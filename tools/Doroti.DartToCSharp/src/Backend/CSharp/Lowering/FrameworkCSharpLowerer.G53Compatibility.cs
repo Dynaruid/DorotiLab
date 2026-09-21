@@ -241,7 +241,7 @@ internal sealed partial class FrameworkCSharpLowerer
             // identifiers through TryGetValue and keep both maps synchronized.
             source = Regex.Replace(
                 source,
-                @"long\? (?<result>result__\d+) = _ids\.GetValueOrDefault\(action\);\n        if \(\(\k<result> is null\)\)\n        \{\n            \k<result> = _nextId\+\+;\n            _ids\[DartRuntimePrimitives\.RequireReference\(action\)\] = DartRuntimePrimitives\.RequireValue\(\k<result>\);\n            _actions\[DartRuntimePrimitives\.RequireValue\(\k<result>\)\] = action;\n        \}\n        return DartRuntimePrimitives\.RequireValue\(\k<result>\);",
+                @"long\? (?<result>result__\d+) = _ids\.GetValueOrDefault\(action\);\n        if \(\(\k<result> is null\)\)\n        \{\n            \k<result> = _nextId\+\+;\n            _ids\[DartRuntimePrimitives\.RequireReference\(action\)\] = __dorotiNullAssert\(\k<result>\);\n            _actions\[__dorotiNullAssert\(\k<result>\)\] = action;\n        \}\n        return __dorotiNullAssert\(\k<result>\);",
                 "if (!_ids.TryGetValue(action, out var ${result}))\n        {\n            ${result} = _nextId++;\n            _ids[DartRuntimePrimitives.RequireReference(action)] = ${result};\n            _actions[${result}] = action;\n        }\n        return ${result};"
             );
         }
@@ -356,7 +356,7 @@ internal sealed partial class FrameworkCSharpLowerer
                     StringComparison.Ordinal
                 )
                 .ReplaceGeneratedLocalPattern(
-                    "        __instance._internalSetValue(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value)));\n",
+                    "        __instance._internalSetValue(__dorotiNullAssert(__dorotiNullAssert(value)));\n",
                     "",
                     StringComparison.Ordinal
                 );
@@ -419,7 +419,7 @@ internal sealed partial class FrameworkCSharpLowerer
                     StringComparison.Ordinal
                 )
                 .ReplaceGeneratedLocalPattern(
-                    "component.abs() < DartRuntimePrimitives.RequireValue(epsilon)",
+                    "component.abs() < __dorotiNullAssert(epsilon)",
                     "component.abs() < epsilon",
                     StringComparison.Ordinal
                 );
@@ -881,7 +881,7 @@ internal sealed partial class FrameworkCSharpLowerer
                 )
                 .ReplaceGeneratedLocalPattern(
                     "_sheetScaleTween.end = this._scale;",
-                    "_sheetScaleTween.end = DartRuntimePrimitives.RequireValue(this._scale);",
+                    "_sheetScaleTween.end = __dorotiNullAssert(this._scale);",
                     StringComparison.Ordinal
                 );
         }
@@ -1453,7 +1453,7 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
                 )
                 .ReplaceGeneratedLocalPattern(
                     ": base(begin: begin, end: end)",
-                    ": base(begin: DartRuntimePrimitives.RequireValue(begin), end: DartRuntimePrimitives.RequireValue(end))",
+                    ": base(begin: __dorotiNullAssert(begin), end: __dorotiNullAssert(end))",
                     StringComparison.Ordinal
                 )
                 .ReplaceGeneratedLocalPattern(
@@ -1567,18 +1567,18 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
         {
             source = source
                 .ReplaceGeneratedLocalPattern(
-                    "[global::Doroti.Framework.Widgets.WidgetState.pressed] = (DartRuntimePrimitives.RequireValue(elevation",
-                    "[global::Doroti.Framework.Widgets.WidgetState.pressed.asConstraint()] = (DartRuntimePrimitives.RequireValue(elevation",
+                    "[global::Doroti.Framework.Widgets.WidgetState.pressed] = (__dorotiNullAssert(elevation",
+                    "[global::Doroti.Framework.Widgets.WidgetState.pressed.asConstraint()] = (__dorotiNullAssert(elevation",
                     StringComparison.Ordinal
                 )
                 .ReplaceGeneratedLocalPattern(
-                    "[global::Doroti.Framework.Widgets.WidgetState.hovered] = (DartRuntimePrimitives.RequireValue(elevation",
-                    "[global::Doroti.Framework.Widgets.WidgetState.hovered.asConstraint()] = (DartRuntimePrimitives.RequireValue(elevation",
+                    "[global::Doroti.Framework.Widgets.WidgetState.hovered] = (__dorotiNullAssert(elevation",
+                    "[global::Doroti.Framework.Widgets.WidgetState.hovered.asConstraint()] = (__dorotiNullAssert(elevation",
                     StringComparison.Ordinal
                 )
                 .ReplaceGeneratedLocalPattern(
-                    "[global::Doroti.Framework.Widgets.WidgetState.focused] = (DartRuntimePrimitives.RequireValue(elevation",
-                    "[global::Doroti.Framework.Widgets.WidgetState.focused.asConstraint()] = (DartRuntimePrimitives.RequireValue(elevation",
+                    "[global::Doroti.Framework.Widgets.WidgetState.focused] = (__dorotiNullAssert(elevation",
+                    "[global::Doroti.Framework.Widgets.WidgetState.focused.asConstraint()] = (__dorotiNullAssert(elevation",
                     StringComparison.Ordinal
                 );
         }
@@ -2185,13 +2185,13 @@ internal static class MaterialDynamicColors
                     StringComparison.Ordinal
                 )
                 .ReplaceGeneratedLocalPattern(
-                    "DartRuntimePrimitives.RequireValue(textDirection).dx",
-                    "DartRuntimePrimitives.RequireValue(secondaryOffset).dx",
+                    "__dorotiNullAssert(textDirection).dx",
+                    "__dorotiNullAssert(secondaryOffset).dx",
                     StringComparison.Ordinal
                 )
                 .ReplaceGeneratedLocalPattern(
                     "textDirection.dx",
-                    "DartRuntimePrimitives.RequireValue(secondaryOffset).dx",
+                    "__dorotiNullAssert(secondaryOffset).dx",
                     StringComparison.Ordinal
                 );
         }
@@ -2419,7 +2419,7 @@ internal static class MaterialDynamicColors
         source = source
             .ReplaceGeneratedLocalPattern(
                 "this.onStateChange?.Invoke(this._lifecycleState!)",
-                "this.onStateChange?.Invoke(DartRuntimePrimitives.RequireValue(this._lifecycleState))",
+                "this.onStateChange?.Invoke(__dorotiNullAssert(this._lifecycleState))",
                 StringComparison.Ordinal
             )
             .ReplaceGeneratedLocalPattern(
@@ -2564,7 +2564,7 @@ internal static class MaterialDynamicColors
             )
             .ReplaceGeneratedLocalPattern(
                 "(minOverscrollLength ?? minLength)",
-                "DartRuntimePrimitives.RequireValue(minOverscrollLength ?? minLength)",
+                "__dorotiNullAssert(minOverscrollLength ?? minLength)",
                 StringComparison.Ordinal
             )
             .ReplaceGeneratedLocalPattern(
@@ -2599,7 +2599,7 @@ internal static class MaterialDynamicColors
             )
             .ReplaceGeneratedLocalPattern(
                 "return _adjustingSelectionEnd = (forward != isReversed__68050);",
-                "return DartRuntimePrimitives.RequireValue(_adjustingSelectionEnd = (forward != isReversed__68050));",
+                "return __dorotiNullAssert(_adjustingSelectionEnd = (forward != isReversed__68050));",
                 StringComparison.Ordinal
             )
             .ReplaceGeneratedLocalPattern(
@@ -2649,7 +2649,7 @@ internal static class MaterialDynamicColors
             source = source
                 .ReplaceGeneratedLocalPattern(
                     "__cascade.cursorHeight = this.cursorHeight",
-                    "__cascade.cursorHeight = DartRuntimePrimitives.RequireValue(this.cursorHeight)",
+                    "__cascade.cursorHeight = __dorotiNullAssert(this.cursorHeight)",
                     StringComparison.Ordinal
                 )
                 .ReplaceGeneratedLocalPattern(
@@ -2893,7 +2893,7 @@ internal static class MaterialDynamicColors
             source = Regex.Replace(
                 source,
                 @"ScrollViewKeyboardDismissBehavior effectiveKeyboardDismissBehavior__\d+ = .+;",
-                "ScrollViewKeyboardDismissBehavior effectiveKeyboardDismissBehavior__22037 = DartRuntimePrimitives.RequireValue(this.keyboardDismissBehavior);"
+                "ScrollViewKeyboardDismissBehavior effectiveKeyboardDismissBehavior__22037 = __dorotiNullAssert(this.keyboardDismissBehavior);"
             );
         }
 
@@ -3053,22 +3053,22 @@ internal static class MaterialDynamicColors
         {
             source = source
                 .ReplaceGeneratedLocalPattern(
-                    "primary: DartRuntimePrimitives.RequireValue(primary)",
+                    "primary: __dorotiNullAssert(primary)",
                     "primary: primary",
                     StringComparison.Ordinal
                 )
                 .ReplaceGeneratedLocalPattern(
-                    "cacheExtent: DartRuntimePrimitives.RequireValue(cacheExtent)",
+                    "cacheExtent: __dorotiNullAssert(cacheExtent)",
                     "cacheExtent: cacheExtent",
                     StringComparison.Ordinal
                 )
                 .ReplaceGeneratedLocalPattern(
-                    "keyboardDismissBehavior: DartRuntimePrimitives.RequireValue(keyboardDismissBehavior)",
+                    "keyboardDismissBehavior: __dorotiNullAssert(keyboardDismissBehavior)",
                     "keyboardDismissBehavior: keyboardDismissBehavior",
                     StringComparison.Ordinal
                 )
                 .ReplaceGeneratedLocalPattern(
-                    "semanticChildCount: DartRuntimePrimitives.RequireValue(semanticChildCount)",
+                    "semanticChildCount: __dorotiNullAssert(semanticChildCount)",
                     "semanticChildCount: semanticChildCount",
                     StringComparison.Ordinal
                 )
@@ -3108,7 +3108,7 @@ internal static class MaterialDynamicColors
             source = source
                 .ReplaceGeneratedLocalPattern(
                     "this.editableText.userUpdateTextEditingValue(((EditableTextState)this.editableText).textEditingValue.copyWith(selection: newSelection__116605), cause)",
-                    "this.editableText.userUpdateTextEditingValue(((EditableTextState)this.editableText).textEditingValue.copyWith(selection: newSelection__116605), DartRuntimePrimitives.RequireValue(cause))",
+                    "this.editableText.userUpdateTextEditingValue(((EditableTextState)this.editableText).textEditingValue.copyWith(selection: newSelection__116605), __dorotiNullAssert(cause))",
                     StringComparison.Ordinal
                 )
                 .ReplaceGeneratedLocalPattern(

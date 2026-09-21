@@ -25,8 +25,11 @@ public abstract class SemanticsEvent
         var @event = new DartMap<string, object> { ["type"] = type, ["data"] = getDataMap() };
         if (nodeId is not null)
         {
-            long nodeId__value2030 = DartRuntimePrimitives.RequireValue(nodeId);
-            @event["nodeId"] = DartRuntimePrimitives.RequireValue(nodeId__value2030);
+            long nodeId__value2030 = (
+                nodeId
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
+            @event["nodeId"] = (nodeId__value2030);
         }
         return @event;
         throw new InvalidOperationException("Dart control flow completed without a value.");

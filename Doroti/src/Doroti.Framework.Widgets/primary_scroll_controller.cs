@@ -57,10 +57,7 @@ public class PrimaryScrollController : InheritedWidget
         TargetPlatform platform = ScrollConfiguration.of(context).getPlatform(context);
         if (result.automaticallyInheritForPlatforms.Contains(platform))
         {
-            return Equals(
-                result.scrollDirection,
-                DartRuntimePrimitives.RequireValue(scrollDirection)
-            );
+            return Equals(result.scrollDirection, (scrollDirection));
         }
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");

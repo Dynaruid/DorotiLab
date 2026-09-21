@@ -62,32 +62,42 @@ public class Divider : StatelessWidget
         DividerThemeData dividerTheme = DividerTheme.of(context);
         DividerThemeData defaults = new _DividerDefaultsM3__divider(context);
         double heightLocal =
-            (height ?? dividerTheme.space) ?? DartRuntimePrimitives.RequireValue(defaults.space);
+            (height ?? dividerTheme.space)
+            ?? (
+                defaults.space
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         double thicknessLocal =
             (thickness ?? dividerTheme.thickness)
-            ?? DartRuntimePrimitives.RequireValue(defaults.thickness);
+            ?? (
+                defaults.thickness
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         double indentLocal =
-            (indent ?? dividerTheme.indent) ?? DartRuntimePrimitives.RequireValue(defaults.indent);
+            (indent ?? dividerTheme.indent)
+            ?? (
+                defaults.indent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         double endIndentLocal =
             (endIndent ?? dividerTheme.endIndent)
-            ?? DartRuntimePrimitives.RequireValue(defaults.endIndent);
+            ?? (
+                defaults.endIndent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         return new SizedBox(
-            height: DartRuntimePrimitives.RequireValue(heightLocal),
+            height: (heightLocal),
             child: new Center(
                 child: new Container(
-                    height: DartRuntimePrimitives.RequireValue(thicknessLocal),
+                    height: (thicknessLocal),
                     margin: EdgeInsetsDirectional.CreateOnly(
-                        start: DartRuntimePrimitives.RequireValue(indentLocal),
-                        end: DartRuntimePrimitives.RequireValue(endIndentLocal)
+                        start: (indentLocal),
+                        end: (endIndentLocal)
                     ),
                     decoration: new BoxDecoration(
                         borderRadius: (radius ?? dividerTheme.radius) ?? defaults.radius,
                         border: new Border(
-                            bottom: createBorderSide(
-                                context,
-                                color: color,
-                                width: DartRuntimePrimitives.RequireValue(thicknessLocal)
-                            )
+                            bottom: createBorderSide(context, color: color, width: (thicknessLocal))
                         )
                     )
                 )
@@ -134,23 +144,37 @@ public class VerticalDivider : StatelessWidget
         DividerThemeData dividerTheme = DividerTheme.of(context);
         DividerThemeData defaults = new _DividerDefaultsM3__divider(context);
         double widthLocal =
-            (width ?? dividerTheme.space) ?? DartRuntimePrimitives.RequireValue(defaults.space);
+            (width ?? dividerTheme.space)
+            ?? (
+                defaults.space
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         double thicknessLocal =
             (thickness ?? dividerTheme.thickness)
-            ?? DartRuntimePrimitives.RequireValue(defaults.thickness);
+            ?? (
+                defaults.thickness
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         double indentLocal =
-            (indent ?? dividerTheme.indent) ?? DartRuntimePrimitives.RequireValue(defaults.indent);
+            (indent ?? dividerTheme.indent)
+            ?? (
+                defaults.indent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         double endIndentLocal =
             (endIndent ?? dividerTheme.endIndent)
-            ?? DartRuntimePrimitives.RequireValue(defaults.endIndent);
+            ?? (
+                defaults.endIndent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         return new SizedBox(
-            width: DartRuntimePrimitives.RequireValue(widthLocal),
+            width: (widthLocal),
             child: new Center(
                 child: new Container(
-                    width: DartRuntimePrimitives.RequireValue(thicknessLocal),
+                    width: (thicknessLocal),
                     margin: EdgeInsetsDirectional.CreateOnly(
-                        top: DartRuntimePrimitives.RequireValue(indentLocal),
-                        bottom: DartRuntimePrimitives.RequireValue(endIndentLocal)
+                        top: (indentLocal),
+                        bottom: (endIndentLocal)
                     ),
                     decoration: new BoxDecoration(
                         borderRadius: (radius ?? dividerTheme.radius) ?? defaults.radius,
@@ -158,7 +182,7 @@ public class VerticalDivider : StatelessWidget
                             left: Divider.createBorderSide(
                                 context,
                                 color: color,
-                                width: DartRuntimePrimitives.RequireValue(thicknessLocal)
+                                width: (thicknessLocal)
                             )
                         )
                     )

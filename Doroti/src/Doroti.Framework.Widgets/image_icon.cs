@@ -44,12 +44,23 @@ public class ImageIcon : StatelessWidget
         }
         double? iconOpacity = iconTheme.opacity;
         Color iconColor = color ?? iconTheme.color!;
-        if ((iconOpacity is not null) && (DartRuntimePrimitives.RequireValue(iconOpacity) != 1.0))
+        if (
+            (iconOpacity is not null)
+            && (
+                (
+                    iconOpacity
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) != 1.0
+            )
+        )
         {
-            double iconOpacity__3341__value3432 = DartRuntimePrimitives.RequireValue(iconOpacity);
-            iconColor = iconColor.withOpacity(
-                iconColor.opacity * DartRuntimePrimitives.RequireValue(iconOpacity__3341__value3432)
+            double iconOpacity__3341__value3432 = (
+                iconOpacity
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
+            iconColor = iconColor.withOpacity(iconColor.opacity * (iconOpacity__3341__value3432));
         }
         return new Semantics(
             label: semanticLabel,

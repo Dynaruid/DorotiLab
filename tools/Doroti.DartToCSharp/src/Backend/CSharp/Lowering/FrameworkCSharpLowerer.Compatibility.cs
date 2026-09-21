@@ -793,7 +793,7 @@ internal sealed partial class FrameworkCSharpLowerer
                     inputPath,
                     diagnostics
                 );
-                builder.Append(".IndexOf(DartRuntimePrimitives.RequireValue(");
+                builder.Append(".IndexOf(__dorotiNullAssert(");
                 LowerExpression(
                     builder,
                     indexArgument,
@@ -2970,7 +2970,7 @@ internal sealed partial class FrameworkCSharpLowerer
                 }
                 if (value?.StaticType?.EndsWith("?", StringComparison.Ordinal) == true)
                 {
-                    builder.Append("DartRuntimePrimitives.RequireValue(");
+                    builder.Append("__dorotiNullAssert(");
                     LowerExpression(
                         builder,
                         value,
@@ -4330,7 +4330,7 @@ internal sealed partial class FrameworkCSharpLowerer
                             );
                         if (requiresNullableValue)
                         {
-                            builder.Append("DartRuntimePrimitives.RequireValue(");
+                            builder.Append("__dorotiNullAssert(");
                         }
 
                         LowerExpression(

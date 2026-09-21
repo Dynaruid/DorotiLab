@@ -816,8 +816,9 @@ internal class _RawChipState__chip : State<RawChip>, TickerProviderStateMixin<Ra
                 (widget.iconTheme?.size ?? chipTheme.iconTheme?.size)
                 ?? theme.chipTheme.iconTheme?.size
             )
-            ?? DartRuntimePrimitives.RequireValue(
+            ?? (
                 new _ChipDefaultsM3__chip(context, widget.isEnabled).iconTheme!.size
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
         MaterialTapTargetSize effectiveMaterialTapTargetSize =
             widget.materialTapTargetSize ?? theme.materialTapTargetSize;
@@ -893,7 +894,10 @@ internal class _RawChipState__chip : State<RawChip>, TickerProviderStateMixin<Ra
             (widget.checkmarkColor ?? chipTheme.checkmarkColor) ?? chipDefaults.checkmarkColor;
         bool showCheckmarkLocal =
             (widget.showCheckmark ?? chipTheme.showCheckmark)
-            ?? DartRuntimePrimitives.RequireValue(chipDefaults.showCheckmark);
+            ?? (
+                chipDefaults.showCheckmark
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         EdgeInsetsGeometry paddingLocal =
             (widget.padding ?? chipTheme.padding) ?? chipDefaults.padding!;
         TextStyle labelStyleLocal = chipTheme.labelStyle ?? chipDefaults.labelStyle!;
@@ -1529,13 +1533,11 @@ public class _RenderChip__chip
         set
         {
             var __value = value;
-            if (Equals(_textDirection, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_textDirection, (__value)))
             {
                 return;
             }
-            _textDirection = DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(__value)
-            );
+            _textDirection = ((__value));
             markNeedsLayout();
         }
     }
@@ -2020,8 +2022,9 @@ public class _RenderChip__chip
         if (t < 0.5)
         {
             double strokeT = t * 2.0;
-            Offset drawMid = DartRuntimePrimitives.RequireValue(
+            Offset drawMid = (
                 Dart_uiLibrary.Offset.lerp(start, mid, strokeT)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
             path.moveTo(origin.dx + start.dx, origin.dy + start.dy);
             path.lineTo(origin.dx + drawMid.dx, origin.dy + drawMid.dy);
@@ -2029,8 +2032,9 @@ public class _RenderChip__chip
         else
         {
             double strokeTLocal = (t - 0.5) * 2.0;
-            Offset drawEnd = DartRuntimePrimitives.RequireValue(
+            Offset drawEnd = (
                 Dart_uiLibrary.Offset.lerp(mid, endLocal, strokeTLocal)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
             path.moveTo(origin.dx + start.dx, origin.dy + start.dy);
             path.lineTo(origin.dx + mid.dx, origin.dy + mid.dy);
@@ -2329,8 +2333,11 @@ public class _RenderChip__chip
                 child,
                 value,
                 debugNameForSlot(
-                    DartRuntimePrimitives.RequireValue(
+                    (
                         DartCollectionRuntime.NullableMapValue<_ChipSlot__chip>(childToSlot, child)
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     )
                 )
             );

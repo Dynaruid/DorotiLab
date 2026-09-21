@@ -157,8 +157,12 @@ public class AnimationController
                 return 0.0;
             }
             return _simulation!.dx(
-                DartRuntimePrimitives.RequireValue(lastElapsedDuration).inMicroseconds.toDouble()
-                    / Duration.microsecondsPerSecond
+                (
+                    lastElapsedDuration
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).inMicroseconds.toDouble() / Duration.microsecondsPerSecond
             );
         }
     }
@@ -210,8 +214,11 @@ public class AnimationController
         _direction = _AnimationDirection__animation_controller.forward;
         if (from is not null)
         {
-            double from__value18454 = DartRuntimePrimitives.RequireValue(from);
-            value = DartRuntimePrimitives.RequireValue(from__value18454);
+            double from__value18454 = (
+                from
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
+            value = (from__value18454);
         }
         return _animateToInternal(upperBound);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -235,8 +242,11 @@ public class AnimationController
         _direction = _AnimationDirection__animation_controller.reverse;
         if (from is not null)
         {
-            double from__value19811 = DartRuntimePrimitives.RequireValue(from);
-            value = DartRuntimePrimitives.RequireValue(from__value19811);
+            double from__value19811 = (
+                from
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
+            value = (from__value19811);
         }
         return _animateToInternal(lowerBound);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -267,8 +277,11 @@ public class AnimationController
             : _AnimationDirection__animation_controller.forward;
         if (from is not null)
         {
-            double from__value21256 = DartRuntimePrimitives.RequireValue(from);
-            value = DartRuntimePrimitives.RequireValue(from__value21256);
+            double from__value21256 = (
+                from
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
+            value = (from__value21256);
         }
         return _animateToInternal(
             _direction switch
@@ -364,8 +377,18 @@ public class AnimationController
                     Equals(_direction, _AnimationDirection__animation_controller.reverse)
                     && (reverseDuration is not null)
                 )
-                    ? DartRuntimePrimitives.RequireValue(reverseDuration)
-                    : DartRuntimePrimitives.RequireValue(this.duration);
+                    ? (
+                        reverseDuration
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                    : (
+                        this.duration
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    );
             simulationDuration = directionDuration * remainingFraction;
         }
         else
@@ -376,7 +399,17 @@ public class AnimationController
             }
         }
         stop();
-        if (Equals(DartRuntimePrimitives.RequireValue(simulationDuration), Duration.zero))
+        if (
+            Equals(
+                (
+                    simulationDuration
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                Duration.zero
+            )
+        )
         {
             if (value != target)
             {
@@ -390,14 +423,22 @@ public class AnimationController
             return TickerFuture.CreateComplete();
         }
         DartRuntimePrimitives.Assert(() =>
-            DartRuntimePrimitives.RequireValue(simulationDuration) > Duration.zero
+            (
+                simulationDuration
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) > Duration.zero
         );
         DartRuntimePrimitives.Assert(() => !isAnimating);
         return _startSimulation(
             new _InterpolationSimulation__animation_controller(
                 _value,
                 target,
-                DartRuntimePrimitives.RequireValue(simulationDuration),
+                (
+                    simulationDuration
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 curve,
                 scale
             )
@@ -429,19 +470,48 @@ public class AnimationController
             }
             return true;
         });
-        DartRuntimePrimitives.Assert(() => max >= DartRuntimePrimitives.RequireValue(min));
+        DartRuntimePrimitives.Assert(() =>
+            max
+            >= (
+                min
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        );
         DartRuntimePrimitives.Assert(() => (max <= upperBound) && (min >= lowerBound));
         DartRuntimePrimitives.Assert(() =>
-            (count is null) || (DartRuntimePrimitives.RequireValue(count) > 0L)
+            (count is null)
+            || (
+                (
+                    count
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) > 0L
+            )
         );
         stop();
         return _startSimulation(
             new _RepeatingSimulation__animation_controller(
                 _value,
-                DartRuntimePrimitives.RequireValue(min),
-                DartRuntimePrimitives.RequireValue(max),
+                (
+                    min
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                (
+                    max
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 reverse,
-                DartRuntimePrimitives.RequireValue(period),
+                (
+                    period
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 _directionSetter,
                 count
             )
@@ -822,7 +892,14 @@ internal class _RepeatingSimulation__animation_controller : Physics.Simulation
             if (!__late__exitTimeInSeconds_initialized)
             {
                 __late__exitTimeInSeconds =
-                    (DartRuntimePrimitives.RequireValue(count) * _periodInSeconds) - _initialT;
+                    (
+                        (
+                            count
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) * _periodInSeconds
+                    ) - _initialT;
                 __late__exitTimeInSeconds_initialized = true;
             }
             return __late__exitTimeInSeconds;
@@ -854,7 +931,15 @@ internal class _RepeatingSimulation__animation_controller : Physics.Simulation
                     * (period.inMicroseconds / Duration.microsecondsPerSecond)
                 );
         System.Diagnostics.Debug.Assert(
-            (count is null) || (DartRuntimePrimitives.RequireValue(count) > 0L)
+            (count is null)
+                || (
+                    (
+                        count
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
     }
 
@@ -868,12 +953,18 @@ internal class _RepeatingSimulation__animation_controller : Physics.Simulation
         if (reverse && isPlayingReverse)
         {
             directionSetter(_AnimationDirection__animation_controller.reverse);
-            return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(max, min, t));
+            return (
+                Dart_uiLibrary.lerpDouble(max, min, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         else
         {
             directionSetter(_AnimationDirection__animation_controller.forward);
-            return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(min, max, t));
+            return (
+                Dart_uiLibrary.lerpDouble(min, max, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

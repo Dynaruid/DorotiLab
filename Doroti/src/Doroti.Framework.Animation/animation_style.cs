@@ -179,8 +179,7 @@ internal class _LerpedCurve__animation_style : Curve
     {
         double a = first.transform(t);
         double b = second.transform(t);
-        return (DartRuntimePrimitives.RequireValue(a) * (1.0 - _t))
-            + (DartRuntimePrimitives.RequireValue(b) * _t);
+        return ((a) * (1.0 - _t)) + ((b) * _t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

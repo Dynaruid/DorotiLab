@@ -183,17 +183,12 @@ public class SliverConstraints : Constraints
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Axis axis =>
-        Basic_typesLibrary.axisDirectionToAxis(DartRuntimePrimitives.RequireValue(axisDirection));
+    public virtual Axis axis => Basic_typesLibrary.axisDirectionToAxis((axisDirection));
     public virtual GrowthDirection normalizedGrowthDirection
     {
         get
         {
-            if (
-                Basic_typesLibrary.axisDirectionIsReversed(
-                    DartRuntimePrimitives.RequireValue(axisDirection)
-                )
-            )
+            if (Basic_typesLibrary.axisDirectionIsReversed((axisDirection)))
             {
                 return growthDirection switch
                 {
@@ -214,12 +209,8 @@ public class SliverConstraints : Constraints
                 && (crossAxisExtent >= 0.0)
                 && (
                     !Equals(
-                        Basic_typesLibrary.axisDirectionToAxis(
-                            DartRuntimePrimitives.RequireValue(axisDirection)
-                        ),
-                        Basic_typesLibrary.axisDirectionToAxis(
-                            DartRuntimePrimitives.RequireValue(crossAxisDirection)
-                        )
+                        Basic_typesLibrary.axisDirectionToAxis((axisDirection)),
+                        Basic_typesLibrary.axisDirectionToAxis((crossAxisDirection))
                     )
                 )
                 && (viewportMainAxisExtent >= 0.0)
@@ -239,8 +230,18 @@ public class SliverConstraints : Constraints
             case Axis.horizontal:
             {
                 return new BoxConstraints(
-                    minHeight: DartRuntimePrimitives.RequireValue(crossAxisExtent),
-                    maxHeight: DartRuntimePrimitives.RequireValue(crossAxisExtent),
+                    minHeight: (
+                        crossAxisExtent
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
+                    maxHeight: (
+                        crossAxisExtent
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     minWidth: minExtent,
                     maxWidth: maxExtent
                 );
@@ -248,8 +249,18 @@ public class SliverConstraints : Constraints
             case Axis.vertical:
             {
                 return new BoxConstraints(
-                    minWidth: DartRuntimePrimitives.RequireValue(crossAxisExtent),
-                    maxWidth: DartRuntimePrimitives.RequireValue(crossAxisExtent),
+                    minWidth: (
+                        crossAxisExtent
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
+                    maxWidth: (
+                        crossAxisExtent
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     minHeight: minExtent,
                     maxHeight: maxExtent
                 );
@@ -314,50 +325,22 @@ public class SliverConstraints : Constraints
                     }
                 }
             }
-            verifyDouble(DartRuntimePrimitives.RequireValue(scrollOffset), "scrollOffset");
-            verifyDouble(DartRuntimePrimitives.RequireValue(overlap), "overlap");
-            verifyDouble(DartRuntimePrimitives.RequireValue(crossAxisExtent), "crossAxisExtent");
-            verifyDouble(
-                DartRuntimePrimitives.RequireValue(scrollOffset),
-                "scrollOffset",
-                mustBePositive: true
-            );
+            verifyDouble((scrollOffset), "scrollOffset");
+            verifyDouble((overlap), "overlap");
+            verifyDouble((crossAxisExtent), "crossAxisExtent");
+            verifyDouble((scrollOffset), "scrollOffset", mustBePositive: true);
             verify(
                 !Equals(
-                    Basic_typesLibrary.axisDirectionToAxis(
-                        DartRuntimePrimitives.RequireValue(axisDirection)
-                    ),
-                    Basic_typesLibrary.axisDirectionToAxis(
-                        DartRuntimePrimitives.RequireValue(crossAxisDirection)
-                    )
+                    Basic_typesLibrary.axisDirectionToAxis((axisDirection)),
+                    Basic_typesLibrary.axisDirectionToAxis((crossAxisDirection))
                 ),
                 "The \"axisDirection\" and the \"crossAxisDirection\" are along the same axis."
             );
-            verifyDouble(
-                DartRuntimePrimitives.RequireValue(viewportMainAxisExtent),
-                "viewportMainAxisExtent",
-                mustBePositive: true
-            );
-            verifyDouble(
-                DartRuntimePrimitives.RequireValue(remainingPaintExtent),
-                "remainingPaintExtent",
-                mustBePositive: true
-            );
-            verifyDouble(
-                DartRuntimePrimitives.RequireValue(remainingCacheExtent),
-                "remainingCacheExtent",
-                mustBePositive: true
-            );
-            verifyDouble(
-                DartRuntimePrimitives.RequireValue(cacheOrigin),
-                "cacheOrigin",
-                mustBeNegative: true
-            );
-            verifyDouble(
-                DartRuntimePrimitives.RequireValue(precedingScrollExtent),
-                "precedingScrollExtent",
-                mustBePositive: true
-            );
+            verifyDouble((viewportMainAxisExtent), "viewportMainAxisExtent", mustBePositive: true);
+            verifyDouble((remainingPaintExtent), "remainingPaintExtent", mustBePositive: true);
+            verifyDouble((remainingCacheExtent), "remainingCacheExtent", mustBePositive: true);
+            verifyDouble((cacheOrigin), "cacheOrigin", mustBeNegative: true);
+            verifyDouble((precedingScrollExtent), "precedingScrollExtent", mustBePositive: true);
             verify(isNormalized, "The constraints are not normalized.");
             if (hasErrors)
             {
@@ -486,11 +469,10 @@ public class SliverGeometry : Diagnosticable
         this.crossAxisExtent = crossAxisExtent;
         this.hasVisualOverflow = hasVisualOverflow;
         this.scrollOffsetCorrection = scrollOffsetCorrection;
-        this.layoutExtent = layoutExtent ?? DartRuntimePrimitives.RequireValue(paintExtent);
-        this.hitTestExtent = hitTestExtent ?? DartRuntimePrimitives.RequireValue(paintExtent);
-        this.cacheExtent =
-            (cacheExtent ?? layoutExtent) ?? DartRuntimePrimitives.RequireValue(paintExtent);
-        this.visible = visible ?? (DartRuntimePrimitives.RequireValue(paintExtent) > 0.0);
+        this.layoutExtent = layoutExtent ?? (paintExtent);
+        this.hitTestExtent = hitTestExtent ?? (paintExtent);
+        this.cacheExtent = (cacheExtent ?? layoutExtent) ?? (paintExtent);
+        this.visible = visible ?? ((paintExtent) > 0.0);
         System.Diagnostics.Debug.Assert(scrollOffsetCorrection != 0.0);
     }
 
@@ -555,9 +537,9 @@ public class SliverGeometry : Diagnosticable
                     "The \"layoutExtent\" exceeds the \"paintExtent\".",
                     details: SliverLibrary._debugCompareFloats(
                         "paintExtent",
-                        DartRuntimePrimitives.RequireValue(paintExtent),
+                        (paintExtent),
                         "layoutExtent",
-                        DartRuntimePrimitives.RequireValue(layoutExtent)
+                        (layoutExtent)
                     )
                 );
             }
@@ -574,9 +556,9 @@ public class SliverGeometry : Diagnosticable
                             {
                                 var __cascade = SliverLibrary._debugCompareFloats(
                                     "maxPaintExtent",
-                                    DartRuntimePrimitives.RequireValue(maxPaintExtent),
+                                    (maxPaintExtent),
                                     "paintExtent",
-                                    DartRuntimePrimitives.RequireValue(paintExtent)
+                                    (paintExtent)
                                 );
                                 __cascade.Add(
                                     new ErrorDescription(
@@ -684,8 +666,11 @@ public class SliverHitTestResult : HitTestResult
     {
         if (paintOffset is not null)
         {
-            Offset paintOffset__value42308 = DartRuntimePrimitives.RequireValue(paintOffset);
-            pushOffset(-DartRuntimePrimitives.RequireValue(paintOffset__value42308));
+            Offset paintOffset__value42308 = (
+                paintOffset
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
+            pushOffset(-(paintOffset__value42308));
         }
         bool isHit = hitTest(
             this,
@@ -694,7 +679,10 @@ public class SliverHitTestResult : HitTestResult
         );
         if (paintOffset is not null)
         {
-            Offset paintOffset__value42549 = DartRuntimePrimitives.RequireValue(paintOffset);
+            Offset paintOffset__value42549 = (
+                paintOffset
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             popTransform();
         }
         return isHit;
@@ -727,7 +715,7 @@ public class SliverLogicalParentData : ParentData
     public virtual double? layoutOffset { get; set; } = default;
 
     public override string ToString() =>
-        $"layoutOffset={((layoutOffset is null) ? "None" : DartRuntimePrimitives.RequireValue(layoutOffset).toStringAsFixed(1L))}";
+        $"layoutOffset={((layoutOffset is null) ? "None" : (layoutOffset ?? throw new global::System.NullReferenceException("Dart null assertion failed.")).toStringAsFixed(1L))}";
 }
 
 public class SliverLogicalContainerParentData

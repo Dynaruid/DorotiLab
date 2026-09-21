@@ -53,13 +53,38 @@ public class Icon : StatelessWidget
         this.blendMode = blendMode;
         this.fontWeight = fontWeight;
         System.Diagnostics.Debug.Assert(
-            (fill is null) || ((0.0 <= DartRuntimePrimitives.RequireValue(fill)) && (fill <= 1.0))
+            (fill is null)
+                || (
+                    (
+                        0.0
+                        <= (
+                            fill
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    ) && (fill <= 1.0)
+                )
         );
         System.Diagnostics.Debug.Assert(
-            (weight is null) || 0.0 < DartRuntimePrimitives.RequireValue(weight)
+            (weight is null)
+                || 0.0
+                    < (
+                        weight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
         );
         System.Diagnostics.Debug.Assert(
-            (opticalSize is null) || 0.0 < DartRuntimePrimitives.RequireValue(opticalSize)
+            (opticalSize is null)
+                || 0.0
+                    < (
+                        opticalSize
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
         );
     }
 
@@ -72,9 +97,10 @@ public class Icon : StatelessWidget
         IconThemeData iconTheme = IconTheme.of(context);
         bool applyTextScalingLocal = (applyTextScaling ?? iconTheme.applyTextScaling) ?? false;
         double tentativeIconSize = (size ?? iconTheme.size) ?? Text_painterLibrary.kDefaultFontSize;
-        double iconSize = DartRuntimePrimitives.RequireValue(applyTextScalingLocal)
-            ? MediaQuery.textScalerOf(context).scale(tentativeIconSize)
-            : tentativeIconSize;
+        double iconSize =
+            (applyTextScalingLocal)
+                ? MediaQuery.textScalerOf(context).scale(tentativeIconSize)
+                : tentativeIconSize;
         double? iconFill = fill ?? iconTheme.fill;
         double? iconWeight = weight ?? iconTheme.weight;
         double? iconGrade = grade ?? iconTheme.grade;
@@ -102,7 +128,12 @@ public class Icon : StatelessWidget
                     () =>
                     {
                         var __cascade = new Paint();
-                        __cascade.blendMode = DartRuntimePrimitives.RequireValue(blendMode);
+                        __cascade.blendMode = (
+                            blendMode
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        );
                         __cascade.color = iconColor;
                         return __cascade;
                     }
@@ -126,7 +157,7 @@ public class Icon : StatelessWidget
         );
         Widget iconWidget = new RichText(
             overflow: TextOverflow.visible,
-            textDirection: DartRuntimePrimitives.RequireValue(textDirectionLocal),
+            textDirection: (textDirectionLocal),
             text: new TextSpan(
                 text: char.ConvertFromUtf32(checked((int)iconLocal.codePoint)),
                 style: fontStyle
@@ -134,7 +165,7 @@ public class Icon : StatelessWidget
         );
         if (iconLocal.matchTextDirection)
         {
-            switch (DartRuntimePrimitives.RequireValue(textDirectionLocal))
+            switch ((textDirectionLocal))
             {
                 case TextDirection.rtl:
                 {

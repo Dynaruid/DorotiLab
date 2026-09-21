@@ -423,7 +423,12 @@ public class _RenderSliverFloatingHeader__sliver_floating_header : RenderSliverS
                 && (
                     (
                         constraints.scrollOffset
-                        < DartRuntimePrimitives.RequireValue(lastScrollOffset)
+                        < (
+                            lastScrollOffset
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     ) || (effectiveScrollOffset < childExtent)
                 );
         }
@@ -438,7 +443,12 @@ public class _RenderSliverFloatingHeader__sliver_floating_header : RenderSliverS
         else
         {
             double delta =
-                DartRuntimePrimitives.RequireValue(lastScrollOffset) - constraints.scrollOffset;
+                (
+                    lastScrollOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) - constraints.scrollOffset;
             if (Equals(constraints.userScrollDirection, ScrollDirection.forward))
             {
                 if (effectiveScrollOffset > childExtent)

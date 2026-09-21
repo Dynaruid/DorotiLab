@@ -227,8 +227,12 @@ public static partial class DialogLibrary
         double? scaledFontSize = MediaQuery.maybeTextScalerOf(context)?.scale(defaultFontSize);
         return (scaledFontSize is not null)
             && (
-                DartRuntimePrimitives.RequireValue(scaledFontSize)
-                > (defaultFontSize * _kMaxRegularTextScaleFactor)
+                (
+                    scaledFontSize
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) > (defaultFontSize * _kMaxRegularTextScaleFactor)
             );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -593,10 +597,7 @@ public class CupertinoPopupSurface : StatelessWidget
             {
                 return null;
             }
-            return ImageFilterConfig.CreateBlur(
-                sigmaX: DartRuntimePrimitives.RequireValue(blurSigma),
-                sigmaY: DartRuntimePrimitives.RequireValue(blurSigma)
-            );
+            return ImageFilterConfig.CreateBlur(sigmaX: (blurSigma), sigmaY: (blurSigma));
         }
         var colorFilter = ImageFilterConfig.Create(
             brightness switch
@@ -613,10 +614,7 @@ public class CupertinoPopupSurface : StatelessWidget
         }
         return ImageFilterConfig.CreateCompose(
             inner: colorFilter,
-            outer: ImageFilterConfig.CreateBlur(
-                sigmaX: DartRuntimePrimitives.RequireValue(blurSigma),
-                sigmaY: DartRuntimePrimitives.RequireValue(blurSigma)
-            )
+            outer: ImageFilterConfig.CreateBlur(sigmaX: (blurSigma), sigmaY: (blurSigma))
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -687,7 +685,14 @@ internal class _SlidingTapGestureRecognizer__dialog : Gestures.VerticalDragGestu
             if (@event is Gestures.PointerUpEvent)
             {
                 Gestures.PointerUpEvent @event__as29359 = (Gestures.PointerUpEvent)@event;
-                stopTrackingPointer(DartRuntimePrimitives.RequireValue(_primaryPointer));
+                stopTrackingPointer(
+                    (
+                        _primaryPointer
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                );
                 onResponsiveEnd?.Invoke(@event__as29359.position);
                 _primaryPointer = null;
                 return;
@@ -1069,8 +1074,11 @@ internal class _CupertinoActionSheetState__dialog : State<CupertinoActionSheet>
             }
             else
             {
-                return DartRuntimePrimitives.RequireValue(
+                return (
                     Dart_uiLibrary.lerpDouble(y1, y2, (x - x1) / (x2 - x1))
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
             }
         }
@@ -1362,11 +1370,13 @@ internal class _ActionSheetActionContent__dialog : StatelessWidget
         return contextBodySize switch
         {
             <= 17L => 21.0,
-            <= 19L => DartRuntimePrimitives.RequireValue(
+            <= 19L => (
                 Dart_uiLibrary.lerpDouble(21.0, 23.0, (contextBodySize - 17.0) / (19.0 - 17.0))
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             ),
-            <= 21L => DartRuntimePrimitives.RequireValue(
+            <= 21L => (
                 Dart_uiLibrary.lerpDouble(23.0, 24.0, (contextBodySize - 19.0) / (21.0 - 19.0))
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             ),
             <= 24L => 24.0,
             _ => contextBodySize,
@@ -2148,8 +2158,14 @@ internal class _CupertinoDialogActionState__dialog
         double fontSizeRatio =
             MediaQuery
                 .textScalerOf(context)
-                .scale(DartRuntimePrimitives.RequireValue(textStyle.fontSize))
-            / DialogLibrary._kDialogMinButtonFontSize;
+                .scale(
+                    (
+                        textStyle.fontSize
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                ) / DialogLibrary._kDialogMinButtonFontSize;
         return new FittedBox(
             fit: BoxFit.scaleDown,
             child: new ConstrainedBox(

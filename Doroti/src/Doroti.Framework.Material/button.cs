@@ -450,8 +450,10 @@ public class _RenderInputPadding__button : RenderShiftedBox
             return null;
         }
         Size childSize = childLocal.getDryLayout(constraints);
-        return DartRuntimePrimitives.RequireValue(result)
-            + Alignment.center.alongOffset(getDryLayout(constraints) - childSize).dy;
+        return (
+                result
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) + Alignment.center.alongOffset(getDryLayout(constraints) - childSize).dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

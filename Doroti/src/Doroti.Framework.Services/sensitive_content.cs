@@ -32,7 +32,10 @@ public class SensitiveContentService
             "SensitiveContent.getContentSensitivity"
         );
         ContentSensitivity contentSensitivity = Enum.GetValues<ContentSensitivity>().ToList()[
-            (int)DartRuntimePrimitives.RequireValue(result)
+            (int)(
+                result
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         ];
         if (Equals(contentSensitivity, ContentSensitivity._unknown))
         {
@@ -53,9 +56,7 @@ public class SensitiveContentService
         {
             return false;
         }
-        return DartRuntimePrimitives.RequireValue(
-            await sensitiveContentChannel.invokeMethod<bool>("SensitiveContent.isSupported")
-        );
+        return (await sensitiveContentChannel.invokeMethod<bool>("SensitiveContent.isSupported"));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }

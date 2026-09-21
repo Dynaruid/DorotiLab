@@ -252,9 +252,9 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) != _skipTraversal)
+            if ((__value) != _skipTraversal)
             {
-                _skipTraversal = DartRuntimePrimitives.RequireValue(__value);
+                _skipTraversal = (__value);
                 _manager?._markPropertiesChanged(this);
             }
         }
@@ -265,10 +265,10 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) != _canRequestFocus)
+            if ((__value) != _canRequestFocus)
             {
-                _canRequestFocus = DartRuntimePrimitives.RequireValue(__value);
-                if (hasFocus && !DartRuntimePrimitives.RequireValue(__value))
+                _canRequestFocus = (__value);
+                if (hasFocus && !(__value))
                 {
                     unfocus(disposition: UnfocusDisposition.previouslyFocusedChild);
                 }
@@ -288,12 +288,12 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) == _descendantsAreFocusable)
+            if ((__value) == _descendantsAreFocusable)
             {
                 return;
             }
-            _descendantsAreFocusable = DartRuntimePrimitives.RequireValue(__value);
-            if (!DartRuntimePrimitives.RequireValue(__value) && hasFocus)
+            _descendantsAreFocusable = (__value);
+            if (!(__value) && hasFocus)
             {
                 unfocus(disposition: UnfocusDisposition.previouslyFocusedChild);
             }
@@ -306,9 +306,9 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) != _descendantsAreTraversable)
+            if ((__value) != _descendantsAreTraversable)
             {
-                _descendantsAreTraversable = DartRuntimePrimitives.RequireValue(__value);
+                _descendantsAreTraversable = (__value);
                 _manager?._markPropertiesChanged(this);
             }
         }
@@ -1792,8 +1792,11 @@ internal class _HighlightModeManager__focus_manager
                     return;
                 }
                 if (
-                    DartRuntimePrimitives.RequireValue(
+                    (
                         _lastInteractionRequiresTraditionalHighlights
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     )
                 )
                 {

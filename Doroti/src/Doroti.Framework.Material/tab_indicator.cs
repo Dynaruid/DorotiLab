@@ -123,9 +123,15 @@ internal class _UnderlinePainter__tab_indicator : BoxPainter
     public override void paint(Canvas canvas, Offset offset, ImageConfiguration configuration)
     {
         DartRuntimePrimitives.Assert(() => configuration.size is not null);
-        Rect rect = offset & DartRuntimePrimitives.RequireValue(configuration.size);
-        TextDirection textDirectionLocal = DartRuntimePrimitives.RequireValue(
+        Rect rect =
+            offset
+            & (
+                configuration.size
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
+        TextDirection textDirectionLocal = (
             configuration.textDirection
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         Paint paintLocal = default!;
         if (borderRadius is not null)

@@ -169,11 +169,21 @@ public class Card : StatelessWidget
                     surfaceTintColor: (surfaceTintColor ?? cardTheme.surfaceTintColor)
                         ?? defaults.surfaceTintColor,
                     elevation: (elevation ?? cardTheme.elevation)
-                        ?? DartRuntimePrimitives.RequireValue(defaults.elevation),
+                        ?? (
+                            defaults.elevation
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
                     shape: (shape ?? cardTheme.shape) ?? defaults.shape,
                     borderOnForeground: borderOnForeground,
                     clipBehavior: (clipBehavior ?? cardTheme.clipBehavior)
-                        ?? DartRuntimePrimitives.RequireValue(defaults.clipBehavior),
+                        ?? (
+                            defaults.clipBehavior
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
                     child: new Widgets.Semantics(
                         explicitChildNodes: !semanticContainer,
                         child: child

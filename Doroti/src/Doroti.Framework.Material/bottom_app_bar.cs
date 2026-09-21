@@ -82,7 +82,10 @@ internal class _BottomAppBarState__bottom_app_bar : State<BottomAppBar>
                 );
         double elevationLocal =
             (widget.elevation ?? babTheme.elevation)
-            ?? DartRuntimePrimitives.RequireValue(defaults.elevation);
+            ?? (
+                defaults.elevation
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         double? heightLocal = (widget.height ?? babTheme.height) ?? defaults.height;
         Color colorLocal = (widget.color ?? babTheme.color) ?? defaults.color!;
         Color surfaceTintColorLocal =
@@ -146,12 +149,13 @@ internal class _BottomAppBarClipper__bottom_app_bar : CustomClipper<Path>
             double? bottomNavigationBarTopLocal = geometry.value.bottomNavigationBarTop;
             if (bottomNavigationBarTopLocal is not null)
             {
-                double bottomNavigationBarTop__9605__value9677 = DartRuntimePrimitives.RequireValue(
+                double bottomNavigationBarTop__9605__value9677 = (
                     bottomNavigationBarTopLocal
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
-                return DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(bottomNavigationBarTop__9605__value9677)
-                );
+                return ((bottomNavigationBarTop__9605__value9677));
             }
             var box = ((RenderBox?)materialKey.currentContext?.findRenderObject())!;
             return box?.localToGlobal(Offset.zero).dy ?? 0;

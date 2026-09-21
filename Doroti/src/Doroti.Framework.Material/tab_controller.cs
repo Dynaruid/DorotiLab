@@ -31,11 +31,7 @@ public class TabController : ChangeNotifier
         );
         System.Diagnostics.Debug.Assert(length >= 0L);
         System.Diagnostics.Debug.Assert(
-            (initialIndex >= 0L)
-                && (
-                    (DartRuntimePrimitives.RequireValue(length) == 0L)
-                    || (initialIndex < DartRuntimePrimitives.RequireValue(length))
-                )
+            (initialIndex >= 0L) && (((length) == 0L) || (initialIndex < (length)))
         );
         if (MemoryAllocationsLibrary.kFlutterMemoryAllocationsEnabled)
         {
@@ -57,10 +53,10 @@ public class TabController : ChangeNotifier
             vsync: default!
         );
         __instance.length = length;
-        __instance._index = DartRuntimePrimitives.RequireValue(index);
-        __instance._previousIndex = DartRuntimePrimitives.RequireValue(previousIndex);
+        __instance._index = (index);
+        __instance._previousIndex = (previousIndex);
         __instance._animationController = animationController;
-        __instance._animationDuration = DartRuntimePrimitives.RequireValue(animationDuration);
+        __instance._animationDuration = (animationDuration);
         if (MemoryAllocationsLibrary.kFlutterMemoryAllocationsEnabled)
         {
             maybeDispatchObjectCreation(__instance);
@@ -77,10 +73,11 @@ public class TabController : ChangeNotifier
     {
         if (index is not null)
         {
-            long index__value5320 = DartRuntimePrimitives.RequireValue(index);
-            _animationController!.value = DartRuntimePrimitives
-                .RequireValue(index__value5320)
-                .toDouble();
+            long index__value5320 = (
+                index
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
+            _animationController!.value = (index__value5320).toDouble();
         }
         var result = Create_(
             index: index ?? _index,
@@ -110,18 +107,25 @@ public class TabController : ChangeNotifier
         _previousIndex = index;
         _index = value;
         if (
-            (duration is not null) && (DartRuntimePrimitives.RequireValue(duration) > Duration.zero)
+            (duration is not null)
+            && (
+                (
+                    duration
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) > Duration.zero
+            )
         )
         {
-            Duration duration__value7060 = DartRuntimePrimitives.RequireValue(duration);
+            Duration duration__value7060 = (
+                duration
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             _indexIsChangingCount += 1L;
             notifyListeners();
             _animationController!
-                .animateTo(
-                    _index.toDouble(),
-                    duration: DartRuntimePrimitives.RequireValue(duration__value7060),
-                    curve: curve!
-                )
+                .animateTo(_index.toDouble(), duration: (duration__value7060), curve: curve!)
                 .whenCompleteOrCancel(() =>
                 {
                     if (_animationController is not null)

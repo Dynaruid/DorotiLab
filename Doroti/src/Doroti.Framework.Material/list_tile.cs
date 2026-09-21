@@ -482,12 +482,18 @@ public class ListTile : StatelessWidget
                                     ) ?? false,
                                     textDirection: textDirectionLocal,
                                     titleBaselineType: titleStyle.textBaseline
-                                        ?? DartRuntimePrimitives.RequireValue(
+                                        ?? (
                                             defaults.titleTextStyle!.textBaseline
+                                            ?? throw new global::System.NullReferenceException(
+                                                "Dart null assertion failed."
+                                            )
                                         ),
                                     subtitleBaselineType: subtitleStyle?.textBaseline
-                                        ?? DartRuntimePrimitives.RequireValue(
+                                        ?? (
                                             defaults.subtitleTextStyle!.textBaseline
+                                            ?? throw new global::System.NullReferenceException(
+                                                "Dart null assertion failed."
+                                            )
                                         ),
                                     horizontalTitleGap: (
                                         horizontalTitleGap ?? tileTheme.horizontalTitleGap
@@ -495,12 +501,18 @@ public class ListTile : StatelessWidget
                                     minVerticalPadding: (
                                         minVerticalPadding ?? tileTheme.minVerticalPadding
                                     )
-                                        ?? DartRuntimePrimitives.RequireValue(
+                                        ?? (
                                             defaults.minVerticalPadding
+                                            ?? throw new global::System.NullReferenceException(
+                                                "Dart null assertion failed."
+                                            )
                                         ),
                                     minLeadingWidth: (minLeadingWidth ?? tileTheme.minLeadingWidth)
-                                        ?? DartRuntimePrimitives.RequireValue(
+                                        ?? (
                                             defaults.minLeadingWidth
+                                            ?? throw new global::System.NullReferenceException(
+                                                "Dart null assertion failed."
+                                            )
                                         ),
                                     minTileHeight: minTileHeight ?? tileTheme.minTileHeight,
                                     titleAlignment: effectiveTitleAlignment
@@ -942,16 +954,13 @@ public class _RenderListTile__list_tile
         _titleAlignment = titleAlignment;
     }
 
-    public virtual RenderBox? leading =>
-        childForSlot(DartRuntimePrimitives.RequireValue(_ListTileSlot__list_tile.leading));
+    public virtual RenderBox? leading => childForSlot((_ListTileSlot__list_tile.leading));
     public virtual RenderBox title =>
         DartRuntimePrimitives.ConvertValue<RenderBox>(
             childForSlot(_ListTileSlot__list_tile.title)!
         );
-    public virtual RenderBox? subtitle =>
-        childForSlot(DartRuntimePrimitives.RequireValue(_ListTileSlot__list_tile.subtitle));
-    public virtual RenderBox? trailing =>
-        childForSlot(DartRuntimePrimitives.RequireValue(_ListTileSlot__list_tile.trailing));
+    public virtual RenderBox? subtitle => childForSlot((_ListTileSlot__list_tile.subtitle));
+    public virtual RenderBox? trailing => childForSlot((_ListTileSlot__list_tile.trailing));
     public virtual IEnumerable<RenderBox> children
     {
         get
@@ -994,11 +1003,11 @@ public class _RenderListTile__list_tile
         set
         {
             var __value = value;
-            if (_isDense == DartRuntimePrimitives.RequireValue(__value))
+            if (_isDense == (__value))
             {
                 return;
             }
-            _isDense = DartRuntimePrimitives.RequireValue(__value);
+            _isDense = (__value);
             markNeedsLayout();
         }
     }
@@ -1022,11 +1031,11 @@ public class _RenderListTile__list_tile
         set
         {
             var __value = value;
-            if (_isThreeLine == DartRuntimePrimitives.RequireValue(__value))
+            if (_isThreeLine == (__value))
             {
                 return;
             }
-            _isThreeLine = DartRuntimePrimitives.RequireValue(__value);
+            _isThreeLine = (__value);
             markNeedsLayout();
         }
     }
@@ -1036,11 +1045,11 @@ public class _RenderListTile__list_tile
         set
         {
             var __value = value;
-            if (Equals(_textDirection, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_textDirection, (__value)))
             {
                 return;
             }
-            _textDirection = DartRuntimePrimitives.RequireValue(__value);
+            _textDirection = (__value);
             markNeedsLayout();
         }
     }
@@ -1050,11 +1059,11 @@ public class _RenderListTile__list_tile
         set
         {
             var __value = value;
-            if (Equals(_titleBaselineType, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_titleBaselineType, (__value)))
             {
                 return;
             }
-            _titleBaselineType = DartRuntimePrimitives.RequireValue(__value);
+            _titleBaselineType = (__value);
             markNeedsLayout();
         }
     }
@@ -1078,11 +1087,11 @@ public class _RenderListTile__list_tile
         set
         {
             var __value = value;
-            if (_horizontalTitleGap == DartRuntimePrimitives.RequireValue(__value))
+            if (_horizontalTitleGap == (__value))
             {
                 return;
             }
-            _horizontalTitleGap = DartRuntimePrimitives.RequireValue(__value);
+            _horizontalTitleGap = (__value);
             markNeedsLayout();
         }
     }
@@ -1096,11 +1105,11 @@ public class _RenderListTile__list_tile
         set
         {
             var __value = value;
-            if (_minVerticalPadding == DartRuntimePrimitives.RequireValue(__value))
+            if (_minVerticalPadding == (__value))
             {
                 return;
             }
-            _minVerticalPadding = DartRuntimePrimitives.RequireValue(__value);
+            _minVerticalPadding = (__value);
             markNeedsLayout();
         }
     }
@@ -1110,11 +1119,11 @@ public class _RenderListTile__list_tile
         set
         {
             var __value = value;
-            if (_minLeadingWidth == DartRuntimePrimitives.RequireValue(__value))
+            if (_minLeadingWidth == (__value))
             {
                 return;
             }
-            _minLeadingWidth = DartRuntimePrimitives.RequireValue(__value);
+            _minLeadingWidth = (__value);
             markNeedsLayout();
         }
     }
@@ -1138,11 +1147,11 @@ public class _RenderListTile__list_tile
         set
         {
             var __value = value;
-            if (Equals(_titleAlignment, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_titleAlignment, (__value)))
             {
                 return;
             }
-            _titleAlignment = DartRuntimePrimitives.RequireValue(__value);
+            _titleAlignment = (__value);
             markNeedsLayout();
         }
     }
@@ -1311,15 +1320,24 @@ public class _RenderListTile__list_tile
                 : (
                     Math.Max(
                         _minLeadingWidth,
-                        DartRuntimePrimitives.RequireValue(leadingSize).width
+                        (
+                            leadingSize
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ).width
                     ) + _effectiveHorizontalTitleGap
                 );
         double adjustedTrailingWidth =
             (trailingSize is null)
                 ? 0.0
                 : Math.Max(
-                    DartRuntimePrimitives.RequireValue(trailingSize).width
-                        + _effectiveHorizontalTitleGap,
+                    (
+                        trailingSize
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).width + _effectiveHorizontalTitleGap,
                     32.0
                 );
         BoxConstraints textConstraintsLocal = looseConstraints.tighten(
@@ -1350,7 +1368,12 @@ public class _RenderListTile__list_tile
                 getBaseline(
                     subtitleLocal,
                     textConstraintsLocal,
-                    DartRuntimePrimitives.RequireValue(subtitleBaselineType)
+                    (
+                        subtitleBaselineType
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 ) ?? subtitleHeight;
             double targetTitleY =
                 (isThreeLine ? (isDense ? 22.0 : 28.0) : (isDense ? 28.0 : 32.0)) - titleBaseline;
@@ -1384,8 +1407,11 @@ public class _RenderListTile__list_tile
             );
             if ((leadingLocal is not null) && (leadingSize is not null))
             {
-                Size leadingSize__57061__value61002 = DartRuntimePrimitives.RequireValue(
+                Size leadingSize__57061__value61002 = (
                     leadingSize
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
                 positionChild(
                     leadingLocal,
@@ -1394,14 +1420,20 @@ public class _RenderListTile__list_tile
                             ? 0.0
                             : (
                                 tileWidth
-                                - DartRuntimePrimitives
-                                    .RequireValue(leadingSize__57061__value61002)
-                                    .width
+                                - (
+                                    leadingSize__57061__value61002
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                ).width
                             ),
                         titleAlignment._yOffsetFor(
-                            DartRuntimePrimitives
-                                .RequireValue(leadingSize__57061__value61002)
-                                .height,
+                            (
+                                leadingSize__57061__value61002
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ).height,
                             tileHeight,
                             this,
                             true
@@ -1411,8 +1443,11 @@ public class _RenderListTile__list_tile
             }
             if ((trailingLocal is not null) && (trailingSize is not null))
             {
-                Size trailingSize__57151__value61289 = DartRuntimePrimitives.RequireValue(
+                Size trailingSize__57151__value61289 = (
                     trailingSize
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
                 positionChild(
                     trailingLocal,
@@ -1420,15 +1455,21 @@ public class _RenderListTile__list_tile
                         isLTR
                             ? (
                                 tileWidth
-                                - DartRuntimePrimitives
-                                    .RequireValue(trailingSize__57151__value61289)
-                                    .width
+                                - (
+                                    trailingSize__57151__value61289
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                ).width
                             )
                             : 0.0,
                         titleAlignment._yOffsetFor(
-                            DartRuntimePrimitives
-                                .RequireValue(trailingSize__57151__value61289)
-                                .height,
+                            (
+                                trailingSize__57151__value61289
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ).height,
                             tileHeight,
                             this,
                             false
@@ -1590,10 +1631,13 @@ public class _RenderListTile__list_tile
                 child,
                 value,
                 debugNameForSlot(
-                    DartRuntimePrimitives.RequireValue(
+                    (
                         DartCollectionRuntime.NullableMapValue<_ListTileSlot__list_tile>(
                             childToSlot,
                             child
+                        )
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
                         )
                     )
                 )

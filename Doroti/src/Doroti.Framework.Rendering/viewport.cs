@@ -243,7 +243,12 @@ public abstract class RenderViewportBase<ParentDataClass>
                         cacheExtent ?? RenderAbstractViewport.defaultCacheExtent
                     ),
                     CacheExtentStyle.viewport => ScrollCacheExtent.CreateViewport(
-                        DartRuntimePrimitives.RequireValue(cacheExtent)
+                        (
+                            cacheExtent
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     ),
                     _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
                 }
@@ -285,11 +290,11 @@ public abstract class RenderViewportBase<ParentDataClass>
         set
         {
             var __value = value;
-            if (Equals(DartRuntimePrimitives.RequireValue(__value), _axisDirection))
+            if (Equals((__value), _axisDirection))
             {
                 return;
             }
-            _axisDirection = DartRuntimePrimitives.RequireValue(__value);
+            _axisDirection = (__value);
             markNeedsLayout();
         }
     }
@@ -299,11 +304,11 @@ public abstract class RenderViewportBase<ParentDataClass>
         set
         {
             var __value = value;
-            if (Equals(DartRuntimePrimitives.RequireValue(__value), _crossAxisDirection))
+            if (Equals((__value), _crossAxisDirection))
             {
                 return;
             }
-            _crossAxisDirection = DartRuntimePrimitives.RequireValue(__value);
+            _crossAxisDirection = (__value);
             markNeedsLayout();
         }
     }
@@ -351,10 +356,22 @@ public abstract class RenderViewportBase<ParentDataClass>
                 _scrollCacheExtent = _scrollCacheExtent switch
                 {
                     _PixelScrollCacheExtent__viewport __object21598 =>
-                        ScrollCacheExtent.CreatePixels(DartRuntimePrimitives.RequireValue(__value)),
+                        ScrollCacheExtent.CreatePixels(
+                            (
+                                __value
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
+                        ),
                     _ViewportScrollCacheExtent__viewport __object21668 =>
                         ScrollCacheExtent.CreateViewport(
-                            DartRuntimePrimitives.RequireValue(__value)
+                            (
+                                __value
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         ),
                     _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
                 };
@@ -387,17 +404,27 @@ public abstract class RenderViewportBase<ParentDataClass>
         set
         {
             var __value = value;
-            if (Equals(DartRuntimePrimitives.RequireValue(__value), cacheExtentStyle))
+            if (Equals((__value), cacheExtentStyle))
             {
                 return;
             }
-            _scrollCacheExtent = DartRuntimePrimitives.RequireValue(__value) switch
+            _scrollCacheExtent = (__value) switch
             {
                 CacheExtentStyle.pixel => ScrollCacheExtent.CreatePixels(
-                    DartRuntimePrimitives.RequireValue(cacheExtent)
+                    (
+                        cacheExtent
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 ),
                 CacheExtentStyle.viewport => ScrollCacheExtent.CreateViewport(
-                    DartRuntimePrimitives.RequireValue(cacheExtent)
+                    (
+                        cacheExtent
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 ),
                 _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
             };
@@ -410,9 +437,9 @@ public abstract class RenderViewportBase<ParentDataClass>
         set
         {
             var __value = value;
-            if (!Equals(DartRuntimePrimitives.RequireValue(__value), _paintOrder))
+            if (!Equals((__value), _paintOrder))
             {
-                _paintOrder = DartRuntimePrimitives.RequireValue(__value);
+                _paintOrder = (__value);
                 markNeedsPaint();
                 markNeedsSemanticsUpdate();
             }
@@ -424,9 +451,9 @@ public abstract class RenderViewportBase<ParentDataClass>
         set
         {
             var __value = value;
-            if (!Equals(DartRuntimePrimitives.RequireValue(__value), _clipBehavior))
+            if (!Equals((__value), _clipBehavior))
             {
-                _clipBehavior = DartRuntimePrimitives.RequireValue(__value);
+                _clipBehavior = (__value);
                 markNeedsPaint();
                 markNeedsSemanticsUpdate();
             }
@@ -580,8 +607,11 @@ public abstract class RenderViewportBase<ParentDataClass>
             DartRuntimePrimitives.Assert(() => childLayoutGeometry.debugAssertIsValid());
             if (childLayoutGeometry.scrollOffsetCorrection is not null)
             {
-                return DartRuntimePrimitives.RequireValue(
+                return (
                     childLayoutGeometry.scrollOffsetCorrection
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
             }
             double effectiveLayoutOffset = layoutOffset + childLayoutGeometry.paintOrigin;
@@ -707,20 +737,41 @@ public abstract class RenderViewportBase<ParentDataClass>
             {
                 return Rect.fromLTRB(
                     semanticBounds.left,
-                    semanticBounds.top - DartRuntimePrimitives.RequireValue(_calculatedCacheExtent),
+                    semanticBounds.top
+                        - (
+                            _calculatedCacheExtent
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
                     semanticBounds.right,
                     semanticBounds.bottom
-                        + DartRuntimePrimitives.RequireValue(_calculatedCacheExtent)
+                        + (
+                            _calculatedCacheExtent
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                 );
             }
             case Axis.horizontal:
             {
                 return Rect.fromLTRB(
                     semanticBounds.left
-                        - DartRuntimePrimitives.RequireValue(_calculatedCacheExtent),
+                        - (
+                            _calculatedCacheExtent
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
                     semanticBounds.top,
                     semanticBounds.right
-                        + DartRuntimePrimitives.RequireValue(_calculatedCacheExtent),
+                        + (
+                            _calculatedCacheExtent
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
                     semanticBounds.bottom
                 );
             }
@@ -872,8 +923,11 @@ public abstract class RenderViewportBase<ParentDataClass>
             if (parentLocal is RenderSliver)
             {
                 RenderSliver parent__41405__as41502 = (RenderSliver)parentLocal;
-                leadingScrollOffset += DartRuntimePrimitives.RequireValue(
+                leadingScrollOffset += (
                     parent__41405__as41502.childScrollOffset(child)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
             }
             else
@@ -894,7 +948,10 @@ public abstract class RenderViewportBase<ParentDataClass>
             DartRuntimePrimitives.Assert(() => pivot.parent is RenderSliver);
             var pivotParent = ((RenderSliver?)(object?)pivot.parent!)!;
             growthDirectionLocal = pivotParent.constraints.growthDirection;
-            pivotExtent = DartRuntimePrimitives.RequireValue(axis) switch
+            pivotExtent = (
+                axis
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) switch
             {
                 Axis.horizontal => pivot.size.width,
                 Axis.vertical => pivot.size.height,
@@ -903,7 +960,14 @@ public abstract class RenderViewportBase<ParentDataClass>
             rect ??= target.paintBounds;
             rectLocal = MatrixUtils.transformRect(
                 target.getTransformTo(pivot),
-                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect))
+                (
+                    (
+                        rect
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
             );
         }
         else
@@ -915,7 +979,14 @@ public abstract class RenderViewportBase<ParentDataClass>
                 pivotExtent = targetSliver.geometry!.scrollExtent;
                 if (rect is null)
                 {
-                    switch (DartRuntimePrimitives.RequireValue(axis))
+                    switch (
+                        (
+                            axis
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    )
                     {
                         case Axis.horizontal:
                         {
@@ -939,14 +1010,24 @@ public abstract class RenderViewportBase<ParentDataClass>
                         }
                     }
                 }
-                rectLocal = DartRuntimePrimitives.RequireValue(rect);
+                rectLocal = (
+                    rect
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
             }
             else
             {
                 DartRuntimePrimitives.Assert(() => rect is not null);
                 return new RevealedOffset(
                     offset: offset.pixels,
-                    rect: DartRuntimePrimitives.RequireValue(rect)
+                    rect: (
+                        rect
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 );
             }
         }
@@ -970,7 +1051,14 @@ public abstract class RenderViewportBase<ParentDataClass>
         Matrix4 transform = target.getTransformTo(this);
         Rect targetRect = MatrixUtils.transformRect(
             transform,
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect))
+            (
+                (
+                    rect
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
         );
         double extentOfPinnedSlivers = maxScrollObstructionExtentBefore(sliver);
         switch (sliver.constraints.growthDirection)
@@ -990,7 +1078,12 @@ public abstract class RenderViewportBase<ParentDataClass>
                 {
                     return new RevealedOffset(offset: double.NegativeInfinity, rect: targetRect);
                 }
-                leadingScrollOffset -= DartRuntimePrimitives.RequireValue(axis) switch
+                leadingScrollOffset -= (
+                    axis
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) switch
                 {
                     Axis.vertical => targetRect.height,
                     Axis.horizontal => targetRect.width,
@@ -999,7 +1092,9 @@ public abstract class RenderViewportBase<ParentDataClass>
                 break;
             }
         }
-        double mainAxisExtentDifference = DartRuntimePrimitives.RequireValue(axis) switch
+        double mainAxisExtentDifference = (
+            axis ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        ) switch
         {
             Axis.horizontal => size.width - extentOfPinnedSlivers - rectLocal.width,
             Axis.vertical => size.height - extentOfPinnedSlivers - rectLocal.height,
@@ -1538,11 +1633,11 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
         {
             var __value = value;
             DartRuntimePrimitives.Assert(() => (__value >= 0.0) && (__value <= 1.0));
-            if (DartRuntimePrimitives.RequireValue(__value) == _anchor)
+            if ((__value) == _anchor)
             {
                 return;
             }
-            _anchor = DartRuntimePrimitives.RequireValue(__value);
+            _anchor = (__value);
             markNeedsLayout();
         }
     }
@@ -1687,9 +1782,22 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
         );
         _calculatedCacheExtent = _scrollCacheExtent._calculateCacheOffset(mainAxisExtent);
         double fullCacheExtent =
-            mainAxisExtent + (2L * DartRuntimePrimitives.RequireValue(_calculatedCacheExtent));
+            mainAxisExtent
+            + (
+                2L
+                * (
+                    _calculatedCacheExtent
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            );
         double centerCacheOffset =
-            centerOffset + DartRuntimePrimitives.RequireValue(_calculatedCacheExtent);
+            centerOffset
+            + (
+                _calculatedCacheExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         double reverseDirectionRemainingCacheExtent = Dart_uiLibrary.clampDouble(
             centerCacheOffset,
             0.0,
@@ -1716,7 +1824,12 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
                 remainingCacheExtent: reverseDirectionRemainingCacheExtent,
                 cacheOrigin: Dart_uiLibrary.clampDouble(
                     mainAxisExtent - centerOffset,
-                    -DartRuntimePrimitives.RequireValue(_calculatedCacheExtent),
+                    -(
+                        _calculatedCacheExtent
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     0.0
                 )
             );
@@ -1740,7 +1853,12 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
             remainingCacheExtent: forwardDirectionRemainingCacheExtent,
             cacheOrigin: Dart_uiLibrary.clampDouble(
                 centerOffset,
-                -DartRuntimePrimitives.RequireValue(_calculatedCacheExtent),
+                -(
+                    _calculatedCacheExtent
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 0.0
             )
         );
@@ -2124,8 +2242,19 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
             growthDirection: GrowthDirection.forward,
             advance: childAfter,
             remainingCacheExtent: mainAxisExtent
-                + (2L * DartRuntimePrimitives.RequireValue(_calculatedCacheExtent)),
-            cacheOrigin: -DartRuntimePrimitives.RequireValue(_calculatedCacheExtent)
+                + (
+                    2L
+                    * (
+                        _calculatedCacheExtent
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                ),
+            cacheOrigin: -(
+                _calculatedCacheExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -2162,7 +2291,10 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
         var childParentData = ((SliverLogicalParentData?)(object?)child.parentData!)!;
         return computeAbsolutePaintOffset(
             child,
-            DartRuntimePrimitives.RequireValue(childParentData.layoutOffset),
+            (
+                childParentData.layoutOffset
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             GrowthDirection.forward
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2214,8 +2346,9 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
     )
     {
         DartRuntimePrimitives.Assert(() => hasSize);
-        double layoutOffsetLocal = DartRuntimePrimitives.RequireValue(
+        double layoutOffsetLocal = (
             ((SliverLogicalParentData?)(object?)child.parentData!)!.layoutOffset
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         return SliverLibrary.applyGrowthDirectionToAxisDirection(
             child.constraints.axisDirection,

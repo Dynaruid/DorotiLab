@@ -14,11 +14,45 @@ public static partial class UtilsLibrary
             return a == b;
         }
         return (
-                DartRuntimePrimitives.RequireValue(a)
-                    > DartRuntimePrimitives.RequireValue(b) - epsilon
-                && DartRuntimePrimitives.RequireValue(a)
-                    < DartRuntimePrimitives.RequireValue(b) + epsilon
-            ) || (DartRuntimePrimitives.RequireValue(a) == DartRuntimePrimitives.RequireValue(b));
+                (
+                    a
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+                    > (
+                        b
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) - epsilon
+                && (
+                    a
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+                    < (
+                        b
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) + epsilon
+            )
+            || (
+                (
+                    a
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+                == (
+                    b
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }

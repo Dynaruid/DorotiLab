@@ -846,7 +846,10 @@ internal class _PageTransitionsThemeTransitionsState__page_transitions_theme<T>
         if (widget.route.popGestureInProgress)
         {
             _transitionPlatform ??= platformLocal;
-            platformLocal = DartRuntimePrimitives.RequireValue(_transitionPlatform);
+            platformLocal = (
+                _transitionPlatform
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         else
         {
@@ -999,10 +1002,10 @@ public class _ZoomEnterTransitionPainter__page_transitions_theme : SnapshotPaint
         var scrimOpacity = 0.0;
         if (!reverse && !animation.isCompleted)
         {
-            scrimOpacity = DartRuntimePrimitives.RequireValue(
+            scrimOpacity = (
                 _ZoomEnterTransitionState__page_transitions_theme._scrimOpacityTween.evaluate(
                     animation
-                )
+                ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
         }
         DartRuntimePrimitives.Assert(() => !reverse || (scrimOpacity == 0.0));
@@ -1283,10 +1286,10 @@ internal class _ZoomEnterTransitionNoCache__page_transitions_theme : StatelessWi
         double opacityLocal = 0;
         if (!reverse && !animation.isCompleted)
         {
-            opacityLocal = DartRuntimePrimitives.RequireValue(
+            opacityLocal = (
                 _ZoomEnterTransitionState__page_transitions_theme._scrimOpacityTween.evaluate(
                     animation
-                )
+                ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
         }
         Animation<double> fadeTransition = reverse

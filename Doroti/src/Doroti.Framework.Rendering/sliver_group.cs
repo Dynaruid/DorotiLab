@@ -63,7 +63,13 @@ public class RenderSliverCrossAxisGroup
                 DartRuntimePrimitives.Assert(() => childCrossAxisExtent is not null);
                 remainingExtent = Math.Max(
                     0.0,
-                    remainingExtent - DartRuntimePrimitives.RequireValue(childCrossAxisExtent)
+                    remainingExtent
+                        - (
+                            childCrossAxisExtent
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                 );
             }
             else
@@ -93,7 +99,12 @@ public class RenderSliverCrossAxisGroup
             }
             else
             {
-                childExtent = DartRuntimePrimitives.RequireValue(child.geometry!.crossAxisExtent);
+                childExtent = (
+                    child.geometry!.crossAxisExtent
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
             }
             SliverGeometry childLayoutGeometry = child.geometry!;
             if (geometry!.scrollExtent < childLayoutGeometry.scrollExtent)
@@ -688,12 +699,14 @@ public class RenderSliverMainAxisGroup
             double? scrollOffsetCorrectionLocal = childLayoutGeometry.scrollOffsetCorrection;
             if (scrollOffsetCorrectionLocal is not null)
             {
-                double scrollOffsetCorrection__13115__value13194 =
-                    DartRuntimePrimitives.RequireValue(scrollOffsetCorrectionLocal);
-                geometry = new SliverGeometry(
-                    scrollOffsetCorrection: DartRuntimePrimitives.RequireValue(
-                        scrollOffsetCorrection__13115__value13194
+                double scrollOffsetCorrection__13115__value13194 = (
+                    scrollOffsetCorrectionLocal
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
                     )
+                );
+                geometry = new SliverGeometry(
+                    scrollOffsetCorrection: (scrollOffsetCorrection__13115__value13194)
                 );
                 return;
             }

@@ -619,7 +619,12 @@ public class SelectableRegionState
                             Foundation.ConstantsLibrary.kIsWeb
                             && (details.kind is not null)
                             && !_isPrecisePointerDevice(
-                                DartRuntimePrimitives.RequireValue(details.kind)
+                                (
+                                    details.kind
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                )
                             )
                         )
                         {
@@ -631,7 +636,12 @@ public class SelectableRegionState
                         if (
                             (details.kind is not null)
                             && !_isPrecisePointerDevice(
-                                DartRuntimePrimitives.RequireValue(details.kind)
+                                (
+                                    details.kind
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                )
                             )
                         )
                         {
@@ -663,7 +673,12 @@ public class SelectableRegionState
                         if (
                             (details.kind is not null)
                             && _isPrecisePointerDevice(
-                                DartRuntimePrimitives.RequireValue(details.kind)
+                                (
+                                    details.kind
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                )
                             )
                         )
                         {
@@ -696,7 +711,14 @@ public class SelectableRegionState
             {
                 if (
                     (details.kind is not null)
-                    && !_isPrecisePointerDevice(DartRuntimePrimitives.RequireValue(details.kind))
+                    && !_isPrecisePointerDevice(
+                        (
+                            details.kind
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    )
                 )
                 {
                     return;
@@ -717,7 +739,14 @@ public class SelectableRegionState
             {
                 if (
                     (details.kind is not null)
-                    && !_isPrecisePointerDevice(DartRuntimePrimitives.RequireValue(details.kind))
+                    && !_isPrecisePointerDevice(
+                        (
+                            details.kind
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    )
                 )
                 {
                     return;
@@ -738,7 +767,12 @@ public class SelectableRegionState
                             || (
                                 (details.kind is not null)
                                 && _isPrecisePointerDevice(
-                                    DartRuntimePrimitives.RequireValue(details.kind)
+                                    (
+                                        details.kind
+                                        ?? throw new global::System.NullReferenceException(
+                                            "Dart null assertion failed."
+                                        )
+                                    )
                                 )
                             )
                         )
@@ -759,13 +793,23 @@ public class SelectableRegionState
                             Foundation.ConstantsLibrary.kIsWeb
                             && (details.kind is not null)
                             && !_isPrecisePointerDevice(
-                                DartRuntimePrimitives.RequireValue(details.kind)
+                                (
+                                    details.kind
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                )
                             )
                             && (_doubleTapOffset is not null)
                         )
                         {
                             _selectWordAt(
-                                offset: DartRuntimePrimitives.RequireValue(_doubleTapOffset)
+                                offset: (
+                                    _doubleTapOffset
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                )
                             );
                             _doubleTapOffset = null;
                         }
@@ -778,7 +822,12 @@ public class SelectableRegionState
                         if (
                             (details.kind is not null)
                             && !_isPrecisePointerDevice(
-                                DartRuntimePrimitives.RequireValue(details.kind)
+                                (
+                                    details.kind
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                )
                             )
                         )
                         {
@@ -812,7 +861,12 @@ public class SelectableRegionState
                         if (
                             (details.kind is not null)
                             && _isPrecisePointerDevice(
-                                DartRuntimePrimitives.RequireValue(details.kind)
+                                (
+                                    details.kind
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                )
                             )
                         )
                         {
@@ -849,7 +903,10 @@ public class SelectableRegionState
     {
         DartRuntimePrimitives.Assert(() => _lastPointerDeviceKind is not null);
         bool isPointerPrecise = _isPrecisePointerDevice(
-            DartRuntimePrimitives.RequireValue(_lastPointerDeviceKind)
+            (
+                _lastPointerDeviceKind
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         bool shouldShowSelectionOverlayOnMobile = !isPointerPrecise;
         switch (PlatformLibrary.defaultTargetPlatform)
@@ -1049,14 +1106,24 @@ public class SelectableRegionState
                     return;
                 }
                 _collapseSelectionAt(
-                    offset: DartRuntimePrimitives.RequireValue(_lastSecondaryTapDownPosition)
+                    offset: (
+                        _lastSecondaryTapDownPosition
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 );
                 break;
             }
             case TargetPlatform.iOS:
             {
                 _selectWordAt(
-                    offset: DartRuntimePrimitives.RequireValue(_lastSecondaryTapDownPosition)
+                    offset: (
+                        _lastSecondaryTapDownPosition
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 );
                 break;
             }
@@ -1071,7 +1138,12 @@ public class SelectableRegionState
                     return;
                 }
                 _selectWordAt(
-                    offset: DartRuntimePrimitives.RequireValue(_lastSecondaryTapDownPosition)
+                    offset: (
+                        _lastSecondaryTapDownPosition
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 );
                 break;
             }
@@ -1087,7 +1159,12 @@ public class SelectableRegionState
                 if (!lastSecondaryTapDownPositionWasOnActiveSelectionLocal)
                 {
                     _collapseSelectionAt(
-                        offset: DartRuntimePrimitives.RequireValue(_lastSecondaryTapDownPosition)
+                        offset: (
+                            _lastSecondaryTapDownPosition
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     );
                 }
                 break;
@@ -1114,7 +1191,12 @@ public class SelectableRegionState
             Equals(
                 _selectable?.dispatchSelectionEvent(
                     SelectionEdgeUpdateEvent.CreateForEnd(
-                        globalPosition: DartRuntimePrimitives.RequireValue(_selectionEndPosition),
+                        globalPosition: (
+                            _selectionEndPosition
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
                         granularity: textGranularity
                     )
                 ),
@@ -1173,7 +1255,12 @@ public class SelectableRegionState
             Equals(
                 _selectable?.dispatchSelectionEvent(
                     new SelectionEdgeUpdateEvent(
-                        globalPosition: DartRuntimePrimitives.RequireValue(_selectionStartPosition),
+                        globalPosition: (
+                            _selectionStartPosition
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
                         granularity: textGranularity
                     )
                 ),
@@ -1517,7 +1604,12 @@ public class SelectableRegionState
             if (_lastSecondaryTapDownPosition is not null)
             {
                 var anchors = new TextSelectionToolbarAnchors(
-                    primaryAnchor: DartRuntimePrimitives.RequireValue(_lastSecondaryTapDownPosition)
+                    primaryAnchor: (
+                        _lastSecondaryTapDownPosition
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 );
                 _lastSecondaryTapDownPosition = null;
                 return anchors;
@@ -1536,7 +1628,10 @@ public class SelectableRegionState
     {
         if (_adjustingSelectionEnd is not null)
         {
-            return DartRuntimePrimitives.RequireValue(_adjustingSelectionEnd);
+            return (
+                _adjustingSelectionEnd
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         bool isReversed = default!;
         SelectionPoint start = _selectionDelegate.value.startSelectionPoint!;
@@ -1556,7 +1651,9 @@ public class SelectableRegionState
                 isReversed = start.localPosition.dx > end.localPosition.dx;
             }
         }
-        return DartRuntimePrimitives.RequireValue(_adjustingSelectionEnd = forward != isReversed);
+        var result = forward != isReversed;
+        _adjustingSelectionEnd = result;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1592,11 +1689,24 @@ public class SelectableRegionState
         _directionalHorizontalBaseline ??= baseLinePoint.localPosition.dx;
         Offset globalSelectionPointOffset = MatrixUtils.transformPoint(
             context.findRenderObject()!.getTransformTo(null),
-            new Offset(DartRuntimePrimitives.RequireValue(_directionalHorizontalBaseline), 0)
+            new Offset(
+                (
+                    _directionalHorizontalBaseline
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                0
+            )
         );
         _selectable?.dispatchSelectionEvent(
             new DirectionallyExtendSelectionEvent(
-                isEnd: DartRuntimePrimitives.RequireValue(_adjustingSelectionEnd),
+                isEnd: (
+                    _adjustingSelectionEnd
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 direction: forward
                     ? SelectionExtendDirection.nextLine
                     : SelectionExtendDirection.previousLine,
@@ -2105,7 +2215,7 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
         bool forEnd
     )
     {
-        if (DartRuntimePrimitives.RequireValue(forEnd))
+        if ((forEnd))
         {
             _lastEndEdgeUpdateGlobalPosition = globalSelectionEdgeLocation;
         }
@@ -2269,7 +2379,12 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
         if ((_lastEndEdgeUpdateGlobalPosition is not null) && _hasReceivedEndEvent.Add(selectable))
         {
             var synthesizedEvent = SelectionEdgeUpdateEvent.CreateForEnd(
-                globalPosition: DartRuntimePrimitives.RequireValue(_lastEndEdgeUpdateGlobalPosition)
+                globalPosition: (
+                    _lastEndEdgeUpdateGlobalPosition
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
             if (currentSelectionEndIndex == -1L)
             {
@@ -2283,8 +2398,11 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
         )
         {
             var synthesizedEventLocal = new SelectionEdgeUpdateEvent(
-                globalPosition: DartRuntimePrimitives.RequireValue(
+                globalPosition: (
                     _lastStartEdgeUpdateGlobalPosition
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 )
             );
             if (currentSelectionStartIndex == -1L)
@@ -2301,8 +2419,11 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
         {
             handleSelectionEdgeUpdate(
                 SelectionEdgeUpdateEvent.CreateForEnd(
-                    globalPosition: DartRuntimePrimitives.RequireValue(
+                    globalPosition: (
                         _lastEndEdgeUpdateGlobalPosition
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     )
                 )
             );
@@ -2311,8 +2432,11 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
         {
             handleSelectionEdgeUpdate(
                 new SelectionEdgeUpdateEvent(
-                    globalPosition: DartRuntimePrimitives.RequireValue(
+                    globalPosition: (
                         _lastStartEdgeUpdateGlobalPosition
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     )
                 )
             );
@@ -2790,15 +2914,21 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
             bool hideStartHandle =
                 (value.startSelectionPoint is null)
                 || (drawableArea is null)
-                || !DartRuntimePrimitives
-                    .RequireValue(drawableArea)
-                    .contains(value.startSelectionPoint!.localPosition);
+                || !(
+                    drawableArea
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).contains(value.startSelectionPoint!.localPosition);
             bool hideEndHandle =
                 (value.endSelectionPoint is null)
                 || (drawableArea is null)
-                || !DartRuntimePrimitives
-                    .RequireValue(drawableArea)
-                    .contains(value.endSelectionPoint!.localPosition);
+                || !(
+                    drawableArea
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).contains(value.endSelectionPoint!.localPosition);
             effectiveStartHandle = hideStartHandle ? null : _startHandleLayer;
             effectiveEndHandle = hideEndHandle ? null : _endHandleLayer;
         }
@@ -2944,7 +3074,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
                 (currentSelectionStartIndex == -1L)
                     ? currentSelectionEndIndex
                     : currentSelectionStartIndex;
-            _clearSelectables(skipIndex: DartRuntimePrimitives.RequireValue(skipIndexLocal));
+            _clearSelectables(skipIndex: (skipIndexLocal));
             return;
         }
         long skipStart = Math.Min(currentSelectionStartIndex, currentSelectionEndIndex);
@@ -3051,7 +3181,12 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
                 if (
                     (index == (checked(selectables.Count) - 1L))
                     && Equals(
-                        DartRuntimePrimitives.RequireValue(lastSelectionResult),
+                        (
+                            lastSelectionResult
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
                         SelectionResult.next
                     )
                 )
@@ -3060,7 +3195,12 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
                 }
                 if (
                     Equals(
-                        DartRuntimePrimitives.RequireValue(lastSelectionResult),
+                        (
+                            lastSelectionResult
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
                         SelectionResult.next
                     )
                 )
@@ -3070,7 +3210,12 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
                 if (
                     (index == 0L)
                     && Equals(
-                        DartRuntimePrimitives.RequireValue(lastSelectionResult),
+                        (
+                            lastSelectionResult
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
                         SelectionResult.previous
                     )
                 )
@@ -3579,7 +3724,10 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
             currentSelectionStartIndex = newIndex;
         }
         _flushInactiveSelections();
-        return DartRuntimePrimitives.RequireValue(finalResult);
+        return (
+            finalResult
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }

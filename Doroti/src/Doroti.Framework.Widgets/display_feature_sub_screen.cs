@@ -81,16 +81,10 @@ public class DisplayFeatureSubScreen : StatelessWidget
     internal static Rect _closestToAnchorPoint(IEnumerable<Rect> subScreens, Offset anchorPoint)
     {
         Rect closestScreen = subScreens.First();
-        double closestDistance = _distanceFromPointToRect(
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(anchorPoint)),
-            closestScreen
-        );
+        double closestDistance = _distanceFromPointToRect(((anchorPoint)), closestScreen);
         foreach (var screen in subScreens)
         {
-            double subScreenDistance = _distanceFromPointToRect(
-                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(anchorPoint)),
-                screen
-            );
+            double subScreenDistance = _distanceFromPointToRect(((anchorPoint)), screen);
             if (subScreenDistance < closestDistance)
             {
                 closestScreen = screen;

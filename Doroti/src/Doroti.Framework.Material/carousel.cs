@@ -481,10 +481,22 @@ internal class _CarouselViewState__carousel : State<CarouselView>
             if (
                 widget.infinite
                 && (widget.itemCount is not null)
-                && (DartRuntimePrimitives.RequireValue(widget.itemCount) > 0L)
+                && (
+                    (
+                        widget.itemCount
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
             )
             {
-                long itemCountLocal = DartRuntimePrimitives.RequireValue(widget.itemCount);
+                long itemCountLocal = (
+                    widget.itemCount
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
                 effectiveBuilder = (context, index) =>
                 {
                     return widget.itemBuilder!(context, index % itemCountLocal);
@@ -503,7 +515,12 @@ internal class _CarouselViewState__carousel : State<CarouselView>
         if (_itemExtent is not null)
         {
             return new _SliverFixedExtentCarousel__carousel(
-                itemExtent: DartRuntimePrimitives.RequireValue(_itemExtent),
+                itemExtent: (
+                    _itemExtent
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 minExtent: widget.shrinkExtent,
                 infinite: widget.infinite,
                 @delegate: new SliverChildBuilderDelegate(
@@ -546,7 +563,12 @@ internal class _CarouselViewState__carousel : State<CarouselView>
                     (widget.itemExtent is null)
                         ? null
                         : Dart_uiLibrary.clampDouble(
-                            DartRuntimePrimitives.RequireValue(widget.itemExtent),
+                            (
+                                widget.itemExtent
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ),
                             0,
                             mainAxisExtent
                         );
@@ -1081,13 +1103,12 @@ public class _RenderSliverWeightedCarousel__carousel : RenderSliverFixedExtentBo
         }
         if (childCount is not null)
         {
-            long childCount__46235__value47249 = DartRuntimePrimitives.RequireValue(childCount);
+            long childCount__46235__value47249 = (
+                childCount
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             double visibleItemsTotalExtentLocal = _distanceToLeadingEdge;
-            for (
-                long i = _firstVisibleItemIndex + 1L;
-                i < DartRuntimePrimitives.RequireValue(childCount__46235__value47249);
-                i++
-            )
+            for (long i = _firstVisibleItemIndex + 1L; i < (childCount__46235__value47249); i++)
             {
                 visibleItemsTotalExtentLocal += _buildItemExtent(i, layoutDimensions);
                 if (visibleItemsTotalExtentLocal >= constraints.viewportMainAxisExtent)
@@ -1113,8 +1134,9 @@ public class _RenderSliverWeightedCarousel__carousel : RenderSliverFixedExtentBo
     // Dart library-private member: distinct from the same name in the base library.
     internal virtual BoxConstraints _getChildConstraints(long index)
     {
-        double extent = DartRuntimePrimitives.RequireValue(
+        double extent = (
             itemExtentBuilder!(index, layoutDimensions)
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         return constraints.asBoxConstraints(minExtent: extent, maxExtent: extent);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1129,8 +1151,22 @@ public class _RenderSliverWeightedCarousel__carousel : RenderSliverFixedExtentBo
         DartRuntimePrimitives.Assert(() =>
             (itemExtentBuilder is not null)
             || (
-                double.IsFinite(DartRuntimePrimitives.RequireValue(itemExtent))
-                && (DartRuntimePrimitives.RequireValue(itemExtent) >= 0L)
+                double.IsFinite(
+                    (
+                        itemExtent
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
+                && (
+                    (
+                        itemExtent
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) >= 0L
+                )
             )
         );
         SliverConstraints constraintsLocal = constraints;
@@ -1155,8 +1191,13 @@ public class _RenderSliverWeightedCarousel__carousel : RenderSliverFixedExtentBo
             long trailingGarbage =
                 (targetLastIndex is not null)
                     ? calculateTrailingGarbage(
-                        lastIndex: DartRuntimePrimitives.RequireValue(
-                            DartRuntimePrimitives.RequireValue(targetLastIndex)
+                        lastIndex: (
+                            (
+                                targetLastIndex
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         )
                     )
                     : 0L;
@@ -1240,7 +1281,15 @@ public class _RenderSliverWeightedCarousel__carousel : RenderSliverFixedExtentBo
         for (
             long indexAlternate = indexOf(trailingChildWithLayout!) + 1L;
             (targetLastIndex is null)
-                || (indexAlternate <= DartRuntimePrimitives.RequireValue(targetLastIndex));
+                || (
+                    indexAlternate
+                    <= (
+                        targetLastIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                );
             ++indexAlternate
         )
         {
@@ -1270,7 +1319,12 @@ public class _RenderSliverWeightedCarousel__carousel : RenderSliverFixedExtentBo
             DartRuntimePrimitives.Assert(() => childParentDataAlternate.index == indexAlternate);
             childParentDataAlternate.layoutOffset = indexToLayoutOffset(
                 deprecatedExtraItemExtent,
-                DartRuntimePrimitives.RequireValue(childParentDataAlternate.index)
+                (
+                    childParentDataAlternate.index
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
         }
         long lastIndexLocal = indexOf(lastChild!);
@@ -1302,7 +1356,15 @@ public class _RenderSliverWeightedCarousel__carousel : RenderSliverFixedExtentBo
         DartRuntimePrimitives.Assert(() => indexOf(firstChild!) == firstIndexLocal);
         DartRuntimePrimitives.Assert(() =>
             (targetLastIndex is null)
-            || (lastIndexLocal <= DartRuntimePrimitives.RequireValue(targetLastIndex))
+            || (
+                lastIndexLocal
+                <= (
+                    targetLastIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
         );
         estimatedMaxScrollOffset = Math.Min(
             estimatedMaxScrollOffset,
@@ -1339,7 +1401,15 @@ public class _RenderSliverWeightedCarousel__carousel : RenderSliverFixedExtentBo
             maxPaintExtent: estimatedMaxScrollOffset,
             hasVisualOverflow: (
                 (targetLastIndexForPaint is not null)
-                && (lastIndexLocal >= DartRuntimePrimitives.RequireValue(targetLastIndexForPaint))
+                && (
+                    lastIndexLocal
+                    >= (
+                        targetLastIndexForPaint
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
             ) || (constraintsLocal.scrollOffset > 0.0)
         );
         if (estimatedMaxScrollOffset == trailingScrollOffsetLocal)
@@ -1375,8 +1445,12 @@ public class CarouselScrollPhysics : ScrollPhysics
         if (position.itemExtent is not null)
         {
             fraction =
-                DartRuntimePrimitives.RequireValue(position.itemExtent)
-                / position.viewportDimension;
+                (
+                    position.itemExtent
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) / position.viewportDimension;
         }
         else
         {
@@ -1566,7 +1640,7 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
     {
         this.initialItem = initialItem;
         _itemToShowOnStartup = initialItem.toDouble();
-        _consumeMaxWeight = DartRuntimePrimitives.RequireValue(consumeMaxWeight);
+        _consumeMaxWeight = (consumeMaxWeight);
         _infinite = infinite;
         _itemCount = itemCount;
         System.Diagnostics.Debug.Assert(
@@ -1594,11 +1668,11 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
         set
         {
             var __value = value;
-            if (_infinite == DartRuntimePrimitives.RequireValue(__value))
+            if (_infinite == (__value))
             {
                 return;
             }
-            _infinite = DartRuntimePrimitives.RequireValue(__value);
+            _infinite = (__value);
         }
     }
     public virtual bool consumeMaxWeight
@@ -1607,20 +1681,17 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
         set
         {
             var __value = value;
-            if (_consumeMaxWeight == DartRuntimePrimitives.RequireValue(__value))
+            if (_consumeMaxWeight == (__value))
             {
                 return;
             }
             if (hasPixels && (flexWeights is not null))
             {
-                double leadingItem = updateLeadingItem(
-                    flexWeights,
-                    DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(__value))
-                );
+                double leadingItem = updateLeadingItem(flexWeights, ((__value)));
                 double newPixel = getPixelsFromItem(leadingItem, flexWeights, itemExtent);
                 forcePixels(newPixel);
             }
-            _consumeMaxWeight = DartRuntimePrimitives.RequireValue(__value);
+            _consumeMaxWeight = (__value);
         }
     }
     public virtual double? itemExtent
@@ -1635,10 +1706,7 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
             }
             if (hasPixels && (_itemExtent is not null) && (viewportDimension != 0.0))
             {
-                double leadingItem = getItemFromPixels(
-                    DartRuntimePrimitives.RequireValue(pixels),
-                    DartRuntimePrimitives.RequireValue(viewportDimension)
-                );
+                double leadingItem = getItemFromPixels((pixels), (viewportDimension));
                 double newPixel = getPixelsFromItem(leadingItem, flexWeights, __value);
                 forcePixels(newPixel);
             }
@@ -1658,10 +1726,7 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
             List<long>? oldWeights = _flexWeights?.ToList();
             if (hasPixels && (oldWeights is not null))
             {
-                double leadingItem = updateLeadingItem(
-                    __value,
-                    DartRuntimePrimitives.RequireValue(consumeMaxWeight)
-                );
+                double leadingItem = updateLeadingItem(__value, (consumeMaxWeight));
                 double newPixel = getPixelsFromItem(leadingItem, __value, itemExtent);
                 forcePixels(newPixel);
             }
@@ -1672,11 +1737,7 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
     {
         get
         {
-            long leadingItem = getItemFromPixels(
-                    DartRuntimePrimitives.RequireValue(pixels),
-                    DartRuntimePrimitives.RequireValue(viewportDimension)
-                )
-                .toInt();
+            long leadingItem = getItemFromPixels((pixels), (viewportDimension)).toInt();
             if (consumeMaxWeight && (flexWeights is not null))
             {
                 leadingItem = Math.Max(leadingItem - flexWeights!.IndexOf(flexWeights!.max()), 0L);
@@ -1684,11 +1745,30 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
             if (
                 infinite
                 && (itemCount is not null)
-                && (DartRuntimePrimitives.RequireValue(itemCount) > 0L)
+                && (
+                    (
+                        itemCount
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
             )
             {
-                long itemCount__value64303 = DartRuntimePrimitives.RequireValue(itemCount);
-                leadingItem = leadingItem % DartRuntimePrimitives.RequireValue(itemCount);
+                long itemCount__value64303 = (
+                    itemCount
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
+                leadingItem =
+                    leadingItem
+                    % (
+                        itemCount
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    );
             }
             return leadingItem;
         }
@@ -1699,10 +1779,7 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
         double maxItem = default!;
         if (hasPixels && (flexWeights is not null))
         {
-            double leadingItem = getItemFromPixels(
-                DartRuntimePrimitives.RequireValue(pixels),
-                DartRuntimePrimitives.RequireValue(viewportDimension)
-            );
+            double leadingItem = getItemFromPixels((pixels), (viewportDimension));
             maxItem = consumeMaxWeight
                 ? leadingItem
                 : (leadingItem + flexWeights!.IndexOf(flexWeights!.max()));
@@ -1734,25 +1811,28 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
 
     public virtual double getItemFromPixels(double pixels, double viewportDimension)
     {
-        DartRuntimePrimitives.Assert(() =>
-            DartRuntimePrimitives.RequireValue(viewportDimension) > 0.0
-        );
+        DartRuntimePrimitives.Assert(() => (viewportDimension) > 0.0);
         double fraction = default!;
         if (itemExtent is not null)
         {
-            double itemExtent__value65364 = DartRuntimePrimitives.RequireValue(itemExtent);
+            double itemExtent__value65364 = (
+                itemExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             fraction =
-                DartRuntimePrimitives.RequireValue(itemExtent)
-                / DartRuntimePrimitives.RequireValue(viewportDimension);
+                (
+                    itemExtent
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) / (viewportDimension);
         }
         else
         {
             DartRuntimePrimitives.Assert(() => flexWeights is not null);
             fraction = flexWeights!.First() / flexWeights!.sum();
         }
-        double actual =
-            Math.Max(0.0, DartRuntimePrimitives.RequireValue(pixels))
-            / (DartRuntimePrimitives.RequireValue(viewportDimension) * fraction);
+        double actual = Math.Max(0.0, (pixels)) / ((viewportDimension) * fraction);
         double round = actual.roundToDouble();
         if ((actual - round).abs() < Foundation.ConstantsLibrary.precisionErrorTolerance)
         {
@@ -1775,9 +1855,11 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
         }
         if (itemExtent is not null)
         {
-            double itemExtent__value66023 = DartRuntimePrimitives.RequireValue(itemExtent);
-            fraction =
-                DartRuntimePrimitives.RequireValue(itemExtent__value66023) / viewportDimension;
+            double itemExtent__value66023 = (
+                itemExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
+            fraction = (itemExtent__value66023) / viewportDimension;
         }
         else
         {
@@ -1796,42 +1878,45 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
     public override bool applyViewportDimension(double viewportDimension)
     {
         double? oldViewportDimensions = hasViewportDimension ? this.viewportDimension : null;
-        if (DartRuntimePrimitives.RequireValue(viewportDimension) == oldViewportDimensions)
+        if ((viewportDimension) == oldViewportDimensions)
         {
             return true;
         }
-        bool result = base.applyViewportDimension(
-            DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(viewportDimension)
-            )
-        );
+        bool result = base.applyViewportDimension(((viewportDimension)));
         double? oldPixels = hasPixels ? pixels : null;
         double item = default!;
         if (oldPixels is null)
         {
-            item = updateLeadingItem(
-                flexWeights,
-                DartRuntimePrimitives.RequireValue(consumeMaxWeight)
-            );
+            item = updateLeadingItem(flexWeights, (consumeMaxWeight));
         }
         else
         {
             if (oldViewportDimensions == 0.0)
             {
-                item = DartRuntimePrimitives.RequireValue(_cachedItem);
+                item = (
+                    _cachedItem
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
             }
             else
             {
                 item = getItemFromPixels(
-                    DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(oldPixels)
+                    (
+                        (
+                            oldPixels
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     ),
-                    oldViewportDimensions ?? DartRuntimePrimitives.RequireValue(viewportDimension)
+                    oldViewportDimensions ?? (viewportDimension)
                 );
             }
         }
         double newPixels = getPixelsFromItem(item, flexWeights, itemExtent);
-        _cachedItem = (DartRuntimePrimitives.RequireValue(viewportDimension) == 0.0) ? item : null;
+        _cachedItem = ((viewportDimension) == 0.0) ? item : null;
         if (newPixels != oldPixels)
         {
             correctPixels(newPixels);
@@ -1856,7 +1941,14 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
     {
         if (
             (itemCount is null)
-            || (DartRuntimePrimitives.RequireValue(itemCount) <= 0L)
+            || (
+                (
+                    itemCount
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) <= 0L
+            )
             || !hasViewportDimension
             || (viewportDimension == 0L)
         )
@@ -1866,8 +1958,17 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
         double fraction = default!;
         if (itemExtent is not null)
         {
-            double itemExtent__value67978 = DartRuntimePrimitives.RequireValue(itemExtent);
-            fraction = DartRuntimePrimitives.RequireValue(itemExtent) / viewportDimension;
+            double itemExtent__value67978 = (
+                itemExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
+            fraction =
+                (
+                    itemExtent
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) / viewportDimension;
         }
         else
         {
@@ -1880,7 +1981,12 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
                 return 0.0;
             }
         }
-        return DartRuntimePrimitives.RequireValue(itemCount) * viewportDimension * fraction;
+        return (
+                itemCount
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+            * viewportDimension
+            * fraction;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1896,10 +2002,7 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
                 return false;
             }
         }
-        return base.applyContentDimensions(
-            infinite ? 0.0 : DartRuntimePrimitives.RequireValue(minScrollExtent),
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(maxScrollExtent))
-        );
+        return base.applyContentDimensions(infinite ? 0.0 : (minScrollExtent), ((maxScrollExtent)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2025,7 +2128,15 @@ public class CarouselController : ScrollController
             long? itemCountLocal = _carouselState!.widget.itemCount;
             index =
                 (itemCountLocal is not null)
-                    ? index.clamp(0L, DartRuntimePrimitives.RequireValue(itemCountLocal) - 1L)
+                    ? index.clamp(
+                        0L,
+                        (
+                            itemCountLocal
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) - 1L
+                    )
                     : 0L;
         }
         else
@@ -2043,8 +2154,13 @@ public class CarouselController : ScrollController
                             __collection72994.Add(
                                 position.animateTo(
                                     _getTargetOffset(position, index, hasFlexWeights),
-                                    duration: DartRuntimePrimitives.RequireValue(
-                                        DartRuntimePrimitives.RequireValue(duration)
+                                    duration: (
+                                        (
+                                            duration
+                                            ?? throw new global::System.NullReferenceException(
+                                                "Dart null assertion failed."
+                                            )
+                                        )
                                     ),
                                     curve: curve
                                 )
@@ -2066,7 +2182,13 @@ public class CarouselController : ScrollController
         if (!hasFlexWeights)
         {
             double targetInFirstCycle =
-                index * DartRuntimePrimitives.RequireValue(_carouselState!._itemExtent);
+                index
+                * (
+                    _carouselState!._itemExtent
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
             if (!_carouselState!.widget.infinite)
             {
                 return targetInFirstCycle;
@@ -2086,7 +2208,12 @@ public class CarouselController : ScrollController
                 (itemCountLocal is not null)
                     ? leadingIndex.clamp(
                         0L,
-                        DartRuntimePrimitives.RequireValue(itemCountLocal) - 1L
+                        (
+                            itemCountLocal
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) - 1L
                     )
                     : 0L;
         }

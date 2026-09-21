@@ -1271,13 +1271,13 @@ public class _SegmentedControlState__sliding_segmented_control<T>
                 childrenLocal = Enumerable.Reverse(childrenLocal).ToList();
                 if (highlightedIndexLocal is not null)
                 {
-                    long highlightedIndex__30239__value33090 = DartRuntimePrimitives.RequireValue(
+                    long highlightedIndex__30239__value33090 = (
                         highlightedIndexLocal
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     );
-                    highlightedIndexLocal =
-                        index
-                        - 1L
-                        - DartRuntimePrimitives.RequireValue(highlightedIndex__30239__value33090);
+                    highlightedIndexLocal = index - 1L - (highlightedIndex__30239__value33090);
                 }
                 break;
             }
@@ -1570,11 +1570,11 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
         set
         {
             var __value = value;
-            if (_thumbScale == DartRuntimePrimitives.RequireValue(__value))
+            if (_thumbScale == (__value))
             {
                 return;
             }
-            _thumbScale = DartRuntimePrimitives.RequireValue(__value);
+            _thumbScale = (__value);
             if (state.highlighted is not null)
             {
                 markNeedsPaint();
@@ -1615,11 +1615,11 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
         set
         {
             var __value = value;
-            if (_proportionalWidth == DartRuntimePrimitives.RequireValue(__value))
+            if (_proportionalWidth == (__value))
             {
                 return;
             }
-            _proportionalWidth = DartRuntimePrimitives.RequireValue(__value);
+            _proportionalWidth = (__value);
             markNeedsLayout();
         }
     }
@@ -1938,12 +1938,22 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
         DartRuntimePrimitives.Assert(() => rightMost > leftMost);
         return Rect.fromLTRB(
             Math.Max(
-                DartRuntimePrimitives.RequireValue(thumbRect).left,
+                (
+                    thumbRect
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).left,
                 leftMost - Sliding_segmented_controlLibrary._kThumbInsets.left
             ),
             firstChildOffset.dy - Sliding_segmented_controlLibrary._kThumbInsets.top,
             Math.Min(
-                DartRuntimePrimitives.RequireValue(thumbRect).right,
+                (
+                    thumbRect
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).right,
                 rightMost + Sliding_segmented_controlLibrary._kThumbInsets.right
             ),
             firstChildOffset.dy
@@ -1963,14 +1973,12 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
         long? highlightedChildIndex = highlightedIndex;
         if (highlightedChildIndex is not null)
         {
-            long highlightedChildIndex__50131__value50234 = DartRuntimePrimitives.RequireValue(
+            long highlightedChildIndex__50131__value50234 = (
                 highlightedChildIndex
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
             RenderBox selectedChild = children[
-                (int)(
-                    DartRuntimePrimitives.RequireValue(highlightedChildIndex__50131__value50234)
-                    * 2L
-                )
+                (int)((highlightedChildIndex__50131__value50234) * 2L)
             ];
             var childParentData = (
                 (_SegmentedControlContainerBoxParentData__sliding_segmented_control?)
@@ -1998,12 +2006,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
                             begin: startingRectLocal,
                             end: newThumbRect
                         ).chain(
-                            new CurveTween(
-                                curve: new Interval(
-                                    DartRuntimePrimitives.RequireValue(state.thumbController.value),
-                                    1
-                                )
-                            )
+                            new CurveTween(curve: new Interval((state.thumbController.value), 1))
                         );
                     }
                 }
@@ -2016,14 +2019,14 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
                 state.thumbAnimatable?.evaluate(state.thumbController) ?? newThumbRect;
             currentThumbRect = unscaledThumbRect;
             _SegmentLocation__sliding_segmented_control childLocation = default!;
-            if (DartRuntimePrimitives.RequireValue(highlightedChildIndex__50131__value50234) == 0L)
+            if ((highlightedChildIndex__50131__value50234) == 0L)
             {
                 childLocation = _SegmentLocation__sliding_segmented_control.leftmost;
             }
             else
             {
                 if (
-                    DartRuntimePrimitives.RequireValue(highlightedChildIndex__50131__value50234)
+                    (highlightedChildIndex__50131__value50234)
                     == checked(checked(children.Count) / 2L)
                 )
                 {
@@ -2049,11 +2052,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
                 width: unscaledThumbRect.width * thumbScale,
                 height: unscaledThumbRect.height * thumbScale
             );
-            _paintThumb(
-                context,
-                offset,
-                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(thumbRect))
-            );
+            _paintThumb(context, offset, ((thumbRect)));
         }
         else
         {
@@ -2089,7 +2088,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
             new BoxShadow(color: new Color(167772160L), offset: new Offset(0, 3), blurRadius: 1),
         };
         var thumbShape = RSuperellipse.fromRectAndRadius(
-            DartRuntimePrimitives.RequireValue(thumbRect).shift(offset),
+            (thumbRect).shift(offset),
             Sliding_segmented_controlLibrary._kThumbRadius
         );
         foreach (var shadow in thumbShadow)
@@ -2474,9 +2473,13 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
             double? result = child.getDistanceToActualBaseline(baseline);
             if (result is not null)
             {
-                double result__138852__value138916 = DartRuntimePrimitives.RequireValue(result);
-                return DartRuntimePrimitives.RequireValue(result__138852__value138916)
-                    + childParentData.offset.dy;
+                double result__138852__value138916 = (
+                    result
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
+                return (result__138852__value138916) + childParentData.offset.dy;
             }
             child = childParentData.nextSibling;
         }

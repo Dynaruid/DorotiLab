@@ -307,7 +307,7 @@ public class SnackBar : StatefulWidget
             actionOverflowThreshold: actionOverflowThreshold,
             showCloseIcon: showCloseIcon,
             closeIconColor: closeIconColor,
-            duration: DartRuntimePrimitives.RequireValue(duration),
+            duration: (duration),
             persist: persist,
             animation: newAnimation,
             onVisible: onVisible,
@@ -425,8 +425,11 @@ internal class _SnackBarState__snack_bar : State<SnackBar>
         ThemeData effectiveTheme = theme;
         TextStyle? contentTextStyleLocal =
             snackBarTheme.contentTextStyle ?? defaults.contentTextStyle;
-        SnackBarBehavior snackBarBehavior = DartRuntimePrimitives.RequireValue(
-            widget.behavior ?? snackBarTheme.behavior ?? defaults.behavior
+        SnackBarBehavior snackBarBehavior = (
+            widget.behavior
+            ?? snackBarTheme.behavior
+            ?? defaults.behavior
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         double? widthLocal = widget.width ?? snackBarTheme.width;
         DartRuntimePrimitives.Assert(() =>
@@ -468,7 +471,10 @@ internal class _SnackBarState__snack_bar : State<SnackBar>
         });
         bool showCloseIconLocal =
             (widget.showCloseIcon ?? snackBarTheme.showCloseIcon)
-            ?? DartRuntimePrimitives.RequireValue(defaults.showCloseIcon);
+            ?? (
+                defaults.showCloseIcon
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         var isFloatingSnackBar = Equals(snackBarBehavior, SnackBarBehavior.floating);
         var horizontalPadding = isFloatingSnackBar ? 16.0 : 24.0;
         EdgeInsetsGeometry paddingLocal =
@@ -526,7 +532,10 @@ internal class _SnackBarState__snack_bar : State<SnackBar>
             widget.width ?? (MediaQuery.widthOf(context) - (marginLocal.left + marginLocal.right));
         double actionOverflowThresholdLocal =
             (widget.actionOverflowThreshold ?? snackBarTheme.actionOverflowThreshold)
-            ?? DartRuntimePrimitives.RequireValue(defaults.actionOverflowThreshold);
+            ?? (
+                defaults.actionOverflowThreshold
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         bool willOverflowAction =
             (actionAndIconWidth / snackBarWidth) > actionOverflowThresholdLocal;
         var maybeActionAndIcon = (
@@ -662,7 +671,10 @@ internal class _SnackBarState__snack_bar : State<SnackBar>
         }
         double elevationLocal =
             (widget.elevation ?? snackBarTheme.elevation)
-            ?? DartRuntimePrimitives.RequireValue(defaults.elevation);
+            ?? (
+                defaults.elevation
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         Color backgroundColorLocal =
             (widget.backgroundColor ?? snackBarTheme.backgroundColor) ?? defaults.backgroundColor!;
         ShapeBorder? shapeLocal =
@@ -682,17 +694,19 @@ internal class _SnackBarState__snack_bar : State<SnackBar>
         {
             if (widthLocal is not null)
             {
-                double width__24238__value30275 = DartRuntimePrimitives.RequireValue(widthLocal);
+                double width__24238__value30275 = (
+                    widthLocal
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
                 snackBar = DartRuntimePrimitives.ConvertValue<Widget>(
                     new Padding(
                         padding: EdgeInsets.CreateOnly(
                             top: marginLocal.top,
                             bottom: marginLocal.bottom
                         ),
-                        child: new SizedBox(
-                            width: DartRuntimePrimitives.RequireValue(width__24238__value30275),
-                            child: snackBar
-                        )
+                        child: new SizedBox(width: (width__24238__value30275), child: snackBar)
                     )
                 );
             }

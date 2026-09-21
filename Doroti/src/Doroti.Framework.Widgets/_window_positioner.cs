@@ -189,9 +189,7 @@ public class WindowPositionerIo
                 _window_positionerLibrary._constrainTo(
                     parentRect,
                     parentAnchor._flipX()._anchorPositionFor(anchorRect)
-                        + _window_positionerLibrary._flipX(
-                            DartRuntimePrimitives.RequireValue(offset)
-                        )
+                        + _window_positionerLibrary._flipX((offset))
                 ) + childAnchor._flipX()._offsetFor(childSize);
             if (_window_positionerLibrary._rectContains(displayRect, resultLocal & childSize))
             {
@@ -204,9 +202,7 @@ public class WindowPositionerIo
                 _window_positionerLibrary._constrainTo(
                     parentRect,
                     parentAnchor._flipY()._anchorPositionFor(anchorRect)
-                        + _window_positionerLibrary._flipY(
-                            DartRuntimePrimitives.RequireValue(offset)
-                        )
+                        + _window_positionerLibrary._flipY((offset))
                 ) + childAnchor._flipY()._offsetFor(childSize);
             if (_window_positionerLibrary._rectContains(displayRect, resultAlternate & childSize))
             {
@@ -220,9 +216,7 @@ public class WindowPositionerIo
                     parentRect,
                     parentAnchor._flipY()._flipX()._anchorPositionFor(anchorRect)
                         + _window_positionerLibrary._flipX(
-                            _window_positionerLibrary._flipY(
-                                DartRuntimePrimitives.RequireValue(offset)
-                            )
+                            _window_positionerLibrary._flipY((offset))
                         )
                 ) + childAnchor._flipY()._flipX()._offsetFor(childSize);
             if (_window_positionerLibrary._rectContains(displayRect, resultNested & childSize))

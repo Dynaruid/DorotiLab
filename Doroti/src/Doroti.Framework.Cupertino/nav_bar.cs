@@ -1075,12 +1075,13 @@ internal class _CupertinoSliverNavigationBarState__nav_bar
         }
         if ((target is not null) && (target <= positionLocal.maxScrollExtent))
         {
-            double target__50844__value51736 = DartRuntimePrimitives.RequireValue(target);
+            double target__50844__value51736 = (
+                target
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             DartRuntimePrimitives.Ignore(
                 positionLocal.animateTo(
-                    DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(target__50844__value51736)
-                    ),
+                    ((target__50844__value51736)),
                     duration: Duration.Create(milliseconds: 300L),
                     curve: Curves.fastEaseInToSlowEaseOut
                 )
@@ -1717,7 +1718,15 @@ public class _RenderLargeTitle__nav_bar : RenderShiftedBox
             return null;
         }
         var childParentData = ((BoxParentData?)child!.parentData!)!;
-        return childParentData.offset.dy + (DartRuntimePrimitives.RequireValue(distance) * _scale);
+        return childParentData.offset.dy
+            + (
+                (
+                    distance
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) * _scale
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1737,8 +1746,14 @@ public class _RenderLargeTitle__nav_bar : RenderShiftedBox
         Size childSize = childLocal.getDryLayout(childConstraints);
         double scale = _computeTitleScale(childSize, constraints, height);
         Size scaledChildSize = childSize * scale;
-        return (DartRuntimePrimitives.RequireValue(result) * scale)
-            + alignment.alongOffset(constraints.biggest - scaledChildSize).dy;
+        return (
+                (
+                    result
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) * scale
+            ) + alignment.alongOffset(constraints.biggest - scaledChildSize).dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1853,7 +1868,14 @@ internal class _PersistentNavigationBar__nav_bar : StatelessWidget
                 (middleVisible is null)
                     ? middleLocal
                     : new AnimatedOpacity(
-                        opacity: DartRuntimePrimitives.RequireValue(middleVisible) ? 1.0 : 0.0,
+                        opacity: (
+                            middleVisible
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                            ? 1.0
+                            : 0.0,
                         duration: Nav_barLibrary._kNavBarTitleFadeDuration,
                         child: middleLocal
                     );
@@ -3024,10 +3046,8 @@ internal class _NavigationBarTransition__nav_bar : StatelessWidget
         )();
         return MediaQuery.withNoTextScaling(
             child: new SizedBox(
-                height: Math.Max(
-                    DartRuntimePrimitives.RequireValue(heightTween.begin),
-                    DartRuntimePrimitives.RequireValue(heightTween.end)
-                ) + MediaQuery.paddingOf(context).top,
+                height: Math.Max((heightTween.begin), (heightTween.end))
+                    + MediaQuery.paddingOf(context).top,
                 width: double.PositiveInfinity,
                 child: new Stack(children: childrenLocal)
             )
@@ -3842,17 +3862,51 @@ public static partial class Nav_barLibrary
     {
         var largestSize = new Size(
             Math.Max(
-                DartRuntimePrimitives.RequireValue(begin).size.width,
-                DartRuntimePrimitives.RequireValue(end).size.width
+                (
+                    begin
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+                    .size
+                    .width,
+                (
+                    end
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+                    .size
+                    .width
             ),
             Math.Max(
-                DartRuntimePrimitives.RequireValue(begin).size.height,
-                DartRuntimePrimitives.RequireValue(end).size.height
+                (
+                    begin
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+                    .size
+                    .height,
+                (
+                    end
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+                    .size
+                    .height
             )
         );
         return new RectTween(
-            begin: DartRuntimePrimitives.RequireValue(begin).topLeft & largestSize,
-            end: DartRuntimePrimitives.RequireValue(end).topLeft & largestSize
+            begin: (
+                begin
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).topLeft & largestSize,
+            end: (
+                end
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).topLeft & largestSize
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

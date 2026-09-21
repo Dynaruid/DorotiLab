@@ -483,11 +483,26 @@ internal class _CupertinoButtonState__button
                     (widget.minSize is null)
                         ? null
                         : new Size(
-                            DartRuntimePrimitives.RequireValue(widget.minSize),
-                            DartRuntimePrimitives.RequireValue(widget.minSize)
+                            (
+                                widget.minSize
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ),
+                            (
+                                widget.minSize
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         )
                 )
-                : DartRuntimePrimitives.RequireValue(widget.minimumSize);
+                : (
+                    widget.minimumSize
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
         CupertinoThemeData themeData = CupertinoTheme.of(context);
         Color primaryColorLocal = themeData.primaryColor;
         Color? backgroundColor = (
@@ -541,7 +556,14 @@ internal class _CupertinoButtonState__button
             .copyWith(
                 color: effectiveForegroundColor,
                 size: (textStyle.fontSize is not null)
-                    ? (DartRuntimePrimitives.RequireValue(textStyle.fontSize) * 1.2)
+                    ? (
+                        (
+                            textStyle.fontSize
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) * 1.2
+                    )
                     : ConstantsLibrary.kCupertinoButtonDefaultIconSize
             );
         Gestures.DeviceGestureSettings? gestureSettingsLocal = MediaQuery.maybeGestureSettingsOf(

@@ -512,13 +512,11 @@ internal class _RadioPainter__radio : ToggleablePainter
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) == _checkmarkStyle)
+            if ((__value) == _checkmarkStyle)
             {
                 return;
             }
-            _checkmarkStyle = DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(__value)
-            );
+            _checkmarkStyle = ((__value));
             notifyListeners();
         }
     }

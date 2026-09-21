@@ -372,15 +372,20 @@ public class CupertinoMagnifier : StatelessWidget
         focalPointOffsetLocal.scale(1, inOutAnimation?.value ?? 1);
         focalPointOffsetLocal += additionalFocalPointOffset;
         return Transform.CreateTranslate(
-            offset: DartRuntimePrimitives.RequireValue(
+            offset: (
                 Dart_uiLibrary.Offset.lerp(
                     new Offset(0, -kMagnifierAboveFocalPoint),
                     Offset.zero,
                     inOutAnimation?.value ?? 1
-                )
+                ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             ),
             child: new RawMagnifier(
-                size: DartRuntimePrimitives.RequireValue(size),
+                size: (
+                    size
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 focalPointOffset: focalPointOffsetLocal,
                 decoration: new MagnifierDecoration(
                     opacity: inOutAnimation?.value ?? 1,

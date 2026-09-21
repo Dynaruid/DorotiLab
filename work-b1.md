@@ -1,13 +1,13 @@
 # B1 — RequireValue 제거 및 C# null 처리 정리
 
 작성일: 2026-09-21  
-상태: **계획 작성 — 구현 미착수**
+상태: **구현 완료 — Android/iOS/macOS/Linux 실기기 실행은 notVerified**
 
 ## 1. 목표와 범위
 
 `Doroti.Runtime.DartRuntimePrimitives.RequireValue`의 제품 코드 의존성과 변환기의 생성 의존성을 제거한다. 필요한 null 검사는 C#의 명시적인 분기·패턴·`?? throw`로 표현하고, 생략 가능한 인자는 올바른 기본값을 적용한다. 정상 입력, 기본값, 예외 발생 조건, 콜백 실행 시점, 위젯 수명을 보존한다.
 
-이 문서는 작업계획이다. 이번 문서 작성에서는 제품 코드·변환기·검증 코드를 변경하거나 구현 검증을 실행하지 않는다. 앞서 완료한 날짜·시간 피커 수정과 회귀 검증은 구현의 출발점으로 유지한다.
+이 문서는 작업계획과 2026-09-21 구현 결과를 함께 기록한다. 앞서 완료한 날짜·시간 피커 수정과 회귀 검증을 출발점으로 유지하면서 제품 코드, 변환기, 검증 코드를 전환했다.
 
 ### 포함
 
@@ -81,35 +81,35 @@
 
 ### B1-0 — 기준선과 소비자 목록 확보
 
-- [ ] 현재 commit·작업 트리 변경·SDK·기존 검사 결과를 기록하고, 다른 작업 변경을 보존한다.
-- [ ] 전체 저장소의 실행 코드에서 런타임 메서드 심볼 참조를 찾는다. 제품·앱·도구·검증, qualified/unqualified 호출, 메서드 그룹을 구분한다.
-- [ ] Roslyn SemanticModel로 호출 위치·오버로드·인자/결과 형식·nullable 흐름·부수효과·제네릭 문맥을 분류한다.
-- [ ] 각 위치에 적용 규칙·검증 항목·미분류 사유를 연결한 manifest를 만든다. 미분류 항목은 자동 수정하지 않는다.
-- [ ] 런타임 공개 API 소비자와 IR 항목의 실제 참조·직렬화 여부를 조사한다.
-- [ ] 기존 런타임 계약 및 피커 검증을 필요한 구성에서 실행하고, 기존 실패를 B1 실패와 구분한다.
+- [x] 현재 commit·작업 트리 변경·SDK·기존 검사 결과를 기록하고, 다른 작업 변경을 보존한다.
+- [x] 전체 저장소의 실행 코드에서 런타임 메서드 심볼 참조를 찾는다. 제품·앱·도구·검증, qualified/unqualified 호출, 메서드 그룹을 구분한다.
+- [x] Roslyn SemanticModel로 호출 위치·오버로드·인자/결과 형식·nullable 흐름·부수효과·제네릭 문맥을 분류한다.
+- [x] 각 위치에 적용 규칙·검증 항목·미분류 사유를 연결한 manifest를 만든다. 미분류 항목은 자동 수정하지 않는다.
+- [x] 런타임 공개 API 소비자와 IR 항목의 실제 참조·직렬화 여부를 조사한다.
+- [x] 기존 런타임 계약 및 피커 검증을 필요한 구성에서 실행하고, 기존 실패를 B1 실패와 구분한다.
 
 완료 기준: 모든 호출이 분류되거나 명시적 미분류 목록에 들어가며, 이후 감소량을 비교할 기준선이 있다.
 
 ### B1-1 — C# 표현 전략과 자동 수정 도구 준비
 
-- [ ] 작은 fixture로 null/정상값, 기본값, 형식 제약, 평가 순서, nullable 흐름을 먼저 고정한다.
-- [ ] 타입 분석에 기반한 수정 도구를 준비한다. dry-run에서 예상 diff·수정 사유·미분류를 출력하고 실제 파일 쓰기는 별도 모드로 수행한다.
-- [ ] 확실한 단순 사례부터 자동화한다. 복잡한 식은 명시적 분기·지역 변수로 전환하며 평가 위치를 보존한다.
-- [ ] AST trivia, 주석, 기존 수동 수정과 이름 충돌을 보존한다. 두 번째 실행에서 추가 diff가 없어야 한다.
-- [ ] 제네릭·dynamic·nullable 형식과 오버로드가 달라지는 사례는 전후 컴파일 및 동작 결과를 비교한다.
+- [x] 작은 fixture로 null/정상값, 기본값, 형식 제약, 평가 순서, nullable 흐름을 먼저 고정한다.
+- [x] 타입 분석에 기반한 수정 도구를 준비한다. dry-run에서 예상 diff·수정 사유·미분류를 출력하고 실제 파일 쓰기는 별도 모드로 수행한다.
+- [x] 확실한 단순 사례부터 자동화한다. 복잡한 식은 명시적 분기·지역 변수로 전환하며 평가 위치를 보존한다.
+- [x] AST trivia, 주석, 기존 수동 수정과 이름 충돌을 보존한다. 두 번째 실행에서 추가 diff가 없어야 한다.
+- [x] 제네릭·dynamic·nullable 형식과 오버로드가 달라지는 사례는 전후 컴파일 및 동작 결과를 비교한다.
 
 완료 기준: 치환 규칙별 작은 계약 검증이 통과하고, 불확실한 사례를 조용히 변환하지 않는다.
 
 ### B1-2 — 변환기 생성 규칙 수정
 
-- [ ] `FrameworkCSharpLowerer.*`의 생성 경로를 모두 조사하고, 공통 생성 로직에서 null assertion·null promotion·기본값 복원을 구분한다.
-- [ ] Dart의 non-null assertion은 직접 C# 검사로 생성하고, 이미 non-null인 값에는 중복 검사를 생성하지 않는다.
-- [ ] 선택 인자의 기본값을 builder가 잘못된 nullable 원본으로 캡처하는 피커 형태의 최소 재현을 추가한다.
-- [ ] 상속 생성자·factory·제네릭 bridge·반환값·이벤트/콜백의 형식 보정을 각각 검증한다.
-- [ ] `Compatibility`/`G53Compatibility`의 옛 호출 문자열 매칭을 새 생성 방식과 맞춘다. 단순 이름 삭제로 기존 보정이 적용되지 않는 상태를 방지한다.
-- [ ] 실제로 쓰이는 IR 항목이면 C# 방출을 수정하고, 미사용 항목이면 참조·직렬화 영향 확인 후 제거한다. enum 값 변경으로 다른 계약을 바꾸지 않는다.
-- [ ] 실제 Dart analyzer → 변환기 → 생성 C# 컴파일 → 실행 경로로 fixture를 검증한다. [virtual-dispatch 검증](tools/Doroti.DartToCSharp/validation/virtual-dispatch/README.md)의 방식을 참고하되 별도 null 처리 fixture를 추가한다.
-- [ ] 생성 후보는 별도 산출물 폴더에 저장한다. 현재 제품 소스를 전체 재생성 결과로 덮어쓰지 않는다.
+- [x] `FrameworkCSharpLowerer.*`의 생성 경로를 모두 조사하고, 공통 생성 로직에서 null assertion·null promotion·기본값 복원을 구분한다.
+- [x] Dart의 non-null assertion은 직접 C# 검사로 생성하고, 이미 non-null인 값에는 중복 검사를 생성하지 않는다.
+- [x] 선택 인자의 기본값을 builder가 잘못된 nullable 원본으로 캡처하는 피커 형태의 최소 재현을 추가한다.
+- [x] 상속 생성자·factory·제네릭 bridge·반환값·이벤트/콜백의 형식 보정을 각각 검증한다.
+- [x] `Compatibility`/`G53Compatibility`의 옛 호출 문자열 매칭을 새 생성 방식과 맞춘다. 단순 이름 삭제로 기존 보정이 적용되지 않는 상태를 방지한다.
+- [x] 실제로 쓰이는 IR 항목이면 C# 방출을 수정하고, 미사용 항목이면 참조·직렬화 영향 확인 후 제거한다. enum 값 변경으로 다른 계약을 바꾸지 않는다.
+- [x] 실제 Dart analyzer → 변환기 → 생성 C# 컴파일 → 실행 경로로 fixture를 검증한다. [virtual-dispatch 검증](tools/Doroti.DartToCSharp/validation/virtual-dispatch/README.md)의 방식을 참고하되 별도 null 처리 fixture를 추가한다.
+- [x] 생성 후보는 별도 산출물 폴더에 저장한다. 현재 제품 소스를 전체 재생성 결과로 덮어쓰지 않는다.
 
 완료 기준: 대상 fixture의 생성 코드에 `RequireValue` 호출이 없고, 정상값·null·기본값·평가 순서가 기대 계약과 일치한다.
 
@@ -126,40 +126,40 @@
 | 5 | Material·Cupertino | 테마 기본값·선택 인자·입력 위젯·다이얼로그·모드 전환 |
 | 6 | 앱·호스트·검증의 추가 소비자 | B1-0에서 발견한 범위와 실제 호출 경로 |
 
-- [ ] 각 묶음의 변경 위치와 미분류 잔여를 manifest에 반영한다.
-- [ ] 검증된 단순 사례를 적용하고, 기본값·nullable 계약 오류는 원래 API 의미에 맞춰 수정한다.
-- [ ] 중첩된 `RequireValue(RequireValue(...))`를 정리하면서 내부 식의 평가 횟수·실패 시점을 유지한다.
-- [ ] 묶음별 Debug·Release 빌드와 관련 계약 검증을 수행한다. 경고 증가·새 억제 없이 통과해야 한다.
-- [ ] 모듈별 잔여가 0인지 확인한다. 동작 근거가 불명확한 항목은 설명과 함께 남기고 완료로 처리하지 않는다.
+- [x] 각 묶음의 변경 위치와 미분류 잔여를 manifest에 반영한다.
+- [x] 검증된 단순 사례를 적용하고, 기본값·nullable 계약 오류는 원래 API 의미에 맞춰 수정한다.
+- [x] 중첩된 `RequireValue(RequireValue(...))`를 정리하면서 내부 식의 평가 횟수·실패 시점을 유지한다.
+- [x] 묶음별 Debug·Release 빌드와 관련 계약 검증을 수행한다. 경고 증가·새 억제 없이 통과해야 한다.
+- [x] 모듈별 잔여가 0인지 확인한다. 동작 근거가 불명확한 항목은 설명과 함께 남기고 완료로 처리하지 않는다.
 
 완료 기준: 현재 제품·앱의 호출 심볼 0건, 새 대체 helper 0건, 변경 묶음별 관련 검증 통과.
 
 ### B1-4 — 런타임 API와 기존 검증 전환
 
-- [ ] 기존 warning-remediation 계약 검증의 직접 `RequireValue` 호출을 새 표현/생성 코드의 의미 검증으로 이관한다. 함수 삭제를 위해 null 실패 검증 자체를 삭제하지 않는다.
-- [ ] 제품·앱·변환기·검증·템플릿에 실행 가능한 소비자가 없는지 확인한 후 런타임 오버로드 3개를 삭제한다.
-- [ ] API 삭제 안내와 소비자 재빌드 필요성을 기록한다. `RequireReference` 등 범위 밖 API를 함께 삭제하지 않는다.
-- [ ] 이전 바이너리·증분 산출물에 가려지지 않도록 격리된 출력 경로에서 관련 프로젝트를 다시 빌드한다.
-- [ ] 전체 저장소의 검색 결과를 실행 코드, 생성 문자열, 문서/과거 기록으로 구분해 최종 확인한다. 문서에 이름이 남는 것은 실패로 계산하지 않는다.
+- [x] 기존 warning-remediation 계약 검증의 직접 `RequireValue` 호출을 새 표현/생성 코드의 의미 검증으로 이관한다. 함수 삭제를 위해 null 실패 검증 자체를 삭제하지 않는다.
+- [x] 제품·앱·변환기·검증·템플릿에 실행 가능한 소비자가 없는지 확인한 후 런타임 오버로드 3개를 삭제한다.
+- [x] API 삭제 안내와 소비자 재빌드 필요성을 기록한다. `RequireReference` 등 범위 밖 API를 함께 삭제하지 않는다.
+- [x] 이전 바이너리·증분 산출물에 가려지지 않도록 격리된 출력 경로에서 관련 프로젝트를 다시 빌드한다.
+- [x] 전체 저장소의 검색 결과를 실행 코드, 생성 문자열, 문서/과거 기록으로 구분해 최종 확인한다. 문서에 이름이 남는 것은 실패로 계산하지 않는다.
 
 완료 기준: 런타임 선언 0건, 실행 코드의 소비자 0건, 새 생성 코드의 호출 0건. API 제거 후 관련 프로젝트가 재빌드된다.
 
 ### B1-5 — 통합 동작·화면 검증
 
-- [ ] 아래 검증 행렬을 수행하고, 각 항목의 구성·명령·결과·실패 근거를 남긴다.
-- [ ] Testbed의 날짜·시간 피커 회귀를 가로·세로 화면에서 다시 확인한다. 초기값·수정값·오류 메시지·모드 왕복·inputOnly를 포함한다.
-- [ ] 변경이 집중된 일반 TextFormField, Focus/controller 교체·dispose, 테마 선택 인자, 레이아웃·애니메이션의 대표 흐름을 검사한다.
-- [ ] 가능한 Windows 제품에서 실행·입력·화면을 확인한다. Android 및 다른 플랫폼은 실제 실행 환경이 있는 경우 별도로 확인한다.
-- [ ] 소스/자동 계약, Skia 렌더링, OS 입력, 실기기 실행 증거를 분리한다. 실행하지 못한 항목은 `notVerified`로 기록한다.
+- [x] 아래 검증 행렬을 수행하고, 각 항목의 구성·명령·결과·실패 근거를 남긴다.
+- [x] Testbed의 날짜·시간 피커 회귀를 가로·세로 화면에서 다시 확인한다. 초기값·수정값·오류 메시지·모드 왕복·inputOnly를 포함한다.
+- [x] 변경이 집중된 일반 TextFormField, Focus/controller 교체·dispose, 테마 선택 인자, 레이아웃·애니메이션의 대표 흐름을 검사한다.
+- [x] 가능한 Windows 제품에서 실행·입력·화면을 확인한다. Android 및 다른 플랫폼은 실제 실행 환경이 있는 경우 별도로 확인한다.
+- [x] 소스/자동 계약, Skia 렌더링, OS 입력, 실기기 실행 증거를 분리한다. 실행하지 못한 항목은 `notVerified`로 기록한다.
 
 완료 기준: 자동 검사와 대표 제품 실행 결과가 각 범위에서 확인되고, 플랫폼별 남은 검증이 명시돼 있다.
 
 ### B1-6 — 재발 방지와 최종 보고
 
-- [ ] 제품 호출·런타임 선언·변환기 fixture 생성 결과에 대한 0건 검사를 재현 가능한 검증 명령에 포함한다.
-- [ ] 의도치 않은 `RequireReference` 증가, 새 동일 역할 helper, 경고 억제 추가를 diff로 검사한다.
-- [ ] 최초/최종 집계, 규칙별 변경 수, 수정한 기본값 오류, API 호환성 영향, 검증 결과·미검증 범위를 정리한다.
-- [ ] 이 문서의 체크리스트와 상태를 실제 근거에 맞게 갱신한다. 일부 호출·구현·필수 검증이 남으면 `PARTIAL`로 유지한다.
+- [x] 제품 호출·런타임 선언·변환기 fixture 생성 결과에 대한 0건 검사를 재현 가능한 검증 명령에 포함한다.
+- [x] 의도치 않은 `RequireReference` 증가, 새 동일 역할 helper, 경고 억제 추가를 diff로 검사한다.
+- [x] 최초/최종 집계, 규칙별 변경 수, 수정한 기본값 오류, API 호환성 영향, 검증 결과·미검증 범위를 정리한다.
+- [x] 이 문서의 체크리스트와 상태를 실제 근거에 맞게 갱신한다. 일부 호출·구현·필수 검증이 남으면 `PARTIAL`로 유지한다.
 
 ## 5. 검증 행렬
 
@@ -203,12 +203,43 @@ python Doroti/validation/run-with-timeout.py dotnet build DorotiTestbedApp/windo
 
 최종 완료에는 다음 조건이 모두 필요하다.
 
-- [ ] 제품·앱·도구·검증의 실행 가능한 `RequireValue` 참조 0건.
-- [ ] 런타임 `RequireValue` 선언 0건, 대체 이름으로 옮긴 동일 역할 helper 0건.
-- [ ] 변환기의 새 생성 결과에 호출 0건, 관련 호환성 규칙·IR 잔여 처리 완료.
-- [ ] 기본값·필수값·nullable 전달·평가 순서·제네릭 계약 검증 통과.
-- [ ] 관련 Debug·Release 및 격리 빌드 통과, 새 nullable 경고/억제 없음.
-- [ ] 피커와 대표 위젯의 자동 동작·렌더링 검증 통과 및 Windows 제품 실행 확인.
-- [ ] API 삭제 영향과 플랫폼별 `notVerified` 항목이 최종 보고에 명시됨.
+- [x] 제품·앱·도구·검증의 실행 가능한 `RequireValue` 참조 0건.
+- [x] 런타임 `RequireValue` 선언 0건, 대체 이름으로 옮긴 동일 역할 helper 0건.
+- [x] 변환기의 새 생성 결과에 호출 0건, 관련 호환성 규칙·IR 잔여 처리 완료.
+- [x] 기본값·필수값·nullable 전달·평가 순서·제네릭 계약 검증 통과.
+- [x] 관련 Debug·Release 및 격리 빌드 통과, 새 nullable 경고/억제 없음.
+- [x] 피커와 대표 위젯의 자동 동작·렌더링 검증 통과 및 Windows 제품 실행 확인.
+- [x] API 삭제 영향과 플랫폼별 `notVerified` 항목이 최종 보고에 명시됨.
 
 호출 수 감소, 빌드 성공 또는 함수 이름 변경만으로 전체 작업을 완료 처리하지 않는다. 제거 목표와 동작 보존을 모두 충족해야 한다.
+
+## 7. 구현 결과 (2026-09-21)
+
+### 변경 결과
+
+- 구현 기준선은 commit `4abb4e45`, 변경 전 clean worktree, .NET SDK `10.0.400`이었다.
+- 최초 텍스트 기준선은 `Doroti/src` 285개 파일 / 3,618회였다. Roslyn 프로젝트 그래프의 최초 binding 기록은 3,612행(이미 non-null 값 1,409, nullable 값 2,094, 참조 109)이었으며, 여러 프로젝트에서 공유되는 파일의 중복 binding을 포함한다.
+- 일반 프로젝트에서 제외된 플랫폼 원본 5개 파일은 소유 프로젝트 compilation을 metadata reference로 사용해 별도로 분석했다. 바인딩된 55행(값 31, nullable 값 8, 참조 16)을 전환했다. 현재 제품 API에서 이미 사라진 `engineId` 때문에 바인딩되지 않는 제외 원본 13건은 별도 manifest에 `excluded-stale-engine-id`로 기록하고 명시적 null 실패식으로 전환했다.
+- 최종 결과는 제품 호출 문자열 0건, Roslyn 호출 심볼 0건, 런타임 선언 0건, 변환기 소스의 생성 의존성 0건이다. `RequireReference`는 범위 밖 기준선 27건을 그대로 유지했고 새 `NoWarn`/warning pragma는 추가하지 않았다.
+- nullable 값·참조는 단일 평가 `?? throw`로, 이미 non-null 값은 직접 식으로 전환했다. nullable 필드 대입 결과가 중첩된 두 위치는 지역 흐름으로 풀어 C# 결과 형식과 평가 순서를 보존했다.
+- 변환기는 postfix `!`와 기존 호환성 생성 경로를 내부 placeholder로 모은 뒤, 최종 C#에서 단일 평가 switch/property pattern과 동일한 `NullReferenceException` 메시지로 내린다. placeholder와 제거 API 이름은 최종 산출물에 남지 않는다. 미사용 `RuntimeIntrinsic.RequireValue`를 제거하면서 다음 항목을 `1`부터 명시해 기존 numeric identity도 보존했다.
+- 공개 `DartRuntimePrimitives.RequireValue` 오버로드 3개 삭제는 소스·바이너리 호환성 변경이다. 외부 소비자는 명시적 C# null 처리로 전환하고 새 런타임에 맞춰 다시 빌드해야 하며 compatibility shim은 없다.
+
+### 검증 결과
+
+| 항목 | 결과 |
+|---|---|
+| 변경 전 기준선 | warning-remediation 95 assertions PASS, picker-input 가로 PASS |
+| 제거 0건 검사 | `require-value-removal verify` PASS, final manifest 0행 |
+| 프레임워크 통합 빌드 | `Doroti.Editor.slnx` Debug/Release, 경고 0·오류 0 |
+| 격리 빌드 | Material 의존성 전체 Release를 `Doroti/artifacts/require-value-removal/isolated`에 재빌드, 경고 0·오류 0 |
+| 런타임 계약 | warning-remediation Debug/Release 각 99 assertions PASS; 0, false, null 메시지, 단일 평가, 콜백 지연 실행 포함 |
+| 변환기 | null-semantics fixture PASS; 실제 analyzer → 변환기 → C# compile → 실행으로 값/참조/generic/dynamic/default/builder/delayed callback 검증 |
+| 변환기 회귀 | virtual-dispatch fixture PASS; 외부 bridge, factory, generic, serial/parallel 결정성 포함 |
+| 피커/화면 | 가로·세로 모두 PASS; 날짜·시간 초기값, 오류, 수정값, 모드 왕복, inputOnly, Skia paint 확인. PNG 4장을 육안 확인해 framework exception/ErrorWidget/클리핑 없음 |
+| Windows 제품 | Windows App SDK Release build PASS; OS SendInput 기반 스크롤·클릭·포커스·native editing·offscreen/remount 입력 PASS |
+| Android | `android-arm64` Release build PASS; 연결된 ADB 기기가 없어 설치·실행·터치·화면은 `notVerified` |
+| iOS/macOS/Linux | 현재 Windows 환경에서 실제 호스트/실기기 실행은 `notVerified` |
+| 저장소 통합 wrapper | guard와 guard-tests PASS 후 기존 Testbed IDE0002 10건(6개 파일)에서 조기 중단. B1 변경 파일 밖의 기존 진단이며 이후 B1 관련 빌드·계약·Windows 제품 입력은 위와 같이 별도 PASS |
+
+재현 가능한 명령과 API 호환성 안내는 `Doroti/validation/require-value-removal/README.md` 및 `tools/Doroti.DartToCSharp/validation/null-semantics/README.md`에 기록했다. 생성 후보와 실행 로그는 제품 소스를 덮어쓰지 않고 `.doroti`와 `Doroti/artifacts/require-value-removal` 아래에 분리했다.

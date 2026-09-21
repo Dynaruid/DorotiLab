@@ -469,7 +469,10 @@ public abstract class RenderSliverScrollingPersistentHeader : RenderSliverPersis
         var __child = (RenderBox)(object)child;
         DartRuntimePrimitives.Assert(() => Equals(__child, this.child));
         DartRuntimePrimitives.Assert(() => _childPosition is not null);
-        return DartRuntimePrimitives.RequireValue(_childPosition);
+        return (
+            _childPosition
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -643,7 +646,11 @@ public abstract class RenderSliverFloatingPersistentHeader : RenderSliverPersist
         }
         double maxExtentLocal = maxExtent;
         double paintExtentLocal =
-            maxExtentLocal - DartRuntimePrimitives.RequireValue(_effectiveScrollOffset);
+            maxExtentLocal
+            - (
+                _effectiveScrollOffset
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         double layoutExtentLocal = maxExtentLocal - constraints.scrollOffset;
         geometry = new SliverGeometry(
             scrollExtent: maxExtentLocal,
@@ -688,7 +695,12 @@ public abstract class RenderSliverFloatingPersistentHeader : RenderSliverPersist
         )();
         _animation = effectiveController.drive(
             new Tween<double>(
-                begin: DartRuntimePrimitives.RequireValue(_effectiveScrollOffset),
+                begin: (
+                    _effectiveScrollOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 end: endValue
             ).chain(new CurveTween(curve: curve))
         );
@@ -708,14 +720,28 @@ public abstract class RenderSliverFloatingPersistentHeader : RenderSliverPersist
         }
         if (
             Equals(direction, ScrollDirection.forward)
-            && (DartRuntimePrimitives.RequireValue(_effectiveScrollOffset) <= 0.0)
+            && (
+                (
+                    _effectiveScrollOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) <= 0.0
+            )
         )
         {
             return;
         }
         if (
             Equals(direction, ScrollDirection.reverse)
-            && (DartRuntimePrimitives.RequireValue(_effectiveScrollOffset) >= maxExtent)
+            && (
+                (
+                    _effectiveScrollOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) >= maxExtent
+            )
         )
         {
             return;
@@ -741,14 +767,28 @@ public abstract class RenderSliverFloatingPersistentHeader : RenderSliverPersist
             (_lastActualScrollOffset is not null)
             && (
                 constraintsLocal.scrollOffset
-                    < DartRuntimePrimitives.RequireValue(_lastActualScrollOffset)
-                || DartRuntimePrimitives.RequireValue(_effectiveScrollOffset) < maxExtentLocal
+                    < (
+                        _lastActualScrollOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                || (
+                    _effectiveScrollOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) < maxExtentLocal
             )
         )
         {
             double delta =
-                DartRuntimePrimitives.RequireValue(_lastActualScrollOffset)
-                - constraintsLocal.scrollOffset;
+                (
+                    _lastActualScrollOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) - constraintsLocal.scrollOffset;
             bool allowFloatingExpansion =
                 Equals(constraintsLocal.userScrollDirection, ScrollDirection.forward)
                 || (
@@ -757,7 +797,14 @@ public abstract class RenderSliverFloatingPersistentHeader : RenderSliverPersist
                 );
             if (allowFloatingExpansion)
             {
-                if (DartRuntimePrimitives.RequireValue(_effectiveScrollOffset) > maxExtentLocal)
+                if (
+                    (
+                        _effectiveScrollOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > maxExtentLocal
+                )
                 {
                     _effectiveScrollOffset = maxExtentLocal;
                 }
@@ -770,7 +817,12 @@ public abstract class RenderSliverFloatingPersistentHeader : RenderSliverPersist
                 }
             }
             _effectiveScrollOffset = Dart_uiLibrary.clampDouble(
-                DartRuntimePrimitives.RequireValue(_effectiveScrollOffset) - delta,
+                (
+                    _effectiveScrollOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) - delta,
                 0.0,
                 constraintsLocal.scrollOffset
             );
@@ -780,10 +832,15 @@ public abstract class RenderSliverFloatingPersistentHeader : RenderSliverPersist
             _effectiveScrollOffset = constraintsLocal.scrollOffset;
         }
         bool overlapsContentLocal =
-            DartRuntimePrimitives.RequireValue(_effectiveScrollOffset)
-            < constraintsLocal.scrollOffset;
+            (
+                _effectiveScrollOffset
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) < constraintsLocal.scrollOffset;
         layoutChild(
-            DartRuntimePrimitives.RequireValue(_effectiveScrollOffset),
+            (
+                _effectiveScrollOffset
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             maxExtentLocal,
             overlapsContent: overlapsContentLocal
         );
@@ -916,7 +973,11 @@ public abstract class RenderSliverFloatingPinnedPersistentHeader
                 : constraints.remainingPaintExtent;
         double maxExtentLocal = maxExtent;
         double paintExtentLocal =
-            maxExtentLocal - DartRuntimePrimitives.RequireValue(_effectiveScrollOffset);
+            maxExtentLocal
+            - (
+                _effectiveScrollOffset
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         double clampedPaintExtent = Dart_uiLibrary.clampDouble(
             paintExtentLocal,
             minAllowedExtent,

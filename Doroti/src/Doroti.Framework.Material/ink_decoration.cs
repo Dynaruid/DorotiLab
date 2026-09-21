@@ -212,11 +212,11 @@ public class InkDecoration : InkFeature
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) == _isVisible)
+            if ((__value) == _isVisible)
             {
                 return;
             }
-            _isVisible = DartRuntimePrimitives.RequireValue(__value);
+            _isVisible = (__value);
             controller.markNeedsPaint();
         }
     }
@@ -265,8 +265,13 @@ public class InkDecoration : InkFeature
         {
             _painter!.paint(
                 canvas,
-                DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(originOffset)
+                (
+                    (
+                        originOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 ),
                 sizedConfiguration
             );

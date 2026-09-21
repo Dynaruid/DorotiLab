@@ -160,7 +160,10 @@ internal class _BottomSheetState__bottom_sheet : State<BottomSheet>
             return;
         }
         widget.animationController!.value -=
-            DartRuntimePrimitives.RequireValue(details.primaryDelta) / _childHeight;
+            (
+                details.primaryDelta
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) / _childHeight;
     }
 
     internal virtual void _handleDragEnd(Gestures.DragEndDetails details)
@@ -369,7 +372,10 @@ internal class _DragHandle__bottom_sheet : StatelessWidget
         BottomSheetThemeData m3Defaults = new _BottomSheetDefaultsM3__bottom_sheet(context);
         Size handleSize =
             (dragHandleSize ?? bottomSheetThemeLocal.dragHandleSize)
-            ?? DartRuntimePrimitives.RequireValue(m3Defaults.dragHandleSize);
+            ?? (
+                m3Defaults.dragHandleSize
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         return new MouseRegion(
             onEnter: (@event) =>
             {
@@ -559,8 +565,10 @@ public class _RenderBottomSheetLayoutWithSizeListener__bottom_sheet : RenderShif
         Size childSize = childConstraints.isTight
             ? childConstraints.smallest
             : childLocal.getDryLayout(childConstraints);
-        return DartRuntimePrimitives.RequireValue(result)
-            + _getPositionForChild(constraints.biggest, childSize).dy;
+        return (
+                result
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) + _getPositionForChild(constraints.biggest, childSize).dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -962,9 +970,7 @@ public class ModalBottomSheetRoute<T> : PopupRoute<T>
                         clipBehavior: clipBehavior,
                         constraints: constraints,
                         isScrollControlled: isScrollControlled,
-                        scrollControlDisabledMaxHeightRatio: DartRuntimePrimitives.RequireValue(
-                            scrollControlDisabledMaxHeightRatio
-                        ),
+                        scrollControlDisabledMaxHeightRatio: (scrollControlDisabledMaxHeightRatio),
                         enableDrag: enableDrag,
                         showDragHandle: showDragHandle
                             ?? (enableDrag && (sheetTheme.showDragHandle ?? false))

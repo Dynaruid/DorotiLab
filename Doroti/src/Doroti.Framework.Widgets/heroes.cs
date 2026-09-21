@@ -216,15 +216,30 @@ public class _HeroState__heroes : State<Hero>
         {
             return widget.placeholderBuilder!(
                 context,
-                DartRuntimePrimitives.RequireValue(_placeholderSize),
+                (
+                    _placeholderSize
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 widget.child
             );
         }
         if (showPlaceholder && !_shouldIncludeChild)
         {
             return new SizedBox(
-                width: DartRuntimePrimitives.RequireValue(_placeholderSize).width,
-                height: DartRuntimePrimitives.RequireValue(_placeholderSize).height
+                width: (
+                    _placeholderSize
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).width,
+                height: (
+                    _placeholderSize
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).height
             );
         }
         return new SizedBox(
@@ -458,8 +473,11 @@ internal class _HeroFlight__heroes
             child: shuttle,
             builder: (context, child) =>
             {
-                Rect rect = DartRuntimePrimitives.RequireValue(
+                Rect rect = (
                     heroRectTween.evaluate(_proxyAnimation)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
                 var offsets = RelativeRect.CreateFromSize(rect, manifest.navigatorSize);
                 return new Positioned(
@@ -554,21 +572,38 @@ internal class _HeroFlight__heroes
                     )
                     : null
             );
-        if ((toHeroOrigin is not null) && DartRuntimePrimitives.RequireValue(toHeroOrigin).isFinite)
-        {
-            Offset toHeroOrigin__26130__value26392 = DartRuntimePrimitives.RequireValue(
+        if (
+            (toHeroOrigin is not null)
+            && (
                 toHeroOrigin
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).isFinite
+        )
+        {
+            Offset toHeroOrigin__26130__value26392 = (
+                toHeroOrigin
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
             if (
                 !Equals(
-                    DartRuntimePrimitives.RequireValue(toHeroOrigin__26130__value26392),
-                    DartRuntimePrimitives.RequireValue(heroRectTween.end).topLeft
+                    (toHeroOrigin__26130__value26392),
+                    (
+                        heroRectTween.end
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).topLeft
                 )
             )
             {
                 Rect heroRectEnd =
-                    DartRuntimePrimitives.RequireValue(toHeroOrigin__26130__value26392)
-                    & DartRuntimePrimitives.RequireValue(heroRectTween.end).size;
+                    (toHeroOrigin__26130__value26392)
+                    & (
+                        heroRectTween.end
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).size;
                 heroRectTween = manifest.createHeroRectTween(
                     begin: heroRectTween.begin,
                     end: heroRectEnd
@@ -587,7 +622,11 @@ internal class _HeroFlight__heroes
             }
         }
         _aborted =
-            (toHeroOrigin is null) || !DartRuntimePrimitives.RequireValue(toHeroOrigin).isFinite;
+            (toHeroOrigin is null)
+            || !(
+                toHeroOrigin
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).isFinite;
     }
 
     public virtual void start(_HeroFlightManifest__heroes initialManifest)
@@ -850,10 +889,11 @@ public class HeroController : NavigatorObserver
         }
         if (flightType is not null)
         {
-            HeroFlightDirection flightType__36140__value36599 = DartRuntimePrimitives.RequireValue(
+            HeroFlightDirection flightType__36140__value36599 = (
                 flightType
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
-            switch (DartRuntimePrimitives.RequireValue(flightType__36140__value36599))
+            switch ((flightType__36140__value36599))
             {
                 case HeroFlightDirection.pop:
                 {
@@ -948,8 +988,13 @@ public class HeroController : NavigatorObserver
                 ((toHeroLocal is null) || (flightType is null))
                     ? null
                     : new _HeroFlightManifest__heroes(
-                        type: DartRuntimePrimitives.RequireValue(
-                            DartRuntimePrimitives.RequireValue(flightType)
+                        type: (
+                            (
+                                flightType
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         ),
                         overlay: overlayLocal,
                         navigatorSize: ((RenderBox)navigatorRenderObject).size,

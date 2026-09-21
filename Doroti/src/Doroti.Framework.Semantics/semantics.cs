@@ -149,7 +149,13 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
                     + $"value: \"{data.value}\", minValue: \"{data.minValue}\", maxValue: \"{data.maxValue}\""
             );
         }
-        if (minVal >= DartRuntimePrimitives.RequireValue(maxVal))
+        if (
+            minVal
+            >= (
+                maxVal
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        )
         {
             return new FlutterError(
                 $"Progress bar minValue ({data.minValue}) must be less than maxValue ({data.maxValue})"
@@ -157,15 +163,28 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
         }
         if (currentValue is not null)
         {
-            double currentValue__8479__value9301 = DartRuntimePrimitives.RequireValue(currentValue);
+            double currentValue__8479__value9301 = (
+                currentValue
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             if (
                 (
-                    DartRuntimePrimitives.RequireValue(currentValue__8479__value9301)
-                    < DartRuntimePrimitives.RequireValue(minVal)
+                    (currentValue__8479__value9301)
+                    < (
+                        minVal
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
                 || (
-                    DartRuntimePrimitives.RequireValue(currentValue__8479__value9301)
-                    > DartRuntimePrimitives.RequireValue(maxVal)
+                    (currentValue__8479__value9301)
+                    > (
+                        maxVal
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
             )
             {
@@ -178,12 +197,29 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
         if (
             (percentValue is not null)
             && (
-                (DartRuntimePrimitives.RequireValue(percentValue) < 0L)
-                || (DartRuntimePrimitives.RequireValue(percentValue) > 100L)
+                (
+                    (
+                        percentValue
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) < 0L
+                )
+                || (
+                    (
+                        percentValue
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 100L
+                )
             )
         )
         {
-            double percentValue__8541__value9681 = DartRuntimePrimitives.RequireValue(percentValue);
+            double percentValue__8541__value9681 = (
+                percentValue
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             return new FlutterError(
                 $"Progress bar percentage value ({data.value}) must be between 0% and 100%"
             );
@@ -594,8 +630,9 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
         bool? isExpandedLocal = data.flagsCollection.isExpanded.toBoolOrNull();
         if (isExpandedLocal is not null)
         {
-            bool isExpanded__19946__value20016 = DartRuntimePrimitives.RequireValue(
+            bool isExpanded__19946__value20016 = (
                 isExpandedLocal
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
             bool hasExpandAction = data.hasAction(SemanticsAction.expand);
             bool hasCollapseAction = data.hasAction(SemanticsAction.collapse);
@@ -605,16 +642,11 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
                     "An expandable node cannot have both expand and collapse actions set at the same time."
                 );
             }
-            if (
-                DartRuntimePrimitives.RequireValue(isExpanded__19946__value20016) && hasExpandAction
-            )
+            if ((isExpanded__19946__value20016) && hasExpandAction)
             {
                 return new FlutterError("An expanded node cannot have an expand action.");
             }
-            if (
-                !DartRuntimePrimitives.RequireValue(isExpanded__19946__value20016)
-                && hasCollapseAction
-            )
+            if (!(isExpanded__19946__value20016) && hasCollapseAction)
             {
                 return new FlutterError("A collapsed node cannot have a collapse action.");
             }
@@ -960,18 +992,32 @@ public class SemanticsLabelBuilder
             if (
                 (textDirection is not null)
                 && (partDirection is not null)
-                && (!Equals(textDirection, DartRuntimePrimitives.RequireValue(partDirection)))
+                && (
+                    !Equals(
+                        textDirection,
+                        (
+                            partDirection
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    )
+                )
             )
             {
-                TextDirection textDirection__value36162 = DartRuntimePrimitives.RequireValue(
+                TextDirection textDirection__value36162 = (
                     textDirection
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
-                TextDirection partDirection__35987__value36187 = DartRuntimePrimitives.RequireValue(
+                TextDirection partDirection__35987__value36187 = (
                     partDirection
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
-                string directionalEmbedding = DartRuntimePrimitives.RequireValue(
-                    partDirection__35987__value36187
-                ) switch
+                string directionalEmbedding = (partDirection__35987__value36187) switch
                 {
                     TextDirection.rtl => Unicode.RLE,
                     TextDirection.ltr => Unicode.LRE,
@@ -1354,7 +1400,14 @@ internal class _SemanticsDiagnosticableNode__semantics : DiagnosticableNode<Sema
         DiagnosticsTreeStyle? style = default!,
         DebugSemanticsDumpOrder childOrder = default!
     )
-        : base(name: name, value: value, style: DartRuntimePrimitives.RequireValue(style))
+        : base(
+            name: name,
+            value: value,
+            style: (
+                style
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        )
     {
         this.childOrder = childOrder;
     }
@@ -1674,7 +1727,16 @@ public class SemanticsProperties : DiagnosticableTree
         System.Diagnostics.Debug.Assert((hint is null) || (attributedHint is null));
         System.Diagnostics.Debug.Assert(
             (headingLevel is null)
-                || ((DartRuntimePrimitives.RequireValue(headingLevel) > 0L) && (headingLevel <= 6L))
+                || (
+                    (
+                        (
+                            headingLevel
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) > 0L
+                    ) && (headingLevel <= 6L)
+                )
         );
         System.Diagnostics.Debug.Assert((linkUrl is null) || (link ?? false));
     }
@@ -1910,12 +1972,10 @@ public class SemanticsNode : DiagnosticableTreeMixin
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() =>
-                DartRuntimePrimitives.RequireValue(__value).isFinite
-            );
-            if (!Equals(_rect, DartRuntimePrimitives.RequireValue(__value)))
+            DartRuntimePrimitives.Assert(() => (__value).isFinite);
+            if (!Equals(_rect, (__value)))
             {
-                _rect = DartRuntimePrimitives.RequireValue(__value);
+                _rect = (__value);
                 _markDirty();
             }
         }
@@ -1928,11 +1988,11 @@ public class SemanticsNode : DiagnosticableTreeMixin
         set
         {
             var __value = value;
-            if (_isMergedIntoParent == DartRuntimePrimitives.RequireValue(__value))
+            if (_isMergedIntoParent == (__value))
             {
                 return;
             }
-            _isMergedIntoParent = DartRuntimePrimitives.RequireValue(__value);
+            _isMergedIntoParent = (__value);
             parent?._markDirty();
         }
     }
@@ -1942,11 +2002,11 @@ public class SemanticsNode : DiagnosticableTreeMixin
         set
         {
             var __value = value;
-            if (_areUserActionsBlocked == DartRuntimePrimitives.RequireValue(__value))
+            if (_areUserActionsBlocked == (__value))
             {
                 return;
             }
-            _areUserActionsBlocked = DartRuntimePrimitives.RequireValue(__value);
+            _areUserActionsBlocked = (__value);
             _markDirty();
         }
     }
@@ -2411,8 +2471,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
     {
         if (Equals(action, SemanticsAction.customAction))
         {
-            return (args is long)
-                && _canPerformCustomAction(DartRuntimePrimitives.RequireValue((long)args));
+            return (args is long) && _canPerformCustomAction(((long)args));
         }
         return _canPerformAction(action);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -3061,13 +3120,13 @@ public class SemanticsNode : DiagnosticableTreeMixin
         List<SemanticsNode>? childrenInDefaultOrder = default!;
         if (inheritedTextDirection is not null)
         {
-            TextDirection inheritedTextDirection__162729__value163025 =
-                DartRuntimePrimitives.RequireValue(inheritedTextDirection);
+            TextDirection inheritedTextDirection__162729__value163025 = (
+                inheritedTextDirection
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             childrenInDefaultOrder = SemanticsLibrary._childrenInDefaultOrder(
                 updatedChildren!,
-                DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(inheritedTextDirection__162729__value163025)
-                )
+                ((inheritedTextDirection__162729__value163025))
             );
         }
         else
@@ -3213,15 +3272,14 @@ public class SemanticsNode : DiagnosticableTreeMixin
         Offset? offset = (transform is not null) ? MatrixUtils.getAsTranslation(transform!) : null;
         if (offset is not null)
         {
-            Offset offset__167351__value167437 = DartRuntimePrimitives.RequireValue(offset);
+            Offset offset__167351__value167437 = (
+                offset
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             properties.add(
                 new DiagnosticsProperty<Rect>(
                     "rect",
-                    rect.shift(
-                        DartRuntimePrimitives.RequireValue(
-                            DartRuntimePrimitives.RequireValue(offset__167351__value167437)
-                        )
-                    ),
+                    rect.shift(((offset__167351__value167437))),
                     showName: false
                 )
             );
@@ -3232,9 +3290,14 @@ public class SemanticsNode : DiagnosticableTreeMixin
             string? descriptionLocal = default!;
             if (scale is not null)
             {
-                double scale__167582__value167690 = DartRuntimePrimitives.RequireValue(scale);
+                double scale__167582__value167690 = (
+                    scale
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
                 descriptionLocal =
-                    $"{rect} scaled by {DartRuntimePrimitives.RequireValue(scale__167582__value167690).toStringAsFixed(1L)}x";
+                    $"{rect} scaled by {(scale__167582__value167690).toStringAsFixed(1L)}x";
             }
             else
             {
@@ -3619,7 +3682,7 @@ internal class _SemanticsSortGroup__semantics : IComparable<_SemanticsSortGroup_
             visitedIds.Add(id);
             if (edges.ContainsKey(id))
             {
-                search(DartRuntimePrimitives.RequireValue(edges.GetValueOrDefault(id)));
+                search((edges.GetValueOrDefault(id)));
             }
             sortedIds.Add(id);
         }
@@ -4192,10 +4255,8 @@ public class SemanticsConfiguration
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() =>
-                !isMergingSemanticsOfDescendants || DartRuntimePrimitives.RequireValue(__value)
-            );
-            _isSemanticBoundary = DartRuntimePrimitives.RequireValue(__value);
+            DartRuntimePrimitives.Assert(() => !isMergingSemanticsOfDescendants || (__value));
+            _isSemanticBoundary = (__value);
         }
     }
     public virtual Locale? localeForSubtree
@@ -4217,7 +4278,7 @@ public class SemanticsConfiguration
 
     internal virtual void _addAction(SemanticsAction action, Action<object?> handler)
     {
-        _actions[DartRuntimePrimitives.RequireValue(action)] = handler;
+        _actions[(action)] = handler;
         _actionsAsBits |= (long)action;
         _hasBeenAnnotated = true;
     }
@@ -4476,12 +4537,8 @@ public class SemanticsConfiguration
                     );
                     __value!(
                         new TextSelection(
-                            baseOffset: DartRuntimePrimitives.RequireValue(
-                                selection.GetValueOrDefault("base")
-                            ),
-                            extentOffset: DartRuntimePrimitives.RequireValue(
-                                selection.GetValueOrDefault("extent")
-                            )
+                            baseOffset: (selection.GetValueOrDefault("base")),
+                            extentOffset: (selection.GetValueOrDefault("extent"))
                         )
                     );
                 }
@@ -4675,7 +4732,7 @@ public class SemanticsConfiguration
         {
             var __value = value;
             DartRuntimePrimitives.Assert(() => isSemanticBoundary);
-            _isMergingSemanticsOfDescendants = DartRuntimePrimitives.RequireValue(__value);
+            _isMergingSemanticsOfDescendants = (__value);
             _hasBeenAnnotated = true;
         }
     }
@@ -4750,7 +4807,7 @@ public class SemanticsConfiguration
         set
         {
             var __value = value;
-            _role = DartRuntimePrimitives.RequireValue(__value);
+            _role = (__value);
             _hasBeenAnnotated = true;
         }
     }
@@ -4884,7 +4941,7 @@ public class SemanticsConfiguration
         set
         {
             var __value = value;
-            _flags = _flags.copyWith(scopesRoute: DartRuntimePrimitives.RequireValue(__value));
+            _flags = _flags.copyWith(scopesRoute: (__value));
             _hasBeenAnnotated = true;
         }
     }
@@ -4894,7 +4951,7 @@ public class SemanticsConfiguration
         set
         {
             var __value = value;
-            _flags = _flags.copyWith(namesRoute: DartRuntimePrimitives.RequireValue(__value));
+            _flags = _flags.copyWith(namesRoute: (__value));
             _hasBeenAnnotated = true;
         }
     }
@@ -4904,7 +4961,7 @@ public class SemanticsConfiguration
         set
         {
             var __value = value;
-            _flags = _flags.copyWith(isImage: DartRuntimePrimitives.RequireValue(__value));
+            _flags = _flags.copyWith(isImage: (__value));
             _hasBeenAnnotated = true;
         }
     }
@@ -4914,7 +4971,7 @@ public class SemanticsConfiguration
         set
         {
             var __value = value;
-            _flags = _flags.copyWith(isLiveRegion: DartRuntimePrimitives.RequireValue(__value));
+            _flags = _flags.copyWith(isLiveRegion: (__value));
             _hasBeenAnnotated = true;
         }
     }
@@ -4935,9 +4992,7 @@ public class SemanticsConfiguration
         {
             var __value = value;
             _flags = _flags.copyWith(
-                isSelected: SemanticsLibrary._tristateFromBoolOrNull(
-                    DartRuntimePrimitives.RequireValue(__value)
-                )
+                isSelected: SemanticsLibrary._tristateFromBoolOrNull((__value))
             );
             _hasBeenAnnotated = true;
         }
@@ -4973,11 +5028,14 @@ public class SemanticsConfiguration
             var __value = value;
             if (__value is not null)
             {
-                bool value__value243016 = DartRuntimePrimitives.RequireValue(__value);
+                bool value__value243016 = (
+                    __value
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
                 _flags = _flags.copyWith(
-                    isChecked: DartRuntimePrimitives.RequireValue(value__value243016)
-                        ? CheckedState.isTrue
-                        : CheckedState.isFalse
+                    isChecked: (value__value243016) ? CheckedState.isTrue : CheckedState.isFalse
                 );
             }
             _hasBeenAnnotated = true;
@@ -5015,9 +5073,7 @@ public class SemanticsConfiguration
         set
         {
             var __value = value;
-            _flags = _flags.copyWith(
-                isInMutuallyExclusiveGroup: DartRuntimePrimitives.RequireValue(__value)
-            );
+            _flags = _flags.copyWith(isInMutuallyExclusiveGroup: (__value));
             _hasBeenAnnotated = true;
         }
     }
@@ -5027,7 +5083,7 @@ public class SemanticsConfiguration
         set
         {
             var __value = value;
-            if (!DartRuntimePrimitives.RequireValue(__value))
+            if (!(__value))
             {
                 _flags = _flags.copyWith(isFocused: Tristate.none);
             }
@@ -5057,12 +5113,9 @@ public class SemanticsConfiguration
         set
         {
             var __value = value;
-            _accessibilityFocusBlockType = DartRuntimePrimitives.RequireValue(__value);
+            _accessibilityFocusBlockType = (__value);
             _flags = _flags.copyWith(
-                isAccessibilityFocusBlocked: !Equals(
-                    DartRuntimePrimitives.RequireValue(__value),
-                    AccessibilityFocusBlockType.none
-                )
+                isAccessibilityFocusBlocked: !Equals((__value), AccessibilityFocusBlockType.none)
             );
             _hasBeenAnnotated = true;
         }
@@ -5073,7 +5126,7 @@ public class SemanticsConfiguration
         set
         {
             var __value = value;
-            _flags = _flags.copyWith(isButton: DartRuntimePrimitives.RequireValue(__value));
+            _flags = _flags.copyWith(isButton: (__value));
             _hasBeenAnnotated = true;
         }
     }
@@ -5083,7 +5136,7 @@ public class SemanticsConfiguration
         set
         {
             var __value = value;
-            _flags = _flags.copyWith(isLink: DartRuntimePrimitives.RequireValue(__value));
+            _flags = _flags.copyWith(isLink: (__value));
             _hasBeenAnnotated = true;
         }
     }
@@ -5107,7 +5160,7 @@ public class SemanticsConfiguration
         set
         {
             var __value = value;
-            _flags = _flags.copyWith(isHeader: DartRuntimePrimitives.RequireValue(__value));
+            _flags = _flags.copyWith(isHeader: (__value));
             _hasBeenAnnotated = true;
         }
     }
@@ -5118,11 +5171,11 @@ public class SemanticsConfiguration
         {
             var __value = value;
             DartRuntimePrimitives.Assert(() => (__value >= 0L) && (__value <= 6L));
-            if (DartRuntimePrimitives.RequireValue(__value) == headingLevel)
+            if ((__value) == headingLevel)
             {
                 return;
             }
-            _headingLevel = DartRuntimePrimitives.RequireValue(__value);
+            _headingLevel = (__value);
             _hasBeenAnnotated = true;
         }
     }
@@ -5132,7 +5185,7 @@ public class SemanticsConfiguration
         set
         {
             var __value = value;
-            _flags = _flags.copyWith(isSlider: DartRuntimePrimitives.RequireValue(__value));
+            _flags = _flags.copyWith(isSlider: (__value));
             _hasBeenAnnotated = true;
         }
     }
@@ -5142,7 +5195,7 @@ public class SemanticsConfiguration
         set
         {
             var __value = value;
-            _flags = _flags.copyWith(isKeyboardKey: DartRuntimePrimitives.RequireValue(__value));
+            _flags = _flags.copyWith(isKeyboardKey: (__value));
             _hasBeenAnnotated = true;
         }
     }
@@ -5152,7 +5205,7 @@ public class SemanticsConfiguration
         set
         {
             var __value = value;
-            _flags = _flags.copyWith(isHidden: DartRuntimePrimitives.RequireValue(__value));
+            _flags = _flags.copyWith(isHidden: (__value));
             _hasBeenAnnotated = true;
         }
     }
@@ -5162,7 +5215,7 @@ public class SemanticsConfiguration
         set
         {
             var __value = value;
-            _flags = _flags.copyWith(isTextField: DartRuntimePrimitives.RequireValue(__value));
+            _flags = _flags.copyWith(isTextField: (__value));
             _hasBeenAnnotated = true;
         }
     }
@@ -5172,7 +5225,7 @@ public class SemanticsConfiguration
         set
         {
             var __value = value;
-            _flags = _flags.copyWith(isReadOnly: DartRuntimePrimitives.RequireValue(__value));
+            _flags = _flags.copyWith(isReadOnly: (__value));
             _hasBeenAnnotated = true;
         }
     }
@@ -5182,7 +5235,7 @@ public class SemanticsConfiguration
         set
         {
             var __value = value;
-            _flags = _flags.copyWith(isObscured: DartRuntimePrimitives.RequireValue(__value));
+            _flags = _flags.copyWith(isObscured: (__value));
             _hasBeenAnnotated = true;
         }
     }
@@ -5192,7 +5245,7 @@ public class SemanticsConfiguration
         set
         {
             var __value = value;
-            _flags = _flags.copyWith(isMultiline: DartRuntimePrimitives.RequireValue(__value));
+            _flags = _flags.copyWith(isMultiline: (__value));
             _hasBeenAnnotated = true;
         }
     }
@@ -5212,9 +5265,7 @@ public class SemanticsConfiguration
         set
         {
             var __value = value;
-            _flags = _flags.copyWith(
-                hasImplicitScrolling: DartRuntimePrimitives.RequireValue(__value)
-            );
+            _flags = _flags.copyWith(hasImplicitScrolling: (__value));
             _hasBeenAnnotated = true;
         }
     }
@@ -5279,7 +5330,7 @@ public class SemanticsConfiguration
         set
         {
             var __value = value;
-            _validationResult = DartRuntimePrimitives.RequireValue(__value);
+            _validationResult = (__value);
             _hasBeenAnnotated = true;
         }
     }
@@ -5289,7 +5340,7 @@ public class SemanticsConfiguration
         set
         {
             var __value = value;
-            _hitTestBehavior = DartRuntimePrimitives.RequireValue(__value);
+            _hitTestBehavior = (__value);
             _hasBeenAnnotated = true;
         }
     }
@@ -5299,7 +5350,7 @@ public class SemanticsConfiguration
         set
         {
             var __value = value;
-            _inputType = DartRuntimePrimitives.RequireValue(__value);
+            _inputType = (__value);
             _hasBeenAnnotated = true;
         }
     }
@@ -5639,12 +5690,11 @@ public static partial class SemanticsLibrary
         }
         if ((!Equals(thisTextDirection, otherTextDirection)) && (otherTextDirection is not null))
         {
-            TextDirection otherTextDirection__value266687 = DartRuntimePrimitives.RequireValue(
+            TextDirection otherTextDirection__value266687 = (
                 otherTextDirection
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
-            AttributedString directionEmbedding = DartRuntimePrimitives.RequireValue(
-                otherTextDirection__value266687
-            ) switch
+            AttributedString directionEmbedding = (otherTextDirection__value266687) switch
             {
                 TextDirection.rtl => new AttributedString(Unicode.RLE),
                 TextDirection.ltr => new AttributedString(Unicode.LRE),
@@ -5756,7 +5806,12 @@ public static partial class SemanticsLibrary
         {
             return Tristate.none;
         }
-        if (DartRuntimePrimitives.RequireValue(value))
+        if (
+            (
+                value
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        )
         {
             return Tristate.isTrue;
         }

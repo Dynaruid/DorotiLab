@@ -58,22 +58,36 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
 
     public virtual double minScrollExtent =>
         DartRuntimePrimitives.ConvertValue<double>(
-            DartRuntimePrimitives.RequireValue(_minScrollExtent)
+            (
+                _minScrollExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
     public virtual double maxScrollExtent =>
         DartRuntimePrimitives.ConvertValue<double>(
-            DartRuntimePrimitives.RequireValue(_maxScrollExtent)
+            (
+                _maxScrollExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
     public virtual bool hasContentDimensions =>
         DartRuntimePrimitives.ConvertValue<bool>(
             (_minScrollExtent is not null) && (_maxScrollExtent is not null)
         );
     public override double pixels =>
-        DartRuntimePrimitives.ConvertValue<double>(DartRuntimePrimitives.RequireValue(_pixels));
+        DartRuntimePrimitives.ConvertValue<double>(
+            (
+                _pixels
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        );
     public override bool hasPixels => DartRuntimePrimitives.ConvertValue<bool>(_pixels is not null);
     public virtual double viewportDimension =>
         DartRuntimePrimitives.ConvertValue<double>(
-            DartRuntimePrimitives.RequireValue(_viewportDimension)
+            (
+                _viewportDimension
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
     public virtual bool hasViewportDimension =>
         DartRuntimePrimitives.ConvertValue<bool>(_viewportDimension is not null);
@@ -181,7 +195,11 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
                 (object?)
                     "An initial pixels value must exist by calling correctPixels on the ScrollPosition"
         );
-        _pixels = DartRuntimePrimitives.RequireValue(_pixels) + correction;
+        _pixels =
+            (
+                _pixels
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) + correction;
         _didChangeViewportDimensionOrReceiveCorrection = true;
     }
 
@@ -213,12 +231,13 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
                 PageStorage.maybeOf(context.storageContext)?.readState(context.storageContext);
             if (value is not null)
             {
-                double value__23743__value23862 = DartRuntimePrimitives.RequireValue(value);
-                correctPixels(
-                    DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(value__23743__value23862)
+                double value__23743__value23862 = (
+                    value
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
                     )
                 );
+                correctPixels(((value__23743__value23862)));
             }
         }
     }
@@ -491,18 +510,12 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
         {
             return;
         }
-        if (Equals(DartRuntimePrimitives.RequireValue(duration), Duration.zero))
+        if (Equals((duration), Duration.zero))
         {
             jumpTo(target);
             return;
         }
-        await animateTo(
-            target,
-            duration: DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(duration)
-            ),
-            curve: curve
-        );
+        await animateTo(target, duration: ((duration)), curve: curve);
         return;
     }
 
@@ -521,7 +534,12 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
         // through ViewportOffset supplies null; Dart selects this override's true.
         clamp ??= true;
         DartRuntimePrimitives.Assert(() => clamp is not null);
-        if (DartRuntimePrimitives.RequireValue(clamp))
+        if (
+            (
+                clamp
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        )
         {
             to = Dart_uiLibrary.clampDouble(to, minScrollExtent, maxScrollExtent);
         }
@@ -710,8 +728,7 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Axis axis =>
-        Basic_typesLibrary.axisDirectionToAxis(DartRuntimePrimitives.RequireValue(axisDirection));
+    public virtual Axis axis => Basic_typesLibrary.axisDirectionToAxis((axisDirection));
     public virtual bool outOfRange =>
         DartRuntimePrimitives.ConvertValue<bool>(
             (pixels < minScrollExtent) || (pixels > maxScrollExtent)

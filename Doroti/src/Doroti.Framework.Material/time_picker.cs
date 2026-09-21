@@ -1297,7 +1297,10 @@ public class _RenderInputPadding__time_picker : RenderShiftedBox
         Size drySize = getDryLayout(constraints);
         Size childSize = childLocal.getDryLayout(constraints);
         Offset childOffset = Alignment.center.alongOffset(drySize - childSize);
-        return DartRuntimePrimitives.RequireValue(result) + childOffset.dy;
+        return (
+                result
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) + childOffset.dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1968,11 +1971,27 @@ public class _DialState__time_picker
         setState(() =>
         {
             Offset offset =
-                DartRuntimePrimitives.RequireValue(_position)
-                - DartRuntimePrimitives.RequireValue(_center);
+                (
+                    _position
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+                - (
+                    _center
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
             double labelRadius =
-                (DartRuntimePrimitives.RequireValue(_dialSize).shortestSide / 2L)
-                - Time_pickerLibrary._kTimePickerDialPadding;
+                (
+                    (
+                        _dialSize
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).shortestSide / 2L
+                ) - Time_pickerLibrary._kTimePickerDialPadding;
             double innerRadius = labelRadius - Time_pickerLibrary._kTimePickerInnerDialOffset;
             double angle =
                 (Dart_mathLibrary.atan2(offset.dx, offset.dy) - (Dart_mathLibrary.pi / 2L))
@@ -2024,14 +2043,21 @@ public class _DialState__time_picker
         var box = ((RenderBox?)context.findRenderObject()!)!;
         _position = box.globalToLocal(details.globalPosition);
         _dialSize = box.size;
-        _center = DartRuntimePrimitives.RequireValue(_dialSize).center(Offset.zero);
+        _center = (
+            _dialSize
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        ).center(Offset.zero);
         _updateThetaForPan();
         _notifyOnChangedIfNeeded();
     }
 
     internal virtual void _handlePanUpdate(Gestures.DragUpdateDetails details)
     {
-        _position = DartRuntimePrimitives.RequireValue(_position) + details.delta;
+        _position =
+            (
+                _position
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) + details.delta;
         _updateThetaForPan();
         _notifyOnChangedIfNeeded();
     }
@@ -2612,34 +2638,88 @@ internal class _TimePickerInputState__time_picker
         }
         if (MediaQuery.alwaysUse24HourFormatOf(context))
         {
-            if ((newHour >= 0L) && (DartRuntimePrimitives.RequireValue(newHour) < 24L))
+            if (
+                (newHour >= 0L)
+                && (
+                    (
+                        newHour
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) < 24L
+                )
+            )
             {
-                return DartRuntimePrimitives.RequireValue(newHour);
+                return (
+                    newHour
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
             }
         }
         else
         {
             if (
-                (DartRuntimePrimitives.RequireValue(newHour) > 0L)
-                && (DartRuntimePrimitives.RequireValue(newHour) < 13L)
+                (
+                    (
+                        newHour
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
+                && (
+                    (
+                        newHour
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) < 13L
+                )
             )
             {
                 if (
                     (
                         Equals(_selectedTime.value.period, DayPeriod.pm)
-                        && (DartRuntimePrimitives.RequireValue(newHour) != 12L)
+                        && (
+                            (
+                                newHour
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ) != 12L
+                        )
                     )
                     || (
                         Equals(_selectedTime.value.period, DayPeriod.am)
-                        && (DartRuntimePrimitives.RequireValue(newHour) == 12L)
+                        && (
+                            (
+                                newHour
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ) == 12L
+                        )
                     )
                 )
                 {
                     newHour =
-                        (DartRuntimePrimitives.RequireValue(newHour) + TimeOfDay.hoursPerPeriod)
-                        % TimeOfDay.hoursPerDay;
+                        (
+                            (
+                                newHour
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ) + TimeOfDay.hoursPerPeriod
+                        ) % TimeOfDay.hoursPerDay;
                 }
-                return DartRuntimePrimitives.RequireValue(newHour);
+                return (
+                    newHour
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
             }
         }
         return null;
@@ -2659,9 +2739,22 @@ internal class _TimePickerInputState__time_picker
         {
             return null;
         }
-        if ((newMinute >= 0L) && (DartRuntimePrimitives.RequireValue(newMinute) < 60L))
+        if (
+            (newMinute >= 0L)
+            && (
+                (
+                    newMinute
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) < 60L
+            )
+        )
         {
-            return DartRuntimePrimitives.RequireValue(newMinute);
+            return (
+                newMinute
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2672,11 +2765,12 @@ internal class _TimePickerInputState__time_picker
         long? newHour = _parseHour(value);
         if (newHour is not null)
         {
-            long newHour__62523__value62560 = DartRuntimePrimitives.RequireValue(newHour);
+            long newHour__62523__value62560 = (
+                newHour
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             _selectedTime.value = new TimeOfDay(
-                hour: DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(newHour__62523__value62560)
-                ),
+                hour: ((newHour__62523__value62560)),
                 minute: _selectedTime.value.minute
             );
             _TimePickerModel__time_picker.setSelectedTime(context, _selectedTime.value);
@@ -2689,7 +2783,10 @@ internal class _TimePickerInputState__time_picker
         long? newHour = _parseHour(value);
         if ((newHour is not null) && (value.Length == 2L))
         {
-            long newHour__62852__value62889 = DartRuntimePrimitives.RequireValue(newHour);
+            long newHour__62852__value62889 = (
+                newHour
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             FocusScope.of(context).nextFocus();
         }
     }
@@ -2699,7 +2796,10 @@ internal class _TimePickerInputState__time_picker
         long? newMinute = _parseMinute(value);
         if (newMinute is not null)
         {
-            long newMinute__63120__value63161 = DartRuntimePrimitives.RequireValue(newMinute);
+            long newMinute__63120__value63161 = (
+                newMinute
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             _selectedTime.value = new TimeOfDay(
                 hour: _selectedTime.value.hour,
                 minute: long.Parse(value!, System.Globalization.CultureInfo.InvariantCulture)
@@ -4482,9 +4582,7 @@ internal class _TimePickerDialogState__time_picker
                                                                 hourLabelText: widget.hourLabelText,
                                                                 minuteLabelText: widget.minuteLabelText,
                                                                 restorationId: "time_picker",
-                                                                entryMode: DartRuntimePrimitives.RequireValue(
-                                                                    _entryMode.value
-                                                                ),
+                                                                entryMode: (_entryMode.value),
                                                                 orientation: widget.orientation,
                                                                 onEntryModeChanged: _handleEntryModeChanged,
                                                                 switchToInputEntryModeIcon: widget.switchToInputEntryModeIcon,
@@ -5154,9 +5252,7 @@ internal class _TimePickerState__time_picker
                             child: new AspectRatio(
                                 aspectRatio: 1,
                                 child: new _Dial__time_picker(
-                                    hourMinuteMode: DartRuntimePrimitives.RequireValue(
-                                        _hourMinuteMode.value
-                                    ),
+                                    hourMinuteMode: (_hourMinuteMode.value),
                                     hourDialType: hourMode,
                                     selectedTime: _selectedTime.value,
                                     onChanged: _handleTimeChanged,
@@ -5275,7 +5371,7 @@ internal class _TimePickerState__time_picker
         return new _TimePickerModel__time_picker(
             entryMode: widget.entryMode,
             selectedTime: _selectedTime.value,
-            hourMinuteMode: DartRuntimePrimitives.RequireValue(_hourMinuteMode.value),
+            hourMinuteMode: (_hourMinuteMode.value),
             orientation: orientationLocal,
             onHourMinuteModeChanged: _handleHourMinuteModeChanged,
             onHourDoubleTapped: () => _handleHourDoubleTapped(),

@@ -60,10 +60,7 @@ public class BorderSide : Diagnosticable
         return new BorderSide(
             color: a.color,
             width: a.width + b.width,
-            strokeAlign: Math.Max(
-                DartRuntimePrimitives.RequireValue(a.strokeAlign),
-                DartRuntimePrimitives.RequireValue(b.strokeAlign)
-            ),
+            strokeAlign: Math.Max((a.strokeAlign), (b.strokeAlign)),
             style: a.style
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -160,10 +157,11 @@ public class BorderSide : Diagnosticable
         {
             return b;
         }
-        double widthLocal = DartRuntimePrimitives.RequireValue(
+        double widthLocal = (
             Dart_uiLibrary.lerpDouble(a.width, b.width, t)
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
-        if (DartRuntimePrimitives.RequireValue(widthLocal) < 0.0)
+        if ((widthLocal) < 0.0)
         {
             return none;
         }
@@ -171,9 +169,9 @@ public class BorderSide : Diagnosticable
         {
             return new BorderSide(
                 color: Dart_uiLibrary.Color.lerp(a.color, b.color, t)!,
-                width: DartRuntimePrimitives.RequireValue(widthLocal),
+                width: (widthLocal),
                 style: a.style,
-                strokeAlign: DartRuntimePrimitives.RequireValue(a.strokeAlign)
+                strokeAlign: (a.strokeAlign)
             );
         }
         Color colorA = a.style switch
@@ -192,20 +190,19 @@ public class BorderSide : Diagnosticable
         {
             return new BorderSide(
                 color: Dart_uiLibrary.Color.lerp(colorA, colorB, t)!,
-                width: DartRuntimePrimitives.RequireValue(widthLocal),
-                strokeAlign: DartRuntimePrimitives.RequireValue(
-                    Dart_uiLibrary.lerpDouble(
-                        DartRuntimePrimitives.RequireValue(a.strokeAlign),
-                        DartRuntimePrimitives.RequireValue(b.strokeAlign),
-                        t
+                width: (widthLocal),
+                strokeAlign: (
+                    Dart_uiLibrary.lerpDouble((a.strokeAlign), (b.strokeAlign), t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
                     )
                 )
             );
         }
         return new BorderSide(
             color: Dart_uiLibrary.Color.lerp(colorA, colorB, t)!,
-            width: DartRuntimePrimitives.RequireValue(widthLocal),
-            strokeAlign: DartRuntimePrimitives.RequireValue(a.strokeAlign)
+            width: (widthLocal),
+            strokeAlign: (a.strokeAlign)
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -238,12 +235,7 @@ public class BorderSide : Diagnosticable
     }
 
     public override int GetHashCode() =>
-        FoundationRuntimePorts.ObjectHash(
-            color,
-            width,
-            style,
-            DartRuntimePrimitives.RequireValue(strokeAlign)
-        );
+        FoundationRuntimePorts.ObjectHash(color, width, style, (strokeAlign));
 
     public virtual string toStringShort() => "BorderSide";
 
@@ -255,11 +247,7 @@ public class BorderSide : Diagnosticable
         );
         properties.add(new DoubleProperty("width", width, defaultValue: 1.0));
         properties.add(
-            new DoubleProperty(
-                "strokeAlign",
-                DartRuntimePrimitives.RequireValue(strokeAlign),
-                defaultValue: strokeAlignInside
-            )
+            new DoubleProperty("strokeAlign", (strokeAlign), defaultValue: strokeAlignInside)
         );
         properties.add(
             new EnumProperty<BorderStyle>("style", style, defaultValue: BorderStyle.solid)

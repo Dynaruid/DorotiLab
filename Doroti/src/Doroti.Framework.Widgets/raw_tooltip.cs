@@ -76,7 +76,12 @@ public class TooltipPositionContext
                 target,
                 targetSize,
                 tooltipSize,
-                DartRuntimePrimitives.RequireValue(overlaySize),
+                (
+                    overlaySize
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 verticalOffset,
                 preferBelow
             )
@@ -240,18 +245,10 @@ public class RawTooltip : StatefulWidget
             new DiagnosticsProperty<Duration>("hover delay", hoverDelay, defaultValue: null)
         );
         properties.add(
-            new DiagnosticsProperty<Duration>(
-                "touch delay",
-                DartRuntimePrimitives.RequireValue(touchDelay),
-                defaultValue: null
-            )
+            new DiagnosticsProperty<Duration>("touch delay", (touchDelay), defaultValue: null)
         );
         properties.add(
-            new DiagnosticsProperty<Duration>(
-                "dismiss delay",
-                DartRuntimePrimitives.RequireValue(dismissDelay),
-                defaultValue: null
-            )
+            new DiagnosticsProperty<Duration>("dismiss delay", (dismissDelay), defaultValue: null)
         );
         properties.add(
             new DiagnosticsProperty<TooltipTriggerMode>(
@@ -370,7 +367,12 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
                 (touchDelay is null)
                     ? null
                     : new Timer(
-                        DartRuntimePrimitives.RequireValue(touchDelay),
+                        (
+                            touchDelay
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
                         () =>
                         {
                             _ = ((Func<double?, Scheduler.TickerFuture>)_controller.reverse)(
@@ -556,7 +558,7 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
         {
             return;
         }
-        _scheduleDismissTooltip(withDelay: DartRuntimePrimitives.RequireValue(widget.touchDelay));
+        _scheduleDismissTooltip(withDelay: (widget.touchDelay));
     }
 
     internal virtual void _handleMouseEnter(Gestures.PointerEnterEvent @event)

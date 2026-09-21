@@ -39,9 +39,8 @@ public class StarBorder : OutlinedBorder
         this.pointRounding = pointRounding;
         this.valleyRounding = valleyRounding;
         this.squash = squash;
-        _rotationRadians =
-            DartRuntimePrimitives.RequireValue(rotation) * Star_borderLibrary._kDegToRad;
-        _innerRadiusRatio = DartRuntimePrimitives.RequireValue(innerRadiusRatio);
+        _rotationRadians = (rotation) * Star_borderLibrary._kDegToRad;
+        _innerRadiusRatio = (innerRadiusRatio);
         System.Diagnostics.Debug.Assert(squash >= 0L);
         System.Diagnostics.Debug.Assert(squash <= 1L);
         System.Diagnostics.Debug.Assert(pointRounding >= 0L);
@@ -75,8 +74,7 @@ public class StarBorder : OutlinedBorder
         __instance.squash = squash;
         __instance.points = sides;
         __instance.valleyRounding = 0;
-        __instance._rotationRadians =
-            DartRuntimePrimitives.RequireValue(rotation) * Star_borderLibrary._kDegToRad;
+        __instance._rotationRadians = (rotation) * Star_borderLibrary._kDegToRad;
         __instance._innerRadiusRatio = null;
         return __instance;
     }
@@ -135,23 +133,41 @@ public class StarBorder : OutlinedBorder
             StarBorder a__as7561 = (StarBorder)a;
             return new StarBorder(
                 side: BorderSide.lerp(a__as7561.side, side, t),
-                points: DartRuntimePrimitives.RequireValue(
+                points: (
                     Dart_uiLibrary.lerpDouble(a__as7561.points, points, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 ),
-                rotation: DartRuntimePrimitives.RequireValue(
+                rotation: (
                     Dart_uiLibrary.lerpDouble(a__as7561._rotationRadians, _rotationRadians, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 ) * Star_borderLibrary._kRadToDeg,
-                innerRadiusRatio: DartRuntimePrimitives.RequireValue(
+                innerRadiusRatio: (
                     Dart_uiLibrary.lerpDouble(a__as7561.innerRadiusRatio, innerRadiusRatio, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 ),
-                pointRounding: DartRuntimePrimitives.RequireValue(
+                pointRounding: (
                     Dart_uiLibrary.lerpDouble(a__as7561.pointRounding, pointRounding, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 ),
-                valleyRounding: DartRuntimePrimitives.RequireValue(
+                valleyRounding: (
                     Dart_uiLibrary.lerpDouble(a__as7561.valleyRounding, valleyRounding, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 ),
-                squash: DartRuntimePrimitives.RequireValue(
+                squash: (
                     Dart_uiLibrary.lerpDouble(a__as7561.squash, squash, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 )
             );
         }
@@ -160,51 +176,81 @@ public class StarBorder : OutlinedBorder
             CircleBorder a__as8105 = (CircleBorder)a;
             if (points >= 2.5)
             {
-                double lerpedPoints = DartRuntimePrimitives.RequireValue(
+                double lerpedPoints = (
                     Dart_uiLibrary.lerpDouble(points.round(), points, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
                 return new StarBorder(
                     side: BorderSide.lerp(a__as8105.side, side, t),
                     points: lerpedPoints,
-                    squash: DartRuntimePrimitives.RequireValue(
+                    squash: (
                         Dart_uiLibrary.lerpDouble(a__as8105.eccentricity, squash, t)
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     ),
                     rotation: rotation,
-                    innerRadiusRatio: DartRuntimePrimitives.RequireValue(
+                    innerRadiusRatio: (
                         Dart_uiLibrary.lerpDouble(
                             Dart_mathLibrary.cos(Dart_mathLibrary.pi / lerpedPoints),
                             innerRadiusRatio,
                             t
                         )
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     ),
-                    pointRounding: DartRuntimePrimitives.RequireValue(
+                    pointRounding: (
                         Dart_uiLibrary.lerpDouble(1.0, pointRounding, t)
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     ),
-                    valleyRounding: DartRuntimePrimitives.RequireValue(
+                    valleyRounding: (
                         Dart_uiLibrary.lerpDouble(0.0, valleyRounding, t)
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     )
                 );
             }
             else
             {
-                double lerpedPointsLocal = DartRuntimePrimitives.RequireValue(
+                double lerpedPointsLocal = (
                     Dart_uiLibrary.lerpDouble(points, 2L, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
                 return new StarBorder(
                     side: BorderSide.lerp(a__as8105.side, side, t),
                     points: lerpedPointsLocal,
-                    squash: DartRuntimePrimitives.RequireValue(
+                    squash: (
                         Dart_uiLibrary.lerpDouble(a__as8105.eccentricity, squash, t)
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     ),
                     rotation: rotation,
-                    innerRadiusRatio: DartRuntimePrimitives.RequireValue(
+                    innerRadiusRatio: (
                         Dart_uiLibrary.lerpDouble(1L, innerRadiusRatio, t)
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     ),
-                    pointRounding: DartRuntimePrimitives.RequireValue(
+                    pointRounding: (
                         Dart_uiLibrary.lerpDouble(0.5, pointRounding, t)
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     ),
-                    valleyRounding: DartRuntimePrimitives.RequireValue(
+                    valleyRounding: (
                         Dart_uiLibrary.lerpDouble(0.5, valleyRounding, t)
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     )
                 );
             }
@@ -265,23 +311,41 @@ public class StarBorder : OutlinedBorder
             StarBorder b__as10562 = (StarBorder)b;
             return new StarBorder(
                 side: BorderSide.lerp(side, b__as10562.side, t),
-                points: DartRuntimePrimitives.RequireValue(
+                points: (
                     Dart_uiLibrary.lerpDouble(points, b__as10562.points, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 ),
-                rotation: DartRuntimePrimitives.RequireValue(
+                rotation: (
                     Dart_uiLibrary.lerpDouble(_rotationRadians, b__as10562._rotationRadians, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 ) * Star_borderLibrary._kRadToDeg,
-                innerRadiusRatio: DartRuntimePrimitives.RequireValue(
+                innerRadiusRatio: (
                     Dart_uiLibrary.lerpDouble(innerRadiusRatio, b__as10562.innerRadiusRatio, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 ),
-                pointRounding: DartRuntimePrimitives.RequireValue(
+                pointRounding: (
                     Dart_uiLibrary.lerpDouble(pointRounding, b__as10562.pointRounding, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 ),
-                valleyRounding: DartRuntimePrimitives.RequireValue(
+                valleyRounding: (
                     Dart_uiLibrary.lerpDouble(valleyRounding, b__as10562.valleyRounding, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 ),
-                squash: DartRuntimePrimitives.RequireValue(
+                squash: (
                     Dart_uiLibrary.lerpDouble(squash, b__as10562.squash, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 )
             );
         }
@@ -290,51 +354,81 @@ public class StarBorder : OutlinedBorder
             CircleBorder b__as11105 = (CircleBorder)b;
             if (points >= 2.5)
             {
-                double lerpedPoints = DartRuntimePrimitives.RequireValue(
+                double lerpedPoints = (
                     Dart_uiLibrary.lerpDouble(points, points.round(), t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
                 return new StarBorder(
                     side: BorderSide.lerp(side, b__as11105.side, t),
                     points: lerpedPoints,
-                    squash: DartRuntimePrimitives.RequireValue(
+                    squash: (
                         Dart_uiLibrary.lerpDouble(squash, b__as11105.eccentricity, t)
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     ),
                     rotation: rotation,
-                    innerRadiusRatio: DartRuntimePrimitives.RequireValue(
+                    innerRadiusRatio: (
                         Dart_uiLibrary.lerpDouble(
                             innerRadiusRatio,
                             Dart_mathLibrary.cos(Dart_mathLibrary.pi / lerpedPoints),
                             t
                         )
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     ),
-                    pointRounding: DartRuntimePrimitives.RequireValue(
+                    pointRounding: (
                         Dart_uiLibrary.lerpDouble(pointRounding, 1.0, t)
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     ),
-                    valleyRounding: DartRuntimePrimitives.RequireValue(
+                    valleyRounding: (
                         Dart_uiLibrary.lerpDouble(valleyRounding, 0.0, t)
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     )
                 );
             }
             else
             {
-                double lerpedPointsLocal = DartRuntimePrimitives.RequireValue(
+                double lerpedPointsLocal = (
                     Dart_uiLibrary.lerpDouble(points, 2L, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
                 return new StarBorder(
                     side: BorderSide.lerp(side, b__as11105.side, t),
                     points: lerpedPointsLocal,
-                    squash: DartRuntimePrimitives.RequireValue(
+                    squash: (
                         Dart_uiLibrary.lerpDouble(squash, b__as11105.eccentricity, t)
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     ),
                     rotation: rotation,
-                    innerRadiusRatio: DartRuntimePrimitives.RequireValue(
+                    innerRadiusRatio: (
                         Dart_uiLibrary.lerpDouble(innerRadiusRatio, 1L, t)
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     ),
-                    pointRounding: DartRuntimePrimitives.RequireValue(
+                    pointRounding: (
                         Dart_uiLibrary.lerpDouble(pointRounding, 0.5, t)
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     ),
-                    valleyRounding: DartRuntimePrimitives.RequireValue(
+                    valleyRounding: (
                         Dart_uiLibrary.lerpDouble(valleyRounding, 0.5, t)
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     )
                 );
             }

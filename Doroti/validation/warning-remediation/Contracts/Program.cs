@@ -33,14 +33,20 @@ Check(
 );
 int? zero = 0;
 Check(
-    DartRuntimePrimitives.RequireValue(zero) == 0 && zero.Value == 0,
+    (zero ?? throw new NullReferenceException("Dart null assertion failed.")) == 0
+        && zero.Value == 0,
     "Value assertion must accept zero."
+);
+bool? falseValue = false;
+Check(
+    (falseValue ?? throw new NullReferenceException("Dart null assertion failed.")) == false,
+    "Value assertion must accept false."
 );
 foreach (
     var action in new Action[]
     {
-        () => DartRuntimePrimitives.RequireValue((int?)null),
-        () => DartRuntimePrimitives.RequireValue((string?)null),
+        () => _ = (int?)null ?? throw new NullReferenceException("Dart null assertion failed."),
+        () => _ = (string?)null ?? throw new NullReferenceException("Dart null assertion failed."),
         () => DartRuntimePrimitives.RequireReference<string?>(null),
     }
 )
@@ -57,6 +63,35 @@ foreach (
             "Preserve null assertion exception and message."
         );
     }
+}
+var evaluationCount = 0;
+int? NextRequiredValue()
+{
+    evaluationCount++;
+    return 5;
+}
+var evaluatedOnce =
+    NextRequiredValue() ?? throw new NullReferenceException("Dart null assertion failed.");
+Check(evaluatedOnce == 5 && evaluationCount == 1, "Null assertion evaluates its operand once.");
+string? delayedValue = null;
+var delayedInvocations = 0;
+Func<string> delayedAssertion = () =>
+{
+    delayedInvocations++;
+    return delayedValue ?? throw new NullReferenceException("Dart null assertion failed.");
+};
+Check(delayedInvocations == 0, "A callback null assertion remains delayed.");
+try
+{
+    _ = delayedAssertion();
+    throw new InvalidOperationException("Delayed null assertion did not throw.");
+}
+catch (NullReferenceException error)
+{
+    Check(
+        delayedInvocations == 1 && error.Message == "Dart null assertion failed.",
+        "A callback null assertion runs at invocation time."
+    );
 }
 Check(
     DartRuntimePrimitives.ConvertValue<string?>(null) is null,

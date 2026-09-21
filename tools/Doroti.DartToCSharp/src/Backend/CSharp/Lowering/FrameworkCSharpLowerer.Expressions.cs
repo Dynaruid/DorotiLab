@@ -695,7 +695,7 @@ internal sealed partial class FrameworkCSharpLowerer
                         && functionArguments.Length == 1
                     )
                     {
-                        builder.Append("DartRuntimePrimitives.RequireValue(");
+                        builder.Append("__dorotiNullAssert(");
                         LowerExpression(
                             builder,
                             functionArguments[0],
@@ -763,9 +763,7 @@ internal sealed partial class FrameworkCSharpLowerer
                         )
                     )
                     {
-                        builder.Append(
-                            "global::Doroti.Ui.Size.fromOffset(DartRuntimePrimitives.RequireValue("
-                        );
+                        builder.Append("global::Doroti.Ui.Size.fromOffset(__dorotiNullAssert(");
                         LowerExpression(
                             builder,
                             expression,
@@ -853,7 +851,7 @@ internal sealed partial class FrameworkCSharpLowerer
                             && mappedSourceType.EndsWith("?", StringComparison.Ordinal)
                         )
                         {
-                            builder.Append("DartRuntimePrimitives.RequireValue(");
+                            builder.Append("__dorotiNullAssert(");
                         }
                         LowerExpression(
                             builder,
@@ -1107,38 +1105,9 @@ internal sealed partial class FrameworkCSharpLowerer
                 {
                     break;
                 }
-                if (
-                    op == "!"
-                    && (
-                        IsValueType(
-                            MapType(node.StaticType ?? operand.StaticType ?? "object").TrimEnd('?')
-                        )
-                        || HasNullableValueStorage(
-                            operand,
-                            _session.ActiveDonorDeclaration ?? declaration
-                        )
-                    )
-                )
+                if (op == "!")
                 {
-                    builder.Append("DartRuntimePrimitives.RequireValue(");
-                    LowerExpression(
-                        builder,
-                        operand,
-                        declaration,
-                        package,
-                        library,
-                        inputPath,
-                        diagnostics
-                    );
-                    builder.Append(')');
-                }
-                else if (
-                    op == "!"
-                    && operand.Kind == CoreNodeKind.SimpleIdentifier
-                    && operand.Text(CoreProperty.name) == "state"
-                )
-                {
-                    builder.Append("DartRuntimePrimitives.RequireValue(");
+                    builder.Append("__dorotiNullAssert(");
                     LowerExpression(
                         builder,
                         operand,
@@ -1536,10 +1505,7 @@ internal sealed partial class FrameworkCSharpLowerer
                 && NeedsNullableValuePromotion(node, owningDeclaration)
             )
             {
-                builder
-                    .Append("DartRuntimePrimitives.RequireValue(")
-                    .Append(emittedName)
-                    .Append(')');
+                builder.Append("__dorotiNullAssert(").Append(emittedName).Append(')');
             }
             else
             {
@@ -1856,10 +1822,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (!_session.EmittingAssignmentLeft && NeedsNullableValuePromotion(node, declaration))
         {
-            builder
-                .Append("DartRuntimePrimitives.RequireValue(")
-                .Append(SafeIdentifier(name))
-                .Append(')');
+            builder.Append("__dorotiNullAssert(").Append(SafeIdentifier(name)).Append(')');
             return;
         }
         if (
@@ -2764,7 +2727,7 @@ internal sealed partial class FrameworkCSharpLowerer
         )
         {
             LowerAssignmentTarget();
-            builder.Append(" = DartRuntimePrimitives.RequireValue(");
+            builder.Append(" = __dorotiNullAssert(");
             LowerExpression(builder, right, declaration, package, library, inputPath, diagnostics);
             builder.Append(')');
             return;
@@ -2839,7 +2802,7 @@ internal sealed partial class FrameworkCSharpLowerer
             {
                 _session.EmittingAssignmentLeft = false;
             }
-            builder.Append(" = DartRuntimePrimitives.RequireValue(");
+            builder.Append(" = __dorotiNullAssert(");
             LowerExpression(builder, right, declaration, package, library, inputPath, diagnostics);
             builder.Append(')');
             return;

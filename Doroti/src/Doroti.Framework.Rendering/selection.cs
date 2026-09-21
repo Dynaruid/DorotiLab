@@ -329,7 +329,7 @@ public class SelectionGeometry : Diagnosticable
         this.hasContent = hasContent;
         System.Diagnostics.Debug.Assert(
             ((startSelectionPoint is null) && (endSelectionPoint is null))
-                || (!Equals(DartRuntimePrimitives.RequireValue(status), SelectionStatus.none))
+                || (!Equals((status), SelectionStatus.none))
         );
     }
 

@@ -426,7 +426,17 @@ internal class _AccountDetailsLayout__user_accounts_drawer_header : MultiChildLa
                 dropdownIcon,
                 _offsetForIcon(
                     size,
-                    DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(iconSize))
+                    (
+                        (
+                            iconSize
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
             );
         }
@@ -439,7 +449,13 @@ internal class _AccountDetailsLayout__user_accounts_drawer_header : MultiChildLa
                 (iconSize is null)
                     ? size
                     : new Size(
-                        size.width - DartRuntimePrimitives.RequireValue(iconSize).width,
+                        size.width
+                            - (
+                                iconSize
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ).width,
                         size.height
                     );
             iconSize ??= new Size(
@@ -452,7 +468,17 @@ internal class _AccountDetailsLayout__user_accounts_drawer_header : MultiChildLa
             );
             Offset bottomLineOffset = _offsetForBottomLine(
                 size,
-                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(iconSize)),
+                (
+                    (
+                        iconSize
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 bottomLineSize
             );
             positionChild(bottomLine, bottomLineOffset);

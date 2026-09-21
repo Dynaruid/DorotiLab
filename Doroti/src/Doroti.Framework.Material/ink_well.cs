@@ -78,8 +78,18 @@ public abstract class InteractiveInkFeature : InkFeature
         else
         {
             canvas.translate(
-                DartRuntimePrimitives.RequireValue(originOffset).dx,
-                DartRuntimePrimitives.RequireValue(originOffset).dy
+                (
+                    originOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).dx,
+                (
+                    originOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).dy
             );
         }
         if (clipCallback is not null)
@@ -1144,7 +1154,7 @@ public class _InkResponseState__ink_well
         foreach (_HighlightType__ink_well highlight in _highlights.Keys)
         {
             _highlights.GetValueOrDefault(highlight)?.dispose();
-            _highlights[DartRuntimePrimitives.RequireValue(highlight)] = null;
+            _highlights[(highlight)] = null;
         }
         widget.parentState?.markChildInkResponsePressed(this, false);
         if (_keepAliveHandle is not null)

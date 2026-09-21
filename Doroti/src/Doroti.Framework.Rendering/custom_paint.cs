@@ -184,11 +184,24 @@ public class RenderCustomPaint : RenderProxyBox
         set
         {
             var __value = value;
-            if (Equals(preferredSize, DartRuntimePrimitives.RequireValue(__value)))
+            if (
+                Equals(
+                    preferredSize,
+                    (
+                        __value
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
+            )
             {
                 return;
             }
-            _preferredSize = DartRuntimePrimitives.RequireValue(__value);
+            _preferredSize = (
+                __value
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             markNeedsLayout();
         }
     }
@@ -607,7 +620,10 @@ public class RenderCustomPaint : RenderProxyBox
         var configLocal = new SemanticsConfiguration();
         if (propertiesLocal.role is not null)
         {
-            configLocal.role = DartRuntimePrimitives.RequireValue(propertiesLocal.role);
+            configLocal.role = (
+                propertiesLocal.role
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (propertiesLocal.sortKey is not null)
         {
@@ -623,11 +639,17 @@ public class RenderCustomPaint : RenderProxyBox
         }
         if (propertiesLocal.selected is not null)
         {
-            configLocal.isSelected = DartRuntimePrimitives.RequireValue(propertiesLocal.selected);
+            configLocal.isSelected = (
+                propertiesLocal.selected
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (propertiesLocal.button is not null)
         {
-            configLocal.isButton = DartRuntimePrimitives.RequireValue(propertiesLocal.button);
+            configLocal.isButton = (
+                propertiesLocal.button
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (propertiesLocal.expanded is not null)
         {
@@ -635,7 +657,10 @@ public class RenderCustomPaint : RenderProxyBox
         }
         if (propertiesLocal.link is not null)
         {
-            configLocal.isLink = DartRuntimePrimitives.RequireValue(propertiesLocal.link);
+            configLocal.isLink = (
+                propertiesLocal.link
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (propertiesLocal.linkUrl is not null)
         {
@@ -643,25 +668,38 @@ public class RenderCustomPaint : RenderProxyBox
         }
         if (propertiesLocal.textField is not null)
         {
-            configLocal.isTextField = DartRuntimePrimitives.RequireValue(propertiesLocal.textField);
+            configLocal.isTextField = (
+                propertiesLocal.textField
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (propertiesLocal.slider is not null)
         {
-            configLocal.isSlider = DartRuntimePrimitives.RequireValue(propertiesLocal.slider);
+            configLocal.isSlider = (
+                propertiesLocal.slider
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (propertiesLocal.keyboardKey is not null)
         {
-            configLocal.isKeyboardKey = DartRuntimePrimitives.RequireValue(
+            configLocal.isKeyboardKey = (
                 propertiesLocal.keyboardKey
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
         }
         if (propertiesLocal.readOnly is not null)
         {
-            configLocal.isReadOnly = DartRuntimePrimitives.RequireValue(propertiesLocal.readOnly);
+            configLocal.isReadOnly = (
+                propertiesLocal.readOnly
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (propertiesLocal.focusable is not null)
         {
-            configLocal.isFocusable = DartRuntimePrimitives.RequireValue(propertiesLocal.focusable);
+            configLocal.isFocusable = (
+                propertiesLocal.focusable
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (propertiesLocal.focused is not null)
         {
@@ -669,8 +707,9 @@ public class RenderCustomPaint : RenderProxyBox
         }
         if (propertiesLocal.accessibilityFocusBlockType is not null)
         {
-            configLocal.accessibilityFocusBlockType = DartRuntimePrimitives.RequireValue(
+            configLocal.accessibilityFocusBlockType = (
                 propertiesLocal.accessibilityFocusBlockType
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
         }
         if (propertiesLocal.enabled is not null)
@@ -679,45 +718,66 @@ public class RenderCustomPaint : RenderProxyBox
         }
         if (propertiesLocal.inMutuallyExclusiveGroup is not null)
         {
-            configLocal.isInMutuallyExclusiveGroup = DartRuntimePrimitives.RequireValue(
+            configLocal.isInMutuallyExclusiveGroup = (
                 propertiesLocal.inMutuallyExclusiveGroup
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
         }
         if (propertiesLocal.obscured is not null)
         {
-            configLocal.isObscured = DartRuntimePrimitives.RequireValue(propertiesLocal.obscured);
+            configLocal.isObscured = (
+                propertiesLocal.obscured
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (propertiesLocal.multiline is not null)
         {
-            configLocal.isMultiline = DartRuntimePrimitives.RequireValue(propertiesLocal.multiline);
+            configLocal.isMultiline = (
+                propertiesLocal.multiline
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (propertiesLocal.hidden is not null)
         {
-            configLocal.isHidden = DartRuntimePrimitives.RequireValue(propertiesLocal.hidden);
+            configLocal.isHidden = (
+                propertiesLocal.hidden
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (propertiesLocal.header is not null)
         {
-            configLocal.isHeader = DartRuntimePrimitives.RequireValue(propertiesLocal.header);
+            configLocal.isHeader = (
+                propertiesLocal.header
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (propertiesLocal.headingLevel is not null)
         {
-            configLocal.headingLevel = DartRuntimePrimitives.RequireValue(
+            configLocal.headingLevel = (
                 propertiesLocal.headingLevel
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
         }
         if (propertiesLocal.scopesRoute is not null)
         {
-            configLocal.scopesRoute = DartRuntimePrimitives.RequireValue(
+            configLocal.scopesRoute = (
                 propertiesLocal.scopesRoute
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
         }
         if (propertiesLocal.namesRoute is not null)
         {
-            configLocal.namesRoute = DartRuntimePrimitives.RequireValue(propertiesLocal.namesRoute);
+            configLocal.namesRoute = (
+                propertiesLocal.namesRoute
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (propertiesLocal.liveRegion is not null)
         {
-            configLocal.liveRegion = DartRuntimePrimitives.RequireValue(propertiesLocal.liveRegion);
+            configLocal.liveRegion = (
+                propertiesLocal.liveRegion
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (propertiesLocal.isRequired is not null)
         {
@@ -737,7 +797,10 @@ public class RenderCustomPaint : RenderProxyBox
         }
         if (propertiesLocal.image is not null)
         {
-            configLocal.isImage = DartRuntimePrimitives.RequireValue(propertiesLocal.image);
+            configLocal.isImage = (
+                propertiesLocal.image
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (propertiesLocal.label is not null)
         {
@@ -801,13 +864,17 @@ public class RenderCustomPaint : RenderProxyBox
         }
         if (propertiesLocal.hitTestBehavior is not null)
         {
-            configLocal.hitTestBehavior = DartRuntimePrimitives.RequireValue(
+            configLocal.hitTestBehavior = (
                 propertiesLocal.hitTestBehavior
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
         }
         if (propertiesLocal.inputType is not null)
         {
-            configLocal.inputType = DartRuntimePrimitives.RequireValue(propertiesLocal.inputType);
+            configLocal.inputType = (
+                propertiesLocal.inputType
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (propertiesLocal.minValue is not null)
         {

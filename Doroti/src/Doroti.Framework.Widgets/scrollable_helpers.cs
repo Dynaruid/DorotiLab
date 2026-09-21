@@ -315,8 +315,14 @@ public class EdgeDraggingAutoScroller
         if (
             (newOffset is null)
             || (
-                (DartRuntimePrimitives.RequireValue(newOffset) - scrollable.position.pixels).abs()
-                < 1.0
+                (
+                    (
+                        newOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) - scrollable.position.pixels
+                ).abs() < 1.0
             )
         )
         {
@@ -325,7 +331,14 @@ public class EdgeDraggingAutoScroller
         }
         var durationLocal = Duration.Create(milliseconds: (1000L / velocityScalar).round());
         await scrollable.position.animateTo(
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(newOffset)),
+            (
+                (
+                    newOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            ),
             duration: durationLocal,
             curve: Curves.linear
         );

@@ -233,15 +233,19 @@ public abstract class ToggleablePainter : ChangeNotifier
     }
     public virtual double splashRadius
     {
-        get => DartRuntimePrimitives.RequireValue(_splashRadius);
+        get =>
+            (
+                _splashRadius
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) == _splashRadius)
+            if ((__value) == _splashRadius)
             {
                 return;
             }
-            _splashRadius = DartRuntimePrimitives.RequireValue(__value);
+            _splashRadius = (__value);
             notifyListeners();
         }
     }
@@ -261,7 +265,11 @@ public abstract class ToggleablePainter : ChangeNotifier
     }
     public virtual bool isFocused
     {
-        get => DartRuntimePrimitives.RequireValue(_isFocused);
+        get =>
+            (
+                _isFocused
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         set
         {
             bool? __value = value;
@@ -275,7 +283,11 @@ public abstract class ToggleablePainter : ChangeNotifier
     }
     public virtual bool isHovered
     {
-        get => DartRuntimePrimitives.RequireValue(_isHovered);
+        get =>
+            (
+                _isHovered
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         set
         {
             bool? __value = value;
@@ -289,7 +301,11 @@ public abstract class ToggleablePainter : ChangeNotifier
     }
     public virtual bool isActive
     {
-        get => DartRuntimePrimitives.RequireValue(_isActive);
+        get =>
+            (
+                _isActive
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         set
         {
             bool? __value = value;

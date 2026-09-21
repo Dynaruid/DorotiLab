@@ -66,22 +66,36 @@ public class FixedScrollMetrics : ScrollMetrics
 
     public virtual double minScrollExtent =>
         DartRuntimePrimitives.ConvertValue<double>(
-            DartRuntimePrimitives.RequireValue(_minScrollExtent)
+            (
+                _minScrollExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
     public virtual double maxScrollExtent =>
         DartRuntimePrimitives.ConvertValue<double>(
-            DartRuntimePrimitives.RequireValue(_maxScrollExtent)
+            (
+                _maxScrollExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
     public virtual bool hasContentDimensions =>
         DartRuntimePrimitives.ConvertValue<bool>(
             (_minScrollExtent is not null) && (_maxScrollExtent is not null)
         );
     public virtual double pixels =>
-        DartRuntimePrimitives.ConvertValue<double>(DartRuntimePrimitives.RequireValue(_pixels));
+        DartRuntimePrimitives.ConvertValue<double>(
+            (
+                _pixels
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        );
     public virtual bool hasPixels => DartRuntimePrimitives.ConvertValue<bool>(_pixels is not null);
     public virtual double viewportDimension =>
         DartRuntimePrimitives.ConvertValue<double>(
-            DartRuntimePrimitives.RequireValue(_viewportDimension)
+            (
+                _viewportDimension
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
     public virtual bool hasViewportDimension =>
         DartRuntimePrimitives.ConvertValue<bool>(_viewportDimension is not null);
@@ -120,8 +134,7 @@ public class FixedScrollMetrics : ScrollMetrics
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Axis axis =>
-        Basic_typesLibrary.axisDirectionToAxis(DartRuntimePrimitives.RequireValue(axisDirection));
+    public virtual Axis axis => Basic_typesLibrary.axisDirectionToAxis((axisDirection));
     public virtual bool outOfRange =>
         DartRuntimePrimitives.ConvertValue<bool>(
             (pixels < minScrollExtent) || (pixels > maxScrollExtent)

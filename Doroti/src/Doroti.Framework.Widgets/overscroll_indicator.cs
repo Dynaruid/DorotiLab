@@ -150,8 +150,11 @@ internal class _GlowingOverscrollIndicatorState__overscroll_indicator
                 confirmationNotification.dispatch(context);
                 _accepted[isLeading] = confirmationNotification.accepted;
                 if (
-                    DartRuntimePrimitives.RequireValue(
+                    (
                         DartCollectionRuntime.NullableMapValue<bool>(_accepted, isLeading)
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     )
                 )
                 {
@@ -160,8 +163,11 @@ internal class _GlowingOverscrollIndicatorState__overscroll_indicator
             }
             DartRuntimePrimitives.Assert(() => controller is not null);
             if (
-                DartRuntimePrimitives.RequireValue(
+                (
                     DartCollectionRuntime.NullableMapValue<bool>(_accepted, isLeading)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 )
             )
             {
@@ -484,7 +490,7 @@ public class _GlowController__overscroll_indicator : ChangeNotifier
             : _glowOpacity.value;
         _glowOpacityTween.end = Dart_uiLibrary.clampDouble(
             velocity * _velocityGlowFactor,
-            DartRuntimePrimitives.RequireValue(_glowOpacityTween.begin),
+            (_glowOpacityTween.begin),
             _maxOpacity
         );
         _glowSizeTween.begin = _glowSize.value;
@@ -615,7 +621,12 @@ public class _GlowController__overscroll_indicator : ChangeNotifier
         {
             double t = (
                 elapsed.inMicroseconds
-                - DartRuntimePrimitives.RequireValue(_displacementTickerLastElapsed).inMicroseconds
+                - (
+                    _displacementTickerLastElapsed
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).inMicroseconds
             ).toDouble();
             _displacement =
                 _displacementTarget

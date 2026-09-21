@@ -304,7 +304,10 @@ public class Localizations : StatefulWidget
             return true;
             throw new InvalidOperationException("Dart closure completed without a value.");
         });
-        return DartRuntimePrimitives.RequireValue(scope!.localizationsState.locale);
+        return (
+            scope!.localizationsState.locale
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -371,16 +374,24 @@ internal class _LocalizationsState__localizations : State<Localizations>
                 return;
             }
             WidgetsBinding.instance.platformDispatcher.setApplicationLocale(
-                DartRuntimePrimitives.RequireValue(locale)
+                (
+                    locale
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
-            _locale = DartRuntimePrimitives.RequireValue(locale);
+            _locale = (
+                locale
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
     }
 
     public override void initState()
     {
         base.initState();
-        load(DartRuntimePrimitives.RequireValue(widget.locale));
+        load((widget.locale));
     }
 
     internal virtual bool _anyDelegatesShouldReload(Localizations old)
@@ -420,7 +431,7 @@ internal class _LocalizationsState__localizations : State<Localizations>
         base.didUpdateWidget(old);
         if ((!Equals(widget.locale, old.locale)) || _anyDelegatesShouldReload(old))
         {
-            load(DartRuntimePrimitives.RequireValue(widget.locale));
+            load((widget.locale));
         }
     }
 
@@ -429,15 +440,12 @@ internal class _LocalizationsState__localizations : State<Localizations>
         IEnumerable<object> delegatesLocal = widget.delegates;
         if (!Enumerable.Any(delegatesLocal))
         {
-            this.locale = DartRuntimePrimitives.RequireValue(locale);
+            this.locale = (locale);
             return;
         }
         DartMap<Type, object>? typeToResources = default!;
         Future<DartMap<Type, object>> typeToResourcesFuture = LocalizationsLibrary
-            ._loadAll(
-                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(locale)),
-                delegatesLocal.Cast<dynamic>()
-            )
+            ._loadAll(((locale)), delegatesLocal.Cast<dynamic>())
             .then(
                 (value) =>
                 {
@@ -448,7 +456,7 @@ internal class _LocalizationsState__localizations : State<Localizations>
         if (typeToResources is not null)
         {
             _typeToResources = typeToResources!;
-            this.locale = DartRuntimePrimitives.RequireValue(locale);
+            this.locale = (locale);
         }
         else
         {
@@ -462,7 +470,7 @@ internal class _LocalizationsState__localizations : State<Localizations>
                             setState(() =>
                             {
                                 _typeToResources = value;
-                                this.locale = DartRuntimePrimitives.RequireValue(locale);
+                                this.locale = (locale);
                             });
                         }
                         RendererBinding.instance.allowFirstFrame();
@@ -503,7 +511,12 @@ internal class _LocalizationsState__localizations : State<Localizations>
             textDirection: _textDirection,
             child: new _LocalizationsScope__localizations(
                 key: _localizedResourcesScopeKey,
-                locale: DartRuntimePrimitives.RequireValue(_locale),
+                locale: (
+                    _locale
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 localizationsState: this,
                 typeToResources: _typeToResources,
                 child: new Directionality(textDirection: _textDirection, child: widget.child!)
@@ -582,10 +595,23 @@ public class LocalizationsResolver : ChangeNotifier, WidgetsBindingObserver
             Locale appLocale =
                 (_locale is not null)
                     ? _resolveLocales(
-                        new List<Locale> { DartRuntimePrimitives.RequireValue(_locale) },
+                        new List<Locale>
+                        {
+                            (
+                                _locale
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ),
+                        },
                         supportedLocales.Cast<Locale>()
                     )
-                    : DartRuntimePrimitives.RequireValue(_resolvedLocale);
+                    : (
+                        _resolvedLocale
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    );
             DartRuntimePrimitives.Assert(() => _debugCheckLocalizations(appLocale));
             return appLocale;
         }
@@ -642,10 +668,13 @@ public class LocalizationsResolver : ChangeNotifier, WidgetsBindingObserver
             Locale? locale = localeListResolutionCallback!(preferredLocales, supportedLocales);
             if (locale is not null)
             {
-                Locale locale__32547__value32633 = DartRuntimePrimitives.RequireValue(locale);
-                return DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(locale__32547__value32633)
+                Locale locale__32547__value32633 = (
+                    locale
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
+                return ((locale__32547__value32633));
             }
         }
         if (localeResolutionCallback is not null)
@@ -658,10 +687,13 @@ public class LocalizationsResolver : ChangeNotifier, WidgetsBindingObserver
             );
             if (localeLocal is not null)
             {
-                Locale locale__32838__value33016 = DartRuntimePrimitives.RequireValue(localeLocal);
-                return DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(locale__32838__value33016)
+                Locale locale__32838__value33016 = (
+                    localeLocal
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
+                return ((locale__32838__value33016));
             }
         }
         return AppLibrary.basicLocaleListResolution(
@@ -703,7 +735,7 @@ public class LocalizationsResolver : ChangeNotifier, WidgetsBindingObserver
             }
             FlutterError.reportError(
                 new FlutterErrorDetails(
-                    exception: $"Warning: This application's locale, {DartRuntimePrimitives.RequireValue(locale)}, is not supported by all of its localization delegates.",
+                    exception: $"Warning: This application's locale, {(locale)}, is not supported by all of its localization delegates.",
                     library: "widgets",
                     informationCollector: (InformationCollector)(
                         () =>

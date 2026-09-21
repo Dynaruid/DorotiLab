@@ -67,8 +67,13 @@ public class PointerRouter
             });
             if (count is not null)
             {
-                long count__2895__value2991 = DartRuntimePrimitives.RequireValue(count);
-                return DartRuntimePrimitives.RequireValue(count__2895__value2991);
+                long count__2895__value2991 = (
+                    count
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
+                return (count__2895__value2991);
             }
             throw new NotSupportedException(
                 "debugGlobalRouteCount is not supported in release builds"

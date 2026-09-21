@@ -40,7 +40,7 @@ public class FlutterLogo : StatelessWidget
         return new AnimatedContainer(
             width: iconSize,
             height: iconSize,
-            duration: DartRuntimePrimitives.RequireValue(duration),
+            duration: (duration),
             curve: curve,
             decoration: new FlutterLogoDecoration(style: style, textColor: textColor)
         );

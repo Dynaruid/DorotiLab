@@ -292,8 +292,13 @@ public class CupertinoDatePicker : StatefulWidget
             (!Equals(mode, CupertinoDatePickerMode.dateAndTime))
                 || (minimumDate is null)
                 || !(initialDateTime ?? new DateTime()).isBefore(
-                    DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(minimumDate)
+                    (
+                        (
+                            minimumDate
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     )
                 )
         );
@@ -301,8 +306,13 @@ public class CupertinoDatePicker : StatefulWidget
             (!Equals(mode, CupertinoDatePickerMode.dateAndTime))
                 || (maximumDate is null)
                 || !(initialDateTime ?? new DateTime()).isAfter(
-                    DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(maximumDate)
+                    (
+                        (
+                            maximumDate
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     )
                 )
         );
@@ -320,7 +330,12 @@ public class CupertinoDatePicker : StatefulWidget
                 || (maximumYear is null)
                 || (
                     (initialDateTime ?? new DateTime()).Year
-                    <= DartRuntimePrimitives.RequireValue(maximumYear)
+                    <= (
+                        maximumYear
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
         );
         System.Diagnostics.Debug.Assert(
@@ -329,9 +344,12 @@ public class CupertinoDatePicker : StatefulWidget
                 && (!Equals(mode, CupertinoDatePickerMode.monthYear))
             )
                 || (minimumDate is null)
-                || !DartRuntimePrimitives
-                    .RequireValue(minimumDate)
-                    .isAfter(initialDateTime ?? new DateTime())
+                || !(
+                    minimumDate
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).isAfter(initialDateTime ?? new DateTime())
         );
         System.Diagnostics.Debug.Assert(
             (
@@ -339,9 +357,12 @@ public class CupertinoDatePicker : StatefulWidget
                 && (!Equals(mode, CupertinoDatePickerMode.monthYear))
             )
                 || (maximumDate is null)
-                || !DartRuntimePrimitives
-                    .RequireValue(maximumDate)
-                    .isBefore(initialDateTime ?? new DateTime())
+                || !(
+                    maximumDate
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).isBefore(initialDateTime ?? new DateTime())
         );
         System.Diagnostics.Debug.Assert(
             Equals(mode, CupertinoDatePickerMode.date) || !showDayOfWeek
@@ -357,7 +378,14 @@ public class CupertinoDatePicker : StatefulWidget
         System.Diagnostics.Debug.Assert(
             (selectableDayPredicate is null)
                 || (initialDateTime is null)
-                || selectableDayPredicate(DartRuntimePrimitives.RequireValue(initialDateTime))
+                || selectableDayPredicate(
+                    (
+                        initialDateTime
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
         );
     }
 
@@ -664,11 +692,11 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
                     widget.showDayOfWeek
                 )
         );
-        return DartRuntimePrimitives.RequireValue(
+        return (
             DartCollectionRuntime.NullableMapValue<double>(
                 estimatedColumnWidths,
                 FoundationRuntimePorts.EnumIndex(columnType)
-            )
+            ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1124,8 +1152,18 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
         if (minCheck || maxCheck)
         {
             DateTime targetDate = minCheck
-                ? DartRuntimePrimitives.RequireValue(widget.minimumDate)
-                : DartRuntimePrimitives.RequireValue(widget.maximumDate);
+                ? (
+                    widget.minimumDate
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+                : (
+                    widget.maximumDate
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
             _scrollToDate(targetDate, selectedDate, minCheck);
         }
     }
@@ -1538,23 +1576,39 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                                 || (
                                     (widget.minimumDate?.Year == selectedYear)
                                     && (
-                                        DartRuntimePrimitives.RequireValue(widget.minimumDate).Month
-                                        == selectedMonth
+                                        (
+                                            widget.minimumDate
+                                            ?? throw new global::System.NullReferenceException(
+                                                "Dart null assertion failed."
+                                            )
+                                        ).Month == selectedMonth
                                     )
                                     && (
-                                        DartRuntimePrimitives.RequireValue(widget.minimumDate).Day
-                                        > day
+                                        (
+                                            widget.minimumDate
+                                            ?? throw new global::System.NullReferenceException(
+                                                "Dart null assertion failed."
+                                            )
+                                        ).Day > day
                                     )
                                 )
                                 || (
                                     (widget.maximumDate?.Year == selectedYear)
                                     && (
-                                        DartRuntimePrimitives.RequireValue(widget.maximumDate).Month
-                                        == selectedMonth
+                                        (
+                                            widget.maximumDate
+                                            ?? throw new global::System.NullReferenceException(
+                                                "Dart null assertion failed."
+                                            )
+                                        ).Month == selectedMonth
                                     )
                                     && (
-                                        DartRuntimePrimitives.RequireValue(widget.maximumDate).Day
-                                        < day
+                                        (
+                                            widget.maximumDate
+                                            ?? throw new global::System.NullReferenceException(
+                                                "Dart null assertion failed."
+                                            )
+                                        ).Day < day
                                     )
                                 );
                             Widget childLocal = itemPositioningBuilder(
@@ -1640,15 +1694,23 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                                 (
                                     (widget.minimumDate?.Year == selectedYear)
                                     && (
-                                        DartRuntimePrimitives.RequireValue(widget.minimumDate).Month
-                                        > month
+                                        (
+                                            widget.minimumDate
+                                            ?? throw new global::System.NullReferenceException(
+                                                "Dart null assertion failed."
+                                            )
+                                        ).Month > month
                                     )
                                 )
                                 || (
                                     (widget.maximumDate?.Year == selectedYear)
                                     && (
-                                        DartRuntimePrimitives.RequireValue(widget.maximumDate).Month
-                                        < month
+                                        (
+                                            widget.maximumDate
+                                            ?? throw new global::System.NullReferenceException(
+                                                "Dart null assertion failed."
+                                            )
+                                        ).Month < month
                                     )
                                 );
                             string monthName = Equals(
@@ -1736,7 +1798,15 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                     }
                     if (
                         (widget.maximumYear is not null)
-                        && (year > DartRuntimePrimitives.RequireValue(widget.maximumYear))
+                        && (
+                            year
+                            > (
+                                widget.maximumYear
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
+                        )
                     )
                     {
                         return null;
@@ -1744,11 +1814,25 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                     bool isValidYear =
                         (
                             (widget.minimumDate is null)
-                            || (DartRuntimePrimitives.RequireValue(widget.minimumDate).Year <= year)
+                            || (
+                                (
+                                    widget.minimumDate
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                ).Year <= year
+                            )
                         )
                         && (
                             (widget.maximumDate is null)
-                            || (DartRuntimePrimitives.RequireValue(widget.maximumDate).Year >= year)
+                            || (
+                                (
+                                    widget.maximumDate
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                ).Year >= year
+                            )
                         );
                     Widget childLocal = itemPositioningBuilder(
                         context,
@@ -1808,8 +1892,18 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
         if (!minCheck || maxCheck)
         {
             DateTime targetDate = minCheck
-                ? DartRuntimePrimitives.RequireValue(widget.maximumDate)
-                : DartRuntimePrimitives.RequireValue(widget.minimumDate);
+                ? (
+                    widget.maximumDate
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+                : (
+                    widget.minimumDate
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
             _scrollToDate(targetDate);
             return;
         }
@@ -1869,24 +1963,33 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                 };
                 columnWidthsLocal = new List<double>
                 {
-                    DartRuntimePrimitives.RequireValue(
+                    (
                         DartCollectionRuntime.NullableMapValue<double>(
                             estimatedColumnWidths,
                             FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month)
                         )
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     ),
-                    DartRuntimePrimitives.RequireValue(
+                    (
                         DartCollectionRuntime.NullableMapValue<double>(
                             estimatedColumnWidths,
                             FoundationRuntimePorts.EnumIndex(
                                 _PickerColumnType__date_picker.dayOfMonth
                             )
                         )
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     ),
-                    DartRuntimePrimitives.RequireValue(
+                    (
                         DartCollectionRuntime.NullableMapValue<double>(
                             estimatedColumnWidths,
                             FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year)
+                        )
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
                         )
                     ),
                 };
@@ -1904,24 +2007,33 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                 };
                 columnWidthsLocal = new List<double>
                 {
-                    DartRuntimePrimitives.RequireValue(
+                    (
                         DartCollectionRuntime.NullableMapValue<double>(
                             estimatedColumnWidths,
                             FoundationRuntimePorts.EnumIndex(
                                 _PickerColumnType__date_picker.dayOfMonth
                             )
                         )
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     ),
-                    DartRuntimePrimitives.RequireValue(
+                    (
                         DartCollectionRuntime.NullableMapValue<double>(
                             estimatedColumnWidths,
                             FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month)
                         )
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     ),
-                    DartRuntimePrimitives.RequireValue(
+                    (
                         DartCollectionRuntime.NullableMapValue<double>(
                             estimatedColumnWidths,
                             FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year)
+                        )
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
                         )
                     ),
                 };
@@ -1939,24 +2051,33 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                 };
                 columnWidthsLocal = new List<double>
                 {
-                    DartRuntimePrimitives.RequireValue(
+                    (
                         DartCollectionRuntime.NullableMapValue<double>(
                             estimatedColumnWidths,
                             FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year)
                         )
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     ),
-                    DartRuntimePrimitives.RequireValue(
+                    (
                         DartCollectionRuntime.NullableMapValue<double>(
                             estimatedColumnWidths,
                             FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month)
                         )
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     ),
-                    DartRuntimePrimitives.RequireValue(
+                    (
                         DartCollectionRuntime.NullableMapValue<double>(
                             estimatedColumnWidths,
                             FoundationRuntimePorts.EnumIndex(
                                 _PickerColumnType__date_picker.dayOfMonth
                             )
+                        )
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
                         )
                     ),
                 };
@@ -1974,24 +2095,33 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                 };
                 columnWidthsLocal = new List<double>
                 {
-                    DartRuntimePrimitives.RequireValue(
+                    (
                         DartCollectionRuntime.NullableMapValue<double>(
                             estimatedColumnWidths,
                             FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year)
                         )
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     ),
-                    DartRuntimePrimitives.RequireValue(
+                    (
                         DartCollectionRuntime.NullableMapValue<double>(
                             estimatedColumnWidths,
                             FoundationRuntimePorts.EnumIndex(
                                 _PickerColumnType__date_picker.dayOfMonth
                             )
                         )
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     ),
-                    DartRuntimePrimitives.RequireValue(
+                    (
                         DartCollectionRuntime.NullableMapValue<double>(
                             estimatedColumnWidths,
                             FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month)
+                        )
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
                         )
                     ),
                 };
@@ -2225,15 +2355,23 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
                                 (
                                     (widget.minimumDate?.Year == selectedYear)
                                     && (
-                                        DartRuntimePrimitives.RequireValue(widget.minimumDate).Month
-                                        > month
+                                        (
+                                            widget.minimumDate
+                                            ?? throw new global::System.NullReferenceException(
+                                                "Dart null assertion failed."
+                                            )
+                                        ).Month > month
                                     )
                                 )
                                 || (
                                     (widget.maximumDate?.Year == selectedYear)
                                     && (
-                                        DartRuntimePrimitives.RequireValue(widget.maximumDate).Month
-                                        < month
+                                        (
+                                            widget.maximumDate
+                                            ?? throw new global::System.NullReferenceException(
+                                                "Dart null assertion failed."
+                                            )
+                                        ).Month < month
                                     )
                                 );
                             string monthName = Equals(
@@ -2316,7 +2454,15 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
                     }
                     if (
                         (widget.maximumYear is not null)
-                        && (year > DartRuntimePrimitives.RequireValue(widget.maximumYear))
+                        && (
+                            year
+                            > (
+                                widget.maximumYear
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
+                        )
                     )
                     {
                         return null;
@@ -2324,11 +2470,25 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
                     bool isValidYear =
                         (
                             (widget.minimumDate is null)
-                            || (DartRuntimePrimitives.RequireValue(widget.minimumDate).Year <= year)
+                            || (
+                                (
+                                    widget.minimumDate
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                ).Year <= year
+                            )
                         )
                         && (
                             (widget.maximumDate is null)
-                            || (DartRuntimePrimitives.RequireValue(widget.maximumDate).Year >= year)
+                            || (
+                                (
+                                    widget.maximumDate
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                ).Year >= year
+                            )
                         );
                     Widget childLocal = itemPositioningBuilder(
                         context,
@@ -2380,8 +2540,18 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
         if (!minCheck || maxCheck)
         {
             DateTime targetDate = minCheck
-                ? DartRuntimePrimitives.RequireValue(widget.maximumDate)
-                : DartRuntimePrimitives.RequireValue(widget.minimumDate);
+                ? (
+                    widget.maximumDate
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+                : (
+                    widget.minimumDate
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
             _scrollToDate(targetDate);
             return;
         }
@@ -2429,16 +2599,22 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
                 };
                 columnWidthsLocal = new List<double>
                 {
-                    DartRuntimePrimitives.RequireValue(
+                    (
                         DartCollectionRuntime.NullableMapValue<double>(
                             estimatedColumnWidths,
                             FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month)
                         )
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     ),
-                    DartRuntimePrimitives.RequireValue(
+                    (
                         DartCollectionRuntime.NullableMapValue<double>(
                             estimatedColumnWidths,
                             FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year)
+                        )
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
                         )
                     ),
                 };
@@ -2456,16 +2632,22 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
                 };
                 columnWidthsLocal = new List<double>
                 {
-                    DartRuntimePrimitives.RequireValue(
+                    (
                         DartCollectionRuntime.NullableMapValue<double>(
                             estimatedColumnWidths,
                             FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year)
                         )
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     ),
-                    DartRuntimePrimitives.RequireValue(
+                    (
                         DartCollectionRuntime.NullableMapValue<double>(
                             estimatedColumnWidths,
                             FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month)
+                        )
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
                         )
                     ),
                 };
@@ -2849,7 +3031,10 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
     )
     {
         _hourScrollController ??= new FixedExtentScrollController(
-            initialItem: DartRuntimePrimitives.RequireValue(selectedHour)
+            initialItem: (
+                selectedHour
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         return new CupertinoPicker(
             scrollController: _hourScrollController,
@@ -2866,7 +3051,12 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
                     selectedHour = index;
                     widget.onTimerDurationChanged(
                         Duration.Create(
-                            hours: DartRuntimePrimitives.RequireValue(selectedHour),
+                            hours: (
+                                selectedHour
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ),
                             minutes: selectedMinute,
                             seconds: selectedSecond ?? 0L
                         )
@@ -2933,7 +3123,13 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
                 DartRuntimePrimitives.ConvertValue<Widget>(
                     _buildLabel(
                         localizations.timerPickerHourLabel(
-                            lastSelectedHour ?? DartRuntimePrimitives.RequireValue(selectedHour)
+                            lastSelectedHour
+                                ?? (
+                                    selectedHour
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                )
                         ) ?? "",
                         additionalPadding
                     )
@@ -3054,7 +3250,12 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
     {
         _secondScrollController ??= new FixedExtentScrollController(
             initialItem: checked(
-                DartRuntimePrimitives.RequireValue(selectedSecond) / widget.secondInterval
+                (
+                    selectedSecond
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) / widget.secondInterval
             )
         );
         return new CupertinoPicker(
@@ -3078,7 +3279,12 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
                         Duration.Create(
                             hours: selectedHour ?? 0L,
                             minutes: selectedMinute,
-                            seconds: DartRuntimePrimitives.RequireValue(selectedSecond)
+                            seconds: (
+                                selectedSecond
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         )
                     );
                 });
@@ -3144,7 +3350,13 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
                 DartRuntimePrimitives.ConvertValue<Widget>(
                     _buildLabel(
                         localizations.timerPickerSecondLabel(
-                            lastSelectedSecond ?? DartRuntimePrimitives.RequireValue(selectedSecond)
+                            lastSelectedSecond
+                                ?? (
+                                    selectedSecond
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                )
                         ) ?? "",
                         additionalPadding
                     )
@@ -3159,7 +3371,10 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
         TextStyle textStyle = CupertinoTheme.of(context).textTheme.pickerTextStyle;
         return textStyle.copyWith(
             color: CupertinoDynamicColor.maybeResolve(textStyle.color, context),
-            fontSize: DartRuntimePrimitives.RequireValue(textStyle.fontSize) * magnification
+            fontSize: (
+                textStyle.fontSize
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) * magnification
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

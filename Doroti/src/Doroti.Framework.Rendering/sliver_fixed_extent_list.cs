@@ -29,7 +29,10 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
     {
         if (itemExtentBuilder is null)
         {
-            itemExtent = DartRuntimePrimitives.RequireValue(this.itemExtent);
+            itemExtent = (
+                this.itemExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             return itemExtent * index;
         }
         else
@@ -41,11 +44,24 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
                 long? childCount = childManager.estimatedChildCount;
                 if (
                     (childCount is not null)
-                    && (i > (DartRuntimePrimitives.RequireValue(childCount) - 1L))
+                    && (
+                        i
+                        > (
+                            (
+                                childCount
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ) - 1L
+                        )
+                    )
                 )
                 {
-                    long childCount__3332__value3391 = DartRuntimePrimitives.RequireValue(
+                    long childCount__3332__value3391 = (
                         childCount
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     );
                     break;
                 }
@@ -54,7 +70,12 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
                 {
                     break;
                 }
-                offset += DartRuntimePrimitives.RequireValue(itemExtentLocal);
+                offset += (
+                    itemExtentLocal
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
             }
             return offset;
         }
@@ -65,7 +86,10 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
     {
         if (itemExtentBuilder is null)
         {
-            itemExtent = DartRuntimePrimitives.RequireValue(this.itemExtent);
+            itemExtent = (
+                this.itemExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             if (itemExtent > 0.0)
             {
                 double actual = scrollOffset / itemExtent;
@@ -92,7 +116,10 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
     {
         if (itemExtentBuilder is null)
         {
-            itemExtent = DartRuntimePrimitives.RequireValue(this.itemExtent);
+            itemExtent = (
+                this.itemExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             if (itemExtent > 0.0)
             {
                 double actual = (scrollOffset / itemExtent) - 1L;
@@ -137,7 +164,10 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
     {
         if (itemExtentBuilder is null)
         {
-            itemExtent = DartRuntimePrimitives.RequireValue(this.itemExtent);
+            itemExtent = (
+                this.itemExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             return childManager.childCount * itemExtent;
         }
         else
@@ -151,7 +181,12 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
                 {
                     break;
                 }
-                offset += DartRuntimePrimitives.RequireValue(itemExtentLocal);
+                offset += (
+                    itemExtentLocal
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
             }
             return offset;
         }
@@ -175,10 +210,25 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
             long? childCount = childManager.estimatedChildCount;
             if (
                 (childCount is not null)
-                && (index > (DartRuntimePrimitives.RequireValue(childCount) - 1L))
+                && (
+                    index
+                    > (
+                        (
+                            childCount
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) - 1L
+                    )
+                )
             )
             {
-                long childCount__8872__value8929 = DartRuntimePrimitives.RequireValue(childCount);
+                long childCount__8872__value8929 = (
+                    childCount
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
                 break;
             }
             itemExtent = callback(index, layoutDimensions);
@@ -186,7 +236,10 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
             {
                 break;
             }
-            position += DartRuntimePrimitives.RequireValue(itemExtent);
+            position += (
+                itemExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             ++index;
         }
         return index - 1L;
@@ -198,12 +251,16 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
         double extent = default!;
         if (itemExtentBuilder is null)
         {
-            extent = DartRuntimePrimitives.RequireValue(itemExtent);
+            extent = (
+                itemExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         else
         {
-            extent = DartRuntimePrimitives.RequireValue(
+            extent = (
                 itemExtentBuilder!(index, layoutDimensions)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
         }
         return constraints.asBoxConstraints(minExtent: extent, maxExtent: extent);
@@ -228,10 +285,14 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
     {
         if (itemExtentBuilder is null)
         {
-            return DartRuntimePrimitives.RequireValue(itemExtent);
+            return (
+                itemExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
-        return DartRuntimePrimitives.RequireValue(
+        return (
             itemExtentBuilder!(indexOf(child), layoutDimensions)
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -243,7 +304,12 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
         {
             if ((itemExtentBuilder is null) && double.IsFinite(geometry!.scrollExtent))
             {
-                double itemExtentLocal = DartRuntimePrimitives.RequireValue(itemExtent);
+                double itemExtentLocal = (
+                    itemExtent
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
                 double scrollExtentLocal = geometry!.scrollExtent;
                 double count = scrollExtentLocal / itemExtentLocal;
                 double diff = (count.roundToDouble() - count).abs();
@@ -282,8 +348,22 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
         DartRuntimePrimitives.Assert(() =>
             (itemExtentBuilder is not null)
             || (
-                double.IsFinite(DartRuntimePrimitives.RequireValue(itemExtent))
-                && (DartRuntimePrimitives.RequireValue(itemExtent) >= 0L)
+                double.IsFinite(
+                    (
+                        itemExtent
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
+                && (
+                    (
+                        itemExtent
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) >= 0L
+                )
             )
         );
         SliverConstraints constraintsLocal = constraints;
@@ -310,16 +390,17 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
             : null;
         if (firstChild is not null)
         {
-            long leadingGarbage = calculateLeadingGarbage(
-                firstIndex: DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(firstIndexLocal)
-                )
-            );
+            long leadingGarbage = calculateLeadingGarbage(firstIndex: ((firstIndexLocal)));
             long trailingGarbage =
                 (targetLastIndex is not null)
                     ? calculateTrailingGarbage(
-                        lastIndex: DartRuntimePrimitives.RequireValue(
-                            DartRuntimePrimitives.RequireValue(targetLastIndex)
+                        lastIndex: (
+                            (
+                                targetLastIndex
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         )
                     )
                     : 0L;
@@ -333,18 +414,9 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
         {
             double layoutOffsetLocal = indexToLayoutOffset(
                 deprecatedExtraItemExtent,
-                DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(firstIndexLocal)
-                )
+                ((firstIndexLocal))
             );
-            if (
-                !addInitialChild(
-                    index: DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(firstIndexLocal)
-                    ),
-                    layoutOffset: layoutOffsetLocal
-                )
-            )
+            if (!addInitialChild(index: ((firstIndexLocal)), layoutOffset: layoutOffsetLocal))
             {
                 double max = default!;
                 if (firstIndexLocal <= 0L)
@@ -363,7 +435,7 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
         RenderBox? trailingChildWithLayout = default!;
         for (
             long indexLocal = indexOf(firstChild!) - 1L;
-            indexLocal >= DartRuntimePrimitives.RequireValue(firstIndexLocal);
+            indexLocal >= (firstIndexLocal);
             --indexLocal
         )
         {
@@ -392,9 +464,7 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
             var childParentDataLocal = ((SliverMultiBoxAdaptorParentData?)firstChild!.parentData!)!;
             childParentDataLocal.layoutOffset = indexToLayoutOffset(
                 deprecatedExtraItemExtent,
-                DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(firstIndexLocal)
-                )
+                ((firstIndexLocal))
             );
             trailingChildWithLayout = firstChild;
         }
@@ -402,7 +472,15 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
         for (
             long indexAlternate = indexOf(trailingChildWithLayout!) + 1L;
             (targetLastIndex is null)
-                || (indexAlternate <= DartRuntimePrimitives.RequireValue(targetLastIndex));
+                || (
+                    indexAlternate
+                    <= (
+                        targetLastIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                );
             ++indexAlternate
         )
         {
@@ -433,62 +511,69 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
             DartRuntimePrimitives.Assert(() => childParentDataAlternate.index == indexAlternate);
             childParentDataAlternate.layoutOffset = indexToLayoutOffset(
                 deprecatedExtraItemExtent,
-                DartRuntimePrimitives.RequireValue(childParentDataAlternate.index)
+                (
+                    childParentDataAlternate.index
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
         }
         long lastIndexLocal = indexOf(lastChild!);
         double leadingScrollOffsetLocal = indexToLayoutOffset(
             deprecatedExtraItemExtent,
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(firstIndexLocal))
+            ((firstIndexLocal))
         );
         double trailingScrollOffsetLocal = indexToLayoutOffset(
             deprecatedExtraItemExtent,
-            DartRuntimePrimitives.RequireValue(lastIndexLocal) + 1L
+            (lastIndexLocal) + 1L
         );
         DartRuntimePrimitives.Assert(() =>
-            (DartRuntimePrimitives.RequireValue(firstIndexLocal) == 0L)
+            ((firstIndexLocal) == 0L)
             || (
                 (
-                    DartRuntimePrimitives.RequireValue(childScrollOffset(firstChild!))
-                    - scrollOffsetLocal
+                    (
+                        childScrollOffset(firstChild!)
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) - scrollOffsetLocal
                 ) <= Foundation.ConstantsLibrary.precisionErrorTolerance
             )
         );
         DartRuntimePrimitives.Assert(() => debugAssertChildListIsNonEmptyAndContiguous());
-        DartRuntimePrimitives.Assert(() =>
-            indexOf(firstChild!) == DartRuntimePrimitives.RequireValue(firstIndexLocal)
-        );
+        DartRuntimePrimitives.Assert(() => indexOf(firstChild!) == (firstIndexLocal));
         DartRuntimePrimitives.Assert(() =>
             (targetLastIndex is null)
-            || (lastIndexLocal <= DartRuntimePrimitives.RequireValue(targetLastIndex))
+            || (
+                lastIndexLocal
+                <= (
+                    targetLastIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
         );
         estimatedMaxScrollOffset = Math.Min(
             estimatedMaxScrollOffset,
             estimateMaxScrollOffset(
                 constraintsLocal,
-                firstIndex: DartRuntimePrimitives.RequireValue(firstIndexLocal),
-                lastIndex: DartRuntimePrimitives.RequireValue(lastIndexLocal),
-                leadingScrollOffset: DartRuntimePrimitives.RequireValue(leadingScrollOffsetLocal),
-                trailingScrollOffset: DartRuntimePrimitives.RequireValue(trailingScrollOffsetLocal)
+                firstIndex: (firstIndexLocal),
+                lastIndex: (lastIndexLocal),
+                leadingScrollOffset: (leadingScrollOffsetLocal),
+                trailingScrollOffset: (trailingScrollOffsetLocal)
             )
         );
         double paintExtentLocal = calculatePaintOffset(
             constraintsLocal,
-            from: DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(leadingScrollOffsetLocal)
-            ),
-            to: DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(trailingScrollOffsetLocal)
-            )
+            from: ((leadingScrollOffsetLocal)),
+            to: ((trailingScrollOffsetLocal))
         );
         double cacheExtentLocal = calculateCacheOffset(
             constraintsLocal,
-            from: DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(leadingScrollOffsetLocal)
-            ),
-            to: DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(trailingScrollOffsetLocal)
-            )
+            from: ((leadingScrollOffsetLocal)),
+            to: ((trailingScrollOffsetLocal))
         );
         double targetEndScrollOffsetForPaint =
             constraintsLocal.scrollOffset + constraintsLocal.remainingPaintExtent;
@@ -505,13 +590,18 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
             maxPaintExtent: estimatedMaxScrollOffset,
             hasVisualOverflow: (
                 (targetLastIndexForPaint is not null)
-                && (lastIndexLocal >= DartRuntimePrimitives.RequireValue(targetLastIndexForPaint))
+                && (
+                    lastIndexLocal
+                    >= (
+                        targetLastIndexForPaint
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
             ) || (constraintsLocal.scrollOffset > 0.0)
         );
-        if (
-            estimatedMaxScrollOffset
-            == DartRuntimePrimitives.RequireValue(trailingScrollOffsetLocal)
-        )
+        if (estimatedMaxScrollOffset == (trailingScrollOffsetLocal))
         {
             childManager.setDidUnderflow(true);
         }
@@ -534,7 +624,10 @@ public class RenderSliverFixedExtentList : RenderSliverFixedExtentBoxAdaptor
         get => _itemExtent;
         set
         {
-            var __value = DartRuntimePrimitives.RequireValue(value);
+            var __value = (
+                value
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             if (_itemExtent == __value)
             {
                 return;

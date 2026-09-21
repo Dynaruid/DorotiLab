@@ -55,7 +55,7 @@ public class InkHighlight : InteractiveInkFeature
                 () =>
                 {
                     var __cascade = new AnimationController(
-                        duration: DartRuntimePrimitives.RequireValue(__fadeDuration),
+                        duration: (__fadeDuration),
                         vsync: this.controller.vsync
                     );
                     __cascade.addListener(this.controller.markNeedsPaint);
@@ -161,8 +161,13 @@ public class InkHighlight : InteractiveInkFeature
             _paintHighlight(
                 canvas,
                 rect.shift(
-                    DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(originOffset)
+                    (
+                        (
+                            originOffset
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     )
                 ),
                 paint

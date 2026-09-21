@@ -164,13 +164,7 @@ public class ButtonThemeData : Diagnosticable
 
     public virtual BoxConstraints constraints
     {
-        get
-        {
-            return new BoxConstraints(
-                minWidth: DartRuntimePrimitives.RequireValue(minWidth),
-                minHeight: DartRuntimePrimitives.RequireValue(height)
-            );
-        }
+        get { return new BoxConstraints(minWidth: (minWidth), minHeight: (height)); }
     }
     public virtual EdgeInsetsGeometry padding =>
         DartRuntimePrimitives.ConvertValue<EdgeInsetsGeometry>(

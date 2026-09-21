@@ -105,7 +105,15 @@ public class IconButton : StatelessWidget
         this.icon = icon;
         _variant = _IconButtonVariant__icon_button.standard;
         System.Diagnostics.Debug.Assert(
-            (splashRadius is null) || (DartRuntimePrimitives.RequireValue(splashRadius) > 0L)
+            (splashRadius is null)
+                || (
+                    (
+                        splashRadius
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
     }
 

@@ -318,7 +318,7 @@ public class GestureArenaManager
                 long? count = state?.members?.Count;
                 var s = (count != 1L) ? "s" : "";
                 PrintLibrary.debugPrint(
-                    $"Gesture arena {pointer.ToString().padRight(4L)} ❙ {message}{((count is not null) ? $" with {DartRuntimePrimitives.RequireValue(count)} member{s}." : "")}"
+                    $"Gesture arena {pointer.ToString().padRight(4L)} ❙ {message}{((count is not null) ? $" with {(count ?? throw new global::System.NullReferenceException("Dart null assertion failed."))} member{s}." : "")}"
                 );
             }
             return true;

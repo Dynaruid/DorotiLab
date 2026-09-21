@@ -198,7 +198,7 @@ internal sealed partial class FrameworkCSharpLowerer
         )
         {
             builder
-                .Append("DartRuntimePrimitives.RequireValue(")
+                .Append("__dorotiNullAssert(")
                 .Append(EmittedLocalIdentifier(prefixNode, prefix))
                 .Append(").")
                 .Append(name);
@@ -1435,7 +1435,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         else if (nullableValuePrefix)
         {
-            builder.Append("DartRuntimePrimitives.RequireValue(");
+            builder.Append("__dorotiNullAssert(");
             LowerExpression(
                 builder,
                 prefixNode!,
@@ -1688,7 +1688,7 @@ internal sealed partial class FrameworkCSharpLowerer
             && name is "top" or "left" or "right" or "bottom"
         )
         {
-            builder.Append("DartRuntimePrimitives.RequireValue(");
+            builder.Append("__dorotiNullAssert(");
             LowerExpression(builder, target, declaration, package, library, inputPath, diagnostics);
             builder.Append(").").Append(name);
             return;
@@ -2171,7 +2171,7 @@ internal sealed partial class FrameworkCSharpLowerer
             )
         )
         {
-            builder.Append("new DateTimeOffset(DartRuntimePrimitives.RequireValue(");
+            builder.Append("new DateTimeOffset(__dorotiNullAssert(");
             LowerExpression(builder, target, declaration, package, library, inputPath, diagnostics);
             builder.Append(")).ToUnixTimeMilliseconds()");
             return;
@@ -2374,7 +2374,7 @@ internal sealed partial class FrameworkCSharpLowerer
             else if (promotedLocalValueTarget)
             {
                 builder
-                    .Append("DartRuntimePrimitives.RequireValue(")
+                    .Append("__dorotiNullAssert(")
                     .Append(
                         EmittedLocalIdentifier(target, target.Text(CoreProperty.name) ?? "value")
                     )
@@ -2382,7 +2382,7 @@ internal sealed partial class FrameworkCSharpLowerer
             }
             else if (nullableValueTarget)
             {
-                builder.Append("DartRuntimePrimitives.RequireValue(");
+                builder.Append("__dorotiNullAssert(");
                 LowerExpression(
                     builder,
                     target,
@@ -2574,7 +2574,7 @@ internal sealed partial class FrameworkCSharpLowerer
             // Dart flow analysis has already promoted such keys at these reads.
             if (requiresClrDictionaryKey)
             {
-                builder.Append("DartRuntimePrimitives.RequireValue(");
+                builder.Append("__dorotiNullAssert(");
             }
 
             LowerExpression(
@@ -2628,7 +2628,7 @@ internal sealed partial class FrameworkCSharpLowerer
             var indexType = MapType(expressions[1].StaticType ?? "object").TrimEnd('?');
             builder.Append(
                 IsValueType(indexType)
-                    ? "DartRuntimePrimitives.RequireValue("
+                    ? "__dorotiNullAssert("
                     : "DartRuntimePrimitives.RequireReference("
             );
             LowerExpression(
@@ -2948,7 +2948,7 @@ internal sealed partial class FrameworkCSharpLowerer
                 && actualArgumentType == expectedArgumentType + "?"
             )
             {
-                builder.Append("DartRuntimePrimitives.RequireValue(");
+                builder.Append("__dorotiNullAssert(");
                 LowerExpression(
                     builder,
                     argumentValue,
@@ -3894,7 +3894,7 @@ internal sealed partial class FrameworkCSharpLowerer
                 || restoresNonConstValueDefault
             )
             {
-                builder.Append("DartRuntimePrimitives.RequireValue(");
+                builder.Append("__dorotiNullAssert(");
                 LowerExpression(
                     builder,
                     values[index],
@@ -3923,7 +3923,7 @@ internal sealed partial class FrameworkCSharpLowerer
                 )
             )
             {
-                builder.Append("DartRuntimePrimitives.RequireValue(");
+                builder.Append("__dorotiNullAssert(");
                 LowerExpression(
                     builder,
                     argumentValue,

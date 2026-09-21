@@ -109,7 +109,12 @@ public static partial class AboutLibrary
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 },
                 routeSettings: routeSettings,
-                anchorPoint: DartRuntimePrimitives.RequireValue(anchorPoint)
+                anchorPoint: (
+                    anchorPoint
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             )
         );
     }

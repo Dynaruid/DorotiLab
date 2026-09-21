@@ -598,7 +598,15 @@ public class TextSelectionOverlay
         }
         _endHandleDragPosition = renderObject
             .localToGlobal(
-                new Offset(0.0, DartRuntimePrimitives.RequireValue(nextEndHandleDragPositionLocal))
+                new Offset(
+                    0.0,
+                    (
+                        nextEndHandleDragPositionLocal
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
             )
             .dy;
         var handleTargetGlobal = new Offset(
@@ -736,7 +744,12 @@ public class TextSelectionOverlay
             .localToGlobal(
                 new Offset(
                     0.0,
-                    DartRuntimePrimitives.RequireValue(nextStartHandleDragPositionLocal)
+                    (
+                        nextStartHandleDragPositionLocal
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
             )
             .dy;
@@ -1026,11 +1039,11 @@ public class SelectionOverlay
         set
         {
             var __value = value;
-            if (Equals(_startHandleType, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_startHandleType, (__value)))
             {
                 return;
             }
-            _startHandleType = DartRuntimePrimitives.RequireValue(__value);
+            _startHandleType = (__value);
             markNeedsBuild();
         }
     }
@@ -1040,11 +1053,11 @@ public class SelectionOverlay
         set
         {
             var __value = value;
-            if (_lineHeightAtStart == DartRuntimePrimitives.RequireValue(__value))
+            if (_lineHeightAtStart == (__value))
             {
                 return;
             }
-            _lineHeightAtStart = DartRuntimePrimitives.RequireValue(__value);
+            _lineHeightAtStart = (__value);
             markNeedsBuild();
         }
     }
@@ -1125,11 +1138,11 @@ public class SelectionOverlay
         set
         {
             var __value = value;
-            if (Equals(_endHandleType, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_endHandleType, (__value)))
             {
                 return;
             }
-            _endHandleType = DartRuntimePrimitives.RequireValue(__value);
+            _endHandleType = (__value);
             markNeedsBuild();
         }
     }
@@ -1139,11 +1152,11 @@ public class SelectionOverlay
         set
         {
             var __value = value;
-            if (_lineHeightAtEnd == DartRuntimePrimitives.RequireValue(__value))
+            if (_lineHeightAtEnd == (__value))
             {
                 return;
             }
-            _lineHeightAtEnd = DartRuntimePrimitives.RequireValue(__value);
+            _lineHeightAtEnd = (__value);
             markNeedsBuild();
         }
     }
@@ -1294,8 +1307,18 @@ public class SelectionOverlay
         overlay.insertAll(
             new List<OverlayEntry>
             {
-                DartRuntimePrimitives.RequireValue(_handles).start,
-                DartRuntimePrimitives.RequireValue(_handles).end,
+                (
+                    _handles
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).start,
+                (
+                    _handles
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).end,
             }.Cast<OverlayEntry>()
         );
     }
@@ -1304,10 +1327,22 @@ public class SelectionOverlay
     {
         if (_handles is not null)
         {
-            DartRuntimePrimitives.RequireValue(_handles).start.remove();
-            DartRuntimePrimitives.RequireValue(_handles).start.dispose();
-            DartRuntimePrimitives.RequireValue(_handles).end.remove();
-            DartRuntimePrimitives.RequireValue(_handles).end.dispose();
+            (
+                _handles
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).start.remove();
+            (
+                _handles
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).start.dispose();
+            (
+                _handles
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).end.remove();
+            (
+                _handles
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).end.dispose();
             _handles = null;
         }
     }
@@ -1422,8 +1457,18 @@ public class SelectionOverlay
         {
             if (_handles is not null)
             {
-                DartRuntimePrimitives.RequireValue(_handles).start.markNeedsBuild();
-                DartRuntimePrimitives.RequireValue(_handles).end.markNeedsBuild();
+                (
+                    _handles
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).start.markNeedsBuild();
+                (
+                    _handles
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).end.markNeedsBuild();
             }
             _toolbar?.markNeedsBuild();
             if (_contextMenuController.isShown)
@@ -2225,7 +2270,12 @@ public class TextSelectionGestureDetectorBuilder
                 return false;
             }
             TextPosition textPosition = renderEditable.getPositionForPoint(
-                DartRuntimePrimitives.RequireValue(renderEditable.lastSecondaryTapDownPosition)
+                (
+                    renderEditable.lastSecondaryTapDownPosition
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
             return (renderEditable.selection!.start <= textPosition.offset)
                 && (renderEditable.selection!.end >= textPosition.offset);
@@ -2274,7 +2324,7 @@ public class TextSelectionGestureDetectorBuilder
         );
         editableText.userUpdateTextEditingValue(
             editableText.textEditingValue.copyWith(selection: nextSelection),
-            DartRuntimePrimitives.RequireValue(cause)
+            (cause)
         );
     }
 
@@ -2286,7 +2336,7 @@ public class TextSelectionGestureDetectorBuilder
         TextSelection nextSelection = selectionLocal.copyWith(extentOffset: tappedPosition.offset);
         editableText.userUpdateTextEditingValue(
             editableText.textEditingValue.copyWith(selection: nextSelection),
-            DartRuntimePrimitives.RequireValue(cause)
+            (cause)
         );
     }
 
@@ -2352,8 +2402,24 @@ public class TextSelectionGestureDetectorBuilder
         PointerDeviceKind? kindLocal = details.kind;
         _shouldShowSelectionToolbar =
             (kindLocal is null)
-            || Equals(DartRuntimePrimitives.RequireValue(kindLocal), PointerDeviceKind.touch)
-            || Equals(DartRuntimePrimitives.RequireValue(kindLocal), PointerDeviceKind.stylus);
+            || Equals(
+                (
+                    kindLocal
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                PointerDeviceKind.touch
+            )
+            || Equals(
+                (
+                    kindLocal
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                PointerDeviceKind.stylus
+            );
         _shouldShowSelectionHandles = _shouldShowSelectionToolbar;
         bool isShiftPressedValid =
             _isShiftPressed && (renderEditable.selection?.baseOffset is not null);
@@ -2884,7 +2950,14 @@ public class TextSelectionGestureDetectorBuilder
             (to is null)
                 ? fromPosition
                 : renderEditable.getPositionForPoint(
-                    DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(to))
+                    (
+                        (
+                            to
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    )
                 );
         TextRange toRange = Equals(toPosition, fromPosition)
             ? fromRange
@@ -2895,7 +2968,10 @@ public class TextSelectionGestureDetectorBuilder
             : new TextSelection(baseOffset: fromRange.end, extentOffset: toRange.start);
         editableText.userUpdateTextEditingValue(
             editableText.textEditingValue.copyWith(selection: newSelection),
-            DartRuntimePrimitives.RequireValue(cause)
+            (
+                cause
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
     }
 
@@ -2950,8 +3026,24 @@ public class TextSelectionGestureDetectorBuilder
         PointerDeviceKind? kindLocal = details.kind;
         _shouldShowSelectionToolbar =
             (kindLocal is null)
-            || Equals(DartRuntimePrimitives.RequireValue(kindLocal), PointerDeviceKind.touch)
-            || Equals(DartRuntimePrimitives.RequireValue(kindLocal), PointerDeviceKind.stylus);
+            || Equals(
+                (
+                    kindLocal
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                PointerDeviceKind.touch
+            )
+            || Equals(
+                (
+                    kindLocal
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                PointerDeviceKind.stylus
+            );
         _shouldShowSelectionHandles = _shouldShowSelectionToolbar;
         _dragStartSelection = renderEditable.selection;
         _dragStartScrollOffset = _scrollPosition;

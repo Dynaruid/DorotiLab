@@ -130,8 +130,20 @@ public class Tab : StatelessWidget, PreferredSizeWidget
         {
             if (height is not null)
             {
-                double height__value7504 = DartRuntimePrimitives.RequireValue(height);
-                return new Size(DartRuntimePrimitives.RequireValue(height));
+                double height__value7504 = (
+                    height
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
+                return new Size(
+                    (
+                        height
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                );
             }
             else
             {
@@ -324,7 +336,12 @@ public class _TabLabelBarRenderer__tabs : RenderFlex
             child = childParentData.nextSibling;
         }
         DartRuntimePrimitives.Assert(() => textDirection is not null);
-        switch (DartRuntimePrimitives.RequireValue(textDirection))
+        switch (
+            (
+                textDirection
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        )
         {
             case TextDirection.rtl:
             {
@@ -337,7 +354,14 @@ public class _TabLabelBarRenderer__tabs : RenderFlex
                 break;
             }
         }
-        onPerformLayout(xOffsets, DartRuntimePrimitives.RequireValue(textDirection), size.width);
+        onPerformLayout(
+            xOffsets,
+            (
+                textDirection
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            size.width
+        );
     }
 }
 
@@ -373,7 +397,10 @@ internal class _TabLabelBar__tabs : Flex
             mainAxisAlignment: mainAxisAlignment,
             mainAxisSize: mainAxisSize,
             crossAxisAlignment: crossAxisAlignment,
-            textDirection: DartRuntimePrimitives.RequireValue(getEffectiveTextDirection(context)),
+            textDirection: (
+                getEffectiveTextDirection(context)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             verticalDirection: verticalDirection,
             onPerformLayout: onPerformLayout
         );
@@ -510,9 +537,7 @@ internal class _IndicatorPainter__tabs : CustomPainter
             showDivider: showDivider,
             devicePixelRatio: devicePixelRatio,
             indicatorAnimation: indicatorAnimation,
-            textDirection: DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(textDirection)
-            ),
+            textDirection: ((textDirection)),
             repaint: new _IndicatorPainterNotifier__tabs()
         );
     }
@@ -606,7 +631,10 @@ internal class _IndicatorPainter__tabs : CustomPainter
         double tabLeft = default!;
         double tabRight = default!;
         DartRuntimePrimitives.Ignore(
-            (tabLeft, tabRight) = DartRuntimePrimitives.RequireValue(_currentTextDirection) switch
+            (tabLeft, tabRight) = (
+                _currentTextDirection
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) switch
             {
                 TextDirection.rtl => (
                     _currentTabOffsets![(int)(tabIndex + 1L)],
@@ -622,9 +650,10 @@ internal class _IndicatorPainter__tabs : CustomPainter
         );
         if (Equals(indicatorSize, TabBarIndicatorSize.label))
         {
-            double tabWidth = DartRuntimePrimitives
-                .RequireValue(tabKeys[(int)tabIndex].currentContext!.size)
-                .width;
+            double tabWidth = (
+                tabKeys[(int)tabIndex].currentContext!.size
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).width;
             EdgeInsetsGeometry labelPadding = labelPaddings[(int)tabIndex];
             EdgeInsets insets = labelPadding.resolve(_currentTextDirection);
             double delta = (tabRight - tabLeft - (tabWidth + insets.horizontal)) / 2.0;
@@ -660,11 +689,24 @@ internal class _IndicatorPainter__tabs : CustomPainter
         };
         DartRuntimePrimitives.Assert(() => _currentRect is not null);
         var configuration = new ImageConfiguration(
-            size: DartRuntimePrimitives.RequireValue(_currentRect).size,
+            size: (
+                _currentRect
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).size,
             textDirection: _currentTextDirection,
             devicePixelRatio: devicePixelRatio
         );
-        if (showDivider && (DartRuntimePrimitives.RequireValue(dividerHeight) > 0L))
+        if (
+            showDivider
+            && (
+                (
+                    dividerHeight
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) > 0L
+            )
+        )
         {
             var dividerPaint = (
                 (Func<Paint>)(
@@ -672,7 +714,12 @@ internal class _IndicatorPainter__tabs : CustomPainter
                     {
                         var __cascade = new Paint();
                         __cascade.color = dividerColor!;
-                        __cascade.strokeWidth = DartRuntimePrimitives.RequireValue(dividerHeight);
+                        __cascade.strokeWidth = (
+                            dividerHeight
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        );
                         return __cascade;
                     }
                 )
@@ -683,7 +730,10 @@ internal class _IndicatorPainter__tabs : CustomPainter
         }
         _painter!.paint(
             canvas,
-            DartRuntimePrimitives.RequireValue(_currentRect).topLeft,
+            (
+                _currentRect
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).topLeft,
             configuration
         );
     }
@@ -746,8 +796,9 @@ internal class _IndicatorPainter__tabs : CustomPainter
                 : controller.previousIndex;
         Rect toRect = indicatorRect(size, to);
         Rect fromRect = indicatorRect(size, @from);
-        Rect rect = DartRuntimePrimitives.RequireValue(
+        Rect rect = (
             Dart_uiLibrary.Rect.lerp(fromRect, toRect, (value - @from).abs())
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         if (controller.animation!.isCompleted)
         {
@@ -798,33 +849,47 @@ internal class _IndicatorPainter__tabs : CustomPainter
         double lerpRectRight = default!;
         if (controller.indexIsChanging)
         {
-            lerpRectLeft = DartRuntimePrimitives.RequireValue(
+            lerpRectLeft = (
                 Dart_uiLibrary.lerpDouble(fromRect.left, toRect.left, leftFraction)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
-            lerpRectRight = DartRuntimePrimitives.RequireValue(
+            lerpRectRight = (
                 Dart_uiLibrary.lerpDouble(fromRect.right, toRect.right, rightFraction)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
         }
         else
         {
             lerpRectLeft = (object)isMovingRight switch
             {
-                true => DartRuntimePrimitives.RequireValue(
+                true => (
                     Dart_uiLibrary.lerpDouble(fromRect.left, toRect.left, leftFraction)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 ),
-                false => DartRuntimePrimitives.RequireValue(
+                false => (
                     Dart_uiLibrary.lerpDouble(toRect.left, fromRect.left, leftFraction)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 ),
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                     throw new InvalidOperationException("Non-exhaustive Dart switch value."),
             };
             lerpRectRight = (object)isMovingRight switch
             {
-                true => DartRuntimePrimitives.RequireValue(
+                true => (
                     Dart_uiLibrary.lerpDouble(fromRect.right, toRect.right, rightFraction)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 ),
-                false => DartRuntimePrimitives.RequireValue(
+                false => (
                     Dart_uiLibrary.lerpDouble(toRect.right, fromRect.right, rightFraction)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 ),
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                     throw new InvalidOperationException("Non-exhaustive Dart switch value."),
@@ -1438,7 +1503,10 @@ internal class _TabBarState__tabs : State<TabBar>
         TabBarThemeData tabBarTheme = TabBarTheme.of(context);
         TabBarIndicatorSize indicatorSizeLocal =
             (widget.indicatorSize ?? tabBarTheme.indicatorSize)
-            ?? DartRuntimePrimitives.RequireValue(_defaults.indicatorSize);
+            ?? (
+                _defaults.indicatorSize
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         _IndicatorPainter__tabs? oldPainter = _indicatorPainter;
         TabIndicatorAnimation defaultTabIndicatorAnimation = indicatorSizeLocal switch
         {
@@ -1616,7 +1684,10 @@ internal class _TabBarState__tabs : State<TabBar>
     )
     {
         return _tabScrollOffset(
-            DartRuntimePrimitives.RequireValue(_currentIndex),
+            (
+                _currentIndex
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             viewportWidth,
             minExtent,
             maxExtent
@@ -1626,7 +1697,12 @@ internal class _TabBarState__tabs : State<TabBar>
 
     internal virtual void _scrollToCurrentIndex()
     {
-        double offset = _tabCenteredScrollOffset(DartRuntimePrimitives.RequireValue(_currentIndex));
+        double offset = _tabCenteredScrollOffset(
+            (
+                _currentIndex
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        );
         DartRuntimePrimitives.Ignore(
             _effectiveScrollController.animateTo(
                 offset,
@@ -1639,15 +1715,46 @@ internal class _TabBarState__tabs : State<TabBar>
     internal virtual void _scrollToControllerValue()
     {
         double? leadingPosition =
-            (DartRuntimePrimitives.RequireValue(_currentIndex) > 0L)
-                ? _tabCenteredScrollOffset(DartRuntimePrimitives.RequireValue(_currentIndex) - 1L)
+            (
+                (
+                    _currentIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) > 0L
+            )
+                ? _tabCenteredScrollOffset(
+                    (
+                        _currentIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) - 1L
+                )
                 : null;
         double middlePosition = _tabCenteredScrollOffset(
-            DartRuntimePrimitives.RequireValue(_currentIndex)
+            (
+                _currentIndex
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         double? trailingPosition =
-            (DartRuntimePrimitives.RequireValue(_currentIndex) < maxTabIndex)
-                ? _tabCenteredScrollOffset(DartRuntimePrimitives.RequireValue(_currentIndex) + 1L)
+            (
+                (
+                    _currentIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) < maxTabIndex
+            )
+                ? _tabCenteredScrollOffset(
+                    (
+                        _currentIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) + 1L
+                )
                 : null;
         double indexLocal = _controller!.index.toDouble();
         double valueLocal = _controller!.animation!.value;
@@ -1658,20 +1765,36 @@ internal class _TabBarState__tabs : State<TabBar>
             0 => middlePosition,
             < 0L => (leadingPosition is null)
                 ? middlePosition
-                : DartRuntimePrimitives.RequireValue(
+                : (
                     Dart_uiLibrary.lerpDouble(
                         middlePosition,
-                        DartRuntimePrimitives.RequireValue(leadingPosition),
+                        (
+                            leadingPosition
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
                         indexLocal - valueLocal
+                    )
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
                     )
                 ),
             _ => (trailingPosition is null)
                 ? middlePosition
-                : DartRuntimePrimitives.RequireValue(
+                : (
                     Dart_uiLibrary.lerpDouble(
                         middlePosition,
-                        DartRuntimePrimitives.RequireValue(trailingPosition),
+                        (
+                            trailingPosition
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
                         valueLocal - indexLocal
+                    )
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
                     )
                 ),
         };
@@ -1814,7 +1937,10 @@ internal class _TabBarState__tabs : State<TabBar>
         TabBarThemeData tabBarTheme = TabBarTheme.of(context);
         TabAlignment effectiveTabAlignment =
             (widget.tabAlignment ?? tabBarTheme.tabAlignment)
-            ?? DartRuntimePrimitives.RequireValue(_defaults.tabAlignment);
+            ?? (
+                _defaults.tabAlignment
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         DartRuntimePrimitives.Assert(() => _debugTabAlignmentIsValid(effectiveTabAlignment));
         MaterialLocalizations localizations = MaterialLocalizations.of(context);
         if (_controller!.length == 0L)
@@ -1871,13 +1997,26 @@ internal class _TabBarState__tabs : State<TabBar>
             {
                 DartRuntimePrimitives.Assert(() => _currentIndex != previousIndexLocal);
                 Animation<double> animationLocal = new _ChangeAnimation__tabs(_controller!);
-                wrappedTabs[(int)DartRuntimePrimitives.RequireValue(_currentIndex)] =
-                    _buildStyledTab(
-                        wrappedTabs[(int)DartRuntimePrimitives.RequireValue(_currentIndex)],
-                        true,
-                        animationLocal,
-                        _defaults
-                    );
+                wrappedTabs[
+                    (int)(
+                        _currentIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                ] = _buildStyledTab(
+                    wrappedTabs[
+                        (int)(
+                            _currentIndex
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    ],
+                    true,
+                    animationLocal,
+                    _defaults
+                );
                 wrappedTabs[(int)previousIndexLocal] = _buildStyledTab(
                     wrappedTabs[(int)previousIndexLocal],
                     false,
@@ -1887,7 +2026,12 @@ internal class _TabBarState__tabs : State<TabBar>
             }
             else
             {
-                long tabIndexLocal = DartRuntimePrimitives.RequireValue(_currentIndex);
+                long tabIndexLocal = (
+                    _currentIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
                 Animation<double> centerAnimation = new _DragAnimation__tabs(
                     _controller!,
                     tabIndexLocal
@@ -1898,9 +2042,22 @@ internal class _TabBarState__tabs : State<TabBar>
                     centerAnimation,
                     _defaults
                 );
-                if (DartRuntimePrimitives.RequireValue(_currentIndex) > 0L)
+                if (
+                    (
+                        _currentIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
                 {
-                    long tabIndexAlternate = DartRuntimePrimitives.RequireValue(_currentIndex) - 1L;
+                    long tabIndexAlternate =
+                        (
+                            _currentIndex
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) - 1L;
                     Animation<double> previousAnimation = new ReverseAnimation(
                         new _DragAnimation__tabs(_controller!, tabIndexAlternate)
                     );
@@ -1912,11 +2069,21 @@ internal class _TabBarState__tabs : State<TabBar>
                     );
                 }
                 if (
-                    DartRuntimePrimitives.RequireValue(_currentIndex)
-                    < (checked(widget.tabs.Count) - 1L)
+                    (
+                        _currentIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) < (checked(widget.tabs.Count) - 1L)
                 )
                 {
-                    long tabIndexNested = DartRuntimePrimitives.RequireValue(_currentIndex) + 1L;
+                    long tabIndexNested =
+                        (
+                            _currentIndex
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) + 1L;
                     Animation<double> nextAnimation = new ReverseAnimation(
                         new _DragAnimation__tabs(_controller!, tabIndexNested)
                     );
@@ -2096,7 +2263,12 @@ internal class _TabBarState__tabs : State<TabBar>
                     (widget.dividerColor ?? tabBarTheme.dividerColor) ?? _defaults.dividerColor!;
                 double dividerHeightLocal =
                     (widget.dividerHeight ?? tabBarTheme.dividerHeight)
-                    ?? DartRuntimePrimitives.RequireValue(_defaults.dividerHeight);
+                    ?? (
+                        _defaults.dividerHeight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    );
                 tabBarLocal = DartRuntimePrimitives.ConvertValue<Widget>(
                     new Align(
                         heightFactor: 1.0,
@@ -2247,13 +2419,25 @@ internal class _TabBarViewState__tabs : State<TabBarView>
         if (_pageController is null)
         {
             _pageController = new PageController(
-                initialPage: DartRuntimePrimitives.RequireValue(_currentIndex),
+                initialPage: (
+                    _currentIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 viewportFraction: widget.viewportFraction
             );
         }
         else
         {
-            _pageController!.jumpToPage(DartRuntimePrimitives.RequireValue(_currentIndex));
+            _pageController!.jumpToPage(
+                (
+                    _currentIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            );
         }
     }
 
@@ -2264,13 +2448,25 @@ internal class _TabBarViewState__tabs : State<TabBarView>
         {
             _updateTabController();
             _currentIndex = _controller!.index;
-            _jumpToPage(DartRuntimePrimitives.RequireValue(_currentIndex));
+            _jumpToPage(
+                (
+                    _currentIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            );
         }
         if (widget.viewportFraction != oldWidget.viewportFraction)
         {
             _pageController?.dispose();
             _pageController = new PageController(
-                initialPage: DartRuntimePrimitives.RequireValue(_currentIndex),
+                initialPage: (
+                    _currentIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 viewportFraction: widget.viewportFraction
             );
         }
@@ -2327,15 +2523,26 @@ internal class _TabBarViewState__tabs : State<TabBarView>
             !mounted
             || (
                 _pageController!.page
-                == DartRuntimePrimitives.RequireValue(_currentIndex).toDouble()
+                == (
+                    _currentIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).toDouble()
             )
         )
         {
             return;
         }
         var adjacentDestination =
-            (DartRuntimePrimitives.RequireValue(_currentIndex) - _controller!.previousIndex).abs()
-            == 1L;
+            (
+                (
+                    _currentIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) - _controller!.previousIndex
+            ).abs() == 1L;
         if (adjacentDestination)
         {
             DartRuntimePrimitives.Ignore(_warpToAdjacentTab(_controller!.animationDuration));
@@ -2350,12 +2557,24 @@ internal class _TabBarViewState__tabs : State<TabBarView>
     {
         if (Equals(duration, Duration.zero))
         {
-            _jumpToPage(DartRuntimePrimitives.RequireValue(_currentIndex));
+            _jumpToPage(
+                (
+                    _currentIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            );
         }
         else
         {
             await _animateToPage(
-                DartRuntimePrimitives.RequireValue(_currentIndex),
+                (
+                    _currentIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 duration: duration,
                 curve: Curves.ease
             );
@@ -2375,12 +2594,40 @@ internal class _TabBarViewState__tabs : State<TabBarView>
     {
         long previousIndexLocal = _controller!.previousIndex;
         DartRuntimePrimitives.Assert(() =>
-            (DartRuntimePrimitives.RequireValue(_currentIndex) - previousIndexLocal).abs() > 1L
+            (
+                (
+                    _currentIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) - previousIndexLocal
+            ).abs() > 1L
         );
         long initialPage =
-            (DartRuntimePrimitives.RequireValue(_currentIndex) > previousIndexLocal)
-                ? (DartRuntimePrimitives.RequireValue(_currentIndex) - 1L)
-                : (DartRuntimePrimitives.RequireValue(_currentIndex) + 1L);
+            (
+                (
+                    _currentIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) > previousIndexLocal
+            )
+                ? (
+                    (
+                        _currentIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) - 1L
+                )
+                : (
+                    (
+                        _currentIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) + 1L
+                );
         setState(() =>
         {
             _childrenWithKey = new List<Widget>(_childrenWithKey);
@@ -2391,12 +2638,24 @@ internal class _TabBarViewState__tabs : State<TabBarView>
         _jumpToPage(initialPage);
         if (Equals(duration, Duration.zero))
         {
-            _jumpToPage(DartRuntimePrimitives.RequireValue(_currentIndex));
+            _jumpToPage(
+                (
+                    _currentIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            );
         }
         else
         {
             await _animateToPage(
-                DartRuntimePrimitives.RequireValue(_currentIndex),
+                (
+                    _currentIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 duration: duration,
                 curve: Curves.ease
             );
@@ -2413,7 +2672,10 @@ internal class _TabBarViewState__tabs : State<TabBarView>
     internal virtual void _syncControllerOffset()
     {
         _controller!.offset = Dart_uiLibrary.clampDouble(
-            DartRuntimePrimitives.RequireValue(_pageController!.page) - _controller!.index,
+            (
+                _pageController!.page
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) - _controller!.index,
             -1.0,
             1.0
         );
@@ -2434,7 +2696,10 @@ internal class _TabBarViewState__tabs : State<TabBarView>
             return false;
         }
         _scrollUnderwayCount += 1L;
-        double pageLocal = DartRuntimePrimitives.RequireValue(_pageController!.page);
+        double pageLocal = (
+            _pageController!.page
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         if ((notification is ScrollUpdateNotification) && !_controller!.indexIsChanging)
         {
             ScrollUpdateNotification notification__as89692 = (ScrollUpdateNotification)notification;

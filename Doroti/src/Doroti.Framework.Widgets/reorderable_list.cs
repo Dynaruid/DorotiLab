@@ -185,7 +185,12 @@ public class ReorderableListState : State<ReorderableList>
             if (widget.cacheExtent is not null)
             {
                 return ScrollCacheExtent.CreatePixels(
-                    DartRuntimePrimitives.RequireValue(widget.cacheExtent)
+                    (
+                        widget.cacheExtent
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 );
             }
             return null;
@@ -553,10 +558,18 @@ public class SliverReorderableListState
     {
         DartRuntimePrimitives.Assert(() => _dragInfo is null);
         _ReorderableItemState__reorderable_list itemLocal = _items.GetValueOrDefault(
-            DartRuntimePrimitives.RequireValue(_dragIndex)
+            (
+                _dragIndex
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         )!;
         itemLocal.dragging = true;
-        widget.onReorderStart?.Invoke(DartRuntimePrimitives.RequireValue(_dragIndex));
+        widget.onReorderStart?.Invoke(
+            (
+                _dragIndex
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        );
         itemLocal.rebuild();
         _insertIndex = itemLocal.index;
         _dragInfo = new _DragInfo__reorderable_list(
@@ -582,8 +595,18 @@ public class SliverReorderableListState
                 continue;
             }
             childItem.updateForGap(
-                DartRuntimePrimitives.RequireValue(_insertIndex),
-                DartRuntimePrimitives.RequireValue(_insertIndex),
+                (
+                    _insertIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                (
+                    _insertIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 _dragInfo!.itemExtent,
                 false,
                 _reverse
@@ -619,10 +642,24 @@ public class SliverReorderableListState
     {
         setState(() =>
         {
-            if ((DartRuntimePrimitives.RequireValue(_insertIndex) - item.index) == 1L)
+            if (
+                (
+                    (
+                        _insertIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) - item.index
+                ) == 1L
+            )
             {
                 _finalDropPosition = _itemOffsetAt(
-                    DartRuntimePrimitives.RequireValue(_insertIndex) - 1L
+                    (
+                        _insertIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) - 1L
                 );
             }
             else
@@ -630,7 +667,12 @@ public class SliverReorderableListState
                 if (_insertIndex == item.index)
                 {
                     _finalDropPosition = _itemOffsetAt(
-                        DartRuntimePrimitives.RequireValue(_insertIndex)
+                        (
+                            _insertIndex
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     );
                 }
                 else
@@ -638,8 +680,12 @@ public class SliverReorderableListState
                     if (_reverse)
                     {
                         if (
-                            DartRuntimePrimitives.RequireValue(_insertIndex)
-                            >= checked(_items.Count)
+                            (
+                                _insertIndex
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ) >= checked(_items.Count)
                         )
                         {
                             _finalDropPosition =
@@ -652,16 +698,37 @@ public class SliverReorderableListState
                         else
                         {
                             _finalDropPosition =
-                                _itemOffsetAt(DartRuntimePrimitives.RequireValue(_insertIndex))
+                                _itemOffsetAt(
+                                    (
+                                        _insertIndex
+                                        ?? throw new global::System.NullReferenceException(
+                                            "Dart null assertion failed."
+                                        )
+                                    )
+                                )
                                 + Reorderable_listLibrary._extentOffset(
-                                    _itemExtentAt(DartRuntimePrimitives.RequireValue(_insertIndex)),
+                                    _itemExtentAt(
+                                        (
+                                            _insertIndex
+                                            ?? throw new global::System.NullReferenceException(
+                                                "Dart null assertion failed."
+                                            )
+                                        )
+                                    ),
                                     _scrollDirection
                                 );
                         }
                     }
                     else
                     {
-                        if (DartRuntimePrimitives.RequireValue(_insertIndex) == 0L)
+                        if (
+                            (
+                                _insertIndex
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ) == 0L
+                        )
                         {
                             _finalDropPosition =
                                 _itemOffsetAt(0L)
@@ -672,7 +739,13 @@ public class SliverReorderableListState
                         }
                         else
                         {
-                            long atIndex = DartRuntimePrimitives.RequireValue(_insertIndex) - 1L;
+                            long atIndex =
+                                (
+                                    _insertIndex
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                ) - 1L;
                             _finalDropPosition =
                                 _itemOffsetAt(atIndex)
                                 + Reorderable_listLibrary._extentOffset(
@@ -684,13 +757,24 @@ public class SliverReorderableListState
                 }
             }
         });
-        widget.onReorderEnd?.Invoke(DartRuntimePrimitives.RequireValue(_insertIndex));
+        widget.onReorderEnd?.Invoke(
+            (
+                _insertIndex
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        );
     }
 
     internal virtual void _dropCompleted()
     {
-        long oldIndex = DartRuntimePrimitives.RequireValue(_dragIndex);
-        long newIndex = DartRuntimePrimitives.RequireValue(_insertIndex);
+        long oldIndex = (
+            _dragIndex
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
+        long newIndex = (
+            _insertIndex
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         _handleReorderItem(oldIndex, newIndex);
         setState(() =>
         {
@@ -704,11 +788,23 @@ public class SliverReorderableListState
         {
             if (
                 (_dragIndex is not null)
-                && _items.ContainsKey(DartRuntimePrimitives.RequireValue(_dragIndex))
+                && _items.ContainsKey(
+                    (
+                        _dragIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
             )
             {
                 _ReorderableItemState__reorderable_list dragItem = _items.GetValueOrDefault(
-                    DartRuntimePrimitives.RequireValue(_dragIndex)
+                    (
+                        _dragIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )!;
                 dragItem._dragging = false;
                 dragItem.rebuild();
@@ -771,12 +867,25 @@ public class SliverReorderableListState
             _scrollDirection
         );
         double proxyItemEnd = proxyItemStart + gapExtent;
-        long newIndex = DartRuntimePrimitives.RequireValue(_insertIndex);
+        long newIndex = (
+            _insertIndex
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         foreach (_ReorderableItemState__reorderable_list item in _items.Values)
         {
             if (
-                (_reverse && (item.index == DartRuntimePrimitives.RequireValue(_dragIndex)))
-                || !item.mounted
+                (
+                    _reverse
+                    && (
+                        item.index
+                        == (
+                            _dragIndex
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    )
+                ) || !item.mounted
             )
             {
                 continue;
@@ -822,11 +931,24 @@ public class SliverReorderableListState
             }
             else
             {
-                if (item.index == DartRuntimePrimitives.RequireValue(_dragIndex))
+                if (
+                    item.index
+                    == (
+                        _dragIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
                 {
                     if ((itemMiddle <= proxyItemEnd) && (proxyItemEnd <= itemEnd))
                     {
-                        newIndex = DartRuntimePrimitives.RequireValue(_dragIndex);
+                        newIndex = (
+                            _dragIndex
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        );
                     }
                 }
                 else
@@ -867,14 +989,26 @@ public class SliverReorderableListState
             foreach (_ReorderableItemState__reorderable_list itemLocal in _items.Values)
             {
                 if (
-                    (itemLocal.index == DartRuntimePrimitives.RequireValue(_dragIndex))
-                    || !itemLocal.mounted
+                    (
+                        itemLocal.index
+                        == (
+                            _dragIndex
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    ) || !itemLocal.mounted
                 )
                 {
                     continue;
                 }
                 itemLocal.updateForGap(
-                    DartRuntimePrimitives.RequireValue(_dragIndex),
+                    (
+                        _dragIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     newIndex,
                     gapExtent,
                     true,
@@ -1010,7 +1144,12 @@ public class SliverReorderableListState
         {
             return new SliverFixedExtentList(
                 @delegate: childrenDelegate,
-                itemExtent: DartRuntimePrimitives.RequireValue(widget.itemExtent)
+                itemExtent: (
+                    widget.itemExtent
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
         }
         else
@@ -1225,8 +1364,11 @@ public class _ReorderableItemState__reorderable_list : State<_ReorderableItem__r
             if (_offsetAnimation is not null)
             {
                 double animValue = Curves.easeInOut.transform(_offsetAnimation!.value);
-                return DartRuntimePrimitives.RequireValue(
+                return (
                     Dart_uiLibrary.Offset.lerp(_startOffset, _targetOffset, animValue)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
             }
             return _targetOffset;
@@ -1300,8 +1442,11 @@ public class _ReorderableItemState__reorderable_list : State<_ReorderableItem__r
                 else
                 {
                     double currentAnimValue = Curves.easeInOut.transform(_offsetAnimation!.value);
-                    Offset currentPosition = DartRuntimePrimitives.RequireValue(
+                    Offset currentPosition = (
                         Dart_uiLibrary.Offset.lerp(_startOffset, previousTarget, currentAnimValue)
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     );
                     _startOffset = currentPosition;
                     _offsetAnimation!.forward(from: 0.0);
@@ -1647,15 +1792,20 @@ internal class _DragItemProxy__reorderable_list : StatelessWidget
                     Offset? dropPosition = listState._finalDropPosition;
                     if (dropPosition is not null)
                     {
-                        Offset dropPosition__58071__value58130 = DartRuntimePrimitives.RequireValue(
+                        Offset dropPosition__58071__value58130 = (
                             dropPosition
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
                         );
-                        effectivePosition = DartRuntimePrimitives.RequireValue(
+                        effectivePosition = (
                             Dart_uiLibrary.Offset.lerp(
-                                DartRuntimePrimitives.RequireValue(dropPosition__58071__value58130)
-                                    - overlayOrigin,
+                                (dropPosition__58071__value58130) - overlayOrigin,
                                 effectivePosition,
                                 Curves.easeOut.transform(animation.value)
+                            )
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
                             )
                         );
                     }

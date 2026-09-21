@@ -642,9 +642,13 @@ public class RenderCustomMultiChildLayoutBox
             double? result = child.getDistanceToActualBaseline(baseline);
             if (result is not null)
             {
-                double result__138852__value138916 = DartRuntimePrimitives.RequireValue(result);
-                return DartRuntimePrimitives.RequireValue(result__138852__value138916)
-                    + childParentData.offset.dy;
+                double result__138852__value138916 = (
+                    result
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
+                return (result__138852__value138916) + childParentData.offset.dy;
             }
             child = childParentData.nextSibling;
         }

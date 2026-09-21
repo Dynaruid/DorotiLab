@@ -99,7 +99,10 @@ public class AssetImage : AssetBundleImageProvider
         }
         return _findBestVariant(
             candidatesByDevicePixelRatio,
-            DartRuntimePrimitives.RequireValue(config.devicePixelRatio)
+            (
+                config.devicePixelRatio
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -117,11 +120,25 @@ public class AssetImage : AssetBundleImageProvider
         double? upper = candidatesByDpr.firstKeyAfter(value);
         if (lower is null)
         {
-            return candidatesByDpr.GetValueOrDefault(DartRuntimePrimitives.RequireValue(upper))!;
+            return candidatesByDpr.GetValueOrDefault(
+                (
+                    upper
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )!;
         }
         if (upper is null)
         {
-            return candidatesByDpr.GetValueOrDefault(DartRuntimePrimitives.RequireValue(lower))!;
+            return candidatesByDpr.GetValueOrDefault(
+                (
+                    lower
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )!;
         }
         if (
             (value < Image_resolutionLibrary._kLowDprLimit)
@@ -129,18 +146,42 @@ public class AssetImage : AssetBundleImageProvider
                 value
                 > (
                     (
-                        DartRuntimePrimitives.RequireValue(lower)
-                        + DartRuntimePrimitives.RequireValue(upper)
+                        (
+                            lower
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                        + (
+                            upper
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     ) / 2L
                 )
             )
         )
         {
-            return candidatesByDpr.GetValueOrDefault(DartRuntimePrimitives.RequireValue(upper))!;
+            return candidatesByDpr.GetValueOrDefault(
+                (
+                    upper
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )!;
         }
         else
         {
-            return candidatesByDpr.GetValueOrDefault(DartRuntimePrimitives.RequireValue(lower))!;
+            return candidatesByDpr.GetValueOrDefault(
+                (
+                    lower
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )!;
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

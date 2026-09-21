@@ -93,7 +93,12 @@ public class Scrollable : StatefulWidget
                 (axis is null)
                 || Equals(
                     Basic_typesLibrary.axisDirectionToAxis(scrollableLocal.axisDirection),
-                    DartRuntimePrimitives.RequireValue(axis)
+                    (
+                        axis
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
             )
             {
@@ -125,7 +130,7 @@ public class Scrollable : StatefulWidget
                             ),
                             new ErrorDescription(
                                 "No Scrollable widget ancestor could be found "
-                                    + $"{((axis is null) ? "" : $"for the provided Axis: {DartRuntimePrimitives.RequireValue(axis)} ")}"
+                                    + $"{((axis is null) ? "" : $"for the provided Axis: {(axis ?? throw new global::System.NullReferenceException("Dart null assertion failed."))} ")}"
                                     + "starting from the context that was passed to Scrollable.of(). This "
                                     + "can happen because you are using a widget that looks for a Scrollable "
                                     + "ancestor, but no such ancestor exists.\n"
@@ -153,7 +158,12 @@ public class Scrollable : StatefulWidget
                 (axis is null)
                 || Equals(
                     Basic_typesLibrary.axisDirectionToAxis(widget.scrollable.axisDirection),
-                    DartRuntimePrimitives.RequireValue(axis)
+                    (
+                        axis
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
             )
             {
@@ -323,7 +333,12 @@ public class ScrollableState
         if (_persistedScrollOffset.value is not null)
         {
             position.restoreOffset(
-                DartRuntimePrimitives.RequireValue(_persistedScrollOffset.value),
+                (
+                    _persistedScrollOffset.value
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 initialRestore: initialRestore
             );
         }
@@ -1336,9 +1351,10 @@ internal class _ScrollableSelectionContainerDelegate__scrollable
         if (Equals(@event.type, SelectionEventType.endEdgeUpdate))
         {
             _currentDragEndRelatedToOrigin = _inferPositionRelatedToOrigin(@event.globalPosition);
-            Offset endOffset = DartRuntimePrimitives
-                .RequireValue(_currentDragEndRelatedToOrigin)
-                .translate(-deltaToOrigin.dx, -deltaToOrigin.dy);
+            Offset endOffset = (
+                _currentDragEndRelatedToOrigin
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).translate(-deltaToOrigin.dx, -deltaToOrigin.dy);
             @event = SelectionEdgeUpdateEvent.CreateForEnd(
                 globalPosition: endOffset,
                 granularity: @event.granularity
@@ -1347,9 +1363,10 @@ internal class _ScrollableSelectionContainerDelegate__scrollable
         else
         {
             _currentDragStartRelatedToOrigin = _inferPositionRelatedToOrigin(@event.globalPosition);
-            Offset startOffset = DartRuntimePrimitives
-                .RequireValue(_currentDragStartRelatedToOrigin)
-                .translate(-deltaToOrigin.dx, -deltaToOrigin.dy);
+            Offset startOffset = (
+                _currentDragStartRelatedToOrigin
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).translate(-deltaToOrigin.dx, -deltaToOrigin.dy);
             @event = new SelectionEdgeUpdateEvent(
                 globalPosition: startOffset,
                 granularity: @event.granularity
@@ -1539,7 +1556,12 @@ internal class _ScrollableSelectionContainerDelegate__scrollable
                 double edgeBottom = edgeOffsetInScrollableCoordinates.dy;
                 double edgeTop =
                     edgeOffsetInScrollableCoordinates.dy
-                    - DartRuntimePrimitives.RequireValue(lineHeightLocal);
+                    - (
+                        lineHeightLocal
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    );
                 if ((edgeBottom >= scrollableRect.bottom) && (edgeTop <= scrollableRect.top))
                 {
                     return;
@@ -1578,7 +1600,12 @@ internal class _ScrollableSelectionContainerDelegate__scrollable
                 double edgeBottomLocal = edgeOffsetInScrollableCoordinates.dy;
                 double edgeTopLocal =
                     edgeOffsetInScrollableCoordinates.dy
-                    - DartRuntimePrimitives.RequireValue(lineHeightLocal);
+                    - (
+                        lineHeightLocal
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    );
                 if (
                     (edgeBottomLocal >= scrollableRect.bottom)
                     && (edgeTopLocal <= scrollableRect.top)
@@ -1700,16 +1727,24 @@ internal class _ScrollableSelectionContainerDelegate__scrollable
             && (
                 (previousStartRecord is null)
                 || (
-                    (newRecord - DartRuntimePrimitives.RequireValue(previousStartRecord)).abs()
-                    > Foundation.ConstantsLibrary.precisionErrorTolerance
+                    (
+                        newRecord
+                        - (
+                            previousStartRecord
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    ).abs() > Foundation.ConstantsLibrary.precisionErrorTolerance
                 )
             )
         )
         {
             Offset deltaToOrigin = ScrollableLibrary._getDeltaToScrollOrigin(state);
-            Offset startOffset = DartRuntimePrimitives
-                .RequireValue(_currentDragStartRelatedToOrigin)
-                .translate(-deltaToOrigin.dx, -deltaToOrigin.dy);
+            Offset startOffset = (
+                _currentDragStartRelatedToOrigin
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).translate(-deltaToOrigin.dx, -deltaToOrigin.dy);
             selectable.dispatchSelectionEvent(
                 new SelectionEdgeUpdateEvent(globalPosition: startOffset)
             );
@@ -1724,16 +1759,24 @@ internal class _ScrollableSelectionContainerDelegate__scrollable
             && (
                 (previousEndRecord is null)
                 || (
-                    (newRecord - DartRuntimePrimitives.RequireValue(previousEndRecord)).abs()
-                    > Foundation.ConstantsLibrary.precisionErrorTolerance
+                    (
+                        newRecord
+                        - (
+                            previousEndRecord
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    ).abs() > Foundation.ConstantsLibrary.precisionErrorTolerance
                 )
             )
         )
         {
             Offset deltaToOriginLocal = ScrollableLibrary._getDeltaToScrollOrigin(state);
-            Offset endOffset = DartRuntimePrimitives
-                .RequireValue(_currentDragEndRelatedToOrigin)
-                .translate(-deltaToOriginLocal.dx, -deltaToOriginLocal.dy);
+            Offset endOffset = (
+                _currentDragEndRelatedToOrigin
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).translate(-deltaToOriginLocal.dx, -deltaToOriginLocal.dy);
             selectable.dispatchSelectionEvent(
                 SelectionEdgeUpdateEvent.CreateForEnd(globalPosition: endOffset)
             );
@@ -1869,11 +1912,11 @@ public class _RenderScrollSemantics__scrollable : RenderProxyBox
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) == _allowImplicitScrolling)
+            if ((__value) == _allowImplicitScrolling)
             {
                 return;
             }
-            _allowImplicitScrolling = DartRuntimePrimitives.RequireValue(__value);
+            _allowImplicitScrolling = (__value);
             markNeedsSemanticsUpdate();
         }
     }
@@ -2379,7 +2422,11 @@ internal class _VerticalOuterDimensionState__scrollable : ScrollableState
     internal virtual void _evaluateLockedAxis(Offset offset)
     {
         DartRuntimePrimitives.Assert(() => lastDragOffset is not null);
-        Offset offsetDelta = DartRuntimePrimitives.RequireValue(lastDragOffset) - offset;
+        Offset offsetDelta =
+            (
+                lastDragOffset
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) - offset;
         double axisDifferential = offsetDelta.dx.abs() - offsetDelta.dy.abs();
         if (axisDifferential.abs() >= Gestures.ConstantsLibrary.kTouchSlop)
         {

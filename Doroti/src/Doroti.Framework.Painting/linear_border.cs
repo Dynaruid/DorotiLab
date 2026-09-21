@@ -26,9 +26,13 @@ public class LinearBorderEdge
         a ??= new LinearBorderEdge(alignment: b!.alignment, size: 0);
         b ??= new LinearBorderEdge(alignment: a.alignment, size: 0);
         return new LinearBorderEdge(
-            size: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.size, b.size, t)),
-            alignment: DartRuntimePrimitives.RequireValue(
+            size: (
+                Dart_uiLibrary.lerpDouble(a.size, b.size, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            alignment: (
                 Dart_uiLibrary.lerpDouble(a.alignment, b.alignment, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -294,25 +298,25 @@ public class LinearBorder : OutlinedBorder
         {
             paintLocal.color = color;
             path.reset();
-            path.moveTo(rect.left, DartRuntimePrimitives.RequireValue(rect.top));
+            path.moveTo(rect.left, (rect.top));
             if (rect.width == 0.0)
             {
                 paintLocal.style = PaintingStyle.stroke;
-                path.lineTo(rect.left, DartRuntimePrimitives.RequireValue(rect.bottom));
+                path.lineTo(rect.left, (rect.bottom));
             }
             else
             {
                 if (rect.height == 0.0)
                 {
                     paintLocal.style = PaintingStyle.stroke;
-                    path.lineTo(rect.right, DartRuntimePrimitives.RequireValue(rect.top));
+                    path.lineTo(rect.right, (rect.top));
                 }
                 else
                 {
                     paintLocal.style = PaintingStyle.fill;
-                    path.lineTo(rect.right, DartRuntimePrimitives.RequireValue(rect.top));
-                    path.lineTo(rect.right, DartRuntimePrimitives.RequireValue(rect.bottom));
-                    path.lineTo(rect.left, DartRuntimePrimitives.RequireValue(rect.bottom));
+                    path.lineTo(rect.right, (rect.top));
+                    path.lineTo(rect.right, (rect.bottom));
+                    path.lineTo(rect.left, (rect.bottom));
                 }
             }
             canvas.drawPath(path, paintLocal);

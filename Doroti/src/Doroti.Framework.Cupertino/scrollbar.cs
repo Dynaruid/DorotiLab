@@ -108,12 +108,22 @@ internal class _CupertinoScrollbarState__scrollbar : RawScrollbarState<Cupertino
     {
         get
         {
-            return DartRuntimePrimitives.RequireValue(widget.thickness)
+            return (
+                    widget.thickness
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
                 + (
                     _thicknessAnimationController.value
                     * (
                         widget.thicknessWhileDragging
-                        - DartRuntimePrimitives.RequireValue(widget.thickness)
+                        - (
+                            widget.thickness
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     )
                 );
         }
@@ -122,12 +132,12 @@ internal class _CupertinoScrollbarState__scrollbar : RawScrollbarState<Cupertino
     {
         get
         {
-            return DartRuntimePrimitives.RequireValue(
+            return (
                 Dart_uiLibrary.Radius.lerp(
                     widget.radius,
                     widget.radiusWhileDragging,
                     _thicknessAnimationController.value
-                )
+                ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
         }
     }
@@ -182,7 +192,10 @@ internal class _CupertinoScrollbarState__scrollbar : RawScrollbarState<Cupertino
         {
             return;
         }
-        _pressStartAxisPosition = DartRuntimePrimitives.RequireValue(direction) switch
+        _pressStartAxisPosition = (
+            direction
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        ) switch
         {
             Axis.vertical => localPosition.dy,
             Axis.horizontal => localPosition.dx,
@@ -211,7 +224,10 @@ internal class _CupertinoScrollbarState__scrollbar : RawScrollbarState<Cupertino
         }
         _thicknessAnimationController.reverse();
         base.handleThumbPressEnd(localPosition, velocity);
-        var (axisPosition, axisVelocity) = DartRuntimePrimitives.RequireValue(direction) switch
+        var (axisPosition, axisVelocity) = (
+            direction
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        ) switch
         {
             Axis.horizontal => (localPosition.dx, velocity.pixelsPerSecond.dx),
             Axis.vertical => (localPosition.dy, velocity.pixelsPerSecond.dy),

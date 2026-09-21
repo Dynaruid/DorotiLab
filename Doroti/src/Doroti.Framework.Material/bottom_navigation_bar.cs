@@ -182,7 +182,10 @@ internal class _BottomNavigationTile__bottom_navigation_bar : StatelessWidget
     public override Widget build(BuildContext context)
     {
         long sizeLocal = default!;
-        double selectedFontSize = DartRuntimePrimitives.RequireValue(selectedLabelStyle.fontSize);
+        double selectedFontSize = (
+            selectedLabelStyle.fontSize
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         double selectedIconSize = selectedIconTheme?.size ?? iconSize;
         double unselectedIconSize = unselectedIconTheme?.size ?? iconSize;
         double selectedIconDiff = Math.Max(selectedIconSize - unselectedIconSize, 0);
@@ -230,7 +233,12 @@ internal class _BottomNavigationTile__bottom_navigation_bar : StatelessWidget
         {
             BottomNavigationBarType.@fixed => 1L,
             BottomNavigationBarType.shifting => (
-                DartRuntimePrimitives.RequireValue(flex) * 1000.0
+                (
+                    flex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) * 1000.0
             ).round(),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                 throw new InvalidOperationException("Non-exhaustive Dart switch value."),
@@ -443,8 +451,18 @@ internal class _Label__bottom_navigation_bar : StatelessWidget
                 transform: Matrix4.diagonal3(
                     new Vector3(
                         new Tween<double>(
-                            begin: DartRuntimePrimitives.RequireValue(unselectedFontSize)
-                                / DartRuntimePrimitives.RequireValue(selectedFontSize),
+                            begin: (
+                                unselectedFontSize
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
+                                / (
+                                    selectedFontSize
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                ),
                             end: 1.0
                         ).evaluate(animation)
                     )

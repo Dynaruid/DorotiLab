@@ -1251,7 +1251,10 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
         {
             return null;
         }
-        return DartRuntimePrimitives.RequireValue(childBaseline)
+        return (
+                childBaseline
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
             + (
                 direction switch
                 {
@@ -2189,7 +2192,10 @@ public class _RenderInputPadding__toggle_buttons : RenderShiftedBox
         Size drySize = getDryLayout(constraints);
         Size childSize = childLocal.getDryLayout(constraints);
         Offset childOffset = Alignment.center.alongOffset(drySize - childSize);
-        return DartRuntimePrimitives.RequireValue(result) + childOffset.dy;
+        return (
+                result
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) + childOffset.dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

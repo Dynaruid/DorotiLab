@@ -106,8 +106,7 @@ internal class _RenderSliverResizingHeader__sliver_resizing_header
         childForSlot(_Slot__sliver_resizing_header.minExtent);
     public virtual RenderBox? maxExtentPrototype =>
         childForSlot(_Slot__sliver_resizing_header.maxExtent);
-    public virtual RenderBox? child =>
-        childForSlot(DartRuntimePrimitives.RequireValue(_Slot__sliver_resizing_header.child));
+    public virtual RenderBox? child => childForSlot((_Slot__sliver_resizing_header.child));
     public virtual IEnumerable<RenderBox> children =>
         DartRuntimePrimitives.ConvertValue<IEnumerable<RenderBox>>(new List<RenderBox>());
 
@@ -314,10 +313,13 @@ internal class _RenderSliverResizingHeader__sliver_resizing_header
                 child,
                 value,
                 debugNameForSlot(
-                    DartRuntimePrimitives.RequireValue(
+                    (
                         DartCollectionRuntime.NullableMapValue<_Slot__sliver_resizing_header>(
                             childToSlot,
                             child
+                        )
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
                         )
                     )
                 )

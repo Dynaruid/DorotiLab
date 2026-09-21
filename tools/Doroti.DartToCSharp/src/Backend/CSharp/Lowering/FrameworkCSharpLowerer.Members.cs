@@ -692,7 +692,7 @@ internal sealed partial class FrameworkCSharpLowerer
             && actualType == expected + "?"
         )
         {
-            builder.Append("DartRuntimePrimitives.RequireValue(");
+            builder.Append("__dorotiNullAssert(");
             LowerExpression(
                 builder,
                 expression,
@@ -3064,9 +3064,7 @@ internal sealed partial class FrameworkCSharpLowerer
         builder.AppendLine("        {");
         if (needsSetterValuePromotion)
         {
-            builder.AppendLine(
-                $"            var {localName} = DartRuntimePrimitives.RequireValue(value);"
-            );
+            builder.AppendLine($"            var {localName} = __dorotiNullAssert(value);");
         }
         else if (needsNullableSetterLocal)
         {
@@ -3182,9 +3180,7 @@ internal sealed partial class FrameworkCSharpLowerer
         builder.AppendLine("        {");
         if (needsSetterValuePromotion)
         {
-            builder.AppendLine(
-                $"            var {localName} = DartRuntimePrimitives.RequireValue(value);"
-            );
+            builder.AppendLine($"            var {localName} = __dorotiNullAssert(value);");
         }
         else if (needsSetterNarrowing)
         {

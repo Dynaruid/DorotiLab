@@ -170,10 +170,25 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
         {
             if (
                 (childCount is not null)
-                && (index > (DartRuntimePrimitives.RequireValue(childCount) - 1L))
+                && (
+                    index
+                    > (
+                        (
+                            childCount
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) - 1L
+                    )
+                )
             )
             {
-                long childCount__8482__value8577 = DartRuntimePrimitives.RequireValue(childCount);
+                long childCount__8482__value8577 = (
+                    childCount
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
                 break;
             }
             itemExtent = itemExtentBuilder(index, layoutDimensions);
@@ -189,17 +204,16 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
                     _computeAnimationOffsetFor(animationKey, position);
                 }
                 totalAnimationOffset +=
-                    DartRuntimePrimitives.RequireValue(
-                        _animationOffsets.GetValueOrDefault(animationKey)
-                    )
-                    * (
-                        1L
-                        - DartRuntimePrimitives
-                            .RequireValue(_activeAnimations.GetValueOrDefault(animationKey))
-                            .value
-                    );
+                    (_animationOffsets.GetValueOrDefault(animationKey))
+                    * (1L - (_activeAnimations.GetValueOrDefault(animationKey)).value);
             }
-            position += DartRuntimePrimitives.RequireValue(itemExtent) - totalAnimationOffset;
+            position +=
+                (
+                    itemExtent
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) - totalAnimationOffset;
             ++index;
         }
         return index - 1L;
@@ -211,18 +225,15 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
         DartRuntimePrimitives.Assert(() => _activeAnimations.ContainsKey(key));
         double targetPosition = constraints.scrollOffset + constraints.remainingCacheExtent;
         var currentPosition = position;
-        long startingIndex = DartRuntimePrimitives
-            .RequireValue(_activeAnimations.GetValueOrDefault(key))
-            .fromIndex;
-        long lastIndex = DartRuntimePrimitives
-            .RequireValue(_activeAnimations.GetValueOrDefault(key))
-            .toIndex;
+        long startingIndex = (_activeAnimations.GetValueOrDefault(key)).fromIndex;
+        long lastIndex = (_activeAnimations.GetValueOrDefault(key)).toIndex;
         var currentIndex = startingIndex;
         var totalAnimatingOffset = 0.0;
         while ((currentIndex <= lastIndex) && (currentPosition < targetPosition))
         {
-            double itemExtent = DartRuntimePrimitives.RequireValue(
+            double itemExtent = (
                 itemExtentBuilder(currentIndex, layoutDimensions)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
             totalAnimatingOffset += itemExtent;
             currentPosition += itemExtent;
@@ -249,10 +260,25 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
         {
             if (
                 (childCount is not null)
-                && (currentIndex > (DartRuntimePrimitives.RequireValue(childCount) - 1L))
+                && (
+                    currentIndex
+                    > (
+                        (
+                            childCount
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) - 1L
+                    )
+                )
             )
             {
-                long childCount__11234__value11326 = DartRuntimePrimitives.RequireValue(childCount);
+                long childCount__11234__value11326 = (
+                    childCount
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
                 break;
             }
             itemExtentLocal = itemExtentBuilder(currentIndex, layoutDimensions);
@@ -265,17 +291,13 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
                 UniqueKey animationKey = _animationLeadingIndices.GetValueOrDefault(currentIndex)!;
                 DartRuntimePrimitives.Assert(() => _animationOffsets.ContainsKey(animationKey));
                 totalAnimationOffset +=
-                    DartRuntimePrimitives.RequireValue(
-                        _animationOffsets.GetValueOrDefault(animationKey)
-                    )
-                    * (
-                        1L
-                        - DartRuntimePrimitives
-                            .RequireValue(_activeAnimations.GetValueOrDefault(animationKey))
-                            .value
-                    );
+                    (_animationOffsets.GetValueOrDefault(animationKey))
+                    * (1L - (_activeAnimations.GetValueOrDefault(animationKey)).value);
             }
-            position += DartRuntimePrimitives.RequireValue(itemExtentLocal);
+            position += (
+                itemExtentLocal
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             currentIndex++;
         }
         return position - totalAnimationOffset;
@@ -299,8 +321,12 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
                 Offset childOffset =
                     new Offset(
                         parentDataLocal.depth * indentation,
-                        DartRuntimePrimitives.RequireValue(parentDataLocal.layoutOffset)
-                            - constraints.scrollOffset
+                        (
+                            parentDataLocal.layoutOffset
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) - constraints.scrollOffset
                     ) + offset;
                 if (
                     (mainAxisDelta < constraints.remainingPaintExtent)
@@ -344,13 +370,19 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
             long parentIndex = Math.Max(segment.leadingIndex - 1L, 0L);
             double leadingOffset =
                 indexToLayoutOffset(0.0, parentIndex)
-                + DartRuntimePrimitives.RequireValue(
+                + (
                     itemExtentBuilder(parentIndex, layoutDimensions)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
             double trailingOffset =
                 indexToLayoutOffset(0.0, segment.trailingIndex)
-                + DartRuntimePrimitives.RequireValue(
+                + (
                     itemExtentBuilder(segment.trailingIndex, layoutDimensions)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
             var rect = Rect.fromPoints(
                 new Offset(0.0, leadingOffset),

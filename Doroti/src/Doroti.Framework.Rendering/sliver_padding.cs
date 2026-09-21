@@ -292,16 +292,36 @@ public abstract class RenderSliverEdgeInsetsPadding
                     var childParentData = ((SliverPhysicalParentData?)(object?)child!.parentData!)!;
                     innerRect = (offset + childParentData.paintOffset) & childSize;
                     DartRuntimePrimitives.Assert(() =>
-                        DartRuntimePrimitives.RequireValue(innerRect).top >= outerRect.top
+                        (
+                            innerRect
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ).top >= outerRect.top
                     );
                     DartRuntimePrimitives.Assert(() =>
-                        DartRuntimePrimitives.RequireValue(innerRect).left >= outerRect.left
+                        (
+                            innerRect
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ).left >= outerRect.left
                     );
                     DartRuntimePrimitives.Assert(() =>
-                        DartRuntimePrimitives.RequireValue(innerRect).right <= outerRect.right
+                        (
+                            innerRect
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ).right <= outerRect.right
                     );
                     DartRuntimePrimitives.Assert(() =>
-                        DartRuntimePrimitives.RequireValue(innerRect).bottom <= outerRect.bottom
+                        (
+                            innerRect
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ).bottom <= outerRect.bottom
                     );
                 }
                 DebugLibrary.debugPaintPadding(context.canvas, outerRect, innerRect);

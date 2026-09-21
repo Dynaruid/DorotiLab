@@ -187,7 +187,14 @@ public abstract class BaseTapGestureRecognizer : PrimaryPointerGestureRecognizer
                 if (@event.buttons != _down!.buttons)
                 {
                     resolve(GestureDisposition.rejected);
-                    stopTrackingPointer(DartRuntimePrimitives.RequireValue(primaryPointer));
+                    stopTrackingPointer(
+                        (
+                            primaryPointer
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    );
                 }
                 else
                 {

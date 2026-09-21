@@ -693,7 +693,7 @@ public class FormFieldState<T>
                 skipTraversal: true,
                 onFocusChange: (value) =>
                 {
-                    if (!DartRuntimePrimitives.RequireValue(value))
+                    if (!(value))
                     {
                         setState(() =>
                         {

@@ -36,7 +36,15 @@ public class DefaultTextStyle : InheritedTheme
         this.textWidthBasis = textWidthBasis;
         this.textHeightBehavior = textHeightBehavior;
         System.Diagnostics.Debug.Assert(
-            (maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L)
+            (maxLines is null)
+                || (
+                    (
+                        maxLines
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
     }
 
@@ -120,10 +128,10 @@ public class DefaultTextStyle : InheritedTheme
         return new DefaultTextStyle(
             style: style,
             textAlign: textAlign,
-            softWrap: DartRuntimePrimitives.RequireValue(softWrap),
-            overflow: DartRuntimePrimitives.RequireValue(overflow),
+            softWrap: (softWrap),
+            overflow: (overflow),
             maxLines: maxLines,
-            textWidthBasis: DartRuntimePrimitives.RequireValue(textWidthBasis),
+            textWidthBasis: (textWidthBasis),
             textHeightBehavior: textHeightBehavior,
             child: child
         );
@@ -414,9 +422,7 @@ public class Text : StatelessWidget
         {
             (TextScaler textScalerAlternate, _) => textScalerAlternate,
             (null, double textScaleFactorLocal) => TextScaler.CreateLinear(
-                DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(textScaleFactorLocal)
-                )
+                ((textScaleFactorLocal))
             ),
             (null, null) => MediaQuery.textScalerOf(context),
         };
@@ -804,7 +810,12 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
             if (
                 (indexAlternate == (checked(selectables.Count) - 1L))
                 && Equals(
-                    DartRuntimePrimitives.RequireValue(lastSelectionResult),
+                    (
+                        lastSelectionResult
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     SelectionResult.next
                 )
             )
@@ -821,7 +832,12 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
             }
             if (
                 Equals(
-                    DartRuntimePrimitives.RequireValue(lastSelectionResult),
+                    (
+                        lastSelectionResult
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     SelectionResult.next
                 )
             )
@@ -847,12 +863,13 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
                     var startIndex = 0L;
                     if ((lastNextIndex is not null) && selectionAtStartOfSelectable)
                     {
-                        long lastNextIndex__38240__value40009 = DartRuntimePrimitives.RequireValue(
+                        long lastNextIndex__38240__value40009 = (
                             lastNextIndex
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
                         );
-                        startIndex =
-                            DartRuntimePrimitives.RequireValue(lastNextIndex__38240__value40009)
-                            + 1L;
+                        startIndex = (lastNextIndex__38240__value40009) + 1L;
                     }
                     else
                     {
@@ -877,7 +894,12 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
             if (
                 (indexAlternate == 0L)
                 && Equals(
-                    DartRuntimePrimitives.RequireValue(lastSelectionResult),
+                    (
+                        lastSelectionResult
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     SelectionResult.previous
                 )
             )
@@ -1022,18 +1044,33 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
                 && (
                     (
                         !forwardSelection
-                        && DartRuntimePrimitives.RequireValue(forward)
+                        && (
+                            forward
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                         && (newIndex >= currentSelectionStartIndex)
                     )
                     || (
                         forwardSelection
-                        && !DartRuntimePrimitives.RequireValue(forward)
+                        && !(
+                            forward
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                         && (newIndex <= currentSelectionStartIndex)
                     )
                 )
             )
             {
-                bool forward__43403__value45352 = DartRuntimePrimitives.RequireValue(forward);
+                bool forward__43403__value45352 = (
+                    forward
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
                 currentSelectionStartIndex = currentSelectionEndIndex;
             }
             currentSelectionEndIndex = newIndex;
@@ -1046,24 +1083,42 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
                 && (
                     (
                         !forwardSelectionLocal
-                        && !DartRuntimePrimitives.RequireValue(forward)
+                        && !(
+                            forward
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                         && (newIndex <= currentSelectionEndIndex)
                     )
                     || (
                         forwardSelectionLocal
-                        && DartRuntimePrimitives.RequireValue(forward)
+                        && (
+                            forward
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                         && (newIndex >= currentSelectionEndIndex)
                     )
                 )
             )
             {
-                bool forward__43403__value45778 = DartRuntimePrimitives.RequireValue(forward);
+                bool forward__43403__value45778 = (
+                    forward
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
                 currentSelectionEndIndex = currentSelectionStartIndex;
             }
             currentSelectionStartIndex = newIndex;
         }
         _flushInactiveSelections();
-        return DartRuntimePrimitives.RequireValue(finalResult);
+        return (
+            finalResult
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

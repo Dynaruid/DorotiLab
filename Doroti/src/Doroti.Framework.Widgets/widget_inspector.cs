@@ -119,14 +119,8 @@ internal class _MulticastCanvas__widget_inspector : Canvas
 
     public new virtual void drawColor(Color color, BlendMode blendMode)
     {
-        _main.drawColor(
-            color,
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(blendMode))
-        );
-        _screenshot.drawColor(
-            color,
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(blendMode))
-        );
+        _main.drawColor(color, ((blendMode)));
+        _screenshot.drawColor(color, ((blendMode)));
     }
 
     public new virtual void drawDRRect(RRect outer, RRect inner, Paint paint)
@@ -240,16 +234,8 @@ internal class _MulticastCanvas__widget_inspector : Canvas
 
     public new virtual void drawVertices(Vertices vertices, BlendMode blendMode, Paint paint)
     {
-        _main.drawVertices(
-            vertices,
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(blendMode)),
-            paint
-        );
-        _screenshot.drawVertices(
-            vertices,
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(blendMode)),
-            paint
-        );
+        _main.drawVertices(vertices, ((blendMode)), paint);
+        _screenshot.drawVertices(vertices, ((blendMode)), paint);
     }
 
     public new virtual long getSaveCount()
@@ -290,11 +276,8 @@ internal class _MulticastCanvas__widget_inspector : Canvas
 
     public new virtual void skew(double sx, double sy)
     {
-        _main.skew(sx, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(sy)));
-        _screenshot.skew(
-            sx,
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(sy))
-        );
+        _main.skew(sx, ((sy)));
+        _screenshot.skew(sx, ((sy)));
     }
 
     public virtual void transform(Float64List matrix4)
@@ -330,12 +313,15 @@ public static partial class Widget_inspectorLibrary
                 Rect? paintClip = @object.describeApproximatePaintClip(child);
                 if (paintClip is not null)
                 {
-                    Rect paintClip__9652__value9716 = DartRuntimePrimitives.RequireValue(paintClip);
+                    Rect paintClip__9652__value9716 = (
+                        paintClip
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    );
                     Rect transformedPaintClip = MatrixUtils.transformRect(
                         transform,
-                        DartRuntimePrimitives.RequireValue(
-                            DartRuntimePrimitives.RequireValue(paintClip__9652__value9716)
-                        )
+                        ((paintClip__9652__value9716))
                     );
                     childBounds = childBounds.intersect(transformedPaintClip);
                 }
@@ -823,11 +809,8 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                 if (parameters.ContainsKey("enabled"))
                 {
                     var value = parameters.GetValueOrDefault("enabled") == "true";
-                    await setter(DartRuntimePrimitives.RequireValue(value));
-                    _postExtensionStateChangedEvent(
-                        name,
-                        DartRuntimePrimitives.RequireValue(value)
-                    );
+                    await setter((value));
+                    _postExtensionStateChangedEvent(name, (value));
                 }
                 return new DartMap<string, object?>
                 {
@@ -1007,10 +990,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             {
                 if (WidgetsBinding.instance.debugShowWidgetInspectorOverride != value)
                 {
-                    _changeWidgetSelectionMode(
-                        DartRuntimePrimitives.RequireValue(value),
-                        notifyStateChange: false
-                    );
+                    _changeWidgetSelectionMode((value), notifyStateChange: false);
                 }
                 return Future.value();
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -1704,7 +1684,13 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             {
                 if (_isValueCreatedByLocalProject(elements[(int)i]))
                 {
-                    numLocalParents = DartRuntimePrimitives.RequireValue(numLocalParents) - 1L;
+                    numLocalParents =
+                        (
+                            numLocalParents
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) - 1L;
                     if (numLocalParents <= 0L)
                     {
                         elements = elements.take(i + 1L).ToList();
@@ -1802,10 +1788,11 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         );
         if (cachedValue is not null)
         {
-            bool cachedValue__63933__value63991 = DartRuntimePrimitives.RequireValue(cachedValue);
-            return DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(cachedValue__63933__value63991)
+            bool cachedValue__63933__value63991 = (
+                cachedValue
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
+            return ((cachedValue__63933__value63991));
         }
         bool result = _isLocalCreationLocationImpl(locationUri);
         _isLocalCreationCache[locationUri] = result;
@@ -2645,7 +2632,10 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         _widgetCreationTracked ??= (
             CreationLocation.of(new _WidgetForTypeTests__widget_inspector()) is not null
         );
-        return DartRuntimePrimitives.RequireValue(_widgetCreationTracked);
+        return (
+            _widgetCreationTracked
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -3261,10 +3251,20 @@ internal class _WidgetInspectorState__widget_inspector
             Rect? paintClip = @object.describeApproximatePaintClip(child);
             if (
                 (paintClip is not null)
-                && !DartRuntimePrimitives.RequireValue(paintClip).contains(localPosition)
+                && !(
+                    paintClip
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).contains(localPosition)
             )
             {
-                Rect paintClip__106714__value106780 = DartRuntimePrimitives.RequireValue(paintClip);
+                Rect paintClip__106714__value106780 = (
+                    paintClip
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
                 continue;
             }
             Matrix4 childTransform = transform.clone();
@@ -3341,7 +3341,16 @@ internal class _WidgetInspectorState__widget_inspector
         Rect bounds = (Offset.zero & (view.physicalSize / view.devicePixelRatio)).deflate(
             Widget_inspectorLibrary._kOffScreenMargin
         );
-        if (!bounds.contains(DartRuntimePrimitives.RequireValue(_lastPointerLocation)))
+        if (
+            !bounds.contains(
+                (
+                    _lastPointerLocation
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
+        )
         {
             selection.clear();
         }
@@ -3362,7 +3371,14 @@ internal class _WidgetInspectorState__widget_inspector
         }
         if (_lastPointerLocation is not null)
         {
-            _inspectAt(DartRuntimePrimitives.RequireValue(_lastPointerLocation));
+            _inspectAt(
+                (
+                    _lastPointerLocation
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            );
             WidgetInspectorService.instance._notifyToolsOfSelection(
                 selection.current,
                 restrictToProjectFiles: true
@@ -3569,7 +3585,7 @@ public class InspectorSelection : ChangeNotifier
         set
         {
             var __value = value;
-            _index = DartRuntimePrimitives.RequireValue(__value);
+            _index = (__value);
             _computeCurrent();
         }
     }
@@ -4959,17 +4975,19 @@ public static partial class Widget_inspectorLibrary
         long? id = DartCollectionRuntime.NullableMapValue<long>(_locationToId, location);
         if (id is not null)
         {
-            long id__152830__value152866 = DartRuntimePrimitives.RequireValue(id);
-            return DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(id__152830__value152866)
+            long id__152830__value152866 = (
+                id ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
+            return ((id__152830__value152866));
         }
         id = checked(_locations.Count);
         _locations.Add(location);
-        _locationToId[location] = DartRuntimePrimitives.RequireValue(
-            DartRuntimePrimitives.RequireValue(id)
+        _locationToId[location] = (
+            (id ?? throw new global::System.NullReferenceException("Dart null assertion failed."))
         );
-        return DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(id));
+        return (
+            (id ?? throw new global::System.NullReferenceException("Dart null assertion failed."))
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }

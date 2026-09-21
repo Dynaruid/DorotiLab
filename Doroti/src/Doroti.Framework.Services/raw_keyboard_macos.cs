@@ -68,7 +68,7 @@ public class RawKeyEventDataMacOs : RawKeyEventData
         {
             if (specifiedLogicalKey is long specifiedLogicalKey__value3625)
             {
-                long key = DartRuntimePrimitives.RequireValue(specifiedLogicalKey__value3625);
+                long key = (specifiedLogicalKey__value3625);
                 return LogicalKeyboardKey.findKeyByKeyId(key) ?? new LogicalKeyboardKey(key);
             }
             LogicalKeyboardKey? numPadKey =
@@ -100,10 +100,7 @@ public class RawKeyEventDataMacOs : RawKeyEventData
             {
                 long keyId =
                     LogicalKeyboardKey.unicodePlane
-                    | (
-                        DartRuntimePrimitives.RequireValue(character__value5291)
-                        & LogicalKeyboardKey.valueMask
-                    );
+                    | ((character__value5291) & LogicalKeyboardKey.valueMask);
                 return LogicalKeyboardKey.findKeyByKeyId(keyId) ?? new LogicalKeyboardKey(keyId);
             }
             return new LogicalKeyboardKey(keyCode | LogicalKeyboardKey.macosPlane);

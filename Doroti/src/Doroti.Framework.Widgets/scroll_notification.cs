@@ -81,8 +81,11 @@ public class ScrollUpdateNotification : ScrollNotification
         this.scrollDelta = scrollDelta;
         if (depth is not null)
         {
-            long depth__value8172 = DartRuntimePrimitives.RequireValue(depth);
-            _depth = DartRuntimePrimitives.RequireValue(depth__value8172);
+            long depth__value8172 = (
+                depth
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
+            _depth = (depth__value8172);
         }
     }
 

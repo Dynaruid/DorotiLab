@@ -620,14 +620,14 @@ internal class _MergeableMaterialState__mergeable_material
         Radius endRadius = Radius.zero;
         if ((index > 0L) && (_children[(int)(index - 1L)] is MaterialGap))
         {
-            startRadius = DartRuntimePrimitives.RequireValue(
+            startRadius = (
                 Dart_uiLibrary.Radius.lerp(
                     Radius.zero,
                     cardRadius,
                     _animationTuples
                         .GetValueOrDefault(_children[(int)(index - 1L)].key)!
                         .startAnimation.value
-                )
+                ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
         }
         if (
@@ -635,14 +635,14 @@ internal class _MergeableMaterialState__mergeable_material
             && (_children[(int)(index + 1L)] is MaterialGap)
         )
         {
-            endRadius = DartRuntimePrimitives.RequireValue(
+            endRadius = (
                 Dart_uiLibrary.Radius.lerp(
                     Radius.zero,
                     cardRadius,
                     _animationTuples
                         .GetValueOrDefault(_children[(int)(index + 1L)].key)!
                         .endAnimation.value
-                )
+                ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
         }
         if (Equals(widget.mainAxis, Axis.vertical))
@@ -665,12 +665,12 @@ internal class _MergeableMaterialState__mergeable_material
     internal virtual double _getGapSize(long index)
     {
         var gap = ((MaterialGap?)_children[(int)index])!;
-        return DartRuntimePrimitives.RequireValue(
+        return (
             Dart_uiLibrary.lerpDouble(
                 _animationTuples.GetValueOrDefault(gap.key)!.gapStart,
                 gap.size,
                 _animationTuples.GetValueOrDefault(gap.key)!.gapAnimation.value
-            )
+            ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

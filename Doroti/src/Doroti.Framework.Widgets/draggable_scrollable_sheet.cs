@@ -217,7 +217,14 @@ public class DraggableScrollableSheet : StatefulWidget
         System.Diagnostics.Debug.Assert(initialChildSize <= maxChildSize);
         System.Diagnostics.Debug.Assert(
             (snapAnimationDuration is null)
-                || (DartRuntimePrimitives.RequireValue(snapAnimationDuration) > Duration.zero)
+                || (
+                    (
+                        snapAnimationDuration
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > Duration.zero
+                )
         );
     }
 
@@ -355,7 +362,7 @@ public class _DraggableSheetExtent__draggable_scrollable_sheet
         new DraggableScrollableNotification(
             minExtent: minSize,
             maxExtent: maxSize,
-            extent: DartRuntimePrimitives.RequireValue(currentSize),
+            extent: (currentSize),
             initialExtent: initialSize,
             context: context,
             shouldCloseOnMinExtent: shouldCloseOnMinExtent
@@ -822,13 +829,14 @@ public class _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet
                     double? snapSize = _getCurrentSnapSize();
                     if (snapSize is not null)
                     {
-                        double snapSize__39055__value39101 = DartRuntimePrimitives.RequireValue(
+                        double snapSize__39055__value39101 = (
                             snapSize
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
                         );
                         extent.updateSize(
-                            DartRuntimePrimitives.RequireValue(
-                                DartRuntimePrimitives.RequireValue(snapSize__39055__value39101)
-                            ),
+                            ((snapSize__39055__value39101)),
                             context.notificationContext!
                         );
                     }

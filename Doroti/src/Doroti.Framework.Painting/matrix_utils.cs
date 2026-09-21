@@ -324,10 +324,7 @@ public abstract class MatrixUtils
 
     internal static double _min4(double a, double b, double c, double d)
     {
-        var e =
-            (DartRuntimePrimitives.RequireValue(a) < DartRuntimePrimitives.RequireValue(b))
-                ? DartRuntimePrimitives.RequireValue(a)
-                : DartRuntimePrimitives.RequireValue(b);
+        var e = ((a) < (b)) ? (a) : (b);
         var f = (c < d) ? c : d;
         return (e < f) ? e : f;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -335,10 +332,7 @@ public abstract class MatrixUtils
 
     internal static double _max4(double a, double b, double c, double d)
     {
-        var e =
-            (DartRuntimePrimitives.RequireValue(a) > DartRuntimePrimitives.RequireValue(b))
-                ? DartRuntimePrimitives.RequireValue(a)
-                : DartRuntimePrimitives.RequireValue(b);
+        var e = ((a) > (b)) ? (a) : (b);
         var f = (c > d) ? c : d;
         return (e > f) ? e : f;
         throw new InvalidOperationException("Dart control flow completed without a value.");

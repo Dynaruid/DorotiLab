@@ -419,17 +419,35 @@ public class RefreshIndicatorState
                     if (Equals(notification__as16986.metrics.axisDirection, AxisDirection.down))
                     {
                         _dragOffset =
-                            DartRuntimePrimitives.RequireValue(_dragOffset)
-                            - DartRuntimePrimitives.RequireValue(notification__as16986.scrollDelta);
+                            (
+                                _dragOffset
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
+                            - (
+                                notification__as16986.scrollDelta
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            );
                     }
                     else
                     {
                         if (Equals(notification__as16986.metrics.axisDirection, AxisDirection.up))
                         {
                             _dragOffset =
-                                DartRuntimePrimitives.RequireValue(_dragOffset)
-                                + DartRuntimePrimitives.RequireValue(
+                                (
+                                    _dragOffset
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                )
+                                + (
                                     notification__as16986.scrollDelta
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
                                 );
                         }
                     }
@@ -457,8 +475,12 @@ public class RefreshIndicatorState
                         if (Equals(notification__as17855.metrics.axisDirection, AxisDirection.down))
                         {
                             _dragOffset =
-                                DartRuntimePrimitives.RequireValue(_dragOffset)
-                                - notification__as17855.overscroll;
+                                (
+                                    _dragOffset
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                ) - notification__as17855.overscroll;
                         }
                         else
                         {
@@ -470,8 +492,12 @@ public class RefreshIndicatorState
                             )
                             {
                                 _dragOffset =
-                                    DartRuntimePrimitives.RequireValue(_dragOffset)
-                                    + notification__as17855.overscroll;
+                                    (
+                                        _dragOffset
+                                        ?? throw new global::System.NullReferenceException(
+                                            "Dart null assertion failed."
+                                        )
+                                    ) + notification__as17855.overscroll;
                             }
                         }
                         _checkDragOffset(notification__as17855.metrics.viewportDimension);
@@ -572,8 +598,10 @@ public class RefreshIndicatorState
             || Equals(_status, RefreshIndicatorStatus.armed)
         );
         double newValue =
-            DartRuntimePrimitives.RequireValue(_dragOffset)
-            / (containerExtent * Refresh_indicatorLibrary._kDragContainerExtentPercentage);
+            (
+                _dragOffset
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) / (containerExtent * Refresh_indicatorLibrary._kDragContainerExtentPercentage);
         if (Equals(_status, RefreshIndicatorStatus.armed))
         {
             newValue = Math.Max(newValue, 1.0 / Refresh_indicatorLibrary._kDragSizeFactorLimit);
@@ -601,7 +629,12 @@ public class RefreshIndicatorState
             _status = newMode;
             widget.onStatusChange?.Invoke(_status);
         });
-        switch (DartRuntimePrimitives.RequireValue(_status))
+        switch (
+            (
+                _status
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        )
         {
             case RefreshIndicatorStatus.done:
             {
@@ -744,11 +777,19 @@ public class RefreshIndicatorState
                             __collection24667.Add(
                                 DartRuntimePrimitives.ConvertValue<Widget>(
                                     new Positioned(
-                                        top: DartRuntimePrimitives.RequireValue(_isIndicatorAtTop)
+                                        top: (
+                                            _isIndicatorAtTop
+                                            ?? throw new global::System.NullReferenceException(
+                                                "Dart null assertion failed."
+                                            )
+                                        )
                                             ? widget.edgeOffset
                                             : null,
-                                        bottom: !DartRuntimePrimitives.RequireValue(
+                                        bottom: !(
                                             _isIndicatorAtTop
+                                            ?? throw new global::System.NullReferenceException(
+                                                "Dart null assertion failed."
+                                            )
                                         )
                                             ? widget.edgeOffset
                                             : null,
@@ -757,16 +798,22 @@ public class RefreshIndicatorState
                                         child: new SizeTransition(
                                             alignment: new AlignmentDirectional(
                                                 -1.0,
-                                                DartRuntimePrimitives.RequireValue(
+                                                (
                                                     _isIndicatorAtTop
+                                                    ?? throw new global::System.NullReferenceException(
+                                                        "Dart null assertion failed."
+                                                    )
                                                 )
                                                     ? 1.0
                                                     : -1.0
                                             ),
                                             sizeFactor: _positionFactor,
                                             child: new Padding(
-                                                padding: DartRuntimePrimitives.RequireValue(
+                                                padding: (
                                                     _isIndicatorAtTop
+                                                    ?? throw new global::System.NullReferenceException(
+                                                        "Dart null assertion failed."
+                                                    )
                                                 )
                                                     ? EdgeInsets.CreateOnly(
                                                         top: widget.displacement
@@ -775,8 +822,11 @@ public class RefreshIndicatorState
                                                         bottom: widget.displacement
                                                     ),
                                                 child: new Align(
-                                                    alignment: DartRuntimePrimitives.RequireValue(
+                                                    alignment: (
                                                         _isIndicatorAtTop
+                                                        ?? throw new global::System.NullReferenceException(
+                                                            "Dart null assertion failed."
+                                                        )
                                                     )
                                                         ? Alignment.topCenter
                                                         : Alignment.bottomCenter,

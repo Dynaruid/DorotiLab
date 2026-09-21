@@ -1382,12 +1382,12 @@ public class TextInput
             return default!;
         }
         var client = (long)args[(int)0L];
-        if (DartRuntimePrimitives.RequireValue(client) != _currentConnection!._id)
+        if ((client) != _currentConnection!._id)
         {
             var debugAllowAnyway = false;
             DartRuntimePrimitives.Assert(() =>
             {
-                if (DartRuntimePrimitives.RequireValue(client) == -1L)
+                if ((client) == -1L)
                 {
                     debugAllowAnyway = true;
                 }

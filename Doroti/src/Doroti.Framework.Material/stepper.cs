@@ -245,8 +245,18 @@ public class Stepper : StatefulWidget
             (stepIconHeight is null)
                 || (stepIconWidth is null)
                 || (
-                    DartRuntimePrimitives.RequireValue(stepIconHeight)
-                    == DartRuntimePrimitives.RequireValue(stepIconWidth)
+                    (
+                        stepIconHeight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                    == (
+                        stepIconWidth
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
         );
     }
@@ -378,8 +388,9 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
     internal virtual Widget _buildCircleChild(long index, bool oldState)
     {
         StepState stateLocal = oldState
-            ? DartRuntimePrimitives.RequireValue(
+            ? (
                 DartCollectionRuntime.NullableMapValue<StepState>(_oldStates, index)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             )
             : widget.steps[(int)index].state;
         if (widget.stepIconBuilder?.Invoke(index, stateLocal) is Widget icon)
@@ -503,8 +514,12 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
                         width: _stepIconWidth ?? StepperLibrary._kStepSize,
                         height: (_stepIconHeight is not null)
                             ? (
-                                DartRuntimePrimitives.RequireValue(_stepIconHeight)
-                                * StepperLibrary._kTriangleSqrt
+                                (
+                                    _stepIconHeight
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                ) * StepperLibrary._kTriangleSqrt
                             )
                             : StepperLibrary._kTriangleHeight,
                         child: new CustomPaint(
@@ -854,11 +869,25 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
         double? marginRight = _stepIconMargin?.resolve(TextDirection.ltr).right;
         double? additionalMarginLeft =
             (marginLeft is not null)
-                ? (DartRuntimePrimitives.RequireValue(marginLeft) / 2.0)
+                ? (
+                    (
+                        marginLeft
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) / 2.0
+                )
                 : null;
         double? additionalMarginRight =
             (marginRight is not null)
-                ? (DartRuntimePrimitives.RequireValue(marginRight) / 2.0)
+                ? (
+                    (
+                        marginRight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) / 2.0
+                )
                 : null;
         EdgeInsetsGeometry effectiveVerticalContentPadding = (
             widget.contentPadding ?? StepperLibrary._kDefaultVerticalContentPadding
@@ -1175,8 +1204,12 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
                             child: new SizedBox(
                                 height: (_stepIconHeight is not null)
                                     ? (
-                                        DartRuntimePrimitives.RequireValue(_stepIconHeight)
-                                        * _heightFactor
+                                        (
+                                            _stepIconHeight
+                                            ?? throw new global::System.NullReferenceException(
+                                                "Dart null assertion failed."
+                                            )
+                                        ) * _heightFactor
                                     )
                                     : null,
                                 child: new Row(children: childrenLocal)

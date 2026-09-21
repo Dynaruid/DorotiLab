@@ -404,15 +404,39 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
             return null;
         }
         long? year = Dart_coreLibrary.tryParse(inputParts[(int)2L], radix: 10L);
-        if ((year is null) || (DartRuntimePrimitives.RequireValue(year) < 1L))
+        if (
+            (year is null)
+            || (
+                (
+                    year
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) < 1L
+            )
+        )
         {
             return null;
         }
         long? month = Dart_coreLibrary.tryParse(inputParts[(int)0L], radix: 10L);
         if (
             (month is null)
-            || (DartRuntimePrimitives.RequireValue(month) < 1L)
-            || (DartRuntimePrimitives.RequireValue(month) > 12L)
+            || (
+                (
+                    month
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) < 1L
+            )
+            || (
+                (
+                    month
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) > 12L
+            )
         )
         {
             return null;
@@ -420,12 +444,38 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
         long? day = Dart_coreLibrary.tryParse(inputParts[(int)1L], radix: 10L);
         if (
             (day is null)
-            || (DartRuntimePrimitives.RequireValue(day) < 1L)
             || (
-                DartRuntimePrimitives.RequireValue(day)
+                (
+                    day
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) < 1L
+            )
+            || (
+                (
+                    day
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
                 > _getDaysInMonth(
-                    DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(year)),
-                    DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(month))
+                    (
+                        (
+                            year
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    ),
+                    (
+                        (
+                            month
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    )
                 )
             )
         )
@@ -435,9 +485,24 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
         try
         {
             return DartRuntimePrimitives.CreateDateTime(
-                DartRuntimePrimitives.RequireValue(year),
-                DartRuntimePrimitives.RequireValue(month),
-                DartRuntimePrimitives.RequireValue(day)
+                (
+                    year
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                (
+                    month
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                (
+                    day
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
         }
         catch (DartArgumentError)

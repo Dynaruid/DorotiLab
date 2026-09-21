@@ -556,14 +556,28 @@ public class _RenderSingleChildViewport__single_child_scroll_view
         {
             return new RevealedOffset(
                 offset: offset.pixels,
-                rect: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect))
+                rect: (
+                    (
+                        rect
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
             );
         }
         RenderBox targetBox = (RenderBox)target;
         Matrix4 transform = targetBox.getTransformTo(child);
         Rect bounds = MatrixUtils.transformRect(
             transform,
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect))
+            (
+                (
+                    rect
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
         );
         Size contentSize = child!.size;
         var (mainAxisExtent, leadingScrollOffset, targetMainAxisExtent) = axisDirection switch

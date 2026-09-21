@@ -71,13 +71,12 @@ public class CupertinoTabBar : StatelessWidget, PreferredSizeWidget
         this.border = __border;
         System.Diagnostics.Debug.Assert(checked(items.Count) >= 2L);
         System.Diagnostics.Debug.Assert(
-            (0L <= DartRuntimePrimitives.RequireValue(currentIndex))
-                && (DartRuntimePrimitives.RequireValue(currentIndex) < checked(items.Count))
+            (0L <= (currentIndex)) && ((currentIndex) < checked(items.Count))
         );
         System.Diagnostics.Debug.Assert(__height >= 0.0);
     }
 
-    public virtual Size preferredSize => new Size(DartRuntimePrimitives.RequireValue(height));
+    public virtual Size preferredSize => new Size((height));
 
     public virtual bool opaque(BuildContext context)
     {

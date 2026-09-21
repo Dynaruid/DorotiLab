@@ -266,12 +266,11 @@ internal class _RoundedRectangleToCircleBorder__rounded_rectangle_border
         RRect rrect = radius.toRRect(rect);
         if (inflation is not null)
         {
-            double inflation__value5719 = DartRuntimePrimitives.RequireValue(inflation);
-            rrect = rrect.inflate(
-                DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(inflation__value5719)
-                )
+            double inflation__value5719 = (
+                inflation
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
+            rrect = rrect.inflate(((inflation__value5719)));
         }
         canvas.drawRRect(rrect, paint);
     }
@@ -281,12 +280,11 @@ internal class _RoundedRectangleToCircleBorder__rounded_rectangle_border
         RRect rrect = radius.toRRect(rect);
         if (inflation is not null)
         {
-            double inflation__value5959 = DartRuntimePrimitives.RequireValue(inflation);
-            rrect = rrect.inflate(
-                DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(inflation__value5959)
-                )
+            double inflation__value5959 = (
+                inflation
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
+            rrect = rrect.inflate(((inflation__value5959)));
         }
         return (
             (Func<Path>)(
@@ -617,12 +615,11 @@ internal class _RoundedSuperellipseToCircleBorder__rounded_rectangle_border
         RSuperellipse rsuperellipse = radius.toRSuperellipse(rect);
         if (inflation is not null)
         {
-            double inflation__value12640 = DartRuntimePrimitives.RequireValue(inflation);
-            rsuperellipse = rsuperellipse.inflate(
-                DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(inflation__value12640)
-                )
+            double inflation__value12640 = (
+                inflation
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
+            rsuperellipse = rsuperellipse.inflate(((inflation__value12640)));
         }
         canvas.drawRSuperellipse(rsuperellipse, paint);
     }
@@ -632,12 +629,11 @@ internal class _RoundedSuperellipseToCircleBorder__rounded_rectangle_border
         RSuperellipse rsuperellipse = radius.toRSuperellipse(rect);
         if (inflation is not null)
         {
-            double inflation__value12936 = DartRuntimePrimitives.RequireValue(inflation);
-            rsuperellipse = rsuperellipse.inflate(
-                DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(inflation__value12936)
-                )
+            double inflation__value12936 = (
+                inflation
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
+            rsuperellipse = rsuperellipse.inflate(((inflation__value12936)));
         }
         return (
             (Func<Path>)(
@@ -855,7 +851,7 @@ internal abstract class _ShapeToCircleBorder__rounded_rectangle_border<T> : Outl
                             (0.5 + (eccentricity / 2L)) * rect.height / 2L
                         )
                     ),
-                    DartRuntimePrimitives.RequireValue(circularity)
+                    (circularity)
                 )!;
             }
             else
@@ -868,14 +864,14 @@ internal abstract class _ShapeToCircleBorder__rounded_rectangle_border<T> : Outl
                             rect.height / 2L
                         )
                     ),
-                    DartRuntimePrimitives.RequireValue(circularity)
+                    (circularity)
                 )!;
             }
         }
         return BorderRadius.lerp(
             resolvedRadius,
             BorderRadius.CreateCircular(rect.shortestSide / 2L),
-            DartRuntimePrimitives.RequireValue(circularity)
+            (circularity)
         )!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -885,8 +881,9 @@ internal abstract class _ShapeToCircleBorder__rounded_rectangle_border<T> : Outl
         return buildPath(
             _adjustRect(rect),
             _adjustBorderRadius(rect, textDirection),
-            -DartRuntimePrimitives.RequireValue(
+            -(
                 Dart_uiLibrary.lerpDouble(side.width, 0L, side.strokeAlign)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");

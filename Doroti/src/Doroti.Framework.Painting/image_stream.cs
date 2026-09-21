@@ -702,7 +702,10 @@ public class MultiFrameImageStreamCompleter : ImageStreamCompleter
             return;
         }
         Duration delay =
-            DartRuntimePrimitives.RequireValue(_frameDuration) - (timestamp - _shownTimestamp);
+            (
+                _frameDuration
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) - (timestamp - _shownTimestamp);
         _timer = new Timer(
             delay * Scheduler.BindingLibrary.timeDilation,
             () =>
@@ -720,7 +723,11 @@ public class MultiFrameImageStreamCompleter : ImageStreamCompleter
 
     internal virtual bool _hasFrameDurationPassed(Duration timestamp)
     {
-        return (timestamp - _shownTimestamp) >= DartRuntimePrimitives.RequireValue(_frameDuration);
+        return (timestamp - _shownTimestamp)
+            >= (
+                _frameDuration
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

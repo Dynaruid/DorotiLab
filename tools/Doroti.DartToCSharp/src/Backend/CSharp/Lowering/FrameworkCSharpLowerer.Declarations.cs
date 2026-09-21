@@ -1630,7 +1630,7 @@ internal sealed partial class FrameworkCSharpLowerer
             // Forward parameters shared by name and let the primary C#
             // constructor supply its declared defaults for everything else.
             // Passing a positional `default!` for every primary parameter made
-            // nullable Dart defaults hit `RequireValue` before the named
+            // nullable Dart defaults hit a null assertion before the named
             // constructor could install its delegate (ListView.builder was the
             // first live Material consumer to expose this).
             var availableParameterNames = parameters
@@ -2071,7 +2071,7 @@ internal sealed partial class FrameworkCSharpLowerer
             {
                 if (requiresValue)
                 {
-                    builder.Append("DartRuntimePrimitives.RequireValue(");
+                    builder.Append("__dorotiNullAssert(");
                 }
 
                 LowerExpression(
@@ -2438,7 +2438,7 @@ internal sealed partial class FrameworkCSharpLowerer
                     && MapType(parameter.Type) == expected.TrimEnd('?') + "?"
                 )
                 {
-                    return $"DartRuntimePrimitives.RequireValue({name})";
+                    return $"__dorotiNullAssert({name})";
                 }
             }
             return name;
@@ -2491,12 +2491,12 @@ internal sealed partial class FrameworkCSharpLowerer
                 && mapped == expected.TrimEnd('?') + "?"
             )
             {
-                return $"DartRuntimePrimitives.RequireValue({name})";
+                return $"__dorotiNullAssert({name})";
             }
         }
         // A nullable super-formal remains nullable when forwarded to the base
         // constructor. Non-null inherited defaults are restored above; forcing
-        // every remaining nullable value through RequireValue turns valid Dart
+        // every remaining nullable value through a null assertion turns valid Dart
         // omissions such as FocusScope.canRequestFocus and Semantics.enabled
         // into startup null-assertion failures.
         return name;

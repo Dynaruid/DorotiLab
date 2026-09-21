@@ -246,11 +246,11 @@ public class _RenderCupertinoTextSelectionToolbarShape__text_selection_toolbar :
         set
         {
             var __value = value;
-            if (Equals(DartRuntimePrimitives.RequireValue(__value), _anchorAbove))
+            if (Equals((__value), _anchorAbove))
             {
                 return;
             }
-            _anchorAbove = DartRuntimePrimitives.RequireValue(__value);
+            _anchorAbove = (__value);
             markNeedsLayout();
         }
     }
@@ -260,11 +260,11 @@ public class _RenderCupertinoTextSelectionToolbarShape__text_selection_toolbar :
         set
         {
             var __value = value;
-            if (Equals(DartRuntimePrimitives.RequireValue(__value), _anchorBelow))
+            if (Equals((__value), _anchorBelow))
             {
                 return;
             }
-            _anchorBelow = DartRuntimePrimitives.RequireValue(__value);
+            _anchorBelow = (__value);
             markNeedsLayout();
         }
     }
@@ -321,8 +321,12 @@ public class _RenderCupertinoTextSelectionToolbarShape__text_selection_toolbar :
         return (result is null)
             ? null
             : (
-                DartRuntimePrimitives.RequireValue(result)
-                + _computeChildOffset(childLocal.getDryLayout(enforcedConstraint)).dy
+                (
+                    result
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) + _computeChildOffset(childLocal.getDryLayout(enforcedConstraint)).dy
             );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -645,10 +649,23 @@ public class _CupertinoTextSelectionToolbarContentState__text_selection_toolbar
     internal virtual void _onHorizontalDragEnd(Gestures.DragEndDetails details)
     {
         double? velocity = details.primaryVelocity;
-        if ((velocity is not null) && (DartRuntimePrimitives.RequireValue(velocity) != 0L))
+        if (
+            (velocity is not null)
+            && (
+                (
+                    velocity
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) != 0L
+            )
+        )
         {
-            double velocity__19307__value19352 = DartRuntimePrimitives.RequireValue(velocity);
-            if (DartRuntimePrimitives.RequireValue(velocity__19307__value19352) > 0L)
+            double velocity__19307__value19352 = (
+                velocity
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
+            if ((velocity__19307__value19352) > 0L)
             {
                 _handlePreviousPage();
             }
@@ -703,7 +720,10 @@ public class _CupertinoTextSelectionToolbarContentState__text_selection_toolbar
         }
         setState(() =>
         {
-            _page = DartRuntimePrimitives.RequireValue(_nextPage);
+            _page = (
+                _nextPage
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             _nextPage = null;
         });
         _controller.forward();
@@ -1087,7 +1107,7 @@ public class _CupertinoTextSelectionToolbarItemsElement__text_selection_toolbar
         _CupertinoTextSelectionToolbarItemsSlot__text_selection_toolbar slot
     )
     {
-        switch (DartRuntimePrimitives.RequireValue(slot))
+        switch ((slot))
         {
             case _CupertinoTextSelectionToolbarItemsSlot__text_selection_toolbar.backButton:
             {
@@ -1109,14 +1129,9 @@ public class _CupertinoTextSelectionToolbarItemsElement__text_selection_toolbar
             _CupertinoTextSelectionToolbarItemsSlot__text_selection_toolbar slot__as28001 =
                 (_CupertinoTextSelectionToolbarItemsSlot__text_selection_toolbar)slot;
             DartRuntimePrimitives.Assert(() => child is RenderBox);
-            _updateRenderObject(
-                ((RenderBox?)child)!,
-                DartRuntimePrimitives.RequireValue(slot__as28001)
-            );
+            _updateRenderObject(((RenderBox?)child)!, (slot__as28001));
             DartRuntimePrimitives.Assert(() =>
-                renderObject.slottedChildren.ContainsKey(
-                    DartRuntimePrimitives.RequireValue(slot__as28001)
-                )
+                renderObject.slottedChildren.ContainsKey((slot__as28001))
             );
             return;
         }
@@ -1161,15 +1176,11 @@ public class _CupertinoTextSelectionToolbarItemsElement__text_selection_toolbar
                 (_CupertinoTextSelectionToolbarItemsSlot__text_selection_toolbar)slot;
             DartRuntimePrimitives.Assert(() => child is RenderBox);
             DartRuntimePrimitives.Assert(() =>
-                renderObject.slottedChildren.ContainsKey(
-                    DartRuntimePrimitives.RequireValue(slot__as29126)
-                )
+                renderObject.slottedChildren.ContainsKey((slot__as29126))
             );
-            _updateRenderObject(null, DartRuntimePrimitives.RequireValue(slot__as29126));
+            _updateRenderObject(null, (slot__as29126));
             DartRuntimePrimitives.Assert(() =>
-                !renderObject.slottedChildren.ContainsKey(
-                    DartRuntimePrimitives.RequireValue(slot__as29126)
-                )
+                !renderObject.slottedChildren.ContainsKey((slot__as29126))
             );
             return;
         }
@@ -1201,9 +1212,7 @@ public class _CupertinoTextSelectionToolbarItemsElement__text_selection_toolbar
             && slotToChild.ContainsKey(slotLocal)
         )
         {
-            slotToChild.remove(
-                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(slotLocal))
-            );
+            slotToChild.remove(((slotLocal)));
         }
         else
         {
@@ -1217,13 +1226,11 @@ public class _CupertinoTextSelectionToolbarItemsElement__text_selection_toolbar
         _CupertinoTextSelectionToolbarItemsSlot__text_selection_toolbar slot
     )
     {
-        Element? oldChild = slotToChild.GetValueOrDefault(DartRuntimePrimitives.RequireValue(slot));
-        Element? newChild = updateChild(oldChild, widget, DartRuntimePrimitives.RequireValue(slot));
+        Element? oldChild = slotToChild.GetValueOrDefault((slot));
+        Element? newChild = updateChild(oldChild, widget, (slot));
         if (oldChild is not null)
         {
-            slotToChild.remove(
-                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(slot))
-            );
+            slotToChild.remove(((slot)));
         }
         if (newChild is not null)
         {
@@ -1356,11 +1363,11 @@ public class _RenderCupertinoTextSelectionToolbarItems__text_selection_toolbar
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) == _page)
+            if ((__value) == _page)
             {
                 return;
             }
-            _page = DartRuntimePrimitives.RequireValue(__value);
+            _page = (__value);
             markNeedsLayout();
         }
     }
@@ -1384,11 +1391,11 @@ public class _RenderCupertinoTextSelectionToolbarItems__text_selection_toolbar
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) == _dividerWidth)
+            if ((__value) == _dividerWidth)
             {
                 return;
             }
-            _dividerWidth = DartRuntimePrimitives.RequireValue(__value);
+            _dividerWidth = (__value);
             markNeedsLayout();
         }
     }
@@ -1401,9 +1408,7 @@ public class _RenderCupertinoTextSelectionToolbarItems__text_selection_toolbar
             _backButton = _updateChild(
                 _backButton,
                 __value,
-                DartRuntimePrimitives.RequireValue(
-                    _CupertinoTextSelectionToolbarItemsSlot__text_selection_toolbar.backButton
-                )
+                (_CupertinoTextSelectionToolbarItemsSlot__text_selection_toolbar.backButton)
             );
         }
     }
@@ -1416,9 +1421,7 @@ public class _RenderCupertinoTextSelectionToolbarItems__text_selection_toolbar
             _nextButton = _updateChild(
                 _nextButton,
                 __value,
-                DartRuntimePrimitives.RequireValue(
-                    _CupertinoTextSelectionToolbarItemsSlot__text_selection_toolbar.nextButton
-                )
+                (_CupertinoTextSelectionToolbarItemsSlot__text_selection_toolbar.nextButton)
             );
         }
     }
@@ -2003,9 +2006,13 @@ public class _RenderCupertinoTextSelectionToolbarItems__text_selection_toolbar
             double? result = child.getDistanceToActualBaseline(baseline);
             if (result is not null)
             {
-                double result__138852__value138916 = DartRuntimePrimitives.RequireValue(result);
-                return DartRuntimePrimitives.RequireValue(result__138852__value138916)
-                    + childParentData.offset.dy;
+                double result__138852__value138916 = (
+                    result
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
+                return (result__138852__value138916) + childParentData.offset.dy;
             }
             child = childParentData.nextSibling;
         }

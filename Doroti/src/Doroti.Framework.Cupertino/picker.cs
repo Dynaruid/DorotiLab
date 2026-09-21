@@ -562,7 +562,14 @@ public class _RenderCupertinoPickerSemantics__picker : RenderProxyBox
             (child) =>
             {
                 DartRuntimePrimitives.Assert(() => child.indexInParent is not null);
-                indexedChildren[DartRuntimePrimitives.RequireValue(child.indexInParent)] = child;
+                indexedChildren[
+                    (
+                        child.indexInParent
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                ] = child;
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }

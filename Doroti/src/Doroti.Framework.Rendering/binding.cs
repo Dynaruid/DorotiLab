@@ -417,8 +417,11 @@ public class RenderingFlutterBinding
             {
                 if (Semantics.DebugLibrary.debugSemanticsDisableAnimations is not null)
                 {
-                    value = DartRuntimePrimitives.RequireValue(
+                    value = (
                         Semantics.DebugLibrary.debugSemanticsDisableAnimations
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     );
                 }
                 return true;

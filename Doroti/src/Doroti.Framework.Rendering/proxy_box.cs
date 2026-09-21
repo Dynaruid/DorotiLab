@@ -689,10 +689,26 @@ public class RenderIntrinsicWidth : RenderProxyBox
         _stepWidth = stepWidth;
         _stepHeight = stepHeight;
         System.Diagnostics.Debug.Assert(
-            (stepWidth is null) || (DartRuntimePrimitives.RequireValue(stepWidth) > 0.0)
+            (stepWidth is null)
+                || (
+                    (
+                        stepWidth
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0.0
+                )
         );
         System.Diagnostics.Debug.Assert(
-            (stepHeight is null) || (DartRuntimePrimitives.RequireValue(stepHeight) > 0.0)
+            (stepHeight is null)
+                || (
+                    (
+                        stepHeight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0.0
+                )
         );
     }
 
@@ -703,7 +719,15 @@ public class RenderIntrinsicWidth : RenderProxyBox
         {
             var __value = value;
             DartRuntimePrimitives.Assert(() =>
-                (__value is null) || (DartRuntimePrimitives.RequireValue(__value) > 0.0)
+                (__value is null)
+                || (
+                    (
+                        __value
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0.0
+                )
             );
             if (__value == _stepWidth)
             {
@@ -720,7 +744,15 @@ public class RenderIntrinsicWidth : RenderProxyBox
         {
             var __value = value;
             DartRuntimePrimitives.Assert(() =>
-                (__value is null) || (DartRuntimePrimitives.RequireValue(__value) > 0.0)
+                (__value is null)
+                || (
+                    (
+                        __value
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0.0
+                )
             );
             if (__value == _stepHeight)
             {
@@ -738,8 +770,19 @@ public class RenderIntrinsicWidth : RenderProxyBox
         {
             return input;
         }
-        return (input / DartRuntimePrimitives.RequireValue(step)).ceil()
-            * DartRuntimePrimitives.RequireValue(step);
+        return (
+                input
+                / (
+                    step
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            ).ceil()
+            * (
+                step
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1097,7 +1140,11 @@ public class RenderAnimatedOpacity : RenderProxyBox, RenderAnimatedOpacityMixin<
     }
 
     public override bool isRepaintBoundary =>
-        (child is not null) && DartRuntimePrimitives.RequireValue(_currentlyIsRepaintBoundary);
+        (child is not null)
+        && (
+            _currentlyIsRepaintBoundary
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
 
     public override OffsetLayer updateCompositedLayer(OffsetLayer? oldLayer)
     {
@@ -1132,7 +1179,11 @@ public class RenderAnimatedOpacity : RenderProxyBox, RenderAnimatedOpacityMixin<
     }
     public virtual bool alwaysIncludeSemantics
     {
-        get => DartRuntimePrimitives.RequireValue(_alwaysIncludeSemantics);
+        get =>
+            (
+                _alwaysIncludeSemantics
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         set
         {
             var __value = value;
@@ -1165,7 +1216,13 @@ public class RenderAnimatedOpacity : RenderProxyBox, RenderAnimatedOpacityMixin<
         if (oldAlpha != _alpha)
         {
             bool? wasRepaintBoundary = _currentlyIsRepaintBoundary;
-            _currentlyIsRepaintBoundary = DartRuntimePrimitives.RequireValue(_alpha) > 0L;
+            _currentlyIsRepaintBoundary =
+                (
+                    _alpha
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) > 0L;
             if ((child is not null) && (wasRepaintBoundary != _currentlyIsRepaintBoundary))
             {
                 markNeedsCompositingBitsUpdate();
@@ -1329,11 +1386,11 @@ public class RenderBackdropFilter : RenderProxyBox
         set
         {
             var __value = value;
-            if (enabled == DartRuntimePrimitives.RequireValue(__value))
+            if (enabled == (__value))
             {
                 return;
             }
-            _enabled = DartRuntimePrimitives.RequireValue(__value);
+            _enabled = (__value);
             markNeedsPaint();
         }
     }
@@ -1370,11 +1427,11 @@ public class RenderBackdropFilter : RenderProxyBox
         set
         {
             var __value = value;
-            if (Equals(_blendMode, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_blendMode, (__value)))
             {
                 return;
             }
-            _blendMode = DartRuntimePrimitives.RequireValue(__value);
+            _blendMode = (__value);
             markNeedsPaint();
         }
     }
@@ -1709,7 +1766,7 @@ public class RenderClipRect : _RenderCustomClip__proxy_box<Rect>
         {
             _updateClip();
             DartRuntimePrimitives.Assert(() => !Equals(_clip, null));
-            if (!DartRuntimePrimitives.RequireValue(_clip).contains(position))
+            if (!(_clip).contains(position))
             {
                 return false;
             }
@@ -1728,7 +1785,7 @@ public class RenderClipRect : _RenderCustomClip__proxy_box<Rect>
                 layer = context.pushClipRect(
                     needsCompositing,
                     offset,
-                    DartRuntimePrimitives.RequireValue(_clip),
+                    (_clip),
                     base.paint,
                     clipBehavior: clipBehavior,
                     oldLayer: ((ClipRectLayer?)layer)!
@@ -1755,17 +1812,17 @@ public class RenderClipRect : _RenderCustomClip__proxy_box<Rect>
                 base.debugPaintSize(context, offset);
                 if (!Equals(clipBehavior, Clip.none))
                 {
-                    context.canvas.drawRect(
-                        DartRuntimePrimitives.RequireValue(_clip).shift(offset),
-                        _debugPaint!
-                    );
+                    context.canvas.drawRect((_clip).shift(offset), _debugPaint!);
                     _debugText!.paint(
                         context.canvas,
                         offset
                             + new Offset(
-                                DartRuntimePrimitives.RequireValue(_clip).width / 8.0,
-                                -DartRuntimePrimitives.RequireValue(
+                                (_clip).width / 8.0,
+                                -(
                                     _debugText!.text!.style!.fontSize
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
                                 ) * 1.1
                             )
                     );
@@ -1885,8 +1942,11 @@ public class RenderClipRRect : _RenderCustomClip__proxy_box<RRect>
                         offset
                             + new Offset(
                                 _clip!.tlRadiusX,
-                                -DartRuntimePrimitives.RequireValue(
+                                -(
                                     _debugText!.text!.style!.fontSize
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
                                 ) * 1.1
                             )
                     );
@@ -2006,8 +2066,11 @@ public class RenderClipRSuperellipse : _RenderCustomClip__proxy_box<RSuperellips
                         offset
                             + new Offset(
                                 _clip!.tlRadiusX,
-                                -DartRuntimePrimitives.RequireValue(
+                                -(
                                     _debugText!.text!.style!.fontSize
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
                                 ) * 1.1
                             )
                     );
@@ -2040,7 +2103,14 @@ public class RenderClipOval : _RenderCustomClip__proxy_box<Rect>
                     () =>
                     {
                         var __cascade = new Path();
-                        __cascade.addOval(DartRuntimePrimitives.RequireValue(_cachedRect));
+                        __cascade.addOval(
+                            (
+                                _cachedRect
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
+                        );
                         return __cascade;
                     }
                 )
@@ -2056,10 +2126,10 @@ public class RenderClipOval : _RenderCustomClip__proxy_box<Rect>
     {
         _updateClip();
         DartRuntimePrimitives.Assert(() => !Equals(_clip, null));
-        Offset centerLocal = DartRuntimePrimitives.RequireValue(_clip).center;
+        Offset centerLocal = (_clip).center;
         var offset = new Offset(
-            (position.dx - centerLocal.dx) / DartRuntimePrimitives.RequireValue(_clip).width,
-            (position.dy - centerLocal.dy) / DartRuntimePrimitives.RequireValue(_clip).height
+            (position.dx - centerLocal.dx) / (_clip).width,
+            (position.dy - centerLocal.dy) / (_clip).height
         );
         if (offset.distanceSquared > 0.25)
         {
@@ -2079,8 +2149,8 @@ public class RenderClipOval : _RenderCustomClip__proxy_box<Rect>
                 layer = context.pushClipPath(
                     needsCompositing,
                     offset,
-                    DartRuntimePrimitives.RequireValue(_clip),
-                    _getClipPath(DartRuntimePrimitives.RequireValue(_clip)),
+                    (_clip),
+                    _getClipPath((_clip)),
                     base.paint,
                     clipBehavior: clipBehavior,
                     oldLayer: ((ClipPathLayer?)layer)!
@@ -2107,20 +2177,17 @@ public class RenderClipOval : _RenderCustomClip__proxy_box<Rect>
                 base.debugPaintSize(context, offset);
                 if (!Equals(clipBehavior, Clip.none))
                 {
-                    context.canvas.drawPath(
-                        _getClipPath(DartRuntimePrimitives.RequireValue(_clip)).shift(offset),
-                        _debugPaint!
-                    );
+                    context.canvas.drawPath(_getClipPath((_clip)).shift(offset), _debugPaint!);
                     _debugText!.paint(
                         context.canvas,
                         offset
                             + new Offset(
-                                (
-                                    DartRuntimePrimitives.RequireValue(_clip).width
-                                    - _debugText!.width
-                                ) / 2.0,
-                                -DartRuntimePrimitives.RequireValue(
+                                ((_clip).width - _debugText!.width) / 2.0,
+                                -(
                                     _debugText!.text!.style!.fontSize
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
                                 ) * 1.1
                             )
                     );
@@ -2327,11 +2394,11 @@ public class RenderPhysicalModel : _RenderPhysicalModelBase__proxy_box<RRect>
         set
         {
             var __value = value;
-            if (Equals(shape, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(shape, (__value)))
             {
                 return;
             }
-            _shape = DartRuntimePrimitives.RequireValue(__value);
+            _shape = (__value);
             _markNeedsClip();
         }
     }
@@ -2935,12 +3002,7 @@ public class RenderTransform : RenderProxyBox
 
     public virtual void translate(double x, double y = 0.0, double z = 0.0)
     {
-        _transform!.translateByDouble(
-            x,
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(y)),
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(z)),
-            1
-        );
+        _transform!.translateByDouble(x, ((y)), ((z)), 1);
         markNeedsPaint();
         markNeedsSemanticsUpdate();
     }
@@ -2965,8 +3027,18 @@ public class RenderTransform : RenderProxyBox
             if (_origin is not null)
             {
                 result.translateByDouble(
-                    DartRuntimePrimitives.RequireValue(_origin).dx,
-                    DartRuntimePrimitives.RequireValue(_origin).dy,
+                    (
+                        _origin
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).dx,
+                    (
+                        _origin
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).dy,
                     0,
                     1
                 );
@@ -2976,8 +3048,18 @@ public class RenderTransform : RenderProxyBox
             {
                 translation = resolvedAlignment.alongSize(size);
                 result.translateByDouble(
-                    DartRuntimePrimitives.RequireValue(translation).dx,
-                    DartRuntimePrimitives.RequireValue(translation).dy,
+                    (
+                        translation
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).dx,
+                    (
+                        translation
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).dy,
                     0,
                     1
                 );
@@ -2986,8 +3068,18 @@ public class RenderTransform : RenderProxyBox
             if (resolvedAlignment is not null)
             {
                 result.translateByDouble(
-                    -DartRuntimePrimitives.RequireValue(translation).dx,
-                    -DartRuntimePrimitives.RequireValue(translation).dy,
+                    -(
+                        translation
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).dx,
+                    -(
+                        translation
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).dy,
                     0,
                     1
                 );
@@ -2995,8 +3087,18 @@ public class RenderTransform : RenderProxyBox
             if (_origin is not null)
             {
                 result.translateByDouble(
-                    -DartRuntimePrimitives.RequireValue(_origin).dx,
-                    -DartRuntimePrimitives.RequireValue(_origin).dy,
+                    -(
+                        _origin
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).dx,
+                    -(
+                        _origin
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).dy,
                     0,
                     1
                 );
@@ -3051,7 +3153,16 @@ public class RenderTransform : RenderProxyBox
                 }
                 else
                 {
-                    base.paint(context, offset + DartRuntimePrimitives.RequireValue(childOffset));
+                    base.paint(
+                        context,
+                        offset
+                            + (
+                                childOffset
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
+                    );
                     layer = null;
                 }
             }
@@ -3070,7 +3181,12 @@ public class RenderTransform : RenderProxyBox
                 )();
                 var filter = new ImageFilter(
                     effectiveTransform.storage,
-                    filterQuality: DartRuntimePrimitives.RequireValue(filterQuality)
+                    filterQuality: (
+                        filterQuality
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 );
                 if (layer is ImageFilterLayer filterLayer)
                 {
@@ -3171,18 +3287,13 @@ public class RenderFittedBox : RenderProxyBox
         set
         {
             var __value = value;
-            if (Equals(_fit, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_fit, (__value)))
             {
                 return;
             }
             BoxFit lastFit = _fit;
-            _fit = DartRuntimePrimitives.RequireValue(__value);
-            if (
-                _fitAffectsLayout(lastFit)
-                || _fitAffectsLayout(
-                    DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(__value))
-                )
-            )
+            _fit = (__value);
+            if (_fitAffectsLayout(lastFit) || _fitAffectsLayout(((__value))))
             {
                 markNeedsLayout();
             }
@@ -3302,9 +3413,9 @@ public class RenderFittedBox : RenderProxyBox
         set
         {
             var __value = value;
-            if (!Equals(DartRuntimePrimitives.RequireValue(__value), _clipBehavior))
+            if (!Equals((__value), _clipBehavior))
             {
-                _clipBehavior = DartRuntimePrimitives.RequireValue(__value);
+                _clipBehavior = (__value);
                 markNeedsPaint();
                 markNeedsSemanticsUpdate();
             }
@@ -3359,9 +3470,7 @@ public class RenderFittedBox : RenderProxyBox
                 )
             )();
             DartRuntimePrimitives.Assert(() =>
-                _transform!.storage.All(
-                    (value) => double.IsFinite(DartRuntimePrimitives.RequireValue(value))
-                )
+                _transform!.storage.All((value) => double.IsFinite((value)))
             );
         }
     }
@@ -3384,7 +3493,16 @@ public class RenderFittedBox : RenderProxyBox
         }
         else
         {
-            base.paint(context, offset + DartRuntimePrimitives.RequireValue(childOffset));
+            base.paint(
+                context,
+                offset
+                    + (
+                        childOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+            );
         }
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -3399,8 +3517,10 @@ public class RenderFittedBox : RenderProxyBox
         _updatePaintData();
         DartRuntimePrimitives.Assert(() => child is not null);
         if (
-            DartRuntimePrimitives.RequireValue(_hasVisualOverflow)
-            && (!Equals(clipBehavior, Clip.none))
+            (
+                _hasVisualOverflow
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) && (!Equals(clipBehavior, Clip.none))
         )
         {
             layer = context.pushClipRect(
@@ -3745,9 +3865,9 @@ public class RenderMouseRegion : RenderProxyBoxWithHitTestBehavior, IMouseTracke
         set
         {
             var __value = value;
-            if (_opaque != DartRuntimePrimitives.RequireValue(__value))
+            if (_opaque != (__value))
             {
-                _opaque = DartRuntimePrimitives.RequireValue(__value);
+                _opaque = (__value);
                 markNeedsPaint();
             }
         }
@@ -3965,11 +4085,11 @@ public class RenderIgnorePointer : RenderProxyBox
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) == _ignoring)
+            if ((__value) == _ignoring)
             {
                 return;
             }
-            _ignoring = DartRuntimePrimitives.RequireValue(__value);
+            _ignoring = (__value);
             if (ignoringSemantics is null)
             {
                 markNeedsSemanticsUpdate();
@@ -4216,11 +4336,11 @@ public class RenderAbsorbPointer : RenderProxyBox
         set
         {
             var __value = value;
-            if (_absorbing == DartRuntimePrimitives.RequireValue(__value))
+            if (_absorbing == (__value))
             {
                 return;
             }
-            _absorbing = DartRuntimePrimitives.RequireValue(__value);
+            _absorbing = (__value);
             if (ignoringSemantics is null)
             {
                 markNeedsSemanticsUpdate();
@@ -4776,11 +4896,17 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
         }
         if (_properties.selected is not null)
         {
-            config.isSelected = DartRuntimePrimitives.RequireValue(_properties.selected);
+            config.isSelected = (
+                _properties.selected
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.button is not null)
         {
-            config.isButton = DartRuntimePrimitives.RequireValue(_properties.button);
+            config.isButton = (
+                _properties.button
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.expanded is not null)
         {
@@ -4788,7 +4914,10 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
         }
         if (_properties.link is not null)
         {
-            config.isLink = DartRuntimePrimitives.RequireValue(_properties.link);
+            config.isLink = (
+                _properties.link
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.linkUrl is not null)
         {
@@ -4796,31 +4925,52 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
         }
         if (_properties.slider is not null)
         {
-            config.isSlider = DartRuntimePrimitives.RequireValue(_properties.slider);
+            config.isSlider = (
+                _properties.slider
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.keyboardKey is not null)
         {
-            config.isKeyboardKey = DartRuntimePrimitives.RequireValue(_properties.keyboardKey);
+            config.isKeyboardKey = (
+                _properties.keyboardKey
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.header is not null)
         {
-            config.isHeader = DartRuntimePrimitives.RequireValue(_properties.header);
+            config.isHeader = (
+                _properties.header
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.headingLevel is not null)
         {
-            config.headingLevel = DartRuntimePrimitives.RequireValue(_properties.headingLevel);
+            config.headingLevel = (
+                _properties.headingLevel
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.textField is not null)
         {
-            config.isTextField = DartRuntimePrimitives.RequireValue(_properties.textField);
+            config.isTextField = (
+                _properties.textField
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.readOnly is not null)
         {
-            config.isReadOnly = DartRuntimePrimitives.RequireValue(_properties.readOnly);
+            config.isReadOnly = (
+                _properties.readOnly
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.focusable is not null)
         {
-            config.isFocusable = DartRuntimePrimitives.RequireValue(_properties.focusable);
+            config.isFocusable = (
+                _properties.focusable
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.focused is not null)
         {
@@ -4828,31 +4978,45 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
         }
         if (_properties.accessibilityFocusBlockType is not null)
         {
-            config.accessibilityFocusBlockType = DartRuntimePrimitives.RequireValue(
+            config.accessibilityFocusBlockType = (
                 _properties.accessibilityFocusBlockType
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
         }
         if (_properties.inMutuallyExclusiveGroup is not null)
         {
-            config.isInMutuallyExclusiveGroup = DartRuntimePrimitives.RequireValue(
+            config.isInMutuallyExclusiveGroup = (
                 _properties.inMutuallyExclusiveGroup
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
         }
         if (_properties.obscured is not null)
         {
-            config.isObscured = DartRuntimePrimitives.RequireValue(_properties.obscured);
+            config.isObscured = (
+                _properties.obscured
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.multiline is not null)
         {
-            config.isMultiline = DartRuntimePrimitives.RequireValue(_properties.multiline);
+            config.isMultiline = (
+                _properties.multiline
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.hidden is not null)
         {
-            config.isHidden = DartRuntimePrimitives.RequireValue(_properties.hidden);
+            config.isHidden = (
+                _properties.hidden
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.image is not null)
         {
-            config.isImage = DartRuntimePrimitives.RequireValue(_properties.image);
+            config.isImage = (
+                _properties.image
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.isRequired is not null)
         {
@@ -4900,15 +5064,24 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
         }
         if (_properties.scopesRoute is not null)
         {
-            config.scopesRoute = DartRuntimePrimitives.RequireValue(_properties.scopesRoute);
+            config.scopesRoute = (
+                _properties.scopesRoute
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.namesRoute is not null)
         {
-            config.namesRoute = DartRuntimePrimitives.RequireValue(_properties.namesRoute);
+            config.namesRoute = (
+                _properties.namesRoute
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.liveRegion is not null)
         {
-            config.liveRegion = DartRuntimePrimitives.RequireValue(_properties.liveRegion);
+            config.liveRegion = (
+                _properties.liveRegion
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.maxValueLength is not null)
         {
@@ -4932,7 +5105,10 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
         }
         if (properties.role is not null)
         {
-            config.role = DartRuntimePrimitives.RequireValue(_properties.role);
+            config.role = (
+                _properties.role
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.controlsNodes is not null)
         {
@@ -4944,13 +5120,17 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
         }
         if (_properties.hitTestBehavior is not null)
         {
-            config.hitTestBehavior = DartRuntimePrimitives.RequireValue(
+            config.hitTestBehavior = (
                 _properties.hitTestBehavior
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
         }
         if (_properties.inputType is not null)
         {
-            config.inputType = DartRuntimePrimitives.RequireValue(_properties.inputType);
+            config.inputType = (
+                _properties.inputType
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.minValue is not null)
         {
@@ -5537,8 +5717,16 @@ public class RenderFollowerLayer : RenderProxyBox
                 ? this.offset
                 : (
                     leaderAnchor.alongSize(
-                        DartRuntimePrimitives.RequireValue(
-                            DartRuntimePrimitives.RequireValue(leaderSizeLocal)
+                        (
+                            (
+                                leaderSizeLocal
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
                         )
                     )
                     - followerAnchor.alongSize(size)

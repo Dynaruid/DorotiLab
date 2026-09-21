@@ -188,15 +188,37 @@ public class SelectableText : StatefulWidget
         this.magnifierConfiguration = magnifierConfiguration;
         textSpan = null;
         System.Diagnostics.Debug.Assert(
-            (maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L)
+            (maxLines is null)
+                || (
+                    (
+                        maxLines
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
         System.Diagnostics.Debug.Assert(
-            (minLines is null) || (DartRuntimePrimitives.RequireValue(minLines) > 0L)
+            (minLines is null)
+                || (
+                    (
+                        minLines
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
         System.Diagnostics.Debug.Assert(
             maxLines is null
                 || minLines is null
-                || maxLines >= DartRuntimePrimitives.RequireValue(minLines)
+                || maxLines
+                    >= (
+                        minLines
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
         );
         System.Diagnostics.Debug.Assert((textScaler is null) || (textScaleFactor is null));
     }

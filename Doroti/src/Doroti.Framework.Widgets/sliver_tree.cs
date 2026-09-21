@@ -330,8 +330,9 @@ public class TreeSliver<T> : StatefulWidget
     {
         Duration animationDuration = toggleAnimationStyle.duration ?? defaultAnimationDuration;
         Curve animationCurve = toggleAnimationStyle.curve ?? defaultAnimationCurve;
-        long index = DartRuntimePrimitives.RequireValue(
+        long index = (
             TreeSliverController.of(context).getActiveIndexFor(node)
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         return new Padding(
             padding: EdgeInsets.CreateAll(8.0),
@@ -582,14 +583,16 @@ internal class _TreeSliverState__sliver_tree<T>
                     long? semanticIndex = widget.semanticIndexCallback(childLocal, index);
                     if (semanticIndex is not null)
                     {
-                        long semanticIndex__26512__value26586 = DartRuntimePrimitives.RequireValue(
+                        long semanticIndex__26512__value26586 = (
                             semanticIndex
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
                         );
                         childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
                             new IndexedSemantics(
-                                index: DartRuntimePrimitives.RequireValue(
-                                    semanticIndex__26512__value26586
-                                ) + widget.semanticIndexOffset,
+                                index: (semanticIndex__26512__value26586)
+                                    + widget.semanticIndexOffset,
                                 child: childLocal
                             )
                         );
@@ -597,7 +600,12 @@ internal class _TreeSliverState__sliver_tree<T>
                 }
                 return (Widget?)
                     new _TreeNodeParentDataWidget__sliver_tree(
-                        depth: DartRuntimePrimitives.RequireValue(node.depth),
+                        depth: (
+                            node.depth
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
                         child: childLocal
                     );
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -733,12 +741,13 @@ internal class _TreeSliverState__sliver_tree<T>
                 CurvedAnimation animation,
                 AnimationController controller,
                 UniqueKey key
-            ) animationRecord = DartRuntimePrimitives.RequireValue(
+            ) animationRecord = (
                 DartCollectionRuntime.NullableMapValue<(
                     CurvedAnimation animation,
                     AnimationController controller,
                     UniqueKey key
                 )>(_currentAnimationForParent, node)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
             long leadingChildIndex = _activeNodes.IndexOf(node) + 1L;
             TreeSliverNodesAnimation animatingChildren = new TreeSliverNodesAnimation(
@@ -766,15 +775,16 @@ internal class _TreeSliverState__sliver_tree<T>
             }
             if (_currentAnimationForParent.ContainsKey(node))
             {
-                DartRuntimePrimitives
-                    .RequireValue(
-                        DartCollectionRuntime.NullableMapValue<(
-                            CurvedAnimation animation,
-                            AnimationController controller,
-                            UniqueKey key
-                        )>(_currentAnimationForParent, node)
+                (
+                    DartCollectionRuntime.NullableMapValue<(
+                        CurvedAnimation animation,
+                        AnimationController controller,
+                        UniqueKey key
+                    )>(_currentAnimationForParent, node)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
                     )
-                    .animation.dispose();
+                ).animation.dispose();
             }
             if (
                 Equals(widget.toggleAnimationStyle, AnimationStyle.noAnimation)
@@ -810,24 +820,26 @@ internal class _TreeSliverState__sliver_tree<T>
                                     case AnimationStatus.dismissed:
                                     case AnimationStatus.completed:
                                     {
-                                        DartRuntimePrimitives
-                                            .RequireValue(
-                                                DartCollectionRuntime.NullableMapValue<(
-                                                    CurvedAnimation animation,
-                                                    AnimationController controller,
-                                                    UniqueKey key
-                                                )>(_currentAnimationForParent, node)
+                                        (
+                                            DartCollectionRuntime.NullableMapValue<(
+                                                CurvedAnimation animation,
+                                                AnimationController controller,
+                                                UniqueKey key
+                                            )>(_currentAnimationForParent, node)
+                                            ?? throw new global::System.NullReferenceException(
+                                                "Dart null assertion failed."
                                             )
-                                            .animation.dispose();
-                                        DartRuntimePrimitives
-                                            .RequireValue(
-                                                DartCollectionRuntime.NullableMapValue<(
-                                                    CurvedAnimation animation,
-                                                    AnimationController controller,
-                                                    UniqueKey key
-                                                )>(_currentAnimationForParent, node)
+                                        ).animation.dispose();
+                                        (
+                                            DartCollectionRuntime.NullableMapValue<(
+                                                CurvedAnimation animation,
+                                                AnimationController controller,
+                                                UniqueKey key
+                                            )>(_currentAnimationForParent, node)
+                                            ?? throw new global::System.NullReferenceException(
+                                                "Dart null assertion failed."
                                             )
-                                            .controller.dispose();
+                                        ).controller.dispose();
                                         _currentAnimationForParent.remove(node);
                                         _updateActiveAnimations();
                                         if (!node._expanded)

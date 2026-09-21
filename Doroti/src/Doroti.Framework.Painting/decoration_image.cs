@@ -351,23 +351,67 @@ public static partial class Decoration_imageLibrary
         Offset? sliceBorder = default!;
         if (centerSlice is not null)
         {
-            Rect centerSlice__value20139 = DartRuntimePrimitives.RequireValue(centerSlice);
-            sliceBorder =
-                (inputSize / scale)
-                - DartRuntimePrimitives.RequireValue(centerSlice__value20139).size;
-            outputSize = outputSize - DartRuntimePrimitives.RequireValue(sliceBorder);
-            inputSize = inputSize - (DartRuntimePrimitives.RequireValue(sliceBorder) * scale);
+            Rect centerSlice__value20139 = (
+                centerSlice
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
+            sliceBorder = (inputSize / scale) - (centerSlice__value20139).size;
+            outputSize =
+                outputSize
+                - (
+                    sliceBorder
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
+            inputSize =
+                inputSize
+                - (
+                    (
+                        sliceBorder
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) * scale
+                );
         }
         fit ??= ((centerSlice is null) ? BoxFit.scaleDown : BoxFit.fill);
         DartRuntimePrimitives.Assert(() =>
             (centerSlice is null)
             || (
-                (!Equals(DartRuntimePrimitives.RequireValue(fit), BoxFit.none))
-                && (!Equals(DartRuntimePrimitives.RequireValue(fit), BoxFit.cover))
+                (
+                    !Equals(
+                        (
+                            fit
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
+                        BoxFit.none
+                    )
+                )
+                && (
+                    !Equals(
+                        (
+                            fit
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
+                        BoxFit.cover
+                    )
+                )
             )
         );
         FittedSizes fittedSizes = Box_fitLibrary.applyBoxFit(
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(fit)),
+            (
+                (
+                    fit
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            ),
             inputSize / scale,
             outputSize
         );
@@ -375,9 +419,18 @@ public static partial class Decoration_imageLibrary
         Size destinationSize = fittedSizes.destination;
         if (centerSlice is not null)
         {
-            Rect centerSlice__value20675 = DartRuntimePrimitives.RequireValue(centerSlice);
-            outputSize += DartRuntimePrimitives.RequireValue(sliceBorder);
-            destinationSize += DartRuntimePrimitives.RequireValue(sliceBorder);
+            Rect centerSlice__value20675 = (
+                centerSlice
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
+            outputSize += (
+                sliceBorder
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
+            destinationSize += (
+                sliceBorder
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             DartRuntimePrimitives.Assert(() => Equals(sourceSize, inputSize));
         }
         if ((!Equals(repeat, ImageRepeat.noRepeat)) && Equals(destinationSize, outputSize))
@@ -569,8 +622,13 @@ public static partial class Decoration_imageLibrary
                 canvas.drawImageNine(
                     image,
                     _scaleRect(
-                        DartRuntimePrimitives.RequireValue(
-                            DartRuntimePrimitives.RequireValue(centerSlice)
+                        (
+                            (
+                                centerSlice
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         ),
                         scale
                     ),
@@ -587,8 +645,13 @@ public static partial class Decoration_imageLibrary
                     canvas.drawImageNine(
                         image,
                         _scaleRect(
-                            DartRuntimePrimitives.RequireValue(
-                                DartRuntimePrimitives.RequireValue(centerSlice)
+                            (
+                                (
+                                    centerSlice
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                )
                             ),
                             scale
                         ),

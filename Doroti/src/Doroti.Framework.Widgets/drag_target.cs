@@ -212,11 +212,17 @@ public class LongPressDraggable<T> : Draggable<T>
             child: child,
             feedback: feedback,
             data: data,
-            axis: DartRuntimePrimitives.RequireValue(axis),
+            axis: (
+                axis
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             childWhenDragging: childWhenDragging,
             feedbackOffset: feedbackOffset,
             dragAnchorStrategy: dragAnchorStrategy ?? Drag_targetLibrary.childDragAnchorStrategy,
-            maxSimultaneousDrags: DartRuntimePrimitives.RequireValue(maxSimultaneousDrags),
+            maxSimultaneousDrags: (
+                maxSimultaneousDrags
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             onDragStarted: onDragStarted,
             onDragUpdate: onDragUpdate,
             onDraggableCanceled: onDraggableCanceled,
@@ -241,7 +247,7 @@ public class LongPressDraggable<T> : Draggable<T>
                 () =>
                 {
                     var __cascade = new DelayedMultiDragGestureRecognizer(
-                        delay: DartRuntimePrimitives.RequireValue(delay),
+                        delay: (delay),
                         allowedButtonsFilter: allowedButtonsFilter
                     );
                     __cascade.onStart = (position) =>
@@ -303,7 +309,15 @@ internal class _DraggableState__drag_target<T> : State<Draggable<T>>
     {
         if (
             (widget.maxSimultaneousDrags is not null)
-            && (_activeCount >= DartRuntimePrimitives.RequireValue(widget.maxSimultaneousDrags))
+            && (
+                _activeCount
+                >= (
+                    widget.maxSimultaneousDrags
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
         )
         {
             return;
@@ -315,7 +329,15 @@ internal class _DraggableState__drag_target<T> : State<Draggable<T>>
     {
         if (
             (widget.maxSimultaneousDrags is not null)
-            && (_activeCount >= DartRuntimePrimitives.RequireValue(widget.maxSimultaneousDrags))
+            && (
+                _activeCount
+                >= (
+                    widget.maxSimultaneousDrags
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
         )
         {
             return default;
@@ -392,7 +414,15 @@ internal class _DraggableState__drag_target<T> : State<Draggable<T>>
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasOverlay(context));
         bool canDrag =
             (widget.maxSimultaneousDrags is null)
-            || (_activeCount < DartRuntimePrimitives.RequireValue(widget.maxSimultaneousDrags));
+            || (
+                _activeCount
+                < (
+                    widget.maxSimultaneousDrags
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            );
         bool showChild = (_activeCount == 0L) || (widget.childWhenDragging is null);
         return new Listener(
             behavior: widget.hitTestBehavior,
@@ -538,7 +568,12 @@ internal class _DragTargetState__drag_target<T> : State<DragTarget<T>>, IDragTar
                 && widget.onWillAcceptWithDetails!(
                     new DragTargetDetails<T>(
                         data: ((T?)avatar.data!)!,
-                        offset: DartRuntimePrimitives.RequireValue(avatar.lastOffset)
+                        offset: (
+                            avatar.lastOffset
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     )
                 )
             );
@@ -595,7 +630,12 @@ internal class _DragTargetState__drag_target<T> : State<DragTarget<T>>, IDragTar
             widget.onAcceptWithDetails?.Invoke(
                 new DragTargetDetails<T>(
                     data: ((T?)avatar.data!)!,
-                    offset: DartRuntimePrimitives.RequireValue(avatar.lastOffset)
+                    offset: (
+                        avatar.lastOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
             );
         }
@@ -610,7 +650,12 @@ internal class _DragTargetState__drag_target<T> : State<DragTarget<T>>, IDragTar
         widget.onMove?.Invoke(
             new DragTargetDetails<T>(
                 data: ((T?)avatar.data!)!,
-                offset: DartRuntimePrimitives.RequireValue(avatar.lastOffset)
+                offset: (
+                    avatar.lastOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             )
         );
     }
@@ -829,7 +874,10 @@ public class _DragAvatar__drag_target<T> : Drag, IDragAvatar
         _entry = null;
         onDragEnd?.Invoke(
             velocity ?? Velocity.zero,
-            DartRuntimePrimitives.RequireValue(_lastOffset),
+            (
+                _lastOffset
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             wasAccepted
         );
     }

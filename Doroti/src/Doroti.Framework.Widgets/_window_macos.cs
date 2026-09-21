@@ -116,7 +116,12 @@ public class WindowingOwnerMacOSIo : WindowingOwnerIo
             (Pointer<Void>)
                 (object?)
                     _MacOSPlatformInterface___window_macos.getWindowHandle(
-                        DartRuntimePrimitives.RequireValue(PlatformDispatcher.instance.engineId),
+                        (
+                            PlatformDispatcher.instance.engineId
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
                         checked((long)view.viewId)
                     )
         );
@@ -206,7 +211,7 @@ public class TooltipWindowControllerMacOSIo
         WindowPositionerIo positioner
     )
     {
-        this._anchorRect = DartRuntimePrimitives.RequireValue(anchorRect);
+        this._anchorRect = (anchorRect);
         this._positioner = positioner;
         this._delegate = @delegate;
         this._parent = parent;
@@ -219,10 +224,11 @@ public class TooltipWindowControllerMacOSIo
     {
         if ((anchorRect is not null))
         {
-            Rect anchorRect__value9934 = DartRuntimePrimitives.RequireValue(anchorRect);
-            _anchorRect = DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(anchorRect__value9934)
+            Rect anchorRect__value9934 = (
+                anchorRect
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
+            _anchorRect = ((anchorRect__value9934));
         }
         if ((positioner is not null))
         {
@@ -382,7 +388,7 @@ public class PopupWindowControllerMacOSIo
         WindowPositionerIo positioner
     )
     {
-        this._anchorRect = DartRuntimePrimitives.RequireValue(anchorRect);
+        this._anchorRect = (anchorRect);
         this._positioner = positioner;
         this._delegate = @delegate;
         this._parent = parent;
@@ -395,10 +401,11 @@ public class PopupWindowControllerMacOSIo
     {
         if ((anchorRect is not null))
         {
-            Rect anchorRect__value12906 = DartRuntimePrimitives.RequireValue(anchorRect);
-            _anchorRect = DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(anchorRect__value12906)
+            Rect anchorRect__value12906 = (
+                anchorRect
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
+            _anchorRect = ((anchorRect__value12906));
         }
         if ((positioner is not null))
         {
@@ -593,7 +600,14 @@ public class WindowControllerMacOSIo : WindowControllerIo, _WindowControllerMixi
         _ensureNotDestroyed();
         _MacOSPlatformInterface___window_macos.setWindowContentSize(
             this.windowHandle,
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(size))
+            (
+                (
+                    size
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
     }
 
@@ -812,7 +826,14 @@ public class DialogWindowControllerMacOSIo
         _ensureNotDestroyed();
         _MacOSPlatformInterface___window_macos.setWindowContentSize(
             this.windowHandle,
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(size))
+            (
+                (
+                    size
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
     }
 
@@ -1032,8 +1053,18 @@ internal class _MacOSPlatformInterface___window_macos
                     () =>
                     {
                         var __cascade = ffiSize.@ref;
-                        __cascade.width = DartRuntimePrimitives.RequireValue(size).width;
-                        __cascade.height = DartRuntimePrimitives.RequireValue(size).height;
+                        __cascade.width = (
+                            size
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ).width;
+                        __cascade.height = (
+                            size
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ).height;
                         return __cascade;
                     }
                 )
@@ -1108,7 +1139,10 @@ internal class _MacOSPlatformInterface___window_macos
         )();
         if ((size is not null))
         {
-            Size size__value25007 = DartRuntimePrimitives.RequireValue(size);
+            Size size__value25007 = (
+                size
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             DartRuntimePrimitives.Ignore(
                 (
                     (Func<_WindowCreationRequest___window_macos>)(
@@ -1116,12 +1150,18 @@ internal class _MacOSPlatformInterface___window_macos
                         {
                             var __cascade = request.@ref;
                             __cascade.hasSize = true;
-                            __cascade.contentSize.width = DartRuntimePrimitives
-                                .RequireValue(size__value25007)
-                                .width;
-                            __cascade.contentSize.height = DartRuntimePrimitives
-                                .RequireValue(size__value25007)
-                                .height;
+                            __cascade.contentSize.width = (
+                                size__value25007
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ).width;
+                            __cascade.contentSize.height = (
+                                size__value25007
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ).height;
                             return __cascade;
                         }
                     )
@@ -1156,7 +1196,10 @@ internal class _MacOSPlatformInterface___window_macos
             );
         }
         long viewId = _MacOSPlatformInterface___window_macos._createWindow(
-            DartRuntimePrimitives.RequireValue(WidgetsBinding.instance.platformDispatcher.engineId),
+            (
+                WidgetsBinding.instance.platformDispatcher.engineId
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             request
         );
         _window_macosLibrary._allocator.free(request);
@@ -1193,7 +1236,10 @@ internal class _MacOSPlatformInterface___window_macos
         )();
         if ((size is not null))
         {
-            Size size__value26560 = DartRuntimePrimitives.RequireValue(size);
+            Size size__value26560 = (
+                size
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             DartRuntimePrimitives.Ignore(
                 (
                     (Func<_WindowCreationRequest___window_macos>)(
@@ -1201,12 +1247,18 @@ internal class _MacOSPlatformInterface___window_macos
                         {
                             var __cascade = request.@ref;
                             __cascade.hasSize = true;
-                            __cascade.contentSize.width = DartRuntimePrimitives
-                                .RequireValue(size__value26560)
-                                .width;
-                            __cascade.contentSize.height = DartRuntimePrimitives
-                                .RequireValue(size__value26560)
-                                .height;
+                            __cascade.contentSize.width = (
+                                size__value26560
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ).width;
+                            __cascade.contentSize.height = (
+                                size__value26560
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ).height;
                             return __cascade;
                         }
                     )
@@ -1243,8 +1295,11 @@ internal class _MacOSPlatformInterface___window_macos
         try
         {
             long viewId = _MacOSPlatformInterface___window_macos._createDialogWindow(
-                DartRuntimePrimitives.RequireValue(
+                (
                     WidgetsBinding.instance.platformDispatcher.engineId
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 ),
                 request
             );
@@ -1287,7 +1342,7 @@ internal class _MacOSPlatformInterface___window_macos
                     __cascade.@ref.onWillClose = onWillClose;
                     __cascade.@ref.onNotifyListeners = onNotifyListeners;
                     __cascade.@ref.onGetWindowPosition = onGetWindowPosition;
-                    __cascade.@ref.parentViewId = DartRuntimePrimitives.RequireValue(parentViewId);
+                    __cascade.@ref.parentViewId = (parentViewId);
                     return __cascade;
                 }
             )
@@ -1317,7 +1372,10 @@ internal class _MacOSPlatformInterface___window_macos
             )()
         );
         long viewId = _MacOSPlatformInterface___window_macos._createTooltipWindow(
-            DartRuntimePrimitives.RequireValue(PlatformDispatcher.instance.engineId),
+            (
+                PlatformDispatcher.instance.engineId
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             request
         );
         _window_macosLibrary._allocator.free(request);
@@ -1355,7 +1413,7 @@ internal class _MacOSPlatformInterface___window_macos
                     __cascade.@ref.onWillClose = onWillClose;
                     __cascade.@ref.onNotifyListeners = onNotifyListeners;
                     __cascade.@ref.onGetWindowPosition = onGetWindowPosition;
-                    __cascade.@ref.parentViewId = DartRuntimePrimitives.RequireValue(parentViewId);
+                    __cascade.@ref.parentViewId = (parentViewId);
                     return __cascade;
                 }
             )
@@ -1385,7 +1443,10 @@ internal class _MacOSPlatformInterface___window_macos
             )()
         );
         long viewId = _MacOSPlatformInterface___window_macos._createPopupWindow(
-            DartRuntimePrimitives.RequireValue(PlatformDispatcher.instance.engineId),
+            (
+                PlatformDispatcher.instance.engineId
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             request
         );
         _window_macosLibrary._allocator.free(request);
@@ -1398,7 +1459,10 @@ internal class _MacOSPlatformInterface___window_macos
     public static void destroyWindow(Pointer<Void> windowHandle)
     {
         _MacOSPlatformInterface___window_macos._destroyWindow(
-            DartRuntimePrimitives.RequireValue(WidgetsBinding.instance.platformDispatcher.engineId),
+            (
+                WidgetsBinding.instance.platformDispatcher.engineId
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             windowHandle
         );
     }

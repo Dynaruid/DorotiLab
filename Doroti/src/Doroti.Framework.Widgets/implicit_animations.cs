@@ -1565,7 +1565,15 @@ public class AnimatedDefaultTextStyle : ImplicitlyAnimatedWidget
         this.textWidthBasis = textWidthBasis;
         this.textHeightBehavior = textHeightBehavior;
         System.Diagnostics.Debug.Assert(
-            (maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L)
+            (maxLines is null)
+                || (
+                    (
+                        maxLines
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
     }
 

@@ -722,7 +722,12 @@ internal class _PopupMenuState__popup_menu<T> : State<_PopupMenu__popup_menu<T>>
                         clipBehavior: widget.clipBehavior,
                         type: MaterialType.card,
                         elevation: (widget.route.elevation ?? popupMenuTheme.elevation)
-                            ?? DartRuntimePrimitives.RequireValue(defaults.elevation),
+                            ?? (
+                                defaults.elevation
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ),
                         shadowColor: (widget.route.shadowColor ?? popupMenuTheme.shadowColor)
                             ?? defaults.shadowColor,
                         surfaceTintColor: (
@@ -989,19 +994,10 @@ public class _PopupMenuRoute__popup_menu<T> : PopupRoute<T>
         Scheduler.SchedulerBinding.instance.addPostFrameCallback(
             (_) =>
             {
-                if (
-                    itemKeys[
-                        (int)DartRuntimePrimitives.RequireValue(selectedItemIndex)
-                    ].currentContext
-                    is not null
-                )
+                if (itemKeys[(int)(selectedItemIndex)].currentContext is not null)
                 {
                     DartRuntimePrimitives.Ignore(
-                        Scrollable.ensureVisible(
-                            itemKeys[
-                                (int)DartRuntimePrimitives.RequireValue(selectedItemIndex)
-                            ].currentContext!
-                        )
+                        Scrollable.ensureVisible(itemKeys[(int)(selectedItemIndex)].currentContext!)
                     );
                 }
             }
@@ -1038,14 +1034,11 @@ public class _PopupMenuRoute__popup_menu<T> : PopupRoute<T>
         }
         if (selectedItemIndex is not null)
         {
-            long selectedItemIndex__34930__value35194 = DartRuntimePrimitives.RequireValue(
+            long selectedItemIndex__34930__value35194 = (
                 selectedItemIndex
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
-            scrollTo(
-                DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(selectedItemIndex__34930__value35194)
-                )
-            );
+            scrollTo(((selectedItemIndex__34930__value35194)));
         }
         Widget menu = new _PopupMenu__popup_menu<T>(
             route: this,

@@ -283,7 +283,12 @@ public class RenderFlow
         {
             _paintingContext!.pushTransform(
                 needsCompositing,
-                DartRuntimePrimitives.RequireValue(_paintingOffset),
+                (
+                    _paintingOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 transform,
                 painter
             );
@@ -291,7 +296,12 @@ public class RenderFlow
         else
         {
             _paintingContext!.pushOpacity(
-                DartRuntimePrimitives.RequireValue(_paintingOffset),
+                (
+                    _paintingOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 Dart_uiLibrary.Color.getAlphaFromOpacity(opacity),
                 (context, offset) =>
                 {
@@ -681,9 +691,13 @@ public class RenderFlow
             double? result = child.getDistanceToActualBaseline(baseline);
             if (result is not null)
             {
-                double result__138852__value138916 = DartRuntimePrimitives.RequireValue(result);
-                return DartRuntimePrimitives.RequireValue(result__138852__value138916)
-                    + childParentData.offset.dy;
+                double result__138852__value138916 = (
+                    result
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
+                return (result__138852__value138916) + childParentData.offset.dy;
             }
             child = childParentData.nextSibling;
         }

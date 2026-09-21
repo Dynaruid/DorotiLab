@@ -109,12 +109,24 @@ public class DragUpdateDetails : PositionedGestureDetails, Diagnosticable
         System.Diagnostics.Debug.Assert(
             (primaryDelta is null)
                 || (
-                    (DartRuntimePrimitives.RequireValue(primaryDelta) == delta.dx)
-                    && (delta.dy == 0.0)
+                    (
+                        (
+                            primaryDelta
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) == delta.dx
+                    ) && (delta.dy == 0.0)
                 )
                 || (
-                    (DartRuntimePrimitives.RequireValue(primaryDelta) == delta.dy)
-                    && (delta.dx == 0.0)
+                    (
+                        (
+                            primaryDelta
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) == delta.dy
+                    ) && (delta.dx == 0.0)
                 )
         );
     }
@@ -163,14 +175,22 @@ public class DragEndDetails : PositionedGestureDetails, Diagnosticable
             (primaryVelocity is null)
                 || (
                     (
-                        DartRuntimePrimitives.RequireValue(primaryVelocity)
-                        == __velocity.pixelsPerSecond.dx
+                        (
+                            primaryVelocity
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) == __velocity.pixelsPerSecond.dx
                     ) && (__velocity.pixelsPerSecond.dy == 0L)
                 )
                 || (
                     (
-                        DartRuntimePrimitives.RequireValue(primaryVelocity)
-                        == __velocity.pixelsPerSecond.dy
+                        (
+                            primaryVelocity
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) == __velocity.pixelsPerSecond.dy
                     ) && (__velocity.pixelsPerSecond.dx == 0L)
                 )
         );

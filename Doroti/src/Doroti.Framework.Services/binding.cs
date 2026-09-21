@@ -193,7 +193,10 @@ public abstract class ServicesBinding : SchedulerBinding
         AppLifecycleState? state = _parseAppLifecycleMessage(message!);
         List<AppLifecycleState> generated = _generateStateTransitions(
             lifecycleState,
-            DartRuntimePrimitives.RequireValue(state)
+            (
+                state
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         foreach (var stateChange in generated)
         {
@@ -222,7 +225,14 @@ public abstract class ServicesBinding : SchedulerBinding
         {
             long previousStateIndex = Enum.GetValues<AppLifecycleState>()
                 .ToList()
-                .IndexOf(DartRuntimePrimitives.RequireValue(previousState));
+                .IndexOf(
+                    (
+                        previousState
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                );
             long stateIndex = Enum.GetValues<AppLifecycleState>().ToList().IndexOf(state);
             DartRuntimePrimitives.Assert(() => previousStateIndex != -1L);
             DartRuntimePrimitives.Assert(() => stateIndex != -1L);

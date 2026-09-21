@@ -436,7 +436,12 @@ public class SliverGrid : SliverMultiBoxAdaptorWidget
                 gridDelegate
                     .getLayout(constraints!)
                     .computeMaxScrollOffset(
-                        DartRuntimePrimitives.RequireValue(@delegate.estimatedChildCount)
+                        (
+                            @delegate.estimatedChildCount
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -572,22 +577,38 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
                 )!;
                 if ((childParentData is not null) && (childParentData.layoutOffset is not null))
                 {
-                    indexToLayoutOffset[indexLocal] = DartRuntimePrimitives.RequireValue(
+                    indexToLayoutOffset[indexLocal] = (
                         childParentData.layoutOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     );
                 }
                 if (
                     (newIndex is not null)
-                    && (DartRuntimePrimitives.RequireValue(newIndex) != indexLocal)
+                    && (
+                        (
+                            newIndex
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) != indexLocal
+                    )
                 )
                 {
-                    long newIndex__39285__value39663 = DartRuntimePrimitives.RequireValue(newIndex);
+                    long newIndex__39285__value39663 = (
+                        newIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    );
                     if (childParentData is not null)
                     {
                         childParentData.layoutOffset = null;
                     }
-                    newChildren[DartRuntimePrimitives.RequireValue(newIndex__39285__value39663)] =
-                        _childElements.GetValueOrDefault(indexLocal);
+                    newChildren[(newIndex__39285__value39663)] = _childElements.GetValueOrDefault(
+                        indexLocal
+                    );
                     if (_replaceMovedChildren)
                     {
                         newChildren.putIfAbsent(indexLocal, () => default!);
@@ -735,22 +756,14 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
         long childCount
     )
     {
-        if (DartRuntimePrimitives.RequireValue(lastIndex) == (childCount - 1L))
+        if ((lastIndex) == (childCount - 1L))
         {
-            return DartRuntimePrimitives.RequireValue(trailingScrollOffset);
+            return (trailingScrollOffset);
         }
-        long reifiedCount =
-            DartRuntimePrimitives.RequireValue(lastIndex)
-            - DartRuntimePrimitives.RequireValue(firstIndex)
-            + 1L;
-        double averageExtent =
-            (
-                DartRuntimePrimitives.RequireValue(trailingScrollOffset)
-                - DartRuntimePrimitives.RequireValue(leadingScrollOffset)
-            ) / reifiedCount;
-        long remainingCount = childCount - DartRuntimePrimitives.RequireValue(lastIndex) - 1L;
-        return DartRuntimePrimitives.RequireValue(trailingScrollOffset)
-            + (averageExtent * remainingCount);
+        long reifiedCount = (lastIndex) - (firstIndex) + 1L;
+        double averageExtent = ((trailingScrollOffset) - (leadingScrollOffset)) / reifiedCount;
+        long remainingCount = childCount - (lastIndex) - 1L;
+        return (trailingScrollOffset) + (averageExtent * remainingCount);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -769,21 +782,72 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
         }
         return ((SliverMultiBoxAdaptorWidget?)widget)!.estimateMaxScrollOffset(
                 constraints,
-                DartRuntimePrimitives.RequireValue(firstIndex),
-                DartRuntimePrimitives.RequireValue(lastIndex),
-                DartRuntimePrimitives.RequireValue(leadingScrollOffset),
-                DartRuntimePrimitives.RequireValue(trailingScrollOffset)
+                (
+                    firstIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                (
+                    lastIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                (
+                    leadingScrollOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                (
+                    trailingScrollOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             )
             ?? (double)_extrapolateMaxScrollOffset(
-                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(firstIndex)),
-                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(lastIndex)),
-                DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(leadingScrollOffset)
+                (
+                    (
+                        firstIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 ),
-                DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(trailingScrollOffset)
+                (
+                    (
+                        lastIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 ),
-                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(childCount))
+                (
+                    (
+                        leadingScrollOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                ),
+                (
+                    (
+                        trailingScrollOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                ),
+                (
+                    (
+                        childCount
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
             );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -842,7 +906,14 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
                 }
                 result = lo;
             }
-            return DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(result));
+            return (
+                (
+                    result
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            );
         }
     }
 
@@ -857,8 +928,8 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
         long firstIndex = DartCollectionRuntime.FirstKeyOrNull(_childElements) ?? 0L;
         long lastIndex = DartCollectionRuntime.LastKeyOrNull(_childElements) ?? 0L;
         ((SliverMultiBoxAdaptorWidget?)widget)!.@delegate.didFinishLayout(
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(firstIndex)),
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(lastIndex))
+            ((firstIndex)),
+            ((lastIndex))
         );
     }
 
@@ -902,9 +973,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
     {
         long __oldSlot = DartRuntimePrimitives.ConvertValue<long>(oldSlot);
         long __newSlot = DartRuntimePrimitives.ConvertValue<long>(newSlot);
-        DartRuntimePrimitives.Assert(() =>
-            _currentlyUpdatingChildIndex == DartRuntimePrimitives.RequireValue(__newSlot)
-        );
+        DartRuntimePrimitives.Assert(() => _currentlyUpdatingChildIndex == (__newSlot));
         renderObject.move(((RenderBox?)child)!, after: _currentBeforeChild);
     }
 
@@ -943,7 +1012,12 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
                     );
                     return (parentDataLocal.layoutOffset is not null)
                         && (
-                            DartRuntimePrimitives.RequireValue(parentDataLocal.layoutOffset)
+                            (
+                                parentDataLocal.layoutOffset
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                             < (
                                 renderObject.constraints.scrollOffset
                                 + renderObject.constraints.remainingPaintExtent
@@ -951,8 +1025,12 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
                         )
                         && (
                             (
-                                DartRuntimePrimitives.RequireValue(parentDataLocal.layoutOffset)
-                                + itemExtent
+                                (
+                                    parentDataLocal.layoutOffset
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                ) + itemExtent
                             ) > renderObject.constraints.scrollOffset
                         );
                     throw new InvalidOperationException("Dart closure completed without a value.");

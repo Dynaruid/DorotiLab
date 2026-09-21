@@ -213,7 +213,9 @@ public class LookupBoundary : InheritedWidget
             return true;
             throw new InvalidOperationException("Dart closure completed without a value.");
         });
-        return DartRuntimePrimitives.RequireValue(result);
+        return (
+            result ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -247,7 +249,9 @@ public class LookupBoundary : InheritedWidget
             return true;
             throw new InvalidOperationException("Dart closure completed without a value.");
         });
-        return DartRuntimePrimitives.RequireValue(result);
+        return (
+            result ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -284,7 +288,9 @@ public class LookupBoundary : InheritedWidget
             return true;
             throw new InvalidOperationException("Dart closure completed without a value.");
         });
-        return DartRuntimePrimitives.RequireValue(result);
+        return (
+            result ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

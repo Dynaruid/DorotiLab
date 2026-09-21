@@ -144,11 +144,11 @@ internal class _RenderOverflowBar__overflow_bar
         set
         {
             var __value = value;
-            if (_spacing == DartRuntimePrimitives.RequireValue(__value))
+            if (_spacing == (__value))
             {
                 return;
             }
-            _spacing = DartRuntimePrimitives.RequireValue(__value);
+            _spacing = (__value);
             markNeedsLayout();
         }
     }
@@ -172,11 +172,11 @@ internal class _RenderOverflowBar__overflow_bar
         set
         {
             var __value = value;
-            if (_overflowSpacing == DartRuntimePrimitives.RequireValue(__value))
+            if (_overflowSpacing == (__value))
             {
                 return;
             }
-            _overflowSpacing = DartRuntimePrimitives.RequireValue(__value);
+            _overflowSpacing = (__value);
             markNeedsLayout();
         }
     }
@@ -186,11 +186,11 @@ internal class _RenderOverflowBar__overflow_bar
         set
         {
             var __value = value;
-            if (Equals(_overflowAlignment, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_overflowAlignment, (__value)))
             {
                 return;
             }
-            _overflowAlignment = DartRuntimePrimitives.RequireValue(__value);
+            _overflowAlignment = (__value);
             markNeedsLayout();
         }
     }
@@ -200,11 +200,11 @@ internal class _RenderOverflowBar__overflow_bar
         set
         {
             var __value = value;
-            if (Equals(_overflowDirection, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_overflowDirection, (__value)))
             {
                 return;
             }
-            _overflowDirection = DartRuntimePrimitives.RequireValue(__value);
+            _overflowDirection = (__value);
             markNeedsLayout();
         }
     }
@@ -214,11 +214,11 @@ internal class _RenderOverflowBar__overflow_bar
         set
         {
             var __value = value;
-            if (Equals(_textDirection, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_textDirection, (__value)))
             {
                 return;
             }
-            _textDirection = DartRuntimePrimitives.RequireValue(__value);
+            _textDirection = (__value);
             markNeedsLayout();
         }
     }
@@ -940,9 +940,13 @@ internal class _RenderOverflowBar__overflow_bar
             double? result = child.getDistanceToActualBaseline(baseline);
             if (result is not null)
             {
-                double result__138852__value138916 = DartRuntimePrimitives.RequireValue(result);
-                return DartRuntimePrimitives.RequireValue(result__138852__value138916)
-                    + childParentData.offset.dy;
+                double result__138852__value138916 = (
+                    result
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
+                return (result__138852__value138916) + childParentData.offset.dy;
             }
             child = childParentData.nextSibling;
         }

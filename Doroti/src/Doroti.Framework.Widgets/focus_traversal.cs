@@ -1150,7 +1150,7 @@ public class WidgetOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocus
                 }
                 _requestFocus(
                     lastNode,
-                    alignmentPolicy: DartRuntimePrimitives.RequireValue(alignmentPolicyLocal),
+                    alignmentPolicy: (alignmentPolicyLocal),
                     groupNode: groupNode
                 );
                 return true;
@@ -1618,10 +1618,18 @@ internal class _ReadingOrderDirectionalGroupData__focus_traversal : Diagnosticab
                 foreach (Rect rectLocal in members.map((data) => data.rect))
                 {
                     _rect ??= rectLocal;
-                    _rect = DartRuntimePrimitives.RequireValue(_rect).expandToInclude(rectLocal);
+                    _rect = (
+                        _rect
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).expandToInclude(rectLocal);
                 }
             }
-            return DartRuntimePrimitives.RequireValue(_rect);
+            return (
+                _rect
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
     }
     public virtual List<Directionality> memberAncestors
@@ -1774,7 +1782,12 @@ public class ReadingOrderTraversalPolicy
             }
             _ReadingOrderSortData__focus_traversal.sortWithDirectionality(
                 bandGroup.members,
-                DartRuntimePrimitives.RequireValue(bandGroup.directionality)
+                (
+                    bandGroup.directionality
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
         }
         return result;
@@ -1828,7 +1841,10 @@ public class ReadingOrderTraversalPolicy
             _ReadingOrderSortData__focus_traversal.commonDirectionalityOf(inBandOfTop);
         _ReadingOrderSortData__focus_traversal.sortWithDirectionality(
             inBandOfTop,
-            DartRuntimePrimitives.RequireValue(nearestCommonDirectionality)
+            (
+                nearestCommonDirectionality
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         List<_ReadingOrderDirectionalGroupData__focus_traversal> bandGroups =
             _collectDirectionalityGroups(
@@ -1840,8 +1856,13 @@ public class ReadingOrderTraversalPolicy
         }
         _ReadingOrderDirectionalGroupData__focus_traversal.sortWithDirectionality(
             bandGroups,
-            DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(nearestCommonDirectionality)
+            (
+                (
+                    nearestCommonDirectionality
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             )
         );
         return bandGroups.First().members.First();
@@ -2245,7 +2266,7 @@ public class ReadingOrderTraversalPolicy
                 }
                 _requestFocus(
                     lastNode,
-                    alignmentPolicy: DartRuntimePrimitives.RequireValue(alignmentPolicyLocal),
+                    alignmentPolicy: (alignmentPolicyLocal),
                     groupNode: groupNode
                 );
                 return true;
@@ -3133,7 +3154,7 @@ public class OrderedTraversalPolicy : FocusTraversalPolicy, DirectionalFocusTrav
                 }
                 _requestFocus(
                     lastNode,
-                    alignmentPolicy: DartRuntimePrimitives.RequireValue(alignmentPolicyLocal),
+                    alignmentPolicy: (alignmentPolicyLocal),
                     groupNode: groupNode
                 );
                 return true;

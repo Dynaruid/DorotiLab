@@ -77,10 +77,7 @@ public class ShapeDecoration : Decoration
 
     public override Path getClipPath(Rect rect, TextDirection textDirection)
     {
-        return shape.getOuterPath(
-            rect,
-            textDirection: DartRuntimePrimitives.RequireValue(textDirection)
-        );
+        return shape.getOuterPath(rect, textDirection: (textDirection));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -341,7 +338,13 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
             {
                 for (
                     var index = 0L;
-                    index < DartRuntimePrimitives.RequireValue(_shadowCount);
+                    index
+                        < (
+                            _shadowCount
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        );
                     index += 1L
                 )
                 {
@@ -370,7 +373,13 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
             {
                 for (
                     var indexLocal = 0L;
-                    indexLocal < DartRuntimePrimitives.RequireValue(_shadowCount);
+                    indexLocal
+                        < (
+                            _shadowCount
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        );
                     indexLocal += 1L
                 )
                 {
@@ -434,7 +443,10 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
         _imagePainter ??= _decoration.image!.createPainter(onChanged);
         _imagePainter!.paint(
             canvas,
-            DartRuntimePrimitives.RequireValue(_lastRect),
+            (
+                _lastRect
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             _innerPath,
             configuration
         );
@@ -449,7 +461,12 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
     public override void paint(Canvas canvas, Offset offset, ImageConfiguration configuration)
     {
         DartRuntimePrimitives.Assert(() => configuration.size is not null);
-        Rect rect = offset & DartRuntimePrimitives.RequireValue(configuration.size);
+        Rect rect =
+            offset
+            & (
+                configuration.size
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         TextDirection? textDirectionLocal = configuration.textDirection;
         _precache(rect, textDirectionLocal);
         _paintShadows(canvas, rect, textDirectionLocal);

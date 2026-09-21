@@ -153,7 +153,10 @@ internal class _ButtonBarRow__button_bar : Flex
             mainAxisAlignment: mainAxisAlignment,
             mainAxisSize: mainAxisSize,
             crossAxisAlignment: crossAxisAlignment,
-            textDirection: DartRuntimePrimitives.RequireValue(getEffectiveTextDirection(context)),
+            textDirection: (
+                getEffectiveTextDirection(context)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             verticalDirection: verticalDirection,
             textBaseline: textBaseline,
             overflowButtonSpacing: overflowButtonSpacing
@@ -246,10 +249,18 @@ public class _RenderButtonBarRow__button_bar : RenderFlex
             child = childAfter(child);
             if ((overflowButtonSpacing is not null) && (child is not null))
             {
-                double overflowButtonSpacing__value15257 = DartRuntimePrimitives.RequireValue(
+                double overflowButtonSpacing__value15257 = (
                     overflowButtonSpacing
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
-                currentHeight += DartRuntimePrimitives.RequireValue(overflowButtonSpacing);
+                currentHeight += (
+                    overflowButtonSpacing
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
             }
         }
         return constraints.constrain(new Size(constraints.maxWidth, currentHeight));
@@ -280,7 +291,14 @@ public class _RenderButtonBarRow__button_bar : RenderFlex
             {
                 var childParentData = ((FlexParentData?)child.parentData!)!;
                 child.layout(childConstraints, parentUsesSize: true);
-                switch (DartRuntimePrimitives.RequireValue(textDirection))
+                switch (
+                    (
+                        textDirection
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
                 {
                     case TextDirection.ltr:
                     {
@@ -352,10 +370,18 @@ public class _RenderButtonBarRow__button_bar : RenderFlex
                 };
                 if ((overflowButtonSpacing is not null) && (child is not null))
                 {
-                    double overflowButtonSpacing__value18856 = DartRuntimePrimitives.RequireValue(
+                    double overflowButtonSpacing__value18856 = (
                         overflowButtonSpacing
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     );
-                    currentHeight += DartRuntimePrimitives.RequireValue(overflowButtonSpacing);
+                    currentHeight += (
+                        overflowButtonSpacing
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    );
                 }
             }
             size = constraints.constrain(new Size(constraints.maxWidth, currentHeight));

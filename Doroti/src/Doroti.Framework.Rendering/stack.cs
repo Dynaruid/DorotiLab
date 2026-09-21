@@ -122,10 +122,22 @@ public class RelativeRect
             return new RelativeRect(b!.left * k, b.top * k, b.right * k, b.bottom * k);
         }
         return new RelativeRect(
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.left, b.left, t)),
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.top, b.top, t)),
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.right, b.right, t)),
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.bottom, b.bottom, t))
+            (
+                Dart_uiLibrary.lerpDouble(a.left, b.left, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            (
+                Dart_uiLibrary.lerpDouble(a.top, b.top, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            (
+                Dart_uiLibrary.lerpDouble(a.right, b.right, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            (
+                Dart_uiLibrary.lerpDouble(a.bottom, b.bottom, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -169,10 +181,30 @@ public class StackParentData : ContainerBoxParentData<RenderBox>
     {
         get =>
             new RelativeRect(
-                DartRuntimePrimitives.RequireValue(left),
-                DartRuntimePrimitives.RequireValue(top),
-                DartRuntimePrimitives.RequireValue(right),
-                DartRuntimePrimitives.RequireValue(bottom)
+                (
+                    left
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                (
+                    top
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                (
+                    right
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                (
+                    bottom
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
         set
         {
@@ -205,18 +237,50 @@ public class StackParentData : ContainerBoxParentData<RenderBox>
             (_, _) => height,
         };
         DartRuntimePrimitives.Assert(() =>
-            (heightLocal is null) || !double.IsNaN(DartRuntimePrimitives.RequireValue(heightLocal))
+            (heightLocal is null)
+            || !double.IsNaN(
+                (
+                    heightLocal
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
         );
         DartRuntimePrimitives.Assert(() =>
-            (widthLocal is null) || !double.IsNaN(DartRuntimePrimitives.RequireValue(widthLocal))
+            (widthLocal is null)
+            || !double.IsNaN(
+                (
+                    widthLocal
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
         );
         return BoxConstraints.CreateTightFor(
             width: (widthLocal is null)
                 ? null
-                : Math.Max(0.0, DartRuntimePrimitives.RequireValue(widthLocal)),
+                : Math.Max(
+                    0.0,
+                    (
+                        widthLocal
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                ),
             height: (heightLocal is null)
                 ? null
-                : Math.Max(0.0, DartRuntimePrimitives.RequireValue(heightLocal))
+                : Math.Max(
+                    0.0,
+                    (
+                        heightLocal
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -325,9 +389,9 @@ public class RenderStack
         set
         {
             var __value = value;
-            if (!Equals(_fit, DartRuntimePrimitives.RequireValue(__value)))
+            if (!Equals(_fit, (__value)))
             {
-                _fit = DartRuntimePrimitives.RequireValue(__value);
+                _fit = (__value);
                 markNeedsLayout();
             }
         }
@@ -338,9 +402,9 @@ public class RenderStack
         set
         {
             var __value = value;
-            if (!Equals(DartRuntimePrimitives.RequireValue(__value), _clipBehavior))
+            if (!Equals((__value), _clipBehavior))
             {
-                _clipBehavior = DartRuntimePrimitives.RequireValue(__value);
+                _clipBehavior = (__value);
                 markNeedsPaint();
                 markNeedsSemanticsUpdate();
             }
@@ -463,7 +527,10 @@ public class RenderStack
                 .dy,
             _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
         };
-        return DartRuntimePrimitives.RequireValue(baselineOffset) + y;
+        return (
+                baselineOffset
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) + y;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -972,9 +1039,13 @@ public class RenderStack
             double? result = child.getDistanceToActualBaseline(baseline);
             if (result is not null)
             {
-                double result__138852__value138916 = DartRuntimePrimitives.RequireValue(result);
-                return DartRuntimePrimitives.RequireValue(result__138852__value138916)
-                    + childParentData.offset.dy;
+                double result__138852__value138916 = (
+                    result
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
+                return (result__138852__value138916) + childParentData.offset.dy;
             }
             child = childParentData.nextSibling;
         }
@@ -1068,7 +1139,10 @@ public class RenderIndexedStack : RenderStack
         : base(
             children: children,
             alignment: alignment ?? AlignmentDirectional.topStart,
-            textDirection: DartRuntimePrimitives.RequireValue(textDirection),
+            textDirection: (
+                textDirection
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             fit: fit,
             clipBehavior: clipBehavior
         )
@@ -1109,7 +1183,15 @@ public class RenderIndexedStack : RenderStack
         RenderBox? child = firstChild;
         for (
             var i = 0L;
-            (i < DartRuntimePrimitives.RequireValue(index)) && (child is not null);
+            (
+                i
+                < (
+                    index
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            ) && (child is not null);
             i += 1L
         )
         {

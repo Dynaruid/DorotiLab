@@ -46,7 +46,15 @@ public class StrutStyle : Diagnosticable
         _fontFamilyFallback = fontFamilyFallback;
         _package = package;
         System.Diagnostics.Debug.Assert(
-            (fontSize is null) || (DartRuntimePrimitives.RequireValue(fontSize) > 0L)
+            (fontSize is null)
+                || (
+                    (
+                        fontSize
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
         System.Diagnostics.Debug.Assert((leading is null) || (leading >= 0L));
         System.Diagnostics.Debug.Assert(
@@ -257,7 +265,10 @@ public class StrutStyle : Diagnosticable
         );
         if (height is not null)
         {
-            double height__value26382 = DartRuntimePrimitives.RequireValue(height);
+            double height__value26382 = (
+                height
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             styles.Add(
                 new EnumProperty<TextLeadingDistribution>(
                     $"{prefix}leadingDistribution",

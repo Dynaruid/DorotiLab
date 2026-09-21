@@ -195,12 +195,23 @@ public class MaxColumnWidth : TableColumnWidth
         {
             if (bFlex is null)
             {
-                return DartRuntimePrimitives.RequireValue(aFlex);
+                return (
+                    aFlex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
             }
         }
         return Math.Max(
-            DartRuntimePrimitives.RequireValue(aFlex),
-            DartRuntimePrimitives.RequireValue(bFlex)
+            (
+                aFlex
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            (
+                bFlex
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -250,12 +261,23 @@ public class MinColumnWidth : TableColumnWidth
         {
             if (bFlex is null)
             {
-                return DartRuntimePrimitives.RequireValue(aFlex);
+                return (
+                    aFlex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
             }
         }
         return Math.Min(
-            DartRuntimePrimitives.RequireValue(aFlex),
-            DartRuntimePrimitives.RequireValue(bFlex)
+            (
+                aFlex
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            (
+                bFlex
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -347,13 +369,13 @@ public class RenderTable : RenderBox
         {
             var __value = value;
             DartRuntimePrimitives.Assert(() => __value >= 0L);
-            if (DartRuntimePrimitives.RequireValue(__value) == columns)
+            if ((__value) == columns)
             {
                 return;
             }
             long oldColumns = columns;
             List<RenderBox?> oldChildren = _children;
-            _columns = DartRuntimePrimitives.RequireValue(__value);
+            _columns = (__value);
             _children = new List<RenderBox?>(
                 Enumerable.Repeat<RenderBox?>(null, checked((int)(columns * rows)))
             );
@@ -389,17 +411,13 @@ public class RenderTable : RenderBox
         {
             var __value = value;
             DartRuntimePrimitives.Assert(() => __value >= 0L);
-            if (DartRuntimePrimitives.RequireValue(__value) == rows)
+            if ((__value) == rows)
             {
                 return;
             }
-            if (_rows > DartRuntimePrimitives.RequireValue(__value))
+            if (_rows > (__value))
             {
-                for (
-                    long xy = columns * DartRuntimePrimitives.RequireValue(__value);
-                    xy < checked(_children.Count);
-                    xy += 1L
-                )
+                for (long xy = columns * (__value); xy < checked(_children.Count); xy += 1L)
                 {
                     if (_children[(int)xy] is not null)
                     {
@@ -407,7 +425,7 @@ public class RenderTable : RenderBox
                     }
                 }
             }
-            _rows = DartRuntimePrimitives.RequireValue(__value);
+            _rows = (__value);
             _children.setLength(columns * rows);
             markNeedsLayout();
         }
@@ -461,11 +479,11 @@ public class RenderTable : RenderBox
         set
         {
             var __value = value;
-            if (Equals(_textDirection, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_textDirection, (__value)))
             {
                 return;
             }
-            _textDirection = DartRuntimePrimitives.RequireValue(__value);
+            _textDirection = (__value);
             markNeedsLayout();
         }
     }
@@ -534,11 +552,11 @@ public class RenderTable : RenderBox
         set
         {
             var __value = value;
-            if (Equals(_defaultVerticalAlignment, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_defaultVerticalAlignment, (__value)))
             {
                 return;
             }
-            _defaultVerticalAlignment = DartRuntimePrimitives.RequireValue(__value);
+            _defaultVerticalAlignment = (__value);
             markNeedsLayout();
         }
     }
@@ -826,17 +844,15 @@ public class RenderTable : RenderBox
 
     public virtual void setFlatChildren(long columns, List<RenderBox?> cells)
     {
-        if (Equals(cells, _children) && (DartRuntimePrimitives.RequireValue(columns) == _columns))
+        if (Equals(cells, _children) && ((columns) == _columns))
         {
             return;
         }
         DartRuntimePrimitives.Assert(() => columns >= 0L);
-        if (
-            (DartRuntimePrimitives.RequireValue(columns) == 0L) || (checked((long)cells.Count) == 0)
-        )
+        if (((columns) == 0L) || (checked((long)cells.Count) == 0))
         {
             DartRuntimePrimitives.Assert(() => checked((long)cells.Count) == 0);
-            _columns = DartRuntimePrimitives.RequireValue(columns);
+            _columns = (columns);
             if (checked((long)_children.Count) == 0)
             {
                 DartRuntimePrimitives.Assert(() => _rows == 0L);
@@ -854,21 +870,19 @@ public class RenderTable : RenderBox
             markNeedsLayout();
             return;
         }
-        DartRuntimePrimitives.Assert(() =>
-            (checked(cells.Count) % DartRuntimePrimitives.RequireValue(columns)) == 0L
-        );
+        DartRuntimePrimitives.Assert(() => (checked(cells.Count) % (columns)) == 0L);
         HashSet<RenderBox> lostChildren = new HashSet<RenderBox>();
         for (var y = 0L; y < _rows; y += 1L)
         {
             for (var x = 0L; x < _columns; x += 1L)
             {
                 long xyOld = x + (y * _columns);
-                long xyNew = x + (y * DartRuntimePrimitives.RequireValue(columns));
+                long xyNew = x + (y * (columns));
                 if (
                     (xyOld < checked(_children.Count))
                     && (_children[(int)xyOld] is not null)
                     && (
-                        (x >= DartRuntimePrimitives.RequireValue(columns))
+                        (x >= (columns))
                         || (xyNew >= checked(cells.Count))
                         || (!Equals(_children[(int)xyOld], cells[(int)xyNew]))
                     )
@@ -879,15 +893,11 @@ public class RenderTable : RenderBox
             }
         }
         var yLocal = 0L;
-        while ((yLocal * DartRuntimePrimitives.RequireValue(columns)) < checked(cells.Count))
+        while ((yLocal * (columns)) < checked(cells.Count))
         {
-            for (
-                var xLocal = 0L;
-                xLocal < DartRuntimePrimitives.RequireValue(columns);
-                xLocal += 1L
-            )
+            for (var xLocal = 0L; xLocal < (columns); xLocal += 1L)
             {
-                long xyNewLocal = xLocal + (yLocal * DartRuntimePrimitives.RequireValue(columns));
+                long xyNewLocal = xLocal + (yLocal * (columns));
                 long xyOldLocal = xLocal + (yLocal * _columns);
                 if (
                     (cells[(int)xyNewLocal] is { } newChild)
@@ -908,12 +918,10 @@ public class RenderTable : RenderBox
             yLocal += 1L;
         }
         lostChildren.forEach(dropChild);
-        _columns = DartRuntimePrimitives.RequireValue(columns);
-        _rows = checked(checked(cells.Count) / DartRuntimePrimitives.RequireValue(columns));
+        _columns = (columns);
+        _rows = checked(checked(cells.Count) / (columns));
         _children = new List<RenderBox?>(cells);
-        DartRuntimePrimitives.Assert(() =>
-            checked(_children.Count) == (rows * DartRuntimePrimitives.RequireValue(columns))
-        );
+        DartRuntimePrimitives.Assert(() => checked(_children.Count) == (rows * (columns)));
         markNeedsLayout();
     }
 
@@ -1160,15 +1168,16 @@ public class RenderTable : RenderBox
             double? flexLocal = columnWidth.flex(columnCells);
             if (flexLocal is not null)
             {
-                double flex__38095__value38143 = DartRuntimePrimitives.RequireValue(flexLocal);
-                DartRuntimePrimitives.Assert(() =>
-                    double.IsFinite(DartRuntimePrimitives.RequireValue(flex__38095__value38143))
+                double flex__38095__value38143 = (
+                    flexLocal
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
-                DartRuntimePrimitives.Assert(() =>
-                    DartRuntimePrimitives.RequireValue(flex__38095__value38143) > 0.0
-                );
-                flexes[(int)x] = DartRuntimePrimitives.RequireValue(flex__38095__value38143);
-                totalFlex += DartRuntimePrimitives.RequireValue(flex__38095__value38143);
+                DartRuntimePrimitives.Assert(() => double.IsFinite((flex__38095__value38143)));
+                DartRuntimePrimitives.Assert(() => (flex__38095__value38143) > 0.0);
+                flexes[(int)x] = (flex__38095__value38143);
+                totalFlex += (flex__38095__value38143);
             }
             else
             {
@@ -1199,7 +1208,12 @@ public class RenderTable : RenderBox
                     {
                         double flexedWidth =
                             remainingWidth
-                            * DartRuntimePrimitives.RequireValue(flexes[(int)xLocal])
+                            * (
+                                flexes[(int)xLocal]
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                             / totalFlex;
                         DartRuntimePrimitives.Assert(() => double.IsFinite(flexedWidth));
                         DartRuntimePrimitives.Assert(() => flexedWidth >= 0.0);
@@ -1247,7 +1261,12 @@ public class RenderTable : RenderBox
                             widths[(int)xNested]
                             - (
                                 deficit
-                                * DartRuntimePrimitives.RequireValue(flexes[(int)xNested])
+                                * (
+                                    flexes[(int)xNested]
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                )
                                 / totalFlex
                             );
                         DartRuntimePrimitives.Assert(() => double.IsFinite(newWidth));
@@ -1262,8 +1281,11 @@ public class RenderTable : RenderBox
                         {
                             deficit -= widths[(int)xNested] - newWidth;
                             widths[(int)xNested] = newWidth;
-                            newTotalFlex += DartRuntimePrimitives.RequireValue(
+                            newTotalFlex += (
                                 flexes[(int)xNested]
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
                             );
                         }
                         DartRuntimePrimitives.Assert(() => widths[(int)xNested] >= 0.0);
@@ -1351,18 +1373,29 @@ public class RenderTable : RenderBox
                 && (
                     (baselineOffset is null)
                     || (
-                        DartRuntimePrimitives.RequireValue(baselineOffset)
-                        < DartRuntimePrimitives.RequireValue(childBaseline)
+                        (
+                            baselineOffset
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                        < (
+                            childBaseline
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     )
                 )
             )
             {
-                double childBaseline__44477__value44974 = DartRuntimePrimitives.RequireValue(
+                double childBaseline__44477__value44974 = (
                     childBaseline
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
-                baselineOffset = DartRuntimePrimitives.RequireValue(
-                    childBaseline__44477__value44974
-                );
+                baselineOffset = (childBaseline__44477__value44974);
             }
         }
         return baselineOffset;
@@ -1429,37 +1462,22 @@ public class RenderTable : RenderBox
         long rowsLocal = rows;
         long columnsLocal = columns;
         DartRuntimePrimitives.Assert(() =>
-            checked(_children.Count)
-            == (
-                DartRuntimePrimitives.RequireValue(rowsLocal)
-                * DartRuntimePrimitives.RequireValue(columnsLocal)
-            )
+            checked(_children.Count) == ((rowsLocal) * (columnsLocal))
         );
-        if (
-            (
-                DartRuntimePrimitives.RequireValue(rowsLocal)
-                * DartRuntimePrimitives.RequireValue(columnsLocal)
-            ) == 0L
-        )
+        if (((rowsLocal) * (columnsLocal)) == 0L)
         {
             _tableWidth = 0.0;
             size = constraintsLocal.constrain(Size.zero);
             return;
         }
         List<double> widths = _computeColumnWidths(constraintsLocal);
-        var positions = new List<double>(
-            Enumerable.Repeat(0.0, checked((int)DartRuntimePrimitives.RequireValue(columnsLocal)))
-        );
+        var positions = new List<double>(Enumerable.Repeat(0.0, checked((int)(columnsLocal))));
         switch (textDirection)
         {
             case TextDirection.rtl:
             {
                 positions[(int)(columnsLocal - 1L)] = 0.0;
-                for (
-                    long xLocal = DartRuntimePrimitives.RequireValue(columnsLocal) - 2L;
-                    xLocal >= 0L;
-                    xLocal -= 1L
-                )
+                for (long xLocal = (columnsLocal) - 2L; xLocal >= 0L; xLocal -= 1L)
                 {
                     positions[(int)xLocal] =
                         positions[(int)(xLocal + 1L)] + widths[(int)(xLocal + 1L)];
@@ -1471,11 +1489,7 @@ public class RenderTable : RenderBox
             case TextDirection.ltr:
             {
                 positions[(int)0L] = 0.0;
-                for (
-                    var xAlternate = 1L;
-                    xAlternate < DartRuntimePrimitives.RequireValue(columnsLocal);
-                    xAlternate += 1L
-                )
+                for (var xAlternate = 1L; xAlternate < (columnsLocal); xAlternate += 1L)
                 {
                     positions[(int)xAlternate] =
                         positions[(int)(xAlternate - 1L)] + widths[(int)(xAlternate - 1L)];
@@ -1488,26 +1502,17 @@ public class RenderTable : RenderBox
         _rowTops.Clear();
         _baselineDistance = null;
         var rowTop = 0.0;
-        for (var yLocal = 0L; yLocal < DartRuntimePrimitives.RequireValue(rowsLocal); yLocal += 1L)
+        for (var yLocal = 0L; yLocal < (rowsLocal); yLocal += 1L)
         {
             _rowTops.Add(rowTop);
             var rowHeight = 0.0;
             var haveBaseline = false;
             var beforeBaselineDistance = 0.0;
             var afterBaselineDistance = 0.0;
-            var baselines = new List<double>(
-                Enumerable.Repeat(
-                    0.0,
-                    checked((int)DartRuntimePrimitives.RequireValue(columnsLocal))
-                )
-            );
-            for (
-                var xNested = 0L;
-                xNested < DartRuntimePrimitives.RequireValue(columnsLocal);
-                xNested += 1L
-            )
+            var baselines = new List<double>(Enumerable.Repeat(0.0, checked((int)(columnsLocal))));
+            for (var xNested = 0L; xNested < (columnsLocal); xNested += 1L)
             {
-                long xy = xNested + (yLocal * DartRuntimePrimitives.RequireValue(columnsLocal));
+                long xy = xNested + (yLocal * (columnsLocal));
                 RenderBox? child = _children[(int)xy];
                 if (child is not null)
                 {
@@ -1524,29 +1529,31 @@ public class RenderTable : RenderBox
                                 parentUsesSize: true
                             );
                             double? childBaseline = child.getDistanceToBaseline(
-                                DartRuntimePrimitives.RequireValue(textBaseline),
+                                (
+                                    textBaseline
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                ),
                                 onlyReal: true
                             );
                             if (childBaseline is not null)
                             {
-                                double childBaseline__49094__value49237 =
-                                    DartRuntimePrimitives.RequireValue(childBaseline);
+                                double childBaseline__49094__value49237 = (
+                                    childBaseline
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                );
                                 beforeBaselineDistance = Math.Max(
                                     beforeBaselineDistance,
-                                    DartRuntimePrimitives.RequireValue(
-                                        childBaseline__49094__value49237
-                                    )
+                                    (childBaseline__49094__value49237)
                                 );
                                 afterBaselineDistance = Math.Max(
                                     afterBaselineDistance,
-                                    child.size.height
-                                        - DartRuntimePrimitives.RequireValue(
-                                            childBaseline__49094__value49237
-                                        )
+                                    child.size.height - (childBaseline__49094__value49237)
                                 );
-                                baselines[(int)xNested] = DartRuntimePrimitives.RequireValue(
-                                    childBaseline__49094__value49237
-                                );
+                                baselines[(int)xNested] = (childBaseline__49094__value49237);
                                 haveBaseline = true;
                             }
                             else
@@ -1586,14 +1593,9 @@ public class RenderTable : RenderBox
                 }
                 rowHeight = Math.Max(rowHeight, beforeBaselineDistance + afterBaselineDistance);
             }
-            for (
-                var xCurrent = 0L;
-                xCurrent < DartRuntimePrimitives.RequireValue(columnsLocal);
-                xCurrent += 1L
-            )
+            for (var xCurrent = 0L; xCurrent < (columnsLocal); xCurrent += 1L)
             {
-                long xyLocal =
-                    xCurrent + (yLocal * DartRuntimePrimitives.RequireValue(columnsLocal));
+                long xyLocal = xCurrent + (yLocal * (columnsLocal));
                 RenderBox? childLocal = _children[(int)xyLocal];
                 if (childLocal is not null)
                 {
@@ -1654,9 +1656,7 @@ public class RenderTable : RenderBox
         }
         _rowTops.Add(rowTop);
         size = constraintsLocal.constrain(new Size(_tableWidth, rowTop));
-        DartRuntimePrimitives.Assert(() =>
-            checked(_rowTops.Count) == (DartRuntimePrimitives.RequireValue(rowsLocal) + 1L)
-        );
+        DartRuntimePrimitives.Assert(() => checked(_rowTops.Count) == ((rowsLocal) + 1L));
     }
 
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)

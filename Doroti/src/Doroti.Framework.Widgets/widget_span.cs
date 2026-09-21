@@ -17,7 +17,10 @@ public class WidgetSpan : PlaceholderSpan
     )
         : base(
             alignment: alignment,
-            baseline: DartRuntimePrimitives.RequireValue(baseline),
+            baseline: (
+                baseline
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             style: style
         )
     {
@@ -49,14 +52,13 @@ public class WidgetSpan : PlaceholderSpan
             };
             if (fontSizeToPush is not null)
             {
-                double fontSizeToPush__3823__value3977 = DartRuntimePrimitives.RequireValue(
+                double fontSizeToPush__3823__value3977 = (
                     fontSizeToPush
-                );
-                fontSizeStack.Add(
-                    DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(fontSizeToPush__3823__value3977)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
                     )
                 );
+                fontSizeStack.Add(((fontSizeToPush__3823__value3977)));
             }
             if (span is WidgetSpan)
             {
@@ -87,14 +89,16 @@ public class WidgetSpan : PlaceholderSpan
             span.visitDirectChildren(visitSubtree);
             if (fontSizeToPush is not null)
             {
-                double fontSizeToPush__3823__value4876 = DartRuntimePrimitives.RequireValue(
+                double fontSizeToPush__3823__value4876 = (
                     fontSizeToPush
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
                 double poppedFontSize = fontSizeStack.removeLast();
                 DartRuntimePrimitives.Assert(() => Enumerable.Any(fontSizeStack));
                 DartRuntimePrimitives.Assert(() =>
-                    poppedFontSize
-                    == DartRuntimePrimitives.RequireValue(fontSizeToPush__3823__value4876)
+                    poppedFontSize == (fontSizeToPush__3823__value4876)
                 );
             }
             return true;
@@ -340,15 +344,13 @@ public class _RenderScaledInlineWidget__widget_span
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) == _scale)
+            if ((__value) == _scale)
             {
                 return;
             }
-            DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.RequireValue(__value) > 0L);
-            DartRuntimePrimitives.Assert(() =>
-                double.IsFinite(DartRuntimePrimitives.RequireValue(__value))
-            );
-            _scale = DartRuntimePrimitives.RequireValue(__value);
+            DartRuntimePrimitives.Assert(() => (__value) > 0L);
+            DartRuntimePrimitives.Assert(() => double.IsFinite((__value)));
+            _scale = (__value);
             markNeedsLayout();
         }
     }
@@ -358,11 +360,11 @@ public class _RenderScaledInlineWidget__widget_span
         set
         {
             var __value = value;
-            if (Equals(_alignment, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_alignment, (__value)))
             {
                 return;
             }
-            _alignment = DartRuntimePrimitives.RequireValue(__value);
+            _alignment = (__value);
             markNeedsLayout();
         }
     }
@@ -407,13 +409,9 @@ public class _RenderScaledInlineWidget__widget_span
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
     {
-        return child?.getDistanceToActualBaseline(
-            DartRuntimePrimitives.RequireValue(baseline)
-        ) switch
+        return child?.getDistanceToActualBaseline((baseline)) switch
         {
-            null => base.computeDistanceToActualBaseline(
-                DartRuntimePrimitives.RequireValue(baseline)
-            ),
+            null => base.computeDistanceToActualBaseline((baseline)),
             double childBaseline => scale * childBaseline,
         };
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -423,9 +421,19 @@ public class _RenderScaledInlineWidget__widget_span
     {
         double? distance = child?.getDryBaseline(
             new BoxConstraints(maxWidth: constraints.maxWidth / scale),
-            DartRuntimePrimitives.RequireValue(baseline)
+            (baseline)
         );
-        return (distance is null) ? null : (scale * DartRuntimePrimitives.RequireValue(distance));
+        return (distance is null)
+            ? null
+            : (
+                scale
+                * (
+                    distance
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

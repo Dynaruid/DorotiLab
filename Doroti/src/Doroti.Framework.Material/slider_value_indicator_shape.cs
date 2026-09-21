@@ -134,7 +134,10 @@ public class RectangularSliderValueIndicatorShape : SliderComponentShape
         );
         return _pathPainter.getPreferredSize(
             labelPainter!,
-            DartRuntimePrimitives.RequireValue(textScaleFactor)
+            (
+                textScaleFactor
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -162,9 +165,7 @@ public class RectangularSliderValueIndicatorShape : SliderComponentShape
             center: center,
             scale: scaleLocal,
             labelPainter: labelPainter,
-            textScaleFactor: DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(textScaleFactor)
-            ),
+            textScaleFactor: ((textScaleFactor)),
             sizeWithOverflow: sizeWithOverflow,
             backgroundPaintColor: sliderTheme.valueIndicatorColor!,
             strokePaintColor: sliderTheme.valueIndicatorStrokeColor
@@ -187,10 +188,7 @@ public class RectangularRangeSliderValueIndicatorShape : RangeSliderValueIndicat
     )
     {
         DartRuntimePrimitives.Assert(() => textScaleFactor >= 0L);
-        return _pathPainter.getPreferredSize(
-            labelPainter,
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textScaleFactor))
-        );
+        return _pathPainter.getPreferredSize(labelPainter, ((textScaleFactor)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -205,11 +203,20 @@ public class RectangularRangeSliderValueIndicatorShape : RangeSliderValueIndicat
     {
         return _pathPainter.getHorizontalShift(
             parentBox: parentBox!,
-            center: DartRuntimePrimitives.RequireValue(center),
+            center: (
+                center
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             labelPainter: labelPainter!,
-            textScaleFactor: DartRuntimePrimitives.RequireValue(textScaleFactor),
-            sizeWithOverflow: DartRuntimePrimitives.RequireValue(sizeWithOverflow),
-            scale: DartRuntimePrimitives.RequireValue(activationAnimation!.value)
+            textScaleFactor: (
+                textScaleFactor
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            sizeWithOverflow: (
+                sizeWithOverflow
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            scale: (activationAnimation!.value)
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -236,13 +243,16 @@ public class RectangularRangeSliderValueIndicatorShape : RangeSliderValueIndicat
         _pathPainter.paint(
             parentBox: parentBox!,
             canvas: canvasLocal,
-            center: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(center)),
+            center: ((center)),
             scale: scaleLocal,
             labelPainter: labelPainter!,
-            textScaleFactor: DartRuntimePrimitives.RequireValue(textScaleFactor),
-            sizeWithOverflow: DartRuntimePrimitives.RequireValue(sizeWithOverflow),
+            textScaleFactor: (textScaleFactor),
+            sizeWithOverflow: (
+                sizeWithOverflow
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             backgroundPaintColor: sliderTheme!.valueIndicatorColor!,
-            strokePaintColor: DartRuntimePrimitives.RequireValue(isOnTop)
+            strokePaintColor: (isOnTop)
                 ? sliderTheme.overlappingShapeStrokeColor
                 : sliderTheme.valueIndicatorStrokeColor
         );
@@ -425,7 +435,10 @@ public class PaddleSliderValueIndicatorShape : SliderComponentShape
         );
         return _pathPainter.getPreferredSize(
             labelPainter!,
-            DartRuntimePrimitives.RequireValue(textScaleFactor)
+            (
+                textScaleFactor
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -465,7 +478,7 @@ public class PaddleSliderValueIndicatorShape : SliderComponentShape
             )(),
             activationAnimation.value,
             labelPainter,
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textScaleFactor)),
+            ((textScaleFactor)),
             sizeWithOverflow,
             sliderTheme.valueIndicatorStrokeColor
         );
@@ -487,10 +500,7 @@ public class PaddleRangeSliderValueIndicatorShape : RangeSliderValueIndicatorSha
     )
     {
         DartRuntimePrimitives.Assert(() => textScaleFactor >= 0L);
-        return _pathPainter.getPreferredSize(
-            labelPainter,
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textScaleFactor))
-        );
+        return _pathPainter.getPreferredSize(labelPainter, ((textScaleFactor)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -504,11 +514,20 @@ public class PaddleRangeSliderValueIndicatorShape : RangeSliderValueIndicatorSha
     )
     {
         return _pathPainter.getHorizontalShift(
-            center: DartRuntimePrimitives.RequireValue(center),
+            center: (
+                center
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             labelPainter: labelPainter!,
-            scale: DartRuntimePrimitives.RequireValue(activationAnimation!.value),
-            textScaleFactor: DartRuntimePrimitives.RequireValue(textScaleFactor),
-            sizeWithOverflow: DartRuntimePrimitives.RequireValue(sizeWithOverflow)
+            scale: (activationAnimation!.value),
+            textScaleFactor: (
+                textScaleFactor
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            sizeWithOverflow: (
+                sizeWithOverflow
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -531,7 +550,10 @@ public class PaddleRangeSliderValueIndicatorShape : RangeSliderValueIndicatorSha
     )
     {
         DartRuntimePrimitives.Assert(() =>
-            !DartRuntimePrimitives.RequireValue(sizeWithOverflow).isEmpty
+            !(
+                sizeWithOverflow
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).isEmpty
         );
         var enableColor = new ColorTween(
             begin: sliderTheme.disabledThumbColor,
@@ -539,7 +561,7 @@ public class PaddleRangeSliderValueIndicatorShape : RangeSliderValueIndicatorSha
         );
         _pathPainter.paint(
             context.canvas,
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(center)),
+            ((center)),
             (
                 (Func<Paint>)(
                     () =>
@@ -550,10 +572,13 @@ public class PaddleRangeSliderValueIndicatorShape : RangeSliderValueIndicatorSha
                     }
                 )
             )(),
-            DartRuntimePrimitives.RequireValue(activationAnimation.value),
+            (activationAnimation.value),
             labelPainter,
-            DartRuntimePrimitives.RequireValue(textScaleFactor),
-            DartRuntimePrimitives.RequireValue(sizeWithOverflow),
+            (textScaleFactor),
+            (
+                sizeWithOverflow
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             isOnTop
                 ? sliderTheme.overlappingShapeStrokeColor
                 : sliderTheme.valueIndicatorStrokeColor

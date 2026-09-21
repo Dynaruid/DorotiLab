@@ -246,11 +246,17 @@ internal class _StadiumToCircleBorder__stadium_border : OutlinedBorder
                 (_StadiumToCircleBorder__stadium_border)a;
             return new _StadiumToCircleBorder__stadium_border(
                 side: BorderSide.lerp(a__as5164.side, side, t),
-                circularity: DartRuntimePrimitives.RequireValue(
+                circularity: (
                     Dart_uiLibrary.lerpDouble(a__as5164.circularity, circularity, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 ),
-                eccentricity: DartRuntimePrimitives.RequireValue(
+                eccentricity: (
                     Dart_uiLibrary.lerpDouble(a__as5164.eccentricity, eccentricity, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 )
             );
         }
@@ -284,11 +290,17 @@ internal class _StadiumToCircleBorder__stadium_border : OutlinedBorder
                 (_StadiumToCircleBorder__stadium_border)b;
             return new _StadiumToCircleBorder__stadium_border(
                 side: BorderSide.lerp(side, b__as5981.side, t),
-                circularity: DartRuntimePrimitives.RequireValue(
+                circularity: (
                     Dart_uiLibrary.lerpDouble(circularity, b__as5981.circularity, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 ),
-                eccentricity: DartRuntimePrimitives.RequireValue(
+                eccentricity: (
                     Dart_uiLibrary.lerpDouble(eccentricity, b__as5981.eccentricity, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 )
             );
         }
@@ -337,7 +349,7 @@ internal class _StadiumToCircleBorder__stadium_border : OutlinedBorder
                             (0.5 + (eccentricity / 2L)) * rect.height / 2L
                         )
                     ),
-                    DartRuntimePrimitives.RequireValue(circularity)
+                    (circularity)
                 )!;
             }
             else
@@ -350,7 +362,7 @@ internal class _StadiumToCircleBorder__stadium_border : OutlinedBorder
                             rect.height / 2L
                         )
                     ),
-                    DartRuntimePrimitives.RequireValue(circularity)
+                    (circularity)
                 )!;
             }
         }
@@ -543,8 +555,11 @@ internal class _StadiumToRoundedRectangleBorder__stadium_border : OutlinedBorder
             return new _StadiumToRoundedRectangleBorder__stadium_border(
                 side: BorderSide.lerp(a__as10842.side, side, t),
                 borderRadius: BorderRadiusGeometry.lerp(a__as10842.borderRadius, borderRadius, t)!,
-                rectilinearity: DartRuntimePrimitives.RequireValue(
+                rectilinearity: (
                     Dart_uiLibrary.lerpDouble(a__as10842.rectilinearity, rectilinearity, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 )
             );
         }
@@ -579,8 +594,11 @@ internal class _StadiumToRoundedRectangleBorder__stadium_border : OutlinedBorder
             return new _StadiumToRoundedRectangleBorder__stadium_border(
                 side: BorderSide.lerp(side, b__as11743.side, t),
                 borderRadius: BorderRadiusGeometry.lerp(borderRadius, b__as11743.borderRadius, t)!,
-                rectilinearity: DartRuntimePrimitives.RequireValue(
+                rectilinearity: (
                     Dart_uiLibrary.lerpDouble(rectilinearity, b__as11743.rectilinearity, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 )
             );
         }
@@ -602,8 +620,9 @@ internal class _StadiumToRoundedRectangleBorder__stadium_border : OutlinedBorder
     {
         RRect borderRect = _adjustBorderRadius(rect).resolve(textDirection).toRRect(rect);
         RRect adjustedRect = borderRect.deflate(
-            DartRuntimePrimitives.RequireValue(
+            (
                 Dart_uiLibrary.lerpDouble(side.width, 0L, side.strokeAlign)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             )
         );
         return (

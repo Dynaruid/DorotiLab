@@ -24,7 +24,14 @@ public class CircularNotchedRectangle : NotchedShape
         if (
             (guest is null)
             || !host.overlaps(
-                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(guest))
+                (
+                    (
+                        guest
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
             )
         )
         {
@@ -39,7 +46,11 @@ public class CircularNotchedRectangle : NotchedShape
                 )
             )();
         }
-        double r = DartRuntimePrimitives.RequireValue(guest).width / 2.0;
+        double r =
+            (
+                guest
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).width / 2.0;
         var notchRadius = Radius.circular(r);
         var invertMultiplier = inverted ? -1.0 : 1.0;
         var s1 = 15.0;
@@ -47,7 +58,12 @@ public class CircularNotchedRectangle : NotchedShape
         double a = -r - s2;
         double b =
             (inverted ? host.bottom : host.top)
-            - DartRuntimePrimitives.RequireValue(guest).center.dy;
+            - (
+                guest
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+                .center
+                .dy;
         double n2 = Dart_mathLibrary.sqrt(b * b * r * r * ((a * a) + (b * b) - (r * r)));
         double p2xA = ((a * r * r) - n2) / ((a * a) + (b * b));
         double p2xB = ((a * r * r) + n2) / ((a * a) + (b * b));
@@ -64,7 +80,10 @@ public class CircularNotchedRectangle : NotchedShape
         p[(int)5L] = new Offset(-1.0 * p[(int)0L].dx, p[(int)0L].dy);
         for (var i = 0L; i < checked(p.Count); i += 1L)
         {
-            p[(int)i] += DartRuntimePrimitives.RequireValue(guest).center;
+            p[(int)i] += (
+                guest
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).center;
         }
         var path = (
             (Func<Path>)(
@@ -164,12 +183,11 @@ public class AutomaticNotchedShape : NotchedShape
         Path hostPath = this.host.getOuterPath(host);
         if ((this.guest is not null) && (guest is not null))
         {
-            Rect guestRect__value6659 = DartRuntimePrimitives.RequireValue(guest);
-            Path guestPath = this.guest!.getOuterPath(
-                DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(guestRect__value6659)
-                )
+            Rect guestRect__value6659 = (
+                guest
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
+            Path guestPath = this.guest!.getOuterPath(((guestRect__value6659)));
             return Dart_uiLibrary.Path.combine(PathOperation.difference, hostPath, guestPath);
         }
         return hostPath;

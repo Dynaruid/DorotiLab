@@ -302,11 +302,11 @@ public class RenderSliverIgnorePointer : RenderProxySliver
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) == _ignoring)
+            if ((__value) == _ignoring)
             {
                 return;
             }
-            _ignoring = DartRuntimePrimitives.RequireValue(__value);
+            _ignoring = (__value);
             if (ignoringSemantics is null)
             {
                 markNeedsSemanticsUpdate();
@@ -504,7 +504,11 @@ public class RenderSliverAnimatedOpacity
     }
 
     public override bool isRepaintBoundary =>
-        (child is not null) && DartRuntimePrimitives.RequireValue(_currentlyIsRepaintBoundary);
+        (child is not null)
+        && (
+            _currentlyIsRepaintBoundary
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
 
     public override OffsetLayer updateCompositedLayer(OffsetLayer? oldLayer)
     {
@@ -539,7 +543,11 @@ public class RenderSliverAnimatedOpacity
     }
     public virtual bool alwaysIncludeSemantics
     {
-        get => DartRuntimePrimitives.RequireValue(_alwaysIncludeSemantics);
+        get =>
+            (
+                _alwaysIncludeSemantics
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         set
         {
             var __value = value;
@@ -572,7 +580,13 @@ public class RenderSliverAnimatedOpacity
         if (oldAlpha != _alpha)
         {
             bool? wasRepaintBoundary = _currentlyIsRepaintBoundary;
-            _currentlyIsRepaintBoundary = DartRuntimePrimitives.RequireValue(_alpha) > 0L;
+            _currentlyIsRepaintBoundary =
+                (
+                    _alpha
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) > 0L;
             if ((child is not null) && (wasRepaintBoundary != _currentlyIsRepaintBoundary))
             {
                 markNeedsCompositingBitsUpdate();
@@ -905,11 +919,17 @@ public class RenderSliverSemanticsAnnotations : RenderProxySliver, SemanticsAnno
         }
         if (_properties.selected is not null)
         {
-            config.isSelected = DartRuntimePrimitives.RequireValue(_properties.selected);
+            config.isSelected = (
+                _properties.selected
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.button is not null)
         {
-            config.isButton = DartRuntimePrimitives.RequireValue(_properties.button);
+            config.isButton = (
+                _properties.button
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.expanded is not null)
         {
@@ -917,7 +937,10 @@ public class RenderSliverSemanticsAnnotations : RenderProxySliver, SemanticsAnno
         }
         if (_properties.link is not null)
         {
-            config.isLink = DartRuntimePrimitives.RequireValue(_properties.link);
+            config.isLink = (
+                _properties.link
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.linkUrl is not null)
         {
@@ -925,31 +948,52 @@ public class RenderSliverSemanticsAnnotations : RenderProxySliver, SemanticsAnno
         }
         if (_properties.slider is not null)
         {
-            config.isSlider = DartRuntimePrimitives.RequireValue(_properties.slider);
+            config.isSlider = (
+                _properties.slider
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.keyboardKey is not null)
         {
-            config.isKeyboardKey = DartRuntimePrimitives.RequireValue(_properties.keyboardKey);
+            config.isKeyboardKey = (
+                _properties.keyboardKey
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.header is not null)
         {
-            config.isHeader = DartRuntimePrimitives.RequireValue(_properties.header);
+            config.isHeader = (
+                _properties.header
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.headingLevel is not null)
         {
-            config.headingLevel = DartRuntimePrimitives.RequireValue(_properties.headingLevel);
+            config.headingLevel = (
+                _properties.headingLevel
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.textField is not null)
         {
-            config.isTextField = DartRuntimePrimitives.RequireValue(_properties.textField);
+            config.isTextField = (
+                _properties.textField
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.readOnly is not null)
         {
-            config.isReadOnly = DartRuntimePrimitives.RequireValue(_properties.readOnly);
+            config.isReadOnly = (
+                _properties.readOnly
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.focusable is not null)
         {
-            config.isFocusable = DartRuntimePrimitives.RequireValue(_properties.focusable);
+            config.isFocusable = (
+                _properties.focusable
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.focused is not null)
         {
@@ -957,31 +1001,45 @@ public class RenderSliverSemanticsAnnotations : RenderProxySliver, SemanticsAnno
         }
         if (_properties.accessibilityFocusBlockType is not null)
         {
-            config.accessibilityFocusBlockType = DartRuntimePrimitives.RequireValue(
+            config.accessibilityFocusBlockType = (
                 _properties.accessibilityFocusBlockType
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
         }
         if (_properties.inMutuallyExclusiveGroup is not null)
         {
-            config.isInMutuallyExclusiveGroup = DartRuntimePrimitives.RequireValue(
+            config.isInMutuallyExclusiveGroup = (
                 _properties.inMutuallyExclusiveGroup
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
         }
         if (_properties.obscured is not null)
         {
-            config.isObscured = DartRuntimePrimitives.RequireValue(_properties.obscured);
+            config.isObscured = (
+                _properties.obscured
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.multiline is not null)
         {
-            config.isMultiline = DartRuntimePrimitives.RequireValue(_properties.multiline);
+            config.isMultiline = (
+                _properties.multiline
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.hidden is not null)
         {
-            config.isHidden = DartRuntimePrimitives.RequireValue(_properties.hidden);
+            config.isHidden = (
+                _properties.hidden
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.image is not null)
         {
-            config.isImage = DartRuntimePrimitives.RequireValue(_properties.image);
+            config.isImage = (
+                _properties.image
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.isRequired is not null)
         {
@@ -1029,15 +1087,24 @@ public class RenderSliverSemanticsAnnotations : RenderProxySliver, SemanticsAnno
         }
         if (_properties.scopesRoute is not null)
         {
-            config.scopesRoute = DartRuntimePrimitives.RequireValue(_properties.scopesRoute);
+            config.scopesRoute = (
+                _properties.scopesRoute
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.namesRoute is not null)
         {
-            config.namesRoute = DartRuntimePrimitives.RequireValue(_properties.namesRoute);
+            config.namesRoute = (
+                _properties.namesRoute
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.liveRegion is not null)
         {
-            config.liveRegion = DartRuntimePrimitives.RequireValue(_properties.liveRegion);
+            config.liveRegion = (
+                _properties.liveRegion
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.maxValueLength is not null)
         {
@@ -1061,7 +1128,10 @@ public class RenderSliverSemanticsAnnotations : RenderProxySliver, SemanticsAnno
         }
         if (properties.role is not null)
         {
-            config.role = DartRuntimePrimitives.RequireValue(_properties.role);
+            config.role = (
+                _properties.role
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.controlsNodes is not null)
         {
@@ -1073,13 +1143,17 @@ public class RenderSliverSemanticsAnnotations : RenderProxySliver, SemanticsAnno
         }
         if (_properties.hitTestBehavior is not null)
         {
-            config.hitTestBehavior = DartRuntimePrimitives.RequireValue(
+            config.hitTestBehavior = (
                 _properties.hitTestBehavior
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
         }
         if (_properties.inputType is not null)
         {
-            config.inputType = DartRuntimePrimitives.RequireValue(_properties.inputType);
+            config.inputType = (
+                _properties.inputType
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (_properties.minValue is not null)
         {

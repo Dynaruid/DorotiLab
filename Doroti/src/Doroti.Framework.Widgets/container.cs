@@ -293,10 +293,7 @@ internal class _DecorationClipper__container : CustomClipper<Path>
 
     public override Path getClip(Size size)
     {
-        return decoration.getClipPath(
-            Offset.zero & size,
-            DartRuntimePrimitives.RequireValue(textDirection)
-        );
+        return decoration.getClipPath(Offset.zero & size, (textDirection));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

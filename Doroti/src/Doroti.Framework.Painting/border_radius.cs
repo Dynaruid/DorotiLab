@@ -507,17 +507,21 @@ public class BorderRadius : BorderRadiusGeometry
             return a.op_Multiply(1.0 - t);
         }
         return new BorderRadius(
-            topLeft: DartRuntimePrimitives.RequireValue(
+            topLeft: (
                 Dart_uiLibrary.Radius.lerp(a.topLeft, b.topLeft, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             ),
-            topRight: DartRuntimePrimitives.RequireValue(
+            topRight: (
                 Dart_uiLibrary.Radius.lerp(a.topRight, b.topRight, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             ),
-            bottomLeft: DartRuntimePrimitives.RequireValue(
+            bottomLeft: (
                 Dart_uiLibrary.Radius.lerp(a.bottomLeft, b.bottomLeft, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             ),
-            bottomRight: DartRuntimePrimitives.RequireValue(
+            bottomRight: (
                 Dart_uiLibrary.Radius.lerp(a.bottomRight, b.bottomRight, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -715,17 +719,21 @@ public class BorderRadiusDirectional : BorderRadiusGeometry
             return a.op_Multiply(1.0 - t);
         }
         return new BorderRadiusDirectional(
-            topStart: DartRuntimePrimitives.RequireValue(
+            topStart: (
                 Dart_uiLibrary.Radius.lerp(a.topStart, b.topStart, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             ),
-            topEnd: DartRuntimePrimitives.RequireValue(
+            topEnd: (
                 Dart_uiLibrary.Radius.lerp(a.topEnd, b.topEnd, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             ),
-            bottomStart: DartRuntimePrimitives.RequireValue(
+            bottomStart: (
                 Dart_uiLibrary.Radius.lerp(a.bottomStart, b.bottomStart, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             ),
-            bottomEnd: DartRuntimePrimitives.RequireValue(
+            bottomEnd: (
                 Dart_uiLibrary.Radius.lerp(a.bottomEnd, b.bottomEnd, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -739,7 +747,12 @@ public class BorderRadiusDirectional : BorderRadiusGeometry
                 $"{typeof(BorderRadiusDirectional)}"
             )
         );
-        switch (DartRuntimePrimitives.RequireValue(direction))
+        switch (
+            (
+                direction
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        )
         {
             case TextDirection.rtl:
             {
@@ -911,7 +924,12 @@ internal class _MixedBorderRadius__border_radius : BorderRadiusGeometry
                 $"{typeof(_MixedBorderRadius__border_radius)}"
             )
         );
-        switch (DartRuntimePrimitives.RequireValue(direction))
+        switch (
+            (
+                direction
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        )
         {
             case TextDirection.rtl:
             {

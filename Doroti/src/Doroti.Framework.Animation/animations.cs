@@ -176,9 +176,19 @@ public class ProxyAnimation
     }
 
     public override AnimationStatus status =>
-        (_parent is not null) ? _parent!.status : DartRuntimePrimitives.RequireValue(_status);
+        (_parent is not null)
+            ? _parent!.status
+            : (
+                _status
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
     public override double value =>
-        (_parent is not null) ? _parent!.value : DartRuntimePrimitives.RequireValue(_value);
+        (_parent is not null)
+            ? _parent!.value
+            : (
+                _value
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
 
     public override string ToString()
     {
@@ -646,7 +656,10 @@ public class TrainHoppingAnimation
         if (_nextTrain is not null)
         {
             DartRuntimePrimitives.Assert(() => _mode is not null);
-            hop = DartRuntimePrimitives.RequireValue(_mode) switch
+            hop = (
+                _mode
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) switch
             {
                 _TrainHoppingMode__animations.minimize => _nextTrain!.value <= _currentTrain!.value,
                 _TrainHoppingMode__animations.maximize => _nextTrain!.value >= _currentTrain!.value,

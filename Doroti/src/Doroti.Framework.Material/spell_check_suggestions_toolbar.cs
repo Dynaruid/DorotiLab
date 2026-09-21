@@ -135,7 +135,10 @@ public class SpellCheckSuggestionsToolbar : StatelessWidget
     {
         return (anchors.secondaryAnchor is null)
             ? anchors.primaryAnchor
-            : DartRuntimePrimitives.RequireValue(anchors.secondaryAnchor);
+            : (
+                anchors.secondaryAnchor
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

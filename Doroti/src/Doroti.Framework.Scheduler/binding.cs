@@ -734,7 +734,15 @@ public abstract class SchedulerBinding : BindingBase
         Duration rawDurationSinceEpoch =
             (_firstRawTimeStampInEpoch is null)
                 ? Duration.zero
-                : (rawTimeStamp - DartRuntimePrimitives.RequireValue(_firstRawTimeStampInEpoch));
+                : (
+                    rawTimeStamp
+                    - (
+                        _firstRawTimeStampInEpoch
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                );
         return new Duration(
             microseconds: (
                 rawDurationSinceEpoch.inMicroseconds / BindingLibrary.timeDilation
@@ -748,7 +756,10 @@ public abstract class SchedulerBinding : BindingBase
         get
         {
             DartRuntimePrimitives.Assert(() => _currentFrameTimeStamp is not null);
-            return DartRuntimePrimitives.RequireValue(_currentFrameTimeStamp);
+            return (
+                _currentFrameTimeStamp
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
     }
     public virtual Duration currentSystemFrameTimeStamp
@@ -801,7 +812,7 @@ public abstract class SchedulerBinding : BindingBase
         _currentFrameTimeStamp = _adjustForEpoch(rawTimeStamp ?? _lastRawTimeStamp);
         if (rawTimeStamp is Duration rawTimeStamp__value47349)
         {
-            _lastRawTimeStamp = DartRuntimePrimitives.RequireValue(rawTimeStamp__value47349);
+            _lastRawTimeStamp = (rawTimeStamp__value47349);
         }
         DartRuntimePrimitives.Assert(() =>
         {
@@ -812,7 +823,12 @@ public abstract class SchedulerBinding : BindingBase
                 if (rawTimeStamp is Duration rawTimeStamp__value47605)
                 {
                     _debugDescribeTimeStamp(
-                        DartRuntimePrimitives.RequireValue(_currentFrameTimeStamp),
+                        (
+                            _currentFrameTimeStamp
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
                         frameTimeStampDescription
                     );
                 }
@@ -850,7 +866,12 @@ public abstract class SchedulerBinding : BindingBase
                     {
                         _invokeFrameCallback(
                             callbackEntry.callback,
-                            DartRuntimePrimitives.RequireValue(_currentFrameTimeStamp),
+                            (
+                                _currentFrameTimeStamp
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ),
                             callbackEntry.debugStack
                         );
                     }
@@ -940,7 +961,12 @@ public abstract class SchedulerBinding : BindingBase
             {
                 _invokeFrameCallback(
                     callback,
-                    DartRuntimePrimitives.RequireValue(_currentFrameTimeStamp)
+                    (
+                        _currentFrameTimeStamp
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 );
             }
             _schedulerPhase = SchedulerPhase.postFrameCallbacks;
@@ -961,7 +987,12 @@ public abstract class SchedulerBinding : BindingBase
                 {
                     _invokeFrameCallback(
                         callback,
-                        DartRuntimePrimitives.RequireValue(_currentFrameTimeStamp)
+                        (
+                            _currentFrameTimeStamp
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     );
                 }
             }

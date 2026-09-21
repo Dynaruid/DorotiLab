@@ -104,7 +104,7 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute,
             return true;
             throw new InvalidOperationException("Dart closure completed without a value.");
         });
-        return DartRuntimePrimitives.RequireValue(disposed);
+        return (disposed);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -782,8 +782,9 @@ public class _ModalScopeState__routes<T> : State<_ModalScope__routes<T>>
         ModalRoute<T> routeLocal = widget.route;
         if (routeLocal.traversalEdgeBehavior is not null)
         {
-            traversalEdgeBehaviorLocal = DartRuntimePrimitives.RequireValue(
+            traversalEdgeBehaviorLocal = (
                 routeLocal.traversalEdgeBehavior
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
         }
         else
@@ -792,8 +793,9 @@ public class _ModalScopeState__routes<T> : State<_ModalScope__routes<T>>
         }
         if (routeLocal.directionalTraversalEdgeBehavior is not null)
         {
-            directionalTraversalEdgeBehaviorLocal = DartRuntimePrimitives.RequireValue(
+            directionalTraversalEdgeBehaviorLocal = (
                 routeLocal.directionalTraversalEdgeBehavior
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
         }
         else

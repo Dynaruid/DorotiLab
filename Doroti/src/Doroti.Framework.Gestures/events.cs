@@ -222,13 +222,9 @@ public abstract class PointerEvent : IPointerEvent, Diagnosticable
     {
         if (transform is null)
         {
-            return DartRuntimePrimitives.RequireValue(position);
+            return (position);
         }
-        var position3 = new Vector3(
-            DartRuntimePrimitives.RequireValue(position).dx,
-            DartRuntimePrimitives.RequireValue(position).dy,
-            0.0
-        );
+        var position3 = new Vector3((position).dx, (position).dy, 0.0);
         Vector3 transformed3 = transform.perspectiveTransform(position3);
         return new Offset(transformed3.x, transformed3.y);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -250,8 +246,10 @@ public abstract class PointerEvent : IPointerEvent, Diagnosticable
             transform,
             untransformedEndPosition - untransformedDelta
         );
-        return DartRuntimePrimitives.RequireValue(transformedEndPosition)
-            - transformedStartPosition;
+        return (
+                transformedEndPosition
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) - transformedStartPosition;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -3229,12 +3227,7 @@ public class PointerDownEvent
             new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug)
         );
         properties.add(
-            new IntProperty(
-                "buttons",
-                DartRuntimePrimitives.RequireValue(buttons),
-                defaultValue: 0L,
-                level: DiagnosticLevel.debug
-            )
+            new IntProperty("buttons", (buttons), defaultValue: 0L, level: DiagnosticLevel.debug)
         );
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
         properties.add(
@@ -3738,12 +3731,7 @@ public class PointerMoveEvent
             new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug)
         );
         properties.add(
-            new IntProperty(
-                "buttons",
-                DartRuntimePrimitives.RequireValue(buttons),
-                defaultValue: 0L,
-                level: DiagnosticLevel.debug
-            )
+            new IntProperty("buttons", (buttons), defaultValue: 0L, level: DiagnosticLevel.debug)
         );
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
         properties.add(

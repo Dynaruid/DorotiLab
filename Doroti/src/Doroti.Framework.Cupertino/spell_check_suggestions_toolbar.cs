@@ -156,7 +156,12 @@ public class CupertinoSpellCheckSuggestionsToolbar : StatelessWidget
             anchorAbove: anchors.primaryAnchor,
             anchorBelow: (anchors.secondaryAnchor is null)
                 ? anchors.primaryAnchor
-                : DartRuntimePrimitives.RequireValue(anchors.secondaryAnchor),
+                : (
+                    anchors.secondaryAnchor
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
             children: childrenLocal
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");

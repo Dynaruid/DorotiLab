@@ -398,7 +398,7 @@ public class OutlineInputBorder : InputBorder
                 new OutlineInputBorder(
                     borderRadius: BorderRadius.lerp(outline.borderRadius, borderRadius, t)!,
                     borderSide: BorderSide.lerp(outline.borderSide, borderSide, t),
-                    gapPadding: DartRuntimePrimitives.RequireValue(outline.gapPadding)
+                    gapPadding: (outline.gapPadding)
                 );
         }
         return base.lerpFrom(a, t);
@@ -415,7 +415,7 @@ public class OutlineInputBorder : InputBorder
                 new OutlineInputBorder(
                     borderRadius: BorderRadius.lerp(borderRadius, outline.borderRadius, t)!,
                     borderSide: BorderSide.lerp(borderSide, outline.borderSide, t),
-                    gapPadding: DartRuntimePrimitives.RequireValue(outline.gapPadding)
+                    gapPadding: (outline.gapPadding)
                 );
         }
         return base.lerpTo(b, t);
@@ -582,15 +582,29 @@ public class OutlineInputBorder : InputBorder
         }
         else
         {
-            double extent = DartRuntimePrimitives.RequireValue(
+            double extent = (
                 Dart_uiLibrary.lerpDouble(0.0, gapExtent + (gapPadding * 2.0), gapPercentage)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
-            double start = DartRuntimePrimitives.RequireValue(textDirection) switch
+            double start = (
+                textDirection
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) switch
             {
-                TextDirection.rtl => DartRuntimePrimitives.RequireValue(gapStart)
+                TextDirection.rtl => (
+                    gapStart
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
                     + gapPadding
                     - extent,
-                TextDirection.ltr => DartRuntimePrimitives.RequireValue(gapStart) - gapPadding,
+                TextDirection.ltr => (
+                    gapStart
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) - gapPadding,
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                     throw new InvalidOperationException("Non-exhaustive Dart switch value."),
             };
@@ -685,7 +699,7 @@ public class ShapedInputBorder : InputBorder
                 new ShapedInputBorder(
                     borderSide: BorderSide.lerp(a__as23771.borderSide, borderSide, t),
                     shape: lerp(a__as23771.shape, shape, t)!,
-                    gapPadding: DartRuntimePrimitives.RequireValue(a__as23771.gapPadding)
+                    gapPadding: (a__as23771.gapPadding)
                 );
         }
         return base.lerpFrom(a, t);
@@ -701,7 +715,7 @@ public class ShapedInputBorder : InputBorder
                 new ShapedInputBorder(
                     borderSide: BorderSide.lerp(borderSide, b__as24105.borderSide, t),
                     shape: lerp(shape, b__as24105.shape, t)!,
-                    gapPadding: DartRuntimePrimitives.RequireValue(b__as24105.gapPadding)
+                    gapPadding: (b__as24105.gapPadding)
                 );
         }
         return base.lerpTo(b, t);
@@ -809,15 +823,29 @@ public class ShapedInputBorder : InputBorder
         }
         else
         {
-            double extent = DartRuntimePrimitives.RequireValue(
+            double extent = (
                 Dart_uiLibrary.lerpDouble(0.0, gapExtent + (gapPadding * 2.0), gapPercentage)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
-            double start = DartRuntimePrimitives.RequireValue(textDirection) switch
+            double start = (
+                textDirection
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) switch
             {
-                TextDirection.rtl => DartRuntimePrimitives.RequireValue(gapStart)
+                TextDirection.rtl => (
+                    gapStart
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
                     + gapPadding
                     - extent,
-                TextDirection.ltr => DartRuntimePrimitives.RequireValue(gapStart) - gapPadding,
+                TextDirection.ltr => (
+                    gapStart
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) - gapPadding,
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                     throw new InvalidOperationException("Non-exhaustive Dart switch value."),
             };
@@ -825,7 +853,12 @@ public class ShapedInputBorder : InputBorder
                 deflatedRect,
                 Math.Max(0.0, start),
                 extent,
-                textDirection: DartRuntimePrimitives.RequireValue(textDirection)
+                textDirection: (
+                    textDirection
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
             canvas.drawPath(path, paintLocal);
         }

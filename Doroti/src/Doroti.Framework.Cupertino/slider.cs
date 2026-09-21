@@ -51,7 +51,15 @@ public class CupertinoSlider : StatefulWidget
         this.thumbColor = __thumbColor;
         System.Diagnostics.Debug.Assert((value >= min) && (value <= max));
         System.Diagnostics.Debug.Assert(
-            (divisions is null) || (DartRuntimePrimitives.RequireValue(divisions) > 0L)
+            (divisions is null)
+                || (
+                    (
+                        divisions
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
     }
 
@@ -77,8 +85,9 @@ internal class _CupertinoSliderState__slider
     internal virtual void _handleChanged(double value, bool isFastDrag)
     {
         DartRuntimePrimitives.Assert(() => widget.onChanged is not null);
-        double lerpValue = DartRuntimePrimitives.RequireValue(
+        double lerpValue = (
             Dart_uiLibrary.lerpDouble(widget.min, widget.max, value)
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         bool isAtEdge = (lerpValue == widget.max) || (lerpValue == widget.min);
         if (lerpValue != widget.value)
@@ -95,8 +104,9 @@ internal class _CupertinoSliderState__slider
     {
         DartRuntimePrimitives.Assert(() => widget.onChangeStart is not null);
         widget.onChangeStart!(
-            DartRuntimePrimitives.RequireValue(
+            (
                 Dart_uiLibrary.lerpDouble(widget.min, widget.max, value)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             )
         );
     }
@@ -105,8 +115,9 @@ internal class _CupertinoSliderState__slider
     {
         DartRuntimePrimitives.Assert(() => widget.onChangeEnd is not null);
         widget.onChangeEnd!(
-            DartRuntimePrimitives.RequireValue(
+            (
                 Dart_uiLibrary.lerpDouble(widget.min, widget.max, value)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             )
         );
     }
@@ -438,7 +449,7 @@ public class _RenderCupertinoSlider__slider : RenderConstrainedBox
         this.onChangeStart = onChangeStart;
         this.onChangeEnd = onChangeEnd;
         _cursor = __cursor;
-        _value = DartRuntimePrimitives.RequireValue(value);
+        _value = (value);
         _divisions = divisions;
         _activeColor = activeColor;
         _thumbColor = thumbColor;
@@ -463,7 +474,7 @@ public class _RenderCupertinoSlider__slider : RenderConstrainedBox
                 () =>
                 {
                     var __cascade = new AnimationController(
-                        value: DartRuntimePrimitives.RequireValue(value),
+                        value: (value),
                         duration: SliderLibrary._kDiscreteTransitionDuration,
                         vsync: vsync
                     );
@@ -488,7 +499,12 @@ public class _RenderCupertinoSlider__slider : RenderConstrainedBox
             _value = newValue;
             if (divisions is not null)
             {
-                long divisions__value13358 = DartRuntimePrimitives.RequireValue(divisions);
+                long divisions__value13358 = (
+                    divisions
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
                 _position.animateTo(newValue, curve: Curves.fastOutSlowIn);
             }
             else
@@ -578,11 +594,11 @@ public class _RenderCupertinoSlider__slider : RenderConstrainedBox
         set
         {
             var __value = value;
-            if (Equals(_textDirection, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_textDirection, (__value)))
             {
                 return;
             }
-            _textDirection = DartRuntimePrimitives.RequireValue(__value);
+            _textDirection = (__value);
             markNeedsPaint();
         }
     }
@@ -593,10 +609,28 @@ public class _RenderCupertinoSlider__slider : RenderConstrainedBox
             double dragValue = Dart_uiLibrary.clampDouble(_currentDragValue, 0.0, 1.0);
             if (divisions is not null)
             {
-                long divisions__value15208 = DartRuntimePrimitives.RequireValue(divisions);
+                long divisions__value15208 = (
+                    divisions
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
                 dragValue =
-                    (dragValue * DartRuntimePrimitives.RequireValue(divisions)).round()
-                    / DartRuntimePrimitives.RequireValue(divisions);
+                    (
+                        dragValue
+                        * (
+                            divisions
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    ).round()
+                    / (
+                        divisions
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    );
             }
             return dragValue;
         }
@@ -614,12 +648,12 @@ public class _RenderCupertinoSlider__slider : RenderConstrainedBox
                 TextDirection.ltr => _value,
                 _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
             };
-            return DartRuntimePrimitives.RequireValue(
+            return (
                 Dart_uiLibrary.lerpDouble(
                     _trackLeft + CupertinoThumbPainter.radius,
                     _trackRight - CupertinoThumbPainter.radius,
                     visualPosition
-                )
+                ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
         }
     }
@@ -639,7 +673,11 @@ public class _RenderCupertinoSlider__slider : RenderConstrainedBox
             SliderLibrary._kPadding,
             size.width - (2.0 * (SliderLibrary._kPadding + CupertinoThumbPainter.radius))
         );
-        double valueDelta = DartRuntimePrimitives.RequireValue(details.primaryDelta) / extent;
+        double valueDelta =
+            (
+                details.primaryDelta
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) / extent;
         _currentDragValue += textDirection switch
         {
             TextDirection.rtl => -valueDelta,
@@ -650,12 +688,18 @@ public class _RenderCupertinoSlider__slider : RenderConstrainedBox
         Duration? currentTimestamp = details.sourceTimeStamp;
         if ((currentTimestamp is not null) && (_lastUpdateTimestamp is not null))
         {
-            Duration currentTimestamp__16442__value16494 = DartRuntimePrimitives.RequireValue(
+            Duration currentTimestamp__16442__value16494 = (
                 currentTimestamp
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
             long timeDelta = (
-                DartRuntimePrimitives.RequireValue(currentTimestamp__16442__value16494)
-                - DartRuntimePrimitives.RequireValue(_lastUpdateTimestamp)
+                (currentTimestamp__16442__value16494)
+                - (
+                    _lastUpdateTimestamp
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             ).inMilliseconds;
             double velocity = valueDelta.abs() * 1000.0 / timeDelta;
             isFast = velocity > SliderLibrary._kVelocityThreshold;
@@ -782,7 +826,15 @@ public class _RenderCupertinoSlider__slider : RenderConstrainedBox
 
     internal virtual double _semanticActionUnit =>
         (divisions is not null)
-            ? (1.0 / DartRuntimePrimitives.RequireValue(divisions))
+            ? (
+                1.0
+                / (
+                    divisions
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
             : SliderLibrary._kAdjustmentUnit;
 
     internal virtual void _increaseAction()

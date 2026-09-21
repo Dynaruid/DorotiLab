@@ -100,7 +100,7 @@ internal class _DropdownMenuPainter__dropdown : CustomPainter
         );
         var bottom = new Tween<double>(
             begin: Dart_uiLibrary.clampDouble(
-                DartRuntimePrimitives.RequireValue(top.begin) + DropdownLibrary._kMenuItemHeight,
+                (top.begin) + DropdownLibrary._kMenuItemHeight,
                 Math.Min(DropdownLibrary._kMenuItemHeight, size.height),
                 size.height
             ),
@@ -503,10 +503,20 @@ internal class _DropdownMenuRouteLayout__dropdown<T> : SingleChildLayoutDelegate
         );
         if (
             (route.menuMaxHeight is not null)
-            && (DartRuntimePrimitives.RequireValue(route.menuMaxHeight) <= maxHeightLocal)
+            && (
+                (
+                    route.menuMaxHeight
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) <= maxHeightLocal
+            )
         )
         {
-            maxHeightLocal = DartRuntimePrimitives.RequireValue(route.menuMaxHeight);
+            maxHeightLocal = (
+                route.menuMaxHeight
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         double widthLocal = Math.Min(constraints.maxWidth, menuWidth ?? buttonRect.width);
         return new BoxConstraints(
@@ -537,7 +547,10 @@ internal class _DropdownMenuRouteLayout__dropdown<T> : SingleChildLayoutDelegate
             return true;
         });
         DartRuntimePrimitives.Assert(() => textDirection is not null);
-        double leftLocal = DartRuntimePrimitives.RequireValue(textDirection) switch
+        double leftLocal = (
+            textDirection
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        ) switch
         {
             TextDirection.rtl => Dart_uiLibrary.clampDouble(buttonRect.right, 0.0, size.width)
                 - childSize.width,
@@ -739,10 +752,18 @@ public class _DropdownRoute__dropdown<T> : PopupRoute<_DropdownRouteResult__drop
         double computedMaxHeight = availableHeight - (2.0 * DropdownLibrary._kMenuItemHeight);
         if (menuMaxHeight is not null)
         {
-            double menuMaxHeight__value19574 = DartRuntimePrimitives.RequireValue(menuMaxHeight);
+            double menuMaxHeight__value19574 = (
+                menuMaxHeight
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             computedMaxHeight = Math.Min(
                 computedMaxHeight,
-                DartRuntimePrimitives.RequireValue(menuMaxHeight)
+                (
+                    menuMaxHeight
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
         }
         double buttonTop = buttonRect.top;
@@ -1504,8 +1525,11 @@ internal class _DropdownButtonState__dropdown<T> : State<DropdownButton<T>>, Wid
         {
             double fontSizeLocal =
                 _textStyle!.fontSize
-                ?? DartRuntimePrimitives.RequireValue(
+                ?? (
                     Theme.of(context).textTheme.titleMedium!.fontSize
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
             double lineHeight =
                 (_textStyle!.height ?? Theme.of(context).textTheme.titleMedium!.height) ?? 1.0;
@@ -1570,7 +1594,12 @@ internal class _DropdownButtonState__dropdown<T> : State<DropdownButton<T>>, Wid
             Size size = View.of(context).physicalSize;
             result = (size.width > size.height) ? Orientation.landscape : Orientation.portrait;
         }
-        return DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(result));
+        return (
+            (
+                result
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

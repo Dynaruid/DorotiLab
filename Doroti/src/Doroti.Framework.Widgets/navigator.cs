@@ -3319,7 +3319,7 @@ public class NavigatorState
             return true;
             throw new InvalidOperationException("Dart closure completed without a value.");
         });
-        return DartRuntimePrimitives.RequireValue(result);
+        return (result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -4040,7 +4040,10 @@ public class NavigatorState
         }
         DartRuntimePrimitives.Assert(() =>
         {
-            _debugLocked = DartRuntimePrimitives.RequireValue(wasDebugLocked);
+            _debugLocked = (
+                wasDebugLocked
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             return true;
             throw new InvalidOperationException("Dart closure completed without a value.");
         });

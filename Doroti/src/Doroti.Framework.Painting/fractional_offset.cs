@@ -101,20 +101,46 @@ public class FractionalOffset : Alignment
         if (a is null)
         {
             return new FractionalOffset(
-                DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0.5, b!.dx, t)),
-                DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0.5, b.dy, t))
+                (
+                    Dart_uiLibrary.lerpDouble(0.5, b!.dx, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                (
+                    Dart_uiLibrary.lerpDouble(0.5, b.dy, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
         }
         if (b is null)
         {
             return new FractionalOffset(
-                DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.dx, 0.5, t)),
-                DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.dy, 0.5, t))
+                (
+                    Dart_uiLibrary.lerpDouble(a.dx, 0.5, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                (
+                    Dart_uiLibrary.lerpDouble(a.dy, 0.5, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
         }
         return new FractionalOffset(
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.dx, b.dx, t)),
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.dy, b.dy, t))
+            (
+                Dart_uiLibrary.lerpDouble(a.dx, b.dx, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            (
+                Dart_uiLibrary.lerpDouble(a.dy, b.dy, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

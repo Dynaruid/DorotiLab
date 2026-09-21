@@ -135,7 +135,10 @@ public class RenderTapRegionSurface : RenderProxyBoxWithHitTestBehavior, TapRegi
         {
             return;
         }
-        Offset globalCenter = DartRuntimePrimitives.RequireValue(globalRect).center;
+        Offset globalCenter = (
+            globalRect
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        ).center;
         Offset localPosition = globalToLocal(globalCenter);
         var hitResult = new BoxHitTestResult();
         if (!hitTest(hitResult, position: localPosition))
@@ -549,9 +552,9 @@ public class RenderTapRegion : RenderProxyBoxWithHitTestBehavior
         set
         {
             var __value = value;
-            if (_enabled != DartRuntimePrimitives.RequireValue(__value))
+            if (_enabled != (__value))
             {
-                _enabled = DartRuntimePrimitives.RequireValue(__value);
+                _enabled = (__value);
                 markNeedsLayout();
             }
         }
@@ -562,9 +565,9 @@ public class RenderTapRegion : RenderProxyBoxWithHitTestBehavior
         set
         {
             var __value = value;
-            if (_consumeOutsideTaps != DartRuntimePrimitives.RequireValue(__value))
+            if (_consumeOutsideTaps != (__value))
             {
-                _consumeOutsideTaps = DartRuntimePrimitives.RequireValue(__value);
+                _consumeOutsideTaps = (__value);
                 markNeedsLayout();
             }
         }

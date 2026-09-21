@@ -99,21 +99,25 @@ public class ImageConfiguration
         }
         if (devicePixelRatio is not null)
         {
-            double devicePixelRatio__value4301 = DartRuntimePrimitives.RequireValue(
+            double devicePixelRatio__value4301 = (
                 devicePixelRatio
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
             if (hasArguments)
             {
                 result.write(", ");
             }
             result.write(
-                $"devicePixelRatio: {DartRuntimePrimitives.RequireValue(devicePixelRatio).toStringAsFixed(1L)}"
+                $"devicePixelRatio: {(devicePixelRatio ?? throw new global::System.NullReferenceException("Dart null assertion failed.")).toStringAsFixed(1L)}"
             );
             hasArguments = true;
         }
         if (locale is not null)
         {
-            Locale locale__value4513 = DartRuntimePrimitives.RequireValue(locale);
+            Locale locale__value4513 = (
+                locale
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             if (hasArguments)
             {
                 result.write(", ");
@@ -123,8 +127,9 @@ public class ImageConfiguration
         }
         if (textDirection is not null)
         {
-            TextDirection textDirection__value4673 = DartRuntimePrimitives.RequireValue(
+            TextDirection textDirection__value4673 = (
                 textDirection
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
             if (hasArguments)
             {
@@ -135,7 +140,10 @@ public class ImageConfiguration
         }
         if (size is not null)
         {
-            Size size__value4854 = DartRuntimePrimitives.RequireValue(size);
+            Size size__value4854 = (
+                size
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             if (hasArguments)
             {
                 result.write(", ");
@@ -767,25 +775,41 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
                                 if (
                                     (targetWidth is not null)
                                     && (
-                                        DartRuntimePrimitives.RequireValue(targetWidth)
-                                        > intrinsicWidth
+                                        (
+                                            targetWidth
+                                            ?? throw new global::System.NullReferenceException(
+                                                "Dart null assertion failed."
+                                            )
+                                        ) > intrinsicWidth
                                     )
                                 )
                                 {
-                                    long targetWidth__43553__value43674 =
-                                        DartRuntimePrimitives.RequireValue(targetWidth);
+                                    long targetWidth__43553__value43674 = (
+                                        targetWidth
+                                        ?? throw new global::System.NullReferenceException(
+                                            "Dart null assertion failed."
+                                        )
+                                    );
                                     targetWidth = intrinsicWidth;
                                 }
                                 if (
                                     (targetHeight is not null)
                                     && (
-                                        DartRuntimePrimitives.RequireValue(targetHeight)
-                                        > intrinsicHeight
+                                        (
+                                            targetHeight
+                                            ?? throw new global::System.NullReferenceException(
+                                                "Dart null assertion failed."
+                                            )
+                                        ) > intrinsicHeight
                                     )
                                 )
                                 {
-                                    long targetHeight__43593__value43815 =
-                                        DartRuntimePrimitives.RequireValue(targetHeight);
+                                    long targetHeight__43593__value43815 = (
+                                        targetHeight
+                                        ?? throw new global::System.NullReferenceException(
+                                            "Dart null assertion failed."
+                                        )
+                                    );
                                     targetHeight = intrinsicHeight;
                                 }
                             }
@@ -813,15 +837,23 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
                                 if (width is null)
                                 {
                                     DartRuntimePrimitives.Assert(() => height is not null);
-                                    targetHeightLocal = DartRuntimePrimitives.RequireValue(height);
+                                    targetHeightLocal = (
+                                        height
+                                        ?? throw new global::System.NullReferenceException(
+                                            "Dart null assertion failed."
+                                        )
+                                    );
                                     targetWidthLocal = (targetHeightLocal * aspectRatio).floor();
                                 }
                                 else
                                 {
                                     if (height is null)
                                     {
-                                        targetWidthLocal = DartRuntimePrimitives.RequireValue(
+                                        targetWidthLocal = (
                                             width
+                                            ?? throw new global::System.NullReferenceException(
+                                                "Dart null assertion failed."
+                                            )
                                         );
                                         targetHeightLocal = checked(
                                             (long)(targetWidthLocal / aspectRatio)

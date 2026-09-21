@@ -400,29 +400,47 @@ public class FloatingActionButton : StatelessWidget
             (splashColor ?? floatingActionButtonTheme.splashColor) ?? defaults.splashColor!;
         double elevationLocal =
             (elevation ?? floatingActionButtonTheme.elevation)
-            ?? DartRuntimePrimitives.RequireValue(defaults.elevation);
+            ?? (
+                defaults.elevation
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         double focusElevationLocal =
             (focusElevation ?? floatingActionButtonTheme.focusElevation)
-            ?? DartRuntimePrimitives.RequireValue(defaults.focusElevation);
+            ?? (
+                defaults.focusElevation
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         double hoverElevationLocal =
             (hoverElevation ?? floatingActionButtonTheme.hoverElevation)
-            ?? DartRuntimePrimitives.RequireValue(defaults.hoverElevation);
+            ?? (
+                defaults.hoverElevation
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         double disabledElevationLocal =
             (
                 (disabledElevation ?? floatingActionButtonTheme.disabledElevation)
                 ?? defaults.disabledElevation
-            ) ?? DartRuntimePrimitives.RequireValue(elevationLocal);
+            ) ?? (elevationLocal);
         double highlightElevationLocal =
             (highlightElevation ?? floatingActionButtonTheme.highlightElevation)
-            ?? DartRuntimePrimitives.RequireValue(defaults.highlightElevation);
+            ?? (
+                defaults.highlightElevation
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         MaterialTapTargetSize materialTapTargetSizeLocal =
             materialTapTargetSize ?? theme.materialTapTargetSize;
         bool enableFeedbackLocal =
             (enableFeedback ?? floatingActionButtonTheme.enableFeedback)
-            ?? DartRuntimePrimitives.RequireValue(defaults.enableFeedback);
+            ?? (
+                defaults.enableFeedback
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         double iconSizeLocal =
             floatingActionButtonTheme.iconSize
-            ?? DartRuntimePrimitives.RequireValue(defaults.iconSize);
+            ?? (
+                defaults.iconSize
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         TextStyle extendedTextStyleLocal = (
             (extendedTextStyle ?? floatingActionButtonTheme.extendedTextStyle)
             ?? defaults.extendedTextStyle!
@@ -522,21 +540,11 @@ public class FloatingActionButton : StatelessWidget
                 mouseCursor,
                 floatingActionButtonTheme.mouseCursor
             ),
-            elevation: DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(elevationLocal)
-            ),
-            focusElevation: DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(focusElevationLocal)
-            ),
-            hoverElevation: DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(hoverElevationLocal)
-            ),
-            highlightElevation: DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(highlightElevationLocal)
-            ),
-            disabledElevation: DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(disabledElevationLocal)
-            ),
+            elevation: ((elevationLocal)),
+            focusElevation: ((focusElevationLocal)),
+            hoverElevation: ((hoverElevationLocal)),
+            highlightElevation: ((highlightElevationLocal)),
+            disabledElevation: ((disabledElevationLocal)),
             constraints: sizeConstraintsLocal,
             materialTapTargetSize: materialTapTargetSizeLocal,
             fillColor: backgroundColorLocal,
@@ -548,9 +556,7 @@ public class FloatingActionButton : StatelessWidget
             clipBehavior: clipBehavior,
             focusNode: focusNode,
             autofocus: autofocus,
-            enableFeedback: DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(enableFeedbackLocal)
-            ),
+            enableFeedback: ((enableFeedbackLocal)),
             child: resolvedChild
         );
         if (tooltip is not null)

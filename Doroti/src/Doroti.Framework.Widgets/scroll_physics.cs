@@ -507,7 +507,12 @@ public class ClampingScrollPhysics : ScrollPhysics
                 new Physics.ScrollSpringSimulation(
                     spring,
                     position.pixels,
-                    DartRuntimePrimitives.RequireValue(end),
+                    (
+                        end
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     Math.Min(0.0, velocity),
                     tolerance: toleranceLocal
                 );

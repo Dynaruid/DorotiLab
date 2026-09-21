@@ -47,7 +47,7 @@ public class RawKeyEventDataLinux : RawKeyEventData
         {
             if (specifiedLogicalKey is long specifiedLogicalKey__value3838)
             {
-                long key = DartRuntimePrimitives.RequireValue(specifiedLogicalKey__value3838);
+                long key = (specifiedLogicalKey__value3838);
                 return LogicalKeyboardKey.findKeyByKeyId(key) ?? new LogicalKeyboardKey(key);
             }
             LogicalKeyboardKey? numPadKey = keyHelper.numpadKey(keyCode);

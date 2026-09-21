@@ -483,7 +483,10 @@ internal class _RootRestorationScopeState__restoration : State<RootRestorationSc
     public override Widget build(BuildContext context)
     {
         if (
-            DartRuntimePrimitives.RequireValue(_okToRenderBlankContainer) && _isWaitingForRootBucket
+            (
+                _okToRenderBlankContainer
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) && _isWaitingForRootBucket
         )
         {
             return SizedBox.CreateShrink();

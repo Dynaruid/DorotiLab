@@ -148,11 +148,11 @@ public class RenderImage : RenderBox
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) == _scale)
+            if ((__value) == _scale)
             {
                 return;
             }
-            _scale = DartRuntimePrimitives.RequireValue(__value);
+            _scale = (__value);
             markNeedsLayout();
         }
     }
@@ -211,11 +211,11 @@ public class RenderImage : RenderBox
         set
         {
             var __value = value;
-            if (Equals(DartRuntimePrimitives.RequireValue(__value), _filterQuality))
+            if (Equals((__value), _filterQuality))
             {
                 return;
             }
-            _filterQuality = DartRuntimePrimitives.RequireValue(__value);
+            _filterQuality = (__value);
             markNeedsPaint();
         }
     }
@@ -240,11 +240,11 @@ public class RenderImage : RenderBox
         set
         {
             var __value = value;
-            if (Equals(DartRuntimePrimitives.RequireValue(__value), _blendMode))
+            if (Equals((__value), _blendMode))
             {
                 return;
             }
-            _blendMode = DartRuntimePrimitives.RequireValue(__value);
+            _blendMode = (__value);
             markNeedsPaint();
         }
     }
@@ -282,11 +282,11 @@ public class RenderImage : RenderBox
         set
         {
             var __value = value;
-            if (Equals(DartRuntimePrimitives.RequireValue(__value), _repeat))
+            if (Equals((__value), _repeat))
             {
                 return;
             }
-            _repeat = DartRuntimePrimitives.RequireValue(__value);
+            _repeat = (__value);
             markNeedsPaint();
         }
     }
@@ -310,11 +310,11 @@ public class RenderImage : RenderBox
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) == _invertColors)
+            if ((__value) == _invertColors)
             {
                 return;
             }
-            _invertColors = DartRuntimePrimitives.RequireValue(__value);
+            _invertColors = (__value);
             markNeedsPaint();
         }
     }
@@ -324,11 +324,11 @@ public class RenderImage : RenderBox
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) == _matchTextDirection)
+            if ((__value) == _matchTextDirection)
             {
                 return;
             }
-            _matchTextDirection = DartRuntimePrimitives.RequireValue(__value);
+            _matchTextDirection = (__value);
             _markNeedResolution();
         }
     }
@@ -352,11 +352,11 @@ public class RenderImage : RenderBox
         set
         {
             var __value = value;
-            if (_isAntiAlias == DartRuntimePrimitives.RequireValue(__value))
+            if (_isAntiAlias == (__value))
             {
                 return;
             }
-            _isAntiAlias = DartRuntimePrimitives.RequireValue(__value);
+            _isAntiAlias = (__value);
             markNeedsPaint();
         }
     }
@@ -383,18 +383,14 @@ public class RenderImage : RenderBox
         {
             return 0.0;
         }
-        return _sizeForConstraints(
-            BoxConstraints.CreateTightForFinite(height: DartRuntimePrimitives.RequireValue(height))
-        ).width;
+        return _sizeForConstraints(BoxConstraints.CreateTightForFinite(height: (height))).width;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
         DartRuntimePrimitives.Assert(() => height >= 0.0);
-        return _sizeForConstraints(
-            BoxConstraints.CreateTightForFinite(height: DartRuntimePrimitives.RequireValue(height))
-        ).width;
+        return _sizeForConstraints(BoxConstraints.CreateTightForFinite(height: (height))).width;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -405,18 +401,14 @@ public class RenderImage : RenderBox
         {
             return 0.0;
         }
-        return _sizeForConstraints(
-            BoxConstraints.CreateTightForFinite(width: DartRuntimePrimitives.RequireValue(width))
-        ).height;
+        return _sizeForConstraints(BoxConstraints.CreateTightForFinite(width: (width))).height;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
         DartRuntimePrimitives.Assert(() => width >= 0.0);
-        return _sizeForConstraints(
-            BoxConstraints.CreateTightForFinite(width: DartRuntimePrimitives.RequireValue(width))
-        ).height;
+        return _sizeForConstraints(BoxConstraints.CreateTightForFinite(width: (width))).height;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -466,7 +458,10 @@ public class RenderImage : RenderBox
             alignment: _resolvedAlignment!,
             centerSlice: _centerSlice,
             repeat: _repeat,
-            flipHorizontally: DartRuntimePrimitives.RequireValue(_flipHorizontally),
+            flipHorizontally: (
+                _flipHorizontally
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             invertColors: invertColors,
             filterQuality: _filterQuality,
             isAntiAlias: _isAntiAlias,

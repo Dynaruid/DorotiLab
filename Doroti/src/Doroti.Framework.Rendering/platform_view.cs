@@ -182,8 +182,22 @@ public class RenderAndroidView : PlatformViewRenderBox
             return;
         }
         bool isTextureLargerThanWidget =
-            (DartRuntimePrimitives.RequireValue(_currentTextureSize).width > size.width)
-            || (DartRuntimePrimitives.RequireValue(_currentTextureSize).height > size.height);
+            (
+                (
+                    _currentTextureSize
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).width > size.width
+            )
+            || (
+                (
+                    _currentTextureSize
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).height > size.height
+            );
         if (isTextureLargerThanWidget && (!Equals(clipBehavior, Clip.none)))
         {
             _clipRectLayer.layer = context.pushClipRect(
@@ -218,7 +232,13 @@ public class RenderAndroidView : PlatformViewRenderBox
         {
             context.addLayer(
                 new PlatformViewLayer(
-                    rect: offset & DartRuntimePrimitives.RequireValue(_currentTextureSize),
+                    rect: offset
+                        & (
+                            _currentTextureSize
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
                     viewId: _viewController.viewId
                 )
             );
@@ -226,8 +246,19 @@ public class RenderAndroidView : PlatformViewRenderBox
         }
         context.addLayer(
             new TextureLayer(
-                rect: offset & DartRuntimePrimitives.RequireValue(_currentTextureSize),
-                textureId: DartRuntimePrimitives.RequireValue(_viewController.textureId)
+                rect: offset
+                    & (
+                        _currentTextureSize
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
+                textureId: (
+                    _viewController.textureId
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             )
         );
     }
@@ -300,12 +331,12 @@ public abstract class RenderDarwinPlatformView<T> : RenderBox
     {
         if (
             Equals(hitTestBehavior, PlatformViewHitTestBehavior.transparent)
-            || !size.contains(DartRuntimePrimitives.RequireValue(position))
+            || !size.contains((position))
         )
         {
             return false;
         }
-        result.add(new BoxHitTestEntry(this, DartRuntimePrimitives.RequireValue(position)));
+        result.add(new BoxHitTestEntry(this, (position)));
         return Equals(hitTestBehavior, PlatformViewHitTestBehavior.opaque);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -323,11 +354,7 @@ public abstract class RenderDarwinPlatformView<T> : RenderBox
         {
             return;
         }
-        if (
-            !(Offset.zero & size).contains(
-                globalToLocal(DartRuntimePrimitives.RequireValue(@event.position))
-            )
-        )
+        if (!(Offset.zero & size).contains(globalToLocal((@event.position))))
         {
             return;
         }

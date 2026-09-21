@@ -158,26 +158,32 @@ public static partial class DebugLibrary
     {
         DartRuntimePrimitives.Assert(() =>
         {
-            if ((innerRect is not null) && !DartRuntimePrimitives.RequireValue(innerRect).isEmpty)
+            if (
+                (innerRect is not null)
+                && !(
+                    innerRect
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).isEmpty
+            )
             {
-                Rect innerRect__value12483 = DartRuntimePrimitives.RequireValue(innerRect);
+                Rect innerRect__value12483 = (
+                    innerRect
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
                 _debugDrawDoubleRect(
                     canvas,
                     outerRect,
-                    DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(innerRect__value12483)
-                    ),
+                    ((innerRect__value12483)),
                     new Color(2415956223L)
                 );
                 _debugDrawDoubleRect(
                     canvas,
-                    DartRuntimePrimitives
-                        .RequireValue(innerRect__value12483)
-                        .inflate(outlineWidth)
-                        .intersect(outerRect),
-                    DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(innerRect__value12483)
-                    ),
+                    (innerRect__value12483).inflate(outlineWidth).intersect(outerRect),
+                    ((innerRect__value12483)),
                     new Color(4278227199L)
                 );
             }

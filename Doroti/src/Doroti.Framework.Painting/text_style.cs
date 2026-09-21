@@ -118,8 +118,18 @@ public class TextStyle : Diagnosticable
         System.Diagnostics.Debug.Assert(
             (height is null)
                 || (
-                    DartRuntimePrimitives.RequireValue(height)
-                    == DartRuntimePrimitives.RequireValue(height)
+                    (
+                        height
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                    == (
+                        height
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
         );
     }
@@ -290,7 +300,16 @@ public class TextStyle : Diagnosticable
             fontFamilyFallback: fontFamilyFallback ?? _fontFamilyFallback,
             fontSize: (fontSize is null)
                 ? null
-                : ((DartRuntimePrimitives.RequireValue(fontSize) * fontSizeFactor) + fontSizeDelta),
+                : (
+                    (
+                        (
+                            fontSize
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) * fontSizeFactor
+                    ) + fontSizeDelta
+                ),
             fontWeight: (fontWeight is null)
                 ? null
                 : global::Doroti.Ui.FontWeight.values[
@@ -304,19 +323,40 @@ public class TextStyle : Diagnosticable
             letterSpacing: (letterSpacing is null)
                 ? null
                 : (
-                    (DartRuntimePrimitives.RequireValue(letterSpacing) * letterSpacingFactor)
-                    + letterSpacingDelta
+                    (
+                        (
+                            letterSpacing
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) * letterSpacingFactor
+                    ) + letterSpacingDelta
                 ),
             wordSpacing: (wordSpacing is null)
                 ? null
                 : (
-                    (DartRuntimePrimitives.RequireValue(wordSpacing) * wordSpacingFactor)
-                    + wordSpacingDelta
+                    (
+                        (
+                            wordSpacing
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) * wordSpacingFactor
+                    ) + wordSpacingDelta
                 ),
             textBaseline: textBaseline ?? this.textBaseline,
             height: ((height is null) || (height == Dart_uiLibrary.kTextHeightNone))
                 ? height
-                : ((DartRuntimePrimitives.RequireValue(height) * heightFactor) + heightDelta),
+                : (
+                    (
+                        (
+                            height
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) * heightFactor
+                    ) + heightDelta
+                ),
             leadingDistribution: leadingDistribution ?? this.leadingDistribution,
             locale: locale ?? this.locale,
             foreground: foreground,
@@ -331,8 +371,12 @@ public class TextStyle : Diagnosticable
                 ? null
                 : (
                     (
-                        DartRuntimePrimitives.RequireValue(decorationThickness)
-                        * decorationThicknessFactor
+                        (
+                            decorationThickness
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) * decorationThicknessFactor
                     ) + decorationThicknessDelta
                 ),
             overflow: overflow ?? this.overflow,
@@ -720,10 +764,26 @@ public class TextStyle : Diagnosticable
     {
         textScaler ??= TextScaler.noScaling;
         DartRuntimePrimitives.Assert(() =>
-            (maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L)
+            (maxLines is null)
+            || (
+                (
+                    maxLines
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) > 0L
+            )
         );
         DartRuntimePrimitives.Assert(() =>
-            (height is null) || !double.IsNaN(DartRuntimePrimitives.RequireValue(height))
+            (height is null)
+            || !double.IsNaN(
+                (
+                    height
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
         );
         TextLeadingDistribution? leadingDistributionLocal = leadingDistribution;
         TextHeightBehavior? effectiveTextHeightBehavior =
@@ -732,8 +792,11 @@ public class TextStyle : Diagnosticable
                 (leadingDistributionLocal is null)
                     ? null
                     : new TextHeightBehavior(
-                        leadingDistribution: DartRuntimePrimitives.RequireValue(
+                        leadingDistribution: (
                             leadingDistributionLocal
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
                         )
                     )
             );
@@ -973,10 +1036,19 @@ public class TextStyle : Diagnosticable
             var decorationDescription = new List<string>();
             if (decorationStyle is not null)
             {
-                TextDecorationStyle decorationStyle__value66964 =
-                    DartRuntimePrimitives.RequireValue(decorationStyle);
+                TextDecorationStyle decorationStyle__value66964 = (
+                    decorationStyle
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
                 decorationDescription.Add(
-                    DartRuntimePrimitives.RequireValue(decorationStyle).ToString()
+                    (
+                        decorationStyle
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).ToString()
                 );
             }
             styles.Add(

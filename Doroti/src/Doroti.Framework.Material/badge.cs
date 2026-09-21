@@ -111,7 +111,12 @@ public class Badge : StatelessWidget
         {
             double minSizeLocal = effectiveWidthOffset =
                 (largeSize ?? badgeTheme.largeSize)
-                ?? DartRuntimePrimitives.RequireValue(defaults.largeSize);
+                ?? (
+                    defaults.largeSize
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
             badge = DartRuntimePrimitives.ConvertValue<Widget>(
                 new DefaultTextStyle(
                     style: ((textStyle ?? badgeTheme.textStyle) ?? defaults.textStyle!).copyWith(
@@ -134,7 +139,12 @@ public class Badge : StatelessWidget
         {
             double effectiveSmallSize = effectiveWidthOffset =
                 (smallSize ?? badgeTheme.smallSize)
-                ?? DartRuntimePrimitives.RequireValue(defaults.smallSize);
+                ?? (
+                    defaults.smallSize
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
             badge = DartRuntimePrimitives.ConvertValue<Widget>(
                 new Container(
                     width: effectiveSmallSize,
@@ -357,7 +367,10 @@ public class _RenderBadge__badge : RenderAligningShiftedBox
         {
             badgeLocation -= new Offset(0, childSize.height / 2L);
         }
-        return DartRuntimePrimitives.RequireValue(childBaseline) + badgeLocation.dy;
+        return (
+                childBaseline
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) + badgeLocation.dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }

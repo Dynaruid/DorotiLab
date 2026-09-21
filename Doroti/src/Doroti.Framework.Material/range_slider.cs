@@ -67,7 +67,15 @@ public class RangeSlider : StatefulWidget
         System.Diagnostics.Debug.Assert((values.start >= min) && (values.start <= max));
         System.Diagnostics.Debug.Assert((values.end >= min) && (values.end <= max));
         System.Diagnostics.Debug.Assert(
-            (divisions is null) || (DartRuntimePrimitives.RequireValue(divisions) > 0L)
+            (divisions is null)
+                || (
+                    (
+                        divisions
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
     }
 
@@ -288,8 +296,9 @@ public class _RangeSliderState__range_slider
 
     internal virtual double _lerp(double value) =>
         DartRuntimePrimitives.ConvertValue<double>(
-            DartRuntimePrimitives.RequireValue(
+            (
                 Dart_uiLibrary.lerpDouble(widget.min, widget.max, value)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             )
         );
 
@@ -477,7 +486,12 @@ public class _RangeSliderState__range_slider
                 overlayChildBuilder: (context) =>
                 {
                     return _buildValueIndicator(
-                        DartRuntimePrimitives.RequireValue(sliderThemeLocal.showValueIndicator)
+                        (
+                            sliderThemeLocal.showValueIndicator
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     );
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 },
@@ -916,14 +930,26 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
         DartRuntimePrimitives.ConvertValue<bool>(onChanged is not null);
     public virtual bool isDiscrete =>
         DartRuntimePrimitives.ConvertValue<bool>(
-            (divisions is not null) && (DartRuntimePrimitives.RequireValue(divisions) > 0L)
+            (divisions is not null)
+                && (
+                    (
+                        divisions
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
     internal virtual double _minThumbSeparationValue =>
         isDiscrete
             ? 0
             : (
-                DartRuntimePrimitives.RequireValue(sliderTheme.minThumbSeparation)
-                / _trackRect.width
+                (
+                    sliderTheme.minThumbSeparation
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) / _trackRect.width
             );
     public virtual RangeValues values
     {
@@ -973,11 +999,11 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
         set
         {
             var __value = value;
-            if (Equals(_platform, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_platform, (__value)))
             {
                 return;
             }
-            _platform = DartRuntimePrimitives.RequireValue(__value);
+            _platform = (__value);
             markNeedsSemanticsUpdate();
         }
     }
@@ -1067,11 +1093,11 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) == _textScaleFactor)
+            if ((__value) == _textScaleFactor)
             {
                 return;
             }
-            _textScaleFactor = DartRuntimePrimitives.RequireValue(__value);
+            _textScaleFactor = (__value);
             _updateLabelPainters();
         }
     }
@@ -1081,11 +1107,24 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
         set
         {
             var __value = value;
-            if (Equals(DartRuntimePrimitives.RequireValue(__value), screenSize))
+            if (
+                Equals(
+                    (
+                        __value
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
+                    screenSize
+                )
+            )
             {
                 return;
             }
-            _screenSize = DartRuntimePrimitives.RequireValue(__value);
+            _screenSize = (
+                __value
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             markNeedsPaint();
         }
     }
@@ -1114,11 +1153,11 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
         set
         {
             var __value = value;
-            if (Equals(DartRuntimePrimitives.RequireValue(__value), _textDirection))
+            if (Equals((__value), _textDirection))
             {
                 return;
             }
-            _textDirection = DartRuntimePrimitives.RequireValue(__value);
+            _textDirection = (__value);
             _updateLabelPainters();
         }
     }
@@ -1128,11 +1167,11 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) == _hovering)
+            if ((__value) == _hovering)
             {
                 return;
             }
-            _hovering = DartRuntimePrimitives.RequireValue(__value);
+            _hovering = (__value);
             _updateForHover(_hovering);
         }
     }
@@ -1142,11 +1181,11 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) == _hoveringStartThumb)
+            if ((__value) == _hoveringStartThumb)
             {
                 return;
             }
-            _hoveringStartThumb = DartRuntimePrimitives.RequireValue(__value);
+            _hoveringStartThumb = (__value);
             _updateForHover(_hovering);
         }
     }
@@ -1156,11 +1195,11 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) == _hoveringEndThumb)
+            if ((__value) == _hoveringEndThumb)
             {
                 return;
             }
-            _hoveringEndThumb = DartRuntimePrimitives.RequireValue(__value);
+            _hoveringEndThumb = (__value);
             _updateForHover(_hovering);
         }
     }
@@ -1340,16 +1379,25 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
 
     internal virtual double _discretize(double value)
     {
-        double result = Dart_uiLibrary.clampDouble(
-            DartRuntimePrimitives.RequireValue(value),
-            0.0,
-            1.0
-        );
+        double result = Dart_uiLibrary.clampDouble((value), 0.0, 1.0);
         if (isDiscrete)
         {
             result =
-                (result * DartRuntimePrimitives.RequireValue(divisions)).round()
-                / (double)DartRuntimePrimitives.RequireValue(divisions);
+                (
+                    result
+                    * (
+                        divisions
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                ).round()
+                / (double)(
+                    divisions
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
         }
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1410,7 +1458,14 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                     throw new InvalidOperationException("Non-exhaustive Dart switch value."),
             };
-            _updateLabelPainter(DartRuntimePrimitives.RequireValue(_lastThumbSelection));
+            _updateLabelPainter(
+                (
+                    _lastThumbSelection
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            );
             onChangeStart?.Invoke(currentValues);
             onChanged!(_discretizeRangeValues(_newValues));
             _state.overlayController.forward();
@@ -1549,15 +1604,21 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
         {
             if (overlayStartRect is not null)
             {
-                hoveringStartThumb = DartRuntimePrimitives
-                    .RequireValue(overlayStartRect)
-                    .contains(@event.localPosition);
+                hoveringStartThumb = (
+                    overlayStartRect
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).contains(@event.localPosition);
             }
             if (overlayEndRect is not null)
             {
-                hoveringEndThumb = DartRuntimePrimitives
-                    .RequireValue(overlayEndRect)
-                    .contains(@event.localPosition);
+                hoveringEndThumb = (
+                    overlayEndRect
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).contains(@event.localPosition);
             }
         }
     }
@@ -1570,13 +1631,19 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
 
     public override double computeMinIntrinsicHeight(double width) =>
         Math.Max(
-            DartRuntimePrimitives.RequireValue(_minPreferredTrackHeight),
+            (
+                _minPreferredTrackHeight
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             _maxSliderPartHeight
         );
 
     public override double computeMaxIntrinsicHeight(double width) =>
         Math.Max(
-            DartRuntimePrimitives.RequireValue(_minPreferredTrackHeight),
+            (
+                _minPreferredTrackHeight
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             _maxSliderPartHeight
         );
 
@@ -1591,7 +1658,12 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
             constraints.hasBoundedHeight
                 ? constraints.maxHeight
                 : Math.Max(
-                    DartRuntimePrimitives.RequireValue(_minPreferredTrackHeight),
+                    (
+                        _minPreferredTrackHeight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     _maxSliderPartHeight
                 )
         );
@@ -1674,19 +1746,23 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
             && (trackGapLocal is not null)
         )
         {
-            double thumbWidth__57746__value58122 = DartRuntimePrimitives.RequireValue(thumbWidth);
-            double pressedThumbWidth__57970__value58144 = DartRuntimePrimitives.RequireValue(
-                pressedThumbWidth
+            double thumbWidth__57746__value58122 = (
+                thumbWidth
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
-            double trackGap__57918__value58173 = DartRuntimePrimitives.RequireValue(trackGapLocal);
-            delta =
-                DartRuntimePrimitives.RequireValue(thumbWidth__57746__value58122)
-                - DartRuntimePrimitives.RequireValue(pressedThumbWidth__57970__value58144);
-            thumbWidth = DartRuntimePrimitives.RequireValue(pressedThumbWidth__57970__value58144);
-            if (DartRuntimePrimitives.RequireValue(trackGap__57918__value58173) > 0.0)
+            double pressedThumbWidth__57970__value58144 = (
+                pressedThumbWidth
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
+            double trackGap__57918__value58173 = (
+                trackGapLocal
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
+            delta = (thumbWidth__57746__value58122) - (pressedThumbWidth__57970__value58144);
+            thumbWidth = (pressedThumbWidth__57970__value58144);
+            if ((trackGap__57918__value58173) > 0.0)
             {
-                trackGapLocal =
-                    DartRuntimePrimitives.RequireValue(trackGap__57918__value58173) - (delta / 2L);
+                trackGapLocal = (trackGap__57918__value58173) - (delta / 2L);
             }
         }
         _sliderTheme.rangeTrackShape!.paint(
@@ -1786,17 +1862,41 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
             double discreteTrackPadding = trackRect.height;
             double adjustedTrackWidth = trackRect.width - discreteTrackPadding;
             if (
-                (adjustedTrackWidth / DartRuntimePrimitives.RequireValue(divisions))
-                >= (3.0 * tickMarkWidth)
+                (
+                    adjustedTrackWidth
+                    / (
+                        divisions
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                ) >= (3.0 * tickMarkWidth)
             )
             {
                 double dyLocal = trackRect.center.dy;
-                for (var i = 0L; i <= DartRuntimePrimitives.RequireValue(divisions); i++)
+                for (
+                    var i = 0L;
+                    i
+                        <= (
+                            divisions
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        );
+                    i++
+                )
                 {
-                    double valueLocal = i / (double)DartRuntimePrimitives.RequireValue(divisions);
+                    double valueLocal =
+                        i
+                        / (double)(
+                            divisions
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        );
                     double dxLocal =
                         trackRect.left
-                        + (DartRuntimePrimitives.RequireValue(valueLocal) * adjustedTrackWidth)
+                        + ((valueLocal) * adjustedTrackWidth)
                         + (discreteTrackPadding / 2L);
                     var tickMarkOffset = new Offset(dxLocal, dyLocal);
                     _sliderTheme.rangeTickMarkShape!.paint(
@@ -1875,8 +1975,18 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
                 ? _sliderTheme.copyWith(
                     thumbSize: new WidgetStatePropertyAll<Size?>(
                         new Size(
-                            DartRuntimePrimitives.RequireValue(thumbWidth),
-                            DartRuntimePrimitives.RequireValue(thumbHeight)
+                            (
+                                thumbWidth
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ),
+                            (
+                                thumbHeight
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         )
                     )
                 )
@@ -1978,8 +2088,18 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
                 ? _sliderTheme.copyWith(
                     thumbSize: new WidgetStatePropertyAll<Size?>(
                         new Size(
-                            DartRuntimePrimitives.RequireValue(thumbWidth),
-                            DartRuntimePrimitives.RequireValue(thumbHeight)
+                            (
+                                thumbWidth
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ),
+                            (
+                                thumbHeight
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         )
                     )
                 )
@@ -2011,17 +2131,13 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
         }
         if (semanticFormatterCallback is not null)
         {
-            config.value = semanticFormatterCallback!(
-                _state._lerp(
-                    DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value))
-                )
-            );
+            config.value = semanticFormatterCallback!(_state._lerp(((value))));
             config.increasedValue = semanticFormatterCallback!(_state._lerp(increasedValue));
             config.decreasedValue = semanticFormatterCallback!(_state._lerp(decreasedValue));
         }
         else
         {
-            config.value = $"{(DartRuntimePrimitives.RequireValue(value) * 100L).round()}%";
+            config.value = $"{((value) * 100L).round()}%";
             config.increasedValue = $"{(increasedValue * 100L).round()}%";
             config.decreasedValue = $"{(decreasedValue * 100L).round()}%";
         }
@@ -2100,7 +2216,15 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
 
     internal virtual double _semanticActionUnit =>
         (divisions is not null)
-            ? (1.0 / DartRuntimePrimitives.RequireValue(divisions))
+            ? (
+                1.0
+                / (
+                    divisions
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
             : _adjustmentUnit;
 
     internal virtual void _increaseStartAction()

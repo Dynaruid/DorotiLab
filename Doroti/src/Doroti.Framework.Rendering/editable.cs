@@ -135,9 +135,11 @@ public class VerticalCaretMovementRun : IEnumerator<TextPosition>
         );
         if (cachedPosition is not null)
         {
-            MapEntry<Offset, TextPosition> cachedPosition__6901__value6954 =
-                DartRuntimePrimitives.RequireValue(cachedPosition);
-            return DartRuntimePrimitives.RequireValue(cachedPosition__6901__value6954);
+            MapEntry<Offset, TextPosition> cachedPosition__6901__value6954 = (
+                cachedPosition
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
+            return (cachedPosition__6901__value6954);
         }
         DartRuntimePrimitives.Assert(() => lineNumber != _currentLine);
         var newOffset = new Offset(_currentOffset.dx, _lineMetrics[(int)lineNumber].baseline);
@@ -409,15 +411,37 @@ public class RenderEditable
         _hasFocus = hasFocus ?? false;
         _disposeShowCursor = showCursor is null;
         System.Diagnostics.Debug.Assert(
-            (maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L)
+            (maxLines is null)
+                || (
+                    (
+                        maxLines
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
         System.Diagnostics.Debug.Assert(
-            (minLines is null) || (DartRuntimePrimitives.RequireValue(minLines) > 0L)
+            (minLines is null)
+                || (
+                    (
+                        minLines
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
         System.Diagnostics.Debug.Assert(
             maxLines is null
                 || minLines is null
-                || maxLines >= DartRuntimePrimitives.RequireValue(minLines)
+                || maxLines
+                    >= (
+                        minLines
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
         );
         System.Diagnostics.Debug.Assert(!expands || ((maxLines is null) && (minLines is null)));
         System.Diagnostics.Debug.Assert(
@@ -597,11 +621,11 @@ public class RenderEditable
         set
         {
             var __value = value;
-            if (Equals(_textPainter.textWidthBasis, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_textPainter.textWidthBasis, (__value)))
             {
                 return;
             }
-            _textPainter.textWidthBasis = DartRuntimePrimitives.RequireValue(__value);
+            _textPainter.textWidthBasis = (__value);
             markNeedsLayout();
         }
     }
@@ -611,11 +635,11 @@ public class RenderEditable
         set
         {
             var __value = value;
-            if (devicePixelRatio == DartRuntimePrimitives.RequireValue(__value))
+            if (devicePixelRatio == (__value))
             {
                 return;
             }
-            _devicePixelRatio = DartRuntimePrimitives.RequireValue(__value);
+            _devicePixelRatio = (__value);
             markNeedsLayout();
         }
     }
@@ -640,11 +664,11 @@ public class RenderEditable
         set
         {
             var __value = value;
-            if (_obscureText == DartRuntimePrimitives.RequireValue(__value))
+            if (_obscureText == (__value))
             {
                 return;
             }
-            _obscureText = DartRuntimePrimitives.RequireValue(__value);
+            _obscureText = (__value);
             _cachedAttributedValue = null;
             markNeedsSemanticsUpdate();
         }
@@ -655,7 +679,7 @@ public class RenderEditable
         set
         {
             var __value = value;
-            _selectionPainter.selectionHeightStyle = DartRuntimePrimitives.RequireValue(__value);
+            _selectionPainter.selectionHeightStyle = (__value);
         }
     }
     public virtual BoxWidthStyle selectionWidthStyle
@@ -664,7 +688,7 @@ public class RenderEditable
         set
         {
             var __value = value;
-            _selectionPainter.selectionWidthStyle = DartRuntimePrimitives.RequireValue(__value);
+            _selectionPainter.selectionWidthStyle = (__value);
         }
     }
     public virtual ValueListenable<bool> selectionStartInViewport => _selectionStartInViewport;
@@ -828,25 +852,29 @@ public class RenderEditable
         set
         {
             var __value = value;
-            if (Equals(_textPainter.textAlign, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_textPainter.textAlign, (__value)))
             {
                 return;
             }
-            _textPainter.textAlign = DartRuntimePrimitives.RequireValue(__value);
+            _textPainter.textAlign = (__value);
             markNeedsLayout();
         }
     }
     public virtual TextDirection textDirection
     {
-        get => DartRuntimePrimitives.RequireValue(_textPainter.textDirection);
+        get =>
+            (
+                _textPainter.textDirection
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         set
         {
             var __value = value;
-            if (Equals(_textPainter.textDirection, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_textPainter.textDirection, (__value)))
             {
                 return;
             }
-            _textPainter.textDirection = DartRuntimePrimitives.RequireValue(__value);
+            _textPainter.textDirection = (__value);
             markNeedsLayout();
             markNeedsSemanticsUpdate();
         }
@@ -936,11 +964,11 @@ public class RenderEditable
         set
         {
             var __value = value;
-            if (_hasFocus == DartRuntimePrimitives.RequireValue(__value))
+            if (_hasFocus == (__value))
             {
                 return;
             }
-            _hasFocus = DartRuntimePrimitives.RequireValue(__value);
+            _hasFocus = (__value);
             markNeedsSemanticsUpdate();
         }
     }
@@ -950,11 +978,11 @@ public class RenderEditable
         set
         {
             var __value = value;
-            if (_forceLine == DartRuntimePrimitives.RequireValue(__value))
+            if (_forceLine == (__value))
             {
                 return;
             }
-            _forceLine = DartRuntimePrimitives.RequireValue(__value);
+            _forceLine = (__value);
             markNeedsLayout();
         }
     }
@@ -964,11 +992,11 @@ public class RenderEditable
         set
         {
             var __value = value;
-            if (_readOnly == DartRuntimePrimitives.RequireValue(__value))
+            if (_readOnly == (__value))
             {
                 return;
             }
-            _readOnly = DartRuntimePrimitives.RequireValue(__value);
+            _readOnly = (__value);
             markNeedsSemanticsUpdate();
         }
     }
@@ -979,7 +1007,15 @@ public class RenderEditable
         {
             var __value = value;
             DartRuntimePrimitives.Assert(() =>
-                (__value is null) || (DartRuntimePrimitives.RequireValue(__value) > 0L)
+                (__value is null)
+                || (
+                    (
+                        __value
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
             );
             if (maxLines == __value)
             {
@@ -997,7 +1033,15 @@ public class RenderEditable
         {
             var __value = value;
             DartRuntimePrimitives.Assert(() =>
-                (__value is null) || (DartRuntimePrimitives.RequireValue(__value) > 0L)
+                (__value is null)
+                || (
+                    (
+                        __value
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
             );
             if (minLines == __value)
             {
@@ -1013,11 +1057,11 @@ public class RenderEditable
         set
         {
             var __value = value;
-            if (expands == DartRuntimePrimitives.RequireValue(__value))
+            if (expands == (__value))
             {
                 return;
             }
-            _expands = DartRuntimePrimitives.RequireValue(__value);
+            _expands = (__value);
             markNeedsLayout();
         }
     }
@@ -1036,7 +1080,7 @@ public class RenderEditable
         set
         {
             var __value = value;
-            textScaler = TextScaler.CreateLinear(DartRuntimePrimitives.RequireValue(__value));
+            textScaler = TextScaler.CreateLinear((__value));
         }
     }
     public virtual TextScaler textScaler
@@ -1097,11 +1141,11 @@ public class RenderEditable
         set
         {
             var __value = value;
-            if (_cursorWidth == DartRuntimePrimitives.RequireValue(__value))
+            if (_cursorWidth == (__value))
             {
                 return;
             }
-            _cursorWidth = DartRuntimePrimitives.RequireValue(__value);
+            _cursorWidth = (__value);
             markNeedsLayout();
         }
     }
@@ -1127,11 +1171,11 @@ public class RenderEditable
         set
         {
             var __value = value;
-            if (_paintCursorOnTop == DartRuntimePrimitives.RequireValue(__value))
+            if (_paintCursorOnTop == (__value))
             {
                 return;
             }
-            _paintCursorOnTop = DartRuntimePrimitives.RequireValue(__value);
+            _paintCursorOnTop = (__value);
             _cachedBuiltInForegroundPainters = null;
             _cachedBuiltInPainters = null;
             _updateForegroundPainter(_foregroundPainter);
@@ -1144,7 +1188,7 @@ public class RenderEditable
         set
         {
             var __value = value;
-            _caretPainter.cursorOffset = DartRuntimePrimitives.RequireValue(__value);
+            _caretPainter.cursorOffset = (__value);
         }
     }
     public virtual Radius? cursorRadius
@@ -1227,9 +1271,9 @@ public class RenderEditable
         set
         {
             var __value = value;
-            if (!Equals(DartRuntimePrimitives.RequireValue(__value), _clipBehavior))
+            if (!Equals((__value), _clipBehavior))
             {
-                _clipBehavior = DartRuntimePrimitives.RequireValue(__value);
+                _clipBehavior = (__value);
                 markNeedsPaint();
                 markNeedsSemanticsUpdate();
             }
@@ -1524,9 +1568,12 @@ public class RenderEditable
                 }
                 if (node.parentPaintClipRect is not null)
                 {
-                    Rect paintRect = DartRuntimePrimitives
-                        .RequireValue(node.parentPaintClipRect)
-                        .intersect(currentRect);
+                    Rect paintRect = (
+                        node.parentPaintClipRect
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).intersect(currentRect);
                     configuration.isHidden = paintRect.isEmpty && !currentRect.isEmpty;
                 }
                 SemanticsNode newChild = default!;
@@ -1591,12 +1638,20 @@ public class RenderEditable
             return;
         }
         long baseOffsetLocal = !extendSelection
-            ? DartRuntimePrimitives.RequireValue(extentOffsetLocal)
+            ? (
+                extentOffsetLocal
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
             : selection!.baseOffset;
         _setSelection(
             new TextSelection(
                 baseOffset: baseOffsetLocal,
-                extentOffset: DartRuntimePrimitives.RequireValue(extentOffsetLocal)
+                extentOffset: (
+                    extentOffsetLocal
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             ),
             SelectionChangedCause.keyboard
         );
@@ -1611,12 +1666,20 @@ public class RenderEditable
             return;
         }
         long baseOffsetLocal = !extendSelection
-            ? DartRuntimePrimitives.RequireValue(extentOffsetLocal)
+            ? (
+                extentOffsetLocal
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
             : selection!.baseOffset;
         _setSelection(
             new TextSelection(
                 baseOffset: baseOffsetLocal,
-                extentOffset: DartRuntimePrimitives.RequireValue(extentOffsetLocal)
+                extentOffset: (
+                    extentOffsetLocal
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             ),
             SelectionChangedCause.keyboard
         );
@@ -1695,7 +1758,10 @@ public class RenderEditable
     {
         for (long i = range.start; i < range.end; i++)
         {
-            long codeUnit = DartRuntimePrimitives.RequireValue(text!.codeUnitAt(i));
+            long codeUnit = (
+                text!.codeUnitAt(i)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             if (!TextLayoutMetrics.isWhitespace(codeUnit))
             {
                 return false;
@@ -2023,8 +2089,11 @@ public class RenderEditable
         long? cachedValue = _cachedLineBreakCount;
         if (cachedValue is not null)
         {
-            long cachedValue__70677__value70722 = DartRuntimePrimitives.RequireValue(cachedValue);
-            return DartRuntimePrimitives.RequireValue(cachedValue__70677__value70722);
+            long cachedValue__70677__value70722 = (
+                cachedValue
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
+            return (cachedValue__70677__value70722);
         }
         var count = 0L;
         for (var index = 0L; index < text.Length; index += 1L)
@@ -2043,7 +2112,8 @@ public class RenderEditable
                 }
             }
         }
-        return DartRuntimePrimitives.RequireValue(_cachedLineBreakCount = count);
+        _cachedLineBreakCount = count;
+        return count;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2078,7 +2148,12 @@ public class RenderEditable
             }
             return Math.Max(estimatedHeight, minHeight);
         }
-        if (DartRuntimePrimitives.RequireValue(maxLinesLocal) == 1L)
+        if (
+            (
+                maxLinesLocal
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) == 1L
+        )
         {
             var (minWidthAlternate, maxWidthAlternate) = _adjustConstraints(maxWidth: width);
             return (
@@ -2092,11 +2167,22 @@ public class RenderEditable
                 )
             )().height;
         }
-        if (minLinesLocal == DartRuntimePrimitives.RequireValue(maxLinesLocal))
+        if (
+            minLinesLocal
+            == (
+                maxLinesLocal
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        )
         {
             return minHeight;
         }
-        double maxHeight = preferredLineHeight * DartRuntimePrimitives.RequireValue(maxLinesLocal);
+        double maxHeight =
+            preferredLineHeight
+            * (
+                maxLinesLocal
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         var (minWidthNested, maxWidthNested) = _adjustConstraints(maxWidth: width);
         return Dart_uiLibrary.clampDouble(
             (
@@ -2228,7 +2314,10 @@ public class RenderEditable
     public virtual void selectPosition(SelectionChangedCause cause)
     {
         selectPositionAt(
-            from: DartRuntimePrimitives.RequireValue(_lastTapDownPosition),
+            from: (
+                _lastTapDownPosition
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             cause: cause
         );
     }
@@ -2248,7 +2337,14 @@ public class RenderEditable
                 ? null
                 : _textPainter.getPositionForOffset(
                     globalToLocal(
-                        DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(to))
+                        (
+                            (
+                                to
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
+                        )
                     ) - _paintOffset
                 );
         long baseOffsetLocal = fromPosition.offset;
@@ -2266,7 +2362,10 @@ public class RenderEditable
     public virtual void selectWord(SelectionChangedCause cause)
     {
         selectWordsInRange(
-            from: DartRuntimePrimitives.RequireValue(_lastTapDownPosition),
+            from: (
+                _lastTapDownPosition
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             cause: cause
         );
     }
@@ -2287,7 +2386,14 @@ public class RenderEditable
                 ? fromPosition
                 : _textPainter.getPositionForOffset(
                     globalToLocal(
-                        DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(to))
+                        (
+                            (
+                                to
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
+                        )
                     ) - _paintOffset
                 );
         TextSelection toWord = Equals(toPosition, fromPosition)
@@ -2309,7 +2415,14 @@ public class RenderEditable
         _computeTextMetricsIfNeeded();
         DartRuntimePrimitives.Assert(() => _lastTapDownPosition is not null);
         TextPosition position = _textPainter.getPositionForOffset(
-            globalToLocal(DartRuntimePrimitives.RequireValue(_lastTapDownPosition)) - _paintOffset
+            globalToLocal(
+                (
+                    _lastTapDownPosition
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            ) - _paintOffset
         );
         TextRange word = _textPainter.getWordBoundary(position);
         TextSelection newSelection = default!;
@@ -2572,9 +2685,8 @@ public class RenderEditable
             1L => _textPainter.height,
             long maxLinesLocal => Dart_uiLibrary.clampDouble(
                 _textPainter.height,
-                preferredLineHeight
-                    * (minLines ?? DartRuntimePrimitives.RequireValue(maxLinesLocal)),
-                preferredLineHeight * DartRuntimePrimitives.RequireValue(maxLinesLocal)
+                preferredLineHeight * (minLines ?? (maxLinesLocal)),
+                preferredLineHeight * (maxLinesLocal)
             ),
         };
         size = new Size(widthLocal, constraintsLocal.constrainHeight(preferredHeight));
@@ -2620,10 +2732,11 @@ public class RenderEditable
         var boundingRects = Rect.fromLTRB(leftBound, topBound, rightBound, bottomBound);
         if (shouldResetOrigin is not null)
         {
-            bool shouldResetOrigin__value92495 = DartRuntimePrimitives.RequireValue(
+            bool shouldResetOrigin__value92495 = (
                 shouldResetOrigin
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
-            _shouldResetOrigin = DartRuntimePrimitives.RequireValue(shouldResetOrigin__value92495);
+            _shouldResetOrigin = (shouldResetOrigin__value92495);
         }
         if (!_shouldResetOrigin)
         {
@@ -2631,7 +2744,14 @@ public class RenderEditable
         }
         if (_previousOffset is not null)
         {
-            deltaPosition = rawCursorOffset - DartRuntimePrimitives.RequireValue(_previousOffset);
+            deltaPosition =
+                rawCursorOffset
+                - (
+                    _previousOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
         }
         if (_resetOriginOnLeft && (deltaPosition.dx > 0L))
         {
@@ -2732,8 +2852,13 @@ public class RenderEditable
                     ? EdgeInsets.lerp(
                         EditableLibrary._kFloatingCursorSizeIncrease,
                         EdgeInsets.zero,
-                        DartRuntimePrimitives.RequireValue(
-                            DartRuntimePrimitives.RequireValue(animationValue)
+                        (
+                            (
+                                animationValue
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         )
                     )!
                     : EditableLibrary._kFloatingCursorSizeIncrease;
@@ -3272,8 +3397,18 @@ public class RenderEditable
         else
         {
             transform.translateByDouble(
-                DartRuntimePrimitives.RequireValue(offsetLocal).dx,
-                DartRuntimePrimitives.RequireValue(offsetLocal).dy,
+                (
+                    offsetLocal
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).dx,
+                (
+                    offsetLocal
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).dy,
                 0,
                 1
             );
@@ -3291,7 +3426,15 @@ public class RenderEditable
             {
                 return;
             }
-            context.paintChild(child, DartRuntimePrimitives.RequireValue(childOffset) + offset);
+            context.paintChild(
+                child,
+                (
+                    childOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) + offset
+            );
             child = childAfter(child);
         }
     }
@@ -3308,7 +3451,12 @@ public class RenderEditable
                 return false;
             }
             bool isHit = result.addWithPaintOffset(
-                offset: DartRuntimePrimitives.RequireValue(childOffset),
+                offset: (
+                    childOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 position: position,
                 hitTest: (result, transformed) => child!.hitTest(result, position: transformed)
             );
@@ -3568,11 +3716,11 @@ internal class _CaretPainter__editable : RenderEditablePainter
         set
         {
             var __value = value;
-            if (shouldPaint == DartRuntimePrimitives.RequireValue(__value))
+            if (shouldPaint == (__value))
             {
                 return;
             }
-            _shouldPaint = DartRuntimePrimitives.RequireValue(__value);
+            _shouldPaint = (__value);
             notifyListeners();
         }
     }
@@ -3610,11 +3758,11 @@ internal class _CaretPainter__editable : RenderEditablePainter
         set
         {
             var __value = value;
-            if (Equals(_cursorOffset, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_cursorOffset, (__value)))
             {
                 return;
             }
-            _cursorOffset = DartRuntimePrimitives.RequireValue(__value);
+            _cursorOffset = (__value);
             notifyListeners();
         }
     }
@@ -3663,8 +3811,12 @@ internal class _CaretPainter__editable : RenderEditablePainter
             if (floatingCursorRect is not null)
             {
                 double distanceSquaredLocal = (
-                    DartRuntimePrimitives.RequireValue(floatingCursorRect).center
-                    - integralRect.center
+                    (
+                        floatingCursorRect
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).center - integralRect.center
                 ).distanceSquared;
                 if (
                     distanceSquaredLocal
@@ -3684,7 +3836,12 @@ internal class _CaretPainter__editable : RenderEditablePainter
             {
                 var caretRRect = RRect.fromRectAndRadius(
                     integralRect,
-                    DartRuntimePrimitives.RequireValue(radius)
+                    (
+                        radius
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 );
                 canvas.drawRRect(caretRRect, caretPaint);
             }
@@ -3718,7 +3875,12 @@ internal class _CaretPainter__editable : RenderEditablePainter
         }
         canvas.drawRRect(
             RRect.fromRectAndRadius(
-                DartRuntimePrimitives.RequireValue(floatingCursorRectLocal),
+                (
+                    floatingCursorRectLocal
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 EditableLibrary._kFloatingCursorRadius
             ),
             (

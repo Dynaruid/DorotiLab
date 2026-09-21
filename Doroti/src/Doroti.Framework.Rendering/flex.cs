@@ -92,8 +92,19 @@ internal class _AscentDescent__flex
             ? none
             : Create_(
                 (
-                    DartRuntimePrimitives.RequireValue(baselineOffset),
-                    crossSize - DartRuntimePrimitives.RequireValue(baselineOffset)
+                    (
+                        baselineOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
+                    crossSize
+                        - (
+                            baselineOffset
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                 )
             );
     }
@@ -316,9 +327,9 @@ public class RenderFlex
         set
         {
             var __value = value;
-            if (!Equals(_direction, DartRuntimePrimitives.RequireValue(__value)))
+            if (!Equals(_direction, (__value)))
             {
-                _direction = DartRuntimePrimitives.RequireValue(__value);
+                _direction = (__value);
                 markNeedsLayout();
             }
         }
@@ -329,9 +340,9 @@ public class RenderFlex
         set
         {
             var __value = value;
-            if (!Equals(_mainAxisAlignment, DartRuntimePrimitives.RequireValue(__value)))
+            if (!Equals(_mainAxisAlignment, (__value)))
             {
-                _mainAxisAlignment = DartRuntimePrimitives.RequireValue(__value);
+                _mainAxisAlignment = (__value);
                 markNeedsLayout();
             }
         }
@@ -342,9 +353,9 @@ public class RenderFlex
         set
         {
             var __value = value;
-            if (!Equals(_mainAxisSize, DartRuntimePrimitives.RequireValue(__value)))
+            if (!Equals(_mainAxisSize, (__value)))
             {
-                _mainAxisSize = DartRuntimePrimitives.RequireValue(__value);
+                _mainAxisSize = (__value);
                 markNeedsLayout();
             }
         }
@@ -355,9 +366,9 @@ public class RenderFlex
         set
         {
             var __value = value;
-            if (!Equals(_crossAxisAlignment, DartRuntimePrimitives.RequireValue(__value)))
+            if (!Equals(_crossAxisAlignment, (__value)))
             {
-                _crossAxisAlignment = DartRuntimePrimitives.RequireValue(__value);
+                _crossAxisAlignment = (__value);
                 markNeedsLayout();
             }
         }
@@ -381,9 +392,9 @@ public class RenderFlex
         set
         {
             var __value = value;
-            if (!Equals(_verticalDirection, DartRuntimePrimitives.RequireValue(__value)))
+            if (!Equals(_verticalDirection, (__value)))
             {
-                _verticalDirection = DartRuntimePrimitives.RequireValue(__value);
+                _verticalDirection = (__value);
                 markNeedsLayout();
             }
         }
@@ -474,9 +485,9 @@ public class RenderFlex
         set
         {
             var __value = value;
-            if (!Equals(DartRuntimePrimitives.RequireValue(__value), _clipBehavior))
+            if (!Equals((__value), _clipBehavior))
             {
-                _clipBehavior = DartRuntimePrimitives.RequireValue(__value);
+                _clipBehavior = (__value);
                 markNeedsPaint();
                 markNeedsSemanticsUpdate();
             }
@@ -488,11 +499,11 @@ public class RenderFlex
         set
         {
             var __value = value;
-            if (_spacing == DartRuntimePrimitives.RequireValue(__value))
+            if (_spacing == (__value))
             {
                 return;
             }
-            _spacing = DartRuntimePrimitives.RequireValue(__value);
+            _spacing = (__value);
             markNeedsLayout();
         }
     }
@@ -826,7 +837,13 @@ public class RenderFlex
                 ? _constraintsForFlexChild(
                     child,
                     constraints,
-                    flex * DartRuntimePrimitives.RequireValue(spacePerFlexLocal)
+                    flex
+                        * (
+                            spacePerFlexLocal
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                 )
                 : nonFlexConstraints;
             throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -849,14 +866,22 @@ public class RenderFlex
             double? childBaseline = childLocal.getDryBaseline(childConstraints, baseline);
             if (childBaseline is not null)
             {
-                double childBaseline__38778__value38854 = DartRuntimePrimitives.RequireValue(
+                double childBaseline__38778__value38854 = (
                     childBaseline
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
                 double? childBaselineOffset =
                     (_isBaselineAligned && (textBaseline is not null))
                         ? childLocal.getDryBaseline(
                             childConstraints,
-                            DartRuntimePrimitives.RequireValue(textBaseline)
+                            (
+                                textBaseline
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         )
                         : null;
                 bool baselineAlign =
@@ -865,8 +890,18 @@ public class RenderFlex
                 if (baselineAlign)
                 {
                     childCrossPosition =
-                        DartRuntimePrimitives.RequireValue(baselineOffsetLocal)
-                        - DartRuntimePrimitives.RequireValue(childBaselineOffset);
+                        (
+                            baselineOffsetLocal
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                        - (
+                            childBaselineOffset
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        );
                 }
                 else
                 {
@@ -891,7 +926,7 @@ public class RenderFlex
                     }
                 }
                 BaselineOffset candidate = new BaselineOffset(
-                    DartRuntimePrimitives.RequireValue(childBaseline__38778__value38854)
+                    (childBaseline__38778__value38854)
                 ).op_Add(childCrossPosition);
                 minBaseline = minBaseline.minOf(candidate);
             }
@@ -915,7 +950,13 @@ public class RenderFlex
                 ? _constraintsForFlexChild(
                     child,
                     constraints,
-                    flex * DartRuntimePrimitives.RequireValue(spacePerFlexLocal)
+                    flex
+                        * (
+                            spacePerFlexLocal
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                 )
                 : nonFlexConstraints;
             throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -954,12 +995,14 @@ public class RenderFlex
             double? childBaseline = childAlternate.getDryBaseline(ccLocal, baseline);
             if (childBaseline is not null)
             {
-                double childBaseline__42618__value42680 = DartRuntimePrimitives.RequireValue(
+                double childBaseline__42618__value42680 = (
                     childBaseline
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
                 double? position = mainPositions.GetValueOrDefault(childAlternate);
-                return DartRuntimePrimitives.RequireValue(childBaseline__42618__value42680)
-                    + (position ?? leadingSpace);
+                return (childBaseline__42618__value42680) + (position ?? leadingSpace);
             }
         }
         return null;
@@ -1182,7 +1225,12 @@ public class RenderFlex
                         : getBaseline(
                             child,
                             nonFlexChildConstraints,
-                            DartRuntimePrimitives.RequireValue(textBaselineLocal)
+                            (
+                                textBaselineLocal
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         );
                 accumulatedAscentDescent = accumulatedAscentDescent.op_Add(
                     _AscentDescent__flex.Create(
@@ -1230,7 +1278,12 @@ public class RenderFlex
                     : getBaseline(
                         childLocal,
                         childConstraints,
-                        DartRuntimePrimitives.RequireValue(textBaselineLocal)
+                        (
+                            textBaselineLocal
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     );
             accumulatedAscentDescent = accumulatedAscentDescent.op_Add(
                 _AscentDescent__flex.Create(
@@ -1322,7 +1375,12 @@ public class RenderFlex
                 && (
                     (
                         childBaselineOffset = child.getDistanceToBaseline(
-                            DartRuntimePrimitives.RequireValue(textBaseline),
+                            (
+                                textBaseline
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ),
                             onlyReal: true
                         )
                     )
@@ -1332,8 +1390,18 @@ public class RenderFlex
             if (baselineAlign)
             {
                 childCrossPosition =
-                    DartRuntimePrimitives.RequireValue(baselineOffsetLocal)
-                    - DartRuntimePrimitives.RequireValue(childBaselineOffset);
+                    (
+                        baselineOffsetLocal
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                    - (
+                        childBaselineOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    );
             }
             else
             {
@@ -1820,9 +1888,13 @@ public class RenderFlex
             double? result = child.getDistanceToActualBaseline(baseline);
             if (result is not null)
             {
-                double result__138852__value138916 = DartRuntimePrimitives.RequireValue(result);
-                return DartRuntimePrimitives.RequireValue(result__138852__value138916)
-                    + childParentData.offset.dy;
+                double result__138852__value138916 = (
+                    result
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
+                return (result__138852__value138916) + childParentData.offset.dy;
             }
             child = childParentData.nextSibling;
         }

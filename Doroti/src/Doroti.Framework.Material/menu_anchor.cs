@@ -173,7 +173,10 @@ internal class _TweenCurve__menu_anchor : Curve
     public override double transformInternal(double t)
     {
         t = curve.transform(t);
-        return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(begin, end, t));
+        return (
+            Dart_uiLibrary.lerpDouble(begin, end, t)
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2225,8 +2228,11 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                         {
                                             var __collection91850 = new List<string>();
                                             if (
-                                                DartRuntimePrimitives.RequireValue(
+                                                (
                                                     serialized.control
+                                                    ?? throw new global::System.NullReferenceException(
+                                                        "Dart null assertion failed."
+                                                    )
                                                 )
                                             )
                                             {
@@ -2237,7 +2243,14 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                                     )
                                                 );
                                             }
-                                            if (DartRuntimePrimitives.RequireValue(serialized.alt))
+                                            if (
+                                                (
+                                                    serialized.alt
+                                                    ?? throw new global::System.NullReferenceException(
+                                                        "Dart null assertion failed."
+                                                    )
+                                                )
+                                            )
                                             {
                                                 __collection91850.Add(
                                                     _getModifierLabel(
@@ -2247,7 +2260,12 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                                 );
                                             }
                                             if (
-                                                DartRuntimePrimitives.RequireValue(serialized.shift)
+                                                (
+                                                    serialized.shift
+                                                    ?? throw new global::System.NullReferenceException(
+                                                        "Dart null assertion failed."
+                                                    )
+                                                )
                                             )
                                             {
                                                 __collection91850.Add(
@@ -2257,7 +2275,14 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                                     )
                                                 );
                                             }
-                                            if (DartRuntimePrimitives.RequireValue(serialized.meta))
+                                            if (
+                                                (
+                                                    serialized.meta
+                                                    ?? throw new global::System.NullReferenceException(
+                                                        "Dart null assertion failed."
+                                                    )
+                                                )
+                                            )
                                             {
                                                 __collection91850.Add(
                                                     _getModifierLabel(
@@ -2280,7 +2305,14 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                         () =>
                                         {
                                             var __collection92331 = new List<string>();
-                                            if (DartRuntimePrimitives.RequireValue(serialized.alt))
+                                            if (
+                                                (
+                                                    serialized.alt
+                                                    ?? throw new global::System.NullReferenceException(
+                                                        "Dart null assertion failed."
+                                                    )
+                                                )
+                                            )
                                             {
                                                 __collection92331.Add(
                                                     _getModifierLabel(
@@ -2290,8 +2322,11 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                                 );
                                             }
                                             if (
-                                                DartRuntimePrimitives.RequireValue(
+                                                (
                                                     serialized.control
+                                                    ?? throw new global::System.NullReferenceException(
+                                                        "Dart null assertion failed."
+                                                    )
                                                 )
                                             )
                                             {
@@ -2302,7 +2337,14 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                                     )
                                                 );
                                             }
-                                            if (DartRuntimePrimitives.RequireValue(serialized.meta))
+                                            if (
+                                                (
+                                                    serialized.meta
+                                                    ?? throw new global::System.NullReferenceException(
+                                                        "Dart null assertion failed."
+                                                    )
+                                                )
+                                            )
                                             {
                                                 __collection92331.Add(
                                                     _getModifierLabel(
@@ -2312,7 +2354,12 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                                 );
                                             }
                                             if (
-                                                DartRuntimePrimitives.RequireValue(serialized.shift)
+                                                (
+                                                    serialized.shift
+                                                    ?? throw new global::System.NullReferenceException(
+                                                        "Dart null assertion failed."
+                                                    )
+                                                )
                                             )
                                             {
                                                 __collection92331.Add(
@@ -2389,8 +2436,11 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                             {
                                                 var __collection93989 = new List<string>();
                                                 if (
-                                                    DartRuntimePrimitives.RequireValue(
+                                                    (
                                                         serialized.control
+                                                        ?? throw new global::System.NullReferenceException(
+                                                            "Dart null assertion failed."
+                                                        )
                                                     )
                                                 )
                                                 {
@@ -2402,8 +2452,11 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                                     );
                                                 }
                                                 if (
-                                                    DartRuntimePrimitives.RequireValue(
+                                                    (
                                                         serialized.alt
+                                                        ?? throw new global::System.NullReferenceException(
+                                                            "Dart null assertion failed."
+                                                        )
                                                     )
                                                 )
                                                 {
@@ -2415,8 +2468,11 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                                     );
                                                 }
                                                 if (
-                                                    DartRuntimePrimitives.RequireValue(
+                                                    (
                                                         serialized.meta
+                                                        ?? throw new global::System.NullReferenceException(
+                                                            "Dart null assertion failed."
+                                                        )
                                                     )
                                                 )
                                                 {
@@ -2442,8 +2498,11 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                             {
                                                 var __collection94377 = new List<string>();
                                                 if (
-                                                    DartRuntimePrimitives.RequireValue(
+                                                    (
                                                         serialized.alt
+                                                        ?? throw new global::System.NullReferenceException(
+                                                            "Dart null assertion failed."
+                                                        )
                                                     )
                                                 )
                                                 {
@@ -2455,8 +2514,11 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                                     );
                                                 }
                                                 if (
-                                                    DartRuntimePrimitives.RequireValue(
+                                                    (
                                                         serialized.control
+                                                        ?? throw new global::System.NullReferenceException(
+                                                            "Dart null assertion failed."
+                                                        )
                                                     )
                                                 )
                                                 {
@@ -2468,8 +2530,11 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                                     );
                                                 }
                                                 if (
-                                                    DartRuntimePrimitives.RequireValue(
+                                                    (
                                                         serialized.meta
+                                                        ?? throw new global::System.NullReferenceException(
+                                                            "Dart null assertion failed."
+                                                        )
                                                     )
                                                 )
                                                 {
@@ -3381,7 +3446,10 @@ internal class _MenuLayout__menu_anchor : SingleChildLayoutDelegate
         Offset finalPosition = _positionChild(childSizeEstimate, overlayRect);
         if (menuPosition is not null)
         {
-            Offset menuPosition__value127155 = DartRuntimePrimitives.RequireValue(menuPosition);
+            Offset menuPosition__value127155 = (
+                menuPosition
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             return finalPosition;
         }
         bool growsUp = (finalPosition.dy + childSizeEstimate.height) <= anchorRect.center.dy;
@@ -3391,8 +3459,9 @@ internal class _MenuLayout__menu_anchor : SingleChildLayoutDelegate
             return new Offset(finalPosition.dx, finalPosition.dy + dyLocal);
         }
         var initialPosition = new Offset(finalPosition.dx, anchorRect.bottom);
-        return DartRuntimePrimitives.RequireValue(
+        return (
             Dart_uiLibrary.Offset.lerp(initialPosition, finalPosition, heightFactor)
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -3439,7 +3508,12 @@ internal class _MenuLayout__menu_anchor : SingleChildLayoutDelegate
         else
         {
             Offset adjustedPosition =
-                DartRuntimePrimitives.RequireValue(menuPosition) + anchorRect.topLeft;
+                (
+                    menuPosition
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) + anchorRect.topLeft;
             xLocal = adjustedPosition.dx;
             yLocal = adjustedPosition.dy;
         }
@@ -3696,12 +3770,21 @@ internal class _MenuPanelState__menu_anchor : State<_MenuPanel__menu_anchor>
         );
         if (fixedSizeLocal is not null)
         {
-            Size fixedSize__135131__value136698 = DartRuntimePrimitives.RequireValue(
+            Size fixedSize__135131__value136698 = (
                 fixedSizeLocal
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
             Size size = effectiveConstraintsLocal.constrain(
-                DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(fixedSize__135131__value136698)
+                (
+                    (
+                        fixedSize__135131__value136698
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 )
             );
             if (double.IsFinite(size.width))

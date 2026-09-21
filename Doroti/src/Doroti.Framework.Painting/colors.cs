@@ -163,20 +163,36 @@ public class HSVColor
         }
         return new HSVColor(
             Dart_uiLibrary.clampDouble(
-                DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.alpha, b.alpha, t)),
+                (
+                    Dart_uiLibrary.lerpDouble(a.alpha, b.alpha, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 0.0,
                 1.0
             ),
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.hue, b.hue, t)) % 360.0,
+            (
+                Dart_uiLibrary.lerpDouble(a.hue, b.hue, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) % 360.0,
             Dart_uiLibrary.clampDouble(
-                DartRuntimePrimitives.RequireValue(
+                (
                     Dart_uiLibrary.lerpDouble(a.saturation, b.saturation, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 ),
                 0.0,
                 1.0
             ),
             Dart_uiLibrary.clampDouble(
-                DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.value, b.value, t)),
+                (
+                    Dart_uiLibrary.lerpDouble(a.value, b.value, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 0.0,
                 1.0
             )
@@ -310,21 +326,35 @@ public class HSLColor
         }
         return new HSLColor(
             Dart_uiLibrary.clampDouble(
-                DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.alpha, b.alpha, t)),
+                (
+                    Dart_uiLibrary.lerpDouble(a.alpha, b.alpha, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 0.0,
                 1.0
             ),
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.hue, b.hue, t)) % 360.0,
+            (
+                Dart_uiLibrary.lerpDouble(a.hue, b.hue, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) % 360.0,
             Dart_uiLibrary.clampDouble(
-                DartRuntimePrimitives.RequireValue(
+                (
                     Dart_uiLibrary.lerpDouble(a.saturation, b.saturation, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 ),
                 0.0,
                 1.0
             ),
             Dart_uiLibrary.clampDouble(
-                DartRuntimePrimitives.RequireValue(
+                (
                     Dart_uiLibrary.lerpDouble(a.lightness, b.lightness, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 ),
                 0.0,
                 1.0

@@ -105,9 +105,7 @@ public class BoxDecoration : Decoration
                             {
                                 var __cascade = new Path();
                                 __cascade.addRRect(
-                                    borderRadius!
-                                        .resolve(DartRuntimePrimitives.RequireValue(textDirection))
-                                        .toRRect(rect)
+                                    borderRadius!.resolve((textDirection)).toRRect(rect)
                                 );
                                 return __cascade;
                             }
@@ -334,8 +332,11 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
             var paint = new Paint();
             if (_decoration.backgroundBlendMode is not null)
             {
-                paint.blendMode = DartRuntimePrimitives.RequireValue(
+                paint.blendMode = (
                     _decoration.backgroundBlendMode
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
             }
             if (_decoration.color is not null)
@@ -485,20 +486,17 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
         {
             if ((_decoration.border is BorderDirectional) && (textDirection is not null))
             {
-                TextDirection textDirection__value18244 = DartRuntimePrimitives.RequireValue(
+                TextDirection textDirection__value18244 = (
                     textDirection
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
                 var borderAlternate = ((BorderDirectional?)(object?)_decoration.border!)!;
-                BorderSide leftSide = Equals(
-                    DartRuntimePrimitives.RequireValue(textDirection__value18244),
-                    TextDirection.rtl
-                )
+                BorderSide leftSide = Equals((textDirection__value18244), TextDirection.rtl)
                     ? borderAlternate.end
                     : borderAlternate.start;
-                BorderSide rightSide = Equals(
-                    DartRuntimePrimitives.RequireValue(textDirection__value18244),
-                    TextDirection.rtl
-                )
+                BorderSide rightSide = Equals((textDirection__value18244), TextDirection.rtl)
                     ? borderAlternate.start
                     : borderAlternate.end;
                 EdgeInsets insetsLocal = new EdgeInsets(
@@ -585,7 +583,12 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
     public override void paint(Canvas canvas, Offset offset, ImageConfiguration configuration)
     {
         DartRuntimePrimitives.Assert(() => configuration.size is not null);
-        Rect rect = offset & DartRuntimePrimitives.RequireValue(configuration.size);
+        Rect rect =
+            offset
+            & (
+                configuration.size
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         TextDirection? textDirectionLocal = configuration.textDirection;
         _paintShadows(canvas, rect, textDirectionLocal);
         _paintBackgroundColor(canvas, rect, textDirectionLocal);

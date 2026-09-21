@@ -233,7 +233,10 @@ public class RectangularRangeSliderTrackShape : RangeSliderTrackShape, BaseRange
         double overlayWidth = sliderTheme
             .overlayShape!.getPreferredSize(isEnabled, isDiscrete)
             .width;
-        double trackHeightLocal = DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight);
+        double trackHeightLocal = (
+            sliderTheme.trackHeight
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         DartRuntimePrimitives.Assert(() => overlayWidth >= 0L);
         DartRuntimePrimitives.Assert(() => trackHeightLocal >= 0L);
         if (
@@ -295,7 +298,14 @@ public class RoundedRectRangeSliderTrackShape : RangeSliderTrackShape, BaseRange
         DartRuntimePrimitives.Assert(() => sliderTheme.rangeThumbShape is not null);
         if (
             (sliderTheme.trackHeight is null)
-            || (DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) <= 0L)
+            || (
+                (
+                    sliderTheme.trackHeight
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) <= 0L
+            )
         )
         {
             return;
@@ -371,10 +381,24 @@ public class RoundedRectRangeSliderTrackShape : RangeSliderTrackShape, BaseRange
         context.canvas.drawRRect(
             RRect.fromLTRBR(
                 leftThumbOffset.dx
-                    - (DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L),
+                    - (
+                        (
+                            sliderTheme.trackHeight
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) / 2L
+                    ),
                 trackRect.top - (additionalActiveTrackHeight / 2L),
                 rightThumbOffset.dx
-                    + (DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L),
+                    + (
+                        (
+                            sliderTheme.trackHeight
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) / 2L
+                    ),
                 trackRect.bottom + (additionalActiveTrackHeight / 2L),
                 trackRadius
             ),
@@ -399,7 +423,10 @@ public class RoundedRectRangeSliderTrackShape : RangeSliderTrackShape, BaseRange
         double overlayWidth = sliderTheme
             .overlayShape!.getPreferredSize(isEnabled, isDiscrete)
             .width;
-        double trackHeightLocal = DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight);
+        double trackHeightLocal = (
+            sliderTheme.trackHeight
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         DartRuntimePrimitives.Assert(() => overlayWidth >= 0L);
         DartRuntimePrimitives.Assert(() => trackHeightLocal >= 0L);
         if (
@@ -449,7 +476,15 @@ public class RoundRangeSliderTickMarkShape : RangeSliderTickMarkShape
     {
         DartRuntimePrimitives.Assert(() => sliderTheme.trackHeight is not null);
         return Size.fromRadius(
-            tickMarkRadius ?? (DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 4L)
+            tickMarkRadius
+                ?? (
+                    (
+                        sliderTheme.trackHeight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) / 4L
+                )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -472,7 +507,14 @@ public class RoundRangeSliderTickMarkShape : RangeSliderTickMarkShape
         DartRuntimePrimitives.Assert(() => sliderTheme.inactiveTickMarkColor is not null);
         bool hasGap =
             (sliderTheme.trackGap is not null)
-            && (DartRuntimePrimitives.RequireValue(sliderTheme.trackGap) > 0L);
+            && (
+                (
+                    sliderTheme.trackGap
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) > 0L
+            );
         bool underThumb = (startThumbCenter.dx == center.dx) || (endThumbCenter.dx == center.dx);
         if (hasGap && underThumb)
         {
@@ -507,15 +549,9 @@ public class RoundRangeSliderTickMarkShape : RangeSliderTickMarkShape
         )();
         double tickMarkRadius =
             getPreferredSize(isEnabled: isEnabled, sliderTheme: sliderTheme).width / 2L;
-        if (DartRuntimePrimitives.RequireValue(tickMarkRadius) > 0L)
+        if ((tickMarkRadius) > 0L)
         {
-            context.canvas.drawCircle(
-                center,
-                DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(tickMarkRadius)
-                ),
-                paintLocal
-            );
+            context.canvas.drawCircle(center, ((tickMarkRadius)), paintLocal);
         }
     }
 }
@@ -591,9 +627,8 @@ public class RoundRangeSliderThumbShape : RangeSliderThumbShape
             canvasLocal.drawCircle(center, radius, strokePaint);
         }
         Color colorLocal = colorTween.evaluate(enableAnimation)!;
-        double evaluatedElevation = DartRuntimePrimitives.RequireValue(isPressed)
-            ? elevationTween.evaluate(activationAnimation)
-            : elevation;
+        double evaluatedElevation =
+            (isPressed) ? elevationTween.evaluate(activationAnimation) : elevation;
         var shadowPath = (
             (Func<Path>)(
                 () =>
@@ -774,7 +809,14 @@ public class GappedRangeSliderTrackShape : RangeSliderTrackShape, BaseRangeSlide
         DartRuntimePrimitives.Assert(() => sliderTheme.rangeThumbShape is not null);
         if (
             (sliderTheme.trackHeight is null)
-            || (DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) <= 0L)
+            || (
+                (
+                    sliderTheme.trackHeight
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) <= 0L
+            )
         )
         {
             return;
@@ -826,7 +868,10 @@ public class GappedRangeSliderTrackShape : RangeSliderTrackShape, BaseRangeSlide
         Size thumbSize = sliderTheme.rangeThumbShape!.getPreferredSize(isEnabled, isDiscrete);
         double thumbRadius = thumbSize.width / 2L;
         DartRuntimePrimitives.Assert(() => thumbRadius > 0L);
-        double trackGapLocal = DartRuntimePrimitives.RequireValue(sliderTheme.trackGap);
+        double trackGapLocal = (
+            sliderTheme.trackGap
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         var trackRRect = RRect.fromRectAndCorners(
             trackRect,
             topLeft: trackCornerRadius,
@@ -869,10 +914,26 @@ public class GappedRangeSliderTrackShape : RangeSliderTrackShape, BaseRangeSlide
         );
         bool drawLeftTrack =
             startThumbCenter.dx
-            > leftRRect.left + (DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L);
+            > leftRRect.left
+                + (
+                    (
+                        sliderTheme.trackHeight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) / 2L
+                );
         bool drawRightTrack =
             endThumbCenter.dx
-            < rightRRect.right - (DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L);
+            < rightRRect.right
+                - (
+                    (
+                        sliderTheme.trackHeight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) / 2L
+                );
         if (drawLeftTrack)
         {
             context.canvas.drawRRect(leftRRect, inactivePaint);
@@ -897,7 +958,10 @@ public class GappedRangeSliderTrackShape : RangeSliderTrackShape, BaseRangeSlide
         context.canvas.restore();
         var stopIndicatorRadius = 2.0;
         double stopIndicatorTrailingSpace =
-            DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L;
+            (
+                sliderTheme.trackHeight
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) / 2L;
         var startStopIndicatorOffset = new Offset(
             trackRect.centerLeft.dx + stopIndicatorTrailingSpace,
             trackRect.center.dy
@@ -947,7 +1011,10 @@ public class GappedRangeSliderTrackShape : RangeSliderTrackShape, BaseRangeSlide
         double overlayWidth = sliderTheme
             .overlayShape!.getPreferredSize(isEnabled, isDiscrete)
             .width;
-        double trackHeightLocal = DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight);
+        double trackHeightLocal = (
+            sliderTheme.trackHeight
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         DartRuntimePrimitives.Assert(() => overlayWidth >= 0L);
         DartRuntimePrimitives.Assert(() => trackHeightLocal >= 0L);
         if (
@@ -1020,8 +1087,9 @@ public class HandleRangeSliderThumbShape : RangeSliderThumbShape
         );
         Color colorLocal = colorTween.evaluate(enableAnimation)!;
         Canvas canvasLocal = context.canvas;
-        Size thumbSizeLocal = DartRuntimePrimitives.RequireValue(
+        Size thumbSizeLocal = (
             __sliderTheme.thumbSize!.resolve(new HashSet<WidgetState>())
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         var rrect = RRect.fromRectAndRadius(
             Rect.fromCenter(
@@ -1063,10 +1131,7 @@ public class RoundedRectRangeSliderValueIndicatorShape : RangeSliderValueIndicat
     {
         DartRuntimePrimitives.Assert(() => labelPainter is not null);
         DartRuntimePrimitives.Assert(() => textScaleFactor >= 0L);
-        return _pathPainter.getPreferredSize(
-            labelPainter!,
-            DartRuntimePrimitives.RequireValue(textScaleFactor)
-        );
+        return _pathPainter.getPreferredSize(labelPainter!, (textScaleFactor));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1098,10 +1163,13 @@ public class RoundedRectRangeSliderValueIndicatorShape : RangeSliderValueIndicat
             center: center,
             scale: scaleLocal,
             labelPainter: labelPainter,
-            textScaleFactor: DartRuntimePrimitives.RequireValue(textScaleFactor),
-            sizeWithOverflow: DartRuntimePrimitives.RequireValue(sizeWithOverflow),
+            textScaleFactor: (textScaleFactor),
+            sizeWithOverflow: (
+                sizeWithOverflow
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             backgroundPaintColor: sliderTheme.valueIndicatorColor!,
-            strokePaintColor: DartRuntimePrimitives.RequireValue(isOnTop)
+            strokePaintColor: (isOnTop)
                 ? sliderTheme.overlappingShapeStrokeColor
                 : sliderTheme.valueIndicatorStrokeColor
         );
@@ -1124,10 +1192,7 @@ public class DropRangeSliderValueIndicatorShape : RangeSliderValueIndicatorShape
     {
         DartRuntimePrimitives.Assert(() => labelPainter is not null);
         DartRuntimePrimitives.Assert(() => textScaleFactor >= 0L);
-        return _pathPainter.getPreferredSize(
-            labelPainter!,
-            DartRuntimePrimitives.RequireValue(textScaleFactor)
-        );
+        return _pathPainter.getPreferredSize(labelPainter!, (textScaleFactor));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1156,10 +1221,13 @@ public class DropRangeSliderValueIndicatorShape : RangeSliderValueIndicatorShape
             center: center,
             scale: scaleLocal,
             labelPainter: labelPainter,
-            textScaleFactor: DartRuntimePrimitives.RequireValue(textScaleFactor),
-            sizeWithOverflow: DartRuntimePrimitives.RequireValue(sizeWithOverflow),
+            textScaleFactor: (textScaleFactor),
+            sizeWithOverflow: (
+                sizeWithOverflow
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             backgroundPaintColor: sliderTheme.valueIndicatorColor!,
-            strokePaintColor: DartRuntimePrimitives.RequireValue(isOnTop)
+            strokePaintColor: (isOnTop)
                 ? sliderTheme.overlappingShapeStrokeColor
                 : sliderTheme.valueIndicatorStrokeColor
         );

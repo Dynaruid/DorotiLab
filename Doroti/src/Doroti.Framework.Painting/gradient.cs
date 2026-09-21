@@ -549,7 +549,12 @@ public class RadialGradient : Gradient
             center: AlignmentGeometry.lerp(a.center, b.center, t)!,
             radius: Math.Max(
                 0.0,
-                DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.radius, b.radius, t))
+                (
+                    Dart_uiLibrary.lerpDouble(a.radius, b.radius, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             ),
             colors: interpolated.colors,
             stops: interpolated.stops,
@@ -557,8 +562,11 @@ public class RadialGradient : Gradient
             focal: AlignmentGeometry.lerp(a.focal, b.focal, t),
             focalRadius: Math.Max(
                 0.0,
-                DartRuntimePrimitives.RequireValue(
+                (
                     Dart_uiLibrary.lerpDouble(a.focalRadius, b.focalRadius, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 )
             ),
             transform: (t < 0.5) ? a.transform : b.transform
@@ -669,7 +677,7 @@ public class SweepGradient : Gradient
             _impliedStops(),
             tileMode,
             startAngle,
-            DartRuntimePrimitives.RequireValue(endAngle),
+            (endAngle),
             _resolveTransform(rect, textDirection)
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -680,7 +688,7 @@ public class SweepGradient : Gradient
         return new SweepGradient(
             center: center,
             startAngle: startAngle,
-            endAngle: DartRuntimePrimitives.RequireValue(endAngle),
+            endAngle: (endAngle),
             colors: colors.map((color) => Dart_uiLibrary.Color.lerp(null, color, factor)!).ToList(),
             stops: stops,
             tileMode: tileMode,
@@ -694,7 +702,7 @@ public class SweepGradient : Gradient
         return new SweepGradient(
             center: center,
             startAngle: startAngle,
-            endAngle: DartRuntimePrimitives.RequireValue(endAngle),
+            endAngle: (endAngle),
             colors: new List<Color>(
                 Enumerable.Repeat(color, checked((int)checked((long)colors.Count)))
             ),
@@ -752,17 +760,19 @@ public class SweepGradient : Gradient
             center: AlignmentGeometry.lerp(a.center, b.center, t)!,
             startAngle: Math.Max(
                 0.0,
-                DartRuntimePrimitives.RequireValue(
+                (
                     Dart_uiLibrary.lerpDouble(a.startAngle, b.startAngle, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 )
             ),
             endAngle: Math.Max(
                 0.0,
-                DartRuntimePrimitives.RequireValue(
-                    Dart_uiLibrary.lerpDouble(
-                        DartRuntimePrimitives.RequireValue(a.endAngle),
-                        DartRuntimePrimitives.RequireValue(b.endAngle),
-                        t
+                (
+                    Dart_uiLibrary.lerpDouble((a.endAngle), (b.endAngle), t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
                     )
                 )
             ),
@@ -804,7 +814,7 @@ public class SweepGradient : Gradient
         FoundationRuntimePorts.ObjectHash(
             center,
             startAngle,
-            DartRuntimePrimitives.RequireValue(endAngle),
+            (endAngle),
             tileMode,
             transform,
             FoundationRuntimePorts.ObjectHashAll(colors),
@@ -817,7 +827,7 @@ public class SweepGradient : Gradient
         {
             $"center: {center}",
             $"startAngle: {Foundation.DebugLibrary.debugFormatDouble(startAngle)}",
-            $"endAngle: {Foundation.DebugLibrary.debugFormatDouble(DartRuntimePrimitives.RequireValue(endAngle))}",
+            $"endAngle: {Foundation.DebugLibrary.debugFormatDouble((endAngle))}",
             $"colors: {colors}",
             $"tileMode: {tileMode}",
         };
@@ -830,7 +840,7 @@ public class SweepGradient : Gradient
         return new SweepGradient(
             center: center,
             startAngle: startAngle,
-            endAngle: DartRuntimePrimitives.RequireValue(endAngle),
+            endAngle: (endAngle),
             colors: new List<Color>(),
             stops: stops,
             tileMode: tileMode,

@@ -194,13 +194,25 @@ public abstract class RenderSliverMultiBoxAdaptor
             if (
                 Equals(
                     _keepAliveBucket.GetValueOrDefault(
-                        DartRuntimePrimitives.RequireValue(childParentData.index)
+                        (
+                            childParentData.index
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     ),
                     child
                 )
             )
             {
-                _keepAliveBucket.remove(DartRuntimePrimitives.RequireValue(childParentData.index));
+                _keepAliveBucket.remove(
+                    (
+                        childParentData.index
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                );
             }
             DartRuntimePrimitives.Assert(() =>
             {
@@ -212,19 +224,36 @@ public abstract class RenderSliverMultiBoxAdaptor
             {
                 if (
                     _keepAliveBucket.ContainsKey(
-                        DartRuntimePrimitives.RequireValue(childParentData.index)
+                        (
+                            childParentData.index
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     )
                 )
                 {
                     _debugDanglingKeepAlives.Add(
                         _keepAliveBucket.GetValueOrDefault(
-                            DartRuntimePrimitives.RequireValue(childParentData.index)
+                            (
+                                childParentData.index
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         )!
                     );
                 }
                 return true;
             });
-            _keepAliveBucket[DartRuntimePrimitives.RequireValue(childParentData.index)] = child;
+            _keepAliveBucket[
+                (
+                    childParentData.index
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            ] = child;
         }
     }
 
@@ -240,7 +269,12 @@ public abstract class RenderSliverMultiBoxAdaptor
         DartRuntimePrimitives.Assert(() =>
             Equals(
                 _keepAliveBucket.GetValueOrDefault(
-                    DartRuntimePrimitives.RequireValue(childParentData.index)
+                    (
+                        childParentData.index
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 ),
                 child
             )
@@ -250,7 +284,12 @@ public abstract class RenderSliverMultiBoxAdaptor
             _debugDanglingKeepAlives.Remove(child);
             return true;
         });
-        _keepAliveBucket.remove(DartRuntimePrimitives.RequireValue(childParentData.index));
+        _keepAliveBucket.remove(
+            (
+                childParentData.index
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        );
         dropChild(child);
     }
 
@@ -304,7 +343,14 @@ public abstract class RenderSliverMultiBoxAdaptor
         {
             DartRuntimePrimitives.Assert(() => !childParentData._keptAlive);
             remove(child);
-            _keepAliveBucket[DartRuntimePrimitives.RequireValue(childParentData.index)] = child;
+            _keepAliveBucket[
+                (
+                    childParentData.index
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            ] = child;
             child.parentData = childParentData;
             base.adoptChild(child);
             childParentData._keptAlive = true;
@@ -535,7 +581,10 @@ public abstract class RenderSliverMultiBoxAdaptor
     {
         var childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
         DartRuntimePrimitives.Assert(() => childParentData.index is not null);
-        return DartRuntimePrimitives.RequireValue(childParentData.index);
+        return (
+            childParentData.index
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -581,8 +630,10 @@ public abstract class RenderSliverMultiBoxAdaptor
     public override double childMainAxisPosition(RenderObject child)
     {
         var __child = (RenderBox)child;
-        return DartRuntimePrimitives.RequireValue(childScrollOffset(__child))
-            - constraints.scrollOffset;
+        return (
+                childScrollOffset(__child)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) - constraints.scrollOffset;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -600,7 +651,12 @@ public abstract class RenderSliverMultiBoxAdaptor
         var childParentData = ((SliverMultiBoxAdaptorParentData?)__child.parentData)!;
         return (childParentData.index is not null)
             && !_keepAliveBucket.ContainsKey(
-                DartRuntimePrimitives.RequireValue(childParentData.index)
+                (
+                    childParentData.index
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

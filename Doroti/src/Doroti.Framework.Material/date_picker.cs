@@ -124,8 +124,13 @@ public static partial class Date_pickerLibrary
             (initialDate is null)
                 ? null
                 : calendarDelegate.dateOnly(
-                    DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(initialDate)
+                    (
+                        (
+                            initialDate
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     )
                 );
         firstDate = calendarDelegate.dateOnly(firstDate);
@@ -137,27 +142,44 @@ public static partial class Date_pickerLibrary
         DartRuntimePrimitives.Assert(
             () =>
                 (initialDate is null)
-                || !DartRuntimePrimitives.RequireValue(initialDate).isBefore(firstDate),
+                || !(
+                    initialDate
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).isBefore(firstDate),
             () =>
                 (object?)
-                    $"initialDate {DartRuntimePrimitives.RequireValue(initialDate)} must be on or after firstDate {firstDate}."
+                    $"initialDate {(initialDate ?? throw new global::System.NullReferenceException("Dart null assertion failed."))} must be on or after firstDate {firstDate}."
         );
         DartRuntimePrimitives.Assert(
             () =>
                 (initialDate is null)
-                || !DartRuntimePrimitives.RequireValue(initialDate).isAfter(lastDate),
+                || !(
+                    initialDate
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).isAfter(lastDate),
             () =>
                 (object?)
-                    $"initialDate {DartRuntimePrimitives.RequireValue(initialDate)} must be on or before lastDate {lastDate}."
+                    $"initialDate {(initialDate ?? throw new global::System.NullReferenceException("Dart null assertion failed."))} must be on or before lastDate {lastDate}."
         );
         DartRuntimePrimitives.Assert(
             () =>
                 (selectableDayPredicate is null)
                 || (initialDate is null)
-                || selectableDayPredicate(DartRuntimePrimitives.RequireValue(initialDate)),
+                || selectableDayPredicate(
+                    (
+                        initialDate
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                ),
             () =>
                 (object?)
-                    $"Provided initialDate {DartRuntimePrimitives.RequireValue(initialDate)} must satisfy provided selectableDayPredicate."
+                    $"Provided initialDate {(initialDate ?? throw new global::System.NullReferenceException("Dart null assertion failed."))} must satisfy provided selectableDayPredicate."
         );
         DartRuntimePrimitives.Assert(() =>
             DebugLibrary.debugCheckHasMaterialLocalizations(context)
@@ -185,25 +207,24 @@ public static partial class Date_pickerLibrary
         );
         if (textDirection is not null)
         {
-            TextDirection textDirection__value11363 = DartRuntimePrimitives.RequireValue(
+            TextDirection textDirection__value11363 = (
                 textDirection
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
             dialog = DartRuntimePrimitives.ConvertValue<Widget>(
-                new Directionality(
-                    textDirection: DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(textDirection__value11363)
-                    ),
-                    child: dialog
-                )
+                new Directionality(textDirection: ((textDirection__value11363)), child: dialog)
             );
         }
         if (locale is not null)
         {
-            Locale locale__value11473 = DartRuntimePrimitives.RequireValue(locale);
+            Locale locale__value11473 = (
+                locale
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             dialog = DartRuntimePrimitives.ConvertValue<Widget>(
                 Localizations.CreateOverride(
                     context: context,
-                    locale: DartRuntimePrimitives.RequireValue(locale__value11473),
+                    locale: (locale__value11473),
                     child: dialog
                 )
             );
@@ -315,8 +336,13 @@ public class DatePickerDialog : StatefulWidget
             (initialDate is null)
                 ? null
                 : this.calendarDelegate.dateOnly(
-                    DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(initialDate)
+                    (
+                        (
+                            initialDate
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     )
                 );
         this.firstDate = this.calendarDelegate.dateOnly(firstDate);
@@ -332,7 +358,12 @@ public class DatePickerDialog : StatefulWidget
         DartRuntimePrimitives.Assert(
             () =>
                 (initialDate is null)
-                || !DartRuntimePrimitives.RequireValue(this.initialDate).isBefore(this.firstDate),
+                || !(
+                    this.initialDate
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).isBefore(this.firstDate),
             () =>
                 (object?)
                     $"initialDate {this.initialDate} must be on or after firstDate {this.firstDate}."
@@ -340,7 +371,12 @@ public class DatePickerDialog : StatefulWidget
         DartRuntimePrimitives.Assert(
             () =>
                 (initialDate is null)
-                || !DartRuntimePrimitives.RequireValue(this.initialDate).isAfter(this.lastDate),
+                || !(
+                    this.initialDate
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).isAfter(this.lastDate),
             () =>
                 (object?)
                     $"initialDate {this.initialDate} must be on or before lastDate {this.lastDate}."
@@ -350,7 +386,12 @@ public class DatePickerDialog : StatefulWidget
                 (this.selectableDayPredicate is null)
                 || (initialDate is null)
                 || this.selectableDayPredicate!(
-                    DartRuntimePrimitives.RequireValue(this.initialDate)
+                    (
+                        this.initialDate
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 ),
             () =>
                 (object?)
@@ -724,7 +765,12 @@ internal class _DatePickerDialogState__date_picker
             titleText: (_selectedDate.value is null)
                 ? ""
                 : widget.calendarDelegate.formatMediumDate(
-                    DartRuntimePrimitives.RequireValue(_selectedDate.value),
+                    (
+                        _selectedDate.value
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     localizations
                 ),
             titleStyle: headlineStyle,
@@ -743,7 +789,12 @@ internal class _DatePickerDialogState__date_picker
         return new Dialog(
             backgroundColor: datePickerTheme.backgroundColor ?? defaultsLocal.backgroundColor,
             elevation: datePickerTheme.elevation
-                ?? DartRuntimePrimitives.RequireValue(defaultsLocal.elevation),
+                ?? (
+                    defaultsLocal.elevation
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
             shadowColor: datePickerTheme.shadowColor ?? defaultsLocal.shadowColor,
             surfaceTintColor: datePickerTheme.surfaceTintColor ?? defaultsLocal.surfaceTintColor,
             shape: datePickerTheme.shape ?? defaultsLocal.shape,
@@ -1534,7 +1585,10 @@ public static partial class Date_pickerLibrary
             initialDateRange: initialDateRange,
             firstDate: firstDate,
             lastDate: lastDate,
-            currentDate: DartRuntimePrimitives.RequireValue(currentDate),
+            currentDate: (
+                currentDate
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             selectableDayPredicate: selectableDayPredicate,
             initialEntryMode: initialEntryMode,
             helpText: helpText,
@@ -1555,25 +1609,24 @@ public static partial class Date_pickerLibrary
         );
         if (textDirection is not null)
         {
-            TextDirection textDirection__value49942 = DartRuntimePrimitives.RequireValue(
+            TextDirection textDirection__value49942 = (
                 textDirection
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
             dialog = DartRuntimePrimitives.ConvertValue<Widget>(
-                new Directionality(
-                    textDirection: DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(textDirection__value49942)
-                    ),
-                    child: dialog
-                )
+                new Directionality(textDirection: ((textDirection__value49942)), child: dialog)
             );
         }
         if (locale is not null)
         {
-            Locale locale__value50052 = DartRuntimePrimitives.RequireValue(locale);
+            Locale locale__value50052 = (
+                locale
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             dialog = DartRuntimePrimitives.ConvertValue<Widget>(
                 Localizations.CreateOverride(
                     context: context,
-                    locale: DartRuntimePrimitives.RequireValue(locale__value50052),
+                    locale: (locale__value50052),
                     child: dialog
                 )
             );
@@ -1612,19 +1665,39 @@ public static partial class Date_pickerLibrary
                 (
                     (endDate is null)
                     || (
-                        DartRuntimePrimitives.RequireValue(startDate).Year
-                        == DartRuntimePrimitives.RequireValue(endDate).Year
+                        (
+                            startDate
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ).Year
+                        == (
+                            endDate
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ).Year
                     )
                 )
                     ? calendarDelegate.formatShortMonthDay(
-                        DartRuntimePrimitives.RequireValue(
-                            DartRuntimePrimitives.RequireValue(startDate)
+                        (
+                            (
+                                startDate
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         ),
                         localizations
                     )
                     : calendarDelegate.formatShortDate(
-                        DartRuntimePrimitives.RequireValue(
-                            DartRuntimePrimitives.RequireValue(startDate)
+                        (
+                            (
+                                startDate
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         ),
                         localizations
                     )
@@ -1649,20 +1722,47 @@ public static partial class Date_pickerLibrary
                 (
                     (startDate is not null)
                     && (
-                        DartRuntimePrimitives.RequireValue(startDate).Year
-                        == DartRuntimePrimitives.RequireValue(endDate).Year
+                        (
+                            startDate
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ).Year
+                        == (
+                            endDate
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ).Year
                     )
-                    && (DartRuntimePrimitives.RequireValue(startDate).Year == currentDate.Year)
+                    && (
+                        (
+                            startDate
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ).Year == currentDate.Year
+                    )
                 )
                     ? calendarDelegate.formatShortMonthDay(
-                        DartRuntimePrimitives.RequireValue(
-                            DartRuntimePrimitives.RequireValue(endDate)
+                        (
+                            (
+                                endDate
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         ),
                         localizations
                     )
                     : calendarDelegate.formatShortDate(
-                        DartRuntimePrimitives.RequireValue(
-                            DartRuntimePrimitives.RequireValue(endDate)
+                        (
+                            (
+                                endDate
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         ),
                         localizations
                     )
@@ -1876,8 +1976,18 @@ internal class _DateRangePickerDialogState__date_picker
         }
         DateTimeRange<DateTime>? selectedRange = _hasSelectedDateRange
             ? new DateTimeRange<DateTime>(
-                start: DartRuntimePrimitives.RequireValue(_selectedStart.value),
-                end: DartRuntimePrimitives.RequireValue(_selectedEnd.value)
+                start: (
+                    _selectedStart.value
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                end: (
+                    _selectedEnd.value
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             )
             : null;
         Navigator.pop<object>(context, selectedRange);
@@ -1905,9 +2015,19 @@ internal class _DateRangePickerDialogState__date_picker
                     if (
                         (_selectedStart.value is not null)
                         && (_selectedEnd.value is not null)
-                        && DartRuntimePrimitives
-                            .RequireValue(_selectedStart.value)
-                            .isAfter(DartRuntimePrimitives.RequireValue(_selectedEnd.value))
+                        && (
+                            _selectedStart.value
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ).isAfter(
+                            (
+                                _selectedEnd.value
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
+                        )
                     )
                     {
                         _selectedEnd.value = null;
@@ -1915,7 +2035,12 @@ internal class _DateRangePickerDialogState__date_picker
                     if (
                         (_selectedStart.value is not null)
                         && !_isDaySelectable(
-                            DartRuntimePrimitives.RequireValue(_selectedStart.value)
+                            (
+                                _selectedStart.value
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         )
                     )
                     {
@@ -1927,7 +2052,12 @@ internal class _DateRangePickerDialogState__date_picker
                         if (
                             (_selectedEnd.value is not null)
                             && !_isDaySelectable(
-                                DartRuntimePrimitives.RequireValue(_selectedEnd.value)
+                                (
+                                    _selectedEnd.value
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                )
                             )
                         )
                         {
@@ -2041,7 +2171,12 @@ internal class _DateRangePickerDialogState__date_picker
                 insetPaddingLocal = EdgeInsets.zero;
                 elevationLocal =
                     datePickerTheme.rangePickerElevation
-                    ?? DartRuntimePrimitives.RequireValue(defaultsLocal.rangePickerElevation);
+                    ?? (
+                        defaultsLocal.rangePickerElevation
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    );
                 shadowColorLocal =
                     datePickerTheme.rangePickerShadowColor ?? defaultsLocal.rangePickerShadowColor!;
                 surfaceTintColorLocal =
@@ -2081,9 +2216,7 @@ internal class _DateRangePickerDialogState__date_picker
                                                 onStartDateChanged: _handleStartDateChanged,
                                                 onEndDateChanged: _handleEndDateChanged,
                                                 autofocus: true,
-                                                autovalidate: DartRuntimePrimitives.RequireValue(
-                                                    _autoValidate.value
-                                                ),
+                                                autovalidate: (_autoValidate.value),
                                                 helpText: widget.helpText,
                                                 errorInvalidRangeText: widget.errorInvalidRangeText,
                                                 errorFormatText: widget.errorFormatText,
@@ -2122,7 +2255,12 @@ internal class _DateRangePickerDialogState__date_picker
                     : Date_pickerLibrary._inputRangeLandscapeDialogSize;
                 elevationLocal =
                     datePickerTheme.elevation
-                    ?? DartRuntimePrimitives.RequireValue(defaultsLocal.elevation);
+                    ?? (
+                        defaultsLocal.elevation
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    );
                 shadowColorLocal = datePickerTheme.shadowColor ?? defaultsLocal.shadowColor;
                 surfaceTintColorLocal =
                     datePickerTheme.surfaceTintColor ?? defaultsLocal.surfaceTintColor;
@@ -2765,16 +2903,26 @@ internal class _CalendarDateRangePicker__date_picker : StatefulWidget
         this.initialStartDate =
             (initialStartDate is not null)
                 ? this.calendarDelegate.dateOnly(
-                    DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(initialStartDate)
+                    (
+                        (
+                            initialStartDate
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     )
                 )
                 : null;
         this.initialEndDate =
             (initialEndDate is not null)
                 ? this.calendarDelegate.dateOnly(
-                    DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(initialEndDate)
+                    (
+                        (
+                            initialEndDate
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     )
                 )
                 : null;
@@ -2787,9 +2935,19 @@ internal class _CalendarDateRangePicker__date_picker : StatefulWidget
             () =>
                 (this.initialStartDate is null)
                 || (this.initialEndDate is null)
-                || !DartRuntimePrimitives
-                    .RequireValue(this.initialStartDate)
-                    .isAfter(DartRuntimePrimitives.RequireValue(initialEndDate)),
+                || !(
+                    this.initialStartDate
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).isAfter(
+                    (
+                        initialEndDate
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                ),
             () => (object?)"initialStartDate must be on or before initialEndDate."
         );
         DartRuntimePrimitives.Assert(
@@ -2891,7 +3049,14 @@ internal class _CalendarDateRangePickerState__date_picker
             if (
                 (_startDate is not null)
                 && (_endDate is null)
-                && !date.isBefore(DartRuntimePrimitives.RequireValue(_startDate))
+                && !date.isBefore(
+                    (
+                        _startDate
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
             )
             {
                 _endDate = date;
@@ -2900,7 +3065,14 @@ internal class _CalendarDateRangePickerState__date_picker
             else
             {
                 _startDate = date;
-                widget.onStartDateChanged?.Invoke(DartRuntimePrimitives.RequireValue(_startDate));
+                widget.onStartDateChanged?.Invoke(
+                    (
+                        _startDate
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                );
                 if (_endDate is not null)
                 {
                     _endDate = null;
@@ -3115,13 +3287,23 @@ internal class _CalendarKeyboardNavigatorState__date_picker
         setState(() =>
         {
             DateTime? nextDate = _nextDateInDirection(
-                DartRuntimePrimitives.RequireValue(_focusedDay),
+                (
+                    _focusedDay
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 intent.direction
             );
             if (nextDate is not null)
             {
-                DateTime nextDate__86735__value86810 = DartRuntimePrimitives.RequireValue(nextDate);
-                _focusedDay = DartRuntimePrimitives.RequireValue(nextDate__86735__value86810);
+                DateTime nextDate__86735__value86810 = (
+                    nextDate
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
+                _focusedDay = (nextDate__86735__value86810);
                 _dayTraversalDirection = intent.direction;
             }
         });
@@ -3146,8 +3328,9 @@ internal class _CalendarKeyboardNavigatorState__date_picker
                 }
             }
         }
-        return DartRuntimePrimitives.RequireValue(
+        return (
             DartCollectionRuntime.NullableMapValue<long>(_directionOffset, traversalDirection)
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -3433,30 +3616,58 @@ internal class _MonthItem__date_picker : StatefulWidget
         System.Diagnostics.Debug.Assert(!firstDate.isAfter(lastDate));
         System.Diagnostics.Debug.Assert(
             (selectedDateStart is null)
-                || !DartRuntimePrimitives.RequireValue(selectedDateStart).isBefore(firstDate)
+                || !(
+                    selectedDateStart
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).isBefore(firstDate)
         );
         System.Diagnostics.Debug.Assert(
             (selectedDateEnd is null)
-                || !DartRuntimePrimitives.RequireValue(selectedDateEnd).isBefore(firstDate)
+                || !(
+                    selectedDateEnd
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).isBefore(firstDate)
         );
         System.Diagnostics.Debug.Assert(
             (selectedDateStart is null)
-                || !DartRuntimePrimitives.RequireValue(selectedDateStart).isAfter(lastDate)
+                || !(
+                    selectedDateStart
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).isAfter(lastDate)
         );
         System.Diagnostics.Debug.Assert(
             (selectedDateEnd is null)
-                || !DartRuntimePrimitives.RequireValue(selectedDateEnd).isAfter(lastDate)
+                || !(
+                    selectedDateEnd
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).isAfter(lastDate)
         );
         System.Diagnostics.Debug.Assert(
             (selectedDateStart is null)
                 || (selectedDateEnd is null)
-                || !DartRuntimePrimitives
-                    .RequireValue(selectedDateStart)
-                    .isAfter(
-                        DartRuntimePrimitives.RequireValue(
-                            DartRuntimePrimitives.RequireValue(selectedDateEnd)
+                || !(
+                    selectedDateStart
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).isAfter(
+                    (
+                        (
+                            selectedDateEnd
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
                         )
                     )
+                )
         );
     }
 
@@ -3491,17 +3702,20 @@ internal class _MonthItemState__date_picker : State<_MonthItem__date_picker>
             (focusedDate is not null)
             && widget.calendarDelegate.isSameMonth(
                 widget.displayedMonth,
-                DartRuntimePrimitives.RequireValue(focusedDate)
+                (
+                    focusedDate
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             )
         )
         {
-            DateTime focusedDate__98201__value98260 = DartRuntimePrimitives.RequireValue(
+            DateTime focusedDate__98201__value98260 = (
                 focusedDate
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
-            _dayFocusNodes[
-                (int)(DartRuntimePrimitives.RequireValue(focusedDate__98201__value98260).Day - 1L)
-            ]
-                .requestFocus();
+            _dayFocusNodes[(int)((focusedDate__98201__value98260).Day - 1L)].requestFocus();
         }
     }
 
@@ -3530,10 +3744,14 @@ internal class _MonthItemState__date_picker : State<_MonthItem__date_picker>
                 ?.scrollDirection;
             if (focusDirection is not null)
             {
-                TraversalDirection focusDirection__98861__value98936 =
-                    DartRuntimePrimitives.RequireValue(focusDirection);
+                TraversalDirection focusDirection__98861__value98936 = (
+                    focusDirection
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
                 ScrollPositionAlignmentPolicy policy = ScrollPositionAlignmentPolicy.@explicit;
-                switch (DartRuntimePrimitives.RequireValue(focusDirection__98861__value98936))
+                switch ((focusDirection__98861__value98936))
                 {
                     case TraversalDirection.up:
                     case TraversalDirection.left:
@@ -3583,17 +3801,41 @@ internal class _MonthItemState__date_picker : State<_MonthItem__date_picker>
         bool isSelectedDayStartLocal =
             (widget.selectedDateStart is not null)
             && dayToBuild.isAtSameMomentAs(
-                DartRuntimePrimitives.RequireValue(widget.selectedDateStart)
+                (
+                    widget.selectedDateStart
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
         bool isSelectedDayEndLocal =
             (widget.selectedDateEnd is not null)
             && dayToBuild.isAtSameMomentAs(
-                DartRuntimePrimitives.RequireValue(widget.selectedDateEnd)
+                (
+                    widget.selectedDateEnd
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
         bool isInRangeLocal =
             isRangeSelectedLocal
-            && dayToBuild.isAfter(DartRuntimePrimitives.RequireValue(widget.selectedDateStart))
-            && dayToBuild.isBefore(DartRuntimePrimitives.RequireValue(widget.selectedDateEnd));
+            && dayToBuild.isAfter(
+                (
+                    widget.selectedDateStart
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
+            && dayToBuild.isBefore(
+                (
+                    widget.selectedDateEnd
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            );
         bool isOneDayRangeLocal =
             isRangeSelectedLocal && Equals(widget.selectedDateStart, widget.selectedDateEnd);
         bool isTodayLocal = widget.calendarDelegate.isSameDay(widget.currentDate, dayToBuild);
@@ -3673,10 +3915,20 @@ internal class _MonthItemState__date_picker : State<_MonthItem__date_picker>
                 && (widget.selectedDateStart is not null)
                 && (widget.selectedDateEnd is not null)
                 && dateAfterLeadingPadding.isAfter(
-                    DartRuntimePrimitives.RequireValue(widget.selectedDateStart)
+                    (
+                        widget.selectedDateStart
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
                 && !dateAfterLeadingPadding.isAfter(
-                    DartRuntimePrimitives.RequireValue(widget.selectedDateEnd)
+                    (
+                        widget.selectedDateEnd
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 );
             weekList.Insert(checked((int)0L), _buildEdgeBox(context, isLeadingInRange));
             if (
@@ -3693,10 +3945,20 @@ internal class _MonthItemState__date_picker : State<_MonthItem__date_picker>
                     (widget.selectedDateStart is not null)
                     && (widget.selectedDateEnd is not null)
                     && !dateBeforeTrailingPadding.isBefore(
-                        DartRuntimePrimitives.RequireValue(widget.selectedDateStart)
+                        (
+                            widget.selectedDateStart
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     )
                     && dateBeforeTrailingPadding.isBefore(
-                        DartRuntimePrimitives.RequireValue(widget.selectedDateEnd)
+                        (
+                            widget.selectedDateEnd
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     );
                 weekList.Add(_buildEdgeBox(context, isTrailingInRange));
             }
@@ -4166,11 +4428,14 @@ internal class _InputDateRangePickerDialog__date_picker : StatelessWidget
             context,
             selectedStartDate,
             selectedEndDate,
-            DartRuntimePrimitives.RequireValue(currentDate)
+            (
+                currentDate
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         var semanticDateText =
             ((selectedStartDate is not null) && (selectedEndDate is not null))
-                ? $"{calendarDelegate.formatMediumDate(DartRuntimePrimitives.RequireValue(selectedStartDate), localizations)} – {calendarDelegate.formatMediumDate(DartRuntimePrimitives.RequireValue(selectedEndDate), localizations)}"
+                ? $"{calendarDelegate.formatMediumDate((selectedStartDate ?? throw new global::System.NullReferenceException("Dart null assertion failed.")), localizations)} – {calendarDelegate.formatMediumDate((selectedEndDate ?? throw new global::System.NullReferenceException("Dart null assertion failed.")), localizations)}"
                 : "";
         Widget header = new _DatePickerHeader__date_picker(
             helpText: helpText ?? localizations.dateRangePickerHelpText,
@@ -4359,16 +4624,26 @@ internal class _InputDateRangePicker__date_picker : StatefulWidget
             (initialStartDate is null)
                 ? null
                 : this.calendarDelegate.dateOnly(
-                    DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(initialStartDate)
+                    (
+                        (
+                            initialStartDate
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     )
                 );
         this.initialEndDate =
             (initialEndDate is null)
                 ? null
                 : this.calendarDelegate.dateOnly(
-                    DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(initialEndDate)
+                    (
+                        (
+                            initialEndDate
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     )
                 );
         this.firstDate = this.calendarDelegate.dateOnly(firstDate);
@@ -4414,7 +4689,12 @@ internal class _InputDateRangePickerState__date_picker : State<_InputDateRangePi
         if (_startDate is not null)
         {
             _startInputText = widget.calendarDelegate.formatCompactDate(
-                DartRuntimePrimitives.RequireValue(_startDate),
+                (
+                    _startDate
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 localizations
             );
             bool selectText = widget.autofocus && !_autoSelected;
@@ -4424,7 +4704,12 @@ internal class _InputDateRangePickerState__date_picker : State<_InputDateRangePi
         if (_endDate is not null)
         {
             _endInputText = widget.calendarDelegate.formatCompactDate(
-                DartRuntimePrimitives.RequireValue(_endDate),
+                (
+                    _endDate
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 localizations
             );
             _updateController(_endController, _endInputText, false);
@@ -4438,9 +4723,19 @@ internal class _InputDateRangePickerState__date_picker : State<_InputDateRangePi
         if ((startError is null) && (endError is null))
         {
             if (
-                DartRuntimePrimitives
-                    .RequireValue(_startDate)
-                    .isAfter(DartRuntimePrimitives.RequireValue(_endDate))
+                (
+                    _startDate
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).isAfter(
+                    (
+                        _endDate
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
             )
             {
                 startError =
@@ -4475,7 +4770,14 @@ internal class _InputDateRangePickerState__date_picker : State<_InputDateRangePi
         {
             if (
                 !_isDaySelectable(
-                    DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(date))
+                    (
+                        (
+                            date
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    )
                 )
             )
             {

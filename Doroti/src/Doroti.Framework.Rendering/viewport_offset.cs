@@ -52,7 +52,15 @@ public abstract class ViewportOffset : ChangeNotifier
     {
         if (
             (duration is null)
-            || Equals(DartRuntimePrimitives.RequireValue(duration), Duration.zero)
+            || Equals(
+                (
+                    duration
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                Duration.zero
+            )
         )
         {
             jumpTo(to);
@@ -62,8 +70,13 @@ public abstract class ViewportOffset : ChangeNotifier
         {
             return animateTo(
                 to,
-                duration: DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(duration)
+                duration: (
+                    (
+                        duration
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 ),
                 curve: curve ?? Curves.ease
             );

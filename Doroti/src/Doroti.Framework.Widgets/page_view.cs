@@ -104,7 +104,10 @@ public class PageController : ScrollController
     public virtual Future nextPage(Duration duration, Curve curve)
     {
         return animateToPage(
-            DartRuntimePrimitives.RequireValue(page).round() + 1L,
+            (
+                page
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).round() + 1L,
             duration: duration,
             curve: curve
         );
@@ -114,7 +117,10 @@ public class PageController : ScrollController
     public virtual Future previousPage(Duration duration, Curve curve)
     {
         return animateToPage(
-            DartRuntimePrimitives.RequireValue(page).round() - 1L,
+            (
+                page
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).round() - 1L,
             duration: duration,
             curve: curve
         );
@@ -163,10 +169,22 @@ public class PageMetrics : FixedScrollMetrics
         double devicePixelRatio
     )
         : base(
-            minScrollExtent: DartRuntimePrimitives.RequireValue(minScrollExtent),
-            maxScrollExtent: DartRuntimePrimitives.RequireValue(maxScrollExtent),
-            pixels: DartRuntimePrimitives.RequireValue(pixels),
-            viewportDimension: DartRuntimePrimitives.RequireValue(viewportDimension),
+            minScrollExtent: (
+                minScrollExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            maxScrollExtent: (
+                maxScrollExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            pixels: (
+                pixels
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            viewportDimension: (
+                viewportDimension
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             axisDirection: axisDirection,
             devicePixelRatio: devicePixelRatio
         )
@@ -239,9 +257,9 @@ internal class _PagePosition__page_view : ScrollPositionWithSingleContext
         )
     {
         this.initialPage = initialPage;
-        _viewportFraction = DartRuntimePrimitives.RequireValue(viewportFraction);
+        _viewportFraction = (viewportFraction);
         _pageToUseOnStartup = initialPage.toDouble();
-        System.Diagnostics.Debug.Assert(DartRuntimePrimitives.RequireValue(viewportFraction) > 0.0);
+        System.Diagnostics.Debug.Assert((viewportFraction) > 0.0);
     }
 
     public override Future ensureVisible(
@@ -277,14 +295,13 @@ internal class _PagePosition__page_view : ScrollPositionWithSingleContext
             _viewportFraction = __value;
             if (oldPage is not null)
             {
-                double oldPage__12904__value12959 = DartRuntimePrimitives.RequireValue(oldPage);
-                forcePixels(
-                    getPixelsFromPage(
-                        DartRuntimePrimitives.RequireValue(
-                            DartRuntimePrimitives.RequireValue(oldPage__12904__value12959)
-                        )
+                double oldPage__12904__value12959 = (
+                    oldPage
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
                     )
                 );
+                forcePixels(getPixelsFromPage(((oldPage__12904__value12959))));
             }
         }
     }
@@ -293,12 +310,9 @@ internal class _PagePosition__page_view : ScrollPositionWithSingleContext
 
     public virtual double getPageFromPixels(double pixels, double viewportDimension)
     {
-        DartRuntimePrimitives.Assert(() =>
-            DartRuntimePrimitives.RequireValue(viewportDimension) > 0.0
-        );
+        DartRuntimePrimitives.Assert(() => (viewportDimension) > 0.0);
         double actual =
-            Math.Max(0.0, DartRuntimePrimitives.RequireValue(pixels) - _initialPageOffset)
-            / (DartRuntimePrimitives.RequireValue(viewportDimension) * viewportFraction);
+            Math.Max(0.0, (pixels) - _initialPageOffset) / ((viewportDimension) * viewportFraction);
         double round = actual.roundToDouble();
         if ((actual - round).abs() < Foundation.ConstantsLibrary.precisionErrorTolerance)
         {
@@ -333,7 +347,7 @@ internal class _PagePosition__page_view : ScrollPositionWithSingleContext
                     _cachedPage
                     ?? (double)getPageFromPixels(
                         Dart_uiLibrary.clampDouble(pixels, minScrollExtent, maxScrollExtent),
-                        DartRuntimePrimitives.RequireValue(viewportDimension)
+                        (viewportDimension)
                     )
                 )
                 : null;
@@ -346,11 +360,7 @@ internal class _PagePosition__page_view : ScrollPositionWithSingleContext
             .maybeOf(context.storageContext)
             ?.writeState(
                 context.storageContext,
-                _cachedPage
-                    ?? (double)getPageFromPixels(
-                        DartRuntimePrimitives.RequireValue(pixels),
-                        DartRuntimePrimitives.RequireValue(viewportDimension)
-                    )
+                _cachedPage ?? (double)getPageFromPixels((pixels), (viewportDimension))
             );
     }
 
@@ -362,23 +372,20 @@ internal class _PagePosition__page_view : ScrollPositionWithSingleContext
                 PageStorage.maybeOf(context.storageContext)?.readState(context.storageContext);
             if (value is not null)
             {
-                double value__14735__value14854 = DartRuntimePrimitives.RequireValue(value);
-                _pageToUseOnStartup = DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(value__14735__value14854)
+                double value__14735__value14854 = (
+                    value
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
+                _pageToUseOnStartup = ((value__14735__value14854));
             }
         }
     }
 
     public override void saveOffset()
     {
-        context.saveOffset(
-            _cachedPage
-                ?? (double)getPageFromPixels(
-                    DartRuntimePrimitives.RequireValue(pixels),
-                    DartRuntimePrimitives.RequireValue(viewportDimension)
-                )
-        );
+        context.saveOffset(_cachedPage ?? (double)getPageFromPixels((pixels), (viewportDimension)));
     }
 
     public override void restoreOffset(double offset, bool initialRestore = false)
@@ -396,15 +403,11 @@ internal class _PagePosition__page_view : ScrollPositionWithSingleContext
     public override bool applyViewportDimension(double viewportDimension)
     {
         double? oldViewportDimensions = hasViewportDimension ? this.viewportDimension : null;
-        if (DartRuntimePrimitives.RequireValue(viewportDimension) == oldViewportDimensions)
+        if ((viewportDimension) == oldViewportDimensions)
         {
             return true;
         }
-        bool result = base.applyViewportDimension(
-            DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(viewportDimension)
-            )
-        );
+        bool result = base.applyViewportDimension(((viewportDimension)));
         double? oldPixels = hasPixels ? pixels : null;
         double page = default!;
         if (oldPixels is null)
@@ -415,20 +418,35 @@ internal class _PagePosition__page_view : ScrollPositionWithSingleContext
         {
             if (oldViewportDimensions == 0.0)
             {
-                page = DartRuntimePrimitives.RequireValue(_cachedPage);
+                page = (
+                    _cachedPage
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
             }
             else
             {
                 page = getPageFromPixels(
-                    DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(oldPixels)
+                    (
+                        (
+                            oldPixels
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     ),
-                    DartRuntimePrimitives.RequireValue(oldViewportDimensions)
+                    (
+                        oldViewportDimensions
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 );
             }
         }
-        double newPixels = getPixelsFromPage(DartRuntimePrimitives.RequireValue(page));
-        _cachedPage = (DartRuntimePrimitives.RequireValue(viewportDimension) == 0.0) ? page : null;
+        double newPixels = getPixelsFromPage((page));
+        _cachedPage = ((viewportDimension) == 0.0) ? page : null;
         if (newPixels != oldPixels)
         {
             correctPixels(newPixels);
@@ -454,14 +472,10 @@ internal class _PagePosition__page_view : ScrollPositionWithSingleContext
 
     public override bool applyContentDimensions(double minScrollExtent, double maxScrollExtent)
     {
-        double newMinScrollExtent =
-            DartRuntimePrimitives.RequireValue(minScrollExtent) + _initialPageOffset;
+        double newMinScrollExtent = (minScrollExtent) + _initialPageOffset;
         return base.applyContentDimensions(
             newMinScrollExtent,
-            Math.Max(
-                newMinScrollExtent,
-                DartRuntimePrimitives.RequireValue(maxScrollExtent) - _initialPageOffset
-            )
+            Math.Max(newMinScrollExtent, (maxScrollExtent) - _initialPageOffset)
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -539,7 +553,10 @@ public class PageScrollPhysics : ScrollPhysics
         if (position is _PagePosition__page_view)
         {
             _PagePosition__page_view position__as18753 = (_PagePosition__page_view)position;
-            return DartRuntimePrimitives.RequireValue(position__as18753.page);
+            return (
+                position__as18753.page
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         return position.pixels / position.viewportDimension;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -891,9 +908,12 @@ internal class _PageViewState__page_view : State<PageView>
                     var metricsLocal = (
                         (PageMetrics?)((ScrollUpdateNotification)notification).metrics
                     )!;
-                    long currentPage = DartRuntimePrimitives
-                        .RequireValue(metricsLocal.page)
-                        .round();
+                    long currentPage = (
+                        metricsLocal.page
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).round();
                     if (currentPage != _lastReportedPage)
                     {
                         _lastReportedPage = currentPage;

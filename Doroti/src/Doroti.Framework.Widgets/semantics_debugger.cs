@@ -98,7 +98,10 @@ internal class _SemanticsDebuggerState__semantics_debugger
     {
         DartRuntimePrimitives.Assert(() => _lastPointerDownLocation is not null);
         _performAction(
-            DartRuntimePrimitives.RequireValue(_lastPointerDownLocation),
+            (
+                _lastPointerDownLocation
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             SemanticsAction.tap
         );
         setState(() =>
@@ -111,7 +114,10 @@ internal class _SemanticsDebuggerState__semantics_debugger
     {
         DartRuntimePrimitives.Assert(() => _lastPointerDownLocation is not null);
         _performAction(
-            DartRuntimePrimitives.RequireValue(_lastPointerDownLocation),
+            (
+                _lastPointerDownLocation
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             SemanticsAction.longPress
         );
         setState(() =>
@@ -133,22 +139,42 @@ internal class _SemanticsDebuggerState__semantics_debugger
             if (Math.Sign(vx) < 0L)
             {
                 _performAction(
-                    DartRuntimePrimitives.RequireValue(_lastPointerDownLocation),
+                    (
+                        _lastPointerDownLocation
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     SemanticsAction.decrease
                 );
                 _performAction(
-                    DartRuntimePrimitives.RequireValue(_lastPointerDownLocation),
+                    (
+                        _lastPointerDownLocation
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     SemanticsAction.scrollLeft
                 );
             }
             else
             {
                 _performAction(
-                    DartRuntimePrimitives.RequireValue(_lastPointerDownLocation),
+                    (
+                        _lastPointerDownLocation
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     SemanticsAction.increase
                 );
                 _performAction(
-                    DartRuntimePrimitives.RequireValue(_lastPointerDownLocation),
+                    (
+                        _lastPointerDownLocation
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     SemanticsAction.scrollRight
                 );
             }
@@ -158,14 +184,24 @@ internal class _SemanticsDebuggerState__semantics_debugger
             if (Math.Sign(vy) < 0L)
             {
                 _performAction(
-                    DartRuntimePrimitives.RequireValue(_lastPointerDownLocation),
+                    (
+                        _lastPointerDownLocation
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     SemanticsAction.scrollUp
                 );
             }
             else
             {
                 _performAction(
-                    DartRuntimePrimitives.RequireValue(_lastPointerDownLocation),
+                    (
+                        _lastPointerDownLocation
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     SemanticsAction.scrollDown
                 );
             }
@@ -247,11 +283,19 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : CustomPainter
         }
         if (pointerPosition is not null)
         {
-            Offset pointerPosition__value6557 = DartRuntimePrimitives.RequireValue(pointerPosition);
+            Offset pointerPosition__value6557 = (
+                pointerPosition
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             var paintLocal = new Paint();
             paintLocal.color = new Color(2130743551L);
             canvas.drawCircle(
-                DartRuntimePrimitives.RequireValue(pointerPosition),
+                (
+                    pointerPosition
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 10.0 * devicePixelRatio,
                 paintLocal
             );
@@ -339,7 +383,12 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : CustomPainter
             }
             else
             {
-                effectiveLabel = DartRuntimePrimitives.RequireValue(data.textDirection) switch
+                effectiveLabel = (
+                    data.textDirection
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) switch
                 {
                     TextDirection.rtl => $"{Unicode.RLI}{tooltipAndLabel}{Unicode.PDI}",
                     TextDirection.ltr => tooltipAndLabel,

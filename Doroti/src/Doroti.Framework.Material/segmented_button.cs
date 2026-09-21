@@ -392,8 +392,11 @@ public class SegmentedButtonState<T> : State<SegmentedButton<T>>
                 content = DartRuntimePrimitives.ConvertValue<Widget>(
                     new Row(
                         mainAxisSize: MainAxisSize.min,
-                        spacing: DartRuntimePrimitives.RequireValue(
+                        spacing: (
                             Dart_uiLibrary.lerpDouble(8L, 4L, scaleLocal)
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
                         ),
                         children: Equals(effectiveIconAlignment, IconAlignment.start)
                             ? new List<Widget>
@@ -493,7 +496,10 @@ public class SegmentedButtonState<T> : State<SegmentedButton<T>>
         };
         return new Material(
             type: MaterialType.transparency,
-            elevation: DartRuntimePrimitives.RequireValue(resolve((style) => style?.elevation)),
+            elevation: (
+                resolve((style) => style?.elevation)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             shadowColor: resolve((style) => style?.shadowColor),
             surfaceTintColor: resolve((style) => style?.surfaceTintColor),
             child: new TextButtonTheme(
@@ -1553,9 +1559,13 @@ public class _RenderSegmentedButton__segmented_button<T>
             double? result = child.getDistanceToActualBaseline(baseline);
             if (result is not null)
             {
-                double result__138852__value138916 = DartRuntimePrimitives.RequireValue(result);
-                return DartRuntimePrimitives.RequireValue(result__138852__value138916)
-                    + childParentData.offset.dy;
+                double result__138852__value138916 = (
+                    result
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
+                return (result__138852__value138916) + childParentData.offset.dy;
             }
             child = childParentData.nextSibling;
         }

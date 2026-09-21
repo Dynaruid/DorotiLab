@@ -112,7 +112,10 @@ public class UiKitView : _DarwinView__platform_view
             viewType: viewType,
             onPlatformViewCreated: onPlatformViewCreated,
             hitTestBehavior: hitTestBehavior,
-            layoutDirection: DartRuntimePrimitives.RequireValue(layoutDirection),
+            layoutDirection: (
+                layoutDirection
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             creationParams: creationParams,
             creationParamsCodec: creationParamsCodec,
             gestureRecognizers: gestureRecognizers
@@ -145,7 +148,10 @@ public class AppKitView : _DarwinView__platform_view
             viewType: viewType,
             onPlatformViewCreated: onPlatformViewCreated,
             hitTestBehavior: hitTestBehavior,
-            layoutDirection: DartRuntimePrimitives.RequireValue(layoutDirection),
+            layoutDirection: (
+                layoutDirection
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             creationParams: creationParams,
             creationParamsCodec: creationParamsCodec,
             gestureRecognizers: gestureRecognizers
@@ -236,7 +242,14 @@ internal class _AndroidViewState__platform_view : State<AndroidView>
         if (didChangeLayoutDirection)
         {
             DartRuntimePrimitives.Ignore(
-                _controller.setLayoutDirection(DartRuntimePrimitives.RequireValue(_layoutDirection))
+                _controller.setLayoutDirection(
+                    (
+                        _layoutDirection
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
             );
         }
     }
@@ -256,7 +269,14 @@ internal class _AndroidViewState__platform_view : State<AndroidView>
         if (didChangeLayoutDirection)
         {
             DartRuntimePrimitives.Ignore(
-                _controller.setLayoutDirection(DartRuntimePrimitives.RequireValue(_layoutDirection))
+                _controller.setLayoutDirection(
+                    (
+                        _layoutDirection
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
             );
         }
     }
@@ -283,9 +303,15 @@ internal class _AndroidViewState__platform_view : State<AndroidView>
     {
         _id = Platform_viewsLibrary.platformViewsRegistry.getNextPlatformViewId();
         _controller = PlatformViewsService.initAndroidView(
-            id: DartRuntimePrimitives.RequireValue(_id),
+            id: (
+                _id
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             viewType: widget.viewType,
-            layoutDirection: DartRuntimePrimitives.RequireValue(_layoutDirection),
+            layoutDirection: (
+                _layoutDirection
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             creationParams: widget.creationParams,
             creationParamsCodec: widget.creationParamsCodec,
             onFocus: () =>
@@ -422,7 +448,12 @@ internal abstract class _DarwinViewState__platform_view<PlatformViewT, Controlle
         {
             DartRuntimePrimitives.Ignore(
                 _controller?.setLayoutDirection(
-                    DartRuntimePrimitives.RequireValue(_layoutDirection)
+                    (
+                        _layoutDirection
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
             );
         }
@@ -447,7 +478,12 @@ internal abstract class _DarwinViewState__platform_view<PlatformViewT, Controlle
         {
             DartRuntimePrimitives.Ignore(
                 _controller?.setLayoutDirection(
-                    DartRuntimePrimitives.RequireValue(_layoutDirection)
+                    (
+                        _layoutDirection
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
             );
         }
@@ -552,7 +588,10 @@ internal class _UiKitViewState__platform_view
             id: id,
             viewType: widget.viewType,
             gestureBlockingPolicy: widget.gestureBlockingPolicy,
-            layoutDirection: DartRuntimePrimitives.RequireValue(_layoutDirection),
+            layoutDirection: (
+                _layoutDirection
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             creationParams: widget.creationParams,
             creationParamsCodec: widget.creationParamsCodec,
             onFocus: () =>
@@ -587,7 +626,10 @@ internal class _AppKitViewState__platform_view
         return await PlatformViewsService.initAppKitView(
             id: id,
             viewType: widget.viewType,
-            layoutDirection: DartRuntimePrimitives.RequireValue(_layoutDirection),
+            layoutDirection: (
+                _layoutDirection
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             creationParams: widget.creationParams,
             creationParamsCodec: widget.creationParamsCodec,
             onFocus: () =>
@@ -873,7 +915,12 @@ internal class _PlatformViewLinkState__platform_view : State<PlatformViewLink>
         _id = Platform_viewsLibrary.platformViewsRegistry.getNextPlatformViewId();
         _controller = widget._onCreatePlatformView(
             new PlatformViewCreationParams(
-                id: DartRuntimePrimitives.RequireValue(_id),
+                id: (
+                    _id
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 viewType: widget.viewType,
                 onPlatformViewCreated: _onPlatformViewCreated,
                 onFocusChanged: _handlePlatformFocusChanged

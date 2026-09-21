@@ -280,14 +280,19 @@ public class InkRipple : InteractiveInkFeature
             )
         )();
         Rect? rect = _clipCallback?.Invoke();
-        Offset centerLocal = DartRuntimePrimitives.RequireValue(
+        Offset centerLocal = (
             Dart_uiLibrary.Offset.lerp(
                 _position,
                 (rect is not null)
-                    ? DartRuntimePrimitives.RequireValue(rect).center
+                    ? (
+                        rect
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).center
                     : referenceBox.size.center(Offset.zero),
                 Curves.ease.transform(_radiusController.value)
-            )
+            ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         paintInkCircle(
             canvas: canvas,

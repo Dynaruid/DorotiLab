@@ -564,10 +564,11 @@ internal class _RadioPaintState__radio : State<_RadioPaint__radio>
                 ? effectiveActivePressedOverlayColor
                 : effectiveInactivePressedOverlayColor;
         }
-        MaterialTapTargetSize effectiveMaterialTapTargetSize = DartRuntimePrimitives.RequireValue(
+        MaterialTapTargetSize effectiveMaterialTapTargetSize = (
             widget.materialTapTargetSize
-                ?? radioTheme.materialTapTargetSize
-                ?? defaults.materialTapTargetSize
+            ?? radioTheme.materialTapTargetSize
+            ?? defaults.materialTapTargetSize
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         VisualDensity effectiveVisualDensity =
             (widget.visualDensity ?? radioTheme.visualDensity) ?? defaults.visualDensity!;
@@ -715,7 +716,11 @@ internal class _RadioPainter__radio : ToggleablePainter
     }
     public virtual double innerRadius
     {
-        get => DartRuntimePrimitives.RequireValue(_innerRadius);
+        get =>
+            (
+                _innerRadius
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         set
         {
             double? __value = value;
@@ -753,11 +758,7 @@ internal class _RadioPainter__radio : ToggleablePainter
             )
         )();
         canvas.drawCircle(centerLocal, RadioLibrary._kOuterRadius, backgroundPaint);
-        BorderSide sideLocal = BorderSide.lerp(
-            inactiveSide,
-            activeSide,
-            DartRuntimePrimitives.RequireValue(position.value)
-        );
+        BorderSide sideLocal = BorderSide.lerp(inactiveSide, activeSide, (position.value));
         new CircleBorder(side: sideLocal).paint(canvas, effectiveRect);
         if (!position.isDismissed)
         {

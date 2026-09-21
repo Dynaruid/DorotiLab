@@ -89,15 +89,19 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
     public virtual RenderAnimatedSizeState state => _state;
     public virtual Duration duration
     {
-        get => DartRuntimePrimitives.RequireValue(_controller.duration);
+        get =>
+            (
+                _controller.duration
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         set
         {
             var __value = value;
-            if (Equals(DartRuntimePrimitives.RequireValue(__value), _controller.duration))
+            if (Equals((__value), _controller.duration))
             {
                 return;
             }
-            _controller.duration = DartRuntimePrimitives.RequireValue(__value);
+            _controller.duration = (__value);
         }
     }
     public virtual Duration? reverseDuration
@@ -132,9 +136,9 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
         set
         {
             var __value = value;
-            if (!Equals(DartRuntimePrimitives.RequireValue(__value), _clipBehavior))
+            if (!Equals((__value), _clipBehavior))
             {
-                _clipBehavior = DartRuntimePrimitives.RequireValue(__value);
+                _clipBehavior = (__value);
                 markNeedsPaint();
                 markNeedsSemanticsUpdate();
             }
@@ -239,12 +243,31 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
             }
         }
         size = _currentSize = constraintsLocal.constrain(
-            DartRuntimePrimitives.RequireValue(_animatedSize)
+            (
+                _animatedSize
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         alignChild();
         if (
-            (size.width < DartRuntimePrimitives.RequireValue(_sizeTween.end).width)
-            || (size.height < DartRuntimePrimitives.RequireValue(_sizeTween.end).height)
+            (
+                size.width
+                < (
+                    _sizeTween.end
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).width
+            )
+            || (
+                size.height
+                < (
+                    _sizeTween.end
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).height
+            )
         )
         {
             _hasVisualOverflow = true;
@@ -289,7 +312,12 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
                 break;
             }
         }
-        return constraints.constrain(DartRuntimePrimitives.RequireValue(_animatedSize));
+        return constraints.constrain(
+            (
+                _animatedSize
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -406,7 +434,10 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
         Size childSize = childLocal.getDryLayout(constraints);
         Size mySize = getDryLayout(constraints);
         Offset offset = resolvedAlignment.alongOffset(mySize - childSize);
-        return DartRuntimePrimitives.RequireValue(result) + offset.dy;
+        return (
+                result
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) + offset.dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

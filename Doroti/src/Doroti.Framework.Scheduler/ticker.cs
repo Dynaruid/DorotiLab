@@ -163,7 +163,15 @@ public class Ticker
         DartRuntimePrimitives.Assert(() => scheduled);
         _animationId = null;
         _startTime ??= timeStamp;
-        _onTick(timeStamp - DartRuntimePrimitives.RequireValue(_startTime));
+        _onTick(
+            timeStamp
+                - (
+                    _startTime
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+        );
         if (shouldScheduleTick)
         {
             scheduleTick(rescheduling: true);
@@ -197,7 +205,12 @@ public class Ticker
         if (scheduled)
         {
             SchedulerBinding.instance.cancelFrameCallbackWithId(
-                DartRuntimePrimitives.RequireValue(_animationId)
+                (
+                    _animationId
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
             _animationId = null;
         }
@@ -341,7 +354,7 @@ public class TickerFuture : Future
                 _secondaryCompleter = new Completer<object?>();
                 if (_completed is bool _completed__value17796)
                 {
-                    if (DartRuntimePrimitives.RequireValue(_completed__value17796))
+                    if ((_completed__value17796))
                     {
                         _secondaryCompleter!.complete();
                     }
@@ -386,7 +399,7 @@ public class TickerFuture : Future
     }
 
     public override string ToString() =>
-        $"{DiagnosticsLibrary.describeIdentity(this)}({((_completed is null) ? "active" : (DartRuntimePrimitives.RequireValue(_completed) ? "complete" : "canceled"))})";
+        $"{DiagnosticsLibrary.describeIdentity(this)}({((_completed is null) ? "active" : ((_completed ?? throw new global::System.NullReferenceException("Dart null assertion failed.")) ? "complete" : "canceled"))})";
 }
 
 public class TickerCanceled : Exception

@@ -412,9 +412,19 @@ public abstract class PrimaryPointerGestureRecognizer : OneSequenceGestureRecogn
             _initialPosition = new OffsetPair(local: @event.localPosition, global: @event.position);
             if (deadline is not null)
             {
-                Duration deadline__value27990 = DartRuntimePrimitives.RequireValue(deadline);
+                Duration deadline__value27990 = (
+                    deadline
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
                 _timer = new Timer(
-                    DartRuntimePrimitives.RequireValue(deadline),
+                    (
+                        deadline
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     () => didExceedDeadlineWithEvent(@event)
                 );
             }
@@ -439,14 +449,24 @@ public abstract class PrimaryPointerGestureRecognizer : OneSequenceGestureRecogn
                 && (preAcceptSlopTolerance is not null)
                 && (
                     _getGlobalDistance(@event)
-                    > DartRuntimePrimitives.RequireValue(preAcceptSlopTolerance)
+                    > (
+                        preAcceptSlopTolerance
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 );
             bool isPostAcceptSlopPastTolerance =
                 _gestureAccepted
                 && (postAcceptSlopTolerance is not null)
                 && (
                     _getGlobalDistance(@event)
-                    > DartRuntimePrimitives.RequireValue(postAcceptSlopTolerance)
+                    > (
+                        postAcceptSlopTolerance
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 );
             if (
                 (@event is PointerMoveEvent)
@@ -455,7 +475,14 @@ public abstract class PrimaryPointerGestureRecognizer : OneSequenceGestureRecogn
             {
                 PointerMoveEvent @event__as28834 = (PointerMoveEvent)@event;
                 resolve(GestureDisposition.rejected);
-                stopTrackingPointer(DartRuntimePrimitives.RequireValue(primaryPointer));
+                stopTrackingPointer(
+                    (
+                        primaryPointer
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                );
             }
             else
             {

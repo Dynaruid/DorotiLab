@@ -21,14 +21,27 @@ public class DeviceGestureSettings
             touchSlop: (physicalTouchSlopLocal is null)
                 ? null
                 : (
-                    DartRuntimePrimitives.RequireValue(physicalTouchSlopLocal)
-                    / view.devicePixelRatio
+                    (
+                        physicalTouchSlopLocal
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) / view.devicePixelRatio
                 )
         );
     }
 
     public virtual double? panSlop =>
-        (touchSlop is not null) ? (DartRuntimePrimitives.RequireValue(touchSlop) * 2L) : null;
+        (touchSlop is not null)
+            ? (
+                (
+                    touchSlop
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) * 2L
+            )
+            : null;
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(touchSlop, 23L);
 

@@ -1130,12 +1130,10 @@ public class ClipRectLayer : ContainerLayer
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() =>
-                !Equals(DartRuntimePrimitives.RequireValue(__value), Clip.none)
-            );
-            if (!Equals(DartRuntimePrimitives.RequireValue(__value), _clipBehavior))
+            DartRuntimePrimitives.Assert(() => !Equals((__value), Clip.none));
+            if (!Equals((__value), _clipBehavior))
             {
-                _clipBehavior = DartRuntimePrimitives.RequireValue(__value);
+                _clipBehavior = (__value);
                 markNeedsAddToScene();
             }
         }
@@ -1147,7 +1145,12 @@ public class ClipRectLayer : ContainerLayer
         bool onlyFirst
     )
     {
-        if (!DartRuntimePrimitives.RequireValue(clipRect).contains(localPosition))
+        if (
+            !(
+                clipRect
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).contains(localPosition)
+        )
         {
             return false;
         }
@@ -1167,7 +1170,12 @@ public class ClipRectLayer : ContainerLayer
         if (enabled)
         {
             engineLayer = builder.pushClipRect(
-                DartRuntimePrimitives.RequireValue(clipRect),
+                (
+                    clipRect
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 clipBehavior: clipBehavior,
                 oldLayer: ((ClipRectEngineLayer?)_engineLayer)!
             );
@@ -1225,12 +1233,10 @@ public class ClipRRectLayer : ContainerLayer
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() =>
-                !Equals(DartRuntimePrimitives.RequireValue(__value), Clip.none)
-            );
-            if (!Equals(DartRuntimePrimitives.RequireValue(__value), _clipBehavior))
+            DartRuntimePrimitives.Assert(() => !Equals((__value), Clip.none));
+            if (!Equals((__value), _clipBehavior))
             {
-                _clipBehavior = DartRuntimePrimitives.RequireValue(__value);
+                _clipBehavior = (__value);
                 markNeedsAddToScene();
             }
         }
@@ -1323,12 +1329,10 @@ public class ClipRSuperellipseLayer : ContainerLayer
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() =>
-                !Equals(DartRuntimePrimitives.RequireValue(__value), Clip.none)
-            );
-            if (!Equals(DartRuntimePrimitives.RequireValue(__value), _clipBehavior))
+            DartRuntimePrimitives.Assert(() => !Equals((__value), Clip.none));
+            if (!Equals((__value), _clipBehavior))
             {
-                _clipBehavior = DartRuntimePrimitives.RequireValue(__value);
+                _clipBehavior = (__value);
                 markNeedsAddToScene();
             }
         }
@@ -1420,12 +1424,10 @@ public class ClipPathLayer : ContainerLayer
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() =>
-                !Equals(DartRuntimePrimitives.RequireValue(__value), Clip.none)
-            );
-            if (!Equals(DartRuntimePrimitives.RequireValue(__value), _clipBehavior))
+            DartRuntimePrimitives.Assert(() => !Equals((__value), Clip.none));
+            if (!Equals((__value), _clipBehavior))
             {
-                _clipBehavior = DartRuntimePrimitives.RequireValue(__value);
+                _clipBehavior = (__value);
                 markNeedsAddToScene();
             }
         }
@@ -1706,8 +1708,13 @@ public class TransformLayer : OffsetLayer
         }
         return base.findAnnotations(
             result,
-            DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(transformedOffset)
+            (
+                (
+                    transformedOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             ),
             onlyFirst: onlyFirst
         );
@@ -1780,7 +1787,9 @@ public class OpacityLayer : OffsetLayer
             enabled = enabled && !DebugLibrary.debugDisableOpacityLayers;
             return true;
         });
-        long realizedAlpha = DartRuntimePrimitives.RequireValue(alpha);
+        long realizedAlpha = (
+            alpha ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         if (enabled && (realizedAlpha < 255L))
         {
             DartRuntimePrimitives.Assert(() => _engineLayer is null or OpacityEngineLayer);
@@ -1874,8 +1883,14 @@ public class ShaderMaskLayer : ContainerLayer
         DartRuntimePrimitives.Assert(() => blendMode is not null);
         engineLayer = builder.pushShaderMask(
             shader!,
-            DartRuntimePrimitives.RequireValue(maskRect),
-            DartRuntimePrimitives.RequireValue(blendMode),
+            (
+                maskRect
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            (
+                blendMode
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             oldLayer: ((ShaderMaskEngineLayer?)_engineLayer)!
         );
         addChildrenToScene(builder);
@@ -1933,9 +1948,9 @@ public class BackdropFilterLayer : ContainerLayer
         set
         {
             var __value = value;
-            if (!Equals(DartRuntimePrimitives.RequireValue(__value), _blendMode))
+            if (!Equals((__value), _blendMode))
             {
-                _blendMode = DartRuntimePrimitives.RequireValue(__value);
+                _blendMode = (__value);
                 markNeedsAddToScene();
             }
         }
@@ -2194,8 +2209,20 @@ public class FollowerLayer : ContainerLayer
         );
         System.Numerics.Vector4 result = _invertedTransform!.transform(vector);
         return new Offset(
-            result[(int)0L] - DartRuntimePrimitives.RequireValue(linkedOffset).dx,
-            result[(int)1L] - DartRuntimePrimitives.RequireValue(linkedOffset).dy
+            result[(int)0L]
+                - (
+                    linkedOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).dx,
+            result[(int)1L]
+                - (
+                    linkedOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).dy
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -2208,11 +2235,24 @@ public class FollowerLayer : ContainerLayer
     {
         if (link.leader is null)
         {
-            if (DartRuntimePrimitives.RequireValue(showWhenUnlinked))
+            if (
+                (
+                    showWhenUnlinked
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
             {
                 return base.findAnnotations(
                     result,
-                    localPosition - DartRuntimePrimitives.RequireValue(unlinkedOffset),
+                    localPosition
+                        - (
+                            unlinkedOffset
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
                     onlyFirst: onlyFirst
                 );
             }
@@ -2225,8 +2265,13 @@ public class FollowerLayer : ContainerLayer
         }
         return base.findAnnotations(
             result,
-            DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(transformedOffset)
+            (
+                (
+                    transformedOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             ),
             onlyFirst: onlyFirst
         );
@@ -2240,8 +2285,14 @@ public class FollowerLayer : ContainerLayer
             return null;
         }
         var result = Matrix4.translationValues(
-            -DartRuntimePrimitives.RequireValue(_lastOffset).dx,
-            -DartRuntimePrimitives.RequireValue(_lastOffset).dy,
+            -(
+                _lastOffset
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).dx,
+            -(
+                _lastOffset
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).dy,
             0.0
         );
         result.multiply(_lastTransform!);
@@ -2345,8 +2396,14 @@ public class FollowerLayer : ContainerLayer
         Matrix4 forwardTransform = _collectTransformForLayerChain(forwardLayers);
         leaderLocal.applyTransform(null, forwardTransform);
         forwardTransform.translateByDouble(
-            DartRuntimePrimitives.RequireValue(linkedOffset).dx,
-            DartRuntimePrimitives.RequireValue(linkedOffset).dy,
+            (
+                linkedOffset
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).dx,
+            (
+                linkedOffset
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).dy,
             0,
             1
         );
@@ -2365,7 +2422,13 @@ public class FollowerLayer : ContainerLayer
     public override void addToScene(SceneBuilder builder)
     {
         DartRuntimePrimitives.Assert(() => showWhenUnlinked is not null);
-        if ((link.leader is null) && !DartRuntimePrimitives.RequireValue(showWhenUnlinked))
+        if (
+            (link.leader is null)
+            && !(
+                showWhenUnlinked
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        )
         {
             _lastTransform = null;
             _lastOffset = null;
@@ -2388,8 +2451,18 @@ public class FollowerLayer : ContainerLayer
         {
             _lastOffset = null;
             var matrix = Matrix4.translationValues(
-                DartRuntimePrimitives.RequireValue(unlinkedOffset).dx,
-                DartRuntimePrimitives.RequireValue(unlinkedOffset).dy,
+                (
+                    unlinkedOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).dx,
+                (
+                    unlinkedOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).dy,
                 0.0
             );
             engineLayer = builder.pushTransform(
@@ -2413,8 +2486,18 @@ public class FollowerLayer : ContainerLayer
         {
             transform.multiply(
                 Matrix4.translationValues(
-                    DartRuntimePrimitives.RequireValue(unlinkedOffset).dx,
-                    DartRuntimePrimitives.RequireValue(unlinkedOffset).dy,
+                    (
+                        unlinkedOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).dx,
+                    (
+                        unlinkedOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).dy,
                     0
                 )
             );
@@ -2462,10 +2545,21 @@ public class AnnotatedRegionLayer<T> : ContainerLayer
         }
         if (
             (size is not null)
-            && !(offset & DartRuntimePrimitives.RequireValue(size)).contains(localPosition)
+            && !(
+                offset
+                & (
+                    size
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            ).contains(localPosition)
         )
         {
-            Size size__value103949 = DartRuntimePrimitives.RequireValue(size);
+            Size size__value103949 = (
+                size
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             return isAbsorbed;
         }
         if (Equals(typeof(T), typeof(S)))

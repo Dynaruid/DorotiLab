@@ -140,21 +140,49 @@ public class WordBoundary : TextBoundary
         {
             return null;
         }
-        return (DartRuntimePrimitives.RequireValue(codeUnitAtIndex) & 64512L) switch
+        return (
+            (
+                codeUnitAtIndex
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) & 64512L
+        ) switch
         {
             55296L => _codePointFromSurrogates(
-                DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(codeUnitAtIndex)
+                (
+                    (
+                        codeUnitAtIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 ),
-                DartRuntimePrimitives.RequireValue(_text.codeUnitAt(index + 1L))
-            ),
-            56320L => _codePointFromSurrogates(
-                DartRuntimePrimitives.RequireValue(_text.codeUnitAt(index - 1L)),
-                DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(codeUnitAtIndex)
+                (
+                    _text.codeUnitAt(index + 1L)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 )
             ),
-            _ => DartRuntimePrimitives.RequireValue(codeUnitAtIndex),
+            56320L => _codePointFromSurrogates(
+                (
+                    _text.codeUnitAt(index - 1L)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                (
+                    (
+                        codeUnitAtIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
+            ),
+            _ => (
+                codeUnitAtIndex
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
         };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -178,19 +206,36 @@ public class WordBoundary : TextBoundary
             (innerCodePoint is null)
             || (outerCodeUnit is null)
             || _isNewline(
-                DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(innerCodePoint)
+                (
+                    (
+                        innerCodePoint
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
             )
             || _isNewline(
-                DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(outerCodeUnit)
+                (
+                    (
+                        outerCodeUnit
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
             );
         return hardBreakRulesApply
             || !_regExpSpaceSeparatorOrPunctuation.hasMatch(
                 char.ConvertFromUtf32(
-                    checked((int)DartRuntimePrimitives.RequireValue(innerCodePoint))
+                    checked(
+                        (int)(
+                            innerCodePoint
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    )
                 )
             );
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -218,19 +263,55 @@ internal class _UntilTextBoundary__text_painter : TextBoundary
             return null;
         }
         long? offset = _textBoundary.getLeadingTextBoundaryAt(position);
-        return ((offset is null) || _predicate(DartRuntimePrimitives.RequireValue(offset), false))
+        return (
+            (offset is null)
+            || _predicate(
+                (
+                    offset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                false
+            )
+        )
             ? offset
-            : getLeadingTextBoundaryAt(DartRuntimePrimitives.RequireValue(offset) - 1L);
+            : getLeadingTextBoundaryAt(
+                (
+                    offset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) - 1L
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override long? getTrailingTextBoundaryAt(long position)
     {
         long? offset = _textBoundary.getTrailingTextBoundaryAt(Math.Max(position, 0L));
-        return ((offset is null) || _predicate(DartRuntimePrimitives.RequireValue(offset), true))
+        return (
+            (offset is null)
+            || _predicate(
+                (
+                    offset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                true
+            )
+        )
             ? offset
             : getTrailingTextBoundaryAt(
-                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(offset))
+                (
+                    (
+                        offset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
             );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -537,7 +618,15 @@ public class TextPainter
         _textHeightBehavior = textHeightBehavior;
         System.Diagnostics.Debug.Assert((text is null) || text.debugAssertIsValid());
         System.Diagnostics.Debug.Assert(
-            (maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L)
+            (maxLines is null)
+                || (
+                    (
+                        maxLines
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
         System.Diagnostics.Debug.Assert(
             textScaleFactor == 1.0 || textScaler is null or _UnspecifiedTextScaler__text_painter
@@ -571,7 +660,7 @@ public class TextPainter
                     var __cascade = new TextPainter(
                         text: text,
                         textAlign: textAlign,
-                        textDirection: DartRuntimePrimitives.RequireValue(textDirection),
+                        textDirection: (textDirection),
                         textScaler: Equals(textScaler, TextScaler.noScaling)
                             ? TextScaler.CreateLinear(textScaleFactor)
                             : textScaler,
@@ -625,7 +714,7 @@ public class TextPainter
                     var __cascade = new TextPainter(
                         text: text,
                         textAlign: textAlign,
-                        textDirection: DartRuntimePrimitives.RequireValue(textDirection),
+                        textDirection: (textDirection),
                         textScaler: Equals(textScaler, TextScaler.noScaling)
                             ? TextScaler.CreateLinear(textScaleFactor)
                             : textScaler,
@@ -736,11 +825,11 @@ public class TextPainter
         set
         {
             var __value = value;
-            if (Equals(_textAlign, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_textAlign, (__value)))
             {
                 return;
             }
-            _textAlign = DartRuntimePrimitives.RequireValue(__value);
+            _textAlign = (__value);
             markNeedsLayout();
         }
     }
@@ -766,7 +855,7 @@ public class TextPainter
         set
         {
             var __value = value;
-            textScaler = TextScaler.CreateLinear(DartRuntimePrimitives.RequireValue(__value));
+            textScaler = TextScaler.CreateLinear((__value));
         }
     }
     public virtual TextScaler textScaler
@@ -821,7 +910,15 @@ public class TextPainter
         {
             var __value = value;
             DartRuntimePrimitives.Assert(() =>
-                (__value is null) || (DartRuntimePrimitives.RequireValue(__value) > 0L)
+                (__value is null)
+                || (
+                    (
+                        __value
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
             );
             if (_maxLines == __value)
             {
@@ -851,7 +948,7 @@ public class TextPainter
         set
         {
             var __value = value;
-            if (Equals(_textWidthBasis, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_textWidthBasis, (__value)))
             {
                 return;
             }
@@ -859,7 +956,7 @@ public class TextPainter
             {
                 return _debugNeedsRelayout = true;
             });
-            _textWidthBasis = DartRuntimePrimitives.RequireValue(__value);
+            _textWidthBasis = (__value);
         }
     }
     public virtual TextHeightBehavior? textHeightBehavior
@@ -1077,8 +1174,13 @@ public class TextPainter
         }
         double paintOffsetAlignment = _computePaintOffsetFraction(
             textAlign,
-            DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(textDirectionLocal)
+            (
+                (
+                    textDirectionLocal
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             )
         );
         bool adjustMaxWidth = !double.IsFinite(maxWidth) && (paintOffsetAlignment != 0L);
@@ -1098,7 +1200,10 @@ public class TextPainter
         )();
         var layoutLocal = new _TextLayout__text_painter(
             paragraphLocal,
-            DartRuntimePrimitives.RequireValue(textDirectionLocal),
+            (
+                textDirectionLocal
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             this
         );
         double contentWidth = layoutLocal._contentWidthFor(minWidth, maxWidth, textWidthBasis);
@@ -1217,19 +1322,15 @@ public class TextPainter
 
     public static bool isHighSurrogate(long value)
     {
-        DartRuntimePrimitives.Assert(() =>
-            _isUTF16(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value)))
-        );
-        return (DartRuntimePrimitives.RequireValue(value) & 64512L) == 55296L;
+        DartRuntimePrimitives.Assert(() => _isUTF16(((value))));
+        return ((value) & 64512L) == 55296L;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static bool isLowSurrogate(long value)
     {
-        DartRuntimePrimitives.Assert(() =>
-            _isUTF16(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value)))
-        );
-        return (DartRuntimePrimitives.RequireValue(value) & 64512L) == 56320L;
+        DartRuntimePrimitives.Assert(() => _isUTF16(((value))));
+        return ((value) & 64512L) == 56320L;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1241,7 +1342,14 @@ public class TextPainter
             return null;
         }
         return isHighSurrogate(
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(nextCodeUnit))
+            (
+                (
+                    nextCodeUnit
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
         )
             ? (offset + 2L)
             : (offset + 1L);
@@ -1256,7 +1364,14 @@ public class TextPainter
             return null;
         }
         return isLowSurrogate(
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(prevCodeUnit))
+            (
+                (
+                    prevCodeUnit
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
         )
             ? (offset - 2L)
             : (offset - 1L);
@@ -1268,7 +1383,7 @@ public class TextPainter
         TextDirection textDirection
     )
     {
-        return (textAlign, DartRuntimePrimitives.RequireValue(textDirection)) switch
+        return (textAlign, (textDirection)) switch
         {
             (TextAlign.left, _) => 0.0,
             (TextAlign.right, _) => 1.0,
@@ -1290,7 +1405,12 @@ public class TextPainter
         {
             double paintOffsetAlignment = _computePaintOffsetFraction(
                 textAlign,
-                DartRuntimePrimitives.RequireValue(textDirection)
+                (
+                    textDirection
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
             double dxLocal =
                 (paintOffsetAlignment == 0L)
@@ -1340,11 +1460,13 @@ public class TextPainter
             double? heightFromCaretMetrics = _computeCaretMetrics(position)?.height;
             if (heightFromCaretMetrics is not null)
             {
-                double heightFromCaretMetrics__56763__value56838 =
-                    DartRuntimePrimitives.RequireValue(heightFromCaretMetrics);
-                return DartRuntimePrimitives.RequireValue(
-                    heightFromCaretMetrics__56763__value56838
+                double heightFromCaretMetrics__56763__value56838 = (
+                    heightFromCaretMetrics
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
+                return (heightFromCaretMetrics__56763__value56838);
             }
         }
         List<TextBox> boxes = _getOrCreateLayoutTemplate()

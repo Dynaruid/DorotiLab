@@ -506,7 +506,7 @@ internal sealed partial class FrameworkCSharpLowerer
                         )
                     )
                     {
-                        builder.Append("DartRuntimePrimitives.RequireValue(");
+                        builder.Append("__dorotiNullAssert(");
                         LowerExpression(
                             builder,
                             expression,
@@ -831,7 +831,12 @@ internal sealed partial class FrameworkCSharpLowerer
                 }
                 builder.Append(prefix).Append("if (");
                 var promotions =
-                    new List<(string Name, string Local, string Type, bool RequireValue)>();
+                    new List<(
+                        string Name,
+                        string Local,
+                        string Type,
+                        bool RequiresNullAssertion
+                    )>();
                 if (caseClause is null)
                 {
                     var promotionCondition =
@@ -1199,7 +1204,7 @@ internal sealed partial class FrameworkCSharpLowerer
                             );
                         if (needsRequiredValue)
                         {
-                            builder.Append("DartRuntimePrimitives.RequireValue(");
+                            builder.Append("__dorotiNullAssert(");
                         }
                         else if (needsObjectValueCast)
                         {
@@ -2200,7 +2205,7 @@ internal sealed partial class FrameworkCSharpLowerer
     private void CollectConditionPromotions(
         CoreAstNode condition,
         CoreResolvedDeclaration declaration,
-        List<(string Name, string Local, string Type, bool RequireValue)> promotions
+        List<(string Name, string Local, string Type, bool RequiresNullAssertion)> promotions
     )
     {
         if (
@@ -2276,7 +2281,12 @@ internal sealed partial class FrameworkCSharpLowerer
         string library,
         string inputPath,
         List<ConverterDiagnostic> diagnostics,
-        IReadOnlyList<(string Name, string Local, string Type, bool RequireValue)> promotions
+        IReadOnlyList<(
+            string Name,
+            string Local,
+            string Type,
+            bool RequiresNullAssertion
+        )> promotions
     )
     {
         var prefix = new string(' ', indent * 4);
@@ -2290,12 +2300,9 @@ internal sealed partial class FrameworkCSharpLowerer
                 .Append(' ')
                 .Append(promotion.Local)
                 .Append(" = ");
-            if (promotion.RequireValue)
+            if (promotion.RequiresNullAssertion)
             {
-                builder
-                    .Append("DartRuntimePrimitives.RequireValue(")
-                    .Append(promotion.Name)
-                    .Append(')');
+                builder.Append("__dorotiNullAssert(").Append(promotion.Name).Append(')');
             }
             else
             {

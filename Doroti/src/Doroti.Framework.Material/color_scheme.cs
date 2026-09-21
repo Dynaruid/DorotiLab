@@ -396,7 +396,7 @@ public class ColorScheme : Diagnosticable
     )
     {
         DynamicScheme scheme = _buildDynamicScheme(
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(brightness)),
+            ((brightness)),
             seedColor,
             dynamicSchemeVariant,
             contrastLevel
@@ -480,7 +480,7 @@ public class ColorScheme : Diagnosticable
             shadow: shadow ?? new Color(MaterialDynamicColors.shadow.getArgb(scheme)),
             scrim: scrim ?? new Color(MaterialDynamicColors.scrim.getArgb(scheme)),
             surfaceTint: surfaceTint ?? new Color(MaterialDynamicColors.primary.getArgb(scheme)),
-            brightness: DartRuntimePrimitives.RequireValue(brightness),
+            brightness: (brightness),
             background: background ?? new Color(MaterialDynamicColors.background.getArgb(scheme)),
             onBackground: onBackground
                 ?? new Color(MaterialDynamicColors.onBackground.getArgb(scheme)),
@@ -1171,7 +1171,7 @@ public class ColorScheme : Diagnosticable
     )
     {
         MaterialColor __primarySwatch = primarySwatch ?? Colors.blue;
-        var isDark = Equals(DartRuntimePrimitives.RequireValue(brightness), Brightness.dark);
+        var isDark = Equals((brightness), Brightness.dark);
         var primaryIsDark = Equals(_brightnessFor(__primarySwatch), Brightness.dark);
         Color secondaryLocal = accentColor ?? (isDark ? Colors.tealAccent[200L]! : __primarySwatch);
         var secondaryIsDark = Equals(_brightnessFor(secondaryLocal), Brightness.dark);
@@ -1184,7 +1184,7 @@ public class ColorScheme : Diagnosticable
             onSecondary: secondaryIsDark ? Colors.white : Colors.black,
             onSurface: isDark ? Colors.white : Colors.black,
             onError: isDark ? Colors.black : Colors.white,
-            brightness: DartRuntimePrimitives.RequireValue(brightness),
+            brightness: (brightness),
             background: backgroundColor ?? (isDark ? Colors.grey[700L]! : __primarySwatch[200L]!),
             onBackground: primaryIsDark ? Colors.white : Colors.black
         );
@@ -1964,7 +1964,7 @@ public class ColorScheme : Diagnosticable
         List<long> scoredResults = Score.score(colorToCountLocal, desired: 1L).ToList();
         var baseColor = new Color(scoredResults.First());
         DynamicScheme scheme = _buildDynamicScheme(
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(brightness)),
+            ((brightness)),
             baseColor,
             dynamicSchemeVariant,
             contrastLevel
@@ -2048,7 +2048,7 @@ public class ColorScheme : Diagnosticable
             shadow: shadow ?? new Color(MaterialDynamicColors.shadow.getArgb(scheme)),
             scrim: scrim ?? new Color(MaterialDynamicColors.scrim.getArgb(scheme)),
             surfaceTint: surfaceTint ?? new Color(MaterialDynamicColors.primary.getArgb(scheme)),
-            brightness: DartRuntimePrimitives.RequireValue(brightness),
+            brightness: (brightness),
             background: background ?? new Color(MaterialDynamicColors.background.getArgb(scheme)),
             onBackground: onBackground
                 ?? new Color(MaterialDynamicColors.onBackground.getArgb(scheme)),
@@ -2180,7 +2180,7 @@ public class ColorScheme : Diagnosticable
             () => (contrastLevel >= -1.0) && (contrastLevel <= 1.0),
             () => (object?)"contrastLevel must be between -1.0 and 1.0 inclusive."
         );
-        var isDarkLocal = Equals(DartRuntimePrimitives.RequireValue(brightness), Brightness.dark);
+        var isDarkLocal = Equals((brightness), Brightness.dark);
         Hct sourceColor = Hct.fromInt(seedColor.value);
         return schemeVariant switch
         {

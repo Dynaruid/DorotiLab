@@ -64,19 +64,34 @@ public class Viewport : MultiChildRenderObjectWidget
             }
             if (cacheExtent is not null)
             {
-                double cacheExtent__value6836 = DartRuntimePrimitives.RequireValue(cacheExtent);
+                double cacheExtent__value6836 = (
+                    cacheExtent
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
                 switch (cacheExtentStyle)
                 {
                     case CacheExtentStyle.pixel:
                     {
                         return ScrollCacheExtent.CreatePixels(
-                            DartRuntimePrimitives.RequireValue(cacheExtent)
+                            (
+                                cacheExtent
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         );
                     }
                     case CacheExtentStyle.viewport:
                     {
                         return ScrollCacheExtent.CreateViewport(
-                            DartRuntimePrimitives.RequireValue(cacheExtent)
+                            (
+                                cacheExtent
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         );
                     }
                     default:
@@ -392,19 +407,34 @@ public class ShrinkWrappingViewport : MultiChildRenderObjectWidget
             }
             if (cacheExtent is not null)
             {
-                double cacheExtent__value17671 = DartRuntimePrimitives.RequireValue(cacheExtent);
+                double cacheExtent__value17671 = (
+                    cacheExtent
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
                 switch (cacheExtentStyle)
                 {
                     case CacheExtentStyle.pixel:
                     {
                         return ScrollCacheExtent.CreatePixels(
-                            DartRuntimePrimitives.RequireValue(cacheExtent)
+                            (
+                                cacheExtent
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         );
                     }
                     case CacheExtentStyle.viewport:
                     {
                         return ScrollCacheExtent.CreateViewport(
-                            DartRuntimePrimitives.RequireValue(cacheExtent)
+                            (
+                                cacheExtent
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         );
                     }
                     default:

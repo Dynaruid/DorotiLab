@@ -682,7 +682,12 @@ internal class _CupertinoMenuAnchorState__menu_anchor
             onDistanceChanged: _handleSwipeDistanceChange,
             enabled: enableSwipe,
             child: new _AnchorScope__menu_anchor(
-                hasLeading: DartRuntimePrimitives.RequireValue(_hasLeadingWidget),
+                hasLeading: (
+                    _hasLeadingWidget
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 child: new RawMenuAnchor(
                     useRootOverlay: widget.useRootOverlay,
                     onCloseRequested: _handleCloseRequested,
@@ -1078,7 +1083,12 @@ internal class _MenuOverlayState__menu_anchor
         {
             anchorMidpoint =
                 widget.anchorRect.topLeft
-                + DartRuntimePrimitives.RequireValue(widget.anchorPosition);
+                + (
+                    widget.anchorPosition
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
         }
         else
         {
@@ -1099,7 +1109,12 @@ internal class _MenuOverlayState__menu_anchor
         {
             _attachmentPoint =
                 widget.anchorRect.topLeft
-                + DartRuntimePrimitives.RequireValue(widget.anchorPosition);
+                + (
+                    widget.anchorPosition
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
             transformOrigin = _attachmentPoint;
         }
         else
@@ -1528,8 +1543,9 @@ internal class _MenuLayoutDelegate__menu_anchor : SingleChildLayoutDelegate
             return new Offset(finalPosition.dx, finalPosition.dy + dyLocal);
         }
         var initialPosition = new Offset(finalPosition.dx, anchorRect.bottom);
-        return DartRuntimePrimitives.RequireValue(
+        return (
             Dart_uiLibrary.Offset.lerp(initialPosition, finalPosition, heightFactor)
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1674,7 +1690,14 @@ internal class _MenuLayoutDelegate__menu_anchor : SingleChildLayoutDelegate
                 closest = screen;
                 closestSquaredDistance = Menu_anchorLibrary._computeSquaredDistanceToRect(
                     point,
-                    DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(closest))
+                    (
+                        (
+                            closest
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    )
                 );
                 continue;
             }
@@ -1688,7 +1711,10 @@ internal class _MenuLayoutDelegate__menu_anchor : SingleChildLayoutDelegate
                 closestSquaredDistance = squaredDistance;
             }
         }
-        return DartRuntimePrimitives.RequireValue(closest);
+        return (
+            closest
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2371,10 +2397,8 @@ internal class _CupertinoMenuItemLabel__menu_anchor : StatelessWidget
 
     internal virtual AlignmentGeometry _resolveTrailingAlignment(double trailingWidth)
     {
-        double horizontalOffset = (DartRuntimePrimitives.RequireValue(trailingWidth) / 2L) + 6L;
-        double horizontalRatio =
-            (DartRuntimePrimitives.RequireValue(trailingWidth) - horizontalOffset)
-            / DartRuntimePrimitives.RequireValue(trailingWidth);
+        double horizontalOffset = ((trailingWidth) / 2L) + 6L;
+        double horizontalRatio = ((trailingWidth) - horizontalOffset) / (trailingWidth);
         double horizontalAlignment = (horizontalRatio * 2L) - 1L;
         return new AlignmentDirectional(horizontalAlignment, 0.0);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2413,9 +2437,7 @@ internal class _CupertinoMenuItemLabel__menu_anchor : StatelessWidget
     internal virtual EdgeInsets _resolvePadding(double minimumHeight, double lineHeight)
     {
         double padding = Math.Max(0, minimumHeight - lineHeight);
-        return EdgeInsets.CreateSymmetric(
-            vertical: DartRuntimePrimitives.RequireValue(padding) / 2L
-        );
+        return EdgeInsets.CreateSymmetric(vertical: (padding) / 2L);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2431,8 +2453,14 @@ internal class _CupertinoMenuItemLabel__menu_anchor : StatelessWidget
             (dynamicBodyText.fontSize is not null) && (dynamicBodyText.height is not null)
         );
         double lineHeight =
-            DartRuntimePrimitives.RequireValue(dynamicBodyText.fontSize)
-            * DartRuntimePrimitives.RequireValue(dynamicBodyText.height);
+            (
+                dynamicBodyText.fontSize
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+            * (
+                dynamicBodyText.height
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         bool showLeadingWidget =
             (leading is not null) || (CupertinoMenuAnchor.maybeHasLeadingOf(context) ?? false);
         double minimumHeight =
@@ -2747,10 +2775,7 @@ internal class _CupertinoMenuItemInteractionHandlerState__menu_anchor
         set
         {
             var __value = value;
-            _statesController.update(
-                DartRuntimePrimitives.RequireValue(WidgetState.focused),
-                __value
-            );
+            _statesController.update((WidgetState.focused), __value);
         }
     }
     public virtual bool isEnabled
@@ -3221,12 +3246,21 @@ public class _SwipeRegionState__menu_anchor : State<_SwipeRegion__menu_anchor>
 
     internal virtual void _handleSwipeUpdate(Gestures.DragUpdateDetails updateDetails)
     {
-        _position = DartRuntimePrimitives.RequireValue(_position) + updateDetails.delta;
+        _position =
+            (
+                _position
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) + updateDetails.delta;
         double minimumSquaredDistance = double.MaxValue;
         foreach (_RenderSwipeSurface__menu_anchor surface in _surfaces)
         {
             double squaredDistance = Menu_anchorLibrary._computeSquaredDistanceToRect(
-                DartRuntimePrimitives.RequireValue(_position),
+                (
+                    _position
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 surface.computeRect()
             );
             if (squaredDistance.floor() == 0L)

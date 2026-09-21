@@ -367,7 +367,12 @@ public class CupertinoListSection : StatelessWidget
                                 __collection19880.Add(
                                     DartRuntimePrimitives.ConvertValue<Widget>(
                                         new SizedBox(
-                                            height: DartRuntimePrimitives.RequireValue(topMargin)
+                                            height: (
+                                                topMargin
+                                                ?? throw new global::System.NullReferenceException(
+                                                    "Dart null assertion failed."
+                                                )
+                                            )
                                         )
                                     )
                                 );

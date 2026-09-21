@@ -67,7 +67,16 @@ public abstract class ProgressIndicator : StatefulWidget
     internal virtual double? _effectiveValue =>
         (value is null)
             ? null
-            : Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(value), 0.0, 1.0);
+            : Dart_uiLibrary.clampDouble(
+                (
+                    value
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                0.0,
+                1.0
+            );
 
     internal virtual Color _getValueColor(BuildContext context, Color? defaultColor = null)
     {
@@ -92,9 +101,12 @@ public abstract class ProgressIndicator : StatefulWidget
         string? expandedSemanticsValue = semanticsValue;
         if (value is not null)
         {
-            double value__value5992 = DartRuntimePrimitives.RequireValue(value);
+            double value__value5992 = (
+                value
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             expandedSemanticsValue ??=
-                $"{(DartRuntimePrimitives.RequireValue(_effectiveValue) * 100L).round()}";
+                $"{((_effectiveValue ?? throw new global::System.NullReferenceException("Dart null assertion failed.")) * 100L).round()}";
             isProgressBar = true;
         }
         return new Widgets.Semantics(
@@ -201,7 +213,12 @@ internal class _LinearProgressIndicatorPainter__progress_indicator : CustomPaint
         {
             double maxRadius = size.height / 2L;
             double radius = Math.Min(
-                DartRuntimePrimitives.RequireValue(stopIndicatorRadius),
+                (
+                    stopIndicatorRadius
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 maxRadius
             );
             var indicatorPaint = (
@@ -238,22 +255,28 @@ internal class _LinearProgressIndicatorPainter__progress_indicator : CustomPaint
         double? effectiveValue =
             (value is null)
                 ? null
-                : Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(value), 0.0, 1.0);
+                : Dart_uiLibrary.clampDouble(
+                    (
+                        value
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
+                    0.0,
+                    1.0
+                );
         if (effectiveValue is not null)
         {
-            double effectiveValue__10098__value10217 = DartRuntimePrimitives.RequireValue(
+            double effectiveValue__10098__value10217 = (
                 effectiveValue
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
             double trackStartFraction =
                 (trackGapFractionLocal > 0L)
                     ? (
-                        DartRuntimePrimitives.RequireValue(effectiveValue__10098__value10217)
+                        (effectiveValue__10098__value10217)
                         + getEffectiveTrackGapFraction(
-                            DartRuntimePrimitives.RequireValue(
-                                DartRuntimePrimitives.RequireValue(
-                                    effectiveValue__10098__value10217
-                                )
-                            ),
+                            ((effectiveValue__10098__value10217)),
                             trackGapFractionLocal
                         )
                     )
@@ -268,21 +291,29 @@ internal class _LinearProgressIndicatorPainter__progress_indicator : CustomPaint
             }
             if (
                 (stopIndicatorRadius is not null)
-                && (DartRuntimePrimitives.RequireValue(stopIndicatorRadius) > 0L)
+                && (
+                    (
+                        stopIndicatorRadius
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
             )
             {
-                double stopIndicatorRadius__value10651 = DartRuntimePrimitives.RequireValue(
+                double stopIndicatorRadius__value10651 = (
                     stopIndicatorRadius
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
                 drawStopIndicator();
             }
-            if (DartRuntimePrimitives.RequireValue(effectiveValue__10098__value10217) > 0L)
+            if ((effectiveValue__10098__value10217) > 0L)
             {
                 drawLinearIndicator(
                     startFraction: 0,
-                    endFraction: DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(effectiveValue__10098__value10217)
-                    ),
+                    endFraction: ((effectiveValue__10098__value10217)),
                     color: valueColor
                 );
             }
@@ -425,7 +456,15 @@ public class LinearProgressIndicator : ProgressIndicator
         this.year2023 = year2023;
         this.controller = controller;
         System.Diagnostics.Debug.Assert(
-            (minHeight is null) || (DartRuntimePrimitives.RequireValue(minHeight) > 0L)
+            (minHeight is null)
+                || (
+                    (
+                        minHeight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
         System.Diagnostics.Debug.Assert((value is null) || (controller is null));
     }
@@ -542,7 +581,10 @@ internal class _LinearProgressIndicatorState__progress_indicator
             ?? defaults.linearTrackColor!;
         double minHeightLocal =
             (widget.minHeight ?? indicatorTheme.linearMinHeight)
-            ?? DartRuntimePrimitives.RequireValue(defaults.linearMinHeight);
+            ?? (
+                defaults.linearMinHeight
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         BorderRadiusGeometry? borderRadiusLocal =
             (widget.borderRadius ?? indicatorTheme.borderRadius) ?? defaults.borderRadius;
         Color? stopIndicatorColorLocal = !year2023Local
@@ -757,8 +799,16 @@ internal class _CircularProgressIndicatorPainter__progress_indicator : CustomPai
         arcSweep =
             (value is not null)
                 ? (
-                    Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(value), 0.0, 1.0)
-                    * _sweep
+                    Dart_uiLibrary.clampDouble(
+                        (
+                            value
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
+                        0.0,
+                        1.0
+                    ) * _sweep
                 )
                 : Math.Max(
                     (headValue * 3L / 2L * Dart_mathLibrary.pi)
@@ -787,7 +837,16 @@ internal class _CircularProgressIndicatorPainter__progress_indicator : CustomPai
             size.width - (strokeOffset * 2L),
             size.height - (strokeOffset * 2L)
         );
-        bool hasGap = (trackGap is not null) && (DartRuntimePrimitives.RequireValue(trackGap) > 0L);
+        bool hasGap =
+            (trackGap is not null)
+            && (
+                (
+                    trackGap
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) > 0L
+            );
         if (trackColor is not null)
         {
             var backgroundPaint = (
@@ -806,16 +865,41 @@ internal class _CircularProgressIndicatorPainter__progress_indicator : CustomPai
             if (
                 hasGap
                 && (value is not null)
-                && (DartRuntimePrimitives.RequireValue(value) > _epsilon)
+                && (
+                    (
+                        value
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > _epsilon
+                )
             )
             {
-                double value__value28734 = DartRuntimePrimitives.RequireValue(value);
+                double value__value28734 = (
+                    value
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
                 double arcRadius = arcActualSize.shortestSide / 2L;
                 double strokeRadius = strokeWidth / arcRadius;
-                double gapRadius = DartRuntimePrimitives.RequireValue(trackGap) / arcRadius;
+                double gapRadius =
+                    (
+                        trackGap
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) / arcRadius;
                 double startGap = strokeRadius + gapRadius;
                 double endGap =
-                    (DartRuntimePrimitives.RequireValue(value) < _epsilon)
+                    (
+                        (
+                            value
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) < _epsilon
+                    )
                         ? startGap
                         : (startGap * 2L);
                 double startSweep = (-Dart_mathLibrary.pi / 2.0) + startGap;
@@ -824,7 +908,12 @@ internal class _CircularProgressIndicatorPainter__progress_indicator : CustomPai
                     _twoPi
                         - (
                             Dart_uiLibrary.clampDouble(
-                                DartRuntimePrimitives.RequireValue(value),
+                                (
+                                    value
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                ),
                                 0.0,
                                 1.0
                             ) * _twoPi
@@ -1116,7 +1205,10 @@ internal class _CircularProgressIndicatorState__progress_indicator
         return CupertinoActivityIndicator.CreatePartiallyRevealed(
             key: widget.key,
             color: tickColor,
-            progress: DartRuntimePrimitives.RequireValue(value)
+            progress: (
+                value
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1145,10 +1237,16 @@ internal class _CircularProgressIndicatorState__progress_indicator
             ?? defaults.circularTrackColor;
         double strokeWidthLocal =
             (widget.strokeWidth ?? indicatorTheme.strokeWidth)
-            ?? DartRuntimePrimitives.RequireValue(defaults.strokeWidth);
+            ?? (
+                defaults.strokeWidth
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         double strokeAlignLocal =
             (widget.strokeAlign ?? indicatorTheme.strokeAlign)
-            ?? DartRuntimePrimitives.RequireValue(defaults.strokeAlign);
+            ?? (
+                defaults.strokeAlign
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         StrokeCap? strokeCapLocal = widget.strokeCap ?? indicatorTheme.strokeCap;
         BoxConstraints constraintsLocal =
             (widget.constraints ?? indicatorTheme.constraints) ?? defaults.constraints!;
@@ -1534,14 +1632,14 @@ internal class _RefreshProgressIndicatorState__progress_indicator
         double? valueLocal = widget._effectiveValue;
         if (valueLocal is not null)
         {
-            double value__54874__value54914 = DartRuntimePrimitives.RequireValue(valueLocal);
-            _lastValue = DartRuntimePrimitives.RequireValue(value__54874__value54914);
+            double value__54874__value54914 = (
+                valueLocal
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
+            _lastValue = (value__54874__value54914);
             _controller.value =
-                _convertTween.transform(
-                    DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(value__54874__value54914)
-                    )
-                ) * (1333L / 2L / Progress_indicatorLibrary._kIndeterminateCircularDuration);
+                _convertTween.transform(((value__54874__value54914)))
+                * (1333L / 2L / Progress_indicatorLibrary._kIndeterminateCircularDuration);
         }
         return _buildAnimation();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1579,8 +1677,13 @@ internal class _RefreshProgressIndicatorState__progress_indicator
             (valueLocal is null)
                 ? 0.0
                 : new Interval(0.1, _strokeHeadInterval).transform(
-                    DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(valueLocal)
+                    (
+                        (
+                            valueLocal
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     )
                 );
         double rotation = default!;
@@ -1593,7 +1696,13 @@ internal class _RefreshProgressIndicatorState__progress_indicator
             rotation =
                 Dart_mathLibrary.pi
                 * _additionalRotationTween.transform(
-                    valueLocal ?? DartRuntimePrimitives.RequireValue(_lastValue)
+                    valueLocal
+                        ?? (
+                            _lastValue
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                 );
         }
         Color valueColorLocal = widget._getValueColor(context);
@@ -1612,10 +1721,16 @@ internal class _RefreshProgressIndicatorState__progress_indicator
             ?? Theme.of(context).canvasColor;
         double strokeWidthLocal =
             (widget.strokeWidth ?? indicatorTheme.strokeWidth)
-            ?? DartRuntimePrimitives.RequireValue(defaults.strokeWidth);
+            ?? (
+                defaults.strokeWidth
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         double strokeAlignLocal =
             (widget.strokeAlign ?? indicatorTheme.strokeAlign)
-            ?? DartRuntimePrimitives.RequireValue(defaults.strokeAlign);
+            ?? (
+                defaults.strokeAlign
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         StrokeCap? strokeCapLocal = widget.strokeCap ?? indicatorTheme.strokeCap;
         return widget._buildSemanticsWrapper(
             context: context,

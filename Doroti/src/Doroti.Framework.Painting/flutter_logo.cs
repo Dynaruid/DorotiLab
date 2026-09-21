@@ -400,7 +400,10 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
     {
         offset += _config.margin.topLeft;
         Size canvasSize = _config.margin.deflateSize(
-            DartRuntimePrimitives.RequireValue(configuration.size)
+            (
+                configuration.size
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         if (canvasSize.isEmpty)
         {
@@ -444,8 +447,9 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
                 logoTargetSquare = centerSquare;
             }
         }
-        Rect logoSquare = DartRuntimePrimitives.RequireValue(
+        Rect logoSquare = (
             Dart_uiLibrary.Rect.lerp(centerSquare, logoTargetSquare, _config._position.abs())
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         if (_config._opacity < 1.0)
         {
@@ -478,11 +482,14 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
                     (rect.width / 2.0) - (_textBoundingRect.width * scaleLocal);
                 var textOffset = new Offset(
                     rect.left
-                        + DartRuntimePrimitives.RequireValue(
+                        + (
                             Dart_uiLibrary.lerpDouble(
                                 initialLeftTextPosition,
                                 finalLeftTextPosition,
                                 _config._position
+                            )
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
                             )
                         ),
                     rect.top + ((rect.height - (_textBoundingRect.height * scaleLocal)) / 2.0)

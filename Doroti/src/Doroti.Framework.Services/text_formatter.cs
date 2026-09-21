@@ -225,8 +225,22 @@ public class LengthLimitingTextInputFormatter : TextInputFormatter
         this.maxLengthEnforcement = maxLengthEnforcement;
         System.Diagnostics.Debug.Assert(
             (maxLength is null)
-                || (DartRuntimePrimitives.RequireValue(maxLength) == -1L)
-                || (DartRuntimePrimitives.RequireValue(maxLength) > 0L)
+                || (
+                    (
+                        maxLength
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) == -1L
+                )
+                || (
+                    (
+                        maxLength
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
     }
 
@@ -291,13 +305,33 @@ public class LengthLimitingTextInputFormatter : TextInputFormatter
         long? maxLength = this.maxLength;
         if (
             (maxLength is null)
-            || (DartRuntimePrimitives.RequireValue(maxLength) == -1L)
-            || (newValue.text.characters().Count <= DartRuntimePrimitives.RequireValue(maxLength))
+            || (
+                (
+                    maxLength
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) == -1L
+            )
+            || (
+                newValue.text.characters().Count
+                <= (
+                    maxLength
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
         )
         {
             return newValue;
         }
-        DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.RequireValue(maxLength) > 0L);
+        DartRuntimePrimitives.Assert(() =>
+            (
+                maxLength
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) > 0L
+        );
         switch (maxLengthEnforcement ?? getDefaultMaxLengthEnforcement())
         {
             case var __case23944 when Equals(__case23944, MaxLengthEnforcement.none):
@@ -309,13 +343,26 @@ public class LengthLimitingTextInputFormatter : TextInputFormatter
                 if (
                     (
                         oldValue.text.characters().Count
-                        == DartRuntimePrimitives.RequireValue(maxLength)
+                        == (
+                            maxLength
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     ) && oldValue.selection.isCollapsed
                 )
                 {
                     return oldValue;
                 }
-                return truncate(newValue, DartRuntimePrimitives.RequireValue(maxLength));
+                return truncate(
+                    newValue,
+                    (
+                        maxLength
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                );
             }
             case var __case24396
                 when Equals(__case24396, MaxLengthEnforcement.truncateAfterCompositionEnds):
@@ -323,7 +370,12 @@ public class LengthLimitingTextInputFormatter : TextInputFormatter
                 if (
                     (
                         oldValue.text.characters().Count
-                        == DartRuntimePrimitives.RequireValue(maxLength)
+                        == (
+                            maxLength
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     ) && !oldValue.composing.isValid
                 )
                 {
@@ -333,7 +385,15 @@ public class LengthLimitingTextInputFormatter : TextInputFormatter
                 {
                     return newValue;
                 }
-                return truncate(newValue, DartRuntimePrimitives.RequireValue(maxLength));
+                return truncate(
+                    newValue,
+                    (
+                        maxLength
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                );
             }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");

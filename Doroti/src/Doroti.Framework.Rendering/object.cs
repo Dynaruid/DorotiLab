@@ -878,7 +878,12 @@ public class PipelineOwner : DiagnosticableTreeMixin
             _shouldMergeDirtyNodes = true;
             DartRuntimePrimitives.Assert(() =>
             {
-                _debugAllowMutationsToDirtySubtrees = DartRuntimePrimitives.RequireValue(oldState);
+                _debugAllowMutationsToDirtySubtrees = (
+                    oldState
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
                 return true;
             });
         }
@@ -1636,7 +1641,10 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     }
 
     public virtual bool debugCanParentUseSize =>
-        DartRuntimePrimitives.RequireValue(_debugCanParentUseSize);
+        (
+            _debugCanParentUseSize
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
     internal virtual (RenderObject, bool)? _debugClosestMutationRoot
     {
         get
@@ -1870,7 +1878,14 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
             {
                 return false;
             }
-            if (DartRuntimePrimitives.RequireValue(node._isRelayoutBoundary))
+            if (
+                (
+                    node._isRelayoutBoundary
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
             {
                 return true;
             }
@@ -2071,43 +2086,42 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                         {
                             if (targetFrame is not null)
                             {
-                                long targetFrame__112422__value112715 =
-                                    DartRuntimePrimitives.RequireValue(targetFrame);
+                                long targetFrame__112422__value112715 = (
+                                    targetFrame
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                );
                                 break;
                             }
                         }
                     }
                     if (
                         (targetFrame is not null)
-                        && (DartRuntimePrimitives.RequireValue(targetFrame) < checked(stack.Count))
+                        && (
+                            (
+                                targetFrame
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ) < checked(stack.Count)
+                        )
                     )
                     {
-                        long targetFrame__112422__value112799 = DartRuntimePrimitives.RequireValue(
+                        long targetFrame__112422__value112799 = (
                             targetFrame
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
                         );
                         Pattern targetFramePattern = new RegExp("^#[0-9]+ +(.+)$");
                         Match? targetFrameMatch = targetFramePattern.matchAsPrefix(
-                            stack[
-                                (int)
-                                    DartRuntimePrimitives.RequireValue(
-                                        DartRuntimePrimitives.RequireValue(
-                                            targetFrame__112422__value112799
-                                        )
-                                    )
-                            ]
+                            stack[(int)((targetFrame__112422__value112799))]
                         );
                         string? problemFunction =
                             ((targetFrameMatch is not null) && (targetFrameMatch.groupCount > 0L))
                                 ? targetFrameMatch.group(1L)
-                                : stack[
-                                    (int)
-                                        DartRuntimePrimitives.RequireValue(
-                                            DartRuntimePrimitives.RequireValue(
-                                                targetFrame__112422__value112799
-                                            )
-                                        )
-                                ]
-                                    .Trim();
+                                : stack[(int)((targetFrame__112422__value112799))].Trim();
                         return new List<DiagnosticsNode>
                         {
                             new ErrorDescription(
@@ -3617,12 +3631,24 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         {
             if (_blocksPreviousSibling is not null)
             {
-                return DartRuntimePrimitives.RequireValue(_blocksPreviousSibling);
+                return (
+                    _blocksPreviousSibling
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
             }
             _blocksPreviousSibling = configProvider
                 .effective
                 .isBlockingSemanticsOfPreviouslyPaintedNodes;
-            if (DartRuntimePrimitives.RequireValue(_blocksPreviousSibling))
+            if (
+                (
+                    _blocksPreviousSibling
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
             {
                 return true;
             }
@@ -3640,7 +3666,10 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
                     }
                 }
             );
-            return DartRuntimePrimitives.RequireValue(_blocksPreviousSibling);
+            return (
+                _blocksPreviousSibling
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
     }
 
@@ -4404,7 +4433,12 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
                 {
                     Rect rectAlternate = MatrixUtils.transformRect(
                         parentGeometry.transform,
-                        DartRuntimePrimitives.RequireValue(parentGeometry.semanticsClipRect)
+                        (
+                            parentGeometry.semanticsClipRect
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     );
                     semanticsClipRectLocal =
                         semanticsClipRectLocal?.intersect(rectAlternate) ?? rectAlternate;
@@ -4413,7 +4447,12 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
                 {
                     Rect rectNested = MatrixUtils.transformRect(
                         parentGeometry.transform,
-                        DartRuntimePrimitives.RequireValue(parentGeometry.paintClipRect)
+                        (
+                            parentGeometry.paintClipRect
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     );
                     paintClipRectLocal = paintClipRectLocal?.intersect(rectNested) ?? rectNested;
                 }
@@ -4424,7 +4463,12 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
                     () =>
                     {
                         var __cascade = node;
-                        __cascade.rect = DartRuntimePrimitives.RequireValue(rectLocal);
+                        __cascade.rect = (
+                            rectLocal
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        );
                         __cascade.transform = null;
                         __cascade.parentSemanticsClipRect = semanticsClipRectLocal;
                         __cascade.parentPaintClipRect = paintClipRectLocal;
@@ -4683,7 +4727,7 @@ public class _SemanticsGeometry__object
             semanticsClipRect: null,
             transform: Matrix4.identity(),
             hidden: false,
-            rect: DartRuntimePrimitives.RequireValue(rect)
+            rect: (rect)
         );
     }
 
@@ -4732,7 +4776,12 @@ public class _SemanticsGeometry__object
                 localSemanticsClipInParent
                 ?? semanticsClipRectLocal?.intersect(
                     localPaintClipInParent
-                        ?? DartRuntimePrimitives.RequireValue(semanticsClipRectLocal)
+                        ?? (
+                            semanticsClipRectLocal
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                 );
             nodeParent.applyPaintTransform(node, transformLocal);
         }
@@ -4760,18 +4809,12 @@ public class _SemanticsGeometry__object
         var isRectHidden = false;
         if (paintClipRectLocal is not null)
         {
-            Rect paintClipRect__259962__value262006 = DartRuntimePrimitives.RequireValue(
+            Rect paintClipRect__259962__value262006 = (
                 paintClipRectLocal
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
-            Rect paintRect = DartRuntimePrimitives
-                .RequireValue(paintClipRect__259962__value262006)
-                .intersect(
-                    DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(rectLocal)
-                    )
-                );
-            isRectHidden =
-                paintRect.isEmpty && !DartRuntimePrimitives.RequireValue(rectLocal).isEmpty;
+            Rect paintRect = (paintClipRect__259962__value262006).intersect(((rectLocal)));
+            isRectHidden = paintRect.isEmpty && !(rectLocal).isEmpty;
             if (!isRectHidden)
             {
                 rectLocal = paintRect;
@@ -4781,7 +4824,7 @@ public class _SemanticsGeometry__object
             transform: transformLocal,
             paintClipRect: paintClipRectLocal,
             semanticsClipRect: semanticsClipRectLocal,
-            rect: DartRuntimePrimitives.RequireValue(rectLocal),
+            rect: (rectLocal),
             hidden: isRectHidden
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -4797,11 +4840,19 @@ public class _SemanticsGeometry__object
         {
             return null;
         }
-        if (DartRuntimePrimitives.RequireValue(rect).isEmpty || transform.isZero())
+        if (
+            (
+                rect
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).isEmpty || transform.isZero()
+        )
         {
             return Rect.zero;
         }
-        return apply(transform, DartRuntimePrimitives.RequireValue(rect));
+        return apply(
+            transform,
+            (rect ?? throw new global::System.NullReferenceException("Dart null assertion failed."))
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -4811,8 +4862,17 @@ public class _SemanticsGeometry__object
         {
             return a;
         }
-        return a?.intersect(DartRuntimePrimitives.RequireValue(b))
-            ?? DartRuntimePrimitives.RequireValue(b);
+        return a?.intersect(
+                (
+                    b
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
+            ?? (
+                b ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }

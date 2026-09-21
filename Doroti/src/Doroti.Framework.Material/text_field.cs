@@ -286,22 +286,58 @@ public class TextField : StatefulWidget
         this.enableInteractiveSelection = enableInteractiveSelection ?? (!readOnly || !obscureText);
         System.Diagnostics.Debug.Assert(obscuringCharacter.Length == 1L);
         System.Diagnostics.Debug.Assert(
-            (maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L)
+            (maxLines is null)
+                || (
+                    (
+                        maxLines
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
         System.Diagnostics.Debug.Assert(
-            (minLines is null) || (DartRuntimePrimitives.RequireValue(minLines) > 0L)
+            (minLines is null)
+                || (
+                    (
+                        minLines
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
         System.Diagnostics.Debug.Assert(
             maxLines is null
                 || minLines is null
-                || maxLines >= DartRuntimePrimitives.RequireValue(minLines)
+                || maxLines
+                    >= (
+                        minLines
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
         );
         System.Diagnostics.Debug.Assert(!expands || ((maxLines is null) && (minLines is null)));
         System.Diagnostics.Debug.Assert(!obscureText || (maxLines == 1L));
         System.Diagnostics.Debug.Assert(
             (maxLength is null)
-                || (DartRuntimePrimitives.RequireValue(maxLength) == noMaxLength)
-                || (DartRuntimePrimitives.RequireValue(maxLength) > 0L)
+                || (
+                    (
+                        maxLength
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) == noMaxLength
+                )
+                || (
+                    (
+                        maxLength
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
         System.Diagnostics.Debug.Assert(
             !DartRuntimePrimitives.Identical(textInputAction, TextInputAction.newline)
@@ -553,7 +589,7 @@ public class TextField : StatefulWidget
         properties.add(
             new DiagnosticsProperty<bool>(
                 "stylusHandwritingEnabled",
-                DartRuntimePrimitives.RequireValue(stylusHandwritingEnabled),
+                (stylusHandwritingEnabled),
                 defaultValue: EditableText.defaultStylusHandwritingEnabled
             )
         );
@@ -648,19 +684,36 @@ internal class _TextFieldState__text_field
     internal virtual bool _hasIntrinsicError =>
         DartRuntimePrimitives.ConvertValue<bool>(
             (widget.maxLength is not null)
-                && (DartRuntimePrimitives.RequireValue(widget.maxLength) > 0L)
+                && (
+                    (
+                        widget.maxLength
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
                 && (
                     (widget.controller is null)
                         ? (
                             !restorePending
                             && (
                                 _effectiveController.value.text.characters().Count
-                                > DartRuntimePrimitives.RequireValue(widget.maxLength)
+                                > (
+                                    widget.maxLength
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                )
                             )
                         )
                         : (
                             _effectiveController.value.text.characters().Count
-                            > DartRuntimePrimitives.RequireValue(widget.maxLength)
+                            > (
+                                widget.maxLength
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         )
                 )
         );
@@ -728,12 +781,30 @@ internal class _TextFieldState__text_field
         }
         var counterTextLocal = $"{currentLengthLocal}";
         var semanticCounterTextLocal = "";
-        if (DartRuntimePrimitives.RequireValue(widget.maxLength) > 0L)
+        if (
+            (
+                widget.maxLength
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) > 0L
+        )
         {
             counterTextLocal += $"/{widget.maxLength}";
             long remaining = (
-                DartRuntimePrimitives.RequireValue(widget.maxLength) - currentLengthLocal
-            ).clamp(0L, DartRuntimePrimitives.RequireValue(widget.maxLength));
+                (
+                    widget.maxLength
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) - currentLengthLocal
+            ).clamp(
+                0L,
+                (
+                    widget.maxLength
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            );
             semanticCounterTextLocal = localizations.remainingTextFieldCharacterCount(remaining);
         }
         if (_hasIntrinsicError)
@@ -1419,7 +1490,14 @@ internal class _TextFieldState__text_field
         if (
             (!Equals(_effectiveMaxLengthEnforcement, MaxLengthEnforcement.none))
             && (widget.maxLength is not null)
-            && (DartRuntimePrimitives.RequireValue(widget.maxLength) > 0L)
+            && (
+                (
+                    widget.maxLength
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) > 0L
+            )
         )
         {
             semanticsMaxValueLength = widget.maxLength;

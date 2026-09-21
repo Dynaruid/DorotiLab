@@ -59,7 +59,7 @@ public class NavigationToolbar : StatelessWidget
         return new CustomMultiChildLayout(
             @delegate: new _ToolbarLayout__navigation_toolbar(
                 centerMiddle: centerMiddle,
-                middleSpacing: DartRuntimePrimitives.RequireValue(middleSpacing),
+                middleSpacing: (middleSpacing),
                 textDirection: textDirectionLocal
             ),
             children: children

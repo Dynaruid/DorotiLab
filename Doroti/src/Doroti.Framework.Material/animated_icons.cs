@@ -44,9 +44,17 @@ public class AnimatedIcon : StatelessWidget
         var iconData = ((_AnimatedIconData__animated_icons_data?)icon)!;
         IconThemeData iconTheme = IconTheme.of(context);
         DartRuntimePrimitives.Assert(() => iconTheme.isConcrete);
-        double iconSize = size ?? DartRuntimePrimitives.RequireValue(iconTheme.size);
+        double iconSize =
+            size
+            ?? (
+                iconTheme.size
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         TextDirection textDirectionLocal = textDirection ?? Directionality.of(context);
-        double iconOpacity = DartRuntimePrimitives.RequireValue(iconTheme.opacity);
+        double iconOpacity = (
+            iconTheme.opacity
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         Color iconColor = color ?? iconTheme.color!;
         if (iconOpacity != 1.0)
         {
@@ -61,10 +69,8 @@ public class AnimatedIcon : StatelessWidget
                     progress: progress,
                     color: iconColor,
                     scale: iconSize / iconData.size.width,
-                    shouldMirror: Equals(
-                        DartRuntimePrimitives.RequireValue(textDirectionLocal),
-                        TextDirection.rtl
-                    ) && iconData.matchTextDirection,
+                    shouldMirror: Equals((textDirectionLocal), TextDirection.rtl)
+                        && iconData.matchTextDirection,
                     uiPathFactory: _pathFactory
                 )
             )
@@ -153,7 +159,7 @@ public class _PathFrames__animated_icons
 
     public virtual void paint(Canvas canvas, Color color, Func<Path> uiPathFactory, double progress)
     {
-        double opacityLocal = DartRuntimePrimitives.RequireValue(
+        double opacityLocal = (
             Animated_iconsLibrary._interpolate(
                 opacities,
                 progress,
@@ -196,7 +202,7 @@ internal class _PathMoveTo__animated_icons : _PathCommand__animated_icons
 
     public virtual void apply(Path path, double progress)
     {
-        Offset offset = DartRuntimePrimitives.RequireValue(
+        Offset offset = (
             Animated_iconsLibrary._interpolate(
                 points,
                 progress,
@@ -226,21 +232,21 @@ internal class _PathCubicTo__animated_icons : _PathCommand__animated_icons
 
     public virtual void apply(Path path, double progress)
     {
-        Offset controlPoint1 = DartRuntimePrimitives.RequireValue(
+        Offset controlPoint1 = (
             Animated_iconsLibrary._interpolate(
                 controlPoints1,
                 progress,
                 (a, b, t) => Offset.lerp(a, b, t)!.Value
             )
         );
-        Offset controlPoint2 = DartRuntimePrimitives.RequireValue(
+        Offset controlPoint2 = (
             Animated_iconsLibrary._interpolate(
                 controlPoints2,
                 progress,
                 (a, b, t) => Offset.lerp(a, b, t)!.Value
             )
         );
-        Offset targetPoint = DartRuntimePrimitives.RequireValue(
+        Offset targetPoint = (
             Animated_iconsLibrary._interpolate(
                 targetPoints,
                 progress,
@@ -269,7 +275,7 @@ internal class _PathLineTo__animated_icons : _PathCommand__animated_icons
 
     public virtual void apply(Path path, double progress)
     {
-        Offset point = DartRuntimePrimitives.RequireValue(
+        Offset point = (
             Animated_iconsLibrary._interpolate(
                 points,
                 progress,
@@ -304,8 +310,9 @@ public static partial class Animated_iconsLibrary
         {
             return values[(int)0L];
         }
-        double targetIdx = DartRuntimePrimitives.RequireValue(
+        double targetIdx = (
             Dart_uiLibrary.lerpDouble(0L, checked(values.Count) - 1L, progress)
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         long lowIdx = targetIdx.floor();
         long highIdx = targetIdx.ceil();

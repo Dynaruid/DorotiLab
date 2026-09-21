@@ -606,9 +606,15 @@ internal class _AndroidMotionEventConverter
             return null;
         }
         return new AndroidMotionEvent(
-            downTime: DartRuntimePrimitives.RequireValue(downTimeMillis),
+            downTime: (
+                downTimeMillis
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             eventTime: @event.timeStamp.inMilliseconds,
-            action: DartRuntimePrimitives.RequireValue(action),
+            action: (
+                action
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             pointerCount: pointerPositions.Count,
             pointerProperties: pointers
                 .map((i) => pointerProperties.GetValueOrDefault(i)!)
@@ -928,7 +934,9 @@ public class SurfaceAndroidViewController : AndroidViewController
 
     internal override async Future<bool> _sendCreateMessage(Size? size, Offset? position = null)
     {
-        var __size = DartRuntimePrimitives.RequireValue(size);
+        var __size = (
+            size ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         DartRuntimePrimitives.Assert(() => !__size.isEmpty);
         object? response = await _AndroidViewControllerInternals.sendCreateMessage(
             service: _service,
@@ -1122,7 +1130,9 @@ public class TextureAndroidViewController : AndroidViewController
 
     internal override async Future _sendCreateMessage(Size? size, Offset? position = null)
     {
-        var __size = DartRuntimePrimitives.RequireValue(size);
+        var __size = (
+            size ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         DartRuntimePrimitives.Assert(() => !__size.isEmpty);
         object? response = await _AndroidViewControllerInternals.sendCreateMessage(
             service: _service,
@@ -1332,7 +1342,7 @@ internal class _Hybrid2AndroidViewControllerInternals : _AndroidViewControllerIn
 
     public static async Future<bool> checkIfSurfaceControlEnabled()
     {
-        return DartRuntimePrimitives.RequireValue(
+        return (
             await PlatformViewsService._instance.Channel2.invokeMethod<bool>(
                 "isSurfaceControlEnabled",
                 new DartMap<string, object?>()

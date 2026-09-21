@@ -424,10 +424,23 @@ public class _TextSelectionToolbarTrailingEdgeAlignRenderBox__text_selection_too
             new Size(
                 (
                     (_closedWidth is null)
-                    || (child!.size.width > DartRuntimePrimitives.RequireValue(_closedWidth))
+                    || (
+                        child!.size.width
+                        > (
+                            _closedWidth
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    )
                 )
                     ? child!.size.width
-                    : DartRuntimePrimitives.RequireValue(_closedWidth),
+                    : (
+                        _closedWidth
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                 child!.size.height
             )
         );

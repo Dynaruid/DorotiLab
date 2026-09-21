@@ -64,22 +64,12 @@ public class BoxConstraints : Constraints
     )
     {
         var __instance = new BoxConstraints(default!, default!, default!, default!);
-        __instance.minWidth =
-            (DartRuntimePrimitives.RequireValue(width) != double.PositiveInfinity)
-                ? DartRuntimePrimitives.RequireValue(width)
-                : 0.0;
+        __instance.minWidth = ((width) != double.PositiveInfinity) ? (width) : 0.0;
         __instance.maxWidth =
-            (DartRuntimePrimitives.RequireValue(width) != double.PositiveInfinity)
-                ? DartRuntimePrimitives.RequireValue(width)
-                : double.PositiveInfinity;
-        __instance.minHeight =
-            (DartRuntimePrimitives.RequireValue(height) != double.PositiveInfinity)
-                ? DartRuntimePrimitives.RequireValue(height)
-                : 0.0;
+            ((width) != double.PositiveInfinity) ? (width) : double.PositiveInfinity;
+        __instance.minHeight = ((height) != double.PositiveInfinity) ? (height) : 0.0;
         __instance.maxHeight =
-            (DartRuntimePrimitives.RequireValue(height) != double.PositiveInfinity)
-                ? DartRuntimePrimitives.RequireValue(height)
-                : double.PositiveInfinity;
+            ((height) != double.PositiveInfinity) ? (height) : double.PositiveInfinity;
         return __instance;
     }
 
@@ -185,28 +175,48 @@ public class BoxConstraints : Constraints
             minWidth: (width is null)
                 ? minWidth
                 : Dart_uiLibrary.clampDouble(
-                    DartRuntimePrimitives.RequireValue(width),
+                    (
+                        width
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     minWidth,
                     maxWidth
                 ),
             maxWidth: (width is null)
                 ? maxWidth
                 : Dart_uiLibrary.clampDouble(
-                    DartRuntimePrimitives.RequireValue(width),
+                    (
+                        width
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     minWidth,
                     maxWidth
                 ),
             minHeight: (height is null)
                 ? minHeight
                 : Dart_uiLibrary.clampDouble(
-                    DartRuntimePrimitives.RequireValue(height),
+                    (
+                        height
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     minHeight,
                     maxHeight
                 ),
             maxHeight: (height is null)
                 ? maxHeight
                 : Dart_uiLibrary.clampDouble(
-                    DartRuntimePrimitives.RequireValue(height),
+                    (
+                        height
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     minHeight,
                     maxHeight
                 )
@@ -236,22 +246,14 @@ public class BoxConstraints : Constraints
     public virtual double constrainWidth(double width = double.PositiveInfinity)
     {
         DartRuntimePrimitives.Assert(() => debugAssertIsValid());
-        return Dart_uiLibrary.clampDouble(
-            DartRuntimePrimitives.RequireValue(width),
-            minWidth,
-            maxWidth
-        );
+        return Dart_uiLibrary.clampDouble((width), minWidth, maxWidth);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual double constrainHeight(double height = double.PositiveInfinity)
     {
         DartRuntimePrimitives.Assert(() => debugAssertIsValid());
-        return Dart_uiLibrary.clampDouble(
-            DartRuntimePrimitives.RequireValue(height),
-            minHeight,
-            maxHeight
-        );
+        return Dart_uiLibrary.clampDouble((height), minHeight, maxHeight);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -276,10 +278,7 @@ public class BoxConstraints : Constraints
 
     public virtual Size constrain(Size size)
     {
-        var result = new Size(
-            constrainWidth(DartRuntimePrimitives.RequireValue(size.width)),
-            constrainHeight(DartRuntimePrimitives.RequireValue(size.height))
-        );
+        var result = new Size(constrainWidth((size.width)), constrainHeight((size.height)));
         DartRuntimePrimitives.Assert(() =>
         {
             result = _debugPropagateDebugSize(size, result);
@@ -291,14 +290,7 @@ public class BoxConstraints : Constraints
 
     public virtual Size constrainDimensions(double width, double height)
     {
-        return new Size(
-            constrainWidth(
-                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(width))
-            ),
-            constrainHeight(
-                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(height))
-            )
-        );
+        return new Size(constrainWidth(((width))), constrainHeight(((height))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -320,36 +312,30 @@ public class BoxConstraints : Constraints
         }
         double widthLocal = size.width;
         double heightLocal = size.height;
-        double aspectRatio =
-            DartRuntimePrimitives.RequireValue(widthLocal)
-            / DartRuntimePrimitives.RequireValue(heightLocal);
-        if (DartRuntimePrimitives.RequireValue(widthLocal) > maxWidth)
+        double aspectRatio = (widthLocal) / (heightLocal);
+        if ((widthLocal) > maxWidth)
         {
             widthLocal = maxWidth;
-            heightLocal = DartRuntimePrimitives.RequireValue(widthLocal) / aspectRatio;
+            heightLocal = (widthLocal) / aspectRatio;
         }
-        if (DartRuntimePrimitives.RequireValue(heightLocal) > maxHeight)
+        if ((heightLocal) > maxHeight)
         {
             heightLocal = maxHeight;
-            widthLocal = DartRuntimePrimitives.RequireValue(heightLocal) * aspectRatio;
+            widthLocal = (heightLocal) * aspectRatio;
         }
-        if (DartRuntimePrimitives.RequireValue(widthLocal) < minWidth)
+        if ((widthLocal) < minWidth)
         {
             widthLocal = minWidth;
-            heightLocal = DartRuntimePrimitives.RequireValue(widthLocal) / aspectRatio;
+            heightLocal = (widthLocal) / aspectRatio;
         }
-        if (DartRuntimePrimitives.RequireValue(heightLocal) < minHeight)
+        if ((heightLocal) < minHeight)
         {
             heightLocal = minHeight;
-            widthLocal = DartRuntimePrimitives.RequireValue(heightLocal) * aspectRatio;
+            widthLocal = (heightLocal) * aspectRatio;
         }
         var resultLocal = new Size(
-            constrainWidth(
-                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(widthLocal))
-            ),
-            constrainHeight(
-                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(heightLocal))
-            )
+            constrainWidth(((widthLocal))),
+            constrainHeight(((heightLocal)))
         );
         DartRuntimePrimitives.Assert(() =>
         {
@@ -462,23 +448,35 @@ public class BoxConstraints : Constraints
         );
         return new BoxConstraints(
             minWidth: double.IsFinite(a.minWidth)
-                ? DartRuntimePrimitives.RequireValue(
+                ? (
                     Dart_uiLibrary.lerpDouble(a.minWidth, b.minWidth, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 )
                 : double.PositiveInfinity,
             maxWidth: double.IsFinite(a.maxWidth)
-                ? DartRuntimePrimitives.RequireValue(
+                ? (
                     Dart_uiLibrary.lerpDouble(a.maxWidth, b.maxWidth, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 )
                 : double.PositiveInfinity,
             minHeight: double.IsFinite(a.minHeight)
-                ? DartRuntimePrimitives.RequireValue(
+                ? (
                     Dart_uiLibrary.lerpDouble(a.minHeight, b.minHeight, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 )
                 : double.PositiveInfinity,
             maxHeight: double.IsFinite(a.maxHeight)
-                ? DartRuntimePrimitives.RequireValue(
+                ? (
                     Dart_uiLibrary.lerpDouble(a.maxHeight, b.maxHeight, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 )
                 : double.PositiveInfinity
         );
@@ -613,14 +611,10 @@ public class BoxConstraints : Constraints
         double minWidthLocal = (minWidth >= 0.0) ? minWidth : 0.0;
         double minHeightLocal = (minHeight >= 0.0) ? minHeight : 0.0;
         return new BoxConstraints(
-            minWidth: DartRuntimePrimitives.RequireValue(minWidthLocal),
-            maxWidth: (DartRuntimePrimitives.RequireValue(minWidthLocal) > maxWidth)
-                ? DartRuntimePrimitives.RequireValue(minWidthLocal)
-                : maxWidth,
-            minHeight: DartRuntimePrimitives.RequireValue(minHeightLocal),
-            maxHeight: (DartRuntimePrimitives.RequireValue(minHeightLocal) > maxHeight)
-                ? DartRuntimePrimitives.RequireValue(minHeightLocal)
-                : maxHeight
+            minWidth: (minWidthLocal),
+            maxWidth: ((minWidthLocal) > maxWidth) ? (minWidthLocal) : maxWidth,
+            minHeight: (minHeightLocal),
+            maxHeight: ((minHeightLocal) > maxHeight) ? (minHeightLocal) : maxHeight
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -683,16 +677,8 @@ public class BoxConstraints : Constraints
             return $"{min.toStringAsFixed(1L)}<={dim}<={max.toStringAsFixed(1L)}";
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        string width = describe(
-            DartRuntimePrimitives.RequireValue(minWidth),
-            DartRuntimePrimitives.RequireValue(maxWidth),
-            "w"
-        );
-        string height = describe(
-            DartRuntimePrimitives.RequireValue(minHeight),
-            DartRuntimePrimitives.RequireValue(maxHeight),
-            "h"
-        );
+        string width = describe((minWidth), (maxWidth), "w");
+        string height = describe((minHeight), (maxHeight), "h");
         return $"BoxConstraints({width}, {height}{annotation})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -739,16 +725,32 @@ public class BoxHitTestResult : HitTestResult
     )
     {
         Offset transformedPosition =
-            (offset is null) ? position : (position - DartRuntimePrimitives.RequireValue(offset));
+            (offset is null)
+                ? position
+                : (
+                    position
+                    - (
+                        offset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                );
         if (offset is not null)
         {
-            Offset offset__value30995 = DartRuntimePrimitives.RequireValue(offset);
-            pushOffset(-DartRuntimePrimitives.RequireValue(offset__value30995));
+            Offset offset__value30995 = (
+                offset
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
+            pushOffset(-(offset__value30995));
         }
         bool isHit = hitTest(this, transformedPosition);
         if (offset is not null)
         {
-            Offset offset__value31113 = DartRuntimePrimitives.RequireValue(offset);
+            Offset offset__value31113 = (
+                offset
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             popTransform();
         }
         return isHit;
@@ -790,8 +792,11 @@ public class BoxHitTestResult : HitTestResult
         );
         if (paintOffset is not null)
         {
-            Offset paintOffset__value34120 = DartRuntimePrimitives.RequireValue(paintOffset);
-            pushOffset(-DartRuntimePrimitives.RequireValue(paintOffset__value34120));
+            Offset paintOffset__value34120 = (
+                paintOffset
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
+            pushOffset(-(paintOffset__value34120));
         }
         else
         {
@@ -872,7 +877,16 @@ public class BaselineOffset
     {
         double? value = this.offset;
         return new BaselineOffset(
-            (value is null) ? null : (DartRuntimePrimitives.RequireValue(value) + offset)
+            (value is null)
+                ? null
+                : (
+                    (
+                        value
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) + offset
+                )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1820,7 +1834,14 @@ public abstract class RenderBox : RenderObject
                     }
                 );
             }
-            if (!DartRuntimePrimitives.RequireValue(_size).isFinite)
+            if (
+                !(
+                    _size
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).isFinite
+            )
             {
                 var information = new List<DiagnosticsNode>
                 {
@@ -1880,7 +1901,16 @@ public abstract class RenderBox : RenderObject
                     }
                 );
             }
-            if (!constraints.isSatisfiedBy(DartRuntimePrimitives.RequireValue(_size)))
+            if (
+                !constraints.isSatisfiedBy(
+                    (
+                        _size
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
+            )
             {
                 throw new FlutterError(
                     new List<DiagnosticsNode>
@@ -2212,7 +2242,12 @@ public abstract class RenderBox : RenderObject
             }
             return true;
         });
-        if (DartRuntimePrimitives.RequireValue(_size).contains(position))
+        if (
+            (
+                _size
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).contains(position)
+        )
         {
             if (hitTestChildren(result, position: position) || hitTestSelf(position))
             {
@@ -2391,37 +2426,31 @@ public abstract class RenderBox : RenderObject
             double? baselineI = getDistanceToBaseline(TextBaseline.ideographic, onlyReal: true);
             if (baselineI is not null)
             {
-                double baselineI__136228__value136315 = DartRuntimePrimitives.RequireValue(
+                double baselineI__136228__value136315 = (
                     baselineI
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
                 paint.color = new Color(4294955008L);
                 path = new Path();
-                path.moveTo(
-                    offset.dx,
-                    offset.dy + DartRuntimePrimitives.RequireValue(baselineI__136228__value136315)
-                );
-                path.lineTo(
-                    offset.dx + size.width,
-                    offset.dy + DartRuntimePrimitives.RequireValue(baselineI__136228__value136315)
-                );
+                path.moveTo(offset.dx, offset.dy + (baselineI__136228__value136315));
+                path.lineTo(offset.dx + size.width, offset.dy + (baselineI__136228__value136315));
                 context.canvas.drawPath(path, paint);
             }
             double? baselineA = getDistanceToBaseline(TextBaseline.alphabetic, onlyReal: true);
             if (baselineA is not null)
             {
-                double baselineA__136632__value136718 = DartRuntimePrimitives.RequireValue(
+                double baselineA__136632__value136718 = (
                     baselineA
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
                 paint.color = new Color(4278255360L);
                 path = new Path();
-                path.moveTo(
-                    offset.dx,
-                    offset.dy + DartRuntimePrimitives.RequireValue(baselineA__136632__value136718)
-                );
-                path.lineTo(
-                    offset.dx + size.width,
-                    offset.dy + DartRuntimePrimitives.RequireValue(baselineA__136632__value136718)
-                );
+                path.moveTo(offset.dx, offset.dy + (baselineA__136632__value136718));
+                path.lineTo(offset.dx + size.width, offset.dy + (baselineA__136632__value136718));
                 context.canvas.drawPath(path, paint);
             }
             return true;

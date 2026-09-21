@@ -61,7 +61,15 @@ public class DataTableThemeData : Diagnosticable
         System.Diagnostics.Debug.Assert(
             (dataRowMinHeight is null)
                 || (dataRowMaxHeight is null)
-                || (dataRowMaxHeight >= DartRuntimePrimitives.RequireValue(dataRowMinHeight))
+                || (
+                    dataRowMaxHeight
+                    >= (
+                        dataRowMinHeight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
         );
         System.Diagnostics.Debug.Assert(
             (dataRowHeight is null) || ((dataRowMinHeight is null) && (dataRowMaxHeight is null))
@@ -96,7 +104,7 @@ public class DataTableThemeData : Diagnosticable
                 || ((dataRowMinHeight is null) && (dataRowMaxHeight is null)),
             () =>
                 (object?)
-                    $"dataRowHeight ({DartRuntimePrimitives.RequireValue(dataRowHeight)}) must not be set if dataRowMinHeight ({dataRowMinHeight}) or dataRowMaxHeight ({dataRowMaxHeight}) are set."
+                    $"dataRowHeight ({(dataRowHeight ?? throw new global::System.NullReferenceException("Dart null assertion failed."))}) must not be set if dataRowMinHeight ({dataRowMinHeight}) or dataRowMaxHeight ({dataRowMaxHeight}) are set."
         );
         dataRowMinHeight = dataRowHeight ?? dataRowMinHeight;
         dataRowMaxHeight = dataRowHeight ?? dataRowMaxHeight;

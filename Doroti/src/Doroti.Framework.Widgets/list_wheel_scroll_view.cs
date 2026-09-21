@@ -111,7 +111,18 @@ public class ListWheelChildBuilderDelegate : ListWheelChildDelegate
                 ? null
                 : new IndexedSemantics(index: index, child: childLocal);
         }
-        if ((index < 0L) || (index >= DartRuntimePrimitives.RequireValue(childCount)))
+        if (
+            (index < 0L)
+            || (
+                index
+                >= (
+                    childCount
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
+        )
         {
             return null;
         }
@@ -225,10 +236,22 @@ public class FixedExtentMetrics : FixedScrollMetrics
         double devicePixelRatio
     )
         : base(
-            minScrollExtent: DartRuntimePrimitives.RequireValue(minScrollExtent),
-            maxScrollExtent: DartRuntimePrimitives.RequireValue(maxScrollExtent),
-            pixels: DartRuntimePrimitives.RequireValue(pixels),
-            viewportDimension: DartRuntimePrimitives.RequireValue(viewportDimension),
+            minScrollExtent: (
+                minScrollExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            maxScrollExtent: (
+                maxScrollExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            pixels: (
+                pixels
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            viewportDimension: (
+                viewportDimension
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             axisDirection: axisDirection,
             devicePixelRatio: devicePixelRatio
         )
@@ -332,10 +355,10 @@ internal class _FixedExtentScrollPosition__list_wheel_scroll_view : ScrollPositi
         get
         {
             return List_wheel_scroll_viewLibrary._getItemFromOffset(
-                offset: DartRuntimePrimitives.RequireValue(pixels),
+                offset: (pixels),
                 itemExtent: itemExtent,
-                minScrollExtent: DartRuntimePrimitives.RequireValue(minScrollExtent),
-                maxScrollExtent: DartRuntimePrimitives.RequireValue(maxScrollExtent)
+                minScrollExtent: (minScrollExtent),
+                maxScrollExtent: (maxScrollExtent)
             );
         }
     }
@@ -822,11 +845,13 @@ public class ListWheelElement : RenderObjectElement, ListWheelChildManager
         {
             return;
         }
-        long firstIndex = DartRuntimePrimitives.RequireValue(
+        long firstIndex = (
             DartCollectionRuntime.FirstKeyOrNull(_childElements)
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
-        long lastIndex = DartRuntimePrimitives.RequireValue(
+        long lastIndex = (
             DartCollectionRuntime.LastKeyOrNull(_childElements)
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         for (var index = firstIndex; index <= lastIndex; ++index)
         {
@@ -1032,8 +1057,8 @@ public class ListWheelViewport : RenderObjectWidget
         return new RenderListWheelViewport(
             childManager: childManagerLocal,
             offset: offset,
-            diameterRatio: DartRuntimePrimitives.RequireValue(diameterRatio),
-            perspective: DartRuntimePrimitives.RequireValue(perspective),
+            diameterRatio: (diameterRatio),
+            perspective: (perspective),
             offAxisFraction: offAxisFraction,
             useMagnifier: useMagnifier,
             magnification: magnification,

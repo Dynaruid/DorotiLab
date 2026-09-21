@@ -47,10 +47,13 @@ public abstract class SliverChildDelegate
             long? children = estimatedChildCount;
             if (children is not null)
             {
-                long children__9813__value9855 = DartRuntimePrimitives.RequireValue(children);
-                description.Add(
-                    $"estimated child count: {DartRuntimePrimitives.RequireValue(children__9813__value9855)}"
+                long children__9813__value9855 = (
+                    children
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
+                description.Add($"estimated child count: {(children__9813__value9855)}");
             }
         }
         catch (Exception e)
@@ -135,7 +138,15 @@ public class SliverChildBuilderDelegate : SliverChildDelegate
             (index < 0L)
             || (
                 (childCount is not null)
-                && (index >= DartRuntimePrimitives.RequireValue(childCount))
+                && (
+                    index
+                    >= (
+                        childCount
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
             )
         )
         {
@@ -170,13 +181,15 @@ public class SliverChildBuilderDelegate : SliverChildDelegate
             long? semanticIndex = semanticIndexCallback(childLocal, index);
             if (semanticIndex is not null)
             {
-                long semanticIndex__23314__value23377 = DartRuntimePrimitives.RequireValue(
+                long semanticIndex__23314__value23377 = (
                     semanticIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
                 childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
                     new IndexedSemantics(
-                        index: DartRuntimePrimitives.RequireValue(semanticIndex__23314__value23377)
-                            + semanticIndexOffset,
+                        index: (semanticIndex__23314__value23377) + semanticIndexOffset,
                         child: childLocal
                     )
                 );
@@ -277,8 +290,9 @@ public class SliverChildListDelegate : SliverChildDelegate
         }
         if (!_keyToIndex!.ContainsKey(key))
         {
-            long index = DartRuntimePrimitives.RequireValue(
+            long index = (
                 DartCollectionRuntime.NullableMapValue<long>(_keyToIndex, null)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
             while (index < checked(children.Count))
             {
@@ -343,13 +357,15 @@ public class SliverChildListDelegate : SliverChildDelegate
             long? semanticIndex = semanticIndexCallback(childLocal, index);
             if (semanticIndex is not null)
             {
-                long semanticIndex__31496__value31559 = DartRuntimePrimitives.RequireValue(
+                long semanticIndex__31496__value31559 = (
                     semanticIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
                 childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
                     new IndexedSemantics(
-                        index: DartRuntimePrimitives.RequireValue(semanticIndex__31496__value31559)
-                            + semanticIndexOffset,
+                        index: (semanticIndex__31496__value31559) + semanticIndexOffset,
                         child: childLocal
                     )
                 );
@@ -668,7 +684,15 @@ public class TwoDimensionalChildBuilderDelegate : TwoDimensionalChildDelegate
             (vicinity.xIndex < 0L)
             || (
                 (maxXIndex is not null)
-                && (vicinity.xIndex > DartRuntimePrimitives.RequireValue(maxXIndex))
+                && (
+                    vicinity.xIndex
+                    > (
+                        maxXIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
             )
         )
         {
@@ -678,7 +702,15 @@ public class TwoDimensionalChildBuilderDelegate : TwoDimensionalChildDelegate
             (vicinity.yIndex < 0L)
             || (
                 (maxYIndex is not null)
-                && (vicinity.yIndex > DartRuntimePrimitives.RequireValue(maxYIndex))
+                && (
+                    vicinity.yIndex
+                    > (
+                        maxYIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
             )
         )
         {

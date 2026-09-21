@@ -381,7 +381,10 @@ internal class _AppBarState__app_bar : State<AppBar>
             (widget.foregroundColor ?? appBarTheme.foregroundColor) ?? defaults.foregroundColor!;
         double elevationLocal =
             (widget.elevation ?? appBarTheme.elevation)
-            ?? DartRuntimePrimitives.RequireValue(defaults.elevation);
+            ?? (
+                defaults.elevation
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         double effectiveElevation = states.Contains(WidgetState.scrolledUnder)
             ? (
                 (
@@ -1803,8 +1806,10 @@ public class _RenderAppBarTitleBox__app_bar : RenderAligningShiftedBox
             return null;
         }
         Size childSize = childLocal.getDryLayout(innerConstraints);
-        return DartRuntimePrimitives.RequireValue(result)
-            + resolvedAlignment.alongOffset(getDryLayout(constraints) - childSize).dy;
+        return (
+                result
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) + resolvedAlignment.alongOffset(getDryLayout(constraints) - childSize).dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

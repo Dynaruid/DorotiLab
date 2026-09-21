@@ -187,7 +187,12 @@ public class NestedScrollViewState : State<NestedScrollView>
                         slivers: widget._buildSlivers(
                             context,
                             _coordinator!._innerController,
-                            DartRuntimePrimitives.RequireValue(_lastHasScrolledBody)
+                            (
+                                _lastHasScrolledBody
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         ),
                         handle: _absorberHandle,
                         clipBehavior: widget.clipBehavior,
@@ -289,10 +294,22 @@ public class _NestedScrollMetrics__nested_scroll_view : FixedScrollMetrics
         double correctionOffset
     )
         : base(
-            minScrollExtent: DartRuntimePrimitives.RequireValue(minScrollExtent),
-            maxScrollExtent: DartRuntimePrimitives.RequireValue(maxScrollExtent),
-            pixels: DartRuntimePrimitives.RequireValue(pixels),
-            viewportDimension: DartRuntimePrimitives.RequireValue(viewportDimension),
+            minScrollExtent: (
+                minScrollExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            maxScrollExtent: (
+                maxScrollExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            pixels: (
+                pixels
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            viewportDimension: (
+                viewportDimension
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             axisDirection: axisDirection,
             devicePixelRatio: devicePixelRatio
         )
@@ -432,19 +449,15 @@ public class _NestedScrollCoordinator__nested_scroll_view
 
     public virtual void updateUserScrollDirection(ScrollDirection value)
     {
-        if (Equals(userScrollDirection, DartRuntimePrimitives.RequireValue(value)))
+        if (Equals(userScrollDirection, (value)))
         {
             return;
         }
-        _userScrollDirection = DartRuntimePrimitives.RequireValue(value);
-        _outerPosition!.didUpdateScrollDirection(
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value))
-        );
+        _userScrollDirection = (value);
+        _outerPosition!.didUpdateScrollDirection(((value)));
         foreach (_NestedScrollPosition__nested_scroll_view position in _innerPositions)
         {
-            position.didUpdateScrollDirection(
-                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value))
-            );
+            position.didUpdateScrollDirection(((value)));
         }
     }
 
@@ -674,20 +687,16 @@ public class _NestedScrollCoordinator__nested_scroll_view
         if (Equals(source, _outerPosition))
         {
             return Dart_uiLibrary.clampDouble(
-                DartRuntimePrimitives.RequireValue(value),
+                (value),
                 _outerPosition!.minScrollExtent,
                 _outerPosition!.maxScrollExtent
             );
         }
-        if (DartRuntimePrimitives.RequireValue(value) < source.minScrollExtent)
+        if ((value) < source.minScrollExtent)
         {
-            return DartRuntimePrimitives.RequireValue(value)
-                - source.minScrollExtent
-                + _outerPosition!.minScrollExtent;
+            return (value) - source.minScrollExtent + _outerPosition!.minScrollExtent;
         }
-        return DartRuntimePrimitives.RequireValue(value)
-            - source.minScrollExtent
-            + _outerPosition!.maxScrollExtent;
+        return (value) - source.minScrollExtent + _outerPosition!.maxScrollExtent;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -696,22 +705,18 @@ public class _NestedScrollCoordinator__nested_scroll_view
         if (Equals(target, _outerPosition))
         {
             return Dart_uiLibrary.clampDouble(
-                DartRuntimePrimitives.RequireValue(value),
+                (value),
                 _outerPosition!.minScrollExtent,
                 _outerPosition!.maxScrollExtent
             );
         }
-        if (DartRuntimePrimitives.RequireValue(value) < _outerPosition!.minScrollExtent)
+        if ((value) < _outerPosition!.minScrollExtent)
         {
-            return DartRuntimePrimitives.RequireValue(value)
-                - _outerPosition!.minScrollExtent
-                + target.minScrollExtent;
+            return (value) - _outerPosition!.minScrollExtent + target.minScrollExtent;
         }
-        if (DartRuntimePrimitives.RequireValue(value) > _outerPosition!.maxScrollExtent)
+        if ((value) > _outerPosition!.maxScrollExtent)
         {
-            return DartRuntimePrimitives.RequireValue(value)
-                - _outerPosition!.maxScrollExtent
-                + target.minScrollExtent;
+            return (value) - _outerPosition!.maxScrollExtent + target.minScrollExtent;
         }
         return target.minScrollExtent;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1298,12 +1303,7 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
 
     public override void jumpTo(double pixels)
     {
-        coordinator.jumpTo(
-            coordinator.unnestOffset(
-                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(pixels)),
-                this
-            )
-        );
+        coordinator.jumpTo(coordinator.unnestOffset(((pixels)), this));
         return;
     }
 
@@ -1320,12 +1320,10 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
 
     public virtual void localJumpTo(double value)
     {
-        if (pixels != DartRuntimePrimitives.RequireValue(value))
+        if (pixels != (value))
         {
             double oldPixels = pixels;
-            forcePixels(
-                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value))
-            );
+            forcePixels(((value)));
             didStartScroll();
             didUpdateScrollPositionBy(pixels - oldPixels);
             didEndScroll();
@@ -1892,18 +1890,30 @@ public class RenderSliverOverlapInjector : RenderSliver
                 + "provided by NestedScrollView.headerSliverBuilder.\n"
         );
         double clampedPaintExtent = Math.Min(
-            DartRuntimePrimitives.RequireValue(_currentLayoutExtent),
+            (
+                _currentLayoutExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             constraints.remainingPaintExtent
         );
         double clampedLayoutExtent = Math.Min(
-            DartRuntimePrimitives.RequireValue(_currentLayoutExtent) - constraints.scrollOffset,
+            (
+                _currentLayoutExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) - constraints.scrollOffset,
             constraints.remainingPaintExtent
         );
         geometry = new SliverGeometry(
-            scrollExtent: DartRuntimePrimitives.RequireValue(_currentLayoutExtent),
+            scrollExtent: (
+                _currentLayoutExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             paintExtent: Math.Max(0.0, clampedPaintExtent),
             layoutExtent: Math.Max(0.0, clampedLayoutExtent),
-            maxPaintExtent: DartRuntimePrimitives.RequireValue(_currentMaxExtent)
+            maxPaintExtent: (
+                _currentMaxExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
     }
 
@@ -1989,7 +1999,10 @@ public class NestedScrollViewViewport : Viewport
         : base(
             key: key,
             axisDirection: axisDirection,
-            crossAxisDirection: DartRuntimePrimitives.RequireValue(crossAxisDirection),
+            crossAxisDirection: (
+                crossAxisDirection
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             anchor: anchor,
             offset: offset,
             center: center,

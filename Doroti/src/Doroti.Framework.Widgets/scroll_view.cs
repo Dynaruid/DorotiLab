@@ -140,7 +140,12 @@ public abstract class ScrollView : StatelessWidget
             ?? (
                 (cacheExtent is not null)
                     ? ScrollCacheExtent.CreatePixels(
-                        DartRuntimePrimitives.RequireValue(cacheExtent)
+                        (
+                            cacheExtent
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     )
                     : null
             );
@@ -640,16 +645,21 @@ public class ListView : BoxScrollView
                         long? itemIndexLocal = findItemIndexCallback(key);
                         return (itemIndexLocal is null)
                             ? null
-                            : (DartRuntimePrimitives.RequireValue(itemIndexLocal) * 2L);
+                            : (
+                                (
+                                    itemIndexLocal
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                ) * 2L
+                            );
                         throw new InvalidOperationException(
                             "Dart closure completed without a value."
                         );
                     }
                 )
                 : findChildIndexCallback,
-            childCount: _computeActualChildCount(
-                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(itemCount))
-            ),
+            childCount: _computeActualChildCount(((itemCount))),
             addAutomaticKeepAlives: addAutomaticKeepAlives,
             addRepaintBoundaries: addRepaintBoundaries,
             addSemanticIndexes: addSemanticIndexes,
@@ -721,10 +731,18 @@ public class ListView : BoxScrollView
     {
         if (itemExtent is not null)
         {
-            double itemExtent__value70683 = DartRuntimePrimitives.RequireValue(itemExtent);
+            double itemExtent__value70683 = (
+                itemExtent
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             return new SliverFixedExtentList(
                 @delegate: childrenDelegate,
-                itemExtent: DartRuntimePrimitives.RequireValue(itemExtent)
+                itemExtent: (
+                    itemExtent
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
         }
         else
@@ -759,7 +777,7 @@ public class ListView : BoxScrollView
 
     internal static long _computeActualChildCount(long itemCount)
     {
-        return Math.Max(0L, (DartRuntimePrimitives.RequireValue(itemCount) * 2L) - 1L);
+        return Math.Max(0L, ((itemCount) * 2L) - 1L);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }

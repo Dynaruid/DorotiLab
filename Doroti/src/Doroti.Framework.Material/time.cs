@@ -42,11 +42,31 @@ public class TimeOfDay : IComparable<TimeOfDay>
     {
         DartRuntimePrimitives.Assert(() =>
             (hour is null)
-            || ((hour >= 0L) && (DartRuntimePrimitives.RequireValue(hour) < hoursPerDay))
+            || (
+                (hour >= 0L)
+                && (
+                    (
+                        hour
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) < hoursPerDay
+                )
+            )
         );
         DartRuntimePrimitives.Assert(() =>
             (minute is null)
-            || ((minute >= 0L) && (DartRuntimePrimitives.RequireValue(minute) < minutesPerHour))
+            || (
+                (minute >= 0L)
+                && (
+                    (
+                        minute
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) < minutesPerHour
+                )
+            )
         );
         return new TimeOfDay(hour: hour ?? this.hour, minute: minute ?? this.minute);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -82,10 +102,8 @@ public class TimeOfDay : IComparable<TimeOfDay>
 
     public virtual long compareTo(TimeOfDay other)
     {
-        long hourComparison = hour.CompareTo(DartRuntimePrimitives.RequireValue(other.hour));
-        return (hourComparison == 0L)
-            ? minute.CompareTo(DartRuntimePrimitives.RequireValue(other.minute))
-            : hourComparison;
+        long hourComparison = hour.CompareTo((other.hour));
+        return (hourComparison == 0L) ? minute.CompareTo((other.minute)) : hourComparison;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -114,8 +132,8 @@ public class TimeOfDay : IComparable<TimeOfDay>
             return value.ToString();
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        string hourLabel = addLeadingZeroIfNeeded(DartRuntimePrimitives.RequireValue(hour));
-        string minuteLabel = addLeadingZeroIfNeeded(DartRuntimePrimitives.RequireValue(minute));
+        string hourLabel = addLeadingZeroIfNeeded((hour));
+        string minuteLabel = addLeadingZeroIfNeeded((minute));
         return $"{typeof(TimeOfDay)}({hourLabel}:{minuteLabel})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

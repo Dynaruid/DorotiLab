@@ -149,12 +149,7 @@ public class FadeInImage : StatefulWidget
             ResizeImage.resizeIfNeeded(
                 placeholderCacheWidth,
                 placeholderCacheHeight,
-                new MemoryImage(
-                    placeholder,
-                    scale: DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(placeholderScale)
-                    )
-                )
+                new MemoryImage(placeholder, scale: ((placeholderScale)))
             ),
             placeholderErrorBuilder,
             ResizeImage.resizeIfNeeded(
@@ -261,8 +256,13 @@ public class FadeInImage : StatefulWidget
                     new ExactAssetImage(
                         placeholder,
                         bundle: bundle,
-                        scale: DartRuntimePrimitives.RequireValue(
-                            DartRuntimePrimitives.RequireValue(placeholderScale)
+                        scale: (
+                            (
+                                placeholderScale
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         )
                     )
                 )

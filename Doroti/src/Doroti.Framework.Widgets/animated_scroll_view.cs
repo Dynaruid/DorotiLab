@@ -28,7 +28,10 @@ public class AnimatedList : _AnimatedScrollView__animated_scroll_view
             scrollDirection: scrollDirection,
             reverse: reverse,
             controller: controller,
-            primary: DartRuntimePrimitives.RequireValue(primary),
+            primary: (
+                primary
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             physics: physics,
             shrinkWrap: shrinkWrap,
             padding: padding,
@@ -173,7 +176,10 @@ public class AnimatedGrid : _AnimatedScrollView__animated_scroll_view
             scrollDirection: scrollDirection,
             reverse: reverse,
             controller: controller,
-            primary: DartRuntimePrimitives.RequireValue(primary),
+            primary: (
+                primary
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             physics: physics,
             padding: padding,
             clipBehavior: clipBehavior,
@@ -322,8 +328,13 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
         {
             _sliverAnimatedMultiBoxKey.currentState!.insertItem(
                 index,
-                duration: DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(duration)
+                duration: (
+                    (
+                        duration
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
             );
         }
@@ -332,16 +343,26 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
             long itemIndex = _computeItemIndex(index);
             _sliverAnimatedMultiBoxKey.currentState!.insertItem(
                 itemIndex,
-                duration: DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(duration)
+                duration: (
+                    (
+                        duration
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
             );
             if (_itemsCount > 1L)
             {
                 _sliverAnimatedMultiBoxKey.currentState!.insertItem(
                     itemIndex,
-                    duration: DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(duration)
+                    duration: (
+                        (
+                            duration
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     )
                 );
             }
@@ -360,8 +381,13 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
             _sliverAnimatedMultiBoxKey.currentState!.insertAllItems(
                 index,
                 length,
-                duration: DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(duration)
+                duration: (
+                    (
+                        duration
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
             );
         }
@@ -372,8 +398,13 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
             _sliverAnimatedMultiBoxKey.currentState!.insertAllItems(
                 itemIndex,
                 lengthWithSeparators,
-                duration: DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(duration)
+                duration: (
+                    (
+                        duration
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
             );
         }
@@ -392,8 +423,13 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
             _sliverAnimatedMultiBoxKey.currentState!.removeItem(
                 index,
                 builder,
-                duration: DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(duration)
+                duration: (
+                    (
+                        duration
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
             );
         }
@@ -404,8 +440,13 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
             _sliverAnimatedMultiBoxKey.currentState!.removeItem(
                 itemIndex,
                 builder,
-                duration: DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(duration)
+                duration: (
+                    (
+                        duration
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
             );
             if (visibleItemsCount > 1L)
@@ -415,8 +456,13 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
                     _sliverAnimatedMultiBoxKey.currentState!.removeItem(
                         itemIndex - 1L,
                         _toRemovedItemBuilder(removedSeparatorBuilderLocal, index - 1L),
-                        duration: DartRuntimePrimitives.RequireValue(
-                            DartRuntimePrimitives.RequireValue(duration)
+                        duration: (
+                            (
+                                duration
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         )
                     );
                 }
@@ -425,8 +471,13 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
                     _sliverAnimatedMultiBoxKey.currentState!.removeItem(
                         itemIndex,
                         _toRemovedItemBuilder(removedSeparatorBuilderLocal, index),
-                        duration: DartRuntimePrimitives.RequireValue(
-                            DartRuntimePrimitives.RequireValue(duration)
+                        duration: (
+                            (
+                                duration
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         )
                     );
                 }
@@ -445,8 +496,13 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
         {
             _sliverAnimatedMultiBoxKey.currentState!.removeAllItems(
                 builder,
-                duration: DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(duration)
+                duration: (
+                    (
+                        duration
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
             );
             return;
@@ -458,8 +514,13 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
                 _sliverAnimatedMultiBoxKey.currentState!.removeItem(
                     index,
                     builder,
-                    duration: DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(duration)
+                    duration: (
+                        (
+                            duration
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     )
                 );
             }
@@ -469,8 +530,13 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
                 _sliverAnimatedMultiBoxKey.currentState!.removeItem(
                     index,
                     _toRemovedItemBuilder(removedSeparatorBuilderLocal, itemIndex),
-                    duration: DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(duration)
+                    duration: (
+                        (
+                            duration
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     )
                 );
             }
@@ -1052,8 +1118,13 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
                         long? index = widget.findChildIndexCallback!(key);
                         return (index is not null)
                             ? _indexToItemIndex(
-                                DartRuntimePrimitives.RequireValue(
-                                    DartRuntimePrimitives.RequireValue(index)
+                                (
+                                    (
+                                        index
+                                        ?? throw new global::System.NullReferenceException(
+                                            "Dart null assertion failed."
+                                        )
+                                    )
                                 )
                             )
                             : null;
@@ -1102,7 +1173,10 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
             }
         }
         var controllerLocal = new AnimationController(
-            duration: DartRuntimePrimitives.RequireValue(duration),
+            duration: (
+                duration
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             vsync: this
         );
         var incomingItem = new _ActiveItem__animated_scroll_view(controllerLocal, itemIndexLocal);
@@ -1145,8 +1219,13 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
         {
             insertItem(
                 index + i,
-                duration: DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(duration)
+                duration: (
+                    (
+                        duration
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
             );
         }
@@ -1171,7 +1250,12 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
         AnimationController controllerLocal =
             incomingItem?.controller
             ?? new AnimationController(
-                duration: DartRuntimePrimitives.RequireValue(duration),
+                duration: (
+                    duration
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 value: 1.0,
                 vsync: this
             );
@@ -1243,8 +1327,13 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
             removeItem(
                 i,
                 builder,
-                duration: DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(duration)
+                duration: (
+                    (
+                        duration
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
             );
         }

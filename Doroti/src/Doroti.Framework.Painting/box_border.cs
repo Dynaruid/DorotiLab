@@ -360,7 +360,7 @@ public class Border : BoxBorder
             color: __color,
             width: width,
             style: style,
-            strokeAlign: DartRuntimePrimitives.RequireValue(__strokeAlign)
+            strokeAlign: (__strokeAlign)
         );
         return CreateFromBorderSide(side);
     }
@@ -972,7 +972,10 @@ public class BorderDirectional : BoxBorder
             return;
         }
         DartRuntimePrimitives.Assert(() => textDirection is not null);
-        var (leftLocal, rightLocal) = DartRuntimePrimitives.RequireValue(textDirection) switch
+        var (leftLocal, rightLocal) = (
+            textDirection
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        ) switch
         {
             TextDirection.rtl => ((BorderSide, BorderSide))(end, start),
             TextDirection.ltr => ((BorderSide, BorderSide))(start, end),
@@ -994,7 +997,12 @@ public class BorderDirectional : BoxBorder
                 rect,
                 shape: shape,
                 borderRadius: borderRadius,
-                textDirection: DartRuntimePrimitives.RequireValue(textDirection),
+                textDirection: (
+                    textDirection
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 top: Equals(top.style, BorderStyle.none) ? BorderSide.none : top,
                 right: Equals(rightLocal.style, BorderStyle.none) ? BorderSide.none : rightLocal,
                 bottom: Equals(bottom.style, BorderStyle.none) ? BorderSide.none : bottom,

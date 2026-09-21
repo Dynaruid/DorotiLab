@@ -398,20 +398,50 @@ public class CupertinoTextField : StatefulWidget
         this.enableInteractiveSelection = enableInteractiveSelection ?? (!readOnly || !obscureText);
         System.Diagnostics.Debug.Assert(obscuringCharacter.Length == 1L);
         System.Diagnostics.Debug.Assert(
-            (maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L)
+            (maxLines is null)
+                || (
+                    (
+                        maxLines
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
         System.Diagnostics.Debug.Assert(
-            (minLines is null) || (DartRuntimePrimitives.RequireValue(minLines) > 0L)
+            (minLines is null)
+                || (
+                    (
+                        minLines
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
         System.Diagnostics.Debug.Assert(
             maxLines is null
                 || minLines is null
-                || maxLines >= DartRuntimePrimitives.RequireValue(minLines)
+                || maxLines
+                    >= (
+                        minLines
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
         );
         System.Diagnostics.Debug.Assert(!expands || ((maxLines is null) && (minLines is null)));
         System.Diagnostics.Debug.Assert(!obscureText || (maxLines == 1L));
         System.Diagnostics.Debug.Assert(
-            (maxLength is null) || (DartRuntimePrimitives.RequireValue(maxLength) > 0L)
+            (maxLength is null)
+                || (
+                    (
+                        maxLength
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
         System.Diagnostics.Debug.Assert(
             !DartRuntimePrimitives.Identical(textInputAction, TextInputAction.newline)
@@ -789,11 +819,7 @@ public class CupertinoTextField : StatefulWidget
         properties.add(new DoubleProperty("cursorWidth", cursorWidth, defaultValue: 2.0));
         properties.add(new DoubleProperty("cursorHeight", cursorHeight, defaultValue: null));
         properties.add(
-            new DiagnosticsProperty<Radius>(
-                "cursorRadius",
-                DartRuntimePrimitives.RequireValue(cursorRadius),
-                defaultValue: null
-            )
+            new DiagnosticsProperty<Radius>("cursorRadius", (cursorRadius), defaultValue: null)
         );
         properties.add(
             new DiagnosticsProperty<bool>(
@@ -860,7 +886,7 @@ public class CupertinoTextField : StatefulWidget
         properties.add(
             new DiagnosticsProperty<bool>(
                 "stylusHandwritingEnabled",
-                DartRuntimePrimitives.RequireValue(stylusHandwritingEnabled),
+                (stylusHandwritingEnabled),
                 defaultValue: EditableText.defaultStylusHandwritingEnabled
             )
         );
@@ -2176,8 +2202,9 @@ public class _RenderBaselineAlignedStack__text_field
             layoutChild: ChildLayoutHelper.layoutChild,
             getBaseline: ChildLayoutHelper.getBaseline
         );
-        double editableTextBaselineValue = DartRuntimePrimitives.RequireValue(
+        double editableTextBaselineValue = (
             editableText.getDistanceToBaseline(editableTextBaseline)
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         double? placeholderBaselineValue = placeholder?.getDistanceToBaseline(placeholderBaseline);
         DartRuntimePrimitives.Assert(() =>
@@ -2188,7 +2215,12 @@ public class _RenderBaselineAlignedStack__text_field
                 ? new Offset(
                     0.0,
                     editableTextBaselineValue
-                        - DartRuntimePrimitives.RequireValue(placeholderBaselineValue)
+                        - (
+                            placeholderBaselineValue
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                 )
                 : Offset.zero;
         var verticalAlignment = new Alignment(0.0, textAlignVertical.y);
@@ -2233,8 +2265,9 @@ public class _RenderBaselineAlignedStack__text_field
         double heightLocal = constraints.minHeight;
         RenderBox editableText = _editableTextChild;
         Size editableTextSize = layoutChild(editableText, constraints);
-        double editableTextBaselineValue = DartRuntimePrimitives.RequireValue(
+        double editableTextBaselineValue = (
             getBaseline(editableText, constraints, editableTextBaseline)
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         double editableTextDescent = editableTextSize.height - editableTextBaselineValue;
         Size? placeholderSize = default!;
@@ -2247,11 +2280,21 @@ public class _RenderBaselineAlignedStack__text_field
             placeholderBaselineValue = getBaseline(placeholder, constraints, placeholderBaseline);
             double placeholderDescent =
                 placeholderSize.height
-                - DartRuntimePrimitives.RequireValue(placeholderBaselineValue);
+                - (
+                    placeholderBaselineValue
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
             double maxExtentBaseline =
                 Math.Max(
                     editableTextBaselineValue,
-                    DartRuntimePrimitives.RequireValue(placeholderBaselineValue)
+                    (
+                        placeholderBaselineValue
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 ) + Math.Max(editableTextDescent, placeholderDescent);
             heightLocal = Math.Max(heightLocal, maxExtentBaseline);
         }
@@ -2343,10 +2386,13 @@ public class _RenderBaselineAlignedStack__text_field
                 child,
                 value,
                 debugNameForSlot(
-                    DartRuntimePrimitives.RequireValue(
+                    (
                         DartCollectionRuntime.NullableMapValue<_BaselineAlignedStackSlot__text_field>(
                             childToSlot,
                             child
+                        )
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
                         )
                     )
                 )

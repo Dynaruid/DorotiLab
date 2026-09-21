@@ -57,7 +57,7 @@ public class DrawerHeader : StatelessWidget
             child: new AnimatedContainer(
                 padding: padding.add(EdgeInsets.CreateOnly(top: statusBarHeight)),
                 decoration: decoration,
-                duration: DartRuntimePrimitives.RequireValue(duration),
+                duration: (duration),
                 curve: curve,
                 child: (child is null)
                     ? null

@@ -112,7 +112,12 @@ public class Drawer : StatelessWidget
                     color: (backgroundColor ?? drawerTheme.backgroundColor)
                         ?? defaults.backgroundColor,
                     elevation: (elevation ?? drawerTheme.elevation)
-                        ?? DartRuntimePrimitives.RequireValue(defaults.elevation),
+                        ?? (
+                            defaults.elevation
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
                     shadowColor: (shadowColor ?? drawerTheme.shadowColor) ?? defaults.shadowColor,
                     surfaceTintColor: (surfaceTintColor ?? drawerTheme.surfaceTintColor)
                         ?? defaults.surfaceTintColor,
@@ -120,7 +125,12 @@ public class Drawer : StatelessWidget
                     clipBehavior: (effectiveShape is not null)
                         ? (
                             (clipBehavior ?? drawerTheme.clipBehavior)
-                            ?? DartRuntimePrimitives.RequireValue(defaults.clipBehavior)
+                            ?? (
+                                defaults.clipBehavior
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         )
                         : Clip.none,
                     child: child
@@ -412,7 +422,12 @@ public class DrawerControllerState
     internal virtual void _move(Gestures.DragUpdateDetails details)
     {
         _controller.value +=
-            DartRuntimePrimitives.RequireValue(details.primaryDelta) / _width * _directionFactor;
+            (
+                details.primaryDelta
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+            / _width
+            * _directionFactor;
         bool opened = _controller.value > 0.5;
         if ((opened != _previouslyOpened) && (widget.drawerCallback is not null))
         {

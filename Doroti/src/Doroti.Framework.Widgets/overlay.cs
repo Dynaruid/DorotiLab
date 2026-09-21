@@ -1103,7 +1103,10 @@ internal interface _RenderTheaterMixin__overlay
                 .dy,
             _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
         };
-        return DartRuntimePrimitives.RequireValue(baselineOffset) + y;
+        return (
+                baselineOffset
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) + y;
     }
     public void layoutChild(RenderBox child, BoxConstraints nonPositionedChildConstraints);
     public bool hitTestChildren(BoxHitTestResult result, Offset position);
@@ -2025,11 +2028,26 @@ public class OverlayPortalController
     {
         long now = _wallTime += 1L;
         DartRuntimePrimitives.Assert(() =>
-            (_zOrderIndex is null) || (DartRuntimePrimitives.RequireValue(_zOrderIndex) < now)
+            (_zOrderIndex is null)
+            || (
+                (
+                    _zOrderIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) < now
+            )
         );
         DartRuntimePrimitives.Assert(() =>
             (_attachTarget?._zOrderIndex is null)
-            || (DartRuntimePrimitives.RequireValue(_attachTarget!._zOrderIndex) < now)
+            || (
+                (
+                    _attachTarget!._zOrderIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) < now
+            )
         );
         return now;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2237,8 +2255,18 @@ internal class _OverlayPortalState__overlay : State<OverlayPortal>
             || (
                 (controllerZOrderIndex is not null)
                 && (
-                    DartRuntimePrimitives.RequireValue(controllerZOrderIndex)
-                    > DartRuntimePrimitives.RequireValue(zOrderIndex)
+                    (
+                        controllerZOrderIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                    > (
+                        zOrderIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
             )
         )
@@ -2330,7 +2358,14 @@ internal class _OverlayPortalState__overlay : State<OverlayPortal>
             );
         }
         _OverlayEntryLocation__overlay overlayLocationLocal = _getLocation(
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(zOrderIndex)),
+            (
+                (
+                    zOrderIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            ),
             widget.overlayLocation
         );
         MediaQueryData overlayData = MediaQuery.of(overlayLocationLocal._childModel.context);
@@ -3367,7 +3402,12 @@ internal class _RenderLayoutBuilder__overlay
 
     internal virtual void _frameCallback(Duration __unused0)
     {
-        DartRuntimePrimitives.Assert(() => !DartRuntimePrimitives.RequireValue(debugDisposed));
+        DartRuntimePrimitives.Assert(() =>
+            !(
+                debugDisposed
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        );
         _callbackId = null;
         markNeedsLayout();
     }

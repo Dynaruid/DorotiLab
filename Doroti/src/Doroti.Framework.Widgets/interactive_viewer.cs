@@ -353,7 +353,12 @@ internal class _InteractiveViewerState__interactive_viewer
                 ),
                 PanAxis.aligned => Interactive_viewerLibrary._alignAxis(
                     translation,
-                    DartRuntimePrimitives.RequireValue(_currentAxis)
+                    (
+                        _currentAxis
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 ),
                 PanAxis.free => translation,
                 _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
@@ -577,25 +582,46 @@ internal class _InteractiveViewerState__interactive_viewer
             widget.onInteractionUpdate?.Invoke(details);
             return;
         }
-        switch (DartRuntimePrimitives.RequireValue(_gestureType))
+        switch (
+            (
+                _gestureType
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        )
         {
             case _GestureType__interactive_viewer.scale:
             {
                 DartRuntimePrimitives.Assert(() => _scaleStart is not null);
                 double desiredScale =
-                    DartRuntimePrimitives.RequireValue(_scaleStart) * details.scale;
+                    (
+                        _scaleStart
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) * details.scale;
                 double scaleChange = desiredScale / scaleLocal;
                 _transformer.value = _matrixScale(_transformer.value, scaleChange);
                 Offset focalPointSceneScaled = _transformer.toScene(details.localFocalPoint);
                 _transformer.value = _matrixTranslate(
                     _transformer.value,
-                    focalPointSceneScaled - DartRuntimePrimitives.RequireValue(_referenceFocalPoint)
+                    focalPointSceneScaled
+                        - (
+                            _referenceFocalPoint
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                 );
                 Offset focalPointSceneCheck = _transformer.toScene(details.localFocalPoint);
                 if (
                     !Equals(
                         Interactive_viewerLibrary._round(
-                            DartRuntimePrimitives.RequireValue(_referenceFocalPoint)
+                            (
+                                _referenceFocalPoint
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         ),
                         Interactive_viewerLibrary._round(focalPointSceneCheck)
                     )
@@ -613,7 +639,12 @@ internal class _InteractiveViewerState__interactive_viewer
                     return;
                 }
                 double desiredRotation =
-                    DartRuntimePrimitives.RequireValue(_rotationStart) + details.rotation;
+                    (
+                        _rotationStart
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) + details.rotation;
                 _transformer.value = _matrixRotate(
                     _transformer.value,
                     _currentRotation - desiredRotation,
@@ -631,11 +662,22 @@ internal class _InteractiveViewerState__interactive_viewer
                     return;
                 }
                 _currentAxis ??= Interactive_viewerLibrary._getPanAxis(
-                    DartRuntimePrimitives.RequireValue(_referenceFocalPoint),
+                    (
+                        _referenceFocalPoint
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     focalPointScene
                 );
                 Offset translationChange =
-                    focalPointScene - DartRuntimePrimitives.RequireValue(_referenceFocalPoint);
+                    focalPointScene
+                    - (
+                        _referenceFocalPoint
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    );
                 _transformer.value = _matrixTranslate(_transformer.value, translationChange);
                 _referenceFocalPoint = _transformer.toScene(details.localFocalPoint);
                 break;

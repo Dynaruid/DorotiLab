@@ -242,11 +242,14 @@ public class WindowingOwnerWin32Io : WindowingOwnerIo
             );
             if ((result is not null))
             {
-                long result__7844__value8042 = DartRuntimePrimitives.RequireValue(result);
-                message.@ref.handled = true;
-                message.@ref.lResult = DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(result__7844__value8042)
+                long result__7844__value8042 = (
+                    result
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
+                message.@ref.handled = true;
+                message.@ref.lResult = ((result__7844__value8042));
                 return;
             }
         }
@@ -479,8 +482,11 @@ public class WindowControllerWin32Io : WindowControllerIo, BaseWindowControllerW
                 (Pointer<Void>)
                     (object?)
                         _Win32PlatformInterface___window_win32.getWindowHandle(
-                            DartRuntimePrimitives.RequireValue(
+                            (
                                 WidgetsBinding.instance.platformDispatcher.engineId
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
                             ),
                             checked((long)this.rootView.viewId)
                         )
@@ -743,8 +749,11 @@ public class DialogWindowControllerWin32Io : DialogWindowControllerIo, BaseWindo
                 (Pointer<Void>)
                     (object?)
                         _Win32PlatformInterface___window_win32.getWindowHandle(
-                            DartRuntimePrimitives.RequireValue(
+                            (
                                 WidgetsBinding.instance.platformDispatcher.engineId
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
                             ),
                             checked((long)this.rootView.viewId)
                         )
@@ -855,7 +864,7 @@ public class TooltipWindowControllerWin32Io
         this._delegate = @delegate;
         this._owner = owner;
         this._parent = parent;
-        this._anchorRect = DartRuntimePrimitives.RequireValue(anchorRect);
+        this._anchorRect = (anchorRect);
         this._positioner = positioner;
     }
 
@@ -916,8 +925,11 @@ public class TooltipWindowControllerWin32Io
                 (Pointer<Void>)
                     (object?)
                         _Win32PlatformInterface___window_win32.getWindowHandle(
-                            DartRuntimePrimitives.RequireValue(
+                            (
                                 PlatformDispatcher.instance.engineId
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
                             ),
                             checked((long)this.rootView.viewId)
                         )
@@ -974,10 +986,11 @@ public class TooltipWindowControllerWin32Io
     {
         if ((anchorRect is not null))
         {
-            Rect anchorRect__value25520 = DartRuntimePrimitives.RequireValue(anchorRect);
-            _anchorRect = DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(anchorRect__value25520)
+            Rect anchorRect__value25520 = (
+                anchorRect
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
+            _anchorRect = ((anchorRect__value25520));
         }
         if ((positioner is not null))
         {
@@ -1088,7 +1101,7 @@ public class PopupWindowControllerWin32Io
         this._delegate = @delegate;
         this._owner = owner;
         this._parent = parent;
-        this._anchorRect = DartRuntimePrimitives.RequireValue(anchorRect);
+        this._anchorRect = (anchorRect);
         this._positioner = positioner;
     }
 
@@ -1147,7 +1160,12 @@ public class PopupWindowControllerWin32Io
             (Pointer<Void>)
                 (object?)
                     _Win32PlatformInterface___window_win32.getWindowHandle(
-                        DartRuntimePrimitives.RequireValue(PlatformDispatcher.instance.engineId),
+                        (
+                            PlatformDispatcher.instance.engineId
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
                         checked((long)this.rootView.viewId)
                     )
         );
@@ -1204,10 +1222,11 @@ public class PopupWindowControllerWin32Io
         _ensureNotDestroyed();
         if ((anchorRect is not null))
         {
-            Rect anchorRect__value31555 = DartRuntimePrimitives.RequireValue(anchorRect);
-            _anchorRect = DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(anchorRect__value31555)
+            Rect anchorRect__value31555 = (
+                anchorRect
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
+            _anchorRect = ((anchorRect__value31555));
         }
         if ((positioner is not null))
         {
@@ -1226,8 +1245,11 @@ public class PopupWindowControllerWin32Io
                 (Pointer<Void>)
                     (object?)
                         _Win32PlatformInterface___window_win32.getWindowHandle(
-                            DartRuntimePrimitives.RequireValue(
+                            (
                                 PlatformDispatcher.instance.engineId
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
                             ),
                             checked((long)((BaseWindowControllerIo)this.parent).rootView.viewId)
                         )
@@ -1295,8 +1317,11 @@ public class PopupWindowControllerWin32Io
                 (Pointer<Void>)
                     (object?)
                         _Win32PlatformInterface___window_win32.getWindowHandle(
-                            DartRuntimePrimitives.RequireValue(
+                            (
                                 PlatformDispatcher.instance.engineId
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
                             ),
                             checked((long)((BaseWindowControllerIo)this.parent).rootView.viewId)
                         )

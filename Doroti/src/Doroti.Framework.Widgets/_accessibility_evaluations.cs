@@ -447,12 +447,7 @@ public class MinimumTextContrastEvaluationIo : _ContrastEvaluation___accessibili
             return new List<ViolationIo>();
         }
         DartMap<Color, long> colorHistogram = _accessibility_evaluationsLibrary
-            ._colorsWithinRect(
-                byteData,
-                paintBoundsWithOffset,
-                DartRuntimePrimitives.RequireValue(image.width),
-                DartRuntimePrimitives.RequireValue(image.height)
-            )
+            ._colorsWithinRect(byteData, paintBoundsWithOffset, (image.width), (image.height))
             .cast<Color, long>();
         if (!Enumerable.Any(colorHistogram))
         {
@@ -554,12 +549,7 @@ public class MinimumNonTextContrastEvaluationIo : _ContrastEvaluation___accessib
             return violations;
         }
         DartMap<Color, long> colorHistogram = _accessibility_evaluationsLibrary
-            ._colorsWithinRect(
-                byteData,
-                inflatedBounds,
-                DartRuntimePrimitives.RequireValue(image.width),
-                DartRuntimePrimitives.RequireValue(image.height)
-            )
+            ._colorsWithinRect(byteData, inflatedBounds, (image.width), (image.height))
             .cast<Color, long>();
         if (checked(colorHistogram.Count) <= 1L)
         {
@@ -628,8 +618,20 @@ internal class _ContrastReport___accessibility_evaluations
             }
         }
         return new _ContrastReport___accessibility_evaluations(
-            lightColor?.key ?? DartRuntimePrimitives.RequireValue(darkColor).key,
-            darkColor?.key ?? DartRuntimePrimitives.RequireValue(lightColor).key
+            lightColor?.key
+                ?? (
+                    darkColor
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).key,
+            darkColor?.key
+                ?? (
+                    lightColor
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).key
         );
     }
 

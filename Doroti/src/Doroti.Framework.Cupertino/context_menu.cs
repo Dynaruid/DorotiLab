@@ -274,7 +274,10 @@ internal class _CupertinoContextMenuState__context_menu
             barrierLabel: CupertinoLocalizations.of(context).menuDismissLabel,
             filter: new ImageFilter(sigmaX: 5.0, sigmaY: 5.0),
             contextMenuLocation: _contextMenuLocation,
-            previousChildRect: DartRuntimePrimitives.RequireValue(_decoyChildEndRect),
+            previousChildRect: (
+                _decoyChildEndRect
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             scaleFactor: _scaleFactor,
             builder: (context, animation) =>
             {
@@ -663,7 +666,10 @@ internal class _DecoyChildState__context_menu
     internal virtual Widget _buildAnimation(BuildContext context, Widget? child)
     {
         return Positioned.CreateFromRect(
-            rect: DartRuntimePrimitives.RequireValue(_rect.value),
+            rect: (
+                _rect.value
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             child: new Container(decoration: _boxDecoration.value, child: widget.child)
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -672,7 +678,10 @@ internal class _DecoyChildState__context_menu
     internal virtual Widget _buildBuilder(BuildContext context, Widget? child)
     {
         return Positioned.CreateFromRect(
-            rect: DartRuntimePrimitives.RequireValue(_rect.value),
+            rect: (
+                _rect.value
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             child: widget.builder!(context, widget.controller)
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -914,10 +923,7 @@ internal class _ContextMenuRoute__context_menu<T> : PopupRoute<T>
         return contextMenuLocation switch
         {
             _ContextMenuLocation__context_menu.center
-                when Equals(
-                    DartRuntimePrimitives.RequireValue(orientation),
-                    Orientation.landscape
-                ) => AlignmentDirectional.topStart,
+                when Equals((orientation), Orientation.landscape) => AlignmentDirectional.topStart,
             _ContextMenuLocation__context_menu.center => AlignmentDirectional.topCenter,
             _ContextMenuLocation__context_menu.right => AlignmentDirectional.topEnd,
             _ContextMenuLocation__context_menu.left => AlignmentDirectional.topStart,
@@ -982,7 +988,12 @@ internal class _ContextMenuRoute__context_menu<T> : PopupRoute<T>
                 ? Context_menuLibrary._getRect(_childGlobalKey)
                 : _ContextMenuRoute__context_menu<T>._getScaledRect(
                     _childGlobalKey,
-                    DartRuntimePrimitives.RequireValue(_scale)
+                    (
+                        _scale
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 );
         _rectTween.begin = _previousChildRect;
         _rectTween.end = childRect;
@@ -1001,7 +1012,9 @@ internal class _ContextMenuRoute__context_menu<T> : PopupRoute<T>
         _sheetRectTween.begin = sheetRectBegin;
         _sheetRectTween.end = sheetRect;
         _sheetScaleTween.begin = 0.0;
-        _sheetScaleTween.end = DartRuntimePrimitives.RequireValue(_scale);
+        _sheetScaleTween.end = (
+            _scale ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         _rectTweenReverse.begin = childRectOriginal;
         _rectTweenReverse.end = childRect;
     }
@@ -1079,21 +1092,35 @@ internal class _ContextMenuRoute__context_menu<T> : PopupRoute<T>
         return new OrientationBuilder(
             builder: (context, orientation) =>
             {
-                _lastOrientation = DartRuntimePrimitives.RequireValue(orientation);
+                _lastOrientation = (orientation);
                 if (!animation.isCompleted)
                 {
                     var reverseLocal = Equals(animation.status, AnimationStatus.reverse);
                     Rect rectLocal = reverseLocal
-                        ? DartRuntimePrimitives.RequireValue(
+                        ? (
                             _rectAnimatableReverse.evaluate(animation)
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
                         )
-                        : DartRuntimePrimitives.RequireValue(_rectAnimatable.evaluate(animation));
+                        : (
+                            _rectAnimatable.evaluate(animation)
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        );
                     Rect sheetRect = reverseLocal
-                        ? DartRuntimePrimitives.RequireValue(
+                        ? (
                             _sheetRectAnimatableReverse.evaluate(animation)
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
                         )
-                        : DartRuntimePrimitives.RequireValue(
+                        : (
                             _sheetRectAnimatable.evaluate(animation)
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
                         );
                     double sheetScale = reverseLocal
                         ? _sheetScaleAnimatableReverse.evaluate(animation)
@@ -1109,18 +1136,14 @@ internal class _ContextMenuRoute__context_menu<T> : PopupRoute<T>
                                         child: Transform.CreateScale(
                                             alignment: _ContextMenuRoute__context_menu<T>.getSheetAlignment(
                                                 _contextMenuLocation,
-                                                DartRuntimePrimitives.RequireValue(
-                                                    DartRuntimePrimitives.RequireValue(orientation)
-                                                )
+                                                ((orientation))
                                             ),
                                             scale: sheetScale,
                                             child: new _ContextMenuSheet__context_menu(
                                                 key: _sheetGlobalKey,
                                                 actions: _actions,
                                                 contextMenuLocation: _contextMenuLocation,
-                                                orientation: DartRuntimePrimitives.RequireValue(
-                                                    orientation
-                                                )
+                                                orientation: (orientation)
                                             )
                                         )
                                     )
@@ -1141,7 +1164,7 @@ internal class _ContextMenuRoute__context_menu<T> : PopupRoute<T>
                     childGlobalKey: _childGlobalKey,
                     contextMenuLocation: _contextMenuLocation,
                     onDismiss: _onDismiss,
-                    orientation: DartRuntimePrimitives.RequireValue(orientation),
+                    orientation: (orientation),
                     sheetGlobalKey: _sheetGlobalKey,
                     childRect: _previousChildRect,
                     child: _builder!(context, animation)

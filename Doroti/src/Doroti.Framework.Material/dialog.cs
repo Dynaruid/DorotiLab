@@ -140,7 +140,12 @@ public class Dialog : StatelessWidget
                             color: (backgroundColor ?? dialogTheme.backgroundColor)
                                 ?? defaults.backgroundColor,
                             elevation: (elevation ?? dialogTheme.elevation)
-                                ?? DartRuntimePrimitives.RequireValue(defaults.elevation),
+                                ?? (
+                                    defaults.elevation
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                ),
                             shadowColor: (shadowColor ?? dialogTheme.shadowColor)
                                 ?? defaults.shadowColor,
                             surfaceTintColor: (surfaceTintColor ?? dialogTheme.surfaceTintColor)
@@ -148,7 +153,12 @@ public class Dialog : StatelessWidget
                             shape: (shape ?? dialogTheme.shape) ?? defaults.shape!,
                             type: MaterialType.card,
                             clipBehavior: (clipBehavior ?? dialogTheme.clipBehavior)
-                                ?? DartRuntimePrimitives.RequireValue(defaults.clipBehavior),
+                                ?? (
+                                    defaults.clipBehavior
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                ),
                             child: child
                         )
                     )
@@ -159,7 +169,7 @@ public class Dialog : StatelessWidget
             role: semanticsRole,
             child: new AnimatedPadding(
                 padding: effectivePadding,
-                duration: DartRuntimePrimitives.RequireValue(insetAnimationDuration),
+                duration: (insetAnimationDuration),
                 curve: insetAnimationCurve,
                 child: MediaQuery.CreateRemoveViewInsets(
                     removeLeft: true,
@@ -750,9 +760,7 @@ internal class _AdaptiveAlertDialog__dialog : AlertDialog
                     actions: actions ?? new List<Widget>(),
                     scrollController: scrollController,
                     actionScrollController: actionScrollController,
-                    insetAnimationDuration: DartRuntimePrimitives.RequireValue(
-                        insetAnimationDuration
-                    ),
+                    insetAnimationDuration: (insetAnimationDuration),
                     insetAnimationCurve: insetAnimationCurve
                 );
             }
@@ -1426,8 +1434,9 @@ public static partial class DialogLibrary
     internal static double _scalePadding(double textScaleFactor)
     {
         double clampedTextScaleFactor = Dart_uiLibrary.clampDouble(textScaleFactor, 1.0, 2.0);
-        return DartRuntimePrimitives.RequireValue(
+        return (
             Dart_uiLibrary.lerpDouble(1.0, 1.0 / 3.0, clampedTextScaleFactor - 1.0)
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

@@ -53,32 +53,62 @@ public abstract class PointerEventConverter
                     }
                     Offset positionLocal =
                         new Offset(datum.physicalX, datum.physicalY)
-                        / DartRuntimePrimitives.RequireValue(devicePixelRatio);
+                        / (
+                            devicePixelRatio
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        );
                     Offset deltaLocal =
                         new Offset(datum.physicalDeltaX, datum.physicalDeltaY)
-                        / DartRuntimePrimitives.RequireValue(devicePixelRatio);
+                        / (
+                            devicePixelRatio
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        );
                     double radiusMinorLocal = _toLogicalPixels(
                         datum.radiusMinor,
-                        DartRuntimePrimitives.RequireValue(
-                            DartRuntimePrimitives.RequireValue(devicePixelRatio)
+                        (
+                            (
+                                devicePixelRatio
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         )
                     );
                     double radiusMajorLocal = _toLogicalPixels(
                         datum.radiusMajor,
-                        DartRuntimePrimitives.RequireValue(
-                            DartRuntimePrimitives.RequireValue(devicePixelRatio)
+                        (
+                            (
+                                devicePixelRatio
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         )
                     );
                     double radiusMinLocal = _toLogicalPixels(
                         datum.radiusMin,
-                        DartRuntimePrimitives.RequireValue(
-                            DartRuntimePrimitives.RequireValue(devicePixelRatio)
+                        (
+                            (
+                                devicePixelRatio
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         )
                     );
                     double radiusMaxLocal = _toLogicalPixels(
                         datum.radiusMax,
-                        DartRuntimePrimitives.RequireValue(
-                            DartRuntimePrimitives.RequireValue(devicePixelRatio)
+                        (
+                            (
+                                devicePixelRatio
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         )
                     );
                     Duration timeStampLocal = datum.timeStamp;
@@ -278,10 +308,20 @@ public abstract class PointerEventConverter
                                 {
                                     Offset panLocal =
                                         new Offset(datum.panX, datum.panY)
-                                        / DartRuntimePrimitives.RequireValue(devicePixelRatio);
+                                        / (
+                                            devicePixelRatio
+                                            ?? throw new global::System.NullReferenceException(
+                                                "Dart null assertion failed."
+                                            )
+                                        );
                                     Offset panDeltaLocal =
                                         new Offset(datum.panDeltaX, datum.panDeltaY)
-                                        / DartRuntimePrimitives.RequireValue(devicePixelRatio);
+                                        / (
+                                            devicePixelRatio
+                                            ?? throw new global::System.NullReferenceException(
+                                                "Dart null assertion failed."
+                                            )
+                                        );
                                     return new PointerPanZoomUpdateEvent(
                                         viewId: checked((long)datum.viewId),
                                         timeStamp: timeStampLocal,
@@ -323,7 +363,12 @@ public abstract class PointerEventConverter
                             }
                             Offset scrollDeltaLocal =
                                 new Offset(datum.scrollDeltaX, datum.scrollDeltaY)
-                                / DartRuntimePrimitives.RequireValue(devicePixelRatio);
+                                / (
+                                    devicePixelRatio
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                );
                             return new PointerScrollEvent(
                                 viewId: checked((long)datum.viewId),
                                 timeStamp: timeStampLocal,

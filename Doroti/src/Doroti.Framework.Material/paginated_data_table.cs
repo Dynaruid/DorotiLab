@@ -114,14 +114,27 @@ public class PaginatedDataTable : StatefulWidget
                 || (
                     (sortColumnIndex >= 0L)
                     && (
-                        DartRuntimePrimitives.RequireValue(sortColumnIndex) < checked(columns.Count)
+                        (
+                            sortColumnIndex
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) < checked(columns.Count)
                     )
                 )
         );
         System.Diagnostics.Debug.Assert(
             (dataRowMinHeight is null)
                 || (dataRowMaxHeight is null)
-                || (dataRowMaxHeight >= DartRuntimePrimitives.RequireValue(dataRowMinHeight))
+                || (
+                    dataRowMaxHeight
+                    >= (
+                        dataRowMinHeight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
         );
         System.Diagnostics.Debug.Assert(
             (dataRowHeight is null) || ((dataRowMinHeight is null) && (dataRowMaxHeight is null))
@@ -136,9 +149,7 @@ public class PaginatedDataTable : StatefulWidget
                         if (onRowsPerPageChanged is not null)
                         {
                             DartRuntimePrimitives.Assert(() =>
-                                __availableRowsPerPage.Contains(
-                                    DartRuntimePrimitives.RequireValue(__rowsPerPage)
-                                )
+                                __availableRowsPerPage.Contains((__rowsPerPage))
                             );
                         }
                         return true;

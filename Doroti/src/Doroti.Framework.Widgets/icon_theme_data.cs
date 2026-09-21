@@ -39,13 +39,38 @@ public class IconThemeData : Diagnosticable
         this.applyTextScaling = applyTextScaling;
         _opacity = opacity;
         System.Diagnostics.Debug.Assert(
-            (fill is null) || ((0.0 <= DartRuntimePrimitives.RequireValue(fill)) && (fill <= 1.0))
+            (fill is null)
+                || (
+                    (
+                        0.0
+                        <= (
+                            fill
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    ) && (fill <= 1.0)
+                )
         );
         System.Diagnostics.Debug.Assert(
-            (weight is null) || 0.0 < DartRuntimePrimitives.RequireValue(weight)
+            (weight is null)
+                || 0.0
+                    < (
+                        weight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
         );
         System.Diagnostics.Debug.Assert(
-            (opticalSize is null) || 0.0 < DartRuntimePrimitives.RequireValue(opticalSize)
+            (opticalSize is null)
+                || 0.0
+                    < (
+                        opticalSize
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
         );
     }
 

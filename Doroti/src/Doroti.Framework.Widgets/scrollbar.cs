@@ -198,11 +198,11 @@ public class ScrollbarPainter : ChangeNotifier
         set
         {
             var __value = value;
-            if (thickness == DartRuntimePrimitives.RequireValue(__value))
+            if (thickness == (__value))
             {
                 return;
             }
-            _thickness = DartRuntimePrimitives.RequireValue(__value);
+            _thickness = (__value);
             notifyListeners();
         }
     }
@@ -212,11 +212,11 @@ public class ScrollbarPainter : ChangeNotifier
         set
         {
             var __value = value;
-            if (mainAxisMargin == DartRuntimePrimitives.RequireValue(__value))
+            if (mainAxisMargin == (__value))
             {
                 return;
             }
-            _mainAxisMargin = DartRuntimePrimitives.RequireValue(__value);
+            _mainAxisMargin = (__value);
             notifyListeners();
         }
     }
@@ -226,11 +226,11 @@ public class ScrollbarPainter : ChangeNotifier
         set
         {
             var __value = value;
-            if (crossAxisMargin == DartRuntimePrimitives.RequireValue(__value))
+            if (crossAxisMargin == (__value))
             {
                 return;
             }
-            _crossAxisMargin = DartRuntimePrimitives.RequireValue(__value);
+            _crossAxisMargin = (__value);
             notifyListeners();
         }
     }
@@ -285,11 +285,11 @@ public class ScrollbarPainter : ChangeNotifier
         set
         {
             var __value = value;
-            if (minLength == DartRuntimePrimitives.RequireValue(__value))
+            if (minLength == (__value))
             {
                 return;
             }
-            _minLength = DartRuntimePrimitives.RequireValue(__value);
+            _minLength = (__value);
             notifyListeners();
         }
     }
@@ -299,11 +299,11 @@ public class ScrollbarPainter : ChangeNotifier
         set
         {
             var __value = value;
-            if (minOverscrollLength == DartRuntimePrimitives.RequireValue(__value))
+            if (minOverscrollLength == (__value))
             {
                 return;
             }
-            _minOverscrollLength = DartRuntimePrimitives.RequireValue(__value);
+            _minOverscrollLength = (__value);
             notifyListeners();
         }
     }
@@ -327,11 +327,11 @@ public class ScrollbarPainter : ChangeNotifier
         set
         {
             var __value = value;
-            if (ignorePointer == DartRuntimePrimitives.RequireValue(__value))
+            if (ignorePointer == (__value))
             {
                 return;
             }
-            _ignorePointer = DartRuntimePrimitives.RequireValue(__value);
+            _ignorePointer = (__value);
             notifyListeners();
         }
     }
@@ -369,10 +369,7 @@ public class ScrollbarPainter : ChangeNotifier
         );
         double fractionOverscrolled =
             1.0 - (_lastMetrics!.extentInside / _lastMetrics!.viewportDimension);
-        double safeMinLength = Math.Min(
-            DartRuntimePrimitives.RequireValue(minLength),
-            _traversableTrackExtent
-        );
+        double safeMinLength = Math.Min((minLength), _traversableTrackExtent);
         double newMinLength =
             ((_beforeExtent > 0L) && (_afterExtent > 0L))
                 ? safeMinLength
@@ -428,7 +425,10 @@ public class ScrollbarPainter : ChangeNotifier
                 }
                 return ScrollbarOrientation.bottom;
             }
-            return DartRuntimePrimitives.RequireValue(scrollbarOrientation);
+            return (
+                scrollbarOrientation
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
     }
 
@@ -564,7 +564,7 @@ public class ScrollbarPainter : ChangeNotifier
         {
             case ScrollbarOrientation.left:
             {
-                thumbSize = new Size(DartRuntimePrimitives.RequireValue(thickness), _thumbExtent);
+                thumbSize = new Size((thickness), _thumbExtent);
                 trackSize = new Size(thickness + (2L * crossAxisMargin), _trackExtent);
                 x = crossAxisMargin + _resolvedPadding!.left;
                 y = _thumbOffset;
@@ -578,7 +578,7 @@ public class ScrollbarPainter : ChangeNotifier
             }
             case ScrollbarOrientation.right:
             {
-                thumbSize = new Size(DartRuntimePrimitives.RequireValue(thickness), _thumbExtent);
+                thumbSize = new Size((thickness), _thumbExtent);
                 trackSize = new Size(thickness + (2L * crossAxisMargin), _trackExtent);
                 x = size.width - thickness - crossAxisMargin - _resolvedPadding!.right;
                 y = _thumbOffset;
@@ -589,7 +589,7 @@ public class ScrollbarPainter : ChangeNotifier
             }
             case ScrollbarOrientation.top:
             {
-                thumbSize = new Size(_thumbExtent, DartRuntimePrimitives.RequireValue(thickness));
+                thumbSize = new Size(_thumbExtent, (thickness));
                 trackSize = new Size(_trackExtent, thickness + (2L * crossAxisMargin));
                 x = _thumbOffset;
                 y = crossAxisMargin + _resolvedPadding!.top;
@@ -603,7 +603,7 @@ public class ScrollbarPainter : ChangeNotifier
             }
             case ScrollbarOrientation.bottom:
             {
-                thumbSize = new Size(_thumbExtent, DartRuntimePrimitives.RequireValue(thickness));
+                thumbSize = new Size(_thumbExtent, (thickness));
                 trackSize = new Size(_trackExtent, thickness + (2L * crossAxisMargin));
                 x = _thumbOffset;
                 y = size.height - thickness - crossAxisMargin - _resolvedPadding!.bottom;
@@ -619,14 +619,32 @@ public class ScrollbarPainter : ChangeNotifier
         {
             if (trackRadius is null)
             {
-                canvas.drawRect(DartRuntimePrimitives.RequireValue(_trackRect), _paintTrack());
+                canvas.drawRect(
+                    (
+                        _trackRect
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
+                    _paintTrack()
+                );
             }
             else
             {
                 canvas.drawRRect(
                     RRect.fromRectAndRadius(
-                        DartRuntimePrimitives.RequireValue(_trackRect),
-                        DartRuntimePrimitives.RequireValue(trackRadius)
+                        (
+                            _trackRect
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
+                        (
+                            trackRadius
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     ),
                     _paintTrack()
                 );
@@ -634,11 +652,26 @@ public class ScrollbarPainter : ChangeNotifier
             canvas.drawLine(borderStart, borderEnd, _paintTrack(isBorder: true));
             if (radius is not null)
             {
-                Radius radius__value22874 = DartRuntimePrimitives.RequireValue(radius);
+                Radius radius__value22874 = (
+                    radius
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
                 canvas.drawRRect(
                     RRect.fromRectAndRadius(
-                        DartRuntimePrimitives.RequireValue(_thumbRect),
-                        DartRuntimePrimitives.RequireValue(radius)
+                        (
+                            _thumbRect
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
+                        (
+                            radius
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     ),
                     _paintThumb
                 );
@@ -646,25 +679,51 @@ public class ScrollbarPainter : ChangeNotifier
             }
             if (shape is null)
             {
-                canvas.drawRect(DartRuntimePrimitives.RequireValue(_thumbRect), _paintThumb);
+                canvas.drawRect(
+                    (
+                        _thumbRect
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
+                    _paintThumb
+                );
                 return;
             }
             if (shape!.preferPaintInterior)
             {
                 shape!.paintInterior(
                     canvas,
-                    DartRuntimePrimitives.RequireValue(_thumbRect),
+                    (
+                        _thumbRect
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     _paintThumb
                 );
             }
             else
             {
                 Path outerPath = shape!.getOuterPath(
-                    DartRuntimePrimitives.RequireValue(_thumbRect)
+                    (
+                        _thumbRect
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 );
                 canvas.drawPath(outerPath, _paintThumb);
             }
-            shape!.paint(canvas, DartRuntimePrimitives.RequireValue(_thumbRect));
+            shape!.paint(
+                canvas,
+                (
+                    _thumbRect
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            );
         }
     }
 
@@ -744,9 +803,15 @@ public class ScrollbarPainter : ChangeNotifier
         {
             return false;
         }
-        return DartRuntimePrimitives
-            .RequireValue(_trackRect)
-            .contains(DartRuntimePrimitives.RequireValue(position));
+        return (
+            _trackRect
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        ).contains(
+            (
+                position
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -768,10 +833,18 @@ public class ScrollbarPainter : ChangeNotifier
         {
             return false;
         }
-        Rect interactiveRect = DartRuntimePrimitives.RequireValue(_trackRect);
+        Rect interactiveRect = (
+            _trackRect
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         Rect paddedRect = interactiveRect.expandToInclude(
             Rect.fromCircle(
-                center: DartRuntimePrimitives.RequireValue(_thumbRect).center,
+                center: (
+                    _thumbRect
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).center,
                 radius: ScrollbarLibrary._kMinInteractiveSize / 2L
             )
         );
@@ -779,9 +852,7 @@ public class ScrollbarPainter : ChangeNotifier
         {
             if (forHover && Equals(kind, PointerDeviceKind.mouse))
             {
-                return paddedRect.contains(
-                    DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(position))
-                );
+                return paddedRect.contains(((position)));
             }
             return false;
         }
@@ -790,18 +861,14 @@ public class ScrollbarPainter : ChangeNotifier
             case PointerDeviceKind.touch:
             case PointerDeviceKind.trackpad:
             {
-                return paddedRect.contains(
-                    DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(position))
-                );
+                return paddedRect.contains(((position)));
             }
             case PointerDeviceKind.mouse:
             case PointerDeviceKind.stylus:
             case PointerDeviceKind.invertedStylus:
             case PointerDeviceKind.unknown:
             {
-                return interactiveRect.contains(
-                    DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(position))
-                );
+                return interactiveRect.contains(((position)));
             }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -832,30 +899,35 @@ public class ScrollbarPainter : ChangeNotifier
             case PointerDeviceKind.touch:
             case PointerDeviceKind.trackpad:
             {
-                Rect touchThumbRect = DartRuntimePrimitives
-                    .RequireValue(_thumbRect)
-                    .expandToInclude(
-                        Rect.fromCircle(
-                            center: DartRuntimePrimitives.RequireValue(_thumbRect).center,
-                            radius: ScrollbarLibrary._kMinInteractiveSize / 2L
-                        )
-                    );
-                return touchThumbRect.contains(
-                    DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(position))
+                Rect touchThumbRect = (
+                    _thumbRect
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).expandToInclude(
+                    Rect.fromCircle(
+                        center: (
+                            _thumbRect
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ).center,
+                        radius: ScrollbarLibrary._kMinInteractiveSize / 2L
+                    )
                 );
+                return touchThumbRect.contains(((position)));
             }
             case PointerDeviceKind.mouse:
             case PointerDeviceKind.stylus:
             case PointerDeviceKind.invertedStylus:
             case PointerDeviceKind.unknown:
             {
-                return DartRuntimePrimitives
-                    .RequireValue(_thumbRect)
-                    .contains(
-                        DartRuntimePrimitives.RequireValue(
-                            DartRuntimePrimitives.RequireValue(position)
-                        )
-                    );
+                return (
+                    _thumbRect
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).contains(((position)));
             }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -1317,42 +1389,85 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
             case AxisDirection.up:
             {
                 primaryDeltaFromDragStart =
-                    DartRuntimePrimitives.RequireValue(_startDragScrollbarAxisOffset).dy
-                    - localPosition.dy;
+                    (
+                        _startDragScrollbarAxisOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).dy - localPosition.dy;
                 primaryDeltaFromLastDragUpdate =
-                    DartRuntimePrimitives.RequireValue(_lastDragUpdateOffset).dy - localPosition.dy;
+                    (
+                        _lastDragUpdateOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).dy - localPosition.dy;
                 break;
             }
             case AxisDirection.right:
             {
                 primaryDeltaFromDragStart =
                     localPosition.dx
-                    - DartRuntimePrimitives.RequireValue(_startDragScrollbarAxisOffset).dx;
+                    - (
+                        _startDragScrollbarAxisOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).dx;
                 primaryDeltaFromLastDragUpdate =
-                    localPosition.dx - DartRuntimePrimitives.RequireValue(_lastDragUpdateOffset).dx;
+                    localPosition.dx
+                    - (
+                        _lastDragUpdateOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).dx;
                 break;
             }
             case AxisDirection.down:
             {
                 primaryDeltaFromDragStart =
                     localPosition.dy
-                    - DartRuntimePrimitives.RequireValue(_startDragScrollbarAxisOffset).dy;
+                    - (
+                        _startDragScrollbarAxisOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).dy;
                 primaryDeltaFromLastDragUpdate =
-                    localPosition.dy - DartRuntimePrimitives.RequireValue(_lastDragUpdateOffset).dy;
+                    localPosition.dy
+                    - (
+                        _lastDragUpdateOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).dy;
                 break;
             }
             case AxisDirection.left:
             {
                 primaryDeltaFromDragStart =
-                    DartRuntimePrimitives.RequireValue(_startDragScrollbarAxisOffset).dx
-                    - localPosition.dx;
+                    (
+                        _startDragScrollbarAxisOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).dx - localPosition.dx;
                 primaryDeltaFromLastDragUpdate =
-                    DartRuntimePrimitives.RequireValue(_lastDragUpdateOffset).dx - localPosition.dx;
+                    (
+                        _lastDragUpdateOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).dx - localPosition.dx;
                 break;
             }
         }
         double scrollOffsetGlobal = scrollbarPainter.getTrackToScroll(
-            DartRuntimePrimitives.RequireValue(_startDragThumbOffset) + primaryDeltaFromDragStart
+            (
+                _startDragThumbOffset
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) + primaryDeltaFromDragStart
         );
         if (
             ((primaryDeltaFromDragStart > 0L) && (scrollOffsetGlobal < positionLocal.pixels))
@@ -1463,16 +1578,38 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
         {
             return;
         }
-        Offset deltaLocal = DartRuntimePrimitives.RequireValue(direction) switch
+        Offset deltaLocal = (
+            direction
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        ) switch
         {
-            Axis.horizontal => new Offset(DartRuntimePrimitives.RequireValue(primaryDeltaLocal), 0),
-            Axis.vertical => new Offset(0, DartRuntimePrimitives.RequireValue(primaryDeltaLocal)),
+            Axis.horizontal => new Offset(
+                (
+                    primaryDeltaLocal
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                0
+            ),
+            Axis.vertical => new Offset(
+                0,
+                (
+                    primaryDeltaLocal
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            ),
             _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
         };
         var renderBox = ((RenderBox?)_scrollbarPainterKey.currentContext!.findRenderObject()!)!;
         var scrollDetails = new DragUpdateDetails(
             delta: deltaLocal,
-            primaryDelta: DartRuntimePrimitives.RequireValue(primaryDeltaLocal),
+            primaryDelta: (
+                primaryDeltaLocal
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             globalPosition: renderBox.localToGlobal(localPosition),
             localPosition: localPosition
         );
@@ -1508,7 +1645,10 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
             localPosition: localPosition,
             globalPosition: renderBox.localToGlobal(localPosition),
             velocity: adjustedVelocity,
-            primaryVelocity: DartRuntimePrimitives.RequireValue(direction) switch
+            primaryVelocity: (
+                direction
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) switch
             {
                 Axis.horizontal => adjustedVelocity.pixelsPerSecond.dx,
                 Axis.vertical => adjustedVelocity.pixelsPerSecond.dy,
@@ -1564,7 +1704,10 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
         var intent = new ScrollIntent(direction: scrollDirection, type: ScrollIncrementType.page);
         DartRuntimePrimitives.Assert(() => state is not null);
         double scrollIncrement = ScrollAction.getDirectionalIncrement(
-            DartRuntimePrimitives.RequireValue(state),
+            (
+                state
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             intent
         );
         DartRuntimePrimitives.Ignore(

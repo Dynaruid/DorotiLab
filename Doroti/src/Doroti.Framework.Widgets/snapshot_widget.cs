@@ -335,7 +335,12 @@ internal class _RenderSnapshotWidget__snapshot_widget : RenderProxyBox
                 offset,
                 size,
                 _childRaster!,
-                DartRuntimePrimitives.RequireValue(_childRasterSize),
+                (
+                    _childRasterSize
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 devicePixelRatio
             );
         }

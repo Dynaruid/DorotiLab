@@ -719,15 +719,21 @@ internal class _SearchViewRoute__search_anchor : PopupRoute<_SearchViewRoute__se
                         curve: Curves.easeInOutCubicEmphasized,
                         reverseCurve: Curves.easeInOutCubicEmphasized.flipped
                     );
-                    Rect viewRectLocal = DartRuntimePrimitives.RequireValue(
+                    Rect viewRectLocal = (
                         _rectTween.evaluate(curvedAnimation!)
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     );
                     double topPaddingLocal = showFullScreenView
-                        ? DartRuntimePrimitives.RequireValue(
+                        ? (
                             Dart_uiLibrary.lerpDouble(
                                 0.0,
                                 MediaQuery.paddingOf(context).top,
                                 curvedAnimation!.value
+                            )
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
                             )
                         )
                         : 0.0;
@@ -761,9 +767,12 @@ internal class _SearchViewRoute__search_anchor : PopupRoute<_SearchViewRoute__se
                                 showFullScreenView: showFullScreenView,
                                 animation: curvedAnimation!,
                                 topPadding: topPaddingLocal,
-                                viewMaxWidth: DartRuntimePrimitives
-                                    .RequireValue(_rectTween.end)
-                                    .width,
+                                viewMaxWidth: (
+                                    _rectTween.end
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                ).width,
                                 viewRect: viewRectLocal,
                                 viewBuilder: viewBuilder,
                                 searchController: searchController,
@@ -937,7 +946,14 @@ internal class _ViewContentState__search_anchor : State<_ViewContent__search_anc
             _screenSize = updatedScreenSize;
             if (widget.showFullScreenView)
             {
-                _viewRect = Offset.zero & DartRuntimePrimitives.RequireValue(_screenSize);
+                _viewRect =
+                    Offset.zero
+                    & (
+                        _screenSize
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    );
             }
         }
         if (searchValue != _controller.text)
@@ -1068,7 +1084,10 @@ internal class _ViewContentState__search_anchor : State<_ViewContent__search_anc
             ?? viewDefaults.surfaceTintColor!;
         double effectiveElevation =
             (widget.viewElevation ?? viewTheme.elevation)
-            ?? DartRuntimePrimitives.RequireValue(viewDefaults.elevation);
+            ?? (
+                viewDefaults.elevation
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         BorderSide? effectiveSide = (widget.viewSide ?? viewTheme.side) ?? viewDefaults.side;
         OutlinedBorder effectiveShape =
             (widget.viewShape ?? viewTheme.shape) ?? viewDefaults.shape!;
@@ -1084,7 +1103,12 @@ internal class _ViewContentState__search_anchor : State<_ViewContent__search_anc
             (effectiveHeaderHeight is null)
                 ? null
                 : BoxConstraints.CreateTightFor(
-                    height: DartRuntimePrimitives.RequireValue(effectiveHeaderHeight)
+                    height: (
+                        effectiveHeaderHeight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 );
         TextStyle? effectiveTextStyle =
             (widget.viewHeaderTextStyle ?? viewTheme.headerTextStyle)
@@ -1106,7 +1130,10 @@ internal class _ViewContentState__search_anchor : State<_ViewContent__search_anc
         double minHeightLocal = Math.Min(effectiveConstraints.minHeight, _viewRect.height);
         bool effectiveShrinkWrap =
             (widget.shrinkWrap ?? viewTheme.shrinkWrap)
-            ?? DartRuntimePrimitives.RequireValue(viewDefaults.shrinkWrap);
+            ?? (
+                viewDefaults.shrinkWrap
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         Widget viewDivider = new DividerTheme(
             data: dividerTheme.copyWith(color: effectiveDividerColor),
             child: new Divider(height: 1)
@@ -1136,7 +1163,12 @@ internal class _ViewContentState__search_anchor : State<_ViewContent__search_anc
                                 alignment: Alignment.topLeft,
                                 maxWidth: Math.Min(
                                     widget.viewMaxWidth,
-                                    DartRuntimePrimitives.RequireValue(_screenSize).width
+                                    (
+                                        _screenSize
+                                        ?? throw new global::System.NullReferenceException(
+                                            "Dart null assertion failed."
+                                        )
+                                    ).width
                                 ),
                                 minWidth: 0,
                                 fit: OverflowBoxFit.deferToChild,
@@ -1662,7 +1694,10 @@ internal class _SearchBarState__search_anchor : State<SearchBar>
             (widget.overlayColor ?? searchBarTheme.overlayColor) ?? defaults.overlayColor;
         TextCapitalization effectiveTextCapitalization =
             (widget.textCapitalization ?? searchBarTheme.textCapitalization)
-            ?? DartRuntimePrimitives.RequireValue(defaults.textCapitalization);
+            ?? (
+                defaults.textCapitalization
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         HashSet<WidgetState> statesLocal = _internalStatesController.value;
         TextStyle? effectiveHintStyle =
             (
@@ -1710,7 +1745,12 @@ internal class _SearchBarState__search_anchor : State<SearchBar>
             child: new Opacity(
                 opacity: widget.enabled ? 1 : Search_anchorLibrary._kDisableSearchBarOpacity,
                 child: new Material(
-                    elevation: DartRuntimePrimitives.RequireValue(effectiveElevation),
+                    elevation: (
+                        effectiveElevation
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     shadowColor: effectiveShadowColor,
                     color: effectiveBackgroundColor,
                     surfaceTintColor: effectiveSurfaceTintColor,

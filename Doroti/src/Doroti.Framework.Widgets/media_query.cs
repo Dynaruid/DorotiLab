@@ -139,13 +139,13 @@ public class MediaQueryData
         this.wordSpacingOverride = wordSpacingOverride;
         this.paragraphSpacingOverride = paragraphSpacingOverride;
         this.displayCornerRadii = displayCornerRadii;
-        _textScaleFactor = DartRuntimePrimitives.RequireValue(textScaleFactor);
+        _textScaleFactor = (textScaleFactor);
         _textScaler = __textScaler;
         System.Diagnostics.Debug.Assert(
             DartRuntimePrimitives.Identical(
                 __textScaler,
                 Media_queryLibrary._kUnspecifiedTextScaler
-            ) || (DartRuntimePrimitives.RequireValue(textScaleFactor) == 1.0)
+            ) || ((textScaleFactor) == 1.0)
         );
     }
 
@@ -283,21 +283,13 @@ public class MediaQueryData
         }
         double devicePixelRatioLocal = metrics.devicePixelRatio;
         return new BorderRadius(
-            topLeft: Radius.circular(
-                displayCornerRadiiLocal.topLeft
-                    / DartRuntimePrimitives.RequireValue(devicePixelRatioLocal)
-            ),
-            topRight: Radius.circular(
-                displayCornerRadiiLocal.topRight
-                    / DartRuntimePrimitives.RequireValue(devicePixelRatioLocal)
-            ),
+            topLeft: Radius.circular(displayCornerRadiiLocal.topLeft / (devicePixelRatioLocal)),
+            topRight: Radius.circular(displayCornerRadiiLocal.topRight / (devicePixelRatioLocal)),
             bottomRight: Radius.circular(
-                displayCornerRadiiLocal.bottomRight
-                    / DartRuntimePrimitives.RequireValue(devicePixelRatioLocal)
+                displayCornerRadiiLocal.bottomRight / (devicePixelRatioLocal)
             ),
             bottomLeft: Radius.circular(
-                displayCornerRadiiLocal.bottomLeft
-                    / DartRuntimePrimitives.RequireValue(devicePixelRatioLocal)
+                displayCornerRadiiLocal.bottomLeft / (devicePixelRatioLocal)
             )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -355,14 +347,11 @@ public class MediaQueryData
         DartRuntimePrimitives.Assert(() => (textScaleFactor is null) || (textScaler is null));
         if (textScaleFactor is not null)
         {
-            double textScaleFactor__value39066 = DartRuntimePrimitives.RequireValue(
+            double textScaleFactor__value39066 = (
                 textScaleFactor
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
-            textScaler ??= TextScaler.CreateLinear(
-                DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(textScaleFactor__value39066)
-                )
-            );
+            textScaler ??= TextScaler.CreateLinear(((textScaleFactor__value39066)));
         }
         return new MediaQueryData(
             size: size ?? this.size,
@@ -404,29 +393,30 @@ public class MediaQueryData
     )
     {
         return new MediaQueryData(
-            size: DartRuntimePrimitives.RequireValue(size),
-            devicePixelRatio: DartRuntimePrimitives.RequireValue(devicePixelRatio),
+            size: (
+                size
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            devicePixelRatio: (devicePixelRatio),
             textScaler: textScaler,
-            platformBrightness: DartRuntimePrimitives.RequireValue(platformBrightness),
+            platformBrightness: (platformBrightness),
             padding: padding,
             viewPadding: viewPadding,
             viewInsets: viewInsets,
             systemGestureInsets: systemGestureInsets,
-            alwaysUse24HourFormat: DartRuntimePrimitives.RequireValue(alwaysUse24HourFormat),
-            invertColors: DartRuntimePrimitives.RequireValue(invertColors),
-            highContrast: DartRuntimePrimitives.RequireValue(highContrast),
-            onOffSwitchLabels: DartRuntimePrimitives.RequireValue(onOffSwitchLabels),
-            disableAnimations: DartRuntimePrimitives.RequireValue(disableAnimations),
-            reduceMotion: DartRuntimePrimitives.RequireValue(reduceMotion),
-            accessibleNavigation: DartRuntimePrimitives.RequireValue(accessibleNavigation),
-            boldText: DartRuntimePrimitives.RequireValue(boldText),
-            supportsAnnounce: DartRuntimePrimitives.RequireValue(supportsAnnounce),
-            navigationMode: DartRuntimePrimitives.RequireValue(navigationMode),
+            alwaysUse24HourFormat: (alwaysUse24HourFormat),
+            invertColors: (invertColors),
+            highContrast: (highContrast),
+            onOffSwitchLabels: (onOffSwitchLabels),
+            disableAnimations: (disableAnimations),
+            reduceMotion: (reduceMotion),
+            accessibleNavigation: (accessibleNavigation),
+            boldText: (boldText),
+            supportsAnnounce: (supportsAnnounce),
+            navigationMode: (navigationMode),
             gestureSettings: gestureSettings,
             displayFeatures: displayFeatures,
-            supportsShowingSystemContextMenu: DartRuntimePrimitives.RequireValue(
-                supportsShowingSystemContextMenu
-            ),
+            supportsShowingSystemContextMenu: (supportsShowingSystemContextMenu),
             lineHeightScaleFactorOverride: lineHeightScaleFactorOverride,
             letterSpacingOverride: letterSpacingOverride,
             wordSpacingOverride: wordSpacingOverride,
@@ -439,29 +429,30 @@ public class MediaQueryData
     public virtual MediaQueryData applyDisplayCornerRadii(BorderRadius? displayCornerRadii)
     {
         return new MediaQueryData(
-            size: DartRuntimePrimitives.RequireValue(size),
-            devicePixelRatio: DartRuntimePrimitives.RequireValue(devicePixelRatio),
+            size: (
+                size
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            devicePixelRatio: (devicePixelRatio),
             textScaler: textScaler,
-            platformBrightness: DartRuntimePrimitives.RequireValue(platformBrightness),
+            platformBrightness: (platformBrightness),
             padding: padding,
             viewPadding: viewPadding,
             viewInsets: viewInsets,
             systemGestureInsets: systemGestureInsets,
-            alwaysUse24HourFormat: DartRuntimePrimitives.RequireValue(alwaysUse24HourFormat),
-            invertColors: DartRuntimePrimitives.RequireValue(invertColors),
-            highContrast: DartRuntimePrimitives.RequireValue(highContrast),
-            onOffSwitchLabels: DartRuntimePrimitives.RequireValue(onOffSwitchLabels),
-            disableAnimations: DartRuntimePrimitives.RequireValue(disableAnimations),
-            reduceMotion: DartRuntimePrimitives.RequireValue(reduceMotion),
-            accessibleNavigation: DartRuntimePrimitives.RequireValue(accessibleNavigation),
-            boldText: DartRuntimePrimitives.RequireValue(boldText),
-            supportsAnnounce: DartRuntimePrimitives.RequireValue(supportsAnnounce),
-            navigationMode: DartRuntimePrimitives.RequireValue(navigationMode),
+            alwaysUse24HourFormat: (alwaysUse24HourFormat),
+            invertColors: (invertColors),
+            highContrast: (highContrast),
+            onOffSwitchLabels: (onOffSwitchLabels),
+            disableAnimations: (disableAnimations),
+            reduceMotion: (reduceMotion),
+            accessibleNavigation: (accessibleNavigation),
+            boldText: (boldText),
+            supportsAnnounce: (supportsAnnounce),
+            navigationMode: (navigationMode),
             gestureSettings: gestureSettings,
             displayFeatures: displayFeatures,
-            supportsShowingSystemContextMenu: DartRuntimePrimitives.RequireValue(
-                supportsShowingSystemContextMenu
-            ),
+            supportsShowingSystemContextMenu: (supportsShowingSystemContextMenu),
             lineHeightScaleFactorOverride: lineHeightScaleFactorOverride,
             letterSpacingOverride: letterSpacingOverride,
             wordSpacingOverride: wordSpacingOverride,

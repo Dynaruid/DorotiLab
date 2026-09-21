@@ -314,20 +314,49 @@ internal class _ButtonStyleState__button_style_button
             );
         BoxConstraints effectiveConstraintsLocal = resolvedVisualDensity.effectiveConstraints(
             new BoxConstraints(
-                minWidth: DartRuntimePrimitives.RequireValue(resolvedMinimumSize).width,
-                minHeight: DartRuntimePrimitives.RequireValue(resolvedMinimumSize).height,
-                maxWidth: DartRuntimePrimitives.RequireValue(resolvedMaximumSize).width,
-                maxHeight: DartRuntimePrimitives.RequireValue(resolvedMaximumSize).height
+                minWidth: (
+                    resolvedMinimumSize
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).width,
+                minHeight: (
+                    resolvedMinimumSize
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).height,
+                maxWidth: (
+                    resolvedMaximumSize
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).width,
+                maxHeight: (
+                    resolvedMaximumSize
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).height
             )
         );
         if (resolvedFixedSize is not null)
         {
-            Size resolvedFixedSize__16402__value18999 = DartRuntimePrimitives.RequireValue(
+            Size resolvedFixedSize__16402__value18999 = (
                 resolvedFixedSize
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
             Size sizeLocal = effectiveConstraintsLocal.constrain(
-                DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(resolvedFixedSize__16402__value18999)
+                (
+                    (
+                        resolvedFixedSize__16402__value18999
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 )
             );
             if (double.IsFinite(sizeLocal.width))
@@ -351,7 +380,14 @@ internal class _ButtonStyleState__button_style_button
             .add(new EdgeInsets(dxLocal, dyLocal, dxLocal, dyLocal))
             .clamp(EdgeInsets.zero, EdgeInsetsGeometry.infinity);
         if (
-            (DartRuntimePrimitives.RequireValue(resolvedAnimationDuration) > Duration.zero)
+            (
+                (
+                    resolvedAnimationDuration
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) > Duration.zero
+            )
             && (elevation is not null)
             && (backgroundColor is not null)
             && (elevation != resolvedElevation)
@@ -364,7 +400,12 @@ internal class _ButtonStyleState__button_style_button
             if (
                 !Equals(
                     controller?.duration,
-                    DartRuntimePrimitives.RequireValue(resolvedAnimationDuration)
+                    (
+                        resolvedAnimationDuration
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
             )
             {
@@ -374,8 +415,11 @@ internal class _ButtonStyleState__button_style_button
                         () =>
                         {
                             var __cascade = new AnimationController(
-                                duration: DartRuntimePrimitives.RequireValue(
+                                duration: (
                                     resolvedAnimationDuration
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
                                 ),
                                 vsync: this
                             );
@@ -416,8 +460,13 @@ internal class _ButtonStyleState__button_style_button
         }
         result = DartRuntimePrimitives.ConvertValue<Widget>(
             new AnimatedTheme(
-                duration: DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(resolvedAnimationDuration)
+                duration: (
+                    (
+                        resolvedAnimationDuration
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 ),
                 data: theme.copyWith(
                     iconTheme: iconThemeLocal.merge(
@@ -450,7 +499,12 @@ internal class _ButtonStyleState__button_style_button
             );
         }
         Size minSizeLocal = default!;
-        switch (DartRuntimePrimitives.RequireValue(resolvedTapTargetSize))
+        switch (
+            (
+                resolvedTapTargetSize
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        )
         {
             case MaterialTapTargetSize.padded:
             {
@@ -477,7 +531,12 @@ internal class _ButtonStyleState__button_style_button
                 child: new ConstrainedBox(
                     constraints: effectiveConstraintsLocal,
                     child: new Material(
-                        elevation: DartRuntimePrimitives.RequireValue(resolvedElevation),
+                        elevation: (
+                            resolvedElevation
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
                         textStyle: resolvedTextStyle?.copyWith(color: resolvedForegroundColor),
                         shape: resolvedShape.copyWith(side: resolvedSide),
                         color: resolvedBackgroundColor,
@@ -486,8 +545,11 @@ internal class _ButtonStyleState__button_style_button
                         type: (resolvedBackgroundColor is null)
                             ? MaterialType.transparency
                             : MaterialType.button,
-                        animationDuration: DartRuntimePrimitives.RequireValue(
+                        animationDuration: (
                             resolvedAnimationDuration
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
                         ),
                         clipBehavior: effectiveClipBehavior,
                         borderOnForeground: false,
@@ -730,8 +792,10 @@ public class _RenderInputPadding__button_style_button : RenderShiftedBox
             return null;
         }
         Size childSize = childLocal.getDryLayout(constraints);
-        return DartRuntimePrimitives.RequireValue(result)
-            + Alignment.center.alongOffset(getDryLayout(constraints) - childSize).dy;
+        return (
+                result
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) + Alignment.center.alongOffset(getDryLayout(constraints) - childSize).dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -228,9 +228,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
         }
         if (_moveDeltaBeforeFrame.ContainsKey(pointer))
         {
-            Offset offset = DartRuntimePrimitives.RequireValue(
-                _moveDeltaBeforeFrame.GetValueOrDefault(pointer)
-            );
+            Offset offset = (_moveDeltaBeforeFrame.GetValueOrDefault(pointer));
             _moveDeltaBeforeFrame[pointer] = offset + localDelta;
         }
         else
@@ -246,9 +244,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
         {
             return sum;
         }
-        Offset offset = DartRuntimePrimitives.RequireValue(
-            _moveDeltaBeforeFrame.GetValueOrDefault(pointer)
-        );
+        Offset offset = (_moveDeltaBeforeFrame.GetValueOrDefault(pointer));
         if (positive)
         {
             if (Equals(axis, _DragDirection__monodrag.vertical))
@@ -296,7 +292,15 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
             {
                 if (positive)
                 {
-                    if (sum > DartRuntimePrimitives.RequireValue(max))
+                    if (
+                        sum
+                        > (
+                            max
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    )
                     {
                         ret = pointerLocal;
                         max = sum;
@@ -304,7 +308,15 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
                 }
                 else
                 {
-                    if (sum < DartRuntimePrimitives.RequireValue(max))
+                    if (
+                        sum
+                        < (
+                            max
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    )
                     {
                         ret = pointerLocal;
                         max = sum;
@@ -415,7 +427,12 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
         else
         {
             double maxSumDelta = _getSumDelta(
-                pointer: DartRuntimePrimitives.RequireValue(maxSumDeltaPointer),
+                pointer: (
+                    maxSumDeltaPointer
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 positive: positiveLocal,
                 axis: axis
             );
@@ -544,10 +561,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
                                 (object?)((PointerPanZoomUpdateEvent?)(object?)@event)!
                         )!.localPan
                     );
-            _lastPosition = new OffsetPair(
-                local: DartRuntimePrimitives.RequireValue(localPositionLocal),
-                global: positionAlternate
-            );
+            _lastPosition = new OffsetPair(local: (localPositionLocal), global: positionAlternate);
             Offset resolvedDelta = _resolveLocalDeltaForMultitouch(@event.pointer, localDeltaLocal);
             switch (_state)
             {
@@ -566,9 +580,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
                             .transformDeltaViaPositions(
                                 transform: localToGlobalTransform,
                                 untransformedDelta: movedLocally,
-                                untransformedEndPosition: DartRuntimePrimitives.RequireValue(
-                                    DartRuntimePrimitives.RequireValue(localPositionLocal)
-                                )
+                                untransformedEndPosition: ((localPositionLocal))
                             )
                             .distance * Math.Sign(_getPrimaryValueFromOffset(movedLocally) ?? 1);
                     if (
@@ -594,7 +606,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
                         delta: _getDeltaForDetails(resolvedDelta),
                         primaryDelta: _getPrimaryValueFromOffset(resolvedDelta),
                         globalPosition: positionAlternate,
-                        localPosition: DartRuntimePrimitives.RequireValue(localPositionLocal),
+                        localPosition: (localPositionLocal),
                         pointer: @event.pointer
                     );
                     break;

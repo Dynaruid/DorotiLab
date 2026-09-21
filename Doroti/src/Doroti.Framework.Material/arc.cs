@@ -21,29 +21,39 @@ public class MaterialPointArcTween : Tween<Offset>
 
     public MaterialPointArcTween(Offset? begin = null, Offset? end = null)
         : base(
-            begin: DartRuntimePrimitives.RequireValue(begin),
-            end: DartRuntimePrimitives.RequireValue(end)
+            begin: (
+                begin
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            end: (
+                end
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         ) { }
 
     internal virtual void _initialize()
     {
-        Offset beginLocal = DartRuntimePrimitives.RequireValue(begin);
-        Offset endLocal = DartRuntimePrimitives.RequireValue(end);
-        Offset delta =
-            DartRuntimePrimitives.RequireValue(endLocal)
-            - DartRuntimePrimitives.RequireValue(beginLocal);
+        Offset beginLocal = (begin);
+        Offset endLocal = (end);
+        Offset delta = (endLocal) - (beginLocal);
         double deltaX = delta.dx.abs();
         double deltaY = delta.dy.abs();
         double distanceFromAtoB = delta.distance;
-        var c = new Offset(
-            DartRuntimePrimitives.RequireValue(endLocal).dx,
-            DartRuntimePrimitives.RequireValue(beginLocal).dy
-        );
+        var c = new Offset((endLocal).dx, (beginLocal).dy);
         double sweepAngle()
         {
             return 2.0
                 * Dart_mathLibrary.asin(
-                    distanceFromAtoB / (2.0 * DartRuntimePrimitives.RequireValue(_radius))
+                    distanceFromAtoB
+                        / (
+                            2.0
+                            * (
+                                _radius
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
+                        )
                 );
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
@@ -51,94 +61,69 @@ public class MaterialPointArcTween : Tween<Offset>
         {
             if (deltaX < deltaY)
             {
-                _radius =
-                    distanceFromAtoB
-                    * distanceFromAtoB
-                    / (c - DartRuntimePrimitives.RequireValue(beginLocal)).distance
-                    / 2.0;
+                _radius = distanceFromAtoB * distanceFromAtoB / (c - (beginLocal)).distance / 2.0;
                 _center = new Offset(
-                    DartRuntimePrimitives.RequireValue(endLocal).dx
+                    (endLocal).dx
                         + (
-                            DartRuntimePrimitives.RequireValue(_radius)
-                            * Math.Sign(
-                                DartRuntimePrimitives.RequireValue(beginLocal).dx
-                                    - DartRuntimePrimitives.RequireValue(endLocal).dx
-                            )
+                            (
+                                _radius
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ) * Math.Sign((beginLocal).dx - (endLocal).dx)
                         ),
-                    DartRuntimePrimitives.RequireValue(endLocal).dy
+                    (endLocal).dy
                 );
-                if (
-                    DartRuntimePrimitives.RequireValue(beginLocal).dx
-                    < DartRuntimePrimitives.RequireValue(endLocal).dx
-                )
+                if ((beginLocal).dx < (endLocal).dx)
                 {
-                    _beginAngle =
-                        sweepAngle()
-                        * Math.Sign(
-                            DartRuntimePrimitives.RequireValue(beginLocal).dy
-                                - DartRuntimePrimitives.RequireValue(endLocal).dy
-                        );
+                    _beginAngle = sweepAngle() * Math.Sign((beginLocal).dy - (endLocal).dy);
                     _endAngle = 0.0;
                 }
                 else
                 {
                     _beginAngle =
                         Dart_mathLibrary.pi
-                        + (
-                            sweepAngle()
-                            * Math.Sign(
-                                DartRuntimePrimitives.RequireValue(endLocal).dy
-                                    - DartRuntimePrimitives.RequireValue(beginLocal).dy
-                            )
-                        );
+                        + (sweepAngle() * Math.Sign((endLocal).dy - (beginLocal).dy));
                     _endAngle = Dart_mathLibrary.pi;
                 }
             }
             else
             {
-                _radius =
-                    distanceFromAtoB
-                    * distanceFromAtoB
-                    / (c - DartRuntimePrimitives.RequireValue(endLocal)).distance
-                    / 2.0;
+                _radius = distanceFromAtoB * distanceFromAtoB / (c - (endLocal)).distance / 2.0;
                 _center = new Offset(
-                    DartRuntimePrimitives.RequireValue(beginLocal).dx,
-                    DartRuntimePrimitives.RequireValue(beginLocal).dy
+                    (beginLocal).dx,
+                    (beginLocal).dy
                         + (
-                            Math.Sign(
-                                DartRuntimePrimitives.RequireValue(endLocal).dy
-                                    - DartRuntimePrimitives.RequireValue(beginLocal).dy
-                            ) * DartRuntimePrimitives.RequireValue(_radius)
+                            Math.Sign((endLocal).dy - (beginLocal).dy)
+                            * (
+                                _radius
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         )
                 );
-                if (
-                    DartRuntimePrimitives.RequireValue(beginLocal).dy
-                    < DartRuntimePrimitives.RequireValue(endLocal).dy
-                )
+                if ((beginLocal).dy < (endLocal).dy)
                 {
                     _beginAngle = -Dart_mathLibrary.pi / 2.0;
                     _endAngle =
-                        DartRuntimePrimitives.RequireValue(_beginAngle)
-                        + (
-                            sweepAngle()
-                            * Math.Sign(
-                                DartRuntimePrimitives.RequireValue(endLocal).dx
-                                    - DartRuntimePrimitives.RequireValue(beginLocal).dx
+                        (
+                            _beginAngle
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
                             )
-                        );
+                        ) + (sweepAngle() * Math.Sign((endLocal).dx - (beginLocal).dx));
                 }
                 else
                 {
                     _beginAngle = Dart_mathLibrary.pi / 2.0;
                     _endAngle =
-                        DartRuntimePrimitives.RequireValue(_beginAngle)
-                        + (
-                            sweepAngle()
-                            * Math.Sign(
-                                DartRuntimePrimitives.RequireValue(beginLocal).dx
-                                    - DartRuntimePrimitives.RequireValue(endLocal).dx
+                        (
+                            _beginAngle
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
                             )
-                        );
+                        ) + (sweepAngle() * Math.Sign((beginLocal).dx - (endLocal).dx));
                 }
             }
             DartRuntimePrimitives.Assert(() => _beginAngle is not null);
@@ -229,22 +214,39 @@ public class MaterialPointArcTween : Tween<Offset>
         }
         if (t == 0.0)
         {
-            return DartRuntimePrimitives.RequireValue(begin);
+            return (begin);
         }
         if (t == 1.0)
         {
-            return DartRuntimePrimitives.RequireValue(end);
+            return (end);
         }
         if ((_beginAngle is null) || (_endAngle is null))
         {
-            return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(begin, end, t));
+            return (
+                Dart_uiLibrary.Offset.lerp(begin, end, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
-        double angle = DartRuntimePrimitives.RequireValue(
+        double angle = (
             Dart_uiLibrary.lerpDouble(_beginAngle, _endAngle, t)
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
-        double x = Dart_mathLibrary.cos(angle) * DartRuntimePrimitives.RequireValue(_radius);
-        double y = Dart_mathLibrary.sin(angle) * DartRuntimePrimitives.RequireValue(_radius);
-        return DartRuntimePrimitives.RequireValue(_center) + new Offset(x, y);
+        double x =
+            Dart_mathLibrary.cos(angle)
+            * (
+                _radius
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
+        double y =
+            Dart_mathLibrary.sin(angle)
+            * (
+                _radius
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
+        return (
+                _center
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) + new Offset(x, y);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -297,7 +299,18 @@ public static partial class ArcLibrary
         foreach (var value in input)
         {
             double key = keyFunc(value);
-            if ((maxKey is null) || (key > DartRuntimePrimitives.RequireValue(maxKey)))
+            if (
+                (maxKey is null)
+                || (
+                    key
+                    > (
+                        maxKey
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
+            )
             {
                 maxValue = value;
                 maxKey = key;
@@ -316,26 +329,70 @@ public class MaterialRectArcTween : RectTween
 
     public MaterialRectArcTween(Rect? begin = null, Rect? end = null)
         : base(
-            begin: DartRuntimePrimitives.RequireValue(begin),
-            end: DartRuntimePrimitives.RequireValue(end)
+            begin: (
+                begin
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            end: (
+                end
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         ) { }
 
     internal virtual void _initialize()
     {
         Offset centersVector =
-            DartRuntimePrimitives.RequireValue(end).center
-            - DartRuntimePrimitives.RequireValue(begin).center;
+            (
+                end
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).center
+            - (
+                begin
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).center;
         _Diagonal__arc diagonal = ArcLibrary._maxBy(
             ArcLibrary._allDiagonals.Cast<_Diagonal__arc>(),
             (d) => _diagonalSupport(centersVector, d)
         );
         _beginArc = new MaterialPointArcTween(
-            begin: _cornerFor(DartRuntimePrimitives.RequireValue(begin), diagonal.beginId),
-            end: _cornerFor(DartRuntimePrimitives.RequireValue(end), diagonal.beginId)
+            begin: _cornerFor(
+                (
+                    begin
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                diagonal.beginId
+            ),
+            end: _cornerFor(
+                (
+                    end
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                diagonal.beginId
+            )
         );
         _endArc = new MaterialPointArcTween(
-            begin: _cornerFor(DartRuntimePrimitives.RequireValue(begin), diagonal.endId),
-            end: _cornerFor(DartRuntimePrimitives.RequireValue(end), diagonal.endId)
+            begin: _cornerFor(
+                (
+                    begin
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                diagonal.endId
+            ),
+            end: _cornerFor(
+                (
+                    end
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                diagonal.endId
+            )
         );
         _dirty = false;
     }
@@ -343,8 +400,24 @@ public class MaterialRectArcTween : RectTween
     internal virtual double _diagonalSupport(Offset centersVector, _Diagonal__arc diagonal)
     {
         Offset delta =
-            _cornerFor(DartRuntimePrimitives.RequireValue(begin), diagonal.endId)
-            - _cornerFor(DartRuntimePrimitives.RequireValue(begin), diagonal.beginId);
+            _cornerFor(
+                (
+                    begin
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                diagonal.endId
+            )
+            - _cornerFor(
+                (
+                    begin
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                diagonal.beginId
+            );
         double length = delta.distance;
         return (centersVector.dx * delta.dx / length) + (centersVector.dy * delta.dy / length);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -427,11 +500,17 @@ public class MaterialRectArcTween : RectTween
         }
         if (t == 0.0)
         {
-            return DartRuntimePrimitives.RequireValue(begin);
+            return (
+                begin
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (t == 1.0)
         {
-            return DartRuntimePrimitives.RequireValue(end);
+            return (
+                end
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         return Rect.fromPoints(_beginArc.lerp(t), _endArc.lerp(t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -451,15 +530,27 @@ public class MaterialRectCenterArcTween : RectTween
 
     public MaterialRectCenterArcTween(Rect? begin = null, Rect? end = null)
         : base(
-            begin: DartRuntimePrimitives.RequireValue(begin),
-            end: DartRuntimePrimitives.RequireValue(end)
+            begin: (
+                begin
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            end: (
+                end
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         ) { }
 
     internal virtual void _initialize()
     {
         _centerArc = new MaterialPointArcTween(
-            begin: DartRuntimePrimitives.RequireValue(begin).center,
-            end: DartRuntimePrimitives.RequireValue(end).center
+            begin: (
+                begin
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).center,
+            end: (
+                end
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).center
         );
         _dirty = false;
     }
@@ -508,26 +599,52 @@ public class MaterialRectCenterArcTween : RectTween
         }
         if (t == 0.0)
         {
-            return DartRuntimePrimitives.RequireValue(begin);
+            return (
+                begin
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         if (t == 1.0)
         {
-            return DartRuntimePrimitives.RequireValue(end);
+            return (
+                end
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
         Offset center = _centerArc.lerp(t);
-        double widthLocal = DartRuntimePrimitives.RequireValue(
+        double widthLocal = (
             Dart_uiLibrary.lerpDouble(
-                DartRuntimePrimitives.RequireValue(begin).width,
-                DartRuntimePrimitives.RequireValue(end).width,
+                (
+                    begin
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).width,
+                (
+                    end
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).width,
                 t
-            )
+            ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
-        double heightLocal = DartRuntimePrimitives.RequireValue(
+        double heightLocal = (
             Dart_uiLibrary.lerpDouble(
-                DartRuntimePrimitives.RequireValue(begin).height,
-                DartRuntimePrimitives.RequireValue(end).height,
+                (
+                    begin
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).height,
+                (
+                    end
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).height,
                 t
-            )
+            ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         return Rect.fromLTWH(
             center.dx - (widthLocal / 2.0),

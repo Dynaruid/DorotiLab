@@ -173,20 +173,50 @@ public class CupertinoTextFormFieldRow : FormField<string>
         System.Diagnostics.Debug.Assert((initialValue is null) || (controller is null));
         System.Diagnostics.Debug.Assert(obscuringCharacter.Length == 1L);
         System.Diagnostics.Debug.Assert(
-            (maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L)
+            (maxLines is null)
+                || (
+                    (
+                        maxLines
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
         System.Diagnostics.Debug.Assert(
-            (minLines is null) || (DartRuntimePrimitives.RequireValue(minLines) > 0L)
+            (minLines is null)
+                || (
+                    (
+                        minLines
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
         System.Diagnostics.Debug.Assert(
             maxLines is null
                 || minLines is null
-                || maxLines >= DartRuntimePrimitives.RequireValue(minLines)
+                || maxLines
+                    >= (
+                        minLines
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
         );
         System.Diagnostics.Debug.Assert(!expands || ((maxLines is null) && (minLines is null)));
         System.Diagnostics.Debug.Assert(!obscureText || (maxLines == 1L));
         System.Diagnostics.Debug.Assert(
-            (maxLength is null) || (DartRuntimePrimitives.RequireValue(maxLength) > 0L)
+            (maxLength is null)
+                || (
+                    (
+                        maxLength
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
     }
 

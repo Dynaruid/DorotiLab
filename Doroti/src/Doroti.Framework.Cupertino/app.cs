@@ -544,7 +544,12 @@ internal class _CupertinoInspectorButton__app : InspectorButton
             ),
             child: (
                 Equals(variant, InspectorButtonVariant.toggle)
-                && !DartRuntimePrimitives.RequireValue(toggledOn)
+                && !(
+                    toggledOn
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             )
                 ? new CupertinoButton(
                     minSize: buttonSize,
@@ -579,7 +584,12 @@ internal class _CupertinoInspectorButton__app : InspectorButton
             }
             case InspectorButtonVariant.toggle:
             {
-                return !DartRuntimePrimitives.RequireValue(toggledOn)
+                return !(
+                    toggledOn
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
                     ? primaryColorLocal
                     : secondaryColor;
             }

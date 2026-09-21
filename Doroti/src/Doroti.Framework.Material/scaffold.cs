@@ -797,12 +797,17 @@ public class ScaffoldGeometry
         {
             return new ScaffoldGeometry(bottomNavigationBarTop: bottomNavigationBarTop);
         }
-        Rect scaledButton = DartRuntimePrimitives.RequireValue(
+        Rect scaledButton = (
             Dart_uiLibrary.Rect.lerp(
-                DartRuntimePrimitives.RequireValue(floatingActionButtonArea).center & Size.zero,
+                (
+                    floatingActionButtonArea
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).center & Size.zero,
                 floatingActionButtonArea,
                 scaleFactor
-            )
+            ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         return copyWith(floatingActionButtonArea: scaledButton);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -853,7 +858,12 @@ public class _ScaffoldGeometryNotifier__scaffold : ChangeNotifier, ValueListenab
                 return true;
             });
             return geometry._scaleFloatingActionButton(
-                DartRuntimePrimitives.RequireValue(floatingActionButtonScale)
+                (
+                    floatingActionButtonScale
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
         }
     }
@@ -1062,7 +1072,15 @@ internal class _ScaffoldLayout__scaffold : MultiChildLayoutDelegate
             bottomNavigationBarTopLocal = Math.Max(0.0, bottomLocal - bottomWidgetsHeightLocal);
             positionChild(
                 _ScaffoldSlot__scaffold.bottomNavigationBar,
-                new Offset(0.0, DartRuntimePrimitives.RequireValue(bottomNavigationBarTopLocal))
+                new Offset(
+                    0.0,
+                    (
+                        bottomNavigationBarTopLocal
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
             );
         }
         if (hasChild(_ScaffoldSlot__scaffold.persistentFooter))
@@ -1200,7 +1218,14 @@ internal class _ScaffoldLayout__scaffold : MultiChildLayoutDelegate
         {
             bool hasCustomWidth =
                 (snackBarWidth is not null)
-                && (DartRuntimePrimitives.RequireValue(snackBarWidth) < size.width);
+                && (
+                    (
+                        snackBarWidth
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) < size.width
+                );
             if (Equals(snackBarSizeLocal, Size.zero))
             {
                 snackBarSizeLocal = layoutChild(
@@ -1218,12 +1243,14 @@ internal class _ScaffoldLayout__scaffold : MultiChildLayoutDelegate
             {
                 if (bottomNavigationBarTopLocal is not null)
                 {
-                    double bottomNavigationBarTop__40047__value47887 =
-                        DartRuntimePrimitives.RequireValue(bottomNavigationBarTopLocal);
+                    double bottomNavigationBarTop__40047__value47887 = (
+                        bottomNavigationBarTopLocal
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    );
                     snackBarYOffsetBase = Math.Min(
-                        DartRuntimePrimitives.RequireValue(
-                            bottomNavigationBarTop__40047__value47887
-                        ),
+                        (bottomNavigationBarTop__40047__value47887),
                         floatingActionButtonRect.top
                     );
                 }
@@ -1240,7 +1267,17 @@ internal class _ScaffoldLayout__scaffold : MultiChildLayoutDelegate
                     : contentBottomLocal;
             }
             double xOffset = hasCustomWidth
-                ? ((size.width - DartRuntimePrimitives.RequireValue(snackBarWidth)) / 2L)
+                ? (
+                    (
+                        size.width
+                        - (
+                            snackBarWidth
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    ) / 2L
+                )
                 : 0.0;
             positionChild(
                 _ScaffoldSlot__scaffold.snackBar,
@@ -2882,17 +2919,41 @@ public class ScaffoldState
             _appBarMaxHeight =
                 AppBar.preferredHeightFor(context, widget.appBar!.preferredSize) + topPadding;
             DartRuntimePrimitives.Assert(() =>
-                (DartRuntimePrimitives.RequireValue(_appBarMaxHeight) >= 0.0)
-                && double.IsFinite(DartRuntimePrimitives.RequireValue(_appBarMaxHeight))
+                (
+                    (
+                        _appBarMaxHeight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) >= 0.0
+                )
+                && double.IsFinite(
+                    (
+                        _appBarMaxHeight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
             );
             _addIfNonNull(
                 childrenLocal,
                 new ConstrainedBox(
                     constraints: new BoxConstraints(
-                        maxHeight: DartRuntimePrimitives.RequireValue(_appBarMaxHeight)
+                        maxHeight: (
+                            _appBarMaxHeight
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     ),
                     child: FlexibleSpaceBar.createSettings(
-                        currentExtent: DartRuntimePrimitives.RequireValue(_appBarMaxHeight),
+                        currentExtent: (
+                            _appBarMaxHeight
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
                         child: (Widget)widget.appBar!
                     )
                 ),
@@ -2965,8 +3026,7 @@ public class ScaffoldState
             MaterialBannerThemeData bannerTheme = MaterialBannerTheme.of(context);
             double elevationLocal =
                 (_messengerMaterialBanner?._widget.elevation ?? bannerTheme.elevation) ?? 0.0;
-            extendBodyBehindMaterialBannerLocal =
-                DartRuntimePrimitives.RequireValue(elevationLocal) != 0.0;
+            extendBodyBehindMaterialBannerLocal = (elevationLocal) != 0.0;
             _addIfNonNull(
                 childrenLocal,
                 _messengerMaterialBanner?._widget,

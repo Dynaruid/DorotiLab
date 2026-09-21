@@ -257,9 +257,7 @@ public class Image : StatefulWidget
             cacheHeight,
             new NetworkImageIo(
                 src,
-                scale: DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(scale)
-                ),
+                scale: ((scale)),
                 headers: headers,
                 webHtmlElementStrategy: webHtmlElementStrategy
             )
@@ -335,10 +333,7 @@ public class Image : StatefulWidget
         __instance.image = ResizeImage.resizeIfNeeded(
             cacheWidth,
             cacheHeight,
-            new FileImage(
-                file,
-                scale: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(scale))
-            )
+            new FileImage(file, scale: ((scale)))
         );
         __instance.loadingBuilder = null;
         return __instance;
@@ -418,8 +413,13 @@ public class Image : StatefulWidget
                 ? new global::Doroti.Framework.Painting.ExactAssetImage(
                     name,
                     bundle: bundle,
-                    scale: DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(scale)
+                    scale: (
+                        (
+                            scale
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     ),
                     package: package
                 )
@@ -501,10 +501,7 @@ public class Image : StatefulWidget
         __instance.image = ResizeImage.resizeIfNeeded(
             cacheWidth,
             cacheHeight,
-            new MemoryImage(
-                bytes,
-                scale: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(scale))
-            )
+            new MemoryImage(bytes, scale: ((scale)))
         );
         __instance.loadingBuilder = null;
         return __instance;
@@ -657,8 +654,18 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
                 context,
                 size: ((widget.width is not null) && (widget.height is not null))
                     ? new Size(
-                        DartRuntimePrimitives.RequireValue(widget.width),
-                        DartRuntimePrimitives.RequireValue(widget.height)
+                        (
+                            widget.width
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
+                        (
+                            widget.height
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     )
                     : null
             )
@@ -718,7 +725,14 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
             _frameNumber =
                 (_frameNumber is null)
                     ? 0L
-                    : (DartRuntimePrimitives.RequireValue(_frameNumber) + 1L);
+                    : (
+                        (
+                            _frameNumber
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) + 1L
+                    );
             _wasSynchronouslyLoaded = _wasSynchronouslyLoaded | synchronousCall;
         });
         if (_isPaused)

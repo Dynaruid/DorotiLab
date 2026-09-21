@@ -242,7 +242,12 @@ public class ThemeData : Diagnosticable
         }
         inputDecorationTheme ??= new InputDecorationThemeData();
         platform ??= PlatformLibrary.defaultTargetPlatform;
-        switch (DartRuntimePrimitives.RequireValue(platform))
+        switch (
+            (
+                platform
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        )
         {
             case TargetPlatform.android:
             case TargetPlatform.fuchsia:
@@ -262,18 +267,40 @@ public class ThemeData : Diagnosticable
         pageTransitionsTheme ??= new PageTransitionsTheme();
         scrollbarTheme ??= new ScrollbarThemeData();
         visualDensity ??= VisualDensity.defaultDensityForPlatform(
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(platform))
+            (
+                (
+                    platform
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
         );
         useSystemColors ??= false;
         bool useInkSparkle =
-            Equals(DartRuntimePrimitives.RequireValue(platform), TargetPlatform.android)
-            && !Foundation.ConstantsLibrary.kIsWeb;
+            Equals(
+                (
+                    platform
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                TargetPlatform.android
+            ) && !Foundation.ConstantsLibrary.kIsWeb;
         splashFactory ??= (useInkSparkle ? InkSparkle.splashFactory : InkRipple.splashFactory);
         DartRuntimePrimitives.Assert(
             () =>
                 (colorScheme?.brightness is null)
                 || (brightness is null)
-                || Equals(colorScheme!.brightness, DartRuntimePrimitives.RequireValue(brightness)),
+                || Equals(
+                    colorScheme!.brightness,
+                    (
+                        brightness
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                ),
             () =>
                 (object?)"ThemeData.brightness does not match ColorScheme.brightness. "
                 + "Either override ColorScheme.brightness or ThemeData.brightness to "
@@ -342,14 +369,22 @@ public class ThemeData : Diagnosticable
             hoverColor: hoverColor,
             highlightColor: highlightColor,
             splashColor: splashColor,
-            materialTapTargetSize: DartRuntimePrimitives.RequireValue(materialTapTargetSize)
+            materialTapTargetSize: (
+                materialTapTargetSize
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         disabledColor ??= (isDark ? Colors.white38 : Colors.black38);
         highlightColor ??= (isDark ? new Color(1087163596L) : new Color(1723645116L));
         splashColor ??= (isDark ? new Color(1087163596L) : new Color(1724434632L));
         typography ??= (
             Typography.CreateMaterial2021(
-                platform: DartRuntimePrimitives.RequireValue(platform),
+                platform: (
+                    platform
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 colorScheme: colorScheme
             )
         );
@@ -452,18 +487,33 @@ public class ThemeData : Diagnosticable
         );
         var theme = new ThemeData(
             adaptationMap: _createAdaptationMap(adaptations.Cast<Adaptation<object>>()),
-            applyElevationOverlayColor: DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(applyElevationOverlayColor)
+            applyElevationOverlayColor: (
+                (
+                    applyElevationOverlayColor
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             ),
             cupertinoOverrideTheme: cupertinoOverrideTheme,
             extensions: _themeExtensionIterableToMap(extensions),
             inputDecorationTheme: ((InputDecorationThemeData?)inputDecorationTheme)!,
-            materialTapTargetSize: DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(materialTapTargetSize)
+            materialTapTargetSize: (
+                (
+                    materialTapTargetSize
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             ),
             pageTransitionsTheme: pageTransitionsTheme,
-            platform: DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(platform)
+            platform: (
+                (
+                    platform
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             ),
             scrollbarTheme: scrollbarTheme,
             splashFactory: splashFactory,
@@ -540,7 +590,12 @@ public class ThemeData : Diagnosticable
             dialogBackgroundColor: dialogBackgroundColor,
             indicatorColor: indicatorColor
         );
-        if (DartRuntimePrimitives.RequireValue(useSystemColors))
+        if (
+            (
+                useSystemColors
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        )
         {
             theme = theme._overrideWithSystemColors();
         }
@@ -2427,11 +2482,13 @@ public class VisualDensity : Diagnosticable
             return a;
         }
         return new VisualDensity(
-            horizontal: DartRuntimePrimitives.RequireValue(
+            horizontal: (
                 Dart_uiLibrary.lerpDouble(a.horizontal, b.horizontal, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             ),
-            vertical: DartRuntimePrimitives.RequireValue(
+            vertical: (
                 Dart_uiLibrary.lerpDouble(a.vertical, b.vertical, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");

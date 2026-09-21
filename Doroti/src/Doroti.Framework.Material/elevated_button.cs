@@ -142,20 +142,18 @@ public class ElevatedButton : ButtonStyleButton
         WidgetStateProperty<double>? elevationValue = default!;
         if (elevation is not null)
         {
-            double elevation__value8154 = DartRuntimePrimitives.RequireValue(elevation);
+            double elevation__value8154 = (
+                elevation
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             elevationValue = WidgetStateProperty<double>.CreateFromMap(
                 new DartMap<WidgetStatesConstraint, double>
                 {
                     [WidgetState.disabled.asConstraint()] = 0,
-                    [WidgetState.pressed.asConstraint()] =
-                        DartRuntimePrimitives.RequireValue(elevation__value8154) + 6L,
-                    [WidgetState.hovered.asConstraint()] =
-                        DartRuntimePrimitives.RequireValue(elevation__value8154) + 2L,
-                    [WidgetState.focused.asConstraint()] =
-                        DartRuntimePrimitives.RequireValue(elevation__value8154) + 2L,
-                    [WidgetStateMembers.any] = DartRuntimePrimitives.RequireValue(
-                        elevation__value8154
-                    ),
+                    [WidgetState.pressed.asConstraint()] = (elevation__value8154) + 6L,
+                    [WidgetState.hovered.asConstraint()] = (elevation__value8154) + 2L,
+                    [WidgetState.focused.asConstraint()] = (elevation__value8154) + 2L,
+                    [WidgetStateMembers.any] = (elevation__value8154),
                 }
             );
         }
@@ -283,8 +281,9 @@ internal class _ElevatedButtonWithIconChild__elevated_button : StatelessWidget
             ) ?? IconAlignment.start;
         return new Row(
             mainAxisSize: MainAxisSize.min,
-            spacing: DartRuntimePrimitives.RequireValue(
+            spacing: (
                 Dart_uiLibrary.lerpDouble(8L, 4L, scaleLocal)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             ),
             children: Equals(effectiveIconAlignment, IconAlignment.start)
                 ? new List<Widget>

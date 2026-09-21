@@ -360,7 +360,10 @@ public class RenderSliverGrid : RenderSliverMultiBoxAdaptor
     {
         var __child = (RenderBox)(object)child;
         var childParentData = ((SliverGridParentData?)(object?)__child.parentData!)!;
-        return DartRuntimePrimitives.RequireValue(childParentData.crossAxisOffset);
+        return (
+            childParentData.crossAxisOffset
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -385,8 +388,13 @@ public class RenderSliverGrid : RenderSliverMultiBoxAdaptor
             long trailingGarbage =
                 (targetLastIndex is not null)
                     ? calculateTrailingGarbage(
-                        lastIndex: DartRuntimePrimitives.RequireValue(
-                            DartRuntimePrimitives.RequireValue(targetLastIndex)
+                        lastIndex: (
+                            (
+                                targetLastIndex
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                         )
                     )
                     : 0L;
@@ -449,7 +457,15 @@ public class RenderSliverGrid : RenderSliverMultiBoxAdaptor
         for (
             long indexAlternate = indexOf(trailingChildWithLayout!) + 1L;
             (targetLastIndex is null)
-                || (indexAlternate <= DartRuntimePrimitives.RequireValue(targetLastIndex));
+                || (
+                    indexAlternate
+                    <= (
+                        targetLastIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                );
             ++indexAlternate
         )
         {
@@ -488,7 +504,15 @@ public class RenderSliverGrid : RenderSliverMultiBoxAdaptor
         DartRuntimePrimitives.Assert(() => indexOf(firstChild!) == firstIndexLocal);
         DartRuntimePrimitives.Assert(() =>
             (targetLastIndex is null)
-            || (lastIndexLocal <= DartRuntimePrimitives.RequireValue(targetLastIndex))
+            || (
+                lastIndexLocal
+                <= (
+                    targetLastIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
         );
         double estimatedTotalExtent = reachedEnd
             ? trailingScrollOffsetLocal

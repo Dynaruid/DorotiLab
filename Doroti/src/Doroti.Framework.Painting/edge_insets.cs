@@ -179,12 +179,30 @@ public abstract class EdgeInsetsGeometry
             return EdgeInsetsDirectional.lerp(a__as10557, b__as10587, t);
         }
         return new _MixedEdgeInsets__edge_insets(
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a._left, b._left, t)),
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a._right, b._right, t)),
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a._start, b._start, t)),
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a._end, b._end, t)),
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a._top, b._top, t)),
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a._bottom, b._bottom, t))
+            (
+                Dart_uiLibrary.lerpDouble(a._left, b._left, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            (
+                Dart_uiLibrary.lerpDouble(a._right, b._right, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            (
+                Dart_uiLibrary.lerpDouble(a._start, b._start, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            (
+                Dart_uiLibrary.lerpDouble(a._end, b._end, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            (
+                Dart_uiLibrary.lerpDouble(a._top, b._top, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            (
+                Dart_uiLibrary.lerpDouble(a._bottom, b._bottom, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -491,10 +509,22 @@ public class EdgeInsets : EdgeInsetsGeometry
             return a.op_Multiply(1.0 - t);
         }
         return new EdgeInsets(
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.left, b.left, t)),
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.top, b.top, t)),
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.right, b.right, t)),
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.bottom, b.bottom, t))
+            (
+                Dart_uiLibrary.lerpDouble(a.left, b.left, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            (
+                Dart_uiLibrary.lerpDouble(a.top, b.top, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            (
+                Dart_uiLibrary.lerpDouble(a.right, b.right, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            (
+                Dart_uiLibrary.lerpDouble(a.bottom, b.bottom, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -681,10 +711,22 @@ public class EdgeInsetsDirectional : EdgeInsetsGeometry
             return a.op_Multiply(1.0 - t);
         }
         return new EdgeInsetsDirectional(
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.start, b.start, t)),
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.top, b.top, t)),
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.end, b.end, t)),
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.bottom, b.bottom, t))
+            (
+                Dart_uiLibrary.lerpDouble(a.start, b.start, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            (
+                Dart_uiLibrary.lerpDouble(a.top, b.top, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            (
+                Dart_uiLibrary.lerpDouble(a.end, b.end, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            (
+                Dart_uiLibrary.lerpDouble(a.bottom, b.bottom, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -697,7 +739,10 @@ public class EdgeInsetsDirectional : EdgeInsetsGeometry
                 $"{typeof(EdgeInsetsDirectional)}"
             )
         );
-        return DartRuntimePrimitives.RequireValue(direction) switch
+        return (
+            direction
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        ) switch
         {
             TextDirection.rtl => new EdgeInsets(end, top, start, bottom),
             TextDirection.ltr => new EdgeInsets(start, top, end, bottom),
@@ -852,7 +897,10 @@ internal class _MixedEdgeInsets__edge_insets : EdgeInsetsGeometry
                 $"{typeof(_MixedEdgeInsets__edge_insets)}"
             )
         );
-        return DartRuntimePrimitives.RequireValue(direction) switch
+        return (
+            direction
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        ) switch
         {
             TextDirection.rtl => new EdgeInsets(_end + _left, _top, _start + _right, _bottom),
             TextDirection.ltr => new EdgeInsets(_start + _left, _top, _end + _right, _bottom),

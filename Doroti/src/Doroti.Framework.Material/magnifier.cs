@@ -143,7 +143,12 @@ internal class _TextMagnifierState__magnifier : State<TextMagnifier>
             (_magnifierPosition is not null)
             && (
                 finalMagnifierPosition.dy
-                != DartRuntimePrimitives.RequireValue(_magnifierPosition).dy
+                != (
+                    _magnifierPosition
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).dy
             )
         )
         {
@@ -180,8 +185,14 @@ internal class _TextMagnifierState__magnifier : State<TextMagnifier>
             () => (object?)"Magnifier position should only be null before the first build."
         );
         return new AnimatedPositioned(
-            top: DartRuntimePrimitives.RequireValue(_magnifierPosition).dy,
-            left: DartRuntimePrimitives.RequireValue(_magnifierPosition).dx,
+            top: (
+                _magnifierPosition
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).dy,
+            left: (
+                _magnifierPosition
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).dx,
             duration: _positionShouldBeAnimated
                 ? TextMagnifier.jumpBetweenLinesAnimationDuration
                 : Duration.zero,
@@ -252,7 +263,10 @@ public class Magnifier : StatelessWidget
                     0,
                     kStandardVerticalFocalPointShift + (kDefaultMagnifierSize.height / 2L)
                 ),
-            size: DartRuntimePrimitives.RequireValue(size),
+            size: (
+                size
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             child: new ColoredBox(color: filmColor)
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");

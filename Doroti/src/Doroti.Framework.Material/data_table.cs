@@ -240,7 +240,12 @@ public class DataTable : StatelessWidget
                 || (
                     (sortColumnIndex >= 0L)
                     && (
-                        DartRuntimePrimitives.RequireValue(sortColumnIndex) < checked(columns.Count)
+                        (
+                            sortColumnIndex
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) < checked(columns.Count)
                     )
                 )
         );
@@ -251,7 +256,15 @@ public class DataTable : StatelessWidget
         System.Diagnostics.Debug.Assert(
             (dataRowMinHeight is null)
                 || (dataRowMaxHeight is null)
-                || (dataRowMaxHeight >= DartRuntimePrimitives.RequireValue(dataRowMinHeight))
+                || (
+                    dataRowMaxHeight
+                    >= (
+                        dataRowMinHeight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
         );
         System.Diagnostics.Debug.Assert(
             (dataRowHeight is null) || ((dataRowMinHeight is null) && (dataRowMaxHeight is null))
@@ -271,7 +284,12 @@ public class DataTable : StatelessWidget
             {
                 if (result is not null)
                 {
-                    long result__30086__value30245 = DartRuntimePrimitives.RequireValue(result);
+                    long result__30086__value30245 = (
+                        result
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    );
                     return null;
                 }
                 result = index;
@@ -957,16 +975,24 @@ public class TableRowInkWell : InkResponse
                 var cellParentData = ((TableCellParentData?)cell.parentData!)!;
                 DartRuntimePrimitives.Assert(() => cellParentData.y is not null);
                 Rect rect = table__49236__as49524.getRowBox(
-                    DartRuntimePrimitives.RequireValue(cellParentData.y)
+                    (
+                        cellParentData.y
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 );
                 table__49236__as49524.applyPaintTransform(cell, transform);
                 Offset? offset = MatrixUtils.getAsTranslation(transform);
                 if (offset is not null)
                 {
-                    Offset offset__49929__value49991 = DartRuntimePrimitives.RequireValue(offset);
-                    return rect.shift(
-                        -DartRuntimePrimitives.RequireValue(offset__49929__value49991)
+                    Offset offset__49929__value49991 = (
+                        offset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     );
+                    return rect.shift(-(offset__49929__value49991));
                 }
             }
             return Rect.zero;
@@ -1054,9 +1080,15 @@ public class _SortArrowState__data_table
         )();
         if (widget.visible)
         {
-            _orientationOffset = DartRuntimePrimitives.RequireValue(widget.up)
-                ? 0.0
-                : Dart_mathLibrary.pi;
+            _orientationOffset =
+                (
+                    widget.up
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+                    ? 0.0
+                    : Dart_mathLibrary.pi;
         }
     }
 
@@ -1086,9 +1118,15 @@ public class _SortArrowState__data_table
             {
                 _orientationController.stop();
                 _orientationController.value = 0.0;
-                _orientationOffset = DartRuntimePrimitives.RequireValue(newUp)
-                    ? 0.0
-                    : Dart_mathLibrary.pi;
+                _orientationOffset =
+                    (
+                        newUp
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                        ? 0.0
+                        : Dart_mathLibrary.pi;
                 skipArrow = true;
             }
             if (widget.visible)

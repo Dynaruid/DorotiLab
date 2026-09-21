@@ -351,7 +351,14 @@ public class RenderListWheelViewport
             }
             return Math.Max(
                 0.0,
-                (DartRuntimePrimitives.RequireValue(childManager.childCount) - 1L) * _itemExtent
+                (
+                    (
+                        childManager.childCount
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) - 1L
+                ) * _itemExtent
             );
         }
     }
@@ -413,7 +420,10 @@ public class RenderListWheelViewport
         {
             return 0.0;
         }
-        return DartRuntimePrimitives.RequireValue(childManager.childCount) * _itemExtent;
+        return (
+                childManager.childCount
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) * _itemExtent;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -423,7 +433,10 @@ public class RenderListWheelViewport
         {
             return 0.0;
         }
-        return DartRuntimePrimitives.RequireValue(childManager.childCount) * _itemExtent;
+        return (
+                childManager.childCount
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) * _itemExtent;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -439,7 +452,10 @@ public class RenderListWheelViewport
     {
         var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
         DartRuntimePrimitives.Assert(() => childParentData.index is not null);
-        return DartRuntimePrimitives.RequireValue(childParentData.index);
+        return (
+            childParentData.index
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -740,7 +756,17 @@ public class RenderListWheelViewport
             magnifierTopLinePosition
         );
         bool inCenter = isAfterMagnifierTopLine && isBeforeMagnifierBottomLine;
-        if (((center is null) || DartRuntimePrimitives.RequireValue(center)) && inCenter)
+        if (
+            (
+                (center is null)
+                || (
+                    center
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            ) && inCenter
+        )
         {
             context.pushClipRect(
                 needsCompositing,
@@ -760,7 +786,17 @@ public class RenderListWheelViewport
                 }
             );
         }
-        if (((center is null) || !DartRuntimePrimitives.RequireValue(center)) && inCenter)
+        if (
+            (
+                (center is null)
+                || !(
+                    center
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            ) && inCenter
+        )
         {
             context.pushClipRect(
                 needsCompositing,
@@ -780,7 +816,17 @@ public class RenderListWheelViewport
                 }
             );
         }
-        if (((center is null) || !DartRuntimePrimitives.RequireValue(center)) && !inCenter)
+        if (
+            (
+                (center is null)
+                || !(
+                    center
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            ) && !inCenter
+        )
         {
             _paintChildCylindrically(context, offset, child, cylindricalTransform, offsetToCenter);
         }
@@ -969,7 +1015,14 @@ public class RenderListWheelViewport
         Matrix4 transform = target.getTransformTo(child);
         Rect bounds = MatrixUtils.transformRect(
             transform,
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect))
+            (
+                (
+                    rect
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
         );
         Rect targetRect = bounds.translate(0.0, (size.height - itemExtent) / 2L);
         return new RevealedOffset(offset: targetOffset, rect: targetRect);

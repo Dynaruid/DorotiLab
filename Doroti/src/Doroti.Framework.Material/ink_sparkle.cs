@@ -59,7 +59,7 @@ public class InkSparkle : InteractiveInkFeature
         _color = color;
         _position = position;
         _borderRadius = borderRadius ?? BorderRadius.zero;
-        _textDirection = DartRuntimePrimitives.RequireValue(textDirection);
+        _textDirection = (textDirection);
         _targetRadius =
             (
                 radius
@@ -335,8 +335,18 @@ public class InkSparkle : InteractiveInkFeature
         else
         {
             canvas.translate(
-                DartRuntimePrimitives.RequireValue(originOffset).dx,
-                DartRuntimePrimitives.RequireValue(originOffset).dy
+                (
+                    originOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).dx,
+                (
+                    originOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).dy
             );
         }
     }

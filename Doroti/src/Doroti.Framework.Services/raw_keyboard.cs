@@ -48,7 +48,12 @@ public abstract class RawKeyEventData : Diagnosticable
                     KeyboardSide? side = getModifierSide(key);
                     if (side is not null)
                     {
-                        result[key] = DartRuntimePrimitives.RequireValue(side);
+                        result[key] = (
+                            side
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        );
                     }
                     DartRuntimePrimitives.Assert(() =>
                     {

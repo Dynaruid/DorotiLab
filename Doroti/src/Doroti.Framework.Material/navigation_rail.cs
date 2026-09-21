@@ -99,33 +99,81 @@ public class NavigationRail : StatefulWidget
         System.Diagnostics.Debug.Assert(
             (selectedIndex is null)
                 || (
-                    (0L <= DartRuntimePrimitives.RequireValue(selectedIndex))
+                    (
+                        0L
+                        <= (
+                            selectedIndex
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    )
                     && (
-                        DartRuntimePrimitives.RequireValue(selectedIndex)
-                        < checked(destinations.Count)
+                        (
+                            selectedIndex
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) < checked(destinations.Count)
                     )
                 )
         );
         System.Diagnostics.Debug.Assert(
-            (elevation is null) || (DartRuntimePrimitives.RequireValue(elevation) > 0L)
+            (elevation is null)
+                || (
+                    (
+                        elevation
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
         System.Diagnostics.Debug.Assert(
-            (minWidth is null) || (DartRuntimePrimitives.RequireValue(minWidth) > 0L)
+            (minWidth is null)
+                || (
+                    (
+                        minWidth
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
         System.Diagnostics.Debug.Assert(
             (minExtendedWidth is null)
-                || (DartRuntimePrimitives.RequireValue(minExtendedWidth) > 0L)
+                || (
+                    (
+                        minExtendedWidth
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
         System.Diagnostics.Debug.Assert(
             (minWidth is null)
                 || (minExtendedWidth is null)
-                || (minExtendedWidth >= DartRuntimePrimitives.RequireValue(minWidth))
+                || (
+                    minExtendedWidth
+                    >= (
+                        minWidth
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                )
         );
         System.Diagnostics.Debug.Assert(
             !extended
                 || (labelType is null)
                 || Equals(
-                    DartRuntimePrimitives.RequireValue(labelType),
+                    (
+                        labelType
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     NavigationRailLabelType.none
                 )
         );
@@ -224,14 +272,24 @@ internal class _NavigationRailState__navigation_rail
             if (oldWidget.selectedIndex is not null)
             {
                 _destinationControllers[
-                    (int)DartRuntimePrimitives.RequireValue(oldWidget.selectedIndex)
+                    (int)(
+                        oldWidget.selectedIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 ]
                     .reverse();
             }
             if (widget.selectedIndex is not null)
             {
                 _destinationControllers[
-                    (int)DartRuntimePrimitives.RequireValue(widget.selectedIndex)
+                    (int)(
+                        widget.selectedIndex
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 ]
                     .forward();
             }
@@ -249,13 +307,22 @@ internal class _NavigationRailState__navigation_rail
             ?? defaults.backgroundColor!;
         double elevationLocal =
             (widget.elevation ?? navigationRailTheme.elevation)
-            ?? DartRuntimePrimitives.RequireValue(defaults.elevation);
+            ?? (
+                defaults.elevation
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         double minWidthLocal =
             (widget.minWidth ?? navigationRailTheme.minWidth)
-            ?? DartRuntimePrimitives.RequireValue(defaults.minWidth);
+            ?? (
+                defaults.minWidth
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         double minExtendedWidthLocal =
             (widget.minExtendedWidth ?? navigationRailTheme.minExtendedWidth)
-            ?? DartRuntimePrimitives.RequireValue(defaults.minExtendedWidth);
+            ?? (
+                defaults.minExtendedWidth
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         TextStyle unselectedLabelTextStyleLocal =
             (widget.unselectedLabelTextStyle ?? navigationRailTheme.unselectedLabelTextStyle)
             ?? defaults.unselectedLabelTextStyle!;
@@ -270,13 +337,22 @@ internal class _NavigationRailState__navigation_rail
             ?? defaults.selectedIconTheme!;
         double groupAlignmentLocal =
             (widget.groupAlignment ?? navigationRailTheme.groupAlignment)
-            ?? DartRuntimePrimitives.RequireValue(defaults.groupAlignment);
+            ?? (
+                defaults.groupAlignment
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         NavigationRailLabelType labelTypeLocal =
             (widget.labelType ?? navigationRailTheme.labelType)
-            ?? DartRuntimePrimitives.RequireValue(defaults.labelType);
+            ?? (
+                defaults.labelType
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         bool useIndicatorLocal =
             (widget.useIndicator ?? navigationRailTheme.useIndicator)
-            ?? DartRuntimePrimitives.RequireValue(defaults.useIndicator);
+            ?? (
+                defaults.useIndicator
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         Color? indicatorColorLocal =
             (widget.indicatorColor ?? navigationRailTheme.indicatorColor)
             ?? defaults.indicatorColor;
@@ -483,7 +559,12 @@ internal class _NavigationRailState__navigation_rail
         if (widget.selectedIndex is not null)
         {
             _destinationControllers[
-                (int)DartRuntimePrimitives.RequireValue(widget.selectedIndex)
+                (int)(
+                    widget.selectedIndex
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             ].value = 1.0;
         }
         _extendedController = new AnimationController(
@@ -730,14 +811,22 @@ internal class _RailDestinationState__navigation_rail : State<_RailDestination__
         bool isLargeIconSize =
             (widget.iconTheme.size is not null)
             && (
-                DartRuntimePrimitives.RequireValue(widget.iconTheme.size)
-                > Navigation_barLibrary._kIndicatorHeight
+                (
+                    widget.iconTheme.size
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) > Navigation_barLibrary._kIndicatorHeight
             );
         double indicatorVerticalOffset = isLargeIconSize
             ? (
                 (
-                    DartRuntimePrimitives.RequireValue(widget.iconTheme.size)
-                    - Navigation_barLibrary._kIndicatorHeight
+                    (
+                        widget.iconTheme.size
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) - Navigation_barLibrary._kIndicatorHeight
                 ) / 2L
             )
             : 0;
@@ -833,11 +922,14 @@ internal class _RailDestinationState__navigation_rail : State<_RailDestination__
                             padding: widget.padding ?? EdgeInsets.zero,
                             child: new ConstrainedBox(
                                 constraints: new BoxConstraints(
-                                    minWidth: DartRuntimePrimitives.RequireValue(
+                                    minWidth: (
                                         Dart_uiLibrary.lerpDouble(
                                             widget.minWidth,
                                             widget.minExtendedWidth,
                                             widget.extendedTransitionAnimation.value
+                                        )
+                                        ?? throw new global::System.NullReferenceException(
+                                            "Dart null assertion failed."
                                         )
                                     )
                                 ),
@@ -881,11 +973,14 @@ internal class _RailDestinationState__navigation_rail : State<_RailDestination__
             case NavigationRailLabelType.selected:
             {
                 double appearingAnimationValue = 1L - _positionAnimation.value;
-                double verticalPadding = DartRuntimePrimitives.RequireValue(
+                double verticalPadding = (
                     Dart_uiLibrary.lerpDouble(
                         Navigation_railLibrary._verticalDestinationPaddingNoLabel,
                         Navigation_railLibrary._verticalDestinationPaddingWithLabel,
                         appearingAnimationValue
+                    )
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
                     )
                 );
                 var interval = widget.selected ? new Interval(0.25, 0.75) : new Interval(0.75, 1.0);
@@ -895,11 +990,14 @@ internal class _RailDestinationState__navigation_rail : State<_RailDestination__
                 double minHeightLocal = 0;
                 Widget topSpacing = new SizedBox(height: 0);
                 Widget labelSpacing = new SizedBox(
-                    height: DartRuntimePrimitives.RequireValue(
+                    height: (
                         Dart_uiLibrary.lerpDouble(
                             0L,
                             Navigation_railLibrary._verticalIconLabelSpacingM3,
                             appearingAnimationValue
+                        )
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
                         )
                     )
                 );

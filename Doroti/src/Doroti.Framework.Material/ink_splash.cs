@@ -158,7 +158,12 @@ public class InkSplash : InteractiveInkFeature
                 referenceBox,
                 containedInkWell,
                 rectCallback,
-                DartRuntimePrimitives.RequireValue(position)
+                (
+                    position
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
         _clipCallback = Ink_splashLibrary._getClipCallback(
             referenceBox,
@@ -267,7 +272,10 @@ public class InkSplash : InteractiveInkFeature
             canvas: canvas,
             transform: transform,
             paint: paintLocal,
-            center: DartRuntimePrimitives.RequireValue(centerLocal),
+            center: (
+                centerLocal
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             textDirection: _textDirection,
             radius: _radius.value,
             customBorder: customBorder,

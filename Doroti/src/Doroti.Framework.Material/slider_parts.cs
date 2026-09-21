@@ -85,7 +85,12 @@ public class RectangularSliderTrackShape : SliderTrackShape, BaseSliderTrackShap
         DartRuntimePrimitives.Assert(() => sliderTheme.activeTrackColor is not null);
         DartRuntimePrimitives.Assert(() => sliderTheme.inactiveTrackColor is not null);
         DartRuntimePrimitives.Assert(() => sliderTheme.thumbShape is not null);
-        if (DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) <= 0L)
+        if (
+            (
+                sliderTheme.trackHeight
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) <= 0L
+        )
         {
             return;
         }
@@ -156,10 +161,18 @@ public class RectangularSliderTrackShape : SliderTrackShape, BaseSliderTrackShap
             && (
                 textDirection switch
                 {
-                    TextDirection.rtl => DartRuntimePrimitives.RequireValue(secondaryOffset).dx
-                        < thumbCenter.dx,
-                    TextDirection.ltr => DartRuntimePrimitives.RequireValue(secondaryOffset).dx
-                        > thumbCenter.dx,
+                    TextDirection.rtl => (
+                        secondaryOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).dx < thumbCenter.dx,
+                    TextDirection.ltr => (
+                        secondaryOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).dx > thumbCenter.dx,
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                         throw new InvalidOperationException("Non-exhaustive Dart switch value."),
                 }
@@ -183,7 +196,12 @@ public class RectangularSliderTrackShape : SliderTrackShape, BaseSliderTrackShap
             Rect secondaryTrackSegment = textDirection switch
             {
                 TextDirection.rtl => Rect.fromLTRB(
-                    DartRuntimePrimitives.RequireValue(secondaryOffset).dx,
+                    (
+                        secondaryOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).dx,
                     trackRect.top,
                     thumbCenter.dx,
                     trackRect.bottom
@@ -191,7 +209,12 @@ public class RectangularSliderTrackShape : SliderTrackShape, BaseSliderTrackShap
                 TextDirection.ltr => Rect.fromLTRB(
                     thumbCenter.dx,
                     trackRect.top,
-                    DartRuntimePrimitives.RequireValue(secondaryOffset).dx,
+                    (
+                        secondaryOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).dx,
                     trackRect.bottom
                 ),
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
@@ -216,7 +239,10 @@ public class RectangularSliderTrackShape : SliderTrackShape, BaseSliderTrackShap
         double overlayWidth = sliderTheme
             .overlayShape!.getPreferredSize(isEnabled, isDiscrete)
             .width;
-        double trackHeightLocal = DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight);
+        double trackHeightLocal = (
+            sliderTheme.trackHeight
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         DartRuntimePrimitives.Assert(() => overlayWidth >= 0L);
         DartRuntimePrimitives.Assert(() => trackHeightLocal >= 0L);
         if (
@@ -273,7 +299,14 @@ public class RoundedRectSliderTrackShape : SliderTrackShape, BaseSliderTrackShap
         DartRuntimePrimitives.Assert(() => sliderTheme.thumbShape is not null);
         if (
             (sliderTheme.trackHeight is null)
-            || (DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) <= 0L)
+            || (
+                (
+                    sliderTheme.trackHeight
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) <= 0L
+            )
         )
         {
             return;
@@ -328,13 +361,28 @@ public class RoundedRectSliderTrackShape : SliderTrackShape, BaseSliderTrackShap
         var isRTL = Equals(textDirection, TextDirection.rtl);
         bool drawInactiveTrack =
             __thumbCenter.dx
-            < trackRect.right - (DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L);
+            < trackRect.right
+                - (
+                    (
+                        sliderTheme.trackHeight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) / 2L
+                );
         if (drawInactiveTrack)
         {
             context.canvas.drawRRect(
                 RRect.fromLTRBR(
                     __thumbCenter.dx
-                        - (DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L),
+                        - (
+                            (
+                                sliderTheme.trackHeight
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ) / 2L
+                        ),
                     isRTL ? (trackRect.top - (additionalActiveTrackHeight / 2L)) : trackRect.top,
                     trackRect.right,
                     isRTL
@@ -347,7 +395,15 @@ public class RoundedRectSliderTrackShape : SliderTrackShape, BaseSliderTrackShap
         }
         bool drawActiveTrack =
             __thumbCenter.dx
-            > trackRect.left + (DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L);
+            > trackRect.left
+                + (
+                    (
+                        sliderTheme.trackHeight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) / 2L
+                );
         if (drawActiveTrack)
         {
             context.canvas.drawRRect(
@@ -355,7 +411,14 @@ public class RoundedRectSliderTrackShape : SliderTrackShape, BaseSliderTrackShap
                     trackRect.left,
                     isLTR ? (trackRect.top - (additionalActiveTrackHeight / 2L)) : trackRect.top,
                     __thumbCenter.dx
-                        + (DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L),
+                        + (
+                            (
+                                sliderTheme.trackHeight
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ) / 2L
+                        ),
                     isLTR
                         ? (trackRect.bottom + (additionalActiveTrackHeight / 2L))
                         : trackRect.bottom,
@@ -368,8 +431,22 @@ public class RoundedRectSliderTrackShape : SliderTrackShape, BaseSliderTrackShap
             secondaryOffset is not null
             && (
                 isLTR
-                    ? (DartRuntimePrimitives.RequireValue(secondaryOffset).dx > __thumbCenter.dx)
-                    : (DartRuntimePrimitives.RequireValue(secondaryOffset).dx < __thumbCenter.dx)
+                    ? (
+                        (
+                            secondaryOffset
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ).dx > __thumbCenter.dx
+                    )
+                    : (
+                        (
+                            secondaryOffset
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ).dx < __thumbCenter.dx
+                    )
             );
         if (showSecondaryTrack)
         {
@@ -393,7 +470,12 @@ public class RoundedRectSliderTrackShape : SliderTrackShape, BaseSliderTrackShap
                     RRect.fromLTRBAndCorners(
                         __thumbCenter.dx,
                         trackRect.top,
-                        DartRuntimePrimitives.RequireValue(secondaryOffset).dx,
+                        (
+                            secondaryOffset
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ).dx,
                         trackRect.bottom,
                         topRight: trackRadius,
                         bottomRight: trackRadius
@@ -405,7 +487,12 @@ public class RoundedRectSliderTrackShape : SliderTrackShape, BaseSliderTrackShap
             {
                 context.canvas.drawRRect(
                     RRect.fromLTRBAndCorners(
-                        DartRuntimePrimitives.RequireValue(secondaryOffset).dx,
+                        (
+                            secondaryOffset
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ).dx,
                         trackRect.top,
                         __thumbCenter.dx,
                         trackRect.bottom,
@@ -432,7 +519,10 @@ public class RoundedRectSliderTrackShape : SliderTrackShape, BaseSliderTrackShap
         double overlayWidth = sliderTheme
             .overlayShape!.getPreferredSize(isEnabled, isDiscrete)
             .width;
-        double trackHeightLocal = DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight);
+        double trackHeightLocal = (
+            sliderTheme.trackHeight
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         DartRuntimePrimitives.Assert(() => overlayWidth >= 0L);
         DartRuntimePrimitives.Assert(() => trackHeightLocal >= 0L);
         if (
@@ -474,7 +564,15 @@ public class RoundSliderTickMarkShape : SliderTickMarkShape
     {
         DartRuntimePrimitives.Assert(() => sliderTheme.trackHeight is not null);
         return Size.fromRadius(
-            tickMarkRadius ?? (DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 4L)
+            tickMarkRadius
+                ?? (
+                    (
+                        sliderTheme.trackHeight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) / 4L
+                )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -530,15 +628,9 @@ public class RoundSliderTickMarkShape : SliderTickMarkShape
         )();
         double tickMarkRadius =
             getPreferredSize(isEnabled: isEnabled, sliderTheme: sliderTheme).width / 2L;
-        if (DartRuntimePrimitives.RequireValue(tickMarkRadius) > 0L)
+        if ((tickMarkRadius) > 0L)
         {
-            context.canvas.drawCircle(
-                center,
-                DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(tickMarkRadius)
-                ),
-                paintLocal
-            );
+            context.canvas.drawCircle(center, ((tickMarkRadius)), paintLocal);
         }
     }
 }
@@ -691,7 +783,10 @@ public class DropSliderValueIndicatorShape : SliderComponentShape
         );
         return _pathPainter.getPreferredSize(
             labelPainter!,
-            DartRuntimePrimitives.RequireValue(textScaleFactor)
+            (
+                textScaleFactor
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -719,9 +814,7 @@ public class DropSliderValueIndicatorShape : SliderComponentShape
             center: center,
             scale: scaleLocal,
             labelPainter: labelPainter,
-            textScaleFactor: DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(textScaleFactor)
-            ),
+            textScaleFactor: ((textScaleFactor)),
             sizeWithOverflow: sizeWithOverflow,
             backgroundPaintColor: sliderTheme.valueIndicatorColor!,
             strokePaintColor: sliderTheme.valueIndicatorStrokeColor
@@ -935,8 +1028,9 @@ public class HandleThumbShape : SliderComponentShape
         );
         Color colorLocal = colorTween.evaluate(enableAnimation)!;
         Canvas canvasLocal = context.canvas;
-        Size thumbSizeLocal = DartRuntimePrimitives.RequireValue(
+        Size thumbSizeLocal = (
             sliderTheme.thumbSize!.resolve(new HashSet<WidgetState>())
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         var rrect = RRect.fromRectAndRadius(
             Rect.fromCenter(
@@ -988,11 +1082,21 @@ public class GappedSliderTrackShape : SliderTrackShape, BaseSliderTrackShape
         DartRuntimePrimitives.Assert(() => sliderTheme.thumbShape is not null);
         DartRuntimePrimitives.Assert(() => sliderTheme.trackGap is not null);
         DartRuntimePrimitives.Assert(() =>
-            !DartRuntimePrimitives.RequireValue(sliderTheme.trackGap).isNegative()
+            !(
+                sliderTheme.trackGap
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).isNegative()
         );
         if (
             (sliderTheme.trackHeight is null)
-            || (DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) <= 0L)
+            || (
+                (
+                    sliderTheme.trackHeight
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) <= 0L
+            )
         )
         {
             return;
@@ -1042,7 +1146,10 @@ public class GappedSliderTrackShape : SliderTrackShape, BaseSliderTrackShape
                 break;
             }
         }
-        double trackGapLocal = DartRuntimePrimitives.RequireValue(sliderTheme.trackGap);
+        double trackGapLocal = (
+            sliderTheme.trackGap
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         Rect trackRect = getPreferredRect(
             parentBox: parentBox,
             offset: offset,
@@ -1094,10 +1201,26 @@ public class GappedSliderTrackShape : SliderTrackShape, BaseSliderTrackShape
         );
         bool drawLeftTrack =
             __thumbCenter.dx
-            > leftRRect.left + (DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L);
+            > leftRRect.left
+                + (
+                    (
+                        sliderTheme.trackHeight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) / 2L
+                );
         bool drawRightTrack =
             __thumbCenter.dx
-            < rightRRect.right - (DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L);
+            < rightRRect.right
+                - (
+                    (
+                        sliderTheme.trackHeight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) / 2L
+                );
         if (drawLeftTrack)
         {
             context.canvas.drawRRect(leftRRect, leftTrackPaint);
@@ -1112,10 +1235,18 @@ public class GappedSliderTrackShape : SliderTrackShape, BaseSliderTrackShape
             && (
                 (object)isLTR switch
                 {
-                    true => DartRuntimePrimitives.RequireValue(secondaryOffset).dx
-                        > (__thumbCenter.dx + trackGapLocal),
-                    false => DartRuntimePrimitives.RequireValue(secondaryOffset).dx
-                        < (__thumbCenter.dx - trackGapLocal),
+                    true => (
+                        secondaryOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).dx > (__thumbCenter.dx + trackGapLocal),
+                    false => (
+                        secondaryOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).dx < (__thumbCenter.dx - trackGapLocal),
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                         throw new InvalidOperationException("Non-exhaustive Dart switch value."),
                 }
@@ -1142,7 +1273,12 @@ public class GappedSliderTrackShape : SliderTrackShape, BaseSliderTrackShape
                     RRect.fromLTRBAndCorners(
                         __thumbCenter.dx + trackGapLocal,
                         trackRect.top,
-                        DartRuntimePrimitives.RequireValue(secondaryOffset).dx,
+                        (
+                            secondaryOffset
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ).dx,
                         trackRect.bottom,
                         topLeft: trackInsideCornerRadius,
                         bottomLeft: trackInsideCornerRadius,
@@ -1156,7 +1292,12 @@ public class GappedSliderTrackShape : SliderTrackShape, BaseSliderTrackShape
             {
                 context.canvas.drawRRect(
                     RRect.fromLTRBAndCorners(
-                        DartRuntimePrimitives.RequireValue(secondaryOffset).dx - trackGapLocal,
+                        (
+                            secondaryOffset
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ).dx - trackGapLocal,
                         trackRect.top,
                         __thumbCenter.dx,
                         trackRect.bottom,
@@ -1172,7 +1313,10 @@ public class GappedSliderTrackShape : SliderTrackShape, BaseSliderTrackShape
         context.canvas.restore();
         var stopIndicatorRadius = 2.0;
         double stopIndicatorTrailingSpace =
-            DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L;
+            (
+                sliderTheme.trackHeight
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) / 2L;
         var stopIndicatorOffset = new Offset(
             Equals(textDirection, TextDirection.ltr)
                 ? (trackRect.centerRight.dx - stopIndicatorTrailingSpace)
@@ -1206,7 +1350,10 @@ public class GappedSliderTrackShape : SliderTrackShape, BaseSliderTrackShape
         double overlayWidth = sliderTheme
             .overlayShape!.getPreferredSize(isEnabled, isDiscrete)
             .width;
-        double trackHeightLocal = DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight);
+        double trackHeightLocal = (
+            sliderTheme.trackHeight
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         DartRuntimePrimitives.Assert(() => overlayWidth >= 0L);
         DartRuntimePrimitives.Assert(() => trackHeightLocal >= 0L);
         if (
@@ -1255,7 +1402,10 @@ public class RoundedRectSliderValueIndicatorShape : SliderComponentShape
         );
         return _pathPainter.getPreferredSize(
             labelPainter!,
-            DartRuntimePrimitives.RequireValue(textScaleFactor)
+            (
+                textScaleFactor
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1283,9 +1433,7 @@ public class RoundedRectSliderValueIndicatorShape : SliderComponentShape
             center: center,
             scale: scaleLocal,
             labelPainter: labelPainter,
-            textScaleFactor: DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(textScaleFactor)
-            ),
+            textScaleFactor: ((textScaleFactor)),
             sizeWithOverflow: sizeWithOverflow,
             backgroundPaintColor: sliderTheme.valueIndicatorColor!,
             strokePaintColor: sliderTheme.valueIndicatorStrokeColor

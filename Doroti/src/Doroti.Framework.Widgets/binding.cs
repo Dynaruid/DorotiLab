@@ -711,8 +711,11 @@ public class WidgetsFlutterBinding
             {
                 if (Framework.Semantics.DebugLibrary.debugSemanticsDisableAnimations is not null)
                 {
-                    value = DartRuntimePrimitives.RequireValue(
+                    value = (
                         Framework.Semantics.DebugLibrary.debugSemanticsDisableAnimations
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     );
                 }
                 return true;

@@ -253,11 +253,11 @@ public class RenderWrap
         set
         {
             var __value = value;
-            if (Equals(_direction, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_direction, (__value)))
             {
                 return;
             }
-            _direction = DartRuntimePrimitives.RequireValue(__value);
+            _direction = (__value);
             markNeedsLayout();
         }
     }
@@ -267,11 +267,11 @@ public class RenderWrap
         set
         {
             var __value = value;
-            if (Equals(_alignment, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_alignment, (__value)))
             {
                 return;
             }
-            _alignment = DartRuntimePrimitives.RequireValue(__value);
+            _alignment = (__value);
             markNeedsLayout();
         }
     }
@@ -281,11 +281,11 @@ public class RenderWrap
         set
         {
             var __value = value;
-            if (_spacing == DartRuntimePrimitives.RequireValue(__value))
+            if (_spacing == (__value))
             {
                 return;
             }
-            _spacing = DartRuntimePrimitives.RequireValue(__value);
+            _spacing = (__value);
             markNeedsLayout();
         }
     }
@@ -295,11 +295,11 @@ public class RenderWrap
         set
         {
             var __value = value;
-            if (Equals(_runAlignment, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_runAlignment, (__value)))
             {
                 return;
             }
-            _runAlignment = DartRuntimePrimitives.RequireValue(__value);
+            _runAlignment = (__value);
             markNeedsLayout();
         }
     }
@@ -309,11 +309,11 @@ public class RenderWrap
         set
         {
             var __value = value;
-            if (_runSpacing == DartRuntimePrimitives.RequireValue(__value))
+            if (_runSpacing == (__value))
             {
                 return;
             }
-            _runSpacing = DartRuntimePrimitives.RequireValue(__value);
+            _runSpacing = (__value);
             markNeedsLayout();
         }
     }
@@ -323,11 +323,11 @@ public class RenderWrap
         set
         {
             var __value = value;
-            if (Equals(_crossAxisAlignment, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_crossAxisAlignment, (__value)))
             {
                 return;
             }
-            _crossAxisAlignment = DartRuntimePrimitives.RequireValue(__value);
+            _crossAxisAlignment = (__value);
             markNeedsLayout();
         }
     }
@@ -350,9 +350,9 @@ public class RenderWrap
         set
         {
             var __value = value;
-            if (!Equals(_verticalDirection, DartRuntimePrimitives.RequireValue(__value)))
+            if (!Equals(_verticalDirection, (__value)))
             {
-                _verticalDirection = DartRuntimePrimitives.RequireValue(__value);
+                _verticalDirection = (__value);
                 markNeedsLayout();
             }
         }
@@ -363,9 +363,9 @@ public class RenderWrap
         set
         {
             var __value = value;
-            if (!Equals(DartRuntimePrimitives.RequireValue(__value), _clipBehavior))
+            if (!Equals((__value), _clipBehavior))
             {
-                _clipBehavior = DartRuntimePrimitives.RequireValue(__value);
+                _clipBehavior = (__value);
                 markNeedsPaint();
                 markNeedsSemanticsUpdate();
             }
@@ -1257,9 +1257,13 @@ public class RenderWrap
             double? result = child.getDistanceToActualBaseline(baseline);
             if (result is not null)
             {
-                double result__138852__value138916 = DartRuntimePrimitives.RequireValue(result);
-                return DartRuntimePrimitives.RequireValue(result__138852__value138916)
-                    + childParentData.offset.dy;
+                double result__138852__value138916 = (
+                    result
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
+                return (result__138852__value138916) + childParentData.offset.dy;
             }
             child = childParentData.nextSibling;
         }

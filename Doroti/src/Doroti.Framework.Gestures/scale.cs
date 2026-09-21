@@ -535,9 +535,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
         Offset focalPointLocal = Offset.zero;
         foreach (long pointer in _pointerLocations.Keys)
         {
-            focalPointLocal += DartRuntimePrimitives.RequireValue(
-                _pointerLocations.GetValueOrDefault(pointer)
-            );
+            focalPointLocal += (_pointerLocations.GetValueOrDefault(pointer));
         }
         foreach (_PointerPanZoomData__scale p in _pointerPanZooms.Values)
         {
@@ -551,7 +549,12 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
         {
             _localFocalPoint = PointerEvent.transformPosition(
                 _lastTransform,
-                DartRuntimePrimitives.RequireValue(_currentFocalPoint)
+                (
+                    _currentFocalPoint
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
             _delta = Offset.zero;
         }
@@ -560,7 +563,12 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
             Offset localPreviousFocalPoint = _localFocalPoint;
             _localFocalPoint = PointerEvent.transformPosition(
                 _lastTransform,
-                DartRuntimePrimitives.RequireValue(_currentFocalPoint)
+                (
+                    _currentFocalPoint
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
             _delta = _localFocalPoint - localPreviousFocalPoint;
         }
@@ -568,9 +576,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
         Offset pointerFocalPoint = Offset.zero;
         foreach (long pointerLocal in _pointerLocations.Keys)
         {
-            pointerFocalPoint += DartRuntimePrimitives.RequireValue(
-                _pointerLocations.GetValueOrDefault(pointerLocal)
-            );
+            pointerFocalPoint += (_pointerLocations.GetValueOrDefault(pointerLocal));
         }
         if (count > 0L)
         {
@@ -582,22 +588,13 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
         foreach (long pointerAlternate in _pointerLocations.Keys)
         {
             totalDeviation += (
-                pointerFocalPoint
-                - DartRuntimePrimitives.RequireValue(
-                    _pointerLocations.GetValueOrDefault(pointerAlternate)
-                )
+                pointerFocalPoint - (_pointerLocations.GetValueOrDefault(pointerAlternate))
             ).distance;
             totalHorizontalDeviation += (
-                pointerFocalPoint.dx
-                - DartRuntimePrimitives
-                    .RequireValue(_pointerLocations.GetValueOrDefault(pointerAlternate))
-                    .dx
+                pointerFocalPoint.dx - (_pointerLocations.GetValueOrDefault(pointerAlternate)).dx
             ).abs();
             totalVerticalDeviation += (
-                pointerFocalPoint.dy
-                - DartRuntimePrimitives
-                    .RequireValue(_pointerLocations.GetValueOrDefault(pointerAlternate))
-                    .dy
+                pointerFocalPoint.dy - (_pointerLocations.GetValueOrDefault(pointerAlternate)).dy
             ).abs();
         }
         _currentSpan = (count > 0L) ? (totalDeviation / count) : 0.0;
@@ -623,11 +620,11 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
             {
                 _currentLine = new _LineBetweenPointers__scale(
                     pointerStartId: _pointerQueue[(int)0L],
-                    pointerStartLocation: DartRuntimePrimitives.RequireValue(
+                    pointerStartLocation: (
                         _pointerLocations.GetValueOrDefault(_pointerQueue[(int)0L])
                     ),
                     pointerEndId: _pointerQueue[(int)1L],
-                    pointerEndLocation: DartRuntimePrimitives.RequireValue(
+                    pointerEndLocation: (
                         _pointerLocations.GetValueOrDefault(_pointerQueue[(int)1L])
                     )
                 );
@@ -636,11 +633,11 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
             {
                 _initialLine = new _LineBetweenPointers__scale(
                     pointerStartId: _pointerQueue[(int)0L],
-                    pointerStartLocation: DartRuntimePrimitives.RequireValue(
+                    pointerStartLocation: (
                         _pointerLocations.GetValueOrDefault(_pointerQueue[(int)0L])
                     ),
                     pointerEndId: _pointerQueue[(int)1L],
-                    pointerEndLocation: DartRuntimePrimitives.RequireValue(
+                    pointerEndLocation: (
                         _pointerLocations.GetValueOrDefault(_pointerQueue[(int)1L])
                     )
                 );
@@ -651,7 +648,10 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
 
     internal virtual bool _reconfigure(long pointer)
     {
-        _initialFocalPoint = DartRuntimePrimitives.RequireValue(_currentFocalPoint);
+        _initialFocalPoint = (
+            _currentFocalPoint
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         _initialSpan = _currentSpan;
         _initialLine = _currentLine;
         _initialHorizontalSpan = _currentHorizontalSpan;
@@ -753,7 +753,12 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
         {
             double spanDelta = (_currentSpan - _initialSpan).abs();
             double focalPointDeltaLocal = (
-                DartRuntimePrimitives.RequireValue(_currentFocalPoint) - _initialFocalPoint
+                (
+                    _currentFocalPoint
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) - _initialFocalPoint
             ).distance;
             if (
                 (spanDelta > EventsLibrary.computeScaleSlop(@event.kind))
@@ -804,8 +809,11 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
                                             scale: _scaleFactor,
                                             horizontalScale: _horizontalScaleFactor,
                                             verticalScale: _verticalScaleFactor,
-                                            focalPoint: DartRuntimePrimitives.RequireValue(
+                                            focalPoint: (
                                                 _currentFocalPoint
+                                                ?? throw new global::System.NullReferenceException(
+                                                    "Dart null assertion failed."
+                                                )
                                             ),
                                             localFocalPoint: _localFocalPoint,
                                             rotation: _computeRotationFactor(),
@@ -839,8 +847,11 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
                             {
                                 onStart!(
                                     new ScaleStartDetails(
-                                        focalPoint: DartRuntimePrimitives.RequireValue(
+                                        focalPoint: (
                                             _currentFocalPoint
+                                            ?? throw new global::System.NullReferenceException(
+                                                "Dart null assertion failed."
+                                            )
                                         ),
                                         localFocalPoint: _localFocalPoint,
                                         pointerCount: pointerCount,
@@ -874,7 +885,12 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
             _dispatchOnStartCallbackIfNeeded();
             if (Equals(dragStartBehavior, DragStartBehavior.start))
             {
-                _initialFocalPoint = DartRuntimePrimitives.RequireValue(_currentFocalPoint);
+                _initialFocalPoint = (
+                    _currentFocalPoint
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
                 _initialSpan = _currentSpan;
                 _initialLine = _currentLine;
                 _initialHorizontalSpan = _currentHorizontalSpan;

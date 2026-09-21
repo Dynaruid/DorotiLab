@@ -11,10 +11,7 @@ public class OvalBorder : CircleBorder
         : base(side: side ?? BorderSide.none, eccentricity: eccentricity) { }
 
     public override ShapeBorder scale(double t) =>
-        new OvalBorder(
-            side: side.scale(t),
-            eccentricity: DartRuntimePrimitives.RequireValue(eccentricity)
-        );
+        new OvalBorder(side: side.scale(t), eccentricity: (eccentricity));
 
     public override OvalBorder copyWith(
         BorderSide? side = null,
@@ -49,11 +46,10 @@ public class OvalBorder : CircleBorder
             return new OvalBorder(
                 side: BorderSide.lerp(a__as1519.side, side, t),
                 eccentricity: Dart_uiLibrary.clampDouble(
-                    DartRuntimePrimitives.RequireValue(
-                        Dart_uiLibrary.lerpDouble(
-                            a__as1519.eccentricity,
-                            DartRuntimePrimitives.RequireValue(eccentricity),
-                            t
+                    (
+                        Dart_uiLibrary.lerpDouble(a__as1519.eccentricity, (eccentricity), t)
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
                         )
                     ),
                     0.0,
@@ -73,11 +69,10 @@ public class OvalBorder : CircleBorder
             return new OvalBorder(
                 side: BorderSide.lerp(side, b__as1828.side, t),
                 eccentricity: Dart_uiLibrary.clampDouble(
-                    DartRuntimePrimitives.RequireValue(
-                        Dart_uiLibrary.lerpDouble(
-                            DartRuntimePrimitives.RequireValue(eccentricity),
-                            b__as1828.eccentricity,
-                            t
+                    (
+                        Dart_uiLibrary.lerpDouble((eccentricity), b__as1828.eccentricity, t)
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
                         )
                     ),
                     0.0,
@@ -91,9 +86,9 @@ public class OvalBorder : CircleBorder
 
     public override string ToString()
     {
-        if (DartRuntimePrimitives.RequireValue(eccentricity) != 1.0)
+        if ((eccentricity) != 1.0)
         {
-            return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "OvalBorder")}({side}, eccentricity: {DartRuntimePrimitives.RequireValue(eccentricity)})";
+            return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "OvalBorder")}({side}, eccentricity: {(eccentricity)})";
         }
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "OvalBorder")}({side})";
         throw new InvalidOperationException("Dart control flow completed without a value.");

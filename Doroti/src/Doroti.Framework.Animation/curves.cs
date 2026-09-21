@@ -145,16 +145,18 @@ public class Split : Curve
         {
             double curveProgress = t / split;
             double transformed = beginCurve.transform(curveProgress);
-            return DartRuntimePrimitives.RequireValue(
+            return (
                 Dart_uiLibrary.lerpDouble(0L, split, transformed)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
         }
         else
         {
             double curveProgressLocal = (t - split) / (1L - split);
             double transformedLocal = endCurve.transform(curveProgressLocal);
-            return DartRuntimePrimitives.RequireValue(
+            return (
                 Dart_uiLibrary.lerpDouble(split, 1L, transformedLocal)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -456,10 +458,18 @@ public class CatmullRomSpline : Curve2D
     )
     {
         DartRuntimePrimitives.Assert(() =>
-            (startHandle is null) || DartRuntimePrimitives.RequireValue(startHandle).isFinite
+            (startHandle is null)
+            || (
+                startHandle
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).isFinite
         );
         DartRuntimePrimitives.Assert(() =>
-            (endHandle is null) || DartRuntimePrimitives.RequireValue(endHandle).isFinite
+            (endHandle is null)
+            || (
+                endHandle
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).isFinite
         );
         DartRuntimePrimitives.Assert(() =>
         {
@@ -481,8 +491,14 @@ public class CatmullRomSpline : Curve2D
         );
         var allPoints = new List<Offset>
         {
-            DartRuntimePrimitives.RequireValue(startHandle),
-            DartRuntimePrimitives.RequireValue(endHandle),
+            (
+                startHandle
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            (
+                endHandle
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
         };
         var alpha = 0.5;
         double reverseTension = 1.0 - tension;
@@ -541,7 +557,12 @@ public class CatmullRomSpline : Curve2D
         _cubicSegments.AddRange(
             _computeSegments(
                 _controlPoints!,
-                DartRuntimePrimitives.RequireValue(_tension),
+                (
+                    _tension
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 startHandle: _startHandle,
                 endHandle: _endHandle
             )
@@ -819,8 +840,9 @@ public class CatmullRomCurve : Curve
             }
         }
         double t2 = (t - startValue.dx) / (endValue.dx - startValue.dx);
-        return DartRuntimePrimitives.RequireValue(
+        return (
             Dart_uiLibrary.lerpDouble(startValue.dy, endValue.dy, t2)
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

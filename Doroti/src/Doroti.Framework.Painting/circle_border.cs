@@ -28,8 +28,11 @@ public class CircleBorder : OutlinedBorder
             return new CircleBorder(
                 side: BorderSide.lerp(a__as2194.side, side, t),
                 eccentricity: Dart_uiLibrary.clampDouble(
-                    DartRuntimePrimitives.RequireValue(
+                    (
                         Dart_uiLibrary.lerpDouble(a__as2194.eccentricity, eccentricity, t)
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     ),
                     0.0,
                     1.0
@@ -48,8 +51,11 @@ public class CircleBorder : OutlinedBorder
             return new CircleBorder(
                 side: BorderSide.lerp(side, b__as2507.side, t),
                 eccentricity: Dart_uiLibrary.clampDouble(
-                    DartRuntimePrimitives.RequireValue(
+                    (
                         Dart_uiLibrary.lerpDouble(eccentricity, b__as2507.eccentricity, t)
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     ),
                     0.0,
                     1.0

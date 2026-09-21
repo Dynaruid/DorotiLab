@@ -2,8 +2,9 @@ namespace Doroti.DartToCSharp;
 
 internal enum RuntimeIntrinsic
 {
-    RequireValue,
-    DynamicIndexGet,
+    // Value 0 was the removed RequireValue intrinsic. Keep remaining values stable
+    // for cached/serialized compiler artifacts.
+    DynamicIndexGet = 1,
     DynamicIndexSet,
     ObjectHash,
     RuntimeType,

@@ -910,7 +910,12 @@ internal class _MaterialInspectorButton__app : InspectorButton
             }
             case InspectorButtonVariant.toggle:
             {
-                return !DartRuntimePrimitives.RequireValue(toggledOn)
+                return !(
+                    toggledOn
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
                     ? secondaryColor
                     : primaryColor;
             }
@@ -935,7 +940,12 @@ internal class _MaterialInspectorButton__app : InspectorButton
             }
             case InspectorButtonVariant.toggle:
             {
-                return !DartRuntimePrimitives.RequireValue(toggledOn)
+                return !(
+                    toggledOn
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
                     ? Colors.transparent
                     : secondaryColor;
             }

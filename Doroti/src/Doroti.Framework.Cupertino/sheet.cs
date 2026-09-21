@@ -752,7 +752,7 @@ public class CupertinoSheetRoute<T> : PageRoute<T>, _CupertinoSheetRouteTransiti
                             onStartPopGesture: () =>
                                 _CupertinoSheetRouteTransitionMixin__sheet<object>._startPopGesture(
                                     this,
-                                    DartRuntimePrimitives.RequireValue(topGap)
+                                    (topGap)
                                 ),
                             builder: _sheetWithDragHandle
                         )
@@ -977,7 +977,11 @@ internal class _CupertinoDragGestureDetectorState__sheet<T>
             new Gestures.IOSScrollViewFlingVelocityTracker(@event.kind)
         );
 
-    public virtual double sheetHeight => DartRuntimePrimitives.RequireValue(context.size).height;
+    public virtual double sheetHeight =>
+        (
+            context.size
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        ).height;
 
     public override void initState()
     {
@@ -1042,7 +1046,14 @@ internal class _CupertinoDragGestureDetectorState__sheet<T>
         }
         double delta =
             (sheetHeight > 0L)
-                ? (DartRuntimePrimitives.RequireValue(details.primaryDelta) / sheetHeight)
+                ? (
+                    (
+                        details.primaryDelta
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) / sheetHeight
+                )
                 : 0.0;
         _dragGestureController!.dragUpdate(delta, _stretchDragController!.controller);
     }
@@ -1439,10 +1450,19 @@ internal class _CupertinoDraggableScrollableSheetState__sheet<T>
             _dragGestureController!.dragUpdate(
                 delta
                     / (
-                        DartRuntimePrimitives.RequireValue(context.size).height
+                        (
+                            context.size
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ).height
                         - (
-                            DartRuntimePrimitives.RequireValue(context.size).height
-                            * SheetLibrary._kTopGapRatio
+                            (
+                                context.size
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ).height * SheetLibrary._kTopGapRatio
                         )
                     ),
                 null
@@ -1456,7 +1476,13 @@ internal class _CupertinoDraggableScrollableSheetState__sheet<T>
         if (_dragGestureController is not null)
         {
             _dragGestureController!.dragEnd(
-                -velocity / DartRuntimePrimitives.RequireValue(context.size).height,
+                -velocity
+                    / (
+                        context.size
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).height,
                 null
             );
             _dragGestureController = null;

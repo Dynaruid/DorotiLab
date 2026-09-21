@@ -197,7 +197,12 @@ public class SensitiveContentHost
                 )
             );
         }
-        if (!DartRuntimePrimitives.RequireValue(_contentSensitivityIsSupported))
+        if (
+            !(
+                _contentSensitivityIsSupported
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        )
         {
             return;
         }
@@ -238,8 +243,11 @@ public class SensitiveContentHost
         try
         {
             await _sensitiveContentService.setContentSensitivity(
-                DartRuntimePrimitives.RequireValue(
+                (
                     _contentSensitivitySetting.contentSensitivityBasedOnWidgetCounts
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 )
             );
         }
@@ -271,10 +279,10 @@ public class SensitiveContentHost
         {
             return;
         }
-        ContentSensitivity contentSensitivityBasedOnWidgetCountsBeforeUnregister =
-            DartRuntimePrimitives.RequireValue(
-                _contentSensitivitySetting.contentSensitivityBasedOnWidgetCounts
-            );
+        ContentSensitivity contentSensitivityBasedOnWidgetCountsBeforeUnregister = (
+            _contentSensitivitySetting.contentSensitivityBasedOnWidgetCounts
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         _contentSensitivitySetting.removeWidgetWithContentSensitivity(widgetSensitivity);
         if (!_contentSensitivitySetting.hasWidgets)
         {
@@ -290,7 +298,12 @@ public class SensitiveContentHost
             try
             {
                 await _sensitiveContentService.setContentSensitivity(
-                    DartRuntimePrimitives.RequireValue(_fallbackContentSensitivitySetting)
+                    (
+                        _fallbackContentSensitivitySetting
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 );
             }
             catch (PlatformException e)
@@ -309,8 +322,9 @@ public class SensitiveContentHost
             }
             return;
         }
-        ContentSensitivity contentSensitivityToRestore = DartRuntimePrimitives.RequireValue(
+        ContentSensitivity contentSensitivityToRestore = (
             _contentSensitivitySetting.contentSensitivityBasedOnWidgetCounts
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         if (
             !Equals(

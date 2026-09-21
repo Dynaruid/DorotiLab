@@ -66,7 +66,13 @@ public abstract class MultiDragPointerState
         else
         {
             DartRuntimePrimitives.Assert(() => pendingDelta is not null);
-            _pendingDelta = DartRuntimePrimitives.RequireValue(_pendingDelta) + @event.delta;
+            _pendingDelta =
+                (
+                    _pendingDelta
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) + @event.delta;
             _lastPendingEventTimestamp = @event.timeStamp;
             checkForResolutionAfterMove();
         }
@@ -94,7 +100,10 @@ public abstract class MultiDragPointerState
         _client = client;
         var details = new DragUpdateDetails(
             sourceTimeStamp: _lastPendingEventTimestamp,
-            delta: DartRuntimePrimitives.RequireValue(pendingDelta),
+            delta: (
+                pendingDelta
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             globalPosition: initialPosition
         );
         _pendingDelta = null;
@@ -302,8 +311,10 @@ internal class _ImmediatePointerState__multidrag : MultiDragPointerState
     {
         DartRuntimePrimitives.Assert(() => pendingDelta is not null);
         if (
-            DartRuntimePrimitives.RequireValue(pendingDelta).distance
-            > EventsLibrary.computeHitSlop(kind, gestureSettings)
+            (
+                pendingDelta
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).distance > EventsLibrary.computeHitSlop(kind, gestureSettings)
         )
         {
             resolve(GestureDisposition.accepted);
@@ -351,8 +362,10 @@ internal class _HorizontalPointerState__multidrag : MultiDragPointerState
     {
         DartRuntimePrimitives.Assert(() => pendingDelta is not null);
         if (
-            DartRuntimePrimitives.RequireValue(pendingDelta).dx.abs()
-            > EventsLibrary.computeHitSlop(kind, gestureSettings)
+            (
+                pendingDelta
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).dx.abs() > EventsLibrary.computeHitSlop(kind, gestureSettings)
         )
         {
             resolve(GestureDisposition.accepted);
@@ -404,8 +417,10 @@ internal class _VerticalPointerState__multidrag : MultiDragPointerState
     {
         DartRuntimePrimitives.Assert(() => pendingDelta is not null);
         if (
-            DartRuntimePrimitives.RequireValue(pendingDelta).dy.abs()
-            > EventsLibrary.computeHitSlop(kind, gestureSettings)
+            (
+                pendingDelta
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).dy.abs() > EventsLibrary.computeHitSlop(kind, gestureSettings)
         )
         {
             resolve(GestureDisposition.accepted);
@@ -458,8 +473,10 @@ internal class _DelayedPointerState__multidrag : MultiDragPointerState
         DartRuntimePrimitives.Assert(() => _timer is not null);
         DartRuntimePrimitives.Assert(() => pendingDelta is not null);
         DartRuntimePrimitives.Assert(() =>
-            DartRuntimePrimitives.RequireValue(pendingDelta).distance
-            <= EventsLibrary.computeHitSlop(kind, gestureSettings)
+            (
+                pendingDelta
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).distance <= EventsLibrary.computeHitSlop(kind, gestureSettings)
         );
         _timer = null;
         if (_starter is not null)
@@ -502,8 +519,10 @@ internal class _DelayedPointerState__multidrag : MultiDragPointerState
         }
         DartRuntimePrimitives.Assert(() => pendingDelta is not null);
         if (
-            DartRuntimePrimitives.RequireValue(pendingDelta).distance
-            > EventsLibrary.computeHitSlop(kind, gestureSettings)
+            (
+                pendingDelta
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).distance > EventsLibrary.computeHitSlop(kind, gestureSettings)
         )
         {
             resolve(GestureDisposition.rejected);
@@ -542,7 +561,7 @@ public class DelayedMultiDragGestureRecognizer : MultiDragGestureRecognizer
     {
         return new _DelayedPointerState__multidrag(
             @event.position,
-            DartRuntimePrimitives.RequireValue(delay),
+            (delay),
             @event.kind,
             gestureSettings
         );

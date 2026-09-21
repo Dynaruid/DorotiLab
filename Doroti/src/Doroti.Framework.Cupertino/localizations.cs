@@ -156,8 +156,11 @@ public class DefaultCupertinoLocalizations : CupertinoLocalizations
     {
         if (weekDay is not null)
         {
-            long weekDay__value15239 = DartRuntimePrimitives.RequireValue(weekDay);
-            return $" {_shortWeekdays[(int)(DartRuntimePrimitives.RequireValue(weekDay__value15239) - 1L)]} {dayIndex} ";
+            long weekDay__value15239 = (
+                weekDay
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
+            return $" {_shortWeekdays[(int)((weekDay__value15239) - 1L)]} {dayIndex} ";
         }
         return dayIndex.ToString();
         throw new InvalidOperationException("Dart control flow completed without a value.");

@@ -271,7 +271,12 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
     {
         resolve(GestureDisposition.accepted);
         _longPressAccepted = true;
-        base.acceptGesture(DartRuntimePrimitives.RequireValue(primaryPointer));
+        base.acceptGesture(
+            (
+                primaryPointer
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        );
         _checkLongPressStart();
     }
 
@@ -336,7 +341,14 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
                         if ((@event__as27552.buttons != _initialButtons) && !_longPressAccepted)
                         {
                             resolve(GestureDisposition.rejected);
-                            stopTrackingPointer(DartRuntimePrimitives.RequireValue(primaryPointer));
+                            stopTrackingPointer(
+                                (
+                                    primaryPointer
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                )
+                            );
                         }
                         else
                         {

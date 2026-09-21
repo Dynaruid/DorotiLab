@@ -288,8 +288,11 @@ internal class _FocusState__focus_scope : State<Focus>
             focusNode.skipTraversal = widget.skipTraversal;
             if (widget._canRequestFocus is not null)
             {
-                focusNode.canRequestFocus = DartRuntimePrimitives.RequireValue(
+                focusNode.canRequestFocus = (
                     widget._canRequestFocus
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
             }
         }
@@ -379,8 +382,11 @@ internal class _FocusState__focus_scope : State<Focus>
                 focusNode.skipTraversal = widget.skipTraversal;
                 if (widget._canRequestFocus is not null)
                 {
-                    focusNode.canRequestFocus = DartRuntimePrimitives.RequireValue(
+                    focusNode.canRequestFocus = (
                         widget._canRequestFocus
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     );
                 }
                 focusNode.descendantsAreFocusable = widget.descendantsAreFocusable;

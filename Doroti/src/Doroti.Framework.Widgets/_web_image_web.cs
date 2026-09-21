@@ -266,11 +266,11 @@ public class RenderWebImageIo : global::Doroti.Framework.Rendering.RenderShifted
         set
         {
             var __value = value;
-            if ((DartRuntimePrimitives.RequireValue(__value) == this._matchTextDirection))
+            if (((__value) == this._matchTextDirection))
             {
                 return;
             }
-            _matchTextDirection = DartRuntimePrimitives.RequireValue(__value);
+            _matchTextDirection = (__value);
             _markNeedResolution();
         }
     }
@@ -401,10 +401,10 @@ public class RenderWebImageIo : global::Doroti.Framework.Rendering.RenderShifted
         {
             return 0.0;
         }
-        return DartRuntimePrimitives.RequireValue(
+        return (
             _sizeForConstraints(
                 global::Doroti.Framework.Rendering.BoxConstraints.CreateTightForFinite(
-                    height: DartRuntimePrimitives.RequireValue(height)
+                    height: (height)
                 )
             ).width
         );
@@ -414,10 +414,10 @@ public class RenderWebImageIo : global::Doroti.Framework.Rendering.RenderShifted
     public override double computeMaxIntrinsicWidth(double height)
     {
         DartRuntimePrimitives.Assert(() => (height >= 0.0));
-        return DartRuntimePrimitives.RequireValue(
+        return (
             _sizeForConstraints(
                 global::Doroti.Framework.Rendering.BoxConstraints.CreateTightForFinite(
-                    height: DartRuntimePrimitives.RequireValue(height)
+                    height: (height)
                 )
             ).width
         );
@@ -431,10 +431,10 @@ public class RenderWebImageIo : global::Doroti.Framework.Rendering.RenderShifted
         {
             return 0.0;
         }
-        return DartRuntimePrimitives.RequireValue(
+        return (
             _sizeForConstraints(
                 global::Doroti.Framework.Rendering.BoxConstraints.CreateTightForFinite(
-                    width: DartRuntimePrimitives.RequireValue(width)
+                    width: (width)
                 )
             ).height
         );
@@ -444,10 +444,10 @@ public class RenderWebImageIo : global::Doroti.Framework.Rendering.RenderShifted
     public override double computeMaxIntrinsicHeight(double width)
     {
         DartRuntimePrimitives.Assert(() => (width >= 0.0));
-        return DartRuntimePrimitives.RequireValue(
+        return (
             _sizeForConstraints(
                 global::Doroti.Framework.Rendering.BoxConstraints.CreateTightForFinite(
-                    width: DartRuntimePrimitives.RequireValue(width)
+                    width: (width)
                 )
             ).height
         );
@@ -511,7 +511,12 @@ public class RenderWebImageIo : global::Doroti.Framework.Rendering.RenderShifted
                 + (
                     (
                         (
-                            DartRuntimePrimitives.RequireValue(this._flipHorizontally)
+                            (
+                                this._flipHorizontally
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
                                 ? -this._resolvedAlignment!.x
                                 : this._resolvedAlignment!.x
                         )

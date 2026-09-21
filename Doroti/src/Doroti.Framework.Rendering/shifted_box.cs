@@ -49,7 +49,12 @@ public abstract class RenderShiftedBox : RenderBox, RenderObjectWithChildMixin<R
             var childParentData = ((BoxParentData?)(object?)childLocal.parentData!)!;
             if (result is not null)
             {
-                double result__1798__value2078 = DartRuntimePrimitives.RequireValue(result);
+                double result__1798__value2078 = (
+                    result
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
                 result__1798__value2078 += childParentData.offset.dy;
             }
         }
@@ -73,7 +78,10 @@ public abstract class RenderShiftedBox : RenderBox, RenderObjectWithChildMixin<R
         {
             return null;
         }
-        return DartRuntimePrimitives.RequireValue(childBaseline);
+        return (
+            childBaseline
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -349,7 +357,10 @@ public class RenderPadding : RenderShiftedBox
         {
             return null;
         }
-        return DartRuntimePrimitives.RequireValue(childBaseline) + padding.top;
+        return (
+                childBaseline
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) + padding.top;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -487,7 +498,10 @@ public class RenderPositionedBox : RenderAligningShiftedBox
         : base(
             child: child,
             alignment: alignment ?? Alignment.center,
-            textDirection: DartRuntimePrimitives.RequireValue(textDirection)
+            textDirection: (
+                textDirection
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         )
     {
         _widthFactor = widthFactor;
@@ -758,7 +772,10 @@ public class RenderPositionedBox : RenderAligningShiftedBox
             )
         );
         Offset childOffset = resolvedAlignment.alongOffset(size - childSize);
-        return DartRuntimePrimitives.RequireValue(result) + childOffset.dy;
+        return (
+                result
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) + childOffset.dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -790,7 +807,10 @@ public class RenderConstrainedOverflowBox : RenderAligningShiftedBox
         : base(
             child: child,
             alignment: alignment ?? Alignment.center,
-            textDirection: DartRuntimePrimitives.RequireValue(textDirection)
+            textDirection: (
+                textDirection
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         )
     {
         _minWidth = minWidth;
@@ -862,11 +882,11 @@ public class RenderConstrainedOverflowBox : RenderAligningShiftedBox
         set
         {
             var __value = value;
-            if (Equals(_fit, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_fit, (__value)))
             {
                 return;
             }
-            _fit = DartRuntimePrimitives.RequireValue(__value);
+            _fit = (__value);
             markNeedsLayoutForSizedByParentChange();
         }
     }
@@ -916,8 +936,10 @@ public class RenderConstrainedOverflowBox : RenderAligningShiftedBox
         }
         Size childSize = childLocal.getDryLayout(childConstraints);
         Size size = getDryLayout(constraints);
-        return DartRuntimePrimitives.RequireValue(result)
-            + resolvedAlignment.alongOffset(size - childSize).dy;
+        return (
+                result
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) + resolvedAlignment.alongOffset(size - childSize).dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1018,7 +1040,10 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
     )
         : base(
             alignment: alignment,
-            textDirection: DartRuntimePrimitives.RequireValue(textDirection),
+            textDirection: (
+                textDirection
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             child: child
         )
     {
@@ -1098,7 +1123,17 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
         return (childSize is null)
             ? constraints.smallest
             : constraints.constrain(
-                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(childSize))
+                (
+                    (
+                        childSize
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1118,8 +1153,10 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
         }
         Size childSize = childLocal.getDryLayout(childConstraints);
         Size size = constraints.constrain(childSize);
-        return DartRuntimePrimitives.RequireValue(result)
-            + resolvedAlignment.alongOffset(size - childSize).dy;
+        return (
+                result
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) + resolvedAlignment.alongOffset(size - childSize).dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1502,7 +1539,10 @@ public class RenderSizedOverflowBox : RenderAligningShiftedBox
         : base(
             child: child,
             alignment: alignment ?? Alignment.center,
-            textDirection: DartRuntimePrimitives.RequireValue(textDirection)
+            textDirection: (
+                textDirection
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         )
     {
         _requestedSize = requestedSize;
@@ -1560,7 +1600,10 @@ public class RenderSizedOverflowBox : RenderAligningShiftedBox
             return base.computeDistanceToActualBaseline(baseline);
         }
         var childParentData = ((BoxParentData?)(object?)childLocal.parentData!)!;
-        return DartRuntimePrimitives.RequireValue(result) + childParentData.offset.dy;
+        return (
+                result
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) + childParentData.offset.dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1578,8 +1621,10 @@ public class RenderSizedOverflowBox : RenderAligningShiftedBox
         }
         Size childSize = childLocal.getDryLayout(constraints);
         Size size = getDryLayout(constraints);
-        return DartRuntimePrimitives.RequireValue(result)
-            + resolvedAlignment.alongOffset(size - childSize).dy;
+        return (
+                result
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) + resolvedAlignment.alongOffset(size - childSize).dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1615,7 +1660,10 @@ public class RenderFractionallySizedOverflowBox : RenderAligningShiftedBox
         : base(
             child: child,
             alignment: alignment ?? Alignment.center,
-            textDirection: DartRuntimePrimitives.RequireValue(textDirection)
+            textDirection: (
+                textDirection
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         )
     {
         _widthFactor = widthFactor;
@@ -1659,7 +1707,14 @@ public class RenderFractionallySizedOverflowBox : RenderAligningShiftedBox
         double maxWidthLocal = constraints.maxWidth;
         if (_widthFactor is not null)
         {
-            double width = maxWidthLocal * DartRuntimePrimitives.RequireValue(_widthFactor);
+            double width =
+                maxWidthLocal
+                * (
+                    _widthFactor
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
             minWidthLocal = width;
             maxWidthLocal = width;
         }
@@ -1667,7 +1722,14 @@ public class RenderFractionallySizedOverflowBox : RenderAligningShiftedBox
         double maxHeightLocal = constraints.maxHeight;
         if (_heightFactor is not null)
         {
-            double height = maxHeightLocal * DartRuntimePrimitives.RequireValue(_heightFactor);
+            double height =
+                maxHeightLocal
+                * (
+                    _heightFactor
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
             minHeightLocal = height;
             maxHeightLocal = height;
         }
@@ -1770,8 +1832,10 @@ public class RenderFractionallySizedOverflowBox : RenderAligningShiftedBox
         }
         Size childSize = childLocal.getDryLayout(childConstraints);
         Size size = getDryLayout(constraints);
-        return DartRuntimePrimitives.RequireValue(result)
-            + resolvedAlignment.alongOffset(size - childSize).dy;
+        return (
+                result
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) + resolvedAlignment.alongOffset(size - childSize).dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1940,7 +2004,10 @@ public class RenderCustomSingleChildLayoutBox : RenderShiftedBox
         {
             return null;
         }
-        return DartRuntimePrimitives.RequireValue(result)
+        return (
+                result
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
             + @delegate
                 .getPositionForChild(
                     _getSize(constraints),
@@ -2059,8 +2126,14 @@ public class RenderBaseline : RenderShiftedBox
             return null;
         }
         return this.baseline
-            + DartRuntimePrimitives.RequireValue(result1)
-            - DartRuntimePrimitives.RequireValue(result2);
+            + (
+                result1
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+            - (
+                result2
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

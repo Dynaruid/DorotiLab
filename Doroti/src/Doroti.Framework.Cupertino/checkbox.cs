@@ -854,9 +854,7 @@ internal class _CheckboxPainter__checkbox : ToggleablePainter
 
     internal virtual Color _colorAt(bool value)
     {
-        return (DartRuntimePrimitives.RequireValue(value) && isActive)
-            ? activeColor
-            : inactiveColor;
+        return ((value) && isActive) ? activeColor : inactiveColor;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -918,10 +916,7 @@ internal class _CheckboxPainter__checkbox : ToggleablePainter
         bool value
     )
     {
-        if (
-            Equals(brightness, Brightness.dark)
-            && !(isActive && DartRuntimePrimitives.RequireValue(value))
-        )
+        if (Equals(brightness, Brightness.dark) && !(isActive && (value)))
         {
             _drawFillGradient(
                 canvas,

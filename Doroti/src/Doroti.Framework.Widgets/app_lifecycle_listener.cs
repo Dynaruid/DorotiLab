@@ -188,7 +188,12 @@ public class AppLifecycleListener : WidgetsBindingObserver, Diagnosticable
                 break;
             }
         }
-        onStateChange?.Invoke(DartRuntimePrimitives.RequireValue(_lifecycleState));
+        onStateChange?.Invoke(
+            (
+                _lifecycleState
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        );
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)

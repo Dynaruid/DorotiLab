@@ -142,22 +142,6 @@ public static class DartRuntimePrimitives
     public static long? MillisecondsSinceEpoch(DateTime? value) =>
         value is { } resolved ? new DateTimeOffset(resolved).ToUnixTimeMilliseconds() : null;
 
-    /// <summary>Implements Dart's postfix null assertion for nullable value types.</summary>
-    public static T RequireValue<T>([NotNull] T? value)
-        where T : struct =>
-        value ?? throw new NullReferenceException("Dart null assertion failed.");
-
-    public static T RequireValue<T>(T value)
-        where T : struct => value;
-
-    /// <summary>Implements Dart's postfix null assertion for reference types.</summary>
-    public static T RequireValue<T>([NotNull] T? value, bool referenceType = true)
-        where T : class
-    {
-        _ = referenceType;
-        return value ?? throw new NullReferenceException("Dart null assertion failed.");
-    }
-
     [return: NotNull]
     public static T RequireReference<T>([NotNull] T value) =>
         value is null ? throw new NullReferenceException("Dart null assertion failed.") : value;

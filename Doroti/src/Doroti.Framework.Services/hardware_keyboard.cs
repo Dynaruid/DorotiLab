@@ -297,9 +297,7 @@ public class HardwareKeyboard
             foreach (long key in keyboardState.Keys)
             {
                 var physicalKey = new PhysicalKeyboardKey(key);
-                var logicalKey = new LogicalKeyboardKey(
-                    DartRuntimePrimitives.RequireValue(keyboardState.GetValueOrDefault(key))
-                );
+                var logicalKey = new LogicalKeyboardKey((keyboardState.GetValueOrDefault(key)));
                 _pressedKeys[physicalKey] = logicalKey;
             }
         }
@@ -384,13 +382,36 @@ public class HardwareKeyboard
             };
             if (lockMode is not null)
             {
-                if (_lockModes.Contains(DartRuntimePrimitives.RequireValue(lockMode)))
+                if (
+                    _lockModes.Contains(
+                        (
+                            lockMode
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    )
+                )
                 {
-                    _lockModes.Remove(DartRuntimePrimitives.RequireValue(lockMode));
+                    _lockModes.Remove(
+                        (
+                            lockMode
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    );
                 }
                 else
                 {
-                    _lockModes.Add(DartRuntimePrimitives.RequireValue(lockMode));
+                    _lockModes.Add(
+                        (
+                            lockMode
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                    );
                 }
             }
         }

@@ -15,7 +15,9 @@ public abstract class Scribe
         {
             throw new FlutterError("MethodChannel.invokeMethod unexpectedly returned null.");
         }
-        return DartRuntimePrimitives.RequireValue(result);
+        return (
+            result ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -26,7 +28,9 @@ public abstract class Scribe
         {
             throw new FlutterError("MethodChannel.invokeMethod unexpectedly returned null.");
         }
-        return DartRuntimePrimitives.RequireValue(result);
+        return (
+            result ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

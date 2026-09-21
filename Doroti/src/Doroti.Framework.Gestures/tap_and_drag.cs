@@ -193,12 +193,24 @@ public class TapDragUpdateDetails : PositionedGestureDetails, Diagnosticable
         System.Diagnostics.Debug.Assert(
             (primaryDelta is null)
                 || (
-                    (DartRuntimePrimitives.RequireValue(primaryDelta) == delta.dx)
-                    && (delta.dy == 0.0)
+                    (
+                        (
+                            primaryDelta
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) == delta.dx
+                    ) && (delta.dy == 0.0)
                 )
                 || (
-                    (DartRuntimePrimitives.RequireValue(primaryDelta) == delta.dy)
-                    && (delta.dx == 0.0)
+                    (
+                        (
+                            primaryDelta
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) == delta.dy
+                    ) && (delta.dx == 0.0)
                 )
         );
     }
@@ -255,12 +267,20 @@ public class TapDragEndDetails : PositionedGestureDetails, Diagnosticable
         System.Diagnostics.Debug.Assert(
             (primaryVelocity is null)
                 || (
-                    DartRuntimePrimitives.RequireValue(primaryVelocity)
-                    == __velocity.pixelsPerSecond.dx
+                    (
+                        primaryVelocity
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) == __velocity.pixelsPerSecond.dx
                 )
                 || (
-                    DartRuntimePrimitives.RequireValue(primaryVelocity)
-                    == __velocity.pixelsPerSecond.dy
+                    (
+                        primaryVelocity
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) == __velocity.pixelsPerSecond.dy
                 )
         );
     }
@@ -867,7 +887,12 @@ public abstract class BaseTapAndDragGestureRecognizer
         {
             _lastDragUpdateDetails = details;
             _dragUpdateThrottleTimer ??= new Timer(
-                DartRuntimePrimitives.RequireValue(dragUpdateThrottleFrequency),
+                (
+                    dragUpdateThrottleFrequency
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 _handleDragUpdateThrottled
             );
         }
@@ -1010,7 +1035,13 @@ public abstract class BaseTapAndDragGestureRecognizer
     public virtual bool _hasSameButton(long buttons)
     {
         DartRuntimePrimitives.Assert(() => _previousButtons is not null);
-        if (buttons == DartRuntimePrimitives.RequireValue(_previousButtons))
+        if (
+            buttons
+            == (
+                _previousButtons
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        )
         {
             return true;
         }
@@ -1027,7 +1058,12 @@ public abstract class BaseTapAndDragGestureRecognizer
         {
             return false;
         }
-        Offset difference = secondTapOffset - DartRuntimePrimitives.RequireValue(_lastTapOffset);
+        Offset difference =
+            secondTapOffset
+            - (
+                _lastTapOffset
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         return difference.distance <= ConstantsLibrary.kDoubleTapSlop;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

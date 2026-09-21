@@ -102,15 +102,26 @@ public class NavigationBar : StatelessWidget
         NavigationBarThemeData navigationBarTheme = NavigationBarTheme.of(context);
         double effectiveHeight =
             (height ?? navigationBarTheme.height)
-            ?? DartRuntimePrimitives.RequireValue(defaults.height);
+            ?? (
+                defaults.height
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         NavigationDestinationLabelBehavior effectiveLabelBehavior =
             (labelBehavior ?? navigationBarTheme.labelBehavior)
-            ?? DartRuntimePrimitives.RequireValue(defaults.labelBehavior);
+            ?? (
+                defaults.labelBehavior
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         return new Material(
             color: (backgroundColor ?? navigationBarTheme.backgroundColor)
                 ?? defaults.backgroundColor!,
             elevation: (elevation ?? navigationBarTheme.elevation)
-                ?? DartRuntimePrimitives.RequireValue(defaults.elevation),
+                ?? (
+                    defaults.elevation
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
             shadowColor: (shadowColor ?? navigationBarTheme.shadowColor) ?? defaults.shadowColor,
             surfaceTintColor: (surfaceTintColor ?? navigationBarTheme.surfaceTintColor)
                 ?? defaults.surfaceTintColor,
@@ -578,8 +589,8 @@ public class NavigationIndicator : StatelessWidget
                             return new FadeTransition(
                                 opacity: fadeAnimation,
                                 child: new Ink(
-                                    width: DartRuntimePrimitives.RequireValue(width),
-                                    height: DartRuntimePrimitives.RequireValue(height),
+                                    width: (width),
+                                    height: (height),
                                     decoration: new ShapeDecoration(
                                         shape: shape
                                             ?? new RoundedRectangleBorder(

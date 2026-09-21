@@ -695,7 +695,12 @@ internal class _MaterialSwitchState__switch
                 )()
             );
             double delta =
-                DartRuntimePrimitives.RequireValue(details.primaryDelta) / _trackInnerLength;
+                (
+                    details.primaryDelta
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) / _trackInnerLength;
             positionController.value += Directionality.of(context) switch
             {
                 TextDirection.rtl => -delta,
@@ -727,7 +732,12 @@ internal class _MaterialSwitchState__switch
     {
         DartRuntimePrimitives.Assert(() => value is not null);
         DartRuntimePrimitives.Assert(() => widget.onChanged is not null);
-        widget.onChanged?.Invoke(DartRuntimePrimitives.RequireValue(value));
+        widget.onChanged?.Invoke(
+            (
+                value
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        );
     }
 
     public override Widget build(BuildContext context)
@@ -1000,7 +1010,10 @@ internal class _MaterialSwitchState__switch
                 : switchConfig.thumbRadiusWithIcon;
         double effectiveSplashRadius =
             (widget.splashRadius ?? switchTheme.splashRadius)
-            ?? DartRuntimePrimitives.RequireValue(defaults.splashRadius);
+            ?? (
+                defaults.splashRadius
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         return new Widgets.Semantics(
             toggled: widget.value,
             child: new GestureDetector(
@@ -1593,43 +1606,55 @@ internal class _SwitchPainter__switch : ToggleablePainter
     }
     public virtual double activeThumbRadius
     {
-        get => DartRuntimePrimitives.RequireValue(_activeThumbRadius);
+        get =>
+            (
+                _activeThumbRadius
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) == _activeThumbRadius)
+            if ((__value) == _activeThumbRadius)
             {
                 return;
             }
-            _activeThumbRadius = DartRuntimePrimitives.RequireValue(__value);
+            _activeThumbRadius = (__value);
             notifyListeners();
         }
     }
     public virtual double inactiveThumbRadius
     {
-        get => DartRuntimePrimitives.RequireValue(_inactiveThumbRadius);
+        get =>
+            (
+                _inactiveThumbRadius
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) == _inactiveThumbRadius)
+            if ((__value) == _inactiveThumbRadius)
             {
                 return;
             }
-            _inactiveThumbRadius = DartRuntimePrimitives.RequireValue(__value);
+            _inactiveThumbRadius = (__value);
             notifyListeners();
         }
     }
     public virtual double pressedThumbRadius
     {
-        get => DartRuntimePrimitives.RequireValue(_pressedThumbRadius);
+        get =>
+            (
+                _pressedThumbRadius
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) == _pressedThumbRadius)
+            if ((__value) == _pressedThumbRadius)
             {
                 return;
             }
-            _pressedThumbRadius = DartRuntimePrimitives.RequireValue(__value);
+            _pressedThumbRadius = (__value);
             notifyListeners();
         }
     }
@@ -1649,43 +1674,68 @@ internal class _SwitchPainter__switch : ToggleablePainter
     }
     public virtual Size transitionalThumbSize
     {
-        get => DartRuntimePrimitives.RequireValue(_transitionalThumbSize);
+        get =>
+            (
+                _transitionalThumbSize
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         set
         {
             var __value = value;
-            if (Equals(DartRuntimePrimitives.RequireValue(__value), _transitionalThumbSize))
+            if (
+                Equals(
+                    (
+                        __value
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
+                    _transitionalThumbSize
+                )
+            )
             {
                 return;
             }
-            _transitionalThumbSize = DartRuntimePrimitives.RequireValue(__value);
+            _transitionalThumbSize = (
+                __value
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             notifyListeners();
         }
     }
     public virtual double trackHeight
     {
-        get => DartRuntimePrimitives.RequireValue(_trackHeight);
+        get =>
+            (
+                _trackHeight
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) == _trackHeight)
+            if ((__value) == _trackHeight)
             {
                 return;
             }
-            _trackHeight = DartRuntimePrimitives.RequireValue(__value);
+            _trackHeight = (__value);
             notifyListeners();
         }
     }
     public virtual double trackWidth
     {
-        get => DartRuntimePrimitives.RequireValue(_trackWidth);
+        get =>
+            (
+                _trackWidth
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) == _trackWidth)
+            if ((__value) == _trackWidth)
             {
                 return;
             }
-            _trackWidth = DartRuntimePrimitives.RequireValue(__value);
+            _trackWidth = (__value);
             notifyListeners();
         }
     }
@@ -1845,15 +1895,19 @@ internal class _SwitchPainter__switch : ToggleablePainter
     }
     public virtual TextDirection textDirection
     {
-        get => DartRuntimePrimitives.RequireValue(_textDirection);
+        get =>
+            (
+                _textDirection
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         set
         {
             var __value = value;
-            if (Equals(_textDirection, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_textDirection, (__value)))
             {
                 return;
             }
-            _textDirection = DartRuntimePrimitives.RequireValue(__value);
+            _textDirection = (__value);
             notifyListeners();
         }
     }
@@ -1873,43 +1927,55 @@ internal class _SwitchPainter__switch : ToggleablePainter
     }
     public virtual bool isInteractive
     {
-        get => DartRuntimePrimitives.RequireValue(_isInteractive);
+        get =>
+            (
+                _isInteractive
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) == _isInteractive)
+            if ((__value) == _isInteractive)
             {
                 return;
             }
-            _isInteractive = DartRuntimePrimitives.RequireValue(__value);
+            _isInteractive = (__value);
             notifyListeners();
         }
     }
     public virtual double trackInnerLength
     {
-        get => DartRuntimePrimitives.RequireValue(_trackInnerLength);
+        get =>
+            (
+                _trackInnerLength
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) == _trackInnerLength)
+            if ((__value) == _trackInnerLength)
             {
                 return;
             }
-            _trackInnerLength = DartRuntimePrimitives.RequireValue(__value);
+            _trackInnerLength = (__value);
             notifyListeners();
         }
     }
     public virtual bool isCupertino
     {
-        get => DartRuntimePrimitives.RequireValue(_isCupertino);
+        get =>
+            (
+                _isCupertino
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) == _isCupertino)
+            if ((__value) == _isCupertino)
             {
                 return;
             }
-            _isCupertino = DartRuntimePrimitives.RequireValue(__value);
+            _isCupertino = (__value);
             notifyListeners();
         }
     }
@@ -2008,16 +2074,50 @@ internal class _SwitchPainter__switch : ToggleablePainter
         }
         var inactiveThumbSize = isCupertino
             ? new Size(
-                (DartRuntimePrimitives.RequireValue(_pressedInactiveThumbRadius) * 2L)
-                    + DartRuntimePrimitives.RequireValue(_pressedThumbExtension),
-                DartRuntimePrimitives.RequireValue(_pressedInactiveThumbRadius) * 2L
+                (
+                    (
+                        _pressedInactiveThumbRadius
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) * 2L
+                )
+                    + (
+                        _pressedThumbExtension
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
+                (
+                    _pressedInactiveThumbRadius
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) * 2L
             )
             : Size.fromRadius(_pressedInactiveThumbRadius ?? (double)inactiveThumbRadius);
         var activeThumbSize = isCupertino
             ? new Size(
-                (DartRuntimePrimitives.RequireValue(_pressedActiveThumbRadius) * 2L)
-                    + DartRuntimePrimitives.RequireValue(_pressedThumbExtension),
-                DartRuntimePrimitives.RequireValue(_pressedActiveThumbRadius) * 2L
+                (
+                    (
+                        _pressedActiveThumbRadius
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) * 2L
+                )
+                    + (
+                        _pressedThumbExtension
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
+                (
+                    _pressedActiveThumbRadius
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) * 2L
             )
             : Size.fromRadius(_pressedActiveThumbRadius ?? (double)activeThumbRadius);
         Animation<Size> thumbSizeAnimation(bool isForward)
@@ -2082,9 +2182,26 @@ internal class _SwitchPainter__switch : ToggleablePainter
             if (reaction.isCompleted)
             {
                 thumbSize = new Size(
-                    (DartRuntimePrimitives.RequireValue(_pressedInactiveThumbRadius) * 2L)
-                        + DartRuntimePrimitives.RequireValue(_pressedThumbExtension),
-                    DartRuntimePrimitives.RequireValue(_pressedInactiveThumbRadius) * 2L
+                    (
+                        (
+                            _pressedInactiveThumbRadius
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) * 2L
+                    )
+                        + (
+                            _pressedThumbExtension
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ),
+                    (
+                        _pressedInactiveThumbRadius
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) * 2L
                 );
             }
             else
@@ -2130,11 +2247,27 @@ internal class _SwitchPainter__switch : ToggleablePainter
                 ? 0
                 : (
                     1.0
-                    - ((currentValue - DartRuntimePrimitives.RequireValue(thumbOffset)).abs() * 2.0)
+                    - (
+                        (
+                            currentValue
+                            - (
+                                thumbOffset
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            )
+                        ).abs() * 2.0
+                    )
                 );
         thumbSize = new Size(
-            DartRuntimePrimitives.RequireValue(thumbSize).width - inset,
-            DartRuntimePrimitives.RequireValue(thumbSize).height - inset
+            (
+                thumbSize
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).width - inset,
+            (
+                thumbSize
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).height - inset
         );
         double colorValue = _colorAnimation!.value;
         Color trackColor = Dart_uiLibrary.Color.lerp(
@@ -2212,11 +2345,26 @@ internal class _SwitchPainter__switch : ToggleablePainter
         Offset trackPaintOffset = _computeTrackPaintOffset(size, trackWidth, trackHeight);
         Offset thumbPaintOffset = _computeThumbPaintOffset(
             trackPaintOffset,
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(thumbSize)),
+            (
+                (
+                    thumbSize
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             visualPosition
         );
         var radialReactionOrigin = new Offset(
-            thumbPaintOffset.dx + (DartRuntimePrimitives.RequireValue(thumbSize).height / 2L),
+            thumbPaintOffset.dx
+                + (
+                    (
+                        thumbSize
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).height / 2L
+                ),
             size.height / 2L
         );
         _paintTrackWith(canvas, paintLocal, trackPaintOffset, trackOutlineColor, trackOutlineWidth);
@@ -2229,7 +2377,14 @@ internal class _SwitchPainter__switch : ToggleablePainter
             thumbImage,
             thumbErrorListener,
             thumbIcon,
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(thumbSize)),
+            (
+                (
+                    thumbSize
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             inset
         );
     }
@@ -2256,11 +2411,26 @@ internal class _SwitchPainter__switch : ToggleablePainter
         double additionalThumbRadius = (thumbSize.height / 2L) - trackRadius;
         double horizontalProgress =
             visualPosition
-            * (trackInnerLength - DartRuntimePrimitives.RequireValue(_pressedThumbExtension));
+            * (
+                trackInnerLength
+                - (
+                    _pressedThumbExtension
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            );
         double thumbHorizontalOffset =
             trackPaintOffset.dx
             + trackRadius
-            + (DartRuntimePrimitives.RequireValue(_pressedThumbExtension) / 2L)
+            + (
+                (
+                    _pressedThumbExtension
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) / 2L
+            )
             - (thumbSize.width / 2L)
             + horizontalProgress;
         double thumbVerticalOffset = trackPaintOffset.dy - additionalThumbRadius;
@@ -2400,7 +2570,12 @@ internal class _SwitchPainter__switch : ToggleablePainter
                                         __collection65120.Add(
                                             new FontVariation(
                                                 "FILL",
-                                                DartRuntimePrimitives.RequireValue(iconFill)
+                                                (
+                                                    iconFill
+                                                    ?? throw new global::System.NullReferenceException(
+                                                        "Dart null assertion failed."
+                                                    )
+                                                )
                                             )
                                         );
                                     }
@@ -2409,7 +2584,12 @@ internal class _SwitchPainter__switch : ToggleablePainter
                                         __collection65120.Add(
                                             new FontVariation(
                                                 "wght",
-                                                DartRuntimePrimitives.RequireValue(iconWeight)
+                                                (
+                                                    iconWeight
+                                                    ?? throw new global::System.NullReferenceException(
+                                                        "Dart null assertion failed."
+                                                    )
+                                                )
                                             )
                                         );
                                     }
@@ -2418,7 +2598,12 @@ internal class _SwitchPainter__switch : ToggleablePainter
                                         __collection65120.Add(
                                             new FontVariation(
                                                 "GRAD",
-                                                DartRuntimePrimitives.RequireValue(iconGrade)
+                                                (
+                                                    iconGrade
+                                                    ?? throw new global::System.NullReferenceException(
+                                                        "Dart null assertion failed."
+                                                    )
+                                                )
                                             )
                                         );
                                     }
@@ -2427,7 +2612,12 @@ internal class _SwitchPainter__switch : ToggleablePainter
                                         __collection65120.Add(
                                             new FontVariation(
                                                 "opsz",
-                                                DartRuntimePrimitives.RequireValue(iconOpticalSize)
+                                                (
+                                                    iconOpticalSize
+                                                    ?? throw new global::System.NullReferenceException(
+                                                        "Dart null assertion failed."
+                                                    )
+                                                )
                                             )
                                         );
                                     }

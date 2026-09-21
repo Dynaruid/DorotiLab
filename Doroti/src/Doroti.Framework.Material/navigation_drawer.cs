@@ -287,11 +287,21 @@ internal class _NavigationDestinationBuilder__navigation_drawer : StatelessWidge
                                 ?? defaults.indicatorShape!,
                             width: (
                                 navigationDrawerTheme.indicatorSize
-                                ?? DartRuntimePrimitives.RequireValue(defaults.indicatorSize)
+                                ?? (
+                                    defaults.indicatorSize
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                )
                             ).width,
                             height: (
                                 navigationDrawerTheme.indicatorSize
-                                ?? DartRuntimePrimitives.RequireValue(defaults.indicatorSize)
+                                ?? (
+                                    defaults.indicatorSize
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                )
                             ).height
                         )
                     ),

@@ -98,7 +98,12 @@ public interface RenderInlineChildrenContainerDefaults
                     Dart_uiLibrary.PlaceholderAlignment.baseline => getBaseline(
                         child,
                         childConstraints,
-                        DartRuntimePrimitives.RequireValue(spanLocal.baseline)
+                        (
+                            spanLocal.baseline
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     ),
                     _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
                 }
@@ -195,7 +200,15 @@ public class RenderParagraph
         );
         System.Diagnostics.Debug.Assert(text.debugAssertIsValid());
         System.Diagnostics.Debug.Assert(
-            (maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L)
+            (maxLines is null)
+                || (
+                    (
+                        maxLines
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
         System.Diagnostics.Debug.Assert(
             DartRuntimePrimitives.Identical(__textScaler, new _UnspecifiedTextScaler__paragraph())
@@ -418,25 +431,29 @@ public class RenderParagraph
         set
         {
             var __value = value;
-            if (Equals(_textPainter.textAlign, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_textPainter.textAlign, (__value)))
             {
                 return;
             }
-            _textPainter.textAlign = DartRuntimePrimitives.RequireValue(__value);
+            _textPainter.textAlign = (__value);
             markNeedsPaint();
         }
     }
     public virtual TextDirection textDirection
     {
-        get => DartRuntimePrimitives.RequireValue(_textPainter.textDirection);
+        get =>
+            (
+                _textPainter.textDirection
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         set
         {
             var __value = value;
-            if (Equals(_textPainter.textDirection, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_textPainter.textDirection, (__value)))
             {
                 return;
             }
-            _textPainter.textDirection = DartRuntimePrimitives.RequireValue(__value);
+            _textPainter.textDirection = (__value);
             markNeedsLayout();
         }
     }
@@ -446,11 +463,11 @@ public class RenderParagraph
         set
         {
             var __value = value;
-            if (_softWrap == DartRuntimePrimitives.RequireValue(__value))
+            if (_softWrap == (__value))
             {
                 return;
             }
-            _softWrap = DartRuntimePrimitives.RequireValue(__value);
+            _softWrap = (__value);
             markNeedsLayout();
         }
     }
@@ -460,15 +477,12 @@ public class RenderParagraph
         set
         {
             var __value = value;
-            if (Equals(_overflow, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_overflow, (__value)))
             {
                 return;
             }
-            _overflow = DartRuntimePrimitives.RequireValue(__value);
-            _textPainter.ellipsis = Equals(
-                DartRuntimePrimitives.RequireValue(__value),
-                TextOverflow.ellipsis
-            )
+            _overflow = (__value);
+            _textPainter.ellipsis = Equals((__value), TextOverflow.ellipsis)
                 ? ParagraphLibrary._kEllipsis
                 : null;
             markNeedsLayout();
@@ -480,7 +494,7 @@ public class RenderParagraph
         set
         {
             var __value = value;
-            textScaler = TextScaler.CreateLinear(DartRuntimePrimitives.RequireValue(__value));
+            textScaler = TextScaler.CreateLinear((__value));
         }
     }
     public virtual TextScaler textScaler
@@ -504,11 +518,11 @@ public class RenderParagraph
         set
         {
             var __value = value;
-            if (_devicePixelRatio == DartRuntimePrimitives.RequireValue(__value))
+            if (_devicePixelRatio == (__value))
             {
                 return;
             }
-            _devicePixelRatio = DartRuntimePrimitives.RequireValue(__value);
+            _devicePixelRatio = (__value);
             if (Foundation.ConstantsLibrary.kIsWeb)
             {
                 markNeedsPaint();
@@ -522,7 +536,15 @@ public class RenderParagraph
         {
             var __value = value;
             DartRuntimePrimitives.Assert(() =>
-                (__value is null) || (DartRuntimePrimitives.RequireValue(__value) > 0L)
+                (__value is null)
+                || (
+                    (
+                        __value
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
             );
             if (_textPainter.maxLines == __value)
             {
@@ -569,11 +591,11 @@ public class RenderParagraph
         set
         {
             var __value = value;
-            if (Equals(_textPainter.textWidthBasis, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_textPainter.textWidthBasis, (__value)))
             {
                 return;
             }
-            _textPainter.textWidthBasis = DartRuntimePrimitives.RequireValue(__value);
+            _textPainter.textWidthBasis = (__value);
             _overflowShader = null;
             markNeedsLayout();
         }
@@ -1393,9 +1415,12 @@ public class RenderParagraph
                 }
                 if (node.parentPaintClipRect is not null)
                 {
-                    Rect paintRect = DartRuntimePrimitives
-                        .RequireValue(node.parentPaintClipRect)
-                        .intersect(currentRect);
+                    Rect paintRect = (
+                        node.parentPaintClipRect
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).intersect(currentRect);
                     configuration.isHidden = paintRect.isEmpty && !currentRect.isEmpty;
                 }
                 SemanticsNode newChild = default!;
@@ -1855,8 +1880,18 @@ public class RenderParagraph
         else
         {
             transform.translateByDouble(
-                DartRuntimePrimitives.RequireValue(offsetLocal).dx,
-                DartRuntimePrimitives.RequireValue(offsetLocal).dy,
+                (
+                    offsetLocal
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).dx,
+                (
+                    offsetLocal
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).dy,
                 0,
                 1
             );
@@ -1874,7 +1909,15 @@ public class RenderParagraph
             {
                 return;
             }
-            context.paintChild(child, DartRuntimePrimitives.RequireValue(childOffset) + offset);
+            context.paintChild(
+                child,
+                (
+                    childOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) + offset
+            );
             child = childAfter(child);
         }
     }
@@ -1891,7 +1934,12 @@ public class RenderParagraph
                 return false;
             }
             bool isHit = result.addWithPaintOffset(
-                offset: DartRuntimePrimitives.RequireValue(childOffset),
+                offset: (
+                    childOffset
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 position: position,
                 hitTest: (result, transformed) => child!.hitTest(result, position: transformed)
             );
@@ -2182,18 +2230,13 @@ internal class _SelectableFragment__paragraph
         TextPosition? targetPosition = default!;
         if (textBoundary is not null)
         {
-            (TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary__value61232 =
-                DartRuntimePrimitives.RequireValue(textBoundary);
+            (TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary__value61232 = (
+                textBoundary
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             DartRuntimePrimitives.Assert(() =>
-                (
-                    DartRuntimePrimitives
-                        .RequireValue(textBoundary__value61232)
-                        .boundaryStart.offset >= range.start
-                )
-                && (
-                    DartRuntimePrimitives.RequireValue(textBoundary__value61232).boundaryEnd.offset
-                    <= range.end
-                )
+                ((textBoundary__value61232).boundaryStart.offset >= range.start)
+                && ((textBoundary__value61232).boundaryEnd.offset <= range.end)
             );
             if (
                 _selectableContainsOriginTextBoundary
@@ -2211,15 +2254,11 @@ internal class _SelectableFragment__paragraph
                 {
                     if (position.offset < existingSelectionEnd.offset)
                     {
-                        targetPosition = DartRuntimePrimitives
-                            .RequireValue(textBoundary__value61232)
-                            .boundaryStart;
+                        targetPosition = (textBoundary__value61232).boundaryStart;
                     }
                     else
                     {
-                        targetPosition = DartRuntimePrimitives
-                            .RequireValue(textBoundary__value61232)
-                            .boundaryEnd;
+                        targetPosition = (textBoundary__value61232).boundaryEnd;
                     }
                     (TextPosition boundaryEnd, TextPosition boundaryStart) localTextBoundary =
                         getTextBoundary(existingSelectionEnd);
@@ -2238,17 +2277,13 @@ internal class _SelectableFragment__paragraph
                 {
                     if (position.offset < existingSelectionEnd.offset)
                     {
-                        targetPosition = DartRuntimePrimitives
-                            .RequireValue(textBoundary__value61232)
-                            .boundaryStart;
+                        targetPosition = (textBoundary__value61232).boundaryStart;
                     }
                     else
                     {
                         if (position.offset > existingSelectionEnd.offset)
                         {
-                            targetPosition = DartRuntimePrimitives
-                                .RequireValue(textBoundary__value61232)
-                                .boundaryEnd;
+                            targetPosition = (textBoundary__value61232).boundaryEnd;
                         }
                         else
                         {
@@ -2263,25 +2298,16 @@ internal class _SelectableFragment__paragraph
                 {
                     if (position.offset < existingSelectionEnd.offset)
                     {
-                        targetPosition = DartRuntimePrimitives
-                            .RequireValue(textBoundary__value61232)
-                            .boundaryStart;
+                        targetPosition = (textBoundary__value61232).boundaryStart;
                     }
                     else
                     {
-                        targetPosition = DartRuntimePrimitives
-                            .RequireValue(textBoundary__value61232)
-                            .boundaryEnd;
+                        targetPosition = (textBoundary__value61232).boundaryEnd;
                     }
                 }
                 else
                 {
-                    targetPosition = _closestTextBoundary(
-                        DartRuntimePrimitives.RequireValue(
-                            DartRuntimePrimitives.RequireValue(textBoundary__value61232)
-                        ),
-                        position
-                    );
+                    targetPosition = _closestTextBoundary(((textBoundary__value61232)), position);
                 }
             }
         }
@@ -2331,18 +2357,13 @@ internal class _SelectableFragment__paragraph
         TextPosition? targetPosition = default!;
         if (textBoundary is not null)
         {
-            (TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary__value65725 =
-                DartRuntimePrimitives.RequireValue(textBoundary);
+            (TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary__value65725 = (
+                textBoundary
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             DartRuntimePrimitives.Assert(() =>
-                (
-                    DartRuntimePrimitives
-                        .RequireValue(textBoundary__value65725)
-                        .boundaryStart.offset >= range.start
-                )
-                && (
-                    DartRuntimePrimitives.RequireValue(textBoundary__value65725).boundaryEnd.offset
-                    <= range.end
-                )
+                ((textBoundary__value65725).boundaryStart.offset >= range.start)
+                && ((textBoundary__value65725).boundaryEnd.offset <= range.end)
             );
             if (
                 _selectableContainsOriginTextBoundary
@@ -2360,15 +2381,11 @@ internal class _SelectableFragment__paragraph
                 {
                     if (position.offset < existingSelectionStart.offset)
                     {
-                        targetPosition = DartRuntimePrimitives
-                            .RequireValue(textBoundary__value65725)
-                            .boundaryStart;
+                        targetPosition = (textBoundary__value65725).boundaryStart;
                     }
                     else
                     {
-                        targetPosition = DartRuntimePrimitives
-                            .RequireValue(textBoundary__value65725)
-                            .boundaryEnd;
+                        targetPosition = (textBoundary__value65725).boundaryEnd;
                     }
                     (TextPosition boundaryEnd, TextPosition boundaryStart) localTextBoundary =
                         getTextBoundary(existingSelectionStart);
@@ -2387,17 +2404,13 @@ internal class _SelectableFragment__paragraph
                 {
                     if (position.offset < existingSelectionStart.offset)
                     {
-                        targetPosition = DartRuntimePrimitives
-                            .RequireValue(textBoundary__value65725)
-                            .boundaryStart;
+                        targetPosition = (textBoundary__value65725).boundaryStart;
                     }
                     else
                     {
                         if (position.offset > existingSelectionStart.offset)
                         {
-                            targetPosition = DartRuntimePrimitives
-                                .RequireValue(textBoundary__value65725)
-                                .boundaryEnd;
+                            targetPosition = (textBoundary__value65725).boundaryEnd;
                         }
                         else
                         {
@@ -2412,25 +2425,16 @@ internal class _SelectableFragment__paragraph
                 {
                     if (position.offset < existingSelectionStart.offset)
                     {
-                        targetPosition = DartRuntimePrimitives
-                            .RequireValue(textBoundary__value65725)
-                            .boundaryStart;
+                        targetPosition = (textBoundary__value65725).boundaryStart;
                     }
                     else
                     {
-                        targetPosition = DartRuntimePrimitives
-                            .RequireValue(textBoundary__value65725)
-                            .boundaryEnd;
+                        targetPosition = (textBoundary__value65725).boundaryEnd;
                     }
                 }
                 else
                 {
-                    targetPosition = _closestTextBoundary(
-                        DartRuntimePrimitives.RequireValue(
-                            DartRuntimePrimitives.RequireValue(textBoundary__value65725)
-                        ),
-                        position
-                    );
+                    targetPosition = _closestTextBoundary(((textBoundary__value65725)), position);
                 }
             }
         }
@@ -2508,29 +2512,58 @@ internal class _SelectableFragment__paragraph
             && (
                 (
                     (
-                        DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset
-                        < range.start
+                        (
+                            textBoundary
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                            .boundaryStart
+                            .offset < range.start
                     )
                     && (
-                        DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset
-                        <= range.start
+                        (
+                            textBoundary
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                            .boundaryEnd
+                            .offset <= range.start
                     )
                 )
                 || (
                     (
-                        DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset
-                        >= range.end
+                        (
+                            textBoundary
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                            .boundaryStart
+                            .offset >= range.end
                     )
                     && (
-                        DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset
-                        > range.end
+                        (
+                            textBoundary
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                            .boundaryEnd
+                            .offset > range.end
                     )
                 )
             )
         )
         {
             (TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary__71646__value71751 =
-                DartRuntimePrimitives.RequireValue(textBoundary);
+                (
+                    textBoundary
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
             textBoundary = null;
         }
         TextPosition targetPosition = _clampTextPosition(
@@ -3308,12 +3341,20 @@ internal class _SelectableFragment__paragraph
                 {
                     return null;
                 }
-                RenderParagraph targetParagraph = DartRuntimePrimitives
-                    .RequireValue(targetDetails)
-                    .paragraph;
+                RenderParagraph targetParagraph = (
+                    targetDetails
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).paragraph;
                 TextPosition positionRelativeToTargetParagraph =
                     targetParagraph.getPositionForOffset(
-                        DartRuntimePrimitives.RequireValue(targetDetails).localPosition
+                        (
+                            targetDetails
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ).localPosition
                     );
                 string targetText = targetParagraph.text.toPlainText(includeSemanticsLabels: false);
                 var positionOnPlaceholder =
@@ -3661,12 +3702,20 @@ internal class _SelectableFragment__paragraph
                 {
                     return null;
                 }
-                RenderParagraph targetParagraph = DartRuntimePrimitives
-                    .RequireValue(targetDetails)
-                    .paragraph;
+                RenderParagraph targetParagraph = (
+                    targetDetails
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ).paragraph;
                 TextPosition positionRelativeToTargetParagraph =
                     targetParagraph.getPositionForOffset(
-                        DartRuntimePrimitives.RequireValue(targetDetails).localPosition
+                        (
+                            targetDetails
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ).localPosition
                     );
                 string targetText = targetParagraph.text.toPlainText(includeSemanticsLabels: false);
                 var positionOnPlaceholder =
@@ -3871,10 +3920,11 @@ internal class _SelectableFragment__paragraph
         }
         if (resultLocal is not null)
         {
-            SelectionResult result__118831__value120148 = DartRuntimePrimitives.RequireValue(
+            SelectionResult result__118831__value120148 = (
                 resultLocal
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
-            return DartRuntimePrimitives.RequireValue(result__118831__value120148);
+            return (result__118831__value120148);
         }
         (TextPosition boundaryEnd, TextPosition boundaryStart)? textBoundary =
             _boundingBoxesContains(localPosition) ? getClampedTextBoundary(position) : null;
@@ -3883,22 +3933,46 @@ internal class _SelectableFragment__paragraph
             && (
                 (
                     (
-                        DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset
-                        < range.start
+                        (
+                            textBoundary
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                            .boundaryStart
+                            .offset < range.start
                     )
                     && (
-                        DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset
-                        <= range.start
+                        (
+                            textBoundary
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                            .boundaryEnd
+                            .offset <= range.start
                     )
                 )
                 || (
                     (
-                        DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset
-                        >= range.end
+                        (
+                            textBoundary
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                            .boundaryStart
+                            .offset >= range.end
                     )
                     && (
-                        DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset
-                        > range.end
+                        (
+                            textBoundary
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                            .boundaryEnd
+                            .offset > range.end
                     )
                 )
             )
@@ -3907,7 +3981,10 @@ internal class _SelectableFragment__paragraph
             (
                 TextPosition boundaryEnd,
                 TextPosition boundaryStart
-            ) textBoundary__120500__value120620 = DartRuntimePrimitives.RequireValue(textBoundary);
+            ) textBoundary__120500__value120620 = (
+                textBoundary
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             textBoundary = null;
         }
         TextPosition targetPosition = _clampTextPosition(
@@ -3945,15 +4022,11 @@ internal class _SelectableFragment__paragraph
         TextPosition position
     )
     {
-        long differenceA = (
-            position.offset - DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset
-        ).abs();
-        long differenceB = (
-            position.offset - DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset
-        ).abs();
+        long differenceA = (position.offset - (textBoundary).boundaryStart.offset).abs();
+        long differenceB = (position.offset - (textBoundary).boundaryEnd.offset).abs();
         return (differenceA < differenceB)
-            ? DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart
-            : DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd;
+            ? (textBoundary).boundaryStart
+            : (textBoundary).boundaryEnd;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -4046,11 +4119,7 @@ internal class _SelectableFragment__paragraph
     {
         foreach (Rect rect in boundingBoxes)
         {
-            if (
-                rect.contains(
-                    DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(position))
-                )
-            )
+            if (rect.contains(((position))))
             {
                 return true;
             }
@@ -4112,7 +4181,7 @@ internal class _SelectableFragment__paragraph
     )
     {
         if (
-            (DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset < range.start)
+            ((textBoundary).boundaryStart.offset < range.start)
             && (textBoundary.boundaryEnd.offset <= range.start)
         )
         {
@@ -4122,7 +4191,7 @@ internal class _SelectableFragment__paragraph
         {
             if (
                 (textBoundary.boundaryStart.offset >= range.end)
-                && (DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset > range.end)
+                && ((textBoundary).boundaryEnd.offset > range.end)
             )
             {
                 return SelectionResult.next;
@@ -4132,8 +4201,8 @@ internal class _SelectableFragment__paragraph
             (textBoundary.boundaryStart.offset >= range.start)
             && (textBoundary.boundaryEnd.offset <= range.end)
         );
-        _textSelectionStart = DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart;
-        _textSelectionEnd = DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd;
+        _textSelectionStart = (textBoundary).boundaryStart;
+        _textSelectionEnd = (textBoundary).boundaryEnd;
         _selectableContainsOriginTextBoundary = true;
         return SelectionResult.end;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -4158,7 +4227,7 @@ internal class _SelectableFragment__paragraph
     )
     {
         if (
-            (DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset < range.start)
+            ((textBoundary).boundaryStart.offset < range.start)
             && (textBoundary.boundaryEnd.offset <= range.start)
         )
         {
@@ -4168,15 +4237,15 @@ internal class _SelectableFragment__paragraph
         {
             if (
                 (textBoundary.boundaryStart.offset >= range.end)
-                && (DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset > range.end)
+                && ((textBoundary).boundaryEnd.offset > range.end)
             )
             {
                 return SelectionResult.next;
             }
         }
         var boundaryAsRange = new TextRange(
-            start: DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset,
-            end: DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset
+            start: (textBoundary).boundaryStart.offset,
+            end: (textBoundary).boundaryEnd.offset
         );
         TextRange? intersectRange = _intersect(range, boundaryAsRange);
         if (intersectRange is not null)
@@ -4184,7 +4253,7 @@ internal class _SelectableFragment__paragraph
             _textSelectionStart = new TextPosition(offset: intersectRange.start);
             _textSelectionEnd = new TextPosition(offset: intersectRange.end);
             _selectableContainsOriginTextBoundary = true;
-            if (range.end < DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset)
+            if (range.end < (textBoundary).boundaryEnd.offset)
             {
                 return SelectionResult.next;
             }
@@ -4763,7 +4832,10 @@ internal class _SelectableFragment__paragraph
                     );
                 }
             }
-            return DartRuntimePrimitives.RequireValue(_cachedRect);
+            return (
+                _cachedRect
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         }
     }
 

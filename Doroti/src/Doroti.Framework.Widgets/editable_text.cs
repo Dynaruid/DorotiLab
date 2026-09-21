@@ -679,12 +679,26 @@ public class EditableText : StatefulWidget
         this.selectionWidthStyle = selectionWidthStyle ?? defaultSelectionWidthStyle;
         System.Diagnostics.Debug.Assert(obscuringCharacter.Length == 1L);
         System.Diagnostics.Debug.Assert(
-            (minLines is null) || (DartRuntimePrimitives.RequireValue(minLines) > 0L)
+            (minLines is null)
+                || (
+                    (
+                        minLines
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
         System.Diagnostics.Debug.Assert(
             maxLines is null
                 || minLines is null
-                || maxLines >= DartRuntimePrimitives.RequireValue(minLines)
+                || maxLines
+                    >= (
+                        minLines
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
         );
         System.Diagnostics.Debug.Assert(!expands || ((maxLines is null) && (minLines is null)));
         System.Diagnostics.Debug.Assert(!obscureText || (maxLines == 1L));
@@ -1121,7 +1135,7 @@ public class EditableText : StatefulWidget
         properties.add(
             new DiagnosticsProperty<bool>(
                 "stylusHandwritingEnabled",
-                DartRuntimePrimitives.RequireValue(stylusHandwritingEnabled),
+                (stylusHandwritingEnabled),
                 defaultValue: defaultStylusHandwritingEnabled
             )
         );
@@ -1782,7 +1796,7 @@ public class EditableTextState
                 .setData(new ClipboardData(text: selectionLocal.textInside(textLocal)))
                 .catchError(_reportClipboardError("while copying selection to clipboard"))
         );
-        if (Equals(DartRuntimePrimitives.RequireValue(cause), SelectionChangedCause.toolbar))
+        if (Equals((cause), SelectionChangedCause.toolbar))
         {
             bringIntoView(textEditingValue.selection.extent);
             hideToolbar(false);
@@ -1831,15 +1845,8 @@ public class EditableTextState
                 .setData(new ClipboardData(text: selectionLocal.textInside(textLocal)))
                 .catchError(_reportClipboardError("while cutting selection to clipboard"))
         );
-        _replaceText(
-            new ReplaceTextIntent(
-                textEditingValue,
-                "",
-                selectionLocal,
-                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(cause))
-            )
-        );
-        if (Equals(DartRuntimePrimitives.RequireValue(cause), SelectionChangedCause.toolbar))
+        _replaceText(new ReplaceTextIntent(textEditingValue, "", selectionLocal, ((cause))));
+        if (Equals((cause), SelectionChangedCause.toolbar))
         {
             Scheduler.SchedulerBinding.instance.addPostFrameCallback(
                 (_) =>
@@ -1890,10 +1897,7 @@ public class EditableTextState
         {
             return;
         }
-        _pasteText(
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(cause)),
-            data.text!
-        );
+        _pasteText(((cause)), data.text!);
     }
 
     internal virtual void _pasteText(SelectionChangedCause cause, string text)
@@ -1909,9 +1913,9 @@ public class EditableTextState
         );
         userUpdateTextEditingValue(
             collapsedTextEditingValue.replaced(selectionLocal, text),
-            DartRuntimePrimitives.RequireValue(cause)
+            (cause)
         );
-        if (Equals(DartRuntimePrimitives.RequireValue(cause), SelectionChangedCause.toolbar))
+        if (Equals((cause), SelectionChangedCause.toolbar))
         {
             Scheduler.SchedulerBinding.instance.addPostFrameCallback(
                 (_) =>
@@ -1931,9 +1935,7 @@ public class EditableTextState
     {
         try
         {
-            await pasteText(
-                DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(cause))
-            );
+            await pasteText(((cause)));
         }
         catch (Exception error)
         {
@@ -1962,9 +1964,9 @@ public class EditableTextState
                     extentOffset: textEditingValue.text.Length
                 )
             ),
-            DartRuntimePrimitives.RequireValue(cause)
+            (cause)
         );
-        if (Equals(DartRuntimePrimitives.RequireValue(cause), SelectionChangedCause.toolbar))
+        if (Equals((cause), SelectionChangedCause.toolbar))
         {
             switch (PlatformLibrary.defaultTargetPlatform)
             {
@@ -2067,7 +2069,7 @@ public class EditableTextState
                     )
             );
         }
-        if (Equals(DartRuntimePrimitives.RequireValue(cause), SelectionChangedCause.toolbar))
+        if (Equals((cause), SelectionChangedCause.toolbar))
         {
             hideToolbar();
         }
@@ -2280,8 +2282,11 @@ public class EditableTextState
             if (renderEditable.lastSecondaryTapDownPosition is not null)
             {
                 return new TextSelectionToolbarAnchors(
-                    primaryAnchor: DartRuntimePrimitives.RequireValue(
+                    primaryAnchor: (
                         renderEditable.lastSecondaryTapDownPosition
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     )
                 );
             }
@@ -2904,7 +2909,7 @@ public class EditableTextState
                     cause = SelectionChangedCause.keyboard;
                 }
             }
-            _handleSelectionChanged(value.selection, DartRuntimePrimitives.RequireValue(cause));
+            _handleSelectionChanged(value.selection, (cause));
         }
         else
         {
@@ -3026,8 +3031,12 @@ public class EditableTextState
                 {
                     shouldResetOriginLocal = false;
                     DartRuntimePrimitives.Ignore(
-                        (startCaretCenter, currentTextPosition) =
-                            DartRuntimePrimitives.RequireValue(point.startLocation)
+                        (startCaretCenter, currentTextPosition) = (
+                            point.startLocation
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     );
                 }
                 else
@@ -3043,13 +3052,23 @@ public class EditableTextState
                 }
                 _startCaretCenter = startCaretCenter;
                 _lastBoundedOffset = renderEditable.calculateBoundedFloatingCursorOffset(
-                    DartRuntimePrimitives.RequireValue(_startCaretCenter) - _floatingCursorOffset,
+                    (
+                        _startCaretCenter
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) - _floatingCursorOffset,
                     shouldResetOrigin: shouldResetOriginLocal
                 );
                 _lastTextPosition = currentTextPosition;
                 renderEditable.setFloatingCursor(
                     point.state,
-                    DartRuntimePrimitives.RequireValue(_lastBoundedOffset),
+                    (
+                        _lastBoundedOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     _lastTextPosition!
                 );
                 break;
@@ -3057,10 +3076,25 @@ public class EditableTextState
             case FloatingCursorDragState.Update:
             {
                 Offset centeredPoint =
-                    DartRuntimePrimitives.RequireValue(point.offset)
-                    - DartRuntimePrimitives.RequireValue(_pointOffsetOrigin);
+                    (
+                        point.offset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                    - (
+                        _pointOffsetOrigin
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    );
                 Offset rawCursorOffset =
-                    DartRuntimePrimitives.RequireValue(_startCaretCenter)
+                    (
+                        _startCaretCenter
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                     + centeredPoint
                     - _floatingCursorOffset;
                 _lastBoundedOffset = renderEditable.calculateBoundedFloatingCursorOffset(
@@ -3068,13 +3102,22 @@ public class EditableTextState
                 );
                 _lastTextPosition = renderEditable.getPositionForPoint(
                     renderEditable.localToGlobal(
-                        DartRuntimePrimitives.RequireValue(_lastBoundedOffset)
-                            + _floatingCursorOffset
+                        (
+                            _lastBoundedOffset
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) + _floatingCursorOffset
                     )
                 );
                 renderEditable.setFloatingCursor(
                     point.state,
-                    DartRuntimePrimitives.RequireValue(_lastBoundedOffset),
+                    (
+                        _lastBoundedOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     _lastTextPosition!
                 );
                 break;
@@ -3126,19 +3169,29 @@ public class EditableTextState
         else
         {
             double lerpValue = _floatingCursorResetController!.value;
-            double lerpX = DartRuntimePrimitives.RequireValue(
+            double lerpX = (
                 Dart_uiLibrary.lerpDouble(
-                    DartRuntimePrimitives.RequireValue(_lastBoundedOffset).dx,
+                    (
+                        _lastBoundedOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).dx,
                     finalPosition.dx,
                     lerpValue
-                )
+                ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
-            double lerpY = DartRuntimePrimitives.RequireValue(
+            double lerpY = (
                 Dart_uiLibrary.lerpDouble(
-                    DartRuntimePrimitives.RequireValue(_lastBoundedOffset).dy,
+                    (
+                        _lastBoundedOffset
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).dy,
                     finalPosition.dy,
                     lerpValue
-                )
+                ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
             renderEditable.setFloatingCursor(
                 FloatingCursorDragState.Update,
@@ -3569,7 +3622,12 @@ public class EditableTextState
             }
             case ScrollEndNotification __object178156
                 when !Equals(
-                    DartRuntimePrimitives.RequireValue(_dataWhenToolbarShowScheduled).value,
+                    (
+                        _dataWhenToolbarShowScheduled
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).value,
                     _value
                 ):
             {
@@ -3656,7 +3714,12 @@ public class EditableTextState
                 }
                 if (
                     !Equals(
-                        DartRuntimePrimitives.RequireValue(_dataWhenToolbarShowScheduled).value,
+                        (
+                            _dataWhenToolbarShowScheduled
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ).value,
                         _value
                     )
                 )
@@ -3679,7 +3742,12 @@ public class EditableTextState
                     }
                     if (
                         !Equals(
-                            DartRuntimePrimitives.RequireValue(_dataWhenToolbarShowScheduled).value,
+                            (
+                                _dataWhenToolbarShowScheduled
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ).value,
                             _value
                         )
                     )
@@ -3694,9 +3762,12 @@ public class EditableTextState
                         || renderEditable.selectionEndInViewport.value;
                     Rect selectionBoundsAlternate = MatrixUtils.transformRect(
                         renderEditable.getTransformTo(null),
-                        DartRuntimePrimitives
-                            .RequireValue(_dataWhenToolbarShowScheduled)
-                            .selectionBounds
+                        (
+                            _dataWhenToolbarShowScheduled
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ).selectionBounds
                     );
                     bool selectionOverlapsWithDeviceRect =
                         !selectionBoundsAlternate.hasNaN
@@ -3705,9 +3776,12 @@ public class EditableTextState
                         selectionVisibleInEditable
                         && selectionOverlapsWithDeviceRect
                         && _selectionInViewport(
-                            DartRuntimePrimitives
-                                .RequireValue(_dataWhenToolbarShowScheduled)
-                                .selectionBounds
+                            (
+                                _dataWhenToolbarShowScheduled
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ).selectionBounds
                         )
                     )
                     {
@@ -3993,7 +4067,12 @@ public class EditableTextState
             );
             List<SuggestionSpan>? suggestions = (
                 await _spellCheckConfiguration.spellCheckService!.fetchSpellCheckSuggestions(
-                    DartRuntimePrimitives.RequireValue(localeForSpellChecking),
+                    (
+                        localeForSpellChecking
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ),
                     text
                 )
             )?.ToList();
@@ -4504,7 +4583,14 @@ public class EditableTextState
             );
         }
         _textInputConnection!.setComposingRect(
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(composingRect))
+            (
+                (
+                    composingRect
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
         );
     }
 
@@ -5014,7 +5100,10 @@ public class EditableTextState
         }
         var state = ((ScrollableState?)_scrollableKey.currentState)!;
         double increment = ScrollAction.getDirectionalIncrement(
-            DartRuntimePrimitives.RequireValue(state),
+            (
+                state
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             intent
         );
         double destination = Dart_uiLibrary.clampDouble(
@@ -5413,20 +5502,28 @@ public class EditableTextState
                 if (
                     (o is not null)
                     && (o >= 0L)
-                    && (DartRuntimePrimitives.RequireValue(o) < textLocal.Length)
+                    && (
+                        (
+                            o
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) < textLocal.Length
+                    )
                 )
                 {
-                    long o__246733__value246816 = DartRuntimePrimitives.RequireValue(o);
+                    long o__246733__value246816 = (
+                        o
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    );
                     textLocal = textLocal.replaceRange(
-                        DartRuntimePrimitives.RequireValue(
-                            DartRuntimePrimitives.RequireValue(o__246733__value246816)
-                        ),
-                        DartRuntimePrimitives.RequireValue(o__246733__value246816) + 1L,
+                        ((o__246733__value246816)),
+                        (o__246733__value246816) + 1L,
                         _value.text.substring(
-                            DartRuntimePrimitives.RequireValue(
-                                DartRuntimePrimitives.RequireValue(o__246733__value246816)
-                            ),
-                            DartRuntimePrimitives.RequireValue(o__246733__value246816) + 1L
+                            ((o__246733__value246816)),
+                            (o__246733__value246816) + 1L
                         )
                     );
                 }
@@ -5778,8 +5875,8 @@ internal class _Editable__editable_text : MultiChildRenderObjectWidget
             cursorRadius: cursorRadius,
             cursorOffset: cursorOffset,
             paintCursorAboveText: paintCursorAboveText,
-            selectionHeightStyle: DartRuntimePrimitives.RequireValue(selectionHeightStyle),
-            selectionWidthStyle: DartRuntimePrimitives.RequireValue(selectionWidthStyle),
+            selectionHeightStyle: (selectionHeightStyle),
+            selectionWidthStyle: (selectionWidthStyle),
             enableInteractiveSelection: enableInteractiveSelection,
             textSelectionDelegate: textSelectionDelegate,
             devicePixelRatio: devicePixelRatio,

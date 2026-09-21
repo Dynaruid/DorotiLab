@@ -340,7 +340,7 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
         FoundationRuntimePorts.ObjectHash(
             this.url,
             this.scale,
-            DartRuntimePrimitives.RequireValue(this.webHtmlElementStrategy),
+            (this.webHtmlElementStrategy),
             new MapEquality<string, string>().hash(this.headers)
         );
 

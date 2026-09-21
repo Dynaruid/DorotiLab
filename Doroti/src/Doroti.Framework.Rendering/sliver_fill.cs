@@ -63,8 +63,9 @@ public class RenderSliverFillViewport : RenderSliverFixedExtentBoxAdaptor
         RenderBox? child = firstChild;
         while (child is not null)
         {
-            double childStart = DartRuntimePrimitives.RequireValue(
+            double childStart = (
                 ((SliverMultiBoxAdaptorParentData?)(object?)child.parentData!)!.layoutOffset
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
             if (childStart >= visibleEnd)
             {

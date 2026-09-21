@@ -295,7 +295,12 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
             DartRuntimePrimitives.Assert(() => _currentIntentionToReport is not null);
             widget.routeInformationProvider!.routerReportsNewRouteInformation(
                 currentRouteInformation,
-                type: DartRuntimePrimitives.RequireValue(_currentIntentionToReport)
+                type: (
+                    _currentIntentionToReport
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
         }
         _currentIntentionToReport = RouteInformationReportingType.none;

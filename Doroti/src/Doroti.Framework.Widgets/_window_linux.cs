@@ -246,8 +246,14 @@ public class WindowControllerLinuxIo : WindowControllerIo, BaseWindowControllerL
     public override void setSize(Size size)
     {
         this._window.resize(
-            DartRuntimePrimitives.RequireValue(size).width.toInt(),
-            DartRuntimePrimitives.RequireValue(size).height.toInt()
+            (
+                size
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).width.toInt(),
+            (
+                size
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).height.toInt()
         );
     }
 
@@ -413,8 +419,14 @@ public class DialogWindowControllerLinuxIo : DialogWindowControllerIo, BaseWindo
     public override void setSize(Size size)
     {
         this._window.resize(
-            DartRuntimePrimitives.RequireValue(size).width.toInt(),
-            DartRuntimePrimitives.RequireValue(size).height.toInt()
+            (
+                size
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).width.toInt(),
+            (
+                size
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).height.toInt()
         );
     }
 
@@ -555,10 +567,11 @@ public class TooltipWindowControllerLinuxIo : TooltipWindowControllerIo, BaseWin
     {
         if ((anchorRect is not null))
         {
-            Rect anchorRect__value23034 = DartRuntimePrimitives.RequireValue(anchorRect);
-            _anchorRect = DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(anchorRect__value23034)
+            Rect anchorRect__value23034 = (
+                anchorRect
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
+            _anchorRect = ((anchorRect__value23034));
         }
         if ((positioner is not null))
         {
@@ -745,10 +758,11 @@ public class PopupWindowControllerLinuxIo : PopupWindowControllerIo, BaseWindowC
     {
         if ((anchorRect is not null))
         {
-            Rect anchorRect__value29691 = DartRuntimePrimitives.RequireValue(anchorRect);
-            _anchorRect = DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(anchorRect__value29691)
+            Rect anchorRect__value29691 = (
+                anchorRect
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
+            _anchorRect = ((anchorRect__value29691));
         }
         if ((positioner is not null))
         {
@@ -1414,7 +1428,10 @@ public class _FlEngine___window_linux : _GObject___window_linux
 
     internal static _FlEngine___window_linux CreateCurrent() =>
         new _FlEngine___window_linux(
-            DartRuntimePrimitives.RequireValue(WidgetsBinding.instance.platformDispatcher.engineId)
+            (
+                WidgetsBinding.instance.platformDispatcher.engineId
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
 }
 

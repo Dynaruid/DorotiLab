@@ -1048,7 +1048,12 @@ public class BuildScope
 
     internal virtual long _dirtyElementIndexAfter(long index)
     {
-        if (!DartRuntimePrimitives.RequireValue(_dirtyElementsNeedsResorting))
+        if (
+            !(
+                _dirtyElementsNeedsResorting
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        )
         {
             return index + 1L;
         }
@@ -2063,11 +2068,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
         DiagnosticsTreeStyle style = DiagnosticsTreeStyle.errorProperty
     )
     {
-        return new DiagnosticsProperty<Element>(
-            name,
-            this,
-            style: DartRuntimePrimitives.RequireValue(style)
-        );
+        return new DiagnosticsProperty<Element>(name, this, style: (style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2076,11 +2077,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
         DiagnosticsTreeStyle style = DiagnosticsTreeStyle.errorProperty
     )
     {
-        return new DiagnosticsProperty<Element>(
-            name,
-            this,
-            style: DartRuntimePrimitives.RequireValue(style)
-        );
+        return new DiagnosticsProperty<Element>(name, this, style: (style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -4593,7 +4590,10 @@ public abstract class RenderObjectElement : Element
         });
         _renderObject = ((RenderObjectWidget?)widget)!.createRenderObject(this);
         DartRuntimePrimitives.Assert(() =>
-            !DartRuntimePrimitives.RequireValue(_renderObject!.debugDisposed)
+            !(
+                _renderObject!.debugDisposed
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         DartRuntimePrimitives.Assert(() =>
         {
@@ -4673,7 +4673,13 @@ public abstract class RenderObjectElement : Element
     public override void unmount()
     {
         DartRuntimePrimitives.Assert(
-            () => !DartRuntimePrimitives.RequireValue(renderObject.debugDisposed),
+            () =>
+                !(
+                    renderObject.debugDisposed
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
             () =>
                 (object?)"A RenderObject was disposed prior to its owning element being unmounted: "
                 + $"{renderObject}"

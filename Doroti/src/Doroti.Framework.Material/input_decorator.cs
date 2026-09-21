@@ -67,9 +67,9 @@ public class _InputBorderGap__input_decorator : ChangeNotifier
         set
         {
             var __value = value;
-            if (DartRuntimePrimitives.RequireValue(__value) != _extent)
+            if ((__value) != _extent)
             {
-                _extent = DartRuntimePrimitives.RequireValue(__value);
+                _extent = (__value);
                 notifyListeners();
             }
         }
@@ -1152,36 +1152,23 @@ public class _RenderDecoration__input_decorator
     public virtual double subtextGap => 4.0;
     public virtual double prefixToInputGap => 4.0;
     public virtual double inputToSuffixGap => 4.0;
-    public virtual RenderBox? icon =>
-        childForSlot(DartRuntimePrimitives.RequireValue(_DecorationSlot__input_decorator.icon));
-    public virtual RenderBox? input =>
-        childForSlot(DartRuntimePrimitives.RequireValue(_DecorationSlot__input_decorator.input));
-    public virtual RenderBox? label =>
-        childForSlot(DartRuntimePrimitives.RequireValue(_DecorationSlot__input_decorator.label));
-    public virtual RenderBox? hint =>
-        childForSlot(DartRuntimePrimitives.RequireValue(_DecorationSlot__input_decorator.hint));
-    public virtual RenderBox? prefix =>
-        childForSlot(DartRuntimePrimitives.RequireValue(_DecorationSlot__input_decorator.prefix));
-    public virtual RenderBox? suffix =>
-        childForSlot(DartRuntimePrimitives.RequireValue(_DecorationSlot__input_decorator.suffix));
+    public virtual RenderBox? icon => childForSlot((_DecorationSlot__input_decorator.icon));
+    public virtual RenderBox? input => childForSlot((_DecorationSlot__input_decorator.input));
+    public virtual RenderBox? label => childForSlot((_DecorationSlot__input_decorator.label));
+    public virtual RenderBox? hint => childForSlot((_DecorationSlot__input_decorator.hint));
+    public virtual RenderBox? prefix => childForSlot((_DecorationSlot__input_decorator.prefix));
+    public virtual RenderBox? suffix => childForSlot((_DecorationSlot__input_decorator.suffix));
     public virtual RenderBox? prefixIcon =>
-        childForSlot(
-            DartRuntimePrimitives.RequireValue(_DecorationSlot__input_decorator.prefixIcon)
-        );
+        childForSlot((_DecorationSlot__input_decorator.prefixIcon));
     public virtual RenderBox? suffixIcon =>
-        childForSlot(
-            DartRuntimePrimitives.RequireValue(_DecorationSlot__input_decorator.suffixIcon)
-        );
+        childForSlot((_DecorationSlot__input_decorator.suffixIcon));
     public virtual RenderBox helperError =>
         DartRuntimePrimitives.ConvertValue<RenderBox>(
             childForSlot(_DecorationSlot__input_decorator.helperError)!
         );
-    public virtual RenderBox? counter =>
-        childForSlot(DartRuntimePrimitives.RequireValue(_DecorationSlot__input_decorator.counter));
+    public virtual RenderBox? counter => childForSlot((_DecorationSlot__input_decorator.counter));
     public virtual RenderBox? container =>
-        childForSlot(
-            DartRuntimePrimitives.RequireValue(_DecorationSlot__input_decorator.container)
-        );
+        childForSlot((_DecorationSlot__input_decorator.container));
     public virtual IEnumerable<RenderBox> children
     {
         get
@@ -1275,11 +1262,11 @@ public class _RenderDecoration__input_decorator
         set
         {
             var __value = value;
-            if (Equals(_textDirection, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_textDirection, (__value)))
             {
                 return;
             }
-            _textDirection = DartRuntimePrimitives.RequireValue(__value);
+            _textDirection = (__value);
             markNeedsLayout();
         }
     }
@@ -1289,11 +1276,11 @@ public class _RenderDecoration__input_decorator
         set
         {
             var __value = value;
-            if (Equals(_textBaseline, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_textBaseline, (__value)))
             {
                 return;
             }
-            _textBaseline = DartRuntimePrimitives.RequireValue(__value);
+            _textBaseline = (__value);
             markNeedsLayout();
         }
     }
@@ -1326,11 +1313,11 @@ public class _RenderDecoration__input_decorator
         set
         {
             var __value = value;
-            if (_isFocused == DartRuntimePrimitives.RequireValue(__value))
+            if (_isFocused == (__value))
             {
                 return;
             }
-            _isFocused = DartRuntimePrimitives.RequireValue(__value);
+            _isFocused = (__value);
             markNeedsSemanticsUpdate();
         }
     }
@@ -1340,11 +1327,11 @@ public class _RenderDecoration__input_decorator
         set
         {
             var __value = value;
-            if (_expands == DartRuntimePrimitives.RequireValue(__value))
+            if (_expands == (__value))
             {
                 return;
             }
-            _expands = DartRuntimePrimitives.RequireValue(__value);
+            _expands = (__value);
             markNeedsLayout();
         }
     }
@@ -1553,11 +1540,14 @@ public class _RenderDecoration__input_decorator
         if (labelLocal is not null)
         {
             double suffixIconSpace = decoration.border.isOutline
-                ? DartRuntimePrimitives.RequireValue(
+                ? (
                     Dart_uiLibrary.lerpDouble(
                         suffixIconSize.width,
                         contentPadding.end,
                         decoration.floatingLabelProgress
+                    )
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
                     )
                 )
                 : suffixIconSize.width;
@@ -1571,12 +1561,12 @@ public class _RenderDecoration__input_decorator
                         + ((suffixIconLocal is null) ? contentPadding.end : suffixIconSpace)
                     )
             );
-            double invertedLabelScale = DartRuntimePrimitives.RequireValue(
+            double invertedLabelScale = (
                 Dart_uiLibrary.lerpDouble(
                     1.0,
                     1L / Input_decoratorLibrary._kFinalLabelScale,
                     decoration.floatingLabelProgress
-                )
+                ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
             BoxConstraints labelConstraints = boxConstraints.copyWith(
                 maxWidth: labelWidth * invertedLabelScale
@@ -1645,7 +1635,12 @@ public class _RenderDecoration__input_decorator
         );
         double minContainerHeight =
             (
-                DartRuntimePrimitives.RequireValue(decoration.isDense)
+                (
+                    decoration.isDense
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
                 || decoration.isCollapsed
                 || expands
             )
@@ -1854,7 +1849,14 @@ public class _RenderDecoration__input_decorator
             suffixIconHeight,
         }.reduce(Dart_mathLibrary.max);
         double minContainerHeight =
-            (DartRuntimePrimitives.RequireValue(decoration.isDense) || expands)
+            (
+                (
+                    decoration.isDense
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) || expands
+            )
                 ? 0.0
                 : ConstantsLibrary.kMinInteractiveDimension;
         return Math.Max(containerHeight, minContainerHeight) + subtextHeight;
@@ -1977,8 +1979,9 @@ public class _RenderDecoration__input_decorator
         double subtextBaseline =
             (layoutLocal.subtextSize?.ascent ?? 0.0) + layoutLocal.containerHeight;
         RenderBox? counterLocal = counter;
-        double helperErrorBaseline = DartRuntimePrimitives.RequireValue(
+        double helperErrorBaseline = (
             helperError.getDistanceToBaseline(TextBaseline.alphabetic)
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         double counterBaseline =
             counterLocal?.getDistanceToBaseline(TextBaseline.alphabetic) ?? 0.0;
@@ -2027,8 +2030,11 @@ public class _RenderDecoration__input_decorator
             _boxParentData(box).offset = new Offset(
                 x,
                 baselineLocal
-                    - DartRuntimePrimitives.RequireValue(
+                    - (
                         box.getDistanceToBaseline(TextBaseline.alphabetic)
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     )
             );
             return box.size.width;
@@ -2217,8 +2223,9 @@ public class _RenderDecoration__input_decorator
             double floatingY = isOutlineBorder
                 ? outlinedFloatingY
                 : (contentPadding.top + (_densityOffset.dy / 2L));
-            double scale = DartRuntimePrimitives.RequireValue(
+            double scale = (
                 Dart_uiLibrary.lerpDouble(1.0, Input_decoratorLibrary._kFinalLabelScale, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
             double centeredFloatX =
                 _boxParentData(container!).offset.dx
@@ -2257,14 +2264,17 @@ public class _RenderDecoration__input_decorator
                     break;
                 }
             }
-            double floatEndX = DartRuntimePrimitives.RequireValue(
+            double floatEndX = (
                 Dart_uiLibrary.lerpDouble(floatStartX, centeredFloatX, floatAlign)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
-            double dxLocal = DartRuntimePrimitives.RequireValue(
+            double dxLocal = (
                 Dart_uiLibrary.lerpDouble(startX, floatEndX, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
-            double dyLocal = DartRuntimePrimitives.RequireValue(
+            double dyLocal = (
                 Dart_uiLibrary.lerpDouble(0.0, floatingY - labelOffset.dy, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
             _labelTransform = (
                 (Func<Matrix4>)(
@@ -2451,10 +2461,13 @@ public class _RenderDecoration__input_decorator
                 child,
                 value,
                 debugNameForSlot(
-                    DartRuntimePrimitives.RequireValue(
+                    (
                         DartCollectionRuntime.NullableMapValue<_DecorationSlot__input_decorator>(
                             childToSlot,
                             child
+                        )
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
                         )
                     )
                 )
@@ -2940,7 +2953,10 @@ internal class _InputDecoratorState__input_decorator
     {
         if (
             (decoration.filled is null)
-            || !DartRuntimePrimitives.RequireValue(decoration.filled)
+            || !(
+                decoration.filled
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
             || !decoration.enabled
         )
         {
@@ -3114,7 +3130,14 @@ internal class _InputDecoratorState__input_decorator
             return borderLocal;
         }
         {
-            if (DartRuntimePrimitives.RequireValue(decoration.filled))
+            if (
+                (
+                    decoration.filled
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
             {
                 InputDecorationThemeData decorationTheme = InputDecorationTheme.of(context);
                 return borderLocal.copyWith(
@@ -3181,8 +3204,9 @@ internal class _InputDecoratorState__input_decorator
         InputDecorationThemeData defaults = new _InputDecoratorDefaultsM3__input_decorator(context);
         IconButtonThemeData iconButtonTheme = IconButtonTheme.of(context);
         TextStyle labelStyle = _getInlineLabelStyle(themeData, defaults);
-        TextBaseline textBaselineLocal = DartRuntimePrimitives.RequireValue(
+        TextBaseline textBaselineLocal = (
             labelStyle.textBaseline
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         TextStyle hintStyle = _getInlineHintStyle(themeData, defaults);
         string? hintTextLocal = decoration.hintText;
@@ -3486,7 +3510,12 @@ internal class _InputDecoratorState__input_decorator
                 );
         EdgeInsetsDirectional contentPaddingLocal = default!;
         double floatingLabelHeightLocal = default!;
-        if (DartRuntimePrimitives.RequireValue(decoration.isCollapsed))
+        if (
+            (
+                decoration.isCollapsed
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        )
         {
             floatingLabelHeightLocal = 0.0;
             contentPaddingLocal = decorationContentPadding ?? EdgeInsetsDirectional.zero;
@@ -3497,7 +3526,18 @@ internal class _InputDecoratorState__input_decorator
             {
                 floatingLabelHeightLocal = MediaQuery
                     .textScalerOf(context)
-                    .scale(4.0 + (0.75 * DartRuntimePrimitives.RequireValue(labelStyle.fontSize)));
+                    .scale(
+                        4.0
+                            + (
+                                0.75
+                                * (
+                                    labelStyle.fontSize
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                )
+                            )
+                    );
                 if (decoration.filled ?? false)
                 {
                     contentPaddingLocal =
@@ -3549,7 +3589,12 @@ internal class _InputDecoratorState__input_decorator
         var decorator = new _Decorator__input_decorator(
             decoration: new _Decoration__input_decorator(
                 contentPadding: contentPaddingLocal,
-                isCollapsed: DartRuntimePrimitives.RequireValue(decoration.isCollapsed),
+                isCollapsed: (
+                    decoration.isCollapsed
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
                 inputGap: inputGapLocal,
                 floatingLabelHeight: floatingLabelHeightLocal,
                 floatingLabelAlignment: decoration.floatingLabelAlignment!,

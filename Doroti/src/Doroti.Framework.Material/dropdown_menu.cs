@@ -441,7 +441,12 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
             (_) =>
             {
                 BuildContext? highlightContext = buttonItemKeys[
-                    (int)DartRuntimePrimitives.RequireValue(currentHighlight)
+                    (int)(
+                        currentHighlight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 ].currentContext;
                 if (highlightContext is not null)
                 {
@@ -487,13 +492,27 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
         }
         if (
             (currentHighlight is null)
-            || (DartRuntimePrimitives.RequireValue(currentHighlight) >= checked(entries.Count))
+            || (
+                (
+                    currentHighlight
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) >= checked(entries.Count)
+            )
         )
         {
             return true;
         }
         if (
-            entries[(int)DartRuntimePrimitives.RequireValue(currentHighlight)]
+            entries[
+                (int)(
+                    currentHighlight
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            ]
                 .label.toLowerCase()
                 .contains(searchText)
         )
@@ -608,8 +627,12 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
                 labelLocal = DartRuntimePrimitives.ConvertValue<Widget>(
                     new ConstrainedBox(
                         constraints: new BoxConstraints(
-                            maxWidth: DartRuntimePrimitives.RequireValue(widget.width)
-                                - horizontalPadding
+                            maxWidth: (
+                                widget.width
+                                ?? throw new global::System.NullReferenceException(
+                                    "Dart null assertion failed."
+                                )
+                            ) - horizontalPadding
                         ),
                         child: labelLocal
                     )
@@ -692,18 +715,42 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
             _enableSearch = false;
             currentHighlight ??= 0L;
             currentHighlight =
-                (DartRuntimePrimitives.RequireValue(currentHighlight) - 1L)
-                % checked(filteredEntries.Count);
+                (
+                    (
+                        currentHighlight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) - 1L
+                ) % checked(filteredEntries.Count);
             while (
-                !filteredEntries[(int)DartRuntimePrimitives.RequireValue(currentHighlight)].enabled
+                !filteredEntries[
+                    (int)(
+                        currentHighlight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                ].enabled
             )
             {
                 currentHighlight =
-                    (DartRuntimePrimitives.RequireValue(currentHighlight) - 1L)
-                    % checked(filteredEntries.Count);
+                    (
+                        (
+                            currentHighlight
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) - 1L
+                    ) % checked(filteredEntries.Count);
             }
             string currentLabel = filteredEntries[
-                (int)DartRuntimePrimitives.RequireValue(currentHighlight)
+                (int)(
+                    currentHighlight
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             ].label;
             _effectiveTextEditingController.value = new TextEditingValue(
                 text: currentLabel,
@@ -724,18 +771,42 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
             _enableSearch = false;
             currentHighlight ??= -1L;
             currentHighlight =
-                (DartRuntimePrimitives.RequireValue(currentHighlight) + 1L)
-                % checked(filteredEntries.Count);
+                (
+                    (
+                        currentHighlight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) + 1L
+                ) % checked(filteredEntries.Count);
             while (
-                !filteredEntries[(int)DartRuntimePrimitives.RequireValue(currentHighlight)].enabled
+                !filteredEntries[
+                    (int)(
+                        currentHighlight
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                ].enabled
             )
             {
                 currentHighlight =
-                    (DartRuntimePrimitives.RequireValue(currentHighlight) + 1L)
-                    % checked(filteredEntries.Count);
+                    (
+                        (
+                            currentHighlight
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) + 1L
+                    ) % checked(filteredEntries.Count);
             }
             string currentLabel = filteredEntries[
-                (int)DartRuntimePrimitives.RequireValue(currentHighlight)
+                (int)(
+                    currentHighlight
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             ].label;
             _effectiveTextEditingController.value = new TextEditingValue(
                 text: currentLabel,
@@ -782,7 +853,12 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
         if (currentHighlight is not null)
         {
             DropdownMenuEntry<T> entry = filteredEntries[
-                (int)DartRuntimePrimitives.RequireValue(currentHighlight)
+                (int)(
+                    currentHighlight
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             ];
             if (entry.enabled)
             {
@@ -877,9 +953,19 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
                             ?.width;
                         return new Size(
                             Math.Min(
-                                DartRuntimePrimitives.RequireValue(widget.width),
+                                (
+                                    widget.width
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                ),
                                 effectiveMaximumWidth
-                                    ?? DartRuntimePrimitives.RequireValue(widget.width)
+                                    ?? (
+                                        widget.width
+                                        ?? throw new global::System.NullReferenceException(
+                                            "Dart null assertion failed."
+                                        )
+                                    )
                             ),
                             0.0
                         );
@@ -894,8 +980,11 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
         {
             if (anchorWidth is not null)
             {
-                double anchorWidth__45717__value46193 = DartRuntimePrimitives.RequireValue(
+                double anchorWidth__45717__value46193 = (
                     anchorWidth
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
                 effectiveMenuStyle = effectiveMenuStyle.copyWith(
                     minimumSize: WidgetStateProperty.resolveWith<Size?>(
@@ -906,13 +995,8 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
                                 ?.width;
                             return new Size(
                                 Math.Min(
-                                    DartRuntimePrimitives.RequireValue(
-                                        anchorWidth__45717__value46193
-                                    ),
-                                    effectiveMaximumWidthLocal
-                                        ?? DartRuntimePrimitives.RequireValue(
-                                            anchorWidth__45717__value46193
-                                        )
+                                    (anchorWidth__45717__value46193),
+                                    effectiveMaximumWidthLocal ?? (anchorWidth__45717__value46193)
                                 ),
                                 0.0
                             );
@@ -930,7 +1014,12 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
                 maximumSize: new WidgetStatePropertyAll<Size>(
                     new Size(
                         double.PositiveInfinity,
-                        DartRuntimePrimitives.RequireValue(widget.menuHeight)
+                        (
+                            widget.menuHeight
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     )
                 )
             );
@@ -1379,7 +1468,15 @@ public class _RenderDropdownMenuBody__dropdown_menu
         DartRuntimePrimitives.Assert(() => maxHeightLocal is not null);
         maxWidthLocal = Math.Max(Dropdown_menuLibrary._kMinimumWidth, maxWidthLocal);
         size = constraintsLocal.constrain(
-            new Size(width ?? maxWidthLocal, DartRuntimePrimitives.RequireValue(maxHeightLocal))
+            new Size(
+                width ?? maxWidthLocal,
+                (
+                    maxHeightLocal
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
         );
     }
 
@@ -1418,7 +1515,15 @@ public class _RenderDropdownMenuBody__dropdown_menu
         DartRuntimePrimitives.Assert(() => maxHeightLocal is not null);
         maxWidthLocal = Math.Max(Dropdown_menuLibrary._kMinimumWidth, maxWidthLocal);
         return constraints.constrain(
-            new Size(width ?? maxWidthLocal, DartRuntimePrimitives.RequireValue(maxHeightLocal))
+            new Size(
+                width ?? maxWidthLocal,
+                (
+                    maxHeightLocal
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1446,16 +1551,13 @@ public class _RenderDropdownMenuBody__dropdown_menu
             {
                 width += minIntrinsicWidth;
             }
-            width = Math.Max(DartRuntimePrimitives.RequireValue(width), minIntrinsicWidth);
+            width = Math.Max((width), minIntrinsicWidth);
             var childParentDataLocal = (
                 (_DropdownMenuBodyParentData__dropdown_menu?)child.parentData!
             )!;
             child = childParentDataLocal.nextSibling;
         }
-        return Math.Max(
-            DartRuntimePrimitives.RequireValue(width),
-            Dropdown_menuLibrary._kMinimumWidth
-        );
+        return Math.Max((width), Dropdown_menuLibrary._kMinimumWidth);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1482,16 +1584,13 @@ public class _RenderDropdownMenuBody__dropdown_menu
             {
                 width += maxIntrinsicWidth;
             }
-            width = Math.Max(DartRuntimePrimitives.RequireValue(width), maxIntrinsicWidth);
+            width = Math.Max((width), maxIntrinsicWidth);
             var childParentDataLocal = (
                 (_DropdownMenuBodyParentData__dropdown_menu?)child.parentData!
             )!;
             child = childParentDataLocal.nextSibling;
         }
-        return Math.Max(
-            DartRuntimePrimitives.RequireValue(width),
-            Dropdown_menuLibrary._kMinimumWidth
-        );
+        return Math.Max((width), Dropdown_menuLibrary._kMinimumWidth);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1501,16 +1600,9 @@ public class _RenderDropdownMenuBody__dropdown_menu
         double widthLocal = 0;
         if (child is not null)
         {
-            widthLocal = Math.Max(
-                DartRuntimePrimitives.RequireValue(widthLocal),
-                child.getMinIntrinsicHeight(
-                    DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(widthLocal)
-                    )
-                )
-            );
+            widthLocal = Math.Max((widthLocal), child.getMinIntrinsicHeight(((widthLocal))));
         }
-        return DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(widthLocal));
+        return ((widthLocal));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1520,16 +1612,9 @@ public class _RenderDropdownMenuBody__dropdown_menu
         double widthLocal = 0;
         if (child is not null)
         {
-            widthLocal = Math.Max(
-                DartRuntimePrimitives.RequireValue(widthLocal),
-                child.getMaxIntrinsicHeight(
-                    DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(widthLocal)
-                    )
-                )
-            );
+            widthLocal = Math.Max((widthLocal), child.getMaxIntrinsicHeight(((widthLocal))));
         }
-        return DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(widthLocal));
+        return ((widthLocal));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1922,9 +2007,13 @@ public class _RenderDropdownMenuBody__dropdown_menu
             double? result = child.getDistanceToActualBaseline(baseline);
             if (result is not null)
             {
-                double result__138852__value138916 = DartRuntimePrimitives.RequireValue(result);
-                return DartRuntimePrimitives.RequireValue(result__138852__value138916)
-                    + childParentData.offset.dy;
+                double result__138852__value138916 = (
+                    result
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
+                return (result__138852__value138916) + childParentData.offset.dy;
             }
             child = childParentData.nextSibling;
         }

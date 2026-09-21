@@ -805,8 +805,18 @@ internal class _CupertinoBackGestureDetectorState__route<T>
         DartRuntimePrimitives.Assert(() => _backGestureController is not null);
         _backGestureController!.dragUpdate(
             _convertToLogical(
-                DartRuntimePrimitives.RequireValue(details.primaryDelta)
-                    / DartRuntimePrimitives.RequireValue(context.size).width
+                (
+                    details.primaryDelta
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+                    / (
+                        context.size
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).width
             )
         );
     }
@@ -818,7 +828,12 @@ internal class _CupertinoBackGestureDetectorState__route<T>
         _backGestureController!.dragEnd(
             _convertToLogical(
                 details.velocity.pixelsPerSecond.dx
-                    / DartRuntimePrimitives.RequireValue(context.size).width
+                    / (
+                        context.size
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).width
             )
         );
         _backGestureController = null;
@@ -1109,16 +1124,33 @@ public class _CupertinoEdgeShadowPainter__route : BoxPainter
         {
             return;
         }
-        double shadowWidth = 0.05 * DartRuntimePrimitives.RequireValue(configuration.size).width;
-        double shadowHeight = DartRuntimePrimitives.RequireValue(configuration.size).height;
+        double shadowWidth =
+            0.05
+            * (
+                configuration.size
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ).width;
+        double shadowHeight = (
+            configuration.size
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        ).height;
         double bandWidth = shadowWidth / (checked(colors.Count) - 1L);
         TextDirection? textDirectionLocal = configuration.textDirection;
         DartRuntimePrimitives.Assert(() => textDirectionLocal is not null);
-        var (shadowDirection, start) = DartRuntimePrimitives.RequireValue(textDirectionLocal) switch
+        var (shadowDirection, start) = (
+            textDirectionLocal
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        ) switch
         {
             TextDirection.rtl => (
                 1,
-                offset.dx + DartRuntimePrimitives.RequireValue(configuration.size).width
+                offset.dx
+                    + (
+                        configuration.size
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).width
             ),
             TextDirection.ltr => ((double, double))(-1, offset.dx),
             _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),

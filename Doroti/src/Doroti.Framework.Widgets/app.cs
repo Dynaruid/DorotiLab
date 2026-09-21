@@ -84,10 +84,13 @@ public static partial class AppLibrary
                 );
                 if (match is not null)
                 {
-                    Locale match__8388__value8497 = DartRuntimePrimitives.RequireValue(match);
-                    return DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(match__8388__value8497)
+                    Locale match__8388__value8497 = (
+                        match
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     );
+                    return ((match__8388__value8497));
                 }
             }
             if (userLocale.countryCode is not null)
@@ -98,20 +101,24 @@ public static partial class AppLibrary
                 );
                 if (matchLocal is not null)
                 {
-                    Locale match__8652__value8763 = DartRuntimePrimitives.RequireValue(matchLocal);
-                    return DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(match__8652__value8763)
+                    Locale match__8652__value8763 = (
+                        matchLocal
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     );
+                    return ((match__8652__value8763));
                 }
             }
             if (matchesLanguageCode is not null)
             {
-                Locale matchesLanguageCode__7850__value9013 = DartRuntimePrimitives.RequireValue(
+                Locale matchesLanguageCode__7850__value9013 = (
                     matchesLanguageCode
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
-                return DartRuntimePrimitives.RequireValue(
-                    DartRuntimePrimitives.RequireValue(matchesLanguageCode__7850__value9013)
-                );
+                return ((matchesLanguageCode__7850__value9013));
             }
             Locale? matchAlternate = DartCollectionRuntime.NullableMapValue<Locale>(
                 languageLocales,
@@ -119,8 +126,13 @@ public static partial class AppLibrary
             );
             if (matchAlternate is not null)
             {
-                Locale match__9139__value9197 = DartRuntimePrimitives.RequireValue(matchAlternate);
-                matchesLanguageCode = DartRuntimePrimitives.RequireValue(match__9139__value9197);
+                Locale match__9139__value9197 = (
+                    matchAlternate
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
+                matchesLanguageCode = (match__9139__value9197);
                 if (
                     (localeIndex == 0L)
                     && !(
@@ -132,8 +144,13 @@ public static partial class AppLibrary
                     )
                 )
                 {
-                    return DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(matchesLanguageCode)
+                    return (
+                        (
+                            matchesLanguageCode
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     );
                 }
             }
@@ -145,12 +162,13 @@ public static partial class AppLibrary
                 );
                 if (matchAlternate is not null)
                 {
-                    Locale match__9139__value10144 = DartRuntimePrimitives.RequireValue(
+                    Locale match__9139__value10144 = (
                         matchAlternate
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     );
-                    matchesCountryCode = DartRuntimePrimitives.RequireValue(
-                        match__9139__value10144
-                    );
+                    matchesCountryCode = (match__9139__value10144);
                 }
             }
         }

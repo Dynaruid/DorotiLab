@@ -213,40 +213,34 @@ public class IntTween : Tween<long>
 {
     public IntTween(long? begin = null, long? end = null)
         : base(
-            begin: DartRuntimePrimitives.RequireValue(begin),
-            end: DartRuntimePrimitives.RequireValue(end)
+            begin: (
+                begin
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            end: (
+                end
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         ) { }
 
-    public override long lerp(double t) =>
-        (
-            DartRuntimePrimitives.RequireValue(begin)
-            + (
-                (
-                    DartRuntimePrimitives.RequireValue(end)
-                    - DartRuntimePrimitives.RequireValue(begin)
-                ) * t
-            )
-        ).round();
+    public override long lerp(double t) => ((begin) + (((end) - (begin)) * t)).round();
 }
 
 public class StepTween : Tween<long>
 {
     public StepTween(long? begin = null, long? end = null)
         : base(
-            begin: DartRuntimePrimitives.RequireValue(begin),
-            end: DartRuntimePrimitives.RequireValue(end)
+            begin: (
+                begin
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            end: (
+                end
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         ) { }
 
-    public override long lerp(double t) =>
-        (
-            DartRuntimePrimitives.RequireValue(begin)
-            + (
-                (
-                    DartRuntimePrimitives.RequireValue(end)
-                    - DartRuntimePrimitives.RequireValue(begin)
-                ) * t
-            )
-        ).floor();
+    public override long lerp(double t) => ((begin) + (((end) - (begin)) * t)).floor();
 }
 
 public class ConstantTween<T> : Tween<T>

@@ -271,8 +271,9 @@ internal class _OutlinedButtonWithIconChild__outlined_button : StatelessWidget
             ) ?? IconAlignment.start;
         return new Row(
             mainAxisSize: MainAxisSize.min,
-            spacing: DartRuntimePrimitives.RequireValue(
+            spacing: (
                 Dart_uiLibrary.lerpDouble(8L, 4L, scaleLocal)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             ),
             children: Equals(effectiveIconAlignment, IconAlignment.start)
                 ? new List<Widget>

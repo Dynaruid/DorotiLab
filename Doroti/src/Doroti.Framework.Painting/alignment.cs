@@ -73,9 +73,18 @@ public abstract class AlignmentGeometry
             return AlignmentDirectional.lerp(a__as8027, b__as8056, t);
         }
         return new _MixedAlignment__alignment(
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a._x, b._x, t)),
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a._start, b._start, t)),
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a._y, b._y, t))
+            (
+                Dart_uiLibrary.lerpDouble(a._x, b._x, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            (
+                Dart_uiLibrary.lerpDouble(a._start, b._start, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            (
+                Dart_uiLibrary.lerpDouble(a._y, b._y, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -242,20 +251,46 @@ public class Alignment : AlignmentGeometry
         if (a is null)
         {
             return new Alignment(
-                DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0.0, b!.x, t)),
-                DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0.0, b.y, t))
+                (
+                    Dart_uiLibrary.lerpDouble(0.0, b!.x, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                (
+                    Dart_uiLibrary.lerpDouble(0.0, b.y, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
         }
         if (b is null)
         {
             return new Alignment(
-                DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.x, 0.0, t)),
-                DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.y, 0.0, t))
+                (
+                    Dart_uiLibrary.lerpDouble(a.x, 0.0, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                (
+                    Dart_uiLibrary.lerpDouble(a.y, 0.0, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
         }
         return new Alignment(
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.x, b.x, t)),
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.y, b.y, t))
+            (
+                Dart_uiLibrary.lerpDouble(a.x, b.x, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            (
+                Dart_uiLibrary.lerpDouble(a.y, b.y, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -376,20 +411,46 @@ public class AlignmentDirectional : AlignmentGeometry
         if (a is null)
         {
             return new AlignmentDirectional(
-                DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0.0, b!.start, t)),
-                DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0.0, b.y, t))
+                (
+                    Dart_uiLibrary.lerpDouble(0.0, b!.start, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                (
+                    Dart_uiLibrary.lerpDouble(0.0, b.y, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
         }
         if (b is null)
         {
             return new AlignmentDirectional(
-                DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.start, 0.0, t)),
-                DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.y, 0.0, t))
+                (
+                    Dart_uiLibrary.lerpDouble(a.start, 0.0, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ),
+                (
+                    Dart_uiLibrary.lerpDouble(a.y, 0.0, t)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
             );
         }
         return new AlignmentDirectional(
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.start, b.start, t)),
-            DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(a.y, b.y, t))
+            (
+                Dart_uiLibrary.lerpDouble(a.start, b.start, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            (
+                Dart_uiLibrary.lerpDouble(a.y, b.y, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -402,7 +463,10 @@ public class AlignmentDirectional : AlignmentGeometry
                 $"{typeof(AlignmentDirectional)}"
             )
         );
-        return DartRuntimePrimitives.RequireValue(direction) switch
+        return (
+            direction
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        ) switch
         {
             TextDirection.rtl => new Alignment(-start, y),
             TextDirection.ltr => new Alignment(start, y),
@@ -499,7 +563,10 @@ internal class _MixedAlignment__alignment : AlignmentGeometry
                 $"{typeof(_MixedAlignment__alignment)}"
             )
         );
-        return DartRuntimePrimitives.RequireValue(direction) switch
+        return (
+            direction
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        ) switch
         {
             TextDirection.rtl => new Alignment(_x - _start, _y),
             TextDirection.ltr => new Alignment(_x + _start, _y),

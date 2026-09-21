@@ -353,8 +353,22 @@ public class TwoDimensionalViewportParentData : ParentData, KeepAliveParentDataM
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
             return (!Equals(_paintExtent, Size.zero))
-                || (DartRuntimePrimitives.RequireValue(_paintExtent).height != 0.0)
-                || (DartRuntimePrimitives.RequireValue(_paintExtent).width != 0.0);
+                || (
+                    (
+                        _paintExtent
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).height != 0.0
+                )
+                || (
+                    (
+                        _paintExtent
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).width != 0.0
+                );
         }
     }
     public virtual bool keptAlive =>
@@ -432,13 +446,28 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
                         cacheExtentStyle switch
                         {
                             CacheExtentStyle.pixel => ScrollCacheExtent.CreatePixels(
-                                DartRuntimePrimitives.RequireValue(cacheExtent)
+                                (
+                                    cacheExtent
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                )
                             ),
                             null => ScrollCacheExtent.CreatePixels(
-                                DartRuntimePrimitives.RequireValue(cacheExtent)
+                                (
+                                    cacheExtent
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                )
                             ),
                             CacheExtentStyle.viewport => ScrollCacheExtent.CreateViewport(
-                                DartRuntimePrimitives.RequireValue(cacheExtent)
+                                (
+                                    cacheExtent
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                )
                             ),
                             _ => throw new InvalidOperationException(
                                 "Non-exhaustive Dart switch value."
@@ -486,11 +515,11 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
         set
         {
             var __value = value;
-            if (Equals(_horizontalAxisDirection, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_horizontalAxisDirection, (__value)))
             {
                 return;
             }
-            _horizontalAxisDirection = DartRuntimePrimitives.RequireValue(__value);
+            _horizontalAxisDirection = (__value);
             markNeedsLayout();
         }
     }
@@ -522,11 +551,11 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
         set
         {
             var __value = value;
-            if (Equals(_verticalAxisDirection, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_verticalAxisDirection, (__value)))
             {
                 return;
             }
-            _verticalAxisDirection = DartRuntimePrimitives.RequireValue(__value);
+            _verticalAxisDirection = (__value);
             markNeedsLayout();
         }
     }
@@ -569,11 +598,11 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
         set
         {
             var __value = value;
-            if (Equals(_mainAxis, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_mainAxis, (__value)))
             {
                 return;
             }
-            _mainAxis = DartRuntimePrimitives.RequireValue(__value);
+            _mainAxis = (__value);
             markNeedsLayout();
         }
     }
@@ -598,10 +627,20 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
                 _scrollCacheExtent = cacheExtentStyle switch
                 {
                     CacheExtentStyle.pixel => ScrollCacheExtent.CreatePixels(
-                        DartRuntimePrimitives.RequireValue(__value)
+                        (
+                            __value
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     ),
                     CacheExtentStyle.viewport => ScrollCacheExtent.CreateViewport(
-                        DartRuntimePrimitives.RequireValue(__value)
+                        (
+                            __value
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     ),
                     _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
                 };
@@ -625,7 +664,12 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
             }
             else
             {
-                _scrollCacheExtent = DartRuntimePrimitives.RequireValue(__value) switch
+                _scrollCacheExtent = (
+                    __value
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) switch
                 {
                     CacheExtentStyle.pixel => ScrollCacheExtent.CreatePixels(cacheExtent),
                     CacheExtentStyle.viewport => ScrollCacheExtent.CreateViewport(cacheExtent),
@@ -664,11 +708,11 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
         set
         {
             var __value = value;
-            if (Equals(_clipBehavior, DartRuntimePrimitives.RequireValue(__value)))
+            if (Equals(_clipBehavior, (__value)))
             {
                 return;
             }
-            _clipBehavior = DartRuntimePrimitives.RequireValue(__value);
+            _clipBehavior = (__value);
             markNeedsPaint();
             markNeedsSemanticsUpdate();
         }
@@ -828,7 +872,12 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
                         Equals(
                             transformed,
                             position
-                                - DartRuntimePrimitives.RequireValue(childParentData.paintOffset)
+                                - (
+                                    childParentData.paintOffset
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                )
                         )
                     );
                     return child.hitTest(result, position: transformed);
@@ -873,7 +922,9 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
     )
     {
         axis ??= mainAxis;
-        var (offsetLocal, axisDirection) = DartRuntimePrimitives.RequireValue(axis) switch
+        var (offsetLocal, axisDirection) = (
+            axis ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        ) switch
         {
             Axis.vertical => (verticalOffset.pixels, verticalAxisDirection),
             Axis.horizontal => ((double, AxisDirection))
@@ -890,10 +941,17 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
         var box = ((RenderBox?)child)!;
         Rect rectLocal = MatrixUtils.transformRect(
             target.getTransformTo((RenderBox)child),
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect))
+            (
+                (
+                    rect
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
         );
         var leadingScrollOffset = offsetLocal;
-        leadingScrollOffset += DartRuntimePrimitives.RequireValue(axisDirection) switch
+        leadingScrollOffset += (axisDirection) switch
         {
             AxisDirection.up => ((RenderBox)child).size.height - rectLocal.bottom,
             AxisDirection.left => ((RenderBox)child).size.width - rectLocal.right,
@@ -901,8 +959,11 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
             AxisDirection.down => rectLocal.top,
             _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
         };
-        Offset paintOffsetLocal = DartRuntimePrimitives.RequireValue(parentDataOf(box).paintOffset);
-        leadingScrollOffset += DartRuntimePrimitives.RequireValue(axisDirection) switch
+        Offset paintOffsetLocal = (
+            parentDataOf(box).paintOffset
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
+        leadingScrollOffset += (axisDirection) switch
         {
             AxisDirection.up => viewportDimension.height - paintOffsetLocal.dy - box.size.height,
             AxisDirection.left => viewportDimension.width - paintOffsetLocal.dx - box.size.width,
@@ -913,22 +974,33 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
         Matrix4 transform = target.getTransformTo(this);
         Rect targetRect = MatrixUtils.transformRect(
             transform,
-            DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect))
+            (
+                (
+                    rect
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                )
+            )
         );
-        double mainAxisExtentDifference = DartRuntimePrimitives.RequireValue(axis) switch
+        double mainAxisExtentDifference = (
+            axis ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        ) switch
         {
             Axis.horizontal => viewportDimension.width - rectLocal.width,
             Axis.vertical => viewportDimension.height - rectLocal.height,
             _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
         };
         double targetOffset = leadingScrollOffset - (mainAxisExtentDifference * alignment);
-        double offsetDifference = DartRuntimePrimitives.RequireValue(axis) switch
+        double offsetDifference = (
+            axis ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        ) switch
         {
             Axis.horizontal => horizontalOffset.pixels - targetOffset,
             Axis.vertical => verticalOffset.pixels - targetOffset,
             _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
         };
-        targetRect = DartRuntimePrimitives.RequireValue(axisDirection) switch
+        targetRect = (axisDirection) switch
         {
             AxisDirection.up => targetRect.translate(0.0, -offsetDifference),
             AxisDirection.down => targetRect.translate(0.0, offsetDifference),
@@ -1050,7 +1122,12 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
                         (object?)
                             MatrixUtils.transformRect(transform, rect ?? descendant.paintBounds);
                 }
-                return DartRuntimePrimitives.RequireValue(rect);
+                return (
+                    rect
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
             }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -1067,7 +1144,7 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
         Curve curve = default!
     )
     {
-        ViewportOffset offsetLocal = DartRuntimePrimitives.RequireValue(axis) switch
+        ViewportOffset offsetLocal = (axis) switch
         {
             Axis.vertical => viewport.verticalOffset,
             Axis.horizontal => viewport.horizontalOffset,
@@ -1077,13 +1154,13 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
             descendant,
             0.0,
             rect: rect,
-            axis: DartRuntimePrimitives.RequireValue(axis)
+            axis: (axis)
         );
         RevealedOffset trailingEdgeOffsetLocal = viewport.getOffsetToReveal(
             descendant,
             1.0,
             rect: rect,
-            axis: DartRuntimePrimitives.RequireValue(axis)
+            axis: (axis)
         );
         double currentOffsetLocal = offsetLocal.pixels;
         RevealedOffset? targetOffset = RevealedOffset.clampOffset(
@@ -1353,12 +1430,18 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
         );
         DartRuntimePrimitives.Assert(() => child.hasSize);
         childParentData._paintExtent = computeChildPaintExtent(
-            DartRuntimePrimitives.RequireValue(childParentData.layoutOffset),
+            (
+                childParentData.layoutOffset
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             child.size
         );
         childParentData.paintOffset = computeAbsolutePaintOffsetFor(
             child,
-            layoutOffset: DartRuntimePrimitives.RequireValue(childParentData.layoutOffset)
+            layoutOffset: (
+                childParentData.layoutOffset
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
         );
         _hasVisualOverflow =
             _hasVisualOverflow
@@ -1500,7 +1583,13 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
             {
                 context.paintChild(
                     child,
-                    offset + DartRuntimePrimitives.RequireValue(childParentData.paintOffset)
+                    offset
+                        + (
+                            childParentData.paintOffset
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                 );
             }
             child = childParentData._nextSibling;
@@ -1674,8 +1763,9 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
     public override void applyPaintTransform(RenderObject child, Matrix4 transform)
     {
         var __child = (RenderBox)child;
-        Offset paintOffsetLocal = DartRuntimePrimitives.RequireValue(
+        Offset paintOffsetLocal = (
             parentDataOf(__child).paintOffset
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         transform.translate(paintOffsetLocal.dx, paintOffsetLocal.dy);
     }

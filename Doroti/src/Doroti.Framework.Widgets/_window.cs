@@ -231,9 +231,7 @@ public abstract class TooltipWindowControllerIo : BaseWindowControllerIo
             parent: parent,
             constraints: __constraints,
             @delegate: @delegate ?? new TooltipWindowControllerDelegateIo(),
-            anchorRect: DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(anchorRect)
-            ),
+            anchorRect: ((anchorRect)),
             positioner: positioner
         );
         return controller;
@@ -280,9 +278,7 @@ public abstract class PopupWindowControllerIo : BaseWindowControllerIo
             parent: parent,
             constraints: constraints ?? new BoxConstraints(),
             @delegate: @delegate ?? new PopupWindowControllerDelegateIo(),
-            anchorRect: DartRuntimePrimitives.RequireValue(
-                DartRuntimePrimitives.RequireValue(anchorRect)
-            ),
+            anchorRect: ((anchorRect)),
             positioner: positioner
         );
     }
@@ -415,11 +411,22 @@ public abstract class SatelliteWindowControllerIo : BaseWindowControllerIo
         }
         if ((size is not null) && (constraints is not null))
         {
-            Size size__value41904 = DartRuntimePrimitives.RequireValue(size);
+            Size size__value41904 = (
+                size
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             DartRuntimePrimitives.Assert(() =>
                 constraints.isSatisfiedBy(
-                    DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(size__value41904)
+                    (
+                        (
+                            size__value41904
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
                     )
                 )
             );

@@ -2681,37 +2681,119 @@ public class SliverSemantics : _SemanticsBase__basic
             explicitChildNodes: explicitChildNodes,
             excludeSemantics: excludeSemantics,
             blockUserActions: blockUserActions,
-            enabled: DartRuntimePrimitives.RequireValue(enabled),
-            @checked: DartRuntimePrimitives.RequireValue(@checked),
-            mixed: DartRuntimePrimitives.RequireValue(mixed),
-            selected: DartRuntimePrimitives.RequireValue(selected),
-            toggled: DartRuntimePrimitives.RequireValue(toggled),
-            button: DartRuntimePrimitives.RequireValue(button),
-            slider: DartRuntimePrimitives.RequireValue(slider),
-            keyboardKey: DartRuntimePrimitives.RequireValue(keyboardKey),
-            link: DartRuntimePrimitives.RequireValue(link),
-            linkUrl: linkUrl,
-            header: DartRuntimePrimitives.RequireValue(header),
-            headingLevel: DartRuntimePrimitives.RequireValue(headingLevel),
-            textField: DartRuntimePrimitives.RequireValue(textField),
-            readOnly: DartRuntimePrimitives.RequireValue(readOnly),
-            focusable: DartRuntimePrimitives.RequireValue(focusable),
-            focused: DartRuntimePrimitives.RequireValue(focused),
-            accessibilityFocusBlockType: DartRuntimePrimitives.RequireValue(
-                accessibilityFocusBlockType
+            enabled: (
+                enabled
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             ),
-            inMutuallyExclusiveGroup: DartRuntimePrimitives.RequireValue(inMutuallyExclusiveGroup),
-            obscured: DartRuntimePrimitives.RequireValue(obscured),
-            multiline: DartRuntimePrimitives.RequireValue(multiline),
-            scopesRoute: DartRuntimePrimitives.RequireValue(scopesRoute),
-            namesRoute: DartRuntimePrimitives.RequireValue(namesRoute),
-            hidden: DartRuntimePrimitives.RequireValue(hidden),
-            image: DartRuntimePrimitives.RequireValue(image),
-            liveRegion: DartRuntimePrimitives.RequireValue(liveRegion),
-            expanded: DartRuntimePrimitives.RequireValue(expanded),
-            isRequired: DartRuntimePrimitives.RequireValue(isRequired),
-            maxValueLength: DartRuntimePrimitives.RequireValue(maxValueLength),
-            currentValueLength: DartRuntimePrimitives.RequireValue(currentValueLength),
+            @checked: (
+                @checked
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            mixed: (
+                mixed
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            selected: (
+                selected
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            toggled: (
+                toggled
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            button: (
+                button
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            slider: (
+                slider
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            keyboardKey: (
+                keyboardKey
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            link: (
+                link
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            linkUrl: linkUrl,
+            header: (
+                header
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            headingLevel: (
+                headingLevel
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            textField: (
+                textField
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            readOnly: (
+                readOnly
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            focusable: (
+                focusable
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            focused: (
+                focused
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            accessibilityFocusBlockType: (
+                accessibilityFocusBlockType
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            inMutuallyExclusiveGroup: (
+                inMutuallyExclusiveGroup
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            obscured: (
+                obscured
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            multiline: (
+                multiline
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            scopesRoute: (
+                scopesRoute
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            namesRoute: (
+                namesRoute
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            hidden: (
+                hidden
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            image: (
+                image
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            liveRegion: (
+                liveRegion
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            expanded: (
+                expanded
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            isRequired: (
+                isRequired
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            maxValueLength: (
+                maxValueLength
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            currentValueLength: (
+                currentValueLength
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             identifier: identifier,
             traversalParentIdentifier: traversalParentIdentifier,
             traversalChildIdentifier: traversalChildIdentifier,
@@ -2728,7 +2810,10 @@ public class SliverSemantics : _SemanticsBase__basic
             tooltip: tooltip,
             onTapHint: onTapHint,
             onLongPressHint: onLongPressHint,
-            textDirection: DartRuntimePrimitives.RequireValue(textDirection),
+            textDirection: (
+                textDirection
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             sortKey: sortKey,
             tagForChildren: tagForChildren,
             onTap: onTap,
@@ -2753,12 +2838,24 @@ public class SliverSemantics : _SemanticsBase__basic
             onExpand: onExpand,
             onCollapse: onCollapse,
             customSemanticsActions: customSemanticsActions,
-            role: DartRuntimePrimitives.RequireValue(role),
+            role: (
+                role
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             controlsNodes: controlsNodes,
             validationResult: validationResult,
-            hitTestBehavior: DartRuntimePrimitives.RequireValue(hitTestBehavior),
-            inputType: DartRuntimePrimitives.RequireValue(inputType),
-            localeForSubtree: DartRuntimePrimitives.RequireValue(localeForSubtree),
+            hitTestBehavior: (
+                hitTestBehavior
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            inputType: (
+                inputType
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
+            localeForSubtree: (
+                localeForSubtree
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ),
             minValue: minValue,
             maxValue: maxValue,
             child: sliver
@@ -3687,7 +3784,15 @@ public class RichText : MultiChildRenderObjectWidget
         this.selectionColor = selectionColor;
         this.textScaler = _effectiveTextScalerFrom(textScaler, textScaleFactor);
         System.Diagnostics.Debug.Assert(
-            (maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L)
+            (maxLines is null)
+                || (
+                    (
+                        maxLines
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0L
+                )
         );
         System.Diagnostics.Debug.Assert(
             (selectionRegistrar is null) || (selectionColor is not null)

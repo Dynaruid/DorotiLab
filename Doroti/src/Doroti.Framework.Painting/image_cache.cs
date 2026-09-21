@@ -180,7 +180,10 @@ public class ImageCache
                     }
                 );
             }
-            _currentSizeBytes -= DartRuntimePrimitives.RequireValue(imageLocal.sizeBytes);
+            _currentSizeBytes -= (
+                imageLocal.sizeBytes
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             imageLocal.dispose();
             return true;
         }
@@ -203,11 +206,21 @@ public class ImageCache
     {
         if (
             (image.sizeBytes is not null)
-            && (DartRuntimePrimitives.RequireValue(image.sizeBytes) <= maximumSizeBytes)
+            && (
+                (
+                    image.sizeBytes
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) <= maximumSizeBytes
+            )
             && (maximumSize > 0L)
         )
         {
-            _currentSizeBytes += DartRuntimePrimitives.RequireValue(image.sizeBytes);
+            _currentSizeBytes += (
+                image.sizeBytes
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             _cache[key] = image;
             _checkCacheSize(timelineTask);
         }
@@ -445,7 +458,10 @@ public class ImageCache
         {
             object key = _cache.Keys.First();
             _CachedImage__image_cache image = _cache.GetValueOrDefault(key)!;
-            _currentSizeBytes -= DartRuntimePrimitives.RequireValue(image.sizeBytes);
+            _currentSizeBytes -= (
+                image.sizeBytes
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             image.dispose();
             _cache.remove(key);
             if (!Foundation.ConstantsLibrary.kReleaseMode)
@@ -541,7 +557,13 @@ internal abstract class _CachedImageBase__image_cache
 internal class _CachedImage__image_cache : _CachedImageBase__image_cache
 {
     internal _CachedImage__image_cache(ImageStreamCompleter completer, long? sizeBytes = null)
-        : base(completer, sizeBytes: DartRuntimePrimitives.RequireValue(sizeBytes)) { }
+        : base(
+            completer,
+            sizeBytes: (
+                sizeBytes
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            )
+        ) { }
 }
 
 internal class _LiveImage__image_cache : _CachedImageBase__image_cache

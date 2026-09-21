@@ -374,8 +374,11 @@ internal class _ReorderableListViewState__reorderable_list : State<ReorderableLi
             builder: (context, child) =>
             {
                 double animValue = Curves.easeInOut.transform(animation.value);
-                double elevationLocal = DartRuntimePrimitives.RequireValue(
+                double elevationLocal = (
                     Dart_uiLibrary.lerpDouble(0L, 6L, animValue)
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
                 );
                 return new Material(elevation: elevationLocal, child: child);
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -441,7 +444,12 @@ internal class _ReorderableListViewState__reorderable_list : State<ReorderableLi
                 (widget.cacheExtent is null)
                     ? null
                     : ScrollCacheExtent.CreatePixels(
-                        DartRuntimePrimitives.RequireValue(widget.cacheExtent)
+                        (
+                            widget.cacheExtent
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     )
             );
         return new CustomScrollView(

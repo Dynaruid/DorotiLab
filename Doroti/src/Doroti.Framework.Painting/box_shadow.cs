@@ -52,8 +52,8 @@ public class BoxShadow : Shadow
     {
         return new BoxShadow(
             color: color,
-            offset: DartRuntimePrimitives.RequireValue(offset) * factor,
-            blurRadius: DartRuntimePrimitives.RequireValue(blurRadius) * factor,
+            offset: (offset) * factor,
+            blurRadius: (blurRadius) * factor,
             spreadRadius: spreadRadius * factor,
             blurStyle: blurStyle
         );
@@ -94,14 +94,17 @@ public class BoxShadow : Shadow
         }
         return new BoxShadow(
             color: Dart_uiLibrary.Color.lerp(a.color, b.color, t)!,
-            offset: DartRuntimePrimitives.RequireValue(
+            offset: (
                 Dart_uiLibrary.Offset.lerp(a.offset, b.offset, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             ),
-            blurRadius: DartRuntimePrimitives.RequireValue(
+            blurRadius: (
                 Dart_uiLibrary.lerpDouble(a.blurRadius, b.blurRadius, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             ),
-            spreadRadius: DartRuntimePrimitives.RequireValue(
+            spreadRadius: (
                 Dart_uiLibrary.lerpDouble(a.spreadRadius, b.spreadRadius, t)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             ),
             blurStyle: Equals(a.blurStyle, BlurStyle.normal) ? b.blurStyle : a.blurStyle
         );
@@ -139,21 +142,15 @@ public class BoxShadow : Shadow
         }
         return (__other is BoxShadow)
             && Equals(__other.color, color)
-            && Equals(__other.offset, DartRuntimePrimitives.RequireValue(offset))
-            && (__other.blurRadius == DartRuntimePrimitives.RequireValue(blurRadius))
+            && Equals(__other.offset, (offset))
+            && (__other.blurRadius == (blurRadius))
             && (__other.spreadRadius == spreadRadius)
             && Equals(__other.blurStyle, blurStyle);
     }
 
     public override int GetHashCode() =>
-        FoundationRuntimePorts.ObjectHash(
-            color,
-            DartRuntimePrimitives.RequireValue(offset),
-            DartRuntimePrimitives.RequireValue(blurRadius),
-            spreadRadius,
-            blurStyle
-        );
+        FoundationRuntimePorts.ObjectHash(color, (offset), (blurRadius), spreadRadius, blurStyle);
 
     public override string ToString() =>
-        $"BoxShadow({color}, {DartRuntimePrimitives.RequireValue(offset)}, {Foundation.DebugLibrary.debugFormatDouble(DartRuntimePrimitives.RequireValue(blurRadius))}, {Foundation.DebugLibrary.debugFormatDouble(spreadRadius)}, {blurStyle})";
+        $"BoxShadow({color}, {(offset)}, {Foundation.DebugLibrary.debugFormatDouble((blurRadius))}, {Foundation.DebugLibrary.debugFormatDouble(spreadRadius)}, {blurStyle})";
 }

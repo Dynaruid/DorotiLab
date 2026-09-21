@@ -45,14 +45,10 @@ public class TextSelectionToolbarLayoutDelegate : SingleChildLayoutDelegate
     public override Offset getPositionForChild(Size size, Size childSize)
     {
         bool fitsAboveLocal = fitsAbove ?? (anchorAbove.dy >= childSize.height);
-        Offset anchor = DartRuntimePrimitives.RequireValue(fitsAboveLocal)
-            ? anchorAbove
-            : anchorBelow;
+        Offset anchor = (fitsAboveLocal) ? anchorAbove : anchorBelow;
         return new Offset(
             centerOn(anchor.dx, childSize.width, size.width),
-            DartRuntimePrimitives.RequireValue(fitsAboveLocal)
-                ? Math.Max(0.0, anchor.dy - childSize.height)
-                : anchor.dy
+            (fitsAboveLocal) ? Math.Max(0.0, anchor.dy - childSize.height) : anchor.dy
         );
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

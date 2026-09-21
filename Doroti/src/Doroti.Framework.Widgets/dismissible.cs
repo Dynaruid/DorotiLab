@@ -342,7 +342,10 @@ internal class _DismissibleState__dismissible
     {
         get
         {
-            Size sizeLocal = DartRuntimePrimitives.RequireValue(context.size);
+            Size sizeLocal = (
+                context.size
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
             return _directionIsXAxis ? sizeLocal.width : sizeLocal.height;
         }
     }
@@ -376,7 +379,10 @@ internal class _DismissibleState__dismissible
         {
             return;
         }
-        double delta = DartRuntimePrimitives.RequireValue(details.primaryDelta);
+        double delta = (
+            details.primaryDelta
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         double oldDragExtent = _dragExtent;
         switch (widget.direction)
         {
@@ -751,8 +757,18 @@ internal class _DismissibleState__dismissible
                 sizeFactor: _resizeAnimation!,
                 axis: _directionIsXAxis ? Axis.vertical : Axis.horizontal,
                 child: new SizedBox(
-                    width: DartRuntimePrimitives.RequireValue(_sizePriorToCollapse).width,
-                    height: DartRuntimePrimitives.RequireValue(_sizePriorToCollapse).height,
+                    width: (
+                        _sizePriorToCollapse
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).width,
+                    height: (
+                        _sizePriorToCollapse
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).height,
                     child: backgroundLocal
                 )
             );

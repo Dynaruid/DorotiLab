@@ -169,13 +169,27 @@ public class ScrollDragController : Drag
         _lastDetails = details;
         _retainMomentum =
             (carriedVelocity is not null)
-            && (DartRuntimePrimitives.RequireValue(carriedVelocity) != 0.0);
+            && (
+                (
+                    carriedVelocity
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                ) != 0.0
+            );
         _lastNonStationaryTimestamp = details.sourceTimeStamp;
         _kind = details.kind;
         _offsetSinceLastStop = (motionStartDistanceThreshold is null) ? null : 0.0;
         System.Diagnostics.Debug.Assert(
             (motionStartDistanceThreshold is null)
-                || (DartRuntimePrimitives.RequireValue(motionStartDistanceThreshold) > 0.0)
+                || (
+                    (
+                        motionStartDistanceThreshold
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) > 0.0
+                )
         );
     }
 
@@ -198,8 +212,18 @@ public class ScrollDragController : Drag
                 (timestamp is null)
                 || (
                     (
-                        DartRuntimePrimitives.RequireValue(timestamp)
-                        - DartRuntimePrimitives.RequireValue(_lastNonStationaryTimestamp)
+                        (
+                            timestamp
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                        - (
+                            _lastNonStationaryTimestamp
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     ) > momentumRetainStationaryDurationThreshold
                 )
             )
@@ -222,14 +246,28 @@ public class ScrollDragController : Drag
                 && (_offsetSinceLastStop is null)
                 && (
                     (
-                        DartRuntimePrimitives.RequireValue(timestamp)
-                        - DartRuntimePrimitives.RequireValue(_lastNonStationaryTimestamp)
+                        (
+                            timestamp
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
+                        - (
+                            _lastNonStationaryTimestamp
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        )
                     ) > motionStoppedDurationThreshold
                 )
             )
             {
-                double motionStartDistanceThreshold__value12588 =
-                    DartRuntimePrimitives.RequireValue(motionStartDistanceThreshold);
+                double motionStartDistanceThreshold__value12588 = (
+                    motionStartDistanceThreshold
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
                 _offsetSinceLastStop = 0.0;
             }
             return 0.0;
@@ -243,10 +281,25 @@ public class ScrollDragController : Drag
             else
             {
                 _offsetSinceLastStop =
-                    DartRuntimePrimitives.RequireValue(_offsetSinceLastStop) + offset;
+                    (
+                        _offsetSinceLastStop
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ) + offset;
                 if (
-                    DartRuntimePrimitives.RequireValue(_offsetSinceLastStop).abs()
-                    > DartRuntimePrimitives.RequireValue(motionStartDistanceThreshold)
+                    (
+                        _offsetSinceLastStop
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).abs()
+                    > (
+                        motionStartDistanceThreshold
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
                 )
                 {
                     _offsetSinceLastStop = null;
@@ -257,8 +310,12 @@ public class ScrollDragController : Drag
                     else
                     {
                         return Math.Min(
-                                DartRuntimePrimitives.RequireValue(motionStartDistanceThreshold)
-                                    / 3.0,
+                                (
+                                    motionStartDistanceThreshold
+                                    ?? throw new global::System.NullReferenceException(
+                                        "Dart null assertion failed."
+                                    )
+                                ) / 3.0,
                                 offset.abs()
                             ) * Math.Sign(offset);
                     }
@@ -276,7 +333,10 @@ public class ScrollDragController : Drag
     {
         DartRuntimePrimitives.Assert(() => details.primaryDelta is not null);
         _lastDetails = details;
-        double offset = DartRuntimePrimitives.RequireValue(details.primaryDelta);
+        double offset = (
+            details.primaryDelta
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         if (offset != 0.0)
         {
             _lastNonStationaryTimestamp = details.sourceTimeStamp;
@@ -297,7 +357,10 @@ public class ScrollDragController : Drag
     public override void end(DragEndDetails details)
     {
         DartRuntimePrimitives.Assert(() => details.primaryVelocity is not null);
-        double velocity = -DartRuntimePrimitives.RequireValue(details.primaryVelocity);
+        double velocity = -(
+            details.primaryVelocity
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+        );
         if (_reversed)
         {
             velocity = -velocity;
@@ -307,16 +370,32 @@ public class ScrollDragController : Drag
         {
             var isFlingingInSameDirection =
                 Math.Sign(velocity)
-                == Math.Sign(DartRuntimePrimitives.RequireValue(carriedVelocity));
+                == Math.Sign(
+                    (
+                        carriedVelocity
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    )
+                );
             bool isVelocityNotSubstantiallyLessThanCarriedMomentum =
                 velocity.abs()
                 > (
-                    DartRuntimePrimitives.RequireValue(carriedVelocity).abs()
-                    * momentumRetainVelocityThresholdFactor
+                    (
+                        carriedVelocity
+                        ?? throw new global::System.NullReferenceException(
+                            "Dart null assertion failed."
+                        )
+                    ).abs() * momentumRetainVelocityThresholdFactor
                 );
             if (isFlingingInSameDirection && isVelocityNotSubstantiallyLessThanCarriedMomentum)
             {
-                velocity += DartRuntimePrimitives.RequireValue(carriedVelocity);
+                velocity += (
+                    carriedVelocity
+                    ?? throw new global::System.NullReferenceException(
+                        "Dart null assertion failed."
+                    )
+                );
             }
         }
         @delegate.goBallistic(velocity);

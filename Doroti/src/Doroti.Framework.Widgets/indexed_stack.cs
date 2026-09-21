@@ -87,12 +87,25 @@ public class _RawIndexedStack__indexed_stack : Stack
         System.Diagnostics.Debug.Assert(
             (index is null)
                 || (
-                    (DartRuntimePrimitives.RequireValue(index) == 0L)
-                    && (checked(this.children.Count) == 0L)
+                    (
+                        (
+                            index
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) == 0L
+                    ) && (checked(this.children.Count) == 0L)
                 )
                 || (
                     (index >= 0L)
-                    && (DartRuntimePrimitives.RequireValue(index) < checked(this.children.Count))
+                    && (
+                        (
+                            index
+                            ?? throw new global::System.NullReferenceException(
+                                "Dart null assertion failed."
+                            )
+                        ) < checked(this.children.Count)
+                    )
                 )
         );
     }
@@ -173,14 +186,11 @@ internal class _IndexedStackElement__indexed_stack : MultiChildRenderObjectEleme
         long? indexLocal = widget.index;
         if ((indexLocal is not null) && Enumerable.Any(children))
         {
-            long index__6279__value6418 = DartRuntimePrimitives.RequireValue(indexLocal);
-            visitor(
-                children.elementAt(
-                    DartRuntimePrimitives.RequireValue(
-                        DartRuntimePrimitives.RequireValue(index__6279__value6418)
-                    )
-                )
+            long index__6279__value6418 = (
+                indexLocal
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
+            visitor(children.elementAt(((index__6279__value6418))));
         }
     }
 }

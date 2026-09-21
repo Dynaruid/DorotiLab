@@ -368,10 +368,11 @@ internal class _CheckboxState__checkbox
             ?? throw new InvalidOperationException(
                 "The built-in checkbox theme must provide overlayColor."
             );
-        MaterialTapTargetSize effectiveMaterialTapTargetSize = DartRuntimePrimitives.RequireValue(
+        MaterialTapTargetSize effectiveMaterialTapTargetSize = (
             widget.materialTapTargetSize
-                ?? checkboxTheme.materialTapTargetSize
-                ?? defaults.materialTapTargetSize
+            ?? checkboxTheme.materialTapTargetSize
+            ?? defaults.materialTapTargetSize
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         VisualDensity effectiveVisualDensity =
             (widget.visualDensity ?? checkboxTheme.visualDensity) ?? defaults.visualDensity!;
@@ -543,7 +544,10 @@ internal class _CheckboxState__checkbox
             ?? defaultCheckColor.resolve(checkStates)!;
         double effectiveSplashRadius =
             (widget.splashRadius ?? checkboxTheme.splashRadius)
-            ?? DartRuntimePrimitives.RequireValue(defaults.splashRadius);
+            ?? (
+                defaults.splashRadius
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            );
         return new Widgets.Semantics(
             label: widget.semanticLabel,
             @checked: widget.value ?? false,
@@ -1046,8 +1050,9 @@ internal class _CheckboxPainter__checkbox : ToggleablePainter
         if (t < 0.5)
         {
             double strokeT = t * 2.0;
-            Offset drawMid = DartRuntimePrimitives.RequireValue(
+            Offset drawMid = (
                 Dart_uiLibrary.Offset.lerp(start, mid, strokeT)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
             path.moveTo(origin.dx + start.dx, origin.dy + start.dy);
             path.lineTo(origin.dx + drawMid.dx, origin.dy + drawMid.dy);
@@ -1055,8 +1060,9 @@ internal class _CheckboxPainter__checkbox : ToggleablePainter
         else
         {
             double strokeTLocal = (t - 0.5) * 2.0;
-            Offset drawEnd = DartRuntimePrimitives.RequireValue(
+            Offset drawEnd = (
                 Dart_uiLibrary.Offset.lerp(mid, end, strokeTLocal)
+                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
             );
             path.moveTo(origin.dx + start.dx, origin.dy + start.dy);
             path.lineTo(origin.dx + mid.dx, origin.dy + mid.dy);
@@ -1071,11 +1077,13 @@ internal class _CheckboxPainter__checkbox : ToggleablePainter
         var start = new Offset(CheckboxLibrary._kEdgeSize * 0.2, CheckboxLibrary._kEdgeSize * 0.5);
         var mid = new Offset(CheckboxLibrary._kEdgeSize * 0.5, CheckboxLibrary._kEdgeSize * 0.5);
         var end = new Offset(CheckboxLibrary._kEdgeSize * 0.8, CheckboxLibrary._kEdgeSize * 0.5);
-        Offset drawStart = DartRuntimePrimitives.RequireValue(
+        Offset drawStart = (
             Dart_uiLibrary.Offset.lerp(start, mid, 1.0 - t)
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
-        Offset drawEnd = DartRuntimePrimitives.RequireValue(
+        Offset drawEnd = (
             Dart_uiLibrary.Offset.lerp(mid, end, t)
+            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
         );
         canvas.drawLine(origin + drawStart, origin + drawEnd, paint);
     }
