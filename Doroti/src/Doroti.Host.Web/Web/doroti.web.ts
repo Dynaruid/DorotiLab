@@ -888,6 +888,11 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   commitDirectCanvasLogicalSize(host, logicalWidth, logicalHeight);
   hosts.set(hostId, host);
   const operatingSystem = browserOperatingSystem();
+  let searchTapTarget: HTMLElement | null = null;
+  const searchTap = new TextInputTapFocus<HTMLElement>((element) => {
+    if (element.isConnected && element.getAttribute("aria-disabled") !== "true")
+      host.textActions.reserveSearchWindow();
+  });
   const tapFocus = new TextInputTapFocus<HTMLInputElement | HTMLTextAreaElement>((field) => {
     if (!field.isConnected || field.disabled || field.readOnly) return;
     host.focusedTextFieldSemanticsId = Number(field.dataset.dorotiSemanticsId);
@@ -946,7 +951,12 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     // canvas text, including when the transparent IME is the DOM hit target.
     event.preventDefault();
     if (phase === 1) {
-      const semanticTextField = semanticsTextFieldAtPoint(host, event.clientX, event.clientY);
+      const control = semanticsControlAtPoint(host, event.clientX, event.clientY);
+      searchTapTarget = event.isTrusted && isWebSearchControl(control)
+        ? control : null;
+      searchTap.start(event, searchTapTarget);
+      const semanticTextField = control?.getAttribute("role") === "textbox" &&
+        (control instanceof HTMLInputElement || control instanceof HTMLTextAreaElement) ? control : null;
       if (operatingSystem === "iOS") tapFocus.start(event,
         semanticTextField instanceof HTMLInputElement || semanticTextField instanceof HTMLTextAreaElement
           ? semanticTextField : null);
@@ -969,9 +979,15 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
       if (operatingSystem !== "iOS") focusActiveEndpoint(host);
       else if (input.hidden) canvas.focus({ preventScroll: true });
     }
-    if (phase === 0 || phase === 4) tapFocus.move(event);
-    if (phase === 2) tapFocus.end(event);
-    if (phase === 3) tapFocus.cancel();
+    if (phase === 0 || phase === 4) { tapFocus.move(event); searchTap.move(event); }
+    if (phase === 2) {
+      if (searchTapTarget && (!event.isTrusted || semanticsControlAtPoint(host, event.clientX, event.clientY) !== searchTapTarget))
+        searchTap.cancel();
+      searchTap.end(event);
+      searchTapTarget = null;
+      tapFocus.end(event);
+    }
+    if (phase === 3) { tapFocus.cancel(); searchTap.cancel(); }
     const inputSequence = ++host.inputSequence;
     requireManaged().dispatchPointerBatch(host.id, phase, pointerKind(event.pointerType), event.pointerId,
       event.buttons, modifierMask(event), inputSequence, pointerSamples(event));
@@ -991,6 +1007,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   observe(root, "pointercancel", (event) => pointer(3)(event as PointerEvent));
   observe(root, "lostpointercapture", () => {
     tapFocus.cancel();
+    searchTap.cancel();
     host.pointerCaptureCursor = null;
     root.style.cursor = host.frameworkCursor;
   });
@@ -1634,6 +1651,7 @@ function applySemanticsProjection(host: BrowserHost, update: SemanticsUpdate, st
       if (enabled && (actions & 1) !== 0) {
         element.addEventListener("click", (event) => {
           event.stopPropagation();
+          if (event.isTrusted && isWebSearchControl(element)) host.textActions.reserveSearchWindow();
           dispatchSemantics(host, node.id, 1);
         }, { signal: listeners.signal });
       }
@@ -1651,6 +1669,7 @@ function applySemanticsProjection(host: BrowserHost, update: SemanticsUpdate, st
         if (action === 0) return;
         key.preventDefault();
         key.stopPropagation();
+        if (action === 1 && key.isTrusted && isWebSearchControl(element)) host.textActions.reserveSearchWindow();
         dispatchSemantics(host, node.id, action);
       }, { signal: listeners.signal });
       element.addEventListener("focus", () => {
@@ -2616,7 +2635,13 @@ function removeUnexpectedSemanticsChildren(parent: HTMLElement, desired: HTMLEle
   }
 }
 
-function semanticsTextFieldAtPoint(host: BrowserHost, clientX: number, clientY: number): HTMLElement | null {
+function isWebSearchControl(element: HTMLElement | null): boolean {
+  // The identifier may live on a Semantics boundary around the actual button.
+  return element?.getAttribute("role") === "button" &&
+    element.closest('[data-doroti-semantics-identifier="doroti.text-action.search-web"]') !== null;
+}
+
+function semanticsControlAtPoint(host: BrowserHost, clientX: number, clientY: number): HTMLElement | null {
   const candidates = Array.from(host.semanticsElements.values()).reverse();
   for (const element of candidates) {
     const role = element.getAttribute("role");
@@ -2625,8 +2650,7 @@ function semanticsTextFieldAtPoint(host: BrowserHost, clientX: number, clientY: 
     if (rect.width <= 0 || rect.height <= 0 || clientX < rect.left || clientX > rect.right ||
         clientY < rect.top || clientY > rect.bottom) continue;
     // Menus and other foreground controls must not focus a field underneath.
-    return role === "textbox" && (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement)
-      ? element : null;
+    return element;
   }
   return null;
 }

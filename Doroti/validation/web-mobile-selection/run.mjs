@@ -156,7 +156,10 @@ try {
     for(let pageIndex=0;pageIndex<3;pageIndex++) {
       const nodes=await dom();
       const button=nodes.find(n=>n.role==='button' && n.rect[2]>0 && pattern.test(n.label ?? n.text ?? ''));
-      if(button) {await tap(button.rect[0]+button.rect[2]/2,button.rect[1]+button.rect[3]/2);return;}
+      if(button) {
+        if(/Search Web/i.test(button.label ?? ''))await save('search-button-before',await evaluate(`Array.from(document.querySelectorAll('[data-doroti-semantics-id]')).filter(e=>e.getAttribute('aria-label')?.includes('Search') || e.dataset.dorotiSemanticsIdentifier).map(e=>({html:e.outerHTML,rect:e.getBoundingClientRect().toJSON()}))`));
+        await tap(button.rect[0]+button.rect[2]/2,button.rect[1]+button.rect[3]/2);return;
+      }
       const menu=nodes.find(n=>n.role==='button' && n.rect[2]>0 && /^(Copy|Cut|Paste|Search Web|Share.*)$/i.test(n.label ?? n.text ?? ''));
       const next=menu && nodes.filter(n=>n.role==='button' && !n.label && !n.description && n.rect[2]>0 && Math.abs(n.rect[1]-menu.rect[1])<8).sort((a,b)=>b.rect[0]-a.rect[0])[0];
       if(!next)break;
@@ -164,6 +167,25 @@ try {
     }
     await save('missing-menu-dom',await dom());await shot('missing-menu');
     throw Error('Menu action not found: '+pattern);
+  };
+  const installTextActionStubs = () => evaluate(`(()=>{
+    window.__textActions=[];window.__originalOpen=window.open;
+    document.addEventListener('pointerup',()=>window.__inTextActionGesture=true,true);
+    document.addEventListener('pointerup',()=>window.__inTextActionGesture=false);
+    window.open=url=>{
+      // Model Safari's gesture restriction, which the previous unconditional
+      // window.open stub missed. No external searches are sent by this test.
+      if(!window.__inTextActionGesture) {window.__textActions.push({action:'blocked',url});return null;}
+      window.__textActions.push({action:'reserve',url});
+      return {opener:null,closed:false,close(){this.closed=true},location:{replace(url){window.__textActions.push({action:'search',url})}}};
+    };
+    Object.defineProperty(navigator,'share',{configurable:true,value:async data=>{window.__textActions.push({action:'share',text:data.text})}});
+  })()`);
+  const checkDirectSearch = async selectedText => {
+    await save('direct-search',await evaluate(`({actions:window.__textActions,nodes:Array.from(document.querySelectorAll('[data-doroti-semantics-identifier],.doroti-text-action-dialog')).map(e=>({role:e.getAttribute('role'),label:e.getAttribute('aria-label'),identifier:e.dataset.dorotiSemanticsIdentifier,rect:e.getBoundingClientRect().toJSON(),html:e.outerHTML}))})`));
+    check(await evaluate(`window.__textActions.filter(x=>x.action==='reserve' && x.url==='about:blank').length===1`),'search opens exactly one tab inside the trusted tap');
+    check(await evaluate(`window.__textActions.filter(x=>x.action==='search' && new URL(x.url).searchParams.get('q')===${JSON.stringify(selectedText)}).length===1`),'reserved search tab receives the selected text once');
+    check(await evaluate(`!window.__textActions.some(x=>x.action==='blocked') && !document.querySelector('.doroti-text-action-dialog[open]')`),'search requires no second tap or fallback modal');
   };
   await save('environment', {version,profile,backend,ua:await evaluate('navigator.userAgent')});
   const policy = await evaluate(`document.querySelector('.doroti-root').dataset.dorotiTextSelection`);
@@ -205,6 +227,11 @@ try {
     check(await evaluate('window.__clipboardReads===0'),'search focus and toolbar do not probe the clipboard');
     check(await evaluate(`getSelection().toString()===''`),'search gestures leave DOM selection empty');
     await shot('search-toolbar');
+    await tapMenu(/^Select All$/i);
+    await installTextActionStubs();
+    await tapMenu(/^Search Web$/i);
+    await checkDirectSearch('search magnifier');
+    await save('search-actions',await evaluate('window.__textActions'));
     const back=(await dom()).find(n=>n.role==='button' && /Back/i.test(n.label ?? n.description ?? n.text ?? ''));
     check(!!back,'search route exposes a Back button');
     await tap(back.rect[0]+back.rect[2]/2,back.rect[1]+back.rect[3]/2);
@@ -316,8 +343,20 @@ try {
     check(!!await menuButton(/^(Copy|Cut)$/i), 'handle drag restores the framework toolbar');
     await shot('canvas-ios-handle-drag');
     const selectedText=await evaluate(`(()=>{const e=document.querySelector('#doroti-ime');return e.value.slice(e.selectionStart,e.selectionEnd)})()`);
-    await evaluate(`window.__textActions=[];window.__originalOpen=window.open;window.open=url=>{window.__textActions.push({action:'search',url});return {opener:null}};Object.defineProperty(navigator,'share',{configurable:true,value:async data=>{window.__textActions.push({action:'share',text:data.text})}})`);
+    await installTextActionStubs();
+    const searchButton=await menuButton(/^Search Web$/i);
+    check(!!searchButton,'search toolbar button is visible before gesture tests');
+    const searchPoint={x:searchButton.rect[0]+searchButton.rect[2]/2,y:searchButton.rect[1]+searchButton.rect[3]/2};
+    await cdp('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[searchPoint]},page);
+    await cdp('Input.dispatchTouchEvent',{type:'touchCancel',touchPoints:[]},page);
+    await wait(150);
+    await cdp('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[searchPoint]},page);
+    await cdp('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:searchPoint.x,y:searchPoint.y+50}]},page);
+    await cdp('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]},page);
+    await wait(300);
+    check(await evaluate('window.__textActions.length===0'),'cancelled and dragged menu touches do not open a tab');
     await tapMenu(/^Search Web$/i);
+    await checkDirectSearch(selectedText);
     check(await evaluate(`window.__textActions.some(x=>x.action==='search' && new URL(x.url).searchParams.get('q')===${JSON.stringify(selectedText)})`), 'Web Search sends the selected text to the browser');
     await tapMenu(/^Share(?:\.\.\.|…)?$/i);
     check(await evaluate(`window.__textActions.some(x=>x.action==='share' && x.text===${JSON.stringify(selectedText)})`), 'Share sends the selected text to the browser API');

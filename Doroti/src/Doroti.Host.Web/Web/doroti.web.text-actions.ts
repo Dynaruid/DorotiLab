@@ -3,15 +3,45 @@
 export class BrowserTextActions {
   private dialog: HTMLDialogElement | null = null;
   private disposed = false;
+  private searchWindow: Window | null = null;
+  private searchWindowTimer = 0;
+
+  /** Called synchronously from a trusted toolbar tap, before Worker dispatch. */
+  reserveSearchWindow(): void {
+    if (this.disposed || this.searchWindow && !this.searchWindow.closed) return;
+    this.releaseSearchWindow();
+    const popup = window.open("about:blank", "_blank");
+    if (!popup) return;
+    popup.opener = null;
+    this.searchWindow = popup;
+    // A removed menu/custom callback must not leave an unused blank tab behind.
+    this.searchWindowTimer = globalThis.setTimeout(() => this.releaseSearchWindow()?.close(), 10000);
+  }
+
+  private releaseSearchWindow(): Window | null {
+    clearTimeout(this.searchWindowTimer);
+    this.searchWindowTimer = 0;
+    const popup = this.searchWindow;
+    this.searchWindow = null;
+    return popup;
+  }
 
   async invoke(action: string, text: string): Promise<string> {
     if (this.disposed) return "cancelled";
     if (action !== "SearchWeb.invoke" && action !== "Share.invoke")
       throw new Error(`Unsupported text action '${action}'.`);
-    if (!text.trim()) return "empty";
+    if (!text.trim()) {
+      if (action === "SearchWeb.invoke") this.releaseSearchWindow()?.close();
+      return "empty";
+    }
     if (action === "SearchWeb.invoke") {
       const url = new URL("https://www.google.com/search");
       url.searchParams.set("q", text);
+      const reserved = this.releaseSearchWindow();
+      if (reserved && !reserved.closed) {
+        reserved.location.replace(url.href);
+        return "opened";
+      }
       const opened = window.open(url.href, "_blank");
       if (opened) { opened.opener = null; return "opened"; }
       this.showDialog(text, url.href);
@@ -29,6 +59,7 @@ export class BrowserTextActions {
 
   dispose(): void {
     this.disposed = true;
+    this.releaseSearchWindow()?.close();
     this.dialog?.remove();
     this.dialog = null;
   }

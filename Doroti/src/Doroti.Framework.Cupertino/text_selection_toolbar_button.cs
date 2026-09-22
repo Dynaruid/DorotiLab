@@ -170,18 +170,23 @@ internal class _CupertinoTextSelectionToolbarButtonState__text_selection_toolbar
         );
         if (widget.onPressed is not null)
         {
-            return new GestureDetector(
+            childLocal = new GestureDetector(
                 onTapDown: _onTapDown,
                 onTapUp: _onTapUp,
                 onTapCancel: () => _onTapCancel(),
                 child: childLocal
             );
         }
-        else
+        // The browser must reserve a search tab during the trusted tap, before
+        // the platform message returns from the render Worker. Do not identify
+        // this action by its localized label.
+        if (Foundation.ConstantsLibrary.kIsWeb
+            && widget.onPressed is not null
+            && widget.buttonItem?.type == ContextMenuButtonType.searchWeb)
         {
-            return childLocal;
+            return new Widgets.Semantics(identifier: "doroti.text-action.search-web", child: childLocal);
         }
-        throw new InvalidOperationException("Control flow completed without returning a value.");
+        return childLocal;
     }
 
     internal virtual Widget _getContentWidget(BuildContext context)

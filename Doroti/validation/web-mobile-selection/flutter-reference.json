@@ -4,6 +4,9 @@
     "packages/flutter/lib/src/widgets/editable_text.dart": "929b910e48bf6f505aad8f557a34c73b199e179df8ea42bc9a0c999fac8bf025",
     "packages/flutter/lib/src/widgets/text_selection.dart": "f21fec024e43f1151ab8c7458ddd4bd9abb16e3dff7ac4bb3cdd886915328557",
     "packages/flutter/lib/src/services/clipboard.dart": "4cde38468aec31dab54e8750df22ab9a54c9446fc07dd4b254731fd3be5bfe18",
-    "engine/src/flutter/lib/web_ui/lib/src/engine/clipboard.dart": "415f7de063a114910b0558e23ce36c1768b36897c1cc3d261e7e43f59153d007"
+    "engine/src/flutter/lib/web_ui/lib/src/engine/clipboard.dart": "415f7de063a114910b0558e23ce36c1768b36897c1cc3d261e7e43f59153d007",
+    "packages/flutter/lib/src/services/browser_context_menu.dart": "6f15cd286891d04d745c55b4e5a3707f51710db9b6e6eefb947382464621da0c",
+    "engine/src/flutter/lib/web_ui/lib/src/engine/platform_dispatcher.dart": "b11b2840c6959c5ebc6e876de78b8d99da6fd0c292b13253756d283e49088855",
+    "engine/src/flutter/shell/platform/darwin/ios/framework/Source/FlutterPlatformPlugin.mm": "fad273f52e3f705d0ac17fe5be0e1f507a03a683f8b3b68204f7e68907188e23"
   }
 }

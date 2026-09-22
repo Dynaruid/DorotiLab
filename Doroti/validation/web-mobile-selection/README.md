@@ -10,7 +10,7 @@
 | 입력 연결 | Worker attach 전 selectionchange 보류, 먼저 도착한 IME 입력은 보존 | `doroti.web.ts` |
 | 표시·숨김과 위치 갱신 | Show/Hide 요청은 별도 처리; 텍스트 ACK·caret geometry 갱신은 포커스를 가져오지 않음 | BrowserHostAdapter / DOM bridge |
 | 선택 UI | iOS 메뉴·확대경·핸들·커서·선택 배경은 Doroti; DOM 입력은 opacity 0 / pointer-events none | Framework + Web CSS |
-| 웹검색·공유 | 실제 플랫폼 메시지를 브라우저 API에 연결; 차단 시 사용자 재실행 링크/버튼, 공유 취소는 정상 종료 | `doroti.web.text-actions.ts` |
+| 웹검색·공유 | 웹검색은 trusted 탭 안에서 탭을 열고 Worker의 검색어로 이동; API 차단 시 재실행 링크/버튼, 공유 취소는 정상 종료 | `doroti.web.text-actions.ts` |
 | 메뉴 글꼴 | Cupertino 테마 글꼴과 앱 fallback, Web Roboto fallback 사용 | Cupertino toolbar button |
 | 확대경 | safe area/키보드 안에 배치하고 확대 좌표 보정; 기존 layout/scroll 프레임에서 위치 추적 | Cupertino magnifier / TextSelectionOverlay |
 
@@ -33,6 +33,30 @@
 클립보드 읽기는 0회였다. 기존 문제를 자동 클립보드 조회 탓으로 단정했던 설명은 정정한다.
 기준 제품은 trusted pointerup 종료 시 아직 canvas가 포커스되어 있어 새 포커스 검사에서 실패했다.
 실제 클립보드 읽기(Paste 또는 명시적 조회)에는 브라우저 권한 UI가 나타날 수 있다.
+
+### Flutter의 웹검색과 Doroti의 차이
+
+Flutter iOS 앱은 `SearchWeb.invoke` → `FlutterPlatformPlugin.searchWeb` →
+`UIApplication.openURL(x-web-search://?검색어)`로 시스템에 검색을 요청한다.
+Flutter 웹은 기본적으로 `BrowserContextMenu.enabled == true`이므로 브라우저 메뉴를
+사용하고 `EditableText.showToolbar()`는 Flutter 메뉴를 표시하지 않는다.
+웹 엔진 `platform_dispatcher.dart`에는 `SearchWeb.invoke` 구현이 없다.
+따라서 Doroti의 웹검색 모달은 Flutter 기본 동작이 아니라 별도로 추가했던 대체 처리다.
+
+iPhone에서 보고된 모달은 Worker 응답 뒤의 `window.open`이 차단되었을 때 표시된다.
+이를 피하도록 Cupertino 웹검색 버튼에 언어와 무관한 semantics 식별자를 붙이고,
+trusted 탭 이벤트 안에서 빈 탭을 열어 둔 후 기존 플랫폼 메시지의 검색어로 이동한다.
+취소·드래그·비활성 버튼에는 탭을 열지 않으며, 사용하지 않은 탭은 timeout/host 종료 시
+정리한다. 정상 처리된 검색 탭은 앱 종료 시 닫지 않는다. 새 창 자체가 차단된 환경에서만
+기존 재실행 링크를 제공한다. 접근성 click/키보드 활성화도 Worker 전달 전에 탭을 연다.
+
+이전 E2E의 `window.open` 대역은 호출 시점과 무관하게 성공해서 실제 기기 문제를 놓쳤다.
+이제 trusted pointerup 밖에서 새 창을 열면 실패하는 대역으로 검사하고, 검색어 전달이
+한 번만 일어나는지와 모달 부재를 확인한다.
+
+Flutter의 `SystemContextMenu`는 웹에서 지원되지 않는다. 웹의 브라우저 메뉴 허용은
+네이티브 텍스트 선택 동작을 다시 허용하는 것이므로, 메뉴만 네이티브로 바꾸고
+핸들·확대경의 네이티브 터치 처리를 배제하는 API로 사용할 수 없다.
 
 ## 검증
 
@@ -77,3 +101,19 @@ failure는 없었다. 검색/일반 입력창 확대경 캡처를 열어 화면 
 현재 글자를 확대한다. 실제 iPhone의 소프트 키보드와 네이티브 공유 화면은 미검증이다.
 
 이전 정책의 실험 결과는 [policy-history.md](policy-history.md)에 보관했다.
+
+### 웹검색의 추가 모달 수정 검증
+
+```sh
+python3 Doroti/validation/run-with-timeout.py dotnet publish DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release -o Doroti/artifacts/web-mobile-selection/search-gesture-product
+node Doroti/validation/web-mobile-selection/search-contracts.mjs Doroti/artifacts/web-mobile-selection/search-gesture-product/wwwroot
+DOROTI_SEARCH_FIELD=1 python3 Doroti/validation/run-with-timeout.py node Doroti/validation/web-mobile-selection/run.mjs Doroti/artifacts/web-mobile-selection/search-gesture-search-final Doroti/artifacts/web-mobile-selection/search-gesture-product/wwwroot iphone
+python3 Doroti/validation/run-with-timeout.py node Doroti/validation/web-mobile-selection/run.mjs Doroti/artifacts/web-mobile-selection/search-gesture-iphone-final Doroti/artifacts/web-mobile-selection/search-gesture-product/wwwroot iphone
+```
+
+Release publish, 새 탭 수명/검색어 인코딩 계약 검사,
+[검색 입력창 17개 검사](../../artifacts/web-mobile-selection/search-gesture-search-final/result.json),
+[일반 입력창 44개 검사](../../artifacts/web-mobile-selection/search-gesture-iphone-final/result.json)를 통과했다.
+탭 이벤트 안의 새 탭 열기 → Worker 검색어 전달 1회 → 모달 부재를 확인했다.
+취소·드래그에서는 새 탭을 열지 않았다. 일반 입력·선택·클립보드·확대경 회귀도 통과했다.
+브라우저 API는 대역이며, 실제 iPhone Safari의 새 탭 전환은 기기에서 재확인이 필요하다.
