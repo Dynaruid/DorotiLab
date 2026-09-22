@@ -1,5 +1,44 @@
 # Web 모바일 텍스트 선택 메뉴
 
+## iOS 네이티브 선택 UI로 변경 (2026-09-22 후속)
+
+실제 iPhone 웹에서 OS 메뉴·확대경과 Doroti UI가 중복된다는 제보에 따라,
+입력창의 iOS/iPadOS 기본 정책을 브라우저 소유로 변경했다.
+
+- iOS 편집 요소의 contextmenu와 touch callout을 허용한다. 활성 IME textarea의
+  터치는 취소하거나 Framework에 중복 전달하지 않는다. 캔버스에서 시작해 캡처한
+  포인터는 끝까지 전달해 제스처 상태를 정리한다.
+- `EditableText`의 메뉴, overlay 복원 및 선택 핸들 드래그 종료 경로의 메뉴를 차단한다.
+  확대경은 일반 길게 누르기와 핸들 드래그 경로 모두 비활성화한다.
+- 캔버스 일반 텍스트의 `SelectableRegion`, Android 웹, 네이티브 iOS 앱은 기존 정책을 유지한다.
+  `BrowserContextMenu.disableContextMenu()`의 명시적인 메뉴 소유권 전환은 유지한다.
+- runner의 iPhone/iPad 항목은 브라우저 메뉴 허용, 실제 터치 이벤트의 기본 동작 허용,
+  Doroti 메뉴 부재, DOM 선택·편집의 Framework semantics 반영을 검증한다.
+  Chromium 에뮬레이션으로 UIKit 메뉴·확대경의 표시를 검증할 수는 없다.
+
+후속 검증: Release publish PASS (빌드 로그에 경고·오류 없음), `git diff --check`,
+`node --check` PASS. Chrome 153/macOS, WebGL에서 다음 결과를 얻었다.
+
+| 프로필 | 결과 |
+| --- | --- |
+| iPhone 390px | PASS: Framework 제스처에서도 메뉴 없음, 실제 DOM 편집 영역 터치 허용, 선택·텍스트 변경의 semantics 동기화 |
+| iPad 데스크톱 UA 820px | PASS: iPhone과 같은 네이티브 정책·입력 검증 |
+| Android 390px | PASS: Doroti Copy/Cut/Paste 메뉴와 편집·클립보드 회귀 |
+| macOS 데스크톱 1280px | FAIL: 실제 우클릭이 input 대신 루트를 대상으로 전달되어 contextmenu 취소. 변경 전 JS 호스트 정책으로 비교해도 같은 실패. 이번 iOS 변경에서 데스크톱 경로는 수정하지 않음. |
+
+산출물은 `Doroti/artifacts/web-mobile-selection/`의 `iphone-native-final`,
+`ipad-native-final`, `android-regression`, `desktop-diagnostic`,
+`desktop-before-host-policy`에 있다. 각 폴더에 제공 자산 hash와 이벤트 결과를 보관한다.
+변경 전 호스트 정책 비교 후 배포 JS는 최종 수정본으로 복구했다.
+초기 iPhone 검증 2회는 입력 영역 대신 장식을 터치해 실패했으며,
+runner를 실제 DOM 입력 좌표와 Framework 장식 좌표로 분리한 뒤 통과했다.
+데스크톱 역시 실제 DOM 좌표로 보정했지만 위의 우클릭 차단은 계속 재현됐다.
+실제 iPhone/iPad Safari·Chrome의 OS 메뉴·확대경 표시는 `notVerified`다.
+
+이어지는 기존 결과는 변경 전 정책과 당시 실행 환경의 이력이다.
+
+## 변경 전 검증 이력
+
 2026-09-22: **Release publish 및 Chromium 자동 검증 PASS**. 실제 Android/iOS,
 Safari/WebKit, 모바일 키보드/IME, TalkBack/VoiceOver는 `notVerified`.
 

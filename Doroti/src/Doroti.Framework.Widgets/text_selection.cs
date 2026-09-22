@@ -123,6 +123,13 @@ public static partial class Text_selectionLibrary
 
 public class TextSelectionOverlay
 {
+    // Editable text has a DOM input on Web. SelectableRegion uses SelectionOverlay
+    // directly and still needs its framework UI for canvas-only text.
+    private bool _usesNativeIosSelection =>
+        Foundation.ConstantsLibrary.kIsWeb
+        && PlatformLibrary.defaultTargetPlatform == TargetPlatform.iOS
+        && BrowserContextMenu.enabled;
+
     public virtual BuildContext context { get; private set; } = default!;
     public virtual RenderEditable renderObject { get; private set; } = default!;
     public virtual TextSelectionControls? selectionControls { get; private set; }
@@ -176,7 +183,9 @@ public class TextSelectionOverlay
         );
         _updateTextSelectionOverlayVisibilities();
         _selectionOverlay = new SelectionOverlay(
-            magnifierConfiguration: magnifierConfiguration,
+            magnifierConfiguration: _usesNativeIosSelection
+                ? TextMagnifierConfiguration.disabled
+                : magnifierConfiguration,
             context: context,
             debugRequiredFor: debugRequiredFor,
             startHandleType: TextSelectionHandleType.collapsed,
@@ -244,6 +253,10 @@ public class TextSelectionOverlay
 
     public virtual void showToolbar()
     {
+        if (_usesNativeIosSelection)
+        {
+            return;
+        }
         DartRuntimePrimitives.Assert(
             () =>
                 !Equals(
@@ -288,6 +301,10 @@ public class TextSelectionOverlay
 
     public virtual void showMagnifier(Offset positionToShow)
     {
+        if (_usesNativeIosSelection)
+        {
+            return;
+        }
         TextPosition position = DartRuntimePrimitives.ConvertValue<TextPosition>(
             renderObject.getPositionForPoint(positionToShow)
         );
@@ -842,6 +859,10 @@ public class TextSelectionOverlay
             return;
         }
         _dragStartSelection = null;
+        if (_usesNativeIosSelection)
+        {
+            return;
+        }
         bool draggingHandles =
             _selectionOverlay.isDraggingStartHandle || _selectionOverlay.isDraggingEndHandle;
         if (selectionControls is not TextSelectionHandleControls)

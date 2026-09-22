@@ -879,8 +879,8 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   commitDirectCanvasLogicalSize(host, logicalWidth, logicalHeight);
   hosts.set(hostId, host);
   const operatingSystem = browserOperatingSystem();
-  const mobileTextSelection = operatingSystem === "android" || operatingSystem === "iOS";
-  root.dataset.dorotiTextSelection = mobileTextSelection ? "framework" : "browser";
+  const frameworkTextSelection = operatingSystem === "android";
+  root.dataset.dorotiTextSelection = frameworkTextSelection ? "framework" : "browser";
   root.dataset.dorotiHostId = String(hostId);
   recordResize(host, "target-observed", "host-initial");
   const observe = (target: EventTarget, name: string, handler: EventListener): void => {
@@ -915,6 +915,11 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     return samples;
   };
   const pointer = (phase: number) => (event: PointerEvent): void => {
+    // Let WebKit own gestures on the active editable endpoint. Forwarding the
+    // same gesture also runs Doroti's caret/long-press selection recognizers.
+    // A gesture captured on the canvas still completes through the framework.
+    if (operatingSystem === "iOS" && host.contextMenuEnabled &&
+        event.target === input && !root.hasPointerCapture(event.pointerId)) return;
     event.preventDefault();
     if (phase === 1) {
       const semanticTextField = semanticsTextFieldAtPoint(host, event.clientX, event.clientY);
@@ -963,12 +968,12 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     const nativeTextInput = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement;
     // Canvas pixels and non-editable semantics belong to framework widgets,
     // so the browser's page/image menu has no useful target here. Preserve
-    // native desktop text editing menus and the explicit BrowserContextMenu
-    // switch. Mobile uses the framework toolbar, including on the IME endpoint.
+    // native iOS/desktop text editing menus and the explicit BrowserContextMenu
+    // switch. Android uses the framework toolbar, including on the IME endpoint.
     const frameworkSurface = target === root || target instanceof HTMLCanvasElement ||
       (target instanceof Node && semantics.contains(target) && !nativeTextInput);
     const frameworkEditable = nativeTextInput && (target === input || semantics.contains(target as Node));
-    if (!host.contextMenuEnabled || frameworkSurface || (mobileTextSelection && frameworkEditable)) event.preventDefault();
+    if (!host.contextMenuEnabled || frameworkSurface || (frameworkTextSelection && frameworkEditable)) event.preventDefault();
   });
   observe(root, "wheel", (event) => {
     const wheel = event as WheelEvent;

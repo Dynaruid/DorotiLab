@@ -83,6 +83,8 @@ try {
   await cdp('Runtime.enable', {}, page);
   await cdp('Page.enable', {}, page);
   const mobile = profile !== 'desktop';
+  const frameworkSelection = profile === 'android';
+  const nativeIosSelection = profile === 'iphone' || profile === 'ipad';
   const devices = {
     android: {userAgent:'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Mobile Safari/537.36', platform:'Linux armv8l'},
     iphone: {userAgent:'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1', platform:'iPhone'},
@@ -127,7 +129,7 @@ try {
   };
   await save('environment', {version,profile,backend,ua:await evaluate('navigator.userAgent')});
   const policy = await evaluate(`document.querySelector('.doroti-root').dataset.dorotiTextSelection`);
-  check(policy === (mobile ? 'framework' : 'browser'), 'correct mobile/desktop selection owner');
+  check(policy === (frameworkSelection ? 'framework' : 'browser'), 'correct mobile/desktop selection owner');
   let textbox;
   for (let i = 0; i < 30; i++) {
     textbox = (await dom()).find(n => n.role === 'textbox' && /Filled|Outlined/.test(n.label ?? '') && n.rect[1] >= 60 && n.rect[1] + n.rect[3] < 800 && n.rect[2] > 0);
@@ -158,22 +160,32 @@ try {
   const accessibility = await cdp('Accessibility.getFullAXTree', {}, page);
   check(accessibility.nodes.some(n=>!n.ignored && n.role?.value==='textbox'), 'browser accessibility tree contains an exposed textbox');
   const menuPrevented = await evaluate(`(()=>{const e=new MouseEvent('contextmenu',{bubbles:true,cancelable:true});document.querySelector('#doroti-ime').dispatchEvent(e);return e.defaultPrevented})()`);
-  check(menuPrevented === mobile, 'native context menu ownership');
-  if (mobile) {
-    // A long press through browser input must reach the real gesture recognizer
-    // and create a rendered toolbar, not just pass a policy unit test.
+  check(menuPrevented === frameworkSelection, 'native context menu ownership');
+  if (nativeIosSelection) {
+    // The decoration can extend beyond the DOM editable. Exercise a framework
+    // gesture there as well, so the toolbar guard is tested independently.
+    await tap(x+24,y+h/2,850);
+    check(!(await dom()).some(n => n.role==='button' && /^(Copy|Cut|Paste|Select All)$/i.test(n.label ?? n.text ?? '')), 'iOS framework gesture does not add a toolbar');
+    await evaluate(`document.addEventListener('pointerdown',e=>window.__selectionPointer={trusted:e.isTrusted,prevented:e.defaultPrevented,target:e.target.id})`);
+    const editableRect = await evaluate(`document.querySelector('#doroti-ime').getBoundingClientRect().toJSON()`);
+    await tap(editableRect.x + Math.min(24, editableRect.width/2), editableRect.y + editableRect.height/2, 850);
+    await save('native-gesture', await evaluate(`({pointer:window.__selectionPointer,active:document.activeElement?.id,inputRect:document.querySelector('#doroti-ime').getBoundingClientRect().toJSON()})`));
+    check(await evaluate(`window.__selectionPointer?.trusted && !window.__selectionPointer.prevented && window.__selectionPointer.target==='doroti-ime'`), 'iOS editable gesture remains browser-owned');
+    check(!(await dom()).some(n => n.role==='button' && /^(Copy|Cut|Paste|Select All)$/i.test(n.label ?? n.text ?? '')), 'iOS long press does not add a framework toolbar');
+    // Chromium emulation cannot show UIKit UI. Exercise the native endpoint's
+    // selection/edit events and verify the managed semantics acknowledge them.
+    await evaluate(`document.querySelector('#doroti-ime').setSelectionRange(0,6)`);
+    await wait(450);
+    check(await evaluate(`Array.from(document.querySelectorAll('[role=textbox]')).some(e=>e.value==='mobile selection' && e.selectionStart===0 && e.selectionEnd===6)`), 'native selection propagates to framework semantics');
+    await cdp('Input.insertText', {text:'native'}, page);
+    await wait(450);
+    check(await evaluate(`document.querySelector('#doroti-ime').value==='native selection' && Array.from(document.querySelectorAll('[role=textbox]')).some(e=>e.value==='native selection')`), 'native replacement updates text and semantics');
+    await shot('native-ios-selection');
+  } else if (frameworkSelection) {
+    // A long press must reach Android's framework selection recognizer.
     await tap(x+24,y+h/2,850);
     await save('toolbar-dom', await dom());
     await shot('toolbar');
-    if (profile === 'iphone' || profile === 'ipad') {
-      // Flutter's focused iOS long press positions the caret; Select All opens
-      // the non-collapsed selection toolbar. Android selects a word directly.
-      const all = (await dom()).find(n => n.role==='button' && /^Select All$/i.test(n.label ?? n.text ?? ''));
-      check(!!all, 'focused iOS long press displays rendered Select All');
-      await tap(all.rect[0]+all.rect[2]/2,all.rect[1]+all.rect[3]/2);
-      await save('selected-toolbar-dom',await dom());
-      await shot('selected-toolbar');
-    }
     const copy = (await dom()).find(n => n.role==='button' && /^(Copy|COPY)$/.test(n.label ?? n.text ?? ''));
     const cut = (await dom()).find(n => n.role==='button' && /^(Cut|CUT)$/.test(n.label ?? n.text ?? ''));
     check(!!copy && !!cut, 'selected text displays rendered Copy and Cut buttons');
@@ -197,10 +209,13 @@ try {
     check(await evaluate(`document.querySelector('#doroti-ime').value`) === pasted, 'rendered Paste replaces the selected text');
     await shot('after-paste');
   } else {
-    await evaluate(`document.addEventListener('contextmenu',e=>window.__selectionMenu={trusted:e.isTrusted,prevented:e.defaultPrevented})`);
-    await cdp('Input.dispatchMouseEvent', {type:'mousePressed',x:x+24,y:y+h/2,button:'right',buttons:2,clickCount:1}, page);
-    await cdp('Input.dispatchMouseEvent', {type:'mouseReleased',x:x+24,y:y+h/2,button:'right',buttons:0,clickCount:1}, page);
+    await evaluate(`document.addEventListener('contextmenu',e=>window.__selectionMenu={trusted:e.isTrusted,prevented:e.defaultPrevented,target:e.target.id})`);
+    const editableRect = await evaluate(`document.querySelector('#doroti-ime').getBoundingClientRect().toJSON()`);
+    const menuPoint = {x:editableRect.x + Math.min(24, editableRect.width/2),y:editableRect.y + editableRect.height/2};
+    await cdp('Input.dispatchMouseEvent', {type:'mousePressed',...menuPoint,button:'right',buttons:2,clickCount:1}, page);
+    await cdp('Input.dispatchMouseEvent', {type:'mouseReleased',...menuPoint,button:'right',buttons:0,clickCount:1}, page);
     await wait(400);
+    await save('desktop-context-menu', await evaluate(`({menu:window.__selectionMenu,active:document.activeElement?.id,inputRect:document.querySelector('#doroti-ime').getBoundingClientRect().toJSON()})`));
     check(await evaluate('window.__selectionMenu?.trusted && !window.__selectionMenu.prevented'), 'trusted desktop right click retains native menu');
     check(!(await dom()).some(n => n.role==='button' && /^(Copy|COPY|Cut|CUT)$/.test(n.label ?? n.text ?? '')), 'desktop does not add a framework toolbar');
     await shot('desktop');
