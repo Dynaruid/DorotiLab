@@ -1,9 +1,12 @@
+import { selectRendererPolicy } from "./doroti.web.policy.js";
+import type { RendererPolicy } from "./doroti.web.policy.js";
 export type DorotiBootstrapStage = "before-start" | "starting" | "started" | "failed";
 
 export interface DorotiBootstrapContext {
   stage: DorotiBootstrapStage;
   /** Main-owned threaded runtime with a JS-affine render Worker. */
   runtimeLocation?: "main" | "worker";
+  rendererPolicy?: RendererPolicy;
   rendererMode?: "worker-direct-webgl" | "worker-direct-webgpu";
 }
 
@@ -30,10 +33,11 @@ async function runStart(options: DorotiBootstrapOptions): Promise<DorotiBootstra
     notifyStage("before-start", context, options);
 
     notifyStage("starting", context, options);
-    context.rendererMode = selectRendererMode();
+    context.rendererPolicy = selectRendererPolicy(globalThis.location.search, navigator);
+    context.rendererMode = context.rendererPolicy.selected;
     document.documentElement.dataset.dorotiRenderer = context.rendererMode;
     const module = await import("./doroti.web.js");
-    await module.startDorotiWorkerHost(context.rendererMode, context.runtimeLocation);
+    await module.startDorotiWorkerHost(context.rendererMode, context.runtimeLocation, context.rendererPolicy);
     notifyStage("started", context, options);
     return context;
   } catch (error: unknown) {
@@ -51,15 +55,6 @@ async function runStart(options: DorotiBootstrapOptions): Promise<DorotiBootstra
     console.error("Doroti Web bootstrap failed.", error);
     throw error;
   }
-}
-
-function selectRendererMode(): "worker-direct-webgl" | "worker-direct-webgpu" {
-  const value = new URLSearchParams(globalThis.location.search).get("dorotiRenderer");
-  if (value === "worker-direct-webgpu" ||
-      value === "worker-direct-webgl")
-    return value;
-  // An omitted, auto, or unrecognized selection uses the product default.
-  return "worker-direct-webgpu";
 }
 
 function notifyStage(

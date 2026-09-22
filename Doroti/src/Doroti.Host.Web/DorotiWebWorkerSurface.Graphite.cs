@@ -40,7 +40,8 @@ public static partial class DorotiWebWorkerSurface
                     WgpuInstance = handles.GetPropertyAsInt32("instance"),
                     WgpuDevice = handles.GetPropertyAsInt32("device"),
                     WgpuQueue = handles.GetPropertyAsInt32("queue"),
-                }
+                },
+                new SKGraphiteContextOptions { GpuBudgetInBytes = ResourceCacheBytes }
             ) ?? throw new InvalidOperationException("Skia Dawn context creation failed.");
         _graphiteContext.MaxBudgetedBytes = ResourceCacheBytes;
         _graphiteImages = new SKGraphiteImageCache();
@@ -117,7 +118,7 @@ public static partial class DorotiWebWorkerSurface
                 dpr,
                 timestamp
             );
-            // The current texture has grow-only capacity, while layout and
+            // The current texture has owner-managed capacity, while layout and
             // raster scale use the exact viewport. Clear unused pixels as
             // WebGPU current textures do not retain the previous frame.
             surface.Canvas.Clear(SKColors.Transparent);

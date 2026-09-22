@@ -1,0 +1,1 @@
+<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType></PropertyGroup><ItemGroup><ProjectReference Include="../../../src/Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj" /></ItemGroup></Project>

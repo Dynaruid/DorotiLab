@@ -1,3 +1,5 @@
+import { CanvasCapacityPolicy, applyCanvasCapacity } from "./doroti.web.policy.js";
+import type { RendererPolicy } from "./doroti.web.policy.js";
 import { FrameCostBuffer } from "./doroti.frame-cost.js";
 import { validateViewEnvironment } from "./doroti.web.protocol.js";
 import type { Insets, BrowserDisplayFeature } from "./doroti.web.environment.js";
@@ -30,6 +32,13 @@ const inboundKinds = new Set([
 const runtimeState = new DorotiRuntimeStateMachine();
 let diagnosticsEnabled = false;
 let frameCost: FrameCostBuffer | undefined;
+let rendererPolicy: RendererPolicy;
+let capacityPolicy = new CanvasCapacityPolicy(false);
+let capacityWake: ReturnType<typeof setTimeout> | undefined;
+let backingReallocations = 0;
+let gpuCleanupTimer: ReturnType<typeof setTimeout> | undefined;
+let lastRasterActivity = 0;
+let backingTransitionColorBytesEstimate = 0;
 
 interface ResizeEpoch {
   generation: number;
@@ -67,6 +76,8 @@ interface HostSnapshot {
 }
 
 interface SurfaceExports extends textures.TextureSurface {
+  ConfigureMemoryProfile(mobile: boolean, webgpu: boolean): void;
+  TrimUnusedGpuResources(): void;
   InitializeBrowserTextures(url: string): Promise<void>;
   CaptureDiagnostics(): string;
   CaptureCostDiagnostics(): string;
@@ -503,8 +514,25 @@ async function drain(value: WorkerPresenter): Promise<void> {
     }
   } finally {
     value.draining = false;
+    lastRasterActivity = performance.now();
+    scheduleGpuCleanup();
     if (!value.current && !value.contextLost && value.latest) scheduleDrain();
   }
+}
+
+function scheduleGpuCleanup(): void {
+  if (gpuCleanupTimer !== undefined || runtimeState.state !== "ready") return;
+  const delay = Math.max(1, 5000 - (performance.now() - lastRasterActivity));
+  gpuCleanupTimer = setTimeout(() => {
+    gpuCleanupTimer = undefined;
+    if (runtimeState.state !== "ready" || presenter?.contextLost) return;
+    if (presenter?.current || presenter?.latest) { lastRasterActivity = performance.now(); }
+    if (performance.now() - lastRasterActivity < 5000) {
+      scheduleGpuCleanup(); return;
+    }
+    try { surface?.TrimUnusedGpuResources(); }
+    catch (error) { post("fatal", { error: `GPU cache cleanup failed: ${String(error)}` }); }
+  }, delay);
 }
 
 async function render(value: WorkerPresenter, request: PresentRequest): Promise<void> {
@@ -516,6 +544,21 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
         latestAdmissionGeneration !== request.generation) {
       terminal(request, "superseded", "worker target changed before raster");
       return;
+    }
+    if (capacityWake !== undefined) { clearTimeout(capacityWake); capacityWake = undefined; }
+    const capacity = capacityPolicy.next(request.physicalWidth, request.physicalHeight,
+      value.canvas.width, value.canvas.height, performance.now());
+    const capacityChanged = capacity.width !== value.canvas.width || capacity.height !== value.canvas.height;
+    if (capacity.wakeAfter > 0) capacityWake = setTimeout(() => {
+      capacityWake = undefined;
+      if (snapshot?.visible) requestPresent(snapshot.resizeEpoch);
+    }, capacity.wakeAfter);
+    if (capacityChanged) {
+      backingTransitionColorBytesEstimate = 4 * (value.canvas.width * value.canvas.height + capacity.width * capacity.height);
+      applyCanvasCapacity(value.canvas, capacity.width, capacity.height);
+      backingReallocations++;
+      value.frontPhysicalWidth = 0;
+      value.frontPhysicalHeight = 0;
     }
     if (webgpu) {
       const started = performance.now();
@@ -536,6 +579,10 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
         terminal(request, "superseded", "DOM placement superseded before ACK");
         return;
       }
+      if (capacityChanged) {
+        snapshot = { ...snapshot, surfaceGeneration: snapshot.surfaceGeneration + 1 };
+        dispatchWorkerSnapshot(hostId, JSON.stringify(snapshot));
+      }
       value.frontGeneration = request.generation;
       value.frontPhysicalWidth = request.physicalWidth;
       value.frontPhysicalHeight = request.physicalHeight;
@@ -553,16 +600,6 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
         contextGeneration: 1, rasterWidth: request.physicalWidth, rasterHeight: request.physicalHeight,
         displayWidth: value.canvas.width, displayHeight: value.canvas.height });
       return;
-    }
-    const capacityChanged =
-      (value.canvas.width < request.physicalWidth || value.canvas.height < request.physicalHeight);
-    if (capacityChanged) {
-      value.canvas.width = Math.max(
-        request.physicalWidth, Math.ceil(value.canvas.width * 1.5));
-      value.canvas.height = Math.max(
-        request.physicalHeight, Math.ceil(value.canvas.height * 1.5));
-      value.frontPhysicalWidth = 0;
-      value.frontPhysicalHeight = 0;
     }
     const gl = currentGl(value);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -727,6 +764,10 @@ function handleHostMessage(event: MessageEvent): void {
       runtimeState.transition("booting");
       diagnosticsEnabled = Boolean(message.resizeDiagnostics);
       if (message.frameCost) frameCost = new FrameCostBuffer();
+      rendererPolicy = message.policy as RendererPolicy;
+      if (!rendererPolicy || rendererPolicy.selected !== message.mode)
+        throw new Error("Doroti renderer policy must match the selected Worker backend.");
+      capacityPolicy = new CanvasCapacityPolicy(rendererPolicy.memoryProfile === "mobile");
       snapshot = message.snapshot as HostSnapshot;
       latestAdmissionGeneration = snapshot.resizeEpoch.generation;
       latestMailboxGeneration = snapshot.resizeEpoch.generation;
@@ -786,6 +827,8 @@ function handleHostMessage(event: MessageEvent): void {
       else ensurePresenter().extension?.restoreContext();
       break;
     case "dispose":
+      if (gpuCleanupTimer !== undefined) { clearTimeout(gpuCleanupTimer); gpuCleanupTimer = undefined; }
+      if (capacityWake !== undefined) { clearTimeout(capacityWake); capacityWake = undefined; }
       // pagehide and a terminal host failure can both request owner shutdown.
       // A runtime-owned pthread may still drain already queued port messages.
       if (runtimeState.state === "disposing" || runtimeState.state === "disposed") return;
@@ -871,6 +914,7 @@ async function startManagedRuntime(): Promise<void> {
         BrowserManagedRenderThread: { CaptureThreadId(): number } } } };
     };
     surface = hostExports.Doroti.Host.Web.DorotiWebWorkerSurface;
+    surface.ConfigureMemoryProfile(rendererPolicy.memoryProfile === "mobile", workerMode === "worker-direct-webgpu");
     captureManagedTimers = hostExports.Doroti.Host.Web.BrowserTimeProvider.CaptureDiagnostics;
     if (workerMode === "worker-direct-webgpu") {
       if (!managedPort || !transferredCanvas) throw new Error("WebGPU requires the main-owned shared runtime and a transferred canvas.");
@@ -900,6 +944,12 @@ async function startManagedRuntime(): Promise<void> {
           const started = performance.timeOrigin + performance.now();
           const managed = JSON.parse(surface!.CaptureCostDiagnostics());
           return { started, ended: performance.timeOrigin + performance.now(), managed,
+            policy: rendererPolicy, webgpu: webgpu?.diagnostics() ?? null, textures: textures.diagnostics(),
+            backing: { width: transferredCanvas?.width, height: transferredCanvas?.height,
+              requiredWidth: snapshot?.resizeEpoch.physicalWidth, requiredHeight: snapshot?.resizeEpoch.physicalHeight,
+              colorBytesEstimate: (transferredCanvas?.width ?? 0) * (transferredCanvas?.height ?? 0) * 4,
+              transitionColorBytesEstimate: backingTransitionColorBytesEstimate, reallocations: backingReallocations,
+              surfaceGeneration: snapshot?.surfaceGeneration },
             wasmBytes: (runtime as unknown as { localHeapViewU8(): Uint8Array }).localHeapViewU8().byteLength };
         },
       },

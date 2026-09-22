@@ -110,5 +110,26 @@ public sealed record SkiaWorkDiagnostics(
     long CommandRecordings = 0,
     int CommandEntries = 0,
     int RetainedCommands = 0,
-    long CommandBytes = 0
+    long CommandBytes = 0,
+    long TextCacheHits = 0,
+    long TextCacheMisses = 0,
+    long TextCacheEvictions = 0,
+    long FontGeneration = 0,
+    int TextEntryLimit = 256,
+    long RasterPixelLimit = 16L * 1024 * 1024
+);
+
+/// <summary>Cache ownership accounting; byte estimates are not GPU/process resident memory.</summary>
+public sealed record SkiaCacheMemoryDiagnostics(
+    int TextEntries,
+    int TextEntryLimit,
+    int TextFontResources,
+    long TextBytesEstimate,
+    long TextHits,
+    long TextMisses,
+    long TextEvictions,
+    long FontGeneration,
+    int RasterEntries,
+    long RasterRgba8Bytes,
+    long RasterRgba8Limit
 );

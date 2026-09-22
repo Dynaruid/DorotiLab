@@ -4,7 +4,7 @@
 - 검토 기준: `18320304` 작업 트리의 현재 소스
 - 상태: **PARTIAL — 계측·일반 화면 실측·후보 A/B 및 회귀 수행, 전체 성능 목표 미달**
 - 실행 결과: [2026-09-22 실측 보고서](Doroti/validation/web-frame-cost/results-2026-09-22.md), [재현 방법](Doroti/validation/web-frame-cost/README.md)
-- 추가 계획: [8. iPhone 탭 종료 대응과 Web 메모리 관리](#8-iphone-탭-종료-대응과-web-메모리-관리) — 사용자 WebGPU/WebGL 비교 결과 반영, 구현 미착수.
+- 추가 계획: [8. iPhone 탭 종료 대응과 Web 메모리 관리](#8-iphone-탭-종료-대응과-web-메모리-관리) — 구현·로컬 검증 결과 반영. 실기기 종료 해결·WebGPU 지연 기준은 PARTIAL.
 
 ## 1. 목표와 범위
 
@@ -237,8 +237,9 @@ Framework·layout·Skia 제출은 같은 render owner를 사용한다. Worker는
 ## 8. iPhone 탭 종료 대응과 Web 메모리 관리
 
 - 추가일: 2026-09-22
-- 상태: **계획 작성 완료 / M0~M5 구현·기기 검증 미착수**
-- 이번 요청의 산출물은 이 작업계획 추가다. 제품 코드·패키지·runtime 설정 변경, build/publish/benchmark는 실행하지 않는다.
+- 상태: **PARTIAL — 구현·로컬 검증 수행, 실기기 종료 해결 및 WebGPU 지연 기준 미충족**
+- 실행 기록: [Web 메모리 검증](Doroti/validation/web-memory/README.md), [2026-09-22 결과](Doroti/validation/web-memory/results-2026-09-22.md)
+- 최초 추가 요청은 계획 작성만을 대상으로 했다. 이후 사용자의 `work.md의 추가작업 전체 해줘` 요청에 따라 제품 코드 수정·Release publish·계약·브라우저 검증을 실행한다. 계획 당시의 실행 금지 문구를 현재 요청의 제한으로 해석하지 않는다.
 - 기존 P0~P5의 PARTIAL 및 미검증 경계는 유지한다. 이번 단계는 **탭 종료 방지와 메모리 상한·자원 회수**를 별도 목표로 삼는다.
 
 ### 8.1 확인한 현상과 근거의 범위
@@ -264,7 +265,7 @@ WebGL 대조 결과는 **WebGPU 경로를 우선 조사할 근거**다. 공용 �
 - 강제 GC 반복, WASM maximum memory 축소, 자동 reload 반복을 해결책으로 채택하지 않는다. runtime/AOT·도구체인 교체는 이번 범위 밖이다.
 - 현재 WebGPU queue의 in-flight 제한과 texture handle의 release 경로를 기준선으로 삼는다. 무제한 queue나 image cache 누수를 조사 없이 가정하지 않는다.
 
-### M0. 동일 조건의 backend 비교와 메모리 기준선 — TODO
+### M0. 동일 조건의 backend 비교와 메모리 기준선 — PARTIAL
 
 1. iPhone 12의 정확한 iOS 26.x/build, Chrome 버전, URL, 실행 자산 hash, viewport/DPR, 화면 방향, 종료 전 동작·소요 시간, 재로드/오류 문구를 기록한다. 사용자 기존 관측은 `userObserved`로 보존한다.
 2. 동일 Release 자산·입력·진단 OFF 조건에서 기본 WebGPU와 명시적 WebGL을 비교한다. 처음부터 두 경로의 시작 화면·GPU 초기화 성공·실제 선택 backend를 확인한다. 기기 재종료는 필요한 최소 재현만 수행한다.
@@ -274,7 +275,7 @@ WebGL 대조 결과는 **WebGPU 경로를 우선 조사할 근거**다. 공용 �
 
 완료 기준: 최소 재현 절차와 동일 workload의 비교 가능 여부, 실제 backend, 사용 가능한 메모리 지표·종료 분류가 고정되어 있다. 기기 연결이 없으면 desktop 결과로 실제 iPhone 종료 해결을 대신하지 않는다.
 
-### M1. iOS WebKit의 시작 backend 안정화 — TODO
+### M1. iOS WebKit의 시작 backend 안정화 — PARTIAL — 선택 구현·계약 완료 / 실기기 미확인
 
 대상: `doroti.loader.ts`, `doroti.web.ts`의 중복 선택 경로와 bootstrap/diagnostics 계약.
 
@@ -286,7 +287,7 @@ WebGL 대조 결과는 **WebGPU 경로를 우선 조사할 근거**다. 공용 �
 
 완료 기준: iOS 기본 진입의 backend가 일관되며 실기기에서 정해진 관찰 구간의 종료가 재발하지 않는다. 이는 `mitigated`이며 **WebGPU 자체 해결**로 기록하지 않는다.
 
-### M2. 텍스트 렌더 자원의 보유 상한과 수명 — TODO
+### M2. 텍스트 렌더 자원의 보유 상한과 수명 — PASS — 구현·native 수명/픽셀 계약
 
 대상: `SkiaSceneRenderer.GetTextRenderResources`, `TextRenderResources`, font 등록·cache clear·renderer dispose 경로.
 
@@ -298,7 +299,7 @@ WebGL 대조 결과는 **WebGPU 경로를 우선 조사할 근거**다. 공용 �
 
 완료 기준: 살아 있는 렌더 자원의 상한과 퇴출·재사용 계약이 검증되고, 반복 theme/스타일 변경 뒤 보유량이 계속 증가하지 않는다.
 
-### M3. Web GPU 캐시 예산과 회수 정책 — TODO
+### M3. Web GPU 캐시 예산과 회수 정책 — PARTIAL — WebGL 예산 채택 / WebGPU 작은 예산 기각
 
 대상: `DorotiWebWorkerSurface.cs`, `.Graphite.cs`, `SkiaSceneRenderer`의 raster cache·GPU 자원 소유 경로.
 
@@ -310,7 +311,7 @@ WebGL 대조 결과는 **WebGPU 경로를 우선 조사할 근거**다. 공용 �
 
 완료 기준: 선택한 예산과 실제 관측값을 설명할 수 있고, 반복 작업·idle 뒤 cache/native 자원이 수렴하며 수명·화질·프레임 비용 회귀가 없다.
 
-### M4. 과대 backing 할당과 grow-only 정책 개선 — TODO
+### M4. 과대 backing 할당과 grow-only 정책 개선 — PARTIAL — 구현·브라우저 계약 완료 / 실기기 미확인
 
 대상: `configureDirectCanvasCapacity`, `doroti.raster.worker.ts`, `doroti.webgpu.ts`, resize generation/commit 경로.
 
@@ -322,7 +323,7 @@ WebGL 대조 결과는 **WebGPU 경로를 우선 조사할 근거**다. 공용 �
 
 완료 기준: 정해진 초과 면적 한도와 shrink 정책을 만족하고, 기존 DPR/픽셀 결과 및 resize·입력·native view 연속성이 유지된다.
 
-### M5. 통합 검증·채택·기록 — TODO
+### M5. 통합 검증·채택·기록 — PARTIAL
 
 | workload | 확인할 내용 |
 | --- | --- |
@@ -345,11 +346,21 @@ WebGL 대조 결과는 **WebGPU 경로를 우선 조사할 근거**다. 공용 �
 
 | 단계 | 상태 | 종료 시 기록할 결과 |
 | --- | --- | --- |
-| M0 기기·backend·메모리 기준선 | TODO | userObserved와 실행 증거, 비교 가능성·종료 원인 분류 |
-| M1 iOS 기본 WebGL 선택 | TODO | 선택 계약·기기 관찰, 완화 여부 `mitigated` |
-| M2 텍스트 자원 제한 | TODO | 상한·퇴출·수명·glyph/측정 결과 및 메모리 변화 |
-| M3 GPU 예산·회수 | TODO | 설정과 실제 bytes, peak/steady-state 및 비용 변화 |
-| M4 backing 여유·축소 | TODO | 실제 크기·초과율·회수·resize/IME 연속성 |
-| M5 통합·기기 검증 | TODO | backend별 PASS/PARTIAL/notVerified, 최종 자산·남은 원인 |
+| M0 기기·backend·메모리 기준선 | PARTIAL | 연결 기기 iOS/Chrome 및 desktop 비교 확보. 기존 URL/자산·실제 종료 원인은 미확인. |
+| M1 iOS 기본 WebGL 선택 | PARTIAL | 중앙 선택·override·미지원 계약 통과. 실제 iPhone의 `mitigated` 판정은 notVerified. |
+| M2 텍스트 자원 제한 | PASS | 256-entry LRU, 초과 스타일 반복·퇴출·font 등록·SKPicture 수명·glyph/측정/픽셀 계약 통과. |
+| M3 GPU 예산·회수 | PARTIAL | 모바일 WebGL 64MiB native/16MiB raster 및 사전 예약·현재 프레임 보호. WebGPU 작은 예산은 기각하고 기존 값 유지. 유휴 회수 적용. |
+| M4 backing 여유·축소 | PARTIAL | mobile exact backing, 1초 안정/2초 간격/25% 초과 축소, 회전 중간 면적 제한. desktop 실행·WebView DPR/resize identity 통과. 실제 IME/주소창 연속성은 미확인. |
+| M5 통합·기기 검증 | PARTIAL | Release publish, native/정책 계약, 입력·양 backend Texture 픽셀/수명, WebView 계약 및 진단 OFF 기본 경로 10분 관찰 수행. 실제 iPhone 및 WebGPU 지연 5% gate 미충족. |
 
 전체 판정에서는 **기본 경로 안정화**, **공용 메모리 관리 개선**, **WebGPU 원인 해결**을 각각 기록한다. WebGL에서 재발하지 않는다는 결과만으로 세 항목을 모두 완료 처리하지 않는다.
+
+
+### 2026-09-22 추가작업 실행 판단
+
+- [추가작업 결과 보고서](Doroti/validation/web-memory/results-2026-09-22.md)에 채택·기각 후보, 실패한 검증 준비, source/asset hash 및 재현 절차를 기록했다.
+- 낮은 raster 예산만 적용한 후보는 promotion 급증으로 기각했다. 큰 단일 항목의 점유와 현재 프레임의 퇴출을 제한한 정책을 남겼다.
+- WebGPU의 64MiB native/16MiB raster 후보는 일관된 지연·사용량 개선을 입증하지 못해 기존 예산으로 복구했다. WebGPU 문제 해결을 선언하지 않는다.
+- 초기 계획의 desktop·자동화 결과를 실제 iPhone 증거로 대체하지 않는 기준을 유지한다. 실제 종료 URL·동일 자산·기기 foreground 관찰 및 최종 WebGPU 성능 gate는 남은 작업이다.
+
+- 최종 자동 선택 기본 경로의 desktop iPhone-UA 관찰: 진단 OFF, 이미지 구간 왕복·theme/탭 전환 41회 / 606.553초, 오류·탭 종료 없음. 실패한 fixture 준비 2건을 포함해 browser 예산 30/30회 사용. 실제 iPhone의 성공으로 대체하지 않는다.

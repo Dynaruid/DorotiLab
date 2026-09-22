@@ -22,7 +22,8 @@ public sealed partial class SkiaSceneRenderer
     private const int PictureRasterComplexityThreshold = 8;
     private const int MaxImageFilterResources = 64;
     private const int MaxPictureRasterCacheEntries = 24;
-    private const long MaxPictureRasterPixels = 16L * 1024 * 1024;
+    private readonly long _maxPictureRasterPixels;
+    private const int MaxTextRenderEntries = 256;
     private const long MaxCacheablePicturePixels = 4L * 1024 * 1024;
     private const int MaxPictureRasterWarmups = 128;
     private const long PictureWarmupLifetimeFrames = 120;
@@ -42,6 +43,11 @@ public sealed partial class SkiaSceneRenderer
     private readonly object _gate = new();
     private readonly object _paintGate = new();
     private readonly Dictionary<TextRenderKey, TextRenderResources> _textRenderResources = [];
+    private readonly LinkedList<TextRenderKey> _textRenderOrder = new();
+    private long _textCacheHits,
+        _textCacheMisses,
+        _textCacheEvictions;
+    private long _fontGeneration;
     private readonly Dictionary<int, SemanticsNodeUpdate> _semantics = [];
     private readonly Dictionary<object, PictureRasterCacheEntry> _pictureRasterCache = new(
         ReferenceEqualityComparer.Instance
@@ -98,9 +104,12 @@ public sealed partial class SkiaSceneRenderer
         string runtimeEffectBackend,
         string diagnosticsBackend,
         bool enablePictureRasterCache = true,
-        SkiaFallbackFontCollection? fallbackFonts = null
+        SkiaFallbackFontCollection? fallbackFonts = null,
+        long pictureRasterCachePixels = 16L * 1024 * 1024
     )
     {
+        ArgumentOutOfRangeException.ThrowIfNegative(pictureRasterCachePixels);
+        _maxPictureRasterPixels = pictureRasterCachePixels;
         _viewId = viewId;
         _host = host;
         _textureOwnerContext = SynchronizationContext.Current;
@@ -191,10 +200,36 @@ public sealed partial class SkiaSceneRenderer
                         _pictureCommandRecordings,
                         _pictureCommandCache.Count,
                         _pictureCommandCount,
-                        _pictureCommandBytes
+                        _pictureCommandBytes,
+                        _textCacheHits,
+                        _textCacheMisses,
+                        _textCacheEvictions,
+                        _fontGeneration,
+                        MaxTextRenderEntries,
+                        _maxPictureRasterPixels
                     )
                 );
             }
+        }
+    }
+
+    public SkiaCacheMemoryDiagnostics CaptureCacheMemory()
+    {
+        lock (_paintGate)
+        {
+            return new(
+                _textRenderResources.Count,
+                MaxTextRenderEntries,
+                _textRenderResources.Values.Sum(value => value.FontResources),
+                _textRenderResources.Values.Sum(value => value.EstimatedBytes),
+                _textCacheHits,
+                _textCacheMisses,
+                _textCacheEvictions,
+                _fontGeneration,
+                _pictureRasterCache.Count,
+                _pictureRasterPixels * 4,
+                _maxPictureRasterPixels * 4
+            );
         }
     }
 
@@ -1209,12 +1244,14 @@ public sealed partial class SkiaSceneRenderer
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
             _fallbackFonts.Register(bytes, family);
+            _fontGeneration++;
             foreach (var resources in _textRenderResources.Values)
             {
                 resources.Dispose();
             }
 
             _textRenderResources.Clear();
+            _textRenderOrder.Clear();
             ClearPictureRasterCache();
         }
         return ValueTask.CompletedTask;
@@ -1271,6 +1308,7 @@ public sealed partial class SkiaSceneRenderer
             }
 
             _textRenderResources.Clear();
+            _textRenderOrder.Clear();
             foreach (var filter in _imageFilterResources.Values)
             {
                 filter.Dispose();
@@ -1433,7 +1471,11 @@ public sealed partial class SkiaSceneRenderer
     {
         ArgumentNullException.ThrowIfNull(canvas);
         ArgumentNullException.ThrowIfNull(commands);
-        DrawScene(canvas, commands, pixelWidth, pixelHeight);
+        lock (_paintGate)
+        {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            DrawScene(canvas, commands, pixelWidth, pixelHeight);
+        }
     }
 
     private void DrawScene(
@@ -1999,7 +2041,12 @@ public sealed partial class SkiaSceneRenderer
         var width = checked((int)Math.Ceiling(rasterExtent.Width + phaseX));
         var height = checked((int)Math.Ceiling(rasterExtent.Height + phaseY));
         var pixels = (long)width * height;
-        if (pixels <= 0 || pixels > MaxCacheablePicturePixels)
+        // Keep one large picture from displacing the entire smaller working set.
+        // Desktop's 16M-pixel budget preserves the existing 4M per-picture cap.
+        if (
+            pixels <= 0
+            || pixels > Math.Min(MaxCacheablePicturePixels, _maxPictureRasterPixels / 4)
+        )
         {
             DrawRetainedPicture(canvas, payload);
             return;
@@ -2026,6 +2073,7 @@ public sealed partial class SkiaSceneRenderer
             )
             {
                 cached.LastUsedSequence = ++_pictureRasterUseSequence;
+                cached.LastUsedFrame = _rasterFrame;
                 DrawRasterImage(canvas, cached.Image, rasterLeft, rasterTop);
                 Interlocked.Increment(ref _pictureRasterCacheHits);
                 return;
@@ -2064,12 +2112,21 @@ public sealed partial class SkiaSceneRenderer
             || _framePromotions >= 2
             || _framePromotionPixels + pixels > MaxCacheablePicturePixels
             || _framePromotionMicroseconds >= PromotionBudgetMicroseconds
+            || pixels > _maxPictureRasterPixels
         )
         {
             DrawRetainedPicture(canvas, payload);
             return;
         }
 
+        // Reserve before allocating the offscreen surface. Native draw/recording
+        // retains its own image references; dropping our cache ref does not free
+        // a texture still used by a submitted recording.
+        if (!TrimPictureRasterCache(pixels, 1))
+        {
+            DrawRetainedPicture(canvas, payload);
+            return;
+        }
         var promotionStarted = DorotiFrameClock.Now;
         var info = new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul);
         using var surface =
@@ -2098,7 +2155,10 @@ public sealed partial class SkiaSceneRenderer
             signature,
             ++_pictureRasterUseSequence,
             SkiaGpuSurfaces.RecordingFor(canvas)
-        );
+        )
+        {
+            LastUsedFrame = _rasterFrame,
+        };
         _pictureRasterCache.Add(cacheKey, cached);
         Interlocked.Increment(ref _pictureRasterCacheEntries);
         _pictureRasterPixels += cached.Pixels;
@@ -2223,11 +2283,11 @@ public sealed partial class SkiaSceneRenderer
         return new SKSize(mapped.Width, mapped.Height);
     }
 
-    private void TrimPictureRasterCache()
+    private bool TrimPictureRasterCache(long incomingPixels = 0, int incomingEntries = 0)
     {
         while (
-            _pictureRasterCache.Count > MaxPictureRasterCacheEntries
-            || _pictureRasterPixels > MaxPictureRasterPixels
+            _pictureRasterCache.Count + incomingEntries > MaxPictureRasterCacheEntries
+            || _pictureRasterPixels + incomingPixels > _maxPictureRasterPixels
         )
         {
             // A frame can draw more pictures than the cache holds. Frame numbers
@@ -2240,8 +2300,13 @@ public sealed partial class SkiaSceneRenderer
                 break;
             }
 
+            // Preserve the current frame's working set. If it fills the budget,
+            // render a miss normally instead of churning images within a frame.
+            if (incomingEntries != 0 && oldest.Value.LastUsedFrame == _rasterFrame)
+                return false;
             RemovePictureRaster(oldest.Key, oldest.Value);
         }
+        return true;
     }
 
     private void RemovePictureRaster(object cacheKey, PictureRasterCacheEntry cached)
@@ -2318,6 +2383,7 @@ public sealed partial class SkiaSceneRenderer
         internal int Height { get; } = height;
         internal PictureRasterTransform Transform { get; } = transform;
         internal long LastUsedSequence { get; set; } = lastUsedSequence;
+        internal long LastUsedFrame { get; set; }
         internal long Pixels => (long)Width * Height;
     }
 
@@ -2343,9 +2409,25 @@ public sealed partial class SkiaSceneRenderer
         );
         if (_textRenderResources.TryGetValue(key, out var resources))
         {
+            _textCacheHits++;
+            _textRenderOrder.Remove(resources.Node!);
+            _textRenderOrder.AddLast(resources.Node!);
             return resources;
         }
 
+        // All callers hold _paintGate and finish using a resource before the
+        // next lookup. SKCanvas draw copies paint/font and retains native glyph
+        // data for pictures/recordings; no managed resource escapes this scope.
+        while (_textRenderResources.Count >= MaxTextRenderEntries)
+        {
+            var oldest = _textRenderOrder.First!;
+            var retired = _textRenderResources[oldest.Value];
+            _textRenderResources.Remove(oldest.Value);
+            _textRenderOrder.RemoveFirst();
+            retired.Dispose();
+            _textCacheEvictions++;
+        }
+        _textCacheMisses++;
         resources = new TextRenderResources(
             fontFamily,
             fontSize,
@@ -2354,6 +2436,7 @@ public sealed partial class SkiaSceneRenderer
             key,
             style?.fontFamilyFallback
         );
+        resources.Node = _textRenderOrder.AddLast(key);
         _textRenderResources.Add(key, resources);
         return resources;
     }
@@ -2476,6 +2559,13 @@ public sealed partial class SkiaSceneRenderer
 
     private sealed class TextRenderResources : IDisposable
     {
+        internal LinkedListNode<TextRenderKey>? Node;
+        internal int FontResources => 1 + _fallbackByFamily.Count;
+
+        // Accounting estimate of wrappers/maps only, excludes shared typeface
+        // data and Skia's native glyph caches. Never a resident-memory metric.
+        internal long EstimatedBytes =>
+            256L + FontResources * 256L + _fallbackByCodePoint.Count * 32L;
         private readonly TextFontResource _primary;
         private readonly SkiaFallbackFontCollection? _registeredFallbacks;
         private readonly float _letterSpacing,
@@ -2685,6 +2775,10 @@ public sealed partial class SkiaSceneRenderer
                 return cached;
             }
 
+            // Bound the lookup memo without disposing fonts referenced by the
+            // current text run. Owned fonts live until the outer entry retires.
+            if (_fallbackByCodePoint.Count >= 512)
+                _fallbackByCodePoint.Clear();
             var registeredTypeface = _registeredFallbacks?.MatchCharacter(codePoint);
             if (registeredTypeface is not null)
             {

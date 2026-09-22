@@ -13,7 +13,26 @@ namespace Doroti.Host.Web;
 [SupportedOSPlatform("browser")]
 public static partial class DorotiWebWorkerSurface
 {
-    private const int ResourceCacheBytes = 256 * 1024 * 1024;
+    private static int ResourceCacheBytes = 256 * 1024 * 1024;
+    internal static long PictureRasterCachePixels { get; private set; } = 16L * 1024 * 1024;
+    private static bool _mobileMemoryProfile;
+
+    [JSExport]
+    public static void ConfigureMemoryProfile(bool mobile, bool webgpu)
+    {
+        if (_initialized || _context is not null || _graphiteContext is not null)
+            throw new InvalidOperationException(
+                "Memory profile must be selected before renderer creation."
+            );
+        _mobileMemoryProfile = mobile;
+        // The 64MiB/16MiB mobile trial increased Graphite frame latency and
+        // did not bound its active native working set. Keep its established
+        // budgets until that backend has independent performance evidence.
+        var compact = mobile && !webgpu;
+        ResourceCacheBytes = (compact ? 64 : 256) * 1024 * 1024;
+        PictureRasterCachePixels = (compact ? 4L : 16L) * 1024 * 1024;
+    }
+
     private static IDorotiBrowserTarget? _target;
     private static ulong _viewId;
     private static GRGlInterface? _glInterface;
@@ -63,6 +82,24 @@ public static partial class DorotiWebWorkerSurface
             }
         );
 
+    private static object? CaptureGaneshMemory()
+    {
+        if (_context is null)
+            return null;
+        _context.GetResourceCacheUsage(out var count, out var bytes);
+        return new { resourceCount = count, budgetedBytes = bytes };
+    }
+
+    [JSExport]
+    public static void TrimUnusedGpuResources()
+    {
+        // Called between owner frames. Skia only purges resources whose native
+        // references are no longer in use; pending recordings/maps stay owned.
+        _graphiteContext?.CheckAsyncWorkCompletion();
+        _graphiteContext?.PerformDeferredCleanup(TimeSpan.FromSeconds(5));
+        _context?.PurgeUnusedResources(5000);
+    }
+
     private static long _costOwnerAllocated;
     private static long _costTotalAllocated;
 
@@ -89,6 +126,15 @@ public static partial class DorotiWebWorkerSurface
                 ownerAllocatedBytes,
                 totalAllocatedBytes,
                 managedHeapBytes = GC.GetTotalMemory(false),
+                memoryProfile = _mobileMemoryProfile ? "mobile" : "desktop",
+                nativeCacheBudgetBytes = ResourceCacheBytes,
+                graphiteContextBudgetedBytes = _graphiteContext?.CurrentBudgetedBytes,
+                graphiteContextLimitBytes = _graphiteContext?.MaxBudgetedBytes,
+                graphiteRecorderBudgetedBytes = "notMeasured: installed API does not expose recorder usage",
+                ganesh = CaptureGaneshMemory(),
+                cache = TextureRenderers.TryGetValue(_viewId, out var renderer)
+                    ? renderer.CaptureCacheMemory()
+                    : null,
                 gcCollections = new[]
                 {
                     GC.CollectionCount(0),

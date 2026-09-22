@@ -1,3 +1,5 @@
+import { selectRendererPolicy, initialCanvasCapacity } from "./doroti.web.policy.js";
+import type { RendererPolicy } from "./doroti.web.policy.js";
 import type { BrowserPlatformComposition, CompositionPacket, RasterPacket } from "./doroti.web.composition.js";
 import { BrowserViewEnvironment } from "./doroti.web.environment.js";
 import { attachTextureRegistry, texturesForCanvas } from "./doroti.web.textures.js";
@@ -126,14 +128,6 @@ interface ResizeTraceEntry {
   queueDepth: number;
   inputSequence: number;
   requestId: number;
-}
-
-type RequestedPresenterMode = "auto" | "worker-direct-webgl" | "worker-direct-webgpu";
-
-interface PresenterPolicy {
-  requested: RequestedPresenterMode;
-  selected: "worker-direct-webgl" | "worker-direct-webgpu";
-  fallbackReason: string | null;
 }
 
 interface WorkerBridge {
@@ -349,10 +343,9 @@ export function dispatchWorkerInput(message: Record<string, unknown>): void {
   }
 }
 
-function presenterPolicy(): PresenterPolicy {
-  const value = new URLSearchParams(globalThis.location.search).get("dorotiRenderer");
-  const requested = value === "worker-direct-webgl" || value === "worker-direct-webgpu" ? value : "auto";
-  return { requested, selected: requested === "auto" ? "worker-direct-webgpu" : requested, fallbackReason: null };
+let selectedRendererPolicy: RendererPolicy | undefined;
+function presenterPolicy(): RendererPolicy {
+  return selectedRendererPolicy ??= selectRendererPolicy(globalThis.location?.search ?? "", navigator);
 }
 
 const resizeDiagnostics: ResizeDiagnostics = {
@@ -570,7 +563,7 @@ function commitDirectCanvasLogicalSize(
   logicalHeight: number): void {
   const workerPresenter = workerDisplayPresenters.get(host.canvas.id);
   if (!directWorkerBootstrap && !workerPresenter) return;
-  // Direct Skia owns a grow-only physical backing. Its completed front
+  // Direct Skia owns the physical backing. Its completed front
   // establishes the pixel scale; the root clips it to the observed viewport.
   // Observer targets must not rescale that backing while a new frame is built.
   if (host.canvas.dataset.dorotiCapacityWidth) return;
@@ -600,10 +593,10 @@ function configureDirectCanvasCapacity(
   initializeBacking = false): void {
   const screenWidth = Number(globalThis.screen?.availWidth ?? globalThis.screen?.width ?? 0);
   const screenHeight = Number(globalThis.screen?.availHeight ?? globalThis.screen?.height ?? 0);
-  const capacityWidth = physicalWidth ?? Math.ceil(
-    Math.max(logicalWidth * 1.5, screenWidth, logicalWidth) * ratio);
-  const capacityHeight = physicalHeight ?? Math.ceil(
-    Math.max(logicalHeight * 1.5, screenHeight, logicalHeight) * ratio);
+  const initial = initialCanvasCapacity(logicalWidth, logicalHeight, ratio,
+    presenterPolicy().memoryProfile === "mobile", screenWidth, screenHeight);
+  const capacityWidth = physicalWidth ?? initial.width;
+  const capacityHeight = physicalHeight ?? initial.height;
   // width/height cannot be assigned from main after control was transferred.
   // Worker capacity growth is reported here only to update the matching CSS
   // pixel ratio; initial/replacement canvases opt in before transfer.
@@ -1714,9 +1707,14 @@ export async function invokePlugin(moduleUrl: string, exportName: string, channe
 }
 
 export async function startDorotiWorkerHost(
-  mode: "worker-direct-webgl" | "worker-direct-webgpu" = "worker-direct-webgpu",
+  mode: "worker-direct-webgl" | "worker-direct-webgpu" = presenterPolicy().selected,
   runtimeLocation: "main" | "worker" = "main",
+  policy: RendererPolicy = presenterPolicy(),
 ): Promise<"started"> {
+  selectedRendererPolicy = mode === policy.selected ? policy :
+    { ...policy, requested: mode, selected: mode, reason: "explicit-host-override" };
+  Object.assign(document.documentElement.dataset, { dorotiRendererRequested: selectedRendererPolicy.requested,
+    dorotiRendererReason: selectedRendererPolicy.reason, dorotiMemoryProfile: selectedRendererPolicy.memoryProfile });
   if (mode === "worker-direct-webgpu" && runtimeLocation !== "main")
     throw new Error("Doroti WebGPU requires runtimeLocation=main and a threaded build.");
   if (typeof Worker === "undefined" || typeof OffscreenCanvas === "undefined" ||
@@ -2229,7 +2227,7 @@ export async function startDorotiWorkerHost(
   const initialMessage = {
     protocolVersion: dorotiProtocolVersion, kind: "init", snapshot: JSON.parse(snapshot(host)),
     rendererContractVersion: mode === "worker-direct-webgpu" ? dorotiWebGpuRendererVersion : undefined,
-    dotnetModuleUrl, mode, canvas: initialOffscreen,
+    dotnetModuleUrl, mode, policy: selectedRendererPolicy, canvas: initialOffscreen,
     testbedMode: new URL(location.href).searchParams.get("dorotiTestbedMode") ?? "diagnostics",
     progressScope: new URL(location.href).searchParams.get("dorotiProgressScope") ?? "local",
     resizeDiagnostics: diagnosticsEnabled(),

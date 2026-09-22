@@ -44,7 +44,8 @@ internal sealed class BrowserSkiaCapabilities : IBrowserGraphicsCapabilities
             host.Snapshot.Gpu.Api == "webgpu"
                 ? "doroti-owned-canvas-graphite-dawn"
                 : "doroti-owned-canvas-webgl2-skia-gpu",
-            fallbackFonts: fallbackFonts
+            fallbackFonts: fallbackFonts,
+            pictureRasterCachePixels: DorotiWebWorkerSurface.PictureRasterCachePixels
         );
         _renderer.PlatformScenePainter = (canvas, commands, descriptor, width, height) =>
             _platform.Draw(_renderer, canvas, commands, descriptor, width, height);

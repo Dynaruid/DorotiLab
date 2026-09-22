@@ -35,17 +35,23 @@ const proxy = createServer(async (req, res) => {
   } catch (error) { res.writeHead(502); res.end(String(error)); }
 });
 await new Promise(r => proxy.listen(0, '127.0.0.1', r));
-const chrome = spawn('C:/Program Files/Google/Chrome/Application/chrome.exe', [
+const chromePath = process.env.DOROTI_CHROME ?? (process.platform === 'darwin'
+  ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+  : 'C:/Program Files/Google/Chrome/Application/chrome.exe');
+const chrome = spawn(chromePath, [
   '--no-first-run', '--no-default-browser-check', '--remote-debugging-port=0', '--remote-allow-origins=*',
   '--window-size=1300,1000', '--user-data-dir=' + join(out, 'chrome-profile'), 'about:blank',
 ], { windowsHide: true, stdio: ['ignore', 'ignore', 'pipe'] });
 const chromeLog = [];
 chrome.stderr.on('data', b => chromeLog.push(b.toString()));
+let chromeError;
+chrome.on('error', error => { chromeError = error; });
 const wait = ms => new Promise(r => setTimeout(r, ms));
 let socket;
 try {
   let port;
   for (let i = 0; i < 100; i++) {
+    if (chromeError) throw chromeError;
     try { port = (await readFile(join(out, 'chrome-profile', 'DevToolsActivePort'), 'utf8')).split('\n')[0]; } catch {}
     if (port) break;
     await wait(100);
@@ -75,9 +81,14 @@ try {
   };
   await cdp('Runtime.enable', {}, page);
   await cdp('Page.enable', {}, page);
+  const mobile = process.env.DOROTI_MEMORY_MOBILE === '1';
+  if (mobile) await cdp('Emulation.setUserAgentOverride', {
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 26_6_1 like Mac OS X) AppleWebKit/605.1.15 CriOS/150.0 Mobile/15E148 Safari/604.1',
+    platform: 'iPhone' }, page);
   await cdp('Emulation.setDeviceMetricsOverride', { width: +width, height: 900, deviceScaleFactor: +dpr, mobile: false }, page);
-  const query = new URLSearchParams({ dorotiTestbedMode: 'sample', dorotiRenderer: backend });
-  if (profile !== 'off') query.set('dorotiFrameCost', '1');
+  const query = new URLSearchParams({ dorotiTestbedMode: 'sample' });
+  if (backend !== 'auto') query.set('dorotiRenderer', backend);
+  if (!['off', 'memory-off', 'memory-soak-off'].includes(profile)) query.set('dorotiFrameCost', '1');
   if (['diagnosis', 'inspect'].includes(profile)) {
     query.set('dorotiResizeDiagnostics', '1'); query.set('dorotiLayoutProfile', '1'); query.set('dorotiAllocationProfile', '1');
   }
@@ -92,7 +103,7 @@ try {
     await wait(200);
   }
   await wait(1500);
-  const worker = profile !== 'off';
+  const worker = !['off', 'memory-off', 'memory-soak-off'].includes(profile);
   const shot = async name => {
     const x = await cdp('Page.captureScreenshot', { format: 'png' }, page);
     await writeFile(join(out, name + '.png'), Buffer.from(x.data, 'base64'));
@@ -104,6 +115,7 @@ try {
     if (worker) await evaluate('__dorotiFrameCost("reset")');
     const processBefore = await cdp('SystemInfo.getProcessInfo');
     const start = Date.now();
+    if (profile.startsWith('memory')) await save('progress', { id, start, phase: 'started', inputs: input.length });
     await action();
     const end = Date.now();
     const processAfter = await cdp('SystemInfo.getProcessInfo');
@@ -111,14 +123,20 @@ try {
     const trace = finished?.trace ?? null;
     const after = finished?.after ?? null;
     const content = await dom();
-    segments.push({ id, start, end, before, after, trace, content, processBefore, processAfter });
+    const main = profile.startsWith('memory') ? await evaluate(`({
+      policy:{...document.documentElement.dataset},
+      canvas:{...document.querySelector('canvas')?.dataset},
+      viewport:{width:innerWidth,height:innerHeight,dpr:devicePixelRatio},visibility:document.visibilityState,focused:document.hasFocus()})`) : null;
+    segments.push({ id, start, end, before, after, trace, content, main, processBefore, processAfter });
     await save('segments', segments);
+    if (profile.startsWith('memory')) await save('progress', { id, end, phase: 'completed', inputs: input.length });
     await shot(id);
     console.log(id + ': ' + (trace?.rows.length ?? 'OFF') + ' numeric records');
   };
   const wheel = async (deltaY, x = +width * .3, y = 650) => {
     input.push({ kind: 'wheel', deltaY, x, y, at: Date.now() });
     await cdp('Input.dispatchMouseEvent', { type: 'mouseWheel', x, y, deltaX: 0, deltaY }, page);
+    if (profile.startsWith('memory')) await save('input', input);
     await wait(180);
   };
   const clickLabel = async text => {
@@ -130,21 +148,27 @@ try {
     await wait(400);
   };
   await save('environment', { version, url, profile, backend, width: +width, height: 900, dpr: +dpr,
-    browser: await evaluate(`({ua:navigator.userAgent,visibility:document.visibilityState,focus:document.hasFocus(),dpr:devicePixelRatio,runtime:getDotnetRuntime(0).runtimeBuildInfo,config:getDotnetRuntime(0).getConfig()})`),
+    browser: await evaluate(`({policy:{...document.documentElement.dataset},ua:navigator.userAgent,visibility:document.visibilityState,focus:document.hasFocus(),dpr:devicePixelRatio,runtime:getDotnetRuntime(0).runtimeBuildInfo,config:getDotnetRuntime(0).getConfig()})`),
     gpu: await cdp('SystemInfo.getInfo') });
   await save('initial-dom', await dom()); await shot('initial');
   await segment('S0', () => wait(profile === 'inspect' ? 1000 : 2500));
-  if (profile === 'smoke') {
+  if (profile.startsWith('memory')) {
+    const { runMemoryWorkload } = await import('../web-memory/workload.mjs');
+    await runMemoryWorkload({ segment, wheel, clickLabel, wait, dom, save, shot, evaluate,
+      resize: async (w, h) => {
+        await cdp('Emulation.setDeviceMetricsOverride', { width: w, height: h, deviceScaleFactor: +dpr, mobile: false }, page);
+      }, width: +width, profile });
+  } else if (profile === 'smoke') {
     await clickLabel('Color');
     await clickLabel('Components');
     await clickLabel('Toggle brightness');
     await shot('light-theme');
     await clickLabel('Toggle brightness');
     let textbox;
-    for (let i=0;i<24;i++) {
+    for (let i=0;i<80;i++) {
       textbox = (await dom()).find(n=>n.role==='textbox' && n.rect[1]>=56 && n.rect[1]+n.rect[3]/2<880 && n.rect[2]>0);
       if (textbox) break;
-      await wheel(120, +width>1000 ? +width*.75 : +width*.5);
+      await wheel(180, +width>1000 ? +width*.75 : +width*.5);
     }
     if (!textbox) throw Error('Visible text input was not reached');
     const [x,y,w,h]=textbox.rect;
