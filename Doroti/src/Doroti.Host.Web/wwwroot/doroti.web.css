@@ -32,6 +32,9 @@ body,
   display: block;
   touch-action: none;
   outline: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .doroti-ime {
@@ -73,4 +76,28 @@ body,
   filter: opacity(0%);
   color: transparent;
   background: transparent;
+}
+
+/* Accessibility labels describe the canvas; they are not a second selectable
+   document. Keep the tree exposed and retain native editable endpoints for AT,
+   IME, clipboard, and selection synchronization. */
+.doroti-semantics,
+.doroti-semantics [data-doroti-semantics-id]:not(input):not(textarea) {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.doroti-ime,
+.doroti-semantics input,
+.doroti-semantics textarea {
+  -webkit-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
+}
+
+.doroti-root[data-doroti-text-selection="framework"] .doroti-ime,
+.doroti-root[data-doroti-text-selection="framework"] .doroti-semantics input,
+.doroti-root[data-doroti-text-selection="framework"] .doroti-semantics textarea {
+  -webkit-touch-callout: none;
 }

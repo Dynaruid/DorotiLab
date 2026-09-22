@@ -739,8 +739,11 @@ export function requestPresent(
 function browserOperatingSystem(): string {
   const navigatorWithUaData = navigator as Navigator & { userAgentData?: { platform?: string } };
   const platform = String(navigatorWithUaData.userAgentData?.platform || navigator.platform || navigator.userAgent || "").toLowerCase();
-  if (/android/.test(platform)) return "android";
-  if (/iphone|ipad|ipod/.test(platform) || (platform.includes("mac") && navigator.maxTouchPoints > 1)) return "iOS";
+  // Android commonly reports navigator.platform as Linux armv8l. Check the UA
+  // too, before desktop Linux; iPadOS can report a desktop Mac platform/UA.
+  const userAgent = navigator.userAgent.toLowerCase();
+  if (/android/.test(platform) || /android/.test(userAgent)) return "android";
+  if (/iphone|ipad|ipod/.test(platform + " " + userAgent) || (platform.includes("mac") && navigator.maxTouchPoints > 1)) return "iOS";
   if (/win/.test(platform)) return "windows";
   if (/mac/.test(platform)) return "macOS";
   if (/linux|x11|cros/.test(platform)) return "linux";
@@ -875,6 +878,9 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   };
   commitDirectCanvasLogicalSize(host, logicalWidth, logicalHeight);
   hosts.set(hostId, host);
+  const operatingSystem = browserOperatingSystem();
+  const mobileTextSelection = operatingSystem === "android" || operatingSystem === "iOS";
+  root.dataset.dorotiTextSelection = mobileTextSelection ? "framework" : "browser";
   root.dataset.dorotiHostId = String(hostId);
   recordResize(host, "target-observed", "host-initial");
   const observe = (target: EventTarget, name: string, handler: EventListener): void => {
@@ -957,10 +963,12 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     const nativeTextInput = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement;
     // Canvas pixels and non-editable semantics belong to framework widgets,
     // so the browser's page/image menu has no useful target here. Preserve
-    // native text editing menus and the explicit BrowserContextMenu switch.
+    // native desktop text editing menus and the explicit BrowserContextMenu
+    // switch. Mobile uses the framework toolbar, including on the IME endpoint.
     const frameworkSurface = target === root || target instanceof HTMLCanvasElement ||
       (target instanceof Node && semantics.contains(target) && !nativeTextInput);
-    if (!host.contextMenuEnabled || frameworkSurface) event.preventDefault();
+    const frameworkEditable = nativeTextInput && (target === input || semantics.contains(target as Node));
+    if (!host.contextMenuEnabled || frameworkSurface || (mobileTextSelection && frameworkEditable)) event.preventDefault();
   });
   observe(root, "wheel", (event) => {
     const wheel = event as WheelEvent;

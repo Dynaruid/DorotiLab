@@ -1573,7 +1573,12 @@ public class EditableTextState
         DartRuntimePrimitives.ConvertValue<bool>(_textInputConnection?.attached ?? false);
     internal virtual bool _webContextMenuEnabled =>
         DartRuntimePrimitives.ConvertValue<bool>(
-            Foundation.ConstantsLibrary.kIsWeb && BrowserContextMenu.enabled
+            // Doroti owns touch selection and paints its toolbar on mobile Web,
+            // just as SelectableRegion does. Desktop keeps native editing menus.
+            Foundation.ConstantsLibrary.kIsWeb
+                && BrowserContextMenu.enabled
+                && PlatformLibrary.defaultTargetPlatform != TargetPlatform.android
+                && PlatformLibrary.defaultTargetPlatform != TargetPlatform.iOS
         );
     internal virtual ScrollController _scrollController =>
         DartRuntimePrimitives.ConvertValue<ScrollController>(
