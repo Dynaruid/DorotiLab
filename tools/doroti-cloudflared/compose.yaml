@@ -1,0 +1,33 @@
+name: doroti-web-tunnel
+
+services:
+  web:
+    image: nginx:1.29-alpine
+    ports:
+      - "127.0.0.1:${DOROTI_PREVIEW_PORT:-5089}:80"
+    volumes:
+      - type: bind
+        source: ../../DorotiTestbedApp/web/bin/Release/net10.0/publish/wwwroot
+        target: /usr/share/nginx/html
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ./nginx.conf
+        target: /etc/nginx/conf.d/default.conf
+        read_only: true
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1/index.html"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  cloudflared:
+    image: cloudflare/cloudflared:2026.8.2
+    command: ["tunnel", "--no-autoupdate", "--protocol", "http2", "--url", "http://web:80"]
+    depends_on:
+      web:
+        condition: service_healthy
+
+# Both services use this project's private Compose network. Only the static
+# published webroot is mounted; the tunnel needs no token or Docker socket.
