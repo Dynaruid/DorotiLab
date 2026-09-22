@@ -83,8 +83,8 @@ try {
   await cdp('Runtime.enable', {}, page);
   await cdp('Page.enable', {}, page);
   const mobile = profile !== 'desktop';
-  const frameworkSelection = profile === 'android';
-  const nativeIosSelection = profile === 'iphone' || profile === 'ipad';
+  const frameworkSelection = mobile;
+  const ios = profile === 'iphone' || profile === 'ipad';
   const devices = {
     android: {userAgent:'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Mobile Safari/537.36', platform:'Linux armv8l'},
     iphone: {userAgent:'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1', platform:'iPhone'},
@@ -114,6 +114,14 @@ try {
     await writeFile(join(out, name + '.png'), Buffer.from(x.data, 'base64'));
   };
   const dom = () => evaluate(`Array.from(document.querySelectorAll('[role],[aria-label]')).map(e=>({role:e.getAttribute('role'),label:e.getAttribute('aria-label'),description:e.getAttribute('aria-description'),text:e.textContent,rect:(()=>{const r=e.getBoundingClientRect();return [r.x,r.y,r.width,r.height]})()}))`);
+  const menuButton = async pattern => {
+    // Clipboard status and the worker's overlay/semantics update are async.
+    for (let i=0;i<30;i++) {
+      const button = (await dom()).find(n=>n.role==='button' && pattern.test(n.label ?? n.text ?? ''));
+      if (button) return button;
+      await wait(100);
+    }
+  };
   const checks = [];
   const check = (ok, name) => { if (!ok) throw Error(name); checks.push(name); };
   const tap = async (x, y, hold = 60) => {
@@ -158,27 +166,35 @@ try {
   check(styles.slice(3).every(s=>s.select==='text'), 'native editing endpoints remain selectable');
   const editablePaint = await evaluate(`(()=>{
     const e=document.querySelector('#doroti-ime'),s=getComputedStyle(e),selection=getComputedStyle(e,'::selection');
-    return {filter:s.filter,opacity:s.opacity,caret:s.caretColor,
+    return {filter:s.filter,opacity:s.opacity,pointer:s.pointerEvents,callout:s.webkitTouchCallout,caret:s.caretColor,
       color:s.color,fill:s.webkitTextFillColor,selection:selection.backgroundColor};
   })()`);
   await save('editable-paint', editablePaint);
-  check(editablePaint.filter==='opacity(0)' && editablePaint.caret==='rgba(0, 0, 0, 0)', 'DOM caret, handles and selection paint remain hidden');
+  if (ios) {
+    check(editablePaint.opacity==='0' && editablePaint.filter==='none' && editablePaint.pointer==='none', 'iOS editable is transparent to native selection UI and excluded from hit testing');
+    const hit = await evaluate(`(()=>{const e=document.querySelector('#doroti-ime'),r=e.getBoundingClientRect();return document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)?.id})()`);
+    check(hit==='doroti-surface', 'touches over the iOS editable hit the canvas');
+  } else {
+    check(editablePaint.filter==='opacity(0)' && editablePaint.caret==='rgba(0, 0, 0, 0)', 'other platforms retain existing DOM paint policy');
+  }
   check(styles[1].hidden !== 'true', 'accessibility tree remains exposed');
   const accessibility = await cdp('Accessibility.getFullAXTree', {}, page);
   check(accessibility.nodes.some(n=>!n.ignored && n.role?.value==='textbox'), 'browser accessibility tree contains an exposed textbox');
   const menuPrevented = await evaluate(`(()=>{const e=new MouseEvent('contextmenu',{bubbles:true,cancelable:true});document.querySelector('#doroti-ime').dispatchEvent(e);return e.defaultPrevented})()`);
   check(menuPrevented === frameworkSelection, 'native context menu ownership');
-  if (nativeIosSelection) {
+  if (ios) {
     // The decoration can extend beyond the DOM editable. Exercise a framework
-    // gesture there as well, so the toolbar guard is tested independently.
+    // gesture there as well as over the transparent editable's bounds.
     await tap(x+24,y+h/2,850);
-    check(!(await dom()).some(n => n.role==='button' && /^(Copy|Cut|Paste|Select All)$/i.test(n.label ?? n.text ?? '')), 'iOS framework gesture does not add a toolbar');
+    await save('ios-long-press-dom', await dom());
+    await shot('ios-long-press');
+    check(!!await menuButton(/^(Paste|Select All)$/i), 'iOS long press displays the framework toolbar');
     await evaluate(`document.addEventListener('pointerdown',e=>window.__selectionPointer={trusted:e.isTrusted,prevented:e.defaultPrevented,target:e.target.id})`);
     const editableRect = await evaluate(`document.querySelector('#doroti-ime').getBoundingClientRect().toJSON()`);
     await tap(editableRect.x + Math.min(24, editableRect.width/2), editableRect.y + editableRect.height/2, 850);
     await save('native-gesture', await evaluate(`({pointer:window.__selectionPointer,active:document.activeElement?.id,inputRect:document.querySelector('#doroti-ime').getBoundingClientRect().toJSON()})`));
-    check(await evaluate(`window.__selectionPointer?.trusted && window.__selectionPointer.prevented && window.__selectionPointer.target==='doroti-ime'`), 'iOS editable gesture reaches framework selection');
-    check(!(await dom()).some(n => n.role==='button' && /^(Copy|Cut|Paste|Select All)$/i.test(n.label ?? n.text ?? '')), 'iOS long press does not add a framework toolbar');
+    check(await evaluate(`window.__selectionPointer?.trusted && window.__selectionPointer.prevented && window.__selectionPointer.target==='doroti-surface'`), 'iOS editable gesture reaches framework selection');
+    check(!!await menuButton(/^(Paste|Select All)$/i), 'iOS canvas gesture retains framework menu access');
     await shot('canvas-ios-caret');
     const wordPoint = {x:editableRect.x + Math.min(24, editableRect.width/2),y:editableRect.y + editableRect.height/2};
     for (let i=0;i<2;i++) {
@@ -202,10 +218,11 @@ try {
       await cdp('Input.dispatchTouchEvent', {type:'touchMove',touchPoints:[{x:handlePoint.x+i*10,y:handlePoint.y}]}, page);
       await wait(40);
     }
+    await shot('canvas-ios-magnifier');
     await cdp('Input.dispatchTouchEvent', {type:'touchEnd',touchPoints:[]}, page);
     await wait(400);
     check(await evaluate(`(()=>{const e=document.querySelector('#doroti-ime');return e.selectionStart===0 && e.selectionEnd>6})()`), 'canvas end-handle drag extends the selection');
-    check(!(await dom()).some(n => n.role==='button' && /^(Copy|Cut|Paste|Select All)$/i.test(n.label ?? n.text ?? '')), 'handle drag does not add a framework toolbar');
+    check(!!await menuButton(/^(Copy|Cut)$/i), 'handle drag restores the framework toolbar');
     await shot('canvas-ios-handle-drag');
     // Chromium emulation cannot show UIKit UI. Exercise the native endpoint's
     // selection/edit events and verify the managed semantics acknowledge them.
@@ -217,11 +234,17 @@ try {
     await wait(450);
     check(await evaluate(`document.querySelector('#doroti-ime').value==='native selection' && Array.from(document.querySelectorAll('[role=textbox]')).some(e=>e.value==='native selection')`), 'native replacement updates text and semantics');
     await shot('native-ios-selection');
-  } else if (frameworkSelection) {
-    // A long press must reach Android's framework selection recognizer.
+  }
+  if (frameworkSelection) {
+    // Both mobile platforms use framework menus and clipboard actions.
     await tap(x+24,y+h/2,850);
     await save('toolbar-dom', await dom());
     await shot('toolbar');
+    if (ios) {
+      const all = (await dom()).find(n => n.role==='button' && /^Select All$/i.test(n.label ?? n.text ?? ''));
+      check(!!all, 'iOS collapsed selection offers framework Select All');
+      await tap(all.rect[0]+all.rect[2]/2,all.rect[1]+all.rect[3]/2);
+    }
     const copy = (await dom()).find(n => n.role==='button' && /^(Copy|COPY)$/.test(n.label ?? n.text ?? ''));
     const cut = (await dom()).find(n => n.role==='button' && /^(Cut|CUT)$/.test(n.label ?? n.text ?? ''));
     check(!!copy && !!cut, 'selected text displays rendered Copy and Cut buttons');

@@ -101,3 +101,12 @@ body,
 .doroti-root[data-doroti-text-selection="framework"] .doroti-semantics textarea {
   -webkit-touch-callout: none;
 }
+
+/* WebKit suppresses its selection assistant for an actually transparent
+   editable layer. A transparent filter/caret alone only hides its paint and
+   can leave UIKit selection gestures alive above our canvas handles. */
+.doroti-root[data-doroti-operating-system="iOS"] .doroti-ime {
+  opacity: 0;
+  filter: none;
+  pointer-events: none;
+}

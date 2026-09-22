@@ -1573,11 +1573,12 @@ public class EditableTextState
         DartRuntimePrimitives.ConvertValue<bool>(_textInputConnection?.attached ?? false);
     internal virtual bool _webContextMenuEnabled =>
         DartRuntimePrimitives.ConvertValue<bool>(
-            // iOS Web keeps native editing menus; suppressing WebKit's selection
-            // UI is unreliable. Android continues to use the framework toolbar.
+            // Mobile Web uses framework selection UI. The browser endpoint remains
+            // available for keyboard/IME input without owning touch selection.
             Foundation.ConstantsLibrary.kIsWeb
                 && BrowserContextMenu.enabled
                 && PlatformLibrary.defaultTargetPlatform != TargetPlatform.android
+                && PlatformLibrary.defaultTargetPlatform != TargetPlatform.iOS
         );
     internal virtual ScrollController _scrollController =>
         DartRuntimePrimitives.ConvertValue<ScrollController>(

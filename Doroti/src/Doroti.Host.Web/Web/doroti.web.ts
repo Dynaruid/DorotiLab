@@ -879,7 +879,8 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   commitDirectCanvasLogicalSize(host, logicalWidth, logicalHeight);
   hosts.set(hostId, host);
   const operatingSystem = browserOperatingSystem();
-  const frameworkTextSelection = operatingSystem === "android";
+  const frameworkTextSelection = operatingSystem === "android" || operatingSystem === "iOS";
+  root.dataset.dorotiOperatingSystem = operatingSystem;
   root.dataset.dorotiTextSelection = frameworkTextSelection ? "framework" : "browser";
   root.dataset.dorotiHostId = String(hostId);
   recordResize(host, "target-observed", "host-initial");
@@ -965,8 +966,8 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     const nativeTextInput = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement;
     // Canvas pixels and non-editable semantics belong to framework widgets,
     // so the browser's page/image menu has no useful target here. Preserve
-    // native iOS/desktop text editing menus and the explicit BrowserContextMenu
-    // switch. Android uses the framework toolbar, including on the IME endpoint.
+    // native desktop text editing menus and the explicit BrowserContextMenu
+    // switch. Mobile uses the framework toolbar, including on the IME endpoint.
     const frameworkSurface = target === root || target instanceof HTMLCanvasElement ||
       (target instanceof Node && semantics.contains(target) && !nativeTextInput);
     const frameworkEditable = nativeTextInput && (target === input || semantics.contains(target as Node));

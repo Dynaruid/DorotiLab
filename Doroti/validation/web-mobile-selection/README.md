@@ -1,6 +1,43 @@
 # Web 모바일 텍스트 선택 메뉴
 
-## 현재 정책: iOS 커서·핸들·선택 배경은 캔버스 렌더링
+## 현재 정책: iOS 선택 UI 전체를 Doroti로 통일
+
+사용자가 투명한 네이티브 핸들의 터치 간섭을 보고했고, 메뉴·확대경까지 Doroti로
+통일하는 방안을 선택했다. 기존 `filter: opacity(0%)`와 투명 caret은 paint만 숨겨
+브라우저 선택 제스처가 남을 수 있었다.
+
+- iOS IME textarea는 `opacity: 0; filter: none; pointer-events: none`을 사용한다.
+  DOM hit test에서 제외하고 키보드·IME용 focus, value 및 selection은 유지한다.
+  선택을 임의로 접거나 input을 blur/disable해 입력을 끊지 않는다.
+- WebKit은 편집 요소의 실제 투명 레이어 여부를 계산하고 이에 따라 selection assistant를
+  억제한다. [투명 상태 계산](https://github.com/WebKit/WebKit/blob/main/Source/WebKit/WebProcess/WebPage/Cocoa/WebPageCocoa.mm),
+  [선택 UI 억제](https://github.com/WebKit/WebKit/blob/main/Source/WebKit/UIProcess/ios/WKContentViewInteraction.mm).
+  이 경로를 사용하므로 네이티브 메뉴·확대경 유지 정책도 함께 종료한다.
+- iOS contextmenu·touch callout을 차단하고 Framework toolbar와 magnifier를 복구한다.
+  커서·핸들·선택 배경도 같은 캔버스 좌표를 계속 사용한다.
+- iOS에만 opacity/hit-test 변경을 적용한다. 접근성 semantics 트리를 유지하고,
+  Android와 데스크톱 입력창의 기존 CSS는 유지한다.
+
+검증: Release publish (경고·오류 없음), `git diff --check`, runner 문법 검사 PASS.
+Chrome 153/macOS, WebGL에서 iPhone 390px·iPad 820px의 opacity/hit-test 정책,
+캔버스 터치 전달, 두 번 탭·핸들 드래그, Doroti 메뉴·Select All·Cut/Paste,
+선택·입력 동기화 PASS. 확대경을 드래그 도중 캡처하고 직접 표시를 확인했다.
+Android의 기존 메뉴·편집·클립보드 회귀 PASS.
+
+첫 iPhone 실행은 고정 대기 뒤 메뉴 존재 검사에서 실패했다. 진단 캡처를 추가한
+동일 제품 실행은 모든 검사를 통과했다. 비동기 clipboard/overlay 갱신을 고려해
+메뉴 검증을 최대 3초간 상태를 관찰하도록 바꿨다. 실패한 실행을 PASS에 포함하지 않는다.
+배포본: `Doroti/artifacts/web-mobile-selection/framework-only-product/`.
+증거·제공 자산 hash·캡처: 같은 상위 경로의 `framework-only-iphone-diagnostic`,
+`framework-only-ipad`, `framework-only-android`. 최초 실패는 `framework-only-iphone`.
+
+실제 iPhone의 OS 제스처 간섭 해소, 소프트 키보드·한글 IME와 실제 클립보드 권한은
+아직 미확인이다. Chromium 에뮬레이션의 DOM hit test를 UIKit 제스처 검증으로 대체하지 않는다.
+
+아래 섹션은 이전 정책들의 검증 이력이다.
+
+
+## 이전 정책: iOS 커서·핸들·선택 배경은 캔버스 렌더링
 
 실기기에서 네이티브 커서·핸들과 캔버스 텍스트의 위치가 어긋난다는 피드백에 따라,
 선택 위치 계산 및 커서·핸들·선택 배경의 렌더링을 Doroti로 복구했다.
