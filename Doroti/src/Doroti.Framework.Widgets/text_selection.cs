@@ -123,9 +123,9 @@ public static partial class Text_selectionLibrary
 
 public class TextSelectionOverlay
 {
-    // Editable text has a DOM input on Web. SelectableRegion uses SelectionOverlay
-    // directly and still needs its framework UI for canvas-only text.
-    private bool _usesNativeIosSelection =>
+    // Only the menu and magnifier are native on iOS Web. Cursor, handles and
+    // highlight use canvas text geometry; SelectableRegion keeps its own UI.
+    private bool _usesNativeIosEditingUi =>
         Foundation.ConstantsLibrary.kIsWeb
         && PlatformLibrary.defaultTargetPlatform == TargetPlatform.iOS
         && BrowserContextMenu.enabled;
@@ -183,7 +183,7 @@ public class TextSelectionOverlay
         );
         _updateTextSelectionOverlayVisibilities();
         _selectionOverlay = new SelectionOverlay(
-            magnifierConfiguration: _usesNativeIosSelection
+            magnifierConfiguration: _usesNativeIosEditingUi
                 ? TextMagnifierConfiguration.disabled
                 : magnifierConfiguration,
             context: context,
@@ -220,9 +220,9 @@ public class TextSelectionOverlay
     internal virtual void _updateTextSelectionOverlayVisibilities()
     {
         _effectiveStartHandleVisibility.value =
-            !_usesNativeIosSelection && _handlesVisible && renderObject.selectionStartInViewport.value;
+            _handlesVisible && renderObject.selectionStartInViewport.value;
         _effectiveEndHandleVisibility.value =
-            !_usesNativeIosSelection && _handlesVisible && renderObject.selectionEndInViewport.value;
+            _handlesVisible && renderObject.selectionEndInViewport.value;
         _effectiveToolbarVisibility.value =
             renderObject.selectionStartInViewport.value
             || renderObject.selectionEndInViewport.value;
@@ -245,11 +245,6 @@ public class TextSelectionOverlay
 
     public virtual void showHandles()
     {
-        if (_usesNativeIosSelection)
-        {
-            _selectionOverlay.hideHandles();
-            return;
-        }
         _updateSelectionOverlay();
         _selectionOverlay.showHandles();
     }
@@ -258,7 +253,7 @@ public class TextSelectionOverlay
 
     public virtual void showToolbar()
     {
-        if (_usesNativeIosSelection)
+        if (_usesNativeIosEditingUi)
         {
             return;
         }
@@ -306,7 +301,7 @@ public class TextSelectionOverlay
 
     public virtual void showMagnifier(Offset positionToShow)
     {
-        if (_usesNativeIosSelection)
+        if (_usesNativeIosEditingUi)
         {
             return;
         }
@@ -864,7 +859,7 @@ public class TextSelectionOverlay
             return;
         }
         _dragStartSelection = null;
-        if (_usesNativeIosSelection)
+        if (_usesNativeIosEditingUi)
         {
             return;
         }

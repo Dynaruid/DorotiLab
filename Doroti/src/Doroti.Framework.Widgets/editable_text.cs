@@ -1571,10 +1571,6 @@ public class EditableTextState
     }
     internal virtual bool _hasInputConnection =>
         DartRuntimePrimitives.ConvertValue<bool>(_textInputConnection?.attached ?? false);
-    private bool _usesNativeIosSelection =>
-        Foundation.ConstantsLibrary.kIsWeb
-        && PlatformLibrary.defaultTargetPlatform == TargetPlatform.iOS
-        && BrowserContextMenu.enabled;
     internal virtual bool _webContextMenuEnabled =>
         DartRuntimePrimitives.ConvertValue<bool>(
             // iOS Web keeps native editing menus; suppressing WebKit's selection
@@ -1623,10 +1619,6 @@ public class EditableTextState
     {
         get
         {
-            if (_usesNativeIosSelection)
-            {
-                return widget.cursorColor.withOpacity(0.0);
-            }
             double effectiveOpacity = Math.Min(
                 widget.cursorColor.alpha / 255.0,
                 _cursorBlinkOpacityController.value

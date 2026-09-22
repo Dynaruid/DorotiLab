@@ -1,5 +1,34 @@
 # Web 모바일 텍스트 선택 메뉴
 
+## 현재 정책: iOS 커서·핸들·선택 배경은 캔버스 렌더링
+
+실기기에서 네이티브 커서·핸들과 캔버스 텍스트의 위치가 어긋난다는 피드백에 따라,
+선택 위치 계산 및 커서·핸들·선택 배경의 렌더링을 Doroti로 복구했다.
+
+- IME textarea는 입력·선택 동기화에 사용하되 모든 네이티브 paint는 다시 숨긴다.
+  iOS 전용 caret 색상·filter 해제와 표시용 dataset을 제거했다.
+- 투명 textarea 위에서도 포인터를 Framework에 전달해 `RenderEditable`의 글자 좌표로
+  커서를 배치하고 선택 핸들을 드래그한다. DOM 기본 포인터 동작은 취소한다.
+- 메뉴·확대경은 기존 iOS 네이티브 정책을 유지한다. Doroti 메뉴·확대경은 계속 차단하고,
+  DOM contextmenu와 touch callout 허용도 유지한다.
+- runner는 DOM paint 숨김, 실제 길게 누르기·두 번 탭·선택 핸들 드래그,
+  메뉴 중복 방지, DOM↔Framework 선택·편집 동기화를 검사하고 캔버스 선택 UI를 캡처한다.
+
+검증: Release publish, `git diff --check`, runner 문법 검사 PASS.
+Chrome 153/macOS, WebGL의 iPhone 390px·iPad 820px 프로필에서 두 번 탭으로
+`mobile` 단어 선택, 실제 터치로 끝 핸들 드래그 후 범위 확장, 메뉴 중복 부재 및
+선택·편집 동기화 PASS. Android의 기존 메뉴·Cut/Paste 회귀 PASS.
+`canvas-ios-handles.png`와 `canvas-ios-handle-drag.png`를 직접 확인해 핸들과
+선택 배경이 그려진 텍스트의 양 끝에 붙고 드래그 후 함께 이동하는 것을 확인했다.
+실제 iPhone의 네이티브 메뉴·확대경 표시와 물리 터치는 미확인이다.
+
+배포본: `Doroti/artifacts/web-mobile-selection/canvas-selection-product/`.
+실행 로그·자산 hash·캡처: 같은 상위 경로의 `canvas-selection-iphone`,
+`canvas-selection-ipad`, `canvas-selection-android`.
+
+아래의 네이티브 핸들 표시 섹션은 이전 시도의 기록이며 현재 정책이 아니다.
+
+
 ## iOS 네이티브 선택 핸들 표시 수정
 
 이전 네이티브 메뉴·확대경 전환에서 IME textarea의 `filter: opacity(0%)`와

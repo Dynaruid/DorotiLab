@@ -881,7 +881,6 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   const operatingSystem = browserOperatingSystem();
   const frameworkTextSelection = operatingSystem === "android";
   root.dataset.dorotiTextSelection = frameworkTextSelection ? "framework" : "browser";
-  input.dataset.dorotiNativeSelection = String(operatingSystem === "iOS");
   root.dataset.dorotiHostId = String(hostId);
   recordResize(host, "target-observed", "host-initial");
   const observe = (target: EventTarget, name: string, handler: EventListener): void => {
@@ -916,11 +915,8 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     return samples;
   };
   const pointer = (phase: number) => (event: PointerEvent): void => {
-    // Let WebKit own gestures on the active editable endpoint. Forwarding the
-    // same gesture also runs Doroti's caret/long-press selection recognizers.
-    // A gesture captured on the canvas still completes through the framework.
-    if (operatingSystem === "iOS" && host.contextMenuEnabled &&
-        event.target === input && !root.hasPointerCapture(event.pointerId)) return;
+    // Cursor placement and handle dragging must use the same geometry as the
+    // canvas text, including when the transparent IME is the DOM hit target.
     event.preventDefault();
     if (phase === 1) {
       const semanticTextField = semanticsTextFieldAtPoint(host, event.clientX, event.clientY);
@@ -1390,9 +1386,7 @@ export function setContextMenuEnabled(hostId: number, enabled: boolean): void {
     activeWorkerBridge.postControl("context-menu", { hostId, enabled });
     return;
   }
-  const host = requireHost(hostId);
-  host.contextMenuEnabled = enabled;
-  host.input.dataset.dorotiNativeSelection = String(enabled && browserOperatingSystem() === "iOS");
+  requireHost(hostId).contextMenuEnabled = enabled;
 }
 
 export function clearTextInput(hostId: number): void {

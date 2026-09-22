@@ -158,17 +158,11 @@ try {
   check(styles.slice(3).every(s=>s.select==='text'), 'native editing endpoints remain selectable');
   const editablePaint = await evaluate(`(()=>{
     const e=document.querySelector('#doroti-ime'),s=getComputedStyle(e),selection=getComputedStyle(e,'::selection');
-    return {native:e.dataset.dorotiNativeSelection,filter:s.filter,opacity:s.opacity,caret:s.caretColor,
+    return {filter:s.filter,opacity:s.opacity,caret:s.caretColor,
       color:s.color,fill:s.webkitTextFillColor,selection:selection.backgroundColor};
   })()`);
   await save('editable-paint', editablePaint);
-  if (nativeIosSelection) {
-    check(editablePaint.native==='true' && editablePaint.filter==='none' && editablePaint.opacity==='1', 'iOS native selection paint is not filtered out');
-    check(editablePaint.caret==='rgb(0, 122, 255)', 'iOS caret and handle color is visible');
-    check(editablePaint.color==='rgba(0, 0, 0, 0)' && editablePaint.fill==='rgba(0, 0, 0, 0)' && editablePaint.selection==='rgba(0, 0, 0, 0)', 'iOS native glyphs and selection background do not duplicate canvas paint');
-  } else {
-    check(editablePaint.filter==='opacity(0)' && editablePaint.caret==='rgba(0, 0, 0, 0)', 'other platforms retain canvas-owned selection paint');
-  }
+  check(editablePaint.filter==='opacity(0)' && editablePaint.caret==='rgba(0, 0, 0, 0)', 'DOM caret, handles and selection paint remain hidden');
   check(styles[1].hidden !== 'true', 'accessibility tree remains exposed');
   const accessibility = await cdp('Accessibility.getFullAXTree', {}, page);
   check(accessibility.nodes.some(n=>!n.ignored && n.role?.value==='textbox'), 'browser accessibility tree contains an exposed textbox');
@@ -183,8 +177,36 @@ try {
     const editableRect = await evaluate(`document.querySelector('#doroti-ime').getBoundingClientRect().toJSON()`);
     await tap(editableRect.x + Math.min(24, editableRect.width/2), editableRect.y + editableRect.height/2, 850);
     await save('native-gesture', await evaluate(`({pointer:window.__selectionPointer,active:document.activeElement?.id,inputRect:document.querySelector('#doroti-ime').getBoundingClientRect().toJSON()})`));
-    check(await evaluate(`window.__selectionPointer?.trusted && !window.__selectionPointer.prevented && window.__selectionPointer.target==='doroti-ime'`), 'iOS editable gesture remains browser-owned');
+    check(await evaluate(`window.__selectionPointer?.trusted && window.__selectionPointer.prevented && window.__selectionPointer.target==='doroti-ime'`), 'iOS editable gesture reaches framework selection');
     check(!(await dom()).some(n => n.role==='button' && /^(Copy|Cut|Paste|Select All)$/i.test(n.label ?? n.text ?? '')), 'iOS long press does not add a framework toolbar');
+    await shot('canvas-ios-caret');
+    const wordPoint = {x:editableRect.x + Math.min(24, editableRect.width/2),y:editableRect.y + editableRect.height/2};
+    for (let i=0;i<2;i++) {
+      await cdp('Input.dispatchTouchEvent', {type:'touchStart',touchPoints:[wordPoint]}, page);
+      await wait(50);
+      await cdp('Input.dispatchTouchEvent', {type:'touchEnd',touchPoints:[]}, page);
+      await wait(60);
+    }
+    await wait(400);
+    check(await evaluate(`(()=>{const e=document.querySelector('#doroti-ime');return e.selectionStart===0 && e.selectionEnd===6})()`), 'framework double tap selects the painted word');
+    await shot('canvas-ios-handles');
+    // Approximate the padded handle hit area, then validate the resulting
+    // framework selection; DOM metrics are not an alignment oracle.
+    const handlePoint = await evaluate(`(()=>{
+      const e=document.querySelector('#doroti-ime'),r=e.getBoundingClientRect(),s=getComputedStyle(e);
+      const c=document.createElement('canvas').getContext('2d');c.font=s.font;
+      return {x:r.x+c.measureText('mobile').width,y:r.bottom+6};
+    })()`);
+    await cdp('Input.dispatchTouchEvent', {type:'touchStart',touchPoints:[handlePoint]}, page);
+    for (let i=1;i<=6;i++) {
+      await cdp('Input.dispatchTouchEvent', {type:'touchMove',touchPoints:[{x:handlePoint.x+i*10,y:handlePoint.y}]}, page);
+      await wait(40);
+    }
+    await cdp('Input.dispatchTouchEvent', {type:'touchEnd',touchPoints:[]}, page);
+    await wait(400);
+    check(await evaluate(`(()=>{const e=document.querySelector('#doroti-ime');return e.selectionStart===0 && e.selectionEnd>6})()`), 'canvas end-handle drag extends the selection');
+    check(!(await dom()).some(n => n.role==='button' && /^(Copy|Cut|Paste|Select All)$/i.test(n.label ?? n.text ?? '')), 'handle drag does not add a framework toolbar');
+    await shot('canvas-ios-handle-drag');
     // Chromium emulation cannot show UIKit UI. Exercise the native endpoint's
     // selection/edit events and verify the managed semantics acknowledge them.
     await evaluate(`document.querySelector('#doroti-ime').setSelectionRange(0,6)`);

@@ -78,22 +78,6 @@ body,
   background: transparent;
 }
 
-/* WebKit uses caret-color for native selection UI too. Hiding the whole
-   editable or making its caret transparent also hides the selection handles.
-   Keep only the glyphs transparent: the canvas already paints the text. */
-.doroti-ime[data-doroti-native-selection="true"] {
-  filter: none;
-  -webkit-text-fill-color: transparent;
-  caret-color: #007aff;
-}
-
-/* The framework paints the selection background; retain only native handles
-   and the insertion caret above it. */
-.doroti-ime[data-doroti-native-selection="true"]::selection {
-  color: transparent;
-  background: transparent;
-}
-
 /* Accessibility labels describe the canvas; they are not a second selectable
    document. Keep the tree exposed and retain native editable endpoints for AT,
    IME, clipboard, and selection synchronization. */
