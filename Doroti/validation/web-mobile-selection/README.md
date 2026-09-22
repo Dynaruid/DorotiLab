@@ -8,6 +8,7 @@
 | 명시적 클립보드 조회 | `Clipboard.hasStrings()`는 실제 텍스트 유무 조회, `getData`/Paste는 실제 읽기 | Services → platform capability → Clipboard API |
 | iOS 키보드 포커스 | 짧은 탭의 pointerup 안에서 DOM focus; 스크롤·길게 누르기·취소·보조 포인터 제외 | `doroti.web.text-focus.ts` |
 | 입력 연결 | Worker attach 전 selectionchange 보류, 먼저 도착한 IME 입력은 보존 | `doroti.web.ts` |
+| 상태 응답 순서 | Worker가 처리한 입력 순서를 함께 전달; 최신 DOM 입력보다 오래된 상태 응답은 무시 | BrowserHostAdapter / DOM bridge |
 | 표시·숨김과 위치 갱신 | Show/Hide 요청은 별도 처리; 텍스트 ACK·caret geometry 갱신은 포커스를 가져오지 않음 | BrowserHostAdapter / DOM bridge |
 | 선택 UI | iOS 메뉴·확대경·핸들·커서·선택 배경은 Doroti; DOM 입력은 opacity 0 / pointer-events auto, 화면 포인터는 root에서 가로채 전달 | Framework + Web CSS |
 | 웹검색·공유 | 웹검색은 trusted 탭 안에서 탭을 열고 Worker의 검색어로 이동; API 차단 시 재실행 링크/버튼, 공유 취소는 정상 종료 | `doroti.web.text-actions.ts` |
@@ -158,3 +159,35 @@ Release publish, WebKit 비교 검사,
 일반 입력창에서는 DOM 입력창을 대상으로 한 터치가 Doroti 선택으로 전달되는지,
 핸들 드래그·확대경·메뉴·Cut/Paste·웹검색이 유지되는지를 확인했다.
 실제 iPhone 키보드의 스페이스바 길게 누르기 제스처는 기기에서 재확인이 필요하다.
+
+### 키보드 커서 드래그 중 맨 끝으로 튀는 현상
+
+커서 위치를 바꾼 직후, 아직 `selectionchange`가 전달되기 전에 오래된 Worker 상태를
+도착시키는 재현을 추가했다. 기준 제품은 11, 7, 3, 6번으로 이동할 때마다 이전 응답의
+16번(문자열 끝)으로 돌아갔다. 텍스트 상태 응답이 `RenderEditable`에서 받은 입력창
+transform을 semantics 사각형으로 교체하는 문제도 함께 확인했다.
+[수정 전 재현](../../artifacts/web-mobile-selection/cursor-race-baseline/cursor-race.json).
+
+- `setTextInputState`에 Worker가 처리한 `InputSequence`를 포함한다. DOM이 마지막으로
+  전송한 텍스트/선택 입력보다 오래된 응답은 반영하지 않는다.
+- 네이티브 커서는 이미 바뀌었지만 `selectionchange` 이벤트가 대기 중일 수도 있으므로,
+  활성 입력창의 실제 상태를 먼저 전달한 뒤 응답 순서를 비교한다.
+- semantics 좌표는 최초 동기 focus를 위한 임시 좌표로만 사용한다. Framework에서
+  정확한 크기/transform을 받으면 이후 텍스트·semantics 갱신이 이를 덮어쓰지 않는다.
+- 입력 설정은 attach/명시적 configuration 변경 시 적용한다. 커서 상태 응답마다
+  키보드 설정을 다시 쓰지 않는다. 새 입력 연결과 연결 종료 때 추적 상태를 초기화한다.
+
+```sh
+python3 Doroti/validation/run-with-timeout.py dotnet publish DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release -o Doroti/artifacts/web-mobile-selection/cursor-race-product
+DOROTI_SEARCH_FIELD=1 DOROTI_CURSOR_RACE=1 python3 Doroti/validation/run-with-timeout.py node Doroti/validation/web-mobile-selection/run.mjs Doroti/artifacts/web-mobile-selection/cursor-race-search-final Doroti/artifacts/web-mobile-selection/cursor-race-product/wwwroot iphone
+python3 Doroti/validation/run-with-timeout.py node Doroti/validation/web-mobile-selection/run.mjs Doroti/artifacts/web-mobile-selection/cursor-race-iphone Doroti/artifacts/web-mobile-selection/cursor-race-product/wwwroot iphone
+DOROTI_EARLY_INPUT=1 python3 Doroti/validation/run-with-timeout.py node Doroti/validation/web-mobile-selection/run.mjs Doroti/artifacts/web-mobile-selection/cursor-race-ipad-ime Doroti/artifacts/web-mobile-selection/cursor-race-product/wwwroot ipad worker-direct-webgl 820
+```
+
+Release publish와 [검색창 26개 검사](../../artifacts/web-mobile-selection/cursor-race-search-final/result.json),
+[일반 입력창 44개 검사](../../artifacts/web-mobile-selection/cursor-race-iphone/result.json),
+[iPad 조기 IME 입력 포함 45개 검사](../../artifacts/web-mobile-selection/cursor-race-ipad-ime/result.json)를 통과했다.
+[수정 후 재현](../../artifacts/web-mobile-selection/cursor-race-search-final/cursor-race.json)에서
+커서는 11, 7, 3, 6번을 유지했고, 입력창 좌표도 바뀌지 않았다. 정상적인 현재 선택 명령과
+검색창을 닫았다 다시 열 때의 새 입력 연결도 확인했다. 재현은 오래된 Worker 응답을
+주입한 브라우저 검사이며 실제 iPhone 키보드 제스처는 기기에서 재확인이 필요하다.

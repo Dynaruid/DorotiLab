@@ -163,7 +163,8 @@ internal static partial class BrowserInterop
         int inputAction,
         bool multiline,
         bool attach,
-        bool enableInteractiveSelection
+        bool enableInteractiveSelection,
+        [JSMarshalAs<JSType.Number>] long acknowledgedInputSequence
     );
 
     [JSImport("updateTextInputConfiguration", Module)]
@@ -758,7 +759,8 @@ public sealed class BrowserHostAdapter
             (int)_textInputConfiguration.inputAction,
             _textInputConfiguration.inputType == DorotiTextInputType.multiline,
             attach,
-            _textInputConfiguration.enableInteractiveSelection
+            _textInputConfiguration.enableInteractiveSelection,
+            InputSequence
         );
 
     public void SetCaretRect(Rect logicalRect) =>

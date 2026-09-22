@@ -77,6 +77,7 @@ interface BrowserHost {
   resizeTrace: ResizeTraceEntry[];
   resizeTraceSequence: number;
   inputSequence: number;
+  lastNativeTextInputSequence: number;
   diagnosticsPublishTimer: number;
   dprQuery: MediaQueryList | null;
   frameRaf: number;
@@ -101,7 +102,7 @@ interface BrowserHost {
   multiline: boolean;
   interactiveSelectionEnabled: boolean;
   pendingBlurConnectionCloseTimer: number;
-  editableGeometryApplied: boolean;
+  editableGeometrySource: "none" | "semantics" | "framework";
   contextMenuEnabled: boolean;
   frameworkCursor: string;
   pointerCaptureCursor: string | null;
@@ -861,6 +862,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   };
   const host: BrowserHost = {
     pendingTextInput: false, pendingNativeEdit: false, textActions: new BrowserTextActions(),
+    lastNativeTextInputSequence: 0,
     textInputAttached: false, textInputUiHidden: false,
     id: hostId, root, canvas, input, semantics,
     semanticsElements: new Map(), semanticsListeners: new Map(),
@@ -882,7 +884,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     viewFocused: false, pressedKeys: new Map(),
     inputAction: 2, multiline: false, interactiveSelectionEnabled: true,
     pendingBlurConnectionCloseTimer: 0,
-    editableGeometryApplied: false, contextMenuEnabled: true,
+    editableGeometrySource: "none", contextMenuEnabled: true,
     frameworkCursor: "default", pointerCaptureCursor: null,
   };
   commitDirectCanvasLogicalSize(host, logicalWidth, logicalHeight);
@@ -895,6 +897,8 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   });
   const tapFocus = new TextInputTapFocus<HTMLInputElement | HTMLTextAreaElement>((field) => {
     if (!field.isConnected || field.disabled || field.readOnly) return;
+    if (host.focusedTextFieldSemanticsId !== Number(field.dataset.dorotiSemanticsId))
+      host.editableGeometrySource = "none";
     host.focusedTextFieldSemanticsId = Number(field.dataset.dorotiSemanticsId);
     placeTextInputAtSemanticsElement(host, field);
     if (input.hidden) {
@@ -961,6 +965,8 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
         semanticTextField instanceof HTMLInputElement || semanticTextField instanceof HTMLTextAreaElement
           ? semanticTextField : null);
       if (semanticTextField?.dataset.dorotiSemanticsId) {
+        if (host.focusedTextFieldSemanticsId !== Number(semanticTextField.dataset.dorotiSemanticsId))
+          host.editableGeometrySource = "none";
         host.focusedTextFieldSemanticsId = Number(semanticTextField.dataset.dorotiSemanticsId);
         placeTextInputAtSemanticsElement(host, semanticTextField);
       }
@@ -1351,18 +1357,28 @@ export function setTextInputState(
   hostId: number, text: string, selectionBase: number, selectionExtent: number,
   inputMode: string, enterKeyHint: string, readOnly: boolean, obscureText: boolean,
   autocapitalize: string, autocorrect: boolean, inputAction: number, multiline: boolean,
-  attach: boolean, enableInteractiveSelection: boolean): void {
+  attach: boolean, enableInteractiveSelection: boolean, acknowledgedInputSequence = 0): void {
   if (activeWorkerBridge) {
     activeWorkerBridge.postControl("text-state", {
       hostId, text, selectionBase, selectionExtent, inputMode, enterKeyHint,
       readOnly, obscureText, autocapitalize, autocorrect, inputAction, multiline, attach,
-      enableInteractiveSelection,
+      enableInteractiveSelection, acknowledgedInputSequence,
     });
     return;
   }
   const host = requireHost(hostId);
   if (!attach && (host.pendingTextInput || !host.textInputAttached)) return;
-  if (attach) { host.textInputAttached = true; host.textInputUiHidden = false; }
+  if (!attach) {
+    // WebKit can change the caret before its queued selectionchange runs.
+    // Publish that change before deciding whether a Worker reply is current.
+    if (document.activeElement === host.input && !host.input.hidden) emitText(host);
+    if (acknowledgedInputSequence < host.lastNativeTextInputSequence) return;
+  } else {
+    host.textInputAttached = true;
+    host.textInputUiHidden = false;
+    host.lastNativeTextInputSequence = 0;
+    host.editableGeometrySource = "none";
+  }
   const pendingNativeEdit = host.pendingNativeEdit;
   host.pendingTextInput = false;
   host.pendingNativeEdit = false;
@@ -1370,7 +1386,7 @@ export function setTextInputState(
     clearTimeout(host.pendingBlurConnectionCloseTimer);
     host.pendingBlurConnectionCloseTimer = 0;
   }
-  applyTextInputConfiguration(
+  if (attach) applyTextInputConfiguration(
     host, inputMode, enterKeyHint, readOnly, obscureText, autocapitalize,
     autocorrect, inputAction, multiline, enableInteractiveSelection);
   const normalizedBase = Math.max(0, Math.min(text.length, selectionBase));
@@ -1416,7 +1432,7 @@ export function setEditableSizeAndTransform(
   if (transform.length !== 16 || transform.some((value) => !Number.isFinite(value)))
     throw new Error("Doroti editable transform must contain sixteen finite values.");
 
-  host.editableGeometryApplied = true;
+  host.editableGeometrySource = "framework";
   host.input.style.left = "0";
   host.input.style.top = "0";
   host.input.style.width = `${Math.max(1, width)}px`;
@@ -1430,7 +1446,7 @@ export function setCaretRect(hostId: number, left: number, top: number, width: n
     return;
   }
   const host = requireHost(hostId);
-  if (!host.editableGeometryApplied) {
+  if (host.editableGeometrySource === "none") {
     host.input.style.left = `${left}px`;
     host.input.style.top = `${top}px`;
     host.input.style.width = `${Math.max(1, width)}px`;
@@ -1455,6 +1471,8 @@ export function clearTextInput(hostId: number): void {
   host.pendingTextInput = false;
   host.pendingNativeEdit = false;
   host.textInputAttached = false;
+  host.lastNativeTextInputSequence = 0;
+  host.editableGeometrySource = "none";
   if (host.pendingBlurConnectionCloseTimer !== 0) {
     clearTimeout(host.pendingBlurConnectionCloseTimer);
     host.pendingBlurConnectionCloseTimer = 0;
@@ -1986,7 +2004,8 @@ export async function startDorotiWorkerHost(
           Number(payload.hostId), String(payload.text), Number(payload.selectionBase), Number(payload.selectionExtent),
           String(payload.inputMode), String(payload.enterKeyHint), Boolean(payload.readOnly), Boolean(payload.obscureText),
           String(payload.autocapitalize), Boolean(payload.autocorrect), Number(payload.inputAction),
-          Boolean(payload.multiline), Boolean(payload.attach), Boolean(payload.enableInteractiveSelection));
+          Boolean(payload.multiline), Boolean(payload.attach), Boolean(payload.enableInteractiveSelection),
+          Number(payload.acknowledgedInputSequence));
         break;
       case "text-config":
         updateTextInputConfiguration(
@@ -2424,6 +2443,8 @@ function closeTextConnectionAfterBlur(host: BrowserHost): void {
   host.pendingTextInput = false;
   host.pendingNativeEdit = false;
   host.textInputAttached = false;
+  host.lastNativeTextInputSequence = 0;
+  host.editableGeometrySource = "none";
   host.compositionStart = -1;
   host.input.value = "";
   host.input.hidden = true;
@@ -2485,6 +2506,7 @@ function emitText(host: BrowserHost): void {
   rememberTextState(
     host, host.input.value, selectionBase, selectionExtent, composingBase, composingExtent);
   const inputSequence = ++host.inputSequence;
+  host.lastNativeTextInputSequence = inputSequence;
   recordResize(host, "text-editing-dispatched", "browser-text-input", {
     inputSequence,
     detail: JSON.stringify({
@@ -2656,9 +2678,12 @@ function semanticsControlAtPoint(host: BrowserHost, clientX: number, clientY: nu
 }
 
 function placeTextInputAtSemanticsElement(host: BrowserHost, element: HTMLElement): void {
+  // Semantics is only a provisional box for synchronous focus. Once the
+  // RenderEditable transform arrives it owns geometry, including scrolling.
+  if (host.editableGeometrySource === "framework") return;
   const rootRect = host.root.getBoundingClientRect();
   const fieldRect = element.getBoundingClientRect();
-  host.editableGeometryApplied = true;
+  host.editableGeometrySource = "semantics";
   host.input.style.left = `${fieldRect.left - rootRect.left}px`;
   host.input.style.top = `${fieldRect.top - rootRect.top}px`;
   host.input.style.width = `${Math.max(1, fieldRect.width)}px`;

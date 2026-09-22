@@ -8,6 +8,7 @@ import { resolve, join } from 'node:path';
 const [directory, upstream, profile = 'android', backend = 'worker-direct-webgl', width = '390', dpr = '1'] = process.argv.slice(2);
 const earlyInput = process.env.DOROTI_EARLY_INPUT === '1';
 const searchField = process.env.DOROTI_SEARCH_FIELD === '1';
+const cursorRace = process.env.DOROTI_CURSOR_RACE === '1';
 if (!directory || !upstream) throw Error('run.mjs OUTPUT URL_OR_WWWROOT [android|iphone|ipad|desktop] [backend] [width] [dpr]');
 const out = resolve(directory);
 if (await access(join(out, 'chrome-profile')).then(() => true, () => false)) throw Error('Use a fresh output directory');
@@ -225,6 +226,37 @@ try {
       check(state.start===offset && state.end===offset && state.focused && state.ack,'keyboard-only cursor move reaches framework at offset '+offset);
     }
     await save('keyboard-cursor',keyboardCursor);
+    if(cursorRace) {
+      const race=await evaluate(`(async()=>{
+        const bridge=await import('/_content/Doroti.Host.Web/doroti.web.js');
+        const id=Number(document.querySelector('.doroti-root').dataset.dorotiHostId),e=document.querySelector('#doroti-ime');
+        const text=e.value, offsets=[11,7,3,6],observed=[];
+        const ack=(base,extent,seq)=>bridge.setTextInputState(id,text,base,extent,'text','done',false,false,'sentences',true,2,false,false,true,seq);
+        for(const offset of offsets) {
+          e.setSelectionRange(offset,offset);
+          // The native caret changed, but its queued selectionchange has not
+          // run yet. An older Worker response still says "end of text".
+          ack(text.length,text.length,0);
+          observed.push(e.selectionStart);
+          await new Promise(r=>setTimeout(r,20));
+        }
+        const root=document.querySelector('.doroti-root').getBoundingClientRect(),rect=e.getBoundingClientRect();
+        const transform=[1,0,0,0,0,1,0,0,0,0,1,0,rect.x-root.x,rect.y-root.y,0,1];
+        bridge.setEditableSizeAndTransform(id,rect.width,rect.height,JSON.stringify(transform));
+        const geometry=e.style.cssText;
+        ack(e.selectionStart,e.selectionEnd,Number.MAX_SAFE_INTEGER);
+        const geometryStable=e.style.cssText===geometry;
+        ack(1,4,Number.MAX_SAFE_INTEGER);
+        const currentUpdate=e.selectionStart===1 && e.selectionEnd===4;
+        return {offsets,observed,geometryStable,currentUpdate};
+      })()`);
+      await save('cursor-race',race);
+      check(JSON.stringify(race.offsets)===JSON.stringify(race.observed),'delayed Worker state cannot reset a newer native cursor to the end');
+      check(race.geometryStable,'text acknowledgements do not replace framework editable geometry');
+      check(race.currentUpdate,'current framework selection commands still apply');
+      await evaluate(`document.querySelector('#doroti-ime').setSelectionRange(14,14)`);
+      await wait(300);
+    }
     const point={x:inputRect.x+24,y:inputRect.y+inputRect.height/2};
     await cdp('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[point]},page);
     await wait(850);
@@ -250,6 +282,14 @@ try {
     await wait(500);
     check((await dom()).some(n=>n.role==='heading' && n.label==='Doroti Material 3'),'search route returns to the sample');
     await shot('search-closed');
+    if(cursorRace) {
+      // The populated SearchBar no longer exposes its placeholder as a label.
+      const reopened=await evaluate(`(()=>{const e=Array.from(document.querySelectorAll('[role=textbox]')).find(e=>e.value==='search magnifier' && e.getBoundingClientRect().width>0);if(!e)return null;const r=e.getBoundingClientRect();return {rect:[r.x,r.y,r.width,r.height]}})()`);
+      check(!!reopened,'search bar remains available after connection close');
+      await tap(reopened.rect[0]+reopened.rect[2]/2,reopened.rect[1]+reopened.rect[3]/2);
+      await wait(700);
+      check(await evaluate(`(()=>{const e=document.querySelector('#doroti-ime');return document.activeElement===e && e.value==='search magnifier' && e.getBoundingClientRect().y<73.5 && e.style.transform.startsWith('matrix3d')})()`),'new text connection restores its own framework geometry and text');
+    }
   } else {
   let textbox;
   for (let i = 0; i < 30; i++) {
