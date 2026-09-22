@@ -123,6 +123,10 @@ public static partial class Text_selectionLibrary
 
 public class TextSelectionOverlay
 {
+    private bool _disposed;
+    private bool _magnifierGeometryUpdateScheduled;
+    private TextPosition? _magnifierTextPosition;
+    private Offset? _magnifierGesturePosition;
     public virtual BuildContext context { get; private set; } = default!;
     public virtual RenderEditable renderObject { get; private set; } = default!;
     public virtual TextSelectionControls? selectionControls { get; private set; }
@@ -429,6 +433,7 @@ public class TextSelectionOverlay
 
     public virtual void dispose()
     {
+        _disposed = true;
         DartRuntimePrimitives.Assert(() =>
             Foundation.DebugLibrary.debugMaybeDispatchDisposed(this)
         );
@@ -489,6 +494,9 @@ public class TextSelectionOverlay
         TextPosition currentTextPosition
     )
     {
+        _magnifierTextPosition = currentTextPosition;
+        _magnifierGesturePosition = globalGesturePosition;
+        _scheduleMagnifierGeometryUpdate();
         TextSelection lineAtOffset = renderEditable.getLineAtOffset(currentTextPosition);
         var positionAtEndOfLine = new TextPosition(
             offset: lineAtOffset.extentOffset,
@@ -518,6 +526,23 @@ public class TextSelectionOverlay
             currentLineBoundaries: overlayLineBoundaries
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");
+    }
+
+    private void _scheduleMagnifierGeometryUpdate()
+    {
+        if (_disposed || _magnifierGeometryUpdateScheduled) return;
+        _magnifierGeometryUpdateScheduled = true;
+        // Refresh after layout/scroll even with a stationary finger. Do not
+        // request extra frames; the callback stops when the lens hides.
+        Scheduler.SchedulerBinding.instance.addPostFrameCallback((_) =>
+        {
+            _magnifierGeometryUpdateScheduled = false;
+            if (_disposed || !context.mounted || !renderObject.attached || !magnifierIsVisible
+                || _magnifierTextPosition is null || _magnifierGesturePosition is null
+                || _magnifierTextPosition.offset > renderObject.plainText.Length) return;
+            _selectionOverlay.updateMagnifier(_buildMagnifier(
+                renderObject, _magnifierGesturePosition.Value, _magnifierTextPosition));
+        });
     }
 
     internal virtual void _handleSelectionEndHandleDragStart(DragStartDetails details)

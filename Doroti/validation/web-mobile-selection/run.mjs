@@ -6,6 +6,8 @@ import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve, join } from 'node:path';
 
 const [directory, upstream, profile = 'android', backend = 'worker-direct-webgl', width = '390', dpr = '1'] = process.argv.slice(2);
+const earlyInput = process.env.DOROTI_EARLY_INPUT === '1';
+const searchField = process.env.DOROTI_SEARCH_FIELD === '1';
 if (!directory || !upstream) throw Error('run.mjs OUTPUT URL_OR_WWWROOT [android|iphone|ipad|desktop] [backend] [width] [dpr]');
 const out = resolve(directory);
 if (await access(join(out, 'chrome-profile')).then(() => true, () => false)) throw Error('Use a fresh output directory');
@@ -82,6 +84,21 @@ try {
   };
   await cdp('Runtime.enable', {}, page);
   await cdp('Page.enable', {}, page);
+  await cdp('Page.addScriptToEvaluateOnNewDocument', {source:`
+    window.__clipboardReads=0;window.__focusAtPointerUp=[];
+    const read=navigator.clipboard.readText.bind(navigator.clipboard);
+    Object.defineProperty(navigator.clipboard,'readText',{configurable:true,value:()=>{window.__clipboardReads++;return read()}});
+    document.addEventListener('pointerup',e=>{if(e.isTrusted)window.__focusAtPointerUp.push(document.activeElement?.id)});
+    window.__earlyInput=${earlyInput};
+    document.addEventListener('focus',e=>{
+      if(!window.__earlyInput || e.target.id!=='doroti-ime')return;
+      window.__earlyInput=false;
+      const input=e.target;
+      input.dispatchEvent(new CompositionEvent('compositionstart',{bubbles:true}));
+      input.value='임';input.setSelectionRange(1,1);
+      input.dispatchEvent(new InputEvent('input',{bubbles:true,data:'임',isComposing:true,inputType:'insertCompositionText'}));
+    },true);
+  `}, page);
   const mobile = profile !== 'desktop';
   const frameworkSelection = mobile;
   const ios = profile === 'iphone' || profile === 'ipad';
@@ -135,9 +152,66 @@ try {
     }
     await wait(450);
   };
+  const tapMenu = async pattern => {
+    for(let pageIndex=0;pageIndex<3;pageIndex++) {
+      const nodes=await dom();
+      const button=nodes.find(n=>n.role==='button' && n.rect[2]>0 && pattern.test(n.label ?? n.text ?? ''));
+      if(button) {await tap(button.rect[0]+button.rect[2]/2,button.rect[1]+button.rect[3]/2);return;}
+      const menu=nodes.find(n=>n.role==='button' && n.rect[2]>0 && /^(Copy|Cut|Paste|Search Web|Share.*)$/i.test(n.label ?? n.text ?? ''));
+      const next=menu && nodes.filter(n=>n.role==='button' && !n.label && !n.description && n.rect[2]>0 && Math.abs(n.rect[1]-menu.rect[1])<8).sort((a,b)=>b.rect[0]-a.rect[0])[0];
+      if(!next)break;
+      await tap(next.rect[0]+next.rect[2]/2,next.rect[1]+next.rect[3]/2);
+    }
+    await save('missing-menu-dom',await dom());await shot('missing-menu');
+    throw Error('Menu action not found: '+pattern);
+  };
   await save('environment', {version,profile,backend,ua:await evaluate('navigator.userAgent')});
   const policy = await evaluate(`document.querySelector('.doroti-root').dataset.dorotiTextSelection`);
   check(policy === (frameworkSelection ? 'framework' : 'browser'), 'correct mobile/desktop selection owner');
+  if (searchField) {
+    check(ios, 'search magnifier scenario uses Cupertino selection');
+    let search;
+    for (let i=0;i<60;i++) {
+      search=(await dom()).find(n=>n.role==='textbox' && /Search colors/.test(n.label ?? '') && n.rect[1]>=60 && n.rect[1]+n.rect[3]<800 && n.rect[2]>0);
+      if(search)break;
+      await cdp('Input.dispatchMouseEvent',{type:'mouseWheel',x:12,y:650,deltaX:0,deltaY:450},page);
+      await wait(250);
+    }
+    await save('search-bar-dom',await dom());
+    check(!!search,'SearchAnchor bar is visible');
+    await evaluate(`navigator.clipboard.writeText('clipboard before search')`);
+    await tap(search.rect[0]+search.rect[2]/2,search.rect[1]+search.rect[3]/2);
+    await wait(700);
+    await save('search-view-dom',await dom());
+    await shot('search-view');
+    check(await evaluate(`document.activeElement?.id==='doroti-ime'`),'search route focuses the editing endpoint');
+    check(await evaluate(`window.__focusAtPointerUp.at(-1)==='doroti-ime'`),'search bar focuses within the trusted tap');
+    await cdp('Input.insertText',{text:'search magnifier'},page);
+    await wait(500);
+    const inputRect=await evaluate(`document.querySelector('#doroti-ime').getBoundingClientRect().toJSON()`);
+    check(inputRect.y+inputRect.height/2<73.5,'search field lies near the viewport top');
+    check(await evaluate(`document.querySelector('#doroti-ime').value==='search magnifier'`),'search route retains typed text');
+    const point={x:inputRect.x+24,y:inputRect.y+inputRect.height/2};
+    await cdp('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[point]},page);
+    await wait(850);
+    await shot('search-top-magnifier');
+    await save('search-magnifier-geometry',inputRect);
+    await cdp('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:point.x+70,y:point.y}]},page);
+    await wait(250);
+    await shot('search-top-magnifier-drag');
+    await cdp('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]},page);
+    await wait(400);
+    check(!!await menuButton(/^(Paste|Select All)$/i),'search long press restores the Doroti toolbar');
+    check(await evaluate('window.__clipboardReads===0'),'search focus and toolbar do not probe the clipboard');
+    check(await evaluate(`getSelection().toString()===''`),'search gestures leave DOM selection empty');
+    await shot('search-toolbar');
+    const back=(await dom()).find(n=>n.role==='button' && /Back/i.test(n.label ?? n.description ?? n.text ?? ''));
+    check(!!back,'search route exposes a Back button');
+    await tap(back.rect[0]+back.rect[2]/2,back.rect[1]+back.rect[3]/2);
+    await wait(500);
+    check((await dom()).some(n=>n.role==='heading' && n.label==='Doroti Material 3'),'search route returns to the sample');
+    await shot('search-closed');
+  } else {
   let textbox;
   for (let i = 0; i < 30; i++) {
     textbox = (await dom()).find(n => n.role === 'textbox' && /Filled|Outlined/.test(n.label ?? '') && n.rect[1] >= 60 && n.rect[1] + n.rect[3] < 800 && n.rect[2] > 0);
@@ -150,7 +224,24 @@ try {
   await save('text-field-dom', await dom());
   if (!textbox) throw Error('No visible TextField');
   const [x,y,w,h] = textbox.rect;
+  if(ios) {
+    const disabled=(await dom()).find(n=>n.role==='textbox' && n.label==='Disabled' && n.rect[1]>=60 && n.rect[1]+n.rect[3]<800 && n.rect[2]>0);
+    if(disabled) {
+      await tap(disabled.rect[0]+disabled.rect[2]/2,disabled.rect[1]+disabled.rect[3]/2);
+      check(await evaluate(`document.querySelector('#doroti-ime').hidden && document.activeElement?.id!=='doroti-ime'`), 'disabled field does not request keyboard focus');
+    }
+  }
+  await evaluate(`navigator.clipboard.writeText('clipboard before first focus')`);
   await tap(x+w/2,y+h/2);
+  await save('first-tap',{reads:await evaluate('window.__clipboardReads'),focus:await evaluate('window.__focusAtPointerUp'),menus:(await dom()).filter(n=>n.role==='button' && /^Paste$/i.test(n.label ?? n.text ?? ''))});
+  check(await evaluate('window.__clipboardReads===0'), 'Flutter web menu status does not read clipboard contents');
+  if (ios) check(await evaluate(`window.__focusAtPointerUp.at(-1)==='doroti-ime'`), 'iOS focus is established before the trusted tap event returns');
+  check(!(await dom()).some(n=>n.role==='button' && /^Paste$/i.test(n.label ?? n.text ?? '')), 'first tap opens editing without a Paste-only menu');
+  if(earlyInput) {
+    check(await evaluate(`document.querySelector('#doroti-ime').value==='임' && Array.from(document.querySelectorAll('[role=textbox]')).some(e=>e.value==='임')`), 'IME input before Worker attachment is preserved');
+    await evaluate(`document.querySelector('#doroti-ime').dispatchEvent(new CompositionEvent('compositionend',{bubbles:true,data:'임'}));document.querySelector('#doroti-ime').setSelectionRange(0,1)`);
+    await wait(100);
+  }
   check(await evaluate('document.activeElement?.matches("input,textarea")'), 'native editing endpoint focused');
   await cdp('Input.insertText', {text:'mobile selection'}, page);
   await wait(500);
@@ -224,6 +315,14 @@ try {
     check(await evaluate(`(()=>{const e=document.querySelector('#doroti-ime');return e.selectionStart===0 && e.selectionEnd>6})()`), 'canvas end-handle drag extends the selection');
     check(!!await menuButton(/^(Copy|Cut)$/i), 'handle drag restores the framework toolbar');
     await shot('canvas-ios-handle-drag');
+    const selectedText=await evaluate(`(()=>{const e=document.querySelector('#doroti-ime');return e.value.slice(e.selectionStart,e.selectionEnd)})()`);
+    await evaluate(`window.__textActions=[];window.__originalOpen=window.open;window.open=url=>{window.__textActions.push({action:'search',url});return {opener:null}};Object.defineProperty(navigator,'share',{configurable:true,value:async data=>{window.__textActions.push({action:'share',text:data.text})}})`);
+    await tapMenu(/^Search Web$/i);
+    check(await evaluate(`window.__textActions.some(x=>x.action==='search' && new URL(x.url).searchParams.get('q')===${JSON.stringify(selectedText)})`), 'Web Search sends the selected text to the browser');
+    await tapMenu(/^Share(?:\.\.\.|…)?$/i);
+    check(await evaluate(`window.__textActions.some(x=>x.action==='share' && x.text===${JSON.stringify(selectedText)})`), 'Share sends the selected text to the browser API');
+    check(!(await dom()).some(n=>n.role==='button' && /^Look Up$/i.test(n.label ?? n.text ?? '')), 'unimplemented browser dictionary action is hidden');
+    await save('text-actions',await evaluate('window.__textActions'));
     // Chromium emulation cannot show UIKit UI. Exercise the native endpoint's
     // selection/edit events and verify the managed semantics acknowledge them.
     await evaluate(`document.querySelector('#doroti-ime').setSelectionRange(0,6)`);
@@ -246,6 +345,7 @@ try {
       await tap(all.rect[0]+all.rect[2]/2,all.rect[1]+all.rect[3]/2);
     }
     const copy = (await dom()).find(n => n.role==='button' && /^(Copy|COPY)$/.test(n.label ?? n.text ?? ''));
+    check(await evaluate('window.__clipboardReads===0'), 'Flutter web toolbar status never probes clipboard contents');
     const cut = (await dom()).find(n => n.role==='button' && /^(Cut|CUT)$/.test(n.label ?? n.text ?? ''));
     check(!!copy && !!cut, 'selected text displays rendered Copy and Cut buttons');
     const selection = await evaluate(`(()=>{const e=document.querySelector('#doroti-ime');return {start:e.selectionStart,end:e.selectionEnd,value:e.value}})()`);
@@ -279,9 +379,52 @@ try {
     check(!(await dom()).some(n => n.role==='button' && /^(Copy|COPY|Cut|CUT)$/.test(n.label ?? n.text ?? '')), 'desktop does not add a framework toolbar');
     await shot('desktop');
   }
+  if(ios) {
+    const before=await evaluate(`document.querySelector('#doroti-ime').getBoundingClientRect().toJSON()`);
+    await cdp('Input.dispatchMouseEvent',{type:'mouseWheel',x:12,y:650,deltaX:0,deltaY:before.y+before.height/2-66},page);
+    await wait(600);
+    const topRect=await evaluate(`document.querySelector('#doroti-ime').getBoundingClientRect().toJSON()`);
+    check(topRect.y+topRect.height/2>=56 && topRect.y+topRect.height/2<73.5,'magnifier test starts at the top edge where the old lens was clipped');
+    await cdp('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:topRect.x+24,y:topRect.y+topRect.height/2}]},page);
+    await wait(850);
+    await shot('top-edge-magnifier');
+    await save('top-edge-geometry',{before:topRect,after:await evaluate(`document.querySelector('#doroti-ime').getBoundingClientRect().toJSON()`)});
+    await cdp('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]},page);
+    await wait(300);
+    const lifecycle=await evaluate(`(async()=>{
+      const bridge=await import('/_content/Doroti.Host.Web/doroti.web.js');
+      const id=Number(document.querySelector('.doroti-root').dataset.dorotiHostId),input=document.querySelector('#doroti-ime');
+      const original=input.value;
+      bridge.setTextInputVisible(id,false);
+      bridge.setCaretRect(id,0,0,1,24);
+      const hidden=document.activeElement===document.querySelector('canvas') && input.value===original && !input.hidden;
+      bridge.setTextInputVisible(id,true);
+      const shown=document.activeElement===input && input.value===original;
+      window.open=()=>null;
+      const text='한글 & <selected text>';
+      await bridge.performTextAction(id,'SearchWeb.invoke',text);
+      let dialog=document.querySelector('.doroti-text-action-dialog');
+      bridge.setCaretRect(id,0,0,1,24);
+      bridge.setTextInputState(id,input.value,input.selectionStart,input.selectionEnd,'text','done',false,false,'sentences',true,2,false,false,true);
+      const dialogFocus=!!document.activeElement.closest('.doroti-text-action-dialog');
+      const search=dialog.open && new URL(dialog.querySelector('a').href).searchParams.get('q')===text && !dialog.querySelector('selected');
+      dialog.close();
+      Object.defineProperty(navigator,'share',{configurable:true,value:async()=>{throw new DOMException('cancelled','AbortError')}});
+      const cancelled=await bridge.performTextAction(id,'Share.invoke',text)==='cancelled' && !document.querySelector('.doroti-text-action-dialog[open]');
+      Object.defineProperty(navigator,'share',{configurable:true,value:async()=>{throw new DOMException('activation required','NotAllowedError')}});
+      await bridge.performTextAction(id,'Share.invoke',text);dialog=document.querySelector('.doroti-text-action-dialog[open]');
+      let retried=false;Object.defineProperty(navigator,'share',{configurable:true,value:async data=>{retried=data.text===text}});
+      dialog.querySelector('button').click();await new Promise(r=>setTimeout(r,50));
+      window.open=window.__originalOpen;
+      return {hidden,shown,dialogFocus,search,cancelled,retried,closed:!document.querySelector('.doroti-text-action-dialog[open]')};
+    })()`);
+    await save('editing-lifecycle',lifecycle);
+    check(Object.values(lifecycle).every(Boolean),'show/hide, geometry focus isolation and blocked/cancelled text actions work');
+  }
+  }
   check(!await evaluate('document.documentElement.dataset.dorotiRendererError'), 'no renderer failure');
   check(!events.some(e=>e.method==='Runtime.exceptionThrown'), 'no unhandled page exception');
-  await save('result', {status:'PASS',profile,backend,checks,physicalMobile:'notVerified'});
+  await save('result', {status:'PASS',profile,backend,searchField,checks,physicalMobile:'notVerified'});
   console.log(JSON.stringify({status:'PASS',profile,checks}));
   await cdp('Browser.close');
 } catch (error) {

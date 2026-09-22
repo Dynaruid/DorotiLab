@@ -45,7 +45,7 @@ internal class _CupertinoTextMagnifierState__magnifier
         SingleTickerProviderStateMixin<CupertinoTextMagnifier>
 {
     internal virtual Offset _currentAdjustedMagnifierPosition { get; set; } = Offset.zero;
-    internal virtual double _verticalFocalPointAdjustment { get; set; } = 0;
+    internal virtual Offset _focalPointAdjustment { get; set; } = Offset.zero;
     internal virtual AnimationController _ioAnimationController { get; private set; } = default!;
     internal virtual Animation<double> _ioAnimation { get; private set; } = default!;
     internal virtual CurvedAnimation _ioCurvedAnimation { get; private set; } = default!;
@@ -174,30 +174,26 @@ internal class _CupertinoTextMagnifierState__magnifier
                     - CupertinoMagnifier.kMagnifierAboveFocalPoint
                 )
         );
-        Rect screenRect = Offset.zero & MediaQuery.sizeOf(context);
-        Offset adjustedMagnifierPosition = MagnifierController
-            .shiftWithinBounds(
-                bounds: Rect.fromLTRB(
-                    screenRect.left + widget.horizontalScreenEdgePadding,
-                    screenRect.top
-                        - (
-                            CupertinoMagnifier.kDefaultSize.height
-                            + CupertinoMagnifier.kMagnifierAboveFocalPoint
-                        ),
-                    screenRect.right - widget.horizontalScreenEdgePadding,
-                    screenRect.bottom
-                        + (
-                            CupertinoMagnifier.kDefaultSize.height
-                            + CupertinoMagnifier.kMagnifierAboveFocalPoint
-                        )
-                ),
-                rect: rawMagnifierPosition & CupertinoMagnifier.kDefaultSize
-            )
-            .topLeft;
+        var media = MediaQuery.of(context);
+        Rect screenRect = Offset.zero & media.size;
+        double top = Math.Max(media.viewPadding.top, media.viewInsets.top) + 8.0;
+        double bottom = screenRect.bottom - Math.Max(media.viewPadding.bottom, media.viewInsets.bottom) - 8.0;
+        double left = screenRect.left + media.viewPadding.left + widget.horizontalScreenEdgePadding;
+        double right = screenRect.right - media.viewPadding.right - widget.horizontalScreenEdgePadding;
+        Offset adjustedMagnifierPosition = MagnifierController.shiftWithinBounds(
+            bounds: Rect.fromLTRB(left, top,
+                Math.Max(left + CupertinoMagnifier.kDefaultSize.width, right),
+                Math.Max(top + CupertinoMagnifier.kDefaultSize.height, bottom)),
+            rect: rawMagnifierPosition & CupertinoMagnifier.kDefaultSize
+        ).topLeft;
         setState(() =>
         {
             _currentAdjustedMagnifierPosition = adjustedMagnifierPosition;
-            _verticalFocalPointAdjustment = verticalCenterOfCurrentLine - verticalPositionOfLens;
+            _focalPointAdjustment = new Offset(
+                rawMagnifierPosition.dx - adjustedMagnifierPosition.dx,
+                verticalCenterOfCurrentLine - verticalPositionOfLens
+                    + rawMagnifierPosition.dy - adjustedMagnifierPosition.dy
+            );
         });
     }
 
@@ -211,7 +207,7 @@ internal class _CupertinoTextMagnifierState__magnifier
             top: _currentAdjustedMagnifierPosition.dy,
             child: new CupertinoMagnifier(
                 inOutAnimation: _ioAnimation,
-                additionalFocalPointOffset: new Offset(0, _verticalFocalPointAdjustment),
+                additionalFocalPointOffset: _focalPointAdjustment,
                 borderSide: new BorderSide(color: themeData.primaryColor, width: 2.0)
             )
         );

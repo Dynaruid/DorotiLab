@@ -110,3 +110,21 @@ body,
   filter: none;
   pointer-events: none;
 }
+
+.doroti-text-action-dialog {
+  box-sizing: border-box;
+  width: min(30rem, calc(100% - 2rem));
+  max-height: calc(100% - 2rem);
+  padding: 1.25rem;
+  border: 1px solid GrayText;
+  border-radius: 12px;
+  font: 16px system-ui, sans-serif;
+  background: Canvas;
+  color: CanvasText;
+}
+.doroti-text-action-dialog h2 { margin-top: 0; font-size: 1.125rem; }
+.doroti-text-action-dialog p { white-space: pre-wrap; overflow-wrap: anywhere; user-select: text; }
+.doroti-text-action-dialog button, .doroti-text-action-dialog a {
+  margin: 0.25rem 0.75rem 0.25rem 0;
+  font: inherit;
+}

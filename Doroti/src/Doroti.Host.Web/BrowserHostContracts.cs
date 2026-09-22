@@ -220,6 +220,12 @@ internal static partial class BrowserInterop
     [return: JSMarshalAs<JSType.Promise<JSType.String>>]
     internal static partial Task<string> WriteClipboardTextAsync(string text);
 
+    [JSImport("performTextAction", Module)]
+    internal static partial Task<string> PerformTextActionAsync(int hostId, string action, string text);
+
+    [JSImport("setTextInputVisible", Module)]
+    internal static partial void SetTextInputVisible(int hostId, bool visible);
+
     [JSImport("updateSemantics", Module)]
     internal static partial void UpdateSemantics(int hostId, string json);
 
@@ -612,6 +618,9 @@ public sealed class BrowserHostAdapter
 
     internal event Action<long, long, string>? SemanticsAction;
 
+    internal Task<string> PerformTextActionAsync(string action, string text) =>
+        BrowserInterop.PerformTextActionAsync(HostId, action, text);
+
     public async ValueTask<string?> GetClipboardTextAsync(
         CancellationToken cancellationToken = default
     )
@@ -691,6 +700,10 @@ public sealed class BrowserHostAdapter
     {
         SetTextInputState(state, attach: false);
     }
+
+    public void ShowTextInput() => BrowserInterop.SetTextInputVisible(HostId, true);
+
+    public void HideTextInput() => BrowserInterop.SetTextInputVisible(HostId, false);
 
     public void SetEditableSizeAndTransform(Size logicalSize, Matrix4 transform)
     {

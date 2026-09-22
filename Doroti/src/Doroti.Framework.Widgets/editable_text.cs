@@ -1222,6 +1222,8 @@ public class EditableTextState
         new ValueNotifier<bool>(true);
     internal virtual GlobalKey<IState> _editableKey { get; private set; } =
         GlobalKey<IState>.Create();
+    // Match Flutter's web notifier: offer Paste without probing the clipboard.
+    // Clipboard.hasStrings itself retains its real content-query semantics.
     public virtual ClipboardStatusNotifier clipboardStatus { get; private set; } =
         Foundation.ConstantsLibrary.kIsWeb
             ? new _WebClipboardStatusNotifier__editable_text()
@@ -1709,7 +1711,7 @@ public class EditableTextState
     {
         get
         {
-            if (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS))
+            if (Foundation.ConstantsLibrary.kIsWeb || !Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS))
             {
                 return false;
             }

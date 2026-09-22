@@ -258,6 +258,16 @@ public sealed class BrowserFrameworkHost : IDisposable
             {
                 return HandleContextMenuMessage(data);
             }
+            if (channel == "flutter/platform" && data is not null)
+            {
+                using var document = JsonDocument.Parse(data.Value);
+                var root = document.RootElement;
+                if (root.TryGetProperty("method", out var method) &&
+                    method.GetString() is "SearchWeb.invoke" or "Share.invoke")
+                {
+                    return HandleTextActionAsync(method.GetString()!, root.GetProperty("args").GetString() ?? "");
+                }
+            }
 
             PlatformMessageHandler? handler;
             lock (_gate)
@@ -267,6 +277,19 @@ public sealed class BrowserFrameworkHost : IDisposable
             return handler is null
                 ? ValueTask.FromResult<ReadOnlyMemory<byte>?>(null)
                 : handler(data, cancellationToken);
+        }
+
+        private async ValueTask<ReadOnlyMemory<byte>?> HandleTextActionAsync(string action, string text)
+        {
+            try
+            {
+                await _host.PerformTextActionAsync(action, text);
+                return JsonSerializer.SerializeToUtf8Bytes(new object?[] { null });
+            }
+            catch (Exception exception)
+            {
+                return JsonSerializer.SerializeToUtf8Bytes(new object?[] { "text-action-failed", exception.Message, null });
+            }
         }
 
         private ValueTask<ReadOnlyMemory<byte>?> HandleContextMenuMessage(

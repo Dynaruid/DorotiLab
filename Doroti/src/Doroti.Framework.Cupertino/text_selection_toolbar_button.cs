@@ -190,11 +190,20 @@ internal class _CupertinoTextSelectionToolbarButtonState__text_selection_toolbar
         {
             return widget.child!;
         }
+        var themeStyle = CupertinoTheme.of(context).textTheme.textStyle;
+        var fallbackFamilies = themeStyle.fontFamilyFallback
+            ?? DefaultTextStyle.of(context).style.fontFamilyFallback;
+        if (Foundation.ConstantsLibrary.kIsWeb)
+        {
+            fallbackFamilies = (fallbackFamilies ?? new List<string>()).Concat(new[] { "Roboto" }).Distinct().ToList();
+        }
         Widget textWidget = new Text(
             widget.text
                 ?? CupertinoTextSelectionToolbarButton.getButtonLabel(context, widget.buttonItem!),
             overflow: TextOverflow.ellipsis,
             style: Text_selection_toolbar_buttonLibrary._kToolbarButtonFontStyle.copyWith(
+                fontFamily: themeStyle.fontFamily,
+                fontFamilyFallback: fallbackFamilies,
                 color: (widget.onPressed is not null)
                     ? Text_selection_toolbar_buttonLibrary._kToolbarTextColor.resolveFrom(context)
                     : CupertinoColors.inactiveGray

@@ -1,0 +1,9 @@
+{
+  "root": "reference/flutter-master",
+  "files": {
+    "packages/flutter/lib/src/widgets/editable_text.dart": "929b910e48bf6f505aad8f557a34c73b199e179df8ea42bc9a0c999fac8bf025",
+    "packages/flutter/lib/src/widgets/text_selection.dart": "f21fec024e43f1151ab8c7458ddd4bd9abb16e3dff7ac4bb3cdd886915328557",
+    "packages/flutter/lib/src/services/clipboard.dart": "4cde38468aec31dab54e8750df22ab9a54c9446fc07dd4b254731fd3be5bfe18",
+    "engine/src/flutter/lib/web_ui/lib/src/engine/clipboard.dart": "415f7de063a114910b0558e23ce36c1768b36897c1cc3d261e7e43f59153d007"
+  }
+}

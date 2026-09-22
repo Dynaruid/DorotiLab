@@ -11,6 +11,8 @@ import { pushBounded } from "./doroti.web.diagnostics.js";
 import { createWorkerVisibleSurface } from "./doroti.web.surface.js";
 import { closeExternalLeases, createDorotiWorker } from "./doroti.web.worker-host.js";
 import { createManagedDorotiWorker, type DorotiWorkerEndpoint } from "./doroti.web.managed-worker.js";
+import { TextInputTapFocus } from "./doroti.web.text-focus.js";
+import { BrowserTextActions } from "./doroti.web.text-actions.js";
 
 interface ManagedCallbacks {
   dispatchPlatformEvent(hostId: number, json: string): void;
@@ -47,6 +49,11 @@ interface ListenerRegistration {
 }
 
 interface BrowserHost {
+  pendingTextInput: boolean;
+  pendingNativeEdit: boolean;
+  textActions: BrowserTextActions;
+  textInputAttached: boolean;
+  textInputUiHidden: boolean;
   environment?: BrowserViewEnvironment;
   id: number;
   root: HTMLElement;
@@ -853,6 +860,8 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     devicePixelRatio: ratio, timestampMicroseconds: Math.round(performance.now() * 1000),
   };
   const host: BrowserHost = {
+    pendingTextInput: false, pendingNativeEdit: false, textActions: new BrowserTextActions(),
+    textInputAttached: false, textInputUiHidden: false,
     id: hostId, root, canvas, input, semantics,
     semanticsElements: new Map(), semanticsListeners: new Map(),
     semanticsContentSignatures: new Map(),
@@ -879,6 +888,23 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   commitDirectCanvasLogicalSize(host, logicalWidth, logicalHeight);
   hosts.set(hostId, host);
   const operatingSystem = browserOperatingSystem();
+  const tapFocus = new TextInputTapFocus<HTMLInputElement | HTMLTextAreaElement>((field) => {
+    if (!field.isConnected || field.disabled || field.readOnly) return;
+    host.focusedTextFieldSemanticsId = Number(field.dataset.dorotiSemanticsId);
+    placeTextInputAtSemanticsElement(host, field);
+    if (input.hidden) {
+      // The native endpoint needs focus before the Worker attaches its client.
+      // Suppress provisional selection events, but retain any early IME edit.
+      host.pendingTextInput = true;
+      host.pendingNativeEdit = false;
+      input.value = field.value;
+      input.hidden = false;
+    }
+    input.readOnly = false;
+    host.textInputUiHidden = false;
+    input.inputMode = field.inputMode as typeof input.inputMode;
+    input.focus({ preventScroll: true });
+  });
   const frameworkTextSelection = operatingSystem === "android" || operatingSystem === "iOS";
   root.dataset.dorotiOperatingSystem = operatingSystem;
   root.dataset.dorotiTextSelection = frameworkTextSelection ? "framework" : "browser";
@@ -921,6 +947,9 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     event.preventDefault();
     if (phase === 1) {
       const semanticTextField = semanticsTextFieldAtPoint(host, event.clientX, event.clientY);
+      if (operatingSystem === "iOS") tapFocus.start(event,
+        semanticTextField instanceof HTMLInputElement || semanticTextField instanceof HTMLTextAreaElement
+          ? semanticTextField : null);
       if (semanticTextField?.dataset.dorotiSemanticsId) {
         host.focusedTextFieldSemanticsId = Number(semanticTextField.dataset.dorotiSemanticsId);
         placeTextInputAtSemanticsElement(host, semanticTextField);
@@ -937,8 +966,12 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
       // connection, so do not steal DOM focus from its native endpoint. A
       // longer external-window blur closes the connection after the grace
       // period and hides the input, making this select the canvas instead.
-      focusActiveEndpoint(host);
+      if (operatingSystem !== "iOS") focusActiveEndpoint(host);
+      else if (input.hidden) canvas.focus({ preventScroll: true });
     }
+    if (phase === 0 || phase === 4) tapFocus.move(event);
+    if (phase === 2) tapFocus.end(event);
+    if (phase === 3) tapFocus.cancel();
     const inputSequence = ++host.inputSequence;
     requireManaged().dispatchPointerBatch(host.id, phase, pointerKind(event.pointerType), event.pointerId,
       event.buttons, modifierMask(event), inputSequence, pointerSamples(event));
@@ -957,6 +990,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   observe(root, "pointerup", (event) => pointer(2)(event as PointerEvent));
   observe(root, "pointercancel", (event) => pointer(3)(event as PointerEvent));
   observe(root, "lostpointercapture", () => {
+    tapFocus.cancel();
     host.pointerCaptureCursor = null;
     root.style.cursor = host.frameworkCursor;
   });
@@ -1048,10 +1082,10 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
       setViewFocus(host, false, event.timeStamp);
     }
   }));
-  observe(input, "compositionstart", () => { host.composing = true; host.compositionStart = input.selectionStart; emitText(host); });
+  observe(input, "compositionstart", () => { host.composing = true; host.compositionStart = input.selectionStart; host.pendingNativeEdit ||= host.pendingTextInput; emitText(host); });
   observe(input, "compositionupdate", () => emitText(host));
   observe(input, "compositionend", () => { host.composing = false; host.compositionStart = -1; emitText(host); });
-  observe(input, "input", () => emitText(host));
+  observe(input, "input", () => { host.pendingNativeEdit ||= host.pendingTextInput; emitText(host); });
   for (const clipboardEvent of ["copy", "cut", "paste"]) {
     observe(input, clipboardEvent, (event) => {
       if (!host.interactiveSelectionEnabled) event.preventDefault();
@@ -1196,6 +1230,7 @@ export function closeHost(hostId: number): void {
   }
   const host = hosts.get(hostId);
   if (!host) return;
+  host.textActions.dispose();
   releasePressedKeys(host);
   if (host.pendingBlurConnectionCloseTimer !== 0)
     clearTimeout(host.pendingBlurConnectionCloseTimer);
@@ -1309,6 +1344,11 @@ export function setTextInputState(
     return;
   }
   const host = requireHost(hostId);
+  if (!attach && (host.pendingTextInput || !host.textInputAttached)) return;
+  if (attach) { host.textInputAttached = true; host.textInputUiHidden = false; }
+  const pendingNativeEdit = host.pendingNativeEdit;
+  host.pendingTextInput = false;
+  host.pendingNativeEdit = false;
   if (attach && host.pendingBlurConnectionCloseTimer !== 0) {
     clearTimeout(host.pendingBlurConnectionCloseTimer);
     host.pendingBlurConnectionCloseTimer = 0;
@@ -1332,7 +1372,7 @@ export function setTextInputState(
     ? null
     : host.semanticsElements.get(host.focusedTextFieldSemanticsId) ?? null;
   if (focusedTextField) placeTextInputAtSemanticsElement(host, focusedTextField);
-  if (document.activeElement !== host.input) host.input.focus({ preventScroll: true });
+  if (attach && document.activeElement !== host.input) host.input.focus({ preventScroll: true });
 
   // While an IME composition owns the textarea, managed state is an
   // acknowledgement of an earlier native edit and may already be stale. Any
@@ -1340,7 +1380,7 @@ export function setTextInputState(
   // the field apparently focused but unable to accept more text. The native
   // endpoint remains authoritative until compositionend publishes the final
   // state back to managed code.
-  if (host.composing) return;
+  if (host.composing || pendingNativeEdit) { emitText(host); return; }
 
   if (!sameText) host.input.value = text;
   if (!sameText || !sameSelection)
@@ -1379,7 +1419,6 @@ export function setCaretRect(hostId: number, left: number, top: number, width: n
     host.input.style.width = `${Math.max(1, width)}px`;
     host.input.style.height = `${Math.max(1, height)}px`;
   }
-  host.input.focus({ preventScroll: true });
 }
 
 export function setContextMenuEnabled(hostId: number, enabled: boolean): void {
@@ -1396,6 +1435,9 @@ export function clearTextInput(hostId: number): void {
     return;
   }
   const host = requireHost(hostId);
+  host.pendingTextInput = false;
+  host.pendingNativeEdit = false;
+  host.textInputAttached = false;
   if (host.pendingBlurConnectionCloseTimer !== 0) {
     clearTimeout(host.pendingBlurConnectionCloseTimer);
     host.pendingBlurConnectionCloseTimer = 0;
@@ -1423,6 +1465,15 @@ export async function launchExternalUrl(url: string): Promise<string> {
   return "opened";
 }
 
+export function setTextInputVisible(hostId: number, visible: boolean): void {
+  if (activeWorkerBridge) { activeWorkerBridge.postControl("text-visible", { hostId, visible }); return; }
+  const host = requireHost(hostId);
+  if (!host.textInputAttached) return;
+  host.textInputUiHidden = !visible;
+  if (visible) host.input.focus({ preventScroll: true });
+  else if (document.activeElement === host.input) host.canvas.focus({ preventScroll: true });
+}
+
 export async function vibrate(durationMilliseconds: number): Promise<void> {
   if (activeWorkerBridge) {
     await activeWorkerBridge.requestControl("haptic-feedback", { durationMilliseconds });
@@ -1430,6 +1481,11 @@ export async function vibrate(durationMilliseconds: number): Promise<void> {
   }
   // Like Flutter web, unsupported hardware/API or denied activation is a no-op.
   navigator.vibrate?.(durationMilliseconds);
+}
+
+export async function performTextAction(hostId: number, action: string, text: string): Promise<string> {
+  if (activeWorkerBridge) return activeWorkerBridge.requestControl("text-action", { hostId, action, text });
+  return requireHost(hostId).textActions.invoke(action, text);
 }
 
 export async function readClipboardText(): Promise<string> {
@@ -1931,6 +1987,7 @@ export async function startDorotiWorkerHost(
           Number(payload.hostId), Number(payload.width), Number(payload.height), String(payload.transformJson));
         break;
       case "context-menu": setContextMenuEnabled(Number(payload.hostId), Boolean(payload.enabled)); break;
+      case "text-visible": setTextInputVisible(Number(payload.hostId), Boolean(payload.visible)); break;
       case "text-clear": clearTextInput(Number(payload.hostId)); break;
       case "semantics": updateSemantics(Number(payload.hostId), String(payload.json)); break;
       case "application-title":
@@ -2145,6 +2202,7 @@ export async function startDorotiWorkerHost(
               return (await requireComposition(packet.batch.owner)).commit(packet, host.resizeEpoch.generation);
             }
             if (kind === "url-launch") return launchExternalUrl(String(payload.url));
+            if (kind === "text-action") return performTextAction(Number(payload.hostId), String(payload.action), String(payload.text));
             if (kind === "haptic-feedback") {
               await vibrate(Number(payload.durationMilliseconds));
               return "";
@@ -2344,6 +2402,9 @@ function isTrackpadWheel(host: BrowserHost, event: WheelEvent): boolean {
 function closeTextConnectionAfterBlur(host: BrowserHost): void {
   if (host.input.hidden) return;
   host.composing = false;
+  host.pendingTextInput = false;
+  host.pendingNativeEdit = false;
+  host.textInputAttached = false;
   host.compositionStart = -1;
   host.input.value = "";
   host.input.hidden = true;
@@ -2355,6 +2416,7 @@ function handleTextInputBlur(
   host: BrowserHost,
   event: FocusEvent,
   belongsToHost: (target: EventTarget | null) => boolean): void {
+  if (host.textInputUiHidden) return;
   const willGainFocus = event.relatedTarget;
   const nativeTarget = willGainFocus instanceof Element ? willGainFocus : document.activeElement;
   if (nativeTarget instanceof Element && nativeTarget.closest("[data-doroti-platform-view]")) {
@@ -2382,6 +2444,7 @@ function handleTextInputBlur(
 }
 
 function emitText(host: BrowserHost): void {
+  if (host.pendingTextInput) return;
   let start = host.input.selectionStart ?? 0;
   let end = host.input.selectionEnd ?? start;
   const selectionBackward = host.input.selectionDirection === "backward";
@@ -2556,11 +2619,14 @@ function removeUnexpectedSemanticsChildren(parent: HTMLElement, desired: HTMLEle
 function semanticsTextFieldAtPoint(host: BrowserHost, clientX: number, clientY: number): HTMLElement | null {
   const candidates = Array.from(host.semanticsElements.values()).reverse();
   for (const element of candidates) {
-    if (!(element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement)) continue;
-    if (element.getAttribute("role") !== "textbox") continue;
+    const role = element.getAttribute("role");
+    if (role !== "textbox" && role !== "button" && role !== "link") continue;
     const rect = element.getBoundingClientRect();
-    if (clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom)
-      return element;
+    if (rect.width <= 0 || rect.height <= 0 || clientX < rect.left || clientX > rect.right ||
+        clientY < rect.top || clientY > rect.bottom) continue;
+    // Menus and other foreground controls must not focus a field underneath.
+    return role === "textbox" && (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement)
+      ? element : null;
   }
   return null;
 }
