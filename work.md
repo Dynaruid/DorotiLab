@@ -4,6 +4,7 @@
 - 검토 기준: `18320304` 작업 트리의 현재 소스
 - 상태: **PARTIAL — 계측·일반 화면 실측·후보 A/B 및 회귀 수행, 전체 성능 목표 미달**
 - 실행 결과: [2026-09-22 실측 보고서](Doroti/validation/web-frame-cost/results-2026-09-22.md), [재현 방법](Doroti/validation/web-frame-cost/README.md)
+- 추가 계획: [8. iPhone 탭 종료 대응과 Web 메모리 관리](#8-iphone-탭-종료-대응과-web-메모리-관리) — 사용자 WebGPU/WebGL 비교 결과 반영, 구현 미착수.
 
 ## 1. 목표와 범위
 
@@ -232,3 +233,123 @@ Framework·layout·Skia 제출은 같은 render owner를 사용한다. Worker는
 - 남은 우선 작업은 AnimatedBuilder/semantics 내부 self time 세분화와 정확한 scene/input 연결이다. 현재 증거로 명령 저장 구조·캐시 크기·AOT 기본값을 변경하거나 “버벅임 해결”을 선언하지 않는다.
 
 과거 참고: [same-work 실험 기록](history/26-09-08/wasm-same-work-execution.md), [작업 계획 보관 요약](history/26-09-08/work-plans-summary.md). 과거 할당 감소나 특정 패널 raster 개선은 이번 일반 화면의 성능 증거로 재사용하지 않는다. 기준 구조는 위에서 직접 확인한 현재 소스를 따른다.
+
+## 8. iPhone 탭 종료 대응과 Web 메모리 관리
+
+- 추가일: 2026-09-22
+- 상태: **계획 작성 완료 / M0~M5 구현·기기 검증 미착수**
+- 이번 요청의 산출물은 이 작업계획 추가다. 제품 코드·패키지·runtime 설정 변경, build/publish/benchmark는 실행하지 않는다.
+- 기존 P0~P5의 PARTIAL 및 미검증 경계는 유지한다. 이번 단계는 **탭 종료 방지와 메모리 상한·자원 회수**를 별도 목표로 삼는다.
+
+### 8.1 확인한 현상과 근거의 범위
+
+| 구분 | 확인 내용 | 아직 확정하지 않은 내용 |
+| --- | --- | --- |
+| 사용자 기기 관측 | iPhone 12, iOS 26, Chrome의 일반 브라우저 실행. `?dorotiTestbedMode=sample`에서 버벅임이 약간 줄었지만 탭이 종료됨. `&dorotiRenderer=worker-direct-webgl` 추가 후에는 사용자 확인 구간에서 크래시가 발생하지 않음. | 정확한 OS/Chrome 버전, 실행 자산·작업·관찰 시간 일치, jetsam/crash 원인, 장시간 안정성 |
+| 기본 경로 | 현재 renderer 자동 선택은 `worker-direct-webgpu`. 사용자 URL에는 상세 진단·frame-cost 옵션이 없어 추가 계측은 OFF. | 종료가 WebKit GPU process, WebContent, WASM trap, device loss 중 어디에서 발생했는지 |
+| 텍스트 자원 | `_textRenderResources`는 색·font size·weight·spacing·fallback 등의 key별 보관이며 상한이 없음. native probe에서 서로 다른 색 32/64/128/256개에 대해 GC 후에도 자원 32/64/128/256개가 유지되고 renderer Dispose 후 0개가 됨. | 이 캐시가 사용자 탭 종료에서 차지하는 비중. 같은 스타일의 반복 사용을 무한 증가로 해석하지 않음. |
+| GPU 예산 | Web host의 `ResourceCacheBytes`는 256MiB. Ganesh cache limit 및 Graphite context/recorder 설정에 사용됨. picture raster 한도는 16M pixels. | 실제 GPU resident bytes와 peak. 설정 상한·context·recorder·raster 수치를 단순 합산하지 않음. |
+| 출력 버퍼 | 초기 backing은 각 축에 1.5배 여유를 두고 screen 크기도 고려. Worker의 이후 크기는 grow-only. | 실제 기기의 viewport/DPR별 backing 및 회전·키보드 후 peak와 잔류량 |
+
+WebGL 대조 결과는 **WebGPU 경로를 우선 조사할 근거**다. 공용 캐시 문제가 없다는 증거도, WebKit의 특정 버그나 OOM을 확정한 증거도 아니다. WebGL 우회 성공과 WebGPU 원인 수정 완료를 서로 다른 상태로 기록한다.
+
+소스: [renderer 선택](Doroti/src/Doroti.Host.Web/Web/doroti.loader.ts), [텍스트·raster 캐시](Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.cs), [Web cache budget](Doroti/src/Doroti.Host.Web/DorotiWebWorkerSurface.cs), [Graphite 수명](Doroti/src/Doroti.Host.Web/DorotiWebWorkerSurface.Graphite.cs), [초기 backing](Doroti/src/Doroti.Host.Web/Web/doroti.web.ts), [WebGPU backing·queue](Doroti/src/Doroti.Host.Web/Web/doroti.webgpu.ts). native probe 원본은 삭제 가능한 `Doroti/artifacts/iphone-memory-review/`에 있으며, 위 표에 핵심 결과를 보존한다.
+
+### 8.2 범위와 적용 순서
+
+**M0 원인 분리·기준선 → M1 iOS 시작 backend 안정화 → M2 텍스트 캐시 제한 → M3 GPU 예산·회수 → M4 backing 축소 → M5 통합 검증** 순서로 진행한다. backend 전환과 M2~M4를 하나의 A/B에 섞지 않는다. 공용 메모리 개선은 WebGL에서도 적용·검증하고, WebGPU 수정 여부는 WebGPU 실행으로 별도 판정한다.
+
+- main runtime 1개 + shared-runtime render Worker 및 직접 GPU 출력 구조를 유지한다.
+- 화면 상태·방문 State·focus·IME·semantics를 삭제하거나, 애니메이션을 멈추거나, DPR·효과를 낮추어 통과시키지 않는다. 폐기 가능한 렌더 캐시와 앱 상태를 구분한다.
+- 강제 GC 반복, WASM maximum memory 축소, 자동 reload 반복을 해결책으로 채택하지 않는다. runtime/AOT·도구체인 교체는 이번 범위 밖이다.
+- 현재 WebGPU queue의 in-flight 제한과 texture handle의 release 경로를 기준선으로 삼는다. 무제한 queue나 image cache 누수를 조사 없이 가정하지 않는다.
+
+### M0. 동일 조건의 backend 비교와 메모리 기준선 — TODO
+
+1. iPhone 12의 정확한 iOS 26.x/build, Chrome 버전, URL, 실행 자산 hash, viewport/DPR, 화면 방향, 종료 전 동작·소요 시간, 재로드/오류 문구를 기록한다. 사용자 기존 관측은 `userObserved`로 보존한다.
+2. 동일 Release 자산·입력·진단 OFF 조건에서 기본 WebGPU와 명시적 WebGL을 비교한다. 처음부터 두 경로의 시작 화면·GPU 초기화 성공·실제 선택 backend를 확인한다. 기기 재종료는 필요한 최소 재현만 수행한다.
+3. 가능한 기기 로그/원격 inspector로 WebContent/GPU process 종료, jetsam memory pressure, device loss, WASM trap을 분리한다. 접근 불가한 로그는 `notVerified`; "탭이 닫힘"만으로 OOM으로 분류하지 않는다. WebKit 알려진 문제는 정확한 OS 빌드와 해당 수정 배포 여부를 대조한다.
+4. managed live estimate·owner/전체 allocation delta·GC 횟수, WASM capacity, text/cache entries·보유 bytes, Graphite budgeted bytes, canvas 실제/필요 크기·추정 bytes, in-flight/retired 자원 수를 구분해 구간 경계에서 수집한다. process/GPU 메모리 미지원은 `notMeasured`로 남긴다. 가상 WASM 용량과 실제 resident memory를 동일시하지 않는다.
+5. 전면 실행을 외부 driver/기기 관찰로 감시한다. 종료될 탭의 메모리 속 로그만 의존하지 않고 최소 진행 marker를 외부 기록 또는 제한 크기 로컬 기록으로 보존한다. 상세 trace·매 프레임 serialization은 안정성 비교에서 끈다.
+
+완료 기준: 최소 재현 절차와 동일 workload의 비교 가능 여부, 실제 backend, 사용 가능한 메모리 지표·종료 분류가 고정되어 있다. 기기 연결이 없으면 desktop 결과로 실제 iPhone 종료 해결을 대신하지 않는다.
+
+### M1. iOS WebKit의 시작 backend 안정화 — TODO
+
+대상: `doroti.loader.ts`, `doroti.web.ts`의 중복 선택 경로와 bootstrap/diagnostics 계약.
+
+- 사용자 대조 결과를 바탕으로 **iOS WebKit의 자동 선택은 우선 WebGL로 시작**하는 안정화 후보를 구현한다. iOS Chrome을 desktop Chromium과 같은 경로로 취급하지 않는다. iPad의 desktop UA 등 플랫폼 식별 한계와 실제 WebGL2/OffscreenCanvas 지원 여부를 함께 처리한다. `navigator.gpu` 존재만으로 안정성이 입증된 것으로 보지 않는다.
+- 선택 규칙을 한 곳에서 계산하고 loader·host·Worker에 동일하게 전달한다. `requested/selected/reason`을 가벼운 진단 정보로 노출한다. 그 외 플랫폼의 기본 WebGPU는 유지한다.
+- 기존 `dorotiRenderer=worker-direct-webgpu` / `worker-direct-webgl` 명시 옵션은 검증용 override로 보존한다. 명시적 선택 실패를 몰래 다른 backend의 PASS로 바꾸지 않는다.
+- renderer 생성 전에 선택한다. 동작 중인 context를 조용히 교체하거나 framework/scene/texture를 중복 생성하는 hot fallback은 추가하지 않는다. WebGL 초기화 불가 시 이유를 보고하고 무한 초기화·재로드를 하지 않는다.
+- 자동 선택·명시 override·미지원 capability를 계약 검사하고, iPhone에서 추가 query 없이 sample을 시작해 확인한다. WebGPU 재기본화 조건은 원인과 해당 OS에서의 안정성 근거가 확보되는 것으로 명시한다.
+
+완료 기준: iOS 기본 진입의 backend가 일관되며 실기기에서 정해진 관찰 구간의 종료가 재발하지 않는다. 이는 `mitigated`이며 **WebGPU 자체 해결**로 기록하지 않는다.
+
+### M2. 텍스트 렌더 자원의 보유 상한과 수명 — TODO
+
+대상: `SkiaSceneRenderer.GetTextRenderResources`, `TextRenderResources`, font 등록·cache clear·renderer dispose 경로.
+
+- owner 안에서 LRU 등 제한 있는 보관 정책을 도입한다. entry 수와 보유 자원/추정 bytes를 함께 기록하고 최초 상한은 baseline의 작업 집합을 보고 실험 전에 고정한다. 추정 bytes를 정확한 native resident bytes로 표시하지 않는다.
+- 색상만 달라질 때 font/fallback 자원을 중복 생성하는 구조를 별도 후보로 검토한다. 색과 무관한 font key 분리는 LRU 후보와 독립 비교하며, 전역 mutable `SKPaint` 공유로 대체하지 않는다.
+- 활성 draw/layout 호출, SKPicture recording/replay, pending GPU recording이 참조하는 자원을 조기 Dispose하지 않도록 소유권·마지막 사용 시점을 정의한다. 필요하면 사용 중 항목을 보호하고, 해제는 owner에서 수행한다.
+- 등록 font 변경 시 generation과 fallback resolution을 갱신한다. clear/dispose/예외 경로의 이중 해제와 누락을 검사한다. 한글·Latin·대체 glyph, font size/weight/spacing, theme/color 변경, fractional transform/DPR의 결과를 비교한다.
+- 재현 fixture에서 상한을 넘는 서로 다른 스타일과 같은 스타일의 재방문을 수행한다. 상한 초과 후 entries가 수렴하고 퇴출 자원이 해제되며, 재생성 후에도 glyph·측정값·픽셀이 유지되는지 확인한다. GC 후 dictionary가 남는 기존 현상을 단순 "GC 미실행"으로 처리하지 않는다.
+
+완료 기준: 살아 있는 렌더 자원의 상한과 퇴출·재사용 계약이 검증되고, 반복 theme/스타일 변경 뒤 보유량이 계속 증가하지 않는다.
+
+### M3. Web GPU 캐시 예산과 회수 정책 — TODO
+
+대상: `DorotiWebWorkerSurface.cs`, `.Graphite.cs`, `SkiaSceneRenderer`의 raster cache·GPU 자원 소유 경로.
+
+- 현재 고정 256MiB를 모바일에 그대로 적용하는 정책을 개선한다. host가 시작 시 정하는 메모리 프로필을 Ganesh/Graphite와 renderer에 일관되게 전달한다. UA·`deviceMemory`·GPU API 존재를 실제 가용 RAM 측정치로 간주하지 않는다.
+- native cache 예산 64MiB, picture raster 예산 RGBA8 환산 16MiB를 **최초 비교 후보**로 삼고, context/recorder 예산 의미와 중복 포함 여부를 설치된 Skia API로 확인한 뒤 확정한다. 이 값은 iPhone 안전 한계나 총 GPU 메모리 상한을 보증하지 않는다. entry 한도와 byte/pixel 한도를 함께 둔다.
+- promotion을 할당한 뒤에만 trim하면 생기는 순간 peak를 점검한다. 활성 프레임이 참조하는 항목은 보존하고, 추가 할당을 포함한 예산 판단·회수 시점을 정의한다. cache miss/promotion 급증으로 스크롤이 나빠지는지 함께 측정한다.
+- frame/recording 완료 후 회수 가능한 native resources, 정지·비가시 전환 시 버릴 수 있는 캐시를 구분한다. GPU 제출·비동기 map·texture 참조가 끝나기 전에 해제하지 않는다. 매 프레임 전체 cache flush는 하지 않는다.
+- Graphite image upload cache는 설치된 구현의 기존 LRU·native 참조 계약을 먼저 확인한다. 이름이나 외부 collection 크기만으로 무제한 누수라 판단하지 않는다. GPU budget 수치가 줄어도 process 전체 peak가 줄었다고 확대하지 않는다.
+
+완료 기준: 선택한 예산과 실제 관측값을 설명할 수 있고, 반복 작업·idle 뒤 cache/native 자원이 수렴하며 수명·화질·프레임 비용 회귀가 없다.
+
+### M4. 과대 backing 할당과 grow-only 정책 개선 — TODO
+
+대상: `configureDirectCanvasCapacity`, `doroti.raster.worker.ts`, `doroti.webgpu.ts`, resize generation/commit 경로.
+
+- 모바일 최초 backing을 화면의 실제 필요 pixel 크기 기준으로 산정한다. 데스크톱 resize 여유 정책을 그대로 확장하지 않고, 여유율과 최대 초과 면적을 수치로 제한한다. DPR은 유지한다.
+- 회전·주소창 변화·키보드로 viewport가 줄어든 뒤 일정 시간 안정되면 shrink하도록 hysteresis를 설계한다. 매 resize 이벤트마다 재할당하지 않는다. 구현 전 안정화 시간·축소 비율·최소 재할당 간격을 기록한다.
+- transferred OffscreenCanvas의 owner에서만 backing을 변경한다. host의 CSS 크기·physical size·resize epoch·surface generation과 일치시키고, 축소 완료 전후의 frame/commit 순서를 정의한다. stale scene, crop, 빈 frame, 일시적 확대·축소가 보이지 않도록 기존 resize 계약을 유지한다.
+- 회수 전 old/new surface가 공존하는 순간 peak를 포함해 계산한다. WebGL framebuffer/surface 재생성과 WebGPU current texture/native wrapper의 해제 시점을 각각 확인한다. 화면 state·focus·IME·platform view identity를 보존한다.
+- portrait→landscape→portrait, 키보드 열기/닫기, 주소창 변화, background→foreground를 제한 횟수로 검증한다. 각 단계의 필요 크기·실제 backing·bytes·generation을 남긴다. 유휴 후에도 큰 한쪽 축만 남는 현상이 사라졌는지 확인한다.
+
+완료 기준: 정해진 초과 면적 한도와 shrink 정책을 만족하고, 기존 DPR/픽셀 결과 및 resize·입력·native view 연속성이 유지된다.
+
+### M5. 통합 검증·채택·기록 — TODO
+
+| workload | 확인할 내용 |
+| --- | --- |
+| 같은 화면에서 progress/animation 전면 실행 | frame당 할당·GPU 자원·queue 수렴, 탭 종료·device loss |
+| Components 양쪽 방문·왕복·탭 복귀 | 유지된 State와 cache 구분, 같은 구간 재방문 후 보유량 수렴 |
+| theme/색상/font 변화 후 동일 상태 재방문 | text resources 상한·퇴출·glyph/측정·cache miss 비용 |
+| 방향 전환·주소창·키보드·복귀 | backing 축소, 일시적 peak, generation·focus·IME 보존 |
+| 기존 WebView/Texture 혼합 화면 | backend 선택·자원 회수가 외부 view/texture 수명에 미치는 회귀 |
+
+- 사용자 iPhone 12/iOS Chrome의 최종 자동 선택 경로를 주 안정성 환경으로 삼는다. 명시적 WebGPU는 별도 원인/수정 검증이다. desktop WebGPU/WebGL·자동화된 모바일 viewport를 실제 iPhone 증거로 대체하지 않는다.
+- 각 후보의 성능은 같은 backend에서 3쌍 AB/BA/AB로 비교한다. WebGPU→WebGL 전환의 차이를 공용 cache 개선 효과로 합산하지 않는다. 성공한 동일 소스 검사는 새 변경·실패·불확실성 없이 반복하지 않는다.
+- 추가 M 단계의 **브라우저/기기 실행 총예산은 실패 포함 30회 이내**, 자동 retry 0, GPU 작업은 순차 실행한다. M0에서 후보·회귀·실기기 관찰에 예산을 배분하고, 기존 P 단계 24회 기록은 별도로 보존한다. 한 실행은 20분 process-tree timeout을 적용한다. 수동 기기 관찰도 20분을 넘기지 않는다.
+- 최종 전면 관찰은 기본 10분으로 시작한다. 기존 종료 시간의 두 배가 더 길면 그 시간을 목표로 하되 20분을 넘으면 이번 예산에서 안정성을 확정하지 않고 `PARTIAL`로 남긴다. foreground 관찰 시간·실제 동작·기기 조건을 기록한다. 무한 안정성을 주장하지 않는다.
+- 캐시 상한 충족, 반복 같은 workload의 마지막 세 구간에서 보유량이 계속 증가하지 않는지, peak와 안정화 후 memory를 각각 확인한다. WASM capacity는 커진 뒤 즉시 줄어드는 것을 요구하지 않고 추가 성장·live estimate·resident 지표를 나눠 판단한다. 임의 강제 GC로 제품 수렴을 연출하지 않는다.
+- 이번 안정성 작업은 §6의 CPU 15%/10% 개선 없이도 **수명 결함·무제한 보유 제거 또는 실제 탭 종료 완화**를 근거로 채택할 수 있다. 기능·픽셀·수명 계약은 필수이며, 같은 backend의 주요 지연 5% 초과 악화는 기본 수용하지 않는다. backend 전환의 성능 차이는 별도 공개하고 자동 선택의 안정성 판단과 구분한다. 한도 숫자만 낮춘 변경은 메모리 개선 PASS로 인정하지 않는다.
+- 공용 renderer 변경 시 affected Release build·계약 및 실행 가능한 native host 한 곳의 그림·수명 회귀를 수행한다. generator lowering을 바꾼 경우에만 대응 fixture·재생성 검증을 추가한다.
+- 최종 source/served asset hash, runtime/OS, backend 선택 이유, 예산, source/asset별 before/after, 실패·원복·채택 이유를 추적되는 보고서에 남긴다. 채택한 경로만 최종 소스에 남기며 실험 flag·중복 선택 로직을 정리한다.
+
+산출물 계획: `Doroti/validation/web-memory/`의 driver·cache/resize/backend 계약·README, `results-<date>.md`의 핵심 근거, `Doroti/artifacts/web-memory/<run>/`의 삭제 가능한 raw 로그·자산 manifest·메모리 시계열·스크린샷. 기존 frame-cost 도구는 활용하되 CPU 개선과 메모리 안정성 결과를 혼동하지 않는다.
+
+| 단계 | 상태 | 종료 시 기록할 결과 |
+| --- | --- | --- |
+| M0 기기·backend·메모리 기준선 | TODO | userObserved와 실행 증거, 비교 가능성·종료 원인 분류 |
+| M1 iOS 기본 WebGL 선택 | TODO | 선택 계약·기기 관찰, 완화 여부 `mitigated` |
+| M2 텍스트 자원 제한 | TODO | 상한·퇴출·수명·glyph/측정 결과 및 메모리 변화 |
+| M3 GPU 예산·회수 | TODO | 설정과 실제 bytes, peak/steady-state 및 비용 변화 |
+| M4 backing 여유·축소 | TODO | 실제 크기·초과율·회수·resize/IME 연속성 |
+| M5 통합·기기 검증 | TODO | backend별 PASS/PARTIAL/notVerified, 최종 자산·남은 원인 |
+
+전체 판정에서는 **기본 경로 안정화**, **공용 메모리 관리 개선**, **WebGPU 원인 해결**을 각각 기록한다. WebGL에서 재발하지 않는다는 결과만으로 세 항목을 모두 완료 처리하지 않는다.
