@@ -156,6 +156,19 @@ try {
   await save('styles', styles);
   check(styles.slice(0,3).every(s=>s.select==='none'), 'canvas and non-editable accessibility DOM are unselectable');
   check(styles.slice(3).every(s=>s.select==='text'), 'native editing endpoints remain selectable');
+  const editablePaint = await evaluate(`(()=>{
+    const e=document.querySelector('#doroti-ime'),s=getComputedStyle(e),selection=getComputedStyle(e,'::selection');
+    return {native:e.dataset.dorotiNativeSelection,filter:s.filter,opacity:s.opacity,caret:s.caretColor,
+      color:s.color,fill:s.webkitTextFillColor,selection:selection.backgroundColor};
+  })()`);
+  await save('editable-paint', editablePaint);
+  if (nativeIosSelection) {
+    check(editablePaint.native==='true' && editablePaint.filter==='none' && editablePaint.opacity==='1', 'iOS native selection paint is not filtered out');
+    check(editablePaint.caret==='rgb(0, 122, 255)', 'iOS caret and handle color is visible');
+    check(editablePaint.color==='rgba(0, 0, 0, 0)' && editablePaint.fill==='rgba(0, 0, 0, 0)' && editablePaint.selection==='rgba(0, 0, 0, 0)', 'iOS native glyphs and selection background do not duplicate canvas paint');
+  } else {
+    check(editablePaint.filter==='opacity(0)' && editablePaint.caret==='rgba(0, 0, 0, 0)', 'other platforms retain canvas-owned selection paint');
+  }
   check(styles[1].hidden !== 'true', 'accessibility tree remains exposed');
   const accessibility = await cdp('Accessibility.getFullAXTree', {}, page);
   check(accessibility.nodes.some(n=>!n.ignored && n.role?.value==='textbox'), 'browser accessibility tree contains an exposed textbox');
@@ -177,6 +190,7 @@ try {
     await evaluate(`document.querySelector('#doroti-ime').setSelectionRange(0,6)`);
     await wait(450);
     check(await evaluate(`Array.from(document.querySelectorAll('[role=textbox]')).some(e=>e.value==='mobile selection' && e.selectionStart===0 && e.selectionEnd===6)`), 'native selection propagates to framework semantics');
+    await shot('native-ios-range-selection');
     await cdp('Input.insertText', {text:'native'}, page);
     await wait(450);
     check(await evaluate(`document.querySelector('#doroti-ime').value==='native selection' && Array.from(document.querySelectorAll('[role=textbox]')).some(e=>e.value==='native selection')`), 'native replacement updates text and semantics');

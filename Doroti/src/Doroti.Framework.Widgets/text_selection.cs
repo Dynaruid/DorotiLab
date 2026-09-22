@@ -220,9 +220,9 @@ public class TextSelectionOverlay
     internal virtual void _updateTextSelectionOverlayVisibilities()
     {
         _effectiveStartHandleVisibility.value =
-            _handlesVisible && renderObject.selectionStartInViewport.value;
+            !_usesNativeIosSelection && _handlesVisible && renderObject.selectionStartInViewport.value;
         _effectiveEndHandleVisibility.value =
-            _handlesVisible && renderObject.selectionEndInViewport.value;
+            !_usesNativeIosSelection && _handlesVisible && renderObject.selectionEndInViewport.value;
         _effectiveToolbarVisibility.value =
             renderObject.selectionStartInViewport.value
             || renderObject.selectionEndInViewport.value;
@@ -245,6 +245,11 @@ public class TextSelectionOverlay
 
     public virtual void showHandles()
     {
+        if (_usesNativeIosSelection)
+        {
+            _selectionOverlay.hideHandles();
+            return;
+        }
         _updateSelectionOverlay();
         _selectionOverlay.showHandles();
     }

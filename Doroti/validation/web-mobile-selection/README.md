@@ -1,5 +1,30 @@
 # Web 모바일 텍스트 선택 메뉴
 
+## iOS 네이티브 선택 핸들 표시 수정
+
+이전 네이티브 메뉴·확대경 전환에서 IME textarea의 `filter: opacity(0%)`와
+`caret-color: transparent`를 남겨두었다. WebKit은 투명한 caret 색상일 때
+네이티브 선택 UI도 숨긴다([WebKit 변경 기록](https://results.webkit.org/commit?id=300554%40main&repository_id=webkit)).
+
+- iOS 브라우저 선택 모드의 활성 IME는 전체 투명 필터를 제거하고 caret/핸들 색상을 표시한다.
+  글자만 `-webkit-text-fill-color: transparent`로 숨기며, 선택 배경도 투명하게 해
+  캔버스의 글자·선택 배경과 중복되지 않도록 한다.
+- 같은 모드에서 Framework 커서(최초 build 및 깜박임 갱신)와 선택 핸들을 숨긴다.
+  `BrowserContextMenu`의 명시적 소유권 전환 시 DOM 표시 정책도 함께 갱신한다.
+- 기존 runner에 실제 computed CSS의 filter·caret·glyph·selection 상태 검사와
+  선택 범위 스크린샷을 추가했다. 변경 전 배포본은 `handles-before`에서
+  `iOS native selection paint is not filtered out`로 실패했다.
+
+Release publish PASS (경고·오류 없음), `git diff --check` 및 runner 문법 검사 PASS.
+Chrome 153/macOS, WebGL에서 iPhone 390px·iPad 820px의 CSS 표시 정책,
+터치 소유권, 메뉴 중복 방지, 선택·입력 동기화 PASS. Android 390px의 기존
+메뉴·Copy/Cut/Paste 및 투명 DOM 유지 회귀도 PASS.
+배포본은 `Doroti/artifacts/web-mobile-selection/handles-product/`, 실행 증거·제공 자산
+hash·스크린샷은 같은 상위 경로의 `handles-iphone`, `handles-ipad`, `handles-android`에 있다.
+
+실기기의 OS 핸들 픽셀·드래그는 Chromium 에뮬레이션 검증에 포함되지 않는다.
+
+
 ## iOS 네이티브 선택 UI로 변경 (2026-09-22 후속)
 
 실제 iPhone 웹에서 OS 메뉴·확대경과 Doroti UI가 중복된다는 제보에 따라,

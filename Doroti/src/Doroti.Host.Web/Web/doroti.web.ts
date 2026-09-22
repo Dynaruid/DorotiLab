@@ -881,6 +881,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   const operatingSystem = browserOperatingSystem();
   const frameworkTextSelection = operatingSystem === "android";
   root.dataset.dorotiTextSelection = frameworkTextSelection ? "framework" : "browser";
+  input.dataset.dorotiNativeSelection = String(operatingSystem === "iOS");
   root.dataset.dorotiHostId = String(hostId);
   recordResize(host, "target-observed", "host-initial");
   const observe = (target: EventTarget, name: string, handler: EventListener): void => {
@@ -1389,7 +1390,9 @@ export function setContextMenuEnabled(hostId: number, enabled: boolean): void {
     activeWorkerBridge.postControl("context-menu", { hostId, enabled });
     return;
   }
-  requireHost(hostId).contextMenuEnabled = enabled;
+  const host = requireHost(hostId);
+  host.contextMenuEnabled = enabled;
+  host.input.dataset.dorotiNativeSelection = String(enabled && browserOperatingSystem() === "iOS");
 }
 
 export function clearTextInput(hostId: number): void {
