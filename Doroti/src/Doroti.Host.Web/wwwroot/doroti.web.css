@@ -108,7 +108,11 @@ body,
 .doroti-root[data-doroti-operating-system="iOS"] .doroti-ime {
   opacity: 0;
   filter: none;
-  pointer-events: none;
+  /* WebKit also hit-tests this layer when the keyboard moves the cursor.
+     Keep it in hit testing; the root pointer handler prevents browser touch
+     gestures and forwards them to Doroti. Opacity still suppresses UIKit's
+     selection assistant, including its invisible handle touch regions. */
+  pointer-events: auto;
 }
 
 .doroti-text-action-dialog {

@@ -9,7 +9,7 @@
 | iOS 키보드 포커스 | 짧은 탭의 pointerup 안에서 DOM focus; 스크롤·길게 누르기·취소·보조 포인터 제외 | `doroti.web.text-focus.ts` |
 | 입력 연결 | Worker attach 전 selectionchange 보류, 먼저 도착한 IME 입력은 보존 | `doroti.web.ts` |
 | 표시·숨김과 위치 갱신 | Show/Hide 요청은 별도 처리; 텍스트 ACK·caret geometry 갱신은 포커스를 가져오지 않음 | BrowserHostAdapter / DOM bridge |
-| 선택 UI | iOS 메뉴·확대경·핸들·커서·선택 배경은 Doroti; DOM 입력은 opacity 0 / pointer-events none | Framework + Web CSS |
+| 선택 UI | iOS 메뉴·확대경·핸들·커서·선택 배경은 Doroti; DOM 입력은 opacity 0 / pointer-events auto, 화면 포인터는 root에서 가로채 전달 | Framework + Web CSS |
 | 웹검색·공유 | 웹검색은 trusted 탭 안에서 탭을 열고 Worker의 검색어로 이동; API 차단 시 재실행 링크/버튼, 공유 취소는 정상 종료 | `doroti.web.text-actions.ts` |
 | 메뉴 글꼴 | Cupertino 테마 글꼴과 앱 fallback, Web Roboto fallback 사용 | Cupertino toolbar button |
 | 확대경 | safe area/키보드 안에 배치하고 확대 좌표 보정; 기존 layout/scroll 프레임에서 위치 추적 | Cupertino magnifier / TextSelectionOverlay |
@@ -117,3 +117,44 @@ Release publish, 새 탭 수명/검색어 인코딩 계약 검사,
 탭 이벤트 안의 새 탭 열기 → Worker 검색어 전달 1회 → 모달 부재를 확인했다.
 취소·드래그에서는 새 탭을 열지 않았다. 일반 입력·선택·클립보드·확대경 회귀도 통과했다.
 브라우저 API는 대역이며, 실제 iPhone Safari의 새 탭 전환은 기기에서 재확인이 필요하다.
+
+### 스페이스바 길게 누르기 커서 이동
+
+네이티브 핸들 간섭을 막으면서 `.doroti-ime`에 적용했던 `pointer-events: none`이
+WebKit의 키보드 커서 위치 계산도 방해했다. WebKit의
+[`visiblePositionInFocusedNodeForPoint`](https://github.com/WebKit/WebKit/blob/main/Source/WebKit/WebProcess/WebPage/Cocoa/WebPageCocoa.mm)는
+입력창 내부로 좌표를 제한한 뒤 `frame.visiblePositionForPoint`로 커서를 계산한다.
+입력창이 hit testing에서 빠지면 입력창 뒤의 canvas를 대상으로 계산하게 된다.
+
+입력창의 `opacity: 0`은 유지하고 `pointer-events: auto`로 복원했다.
+네이티브 선택 assistant는 투명도로 계속 억제한다. 화면의 터치는 root에서
+`preventDefault()` 후 Doroti로 전달하고, 키보드가 바꾼 커서는 기존 `selectionchange`로
+Framework에 전달한다. 별도 키보드 드래그 감지나 클립보드 조회를 추가하지 않았다.
+
+iOS 26.5 Simulator의 WKWebView에서 동일한 투명 입력창으로 비교했다.
+
+| 입력창 hit testing | x=45 요청 | x=80 요청 | 네이티브 선택 assistant |
+| --- | --- | --- | --- |
+| `none` (수정 전) | offset 0 | offset 0 | 억제됨 |
+| `auto` (수정 후) | offset 2 | offset 5 | 억제됨 |
+
+[원시 관측값](../../artifacts/web-mobile-selection/keyboard-cursor-webkit/observations.json)과
+[결과](../../artifacts/web-mobile-selection/keyboard-cursor-webkit/result.json)를 기록했다.
+테스트 전용 앱에서 WebKit의 native point-selection SPI를 호출한 검사이며,
+실제 소프트 키보드의 스페이스바 제스처를 자동화한 검사는 아니다. SPI는 제품에 포함하지 않는다.
+
+```sh
+# Booted iOS Simulator UUID를 지정한다. Xcode/Apple Silicon 환경 필요.
+python3 Doroti/validation/web-mobile-selection/ios-keyboard-cursor-probe.py SIMULATOR_UUID Doroti/artifacts/web-mobile-selection/keyboard-cursor-webkit
+python3 Doroti/validation/run-with-timeout.py dotnet publish DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release -o Doroti/artifacts/web-mobile-selection/keyboard-cursor-product
+DOROTI_SEARCH_FIELD=1 python3 Doroti/validation/run-with-timeout.py node Doroti/validation/web-mobile-selection/run.mjs Doroti/artifacts/web-mobile-selection/keyboard-cursor-search Doroti/artifacts/web-mobile-selection/keyboard-cursor-product/wwwroot iphone
+python3 Doroti/validation/run-with-timeout.py node Doroti/validation/web-mobile-selection/run.mjs Doroti/artifacts/web-mobile-selection/keyboard-cursor-iphone Doroti/artifacts/web-mobile-selection/keyboard-cursor-product/wwwroot iphone
+```
+
+Release publish, WebKit 비교 검사,
+[검색창 21개 검사](../../artifacts/web-mobile-selection/keyboard-cursor-search/result.json),
+[일반 입력창 44개 검사](../../artifacts/web-mobile-selection/keyboard-cursor-iphone/result.json)를 통과했다.
+검색창에서는 텍스트 입력·화면 터치 없이 커서만 이동시켜 Framework에 반영되는지도 확인했다.
+일반 입력창에서는 DOM 입력창을 대상으로 한 터치가 Doroti 선택으로 전달되는지,
+핸들 드래그·확대경·메뉴·Cut/Paste·웹검색이 유지되는지를 확인했다.
+실제 iPhone 키보드의 스페이스바 길게 누르기 제스처는 기기에서 재확인이 필요하다.

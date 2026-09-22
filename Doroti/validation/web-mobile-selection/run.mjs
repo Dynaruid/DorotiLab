@@ -213,6 +213,18 @@ try {
     const inputRect=await evaluate(`document.querySelector('#doroti-ime').getBoundingClientRect().toJSON()`);
     check(inputRect.y+inputRect.height/2<73.5,'search field lies near the viewport top');
     check(await evaluate(`document.querySelector('#doroti-ime').value==='search magnifier'`),'search route retains typed text');
+    const keyboardCursor=[];
+    for (const offset of [13,8,2,14]) {
+      // A software-keyboard cursor move changes selection without input or a
+      // canvas pointer gesture. WebKit's native hit testing is covered by the
+      // separate iOS simulator probe; this checks DOM -> Worker -> canvas state.
+      await evaluate(`document.querySelector('#doroti-ime').setSelectionRange(${offset},${offset})`);
+      await wait(150);
+      const state=await evaluate(`(()=>{const e=document.querySelector('#doroti-ime');return {start:e.selectionStart,end:e.selectionEnd,focused:document.activeElement===e,ack:Array.from(document.querySelectorAll('[role=textbox]')).some(n=>n.value==='search magnifier' && n.selectionStart===${offset} && n.selectionEnd===${offset})}})()`);
+      keyboardCursor.push({offset,...state});
+      check(state.start===offset && state.end===offset && state.focused && state.ack,'keyboard-only cursor move reaches framework at offset '+offset);
+    }
+    await save('keyboard-cursor',keyboardCursor);
     const point={x:inputRect.x+24,y:inputRect.y+inputRect.height/2};
     await cdp('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[point]},page);
     await wait(850);
@@ -289,9 +301,9 @@ try {
   })()`);
   await save('editable-paint', editablePaint);
   if (ios) {
-    check(editablePaint.opacity==='0' && editablePaint.filter==='none' && editablePaint.pointer==='none', 'iOS editable is transparent to native selection UI and excluded from hit testing');
+    check(editablePaint.opacity==='0' && editablePaint.filter==='none' && editablePaint.pointer==='auto', 'iOS editable suppresses native selection UI while retaining keyboard cursor hit testing');
     const hit = await evaluate(`(()=>{const e=document.querySelector('#doroti-ime'),r=e.getBoundingClientRect();return document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)?.id})()`);
-    check(hit==='doroti-surface', 'touches over the iOS editable hit the canvas');
+    check(hit==='doroti-ime', 'WebKit can hit-test the focused editable for keyboard cursor movement');
   } else {
     check(editablePaint.filter==='opacity(0)' && editablePaint.caret==='rgba(0, 0, 0, 0)', 'other platforms retain existing DOM paint policy');
   }
@@ -311,7 +323,7 @@ try {
     const editableRect = await evaluate(`document.querySelector('#doroti-ime').getBoundingClientRect().toJSON()`);
     await tap(editableRect.x + Math.min(24, editableRect.width/2), editableRect.y + editableRect.height/2, 850);
     await save('native-gesture', await evaluate(`({pointer:window.__selectionPointer,active:document.activeElement?.id,inputRect:document.querySelector('#doroti-ime').getBoundingClientRect().toJSON()})`));
-    check(await evaluate(`window.__selectionPointer?.trusted && window.__selectionPointer.prevented && window.__selectionPointer.target==='doroti-surface'`), 'iOS editable gesture reaches framework selection');
+    check(await evaluate(`window.__selectionPointer?.trusted && window.__selectionPointer.prevented && window.__selectionPointer.target==='doroti-ime'`), 'iOS editable gesture is intercepted and reaches framework selection');
     check(!!await menuButton(/^(Paste|Select All)$/i), 'iOS canvas gesture retains framework menu access');
     await shot('canvas-ios-caret');
     const wordPoint = {x:editableRect.x + Math.min(24, editableRect.width/2),y:editableRect.y + editableRect.height/2};
