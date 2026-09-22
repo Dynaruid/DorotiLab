@@ -17,14 +17,23 @@ services:
         target: /etc/nginx/conf.d/default.conf
         read_only: true
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1/index.html"]
+      test:
+        ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1/index.html"]
       interval: 5s
       timeout: 3s
       retries: 12
 
   cloudflared:
-    image: cloudflare/cloudflared:2026.8.2
-    command: ["tunnel", "--no-autoupdate", "--protocol", "http2", "--url", "http://web:80"]
+    image: cloudflare/cloudflared
+    command:
+      [
+        "tunnel",
+        "--no-autoupdate",
+        "--protocol",
+        "http2",
+        "--url",
+        "http://web:80",
+      ]
     depends_on:
       web:
         condition: service_healthy
