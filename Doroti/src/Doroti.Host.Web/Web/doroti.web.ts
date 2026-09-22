@@ -1809,9 +1809,23 @@ export async function startDorotiWorkerHost(
     };
     sendLatestDirectAdmission();
   };
+  const frameCostPending = new Map<number, { resolve(value: unknown): void; reject(error: Error): void }>();
+  let frameCostSequence = 0;
+  const frameCostEnabled = new URL(location.href).searchParams.get("dorotiFrameCost") === "1";
+  if (frameCostEnabled) Object.assign(globalThis, { __dorotiFrameCost: (action: string) => {
+    if (frameCostPending.size >= 4) return Promise.reject(new Error("Frame cost capture already pending."));
+    const request = ++frameCostSequence;
+    return new Promise<unknown>((resolve, reject) => {
+      const timer = setTimeout(() => { frameCostPending.delete(request); reject(new Error("Frame cost capture timed out.")); }, 15000);
+      frameCostPending.set(request, { resolve: value => { clearTimeout(timer); resolve(value); },
+        reject: error => { clearTimeout(timer); reject(error); } });
+      activeWorker.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "frame-cost", request, action });
+    });
+  } });
   const postInput = (
     inputKind: string, hostId: number, inputSequence: number, payload: Record<string, unknown>): void =>
-    activeWorker.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "input", inputKind, hostId, inputSequence, payload });
+    activeWorker.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "input", inputKind, hostId, inputSequence, payload,
+      ingressEpochMilliseconds: frameCostEnabled ? performance.timeOrigin + performance.now() : 0 });
   configureManagedCallbacks({
     dispatchPlatformEvent: (id, json) => postInput("platform", id, 0, { json }),
     dispatchAnimationFrame: () => { throw new Error("main worker host cannot receive managed frame callbacks"); },
@@ -1922,7 +1936,7 @@ export async function startDorotiWorkerHost(
       let message: Record<string, unknown>;
       try {
         message = decodeDorotiMessage((event as MessageEvent).data, new Set([
-          "runtime-ready", "gpu-ready", "snapshot-applied", "admission-applied", "managed-raster",
+          "frame-cost", "runtime-ready", "gpu-ready", "snapshot-applied", "admission-applied", "managed-raster",
           "present-requested", "direct-commit", "terminal", "resource", "context-lost", "gpu-disposed", "texture-response", "texture-error",
         "context-restored", "control", "control-request", "closed", "disposed", "fatal",
         ]));
@@ -1930,6 +1944,13 @@ export async function startDorotiWorkerHost(
         message = { kind: "fatal", error: `protocol violation: ${String(error)}` };
       }
       switch (message.kind) {
+        case "frame-cost": {
+          const pending = frameCostPending.get(Number(message.request));
+          frameCostPending.delete(Number(message.request));
+          if (message.error) pending?.reject(new Error(String(message.error)));
+          else pending?.resolve(message.value);
+          break;
+        }
         case "runtime-ready":
           attachTextureRegistry(canvas.id, worker);
           ready = true;
@@ -2180,6 +2201,7 @@ export async function startDorotiWorkerHost(
               testbedMode: new URL(location.href).searchParams.get("dorotiTestbedMode") ?? "diagnostics",
     progressScope: new URL(location.href).searchParams.get("dorotiProgressScope") ?? "local",
               resizeDiagnostics: diagnosticsEnabled(),
+    frameCost: new URL(location.href).searchParams.get("dorotiFrameCost") === "1",
             }, replacementOffscreen ? [replacementOffscreen] : []);
           } else {
             terminalFailure = error;
@@ -2211,6 +2233,7 @@ export async function startDorotiWorkerHost(
     testbedMode: new URL(location.href).searchParams.get("dorotiTestbedMode") ?? "diagnostics",
     progressScope: new URL(location.href).searchParams.get("dorotiProgressScope") ?? "local",
     resizeDiagnostics: diagnosticsEnabled(),
+    frameCost: new URL(location.href).searchParams.get("dorotiFrameCost") === "1",
   };
   activeWorker.postMessage(initialMessage, initialOffscreen ? [initialOffscreen] : []);
   globalThis.addEventListener("pagehide", () => {

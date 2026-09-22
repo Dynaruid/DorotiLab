@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import { pathToFileURL } from 'node:url';
+import { resolve } from 'node:path';
+const { FrameCostBuffer } = await import(pathToFileURL(resolve(process.argv[2])).href);
+const buffer = new FrameCostBuffer(2);
+assert.deepEqual(buffer.capture(), { rows: [], dropped: 0 });
+buffer.record(1, 10, 100, 5, 10);
+buffer.record(2, 11, 101, 6, 7, 4);
+const immutableExport = buffer.capture();
+buffer.record(3, 12, 102, 11, 14, 1);
+assert.deepEqual(buffer.capture(), { rows: [[2,11,101,6,7,4],[3,12,102,11,14,1]], dropped: 1 });
+assert.deepEqual(immutableExport, { rows: [[1,10,100,5,10,0],[2,11,101,6,7,4]], dropped: 0 });
+buffer.reset();
+assert.deepEqual(buffer.capture(), { rows: [], dropped: 0 });
+buffer.record(2, 13, 103, 20, 21, 19);
+assert.deepEqual(buffer.capture(), { rows: [[2,13,103,20,21,19]], dropped: 0 });
+console.log('PASS: chronological wrap, immutable export, reset, input timestamps');

@@ -2,7 +2,8 @@
 
 - 작성일: 2026-09-22
 - 검토 기준: `18320304` 작업 트리의 현재 소스
-- 상태: **구조 검토·계획 작성 완료 / 구현·실행 측정 미착수**
+- 상태: **PARTIAL — 계측·일반 화면 실측·후보 A/B 및 회귀 수행, 전체 성능 목표 미달**
+- 실행 결과: [2026-09-22 실측 보고서](Doroti/validation/web-frame-cost/results-2026-09-22.md), [재현 방법](Doroti/validation/web-frame-cost/README.md)
 
 ## 1. 목표와 범위
 
@@ -10,7 +11,7 @@
 
 목표는 같은 화면·입력·기능을 유지하면서 프레임당 managed CPU 작업, 객체 할당, 반복적인 scene 변환·재생 비용을 줄이고, 입력 대기와 프레임 간격이 함께 개선되는지 확인하는 것이다. 현재 병목은 실행 측정으로 확정하지 않았다. 아래의 구조적 후보를 곧바로 원인으로 단정하지 않는다.
 
-- 이번 요청에서는 이 문서만 작성한다. 제품 코드, 패키지, 런타임 설정 변경이나 build/publish/benchmark는 수행하지 않는다.
+- 최초 작성 요청은 계획 문서만을 대상으로 했다. 이후 사용자의 `work.md의 전체작업해줘` 요청에 따라 2026-09-22 구현·publish·측정을 수행했다. 아래의 미충족 항목을 완료로 바꾸지는 않는다.
 - 구현 시 현재의 main runtime 1개 + shared-runtime render Worker + 직접 GPU 출력 구조를 기준선으로 유지한다.
 - 공용 Framework의 dirty 대상·처리 순서, layout fast path, inherited dependency, GlobalKey/State 생명주기, 입력·focus·IME·semantics를 보존한다.
 - 화면 밖 상태 제거, 애니메이션 정지, 입력 샘플 생략, DPR 저하, 효과 제거로 부하를 줄이는 것은 이 계획의 개선 방법이 아니다.
@@ -82,7 +83,7 @@ Framework·layout·Skia 제출은 같은 render owner를 사용한다. Worker는
 
 ## 4. 단계별 작업
 
-### P0. 재현 기준선과 원인 계측 — 필수 / TODO
+### P0. 재현 기준선과 원인 계측 — 필수 / PARTIAL
 
 1. HEAD·dirty diff·SDK/runtime·Skia·브라우저·GPU·OS·viewport·DPR·refresh rate·전원 상태·실행 명령·served asset hash를 기록한다. 사용자 실행 조건이 불명확하면 Release publish를 주 기준으로 하고 현재 Debug 실행은 비교용으로 구분한다.
 2. 평가된 `RunAOTCompilation`, `WasmBuildNative`, threads, SIMD, 명시적 runtime 옵션과 실제 로드 자산을 기록한다. native relink를 managed AOT로 간주하지 않는다. 알 수 없는 Jiterpreter 상태는 `notMeasured`로 남긴다.
@@ -96,7 +97,7 @@ Framework·layout·Skia 제출은 같은 render owner를 사용한다. Worker는
 
 완료 기준: 동일 workload를 다시 실행할 수 있고, profile ON/OFF가 확인되며, 실측 근거가 있는 첫 개선 후보와 baseline이 고정되어 있다. 계측이 불완전하면 제품 구조 변경에 착수하지 않고 부족한 경로를 보완한다.
 
-### P1. 그리기 명령·scene snapshot의 중복 비용 축소 — H1/H2가 유효할 때 / TODO
+### P1. 그리기 명령·scene snapshot의 중복 비용 축소 — H1/H2가 유효할 때 / DEFERRED
 
 대상: `GraphicsAndSemanticsContracts.cs`, `PaintingTypes.cs`, scene/picture 소비자.
 
@@ -109,7 +110,7 @@ Framework·layout·Skia 제출은 같은 render owner를 사용한다. Worker는
 
 완료 기준: 같은 명령 의미와 snapshot 수명을 보존하면서 실측 비용이 감소한다. P1-A와 P1-B를 묶어 원인을 알 수 없는 단일 A/B로 제출하지 않는다.
 
-### P2. retained 명령의 재생 비용과 캐시 효율 개선 — H3가 유효할 때 / TODO
+### P2. retained 명령의 재생 비용과 캐시 효율 개선 — H3가 유효할 때 / EXPERIMENT REVERTED
 
 대상: `SkiaPictureCommandCache.cs`, `SkiaSceneRenderer.cs`, 필요한 paragraph/path/paint 변환 경로.
 
@@ -121,7 +122,7 @@ Framework·layout·Skia 제출은 같은 render owner를 사용한다. Worker는
 
 완료 기준: 반복 스크롤/애니메이션의 재생 또는 promotion 비용 감소, 텍스트·그림자·효과·fractional transform의 회귀 없음, 반복 방문 후 캐시 자원 수가 수렴한다.
 
-### P3. Framework와 semantics의 실제 상위 비용 개선 — H4/H5가 유효할 때 / TODO
+### P3. Framework와 semantics의 실제 상위 비용 개선 — H4/H5가 유효할 때 / PARTIAL
 
 대상: `framework.cs`, Rendering의 `object.cs`/`box.cs`/실측 상위 layout, `BrowserSkiaCapabilities.cs`, 필요 시 Material sample의 소유 범위.
 
@@ -134,7 +135,7 @@ Framework·layout·Skia 제출은 같은 render owner를 사용한다. Worker는
 
 완료 기준: 선택한 병목의 self time 감소와 계약 보존. 의도적으로 widget 경계를 바꾼 후보는 observable 결과가 같아도 작업량 변화와 원인을 별도 기록한다.
 
-### P4. managed 실행 모드 확인과 조건부 AOT 비교 — P0 결과에 따라 / TODO
+### P4. managed 실행 모드 확인과 조건부 AOT 비교 — P0 결과에 따라 / PARTIAL
 
 - P0에서 실제 실행 모드를 확인하는 일은 필수다. GPU 또는 명령 생성 문제가 우세하면 AOT 실험은 근거와 함께 `notApplicable`로 정리한다.
 - 필요한 C# 작업 자체의 실행 시간이 계속 지배적이고 현재 산출물이 managed AOT가 아닐 때만, 같은 소스·같은 화면으로 공식 설치 toolchain의 Mono WASM AOT publish를 비교한다.
@@ -144,7 +145,7 @@ Framework·layout·Skia 제출은 같은 render owner를 사용한다. Worker는
 
 완료 기준: 실험 적용 여부와 이유가 명시되고, 수행했다면 실제 로드 자산까지 확인한 성능·비용 비교와 채택/원복 결정이 있다. 지원 불가·빌드 실패는 해당 후보의 상태로 남기고 다른 개선과 구분한다.
 
-### P5. 통합·회귀·결과 정리 — 필수 / TODO
+### P5. 통합·회귀·결과 정리 — 필수 / PARTIAL
 
 - 채택한 후보만 최종 소스에 남긴다. 실패/원복 후보의 결과는 기록하고 실험 flag·중복 제품 경로를 정리한다.
 - 공용 명령/Framework 변경은 affected 프로젝트의 Release build와 계약을 검증한다. 소스의 `doroti-reviewed-framework-source` 소유 정책을 유지한다. generator lowering을 바꾼 경우에만 그에 대응하는 변환 fixture·재생성 검증을 추가한다.
@@ -216,11 +217,18 @@ Framework·layout·Skia 제출은 같은 render owner를 사용한다. Worker는
 | 단계 | 현재 상태 | 결과 기록 |
 | --- | --- | --- |
 | 구조 검토 및 계획 | DONE | 소스·현재 존재하는 문서 확인. 측정으로 원인 확정하지 않음. |
-| P0 기준선·계측 | TODO | 실제 runtime/served assets/일반 화면 비용 미측정 |
-| P1 명령·snapshot | TODO | H1/H2 실측 후 선택 또는 근거 있는 notApplicable |
-| P2 재생·캐시 | TODO | H3 실측 후 선택 또는 근거 있는 notApplicable |
-| P3 Framework·bridge | TODO | H4/H5 실측 후 선택 또는 근거 있는 notApplicable |
-| P4 실행 모드 | TODO | 모드 확인 필수, AOT 실험 조건부 |
-| P5 통합·검증 | TODO | 전체 성능·물리 체감·플랫폼 회귀 미검증 |
+| P0 기준선·계측 | PARTIAL | Release runtime/자산 hash, 숫자 ring, 실제 allocation flag, export 제외 할당량, scroll/animation 기준선 확보. 정확한 input→반영 scene 인과 연결, 전체 stage·명령별 비용 및 결정적 계약 fixture는 미완료. |
+| P1 명령·snapshot | DEFERRED | 중복 저장·scope 복사가 상위 원인이라는 근거 미확보. 구조 변경하지 않음. `notApplicable`로 확정하지 않음. |
+| P2 재생·캐시 | EXPERIMENT REVERTED | 텍스트 재생의 빈 fallback JSON 생성을 줄이는 후보를 AB/BA/AB 3쌍 비교. 일관성·채택 기준 미달로 원복. bypass 사유 전체 분류는 미완료. |
+| P3 Framework·bridge | PARTIAL | 상세 진단 OFF에서 raster interop/message/payload 생성을 차단. AnimatedBuilder와 semantics의 높은 self time 확인. Framework 구조·작업 순서는 변경하지 않았으며 해당 병목 개선은 남음. |
+| P4 실행 모드 | PARTIAL | 실제 Release Mono 10.0.11, threads/SIMD/native relink 확인. managed AOT 설정 없음. Jiterpreter 활성·기여도 및 AOT 독립 실험은 미측정이며 AOT 적합성을 확정하지 않음. |
+| P5 통합·검증 | PARTIAL | Release publish, ring/분석 계약, native raster 계약 및 Web 회귀 근거는 결과 문서에 기록. 전체 corpus·결정적 Framework 계약·물리 체감·전체 플랫폼 성능 PASS 아님. |
+
+### 2026-09-22 실행 판단
+
+- 첫 후보의 S2 owner 동기 구간 합계 변화는 세 쌍에서 **−1.2%, −2.1%, +1.5%**였다. S3도 일관되게 개선되지 않았다. 좋은 실행만 골라 채택하지 않고 후보를 원복했다.
+- 유지한 변경은 계측과 진단 OFF 경로의 불필요한 작업 제거다. 숫자 ring은 16,384개 기록으로 제한하고, export 할당을 managed 구간 할당에 섞지 않는다. 최종 `finish`는 같은 Worker turn에서 managed/ring snapshot을 함께 읽는다.
+- corpus는 좌측 Components 스크롤, 보이는 progress 10초, 버튼 입력, 탭 복귀를 재현한다. 우측 전체 방문·독립 소형 animation·스크롤 중 focus 동시 입력·결정적 tick 계약까지 충족한 것으로 확대하지 않는다.
+- 남은 우선 작업은 AnimatedBuilder/semantics 내부 self time 세분화와 정확한 scene/input 연결이다. 현재 증거로 명령 저장 구조·캐시 크기·AOT 기본값을 변경하거나 “버벅임 해결”을 선언하지 않는다.
 
 과거 참고: [same-work 실험 기록](history/26-09-08/wasm-same-work-execution.md), [작업 계획 보관 요약](history/26-09-08/work-plans-summary.md). 과거 할당 감소나 특정 패널 raster 개선은 이번 일반 화면의 성능 증거로 재사용하지 않는다. 기준 구조는 위에서 직접 확인한 현재 소스를 따른다.

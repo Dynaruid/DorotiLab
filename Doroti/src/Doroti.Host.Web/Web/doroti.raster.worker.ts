@@ -1,3 +1,4 @@
+import { FrameCostBuffer } from "./doroti.frame-cost.js";
 import { validateViewEnvironment } from "./doroti.web.protocol.js";
 import type { Insets, BrowserDisplayFeature } from "./doroti.web.environment.js";
 import {
@@ -24,10 +25,11 @@ import * as textures from "./doroti.web.texture-worker.js";
 const protocolVersion = dorotiProtocolVersion;
 const inboundKinds = new Set([
   "init", "snapshot", "admission-target", "input", "control-response",
-  "context", "dispose", "crash", "texture",
+  "context", "dispose", "crash", "texture", "frame-cost",
 ]);
 const runtimeState = new DorotiRuntimeStateMachine();
 let diagnosticsEnabled = false;
+let frameCost: FrameCostBuffer | undefined;
 
 interface ResizeEpoch {
   generation: number;
@@ -67,6 +69,8 @@ interface HostSnapshot {
 interface SurfaceExports extends textures.TextureSurface {
   InitializeBrowserTextures(url: string): Promise<void>;
   CaptureDiagnostics(): string;
+  CaptureCostDiagnostics(): string;
+  BeginCostInterval(): void;
   InitializeGraphite(moduleUrl: string): Promise<void>;
   RenderGraphiteFrame(requestId: number, generation: number, logicalWidth: number, logicalHeight: number,
     width: number, height: number, dpr: number, timestamp: number): string;
@@ -219,9 +223,10 @@ function dispatchPendingWorkerFrame(timestamp: number): void {
   const request = pendingWorkerFrame;
   pendingWorkerFrame = null;
   if (request) {
-    const started = diagnosticsEnabled ? performance.now() : 0;
+    const started = diagnosticsEnabled || frameCost ? performance.now() : 0;
     try { dispatchWorkerAnimationFrame(request.hostId, request.callbackId, timestamp); }
     finally {
+      frameCost?.record(1, request.callbackId, lastDispatchedInputSequence, performance.timeOrigin + started, performance.timeOrigin + performance.now(), timestamp);
       if (diagnosticsEnabled) post("managed-raster", {
         phase: "framework-frame", callbackId: request.callbackId,
         generation: snapshot?.resizeEpoch.generation,
@@ -524,6 +529,8 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
         return;
       }
       webgpu.submitted();
+      frameCost?.record(3, request.requestId, request.inputSequence, performance.timeOrigin + started,
+        performance.timeOrigin + completed, result === "exact-rendered" ? 1 : 0);
       if (!await commitPlatformFrame()) {
         surface!.CompleteFrame(request.requestId, request.generation, "superseded", "DOM placement superseded before ACK");
         terminal(request, "superseded", "DOM placement superseded before ACK");
@@ -572,6 +579,8 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
       request.timestampMicroseconds, 0, 8, 0,
       value.contextGeneration, true));
     const managedSurfaceCompleted = performance.now();
+    frameCost?.record(3, request.requestId, request.inputSequence, performance.timeOrigin + managedSurfaceStarted,
+      performance.timeOrigin + managedSurfaceCompleted, result === "exact-rendered" ? 1 : result === "replay-rendered" ? 0 : -1);
     if (result !== "exact-rendered" && result !== "replay-rendered") {
       surface!.CompleteFrame(request.requestId, request.generation, "superseded", `managed raster result=${result}`);
       terminal(request, "superseded", `managed raster result=${result}`);
@@ -660,7 +669,8 @@ configureWorkerBridge({
     schedulePendingWorkerFrame();
   },
   recordManagedRaster(id, phase, width, height, duration) {
-    post("managed-raster", { hostId: id, phase, width, height, durationMicroseconds: duration });
+    if (diagnosticsEnabled)
+      post("managed-raster", { hostId: id, phase, width, height, durationMicroseconds: duration });
   },
   requestPresent(_canvasId, epoch) { requestPresent(epoch); },
   captureResizeTrace() { return "[]"; },
@@ -696,6 +706,19 @@ function handleHostMessage(event: MessageEvent): void {
     return;
   }
   switch (message.kind) {
+    case "frame-cost": {
+      if (!frameCost) break;
+      try {
+        const api = (globalThis as unknown as { __dorotiFrameCost: Record<string, () => unknown> }).__dorotiFrameCost;
+        const action = String(message.action);
+        if (!["reset", "capture", "diagnostics", "finish"].includes(action)) throw new Error("Unknown frame cost action.");
+        // Both snapshots belong to this one Worker turn. No animation/input can
+        // slip between the numeric ring and the managed allocation endpoint.
+        const value = action === "finish" ? { after: api.diagnostics(), trace: api.capture() } : api[action]();
+        post("frame-cost", { request: message.request, value });
+      } catch (error) { post("frame-cost", { request: message.request, error: String(error) }); }
+      break;
+    }
     case "texture":
       void textures.textureMessage(message).then(result => post("texture-response", { request: message.request, ...result }),
         error => post("texture-response", { request: message.request, code: "Source", error: String(error) }));
@@ -703,6 +726,7 @@ function handleHostMessage(event: MessageEvent): void {
     case "init":
       runtimeState.transition("booting");
       diagnosticsEnabled = Boolean(message.resizeDiagnostics);
+      if (message.frameCost) frameCost = new FrameCostBuffer();
       snapshot = message.snapshot as HostSnapshot;
       latestAdmissionGeneration = snapshot.resizeEpoch.generation;
       latestMailboxGeneration = snapshot.resizeEpoch.generation;
@@ -737,7 +761,10 @@ function handleHostMessage(event: MessageEvent): void {
         pendingManagedInputs.push(message);
       } else {
         lastDispatchedInputSequence = Number(message.inputSequence ?? 0);
+        const started = frameCost ? performance.timeOrigin + performance.now() : 0;
         dispatchWorkerInput(message);
+        frameCost?.record(2, lastDispatchedInputSequence, lastDispatchedInputSequence, started,
+          performance.timeOrigin + performance.now(), Number(message.ingressEpochMilliseconds ?? 0));
       }
       break;
     case "control-response": {
@@ -863,6 +890,18 @@ async function startManagedRuntime(): Promise<void> {
         return { epochMilliseconds, completedEpochMilliseconds: performance.timeOrigin + performance.now(), managed,
           timers: { ...JSON.parse(captureManagedTimers!()), ...captureBrowserTimers() },
           webgpu: webgpu?.diagnostics() ?? null };
+      },
+    });
+    if (frameCost) Object.assign(globalThis, {
+      __dorotiFrameCost: {
+        reset: () => { frameCost!.reset(); surface!.BeginCostInterval(); },
+        capture: () => frameCost!.capture(),
+        diagnostics: () => {
+          const started = performance.timeOrigin + performance.now();
+          const managed = JSON.parse(surface!.CaptureCostDiagnostics());
+          return { started, ended: performance.timeOrigin + performance.now(), managed,
+            wasmBytes: (runtime as unknown as { localHeapViewU8(): Uint8Array }).localHeapViewU8().byteLength };
+        },
       },
     });
     const config = runtime.getConfig();

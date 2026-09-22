@@ -210,6 +210,7 @@ public static class FrameworkWorkProfile
             framesDropped = Math.Max(0, (_buffer?.FrameCount ?? 0) - 512),
             enabled = FrameworkWorkCounters.Enabled,
             layoutEnabled = LayoutEnabled,
+            allocationEnabled = AllocationEnabled,
             thread = Environment.CurrentManagedThreadId,
             dropped = _buffer?.Dropped ?? 0,
             entries = CaptureEntries(),

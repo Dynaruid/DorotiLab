@@ -63,6 +63,54 @@ public static partial class DorotiWebWorkerSurface
             }
         );
 
+    private static long _costOwnerAllocated;
+    private static long _costTotalAllocated;
+
+    [JSExport]
+    public static void BeginCostInterval()
+    {
+        _costOwnerAllocated = GC.GetAllocatedBytesForCurrentThread();
+        _costTotalAllocated = GC.GetTotalAllocatedBytes();
+    }
+
+    [JSExport]
+    public static string CaptureCostDiagnostics()
+    {
+        // Read allocation before creating any export objects. BeginCostInterval
+        // runs after the previous export so serialization is outside the delta.
+        var ownerAllocatedBytes = GC.GetAllocatedBytesForCurrentThread() - _costOwnerAllocated;
+        var totalAllocatedBytes = GC.GetTotalAllocatedBytes() - _costTotalAllocated;
+        var frame = _target?.CaptureFrameDiagnostics(_viewId);
+        var skia = frame?.Skia;
+        return System.Text.Json.JsonSerializer.Serialize(
+            new
+            {
+                clockMicroseconds = DorotiFrameClock.Now.Ticks / 10,
+                ownerAllocatedBytes,
+                totalAllocatedBytes,
+                managedHeapBytes = GC.GetTotalMemory(false),
+                gcCollections = new[]
+                {
+                    GC.CollectionCount(0),
+                    GC.CollectionCount(1),
+                    GC.CollectionCount(2),
+                },
+                enabled = FrameworkWorkCounters.Enabled,
+                layoutEnabled = FrameworkWorkProfile.LayoutEnabled,
+                allocationEnabled = FrameworkWorkProfile.AllocationEnabled,
+                entries = FrameworkWorkProfile.CaptureEntries(),
+                components = FrameworkComponentProfile.Snapshot(),
+                frame = frame is null ? null : frame with { Skia = null },
+                skia = skia is null ? null : skia with { Trace = [] },
+                scroll = skia
+                    ?.Trace.Where(e => e.ScrollOffset is not null)
+                    .GroupBy(e => e.ScrollPositionId)
+                    .Select(g => g.Last())
+                    .ToArray(),
+            }
+        );
+    }
+
     [JSExport]
     public static string RenderFrame(
         [JSMarshalAs<JSType.Number>] long requestId,

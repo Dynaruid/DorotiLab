@@ -1746,6 +1746,9 @@ public sealed partial class SkiaSceneRenderer
 
     private void DrawPicture(SKCanvas canvas, IReadOnlyList<PathCommand> commands)
     {
+        using var costProfile = FrameworkWorkCounters.Enabled
+            ? FrameworkWorkProfile.Begin(typeof(SkiaSceneRenderer), 21)
+            : default;
         foreach (var command in commands)
         {
             switch (command.Operation)
@@ -2412,6 +2415,9 @@ public sealed partial class SkiaSceneRenderer
 
     private void DrawParagraphText(SKCanvas canvas, Paragraph paragraph, Offset offset)
     {
+        using var costProfile = FrameworkWorkCounters.Enabled
+            ? FrameworkWorkProfile.Begin(typeof(SkiaSceneRenderer), 24)
+            : default;
         foreach (var line in paragraph.PaintLines)
         {
             var x = (float)(offset.dx + line.Left);
@@ -2757,6 +2763,9 @@ public sealed partial class SkiaSceneRenderer
 
     private SKPaint ToPaint(PaintSnapshot value)
     {
+        using var costProfile = FrameworkWorkCounters.Enabled
+            ? FrameworkWorkProfile.Begin(typeof(SkiaSceneRenderer), 22)
+            : default;
         var paint = new SKPaint
         {
             Color = ToColor(value.Color),
@@ -3151,6 +3160,9 @@ public sealed partial class SkiaSceneRenderer
 
     private static SKPath ToPath(UiPath path)
     {
+        using var costProfile = FrameworkWorkCounters.Enabled
+            ? FrameworkWorkProfile.Begin(typeof(SkiaSceneRenderer), 23)
+            : default;
         using var builder = new SKPathBuilder
         {
             FillType =

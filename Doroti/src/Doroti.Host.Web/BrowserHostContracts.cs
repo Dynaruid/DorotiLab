@@ -592,7 +592,15 @@ public sealed class BrowserHostAdapter
         BrowserInterop.UpdateSemantics(HostId, json);
     }
 
-    internal void RecordRaster(string phase, int width, int height, TimeSpan? duration = null) =>
+    internal static readonly bool RasterDiagnosticsEnabled =
+        Environment.GetEnvironmentVariable("DOROTI_WEB_DIRECT_TRACE") == "1";
+
+    internal void RecordRaster(string phase, int width, int height, TimeSpan? duration = null)
+    {
+        if (!RasterDiagnosticsEnabled)
+        {
+            return;
+        }
         BrowserInterop.RecordManagedRaster(
             HostId,
             phase,
@@ -600,6 +608,7 @@ public sealed class BrowserHostAdapter
             height,
             (duration?.Ticks / 10.0) ?? 0
         );
+    }
 
     internal event Action<long, long, string>? SemanticsAction;
 

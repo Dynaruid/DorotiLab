@@ -106,7 +106,7 @@ internal sealed class BrowserSkiaCapabilities : IBrowserGraphicsCapabilities
         long requestId
     )
     {
-        var started = DorotiFrameClock.Now;
+        var started = BrowserHostAdapter.RasterDiagnosticsEnabled ? DorotiFrameClock.Now : default;
         _host.RecordRaster("managed-raster-start", pixelWidth, pixelHeight);
         try
         {
@@ -128,12 +128,15 @@ internal sealed class BrowserSkiaCapabilities : IBrowserGraphicsCapabilities
         }
         finally
         {
-            _host.RecordRaster(
-                "managed-raster-end",
-                pixelWidth,
-                pixelHeight,
-                DorotiFrameClock.Now - started
-            );
+            if (BrowserHostAdapter.RasterDiagnosticsEnabled)
+            {
+                _host.RecordRaster(
+                    "managed-raster-end",
+                    pixelWidth,
+                    pixelHeight,
+                    DorotiFrameClock.Now - started
+                );
+            }
         }
     }
 
