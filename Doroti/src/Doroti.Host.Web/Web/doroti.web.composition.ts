@@ -1,7 +1,7 @@
 import { DorotiPlatformViewDomRegistry, type NativeBatch, type NativeIdentity, type NativeBounds } from "./doroti.web.platform-views.js";
 import { BrowserWebView, WebViewFailure } from "./doroti.web.webview.js";
 
-export interface RasterPacket { order: number; bounds: NativeBounds; width: number; height: number; pixels: Uint8Array; }
+export interface RasterPacket { order: number; bounds: NativeBounds; width: number; height: number; pixels: Uint8Array; bitmap?: ImageBitmap; }
 export interface CompositionPacket { batch: NativeBatch; rasters: RasterPacket[]; }
 
 /** Owner-local DOM service. ACK means synchronous DOM/canvas acceptance, never physical presentation. */
@@ -50,8 +50,10 @@ export class BrowserPlatformComposition {
     }
   }
   commit(packet: CompositionPacket, generation: number): string {
-    if (this.#closed || packet.batch.surfaceGeneration !== generation)
+    if (this.#closed || packet.batch.surfaceGeneration !== generation) {
+      for (const raster of packet.rasters) raster.bitmap?.close();
       return JSON.stringify({ accepted: false, reason: "Closed/stale composition frame." });
+    }
     let bytes = 0, residentBytes = 0;
     const orders = new Set<number>([...packet.batch.views, ...packet.batch.shields, ...(packet.batch.effects ?? [])].map(p => p.order));
     const next: HTMLCanvasElement[] = [];
@@ -62,13 +64,14 @@ export class BrowserPlatformComposition {
       for (const raster of packet.rasters) {
         if (!Number.isSafeInteger(raster.width) || !Number.isSafeInteger(raster.height) || raster.width <= 0 || raster.height <= 0 ||
           (raster.pixels.byteLength !== 0 && raster.pixels.byteLength !== raster.width * raster.height * 4) ||
+          (raster.bitmap && (raster.bitmap.width !== raster.width || raster.bitmap.height !== raster.height || raster.pixels.byteLength !== 0)) ||
           (residentBytes += raster.width * raster.height * 4) > 64 * 1024 * 1024 ||
           !Number.isSafeInteger(raster.order) || raster.order < 0 || orders.has(raster.order) ||
           !Object.values(raster.bounds).every(Number.isFinite) || raster.bounds.width <= 0 || raster.bounds.height <= 0)
           throw new Error("Invalid/budget-exceeding raster packet.");
         orders.add(raster.order);
         bytes += raster.pixels.byteLength;
-        if (raster.pixels.byteLength === 0) {
+        if (raster.pixels.byteLength === 0 && !raster.bitmap) {
           const old = this.#rasters.find(c => c.dataset.dorotiRaster === String(raster.order));
           if (!old || old.width !== raster.width || old.height !== raster.height) throw new Error("Stale raster reuse identity.");
           next.push(old); continue;
@@ -79,7 +82,8 @@ export class BrowserPlatformComposition {
         element.width = raster.width; element.height = raster.height;
         Object.assign(element.style, { position: "absolute", pointerEvents: "none", left: "0px",
           top: "0px", width: `${raster.bounds.width}px`, height: `${raster.bounds.height}px`, zIndex: String(raster.order) });
-        element.getContext("2d")!.putImageData(new ImageData(new Uint8ClampedArray(raster.pixels), raster.width, raster.height), 0, 0);
+        if (raster.bitmap) element.getContext("bitmaprenderer")!.transferFromImageBitmap(raster.bitmap);
+        else element.getContext("2d")!.putImageData(new ImageData(new Uint8ClampedArray(raster.pixels), raster.width, raster.height), 0, 0);
         next.push(element);
       }
       this.registry.commit(packet.batch, true);
@@ -103,6 +107,8 @@ export class BrowserPlatformComposition {
       for (const element of created) element.remove();
       if (/stale|closed/i.test(String(error))) return JSON.stringify({ accepted: false, reason: String(error) });
       throw error;
+    } finally {
+      for (const raster of packet.rasters) raster.bitmap?.close();
     }
   }
   async dispose(): Promise<void> {

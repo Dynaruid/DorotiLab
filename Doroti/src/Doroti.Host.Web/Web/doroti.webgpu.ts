@@ -133,3 +133,25 @@ export function releaseNative(): void {
   context = undefined; canvas = undefined; device = undefined; native = undefined;
 }
 export function loseDevice(): void { device?.destroy(); }
+
+// Sampling textures share the presenter's exact device/queue. Source capture is
+// consumed by copyExternalImageToTexture; destination retirement is separate.
+export function copyTextureSource(source: VideoFrame | ImageBitmap | OffscreenCanvas, width: number, height: number) {
+  if (!device || !native || failure || disposed) throw failure ?? new Error("WebGPU texture owner unavailable.");
+  if (width > device.limits.maxTextureDimension2D || height > device.limits.maxTextureDimension2D)
+    throw new Error("Source exceeds the WebGPU device dimension limit.");
+  const usage = (globalThis as unknown as { GPUTextureUsage: { COPY_DST: number; TEXTURE_BINDING: number; RENDER_ATTACHMENT: number } }).GPUTextureUsage;
+  const texture = device.createTexture({ size: [width, height], format: "rgba8unorm",
+    usage: usage.COPY_DST | usage.TEXTURE_BINDING | usage.RENDER_ATTACHMENT });
+  try {
+    device.queue.copyExternalImageToTexture({ source, flipY: false },
+      { texture, premultipliedAlpha: true, colorSpace: "srgb" }, [width, height]);
+    const handle = native.WebGPU.importJsTexture(texture);
+    if (!handle) throw new Error("Dawn texture import failed.");
+    return { handle, destroy: () => { native!._wgpuTextureRelease(handle); texture.destroy(); } };
+  } catch (error) { texture.destroy(); throw error; }
+}
+export function textureWorkDone(): Promise<void> {
+  if (!device) return Promise.resolve();
+  return Promise.race([device.queue.onSubmittedWorkDone().catch(() => {}), device.lost.then(() => {})]);
+}

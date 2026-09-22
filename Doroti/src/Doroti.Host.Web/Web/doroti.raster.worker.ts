@@ -5,6 +5,7 @@ import {
   commitPlatformFrame,
   discardPlatformFrame,
   drainPlatformViews,
+  drainPlatformCaptures,
   dispatchWorkerAnimationFrame,
   dispatchWorkerInput,
   dispatchWorkerResizeEpoch,
@@ -18,11 +19,12 @@ import {
   DorotiRuntimeStateMachine,
 } from "./doroti.web.protocol.js";
 import { captureBrowserTimers } from "./doroti.web.timers.js";
+import * as textures from "./doroti.web.texture-worker.js";
 
 const protocolVersion = dorotiProtocolVersion;
 const inboundKinds = new Set([
   "init", "snapshot", "admission-target", "input", "control-response",
-  "context", "dispose", "crash",
+  "context", "dispose", "crash", "texture",
 ]);
 const runtimeState = new DorotiRuntimeStateMachine();
 let diagnosticsEnabled = false;
@@ -62,7 +64,8 @@ interface HostSnapshot {
   resizeEpoch: ResizeEpoch;
 }
 
-interface SurfaceExports {
+interface SurfaceExports extends textures.TextureSurface {
+  InitializeBrowserTextures(url: string): Promise<void>;
   CaptureDiagnostics(): string;
   InitializeGraphite(moduleUrl: string): Promise<void>;
   RenderGraphiteFrame(requestId: number, generation: number, logicalWidth: number, logicalHeight: number,
@@ -441,6 +444,8 @@ function ensurePresenter(): WorkerPresenter {
     if (interrupted) terminal(interrupted, "failed", "worker WebGL context lost");
 
     presenter.current = null;
+    discardPlatformFrame();
+    void textures.disposeTextures(true).catch(error => post("fatal", { error: String(error) }));
     surface?.ContextLost(interrupted?.requestId ?? 0, interrupted?.generation ?? 0);
     post("context-lost", { contextGeneration: presenter.contextGeneration });
   });
@@ -464,6 +469,9 @@ function terminal(request: PresentRequest, value: "submitted" | "superseded" | "
 }
 
 function requestPresent(epoch: ResizeEpoch): void {
+  // Unregistering producers invalidates the renderer while shutdown drains.
+  // Do not admit a new external frame lease after the disposal sweep or loss.
+  if (runtimeState.state === "disposing" || runtimeState.state === "disposed" || presenter?.contextLost) return;
   const value = ensurePresenter();
   const request: PresentRequest = { ...epoch, requestId: ++value.nextRequestId, terminal: false, inputSequence: lastDispatchedInputSequence };
   post("present-requested", { requestId: request.requestId, epoch });
@@ -622,6 +630,8 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
     try { surface?.CompleteFrame(request.requestId, request.generation, "failed", String(error)); } catch { }
     terminal(request, "failed", String(error));
     if (webgpu) post("fatal", { error: String(error) });
+  } finally {
+    void textures.flushRetired().catch(error => post("fatal", { error: String(error) }));
   }
 }
 
@@ -660,7 +670,7 @@ configureWorkerBridge({
     return new URL(relativeUrl, applicationBase).href;
   },
   postControl(kind, payload) { post("control", { controlKind: kind, payload }); },
-  requestControl(kind, payload) {
+  requestControl(kind, payload, transfer = []) {
     if (pendingControls.size >= 256) return Promise.reject(new Error("Worker control mailbox is full."));
     const correlationId = ++controlSequence;
     const promise = new Promise<string>((resolve, reject) => {
@@ -668,7 +678,8 @@ configureWorkerBridge({
       pendingControls.set(correlationId, { resolve: value => { clearTimeout(timer); resolve(value); },
         reject: error => { clearTimeout(timer); reject(error); } });
     });
-    post("control-request", { correlationId, controlKind: kind, payload });
+    try { post("control-request", { correlationId, controlKind: kind, payload }, transfer); }
+    catch (error) { pendingControls.get(correlationId)?.reject(error); pendingControls.delete(correlationId); }
     const completion = promise.finally(() => pendingControlTasks.delete(completion));
     pendingControlTasks.add(completion);
     return completion;
@@ -680,10 +691,15 @@ function handleHostMessage(event: MessageEvent): void {
   try {
     message = decodeDorotiMessage(event.data, inboundKinds);
   } catch (error) {
+    textures.rejectTransferred(event.data);
     post("fatal", { error: String(error) });
     return;
   }
   switch (message.kind) {
+    case "texture":
+      void textures.textureMessage(message).then(result => post("texture-response", { request: message.request, ...result }),
+        error => post("texture-response", { request: message.request, code: "Source", error: String(error) }));
+      break;
     case "init":
       runtimeState.transition("booting");
       diagnosticsEnabled = Boolean(message.resizeDiagnostics);
@@ -747,6 +763,7 @@ function handleHostMessage(event: MessageEvent): void {
       // A runtime-owned pthread may still drain already queued port messages.
       if (runtimeState.state === "disposing" || runtimeState.state === "disposed") return;
       runtimeState.transition("disposing");
+      discardPlatformFrame();
       if (workerFrameRaf !== 0 && typeof globalThis.cancelAnimationFrame === "function")
         globalThis.cancelAnimationFrame(workerFrameRaf);
       if (workerFrameTimer !== 0) globalThis.clearTimeout(workerFrameTimer);
@@ -770,6 +787,8 @@ function handleHostMessage(event: MessageEvent): void {
       }
       void (async () => {
         try {
+          await drainPlatformCaptures();
+          await textures.disposeTextures();
           if (webgpu) await webgpu.drainForShutdown();
           stopManagedRuntime?.();
           stopManagedRuntime = null;
@@ -784,7 +803,7 @@ function handleHostMessage(event: MessageEvent): void {
           if (!managedPort) managedRuntime?.exit(0);
           managedRuntime = null;
           runtimeState.transition("disposed");
-          post("disposed", { activeRequests: pendingControlTasks.size, activeReceipts: 0,
+          post("disposed", { textures: textures.diagnostics(), activeRequests: pendingControlTasks.size, activeReceipts: 0,
             timers: { ...JSON.parse(captureManagedTimers?.() ?? "{}"), ...captureBrowserTimers() } });
           if (managedPort) {
             managedPort.removeEventListener("message", handleHostMessage);
@@ -830,6 +849,7 @@ async function startManagedRuntime(): Promise<void> {
       if (!managedPort || !transferredCanvas) throw new Error("WebGPU requires the main-owned shared runtime and a transferred canvas.");
       webgpu = await import("./doroti.webgpu.js");
       webgpuIdentity = await webgpu.initialize(transferredCanvas, error => {
+        discardPlatformFrame();
         if (presenter) presenter.contextLost = true;
         post("fatal", { error: String(error) });
       });
@@ -851,6 +871,12 @@ async function startManagedRuntime(): Promise<void> {
     };
     stopManagedRuntime = appExports.Doroti.Generated.DorotiBootstrap.StopWorker;
     const result = await appExports.Doroti.Generated.DorotiBootstrap.StartWorker();
+    await surface.InitializeBrowserTextures(new URL("./doroti.web.texture-worker.js", import.meta.url).href);
+    textures.initializeTextures(surface, webgpu, () => {
+      currentGl(ensurePresenter());
+      return (globalThis as unknown as { SkiaSharpGL: Parameters<typeof textures.initializeTextures>[2] extends () => infer T ? T : never }).SkiaSharpGL;
+    }, () => ensurePresenter().canvas, (textureId, error) => post("texture-error", {
+      textureId, code: error instanceof DOMException ? error.name : "Source", error: String(error) }));
     managedHostReady = true;
     runtimeState.transition("ready");
     if (pendingManagedSnapshot) {

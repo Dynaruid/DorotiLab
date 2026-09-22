@@ -1,3 +1,4 @@
+/// <reference path="../doroti-textures/index.d.ts" />
 declare module "*_content/Doroti.Host.Web/doroti.loader.js" {
   export type DorotiBootstrapStage = "before-start" | "starting" | "started" | "failed";
 

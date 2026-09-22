@@ -1,4 +1,18 @@
 <Project>
+  <!-- Emscripten 3.1.56 implicitly uses STACK_FIRST at -O0 unless GLOBAL_BASE
+       is explicit. That puts the main pthread stack's lower bound at zero,
+       which Mono rejects in mono_threads_platform_get_stack_bounds. Explicitly
+       retain Emscripten's normal global base without changing Debug optimization,
+       symbols, assertions, or threading. Append user flags last so their explicit
+       GLOBAL_BASE can still take precedence. -->
+  <Target Name="DorotiConfigureWebDebugStackLayout"
+          BeforeTargets="_PrepareForBrowserWasmBuildNative"
+          Condition="'$(DorotiTarget)' == 'Web' and '$(Configuration)' == 'Debug' and '$(WasmEnableThreads)' == 'true'">
+    <PropertyGroup>
+      <EmccExtraLDFlags>-sGLOBAL_BASE=1024 $(EmccExtraLDFlags)</EmccExtraLDFlags>
+    </PropertyGroup>
+  </Target>
+
   <!-- WebCIL conversion reuses outputs by timestamp. Switching runtime packs
        (notably WasmEnableThreads) or NuGet versions can select different DLLs
        whose package timestamps predate those outputs. Track package content and

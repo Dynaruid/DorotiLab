@@ -124,3 +124,7 @@ The Windows check exposed a retained-scene optimization that dropped producer-on
 wakeups. The host now tracks the renderer's texture revision independently of
 widget scene revisions, preserving idle-frame suppression while presenting fresh
 native/CPU texture frames without a framework rebuild.
+
+## Web native browser sources — 2026-09-22
+
+See [Web implementation and final validation](web-results-2026-09-22.md). Both published WebGPU and explicit WebGL passed source/lifetime and 46 pixel checks each. The pre-existing Debug runtime startup failure was [fixed and independently verified](../web-debug-startup-2026-09-22.md). Physical camera qualification remains separate.

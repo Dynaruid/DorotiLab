@@ -48,6 +48,7 @@ internal sealed class BrowserSkiaCapabilities : IBrowserGraphicsCapabilities
         );
         _renderer.PlatformScenePainter = (canvas, commands, descriptor, width, height) =>
             _platform.Draw(_renderer, canvas, commands, descriptor, width, height);
+        DorotiWebWorkerSurface.AttachTextureRenderer(viewId, _renderer);
     }
 
     public event Action<SemanticsActionEvent>? Action
@@ -251,6 +252,7 @@ internal sealed class BrowserSkiaCapabilities : IBrowserGraphicsCapabilities
 
             _pendingPaints.Clear();
         }
+        DorotiWebWorkerSurface.DetachTextureRenderer(_renderer);
         _renderer.Dispose();
         _platform.Dispose();
         _bridge.Dispose();

@@ -93,6 +93,7 @@ public static partial class DorotiWebWorkerSurface
 
         _graphiteContext.CheckAsyncWorkCompletion();
         var texture = GraphiteAcquire(width, height);
+        var snapped = false;
         try
         {
             using var backend =
@@ -140,6 +141,7 @@ public static partial class DorotiWebWorkerSurface
             using var recording =
                 _graphiteRecorder.Snap()
                 ?? throw new InvalidOperationException("Graphite produced no recording.");
+            snapped = true;
             if (result is "exact-rendered" or "replay-rendered")
             {
                 if (_graphiteContext.InsertRecording(recording) != SKGraphiteInsertStatus.Success)
@@ -156,6 +158,8 @@ public static partial class DorotiWebWorkerSurface
         }
         finally
         {
+            if (!snapped)
+                _graphiteRecorder.Snap()?.Dispose();
             GraphiteReleaseTexture(texture);
         }
     }

@@ -440,7 +440,8 @@ internal sealed partial class BrowserPlatformViewHost : IPlatformViewDispatcher,
 
                             _nextRasters.Add(order, new(scope, slice));
                             if (
-                                _rasters.TryGetValue(order, out var prior)
+                                !ContainsTexture(slice.Commands)
+                                && _rasters.TryGetValue(order, out var prior)
                                 && SkiaPlatformRasterContent.CanReuse(
                                     prior.Scope,
                                     prior.Slice,
@@ -458,6 +459,30 @@ internal sealed partial class BrowserPlatformViewHost : IPlatformViewDispatcher,
                                     bounds.Width,
                                     bounds.Height,
                                     []
+                                );
+                                continue;
+                            }
+                            if (ContainsTexture(slice.Commands))
+                            {
+                                // External GPU images cannot be drawn into the CPU bitmap below.
+                                // Capture a GPU-rendered slice as an ImageBitmap on the same owner.
+                                canvas.Clear(
+                                    raster.PaintOrder == 0
+                                        ? renderer.PlatformBackgroundColor
+                                        : SKColors.Transparent
+                                );
+                                renderer.DrawPlatformRasterSegment(
+                                    canvas,
+                                    slice.Commands,
+                                    width,
+                                    height
+                                );
+                                DorotiWebWorkerSurface.CaptureTextureRaster(
+                                    canvas,
+                                    order,
+                                    bounds,
+                                    descriptor.DeviceScaleX,
+                                    descriptor.DeviceScaleY
                                 );
                                 continue;
                             }
@@ -647,6 +672,13 @@ internal sealed partial class BrowserPlatformViewHost : IPlatformViewDispatcher,
             width = Math.Max(0, r.width),
             height = Math.Max(0, r.height),
         };
+
+    private static bool ContainsTexture(IReadOnlyList<SceneCommand> commands) =>
+        commands.Any(command =>
+            command.Operation == "texture"
+            || command.HostPayload is SceneRetainedPayload retained
+                && ContainsTexture(retained.Commands)
+        );
 
     private static Rect Map(Rect rect, PlatformViewTransform transform)
     {

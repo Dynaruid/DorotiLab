@@ -1,5 +1,6 @@
 import type { BrowserPlatformComposition, CompositionPacket, RasterPacket } from "./doroti.web.composition.js";
 import { BrowserViewEnvironment } from "./doroti.web.environment.js";
+import { attachTextureRegistry, texturesForCanvas } from "./doroti.web.textures.js";
 import { decodeDorotiMessage, dorotiProtocolVersion, dorotiWebGpuRendererVersion } from "./doroti.web.protocol.js";
 import { initializeBrowserTimers } from "./doroti.web.timers.js";
 export { scheduleBrowserTimer, cancelBrowserTimer, cancelBrowserTimerOwner } from "./doroti.web.timers.js";
@@ -147,7 +148,7 @@ interface WorkerBridge {
   closeHost(hostId: number): void;
   resolveResourceUrl(relativeUrl: string): string;
   postControl(kind: string, payload: Record<string, unknown>): void;
-  requestControl(kind: string, payload: Record<string, unknown>): Promise<string>;
+  requestControl(kind: string, payload: Record<string, unknown>, transfer?: Transferable[]): Promise<string>;
 }
 
 interface WorkerDisplayPresenter {
@@ -1922,7 +1923,7 @@ export async function startDorotiWorkerHost(
       try {
         message = decodeDorotiMessage((event as MessageEvent).data, new Set([
           "runtime-ready", "gpu-ready", "snapshot-applied", "admission-applied", "managed-raster",
-          "present-requested", "direct-commit", "terminal", "resource", "context-lost", "gpu-disposed",
+          "present-requested", "direct-commit", "terminal", "resource", "context-lost", "gpu-disposed", "texture-response", "texture-error",
         "context-restored", "control", "control-request", "closed", "disposed", "fatal",
         ]));
       } catch (error) {
@@ -1930,6 +1931,7 @@ export async function startDorotiWorkerHost(
       }
       switch (message.kind) {
         case "runtime-ready":
+          attachTextureRegistry(canvas.id, worker);
           ready = true;
           root.dataset.dorotiWorkerRuntime = "ready";
           root.dataset.dorotiSharedRuntimeRenderThread = String(message.sharedRuntimeRenderThread === true);
@@ -2212,6 +2214,7 @@ export async function startDorotiWorkerHost(
   };
   activeWorker.postMessage(initialMessage, initialOffscreen ? [initialOffscreen] : []);
   globalThis.addEventListener("pagehide", () => {
+    try { texturesForCanvas(canvas.id).disconnect(); } catch { /* Already closed. */ }
     closeComposition();
     if (runtimeLocation === "main") {
       // Keep DOM endpoints alive until the role has drained cursor/text/frame
@@ -2616,6 +2619,21 @@ function semanticsRole(node: SemanticsNode): string {
 // Staging belongs to the rendering Worker. Exactly one bounded packet may be in flight.
 let platformRasters: RasterPacket[] = [];
 let platformFrame: CompositionPacket | null = null;
+let platformBitmapTasks: Promise<void>[] = [];
+const pendingPlatformCaptures = new Set<Promise<void>>();
+let platformCaptureGeneration = 0;
+export function stagePlatformBitmap(order: number, left: number, top: number, width: number, height: number,
+  pixelWidth: number, pixelHeight: number, bitmap: Promise<ImageBitmap>): void {
+  const raster: RasterPacket = { order, bounds: { left, top, width, height }, width: pixelWidth, height: pixelHeight, pixels: new Uint8Array() };
+  platformRasters.push(raster);
+  const generation = platformCaptureGeneration;
+  const task = bitmap.then(value => { if (generation !== platformCaptureGeneration) value.close(); else raster.bitmap = value; });
+  // Observe immediately: render failure can discard the packet before commit.
+  pendingPlatformCaptures.add(task);
+  void task.then(() => pendingPlatformCaptures.delete(task), () => pendingPlatformCaptures.delete(task));
+  platformBitmapTasks.push(task);
+}
+export async function drainPlatformCaptures(): Promise<void> { await Promise.allSettled([...pendingPlatformCaptures]); }
 export function stagePlatformRaster(order: number, left: number, top: number, width: number, height: number,
   pixelWidth: number, pixelHeight: number, pixels: Uint8Array): void {
   platformRasters.push({ order, bounds: { left, top, width, height }, width: pixelWidth, height: pixelHeight, pixels });
@@ -2623,12 +2641,23 @@ export function stagePlatformRaster(order: number, left: number, top: number, wi
 export function stagePlatformFrame(json: string): void {
   platformFrame = { batch: JSON.parse(json), rasters: platformRasters }; platformRasters = [];
 }
-export function discardPlatformFrame(): void { platformFrame = null; platformRasters = []; }
+export function discardPlatformFrame(): void {
+  platformCaptureGeneration++;
+  for (const raster of [...platformRasters, ...(platformFrame?.rasters ?? [])]) raster.bitmap?.close();
+  platformFrame = null; platformRasters = []; platformBitmapTasks = [];
+}
 export async function commitPlatformFrame(): Promise<boolean> {
   const frame = platformFrame; platformFrame = null;
   if (!frame) return true;
-  const receipt = JSON.parse(await activeWorkerBridge!.requestControl("platform-frame", frame as unknown as Record<string, unknown>));
-  return receipt.accepted === true;
+  const tasks = platformBitmapTasks; platformBitmapTasks = [];
+  const generation = platformCaptureGeneration;
+  try {
+    await Promise.all(tasks);
+    if (generation !== platformCaptureGeneration) return false;
+    const transfer = frame.rasters.flatMap(raster => raster.bitmap ? [raster.bitmap] : []);
+    const receipt = JSON.parse(await activeWorkerBridge!.requestControl("platform-frame", frame as unknown as Record<string, unknown>, transfer));
+    return receipt.accepted === true;
+  } finally { for (const raster of frame.rasters) raster.bitmap?.close(); }
 }
 export function platformViewRequest(hostId: number, json: string): Promise<string> {
   return activeWorkerBridge!.requestControl("platform", { ...JSON.parse(json), hostId });

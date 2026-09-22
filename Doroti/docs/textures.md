@@ -2,7 +2,10 @@
 
 2026-09-22: **CPU textures and Android/Windows native GPU input implemented and exercised.**
 iOS/macOS Metal and Linux DMA-BUF/camera adapters are implemented in source only;
-their platform builds and execution are **notVerified**. Web native GPU input remains planned.
+their platform builds and execution are **notVerified**. Web Canvas/video/frame GPU
+input is implemented on WebGPU and explicit WebGL. See [Browser source textures](web-textures.md)
+and [Web validation](../validation/textures/web-results-2026-09-22.md) for the API,
+executed checks and separate physical-camera/Debug-runtime limits.
 
 ## Existing implementation and completed connection
 

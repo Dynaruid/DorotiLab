@@ -212,7 +212,7 @@ Build, native execution, browser execution, physical-device behavior, accessibil
 | AppKit | Native execution and remaining conditions are recorded in the [AppKit summary](../history/26-08-20/macos-appkit-dual-backend-summary.md). |
 | iOS | NativeAOT build, deployment, and device observations are recorded in the [NativeAOT summary](../history/26-09-10/nativeaot-work2-summary.md); they apply to the documented configurations. |
 | Native controls and WebView | Consult the [PlatformView support matrix](docs/platform-views/support-matrix.md) for implementation and validation boundaries. |
-| Texture | [Frame textures](docs/textures.md): CPU RGBA, Android Surface/AHB, and Windows D3D11 GPU input. Windows camera and AMD/NVIDIA composition tested; iOS/macOS Metal and Linux DMA-BUF camera adapters are source-only, not runtime-qualified. |
+| Texture | [Frame textures](docs/textures.md): CPU RGBA, Android Surface/AHB, Windows D3D11, and [Web Canvas/video/frame GPU input](docs/web-textures.md) on WebGPU or explicit WebGL. Web physical camera qualification remains separate. Windows camera and AMD/NVIDIA composition tested; iOS/macOS Metal and Linux DMA-BUF camera adapters are source-only, not runtime-qualified. |
 
 The [development history](../history/) contains results from specific runs, not guarantees for every current device or configuration.
 

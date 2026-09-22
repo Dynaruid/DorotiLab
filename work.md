@@ -1,10 +1,14 @@
 # Web 네이티브 소스 Texture 작업계획
 
 작성일: 2026-09-22  
-상태: **계획 작성 완료 / 아래 구현·검증은 미착수**  
+상태: **P0–P6 구현·자동 검증 완료 / Debug 런타임 시작 오류 수정·검증 완료 / 실카메라 notVerified**
 범위: Doroti Web의 Canvas·Video·카메라 프레임을 기존 `Texture` 위젯으로 합성한다.
 
-이번 요청의 산출물은 이 작업계획이다. 제품 코드 변경과 실행 검증은 수행하지 않는다. 기존 Android·Windows·Apple·Linux 텍스처 작업과 작업 트리의 변경사항은 유지한다.
+2026-09-22 전체 작업 요청에 따라 제품 구현과 실행 검증을 수행했다. 기존 Android·Windows·Apple·Linux 텍스처 구현은 유지했다. 실카메라 전체 승인은 아래 자동 검증 완료와 구분한다.
+
+구현·재현 명령·증거·제한사항: [Web 검증 보고서](Doroti/validation/textures/web-results-2026-09-22.md). 공개 API: [Browser source textures](Doroti/docs/web-textures.md).
+
+최종 publish 앱의 WebGPU·WebGL 각각 15개 제품/수명 검사와 46개 픽셀 검사 통과. 양쪽 device/context loss와 실제 샘플 버튼·합성된 native 입력 검사 통과. 후속 요청으로 기존 Debug WASM 시작 오류도 수정하고, Debug의 WebGPU·WebGL 각각 15개 실행 검사와 46개 픽셀 검사를 통과했다([Debug 검증 보고서](Doroti/validation/web-debug-startup-2026-09-22.md)). 실카메라/물리 입력·표시 지연은 `notVerified`다.
 
 ## 1. 목표와 완료 기준
 
@@ -39,7 +43,7 @@
 
 ## 3. 입력 API와 소유권 설계
 
-다음은 구현할 API의 **설계안**이며 기존 API가 아니다. 최종 명칭은 P0에서 확정한다.
+아래 형태를 구현했다. 공개 진입점은 `texturesForCanvas(canvasId)`이며 ID는 decimal Int64 문자열이다. 상세한 소유권·오류 계약은 API 문서를 따른다.
 
 ```ts
 const videoEntry = await textures.registerVideo(video);
@@ -113,67 +117,67 @@ render Worker: 최신 pending 1개 → owning GPU device/context의 텍스처
 
 ### P0 — 타입·native bridge·owner 경계 확정
 
-- [ ] 실제 main/managed Worker/render Worker 통로와 transfer list 전달 가능 지점을 추적한다. JSON control channel에 frame 객체를 넣지 않는다.
-- [ ] pinned SkiaSharp/WASM의 Dawn image wrapper, GL texture 등록, release callback 및 GPU 완료 hook을 확인한다.
-- [ ] browser 전용 capability/entry API, ID wire 형식, 오류 모델, 메모리 예산을 확정한다.
-- [ ] `SkiaGraphiteSession` 재사용 여부를 판단하되 기존 Web 세션과 이중 recorder/device를 만들지 않는다.
-- [ ] 정적 RGBA source 하나를 실제 Skia GPU 장면 안에 합성하는 작은 검증을 WebGPU·WebGL 각각 수행한다.
+- [x] 실제 main/managed Worker/render Worker 통로와 transfer list 전달 가능 지점을 추적한다. JSON control channel에 frame 객체를 넣지 않는다.
+- [x] pinned SkiaSharp/WASM의 Dawn image wrapper, GL texture 등록, release callback 및 GPU 완료 hook을 확인한다.
+- [x] browser 전용 capability/entry API, ID wire 형식, 오류 모델, 메모리 예산을 확정한다.
+- [x] `SkiaGraphiteSession` 재사용 여부를 판단하되 기존 Web 세션과 이중 recorder/device를 만들지 않는다.
+- [x] 정적 RGBA source 하나를 실제 Skia GPU 장면 안에 합성하는 작은 검증을 WebGPU·WebGL 각각 수행한다.
 
 게이트 G0: 실제 제품 GPU 컨텍스트에서 source → native wrapper → SKImage sampling이 가능하고 참조 반환 경로를 설명할 수 있어야 한다. binding 제한을 발견하면 필요한 bridge 변경과 근거를 기록하고 해결한다. CPU 변환으로 성공을 대체하지 않는다.
 
 ### P1 — JS 등록 API와 bounded frame 전달
 
-- [ ] 제안 파일 `Web/doroti.web.textures.ts`에 source 등록, frame producer, source 교체, dispose를 구현한다.
-- [ ] 프로토콜 kind/버전 또는 capability 협상을 추가하고 main/Worker 양쪽을 함께 갱신한다.
-- [ ] credit/ACK, 최신 후보, 비동기 Canvas snapshot coalescing, late-frame cleanup을 구현한다.
-- [ ] 등록된 ID와 공통 `TextureRegistry` external source의 매핑을 연결한다.
-- [ ] 타입 선언 및 호스트 정적 자산 패키징을 갱신한다.
+- [x] 제안 파일 `Web/doroti.web.textures.ts`에 source 등록, frame producer, source 교체, dispose를 구현한다.
+- [x] 프로토콜 kind/버전 또는 capability 협상을 추가하고 main/Worker 양쪽을 함께 갱신한다.
+- [x] credit/ACK, 최신 후보, 비동기 Canvas snapshot coalescing, late-frame cleanup을 구현한다.
+- [x] 등록된 ID와 공통 `TextureRegistry` external source의 매핑을 연결한다.
+- [x] 타입 선언 및 호스트 정적 자산 패키징을 갱신한다.
 
 게이트 G1: 느린 consumer, 게시 실패, source 교체, snapshot 완료 전 dispose에서도 상류/하류 큐가 제한되고 모든 전달된 frame이 정확히 반환된다.
 
 ### P2 — WebGPU/Dawn importer와 합성 수명
 
-- [ ] 제안 `BrowserTextureEntry.cs` 및 `DorotiWebWorkerSurface.Textures.cs`에서 browser external source를 연결한다.
-- [ ] `doroti.webgpu.ts`의 owning device에 source copy, texture pool, native import/release를 추가한다.
-- [ ] 현재 Graphite submit/queue completion에 자원 retirement를 연결한다. canceled recording과 실패한 submit도 처리한다.
-- [ ] texture-only invalidation, freeze, resize, retained scene, clip/transform/opacity를 연결한다.
+- [x] 제안 `BrowserTextureEntry.cs` 및 `DorotiWebWorkerSurface.Textures.cs`에서 browser external source를 연결한다.
+- [x] `doroti.webgpu.ts`의 owning device에 source copy, texture pool, native import/release를 추가한다.
+- [x] 현재 Graphite submit/queue completion에 자원 retirement를 연결한다. canceled recording과 실패한 submit도 처리한다.
+- [x] texture-only invalidation, freeze, resize, retained scene, clip/transform/opacity를 연결한다.
 
 게이트 G2: WebGPU Canvas·Video가 화면에서 갱신되며, freeze/resume/재생성과 GPU 완료 후 자원 반환이 pixel·진단 양쪽에서 확인된다. WebGPU validation 오류 0건.
 
 ### P3 — WebGL importer
 
-- [ ] 동일 source/protocol을 WebGL texture upload와 Skia Ganesh wrapper로 연결한다.
-- [ ] GL 상태 복원/무효화, texture name 소유권, sampling 완료 및 context loss 정리를 구현한다.
-- [ ] backend별 capability와 실패 이유를 명시한다. 지원하지 않는 direct frame 입력은 명확히 거부한다.
+- [x] 동일 source/protocol을 WebGL texture upload와 Skia Ganesh wrapper로 연결한다.
+- [x] GL 상태 복원/무효화, texture name 소유권, sampling 완료 및 context loss 정리를 구현한다.
+- [x] backend별 capability와 실패 이유를 명시한다. 지원하지 않는 direct frame 입력은 명확히 거부한다.
 
 게이트 G3: 명시적인 `worker-direct-webgl` 실행에서 Canvas·Video·카메라 기본 경로와 합성 동작이 통과한다. GL 오류 및 살아 있는 wrapper/texture 잔여가 없다.
 
 ### P4 — source 어댑터와 샘플
 
-- [ ] Canvas 패턴: 방향을 구분할 모서리 색, 이동 도형, 반투명 영역, 크기 변경, 수동 갱신을 넣는다.
-- [ ] Video: 저장소의 로컬 테스트 영상으로 재생/정지/seek/ended/source 교체를 확인한다.
-- [ ] Camera: 사용자가 시작하는 액션에서만 접근을 요청한다. 생성한 stream의 소유권과 종료를 구현한다.
-- [ ] 직접 `VideoFrame`/`ImageBitmap` 공급과 owner-local `OffscreenCanvas` 예제를 제공한다. WebCodecs 디코딩 예제는 codec capability를 확인한다.
-- [ ] 기존 Texture 샘플에 Web source 선택과 Freeze/Resume, Recreate, Stop을 추가한다. 기술 진단값은 테스트/개발 화면에 둔다.
+- [x] Canvas 패턴: 방향을 구분할 모서리 색, 이동 도형, 반투명 영역, 크기 변경, 수동 갱신을 넣는다.
+- [x] Video: 저장소의 로컬 테스트 영상으로 재생/정지/seek/ended/source 교체를 확인한다.
+- [x] Camera: 사용자가 시작하는 액션에서만 접근을 요청한다. 생성한 stream의 소유권과 종료를 구현한다.
+- [x] 직접 `VideoFrame`/`ImageBitmap` 공급과 owner-local `OffscreenCanvas` 예제를 제공한다. WebCodecs 디코딩 예제는 codec capability를 확인한다.
+- [x] 기존 Texture 샘플에 Web source 선택과 Freeze/Resume, Recreate, Stop을 추가한다. 기술 진단값은 테스트/개발 화면에 둔다.
 
 게이트 G4: Canvas·영상·카메라가 모두 같은 `Texture` 위젯 합성 경로를 사용한다. 일반 샘플 시작만으로 카메라 권한 요청이나 source 재생을 시작하지 않는다.
 
 ### P5 — 자동 검증과 Windows 브라우저 실행
 
-- [ ] 소유권/프로토콜 계약 테스트와 실제 렌더링 테스트를 구분해 추가한다.
-- [ ] Windows의 설치된 Chrome 또는 Edge에서 제품 WebGPU 및 명시적 WebGL을 실행한다. 브라우저 버전, GPU, 렌더러, origin isolation, 실행 자산 해시를 기록한다.
-- [ ] 아래 매트릭스를 source/backend에 맞춰 실행한다. 기능이 없는 브라우저는 지원 실패/미검증으로 기록하고 테스트 통과로 바꾸지 않는다.
-- [ ] 기존 CPU Texture 및 native ownership 계약 테스트를 실행해 공통 계층 회귀를 확인한다.
-- [ ] native 앱·Android 에뮬레이터·Apple/Linux 실행은 이 Web 작업의 필수 실행 범위에 포함하지 않는다. 해당 코드를 변경해야 한다면 영향과 필요한 별도 검증을 먼저 계획에 반영한다.
+- [x] 소유권/프로토콜 계약 테스트와 실제 렌더링 테스트를 구분해 추가한다.
+- [x] Windows의 설치된 Chrome 또는 Edge에서 제품 WebGPU 및 명시적 WebGL을 실행한다. 브라우저 버전, GPU, 렌더러, origin isolation, 실행 자산 해시를 기록한다.
+- [x] 아래 매트릭스를 source/backend에 맞춰 실행한다. 기능이 없는 브라우저는 지원 실패/미검증으로 기록하고 테스트 통과로 바꾸지 않는다.
+- [x] 기존 CPU Texture 및 native ownership 계약 테스트를 실행해 공통 계층 회귀를 확인한다.
+- [x] native 앱·Android 에뮬레이터·Apple/Linux 실행은 이 Web 작업의 필수 실행 범위에 포함하지 않는다. 해당 코드를 변경해야 한다면 영향과 필요한 별도 검증을 먼저 계획에 반영한다.
 
 게이트 G5: 필수 기본 경로는 실제 픽셀 검사까지 통과하고, 실패·종료 경로에서 pending/current/in-flight 및 frame close 계정이 일치한다. 물리 카메라 검증이 불가능하면 사유와 함께 해당 항목을 `notVerified`로 남기고 전체 카메라 완료를 선언하지 않는다.
 
 ### P6 — 문서·패키징·최종 보고
 
-- [ ] `Doroti/docs/textures.md`와 validation 문서에 API, 소유권, backend 지원, 오류, CORS, 카메라 시작/종료 사용법을 추가한다.
-- [ ] published testbed 및 패키지에 JS module/type declarations/native export가 누락되지 않았는지 확인한다.
-- [ ] README 지원 상태와 진단 schema를 갱신한다.
-- [ ] CSharpier, TypeScript/managed build, whitespace 검사 및 관련 게이트 결과를 기록한다.
+- [x] `Doroti/docs/textures.md`와 validation 문서에 API, 소유권, backend 지원, 오류, CORS, 카메라 시작/종료 사용법을 추가한다.
+- [x] published testbed 및 패키지에 JS module/type declarations/native export가 누락되지 않았는지 확인한다.
+- [x] README 지원 상태와 진단 schema를 갱신한다.
+- [x] CSharpier, TypeScript/managed build, whitespace 검사 및 관련 게이트 결과를 기록한다.
 
 게이트 G6: 구현 파일, 재현 명령, 실제 실행 증거, 미검증 범위를 연결한 보고서가 있어야 한다. 브라우저 GPU 입력 구현을 하드웨어 디코딩·zero-copy·물리 표시 지연 개선의 증거로 확대하지 않는다.
 
@@ -231,3 +235,12 @@ Web 프로젝트 빌드가 기존 MSBuild TypeScript 경로를 실행하도록 �
 - [WebGL 2 규격](https://registry.khronos.org/webgl/specs/latest/2.0/) — WebGL source upload·context 계약.
 
 완료 표기 규칙: 미실행은 `notVerified`, 환경/드라이버 조건 미충족은 사유를 기재한다. 부분 성공을 전체 플랫폼 지원 완료로 표시하지 않는다.
+
+## 11. 실행 완료 메모
+
+- G0–G4: 실제 owning WebGPU/Dawn·WebGL/Ganesh wrapper와 소스별 픽셀 합성, freeze/resume, resize, retained scene, WebView 중첩을 검증했다.
+- G1: main transfer/latest/snapshot 및 Worker pending/GPU 예산, late-frame close, 세대·게시 실패·GPU 완료를 계약 테스트로 확인했다.
+- G5: Release publish의 두 backend 자동 검사, 공통 CPU 29개·native 25개 검사, DOM 수명 회귀 18개 검사를 통과했다. 카메라는 가상 장치 검증이며 물리 센서·권한 UI·분리/재연결은 `notVerified`다.
+- G6: NuGet 모듈·타입 선언, publish 자산·native export, CSharpier/TypeScript/managed build/diff 검사를 통과했다. 정확한 브라우저·GPU·자산 hash와 프레임 반환 계정은 위 보고서와 `Doroti/artifacts/textures/web/`에 기록했다.
+- Debug 후속 수정: Emscripten의 주소 0 스택 배치를 Runner SDK에서 바로잡고 `-O0`·디버그 심볼·스레드를 유지했다. 두 backend의 실제 Debug 시작과 픽셀 출력 검사를 통과했다. IDE 중단점 연결은 별도 미검증이다.
+- 전체 실카메라 지원/물리 표시 성능까지 무조건 PASS로 확대하지 않는다. native submit 오류 코드별 강제 주입과 장시간 성능은 검증 보고서의 제한사항을 따른다.

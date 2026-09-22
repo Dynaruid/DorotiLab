@@ -185,6 +185,8 @@ public static partial class DorotiWebWorkerSurface
         ReleaseGpu();
         _target = null;
         _viewId = 0;
+        _textureModule?.Dispose();
+        _textureModule = null;
     }
 
     private static void RequestPresent()

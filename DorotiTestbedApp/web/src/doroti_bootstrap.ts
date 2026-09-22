@@ -11,6 +11,10 @@ await startDoroti({
     document.documentElement.dataset.dorotiBootstrapConfigured = "true";
   },
   onStage(stage) {
+    if (stage === "started") {
+      const runtime = (globalThis as unknown as { getDotnetRuntime(id: number): { getAssemblyExports(name: string): Promise<{ DorotiTestbedApp: { Web: { Validation: { WebTextureExport: { Initialize(): void } } } } }> } }).getDotnetRuntime(0);
+      void runtime.getAssemblyExports("DorotiTestbedApp.Web.dll").then(exports => exports.DorotiTestbedApp.Web.Validation.WebTextureExport.Initialize());
+    }
     document.documentElement.dataset.dorotiBootstrapStage = stage;
     const history = document.documentElement.dataset.dorotiBootstrapStages;
     document.documentElement.dataset.dorotiBootstrapStages = history ? `${history},${stage}` : stage;

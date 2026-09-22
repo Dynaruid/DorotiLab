@@ -30,6 +30,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="Web\types\doroti-loader\index.d.ts" Pack="true" PackagePath="types\doroti-loader\index.d.ts" />
+    <None Include="Web\types\doroti-textures\index.d.ts" Pack="true" PackagePath="types\doroti-textures\index.d.ts" />
   </ItemGroup>
   <Import Project="..\Doroti.App.Sdk\Sdk\Doroti.TypeScript.targets" />
 </Project>
