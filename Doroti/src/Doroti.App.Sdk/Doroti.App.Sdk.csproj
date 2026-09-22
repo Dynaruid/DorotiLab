@@ -5,7 +5,7 @@
     <Description>Platform-neutral MSBuild SDK for Doroti application assemblies.</Description>
     <IsDorotiProduct>false</IsDorotiProduct>
     <IsPackable>true</IsPackable>
-    <Version>0.2.0-beta</Version>
+    <Version>0.3.0-beta</Version>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     <IncludeSymbols>false</IncludeSymbols>

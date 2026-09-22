@@ -1,7 +1,7 @@
 {
   "schemaVersion": "doroti.target-package/v1",
   "packageId": "Doroti.Target.Web.browser-wasm",
-  "packageVersion": "0.2.0-beta",
+  "packageVersion": "0.3.0-beta",
   "rid": "browser-wasm",
   "host": "managed-render-worker",
   "defaultRenderer": "worker-direct-webgpu",

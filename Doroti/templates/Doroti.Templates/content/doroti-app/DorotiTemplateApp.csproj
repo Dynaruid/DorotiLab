@@ -1,12 +1,12 @@
-<Project Sdk="Doroti.App.Sdk/0.2.0-beta">
+<Project Sdk="Doroti.App.Sdk/0.3.0-beta">
   <PropertyGroup>
     <AssemblyName>DorotiTemplateApp</AssemblyName>
     <RootNamespace>DorotiTemplateApp</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Doroti.Hosting" Version="0.2.0-beta" />
-    <PackageReference Include="Doroti.Ui" Version="0.2.0-beta" />
-    <PackageReference Include="Doroti.Framework.Widgets" Version="0.2.0-beta" />
-    <PackageReference Include="Doroti.Framework.Material" Version="0.2.0-beta" />
+    <PackageReference Include="Doroti.Hosting" Version="0.3.0-beta" />
+    <PackageReference Include="Doroti.Ui" Version="0.3.0-beta" />
+    <PackageReference Include="Doroti.Framework.Widgets" Version="0.3.0-beta" />
+    <PackageReference Include="Doroti.Framework.Material" Version="0.3.0-beta" />
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 {
   "schemaVersion": "doroti.target-package/v1",
   "packageId": "Doroti.Target.Linux.Qt.linux-x64",
-  "packageVersion": "0.2.0-beta",
+  "packageVersion": "0.3.0-beta",
   "rid": "linux-x64",
   "host": "qt6-c-abi",
   "graphicsBackend": "qt6/QWindow/Graphite-Vulkan",

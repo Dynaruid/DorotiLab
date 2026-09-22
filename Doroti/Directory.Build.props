@@ -3,7 +3,7 @@
   <Import Project="src/Doroti.Runner.Sdk/Sdk/Doroti.IosNativeAot.props" />
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <VersionPrefix>0.2.0</VersionPrefix>
+    <VersionPrefix>0.3.0</VersionPrefix>
     <VersionSuffix>beta</VersionSuffix>
     <LangVersion>14.0</LangVersion>
     <Nullable>enable</Nullable>

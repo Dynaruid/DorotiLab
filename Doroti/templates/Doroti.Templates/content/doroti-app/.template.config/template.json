@@ -39,7 +39,7 @@
     "displayVersion": {
       "type": "parameter",
       "datatype": "text",
-      "defaultValue": "0.2.0",
+      "defaultValue": "0.3.0",
       "replaces": "__DOROTI_DISPLAY_VERSION__"
     },
     "applicationVersion": {

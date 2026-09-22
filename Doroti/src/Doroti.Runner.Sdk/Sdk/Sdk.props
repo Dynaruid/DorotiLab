@@ -30,7 +30,7 @@
     <SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
     <MauiVersion Condition="'$(MauiVersion)' == '' and '$(DorotiIosMauiVersion)' != ''">$(DorotiIosMauiVersion)</MauiVersion>
     <MauiVersion Condition="'$(MauiVersion)' == ''">10.0.90</MauiVersion>
-    <DorotiVersion Condition="'$(DorotiVersion)' == ''">0.2.0-beta</DorotiVersion>
+    <DorotiVersion Condition="'$(DorotiVersion)' == ''">0.3.0-beta</DorotiVersion>
     <SkiaSharpVersion Condition="'$(SkiaSharpVersion)' == ''">4.154.0-preview.1.26454.9</SkiaSharpVersion>
     <DorotiMarkupVersion Condition="'$(DorotiMarkupVersion)' == ''">8.0.0</DorotiMarkupVersion>
     <DorotiTypeScriptVersion Condition="'$(DorotiTypeScriptVersion)' == ''">7.0.0</DorotiTypeScriptVersion>
