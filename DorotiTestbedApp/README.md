@@ -187,7 +187,7 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platf
 
 In a browser, [open the Material sample](http://127.0.0.1:5088/?dorotiTestbedMode=sample).
 Web selects the screen with **`dorotiTestbedMode=sample` in the URL** instead of an environment variable.
-Omitting the renderer option uses the default SkiaSharp direct Worker/WebGPU renderer.
+Omitting the renderer option uses the default SkiaSharp direct Worker/WebGL2 renderer.
 Press `Ctrl+C` in the server terminal to stop it.
 
 ## Screen and renderer settings
@@ -208,12 +208,12 @@ On Web, switch screens using the URLs below without restarting the server. Omitt
 
 | Screen / renderer | Open |
 | --- | --- |
-| Material sample / default WebGPU | [Sample](http://127.0.0.1:5088/?dorotiTestbedMode=sample) |
-| Material sample / WebGL2 | [WebGL2 sample](http://127.0.0.1:5088/?dorotiTestbedMode=sample&dorotiRenderer=worker-direct-webgl) |
-| Diagnostics / default WebGPU | [Diagnostics](http://127.0.0.1:5088/?dorotiTestbedMode=diagnostics) |
-| Diagnostics / WebGL2 | [WebGL2 diagnostics](http://127.0.0.1:5088/?dorotiTestbedMode=diagnostics&dorotiRenderer=worker-direct-webgl) |
+| Material sample / default WebGL2 | [Sample](http://127.0.0.1:5088/?dorotiTestbedMode=sample) |
+| Material sample / WebGPU | [WebGPU sample](http://127.0.0.1:5088/?dorotiTestbedMode=sample&dorotiRenderer=worker-direct-webgpu) |
+| Diagnostics / default WebGL2 | [Diagnostics](http://127.0.0.1:5088/?dorotiTestbedMode=diagnostics) |
+| Diagnostics / WebGPU | [WebGPU diagnostics](http://127.0.0.1:5088/?dorotiTestbedMode=diagnostics&dorotiRenderer=worker-direct-webgpu) |
 
-`dorotiRenderer` selects `worker-direct-webgpu` (default and `auto`) or `worker-direct-webgl`.
+`dorotiRenderer` selects `worker-direct-webgl` (default and `auto`) or explicit `worker-direct-webgpu`.
 The Web host uses SkiaSharp WASM and Microsoft.TypeScript.MSBuild; no CanvasKit/npm restore is required.
 After rebuilding a renderer, restart the runner and reload the page.
 Check animation with the play button under Components → Communication → Progress indicators.

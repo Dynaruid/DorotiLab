@@ -49,7 +49,7 @@ SDK 선택과 대상 프레임워크는 별개입니다. iOS 실기기 Release�
 | Android / `android-arm64`, `android-x64` | Windows 또는 macOS | 10 / `maui-android` | Android SDK Platforms·Build Tools·Platform Tools(`adb`), **OpenJDK 17–21**. .NET workload가 요구하는 SDK와 native bridge의 **API 34**를 준비합니다. Android 7.0/API 24 이상 기기 또는 해당 ABI 에뮬레이터와 Vulkan 1.2 지원이 필요합니다. |
 | iOS / `ios-arm64`, `iossimulator-arm64`, `iossimulator-x64` | macOS + Xcode | 11 / `maui-ios` | workload와 호환되는 전체 Xcode와 iOS SDK. 시뮬레이터는 해당 Simulator runtime, 실기기는 **iOS 15 이상**, 코드 서명 인증서와 provisioning profile이 필요합니다. Release NativeAOT는 `ios-arm64`용입니다. |
 | Linux Qt / `linux-x64` | Linux x64 | 10 / 별도 MAUI workload 없음 | **Qt 6.5 이상** Core/Gui/Widgets/OpenGL/OpenGLWidgets 개발 파일, **CMake 3.24 이상**, C/C++20 compiler, `pkg-config`, Wayland client 개발 파일, `wayland-scanner`, Vulkan 개발 헤더, fontconfig. 실행 시 `wayland` 또는 `xcb` QPA plugin과 Vulkan 1.2 드라이버가 필요합니다. |
-| Web / `browser-wasm` | Windows, macOS 또는 Linux | 10 / `wasm-tools` | 기본 WebGPU 경로는 WebGPU·WASM threads 지원 브라우저, hardware WebGPU adapter와 COOP/COEP 격리가 필요합니다. `worker-direct-webgl`을 선택하면 WebGL2를 사용합니다. |
+| Web / `browser-wasm` | Windows, macOS 또는 Linux | 10 / `wasm-tools` | 기본 렌더러는 하드웨어 WebGL2를 사용합니다. Testbed의 메인 소유 런타임에는 WASM threads와 COOP/COEP 격리도 필요합니다. `worker-direct-webgpu`를 명시적으로 선택하면 하드웨어 WebGPU 어댑터가 필요합니다. |
 
 Windows App SDK 2.4는 target의 NuGet 복원·배포에 포함됩니다. 별도의 machine-wide Windows App Runtime 설치는 요구하지 않습니다. Android native bridge는 저장소의 Gradle wrapper 8.10.2/AGP 8.6.1을 사용합니다. `JAVA_HOME`으로 지원 JDK를 지정하고 `adb`를 `PATH`에 추가합니다. Apple은 `xcode-select -p`와 `xcodebuild -version`으로 선택한 Xcode를 확인합니다.
 
@@ -164,10 +164,10 @@ Android, iOS, AppKit macOS, Mac Catalyst 실행 프로젝트는 각각 앱 소�
 
 | 렌더러 | 요구 사항 |
 | --- | --- |
-| `worker-direct-webgpu` (기본) | Graphite/Dawn, `runtimeLocation: "main"`, WASM threads, COOP/COEP 격리, 하드웨어 WebGPU 어댑터 |
-| `worker-direct-webgl` (명시적 선택) | Ganesh/WebGL2, 독립 Worker 런타임도 지원 |
+| `worker-direct-webgl` (기본) | Ganesh/WebGL2, 독립 Worker 런타임도 지원 |
+| `worker-direct-webgpu` (명시적 선택) | Graphite/Dawn, `runtimeLocation: "main"`, WASM threads, COOP/COEP 격리, 하드웨어 WebGPU 어댑터 |
 
-`auto`와 알 수 없는 렌더러 값은 WebGPU를 선택합니다. GPU 초기화 실패 시 자동으로 다른 렌더러로 전환하지 않습니다. 두 경로 모두 표시할 canvas를 한 번 이전합니다. 로더의 `started`는 런타임·GPU 준비 완료를 뜻하며, 첫 콘텐츠가 표시되었다는 의미는 아닙니다.
+`auto`와 알 수 없는 렌더러 값은 WebGL2를 선택합니다. GPU 초기화 실패 시 자동으로 다른 렌더러로 전환하지 않습니다. 두 경로 모두 표시할 canvas를 한 번 이전합니다. 로더의 `started`는 런타임·GPU 준비 완료를 뜻하며, 첫 콘텐츠가 표시되었다는 의미는 아닙니다.
 
 앱의 부팅 코드는 `web/src/**/*.ts`, 프레임워크 웹 코드는 `src/Doroti.Host.Web/Web/*.ts`에 있습니다. `Microsoft.TypeScript.MSBuild`가 실행 프로젝트의 `obj`에 JavaScript를 만들고, 배포에는 결과 파일을 포함합니다. Node, npm, Bun, 번들러는 필요하지 않습니다. Testbed와 템플릿은 같은 출처의 대체 폰트를 미리 읽고 import map의 `dotnet.js`를 사용합니다. [웹 렌더러 옵션](../DorotiTestbedApp/README.ko.md#web-렌더러와-측정-옵션)을 참고하세요.
 

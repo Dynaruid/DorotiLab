@@ -49,7 +49,7 @@ Prepare the tools for the selected platform. Workload names identify .NET instal
 | Android / `android-arm64`, `android-x64` | Windows or macOS | 10 / `maui-android` | Android SDK Platforms, Build Tools, Platform Tools (`adb`), and **OpenJDK 17–21**. Install the SDK required by the .NET workload plus **API 34** for the native bridge. Use an Android 7.0/API 24 or later device or an emulator with the matching ABI and Vulkan 1.2 support. |
 | iOS / `ios-arm64`, `iossimulator-arm64`, `iossimulator-x64` | macOS + Xcode | 11 / `maui-ios` | A full Xcode installation compatible with the workload and the iOS SDK. Simulators need the matching Simulator runtime; devices need **iOS 15 or later**, a signing certificate, and a provisioning profile. Release NativeAOT targets `ios-arm64`. |
 | Linux Qt / `linux-x64` | Linux x64 | 10 / no separate MAUI workload | **Qt 6.5 or later** Core/Gui/Widgets/OpenGL/OpenGLWidgets development files, **CMake 3.24 or later**, a C/C++20 compiler, `pkg-config`, Wayland client development files, `wayland-scanner`, Vulkan development headers, and fontconfig. Runtime requires the `wayland` or `xcb` QPA plugin and a Vulkan 1.2 driver. |
-| Web / `browser-wasm` | Windows, macOS, or Linux | 10 / `wasm-tools` | The default WebGPU path requires a browser with WebGPU and WASM threads, a hardware WebGPU adapter, and COOP/COEP isolation. Explicit `worker-direct-webgl` uses WebGL2. |
+| Web / `browser-wasm` | Windows, macOS, or Linux | 10 / `wasm-tools` | The default renderer uses hardware WebGL2. The Testbed's main-owned runtime also requires WASM threads and COOP/COEP isolation. Explicit `worker-direct-webgpu` requires a hardware WebGPU adapter. |
 
 Windows App SDK 2.4 is restored through NuGet and deployed with the target; a separate machine-wide Windows App Runtime installation is not required. The Android native bridge uses the repository's Gradle 8.10.2 wrapper and AGP 8.6.1. Set `JAVA_HOME` to a supported JDK and add `adb` to `PATH`. On Apple hosts, check the selected Xcode with `xcode-select -p` and `xcodebuild -version`.
 
@@ -164,10 +164,10 @@ The default path renders through Graphite/Vulkan and presents through D3D12/DXGI
 
 | Renderer | Requirements |
 | --- | --- |
-| `worker-direct-webgpu` (default) | Graphite/Dawn, `runtimeLocation: "main"`, WASM threads, COOP/COEP isolation, hardware WebGPU adapter |
-| `worker-direct-webgl` (explicit) | Ganesh/WebGL2; also supports an independent Worker runtime |
+| `worker-direct-webgl` (default) | Ganesh/WebGL2; also supports an independent Worker runtime |
+| `worker-direct-webgpu` (explicit) | Graphite/Dawn, `runtimeLocation: "main"`, WASM threads, COOP/COEP isolation, hardware WebGPU adapter |
 
-`auto` and unknown renderer values select WebGPU. GPU initialization failures do not trigger an automatic fallback. Both paths transfer the visible canvas once. Loader `started` signals runtime/GPU readiness, not the first visible content.
+`auto` and unknown renderer values select WebGL2. GPU initialization failures do not trigger an automatic fallback. Both paths transfer the visible canvas once. Loader `started` signals runtime/GPU readiness, not the first visible content.
 
 Application bootstrap code lives in `web/src/**/*.ts`; framework Web code lives in `src/Doroti.Host.Web/Web/*.ts`. `Microsoft.TypeScript.MSBuild` compiles both into runner-local `obj` directories, and publishing includes the resulting JavaScript. Node, npm, Bun, and a bundler are not required. Testbed and templates preload the same-origin fallback font and use the import-mapped `dotnet.js`. See [Web renderer options](../DorotiTestbedApp/README.md#web-renderers-and-measurement-options).
 

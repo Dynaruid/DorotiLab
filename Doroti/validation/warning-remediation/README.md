@@ -134,7 +134,7 @@ python Doroti/validation/run-with-timeout.py node Doroti/validation/warning-reme
 ```
 
 The test creates its own headless Chrome profile and isolation proxy, retaining
-the default `worker-direct-webgpu` mode. It checks disabled buttons, navigation,
+the default `worker-direct-webgl` mode. It checks disabled buttons, navigation,
 checkbox/switch changes after scrolling, date-picker cancellation, text entry,
 text connection closure and remount. Screenshots, events and renderer state are
 saved. It closes its own browser and proxy; stop the separately launched dev

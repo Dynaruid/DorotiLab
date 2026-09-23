@@ -186,7 +186,7 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platf
 
 브라우저에서 [Material 샘플 열기](http://127.0.0.1:5088/?dorotiTestbedMode=sample)를 누릅니다.
 Web은 환경변수 대신 **URL의 `dorotiTestbedMode=sample`**로 화면을 선택합니다.
-renderer 옵션을 생략하면 기본 SkiaSharp direct Worker/WebGPU로 실행됩니다.
+renderer 옵션을 생략하면 기본 SkiaSharp direct Worker/WebGL2로 실행됩니다.
 서버는 실행한 터미널에서 `Ctrl+C`로 종료합니다.
 
 ## 화면과 렌더러 설정
@@ -207,12 +207,12 @@ Web은 서버 재시작 없이 아래 URL로 화면을 바꿉니다. 모드를 �
 
 | 화면 / 렌더러 | 열기 |
 | --- | --- |
-| Material 샘플 / 기본 WebGPU | [샘플](http://127.0.0.1:5088/?dorotiTestbedMode=sample) |
-| Material 샘플 / WebGL2 | [WebGL2 샘플](http://127.0.0.1:5088/?dorotiTestbedMode=sample&dorotiRenderer=worker-direct-webgl) |
-| 진단 / 기본 WebGPU | [진단](http://127.0.0.1:5088/?dorotiTestbedMode=diagnostics) |
-| 진단 / WebGL2 | [WebGL2 진단](http://127.0.0.1:5088/?dorotiTestbedMode=diagnostics&dorotiRenderer=worker-direct-webgl) |
+| Material 샘플 / 기본 WebGL2 | [샘플](http://127.0.0.1:5088/?dorotiTestbedMode=sample) |
+| Material 샘플 / WebGPU | [WebGPU 샘플](http://127.0.0.1:5088/?dorotiTestbedMode=sample&dorotiRenderer=worker-direct-webgpu) |
+| 진단 / 기본 WebGL2 | [진단](http://127.0.0.1:5088/?dorotiTestbedMode=diagnostics) |
+| 진단 / WebGPU | [WebGPU 진단](http://127.0.0.1:5088/?dorotiTestbedMode=diagnostics&dorotiRenderer=worker-direct-webgpu) |
 
-`dorotiRenderer`는 `worker-direct-webgpu`(기본값 및 `auto`) 또는 `worker-direct-webgl`을 선택합니다.
+`dorotiRenderer`는 `worker-direct-webgl`(기본값 및 `auto`) 또는 명시적인 `worker-direct-webgpu`를 선택합니다.
 현재 Web 호스트는 SkiaSharp WASM과 Microsoft.TypeScript.MSBuild를 사용하며 CanvasKit/npm 복원은 필요 없습니다.
 렌더러를 다시 빌드했다면 runner를 재시작하고 페이지를 새로고침하세요.
 Components → Communication → Progress indicators의 재생 버튼으로 애니메이션을 확인할 수 있습니다.

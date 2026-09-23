@@ -150,7 +150,7 @@ let dotnetModuleUrl: string | null = null;
 let testbedMode = "diagnostics";
 let progressScope = "local";
 let managedHostReady = false;
-let workerMode: WorkerMode = "worker-direct-webgpu";
+let workerMode: WorkerMode = "worker-direct-webgl";
 let transferredCanvas: OffscreenCanvas | null = null;
 let pendingManagedSnapshot: { hostId: number; value: HostSnapshot } | null = null;
 let latestAdmissionGeneration = 0;
@@ -771,7 +771,7 @@ function handleHostMessage(event: MessageEvent): void {
       snapshot = message.snapshot as HostSnapshot;
       latestAdmissionGeneration = snapshot.resizeEpoch.generation;
       latestMailboxGeneration = snapshot.resizeEpoch.generation;
-      workerMode = String(message.mode ?? "worker-direct-webgpu") as WorkerMode;
+      workerMode = String(message.mode ?? "worker-direct-webgl") as WorkerMode;
       if (workerMode === "worker-direct-webgpu" && message.rendererContractVersion !== dorotiWebGpuRendererVersion)
         throw new Error("Unsupported Doroti WebGPU renderer contract version.");
       if (workerMode !== "worker-direct-webgl" && workerMode !== "worker-direct-webgpu")

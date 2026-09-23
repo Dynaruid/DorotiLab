@@ -17,9 +17,9 @@ export function selectRendererPolicy(search: string, platform: {
   const requested = value === "worker-direct-webgl" || value === "worker-direct-webgpu" ? value : "auto";
   const ios = /iPhone|iPad|iPod/.test(platform.userAgent) ||
     (platform.platform === "MacIntel" && platform.maxTouchPoints > 1);
-  const selected = requested === "auto" ? (ios ? "worker-direct-webgl" : "worker-direct-webgpu") : requested;
+  const selected = requested === "auto" ? "worker-direct-webgl" : requested;
   return { requested, selected, reason: requested !== "auto" ? "explicit-override" :
-    ios ? "ios-webkit-stability" : "default-webgpu", fallbackReason: null,
+    ios ? "ios-webkit-stability" : "default-webgl2", fallbackReason: null,
     memoryProfile: ios || /Android/.test(platform.userAgent) ? "mobile" : "desktop" };
 }
 

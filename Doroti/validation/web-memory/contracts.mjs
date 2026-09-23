@@ -9,9 +9,13 @@ const ipad = { userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) Safari/
 const mac = { ...ipad, maxTouchPoints: 0 };
 assert.equal(select('', iphone).selected, 'worker-direct-webgl');
 assert.equal(select('', ipad).selected, 'worker-direct-webgl');
-assert.equal(select('', mac).selected, 'worker-direct-webgpu');
+assert.equal(select('', mac).selected, 'worker-direct-webgl');
+assert.equal(select('?dorotiRenderer=auto', mac).selected, 'worker-direct-webgl');
+assert.equal(select('?dorotiRenderer=unknown', mac).selected, 'worker-direct-webgl');
+assert.equal(select('', mac).reason, 'default-webgl2');
 assert.equal(select('', iphone).reason, 'ios-webkit-stability');
 assert.equal(select('?dorotiRenderer=worker-direct-webgpu', iphone).selected, 'worker-direct-webgpu');
+assert.equal(select('?dorotiRenderer=worker-direct-webgpu', mac).reason, 'explicit-override');
 assert.equal(select('?dorotiRenderer=worker-direct-webgl', mac).reason, 'explicit-override');
 assert.equal(select('?dorotiRenderer=unknown', iphone).requested, 'auto');
 assert.equal(select('', { ...mac, userAgent: 'Android Chrome' }).memoryProfile, 'mobile');

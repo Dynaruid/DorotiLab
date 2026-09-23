@@ -50,7 +50,7 @@ try{
    await until(()=>evaluate(`document.querySelector('#doroti-ime')?.value.includes('A1 web input')`),'text entry');check(true,'text editing after scrolling');await shot('text-input');
    await tab('Color');await until(()=>evaluate(`document.querySelector('#doroti-ime')?.hidden===true`),'text connection closes');await tab('Components');check(true,'navigation disposes and remounts controls');
    const presenter=await evaluate(`JSON.parse(globalThis.__dorotiResizeDiagnostics.presenter('doroti-surface'))`);
-   check(presenter.mode==='worker-direct-webgpu'&&!presenter.contextLost,'default WebGPU renderer remains active');
+   check(presenter.mode==='worker-direct-webgl'&&!presenter.contextLost,'default WebGL2 renderer remains active');
    check(!events.some(e=>e.method==='Runtime.exceptionThrown'),'no unhandled page exceptions');
    await writeFile(join(out,'result.json'),JSON.stringify({status:'passed',state,presenter,tests:['disabled callback','navigation','scroll and checkbox','picker cancellation','switch','text input','dispose and remount'],input:'Chrome CDP browser input',physicalInput:'notVerified'},null,2));
  }catch(error){await shot('failure');await writeFile(join(out,'failure-nodes.json'),JSON.stringify(await nodes(),null,2));throw error;}
