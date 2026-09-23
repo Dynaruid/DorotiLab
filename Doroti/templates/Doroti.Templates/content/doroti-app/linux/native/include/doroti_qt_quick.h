@@ -29,6 +29,7 @@ DOROTI_QT_EXPORT int doroti_qt_quick_commit(void* window,const doroti_qt_quick_p
 #include <QEvent>
 #include <QWindow>
 bool DorotiQtQuickNativeInput(QWindow* window,QEvent* event);
+void DorotiQtQuickCancelNativeInput(QWindow* window);
 bool DorotiQtQuickHasNativeFocus(QWindow* window);
 void DorotiQtQuickClearFocus(QWindow* window);
 #endif

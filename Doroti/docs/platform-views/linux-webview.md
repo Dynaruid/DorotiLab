@@ -42,6 +42,9 @@ borrowed only during the call. Normal retirement unbinds before freeing the mana
 context; native owner close destroys its objects before managed callback cleanup.
 Renderer process failure is terminal and fails pending commands. Explicit controller
 recreation starts a fresh document; history/forms/media are not restored.
+All five current WebView bits are required by the public adapter; additional
+unknown bits are accepted as optional additions. Native failures retain the
+numeric status, operation and owner on `WebViewException` for diagnostics.
 
 ## Profiles and app content
 

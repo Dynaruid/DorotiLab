@@ -147,6 +147,17 @@ internal static unsafe class QtNativeV2
     [StructLayout(LayoutKind.Sequential)]
     internal readonly struct Key
     {
+        internal Key(long physical, long logical, uint type, long timestampMicroseconds = 0)
+        {
+            AbiVersion = QtNativeV2.AbiVersion;
+            StructSize = checked((uint)sizeof(Key));
+            Physical = physical;
+            Logical = logical;
+            Type = type;
+            Modifiers = 0;
+            Character = default;
+            TimestampMicroseconds = timestampMicroseconds;
+        }
         internal readonly uint AbiVersion;
         internal readonly uint StructSize;
         internal readonly long Physical;

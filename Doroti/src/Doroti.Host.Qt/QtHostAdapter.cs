@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using Doroti.Skia.Rendering;
 using Doroti.Ui;
@@ -31,6 +32,9 @@ internal sealed unsafe class QtHostAdapter
     private long _nativeClockOriginMicroseconds = -1;
     private TimeSpan _dorotiClockOrigin;
     private bool _disposed;
+
+    [DllImport("doroti_qt_host", EntryPoint = "doroti_qt_request_focus_v2")]
+    private static extern int RequestNativeFocus(nint viewHandle);
 
     internal QtHostAdapter(
         nint viewHandle,
@@ -67,6 +71,7 @@ internal sealed unsafe class QtHostAdapter
 
     private long _resizeGeneration;
     public ViewMetrics Metrics { get; private set; }
+    internal bool SupportsIdleFrameElision => (_hostApi.FeatureBits & (1UL << 20)) != 0;
     public PlatformConfiguration Configuration { get; private set; }
     public long InputSequence => Volatile.Read(ref _inputSequence);
     public long SurfaceGeneration => Metrics.surfaceGeneration;
@@ -172,7 +177,14 @@ internal sealed unsafe class QtHostAdapter
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         _ = direction;
-        FocusData?.Invoke(new(1, state == ViewFocusState.focused, DorotiFrameClock.Now));
+        if (state == ViewFocusState.focused && (_hostApi.FeatureBits & (1UL << 19)) != 0)
+        {
+            var status = RequestNativeFocus(_viewHandle);
+            if (status != 0)
+                throw new InvalidOperationException($"Qt activation request failed (status {status}).");
+        }
+        // Only ApplyFocus, called from Qt's observed activate/deactivate event,
+        // publishes the actual window focus state to the framework.
     }
 
     internal void BeginFrame(in QtNativeV2.Surface surface)
@@ -533,6 +545,9 @@ internal sealed unsafe class QtHostAdapter
                 : new
                 {
                     selected = node.flags.isSelected.toBoolOrNull(),
+                    checkedState = (int)node.flags.isChecked,
+                    toggled = node.flags.isToggled.toBoolOrNull(),
+                    expanded = node.flags.isExpanded.toBoolOrNull(),
                     enabled = node.flags.isEnabled.toBoolOrNull(),
                     focused = node.flags.isFocused.toBoolOrNull(),
                     button = node.flags.isButton,
@@ -542,6 +557,8 @@ internal sealed unsafe class QtHostAdapter
                     image = node.flags.isImage,
                     slider = node.flags.isSlider,
                     readOnly = node.flags.isReadOnly,
+                    obscured = node.flags.isObscured,
+                    multiline = node.flags.isMultiline,
                 },
             node.textSelectionBase,
             node.textSelectionExtent,

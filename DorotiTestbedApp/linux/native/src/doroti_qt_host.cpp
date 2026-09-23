@@ -46,6 +46,7 @@
 #include <QAccessibilityHints>
 #endif
 #include <QTabletEvent>
+#include <QThread>
 #include <QTimer>
 #include <QTouchEvent>
 #include <QWheelEvent>
@@ -109,7 +110,8 @@ constexpr std::uint64_t kSupportedFeatures =
     DOROTI_QT_FEATURE_TEXT_INPUT |
     DOROTI_QT_FEATURE_PLATFORM_SERVICES |
     DOROTI_QT_FEATURE_SEMANTICS | DOROTI_QT_FEATURE_TITLEBAR |
-    DOROTI_QT_FEATURE_PRE_APPLICATION | DOROTI_QT_FEATURE_PLATFORM_VIEWS;
+    DOROTI_QT_FEATURE_PRE_APPLICATION | DOROTI_QT_FEATURE_PLATFORM_VIEWS |
+    DOROTI_QT_FEATURE_ACTIVATION_REQUEST | DOROTI_QT_FEATURE_IDLE_FRAME_ELISION;
 constexpr std::uint32_t kGlRgba8 = 0x8058;
 
 doroti_qt_utf8_v2 Utf8(const char* value) {
@@ -140,6 +142,17 @@ struct SemanticNode {
   bool image = false;
   bool slider = false;
   bool read_only = false;
+  bool selected = false;
+  bool selectable = false;
+  int checked_state = 0;
+  bool toggled = false;
+  bool toggleable = false;
+  bool expanded = false;
+  bool expandable = false;
+  bool obscured = false;
+  bool multiline = false;
+  int selection_base = -1;
+  int selection_extent = -1;
 };
 
 class DorotiAccessibleNode;
@@ -326,7 +339,8 @@ class DorotiSurface final : public DorotiWindowBase {
     backdrop_event_timer_->start(16);
     wl_display_flush(wayland_display_);
   }
-  void DispatchSemanticsAction(std::int64_t id, std::int64_t action) {
+  void DispatchSemanticsAction(std::int64_t id, std::int64_t action,
+                               const QByteArray& arguments = "null") {
     // Accessibility requests are distinct from publishing node state. Recheck
     // the current node when an AT action arrives; a retained provider may refer
     // to a removed, disabled or no-longer-actionable node.
@@ -336,7 +350,7 @@ class DorotiSurface final : public DorotiWindowBase {
     if (node->read_only && (action == (1ll << 6) || action == (1ll << 7))) return;
     for (std::uint32_t button = 1; button <= 3; ++button)
       if (id == CaptionId(button) && action == 1) { ActivateCaptionButton(button); return; }
-    callbacks_.semantics_action(callback_context_, this, id, action, Utf8("null"));
+    callbacks_.semantics_action(callback_context_, this, id, action, Utf8(arguments));
   }
 
   static void RequestFrame(void* view_handle, std::uint64_t frame_token) noexcept {
@@ -611,11 +625,18 @@ class DorotiSurface final : public DorotiWindowBase {
       Terminal(std::exchange(rasterized_frame_token_, 0), DOROTI_QT_TERMINAL_SUPERSEDED, rasterized_generation_);
 #endif
     const auto result = callbacks_.render(callback_context_, this, &descriptor, token);
-    if (result == 1) {
+    if (result == 1 || result == 2) {
       Terminal(token, DOROTI_QT_TERMINAL_SUPERSEDED, surface_generation_);
       // No buffer was committed, so no compositor frame callback is promised.
-      // Retry on the owner event loop even if Wayland is waiting for one.
-      if (!render_retry_pending_) {
+      // A known empty scene at the published extent needs no retry.
+#ifdef DOROTI_QT_QUICK
+      const bool retry = result == 1 || !quick_has_frame_ ||
+          descriptor.pixel_width != published_pixel_width_ ||
+          descriptor.pixel_height != published_pixel_height_;
+#else
+      const bool retry = true;
+#endif
+      if (retry && !render_retry_pending_) {
         render_retry_pending_ = true;
         QTimer::singleShot(8, this, [this] {
           render_retry_pending_ = false;
@@ -633,6 +654,17 @@ class DorotiSurface final : public DorotiWindowBase {
       return;
     }
     if (result != DOROTI_QT_OK) {
+      const auto details = QJsonDocument(QJsonObject{
+          {"qt", QString::fromLatin1(qVersion())},
+          {"qpa", QGuiApplication::platformName()},
+          {"logicalWidth", width()}, {"logicalHeight", height()},
+          {"pixelWidth", descriptor.pixel_width}, {"pixelHeight", descriptor.pixel_height},
+          {"dpr", descriptor.device_pixel_ratio},
+          {"surfaceGeneration", qint64(surface_generation_)},
+          {"metricsGeneration", qint64(metrics_generation_)},
+          {"frameToken", QString::number(token)}, {"status", result}
+      }).toJson(QJsonDocument::Compact);
+      Diagnostic("render.failure", details.constData());
       fatal_ = true;
       Terminal(token, DOROTI_QT_TERMINAL_FAILED, surface_generation_);
       callbacks_.fatal(callback_context_, result, Utf8("managed Vulkan render callback failed"));
@@ -646,6 +678,8 @@ class DorotiSurface final : public DorotiWindowBase {
 #endif
 #ifdef DOROTI_QT_QUICK
     quick_has_frame_ = true;
+    published_pixel_width_ = descriptor.pixel_width;
+    published_pixel_height_ = descriptor.pixel_height;
     if (rasterized_frame_token_ != 0)
       Terminal(std::exchange(rasterized_frame_token_, 0), DOROTI_QT_TERMINAL_SUPERSEDED, rasterized_generation_);
 #endif
@@ -802,6 +836,9 @@ class DorotiSurface final : public DorotiWindowBase {
         break;
       case QEvent::Hide:
         ResetTrackpad();
+#ifdef DOROTI_QT_QUICK
+        DorotiQtQuickCancelNativeInput(this);
+#endif
         lifecycle_state_ = 3;
         callbacks_.lifecycle_changed(callback_context_, this, lifecycle_state_, Micros());
         SendMetrics();
@@ -820,6 +857,9 @@ class DorotiSurface final : public DorotiWindowBase {
         break;
       case QEvent::WindowDeactivate:
         ResetTrackpad();
+#ifdef DOROTI_QT_QUICK
+        DorotiQtQuickCancelNativeInput(this);
+#endif
         lifecycle_state_ = 2;
         callbacks_.lifecycle_changed(callback_context_, this, lifecycle_state_, Micros());
         callbacks_.focus(callback_context_, this, 0, Micros());
@@ -833,6 +873,9 @@ class DorotiSurface final : public DorotiWindowBase {
         break;
       case QEvent::Close:
         ResetTrackpad();
+#ifdef DOROTI_QT_QUICK
+        DorotiQtQuickCancelNativeInput(this);
+#endif
         if (!close_requested_) {
           close_requested_ = true;
           callbacks_.close_requested(callback_context_, this);
@@ -976,6 +1019,17 @@ class DorotiSurface final : public DorotiWindowBase {
             static_cast<std::int64_t>(key->key()),
             event->type() == QEvent::KeyRelease ? 1u : key->isAutoRepeat() ? 2u : 0u,
             static_cast<std::uint32_t>(key->modifiers()), Utf8(text), Micros()};
+        if (qEnvironmentVariableIsSet("DOROTI_QT_VALIDATION_KEYCODES")) {
+          const auto detail = QJsonDocument(QJsonObject{
+              {"qpa", QGuiApplication::platformName()},
+              {"nativeScanCode", qint64(key->nativeScanCode())},
+              {"qtKey", key->key()},
+              {"modifiers", qint64(static_cast<int>(key->modifiers()))},
+              {"release", event->type() == QEvent::KeyRelease},
+              {"repeat", key->isAutoRepeat()}
+          }).toJson(QJsonDocument::Compact);
+          Diagnostic("input.key", detail.constData());
+        }
         callbacks_.key(callback_context_, this, &descriptor);
         if (text_client_active_ && event->type() == QEvent::KeyPress &&
             (key->key() == Qt::Key_Return || key->key() == Qt::Key_Enter) &&
@@ -1347,6 +1401,7 @@ class DorotiSurface final : public DorotiWindowBase {
     surface_released_ = true;
 #ifdef DOROTI_QT_QUICK
     quick_has_frame_ = false;
+    published_pixel_width_ = published_pixel_height_ = 0;
 #endif
 #ifdef DOROTI_QT_GRAPHITE
     gpu_poll_timer_.stop();
@@ -1545,6 +1600,7 @@ class DorotiSurface final : public DorotiWindowBase {
   std::uint64_t rasterized_generation_ = 0;
   std::uint64_t next_automatic_frame_token_ = 1;
   bool surface_released_ = true;
+  int published_pixel_width_ = 0, published_pixel_height_ = 0;
   bool surface_diagnostics_reported_ = false;
   std::uint32_t reported_framebuffer_object_ = 0;
   int reported_sample_count_ = 0;
@@ -1597,7 +1653,9 @@ class DorotiSurface final : public DorotiWindowBase {
 };
 
 class DorotiAccessibleNode final : public QAccessibleInterface,
-                                   public QAccessibleActionInterface {
+                                   public QAccessibleActionInterface,
+                                   public QAccessibleTextInterface,
+                                   public QAccessibleEditableTextInterface {
  public:
   DorotiAccessibleNode(DorotiSurface* surface, std::int64_t id)
       : surface_(surface), id_(id) {}
@@ -1642,10 +1700,12 @@ class DorotiAccessibleNode final : public QAccessibleInterface,
     const auto* node = Node();
     if (node == nullptr) return {};
     if (type == QAccessible::Name) return node->label;
-    if (type == QAccessible::Value) return node->value;
+    if (type == QAccessible::Value) return node->obscured ? QString() : node->value;
     return {};
   }
-  void setText(QAccessible::Text, const QString&) override {}
+  void setText(QAccessible::Text type, const QString& value) override {
+    if (type == QAccessible::Value) ReplaceValue(value);
+  }
 
   QRect rect() const override {
     const auto* node = Node();
@@ -1661,6 +1721,8 @@ class DorotiAccessibleNode final : public QAccessibleInterface,
     if (id_ == 0) return QAccessible::Client;
     if (node->button) return QAccessible::Button;
     if (node->text_field) return QAccessible::EditableText;
+    if (node->checked_state != 0) return QAccessible::CheckBox;
+    if (node->toggleable) return QAccessible::CheckBox;
     if (node->header) return QAccessible::Heading;
     if (node->image) return QAccessible::Graphic;
     if (node->slider) return QAccessible::Slider;
@@ -1697,12 +1759,84 @@ class DorotiAccessibleNode final : public QAccessibleInterface,
     state.readOnly = node->read_only;
     state.editable = node->text_field && !node->read_only;
     state.selectableText = node->text_field;
+    state.selected = node->selected;
+    state.selectable = node->selectable;
+    state.checkable = node->checked_state != 0 || node->toggleable;
+    state.checked = node->checked_state == 1 || node->toggled;
+    state.checkStateMixed = node->checked_state == 3;
+    state.expandable = node->expandable;
+    state.expanded = node->expandable && node->expanded;
+    state.collapsed = node->expandable && !node->expanded;
+    state.passwordEdit = node->obscured;
+    state.multiLine = node->multiline;
     return state;
   }
 
   void* interface_cast(QAccessible::InterfaceType type) override {
-    return type == QAccessible::ActionInterface
-               ? static_cast<QAccessibleActionInterface*>(this) : nullptr;
+    if (type == QAccessible::ActionInterface)
+      return static_cast<QAccessibleActionInterface*>(this);
+    const auto* node = Node();
+    if (node == nullptr || !node->text_field) return nullptr;
+    if (type == QAccessible::TextInterface)
+      return static_cast<QAccessibleTextInterface*>(this);
+    if (type == QAccessible::EditableTextInterface && !node->read_only &&
+        (node->actions & (1ll << 21)) != 0)
+      return static_cast<QAccessibleEditableTextInterface*>(this);
+    return nullptr;
+  }
+
+  void selection(int index, int* start, int* end) const override {
+    const auto* node = Node();
+    if (!node || index != 0 || node->selection_base < 0 ||
+        node->selection_base == node->selection_extent) { *start = *end = -1; return; }
+    *start = std::min(node->selection_base, node->selection_extent);
+    *end = std::max(node->selection_base, node->selection_extent);
+  }
+  int selectionCount() const override {
+    const auto* node = Node();
+    return node && node->selection_base >= 0 &&
+        node->selection_base != node->selection_extent ? 1 : 0;
+  }
+  void addSelection(int start, int end) override { SendSelection(start, end); }
+  void removeSelection(int index) override {
+    if (index == 0) setCursorPosition(cursorPosition());
+  }
+  void setSelection(int index, int start, int end) override {
+    if (index == 0) SendSelection(start, end);
+  }
+  int cursorPosition() const override {
+    const auto* node = Node();
+    return node ? std::clamp(node->selection_extent, 0, int(node->value.size())) : 0;
+  }
+  void setCursorPosition(int offset) override { SendSelection(offset, offset); }
+  QString text(int start, int end) const override {
+    const auto* node = Node();
+    if (!node || node->obscured) return {};
+    const int begin = std::clamp(start, 0, int(node->value.size()));
+    const int finish = std::clamp(end, begin, int(node->value.size()));
+    return node->value.mid(begin, finish - begin);
+  }
+  int characterCount() const override {
+    const auto* node = Node(); return node ? node->value.size() : 0;
+  }
+  QRect characterRect(int) const override { return {}; }
+  int offsetAtPoint(const QPoint&) const override { return -1; }
+  void scrollToSubstring(int, int) override {}
+  QString attributes(int, int* start, int* end) const override {
+    *start = 0; *end = characterCount(); return {};
+  }
+  void deleteText(int start, int end) override { replaceText(start, end, {}); }
+  void insertText(int offset, const QString& value) override {
+    replaceText(offset, offset, value);
+  }
+  void replaceText(int start, int end, const QString& value) override {
+    const auto* node = Node();
+    if (!node || node->read_only) return;
+    const int begin = std::clamp(start, 0, int(node->value.size()));
+    const int finish = std::clamp(end, begin, int(node->value.size()));
+    QString next = node->value;
+    next.replace(begin, finish - begin, value);
+    ReplaceValue(next);
   }
 
   QStringList actionNames() const override {
@@ -1710,6 +1844,8 @@ class DorotiAccessibleNode final : public QAccessibleInterface,
     const auto* node = Node();
     if (node == nullptr) return result;
     if ((node->actions & 1) != 0) result << pressAction();
+    if ((node->actions & 1) != 0 &&
+        (node->checked_state != 0 || node->toggleable)) result << toggleAction();
     if ((node->actions & (1ll << 6)) != 0) result << increaseAction();
     if ((node->actions & (1ll << 7)) != 0) result << decreaseAction();
     if ((node->actions & (1ll << 22)) != 0) result << setFocusAction();
@@ -1723,6 +1859,7 @@ class DorotiAccessibleNode final : public QAccessibleInterface,
   void doAction(const QString& name) override {
     std::int64_t action = 0;
     if (name == pressAction()) action = 1;
+    else if (name == toggleAction()) action = 1;
     else if (name == increaseAction()) action = 1ll << 6;
     else if (name == decreaseAction()) action = 1ll << 7;
     else if (name == setFocusAction()) action = 1ll << 22;
@@ -1735,6 +1872,20 @@ class DorotiAccessibleNode final : public QAccessibleInterface,
   QStringList keyBindingsForAction(const QString&) const override { return {}; }
 
  private:
+  void SendSelection(int start, int end) {
+    const auto* node = Node();
+    if (!node || surface_ == nullptr) return;
+    QJsonObject args{{"base", std::clamp(start, 0, int(node->value.size()))},
+                     {"extent", std::clamp(end, 0, int(node->value.size()))}};
+    surface_->DispatchSemanticsAction(id_, 1ll << 11,
+        QJsonDocument(args).toJson(QJsonDocument::Compact));
+  }
+  void ReplaceValue(const QString& value) {
+    const auto* node = Node();
+    if (!node || node->read_only || surface_ == nullptr) return;
+    const auto encoded = QJsonDocument(QJsonArray{value}).toJson(QJsonDocument::Compact);
+    surface_->DispatchSemanticsAction(id_, 1ll << 21, encoded.mid(1, encoded.size() - 2));
+  }
   const SemanticNode* Node() const { return surface_ == nullptr ? nullptr : surface_->Semantic(id_); }
   DorotiSurface* surface_;
   std::int64_t id_;
@@ -1787,11 +1938,29 @@ void DorotiSurface::ApplySemantics(const QByteArray& json) {
     node.image = flags.value("image").toBool();
     node.slider = flags.value("slider").toBool();
     node.read_only = flags.value("readOnly").toBool();
+    node.selectable = flags.contains("selected") && !flags.value("selected").isNull();
+    node.selected = flags.value("selected").toBool();
+    node.checked_state = flags.value("checkedState").toInt();
+    node.toggleable = flags.contains("toggled") && !flags.value("toggled").isNull();
+    node.toggled = flags.value("toggled").toBool();
+    node.expandable = flags.contains("expanded") && !flags.value("expanded").isNull();
+    node.expanded = flags.value("expanded").toBool();
+    node.obscured = flags.value("obscured").toBool();
+    node.multiline = flags.value("multiline").toBool();
+    node.selection_base = object.value("textSelectionBase").toInt(-1);
+    node.selection_extent = object.value("textSelectionExtent").toInt(-1);
     next.insert(node.id, node);
   }
   for (auto parent = next.begin(); parent != next.end(); ++parent)
     for (const auto child_id : parent->children)
       if (auto child = next.find(child_id); child != next.end()) child->parent = parent->id;
+  const auto previous = semantics_;
+  bool reordered = previous.size() != next.size();
+  for (auto it = next.cbegin(); it != next.cend(); ++it) {
+    const auto before = previous.constFind(it.key());
+    if (before == previous.cend() || before->children != it->children ||
+        before->parent != it->parent) reordered = true;
+  }
   for (auto it = accessible_ids_.begin(); it != accessible_ids_.end();) {
     if (next.contains(it.key())) { ++it; continue; }
     QAccessible::deleteAccessibleInterface(it.value());
@@ -1799,12 +1968,75 @@ void DorotiSurface::ApplySemantics(const QByteArray& json) {
   }
   semantics_ = std::move(next);
   RefreshCaptionSemantics();
-  QAccessibleEvent changed(this, QAccessible::ObjectReorder);
-  QAccessible::updateAccessibility(&changed);
+  if (reordered) {
+    QAccessibleEvent changed(this, QAccessible::ObjectReorder);
+    QAccessible::updateAccessibility(&changed);
+  }
+  for (auto it = semantics_.cbegin(); it != semantics_.cend(); ++it) {
+    const auto old = previous.constFind(it.key());
+    if (old == previous.cend()) continue;
+    auto* iface = Accessible(it.key());
+    if (iface == nullptr) continue;
+    if (old->label != it->label) {
+      QAccessibleEvent changed(iface, QAccessible::NameChanged);
+      QAccessible::updateAccessibility(&changed);
+    }
+    if (old->value != it->value) {
+      if (it->text_field && !it->obscured) {
+        QAccessibleTextUpdateEvent changed(iface, 0, old->value, it->value);
+        QAccessible::updateAccessibility(&changed);
+      } else {
+        QAccessibleValueChangeEvent changed(iface, it->obscured ? QString() : it->value);
+        QAccessible::updateAccessibility(&changed);
+      }
+    }
+    if (old->selection_base != it->selection_base ||
+        old->selection_extent != it->selection_extent) {
+      QAccessibleTextSelectionEvent changed(iface, it->selection_base, it->selection_extent);
+      QAccessible::updateAccessibility(&changed);
+    }
+    if (old->focused != it->focused) {
+      QAccessible::State states;
+      states.focused = true;
+      QAccessibleStateChangeEvent changed(iface, states);
+      QAccessible::updateAccessibility(&changed);
+      if (it->focused) {
+        QAccessibleEvent focus(iface, QAccessible::Focus);
+        QAccessible::updateAccessibility(&focus);
+      }
+    }
+    if (old->selected != it->selected || old->checked_state != it->checked_state ||
+        old->toggled != it->toggled || old->expanded != it->expanded ||
+        old->enabled != it->enabled || old->hidden != it->hidden) {
+      QAccessible::State states;
+      states.selected = old->selected != it->selected;
+      states.checked = old->checked_state != it->checked_state || old->toggled != it->toggled;
+      states.checkStateMixed = old->checked_state != it->checked_state;
+      states.expanded = old->expanded != it->expanded;
+      states.collapsed = old->expanded != it->expanded;
+      states.disabled = old->enabled != it->enabled;
+      states.invisible = old->hidden != it->hidden;
+      QAccessibleStateChangeEvent changed(iface, states);
+      QAccessible::updateAccessibility(&changed);
+    }
+  }
   if (qEnvironmentVariableIsSet("DOROTI_QT_VALIDATION_ACCESSIBILITY_DUMP")) {
     auto* root = Accessible(0);
     const auto children = QByteArray::number(root == nullptr ? 0 : root->childCount());
     Diagnostic("accessibility.rootChildren", children.constData());
+    int text_interfaces = 0, editable_interfaces = 0, selected_nodes = 0;
+    for (auto it = semantics_.cbegin(); it != semantics_.cend(); ++it) {
+      auto* iface = Accessible(it.key());
+      if (iface == nullptr) continue;
+      if (iface->interface_cast(QAccessible::TextInterface)) ++text_interfaces;
+      if (iface->interface_cast(QAccessible::EditableTextInterface)) ++editable_interfaces;
+      if (iface->state().selected) ++selected_nodes;
+    }
+    const auto detail = QJsonDocument(QJsonObject{
+        {"textInterfaces", text_interfaces}, {"editableTextInterfaces", editable_interfaces},
+        {"selectedNodes", selected_nodes}
+    }).toJson(QJsonDocument::Compact);
+    Diagnostic("accessibility.interfaces", detail.constData());
   }
 }
 
@@ -1879,6 +2111,16 @@ std::int32_t Validate(const doroti_qt_configuration_v2* configuration,
   return DOROTI_QT_OK;
 }
 }  // namespace
+
+extern "C" DOROTI_QT_EXPORT std::int32_t doroti_qt_request_focus_v2(void* view_handle) {
+  if (!QCoreApplication::instance() ||
+      QThread::currentThread() != QCoreApplication::instance()->thread())
+    return DOROTI_QT_PV_WRONG_THREAD;
+  if (view_handle == nullptr || !accessible_surfaces.contains(static_cast<QObject*>(view_handle)))
+    return DOROTI_QT_PV_STALE;
+  static_cast<DorotiSurface*>(view_handle)->requestActivate();
+  return DOROTI_QT_OK;
+}
 
 extern "C" DOROTI_QT_EXPORT std::int32_t doroti_qt_run_v2(
     const doroti_qt_configuration_v2* configuration,

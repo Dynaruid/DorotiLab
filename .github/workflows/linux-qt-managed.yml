@@ -1,0 +1,31 @@
+name: Linux Qt displayless contracts
+on:
+  push:
+    paths:
+      - '.github/workflows/linux-qt-managed.yml'
+      - 'Doroti/src/**'
+      - 'Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/**'
+      - 'DorotiTestbedApp/linux/native/**'
+      - 'Doroti/validation/linux-qt-contract/**'
+      - 'Doroti/validation/linux-qt-quick/check-native-sync.py'
+  pull_request:
+    paths:
+      - '.github/workflows/linux-qt-managed.yml'
+      - 'Doroti/src/**'
+      - 'Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/**'
+      - 'DorotiTestbedApp/linux/native/**'
+      - 'Doroti/validation/linux-qt-contract/**'
+      - 'Doroti/validation/linux-qt-quick/check-native-sync.py'
+jobs:
+  displayless:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.400
+      - name: Check native app and template bytes
+        run: python3 Doroti/validation/linux-qt-quick/check-native-sync.py
+      - name: Managed ABI, key and error contracts
+        run: python3 Doroti/validation/run-with-timeout.py dotnet run --project Doroti/validation/linux-qt-contract/Contract.csproj

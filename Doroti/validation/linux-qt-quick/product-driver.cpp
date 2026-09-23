@@ -44,7 +44,8 @@ static void Start() {
             QQuickWindow* window=nullptr;
             for(auto* w:QGuiApplication::topLevelWindows())
                 if(w->title().contains("Doroti")) { window=qobject_cast<QQuickWindow*>(w);break; }
-            if(!window||!window->isExposed())return;
+            if(!window)return;
+            if(!window->isExposed()&&index==0)return;
             if(index>=steps.size()) { timer->stop();window->close();return; }
             const auto step=steps[index++].toObject();
             const auto action=step["action"].toString();
@@ -161,8 +162,15 @@ static void Start() {
                     Qt::NoButton,Qt::NoModifier,Qt::NoScrollPhase,false);
                 QCoreApplication::sendEvent(window,&event);
             } else if(action=="resize")window->resize(step["width"].toInt(),step["height"].toInt());
+            else if(action=="maximize")window->showMaximized();
+            else if(action=="restore")window->showNormal();
+            else if(action=="minimize")window->showMinimized();
+            else if(action=="hide")window->hide();
+            else if(action=="show")window->show();
             else if(action=="capture") {
                 const auto path=step["path"].toString();
+                if(qEnvironmentVariableIsSet("DOROTI_QT_VALIDATION_ACCESSIBILITY_DUMP"))
+                    QAccessible::setActive(true);
                 DorotiQtRecordPlatformOwner(window,path.toUtf8().constData());
                 QJsonArray names;
                 std::function<void(QAccessibleInterface*,int)> visit=[&](QAccessibleInterface* item,int depth) {
@@ -171,10 +179,21 @@ static void Start() {
                     for(int i=0;i<item->childCount();i++)visit(item->child(i),depth+1);
                 };
                 visit(QAccessible::queryAccessibleInterface(window),0);
+                QJsonArray nativeNames;
+                std::function<void(QAccessibleInterface*,int)> visitNative=[&](QAccessibleInterface* item,int depth) {
+                    if(!item||depth>32||nativeNames.size()>512)return;
+                    nativeNames.append(item->text(QAccessible::Name));
+                    for(int i=0;i<item->childCount();i++)visitNative(item->child(i),depth+1);
+                };
+                visitNative(QAccessible::queryAccessibleInterface(window->contentItem()),0);
+                for(auto* item:window->findChildren<QQuickItem*>())
+                    if(item->objectName().startsWith("doroti-quick-"))
+                        visitNative(QAccessible::queryAccessibleInterface(item),0);
                 QFile file(path+".json");
                 if(file.open(QIODevice::ReadOnly)) {
                     auto record=QJsonDocument::fromJson(file.readAll()).object();file.close();
                     record.insert("accessibleNames",names);
+                    record.insert("nativeAccessibleNames",nativeNames);
                     QJsonArray effects;
                     for(auto* item:window->findChildren<QQuickItem*>())if(item->metaObject()->indexOfProperty("outputRect")>=0) {
                         const auto rect=item->property("outputRect").toRectF();

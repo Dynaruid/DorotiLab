@@ -12,6 +12,7 @@ namespace Doroti.Host.Qt;
 /// images with live Quick Controls; the legacy ABI places disjoint child Widgets.</summary>
 internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDisposable
 {
+    internal static bool SupportsFeatures(ulong features) => (features & 1) != 0;
     [StructLayout(LayoutKind.Sequential)]
     internal readonly record struct NativeRect(double X, double Y, double Width, double Height);
 
@@ -110,8 +111,7 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
         if (
             _api.Version != 1
             || _api.Size != sizeof(Api)
-            || (_api.Features & 1) == 0
-            || (_api.Features & ~31UL) != 0
+            || !SupportsFeatures(_api.Features)
             || _api.Post == null
             || _api.Create == null
             || _api.Commit == null

@@ -156,6 +156,11 @@ public static unsafe partial class DorotiQtRunner
         private readonly Dictionary<string, string> _nativeDiagnostics = new(
             StringComparer.Ordinal
         );
+        private long _frameMismatchCount;
+        private string? _lastFrameMismatch;
+        private long _replacementMetricsGeneration = -1;
+        private long _replacementResizeGeneration = -1;
+        private long _replacementSurfaceGeneration = -1;
         private readonly DorotiApplicationBoundary _application;
         private readonly DorotiViewConfiguration _configuration;
         internal QtPlatformViewHost PlatformViews { get; }
@@ -199,6 +204,7 @@ public static unsafe partial class DorotiQtRunner
         internal string Title => _configuration.title;
         internal QtTitlebarAppearance? TitlebarAppearance { get; private set; }
         internal DorotiView? View { get; private set; }
+        internal ulong CurrentFrameToken { get; set; }
 
         internal void SetHost(nint viewHandle, in QtNativeV2.HostApi hostApi)
         {
@@ -339,6 +345,7 @@ public static unsafe partial class DorotiQtRunner
                 View = view;
                 renderer.AttachSurface(host.RequestInvalidate);
                 host.Show();
+                view.ScheduleFrame(DorotiUiInvocation.Managed("Qt host initial scene"));
             }
             catch
             {
@@ -480,6 +487,15 @@ public static unsafe partial class DorotiQtRunner
             }
 
             Console.Error.WriteLine($"doroti.qt managed.fatal={exception}");
+            Console.Error.WriteLine($"doroti.qt managed.failureContext={JsonSerializer.Serialize(new
+            {
+                frameToken = CurrentFrameToken,
+                resizeGeneration = Host?.ResizeTarget.Generation,
+                surfaceGeneration = Host?.Metrics.surfaceGeneration,
+                physicalWidth = Host?.Metrics.physicalSize.width,
+                physicalHeight = Host?.Metrics.physicalSize.height,
+                dpr = Host?.Metrics.devicePixelRatio,
+            })}");
             RequestClose();
         }
 
@@ -499,6 +515,23 @@ public static unsafe partial class DorotiQtRunner
             {
                 Console.Error.WriteLine($"doroti.qt {key}={value}");
             }
+        }
+
+        internal void RecordFrameMismatch(DorotiFrameMatchResult? match)
+        {
+            if (match is null) return;
+            _frameMismatchCount++;
+            _lastFrameMismatch = $"{match.MismatchCode}: {match.Detail}";
+            if (Host is null || View is null) return;
+            var epoch = Host.ViewEpoch;
+            if (_replacementMetricsGeneration == epoch.MetricsGeneration
+                && _replacementResizeGeneration == epoch.ResizeTargetGeneration
+                && _replacementSurfaceGeneration == Host.SurfaceGeneration)
+                return;
+            _replacementMetricsGeneration = epoch.MetricsGeneration;
+            _replacementResizeGeneration = epoch.ResizeTargetGeneration;
+            _replacementSurfaceGeneration = Host.SurfaceGeneration;
+            View.ScheduleFrame(DorotiUiInvocation.Managed("Qt stale scene replacement"));
         }
 
         internal void WriteDiagnostics()
@@ -532,10 +565,18 @@ public static unsafe partial class DorotiQtRunner
                         failed = _failed,
                         rendererSubmitted = renderer?.Submitted,
                         rendererPending = renderer?.PendingScene,
+                        mismatchCount = _frameMismatchCount,
+                        lastMismatch = _lastFrameMismatch,
                     },
                     inputCount = Host?.InputSequence ?? 0,
                     compositionFrames = PlatformViews.CommittedFrames,
                     quickPeakReservedBytes = Surface.QuickPeakReservedBytes,
+                    quickReservedBytes = Surface.QuickGpu?.ReservedBytes ?? 0,
+                    quickRetiringLayers = Surface.QuickGpu?.RetiringLayers ?? 0,
+                    quickPeakRetiringLayers = Math.Max(Surface.QuickPeakRetiringLayers,
+                        Surface.QuickGpu?.PeakRetiringLayers ?? 0),
+                    quickTimings = Surface.QuickTimings ?? Surface.QuickGpu?.Timings,
+                    quickNativeCommitTimings = Surface.QuickNativeCommitTimings,
                     semanticsNodes = _nativeDiagnostics.GetValueOrDefault("semantics.nodes", "0"),
                     renderer = renderer?.Backend,
                     softwareFallback = false,
@@ -662,11 +703,14 @@ public static unsafe partial class DorotiQtRunner
     )
     {
         var presented = false;
+        var attemptedPaint = false;
+        SkiaPaintDisposition disposition = default;
         var result = Guard(
             context,
             state =>
             {
-                _ = (viewHandle, frameToken);
+                _ = viewHandle;
+                state.CurrentFrameToken = frameToken;
                 if (surface == null)
                 {
                     throw new InvalidDataException("Qt supplied a null surface descriptor.");
@@ -699,12 +743,14 @@ public static unsafe partial class DorotiQtRunner
                     in *surface,
                     (skiaSurface, width, height) =>
                     {
+                        attemptedPaint = true;
                         paint = state.Renderer.Paint(
                             skiaSurface,
                             width,
                             height,
                             state.Host.ResizeTarget
                         );
+                        disposition = paint.Disposition;
                         var caption =
                             state.Surface.QuickEnabled && surface->TitlebarHeight != 0
                                 ? state.Surface.QuickCaptionCanvas(in *surface)
@@ -717,8 +763,11 @@ public static unsafe partial class DorotiQtRunner
                         );
                     },
                     shouldPresent: () => paint.ShouldPresent,
-                    beforePresent: state.PreparePresent
+                    beforePresent: state.PreparePresent,
+                    frameToken: frameToken
                 );
+                if (paint.Disposition == SkiaPaintDisposition.superseded)
+                    state.RecordFrameMismatch(paint.MatchResult);
                 if (presented && state.Surface.QuickEnabled)
                 {
                     state.AwaitQuickCompositionTerminal(frameToken);
@@ -742,7 +791,11 @@ public static unsafe partial class DorotiQtRunner
                 }
             }
         );
-        return result == 0 && !presented ? 1 : result;
+        if (result == 0 && !presented)
+            return attemptedPaint && disposition == SkiaPaintDisposition.empty
+                && GetState(context).Surface.QuickEnabled
+                && GetState(context).Host?.SupportsIdleFrameElision == true ? 2 : 1;
+        return result;
     }
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]

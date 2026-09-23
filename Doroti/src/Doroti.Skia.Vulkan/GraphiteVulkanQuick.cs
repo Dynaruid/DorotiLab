@@ -1,4 +1,5 @@
 using Doroti.Skia.Rendering;
+using System.Diagnostics;
 using Silk.NET.Vulkan;
 using SkiaSharp;
 using VkImage = Silk.NET.Vulkan.Image;
@@ -10,6 +11,28 @@ namespace Doroti.Skia.Vulkan;
 /// The Qt basic render loop serializes all access on its GUI/render owner.</summary>
 public sealed unsafe class GraphiteVulkanQuick : IDisposable
 {
+    public readonly record struct Percentiles(int Samples, double? P50Ms, double? P95Ms, double? P99Ms);
+    public readonly record struct TimingSummary(Percentiles QueueIdle, Percentiles Recording,
+        Percentiles CopySubmit, Percentiles FenceWait);
+    private readonly List<double> _queueIdleMs = [], _recordingMs = [], _copySubmitMs = [], _fenceWaitMs = [];
+    private long _recordingStarted;
+    public TimingSummary Timings => new(Percentile(_queueIdleMs), Percentile(_recordingMs),
+        Percentile(_copySubmitMs), Percentile(_fenceWaitMs));
+    private static Percentiles Percentile(List<double> samples)
+    {
+        if (samples.Count == 0) return new(0, null, null, null);
+        var ordered = samples.Order().ToArray();
+        double At(double p) => ordered[Math.Clamp((int)Math.Ceiling(p * ordered.Length) - 1, 0, ordered.Length - 1)];
+        return new(ordered.Length, At(.5), At(.95), At(.99));
+    }
+    private static void Sample(List<double> samples, long start)
+    {
+        if (samples.Count < 10000) samples.Add(Stopwatch.GetElapsedTime(start).TotalMilliseconds);
+    }
+    public enum FailureKind { None, DeviceLost, Timeout, VulkanError, SubmissionError }
+    // A timed-out fence does not prove that Qt has stopped sampling its images.
+    // Keep those allocations and their dispatch owners alive until process exit.
+    private static readonly List<GraphiteVulkanQuick> Quarantined = [];
     private const ulong Timeout = 5_000_000_000;
     private const ulong Budget = 128UL * 1024 * 1024;
     private readonly int _owner = Environment.CurrentManagedThreadId;
@@ -26,6 +49,11 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
     private SkiaGraphiteSession.Frame? _frame;
     private bool _submitted,
         _disposed;
+    private bool _disposing;
+    public FailureKind Failure { get; private set; }
+    public ulong FrameToken { get; set; }
+    public string? FailureOperation { get; private set; }
+    public Result? FailureResult { get; private set; }
     private readonly List<Layer> _layers = [];
     private readonly List<Layer> _retired = [];
     private HashSet<Layer> _published = [];
@@ -40,6 +68,7 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
     public ulong ReservedBytes => _bytes;
     public ulong PeakReservedBytes { get; private set; }
     public int RetiringLayers => _retired.Count;
+    public int PeakRetiringLayers { get; private set; }
     public event Action? ResourcesReleasing;
 
     private sealed class Layer
@@ -145,7 +174,8 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
         {
             if (_session is not null)
             {
-                Dispose();
+                try { Dispose(); }
+                catch { /* Preserve the initialization error. */ }
             }
             else
             {
@@ -170,11 +200,12 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
         }
         // Qt submitted the preceding scene-graph frame before this GUI-thread sync.
         // Do not overwrite or free any P while Qt can still sample it.
-        Check(_vk.QueueWaitIdle(_queue), "Qt sampling retirement");
+        WaitQueue("Qt sampling retirement", _queueIdleMs);
         _borrowed.Clear();
         // Never render/copy into the published bank, even at the same extent.
         // A rejected native commit must leave its pixels as well as geometry intact.
         _retired.AddRange(_layers);
+        PeakRetiringLayers = Math.Max(PeakRetiringLayers, _retired.Count);
         _layers.Clear();
         var resized = _width != width || _height != height;
         _width = width;
@@ -194,6 +225,7 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
         _used = 0;
         Canvas(0);
         _frame = _session.BeginVulkanFrame(_layers[0].Target!);
+        _recordingStarted = Stopwatch.GetTimestamp();
         return _frame.Surface;
     }
 
@@ -284,6 +316,7 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
     public void Cancel()
     {
         Verify();
+        _recordingStarted = 0;
         if (_frame is null)
         {
             return;
@@ -291,7 +324,7 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
 
         if (_submitted)
         {
-            Check(_vk.QueueWaitIdle(_queue), "failed Quick submission drain");
+            WaitQueue("failed Quick submission drain");
             _frame.CompleteGpuWork();
         }
         else
@@ -305,12 +338,24 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
 
     public void Complete()
     {
+        try { CompleteCore(); }
+        catch
+        {
+            RecordFailure(FailureKind.SubmissionError, "Quick frame submission");
+            throw;
+        }
+    }
+
+    private void CompleteCore()
+    {
         Verify();
         if (_frame is null)
         {
             throw new InvalidOperationException("No Quick recording.");
         }
 
+        if (_recordingStarted != 0) Sample(_recordingMs, _recordingStarted);
+        _recordingStarted = 0;
         _submitted = true;
         _frame.Submit();
         var reset = _observer.Call<VulkanObserver.ResetCommandBufferDelegate>(
@@ -422,16 +467,27 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
             CommandBufferCount = 1,
             PCommandBuffers = &command,
         };
-        Check(
-            _observer.Call<VulkanObserver.QueueSubmitDelegate>("vkQueueSubmit")(
-                _queue,
-                1,
-                &submit,
-                _fence
-            ),
-            "Quick copy submit"
-        );
-        Check(_vk.WaitForFences(_device, 1, in _fence, true, Timeout), "Quick copy completion");
+        var submitStart = Stopwatch.GetTimestamp();
+        try {
+            Check(
+                _observer.Call<VulkanObserver.QueueSubmitDelegate>("vkQueueSubmit")(
+                    _queue, 1, &submit, _fence
+                ), "Quick copy submit"
+            );
+        }
+        finally { Sample(_copySubmitMs, submitStart); }
+        var fenceStart = Stopwatch.GetTimestamp();
+        Result fenceResult;
+        try { fenceResult = _vk.WaitForFences(_device, 1, in _fence, true, Timeout); }
+        catch (Exception error)
+        {
+            RecordFailure(FailureKind.VulkanError, "Quick copy completion");
+            throw new InvalidOperationException(
+                $"Quick copy completion threw after {Stopwatch.GetElapsedTime(fenceStart).TotalMilliseconds} ms; owner={_owner}; token={FrameToken}.", error);
+        }
+        var fenceMs = Stopwatch.GetElapsedTime(fenceStart).TotalMilliseconds;
+        if (_fenceWaitMs.Count < 10000) _fenceWaitMs.Add(fenceMs);
+        Check(fenceResult, "Quick copy completion", fenceMs);
         _observer.Check();
         _frame.CompleteGpuWork();
         _frame = null;
@@ -608,22 +664,59 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
         _bytes -= layer.Bytes;
     }
 
-    private void Check(Result result, string operation)
+    private void WaitQueue(string operation, List<double>? samples = null)
     {
-        if (result == Result.ErrorDeviceLost)
+        var start = Stopwatch.GetTimestamp();
+        Result result;
+        try { result = _vk.QueueWaitIdle(_queue); }
+        catch (Exception error)
         {
-            _session.NotifyVulkanDeviceLost();
+            RecordFailure(FailureKind.VulkanError, operation);
+            throw new InvalidOperationException(
+                $"{operation} threw after {Stopwatch.GetElapsedTime(start).TotalMilliseconds} ms; owner={_owner}; token={FrameToken}.", error);
+        }
+        var elapsed = Stopwatch.GetElapsedTime(start).TotalMilliseconds;
+        if (samples is not null && samples.Count < 10000) samples.Add(elapsed);
+        Check(result, operation, elapsed);
+    }
+
+    private void Check(Result result, string operation, double? waitMs = null)
+    {
+        if (result == Result.Success)
+        {
+            return;
         }
 
-        if (result != Result.Success)
+        RecordFailure(result == Result.ErrorDeviceLost ? FailureKind.DeviceLost
+            : result == Result.Timeout ? FailureKind.Timeout : FailureKind.VulkanError,
+            operation, result);
+        if (result == Result.ErrorDeviceLost)
         {
-            throw new InvalidOperationException($"{operation}: {result}");
+            _session?.NotifyVulkanDeviceLost();
         }
+
+        throw new InvalidOperationException($"{operation}: {result}; waitMs={waitMs}; owner={_owner}; token={FrameToken}; frame={Frames}; failure={Failure}");
+    }
+
+    internal void InjectFailureForContract(Result result) => Check(result, "injected Quick failure");
+
+    private void RecordFailure(FailureKind kind, string operation, Result? result = null)
+    {
+        if (Failure != FailureKind.None) return;
+        Failure = kind;
+        FailureOperation = operation;
+        FailureResult = result;
     }
 
     private void Verify()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
+        if (_disposing || Failure != FailureKind.None)
+        {
+            throw new InvalidOperationException(
+                $"Quick GPU is terminal: {FailureOperation ?? "disposing"}, {FailureResult}; owner={_owner}; token={FrameToken}; frame={Frames}."
+            );
+        }
         if (Environment.CurrentManagedThreadId != _owner)
         {
             throw new InvalidOperationException("Quick GPU owner thread mismatch.");
@@ -637,32 +730,63 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
             return;
         }
 
-        Verify();
-        Check(_vk.QueueWaitIdle(_queue), "Quick terminal GPU drain");
-        Cancel();
-        ResourcesReleasing?.Invoke();
-        foreach (var layer in _layers.Concat(_retired))
+        if (Environment.CurrentManagedThreadId != _owner)
+            throw new InvalidOperationException("Quick GPU owner thread mismatch.");
+        _disposing = true;
+        Exception? cleanupError = null;
+        try
         {
-            Destroy(layer);
+            if (Failure == FailureKind.None)
+            {
+                try { WaitQueue("Quick terminal GPU drain"); }
+                catch (Exception error) { cleanupError = error; }
+            }
+            // Do not free images or a submitted recording after an unproven drain.
+            if (Failure != FailureKind.None)
+            {
+                if (_frame is not null && !_submitted)
+                {
+                    try { _frame.CancelRecording(); _frame = null; }
+                    catch (Exception error) { cleanupError ??= error; }
+                }
+                lock (Quarantined) Quarantined.Add(this);
+                return;
+            }
+            if (_frame is not null)
+            {
+                try
+                {
+                    if (_submitted) _frame.CompleteGpuWork();
+                    else _frame.CancelRecording();
+                    _frame = null;
+                    _submitted = false;
+                }
+                catch (Exception error) { cleanupError ??= error; }
+            }
+            try { ResourcesReleasing?.Invoke(); }
+            catch (Exception error) { cleanupError ??= error; }
+            foreach (var layer in _layers.Concat(_retired).Distinct())
+            {
+                try { Destroy(layer); }
+                catch (Exception error) { cleanupError ??= error; }
+            }
+            _layers.Clear();
+            _retired.Clear();
+            try { _session?.Dispose(); }
+            catch (Exception error) { cleanupError ??= error; }
+            if (_fence.Handle != 0) _vk.DestroyFence(_device, _fence, null);
+            if (_pool.Handle != 0) _vk.DestroyCommandPool(_device, _pool, null);
+            _observer?.Journal.FreePool(_pool.Handle);
+            try { _observer?.Check(); }
+            catch (Exception error) { cleanupError ??= error; }
+            _observer?.Dispose();
+            _vk.Dispose(); // Qt's borrowed device/instance are never destroyed here.
         }
-
-        _layers.Clear();
-        _retired.Clear();
-        _session.Dispose();
-        if (_fence.Handle != 0)
+        finally
         {
-            _vk.DestroyFence(_device, _fence, null);
+            _disposed = true;
+            _disposing = false;
         }
-
-        if (_pool.Handle != 0)
-        {
-            _vk.DestroyCommandPool(_device, _pool, null);
-        }
-
-        _observer.Journal.FreePool(_pool.Handle);
-        _observer.Check();
-        _observer.Dispose();
-        _vk.Dispose();
-        _disposed = true; // Qt's borrowed device/instance are never destroyed here.
+        if (cleanupError is not null) throw cleanupError;
     }
 }

@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using System.Diagnostics;
 using Doroti.Skia.Vulkan;
 using SkiaSharp;
 
@@ -14,6 +15,19 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
     internal QtQuickNative.Part[] QuickParts { get; set; } = [];
     internal bool QuickEnabled { get; private set; }
     internal ulong QuickPeakReservedBytes { get; private set; }
+    internal int QuickPeakRetiringLayers { get; private set; }
+    internal GraphiteVulkanQuick.TimingSummary? QuickTimings { get; private set; }
+    private readonly List<double> _quickCommitMs = [];
+    internal GraphiteVulkanQuick.Percentiles QuickNativeCommitTimings
+    {
+        get
+        {
+            if (_quickCommitMs.Count == 0) return new(0, null, null, null);
+            var values = _quickCommitMs.Order().ToArray();
+            double At(double p) => values[Math.Clamp((int)Math.Ceiling(p * values.Length) - 1, 0, values.Length - 1)];
+            return new(values.Length, At(.5), At(.95), At(.99));
+        }
+    }
     private nint _quickWindow;
     private bool _nativeTextures;
     internal bool NativeTexturesConfigured => !QuickEnabled || _nativeTextures;
@@ -76,7 +90,8 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
         in QtNativeV2.Surface descriptor,
         Action<SKSurface, int, int> render,
         Func<bool>? shouldPresent = null,
-        Action? beforePresent = null
+        Action? beforePresent = null,
+        ulong frameToken = 0
     )
     {
         ArgumentNullException.ThrowIfNull(render);
@@ -103,6 +118,7 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
             }
             var width = descriptor.PixelWidth;
             var height = descriptor.PixelHeight;
+            QuickGpu.FrameToken = frameToken;
             var target = QuickGpu.Begin(width, height);
             var bounds = new QtPlatformViewHost.NativeRect(
                 0,
@@ -132,15 +148,24 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
                     QuickGpu.Cancel();
                     return false;
                 }
+                var commitStart = Stopwatch.GetTimestamp();
                 QtQuickNative.Commit(_quickWindow, QuickParts, apply: false);
+                var prepareMs = Stopwatch.GetElapsedTime(commitStart).TotalMilliseconds;
                 QuickGpu.Complete();
+                commitStart = Stopwatch.GetTimestamp();
                 QtQuickNative.Commit(_quickWindow, QuickParts, apply: true);
+                if (_quickCommitMs.Count < 10000)
+                    _quickCommitMs.Add(prepareMs + Stopwatch.GetElapsedTime(commitStart).TotalMilliseconds);
                 QuickGpu.MarkPublished();
                 return true;
             }
             catch
             {
-                QuickGpu.Cancel();
+                if (QuickGpu.Failure == GraphiteVulkanQuick.FailureKind.None)
+                {
+                    try { QuickGpu.Cancel(); }
+                    catch { /* Preserve the render/submit failure. */ }
+                }
                 throw;
             }
         }
@@ -307,10 +332,14 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
 
     private void ReleaseGpuResources()
     {
+        Exception? quickError = null;
         if (QuickGpu is { } quick)
         {
             QuickPeakReservedBytes = Math.Max(QuickPeakReservedBytes, quick.PeakReservedBytes);
-            quick.Dispose();
+            QuickPeakRetiringLayers = Math.Max(QuickPeakRetiringLayers, quick.PeakRetiringLayers);
+            QuickTimings = quick.Timings;
+            try { quick.Dispose(); }
+            catch (Exception error) { quickError = error; }
         }
         QuickGpu = null;
         QuickParts = [];
@@ -322,6 +351,7 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
         _interface?.Dispose();
         _interface = null;
         _contextIdentity = 0;
+        if (quickError is not null) throw quickError;
     }
 
     private void ReleaseRenderTarget()

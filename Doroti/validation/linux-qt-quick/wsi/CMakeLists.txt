@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.24)
+project(doroti_qt_wsi_isolation LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 20)
+find_package(Qt6 6.6 REQUIRED COMPONENTS Core Gui Quick)
+find_package(Vulkan REQUIRED)
+add_executable(qt-wsi-resize ../wsi-resize-fixture.cpp)
+target_link_libraries(qt-wsi-resize PRIVATE Qt6::Core Qt6::Gui Qt6::Quick Vulkan::Headers)

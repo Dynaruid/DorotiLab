@@ -10,6 +10,9 @@ namespace Doroti.Host.Qt;
 // A command adapter for the coordinator-owned Quick item. No second native view.
 internal sealed partial class QtWebViewSession : IDisposable
 {
+    internal const ulong RequiredFeatures = 1 | 2 | 4 | 8 | 16;
+    internal static bool SupportsFeatures(ulong features) =>
+        (features & RequiredFeatures) == RequiredFeatures;
     [StructLayout(LayoutKind.Sequential)]
     internal unsafe struct Api
     {
@@ -50,11 +53,11 @@ internal sealed partial class QtWebViewSession : IDisposable
         _owner = owner;
         _id = id;
         _changed = changed;
-        Check(GetApi(1, (uint)sizeof(Api), out _api));
+        Check(GetApi(1, (uint)sizeof(Api), out _api), "get_webview_api");
         if (
             _api.Version != 1
             || _api.Size != sizeof(Api)
-            || _api.Features != 31
+            || !SupportsFeatures(_api.Features)
             || _api.Bind == null
             || _api.Execute == null
         )
@@ -65,7 +68,7 @@ internal sealed partial class QtWebViewSession : IDisposable
         _context = GCHandle.Alloc(this);
         try
         {
-            Check(_api.Bind(owner, id, &Callback, GCHandle.ToIntPtr(_context)));
+            Check(_api.Bind(owner, id, &Callback, GCHandle.ToIntPtr(_context)), "bind", owner);
         }
         catch
         {
@@ -74,14 +77,21 @@ internal sealed partial class QtWebViewSession : IDisposable
         }
     }
 
-    private static void Check(int status)
+    internal static void Check(int status, string operation, ulong owner = 0)
     {
         if (status != 0)
         {
+            var error = status switch
+            {
+                64 or 72 => WebViewError.InvalidRequest,
+                69 or 70 or 80 or 81 or 82 or 83 => WebViewError.ProcessFailed,
+                71 or 73 => WebViewError.Closed,
+                _ => WebViewError.Unsupported,
+            };
             throw new WebViewException(
-                status is 71 or 73 ? WebViewError.Closed : WebViewError.Unsupported,
-                $"Qt WebView operation rejected (native status {status})."
-            );
+                error,
+                $"Qt WebView {operation} rejected (native status {status}, owner {owner})."
+            ) { NativeStatus = status, NativeOperation = operation, NativeOwner = owner };
         }
     }
 
@@ -257,7 +267,7 @@ internal sealed partial class QtWebViewSession : IDisposable
     {
         fixed (byte* data = bytes)
         {
-            Check(_api.Execute(_owner, _id, new(data, (ulong)bytes.Length)));
+            Check(_api.Execute(_owner, _id, new(data, (ulong)bytes.Length)), "execute", _owner);
         }
     }
 
@@ -398,7 +408,7 @@ internal sealed partial class QtWebViewSession : IDisposable
             // further operations, so already-retired tokens are safe to release.
             if (status is not (0 or 71 or 73))
             {
-                Check(status);
+                Check(status, "unbind", _owner);
             }
         }
         lock (_gate)

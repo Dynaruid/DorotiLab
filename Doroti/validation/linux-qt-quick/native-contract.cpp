@@ -2,6 +2,8 @@
 #include <QApplication>
 #include <QQuickItem>
 #include <QQuickWindow>
+#include <QTouchEvent>
+#include <QTabletEvent>
 #include <QTest>
 #include <QVulkanInstance>
 #include <bit>
@@ -60,7 +62,58 @@ int main(int argc,char** argv) {
         bad=effect;bad.clip.width+=1;
         Check(doroti_qt_quick_commit(&a,&bad,1,1)==DOROTI_QT_PV_UNSUPPORTED,"sample expansion validated");
         Check(doroti_qt_quick_commit(&a,&part,1,1)==0&&button->parentItem()->parentItem()==a.contentItem(),"last effect removed and native identity retained");
+        QMouseEvent secondPress(QEvent::MouseButtonPress,{180,180},{180,180},Qt::RightButton,
+                                Qt::LeftButton|Qt::RightButton,Qt::NoModifier);
+        QMouseEvent firstRelease(QEvent::MouseButtonRelease,{180,180},{180,180},Qt::LeftButton,
+                                  Qt::RightButton,Qt::NoModifier);
+        QMouseEvent secondRelease(QEvent::MouseButtonRelease,{180,180},{180,180},Qt::RightButton,
+                                   Qt::NoButton,Qt::NoModifier);
+        Check(DorotiQtQuickNativeInput(&a,&press),"native drag start");
+        Check(DorotiQtQuickNativeInput(&a,&secondPress),"second button preserves first owner");
+        Check(DorotiQtQuickNativeInput(&a,&firstRelease),"first button release preserves drag owner");
+        Check(DorotiQtQuickNativeInput(&a,&secondRelease),"final button release reaches owner");
+        QMouseEvent outsideMove(QEvent::MouseMove,{180,180},{180,180},Qt::NoButton,Qt::NoButton,Qt::NoModifier);
+        Check(!DorotiQtQuickNativeInput(&a,&outsideMove),"final mouse release clears capture");
+        QPointingDevice touchDevice("contract-touch",7,QInputDevice::DeviceType::TouchScreen,
+                                    QPointingDevice::PointerType::Finger,QInputDevice::Capability::Position,2,0);
+        QTouchEvent touchDown(QEvent::TouchBegin,&touchDevice,Qt::NoModifier,
+            {QEventPoint(1,QEventPoint::Pressed,{25,35},{25,35})});
+        QTouchEvent touchMove(QEvent::TouchUpdate,&touchDevice,Qt::NoModifier,
+            {QEventPoint(1,QEventPoint::Updated,{180,180},{180,180})});
+        QTouchEvent touchEnd(QEvent::TouchEnd,&touchDevice,Qt::NoModifier,
+            {QEventPoint(1,QEventPoint::Released,{180,180},{180,180})});
+        Check(DorotiQtQuickNativeInput(&a,&touchDown),"native touch start");
+        Check(DorotiQtQuickNativeInput(&a,&touchMove),"touch move retains owner");
+        Check(DorotiQtQuickNativeInput(&a,&touchEnd),"touch release retains owner");
+        Check(!DorotiQtQuickNativeInput(&a,&touchMove),"touch release clears owner");
+        QPointingDevice penDevice("contract-pen",8,QInputDevice::DeviceType::Stylus,
+                                  QPointingDevice::PointerType::Pen,QInputDevice::Capability::Position,1,1);
+        QTabletEvent penDown(QEvent::TabletPress,&penDevice,{25,35},{25,35},1,0,0,0,0,0,
+                             Qt::NoModifier,Qt::LeftButton,Qt::LeftButton);
+        QTabletEvent penMove(QEvent::TabletMove,&penDevice,{180,180},{180,180},1,0,0,0,0,0,
+                             Qt::NoModifier,Qt::NoButton,Qt::LeftButton);
+        QTabletEvent penUp(QEvent::TabletRelease,&penDevice,{180,180},{180,180},0,0,0,0,0,0,
+                           Qt::NoModifier,Qt::LeftButton,Qt::NoButton);
+        Check(DorotiQtQuickNativeInput(&a,&penDown),"native tablet start");
+        Check(DorotiQtQuickNativeInput(&a,&penMove),"tablet move retains owner");
+        Check(DorotiQtQuickNativeInput(&a,&penUp),"tablet release retains owner");
+        Check(!DorotiQtQuickNativeInput(&a,&penMove),"tablet release clears owner");
+        Check(doroti_qt_quick_commit(&a,blocked,2,1)==0,"touch/tablet shield setup");
+        Check(!DorotiQtQuickNativeInput(&a,&touchDown),"shield blocks native touch");
+        Check(!DorotiQtQuickNativeInput(&a,&penDown),"shield blocks native tablet");
+        DorotiQtQuickNativeInput(&a,&touchEnd);
+        DorotiQtQuickNativeInput(&a,&penUp);
+        Check(doroti_qt_quick_commit(&a,&part,1,1)==0,"touch/tablet shield cleanup");
+        Check(DorotiQtQuickNativeInput(&a,&press),"drag before cancel");
+        DorotiQtQuickCancelNativeInput(&a);
+        Check(!DorotiQtQuickNativeInput(&a,&outsideMove),"window deactivation clears native capture");
+        Check(DorotiQtQuickNativeInput(&a,&press),"drag before lost grab");
+        QEvent ungrab(QEvent::UngrabMouse);
+        DorotiQtQuickNativeInput(&a,&ungrab);
+        Check(!DorotiQtQuickNativeInput(&a,&outsideMove),"lost mouse grab clears capture");
+        Check(DorotiQtQuickNativeInput(&a,&press),"drag before hide");
         Check(doroti_qt_quick_commit(&a,nullptr,0,1)==0&&!button->isVisible(),"empty frame hides native and shields");
+        Check(!DorotiQtQuickNativeInput(&a,&outsideMove),"hidden native control clears capture");
         for(int i=0;i<10;i++) {
             std::uint64_t transient;
             Check(api.create(owner,0,{},nullptr,nullptr,&transient)==0,"repeated create");

@@ -43,6 +43,8 @@ enum doroti_qt_feature_v2 : std::uint64_t {
   // Qt owns device/queue/WSI; optional quick API exposes GPU image composition.
   DOROTI_QT_FEATURE_QUICK_COMPOSITION = 1ull << 17,
   DOROTI_QT_FEATURE_NATIVE_TEXTURE_EXTENSIONS = 1ull << 18,
+  DOROTI_QT_FEATURE_ACTIVATION_REQUEST = 1ull << 19,
+  DOROTI_QT_FEATURE_IDLE_FRAME_ELISION = 1ull << 20,
 };
 
 enum doroti_qt_terminal_state_v2 : std::uint32_t {
@@ -218,6 +220,10 @@ struct doroti_qt_host_api_v2 {
   void (*clear_semantics)(void* view_handle);
   void (*prepare_present)(void* view_handle);
 };
+
+// Requests OS window activation. Completion is reported only by the existing
+// focus callback after Qt observes WindowActivate; compositors may reject it.
+DOROTI_QT_EXPORT std::int32_t doroti_qt_request_focus_v2(void* view_handle);
 
 struct doroti_qt_callbacks_v2 {
   std::uint32_t abi_version;

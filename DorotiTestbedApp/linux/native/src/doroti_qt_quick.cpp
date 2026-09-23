@@ -9,6 +9,7 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QTouchEvent>
+#include <QTabletEvent>
 #include <QQmlComponent>
 #include <QQmlEngine>
 #include <QQuickItem>
@@ -69,7 +70,10 @@ struct Owner {
   std::vector<doroti_qt_quick_part> parts;
   QQuickItem* sourceGroup=nullptr;
   QQuickItem* effect=nullptr;
+  bool mouseDragActive=false;
   bool nativeDrag=false;
+  std::map<std::uint64_t,bool> touchOwners;
+  std::map<std::uint64_t,bool> tabletOwners;
 };
 std::mutex gate;
 std::map<std::uint64_t,std::unique_ptr<Owner>> owners;
@@ -156,6 +160,7 @@ int Remove(std::uint64_t id,std::uint64_t token) {
   Owner* owner;auto status=Lookup(id,owner);if(status)return status;
   auto it=owner->controls.find(token);if(it==owner->controls.end())return DOROTI_QT_PV_STALE;
   auto c=it->second;owner->controls.erase(it);
+  DorotiQtQuickCancelNativeInput(owner->window);
 #ifdef DOROTI_QT_WEBENGINE
   DorotiWebBind(c.item,nullptr,nullptr);
 #endif
@@ -293,7 +298,9 @@ extern "C" DOROTI_QT_EXPORT int doroti_qt_quick_commit(void* window,const doroti
     }
     // Reparent visual items only; QObject ownership and native identity stay stable.
     QPointer<QQuickItem> focused=owner->window->activeFocusItem();
-    for(auto&[id,c]:owner->controls)if(!seen.contains(id)) {
+  bool hiddenControl=false;
+  for(auto&[id,c]:owner->controls)if(!seen.contains(id)) {
+      hiddenControl=hiddenControl||c.clip->isVisible();
       c.clip->setVisible(false);
       if(c.clip->parentItem()!=root)c.clip->setParentItem(root);
     }
@@ -302,7 +309,9 @@ extern "C" DOROTI_QT_EXPORT int doroti_qt_quick_commit(void* window,const doroti
       auto* parent=effect && &p<effect?owner->sourceGroup:root;
       if(p.kind==1) { auto& c=owner->controls.at(p.id);
         if(c.clip->parentItem()!=parent)c.clip->setParentItem(parent);
-        Place(c,Rect(p.bounds),Rect(p.clip),i+1,true); }
+        const bool wasVisible=c.clip->isVisible();
+        Place(c,Rect(p.bounds),Rect(p.clip),i+1,true);
+        hiddenControl=hiddenControl||(wasVisible&&!c.clip->isVisible()); }
       else if(p.kind==0) { auto* item=owner->rasters[raster++];item->image=p.image;item->identity=p.id;item->pixels=QSize(p.pixel_width,p.pixel_height);
         item->setParentItem(parent);
         item->setPosition(Rect(p.bounds).topLeft());item->setSize(Rect(p.bounds).size());item->setZ(i+1);item->setVisible(true);item->update(); }
@@ -312,7 +321,9 @@ extern "C" DOROTI_QT_EXPORT int doroti_qt_quick_commit(void* window,const doroti
     while(owner->rasters.size()>rasters) { delete owner->rasters.back();owner->rasters.pop_back(); }
     if(!effect) { delete owner->effect;owner->effect=nullptr;delete owner->sourceGroup;owner->sourceGroup=nullptr; }
     if(focused&&focused->isVisible()&&!focused->hasActiveFocus())focused->forceActiveFocus(Qt::OtherFocusReason);
-    owner->parts=std::move(next);return 0;
+    owner->parts=std::move(next);
+    if(hiddenControl) DorotiQtQuickCancelNativeInput(owner->window);
+    return 0;
   }catch(...){return DOROTI_QT_ERROR_NATIVE_EXCEPTION;}
 }
 bool DorotiQtQuickHasNativeFocus(QWindow* window) {
@@ -329,23 +340,57 @@ void DorotiQtQuickClearFocus(QWindow* window) {
 }
 bool DorotiQtQuickNativeInput(QWindow* window,QEvent* event) {
   auto* o=Find(window);if(!o)return false;
+  if(event->type()==QEvent::UngrabMouse) {
+    o->mouseDragActive=false;o->nativeDrag=false;
+    return false;
+  }
   if(event->type()==QEvent::KeyPress||event->type()==QEvent::KeyRelease||event->type()==QEvent::InputMethod||event->type()==QEvent::InputMethodQuery)
     return DorotiQtQuickHasNativeFocus(window);
+  auto hit=[o](QPointF point) {
+    for(auto it=o->parts.rbegin();it!=o->parts.rend();++it)
+      if((it->kind==1||it->kind==2)&&Rect(it->bounds).intersected(Rect(it->clip)).contains(point))
+        return it->kind==1&&o->controls.contains(it->id)&&o->controls.at(it->id).clip->isVisible();
+    return false;
+  };
+  if(auto* touch=dynamic_cast<QTouchEvent*>(event)) {
+    const auto device=static_cast<std::uint64_t>(touch->pointingDevice()->systemId());
+    auto found=o->touchOwners.find(device);
+    bool native=found!=o->touchOwners.end()?found->second:
+        !touch->points().isEmpty()&&hit(touch->points().first().scenePosition());
+    if(event->type()==QEvent::TouchEnd||event->type()==QEvent::TouchCancel)
+      o->touchOwners.erase(device);
+    else o->touchOwners[device]=native;
+    return native;
+  }
+  if(auto* tablet=dynamic_cast<QTabletEvent*>(event)) {
+    const auto device=static_cast<std::uint64_t>(tablet->device()->systemId());
+    auto found=o->tabletOwners.find(device);
+    const bool native=found!=o->tabletOwners.end()?found->second:hit(tablet->position());
+    if(event->type()==QEvent::TabletRelease) o->tabletOwners.erase(device);
+    else if(event->type()==QEvent::TabletPress) o->tabletOwners[device]=native;
+    return native;
+  }
   QPointF point;
   auto* mouse=dynamic_cast<QMouseEvent*>(event);
   if(mouse)point=mouse->position();
   else if(auto* wheel=dynamic_cast<QWheelEvent*>(event))point=wheel->position();
   else return false;
-  bool native=false;
-  for(auto it=o->parts.rbegin();it!=o->parts.rend();++it)if((it->kind==1||it->kind==2)&&Rect(it->bounds).intersected(Rect(it->clip)).contains(point)) {
-    native=it->kind==1&&o->controls.contains(it->id)&&o->controls.at(it->id).clip->isVisible();break;
-  }
+  bool native=hit(point);
   if(mouse) {
-    if(event->type()==QEvent::MouseButtonPress||event->type()==QEvent::MouseButtonDblClick)o->nativeDrag=native;
-    else if(event->type()==QEvent::MouseButtonRelease){native=o->nativeDrag;o->nativeDrag=false;}
-    else if(mouse->buttons()!=Qt::NoButton)native=o->nativeDrag;
+    if(event->type()==QEvent::MouseButtonPress||event->type()==QEvent::MouseButtonDblClick) {
+      if(!o->mouseDragActive) {o->nativeDrag=native;o->mouseDragActive=true;}
+      native=o->nativeDrag;
+    } else if(event->type()==QEvent::MouseButtonRelease) {
+      if(o->mouseDragActive)native=o->nativeDrag;
+      if(mouse->buttons()==Qt::NoButton) {o->mouseDragActive=false;o->nativeDrag=false;}
+    } else if(o->mouseDragActive) native=o->nativeDrag;
   }
   return native;
+}
+void DorotiQtQuickCancelNativeInput(QWindow* window) {
+  auto* o=Find(window);if(!o)return;
+  o->mouseDragActive=false;o->nativeDrag=false;
+  o->touchOwners.clear();o->tabletOwners.clear();
 }
 void DorotiQtRecordPlatformOwner(QWindow* window,const char* path) {
   if(!path||!*path)return;auto* o=Find(window);if(!o)return;
@@ -356,9 +401,16 @@ void DorotiQtRecordPlatformOwner(QWindow* window,const char* path) {
     {"focused",c.item->hasActiveFocus()},
     {"x",c.clip->x()},{"y",c.clip->y()},{"width",c.clip->width()},{"height",c.clip->height()},{"z",c.clip->z()}});
   // Validation-only GPU readback; QScreen::grabWindow cannot capture Wayland clients.
-  auto capture=o->window->grabWindow();bool saved=!capture.isNull()&&capture.save(QString::fromUtf8(path)+".png");
+  // Qt cannot read back a hidden/minimized surface; a grab may wait for a
+  // scene-graph frame that the compositor will never expose.
+  QImage capture;
+  if(o->window->isVisible()&&o->window->isExposed())capture=o->window->grabWindow();
+  bool saved=!capture.isNull()&&capture.save(QString::fromUtf8(path)+".png");
   QFile file(QString::fromUtf8(path)+".json");if(file.open(QIODevice::WriteOnly))file.write(QJsonDocument(QJsonObject{
     {"qpa",QGuiApplication::platformName()},{"composition","qt-quick-vulkan-gpu-textures"},{"cpuReadback",false},
+    {"windowWidth",o->window->width()},{"windowHeight",o->window->height()},
+    {"windowDpr",o->window->devicePixelRatio()},{"windowVisible",o->window->isVisible()},
+    {"windowState",int(o->window->windowState())},
     {"validationCaptureReadback",saved},{"rasterItems",int(o->rasters.size())},{"effectItems",o->effect?1:0},
     {"frameworkEffectState",QString::fromUtf8(qgetenv("DOROTI_PLATFORM_EFFECT_PROBE_STATE"))},
     {"effectSourceGroup",o->sourceGroup!=nullptr},{"controls",controls},{"windowCapture",saved}}).toJson());

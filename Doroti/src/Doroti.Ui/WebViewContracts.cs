@@ -26,6 +26,9 @@ public enum WebViewError
 public sealed class WebViewException(WebViewError code, string message) : Exception(message)
 {
     public WebViewError Code { get; } = code;
+    public int? NativeStatus { get; init; }
+    public string? NativeOperation { get; init; }
+    public ulong? NativeOwner { get; init; }
 }
 
 public enum WebViewOperation

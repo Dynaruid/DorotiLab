@@ -13,6 +13,28 @@ Run from the repository root. Every command below has a 1,200-second outer
 process-tree timeout; the product script also limits its application to 180 seconds.
 Run .NET build commands sequentially to avoid shared obj races.
 
+For a bounded indexed run, use `run-suite.py --output <new-directory> --shim
+<matching-libdoroti_qt_host.so> --app <matching-app.dll> --qpa wayland --product`.
+The suite saves each step's log and `index.json`; omit `--product` for displayless
+contracts. `check-native-sync.py` hashes every app/template native file, including
+ABI headers, QML, CMake, shaders and metadata. The C++ format policy is the
+matching `.clang-format` in both native trees. Package consumers can be built
+outside the repository with `verify-package-consumer.py --output <new-directory>
+--quick --webengine --qpa wayland`; it packs the Linux dependency closure into a
+local feed, installs and removes the template, checks for source ProjectReferences,
+and records publish and mapped runtime binaries. Use a new output path for each
+attempt. These local runs do not substitute for a clean VM installation.
+
+The Quick summary records sample count and p50/p95/p99 milliseconds for GUI
+queue idle, CPU recording, copy submit, copy fence wait and native commit. An
+empty sample reports null percentiles. `measure-qt-workloads.py` additionally
+records process-tree PSS, WebEngine process count and idle CPU. Qt `frameSwapped`
+intervals are not physical display latency. `DOROTI_QT_VALIDATION_KEYCODES=1`
+records QPA, native scan code, Qt key, modifiers and repeat without key text for
+physical-key mapping evidence; `DOROTI_QT_VALIDATION_ACCESSIBILITY_DUMP=1`
+records exposed text/editable interface counts. Orca and physical input still
+require separately recorded manual results.
+
 ```sh
 python3 Doroti/validation/run-with-timeout.py dotnet build DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj
 DOROTI_TESTBED_MODE=platform-effects \
@@ -60,6 +82,10 @@ immutability, stale/cross-owner/thread rejection, paint-ordered shields,
 pass-through effects, invalid sample/multiple-effect rejection, empty frames,
 10 native create/dispose cycles, and a 1,024-entry queued-work bound with
 exactly-once close cancellation. This fixture is separate from product input.
+It also checks multiple mouse buttons, native touch/tablet retention through
+move/release, shield rejection, and capture reset on hide/deactivation/lost mouse grab using
+synthetic Qt events. Device hardware and mixed-target touch gestures remain
+outside this contract.
 
 The managed contract checks all ABI layouts and Quick versus Widgets geometry.
 Its optional GPU driver uses a real Qt-owned Vulkan queue and the production
@@ -79,6 +105,16 @@ pixels on both QPA backends. Capture readback is separate from product GPU trans
 
 See [the current Qt contract and remaining gates](../../docs/platform-views/linux-qt.md).
 The missing older Quick result.json files were not recovered or relabeled PASS.
+The [2026-09-23 work3 result](work3-results-2026-09-23.md) records the current
+partial outcome, including a mapped-layer XWayland resize VUID and a Qt-only
+slow-sync reproducer. Use `verify-resize.py` for ten product resize cycles with
+actual layer-path evidence, and `verify-lifecycle.py` for window-state evidence.
+The independent `wsi/` CMake project builds `qt-wsi-resize` with only Qt Core,
+Gui, Quick and Vulkan headers. Set `QT_QPA_PLATFORM=xcb`,
+`VK_INSTANCE_LAYERS=VK_LAYER_KHRONOS_validation`, the corresponding layer path,
+and `DOROTI_QT_WSI_SYNC_DELAY_MS=50` to reproduce the 10-cycle timing fixture.
+It prints the actual swap count and mapped-layer state; an exit 0 still requires
+checking its log for `VUID-`.
 
 `verify-controls.py` accepts the same `--app`, `--driver`, `--output`, and `--qpa`
 arguments. It records all ten Material composition cases and asserts 10 mounted
