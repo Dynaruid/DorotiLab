@@ -75,7 +75,7 @@ public class NetworkAssetBundle : AssetBundle
     public override async Future<ByteData> load(string key)
     {
         HttpClientRequest request = await _httpClient.getUrl(_urlFromKey(key));
-        HttpClientResponse response = await request.close();
+        using HttpClientResponse response = await request.close();
         if (response.statusCode != HttpStatus.ok)
         {
             throw new FlutterError(

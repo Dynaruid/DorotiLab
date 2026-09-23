@@ -131,7 +131,7 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
                     request.headers.add(name, value);
                 }
             );
-            HttpClientResponse response = await request.close();
+            using HttpClientResponse response = await request.close();
             if (response.statusCode != HttpStatus.ok)
             {
                 await response.drain(new List<long>());

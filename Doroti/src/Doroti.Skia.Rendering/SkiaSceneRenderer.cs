@@ -1595,8 +1595,13 @@ public sealed partial class SkiaSceneRenderer
                         restoreCounts.Push(1);
                         canvas.Translate((float)opacity.Offset.dx, (float)opacity.Offset.dy);
                         break;
-                    case "colorFilter" when command.HostPayload is SceneColorFilterPayload:
-                        canvas.SaveLayer();
+                    case "colorFilter" when command.HostPayload is SceneColorFilterPayload color:
+                        using (var filter = ToColorFilter(color.Filter))
+                        using (var paint = new SKPaint { ColorFilter = filter })
+                        {
+                            canvas.SaveLayer(paint);
+                        }
+
                         restoreCounts.Push(1);
                         break;
                     case "shaderMask" when command.HostPayload is SceneShaderMaskPayload mask:
@@ -2883,6 +2888,12 @@ public sealed partial class SkiaSceneRenderer
         if (value.Shader is not null)
         {
             paint.Shader = ToShader(value.Shader);
+        }
+
+        if (value.ColorFilter is not null)
+        {
+            using var filter = ToColorFilter(value.ColorFilter);
+            paint.ColorFilter = filter;
         }
 
         if (value.MaskFilter is { sigma: > 0 } blur)

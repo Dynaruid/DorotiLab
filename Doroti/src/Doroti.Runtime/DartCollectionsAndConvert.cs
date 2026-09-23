@@ -580,17 +580,19 @@ public sealed class HttpClientRequest(
 
     private async Task<HttpClientResponse> SendAsync()
     {
+        using var request = new HttpRequestMessage(HttpMethod.Get, uri.ToString());
+        headers.ApplyTo(request);
         if (timeProvider is null)
         {
             return new(
-                await client.GetAsync(uri.ToString(), HttpCompletionOption.ResponseHeadersRead)
+                await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead)
             );
         }
 
         using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(100), timeProvider);
         return new(
-            await client.GetAsync(
-                uri.ToString(),
+            await client.SendAsync(
+                request,
                 HttpCompletionOption.ResponseHeadersRead,
                 timeout.Token
             )
@@ -608,9 +610,17 @@ public sealed class DartHttpHeaders
         (_values.TryGetValue(name, out var values) ? values : _values[name] = []).Add(
             value.ToString() ?? string.Empty
         );
+
+    internal void ApplyTo(HttpRequestMessage request)
+    {
+        foreach (var (name, values) in _values)
+        {
+            request.Headers.Add(name, values);
+        }
+    }
 }
 
-public sealed class HttpClientResponse : IAsyncEnumerable<ReadOnlyMemory<byte>>
+public sealed class HttpClientResponse : IAsyncEnumerable<ReadOnlyMemory<byte>>, IDisposable
 {
     private readonly HttpResponseMessage _response;
 
@@ -618,23 +628,32 @@ public sealed class HttpClientResponse : IAsyncEnumerable<ReadOnlyMemory<byte>>
 
     public long statusCode => (long)_response.StatusCode;
 
+    public void Dispose() => _response.Dispose();
+
     public Future<T> drain<T>(T futureValue) => Future<T>.fromTask(DrainAsync(futureValue));
 
     private async Task<T> DrainAsync<T>(T value)
     {
-        await _response.Content.LoadIntoBufferAsync();
-        return value;
+        using (_response)
+        {
+            await using var stream = await _response.Content.ReadAsStreamAsync();
+            await stream.CopyToAsync(Stream.Null);
+            return value;
+        }
     }
 
     public async IAsyncEnumerator<ReadOnlyMemory<byte>> GetAsyncEnumerator(
         CancellationToken cancellationToken = default
     )
     {
-        await using var stream = await _response.Content.ReadAsStreamAsync(cancellationToken);
-        var buffer = new byte[8192];
-        while (await stream.ReadAsync(buffer, cancellationToken) is var count && count > 0)
+        using (_response)
         {
-            yield return buffer.AsMemory(0, count).ToArray();
+            await using var stream = await _response.Content.ReadAsStreamAsync(cancellationToken);
+            var buffer = new byte[8192];
+            while (await stream.ReadAsync(buffer, cancellationToken) is var count && count > 0)
+            {
+                yield return buffer.AsMemory(0, count).ToArray();
+            }
         }
     }
 }
