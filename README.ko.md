@@ -41,7 +41,11 @@ Web에서는 Ganesh/WebGL2도 명시적으로 선택할 수 있습니다. 구현
 
 ## 시작하기
 
-샘플 앱으로 Doroti를 살펴볼 수 있습니다. Windows에서는 .NET SDK 10.0.400, PowerShell 7, [플랫폼별 준비 사항](Doroti/README.ko.md)에 안내된 Windows C++ 빌드 도구를 설치하세요. 다른 플랫폼은 각각 필요한 SDK와 워크로드가 다릅니다.
+샘플 앱으로 Doroti를 살펴볼 수 있습니다. 빌드 호스트에 다음 의존성을 준비하세요:
+
+- **Windows·macOS·Linux 공통:** 저장소 스크립트 실행용 [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6)을 설치합니다.
+- **.NET SDK:** iOS 외 대상에는 10.0.400 계열을 설치합니다. iOS Testbed에는 .NET 10과 함께 11.0.100-rc.1.26425.128도 설치합니다.
+- **플랫폼별 도구:** 기본 Windows runner에는 [플랫폼별 준비 사항](Doroti/README.ko.md)의 Windows C++ 빌드 도구가 필요합니다. 다른 대상의 workload와 네이티브 도구도 해당 안내를 참고하세요.
 
 저장소를 복제한 뒤 루트 디렉터리에서 샘플을 실행합니다.
 

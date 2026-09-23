@@ -27,7 +27,7 @@ Doroti는 데스크톱·모바일·웹에서 공유하는 위젯, 레이아웃, 
 
 ### 공통 도구와 SDK 선택
 
-- PowerShell 7: `eng/doroti.ps1` 등 저장소 스크립트 실행에 사용합니다. 아래 명령은 **저장소 루트 `DorotiLab`**에서 PowerShell로 시작합니다.
+- Windows·macOS·Linux에서 [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6)을 설치해 `eng/doroti.ps1` 등 저장소 스크립트 실행에 사용합니다. 아래 명령은 **저장소 루트 `DorotiLab`**에서 PowerShell로 시작합니다.
 - **iOS 외 플랫폼: .NET SDK 10.0.400** 또는 같은 기능 밴드의 호환 패치 버전. [루트 global.json](../global.json)과 [Doroti/global.json](global.json)이 선택합니다.
 - **iOS Testbed: .NET SDK 11.0.100-rc.1.26425.128** 또는 호환 패치 버전. [iOS global.json](../DorotiTestbedApp/ios/global.json)이 선택합니다. .NET 10과 함께 설치합니다.
 - 선택한 SDK에 맞는 플랫폼 워크로드와 NuGet 패키지 복원이 필요합니다. .NET 10 경로는 프로젝트가 지정한 10.0.11 런타임 팩을 사용하며, 필요한 팩은 대상별로 복원합니다.

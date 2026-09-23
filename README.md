@@ -41,7 +41,11 @@ Web also offers an explicitly selected Ganesh/WebGL2 path. These implementations
 
 ## Get started
 
-The sample application is the starting point for exploring Doroti. For Windows, install .NET SDK 10.0.400, PowerShell 7, and the Windows C++ build tools listed in the [platform prerequisites](Doroti/README.md#platform-prerequisites). Other targets have their own SDK and workload requirements.
+The sample application is the starting point for exploring Doroti. Prepare these dependencies on the build host:
+
+- **Windows, macOS, and Linux:** Install [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6) to run the repository scripts.
+- **.NET SDK:** Install the 10.0.400 feature band for targets other than iOS. For the iOS Testbed, also install 11.0.100-rc.1.26425.128 alongside .NET 10.
+- **Platform tools:** The default Windows runner needs the Windows C++ build tools in the [platform prerequisites](Doroti/README.md#platform-prerequisites). See that guide for workloads and native tools for other targets.
 
 Clone the repository and run the sample from its root:
 

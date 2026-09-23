@@ -28,10 +28,10 @@ interactive local page and a reset action.
 
 ## Prerequisites
 
-Run all commands in PowerShell 7 from the **repository root, `DorotiLab`**.
+Install [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6) on Windows, macOS, or Linux, then run all commands in PowerShell from the **repository root, `DorotiLab`**.
 If your macOS/Linux shell is zsh/bash, enter `pwsh -NoProfile` first.
-Use the **.NET SDK 10.0.400 feature band** selected by the repository root [global.json](../global.json).
-iOS alone uses **SDK 11.0.100 RC 1** from [ios/global.json](ios/global.json).
+Use the **.NET SDK 10.0.400 feature band** selected by the repository root [global.json](../global.json) for targets other than iOS.
+For iOS, also install **.NET SDK 11.0.100-rc.1.26425.128** from [ios/global.json](ios/global.json) alongside .NET 10.
 Platform-specific workloads and tools are listed with each command below.
 
 The first run restores packages, builds, and deploys to a device where needed. All examples use Release.

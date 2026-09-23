@@ -27,10 +27,10 @@ JavaScript 실행 컨트롤도 표시합니다. attachment만 제공하는 호�
 
 ## 실행 준비
 
-모든 명령은 **저장소 루트 `DorotiLab`**에서 PowerShell 7로 실행합니다.
+Windows·macOS·Linux에서 [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6)을 설치하세요. 모든 명령은 **저장소 루트 `DorotiLab`**에서 PowerShell로 실행합니다.
 macOS/Linux의 기본 셸이 zsh/bash라면 먼저 `pwsh -NoProfile`을 실행하세요.
-.NET SDK는 저장소 루트 [global.json](../global.json)의 **10.0.400 계열**을 사용하고,
-iOS만 [ios/global.json](ios/global.json)의 **11.0.100 RC 1** SDK를 사용합니다.
+iOS 외 대상은 저장소 루트 [global.json](../global.json)이 선택하는 **.NET SDK 10.0.400 계열**을 사용합니다.
+iOS용으로는 .NET 10과 함께 [ios/global.json](ios/global.json)이 선택하는 **.NET SDK 11.0.100-rc.1.26425.128**을 설치합니다.
 각 플랫폼에 필요한 workload와 도구는 아래 실행 항목에서 확인하세요.
 
 첫 실행은 패키지 복원과 빌드, 필요한 경우 기기 설치를 포함합니다. 예제는 모두 Release 구성입니다.
