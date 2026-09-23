@@ -120,6 +120,15 @@ def main():
         index["publishShims"] = {path.name: hashlib.sha256(path.read_bytes()).hexdigest()
                                  for path in publish.glob("libdoroti_*.so")}
         if args.qpa:
+            preflight = [sys.executable, ROOT / "Doroti/validation/linux-qt-quick/check-runtime.py",
+                         "--publish", publish, "--qpa", args.qpa,
+                         "--output", output / "runtime-preflight.json"]
+            if args.quick:
+                preflight.append("--quick")
+            if args.webengine:
+                preflight.append("--webengine")
+            if not step("runtime-preflight", preflight):
+                return 1
             log = output / "consumer-run.log"
             run_env = dict(env, QT_QPA_PLATFORM=args.qpa,
                            DOROTI_QT_VALIDATION_RESIZE_CYCLES="10", DOROTI_QT_DIAGNOSTICS="1")

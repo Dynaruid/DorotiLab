@@ -23,6 +23,25 @@ Check(QtKeyMap.Physical(36, 0x01000004) == 0x00070028
 Check(QtKeyMap.Physical(0, 'A') == 0x00070004
     && QtKeyMap.Logical('A', "q") == 'q',
     "Synthetic fallback or logical layout changed.");
+Check(QtKeyMap.Physical(38, 'A') == QtKeyMap.Physical(38, 'Q')
+    && QtKeyMap.Logical('A', "ㅁ") == 'ㅁ'
+    && QtKeyMap.Physical(59, ',') == QtKeyMap.Physical(0, ',')
+    && QtKeyMap.Physical(60, '.') == QtKeyMap.Physical(0, '.')
+    && QtKeyMap.Physical(59, ',') != QtKeyMap.Physical(60, '.')
+    && QtKeyMap.Physical(0, 0x01000090) != QtKeyMap.Physical(0, 0x01000091),
+    "Non-English logical input or punctuation physical fallback collapsed.");
+var repeatHost = new QtHostAdapter(0, default, 100, 100);
+var repeated = new List<KeyData>();
+repeatHost.KeyData += repeated.Add;
+repeatHost.ApplyKey(new QtNativeV2.Key(38, 'A', 0), "a");
+repeatHost.ApplyKey(new QtNativeV2.Key(38, 'Q', 2), "q");
+repeatHost.ApplyKey(new QtNativeV2.Key(38, 'Q', 1), "");
+repeatHost.ApplyFocus(false, 0);
+Check(repeated.Count == 3 && repeated[0].type == KeyEventType.down
+    && repeated[1].type == KeyEventType.repeat && repeated[2].type == KeyEventType.up
+    && repeated.All(key => key.physical == 0x00070004 && key.logical == 'a')
+    && repeated[1].character == "q" && repeated[2].character is null,
+    "Repeat/release lost the original pressed key after a layout or modifier change.");
 var keyHost = new QtHostAdapter(0, default, 100, 100);
 var keys = new List<KeyData>();
 keyHost.KeyData += keys.Add;

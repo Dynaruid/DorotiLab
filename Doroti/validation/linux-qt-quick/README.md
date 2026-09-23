@@ -24,6 +24,23 @@ outside the repository with `verify-package-consumer.py --output <new-directory>
 local feed, installs and removes the template, checks for source ProjectReferences,
 and records publish and mapped runtime binaries. Use a new output path for each
 attempt. These local runs do not substitute for a clean VM installation.
+The package runner now calls `check-runtime.py` before launch. It checks the
+published shims and linker dependencies, the selected QPA plugin, required QML
+module descriptors and mandatory plugins, and the WebEngine helper, resources
+and locale separately. It uses `qtpaths6` when available. On a runtime-only
+machine without that developer tool it infers standard Qt directories from the
+linked Qt6Core location; custom Qt layouts should pass a matching `--qtpaths`.
+For an existing publish directory, run:
+
+```sh
+python3 Doroti/validation/linux-qt-quick/check-runtime.py \
+  --publish <publish-directory> --qpa wayland --quick --webengine
+```
+
+The JSON result can be saved with `--output <file>`. This preflight checks file
+presence and direct linker resolution. It cannot prove that a platform plugin
+loads or that a compositor, graphics driver, sandbox and QML runtime behave
+correctly; the product run remains required.
 
 The Quick summary records sample count and p50/p95/p99 milliseconds for GUI
 queue idle, CPU recording, copy submit, copy fence wait and native commit. An
@@ -113,8 +130,22 @@ The independent `wsi/` CMake project builds `qt-wsi-resize` with only Qt Core,
 Gui, Quick and Vulkan headers. Set `QT_QPA_PLATFORM=xcb`,
 `VK_INSTANCE_LAYERS=VK_LAYER_KHRONOS_validation`, the corresponding layer path,
 and `DOROTI_QT_WSI_SYNC_DELAY_MS=50` to reproduce the 10-cycle timing fixture.
-It prints the actual swap count and mapped-layer state; an exit 0 still requires
-checking its log for `VUID-`.
+It prints the actual swap count and mapped-layer state. Use `verify-wsi.py`
+to require a mapped layer and fail on `VUID-` even if the fixture exits 0:
+
+```sh
+VK_INSTANCE_LAYERS=VK_LAYER_KHRONOS_validation \
+  python3 Doroti/validation/linux-qt-quick/verify-wsi.py \
+  --executable <wsi-build>/qt-wsi-resize --qpa xcb \
+  --sync-delay-ms 100 --output <new-artifact-directory>
+```
+
+Set `VK_LAYER_PATH` and the layer library search path if the validation layer
+is installed outside the system Vulkan paths. The fixture now requests Qt
+Quick's preferred Vulkan instance extensions, as the product does. The
+[2026-09-24 investigation](wsi-investigation-2026-09-24.md) records an
+intermittent Qt-only xcb/XWayland extent VUID. Native Wayland is the tested
+backend workaround on a Wayland session; it does not qualify xcb.
 
 `verify-controls.py` accepts the same `--app`, `--driver`, `--output`, and `--qpa`
 arguments. It records all ten Material composition cases and asserts 10 mounted

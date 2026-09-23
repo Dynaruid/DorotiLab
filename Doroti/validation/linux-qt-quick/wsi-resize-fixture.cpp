@@ -1,5 +1,6 @@
 #include <QGuiApplication>
 #include <QFile>
+#include <QQuickGraphicsConfiguration>
 #include <QQuickWindow>
 #include <QSGRendererInterface>
 #include <QTimer>
@@ -15,6 +16,7 @@ int main(int argc, char** argv) {
     QGuiApplication app(argc, argv);
     QVulkanInstance instance;
     instance.setApiVersion(QVersionNumber(1, 2));
+    instance.setExtensions(QQuickGraphicsConfiguration::preferredInstanceExtensions());
     if (!instance.create()) return 2;
     QQuickWindow window;
     window.setVulkanInstance(&instance);

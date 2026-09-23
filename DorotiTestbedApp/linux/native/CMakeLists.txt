@@ -12,7 +12,7 @@ if(DOROTI_QT_WEBENGINE AND NOT DOROTI_QT_QUICK)
   message(FATAL_ERROR "WebEngine Quick requires DOROTI_QT_QUICK")
 endif()
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core Gui Widgets OpenGL OpenGLWidgets)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Gui Widgets)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(WaylandClient REQUIRED IMPORTED_TARGET wayland-client)
 find_program(WAYLAND_SCANNER_EXECUTABLE wayland-scanner REQUIRED)
@@ -75,6 +75,8 @@ if(DOROTI_QT_QUICK)
     set_target_properties(doroti_qt_host PROPERTIES BUILD_RPATH "$ORIGIN" INSTALL_RPATH "$ORIGIN" BUILD_WITH_INSTALL_RPATH TRUE)
   endif()
 else()
+  # QOpenGLWindow belongs to Qt OpenGL only in the Widgets comparison backend.
+  find_package(Qt6 6.5 REQUIRED COMPONENTS OpenGL)
   add_library(doroti_qt_host SHARED src/doroti_qt_host.cpp src/doroti_qt_platform_views.cpp)
 endif()
 doroti_generate_wayland_client(ext-background-effect-v1
@@ -88,8 +90,11 @@ if(DOROTI_QT_GRAPHITE)
   target_compile_definitions(doroti_qt_host PRIVATE DOROTI_QT_GRAPHITE)
   target_link_libraries(doroti_qt_host PRIVATE Vulkan::Headers)
 endif()
-target_link_libraries(doroti_qt_host PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::OpenGL
-  Qt6::OpenGLWidgets PkgConfig::WaylandClient)
+target_link_libraries(doroti_qt_host PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets
+  PkgConfig::WaylandClient)
+if(NOT DOROTI_QT_QUICK)
+  target_link_libraries(doroti_qt_host PRIVATE Qt6::OpenGL)
+endif()
 set_target_properties(doroti_qt_host PROPERTIES OUTPUT_NAME doroti_qt_host)
 
 install(TARGETS doroti_qt_host LIBRARY DESTINATION .)

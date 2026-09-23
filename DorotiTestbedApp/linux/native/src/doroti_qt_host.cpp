@@ -37,7 +37,9 @@
 #include <QNativeGestureEvent>
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
+#ifndef DOROTI_QT_QUICK
 #include <QOpenGLWindow>
+#endif
 #include <QPointerEvent>
 #include <QScreen>
 #include <QSurfaceFormat>

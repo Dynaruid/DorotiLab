@@ -47,6 +47,24 @@ is visible in Qt 6.10.2's [Wayland input code](https://github.com/qt/qtbase/blob
 and xcb passes its [XKB keycode](https://github.com/qt/qtbase/blob/v6.10.2/src/plugins/platforms/xcb/qxcbkeyboard.cpp)
 through the native scan-code field.
 
+Doroti semantics are exposed through a Qt accessibility root on the surface.
+The current state and event mapping is:
+
+| Doroti semantics | Qt accessibility | Change notification |
+| --- | --- | --- |
+| `focused`, `enabled`, `hidden` | `focused`, `disabled`, `invisible` | `StateChanged`; focus gain also sends `Focus` |
+| `selected` | `selectable`, `selected` | `StateChanged` |
+| `checkedState`, `toggled` | checkbox role, `checkable`, `checked`, mixed state | `StateChanged` |
+| `expanded` | `expandable`, `expanded`, `collapsed` | `StateChanged` |
+| `textField`, `readOnly`, `obscured`, `multiline` | text role, edit/password/multiline state; Text and writable EditableText interfaces | text update or value change |
+| `textSelectionBase`, `textSelectionExtent` | selection and caret offsets | `TextSelection` |
+| node label, children or parent | name and child hierarchy | `NameChanged`; `ObjectReorder` only for hierarchy changes |
+
+Editable text actions dispatch back to the framework; a password value is not
+returned. Character rectangles and hit-test offsets are not available from the
+current semantics payload. The native Quick/WebView accessibility descendants
+have not been shown to connect to this root, and Orca reading remains unverified.
+
 Host ABI 4 requires its documented mask and function pointers. Feature bit 19
 advertises the optional `doroti_qt_request_focus_v2` export; a request asks Qt
 to activate the window, while only a subsequent Qt focus callback changes the
@@ -110,6 +128,14 @@ A Qt-only Quick/Vulkan fixture reproduced that exact mismatch when its sync
 callback took 50 ms, without Doroti or WebEngine. An undelayed 10-cycle fixture
 did not reproduce it. The Qt/XWayland WSI issue remains open; this evidence
 does not justify removing the queue drain or declaring a Qt version workaround.
+The [2026-09-24 follow-up](../../validation/linux-qt-quick/wsi-investigation-2026-09-24.md)
+reproduced the same extent VUID in the Qt-only xcb/XWayland fixture after
+matching the product's Vulkan instance extensions. Delaying resize delivery
+by 10/30/60 ms did not prevent it. A mapped-layer native Wayland product run
+passed ten resizes in this VM; an xcb run also passed once, which does not
+resolve the intermittent xcb failure. On Wayland sessions, use
+`QT_QPA_PLATFORM=wayland` rather than forcing xcb while this Qt/WSI issue is
+open. This is a backend workaround, not xcb Vulkan qualification.
 The 2026-09-20 report includes bounded 0/1/4-view interval/PSS observations,
 relocated Release runs and synthetic Korean composition/native Tab/focus return.
 Linux NativeAOT is currently rejected by the existing runner policy.

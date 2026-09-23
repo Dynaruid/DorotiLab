@@ -89,7 +89,20 @@ internal static class QtKeyMap
             0x01000020 => HidPlane + 0xe1,
             0x01000023 => HidPlane + 0xe2,
             0x01000022 => HidPlane + 0xe3,
-            _ => QtFallbackPlane | (nativeScanCode & 0xffffffff),
+            '-' => HidPlane + 0x2d,
+            '=' => HidPlane + 0x2e,
+            '[' => HidPlane + 0x2f,
+            ']' => HidPlane + 0x30,
+            '\\' => HidPlane + 0x31,
+            ';' => HidPlane + 0x33,
+            '\'' => HidPlane + 0x34,
+            '`' => HidPlane + 0x35,
+            ',' => HidPlane + 0x36,
+            '.' => HidPlane + 0x37,
+            '/' => HidPlane + 0x38,
+            // Synthetic events have no native position. Keep unknown Qt keys
+            // distinct instead of collapsing all of them onto scan code zero.
+            _ => QtFallbackPlane | (qtKey & 0xffffffff),
         };
     }
 

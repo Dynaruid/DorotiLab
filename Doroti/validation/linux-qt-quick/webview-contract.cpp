@@ -33,6 +33,10 @@ int main(int argc,char** argv) {
         Check(doroti_qt_get_webview_api(2,sizeof(web),&web)==DOROTI_QT_ERROR_ABI_VERSION,"reject incompatible version");
         Check(doroti_qt_get_webview_api(1,sizeof(web)-8,&web)==DOROTI_QT_ERROR_ABI_SIZE,"reject incompatible size");
         Check(doroti_qt_get_webview_api(1,sizeof(web),&web)==0&&web.features==31,"WebView ABI 1 / 32 bytes");
+        auto malformed=QByteArray("doroti-webview:999\n{}");
+        std::uint64_t rejected=0;
+        Check(pv.create(owner,2,Utf8(malformed),nullptr,nullptr,&rejected)==DOROTI_QT_ERROR_NATIVE_EXCEPTION&&rejected==0,
+              "native creation exception becomes status 70 without publishing an item");
         auto html=QByteArray("<!doctype html><title>owner</title><input value='retained'>");
         Check(pv.create(owner,2,Utf8(html),nullptr,nullptr,&id)==0,"live first WebView");
         Check(pv.create(other,2,Utf8(html),nullptr,nullptr,&id2)==0&&id!=id2,"live second owner WebView");
