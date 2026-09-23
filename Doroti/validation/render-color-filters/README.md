@@ -15,7 +15,7 @@ The fix applies the scene filter when restoring its child layer and applies the
 paint filter to primitive/image drawing and Canvas `saveLayer`. Temporary native
 filter wrappers are disposed after the paint/layer retains their native reference.
 Unfiltered paints do not allocate a color filter. This is a rendering correctness
-fix, separate from the frame-cost and rendering-memory work in root `work.md`.
+fix, separate from the frame-cost and rendering-memory work in the [archived summary](../../../history/26-09-22/web-frame-cost-and-memory-summary.md).
 
 ## Validation
 

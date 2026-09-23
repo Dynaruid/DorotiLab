@@ -25,7 +25,7 @@ The active Painting project excludes `_network_image_web.cs`; its compiled
 The adapter previously recorded headers but called `GetAsync` without applying
 them. Response enumeration/draining also left `HttpResponseMessage` undisposed,
 and `drain` buffered the complete error body. These are separate from the frame
-cost and renderer memory work in root `work.md`.
+cost and renderer memory work in the [archived summary](../../../history/26-09-22/web-frame-cost-and-memory-summary.md).
 
 The original eight regression cases failed before the fix and passed afterward.
 An additional explicit unread-response disposal case covers the ownership API
