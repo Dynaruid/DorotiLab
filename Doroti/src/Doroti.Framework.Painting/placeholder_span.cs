@@ -23,14 +23,14 @@ public abstract class PlaceholderSpan : InlineSpan
     }
 
     public override void computeToPlainText(
-        StringBuffer buffer,
+        System.Text.StringBuilder buffer,
         bool includeSemanticsLabels = true,
         bool includePlaceholders = true
     )
     {
         if (includePlaceholders)
         {
-            buffer.writeCharCode(placeholderCodeUnit);
+            buffer.Append(char.ConvertFromUtf32(checked((int)placeholderCodeUnit)));
         }
     }
 

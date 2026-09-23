@@ -1,0 +1,948 @@
+# Doroti.Runtime API snapshot: 94d24bbd
+# Includes public and internal declared types and members; compiler-generated private types are excluded.
+TYPE Doroti.Runtime.AssertionError
+  Constructor Void .ctor(System.Object)
+TYPE Doroti.Runtime.ByteBuffer
+  Method Byte Get(Int64)
+  Method Doroti.Runtime.ByteData asByteData(Int64, System.Nullable`1[System.Int64])
+  Method Doroti.Runtime.Uint8List asUint8List(Int64, System.Nullable`1[System.Int64])
+  Method Int64 get_lengthInBytes()
+  Property Int64 lengthInBytes
+  Method System.Collections.Generic.List`1[System.Int64] asUint32List(Int64, System.Nullable`1[System.Int64])
+  Method System.ReadOnlySpan`1[System.Byte] Slice(Int64, Int64)
+  Constructor Void .ctor(Byte[])
+  Method Void Set(Int64, Byte)
+TYPE Doroti.Runtime.ByteData
+  Property Doroti.Runtime.ByteBuffer buffer
+  Method Doroti.Runtime.ByteBuffer get_buffer()
+  Method Doroti.Runtime.ByteData op_Implicit(System.ReadOnlyMemory`1[System.Byte])
+  Method Int64 get_lengthInBytes()
+  Method Int64 get_offsetInBytes()
+  Method Int64 getUint32(Int64)
+  Property Int64 lengthInBytes
+  Property Int64 offsetInBytes
+  Method System.ReadOnlyMemory`1[System.Byte] asMemory()
+  Method System.ReadOnlyMemory`1[System.Byte] op_Implicit(Doroti.Runtime.ByteData)
+  Constructor Void .ctor(Doroti.Runtime.ByteBuffer, Int64, System.Nullable`1[System.Int64])
+  Constructor Void .ctor(Doroti.Runtime.Uint8List)
+TYPE Doroti.Runtime.CharacterRange
+  Method Boolean moveBack(Int64)
+  Method Boolean MoveNext()
+  Method Boolean moveNext(Int64)
+  Property Doroti.Runtime.Characters currentCharacters
+  Method Doroti.Runtime.Characters get_currentCharacters()
+  Property Int64 Count
+  Method Int64 get_Count()
+  Method Int64 get_stringAfterLength()
+  Method Int64 get_stringBeforeLength()
+  Property Int64 stringAfterLength
+  Property Int64 stringBeforeLength
+  Property System.String current
+  Property System.String Current
+  Method System.String get_current()
+  Method System.String get_Current()
+  Method System.String get_stringAfter()
+  Method System.String get_stringBefore()
+  Property System.String stringAfter
+  Property System.String stringBefore
+  Constructor Void .ctor(System.String, Int64)
+  Constructor Void .ctor(System.String)
+  Constructor Void .ctor(System.String[])
+  Method Void expandNext(Int64)
+TYPE Doroti.Runtime.Characters
+  Method Doroti.Runtime.CharacterRange get_iterator()
+  Property Doroti.Runtime.CharacterRange iterator
+  Method Doroti.Runtime.Characters GetRange(Int64, System.Nullable`1[System.Int64])
+  Method Doroti.Runtime.Characters op_Implicit(System.String)
+  Property Int32 Count
+  Method Int32 get_Count()
+  Method System.Collections.Generic.IEnumerator`1[System.String] GetEnumerator()
+  Method System.String characterAt(Int64)
+  Property System.String first
+  Method System.String get_first()
+  Method System.String get_last()
+  Property System.String last
+  Constructor Void .ctor(System.String)
+TYPE Doroti.Runtime.Completer`1
+  Method Boolean get_isCompleted()
+  Property Boolean isCompleted
+  Property Doroti.Runtime.Future`1[T] future
+  Method Doroti.Runtime.Future`1[T] get_future()
+  Constructor Void .ctor()
+  Method Void complete()
+  Method Void complete(Doroti.Runtime.Future`1[T])
+  Method Void complete(System.Object)
+  Method Void complete(System.Threading.Tasks.Task`1[T])
+  Method Void complete(T)
+  Method Void completeError(System.Object, System.Object)
+  Method Void completeError(System.Object)
+TYPE Doroti.Runtime.CreationLocation
+  Method Boolean Equals(Doroti.Runtime.CreationLocation)
+  Method Boolean Equals(System.Object)
+  Method Boolean op_Equality(Doroti.Runtime.CreationLocation, Doroti.Runtime.CreationLocation)
+  Method Boolean op_Inequality(Doroti.Runtime.CreationLocation, Doroti.Runtime.CreationLocation)
+  Method Doroti.Runtime.CreationLocation <Clone>$()
+  Method Doroti.Runtime.CreationLocation of(System.Object)
+  Method Doroti.Runtime.DartMap`2[System.String,System.Object] toJsonMap()
+  Method Int32 GetHashCode()
+  Property Int64 column
+  Method Int64 get_column()
+  Method Int64 get_line()
+  Property Int64 line
+  Property System.String file
+  Method System.String get_file()
+  Method System.String get_name()
+  Property System.String name
+  Method System.String ToString()
+  Constructor Void .ctor(System.String, Int64, Int64, System.String)
+  Method Void Deconstruct(System.String ByRef, Int64 ByRef, Int64 ByRef, System.String ByRef)
+  Method Void set_column(Int64)
+  Method Void set_file(System.String)
+  Method Void set_line(Int64)
+  Method Void set_name(System.String)
+TYPE Doroti.Runtime.Dart_convertLibrary
+  Method JsonCodec get_json()
+  Property JsonCodec json
+  Method System.String jsonEncode(System.Object, System.Func`2[System.Object,System.Object])
+TYPE Doroti.Runtime.Dart_convertLibrary+base64
+  Property Base64Encoder encoder
+  Method Base64Encoder get_encoder()
+  Method Doroti.Runtime.Uint8List decode(System.String)
+  Method System.String encode(Doroti.Runtime.Uint8List)
+TYPE Doroti.Runtime.Dart_convertLibrary+Base64Encoder
+  Method System.String convert(Doroti.Runtime.Uint8List)
+  Constructor Void .ctor()
+TYPE Doroti.Runtime.Dart_convertLibrary+JsonCodec
+  Method System.Object decode(System.String)
+  Method System.String encode(System.Object)
+  Constructor Void .ctor()
+TYPE Doroti.Runtime.Dart_convertLibrary+utf8
+  Method Doroti.Runtime.Uint8List encode(System.String)
+  Method System.String decode(Doroti.Runtime.Uint8List)
+  Method System.String decode(System.Collections.Generic.List`1[System.Int64])
+  Property Utf8Decoder decoder
+  Method Utf8Decoder get_decoder()
+TYPE Doroti.Runtime.Dart_convertLibrary+Utf8Decoder
+  Method System.String convert(Doroti.Runtime.Uint8List)
+  Method System.String convert(System.ReadOnlyMemory`1[System.Byte])
+  Constructor Void .ctor()
+TYPE Doroti.Runtime.Dart_coreLibrary
+  Method Int32 identityHashCode(System.Object)
+  Method Int64 hashAllUnordered[T](System.Collections.Generic.IEnumerable`1[T])
+  Method System.Nullable`1[System.Double] tryParse(System.String)
+  Method System.Nullable`1[System.Int64] tryParse(System.String, Int64)
+  Method System.Object parse(System.String)
+  Method System.String decodeComponent(System.String)
+  Method System.String escape(System.String)
+  Method Void throwWithStackTrace(System.Object, System.Object)
+TYPE Doroti.Runtime.Dart_developerLibrary
+  Method T inspect[T](T)
+  Method Void postEvent(System.String, System.Object, System.String)
+TYPE Doroti.Runtime.Dart_developerLibrary+Flow
+  Method Doroti.Runtime.Flow step(Int64)
+TYPE Doroti.Runtime.Dart_developerLibrary+Timeline
+  Method T timeSync[T](System.String, System.Func`1[T], Doroti.Runtime.Flow)
+  Method Void finishSync()
+  Method Void startSync(System.String)
+  Method Void timeSync(System.String, System.Action, Doroti.Runtime.Flow)
+TYPE Doroti.Runtime.Dart_ioLibrary
+  Method Doroti.Runtime.GZipCodec get_gzip()
+  Property Doroti.Runtime.GZipCodec gzip
+TYPE Doroti.Runtime.Dart_mathLibrary
+  Method Double acos(Double)
+  Method Double asin(Double)
+  Method Double atan(Double)
+  Method Double atan2(Double, Double)
+  Method Double cos(Double)
+  Field Double e
+  Method Double exp(Double)
+  Field Double ln10
+  Field Double ln2
+  Method Double log(Double)
+  Field Double log10e
+  Field Double log2e
+  Method Double max(Double, Double)
+  Method Double min(Double, Double)
+  Field Double pi
+  Method Double pow(Double, Double)
+  Method Double sin(Double)
+  Method Double sqrt(Double)
+  Field Double sqrt1_2
+  Field Double sqrt2
+  Method Double tan(Double)
+  Method Int64 max(Int64, Int64)
+  Method Int64 min(Int64, Int64)
+TYPE Doroti.Runtime.DartArgumentError
+  Method System.Object get_invalidValue()
+  Property System.Object invalidValue
+  Constructor Void .ctor(System.Object, System.String, System.String)
+TYPE Doroti.Runtime.DartAsyncRuntime
+  Method Doroti.Runtime.Future wait(System.Collections.Generic.IEnumerable`1[Doroti.Runtime.Future])
+  Method Doroti.Runtime.Future`1[System.Collections.Generic.List`1[T]] wait[T](System.Collections.Generic.IEnumerable`1[Doroti.Runtime.Future])
+  Method System.Action`1[System.Action] captureMicrotaskScheduler()
+  Method System.IDisposable enterMicrotaskScheduler(System.Action`1[System.Action])
+  Method System.IDisposable enterTimeProvider(System.TimeProvider)
+  Method System.Threading.Tasks.Task AwaitFutureOr(Doroti.Runtime.Future)
+  Method System.Threading.Tasks.Task dispatchCapturedAsync(System.Action`1[System.Action], System.Action)
+  Method System.Threading.Tasks.Task InvokeErrorHandlerAsync(System.Delegate, System.Exception)
+  Method System.Threading.Tasks.Task`1[System.Object] AwaitObject(Doroti.Runtime.Future)
+  Method System.Threading.Tasks.Task`1[T] AwaitFutureOr[T](Doroti.Runtime.Future`1[T])
+  Method System.Threading.Tasks.Task`1[T] AwaitFutureOr[T](T)
+  Method System.Threading.Tasks.Task`1[T] AwaitFutureOrValue[T](System.Object)
+  Method System.Threading.Tasks.Task`1[T] dispatchCapturedAsync[T](System.Action`1[System.Action], System.Func`1[T])
+  Method System.TimeProvider get_timeProvider()
+  Property System.TimeProvider timeProvider
+  Method Void dispatchCaptured(System.Action`1[System.Action], System.Action)
+  Method Void scheduleMicrotask(System.Action)
+  Method Void scheduleMicrotask(System.Action`1[System.Nullable`1[Doroti.Runtime.Duration]])
+  Method Void unawaited(System.Object)
+TYPE Doroti.Runtime.DartCollectionRuntime
+  Method System.Nullable`1[TKey] FirstKeyOrNull[TKey,TValue](System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue])
+  Method System.Nullable`1[TKey] LastKeyOrNull[TKey,TValue](System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue])
+  Method System.Nullable`1[TValue] NullableMapValue[TValue](System.Object, System.Object)
+TYPE Doroti.Runtime.DartCoreExtensions
+  Method Boolean add[T](System.Collections.Generic.ISet`1[T], T)
+  Method Boolean any[T](System.Collections.Generic.IEnumerable`1[T], System.Delegate)
+  Method Boolean any[T](System.Collections.Generic.IEnumerable`1[T], System.Func`2[T,System.Boolean])
+  Method Boolean contains(System.String, System.String)
+  Method Boolean contains[T](System.Collections.Generic.IEnumerable`1[T], T)
+  Method Boolean endsWith(System.String, System.String)
+  Method Boolean isAfter(System.DateTime, System.DateTime)
+  Method Boolean isAtSameMomentAs(System.DateTime, System.DateTime)
+  Method Boolean isBefore(System.DateTime, System.DateTime)
+  Method Boolean isFinite(Double)
+  Method Boolean isFinite(Int64)
+  Method Boolean isInfinite(Double)
+  Method Boolean isNegative(Double)
+  Method Boolean remove[T](System.Collections.Generic.ISet`1[T], T)
+  Method Boolean remove[TKey,TValue](System.Collections.Generic.IDictionary`2[TKey,TValue], TKey)
+  Method Boolean startsWith(System.String, System.String)
+  Method Doroti.Runtime.Characters characters(System.String)
+  Method Doroti.Runtime.DartMap`2[System.Int64,T] asMap[T](System.Collections.Generic.IEnumerable`1[T])
+  Method Doroti.Runtime.DartMap`2[TResultKey,TResultValue] map[TKey,TValue,TResultKey,TResultValue](System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue], System.Func`3[TKey,TValue,Doroti.Runtime.MapEntry`2[TResultKey,TResultValue]])
+  Method Doroti.Runtime.Duration difference(System.DateTime, System.DateTime)
+  Method Double abs(Double)
+  Method Double ceilToDouble(Double)
+  Method Double clamp(Double, Double, Double)
+  Method Double floorToDouble(Double)
+  Method Double max(System.Collections.Generic.IEnumerable`1[System.Double])
+  Method Double min(System.Collections.Generic.IEnumerable`1[System.Double])
+  Method Double nextDouble(System.Random)
+  Method Double roundToDouble(Double)
+  Method Double sum(System.Collections.Generic.IEnumerable`1[System.Double])
+  Method Double toDouble(Double)
+  Method Double toDouble(Int32)
+  Method Double toDouble(Int64)
+  Method Double truncateToDouble(Double)
+  Method Int32 lastIndexWhere[T](System.Collections.Generic.List`1[T], System.Func`2[T,System.Boolean], System.Nullable`1[System.Int32])
+  Method Int64 abs(Int64)
+  Method Int64 ceil(Double)
+  Method Int64 ceil(Int64)
+  Method Int64 clamp(Int64, Int64, Int64)
+  Method Int64 codeUnitAt(System.String, Int64)
+  Method Int64 floor(Double)
+  Method Int64 floor(Int64)
+  Method Int64 indexWhere[T](System.Collections.Generic.IEnumerable`1[T], System.Func`2[T,System.Boolean], Int64)
+  Method Int64 max(System.Collections.Generic.IEnumerable`1[System.Int64])
+  Method Int64 min(System.Collections.Generic.IEnumerable`1[System.Int64])
+  Method Int64 round(Double)
+  Method Int64 sum(System.Collections.Generic.IEnumerable`1[System.Int64])
+  Method Int64 ToDartWeekday(System.DayOfWeek)
+  Method Int64 toInt(Double)
+  Method System.Collections.Generic.HashSet`1[T] difference[T](System.Collections.Generic.HashSet`1[T], System.Collections.Generic.IEnumerable`1[T])
+  Method System.Collections.Generic.HashSet`1[T] intersection[T](System.Collections.Generic.IEnumerable`1[T], System.Collections.Generic.IEnumerable`1[T])
+  Method System.Collections.Generic.HashSet`1[T] toSet[T](System.Collections.Generic.IEnumerable`1[T])
+  Method System.Collections.Generic.IEnumerable`1[System.Int64] runes(System.String)
+  Method System.Collections.Generic.IEnumerable`1[System.ValueTuple`2[System.Int64,T]] indexed[T](System.Collections.Generic.IEnumerable`1[T])
+  Method System.Collections.Generic.IEnumerable`1[T] followedBy[T](System.Collections.Generic.IEnumerable`1[T], System.Collections.Generic.IEnumerable`1[T])
+  Method System.Collections.Generic.IEnumerable`1[T] reversed[T](System.Collections.Generic.IEnumerable`1[T])
+  Method System.Collections.Generic.IEnumerable`1[T] skip[T](System.Collections.Generic.IEnumerable`1[T], Int64)
+  Method System.Collections.Generic.IEnumerable`1[T] take[T](System.Collections.Generic.IEnumerable`1[T], Int64)
+  Method System.Collections.Generic.IEnumerable`1[T] where[T](System.Collections.Generic.IEnumerable`1[T], System.Delegate)
+  Method System.Collections.Generic.IEnumerable`1[T] where[T](System.Collections.Generic.IEnumerable`1[T], System.Func`2[T,System.Boolean])
+  Method System.Collections.Generic.IEnumerable`1[TResult] cast[TResult](System.Collections.IEnumerable)
+  Method System.Collections.Generic.IEnumerable`1[TResult] expand[T,TResult](System.Collections.Generic.IEnumerable`1[T], System.Func`2[T,System.Collections.Generic.IEnumerable`1[TResult]])
+  Method System.Collections.Generic.IEnumerable`1[TResult] map[T,TResult](System.Collections.Generic.IEnumerable`1[T], System.Func`2[T,TResult])
+  Method System.Collections.Generic.IEnumerable`1[TResult] map[TKey,TValue,TResult](System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue], System.Func`3[TKey,TValue,TResult])
+  Method System.Collections.Generic.List`1[System.String] split(System.String, System.String)
+  Method System.Collections.Generic.List`1[T] GetRange[T](System.Collections.Generic.List`1[T], Int64, Int64)
+  Method System.Collections.Generic.List`1[T] toList[T](System.Collections.Generic.IEnumerable`1[T], Boolean)
+  Method System.DateTime add(System.DateTime, Doroti.Runtime.Duration)
+  Method System.DateTime subtract(System.DateTime, Doroti.Runtime.Duration)
+  Method System.String padLeft(System.String, Int64, System.String)
+  Method System.String padRight(System.String, Int64, System.String)
+  Method System.String repeat(System.String, Int64)
+  Method System.String replaceAll(System.String, System.String, System.String)
+  Method System.String replaceRange(System.String, Int64, System.Nullable`1[System.Int64], System.String)
+  Method System.String substring(System.String, Int64, System.Nullable`1[System.Int64])
+  Method System.String toLowerCase(System.String)
+  Method System.String toRadixString(Int64, Int64)
+  Method System.String toStringAsFixed(Double, Int64)
+  Method System.String toStringAsPrecision(Double, Int64)
+  Method System.String toUpperCase(System.String)
+  Method System.String trimRight(System.String)
+  Method T _merge[T](T, T)
+  Method T elementAt[T](System.Collections.Generic.IEnumerable`1[T], Int64)
+  Method T elementAtOrNull[T](System.Collections.Generic.IEnumerable`1[T], Int64)
+  Method T firstWhere[T](System.Collections.Generic.IEnumerable`1[T], System.Func`2[T,System.Boolean], System.Func`1[T])
+  Method T firstWhere[T](System.Collections.Generic.IEnumerable`1[T], System.Func`2[T,System.Boolean])
+  Method T firstWhereOrNull[T](System.Collections.Generic.IEnumerable`1[T], System.Func`2[T,System.Boolean])
+  Method T lastWhere[T](System.Collections.Generic.IEnumerable`1[T], System.Func`2[T,System.Boolean], System.Func`1[T])
+  Method T lastWhere[T](System.Collections.Generic.IEnumerable`1[T], System.Func`2[T,System.Boolean])
+  Method T reduce[T](System.Collections.Generic.IEnumerable`1[T], System.Func`3[T,T,T])
+  Method T removeAt[T](System.Collections.Generic.List`1[T], Int64)
+  Method T removeLast[T](System.Collections.Generic.List`1[T])
+  Method T removeLast[T](System.Collections.Generic.Queue`1[T])
+  Method T weakTarget[T](System.WeakReference`1[T])
+  Method TKey firstKey[TKey,TValue](System.Collections.Generic.SortedDictionary`2[TKey,TValue])
+  Method TKey firstKeyAfter[TKey,TValue](System.Collections.Generic.SortedDictionary`2[TKey,TValue], TKey)
+  Method TKey lastKey[TKey,TValue](System.Collections.Generic.SortedDictionary`2[TKey,TValue])
+  Method TKey lastKeyBefore[TKey,TValue](System.Collections.Generic.SortedDictionary`2[TKey,TValue], TKey)
+  Method TResult fold[T,TResult](System.Collections.Generic.IEnumerable`1[T], TResult, System.Func`3[TResult,T,TResult])
+  Method TValue putIfAbsent[TKey,TValue](System.Collections.Generic.IDictionary`2[TKey,TValue], TKey, System.Func`1[TValue])
+  Method Void addFirst[T](System.Collections.Generic.Queue`1[T], T)
+  Method Void addLast[T](System.Collections.Generic.Queue`1[T], T)
+  Method Void AddRange[T](System.Collections.Generic.ISet`1[T], System.Collections.Generic.IEnumerable`1[T])
+  Method Void AddRange[T](System.Collections.Generic.Queue`1[T], System.Collections.Generic.IEnumerable`1[T])
+  Method Void clear[TKey,TValue](System.Collections.Generic.IDictionary`2[TKey,TValue])
+  Method Void forEach(System.Collections.IDictionary, System.Action`2[System.Object,System.Object])
+  Method Void forEach[T](System.Collections.Generic.IEnumerable`1[T], System.Action`1[T])
+  Method Void forEach[TKey,TValue](System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue], System.Action`2[TKey,TValue])
+  Method Void removeAll[T](System.Collections.Generic.HashSet`1[T], System.Collections.Generic.IEnumerable`1[T])
+  Method Void removeWhere[T](System.Collections.Generic.HashSet`1[T], System.Delegate)
+  Method Void removeWhere[T](System.Collections.Generic.HashSet`1[T], System.Func`2[T,System.Boolean])
+  Method Void removeWhere[T](System.Collections.Generic.List`1[T], System.Delegate)
+  Method Void removeWhere[T](System.Collections.Generic.List`1[T], System.Func`2[T,System.Boolean])
+  Method Void setLength[T](System.Collections.Generic.List`1[T], Int64)
+  Method Void sort[T](System.Collections.Generic.List`1[T], System.Comparison`1[T])
+  Method Void sort[T](System.Collections.Generic.List`1[T], System.Func`3[T,T,System.Int64])
+TYPE Doroti.Runtime.DartDeveloperTimeline
+  Method Doroti.Runtime.Flow beginFlow()
+  Method Doroti.Runtime.Flow step(Int64)
+  Event System.Action`1[Doroti.Runtime.DartTimelineEvent] eventEmitted
+  Method System.Collections.Generic.IReadOnlyList`1[Doroti.Runtime.DartTimelineEvent] snapshot()
+  Method Void add_eventEmitted(System.Action`1[Doroti.Runtime.DartTimelineEvent])
+  Method Void clear()
+  Method Void emit(System.String, Doroti.Runtime.DartTimelineEventKind, Doroti.Runtime.Flow)
+  Method Void remove_eventEmitted(System.Action`1[Doroti.Runtime.DartTimelineEvent])
+TYPE Doroti.Runtime.DartErrorHandlers
+  Method System.Action`2[System.Exception,System.Diagnostics.StackTrace] Adapt[TError](System.Action`2[TError,System.Diagnostics.StackTrace])
+  Method System.Func`3[System.Exception,System.Diagnostics.StackTrace,System.Object] Adapt[TError,TResult](System.Func`2[TError,TResult])
+  Method System.Func`3[System.Exception,System.Diagnostics.StackTrace,System.Object] Adapt[TError,TResult](System.Func`3[TError,System.Diagnostics.StackTrace,TResult])
+  Method System.Func`3[System.Exception,System.Diagnostics.StackTrace,System.Threading.Tasks.Task`1[System.Object]] AdaptTask[TError,TResult](System.Func`2[TError,System.Threading.Tasks.Task`1[TResult]])
+  Method System.Object Invoke[T](System.Delegate, System.Exception)
+  Method System.Threading.Tasks.Task Observe(System.Delegate, System.Exception)
+  Method System.Threading.Tasks.Task`1[T] Recover[T](System.Delegate, System.Exception)
+TYPE Doroti.Runtime.DartFile
+  Method Doroti.Runtime.Future`1[Doroti.Runtime.Uint8List] readAsBytes()
+  Method Doroti.Runtime.Future`1[System.Int64] length()
+  Method System.String get_path()
+  Property System.String path
+  Method System.String ToString()
+  Constructor Void .ctor(System.String)
+TYPE Doroti.Runtime.DartFutureDiagnostic
+  Method Boolean Equals(Doroti.Runtime.DartFutureDiagnostic)
+  Method Boolean Equals(System.Object)
+  Method Boolean op_Equality(Doroti.Runtime.DartFutureDiagnostic, Doroti.Runtime.DartFutureDiagnostic)
+  Method Boolean op_Inequality(Doroti.Runtime.DartFutureDiagnostic, Doroti.Runtime.DartFutureDiagnostic)
+  Method Doroti.Runtime.DartFutureDiagnostic <Clone>$()
+  Method Int32 GetHashCode()
+  Property System.Exception Exception
+  Method System.Exception get_Exception()
+  Method System.String get_Operation()
+  Property System.String Operation
+  Method System.String ToString()
+  Constructor Void .ctor(System.String, System.Exception)
+  Method Void Deconstruct(System.String ByRef, System.Exception ByRef)
+  Method Void set_Exception(System.Exception)
+  Method Void set_Operation(System.String)
+TYPE Doroti.Runtime.DartHttpHeaders
+  Constructor Void .ctor()
+  Method Void add(System.String, System.Object)
+  Method Void ApplyTo(System.Net.Http.HttpRequestMessage)
+TYPE Doroti.Runtime.DartLinkedList`1
+  Method Boolean contains(T)
+  Method Boolean get_isEmpty()
+  Property Boolean isEmpty
+  Method Boolean remove(T)
+  Method System.Collections.Generic.IEnumerator`1[T] GetEnumerator()
+  Property T first
+  Method T get_first()
+  Method T get_last()
+  Property T last
+  Constructor Void .ctor()
+  Method Void add(T)
+  Method Void addFirst(T)
+  Method Void InsertAfter(T, T)
+TYPE Doroti.Runtime.DartLinkedListEntry`1
+  Method Doroti.Runtime.DartLinkedList`1[T] get_list()
+  Property Doroti.Runtime.DartLinkedList`1[T] list
+  Method T get_next()
+  Method T get_previous()
+  Property T next
+  Property T previous
+  Method Void Attach(Doroti.Runtime.DartLinkedList`1[T])
+  Method Void Detach()
+  Method Void insertAfter(T)
+  Method Void set_next(T)
+  Method Void set_previous(T)
+  Method Void unlink()
+TYPE Doroti.Runtime.DartMap`2
+  Method Boolean Contains(System.Collections.Generic.KeyValuePair`2[TKey,TValue])
+  Method Boolean ContainsKey(TKey)
+  Method Boolean containsValue(TValue)
+  Method Boolean get_IsReadOnly()
+  Property Boolean IsReadOnly
+  Method Boolean Remove(System.Collections.Generic.KeyValuePair`2[TKey,TValue])
+  Method Boolean Remove(TKey)
+  Method Boolean TryGetValue(TKey, TValue ByRef)
+  Method Doroti.Runtime.DartMap`2[TNewKey,TNewValue] cast[TNewKey,TNewValue]()
+  Property Int32 Count
+  Method Int32 get_Count()
+  Method System.Collections.Generic.ICollection`1[TKey] get_Keys()
+  Property System.Collections.Generic.ICollection`1[TKey] Keys
+  Method System.Collections.Generic.ICollection`1[TValue] get_Values()
+  Property System.Collections.Generic.ICollection`1[TValue] Values
+  Property System.Collections.Generic.IEnumerable`1[Doroti.Runtime.MapEntry`2[TKey,TValue]] entries
+  Method System.Collections.Generic.IEnumerable`1[Doroti.Runtime.MapEntry`2[TKey,TValue]] get_entries()
+  Method System.Collections.Generic.IEnumerator`1[System.Collections.Generic.KeyValuePair`2[TKey,TValue]] GetEnumerator()
+  Method TValue get_Item(TKey)
+  Method TValue GetValueOrDefault(System.Object)
+  Property TValue Item [TKey]
+  Method TValue putIfAbsent(TKey, System.Func`1[TValue])
+  Method TValue remove(TKey)
+  Method TValue update(TKey, System.Func`2[TValue,TValue], System.Func`1[TValue])
+  Constructor Void .ctor()
+  Constructor Void .ctor(System.Collections.Generic.IEnumerable`1[System.Collections.Generic.KeyValuePair`2[TKey,TValue]])
+  Constructor Void .ctor(System.Collections.Generic.IEnumerable`1[TKey], System.Collections.Generic.IEnumerable`1[TValue])
+  Method Void Add(System.Collections.Generic.KeyValuePair`2[TKey,TValue])
+  Method Void Add(TKey, TValue)
+  Method Void addEntries(System.Collections.Generic.IEnumerable`1[Doroti.Runtime.MapEntry`2[TKey,TValue]])
+  Method Void AddRange(System.Collections.Generic.IEnumerable`1[System.Collections.Generic.KeyValuePair`2[TKey,TValue]])
+  Method Void Clear()
+  Method Void CopyTo(System.Collections.Generic.KeyValuePair`2[TKey,TValue][], Int32)
+  Method Void removeWhere(System.Func`3[TKey,TValue,System.Boolean])
+  Method Void set_Item(TKey, TValue)
+TYPE Doroti.Runtime.DartMatch
+  Property Int64 end
+  Method Int64 get_end()
+  Method Int64 get_groupCount()
+  Method Int64 get_start()
+  Property Int64 groupCount
+  Property Int64 start
+  Method System.String group(Int64)
+  Constructor Void .ctor(Int64, Int64, System.Text.RegularExpressions.Match)
+TYPE Doroti.Runtime.DartMicrotaskQueue
+  Property Int32 count
+  Method Int32 get_count()
+  Constructor Void .ctor()
+  Method Void drain()
+  Method Void enqueue(System.Action)
+TYPE Doroti.Runtime.DartPatternRuntime
+  Method Boolean IsMap(System.Object)
+  Method Boolean TryGetMapValue(System.Object, System.Object, System.Object ByRef)
+TYPE Doroti.Runtime.DartRandom
+  Method Double nextDouble()
+  Constructor Void .ctor()
+  Constructor Void .ctor(Int64)
+TYPE Doroti.Runtime.DartRuntimePrimitives
+  Method Boolean get_NonExhaustiveSwitchGuard()
+  Method Boolean Identical(Double, Double)
+  Method Boolean Identical(System.Nullable`1[System.Double], System.Nullable`1[System.Double])
+  Method Boolean Identical[T](T, T)
+  Property Boolean NonExhaustiveSwitchGuard
+  Method Doroti.Runtime.DartMap`2[TKey,TValue] ConvertMap[TKey,TValue](System.Collections.IDictionary)
+  Method Int64 MillisecondsSinceEpoch(System.DateTime)
+  Method System.Action AdaptAsyncCallback(System.Func`1[Doroti.Runtime.Future])
+  Property System.Action`1[Doroti.Runtime.DartFutureDiagnostic] FutureDiagnosticSink
+  Method System.Action`1[Doroti.Runtime.DartFutureDiagnostic] get_FutureDiagnosticSink()
+  Method System.Collections.Generic.IEnumerable`1[T] ConvertEnumerable[T](System.Collections.IEnumerable)
+  Method System.Collections.Generic.List`1[T] CreateList[T](Int64, System.Func`2[System.Int64,T])
+  Method System.DateTime CreateDateTime(Int64, Int64, Int64, Int64, Int64, Int64, Int64, Int64)
+  Method System.Diagnostics.StackTrace StackTraceFrom(System.Object)
+  Method System.Exception AsException(System.Object)
+  Method System.Nullable`1[System.Int64] MillisecondsSinceEpoch(System.Nullable`1[System.DateTime])
+  Method System.Nullable`1[T] LerpNullable[T](System.Nullable`1[T], System.Nullable`1[T], Double, System.Func`4[System.Nullable`1[T],System.Nullable`1[T],System.Double,T])
+  Method System.Object CaptureVoid(System.Action)
+  Method System.String RuntimeTypeName(System.Object)
+  Method System.Type RuntimeType(System.Object)
+  Method T ConvertValue[T](System.Object)
+  Method T LerpTweenValue[T](T, T, Double)
+  Method T Max[T](T, T)
+  Method T Min[T](T, T)
+  Method T RequireNonNull[T](T)
+  Method T RequireNotNull[T](T)
+  Method T RequireReference[T](T)
+  Method TResult NullAware[TTarget,TResult](TTarget, System.Func`2[TTarget,TResult])
+  Method Void Assert(System.Func`1[System.Boolean], System.Func`1[System.Object])
+  Method Void Assert(System.Func`1[System.Boolean])
+  Method Void Ignore(Doroti.Runtime.Future)
+  Method Void Ignore[T](T)
+  Method Void Noop()
+  Method Void Observe(Doroti.Runtime.Future, System.String)
+  Method Void ObserveTask(System.Threading.Tasks.Task, System.String)
+  Method Void set_FutureDiagnosticSink(System.Action`1[Doroti.Runtime.DartFutureDiagnostic])
+TYPE Doroti.Runtime.DartTimelineEvent
+  Method Boolean Equals(Doroti.Runtime.DartTimelineEvent)
+  Method Boolean Equals(System.Object)
+  Method Boolean op_Equality(Doroti.Runtime.DartTimelineEvent, Doroti.Runtime.DartTimelineEvent)
+  Method Boolean op_Inequality(Doroti.Runtime.DartTimelineEvent, Doroti.Runtime.DartTimelineEvent)
+  Method Doroti.Runtime.DartTimelineEventKind get_kind()
+  Property Doroti.Runtime.DartTimelineEventKind kind
+  Method Int32 GetHashCode()
+  Method System.DateTimeOffset get_timestamp()
+  Property System.DateTimeOffset timestamp
+  Property System.Nullable`1[System.Int64] flowId
+  Method System.Nullable`1[System.Int64] get_flowId()
+  Method System.String get_name()
+  Property System.String name
+  Method System.String ToString()
+  Constructor Void .ctor(System.String, Doroti.Runtime.DartTimelineEventKind, System.Nullable`1[System.Int64], System.DateTimeOffset)
+  Method Void Deconstruct(System.String ByRef, Doroti.Runtime.DartTimelineEventKind ByRef, System.Nullable`1[System.Int64] ByRef, System.DateTimeOffset ByRef)
+  Method Void set_flowId(System.Nullable`1[System.Int64])
+  Method Void set_kind(Doroti.Runtime.DartTimelineEventKind)
+  Method Void set_name(System.String)
+  Method Void set_timestamp(System.DateTimeOffset)
+TYPE Doroti.Runtime.DartTimelineEventKind
+  Field Doroti.Runtime.DartTimelineEventKind begin
+  Field Doroti.Runtime.DartTimelineEventKind end
+  Field Doroti.Runtime.DartTimelineEventKind instant
+  Field Int32 value__
+TYPE Doroti.Runtime.DartTypedList`1
+  Method Boolean Contains(T)
+  Method Boolean get_IsReadOnly()
+  Property Boolean IsReadOnly
+  Method Boolean Remove(T)
+  Property Int32 Count
+  Method Int32 get_Count()
+  Method Int32 IndexOf(T)
+  Method System.Collections.Generic.IEnumerator`1[T] GetEnumerator()
+  Method T get_Item(Int32)
+  Method T get_Item(Int64)
+  Property T Item [Int32]
+  Property T Item [Int64]
+  Method T[] ToArray()
+  Method Void Add(T)
+  Method Void Clear()
+  Method Void CopyTo(T[], Int32)
+  Method Void Insert(Int32, T)
+  Method Void RemoveAt(Int32)
+  Method Void set_Item(Int32, T)
+  Method Void set_Item(Int64, T)
+TYPE Doroti.Runtime.DartUri
+  Method Doroti.Runtime.DartMap`2[System.String,System.Collections.Generic.List`1[System.String]] get_queryParametersAll()
+  Property Doroti.Runtime.DartMap`2[System.String,System.Collections.Generic.List`1[System.String]] queryParametersAll
+  Property Doroti.Runtime.DartUri base
+  Method Doroti.Runtime.DartUri get_base()
+  Method Doroti.Runtime.DartUri parse(System.String)
+  Method Doroti.Runtime.DartUri replace(System.Collections.Generic.IReadOnlyDictionary`2[System.String,System.String], System.String)
+  Method Doroti.Runtime.DartUri resolve(System.String)
+  Method System.String encodeFull(System.String)
+  Property System.String fragment
+  Method System.String get_fragment()
+  Method System.String get_path()
+  Property System.String path
+  Method System.String ToString()
+  Constructor Void .ctor(System.String, System.Collections.Generic.IReadOnlyDictionary`2[System.String,System.Collections.Generic.List`1[System.String]], System.String)
+TYPE Doroti.Runtime.DeepCollectionEquality
+  Method Boolean equals(System.Object, System.Object)
+  Method Int32 hash(System.Object)
+  Constructor Void .ctor()
+TYPE Doroti.Runtime.Duration
+  Method Boolean Equals(Doroti.Runtime.Duration)
+  Method Boolean Equals(System.Object)
+  Method Boolean op_Equality(Doroti.Runtime.Duration, Doroti.Runtime.Duration)
+  Method Boolean op_GreaterThan(Doroti.Runtime.Duration, Doroti.Runtime.Duration)
+  Method Boolean op_GreaterThanOrEqual(Doroti.Runtime.Duration, Doroti.Runtime.Duration)
+  Method Boolean op_Inequality(Doroti.Runtime.Duration, Doroti.Runtime.Duration)
+  Method Boolean op_LessThan(Doroti.Runtime.Duration, Doroti.Runtime.Duration)
+  Method Boolean op_LessThanOrEqual(Doroti.Runtime.Duration, Doroti.Runtime.Duration)
+  Method Doroti.Runtime.Duration Create(Int64, Int64, Int64, Int64, Int64, Int64)
+  Method Doroti.Runtime.Duration get_zero()
+  Method Doroti.Runtime.Duration op_Addition(Doroti.Runtime.Duration, Doroti.Runtime.Duration)
+  Method Doroti.Runtime.Duration op_Implicit(System.TimeSpan)
+  Method Doroti.Runtime.Duration op_Multiply(Doroti.Runtime.Duration, Double)
+  Method Doroti.Runtime.Duration op_Multiply(Double, Doroti.Runtime.Duration)
+  Method Doroti.Runtime.Duration op_Subtraction(Doroti.Runtime.Duration, Doroti.Runtime.Duration)
+  Property Doroti.Runtime.Duration zero
+  Method Int32 CompareTo(Doroti.Runtime.Duration)
+  Method Int32 GetHashCode()
+  Method Int64 get_inDays()
+  Method Int64 get_inHours()
+  Method Int64 get_inMicroseconds()
+  Method Int64 get_inMilliseconds()
+  Method Int64 get_inMinutes()
+  Method Int64 get_inSeconds()
+  Method Int64 get_microseconds()
+  Field Int64 hoursPerDay
+  Property Int64 inDays
+  Property Int64 inHours
+  Property Int64 inMicroseconds
+  Property Int64 inMilliseconds
+  Property Int64 inMinutes
+  Property Int64 inSeconds
+  Property Int64 microseconds
+  Field Int64 microsecondsPerMillisecond
+  Field Int64 microsecondsPerSecond
+  Field Int64 millisecondsPerSecond
+  Field Int64 minutesPerHour
+  Field Int64 secondsPerMinute
+  Method System.String ToString()
+  Method System.TimeSpan op_Implicit(Doroti.Runtime.Duration)
+  Constructor Void .ctor(Double)
+  Constructor Void .ctor(Int64)
+  Method Void Deconstruct(Int64 ByRef)
+  Method Void set_microseconds(Int64)
+TYPE Doroti.Runtime.Expando`1
+  Method T get_Item(System.Object)
+  Property T Item [System.Object]
+  Constructor Void .ctor()
+  Method Void set_Item(System.Object, T)
+TYPE Doroti.Runtime.Float32List
+  Constructor Void .ctor(Int64)
+  Constructor Void .ctor(System.Collections.Generic.IEnumerable`1[System.Single])
+TYPE Doroti.Runtime.Float64List
+  Constructor Void .ctor(Int64)
+  Constructor Void .ctor(System.Collections.Generic.IEnumerable`1[System.Double])
+TYPE Doroti.Runtime.Flow
+  Method Boolean Equals(Doroti.Runtime.Flow)
+  Method Boolean Equals(System.Object)
+  Method Boolean op_Equality(Doroti.Runtime.Flow, Doroti.Runtime.Flow)
+  Method Boolean op_Inequality(Doroti.Runtime.Flow, Doroti.Runtime.Flow)
+  Method Doroti.Runtime.Flow <Clone>$()
+  Method Doroti.Runtime.Flow begin()
+  Method Doroti.Runtime.Flow end(Int64)
+  Method Doroti.Runtime.Flow step(Int64)
+  Method Int32 GetHashCode()
+  Method Int64 get_id()
+  Property Int64 id
+  Method System.String ToString()
+  Constructor Void .ctor(Int64)
+  Method Void Deconstruct(Int64 ByRef)
+  Method Void set_id(Int64)
+TYPE Doroti.Runtime.FoundationRuntimePorts
+  Method Boolean get_kProfileMode()
+  Method Boolean get_kReleaseMode()
+  Property Boolean kProfileMode
+  Property Boolean kReleaseMode
+  Method Doroti.Runtime.Duration get_kLongPressTimeout()
+  Property Doroti.Runtime.Duration kLongPressTimeout
+  Method Int32 Length(System.Object)
+  Method Int32 ObjectHash(System.Object[])
+  Method Int32 ObjectHashAll[T](System.Collections.Generic.IEnumerable`1[T])
+  Method Int64 EnumIndex(System.Object)
+  Method System.Nullable`1[System.Int64] EnumIndexNullable(System.Object)
+  Method System.Object Index(System.Object, System.Object)
+TYPE Doroti.Runtime.Future
+  Method Doroti.Runtime.Future catchError(System.Action`2[System.Object,System.Diagnostics.StackTrace], System.Func`2[System.Object,System.Boolean])
+  Method Doroti.Runtime.Future catchError(System.Delegate, System.Func`2[System.Object,System.Boolean])
+  Method Doroti.Runtime.Future catchError(System.Func`3[System.Object,System.Diagnostics.StackTrace,Doroti.Runtime.Future], System.Func`2[System.Object,System.Boolean])
+  Method Doroti.Runtime.Future error(System.Exception)
+  Method Doroti.Runtime.Future fromTask(System.Threading.Tasks.Task)
+  Method Doroti.Runtime.Future onError(System.Action`2[System.Object,System.Diagnostics.StackTrace], System.Func`2[System.Object,System.Boolean])
+  Method Doroti.Runtime.Future onError(System.Delegate, System.Func`2[System.Object,System.Boolean])
+  Method Doroti.Runtime.Future then(System.Action`1[System.Object], System.Action`2[System.Exception,System.Diagnostics.StackTrace])
+  Method Doroti.Runtime.Future then(System.Action`1[System.Object], System.Delegate)
+  Method Doroti.Runtime.Future value()
+  Method Doroti.Runtime.Future whenComplete(System.Action)
+  Method Doroti.Runtime.Future`1[System.Object] then(System.Func`2[System.Object,System.Object], System.Delegate)
+  Method Doroti.Runtime.Future`1[TResult] then[TResult](System.Func`2[System.Object,System.Object], System.Delegate)
+  Method System.Runtime.CompilerServices.TaskAwaiter GetAwaiter()
+  Method System.Threading.Tasks.Task asTask()
+  Method System.Threading.Tasks.Task`1[System.Object] asObjectTask()
+  Constructor Void .ctor(Doroti.Runtime.Duration)
+  Constructor Void .ctor(System.Func`1[Doroti.Runtime.Future])
+TYPE Doroti.Runtime.Future`1
+  Method Doroti.Runtime.Future then(System.Action`1[T], System.Action`2[System.Exception,System.Diagnostics.StackTrace])
+  Method Doroti.Runtime.Future then(System.Action`1[T], System.Delegate)
+  Method Doroti.Runtime.Future`1[T] catchError(System.Action`2[System.Object,System.Diagnostics.StackTrace], System.Func`2[System.Object,System.Boolean])
+  Method Doroti.Runtime.Future`1[T] catchError(System.Delegate, System.Func`2[System.Object,System.Boolean])
+  Method Doroti.Runtime.Future`1[T] catchError(System.Func`3[System.Object,System.Diagnostics.StackTrace,Doroti.Runtime.Future], System.Func`2[System.Object,System.Boolean])
+  Method Doroti.Runtime.Future`1[T] error(System.Exception)
+  Method Doroti.Runtime.Future`1[T] fromTask(System.Threading.Tasks.Task`1[T])
+  Method Doroti.Runtime.Future`1[T] onError(System.Action`2[System.Object,System.Diagnostics.StackTrace], System.Func`2[System.Object,System.Boolean])
+  Method Doroti.Runtime.Future`1[T] onError(System.Delegate, System.Func`2[System.Object,System.Boolean])
+  Method Doroti.Runtime.Future`1[T] timeout(Doroti.Runtime.Duration, System.Func`1[Doroti.Runtime.Future])
+  Method Doroti.Runtime.Future`1[T] timeout(Doroti.Runtime.Duration, System.Func`1[System.Object])
+  Method Doroti.Runtime.Future`1[T] value(T)
+  Method Doroti.Runtime.Future`1[T] whenComplete(System.Action)
+  Method Doroti.Runtime.Future`1[T] whenComplete(System.Func`1[System.Object])
+  Method Doroti.Runtime.Future`1[TResult] then[TResult](System.Func`2[T,Doroti.Runtime.Future`1[TResult]], System.Action`2[System.Exception,System.Diagnostics.StackTrace])
+  Method Doroti.Runtime.Future`1[TResult] then[TResult](System.Func`2[T,Doroti.Runtime.Future`1[TResult]], System.Delegate)
+  Method Doroti.Runtime.Future`1[TResult] then[TResult](System.Func`2[T,System.Object], System.Delegate)
+  Method Doroti.Runtime.Future`1[TResult] then[TResult](System.Func`2[T,TResult])
+  Method Doroti.Runtime.Stream`1[T] asStream()
+  Method System.Runtime.CompilerServices.TaskAwaiter`1[T] GetAwaiter()
+  Method System.Threading.Tasks.Task`1[System.Object] asObjectTask()
+  Method System.Threading.Tasks.Task`1[T] asTask()
+  Constructor Void .ctor(Doroti.Runtime.Duration)
+  Constructor Void .ctor(System.Object, System.Diagnostics.StackTrace)
+TYPE Doroti.Runtime.FutureMethodBuilder
+  Method Doroti.Runtime.Future get_Task()
+  Property Doroti.Runtime.Future Task
+  Method Doroti.Runtime.FutureMethodBuilder Create()
+  Method Void AwaitOnCompleted[TAwaiter,TStateMachine](TAwaiter ByRef, TStateMachine ByRef)
+  Method Void AwaitUnsafeOnCompleted[TAwaiter,TStateMachine](TAwaiter ByRef, TStateMachine ByRef)
+  Method Void SetException(System.Exception)
+  Method Void SetResult()
+  Method Void SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)
+  Method Void Start[TStateMachine](TStateMachine ByRef)
+TYPE Doroti.Runtime.FutureMethodBuilder`1
+  Method Doroti.Runtime.Future`1[T] get_Task()
+  Property Doroti.Runtime.Future`1[T] Task
+  Method Doroti.Runtime.FutureMethodBuilder`1[T] Create()
+  Method Void AwaitOnCompleted[TAwaiter,TStateMachine](TAwaiter ByRef, TStateMachine ByRef)
+  Method Void AwaitUnsafeOnCompleted[TAwaiter,TStateMachine](TAwaiter ByRef, TStateMachine ByRef)
+  Method Void SetException(System.Exception)
+  Method Void SetResult(T)
+  Method Void SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)
+  Method Void Start[TStateMachine](TStateMachine ByRef)
+TYPE Doroti.Runtime.GZipCodec
+  Method System.Collections.Generic.List`1[System.Int64] decode(Doroti.Runtime.Uint8List)
+  Method System.Collections.Generic.List`1[System.Int64] decode(System.Collections.Generic.List`1[System.Int64])
+  Constructor Void .ctor()
+TYPE Doroti.Runtime.HeapPriorityQueue`1
+  Constructor Void .ctor(System.Comparison`1[T])
+  Constructor Void .ctor(System.Func`3[T,T,System.Int64])
+TYPE Doroti.Runtime.HttpClient
+  Property Boolean autoUncompress
+  Method Boolean get_autoUncompress()
+  Method Doroti.Runtime.Future`1[Doroti.Runtime.HttpClientRequest] getUrl(Doroti.Runtime.DartUri)
+  Constructor Void .ctor()
+  Method Void set_autoUncompress(Boolean)
+TYPE Doroti.Runtime.HttpClientRequest
+  Method Doroti.Runtime.DartHttpHeaders get_headers()
+  Property Doroti.Runtime.DartHttpHeaders headers
+  Method Doroti.Runtime.Future`1[Doroti.Runtime.HttpClientResponse] close()
+  Constructor Void .ctor(System.Net.Http.HttpClient, Doroti.Runtime.DartUri, System.TimeProvider)
+  Constructor Void .ctor(System.Net.Http.HttpClient, Doroti.Runtime.DartUri)
+TYPE Doroti.Runtime.HttpClientResponse
+  Method Doroti.Runtime.Future`1[T] drain[T](T)
+  Method Int64 get_statusCode()
+  Property Int64 statusCode
+  Method System.Collections.Generic.IAsyncEnumerator`1[System.ReadOnlyMemory`1[System.Byte]] GetAsyncEnumerator(System.Threading.CancellationToken)
+  Constructor Void .ctor(System.Net.Http.HttpResponseMessage)
+  Method Void Dispose()
+TYPE Doroti.Runtime.HttpStatus
+  Field Int64 ok
+TYPE Doroti.Runtime.IDartEnumIndex
+  Property Int64 DartEnumIndex
+  Method Int64 get_DartEnumIndex()
+TYPE Doroti.Runtime.IDartMap
+  Method Boolean TryGetValueObject(System.Object, System.Object ByRef)
+TYPE Doroti.Runtime.IDartTweenValue`1
+  Method T LerpTo(T, Double)
+TYPE Doroti.Runtime.Int32List
+  Constructor Void .ctor(Int64)
+  Constructor Void .ctor(System.Collections.Generic.IEnumerable`1[System.Int32])
+  Constructor Void .ctor(System.Collections.Generic.IEnumerable`1[System.Int64])
+TYPE Doroti.Runtime.Int64List
+  Constructor Void .ctor(Int64)
+  Constructor Void .ctor(System.Collections.Generic.IEnumerable`1[System.Int64])
+TYPE Doroti.Runtime.Invocation
+  Method System.Collections.Generic.IReadOnlyDictionary`2[System.Object,System.Object] get_namedArguments()
+  Property System.Collections.Generic.IReadOnlyDictionary`2[System.Object,System.Object] namedArguments
+  Method System.Collections.Generic.IReadOnlyList`1[System.Object] get_positionalArguments()
+  Property System.Collections.Generic.IReadOnlyList`1[System.Object] positionalArguments
+  Method System.Object get_memberName()
+  Property System.Object memberName
+  Constructor Void .ctor(System.Object, System.Collections.Generic.IReadOnlyList`1[System.Object], System.Collections.Generic.IReadOnlyDictionary`2[System.Object,System.Object])
+TYPE Doroti.Runtime.IPointerEvent
+TYPE Doroti.Runtime.IPointerRemovedEvent
+TYPE Doroti.Runtime.MapEntry`2
+  Method Boolean Equals(Doroti.Runtime.MapEntry`2[TKey,TValue])
+  Method Boolean Equals(System.Object)
+  Method Boolean op_Equality(Doroti.Runtime.MapEntry`2[TKey,TValue], Doroti.Runtime.MapEntry`2[TKey,TValue])
+  Method Boolean op_Inequality(Doroti.Runtime.MapEntry`2[TKey,TValue], Doroti.Runtime.MapEntry`2[TKey,TValue])
+  Method Int32 GetHashCode()
+  Method System.String ToString()
+  Method TKey get_key()
+  Property TKey key
+  Method TValue get_value()
+  Property TValue value
+  Constructor Void .ctor(TKey, TValue)
+  Method Void Deconstruct(TKey ByRef, TValue ByRef)
+  Method Void set_key(TKey)
+  Method Void set_value(TValue)
+TYPE Doroti.Runtime.MapEquality`2
+  Method Boolean equals(System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue], System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue])
+  Method Int32 hash(System.Collections.Generic.IReadOnlyDictionary`2[TKey,TValue])
+  Constructor Void .ctor()
+TYPE Doroti.Runtime.MaterialColorSchemeRuntime
+  Method Int64 GetArgb(Int64, Boolean, System.String, Double, System.String)
+TYPE Doroti.Runtime.MaterialImageColorRuntime
+  Method Int64[] ArgbFromRgba(System.ReadOnlySpan`1[System.Byte])
+  Method System.Collections.Generic.IReadOnlyDictionary`2[System.Int64,System.Int64] Quantize(System.Collections.Generic.IEnumerable`1[System.Int64], Int32)
+  Method System.Collections.Generic.IReadOnlyList`1[System.Int64] Score(System.Collections.Generic.IReadOnlyDictionary`2[System.Int64,System.Int64], Int32)
+TYPE Doroti.Runtime.MaterialImageQuantizerWu
+  Method MaterialColorUtilities.Quantize.QuantizerResult Quantize(UInt32[], UInt32)
+  Constructor Void .ctor()
+TYPE Doroti.Runtime.MaterialImageQuantizerWu+Box
+  Property Int32 B0
+  Property Int32 B1
+  Property Int32 G0
+  Property Int32 G1
+  Method Int32 get_B0()
+  Method Int32 get_B1()
+  Method Int32 get_G0()
+  Method Int32 get_G1()
+  Method Int32 get_R0()
+  Method Int32 get_R1()
+  Method Int32 get_Vol()
+  Property Int32 R0
+  Property Int32 R1
+  Property Int32 Vol
+  Constructor Void .ctor()
+  Method Void set_B0(Int32)
+  Method Void set_B1(Int32)
+  Method Void set_G0(Int32)
+  Method Void set_G1(Int32)
+  Method Void set_R0(Int32)
+  Method Void set_R1(Int32)
+  Method Void set_Vol(Int32)
+TYPE Doroti.Runtime.MaterialImageQuantizerWu+CreateBoxesResult
+  Method Int32 get_RequestedCount()
+  Method Int32 get_ResultCount()
+  Property Int32 RequestedCount
+  Property Int32 ResultCount
+  Constructor Void .ctor(Int32, Int32)
+  Method Void set_RequestedCount(Int32)
+  Method Void set_ResultCount(Int32)
+TYPE Doroti.Runtime.MaterialImageQuantizerWu+Direction
+  Field Direction BLUE
+  Field Direction GREEN
+  Field Direction RED
+  Field Int32 value__
+TYPE Doroti.Runtime.MaterialImageQuantizerWu+MaximizeResult
+  Method Double get_Maximum()
+  Property Double Maximum
+  Property Int32 CutLocation
+  Method Int32 get_CutLocation()
+  Constructor Void .ctor(Int32, Double)
+  Method Void set_CutLocation(Int32)
+  Method Void set_Maximum(Double)
+TYPE Doroti.Runtime.NoSuchMethodError
+  Constructor Void .ctor(System.Object)
+TYPE Doroti.Runtime.Pattern
+  Method Doroti.Runtime.DartMatch matchAsPrefix(System.String, Int64)
+  Method Doroti.Runtime.Pattern op_Implicit(System.String)
+  Method System.Collections.Generic.IEnumerable`1[Doroti.Runtime.DartMatch] allMatches(System.String)
+TYPE Doroti.Runtime.PriorityQueue`1
+  Property Int32 Count
+  Method Int32 get_Count()
+  Property T first
+  Method T get_first()
+  Method T removeFirst()
+  Constructor Void .ctor(System.Comparison`1[T])
+  Constructor Void .ctor(System.Func`3[T,T,System.Int64])
+  Method Void Add(T)
+  Method Void Add[TValue](TValue)
+TYPE Doroti.Runtime.ReceivePort
+  Method Doroti.Runtime.SendPort get_sendPort()
+  Property Doroti.Runtime.SendPort sendPort
+  Constructor Void .ctor()
+  Method Void listen(System.Action`1[System.Object])
+TYPE Doroti.Runtime.RegExp
+  Method Boolean hasMatch(System.String)
+  Method System.Collections.Generic.IEnumerable`1[Doroti.Runtime.DartMatch] allMatches(System.String)
+  Constructor Void .ctor(System.String, Boolean, Boolean, Boolean, Boolean)
+TYPE Doroti.Runtime.SendPort
+  Constructor Void .ctor()
+  Method Void Listen(System.Action`1[System.Object])
+  Method Void send(System.Object)
+TYPE Doroti.Runtime.Stream`1
+  Method Boolean get_isBroadcast()
+  Property Boolean isBroadcast
+  Method Doroti.Runtime.StreamSubscription`1[T] listen(System.Action`1[T], System.Action`1[System.Exception], System.Action)
+  Method Doroti.Runtime.StreamSubscription`1[T] listen(System.Action`1[T], System.Action`2[System.Object,System.Diagnostics.StackTrace], System.Action)
+  Method System.Collections.Generic.IAsyncEnumerator`1[T] GetAsyncEnumerator(System.Threading.CancellationToken)
+  Constructor Void .ctor(Doroti.Runtime.StreamController`1[T])
+TYPE Doroti.Runtime.StreamController`1
+  Method Boolean get_IsBroadcast()
+  Property Boolean IsBroadcast
+  Method Doroti.Runtime.Future close()
+  Method Doroti.Runtime.Stream`1[T] get_stream()
+  Property Doroti.Runtime.Stream`1[T] stream
+  Method Doroti.Runtime.StreamSubscription`1[T] Listen(System.Action`1[T], System.Action`1[System.Exception], System.Action)
+  Constructor Void .ctor(Boolean, System.Func`1[System.Threading.Tasks.Task], System.Func`1[System.Threading.Tasks.Task])
+  Constructor Void .ctor(System.Func`1[System.Threading.Tasks.Task])
+  Method Void add(T)
+  Method Void Add(T)
+  Method Void addError(System.Exception)
+TYPE Doroti.Runtime.StreamSubscription`1
+  Method Boolean get_isCanceled()
+  Property Boolean isCanceled
+  Method Doroti.Runtime.Future cancel()
+  Method System.Action get_OnDone()
+  Property System.Action OnDone
+  Method System.Action`1[System.Exception] get_OnError()
+  Property System.Action`1[System.Exception] OnError
+  Method System.Action`1[T] get_OnData()
+  Property System.Action`1[T] OnData
+  Constructor Void .ctor(System.Action`1[T], System.Action`1[System.Exception], System.Action, System.Action`1[Doroti.Runtime.StreamSubscription`1[T]])
+  Method Void onData(System.Action`1[T])
+TYPE Doroti.Runtime.StringBuffer
+  Method System.String ToString()
+  Constructor Void .ctor(System.Object)
+  Method Void write(System.Object)
+  Method Void writeCharCode(Int64)
+  Method Void writeln(System.Object)
+TYPE Doroti.Runtime.Timeline
+  Method T timeSync[T](System.String, System.Func`1[T], Doroti.Runtime.Flow)
+  Method Void finishSync()
+  Method Void instantSync(System.String, System.Object)
+  Method Void startSync(System.String)
+  Method Void timeSync(System.String, System.Action, Doroti.Runtime.Flow)
+TYPE Doroti.Runtime.TimelineTask
+  Constructor Void .ctor()
+  Method Void finish(System.Object)
+  Method Void start(System.String, System.Object)
+TYPE Doroti.Runtime.Timer
+  Method Boolean get_isActive()
+  Property Boolean isActive
+  Method Doroti.Runtime.Timer periodic(Doroti.Runtime.Duration, System.Action`1[Doroti.Runtime.Timer])
+  Constructor Void .ctor(Doroti.Runtime.Duration, System.Action)
+  Constructor Void .ctor(Doroti.Runtime.Duration, System.Action`1[Doroti.Runtime.Timer])
+  Method Void cancel()
+  Method Void Dispose()
+  Method Void run(System.Action)
+TYPE Doroti.Runtime.TypeError
+  Constructor Void .ctor(System.Object)
+TYPE Doroti.Runtime.Uint8List
+  Method Boolean Contains(Int64)
+  Method Boolean get_isNotEmpty()
+  Method Boolean get_IsReadOnly()
+  Property Boolean isNotEmpty
+  Property Boolean IsReadOnly
+  Method Boolean Remove(Int64)
+  Method Byte[] ToByteArray()
+  Property Doroti.Runtime.ByteBuffer buffer
+  Method Doroti.Runtime.ByteBuffer get_buffer()
+  Property Int32 Count
+  Method Int32 get_Count()
+  Method Int32 IndexOf(Int64)
+  Method Int64 get_Item(Int32)
+  Method Int64 get_Item(Int64)
+  Method Int64 get_lengthInBytes()
+  Method Int64 get_offsetInBytes()
+  Property Int64 Item [Int32]
+  Property Int64 Item [Int64]
+  Property Int64 lengthInBytes
+  Property Int64 offsetInBytes
+  Method System.Collections.Generic.IEnumerator`1[System.Int64] GetEnumerator()
+  Method System.Collections.Generic.List`1[System.Int64] op_Implicit(Doroti.Runtime.Uint8List)
+  Constructor Void .ctor(Byte[])
+  Constructor Void .ctor(Doroti.Runtime.ByteBuffer, Int64, Int64)
+  Constructor Void .ctor(Doroti.Runtime.ByteBuffer)
+  Constructor Void .ctor(Doroti.Runtime.ByteData)
+  Constructor Void .ctor(Doroti.Runtime.Uint8List, Int64, Int64)
+  Constructor Void .ctor(Int64)
+  Constructor Void .ctor(System.Collections.Generic.IEnumerable`1[System.Int64])
+  Constructor Void .ctor(System.Collections.Generic.IEnumerable`1[System.Object])
+  Method Void Add(Int64)
+  Method Void Clear()
+  Method Void CopyTo(Int64[], Int32)
+  Method Void Insert(Int32, Int64)
+  Method Void RemoveAt(Int32)
+  Method Void set_Item(Int32, Int64)
+  Method Void set_Item(Int64, Int64)

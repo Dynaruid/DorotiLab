@@ -361,7 +361,7 @@ public class _RenderCupertinoTextSelectionToolbarShape__text_selection_toolbar :
 
     internal static Path _addRRectToPath(Path path, RRect rrect, double startAngle)
     {
-        double halfPI = Dart_mathLibrary.pi / 2L;
+        double halfPI = Math.PI / 2L;
         DartRuntimePrimitives.Assert(() => (startAngle % halfPI) == 0.0);
         Rect rect = rrect.outerRect;
         var rrectCorners = new List<(Offset, Radius)>
@@ -481,7 +481,7 @@ public class _RenderCupertinoTextSelectionToolbarShape__text_selection_toolbar :
                 )()
             );
         }
-        double startAngleLocal = isAbove ? (Dart_mathLibrary.pi / 2L) : (-Dart_mathLibrary.pi / 2L);
+        double startAngleLocal = isAbove ? (Math.PI / 2L) : (-Math.PI / 2L);
         return (
             (Func<Path>)(
                 () =>

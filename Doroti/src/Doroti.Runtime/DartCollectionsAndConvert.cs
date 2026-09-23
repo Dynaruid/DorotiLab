@@ -561,7 +561,7 @@ public sealed class HttpClient
 
     public Future<HttpClientRequest> getUrl(DartUri uri) =>
         Future<HttpClientRequest>.value(
-            new(_client, uri, OperatingSystem.IsBrowser() ? DartAsyncRuntime.timeProvider : null)
+            new(_client, uri, OperatingSystem.IsBrowser() ? DorotiExecutionContext.TimeProvider : null)
         );
 }
 

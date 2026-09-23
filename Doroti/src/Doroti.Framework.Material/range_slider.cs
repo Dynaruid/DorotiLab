@@ -905,9 +905,9 @@ public class _RenderRangeSlider__range_slider : RenderBox, RelayoutWhenSystemFon
     }
 
     internal virtual double _maxSliderPartWidth =>
-        _sliderPartSizes.map((size) => size.width).reduce(Dart_mathLibrary.max);
+        _sliderPartSizes.map((size) => size.width).reduce(Math.Max);
     internal virtual double _maxSliderPartHeight =>
-        _sliderPartSizes.map((size) => size.height).reduce(Dart_mathLibrary.max);
+        _sliderPartSizes.map((size) => size.height).reduce(Math.Max);
     internal virtual double _thumbSizeHeight =>
         _sliderTheme.rangeThumbShape!.getPreferredSize(isEnabled, isDiscrete).height;
     internal virtual double _overlayHeight =>

@@ -1831,7 +1831,7 @@ public class _RenderDecoration__input_decorator
             )()
         );
         double inputMaxHeight = new List<double> { inputHeight, prefixHeight, suffixHeight }.reduce(
-            Dart_mathLibrary.max
+            Math.Max
         );
         double contentHeight =
             contentPadding.top
@@ -1845,7 +1845,7 @@ public class _RenderDecoration__input_decorator
             contentHeight,
             prefixIconHeight,
             suffixIconHeight,
-        }.reduce(Dart_mathLibrary.max);
+        }.reduce(Math.Max);
         double minContainerHeight =
             (
                 (

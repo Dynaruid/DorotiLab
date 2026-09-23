@@ -115,6 +115,7 @@ public sealed class DeepCollectionEquality
     private int hashCode(object? value) => hash(value);
 }
 
+// Temporary import-tool bridge. Widgets use LinkedList<T>; remove in R6.
 public abstract class DartLinkedListEntry<T>
     where T : DartLinkedListEntry<T>
 {

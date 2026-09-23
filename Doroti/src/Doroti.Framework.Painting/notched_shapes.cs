@@ -64,11 +64,11 @@ public class CircularNotchedRectangle : NotchedShape
             )
                 .center
                 .dy;
-        double n2 = Dart_mathLibrary.sqrt(b * b * r * r * ((a * a) + (b * b) - (r * r)));
+        double n2 = Math.Sqrt(b * b * r * r * ((a * a) + (b * b) - (r * r)));
         double p2xA = ((a * r * r) - n2) / ((a * a) + (b * b));
         double p2xB = ((a * r * r) + n2) / ((a * a) + (b * b));
-        double p2yA = Dart_mathLibrary.sqrt((r * r) - (p2xA * p2xA)) * invertMultiplier;
-        double p2yB = Dart_mathLibrary.sqrt((r * r) - (p2xB * p2xB)) * invertMultiplier;
+        double p2yA = Math.Sqrt((r * r) - (p2xA * p2xA)) * invertMultiplier;
+        double p2yB = Math.Sqrt((r * r) - (p2xB * p2xB)) * invertMultiplier;
         var p = new List<Offset>(Enumerable.Repeat(Offset.zero, checked((int)6L)));
         p[(int)0L] = new Offset(a - s1, b);
         p[(int)1L] = new Offset(a, b);

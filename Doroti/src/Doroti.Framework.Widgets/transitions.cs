@@ -195,7 +195,7 @@ public class RotationTransition : MatrixTransition
     public virtual Animation<double> turns => animation;
 
     internal static Matrix4 _handleTurnsMatrix(double value) =>
-        Matrix4.rotationZ(value * Dart_mathLibrary.pi * 2.0);
+        Matrix4.rotationZ(value * Math.PI * 2.0);
 }
 
 public class SizeTransition : AnimatedWidget

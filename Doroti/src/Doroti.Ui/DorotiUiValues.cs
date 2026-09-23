@@ -345,21 +345,21 @@ public sealed record Quaternion
 
 public sealed class Matrix4
 {
-    private readonly Float64List _storage;
+    private readonly double[] _storage;
 
     public Matrix4()
         : this([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]) { }
 
     public Matrix4(IEnumerable<double> values)
     {
-        _storage = new Float64List(values);
-        if (_storage.Count != 16)
+        _storage = values.ToArray();
+        if (_storage.Length != 16)
         {
             throw new ArgumentException("Matrix4 requires sixteen values.", nameof(values));
         }
     }
 
-    public Float64List storage => _storage;
+    public double[] storage => _storage;
 
     public static Matrix4 identity() => new();
 
@@ -784,7 +784,7 @@ public sealed class Matrix4
         ]);
     }
 
-    private static void CopyStorage(Float64List source, Float64List destination)
+    private static void CopyStorage(double[] source, double[] destination)
     {
         for (var index = 0; index < 16; index++)
         {

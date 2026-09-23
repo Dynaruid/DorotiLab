@@ -298,34 +298,34 @@ public class StandardMessageCodec : MessageCodec<object?>
                             }
                             else
                             {
-                                if (value is Int32List value__as16723)
+                                if (value is int[] value__as16723)
                                 {
                                     buffer.putUint8(_valueInt32List);
-                                    writeSize(buffer, value__as16723.Count);
+                                    writeSize(buffer, value__as16723.Length);
                                     buffer.putInt32List(value__as16723);
                                 }
                                 else
                                 {
-                                    if (value is Int64List value__as16873)
+                                    if (value is long[] value__as16873)
                                     {
                                         buffer.putUint8(_valueInt64List);
-                                        writeSize(buffer, value__as16873.Count);
+                                        writeSize(buffer, value__as16873.Length);
                                         buffer.putInt64List(value__as16873);
                                     }
                                     else
                                     {
-                                        if (value is Float32List value__as17023)
+                                        if (value is float[] value__as17023)
                                         {
                                             buffer.putUint8(_valueFloat32List);
-                                            writeSize(buffer, value__as17023.Count);
+                                            writeSize(buffer, value__as17023.Length);
                                             buffer.putFloat32List(value__as17023);
                                         }
                                         else
                                         {
-                                            if (value is Float64List value__as17179)
+                                            if (value is double[] value__as17179)
                                             {
                                                 buffer.putUint8(_valueFloat64List);
-                                                writeSize(buffer, value__as17179.Count);
+                                                writeSize(buffer, value__as17179.Length);
                                                 buffer.putFloat64List(value__as17179);
                                             }
                                             else

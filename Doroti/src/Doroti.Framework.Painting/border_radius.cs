@@ -145,41 +145,41 @@ public abstract class BorderRadiusGeometry
         }
         else
         {
-            var result = new StringBuffer();
-            result.write("BorderRadius.only(");
+            var result = new System.Text.StringBuilder();
+            result.Append("BorderRadius.only(");
             var comma = false;
             if (!Equals(_topLeft, Radius.zero))
             {
-                result.write($"topLeft: {_topLeft}");
+                result.Append($"topLeft: {_topLeft}");
                 comma = true;
             }
             if (!Equals(_topRight, Radius.zero))
             {
                 if (comma)
                 {
-                    result.write(", ");
+                    result.Append(", ");
                 }
-                result.write($"topRight: {_topRight}");
+                result.Append($"topRight: {_topRight}");
                 comma = true;
             }
             if (!Equals(_bottomLeft, Radius.zero))
             {
                 if (comma)
                 {
-                    result.write(", ");
+                    result.Append(", ");
                 }
-                result.write($"bottomLeft: {_bottomLeft}");
+                result.Append($"bottomLeft: {_bottomLeft}");
                 comma = true;
             }
             if (!Equals(_bottomRight, Radius.zero))
             {
                 if (comma)
                 {
-                    result.write(", ");
+                    result.Append(", ");
                 }
-                result.write($"bottomRight: {_bottomRight}");
+                result.Append($"bottomRight: {_bottomRight}");
             }
-            result.write(")");
+            result.Append(")");
             visual = result.ToString();
         }
         if (
@@ -203,41 +203,41 @@ public abstract class BorderRadiusGeometry
         }
         else
         {
-            var resultLocal = new StringBuffer();
-            resultLocal.write("BorderRadiusDirectional.only(");
+            var resultLocal = new System.Text.StringBuilder();
+            resultLocal.Append("BorderRadiusDirectional.only(");
             var commaLocal = false;
             if (!Equals(_topStart, Radius.zero))
             {
-                resultLocal.write($"topStart: {_topStart}");
+                resultLocal.Append($"topStart: {_topStart}");
                 commaLocal = true;
             }
             if (!Equals(_topEnd, Radius.zero))
             {
                 if (commaLocal)
                 {
-                    resultLocal.write(", ");
+                    resultLocal.Append(", ");
                 }
-                resultLocal.write($"topEnd: {_topEnd}");
+                resultLocal.Append($"topEnd: {_topEnd}");
                 commaLocal = true;
             }
             if (!Equals(_bottomStart, Radius.zero))
             {
                 if (commaLocal)
                 {
-                    resultLocal.write(", ");
+                    resultLocal.Append(", ");
                 }
-                resultLocal.write($"bottomStart: {_bottomStart}");
+                resultLocal.Append($"bottomStart: {_bottomStart}");
                 commaLocal = true;
             }
             if (!Equals(_bottomEnd, Radius.zero))
             {
                 if (commaLocal)
                 {
-                    resultLocal.write(", ");
+                    resultLocal.Append(", ");
                 }
-                resultLocal.write($"bottomEnd: {_bottomEnd}");
+                resultLocal.Append($"bottomEnd: {_bottomEnd}");
             }
-            resultLocal.write(")");
+            resultLocal.Append(")");
             logical = resultLocal.ToString();
         }
         if ((visual is not null) && (logical is not null))

@@ -1220,7 +1220,7 @@ internal class _RadialPainter__bottom_navigation_bar : CustomPainter
     {
         double maxX = Math.Max(center.dx, size.width - center.dx);
         double maxY = Math.Max(center.dy, size.height - center.dy);
-        return Dart_mathLibrary.sqrt((maxX * maxX) + (maxY * maxY));
+        return Math.Sqrt((maxX * maxX) + (maxY * maxY));
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 

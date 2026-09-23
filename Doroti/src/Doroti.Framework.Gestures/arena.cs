@@ -54,14 +54,14 @@ internal class _GestureArena__arena
 
     public override string ToString()
     {
-        var buffer = new StringBuffer();
+        var buffer = new System.Text.StringBuilder();
         if (checked((long)members.Count) == 0)
         {
-            buffer.write("<empty>");
+            buffer.Append("<empty>");
         }
         else
         {
-            buffer.write(
+            buffer.Append(
                 string.Join(
                     ", ",
                     members.map(
@@ -79,15 +79,15 @@ internal class _GestureArena__arena
         }
         if (isOpen)
         {
-            buffer.write(" [open]");
+            buffer.Append(" [open]");
         }
         if (isHeld)
         {
-            buffer.write(" [held]");
+            buffer.Append(" [held]");
         }
         if (hasPendingSweep)
         {
-            buffer.write(" [hasPendingSweep]");
+            buffer.Append(" [hasPendingSweep]");
         }
         return buffer.ToString();
         throw new InvalidOperationException("Control flow completed without returning a value.");

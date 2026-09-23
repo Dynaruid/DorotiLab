@@ -2142,7 +2142,7 @@ public class ColorScheme : Diagnosticable
             stream.addListener(listener);
             return await completion.Task.WaitAsync(
                 TimeSpan.FromSeconds(30),
-                DartAsyncRuntime.timeProvider
+                DorotiExecutionContext.TimeProvider
             );
         }
         catch (Exception exception)

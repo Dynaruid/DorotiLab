@@ -7,12 +7,12 @@ namespace Doroti.Framework.Painting;
 
 public static partial class Star_borderLibrary
 {
-    internal static double _kRadToDeg = 180L / Dart_mathLibrary.pi;
+    internal static double _kRadToDeg = 180L / Math.PI;
 }
 
 public static partial class Star_borderLibrary
 {
-    internal static double _kDegToRad = Dart_mathLibrary.pi / 180L;
+    internal static double _kDegToRad = Math.PI / 180L;
 }
 
 public class StarBorder : OutlinedBorder
@@ -81,7 +81,7 @@ public class StarBorder : OutlinedBorder
 
     public virtual double innerRadiusRatio
     {
-        get { return _innerRadiusRatio ?? Dart_mathLibrary.cos(Dart_mathLibrary.pi / points); }
+        get { return _innerRadiusRatio ?? Math.Cos(Math.PI / points); }
     }
     public virtual double rotation => _rotationRadians * Star_borderLibrary._kRadToDeg;
 
@@ -180,7 +180,7 @@ public class StarBorder : OutlinedBorder
                     rotation: rotation,
                     innerRadiusRatio: (
                         DorotiUiLibrary.lerpDouble(
-                            Dart_mathLibrary.cos(Dart_mathLibrary.pi / lerpedPoints),
+                            Math.Cos(Math.PI / lerpedPoints),
                             innerRadiusRatio,
                             t
                         )
@@ -343,7 +343,7 @@ public class StarBorder : OutlinedBorder
                     innerRadiusRatio: (
                         DorotiUiLibrary.lerpDouble(
                             innerRadiusRatio,
-                            Dart_mathLibrary.cos(Dart_mathLibrary.pi / lerpedPoints),
+                            Math.Cos(Math.PI / lerpedPoints),
                             t
                         )
                         ?? throw new global::System.NullReferenceException(
@@ -666,11 +666,11 @@ internal class _StarGenerator__star_border
         double innerRadius
     )
     {
-        double step = Dart_mathLibrary.pi / points;
-        double angle = (-Dart_mathLibrary.pi / 2L) - step;
+        double step = Math.PI / points;
+        double angle = (-Math.PI / 2L) - step;
         var valleyLocal = new Offset(
-            center.dx + (Dart_mathLibrary.cos(angle) * innerRadius),
-            center.dy + (Dart_mathLibrary.sin(angle) * innerRadius)
+            center.dx + (Math.Cos(angle) * innerRadius),
+            center.dy + (Math.Sin(angle) * innerRadius)
         );
         Offset getCurveMidpoint(Offset a, Offset b, Offset c, Offset a1, Offset c1)
         {
@@ -690,13 +690,13 @@ internal class _StarGenerator__star_border
         {
             pointAngle += pointStep;
             var pointLocal = new Offset(
-                center.dx + (Dart_mathLibrary.cos(pointAngle) * pointRadius),
-                center.dy + (Dart_mathLibrary.sin(pointAngle) * pointRadius)
+                center.dx + (Math.Cos(pointAngle) * pointRadius),
+                center.dy + (Math.Sin(pointAngle) * pointRadius)
             );
             pointAngle += pointStep;
             var nextValley = new Offset(
-                center.dx + (Dart_mathLibrary.cos(pointAngle) * pointInnerRadius),
-                center.dy + (Dart_mathLibrary.sin(pointAngle) * pointInnerRadius)
+                center.dx + (Math.Cos(pointAngle) * pointInnerRadius),
+                center.dy + (Math.Sin(pointAngle) * pointInnerRadius)
             );
             Offset valleyArc1Local = valleyLocal + ((pointLocal - valleyLocal) * valleyRounding);
             Offset pointArc1Local = pointLocal + ((valleyLocal - pointLocal) * pointRounding);
@@ -816,7 +816,7 @@ internal class _StarGenerator__star_border
 
     internal virtual double _getWeight(double angle)
     {
-        return Dart_mathLibrary.cos(angle / 2L % (Dart_mathLibrary.pi / 2L));
+        return Math.Cos(angle / 2L % (Math.PI / 2L));
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
@@ -831,10 +831,10 @@ internal class _StarGenerator__star_border
         double dot = (u.dx * v.dx) + (u.dy * v.dy);
         double m1 = (b.dx == a.dx) ? double.PositiveInfinity : (-u.dy / -u.dx);
         double m2 = (b.dx == c.dx) ? double.PositiveInfinity : (-v.dy / -v.dx);
-        double angle = Dart_mathLibrary.atan2(m1 - m2, 1L + (m1 * m2)).abs();
+        double angle = Math.Atan2(m1 - m2, 1L + (m1 * m2)).abs();
         if (dot < 0L)
         {
-            angle += Dart_mathLibrary.pi;
+            angle += Math.PI;
         }
         return angle;
         throw new InvalidOperationException("Control flow completed without returning a value.");

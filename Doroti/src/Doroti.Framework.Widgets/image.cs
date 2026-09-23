@@ -266,7 +266,7 @@ public class Image : StatefulWidget
     }
 
     public static Image CreateFile(
-        DartFile file,
+        FileInfo file,
         Key? key = null,
         double scale = 1.0,
         Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder = null,

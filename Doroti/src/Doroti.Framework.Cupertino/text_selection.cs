@@ -226,7 +226,7 @@ public class CupertinoTextSelectionControls : TextSelectionControls
                                     0,
                                     1
                                 );
-                                __cascade.rotateZ(Dart_mathLibrary.pi);
+                                __cascade.rotateZ(Math.PI);
                                 __cascade.translateByDouble(
                                     -desiredSize.width / 2L,
                                     -desiredSize.height / 2L,

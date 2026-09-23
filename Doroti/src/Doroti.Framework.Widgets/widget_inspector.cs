@@ -1,5 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart
+using System.Runtime.CompilerServices;
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -197,9 +198,9 @@ internal class _MulticastCanvas__widget_inspector : Canvas
 
     public new virtual void drawRawAtlas(
         Ui.Image atlas,
-        Float32List rstTransforms,
-        Float32List rects,
-        Int32List? colors,
+        IReadOnlyList<float> rstTransforms,
+        IReadOnlyList<float> rects,
+        IReadOnlyList<int>? colors,
         BlendMode? blendMode,
         Rect? cullRect,
         Paint paint
@@ -209,7 +210,7 @@ internal class _MulticastCanvas__widget_inspector : Canvas
         _screenshot.drawRawAtlas(atlas, rstTransforms, rects, colors, blendMode, cullRect, paint);
     }
 
-    public new virtual void drawRawPoints(PointMode pointMode, Float32List points, Paint paint)
+    public new virtual void drawRawPoints(PointMode pointMode, IReadOnlyList<float> points, Paint paint)
     {
         _main.drawRawPoints(pointMode, points, paint);
         _screenshot.drawRawPoints(pointMode, points, paint);
@@ -280,7 +281,7 @@ internal class _MulticastCanvas__widget_inspector : Canvas
         _screenshot.skew(sx, ((sy)));
     }
 
-    public virtual void transform(Float64List matrix4)
+    public new virtual void transform(IReadOnlyList<double> matrix4)
     {
         _main.transform(matrix4);
         _screenshot.transform(matrix4);
@@ -5248,7 +5249,7 @@ public static partial class Widget_inspectorLibrary
 public class WeakMap<K, V>
     where K : notnull
 {
-    internal virtual Expando<object> _objects { get; set; } = new Expando<object>();
+    internal virtual ConditionalWeakTable<object, object> _objects { get; set; } = new();
     internal virtual DartMap<K, V?> _primitives { get; private set; } = new DartMap<K, V?>();
 
     internal virtual bool _isPrimitive(object? key)
@@ -5267,7 +5268,7 @@ public class WeakMap<K, V>
             }
             else
             {
-                return ((V?)_objects[key!])!;
+                return _objects.TryGetValue(key!, out var value) ? (V)value : default;
             }
         }
         set
@@ -5278,7 +5279,11 @@ public class WeakMap<K, V>
             }
             else
             {
-                _objects[key!] = value;
+                _objects.Remove(key!);
+                if (value is not null)
+                {
+                    _objects.Add(key!, value);
+                }
             }
         }
     }
@@ -5291,8 +5296,8 @@ public class WeakMap<K, V>
         }
         else
         {
-            var result = ((V?)_objects[key!])!;
-            _objects[key] = null;
+            var result = _objects.TryGetValue(key!, out var value) ? (V)value : default;
+            _objects.Remove(key!);
             return result;
         }
         throw new InvalidOperationException("Control flow completed without returning a value.");
@@ -5300,7 +5305,7 @@ public class WeakMap<K, V>
 
     public virtual void clear()
     {
-        _objects = new Expando<object>();
+        _objects = new ConditionalWeakTable<object, object>();
         _primitives.Clear();
     }
 }

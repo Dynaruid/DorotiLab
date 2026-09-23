@@ -14,7 +14,7 @@ public class _Vector__lsq_solver
     {
         _offset = 0L;
         _length = size;
-        _elements = new Float64List(size).ToList();
+        _elements = Enumerable.Repeat(0.0, checked((int)size)).ToList();
     }
 
     internal static _Vector__lsq_solver CreateFromVOL(List<double> values, long offset, long length)
@@ -43,7 +43,7 @@ public class _Vector__lsq_solver
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
-    public virtual double norm() => Dart_mathLibrary.sqrt(op_Multiply(this));
+    public virtual double norm() => Math.Sqrt(op_Multiply(this));
 }
 
 internal class _Matrix__lsq_solver
@@ -54,7 +54,7 @@ internal class _Matrix__lsq_solver
     internal _Matrix__lsq_solver(long rows, long cols)
     {
         _columns = cols;
-        _elements = new Float64List(rows * cols).ToList();
+        _elements = Enumerable.Repeat(0.0, checked((int)(rows * cols))).ToList();
     }
 
     public virtual double get(long row, long col) => _elements[(int)((row * _columns) + col)];
@@ -75,7 +75,7 @@ public class PolynomialFit
 
     public PolynomialFit(long degree)
     {
-        coefficients = new Float64List(degree + 1L).ToList();
+        coefficients = Enumerable.Repeat(0.0, checked((int)(degree + 1L))).ToList();
     }
 
     public override string ToString()

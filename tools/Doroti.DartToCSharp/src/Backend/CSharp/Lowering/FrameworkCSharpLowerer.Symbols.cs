@@ -486,12 +486,38 @@ internal sealed partial class FrameworkCSharpLowerer
     private string MapDartLibraryStaticClass(string libraryUri) =>
         libraryUri switch
         {
-            "dart:math" => "global::Doroti.Runtime.Dart_mathLibrary",
+            "dart:math" => "global::System.Math",
             "dart:ui" => "DorotiUiLibrary",
             "dart:async" => "global::Doroti.Runtime.DartAsyncRuntime",
             "dart:convert" => "global::Doroti.Runtime.Dart_convertLibrary",
             _ => LibraryStaticClassName(libraryUri),
         };
+
+    private static string MapDartMathMemberName(string name) => name switch
+    {
+        "pi" => "PI",
+        "e" => "E",
+        "ln2" => "Log(2)",
+        "ln10" => "Log(10)",
+        "log2e" => "Log2(E)",
+        "log10e" => "Log10(E)",
+        "sqrt1_2" => "Sqrt(0.5)",
+        "sqrt2" => "Sqrt(2)",
+        "min" => "Min",
+        "max" => "Max",
+        "atan2" => "Atan2",
+        "pow" => "Pow",
+        "sin" => "Sin",
+        "cos" => "Cos",
+        "tan" => "Tan",
+        "asin" => "Asin",
+        "acos" => "Acos",
+        "atan" => "Atan",
+        "sqrt" => "Sqrt",
+        "exp" => "Exp",
+        "log" => "Log",
+        _ => name,
+    };
 
     private bool HasNullableValueStorage(CoreAstNode node, CoreResolvedDeclaration declaration)
     {

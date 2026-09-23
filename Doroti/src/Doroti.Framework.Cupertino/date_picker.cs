@@ -523,7 +523,7 @@ public class CupertinoDatePicker : StatefulWidget
                         textDirection: Directionality.of(context)
                     )
             )
-            .reduce(Dart_mathLibrary.max);
+            .reduce(Math.Max);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

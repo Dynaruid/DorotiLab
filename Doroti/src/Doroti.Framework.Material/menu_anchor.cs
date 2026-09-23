@@ -2979,7 +2979,7 @@ public class MenuAcceleratorLabel : StatefulWidget
     public static string stripAcceleratorMarkers(string label, Action<long>? setIndex = null)
     {
         var quotedAmpersands = 0L;
-        var displayLabel = new StringBuffer();
+        var displayLabel = new System.Text.StringBuilder();
         var acceleratorIndex = -1L;
         Characters labelChars = label.characters();
         Characters ampersand = "&".characters();
@@ -2990,12 +2990,12 @@ public class MenuAcceleratorLabel : StatefulWidget
             if (lastWasAmpersand)
             {
                 lastWasAmpersand = false;
-                displayLabel.write(character);
+                displayLabel.Append(character);
                 continue;
             }
             if (!Equals(character, ampersand))
             {
-                displayLabel.write(character);
+                displayLabel.Append(character);
                 continue;
             }
             if (i == (labelChars.Count - 1L))

@@ -245,7 +245,7 @@ internal class _CupertinoActivityIndicatorState__activity_indicator
 
 public static partial class Activity_indicatorLibrary
 {
-    internal static double _kTwoPI = Dart_mathLibrary.pi * 2.0;
+    internal static double _kTwoPI = Math.PI * 2.0;
 }
 
 public static partial class Activity_indicatorLibrary

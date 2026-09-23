@@ -83,11 +83,12 @@ public readonly record struct Duration(long microseconds) : IComparable<Duration
         left.inMicroseconds >= right.inMicroseconds;
 
     public static implicit operator TimeSpan(Duration value) =>
-        TimeSpan.FromTicks(value.inMicroseconds * 10);
+        TimeSpan.FromTicks(checked(value.inMicroseconds * 10));
 
     public static implicit operator Duration(TimeSpan value) => new(value.Ticks / 10);
 }
 
+// Temporary import-tool bridge. Product consumers use StringBuilder; remove in R6.
 public sealed class StringBuffer
 {
     private readonly StringBuilder _builder = new();
@@ -110,6 +111,7 @@ public sealed class StringBuffer
     public override string ToString() => _builder.ToString();
 }
 
+// Temporary import-tool bridge. The scheduler uses the BCL priority queue.
 public class PriorityQueue<T>
 {
     private readonly List<T> _items = [];
@@ -155,18 +157,6 @@ public sealed class HeapPriorityQueue<T> : PriorityQueue<T>
 
     public HeapPriorityQueue(Func<T, T, long> comparison)
         : base(comparison) { }
-}
-
-public sealed class DartRandom(long seed)
-{
-    // Preserve entropy from both halves of Dart's 64-bit seed without throwing
-    // when the value is outside System.Random's signed 32-bit seed range.
-    private readonly Random _random = new(unchecked((int)(seed ^ (seed >> 32))));
-
-    public DartRandom()
-        : this(Random.Shared.NextInt64()) { }
-
-    public double nextDouble() => _random.NextDouble();
 }
 
 public sealed class DartArgumentError(

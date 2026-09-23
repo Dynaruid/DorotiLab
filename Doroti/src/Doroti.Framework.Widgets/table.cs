@@ -25,25 +25,25 @@ public class TableRow
 
     public override string ToString()
     {
-        var result = new StringBuffer();
-        result.write("TableRow(");
+        var result = new System.Text.StringBuilder();
+        result.Append("TableRow(");
         if (key is not null)
         {
-            result.write($"{key}, ");
+            result.Append($"{key}, ");
         }
         if (decoration is not null)
         {
-            result.write($"{decoration}, ");
+            result.Append($"{decoration}, ");
         }
         if (!Enumerable.Any(children))
         {
-            result.write("no children");
+            result.Append("no children");
         }
         else
         {
-            result.write($"{children}");
+            result.Append($"{children}");
         }
-        result.write(")");
+        result.Append(")");
         return result.ToString();
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }

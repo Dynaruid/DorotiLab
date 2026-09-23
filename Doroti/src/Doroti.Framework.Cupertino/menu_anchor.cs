@@ -3278,7 +3278,7 @@ public class _SwipeRegionState__menu_anchor : State<_SwipeRegion__menu_anchor>
             minimumSquaredDistance = Math.Min(squaredDistance, minimumSquaredDistance);
         }
         double distance =
-            (minimumSquaredDistance == 0L) ? 0 : Dart_mathLibrary.sqrt(minimumSquaredDistance);
+            (minimumSquaredDistance == 0L) ? 0 : Math.Sqrt(minimumSquaredDistance);
         widget.onDistanceChanged(distance);
     }
 

@@ -42,7 +42,7 @@ public class MaterialPointArcTween : Tween<Offset>
         double sweepAngle()
         {
             return 2.0
-                * Dart_mathLibrary.asin(
+                * Math.Asin(
                     distanceFromAtoB
                         / (
                             2.0
@@ -83,9 +83,9 @@ public class MaterialPointArcTween : Tween<Offset>
                 else
                 {
                     _beginAngle =
-                        Dart_mathLibrary.pi
+                        Math.PI
                         + (sweepAngle() * Math.Sign((endLocal).dy - (beginLocal).dy));
-                    _endAngle = Dart_mathLibrary.pi;
+                    _endAngle = Math.PI;
                 }
             }
             else
@@ -106,7 +106,7 @@ public class MaterialPointArcTween : Tween<Offset>
                 );
                 if ((beginLocal).dy < (endLocal).dy)
                 {
-                    _beginAngle = -Dart_mathLibrary.pi / 2.0;
+                    _beginAngle = -Math.PI / 2.0;
                     _endAngle =
                         (
                             _beginAngle
@@ -117,7 +117,7 @@ public class MaterialPointArcTween : Tween<Offset>
                 }
                 else
                 {
-                    _beginAngle = Dart_mathLibrary.pi / 2.0;
+                    _beginAngle = Math.PI / 2.0;
                     _endAngle =
                         (
                             _beginAngle
@@ -233,13 +233,13 @@ public class MaterialPointArcTween : Tween<Offset>
             ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         double x =
-            Dart_mathLibrary.cos(angle)
+            Math.Cos(angle)
             * (
                 _radius
                 ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         double y =
-            Dart_mathLibrary.sin(angle)
+            Math.Sin(angle)
             * (
                 _radius
                 ?? throw new global::System.NullReferenceException("A required value was null.")

@@ -176,15 +176,15 @@ public static partial class BindingLibrary
         var mode = Foundation.ConstantsLibrary.kDebugMode
             ? "DEBUG MODE"
             : (Foundation.ConstantsLibrary.kReleaseMode ? "RELEASE MODE" : "PROFILE MODE");
-        var buffer = new StringBuffer();
-        buffer.writeln($"{DartRuntimePrimitives.RuntimeType(WidgetsBinding.instance)} - {mode}");
+        var buffer = new System.Text.StringBuilder();
+        buffer.AppendLine($"{DartRuntimePrimitives.RuntimeType(WidgetsBinding.instance)} - {mode}");
         if (WidgetsBinding.instance.rootElement is not null)
         {
-            buffer.writeln(WidgetsBinding.instance.rootElement!.toStringDeep());
+            buffer.AppendLine(WidgetsBinding.instance.rootElement!.toStringDeep());
         }
         else
         {
-            buffer.writeln("<no tree currently mounted>");
+            buffer.AppendLine("<no tree currently mounted>");
         }
         return buffer.ToString();
         throw new InvalidOperationException("Control flow completed without returning a value.");

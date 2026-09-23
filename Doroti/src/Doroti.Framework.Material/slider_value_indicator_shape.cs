@@ -597,13 +597,13 @@ internal class _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_sh
     internal const double _bottomNeckRadius = 4.5;
     internal static double _neckTriangleBase = _topNeckRadius + (_middleNeckWidth / 2L);
     internal static double _rightBottomNeckCenterX = (_middleNeckWidth / 2L) + _bottomNeckRadius;
-    internal static double _rightBottomNeckAngleStart = Dart_mathLibrary.pi;
+    internal static double _rightBottomNeckAngleStart = Math.PI;
     internal static Offset _topLobeCenter = new Offset(0.0, -_distanceBetweenTopBottomCenters);
     internal const double _topNeckRadius = 13.0;
     internal static double _neckTriangleHypotenuse = _topLobeRadius + _topNeckRadius;
-    internal static double _twoSeventyDegrees = 3.0 * Dart_mathLibrary.pi / 2.0;
-    internal static double _ninetyDegrees = Dart_mathLibrary.pi / 2.0;
-    internal static double _thirtyDegrees = Dart_mathLibrary.pi / 6.0;
+    internal static double _twoSeventyDegrees = 3.0 * Math.PI / 2.0;
+    internal static double _ninetyDegrees = Math.PI / 2.0;
+    internal static double _thirtyDegrees = Math.PI / 6.0;
     internal static double _preferredHeight =
         _distanceBetweenTopBottomCenters + _topLobeRadius + _bottomLobeRadius;
     internal const bool _debuggingLabelLocation = false;
@@ -721,13 +721,13 @@ internal class _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_sh
         canvas.scale(overallScale, overallScale);
         double bottomNeckTriangleHypotenuse =
             _bottomNeckRadius + (_bottomLobeRadius / overallScale);
-        double rightBottomNeckCenterY = -Dart_mathLibrary.sqrt(
-            Dart_mathLibrary.pow(bottomNeckTriangleHypotenuse, 2L)
-                - Dart_mathLibrary.pow(_rightBottomNeckCenterX, 2L)
+        double rightBottomNeckCenterY = -Math.Sqrt(
+            Math.Pow(bottomNeckTriangleHypotenuse, 2L)
+                - Math.Pow(_rightBottomNeckCenterX, 2L)
         );
         double rightBottomNeckAngleEnd =
-            Dart_mathLibrary.pi
-            + Dart_mathLibrary.atan(rightBottomNeckCenterY / _rightBottomNeckCenterX);
+            Math.PI
+            + Math.Atan(rightBottomNeckCenterY / _rightBottomNeckCenterX);
         var path = (
             (Func<Path>)(
                 () =>
@@ -749,14 +749,14 @@ internal class _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_sh
             path,
             Offset.zero,
             _bottomLobeRadius / overallScale,
-            rightBottomNeckAngleEnd - Dart_mathLibrary.pi,
-            (2L * Dart_mathLibrary.pi) - rightBottomNeckAngleEnd
+            rightBottomNeckAngleEnd - Math.PI,
+            (2L * Math.PI) - rightBottomNeckAngleEnd
         );
         _addArc(
             path,
             new Offset(-_rightBottomNeckCenterX, rightBottomNeckCenterY),
             _bottomNeckRadius,
-            Dart_mathLibrary.pi - rightBottomNeckAngleEnd,
+            Math.PI - rightBottomNeckAngleEnd,
             0
         );
         double halfWidthNeeded = Math.Max(
@@ -777,19 +777,19 @@ internal class _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_sh
         double rightTheta = (1.0 - rightAmount) * _thirtyDegrees;
         var leftTopNeckCenter = new Offset(
             -_neckTriangleBase,
-            _topLobeCenter.dy + (Dart_mathLibrary.cos(leftTheta) * _neckTriangleHypotenuse)
+            _topLobeCenter.dy + (Math.Cos(leftTheta) * _neckTriangleHypotenuse)
         );
         var neckRightCenter = new Offset(
             _neckTriangleBase,
-            _topLobeCenter.dy + (Dart_mathLibrary.cos(rightTheta) * _neckTriangleHypotenuse)
+            _topLobeCenter.dy + (Math.Cos(rightTheta) * _neckTriangleHypotenuse)
         );
         double leftNeckArcAngle = _ninetyDegrees - leftTheta;
-        double rightNeckArcAngle = Dart_mathLibrary.pi + _ninetyDegrees - rightTheta;
+        double rightNeckArcAngle = Math.PI + _ninetyDegrees - rightTheta;
         double neckStretchBaseline = Math.Max(
             0.0,
             rightBottomNeckCenterY - Math.Max(leftTopNeckCenter.dy, neckRightCenter.dy)
         );
-        var t = (double)Dart_mathLibrary.pow(inverseTextScale, 3.0);
+        var t = (double)Math.Pow(inverseTextScale, 3.0);
         double stretch = DorotiUiLibrary.clampDouble(
             neckStretchBaseline * t,
             0.0,
@@ -846,14 +846,14 @@ internal class _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_sh
             _topLobeCenter + new Offset(rightWidthNeeded, 0.0) + neckStretch,
             _topLobeRadius,
             _twoSeventyDegrees,
-            _twoSeventyDegrees + Dart_mathLibrary.pi - rightTheta
+            _twoSeventyDegrees + Math.PI - rightTheta
         );
         _addArc(
             path,
             neckRightCenter + neckStretch,
             _topNeckRadius,
             rightNeckArcAngle,
-            Dart_mathLibrary.pi
+            Math.PI
         );
         if (strokePaintColor is not null)
         {

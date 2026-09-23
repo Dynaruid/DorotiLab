@@ -71,7 +71,7 @@ internal class _ExpandIconState__expand_icon
         _iconTurns = _controller.drive(_iconTurnTween);
         if (widget.isExpanded)
         {
-            _controller.value = Dart_mathLibrary.pi;
+            _controller.value = Math.PI;
         }
     }
 

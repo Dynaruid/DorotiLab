@@ -10,7 +10,7 @@ public class InkSparkle : InteractiveInkFeature
 {
     internal static Duration _animationDuration = Duration.Create(milliseconds: 617L);
     internal const double _targetRadiusMultiplier = 2.3;
-    internal static double _rotateRight = Dart_mathLibrary.pi * 0.0078125;
+    internal static double _rotateRight = Math.PI * 0.0078125;
     internal static double _rotateLeft = -_rotateRight;
     internal const double _noiseDensity = 2.1;
     internal virtual AnimationController _animationController { get; set; } = default!;
@@ -157,7 +157,8 @@ public class InkSparkle : InteractiveInkFeature
             turbulenceSeed ??= _InkSparkleFactory__ink_sparkle.constantSeed;
             return true;
         });
-        _turbulenceSeed = turbulenceSeed ?? (new DartRandom().nextDouble() * 1000.0);
+        _turbulenceSeed = turbulenceSeed
+            ?? (DorotiRandom.FromSeed(Random.Shared.NextInt64()).NextDouble() * 1000.0);
     }
 
     internal virtual void _handleStatusChanged(AnimationStatus status)
@@ -233,9 +234,9 @@ public class InkSparkle : InteractiveInkFeature
         var turbulenceScale = 1.5;
         double turbulencePhase = _turbulenceSeed + _radiusScale.value;
         var noisePhase = turbulencePhase;
-        double rotation1 = (turbulencePhase * _rotateRight) + (1.7 * Dart_mathLibrary.pi);
-        double rotation2 = (turbulencePhase * _rotateLeft) + (2.0 * Dart_mathLibrary.pi);
-        double rotation3 = (turbulencePhase * _rotateRight) + (2.75 * Dart_mathLibrary.pi);
+        double rotation1 = (turbulencePhase * _rotateRight) + (1.7 * Math.PI);
+        double rotation2 = (turbulencePhase * _rotateLeft) + (2.0 * Math.PI);
+        double rotation3 = (turbulencePhase * _rotateRight) + (2.75 * Math.PI);
         DartRuntimePrimitives.Ignore(
             (
                 (Func<FragmentShader>)(
@@ -264,7 +265,7 @@ public class InkSparkle : InteractiveInkFeature
                                 + (
                                     turbulencePhase
                                     * 0.01
-                                    * Dart_mathLibrary.cos(turbulenceScale * 0.55)
+                                    * Math.Cos(turbulenceScale * 0.55)
                                 )
                         );
                         __cascade.setFloat(
@@ -273,7 +274,7 @@ public class InkSparkle : InteractiveInkFeature
                                 + (
                                     turbulencePhase
                                     * 0.01
-                                    * Dart_mathLibrary.sin(turbulenceScale * 0.55)
+                                    * Math.Sin(turbulenceScale * 0.55)
                                 )
                         );
                         __cascade.setFloat(
@@ -282,7 +283,7 @@ public class InkSparkle : InteractiveInkFeature
                                 + (
                                     turbulencePhase
                                     * -0.0066
-                                    * Dart_mathLibrary.cos(turbulenceScale * 0.45)
+                                    * Math.Cos(turbulenceScale * 0.45)
                                 )
                         );
                         __cascade.setFloat(
@@ -291,7 +292,7 @@ public class InkSparkle : InteractiveInkFeature
                                 + (
                                     turbulencePhase
                                     * -0.0066
-                                    * Dart_mathLibrary.sin(turbulenceScale * 0.45)
+                                    * Math.Sin(turbulenceScale * 0.45)
                                 )
                         );
                         __cascade.setFloat(
@@ -300,7 +301,7 @@ public class InkSparkle : InteractiveInkFeature
                                 + (
                                     turbulencePhase
                                     * -0.0066
-                                    * Dart_mathLibrary.cos(turbulenceScale * 0.35)
+                                    * Math.Cos(turbulenceScale * 0.35)
                                 )
                         );
                         __cascade.setFloat(
@@ -309,15 +310,15 @@ public class InkSparkle : InteractiveInkFeature
                                 + (
                                     turbulencePhase
                                     * -0.0066
-                                    * Dart_mathLibrary.sin(turbulenceScale * 0.35)
+                                    * Math.Sin(turbulenceScale * 0.35)
                                 )
                         );
-                        __cascade.setFloat(22L, Dart_mathLibrary.cos(rotation1));
-                        __cascade.setFloat(23L, Dart_mathLibrary.sin(rotation1));
-                        __cascade.setFloat(24L, Dart_mathLibrary.cos(rotation2));
-                        __cascade.setFloat(25L, Dart_mathLibrary.sin(rotation2));
-                        __cascade.setFloat(26L, Dart_mathLibrary.cos(rotation3));
-                        __cascade.setFloat(27L, Dart_mathLibrary.sin(rotation3));
+                        __cascade.setFloat(22L, Math.Cos(rotation1));
+                        __cascade.setFloat(23L, Math.Sin(rotation1));
+                        __cascade.setFloat(24L, Math.Cos(rotation2));
+                        __cascade.setFloat(25L, Math.Sin(rotation2));
+                        __cascade.setFloat(26L, Math.Cos(rotation3));
+                        __cascade.setFloat(27L, Math.Sin(rotation3));
                         return __cascade;
                     }
                 )

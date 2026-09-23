@@ -102,43 +102,11 @@ public sealed class Timer : IDisposable
 
 public static class DartAsyncRuntime
 {
-    private static readonly AsyncLocal<Action<Action>?> MicrotaskScheduler = new();
-    private static readonly AsyncLocal<TimeProvider?> AmbientTimeProvider = new();
-
     /// <summary>Host-owned time source, captured by timers and timed futures.</summary>
-    public static TimeProvider timeProvider =>
-        AmbientTimeProvider.Value
-        ?? (
-            OperatingSystem.IsBrowser()
-                ? throw new InvalidOperationException(
-                    "Doroti browser timers require an active host TimeProvider scope."
-                )
-                : TimeProvider.System
-        );
+    public static TimeProvider timeProvider => DorotiExecutionContext.TimeProvider;
 
     public static IDisposable enterTimeProvider(TimeProvider provider)
-    {
-        ArgumentNullException.ThrowIfNull(provider);
-        var previous = AmbientTimeProvider.Value;
-        AmbientTimeProvider.Value = provider;
-        return new TimeProviderScope(previous);
-    }
-
-    private sealed class TimeProviderScope(TimeProvider? previous) : IDisposable
-    {
-        private bool _disposed;
-
-        public void Dispose()
-        {
-            if (_disposed)
-            {
-                return;
-            }
-
-            _disposed = true;
-            AmbientTimeProvider.Value = previous;
-        }
-    }
+        => DorotiExecutionContext.EnterTimeProvider(provider);
 
     public static void unawaited(object? future)
     {
@@ -168,7 +136,7 @@ public static class DartAsyncRuntime
     public static void scheduleMicrotask(Action callback)
     {
         ArgumentNullException.ThrowIfNull(callback);
-        var scheduler = MicrotaskScheduler.Value;
+        var scheduler = captureMicrotaskScheduler();
         if (scheduler is null)
         {
             DartRuntimePrimitives.ObserveTask(Task.Run(callback), "scheduleMicrotask");
@@ -179,7 +147,11 @@ public static class DartAsyncRuntime
         }
     }
 
-    internal static Action<Action>? captureMicrotaskScheduler() => MicrotaskScheduler.Value;
+    internal static Action<Action>? captureMicrotaskScheduler()
+    {
+        var dispatcher = DorotiExecutionContext.CaptureDispatcher();
+        return dispatcher is null ? null : callback => dispatcher.TryPost(callback);
+    }
 
     internal static void dispatchCaptured(Action<Action>? scheduler, Action callback)
     {
@@ -262,9 +234,11 @@ public static class DartAsyncRuntime
     public static IDisposable enterMicrotaskScheduler(Action<Action> scheduler)
     {
         ArgumentNullException.ThrowIfNull(scheduler);
-        var previous = MicrotaskScheduler.Value;
-        MicrotaskScheduler.Value = scheduler;
-        return new MicrotaskSchedulerScope(previous);
+        return DorotiExecutionContext.EnterDispatcher(callback =>
+        {
+            scheduler(callback);
+            return true;
+        });
     }
 
     public static Task<T> AwaitFutureOr<T>(Future<T> future) => future.asTask();
@@ -294,15 +268,6 @@ public static class DartAsyncRuntime
     internal static Task InvokeErrorHandlerAsync(Delegate handler, Exception error) =>
         DartErrorHandlers.Observe(handler, error);
 
-    private sealed class MicrotaskSchedulerScope(Action<Action>? previous) : IDisposable
-    {
-        private Action<Action>? _previous = previous;
-
-        public void Dispose()
-        {
-            MicrotaskScheduler.Value = Interlocked.Exchange(ref _previous, null);
-        }
-    }
 }
 
 /// <summary>A deterministic FIFO queue for Flutter/Dart microtask behavior validation and host pumps.</summary>
@@ -328,6 +293,14 @@ public sealed class DartMicrotaskQueue
         lock (_gate)
         {
             _callbacks.Enqueue(callback);
+        }
+    }
+
+    public void clear()
+    {
+        lock (_gate)
+        {
+            _callbacks.Clear();
         }
     }
 

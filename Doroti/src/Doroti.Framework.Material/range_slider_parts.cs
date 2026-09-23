@@ -639,7 +639,7 @@ public class RoundRangeSliderThumbShape : RangeSliderThumbShape
                     __cascade.addArc(
                         Rect.fromCenter(center: center, width: 2L * radius, height: 2L * radius),
                         0,
-                        Dart_mathLibrary.pi * 2L
+                        Math.PI * 2L
                     );
                     return __cascade;
                 }

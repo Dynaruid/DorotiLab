@@ -142,11 +142,11 @@ public class MaterialTextSelectionControls : TextSelectionControls
         return type switch
         {
             TextSelectionHandleType.left => DartRuntimePrimitives.ConvertValue<Widget>(
-                Transform.CreateRotate(angle: Dart_mathLibrary.pi / 2.0, child: handle)
+                Transform.CreateRotate(angle: Math.PI / 2.0, child: handle)
             ),
             TextSelectionHandleType.right => handle,
             TextSelectionHandleType.collapsed => DartRuntimePrimitives.ConvertValue<Widget>(
-                Transform.CreateRotate(angle: Dart_mathLibrary.pi / 4.0, child: handle)
+                Transform.CreateRotate(angle: Math.PI / 4.0, child: handle)
             ),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                 throw new InvalidOperationException(

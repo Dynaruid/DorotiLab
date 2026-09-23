@@ -1,5 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/navigator.dart
+using System.Runtime.CompilerServices;
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -414,9 +415,19 @@ public abstract class Page<T> : RouteSettings
 
 public class NavigatorObserver
 {
-    internal static Expando<NavigatorState> _navigators = new Expando<NavigatorState>();
+    internal static ConditionalWeakTable<NavigatorObserver, NavigatorState> _navigators = new();
 
-    public virtual NavigatorState? navigator => _navigators[this];
+    public virtual NavigatorState? navigator =>
+        _navigators.TryGetValue(this, out var state) ? state : null;
+
+    internal static void SetNavigator(NavigatorObserver observer, NavigatorState? state)
+    {
+        _navigators.Remove(observer);
+        if (state is not null)
+        {
+            _navigators.Add(observer, state);
+        }
+    }
 
     public virtual void didPush(dynamic route, dynamic? previousRoute) { }
 
@@ -2060,7 +2071,7 @@ public class NavigatorState
         foreach (NavigatorObserver observer in widget.observers)
         {
             DartRuntimePrimitives.Assert(() => observer.navigator is null);
-            NavigatorObserver._navigators[observer] = this;
+            NavigatorObserver.SetNavigator(observer, this);
         }
         _effectiveObservers = widget.observers;
         var heroControllerScope = (
@@ -2312,12 +2323,11 @@ public class NavigatorState
                         "Callback completed without returning a value."
                     );
                 });
-                NavigatorObserver._navigators[newHeroController] = this;
+                NavigatorObserver.SetNavigator(newHeroController, this);
             }
             if (Equals(_heroControllerFromScope?.navigator, this))
             {
-                NavigatorObserver._navigators[_heroControllerFromScope!] =
-                    DartRuntimePrimitives.ConvertValue<NavigatorState>(null);
+                NavigatorObserver.SetNavigator(_heroControllerFromScope!, null);
             }
             _heroControllerFromScope = newHeroController;
             _updateEffectiveObservers();
@@ -2347,13 +2357,12 @@ public class NavigatorState
         {
             foreach (NavigatorObserver observer in oldWidget.observers)
             {
-                NavigatorObserver._navigators[observer] =
-                    DartRuntimePrimitives.ConvertValue<NavigatorState>(null);
+                NavigatorObserver.SetNavigator(observer, null);
             }
             foreach (NavigatorObserver observerLocal in widget.observers)
             {
                 DartRuntimePrimitives.Assert(() => observerLocal.navigator is null);
-                NavigatorObserver._navigators[observerLocal] = this;
+                NavigatorObserver.SetNavigator(observerLocal, this);
             }
             _updateEffectiveObservers();
         }
@@ -2413,8 +2422,7 @@ public class NavigatorState
     {
         foreach (NavigatorObserver observer in _effectiveObservers)
         {
-            NavigatorObserver._navigators[observer] =
-                DartRuntimePrimitives.ConvertValue<NavigatorState>(null);
+            NavigatorObserver.SetNavigator(observer, null);
         }
         _effectiveObservers = new List<NavigatorObserver>();
         base.deactivate();
@@ -2429,7 +2437,7 @@ public class NavigatorState
         foreach (NavigatorObserver observer in _effectiveObservers)
         {
             DartRuntimePrimitives.Assert(() => observer.navigator is null);
-            NavigatorObserver._navigators[observer] = this;
+            NavigatorObserver.SetNavigator(observer, this);
         }
     }
 

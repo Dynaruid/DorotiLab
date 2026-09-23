@@ -17,7 +17,7 @@ public static partial class BannerLibrary
 
 public static partial class BannerLibrary
 {
-    internal static double _kBottomOffset = _kOffset + (Dart_mathLibrary.sqrt1_2 * _kHeight);
+    internal static double _kBottomOffset = _kOffset + (0.7071067811865476 * _kHeight);
 }
 
 public static partial class BannerLibrary
@@ -209,7 +209,7 @@ public class BannerPainter : CustomPainter
     {
         get
         {
-            return Dart_mathLibrary.pi
+            return Math.PI
                 / 4.0
                 * (
                     (layoutDirection, location) switch

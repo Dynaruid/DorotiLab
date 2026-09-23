@@ -87,7 +87,7 @@ internal class _PointerPanZoomData__scale
             if (parent.trackpadScrollCausesScale)
             {
                 return _scale
-                    * Dart_mathLibrary.exp(
+                    * Math.Exp(
                         (_pan.dx * parent.trackpadScrollToScaleFactor.dx)
                             + (_pan.dy * parent.trackpadScrollToScaleFactor.dy)
                     );
@@ -371,8 +371,8 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
             double nfy = _currentLine!.pointerStartLocation.dy;
             double nsx = _currentLine!.pointerEndLocation.dx;
             double nsy = _currentLine!.pointerEndLocation.dy;
-            double angle1 = Dart_mathLibrary.atan2(fy - sy, fx - sx);
-            double angle2 = Dart_mathLibrary.atan2(nfy - nsy, nfx - nsx);
+            double angle1 = Math.Atan2(fy - sy, fx - sx);
+            double angle2 = Math.Atan2(nfy - nsy, nfx - nsx);
             factor = angle2 - angle1;
         }
         foreach (_PointerPanZoomData__scale p in _pointerPanZooms.Values)

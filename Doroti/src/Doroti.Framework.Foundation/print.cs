@@ -104,7 +104,7 @@ public static partial class PrintLibrary
             _debugPrintedCharacters += line.Length;
             if (_debugPrintedCharacters >= _kDebugPrintCapacity)
             {
-                await Task.Delay(_kDebugPrintPauseTime, Runtime.DartAsyncRuntime.timeProvider)
+                await Task.Delay(_kDebugPrintPauseTime, Runtime.DorotiExecutionContext.TimeProvider)
                     .ConfigureAwait(false);
                 _debugPrintedCharacters = 0;
                 _debugPrintStopwatch.Restart();

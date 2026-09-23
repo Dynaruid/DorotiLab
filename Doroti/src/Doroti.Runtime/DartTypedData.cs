@@ -307,6 +307,7 @@ public sealed class SendPort
         )(message);
 }
 
+// Temporary import-tool bridge. Product weak attachments use ConditionalWeakTable.
 public sealed class Expando<T>
     where T : class
 {

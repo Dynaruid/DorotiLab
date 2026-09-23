@@ -10,6 +10,7 @@ public sealed class PlatformDispatcher : IDisposable
     private readonly object _dispatchGate = new();
     private readonly Dictionary<ulong, DorotiView> _views = [];
     private readonly DartMicrotaskQueue _microtasks = new();
+    private CancellationTokenSource _callbackLifetime = new();
     private readonly DorotiFrameTrace _frameTrace = new();
     private readonly IDartPerformanceModeCapability? _performanceModeCapability;
     private readonly TimeProvider _timeProvider;
@@ -32,7 +33,7 @@ public sealed class PlatformDispatcher : IDisposable
     public PlatformDispatcher(IDartPerformanceModeCapability? performanceModeCapability = null)
     {
         _performanceModeCapability = performanceModeCapability;
-        _timeProvider = DartAsyncRuntime.timeProvider;
+        _timeProvider = DorotiExecutionContext.TimeProvider;
     }
 
     /// <summary>
@@ -59,12 +60,12 @@ public sealed class PlatformDispatcher : IDisposable
         ActiveDispatcher.Value = this;
         return new DispatcherScope(
             previous,
-            DartAsyncRuntime.enterMicrotaskScheduler(EnqueueMicrotask),
-            DartAsyncRuntime.enterTimeProvider(_timeProvider)
+            DorotiExecutionContext.EnterDispatcher(EnqueueMicrotask, _callbackLifetime.Token),
+            DorotiExecutionContext.EnterTimeProvider(_timeProvider)
         );
     }
 
-    private void EnqueueMicrotask(Action callback)
+    private bool EnqueueMicrotask(Action callback)
     {
         DorotiView[] registered;
         lock (_gate)
@@ -75,13 +76,13 @@ public sealed class PlatformDispatcher : IDisposable
             // closed view.
             if (_disposed || _views.Count == 0)
             {
-                return;
+                return false;
             }
 
             _microtasks.enqueue(callback);
             if (Volatile.Read(ref _dispatchDepth) != 0)
             {
-                return;
+                return true;
             }
 
             registered = _views.Values.ToArray();
@@ -90,6 +91,7 @@ public sealed class PlatformDispatcher : IDisposable
         {
             view.ScheduleFrame(DorotiUiInvocation.Managed("Doroti.Ui#PlatformDispatcher.microtask"));
         }
+        return true;
     }
 
     /// <summary>Whether the host provides optional Dart VM performance hints.</summary>
@@ -439,6 +441,10 @@ public sealed class PlatformDispatcher : IDisposable
                 );
             }
             capabilities.Seal();
+            if (_callbackLifetime.IsCancellationRequested)
+            {
+                _callbackLifetime = new CancellationTokenSource();
+            }
             DorotiView view;
             try
             {
@@ -480,6 +486,11 @@ public sealed class PlatformDispatcher : IDisposable
             if (_views.TryGetValue(view.viewId, out var current) && ReferenceEquals(current, view))
             {
                 _views.Remove(view.viewId);
+                if (_views.Count == 0)
+                {
+                    _callbackLifetime.Cancel();
+                    _microtasks.clear();
+                }
             }
         }
     }
@@ -607,6 +618,10 @@ public sealed class PlatformDispatcher : IDisposable
         lock (_dispatchGate)
         {
             using var dispatcherScope = EnterScope();
+            using var viewScope = DorotiExecutionContext.EnterDispatcher(
+                EnqueueMicrotask,
+                view.CallbackLifetime
+            );
             if (view.environmentConfiguration is { } configuration)
             {
                 using var environmentScope = PlatformEnvironmentContext.Enter(configuration);
@@ -626,10 +641,16 @@ public sealed class PlatformDispatcher : IDisposable
         }
         finally
         {
-            _dispatchDepth--;
-            if (_dispatchDepth == 0)
+            try
             {
-                _microtasks.drain();
+                if (_dispatchDepth == 1)
+                {
+                    _microtasks.drain();
+                }
+            }
+            finally
+            {
+                _dispatchDepth--;
             }
         }
     }
@@ -679,6 +700,8 @@ public sealed class PlatformDispatcher : IDisposable
             _disposed = true;
             viewsToDispose = _views.Values.ToArray();
             _views.Clear();
+            _callbackLifetime.Cancel();
+            _microtasks.clear();
         }
         foreach (var view in viewsToDispose)
         {
@@ -734,6 +757,7 @@ public sealed class DorotiView : IDisposable
     private readonly ISemanticsHostCapability? _semanticsHost;
     private readonly AsyncLocal<DorotiSceneBuildToken?> _activeBuildToken = new();
     private readonly AsyncLocal<DorotiFrameTransaction?> _activeFrameTransaction = new();
+    private readonly CancellationTokenSource _callbackLifetime = new();
     private bool _disposed;
     private ViewMetrics _metrics;
     private PlatformConfiguration? _environmentConfiguration;
@@ -805,6 +829,7 @@ public sealed class DorotiView : IDisposable
     }
 
     public ulong viewId { get; }
+    internal CancellationToken CallbackLifetime => _callbackLifetime.Token;
     internal DorotiFrameTrace FrameTrace => _dispatcher.frameTrace;
 
     public string targetIdentity => _capabilities.TargetIdentity;
@@ -1059,7 +1084,7 @@ public sealed class DorotiView : IDisposable
 
         return transaction.Completion.WaitAsync(
             timeout,
-            DartAsyncRuntime.timeProvider,
+            DorotiExecutionContext.TimeProvider,
             cancellationToken
         );
     }
@@ -1195,6 +1220,7 @@ public sealed class DorotiView : IDisposable
         {
             return;
         }
+        _callbackLifetime.Cancel();
         _dispatcher.Remove(this);
         DisposeCore(closeHost: true);
     }
@@ -1208,6 +1234,7 @@ public sealed class DorotiView : IDisposable
             return;
         }
         _disposed = true;
+        _callbackLifetime.Cancel();
         _viewHost.MetricsChanged -= HandleMetricsChanged;
         _viewHost.LifecycleChanged -= HandleLifecycleChanged;
         _viewHost.CloseRequested -= HandleCloseRequested;

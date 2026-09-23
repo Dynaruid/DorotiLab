@@ -756,13 +756,13 @@ internal class _IndicatorPainter__tabs : CustomPainter
 
     public virtual double decelerateInterpolation(double fraction)
     {
-        return Dart_mathLibrary.sin(fraction * Dart_mathLibrary.pi / 2.0);
+        return Math.Sin(fraction * Math.PI / 2.0);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double accelerateInterpolation(double fraction)
     {
-        return 1.0 - Dart_mathLibrary.cos(fraction * Dart_mathLibrary.pi / 2.0);
+        return 1.0 - Math.Cos(fraction * Math.PI / 2.0);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 

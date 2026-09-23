@@ -356,9 +356,8 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
         canvas.drawPath(bottomBeam, darkPaint);
         canvas.save();
         canvas.transform(
-            new Float64List(
-                new List<double>
-                {
+            new double[]
+            {
                     0.7071,
                     -0.7071,
                     0.0,
@@ -375,8 +374,7 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
                     98.057,
                     0.0,
                     1.0,
-                }
-            )
+            }
         );
         canvas.drawRect(Rect.fromLTWH(59.8, 123.1, 39.4, 39.4), mediumPaint);
         canvas.restore();

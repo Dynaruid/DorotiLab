@@ -518,7 +518,7 @@ public class _GlowController__overscroll_indicator : ChangeNotifier
         double height = Math.Min(extent, crossExtent * _widthToHeightFactor);
         _glowSizeTween.begin = _glowSize.value;
         _glowSizeTween.end = Math.Max(
-            1.0 - (1.0 / (0.7 * Dart_mathLibrary.sqrt(_pullDistance * height))),
+            1.0 - (1.0 / (0.7 * Math.Sqrt(_pullDistance * height))),
             _glowSize.value
         );
         _displacementTarget = crossAxisOffset / crossExtent;
@@ -628,7 +628,7 @@ public class _GlowController__overscroll_indicator : ChangeNotifier
                 _displacementTarget
                 - (
                     (_displacementTarget - _displacement)
-                    * Dart_mathLibrary.pow(2.0, -t / _crossAxisHalfTime.inMicroseconds)
+                    * Math.Pow(2.0, -t / _crossAxisHalfTime.inMicroseconds)
                 );
             notifyListeners();
         }
@@ -691,7 +691,7 @@ internal class _GlowingOverscrollIndicatorPainter__overscroll_indicator : Custom
     public virtual _GlowController__overscroll_indicator? leadingController { get; private set; }
     public virtual _GlowController__overscroll_indicator? trailingController { get; private set; }
     public virtual AxisDirection axisDirection { get; private set; } = default!;
-    public static double piOver2 = Dart_mathLibrary.pi / 2.0;
+    public static double piOver2 = Math.PI / 2.0;
 
     internal _GlowingOverscrollIndicatorPainter__overscroll_indicator(
         _GlowController__overscroll_indicator? leadingController = null,
@@ -1148,7 +1148,7 @@ internal class _StretchController__overscroll_indicator : Listenable
     internal virtual ValueNotifier<double> _overscrollNotifier { get; private set; } =
         new ValueNotifier<double>(0.0);
     internal virtual double _interruptedOverscroll { get; set; } = 0.0;
-    internal static double _exponentialScalar = Dart_mathLibrary.e / 0.33;
+    internal static double _exponentialScalar = Math.E / 0.33;
     internal const double _stretchIntensity = 0.016;
     public static double minOverscroll = -1.0;
     public const double maxOverscroll = 1.0;
@@ -1285,7 +1285,7 @@ internal class _StretchController__overscroll_indicator : Listenable
         double absDistance = pullDistance.abs();
         double linearIntensity = _stretchIntensity * absDistance;
         double exponentialIntensity =
-            _stretchIntensity * (1L - Dart_mathLibrary.exp(-absDistance * _exponentialScalar));
+            _stretchIntensity * (1L - Math.Exp(-absDistance * _exponentialScalar));
         double directionSign = Math.Sign(pullDistance);
         double newOverscroll = directionSign * (linearIntensity + exponentialIntensity);
         overscroll = newOverscroll + _interruptedOverscroll;

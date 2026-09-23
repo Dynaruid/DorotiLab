@@ -44,7 +44,7 @@ public class FrictionSimulation : Simulation
         : base(tolerance: tolerance ?? Tolerance.defaultTolerance)
     {
         _drag = drag;
-        _dragLog = Dart_mathLibrary.log(drag);
+        _dragLog = Math.Log(drag);
         _x = position;
         _v = velocity;
         _constantDeceleration = constantDeceleration * Math.Sign(velocity);
@@ -82,8 +82,8 @@ public class FrictionSimulation : Simulation
     )
     {
         return (double)
-            Dart_mathLibrary.pow(
-                Dart_mathLibrary.e,
+            Math.Pow(
+                Math.E,
                 (startVelocity - endVelocity) / (startPosition - endPosition)
             );
         throw new InvalidOperationException("Control flow completed without returning a value.");
@@ -96,7 +96,7 @@ public class FrictionSimulation : Simulation
             return finalX;
         }
         return _x
-            + (_v * Dart_mathLibrary.pow(_drag, time) / _dragLog)
+            + (_v * Math.Pow(_drag, time) / _dragLog)
             - (_v / _dragLog)
             - (_constantDeceleration / 2L * time * time);
         throw new InvalidOperationException("Control flow completed without returning a value.");
@@ -108,7 +108,7 @@ public class FrictionSimulation : Simulation
         {
             return 0;
         }
-        return (_v * Dart_mathLibrary.pow(_drag, time)) - (_constantDeceleration * time);
+        return (_v * Math.Pow(_drag, time)) - (_constantDeceleration * time);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 

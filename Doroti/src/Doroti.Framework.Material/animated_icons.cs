@@ -112,7 +112,7 @@ internal class _AnimatedIconPainter__animated_icons : CustomPainter
     {
         if (shouldMirror)
         {
-            canvas.rotate(Dart_mathLibrary.pi);
+            canvas.rotate(Math.PI);
             canvas.translate(-size.width, -size.height);
         }
         canvas.scale(scale, scale);

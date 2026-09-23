@@ -195,11 +195,10 @@ internal sealed partial class FrameworkCSharpLowerer
             {
                 return $"new {type}(0xFF000000L)";
             }
-            var factory = type is "Duration" or "global::Doroti.Runtime.Duration"
-                ? ".Create"
-                : string.Empty;
-            return factory.Length > 0
-                ? $"{type}{factory}({arguments})"
+            return type is "Duration" or "global::Doroti.Runtime.Duration"
+                ? $"{type}.Create({arguments})"
+                : type is ("Random" or "global::System.Random") && arguments.Trim().Length > 0
+                    ? $"global::Doroti.Runtime.DorotiRandom.FromSeed({arguments})"
                 : $"new {type}({arguments})";
         }
         if (
@@ -237,7 +236,7 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             return $"{MapType(member.Groups["type"].Value)}.{SafeIdentifier(member.Groups["name"].Value)}";
         }
-        expression = expression.Replace("math.pi", "Dart_mathLibrary.pi", StringComparison.Ordinal);
+        expression = expression.Replace("math.pi", "global::System.Math.PI", StringComparison.Ordinal);
         if (expression == "kNoDefaultValue")
         {
             return "global::Doroti.Framework.Foundation.DiagnosticsLibrary.kNoDefaultValue";
@@ -1437,7 +1436,7 @@ internal sealed partial class FrameworkCSharpLowerer
                 "HttpClient" => "global::Doroti.Runtime.HttpClient",
                 "HttpClientRequest" => "global::Doroti.Runtime.HttpClientRequest",
                 "HttpClientResponse" => "global::Doroti.Runtime.HttpClientResponse",
-                "File" => "global::Doroti.Runtime.DartFile",
+                "File" => "global::System.IO.FileInfo",
                 // Dart Never is the bottom type. `dynamic` preserves its ability
                 // to inhabit every expression context while the emitted body
                 // still terminates by throwing.
@@ -1461,7 +1460,7 @@ internal sealed partial class FrameworkCSharpLowerer
                 "UnimplementedError" => "NotImplementedException",
                 "UnsupportedError" => "NotSupportedException",
                 "ArgumentError" => "DartArgumentError",
-                "Random" => "DartRandom",
+                "Random" => "global::System.Random",
                 "StateError" => "InvalidOperationException",
                 _ => TryMapFunctionType(type) ?? MapNamedType(type),
             };

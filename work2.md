@@ -1,13 +1,25 @@
 # Doroti.Runtime의 Dart 호환 계층 제거 및 C#/.NET 전환 계획
 
 - 작성일: 2026-09-23
-- 검토 기준: `277e4395`의 현재 소스, `.github/copilot-instructions.md`
-- 상태: **계획 작성 완료 / R0–R8 구현·빌드·실행 검증 미착수**
-- 이번 요청의 수행 범위: 소스·의존성 검토와 이 문서 작성. 기존 `work2.md`는 0바이트였으며 제품 소스는 변경하지 않는다.
+- 계획 작성 검토 기준: `277e4395`의 소스, `.github/copilot-instructions.md` (실행 기준선은 아래 `94d24bbd`)
+- 상태 (2026-09-23 실행 중): **R0–R2 PARTIAL / R3 TODO / R4 PARTIAL / R5 TODO / R6–R7 PARTIAL / R8 TODO**
+- 계획 작성 당시 수행 범위: 소스·의존성 검토와 이 문서 작성. 현재 구현 요청으로 제품 소스 변경을 진행 중이다.
+
+### 2026-09-23 실행 기록
+
+- 기준선 `94d24bbd`: Runtime·Material·import 도구 Release 빌드 경고/오류 0, 기존 계약 103개 통과. [타입·멤버 인벤토리와 영향도](Doroti/validation/runtime-dotnet/inventory.md), [원본 API 스냅샷](Doroti/validation/runtime-dotnet/api-baseline.txt)을 기록했다. R0의 Roslyn-bound 사용처와 최종 package API diff는 남아 있다.
+- R1: `DorotiExecutionContext`/`DorotiCallbackDispatcher`에 host 시간 소스와 후속 작업 큐 캡처를 분리했다. dispatcher와 Web runner의 직접 시간 소스 사용을 전환하고, view 종료 시 캡처된 작업을 거절·취소하도록 했다. drain 중 재진입 순서를 수정했다. 실제 Web/Windows owner 실행은 `notVerified`다.
+- Web 제품 브라우저 검증은 통과했지만, 선택 `TimerValidationExport`를 페이지 JS에서 직접 호출하는 시도는 그 호출 컨텍스트에 `doroti.web` 타이머 dispatcher가 준비되지 않아 계약 결과를 얻지 못했다. 계측 변경은 되돌렸고 전용 타이머·owner 계약은 `notVerified`로 남긴다.
+- R2: 사용자 결정에 따라 Flutter API인 `Duration` 정의와 소비 계약을 유지한다. `Duration`↔`TimeSpan`의 microsecond/tick, 음수 절삭, 범위 초과 계약을 확인하고 초과 시 예외를 내도록 변환 경계를 보강했다. `StringBuffer`→`StringBuilder`, `Expando`→`ConditionalWeakTable`, `DartFile`→`FileInfo`, `Dart_mathLibrary`→`System.Math`, 제품 `DartRandom` 사용→`Random`을 전환했다. 파일 이미지 등 일부 public API는 변경되며 URI·encoding·그 밖의 adapter는 남아 있다.
+- R4: scheduler의 Runtime priority queue를 BCL `PriorityQueue`로 교체하고 generic 작업의 타입을 보존했다. Widgets의 두 linked-list 소비자를 `LinkedList<T>`/node로 옮겼다. `Matrix4.storage`와 semantics child ID, Canvas raw 배열 계약을 .NET 배열/읽기 전용 목록으로 옮겼다. 숫자 typed-list의 제품 참조를 제거하고 `StandardMessageCodec`의 `int[]`/`long[]`/`float[]`/`double[]` tag·왕복 및 int32 little-endian fixture를 확인했다. null-key ordered map과 byte view/복사 기준선도 추가했다. `DartMap`·`Uint8List`/`ByteData`의 제품 타입 전환과 전체 codec 통합 검증은 남아 있다.
+- `StringBuffer`, `Expando`, Runtime priority/linked-list 타입은 선택 import 도구가 아직 출력할 수 있어 R6 제거 기한의 임시 bridge로 Runtime에 유지한다. 제품 소비 코드는 BCL로 옮겼으며 최종 완료로 판정하지 않는다.
+- R6: 선택 import 도구의 `File.path`/Random/math lowering을 일부 .NET 타입으로 옮겼고, [대표 fixture](tools/Doroti.DartToCSharp/validation/runtime-dotnet/validate.ps1)는 Dart 분석 0 diagnostics와 생성 C# 빌드를 통과했다. 다른 File 메서드·출력 경로와 제품 잔여 helper 처리는 남아 있다.
+- R7: 현재 변경의 [C# API 이전표](Doroti/validation/runtime-dotnet/api-changes.md)를 작성했다. 이 문서는 진행 중인 변경만 다루며 최종 migration guide는 R3–R6 후 갱신해야 한다.
+- 현재 검증: Runtime, Material, Widgets, Web Testbed, Windows App SDK Testbed, `DorotiTestbedApp`, import 도구 빌드와 기존 계약 103개, 새 managed 계약 54개가 통과했다. 대표 compiler fixture 출력 C#도 빌드했다. 최신 배열 변경 후 Chrome CDP Web 제품 검증에서 기본 WebGPU, 체크박스·스위치, 날짜 선택 취소, 텍스트 입력, 탭 재마운트, 페이지 예외 없음이 통과했다. Runtime 로컬 NuGet pack을 새 캐시에 복원하여 패키지 DLL과 현재 빌드 DLL의 SHA-256 일치를 확인했고 저장소 밖 C# 소비 프로젝트도 실행했다. 다른 compiler 출력, Windows/Android/iOS/macOS/Linux 실행, Safari·실기기 Web, 전체 package/template 소비, AOT·성능은 아직 `notVerified`다.
 
 ## 1. 목표와 범위
 
-`Doroti.Runtime`이 제공하는 Dart 언어·표준 라이브러리 호환 API를 제거하고, 제품의 공개 API와 내부 소비 코드를 C#/.NET 표준 타입 중심으로 전환한다. `Future → Task`, `Duration → TimeSpan`, typed-data → .NET 메모리 타입처럼 실제 계약과 소비 방식까지 변경한다. `Dart` 접두사만 바꾸거나 같은 호환 계층을 다른 제품 프로젝트로 옮기는 것은 완료가 아니다.
+`Doroti.Runtime`이 제공하는 Dart 언어·표준 라이브러리 호환 API를 제거하고, 제품의 공개 API와 내부 소비 코드를 C#/.NET 표준 타입 중심으로 전환한다. `Future → Task`, typed-data → .NET 메모리 타입처럼 실제 계약과 소비 방식까지 변경한다. **Flutter API 구현인 `Duration`은 유지한다(2026-09-23 사용자 결정).** `Dart` 접두사만 바꾸거나 같은 호환 계층을 다른 제품 프로젝트로 옮기는 것은 완료가 아니다.
 
 현재 Runtime은 이미 `Microsoft.NET.Sdk`를 쓰는 C# 프로젝트다. 공통 설정은 `net10.0`, C# 14, nullable 및 warnings-as-errors이며, Runtime에는 `IsAotCompatible=true`가 설정되어 있다. `Future`는 `Task`를 감싸고, 타이머는 `TimeProvider`/`ITimer`, HTTP는 `System.Net.Http.HttpClient`를 사용한다. **이번 작업의 핵심은 Dart VM 교체가 아니라 .NET 위에 남아 있는 Dart 호환 API와 의미 변환 코드의 제거다.**
 
@@ -86,7 +98,7 @@ Runtime만 수정하면 충분하지 않다. `Doroti.Ui`, `Doroti.Hosting`, 여�
 | --- | --- | --- |
 | `Future<T>`, `Future`, `Completer<T>`, method builder | `Task<T>`, `Task`, `TaskCompletionSource<T>`, C# `async`/`await` | 성공·오류·취소, inline 완료와 지연 callback 차이, 다중 await, 오류 관찰 |
 | `FutureOr`를 `object`로 받는 callback | 명시적 `Func<..., Task<T>>`; 동기 overload는 필요한 곳에만 제공 | 암묵적인 반환값 변환 제거. `ValueTask<T>`는 즉시 완료 비중과 단일 소비 조건이 확인된 내부 경로에 한정 |
-| `Duration` | `TimeSpan` | microsecond→tick 단위, 음수·0·overflow·곱셈 반올림/절삭, wire timestamp 단위 |
+| `Duration` | Flutter API 구현으로 유지; .NET 경계에서 `TimeSpan`과 변환 | microsecond→tick 단위, 음수·0·overflow·곱셈 반올림/절삭, wire timestamp 단위 |
 | Dart `Timer`·microtask | `TimeProvider`, `ITimer`, dispatcher의 명시적인 후속 작업 큐 | UI owner 복귀, FIFO·재진입, 취소 직전 enqueue 경합, 해제된 view의 callback 차단 |
 | `Stream<T>`, controller/subscription | async pull은 `IAsyncEnumerable<T>`/`Channel<T>`; UI push는 명시적 .NET event/구독 계약 | broadcast, 오류 후 재개, 완료, 해제, buffer 정책. Channel 하나를 여러 구독자의 broadcast로 사용하지 않음 |
 | `DartMap`, `MapEntry`, collection helpers | `Dictionary`, `OrderedDictionary` 또는 명시적 ordered 항목 목록, `KeyValuePair`, `List`, `HashSet`, LINQ | 순서가 필요한 위치, null 키와 null 값 구분, equality/hash, 없는 키, duplicate/update/remove |
@@ -120,14 +132,14 @@ Runtime만 수정하면 충분하지 않다. `Doroti.Ui`, `Doroti.Hosting`, 여�
 - 일반 lookup은 Dictionary를 우선 사용한다. 순서에 따라 첫 번째 상태를 고르는 widget-state map, 진단 출력, codec 등은 소비자별로 ordered 계약 필요 여부를 확인한다.
 - null 키가 필요한 protocol/map은 일반 Dictionary에 그대로 옮기지 않는다. 명시적인 키 표현 또는 codec 전용 항목 목록으로 처리한다. null **값**이 있다는 이유로 null 키 대책을 추가하지 않는다.
 - byte/typed-data 변환은 codec→messenger→host와 asset→image decode→renderer 전체 경로를 같은 단계에서 수정한다. pooling·zero-copy는 별도 성능 근거 없이 함께 도입하지 않는다.
-- 공개 API의 `Future`, `Duration`, `DartMap`, typed-data 변경은 source/binary breaking change다. 구형 DLL 교체 호환을 주장하지 않고 전체 소비 프로젝트를 재빌드한다. 다음 배포 시 버전·migration guide에 반영하되 이 계획 작성 단계에서 버전을 올리거나 배포하지 않는다.
+- 공개 API의 `Future`, `DartMap`, typed-data 변경은 source/binary breaking change다. `Duration` 자체는 유지한다. 구형 DLL 교체 호환을 주장하지 않고 전체 소비 프로젝트를 재빌드한다. 다음 배포 시 버전·migration guide에 반영하되 이 계획 작성 단계에서 버전을 올리거나 배포하지 않는다.
 - 단계 이행용 bridge는 소유자·제거 단계·남은 소비자를 기록한다. 제품 최종 상태에는 legacy alias, type forwarding, 별도 제품용 Dart compatibility package를 남기지 않는다.
 
 ## 4. 단계별 작업
 
 실행 순서는 **R0 → R1 → R2 → R3 → R4 → R5 → R6 → R7 → R8**이다. 각 단계는 대체 구현·모든 관련 소비자·해당 계약 검증을 한 변경 단위로 구성한다. 공통 `obj`를 쓰는 빌드는 직렬 실행한다.
 
-### R0. 심벌 인벤토리·기준선 — TODO
+### R0. 심벌 인벤토리·기준선 — PARTIAL
 
 1. Runtime 15개 `.cs` 파일의 public/internal 타입·멤버, 소비 프로젝트, 공개 API 노출, 사용 여부를 수집한다. extension method와 global using은 Roslyn 심벌 조회로 보완한다.
 2. 각 항목에 BCL 대체, 제품 고유 계약, 미사용 삭제, import 도구 전용 처리를 배정한다. Runtime 밖의 `IDartEnumIndex`, `IDartTweenValue` 구현과 helper 호출도 포함한다.
@@ -137,7 +149,7 @@ Runtime만 수정하면 충분하지 않다. `Doroti.Ui`, `Doroti.Hosting`, 여�
 
 **통과 기준:** Runtime 전체 심벌의 처리 방향과 영향 경로가 빠짐없이 기록되고, 주요 동작 기준선 및 기존 실패가 구분되어 있다.
 
-### R1. .NET 실행 context·시간·오류 관찰 기반 — TODO
+### R1. .NET 실행 context·시간·오류 관찰 기반 — PARTIAL
 
 1. dispatcher의 후속 작업 큐·wake-up·scope·view lifetime을 명시적인 Doroti 실행 계약으로 정리한다. 기존 Dart API와의 임시 bridge에는 R3 제거 기한을 둔다.
 2. `BrowserTimeProvider`와 Web runner의 scope를 새 계약에 연결한다. HTTP timeout, debug print, Material 비동기 처리 등 provider를 직접 읽는 호출부도 포함한다.
@@ -146,13 +158,13 @@ Runtime만 수정하면 충분하지 않다. `Doroti.Ui`, `Doroti.Hosting`, 여�
 
 **통과 기준:** desktop와 Web 각각에서 owner·시간 소스·후속 작업 순서의 계약이 성립한다. 후속 Task 전환이 ThreadPool에서 UI를 갱신하는 경로를 만들지 않는다.
 
-### R2. 시간·기초 값과 저위험 어댑터 전환 — TODO
+### R2. 시간·기초 값과 저위험 어댑터 전환 — PARTIAL
 
-1. `Duration`을 `TimeSpan`으로 Framework public API와 호출부까지 변경한다. animation, gesture, scheduler, timestamp 변환을 함께 수정한다.
+1. Flutter API 구현인 `Duration`을 유지한다. .NET host 경계의 `TimeSpan` 변환과 animation, gesture, scheduler, timestamp 단위 동작을 검증한다.
 2. StringBuffer, 단순 math/encoding, Expando, 파일·URI의 직접 대체 가능한 소비자를 BCL로 옮긴다. 애매한 URI/문자열 의미는 R5에 남은 항목으로 기록한다.
 3. public constructor의 기본값, nullable 값, 상수·곱셈·나눗셈과 checked 범위를 검토한다.
 
-**통과 기준:** 제품의 `Duration` 정의·참조가 제거되고, animation·gesture·clock 단위 회귀와 해당 소비자 빌드가 통과한다.
+**통과 기준:** `Duration` API가 유지되고, .NET 경계의 animation·gesture·clock 단위 회귀와 해당 소비자 빌드가 통과한다.
 
 ### R3. Future·Completer와 상위 비동기 API 전환 — TODO
 
@@ -164,7 +176,7 @@ Runtime만 수정하면 충분하지 않다. `Doroti.Ui`, `Doroti.Hosting`, 여�
 
 **통과 기준:** 제품 공개 API·구현에 Runtime Future/Completer/builder 의존이 없고, 즉시/지연 완료·취소·timeout·오류·dispose 후 callback 회귀가 통과한다.
 
-### R4. 컬렉션과 typed-data 전환 — TODO
+### R4. 컬렉션과 typed-data 전환 — PARTIAL
 
 1. `DartMap` 소비자를 lookup/ordered/null-key protocol로 나누어 목적에 맞는 .NET 표현으로 옮긴다. `MapEntry`, map equality·deep equality, collection extension도 정리한다.
 2. scheduler priority queue와 Widgets의 linked-list listener를 전환한다. node/listener identity와 동일 우선순위 순서를 검증한다.
@@ -183,7 +195,7 @@ Runtime만 수정하면 충분하지 않다. `Doroti.Ui`, `Doroti.Hosting`, 여�
 
 **통과 기준:** 새 스트림 계약에서 broadcast/오류/종료/해제 동작을 충족하고, 제품의 I/O·텍스트·진단 호출이 Dart 표준 라이브러리 wrapper 없이 동작한다.
 
-### R6. 언어 helper 제거·선택 도구 경계 정리 — TODO
+### R6. 언어 helper 제거·선택 도구 경계 정리 — PARTIAL
 
 1. `DartRuntimePrimitives`, `DartCoreExtensions`, `FoundationRuntimePorts`, `Dart_*Library`, `Invocation`, Dart exception과 interface의 잔여 참조를 심벌별로 처리한다.
 2. 단순 static typing으로 표현할 수 있는 변환은 C#으로 옮긴다. null→default, reference identity, NaN/음수 zero, 날짜 overflow, enum index, release assert 의미를 전역 치환으로 바꾸지 않는다.
@@ -194,7 +206,7 @@ Runtime만 수정하면 충분하지 않다. `Doroti.Ui`, `Doroti.Hosting`, 여�
 
 **통과 기준:** 제품은 Dart 언어 호환 assembly/API를 사용하지 않는다. 선택 도구의 유지되는 기능·격리 경계·미지원 출력은 명시되어 있고 제품 build에 Dart SDK가 필요하지 않다.
 
-### R7. 전체 소비자·패키지·문서 전환 — TODO
+### R7. 전체 소비자·패키지·문서 전환 — PARTIAL
 
 1. Runtime부터 Ui/Hosting, Foundation/Scheduler/Services, 나머지 Framework, host/target, renderer, TestbedApp 순으로 실제 project graph를 따라 빌드한다.
 2. `DorotiTestbedApp`, template의 API 사용 예제, validation과 optional tool의 project graph를 정리한다. warnings-as-errors와 AOT 분석 설정을 낮추지 않는다.
@@ -217,7 +229,7 @@ Runtime만 수정하면 충분하지 않다. `Doroti.Ui`, `Doroti.Hosting`, 여�
 | 검증층 | 필수 시나리오 | 증명 범위 |
 | --- | --- | --- |
 | 정적/API | 심벌 처리표, 공개 API diff, assembly/package dependencies, global using·alias, optional tool 출력 | 제품 Dart 호환 계층 제거와 API 표면 |
-| managed 계약 | TimeSpan 경계, Task 성공/실패/취소·동기 완료, callback FIFO/재진입, Ticker, ordered/null-key map, codec byte fixture, view/copy lifetime, Unicode, stream 종료·오류·해제 | 플랫폼과 분리된 의미·수명 계약 |
+| managed 계약 | Duration/TimeSpan 경계, Task 성공/실패/취소·동기 완료, callback FIFO/재진입, Ticker, ordered/null-key map, codec byte fixture, view/copy lifetime, Unicode, stream 종료·오류·해제 | 플랫폼과 분리된 의미·수명 계약 |
 | Framework 통합 | FutureBuilder/StreamBuilder 갱신·교체·dispose, localization 즉시 로딩, image load/error, Navigator 결과, scroll/animation 완료, focus·text input 후속 큐 | 실제 소비 경로와 UI 상태 전이 |
 | Windows 실행 | 사용되는 Windows App SDK 및 MAUI 경로의 startup, 클릭·스크롤·animation·gesture timer, 입력·window 종료 후 작업 | 각 host runtime과 owner 연결 |
 | Web 실행 | 현재 기본 WebGPU 및 지원 WebGL 경로, Worker time provider, delay/timeout·HTTP 실패·이미지·stream·view 해제 | browser/Worker 실행. desktop browser 자동화를 Safari/휴대폰 실기기 증거로 사용하지 않음 |
@@ -242,7 +254,7 @@ host/publish 명령은 실행 시 해당 OS·SDK·workload·RID와 현재 `Dorot
 ## 6. 최종 완료 정의
 
 - [ ] Runtime의 모든 심벌이 대체·유지·삭제·도구 전용으로 분류되고 미처리 항목이 없다.
-- [ ] 제품 공개 API와 구현에 Runtime `Future`, `Completer`, `Duration`, Dart collection/typed-data/stdlib wrapper, 언어 범용 helper 의존이 없다.
+- [ ] 제품 공개 API와 구현에 Runtime `Future`, `Completer`, Dart collection/typed-data/stdlib wrapper, 언어 범용 helper 의존이 없다. Flutter API `Duration`은 유지한다.
 - [ ] 남은 Runtime 코드는 BCL 기반의 제품 고유 기능이며 Dart 호환 계층을 다른 제품 프로젝트에 옮겨 숨기지 않았다.
 - [ ] UI owner·후속 큐·시간 소스·취소·오류·버퍼 수명·wire 형식의 계약 검증이 통과했다.
 - [ ] Framework·hosts·samples·templates·검증 코드와 선택 도구의 연결 변경이 완료되었다.

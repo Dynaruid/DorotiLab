@@ -1,5 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/services/platform_channel.dart
+using System.Runtime.CompilerServices;
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Services;
@@ -28,8 +29,7 @@ public static partial class Platform_channelLibrary
 
 public static partial class Platform_channelLibrary
 {
-    internal static Expando<BinaryMessenger> _profiledBinaryMessengers =
-        new Expando<BinaryMessenger>();
+    internal static ConditionalWeakTable<object, BinaryMessenger> _profiledBinaryMessengers = new();
 }
 
 internal class _ProfiledBinaryMessenger : BinaryMessenger
@@ -164,13 +164,13 @@ public static partial class Platform_channelLibrary
             _profilePlatformChannelsIsRunning = true;
             await new Future<object>(_profilePlatformChannelsRate);
             _profilePlatformChannelsIsRunning = false;
-            var log = new StringBuffer();
-            log.writeln("Platform Channel Stats:");
+            var log = new System.Text.StringBuilder();
+            log.AppendLine("Platform Channel Stats:");
             List<_PlatformChannelStats> allStats = _profilePlatformChannelsStats.Values.ToList();
             allStats.sort((x, y) => y.upBytes + y.downBytes - (x.upBytes + x.downBytes));
             foreach (var stats in allStats)
             {
-                log.writeln(
+                log.AppendLine(
                     $"  (name:\"{stats.channel}\" type:\"{stats.type}\" codec:\"{stats.codec}\" upBytes:{stats.upBytes} upBytes_avg:{stats.averageUpPayload.toStringAsFixed(1L)} downBytes:{stats.downBytes} downBytes_avg:{stats.averageDownPayload.toStringAsFixed(1L)})"
                 );
             }
@@ -247,12 +247,14 @@ public class BasicMessageChannel<T>
             BinaryMessenger result =
                 _binaryMessenger ?? Platform_channelLibrary._findBinaryMessenger();
             return Platform_channelLibrary.shouldProfilePlatformChannels
-                ? Platform_channelLibrary._profiledBinaryMessengers[this] ??=
-                    new _ProfiledBinaryMessenger(
+                ? Platform_channelLibrary._profiledBinaryMessengers.GetValue(
+                    this,
+                    _ => new _ProfiledBinaryMessenger(
                         result,
                         GetType().ToString(),
                         DartRuntimePrimitives.RuntimeTypeName(codec)
                     )
+                )
                 : result;
         }
     }
@@ -312,12 +314,14 @@ public class MethodChannel
             BinaryMessenger result =
                 _binaryMessenger ?? Platform_channelLibrary._findBinaryMessenger();
             return Platform_channelLibrary.shouldProfilePlatformChannels
-                ? Platform_channelLibrary._profiledBinaryMessengers[this] ??=
-                    new _ProfiledBinaryMessenger(
+                ? Platform_channelLibrary._profiledBinaryMessengers.GetValue(
+                    this,
+                    _ => new _ProfiledBinaryMessenger(
                         result,
                         GetType().ToString(),
                         DartRuntimePrimitives.RuntimeTypeName(codec)
                     )
+                )
                 : result;
         }
     }

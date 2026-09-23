@@ -83,7 +83,7 @@ internal class _MutableTextRange
 internal class _TextEditingValueAccumulator
 {
     public virtual TextEditingValue inputValue { get; private set; } = default!;
-    public virtual StringBuffer stringBuffer { get; private set; } = new StringBuffer();
+    public virtual System.Text.StringBuilder stringBuffer { get; private set; } = new System.Text.StringBuilder();
     public virtual _MutableTextRange? selection { get; private set; }
     public virtual _MutableTextRange? composingRegion { get; private set; }
     public virtual bool debugFinalized { get; set; } = false;
@@ -189,7 +189,7 @@ public class FilteringTextInputFormatter : TextInputFormatter
         string replacementString = isBannedRegion
             ? ((regionStart == regionEnd) ? "" : this.replacementString)
             : state.inputValue.text.substring(regionStart, regionEnd);
-        state.stringBuffer.write(replacementString);
+        state.stringBuffer.Append(replacementString);
         if (replacementString.Length == (regionEnd - regionStart))
         {
             return;

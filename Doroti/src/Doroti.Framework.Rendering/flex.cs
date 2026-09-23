@@ -2058,7 +2058,7 @@ public class RenderFlex
                                 + DebugOverflowIndicatorMixin._indicatorLabelPaddingPixels,
                             0.0
                         ),
-                    rotation: Dart_mathLibrary.pi / 2.0,
+                    rotation: Math.PI / 2.0,
                     side: _OverflowSide__debug_overflow_indicator.left
                 )
             );
@@ -2081,7 +2081,7 @@ public class RenderFlex
                                 + DebugOverflowIndicatorMixin._indicatorLabelPaddingPixels,
                             0.0
                         ),
-                    rotation: -Dart_mathLibrary.pi / 2.0,
+                    rotation: -Math.PI / 2.0,
                     side: _OverflowSide__debug_overflow_indicator.right
                 )
             );

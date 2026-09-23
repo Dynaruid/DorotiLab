@@ -316,7 +316,7 @@ public abstract class Curve2D : ParametricCurve<Offset>
     )
     {
         DartRuntimePrimitives.Assert(() => end > start);
-        var rand = new DartRandom(samplingSeed);
+        var rand = DorotiRandom.FromSeed(samplingSeed);
         bool isFlat(Offset p, Offset q, Offset r)
         {
             Offset pr = p - r;
@@ -332,7 +332,7 @@ public abstract class Curve2D : ParametricCurve<Offset>
         var samples = new List<Curve2DSample> { first };
         void sample(Curve2DSample p, Curve2DSample q, bool forceSubdivide = false)
         {
-            double tLocal = p.t + ((0.45 + (0.1 * rand.nextDouble())) * (q.t - p.t));
+            double tLocal = p.t + ((0.45 + (0.1 * rand.NextDouble())) * (q.t - p.t));
             var rLocal = new Curve2DSample(tLocal, transform(tLocal));
             if (!forceSubdivide && isFlat(p.value, q.value, rLocal.value))
             {
@@ -519,9 +519,9 @@ public class CatmullRomSpline : Curve2D
             Offset diffCurve10 = curve[(int)1L] - curve[(int)0L];
             Offset diffCurve21 = curve[(int)2L] - curve[(int)1L];
             Offset diffCurve32 = curve[(int)3L] - curve[(int)2L];
-            double t01 = Dart_mathLibrary.pow(diffCurve10.distance, alpha).toDouble();
-            double t12 = Dart_mathLibrary.pow(diffCurve21.distance, alpha).toDouble();
-            double t23 = Dart_mathLibrary.pow(diffCurve32.distance, alpha).toDouble();
+            double t01 = Math.Pow(diffCurve10.distance, alpha).toDouble();
+            double t12 = Math.Pow(diffCurve21.distance, alpha).toDouble();
+            double t23 = Math.Pow(diffCurve32.distance, alpha).toDouble();
             Offset m1 =
                 (
                     diffCurve21
@@ -963,8 +963,8 @@ public class ElasticInCurve : Curve
     {
         double s = period / 4.0;
         t = t - 1.0;
-        return -Dart_mathLibrary.pow(2.0, 10.0 * t)
-            * Dart_mathLibrary.sin((t - s) * (Dart_mathLibrary.pi * 2.0) / period);
+        return -Math.Pow(2.0, 10.0 * t)
+            * Math.Sin((t - s) * (Math.PI * 2.0) / period);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
@@ -988,8 +988,8 @@ public class ElasticOutCurve : Curve
     {
         double s = period / 4.0;
         return (
-                Dart_mathLibrary.pow(2.0, -10L * t)
-                * Dart_mathLibrary.sin((t - s) * (Dart_mathLibrary.pi * 2.0) / period)
+                Math.Pow(2.0, -10L * t)
+                * Math.Sin((t - s) * (Math.PI * 2.0) / period)
             ) + 1.0;
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
@@ -1017,14 +1017,14 @@ public class ElasticInOutCurve : Curve
         if (t < 0.0)
         {
             return -0.5
-                * Dart_mathLibrary.pow(2.0, 10.0 * t)
-                * Dart_mathLibrary.sin((t - s) * (Dart_mathLibrary.pi * 2.0) / period);
+                * Math.Pow(2.0, 10.0 * t)
+                * Math.Sin((t - s) * (Math.PI * 2.0) / period);
         }
         else
         {
             return (
-                    Dart_mathLibrary.pow(2.0, -10.0 * t)
-                    * Dart_mathLibrary.sin((t - s) * (Dart_mathLibrary.pi * 2.0) / period)
+                    Math.Pow(2.0, -10.0 * t)
+                    * Math.Sin((t - s) * (Math.PI * 2.0) / period)
                     * 0.5
                 ) + 1.0;
         }

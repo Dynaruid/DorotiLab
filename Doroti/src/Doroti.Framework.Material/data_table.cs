@@ -1042,7 +1042,7 @@ public class _SortArrowState__data_table
     internal virtual bool? _up { get; set; } = default;
     internal static Animatable<double> _turnTween = new Tween<double>(
         begin: 0.0,
-        end: Dart_mathLibrary.pi
+        end: Math.PI
     ).chain(new CurveTween(curve: Curves.easeIn));
     internal static double _arrowIconBaselineOffset = -1.5;
     internal const double _arrowIconSize = 16.0;
@@ -1090,7 +1090,7 @@ public class _SortArrowState__data_table
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
                     ? 0.0
-                    : Dart_mathLibrary.pi;
+                    : Math.PI;
         }
     }
 
@@ -1103,8 +1103,8 @@ public class _SortArrowState__data_table
     {
         if (AnimationStatusMembers.isCompleted(status))
         {
-            DartRuntimePrimitives.Assert(() => _orientationAnimation.value == Dart_mathLibrary.pi);
-            _orientationOffset += Dart_mathLibrary.pi;
+            DartRuntimePrimitives.Assert(() => _orientationAnimation.value == Math.PI);
+            _orientationOffset += Math.PI;
             _orientationController.value = 0.0;
         }
     }
@@ -1128,7 +1128,7 @@ public class _SortArrowState__data_table
                         )
                     )
                         ? 0.0
-                        : Dart_mathLibrary.pi;
+                        : Math.PI;
                 skipArrow = true;
             }
             if (widget.visible)

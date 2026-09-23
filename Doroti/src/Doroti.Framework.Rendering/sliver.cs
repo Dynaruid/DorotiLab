@@ -283,7 +283,7 @@ public class SliverConstraints : Constraints
         DartRuntimePrimitives.Assert(() =>
         {
             var hasErrors = false;
-            var errorMessage = new StringBuffer("\n");
+            var errorMessage = new System.Text.StringBuilder("\n");
             void verify(bool check, string message)
             {
                 if (check)
@@ -291,7 +291,7 @@ public class SliverConstraints : Constraints
                     return;
                 }
                 hasErrors = true;
-                errorMessage.writeln($"  {message}");
+                errorMessage.AppendLine($"  {message}");
             }
             void verifyDouble(
                 double property,

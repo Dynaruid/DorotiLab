@@ -282,7 +282,7 @@ public class BouncingScrollPhysics : ScrollPhysics
 
     public virtual double frictionFactor(double overscrollFraction)
     {
-        return Dart_mathLibrary.pow(1L - overscrollFraction, 2L)
+        return Math.Pow(1L - overscrollFraction, 2L)
             * (
                 decelerationRate switch
                 {
@@ -381,7 +381,7 @@ public class BouncingScrollPhysics : ScrollPhysics
     {
         return Math.Sign(existingVelocity)
             * Math.Min(
-                0.000816 * Dart_mathLibrary.pow(existingVelocity.abs(), 1.967).toDouble(),
+                0.000816 * Math.Pow(existingVelocity.abs(), 1.967).toDouble(),
                 40000.0
             );
         throw new InvalidOperationException("Control flow completed without returning a value.");

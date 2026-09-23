@@ -982,15 +982,15 @@ public class SemanticsLabelBuilder
             var (text, _) = _parts.First();
             return text;
         }
-        var buffer = new StringBuffer();
+        var buffer = new System.Text.StringBuilder();
         var (firstText, _) = _parts.First();
-        buffer.write(firstText);
+        buffer.Append(firstText);
         foreach (var (partText, partTextDirection) in _parts.skip(1L))
         {
             TextDirection? partDirection = partTextDirection ?? textDirection;
             if (separator.Length != 0)
             {
-                buffer.write(separator);
+                buffer.Append(separator);
             }
             var processedText = partText;
             if (
@@ -1027,7 +1027,7 @@ public class SemanticsLabelBuilder
                 };
                 processedText = directionalEmbedding + partText + Unicode.PDF;
             }
-            buffer.write(processedText);
+            buffer.Append(processedText);
         }
         return buffer.ToString();
         throw new InvalidOperationException("Control flow completed without returning a value.");
@@ -1914,8 +1914,8 @@ public class SemanticsNode : DiagnosticableTreeMixin
         DorotiUiLibrary.SemanticsHitTestBehavior.defer;
     internal virtual SemanticsInputType _inputType { get; set; } = _kEmptyConfig.inputType;
     internal static SemanticsConfiguration _kEmptyConfig = new SemanticsConfiguration();
-    internal static Int32List _kEmptyChildList = new Int32List(0L);
-    internal static Int32List _kEmptyCustomSemanticsActionsList = new Int32List(0L);
+    internal static int[] _kEmptyChildList = [];
+    internal static int[] _kEmptyCustomSemanticsActionsList = [];
     internal static Matrix4 _kIdentityTransform = Matrix4.identity();
 
     public SemanticsNode(Key? key = null, Action? showOnScreen = null)
@@ -2848,10 +2848,10 @@ public class SemanticsNode : DiagnosticableTreeMixin
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
-    internal virtual Int32List _childrenIdInTraversalOrder()
+    internal virtual int[] _childrenIdInTraversalOrder()
     {
         List<SemanticsNode> sortedChildren = _childrenInTraversalOrder();
-        var childrenInTraversalOrder = new Int32List(checked(sortedChildren.Count));
+        var childrenInTraversalOrder = new int[sortedChildren.Count];
         for (var i = 0L; i < checked(sortedChildren.Count); i += 1L)
         {
             childrenInTraversalOrder[i] = checked((int)sortedChildren[(int)i].id);
@@ -2890,10 +2890,10 @@ public class SemanticsNode : DiagnosticableTreeMixin
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
-    internal virtual Int32List _childrenIdInHitTestOrder()
+    internal virtual int[] _childrenIdInHitTestOrder()
     {
         List<SemanticsNode> children = _childrenInHitTestOrder();
-        return new Int32List(Enumerable.Reverse(children).map((node) => node.id).ToList());
+        return Enumerable.Reverse(children).Select(node => checked((int)node.id)).ToArray();
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
@@ -2913,8 +2913,8 @@ public class SemanticsNode : DiagnosticableTreeMixin
             }
             return true;
         });
-        Int32List childrenInTraversalOrderLocal = default!;
-        Int32List childrenInHitTestOrderLocal = default!;
+        int[] childrenInTraversalOrderLocal = default!;
+        int[] childrenInHitTestOrderLocal = default!;
         if (!hasChildren || mergeAllDescendantsIntoThisNode)
         {
             if (_isTraversalParent && !ConstantsLibrary.kIsWeb)
@@ -2928,7 +2928,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
                     HashSet<SemanticsNode> traversalChildren =
                         owner._traversalChildNodes.GetValueOrDefault(parentIdentifier)!;
                     var index = 0L;
-                    childrenInTraversalOrderLocal = new Int32List(checked(traversalChildren.Count));
+                    childrenInTraversalOrderLocal = new int[traversalChildren.Count];
                     foreach (var node in traversalChildren)
                     {
                         if (node.attached)
@@ -2955,7 +2955,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
             childrenInTraversalOrderLocal = _childrenIdInTraversalOrder();
             childrenInHitTestOrderLocal = _childrenIdInHitTestOrder();
         }
-        Int32List? customSemanticsActionIdsLocal = default!;
+        int[]? customSemanticsActionIdsLocal = default!;
         if (
             (
                 ((long?)(data.customSemanticsActionIds?.Count)) is { } __count156027
@@ -2964,9 +2964,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
             ) ?? false
         )
         {
-            customSemanticsActionIdsLocal = new Int32List(
-                checked(data.customSemanticsActionIds!.Count)
-            );
+            customSemanticsActionIdsLocal = new int[data.customSemanticsActionIds!.Count];
             for (var i = 0L; i < checked(data.customSemanticsActionIds!.Count); i++)
             {
                 customSemanticsActionIdsLocal[i] = checked(
@@ -3633,13 +3631,13 @@ internal class _SemanticsSortGroup__semantics : IComparable<_SemanticsSortGroup_
                 double directionLocal = centerDelta.direction;
                 bool isLtrAndForward =
                     Equals(textDirection, TextDirection.ltr)
-                    && ((-Dart_mathLibrary.pi / 4L) < directionLocal)
-                    && (directionLocal < (3L * Dart_mathLibrary.pi / 4L));
+                    && ((-Math.PI / 4L) < directionLocal)
+                    && (directionLocal < (3L * Math.PI / 4L));
                 bool isRtlAndForward =
                     Equals(textDirection, TextDirection.rtl)
                     && (
-                        (directionLocal < (-3L * Dart_mathLibrary.pi / 4L))
-                        || (directionLocal > (3L * Dart_mathLibrary.pi / 4L))
+                        (directionLocal < (-3L * Math.PI / 4L))
+                        || (directionLocal > (3L * Math.PI / 4L))
                     );
                 if (isLtrAndForward || isRtlAndForward)
                 {
@@ -4384,8 +4382,8 @@ public class SemanticsConfiguration
                 SemanticsAction.scrollToOffset,
                 (args) =>
                 {
-                    var list = ((Float64List?)args!)!;
-                    __value!(new Offset(list[0L], list[1L]));
+                    var list = ((IReadOnlyList<double>?)args!)!;
+                    __value!(new Offset(list[0], list[1]));
                 }
             );
             _onScrollToOffset = __value;

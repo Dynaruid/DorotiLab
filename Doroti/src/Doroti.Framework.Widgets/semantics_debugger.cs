@@ -546,7 +546,7 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : CustomPainter
     {
         return new HSLColor(
             1.0,
-            360.0 * new DartRandom(_getColorSeed(index, level)).nextDouble(),
+            360.0 * DorotiRandom.FromSeed(_getColorSeed(index, level)).NextDouble(),
             1.0,
             0.7
         ).toColor();

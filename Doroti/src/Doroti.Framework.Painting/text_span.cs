@@ -168,7 +168,7 @@ public class TextSpan : InlineSpan, HitTestTarget
     }
 
     public override void computeToPlainText(
-        StringBuffer buffer,
+        System.Text.StringBuilder buffer,
         bool includeSemanticsLabels = true,
         bool includePlaceholders = true
     )
@@ -176,13 +176,13 @@ public class TextSpan : InlineSpan, HitTestTarget
         DartRuntimePrimitives.Assert(() => debugAssertIsValid());
         if ((semanticsLabel is not null) && includeSemanticsLabels)
         {
-            buffer.write(semanticsLabel);
+            buffer.Append(semanticsLabel);
         }
         else
         {
             if (text is not null)
             {
-                buffer.write(text);
+                buffer.Append(text);
             }
         }
         if (children is not null)

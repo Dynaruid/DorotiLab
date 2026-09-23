@@ -755,10 +755,10 @@ internal class _CircularProgressIndicatorPainter__progress_indicator : CustomPai
     public virtual StrokeCap? strokeCap { get; private set; }
     public virtual double? trackGap { get; private set; }
     public virtual bool year2023 { get; private set; } = default!;
-    internal static double _twoPi = Dart_mathLibrary.pi * 2.0;
+    internal static double _twoPi = Math.PI * 2.0;
     internal const double _epsilon = 0.001;
     internal static double _sweep = _twoPi - _epsilon;
-    internal static double _startAngle = -Dart_mathLibrary.pi / 2.0;
+    internal static double _startAngle = -Math.PI / 2.0;
 
     internal _CircularProgressIndicatorPainter__progress_indicator(
         Color? trackColor = null,
@@ -792,9 +792,9 @@ internal class _CircularProgressIndicatorPainter__progress_indicator : CustomPai
                 ? _startAngle
                 : (
                     _startAngle
-                    + (tailValue * 3L / 2L * Dart_mathLibrary.pi)
-                    + (rotationValue * Dart_mathLibrary.pi * 2.0)
-                    + (offsetValue * 0.5 * Dart_mathLibrary.pi)
+                    + (tailValue * 3L / 2L * Math.PI)
+                    + (rotationValue * Math.PI * 2.0)
+                    + (offsetValue * 0.5 * Math.PI)
                 );
         arcSweep =
             (value is not null)
@@ -811,8 +811,8 @@ internal class _CircularProgressIndicatorPainter__progress_indicator : CustomPai
                     ) * _sweep
                 )
                 : Math.Max(
-                    (headValue * 3L / 2L * Dart_mathLibrary.pi)
-                        - (tailValue * 3L / 2L * Dart_mathLibrary.pi),
+                    (headValue * 3L / 2L * Math.PI)
+                        - (tailValue * 3L / 2L * Math.PI),
                     _epsilon
                 );
     }
@@ -898,7 +898,7 @@ internal class _CircularProgressIndicatorPainter__progress_indicator : CustomPai
                     )
                         ? startGap
                         : (startGap * 2L);
-                double startSweep = (-Dart_mathLibrary.pi / 2.0) + startGap;
+                double startSweep = (-Math.PI / 2.0) + startGap;
                 double endSweep = Math.Max(
                     0.0,
                     _twoPi
@@ -1478,8 +1478,8 @@ internal class _RefreshProgressIndicatorPainter__progress_indicator
     public virtual void paintArrowhead(Canvas canvas, Size size)
     {
         double arcEnd = arcStart + arcSweep;
-        double ux = Dart_mathLibrary.cos(arcEnd);
-        double uy = Dart_mathLibrary.sin(arcEnd);
+        double ux = Math.Cos(arcEnd);
+        double uy = Math.Sin(arcEnd);
         DartRuntimePrimitives.Assert(() => size.width == size.height);
         double radius = size.width / 2.0;
         double arrowheadPointX =
@@ -1696,7 +1696,7 @@ internal class _RefreshProgressIndicatorState__progress_indicator
         else
         {
             rotation =
-                Dart_mathLibrary.pi
+                Math.PI
                 * _additionalRotationTween.transform(
                     valueLocal
                         ?? (

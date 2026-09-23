@@ -1047,7 +1047,7 @@ public class Transform : SingleChildRenderObjectWidget
         {
             return Matrix4.identity();
         }
-        double sinLocal = Dart_mathLibrary.sin(radians);
+        double sinLocal = Math.Sin(radians);
         if (sinLocal == 1.0)
         {
             return _createZRotation(1.0, 0.0);
@@ -1056,7 +1056,7 @@ public class Transform : SingleChildRenderObjectWidget
         {
             return _createZRotation(-1.0, 0.0);
         }
-        double cosLocal = Dart_mathLibrary.cos(radians);
+        double cosLocal = Math.Cos(radians);
         if (cosLocal == -1.0)
         {
             return _createZRotation(0.0, -1.0);

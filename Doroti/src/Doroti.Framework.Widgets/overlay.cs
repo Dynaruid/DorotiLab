@@ -202,7 +202,7 @@ public class _OverlayEntryWidget__overlay : StatefulWidget
 public class _OverlayEntryWidgetState__overlay : State<_OverlayEntryWidget__overlay>
 {
     internal virtual _RenderTheater__overlay _theater { get; set; } = default!;
-    internal virtual DartLinkedList<_OverlayEntryLocation__overlay>? _sortedTheaterSiblings { get; set; } =
+    internal virtual LinkedList<_OverlayEntryLocation__overlay>? _sortedTheaterSiblings { get; set; } =
         default;
     private bool __late__paintOrderIterable_initialized;
     private IEnumerable<_RenderDeferredLayoutBox__overlay> __late__paintOrderIterable = default!;
@@ -236,29 +236,36 @@ public class _OverlayEntryWidgetState__overlay : State<_OverlayEntryWidget__over
     internal virtual void _add(_OverlayEntryLocation__overlay child)
     {
         DartRuntimePrimitives.Assert(() => mounted);
-        DartLinkedList<_OverlayEntryLocation__overlay> children = _sortedTheaterSiblings ??=
-            new DartLinkedList<_OverlayEntryLocation__overlay>();
-        DartRuntimePrimitives.Assert(() => !children.contains(child));
-        _OverlayEntryLocation__overlay? insertPosition = children.isEmpty ? null : children.last;
+        LinkedList<_OverlayEntryLocation__overlay> children = _sortedTheaterSiblings ??=
+            new LinkedList<_OverlayEntryLocation__overlay>();
+        DartRuntimePrimitives.Assert(() => !children.Contains(child));
+        _OverlayEntryLocation__overlay? insertPosition = children.Last?.Value;
         while ((insertPosition is not null) && (insertPosition._zOrderIndex > child._zOrderIndex))
         {
-            insertPosition = insertPosition.previous;
+            insertPosition = insertPosition.node?.Previous?.Value;
         }
         if (insertPosition is null)
         {
-            children.addFirst(child);
+            child.node = children.AddFirst(child);
         }
         else
         {
-            insertPosition.insertAfter(child);
+            child.node = children.AddAfter(insertPosition.node!, child);
         }
-        DartRuntimePrimitives.Assert(() => children.contains(child));
+        DartRuntimePrimitives.Assert(() => children.Contains(child));
     }
 
     internal virtual void _remove(_OverlayEntryLocation__overlay child)
     {
         DartRuntimePrimitives.Assert(() => _sortedTheaterSiblings is not null);
-        bool wasInCollection = _sortedTheaterSiblings?.remove(child) ?? false;
+        var node = child.node;
+        bool wasInCollection = node is not null
+            && ReferenceEquals(node.List, _sortedTheaterSiblings);
+        if (wasInCollection)
+        {
+            _sortedTheaterSiblings!.Remove(node!);
+            child.node = null;
+        }
         DartRuntimePrimitives.Assert(() => wasInCollection);
     }
 
@@ -266,16 +273,16 @@ public class _OverlayEntryWidgetState__overlay : State<_OverlayEntryWidget__over
         bool reversed
     )
     {
-        DartLinkedList<_OverlayEntryLocation__overlay>? children = _sortedTheaterSiblings;
-        if ((children is null) || children.isEmpty)
+        LinkedList<_OverlayEntryLocation__overlay>? children = _sortedTheaterSiblings;
+        if ((children is null) || children.Count == 0)
         {
             yield break;
         }
-        _OverlayEntryLocation__overlay? candidate = reversed ? children.last : children.first;
+        _OverlayEntryLocation__overlay? candidate = reversed ? children.Last?.Value : children.First?.Value;
         while (candidate is not null)
         {
             _RenderDeferredLayoutBox__overlay? renderBox = candidate._overlayChildRenderBox;
-            candidate = reversed ? candidate.previous : candidate.next;
+            candidate = reversed ? candidate.node?.Previous?.Value : candidate.node?.Next?.Value;
             if (renderBox is not null)
             {
                 yield return renderBox;
@@ -2391,8 +2398,9 @@ internal class _OverlayPortalState__overlay : State<OverlayPortal>
     }
 }
 
-public class _OverlayEntryLocation__overlay : DartLinkedListEntry<_OverlayEntryLocation__overlay>
+public class _OverlayEntryLocation__overlay
 {
+    internal LinkedListNode<_OverlayEntryLocation__overlay>? node { get; set; }
     internal virtual long _zOrderIndex { get; private set; } = default!;
     internal virtual _OverlayEntryWidgetState__overlay _childModel { get; private set; } = default!;
     internal virtual _RenderTheater__overlay _theater { get; private set; } = default!;
@@ -2432,7 +2440,7 @@ public class _OverlayEntryLocation__overlay : DartLinkedListEntry<_OverlayEntryL
         DartRuntimePrimitives.Assert(() => Equals(child, _overlayChildRenderBox));
         _overlayChildRenderBox = null;
         DartRuntimePrimitives.Assert(() =>
-            _childModel._sortedTheaterSiblings?.contains(this) ?? false
+            _childModel._sortedTheaterSiblings?.Contains(this) ?? false
         );
         _childModel._remove(this);
         _theater.markNeedsPaint();

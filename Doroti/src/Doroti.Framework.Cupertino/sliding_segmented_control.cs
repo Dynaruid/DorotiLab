@@ -1008,8 +1008,8 @@ public class _SegmentedControlState__sliding_segmented_control<T>
         Offset offCenter =
             details.localPosition - new Offset(sizeLocal.width / 2L, sizeLocal.height / 2L);
         var l2 = (double)(
-            Dart_mathLibrary.pow(Math.Max(0.0, offCenter.dx.abs() - (sizeLocal.width / 2L)), 2L)
-            + Dart_mathLibrary.pow(Math.Max(0.0, offCenter.dy.abs() - (sizeLocal.height / 2L)), 2L)
+            Math.Pow(Math.Max(0.0, offCenter.dx.abs() - (sizeLocal.width / 2L)), 2L)
+            + Math.Pow(Math.Max(0.0, offCenter.dy.abs() - (sizeLocal.height / 2L)), 2L)
         );
         return l2 > Sliding_segmented_controlLibrary._kTouchYDistanceThreshold;
         throw new InvalidOperationException("Control flow completed without returning a value.");

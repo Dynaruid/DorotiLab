@@ -26,7 +26,7 @@ public class SpringDescription
         var __instance = new SpringDescription(mass, stiffness, default!);
         __instance.mass = mass;
         __instance.stiffness = stiffness;
-        __instance.damping = ratio * 2.0 * Dart_mathLibrary.sqrt(mass * stiffness);
+        __instance.damping = ratio * 2.0 * Math.Sqrt(mass * stiffness);
         return __instance;
     }
 
@@ -41,13 +41,13 @@ public class SpringDescription
         var massLocal = 1.0;
         double stiffnessLocal =
             4L
-            * Dart_mathLibrary.pi
-            * Dart_mathLibrary.pi
+            * Math.PI
+            * Math.PI
             * massLocal
-            / Dart_mathLibrary.pow(durationInSeconds, 2L);
+            / Math.Pow(durationInSeconds, 2L);
         double dampingRatio = (bounce > 0L) ? (1.0 - bounce) : (1L / (bounce + 1L));
         double dampingLocal =
-            dampingRatio * 2.0 * Dart_mathLibrary.sqrt(massLocal * stiffnessLocal);
+            dampingRatio * 2.0 * Math.Sqrt(massLocal * stiffnessLocal);
         return new SpringDescription(
             mass: massLocal,
             stiffness: stiffnessLocal,
@@ -59,8 +59,8 @@ public class SpringDescription
     {
         get
         {
-            double durationInSeconds = Dart_mathLibrary.sqrt(
-                4L * Dart_mathLibrary.pi * Dart_mathLibrary.pi * mass / stiffness
+            double durationInSeconds = Math.Sqrt(
+                4L * Math.PI * Math.PI * mass / stiffness
             );
             long millisecondsLocal = (durationInSeconds * Duration.millisecondsPerSecond).round();
             return Duration.Create(milliseconds: millisecondsLocal);
@@ -70,7 +70,7 @@ public class SpringDescription
     {
         get
         {
-            double dampingRatio = damping / (2.0 * Dart_mathLibrary.sqrt(mass * stiffness));
+            double dampingRatio = damping / (2.0 * Math.Sqrt(mass * stiffness));
             return (dampingRatio < 1.0) ? (1.0 - dampingRatio) : ((1L / dampingRatio) - 1L);
         }
     }
@@ -220,13 +220,13 @@ internal class _CriticalSolution__spring_simulation : _SpringSolution__spring_si
 
     public virtual double x(double time)
     {
-        return (_c1 + (_c2 * time)) * Dart_mathLibrary.pow(Dart_mathLibrary.e, _r * time);
+        return (_c1 + (_c2 * time)) * Math.Pow(Math.E, _r * time);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double dx(double time)
     {
-        var power = (double)Dart_mathLibrary.pow(Dart_mathLibrary.e, _r * time);
+        var power = (double)Math.Pow(Math.E, _r * time);
         return (_r * (_c1 + (_c2 * time)) * power) + (_c2 * power);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
@@ -248,8 +248,8 @@ internal class _OverdampedSolution__spring_simulation : _SpringSolution__spring_
     )
     {
         double cmk = (spring.damping * spring.damping) - (4L * spring.mass * spring.stiffness);
-        double r1 = (-spring.damping - Dart_mathLibrary.sqrt(cmk)) / (2.0 * spring.mass);
-        double r2 = (-spring.damping + Dart_mathLibrary.sqrt(cmk)) / (2.0 * spring.mass);
+        double r1 = (-spring.damping - Math.Sqrt(cmk)) / (2.0 * spring.mass);
+        double r2 = (-spring.damping + Math.Sqrt(cmk)) / (2.0 * spring.mass);
         double c2 = (velocity - (r1 * distance)) / (r2 - r1);
         double c1 = distance - c2;
         return new _OverdampedSolution__spring_simulation(r1, r2, c1, c2);
@@ -265,15 +265,15 @@ internal class _OverdampedSolution__spring_simulation : _SpringSolution__spring_
 
     public virtual double x(double time)
     {
-        return (_c1 * Dart_mathLibrary.pow(Dart_mathLibrary.e, _r1 * time))
-            + (_c2 * Dart_mathLibrary.pow(Dart_mathLibrary.e, _r2 * time));
+        return (_c1 * Math.Pow(Math.E, _r1 * time))
+            + (_c2 * Math.Pow(Math.E, _r2 * time));
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double dx(double time)
     {
-        return (_c1 * _r1 * Dart_mathLibrary.pow(Dart_mathLibrary.e, _r1 * time))
-            + (_c2 * _r2 * Dart_mathLibrary.pow(Dart_mathLibrary.e, _r2 * time));
+        return (_c1 * _r1 * Math.Pow(Math.E, _r1 * time))
+            + (_c2 * _r2 * Math.Pow(Math.E, _r2 * time));
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
@@ -294,7 +294,7 @@ internal class _UnderdampedSolution__spring_simulation : _SpringSolution__spring
     )
     {
         double w =
-            Dart_mathLibrary.sqrt(
+            Math.Sqrt(
                 (4.0 * spring.mass * spring.stiffness) - (spring.damping * spring.damping)
             ) / (2.0 * spring.mass);
         double r = -(spring.damping / 2.0 / spring.mass);
@@ -313,16 +313,16 @@ internal class _UnderdampedSolution__spring_simulation : _SpringSolution__spring
 
     public virtual double x(double time)
     {
-        return (double)Dart_mathLibrary.pow(Dart_mathLibrary.e, _r * time)
-            * ((_c1 * Dart_mathLibrary.cos(_w * time)) + (_c2 * Dart_mathLibrary.sin(_w * time)));
+        return (double)Math.Pow(Math.E, _r * time)
+            * ((_c1 * Math.Cos(_w * time)) + (_c2 * Math.Sin(_w * time)));
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double dx(double time)
     {
-        var power = (double)Dart_mathLibrary.pow(Dart_mathLibrary.e, _r * time);
-        double cosine = Dart_mathLibrary.cos(_w * time);
-        double sine = Dart_mathLibrary.sin(_w * time);
+        var power = (double)Math.Pow(Math.E, _r * time);
+        double cosine = Math.Cos(_w * time);
+        double sine = Math.Sin(_w * time);
         return (power * ((_c2 * _w * cosine) - (_c1 * _w * sine)))
             + (_r * power * ((_c2 * sine) + (_c1 * cosine)));
         throw new InvalidOperationException("Control flow completed without returning a value.");

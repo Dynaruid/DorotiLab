@@ -2973,10 +2973,10 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
         {
             return null;
         }
-        var buffer = new StringBuffer();
+        var buffer = new System.Text.StringBuilder();
         foreach (var selection in selections)
         {
-            buffer.write(selection.plainText);
+            buffer.Append(selection.plainText);
         }
         return new SelectedContent(plainText: buffer.ToString());
         throw new InvalidOperationException("Control flow completed without returning a value.");

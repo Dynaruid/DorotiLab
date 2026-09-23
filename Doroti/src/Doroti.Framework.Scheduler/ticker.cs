@@ -270,23 +270,23 @@ public class Ticker
 
     public virtual string ToString(bool debugIncludeStack = false)
     {
-        var buffer = new StringBuffer();
-        buffer.write($"{objectRuntimeTypeFunctions.objectRuntimeType(this, "Ticker")}(");
+        var buffer = new System.Text.StringBuilder();
+        buffer.Append($"{objectRuntimeTypeFunctions.objectRuntimeType(this, "Ticker")}(");
         DartRuntimePrimitives.Assert(() =>
         {
-            buffer.write(debugLabel ?? "");
+            buffer.Append(debugLabel ?? "");
             return true;
         });
-        buffer.write(")");
+        buffer.Append(")");
         DartRuntimePrimitives.Assert(() =>
         {
             if (debugIncludeStack)
             {
-                buffer.writeln();
-                buffer.writeln($"The stack trace when the {GetType()} was actually created was:");
+                buffer.AppendLine();
+                buffer.AppendLine($"The stack trace when the {GetType()} was actually created was:");
                 FlutterError
                     .defaultStackFilter(_debugCreationStack.ToString().trimRight().split("\n"))
-                    .forEach(buffer.writeln);
+                    .forEach(line => buffer.AppendLine(line));
             }
             return true;
         });

@@ -1338,7 +1338,7 @@ public class RenderEditable
             }
             else
             {
-                var buffer = new StringBuffer();
+                var buffer = new System.Text.StringBuilder();
                 var offset = 0L;
                 var attributesLocal = new List<StringAttribute>();
                 foreach (InlineSpanSemanticsInformation infoLocal in _semanticsInfo!)
@@ -1356,7 +1356,7 @@ public class RenderEditable
                             )
                         );
                     }
-                    buffer.write(label);
+                    buffer.Append(label);
                     offset += label.Length;
                 }
                 _cachedAttributedValue = new AttributedString(

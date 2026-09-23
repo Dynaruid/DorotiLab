@@ -87,7 +87,7 @@ public abstract class ElevationOverlay
 
     internal static Color _overlayColor(Color color, double elevation)
     {
-        double opacity = ((4.5 * Runtime.Dart_mathLibrary.log(elevation + 1L)) + 2L) / 100.0;
+        double opacity = ((4.5 * System.Math.Log(elevation + 1L)) + 2L) / 100.0;
         return color.withOpacity(opacity);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }

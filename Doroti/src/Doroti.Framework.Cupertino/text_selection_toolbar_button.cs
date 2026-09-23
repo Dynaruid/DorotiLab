@@ -301,7 +301,7 @@ internal class _LiveTextIconPainter__text_selection_toolbar_button : CustomPaint
                 () =>
                 {
                     var __cascade = Matrix4.identity();
-                    __cascade.rotateZ(Dart_mathLibrary.pi / 2.0);
+                    __cascade.rotateZ(Math.PI / 2.0);
                     return __cascade;
                 }
             )

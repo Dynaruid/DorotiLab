@@ -63,19 +63,19 @@ public class LinearBorderEdge
 
     public override string ToString()
     {
-        var s = new StringBuffer(
+        var s = new System.Text.StringBuilder(
             $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "LinearBorderEdge")}("
         );
         if (size != 1.0)
         {
-            s.write($"size: {size}");
+            s.Append($"size: {size}");
         }
         if (alignment != 0L)
         {
             var comma = (size != 1.0) ? ", " : "";
-            s.write($"{comma}alignment: {alignment}");
+            s.Append($"{comma}alignment: {alignment}");
         }
-        s.write(")");
+        s.Append(")");
         return s.ToString();
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
@@ -412,26 +412,26 @@ public class LinearBorder : OutlinedBorder
         {
             return "LinearBorder.none";
         }
-        var s = new StringBuffer(
+        var s = new System.Text.StringBuilder(
             $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "LinearBorder")}(side: {side}"
         );
         if (start is not null)
         {
-            s.write($", start: {start}");
+            s.Append($", start: {start}");
         }
         if (end is not null)
         {
-            s.write($", end: {end}");
+            s.Append($", end: {end}");
         }
         if (top is not null)
         {
-            s.write($", top: {top}");
+            s.Append($", top: {top}");
         }
         if (bottom is not null)
         {
-            s.write($", bottom: {bottom}");
+            s.Append($", bottom: {bottom}");
         }
-        s.write(")");
+        s.Append(")");
         return s.ToString();
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }

@@ -1151,7 +1151,7 @@ public class RenderParagraph
             {
                 if (_cachedAttributedLabels is null)
                 {
-                    var buffer = new StringBuffer();
+                    var buffer = new System.Text.StringBuilder();
                     var offset = 0L;
                     var attributesLocal = new List<StringAttribute>();
                     foreach (InlineSpanSemanticsInformation infoLocal in _semanticsInfo!)
@@ -1169,7 +1169,7 @@ public class RenderParagraph
                                 )
                             );
                         }
-                        buffer.write(label);
+                        buffer.Append(label);
                         offset += label.Length;
                     }
                     _cachedAttributedLabels = new List<AttributedString>

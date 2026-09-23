@@ -21,7 +21,7 @@ public static partial class Paint_utilitiesLibrary
         canvas.save();
         canvas.translate(start.dx, start.dy);
         end = end - start;
-        canvas.rotate(Dart_mathLibrary.atan2(end.dy, end.dx));
+        canvas.rotate(Math.Atan2(end.dy, end.dx));
         double length = end.distance;
         double spacing = length / (zigs * 2.0);
         var path = (

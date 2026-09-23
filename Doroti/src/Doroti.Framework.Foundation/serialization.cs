@@ -73,18 +73,6 @@ public sealed class WriteBuffer
     public void putUint8List(Uint8List values) =>
         Append(values.Select(value => checked((byte)value)).ToArray());
 
-    public void putInt32List(Int32List values, Endian endian = Endian.host) =>
-        putInt32List(values.ToArray(), endian);
-
-    public void putInt64List(Int64List values, Endian endian = Endian.host) =>
-        putInt64List(values.ToArray(), endian);
-
-    public void putFloat32List(Float32List values, Endian endian = Endian.host) =>
-        putFloat32List(values.ToArray(), endian);
-
-    public void putFloat64List(Float64List values, Endian endian = Endian.host) =>
-        putFloat64List(values.ToArray(), endian);
-
     public void putInt32List(ReadOnlySpan<int> values, Endian endian = Endian.host)
     {
         Align(4);

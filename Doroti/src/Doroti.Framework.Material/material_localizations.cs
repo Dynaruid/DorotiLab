@@ -554,14 +554,14 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
             return number.ToString();
         }
         var digits = number.abs().ToString();
-        var result = new StringBuffer((number < 0L) ? "-" : "");
+        var result = new System.Text.StringBuilder((number < 0L) ? "-" : "");
         long maxDigitIndex = digits.Length - 1L;
         for (var i = 0L; i <= maxDigitIndex; i += 1L)
         {
-            result.write(digits[(int)i].ToString());
+            result.Append(digits[(int)i].ToString());
             if ((i < maxDigitIndex) && (((maxDigitIndex - i) % 3L) == 0L))
             {
-                result.write(",");
+                result.Append(",");
             }
         }
         return result.ToString();
@@ -570,18 +570,18 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
 
     public override string formatTimeOfDay(TimeOfDay timeOfDay, bool alwaysUse24HourFormat = false)
     {
-        var buffer = new StringBuffer();
+        var buffer = new System.Text.StringBuilder();
         DartRuntimePrimitives.Ignore(
             (
-                (Func<StringBuffer>)(
+                (Func<System.Text.StringBuilder>)(
                     () =>
                     {
                         var __cascade = buffer;
-                        __cascade.write(
+                        __cascade.Append(
                             formatHour(timeOfDay, alwaysUse24HourFormat: alwaysUse24HourFormat)
                         );
-                        __cascade.write(":");
-                        __cascade.write(formatMinute(timeOfDay));
+                        __cascade.Append(":");
+                        __cascade.Append(formatMinute(timeOfDay));
                         return __cascade;
                     }
                 )
@@ -593,12 +593,12 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
         }
         DartRuntimePrimitives.Ignore(
             (
-                (Func<StringBuffer>)(
+                (Func<System.Text.StringBuilder>)(
                     () =>
                     {
                         var __cascade = buffer;
-                        __cascade.write(" ");
-                        __cascade.write(_formatDayPeriod(timeOfDay));
+                        __cascade.Append(" ");
+                        __cascade.Append(_formatDayPeriod(timeOfDay));
                         return __cascade;
                     }
                 )

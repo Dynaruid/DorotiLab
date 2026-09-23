@@ -89,12 +89,12 @@ public class ImageConfiguration
 
     public override string ToString()
     {
-        var result = new StringBuffer();
-        result.write("ImageConfiguration(");
+        var result = new System.Text.StringBuilder();
+        result.Append("ImageConfiguration(");
         var hasArguments = false;
         if (bundle is not null)
         {
-            result.write($"bundle: {bundle}");
+            result.Append($"bundle: {bundle}");
             hasArguments = true;
         }
         if (devicePixelRatio is not null)
@@ -105,9 +105,9 @@ public class ImageConfiguration
             );
             if (hasArguments)
             {
-                result.write(", ");
+                result.Append(", ");
             }
-            result.write(
+            result.Append(
                 $"devicePixelRatio: {(devicePixelRatio ?? throw new global::System.NullReferenceException("A required value was null.")).toStringAsFixed(1L)}"
             );
             hasArguments = true;
@@ -120,9 +120,9 @@ public class ImageConfiguration
             );
             if (hasArguments)
             {
-                result.write(", ");
+                result.Append(", ");
             }
-            result.write($"locale: {locale}");
+            result.Append($"locale: {locale}");
             hasArguments = true;
         }
         if (textDirection is not null)
@@ -133,9 +133,9 @@ public class ImageConfiguration
             );
             if (hasArguments)
             {
-                result.write(", ");
+                result.Append(", ");
             }
-            result.write($"textDirection: {textDirection}");
+            result.Append($"textDirection: {textDirection}");
             hasArguments = true;
         }
         if (size is not null)
@@ -146,21 +146,21 @@ public class ImageConfiguration
             );
             if (hasArguments)
             {
-                result.write(", ");
+                result.Append(", ");
             }
-            result.write($"size: {size}");
+            result.Append($"size: {size}");
             hasArguments = true;
         }
         if (platform is not null)
         {
             if (hasArguments)
             {
-                result.write(", ");
+                result.Append(", ");
             }
-            result.write($"platform: {platform!.ToString()}");
+            result.Append($"platform: {platform!.ToString()}");
             hasArguments = true;
         }
-        result.write(")");
+        result.Append(")");
         return result.ToString();
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
@@ -998,10 +998,10 @@ public interface NetworkImage : IImageProvider
 
 public class FileImage : ImageProvider<FileImage>
 {
-    public virtual DartFile file { get; private set; } = default!;
+    public virtual FileInfo file { get; private set; } = default!;
     public virtual double scale { get; private set; } = default!;
 
-    public FileImage(DartFile file, double scale = 1.0)
+    public FileImage(FileInfo file, double scale = 1.0)
     {
         this.file = file;
         this.scale = scale;
@@ -1024,9 +1024,9 @@ public class FileImage : ImageProvider<FileImage>
                 decode: (ImmutableBuffer __buffer) => decode(__buffer, false, null, null)
             ),
             scale: key.scale,
-            debugLabel: key.file.path,
+            debugLabel: key.file.FullName,
             informationCollector: () =>
-                new List<DiagnosticsNode> { new ErrorDescription($"Path: {file.path}") }
+                new List<DiagnosticsNode> { new ErrorDescription($"Path: {file.FullName}") }
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
@@ -1039,9 +1039,9 @@ public class FileImage : ImageProvider<FileImage>
         return new MultiFrameImageStreamCompleter(
             codec: _loadAsync(key, decode: (ImmutableBuffer __buffer) => decode(__buffer, null)),
             scale: key.scale,
-            debugLabel: key.file.path,
+            debugLabel: key.file.FullName,
             informationCollector: () =>
-                new List<DiagnosticsNode> { new ErrorDescription($"Path: {file.path}") }
+                new List<DiagnosticsNode> { new ErrorDescription($"Path: {file.FullName}") }
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
@@ -1052,21 +1052,15 @@ public class FileImage : ImageProvider<FileImage>
     )
     {
         DartRuntimePrimitives.Assert(() => Equals(key, this));
-        long lengthInBytes = await file.length();
+        long lengthInBytes = file.Length;
         if (lengthInBytes == 0L)
         {
             PaintingBinding.instance.imageCache.evict(key);
             throw new InvalidOperationException(
-                $"{file} is empty and cannot be loaded as an image."
+                $"File: '{file.FullName}' is empty and cannot be loaded as an image."
             );
         }
-        return await (
-            Equals(DartRuntimePrimitives.RuntimeType(file), typeof(DartFile))
-                ? decode(await DorotiUiLibrary.ImmutableBuffer.fromFilePath(file.path))
-                : decode(
-                    await DorotiUiLibrary.ImmutableBuffer.fromUint8List(await file.readAsBytes())
-                )
-        );
+        return await decode(await DorotiUiLibrary.ImmutableBuffer.fromFilePath(file.FullName));
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
@@ -1083,14 +1077,14 @@ public class FileImage : ImageProvider<FileImage>
             return false;
         }
         return (__other is FileImage)
-            && (__other.file.path == file.path)
+            && (__other.file.FullName == file.FullName)
             && (__other.scale == scale);
     }
 
-    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(file.path, scale);
+    public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(file.FullName, scale);
 
     public override string ToString() =>
-        $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "FileImage")}(\"{file.path}\", scale: {scale.toStringAsFixed(1L)})";
+        $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "FileImage")}(\"{file.FullName}\", scale: {scale.toStringAsFixed(1L)})";
 }
 
 public class MemoryImage : ImageProvider<MemoryImage>

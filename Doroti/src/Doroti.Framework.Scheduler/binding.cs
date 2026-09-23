@@ -35,7 +35,14 @@ public delegate object TaskCallback<T>();
 
 public delegate bool SchedulingStrategy(long priority, SchedulerBinding scheduler);
 
-internal class _TaskEntry<T>
+internal interface IScheduledTaskEntry
+{
+    long priority { get; }
+    StackTrace debugStack { get; set; }
+    void run();
+}
+
+internal class _TaskEntry<T> : IScheduledTaskEntry
 {
     public virtual Func<object> task { get; private set; } = default!;
     public virtual long priority { get; private set; } = default!;
@@ -123,8 +130,11 @@ public abstract class SchedulerBinding : BindingBase
     internal virtual AppLifecycleState? _lifecycleState { get; set; } = default;
     public virtual SchedulingStrategy schedulingStrategy { get; set; } =
         BindingLibrary.defaultSchedulingStrategy;
-    internal virtual PriorityQueue<_TaskEntry<object>> _taskQueue { get; private set; } =
-        new HeapPriorityQueue<_TaskEntry<object>>(_taskSorter);
+    internal virtual System.Collections.Generic.PriorityQueue<IScheduledTaskEntry, long> _taskQueue
+    {
+        get;
+        private set;
+    } = new(Comparer<long>.Create((left, right) => right.CompareTo(left)));
     internal virtual bool _hasRequestedAnEventLoopCallback { get; set; } = false;
     internal virtual long _nextFrameCallbackId { get; set; } = 0L;
     internal virtual DartMap<long, _FrameCallbackEntry> _transientCallbacks { get; set; } =
@@ -287,12 +297,6 @@ public abstract class SchedulerBinding : BindingBase
         }
     }
 
-    internal static long _taskSorter(_TaskEntry<object> e1, _TaskEntry<object> e2)
-    {
-        return -e1.priority.CompareTo(e2.priority);
-        throw new InvalidOperationException("Control flow completed without returning a value.");
-    }
-
     public virtual Future<T> scheduleTask<T>(
         Func<object> task,
         Priority priority,
@@ -302,7 +306,7 @@ public abstract class SchedulerBinding : BindingBase
     {
         bool isFirstTask = _taskQueue.Count == 0;
         var entry = new _TaskEntry<T>(task, priority.value, debugLabel, flow);
-        _taskQueue.Add(entry);
+        _taskQueue.Enqueue(entry, entry.priority);
         if (isFirstTask && !locked)
         {
             _ensureEventLoopCallback();
@@ -354,12 +358,12 @@ public abstract class SchedulerBinding : BindingBase
         {
             return false;
         }
-        _TaskEntry<object> entry = _taskQueue.first;
+        IScheduledTaskEntry entry = _taskQueue.Peek();
         if (schedulingStrategy(entry.priority, this))
         {
             try
             {
-                _taskQueue.removeFirst();
+                _taskQueue.Dequeue();
                 entry.run();
             }
             catch (Exception exception)
@@ -819,7 +823,7 @@ public abstract class SchedulerBinding : BindingBase
             _debugFrameNumber += 1L;
             if (DebugLibrary.debugPrintBeginFrameBanner || DebugLibrary.debugPrintEndFrameBanner)
             {
-                var frameTimeStampDescription = new StringBuffer();
+                var frameTimeStampDescription = new System.Text.StringBuilder();
                 if (rawTimeStamp is Duration rawTimeStamp__value47605)
                 {
                     _debugDescribeTimeStamp(
@@ -834,7 +838,7 @@ public abstract class SchedulerBinding : BindingBase
                 }
                 else
                 {
-                    frameTimeStampDescription.write("(warm-up frame)");
+                    frameTimeStampDescription.Append("(warm-up frame)");
                 }
                 _debugBanner =
                     $"▄▄▄▄▄▄▄▄ Frame {_debugFrameNumber.ToString().padRight(7L)}   {frameTimeStampDescription.ToString().padLeft(18L)} ▄▄▄▄▄▄▄▄";
@@ -1039,31 +1043,31 @@ public abstract class SchedulerBinding : BindingBase
     }
 
     private static TimeSpan ToTimeSpan(Duration? timestamp) =>
-        TimeSpan.FromTicks(Math.Max(0, (timestamp?.inMicroseconds ?? 0) * 10));
+        timestamp is { } value && value > Duration.zero ? (TimeSpan)value : TimeSpan.Zero;
 
-    internal static void _debugDescribeTimeStamp(Duration timeStamp, StringBuffer buffer)
+    internal static void _debugDescribeTimeStamp(Duration timeStamp, System.Text.StringBuilder buffer)
     {
         if (timeStamp.inDays > 0L)
         {
-            buffer.write($"{timeStamp.inDays}d ");
+            buffer.Append($"{timeStamp.inDays}d ");
         }
         if (timeStamp.inHours > 0L)
         {
-            buffer.write($"{timeStamp.inHours - (timeStamp.inDays * Duration.hoursPerDay)}h ");
+            buffer.Append($"{timeStamp.inHours - (timeStamp.inDays * Duration.hoursPerDay)}h ");
         }
         if (timeStamp.inMinutes > 0L)
         {
-            buffer.write(
+            buffer.Append(
                 $"{timeStamp.inMinutes - (timeStamp.inHours * Duration.minutesPerHour)}m "
             );
         }
         if (timeStamp.inSeconds > 0L)
         {
-            buffer.write(
+            buffer.Append(
                 $"{timeStamp.inSeconds - (timeStamp.inMinutes * Duration.secondsPerMinute)}s "
             );
         }
-        buffer.write(
+        buffer.Append(
             $"{timeStamp.inMilliseconds - (timeStamp.inSeconds * Duration.millisecondsPerSecond)}"
         );
         long microseconds =
@@ -1071,9 +1075,9 @@ public abstract class SchedulerBinding : BindingBase
             - (timeStamp.inMilliseconds * Duration.microsecondsPerMillisecond);
         if (microseconds > 0L)
         {
-            buffer.write($".{microseconds.ToString().padLeft(3L, "0")}");
+            buffer.Append($".{microseconds.ToString().padLeft(3L, "0")}");
         }
-        buffer.write("ms");
+        buffer.Append("ms");
     }
 
     internal virtual void _invokeFrameCallback(

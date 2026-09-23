@@ -1365,7 +1365,7 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
         Offset bottomRightLocal = size.bottomRight(offset);
         var outer = Rect.fromLTRB(offset.dx, offset.dy, bottomRightLocal.dx, bottomRightLocal.dy);
         Rect center = outer.deflate(borderSide.width / 2.0);
-        double sweepAngle = Dart_mathLibrary.pi / 2.0;
+        double sweepAngle = Math.PI / 2.0;
         RRect rrect = RRect
             .fromRectAndCorners(
                 center,
@@ -1421,11 +1421,11 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
                             var __cascade = leadingPath;
                             __cascade.moveTo(startX, rrect.bottom);
                             __cascade.lineTo(rrect.left + rrect.blRadiusX, rrect.bottom);
-                            __cascade.addArc(blCorner, Dart_mathLibrary.pi / 2.0, sweepAngle);
+                            __cascade.addArc(blCorner, Math.PI / 2.0, sweepAngle);
                             __cascade.lineTo(rrect.left, rrect.top + rrect.tlRadiusY);
-                            __cascade.addArc(tlCorner, Dart_mathLibrary.pi, sweepAngle);
+                            __cascade.addArc(tlCorner, Math.PI, sweepAngle);
                             __cascade.lineTo(rrect.right - rrect.trRadiusX, rrect.top);
-                            __cascade.addArc(trCorner, Dart_mathLibrary.pi * 3.0 / 2.0, sweepAngle);
+                            __cascade.addArc(trCorner, Math.PI * 3.0 / 2.0, sweepAngle);
                             __cascade.lineTo(rrect.right, rrect.bottom - rrect.brRadiusY);
                             __cascade.addArc(brCorner, 0, sweepAngle);
                             return __cascade;
@@ -1480,7 +1480,7 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
                                         __cascade.lineTo(rrect.right - rrect.trRadiusX, rrect.top);
                                         __cascade.addArc(
                                             trCorner,
-                                            Dart_mathLibrary.pi * 3.0 / 2.0,
+                                            Math.PI * 3.0 / 2.0,
                                             sweepAngle
                                         );
                                         __cascade.lineTo(
@@ -1517,7 +1517,7 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
                                             );
                                             __cascade.addArc(
                                                 blCorner,
-                                                Dart_mathLibrary.pi / 2.0,
+                                                Math.PI / 2.0,
                                                 sweepAngle
                                             );
                                             __cascade.lineTo(
@@ -1526,7 +1526,7 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
                                             );
                                             __cascade.addArc(
                                                 tlCorner,
-                                                Dart_mathLibrary.pi,
+                                                Math.PI,
                                                 sweepAngle
                                             );
                                             __cascade.lineTo(outer.right, rrect.top);
@@ -1636,7 +1636,7 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
                                         __cascade.lineTo(rrect.left + rrect.tlRadiusX, rrect.top);
                                         __cascade.addArc(
                                             tlCorner,
-                                            Dart_mathLibrary.pi * 3.0 / 2.0,
+                                            Math.PI * 3.0 / 2.0,
                                             -sweepAngle
                                         );
                                         __cascade.lineTo(
@@ -1645,7 +1645,7 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
                                         );
                                         __cascade.addArc(
                                             blCorner,
-                                            Dart_mathLibrary.pi,
+                                            Math.PI,
                                             -sweepAngle
                                         );
                                         __cascade.lineTo(
@@ -1677,7 +1677,7 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
                                             );
                                             __cascade.addArc(
                                                 brCorner,
-                                                Dart_mathLibrary.pi / 2.0,
+                                                Math.PI / 2.0,
                                                 -sweepAngle
                                             );
                                             __cascade.lineTo(
@@ -1801,7 +1801,7 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
                                         );
                                         __cascade.addArc(
                                             blCorner,
-                                            Dart_mathLibrary.pi * 3.0,
+                                            Math.PI * 3.0,
                                             -sweepAngle
                                         );
                                         __cascade.lineTo(
@@ -1810,7 +1810,7 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
                                         );
                                         __cascade.addArc(
                                             brCorner,
-                                            Dart_mathLibrary.pi / 2.0,
+                                            Math.PI / 2.0,
                                             -sweepAngle
                                         );
                                         __cascade.lineTo(
@@ -1842,7 +1842,7 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
                                             );
                                             __cascade.addArc(
                                                 tlCorner,
-                                                Dart_mathLibrary.pi,
+                                                Math.PI,
                                                 sweepAngle
                                             );
                                             __cascade.lineTo(
@@ -1851,7 +1851,7 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
                                             );
                                             __cascade.addArc(
                                                 trCorner,
-                                                Dart_mathLibrary.pi * 3.0 / 2.0,
+                                                Math.PI * 3.0 / 2.0,
                                                 sweepAngle
                                             );
                                             __cascade.lineTo(rrect.right, outer.bottom);
@@ -1951,11 +1951,11 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
                                             rrect.bottom - (leadingBorderSide.width / 2.0)
                                         );
                                         __cascade.lineTo(rrect.left, rrect.top + rrect.tlRadiusY);
-                                        __cascade.addArc(tlCorner, Dart_mathLibrary.pi, sweepAngle);
+                                        __cascade.addArc(tlCorner, Math.PI, sweepAngle);
                                         __cascade.lineTo(rrect.right - rrect.trRadiusX, rrect.top);
                                         __cascade.addArc(
                                             trCorner,
-                                            Dart_mathLibrary.pi * 3.0 / 2.0,
+                                            Math.PI * 3.0 / 2.0,
                                             sweepAngle
                                         );
                                         __cascade.lineTo(
@@ -1987,7 +1987,7 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
                                             );
                                             __cascade.addArc(
                                                 blCorner,
-                                                Dart_mathLibrary.pi,
+                                                Math.PI,
                                                 -sweepAngle
                                             );
                                             __cascade.lineTo(
@@ -1996,7 +1996,7 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
                                             );
                                             __cascade.addArc(
                                                 brCorner,
-                                                Dart_mathLibrary.pi / 2.0,
+                                                Math.PI / 2.0,
                                                 -sweepAngle
                                             );
                                             __cascade.lineTo(rrect.right, outer.top);

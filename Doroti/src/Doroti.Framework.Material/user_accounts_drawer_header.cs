@@ -274,7 +274,7 @@ public class _AccountDetailsState__user_accounts_drawer_header
                                                 child: new Center(
                                                     child: Transform.CreateRotate(
                                                         angle: _animation.value
-                                                            * Dart_mathLibrary.pi,
+                                                            * Math.PI,
                                                         child: new Icon(
                                                             Icons.arrow_drop_down,
                                                             color: widget.arrowColor,

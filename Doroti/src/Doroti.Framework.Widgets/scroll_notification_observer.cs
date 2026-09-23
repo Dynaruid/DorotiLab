@@ -33,8 +33,8 @@ internal class _ScrollNotificationObserverScope__scroll_notification_observer : 
 }
 
 internal class _ListenerEntry__scroll_notification_observer
-    : DartLinkedListEntry<_ListenerEntry__scroll_notification_observer>
 {
+    internal LinkedListNode<_ListenerEntry__scroll_notification_observer>? node { get; set; }
     public virtual Action<ScrollNotification> listener { get; private set; } = default!;
 
     internal _ListenerEntry__scroll_notification_observer(Action<ScrollNotification> listener)
@@ -94,8 +94,8 @@ public class ScrollNotificationObserver : StatefulWidget
 
 public class ScrollNotificationObserverState : State<ScrollNotificationObserver>
 {
-    internal virtual DartLinkedList<_ListenerEntry__scroll_notification_observer>? _listeners { get; set; } =
-        new DartLinkedList<_ListenerEntry__scroll_notification_observer>();
+    internal virtual LinkedList<_ListenerEntry__scroll_notification_observer>? _listeners { get; set; } =
+        new LinkedList<_ListenerEntry__scroll_notification_observer>();
 
     internal virtual bool _debugAssertNotDisposed()
     {
@@ -120,7 +120,8 @@ public class ScrollNotificationObserverState : State<ScrollNotificationObserver>
     public virtual void addListener(Action<ScrollNotification> listener)
     {
         DartRuntimePrimitives.Assert(() => _debugAssertNotDisposed());
-        _listeners!.add(new _ListenerEntry__scroll_notification_observer(listener));
+        var entry = new _ListenerEntry__scroll_notification_observer(listener);
+        entry.node = _listeners!.AddLast(entry);
     }
 
     public virtual void removeListener(Action<ScrollNotification> listener)
@@ -130,7 +131,8 @@ public class ScrollNotificationObserverState : State<ScrollNotificationObserver>
         {
             if (Equals(entry.listener, listener))
             {
-                entry.unlink();
+                _listeners.Remove(entry.node!);
+                entry.node = null;
                 return;
             }
         }
@@ -139,7 +141,7 @@ public class ScrollNotificationObserverState : State<ScrollNotificationObserver>
     internal virtual void _notifyListeners(ScrollNotification notification)
     {
         DartRuntimePrimitives.Assert(() => _debugAssertNotDisposed());
-        if (_listeners!.isEmpty)
+        if (_listeners!.Count == 0)
         {
             return;
         }
@@ -148,7 +150,7 @@ public class ScrollNotificationObserverState : State<ScrollNotificationObserver>
         {
             try
             {
-                if (entry.list is not null)
+                if (entry.node?.List is not null)
                 {
                     entry.listener(notification);
                 }

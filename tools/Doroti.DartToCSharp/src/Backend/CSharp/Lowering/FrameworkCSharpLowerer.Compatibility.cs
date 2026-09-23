@@ -1070,7 +1070,7 @@ internal sealed partial class FrameworkCSharpLowerer
             builder
                 .Append(resolvedTarget)
                 .Append('.')
-                .Append(MapMethodInvocationName(methodName, null))
+                .Append(dartLibrary == "dart:math" ? MapDartMathMemberName(methodName) : MapMethodInvocationName(methodName, null))
                 .Append(typeArguments)
                 .Append('(');
             EmitArguments(
@@ -1097,7 +1097,7 @@ internal sealed partial class FrameworkCSharpLowerer
             builder
                 .Append(MapDartLibraryStaticClass(bareDartLibrary))
                 .Append('.')
-                .Append(MapMethodInvocationName(methodName, null))
+                .Append(bareDartLibrary == "dart:math" ? MapDartMathMemberName(methodName) : MapMethodInvocationName(methodName, null))
                 .Append(typeArguments)
                 .Append('(');
             EmitArguments(
@@ -2014,6 +2014,10 @@ internal sealed partial class FrameworkCSharpLowerer
 
     private string MapMethodInvocationName(string name, string? targetType)
     {
+        if (name == "nextDouble" && targetType?.TrimEnd('?') is ("Random" or "global::System.Random"))
+        {
+            return "NextDouble";
+        }
         if (
             string.IsNullOrEmpty(targetType)
             && _session.ActiveDonorDeclaration?.Members.Any(member =>
@@ -2863,6 +2867,14 @@ internal sealed partial class FrameworkCSharpLowerer
         else if (typeName == "KeyHelper" && constructor is null or "new")
         {
             builder.Append("KeyHelper.Create(");
+        }
+        else if (
+            typeName == "global::System.Random"
+            && constructor is null or "new"
+            && argumentList.Length == 1
+        )
+        {
+            builder.Append("global::Doroti.Runtime.DorotiRandom.FromSeed(");
         }
         else if (
             (typeName is "Duration" or "global::Doroti.Runtime.Duration")
@@ -4845,6 +4857,10 @@ internal sealed partial class FrameworkCSharpLowerer
             _session.ActiveMemberContractSubstitutions
         );
         var mappedTargetType = MapType(contractTargetType).TrimEnd('?');
+        if (name == "path" && mappedTargetType == "global::System.IO.FileInfo")
+        {
+            return "FullName";
+        }
         if (
             name == "name"
             && (

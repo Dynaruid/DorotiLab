@@ -502,14 +502,14 @@ public class OutlineInputBorder : InputBorder
             scaledRRect.blRadiusX * 2.0,
             scaledRRect.blRadiusY * 2.0
         );
-        double cornerArcSweep = Dart_mathLibrary.pi / 2.0;
+        double cornerArcSweep = Math.PI / 2.0;
         var path = new Path();
         if (!Equals(scaledRRect.tlRadius, Radius.zero))
         {
-            double tlCornerArcSweep = Dart_mathLibrary.acos(
+            double tlCornerArcSweep = Math.Acos(
                 DorotiUiLibrary.clampDouble(1L - (start / scaledRRect.tlRadiusX), 0.0, 1.0)
             );
-            path.addArc(tlCorner, Dart_mathLibrary.pi, tlCornerArcSweep);
+            path.addArc(tlCorner, Math.PI, tlCornerArcSweep);
         }
         else
         {
@@ -519,7 +519,7 @@ public class OutlineInputBorder : InputBorder
         {
             path.lineTo(start, scaledRRect.top);
         }
-        double trCornerArcStart = 3L * Dart_mathLibrary.pi / 2.0;
+        double trCornerArcStart = 3L * Math.PI / 2.0;
         var trCornerArcSweep = cornerArcSweep;
         if ((start + extent) < (outerWidth - scaledRRect.trRadiusX))
         {
@@ -535,7 +535,7 @@ public class OutlineInputBorder : InputBorder
             if ((start + extent) < outerWidth)
             {
                 double dx = outerWidth - (start + extent);
-                double sweep = Dart_mathLibrary.asin(
+                double sweep = Math.Asin(
                     DorotiUiLibrary.clampDouble(1L - (dx / scaledRRect.trRadiusX), 0.0, 1.0)
                 );
                 path.addArc(trCorner, trCornerArcStart + sweep, trCornerArcSweep - sweep);
@@ -553,7 +553,7 @@ public class OutlineInputBorder : InputBorder
         path.lineTo(scaledRRect.left + scaledRRect.blRadiusX, scaledRRect.bottom);
         if (!Equals(scaledRRect.blRadius, Radius.zero))
         {
-            path.addArc(blCorner, Dart_mathLibrary.pi / 2.0, cornerArcSweep);
+            path.addArc(blCorner, Math.PI / 2.0, cornerArcSweep);
         }
         path.lineTo(scaledRRect.left, scaledRRect.top + scaledRRect.tlRadiusY);
         return path;

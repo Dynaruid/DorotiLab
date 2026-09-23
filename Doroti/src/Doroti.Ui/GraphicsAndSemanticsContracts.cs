@@ -1581,7 +1581,7 @@ public class Canvas
         );
     }
 
-    public void drawRawPoints(PointMode pointMode, Float32List points, Paint paint)
+    public void drawRawPoints(PointMode pointMode, IReadOnlyList<float> points, Paint paint)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(paint);
@@ -1635,9 +1635,9 @@ public class Canvas
 
     public void drawRawAtlas(
         Image atlas,
-        Float32List rstTransforms,
-        Float32List rects,
-        Int32List? colors,
+        IReadOnlyList<float> rstTransforms,
+        IReadOnlyList<float> rects,
+        IReadOnlyList<int>? colors,
         BlendMode? blendMode,
         Rect? cullRect,
         Paint paint

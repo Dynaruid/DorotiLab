@@ -7,7 +7,7 @@ namespace Doroti.Framework.Rendering;
 
 public static partial class Rotated_boxLibrary
 {
-    internal static double _kQuarterTurnsInRadians = Dart_mathLibrary.pi / 2.0;
+    internal static double _kQuarterTurnsInRadians = Math.PI / 2.0;
 }
 
 public class RenderRotatedBox : RenderBox, RenderObjectWithChildMixin<RenderBox>

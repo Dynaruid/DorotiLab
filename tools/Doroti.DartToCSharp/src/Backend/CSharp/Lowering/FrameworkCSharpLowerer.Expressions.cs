@@ -18,7 +18,7 @@ internal sealed partial class FrameworkCSharpLowerer
         );
         if (string.Equals(node.ElementId, "dart:math#pi", StringComparison.Ordinal))
         {
-            builder.Append("Dart_mathLibrary.pi");
+            builder.Append("global::System.Math.PI");
             return;
         }
         switch (node.Kind)

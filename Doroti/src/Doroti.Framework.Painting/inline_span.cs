@@ -191,7 +191,7 @@ public abstract class InlineSpan : DiagnosticableTree
         bool includePlaceholders = true
     )
     {
-        var buffer = new StringBuffer();
+        var buffer = new System.Text.StringBuilder();
         computeToPlainText(
             buffer,
             includeSemanticsLabels: includeSemanticsLabels,
@@ -215,7 +215,7 @@ public abstract class InlineSpan : DiagnosticableTree
         bool inheritedSpellOut = false
     );
     public abstract void computeToPlainText(
-        StringBuffer buffer,
+        System.Text.StringBuilder buffer,
         bool includeSemanticsLabels = true,
         bool includePlaceholders = true
     );

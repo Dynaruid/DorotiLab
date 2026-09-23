@@ -158,8 +158,8 @@ public class InteractiveViewer : StatefulWidget
     public static Vector3 getNearestPointOnLine(Vector3 point, Vector3 l1, Vector3 l2)
     {
         double lengthSquared =
-            Dart_mathLibrary.pow(l2.x - l1.x, 2.0).toDouble()
-            + Dart_mathLibrary.pow(l2.y - l1.y, 2.0).toDouble();
+            Math.Pow(l2.x - l1.x, 2.0).toDouble()
+            + Math.Pow(l2.y - l1.y, 2.0).toDouble();
         if (lengthSquared == 0L)
         {
             return l1;
@@ -228,9 +228,9 @@ public class InteractiveViewer : StatefulWidget
         Vector3 closestOverall = default!;
         foreach (var closePoint in closestPoints)
         {
-            double distance = Dart_mathLibrary.sqrt(
-                Dart_mathLibrary.pow(point.x - closePoint.x, 2L)
-                    + Dart_mathLibrary.pow(point.y - closePoint.y, 2L)
+            double distance = Math.Sqrt(
+                Math.Pow(point.x - closePoint.x, 2L)
+                    + Math.Pow(point.y - closePoint.y, 2L)
             );
             if (distance < minDistance)
             {
@@ -835,7 +835,7 @@ internal class _InteractiveViewerState__interactive_viewer
             {
                 return;
             }
-            scaleChange = Dart_mathLibrary.exp(
+            scaleChange = Math.Exp(
                 -@event__as35966.scrollDelta.dy / widget.scaleFactor
             );
         }
@@ -1226,8 +1226,8 @@ public static partial class Interactive_viewerLibrary
         double effectivelyMotionless = 10
     )
     {
-        return Dart_mathLibrary.log(effectivelyMotionless / velocity)
-            / Dart_mathLibrary.log(drag / 100L);
+        return Math.Log(effectivelyMotionless / velocity)
+            / Math.Log(drag / 100L);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

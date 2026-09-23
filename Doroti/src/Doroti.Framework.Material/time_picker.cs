@@ -18,7 +18,7 @@ public static partial class Time_pickerLibrary
 
 public static partial class Time_pickerLibrary
 {
-    internal static double _kTwoPi = 2L * Dart_mathLibrary.pi;
+    internal static double _kTwoPi = 2L * Math.PI;
 }
 
 public static partial class Time_pickerLibrary
@@ -1495,8 +1495,8 @@ public class _DialPainter__time_picker : CustomPainter
         {
             return centerLocal
                 + new Offset(
-                    radius * Dart_mathLibrary.cos(theta),
-                    -radius * Dart_mathLibrary.sin(theta)
+                    radius * Math.Cos(theta),
+                    -radius * Math.Sin(theta)
                 );
             throw new InvalidOperationException(
                 "Control flow completed without returning a value."
@@ -1509,7 +1509,7 @@ public class _DialPainter__time_picker : CustomPainter
                 return;
             }
             double labelThetaIncrement = -Time_pickerLibrary._kTwoPi / checked(labels.Count);
-            double labelTheta = Dart_mathLibrary.pi / 2L;
+            double labelTheta = Math.PI / 2L;
             foreach (var labelLocal in labels)
             {
                 TextPainter labelPainter = labelLocal.painter;
@@ -1916,7 +1916,7 @@ public class _DialState__time_picker
                     "Switch expression did not handle the supplied value."
                 ),
         };
-        var theta = (Dart_mathLibrary.pi / 2) - (fraction * Time_pickerLibrary._kTwoPi);
+        var theta = (Math.PI / 2) - (fraction * Time_pickerLibrary._kTwoPi);
         return ((theta % Time_pickerLibrary._kTwoPi) + Time_pickerLibrary._kTwoPi)
             % Time_pickerLibrary._kTwoPi;
         throw new InvalidOperationException("Control flow completed without returning a value.");
@@ -2020,7 +2020,7 @@ public class _DialState__time_picker
                 ) - Time_pickerLibrary._kTimePickerDialPadding;
             double innerRadius = labelRadius - Time_pickerLibrary._kTimePickerInnerDialOffset;
             double angle =
-                (Dart_mathLibrary.atan2(offset.dx, offset.dy) - (Dart_mathLibrary.pi / 2L))
+                (Math.Atan2(offset.dx, offset.dy) - (Math.PI / 2L))
                 % Time_pickerLibrary._kTwoPi;
             double radiusLocal = DorotiUiLibrary.clampDouble(
                 (offset.distance - innerRadius) / Time_pickerLibrary._kTimePickerInnerDialOffset,

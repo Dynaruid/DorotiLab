@@ -171,7 +171,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (string.Equals(node.ElementId, "dart:math#pi", StringComparison.Ordinal))
         {
-            builder.Append("Dart_mathLibrary.pi");
+            builder.Append("global::System.Math.PI");
             return;
         }
         if (
@@ -302,7 +302,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (prefix == "math" && name == "pi")
         {
-            builder.Append("Dart_mathLibrary.pi");
+            builder.Append("global::System.Math.PI");
             return;
         }
         if (prefix == "StackTrace" && name == "current")
@@ -381,7 +381,7 @@ internal sealed partial class FrameworkCSharpLowerer
                     builder
                         .Append(MapDartLibraryStaticClass(elementLibrary))
                         .Append('.')
-                        .Append(SafeIdentifier(symbol));
+                        .Append(elementLibrary == "dart:math" ? MapDartMathMemberName(symbol) : SafeIdentifier(symbol));
                 }
                 else
                 {
@@ -1776,7 +1776,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (target?.Text(CoreProperty.name) == "math" && name == "pi")
         {
-            builder.Append("Dart_mathLibrary.pi");
+            builder.Append("global::System.Math.PI");
             return;
         }
         if (target?.Text(CoreProperty.name) == "StackTrace" && name == "current")

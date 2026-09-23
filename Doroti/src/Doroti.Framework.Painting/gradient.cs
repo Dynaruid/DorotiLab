@@ -99,8 +99,8 @@ public class GradientRotation : GradientTransform
 
     public virtual Matrix4? transform(Rect bounds, TextDirection? textDirection = null)
     {
-        double sinRadians = Dart_mathLibrary.sin(radians);
-        double oneMinusCosRadians = 1L - Dart_mathLibrary.cos(radians);
+        double sinRadians = Math.Sin(radians);
+        double oneMinusCosRadians = 1L - Math.Cos(radians);
         Offset centerLocal = bounds.center;
         double originX = (sinRadians * centerLocal.dy) + (oneMinusCosRadians * centerLocal.dx);
         double originY = (-sinRadians * centerLocal.dx) + (oneMinusCosRadians * centerLocal.dy);
@@ -240,7 +240,7 @@ public abstract class Gradient
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
-    internal virtual Float64List? _resolveTransform(Rect bounds, TextDirection? textDirection)
+    internal virtual double[]? _resolveTransform(Rect bounds, TextDirection? textDirection)
     {
         return transform?.transform(bounds, textDirection: textDirection)?.storage;
         throw new InvalidOperationException("Control flow completed without returning a value.");
@@ -658,7 +658,7 @@ public class SweepGradient : Gradient
         : base(colors: colors, stops: stops, transform: transform)
     {
         AlignmentGeometry __center = center ?? Alignment.center;
-        double __endAngle = endAngle ?? (Dart_mathLibrary.pi * 2);
+        double __endAngle = endAngle ?? (Math.PI * 2);
         this.center = __center;
         this.startAngle = startAngle;
         this.endAngle = __endAngle;

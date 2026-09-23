@@ -7,7 +7,7 @@ namespace Doroti.Framework.Painting;
 
 public abstract class MatrixUtils
 {
-    internal static Float64List _minMax = new Float64List(4L);
+    internal static double[] _minMax = new double[4];
 
     public static Offset? getAsTranslation(Matrix4 transform)
     {
@@ -72,7 +72,7 @@ public abstract class MatrixUtils
 
     public static void multiplyInPlace(Matrix4 a, Matrix4 b)
     {
-        Float64List aStorage = a.storage;
+        double[] aStorage = a.storage;
         double m00 = aStorage[0L];
         double m01 = aStorage[4L];
         double m02 = aStorage[8L];
@@ -89,7 +89,7 @@ public abstract class MatrixUtils
         double m31 = aStorage[7L];
         double m32 = aStorage[11L];
         double m33 = aStorage[15L];
-        Float64List bStorage = b.storage;
+        double[] bStorage = b.storage;
         double n00 = bStorage[0L];
         double n01 = bStorage[4L];
         double n02 = bStorage[8L];
@@ -181,7 +181,7 @@ public abstract class MatrixUtils
 
     public static Offset transformPoint(Matrix4 transform, Offset point)
     {
-        Float64List storageLocal = transform.storage;
+        double[] storageLocal = transform.storage;
         double x = point.dx;
         double y = point.dy;
         double rx = (storageLocal[0L] * x) + (storageLocal[4L] * y) + storageLocal[12L];
@@ -200,7 +200,7 @@ public abstract class MatrixUtils
 
     internal static Rect _safeTransformRect(Matrix4 transform, Rect rect)
     {
-        Float64List storageLocal = transform.storage;
+        double[] storageLocal = transform.storage;
         bool isAffine =
             (storageLocal[3L] == 0.0) && (storageLocal[7L] == 0.0) && (storageLocal[15L] == 1.0);
         _accumulate(storageLocal, rect.left, rect.top, true, isAffine);
@@ -211,7 +211,7 @@ public abstract class MatrixUtils
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
-    internal static void _accumulate(Float64List m, double x, double y, bool first, bool isAffine)
+    internal static void _accumulate(double[] m, double x, double y, bool first, bool isAffine)
     {
         double w = isAffine ? 1.0 : (1.0 / ((m[3L] * x) + (m[7L] * y) + m[15L]));
         double tx = ((m[0L] * x) + (m[4L] * y) + m[12L]) * w;
@@ -244,7 +244,7 @@ public abstract class MatrixUtils
 
     public static Rect transformRect(Matrix4 transform, Rect rect)
     {
-        Float64List storageLocal = transform.storage;
+        double[] storageLocal = transform.storage;
         double x = rect.left;
         double y = rect.top;
         double w = rect.right - x;
@@ -403,7 +403,7 @@ public abstract class MatrixUtils
     public static Matrix4 forceToPoint(Offset offset)
     {
         var result = Matrix4.zero();
-        Float64List storageLocal = result.storage;
+        double[] storageLocal = result.storage;
         storageLocal[10L] = 1;
         storageLocal[12L] = offset.dx;
         storageLocal[13L] = offset.dy;

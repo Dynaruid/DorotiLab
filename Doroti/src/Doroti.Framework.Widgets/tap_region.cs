@@ -1,5 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/tap_region.dart
+using System.Runtime.CompilerServices;
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -87,8 +88,7 @@ internal delegate void _ClassifiedTapRegions__tap_region();
 
 public class RenderTapRegionSurface : RenderProxyBoxWithHitTestBehavior, TapRegionRegistry
 {
-    internal virtual Expando<BoxHitTestResult> _cachedResults { get; private set; } =
-        new Expando<BoxHitTestResult>();
+    internal virtual ConditionalWeakTable<object, BoxHitTestResult> _cachedResults { get; private set; } = new();
     internal virtual HashSet<RenderTapRegion> _registeredRegions { get; private set; } =
         new HashSet<RenderTapRegion>();
     internal virtual DartMap<object, HashSet<RenderTapRegion>> _groupIdToRegions
@@ -222,7 +222,8 @@ public class RenderTapRegionSurface : RenderProxyBoxWithHitTestBehavior, TapRegi
         if (hitTarget)
         {
             var entry = new BoxHitTestEntry(this, position);
-            _cachedResults[entry.identity] = result;
+            _cachedResults.Remove(entry.identity);
+            _cachedResults.Add(entry.identity, result);
             result.add(entry);
         }
         return hitTarget;
@@ -298,7 +299,9 @@ public class RenderTapRegionSurface : RenderProxyBoxWithHitTestBehavior, TapRegi
             );
             return;
         }
-        BoxHitTestResult? result = _cachedResults[entry.identity];
+        BoxHitTestResult? result = _cachedResults.TryGetValue(entry.identity, out var cached)
+            ? cached
+            : null;
         if (result is null)
         {
             DartRuntimePrimitives.Assert(() =>

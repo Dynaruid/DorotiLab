@@ -136,7 +136,7 @@ public class ClampingScrollSimulation : Physics.Simulation
     internal virtual double _duration { get; set; } = default!;
     internal virtual double _distance { get; set; } = default!;
     internal static double _kDecelerationRate =
-        Dart_mathLibrary.log(0.78) / Dart_mathLibrary.log(0.9);
+        Math.Log(0.78) / Math.Log(0.9);
     internal const double _kInflexion = 0.35;
     internal static double _physicalCoeff = 9.80665 * 39.37 * 160.0 * 0.84;
 
@@ -159,7 +159,7 @@ public class ClampingScrollSimulation : Physics.Simulation
     {
         double referenceVelocity = friction * _physicalCoeff / _kInflexion;
         var androidDuration = (double)
-            Dart_mathLibrary.pow(
+            Math.Pow(
                 velocity.abs() / referenceVelocity,
                 1L / (_kDecelerationRate - 1.0)
             );
@@ -173,11 +173,11 @@ public class ClampingScrollSimulation : Physics.Simulation
         DartRuntimePrimitives.Assert(() =>
         {
             double referenceVelocity = friction * _physicalCoeff / _kInflexion;
-            double logVelocity = Dart_mathLibrary.log(velocity.abs() / referenceVelocity);
+            double logVelocity = Math.Log(velocity.abs() / referenceVelocity);
             double distanceAgain =
                 friction
                 * _physicalCoeff
-                * Dart_mathLibrary.exp(
+                * Math.Exp(
                     logVelocity * _kDecelerationRate / (_kDecelerationRate - 1.0)
                 );
             return (distanceLocal.abs() - distanceAgain).abs() < tolerance.distance;
@@ -190,14 +190,14 @@ public class ClampingScrollSimulation : Physics.Simulation
     public override double x(double time)
     {
         double t = DorotiUiLibrary.clampDouble(time / _duration, 0.0, 1.0);
-        return position + (_distance * (1.0 - Dart_mathLibrary.pow(1.0 - t, _kDecelerationRate)));
+        return position + (_distance * (1.0 - Math.Pow(1.0 - t, _kDecelerationRate)));
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double dx(double time)
     {
         double t = DorotiUiLibrary.clampDouble(time / _duration, 0.0, 1.0);
-        return velocity * Dart_mathLibrary.pow(1.0 - t, _kDecelerationRate - 1.0);
+        return velocity * Math.Pow(1.0 - t, _kDecelerationRate - 1.0);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 

@@ -383,9 +383,9 @@ public class RenderListWheelViewport
         {
             if (_diameterRatio < 1.0)
             {
-                return Dart_mathLibrary.pi / 2.0;
+                return Math.PI / 2.0;
             }
-            return Dart_mathLibrary.asin(1.0 / _diameterRatio);
+            return Math.Asin(1.0 / _diameterRatio);
         }
     }
 
@@ -688,8 +688,8 @@ public class RenderListWheelViewport
             (untransformedPaintingCoordinates.dy + (_itemExtent / 2.0)) / size.height;
         double angleLocal = -(fractionalY - 0.5) * 2.0 * _maxVisibleRadian / squeeze;
         if (
-            (angleLocal > (Dart_mathLibrary.pi / 2.0))
-            || (angleLocal < (-Dart_mathLibrary.pi / 2.0))
+            (angleLocal > (Math.PI / 2.0))
+            || (angleLocal < (-Math.PI / 2.0))
             || double.IsNaN(angleLocal)
         )
         {
