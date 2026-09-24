@@ -27,7 +27,22 @@ public abstract class DorotiMauiWinUIApplication : MauiWinUIApplication
         var builder = MauiApp.CreateBuilder();
         builder.ConfigureLifecycleEvents(events =>
             events.AddWindows(windows =>
-                windows.OnWindowCreated(window => window.Closed += HandlePlatformWindowClosed)
+                windows
+                    .OnPlatformWindowSubclassed(
+                        (window, _) =>
+                        {
+                            if (WindowsCompositionSurfaceFeature.Enabled)
+                            {
+                                WindowsNativeCaption.Enable(window);
+                            }
+                        }
+                    )
+                    .OnWindowCreated(window =>
+                    {
+                        if (WindowsNativeCaption.IsEnabled(window))
+                            window.AppWindow.Title = window.Title;
+                        window.Closed += HandlePlatformWindowClosed;
+                    })
             )
         );
         ConfigurePlatform(builder);

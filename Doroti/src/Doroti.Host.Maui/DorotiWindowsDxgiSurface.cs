@@ -129,6 +129,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
     internal event Action? CaptureNativeEnvironment;
     private readonly object _gate = new();
     private readonly DorotiWindowsDxgiElement _view;
+    private readonly WindowsResizeDispatchQueue _compositionDispatch;
     private readonly AutoResetEvent _wake = new(false);
     private readonly AutoResetEvent _metricsWake = new(false);
     private readonly Thread _rasterThread;
@@ -159,9 +160,35 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
     private bool _disposed;
     private bool _stopRequested;
 
+    // UI-thread-owned proposal. Layout notifications must not replace it with
+    // the old host size while the exact proposed frame is being prepared.
+    private bool _compositionResizePending;
+    private bool _compositionNativeAuthority;
+    internal bool OwnsWindowContent { get; set; }
+    private int _compositionContentTop;
+    private string CompositionViewType =>
+        OwnsWindowContent
+            ? "HWND-attached DirectComposition with WinUI input"
+            : "WinUI attached Composition visual hosted by DorotiWindowsDxgiHost";
+    private string CompositionBackend =>
+        OwnsWindowContent
+            ? WindowsCompositionSurfaceFeature.GraphiteEnabled
+                ? "HWND/DirectComposition/DXGI/Graphite-Vulkan"
+                : "HWND/DirectComposition/DXGI/D3D12-Skia"
+            : WindowsCompositionSurfaceFeature.GraphiteEnabled
+                ? "WinUI/CompositionDrawingSurface/Graphite-Vulkan"
+                : "WinUI/CompositionDrawingSurface/D3D11On12-D3D12-Skia";
+
     internal DorotiWindowsDxgiSurface()
     {
         _view = new(this);
+        _compositionDispatch = new(action =>
+        {
+            if (!_view.Dispatcher.Dispatch(action))
+            {
+                throw new InvalidOperationException("Windows Composition dispatch was rejected.");
+            }
+        });
         _view.SizeChanged += HandleMauiSizeChanged;
         _view.Loaded += HandleMauiLoaded;
         _view.Unloaded += HandleMauiUnloaded;
@@ -343,6 +370,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
             }
 
             nativeSource?.SetCursor(cursor);
+            _rootMouse?.SetCursor(cursor);
             if (inputOwner is null)
             {
                 return;
@@ -393,15 +421,13 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
             DevicePixelRatio = target?.DevicePixelRatio ?? current.DevicePixelRatio,
             SurfaceGeneration = Interlocked.Read(ref _surfaceGeneration),
             NativeViewType = compositionCandidate
-                ? "WinUI attached Composition visual hosted by DorotiWindowsDxgiHost"
+                ? CompositionViewType
                 : "Win32 child HWND hosted by DorotiWindowsDxgiHost",
-            GraphicsBackend = compositionCandidate
-                ? WindowsCompositionSurfaceFeature.GraphiteEnabled
-                    ? "WinUI/CompositionDrawingSurface/Graphite-Vulkan"
-                    : "WinUI/CompositionDrawingSurface/D3D11On12-D3D12-Skia"
+            GraphicsBackend =
+                compositionCandidate ? CompositionBackend
                 : WindowsStableCapacityFeature.Enabled
                     ? "Win32/child-HWND/grow-only-capacity/exact-content/DXGI-D3D12-Skia"
-                    : "Win32/child-HWND/offscreen-copy/DXGI-D3D12-Skia",
+                : "Win32/child-HWND/offscreen-copy/DXGI-D3D12-Skia",
             LogicalWidth = target?.LogicalWidth ?? current.LogicalWidth,
             LogicalHeight = target?.LogicalHeight ?? current.LogicalHeight,
             ResizeContinuityActivations = Interlocked.Read(ref _activations),
@@ -480,7 +506,11 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
                 return;
             }
 
-            var topLevelSource = WindowsTopLevelResizeSource.TryCreate(_view, HandleTopLevelResize);
+            var topLevelSource = WindowsTopLevelResizeSource.TryCreate(
+                _view,
+                HandleTopLevelResize,
+                HandleProposedCompositionResize
+            );
             if (topLevelSource is null)
             {
                 return;
@@ -494,8 +524,26 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
                     return;
                 }
                 _topLevelResizeSource = topLevelSource;
+                _compositionNativeAuthority = OwnsWindowContent;
             }
             topLevelSource.Start();
+            if (_compositionNativeAuthority)
+            {
+                if (_inputOwner is { } inputOwner)
+                {
+                    inputOwner.IsHitTestVisible = true;
+                    inputOwner.Opacity = 1;
+                }
+                var inputWindow = WindowsRootMouseInput.FindInputWindow(
+                    topLevelSource.WindowHandle
+                );
+                if (inputWindow == 0)
+                {
+                    throw new InvalidOperationException("The WinUI input HWND is unavailable.");
+                }
+                _rootMouse = new(inputWindow, () => _compositionContentTop, HandleNativePointer);
+                _nativePointers = new(inputWindow, 1, DispatchNativePointerPacket);
+            }
             if (_view.Window?.Handler?.PlatformView is Microsoft.UI.Xaml.Window window)
             {
                 AttachTrackpad(WinRT.Interop.WindowNative.GetWindowHandle(window));
@@ -545,6 +593,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
 
     private Hosting.WindowsPrecisionTrackpad? _trackpad;
     private Hosting.WindowsNativePointerInput? _nativePointers;
+    private WindowsRootMouseInput? _rootMouse;
 
     private void AttachTrackpad(nint window)
     {
@@ -567,7 +616,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
                     data.kind,
                     data.pointerIdentifier,
                     data.physicalX,
-                    data.physicalY,
+                    data.physicalY - (_compositionNativeAuthority ? _compositionContentTop : 0),
                     (int)data.buttons,
                     data.scrollDeltaX,
                     data.scrollDeltaY,
@@ -619,10 +668,13 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
 
     private long HandleTopLevelResize(string source)
     {
-        // WM_SIZE has reached WinUI before this callback. Finish its pending
-        // layout now so the exact XAML host size reaches Skia during the drag,
-        // rather than publishing the previous layout from the window message.
-        _host?.UpdateLayout();
+        // Embedded views still need layout; the root renderer uses the actual
+        // native client rectangle even while XAML retains its previous size.
+        if (!_compositionNativeAuthority)
+        {
+            _host?.UpdateLayout();
+        }
+        _compositionResizePending = false;
         var provisional = _targets.Latest;
         WindowsTopLevelResizeSource? topLevelSource;
         lock (_gate)
@@ -640,17 +692,98 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
                 "top-level-observed",
                 provisional,
                 source,
-                detail: $"provisionalPhysical={width}x{height}; exactAuthority=XAML-host-layout"
+                detail: $"provisionalPhysical={width}x{height}; exactAuthority={(_compositionNativeAuthority ? "native-root-content" : "XAML-host-layout")}"
             );
         }
-        return PublishTarget(source)?.Generation ?? 0;
+        var target = PublishTarget(source);
+        // Reconcile actual geometry before releasing a moving-origin front. A
+        // different DPI/rectangle supersedes the proposal at the usual
+        // generation gate rather than presenting it against unrelated bounds.
+        _compositionDispatch.EndResize();
+        if (target is not null)
+        {
+            Record("geometry-applied", target, source);
+        }
+        return target?.Generation ?? 0;
+    }
+
+    private void HandleProposedCompositionResize(
+        int widthDelta,
+        int heightDelta,
+        bool movingOrigin,
+        string source
+    )
+    {
+        // Only the dedicated window runner opts into native size authority.
+        // Embedded surfaces keep their existing XAML layout and presentation.
+        if (
+            _disposed
+            || _stopRequested
+            || !_loaded
+            || !_compositionNativeAuthority
+            || _topLevelResizeSource is null
+            || Interlocked.Read(ref _presented) == 0
+            || !_topLevelResizeSource.TryGetContentSize(out var currentWidth, out var currentHeight)
+        )
+        {
+            return;
+        }
+        var width = currentWidth + widthDelta;
+        var height = currentHeight + heightDelta;
+        if (width <= 0 || height <= 0)
+        {
+            return;
+        }
+        _compositionResizePending = true;
+        var target = PublishTarget(source, width, height);
+        if (target is null)
+        {
+            _compositionResizePending = false;
+            return;
+        }
+        // Keep the prepared back buffer non-visible until geometry applies for
+        // every edge. Pre-presenting a smaller frame exposes the old window's
+        // uncovered tail; pre-presenting growth makes layout jump ahead of it.
+        _compositionDispatch.BeginResize(target.Generation, deferCommit: true);
+        var started = DorotiFrameClock.Now;
+        var ready = _compositionDispatch.WaitForFrame(
+            target.Generation,
+            prepareOnly: true,
+            TimeSpan.FromMilliseconds(100)
+        );
+        Record(
+            ready ? "resize-frame-ready" : "resize-frame-timeout",
+            target,
+            source,
+            DorotiFrameClock.Now - started,
+            detail: $"movingOrigin={movingOrigin}; commitDeferred=True; preGeometry=1"
+        );
+        if (ready && source == "top-level.WM_WINDOWPOSCHANGING")
+        {
+            var clockStarted = DorotiFrameClock.Now;
+            var status = WindowsNativeCompositionOutput.AlignResizeWithCompositor();
+            Record(
+                status == 0 ? "resize-clock-ready" : "resize-clock-miss",
+                target,
+                source,
+                DorotiFrameClock.Now - clockStarted,
+                detail: $"status=0x{status:x8}; preGeometry=1"
+            );
+        }
+        // A bounded miss lets USER32 advance. WM_SIZE then reconciles actual
+        // layout and releases the deferred commit; WM_EXITSIZEMOVE also does
+        // this for a cancelled drag that never applies the proposed rectangle.
     }
 
     private void HandleNativePointer(MauiSurfacePointerData pointer)
     {
-        if (pointer.Change == PointerChange.down && _panel is { } panel)
+        if (pointer.Change == PointerChange.down && _inputOwner is { } inputOwner)
         {
-            _ = panel.Focus(FocusState.Pointer);
+            var focused = inputOwner.Focus(FocusState.Pointer);
+            if (_latestTarget is { } target)
+            {
+                Record("input-focus", target, "WinUI input owner", detail: $"focused={focused}");
+            }
         }
 
         Pointer?.Invoke(pointer);
@@ -691,11 +824,22 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
             _nativeResizeSource = null;
         }
         topLevelSource?.Dispose();
+        _rootMouse?.Dispose();
+        _rootMouse = null;
+        _nativePointers?.Dispose();
+        _nativePointers = null;
+        _compositionNativeAuthority = false;
+        _compositionResizePending = false;
+        _compositionDispatch.EndResize();
         source?.Dispose();
     }
 
     private void PublishFallbackTarget(string source)
     {
+        if (_compositionResizePending)
+        {
+            return;
+        }
         lock (_gate)
         {
             if (!WindowsCompositionSurfaceFeature.Enabled && _nativeResizeSource is not null)
@@ -737,6 +881,10 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
         var nativeScale = nativeSource?.GetDeviceScale();
         var xamlScale =
             topLevelSource?.GetDeviceScale() ?? host.XamlRoot?.RasterizationScale ?? 1.0;
+        if (_compositionNativeAuthority && topLevelSource is not null)
+        {
+            _compositionContentTop = topLevelSource.ContentTop;
+        }
         var scaleX = compositionCandidate ? xamlScale : nativeScale ?? panel!.CompositionScaleX;
         var scaleY = compositionCandidate ? xamlScale : nativeScale ?? panel!.CompositionScaleY;
         if (!double.IsFinite(scaleX) || scaleX <= 0 || !double.IsFinite(scaleY) || scaleY <= 0)
@@ -746,14 +894,17 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
 
         var physicalWidth = 0;
         var physicalHeight = 0;
-        // Candidate exact geometry belongs to the laid-out XAML host. The
-        // top-level observer is intentionally provisional: promoting its
-        // client rect before WinUI layout would recreate the border-before-
-        // content phase as an app-owned size-authority mismatch.
-        var hasProposedNativeSize =
-            !compositionCandidate && proposedPhysicalWidth is > 0 && proposedPhysicalHeight is > 0;
+        // The root page can prepare an explicit native proposal before layout.
+        // Embedded views and ordinary layout changes continue to use XAML.
+        var hasProposedNativeSize = proposedPhysicalWidth is > 0 && proposedPhysicalHeight is > 0;
         var hasNativeSize =
             hasProposedNativeSize
+            || (
+                compositionCandidate
+                && _compositionNativeAuthority
+                && topLevelSource is not null
+                && topLevelSource.TryGetContentSize(out physicalWidth, out physicalHeight)
+            )
             || (
                 !compositionCandidate
                 && nativeSource is not null
@@ -862,6 +1013,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
             WindowsClientResizeSource? nativeSource;
             DorotiWindowsDxgiHost? host;
             Microsoft.UI.Composition.Compositor? compositor;
+            nint nativeCompositionWindow;
             MauiPaintCompletion? preparedCompletion;
             long preparedGeneration;
             long presentRequestedGeneration;
@@ -877,6 +1029,9 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
                 nativeSource = _nativeResizeSource;
                 host = _host;
                 compositor = _compositionCompositor;
+                nativeCompositionWindow = _compositionNativeAuthority
+                    ? _topLevelResizeSource?.WindowHandle ?? 0
+                    : 0;
                 preparedCompletion = _preparedNativeCompletion;
                 preparedGeneration = _nativePreparedGeneration;
                 presentRequestedGeneration = _nativePresentRequestedGeneration;
@@ -992,6 +1147,9 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
                     compositionPresenter ??= new WindowsCompositionSurfacePresenter(
                         compositor!,
                         InvokeOnUiThread,
+                        (generation, action) => _compositionDispatch.Invoke(action, generation),
+                        nativeCompositionWindow,
+                        () => Volatile.Read(ref _compositionContentTop),
                         WakeCompositionRetry
                     );
                     _compositionPresenter = compositionPresenter;
@@ -1036,7 +1194,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
                     surfaceWidth: surfaceWidth,
                     surfaceHeight: surfaceHeight,
                     detail: compositionCandidate
-                        ? $"backend=composition-surface; backingStoreResized={surfaceChanged}; graphiteDeviceCreations={compositionPresenter!.GraphiteDeviceCreationCount}; rawRenderChildHwnd=0; hwndSwapChain=0; swapChainPanelAttachment=0; surface={surfaceWidth}x{surfaceHeight}; logical={target.LogicalWidth}x{target.LogicalHeight}; scale={target.DeviceScaleX}; adapter={adapterDescription}"
+                        ? $"backend={(compositionPresenter!.UsesNativeOutput ? "native-composition" : "composition-surface")}; backingStoreResized={surfaceChanged}; graphiteDeviceCreations={compositionPresenter!.GraphiteDeviceCreationCount}; rawRenderChildHwnd=0; hwndSwapChain=0; swapChainPanelAttachment=0; surface={surfaceWidth}x{surfaceHeight}; logical={target.LogicalWidth}x{target.LogicalHeight}; scale={target.DeviceScaleX}; adapter={adapterDescription}"
                         : $"backend=raw-child-hwnd; stableCapacity={WindowsStableCapacityFeature.Enabled}; backingStoreResized={surfaceChanged}; hwnd={nativeSource!.RenderWindowHandle}; exactContent={surfaceWidth}x{surfaceHeight}; capacity={presenter.CapacityWidth}x{presenter.CapacityHeight}; adapter={adapterDescription}"
                 );
                 var paint = new MauiSkiaPaintContext(
@@ -1046,14 +1204,11 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
                     surfaceHeight,
                     target.DevicePixelRatio,
                     Interlocked.Read(ref _surfaceGeneration),
-                    compositionCandidate ? "WinUI attached Composition visual" : "Win32 child HWND",
-                    compositionCandidate
-                        ? WindowsCompositionSurfaceFeature.GraphiteEnabled
-                            ? "WinUI/CompositionDrawingSurface/Graphite-Vulkan"
-                            : "WinUI/CompositionDrawingSurface/D3D11On12-D3D12-Skia"
+                    compositionCandidate ? CompositionViewType : "Win32 child HWND",
+                    compositionCandidate ? CompositionBackend
                         : WindowsStableCapacityFeature.Enabled
                             ? "Win32/child-HWND/grow-only-capacity/exact-content/DXGI-D3D12-Skia"
-                            : "Win32/child-HWND/offscreen-copy/DXGI-D3D12-Skia"
+                        : "Win32/child-HWND/offscreen-copy/DXGI-D3D12-Skia"
                 );
                 lock (_gate)
                 {
@@ -1244,7 +1399,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
                     Record(
                         "pre-swap",
                         target,
-                        "WinUI attached Composition visual",
+                        CompositionViewType,
                         surfaceWidth: surfaceWidth,
                         surfaceHeight: surfaceHeight,
                         detail: $"prePresentTargetGeneration={prePresentGeneration}; presentedGeneration={target.Generation}; schedulerSerial={prePresentSerial}; frameSerial={serial}; newerTargetKnownAtPrePresent=0"
@@ -1321,13 +1476,19 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
                     "post-swap",
                     target,
                     compositionCandidate
-                        ? "WinUI Composition commit barrier"
+                        ? (
+                            _compositionNativeAuthority
+                                ? "HWND DirectComposition/DXGI present"
+                                : "WinUI Composition commit barrier"
+                        )
                         : "Doroti-owned child HWND DXGI",
                     DorotiFrameClock.Now - presentStarted,
                     surfaceWidth: surfaceWidth,
                     surfaceHeight: surfaceHeight,
-                    detail: compositionCandidate
-                        ? $"prePresentTargetGeneration={prePresentGeneration}; presentedGeneration={target.Generation}; postPresentObservedGeneration={postPresentGeneration}; beginDraw={compositionPresenter!.BeginDrawCount}; endDraw={compositionPresenter.EndDrawCount}; gpuFences={compositionPresenter.GpuFenceCount}; commitRequests={compositionPresenter.CommitRequestCount}; commitActionCompletions={compositionPresenter.CommitCompletionCount}; commitBatchCompletions={compositionPresenter.CommitBatchCompletionCount}; frontAdoptions={compositionPresenter.FrontAdoptedCount}; retirements={compositionPresenter.RetirementCount}; checkedOut={compositionPresenter.CheckedOutResourceCount}; openDraw={compositionPresenter.OpenDrawCount}"
+                    detail: compositionCandidate && compositionPresenter!.UsesNativeOutput
+                            ? $"prePresentTargetGeneration={prePresentGeneration}; presentedGeneration={target.Generation}; postPresentObservedGeneration={postPresentGeneration}; {compositionPresenter.NativeOutputDiagnostics}"
+                        : compositionCandidate
+                            ? $"prePresentTargetGeneration={prePresentGeneration}; presentedGeneration={target.Generation}; postPresentObservedGeneration={postPresentGeneration}; beginDraw={compositionPresenter!.BeginDrawCount}; endDraw={compositionPresenter.EndDrawCount}; gpuFences={compositionPresenter.GpuFenceCount}; commitRequests={compositionPresenter.CommitRequestCount}; commitActionCompletions={compositionPresenter.CommitCompletionCount}; commitBatchCompletions={compositionPresenter.CommitBatchCompletionCount}; frontAdoptions={compositionPresenter.FrontAdoptedCount}; retirements={compositionPresenter.RetirementCount}; checkedOut={compositionPresenter.CheckedOutResourceCount}; openDraw={compositionPresenter.OpenDrawCount}"
                         : $"prePresentTargetGeneration={prePresentGeneration}; presentedGeneration={target.Generation}; postPresentObservedGeneration={postPresentGeneration}; swapChainResized={presenter.LastCommitResized}"
                 );
                 if (postPresentGeneration != target.Generation)
@@ -1563,41 +1724,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
             action();
             return;
         }
-        using var completed = new ManualResetEventSlim();
-        Exception? failure = null;
-        if (
-            !_view.Dispatcher.Dispatch(() =>
-            {
-                try
-                {
-                    action();
-                }
-                catch (Exception exception)
-                {
-                    failure = exception;
-                }
-                finally
-                {
-                    completed.Set();
-                }
-            })
-        )
-        {
-            throw new InvalidOperationException(
-                "Windows UI dispatcher rejected swap-chain attachment."
-            );
-        }
-        if (!completed.Wait(TimeSpan.FromSeconds(5)))
-        {
-            throw new TimeoutException(
-                "Windows UI dispatcher did not attach the swap chain within five seconds."
-            );
-        }
-
-        if (failure is not null)
-        {
-            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failure).Throw();
-        }
+        _compositionDispatch.Invoke(action);
     }
 
     private void Record(
@@ -1696,17 +1823,22 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
         }
         _metricsWake.Dispose();
         _wake.Dispose();
+        _compositionDispatch.Dispose();
     }
 }
 
 /// <summary>
 /// Observer for the existing WinUI top-level HWND. It never
 /// creates or subclasses a render child and never owns pointer routing. Its
-/// publishes sizing/DPI epochs after WinUI consumes the native geometry.
+/// prepares root-page frames before geometry and reconciles XAML after WinUI
+/// consumes it. Embedded views remain layout driven.
 /// </summary>
 internal sealed class WindowsTopLevelResizeSource : IDisposable
 {
     private const uint WmSize = 0x0005;
+    private const uint WmSizing = 0x0214;
+    private const uint WmWindowPosChanging = 0x0046;
+    private const uint WmExitSizeMove = 0x0232;
     private const uint WmDpiChanged = 0x02E0;
     private const uint WmNcDestroy = 0x0082;
     private static long _nextSubclassId;
@@ -1715,19 +1847,26 @@ internal sealed class WindowsTopLevelResizeSource : IDisposable
     private readonly nuint _subclassId;
     private readonly TopLevelSubclassProcedure _procedure;
     private readonly Func<string, long> _sizeChanged;
+    private readonly Action<int, int, bool, string> _proposedSize;
+    private WindowsRootRedirection? _redirection;
     private bool _attached;
     private bool _started;
     private bool _disposed;
 
+    internal nint WindowHandle => _windowHandle;
+    internal int ContentTop => Math.Max(0, _platformWindow.AppWindow.TitleBar.Height);
+
     private WindowsTopLevelResizeSource(
         Microsoft.UI.Xaml.Window platformWindow,
         nint windowHandle,
-        Func<string, long> sizeChanged
+        Func<string, long> sizeChanged,
+        Action<int, int, bool, string> proposedSize
     )
     {
         _platformWindow = platformWindow;
         _windowHandle = windowHandle;
         _sizeChanged = sizeChanged;
+        _proposedSize = proposedSize;
         _subclassId = checked((nuint)Interlocked.Increment(ref _nextSubclassId));
         _procedure = HandleWindowMessage;
         _attached = SetWindowSubclass(_windowHandle, _procedure, _subclassId, 0);
@@ -1735,7 +1874,8 @@ internal sealed class WindowsTopLevelResizeSource : IDisposable
 
     internal static WindowsTopLevelResizeSource? TryCreate(
         DorotiWindowsDxgiElement view,
-        Func<string, long> sizeChanged
+        Func<string, long> sizeChanged,
+        Action<int, int, bool, string> proposedSize
     )
     {
         ArgumentNullException.ThrowIfNull(view);
@@ -1746,23 +1886,44 @@ internal sealed class WindowsTopLevelResizeSource : IDisposable
         }
 
         platformWindow.ExtendsContentIntoTitleBar = false;
-        var titleBarForeground = platformWindow.Content
-            is FrameworkElement { ActualTheme: ElementTheme.Light }
-            ? Microsoft.UI.Colors.Black
-            : Microsoft.UI.Colors.White;
-        platformWindow.AppWindow.TitleBar.ForegroundColor = titleBarForeground;
-        platformWindow.AppWindow.TitleBar.ButtonForegroundColor = titleBarForeground;
-        platformWindow.AppWindow.TitleBar.ButtonHoverForegroundColor = titleBarForeground;
-        platformWindow.AppWindow.TitleBar.ButtonPressedForegroundColor = titleBarForeground;
+        if (!WindowsNativeCaption.IsEnabled(platformWindow))
+        {
+            var titleBarForeground = platformWindow.Content
+                is FrameworkElement { ActualTheme: ElementTheme.Light }
+                ? Microsoft.UI.Colors.Black
+                : Microsoft.UI.Colors.White;
+            platformWindow.AppWindow.TitleBar.ForegroundColor = titleBarForeground;
+            platformWindow.AppWindow.TitleBar.ButtonForegroundColor = titleBarForeground;
+            platformWindow.AppWindow.TitleBar.ButtonHoverForegroundColor = titleBarForeground;
+            platformWindow.AppWindow.TitleBar.ButtonPressedForegroundColor = titleBarForeground;
+        }
         var windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(platformWindow);
         if (windowHandle == 0)
         {
             return null;
         }
 
-        var source = new WindowsTopLevelResizeSource(platformWindow, windowHandle, sizeChanged);
+        var source = new WindowsTopLevelResizeSource(
+            platformWindow,
+            windowHandle,
+            sizeChanged,
+            proposedSize
+        );
         if (source._attached)
         {
+            if (view.Owner.OwnsWindowContent)
+            {
+                try
+                {
+                    source._redirection = new(windowHandle);
+                    source._redirection.Apply();
+                }
+                catch
+                {
+                    source.Dispose();
+                    throw;
+                }
+            }
             return source;
         }
 
@@ -1824,12 +1985,50 @@ internal sealed class WindowsTopLevelResizeSource : IDisposable
         _ = lParam;
         _ = subclassId;
         _ = referenceData;
+        var traceMessage = message is 0x0005 or 0x0046 or 0x0047 or 0x0214 or 0x007c or 0x007d;
+        if (traceMessage)
+            WindowsResizeTimeline.Record(windowHandle, "message-enter", message);
+        if (_started && !_disposed && lParam != 0 && !IsZoomed(windowHandle))
+        {
+            if (message == WmSizing)
+            {
+                var proposed = Marshal.PtrToStructure<TopLevelRect>(lParam);
+                PrepareResize(proposed, "top-level.WM_SIZING");
+            }
+            else if (message == WmWindowPosChanging)
+            {
+                var pos = Marshal.PtrToStructure<TopLevelWindowPos>(lParam);
+                // Frame/style changes (maximize, DPI, title-bar changes) need
+                // actual WinUI layout. Plain SetWindowPos also gets pre-render.
+                if (
+                    (pos.Flags & (0x0001u | 0x0020u)) == 0
+                    && GetWindowRect(windowHandle, out var current)
+                )
+                {
+                    var left = (pos.Flags & 0x0002u) == 0 ? pos.X : current.Left;
+                    var top = (pos.Flags & 0x0002u) == 0 ? pos.Y : current.Top;
+                    PrepareResize(
+                        new TopLevelRect
+                        {
+                            Left = left,
+                            Top = top,
+                            Right = left + pos.Width,
+                            Bottom = top + pos.Height,
+                        },
+                        "top-level.WM_WINDOWPOSCHANGING"
+                    );
+                }
+            }
+        }
         var result = DefSubclassProc(windowHandle, message, wParam, lParam);
-        if (_started && !_disposed && message is WmSize or WmDpiChanged)
+        if (message == 0x031e) // WM_DWMCOMPOSITIONCHANGED
+            _redirection?.Apply();
+        if (_started && !_disposed && message is WmSize or WmDpiChanged or WmExitSizeMove)
         {
             var source = message switch
             {
                 WmDpiChanged => "top-level.WM_DPICHANGED",
+                WmExitSizeMove => "top-level.WM_EXITSIZEMOVE",
                 _ => "top-level.WM_SIZE",
             };
             _sizeChanged(source);
@@ -1839,7 +2038,29 @@ internal sealed class WindowsTopLevelResizeSource : IDisposable
             _attached = false;
         }
 
+        if (traceMessage)
+            WindowsResizeTimeline.Record(windowHandle, "message-exit", message);
+
         return result;
+    }
+
+    private void PrepareResize(TopLevelRect proposed, string source)
+    {
+        if (!GetWindowRect(_windowHandle, out var current))
+        {
+            return;
+        }
+        var widthDelta = proposed.Right - proposed.Left - (current.Right - current.Left);
+        var heightDelta = proposed.Bottom - proposed.Top - (current.Bottom - current.Top);
+        if (widthDelta != 0 || heightDelta != 0)
+        {
+            _proposedSize(
+                widthDelta,
+                heightDelta,
+                proposed.Left != current.Left || proposed.Top != current.Top,
+                source
+            );
+        }
     }
 
     public void Dispose()
@@ -1851,11 +2072,14 @@ internal sealed class WindowsTopLevelResizeSource : IDisposable
 
         _disposed = true;
         _started = false;
+        WindowsResizeTimeline.Save();
         if (_attached)
         {
             RemoveWindowSubclass(_windowHandle, _procedure, _subclassId);
             _attached = false;
+            _redirection?.Dispose();
         }
+        _redirection = null;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -1866,6 +2090,26 @@ internal sealed class WindowsTopLevelResizeSource : IDisposable
         internal int Right;
         internal int Bottom;
     }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct TopLevelWindowPos
+    {
+        internal nint Window;
+        internal nint InsertAfter;
+        internal int X;
+        internal int Y;
+        internal int Width;
+        internal int Height;
+        internal uint Flags;
+    }
+
+    [DllImport("user32.dll", ExactSpelling = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool GetWindowRect(nint window, out TopLevelRect rectangle);
+
+    [DllImport("user32.dll", ExactSpelling = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool IsZoomed(nint window);
 
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     private delegate nint TopLevelSubclassProcedure(
@@ -2237,7 +2481,7 @@ internal sealed class WindowsClientResizeSource : IDisposable
 
     private static int GetHitTest(nint lParam) => unchecked((short)(long)lParam);
 
-    private static nint ResolveCursor(DorotiMouseCursorKind cursor)
+    internal static nint ResolveCursor(DorotiMouseCursorKind cursor)
     {
         var resource = cursor switch
         {

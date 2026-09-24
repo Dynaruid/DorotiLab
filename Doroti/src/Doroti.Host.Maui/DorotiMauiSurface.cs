@@ -17,6 +17,15 @@ internal sealed partial class MauiEvidenceJsonContext : JsonSerializerContext;
 
 public sealed class DorotiMauiSurface : Grid, IDisposable
 {
+#if WINDOWS
+    // Set only by the dedicated full-window runner. Embedded MAUI surfaces keep
+    // their XAML clipping, layout and overlay behavior.
+    internal bool OwnsWindowContent
+    {
+        get => ((DorotiWindowsDxgiSurface)_renderSurface).OwnsWindowContent;
+        init => ((DorotiWindowsDxgiSurface)_renderSurface).OwnsWindowContent = value;
+    }
+#endif
     private static readonly TimeSpan EvidenceWriteInterval = TimeSpan.FromSeconds(1);
     private static readonly TimeSpan EvidenceWriteQuiescence = TimeSpan.FromMilliseconds(250);
     private readonly ulong _viewId;
@@ -555,7 +564,8 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         {
             _windowsBackdrop = new(
                 backdropWindow,
-                _application.ViewConfiguration.ResolveAppearance().ResolveBackdrop(isMacOS: false)
+                _application.ViewConfiguration.ResolveAppearance().ResolveBackdrop(isMacOS: false),
+                OwnsWindowContent && WindowsNativeCaption.IsEnabled(backdropWindow)
             );
         }
         if (

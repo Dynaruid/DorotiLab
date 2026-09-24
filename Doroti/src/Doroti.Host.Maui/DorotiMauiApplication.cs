@@ -131,7 +131,12 @@ public sealed class DorotiMauiApplication(DorotiApplicationDescriptor descriptor
 #endif
                 SafeAreaEdges = Microsoft.Maui.SafeAreaEdges.None,
                 Title = title,
-                Content = new DorotiMauiSurface(descriptor),
+                Content = new DorotiMauiSurface(descriptor)
+                {
+#if WINDOWS
+                    OwnsWindowContent = true,
+#endif
+                },
             }
         )
         {

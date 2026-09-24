@@ -13,6 +13,7 @@ spec = importlib.util.spec_from_file_location('resize', Path(__file__).with_name
 g = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(g)
 g.u.SetCursorPos.argtypes = [c.c_int, c.c_int]
+g.u.GetForegroundWindow.restype = g.w.HWND
 g.u.GetCursorPos.argtypes = [c.POINTER(g.w.POINT)]
 g.u.mouse_event.argtypes = [g.w.DWORD, g.w.DWORD, g.w.DWORD, g.w.DWORD, c.c_size_t]
 background = tk.Tk()
@@ -38,10 +39,14 @@ try:
     def capture(name, color):
         background.configure(bg=color)
         background.update()
+        # Tk may activate its background while servicing the color change.
+        # Restore this test's app before sampling its active material.
+        g.u.SetForegroundWindow(hwnd)
         time.sleep(.8)
+        assert g.u.GetForegroundWindow() == hwnd, 'Test window lost foreground; capture aborted'
         bounds = g.w.RECT()
         g.u.GetWindowRect(hwnd, c.byref(bounds))
-        im = ImageGrab.grab((bounds.left, bounds.top, bounds.right, bounds.bottom))
+        im = ImageGrab.grab((bounds.left, bounds.top, bounds.right, bounds.bottom), include_layered_windows=True)
         im.save(g.OUT / f'{name}.png')
         return im
 
@@ -52,6 +57,7 @@ try:
     scale = g.evidence()['surface']['devicePixelRatio']
     bounds = g.w.RECT()
     g.u.GetWindowRect(hwnd, c.byref(bounds))
+    assert g.u.GetForegroundWindow() == hwnd, 'Test window lost foreground; input aborted'
     g.u.SetCursorPos(bounds.right - round(106 * scale), bounds.top + round(60 * scale))
     g.u.mouse_event(2, 0, 0, 0, 0)
     time.sleep(.15)
@@ -66,18 +72,26 @@ try:
     off = response(off_red, off_blue)
     on = response(on_red, on_blue)
     result = dict(offBackgroundResponse=off, onBackgroundResponse=on,
-                  physicalAppearance='notVerified', output=str(g.OUT))
+                  status='failed', physicalAppearance='notVerified', output=str(g.OUT))
     (g.OUT / 'acrylic-result.json').write_text(json.dumps(result, indent=2), encoding='utf-8')
-    print(json.dumps(result, indent=2), flush=True)
     assert max(off) < 3, 'Opaque control responds to background'
     assert max(on) > max(off) + 5, 'Acrylic did not reveal the desktop background'
+    assert g.evidence()['nativePointerEvents'] > 0, 'No native pointer ingress'
     g.u.PostMessageW(hwnd, 0x10, 0, 0)
     assert process.wait(timeout=15) == 0
     assert not (g.OUT / 'evidence.json.exception.txt').exists()
     result['status'] = 'passed'
     result['cleanExit'] = True
     (g.OUT / 'acrylic-result.json').write_text(json.dumps(result, indent=2), encoding='utf-8')
+    print(json.dumps(result, indent=2), flush=True)
+except Exception as error:
+    result_path = g.OUT / 'acrylic-result.json'
+    if not result_path.exists():
+        result_path.write_text(json.dumps(dict(status='notMeasured', reason=str(error),
+                                              physicalAppearance='notVerified', output=str(g.OUT)), indent=2), encoding='utf-8')
+    raise
 finally:
+    g.u.mouse_event(4, 0, 0, 0, 0)
     g.u.SetCursorPos(cursor.x, cursor.y)
     if process is not None and process.poll() is None:
         if hwnd:

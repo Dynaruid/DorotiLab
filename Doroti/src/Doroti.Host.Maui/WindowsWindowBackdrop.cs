@@ -13,20 +13,48 @@ internal sealed class WindowsWindowBackdrop : IDisposable
     private readonly Microsoft.UI.Xaml.Window _window;
     private readonly SystemBackdrop? _previous;
     private readonly AcrylicMaterial? _material;
+    private readonly WindowBackdropOptions _options;
+    private readonly bool _nativeCaption;
+    private readonly FrameworkElement? _themeOwner;
+    private bool _disposed;
 
-    internal WindowsWindowBackdrop(Microsoft.UI.Xaml.Window window, WindowBackdropOptions options)
+    internal WindowsWindowBackdrop(
+        Microsoft.UI.Xaml.Window window,
+        WindowBackdropOptions options,
+        bool nativeCaption = false
+    )
     {
         _window = window;
+        _options = options;
+        _nativeCaption = nativeCaption;
         _previous = window.SystemBackdrop;
         if (options.mode is WindowBackdropMode.acrylic or WindowBackdropMode.experimentalAcrylic)
         {
             _material = new(options);
             window.SystemBackdrop = _material;
         }
+        if (_nativeCaption)
+        {
+            _themeOwner = window.Content as FrameworkElement;
+            if (_themeOwner is not null)
+                _themeOwner.ActualThemeChanged += HandleThemeChanged;
+            ApplyCaption();
+        }
+    }
+
+    private void HandleThemeChanged(FrameworkElement sender, object args) => ApplyCaption();
+
+    private void ApplyCaption()
+    {
+        if (!_disposed && _nativeCaption)
+            WindowsNativeCaption.ApplyTheme(_window, _options);
     }
 
     public void Dispose()
     {
+        _disposed = true;
+        if (_themeOwner is not null)
+            _themeOwner.ActualThemeChanged -= HandleThemeChanged;
         if (_material is not null && ReferenceEquals(_window.SystemBackdrop, _material))
         {
             _window.SystemBackdrop = _previous;

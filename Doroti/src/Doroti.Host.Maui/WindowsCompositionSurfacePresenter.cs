@@ -63,6 +63,13 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
     private const int MaximumSurfaceSlots = 3;
     private readonly Compositor _compositor;
     private readonly Action<Action> _invokeOnUiThread;
+    private readonly Action<long, Action> _presentOnUiThread;
+    private readonly nint _nativeWindow;
+    private readonly Func<int> _nativeContentTop;
+    private WindowsNativeCompositionOutput? _nativeOutput;
+    internal bool UsesNativeOutput => _nativeWindow != 0;
+    internal string NativeOutputDiagnostics =>
+        $"nativeCopies={_nativeOutput?.Copies ?? 0}; nativePresents={_nativeOutput?.Presents ?? 0}; nativeSwapChainResizes={_nativeOutput?.ResizeBuffers ?? 0}; nativeContentAttachments={_nativeOutput?.ContentAttachments ?? 0}";
     private readonly Action _frontSlotAvailable;
     private readonly object _poolGate = new();
     private readonly List<WindowsCompositionSurfaceSlot> _slots = [];
@@ -101,11 +108,17 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
     internal WindowsCompositionSurfacePresenter(
         Compositor compositor,
         Action<Action> invokeOnUiThread,
+        Action<long, Action> presentOnUiThread,
+        nint nativeWindow,
+        Func<int> nativeContentTop,
         Action frontSlotAvailable
     )
     {
         _compositor = compositor;
         _invokeOnUiThread = invokeOnUiThread;
+        _presentOnUiThread = presentOnUiThread;
+        _nativeWindow = nativeWindow;
+        _nativeContentTop = nativeContentTop;
         _frontSlotAvailable = frontSlotAvailable;
     }
 
@@ -227,6 +240,32 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
             );
         }
 
+        if (_nativeOutput is not null)
+        {
+            _nativeOutput.Prepare(
+                _backingStore!.Resource,
+                Width,
+                Height,
+                _graphite is not null ? ResourceStates.Common : ResourceStates.RenderTarget
+            );
+            var committed = false;
+            var generation = 0L;
+            _presentOnUiThread(
+                target.Generation,
+                () =>
+                {
+                    generation = latestTargetGeneration();
+                    if (generation != target.Generation)
+                    {
+                        return;
+                    }
+                    onCommitStarting();
+                    committed = _nativeOutput.Present(_nativeContentTop(), target.Generation);
+                }
+            );
+            observedTargetGeneration = generation;
+            return committed;
+        }
         ThrowAsyncCommitFailure();
         var slot = TryAcquireSlot();
         if (slot is null)
@@ -659,6 +698,12 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
             _copyFence = _device12.CreateFence(0, FenceFlags.None);
         }
 
+        if (_nativeWindow != 0)
+        {
+            _nativeOutput ??= new(_nativeWindow, _factory!, _device12!, _queue!);
+            _attachedHost = host;
+            return;
+        }
         if (_visual is null)
         {
             _brush = _compositor.CreateSurfaceBrush();
@@ -717,7 +762,14 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
             return;
         }
 
-        ElementCompositionPreview.SetElementChildVisual(host, null);
+        if (_nativeOutput is not null)
+        {
+            _nativeOutput.Detach();
+        }
+        else
+        {
+            ElementCompositionPreview.SetElementChildVisual(host, null);
+        }
         _attachedHost = null;
         _uiTeardown = true;
     }
@@ -762,9 +814,11 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
             );
         }
 
+        _nativeOutput?.Dispose();
+        _nativeOutput = null;
         _invokeOnUiThread(() =>
         {
-            if (_attachedHost is not null)
+            if (_attachedHost is not null && _nativeWindow == 0)
             {
                 ElementCompositionPreview.SetElementChildVisual(_attachedHost, null);
                 _attachedHost = null;

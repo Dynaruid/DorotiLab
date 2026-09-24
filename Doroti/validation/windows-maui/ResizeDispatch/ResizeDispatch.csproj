@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <DefineConstants>$(DefineConstants);WINDOWS</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../../src/Doroti.Host.Maui/WindowsResizeDispatchQueue.cs" Link="WindowsResizeDispatchQueue.cs" />
+  </ItemGroup>
+</Project>
