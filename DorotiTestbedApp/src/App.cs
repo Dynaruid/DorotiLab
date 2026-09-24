@@ -343,7 +343,10 @@ internal static class App
                     : new(
                         ExperimentalAcrylicEnabled
                             ? WindowBackdropMode.experimentalAcrylic
-                            : WindowBackdropMode.acrylic
+                            : WindowBackdropMode.acrylic,
+                        acrylicKind: OperatingSystem.IsWindows()
+                            ? WindowAcrylicKind.thin
+                            : WindowAcrylicKind.@default
                     ),
                 titlebarStyle: TitlebarStyle,
                 macOSBackdrop: new(

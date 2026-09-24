@@ -619,6 +619,10 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
 
     private long HandleTopLevelResize(string source)
     {
+        // WM_SIZE has reached WinUI before this callback. Finish its pending
+        // layout now so the exact XAML host size reaches Skia during the drag,
+        // rather than publishing the previous layout from the window message.
+        _host?.UpdateLayout();
         var provisional = _targets.Latest;
         WindowsTopLevelResizeSource? topLevelSource;
         lock (_gate)
@@ -1032,7 +1036,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
                     surfaceWidth: surfaceWidth,
                     surfaceHeight: surfaceHeight,
                     detail: compositionCandidate
-                        ? $"backend=composition-surface; backingStoreResized={surfaceChanged}; rawRenderChildHwnd=0; hwndSwapChain=0; swapChainPanelAttachment=0; surface={surfaceWidth}x{surfaceHeight}; logical={target.LogicalWidth}x{target.LogicalHeight}; scale={target.DeviceScaleX}; adapter={adapterDescription}"
+                        ? $"backend=composition-surface; backingStoreResized={surfaceChanged}; graphiteDeviceCreations={compositionPresenter!.GraphiteDeviceCreationCount}; rawRenderChildHwnd=0; hwndSwapChain=0; swapChainPanelAttachment=0; surface={surfaceWidth}x{surfaceHeight}; logical={target.LogicalWidth}x{target.LogicalHeight}; scale={target.DeviceScaleX}; adapter={adapterDescription}"
                         : $"backend=raw-child-hwnd; stableCapacity={WindowsStableCapacityFeature.Enabled}; backingStoreResized={surfaceChanged}; hwnd={nativeSource!.RenderWindowHandle}; exactContent={surfaceWidth}x{surfaceHeight}; capacity={presenter.CapacityWidth}x{presenter.CapacityHeight}; adapter={adapterDescription}"
                 );
                 var paint = new MauiSkiaPaintContext(
@@ -1696,15 +1700,13 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
 }
 
 /// <summary>
-/// Candidate-only observer for the existing WinUI top-level HWND. It never
+/// Observer for the existing WinUI top-level HWND. It never
 /// creates or subclasses a render child and never owns pointer routing. Its
-/// only responsibility is publishing top-level sizing/DPI epochs early enough
-/// for the framework/raster current+latest mailbox.
+/// publishes sizing/DPI epochs after WinUI consumes the native geometry.
 /// </summary>
 internal sealed class WindowsTopLevelResizeSource : IDisposable
 {
     private const uint WmSize = 0x0005;
-    private const uint WmSizing = 0x0214;
     private const uint WmDpiChanged = 0x02E0;
     private const uint WmNcDestroy = 0x0082;
     private static long _nextSubclassId;
@@ -1822,11 +1824,11 @@ internal sealed class WindowsTopLevelResizeSource : IDisposable
         _ = lParam;
         _ = subclassId;
         _ = referenceData;
-        if (_started && message is WmSizing or WmSize or WmDpiChanged)
+        var result = DefSubclassProc(windowHandle, message, wParam, lParam);
+        if (_started && !_disposed && message is WmSize or WmDpiChanged)
         {
             var source = message switch
             {
-                WmSizing => "top-level.WM_SIZING",
                 WmDpiChanged => "top-level.WM_DPICHANGED",
                 _ => "top-level.WM_SIZE",
             };
@@ -1837,7 +1839,7 @@ internal sealed class WindowsTopLevelResizeSource : IDisposable
             _attached = false;
         }
 
-        return DefSubclassProc(windowHandle, message, wParam, lParam);
+        return result;
     }
 
     public void Dispose()

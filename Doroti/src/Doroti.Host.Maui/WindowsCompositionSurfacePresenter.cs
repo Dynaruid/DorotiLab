@@ -53,8 +53,8 @@ internal static class WindowsCompositionSurfaceFeature
 }
 
 /// <summary>
-/// Candidate presentation boundary used only behind
-/// DOROTI_WINDOWS_COMPOSITION_SURFACE=1. Skia renders into an exact D3D12
+/// Default Graphite presentation boundary (also available to Ganesh through
+/// DOROTI_WINDOWS_COMPOSITION_SURFACE=1). Skia renders into an exact D3D12
 /// backing store; this owner copies that resource into a bounded pool of
 /// CompositionDrawingSurface fronts without CPU readback.
 /// </summary>
@@ -119,6 +119,7 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
     internal long BeginDrawCount { get; private set; }
     internal long EndDrawCount { get; private set; }
     internal long GpuFenceCount { get; private set; }
+    internal long GraphiteDeviceCreationCount { get; private set; }
     internal long CommitRequestCount { get; private set; }
     internal long CommitCompletionCount { get; private set; }
     internal long CommitBatchCompletionCount { get; private set; }
@@ -156,13 +157,11 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
             && (_backingStore.Width != width || _backingStore.Height != height)
         )
         {
-            // Dispose the imported image before releasing its D3D allocation.
-            _graphite.Dispose();
-            _graphite = null;
+            // Retire the imported images before resizing their D3D allocation.
+            // Recreating the Vulkan device/Graphite session here makes every
+            // pixel of a live resize pay device and shader warm-up costs.
+            _graphite.ReleaseD3D12Resource();
             _graphiteSurface = null;
-            _backingStore.Dispose();
-            _backingStore = null;
-            CreateGraphite();
         }
         _backingStore ??= new WindowsD3D12BackingStore(_device12!, _skiaContext);
         SurfaceChanged = _backingStore.EnsureSize(width, height);
@@ -701,6 +700,7 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
                 GraphiteNativeLibrary.ReadAssetManifest(assetManifest)
             );
         _graphite.ResourcesReleasing += () => GpuResourcesReleasing?.Invoke();
+        GraphiteDeviceCreationCount++;
     }
 
     internal void TakeGraphiteShutdownOwnershipAfterThreadJoined() =>

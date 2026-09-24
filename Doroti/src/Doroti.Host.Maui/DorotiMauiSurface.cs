@@ -36,6 +36,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     private Window? _window;
 #if WINDOWS
     private Microsoft.UI.Xaml.Window? _closingWindow;
+    private WindowsWindowBackdrop? _windowsBackdrop;
     private bool _closeStarted;
     private bool _closeReady;
 #endif
@@ -85,6 +86,9 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         BackgroundColor = Microsoft.Maui.Graphics.Colors.Transparent;
 #elif WINDOWS
         _renderSurface = new DorotiWindowsDxgiSurface();
+        // Skia already applies the configured base color. Keep the MAUI
+        // container transparent so it does not cover the system material.
+        BackgroundColor = Microsoft.Maui.Graphics.Colors.Transparent;
 #else
         _renderSurface = new MauiSkglSurface(_textInput, _viewId);
 #endif
@@ -547,6 +551,13 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         window.Stopped += HandleStopped;
         window.Destroying += HandleDestroying;
 #if WINDOWS
+        if (window.Handler?.PlatformView is Microsoft.UI.Xaml.Window backdropWindow)
+        {
+            _windowsBackdrop = new(
+                backdropWindow,
+                _application.ViewConfiguration.ResolveAppearance().ResolveBackdrop(isMacOS: false)
+            );
+        }
         if (
             window.Handler?.PlatformView is Microsoft.UI.Xaml.Window nativeWindow
             && WindowsCompositionSurfaceFeature.GraphiteEnabled
@@ -596,7 +607,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
 
     private void HandleRequestedThemeChanged(object? sender, AppThemeChangedEventArgs args)
     {
-#if MACOS
+#if MACOS || WINDOWS
         BackgroundColor = Microsoft.Maui.Graphics.Colors.Transparent;
 #else
         var color = ResolveBackgroundColor(args.RequestedTheme);
@@ -682,6 +693,8 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         _window.Stopped -= HandleStopped;
         _window.Destroying -= HandleDestroying;
 #if WINDOWS
+        _windowsBackdrop?.Dispose();
+        _windowsBackdrop = null;
         if (_closingWindow is { } nativeWindow)
         {
             nativeWindow.AppWindow.Closing -= HandleNativeClosing;

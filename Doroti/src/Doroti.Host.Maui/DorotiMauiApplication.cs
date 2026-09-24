@@ -126,7 +126,7 @@ public sealed class DorotiMauiApplication(DorotiApplicationDescriptor descriptor
         var window = new Window(
             new ContentPage
             {
-#if MACOS
+#if MACOS || WINDOWS
                 BackgroundColor = Microsoft.Maui.Graphics.Colors.Transparent,
 #endif
                 SafeAreaEdges = Microsoft.Maui.SafeAreaEdges.None,

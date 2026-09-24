@@ -42,10 +42,7 @@ public sealed unsafe partial class GraphiteVulkanWindow
     /// <summary>Caller has drained D3D copies and keeps the resource in COMMON until the next FlushD3D12Frame.</summary>
     public void ImportD3D12Resource(nint sharedHandle, int width, int height)
     {
-        CheckOwner();
-        ReleaseD3D12Frame();
-        Check(_vk.DeviceWaitIdle(_device), "shared image resize drain");
-        ReleaseImages();
+        ReleaseD3D12Resource();
         const ImageUsageFlags usage =
             ImageUsageFlags.ColorAttachmentBit
             | ImageUsageFlags.InputAttachmentBit
@@ -149,6 +146,23 @@ public sealed unsafe partial class GraphiteVulkanWindow
         Generation++;
         _externalInitialized = false;
         CreateIntermediateTarget(width, height, usage);
+    }
+
+    /// <summary>
+    /// Releases the imported allocation before its D3D12 owner resizes it,
+    /// retaining the Vulkan device and Graphite session for the next import.
+    /// The caller must first drain its D3D12 copies.
+    /// </summary>
+    public void ReleaseD3D12Resource()
+    {
+        CheckOwner();
+        ReleaseD3D12Frame();
+        if (_backing.Handle != 0 || _target is not null)
+        {
+            Check(_vk.DeviceWaitIdle(_device), "shared image resize drain");
+            ReleaseImages();
+        }
+        _externalInitialized = false;
     }
 
     public SKSurface BeginD3D12Frame()

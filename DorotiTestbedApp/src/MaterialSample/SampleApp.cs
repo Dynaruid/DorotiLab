@@ -114,7 +114,13 @@ internal sealed class SampleAppState : State<SampleApp>
 
     private M.ThemeData WindowTheme(M.ThemeData theme) =>
         _acrylic
-            ? theme.copyWith(scaffoldBackgroundColor: theme.colorScheme.surface.withAlpha(153))
+            // Desktop Acrylic already tints the background. Keep a lighter
+            // Windows scaffold wash so the material is visible through it.
+            ? theme.copyWith(
+                scaffoldBackgroundColor: theme.colorScheme.surface.withAlpha(
+                    OperatingSystem.IsWindows() ? 96 : 153
+                )
+            )
             : theme;
 
     private M.ThemeData LightTheme() =>
