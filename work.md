@@ -4,7 +4,7 @@
 
 검토 기준: `7f74005f`, `.github/copilot-instructions.md`, 사용자가 제공한 Sudoku Flutter 앱과 아래 공식 웹 문서.
 
-상태: **검토·계획 작성 완료 / 구현 TODO**. 이번 요청에서는 이 문서만 작성한다. 아래 API 예제는 제안이며 현재 컴파일되는 API가 아니다. `work2.md`의 Runtime 전환과 `work3.md`의 Linux Qt 작업은 별도로 유지한다.
+상태: **검토·계획 작성 완료 / 구현 TODO**. 이번 요청에서는 이 문서만 작성한다. 아래 API 예제는 제안이며 현재 컴파일되는 API가 아니다. [Runtime 전환 보관 요약](history/26-09-24/runtime-dotnet-migration-summary.md)과 [Linux Qt 작업 보관 요약](history/26-09-24/linux-qt-improvements-summary.md)의 잔여 작업은 별도로 유지한다.
 
 사용자 확정 방향(2026-09-25 추가): **새 창 API는 데스크톱 OS 전용으로 제공하고, 향후 다중 창 지원 시 사용 코드를 다시 설계하지 않도록 창 관리·창별 제어·창 콘텐츠 생성을 처음부터 분리한다.** 이번 범위는 다중 창의 API·수명 설계까지이며, 실제 여러 네이티브 창의 동시 실행 구현은 후속 단계로 둔다.
 
@@ -379,7 +379,7 @@ Windows는 드래그, 8방향 resize, 더블클릭 최대화/복원, 우클릭 �
 - [ ] 최종 지원표와 각 gate의 PASS/PARTIAL/notVerified를 기록하고, 확인되지 않은 host를 지원 완료로 표시하지 않는다.
 - 완료 기준: 사용자 앱 코드에 HWND/host-specific 분기가 없어도 지원되는 세 예제를 사용할 수 있음.
 
-의존 순서: **W0 → W1 → W2 → W3 → W4 → W5**. W3의 커스텀 창은 기본 native caption 경로와 별도로 검증한다. W4의 Qt 변경은 `work3.md`의 GPU·입력·접근성 수정과 충돌을 확인하며, 그 계획을 이번 창 API 작업 완료로 대체하지 않는다.
+의존 순서: **W0 → W1 → W2 → W3 → W4 → W5**. W3의 커스텀 창은 기본 native caption 경로와 별도로 검증한다. W4의 Qt 변경은 [Linux Qt 보관 작업](history/26-09-24/linux-qt-improvements-summary.md)의 GPU·입력·접근성 수정과 충돌을 확인하며, 그 계획을 이번 창 API 작업 완료로 대체하지 않는다.
 
 ### W6 — 후속 다중 네이티브 창 구현 (이번 첫 구현 범위 밖)
 

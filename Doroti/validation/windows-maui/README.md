@@ -30,7 +30,7 @@ status below remains **PARTIAL**.
 construction, as explicitly selected by the user. Final capture found no black
 resize strips or caption geometry mismatch; content/outer-edge timing still
 fails the full visual gate. See the latest
-[handoff report](../../../windows-maui-resize-report.md) for final changes,
+[archived handoff summary](../../../history/26-09-24/windows-maui-resize-summary.md) for final changes,
 passed operational checks, and the **failing** `verify-flicker.py` visual gate.
 Earlier passing size/lifetime results below do not qualify visual continuity.
 
