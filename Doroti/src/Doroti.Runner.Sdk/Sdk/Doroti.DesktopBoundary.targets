@@ -4,7 +4,7 @@
       <_DorotiDesktopAssembly Include="@(ReferencePath)" Condition="$([System.String]::Copy('%(ReferencePath.Filename)').StartsWith('Doroti.Desktop'))" />
     </ItemGroup>
     <Error Code="DOROTIDESKTOP004"
-           Condition="'@(_DorotiDesktopAssembly)' != '' and ('$(DorotiTarget)' == 'Web' or '$(DorotiTarget)' == 'Android' or '$(DorotiTarget)' == 'iOS' or '$(DorotiTarget)' == 'MacCatalyst' or '$(DorotiTarget)' == '')"
+           Condition="'@(_DorotiDesktopAssembly)' != '' and ('$(DorotiTarget)' == 'Web' or '$(DorotiTarget)' == 'Android' or '$(DorotiTarget)' == 'iOS' or '$(DorotiTarget)' == '')"
            Text="Desktop assemblies cannot be referenced by the common application or a non-desktop runner. Use a desktop companion: @(_DorotiDesktopAssembly)." />
   </Target>
 </Project>

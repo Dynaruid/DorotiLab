@@ -179,6 +179,18 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
     internal UIKitPlatformRasterSurface CreatePlatformRasterSurface() => new(Device!, _queue);
 #endif
 
+#if MACCATALYST
+    private readonly TaskCompletionSource _retired = new(
+        TaskCreationOptions.RunContinuationsAsynchronously
+    );
+
+    internal Task RetireAsync()
+    {
+        Disconnect();
+        return _retired.Task;
+    }
+#endif
+
     internal void Disconnect()
     {
         if (_releaseRequested)
@@ -445,12 +457,7 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
             frame.Submit();
             // Transfer ownership before attempting the terminal marker. Even a
             // failed commit must retain textures; it is not GPU completion.
-            var pending = new PendingFrame(
-                frame,
-                drawable,
-                owner,
-                paint.Completion,
-                generation
+            var pending = new PendingFrame(frame, drawable, owner, paint.Completion, generation
 #if IOS && !MACCATALYST
                 ,
                 platformFrame
@@ -488,12 +495,7 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
                     frame?.CancelRecording();
                     frame = null;
                 }
-                var pending = new PendingFrame(
-                    frame,
-                    drawable!,
-                    owner,
-                    null,
-                    _generation
+                var pending = new PendingFrame(frame, drawable!, owner, null, _generation
 #if IOS && !MACCATALYST
                     ,
                     platformFrame
@@ -705,6 +707,9 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
         _queue.Dispose();
         _resourcesReleased = true;
         RetiringViews.Remove(this);
+#if MACCATALYST
+        _retired.TrySetResult();
+#endif
     }
 
     private void DispatchTouches(NSSet touches, UIEvent? evt, PointerChange change)

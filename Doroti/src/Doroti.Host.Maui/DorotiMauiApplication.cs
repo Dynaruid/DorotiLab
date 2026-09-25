@@ -119,12 +119,29 @@ public static class DorotiMauiApplicationBuilderExtensions
 
 public sealed class DorotiMauiApplication(DorotiApplicationDescriptor descriptor) : Application
 {
+#if MACCATALYST
+    internal bool UsesDesktop =>
+        Doroti.Desktop.DesktopApplication.TryGetDefinition(descriptor, out _);
+#endif
+
     protected override Window CreateWindow(IActivationState? activationState)
     {
         _ = activationState;
 #if WINDOWS
         if (Doroti.Desktop.DesktopApplication.TryGetDefinition(descriptor, out var desktop))
             return WindowsDesktopWindowHost.CreateMainWindow(descriptor, desktop!);
+#elif MACOS
+        if (Doroti.Desktop.DesktopApplication.TryGetDefinition(descriptor, out var desktop))
+            return AppKitDesktopWindowHost.CreateMainWindow(descriptor, desktop!);
+#elif MACCATALYST
+        if (Doroti.Desktop.DesktopApplication.TryGetDefinition(descriptor, out var desktop))
+        {
+            if (!OperatingSystem.IsMacCatalystVersionAtLeast(16))
+                throw new PlatformNotSupportedException(
+                    "The Catalyst Desktop adapter requires Mac Catalyst 16 or later."
+                );
+            return MacCatalystDesktopWindowHost.CreateMainWindow(descriptor, desktop!);
+        }
 #endif
         var title = descriptor.ViewConfiguration.title;
         var window = new Window(

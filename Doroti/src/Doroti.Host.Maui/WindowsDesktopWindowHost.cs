@@ -111,6 +111,8 @@ internal sealed class WindowsDesktopWindowHost : IWindowHost
     private static WindowEvaluation EvaluateOptions(WindowOptions options, WindowOptions? current)
     {
         options.Validate();
+        if (options.StartupVisibility == WindowStartupVisibility.PlatformDefault)
+            return new(WindowSupport.Unsupported, "This adapter owns first visibility; use Manual or WhenReady.");
         var appearance = options.Appearance;
         if (
             appearance.TitleBar.Style != WindowTitleBarStyle.Normal

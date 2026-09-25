@@ -17,11 +17,22 @@ internal sealed partial class MauiEvidenceJsonContext : JsonSerializerContext;
 
 public sealed class DorotiMauiSurface : Grid, IDisposable
 {
-#if WINDOWS
+#if WINDOWS || MACOS || MACCATALYST
     internal bool DesktopManaged { get; init; }
     internal event Action? DesktopFrameReady;
     internal event Action<Exception>? DesktopFrameFailed;
-    internal Task PrepareDesktopCloseAsync() => ((DorotiWindowsDxgiSurface)_renderSurface).PrepareForCloseAsync();
+#endif
+#if MACCATALYST
+    internal DorotiUIKitGraphiteView? DesktopCatalystSurface => _renderSurface.Element.Handler?.PlatformView as DorotiUIKitGraphiteView;
+    internal void RequestDesktopFrame() => _renderSurface.InvalidateSurface();
+#endif
+#if MACOS
+    internal DorotiMacOSMetalSurface DesktopMetalSurface => (DorotiMacOSMetalSurface)_renderSurface;
+#endif
+#if WINDOWS
+    internal Task PrepareDesktopCloseAsync() =>
+        ((DorotiWindowsDxgiSurface)_renderSurface).PrepareForCloseAsync();
+
     // Set only by the dedicated full-window runner. Embedded MAUI surfaces keep
     // their XAML clipping, layout and overlay behavior.
     internal bool OwnsWindowContent
@@ -276,7 +287,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
             return;
         }
         _host.CompletePaint(_viewId, completion);
-#if WINDOWS
+#if WINDOWS || MACOS || MACCATALYST
         DesktopFrameReady?.Invoke();
 #endif
         ScheduleEvidenceWrite();
@@ -290,7 +301,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         }
 
         WriteFailure(exception);
-#if WINDOWS
+#if WINDOWS || MACOS || MACCATALYST
         DesktopFrameFailed?.Invoke(exception);
 #endif
         ScheduleEvidenceWrite();
@@ -570,7 +581,10 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         window.Stopped += HandleStopped;
         window.Destroying += HandleDestroying;
 #if WINDOWS
-        if (!DesktopManaged && window.Handler?.PlatformView is Microsoft.UI.Xaml.Window backdropWindow)
+        if (
+            !DesktopManaged
+            && window.Handler?.PlatformView is Microsoft.UI.Xaml.Window backdropWindow
+        )
         {
             _windowsBackdrop = new(
                 backdropWindow,
@@ -579,7 +593,8 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
             );
         }
         if (
-            !DesktopManaged && window.Handler?.PlatformView is Microsoft.UI.Xaml.Window nativeWindow
+            !DesktopManaged
+            && window.Handler?.PlatformView is Microsoft.UI.Xaml.Window nativeWindow
             && WindowsCompositionSurfaceFeature.GraphiteEnabled
         )
         {

@@ -12,6 +12,8 @@ public sealed class DesktopStartup : IDorotiDesktopApplicationStartup
     {
         var mode = Environment.GetEnvironmentVariable("DOROTI_DESKTOP_SAMPLE") ?? "legacy";
         var legacy = desktop.LegacyMainWindow;
+        if (Environment.GetEnvironmentVariable("DOROTI_DESKTOP_LIFETIME") == "Explicit")
+            desktop.LifetimePolicy = WindowLifetimePolicy.Explicit;
         var options =
             mode == "legacy"
                 ? legacy.Options
@@ -78,8 +80,9 @@ public sealed class DesktopStartup : IDorotiDesktopApplicationStartup
                     await context.Window.EnsureInitializedAsync(cancellationToken);
                     await context.Window.WaitUntilReadyToShowAsync(cancellationToken);
                     var beforeShow = context.Window.State;
-                    if (options.StartupVisibility == WindowStartupVisibility.Manual)
-                        await context.Window.ShowAsync(cancellationToken);
+                    // The WhenReady auto-show and this hook run concurrently. Explicitly
+                    // await the idempotent show before asking the native host for focus.
+                    await context.Window.ShowAsync(cancellationToken);
                     await context.Window.FocusAsync(cancellationToken);
                     if (
                         Environment.GetEnvironmentVariable("DOROTI_DESKTOP_PROBE") is

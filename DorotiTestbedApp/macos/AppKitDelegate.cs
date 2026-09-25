@@ -20,6 +20,7 @@ public sealed class AppKitDelegate : DorotiMacOSMauiApplication
         NSApplication.SharedApplication.Activate();
         _ = CaptureNativeBridgeEvidenceAsync();
         _ = PlatformViewEvidence.CaptureAsync();
+        _ = MacOSDesktopWindowEvidence.RunAsync();
     }
 
     private static async Task CaptureNativeBridgeEvidenceAsync()

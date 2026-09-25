@@ -1,10 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0-maccatalyst</TargetFramework>
+    <DorotiMacCatalystTargetFramework Condition="'$(DorotiMacCatalystTargetFramework)' == ''">net10.0-maccatalyst</DorotiMacCatalystTargetFramework>
+    <TargetFramework>$(DorotiMacCatalystTargetFramework)</TargetFramework>
     <AssemblyName>DorotiTestbedApp.MacCatalyst.Native</AssemblyName>
     <RootNamespace>DorotiTestbedApp.MacCatalyst.Native</RootNamespace>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <NoWarn Condition="'$(DorotiMacCatalystTargetFramework)' == 'net10.0-maccatalyst27.0'">$(NoWarn);XCODE_27_0_PREVIEW</NoWarn>
     <IsBindingProject>true</IsBindingProject>
     <IsPackable>false</IsPackable>
     <IsTrimmable>true</IsTrimmable>

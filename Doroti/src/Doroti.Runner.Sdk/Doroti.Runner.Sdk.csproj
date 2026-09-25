@@ -13,6 +13,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="Sdk\Sdk.props" Pack="true" PackagePath="Sdk\Sdk.props" />
+    <None Include="Sdk\Doroti.MacCatalyst.props" Pack="true" PackagePath="Sdk\Doroti.MacCatalyst.props" />
     <None Include="Sdk\Doroti.MacOS.props" Pack="true" PackagePath="Sdk\Doroti.MacOS.props" />
     <None Include="Sdk\Doroti.IosNativeAot.props" Pack="true" PackagePath="Sdk\Doroti.IosNativeAot.props" />
     <None Include="Sdk\Doroti.NativeAot.Evidence.targets" Pack="true" PackagePath="Sdk\Doroti.NativeAot.Evidence.targets" />

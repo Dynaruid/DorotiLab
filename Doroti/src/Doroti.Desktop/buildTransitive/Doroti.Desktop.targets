@@ -1,7 +1,7 @@
 <Project>
   <Target Name="ValidateDorotiDesktopBoundary" BeforeTargets="PrepareForBuild">
     <Error Code="DOROTIDESKTOP001"
-      Condition="'$(DorotiTarget)' == 'Web' or '$(DorotiTarget)' == 'Android' or '$(DorotiTarget)' == 'iOS' or '$(DorotiTarget)' == 'MacCatalyst' or $([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)|$(RuntimeIdentifier)', '(?i)(browser|android|ios|maccatalyst)'))"
-      Text="Doroti.Desktop requires a native Windows, AppKit macOS, or Linux desktop host. Put desktop startup in a separate companion assembly." />
+      Condition="'$(DorotiTarget)' == 'Web' or '$(DorotiTarget)' == 'Android' or '$(DorotiTarget)' == 'iOS' or $([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)|$(RuntimeIdentifier)', '(?i)(browser|android|ios)'))"
+      Text="Doroti.Desktop requires a native Windows, AppKit macOS, Mac Catalyst, or Linux desktop host. Put desktop startup in a separate companion assembly." />
   </Target>
 </Project>

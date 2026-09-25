@@ -1,4 +1,5 @@
 <Project>
+  <Import Project="Doroti.MacCatalyst.props" Condition="'$(DorotiMacCatalystProfileImported)' != 'true'" />
   <Import Project="Doroti.MacOS.props" Condition="'$(DorotiMacOSProfileImported)' != 'true'" />
   <Import Project="Doroti.IosNativeAot.props" Condition="'$(DorotiIosNativeAotProfileImported)' != 'true'" />
   <PropertyGroup>

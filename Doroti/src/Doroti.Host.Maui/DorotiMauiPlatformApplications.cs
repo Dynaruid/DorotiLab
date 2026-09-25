@@ -1,6 +1,9 @@
 using Doroti.Hosting;
-#if WINDOWS
+#if WINDOWS || MACCATALYST
 using Microsoft.Maui.LifecycleEvents;
+#endif
+#if MACCATALYST
+using Microsoft.Maui.Platform;
 #endif
 #if MACOS
 using AppKit;
@@ -78,7 +81,7 @@ public abstract class DorotiMauiWinUIApplication : MauiWinUIApplication
 #elif IOS || MACCATALYST
 public abstract class DorotiMauiUIApplicationDelegate : MauiUIApplicationDelegate
 {
-#if IOS && !MACCATALYST
+#if IOS || MACCATALYST
     public override UIKit.UISceneConfiguration GetConfiguration(
         UIKit.UIApplication application,
         UIKit.UISceneSession connectingSceneSession,
@@ -87,7 +90,11 @@ public abstract class DorotiMauiUIApplicationDelegate : MauiUIApplicationDelegat
     {
         var configuration = base.GetConfiguration(application, connectingSceneSession, options);
         // A direct type reference keeps the registered delegate in trimmed/AOT apps.
+#if MACCATALYST
+        configuration.DelegateClass = new ObjCRuntime.Class(typeof(DorotiMacCatalystSceneDelegate));
+#else
         configuration.DelegateClass = new ObjCRuntime.Class(typeof(DorotiMauiSceneDelegate));
+#endif
         return configuration;
     }
 #endif
@@ -104,6 +111,34 @@ public abstract class DorotiMauiUIApplicationDelegate : MauiUIApplicationDelegat
     protected sealed override MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
+#if MACCATALYST
+        builder.ConfigureLifecycleEvents(events =>
+            events.AddiOS(ios =>
+                ios.SceneWillConnect(
+                    (scene, session, options) =>
+                    {
+                        // A previously saved implicit UIKit scene can have no configuration
+                        // name and retain MAUI's base delegate. Its WillConnect only creates
+                        // a window for MAUI's named configuration. Complete that missing path
+                        // using the public MAUI scene API, without replacing the native delegate.
+                        if (
+                            session.Configuration.Name != "__MAUI_DEFAULT_SCENE_CONFIGURATION__"
+                            && scene.Delegate is MauiUISceneDelegate { Window: null } sceneDelegate
+                            && IPlatformApplication.Current?.Application is { } app
+                        )
+                        {
+                            sceneDelegate.CreatePlatformWindow(app, scene, session, options);
+                            if (sceneDelegate.Window is { } native)
+                                app.Windows.FirstOrDefault(window =>
+                                        ReferenceEquals(window.Handler?.PlatformView, native)
+                                    )
+                                    ?.Created();
+                        }
+                    }
+                )
+            )
+        );
+#endif
         ConfigurePlatform(builder);
         return builder.UseDorotiApplication(CreateApplicationDescriptor()).Build();
     }
@@ -130,9 +165,95 @@ public abstract class DorotiMauiAndroidApplication(
     protected virtual void ConfigurePlatform(MauiAppBuilder builder) => _ = builder;
 }
 #elif MACOS
-public abstract class DorotiMacOSMauiApplication : MacOSMauiApplication
+public abstract class DorotiMacOSMauiApplication : MacOSMauiApplication, IPlatformApplication
 {
     private bool _terminateAfterLastWindowClosed;
+    private DorotiApplicationDescriptor? _descriptor;
+    private IApplication? _desktopApplication;
+    private Doroti.Desktop.DorotiWindowManager? _desktopManager;
+    private bool _terminationPending;
+    IApplication IPlatformApplication.Application => _desktopApplication ?? base.Application;
+
+    public override void DidFinishLaunching(Foundation.NSNotification notification)
+    {
+        _descriptor = CreateApplicationDescriptor();
+        if (!Doroti.Desktop.DesktopApplication.TryGetDefinition(_descriptor, out _))
+        {
+            base.DidFinishLaunching(notification);
+            return;
+        }
+        // The pinned preview creates WindowHandler directly and shows before mapping
+        // content. Own only the opted-in Desktop launch; legacy launch stays upstream.
+        IPlatformApplication.Current = this;
+        var app = CreateMauiApp();
+        var context = new MacOSMauiContext(app.Services).MakeApplicationScope(this);
+        Services = context.Services;
+        _desktopApplication =
+            Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<IApplication>(
+                Services
+            );
+        Microsoft.Maui.Platforms.MacOS.Handlers.MenuBarManager.SetupDefaultMenuBar(
+            Services.GetService(typeof(MacOSMenuBarOptions)) as MacOSMenuBarOptions
+        );
+        var applicationHandler = new Microsoft.Maui.Platforms.MacOS.Handlers.ApplicationHandler();
+        applicationHandler.SetMauiContext(context);
+        applicationHandler.SetVirtualView(_desktopApplication);
+        var window = _desktopApplication.CreateWindow(new ActivationState(context));
+        var handler = new AppKitDesktopWindowHandler();
+        handler.SetMauiContext(context);
+        handler.SetVirtualView(window);
+        window.Created();
+        OnStarted();
+    }
+
+    internal void AttachDesktopManager(Doroti.Desktop.DorotiWindowManager manager)
+    {
+        _desktopManager = manager;
+        manager.ExitRequested += () =>
+            NSApplication.SharedApplication.BeginInvokeOnMainThread(() =>
+            {
+                if (!_terminationPending)
+                    NSApplication.SharedApplication.Terminate(this);
+            });
+    }
+
+    public override NSApplicationTerminateReply ApplicationShouldTerminate(NSApplication sender)
+    {
+        if (_desktopManager is null || _desktopManager.GetWindows().Count == 0)
+            return NSApplicationTerminateReply.Now;
+        if (!_terminationPending)
+        {
+            _terminationPending = true;
+            _ = DecideTerminationAsync(sender);
+        }
+        return NSApplicationTerminateReply.Later;
+    }
+
+    private async Task DecideTerminationAsync(NSApplication application)
+    {
+        // Reply only after AppKit has received Later, even if close completes inline.
+        await Task.Yield();
+        var allow = true;
+        try
+        {
+            foreach (var window in _desktopManager!.GetWindows())
+                if (!await window.CloseAsync())
+                {
+                    allow = false;
+                    break;
+                }
+        }
+        catch (Exception error)
+        {
+            allow = false;
+            DorotiMauiSurface.WriteFailure(error);
+        }
+        application.BeginInvokeOnMainThread(() =>
+        {
+            _terminationPending = false;
+            application.ReplyToApplicationShouldTerminate(allow);
+        });
+    }
 
     protected DorotiMacOSMauiApplication()
     {
@@ -146,7 +267,7 @@ public abstract class DorotiMacOSMauiApplication : MacOSMauiApplication
     protected sealed override MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
-        var descriptor = CreateApplicationDescriptor();
+        var descriptor = _descriptor ??= CreateApplicationDescriptor();
         _terminateAfterLastWindowClosed = descriptor
             .ViewConfiguration
             .terminateAfterLastWindowClosed;
@@ -159,7 +280,7 @@ public abstract class DorotiMacOSMauiApplication : MacOSMauiApplication
     )
     {
         _ = sender;
-        return _terminateAfterLastWindowClosed;
+        return _desktopManager is null && _terminateAfterLastWindowClosed;
     }
 
     protected abstract DorotiApplicationDescriptor CreateApplicationDescriptor();

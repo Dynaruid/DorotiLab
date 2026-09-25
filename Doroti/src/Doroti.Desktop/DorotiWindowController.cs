@@ -161,6 +161,10 @@ public sealed class DorotiWindowController
         });
     }
 
+    /// <summary>
+    /// Registers an API close decision. Native close requests participate only when
+    /// Capabilities.CanCancelNativeClose is true; platform termination may bypass it.
+    /// </summary>
     public IDisposable RegisterClosing(
         Func<WindowClosingContext, CancellationToken, Task<WindowCloseDecision>> callback
     )

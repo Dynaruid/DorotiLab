@@ -460,6 +460,222 @@ await Check(
         Assert(f.Hosts[0].Disposed && manager.GetWindows().Count == 0);
     }
 );
+#if DOROTI_APPKIT_CONTRACTS
+await Check(
+    "AppKit rejects app-wide and unmapped window requests",
+    () =>
+    {
+        var normal = new WindowOptions();
+        Assert(
+            Doroti.Host.Maui.AppKitDesktopWindowPolicy.Evaluate(normal, null).Support
+                == WindowSupport.Supported
+        );
+        Assert(
+            Doroti
+                .Host.Maui.AppKitDesktopWindowPolicy.Evaluate(
+                    normal with
+                    {
+                        SkipTaskbar = true,
+                    },
+                    null
+                )
+                .Support == WindowSupport.Unsupported
+        );
+        Assert(
+            Doroti
+                .Host.Maui.AppKitDesktopWindowPolicy.Evaluate(
+                    normal with
+                    {
+                        Position = new Offset(10, 20),
+                    },
+                    null
+                )
+                .Support == WindowSupport.Unsupported
+        );
+        Assert(
+            Doroti
+                .Host.Maui.AppKitDesktopWindowPolicy.Evaluate(
+                    normal with
+                    {
+                        Appearance = normal.Appearance with
+                        {
+                            TitleBar = new() { Style = WindowTitleBarStyle.Hidden },
+                        },
+                    },
+                    null
+                )
+                .Support == WindowSupport.Unsupported
+        );
+        return Task.CompletedTask;
+    }
+);
+await Check(
+    "AppKit evaluates selected macOS material and unsupported tint",
+    () =>
+    {
+        var options = new WindowOptions
+        {
+            Appearance = new Appearance
+            {
+                Backdrop = new()
+                {
+                    Mode = Doroti.Desktop.WindowBackdropMode.Acrylic,
+                    LuminosityOpacity = .5,
+                },
+                MacOSBackdrop = new()
+                {
+                    Mode = Doroti.Desktop.WindowBackdropMode.LiquidGlass,
+                    TintColor = new Color(0xff112233),
+                    TintOpacity = .5,
+                },
+            },
+        };
+        Assert(
+            Doroti.Host.Maui.AppKitDesktopWindowPolicy.Evaluate(options, null).Support
+                == WindowSupport.Supported
+        );
+        Assert(
+            Doroti
+                .Host.Maui.AppKitDesktopWindowPolicy.Evaluate(
+                    options with
+                    {
+                        Appearance = options.Appearance with { MacOSBackdrop = null },
+                    },
+                    null
+                )
+                .Support == WindowSupport.Unsupported
+        );
+        Assert(
+            Doroti
+                .Host.Maui.AppKitDesktopWindowPolicy.Evaluate(
+                    options with
+                    {
+                        Appearance = options.Appearance with { BackgroundColor = new Color(0) },
+                    },
+                    options
+                )
+                .Support == WindowSupport.RequiresRecreation
+        );
+        return Task.CompletedTask;
+    }
+);
+
+await Check(
+    "AppKit material fallback keeps OS policy separate from unavailable Glass",
+    () =>
+    {
+        var a = new Appearance
+        {
+            MacOSBackdrop = new()
+            {
+                Mode = Doroti.Desktop.WindowBackdropMode.LiquidGlass,
+                Fallback = Doroti.Desktop.WindowBackdropFallback.Transparent,
+            },
+        };
+        var oldOs = Doroti.Host.Maui.AppKitDesktopWindowPolicy.Resolve(a, false, false);
+        Assert(
+            oldOs.Appearance.Backdrop.Mode == Doroti.Desktop.WindowBackdropMode.Transparent
+                && !oldOs.SystemPolicyFallback
+        );
+        Assert(a.MacOSBackdrop.Mode == Doroti.Desktop.WindowBackdropMode.LiquidGlass);
+        var policy = Doroti.Host.Maui.AppKitDesktopWindowPolicy.Resolve(a, true, true);
+        Assert(
+            policy.Appearance.Backdrop.Mode == Doroti.Desktop.WindowBackdropMode.Solid
+                && policy.SystemPolicyFallback
+        );
+        var restored = Doroti.Host.Maui.AppKitDesktopWindowPolicy.Resolve(a, true, false);
+        Assert(
+            restored.Appearance.Backdrop.Mode == Doroti.Desktop.WindowBackdropMode.LiquidGlass
+                && !restored.SystemPolicyFallback
+        );
+        return Task.CompletedTask;
+    }
+);
+await Check(
+    "Catalyst requires explicit platform startup and opaque native chrome",
+    () =>
+    {
+        var options = new WindowOptions
+        {
+            StartupVisibility = WindowStartupVisibility.PlatformDefault,
+        };
+        var capabilities = new WindowCapabilities(
+            Doroti.Host.Maui.MacCatalystDesktopWindowPolicy.Evaluate,
+            canCancelNativeClose: false
+        );
+        Assert(!capabilities.CanCancelNativeClose);
+        Assert(capabilities.Evaluate(options).Support == WindowSupport.Supported);
+        foreach (
+            var rejected in new[]
+            {
+                options with
+                {
+                    StartupVisibility = WindowStartupVisibility.Manual,
+                },
+                options with
+                {
+                    StartupVisibility = WindowStartupVisibility.WhenReady,
+                },
+                options with
+                {
+                    Centered = true,
+                },
+                options with
+                {
+                    SkipTaskbar = true,
+                },
+                options with
+                {
+                    AlwaysOnTop = true,
+                },
+                options with
+                {
+                    Appearance = options.Appearance with { MacOSBackdrop = new() },
+                },
+                options with
+                {
+                    Appearance = options.Appearance with
+                    {
+                        Backdrop = new() { Mode = Doroti.Desktop.WindowBackdropMode.Acrylic },
+                    },
+                },
+                options with
+                {
+                    Appearance = options.Appearance with { BackgroundColor = new Color(0) },
+                },
+            }
+        )
+            Assert(capabilities.Evaluate(rejected).Support == WindowSupport.Unsupported);
+        Assert(
+            Doroti.Host.Maui.AppKitDesktopWindowPolicy.Evaluate(options, null).Support
+                == WindowSupport.Unsupported
+        );
+        return Task.CompletedTask;
+    }
+);
+await Check(
+    "platform startup does not add an implicit managed show",
+    async () =>
+    {
+        var factory = new Factory();
+        var manager = new DorotiWindowManager(factory, WindowLifetimePolicy.Explicit);
+        var request = Request() with
+        {
+            Options = new() { StartupVisibility = WindowStartupVisibility.PlatformDefault },
+        };
+        var window = await manager.CreateMainWindowAsync(request);
+        factory.Hosts[0].Ready.TrySetResult();
+        await window.InitializationWork;
+        Assert(!window.State.Visible);
+        using var closing = window.RegisterClosing(
+            (_, _) => Task.FromResult(WindowCloseDecision.Cancel)
+        );
+        Assert(!await window.CloseAsync());
+        closing.Dispose();
+        Assert(await window.CloseAsync());
+    }
+);
+#endif
 Console.WriteLine($"{passed}/{passed} contracts passed. Native visual/input evidence is separate.");
 
 sealed class Content : IDorotiViewEntrypoint

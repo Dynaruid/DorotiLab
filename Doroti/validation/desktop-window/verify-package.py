@@ -49,12 +49,14 @@ project.write_text('''<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup>
 </ItemGroup></Project>''', encoding='utf-8')
 output = run(['dotnet', 'run', '--project', str(project), '-c', 'Release'], cwd=consumer)
 assert 'contracts passed' in output, output
-for target in ['Web', 'Android', 'iOS', 'MacCatalyst']:
+for target in ['Web', 'Android', 'iOS']:
     run(['dotnet', 'build', str(project), '--no-restore', f'-p:DorotiTarget={target}', '--nologo', '-v:q'], cwd=consumer, expected='DOROTIDESKTOP001')
     print(f'PASS package boundary {target}', flush=True)
+run(['dotnet', 'build', str(project), '--no-restore', '-p:DorotiTarget=MacCatalyst', '--nologo', '-v:q'], cwd=consumer)
+print('PASS MacCatalyst package boundary', flush=True)
 assets = json.loads((consumer / 'obj/project.assets.json').read_text(encoding='utf-8'))
 assert all(item.get('type') != 'project' for item in assets['libraries'].values()), 'Source project leaked into consumer'
 result = dict(status='PASS', consumer=str(consumer), packages=len(projects), packageOnly=True,
-              negativeTargets=['Web', 'Android', 'iOS', 'MacCatalyst'], windowsExecution='notRun', contractOutput=output)
+              negativeTargets=['Web', 'Android', 'iOS'], positiveTargets=['MacCatalyst'], windowsExecution='notRun', contractOutput=output)
 (OUT / 'result.json').write_text(json.dumps(result, indent=2), encoding='utf-8')
 print(json.dumps(result, indent=2))

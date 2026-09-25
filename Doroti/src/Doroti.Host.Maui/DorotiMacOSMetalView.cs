@@ -161,6 +161,16 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         RequestFrame();
     }
 
+    private readonly TaskCompletionSource _retired = new(
+        TaskCreationOptions.RunContinuationsAsynchronously
+    );
+
+    internal Task RetireAsync()
+    {
+        Disconnect();
+        return _retired.Task;
+    }
+
     internal void Disconnect()
     {
         ResetTrackpad();
@@ -193,6 +203,15 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         }
     }
 
+    private ICAMetalDrawable? _preparedDrawable;
+
+    internal void PresentPreparedFrame()
+    {
+        AppKitPlatformViewDispatcher.VerifyThread();
+        _preparedDrawable?.Present();
+        _preparedDrawable = null;
+    }
+
     internal void RequestFrame()
     {
         if (_releaseRequested)
@@ -211,6 +230,9 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
             if (!_releaseRequested)
             {
                 NeedsDisplay = true;
+                // Ordered-out desktop windows still need a completed first drawable.
+                if (Window is { IsVisible: false })
+                    Draw();
             }
         });
     }
@@ -522,7 +544,8 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
                 ?? throw new InvalidOperationException("Metal command buffer creation failed.");
             platformFrame?.Commit();
             var transactionPresentation = _drawingLayout || compositionTransaction;
-            if (!transactionPresentation)
+            var orderedOut = Window is { IsVisible: false };
+            if (!transactionPresentation && !orderedOut)
             {
                 commandBuffer.PresentDrawable(drawable);
             }
@@ -534,7 +557,8 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
                 generation,
                 graphiteFrame,
                 drawable,
-                platformFrame
+                platformFrame,
+                prepareHidden: orderedOut
             );
             commandBufferTracked = true;
             commandBuffer.Commit();
@@ -544,7 +568,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
             graphiteSubmissionAttempted = false;
             Interlocked.Increment(ref _commandBuffersCommitted);
             commandBufferTracked = false;
-            if (transactionPresentation)
+            if (transactionPresentation && !orderedOut)
             {
                 commandBuffer.WaitUntilScheduled();
                 drawable.Present();
@@ -628,7 +652,8 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         long generation,
         SkiaGraphiteSession.Frame? graphiteFrame,
         ICAMetalDrawable drawable,
-        AppKitPlatformViewHost.PreparedFrame? platformFrame = null
+        AppKitPlatformViewHost.PreparedFrame? platformFrame = null,
+        bool prepareHidden = false
     )
     {
         buffer.AddCompletedHandler(completedBuffer =>
@@ -687,6 +712,8 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
                     Interlocked.Increment(ref _commandBuffersCompleted);
                     if (completion is { } value)
                     {
+                        if (prepareHidden && !stale)
+                            _preparedDrawable = drawable;
                         owner.RaisePresent(value, stale);
                     }
                 }
@@ -1181,8 +1208,10 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         _backendContext.Dispose();
         _commandQueue.Dispose();
         _metalDevice.Dispose();
+        _preparedDrawable = null;
         _resourcesReleased = true;
         RetiringViews.Remove(this);
+        _retired.TrySetResult();
     }
 }
 #endif

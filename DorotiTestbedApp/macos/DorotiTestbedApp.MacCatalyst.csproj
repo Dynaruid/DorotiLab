@@ -1,17 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.props" />
   <PropertyGroup>
-    <TargetFramework>net10.0-maccatalyst</TargetFramework>
+    <DorotiMacCatalystTargetFramework Condition="'$(DorotiMacCatalystTargetFramework)' == ''">net10.0-maccatalyst</DorotiMacCatalystTargetFramework>
+    <TargetFramework>$(DorotiMacCatalystTargetFramework)</TargetFramework>
     <RuntimeIdentifier>maccatalyst-arm64</RuntimeIdentifier>
     <AssemblyName>DorotiTestbedApp.MacCatalyst</AssemblyName>
     <RootNamespace>DorotiTestbedApp.MacCatalyst</RootNamespace>
     <DorotiAppProject>..\DorotiTestbedApp.csproj</DorotiAppProject>
     <DorotiTarget>MacCatalyst</DorotiTarget>
+    <DorotiDesktopProject>..\desktop\DorotiTestbedApp.Desktop.csproj</DorotiDesktopProject>
+    <DorotiDesktopStartupType>DorotiTestbedApp.Desktop.MacCatalystDesktopStartup</DorotiDesktopStartupType>
     <DorotiHostKind>Maui</DorotiHostKind>
     <DorotiNativeEntryKind>UIKit-Main</DorotiNativeEntryKind>
     <UseMaui>true</UseMaui>
     <DefineConstants>$(DefineConstants);MACCATALYST;DOROTI_MAUI</DefineConstants>
-    <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion>$(DorotiMacCatalystMinimumOSVersion)</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="'$(DorotiMacCatalystTargetFramework)' == 'net10.0-maccatalyst'">16.0</SupportedOSPlatformVersion>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <ApplicationTitle>Doroti Testbed</ApplicationTitle>
     <ApplicationId>dev.doroti.testbed</ApplicationId>
@@ -23,7 +27,7 @@
     <PartialAppManifest Include="Info.plist" />
     <DorotiNativeBindingProject Include="binding\DorotiTestbedApp.MacCatalyst.Native.csproj" />
     <DorotiTargetDescriptor Include="MacCatalyst" HostKind="Maui" NativeEntryKind="UIKit-Main"
-        RuntimeIdentifier="maccatalyst-arm64" TargetFramework="net10.0-maccatalyst"
+        RuntimeIdentifier="maccatalyst-arm64" TargetFramework="$(DorotiMacCatalystTargetFramework)"
         TargetPackage="Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64" />
     <ProjectReference Include="..\..\Doroti\src\Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64\Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.csproj" />
   </ItemGroup>

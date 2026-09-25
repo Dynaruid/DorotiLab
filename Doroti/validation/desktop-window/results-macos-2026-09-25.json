@@ -1,0 +1,951 @@
+{
+  "date": "2026-09-25",
+  "overall": "PARTIAL",
+  "scope": "AppKit native single-window Desktop adapter",
+  "source": {
+    "baseCommit": "3770cf2b70d3e46604e771fa77f09e4227357540",
+    "uncommittedChanges": true,
+    "sha256": "b16118d4794dbc8b1b2e8919147286848d79f9fc92a8269d5aa602cb2b6f8c24",
+    "roots": [
+      "Doroti/src",
+      "DorotiTestbedApp/desktop",
+      "DorotiTestbedApp/macos"
+    ]
+  },
+  "environment": {
+    "os": "macOS 26.6.2 (25G83)",
+    "architecture": "arm64",
+    "device": "Apple M1",
+    "xcode": "27.0 (27A266a)",
+    "dotnetSdk": "10.0.400",
+    "tfm": "net10.0-macos27.0",
+    "rid": "osx-arm64",
+    "scale": 2
+  },
+  "build": {
+    "configuration": "Release",
+    "status": "PASS",
+    "warnings": 0,
+    "errors": 0
+  },
+  "contracts": {
+    "status": "PASS",
+    "count": 28,
+    "shared": 25,
+    "appKitPolicy": 3,
+    "packageShared": 25
+  },
+  "negativePackageTargets": [
+    "Web",
+    "Android",
+    "iOS",
+    "MacCatalyst"
+  ],
+  "nativeRuns": [
+    {
+      "name": "graphite-normal",
+      "status": "PASS",
+      "identity": {
+        "renderer": "graphite",
+        "material": "normal",
+        "quit": false,
+        "explicit": false,
+        "caption": null,
+        "executable": "/Users/ceramic/Labo/DorotiLab/DorotiTestbedApp/macos/bin/Release/net10.0-macos27.0/osx-arm64/Doroti Testbed (AppKit).app/Contents/MacOS/DorotiTestbedApp.MacOS",
+        "executableSha256": "6fabc60e1a7472d2ecef91202011bf552837687082cc37181bec44fbc13ca5e4",
+        "hostSha256": "705f4224fdb9461abbd85f003151469d579f3dadb95b00b703d2c0c8f1d5f896",
+        "head": "3770cf2b70d3e46604e771fa77f09e4227357540"
+      },
+      "states": {
+        "beforeShow": {
+          "size": [
+            450,
+            800
+          ],
+          "Scale": 2,
+          "Visible": false,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "shown": {
+          "size": [
+            450,
+            800
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "resize": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "skipTaskbarRejected": true,
+        "maximized": {
+          "size": [
+            1440,
+            755
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": false,
+          "presentation": "Maximized",
+          "Closed": false
+        },
+        "restored": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "minimized": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": false,
+          "Focused": false,
+          "presentation": "Minimized",
+          "Closed": false
+        },
+        "fullscreen": {
+          "size": [
+            1440,
+            900
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "FullScreen",
+          "Closed": false
+        },
+        "windowed": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "hidden": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": false,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "appearance": {
+          "changed": "Applied",
+          "reset": "Applied"
+        },
+        "materialTransitions": {
+          "Solid": {
+            "status": "Applied",
+            "effective": "Solid"
+          },
+          "Transparent": {
+            "status": "Applied",
+            "effective": "Transparent"
+          },
+          "Acrylic": {
+            "status": "Applied",
+            "effective": "Acrylic"
+          },
+          "LiquidGlass": {
+            "status": "Applied",
+            "effective": "LiquidGlass"
+          }
+        },
+        "final": {
+          "size": [
+            450,
+            800
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "Normal",
+          "Closed": false
+        }
+      },
+      "native": {
+        "result": "PASS",
+        "closeKind": "window-close",
+        "windowNumber": 1486,
+        "client": [
+          450,
+          800
+        ],
+        "minimum": [
+          350,
+          532
+        ],
+        "scale": 2
+      },
+      "closed": {
+        "Closed": true,
+        "remaining": 0,
+        "lifetime": "OnLastWindowClosed"
+      },
+      "startupBackdrop": "default",
+      "screenshotSha256": "9eced97cd58a5479298ae49118d7144dbb7a8c74b1018de249a5559f09330581"
+    },
+    {
+      "name": "graphite-acrylic-quit",
+      "status": "PASS",
+      "identity": {
+        "renderer": "graphite",
+        "material": "acrylic",
+        "quit": true,
+        "explicit": false,
+        "caption": null,
+        "executable": "/Users/ceramic/Labo/DorotiLab/DorotiTestbedApp/macos/bin/Release/net10.0-macos27.0/osx-arm64/Doroti Testbed (AppKit).app/Contents/MacOS/DorotiTestbedApp.MacOS",
+        "executableSha256": "6fabc60e1a7472d2ecef91202011bf552837687082cc37181bec44fbc13ca5e4",
+        "hostSha256": "705f4224fdb9461abbd85f003151469d579f3dadb95b00b703d2c0c8f1d5f896",
+        "head": "3770cf2b70d3e46604e771fa77f09e4227357540"
+      },
+      "states": {
+        "beforeShow": {
+          "size": [
+            450,
+            800
+          ],
+          "Scale": 2,
+          "Visible": false,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "shown": {
+          "size": [
+            450,
+            800
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "resize": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "skipTaskbarRejected": true,
+        "maximized": {
+          "size": [
+            1440,
+            755
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": false,
+          "presentation": "Maximized",
+          "Closed": false
+        },
+        "restored": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "minimized": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": false,
+          "Focused": false,
+          "presentation": "Minimized",
+          "Closed": false
+        },
+        "fullscreen": {
+          "size": [
+            1440,
+            900
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "FullScreen",
+          "Closed": false
+        },
+        "windowed": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "hidden": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": false,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "appearance": {
+          "changed": "Applied",
+          "reset": "Applied"
+        },
+        "materialTransitions": {
+          "Solid": {
+            "status": "Applied",
+            "effective": "Solid"
+          },
+          "Transparent": {
+            "status": "Applied",
+            "effective": "Transparent"
+          },
+          "Acrylic": {
+            "status": "Applied",
+            "effective": "Acrylic"
+          },
+          "LiquidGlass": {
+            "status": "Applied",
+            "effective": "LiquidGlass"
+          }
+        },
+        "final": {
+          "size": [
+            450,
+            800
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "Normal",
+          "Closed": false
+        }
+      },
+      "native": {
+        "result": "PASS",
+        "closeKind": "application-quit",
+        "windowNumber": 1528,
+        "client": [
+          450,
+          800
+        ],
+        "minimum": [
+          350,
+          532
+        ],
+        "scale": 2
+      },
+      "closed": {
+        "Closed": true,
+        "remaining": 0,
+        "lifetime": "OnLastWindowClosed"
+      },
+      "startupBackdrop": "default",
+      "screenshotSha256": "20bb5a3cd4316192f707d193d97d0d3985207c1c14ec63c3c2aaaa0ffa86238a"
+    },
+    {
+      "name": "ganesh-acrylic-explicit",
+      "status": "PASS",
+      "identity": {
+        "renderer": "ganesh",
+        "material": "acrylic",
+        "quit": false,
+        "explicit": true,
+        "caption": "Solid",
+        "executable": "/Users/ceramic/Labo/DorotiLab/DorotiTestbedApp/macos/bin/Release/net10.0-macos27.0/osx-arm64/Doroti Testbed (AppKit).app/Contents/MacOS/DorotiTestbedApp.MacOS",
+        "executableSha256": "6fabc60e1a7472d2ecef91202011bf552837687082cc37181bec44fbc13ca5e4",
+        "hostSha256": "705f4224fdb9461abbd85f003151469d579f3dadb95b00b703d2c0c8f1d5f896",
+        "head": "3770cf2b70d3e46604e771fa77f09e4227357540"
+      },
+      "states": {
+        "beforeShow": {
+          "size": [
+            450,
+            800
+          ],
+          "Scale": 2,
+          "Visible": false,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "shown": {
+          "size": [
+            450,
+            800
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "resize": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "skipTaskbarRejected": true,
+        "maximized": {
+          "size": [
+            1440,
+            755
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": false,
+          "presentation": "Maximized",
+          "Closed": false
+        },
+        "restored": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "minimized": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": false,
+          "Focused": false,
+          "presentation": "Minimized",
+          "Closed": false
+        },
+        "fullscreen": {
+          "size": [
+            1440,
+            900
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "FullScreen",
+          "Closed": false
+        },
+        "windowed": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "hidden": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": false,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "appearance": {
+          "changed": "Applied",
+          "reset": "Applied"
+        },
+        "materialTransitions": {
+          "Solid": {
+            "status": "Applied",
+            "effective": "Solid"
+          },
+          "Transparent": {
+            "status": "Applied",
+            "effective": "Transparent"
+          },
+          "Acrylic": {
+            "status": "Applied",
+            "effective": "Acrylic"
+          },
+          "LiquidGlass": {
+            "status": "Applied",
+            "effective": "LiquidGlass"
+          }
+        },
+        "final": {
+          "size": [
+            450,
+            800
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "Normal",
+          "Closed": false
+        }
+      },
+      "native": {
+        "result": "PASS",
+        "closeKind": "window-close",
+        "windowNumber": 1570,
+        "client": [
+          450,
+          800
+        ],
+        "minimum": [
+          350,
+          532
+        ],
+        "scale": 2
+      },
+      "closed": {
+        "Closed": true,
+        "remaining": 0,
+        "lifetime": "Explicit"
+      },
+      "startupBackdrop": "default",
+      "screenshotSha256": "24c1c71edf1fbb6caade243f7b3aedb2296f02e78e354e06dc7f6a86a893388d"
+    },
+    {
+      "name": "graphite-legacy",
+      "status": "PASS",
+      "identity": {
+        "renderer": "graphite",
+        "material": "legacy",
+        "quit": false,
+        "explicit": false,
+        "caption": null,
+        "executable": "/Users/ceramic/Labo/DorotiLab/DorotiTestbedApp/macos/bin/Release/net10.0-macos27.0/osx-arm64/Doroti Testbed (AppKit).app/Contents/MacOS/DorotiTestbedApp.MacOS",
+        "executableSha256": "6fabc60e1a7472d2ecef91202011bf552837687082cc37181bec44fbc13ca5e4",
+        "hostSha256": "705f4224fdb9461abbd85f003151469d579f3dadb95b00b703d2c0c8f1d5f896",
+        "head": "3770cf2b70d3e46604e771fa77f09e4227357540"
+      },
+      "states": {
+        "beforeShow": {
+          "size": [
+            720,
+            640
+          ],
+          "Scale": 2,
+          "Visible": false,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "shown": {
+          "size": [
+            720,
+            640
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "resize": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "skipTaskbarRejected": true,
+        "maximized": {
+          "size": [
+            1440,
+            755
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": false,
+          "presentation": "Maximized",
+          "Closed": false
+        },
+        "restored": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "minimized": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": false,
+          "Focused": false,
+          "presentation": "Minimized",
+          "Closed": false
+        },
+        "fullscreen": {
+          "size": [
+            1440,
+            900
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "FullScreen",
+          "Closed": false
+        },
+        "windowed": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "hidden": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": false,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "appearance": {
+          "changed": "Applied",
+          "reset": "Applied"
+        },
+        "materialTransitions": {
+          "Solid": {
+            "status": "Applied",
+            "effective": "Solid"
+          },
+          "Transparent": {
+            "status": "Applied",
+            "effective": "Transparent"
+          },
+          "Acrylic": {
+            "status": "Applied",
+            "effective": "Acrylic"
+          },
+          "LiquidGlass": {
+            "status": "Applied",
+            "effective": "LiquidGlass"
+          }
+        },
+        "final": {
+          "size": [
+            450,
+            800
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "Normal",
+          "Closed": false
+        }
+      },
+      "native": {
+        "result": "PASS",
+        "closeKind": "window-close",
+        "windowNumber": 1612,
+        "client": [
+          450,
+          800
+        ],
+        "minimum": [
+          1,
+          33
+        ],
+        "scale": 2
+      },
+      "closed": {
+        "Closed": true,
+        "remaining": 0,
+        "lifetime": "OnLastWindowClosed"
+      },
+      "startupBackdrop": "default",
+      "screenshotSha256": "20bb5a3cd4316192f707d193d97d0d3985207c1c14ec63c3c2aaaa0ffa86238a"
+    },
+    {
+      "name": "graphite-glass",
+      "status": "PASS",
+      "identity": {
+        "renderer": "graphite",
+        "material": "legacy",
+        "quit": false,
+        "explicit": false,
+        "caption": null,
+        "executable": "/Users/ceramic/Labo/DorotiLab/DorotiTestbedApp/macos/bin/Release/net10.0-macos27.0/osx-arm64/Doroti Testbed (AppKit).app/Contents/MacOS/DorotiTestbedApp.MacOS",
+        "executableSha256": "6fabc60e1a7472d2ecef91202011bf552837687082cc37181bec44fbc13ca5e4",
+        "hostSha256": "705f4224fdb9461abbd85f003151469d579f3dadb95b00b703d2c0c8f1d5f896",
+        "head": "3770cf2b70d3e46604e771fa77f09e4227357540"
+      },
+      "states": {
+        "beforeShow": {
+          "size": [
+            720,
+            640
+          ],
+          "Scale": 2,
+          "Visible": false,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "shown": {
+          "size": [
+            720,
+            640
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "resize": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "skipTaskbarRejected": true,
+        "maximized": {
+          "size": [
+            1440,
+            755
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": false,
+          "presentation": "Maximized",
+          "Closed": false
+        },
+        "restored": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "minimized": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": false,
+          "Focused": false,
+          "presentation": "Minimized",
+          "Closed": false
+        },
+        "fullscreen": {
+          "size": [
+            1440,
+            900
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "FullScreen",
+          "Closed": false
+        },
+        "windowed": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "hidden": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": false,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "appearance": {
+          "changed": "Applied",
+          "reset": "Applied"
+        },
+        "materialTransitions": {
+          "Solid": {
+            "status": "Applied",
+            "effective": "Solid"
+          },
+          "Transparent": {
+            "status": "Applied",
+            "effective": "Transparent"
+          },
+          "Acrylic": {
+            "status": "Applied",
+            "effective": "Acrylic"
+          },
+          "LiquidGlass": {
+            "status": "Applied",
+            "effective": "LiquidGlass"
+          }
+        },
+        "final": {
+          "size": [
+            450,
+            800
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "Normal",
+          "Closed": false
+        }
+      },
+      "native": {
+        "result": "PASS",
+        "closeKind": "window-close",
+        "windowNumber": 1654,
+        "client": [
+          450,
+          800
+        ],
+        "minimum": [
+          1,
+          33
+        ],
+        "scale": 2
+      },
+      "closed": {
+        "Closed": true,
+        "remaining": 0,
+        "lifetime": "OnLastWindowClosed"
+      },
+      "startupBackdrop": "liquidGlass",
+      "screenshotSha256": "07f1d1ec3b3fb9b738d3ad150259ab060762c5ffe0fcbe85b3921a52242f38b1"
+    }
+  ],
+  "externalPackage": {
+    "status": "PASS",
+    "consumer": "/var/folders/g2/w1lbfj592h51kv75lh9n7fh40000gn/T/doroti-desktop-appkit-2_8jw7tk",
+    "appkitExecution": "PASS",
+    "packageOnly": true,
+    "tfm": "net10.0-macos27.0",
+    "probeOutput": {
+      "result": "PASS",
+      "renderer": "graphite",
+      "material": "normal",
+      "quit": false,
+      "explicit": false,
+      "caption": null,
+      "executable": "/private/var/folders/g2/w1lbfj592h51kv75lh9n7fh40000gn/T/doroti-desktop-appkit-2_8jw7tk/macos/bin/Release/net10.0-macos27.0/osx-arm64/Doroti Package Probe.app/Contents/MacOS/DorotiTestbedApp.MacOS",
+      "executableSha256": "c26ed5dc619b98ef7d55ecb3c70ceb5cd5592652726bcbf8ceda3398e1f8edf8",
+      "hostSha256": "ce9d95b3d0eb8214c0acbbf1df13423761e1156b4ec98939ec8e355c2184520a",
+      "head": "3770cf2b70d3e46604e771fa77f09e4227357540",
+      "native": {
+        "result": "PASS",
+        "closeKind": "window-close",
+        "windowNumber": 1442,
+        "client": [
+          450,
+          800
+        ],
+        "minimum": [
+          350,
+          532
+        ],
+        "scale": 2
+      }
+    }
+  },
+  "notVerified": [
+    "first-visible-frame sequence",
+    "physical IME/VoiceOver/keyboard input",
+    "mixed monitors",
+    "macOS <26 runtime fallback",
+    "OS-wide contrast/transparency toggles",
+    "live-resize visual continuity",
+    "notarization/Gatekeeper/another machine"
+  ],
+  "unsupported": [
+    "Position/SetBounds",
+    "SkipTaskbar=true",
+    "Hidden/custom/frameless",
+    "App theme bridge",
+    "programmatic resize",
+    "additional native windows/owners"
+  ]
+}

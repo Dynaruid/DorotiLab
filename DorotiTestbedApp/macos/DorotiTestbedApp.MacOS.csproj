@@ -8,6 +8,8 @@
     <RootNamespace>DorotiTestbedApp.MacOS</RootNamespace>
     <DorotiAppProject>..\DorotiTestbedApp.csproj</DorotiAppProject>
     <DorotiTarget>macOS</DorotiTarget>
+    <DorotiDesktopProject>..\desktop\DorotiTestbedApp.Desktop.csproj</DorotiDesktopProject>
+    <DorotiDesktopStartupType>DorotiTestbedApp.Desktop.DesktopStartup</DorotiDesktopStartupType>
     <DorotiHostKind>Maui</DorotiHostKind>
     <DorotiNativeEntryKind>AppKit-Main</DorotiNativeEntryKind>
     <UseMaui>true</UseMaui>

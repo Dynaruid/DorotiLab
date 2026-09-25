@@ -1,0 +1,337 @@
+{
+  "date": "2026-09-25",
+  "status": "PASS within documented Catalyst scope; overall desktop plan remains PARTIAL",
+  "environment": {
+    "machine": "Apple M1 arm64",
+    "os": "macOS 26.6.2 (25G83)",
+    "xcode": "27.0 (27A266a)",
+    "dotnetSdk": "10.0.400",
+    "maui": "10.0.90",
+    "tfm": "net10.0-maccatalyst27.0",
+    "rid": "maccatalyst-arm64",
+    "scale": 2
+  },
+  "sourceIdentity": {
+    "baseCommit": "3770cf2b70d3e46604e771fa77f09e4227357540",
+    "uncommittedWorkingTree": true,
+    "note": "Base commit alone does not identify the tested implementation.",
+    "sha256": {
+      "Doroti/Directory.Build.props": "6662e4438af3d277341e7d3be7f9b96ed08a117715a8d9d7a7d9b518d35d3a43",
+      "Doroti/src/Doroti.Desktop/DesktopApplicationBuilder.cs": "275e0bd54a7b0ba14c7c6d67b1830b4338a11b894dc47b90839828c5d0ee3f7a",
+      "Doroti/src/Doroti.Desktop/DorotiWindowController.cs": "ae470dc1841e410fdd66b601b9de64acf17c1ff97e86796aaad92b81b6123e8d",
+      "Doroti/src/Doroti.Desktop/WindowOptions.cs": "31728fe30cc3d66343ac2ab5a8cabed799d9ee5e1e2a7b94ca3fcd8b6dc7ef60",
+      "Doroti/src/Doroti.Desktop/buildTransitive/Doroti.Desktop.targets": "7328abe83a0c5160997d116b3bb883bddf4cdb79904f23a92be5354131c901c2",
+      "Doroti/src/Doroti.Host.Maui/AppKitDesktopWindowHost.cs": "80f1a61357a97b487ec3fba859a29e3e39fe0198e3a0aa9aeb8e3ba663b35f39",
+      "Doroti/src/Doroti.Host.Maui/AppKitDesktopWindowPolicy.cs": "b7d305ba2c8b7494d5d5b2f4f20310a6a213c6cef1a151e4aafc0478f4356dfa",
+      "Doroti/src/Doroti.Host.Maui/Doroti.Host.Maui.csproj": "ae1e95e4bb7b6fa81b428c761b2cfeaa658d94ea7adcdce6baa060be3fcfa3fc",
+      "Doroti/src/Doroti.Host.Maui/DorotiMacCatalystSceneDelegate.cs": "dff6071ab69bb12c721babe8ab93a20ab2d071084442a13c727f16b676372e1c",
+      "Doroti/src/Doroti.Host.Maui/DorotiMacOSMetalView.cs": "ff51ce3cdce133e2661c2dca6eb788c6021fba23d240e9994c010ec363c39f66",
+      "Doroti/src/Doroti.Host.Maui/DorotiMauiApplication.cs": "ee493684cdf18e11e30d2a856cd1f7f41ec8e2783474259669848667c65948c6",
+      "Doroti/src/Doroti.Host.Maui/DorotiMauiPlatformApplications.cs": "37c66a5b2422e7c959e0881ddf15ee5c58f0cf0ed3478c386627b0ca73295f9f",
+      "Doroti/src/Doroti.Host.Maui/DorotiMauiSurface.cs": "73fc93ffa4487467fee877171edde2a895342e009124db6d76ed372f1056fdee",
+      "Doroti/src/Doroti.Host.Maui/DorotiUIKitGraphiteViewHandler.cs": "9a10740f8c8d86f65fcb4421451683f6280b9eae85a01b713bf51c9dcb982139",
+      "Doroti/src/Doroti.Host.Maui/MacCatalystDesktopWindowHost.cs": "65a451820cc8bdf03e3ac2d01739ea89f4efcee0d207c63bc66683c31c328302",
+      "Doroti/src/Doroti.Host.Maui/MacCatalystDesktopWindowPolicy.cs": "6349114ae291bb0f93f7dfa82a474a5552dd42dac310920fc91304246c8de700",
+      "Doroti/src/Doroti.Host.Maui/WindowsDesktopWindowHost.cs": "012d1f5d34ab1f176b3c54796e4f185eae74ea34c1993ef80d6594df55ae9efa",
+      "Doroti/src/Doroti.Runner.Sdk/Doroti.Runner.Sdk.csproj": "73de7f5637bc317eca1ad5c3453c2778c4047076259b573aca8cd84d899985ab",
+      "Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.DesktopBoundary.targets": "93e14d71c7adc189f3023aa404d14b4f6e833ae2ab74f790f87aba681d292840",
+      "Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.MacCatalyst.props": "e98905545bc3be9a70c1e22af66054653f5f324362543285b992df56f0be9e56",
+      "Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.props": "7ea032e5d020ea04989d70d4de99551af215ca9ce42d8f0da08df03fc78be2a9",
+      "Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.targets": "3190b0e19e35fbab88d5405cd67662d155b7434d500cd0d443788f5df0748182",
+      "Doroti/src/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.csproj": "53d9034b9500c32d23c7c858ff4dd19a3de4ede153633cfd772ccf51591cca63",
+      "Doroti/src/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/buildTransitive/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.targets": "13c65e55a49610dab00a0128765436981381e80e77de6eb421ddbc50ba0a049a",
+      "Doroti/templates/Doroti.Templates/content/doroti-app/desktop/MacCatalystDesktopStartup.cs": "0118b65094fc01854d8ef907896da83250c7257f06712e99ba9bac26dd5e01b7",
+      "Doroti/templates/Doroti.Templates/content/doroti-app/macos/DorotiTemplateApp.MacCatalyst.csproj": "eba77b9d9a5ae8d9b2de96ae1d96ad91c83acf06abc5506ec4288a57c00a0c7a",
+      "Doroti/templates/Doroti.Templates/content/doroti-app/macos/Info.plist": "7ee62c82eedd81cd727447990c75f7d4041100d6e286f720f1a0e4be8d530de1",
+      "Doroti/templates/Doroti.Templates/content/doroti-app/macos/binding/DorotiTemplateApp.MacCatalyst.Native.csproj": "7acf04265a73e510fd9335ca7375365a31ba1d985edd4513ca657ccc86f63c27",
+      "Doroti/validation/desktop-window/Contract.csproj": "1eefbe7e98b9492f42c3da5433c83e546c21ef1217bb5e8a3c7e57407caf432f",
+      "Doroti/validation/desktop-window/Program.cs": "f69eb597eedbe80a537c921624e9274d92aac1c396046d44192d5982a3bc6e6b",
+      "Doroti/validation/desktop-window/verify-maccatalyst-package.py": "c7883d35ffb4acc0aa3372a60769b756884417f976c00c1eed28cc5b120d3850",
+      "Doroti/validation/desktop-window/verify-maccatalyst.py": "91171d92bc0440acf31110f913fe1275cb8fcd86f4d2a111f11ef906e86f0ba9",
+      "Doroti/validation/desktop-window/verify-macos-package.py": "19b7c5a288dd9ae6257a6f26385ee32ffb53828d1a1a56bc2e4b2286dad0aedb",
+      "Doroti/validation/desktop-window/verify-macos.py": "ff6c1356a3fe100f4c6bcde7621d605539fb1f0d5889b49cbf723fc6b5407f1a",
+      "Doroti/validation/desktop-window/verify-package.py": "ac6b0f9f2d05630decd66e4622cc45ade8558bea98234c2cf3f5ad69dac072e5",
+      "DorotiTestbedApp/desktop/DesktopProbe.cs": "5cc86b7cfab11168241e718bee5ad81a3f15419ac2bf93e90539678e99de4020",
+      "DorotiTestbedApp/desktop/DesktopStartup.cs": "0fee4a96999adc1110a9c4dd41fcf85290b99d579cde436db503ca6f0e2a89ee",
+      "DorotiTestbedApp/desktop/MacCatalystDesktopStartup.cs": "0782bf42413ff7d4c2d786e94f21a592a77e76a95c9eea45eb3b1639fa7daccc",
+      "DorotiTestbedApp/macos/AppDelegate.cs": "026236f9eddc358ef19ed6a8252d35bce6b6ec65d66d62ddc68e113844968f98",
+      "DorotiTestbedApp/macos/AppKitDelegate.cs": "c2e428dcaad8552d06bf28c963f1436e2cc81a65f0fbde76f3b5acf21bc486db",
+      "DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj": "f33355260903720fe0dbd3393f0ede9224b9e466ab99d0ebfa543bc9e18d18be",
+      "DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj": "782b3ef895493503a36a10f892926d5e63e8bd2665c8270ae6010a5612976539",
+      "DorotiTestbedApp/macos/Info.plist": "7527aba8f09e5c554c381aeca1d3b015d320fa945909bd123a8f17d93d52a6ca",
+      "DorotiTestbedApp/macos/MacCatalystDesktopEvidence.cs": "677ed17f8e4c43f995ab758f1d2754d08704820d577fd5684ca78a8346db0cf9",
+      "DorotiTestbedApp/macos/MacOSDesktopWindowEvidence.cs": "4da1816bca85cbda36e748d4c5f27d784f08ace9c1b55f6249468f38aa0da9e5",
+      "DorotiTestbedApp/macos/binding/DorotiTestbedApp.MacCatalyst.Native.csproj": "9bb6ea1e0145cca4d695b9b50a47fd1206f77d1d6b4da34565f2607002b994f4"
+    }
+  },
+  "releaseBuild": {
+    "result": "PASS",
+    "warnings": 0,
+    "errors": 0
+  },
+  "contracts": {
+    "result": "PASS",
+    "passed": 30,
+    "total": 30
+  },
+  "apiClose": {
+    "status": "PASS",
+    "identity": {
+      "app": "/Users/ceramic/Labo/DorotiLab/DorotiTestbedApp/macos/bin/Release/net10.0-maccatalyst27.0/maccatalyst-arm64/Doroti Testbed.app",
+      "executableSha256": "a30b04a9d5474e31674d7b0539a7849a225686103cb64f50c422552c27a8d563",
+      "nativeClose": false,
+      "head": "3770cf2b70d3e46604e771fa77f09e4227357540"
+    },
+    "native": {
+      "result": "PASS",
+      "Title": "Doroti Catalyst Desktop Probe",
+      "size": [
+        500,
+        450
+      ],
+      "minimum": [
+        320,
+        280
+      ],
+      "scale": 2,
+      "Hidden": false
+    },
+    "closed": {
+      "Closed": true,
+      "remaining": 0,
+      "closingCallbacks": 2
+    },
+    "initialObserved": {
+      "size": [
+        500,
+        450
+      ],
+      "Scale": 2,
+      "Visible": true,
+      "Focused": true
+    },
+    "processAfterSceneClose": "running",
+    "limitation": "Native close bypasses managed cancellation; UIKit owns process lifetime."
+  },
+  "nativeSceneDisconnect": {
+    "status": "PASS",
+    "identity": {
+      "app": "/Users/ceramic/Labo/DorotiLab/DorotiTestbedApp/macos/bin/Release/net10.0-maccatalyst27.0/maccatalyst-arm64/Doroti Testbed.app",
+      "executableSha256": "a30b04a9d5474e31674d7b0539a7849a225686103cb64f50c422552c27a8d563",
+      "nativeClose": true,
+      "head": "3770cf2b70d3e46604e771fa77f09e4227357540"
+    },
+    "native": {
+      "result": "PASS",
+      "Title": "Doroti Catalyst Desktop Probe",
+      "size": [
+        500,
+        450
+      ],
+      "minimum": [
+        320,
+        280
+      ],
+      "scale": 2,
+      "Hidden": false
+    },
+    "closed": {
+      "Closed": true,
+      "remaining": 0,
+      "closingCallbacks": 0
+    },
+    "initialObserved": {
+      "size": [
+        500,
+        450
+      ],
+      "Scale": 2,
+      "Visible": true,
+      "Focused": true
+    },
+    "processAfterSceneClose": "running",
+    "limitation": "Native close bypasses managed cancellation; UIKit owns process lifetime."
+  },
+  "states": {
+    "initial": {
+      "size": [
+        500,
+        450
+      ],
+      "Scale": 2,
+      "Visible": true,
+      "Focused": true
+    },
+    "intermediate": {
+      "size": [
+        550,
+        475
+      ],
+      "Scale": 2,
+      "Visible": true,
+      "Focused": true
+    },
+    "resized": {
+      "size": [
+        500,
+        450
+      ],
+      "Scale": 2,
+      "Visible": true,
+      "Focused": true
+    },
+    "fixedResize": {
+      "size": [
+        520,
+        460
+      ],
+      "Scale": 2,
+      "Visible": true,
+      "Focused": true
+    },
+    "appearance": {
+      "dark": "Applied",
+      "reset": "Applied"
+    },
+    "canCancelNativeClose": false,
+    "rejected": [
+      "SkipTaskbar",
+      "Hide",
+      "FullScreen"
+    ],
+    "acrylicRejected": true,
+    "final": {
+      "size": [
+        500,
+        450
+      ],
+      "Scale": 2,
+      "Visible": true,
+      "Focused": true
+    }
+  },
+  "packageBoundary": {
+    "status": "PASS",
+    "consumer": "/var/folders/g2/w1lbfj592h51kv75lh9n7fh40000gn/T/doroti-desktop-consumer-6t6kz36r",
+    "packages": 15,
+    "packageOnly": true,
+    "negativeTargets": [
+      "Web",
+      "Android",
+      "iOS"
+    ],
+    "positiveTargets": [
+      "MacCatalyst"
+    ],
+    "windowsExecution": "notRun",
+    "contractOutput": "PASS invalid options allocate no host\nPASS single host rejects additional creation before allocation\nPASS two windows have isolated factories state and scope\nPASS readiness hook does not deadlock create\nPASS close terminates pending ready and show\nPASS close cancel and concurrent close share decision\nPASS native close uses same cancellation callback\nPASS last window policy includes hidden windows\nPASS factory failure rolls back\nPASS initialization cancellation rolls back\nPASS creation token no longer owns returned window\nPASS ready waiter cancellation does not poison others\nPASS hook failure before ready fails waiters and destroys host\nPASS hook failure after ready preserves readiness\nPASS appearance updates serialize using latest snapshot\nPASS queued replacement supersedes only appearance\nPASS failed appearance rolls back and reports error\nPASS subscriptions detach\nPASS reused content and owned windows rejected\nPASS closed notification follows host disposal\nPASS accepted close cancels deferred commands before drain\nPASS automatic startup failure is observed without waiting for a frame\nPASS last close waits for in-flight creation rollback\nPASS native close during creation never enters registry\nPASS manual native readiness failure destroys the hidden window\n25/25 contracts passed. Native visual/input evidence is separate.\n"
+  },
+  "externalPackage": {
+    "status": "PASS",
+    "consumer": "/var/folders/g2/w1lbfj592h51kv75lh9n7fh40000gn/T/doroti-desktop-catalyst-hwt3a39z",
+    "catalystExecution": "PASS",
+    "packageOnly": true,
+    "tfm": "net10.0-maccatalyst27.0",
+    "probe": {
+      "status": "PASS",
+      "identity": {
+        "app": "/private/var/folders/g2/w1lbfj592h51kv75lh9n7fh40000gn/T/doroti-desktop-catalyst-hwt3a39z/macos/bin/Release/net10.0-maccatalyst27.0/maccatalyst-arm64/Doroti Package Probe.app",
+        "executableSha256": "f5e9c3d4d15c65c8702441c7b7a04623e9ea982631df84b2158b352ed02932ac",
+        "nativeClose": false,
+        "head": "3770cf2b70d3e46604e771fa77f09e4227357540"
+      },
+      "native": {
+        "result": "PASS",
+        "Title": "Doroti Catalyst Desktop Probe",
+        "size": [
+          500,
+          450
+        ],
+        "minimum": [
+          320,
+          280
+        ],
+        "scale": 2,
+        "Hidden": false
+      },
+      "closed": {
+        "Closed": true,
+        "remaining": 0,
+        "closingCallbacks": 2
+      },
+      "initialObserved": {
+        "size": [
+          600,
+          500
+        ],
+        "Scale": 2,
+        "Visible": true,
+        "Focused": true
+      },
+      "processAfterSceneClose": "running",
+      "limitation": "Native close bypasses managed cancellation; UIKit owns process lifetime."
+    }
+  },
+  "packageSha256": {
+    "Doroti.Desktop.0.3.0-beta.nupkg": "fcda6357e264f9ce90ae0c33d761cbc5b1c6068f492dfb1625d845705bbb0322",
+    "Doroti.App.Sdk.0.3.0-beta.nupkg": "d4f4331bd14c3c2307646c88284c973e74cd2d2314ab39622978bcd9c7f70baf",
+    "Doroti.Runner.Sdk.0.3.0-beta.nupkg": "cde5a30f9ff1eede67139bf310d4cee6ec3d5e17d80ead4d39f1542c610aaa9d",
+    "Doroti.Host.Maui.0.3.0-beta.nupkg": "7e23d6cfadcd0f975bb69524c6dccad5b19b1a8818ded9b7be1cb9489ef9389f",
+    "Doroti.Desktop.Widgets.0.3.0-beta.nupkg": "d00a45e73646a24151347fe6e3463527f6e22a1383dc5f54b6688f6ae46007ea",
+    "Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.0.3.0-beta.nupkg": "88c6f3af13fb799394dd4dc568ea980c524c172dca536d8ce484012d3399e7a4"
+  },
+  "appKitRegression": {
+    "releaseRebuild": "PASS",
+    "warnings": 0,
+    "errors": 0,
+    "nativeProbe": {
+      "result": "PASS",
+      "renderer": "graphite",
+      "material": "normal",
+      "quit": false,
+      "explicit": false,
+      "caption": null,
+      "executable": "/Users/ceramic/Labo/DorotiLab/DorotiTestbedApp/macos/bin/Release/net10.0-macos27.0/osx-arm64/Doroti Testbed (AppKit).app/Contents/MacOS/DorotiTestbedApp.MacOS",
+      "executableSha256": "bb753146def29605053106150ee663715323a47b18886fe3a968b1c6997bac69",
+      "hostSha256": "7fea8357544175dbac1abdee3a8c056b84fd3caa2990ed8e599bd7a9347f2f82",
+      "head": "3770cf2b70d3e46604e771fa77f09e4227357540",
+      "native": {
+        "result": "PASS",
+        "closeKind": "window-close",
+        "windowNumber": 1835,
+        "client": [
+          450,
+          800
+        ],
+        "minimum": [
+          350,
+          532
+        ],
+        "scale": 2
+      }
+    }
+  },
+  "unsupported": [
+    "hidden startup",
+    "native close cancellation",
+    "AppKit MacOSBackdrop",
+    "desktop Acrylic/LiquidGlass/transparent material",
+    "global placement/centering",
+    "topmost/Dock policy",
+    "hide",
+    "programmatic min/max/fullscreen/drag/resize",
+    "additional native windows/owners",
+    "app theme bridge"
+  ],
+  "notVerified": [
+    "Intel/Rosetta",
+    "old/default Catalyst SDK profile",
+    "physical keyboard/traffic-light input",
+    "VoiceOver/IME",
+    "multiple displays/mixed DPI",
+    "complete first-visible-frame/live-resize visual capture",
+    "Windows native regression on this Mac",
+    "fresh dotnet-new template instantiation"
+  ],
+  "retention": "This tracked summary retains measurements and identities. Raw logs, temporary consumers and Doroti/artifacts are disposable; their paths do not promise continued existence."
+}

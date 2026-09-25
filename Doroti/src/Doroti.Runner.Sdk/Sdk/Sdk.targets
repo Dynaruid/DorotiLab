@@ -74,14 +74,14 @@
     <StartupObject Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main' or '$(DorotiNativeEntryKind)' == 'UIKit-Main' or '$(DorotiNativeEntryKind)' == 'AppKit-Main' or '$(DorotiNativeEntryKind)' == 'Qt-Main' or '$(DorotiNativeEntryKind)' == 'Win32-WinMain'">Doroti.Generated.DorotiBootstrap</StartupObject>
     <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'Android'">net10.0-android</_DorotiExpectedNativeBindingTfm>
     <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'iOS'">$(TargetFramework)</_DorotiExpectedNativeBindingTfm>
-    <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'MacCatalyst'">net10.0-maccatalyst</_DorotiExpectedNativeBindingTfm>
+    <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'MacCatalyst'">$(DorotiMacCatalystTargetFramework)</_DorotiExpectedNativeBindingTfm>
     <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'macOS'">$(TargetFramework)</_DorotiExpectedNativeBindingTfm>
     <_DorotiExpectedNativeBuildItem Condition="'$(DorotiTarget)' == 'Android'">AndroidGradleProject</_DorotiExpectedNativeBuildItem>
     <_DorotiExpectedNativeBuildItem Condition="'$(DorotiTarget)' == 'iOS' or '$(DorotiTarget)' == 'MacCatalyst' or '$(DorotiTarget)' == 'macOS'">XcodeProject</_DorotiExpectedNativeBuildItem>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="$(DorotiDesktopProject)" Condition="'$(DorotiDesktopProject)' != '' and ('$(DorotiTarget)' == 'Windows' or '$(DorotiTarget)' == 'macOS' or '$(DorotiTarget)' == 'Linux')"
+    <ProjectReference Include="$(DorotiDesktopProject)" Condition="'$(DorotiDesktopProject)' != '' and ('$(DorotiTarget)' == 'Windows' or '$(DorotiTarget)' == 'macOS' or '$(DorotiTarget)' == 'MacCatalyst' or '$(DorotiTarget)' == 'Linux')"
                       GlobalPropertiesToRemove="TargetFramework;TargetFrameworks;RuntimeIdentifier;RuntimeIdentifiers;DorotiTarget;DorotiHostKind;DorotiNativeEntryKind" />
     <DorotiNativeBindingProject Update="@(DorotiNativeBindingProject)">
       <DorotiFullPath>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '%(Identity)'))</DorotiFullPath>
@@ -141,12 +141,12 @@
   </ItemGroup>
 
   <Target Name="ValidateDorotiRunnerProperties" BeforeTargets="Restore">
-    <Error Code="DOROTIDESKTOP002" Condition="('$(DorotiDesktopProject)' != '' or '$(DorotiDesktopStartupType)' != '') and '$(DorotiTarget)' != 'Windows' and '$(DorotiTarget)' != 'macOS' and '$(DorotiTarget)' != 'Linux'"
+    <Error Code="DOROTIDESKTOP002" Condition="('$(DorotiDesktopProject)' != '' or '$(DorotiDesktopStartupType)' != '') and '$(DorotiTarget)' != 'Windows' and '$(DorotiTarget)' != 'macOS' and '$(DorotiTarget)' != 'MacCatalyst' and '$(DorotiTarget)' != 'Linux'"
            Text="Desktop companion/startup is only allowed in native desktop runners." />
     <Error Code="DOROTIDESKTOP003" Condition="'$(DorotiDesktopProject)' != '' and ('$(DorotiDesktopStartupType)' == '' or !Exists('$(DorotiDesktopProject)'))"
            Text="DorotiDesktopProject requires an existing companion project and DorotiDesktopStartupType." />
-    <Error Code="DOROTIDESKTOP005" Condition="'$(DorotiDesktopStartupType)' != '' and ('$(DorotiTarget)' != 'Windows' or '$(DorotiHostKind)' != 'Maui')"
-           Text="The desktop startup adapter is currently implemented for Windows MAUI only. Other native desktop adapters are pending; refusing an ignored startup." />
+    <Error Code="DOROTIDESKTOP005" Condition="'$(DorotiDesktopStartupType)' != '' and (('$(DorotiTarget)' != 'Windows' and '$(DorotiTarget)' != 'macOS' and '$(DorotiTarget)' != 'MacCatalyst') or '$(DorotiHostKind)' != 'Maui')"
+           Text="The desktop startup adapter is currently implemented for Windows MAUI, AppKit macOS and Mac Catalyst. Other native desktop adapters are pending; refusing an ignored startup." />
     <Error Code="DOROTIAPP201" Condition="'$(DorotiAppProject)' == '' or !Exists('$(DorotiAppProject)')"
            Text="DorotiAppProject must resolve to an existing platform-neutral application project; found '$(DorotiAppProject)'." />
     <Error Code="DOROTIAPP202" Condition="'$(DorotiTarget)' == '' or '$(DorotiHostKind)' == '' or '$(DorotiNativeEntryKind)' == ''"

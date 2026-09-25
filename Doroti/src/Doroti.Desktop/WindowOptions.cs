@@ -6,6 +6,9 @@ public enum WindowStartupVisibility
 {
     WhenReady,
     Manual,
+
+    /// <summary>The platform owns first visibility; readiness does not promise a hidden first frame.</summary>
+    PlatformDefault,
 }
 
 public enum WindowLifetimePolicy
@@ -261,9 +264,16 @@ public sealed record WindowEvaluation(WindowSupport Support, string? Reason = nu
 }
 
 public sealed class WindowCapabilities(
-    Func<WindowOptions, WindowOptions?, WindowEvaluation> evaluate
+    Func<WindowOptions, WindowOptions?, WindowEvaluation> evaluate,
+    bool canCancelNativeClose
 )
 {
+    public WindowCapabilities(Func<WindowOptions, WindowOptions?, WindowEvaluation> evaluate)
+        : this(evaluate, true) { }
+
+    /// <summary>Whether native close requests participate in RegisterClosing. API close remains cancellable.</summary>
+    public bool CanCancelNativeClose { get; } = canCancelNativeClose;
+
     public WindowEvaluation Evaluate(WindowOptions options, WindowOptions? current = null)
     {
         options.Validate();

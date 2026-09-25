@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0-maccatalyst</TargetFramework>
+    <DorotiMacCatalystTargetFramework Condition="'$(DorotiMacCatalystTargetFramework)' == ''">net10.0-maccatalyst</DorotiMacCatalystTargetFramework>
+    <TargetFramework>$(DorotiMacCatalystTargetFramework)</TargetFramework>
     <RuntimeIdentifier>maccatalyst-arm64</RuntimeIdentifier>
     <AssemblyName>Doroti.Target.MacCatalyst.Maui</AssemblyName>
     <RootNamespace>Doroti.Target.MacCatalyst.Maui</RootNamespace>
@@ -10,13 +11,15 @@
     <UseMaui>true</UseMaui>
     <SingleProject>true</SingleProject>
     <EnableDefaultMauiItems>false</EnableDefaultMauiItems>
-    <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion>$(DorotiMacCatalystMinimumOSVersion)</SupportedOSPlatformVersion>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Doroti.Host.Maui\Doroti.Host.Maui.csproj" AdditionalProperties="RuntimeIdentifier=maccatalyst-arm64"
-                      SetTargetFramework="TargetFramework=net10.0-maccatalyst" SkipGetTargetFrameworkProperties="true" />
-    <EmbeddedResource Include="doroti-target-manifest.json" LogicalName="Doroti.Target.Manifest" />
-    <None Include="doroti-target-manifest.json" Pack="true" PackagePath="doroti\" />
+                      SetTargetFramework="TargetFramework=$(DorotiMacCatalystTargetFramework)" SkipGetTargetFrameworkProperties="true" />
+    <EmbeddedResource Include="doroti-target-manifest.json" LogicalName="Doroti.Target.Manifest" Condition="'$(TargetFramework)' != 'net10.0-maccatalyst27.0'" />
+    <None Include="doroti-target-manifest.json" Pack="true" PackagePath="doroti\" Condition="'$(TargetFramework)' != 'net10.0-maccatalyst27.0'" />
+    <EmbeddedResource Include="doroti-target-manifest.maccatalyst27.json" LogicalName="Doroti.Target.Manifest" Condition="'$(TargetFramework)' == 'net10.0-maccatalyst27.0'" />
+    <None Include="doroti-target-manifest.maccatalyst27.json" Pack="true" PackagePath="doroti/doroti-target-manifest.json" Condition="'$(TargetFramework)' == 'net10.0-maccatalyst27.0'" />
     <None Include="buildTransitive\Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.targets" Pack="true" PackagePath="buildTransitive\Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.targets" />
   </ItemGroup>
 </Project>

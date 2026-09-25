@@ -23,7 +23,20 @@ internal static class DesktopProbe
         states["resize"] = Snapshot(await window.SetSizeAsync(new Size(500, 650), ct));
         await window.SetAlwaysOnTopAsync(true, ct);
         await window.SetAlwaysOnTopAsync(false, ct);
-        await window.SetSkipTaskbarAsync(true, ct);
+        if (OperatingSystem.IsMacOS())
+        {
+            try
+            {
+                await window.SetSkipTaskbarAsync(true, ct);
+                throw new InvalidOperationException("AppKit accepted per-window Dock hiding.");
+            }
+            catch (NotSupportedException)
+            {
+                states["skipTaskbarRejected"] = true;
+            }
+        }
+        else
+            await window.SetSkipTaskbarAsync(true, ct);
         await window.SetSkipTaskbarAsync(false, ct);
         await window.SetResizableAsync(false, ct);
         await window.SetResizableAsync(true, ct);
@@ -45,7 +58,8 @@ internal static class DesktopProbe
                 ThemeSource = WindowThemeSource.Explicit,
                 Theme = WindowTheme.Dark,
                 Backdrop =
-                    appearance.Backdrop.Mode == Doroti.Desktop.WindowBackdropMode.Acrylic
+                    !OperatingSystem.IsMacOS()
+                    && appearance.Backdrop.Mode == Doroti.Desktop.WindowBackdropMode.Acrylic
                         ? appearance.Backdrop with
                         {
                             TintOpacity = 0.4,
@@ -61,6 +75,37 @@ internal static class DesktopProbe
             changed = apply.Status.ToString(),
             reset = reset.Status.ToString(),
         };
+        if (OperatingSystem.IsMacOS())
+        {
+            var modes = new Dictionary<string, object>();
+            foreach (
+                var mode in new[]
+                {
+                    Doroti.Desktop.WindowBackdropMode.Solid,
+                    Doroti.Desktop.WindowBackdropMode.Transparent,
+                    Doroti.Desktop.WindowBackdropMode.Acrylic,
+                    Doroti.Desktop.WindowBackdropMode.LiquidGlass,
+                }
+            )
+            {
+                var result = await window.ApplyAppearanceAsync(
+                    appearance with
+                    {
+                        MacOSBackdrop = null,
+                        Backdrop = new() { Mode = mode },
+                        TitleBar = new() { Background = WindowTitleBarBackground.System },
+                    },
+                    ct
+                );
+                modes[mode.ToString()] = new
+                {
+                    status = result.Status.ToString(),
+                    effective = result.State.EffectiveAppearance.Appearance.Backdrop.Mode.ToString(),
+                };
+            }
+            await window.ApplyAppearanceAsync(appearance, ct);
+            states["materialTransitions"] = modes;
+        }
         states["final"] = Snapshot(window.State);
         var closes = 0;
         var closeSubscription = window.RegisterClosing(
@@ -78,6 +123,17 @@ internal static class DesktopProbe
         {
             if (closed.Id != window.Id)
                 return;
+            File.WriteAllText(
+                path + ".closed",
+                JsonSerializer.Serialize(
+                    new
+                    {
+                        closed.State.Closed,
+                        remaining = context.Windows.GetWindows().Count,
+                        lifetime = context.Windows.LifetimePolicy.ToString(),
+                    }
+                )
+            );
             closeSubscription.Dispose();
             context.Windows.WindowClosed -= Closed;
         }

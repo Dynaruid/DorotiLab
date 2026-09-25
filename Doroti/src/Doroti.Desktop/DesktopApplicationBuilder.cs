@@ -57,7 +57,7 @@ public static class DesktopApplication
     )
         where TStartup : IDorotiDesktopApplicationStartup, new()
     {
-        if (application.LaunchContext.Target is not ("Windows" or "macOS" or "Linux"))
+        if (application.LaunchContext.Target is not ("Windows" or "macOS" or "MacCatalyst" or "Linux"))
             throw new PlatformNotSupportedException(
                 "Desktop startup requires a native desktop runner."
             );

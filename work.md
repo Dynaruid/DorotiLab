@@ -4,9 +4,11 @@
 
 검토 기준: `7f74005f`, `.github/copilot-instructions.md`, 사용자가 제공한 Sudoku Flutter 앱과 아래 공식 웹 문서.
 
-상태: **구현·검증 진행 / 전체 PARTIAL (2026-09-25)**. 사용자의 전체 작업 요청에 따라 Desktop 패키지, manager/controller, SDK companion, Windows MAUI 기본 창 경로를 구현했다. 계약 검사 25개, Windows 실제 창 조작, native caption 재질 조합, 저장소 밖 package-only Windows 실행을 검증했다. **W3의 Hidden/custom 상단바·위젯, W4의 WindowsAppSDK/AppKit/Qt adapter, 일부 환경·시각 gate는 미완료**다. 아래 제안 예제 중 현재 제공되는 API와 제한은 [구현 API 문서](Doroti/docs/desktop-windows.md), 검증 근거는 [실행 결과](Doroti/validation/desktop-window/README.md)를 기준으로 한다. [Runtime 전환 보관 요약](history/26-09-24/runtime-dotnet-migration-summary.md)과 [Linux Qt 작업 보관 요약](history/26-09-24/linux-qt-improvements-summary.md)의 잔여 작업은 별도로 유지한다.
+상태: **구현·검증 진행 / 전체 PARTIAL (2026-09-25)**. 사용자의 전체 작업 요청에 따라 Desktop 패키지, manager/controller, SDK companion, Windows MAUI 기본 창 경로를 구현했다. 후속 작업으로 AppKit과 제한된 Mac Catalyst 기본 창 adapter도 추가했다. 계약 검사 30개, Windows/AppKit/Catalyst 실제 창 조작과 플랫폼별 package-only 실행을 검증하며 세부 결과·미검증 범위는 아래 기록으로 구분한다. **W3의 Hidden/custom 상단바·위젯, W4의 WindowsAppSDK/Qt adapter와 AppKit 잔여 gate, 일부 환경·시각 gate는 미완료**다. 아래 제안 예제 중 현재 제공되는 API와 제한은 [구현 API 문서](Doroti/docs/desktop-windows.md), 검증 근거는 [실행 결과](Doroti/validation/desktop-window/README.md)를 기준으로 한다. [Runtime 전환 보관 요약](history/26-09-24/runtime-dotnet-migration-summary.md)과 [Linux Qt 작업 보관 요약](history/26-09-24/linux-qt-improvements-summary.md)의 잔여 작업은 별도로 유지한다.
 
 사용자 확정 방향(2026-09-25 추가): **새 창 API는 데스크톱 OS 전용으로 제공하고, 향후 다중 창 지원 시 사용 코드를 다시 설계하지 않도록 창 관리·창별 제어·창 콘텐츠 생성을 처음부터 분리한다.** 이번 범위는 다중 창의 API·수명 설계까지이며, 실제 여러 네이티브 창의 동시 실행 구현은 후속 단계로 둔다.
+
+macOS 보강 검토(2026-09-25): 현재 소스와 Apple 공식 문서를 대조해 **AppKit 연결·빌드 경계, 좌표/상단바 계약, 종료 정책, 재질 fallback, 검증 gate**를 §3.1·§5.6·W4-M·§8.1에 추가했다. 후속 실제 작업으로 AppKit 기본 창 adapter·SDK 연결·Testbed·검증 도구를 추가했다. Release 빌드(경고/오류 0), 계약 28개, Graphite/Ganesh native 조작·종료, 저장소 밖 package-only 실행을 검증했다. 지원/미지원 범위는 아래 구현 현황과 API 문서를 기준으로 하며, 전체 macOS 시각·입력 gate가 완료됐다는 뜻은 아니다.
 
 ## 1. 권장 방향
 
@@ -20,7 +22,7 @@
 - 제목 표시줄의 **표시 방식**, **배경 재질**, **콘텐츠·버튼 소유자**를 구분한다. 기존 `unified/solid`만으로는 숨김·커스텀 제목 표시줄까지 표현하기 어렵다.
 - 창 배경색, 뒤쪽 데스크톱 재질, 앱 콘텐츠의 투명도, 창 전체 opacity는 서로 다른 기능이다.
 - 시작 옵션과 실행 중 변경은 같은 검증·적용 경로를 공유한다. 지원하지 않는 옵션을 성공으로 처리하지 않는다.
-- Windows/macOS/Linux의 네이티브 데스크톱 앱에서만 새 API를 제공한다. Windows MAUI를 첫 구현 대상으로 삼고 WindowsAppSDK raw, macOS AppKit, Linux Qt로 확장한다. Web·Android·iOS에는 이 API의 참조·등록·호출 경로를 제공하지 않는다. 데스크톱 OS에서 실행한 브라우저도 Web 대상이다.
+- Windows/macOS/Linux의 네이티브 데스크톱 앱에서만 새 API를 제공한다. Windows MAUI를 첫 구현 대상으로 삼고 WindowsAppSDK raw, macOS AppKit·Mac Catalyst, Linux Qt로 확장한다. Web·Android·iOS에는 이 API의 참조·등록·호출 경로를 제공하지 않는다. 데스크톱 OS에서 실행한 브라우저도 Web 대상이다.
 
 ## 2. 참고 코드와 웹 문서 검토
 
@@ -72,6 +74,19 @@
 
 직전 Windows MAUI 수정은 기본 caption에 아크릴이 보이는 경로를 추가했다. 이를 `Normal + Backdrop`의 기존 기반으로 사용한다. 네이티브 caption을 초기화한 뒤 AppWindow 색상·확장 설정이 다시 custom caption을 만들지 않도록 현재 초기화 순서를 보존한다. [기존 검증 기록](Doroti/validation/windows-maui/README.md)의 리사이즈 시각 연속성 **PARTIAL**은 이 API 계획으로 해소되지 않는다.
 
+### 3.1 macOS 현재 구성과 연결 누락
+
+| 구분 | 소스에서 확인한 현재 상태 | 보강할 지점 |
+| --- | --- | --- |
+| AppKit runner | [MacOS.csproj](DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj): `DorotiTarget=macOS`, `AppKit-Main`, `osx-arm64`, 기본 `net10.0-macos`, 최소 OS 14.0 | Apple Silicon AppKit을 첫 지원 대상으로 명시한다. Intel/Rosetta·MacCatalyst 지원으로 확대 해석하지 않는다. |
+| 별도 MacCatalyst runner | [MacCatalyst.csproj](DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj): `UIKit-Main`, `maccatalyst-arm64` | 후속 사용자 요청으로 UIKit 전용 Desktop adapter를 추가했다. AppKit과 별도 capability를 사용하며 상세 범위는 §8.2를 따른다. |
+| Desktop 연결 | [AppKitDesktopWindowHost.cs](Doroti/src/Doroti.Host.Maui/AppKitDesktopWindowHost.cs)의 factory/host/handler와 AppKit launch를 추가했다. Host의 macOS TFM에 Desktop을 참조하고 SDK에서 Windows MAUI/AppKit/Catalyst startup을 허용한다. | WindowsAppSDK/Qt의 거절은 유지한다. MacCatalyst는 §8.2의 별도 adapter를 사용한다. Hidden/custom과 전역 물리 pixel 위치 지정은 명시적 미지원이다. |
+| 기본 창 생성·종료 | [DorotiMauiPlatformApplications.cs](Doroti/src/Doroti.Host.Maui/DorotiMauiPlatformApplications.cs)는 Desktop startup에서 별도 hidden 생성 경로와 manager를 사용한다. | upstream preview의 생성 즉시 show를 피한다. native/API 닫기와 Cmd+Q는 controller 결정을 따르고, Desktop 미사용 앱은 legacy 생성·종료 경로를 유지한다. |
+| 재질 | [AppKitWindowBackdrop.cs](Doroti/src/Doroti.Host.Maui/AppKitWindowBackdrop.cs): Acrylic은 `NSVisualEffectView`의 `BehindWindow`, Liquid Glass는 OS 26 이상 `NSGlassEffectView`, 하위 OS는 Acrylic. unified/solid와 detach 복구가 있다. | 기존 재질 구현을 재사용하되 새 API의 요청값/실제값·fallback 이유·옵션별 지원 여부를 연결한다. 현재 blur 생성부는 tint/luminosity를 소비하지 않는다. |
+| 화면 환경 | [MauiViewEnvironment.MacOS.cs](Doroti/src/Doroti.Host.Maui/MauiViewEnvironment.MacOS.cs)는 backing scale, safe area, 화면/전체화면/접근성 변경을 관찰한다. | 창 상태 이벤트와 통합하고 창별 notification을 해당 `NSWindow`로 제한한다. Reduce Transparency와 재질 effective state 연결을 추가 검토한다. |
+
+현재 `WindowOptions.Position`은 **전역 물리 pixel의 바깥 프레임 원점**, 크기는 **client 논리 단위**다. AppKit point를 그대로 대입하면 계약이 달라진다. 또한 공개 `WindowBackdropFallback`은 `Solid/Transparent`만 있어 legacy의 `LiquidGlass → Acrylic`을 명시적으로 선택할 수 없다. 이번 adapter는 Position/SetBounds를 거절하고 Bounds=null을 반환하며, 새 API의 하위 OS Glass 요청에는 선택된 Solid/Transparent fallback을 적용한다. legacy Glass→Acrylic 동작은 기존 경로에 보존한다.
+
 ## 4. 제안하는 공개 API
 
 ### 4.1 역할과 소유권
@@ -97,7 +112,7 @@ controller는 `WindowId + lifetime`에 귀속한다. 여러 view가 한 창을 �
 ### 4.1.1 데스크톱 전용 제공 경계
 
 - 기본 방침은 **컴파일·패키지 경계에서 분리**하는 것이다. `if (isDesktop)` 아래에서 모바일에도 같은 API를 호출하게 하는 범용 facade나 no-op 구현은 만들지 않는다.
-- SDK가 desktop 전용 startup/source/project와 패키지 참조를 Windows/macOS/Linux runner에만 포함한다. 예: 공통 `AppStartup` + 별도 `DesktopStartup : IDorotiDesktopApplicationStartup`. 기존 공유 앱 assembly가 target-neutral이면 별도 desktop companion assembly를 사용한다. 플랫폼별 빌드로 전환할 경우 target별 출력·중간 파일 격리까지 설계해야 한다.
+- SDK가 desktop 전용 startup/source/project와 패키지 참조를 Windows/macOS(AppKit·Mac Catalyst)/Linux runner에만 포함한다. 예: 공통 `AppStartup` + 별도 `DesktopStartup : IDorotiDesktopApplicationStartup`. 기존 공유 앱 assembly가 target-neutral이면 별도 desktop companion assembly를 사용한다. 플랫폼별 빌드로 전환할 경우 target별 출력·중간 파일 격리까지 설계해야 한다.
 - Web/Android/iOS 빌드에는 desktop startup 및 `Doroti.Desktop.Widgets`를 포함하지 않는다. 앱 개발자는 데스크톱 파일에서 한 번 설정하고 공통 UI에는 매번 OS 분기를 넣지 않는다.
 - 비데스크톱 runner가 Desktop 패키지·startup을 잘못 참조하면 SDK build diagnostic으로 거절한다. 리플렉션/수동 assembly 로딩 등으로 경계를 우회해도 지원 host 없는 초기화는 명시적으로 실패하며 조용히 무시하지 않는다.
 - OS 식별만으로 동작을 허용하지 않는다. macOS의 MacCatalyst처럼 별도 host adapter가 필요한 대상은 해당 데스크톱 adapter의 준비·검증 여부로 허용한다. embedded 데스크톱 UI는 OS 제한과 별도로 창 소유 host의 명시적 controller 연결이 필요하다.
@@ -317,6 +332,45 @@ Position/Bounds는 대상 모니터 좌표계·배율 기준을 명시하고, �
 
 Windows는 드래그, 8방향 resize, 더블클릭 최대화/복원, 우클릭 시스템 메뉴, Alt+Space/Alt+F4, native 버튼 hover 및 Snap 동작을 확인한다. Custom 버튼에는 이름·role·상태·키보드 접근을 제공한다. Snap 등 OS 통합을 확인하지 못한 custom 경로를 native와 동등하다고 표시하지 않는다. macOS와 Qt는 해당 OS 동작에 맞게 검증한다.
 
+### 5.6 macOS AppKit 전용 계약
+
+아래는 구현·수락 기준이다. 기존 native 재질이 있다는 사실만으로 새 Desktop API의 지원을 선언하지 않는다.
+
+**준비·표시·소유권**
+
+- AppKit 작업은 main thread에서 실행하고 `NSWindow`별 controller·notification·close 결정 수명을 둔다. MAUI가 소유한 window delegate를 무조건 교체하지 말고 기존 lifecycle과 공존하는 연결점을 사용한다.
+- 자동 `orderFront`/key-window/앱 활성화보다 먼저 초기 geometry·titlebar·재질을 적용한다. `Manual`은 앱 활성화나 숨겨진 창의 첫 frame 준비만으로 창을 표시하지 않는다. `WhenReady`와 명시적 `ShowAsync`는 같은 readiness를 사용한다.
+- 숨긴 `MTKView`에서 drawable/frame callback을 받을 수 있는지 확인한다. 받을 수 없으면 준비 경로를 별도로 구현한다. `ReadyToShow` 대기 중 창을 잠깐 표시하거나 timer로 성공시키지 않는다. 실패·취소·close는 준비 대기와 Metal 자원을 함께 정리한다.
+- show, key-window 요청, 앱 활성화는 다른 작업으로 다룬다. 실제 key/visible 상태를 다시 읽고, 최소화·앱 숨김·다른 Space에 있는 상태를 구별한다.
+
+**좌표·창 상태·시스템 동작**
+
+- `Size/MinimumSize/MaximumSize`를 AppKit point 기반 client 크기로 변환한다. full-size content를 사용할 때 `contentView` 전체와 가려지지 않는 `contentLayoutRect` 중 무엇이 공통 client 계약에 해당하는지 고정하고, Normal↔Hidden 전환 전후 콘텐츠 크기와 inset을 검증한다. [Apple contentLayoutRect](https://developer.apple.com/documentation/appkit/nswindow/contentlayoutrect)
+- 공통 Position/Bounds의 원점·축 방향과 화면 식별 규칙을 먼저 고정한다. AppKit screen 좌표와 backing pixel의 변환은 화면별로 수행하고 전역 원점까지 한 창의 `BackingScaleFactor`로 곱하지 않는다. 1×/2×, 음수 배치, 화면 경계 이동과 왕복 변환을 검사한다. 안정적인 공통 매핑을 정의하지 못하면 Position/SetBounds 지원을 보류하거나 공통 계약을 명시적으로 개정한다. [Apple screen backing 변환](https://developer.apple.com/documentation/appkit/nsscreen/convertrecttobacking(_:))
+- `Centered`는 선택 화면의 작업 영역과 Dock/menu bar를 고려한다. `Maximized`의 AppKit zoom 의미와 native full-screen Space를 구분하고, 전체화면 진입/종료 notification에서 완료 상태를 확정한다. 복원 geometry·화면 제거·전환 중 close/resize도 검증한다.
+- `AlwaysOnTop`은 창 level 정책으로 한정하고 다른 앱의 full-screen Space까지 항상 덮는다고 보장하지 않는다. `SkipTaskbar=true`를 앱 전체 Dock 숨김으로 치환하지 않는다. Dock/activation policy는 앱 범위이므로 창별 동등 동작이 없으면 명시적 Unsupported로 반환한다. [Apple activation policy](https://developer.apple.com/documentation/appkit/nsapplication/activationpolicy-swift.enum)
+
+**상단바·입력·접근성**
+
+- `Normal`은 제목과 traffic lights를 유지한다. `Hidden + Native`는 제목 콘텐츠만 앱이 맡고 native 버튼은 보존한다. `TitleVisibility`, `TitlebarAppearsTransparent`, `FullSizeContentView`를 같은 appearance snapshot으로 적용하며 solid/unified legacy 매핑과 분리해 검사한다.
+- 버튼 예약 공간과 content inset을 실제 버튼 bounds·content layout에서 구한다. 고정 높이/왼쪽 padding을 넣지 않는다. full-screen, toolbar, 배율·레이아웃 변화 때 `WindowChromeMetrics`를 갱신하고 MAUI container/SafeArea와 중복 적용하지 않는다.
+- OS drag는 원래 mouse-down event를 가진 시점에 `performDrag(with:)`로 시작한다. 드래그 이후 mouse-up이 전달되지 않을 수 있으므로 framework pointer 상태를 정리한다. 검색·버튼·WebView·한글 IME 조합 영역은 drag에서 제외한다. [Apple performDrag](https://developer.apple.com/documentation/appkit/nswindow/performdrag(with:))
+- 더블클릭 제목줄 동작은 OS 사용자 설정을 존중한다. traffic lights의 닫기/최소화/전체화면, Cmd+W, Cmd+M, 메뉴 동작, VoiceOver와 키보드 포커스를 검증한다. Custom/Frameless와 programmatic resize 시작은 native 기능과 별도로 capability를 판정한다.
+
+**재질·테마·fallback**
+
+- effective material은 `MacOSBackdrop ?? Backdrop`에서 선택한다. `NSVisualEffectView` 기반 Acrylic과 `NSGlassEffectView` 기반 Liquid Glass를 별도 판정한다. 후자는 OS 26 이상 API이며, Windows Acrylic과 수치·픽셀 결과가 동일하다고 약속하지 않는다. [Apple NSGlassEffectView](https://developer.apple.com/documentation/appkit/nsglasseffectview)
+- legacy `LiquidGlass → Acrylic`은 호환 경로에서 보존한다. 새 API는 하위 OS에서 사용자가 선택한 `Solid/Transparent` fallback을 적용하거나, Acrylic fallback을 선택할 수 있는 계약 확장을 먼저 마련한다. 요청은 LiquidGlass로 보존하고 실제 적용 모드·사유를 기록한다. 기존 helper의 무조건 Acrylic 전환을 새 API의 성공으로 감추지 않는다.
+- 현재 blur 경로에서 적용되지 않는 `TintColor/TintOpacity/LuminosityOpacity`는 구현 전 명시 요청을 거절한다. Liquid Glass의 tint alpha도 Windows luminosity와 구분한다. 명시 값→null 초기화와 Solid/Transparent/System 복원 시 effect view·배경·opaque·titlebar 상태를 검사한다.
+- 밝음/어두움, inactive, Increase Contrast, Reduce Transparency 변경을 관찰하고 `EffectiveAppearance`와 `SystemPolicyFallback`에 반영한다. 재질 존재 여부만으로 시스템 fallback을 판단하지 않는다. 투명한 renderer 위에 불투명 콘텐츠가 덮인 경우와 재질 미지원도 구별한다.
+- 제목줄/body의 효과 중첩·입력 가로채기를 방지하고 창 뒤 데스크톱 재질과 앱 내부 `BackdropFilter`를 구분한다. 재질 변경에 Graphite/Ganesh device·session을 재생성하지 않는지, live resize와 native platform view의 합성이 유지되는지 확인한다.
+
+**창 닫기·앱 종료**
+
+- 빨간 닫기 버튼·Cmd+W·`CloseAsync`를 같은 비동기 결정으로 연결한다. 동기 `windowShouldClose`에서 UI thread를 기다리지 말고 일단 보류한 뒤 허용 시 한 번만 native close를 재개하며 재진입을 막는다. [Apple windowShouldClose](https://developer.apple.com/documentation/appkit/nswindowdelegate/windowshouldclose(_:))
+- Cmd+Q/앱 메뉴 종료는 별도 경로다. Apple은 앱 종료 시 `windowShouldClose`가 호출되지 않는다고 명시한다. `applicationShouldTerminate`의 지연 응답과 reply를 사용해 앱 종료 결정·창별 취소·자원 해제를 조정한다. 일반 종료 취소를 강제 종료/프로세스 kill 보장으로 확대하지 않는다. [Apple applicationShouldTerminate](https://developer.apple.com/documentation/appkit/nsapplicationdelegate/applicationshouldterminate(_:))
+- 마지막 창 닫기는 manager의 `OnLastWindowClosed/Explicit`을 따른다. `Explicit`에서 앱만 남을 때 Dock 재활성화가 닫힌 controller를 다시 쓰지 않게 한다. 창 0개 이후 새 창 생성·reopen 지원은 W6 capability와 함께 명시하고 현재 지원으로 간주하지 않는다.
+
 ## 6. 단계별 작업계획
 
 체크박스는 해당 항목 전체의 충족 여부다. 부분 구현은 체크하지 않고 아래에 기록한다. 구현 상태와 실제 검증 범위를 구별한다.
@@ -327,7 +381,7 @@ Windows는 드래그, 8방향 resize, 더블클릭 최대화/복원, 우클릭 �
 | W1 | 핵심 구현 및 25개 fake-host 계약 PASS. 한 창의 다중 view/일부 경합 확대 검증 잔여 |
 | W2 | Windows 기본 경로와 200% DPI 창 조작 PASS. 최초 노출 전체 프레임 캡처·혼합 DPI 잔여 |
 | W3 | Normal+System/Solid/Backdrop 픽셀 회귀 PASS. Hidden/custom/frameless·App theme bridge 미구현 |
-| W4 | 비데스크톱 package negative build PASS. WindowsAppSDK/AppKit/Qt adapter 미구현, 명시적 거절 |
+| W4 | AppKit·Mac Catalyst 기본 창 adapter·SDK·Testbed 연결 구현. WindowsAppSDK/Qt 미구현. AppKit Hidden/custom·혼합 화면 좌표·물리 입력 gate 잔여 |
 | W5 | Testbed/선택형 companion template/이전 문서/package-only Windows 실행 PASS. 커스텀 상단바 예제 등 잔여 |
 | W6 | 이번 범위 밖. 실제 다중 네이티브 창 미구현 |
 
@@ -372,11 +426,24 @@ Windows는 드래그, 8방향 resize, 더블클릭 최대화/복원, 우클릭 �
 ### W4 — 다른 데스크톱 host와 비데스크톱 경계
 
 - [ ] WindowsAppSDK runner/native ABI에 공통 command/event 연결을 추가한다. 기존 AcrylicOptionsState의 validation/revision을 재사용하고 공용 controller가 문자열 JSON을 요구하지 않게 한다.
-- [ ] macOS MAUI/AppKit에 기본 창 조작·Acrylic/Liquid Glass·제목 표시줄 조합을 연결한다. MacCatalyst를 AppKit과 자동 동등 취급하지 않는다.
+- [ ] macOS MAUI/AppKit에 기본 창 조작·Acrylic/Liquid Glass·제목 표시줄 조합을 연결한다. 아래 W4-M과 §8.1을 완료 기준으로 사용한다. MacCatalyst는 별도 UIKit adapter와 지원 범위를 적용한다.
 - [ ] Qt managed/native/QML과 앱 template에 상태·크기·OS drag/resize·caption 경로를 연결한다. X11/Wayland별 지원을 분리한다.
 - [ ] Linux의 기존 in-app blur를 뒤쪽 데스크톱 Acrylic으로 광고하지 않는다. compositor 의존 재질은 검증된 capability만 제공한다.
 - [ ] Web/Android/iOS 빌드에 Desktop 패키지·startup·위젯 assembly가 포함되지 않는지 검사하고 잘못된 참조는 실패시킨다. 데스크톱 embedded MAUI는 host가 명시적으로 연결한 창 controller만 사용하도록 별도 검증한다.
 - 완료 기준: 동일 C# 계약을 사용하되 플랫폼별 구현·미지원·미검증 항목이 구별된 표와 실행 근거.
+
+#### W4-M — AppKit 구현 순서와 산출물
+
+- [x] **M0 계약/환경**: §5.6의 client/좌표·zoom/full-screen·SkipTaskbar·재질 fallback 의미를 API 문서와 capability 표에 고정한다. .NET SDK/workload/Xcode/macOS SDK/실행 OS/RID/TFM을 기록한다.
+- [x] **M1 adapter/표시**: AppKit `IWindowHostFactory/IWindowHost`와 기본 창 manager 등록, Desktop 조건부 참조, SDK bootstrap, hidden readiness를 연결한다. 이 경로가 준비된 AppKit만 `DOROTIDESKTOP005`에서 허용하고 Web/Android/iOS negative build는 유지한다. MacCatalyst는 후속 UIKit adapter 검증으로 분리한다.
+- [ ] **M2 제어/수명**: client 크기·제약·위치·title·show/hide/focus·창 상태·native 이벤트, 비동기 close와 Cmd+Q, 마지막 창 종료 정책을 구현한다. 상태를 native에서 읽고 기존 MAUI lifecycle과 구독 해제를 검증한다.
+- [ ] **M3 재질/상단바**: Normal+System/Solid/Backdrop부터 연결하고 effective mode·OS fallback·null 복원을 확인한다. Hidden+Native는 버튼 metrics·drag 제외 영역·IME/VoiceOver gate를 통과한 뒤 공개 지원한다. Custom/Frameless는 별도 판정한다.
+- [x] **M4 샘플/배포**: AppKit용 desktop companion 소비 예제와 template을 연결하고 저장소 밖 package-only restore/build/run을 확인한다. AppKit과 MacCatalyst runner가 각각 전용 Desktop startup을 선택하게 한다.
+- [ ] **M5 근거**: §8.1의 환경별 결과를 [Desktop 검증 기록](Doroti/validation/desktop-window/README.md)과 [API 지원표](Doroti/docs/desktop-windows.md)에 반영한다. 빌드·계약·native 조작·시각 검증을 구분하고 추가 native 창은 W6로 남긴다.
+
+현재 구현: M0/M1 완료. M2의 native 크기·표시·최소화·zoom·전체화면·닫기/Cmd+Q와 M3의 Normal 재질 전환을 구현했다. M2의 전역 물리 pixel 위치, M3의 Hidden/custom·물리 입력 검증은 남아 있어 단계 전체를 완료 처리하지 않는다. Testbed AppKit에 companion을 연결하고 template의 선택형 companion 안내도 갱신했다. M4의 저장소 밖 package-only AppKit build/run과 비데스크톱 negative package 검사를 통과했다. 전체 물리 입력·시각 환경 gate는 미완료다.
+
+M0→M1→M2→M3→M4→M5로 진행한다. Windows 전용 W3 시각 결과는 AppKit의 선행 PASS가 아니며, 공통 계약 변경이 있으면 Windows 회귀 검사도 수행한다.
 
 ### W5 — 샘플·이전·패키지·문서
 
@@ -445,8 +512,70 @@ python Doroti/validation/run-with-timeout.py python Doroti/validation/windows-ma
 
 기존 resize 시각 gate가 계속 실패하면 창 API의 통과 항목과 별개로 전체 resize 연속성은 PARTIAL로 유지한다. `Doroti/artifacts`의 원시 캡처는 삭제 가능한 산출물이므로 최종 문서에는 실행 조건·요약·바이너리 식별 정보를 남기고, 삭제된 파일을 남아 있는 증거로 링크하지 않는다.
 
+### 8.1 macOS 빌드 구성과 전용 검증 gate
+
+**후속 실제 구현·검증 진행:** AppKit adapter와 자동화 도구를 추가했다. 실행 결과는 [Desktop macOS 검증 기록](Doroti/validation/desktop-window/README.md#appkit-macos--2026-09-25)에 별도로 기록한다. 기존 [macOS platform-view 검증](Doroti/validation/platform-views/macos/README.md)은 renderer/합성의 참고 기준선이며 새 Desktop 창 API의 PASS 근거가 아니다.
+
+- 저장소 SDK는 `global.json`의 .NET `10.0.400`/`latestPatch` 정책, AppKit MAUI 패키지는 `Directory.Packages.props`의 pin을 따른다. 최소 실행 OS 14.0과 빌드에 필요한 Xcode/macOS SDK 버전을 구별한다.
+- 기본 `net10.0-macos`와 명시 `net10.0-macos27.0`은 별도 빌드 프로필이다. Xcode 27 환경은 [Doroti.MacOS.props](Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.MacOS.props)의 `DorotiMacOSTargetFramework`를 사용한다. OS가 26이라는 이유만으로 TFM을 26으로 추정하지 않고, 선택된 workload/SDK와 Xcode 조합을 확인한다. 버전 검사를 끄거나 lock 파일을 무조건 갱신해 불일치를 감추지 않는다.
+- runner/binding의 `obj/macos`와 `obj/maccatalyst` 분리를 유지하고 프로필 전환 빌드는 직렬 실행한다. Testbed와 template의 target manifest·native binding·lock file·생성 bootstrap이 같은 TFM/RID를 사용하는지 확인한다.
+
+저장소 루트에서 실행할 zsh/bash 예시(기존 AppKit runner 빌드이며 새 Desktop adapter 검증을 대신하지 않음):
+
+```sh
+python3 Doroti/validation/run-with-timeout.py dotnet --info
+python3 Doroti/validation/run-with-timeout.py dotnet workload list
+python3 Doroti/validation/run-with-timeout.py xcode-select -p
+python3 Doroti/validation/run-with-timeout.py xcodebuild -version
+python3 Doroti/validation/run-with-timeout.py xcrun --sdk macosx --show-sdk-version
+python3 Doroti/validation/run-with-timeout.py sw_vers
+
+# 설치된 workload/Xcode가 기본 프로필과 호환될 때
+python3 Doroti/validation/run-with-timeout.py dotnet build DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -r osx-arm64
+
+# Xcode 27 프로필을 선택할 때: 위 기본 빌드 대신 사용
+python3 Doroti/validation/run-with-timeout.py dotnet build DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -r osx-arm64 -p:DorotiMacOSTargetFramework=net10.0-macos27.0
+```
+
+| Gate | 필수 사례 | 합격 근거/제한 |
+| --- | --- | --- |
+| SDK/패키지 경계 | AppKit/Catalyst companion/bootstrap, Web/mobile 거절, 저장소 밖 package 소비 | AppKit adapter 전에는 startup 거절이 정상. 구현 후에만 positive 실행으로 바꿈 |
+| 최초 표시 | Manual/WhenReady, hidden 첫 frame, 실패·취소·close 중 readiness | 최초 visible frame부터 geometry·titlebar·재질 캡처, 대기자 종결. 앱이 켜진 화면 한 장으로 대체하지 않음 |
+| 크기/좌표 | 450×800 client, 최소 350×500, 최대 크기, 1×/2×, 음수·혼합 화면, 모니터 이동 | native frame/client/backing 값과 controller 상태 왕복 비교. 확보 못한 실제 화면 구성은 notVerified |
+| 상태/시스템 통합 | zoom/복원, minimize/복원, native full-screen 진입/이탈, Space 전환, topmost, focus | 완료 notification·실제 표시·복원 bounds. 요청 반환만으로 full-screen/포커스 PASS 금지 |
+| 상단바/입력 | Normal 세 재질 조합, Hidden+Native, traffic lights, drag 제외 영역, 한글 IME, VoiceOver | 버튼 bounds/inset와 실제 입력 확인. Custom/Frameless는 별도 gate |
+| 재질/환경 | Acrylic/LiquidGlass, OS 26 미만 fallback, null 복원, light/dark/inactive, 대비 증가/투명도 감소 | 통제 배경 caption/body 픽셀과 requested/effective state. OS 26 이상 실행만으로 하위 OS fallback PASS 금지 |
+| 닫기/앱 종료 | native 버튼/Cmd+W/API 취소→허용, Cmd+Q 취소→허용, 두 lifetime 정책, 중복 요청 | 닫기 결정·registry 제거·구독 해제·GPU 해제 각 1회. Explicit의 앱 생존과 W6 reopen 지원을 구별 |
+| renderer 회귀 | Graphite 기본/Ganesh 대체, live resize 중 재질 변경·close, WebView/IME | renderer별 원본 캡처·수명 기록. 미해결 resize 시각 항목을 빌드 성공으로 해제하지 않음 |
+| 배포 | Release `.app`, 로컬 package-only/template 앱 실행, TFM/RID·바이너리 식별 | 개발 환경 실행과 서명/notarization/Gatekeeper/다른 Mac 검증을 구별. 수행하지 않은 배포 검사는 notVerified |
+
+[verify-macos.py](Doroti/validation/desktop-window/verify-macos.py)는 native 조작·재질 교체·닫기/앱 종료를 검사하고, [verify-macos-package.py](Doroti/validation/desktop-window/verify-macos-package.py)는 저장소 밖 package-only 소비를 검사한다. 입력·시각 gate 전체를 이 자동화 결과로 대체하지 않는다. 검증 자동화에 화면 기록/손쉬운 사용 권한이 필요하면 부여 여부를 기록하고, 권한 부족은 해당 gate의 미검증 사유로 남긴다. 반복은 30회 이내, 명령별 timeout은 기존 1,200초 정책을 적용한다.
+
+### 8.2 Mac Catalyst 후속 구성 (2026-09-25)
+
+사용자의 추가 요청으로 `MacCatalystDesktopWindowHost`와 UIKit 전용 startup을
+구현했다. Mac Catalyst를 Desktop package/SDK/descriptor 경계에서 허용하되
+Web/Android/iOS의 잘못된 참조는 계속 거절한다. AppKit adapter를 재사용하지 않는다.
+
+- `UIApplicationSceneManifest`에 MAUI 구성 이름과 `DorotiMacCatalystSceneDelegate`를 등록하고 scene 닫기에 필요한 `UIApplicationSupportsMultipleScenes=true`를 설정한다. 추가 창은 delegate/manager에서 거절한다. Mac idiom(UIDeviceFamily=6), Graphite, Catalyst 16 이상을 요구한다.
+- 현재 Xcode 27 환경에서는 `DorotiMacCatalystTargetFramework=net10.0-maccatalyst27.0`을 지정한다. 이 프로필의 SDK 최소 Catalyst 버전은 17.0이다. 기존 기본 TFM과 출력 분리를 보존하고 Xcode 버전 검사를 우회하지 않는다.
+- `StartupVisibility.PlatformDefault`와 `WindowLifetimePolicy.Explicit`을 명시한다. UIKit이 최초 표시·앱 종료를 소유하며 숨긴 첫 프레임 준비를 보장하지 않는다. manager는 프로세스 종료를 강제하지 않는다.
+- 제목, client 크기·min/max·resizable, 기존 scene 표시/활성화 요청, System/Solid 불투명 배경과 System/Explicit 테마를 연결한다. 크기 요청은 native geometry와 콘텐츠 layout 일치 확인 또는 오류로 종결한다. 최초 크기는 UIKit 복원 상태가 덮어쓸 수 있으므로 실제 State를 읽고 필요하면 준비 후 SetSizeAsync를 호출한다.
+- API `CloseAsync`는 취소할 수 있다. 네이티브 닫기/앱 종료는 UIKit이 소유하며 `CanCancelNativeClose=false`로 공개한다. `RegisterClosing`을 native close에도 적용한다고 가정하지 않는다.
+- AppKit용 `MacOSBackdrop`, desktop Acrylic/Liquid Glass, 위치/센터링, topmost/Dock, 숨김 시작·hide, programmatic minimize/maximize/full-screen, hidden/custom chrome은 명시적으로 거절한다. native controls 사용 및 시스템 상태 관찰과 구분한다.
+- Testbed와 template에 Catalyst 전용 companion startup을 제공한다. AppKit용 예제를 그대로 넣어 미지원 재질·표시 정책이 조용히 무시되지 않게 한다.
+- 검증 완료: Release 빌드 경고·오류 0, 계약 30/30, 실제 UIKit 창 조작·API 닫기 취소→허용·native scene disconnect, 외부 package-only 소비, Web/Android/iOS negative build, AppKit 재빌드·기본 창 회귀 실행 PASS. 전체 작업 상태는 PARTIAL을 유지한다.
+- [Catalyst 실행 도구](Doroti/validation/desktop-window/verify-maccatalyst.py)는 API 닫기 취소→허용과 native scene disconnect를 별도로 확인한다. [외부 패키지 도구](Doroti/validation/desktop-window/verify-maccatalyst-package.py)는 저장소 밖 runner/binding/companion 구성을 검증한다. 실행 근거는 [검증 기록](Doroti/validation/desktop-window/README.md#mac-catalyst--2026-09-25)에 남긴다.
+
+```sh
+python3 Doroti/validation/run-with-timeout.py dotnet build DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj -c Release -r maccatalyst-arm64 -p:DorotiMacCatalystTargetFramework=net10.0-maccatalyst27.0
+```
+
+이 추가 작업은 AppKit W4-M의 미완료 입력·시각 검증이나 실제 다중 창 W6를 완료로 바꾸지 않는다.
+
+
 ## 9. 이번 검토의 결론
 
 **데스크톱 전용 패키지·startup → 앱 범위 WindowManager → 창별 WindowController와 콘텐츠 factory**를 기본 구조로 확정한다. 기본 창은 `UseMainWindow`, 향후 추가 창은 `CreateWindowAsync`로 만들고, 생성 이후에는 같은 조작·외형·이벤트 API를 사용한다. 이를 통해 사용자가 편하게 썼던 선언·준비·표시 흐름과 아크릴·커스텀 상단바 조합을 유지하면서, 나중에 다중 창을 추가할 때 전역 단일 창 API를 다시 걷어내는 일을 피한다.
 
-2026-09-25 전체 작업 요청으로 제품 구현과 bounded 검증을 진행했다. 외부 Sudoku 프로젝트는 수정하지 않았다. 미완료 항목을 체크한 것으로 처리하지 않으며, 다음 구현 지점은 Hidden+Native chrome/입력·위젯, App theme bridge, WindowsAppSDK/AppKit/Qt adapter와 내부 Acrylic 채널 위임이다. 기존 resize 시각 연속성은 PARTIAL을 유지한다.
+2026-09-25 전체 작업 요청으로 제품 구현과 bounded 검증을 진행했다. 외부 Sudoku 프로젝트는 수정하지 않았다. 미완료 항목을 체크한 것으로 처리하지 않으며, 다음 구현 지점은 Hidden+Native chrome/입력·위젯, App theme bridge, WindowsAppSDK/Qt adapter와 내부 Acrylic 채널 위임이다. AppKit 및 제한된 Mac Catalyst 기본 창 adapter는 후속 구현으로 추가했으며 macOS 미지원 조합·잔여 검증은 W4-M과 §8.1–8.2에 남긴다. 기존 resize 시각 연속성은 PARTIAL을 유지한다.

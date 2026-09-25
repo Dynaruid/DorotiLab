@@ -1,0 +1,11 @@
+<Project>
+  <PropertyGroup>
+    <DorotiMacCatalystMinimumOSVersion>15.0</DorotiMacCatalystMinimumOSVersion>
+    <DorotiMacCatalystProfileImported>true</DorotiMacCatalystProfileImported>
+    <DorotiMacCatalystTargetFramework Condition="'$(DorotiMacCatalystTargetFramework)' == ''">net10.0-maccatalyst</DorotiMacCatalystTargetFramework>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(DorotiMacCatalystTargetFramework)' == 'net10.0-maccatalyst27.0'">
+    <DorotiMacCatalystMinimumOSVersion>17.0</DorotiMacCatalystMinimumOSVersion>
+    <NoWarn>$(NoWarn);XCODE_27_0_PREVIEW</NoWarn>
+  </PropertyGroup>
+</Project>

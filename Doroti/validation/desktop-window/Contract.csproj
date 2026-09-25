@@ -1,4 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <PropertyGroup><OutputType>Exe</OutputType><DefineConstants>$(DefineConstants);DOROTI_APPKIT_CONTRACTS</DefineConstants></PropertyGroup>
   <ItemGroup><ProjectReference Include="../../src/Doroti.Desktop/Doroti.Desktop.csproj" /></ItemGroup>
+  <ItemGroup><Compile Include="../../src/Doroti.Host.Maui/AppKitDesktopWindowPolicy.cs" Link="AppKitDesktopWindowPolicy.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="../../src/Doroti.Host.Maui/MacCatalystDesktopWindowPolicy.cs" Link="MacCatalystDesktopWindowPolicy.cs" /></ItemGroup>
 </Project>

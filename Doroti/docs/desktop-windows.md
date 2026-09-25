@@ -2,7 +2,7 @@
 
 The first implementation provides `Doroti.Desktop` and optional
 `Doroti.Desktop.Widgets`. **The complete W0–W5 plan is PARTIAL.** Windows MAUI
-has the native adapter. WindowsAppSDK raw, AppKit and Qt adapters and custom
+and AppKit macOS have native main-window adapters. Mac Catalyst has a restricted UIKit scene adapter. WindowsAppSDK raw and Qt adapters and custom
 title-bar widgets are still unimplemented. Native multi-window execution is W6,
 outside this first implementation.
 
@@ -19,7 +19,7 @@ outside this first implementation.
 | Close | AppWindow Closing → controller decision → render drain → detach/dispose → native close → registry removal | Native/API close share one cancellable decision |
 | Material/caption | `WindowsWindowBackdrop`, `WindowsNativeCaption` | Same appearance snapshot, native System/Solid/Backdrop caption |
 | Existing raw Acrylic channel | `WindowsAcrylicOptionsState` | Existing implementation retained; controller adapter still pending |
-| AppKit | `AppKitWindowBackdrop`, macOS platform application | Existing path retained; new adapter pending |
+| AppKit | `AppKitDesktopWindowHost`, `AppKitDesktopWindowPolicy`, macOS platform application | Opt-in desktop launch, ordered-out Metal preparation, native controls/materials and cancellable window/app exit |
 | Qt | `DorotiQtRunner`, `QtTitlebarAppearance`, QML/native ABI | Existing path retained; new adapter pending |
 | Legacy facade | `SingletonDorotiWindow`, Ui metrics, `WindowTitlebar` | Unchanged; not promoted to process-wide window manager |
 
@@ -175,3 +175,99 @@ MAUI 10.0.90's native-caption conflict was traced through
 and [NavigationRootManager](https://github.com/dotnet/maui/blob/10.0.90/src/Core/src/Platform/Windows/NavigationRootManager.cs).
 The adapter tracks the public XAML caption template part while native chrome owns
 the title bar and unregisters the property callback at close.
+
+## AppKit macOS
+
+Set `DorotiDesktopProject` and `DorotiDesktopStartupType` in the AppKit runner,
+using the same separate companion as Windows. The Testbed now enables this
+path; the template exposes it through the optional desktop companion. Apps
+without desktop startup retain the upstream MAUI AppKit launch. Mac Catalyst uses a separate UIKit startup with the limitations below.
+
+The pinned MAUI AppKit preview constructs its WindowHandler directly and calls
+MakeKeyAndOrderFront during allocation. The desktop launch therefore owns its
+native window and handler, reuses MAUI's application/content handlers and menu
+bar, and connects a controller before ordering the window. A hidden Metal
+frame completes GPU work without waiting for presentation. Its drawable is
+retained for first show. Close drains Metal work before surface disposal and
+native close. Cmd+Q uses AppKit's deferred termination reply and the same
+controller close decision. `Explicit` leaves the app running after its window
+closes; native window recreation remains unsupported.
+
+| Feature | AppKit behavior |
+| --- | --- |
+| Size/min/max | Unobscured client area in points; native caption is excluded. Explicit sizes may exceed the screen work area. |
+| Position/outer Bounds | Position and SetBounds are rejected; State.Bounds is null until a global physical-pixel mapping is implemented. Center uses AppKit. |
+| Show/hide/focus | Manual/WhenReady preparation, native ordering and key-window request; OS focus policy still applies. |
+| Minimize/zoom/full screen | Minimize and native full-screen transitions await delegate completion. Maximize uses AppKit zoom. |
+| Topmost/Dock | Native floating window level; no claim to cover other full-screen Spaces. SkipTaskbar=true is rejected because Dock visibility is app-wide. |
+| Native title bar | Normal with System/Solid/Backdrop; Solid has a separate opaque caption fill, native traffic lights remain. Explicit caption color requires Solid. |
+| Materials | System/Solid/Transparent/Acrylic/LiquidGlass, runtime replacement and reset. MacOSBackdrop takes precedence. |
+| Liquid Glass fallback | OS <26 uses the explicitly selected Solid/Transparent fallback. The legacy path retains its old Acrylic fallback. |
+| Tint | Acrylic tint/luminosity requests rejected. Glass accepts TintColor and optional TintOpacity; luminosity rejected. |
+| Accessibility policy | Reduce Transparency selects solid and reports SystemPolicyFallback; system/explicit appearance and effective theme are tracked. |
+| Unsupported | Hidden/custom/frameless chrome, app theme bridge, programmatic resize initiation, additional native windows/owners. |
+| Renderer base color | Changing BackgroundColor/DarkBackgroundColor at runtime returns RequiresRecreation. |
+
+Native operation tests and screenshots are listed in the
+[desktop validation record](../validation/desktop-window/README.md). They do
+not qualify physical mixed-monitor input, VoiceOver/IME, a complete first-frame
+capture sequence, all OS accessibility settings, or notarized distribution.
+
+
+## Mac Catalyst
+
+Mac Catalyst is now an allowed desktop target, with a separate UIKit scene
+adapter. It requires Mac idiom (`UIDeviceFamily=6`), the scene manifest and
+registered `DorotiMacCatalystSceneDelegate`, `UIApplicationSupportsMultipleScenes=true`,
+Graphite, and Mac Catalyst 16+. UIKit requires multi-scene adoption to destroy
+even the only scene. The adapter still rejects additional native windows.
+The Xcode 27 build profile uses `DorotiMacCatalystTargetFramework=net10.0-maccatalyst27.0`
+and the SDK-required minimum Catalyst 17. The default profile and existing
+non-desktop mobile boundaries remain intact.
+
+```csharp
+public void Configure(DesktopApplicationBuilder desktop)
+{
+    desktop.LifetimePolicy = WindowLifetimePolicy.Explicit;
+    desktop.UseMainWindow(desktop.LegacyMainWindow with
+    {
+        Options = new WindowOptions
+        {
+            Title = "My Catalyst app",
+            Size = new Size(600, 500),
+            MinimumSize = new Size(350, 300),
+            StartupVisibility = WindowStartupVisibility.PlatformDefault,
+        },
+    });
+}
+```
+
+`PlatformDefault` deliberately lets UIKit own first visibility. ReadyToShow
+still waits for initialized geometry and a completed Graphite frame; it does
+not promise that the native window was hidden before readiness. AppKit and
+Windows reject this startup mode because their adapters own first visibility.
+Catalyst requires Explicit manager lifetime: the manager does not request
+process exit; UIKit owns native application termination. Scene restoration can
+replace initial size/placement; State reports the observed client size. Use
+SetSizeAsync after readiness when a specific post-launch size is required.
+
+| Feature | Catalyst behavior |
+| --- | --- |
+| Size/min/max/resizable | UIKit geometry requests and scene restrictions; UIKit resolves actual geometry. Mac points require Mac idiom. |
+| Title/show/focus | Scene title and UIWindow.MakeKeyAndVisible; OS policy decides application activation. |
+| Appearance | Opaque System/Solid body and native System titlebar; System/Explicit theme. Base-color replacement requires recreation. |
+| API CloseAsync | Controller cancellation, GPU retirement, scene destruction, then registry removal. |
+| Native close/quit | UIKit owns these paths. `Capabilities.CanCancelNativeClose=false`; RegisterClosing does not intercept native close. Scene disconnect retires the managed host. |
+| Unsupported | Manual/WhenReady startup, hidden/custom/frameless chrome, Acrylic/LiquidGlass/transparent desktop material, MacOSBackdrop override, app theme bridge, placement/centering, hide, topmost/Dock policy, programmatic minimize/maximize/restore/full-screen/drag/resize, additional windows/owners. |
+
+Fullscreen changes made using native controls are observable; the adapter reports
+Normal/FullScreen only, so PresentationState is not a minimized/maximized detector.
+UIKit safe-area insets remain available to rendered content. Bounds remains
+null because global physical-pixel geometry is not mapped. Native caption
+reservation is owned by UIKit, so the adapter does not invent custom chrome
+metrics. Current results are in the [Catalyst validation record](../validation/desktop-window/README.md#mac-catalyst--2026-09-25).
+
+The behavior boundaries follow Apple's public
+[geometry request](https://developer.apple.com/documentation/uikit/uiwindowscene/requestgeometryupdate(_:errorhandler:))
+and [scene lifecycle](https://developer.apple.com/documentation/uikit/uiwindowscene)
+contracts. Native AppKit window selectors are not used to fill gaps in UIKit.
