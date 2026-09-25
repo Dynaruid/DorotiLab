@@ -1,8 +1,8 @@
-# Desktop window API — implementation status, 2026-09-25
+# Desktop window API — implementation status, 2026-09-26
 
 The first implementation provides `Doroti.Desktop` and optional
 `Doroti.Desktop.Widgets`. **The complete W0–W5 plan is PARTIAL.** Windows MAUI
-and AppKit macOS have native main-window adapters. Mac Catalyst has a restricted UIKit scene adapter. WindowsAppSDK raw and Qt adapters and custom
+and AppKit macOS have native main-window adapters. Mac Catalyst has a restricted UIKit scene adapter, and Linux Qt Quick has a basic main-window adapter. WindowsAppSDK raw and custom
 title-bar widgets are still unimplemented. Native multi-window execution is W6,
 outside this first implementation.
 
@@ -20,7 +20,7 @@ outside this first implementation.
 | Material/caption | `WindowsWindowBackdrop`, `WindowsNativeCaption` | Same appearance snapshot, native System/Solid/Backdrop caption |
 | Existing raw Acrylic channel | `WindowsAcrylicOptionsState` | Existing implementation retained; controller adapter still pending |
 | AppKit | `AppKitDesktopWindowHost`, `AppKitDesktopWindowPolicy`, macOS platform application | Opt-in desktop launch, ordered-out Metal preparation, native controls/materials and cancellable window/app exit |
-| Qt | `DorotiQtRunner`, `QtTitlebarAppearance`, QML/native ABI | Existing path retained; new adapter pending |
+| Qt | `QtDesktopWindowHost`, `QtDesktopWindowPolicy`, optional Desktop ABI 1 | Quick main window, PlatformDefault startup, native chrome; legacy paths retained |
 | Legacy facade | `SingletonDorotiWindow`, Ui metrics, `WindowTitlebar` | Unchanged; not promoted to process-wide window manager |
 
 SDK properties `DorotiDesktopProject` and `DorotiDesktopStartupType` compile the
@@ -271,3 +271,40 @@ The behavior boundaries follow Apple's public
 [geometry request](https://developer.apple.com/documentation/uikit/uiwindowscene/requestgeometryupdate(_:errorhandler:))
 and [scene lifecycle](https://developer.apple.com/documentation/uikit/uiwindowscene)
 contracts. Native AppKit window selectors are not used to fill gaps in UIKit.
+
+## Linux Qt Quick — 2026-09-26
+
+Enable `DorotiQtQuick=true` and select the template's
+`LinuxDesktopStartup` companion. The source Testbed uses the opt-in build property
+`-p:DorotiLinuxDesktop=true`; its default legacy runner is preserved.
+The adapter requires Graphite/Vulkan and the rebuilt app-owned native shim.
+Desktop ABI 1 (48-byte table, 40-byte command/state) is separate from host ABI 4.
+Desktop bootstrap sources use a startup-specific filename, so a legacy build or
+evaluation cannot overwrite the source selected by a Desktop build.
+Old shims still run legacy apps; a Desktop launch rejects a missing export before
+first show. Non-Quick Desktop startup is rejected at the SDK and native boundaries.
+
+| Feature | Current behavior |
+| --- | --- |
+| Creation | One main window, fresh content factory, manager registration; additional windows/reopen rejected |
+| Startup | `PlatformDefault`; readiness follows the first composed `frameSwapped`, including a valid replay. No hidden-first-frame promise. Manual/WhenReady and initially minimized startup rejected |
+| Size | Integral logical client size/min/max in [1, 16777215], resizability and null limit restoration; native decorations excluded |
+| Commands | Title, show/hide, focus request, maximize/restore/full-screen; presentation commands wait for an observed platform state, with a five-second failure deadline |
+| Minimize | xcb only; native Wayland rejects programmatic minimize because acknowledged minimized state is unavailable |
+| Placement/system policy | Bounds=null; Position/SetBounds/Center, topmost, taskbar changes, deferred system drag/resize rejected |
+| Appearance | Opaque System/Solid client background, optional system dark background, system theme, Normal/System native decorations. Changed runtime snapshots require recreation and are rejected |
+| Close/lifetime | Native `QCloseEvent` and API close share cancellable decisions. Approved destruction drains window resources before Closed/registry removal. OnLastWindowClosed quits; Explicit leaves the process running |
+
+Native state is read on the Qt GUI thread. The adapter separates requested
+`windowStateChanged` signals from platform `WindowStateChange` events, since
+[Qt's setter also emits the signal](https://github.com/qt/qtbase/blob/v6.10.2/src/gui/kernel/qwindow.cpp#L1379-L1396).
+Compositors can refuse focus or state changes; a timed-out presentation request
+fails rather than setting a synthetic state. Size constraints remain native WM
+hints. Changed constraints request a Quick update so idle rendering still commits
+the Wayland surface's size hints.
+
+Legacy Wayland compositor blur/client caption and Quick in-app blur are retained.
+They are not exposed as new Desktop Acrylic/Hidden+Native support. Custom chrome,
+App/Explicit theme, runtime background changes, physical input/Orca, mixed DPI,
+clean-machine deployment and the known xcb/XWayland Vulkan extent race remain
+outside the verified basic adapter. See the [Linux execution evidence](../validation/desktop-window/README.md#linux-qt-quick--2026-09-26).

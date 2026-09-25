@@ -29,3 +29,12 @@ QT_QPA_PLATFORM=wayland dotnet <published-app>.dll
 This selects a different window-system path, not a repair of Qt's xcb swapchain handling. Native Wayland still needs qualification on the target compositor and GPU. An xcb/XWayland Vulkan qualification requires a Qt/WSI change followed by repeated layer-loaded Qt-only and product resize runs, with zero VUIDs, correct dimensions, and no hidden frame or lifecycle regressions. Doroti must not rewrite Qt's owned swapchain or remove its GPU lifetime drain to suppress this validation error.
 
 `verify-wsi.py` now returns failure for a VUID even when the Qt-only fixture exits 0. It records the loaded-layer assertion, swap count, VUID IDs and raw log in a new artifact directory.
+
+## Desktop adapter regression — 2026-09-26
+
+The new Desktop window probe reproduced `07781` on xcb/XWayland with the
+validation layer mapped: requested 540×480, surface capabilities 500×450,
+process exit 0. Window commands and close cancellation passed, but the overall
+run is **failed**. The final native Wayland Desktop runs passed with a mapped
+layer. This does not close the xcb issue; see the [Desktop execution record](../desktop-window/README.md#linux-qt-quick--2026-09-26)
+and its tracked result summary.

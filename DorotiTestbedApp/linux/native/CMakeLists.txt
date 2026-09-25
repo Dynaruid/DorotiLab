@@ -81,6 +81,7 @@ else()
 endif()
 doroti_generate_wayland_client(ext-background-effect-v1
   "${CMAKE_CURRENT_SOURCE_DIR}/protocols/ext-background-effect-v1.xml")
+target_sources(doroti_qt_host PRIVATE src/doroti_qt_desktop.cpp)
 doroti_generate_wayland_client(kde-blur
   "${CMAKE_CURRENT_SOURCE_DIR}/protocols/kde-blur.xml")
 target_include_directories(doroti_qt_host PUBLIC include PRIVATE "${DOROTI_WAYLAND_GENERATED_DIR}")

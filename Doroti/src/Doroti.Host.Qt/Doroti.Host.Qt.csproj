@@ -9,6 +9,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Doroti.Desktop\Doroti.Desktop.csproj" />
     <ProjectReference Include="..\Doroti.Skia.Vulkan\Doroti.Skia.Vulkan.csproj" />
     <InternalsVisibleTo Include="Doroti.Validation.LinuxQtContract" />
     <PackageReference Include="SkiaSharp" />

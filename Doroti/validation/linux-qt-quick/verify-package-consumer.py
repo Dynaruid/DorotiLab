@@ -40,10 +40,13 @@ def main():
     parser.add_argument("--configuration", choices=("Debug", "Release"), default="Debug")
     parser.add_argument("--quick", action="store_true")
     parser.add_argument("--webengine", action="store_true")
+    parser.add_argument("--desktop", action="store_true", help="Exercise the Linux Desktop companion and native window API")
     parser.add_argument("--qpa", choices=("wayland", "xcb"), help="Run the published app on this host")
     args = parser.parse_args()
     if args.webengine and not args.quick:
         parser.error("--webengine requires --quick")
+    if args.desktop and not args.quick:
+        parser.error("--desktop requires --quick")
     output = args.output.resolve()
     if output == ROOT or ROOT in output.parents:
         parser.error("Output must be outside the source checkout")
@@ -51,7 +54,7 @@ def main():
     feed = output / "feed"
     feed.mkdir()
     index = {"schemaVersion": 1, "configuration": args.configuration,
-             "quick": args.quick, "webengine": args.webengine, "steps": []}
+             "quick": args.quick, "webengine": args.webengine, "desktop": args.desktop, "steps": []}
     env = dict(os.environ, NUGET_PACKAGES=str(output / "nuget-packages"))
 
     def step(name, command, cwd=ROOT, custom_env=None):
@@ -100,6 +103,20 @@ def main():
 </packageSources><packageSourceMapping><packageSource key="local"><package pattern="Doroti.*"/></packageSource>
 <packageSource key="nuget"><package pattern="*"/></packageSource></packageSourceMapping></configuration>\n''')
         project = app / "linux/QtPackageProbe.Linux.csproj"
+        if args.desktop:
+            tree = ET.parse(project)
+            group = ET.Element("PropertyGroup")
+            ET.SubElement(group, "DorotiDesktopProject").text = "../desktop/QtPackageProbe.Desktop.csproj"
+            ET.SubElement(group, "DorotiDesktopStartupType").text = "QtPackageProbe.Desktop.LinuxDesktopStartup"
+            tree.getroot().insert(2, group)
+            tree.write(project, encoding="unicode")
+            # The package consumer compiles its own probe, with no source ProjectReference.
+            probe = (ROOT / "DorotiTestbedApp/desktop/LinuxDesktopProbe.cs").read_text()
+            (app / "desktop/LinuxDesktopProbe.cs").write_text(probe.replace("DorotiTestbedApp.Desktop", "QtPackageProbe.Desktop"))
+            startup = app / "desktop/LinuxDesktopStartup.cs"
+            startup.write_text(startup.read_text().replace(
+                "await context.Window.FocusAsync(ct);",
+                'await LinuxDesktopProbe.RunAsync(context, Environment.GetEnvironmentVariable("DOROTI_QT_DESKTOP_PROBE")!, ct);'))
         props = [f"-p:DorotiQtQuick={'true' if args.quick else 'false'}",
                  f"-p:DorotiQtWebEngine={'true' if args.webengine else 'false'}"]
         if not step("consumer-build", ["dotnet", "build", project, "-c", args.configuration,
@@ -129,6 +146,15 @@ def main():
                 preflight.append("--webengine")
             if not step("runtime-preflight", preflight):
                 return 1
+            if args.desktop:
+                if not step("desktop-consumer-run", [sys.executable,
+                    ROOT / "Doroti/validation/desktop-window/verify-linux.py",
+                    "--app", publish / "QtPackageProbe.Linux.dll", "--qpa", args.qpa,
+                    "--output", output / "desktop-product", "--native-close"]):
+                    return 1
+                index["consumerRun"] = json.loads((output / "desktop-product/result.json").read_text())
+                (output / "index.json").write_text(json.dumps(index, indent=2) + "\n")
+                return 0
             log = output / "consumer-run.log"
             run_env = dict(env, QT_QPA_PLATFORM=args.qpa,
                            DOROTI_QT_VALIDATION_RESIZE_CYCLES="10", DOROTI_QT_DIAGNOSTICS="1")
@@ -152,7 +178,9 @@ def main():
                     os.killpg(process.pid, signal.SIGKILL)
                     process.wait()
             mapped_doroti = {Path(path).name for path in mapped if "libdoroti_" in path}
-            valid = (process.returncode == 0 and "doroti.qt.summary=" in log.read_text(errors="replace")
+            log_text = log.read_text(errors="replace")
+            valid = (process.returncode == 0 and "doroti.qt.summary=" in log_text
+                     and "VUID-" not in log_text and "Validation Error" not in log_text
                      and set(expected) <= mapped_doroti
                      and any(Path(path).name == "libSkiaSharp.so" and str(publish) in path
                              for path in mapped)

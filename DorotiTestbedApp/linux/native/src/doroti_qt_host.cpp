@@ -1,5 +1,6 @@
 #include "doroti_qt_host_v2.h"
 #include "doroti_qt_platform_views.h"
+#include "doroti_qt_desktop.h"
 #ifdef DOROTI_QT_QUICK
 #include "doroti_qt_quick.h"
 #include <QQuickWindow>
@@ -373,7 +374,6 @@ class DorotiSurface final : public DorotiWindowBase {
     auto* surface = static_cast<DorotiSurface*>(view_handle);
     if (surface == nullptr) return;
     QMetaObject::invokeMethod(surface, [surface] {
-      surface->closing_ = true;
       surface->close();
     }, Qt::QueuedConnection);
   }
@@ -2177,11 +2177,18 @@ extern "C" DOROTI_QT_EXPORT std::int32_t doroti_qt_run_v2(
     auto* surface = surface_owner.get();
     accessible_surfaces.insert(surface);
     DorotiQtRegisterPlatformOwner(surface);
+    DorotiQtRegisterDesktopWindow(surface, [&surface_owner] { surface_owner.reset(); });
+    struct DesktopCleanup {
+      std::unique_ptr<DorotiSurface>& owner;
+      QWindow* window;
+      ~DesktopCleanup() { owner.reset(); DorotiQtReleaseDesktopWindow(window); }
+    } desktop_cleanup{surface_owner, surface};
     surface->setTitle(title);
     const auto created = callbacks->view_created(
         callbacks->callback_context, surface, &kHostApi);
     if (created != DOROTI_QT_OK) {
       surface_owner.reset();
+      DorotiQtReleaseDesktopWindow(surface);
       return created;
     }
     surface->resize(configuration->logical_width, configuration->logical_height);
@@ -2213,6 +2220,7 @@ extern "C" DOROTI_QT_EXPORT std::int32_t doroti_qt_run_v2(
     }
     const auto result = app.exec();
     surface_owner.reset();
+    DorotiQtReleaseDesktopWindow(surface);
     return result;
   } catch (const std::exception&) {
     return DOROTI_QT_ERROR_NATIVE_EXCEPTION;

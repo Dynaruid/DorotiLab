@@ -80,6 +80,11 @@
     <_DorotiExpectedNativeBuildItem Condition="'$(DorotiTarget)' == 'iOS' or '$(DorotiTarget)' == 'MacCatalyst' or '$(DorotiTarget)' == 'macOS'">XcodeProject</_DorotiExpectedNativeBuildItem>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <!-- Evaluated after the runner's startup properties. A legacy/design-time
+         evaluation must not overwrite the source selected by a desktop build. -->
+    <_DorotiBootstrapFile Condition="'$(DorotiDesktopStartupType)' != ''">$(_DorotiGeneratedDirectory)DorotiBootstrap.Desktop.$(DorotiDesktopStartupType).g.cs</_DorotiBootstrapFile>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="$(DorotiDesktopProject)" Condition="'$(DorotiDesktopProject)' != '' and ('$(DorotiTarget)' == 'Windows' or '$(DorotiTarget)' == 'macOS' or '$(DorotiTarget)' == 'MacCatalyst' or '$(DorotiTarget)' == 'Linux')"
                       GlobalPropertiesToRemove="TargetFramework;TargetFrameworks;RuntimeIdentifier;RuntimeIdentifiers;DorotiTarget;DorotiHostKind;DorotiNativeEntryKind" />
@@ -145,8 +150,8 @@
            Text="Desktop companion/startup is only allowed in native desktop runners." />
     <Error Code="DOROTIDESKTOP003" Condition="'$(DorotiDesktopProject)' != '' and ('$(DorotiDesktopStartupType)' == '' or !Exists('$(DorotiDesktopProject)'))"
            Text="DorotiDesktopProject requires an existing companion project and DorotiDesktopStartupType." />
-    <Error Code="DOROTIDESKTOP005" Condition="'$(DorotiDesktopStartupType)' != '' and (('$(DorotiTarget)' != 'Windows' and '$(DorotiTarget)' != 'macOS' and '$(DorotiTarget)' != 'MacCatalyst') or '$(DorotiHostKind)' != 'Maui')"
-           Text="The desktop startup adapter is currently implemented for Windows MAUI, AppKit macOS and Mac Catalyst. Other native desktop adapters are pending; refusing an ignored startup." />
+    <Error Code="DOROTIDESKTOP005" Condition="'$(DorotiDesktopStartupType)' != '' and !(('$(DorotiHostKind)' == 'Maui' and ('$(DorotiTarget)' == 'Windows' or '$(DorotiTarget)' == 'macOS' or '$(DorotiTarget)' == 'MacCatalyst')) or ('$(DorotiTarget)' == 'Linux' and '$(DorotiHostKind)' == 'Qt' and '$(DorotiQtQuick)' == 'true'))"
+           Text="Desktop startup requires Windows MAUI, AppKit macOS, Mac Catalyst, or Linux Qt Quick. Other adapters are pending; refusing an ignored startup." />
     <Error Code="DOROTIAPP201" Condition="'$(DorotiAppProject)' == '' or !Exists('$(DorotiAppProject)')"
            Text="DorotiAppProject must resolve to an existing platform-neutral application project; found '$(DorotiAppProject)'." />
     <Error Code="DOROTIAPP202" Condition="'$(DorotiTarget)' == '' or '$(DorotiHostKind)' == '' or '$(DorotiNativeEntryKind)' == ''"

@@ -676,6 +676,43 @@ await Check(
     }
 );
 #endif
+#if DOROTI_QT_CONTRACTS
+await Check("Qt rejects hidden readiness, placement and unsupported native policies", () =>
+{
+    var capabilities = new WindowCapabilities(Doroti.Host.Qt.QtDesktopWindowPolicy.Evaluate);
+    var options = new WindowOptions { StartupVisibility = WindowStartupVisibility.PlatformDefault };
+    Assert(capabilities.Evaluate(options).Support == WindowSupport.Supported);
+    foreach (var rejected in new[]
+    {
+        options with { StartupVisibility = WindowStartupVisibility.Manual },
+        options with { StartupVisibility = WindowStartupVisibility.WhenReady },
+        options with { PresentationState = WindowPresentationState.Minimized },
+        options with { Position = new Offset(0, 0) },
+        options with { Centered = true }, options with { AlwaysOnTop = true },
+        options with { SkipTaskbar = true }, options with { Size = new Size(500.5, 600) },
+        options with { MaximumSize = new Size(20000000, 20000000) },
+    }) Assert(capabilities.Evaluate(rejected).Support == WindowSupport.Unsupported);
+    return Task.CompletedTask;
+});
+await Check("Qt keeps legacy compositor blur and immutable native chrome separate", () =>
+{
+    var capabilities = new WindowCapabilities(Doroti.Host.Qt.QtDesktopWindowPolicy.Evaluate);
+    var options = new WindowOptions { StartupVisibility = WindowStartupVisibility.PlatformDefault };
+    foreach (var appearance in new[]
+    {
+        options.Appearance with { Backdrop = new() { Mode = Doroti.Desktop.WindowBackdropMode.Acrylic } },
+        options.Appearance with { TitleBar = new() { Background = WindowTitleBarBackground.Backdrop } },
+        options.Appearance with { BackgroundColor = new Color(0x00ffffff) },
+        options.Appearance with { ThemeSource = WindowThemeSource.Explicit },
+        options.Appearance with { MacOSBackdrop = new() },
+    }) Assert(capabilities.Evaluate(options with { Appearance = appearance }).Support == WindowSupport.Unsupported);
+    Assert(capabilities.Evaluate(options, options).Support == WindowSupport.Supported);
+    Assert(capabilities.Evaluate(options with { Appearance = options.Appearance with
+        { BackgroundColor = new Color(0xffeeeeee) } }, options).Support == WindowSupport.RequiresRecreation);
+    Assert(capabilities.CanCancelNativeClose);
+    return Task.CompletedTask;
+});
+#endif
 Console.WriteLine($"{passed}/{passed} contracts passed. Native visual/input evidence is separate.");
 
 sealed class Content : IDorotiViewEntrypoint

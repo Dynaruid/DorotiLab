@@ -1,7 +1,7 @@
 # Desktop window implementation evidence — 2026-09-25
 
 Overall **PARTIAL**. This implements the main-window desktop contract and a
-Windows MAUI, AppKit macOS and restricted Mac Catalyst adapters, not the entire W0–W5 plan. The authoritative remaining work
+Windows MAUI, AppKit macOS, restricted Mac Catalyst and basic Linux Qt Quick adapters, not the entire W0–W5 plan. The authoritative remaining work
 is in the root [work.md](../../../work.md) and the
 [API/support document](../../docs/desktop-windows.md).
 
@@ -27,7 +27,7 @@ stress test or physical-display qualification is claimed.
 | First-display frame sequence / physical appearance | notVerified | Readiness and native/pixel automation are not a complete first-visible-frame capture or physical-display acceptance |
 | 100/150% / mixed DPI, high contrast, transparency off | notVerified | No OS-wide settings were changed to manufacture results |
 | Hidden/custom chrome, chrome widgets, App theme bridge | notImplemented | Requests rejected; native input/Snap/IME/accessibility gate remains open |
-| WindowsAppSDK/Qt adapters | notImplemented | New desktop startup rejected; existing host paths remain intact |
+| WindowsAppSDK/Qt adapters | Historical checkpoint | WindowsAppSDK remains pending; the Qt Quick adapter is added in the Linux checkpoint below |
 | Native multiple windows / owners | notImplemented, W6 | Fake two-window PASS is not native multi-window support |
 
 ## Reproduction
@@ -221,3 +221,86 @@ AppKit Acrylic/Liquid Glass, hidden first-frame display, native-close veto,
 global pixel placement, per-window Dock/topmost policy and additional windows
 are unsupported on this UIKit adapter. Full physical display/input/OS-version
 qualification and Intel execution are not claimed.
+
+## Linux Qt Quick — 2026-09-26
+
+The basic main-window adapter is implemented. The wider W4-Q plan remains
+**PARTIAL**. [Tracked results and binary hashes](results-linux-2026-09-26.json)
+retain both successes and failed attempts. Raw logs/captures are under
+`Doroti/artifacts/linux-qt-desktop`; external package consumers are under
+`/tmp/doroti-qt-desktop-package-20260926-*`. Those directories are disposable.
+
+Environment: Ubuntu 26.04.1 VM, .NET SDK 10.0.400, Qt 6.10.2, KWin Wayland,
+software Vulkan. This is not a physical GPU/input or clean-machine qualification.
+The Khronos validation layer was extracted into the artifact directory without
+installing a system package. The final Desktop runs assert that it was mapped.
+
+| Gate | Result | Evidence / limits |
+| --- | --- | --- |
+| Release Testbed/host/native build | PASS | Zero warnings/errors; Desktop enabled with `DorotiLinuxDesktop=true` |
+| Desktop contracts | PASS, 32/32 | Shared core and platform policy checks, including Qt hidden startup, placement, size bounds, chrome/material and recreation rejection |
+| Qt managed ABI/geometry | PASS | Existing Quick/Widgets contracts plus independent Desktop table/command/state sizes and offsets |
+| Native/template | PASS | 23 files match byte for byte |
+| Native Wayland, native close | PASS | Final native run: observed geometry/state, limit restoration, native title/chrome, close cancellation then approval, zero remaining windows, stale owner rejected, layer loaded and no VUID |
+| Native Wayland, API close + Explicit | PASS | Final Explicit run: commands still work after canceled close; accepted close removes registry/resources; process stays alive until the validation driver quits it |
+| External Linux package/template consumer | PASS | 24 local packages, fresh external consumer/cache, no source ProjectReference, Quick ON/WebEngine OFF, companion/bootstrap and native close; mapped Qt/Doroti/Skia modules and hashes recorded |
+| Package boundaries | PASS | External core 25/25 contracts; Web/Android/iOS rejected with Desktop diagnostic, Catalyst package boundary preserved. Full mobile/Web app execution was not rerun |
+| Old native shim | PASS, negative | Shim built from HEAD before this implementation rejects Desktop with status 69 and a missing Desktop ABI diagnostic, without an unhandled exception |
+| Bootstrap build switching | PASS | Legacy→Desktop build, startup-specific generated filename, legacy generation preserves Desktop source; resulting binary matches the validated Desktop binary |
+| Non-Quick Desktop startup | PASS, negative | SDK emits DOROTIDESKTOP005; OFF/OFF native configuration builds, without claiming Desktop or runtime support |
+| Legacy Qt Quick/Acrylic | PASS, bounded regression | Default source runner without companion: ten native Wayland resizes, existing unified client caption/KDE blur, normal exit, 24 rasterized frames, zero failed frames and zero retained Quick bytes at teardown. Layer requested; mapping was not separately asserted in this legacy run |
+| xcb/XWayland | **FAILED** | Controls, native cancellation and cleanup passed, but loaded-layer run emitted VUID 07781: requested 540×480 while surface required 500×450. Exit 0 does not make this a PASS |
+| Pure X11 / hardware / IME / Orca / mixed DPI / clean VM / self-contained publish | notVerified here | Existing broader Linux gates remain separate |
+
+Execution exposed two issues before the final successful runs. Wayland does not
+provide an acknowledged minimized state, so the adapter now explicitly rejects
+programmatic minimize there. Earlier Wayland minimize attempts remain recorded
+as failures. Restoring size limits while the framework scene was idle could also
+leave the compositor using old constraints, preventing maximization. The host
+now requests a Qt Quick update to commit changed hints. Presentation completion
+uses a platform state event; an unacknowledged request fails after five seconds.
+The fixture observes stable native state between transitions; that settling
+interval never turns a product timeout into success.
+
+A later legacy→Desktop build also exposed a shared generated bootstrap being
+overwritten with legacy startup. The SDK now selects a startup-specific Desktop
+bootstrap filename. `verify-linux-bootstrap.py <new-output-directory>` runs the
+build transition and verifies that subsequent legacy generation preserves the
+Desktop source. Final product runs use the isolated bootstrap.
+
+`verify-linux.py` uses a validation-only preload driver. It reads actual
+QWindow properties, captures Quick content, rejects invalid ABI size/version
+and cross-thread access, sends QWindow close events, and checks owner retirement.
+These are native API events, not physical keyboard or WM-button evidence.
+The driver ends Explicit lifetime only after confirming the app survived its
+last window. Production does not install the driver or that exit behavior.
+
+```sh
+python3 Doroti/validation/run-with-timeout.py dotnet build \
+  DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Release -r linux-x64 \
+  -p:DorotiLinuxDesktop=true
+python3 Doroti/validation/run-with-timeout.py python3 Doroti/validation/desktop-window/verify-linux.py \
+  --app DorotiTestbedApp/linux/bin/linux-x64/Release/net10.0/linux-x64/DorotiTestbedApp.Linux.dll \
+  --qpa wayland --native-close --output Doroti/artifacts/linux-qt-desktop/new-native-run
+```
+
+Use a new output directory for every run. Replace `--native-close` with
+`--explicit` to test API cancellation and Explicit lifetime. For Vulkan
+qualification, set `VK_INSTANCE_LAYERS=VK_LAYER_KHRONOS_validation` and matching
+`VK_LAYER_PATH`/loader paths, then require `validationLayerLoaded=true` in the
+result. Without a mapped layer, absence of VUIDs is not GPU validation approval.
+`--qpa xcb` is a separate run and is not currently qualified on XWayland.
+
+For the external package/template path:
+
+```sh
+python3 Doroti/validation/run-with-timeout.py python3 Doroti/validation/linux-qt-quick/verify-package-consumer.py \
+  --configuration Release --quick --desktop --qpa wayland \
+  --output /tmp/doroti-qt-desktop-new-consumer
+```
+
+Hidden first-frame readiness, global placement, topmost/taskbar policy, deferred
+OS drag/resize, custom chrome, runtime appearance/Desktop Acrylic and actual
+multiple windows remain explicitly unsupported. Legacy Wayland compositor blur
+and the existing renderer ownership/drain are preserved. The [Qt-only WSI
+investigation](../linux-qt-quick/wsi-investigation-2026-09-24.md) remains open.

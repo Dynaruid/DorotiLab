@@ -2,12 +2,15 @@
 
 The Testbed uses `DorotiQtQuick=true`. Its Linux runner also enables
 `DorotiQtWebEngine=true`; other applications/templates keep both options opt-in.
-Build with Qt 6.6+ Core, Gui, Widgets, OpenGL, Quick, Qml, QuickControls2,
+Build with Qt 6.6+ Core, Gui, Widgets, Quick, Qml, QuickControls2,
 Vulkan headers, Wayland client development files,
 `wayland-scanner`, and the active `xcb` or `wayland` plugin. Qt 6.8+ WebEngineQuick/WebChannel and
 the `QtWebEngine`/`QtWebChannel` runtime QML modules are needed when WebEngine is enabled.
 Quick Controls require the `QtQuick` and `QtQuick.Controls` runtime modules.
 The validation driver additionally uses Qt Test and Python Pillow.
+The non-Quick comparison backend additionally requires the Qt OpenGL development
+component. Quick does not directly request OpenGL or OpenGLWidgets in CMake;
+this does not exclude transitive runtime dependencies of Qt or WebEngine.
 
 Run from the repository root. Every command below has a 1,200-second outer
 process-tree timeout; the product script also limits its application to 180 seconds.
@@ -24,6 +27,8 @@ outside the repository with `verify-package-consumer.py --output <new-directory>
 local feed, installs and removes the template, checks for source ProjectReferences,
 and records publish and mapped runtime binaries. Use a new output path for each
 attempt. These local runs do not substitute for a clean VM installation.
+Add `--desktop` with `--quick` to exercise the Linux Desktop companion and native
+window probe; see [Desktop validation](../desktop-window/README.md#linux-qt-quick--2026-09-26).
 The package runner now calls `check-runtime.py` before launch. It checks the
 published shims and linker dependencies, the selected QPA plugin, required QML
 module descriptors and mandatory plugins, and the WebEngine helper, resources

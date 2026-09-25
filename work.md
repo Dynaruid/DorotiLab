@@ -4,11 +4,13 @@
 
 검토 기준: `7f74005f`, `.github/copilot-instructions.md`, 사용자가 제공한 Sudoku Flutter 앱과 아래 공식 웹 문서.
 
-상태: **구현·검증 진행 / 전체 PARTIAL (2026-09-25)**. 사용자의 전체 작업 요청에 따라 Desktop 패키지, manager/controller, SDK companion, Windows MAUI 기본 창 경로를 구현했다. 후속 작업으로 AppKit과 제한된 Mac Catalyst 기본 창 adapter도 추가했다. 계약 검사 30개, Windows/AppKit/Catalyst 실제 창 조작과 플랫폼별 package-only 실행을 검증하며 세부 결과·미검증 범위는 아래 기록으로 구분한다. **W3의 Hidden/custom 상단바·위젯, W4의 WindowsAppSDK/Qt adapter와 AppKit 잔여 gate, 일부 환경·시각 gate는 미완료**다. 아래 제안 예제 중 현재 제공되는 API와 제한은 [구현 API 문서](Doroti/docs/desktop-windows.md), 검증 근거는 [실행 결과](Doroti/validation/desktop-window/README.md)를 기준으로 한다. [Runtime 전환 보관 요약](history/26-09-24/runtime-dotnet-migration-summary.md)과 [Linux Qt 작업 보관 요약](history/26-09-24/linux-qt-improvements-summary.md)의 잔여 작업은 별도로 유지한다.
+상태: **구현·검증 진행 / 전체 PARTIAL (2026-09-26)**. 사용자의 전체 작업 요청에 따라 Desktop 패키지, manager/controller, SDK companion, Windows MAUI 기본 창 경로를 구현했다. 후속 작업으로 AppKit·제한된 Mac Catalyst 및 Qt Quick 기본 창 adapter도 추가했다. 계약 검사 32개, Windows/AppKit/Catalyst/Qt 실제 창 조작과 플랫폼별 package-only 실행을 검증하며 세부 결과·미검증 범위는 아래 기록으로 구분한다. **W3의 Hidden/custom 상단바·위젯, W4의 WindowsAppSDK adapter·Qt 잔여 gate와 AppKit 잔여 gate, 일부 환경·시각 gate는 미완료**다. 아래 제안 예제 중 현재 제공되는 API와 제한은 [구현 API 문서](Doroti/docs/desktop-windows.md), 검증 근거는 [실행 결과](Doroti/validation/desktop-window/README.md)를 기준으로 한다. [Runtime 전환 보관 요약](history/26-09-24/runtime-dotnet-migration-summary.md)과 [Linux Qt 작업 보관 요약](history/26-09-24/linux-qt-improvements-summary.md)의 잔여 작업은 별도로 유지한다.
 
 사용자 확정 방향(2026-09-25 추가): **새 창 API는 데스크톱 OS 전용으로 제공하고, 향후 다중 창 지원 시 사용 코드를 다시 설계하지 않도록 창 관리·창별 제어·창 콘텐츠 생성을 처음부터 분리한다.** 이번 범위는 다중 창의 API·수명 설계까지이며, 실제 여러 네이티브 창의 동시 실행 구현은 후속 단계로 둔다.
 
 macOS 보강 검토(2026-09-25): 현재 소스와 Apple 공식 문서를 대조해 **AppKit 연결·빌드 경계, 좌표/상단바 계약, 종료 정책, 재질 fallback, 검증 gate**를 §3.1·§5.6·W4-M·§8.1에 추가했다. 후속 실제 작업으로 AppKit 기본 창 adapter·SDK 연결·Testbed·검증 도구를 추가했다. Release 빌드(경고/오류 0), 계약 28개, Graphite/Ganesh native 조작·종료, 저장소 밖 package-only 실행을 검증했다. 지원/미지원 범위는 아래 구현 현황과 API 문서를 기준으로 하며, 전체 macOS 시각·입력 gate가 완료됐다는 뜻은 아니다.
+
+Linux Qt 보강 검토(2026-09-26): 현재 managed/native/SDK/template과 Qt 공식 문서를 대조해 **Desktop 연결 경계, 숨긴 창 준비·비동기 닫기, QPA별 좌표·상단바·재질, ABI 호환성, 빌드·배포 및 검증 기준**을 §3.2·§5.7·W4-Q·§8.3에 추가했다. 후속 실제 작업으로 Qt Quick 기본 창 adapter·별도 Desktop ABI 1·SDK·Testbed/template을 연결했다. 구현 범위와 실행 결과는 아래 W4-Q 및 §8.3의 후속 기록을 따른다. 기존 Wayland compositor blur와 client caption은 재사용할 기반이지만 새 Desktop API의 지원 근거와 구분한다. 전체 PARTIAL과 XWayland WSI 미해결 상태를 유지한다.
 
 ## 1. 권장 방향
 
@@ -80,12 +82,25 @@ macOS 보강 검토(2026-09-25): 현재 소스와 Apple 공식 문서를 대조�
 | --- | --- | --- |
 | AppKit runner | [MacOS.csproj](DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj): `DorotiTarget=macOS`, `AppKit-Main`, `osx-arm64`, 기본 `net10.0-macos`, 최소 OS 14.0 | Apple Silicon AppKit을 첫 지원 대상으로 명시한다. Intel/Rosetta·MacCatalyst 지원으로 확대 해석하지 않는다. |
 | 별도 MacCatalyst runner | [MacCatalyst.csproj](DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj): `UIKit-Main`, `maccatalyst-arm64` | 후속 사용자 요청으로 UIKit 전용 Desktop adapter를 추가했다. AppKit과 별도 capability를 사용하며 상세 범위는 §8.2를 따른다. |
-| Desktop 연결 | [AppKitDesktopWindowHost.cs](Doroti/src/Doroti.Host.Maui/AppKitDesktopWindowHost.cs)의 factory/host/handler와 AppKit launch를 추가했다. Host의 macOS TFM에 Desktop을 참조하고 SDK에서 Windows MAUI/AppKit/Catalyst startup을 허용한다. | WindowsAppSDK/Qt의 거절은 유지한다. MacCatalyst는 §8.2의 별도 adapter를 사용한다. Hidden/custom과 전역 물리 pixel 위치 지정은 명시적 미지원이다. |
+| Desktop 연결 | [AppKitDesktopWindowHost.cs](Doroti/src/Doroti.Host.Maui/AppKitDesktopWindowHost.cs)의 factory/host/handler와 AppKit launch를 추가했다. Host의 macOS TFM에 Desktop을 참조하고 SDK에서 Windows MAUI/AppKit/Catalyst startup을 허용한다. | WindowsAppSDK의 거절은 유지한다. Qt Quick는 §3.2의 제한된 adapter를 사용한다. MacCatalyst는 §8.2의 별도 adapter를 사용한다. Hidden/custom과 전역 물리 pixel 위치 지정은 명시적 미지원이다. |
 | 기본 창 생성·종료 | [DorotiMauiPlatformApplications.cs](Doroti/src/Doroti.Host.Maui/DorotiMauiPlatformApplications.cs)는 Desktop startup에서 별도 hidden 생성 경로와 manager를 사용한다. | upstream preview의 생성 즉시 show를 피한다. native/API 닫기와 Cmd+Q는 controller 결정을 따르고, Desktop 미사용 앱은 legacy 생성·종료 경로를 유지한다. |
 | 재질 | [AppKitWindowBackdrop.cs](Doroti/src/Doroti.Host.Maui/AppKitWindowBackdrop.cs): Acrylic은 `NSVisualEffectView`의 `BehindWindow`, Liquid Glass는 OS 26 이상 `NSGlassEffectView`, 하위 OS는 Acrylic. unified/solid와 detach 복구가 있다. | 기존 재질 구현을 재사용하되 새 API의 요청값/실제값·fallback 이유·옵션별 지원 여부를 연결한다. 현재 blur 생성부는 tint/luminosity를 소비하지 않는다. |
 | 화면 환경 | [MauiViewEnvironment.MacOS.cs](Doroti/src/Doroti.Host.Maui/MauiViewEnvironment.MacOS.cs)는 backing scale, safe area, 화면/전체화면/접근성 변경을 관찰한다. | 창 상태 이벤트와 통합하고 창별 notification을 해당 `NSWindow`로 제한한다. Reduce Transparency와 재질 effective state 연결을 추가 검토한다. |
 
 현재 `WindowOptions.Position`은 **전역 물리 pixel의 바깥 프레임 원점**, 크기는 **client 논리 단위**다. AppKit point를 그대로 대입하면 계약이 달라진다. 또한 공개 `WindowBackdropFallback`은 `Solid/Transparent`만 있어 legacy의 `LiquidGlass → Acrylic`을 명시적으로 선택할 수 없다. 이번 adapter는 Position/SetBounds를 거절하고 Bounds=null을 반환하며, 새 API의 하위 OS Glass 요청에는 선택된 Solid/Transparent fallback을 적용한다. legacy Glass→Acrylic 동작은 기존 경로에 보존한다.
+
+### 3.2 Linux Qt 현재 구성과 연결 누락
+
+| 구분 | 소스에서 확인한 현재 상태 | 보강할 지점 |
+| --- | --- | --- |
+| runner/렌더러 | [Linux.csproj](DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj)는 `net10.0`, `linux-x64`, `Qt-Main`, Quick 기본 활성화와 선택 WebEngine을 사용한다. [SDK Qt 설정](Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.Qt.targets)과 일반 template의 Quick/WebEngine 기본값은 false다. | Testbed 기본값을 전체 SDK 기본값으로 설명하지 않는다. 첫 Desktop adapter 대상은 Quick+Graphite/Vulkan으로 명시하고 non-Quick 경로는 별도 지원 판정한다. |
+| Desktop 연결 | [QtDesktopWindowHost](Doroti/src/Doroti.Host.Qt/QtDesktopWindowHost.cs)의 factory/host와 manager, 별도 Desktop ABI 1, companion/bootstrap을 추가했다. [Sdk.targets](Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.targets)는 Linux Qt Quick startup을 허용한다. | non-Quick·구형 shim·미지원 옵션은 명시적으로 거절한다. 공통 Ui/Hosting의 Desktop 역참조는 추가하지 않는다. |
+| 최초 표시/닫기 | [native host](DorotiTestbedApp/linux/native/src/doroti_qt_host.cpp)는 `view_created → resize → show → InitializeBackdrop → app.exec` 순서다. `QEvent::Close`에서 통지 후 `closing_=true`로 전환한다. [QtHostAdapter.Show](Doroti/src/Doroti.Host.Qt/QtHostAdapter.cs)는 invalidate만 요청한다. | legacy 경로는 유지한다. 새 Desktop adapter는 PlatformDefault만 허용하고, 실제 show/hide·첫 frame readiness·취소 가능한 native/API close를 별도로 연결했다. |
+| 재질 | 같은 native host에 Wayland `ext-background-effect-v1 → kde-blur → Solid/Transparent fallback` 경로가 있다. xcb에서는 이 compositor blur 경로를 사용하지 않는다. | 기존 창 뒤쪽 blur를 재사용하되 provider·요청/실제값·fallback 이유를 Desktop 상태로 연결한다. Quick `Backdrop.qml`의 앱 내부 효과와 구분한다. |
+| 제목 표시줄 | legacy `unified + acrylic`은 `FramelessWindowHint`와 자체 caption/button/hit test를 사용하고 나머지는 native decoration 경로다. [QtTitlebarPainter](Doroti/src/Doroti.Host.Qt/QtTitlebarPainter.cs)와 [QtTitlebarAppearance](Doroti/src/Doroti.Host.Qt/QtTitlebarAppearance.cs)가 색상·그리기를 맡는다. | legacy unified를 새 `Normal + Backdrop`이나 `Hidden + Native buttons`로 그대로 매핑하지 않는다. 서버 장식과 앱 장식의 버튼 소유권·metrics를 구분한다. |
+| native/template·배포 | [CMake](DorotiTestbedApp/linux/native/CMakeLists.txt)는 Quick Qt 6.6+, WebEngine Qt 6.8+, Vulkan headers 및 Wayland client/scanner를 요구한다. Quick는 Qt OpenGL/OpenGLWidgets 개발 component를 직접 요구하지 않는다. | `ON/ON`, `ON/OFF`, `OFF/OFF`와 xcb/Wayland 런타임을 분리한다. xcb 실행도 현재 shim의 Wayland 의존성을 제거하지 않는다. |
+
+Desktop companion을 사용하지 않는 Linux 기본 창은 기존 `UseView` 경로다. Qt의 창 제어 함수가 존재하거나 기존 platform-view owner token이 있다는 사실만으로 `IWindowHost`·실제 다중 창을 제공한다고 표시하지 않는다. 보관된 QT-01–10 작업은 W4-Q의 회귀 기준으로 사용하며 완료 여부는 별도로 유지한다.
 
 ## 4. 제안하는 공개 API
 
@@ -371,6 +386,38 @@ Windows는 드래그, 8방향 resize, 더블클릭 최대화/복원, 우클릭 �
 - Cmd+Q/앱 메뉴 종료는 별도 경로다. Apple은 앱 종료 시 `windowShouldClose`가 호출되지 않는다고 명시한다. `applicationShouldTerminate`의 지연 응답과 reply를 사용해 앱 종료 결정·창별 취소·자원 해제를 조정한다. 일반 종료 취소를 강제 종료/프로세스 kill 보장으로 확대하지 않는다. [Apple applicationShouldTerminate](https://developer.apple.com/documentation/appkit/nsapplicationdelegate/applicationshouldterminate(_:))
 - 마지막 창 닫기는 manager의 `OnLastWindowClosed/Explicit`을 따른다. `Explicit`에서 앱만 남을 때 Dock 재활성화가 닫힌 controller를 다시 쓰지 않게 한다. 창 0개 이후 새 창 생성·reopen 지원은 W6 capability와 함께 명시하고 현재 지원으로 간주하지 않는다.
 
+### 5.7 Linux Qt 전용 계약
+
+아래는 구현 전에 고정할 계약이다. Qt 문서는 검토일의 Qt 6 문서를 참고했으며 실제 최소 버전은 CMake의 6.5/6.6/6.8 분기를 따른다. 더 최근 Qt API를 도입하면 compile/runtime guard 또는 명시적 최소 버전 상향과 배포 검증을 함께 추가한다.
+
+**준비·표시·GUI thread**
+
+- 하나의 `QApplication`과 기존 `basic` GUI/render loop를 유지한다. WebEngine 초기화·scheme 등록은 QApplication 생성 전이다. Desktop hook의 continuation이 임의 thread에서 Qt 객체를 조작하지 않게 owner dispatch를 제공하고, C callback 경계를 넘는 예외는 status/operation/owner를 보존해 종결한다.
+- 초기 options 검증과 geometry/chrome 적용을 최초 show보다 앞에 둔다. 현재 show 뒤 `InitializeBackdrop`가 Wayland surface를 얻는 구조이므로, 숨긴 native surface의 생성·protocol 등록·최초 commit 순서를 검증한다. compositor의 비동기 blur 통지를 기다리는 정책도 명시하고 타이머만으로 효과 적용을 성공 처리하지 않는다.
+- Quick의 숨김/비노출 상태에서는 렌더 작업이 실행되지 않거나 그래픽 자원이 해제될 수 있다. `frameSwapped`만 기다리는 hidden readiness는 교착 가능성을 조사해야 한다. 노출 없이 준비 가능한 경로가 없으면 `Manual/WhenReady`를 명시적으로 거절하고 지원 가능한 `PlatformDefault`만 제공한다. 요청을 몰래 PlatformDefault로 바꾸거나 첫 frame을 얻으려고 잠깐 show하지 않는다. [Qt Quick 렌더 수명](https://doc.qt.io/qt-6/qquickwindow.html#scheduleRenderJob)
+- hide/minimize/restore·scene graph invalidation 뒤에는 generation/token을 확인해 재연결한다. 이미 발행한 P bank, R/P drain, Qt-owned device/instance/WSI 수명은 기존 계약을 지키며 `frameSwapped`를 GPU fence나 물리 표시 완료로 사용하지 않는다.
+
+**크기·위치·상태·입력**
+
+- Qt client 논리 크기, 앱 콘텐츠 크기, native frame을 구분한다. 기존 client caption의 32 논리 단위와 콘텐츠 inset을 새 size/min/max 및 chrome metrics에 어떻게 반영하는지 정하고 중복 차감하지 않는다. fractional DPR, 최소/최대 크기 복원, fullscreen의 caption 제거를 검사한다.
+- Wayland의 전역 Position/SetBounds/정확한 Center는 기본 Unsupported로 두고, 읽을 수 없는 Bounds는 null로 반환한다. `(0,0)`을 실제 위치로 보고하지 않는다. xcb도 순수 X11과 XWayland를 따로 검증하며, 공통 물리 pixel 좌표와 Qt 논리 좌표 사이의 화면별 변환이 검증되기 전 위치 지원을 선언하지 않는다. [Qt 위치 제약](https://doc.qt.io/qt-6/qwindow.html#position), [Qt High DPI](https://doc.qt.io/qt-6/highdpi.html)
+- `activeChanged`, visibility/window state/크기/화면 변경에서 실제 상태를 갱신한다. focus·topmost·taskbar·크기 제약은 QPA/WM 정책별로 평가하며 Qt setter 호출 완료만으로 지원·적용 성공을 반환하지 않는다. 확인할 수 없는 기능은 Unsupported로 남긴다.
+- OS move/resize는 유효한 원래 pointer 입력 시점에 시작하고 Qt의 bool 반환을 검사한다. 비동기 managed 큐를 한 바퀴 돈 뒤에도 입력 권한이 유지된다고 가정하지 않는다. 실패 시 임의 위치 이동으로 대체하지 않는다. caption의 검색창·버튼·WebView·IME 영역을 제외하고 OS drag 이후 capture/key 상태를 정리한다. [Qt system move/resize](https://doc.qt.io/qt-6/qwindow.html#startSystemMove)
+
+**제목 표시줄·compositor 재질·테마**
+
+- `Normal + System`부터 연결한다. native decoration의 Solid 색상이나 Backdrop은 compositor가 제어할 수 있으므로 client 배경 변경으로 성공 처리하지 않는다. 요청을 frameless/client caption으로 자동 전환하지 않는다. `Hidden + Native`, `Hidden + Custom`, Frameless는 각각 지원 조합과 입력·접근성 검증을 둔다.
+- legacy unified caption은 자체 버튼 경로로 보존한다. 고정 caption 높이와 button bounds를 그대로 범용 chrome metrics로 공개하지 말고 DPI·최대화·전체화면·RTL 및 hit test와 일치시킨다. MaterialApp theme 전달과 Desktop System/App/Explicit 정책의 우선순위를 연결한다.
+- 창 뒤쪽 재질은 기존 Wayland protocol 경로를 사용하고 provider·가용성 변경·Solid/Transparent fallback을 관찰한다. protocol 광고/요청 전송과 실제 시각 효과를 구분한다. xcb, protocol 미제공 compositor, blur 해제 상태를 따로 기록하고 tint/luminosity 중 실제 소비하지 않는 명시 옵션은 거절한다.
+- QML 앱 내부 blur와 compositor blur의 capability·성능·증거를 분리한다. runtime mode/frame 변경이 surface 재생성을 요구하면 `RequiresRecreation`으로 거절하고, 지원하려면 Vulkan surface/Wayland effect/입력 owner 재연결을 먼저 구현한다. 재질 변경만을 이유로 GPU drain을 제거하지 않는다.
+
+**비동기 닫기·앱 종료·ABI**
+
+- native 닫기 버튼·Alt+F4·API close를 controller의 같은 결정으로 전달한다. 첫 `QCloseEvent`는 보류하고 GUI thread를 block하지 않는다. Cancel이면 closing/입력/renderer 상태를 유지 또는 복구하고, Allow면 재진입 방지 상태로 한 번만 native close를 재개한다. callback 통지를 닫기 승인으로 간주하지 않는다.
+- `quitOnLastWindowClosed` 기본 자동 종료와 manager의 `OnLastWindowClosed/Explicit`을 일치시킨다. Desktop 경로에서는 manager가 마지막 창의 해제·registry 제거 후 앱 종료를 결정하도록 연결한다. Explicit에서는 native 창 자원을 app.exec 종료까지 불필요하게 붙잡지 않는다. 앱 생존과 새 창/reopen 지원은 별개이며 실제 다중 창은 W6다. [Qt 마지막 창 종료 정책](https://doc.qt.io/qt-6/qguiapplication.html#quitOnLastWindowClosed-prop)
+- 수락한 command·readiness·frame·close 대기자는 종료/실패에도 한 번만 종결한다. 창 소유 platform view·WebView·입력·접근성·GPU 작업을 정리하고 Qt instance보다 Quick window가 먼저 파괴되게 한다. 완료를 증명하지 못한 GPU 자원의 process-exit 격리 정책은 유지한다.
+- 기존 ABI 4의 struct 크기/필드 의미와 required mask를 보존한다. Desktop command/event는 별도 version/size table 또는 협상된 export로 추가하고, 구형 shim에서는 legacy 실행을 보존하며 Desktop 요청만 사전 거절한다. feature bit가 있어도 함수 포인터·owner lifetime을 검증한다. native/template·managed layout·old/new shim 계약을 함께 갱신한다.
+
 ## 6. 단계별 작업계획
 
 체크박스는 해당 항목 전체의 충족 여부다. 부분 구현은 체크하지 않고 아래에 기록한다. 구현 상태와 실제 검증 범위를 구별한다.
@@ -381,7 +428,7 @@ Windows는 드래그, 8방향 resize, 더블클릭 최대화/복원, 우클릭 �
 | W1 | 핵심 구현 및 25개 fake-host 계약 PASS. 한 창의 다중 view/일부 경합 확대 검증 잔여 |
 | W2 | Windows 기본 경로와 200% DPI 창 조작 PASS. 최초 노출 전체 프레임 캡처·혼합 DPI 잔여 |
 | W3 | Normal+System/Solid/Backdrop 픽셀 회귀 PASS. Hidden/custom/frameless·App theme bridge 미구현 |
-| W4 | AppKit·Mac Catalyst 기본 창 adapter·SDK·Testbed 연결 구현. WindowsAppSDK/Qt 미구현. AppKit Hidden/custom·혼합 화면 좌표·물리 입력 gate 잔여 |
+| W4 | AppKit·Mac Catalyst 및 Qt Quick 기본 창 adapter·SDK·Testbed 연결 구현. WindowsAppSDK 미구현. Qt의 미지원 조합·잔여 검증은 §5.7·W4-Q·§8.3 참조. AppKit Hidden/custom·혼합 화면 좌표·물리 입력 gate 잔여 |
 | W5 | Testbed/선택형 companion template/이전 문서/package-only Windows 실행 PASS. 커스텀 상단바 예제 등 잔여 |
 | W6 | 이번 범위 밖. 실제 다중 네이티브 창 미구현 |
 
@@ -427,8 +474,8 @@ Windows는 드래그, 8방향 resize, 더블클릭 최대화/복원, 우클릭 �
 
 - [ ] WindowsAppSDK runner/native ABI에 공통 command/event 연결을 추가한다. 기존 AcrylicOptionsState의 validation/revision을 재사용하고 공용 controller가 문자열 JSON을 요구하지 않게 한다.
 - [ ] macOS MAUI/AppKit에 기본 창 조작·Acrylic/Liquid Glass·제목 표시줄 조합을 연결한다. 아래 W4-M과 §8.1을 완료 기준으로 사용한다. MacCatalyst는 별도 UIKit adapter와 지원 범위를 적용한다.
-- [ ] Qt managed/native/QML과 앱 template에 상태·크기·OS drag/resize·caption 경로를 연결한다. X11/Wayland별 지원을 분리한다.
-- [ ] Linux의 기존 in-app blur를 뒤쪽 데스크톱 Acrylic으로 광고하지 않는다. compositor 의존 재질은 검증된 capability만 제공한다.
+- [ ] Qt managed/native/QML과 앱 template에 상태·크기·OS drag/resize·caption 경로를 연결한다. §5.7·W4-Q·§8.3을 기준으로 native Wayland/순수 X11/XWayland별 지원을 분리한다.
+- [ ] Linux의 기존 Wayland compositor blur를 Desktop requested/effective/fallback에 연결한다. Quick in-app blur와 분리하고 재질·native/client caption 조합은 검증된 capability만 제공한다.
 - [ ] Web/Android/iOS 빌드에 Desktop 패키지·startup·위젯 assembly가 포함되지 않는지 검사하고 잘못된 참조는 실패시킨다. 데스크톱 embedded MAUI는 host가 명시적으로 연결한 창 controller만 사용하도록 별도 검증한다.
 - 완료 기준: 동일 C# 계약을 사용하되 플랫폼별 구현·미지원·미검증 항목이 구별된 표와 실행 근거.
 
@@ -444,6 +491,17 @@ Windows는 드래그, 8방향 resize, 더블클릭 최대화/복원, 우클릭 �
 현재 구현: M0/M1 완료. M2의 native 크기·표시·최소화·zoom·전체화면·닫기/Cmd+Q와 M3의 Normal 재질 전환을 구현했다. M2의 전역 물리 pixel 위치, M3의 Hidden/custom·물리 입력 검증은 남아 있어 단계 전체를 완료 처리하지 않는다. Testbed AppKit에 companion을 연결하고 template의 선택형 companion 안내도 갱신했다. M4의 저장소 밖 package-only AppKit build/run과 비데스크톱 negative package 검사를 통과했다. 전체 물리 입력·시각 환경 gate는 미완료다.
 
 M0→M1→M2→M3→M4→M5로 진행한다. Windows 전용 W3 시각 결과는 AppKit의 선행 PASS가 아니며, 공통 계약 변경이 있으면 Windows 회귀 검사도 수행한다.
+
+#### W4-Q — Linux Qt 구현 순서와 산출물
+
+- [x] **Q0 계약/환경**: §3.2·§5.7을 API 지원표로 옮기고 Quick/non-Quick, native Wayland/순수 X11/XWayland, Qt·compositor·GPU/driver별 범위를 고정한다. hidden readiness·좌표·caption 소유권·재질 fallback을 우선 판정한다.
+- [x] **Q1 ABI/adapter/표시**: Desktop용 native command/event와 managed factory/host, owner dispatch, manager·bootstrap을 연결한다. readiness가 검증된 시작 정책만 허용한다. 구현·negative 계약을 갖춘 뒤 SDK의 Qt startup 거절을 해제한다.
+- [ ] **Q2 제어/수명**: 실제 상태 조회·title·client 크기/min/max·show/hide/focus·상태 전환과 비동기 닫기 취소→허용, 마지막 창 종료 정책을 연결한다. scene graph 재생성·close 중 pending command·구형 shim 거절을 검사한다.
+- [ ] **Q3 재질/상단바**: Normal+System을 먼저 제공하고 Wayland 재질의 실제값·fallback·테마를 연결한다. legacy unified/client buttons와 새 Native buttons를 구분한다. Hidden/custom·drag 제외 영역·IME/Orca는 별도 gate를 통과한 조합만 허용한다.
+- [ ] **Q4 샘플/패키지**: Linux 전용 companion과 Testbed/template 예제를 추가한다. Windows/AppKit용 Acrylic·Center 옵션을 그대로 공유하지 않는다. 외부 package-only 앱에서 Quick ON/WebEngine ON·OFF, non-Quick의 명시 지원 또는 거절, framework-dependent/self-contained 디렉터리 배포를 확인한다.
+- [ ] **Q5 근거/회귀**: §8.3 결과를 Desktop 검증 기록과 API 지원표에 남기고 기존 QT-01–10의 수명·입력·WSI·배포 회귀를 확인한다. 지원하지 않는 기능, 실행하지 않은 환경, 실패한 사례를 각각 구분한다.
+
+Q0→Q1→Q2→Q3→Q4→Q5로 진행한다. Q0/Q1의 기본 Quick 연결을 구현했다. Q2의 창 제어·닫기/종료, Q4의 companion/template·외부 package 소비, Q5의 계약·VM 실행을 보강했으나 전체 환경·배포 gate와 Q3의 재질/커스텀 상단바는 미완료다. Qt-only와 제품 xcb/XWayland의 `VUID-VkSwapchainCreateInfoKHR-pNext-07781`은 미해결이며, native Wayland PASS를 xcb 승인으로 확대하지 않는다. [WSI 조사와 완료 조건](Doroti/validation/linux-qt-quick/wsi-investigation-2026-09-24.md)을 별도 gate로 유지한다.
 
 ### W5 — 샘플·이전·패키지·문서
 
@@ -574,8 +632,70 @@ python3 Doroti/validation/run-with-timeout.py dotnet build DorotiTestbedApp/maco
 이 추가 작업은 AppKit W4-M의 미완료 입력·시각 검증이나 실제 다중 창 W6를 완료로 바꾸지 않는다.
 
 
+### 8.3 Linux Qt 검증 구성 (2026-09-26 보강)
+
+현재 실행 근거는 [Quick 검증](Doroti/validation/linux-qt-quick/README.md), [managed 계약](Doroti/validation/linux-qt-contract/README.md), [09-24 기록](Doroti/validation/linux-qt-quick/work3-results-2026-09-24.md)이다. 이 기록은 새 Desktop API 실행 PASS가 아니다. 새 Qt adapter 실행 결과는 아래 §8.3.1과 [Desktop 검증 기록](Doroti/validation/desktop-window/README.md#linux-qt-quick--2026-09-26)에 별도로 기록했다.
+
+환경 기록에는 .NET SDK/TFM/RID, Qt build/runtime 버전, Quick/WebEngine 설정, 실제 QPA, session/compositor 및 버전, Vulkan device/driver, 화면별 DPR, app/shim/driver의 경로·hash를 포함한다. `XDG_SESSION_TYPE=wayland`만으로 native Wayland 실행을 판단하지 않고 Qt의 실제 platformName을 확인한다. 현재 llvmpipe VM 증거를 물리 GPU 성능 승인으로 사용하지 않는다.
+
+| Gate | 필수 사례 | 합격 근거/제한 |
+| --- | --- | --- |
+| SDK/ABI | Linux companion/bootstrap, 구형 shim, 잘못된 feature/table/owner, Web/mobile/common assembly negative build | adapter 전 Qt startup 거절은 정상. ABI 검사는 OS 창 조작 검증과 별개 |
+| 최초 표시 | PlatformDefault 및 제공하는 Manual/WhenReady, 실패·취소·준비 중 close, protocol 없는 compositor | 최초 노출부터 geometry/chrome/fallback 확인. hidden frame 준비를 지원할 수 없으면 명시적 거절 |
+| 크기/상태 | client 450×800·최소 350×500·최대·resizable 복원, DPR 1/1.25/1.5/2, 혼합 화면, hide/minimize/restore/fullscreen | native geometry·metrics·실제 상태 비교. 화면이 작아 control을 못 누른 사례는 PASS가 아님 |
+| 위치/시스템 | Wayland Position/Center 거절·Bounds=null, xcb 좌표 왕복, focus 거부, topmost/taskbar | Wayland/순수 X11/XWayland 별도 결과. setter 반환만으로 효과 적용 승인 금지 |
+| 상단바/입력 | native/client caption, move/resize·더블클릭·Alt+F4, drag 제외 영역, Tab/Shift+Tab, 한글 IME·Orca | 합성 입력과 실제 입력 분리. Quick/WebView/framework 포커스 왕복, custom button 접근성 포함 |
+| 재질/테마 | ext/KDE/미제공 provider, Solid/Transparent fallback, light/dark/inactive, nullable 복원, resize 중 변경 | 통제된 창 뒤 배경의 caption/body 캡처와 effective state 비교. in-app blur 캡처로 대체 금지 |
+| 닫기/앱 종료 | native/API 취소→허용, 중복 close, 준비·명령·GPU 작업 중 close, 두 lifetime 정책 | 결정·대기 종결·해제·registry 제거 각 1회, Cancel 후 계속 입력·렌더 가능 |
+| GPU/WSI | 같은 Release의 driver/shim으로 lifecycle·resize 우선 10회, validation layer 실제 로드, Qt-only 재현 | exit 0이어도 VUID면 failed. xcb 간헐 PASS는 해결 증거가 아니며 Qt swapchain/drain 우회 금지 |
+| 배포 | Quick/WebEngine ON/ON·ON/OFF·OFF/OFF, 외부 package-only/template, 두 디렉터리 배포, QPA/QML/helper/pak/locale 누락 | clean VM 실제 실행·loaded binary 식별 필요. trim/single-file/NativeAOT 거절 유지. Quick의 추가 기능을 non-Quick에 보장하지 않음 |
+
+아래는 **기존 기반 검사 재실행 명령**이며 Desktop 동작 검증을 대신하지 않는다. 저장소 루트에서 실행하고 `--output`은 매번 새 디렉터리를 사용한다. suite는 각 내부 명령에 1,200초 timeout을 적용한다.
+
+```sh
+python3 Doroti/validation/run-with-timeout.py dotnet --info
+python3 Doroti/validation/run-with-timeout.py pkg-config --modversion Qt6Core Qt6Quick
+python3 Doroti/validation/run-with-timeout.py python3 Doroti/validation/linux-qt-quick/check-native-sync.py
+python3 Doroti/validation/linux-qt-quick/run-suite.py \
+  --output Doroti/artifacts/linux-qt-desktop/2026-09-26-contract-01
+
+# Qt 개발 의존성이 준비된 Linux에서 직렬 빌드
+python3 Doroti/validation/run-with-timeout.py dotnet build \
+  DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Release -r linux-x64 \
+  -p:DorotiQtQuick=true -p:DorotiQtWebEngine=true
+```
+
+제품 검사는 suite에 같은 빌드의 `--shim`, `--app`, `--qpa wayland --product`를 지정한다. xcb는 별도 새 디렉터리에서 실행하며 XWayland인지 순수 X11인지 기록한다. package 소비는 `verify-package-consumer.py`, runtime 누락 검사는 `check-runtime.py`, Qt-only WSI는 `verify-wsi.py`를 사용한다. 옵션·실행 예시는 위 Quick 검증 문서를 따른다. 새 Desktop API 검증 도구는 [verify-linux.py](Doroti/validation/desktop-window/verify-linux.py)이며 테스트 전용 Qt preload driver로 native geometry·ABI·닫기·해제를 확인한다.
+
+미실행은 `notVerified`, 명시적 비지원은 `unsupported`, 재현 실패는 `failed`로 기록한다. 이전 보고서가 가리키는 원시 산출물이 삭제됐으면 당시 기록과 이번 재확인 결과를 구분한다. Linux 반복은 우선 10회, 필요한 확대도 30회 이내이며 shared obj 빌드는 직렬 실행한다.
+
+앞선 문서 보강 단계에서 수행한 검사: 추가한 로컬 링크 14개 존재, 절 제목·code fence 및 `git diff --check` 정상, timeout wrapper로 실행한 native/template 21개 파일 byte 일치 PASS. Quick 검증 README의 직접 OpenGL 개발 의존성 안내를 CMake와 일치시켰다. 그 문서 보강 단계에서는 제품 빌드·GUI 실행·Desktop 계약 검사를 수행하지 않았다. 후속 실제 구현 결과는 아래와 같다.
+
+### 8.3.1 Qt 기본 창 실제 구현·검증 (2026-09-26)
+
+- [QtDesktopWindowHost](Doroti/src/Doroti.Host.Qt/QtDesktopWindowHost.cs)와 [정책](Doroti/src/Doroti.Host.Qt/QtDesktopWindowPolicy.cs), 별도 Desktop ABI 1(기존 host ABI 4 유지), SDK bootstrap, Linux 전용 companion/template을 추가했다. Testbed는 `DorotiLinuxDesktop=true`로 선택하며 기본 legacy 구성은 유지한다.
+- Quick+Graphite/Vulkan의 기본 창 하나를 지원한다. PlatformDefault 시작, 불투명 System/Solid 배경·System 테마·Normal/System native decoration, 제목·client 크기/min/max/resizable·show/hide/focus·최대화/복원/전체화면을 연결했다. native 상태 전환을 기다리며 compositor가 요청을 받아들이지 않으면 5초 내 실패로 종결한다.
+- native/API 닫기는 같은 취소→허용 결정을 사용한다. 승인된 destroy를 한 번만 실행하고 GPU/view/native 자원 해제 후 Closed·registry 제거·manager 종료 정책을 적용한다. Explicit의 마지막 창 닫기 후 프로세스 생존도 검사했다. 추가 창/reopen은 미지원이다.
+- Wayland의 프로그램 최소화는 상태 확인이 불가능해 명시적 미지원으로 둔다. xcb 최소화는 조작 검사에 포함했다. Manual/WhenReady, 초기 최소화, Position/Bounds/Center, topmost/taskbar, deferred drag/resize, 커스텀 chrome, Desktop Acrylic 및 runtime appearance 변경도 거절한다. 기존 Wayland blur/client caption 경로는 별도로 보존했다.
+- legacy/Desktop 전환 빌드에서 생성 bootstrap이 공유되는 문제를 수정했다. Desktop startup별 생성 파일을 분리하고 legacy→Desktop 빌드 및 이후 legacy 생성이 Desktop 소스를 덮지 않는지 검사했다. 전환 후 바이너리가 검증한 Desktop 바이너리와 일치함도 확인했다.
+- 실행 중 발견한 크기 제한 갱신 문제를 수정했다. 유휴 장면에서도 Qt Quick 갱신을 요청해 Wayland size hints를 commit하고, setter의 요청 signal과 플랫폼 상태 event를 구분한다. 타이머 만료를 성공으로 처리하지 않는다.
+- Release 빌드 경고·오류 0, Desktop 계약 32개, Qt ABI/geometry 계약, native/template 23개 파일 일치 PASS. Wayland 실제 창 조작·native/API 닫기·두 lifetime 정책, 저장소 밖 package-only/template 실행, 구형 shim·non-Quick startup 거절 및 Web/Android/iOS package 경계 검사를 수행했다. 상세 결과와 실패 시도는 [추적되는 실행 요약](Doroti/validation/desktop-window/results-linux-2026-09-26.json)과 [검증 기록](Doroti/validation/desktop-window/README.md#linux-qt-quick--2026-09-26)에 남긴다.
+- **xcb/XWayland는 전체 실패**: 창 조작·닫기는 동작했지만 layer가 로드된 실행에서 기존 `07781` VUID가 재현됐다(요청 540×480, surface 500×450, exit 0). WSI 완료로 처리하지 않는다. 순수 X11·물리 GPU·IME/Orca·혼합 DPI·clean VM·전체 재질/상단바 gate는 미검증 또는 미구현이다.
+
+```sh
+python3 Doroti/validation/run-with-timeout.py dotnet build \
+  DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Release -r linux-x64 \
+  -p:DorotiLinuxDesktop=true
+python3 Doroti/validation/run-with-timeout.py python3 Doroti/validation/desktop-window/verify-linux.py \
+  --app DorotiTestbedApp/linux/bin/linux-x64/Release/net10.0/linux-x64/DorotiTestbedApp.Linux.dll \
+  --qpa wayland --native-close \
+  --output Doroti/artifacts/linux-qt-desktop/new-native-run
+```
+
+API 닫기와 Explicit 검사는 `--native-close` 대신 `--explicit`을 지정한다. 위 명령만으로 Vulkan layer가 활성화되지는 않는다. GPU 검증에는 layer 환경 설정과 결과의 `validationLayerLoaded=true`를 함께 요구한다. 외부 소비는 `verify-package-consumer.py --configuration Release --quick --desktop --qpa wayland --output <저장소 밖 새 경로>`로 재실행한다. Q2–Q5 전체를 완료 처리하지 않고 위 지원 범위만 제공한다.
+
 ## 9. 이번 검토의 결론
 
 **데스크톱 전용 패키지·startup → 앱 범위 WindowManager → 창별 WindowController와 콘텐츠 factory**를 기본 구조로 확정한다. 기본 창은 `UseMainWindow`, 향후 추가 창은 `CreateWindowAsync`로 만들고, 생성 이후에는 같은 조작·외형·이벤트 API를 사용한다. 이를 통해 사용자가 편하게 썼던 선언·준비·표시 흐름과 아크릴·커스텀 상단바 조합을 유지하면서, 나중에 다중 창을 추가할 때 전역 단일 창 API를 다시 걷어내는 일을 피한다.
 
-2026-09-25 전체 작업 요청으로 제품 구현과 bounded 검증을 진행했다. 외부 Sudoku 프로젝트는 수정하지 않았다. 미완료 항목을 체크한 것으로 처리하지 않으며, 다음 구현 지점은 Hidden+Native chrome/입력·위젯, App theme bridge, WindowsAppSDK/Qt adapter와 내부 Acrylic 채널 위임이다. AppKit 및 제한된 Mac Catalyst 기본 창 adapter는 후속 구현으로 추가했으며 macOS 미지원 조합·잔여 검증은 W4-M과 §8.1–8.2에 남긴다. 기존 resize 시각 연속성은 PARTIAL을 유지한다.
+2026-09-25 전체 작업 요청으로 제품 구현과 bounded 검증을 진행했다. 외부 Sudoku 프로젝트는 수정하지 않았다. 미완료 항목을 체크한 것으로 처리하지 않으며, 다음 구현 지점은 Hidden+Native chrome/입력·위젯, App theme bridge, WindowsAppSDK adapter와 내부 Acrylic 채널 위임, Qt 재질·커스텀 상단바 및 잔여 검증이다. AppKit 및 제한된 Mac Catalyst 기본 창 adapter는 후속 구현으로 추가했으며 macOS 미지원 조합·잔여 검증은 W4-M과 §8.1–8.2에 남긴다. 기존 resize 시각 연속성은 PARTIAL을 유지한다.

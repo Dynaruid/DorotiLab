@@ -12,6 +12,10 @@
     <DorotiQtQuick>true</DorotiQtQuick>
     <DorotiQtWebEngine Condition="'$(DorotiQtWebEngine)' == '' and '$(DorotiQtQuick)' == 'true'">true</DorotiQtWebEngine>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(DorotiLinuxDesktop)' == 'true'">
+    <DorotiDesktopProject>../desktop/DorotiTestbedApp.Desktop.csproj</DorotiDesktopProject>
+    <DorotiDesktopStartupType>DorotiTestbedApp.Desktop.LinuxDesktopStartup</DorotiDesktopStartupType>
+  </PropertyGroup>
   <ItemGroup>
     <DorotiTargetDescriptor Include="Linux" HostKind="Qt" NativeEntryKind="Qt-Main"
         RuntimeIdentifier="linux-x64" TargetFramework="net10.0"

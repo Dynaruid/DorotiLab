@@ -1,0 +1,327 @@
+{
+  "date": "2026-09-26",
+  "overall": "PARTIAL",
+  "sourceCommit": "6effa7b1f7ea59b9dcdfc2cf49bc0d3e4c506371",
+  "sourceHasUncommittedImplementation": true,
+  "environment": {
+    "os": "Ubuntu 26.04.1 LTS",
+    "dotnetSdk": "10.0.400",
+    "qt": "6.10.2",
+    "session": "KWin Wayland",
+    "gpu": "software Vulkan (llvmpipe VM)",
+    "rid": "linux-x64",
+    "tfm": "net10.0"
+  },
+  "build": {
+    "configuration": "Release",
+    "warnings": 0,
+    "errors": 0,
+    "testbedDesktop": "opt-in DorotiLinuxDesktop=true",
+    "quickWebEngineMatrix": [
+      "ON/ON product",
+      "ON/OFF external package product",
+      "OFF/OFF native build only"
+    ]
+  },
+  "contracts": {
+    "desktop": "32/32 passed",
+    "qtAbiAndGeometry": "passed (includes Desktop 48/40/40 byte tables and offsets)",
+    "nativeTemplateSync": "23 files identical",
+    "externalCore": "25/25 passed",
+    "negativePackageTargets": [
+      "Web",
+      "Android",
+      "iOS"
+    ],
+    "nonQuickDesktopStartup": "DOROTIDESKTOP005",
+    "oldShimDesktop": {
+      "exit": 69,
+      "oldShimRejected": true,
+      "noUnhandledException": true
+    }
+  },
+  "runs": [
+    {
+      "name": "native Wayland native close, OnLastWindowClosed",
+      "status": "passed",
+      "evidence": "/home/orange/workspace/DorotiLab/Doroti/artifacts/linux-qt-desktop/2026-09-26-isolated-native/result.json",
+      "exit": 0,
+      "checks": {
+        "exit": true,
+        "deadline": true,
+        "nativeGeometry": true,
+        "nativeLimitsRestored": true,
+        "nativeTitleAndChrome": true,
+        "actualQpa": true,
+        "visibleCapture": true,
+        "nativeCloseCapability": true,
+        "closedOnce": true,
+        "ownerRetired": true,
+        "abiGuards": true,
+        "unsupportedDefaultsRejected": true,
+        "unsupportedRejected": true,
+        "mappedProductBinaries": true,
+        "nativeCloseCanceled": true,
+        "waylandMinimizeRejected": true,
+        "validationLayerLoaded": true,
+        "noManagedFatal": true,
+        "noVulkanValidationError": true
+      },
+      "appSha256": "dd198c3be3ceaac9f4407348fe381e191938624969eab2b68d5af2104d54bc20",
+      "shimSha256": "35b1fd1ba5ee61528e80b2a97a4443c897de3909767cb222e132eb983e938993",
+      "hostSha256": "bcdc209c1bb0496b9cd7c8328865bcabe5afdda39bc2d8e50ae7e88a0a0e4b4b",
+      "validationLayers": "VK_LAYER_KHRONOS_validation",
+      "mappedModules": {
+        "/usr/lib/x86_64-linux-gnu/libQt6WebEngineCore.so.6.10.2": "8c3055616c3cd7f2e09c7304b6f63b6bb4b8d03a962af2ff5c9af66ec24a9a86",
+        "/usr/lib/x86_64-linux-gnu/libQt6PrintSupport.so.6.10.2": "bca30654a7999c0f0e03aa6f2a01da55df37e3b7ec49d2f67f73b58adcc34103",
+        "/usr/lib/x86_64-linux-gnu/libQt6Xml.so.6.10.2": "eaf4b1f359141f500e2f8ddf77ddbb2acd4c6297c997109d5fce5d4999a1f160",
+        "/usr/lib/x86_64-linux-gnu/libQt6QuickTemplates2.so.6.10.2": "fe9d94200c6fd1d01dac267613d46fa0dd6b6fbb96c3a10fff96255a9ac6631a",
+        "/usr/lib/x86_64-linux-gnu/libQt6WaylandClient.so.6.10.2": "750d84878e449229d3a8973b5a5828ba7ddc37e485a7be01092db581ec2ea463",
+        "/usr/lib/x86_64-linux-gnu/libQt6QuickControls2.so.6.10.2": "5c8da348d3b84d8658105b768882bf2123541d4ca42d8213c2ee45730a485841",
+        "/usr/lib/x86_64-linux-gnu/libQt6Widgets.so.6.10.2": "655542813ae4a1a51f42d20930b70e8dda31a3b7873234cce4cf24879ae9a3a2",
+        "/home/orange/workspace/DorotiLab/Doroti/artifacts/linux-qt-desktop/final-app-isolated/libSkiaSharp.so": "3a7778cce23720da6503e0ca845b423ad366cfe7e6a6b9ad6eea052fc0c91e92",
+        "/usr/lib/x86_64-linux-gnu/libQt6Positioning.so.6.10.2": "7cebb79f37f5c9dbc2484295617653ff73848f92b1ad27a56690a7a6e235e404",
+        "/usr/lib/x86_64-linux-gnu/libQt6WebChannel.so.6.10.2": "eb4103f87f7e6fde8096ea3e8a94d67b9bea83bb7711900e21b4957df000034b",
+        "/usr/lib/x86_64-linux-gnu/libQt6WebChannelQuick.so.6.10.2": "11a2964ad8a45a54039168a9dc21ff43ef7702d5d49f37da6e789e29efc4d440",
+        "/usr/lib/x86_64-linux-gnu/libQt6WebEngineQuick.so.6.10.2": "d664db7a0accde04b9d27ca59341bfef009b78d91d24a7eb328635ad17183236",
+        "/home/orange/workspace/DorotiLab/Doroti/artifacts/linux-qt-desktop/final-app-isolated/libdoroti_webview_qt.so": "5d87b937a9980c680d09b6240e0431d98769f7d6053a905c1f26c7f702e793d1",
+        "/home/orange/workspace/DorotiLab/Doroti/artifacts/linux-qt-desktop/final-app-isolated/libdoroti_qt_host.so": "35b1fd1ba5ee61528e80b2a97a4443c897de3909767cb222e132eb983e938993",
+        "/usr/lib/x86_64-linux-gnu/libQt6Network.so.6.10.2": "dd8327d7d44b9af4a2309f054c866ad458fcf5a6a1a411b73a580f0d527c983c",
+        "/usr/lib/x86_64-linux-gnu/libQt6Qml.so.6.10.2": "8e84dc9a287b6bcde6e2c69790cc9d464f750d44339bf8a0a207bc3b3fd6dc49",
+        "/usr/lib/x86_64-linux-gnu/libQt6Core.so.6.10.2": "e9ec748b18f100f620a301f772861969b20556b2cffb2c33e38140cbbef2f11b",
+        "/usr/lib/x86_64-linux-gnu/libQt6QmlWorkerScript.so.6.10.2": "66cdf0ac50f4cff490d28b0506f1e67152092403c06b500c1d1126cdffda499e",
+        "/usr/lib/x86_64-linux-gnu/libQt6Gui.so.6.10.2": "1cccdc5c19b4d9706f67b928155dc6f46c44799e9fff8ea441de0c6b8a5176c1",
+        "/usr/lib/x86_64-linux-gnu/libQt6DBus.so.6.10.2": "2d9843347c9d6bb7ae66412b6d7620cd8fbaa4f31af63499b00911e450a36ea1",
+        "/usr/lib/x86_64-linux-gnu/libQt6OpenGL.so.6.10.2": "44c832977dad22888c74b8271affe03b0e70a8569e8a08096234eb053f88e330",
+        "/usr/lib/x86_64-linux-gnu/libQt6Quick.so.6.10.2": "36d8d5518e6479ab710c0ce4e378fcebb59b7bf7b0c277124aabcc8f7bd9c7d4",
+        "/usr/lib/x86_64-linux-gnu/libQt6QmlModels.so.6.10.2": "85120b630a0d6e9920c2bd0ae7c88b908fa4b2dfe770d55f0eeba01b226c5382",
+        "/usr/lib/x86_64-linux-gnu/libQt6QmlMeta.so.6.10.2": "38551ff230f7f97f965baea045a0d6538e44d901fd948ab57e1a07c16e7cdea6"
+      }
+    },
+    {
+      "name": "native Wayland API close, Explicit",
+      "status": "passed",
+      "evidence": "/home/orange/workspace/DorotiLab/Doroti/artifacts/linux-qt-desktop/2026-09-26-isolated-explicit/result.json",
+      "exit": 0,
+      "checks": {
+        "exit": true,
+        "deadline": true,
+        "nativeGeometry": true,
+        "nativeLimitsRestored": true,
+        "nativeTitleAndChrome": true,
+        "actualQpa": true,
+        "visibleCapture": true,
+        "nativeCloseCapability": true,
+        "closedOnce": true,
+        "ownerRetired": true,
+        "abiGuards": true,
+        "unsupportedDefaultsRejected": true,
+        "unsupportedRejected": true,
+        "mappedProductBinaries": true,
+        "usableAfterCanceledClose": true,
+        "explicitProcessSurvived": true,
+        "waylandMinimizeRejected": true,
+        "validationLayerLoaded": true,
+        "noManagedFatal": true,
+        "noVulkanValidationError": true
+      },
+      "appSha256": "dd198c3be3ceaac9f4407348fe381e191938624969eab2b68d5af2104d54bc20",
+      "shimSha256": "35b1fd1ba5ee61528e80b2a97a4443c897de3909767cb222e132eb983e938993",
+      "hostSha256": "bcdc209c1bb0496b9cd7c8328865bcabe5afdda39bc2d8e50ae7e88a0a0e4b4b",
+      "validationLayers": "VK_LAYER_KHRONOS_validation",
+      "mappedModules": {
+        "/usr/lib/x86_64-linux-gnu/libQt6WebEngineCore.so.6.10.2": "8c3055616c3cd7f2e09c7304b6f63b6bb4b8d03a962af2ff5c9af66ec24a9a86",
+        "/usr/lib/x86_64-linux-gnu/libQt6PrintSupport.so.6.10.2": "bca30654a7999c0f0e03aa6f2a01da55df37e3b7ec49d2f67f73b58adcc34103",
+        "/usr/lib/x86_64-linux-gnu/libQt6Xml.so.6.10.2": "eaf4b1f359141f500e2f8ddf77ddbb2acd4c6297c997109d5fce5d4999a1f160",
+        "/usr/lib/x86_64-linux-gnu/libQt6QuickTemplates2.so.6.10.2": "fe9d94200c6fd1d01dac267613d46fa0dd6b6fbb96c3a10fff96255a9ac6631a",
+        "/usr/lib/x86_64-linux-gnu/libQt6WaylandClient.so.6.10.2": "750d84878e449229d3a8973b5a5828ba7ddc37e485a7be01092db581ec2ea463",
+        "/usr/lib/x86_64-linux-gnu/libQt6QuickControls2.so.6.10.2": "5c8da348d3b84d8658105b768882bf2123541d4ca42d8213c2ee45730a485841",
+        "/usr/lib/x86_64-linux-gnu/libQt6Positioning.so.6.10.2": "7cebb79f37f5c9dbc2484295617653ff73848f92b1ad27a56690a7a6e235e404",
+        "/usr/lib/x86_64-linux-gnu/libQt6Widgets.so.6.10.2": "655542813ae4a1a51f42d20930b70e8dda31a3b7873234cce4cf24879ae9a3a2",
+        "/home/orange/workspace/DorotiLab/Doroti/artifacts/linux-qt-desktop/final-app-isolated/libSkiaSharp.so": "3a7778cce23720da6503e0ca845b423ad366cfe7e6a6b9ad6eea052fc0c91e92",
+        "/usr/lib/x86_64-linux-gnu/libQt6WebChannel.so.6.10.2": "eb4103f87f7e6fde8096ea3e8a94d67b9bea83bb7711900e21b4957df000034b",
+        "/usr/lib/x86_64-linux-gnu/libQt6WebChannelQuick.so.6.10.2": "11a2964ad8a45a54039168a9dc21ff43ef7702d5d49f37da6e789e29efc4d440",
+        "/usr/lib/x86_64-linux-gnu/libQt6WebEngineQuick.so.6.10.2": "d664db7a0accde04b9d27ca59341bfef009b78d91d24a7eb328635ad17183236",
+        "/home/orange/workspace/DorotiLab/Doroti/artifacts/linux-qt-desktop/final-app-isolated/libdoroti_webview_qt.so": "5d87b937a9980c680d09b6240e0431d98769f7d6053a905c1f26c7f702e793d1",
+        "/home/orange/workspace/DorotiLab/Doroti/artifacts/linux-qt-desktop/final-app-isolated/libdoroti_qt_host.so": "35b1fd1ba5ee61528e80b2a97a4443c897de3909767cb222e132eb983e938993",
+        "/usr/lib/x86_64-linux-gnu/libQt6Network.so.6.10.2": "dd8327d7d44b9af4a2309f054c866ad458fcf5a6a1a411b73a580f0d527c983c",
+        "/usr/lib/x86_64-linux-gnu/libQt6Qml.so.6.10.2": "8e84dc9a287b6bcde6e2c69790cc9d464f750d44339bf8a0a207bc3b3fd6dc49",
+        "/usr/lib/x86_64-linux-gnu/libQt6Core.so.6.10.2": "e9ec748b18f100f620a301f772861969b20556b2cffb2c33e38140cbbef2f11b",
+        "/usr/lib/x86_64-linux-gnu/libQt6Gui.so.6.10.2": "1cccdc5c19b4d9706f67b928155dc6f46c44799e9fff8ea441de0c6b8a5176c1",
+        "/usr/lib/x86_64-linux-gnu/libQt6QmlWorkerScript.so.6.10.2": "66cdf0ac50f4cff490d28b0506f1e67152092403c06b500c1d1126cdffda499e",
+        "/usr/lib/x86_64-linux-gnu/libQt6DBus.so.6.10.2": "2d9843347c9d6bb7ae66412b6d7620cd8fbaa4f31af63499b00911e450a36ea1",
+        "/usr/lib/x86_64-linux-gnu/libQt6OpenGL.so.6.10.2": "44c832977dad22888c74b8271affe03b0e70a8569e8a08096234eb053f88e330",
+        "/usr/lib/x86_64-linux-gnu/libQt6Quick.so.6.10.2": "36d8d5518e6479ab710c0ce4e378fcebb59b7bf7b0c277124aabcc8f7bd9c7d4",
+        "/usr/lib/x86_64-linux-gnu/libQt6QmlModels.so.6.10.2": "85120b630a0d6e9920c2bd0ae7c88b908fa4b2dfe770d55f0eeba01b226c5382",
+        "/usr/lib/x86_64-linux-gnu/libQt6QmlMeta.so.6.10.2": "38551ff230f7f97f965baea045a0d6538e44d901fd948ab57e1a07c16e7cdea6"
+      }
+    },
+    {
+      "name": "external package-only, Quick ON / WebEngine OFF",
+      "status": "passed",
+      "evidence": "/tmp/doroti-qt-desktop-package-20260926-isolated/desktop-product/result.json",
+      "exit": 0,
+      "checks": {
+        "exit": true,
+        "deadline": true,
+        "nativeGeometry": true,
+        "nativeLimitsRestored": true,
+        "nativeTitleAndChrome": true,
+        "actualQpa": true,
+        "visibleCapture": true,
+        "nativeCloseCapability": true,
+        "closedOnce": true,
+        "ownerRetired": true,
+        "abiGuards": true,
+        "unsupportedDefaultsRejected": true,
+        "unsupportedRejected": true,
+        "mappedProductBinaries": true,
+        "nativeCloseCanceled": true,
+        "waylandMinimizeRejected": true,
+        "validationLayerLoaded": true,
+        "noManagedFatal": true,
+        "noVulkanValidationError": true
+      },
+      "appSha256": "6391110a5ffd34eac99f78089c05653233105a3270cbf66c31ab6f24e99e193b",
+      "shimSha256": "d96e77dd83fcaea3378e7dfd7bc8c39201bbfa8056000fc452c3134dcc7266bf",
+      "hostSha256": "bcdc209c1bb0496b9cd7c8328865bcabe5afdda39bc2d8e50ae7e88a0a0e4b4b",
+      "validationLayers": "VK_LAYER_KHRONOS_validation",
+      "mappedModules": {
+        "/usr/lib/x86_64-linux-gnu/libQt6PrintSupport.so.6.10.2": "bca30654a7999c0f0e03aa6f2a01da55df37e3b7ec49d2f67f73b58adcc34103",
+        "/usr/lib/x86_64-linux-gnu/libQt6QuickTemplates2.so.6.10.2": "fe9d94200c6fd1d01dac267613d46fa0dd6b6fbb96c3a10fff96255a9ac6631a",
+        "/usr/lib/x86_64-linux-gnu/libQt6Xml.so.6.10.2": "eaf4b1f359141f500e2f8ddf77ddbb2acd4c6297c997109d5fce5d4999a1f160",
+        "/usr/lib/x86_64-linux-gnu/libQt6Widgets.so.6.10.2": "655542813ae4a1a51f42d20930b70e8dda31a3b7873234cce4cf24879ae9a3a2",
+        "/tmp/doroti-qt-desktop-package-20260926-isolated/publish/libSkiaSharp.so": "3a7778cce23720da6503e0ca845b423ad366cfe7e6a6b9ad6eea052fc0c91e92",
+        "/usr/lib/x86_64-linux-gnu/libQt6WaylandClient.so.6.10.2": "750d84878e449229d3a8973b5a5828ba7ddc37e485a7be01092db581ec2ea463",
+        "/usr/lib/x86_64-linux-gnu/libQt6QuickControls2.so.6.10.2": "5c8da348d3b84d8658105b768882bf2123541d4ca42d8213c2ee45730a485841",
+        "/tmp/doroti-qt-desktop-package-20260926-isolated/publish/libdoroti_qt_host.so": "d96e77dd83fcaea3378e7dfd7bc8c39201bbfa8056000fc452c3134dcc7266bf",
+        "/usr/lib/x86_64-linux-gnu/libQt6DBus.so.6.10.2": "2d9843347c9d6bb7ae66412b6d7620cd8fbaa4f31af63499b00911e450a36ea1",
+        "/usr/lib/x86_64-linux-gnu/libQt6Network.so.6.10.2": "dd8327d7d44b9af4a2309f054c866ad458fcf5a6a1a411b73a580f0d527c983c",
+        "/usr/lib/x86_64-linux-gnu/libQt6Qml.so.6.10.2": "8e84dc9a287b6bcde6e2c69790cc9d464f750d44339bf8a0a207bc3b3fd6dc49",
+        "/usr/lib/x86_64-linux-gnu/libQt6Core.so.6.10.2": "e9ec748b18f100f620a301f772861969b20556b2cffb2c33e38140cbbef2f11b",
+        "/usr/lib/x86_64-linux-gnu/libQt6Gui.so.6.10.2": "1cccdc5c19b4d9706f67b928155dc6f46c44799e9fff8ea441de0c6b8a5176c1",
+        "/usr/lib/x86_64-linux-gnu/libQt6QmlWorkerScript.so.6.10.2": "66cdf0ac50f4cff490d28b0506f1e67152092403c06b500c1d1126cdffda499e",
+        "/usr/lib/x86_64-linux-gnu/libQt6QmlModels.so.6.10.2": "85120b630a0d6e9920c2bd0ae7c88b908fa4b2dfe770d55f0eeba01b226c5382",
+        "/usr/lib/x86_64-linux-gnu/libQt6Quick.so.6.10.2": "36d8d5518e6479ab710c0ce4e378fcebb59b7bf7b0c277124aabcc8f7bd9c7d4",
+        "/usr/lib/x86_64-linux-gnu/libQt6OpenGL.so.6.10.2": "44c832977dad22888c74b8271affe03b0e70a8569e8a08096234eb053f88e330",
+        "/usr/lib/x86_64-linux-gnu/libQt6QmlMeta.so.6.10.2": "38551ff230f7f97f965baea045a0d6538e44d901fd948ab57e1a07c16e7cdea6"
+      }
+    },
+    {
+      "name": "xcb/XWayland, prior implementation checkpoint",
+      "status": "failed",
+      "evidence": "/home/orange/workspace/DorotiLab/Doroti/artifacts/linux-qt-desktop/2026-09-26-xcb-native-01/result.json",
+      "exit": 0,
+      "checks": {
+        "exit": true,
+        "deadline": true,
+        "nativeGeometry": true,
+        "nativeLimitsRestored": true,
+        "nativeTitleAndChrome": true,
+        "actualQpa": true,
+        "visibleCapture": true,
+        "nativeCloseCapability": true,
+        "closedOnce": true,
+        "ownerRetired": true,
+        "abiGuards": true,
+        "unsupportedRejected": true,
+        "nativeCloseCanceled": true,
+        "validationLayerLoaded": true,
+        "noManagedFatal": true,
+        "noVulkanValidationError": false
+      },
+      "appSha256": "11aa4036b0fb46c0325a70e122b622f3b6b06602f81ad0e8a4ce7756dce58723",
+      "shimSha256": "61060493032542401ce30277161ab38d1a1d7fbab0e46586b1a2efd059759734",
+      "hostSha256": "0f22edf23f47ebae73bc36ed0ee5a2741b5ad97d0a14b41c926efd9085b48310",
+      "validationLayers": "VK_LAYER_KHRONOS_validation"
+    }
+  ],
+  "legacyRegression": {
+    "status": "passed",
+    "resizeCycles": 10,
+    "native": {
+      "titlebar.effective": "unified-client",
+      "backdrop.requested": "acrylic",
+      "backdrop.fallback": "transparent",
+      "backdrop.effective": "acrylic",
+      "backdrop.provider": "kde-blur-v1",
+      "backdrop.compositorBlur": "true",
+      "qpa": "wayland",
+      "graphics.backend": "QtQuick-Graphite-Vulkan",
+      "composition": "interleaved-gpu-images",
+      "raster.cpuReadback": "false",
+      "presentation.completion": "queue-present-accepted-not-scanout",
+      "vulkan.instance.apiVersion": "1.2",
+      "vulkan.instance.extensions": "VK_KHR_get_physical_device_properties2,VK_EXT_swapchain_colorspace,VK_KHR_surface,VK_KHR_portability_enumeration,VK_EXT_debug_utils,VK_KHR_wayland_surface",
+      "semantics.nodes": "47"
+    },
+    "frames": {
+      "rasterized": 24,
+      "presented": 17,
+      "replayed": 6,
+      "rasterizedSuperseded": 1,
+      "superseded": 30,
+      "failed": 0,
+      "rendererSubmitted": 0,
+      "rendererPending": false,
+      "mismatchCount": 3,
+      "lastMismatch": "metricsGeneration: scene=8; current=10"
+    },
+    "quickReservedBytes": 0,
+    "layerRequested": true,
+    "layerMappedSeparatelyAsserted": false
+  },
+  "package": {
+    "packages": 24,
+    "sourceProjectReferences": [],
+    "cleanMachine": "notVerified",
+    "selfContained": "notVerified in this checkpoint"
+  },
+  "failedAttempts": [
+    {
+      "evidence": "2026-09-26-wayland-api-01; 2026-09-26-wayland-native-01; /tmp/doroti-qt-desktop-package-20260926-01",
+      "reason": "Wayland minimized state could not be observed; now explicitly unsupported"
+    },
+    {
+      "evidence": "2026-09-26-wayland-explicit-01 and -02",
+      "reason": "Maximize was not acknowledged after restoring size constraints; fixed by requesting a Quick commit for changed hints and waiting for platform state"
+    },
+    {
+      "evidence": "2026-09-26-xcb-native-01",
+      "reason": "VUID-VkSwapchainCreateInfoKHR-pNext-07781, requested 540x480, surface extent 500x450; exit 0; remains failed"
+    },
+    {
+      "evidence": "2026-09-26-final-native2",
+      "reason": "A shared generated bootstrap selected legacy startup during a Desktop build; fixed by startup-specific Desktop bootstrap filenames, followed by build-toggle and live-product checks"
+    }
+  ],
+  "limits": [
+    "hidden first-frame startup unsupported",
+    "initially minimized startup unsupported",
+    "placement/topmost/taskbar/deferred drag/resize unsupported",
+    "custom chrome/runtime appearance/Desktop blur unsupported",
+    "additional windows/reopen unsupported",
+    "native Wayland programmatic minimize unsupported",
+    "pure X11, physical GPU/input/Orca, mixed DPI not verified",
+    "xcb/XWayland Vulkan WSI unresolved"
+  ],
+  "artifactPolicy": "Raw artifacts and /tmp consumers are disposable; this tracked summary preserves results and hashes.",
+  "bootstrapIsolation": {
+    "status": "passed",
+    "builds": [
+      {
+        "desktop": false,
+        "build": "passed",
+        "bootstrap": "/home/orange/workspace/DorotiLab/DorotiTestbedApp/linux/obj/linux-x64/Doroti.Generated/DorotiBootstrap.g.cs"
+      },
+      {
+        "desktop": true,
+        "build": "passed",
+        "bootstrap": "/home/orange/workspace/DorotiLab/DorotiTestbedApp/linux/obj/linux-x64/Doroti.Generated/DorotiBootstrap.Desktop.DorotiTestbedApp.Desktop.LinuxDesktopStartup.g.cs"
+      }
+    ],
+    "legacyGenerationPreservesDesktopSource": true,
+    "runtime": "Run verify-linux.py against the final Desktop binary separately.",
+    "binaryMatchesValidatedDesktop": true
+  }
+}

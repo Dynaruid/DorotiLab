@@ -49,7 +49,20 @@ public static unsafe partial class DorotiQtRunner
             descriptor.LaunchContext.RuntimeIdentifier,
             platformViewFactories: platformViews.Factories
         );
-        using var session = new DorotiHostSession(descriptor.EntrypointFactory());
+        QtDesktopWindowHost? desktop = null;
+        Doroti.Desktop.DorotiWindowManager? windows = null;
+        if (Doroti.Desktop.DesktopApplication.TryGetDefinition(descriptor, out var definition))
+        {
+            if (!QtSkiaSurface.GraphiteEnabled)
+                throw new NotSupportedException("Qt Desktop requires Quick with Graphite/Vulkan.");
+            desktop = new QtDesktopWindowHost();
+            windows = new(desktop, definition!.LifetimePolicy);
+            windows.ExitRequested += QtDesktopWindowHost.Quit;
+            windows.InitializationFailed += (_, error) =>
+                Console.Error.WriteLine($"doroti.qt.desktop.failure={error}");
+            windows.CreateMainWindowAsync(definition.MainWindow).GetAwaiter().GetResult();
+        }
+        using var session = new DorotiHostSession(desktop?.Content ?? descriptor.EntrypointFactory());
         using var state = new QtManagedState(
             session,
             application,
@@ -57,6 +70,8 @@ public static unsafe partial class DorotiQtRunner
             platformViews,
             prepareApplication
         );
+        state.Desktop = desktop;
+        if (desktop is not null) desktop.Fatal = state.CaptureFatal;
         var stateHandle = GCHandle.Alloc(state);
         try
         {
@@ -131,6 +146,8 @@ public static unsafe partial class DorotiQtRunner
         }
         finally
         {
+            desktop?.Fail(new ObjectDisposedException("Qt native run has ended."));
+            GC.KeepAlive(windows);
             stateHandle.Free();
         }
     }
@@ -203,6 +220,7 @@ public static unsafe partial class DorotiQtRunner
         internal SkiaSceneRenderer? Renderer { get; private set; }
         internal string Title => _configuration.title;
         internal QtTitlebarAppearance? TitlebarAppearance { get; private set; }
+        internal QtDesktopWindowHost? Desktop { get; set; }
         internal DorotiView? View { get; private set; }
         internal ulong CurrentFrameToken { get; set; }
 
@@ -244,6 +262,12 @@ public static unsafe partial class DorotiQtRunner
                 (hostApi.FeatureBits & QtQuickNative.NativeTexturesFeature) != 0
                     && Environment.GetEnvironmentVariable("DOROTI_LINUX_NATIVE_TEXTURES") == "1"
             );
+            if (Desktop is not null)
+            {
+                if (!Surface.QuickEnabled)
+                    throw new NotSupportedException("Qt Desktop requires a Quick-enabled native shim.");
+                Desktop.Attach(viewHandle);
+            }
             var host = new QtHostAdapter(
                 viewHandle,
                 hostApi,
@@ -445,9 +469,11 @@ public static unsafe partial class DorotiQtRunner
                 {
                     case QtNativeV2.TerminalState.Presented:
                         _presented++;
+                        Desktop?.FramePresented();
                         break;
                     case QtNativeV2.TerminalState.Replayed:
                         _replayed++;
+                        Desktop?.FramePresented();
                         break;
                     case QtNativeV2.TerminalState.Superseded:
                         _superseded++;
@@ -602,6 +628,11 @@ public static unsafe partial class DorotiQtRunner
 
         internal void RequestClose()
         {
+            if (Desktop is not null)
+            {
+                Desktop.Abort();
+                return;
+            }
             QtNativeV2.HostApi hostApi;
             nint viewHandle;
             lock (_gate)
@@ -901,7 +932,8 @@ public static unsafe partial class DorotiQtRunner
             state =>
             {
                 _ = viewHandle;
-                state.Host?.RaiseCloseRequested();
+                if (state.Desktop is not null) state.Desktop.RequestClose();
+                else state.Host?.RaiseCloseRequested();
             }
         );
 
@@ -913,7 +945,12 @@ public static unsafe partial class DorotiQtRunner
             {
                 _ = viewHandle;
                 state.NativeClosed();
-                state.Host?.RaiseClosed();
+                if (state.Desktop is not null)
+                {
+                    state.Dispose();
+                    state.Session.Shutdown();
+                }
+                else state.Host?.RaiseClosed();
             }
         );
 

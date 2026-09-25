@@ -9,6 +9,13 @@ static void Check(bool condition, string message)
 }
 
 QtNativeV2.ValidateLayout();
+Check(Marshal.SizeOf<QtDesktopWindowHost.Api>() == 48
+    && Marshal.SizeOf<QtDesktopWindowHost.NativeCommand>() == 40
+    && Marshal.SizeOf<QtDesktopWindowHost.NativeState>() == 40
+    && Marshal.OffsetOf<QtDesktopWindowHost.Api>("Post").ToInt32() == 16
+    && Marshal.OffsetOf<QtDesktopWindowHost.NativeCommand>("Text").ToInt32() == 24
+    && Marshal.OffsetOf<QtDesktopWindowHost.NativeState>("Presentation").ToInt32() == 32,
+    "Qt Desktop ABI 1 layout differs from the independent native table.");
 Check(QtKeyMap.Physical(38, 'A') == QtKeyMap.Physical(38, 'Q')
     && QtKeyMap.Physical(38, 'A') == 0x00070004,
     "Physical key changed with keyboard layout.");
