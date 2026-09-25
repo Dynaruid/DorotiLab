@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using Doroti.Hosting;
@@ -11,11 +10,12 @@ internal sealed class WindowsPlatformViewDispatcher
         IPlatformViewDispatcher,
         IDisposable
 {
-    private readonly ConcurrentQueue<Action> _queue = new();
+    private readonly Queue<Action> _queue = new();
     private readonly object _gate = new();
     private readonly uint _thread = Native.GetCurrentThreadId();
     private readonly Native.SubclassProc _callback;
     private nint _window;
+    private bool _dispatchPending;
     private const uint DispatchMessage = 0x8000 + 0x731;
 
     internal WindowsPlatformViewDispatcher()
@@ -69,16 +69,25 @@ internal sealed class WindowsPlatformViewDispatcher
         lock (_gate)
         {
             ObjectDisposedException.ThrowIf(_window == 0, this);
-            _queue.Enqueue(action);
-            if (!Native.PostMessageW(_window, DispatchMessage, 0, 0))
+            // Publish the wakeup before accepting work. Drain takes the same
+            // gate, so it cannot observe an empty queue before this enqueue.
+            // A rejected post must never leave work that can execute later.
+            if (!_dispatchPending && !Native.PostMessageW(_window, DispatchMessage, 0, 0))
             {
                 throw new Win32Exception(Marshal.GetLastWin32Error());
             }
+            _dispatchPending = true;
+            _queue.Enqueue(action);
         }
     }
 
     public ValueTask InvokeAsync(Func<ValueTask> action)
     {
+        ArgumentNullException.ThrowIfNull(action);
+        lock (_gate)
+        {
+            ObjectDisposedException.ThrowIf(_window == 0, this);
+        }
         var completion = new TaskCompletionSource(
             TaskCreationOptions.RunContinuationsAsynchronously
         );
@@ -143,9 +152,27 @@ internal sealed class WindowsPlatformViewDispatcher
         SetSynchronizationContext(this);
         try
         {
-            while (_queue.TryDequeue(out var action))
+            while (true)
             {
-                action();
+                Action action;
+                lock (_gate)
+                {
+                    if (!_queue.TryDequeue(out action!))
+                    {
+                        _dispatchPending = false;
+                        break;
+                    }
+                }
+                try
+                {
+                    action();
+                }
+                catch (Exception error)
+                {
+                    // One failing Post callback must not strand the remaining
+                    // work after its shared wakeup has been consumed.
+                    System.Diagnostics.Trace.TraceError(error.ToString());
+                }
             }
         }
         finally
@@ -184,7 +211,7 @@ internal sealed class WindowsPlatformViewDispatcher
                 return;
             }
 
-            if (!_queue.IsEmpty)
+            if (_queue.Count != 0)
             {
                 throw new InvalidOperationException(
                     "PlatformView UI queue must drain before destruction."

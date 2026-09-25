@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "wheelScroll": true,
+  "postScrollClick": true,
+  "postScrollNavigation": true,
+  "nativeButton": true,
+  "nativeEditing": true,
+  "nativeWheel": true,
+  "blurForegroundClick": true,
+  "blurNativePassThrough": true,
+  "offscreenScrollAndReturn": true,
+  "remountInput": true,
+  "inputTransport": "OS SendInput; 150ms button hold",
+  "physicalHumanInput": "notVerified"
+}

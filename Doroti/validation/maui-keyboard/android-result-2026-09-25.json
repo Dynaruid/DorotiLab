@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "device": "R3CY30KZA4B",
+  "model": "SM-S931N",
+  "transport": "ADB input on physical device",
+  "repeat": true,
+  "keypadEnter": true,
+  "focusLossRelease": true,
+  "releaseWasSynthesized": false,
+  "sameProcessResume": true,
+  "nativeTextAndBackspace": true,
+  "physicalKeyboardAndHumanIme": "notVerified"
+}

@@ -28,7 +28,7 @@ internal sealed unsafe class WindowsManagedProductHost
     private readonly HashSet<long> _resizeTerminalGenerations = [];
     private readonly Dictionary<ulong, TaskCompletionSource<string?>> _clipboardRequests = [];
     private readonly Queue<Action> _pendingInput = [];
-    private readonly Dictionary<long, long> _pressedLogicalKeys = [];
+    private readonly WindowsKeyboardState _keyboard = new();
     private Action<TimeSpan, DorotiViewEpoch>? _pendingFrame;
     private bool _disposed;
     private long _inputSequence;
@@ -427,31 +427,7 @@ internal sealed unsafe class WindowsManagedProductHost
         var sequence = Interlocked.Increment(ref _inputSequence);
         var timestamp = MapTimestamp(value.TimestampQpc);
         var type = (KeyEventType)value.Type;
-        var physical = WindowsKeyMap.Physical(value.Physical, value.Logical);
-        var logical = WindowsKeyMap.Logical(value.Physical, value.Logical, character);
-        if (type == KeyEventType.up)
-        {
-            if (_pressedLogicalKeys.Remove(physical, out var pressedLogical))
-            {
-                logical = pressedLogical;
-            }
-        }
-        else
-        {
-            _pressedLogicalKeys[physical] = logical;
-        }
-
-        var key = new KeyData(
-            1,
-            timestamp,
-            type,
-            physical,
-            logical,
-            false,
-            value.Type == (uint)KeyEventType.up || string.IsNullOrEmpty(character)
-                ? null
-                : character
-        );
+        var key = _keyboard.Apply(timestamp, type, value.Physical, value.Logical, character);
         EnqueueInput(() =>
         {
             KeyData?.Invoke(key);
@@ -461,8 +437,16 @@ internal sealed unsafe class WindowsManagedProductHost
 
     internal void ApplyFocus(bool focused, long timestampQpc)
     {
-        var data = new RawFocusData(1, focused, MapTimestamp(timestampQpc));
-        EnqueueInput(() => FocusData?.Invoke(data));
+        var timestamp = MapTimestamp(timestampQpc);
+        var released = focused ? [] : _keyboard.ReleaseAll(timestamp);
+        var sequence = released.Length == 0 ? 0 : Interlocked.Increment(ref _inputSequence);
+        var data = new RawFocusData(1, focused, timestamp);
+        EnqueueInput(() =>
+        {
+            foreach (var key in released) KeyData?.Invoke(key);
+            if (sequence != 0) InputReceived?.Invoke(sequence, timestamp);
+            FocusData?.Invoke(data);
+        });
     }
 
     internal void ApplyLifecycle(uint value)

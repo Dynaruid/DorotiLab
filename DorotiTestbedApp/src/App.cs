@@ -185,6 +185,9 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
 
     private Widget CreateRootApp()
     {
+        if (Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE") == "keyboard-input")
+            return new Material.MaterialApp(debugShowCheckedModeBanner: false,
+                home: new KeyboardInputFixture());
         if (Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE") == "texture-web")
             return new Material.MaterialApp(
                 debugShowCheckedModeBanner: false,

@@ -6,6 +6,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <InternalsVisibleTo Include="Doroti.Host.Maui" />
+    <InternalsVisibleTo Include="Doroti.Host.WindowsAppSdk" />
+    <InternalsVisibleTo Include="Doroti.Validation.MauiKeyboard" />
     <ProjectReference Include="..\Doroti.Runtime\Doroti.Runtime.csproj" />
     <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
   </ItemGroup>

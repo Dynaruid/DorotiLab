@@ -1,0 +1,7 @@
+{
+  "status": "partial",
+  "inputPassed": true,
+  "shutdown": "timeout",
+  "transport": "OS SendInput",
+  "physicalKeyboard": "notVerified"
+}

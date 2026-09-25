@@ -29,7 +29,8 @@ internal static class MauiNativeInput
         private readonly SKGLView _view;
         private readonly ulong _viewId;
         private readonly Action<KeyData> _dispatch;
-        private readonly Dictionary<long, (long Logical, string? Character)> _pressed = [];
+        private readonly MauiKeyboardState _keyboard = new();
+        private readonly MauiWindowsKeyboardFocus _windowFocus;
         private readonly MauiTextInputBridge _textInput;
         private readonly List<Microsoft.UI.Xaml.UIElement> _native = [];
 
@@ -44,6 +45,7 @@ internal static class MauiNativeInput
             _textInput = textInput;
             _viewId = viewId;
             _dispatch = dispatch;
+            _windowFocus = new(view, ReleasePressed);
             _view.HandlerChanged += HandleHandlerChanged;
             _view.Unfocused += HandleUnfocused;
             foreach (var input in _textInput.Inputs)
@@ -68,6 +70,7 @@ internal static class MauiNativeInput
             {
                 element.KeyDown += HandleKeyDown;
                 element.KeyUp += HandleKeyUp;
+                element.LostFocus += HandleNativeLostFocus;
                 _native.Add(element);
             }
         }
@@ -81,8 +84,7 @@ internal static class MauiNativeInput
 
             Dispatch(
                 args,
-                args.KeyStatus.RepeatCount > 1 ? KeyEventType.repeat : KeyEventType.down,
-                false
+                args.KeyStatus.WasKeyDown ? KeyEventType.repeat : KeyEventType.down
             );
         }
 
@@ -93,7 +95,7 @@ internal static class MauiNativeInput
                 return;
             }
 
-            Dispatch(args, KeyEventType.up, false);
+            Dispatch(args, KeyEventType.up);
         }
 
         private bool NativeTextInputOwnsKey(
@@ -115,165 +117,47 @@ internal static class MauiNativeInput
 
         private void Dispatch(
             Microsoft.UI.Xaml.Input.KeyRoutedEventArgs args,
-            KeyEventType type,
-            bool synthesized
+            KeyEventType type
         )
         {
-            var key = KeyName(args.Key);
-            var physical = Physical(
-                args.Key,
-                args.KeyStatus.ScanCode,
-                args.KeyStatus.IsExtendedKey
-            );
-            var logical = MauiKeyMap.Logical(key, physical);
-            var character = key.Length == 1 ? key : null;
-            if (type is KeyEventType.down or KeyEventType.repeat)
+            if (_keyboard.Apply(MauiWindowsKeyboard.Translate(_viewId, args, type)) is { } key)
             {
-                _pressed[physical] = (logical, character);
+                _dispatch(key);
             }
-            else
-            {
-                _pressed.Remove(physical);
-            }
-
-            _dispatch(
-                new(
-                    _viewId,
-                    TimeSpan.FromTicks(DateTime.UtcNow.Ticks),
-                    type,
-                    physical,
-                    logical,
-                    synthesized,
-                    type == KeyEventType.up ? null : character
-                )
-            );
             args.Handled = true;
+        }
+
+        private void HandleNativeLostFocus(object sender, Microsoft.UI.Xaml.RoutedEventArgs args)
+        {
+            if (sender is Microsoft.UI.Xaml.UIElement owner && MauiWindowsKeyboard.OwnsFocus(owner)) return;
+            ReleasePressed();
         }
 
         private void HandleUnfocused(object? sender, FocusEventArgs args) => ReleasePressed();
 
         private void ReleasePressed()
         {
-            var timestamp = TimeSpan.FromTicks(DateTime.UtcNow.Ticks);
-            foreach (var (physical, value) in _pressed)
+            foreach (var key in _keyboard.ReleaseAll(_viewId, DorotiFrameClock.Now))
             {
-                _dispatch(
-                    new(_viewId, timestamp, KeyEventType.up, physical, value.Logical, true, null)
-                );
+                _dispatch(key);
             }
-
-            _pressed.Clear();
-        }
-
-        private static long Physical(Windows.System.VirtualKey key, uint scanCode, bool extended)
-        {
-            var value = (int)key;
-            if (value is >= 65 and <= 90)
-            {
-                return 0x70004 + value - 65;
-            }
-
-            if (value is >= 49 and <= 57)
-            {
-                return 0x7001e + value - 49;
-            }
-
-            if (value == 48)
-            {
-                return 0x70027;
-            }
-
-            if (value is >= 112 and <= 123)
-            {
-                return 0x7003a + value - 112;
-            }
-
-            if (value is >= 124 and <= 135)
-            {
-                return 0x70068 + value - 124;
-            }
-
-            return key switch
-            {
-                Windows.System.VirtualKey.Enter => 0x70028,
-                Windows.System.VirtualKey.Escape => 0x70029,
-                Windows.System.VirtualKey.Back => 0x7002a,
-                Windows.System.VirtualKey.Tab => 0x7002b,
-                Windows.System.VirtualKey.Space => 0x7002c,
-                Windows.System.VirtualKey.Home => 0x7004a,
-                Windows.System.VirtualKey.PageUp => 0x7004b,
-                Windows.System.VirtualKey.Delete => 0x7004c,
-                Windows.System.VirtualKey.End => 0x7004d,
-                Windows.System.VirtualKey.PageDown => 0x7004e,
-                Windows.System.VirtualKey.Right => 0x7004f,
-                Windows.System.VirtualKey.Left => 0x70050,
-                Windows.System.VirtualKey.Down => 0x70051,
-                Windows.System.VirtualKey.Up => 0x70052,
-                Windows.System.VirtualKey.Control => extended ? 0x700e4 : 0x700e0,
-                Windows.System.VirtualKey.Shift => scanCode == 0x36 ? 0x700e5 : 0x700e1,
-                Windows.System.VirtualKey.Menu => extended ? 0x700e6 : 0x700e2,
-                Windows.System.VirtualKey.LeftControl => 0x700e0,
-                Windows.System.VirtualKey.RightControl => 0x700e4,
-                Windows.System.VirtualKey.LeftShift => 0x700e1,
-                Windows.System.VirtualKey.RightShift => 0x700e5,
-                Windows.System.VirtualKey.LeftMenu => 0x700e2,
-                Windows.System.VirtualKey.RightMenu => 0x700e6,
-                Windows.System.VirtualKey.LeftWindows => 0x700e3,
-                Windows.System.VirtualKey.RightWindows => 0x700e7,
-                _ => 0x100000000 | (uint)value,
-            };
-        }
-
-        private static string KeyName(Windows.System.VirtualKey key)
-        {
-            var value = (int)key;
-            if (value is >= 65 and <= 90)
-            {
-                return ((char)value).ToString();
-            }
-
-            if (value is >= 48 and <= 57)
-            {
-                return ((char)value).ToString();
-            }
-
-            return key switch
-            {
-                Windows.System.VirtualKey.Enter => "Enter",
-                Windows.System.VirtualKey.Escape => "Escape",
-                Windows.System.VirtualKey.Back => "Backspace",
-                Windows.System.VirtualKey.Tab => "Tab",
-                Windows.System.VirtualKey.Space => " ",
-                Windows.System.VirtualKey.Delete => "Delete",
-                Windows.System.VirtualKey.Home => "Home",
-                Windows.System.VirtualKey.End => "End",
-                Windows.System.VirtualKey.PageUp => "PageUp",
-                Windows.System.VirtualKey.PageDown => "PageDown",
-                Windows.System.VirtualKey.Left => "ArrowLeft",
-                Windows.System.VirtualKey.Right => "ArrowRight",
-                Windows.System.VirtualKey.Up => "ArrowUp",
-                Windows.System.VirtualKey.Down => "ArrowDown",
-                Windows.System.VirtualKey.Control => "ControlLeft",
-                Windows.System.VirtualKey.Shift => "ShiftLeft",
-                Windows.System.VirtualKey.Menu => "AltLeft",
-                Windows.System.VirtualKey.LeftWindows => "MetaLeft",
-                Windows.System.VirtualKey.RightWindows => "MetaRight",
-                _ => key.ToString(),
-            };
         }
 
         private void DetachCurrent()
         {
+            ReleasePressed();
             foreach (var element in _native)
             {
                 element.KeyDown -= HandleKeyDown;
                 element.KeyUp -= HandleKeyUp;
+                element.LostFocus -= HandleNativeLostFocus;
             }
             _native.Clear();
         }
 
         public void Dispose()
         {
+            _windowFocus.Dispose();
             _view.HandlerChanged -= HandleHandlerChanged;
             _view.Unfocused -= HandleUnfocused;
             foreach (var input in _textInput.Inputs)
@@ -516,6 +400,18 @@ internal static class MauiNativeInput
         private readonly ulong _viewId;
         private readonly Action<KeyData> _dispatch;
         private readonly List<Android.Views.View> _native = [];
+        private readonly List<Android.Views.ViewTreeObserver> _observers = [];
+        private readonly MauiKeyboardState _keyboard = new();
+        private readonly WindowFocusListener _windowFocusListener;
+
+        private sealed class WindowFocusListener(Action release) : Java.Lang.Object,
+            Android.Views.ViewTreeObserver.IOnWindowFocusChangeListener
+        {
+            public void OnWindowFocusChanged(bool hasFocus)
+            {
+                if (!hasFocus) release();
+            }
+        }
 
         internal NativeKeyboardSubscription(
             SKGLView view,
@@ -528,6 +424,7 @@ internal static class MauiNativeInput
             _textInput = textInput;
             _viewId = viewId;
             _dispatch = dispatch;
+            _windowFocusListener = new(ReleasePressed);
             _view.HandlerChanged += HandleHandlerChanged;
             foreach (var input in _textInput.Inputs)
             {
@@ -556,6 +453,12 @@ internal static class MauiNativeInput
                 native.Focusable = true;
                 native.FocusableInTouchMode = true;
                 native.KeyPress += HandleKeyPress;
+                native.FocusChange += HandleFocusChange;
+                if (native.ViewTreeObserver is { IsAlive: true } observer && !_observers.Contains(observer))
+                {
+                    observer.AddOnWindowFocusChangeListener(_windowFocusListener);
+                    _observers.Add(observer);
+                }
                 _native.Add(native);
             }
         }
@@ -577,35 +480,29 @@ internal static class MauiNativeInput
                 args.Handled = false;
                 return;
             }
+            if (nativeEvent.Action is not (Android.Views.KeyEventActions.Down or Android.Views.KeyEventActions.Up))
+            {
+                args.Handled = false;
+                return;
+            }
             var type = nativeEvent.Action switch
             {
                 Android.Views.KeyEventActions.Up => KeyEventType.up,
                 _ when nativeEvent.RepeatCount > 0 => KeyEventType.repeat,
                 _ => KeyEventType.down,
             };
-            var physical = Physical(args.KeyCode);
-            var unicode = nativeEvent.GetUnicodeChar(nativeEvent.MetaState);
-            var character =
-                unicode > 0 && !char.IsControl((char)unicode)
-                    ? char.ConvertFromUtf32(unicode)
-                    : null;
+            var physical = MauiKeyMap.AndroidPhysical((int)args.KeyCode, nativeEvent.ScanCode);
+            var character = MauiKeyMap.AndroidCharacter(nativeEvent.GetUnicodeChar(nativeEvent.MetaState));
             var name = character ?? KeyName(args.KeyCode);
-            _dispatch(
-                new(
-                    _viewId,
-                    TimeSpan.FromTicks(DateTime.UtcNow.Ticks),
-                    type,
-                    physical,
-                    MauiKeyMap.Logical(name, physical),
-                    false,
-                    type == KeyEventType.up ? null : character
-                )
-            );
+            // Logical fallback follows the Android keycode, not the physical position.
+            var logical = MauiKeyMap.Logical(name, MauiKeyMap.AndroidPhysical((int)args.KeyCode));
+            if (_keyboard.Apply(new(_viewId, DorotiFrameClock.Now, type, physical,
+                logical, false, type == KeyEventType.up ? null : character)) is { } key)
+            {
+                _dispatch(key);
+            }
             args.Handled = true;
         }
-
-        private static long Physical(Android.Views.Keycode key) =>
-            MauiKeyMap.AndroidPhysical((int)key);
 
         private static string KeyName(Android.Views.Keycode key) =>
             key switch
@@ -627,11 +524,31 @@ internal static class MauiNativeInput
                 _ => key.ToString(),
             };
 
+        private void HandleFocusChange(object? sender, Android.Views.View.FocusChangeEventArgs args)
+        {
+            if (!args.HasFocus) ReleasePressed();
+        }
+
+        private void ReleasePressed()
+        {
+            foreach (var key in _keyboard.ReleaseAll(_viewId, DorotiFrameClock.Now)) _dispatch(key);
+        }
+
         private void DetachCurrent()
         {
+            ReleasePressed();
+            // Before attachment Android may merge a floating ViewTreeObserver
+            // into the root. Remove the same listener from the current root too.
+            foreach (var observer in _observers.Concat(_native.Select(view => view.ViewTreeObserver)
+                .OfType<Android.Views.ViewTreeObserver>()).Distinct())
+            {
+                if (observer.IsAlive) observer.RemoveOnWindowFocusChangeListener(_windowFocusListener);
+            }
+            _observers.Clear();
             foreach (var native in _native)
             {
                 native.KeyPress -= HandleKeyPress;
+                native.FocusChange -= HandleFocusChange;
             }
 
             _native.Clear();
@@ -646,6 +563,7 @@ internal static class MauiNativeInput
             }
 
             DetachCurrent();
+            _windowFocusListener.Dispose();
         }
     }
 

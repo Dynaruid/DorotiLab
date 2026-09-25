@@ -182,6 +182,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
     internal DorotiWindowsDxgiSurface()
     {
         _view = new(this);
+        _keyboardWindowFocus = new(_view, ReleasePressedKeys);
         _compositionDispatch = new(action =>
         {
             if (!_view.Dispatcher.Dispatch(action))
@@ -270,6 +271,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
 
     internal void Disconnect(DorotiWindowsDxgiHost host)
     {
+        ReleasePressedKeys();
         _compositionPresenter?.PrepareForUiTeardown(host);
         var panel = host.Presenter;
         var inputOwner = host.InputOwner;
@@ -1688,6 +1690,14 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
         args.Handled = true;
     }
 
+    private readonly MauiKeyboardState _keyboard = new();
+    private readonly MauiWindowsKeyboardFocus _keyboardWindowFocus;
+
+    private void ReleasePressedKeys()
+    {
+        foreach (var key in _keyboard.ReleaseAll(1, DorotiFrameClock.Now)) Key?.Invoke(key);
+    }
+
     private void HandleGotFocus(object sender, RoutedEventArgs args)
     {
         _ = sender;
@@ -1697,8 +1707,10 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
 
     private void HandleLostFocus(object sender, RoutedEventArgs args)
     {
+        if (_inputOwner is { } inputOwner && MauiWindowsKeyboard.OwnsFocus(inputOwner)) return;
         _ = sender;
         _ = args;
+        ReleasePressedKeys();
         FocusChanged?.Invoke(false);
     }
 
@@ -1710,10 +1722,10 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
 
     private void RaiseKey(KeyRoutedEventArgs args, KeyEventType type)
     {
-        var value = (long)args.Key;
-        Key?.Invoke(
-            new(1, DorotiFrameClock.Now, type, 0x100000000L | value, 0x100000000L | value, false)
-        );
+        if (_keyboard.Apply(MauiWindowsKeyboard.Translate(1, args, type)) is { } key)
+        {
+            Key?.Invoke(key);
+        }
         args.Handled = true;
     }
 
@@ -1784,6 +1796,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
 
             _disposed = true;
         }
+        _keyboardWindowFocus.Dispose();
         _view.SizeChanged -= HandleMauiSizeChanged;
         _trackpad?.Dispose();
         _nativePointers?.Dispose();

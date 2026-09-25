@@ -18,6 +18,7 @@ spec = importlib.util.spec_from_file_location('gate', Path(__file__).parents[1] 
 g = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(g)
 g.u.SendMessageTimeoutW.argtypes = [w.HWND, w.UINT, w.WPARAM, w.LPARAM, w.UINT, w.UINT, c.POINTER(c.c_size_t)]
+g.u.GetClientRect.argtypes = [w.HWND, c.POINTER(w.RECT)]
 
 def send(hwnd, msg, wp=0, lp=0):
     result = c.c_size_t()
@@ -135,9 +136,12 @@ def main():
             print('offscreen scroll and return passed', flush=True)
             click(hwnd, 72, 590, scale)
             g.wait_for(lambda: (v if (v := g.read(OUT / 'frame.json')) and not v['native'] else None), process, 8)
-            # Six current destinations: Platform views is index four; the last
-            # destination now opens the independently added WebView sample.
-            click(hwnd, 540, 590, scale)
+            # Seven current destinations (including Texture). Platform views
+            # is index four. Components resets the horizontal scroll to zero.
+            client = w.RECT()
+            assert g.u.GetClientRect(hwnd, c.byref(client))
+            bar_width = max((client.right - client.left) / scale, 7 * 96)
+            click(hwnd, bar_width * 4.5 / 7, 590, scale)
             frame = g.wait_for(lambda: (v if (v := g.read(OUT / 'frame.json')) and len(v['native']) == 2 else None), process, 8)
             time.sleep(.5)
             click(hwnd, 110, frame['native'][0]['transform']['Dy'] + 40, scale)

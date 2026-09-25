@@ -2347,7 +2347,9 @@ class ProductHost final {
         const auto scan = static_cast<UINT>((lparam >> 16) & 0xFF);
         const auto count = ToUnicodeEx(static_cast<UINT>(wparam), scan,
                                        keyboard_state, buffer,
-                                       static_cast<int>(std::size(buffer)), 0,
+                                       // Character inspection must not consume or
+                                       // modify TranslateMessage's dead-key state.
+                                       static_cast<int>(std::size(buffer)), 4,
                                        GetKeyboardLayout(0));
         if (count > 0) character.assign(buffer, buffer + count);
       }
