@@ -15,6 +15,9 @@ spec.loader.exec_module(g)
 g.u.SetCursorPos.argtypes = [c.c_int, c.c_int]
 g.u.GetForegroundWindow.restype = g.w.HWND
 g.u.GetCursorPos.argtypes = [c.POINTER(g.w.POINT)]
+g.u.ClientToScreen.argtypes = [g.w.HWND, c.POINTER(g.w.POINT)]
+dwm = c.WinDLL('dwmapi')
+dwm.DwmGetWindowAttribute.argtypes = [g.w.HWND, g.w.DWORD, c.c_void_p, g.w.DWORD]
 g.u.mouse_event.argtypes = [g.w.DWORD, g.w.DWORD, g.w.DWORD, g.w.DWORD, c.c_size_t]
 background = tk.Tk()
 background.overrideredirect(True)
@@ -67,15 +70,33 @@ try:
     on_blue = capture('on-blue', '#2020ff')
     # App bar blank area, below the native title bar and clear of controls.
     region = (round(265*scale), round(40*scale), round(305*scale), round(80*scale))
-    def response(a, b):
+    client_origin = g.w.POINT()
+    assert g.u.ClientToScreen(hwnd, c.byref(client_origin))
+    caption_height = client_origin.y - bounds.top
+    assert caption_height > 20 * scale, 'Native caption is missing'
+    caption_region = (round(265*scale), round(caption_height*.25),
+                      round(305*scale), round(caption_height*.7))
+    def response(a, b, region=region):
         return ImageStat.Stat(ImageChops.difference(a.crop(region), b.crop(region))).mean[:3]
     off = response(off_red, off_blue)
     on = response(on_red, on_blue)
+    # The sample toggle changes client opacity; the window backdrop remains
+    # Acrylic in both states, including the standard non-client caption.
+    caption_off = response(off_red, off_blue, caption_region)
+    caption_on = response(on_red, on_blue, caption_region)
+    backdrop_type = g.w.DWORD()
+    assert dwm.DwmGetWindowAttribute(hwnd, 38, c.byref(backdrop_type), c.sizeof(backdrop_type)) == 0
     result = dict(offBackgroundResponse=off, onBackgroundResponse=on,
+                  captionOffBackgroundResponse=caption_off,
+                  captionOnBackgroundResponse=caption_on,
+                  captionRegion=caption_region, systemBackdropType=backdrop_type.value,
                   status='failed', physicalAppearance='notVerified', output=str(g.OUT))
     (g.OUT / 'acrylic-result.json').write_text(json.dumps(result, indent=2), encoding='utf-8')
     assert max(off) < 3, 'Opaque control responds to background'
     assert max(on) > max(off) + 5, 'Acrylic did not reveal the desktop background'
+    assert backdrop_type.value == 3, 'Native caption did not select Desktop Acrylic'
+    assert max(caption_off) > 5 and max(caption_on) > 5, \
+        'Native caption did not reveal the desktop background'
     assert g.evidence()['nativePointerEvents'] > 0, 'No native pointer ingress'
     g.u.PostMessageW(hwnd, 0x10, 0, 0)
     assert process.wait(timeout=15) == 0

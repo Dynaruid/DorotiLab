@@ -47,7 +47,7 @@ internal sealed class WindowsWindowBackdrop : IDisposable
     private void ApplyCaption()
     {
         if (!_disposed && _nativeCaption)
-            WindowsNativeCaption.ApplyTheme(_window, _options);
+            WindowsNativeCaption.ApplyAppearance(_window, _options);
     }
 
     public void Dispose()
@@ -59,6 +59,8 @@ internal sealed class WindowsWindowBackdrop : IDisposable
         {
             _window.SystemBackdrop = _previous;
         }
+        if (_nativeCaption)
+            WindowsNativeCaption.RestoreBackdrop(_window);
     }
 
     private sealed class AcrylicMaterial(WindowBackdropOptions options) : SystemBackdrop

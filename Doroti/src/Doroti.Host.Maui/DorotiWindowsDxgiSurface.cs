@@ -1898,9 +1898,9 @@ internal sealed class WindowsTopLevelResizeSource : IDisposable
             return null;
         }
 
-        platformWindow.ExtendsContentIntoTitleBar = false;
         if (!WindowsNativeCaption.IsEnabled(platformWindow))
         {
+            platformWindow.ExtendsContentIntoTitleBar = false;
             var titleBarForeground = platformWindow.Content
                 is FrameworkElement { ActualTheme: ElementTheme.Light }
                 ? Microsoft.UI.Colors.Black

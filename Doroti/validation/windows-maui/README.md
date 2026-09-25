@@ -1,5 +1,31 @@
 # Windows MAUI resize and Acrylic regression
 
+## 2026-09-25 native caption Acrylic correction
+
+The dedicated MAUI window now gives its native caption Desktop Acrylic via
+[DWMWA_SYSTEMBACKDROP_TYPE / DWMSBT_TRANSIENTWINDOW](https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/ne-dwmapi-dwm_systembackdrop_type)
+on Windows 11 build 22621 or newer. Earlier Windows versions retain the standard
+caption. Client tint/kind options remain owned by `DesktopAcrylicController`;
+the native caption uses the Windows-managed material variant.
+
+Reset the title bar both before MAUI chooses its title-row layout and when the
+window backdrop attaches. The early reset alone left a custom opaque caption:
+DWM accepted Acrylic and diagnostic caption colors without changing its pixels.
+Avoid subsequently setting `ExtendsContentIntoTitleBar` on the native path.
+Theme changes reapply the appearance; detachment restores the prior DWM backdrop.
+
+`verify-acrylic.py` now checks a blank native caption region as well as the
+client app bar. In the local 200% DPI dark-mode capture, caption red/blue RGB
+response changed from `(0, 0, 0)` to `(193, 30, 233)`. Client off/on response
+remained `(0, 0, 0)` / `(84, 14, 102)`. The sample toggle changes client opacity;
+the configured window material, including its caption, stays Acrylic in both
+states. Caption and client checks, native pointer ingress and clean exit passed.
+OS right/top-left drags and maximize/restore passed. Local removable captures:
+`20260925-092740` (before), `20260925-093552` (after), `20260925-093616` (drag).
+Physical appearance and other DPI/theme/device combinations remain `notVerified`.
+This corrects the caption appearance only; the historical resize continuity
+status below remains **PARTIAL**.
+
 **Current status: PARTIAL.** Native Windows caption is now enabled at window
 construction, as explicitly selected by the user. Final capture found no black
 resize strips or caption geometry mismatch; content/outer-edge timing still
