@@ -82,8 +82,6 @@ endif()
 doroti_generate_wayland_client(ext-background-effect-v1
   "${CMAKE_CURRENT_SOURCE_DIR}/protocols/ext-background-effect-v1.xml")
 target_sources(doroti_qt_host PRIVATE src/doroti_qt_desktop.cpp)
-doroti_generate_wayland_client(kde-blur
-  "${CMAKE_CURRENT_SOURCE_DIR}/protocols/kde-blur.xml")
 target_include_directories(doroti_qt_host PUBLIC include PRIVATE "${DOROTI_WAYLAND_GENERATED_DIR}")
 target_compile_definitions(doroti_qt_host PRIVATE DOROTI_QT_HOST_BUILD)
 if(DOROTI_QT_GRAPHITE)
@@ -105,7 +103,22 @@ option(DOROTI_GSTREAMER_TEXTURES "Build the GPU DMA-BUF camera/video adapter" OF
 if(DOROTI_GSTREAMER_TEXTURES)
   pkg_check_modules(GStreamerTexture REQUIRED IMPORTED_TARGET
     gstreamer-1.0>=1.24 gstreamer-app-1.0>=1.24 gstreamer-video-1.0>=1.24 gstreamer-allocators-1.0>=1.24)
+  foreach(library IN LISTS GStreamerTexture_LINK_LIBRARIES)
+    if(NOT library MATCHES "\\.so(\\.[0-9]+)*$")
+      message(FATAL_ERROR "Doroti license policy: GStreamer requires resolved shared libraries, got ${library}")
+    endif()
+  endforeach()
   add_library(doroti_texture_gstreamer SHARED src/doroti_texture_gstreamer.cpp)
+  target_include_directories(doroti_texture_gstreamer PRIVATE include)
   target_link_libraries(doroti_texture_gstreamer PRIVATE PkgConfig::GStreamerTexture)
   install(TARGETS doroti_texture_gstreamer LIBRARY DESTINATION .)
 endif()
+
+# Check the linked target graph, including Qt's transitive CMake dependencies.
+include(cmake/DorotiLicensePolicy.cmake)
+doroti_check_qt_license_policy(doroti_qt_host)
+if(TARGET doroti_webview_qt)
+  doroti_check_qt_license_policy(doroti_webview_qt)
+endif()
+
+install(DIRECTORY licenses/ DESTINATION licenses/doroti-linux)

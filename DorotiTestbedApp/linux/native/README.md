@@ -8,7 +8,7 @@ Feature bit 13 requires `prepare_present` in the appended 128-byte host API tabl
 
 Graphite clears its persistent GPU backing to transparent before a complete frame; a GPU copy reaches the acquired swapchain image. Resizing passes the current swapchain as `oldSwapchain` when creating its replacement before destroying the old handle. Vulkan 1.2 and Vulkan development headers are required. Two bounded frame slots use nonblocking acquisition and fence polling. A Qt owner-thread timer polls pending GPU work every 8 ms, including after the last frame and while hidden, and stops once complete. Close blocks new rendering and hides the window before teardown. Native window teardown drains and destroys the managed swapchain before Qt releases its VkSurfaceKHR. For an explicit legacy comparison, configure CMake with `-DDOROTI_QT_GRAPHITE=OFF` and also set `DOROTI_LINUX_GRAPHITE=0` for the managed process. This builds the retained QOpenGLWindow/FBO implementation; there is no automatic fallback.
 
-`WindowBackdropMode.acrylic` requests compositor blur for the complete client surface. Wayland selects `ext-background-effect-v1` first, falls back to the legacy KDE blur protocol, and finally applies the configured transparent or solid policy when neither protocol is advertised. The framework background colors remain responsible for the acrylic tint and alpha.
+`WindowBackdropMode.acrylic` requests compositor blur for the complete client surface. Wayland uses the MIT-licensed `ext-background-effect-v1` protocol and applies the configured transparent or solid policy when that protocol or its blur capability is unavailable. The LGPL-licensed legacy KDE blur protocol is not included, so older KWin compositors may use the fallback. The framework background colors remain responsible for the acrylic tint and alpha.
 
 Qt is a system dependency for this target. Build and runtime require a Vulkan-enabled Qt 6.5 or newer with Core, Gui, Widgets, OpenGL (for the retained comparison build), the active platform plugin (`wayland` or `xcb`), Wayland client development files, `pkg-config`, and `wayland-scanner`. The shim has no embedded build-path RUNPATH; the system loader and Qt plugin search rules select those libraries. Accessibility, physical Linux IME, and X11 evidence remain separate acceptance gates.
 
@@ -91,3 +91,33 @@ defensive bounds, not accepted frame-time budgets. No effect host/sample texture
 remain at zero native effects. Rapid XWayland resize still has an observed Qt WSI
 extent race (`VUID-VkSwapchainCreateInfoKHR-pNext-07781`); physical GPU, IME/Orca,
 full device-loss, performance and deployment approvals remain separate.
+
+## License policy and optional GStreamer
+
+Qt runtime modules must be on the reviewed LGPL-capable list in
+`cmake/DorotiLicensePolicy.cmake` and dynamically linked. CMake checks linked Qt
+targets and their transitive target dependencies. Do not replace target references
+with raw linker flags or inject unreviewed QML/platform plugins. Build-time tools
+such as moc, rcc and qsb are distinct from linked runtime modules.
+
+GStreamer textures remain OFF by default. When enabling
+`-DDOROTI_GSTREAMER_TEXTURES=ON` (`DorotiGStreamerTextures=true` in MSBuild), set
+`DOROTI_GSTREAMER_PLUGIN_DIR` to a dedicated directory containing only reviewed
+plugin `.so` files (copies or symlinks). `libgstcoreelements.so` and `libgstapp.so`
+are required. The optional plugin names are `video4linux2`, `videoconvertscale`,
+`videotestsrc`, `opengl`, `vulkan`, and `va`. No subdirectories or other entries
+are accepted. This supports explicit raw camera/GPU pipelines; automatic media
+playback and libav/x264/x265 plugins are intentionally unavailable.
+
+The adapter must initialize GStreamer first and owns its process-wide plugin
+search configuration. Keep the directory immutable while running and do not
+load additional plugins through other GStreamer code. Initialization checks file
+names before discovery, restricts the loader whitelist and paths, and checks
+registry names and LGPL metadata before accepting a pipeline. This is an
+accidental-dependency guard, not a sandbox or proof of the licenses of transitive
+codec/driver libraries. Review the actual binaries and their dependency closure
+before copying plugins into this directory or redistributing them.
+
+`licenses/` is copied into build/publish output by the runner and installed by
+CMake. See `licenses/README.md` for notices, source availability and distribution
+obligations. System Qt/GStreamer binaries are not bundled by this build.

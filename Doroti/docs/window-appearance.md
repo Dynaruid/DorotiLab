@@ -31,7 +31,7 @@ On Qt, caption drag/edge resize use `QWindow::startSystemMove` and `startSystemR
 Minimize, maximize/restore, close, double-click maximize and Alt+F4 are handled by the
 native host. Caption buttons are exposed through Qt accessibility. The caption height is
 included in `viewPadding.top` and removed in fullscreen; applications should respect safe areas.
-Wayland blur still depends on `ext-background-effect-v1` or KDE blur support; configured
+Wayland blur still depends on `ext-background-effect-v1` blur support; configured
 backdrop fallback applies when neither is available. A desktop theme may customize native
 decorations in `solid` mode. OS material colors are not guaranteed to match across platforms.
 

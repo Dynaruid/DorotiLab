@@ -45,4 +45,18 @@
     <Delete Files="$(PublishDir)libdoroti_webview_qt.so;$(PublishDir)doroti-webview-runtime.json" Condition="'$(DorotiQtWebEngine)' != 'true' and '$(PublishDir)' != ''" />
     <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_qt_host.so" DestinationFolder="$(PublishDir)" Condition="'$(PublishDir)' != ''" />
   </Target>
+  <Target Name="CopyDorotiQtLicenseNotices" AfterTargets="Build;Publish"
+          Condition="'$(DorotiHostKind)' == 'Qt'">
+    <ItemGroup>
+      <_DorotiQtRequiredLicense Include="README.md;LGPL-3.txt;GPL-3.txt;LGPL-2.1.txt;Wayland-background-effect-MIT.txt" />
+      <_DorotiQtLicenseNotice Include="$(MSBuildProjectDirectory)/native/licenses/**/*" />
+    </ItemGroup>
+    <Error Condition="!Exists('$(MSBuildProjectDirectory)/native/licenses/%(_DorotiQtRequiredLicense.Identity)')"
+           Text="Doroti Qt license notice %(_DorotiQtRequiredLicense.Identity) is missing. Update native/licenses from the app template before distributing this host." />
+    <Copy SourceFiles="@(_DorotiQtLicenseNotice)"
+          DestinationFiles="@(_DorotiQtLicenseNotice->'$(TargetDir)licenses/doroti-linux/%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(_DorotiQtLicenseNotice)"
+          DestinationFiles="@(_DorotiQtLicenseNotice->'$(PublishDir)licenses/doroti-linux/%(RecursiveDir)%(Filename)%(Extension)')"
+          Condition="'$(PublishDir)' != ''" />
+  </Target>
 </Project>

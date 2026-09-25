@@ -71,7 +71,6 @@
 #include <wayland-client.h>
 
 #include "ext-background-effect-v1-client-protocol.h"
-#include "kde-blur-client-protocol.h"
 
 // Qt deliberately keeps the per-window native resource accessor in its QPA
 // compatibility surface. Keep the small ABI prefix used here isolated; the
@@ -1442,12 +1441,6 @@ class DorotiSurface final : public DorotiWindowBase {
       if (surface->ext_manager_ != nullptr)
         ext_background_effect_manager_v1_add_listener(
             surface->ext_manager_, &kExtManagerListener, surface);
-    } else if (std::strcmp(interface, org_kde_kwin_blur_manager_interface.name) == 0) {
-      surface->kde_manager_name_ = name;
-      surface->kde_manager_ = static_cast<org_kde_kwin_blur_manager*>(
-          wl_registry_bind(registry, name, &org_kde_kwin_blur_manager_interface,
-                           std::min(version, 1u)));
-      surface->ApplyBackdrop();
     }
   }
 
@@ -1460,14 +1453,6 @@ class DorotiSurface final : public DorotiWindowBase {
       surface->ext_manager_ = nullptr;
       surface->ext_manager_name_ = 0;
       surface->ext_blur_available_ = false;
-      surface->ApplyBackdrop();
-    }
-    if (name == surface->kde_manager_name_) {
-      surface->DestroyKdeBackdrop();
-      if (surface->kde_manager_ != nullptr)
-        wl_proxy_destroy(reinterpret_cast<wl_proxy*>(surface->kde_manager_));
-      surface->kde_manager_ = nullptr;
-      surface->kde_manager_name_ = 0;
       surface->ApplyBackdrop();
     }
   }
@@ -1483,7 +1468,6 @@ class DorotiSurface final : public DorotiWindowBase {
   void ApplyBackdrop() {
     if (backdrop_mode_ != DOROTI_QT_BACKDROP_ACRYLIC || wayland_surface_ == nullptr) return;
     if (ext_manager_ != nullptr && ext_blur_available_) {
-      DestroyKdeBackdrop();
       if (ext_effect_ == nullptr)
         ext_effect_ = ext_background_effect_manager_v1_get_background_effect(
             ext_manager_, wayland_surface_);
@@ -1491,16 +1475,7 @@ class DorotiSurface final : public DorotiWindowBase {
       ReportBackdrop("acrylic", "ext-background-effect-v1", true);
       return;
     }
-    if (kde_manager_ != nullptr) {
-      DestroyExtBackdrop();
-      if (kde_effect_ == nullptr)
-        kde_effect_ = org_kde_kwin_blur_manager_create(kde_manager_, wayland_surface_);
-      ApplyFullSurfaceBackdropRegion();
-      ReportBackdrop("acrylic", "kde-blur-v1", true);
-      return;
-    }
     DestroyExtBackdrop();
-    DestroyKdeBackdrop();
     ApplyBackdropFallback();
   }
 
@@ -1524,17 +1499,13 @@ class DorotiSurface final : public DorotiWindowBase {
 
   void ApplyFullSurfaceBackdropRegion() {
     if (wayland_compositor_ == nullptr || wayland_surface_ == nullptr ||
-        (ext_effect_ == nullptr && kde_effect_ == nullptr)) return;
+        ext_effect_ == nullptr) return;
     auto* region = wl_compositor_create_region(wayland_compositor_);
     if (region == nullptr) return;
     wl_region_add(region, 0, 0, kFullSurfaceBackdropExtent,
                   kFullSurfaceBackdropExtent);
     if (ext_effect_ != nullptr)
       ext_background_effect_surface_v1_set_blur_region(ext_effect_, region);
-    if (kde_effect_ != nullptr) {
-      org_kde_kwin_blur_set_region(kde_effect_, region);
-      org_kde_kwin_blur_commit(kde_effect_);
-    }
     wl_region_destroy(region);
     update();
   }
@@ -1545,26 +1516,13 @@ class DorotiSurface final : public DorotiWindowBase {
     ext_effect_ = nullptr;
   }
 
-  void DestroyKdeBackdrop() {
-    if (kde_effect_ == nullptr) return;
-    // The platform window may already have destroyed its wl_surface during
-    // close(). Releasing the blur object is sufficient and never references a
-    // potentially stale surface proxy.
-    org_kde_kwin_blur_release(kde_effect_);
-    kde_effect_ = nullptr;
-  }
-
   void ReleaseBackdrop() {
     if (backdrop_event_timer_ != nullptr) backdrop_event_timer_->stop();
     DestroyExtBackdrop();
-    DestroyKdeBackdrop();
     if (ext_manager_ != nullptr) ext_background_effect_manager_v1_destroy(ext_manager_);
-    if (kde_manager_ != nullptr)
-      wl_proxy_destroy(reinterpret_cast<wl_proxy*>(kde_manager_));
     if (wayland_registry_ != nullptr) wl_registry_destroy(wayland_registry_);
     if (backdrop_event_queue_ != nullptr) wl_event_queue_destroy(backdrop_event_queue_);
     ext_manager_ = nullptr;
-    kde_manager_ = nullptr;
     wayland_registry_ = nullptr;
     backdrop_event_queue_ = nullptr;
     wayland_surface_ = nullptr;
@@ -1620,10 +1578,7 @@ class DorotiSurface final : public DorotiWindowBase {
   wl_event_queue* backdrop_event_queue_ = nullptr;
   ext_background_effect_manager_v1* ext_manager_ = nullptr;
   ext_background_effect_surface_v1* ext_effect_ = nullptr;
-  org_kde_kwin_blur_manager* kde_manager_ = nullptr;
-  org_kde_kwin_blur* kde_effect_ = nullptr;
   std::uint32_t ext_manager_name_ = 0;
-  std::uint32_t kde_manager_name_ = 0;
   bool ext_blur_available_ = false;
   QByteArray backdrop_effective_;
   QByteArray backdrop_provider_;

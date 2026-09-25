@@ -3,7 +3,7 @@
 #include <gst/app/gstappsink.h>
 #include <gst/allocators/gstdmabuf.h>
 #include <gst/video/video.h>
-#include <gst/video/video-info-dma-drm.h>
+#include <gst/video/video-info-dma.h>
 #include <cstdint>
 #include <unistd.h>
 #include <cstdio>
@@ -11,6 +11,7 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include "doroti_gstreamer_policy.h"
 #define EXPORT extern "C" __attribute__((visibility("default")))
 namespace {
 struct Camera {
@@ -28,10 +29,7 @@ static_assert(sizeof(DorotiGstFrame)==56);
 EXPORT int doroti_texture_gst_open(const char* description,void** result,char* error,uint32_t size) noexcept {
   try {
     if(!description || !result)throw std::invalid_argument("Missing pipeline/result"); *result=nullptr;
-    GError* init_error=nullptr;
-    if(!gst_init_check(nullptr,nullptr,&init_error)) {
-      std::string message=init_error?init_error->message:"gst_init failed"; if(init_error)g_error_free(init_error);throw std::runtime_error(message);
-    }
+    doroti::InitializeGStreamer();
     auto camera=std::make_unique<Camera>();
     GError* parse_error=nullptr; camera->pipeline=gst_parse_launch(description,&parse_error);
     if(parse_error) { std::string message=parse_error->message;g_error_free(parse_error);throw std::runtime_error(message); }

@@ -56,11 +56,20 @@ Doroti is independently implemented. Reference checkouts are not runtime depende
 - Use: vendored `ext-background-effect-v1.xml` client protocol description for compositor blur negotiation
 - License: MIT; the copyright and permission notice are preserved in each vendored XML file
 
-## KDE Plasma Wayland blur protocol
+## Linux Qt host
 
-- Upstream: https://invent.kde.org/libraries/plasma-wayland-protocols
-- Use: vendored legacy `blur.xml` client protocol description for older KWin compositors
-- License: LGPL-2.1-or-later; SPDX notices are preserved in each vendored XML file
+- Upstream: https://www.qt.io/ and https://code.qt.io/
+- Use: dynamically linked system Qt 6 runtime modules for Linux windows, Quick controls and optional WebEngine/WebChannel.
+- Selected license: LGPL-3.0 for the LGPL-capable Qt modules; GPL-only runtime modules and static Qt linkage are rejected by the native CMake policy.
+- Qt WebEngine also includes Chromium and third-party code under their respective licenses: https://doc.qt.io/qt-6/qtwebengine-licensing.html
+- Notices and license texts for app distribution: `linux/native/licenses/` in the app and template. The runner copies these into build/publish output. Qt/GStreamer binaries and vendor-specific third-party notices must be handled separately if bundled.
+
+## Optional Linux GStreamer adapter
+
+- Upstream: https://gstreamer.freedesktop.org/
+- Use: optional dynamically linked GStreamer 1.24+ core/app/video/allocators libraries and restricted raw camera/GPU plugins. Disabled by default.
+- Selected license: LGPL-2.1-or-later. Actual plugin and transitive dependency builds require separate review; a plugin's LGPL metadata alone does not certify its linked dependencies.
+- The adapter accepts only its limited plugin list from a dedicated directory. It does not enable libav/x264/x265 or automatic playback plugins.
 
 Distribution packaging must reproduce the applicable notice and license text for every promoted third-party source.
 

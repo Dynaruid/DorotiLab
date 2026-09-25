@@ -276,6 +276,14 @@ Build the optional camera adapter with `-p:DorotiGStreamerTextures=true`, or CMa
 packages are required; the runner copies `libdoroti_texture_gstreamer.so` to the
 build/publish directory. Other applications keep this dependency disabled.
 
+Set `DOROTI_GSTREAMER_PLUGIN_DIR` to a dedicated directory of reviewed plugins
+before opening a camera. The adapter must initialize GStreamer first, restricts
+its process-wide search paths, and checks plugin names/licenses. See the native
+[plugin policy](../../DorotiTestbedApp/linux/native/README.md#license-policy-and-optional-gstreamer)
+for the allowlist. libav/x264/x265 and automatic playback are not enabled. Review
+the actual plugin binaries and their transitive dependencies before distribution;
+the runtime checks do not certify a vendor's build.
+
 The caller-supplied local pipeline must end with `appsink name=doroti_texture`,
 negotiating `video/x-raw(memory:DMABuf),format=DMA_DRM`. Only single-memory,
 single-plane DRM `AB24` (RGBA) or `AR24` (BGRA), with `GstVideoMeta`, is accepted.
@@ -283,8 +291,9 @@ A camera's NV12/YUY2 output needs a GPU conversion/export stage first (for examp
 a supported GStreamer GL or VA driver pipeline). There is deliberately no universal
 pipeline string: GPU DMA-BUF export capabilities/modifiers vary by camera and driver.
 The adapter preserves each `GstSample` pool lease, bounds appsink queuing to two
-samples and rejects CPU memory. **Linux platform build/run and actual camera/GPU
-negotiation were not performed.**
+samples and rejects CPU memory. The adapter build and plugin-policy initialization
+paths are exercised by `validation/license-policy/verify.py --build-gstreamer`.
+**Actual camera/GPU DMA-BUF negotiation remains unverified.**
 
 ### Remaining qualification
 
