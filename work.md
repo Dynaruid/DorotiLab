@@ -357,7 +357,6 @@ Windows는 드래그, 8방향 resize, 더블클릭 최대화/복원, 우클릭 �
 - [x] 초기 size/min/max/title/background/taskbar/topmost, 위치·표시·포커스·최대화·복원·닫기 API와 이벤트를 구현한다.
 - [x] 첫 frame readiness와 미리 생성해야 하는 caption 정책을 분리한다. hook을 await하느라 framework bootstrap이 막히지 않게 한다.
 - [x] 기본 창 생성·종료도 manager를 경유시킨다. window.Closed에서 앱 전체를 즉시 Exit하는 경로와 window/view ID 고정값을 조사해 앱 종료 정책·식별자 할당 경계로 옮긴다.
-- [ ] Sudoku의 `450×800`, 최소 `350×500` 예제를 실제 창 측정과 표시 시작 캡처로 검증한다.
 - 완료 기준: 기존 옵션 누락 없이 단순 예제가 동작하고, 시작 시 기본 외형 노출·무한 대기·중복 caption이 없음.
 
 ### W3 — Windows MAUI 아크릴·상단바 조합과 실행 중 변경
@@ -427,7 +426,6 @@ Windows는 드래그, 8방향 resize, 더블클릭 최대화/복원, 우클릭 �
 | 계약 | 옵션 충돌·불법 조합, 2개 창 격리, 준비/취소/닫기 경쟁, snapshot 대체, callback 예외 | 의미 있는 fake-host 계약 검사, 각 요청 정확히 한 번 종결 |
 | 다중 창 준비 | manager lifetime, WindowId 미재사용, 생성 실패 rollback, 기본 창/추가 창의 동일 경로, 개별/앱 종료 구분 | W1 fake-host 두 창 검증. W6 전까지 실제 네이티브 다중 창은 미구현으로 기록 |
 | 최초 표시 | 옵션 적용 전 창 노출, 첫 geometry, 최초 frame, hook 실패 | Windows 실제 표시 캡처와 요청/적용 상태 기록 |
-| Sudoku 동등 사용 | 초기 client 450×800, 최소 350×500, normal caption, 작업 표시줄, topmost 해제, show/focus | DPI를 반영한 실제 bounds/state와 OS 동작 |
 | 외형 조합 | native/custom × solid/acrylic, caption/body 재질 구별, tint 기본값 복원 | 통제 배경 픽셀 비교와 원본 캡처. 투명 pixel만으로 데스크톱 blur 성공 판정 금지 |
 | 사용자 정의 입력 | drag 제외 검색창·버튼, resize, 더블클릭·메뉴·시스템 키, focus/IME | OS 입력 및 접근성 검사. native controls와 custom controls를 구별 |
 | 동적 변경 | 외형 변경 중 resize/최대화/close, 마지막 요청 적용, renderer 수명 | revision/종결 결과 + 실제 표시 캡처. generation 일치만으로 시각 PASS 금지 |
