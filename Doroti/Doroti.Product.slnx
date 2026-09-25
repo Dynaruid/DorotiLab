@@ -5,6 +5,8 @@
     <Project Path="src/Doroti.Runtime/Doroti.Runtime.csproj" />
     <Project Path="src/Doroti.Ui/Doroti.Ui.csproj" />
     <Project Path="src/Doroti.Hosting/Doroti.Hosting.csproj" />
+    <Project Path="src/Doroti.Desktop/Doroti.Desktop.csproj" />
+    <Project Path="src/Doroti.Desktop.Widgets/Doroti.Desktop.Widgets.csproj" />
     <Project Path="src/Doroti.Framework.Foundation/Doroti.Framework.Foundation.csproj" />
     <Project Path="src/Doroti.Framework.Scheduler/Doroti.Framework.Scheduler.csproj" />
     <Project Path="src/Doroti.Framework.Services/Doroti.Framework.Services.csproj" />

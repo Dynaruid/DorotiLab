@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><IsDorotiProduct>true</IsDorotiProduct></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Doroti.Desktop/Doroti.Desktop.csproj" />
+    <ProjectReference Include="../Doroti.Framework.Widgets/Doroti.Framework.Widgets.csproj" />
+  </ItemGroup>
+</Project>

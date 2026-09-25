@@ -4,7 +4,7 @@
 
 검토 기준: `7f74005f`, `.github/copilot-instructions.md`, 사용자가 제공한 Sudoku Flutter 앱과 아래 공식 웹 문서.
 
-상태: **검토·계획 작성 완료 / 구현 TODO**. 이번 요청에서는 이 문서만 작성한다. 아래 API 예제는 제안이며 현재 컴파일되는 API가 아니다. [Runtime 전환 보관 요약](history/26-09-24/runtime-dotnet-migration-summary.md)과 [Linux Qt 작업 보관 요약](history/26-09-24/linux-qt-improvements-summary.md)의 잔여 작업은 별도로 유지한다.
+상태: **구현·검증 진행 / 전체 PARTIAL (2026-09-25)**. 사용자의 전체 작업 요청에 따라 Desktop 패키지, manager/controller, SDK companion, Windows MAUI 기본 창 경로를 구현했다. 계약 검사 25개, Windows 실제 창 조작, native caption 재질 조합, 저장소 밖 package-only Windows 실행을 검증했다. **W3의 Hidden/custom 상단바·위젯, W4의 WindowsAppSDK/AppKit/Qt adapter, 일부 환경·시각 gate는 미완료**다. 아래 제안 예제 중 현재 제공되는 API와 제한은 [구현 API 문서](Doroti/docs/desktop-windows.md), 검증 근거는 [실행 결과](Doroti/validation/desktop-window/README.md)를 기준으로 한다. [Runtime 전환 보관 요약](history/26-09-24/runtime-dotnet-migration-summary.md)과 [Linux Qt 작업 보관 요약](history/26-09-24/linux-qt-improvements-summary.md)의 잔여 작업은 별도로 유지한다.
 
 사용자 확정 방향(2026-09-25 추가): **새 창 API는 데스크톱 OS 전용으로 제공하고, 향후 다중 창 지원 시 사용 코드를 다시 설계하지 않도록 창 관리·창별 제어·창 콘텐츠 생성을 처음부터 분리한다.** 이번 범위는 다중 창의 API·수명 설계까지이며, 실제 여러 네이티브 창의 동시 실행 구현은 후속 단계로 둔다.
 
@@ -319,42 +319,52 @@ Windows는 드래그, 8방향 resize, 더블클릭 최대화/복원, 우클릭 �
 
 ## 6. 단계별 작업계획
 
-모든 단계는 **TODO**다. 단계 종료 시 구현 상태와 실제 검증 범위를 따로 기록한다.
+체크박스는 해당 항목 전체의 충족 여부다. 부분 구현은 체크하지 않고 아래에 기록한다. 구현 상태와 실제 검증 범위를 구별한다.
+
+| 단계 | 현재 상태 |
+| --- | --- |
+| W0 | 계약·인벤토리 문서화 완료. 실제 다중 창은 W6로 분리 |
+| W1 | 핵심 구현 및 25개 fake-host 계약 PASS. 한 창의 다중 view/일부 경합 확대 검증 잔여 |
+| W2 | Windows 기본 경로와 200% DPI 창 조작 PASS. 최초 노출 전체 프레임 캡처·혼합 DPI 잔여 |
+| W3 | Normal+System/Solid/Backdrop 픽셀 회귀 PASS. Hidden/custom/frameless·App theme bridge 미구현 |
+| W4 | 비데스크톱 package negative build PASS. WindowsAppSDK/AppKit/Qt adapter 미구현, 명시적 거절 |
+| W5 | Testbed/선택형 companion template/이전 문서/package-only Windows 실행 PASS. 커스텀 상단바 예제 등 잔여 |
+| W6 | 이번 범위 밖. 실제 다중 네이티브 창 미구현 |
 
 ### W0 — 데스크톱 경계·다중 창을 고려한 API 계약 확정
 
-- [ ] public API/호출부/target host/SDK/template/validation 인벤토리를 작성한다. `UseView`, 기존 backdrop 메시지, 종료 경로와 최초 show 위치를 추적한다.
-- [ ] 사용자 Sudoku 설정을 Doroti 예제로 옮기고 크기의 client/frame 의미를 확인한다.
-- [ ] 옵션·controller·결과·이벤트 타입, 기본값, namespace, 충돌 정책, owner 모델과 지원 조합표를 확정한다.
-- [ ] Desktop 패키지/전용 startup의 참조 경계를 확정한다. 공유 앱 assembly의 target-neutral 빌드와 양립하는 companion assembly·SDK 등록 경로를 설계한다.
-- [ ] manager/CreateWindowAsync/WindowId/WindowContent/MainWindow/앱 종료 정책을 확정하고 기본 창·추가 창·창 종료 후 조회 사용 예제를 작성한다.
-- [ ] 최근 Windows caption 수정과 resize PARTIAL을 실행 기준선으로 기록한다. 이전 산출물이 삭제되었으면 새 검증 결과로 대체하되 과거 PASS를 재사용하지 않는다.
+- [x] public API/호출부/target host/SDK/template/validation 인벤토리를 작성한다. `UseView`, 기존 backdrop 메시지, 종료 경로와 최초 show 위치를 추적한다.
+- [x] 사용자 Sudoku 설정을 Doroti 예제로 옮기고 크기의 client/frame 의미를 확인한다.
+- [x] 옵션·controller·결과·이벤트 타입, 기본값, namespace, 충돌 정책, owner 모델과 지원 조합표를 확정한다.
+- [x] Desktop 패키지/전용 startup의 참조 경계를 확정한다. 공유 앱 assembly의 target-neutral 빌드와 양립하는 companion assembly·SDK 등록 경로를 설계한다.
+- [x] manager/CreateWindowAsync/WindowId/WindowContent/MainWindow/앱 종료 정책을 확정하고 기본 창·추가 창·창 종료 후 조회 사용 예제를 작성한다.
+- [x] 최근 Windows caption 수정과 resize PARTIAL을 실행 기준선으로 기록한다. 이전 산출물이 삭제되었으면 새 검증 결과로 대체하되 과거 PASS를 재사용하지 않는다.
 - 완료 기준: 데스크톱 전용 진입점과 기본/추가 창의 일관된 사용 모양이 정해지고, 세 외형 예제 및 지원 불가 조합이 명시됨. 실제 다중 창 구현을 요구하는 단계와 API 설계만 고정하는 항목을 구분함.
 
 ### W1 — Desktop 패키지·manager·controller·startup 연결
 
-- [ ] `WindowOptions`, 확장 appearance/titlebar 옵션, capability 평가와 effective state를 구현한다.
-- [ ] 앱 범위 manager와 WindowId registry, 창별 controller/context/content factory, owner dispatch, cancellation/폐기, 비동기 hook과 구독 해제를 구현한다.
-- [ ] desktop startup의 `UseMainWindow(WindowCreateOptions)` 및 SDK 연결을 추가하고 `UseView` legacy adapter를 기본 창의 단일 생성 경로로 만든다.
-- [ ] 비데스크톱 빌드에서 새 패키지·startup 참조를 거절하는 diagnostic과 desktop-only source/assembly 구성을 구현한다. 공통 Ui/Hosting에 Desktop 역참조가 없는지 확인한다.
+- [x] `WindowOptions`, 확장 appearance/titlebar 옵션, capability 평가와 effective state를 구현한다.
+- [x] 앱 범위 manager와 WindowId registry, 창별 controller/context/content factory, owner dispatch, cancellation/폐기, 비동기 hook과 구독 해제를 구현한다.
+- [x] desktop startup의 `UseMainWindow(WindowCreateOptions)` 및 SDK 연결을 추가하고 `UseView` legacy adapter를 기본 창의 단일 생성 경로로 만든다.
+- [x] 비데스크톱 빌드에서 새 패키지·startup 참조를 거절하는 diagnostic과 desktop-only source/assembly 구성을 구현한다. 공통 Ui/Hosting에 Desktop 역참조가 없는지 확인한다.
 - [ ] fake host 계약 검사로 두 창의 격리, 한 창의 여러 view, 준비 전 호출, 닫힘 중 대기, 예외 전파와 중복 초기화를 확인한다.
-- [ ] 창 종료 후 ID 미재사용, stale controller 실패, 개별 Close와 앱 종료 분리, 추가 생성 미지원 시 사전 거절을 확인한다.
+- [x] 창 종료 후 ID 미재사용, stale controller 실패, 개별 Close와 앱 종료 분리, 추가 생성 미지원 시 사전 거절을 확인한다.
 - 완료 기준: 실제 OS 기능을 허위 지원하지 않는 Desktop 계약과 단일 창 C# 소비 예제. fake-host 다중 창 계약 통과와 네이티브 다중 창 미구현 상태를 명시함.
 
 ### W2 — Windows MAUI 기본 창 제어·준비 후 표시
 
-- [ ] `DorotiMauiApplication`, platform lifecycle, surface/capability 등록을 연결한다. 초기 옵션 적용 전 자동 표시/활성화를 제어한다.
-- [ ] 초기 size/min/max/title/background/taskbar/topmost, 위치·표시·포커스·최대화·복원·닫기 API와 이벤트를 구현한다.
-- [ ] 첫 frame readiness와 미리 생성해야 하는 caption 정책을 분리한다. hook을 await하느라 framework bootstrap이 막히지 않게 한다.
-- [ ] 기본 창 생성·종료도 manager를 경유시킨다. window.Closed에서 앱 전체를 즉시 Exit하는 경로와 window/view ID 고정값을 조사해 앱 종료 정책·식별자 할당 경계로 옮긴다.
+- [x] `DorotiMauiApplication`, platform lifecycle, surface/capability 등록을 연결한다. 초기 옵션 적용 전 자동 표시/활성화를 제어한다.
+- [x] 초기 size/min/max/title/background/taskbar/topmost, 위치·표시·포커스·최대화·복원·닫기 API와 이벤트를 구현한다.
+- [x] 첫 frame readiness와 미리 생성해야 하는 caption 정책을 분리한다. hook을 await하느라 framework bootstrap이 막히지 않게 한다.
+- [x] 기본 창 생성·종료도 manager를 경유시킨다. window.Closed에서 앱 전체를 즉시 Exit하는 경로와 window/view ID 고정값을 조사해 앱 종료 정책·식별자 할당 경계로 옮긴다.
 - [ ] Sudoku의 `450×800`, 최소 `350×500` 예제를 실제 창 측정과 표시 시작 캡처로 검증한다.
 - 완료 기준: 기존 옵션 누락 없이 단순 예제가 동작하고, 시작 시 기본 외형 노출·무한 대기·중복 caption이 없음.
 
 ### W3 — Windows MAUI 아크릴·상단바 조합과 실행 중 변경
 
-- [ ] `WindowsWindowBackdrop`와 `WindowsNativeCaption`이 동일한 appearance snapshot을 소비하도록 묶는다. `solid/unified` 기존 입력을 각각 Solid/Backdrop에 매핑한다.
+- [x] `WindowsWindowBackdrop`와 `WindowsNativeCaption`이 동일한 appearance snapshot을 소비하도록 묶는다. `solid/unified` 기존 입력을 각각 Solid/Backdrop에 매핑한다.
 - [ ] tint/kind/theme/fallback 갱신, nullable 기본값 복원, native caption 정책 복구, 활성·고대비 상태를 연결한다.
-- [ ] Normal+System/Solid/Backdrop 조합을 구현하고 실제 caption/body 색상 응답을 각각 검사한다.
+- [x] Normal+System/Solid/Backdrop 조합을 구현하고 실제 caption/body 색상 응답을 각각 검사한다.
 - [ ] Hidden+Native buttons를 구현하고 chrome metrics·native drag/hit testing을 framework에 전달한다.
 - [ ] WindowTitleBar/DragRegion/CaptionButtons 위젯을 추가한다. Custom buttons/Frameless는 필수 OS 동작·접근성 검증이 끝난 조합만 공개 지원한다.
 - [ ] 연속 외형 요청, resize 중 요청, 적용 중 close를 bounded 검증한다. 지원하지 않는 runtime mode/frame 변경은 RequiresRecreation으로 종결한다.
@@ -374,9 +384,9 @@ Windows는 드래그, 8방향 resize, 더블클릭 최대화/복원, 우클릭 �
 - [ ] Testbed와 template에 일반 창, native Acrylic 창, 사용자 정의 검색 상단바 창을 추가한다.
 - [ ] startup와 runtime 옵션 변경, 테마 추종, close 취소, 이벤트 해제 예제를 제공한다.
 - [ ] 이전 API→새 API 매핑, 옵션 우선순위와 호환 기간을 문서화한다. 기존 내부 Acrylic 채널은 같은 controller 적용 경로로 위임한다.
-- [ ] 저장소 밖 앱에서 로컬 package restore/build 및 Windows 실행을 확인한다. SDK 생성물과 template 경로가 source project 참조에 의존하지 않게 한다.
-- [ ] 공통 앱+desktop companion 구성 예제와 후속 추가 창 생성 예제를 제공한다. 다중 창 예제는 해당 기능이 실제 지원되기 전까지 목표 API 예제로 표시한다.
-- [ ] 최종 지원표와 각 gate의 PASS/PARTIAL/notVerified를 기록하고, 확인되지 않은 host를 지원 완료로 표시하지 않는다.
+- [x] 저장소 밖 앱에서 로컬 package restore/build 및 Windows 실행을 확인한다. SDK 생성물과 template 경로가 source project 참조에 의존하지 않게 한다.
+- [x] 공통 앱+desktop companion 구성 예제와 후속 추가 창 생성 예제를 제공한다. 다중 창 예제는 해당 기능이 실제 지원되기 전까지 목표 API 예제로 표시한다.
+- [x] 최종 지원표와 각 gate의 PASS/PARTIAL/notVerified를 기록하고, 확인되지 않은 host를 지원 완료로 표시하지 않는다.
 - 완료 기준: 사용자 앱 코드에 HWND/host-specific 분기가 없어도 지원되는 세 예제를 사용할 수 있음.
 
 의존 순서: **W0 → W1 → W2 → W3 → W4 → W5**. W3의 커스텀 창은 기본 native caption 경로와 별도로 검증한다. W4의 Qt 변경은 [Linux Qt 보관 작업](history/26-09-24/linux-qt-improvements-summary.md)의 GPU·입력·접근성 수정과 충돌을 확인하며, 그 계획을 이번 창 API 작업 완료로 대체하지 않는다.
@@ -409,7 +419,7 @@ Windows는 드래그, 8방향 resize, 더블클릭 최대화/복원, 우클릭 �
 
 ## 8. 검증 계획과 완료 판정
 
-현재 요청은 계획 작성이므로 아래 검사는 **미실행**이다. 제품 구현 단계에서 각 명령을 `python Doroti/validation/run-with-timeout.py <command>`로 실행한다. 제한 시간은 1,200초이며 공유 `obj` 빌드는 직렬 실행한다. 케이스별 반복은 통상 30회 이내로 제한한다.
+실행한 검사는 [Desktop 실행 결과](Doroti/validation/desktop-window/README.md)에 기록했다. 아래 표는 전체 수락 기준이며 아직 모두 통과한 것은 아니다. 각 명령은 `python Doroti/validation/run-with-timeout.py <command>`로 실행한다. 제한 시간은 1,200초이며 공유 `obj` 빌드는 직렬 실행한다. 케이스별 반복은 통상 30회 이내로 제한한다.
 
 | Gate | 필수 확인 | 합격 근거 |
 | --- | --- | --- |
@@ -441,4 +451,4 @@ python Doroti/validation/run-with-timeout.py python Doroti/validation/windows-ma
 
 **데스크톱 전용 패키지·startup → 앱 범위 WindowManager → 창별 WindowController와 콘텐츠 factory**를 기본 구조로 확정한다. 기본 창은 `UseMainWindow`, 향후 추가 창은 `CreateWindowAsync`로 만들고, 생성 이후에는 같은 조작·외형·이벤트 API를 사용한다. 이를 통해 사용자가 편하게 썼던 선언·준비·표시 흐름과 아크릴·커스텀 상단바 조합을 유지하면서, 나중에 다중 창을 추가할 때 전역 단일 창 API를 다시 걷어내는 일을 피한다.
 
-이번 변경은 `work.md` 작성뿐이며 제품 소스·외부 Sudoku 프로젝트·기존 작업계획은 수정하지 않는다.
+2026-09-25 전체 작업 요청으로 제품 구현과 bounded 검증을 진행했다. 외부 Sudoku 프로젝트는 수정하지 않았다. 미완료 항목을 체크한 것으로 처리하지 않으며, 다음 구현 지점은 Hidden+Native chrome/입력·위젯, App theme bridge, WindowsAppSDK/AppKit/Qt adapter와 내부 Acrylic 채널 위임이다. 기존 resize 시각 연속성은 PARTIAL을 유지한다.

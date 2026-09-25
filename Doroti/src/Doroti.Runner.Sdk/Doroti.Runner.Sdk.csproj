@@ -17,6 +17,7 @@
     <None Include="Sdk\Doroti.IosNativeAot.props" Pack="true" PackagePath="Sdk\Doroti.IosNativeAot.props" />
     <None Include="Sdk\Doroti.NativeAot.Evidence.targets" Pack="true" PackagePath="Sdk\Doroti.NativeAot.Evidence.targets" />
     <None Include="Sdk\Sdk.targets" Pack="true" PackagePath="Sdk\Sdk.targets" />
+    <None Include="Sdk\Doroti.DesktopBoundary.targets" Pack="true" PackagePath="Sdk\Doroti.DesktopBoundary.targets" />
     <None Include="Sdk\Doroti.Qt.targets" Pack="true" PackagePath="Sdk\Doroti.Qt.targets" />
     <None Include="Sdk\Doroti.Web.targets" Pack="true" PackagePath="Sdk\Doroti.Web.targets" />
     <None Include="..\Doroti.App.Sdk\Sdk\Doroti.TypeScript.targets" Pack="true" PackagePath="Sdk\Doroti.TypeScript.targets" Link="Sdk\Doroti.TypeScript.targets" />

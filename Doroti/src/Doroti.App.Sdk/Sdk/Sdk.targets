@@ -1,4 +1,6 @@
 <Project>
+  <Import Project="Doroti.DesktopBoundary.targets" Condition="Exists('$(MSBuildThisFileDirectory)Doroti.DesktopBoundary.targets')" />
+  <Import Project="../../Doroti.Runner.Sdk/Sdk/Doroti.DesktopBoundary.targets" Condition="!Exists('$(MSBuildThisFileDirectory)Doroti.DesktopBoundary.targets')" />
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="src/**/*.cs" />
@@ -16,6 +18,7 @@
                      $([System.String]::Copy('%(ProjectReference.Filename)').Contains('Doroti.Host.Web')) or
                      $([System.String]::Copy('%(ProjectReference.Filename)').Contains('Doroti.Host.Qt')) or
                      $([System.String]::Copy('%(ProjectReference.Filename)').Contains('Doroti.Target.')) or
+                     $([System.String]::Copy('%(ProjectReference.Filename)').StartsWith('Doroti.Desktop')) or
                      $([System.String]::Copy('%(ProjectReference.Filename)').EndsWith('.Android.Native')) or
                      $([System.String]::Copy('%(ProjectReference.Filename)').EndsWith('.iOS.Native')) or
                      $([System.String]::Copy('%(ProjectReference.Filename)').EndsWith('.MacCatalyst.Native')) or
@@ -24,6 +27,7 @@
           Condition="$([System.String]::Copy('%(PackageReference.Identity)').StartsWith('Microsoft.Maui')) or
                      $([System.String]::Copy('%(PackageReference.Identity)').StartsWith('Microsoft.AspNetCore.Components.WebAssembly')) or
                      $([System.String]::Copy('%(PackageReference.Identity)').StartsWith('Doroti.Host.')) or
+                     $([System.String]::Copy('%(PackageReference.Identity)').StartsWith('Doroti.Desktop')) or
                      $([System.String]::Copy('%(PackageReference.Identity)').StartsWith('Doroti.Target.'))" />
     </ItemGroup>
     <Error Code="DOROTIAPP101" Condition="'$(TargetFramework)' != 'net10.0'"

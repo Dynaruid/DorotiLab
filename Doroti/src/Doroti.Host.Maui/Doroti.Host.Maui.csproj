@@ -30,6 +30,7 @@
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">24.0</SupportedOSPlatformVersion>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Doroti.Desktop\Doroti.Desktop.csproj" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'" />
     <None Include="buildTransitive\Doroti.Host.Maui.targets" Pack="true" PackagePath="buildTransitive\" />
     <InternalsVisibleTo Include="DorotiTestbedApp.iOS" />
     <InternalsVisibleTo Include="DorotiTestbedApp.MacOS" />

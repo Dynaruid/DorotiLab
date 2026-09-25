@@ -14,9 +14,30 @@ internal sealed class WindowsWindowBackdrop : IDisposable
     private readonly SystemBackdrop? _previous;
     private readonly AcrylicMaterial? _material;
     private readonly WindowBackdropOptions _options;
+    private readonly Doroti.Desktop.WindowAppearanceOptions? _appearance;
     private readonly bool _nativeCaption;
     private readonly FrameworkElement? _themeOwner;
     private bool _disposed;
+    private bool _ownsEmptyBackdrop;
+
+    internal WindowsWindowBackdrop(
+        Microsoft.UI.Xaml.Window window,
+        Doroti.Desktop.WindowAppearanceOptions appearance
+    )
+        : this(window, Doroti.Desktop.DesktopApplication.ToLegacy(appearance), nativeCaption: true)
+    {
+        _appearance = appearance;
+        if (
+            appearance.Backdrop.Mode
+            is Doroti.Desktop.WindowBackdropMode.Transparent
+                or Doroti.Desktop.WindowBackdropMode.Solid
+        )
+        {
+            window.SystemBackdrop = null;
+            _ownsEmptyBackdrop = true;
+        }
+        ApplyCaption();
+    }
 
     internal WindowsWindowBackdrop(
         Microsoft.UI.Xaml.Window window,
@@ -47,7 +68,12 @@ internal sealed class WindowsWindowBackdrop : IDisposable
     private void ApplyCaption()
     {
         if (!_disposed && _nativeCaption)
-            WindowsNativeCaption.ApplyAppearance(_window, _options);
+        {
+            if (_appearance is { } appearance)
+                WindowsNativeCaption.ApplyAppearance(_window, appearance);
+            else
+                WindowsNativeCaption.ApplyAppearance(_window, _options);
+        }
     }
 
     public void Dispose()
@@ -55,7 +81,10 @@ internal sealed class WindowsWindowBackdrop : IDisposable
         _disposed = true;
         if (_themeOwner is not null)
             _themeOwner.ActualThemeChanged -= HandleThemeChanged;
-        if (_material is not null && ReferenceEquals(_window.SystemBackdrop, _material))
+        if (
+            (_material is not null && ReferenceEquals(_window.SystemBackdrop, _material))
+            || (_ownsEmptyBackdrop && _window.SystemBackdrop is null)
+        )
         {
             _window.SystemBackdrop = _previous;
         }

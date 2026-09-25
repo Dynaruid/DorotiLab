@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsDorotiProduct>true</IsDorotiProduct>
+    <Description>Explicit application-scoped desktop windows and host contracts.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Doroti.Hosting/Doroti.Hosting.csproj" />
+    <None Include="buildTransitive/Doroti.Desktop.targets" Pack="true" PackagePath="buildTransitive/" />
+  </ItemGroup>
+  <Import Project="buildTransitive/Doroti.Desktop.targets" />
+</Project>

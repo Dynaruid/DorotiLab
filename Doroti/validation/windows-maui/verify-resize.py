@@ -18,6 +18,8 @@ OUT = ROOT / 'Doroti/artifacts/validation/windows-maui' / datetime.datetime.now(
 OUT.mkdir(parents=True)
 EXE = Path(os.environ.get('DOROTI_MAUI_VALIDATION_EXE', str(ROOT / 'DorotiTestbedApp/windows/bin/x64/Release/net10.0-windows10.0.19041.0/win-x64/DorotiTestbedApp.Windows.exe')))
 u = c.WinDLL('user32', use_last_error=True)
+dwm = c.WinDLL('dwmapi')
+dwm.DwmGetWindowAttribute.argtypes = [w.HWND, w.DWORD, c.c_void_p, w.DWORD]
 u.SetProcessDpiAwarenessContext.argtypes = [w.HANDLE]
 u.SetProcessDpiAwarenessContext(w.HANDLE(-4))
 u.GetWindowThreadProcessId.argtypes = [w.HWND, c.POINTER(w.DWORD)]
@@ -41,7 +43,12 @@ def window_for(pid):
         owner = w.DWORD()
         u.GetWindowThreadProcessId(hwnd, c.byref(owner))
         if owner.value == pid and u.IsWindowVisible(hwnd):
-            found.append(hwnd)
+            # Desktop startup composes its first frame under DWM cloak. A
+            # WS_VISIBLE-but-cloaked HWND is not yet the displayed test window.
+            cloaked = w.DWORD()
+            result = dwm.DwmGetWindowAttribute(hwnd, 14, c.byref(cloaked), c.sizeof(cloaked))
+            if result == 0 and cloaked.value == 0:
+                found.append(hwnd)
         return True
     u.EnumWindows(visit, 0)
     return found[0] if found else None

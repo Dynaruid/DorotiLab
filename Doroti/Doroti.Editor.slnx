@@ -19,6 +19,8 @@
   <Project Path="src/Doroti.Host.Web/Doroti.Host.Web.csproj" />
   <Project Path="src/Doroti.Host.WindowsAppSdk/Doroti.Host.WindowsAppSdk.csproj" />
   <Project Path="src/Doroti.Hosting/Doroti.Hosting.csproj" />
+  <Project Path="src/Doroti.Desktop/Doroti.Desktop.csproj" />
+  <Project Path="src/Doroti.Desktop.Widgets/Doroti.Desktop.Widgets.csproj" />
   <Project Path="src/Doroti.Runtime/Doroti.Runtime.csproj" />
   <Project Path="src/Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj" />
   <Project Path="src/Doroti.Skia.RuntimeEffects/Doroti.Skia.RuntimeEffects.csproj" />

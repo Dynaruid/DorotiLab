@@ -1,0 +1,405 @@
+{
+  "date": "2026-09-25",
+  "baseCommit": "351d4dd2",
+  "workingTreeImplementation": true,
+  "overall": "PARTIAL",
+  "runs": {
+    "sourceWindowProbe": {
+      "beforeShow": {
+        "size": [
+          450,
+          800
+        ],
+        "Scale": 2,
+        "Visible": false,
+        "Focused": false,
+        "presentation": "Normal",
+        "Closed": false
+      },
+      "shown": {
+        "size": [
+          450,
+          800
+        ],
+        "Scale": 2,
+        "Visible": true,
+        "Focused": true,
+        "presentation": "Normal",
+        "Closed": false
+      },
+      "resize": {
+        "size": [
+          500,
+          650
+        ],
+        "Scale": 2,
+        "Visible": true,
+        "Focused": true,
+        "presentation": "Normal",
+        "Closed": false
+      },
+      "maximized": {
+        "size": [
+          1280,
+          729.5
+        ],
+        "Scale": 2,
+        "Visible": true,
+        "Focused": true,
+        "presentation": "Maximized",
+        "Closed": false
+      },
+      "restored": {
+        "size": [
+          500,
+          650
+        ],
+        "Scale": 2,
+        "Visible": true,
+        "Focused": true,
+        "presentation": "Normal",
+        "Closed": false
+      },
+      "minimized": {
+        "size": [
+          0,
+          0
+        ],
+        "Scale": 2,
+        "Visible": true,
+        "Focused": false,
+        "presentation": "Minimized",
+        "Closed": false
+      },
+      "fullscreen": {
+        "size": [
+          1280,
+          800
+        ],
+        "Scale": 2,
+        "Visible": true,
+        "Focused": true,
+        "presentation": "FullScreen",
+        "Closed": false
+      },
+      "windowed": {
+        "size": [
+          500,
+          650
+        ],
+        "Scale": 2,
+        "Visible": true,
+        "Focused": true,
+        "presentation": "Normal",
+        "Closed": false
+      },
+      "hidden": {
+        "size": [
+          500,
+          650
+        ],
+        "Scale": 2,
+        "Visible": false,
+        "Focused": false,
+        "presentation": "Normal",
+        "Closed": false
+      },
+      "appearance": {
+        "changed": "Applied",
+        "reset": "Applied"
+      },
+      "final": {
+        "size": [
+          450,
+          800
+        ],
+        "Scale": 2,
+        "Visible": true,
+        "Focused": true,
+        "presentation": "Normal",
+        "Closed": false
+      },
+      "status": "PASS",
+      "cleanExit": true,
+      "physicalDisplay": "notVerified",
+      "customChrome": "notImplemented"
+    },
+    "nativeCaptionBackdrop": {
+      "offBackgroundResponse": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "onBackgroundResponse": [
+        84.0,
+        14.0,
+        102.0
+      ],
+      "captionOffBackgroundResponse": [
+        193.0,
+        30.0,
+        233.0
+      ],
+      "captionOnBackgroundResponse": [
+        193.0,
+        30.0,
+        233.0
+      ],
+      "captionRegion": [
+        530,
+        14,
+        610,
+        41
+      ],
+      "systemBackdropType": 3,
+      "status": "passed",
+      "physicalAppearance": "notVerified",
+      "output": "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\artifacts\\validation\\windows-maui\\20260925-103938",
+      "cleanExit": true
+    },
+    "nativeCaptionSolid": {
+      "offBackgroundResponse": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "onBackgroundResponse": [
+        84.0,
+        14.0,
+        102.0
+      ],
+      "captionOffBackgroundResponse": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "captionOnBackgroundResponse": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "captionRegion": [
+        530,
+        14,
+        610,
+        41
+      ],
+      "systemBackdropType": 1,
+      "status": "passed",
+      "physicalAppearance": "notVerified",
+      "output": "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\artifacts\\validation\\windows-maui\\20260925-104904",
+      "captionMode": "solid",
+      "cleanExit": true
+    },
+    "nativeCaptionSystem": {
+      "offBackgroundResponse": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "onBackgroundResponse": [
+        84.0,
+        14.0,
+        102.0
+      ],
+      "captionOffBackgroundResponse": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "captionOnBackgroundResponse": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "captionRegion": [
+        530,
+        14,
+        610,
+        41
+      ],
+      "systemBackdropType": 1,
+      "status": "passed",
+      "physicalAppearance": "notVerified",
+      "output": "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\artifacts\\validation\\windows-maui\\20260925-104953",
+      "captionMode": "system",
+      "cleanExit": true
+    },
+    "resizeOperations": {
+      "status": "passed",
+      "resizes": 24,
+      "resizeTargets": 27,
+      "presentedGenerations": 25,
+      "graphiteDeviceCreations": 1,
+      "finalPhysical": [
+        934,
+        629
+      ],
+      "surfacePrepareP95Microseconds": 2108,
+      "nativePreparedFrames": 41,
+      "nativeResizeTimeouts": 0,
+      "maximumNativeRequestMilliseconds": 80.7167999446392,
+      "preparedFrameP95Microseconds": 21719,
+      "physicalDrag": "notVerified",
+      "acrylicAppearance": "notVerified",
+      "cleanExit": true
+    },
+    "flickerGate": {
+      "status": "notMeasured",
+      "reason": "Timed out waiting for MAUI window/frame evidence",
+      "physicalDisplay": "notVerified",
+      "output": "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\artifacts\\validation\\windows-maui\\20260925-104247"
+    },
+    "packageContracts": {
+      "status": "PASS",
+      "consumer": "C:\\Users\\parti\\AppData\\Local\\Temp\\doroti-desktop-consumer-ddtbvzfh",
+      "packages": 15,
+      "packageOnly": true,
+      "negativeTargets": [
+        "Web",
+        "Android",
+        "iOS",
+        "MacCatalyst"
+      ],
+      "windowsExecution": "notRun",
+      "contractOutput": "PASS invalid options allocate no host\nPASS single host rejects additional creation before allocation\nPASS two windows have isolated factories state and scope\nPASS readiness hook does not deadlock create\nPASS close terminates pending ready and show\nPASS close cancel and concurrent close share decision\nPASS native close uses same cancellation callback\nPASS last window policy includes hidden windows\nPASS factory failure rolls back\nPASS initialization cancellation rolls back\nPASS creation token no longer owns returned window\nPASS ready waiter cancellation does not poison others\nPASS hook failure before ready fails waiters and destroys host\nPASS hook failure after ready preserves readiness\nPASS appearance updates serialize using latest snapshot\nPASS queued replacement supersedes only appearance\nPASS failed appearance rolls back and reports error\nPASS subscriptions detach\nPASS reused content and owned windows rejected\nPASS closed notification follows host disposal\nPASS accepted close cancels deferred commands before drain\nPASS automatic startup failure is observed without waiting for a frame\nPASS last close waits for in-flight creation rollback\nPASS native close during creation never enters registry\nPASS manual native readiness failure destroys the hidden window\n25/25 contracts passed. Native visual/input evidence is separate.\n"
+    },
+    "packageWindows": {
+      "status": "PASS",
+      "consumer": "C:\\Users\\parti\\AppData\\Local\\Temp\\doroti-desktop-windows-a8ew2v5n",
+      "windowsExecution": "PASS",
+      "packageOnly": true,
+      "probe": {
+        "beforeShow": {
+          "size": [
+            450,
+            800
+          ],
+          "Scale": 2,
+          "Visible": false,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "shown": {
+          "size": [
+            450,
+            800
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "resize": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "maximized": {
+          "size": [
+            1280,
+            729.5
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "Maximized",
+          "Closed": false
+        },
+        "restored": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "minimized": {
+          "size": [
+            0,
+            0
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": false,
+          "presentation": "Minimized",
+          "Closed": false
+        },
+        "fullscreen": {
+          "size": [
+            1280,
+            800
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "FullScreen",
+          "Closed": false
+        },
+        "windowed": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "hidden": {
+          "size": [
+            500,
+            650
+          ],
+          "Scale": 2,
+          "Visible": false,
+          "Focused": false,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "appearance": {
+          "changed": "Applied",
+          "reset": "Applied"
+        },
+        "final": {
+          "size": [
+            450,
+            800
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "Normal",
+          "Closed": false
+        },
+        "status": "PASS",
+        "cleanExit": true,
+        "physicalDisplay": "notVerified",
+        "customChrome": "notImplemented",
+        "output": "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\artifacts\\validation\\windows-maui\\20260925-110343"
+      }
+    }
+  },
+  "packageBinarySha256": {
+    "Probe.Windows.exe": "8a15174511e15ea7872e8804fea54dc9b7a0d92d4c5847c367fef1144099d6af",
+    "Doroti.Desktop.dll": "395111ed09ae22707c02bed0d61380640942f133975cc89da63459855b1400cb",
+    "Doroti.Host.Maui.dll": "abfde8035360f5109a52e6d5b4b49a8f0f27568ce28a0f98fd0bb4c9cad075db"
+  },
+  "sourceSha256": {
+    "Doroti/src/Doroti.Desktop/DorotiWindowController.cs": "80d6b1eef33d48d0541bd0bf213a7a4134a3d01b3afa158f37eaea5804da0d62",
+    "Doroti/src/Doroti.Desktop/DorotiWindowManager.cs": "d0e86bf5740ea4838d8cd15c6f71555d25dcade0f7f74b9010d0f872137ff739",
+    "Doroti/src/Doroti.Host.Maui/WindowsDesktopWindowHost.cs": "a7b06ece79a0df29dcccecd905223831862b25c10b518e6c2f92b17eb9fa0ea6"
+  }
+}

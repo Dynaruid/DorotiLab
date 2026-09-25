@@ -1,4 +1,5 @@
 <Project>
+  <Import Project="Doroti.DesktopBoundary.targets" />
   <!-- Set PublishAot on the executable, never as a global property on the
        platform-neutral ProjectReference graph (NETSDK1203 for ios-arm64). -->
   <PropertyGroup>
@@ -80,6 +81,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="$(DorotiDesktopProject)" Condition="'$(DorotiDesktopProject)' != '' and ('$(DorotiTarget)' == 'Windows' or '$(DorotiTarget)' == 'macOS' or '$(DorotiTarget)' == 'Linux')"
+                      GlobalPropertiesToRemove="TargetFramework;TargetFrameworks;RuntimeIdentifier;RuntimeIdentifiers;DorotiTarget;DorotiHostKind;DorotiNativeEntryKind" />
     <DorotiNativeBindingProject Update="@(DorotiNativeBindingProject)">
       <DorotiFullPath>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '%(Identity)'))</DorotiFullPath>
       <DorotiAssemblyIdentity Condition="'%(AssemblyName)' == ''">%(Filename)</DorotiAssemblyIdentity>
@@ -138,6 +141,12 @@
   </ItemGroup>
 
   <Target Name="ValidateDorotiRunnerProperties" BeforeTargets="Restore">
+    <Error Code="DOROTIDESKTOP002" Condition="('$(DorotiDesktopProject)' != '' or '$(DorotiDesktopStartupType)' != '') and '$(DorotiTarget)' != 'Windows' and '$(DorotiTarget)' != 'macOS' and '$(DorotiTarget)' != 'Linux'"
+           Text="Desktop companion/startup is only allowed in native desktop runners." />
+    <Error Code="DOROTIDESKTOP003" Condition="'$(DorotiDesktopProject)' != '' and ('$(DorotiDesktopStartupType)' == '' or !Exists('$(DorotiDesktopProject)'))"
+           Text="DorotiDesktopProject requires an existing companion project and DorotiDesktopStartupType." />
+    <Error Code="DOROTIDESKTOP005" Condition="'$(DorotiDesktopStartupType)' != '' and ('$(DorotiTarget)' != 'Windows' or '$(DorotiHostKind)' != 'Maui')"
+           Text="The desktop startup adapter is currently implemented for Windows MAUI only. Other native desktop adapters are pending; refusing an ignored startup." />
     <Error Code="DOROTIAPP201" Condition="'$(DorotiAppProject)' == '' or !Exists('$(DorotiAppProject)')"
            Text="DorotiAppProject must resolve to an existing platform-neutral application project; found '$(DorotiAppProject)'." />
     <Error Code="DOROTIAPP202" Condition="'$(DorotiTarget)' == '' or '$(DorotiHostKind)' == '' or '$(DorotiNativeEntryKind)' == ''"
@@ -267,8 +276,10 @@
       <_DorotiBootstrapLines Include="internal static partial class DorotiBootstrap" />
       <_DorotiBootstrapLines Include="{" />
       <_DorotiBootstrapLines Include="    internal static global::Doroti.Hosting.DorotiApplicationDescriptor Create(string[] args) =&gt;" />
+      <_DorotiBootstrapLines Include="        global::Doroti.Desktop.DesktopApplication.Configure&lt;global::$(DorotiDesktopStartupType)&gt;(" Condition="'$(DorotiDesktopStartupType)' != ''" />
       <_DorotiBootstrapLines Include="        global::Doroti.Hosting.DorotiApplicationFactory.Create&lt;global::$(DorotiApplicationType)&gt;(" />
-      <_DorotiBootstrapLines Include="            global::Doroti.Hosting.DorotiLaunchContext.Create(&quot;$(DorotiTarget)&quot;, &quot;$(RuntimeIdentifier)&quot;, args), DorotiPluginRegistration.Items, typeof(DorotiBootstrap).Assembly, DorotiNativePluginRegistration.Items)%3B" />
+      <_DorotiBootstrapLines Include="            global::Doroti.Hosting.DorotiLaunchContext.Create(&quot;$(DorotiTarget)&quot;, &quot;$(RuntimeIdentifier)&quot;, args), DorotiPluginRegistration.Items, typeof(DorotiBootstrap).Assembly, DorotiNativePluginRegistration.Items)%3B" Condition="'$(DorotiDesktopStartupType)' == ''" />
+      <_DorotiBootstrapLines Include="            global::Doroti.Hosting.DorotiLaunchContext.Create(&quot;$(DorotiTarget)&quot;, &quot;$(RuntimeIdentifier)&quot;, args), DorotiPluginRegistration.Items, typeof(DorotiBootstrap).Assembly, DorotiNativePluginRegistration.Items))%3B" Condition="'$(DorotiDesktopStartupType)' != ''" />
       <_DorotiBootstrapLines Include="    [global::System.Runtime.Versioning.SupportedOSPlatform(&quot;browser&quot;)]" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
       <_DorotiBootstrapLines Include="    public static global::System.Threading.Tasks.Task Main(string[] args) =&gt;" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
       <_DorotiBootstrapLines Include="        global::System.Threading.Tasks.Task.CompletedTask%3B" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />

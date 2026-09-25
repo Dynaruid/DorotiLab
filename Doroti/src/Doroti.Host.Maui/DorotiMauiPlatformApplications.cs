@@ -25,6 +25,8 @@ public abstract class DorotiMauiWinUIApplication : MauiWinUIApplication
     protected sealed override MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
+        var descriptor = CreateApplicationDescriptor();
+        var desktopManaged = Doroti.Desktop.DesktopApplication.TryGetDefinition(descriptor, out _);
         builder.ConfigureLifecycleEvents(events =>
             events.AddWindows(windows =>
                 windows
@@ -35,18 +37,21 @@ public abstract class DorotiMauiWinUIApplication : MauiWinUIApplication
                             {
                                 WindowsNativeCaption.Enable(window);
                             }
+                            if (desktopManaged)
+                                WindowsDesktopWindowHost.PrepareNativeWindow(window);
                         }
                     )
                     .OnWindowCreated(window =>
                     {
                         if (WindowsNativeCaption.IsEnabled(window))
                             window.AppWindow.Title = window.Title;
-                        window.Closed += HandlePlatformWindowClosed;
+                        if (!desktopManaged)
+                            window.Closed += HandlePlatformWindowClosed;
                     })
             )
         );
         ConfigurePlatform(builder);
-        return builder.UseDorotiApplication(CreateApplicationDescriptor()).Build();
+        return builder.UseDorotiApplication(descriptor).Build();
     }
 
     private static void HandlePlatformWindowClosed(

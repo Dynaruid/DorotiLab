@@ -122,6 +122,10 @@ public sealed class DorotiMauiApplication(DorotiApplicationDescriptor descriptor
     protected override Window CreateWindow(IActivationState? activationState)
     {
         _ = activationState;
+#if WINDOWS
+        if (Doroti.Desktop.DesktopApplication.TryGetDefinition(descriptor, out var desktop))
+            return WindowsDesktopWindowHost.CreateMainWindow(descriptor, desktop!);
+#endif
         var title = descriptor.ViewConfiguration.title;
         var window = new Window(
             new ContentPage

@@ -94,9 +94,16 @@ try:
     (g.OUT / 'acrylic-result.json').write_text(json.dumps(result, indent=2), encoding='utf-8')
     assert max(off) < 3, 'Opaque control responds to background'
     assert max(on) > max(off) + 5, 'Acrylic did not reveal the desktop background'
-    assert backdrop_type.value == 3, 'Native caption did not select Desktop Acrylic'
-    assert max(caption_off) > 5 and max(caption_on) > 5, \
-        'Native caption did not reveal the desktop background'
+    caption_mode = os.environ.get('DOROTI_DESKTOP_CAPTION', 'Backdrop').lower()
+    result['captionMode'] = caption_mode
+    if caption_mode == 'backdrop':
+        assert backdrop_type.value == 3, 'Native caption did not select Desktop Acrylic'
+        assert max(caption_off) > 5 and max(caption_on) > 5, \
+            'Native caption did not reveal the desktop background'
+    else:
+        assert caption_mode in ('solid', 'system'), 'Unknown validation caption mode'
+        assert backdrop_type.value == 1, 'System/Solid caption retained Acrylic'
+        assert max(caption_off) < 3 and max(caption_on) < 3, 'Opaque caption responds to desktop background'
     assert g.evidence()['nativePointerEvents'] > 0, 'No native pointer ingress'
     g.u.PostMessageW(hwnd, 0x10, 0, 0)
     assert process.wait(timeout=15) == 0

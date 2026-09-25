@@ -6,6 +6,8 @@
     <AssemblyName>DorotiTestbedApp.Windows</AssemblyName>
     <RootNamespace>DorotiTestbedApp.WinUI</RootNamespace>
     <DorotiAppProject>..\DorotiTestbedApp.csproj</DorotiAppProject>
+    <DorotiDesktopProject>..\desktop\DorotiTestbedApp.Desktop.csproj</DorotiDesktopProject>
+    <DorotiDesktopStartupType>DorotiTestbedApp.Desktop.DesktopStartup</DorotiDesktopStartupType>
     <DorotiTarget>Windows</DorotiTarget>
     <DorotiHostKind>Maui</DorotiHostKind>
     <DorotiNativeEntryKind>WinUI-Xaml</DorotiNativeEntryKind>
