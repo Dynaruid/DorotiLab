@@ -349,6 +349,40 @@ await Check(
         }
     }
 );
+await Check(
+    "variable blur cannot masquerade as a native Gaussian backdrop",
+    async () =>
+    {
+        await using var owner = Owner(14);
+        var handle = await owner.CreateAsync(
+            new PlatformViewRequest(1, "test", PlatformViewComposition.InterleavedComposition)
+        );
+        var builder = new SceneBuilder(14);
+        builder.addPlatformView(handle, width: 100, height: 100);
+        builder.pushClipRect(Rect.fromLTWH(10, 10, 50, 50));
+        // Even a saturation intent must not let the new filter through the
+        // native planner's zero-sigma Gaussian special case.
+        builder.pushBackdropFilter(
+            ImageFilter.variableBlur(Offset.zero, new Offset(0, 50)) with
+            {
+                PlatformEffectIntent = new(Saturation: 0),
+            }
+        );
+        builder.pop();
+        builder.pop();
+        using var scene = builder.build();
+        await Reject(() =>
+        {
+            using var plan = PlatformCompositionPlanner.Build(
+                scene,
+                new(14, 0, 1, 0),
+                owner,
+                effects: new(true, 1, 64, true)
+            );
+            return Task.CompletedTask;
+        });
+    }
+);
 Console.WriteLine(
     System.Text.Json.JsonSerializer.Serialize(
         new

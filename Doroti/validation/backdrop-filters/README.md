@@ -8,6 +8,11 @@ opacity, color-filter and shader-mask layers. There is no software capture fallb
 
 ## C# API
 
+For a blur radius that varies across a panel, use
+[`ImageFilter.variableBlur` or `ImageFilterConfig.CreateVariableBlur`](variable-blur.md).
+The linked guide includes the shader research, coordinate/sigma contract, sample,
+and separate offscreen GPU and displayed Windows validation evidence.
+
 ```csharp
 new BackdropFilter(
     filter: new ImageFilter(

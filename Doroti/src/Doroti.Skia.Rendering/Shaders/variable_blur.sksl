@@ -1,0 +1,29 @@
+uniform float2 size;
+uniform shader inputImage;
+uniform float3 ramp;
+uniform float2 sigmas;
+uniform float2 axis;
+uniform float samples;
+half4 main(float2 p) {
+    float t = clamp(dot(ramp.xy, p) + ramp.z, 0.0, 1.0);
+    float sigma = mix(sigmas.x, sigmas.y, t);
+    if (sigma <= 0.0001) return inputImage.eval(p);
+    float deviceScale = length(axis);
+    float radius = 3.0 * sigma;
+    float count = min(samples, max(1.0, ceil(radius * deviceScale)));
+    float stepSize = radius / count;
+    float4 sum = float4(inputImage.eval(p));
+    float weightSum = 1.0;
+    for (int i = 1; i <= 64; ++i) {
+        if (float(i) <= count) {
+            float d = float(i) * stepSize;
+            float z = d / sigma;
+            float weight = exp(-0.5 * z * z);
+            float2 offset = axis * d;
+            sum += weight * (float4(inputImage.eval(p + offset))
+                           + float4(inputImage.eval(p - offset)));
+            weightSum += 2.0 * weight;
+        }
+    }
+    return half4(sum / weightSum);
+}

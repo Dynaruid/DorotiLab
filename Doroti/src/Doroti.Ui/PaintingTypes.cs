@@ -680,7 +680,7 @@ public enum ImageFilterMorphology
     erode,
 }
 
-public sealed record ImageFilter
+public sealed partial record ImageFilter
 {
     // Doroti's production renderers implement shader filters on both Ganesh and
     // Graphite. This advertises that API capability, not a CPU canvas fallback.
@@ -797,6 +797,7 @@ public sealed record ImageFilter
     public string debugShortDescription =>
         outer is not null && inner is not null
             ? $"{inner.debugShortDescription} -> {outer.debugShortDescription}"
+        : VariableBlur is not null ? "variableBlur"
         : shader is not null ? "shader"
         : matrix4 is not null ? "matrix"
         : morphology is { } operation ? operation.ToString()

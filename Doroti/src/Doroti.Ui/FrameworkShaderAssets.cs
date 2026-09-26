@@ -13,9 +13,9 @@ public sealed record FrameworkShaderSampler(string Name, int Index);
 
 public sealed record FrameworkShaderAsset(
     string Id,
-    string FlutterAssetKey,
-    string FlutterSourcePath,
-    string FlutterSourceSha256,
+    string? FlutterAssetKey,
+    string? FlutterSourcePath,
+    string? FlutterSourceSha256,
     string AdaptedSourcePath,
     string AdaptedSourceSha256,
     string OwningAssembly,
@@ -28,7 +28,8 @@ public sealed record FrameworkShaderAsset(
 
 /// <summary>
 /// The closed framework shader manifest shared by framework ports and all GPU hosts.
-/// Source pins describe the Flutter reference; the adapted hash protects the packaged
+/// Optional source pins describe the Flutter reference; Doroti-original shaders have
+/// no Flutter reference. The adapted hash protects the packaged
 /// Doroti artifact that is actually loaded at runtime.
 /// </summary>
 public static class FrameworkShaderManifest
@@ -87,6 +88,28 @@ public static class FrameworkShaderManifest
             License: "BSD-3-Clause",
             TargetSupport: ["android", "windows", "maccatalyst", "web"]
         ),
+        new FrameworkShaderAsset(
+            Id: "rendering.variable-blur",
+            FlutterAssetKey: null,
+            FlutterSourcePath: null,
+            FlutterSourceSha256: null,
+            AdaptedSourcePath: "Doroti/src/Doroti.Skia.Rendering/Shaders/variable_blur.sksl",
+            AdaptedSourceSha256: "69f5cd20f26761c2e1fabc74716524f9636c7f5290b335554b1da6af6d0bf08b",
+            OwningAssembly: "Doroti.Skia.Rendering",
+            EmbeddedResourceName: "Doroti.Skia.Rendering.Shaders.variable_blur.sksl",
+            Uniforms:
+            [
+                new("size", "float2"),
+                new("ramp", "float3"),
+                new("sigmas", "float2"),
+                new("axis", "float2"),
+                new("samples", "float"),
+            ],
+            Samplers: [new("inputImage", 0)],
+            License: "BSD-3-Clause",
+            // Implementation targets, not a claim of device validation.
+            TargetSupport: ["android", "windows", "ios", "macos", "maccatalyst", "linux", "web"]
+        ),
     ];
 
     public static IReadOnlyList<FrameworkShaderAsset> Assets => _assets;
@@ -106,7 +129,8 @@ public sealed record FrameworkShaderDiagnostic(
 );
 
 /// <summary>
-/// One asynchronous loader for framework and application runtime-effect assets.
+/// Shared loader for embedded framework runtime-effect assets, with synchronous
+/// renderer access and the existing asynchronous framework API.
 /// It verifies the packaged bytes and ABI before exposing a FragmentProgram. A failed
 /// load is reported through diagnostics and never converted into a transparent effect.
 /// </summary>
@@ -142,19 +166,24 @@ public static partial class FrameworkShaderLoader
 
     public static IReadOnlyList<FrameworkShaderDiagnostic> Diagnostics => DiagnosticLog.ToArray();
 
-    public static Future<FragmentProgram> LoadProgram(string assetId)
-    {
-        var task = ProgramCache
+    public static Future<FragmentProgram> LoadProgram(string assetId) =>
+        Future<FragmentProgram>.fromTask(GetProgramTask(assetId));
+
+    // Embedded assembly bytes are loaded synchronously, so this cached task is
+    // already completed (or faulted). Never route external I/O through this path.
+    internal static FragmentProgram LoadEmbeddedProgram(string assetId) =>
+        GetProgramTask(assetId).GetAwaiter().GetResult();
+
+    private static Task<FragmentProgram> GetProgramTask(string assetId) =>
+        ProgramCache
             .GetOrAdd(
                 assetId,
                 static id => new Lazy<Task<FragmentProgram>>(
-                    () => LoadProgramAsync(FrameworkShaderManifest.Get(id)),
+                    () => CreateProgramTask(FrameworkShaderManifest.Get(id)),
                     LazyThreadSafetyMode.ExecutionAndPublication
                 )
             )
             .Value;
-        return Future<FragmentProgram>.fromTask(task);
-    }
 
     /// <summary>Starts an asset load and observes both completion and failure.</summary>
     public static void BeginLoad(
@@ -210,16 +239,29 @@ public static partial class FrameworkShaderLoader
         }
     }
 
-    private static async Task<FragmentProgram> LoadProgramAsync(FrameworkShaderAsset asset)
+    private static Task<FragmentProgram> CreateProgramTask(FrameworkShaderAsset asset)
+    {
+        try
+        {
+            return Task.FromResult(LoadPackagedProgram(asset));
+        }
+        catch (Exception error)
+        {
+            // Preserve faulted-task behavior for LoadProgram/BeginLoad callers.
+            return Task.FromException<FragmentProgram>(error);
+        }
+    }
+
+    private static FragmentProgram LoadPackagedProgram(FrameworkShaderAsset asset)
     {
         var assembly = ResolveAssembly(asset.OwningAssembly);
-        await using var stream =
+        using var stream =
             assembly.GetManifestResourceStream(asset.EmbeddedResourceName)
             ?? throw new InvalidDataException(
                 $"Framework shader '{asset.Id}' is missing embedded resource '{asset.EmbeddedResourceName}'."
             );
         using var buffer = new MemoryStream();
-        await stream.CopyToAsync(buffer).ConfigureAwait(false);
+        stream.CopyTo(buffer);
         var bytes = buffer.ToArray();
         var adaptedHash = Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant();
         if (!string.Equals(adaptedHash, asset.AdaptedSourceSha256, StringComparison.Ordinal))
@@ -236,7 +278,7 @@ public static partial class FrameworkShaderLoader
         }
 
         ValidateAbi(asset, source);
-        return FragmentProgram.fromSource(source, asset.FlutterAssetKey);
+        return FragmentProgram.fromSource(source, asset.FlutterAssetKey ?? asset.Id);
     }
 
     private static Assembly ResolveAssembly(string name) =>

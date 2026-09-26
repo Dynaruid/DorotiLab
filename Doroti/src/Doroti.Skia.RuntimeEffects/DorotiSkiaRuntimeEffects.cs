@@ -119,7 +119,8 @@ public static partial class DorotiSkiaRuntimeEffects
         Func<Image, SKShader> imageShaderFactory,
         string backend = ValidationBackend,
         long contextGeneration = 0,
-        object? contextOwner = null
+        object? contextOwner = null,
+        SKShaderTileMode inputTileMode = SKShaderTileMode.Decal
     )
     {
         ArgumentNullException.ThrowIfNull(snapshot);
@@ -155,8 +156,8 @@ public static partial class DorotiSkiaRuntimeEffects
         try
         {
             var inputShader = input.ToShader(
-                SKShaderTileMode.Decal,
-                SKShaderTileMode.Decal,
+                inputTileMode,
+                inputTileMode,
                 inputSampling
             );
             childShaders.Add(inputShader);

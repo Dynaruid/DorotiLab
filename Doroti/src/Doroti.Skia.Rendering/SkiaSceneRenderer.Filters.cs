@@ -10,6 +10,7 @@ public sealed partial class SkiaSceneRenderer
 
     private static bool ContainsShader(ImageFilterSnapshot filter) =>
         filter.Shader is not null
+        || filter.VariableBlur is not null
         || (filter.Inner is not null && ContainsShader(filter.Inner))
         || (filter.Outer is not null && ContainsShader(filter.Outer));
 
@@ -300,7 +301,14 @@ public sealed partial class SkiaSceneRenderer
         }
         using var snapshot = layer.Snapshot();
         using var output = command.HostPayload is SceneImageFilterPayload imageFilter
-            ? ApplyGpuImageFilter(target, snapshot, imageFilter.Filter, width, height)
+            ? ApplyGpuImageFilter(
+                target,
+                snapshot,
+                imageFilter.Filter,
+                width,
+                height,
+                filterMatrix: canvas.TotalMatrix
+            )
             : null;
         target.Save();
         try
@@ -327,7 +335,8 @@ public sealed partial class SkiaSceneRenderer
         ImageFilterSnapshot filter,
         int width,
         int height,
-        bool isBackdrop = false
+        bool isBackdrop = false,
+        SKMatrix? filterMatrix = null
     )
     {
         if (filter.Outer is not null && filter.Inner is not null)
@@ -338,9 +347,12 @@ public sealed partial class SkiaSceneRenderer
                 filter.Inner,
                 width,
                 height,
-                isBackdrop
+                isBackdrop,
+                filterMatrix
             );
-            return ApplyGpuImageFilter(target, inner, filter.Outer, width, height, isBackdrop);
+            return ApplyGpuImageFilter(
+                target, inner, filter.Outer, width, height, isBackdrop, filterMatrix
+            );
         }
         if (filter.ColorFilter is not null && filter.Inner is not null)
         {
@@ -350,7 +362,8 @@ public sealed partial class SkiaSceneRenderer
                 filter.Inner,
                 width,
                 height,
-                isBackdrop
+                isBackdrop,
+                filterMatrix
             );
             return ApplyGpuImageFilter(
                 target,
@@ -361,9 +374,20 @@ public sealed partial class SkiaSceneRenderer
                 },
                 width,
                 height,
-                isBackdrop
+                isBackdrop,
+                filterMatrix
             );
         }
+        if (filter.VariableBlur is { } variable)
+            return ApplyVariableBlur(
+                target,
+                input,
+                variable,
+                filter.TileMode,
+                width,
+                height,
+                filterMatrix ?? target.TotalMatrix
+            );
         using var surface = CreateFilterSurface(target, width, height);
         var canvas = surface.Canvas;
         if (filter.Shader is FragmentShaderSnapshot fragment)

@@ -36,6 +36,27 @@ public abstract class ImageFilterConfig
         ImageFilterConfig inner
     ) => new _ComposeImageFilterConfig__image_filter_config(outer, inner);
 
+    /// <summary>Progressive blur with endpoints relative to the painted bounds:
+    /// (0,0) is top-left and (1,1) is bottom-right. Defaults to clear top, blurred bottom.</summary>
+    public static ImageFilterConfig CreateVariableBlur(
+        double startSigma = 0,
+        double endSigma = 20,
+        Offset? start = null,
+        Offset? end = null,
+        int maxSamples = 32,
+        TileMode tileMode = TileMode.clamp,
+        bool bounded = true
+    ) =>
+        new VariableBlurImageFilterConfig(
+            start ?? Offset.zero,
+            end ?? new Offset(0, 1),
+            startSigma,
+            endSigma,
+            maxSamples,
+            tileMode,
+            bounded
+        );
+
     public abstract ImageFilter resolve(ImageFilterContext context);
     public virtual ImageFilter? filter => null;
     public abstract string debugShortDescription { get; }

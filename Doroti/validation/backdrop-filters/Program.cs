@@ -17,6 +17,11 @@ using var renderer = new SkiaSceneRenderer(
     "backdrop-contract",
     enablePictureRasterCache: false
 );
+if (args.Contains("--variable-only"))
+{
+    VariableBlurValidation.Run(renderer, fixture, graphite);
+    return;
+}
 var swap = new double[] { 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0 };
 var shader = FragmentProgram
     .fromSource(
@@ -332,6 +337,7 @@ foreach (var (name, filter, native) in cases)
         }
     }
 }
+VariableBlurValidation.Run(renderer, fixture, graphite);
 foreach (var invalid in new[] { -1d, double.NaN, double.PositiveInfinity })
 {
     try

@@ -819,7 +819,8 @@ internal sealed record ImageFilterSnapshot(
     PlatformEffectStyle? PlatformEffectIntent = null,
     ImageFilterMorphology? Morphology = null,
     double RadiusX = 0,
-    double RadiusY = 0
+    double RadiusY = 0,
+    VariableBlurSettings? VariableBlur = null
 )
 {
     internal static ImageFilterSnapshot Capture(ImageFilter filter)
@@ -855,7 +856,8 @@ internal sealed record ImageFilterSnapshot(
             filter.PlatformEffectIntent,
             filter.morphology,
             filter.radiusX,
-            filter.radiusY
+            filter.radiusY,
+            filter.VariableBlur
         );
     }
 }

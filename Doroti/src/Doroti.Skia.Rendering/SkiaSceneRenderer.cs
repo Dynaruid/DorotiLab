@@ -2948,7 +2948,7 @@ public sealed partial class SkiaSceneRenderer
                 ? SKImageFilter.CreateDilate((float)filter.RadiusX, (float)filter.RadiusY)
                 : SKImageFilter.CreateErode((float)filter.RadiusX, (float)filter.RadiusY);
         }
-        if (filter.Shader is not null)
+        if (filter.Shader is not null || filter.VariableBlur is not null)
         {
             throw new InvalidOperationException(
                 "Shader image filters must be rendered through Doroti's GPU offscreen input path."
