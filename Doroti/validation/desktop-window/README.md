@@ -2,7 +2,7 @@
 
 Overall **PARTIAL**. This implements the main-window desktop contract and a
 Windows MAUI, AppKit macOS, restricted Mac Catalyst and basic Linux Qt Quick adapters, not the entire W0–W5 plan. The authoritative remaining work
-is in the root [work.md](../../../work.md) and the
+is preserved in the [archived work summary](../../../history/26-09-26/desktop-window-api-summary.md) and the
 [API/support document](../../docs/desktop-windows.md).
 
 All build/test commands used `run-with-timeout.py` (1,200 seconds). Shared build
