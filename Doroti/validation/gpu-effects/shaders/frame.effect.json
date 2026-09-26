@@ -1,0 +1,6 @@
+{
+  "schema": 1,
+  "assetId": "FrameContract",
+  "entryPoint": "fs_main",
+  "requiredBackends": ["vulkan-fragment"]
+}

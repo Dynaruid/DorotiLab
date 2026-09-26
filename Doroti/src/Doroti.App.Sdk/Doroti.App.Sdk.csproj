@@ -14,6 +14,7 @@
   <ItemGroup>
     <None Include="Sdk\Sdk.props" Pack="true" PackagePath="Sdk\Sdk.props" />
     <None Include="Sdk\Sdk.targets" Pack="true" PackagePath="Sdk\Sdk.targets" />
+    <None Include="Sdk\Doroti.GpuEffects.targets" Pack="true" PackagePath="Sdk\Doroti.GpuEffects.targets" />
     <None Include="..\Doroti.Runner.Sdk\Sdk\Doroti.DesktopBoundary.targets" Pack="true" PackagePath="Sdk\Doroti.DesktopBoundary.targets" Link="Sdk\Doroti.DesktopBoundary.targets" />
     <None Include="Sdk\Doroti.TypeScript.targets" Pack="true" PackagePath="Sdk\Doroti.TypeScript.targets" />
     <None Include="..\Doroti.Host.Web\Web\types\doroti-loader\index.d.ts" Pack="true" PackagePath="Sdk\types\doroti-loader\index.d.ts" Link="Sdk\types\doroti-loader\index.d.ts" />

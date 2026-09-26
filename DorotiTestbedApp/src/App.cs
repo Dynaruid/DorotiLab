@@ -185,6 +185,9 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
 
     private Widget CreateRootApp()
     {
+        if (Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE") is "gpu-effects" or "gpu-backdrop")
+            return new Material.MaterialApp(debugShowCheckedModeBanner: false,
+                home: new GpuEffectFixture(Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE") == "gpu-backdrop"));
         if (Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE") == "keyboard-input")
             return new Material.MaterialApp(debugShowCheckedModeBanner: false,
                 home: new KeyboardInputFixture());

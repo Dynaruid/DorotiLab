@@ -22,7 +22,8 @@ public sealed partial class SkiaSceneRenderer
         for (var i = start; i < end; i++)
         {
             if (
-                commands[i].HostPayload is SceneBackdropFilterPayload backdrop
+                commands[i].HostPayload is SceneGpuEffectPayload
+                || commands[i].HostPayload is SceneBackdropFilterPayload backdrop
                     && ContainsShader(backdrop.Filter)
                 || commands[i].HostPayload is SceneImageFilterPayload image
                     && image.Filter.Shader is null
@@ -189,6 +190,58 @@ public sealed partial class SkiaSceneRenderer
         List<FilterCanvasState> state
     )
     {
+        if (command.HostPayload is SceneGpuEffectPayload gpu)
+        {
+            var backend = SkiaGraphiteSession.CurrentRecording?.GpuEffects ?? SkiaGpuEffectScope.Current
+                ?? throw new PlatformNotSupportedException($"GPU effect '{gpu.Program.AssetId}' is unsupported by this host.");
+            using var backdropInput = gpu.IsBackdrop
+                ? target.Surface?.Snapshot() ?? throw new NotSupportedException("A GPU backdrop requires the current owned Skia layer.")
+                : null;
+            target.Save();
+            try
+            {
+                target.Translate((float)gpu.Offset.dx, (float)gpu.Offset.dy);
+                var matrix = target.TotalMatrix;
+                var mapped = matrix.MapRect(ToRect(gpu.Bounds));
+                if (!float.IsFinite(mapped.Left) || !float.IsFinite(mapped.Top) ||
+                    !float.IsFinite(mapped.Right) || !float.IsFinite(mapped.Bottom))
+                    throw new InvalidOperationException("GPU effect capture bounds are not finite.");
+                var left = MathF.Floor(mapped.Left);
+                var top = MathF.Floor(mapped.Top);
+                var captureWidth = checked((int)(MathF.Ceiling(mapped.Right) - left));
+                var captureHeight = checked((int)(MathF.Ceiling(mapped.Bottom) - top));
+                if (captureWidth <= 0 || captureHeight <= 0) return;
+                var captureMatrix = SKMatrix.Concat(SKMatrix.CreateTranslation(-left, -top), matrix);
+                var captureState = new List<FilterCanvasState> { new(c => c.SetMatrix(captureMatrix)) };
+                target.ResetMatrix();
+                target.Translate(left, top);
+                backend.Draw(target, captureWidth, captureHeight, input =>
+                {
+                    input.Clear(SKColors.Transparent);
+                    if (backdropInput is not null)
+                        input.DrawImage(backdropInput, -left, -top, new SKSamplingOptions(SKFilterMode.Nearest));
+                    else
+                    {
+                        foreach (var apply in captureState) apply.Apply(input);
+                        DrawGpuFilterScene(input, commands, start, end, captureWidth, captureHeight, captureState);
+                    }
+                }, gpu.Program, gpu.Parameters, (float)gpu.Bounds.width, (float)gpu.Bounds.height);
+            }
+            finally { target.Restore(); }
+            if (gpu.IsBackdrop)
+            {
+                target.Save();
+                try
+                {
+                    target.Translate((float)gpu.Offset.dx, (float)gpu.Offset.dy);
+                    var childState = new List<FilterCanvasState>(state)
+                    { new(c => c.Translate((float)gpu.Offset.dx, (float)gpu.Offset.dy)) };
+                    DrawGpuFilterScene(target, commands, start, end, width, height, childState);
+                }
+                finally { target.Restore(); }
+            }
+            return;
+        }
         using var layer = CreateFilterSurface(target, width, height);
         var canvas = layer.Canvas;
         // Image filters may read beyond the output clip (blur/morphology halos).

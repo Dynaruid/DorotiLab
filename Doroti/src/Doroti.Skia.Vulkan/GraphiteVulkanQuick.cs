@@ -134,6 +134,8 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
                 1,
                 1
             );
+            _session.GpuEffects = new VulkanGpuEffect(_vk, _physical, _device, _queue,
+                _family, _observer, _session);
             if (
                 nativeTextureExtensionsRequested
                 && VulkanNativeTextureImporter.SupportsLinux(_vk, _physical)

@@ -184,6 +184,8 @@ public sealed partial class SkiaGraphiteSession : IDisposable
         }
 
         _context.CheckAsyncWorkCompletion();
+        (GpuEffects as IDisposable)?.Dispose();
+        GpuEffects = null;
         NativeTextureImporter?.Dispose();
         NativeTextureImporter = null;
         _images.Dispose();
@@ -211,7 +213,7 @@ public sealed partial class SkiaGraphiteSession : IDisposable
         }
     }
 
-    public sealed class Frame
+    public sealed partial class Frame
     {
         private readonly SkiaGraphiteSession _session;
         private readonly SKGraphiteBackendTexture _backend;
@@ -493,6 +495,12 @@ public sealed partial class SkiaGraphiteSession : IDisposable
                 SkiaGpuSurfaces.CompleteRecording(_session._recorder, discarded: true);
                 _readback?.TrySetCanceled();
             }
+            // Earlier segments are already on the queue even though the final
+            // recording was cancelled. Do not return any borrowed GPU resource
+            // until the host establishes completion of those segments.
+            _completeSegmentsOnCancellation?.Invoke();
+            if (_completeSegmentsOnCancellation is not null)
+                _session._context.CheckAsyncWorkCompletion();
             _session._recordingFrame = null;
             _currentRecording = _previousRecording;
             Release();
@@ -511,6 +519,12 @@ public sealed partial class SkiaGraphiteSession : IDisposable
             }
 
             _recording?.Dispose();
+            foreach (var segment in _segments)
+                segment.Dispose();
+            _segments.Clear();
+            foreach (var resource in _segmentResources.AsEnumerable().Reverse())
+                resource.Dispose();
+            _segmentResources.Clear();
             foreach (var texture in NativeTextures.Values)
                 texture.Dispose();
             NativeTextures.Clear();

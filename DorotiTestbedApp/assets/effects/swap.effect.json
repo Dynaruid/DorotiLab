@@ -1,0 +1,6 @@
+{
+  "schema": 1,
+  "assetId": "SwapChannels",
+  "entryPoint": "fs_main",
+  "requiredBackends": ["vulkan-fragment", "webgpu-fragment", "webgl2-fragment", "metal-fragment"]
+}

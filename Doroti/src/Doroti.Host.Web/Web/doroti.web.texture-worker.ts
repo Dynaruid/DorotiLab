@@ -1,5 +1,6 @@
 import type { BrowserTextureFrame } from "./doroti.web.textures.js";
 import { stagePlatformBitmap } from "./doroti.web.js";
+import { releaseEffectPrograms } from "./doroti.web.gpu-effects.js";
 
 export interface TextureSurface {
   RegisterBrowserTexture(): string;
@@ -14,7 +15,7 @@ interface Entry {
   allocations: number;
 }
 interface Allocation { id: string; bytes: number; handle: number; retiring?: boolean; destroy(): void; }
-interface GlTable { textures: (WebGLTexture | null)[]; getNewId(table: (WebGLTexture | null)[]): number; currentContext: { GLctx: WebGL2RenderingContext }; }
+export interface GlTable { textures: (WebGLTexture | null)[]; getNewId(table: (WebGLTexture | null)[]): number; currentContext: { GLctx: WebGL2RenderingContext }; }
 let surface: TextureSurface;
 let gpu: typeof import("./doroti.webgpu.js") | undefined;
 let getGl: () => GlTable;
@@ -34,6 +35,28 @@ const completions = new Set<Promise<void>>();
 const counts = { received: 0, accepted: 0, rejected: 0, closed: 0, dropped: 0, imported: 0, drawn: 0, retired: 0, errors: 0 };
 const sourceBudget = 16 * 1024 * 1024;
 const viewBudget = 64 * 1024 * 1024;
+export { allocateEffect, executeEffect } from "./doroti.web.gpu-effects.js";
+export function effectGl(): GlTable {
+  if (closed || lost || gpu) throw new Error("WebGL effect requires the live Ganesh render owner.");
+  return getGl();
+}
+export function effectGpu(): typeof gpu {
+  if (closed || lost) throw new Error("GPU effect owner is unavailable.");
+  return gpu;
+}
+export function accountEffectBytes(token: number, extra: number): void {
+  const allocation = allocations.get(token);
+  if (!allocation || !Number.isSafeInteger(extra) || extra < 0 || bytes + extra > viewBudget)
+    throw new Error("GPU effect uniform exceeds the view budget.");
+  allocation.bytes += extra; bytes += extra; peakBytes = Math.max(peakBytes, bytes);
+}
+export function registerEffectAllocation(size: number, handle: number, destroy: () => void): number {
+  if (closed || lost || bytes + size > viewBudget) throw new Error("GPU effect exceeds the view memory budget.");
+  const token = ++nextToken;
+  allocations.set(token, { id: "gpu-effect", bytes: size, handle, destroy });
+  bytes += size; peakBytes = Math.max(peakBytes, bytes);
+  return token;
+}
 
 export function initializeTextures(exports: TextureSurface, webgpu: typeof gpu, gl: () => GlTable, canvas?: () => OffscreenCanvas,
   onError?: (id: string, error: unknown) => void): void {
@@ -216,6 +239,7 @@ export async function disposeTextures(contextLost = false): Promise<void> {
   closed = true; lost = contextLost;
   for (const [id, entry] of entries) { clearPending(entry); surface.UnregisterBrowserTexture(id); }
   entries.clear(); await flushRetired(); await Promise.all(completions);
+  if (!gpu) releaseEffectPrograms(getGl().currentContext.GLctx);
 }
 export function diagnostics(): Record<string, unknown> {
   return { schema: 1, ...counts, registrations: entries.size, pending: [...entries.values()].filter(e => e.pending).length,

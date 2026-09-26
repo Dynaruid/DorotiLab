@@ -398,6 +398,8 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
                 1,
                 _pipelinedWindowFrames ? WindowFrameLimit : 1
             );
+            _session.GpuEffects = new VulkanGpuEffect(_vk, _physical, _device, _queue,
+                _family, _stockObserver, _session);
             if (
                 OperatingSystem.IsLinux()
                 && VulkanNativeTextureImporter.LinuxExtensions.All(extensionNames.Contains)

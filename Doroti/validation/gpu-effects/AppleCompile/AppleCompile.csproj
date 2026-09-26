@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>$(DefineConstants);IOS</DefineConstants>
+    <EnableNETAnalyzers>false</EnableNETAnalyzers>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../../src/Doroti.Host.Maui/AppleGpuEffects.cs" Link="AppleGpuEffects.cs" />
+    <ProjectReference Include="../../../src/Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj" />
+    <Reference Include="Microsoft.iOS" HintPath="$(AppleReferenceAssembly)" Private="false" />
+  </ItemGroup>
+  <Target Name="RequireAppleReference" BeforeTargets="ResolveReferences">
+    <Error Condition="!Exists('$(AppleReferenceAssembly)')" Text="Set AppleReferenceAssembly to the installed iOS reference pack Microsoft.iOS.dll. This target only compiles binding usage; it does not execute Metal." />
+  </Target>
+</Project>

@@ -1,0 +1,38 @@
+<Project>
+  <PropertyGroup>
+    <_DorotiWgslExtension Condition="$([MSBuild]::IsOSPlatform('Windows'))">.exe</_DorotiWgslExtension>
+    <DorotiWgslTool Condition="'$(DorotiWgslTool)' == ''">$(MSBuildThisFileDirectory)..\..\..\..\tools\Doroti.Wgsl\target\debug\doroti-wgsl$(_DorotiWgslExtension)</DorotiWgslTool>
+  </PropertyGroup>
+  <Target Name="PrepareDorotiGpuEffects" Condition="'@(DorotiGpuEffect)' != ''">
+    <Error Code="DOROTIWGSL100" Condition="!Exists('$(DorotiWgslTool)')"
+           Text="WGSL compiler is missing: $(DorotiWgslTool). Set DorotiWgslTool to the installed compiler. Repository developers build tools/Doroti.Wgsl with cargo build --locked; application builds never install Cargo dependencies." />
+    <Error Code="DOROTIWGSL101" Condition="!Exists('%(DorotiGpuEffect.Definition)')"
+           Text="Effect %(DorotiGpuEffect.Identity) requires an existing Definition file." />
+    <ItemGroup>
+      <_DorotiGpuEffect Include="@(DorotiGpuEffect)">
+        <OutputDirectory>$(IntermediateOutputPath)gpu-effects/%(DorotiGpuEffect.Filename)</OutputDirectory>
+      </_DorotiGpuEffect>
+      <_DorotiGpuEffectNames Include="@(DorotiGpuEffect->'%(Filename)')" />
+    </ItemGroup>
+    <RemoveDuplicates Inputs="@(_DorotiGpuEffectNames)">
+      <Output TaskParameter="Filtered" ItemName="_DorotiUniqueGpuEffectNames" />
+    </RemoveDuplicates>
+    <Error Code="DOROTIWGSL103" Condition="'@(_DorotiGpuEffectNames->Count())' != '@(_DorotiUniqueGpuEffectNames->Count())'"
+           Text="WGSL effect filenames must be unique within one application." />
+  </Target>
+  <Target Name="CompileDorotiGpuEffects" DependsOnTargets="PrepareDorotiGpuEffects"
+          Inputs="%(_DorotiGpuEffect.FullPath);%(_DorotiGpuEffect.Definition);$(DorotiWgslTool)"
+          Outputs="%(_DorotiGpuEffect.OutputDirectory)/Parameters.g.cs;%(_DorotiGpuEffect.OutputDirectory)/manifest.json"
+          Condition="'@(DorotiGpuEffect)' != ''">
+    <Delete Files="%(_DorotiGpuEffect.OutputDirectory)/Parameters.g.cs;%(_DorotiGpuEffect.OutputDirectory)/manifest.json" />
+    <Exec Command="&quot;$(DorotiWgslTool)&quot; compile &quot;%(_DorotiGpuEffect.FullPath)&quot; &quot;%(_DorotiGpuEffect.Definition)&quot; &quot;%(_DorotiGpuEffect.OutputDirectory)&quot;" />
+    <Error Code="DOROTIWGSL102" Condition="!Exists('%(_DorotiGpuEffect.OutputDirectory)/Parameters.g.cs') or !Exists('%(_DorotiGpuEffect.OutputDirectory)/manifest.json')"
+           Text="WGSL compiler returned without the required generated code or manifest." />
+  </Target>
+  <Target Name="IncludeDorotiGpuEffects" BeforeTargets="CoreCompile" DependsOnTargets="CompileDorotiGpuEffects">
+    <ItemGroup>
+      <Compile Include="@(_DorotiGpuEffect->'%(OutputDirectory)/Parameters.g.cs')" />
+      <FileWrites Include="@(_DorotiGpuEffect->'%(OutputDirectory)/**/*')" />
+    </ItemGroup>
+  </Target>
+</Project>

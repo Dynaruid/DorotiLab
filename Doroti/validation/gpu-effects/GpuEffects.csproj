@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AssemblyName>Doroti.Validation.GpuEffects</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="AppleCompile/**/*.cs" />
+    <Compile Remove="Contracts/**/*.cs" />
+    <ProjectReference Include="../../src/Doroti.Skia.Vulkan/Doroti.Skia.Vulkan.csproj" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Win32" />
+    <None Include="shaders/*.spv" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

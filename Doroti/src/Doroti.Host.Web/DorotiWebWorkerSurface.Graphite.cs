@@ -93,6 +93,7 @@ public static partial class DorotiWebWorkerSurface
         }
 
         _graphiteContext.CheckAsyncWorkCompletion();
+        using var gpuEffects = new Doroti.Skia.Rendering.SkiaGpuEffectScope(new BrowserGpuEffectBackend());
         var texture = GraphiteAcquire(width, height);
         var snapped = false;
         try

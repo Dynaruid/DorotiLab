@@ -35,6 +35,7 @@ internal sealed class UIKitPlatformRasterSurface : UIView
         UserInteractionEnabled = false;
         Hidden = true;
         _graphite = SkiaGraphiteSession.CreateMetal(device.Handle, queue.Handle, 1);
+        _graphite.GpuEffects = new AppleGpuEffects(device, queue, _graphite);
     }
 
     public override void LayoutSubviews()

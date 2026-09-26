@@ -47,6 +47,7 @@ Web에서는 Ganesh/WebGL2도 명시적으로 선택할 수 있습니다. 구현
 - **Windows·macOS·Linux 공통:** 저장소 스크립트 실행용 [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6)을 설치합니다.
 - **.NET SDK:** iOS 외 대상에는 10.0.400 계열을 설치합니다. iOS Testbed에는 .NET 10과 함께 11.0.100-rc.1.26425.128도 설치합니다.
 - **플랫폼별 도구:** 기본 Windows runner에는 [플랫폼별 준비 사항](Doroti/README.ko.md)의 Windows C++ 빌드 도구가 필요합니다. 다른 대상의 workload와 네이티브 도구도 해당 안내를 참고하세요.
+- **WGSL 샘플 빌드:** 현재 소스 트리 Testbed는 [WGSL 컴파일러](tools/Doroti.Wgsl/README.md)가 필요합니다. Rust 1.95.0 도구 체인을 준비하고 아래 명령으로 한 번 빌드합니다.
 
 저장소를 복제한 뒤 루트 디렉터리에서 샘플을 실행합니다.
 
@@ -54,6 +55,7 @@ Web에서는 Ganesh/WebGL2도 명시적으로 선택할 수 있습니다. 구현
 git clone https://github.com/Dynaruid/DorotiLab.git
 cd DorotiLab
 
+python Doroti/validation/run-with-timeout.py cargo build --locked --manifest-path tools/Doroti.Wgsl/Cargo.toml
 $env:DOROTI_TESTBED_MODE = 'sample'
 pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows
 ```
@@ -85,6 +87,7 @@ Material·Cupertino API의 동작은 Flutter를 참고합니다. 실제 구현�
 | [프레임워크 가이드](Doroti/README.ko.md) | SDK, 워크로드, 빌드 명령, 패키징, 호스트 설정 |
 | [샘플 앱 가이드](DorotiTestbedApp/README.ko.md) | 플랫폼별 실행, 샘플 화면, 렌더러 옵션, 문제 해결 |
 | [Dart-to-C# 컴파일러](tools/Doroti.DartToCSharp/README.ko.md) | 선택적 소스 가져오기 및 마이그레이션 도구 |
+| [WGSL GPU 효과](Doroti/validation/gpu-effects/README.md) | Windows fragment 구현·검증, 초기 도구 설치 및 남은 플랫폼 범위 |
 | [개발 이력](history/) | 지난 작업 계획과 검증 기록 |
 
 ## 프로젝트 상태

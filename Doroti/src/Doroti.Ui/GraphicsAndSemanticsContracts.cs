@@ -942,6 +942,7 @@ public sealed class ClipPathEngineLayer : EngineLayer;
 public sealed class ColorFilterEngineLayer : EngineLayer;
 
 public sealed class ImageFilterEngineLayer : EngineLayer;
+public sealed class GpuEffectEngineLayer : EngineLayer;
 
 public sealed class TransformEngineLayer : EngineLayer;
 
@@ -1097,6 +1098,11 @@ public sealed class SceneBuilder
                 cacheGeneration
             )
         );
+
+    public GpuEffectEngineLayer pushGpuEffect(GpuEffectProgram program, GpuEffectParameters parameters,
+        Rect bounds, Offset offset = default, GpuEffectEngineLayer? oldLayer = null, bool isBackdrop = false) =>
+        Push(oldLayer, "gpuEffect", new { program.AssetId, program.ContentHash, bounds, offset, isBackdrop },
+            new SceneGpuEffectPayload(program, parameters, offset, bounds, isBackdrop));
 
     public TransformEngineLayer pushTransform(
         IReadOnlyList<double> matrix4,

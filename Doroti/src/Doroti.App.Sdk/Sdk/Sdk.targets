@@ -1,4 +1,5 @@
 <Project>
+  <Import Project="Doroti.GpuEffects.targets" />
   <Import Project="Doroti.DesktopBoundary.targets" Condition="Exists('$(MSBuildThisFileDirectory)Doroti.DesktopBoundary.targets')" />
   <Import Project="../../Doroti.Runner.Sdk/Sdk/Doroti.DesktopBoundary.targets" Condition="!Exists('$(MSBuildThisFileDirectory)Doroti.DesktopBoundary.targets')" />
   <ItemGroup>
@@ -48,6 +49,8 @@
           TargetFramework="$(TargetFramework)" StartupType="$(DorotiApplicationType)" AssemblyName="$(AssemblyName)" />
       <_DorotiApplicationContract Include="@(EmbeddedResource)" Kind="Asset"
           LogicalName="%(EmbeddedResource.LogicalName)" />
+      <_DorotiApplicationContract Include="@(DorotiGpuEffect)" Kind="GpuEffect"
+          Definition="%(DorotiGpuEffect.Definition)" />
     </ItemGroup>
   </Target>
 

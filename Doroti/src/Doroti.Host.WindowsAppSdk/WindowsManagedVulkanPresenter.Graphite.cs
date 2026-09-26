@@ -92,6 +92,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
             checked((long)DeviceGeneration + 1),
             maxFrames: 1
         );
+        _graphite.GpuEffects = new VulkanGpuEffect(_vk, _physicalDevice, _device, _queue,
+            _queueFamily, _stockObserver, _graphite);
         _graphite.NativeTextureImporter = new VulkanNativeTextureImporter(
             _graphite,
             _vk,

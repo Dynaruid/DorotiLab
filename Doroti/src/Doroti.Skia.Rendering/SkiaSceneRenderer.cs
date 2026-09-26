@@ -1794,6 +1794,7 @@ public sealed partial class SkiaSceneRenderer
                 or "colorFilter"
                 or "shaderMask"
                 or "imageFilter"
+                or "gpuEffect"
                 or "backdropFilter";
 
     private void DrawPicture(SKCanvas canvas, IReadOnlyList<PathCommand> commands)

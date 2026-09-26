@@ -47,6 +47,7 @@ The sample application is the starting point for exploring Doroti. Prepare these
 - **Windows, macOS, and Linux:** Install [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6) to run the repository scripts.
 - **.NET SDK:** Install the 10.0.400 feature band for targets other than iOS. For the iOS Testbed, also install 11.0.100-rc.1.26425.128 alongside .NET 10.
 - **Platform tools:** The default Windows runner needs the Windows C++ build tools in the [platform prerequisites](Doroti/README.md#platform-prerequisites). See that guide for workloads and native tools for other targets.
+- **WGSL sample build:** The source-tree Testbed currently needs the [WGSL compiler](tools/Doroti.Wgsl/README.md). Install the Rust 1.95.0 toolchain and build it once as shown below.
 
 Clone the repository and run the sample from its root:
 
@@ -54,6 +55,7 @@ Clone the repository and run the sample from its root:
 git clone https://github.com/Dynaruid/DorotiLab.git
 cd DorotiLab
 
+python Doroti/validation/run-with-timeout.py cargo build --locked --manifest-path tools/Doroti.Wgsl/Cargo.toml
 $env:DOROTI_TESTBED_MODE = 'sample'
 pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows
 ```
@@ -85,6 +87,7 @@ The project began with a Dart-to-C# compiler to bootstrap framework code. Today,
 | [Framework guide](Doroti/README.md) | SDKs, workloads, build commands, packaging, and host configuration |
 | [Sample app guide](DorotiTestbedApp/README.md) | Platform launch commands, sample screens, renderer options, and troubleshooting |
 | [Dart-to-C# compiler](tools/Doroti.DartToCSharp/README.md) | Optional source import and migration tooling |
+| [WGSL GPU effects](Doroti/validation/gpu-effects/README.md) | Windows fragment implementation, source-tree compiler setup, and remaining platform work |
 | [Development history](history/) | Archived plans and validation records |
 
 ## Project status

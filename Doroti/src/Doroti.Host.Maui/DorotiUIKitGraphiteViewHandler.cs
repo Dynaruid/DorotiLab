@@ -420,6 +420,7 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
                 _session,
                 Device!.Handle
             );
+            _session.GpuEffects ??= new AppleGpuEffects(Device!, _queue, _session);
             var width = checked((int)drawable.Texture.Width);
             var height = checked((int)drawable.Texture.Height);
             frame = _session.BeginMetalFrame(width, height, drawable.Texture.Handle);

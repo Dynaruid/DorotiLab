@@ -2,7 +2,24 @@
 
 작성일: 2026-09-26
 
-상태: **계획 작성 완료 / 제품 구현 미착수**. 이번 작업은 현재 소스와 공식 문서 검토 및 이 문서 작성으로 한정한다. 아래 API·파일명·빌드 항목은 별도 표시가 없으면 제안이다. 코드 빌드, 셰이더 컴파일, GPU 실행 및 성능 측정은 이번 계획 작성에서 수행하지 않았다.
+상태: **PARTIAL — Windows WGSL fragment·backdrop 경로 구현·실행 확인, G0~G9 전체 미완료**. 2026-09-26 사용자의 전체 구현 요청에 따라 계획 전용 제한을 해제했으며 09-27까지 진행했다. WindowsAppSdk 및 MAUI Windows의 실제 화면을 확인하며, 다른 플랫폼은 우선 코드 구현까지 진행하는 범위다. 비Windows 실행은 `notVerified`로 남길 수 있지만 실행기 미구현을 완료로 간주하지 않는다.
+
+구현·검증 상세와 재현 명령은 [GPU 효과 검증 기록](Doroti/validation/gpu-effects/README.md), 도구 사용법은 [WGSL 도구](tools/Doroti.Wgsl/README.md)에 기록한다.
+
+| 단계 | 현재 결과 | 남은 핵심 작업 |
+| --- | --- | --- |
+| G0 | Windows 실제 GPU 및 두 제품 host에서 Skia→Vulkan fragment→Skia 합성 PASS. Metal/Dawn/WebGL2 동일 장치/context fragment 연결 코드 추가 | 비Windows 제품 host의 frame·완료 연결 실행 검증(notVerified) |
+| G1 | 불변 program/parameter, fragment binding, Naga scalar/vector/matrix/array serializer, ABI 오류 검사 구현 | 정식 capabilities/texture lease/graph schema, linear RGB/outsets, backend별 layout adapter |
+| G2 | Naga 30.0.1/Rust 1.95.0 고정, 4개 언어 산출물, App SDK 생성·증분·삭제/rename 검증 PASS | compiler RID 배포, runner variant catalog, NuGet/publish/ABI hash 검증. 현재 모든 variant를 생성 C#에 포함하는 초기 구현 |
+| G3 | GpuEffect→render object/layer→scene→실행기 연결, enabled 토글, transformed paint bounds/DPR 캡처 구현 | parameter-only input cache, 외부 texture revision 캐시, outsets/전체 중첩·수명 검증 |
+| G4 | WindowsAppSdk/MAUI 공통 Vulkan 실행 및 표시·3가지 resize·toggle PASS, Vulkan pipeline cache 재사용 7회/생성 1회 확인 | DPR 전환·애니메이션·device loss 검증과 G1/G2 남은 사항 |
+| G5 | 중첩 fragment 두 패스의 identity 픽셀 및 취소 회수 PASS | 정식 DAG, compute/storage, history, WebGL2 다중 패스 |
+| G6 | Android/Linux 공통 실행기 등록. Apple Metal fragment 실행기·호스트 등록, iOS reference assembly API 컴파일 PASS | metallib 패키징, Apple 장치 실행/수명 검증(notVerified) |
+| G7 | WebGPU/Dawn·WebGL2/Ganesh Worker fragment 실행기 및 fence retirement 코드, Web 호스트 빌드 PASS. Windows Edge WebGL2 3,072픽셀·uniform·GL 상태·회수 probe PASS | 제품 Worker 최종 표시·context loss 검증(notVerified), 정식 다중 패스/history/compute |
+| G8 | GpuBackdropEffect 구현, WindowsAppSdk/MAUI 배경 표시/resize/toggle PASS. 명시적 시작/정지 controller 및 시간 스냅샷 계약 8건 PASS | 복합 중첩·플랫폼 native 입력 capability·비동기 loader/준비 계약 |
+| G9 | 메모리 budget·완료 후 회수, compiler/SDK/Windows 검증과 문서 추가 | pool/cache, 배포, 비용 측정(notMeasured), 종료/device loss 검증 |
+
+현재 Windows 화면은 단일 fragment 효과의 수직 경로를 증명한다. 위 표의 미완료 항목이 있어 **G0~G4 전체 milestone 및 전체 작업 완료로 표시하지 않는다**. 기존 SkSL 회귀 159건과 native texture 계약 25건도 통과했지만 새 기능의 미검증 항목을 대신하지 않는다.
 
 ## 1. 목표와 완료 범위
 
@@ -193,12 +210,12 @@ WebGL2도 GLSL 소스를 패키징하며 브라우저가 compile/link를 수행�
 
 ## 5. 구현 단계와 통과 조건
 
-모든 단계는 현재 **NOT_STARTED**다. 아래 `[ ]`는 구현 작업이며 이번 소스 검토로 완료 처리하지 않는다.
+아래 체크리스트는 원래의 전체 완료 조건이다. 위 진행 표와 검증 기록을 함께 읽는다. 일부만 구현된 복합 항목은 `[ ]`를 유지하며, 언어 산출물 생성과 실행기 구현을 구분한다.
 
 ### G0 — 외부 GPU 패스 연결 가능성 검증
 
 - [ ] 현재 SkiaSharp/Graphite binding, Vulkan 상태 추적, Metal/Dawn 호스트 소유권을 확인하고 필요한 API 확장을 목록화한다.
-- [ ] Windows/Vulkan에서 호스트 소유 입력/출력 이미지와 고정 fragment shader로 `Skia draw → native pass → Skia composite` 최소 경로를 만든다. WGSL 전체 빌드 시스템보다 먼저 검증한다.
+- [x] Windows/Vulkan에서 호스트 소유 입력/출력 이미지와 고정 fragment shader로 `Skia draw → native pass → Skia composite` 최소 경로를 만든다. WGSL 전체 빌드 시스템보다 먼저 검증한다.
 - [ ] 실제 장치/queue 동일성, usage flags, MSAA resolve 필요 여부, 기록 순서, native pass 실행, 입력/출력 상태, 완료 후 release를 증명한다.
 - [ ] CPU readback 0회, 프레임 도중 device/queue idle wait 0회, 최종 표시 순서와 픽셀을 확인한다.
 - [ ] Metal/Dawn도 같은 연결을 할 수 있는지 소스와 최소 probe로 구분해 기록한다. 아직 실행하지 못한 플랫폼은 `notVerified`다.
@@ -211,7 +228,7 @@ WebGL2도 GLSL 소스를 패키징하며 브라우저가 compile/link를 수행�
 - [ ] `GpuEffectProgram`, parameter snapshot, capability, internal texture lease, 패스 definition schema를 설계·구현한다.
 - [ ] fragment 기본 프로파일, binding map, 픽셀/UV 좌표, 색 공간·alpha, outsets, 오류 계약을 고정한다.
 - [ ] `webgl2-fragment` 프로파일의 GLSL ES 3.00 제한, combined sampler/UBO mapping, capability 오류 및 명시적 대안 pass graph 계약을 확정한다.
-- [ ] WGSL 구조체 layout과 C# serializer의 golden을 만든다. `vec3`, matrix, array padding, `u32/i32/f32`를 포함한다.
+- [x] WGSL 구조체 layout과 C# serializer의 golden을 만든다. `vec3`, matrix, array padding, `u32/i32/f32`를 포함한다. Naga offset golden과 생성 serializer 구현 완료; 실행 UBO multiplier 픽셀도 별도로 확인했다.
 - [ ] 사용자 입력/엔진 예약 binding 충돌, 없는 entry point, 읽기·쓰기 alias, 잘못된 resource format을 진단한다.
 
 통과 조건: ABI를 단순 scalar 예제에만 맞추지 않고 구조체·배열 및 잘못된 선언까지 검증한다. unsupported capability는 명시적으로 보고한다.
@@ -228,19 +245,19 @@ WebGL2도 GLSL 소스를 패키징하며 브라우저가 compile/link를 수행�
 
 ### G3 — 위젯·렌더 레이어·장면 통합
 
-- [ ] Widgets에 `GpuEffect`, Rendering에 proxy render object/layer, Ui에 불변 scene payload를 추가한다.
+- [x] Widgets에 `GpuEffect`, Rendering에 proxy render object/layer, Ui에 불변 scene payload를 추가한다.
 - [ ] enabled, parameter update, child repaint, external texture revision, retained layer 및 dispose에 맞는 invalidation을 연결한다.
 - [ ] capture bounds/halo/DPR/transform/clip/opacity/mask와 합성 위치를 유지한다. hit testing과 semantics 계약을 유지한다.
-- [ ] 미지원 host에서 분명한 capability 오류를 반환한다. SkSL 필터 또는 CPU 효과로 조용히 바꾸지 않는다.
+- [x] 미지원 host/profile에서 명시적인 지원 오류를 반환한다. SkSL 필터 또는 CPU 효과로 조용히 바꾸지 않는다. 정식 capability 조회 API는 G1 잔여 작업이다.
 - [ ] 실제 wire transport를 사용하는 경로가 있다면 opcode/schema를 명시적으로 확장하고 encode/decode golden을 추가한다. 비활성 display-list 경로를 제품 실행 증거로 사용하지 않는다.
 
 통과 조건: 위젯에서 생성한 scene이 실제 실행기에 도달하고, 낮은 수준의 수동 SceneBuilder 예제에만 기능이 존재하지 않는다.
 
 ### G4 — Windows/Vulkan 제품 경로 완성
 
-- [ ] G0의 검증된 frame segment 계약을 `SkiaGraphiteSession`과 host/Vulkan 계층에 통합한다.
+- [x] G0의 검증된 frame segment 계약을 `SkiaGraphiteSession`과 host/Vulkan 계층에 통합한다.
 - [ ] input/output allocator, descriptor bindings, pipeline cache, native render pass, barrier, output wrapping, retirement를 구현한다.
-- [ ] WindowsAppSdk 기본 host와 MAUI host의 공통 Vulkan 경로를 연결한다. 기존 DXGI/HWND presentation 경로는 유지한다.
+- [x] WindowsAppSdk 기본 host와 MAUI host의 공통 Vulkan 경로를 연결한다. 기존 DXGI/HWND presentation 경로는 유지한다.
 - [ ] offscreen pixel 비교와 실제 testbed 표시를 모두 확인한다. resize·DPR·스크롤·애니메이션 중 stale texture/blank frame을 확인한다.
 - [ ] 기존 [backdrop-filters](Doroti/validation/backdrop-filters/README.md), [texture 경로](Doroti/validation/textures/README.md), 플랫폼 raster/resize 경로 회귀를 수행한다.
 
@@ -260,7 +277,7 @@ WebGL2도 GLSL 소스를 패키징하며 브라우저가 compile/link를 수행�
 
 - [ ] Apple SDK별 `.metallib` 생성, native resource packaging, 동일 MTLDevice/queue 기반 input/output texture와 encoder 연결을 구현한다.
 - [ ] Graphite Metal 기록과 사용자 encoder 사이 순서·완료·lease를 연결한다. iOS device와 simulator 산출물을 구분한다.
-- [ ] Android/Linux의 기존 Vulkan 장치·queue·surface lifecycle에 공통 실행기를 연결한다.
+- [x] Android/Linux의 기존 Vulkan 장치·queue·surface lifecycle에 공통 실행기를 등록했다. 플랫폼별 실행·device/surface 재생성 검증은 notVerified다.
 - [ ] Android pause/resume·surface 재생성, Apple background/foreground, Linux resize·teardown을 확인한다.
 
 통과 조건: macOS AppKit·Mac Catalyst, iOS 실기기, Android 실기기, Linux Qt GPU host에서 에셋 패키징→표시→자원 회수 증거를 남긴다. iOS simulator는 device와 별도 행으로 관리한다. 크로스 빌드나 emulator만으로 실기기 항목을 PASS 처리하지 않는다.
@@ -293,7 +310,7 @@ WebGL2도 GLSL 소스를 패키징하며 브라우저가 compile/link를 수행�
 
 ### G8 — 배경 효과와 제품 API 마무리
 
-- [ ] `GpuBackdropEffect`를 추가해 child 입력과 backdrop 입력을 명확히 구분한다.
+- [x] `GpuBackdropEffect`를 추가해 child 입력과 backdrop 입력을 명확히 구분한다.
 - [ ] 현재 레이어의 선행 그리기만 입력에 포함하고, 자기 출력이나 뒤의 형제 위젯이 입력에 섞이지 않게 한다.
 - [ ] 중첩 opacity/mask/filter, 겹치는 배경 영역, halo, blend mode 및 유지된 레이어를 검증한다.
 - [ ] WebGL2에서도 현재 레이어의 backdrop 입력을 texture/FBO로 확보해 처리한다. 최종 canvas 전체를 복사해 중첩 레이어 의미를 잃거나 `readPixels`로 우회하지 않는다.
@@ -363,7 +380,7 @@ WebGL2도 GLSL 소스를 패키징하며 브라우저가 compile/link를 수행�
 - 정확한 새 검증 프로젝트명·명령은 해당 단계 구현 시 확정하여 기록한다. 존재하지 않는 프로젝트를 실행한 것으로 보고하지 않는다.
 - 원시 캡처·로그는 삭제 가능한 `Doroti/artifacts/gpu-effects/`에 저장한다. 장치·버전·명령·결과·허용 오차·제약은 추적되는 `Doroti/validation/gpu-effects/` 요약에 남긴다.
 
-현재 증거 상태: 소스 검토 **완료**, WGSL compiler **NOT_STARTED**, native effect executor **NOT_STARTED**, 플랫폼 GPU/표시 검증 **notVerified**, 성능·메모리 **notMeasured**. 기존 SkSL 필터 검증 결과를 새 WGSL 실행기의 결과로 재사용하지 않는다.
+현재 증거 상태: fragment/backdrop/controller와 Vulkan/Metal/WebGPU/WebGL2 실행 코드 **부분 구현**, WindowsAppSdk/MAUI fragment 및 WindowsAppSdk backdrop 표시·resize·toggle **PASS**, compute/storage/history·정식 패키징·캐시 일부 **미완료**, 비Windows 제품 실행 **notVerified**, 성능 **notMeasured**. Windows Edge의 독립 WebGL2 probe PASS는 전체 Ganesh Worker 실행 PASS가 아니다. Native probe의 peak/live allocation은 앱 전체 메모리나 장시간 안정성 측정으로 확대 해석하지 않는다.
 
 ## 8. 공식 참고 자료
 

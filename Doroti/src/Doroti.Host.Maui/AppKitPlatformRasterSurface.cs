@@ -46,6 +46,7 @@ internal sealed class AppKitPlatformRasterSurface : NSView
         if (DorotiMacOSMetalView.UseGraphite)
         {
             _graphite = SkiaGraphiteSession.CreateMetal(device.Handle, queue.Handle, 1);
+            _graphite.GpuEffects = new AppleGpuEffects(device, queue, _graphite);
         }
     }
 

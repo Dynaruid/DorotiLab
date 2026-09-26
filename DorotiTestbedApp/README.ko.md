@@ -27,6 +27,14 @@ JavaScript 실행 컨트롤도 표시합니다. attachment만 제공하는 호�
 
 ## 실행 준비
 
+현재 Testbed의 `.wgsl` 에셋에는 Rust 1.95.0 기반 [WGSL 컴파일러](../tools/Doroti.Wgsl/README.md)가 필요합니다. 저장소 루트에서 한 번 준비합니다:
+
+```powershell
+python Doroti/validation/run-with-timeout.py cargo build --locked --manifest-path tools/Doroti.Wgsl/Cargo.toml
+```
+
+`DOROTI_TESTBED_MODE=gpu-effects`는 Windows에서 검증한 색상 교환 위젯을, `gpu-backdrop`은 배경 효과를 엽니다. [구현·검증 범위](../Doroti/validation/gpu-effects/README.md)는 현재 **PARTIAL**입니다. Metal/Web fragment 실행 코드를 포함하지만 비Windows 제품 실행은 `notVerified`입니다.
+
 Windows·macOS·Linux에서 [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6)을 설치하세요. 모든 명령은 **저장소 루트 `DorotiLab`**에서 PowerShell로 실행합니다.
 macOS/Linux의 기본 셸이 zsh/bash라면 먼저 `pwsh -NoProfile`을 실행하세요.
 iOS 외 대상은 저장소 루트 [global.json](../global.json)이 선택하는 **.NET SDK 10.0.400 계열**을 사용합니다.

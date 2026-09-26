@@ -216,6 +216,7 @@ public static partial class DorotiWebWorkerSurface
             _context!.ResetContext(GRGlBackendState.All);
         }
 
+        using var gpuEffects = new Doroti.Skia.Rendering.SkiaGpuEffectScope(new BrowserGpuEffectBackend());
         string result;
         using (new SKAutoCanvasRestore(_surface!.Canvas, true))
         {

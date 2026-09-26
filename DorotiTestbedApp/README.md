@@ -28,6 +28,14 @@ interactive local page and a reset action.
 
 ## Prerequisites
 
+The Testbed's `.wgsl` assets currently require the Rust 1.95.0 [WGSL compiler](../tools/Doroti.Wgsl/README.md). Build it once from the repository root:
+
+```powershell
+python Doroti/validation/run-with-timeout.py cargo build --locked --manifest-path tools/Doroti.Wgsl/Cargo.toml
+```
+
+`DOROTI_TESTBED_MODE=gpu-effects` opens the channel-swap widget verified on Windows; `gpu-backdrop` opens the backdrop example. [Implementation and evidence](../Doroti/validation/gpu-effects/README.md) remain **PARTIAL**. Metal/Web fragment executors are included, with non-Windows product execution `notVerified`.
+
 Install [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6) on Windows, macOS, or Linux, then run all commands in PowerShell from the **repository root, `DorotiLab`**.
 If your macOS/Linux shell is zsh/bash, enter `pwsh -NoProfile` first.
 Use the **.NET SDK 10.0.400 feature band** selected by the repository root [global.json](../global.json) for targets other than iOS.

@@ -461,6 +461,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
                     _commandQueue.Handle,
                     Interlocked.Increment(ref _contextGeneration)
                 );
+                _graphite.GpuEffects = new AppleGpuEffects(_metalDevice, _commandQueue, _graphite);
             }
             if (_graphite is not null)
                 _graphite.NativeTextureImporter ??= new AppleNativeTextureImporter(
