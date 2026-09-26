@@ -19,6 +19,7 @@ The project began by translating Flutter framework source code into C# and is no
 - **Shared application code** — keep your UI in a platform-neutral library with separate runners for each target.
 - **Material and Cupertino widgets** — build on Flutter-inspired APIs implemented and maintained in C#.
 - **SkiaSharp-based GPU rendering** — access Skia Graphite from C# through SkiaSharp, using Vulkan, Metal, or WebGPU depending on the platform.
+- **Image and backdrop filters** — blur, matrix transforms, dilation/erosion, saturation/color filters, and composed GPU shaders. See [API and validation coverage](Doroti/validation/backdrop-filters/README.md).
 - **Native integration** — platform hosts connect the UI to windows, input, text entry, clipboard, and accessibility services.
 - **A sample app and templates** — explore `DorotiTestbedApp` and the `doroti-app` project template.
 

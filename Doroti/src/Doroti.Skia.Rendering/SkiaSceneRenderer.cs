@@ -1495,6 +1495,11 @@ public sealed partial class SkiaSceneRenderer
     )
     {
         var restoreCounts = new Stack<int>();
+        if (RequiresGpuFilterLayers(commands, start, end))
+        {
+            DrawGpuFilterScene(canvas, commands, start, end, pixelWidth, pixelHeight);
+            return;
+        }
         DrawCommands(commands, start, end);
         if (restoreCounts.Count != 0)
         {
@@ -2936,6 +2941,12 @@ public sealed partial class SkiaSceneRenderer
 
     private SKImageFilter CreateImageFilter(ImageFilterSnapshot filter)
     {
+        if (filter.Morphology is { } morphology)
+        {
+            return morphology == ImageFilterMorphology.dilate
+                ? SKImageFilter.CreateDilate((float)filter.RadiusX, (float)filter.RadiusY)
+                : SKImageFilter.CreateErode((float)filter.RadiusX, (float)filter.RadiusY);
+        }
         if (filter.Shader is not null)
         {
             throw new InvalidOperationException(

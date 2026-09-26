@@ -265,6 +265,7 @@ public static class PlatformCompositionPlanner
                             ColorFilter: null,
                             Matrix4: null,
                             Shader: null,
+                            Morphology: null,
                             TileMode: TileMode.clamp
                         } filter
                     || !double.IsFinite(filter.SigmaX)

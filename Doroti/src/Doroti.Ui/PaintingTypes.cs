@@ -641,10 +641,49 @@ public sealed record ColorFilter
     public static ColorFilter linearToSrgbGamma() => new(ColorFilterKind.linearToSrgbGamma);
 
     public static ColorFilter srgbToLinearGamma() => new(ColorFilterKind.srgbToLinearGamma);
+
+    public static ColorFilter saturation(double saturation)
+    {
+        if (!double.IsFinite(saturation))
+            throw new ArgumentOutOfRangeException(nameof(saturation));
+        var r = (1 - saturation) * .2126;
+        var g = (1 - saturation) * .7152;
+        var b = (1 - saturation) * .0722;
+        return matrix([
+            r + saturation,
+            g,
+            b,
+            0,
+            0,
+            r,
+            g + saturation,
+            b,
+            0,
+            0,
+            r,
+            g,
+            b + saturation,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+        ]);
+    }
+}
+
+public enum ImageFilterMorphology
+{
+    dilate,
+    erode,
 }
 
 public sealed record ImageFilter
 {
+    // Doroti's production renderers implement shader filters on both Ganesh and
+    // Graphite. This advertises that API capability, not a CPU canvas fallback.
     public static bool isShaderFilterSupported => true;
 
     public ImageFilter(
@@ -675,6 +714,25 @@ public sealed record ImageFilter
     public ImageFilter(ColorFilter filter)
     {
         colorFilter = filter;
+    }
+
+    public static implicit operator ImageFilter(ColorFilter filter) => new(filter);
+
+    public static ImageFilter dilate(double radiusX = 0, double radiusY = 0) =>
+        new(ImageFilterMorphology.dilate, radiusX, radiusY);
+
+    public static ImageFilter erode(double radiusX = 0, double radiusY = 0) =>
+        new(ImageFilterMorphology.erode, radiusX, radiusY);
+
+    private ImageFilter(ImageFilterMorphology morphology, double radiusX, double radiusY)
+    {
+        if (!double.IsFinite(radiusX) || radiusX < 0 || radiusX > float.MaxValue)
+            throw new ArgumentOutOfRangeException(nameof(radiusX));
+        if (!double.IsFinite(radiusY) || radiusY < 0 || radiusY > float.MaxValue)
+            throw new ArgumentOutOfRangeException(nameof(radiusY));
+        this.morphology = morphology;
+        this.radiusX = radiusX;
+        this.radiusY = radiusY;
     }
 
     public ImageFilter(
@@ -724,6 +782,9 @@ public sealed record ImageFilter
     public PlatformEffectStyle? PlatformEffectIntent { get; init; }
     public double sigmaX { get; }
     public double sigmaY { get; }
+    public ImageFilterMorphology? morphology { get; }
+    public double radiusX { get; }
+    public double radiusY { get; }
     public TileMode tileMode { get; }
     public Rect? bounds { get; }
     public ImageFilter? outer { get; }
@@ -738,6 +799,8 @@ public sealed record ImageFilter
             ? $"{inner.debugShortDescription} -> {outer.debugShortDescription}"
         : shader is not null ? "shader"
         : matrix4 is not null ? "matrix"
+        : morphology is { } operation ? operation.ToString()
+        : colorFilter is not null ? "color"
         : "blur";
 }
 

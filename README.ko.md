@@ -19,6 +19,7 @@ Flutter 프레임워크 소스를 C#으로 변환하는 데서 시작했으며, 
 - **애플리케이션 코드 공유** — 플랫폼 중립 라이브러리에 UI를 작성하고, 각 플랫폼의 실행 프로젝트에서 사용합니다.
 - **Material·Cupertino 위젯** — Flutter에서 익숙한 API를 C#으로 구현하고 유지보수합니다.
 - **SkiaSharp 기반 GPU 렌더링** — C#에서 SkiaSharp를 통해 Skia Graphite를 사용하며, 플랫폼에 따라 Vulkan, Metal, WebGPU로 렌더링합니다.
+- **이미지·배경 필터** — 블러, 행렬 변환, 팽창·침식, 채도·색상 필터와 GPU 셰이더 조합을 제공합니다. [API와 검증 범위](Doroti/validation/backdrop-filters/README.md)를 참고하세요.
 - **네이티브 연동** — 플랫폼 호스트가 창, 입력, 텍스트 입력, 클립보드, 접근성 서비스를 연결합니다.
 - **샘플 앱과 템플릿** — `DorotiTestbedApp`과 `doroti-app` 프로젝트 템플릿으로 구성을 살펴볼 수 있습니다.
 

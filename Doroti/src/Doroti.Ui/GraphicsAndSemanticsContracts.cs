@@ -816,7 +816,10 @@ internal sealed record ImageFilterSnapshot(
     IReadOnlyList<double>? Matrix4,
     FilterQuality FilterQuality,
     ShaderSnapshot? Shader,
-    PlatformEffectStyle? PlatformEffectIntent = null
+    PlatformEffectStyle? PlatformEffectIntent = null,
+    ImageFilterMorphology? Morphology = null,
+    double RadiusX = 0,
+    double RadiusY = 0
 )
 {
     internal static ImageFilterSnapshot Capture(ImageFilter filter)
@@ -849,7 +852,10 @@ internal sealed record ImageFilterSnapshot(
             filter.matrix4 is null ? null : Array.AsReadOnly(filter.matrix4.ToArray()),
             filter.filterQuality,
             null,
-            filter.PlatformEffectIntent
+            filter.PlatformEffectIntent,
+            filter.morphology,
+            filter.radiusX,
+            filter.radiusY
         );
     }
 }
