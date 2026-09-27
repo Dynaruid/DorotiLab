@@ -66,11 +66,13 @@ internal sealed class CupertinoSampleState : State<CupertinoSample>
                 new(icon: new Icon(CupertinoIcons.square_grid_2x2), label: "Components"),
                 new(icon: new Icon(CupertinoIcons.person), label: "Profile"),
                 new(icon: new Icon(CupertinoIcons.settings), label: "Settings"),
+                new(icon: new Icon(CupertinoIcons.list_bullet), label: "Variable Blur"),
             }),
             tabBuilder: (tabContext, index) => index switch
             {
                 1 => Profile(tabContext),
                 2 => Settings(tabContext),
+                3 => new VariableBlurPage(),
                 _ => Components(tabContext),
             }
         )

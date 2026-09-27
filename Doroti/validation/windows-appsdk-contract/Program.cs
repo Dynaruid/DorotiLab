@@ -43,6 +43,29 @@ Check(released.Length == 1 && released[0].physical == 0x700e5 && released[0].syn
 Check(keyboard.ReleaseAll(TimeSpan.Zero).Length == 0, "Duplicate focus loss releases no keys");
 Check(keyboard.Apply(TimeSpan.Zero, KeyEventType.down, 0x1e, 'Q', "q").logical == 'q', "New focus session uses new layout");
 
+// Continuous input must not starve a slower GPU frame. Simulate input arriving
+// on the platform thread after scene submission and before each presentation.
+var inputState = new WindowsFrameInputState();
+var nextInput = inputState.Receive();
+var presentationsDuringGesture = 0;
+var rejectedByIngressPolicy = 0;
+for (var frame = 0; frame < 24; frame++)
+{
+    inputState.Dispatch(nextInput);
+    var sceneInput = inputState.Dispatched;
+    nextInput = Task.Run(inputState.Receive).GetAwaiter().GetResult();
+    Check(inputState.Dispatched == sceneInput, "Queued input is not stamped onto the current scene");
+    if (inputState.CanPresent(sceneInput)) presentationsDuringGesture++;
+    if (!inputState.IsLatestReceived(sceneInput)) rejectedByIngressPolicy++;
+    Check(!inputState.CanPresent(sceneInput - 1), "Pre-dispatch retained scene is still rejected");
+    Check(!inputState.IsLatestReceived(sceneInput), "Prepared resize still rejects newer native input");
+}
+Check(presentationsDuringGesture == 24 && rejectedByIngressPolicy == 24,
+    "Continuous input presents every completed frame instead of waiting for gesture end");
+inputState.Dispatch(nextInput);
+Check(inputState.CanPresent(nextInput) && inputState.IsLatestReceived(nextInput),
+    "Final gesture input is eligible for ordinary and prepared presentation");
+
 // Exercise the real message-only HWND, including worker enqueue and async continuation.
 using var dispatcher = new WindowsPlatformViewDispatcher();
 var order = new List<int>();

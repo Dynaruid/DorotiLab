@@ -5,6 +5,13 @@ Cupertino 스타일의 독립 Doroti 샘플 앱입니다. 공통 C# UI와 Window
 - **Components**: 카운터 버튼, 스위치, 슬라이더, 활동 표시기, 다이얼로그
 - **Profile**: 이름 입력과 인사말, 탭 전환 시 입력 상태 유지
 - **Settings**: 시스템 / 라이트 / 다크 테마 선택
+- **Variable Blur**: 60개 항목의 ListView 위에 상단 고정 VariableBlur 오버레이, 강도 조절과 켜기/끄기
+
+Variable Blur 페이지는 리스트 상단 180px에 `BackdropFilter`와
+`ImageFilterConfig.CreateVariableBlur(startSigma: 강도, endSigma: 0)`를 적용합니다.
+위쪽은 흐리고 아래쪽은 선명하며, 블러 영역에서도 리스트를 스크롤할 수 있습니다.
+구현은 [src/VariableBlurPage.cs](src/VariableBlurPage.cs)에 있습니다.
+VariableBlur에는 GPU 렌더러가 필요하며, 기본 CPU 래스터 검증에는 이 탭의 블러 렌더링이 포함되지 않습니다.
 
 설정과 입력값은 앱 실행 중에만 유지됩니다. Cupertino Icons 1.0.9 폰트와 해당 라이선스는 `assets/fonts`에 포함되어 있습니다.
 
@@ -43,3 +50,13 @@ python ./Doroti/validation/run-with-timeout.py dotnet run --project ./Doroti/val
 히트 테스트, 선택된 탭 번호, 표시된 페이지와 같은 탭 재선택까지 확인합니다.
 PNG는 검증 프로젝트의 `bin/Release/net10.0/snapshots`에 생성됩니다.
 이 검증에는 실제 OS 입력 및 Windows / 브라우저 화면 표시 확인은 포함되지 않습니다.
+
+Variable Blur는 Vulkan GPU가 있는 환경에서 별도로 검증합니다.
+
+```powershell
+python ./Doroti/validation/run-with-timeout.py dotnet run --project ./Doroti/validation/cupertino-sample -c Release -- --variable-blur
+python ./Doroti/validation/run-with-timeout.py dotnet run --project ./Doroti/validation/cupertino-sample -c Release --no-build -- --variable-blur --portrait
+```
+
+블러 영역에서 합성 트랙패드 pan/zoom을 시작해 종료 이벤트 전의 리스트 위치와
+GPU 렌더링 픽셀 변화를 확인합니다. 실제 물리 트랙패드 입력 및 화면 표시 지연은 별도 확인 대상입니다.

@@ -606,7 +606,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 if (action == 1)
                 {
                     vulkan.CancelPreparedMovingFrame();
-                    _movingFrame = nativeKey.ToKey(host.InputSequence);
+                    _movingFrame = nativeKey.ToKey(host.ReceivedInputSequence);
                     return 0;
                 }
                 if (action is not (2 or 5) || _movingFrame is not { } key)
@@ -633,7 +633,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 }
                 if (
                     key != nativeKey.ToKey(key.InputSequence)
-                    || !host.IsInputSequenceCurrent(key.InputSequence)
+                    || !host.IsReceivedInputSequenceCurrent(key.InputSequence)
                     || !host.IsLatestResizeGeneration(key.MetricsGeneration)
                 )
                 {
@@ -925,6 +925,9 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     return presented = false;
                 }
 
+                // Input queued while rasterizing is for the next framework
+                // frame. Reject only scenes older than dispatched input;
+                // comparing with native ingress starves continuous gestures.
                 if (!host.IsInputSequenceCurrent(candidate.InputSequence))
                 {
                     staleInputPrevented = true;

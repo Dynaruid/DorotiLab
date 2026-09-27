@@ -31,7 +31,7 @@ internal sealed unsafe class WindowsManagedProductHost
     private readonly WindowsKeyboardState _keyboard = new();
     private Action<TimeSpan, DorotiViewEpoch>? _pendingFrame;
     private bool _disposed;
-    private long _inputSequence;
+    private readonly WindowsFrameInputState _inputState = new();
     private bool _nativeActive = true;
     private ulong _nextClipboardRequest;
     private long _nativeClockOrigin = -1;
@@ -94,9 +94,10 @@ internal sealed unsafe class WindowsManagedProductHost
         );
         void DispatchNativePacket(PointerDataPacket packet)
         {
-            var sequence = Interlocked.Increment(ref _inputSequence);
+            var sequence = _inputState.Receive();
             EnqueueInput(() =>
             {
+                _inputState.Dispatch(sequence);
                 PointerData?.Invoke(packet);
                 InputReceived?.Invoke(sequence, packet.data[^1].timeStamp);
             });
@@ -112,7 +113,10 @@ internal sealed unsafe class WindowsManagedProductHost
     internal bool IsLatestResizeGeneration(ulong generation) =>
         generation <= long.MaxValue && _coordinator.IsLatest((long)generation);
 
-    internal bool IsInputSequenceCurrent(long inputSequence) => inputSequence >= InputSequence;
+    internal bool IsInputSequenceCurrent(long inputSequence) => _inputState.CanPresent(inputSequence);
+    internal long ReceivedInputSequence => _inputState.Received;
+    internal bool IsReceivedInputSequenceCurrent(long inputSequence) =>
+        _inputState.IsLatestReceived(inputSequence);
 
     public ValueTask<UrlLaunchResult> LaunchUrlAsync(
         string absoluteUrl,
@@ -138,7 +142,7 @@ internal sealed unsafe class WindowsManagedProductHost
     private long _metricsGeneration;
     public ViewMetrics Metrics { get; private set; }
     public PlatformConfiguration Configuration { get; private set; }
-    public long InputSequence => Volatile.Read(ref _inputSequence);
+    public long InputSequence => _inputState.Dispatched;
     public long SurfaceGeneration => Metrics.surfaceGeneration;
     public DorotiResizeEpoch ResizeTarget =>
         new(
@@ -379,7 +383,7 @@ internal sealed unsafe class WindowsManagedProductHost
             throw new InvalidDataException("Native pointer packet is invalid.");
         }
 
-        var sequence = Interlocked.Increment(ref _inputSequence);
+        var sequence = _inputState.Receive();
         var timestamp = MapTimestamp(value.TimestampQpc);
         var packet = new PointerDataPacket(
             (PointerData[])
@@ -407,6 +411,7 @@ internal sealed unsafe class WindowsManagedProductHost
         );
         EnqueueInput(() =>
         {
+            _inputState.Dispatch(sequence);
             PointerData?.Invoke(packet);
             InputReceived?.Invoke(sequence, timestamp);
         });
@@ -424,12 +429,13 @@ internal sealed unsafe class WindowsManagedProductHost
             throw new InvalidDataException("Native key packet is invalid.");
         }
 
-        var sequence = Interlocked.Increment(ref _inputSequence);
+        var sequence = _inputState.Receive();
         var timestamp = MapTimestamp(value.TimestampQpc);
         var type = (KeyEventType)value.Type;
         var key = _keyboard.Apply(timestamp, type, value.Physical, value.Logical, character);
         EnqueueInput(() =>
         {
+            _inputState.Dispatch(sequence);
             KeyData?.Invoke(key);
             InputReceived?.Invoke(sequence, timestamp);
         });
@@ -439,10 +445,11 @@ internal sealed unsafe class WindowsManagedProductHost
     {
         var timestamp = MapTimestamp(timestampQpc);
         var released = focused ? [] : _keyboard.ReleaseAll(timestamp);
-        var sequence = released.Length == 0 ? 0 : Interlocked.Increment(ref _inputSequence);
+        var sequence = released.Length == 0 ? 0 : _inputState.Receive();
         var data = new RawFocusData(1, focused, timestamp);
         EnqueueInput(() =>
         {
+            if (sequence != 0) _inputState.Dispatch(sequence);
             foreach (var key in released) KeyData?.Invoke(key);
             if (sequence != 0) InputReceived?.Invoke(sequence, timestamp);
             FocusData?.Invoke(data);

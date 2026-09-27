@@ -5,6 +5,8 @@ using PointerUpEvent = Doroti.Framework.Gestures.PointerUpEvent;
 using Doroti.Framework.Rendering;
 using Doroti.Framework.Widgets;
 using Doroti.Skia.Rendering;
+using Doroti.Skia.RuntimeEffects;
+using Doroti.Runtime;
 using Doroti.Ui;
 using SkiaSharp;
 using Path = System.IO.Path;
@@ -12,6 +14,8 @@ using Path = System.IO.Path;
 using var dispatcher = new PlatformDispatcher();
 using var scope = dispatcher.EnterScope();
 var portrait = args.Contains("--portrait", StringComparer.Ordinal);
+var variableBlur = args.Contains("--variable-blur", StringComparer.Ordinal);
+using var gpu = variableBlur ? new VulkanFixture() : null;
 var host = new BuildHost(portrait ? new Size(400, 800) : new Size(720, 840));
 using var renderer = new SkiaSceneRenderer(
     1,
@@ -19,7 +23,7 @@ using var renderer = new SkiaSceneRenderer(
     null,
     null,
     "cupertino-sample",
-    "skia-raster",
+    variableBlur ? DorotiSkiaRuntimeEffects.WindowsVulkanBackend : "skia-raster",
     "cupertino-sample",
     enablePictureRasterCache: false
 );
@@ -50,6 +54,51 @@ FlutterError.onError = errors.Add;
 var root = (Widget)typeof(DorotiSampleApp2.App).Assembly.CreateInstance("DorotiSampleApp2.CupertinoSample", true)!;
 binding.attachRootWidget(binding.wrapWithDefaultView(root));
 Pump();
+if (variableBlur)
+{
+    Tab(3);
+    var listElement = Elements(binding.rootElement!).Single(element => element.widget is ListView);
+    var controller = ((ListView)listElement.widget).controller!;
+    var box = (RenderBox)listElement.findRenderObject()!;
+    // Start within the overlay: IgnorePointer must allow the list to receive pan/zoom.
+    var position = box.localToGlobal(new Offset(box.size.width / 2, 80));
+    binding.handlePointerEvent(new Doroti.Framework.Gestures.PointerPanZoomStartEvent(
+        viewId: 1, pointer: 99, device: 99, position: position));
+    using var before = CaptureVariableBlur();
+    var lastPixels = before.Pixels;
+    var lastOffset = controller.offset;
+    for (var update = 1; update <= 8; update++)
+    {
+        binding.handlePointerEvent(new Doroti.Framework.Gestures.PointerPanZoomUpdateEvent(
+            viewId: 1, pointer: 99, device: 99, position: position,
+            timeStamp: new Duration(microseconds: update * 16_000),
+            pan: new Offset(0, -update * 32), panDelta: new Offset(0, -32)));
+        host.Pump(16);
+        // The first update can establish drag slop; subsequent updates must scroll
+        // BEFORE PanZoomEnd, including through the GPU backdrop-filter scene path.
+        if (update > 1)
+            Check(controller.offset > lastOffset, $"pan/zoom update {update} scrolls before gesture end");
+        lastOffset = controller.offset;
+        if (update is 4 or 8)
+        {
+            using var during = CaptureVariableBlur();
+            var changed = lastPixels.Zip(during.Pixels).Count(pair => pair.First != pair.Second);
+            Check(changed > 1000, $"GPU pixels change during active pan/zoom ({changed})");
+            lastPixels = during.Pixels;
+            var directory = Path.Combine(AppContext.BaseDirectory, "snapshots");
+            Directory.CreateDirectory(directory);
+            using var data = during.Encode(SKEncodedImageFormat.Png, 100);
+            File.WriteAllBytes(Path.Combine(directory,
+                $"variable-blur-during-{update}-{(portrait ? "portrait" : "landscape")}.png"), data.ToArray());
+        }
+    }
+    binding.handlePointerEvent(new Doroti.Framework.Gestures.PointerPanZoomEndEvent(
+        viewId: 1, pointer: 99, device: 99, position: position,
+        timeStamp: new Duration(microseconds: 144_000)));
+    Pump();
+    Console.WriteLine("PASS Variable Blur synthetic trackpad updates and Vulkan pixels before gesture end");
+    return;
+}
 // Advance through more than a full indicator cycle, including negative Dart-modulo inputs.
 for (var frame = 0; frame < 24; frame++) host.Pump();
 Pump();
@@ -121,7 +170,7 @@ void Tab(long index)
     Check(Find<CupertinoTabBar>().Single().currentIndex == index, $"pointer click selects tab {index}");
     var activePages = Elements(binding.rootElement!).Where(element =>
         element.widget is Offstage offstage && !offstage.offstage).SelectMany(Elements);
-    var expected = new[] { "Components", "Profile", "Settings" }[index];
+    var expected = new[] { "Components", "Profile", "Settings", "Variable Blur" }[index];
     Check(activePages.Any(element => element.widget is CupertinoNavigationBar bar && (bar.middle as Text)?.data == expected),
         $"{expected} page is onstage after pointer click");
 }
@@ -152,7 +201,9 @@ IEnumerable<Element> Elements(Element element)
 void Snapshot(string name)
 {
     var size = host.Metrics.physicalSize;
-    using var surface = SKSurface.Create(new SKImageInfo((int)size.width, (int)size.height));
+    using var surface = gpu is null
+        ? SKSurface.Create(new SKImageInfo((int)size.width, (int)size.height))
+        : gpu.CreateSurface(new SKImageInfo((int)size.width, (int)size.height));
     Check(
         renderer.Paint(surface, (int)size.width, (int)size.height) is not null,
         "Skia paints Cupertino sample"
@@ -165,6 +216,15 @@ void Snapshot(string name)
         Path.Combine(directory, name + (portrait ? "-portrait" : "-landscape") + ".png"),
         data.ToArray()
     );
+}
+SKBitmap CaptureVariableBlur()
+{
+    var size = host.Metrics.physicalSize;
+    using var surface = gpu!.CreateSurface(new SKImageInfo((int)size.width, (int)size.height));
+    Check(renderer.Paint(surface, (int)size.width, (int)size.height) is not null,
+        "Vulkan paints Variable Blur scene");
+    using var image = surface.Snapshot();
+    return SKBitmap.FromImage(image);
 }
 void CheckDialogBackdrop(string phase)
 {
