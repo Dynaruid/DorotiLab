@@ -24,7 +24,8 @@ public sealed partial class SkiaSceneRenderer
         int width,
         int height,
         SKMatrix matrix,
-        SKRect? outputBounds = null
+        SKRect? outputBounds = null,
+        bool keepWorkingResolution = false
     )
     {
         if (
@@ -60,12 +61,16 @@ public sealed partial class SkiaSceneRenderer
             var sx = (float)smallWidth / width;
             var sy = (float)smallHeight / height;
             using var small = CreateFilterSurface(target, smallWidth, smallHeight);
+            var downsampleStarted = StartVariableBlurStage();
             small.Canvas.DrawImage(
                 input,
                 SKRect.Create(smallWidth, smallHeight),
                 new SKSamplingOptions(SKFilterMode.Linear)
             );
+            EndVariableBlurStage("downsample-draw", downsampleStarted);
+            downsampleStarted = StartVariableBlurStage();
             using var reduced = small.Snapshot();
+            EndVariableBlurStage("downsample-snapshot", downsampleStarted);
             SKRect? smallBounds = outputBounds is { } bounds
                 ? new SKRect(
                     bounds.Left * sx,
@@ -80,7 +85,7 @@ public sealed partial class SkiaSceneRenderer
                 expanded.Inflate(1, 1);
                 smallBounds = expanded;
             }
-            using var blurred = ApplyVariableBlur(
+            var blurred = ApplyVariableBlur(
                 target,
                 reduced,
                 settings with
@@ -93,13 +98,18 @@ public sealed partial class SkiaSceneRenderer
                 SKMatrix.Concat(SKMatrix.CreateScale(sx, sy), matrix),
                 smallBounds
             );
-            using var restored = CreateFilterSurface(target, width, height);
-            restored.Canvas.DrawImage(
-                blurred,
-                SKRect.Create(width, height),
-                new SKSamplingOptions(SKFilterMode.Linear)
-            );
-            return restored.Snapshot();
+            if (keepWorkingResolution)
+                return blurred;
+            using (blurred)
+            {
+                using var restored = CreateFilterSurface(target, width, height);
+                restored.Canvas.DrawImage(
+                    blurred,
+                    SKRect.Create(width, height),
+                    new SKSamplingOptions(SKFilterMode.Linear)
+                );
+                return restored.Snapshot();
+            }
         }
 
         var dx = (double)(float)settings.End.dx - (float)settings.Start.dx;
@@ -162,6 +172,7 @@ public sealed partial class SkiaSceneRenderer
                 axisX,
                 axisY,
                 settings.MaxSamples,
+                settings.Kernel == VariableBlurKernel.fastGaussian ? 1 : 0,
             };
             if (
                 values.Any(v => !float.IsFinite((float)v))
@@ -176,6 +187,7 @@ public sealed partial class SkiaSceneRenderer
                 throw new NotSupportedException(
                     "Variable blur exceeds shader coordinate precision."
                 );
+            var stageStarted = StartVariableBlurStage();
             var fragment = VariableBlurProgram.Value.fragmentShader();
             for (var i = 0; i < values.Length; i++)
                 fragment.setFloat(i + 2, values[i]);
@@ -189,11 +201,17 @@ public sealed partial class SkiaSceneRenderer
                 _runtimeEffectContextOwner,
                 mode
             );
+            EndVariableBlurStage("gaussian-bind-shader", stageStarted);
             using var output = CreateFilterSurface(target, width, height);
             using var paint = new SKPaint { Shader = shader, BlendMode = SKBlendMode.Src };
+            stageStarted = StartVariableBlurStage();
             output.Canvas.DrawRect(drawRect, paint);
+            EndVariableBlurStage("gaussian-draw", stageStarted);
             Interlocked.Increment(ref _shaderImageFiltersRendered);
-            return output.Snapshot();
+            stageStarted = StartVariableBlurStage();
+            var snapshot = output.Snapshot();
+            EndVariableBlurStage("gaussian-snapshot", stageStarted);
+            return snapshot;
         }
 
         using var first = Pass(input, ux, uy, firstRect);

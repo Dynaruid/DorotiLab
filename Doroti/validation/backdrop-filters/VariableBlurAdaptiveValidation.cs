@@ -35,7 +35,11 @@ internal static class VariableBlurAdaptiveValidation
                 : name == "constant-high" ? 12
                 : 0;
             var sigma1 = name == "constant-low" ? 1 : 12;
-            byte[] Render(double scale, bool adaptive)
+            byte[] Render(
+                double scale,
+                bool adaptive,
+                VariableBlurKernel kernel = VariableBlurKernel.gaussian
+            )
             {
                 using var surface = fixture.CreateSurface(info);
                 surface.Canvas.Clear(SKColors.Transparent);
@@ -60,7 +64,8 @@ internal static class VariableBlurAdaptiveValidation
                         startSigma: sigma0 / dpr,
                         endSigma: sigma1 / dpr,
                         resolutionScale: scale,
-                        adaptiveResolution: adaptive
+                        adaptiveResolution: adaptive,
+                        kernel: kernel
                     ),
                     Doroti.Ui.BlendMode.src
                 );
@@ -80,6 +85,9 @@ internal static class VariableBlurAdaptiveValidation
             var half = Render(.5, false);
             var quarter = Render(.25, false);
             var actual = Render(.25, true);
+            var fast = Render(.25, true, VariableBlurKernel.fastGaussian);
+            var fastError = 0d;
+            var fastSharpError = 0;
             var max = 0d;
             var sharpError = 0;
             var sharpPixels = 0;
@@ -106,9 +114,11 @@ internal static class VariableBlurAdaptiveValidation
                         + half[p] * (halfWeight - quarterWeight)
                         + quarter[p] * quarterWeight;
                     max = Math.Max(max, Math.Abs(actual[p] - expected));
+                    fastError += Math.Abs(fast[p] - actual[p]);
                     if (sigma <= 2)
                     {
                         sharpError = Math.Max(sharpError, Math.Abs(actual[p] - full[p]));
+                        fastSharpError = Math.Max(fastSharpError, Math.Abs(fast[p] - full[p]));
                         fixedSharpError += Math.Abs(quarter[p] - full[p]);
                         sharpPixels++;
                     }
@@ -120,8 +130,15 @@ internal static class VariableBlurAdaptiveValidation
                 );
             if (name == "vertical" && fixedSharpError / sharpPixels < 5)
                 throw new Exception("Sharp-detail fixture did not expose fixed-resolution loss");
+            if (fastSharpError > 1 || fastError / actual.Length > 8)
+                throw new Exception(
+                    $"fastGaussian/{name}: sharp error={fastSharpError}, MAE={fastError / actual.Length:F3}"
+                );
             Console.WriteLine(
                 $"PASS adaptive/{name}: transition error={max:F3}, sharp error={sharpError}, fixed sharp MAE={(sharpPixels == 0 ? 0 : fixedSharpError / sharpPixels):F3}"
+            );
+            Console.WriteLine(
+                $"PASS fastGaussian/{name}: sharp error={fastSharpError}, MAE={fastError / actual.Length:F3}"
             );
         }
     }

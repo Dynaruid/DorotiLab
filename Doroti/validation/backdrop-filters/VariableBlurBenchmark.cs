@@ -11,12 +11,22 @@ internal static class VariableBlurBenchmark
         bool fullResolutionOnly
     )
     {
-        foreach (var (width, height) in new[] { (640, 360), (1920, 1080) })
+        Console.WriteLine(
+            "OFFSCREEN FILTER BENCHMARK — NOT FPS; excludes framework, window presentation and host frame-pool lifecycle."
+        );
+        foreach (var (width, height) in new[] { (2560, 1600) })
         foreach (var fraction in new[] { 1.0, 0.25 })
         foreach (
-            var (scale, adaptive) in fullResolutionOnly
-                ? new[] { (1.0, true) }
-                : new[] { (1.0, true), (0.5, true), (0.25, true), (0.25, false) }
+            var (scale, adaptive, kernel) in fullResolutionOnly
+                ? new[] { (1.0, true, VariableBlurKernel.gaussian) }
+                : new[]
+                {
+                    (1.0, true, VariableBlurKernel.gaussian),
+                    (0.5, true, VariableBlurKernel.gaussian),
+                    (0.25, true, VariableBlurKernel.gaussian),
+                    (0.25, false, VariableBlurKernel.gaussian),
+                    (0.25, true, VariableBlurKernel.fastGaussian),
+                }
         )
         {
             using var surface = fixture.CreateSurface(
@@ -57,7 +67,8 @@ internal static class VariableBlurBenchmark
                     new Offset(0, height * fraction),
                     endSigma: 20,
                     resolutionScale: scale,
-                    adaptiveResolution: adaptive
+                    adaptiveResolution: adaptive,
+                    kernel: kernel
                 )
             );
             builder.pop();
@@ -81,7 +92,7 @@ internal static class VariableBlurBenchmark
             times.Sort();
             recordTimes.Sort();
             Console.WriteLine(
-                $"BENCH {width}x{height} coverage={fraction:P0} scale={scale} adaptive={adaptive} recordMedian={recordTimes[6]:F3}ms completeMedian={times[6]:F3}ms p95={times[^1]:F3}ms (12 frames, 3 warmups; includes GPU wait, excludes readback/presentation)"
+                $"BENCH {width}x{height} coverage={fraction:P0} scale={scale} adaptive={adaptive} kernel={kernel} recordMedian={recordTimes[6]:F3}ms completeMedian={times[6]:F3}ms p95={times[^1]:F3}ms (12 frames, 3 warmups; includes GPU wait, excludes readback/presentation)"
             );
             if (width == 640 && fraction == 1 && fixture.Context is not null)
             {

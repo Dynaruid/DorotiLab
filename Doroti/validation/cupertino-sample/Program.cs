@@ -14,11 +14,15 @@ using Path = System.IO.Path;
 using var dispatcher = new PlatformDispatcher();
 using var scope = dispatcher.EnterScope();
 var portrait = args.Contains("--portrait", StringComparer.Ordinal);
-var variableBlur = args.Contains("--variable-blur", StringComparer.Ordinal);
+var frameBenchmark = args.Contains("--frame-benchmark", StringComparer.Ordinal);
+var variableBlur = args.Contains("--variable-blur", StringComparer.Ordinal) || frameBenchmark;
 var highDpi = args.Contains("--high-dpi", StringComparer.Ordinal);
 var oversizedBacking = args.Contains("--oversized-backing", StringComparer.Ordinal);
 using var gpu = variableBlur ? new VulkanFixture() : null;
-var host = new BuildHost(portrait ? new Size(400, 800) : new Size(720, 840), highDpi ? 2 : 1);
+var large = args.Contains("--2560x1600", StringComparer.Ordinal);
+var host = new BuildHost(large
+    ? new Size(2560 / (highDpi ? 2 : 1), 1600 / (highDpi ? 2 : 1))
+    : portrait ? new Size(400, 800) : new Size(720, 840), highDpi ? 2 : 1);
 using var renderer = new SkiaSceneRenderer(
     1,
     host,
@@ -27,7 +31,7 @@ using var renderer = new SkiaSceneRenderer(
     "cupertino-sample",
     variableBlur ? DorotiSkiaRuntimeEffects.WindowsVulkanBackend : "skia-raster",
     "cupertino-sample",
-    enablePictureRasterCache: false
+    enablePictureRasterCache: frameBenchmark
 );
 using (var stream = typeof(DorotiSampleApp2.App).Assembly.GetManifestResourceStream("CupertinoSample.icons.ttf")!)
 {
@@ -61,6 +65,11 @@ if (variableBlur)
     Tab(3);
     var listElement = Elements(binding.rootElement!).Single(element => element.widget is ListView);
     var controller = ((ListView)listElement.widget).controller!;
+    if (frameBenchmark)
+    {
+        RunFrameBenchmark(controller);
+        return;
+    }
     var box = (RenderBox)listElement.findRenderObject()!;
     // Start within the overlay: IgnorePointer must allow the list to receive pan/zoom.
     var position = box.localToGlobal(new Offset(box.size.width / 2, 80));
@@ -107,11 +116,28 @@ if (variableBlur)
         timeStamp: new Duration(microseconds: 144_000)));
     Pump();
     using var fastBlur = CaptureVariableBlur();
-    Find<CupertinoSwitch>().Last().onChanged!(false);
-    Pump();
-    using var fullBlur = CaptureVariableBlur();
-    var qualityChanges = fastBlur.Pixels.Zip(fullBlur.Pixels).Count(pair => pair.First != pair.Second);
-    Check(qualityChanges > 100, $"Fast blur switch changes rendered quality ({qualityChanges} pixels)");
+    foreach (var mode in new[] { "full", "adaptive", "fixed", "fast" })
+    {
+        var radio = Elements(binding.rootElement!).Single(element =>
+            element.widget is CupertinoRadio<string> r && r.value == mode);
+        var radioBox = (RenderBox)radio.findRenderObject()!;
+        var point = radioBox.localToGlobal(new Offset(radioBox.size.width / 2, radioBox.size.height / 2));
+        var kind = portrait ? PointerDeviceKind.touch : PointerDeviceKind.mouse;
+        binding.handlePointerEvent(new PointerDownEvent(viewId: 1, pointer: 2, kind: kind, position: point));
+        binding.handlePointerEvent(new PointerUpEvent(viewId: 1, pointer: 2, kind: kind, position: point));
+        Pump();
+        Check(Find<RadioGroup<string>>().Single().groupValue == mode, $"pointer selects blur radio {mode}");
+        using var modeImage = CaptureVariableBlur();
+        if (mode == "full")
+        {
+            var changes = fastBlur.Pixels.Zip(modeImage.Pixels).Count(pair => pair.First != pair.Second);
+            Check(changes > 100, $"radio changes blur quality ({changes} pixels)");
+        }
+        var directory = Path.Combine(AppContext.BaseDirectory, "snapshots");
+        Directory.CreateDirectory(directory);
+        using var data = modeImage.Encode(SKEncodedImageFormat.Png, 100);
+        File.WriteAllBytes(Path.Combine(directory, $"variable-blur-{mode}-{modeImage.Width}x{modeImage.Height}.png"), data.ToArray());
+    }
     Console.WriteLine("PASS Variable Blur synthetic trackpad updates and Vulkan pixels before gesture end");
     return;
 }
@@ -172,6 +198,40 @@ void Press(string text)
 {
     Find<CupertinoButton>().Single(button => (button.child as Text)?.data == text).onPressed!();
     Pump();
+}
+void RunFrameBenchmark(ScrollController controller)
+{
+    var size = host.Metrics.physicalSize;
+    var width = (int)size.width;
+    var height = (int)size.height;
+    using var surface = gpu!.CreateSurface(new SKImageInfo(
+        width * (oversizedBacking ? 2 : 1), height * (oversizedBacking ? 2 : 1)));
+    foreach (var mode in new[] { "off", "full", "adaptive", "fast", "fixed" })
+    {
+        Find<CupertinoSwitch>().Last().onChanged!(mode != "off");
+        Find<RadioGroup<string>>().Single().onChanged(mode == "off" ? "full" : mode);
+        controller.jumpTo(0);
+        Pump();
+        var samples = new List<(double Framework, double Record, double Complete, long Allocated)>();
+        for (var frame = 0; frame < 15; frame++)
+        {
+            var allocated = GC.GetAllocatedBytesForCurrentThread();
+            var timer = System.Diagnostics.Stopwatch.StartNew();
+            controller.jumpTo(200 + frame * 24);
+            host.Pump(16);
+            var framework = timer.Elapsed.TotalMilliseconds;
+            var painted = renderer.Paint(surface, width, height);
+            var record = timer.Elapsed.TotalMilliseconds;
+            gpu.Complete();
+            var complete = timer.Elapsed.TotalMilliseconds;
+            if (painted is null) throw new Exception("Frame benchmark did not paint a new scene");
+            if (frame >= 3)
+                samples.Add((framework, record - framework, complete,
+                    GC.GetAllocatedBytesForCurrentThread() - allocated));
+        }
+        double Median(IEnumerable<double> values) => values.Order().ElementAt(6);
+        Console.WriteLine($"FRAMEBENCH {width}x{height} dpr={host.Metrics.devicePixelRatio} oversized={oversizedBacking} mode={mode} frameworkMedian={Median(samples.Select(s => s.Framework)):F3}ms recordMedian={Median(samples.Select(s => s.Record)):F3}ms completeMedian={Median(samples.Select(s => s.Complete)):F3}ms p95={samples.Max(s => s.Complete):F3}ms allocationMedian={Median(samples.Select(s => (double)s.Allocated)):F0}bytes framesOver33ms={samples.Count(s => s.Complete > 33.333)}/12 (3 warmups; real widget scene each frame; cache enabled; GPU sync included; no readback/presentation/vsync; NOT FPS)");
+    }
 }
 void Tab(long index)
 {

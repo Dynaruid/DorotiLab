@@ -61,6 +61,11 @@ existing `ImageFilter(sigmaX, sigmaY)` terminology. Sampling extends to roughly
 
 ### Performance controls and measured results (2026-09-27)
 
+The latest native-window measurements, allocation fixes, adaptive-region repair,
+four sample radio modes and reproduction commands are recorded in
+[VariableBlur performance follow-up](variable-blur-performance.md).
+The older offscreen timings below isolate filter work and are **not FPS**.
+
 Both factories accept `resolutionScale` in `0.125..1` (default `1`) and
 `adaptiveResolution` (default `true`). Scale is the **minimum** working resolution
 when adaptive mode is enabled. For a fast large panel with sharp low-blur detail:
@@ -97,7 +102,13 @@ Both modes account for rounded working dimensions on X/Y and keep sigma in
 logical coordinates. Both-zero sigma retains full-resolution identity.
 `maxSamples` remains a separate per-side tap cap.
 
-Current Radeon 780M / Windows Vulkan Ganesh measurements, 1080p, sigma 0→20:
+The optional `kernel: VariableBlurKernel.fastGaussian` uses seven bilinear reads
+per pass at working sigma >= 3, approximating a 13-tap Gaussian. Working sigma
+2..3 crossfades with the original kernel; <= 2 preserves the original kernel.
+This approximation can lose detail or show sparse-sampling artifacts at large
+sigma. `VariableBlurKernel.gaussian` remains the API and sample default.
+
+Earlier Radeon 780M / Windows Vulkan Ganesh measurements, 1080p, sigma 0→20:
 
 | Coverage | Full resolution | Adaptive min 1/2 | Adaptive min 1/4 | Fixed 1/4 |
 | --- | ---: | ---: | ---: | ---: |
@@ -118,8 +129,8 @@ fixed 1/4 path had low-sigma mean channel error 50.597/255; adaptive mode has 0.
 Twenty odd-size/shear/oversized-backing comparisons also pass at minimum scales
 1, 0.5, 0.25, 0.3 and 0.125. The 200%-DPI mounted sample comparison of exact and
 oversized buffers still has max channel error 0; its screenshot shows the clear
-end without the former pixelated text/rounded corners. Window presentation and
-other-platform execution remain unverified.
+end without the former pixelated text/rounded corners. The later Windows display
+measurement is documented in the follow-up; other-platform execution remains unverified.
 
 Two bottlenecks were addressed:
 
@@ -148,7 +159,8 @@ An earlier geometry-heavy fixture spent roughly 8–11 ms recording its thousand
 of background rectangles; those times cannot be attributed to VariableBlur.
 Quarter resolution is not always fastest for a tiny region because extra
 downsample/reconstruction passes have overhead. Full-size capture/layer surfaces
-still exist; this change does not remove all allocation or composition cost.
+still existed in this measurement. The follow-up removes redundant empty-child
+layers and pools intermediate surfaces; it does not remove all composition cost.
 
 The historical fixed-resolution Graphite benchmark had 1080p full coverage of
 6.470 / 3.688 / 2.733 ms at full / half / quarter resolution; 25% coverage was
@@ -161,9 +173,11 @@ the existing 159 filter comparisons. Full-resolution tolerances remain 2 channel
 levels (5 for diagonal resampling); reduced-resolution tolerances are 5 (8 for
 diagonal), including low-resolution sampling-count rounding. The cropped versus
 full-frame comparisons allow at most 1 channel level. Embedded shader hash/ABI
-checks passed. SampleApp2 defaults to Fast blur and exposes a switch for original
-quality; its mounted Vulkan test checks active scrolling and quality switching.
-Actual window presentation/FPS and other platform execution remain unverified.
+checks passed. SampleApp2 now defaults to Adaptive and exposes Full quality,
+Adaptive, Fast adaptive and Fixed 1/4 radio choices. Its mounted Vulkan test
+checks active scrolling and all four choices through pointer input. Native
+desktop visual-change measurements are in the follow-up; physical scan-out FPS
+and other-platform execution remain unverified.
 
 Follow-up viewport regression: Windows can retain a GPU surface larger than the
 current viewport. The initial fast path resized the entire backing snapshot,
@@ -247,9 +261,10 @@ outside the Skia layer is not captured; the native composition planner rejects
 this filter even when a Gaussian/saturation intent is attached. The API currently
 supports a linear gradient, not arbitrary mask images or multi-stop gradients.
 
-Full-surface GPU intermediates remain part of the existing shader filter path.
-No steady frame-time, peak-memory or first-use performance claim is made:
-**notMeasured**. No WGSL compiler or change to the active WGSL work plan is needed.
+GPU intermediates remain part of the existing shader filter path. The follow-up
+measures native desktop content changes and CPU stage timings; peak GPU memory,
+physical scan-out and cold shader compilation remain **notMeasured**.
+No WGSL compiler or change to the active WGSL work plan is needed.
 
 ## Research consulted
 

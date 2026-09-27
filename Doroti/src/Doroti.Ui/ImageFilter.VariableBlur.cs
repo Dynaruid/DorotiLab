@@ -1,5 +1,15 @@
 namespace Doroti.Ui;
 
+/// <summary>Sampling kernel for a spatially varying blur.</summary>
+public enum VariableBlurKernel
+{
+    gaussian,
+
+    /// <summary>Seven bilinear reads per pass at strong blur; preserves the
+    /// Gaussian kernel below two working pixels of sigma. Approximate at large radii.</summary>
+    fastGaussian,
+}
+
 public sealed partial record ImageFilter
 {
     /// <summary>
@@ -9,8 +19,10 @@ public sealed partial record ImageFilter
     /// </summary>
     /// <remarks>
     /// Use an ancestor clip to bound a BackdropFilter. Supports affine transforms,
-    /// ImageFiltered and composition. Each pass takes at most 2 * maxSamples + 1
-    /// samples; large sigma at a low sample budget can show banding. Arbitrary mask
+    /// ImageFiltered and composition. Gaussian passes take at most 2 * maxSamples + 1
+    /// samples; large sigma at a low sample budget can show banding. fastGaussian
+    /// uses seven reads at strong blur and blends with the Gaussian at working
+    /// sigma 2..3 (up to seven extra reads in that transition). Arbitrary mask
     /// images and native PlatformView backdrop capture are not supported.
     /// resolutionScale (0.125..1) is the minimum working resolution. By default,
     /// adaptiveResolution preserves full resolution at low sigma and blends into
@@ -26,7 +38,8 @@ public sealed partial record ImageFilter
         TileMode tileMode = TileMode.clamp,
         Rect? bounds = null,
         double resolutionScale = 1,
-        bool adaptiveResolution = true
+        bool adaptiveResolution = true,
+        VariableBlurKernel kernel = VariableBlurKernel.gaussian
     )
     {
         static bool Finite(double value) => double.IsFinite(value) && float.IsFinite((float)value);
@@ -55,6 +68,8 @@ public sealed partial record ImageFilter
             throw new ArgumentOutOfRangeException(nameof(tileMode));
         if (!double.IsFinite(resolutionScale) || resolutionScale is < 0.125 or > 1)
             throw new ArgumentOutOfRangeException(nameof(resolutionScale));
+        if (!Enum.IsDefined(kernel))
+            throw new ArgumentOutOfRangeException(nameof(kernel));
         return new ImageFilter(tileMode: tileMode, bounds: bounds)
         {
             VariableBlur = new(
@@ -64,7 +79,8 @@ public sealed partial record ImageFilter
                 endSigma,
                 maxSamples,
                 resolutionScale,
-                adaptiveResolution
+                adaptiveResolution,
+                kernel
             ),
         };
     }
@@ -79,5 +95,6 @@ internal sealed record VariableBlurSettings(
     double EndSigma,
     int MaxSamples,
     double ResolutionScale,
-    bool AdaptiveResolution
+    bool AdaptiveResolution,
+    VariableBlurKernel Kernel
 );

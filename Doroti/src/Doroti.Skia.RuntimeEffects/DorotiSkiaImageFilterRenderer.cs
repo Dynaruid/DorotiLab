@@ -5,7 +5,8 @@ namespace Doroti.Skia.RuntimeEffects;
 
 internal static class DorotiSkiaImageFilterRenderer
 {
-    private const int MaxPooledSurfacesPerFrame = 8;
+    private const int MaxPooledSurfacesPerFrame = 16;
+    private const long MaxPooledSurfacePixels = 32L * 1024 * 1024;
     private const int MaxCachedImages = 32;
     private const int StableCacheFrames = 3;
     private const long MaxCacheableImagePixels = 4L * 1024 * 1024;
@@ -553,6 +554,55 @@ internal static class DorotiSkiaImageFilterRenderer
         && float.IsFinite(rect.Right)
         && float.IsFinite(rect.Bottom);
 
+    // Scene filters participate in the same frame/context-owned pool as shader
+    // ImageFiltered captures. A slot is used only once per recording frame.
+    internal static SceneSurfaceLease RentSceneSurface(
+        SKCanvas context,
+        string backend,
+        long contextGeneration,
+        int width,
+        int height,
+        object? contextOwner,
+        SKSurfaceProperties? properties
+    )
+    {
+        var lease = RentSurface(
+            context,
+            backend,
+            contextGeneration,
+            width,
+            height,
+            contextOwner,
+            properties
+        );
+        return new SceneSurfaceLease(lease.Surface, lease.IsTemporary);
+    }
+
+    internal sealed class SceneSurfaceLease : IDisposable
+    {
+        private readonly SKSurface _surface;
+        private readonly bool _temporary;
+
+        internal SceneSurfaceLease(SKSurface surface, bool temporary)
+        {
+            _surface = surface;
+            _temporary = temporary;
+            surface.Canvas.Save();
+            surface.Canvas.ResetMatrix();
+        }
+
+        internal SKCanvas Canvas => _surface.Canvas;
+
+        internal SKImage Snapshot() => _surface.Snapshot();
+
+        public void Dispose()
+        {
+            _surface.Canvas.RestoreToCount(1);
+            if (_temporary)
+                _surface.Dispose();
+        }
+    }
+
     private static SurfaceLease RentSurface(
         SKCanvas context,
         string backend,
@@ -578,6 +628,18 @@ internal static class DorotiSkiaImageFilterRenderer
             }
 
             var surface = pool.Surfaces[slot];
+            var oldPixels = surface is null
+                ? 0L
+                : (long)surface.Canvas.DeviceClipBounds.Width
+                    * surface.Canvas.DeviceClipBounds.Height;
+            var requiredPixels = (long)width * height;
+            if (pool.SurfacePixels - oldPixels + requiredPixels > MaxPooledSurfacePixels)
+            {
+                surface?.Dispose();
+                pool.Surfaces[slot] = null;
+                pool.SurfacePixels -= oldPixels;
+                return new(CreateSurface(context, width, height, properties), true);
+            }
             // GPU snapshots are the implicit texture passed to the runtime
             // effect. Keep that texture exact-sized: reusing a larger pooled
             // surface after a shrink asks the backend for a subset snapshot,
@@ -591,8 +653,11 @@ internal static class DorotiSkiaImageFilterRenderer
             )
             {
                 surface?.Dispose();
+                pool.Surfaces[slot] = null;
+                pool.SurfacePixels -= oldPixels;
                 surface = CreateSurface(context, width, height, properties);
                 pool.Surfaces[slot] = surface;
+                pool.SurfacePixels += requiredPixels;
             }
             else
             {
@@ -707,6 +772,7 @@ internal static class DorotiSkiaImageFilterRenderer
         internal Dictionary<object, CacheWarmup> Warmups { get; } =
             new(ReferenceEqualityComparer.Instance);
         internal int NextSlot { get; set; }
+        internal long SurfacePixels { get; set; }
         internal long FrameNumber { get; private set; }
         internal long UseSequence { get; set; }
         internal long CachedPixels { get; set; }

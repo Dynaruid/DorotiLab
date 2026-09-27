@@ -4,11 +4,32 @@ uniform float3 ramp;
 uniform float2 sigmas;
 uniform float2 axis;
 uniform float samples;
+uniform float fastKernel;
+// Pair adjacent weights of a normalized 13-tap Gaussian (sigma 2).
+// Bilinear sampling collapses each pair into one read. Scaling the offsets
+// approximates wider kernels; adaptive resolution limits undersampling.
+half4 fastGaussian(float2 p, float2 spread) {
+    float4 sum = 0.1996756275 * float4(inputImage.eval(p));
+    float2 d = spread * 0.7036667000;
+    sum += 0.2973225129 * (float4(inputImage.eval(p + d)) + float4(inputImage.eval(p - d)));
+    d = spread * 1.6471074861;
+    sum += 0.0918483427 * (float4(inputImage.eval(p + d)) + float4(inputImage.eval(p - d)));
+    d = spread * 2.6009066111;
+    sum += 0.0109913306 * (float4(inputImage.eval(p + d)) + float4(inputImage.eval(p - d)));
+    return half4(sum);
+}
 half4 main(float2 p) {
     float t = clamp(dot(ramp.xy, p) + ramp.z, 0.0, 1.0);
     float sigma = mix(sigmas.x, sigmas.y, t);
     if (sigma <= 0.0001) return inputImage.eval(p);
     float deviceScale = length(axis);
+    float deviceSigma = sigma * deviceScale;
+    half4 fast = half4(0);
+    bool useFast = fastKernel > 0.5 && samples >= 3.0 && deviceSigma > 2.0;
+    if (useFast) {
+        fast = fastGaussian(p, axis * sigma);
+        if (deviceSigma >= 3.0) return fast;
+    }
     float radius = 3.0 * sigma;
     float count = min(samples, max(1.0, ceil(radius * deviceScale)));
     float stepSize = radius / count;
@@ -29,5 +50,7 @@ half4 main(float2 p) {
                        + float4(inputImage.eval(p - offset)));
         weightSum += 2.0 * weight;
     }
-    return half4(sum / weightSum);
+    half4 exact = half4(sum / weightSum);
+    // Avoid a visible kernel switch near the sharp end.
+    return useFast ? mix(exact, fast, half(deviceSigma - 2.0)) : exact;
 }

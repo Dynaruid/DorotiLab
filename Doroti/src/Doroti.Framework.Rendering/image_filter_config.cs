@@ -47,7 +47,8 @@ public abstract class ImageFilterConfig
         TileMode tileMode = TileMode.clamp,
         bool bounded = true,
         double resolutionScale = 1,
-        bool adaptiveResolution = true
+        bool adaptiveResolution = true,
+        VariableBlurKernel kernel = VariableBlurKernel.gaussian
     ) =>
         new VariableBlurImageFilterConfig(
             start ?? Offset.zero,
@@ -58,7 +59,8 @@ public abstract class ImageFilterConfig
             tileMode,
             bounded,
             resolutionScale,
-            adaptiveResolution
+            adaptiveResolution,
+            kernel
         );
 
     public abstract ImageFilter resolve(ImageFilterContext context);

@@ -74,7 +74,9 @@ public sealed partial class SkiaSceneRenderer
                 try
                 {
                     target.Translate((float)picture.Offset.dx, (float)picture.Offset.dy);
+                    var pictureStarted = StartVariableBlurStage();
                     DrawPictureLayer(target, picture);
+                    EndVariableBlurStage("picture-replay", pictureStarted);
                 }
                 finally
                 {
@@ -171,12 +173,25 @@ public sealed partial class SkiaSceneRenderer
         }
     }
 
-    private SKSurface CreateFilterSurface(SKCanvas target, int width, int height)
+    private DorotiSkiaImageFilterRenderer.SceneSurfaceLease CreateFilterSurface(
+        SKCanvas target,
+        int width,
+        int height
+    )
     {
+        var stageStarted = StartVariableBlurStage();
         using var properties = target.Surface?.SurfaceProperties;
-        var info = new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul);
-        var surface = SkiaGpuSurfaces.CreateCompatible(target, info, properties);
+        var surface = DorotiSkiaImageFilterRenderer.RentSceneSurface(
+            target,
+            RuntimeEffectBackend,
+            _contextGeneration,
+            width,
+            height,
+            _runtimeEffectContextOwner,
+            properties
+        );
         surface.Canvas.Clear(SKColors.Transparent);
+        EndVariableBlurStage("surface-create-clear", stageStarted);
         return surface;
     }
 
@@ -193,10 +208,17 @@ public sealed partial class SkiaSceneRenderer
     {
         if (command.HostPayload is SceneGpuEffectPayload gpu)
         {
-            var backend = SkiaGraphiteSession.CurrentRecording?.GpuEffects ?? SkiaGpuEffectScope.Current
-                ?? throw new PlatformNotSupportedException($"GPU effect '{gpu.Program.AssetId}' is unsupported by this host.");
+            var backend =
+                SkiaGraphiteSession.CurrentRecording?.GpuEffects
+                ?? SkiaGpuEffectScope.Current
+                ?? throw new PlatformNotSupportedException(
+                    $"GPU effect '{gpu.Program.AssetId}' is unsupported by this host."
+                );
             using var backdropInput = gpu.IsBackdrop
-                ? target.Surface?.Snapshot() ?? throw new NotSupportedException("A GPU backdrop requires the current owned Skia layer.")
+                ? target.Surface?.Snapshot()
+                    ?? throw new NotSupportedException(
+                        "A GPU backdrop requires the current owned Skia layer."
+                    )
                 : null;
             target.Save();
             try
@@ -204,31 +226,70 @@ public sealed partial class SkiaSceneRenderer
                 target.Translate((float)gpu.Offset.dx, (float)gpu.Offset.dy);
                 var matrix = target.TotalMatrix;
                 var mapped = matrix.MapRect(ToRect(gpu.Bounds));
-                if (!float.IsFinite(mapped.Left) || !float.IsFinite(mapped.Top) ||
-                    !float.IsFinite(mapped.Right) || !float.IsFinite(mapped.Bottom))
-                    throw new InvalidOperationException("GPU effect capture bounds are not finite.");
+                if (
+                    !float.IsFinite(mapped.Left)
+                    || !float.IsFinite(mapped.Top)
+                    || !float.IsFinite(mapped.Right)
+                    || !float.IsFinite(mapped.Bottom)
+                )
+                    throw new InvalidOperationException(
+                        "GPU effect capture bounds are not finite."
+                    );
                 var left = MathF.Floor(mapped.Left);
                 var top = MathF.Floor(mapped.Top);
                 var captureWidth = checked((int)(MathF.Ceiling(mapped.Right) - left));
                 var captureHeight = checked((int)(MathF.Ceiling(mapped.Bottom) - top));
-                if (captureWidth <= 0 || captureHeight <= 0) return;
-                var captureMatrix = SKMatrix.Concat(SKMatrix.CreateTranslation(-left, -top), matrix);
-                var captureState = new List<FilterCanvasState> { new(c => c.SetMatrix(captureMatrix)) };
+                if (captureWidth <= 0 || captureHeight <= 0)
+                    return;
+                var captureMatrix = SKMatrix.Concat(
+                    SKMatrix.CreateTranslation(-left, -top),
+                    matrix
+                );
+                var captureState = new List<FilterCanvasState>
+                {
+                    new(c => c.SetMatrix(captureMatrix)),
+                };
                 target.ResetMatrix();
                 target.Translate(left, top);
-                backend.Draw(target, captureWidth, captureHeight, input =>
-                {
-                    input.Clear(SKColors.Transparent);
-                    if (backdropInput is not null)
-                        input.DrawImage(backdropInput, -left, -top, new SKSamplingOptions(SKFilterMode.Nearest));
-                    else
+                backend.Draw(
+                    target,
+                    captureWidth,
+                    captureHeight,
+                    input =>
                     {
-                        foreach (var apply in captureState) apply.Apply(input);
-                        DrawGpuFilterScene(input, commands, start, end, captureWidth, captureHeight, captureState);
-                    }
-                }, gpu.Program, gpu.Parameters, (float)gpu.Bounds.width, (float)gpu.Bounds.height);
+                        input.Clear(SKColors.Transparent);
+                        if (backdropInput is not null)
+                            input.DrawImage(
+                                backdropInput,
+                                -left,
+                                -top,
+                                new SKSamplingOptions(SKFilterMode.Nearest)
+                            );
+                        else
+                        {
+                            foreach (var apply in captureState)
+                                apply.Apply(input);
+                            DrawGpuFilterScene(
+                                input,
+                                commands,
+                                start,
+                                end,
+                                captureWidth,
+                                captureHeight,
+                                captureState
+                            );
+                        }
+                    },
+                    gpu.Program,
+                    gpu.Parameters,
+                    (float)gpu.Bounds.width,
+                    (float)gpu.Bounds.height
+                );
             }
-            finally { target.Restore(); }
+            finally
+            {
+                target.Restore();
+            }
             if (gpu.IsBackdrop)
             {
                 target.Save();
@@ -236,10 +297,76 @@ public sealed partial class SkiaSceneRenderer
                 {
                     target.Translate((float)gpu.Offset.dx, (float)gpu.Offset.dy);
                     var childState = new List<FilterCanvasState>(state)
-                    { new(c => c.Translate((float)gpu.Offset.dx, (float)gpu.Offset.dy)) };
+                    {
+                        new(c => c.Translate((float)gpu.Offset.dx, (float)gpu.Offset.dy)),
+                    };
                     DrawGpuFilterScene(target, commands, start, end, width, height, childState);
                 }
-                finally { target.Restore(); }
+                finally
+                {
+                    target.Restore();
+                }
+            }
+            return;
+        }
+        // An empty backdrop child needs no extra full-frame layer, copy or
+        // snapshot. Preserve the final clip/blend directly on the target.
+        if (
+            start == end
+            && command.HostPayload is SceneBackdropFilterPayload direct
+            && direct.Filter.VariableBlur is { } variable
+        )
+        {
+            var visible = VariableBlurOutputBounds(target, direct.Filter);
+            if (visible.IsEmpty)
+                return;
+            var capture = VariableBlurCaptureBounds(
+                visible,
+                variable,
+                direct.Filter.TileMode,
+                target.TotalMatrix,
+                width,
+                height
+            );
+            var captureStarted = StartVariableBlurStage();
+            using var input = target.Surface!.Snapshot(capture);
+            EndVariableBlurStage("backdrop-capture", captureStarted);
+            var localVisible = visible;
+            localVisible.Offset(-capture.Left, -capture.Top);
+            var localMatrix = SKMatrix.Concat(
+                SKMatrix.CreateTranslation(-capture.Left, -capture.Top),
+                target.TotalMatrix
+            );
+            var filterStarted = StartVariableBlurStage();
+            using var filtered = ApplyVariableBlur(
+                target,
+                input,
+                variable,
+                direct.Filter.TileMode,
+                capture.Width,
+                capture.Height,
+                localMatrix,
+                localVisible,
+                keepWorkingResolution: true
+            );
+            EndVariableBlurStage("filter-total", filterStarted);
+            using var blend = new SKPaint { BlendMode = ToBlend(direct.BlendMode) };
+            target.Save();
+            try
+            {
+                if (direct.Filter.Bounds is { } bounds)
+                    target.ClipRect(ToRect(bounds), SKClipOperation.Intersect, true);
+                target.ResetMatrix();
+                target.DrawImage(
+                    filtered,
+                    (SKRect)capture,
+                    new SKSamplingOptions(SKFilterMode.Linear),
+                    blend
+                );
+            }
+            finally
+            {
+                target.Restore();
             }
             return;
         }
@@ -280,12 +407,7 @@ public sealed partial class SkiaSceneRenderer
             using var input = target.Surface!.Snapshot(new SKRectI(0, 0, width, height));
             SKRect? variableOutputBounds = null;
             if (backdrop.Filter.VariableBlur is not null)
-            {
-                SKRect visible = target.DeviceClipBounds;
-                if (backdrop.Filter.Bounds is { } variableBounds)
-                    visible.Intersect(target.TotalMatrix.MapRect(ToRect(variableBounds)));
-                variableOutputBounds = visible;
-            }
+                variableOutputBounds = VariableBlurOutputBounds(target, backdrop.Filter);
             using var filtered = ApplyGpuImageFilter(
                 target,
                 input,
@@ -339,6 +461,14 @@ public sealed partial class SkiaSceneRenderer
         }
     }
 
+    private static SKRect VariableBlurOutputBounds(SKCanvas target, ImageFilterSnapshot filter)
+    {
+        SKRect visible = target.DeviceClipBounds;
+        if (filter.Bounds is { } bounds)
+            visible.Intersect(target.TotalMatrix.MapRect(ToRect(bounds)));
+        return visible;
+    }
+
     // Each stage keeps its GPU input alive until the output snapshot owns the draw.
     // Compose is deliberately evaluated inner -> outer, including nested shaders.
     private SKImage ApplyGpuImageFilter(
@@ -364,7 +494,13 @@ public sealed partial class SkiaSceneRenderer
                 filterMatrix
             );
             return ApplyGpuImageFilter(
-                target, inner, filter.Outer, width, height, isBackdrop, filterMatrix
+                target,
+                inner,
+                filter.Outer,
+                width,
+                height,
+                isBackdrop,
+                filterMatrix
             );
         }
         if (filter.ColorFilter is not null && filter.Inner is not null)

@@ -8,6 +8,7 @@ internal sealed class VariableBlurImageFilterConfig : ImageFilterConfig
     private readonly bool _bounded;
     private readonly double _resolutionScale;
     private readonly bool _adaptiveResolution;
+    private readonly VariableBlurKernel _kernel;
     private readonly (
         Offset Start,
         Offset End,
@@ -25,7 +26,8 @@ internal sealed class VariableBlurImageFilterConfig : ImageFilterConfig
         TileMode tileMode,
         bool bounded,
         double resolutionScale,
-        bool adaptiveResolution
+        bool adaptiveResolution,
+        VariableBlurKernel kernel
     )
     {
         _template = ImageFilter.variableBlur(
@@ -36,11 +38,13 @@ internal sealed class VariableBlurImageFilterConfig : ImageFilterConfig
             maxSamples,
             tileMode,
             resolutionScale: resolutionScale,
-            adaptiveResolution: adaptiveResolution
+            adaptiveResolution: adaptiveResolution,
+            kernel: kernel
         );
         _bounded = bounded;
         _resolutionScale = resolutionScale;
         _adaptiveResolution = adaptiveResolution;
+        _kernel = kernel;
         _settings = (start, end, startSigma, endSigma, maxSamples);
     }
 
@@ -61,7 +65,8 @@ internal sealed class VariableBlurImageFilterConfig : ImageFilterConfig
             _template.tileMode,
             _bounded ? bounds : null,
             _resolutionScale,
-            _adaptiveResolution
+            _adaptiveResolution,
+            _kernel
         );
     }
 

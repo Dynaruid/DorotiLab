@@ -17,6 +17,9 @@ internal static class VariableBlurValidation
         Reject(() => ImageFilter.variableBlur(Offset.zero, new Offset(double.NaN, 1)));
         Reject(() => ImageFilter.variableBlur(Offset.zero, new Offset(0, 32), maxSamples: 0));
         Reject(() => ImageFilter.variableBlur(Offset.zero, new Offset(0, 32), maxSamples: 65));
+        Reject(() =>
+            ImageFilter.variableBlur(Offset.zero, new Offset(0, 32), kernel: (VariableBlurKernel)99)
+        );
         foreach (var invalid in new[] { 0, 0.124, 1.01, double.NaN, double.PositiveInfinity })
             Reject(() =>
                 ImageFilter.variableBlur(Offset.zero, new Offset(0, 32), resolutionScale: invalid)
@@ -74,6 +77,24 @@ internal static class VariableBlurValidation
                 )
         )
             throw new Exception("Adaptive resolution was lost in config/equality");
+        var kernelConfig = Doroti.Framework.Rendering.ImageFilterConfig.CreateVariableBlur(
+            endSigma: 4,
+            resolutionScale: 0.25,
+            kernel: VariableBlurKernel.fastGaussian
+        );
+        if (
+            kernelConfig.Equals(fastConfig)
+            || kernelConfig.resolve(new Doroti.Framework.Rendering.ImageFilterContext(box))
+                != ImageFilter.variableBlur(
+                    new Offset(10, 20),
+                    new Offset(10, 100),
+                    endSigma: 4,
+                    bounds: box,
+                    resolutionScale: 0.25,
+                    kernel: VariableBlurKernel.fastGaussian
+                )
+        )
+            throw new Exception("Variable blur kernel was lost in config/equality");
         if (fixture is null)
         {
             using var surface = SKSurface.Create(new SKImageInfo(Size, Size));

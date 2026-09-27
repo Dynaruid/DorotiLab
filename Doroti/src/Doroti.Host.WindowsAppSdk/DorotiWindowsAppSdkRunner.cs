@@ -1453,6 +1453,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 frames = diagnostics,
                 resize = Host?.ResizeSnapshot,
                 renderer = Renderer?.Diagnostics,
+                variableBlurProfile = Renderer?.VariableBlurProfile,
             };
         }
 

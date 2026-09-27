@@ -163,6 +163,8 @@ public sealed partial class SkiaSceneRenderer
             if (colors.All(color => color.Alpha == 0))
                 continue;
 
+            // All levels share the same capture domain and pixel origin. Cropping
+            // the input per band shifts sampling on retained Graphite snapshots.
             using var blurred = ApplyVariableBlur(
                 target,
                 input,
@@ -174,12 +176,14 @@ public sealed partial class SkiaSceneRenderer
                 width,
                 height,
                 matrix,
-                region
+                region,
+                keepWorkingResolution: true
             );
             using var image = blurred.ToShader(
                 SKShaderTileMode.Clamp,
                 SKShaderTileMode.Clamp,
-                new SKSamplingOptions(SKFilterMode.Nearest)
+                new SKSamplingOptions(SKFilterMode.Linear),
+                SKMatrix.CreateScale((float)width / blurred.Width, (float)height / blurred.Height)
             );
             using var mask = SKShader.CreateLinearGradient(
                 gradientStart,
@@ -191,9 +195,14 @@ public sealed partial class SkiaSceneRenderer
             using var weighted = SKShader.CreateBlend(SKBlendMode.DstIn, image, mask);
             using var paint = new SKPaint { Shader = weighted, BlendMode = SKBlendMode.Plus };
             // Coverage comes from the gradient mask, not an antialiased band edge.
+            var blendStarted = StartVariableBlurStage();
             output.Canvas.DrawRect(region, paint);
+            EndVariableBlurStage("band-blend", blendStarted);
         }
-        return output.Snapshot();
+        var outputStarted = StartVariableBlurStage();
+        var outputImage = output.Snapshot();
+        EndVariableBlurStage("adaptive-snapshot", outputStarted);
+        return outputImage;
     }
 
     private static SKRect VariableBlurBandBounds(
