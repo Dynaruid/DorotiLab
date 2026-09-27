@@ -8,15 +8,21 @@ namespace Doroti.Skia.Rendering;
 /// through the platform font manager. Browser WebAssembly uses this because
 /// CSS/system fonts are not exposed to Skia as font data.
 /// </summary>
-public sealed class SkiaFallbackFontCollection : IDisposable
+public sealed class SkiaFallbackFontCollection(string? defaultFamily = null) : IDisposable
 {
     private readonly List<RegisteredFont> _fonts = [];
     private bool _disposed;
 
+    /// <summary>Host default, used when requested families cannot be resolved.</summary>
+    public string? DefaultFamily { get; } = defaultFamily;
+    public event Action<int>? CharacterMissing;
+    public event Action? Changed;
+    internal void ReportMissingCharacter(int codePoint) => CharacterMissing?.Invoke(codePoint);
+
     public IReadOnlyList<string> Families =>
         _fonts.Select(font => font.Typeface.FamilyName).ToArray();
 
-    public string Register(ReadOnlyMemory<byte> bytes, string? family = null)
+    public string Register(ReadOnlyMemory<byte> bytes, string? family = null, bool preferForFallback = false)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (bytes.IsEmpty)
@@ -29,7 +35,11 @@ public sealed class SkiaFallbackFontCollection : IDisposable
             SKTypeface.FromData(data)
             ?? throw new InvalidDataException("Skia could not decode the supplied fallback font.");
         var font = new RegisteredFont(typeface, family);
-        _fonts.Add(font);
+        if (preferForFallback)
+            _fonts.Insert(0, font);
+        else
+            _fonts.Add(font);
+        Changed?.Invoke();
         return typeface.FamilyName;
     }
 
@@ -51,10 +61,11 @@ public sealed class SkiaFallbackFontCollection : IDisposable
                 .Reverse()
                 .Where(font =>
                     string.Equals(
-                        font.Alias ?? font.Typeface.FamilyName,
+                        font.Alias,
                         family,
                         StringComparison.OrdinalIgnoreCase
                     )
+                    || string.Equals(font.Typeface.FamilyName, family, StringComparison.OrdinalIgnoreCase)
                 )
                 .OrderBy(font =>
                     Math.Abs(font.Typeface.FontWeight - (style?.Weight ?? 400))
@@ -67,15 +78,18 @@ public sealed class SkiaFallbackFontCollection : IDisposable
                 .FirstOrDefault()
                 ?.Typeface;
 
-    internal SKTypeface? MatchCharacter(int codePoint)
+    internal SKTypeface? MatchCharacter(int codePoint, SKFontStyle? style = null)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        foreach (var font in _fonts)
+        // Preserve family priority, but choose the closest face within that family.
+        foreach (var family in _fonts.GroupBy(font => font.Typeface.FamilyName))
         {
-            if (font.Probe.ContainsGlyph(codePoint))
-            {
-                return font.Typeface;
-            }
+            var match = family.Where(font => font.Probe.ContainsGlyph(codePoint))
+                .OrderBy(font => Math.Abs(font.Typeface.FontWeight - (style?.Weight ?? 400))
+                    + (font.Typeface.FontSlant == (style?.Slant ?? SKFontStyleSlant.Upright) ? 0 : 1000))
+                .FirstOrDefault();
+            if (match is not null)
+                return match.Typeface;
         }
         return null;
     }

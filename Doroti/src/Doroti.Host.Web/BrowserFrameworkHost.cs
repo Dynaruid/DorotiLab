@@ -10,13 +10,43 @@ public sealed class BrowserFrameworkHost : IDisposable
     public static IEnumerable<IPlatformViewFactory> PlatformViewFactories =>
         BrowserPlatformViewHost.Factories;
     private readonly string _targetIdentity;
-    private readonly Skia.Rendering.SkiaFallbackFontCollection _fallbackFonts = new();
+    private readonly Skia.Rendering.SkiaFallbackFontCollection _fallbackFonts = new("Roboto");
     private readonly Dictionary<
         ulong,
         (DorotiView View, BrowserHostAdapter Host, IBrowserGraphicsCapabilities Graphics)
     > _views = [];
     private readonly Dictionary<ulong, DorotiHostSession> _sessions = [];
     private bool _disposed;
+    private BrowserFontFallbackLoader? _fontFallbackLoader;
+
+    public void EnableFontFallbacks(HttpClient http, BrowserFontFallbackOptions? options = null,
+        TimeProvider? timeProvider = null)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        _fontFallbackLoader?.Dispose();
+        options ??= new();
+        options = options with { PreferredLanguage = options.PreferredLanguage
+            ?? _views.Values.FirstOrDefault().Host?.Snapshot.LanguageTag ?? "en" };
+        _fontFallbackLoader = new(_fallbackFonts, async (url, token) =>
+        {
+            var bytes = await http.GetByteArrayAsync(url, token);
+            if (bytes.Length > 30 * 1024 * 1024)
+                throw new InvalidDataException("Compressed fallback font exceeds 30 MB.");
+            return await BrowserWoff2Decoder.DecodeAsync(bytes, options.DecoderUrl, token);
+        }, NotifyFontsChanged, options, timeProvider);
+    }
+
+    private void NotifyFontsChanged()
+    {
+        if (_disposed) return;
+        foreach (var session in _sessions.Values.Distinct())
+        {
+            using var scope = session.dispatcher.EnterScope();
+            session.dispatcher.channelBuffers.NotifyFramework("flutter/system",
+                new Doroti.Runtime.ByteData(new Doroti.Runtime.Uint8List(
+                    System.Text.Encoding.UTF8.GetBytes("{\"type\":\"fontsChange\"}"))));
+        }
+    }
 
     public BrowserFrameworkHost(string targetIdentity = "browser-wasm/auto") =>
         _targetIdentity = targetIdentity;
@@ -218,6 +248,7 @@ public sealed class BrowserFrameworkHost : IDisposable
         }
 
         _disposed = true;
+        _fontFallbackLoader?.Dispose();
         foreach (var (viewId, value) in _views.Reverse().ToArray())
         {
             if (_sessions.Remove(viewId, out var session))

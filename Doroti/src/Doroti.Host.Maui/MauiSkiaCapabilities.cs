@@ -187,6 +187,7 @@ internal sealed class MauiSkiaCapabilities
             "skiasharp-maui-skglview-gpu"
         );
 #endif
+        Doroti.Skia.Fonts.NativeDefaultFonts.Register(_renderer);
 #if IOS || MACCATALYST
         if (DorotiGraphiteView.Enabled)
             _renderer.EnableNativeTextures(NativeTexturePlatform.Apple);

@@ -9,6 +9,10 @@
     <DefaultItemExcludes>$(DefaultItemExcludes);Web\node_modules\**</DefaultItemExcludes>
   </PropertyGroup>
   <ItemGroup>
+    <Content Remove="wwwroot/fonts/**" />
+    <None Remove="wwwroot/fonts/**" />
+    <EmbeddedResource Include="Fonts/fallbacks.bin" LogicalName="Doroti.Host.Web.Fonts.fallbacks.bin" />
+    <None Update="Fonts/LICENSE.flutter.txt" Pack="true" PackagePath="licenses/Flutter-font-fallbacks.txt" />
     <PackageReference Include="Microsoft.TypeScript.MSBuild" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
     <PackageReference Include="SkiaSharp" />

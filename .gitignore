@@ -7,6 +7,8 @@
 /reference/flutter_inappwebview-master/
 
 # .NET build output
+# Legacy local web font cache; production fonts/decoder load from CDN.
+/Doroti/src/Doroti.Host.Web/wwwroot/fonts/
 # Project-local temporary workspaces and reusable caches. See
 # Doroti/eng/LOCAL_STORAGE.md and Doroti/eng/clean-local-state.ps1.
 **/.doroti/

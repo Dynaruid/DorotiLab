@@ -23,6 +23,7 @@
   <Project Path="src/Doroti.Desktop.Widgets/Doroti.Desktop.Widgets.csproj" />
   <Project Path="src/Doroti.Runtime/Doroti.Runtime.csproj" />
   <Project Path="src/Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj" />
+  <Project Path="src/Doroti.Skia.Fonts/Doroti.Skia.Fonts.csproj" />
   <Project Path="src/Doroti.Skia.RuntimeEffects/Doroti.Skia.RuntimeEffects.csproj" />
   <Project Path="src/Doroti.Skia.Vulkan/Doroti.Skia.Vulkan.csproj" />
   <Project Path="src/Doroti.Ui/Doroti.Ui.csproj" />

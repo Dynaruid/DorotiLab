@@ -60,6 +60,25 @@ FlutterError.onError = errors.Add;
 var root = (Widget)typeof(DorotiSampleApp2.App).Assembly.CreateInstance("DorotiSampleApp2.CupertinoSample", true)!;
 binding.attachRootWidget(binding.wrapWithDefaultView(root));
 Pump();
+if (args.Contains("--font-update", StringComparer.Ordinal))
+{
+    var paragraph = Elements(binding.rootElement!).Select(element => element.findRenderObject())
+        .OfType<RenderParagraph>().First(p => p.text.toPlainText().Contains("Cupertino playground", StringComparison.Ordinal));
+    paragraph.text = new Doroti.Framework.Painting.TextSpan(text: "iiii WWWW Late font",
+        style: new Doroti.Framework.Painting.TextStyle(fontFamily: "LateFont", fontSize: 24));
+    Pump();
+    var before = paragraph.getMaxIntrinsicWidth(double.PositiveInfinity);
+    renderer.RegisterFontAsync(File.ReadAllBytes("samples/DorotiTestbedApp/assets/fonts/Roboto-bold.ttf"),
+        "LateFont").GetAwaiter().GetResult();
+    binding.handleSystemMessage(new Dictionary<string, object> { ["type"] = "fontsChange" })
+        .GetAwaiter().GetResult();
+    Pump();
+    var after = paragraph.getMaxIntrinsicWidth(double.PositiveInfinity);
+    Console.WriteLine($"Font relayout widths: {before} -> {after}; attached={paragraph.attached}; text={paragraph.text.toPlainText()}");
+    Check(Math.Abs(before - after) > .1, "download notification refreshes mounted paragraph measurements");
+    Console.WriteLine("PASS fontsChange relayout through framework system message handler");
+    return;
+}
 if (variableBlur)
 {
     Tab(3);

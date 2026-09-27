@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Doroti.Skia.Fonts</AssemblyName>
+    <PackageId>Doroti.Skia.Fonts</PackageId>
+    <Description>Offline native default fonts restored from a pinned CDN release at build time.</Description>
+    <IsDorotiProduct>true</IsDorotiProduct>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj" />
+    <Compile Remove="Build/**/*.cs" />
+  </ItemGroup>
+  <Import Project="Build/NativeFonts.targets" />
+</Project>

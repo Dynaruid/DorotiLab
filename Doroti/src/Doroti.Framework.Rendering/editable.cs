@@ -802,6 +802,7 @@ public class RenderEditable
     {
         markNeedsLayout();
         _textPainter.markNeedsLayout();
+        _textIntrinsicsCache?.markNeedsLayout();
     }
 
     public virtual string plainText => _textPainter.plainText;
@@ -1772,6 +1773,7 @@ public class RenderEditable
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
+        PaintingBinding.instance.systemFonts.addListener(_scheduleSystemFontsUpdate);
         RenderBox? child = _firstChild;
         while (child is not null)
         {
@@ -1809,6 +1811,7 @@ public class RenderEditable
 
     public override void detach()
     {
+        PaintingBinding.instance.systemFonts.removeListener(_scheduleSystemFontsUpdate);
         _tap.dispose();
         _longPress.dispose();
         _offset.removeListener(markNeedsPaint);

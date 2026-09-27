@@ -73,6 +73,9 @@ public sealed class BrowserWasmTarget : IDorotiBrowserTarget
         return _host.RegisterFont(bytes);
     }
 
+    public void EnableFontFallbacks(HttpClient http, BrowserFontFallbackOptions? options = null,
+        TimeProvider? timeProvider = null) => _host.EnableFontFallbacks(http, options, timeProvider);
+
     public DorotiView CreateView(
         DorotiHostSession session,
         ulong viewId,

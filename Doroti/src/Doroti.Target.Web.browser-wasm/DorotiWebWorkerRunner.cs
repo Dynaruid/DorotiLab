@@ -8,7 +8,6 @@ namespace Doroti.Target.Web;
 public static class DorotiWebWorkerRunner
 {
     private const ulong ViewId = 7301;
-    private const string FallbackFontUrl = "_content/Doroti.Host.Web/fonts/NanumGothic-Regular.ttf";
     private static BrowserWasmTarget? _target;
     private static DorotiApplicationBoundary? _boundary;
     private static DorotiHostSession? _session;
@@ -18,7 +17,8 @@ public static class DorotiWebWorkerRunner
 
     public static async Task<string> RunAsync<TStartup>(
         System.Reflection.Assembly manifestAssembly,
-        IEnumerable<DorotiApplicationPluginRegistration>? plugins = null
+        IEnumerable<DorotiApplicationPluginRegistration>? plugins = null,
+        BrowserFontFallbackOptions? fontFallbackOptions = null
     )
         where TStartup : IDorotiApplicationStartup, new()
     {
@@ -40,12 +40,17 @@ public static class DorotiWebWorkerRunner
         );
         _target = new BrowserWasmTarget();
         _http = new HttpClient { Timeout = Timeout.InfiniteTimeSpan };
-        var fontUrl = BrowserHostRuntime.ResolveResourceUrl(FallbackFontUrl);
         using (
             var fontTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(100), _timeProvider)
         )
         {
-            _target.RegisterFont(await _http.GetByteArrayAsync(fontUrl, fontTimeout.Token));
+            // Load all faces before first layout. Registration order defines fallback
+            // family priority, independent of the order downloads finish in.
+            var fontBaseUrl = (fontFallbackOptions ?? new()).BaseUrl;
+            var fonts = await Task.WhenAll(BrowserDefaultFonts.Paths.Select(path =>
+                _http.GetByteArrayAsync(new Uri(fontBaseUrl, path), fontTimeout.Token)));
+            foreach (var font in fonts)
+                _target.RegisterFont(font);
         }
 
         _session = new DorotiHostSession(descriptor.EntrypointFactory());
@@ -72,6 +77,7 @@ public static class DorotiWebWorkerRunner
             descriptor.ViewConfiguration,
             _boundary
         );
+        _target.EnableFontFallbacks(_http, fontFallbackOptions, _timeProvider);
         BrowserHostRuntime.SetApplicationTitle(1, descriptor.ViewConfiguration.title);
         DorotiWebWorkerSurface.Initialize(_target, ViewId);
         _view.Show();

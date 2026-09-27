@@ -41,6 +41,15 @@ dotnet run --project ./samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj 
 
 브라우저에서 `http://127.0.0.1:5089`에 접속합니다. WebAssembly 빌드에는 `wasm-tools` 워크로드가 필요합니다.
 
+웹 글꼴은 첫 화면 전에 CDN에서 Roboto를 로드하고, 한글 등 다른 문자권과 컬러 이모지는 필요한
+Noto 폰트 조각을 자동 다운로드합니다. Flutter의 CanvasKit/Skwasm처럼 엔진에 폰트 파일을
+등록하며, CSS나 브라우저 기본 폰트를 직접 사용하지 않습니다. 폰트가 추가되면 글자 폭과
+레이아웃도 자동 갱신됩니다. 네이티브의 기본/미해결 Cupertino 폰트는 플랫폼 UI 폰트로
+연결합니다. CDN 변경·다운로드 비활성화와 지원 범위는
+[자동 웹 폰트 안내](../../Doroti/src/Doroti.Host.Web/Fonts/README.md)에 있습니다.
+웹 빌드는 폰트 파일을 다운로드하거나 포함하지 않습니다. 네이티브 빌드는 Roboto를 CDN에서
+받아 DLL에 포함하므로 실행 시에는 폰트 다운로드가 필요 없습니다.
+
 워크스페이스 CLI에서도 `-App ./samples/DorotiSampleApp2 -Platform windows` 또는 `-Platform web`으로 선택할 수 있습니다.
 
 화면 구현은 [src/App.cs](src/App.cs), 공통 진입점은 [Program.cs](Program.cs)에 있습니다.

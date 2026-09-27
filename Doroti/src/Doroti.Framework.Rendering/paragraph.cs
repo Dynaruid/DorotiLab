@@ -754,6 +754,7 @@ public class RenderParagraph
     {
         markNeedsLayout();
         _textPainter.markNeedsLayout();
+        _textIntrinsicsCache?.markNeedsLayout();
     }
 
     internal virtual double _adjustMaxWidth(double maxWidth)
@@ -1743,6 +1744,7 @@ public class RenderParagraph
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
+        PaintingBinding.instance.systemFonts.addListener(_scheduleSystemFontsUpdate);
         RenderBox? child = _firstChild;
         while (child is not null)
         {
@@ -1754,6 +1756,7 @@ public class RenderParagraph
 
     public override void detach()
     {
+        PaintingBinding.instance.systemFonts.removeListener(_scheduleSystemFontsUpdate);
         base.detach();
         RenderBox? child = _firstChild;
         while (child is not null)

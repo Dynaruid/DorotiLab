@@ -1,0 +1,23 @@
+<Project>
+  <PropertyGroup>
+    <DorotiNativeFontsOffline Condition="'$(DorotiNativeFontsOffline)' == ''">false</DorotiNativeFontsOffline>
+    <_DorotiNativeFontUrl>https://storage.googleapis.com/flutter_infra_release/flutter/fonts/3012db47f3130e62f7cc0beabff968a33cbec8d8/fonts.zip</_DorotiNativeFontUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <DorotiNativeFontAsset Include=".doroti/fonts/Roboto-regular.ttf" ZipEntry="Roboto-Regular.ttf" Sha256="79E851404657DAC2106B3D22AD256D47824A9A5765458EDB72C9102A45816D95" />
+    <DorotiNativeFontAsset Include=".doroti/fonts/Roboto-medium.ttf" ZipEntry="Roboto-Medium.ttf" Sha256="F205CC511821EA56078A105557FCEA6253129404D411C997E1866FBD006ABB68" />
+    <DorotiNativeFontAsset Include=".doroti/fonts/Roboto-bold.ttf" ZipEntry="Roboto-Bold.ttf" Sha256="7D0B991EE3E0BE7AF01AD7EA8CD2BEEA6C00A25E679A0226B6737F079AAFFF86" />
+    <DorotiNativeFontAsset Include=".doroti/fonts/LICENSE.roboto.txt" ZipEntry="Roboto_LICENSE.txt" Sha256="CFC7749B96F63BD31C3C42B5C471BF756814053E847C10F3EB003417BC523D30" />
+    <EmbeddedResource Include="@(DorotiNativeFontAsset)" LogicalName="Doroti.Skia.Fonts.%(Filename)%(Extension)" />
+    <None Include=".doroti/fonts/LICENSE.roboto.txt" Pack="true" PackagePath="licenses/Roboto.txt" />
+  </ItemGroup>
+  <UsingTask TaskName="RestoreDorotiNativeFonts" TaskFactory="RoslynCodeTaskFactory"
+             AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+    <Task><Code Type="Class" Language="cs" Source="$(MSBuildThisFileDirectory)RestoreNativeFonts.cs" /></Task>
+  </UsingTask>
+  <Target Name="DorotiRestoreNativeFonts" BeforeTargets="PrepareForBuild;AssignTargetPaths"
+          Condition="'$(DesignTimeBuild)' != 'true'">
+    <RestoreDorotiNativeFonts ProjectDirectory="$(MSBuildProjectDirectory)"
+        Assets="@(DorotiNativeFontAsset)" Url="$(_DorotiNativeFontUrl)" Offline="$(DorotiNativeFontsOffline)" />
+  </Target>
+</Project>

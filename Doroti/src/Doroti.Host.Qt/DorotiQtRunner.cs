@@ -290,6 +290,7 @@ public static unsafe partial class DorotiQtRunner
                     : DorotiSkiaRuntimeEffects.QtGpuBackend,
                 enablePictureRasterCache: !QtSkiaSurface.GraphiteEnabled
             );
+            Doroti.Skia.Fonts.NativeDefaultFonts.Register(renderer);
             if (QtSkiaSurface.GraphiteEnabled && Surface.NativeTexturesConfigured)
                 renderer.EnableNativeTextures(NativeTexturePlatform.Linux);
             Surface.GpuResourcesReleasing += renderer.InvalidateGpuContextResources;

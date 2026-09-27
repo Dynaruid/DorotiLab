@@ -458,6 +458,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 enablePictureRasterCache: Presenter.RuntimeEffectsBackend
                     != DorotiSkiaRuntimeEffects.NativeGraphiteVulkanBackend
             );
+            Doroti.Skia.Fonts.NativeDefaultFonts.Register(renderer);
             if (
                 Presenter is WindowsManagedVulkanPresenter nativeTexturePresenter
                 && WindowsManagedVulkanPresenter.GraphiteEnabled
