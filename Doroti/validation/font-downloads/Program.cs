@@ -102,6 +102,38 @@ if (!args.Contains("--network"))
     return;
 }
 using var http = new HttpClient();
+var startupDecodeIndex = 10000;
+// Exercise the actual startup path in a fresh collection, before any text/layout
+// can discover missing glyphs. Check every modern syllable, not just common text.
+using (var startupFonts = new SkiaFallbackFontCollection("Roboto"))
+{
+    await BrowserStartupFonts.LoadAsync(new() { PreloadLanguages = ["ko", "en", "ko-KR"] }, http, new Uri("https://app.invalid/"), (bytes, family) =>
+    {
+        startupFonts.Register(bytes, family);
+        if (family != "Noto Sans KR") return;
+        using var data = SKData.CreateCopy(bytes.ToArray());
+        using var face = SKTypeface.FromData(data);
+        using var font = new SKFont(face, 24);
+        Check(face.FamilyName == family && face.FontWeight == 400,
+            $"CDN Korean startup face {face.FontWeight}, {bytes.Length} bytes");
+        Check(Enumerable.Range(0xac00, 11172).All(font.ContainsGlyph),
+            "complete modern Hangul syllables are present in each startup face");
+        Check(Enumerable.Range(0x3131, 0x3163 - 0x3131 + 1).All(font.ContainsGlyph)
+            && Enumerable.Range(0x1100, 19).All(font.ContainsGlyph)
+            && Enumerable.Range(0x1161, 21).All(font.ContainsGlyph)
+            && Enumerable.Range(0x11a8, 27).All(font.ContainsGlyph),
+            "compatibility and conjoining IME jamo are present before input");
+    }, (bytes, _, ct) => DecodeFont(bytes, startupDecodeIndex++, ct));
+    using var inputFallback = new BrowserFontFallbackLoader(startupFonts,
+        (_, _) => throw new Exception("Korean input must not trigger a fallback request"),
+        () => throw new Exception("Korean input must not need a later fontsChange"));
+    foreach (var cp in Enumerable.Range(0xac00, 11172)
+        .Concat("ㄱ가각갂ㅎ하한ㄱ그글한".EnumerateRunes().Select(r => r.Value)))
+        inputFallback.Request(cp);
+    await inputFallback.WhenIdleAsync();
+    Check(inputFallback.DownloadCount == 0 && inputFallback.UnsupportedCount == 0,
+        "fresh IME combinations use startup coverage with zero late downloads");
+}
 foreach (var (path, weight) in BrowserDefaultFonts.Paths.Zip(new[] { 400, 500, 700 }))
 {
     using var data = SKData.CreateCopy(await http.GetByteArrayAsync(new Uri(new BrowserFontFallbackOptions().BaseUrl, path)));
@@ -146,9 +178,13 @@ Console.WriteLine($"PASS {loader.LoadedCount} real fallback fonts; script covera
 async Task<byte[]> Download(Uri uri, CancellationToken cancellationToken)
 {
     var index = catalog.Fonts.Single(f => uri.AbsoluteUri.EndsWith(f.Path, StringComparison.Ordinal)).Index;
+    return await DecodeFont(await http.GetByteArrayAsync(uri, cancellationToken), index, cancellationToken);
+}
+async Task<byte[]> DecodeFont(byte[] bytes, int index, CancellationToken cancellationToken)
+{
     var compressed = Path.Combine(output, $"font-{index}.woff2");
     var decoded = Path.Combine(output, $"font-{index}.ttf");
-    await File.WriteAllBytesAsync(compressed, await http.GetByteArrayAsync(uri, cancellationToken), cancellationToken);
+    await File.WriteAllBytesAsync(compressed, bytes, cancellationToken);
     var start = new ProcessStartInfo("node") { UseShellExecute = false, CreateNoWindow = true };
     start.ArgumentList.Add(Path.GetFullPath("Doroti/validation/font-downloads/decode-file.mjs"));
     start.ArgumentList.Add(compressed);

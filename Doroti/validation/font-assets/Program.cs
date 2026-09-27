@@ -50,11 +50,42 @@ var order = new List<string>();
 var combined = new BrowserFontFallbackOptions
 {
     BaseUrl = new Uri(baseUri, "cdn-mirror/"),
+    PreloadLanguages = ["ko", "en", "ko-KR", "KO_kr"],
     Assets = [new BrowserFontAsset("Additional", "fonts/regular.ttf")],
 };
-await BrowserStartupFonts.LoadAsync(combined, http, baseUri, (_, family) => order.Add(family));
-Check(order.SequenceEqual(new[] { "Roboto", "Roboto", "Roboto", "Additional" }),
-    "default CDN mode can add assets without changing registration priority");
+var koreanReady = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+handler.KoreanGate = koreanReady.Task;
+var startup = BrowserStartupFonts.LoadAsync(combined, http, baseUri, (_, family) => order.Add(family),
+    (data, _, _) => Task.FromResult(bytes));
+Check(!startup.IsCompleted && order.Count == 0, "startup waits for the hinted language before exposing fonts to the view");
+koreanReady.SetResult();
+await startup;
+handler.KoreanGate = null;
+Check(order.SequenceEqual(new[] { "Roboto", "Roboto", "Roboto", "Noto Sans KR", "Additional" }),
+    "language hints deduplicate full fonts and preserve asset registration priority");
+Check(handler.Requests.Count(url => url.Contains("notosanskr/", StringComparison.Ordinal)) == 1,
+    "Korean regional aliases download one complete face from the configured mirror");
+handler.Requests.Clear();
+order.Clear();
+await BrowserStartupFonts.LoadAsync(combined with { PreloadLanguages = [] }, http, baseUri,
+    (_, family) => order.Add(family));
+Check(order.SequenceEqual(new[] { "Roboto", "Roboto", "Roboto", "Additional" })
+    && handler.Requests.All(url => !url.Contains("notosanskr", StringComparison.Ordinal)),
+    "no language hints retains the lightweight on-demand default");
+handler.Requests.Clear();
+await Reject(combined with { PreloadLanguages = ["unsupported"] }, "unsupported preload language");
+await Reject(combined with { DecoderUrl = null, Enabled = false }, "preload requires explicit decoder");
+Check(handler.Requests.Count == 0, "invalid hints fail before any network request");
+order.Clear();
+await BrowserStartupFonts.LoadAsync(combined with
+{
+    PreloadLanguages = ["ja", "zh-CN", "zh-Hans", "zh-TW", "zh-Hant", "zh-HK", "ar", "fa", "he", "hi", "mr",
+        "bn", "ta", "te", "kn", "ml", "gu", "th", "lo", "km", "my", "ka", "hy", "de", "ru", "vi"],
+}, http, baseUri, (_, family) => order.Add(family), (data, _, _) => Task.FromResult(bytes));
+Check(order.Count(f => f == "Noto Sans SC") == 1 && order.Count(f => f == "Noto Sans TC") == 1
+    && order.Count(f => f == "Noto Sans HK") == 1 && order.Count(f => f == "Noto Sans") == 1
+    && order.Count(f => f == "Noto Sans Arabic") == 1 && order.Count(f => f == "Noto Sans Devanagari") == 1,
+    "language/script aliases resolve existing complete catalog faces once per family");
 var cancellations = new CancellationTokenSource();
 cancellations.Cancel();
 try
@@ -88,17 +119,20 @@ static void Check(bool value, string message)
 sealed class AssetHandler(Uri baseUri, byte[] font) : HttpMessageHandler
 {
     public List<string> Requests { get; } = [];
-    protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    public Task? KoreanGate { get; set; }
+    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         var url = request.RequestUri!.AbsoluteUri;
         Requests.Add(url);
         if (!url.StartsWith(baseUri.AbsoluteUri, StringComparison.Ordinal))
             throw new Exception($"Unexpected external request: {url}");
+        if (url.Contains("notosanskr/", StringComparison.Ordinal) && KoreanGate is { } gate)
+            await gate.WaitAsync(cancellationToken);
         if (url.EndsWith("missing.ttf", StringComparison.Ordinal))
-            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound));
+            return new HttpResponseMessage(HttpStatusCode.NotFound);
         var content = url.EndsWith(".woff2", StringComparison.Ordinal) ? "wOF2-invalid-fixture"u8.ToArray() : font;
-        return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent(content) });
+        return new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent(content) };
     }
 }
 sealed class Host : ISkiaSceneRendererHost

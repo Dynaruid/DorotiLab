@@ -50,8 +50,12 @@ pwsh -NoProfile -File ./tools/doroti-cloudflared/tunnel.ps1 start -App ./samples
 Release 게시 후 접속 주소가 출력됩니다. 종료는 `tunnel.ps1 stop`을 사용합니다.
 필수 도구와 관리 명령은 [터널 안내](../../tools/doroti-cloudflared/README.md)를 참고하세요.
 
-웹 글꼴은 첫 화면 전에 CDN에서 Roboto를 로드하고, 한글 등 다른 문자권과 컬러 이모지는 필요한
-Noto 폰트 조각을 자동 다운로드합니다. Flutter의 CanvasKit/Skwasm처럼 엔진에 폰트 파일을
+웹 글꼴은 `web/WebFonts.cs`의 `PreloadLanguages = ["ko", "en"]` 힌트에 따라 첫 화면 전에
+CDN에서 Roboto와 전체 Noto Sans KR을 로드합니다. 한글 자모와 11,172개 음절을 입력 전에
+준비하므로 새로운 조합마다 폰트를 받느라 잠깐 사각형으로 표시되는 현상을 방지합니다.
+그 외 문자권과 컬러 이모지는 필요한 Noto 폰트 조각을 자동 다운로드합니다.
+힌트를 비우면 Roboto만 미리 로드하는 기본 동작으로 돌아갑니다.
+Flutter의 CanvasKit/Skwasm처럼 엔진에 폰트 파일을
 등록하며, CSS나 브라우저 기본 폰트를 직접 사용하지 않습니다. 폰트가 추가되면 글자 폭과
 레이아웃도 자동 갱신됩니다. 네이티브의 기본/미해결 Cupertino 폰트는 플랫폼 UI 폰트로
 연결합니다. CDN 변경·다운로드 비활성화와 지원 범위는

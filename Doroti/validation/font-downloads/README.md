@@ -8,6 +8,21 @@ python Doroti/validation/run-with-timeout.py dotnet run --project Doroti/validat
 python Doroti/validation/run-with-timeout.py dotnet run --project Doroti/validation/cupertino-sample -c Release -- --font-update
 ```
 
+The network mode also exercises `PreloadLanguages = ["ko", "en", "ko-KR"]`
+through the production startup loader and WOFF2 wrapper. A fresh collection must
+cover all 11,172 modern Hangul syllables and compatibility/conjoining IME jamo
+before input, with zero subsequent fallback downloads for new combinations.
+`font-assets` covers hint aliases, Chinese variants, shared-script deduplication,
+no-hint startup, invalid hints and asset-only network isolation using a fake transport.
+
+2026-09-28 language-hint validation: SampleApp2 Release built with zero warnings
+and errors. Chrome displayed `ㄱ 가 각 갂 똠 쀍 힣 한글` in both the Profile text field
+and greeting using `PreloadLanguages = ["ko", "en"]`. The disposable screenshot
+is `Doroti/artifacts/font-downloads/browser-preload-korean.png`. This is browser
+text insertion/display evidence, not a physical keyboard IME composition recording.
+The real Korean WOFF2 is 2,058,984 bytes (decoded: 6,223,356 bytes); exhaustive
+modern syllable/jamo coverage and zero late downloads passed in the startup test.
+
 The offline tests cover the full catalog, missing/unsupported scalars, coalescing,
 bounded 404 alternatives/transient retries, retry success, disabling downloads,
 and disposal during a request. The network mode requires Node and uses the production

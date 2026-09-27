@@ -8,6 +8,7 @@
     <DorotiAppProject>..\DorotiSampleApp2.csproj</DorotiAppProject>
     <DorotiTarget>Web</DorotiTarget>
     <DorotiHostKind>BlazorWebAssembly</DorotiHostKind>
+    <DorotiWebFontOptions>global::DorotiSampleApp2.Web.WebFonts.CdnOptions</DorotiWebFontOptions>
     <DorotiNativeEntryKind>Managed-Main</DorotiNativeEntryKind>
     <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
     <WasmBuildNative>true</WasmBuildNative>

@@ -1,7 +1,10 @@
 # Automatic web font fallback
 
 `DorotiWebWorkerRunner` enables fallback downloads by default. Only the three
-Roboto faces are downloaded from the versioned Google Fonts CDN before the first frame. When a
+Roboto faces load before the first frame unless the app supplies `PreloadLanguages`
+or font assets. Language hints load complete Noto faces before view creation,
+preventing first-use missing-glyph boxes during IME input for the covered script.
+When a
 glyph is absent, the render worker batches missing Unicode scalars, chooses Noto
 fonts using the browser language and coverage, and downloads the selected subsets.
 The catalog contains all 727 entries in the pinned Flutter reference, including
@@ -30,6 +33,7 @@ await DorotiWebWorkerRunner.RunAsync<MyStartup>(typeof(MyStartup).Assembly,
         BaseUrl = new Uri("https://assets.example.com/fonts/"),
         DecoderUrl = new Uri("https://assets.example.com/woff2/decompress.js"),
         PreferredLanguage = "ko-KR", // omitted: browser language
+        PreloadLanguages = ["ko", "en"], // default: []; independent of browser language
         DownloadTimeout = TimeSpan.FromSeconds(20),
     });
 ```
@@ -40,6 +44,33 @@ origin in `script-src`, and WebAssembly under the same policy as the application
 `Enabled = false` disables missing-glyph downloads; the runner still needs its
 Roboto defaults unless `LoadDefaultFontsFromCdn` is also disabled. Use `AssetsOnly`
 below to disable both with one setting.
+
+`PreloadLanguages = ["ko", "en"]` adds one complete Noto Sans KR WOFF2 download;
+English reuses CDN Roboto. The Korean font includes IME compatibility/conjoining
+jamo and all 11,172 modern syllables, including uncommon intermediate combinations.
+Language aliases such as `ko` and `ko-KR` deduplicate by font family. All startup
+fonts fetch concurrently and register in a stable order: Roboto, hinted languages,
+then app assets. Startup waits for download, decoding and registration; a preload
+failure is a startup error, rather than silently allowing missing input glyphs.
+Complete fonts cost more startup bandwidth/memory than a few text subsets, but
+avoid later per-combination requests. Subsequent visits use normal HTTP caching.
+
+Supported primary language tags are `en`, `ko`, `ja`, `zh`, `ar`, `fa`, `ur`, `he`,
+`hi`, `mr`, `ne`, `bn`, `ta`, `te`, `kn`, `ml`, `gu`, `th`, `lo`, `km`, `my`, `ka`,
+`hy`, `de`, `fr`, `es`, `it`, `pt`, `nl`, `sv`, `da`, `no`, `fi`, `pl`, `cs`, `sk`,
+`hu`, `ro`, `tr`, `vi`, `id`, `ms`, `ru`, `uk`, `bg`, `sr`, and `el`.
+Region suffixes are accepted; Chinese distinguishes `zh-Hans`/`zh-CN`,
+`zh-Hant`/`zh-TW`/`zh-MO`, and `zh-HK`. Other tags use the primary language's
+default script. Unknown primary tags fail before downloads; use explicit `Assets`
+for other languages/scripts or a specific typeface. Hints are font coverage
+choices, not shaping or localization settings, and cannot predict every symbol,
+emoji or borrowed character a user might enter.
+
+`PreferredLanguage` only influences on-demand subset selection; it does not
+preload glyphs. Hints are explicit CDN requests, independent of `Enabled` and
+`LoadDefaultFontsFromCdn`, and require `DecoderUrl`. `AssetsOnly` has empty hints
+and continues to make no implicit CDN requests. For offline Korean input, include
+a complete Korean TTF/OTF in `Assets` instead of adding a language hint.
 
 There are no build-time font downloads or font/third-party decoder binaries in the
 host web package. The host's `wwwroot/fonts/` is ignored by Git and excluded from static web assets,

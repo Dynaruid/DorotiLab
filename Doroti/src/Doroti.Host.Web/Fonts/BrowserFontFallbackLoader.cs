@@ -7,6 +7,10 @@ namespace Doroti.Host.Web;
 public sealed record BrowserFontFallbackOptions
 {
     public bool LoadDefaultFontsFromCdn { get; init; } = true;
+    /// <summary>Language tags whose complete script fonts must load before the first view,
+    /// e.g. ["ko", "en"]. Empty by default; unlisted scripts retain on-demand fallback.
+    /// These are explicit CDN requests and require DecoderUrl for Noto WOFF2 fonts.</summary>
+    public IReadOnlyList<string> PreloadLanguages { get; init; } = [];
     public string DefaultFamily { get; init; } = "Roboto";
     public IReadOnlyList<BrowserFontAsset> Assets { get; init; } = [];
     public bool Enabled { get; init; } = true;

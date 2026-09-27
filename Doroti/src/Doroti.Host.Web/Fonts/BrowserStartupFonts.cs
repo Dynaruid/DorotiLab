@@ -26,18 +26,16 @@ public static class BrowserStartupFonts
             && !assets.Any(asset => string.Equals(asset.Family, options.DefaultFamily, StringComparison.OrdinalIgnoreCase)))
             throw new ArgumentException($"No startup asset is registered for default font '{options.DefaultFamily}'.");
 
-        if (options.LoadDefaultFontsFromCdn)
-        {
-            var defaults = await Task.WhenAll(BrowserDefaultFonts.Paths.Select(path =>
-                http.GetByteArrayAsync(new Uri(options.BaseUrl, path), cancellationToken)));
-            foreach (var bytes in defaults)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                register(bytes, "Roboto");
-            }
-        }
+        var languageAssets = BrowserLanguageFonts.Resolve(options);
+        if (languageAssets.Length > 0 && (options.DecoderUrl is null || decodeWoff2 is null))
+            throw new ArgumentException("PreloadLanguages requires a WOFF2 decoder. For offline fonts, use Assets instead.", nameof(options));
+        var defaults = options.LoadDefaultFontsFromCdn
+            ? BrowserDefaultFonts.Paths.Select(path => new BrowserFontAsset("Roboto", new Uri(options.BaseUrl, path).AbsoluteUri))
+            : [];
+        assets = defaults.Concat(languageAssets).Concat(assets).ToArray();
 
-        // Registration follows declaration order, regardless of download timing.
+        // Fetch defaults, hinted languages and app assets together. Registration
+        // follows declaration order, regardless of download timing.
         var loaded = await Task.WhenAll(assets.Select(async asset =>
         {
             var bytes = await asset.ReadAsync(http, baseUri, cancellationToken);
