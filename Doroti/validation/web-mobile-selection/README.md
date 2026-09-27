@@ -191,3 +191,37 @@ Release publish와 [검색창 26개 검사](../../artifacts/web-mobile-selection
 커서는 11, 7, 3, 6번을 유지했고, 입력창 좌표도 바뀌지 않았다. 정상적인 현재 선택 명령과
 검색창을 닫았다 다시 열 때의 새 입력 연결도 확인했다. 재현은 오래된 Worker 응답을
 주입한 브라우저 검사이며 실제 iPhone 키보드 제스처는 기기에서 재확인이 필요하다.
+
+### 2026-09-28 Android 네이티브 선택 핸들 중복
+
+Android의 Doroti canvas·IME·semantics에 `touchstart` 취소 처리를 추가했다.
+리스너는 명시적으로 `passive: false`이며 외부 DOM 입력창에는 적용하지 않는다.
+기존 PointerEvent 전달, 입력창 hit testing, IME/선택 동기화는 유지한다.
+Chromium의 [HandleGestureLongPress](https://github.com/chromium/chromium/blob/main/third_party/blink/renderer/core/input/gesture_manager.cc)는
+네이티브 선택을 먼저 처리한 뒤 contextmenu를 전달하므로 기존 메뉴 취소만으로는 부족하다.
+
+검증 결과:
+
+- Testbed와 DorotiSampleApp2 Release publish 통과.
+- [Android 에뮬레이션 26개 검사](../../artifacts/web-mobile-selection/android-handles-emulated/result.json):
+  실제 touch 이벤트 취소, PointerEvent/포커스 유지, 프레임워크 선택, Cut/Paste 통과.
+- [데스크톱 16개 검사](../../artifacts/web-mobile-selection/android-handles-desktop/result.json):
+  네이티브 우클릭 메뉴와 입력 유지.
+- [iPhone 검색·커서 동기화 26개 검사](../../artifacts/web-mobile-selection/android-handles-iphone-search/result.json) 통과.
+  일반 iPhone 검사에서는 입력·선택·클립보드 구간 이후 기존 확대경 검사의
+  `magnifier test starts at the top edge` 위치 조건이 실패했다. 전체 iPhone 실행을 PASS로 간주하지 않는다.
+- Galaxy S25 (SM-S931N), Chrome 153.0.8010.52에서 SampleApp2 Profile을 실제 실행했다.
+  만료된 터널 대신 USB reverse의 localhost로 같은 Release 정적 파일을 제공하고,
+  ADB OS 터치 입력과 기기 전체 스크린샷으로 확인했다. WebGL2를 명시했다.
+  비교용 계측은 새 touchstart 리스너만 켜고 끈다. 비활성 상태에서 long press의
+  pointerup이 도착하지 않았고, 활성 상태에서는 touchstart 취소와 pointerup 전달을 확인했다.
+  [기기 이벤트 기록](../../artifacts/web-mobile-selection/android-handles-device/fixed-physical.json).
+  수정 후 [더블 탭](../../artifacts/web-mobile-selection/android-handles-device/fixed-doubletap.png)의
+  Cupertino 핸들 한 쌍을 확인했고,
+  [핸들 드래그](../../artifacts/web-mobile-selection/android-handles-device/fixed-handle-drag.png)로
+  선택 범위가 7..16에서 7..21로 바뀌었다.
+  [길게 누른 뒤 커서 드래그](../../artifacts/web-mobile-selection/android-handles-device/fixed-cursor-drag.png)는
+  21..21로 이동했고 네이티브 핸들 중복은 관찰되지 않았다.
+  수정 전 핸들 두 쌍이 동시에 보이는 화면까지 재현한 것은 아니다.
+
+소스 반영 후 터널을 다시 게시할 때 `-SkipPublish`를 사용하지 않는다.

@@ -1,4 +1,4 @@
-import { selectRendererPolicy, initialCanvasCapacity } from "./doroti.web.policy.js";
+import { selectRendererPolicy, resolveRendererPolicy, initialCanvasCapacity } from "./doroti.web.policy.js";
 import type { RendererPolicy } from "./doroti.web.policy.js";
 import type { BrowserPlatformComposition, CompositionPacket, RasterPacket } from "./doroti.web.composition.js";
 import { BrowserViewEnvironment } from "./doroti.web.environment.js";
@@ -370,7 +370,7 @@ const resizeDiagnostics: ResizeDiagnostics = {
       context: 0,
       requestedMode: presenterPolicy().requested,
       mode: workerPresenter.mode,
-      fallbackReason: null,
+      fallbackReason: presenterPolicy().fallbackReason,
       contextGeneration: workerPresenter.contextGeneration,
       currentRequestId: workerPresenter.currentRequestId,
       latestRequestId: workerPresenter.latestRequestId,
@@ -919,8 +919,8 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   root.dataset.dorotiTextSelection = frameworkTextSelection ? "framework" : "browser";
   root.dataset.dorotiHostId = String(hostId);
   recordResize(host, "target-observed", "host-initial");
-  const observe = (target: EventTarget, name: string, handler: EventListener): void => {
-    target.addEventListener(name, handler);
+  const observe = (target: EventTarget, name: string, handler: EventListener, options?: { passive: boolean }): void => {
+    target.addEventListener(name, handler, options);
     host.listeners.push({ target, name, handler });
   };
   const belongsToHost = (target: EventTarget | null): boolean =>
@@ -1018,6 +1018,16 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     root.style.cursor = host.frameworkCursor;
   });
   observe(root, "pointerleave", (event) => pointer(6)(event as PointerEvent));
+  if (operatingSystem === "android") observe(root, "touchstart", (event) => {
+    // Chromium performs long-press selection before dispatching contextmenu;
+    // cancelling pointerdown only suppresses compatibility mouse events. Stop
+    // the native gesture at touchstart so its OS handles cannot overlap ours.
+    // Pointer events still drive framework selection, and the editable remains
+    // focusable/hit-testable for IME, keyboard cursor movement and accessibility.
+    const target = event.target;
+    if (target === root || target === canvas || target === input ||
+        (target instanceof Node && semantics.contains(target))) event.preventDefault();
+  }, { passive: false });
   observe(root, "contextmenu", (event) => {
     const target = event.target;
     const nativeTextInput = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement;
@@ -1811,13 +1821,18 @@ export async function invokePlugin(moduleUrl: string, exportName: string, channe
 }
 
 export async function startDorotiWorkerHost(
-  mode: "worker-direct-webgl" | "worker-direct-webgpu" = presenterPolicy().selected,
+  mode?: "worker-direct-webgl" | "worker-direct-webgpu",
   runtimeLocation: "main" | "worker" = "main",
-  policy: RendererPolicy = presenterPolicy(),
+  policy?: RendererPolicy,
 ): Promise<"started"> {
-  selectedRendererPolicy = mode === policy.selected ? policy :
-    { ...policy, requested: mode, selected: mode, reason: "explicit-host-override" };
-  Object.assign(document.documentElement.dataset, { dorotiRendererRequested: selectedRendererPolicy.requested,
+  // The loader supplies its resolved policy. Direct host callers resolve auto
+  // here; a mode argument is an explicit override even if it matches auto.
+  const preferred = policy ?? presenterPolicy();
+  selectedRendererPolicy = mode !== undefined && (!policy || mode !== policy.selected) ?
+    { ...preferred, requested: mode, selected: mode, reason: "explicit-host-override", fallbackReason: null } :
+    policy ?? await resolveRendererPolicy(preferred, runtimeLocation);
+  mode = selectedRendererPolicy.selected;
+  Object.assign(document.documentElement.dataset, { dorotiRenderer: mode, dorotiRendererRequested: selectedRendererPolicy.requested,
     dorotiRendererReason: selectedRendererPolicy.reason, dorotiMemoryProfile: selectedRendererPolicy.memoryProfile });
   if (mode === "worker-direct-webgpu" && runtimeLocation !== "main")
     throw new Error("Doroti WebGPU requires runtimeLocation=main and a threaded build.");

@@ -2,11 +2,21 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
 const path = process.argv[2] ?? 'Doroti/src/Doroti.Host.Web/obj/Release/net10.0/Doroti.Web/wwwroot/doroti.web.policy.js';
-const { selectRendererPolicy: select, initialCanvasCapacity: initial, CanvasCapacityPolicy: Capacity, applyCanvasCapacity } =
+const { selectRendererPolicy: select, resolveRendererPolicy: resolvePolicy, initialCanvasCapacity: initial, CanvasCapacityPolicy: Capacity, applyCanvasCapacity } =
   await import('data:text/javascript;base64,' + Buffer.from(await readFile(path)).toString('base64'));
 const iphone = { userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 26_6_1 like Mac OS X) CriOS/150 Mobile', platform: 'iPhone', maxTouchPoints: 5 };
 const ipad = { userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) Safari/605', platform: 'MacIntel', maxTouchPoints: 5 };
 const mac = { ...ipad, maxTouchPoints: 0 };
+const android = { userAgent: 'Mozilla/5.0 (Linux; Android 16) Chrome/150 Mobile', platform: 'Linux armv8l', maxTouchPoints: 5 };
+const windows = { userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/150', platform: 'Win32', maxTouchPoints: 10 };
+const linux = { userAgent: 'Mozilla/5.0 (X11; Linux x86_64)', platform: 'Linux x86_64', maxTouchPoints: 0 };
+for (const query of ['', '?dorotiRenderer=auto', '?dorotiRenderer=unknown']) {
+  assert.equal(select(query, android).selected, 'worker-direct-webgpu');
+  for (const platform of [iphone, ipad, mac, windows, linux])
+    assert.equal(select(query, platform).selected, 'worker-direct-webgl');
+}
+assert.equal(select('', android).reason, 'android-prefer-webgpu');
+assert.equal(select('?dorotiRenderer=worker-direct-webgl', android).selected, 'worker-direct-webgl');
 assert.equal(select('', iphone).selected, 'worker-direct-webgl');
 assert.equal(select('', ipad).selected, 'worker-direct-webgl');
 assert.equal(select('', mac).selected, 'worker-direct-webgl');
@@ -37,6 +47,42 @@ const desktop = new Capacity(false);
 assert.equal(desktop.next(800, 600, 1600, 1200, 10000).wakeAfter, 0);
 assert.equal(desktop.next(1700, 600, 1600, 1200, 10001).width, 2400);
 console.log('PASS backend selection and canvas capacity contracts');
+
+let probes = 0;
+const available = { isSecureContext: true, crossOriginIsolated: true,
+  navigator: { gpu: { requestAdapter: async () => { probes++; return {}; } } } };
+const preferred = select('', android);
+assert.equal(await resolvePolicy(preferred, 'main', available), preferred);
+assert.equal(probes, 1);
+for (const [environment, runtime, reason] of [
+  [{ ...available, navigator: {} }, 'main', 'webgpu-api-unavailable'],
+  [{ ...available, isSecureContext: false }, 'main', 'webgpu-requires-secure-isolated-origin'],
+  [{ ...available, crossOriginIsolated: false }, 'main', 'webgpu-requires-secure-isolated-origin'],
+  [available, 'worker', 'webgpu-requires-main-runtime'],
+  [{ ...available, navigator: { gpu: { requestAdapter: async () => null } } }, 'main', 'webgpu-adapter-unavailable'],
+  [{ ...available, navigator: { gpu: { requestAdapter: async () => { throw new Error('blocked'); } } } }, 'main', 'webgpu-adapter-probe-failed'],
+]) {
+  const result = await resolvePolicy(preferred, runtime, environment);
+  assert.equal(result.selected, 'worker-direct-webgl');
+  assert.equal(result.requested, 'auto');
+  assert.equal(result.memoryProfile, 'mobile');
+  assert.equal(result.reason, 'auto-webgl2-fallback');
+  assert.equal(result.fallbackReason, reason);
+}
+for (const platform of [android, iphone, windows]) {
+  for (const mode of ['worker-direct-webgl', 'worker-direct-webgpu']) {
+    const explicit = select('?dorotiRenderer=' + mode, platform);
+    assert.equal(await resolvePolicy(explicit, 'worker', { ...available, navigator: {} }), explicit);
+    assert.equal(await resolvePolicy(explicit, 'main', available), explicit);
+  }
+}
+for (const platform of [iphone, ipad, mac, windows, linux]) {
+  const preferred = select('', platform);
+  assert.equal(await resolvePolicy(preferred, 'main', available), preferred);
+}
+assert.equal(probes, 1, 'only Android auto should probe an adapter');
+assert.equal(preferred.selected, 'worker-direct-webgpu', 'fallback must not mutate the preference');
+console.log('PASS Android auto capability resolution and explicit override preservation');
 
 let w = 1170, h = 2532;
 const areas = [];

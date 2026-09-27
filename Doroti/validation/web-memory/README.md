@@ -10,6 +10,7 @@ run before removing that stale lock manually. No retry is automatic. Historical 
 ```sh
 python3 Doroti/validation/run-with-timeout.py dotnet publish samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release -o Doroti/artifacts/web-memory/final/product
 python3 Doroti/validation/run-with-timeout.py node Doroti/validation/web-memory/contracts.mjs
+python3 Doroti/validation/run-with-timeout.py node --experimental-vm-modules Doroti/validation/web-memory/frame-admission.mjs
 python3 Doroti/validation/run-with-timeout.py dotnet run --project Doroti/validation/web-memory/CacheContracts/CacheContracts.csproj -c Release
 python3 Doroti/validation/run-with-timeout.py node Doroti/validation/web-memory/run.mjs Doroti/artifacts/web-memory/run-example Doroti/artifacts/web-memory/final/product/wwwroot auto memory 1
 ```
@@ -21,6 +22,13 @@ driver. The former `textures`/`webview` modes and `run-contract.mjs` were remove
 with the Testbed Fixture code on 2026-09-27. macOS and Windows installed Chrome are supported; `DOROTI_CHROME` overrides
 the executable. A mobile run uses an iPhone UA, 390×900, DPR 3. It is **desktop
 Chromium emulation, not iOS WebKit evidence**. Desktop uses 1280×900, DPR 1.
+
+`DOROTI_BROWSER_PLATFORM=android` or `ios` overrides the driver's UA for
+automatic renderer selection checks. This still uses the desktop GPU/browser;
+it does not qualify Android/iOS performance. The policy contracts also cover
+missing/failed WebGPU adapters and explicit overrides. `frame-admission.mjs`
+executes the compiled Worker queue with a controlled GPU completion gate to
+verify that requests replaced during the wait are skipped before raster.
 
 `memory-soak` (minimal diagnostics) or `memory-soak-off` (diagnostics OFF)
 repeats visits for at least 10 foreground minutes, then runs the

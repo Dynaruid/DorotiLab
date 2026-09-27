@@ -540,6 +540,13 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
     discardPlatformFrame();
     if (webgpu) await webgpu.waitForCapacity();
     if (request.terminal || runtimeState.state === "disposing" || runtimeState.state === "disposed") return;
+    // Input/animation may replace the request while GPU capacity is awaited.
+    // Raster only the latest queued frame instead of spending the freed slot
+    // on obsolete work and adding another frame of input latency.
+    if (value.latest && value.latest.requestId > request.requestId) {
+      terminal(request, "superseded", "newer worker request arrived before raster");
+      return;
+    }
     if (!snapshot || snapshot.resizeEpoch.generation !== request.generation ||
         latestAdmissionGeneration !== request.generation) {
       terminal(request, "superseded", "worker target changed before raster");

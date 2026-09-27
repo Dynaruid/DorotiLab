@@ -163,7 +163,7 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedAp
 
 브라우저에서 [Material 샘플 열기](http://127.0.0.1:5088/)를 누릅니다.
 Web도 Material 샘플을 바로 엽니다.
-renderer 옵션을 생략하면 기본 SkiaSharp direct Worker/WebGL2로 실행됩니다.
+renderer 옵션을 생략하면 Android는 WebGPU를, 나머지 플랫폼은 WebGL2를 우선합니다.
 서버는 실행한 터미널에서 `Ctrl+C`로 종료합니다.
 
 ## 화면과 렌더러 설정
@@ -174,10 +174,11 @@ Native와 Web 모두 Material 샘플을 바로 엽니다.
 
 | 화면 / 렌더러 | 열기 |
 | --- | --- |
-| Material 샘플 / 기본 WebGL2 | [샘플](http://127.0.0.1:5088/) |
+| Material 샘플 / 렌더러 자동 선택 | [샘플](http://127.0.0.1:5088/) |
+| Material 샘플 / WebGL2 | [WebGL2 샘플](http://127.0.0.1:5088/?dorotiRenderer=worker-direct-webgl) |
 | Material 샘플 / WebGPU | [WebGPU 샘플](http://127.0.0.1:5088/?dorotiRenderer=worker-direct-webgpu) |
 
-`dorotiRenderer`는 `worker-direct-webgl`(기본값 및 `auto`) 또는 명시적인 `worker-direct-webgpu`를 선택합니다.
+`dorotiRenderer` 생략, `auto`, 알 수 없는 값은 Android에서 WebGPU를, 나머지 플랫폼에서는 WebGL2를 우선합니다. Android 자동 선택은 시작 전에 런타임·출처 조건과 WebGPU API·어댑터를 확인하고 사용할 수 없으면 WebGL2를 선택합니다. 명시적인 `worker-direct-webgl` / `worker-direct-webgpu` 지정은 유지하며, 장치·context 초기화 실패는 백엔드 재시도 없이 보고합니다.
 현재 Web 호스트는 SkiaSharp WASM과 Microsoft.TypeScript.MSBuild를 사용하며 CanvasKit/npm 복원은 필요 없습니다.
 렌더러를 다시 빌드했다면 runner를 재시작하고 페이지를 새로고침하세요.
 Components → Communication → Progress indicators의 재생 버튼으로 애니메이션을 확인할 수 있습니다.

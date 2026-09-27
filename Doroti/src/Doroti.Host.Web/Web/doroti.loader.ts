@@ -1,4 +1,4 @@
-import { selectRendererPolicy } from "./doroti.web.policy.js";
+import { selectRendererPolicy, resolveRendererPolicy } from "./doroti.web.policy.js";
 import type { RendererPolicy } from "./doroti.web.policy.js";
 export type DorotiBootstrapStage = "before-start" | "starting" | "started" | "failed";
 
@@ -33,7 +33,8 @@ async function runStart(options: DorotiBootstrapOptions): Promise<DorotiBootstra
     notifyStage("before-start", context, options);
 
     notifyStage("starting", context, options);
-    context.rendererPolicy = selectRendererPolicy(globalThis.location.search, navigator);
+    context.rendererPolicy = await resolveRendererPolicy(
+      selectRendererPolicy(globalThis.location.search, navigator), context.runtimeLocation ?? "main");
     context.rendererMode = context.rendererPolicy.selected;
     document.documentElement.dataset.dorotiRenderer = context.rendererMode;
     const module = await import("./doroti.web.js");

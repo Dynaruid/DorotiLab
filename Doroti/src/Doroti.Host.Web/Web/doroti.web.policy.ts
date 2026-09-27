@@ -17,10 +17,32 @@ export function selectRendererPolicy(search: string, platform: {
   const requested = value === "worker-direct-webgl" || value === "worker-direct-webgpu" ? value : "auto";
   const ios = /iPhone|iPad|iPod/.test(platform.userAgent) ||
     (platform.platform === "MacIntel" && platform.maxTouchPoints > 1);
-  const selected = requested === "auto" ? "worker-direct-webgl" : requested;
+  const android = !ios && /Android/.test(platform.userAgent);
+  const selected = requested === "auto" ? android ? "worker-direct-webgpu" : "worker-direct-webgl" : requested;
   return { requested, selected, reason: requested !== "auto" ? "explicit-override" :
-    ios ? "ios-webkit-stability" : "default-webgl2", fallbackReason: null,
-    memoryProfile: ios || /Android/.test(platform.userAgent) ? "mobile" : "desktop" };
+    ios ? "ios-webkit-stability" : android ? "android-prefer-webgpu" : "default-webgl2", fallbackReason: null,
+    memoryProfile: ios || android ? "mobile" : "desktop" };
+}
+
+// Resolve auto preference before transferring the visible canvas or starting a
+// GPU owner. Explicit overrides and failures after initialization stay visible.
+export async function resolveRendererPolicy(policy: RendererPolicy, runtimeLocation: "main" | "worker",
+  environment: { isSecureContext: boolean; crossOriginIsolated: boolean;
+    navigator: { gpu?: { requestAdapter(): Promise<unknown | null> } } } = globalThis): Promise<RendererPolicy> {
+  if (policy.requested !== "auto" || policy.selected !== "worker-direct-webgpu") return policy;
+  let fallbackReason: string | null = null;
+  if (runtimeLocation !== "main") fallbackReason = "webgpu-requires-main-runtime";
+  else if (!environment.isSecureContext || !environment.crossOriginIsolated)
+    fallbackReason = "webgpu-requires-secure-isolated-origin";
+  else if (!environment.navigator.gpu) fallbackReason = "webgpu-api-unavailable";
+  else {
+    try {
+      if (!await environment.navigator.gpu.requestAdapter()) fallbackReason = "webgpu-adapter-unavailable";
+    } catch {
+      fallbackReason = "webgpu-adapter-probe-failed";
+    }
+  }
+  return fallbackReason ? { ...policy, selected: "worker-direct-webgl", reason: "auto-webgl2-fallback", fallbackReason } : policy;
 }
 
 export function initialCanvasCapacity(width: number, height: number, dpr: number,

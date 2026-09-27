@@ -352,6 +352,27 @@ try {
   check(accessibility.nodes.some(n=>!n.ignored && n.role?.value==='textbox'), 'browser accessibility tree contains an exposed textbox');
   const menuPrevented = await evaluate(`(()=>{const e=new MouseEvent('contextmenu',{bubbles:true,cancelable:true});document.querySelector('#doroti-ime').dispatchEvent(e);return e.defaultPrevented})()`);
   check(menuPrevented === frameworkSelection, 'native context menu ownership');
+  const touchOwnership = await evaluate(`(()=>{
+    const root=document.querySelector('.doroti-root');
+    const external=document.createElement('input');root.append(external);
+    const result=[document.querySelector('canvas'),document.querySelector('#doroti-ime'),
+      document.querySelector('[role=textbox]'),external].map(target=>{
+      const event=new Event('touchstart',{bubbles:true,cancelable:true});target.dispatchEvent(event);return event.defaultPrevented;
+    });external.remove();return result;
+  })()`);
+  check(touchOwnership.slice(0,3).every(value=>value===(profile==='android')) && !touchOwnership[3],
+    'Android cancels native touch gestures only on framework surfaces and editable endpoints');
+  if (profile === 'android') {
+    await evaluate(`window.__selectionTouches=[];document.addEventListener('touchstart',e=>window.__selectionTouches.push({trusted:e.isTrusted,prevented:e.defaultPrevented,target:e.target.id}));window.__selectionPointerUps=0;document.addEventListener('pointerup',()=>window.__selectionPointerUps++);`);
+    const rect=await evaluate(`document.querySelector('#doroti-ime').getBoundingClientRect().toJSON()`);
+    await tap(rect.x+Math.min(24,rect.width/2),rect.y+rect.height/2,850);
+    const gesture=await evaluate(`({touch:window.__selectionTouches.at(-1),pointerUps:window.__selectionPointerUps,active:document.activeElement?.id})`);
+    await save('android-native-gesture',gesture);
+    check(gesture.touch?.trusted && gesture.touch.prevented && gesture.touch.target==='doroti-ime',
+      'trusted Android long press cancels the native editable touch gesture');
+    check(gesture.pointerUps>0 && gesture.active==='doroti-ime', 'native gesture cancellation preserves pointer delivery and keyboard focus');
+    check(!!await menuButton(/^Copy$/i), 'Android long press still selects through the framework');
+  }
   if (ios) {
     // The decoration can extend beyond the DOM editable. Exercise a framework
     // gesture there as well as over the transparent editable's bounds.

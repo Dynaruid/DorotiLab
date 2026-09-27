@@ -169,7 +169,7 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedAp
 
 In a browser, [open the Material sample](http://127.0.0.1:5088/).
 Web opens the Material sample directly.
-Omitting the renderer option uses the default SkiaSharp direct Worker/WebGL2 renderer.
+Omitting the renderer option prefers WebGPU on Android and WebGL2 elsewhere.
 Press `Ctrl+C` in the server terminal to stop it.
 
 ## Screen and renderer settings
@@ -180,10 +180,11 @@ Native and Web launches open the Material sample directly.
 
 | Screen / renderer | Open |
 | --- | --- |
-| Material sample / default WebGL2 | [Sample](http://127.0.0.1:5088/) |
+| Material sample / automatic renderer | [Sample](http://127.0.0.1:5088/) |
+| Material sample / WebGL2 | [WebGL2 sample](http://127.0.0.1:5088/?dorotiRenderer=worker-direct-webgl) |
 | Material sample / WebGPU | [WebGPU sample](http://127.0.0.1:5088/?dorotiRenderer=worker-direct-webgpu) |
 
-`dorotiRenderer` selects `worker-direct-webgl` (default and `auto`) or explicit `worker-direct-webgpu`.
+Omitted, `auto`, and unknown `dorotiRenderer` values prefer WebGPU on Android and WebGL2 elsewhere. Android auto checks the runtime/origin and WebGPU API/adapter before startup, choosing WebGL2 if unavailable. Explicit `worker-direct-webgl` / `worker-direct-webgpu` overrides are preserved; device/context initialization failures are reported without backend retry.
 The Web host uses SkiaSharp WASM and Microsoft.TypeScript.MSBuild; no CanvasKit/npm restore is required.
 After rebuilding a renderer, restart the runner and reload the page.
 Check animation with the play button under Components → Communication → Progress indicators.

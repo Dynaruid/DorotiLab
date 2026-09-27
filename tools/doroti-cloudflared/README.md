@@ -50,6 +50,17 @@ pwsh -NoProfile -File ./tools/doroti-cloudflared/tunnel.ps1 stop
 게시하므로 잠시 연결이 끊기며 새 터널 주소가 발급됩니다. `-SkipPublish`는
 기존 컨테이너가 정상 실행 중이면 그대로 재사용합니다.
 
+## 기기별 렌더러 선택
+
+같은 URL에서도 Android는 WebGPU를 우선하고, Windows·iOS/iPadOS·macOS 등은
+WebGL2를 사용합니다. Android에서 WebGPU API·어댑터를 사용할 수 없거나
+런타임·출처 조건이 맞지 않으면 시작 전에 WebGL2를 선택합니다.
+
+비교할 때는 URL에 `?dorotiRenderer=worker-direct-webgl` 또는
+`?dorotiRenderer=worker-direct-webgpu`를 붙여 고정합니다. 기존 쿼리가 있으면
+`&dorotiRenderer=...`를 붙입니다. 명시적인 지정은 플랫폼보다 우선하며,
+지정한 렌더러의 초기화 실패는 오류로 표시합니다.
+
 ## 구성
 
 ```text

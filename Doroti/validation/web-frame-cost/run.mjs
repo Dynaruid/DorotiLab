@@ -82,7 +82,12 @@ try {
   await cdp('Runtime.enable', {}, page);
   await cdp('Page.enable', {}, page);
   const mobile = process.env.DOROTI_MEMORY_MOBILE === '1';
-  if (mobile) await cdp('Emulation.setUserAgentOverride', {
+  const browserPlatform = process.env.DOROTI_BROWSER_PLATFORM ?? (mobile ? 'ios' : 'desktop');
+  if (!['desktop', 'ios', 'android'].includes(browserPlatform)) throw Error('Unknown DOROTI_BROWSER_PLATFORM');
+  if (browserPlatform === 'android') await cdp('Emulation.setUserAgentOverride', {
+    userAgent: 'Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0 Mobile Safari/537.36',
+    platform: 'Linux armv8l' }, page);
+  else if (browserPlatform === 'ios') await cdp('Emulation.setUserAgentOverride', {
     userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 26_6_1 like Mac OS X) AppleWebKit/605.1.15 CriOS/150.0 Mobile/15E148 Safari/604.1',
     platform: 'iPhone' }, page);
   await cdp('Emulation.setDeviceMetricsOverride', { width: +width, height: 900, deviceScaleFactor: +dpr, mobile: false }, page);
