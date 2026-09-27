@@ -64,7 +64,7 @@ Default edges are right, bottom, bottom-right, left, top, top-left, top-right an
 bottom-left. Set `DOROTI_CAPTURE_EDGES` to a comma-separated subset if needed.
 
 ```powershell
-$env:DOROTI_MAUI_VALIDATION_EXE=(Resolve-Path 'DorotiTestbedApp/windows/bin/Release/net10.0-windows10.0.19041.0/win-x64/DorotiTestbedApp.Windows.exe').Path
+$env:DOROTI_MAUI_VALIDATION_EXE=(Resolve-Path 'samples/DorotiTestbedApp/windows/bin/Release/net10.0-windows10.0.19041.0/win-x64/DorotiTestbedApp.Windows.exe').Path
 python Doroti/validation/run-with-timeout.py python Doroti/validation/windows-maui/capture-resize-frames.py
 python Doroti/validation/run-with-timeout.py python Doroti/validation/windows-maui/verify-flicker.py
 # For a raw WindowsAppSDK comparison, set DOROTI_RESIZE_HOST=windowsappsdk and
@@ -112,7 +112,7 @@ only resize/close the process they start. Acrylic validation temporarily moves
 the pointer and opens a red/blue background window, then restores the pointer.
 
 ```powershell
-python Doroti/validation/run-with-timeout.py dotnet build DorotiTestbedApp/windows/DorotiTestbedApp.Windows.csproj -c Release -p:Platform=x64
+python Doroti/validation/run-with-timeout.py dotnet build samples/DorotiTestbedApp/windows/DorotiTestbedApp.Windows.csproj -c Release -p:Platform=x64
 python Doroti/validation/run-with-timeout.py python Doroti/validation/windows-maui/verify-resize.py
 python Doroti/validation/run-with-timeout.py python Doroti/validation/windows-maui/verify-acrylic.py
 python Doroti/validation/run-with-timeout.py dotnet run --project Doroti/validation/windows-maui/ResizeDispatch -c Release

@@ -42,19 +42,19 @@
   </Folder>
   <Project Path="src/Doroti.App.Sdk/Doroti.App.Sdk.csproj" />
   <Folder Name="/samples/">
-    <Project Path="../DorotiTestbedApp/DorotiTestbedApp.csproj" />
-    <Project Path="../DorotiTestbedApp/windows/DorotiTestbedApp.Windows.csproj" />
-    <Project Path="../DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj" />
-    <Project Path="../DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj" />
-    <Project Path="../DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj" />
-    <Project Path="../DorotiTestbedApp/android/binding/DorotiTestbedApp.Android.Native.csproj" />
-    <Project Path="../DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj" />
-    <Project Path="../DorotiTestbedApp/macos/binding/DorotiTestbedApp.MacCatalyst.Native.csproj" />
-    <Project Path="../DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj" />
-    <Project Path="../DorotiTestbedApp/macos/binding/DorotiTestbedApp.MacOS.Native.csproj" />
-    <Project Path="../DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj" />
-    <Project Path="../DorotiTestbedApp/ios/binding/DorotiTestbedApp.iOS.Native.csproj" />
-    <Project Path="../DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj" />
+    <Project Path="../samples/DorotiTestbedApp/DorotiTestbedApp.csproj" />
+    <Project Path="../samples/DorotiTestbedApp/windows/DorotiTestbedApp.Windows.csproj" />
+    <Project Path="../samples/DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj" />
+    <Project Path="../samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj" />
+    <Project Path="../samples/DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj" />
+    <Project Path="../samples/DorotiTestbedApp/android/binding/DorotiTestbedApp.Android.Native.csproj" />
+    <Project Path="../samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj" />
+    <Project Path="../samples/DorotiTestbedApp/macos/binding/DorotiTestbedApp.MacCatalyst.Native.csproj" />
+    <Project Path="../samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj" />
+    <Project Path="../samples/DorotiTestbedApp/macos/binding/DorotiTestbedApp.MacOS.Native.csproj" />
+    <Project Path="../samples/DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj" />
+    <Project Path="../samples/DorotiTestbedApp/ios/binding/DorotiTestbedApp.iOS.Native.csproj" />
+    <Project Path="../samples/DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj" />
   </Folder>
   <Folder Name="/templates/">
     <Project Path="templates/Doroti.Templates/Doroti.Templates.csproj" />

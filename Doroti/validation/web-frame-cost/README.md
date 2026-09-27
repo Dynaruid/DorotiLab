@@ -6,7 +6,7 @@ Chrome profile; no retries. The runner owns and closes its browser and local HTT
 server. Existing development servers are not required.
 
 ```powershell
-python Doroti/validation/run-with-timeout.py dotnet publish DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release -o Doroti/artifacts/web-frame-cost/product
+python Doroti/validation/run-with-timeout.py dotnet publish samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release -o Doroti/artifacts/web-frame-cost/product
 python Doroti/validation/run-with-timeout.py node Doroti/validation/web-frame-cost/run.mjs Doroti/artifacts/web-frame-cost/run-01 Doroti/artifacts/web-frame-cost/product/wwwroot minimal
 python Doroti/validation/run-with-timeout.py python Doroti/validation/web-frame-cost/analyze.py Doroti/artifacts/web-frame-cost/run-01
 python Doroti/validation/run-with-timeout.py python Doroti/validation/web-frame-cost/test_analyze.py

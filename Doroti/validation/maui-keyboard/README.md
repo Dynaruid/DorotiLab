@@ -1,5 +1,7 @@
 # MAUI Windows / Android keyboard regression
 
+> The Testbed Evidence/Fixture code was removed on 2026-09-27. The following runners were retired with it: `verify-windows.py`, `verify-android.py`. Commands and results below that use them are historical; independent contracts and artifact analyzers remain available.
+
 Run from the repository root with the required process-tree deadline:
 
 ```powershell

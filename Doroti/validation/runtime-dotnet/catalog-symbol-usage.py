@@ -32,7 +32,7 @@ def main():
     )
 
     listed = subprocess.check_output(
-        ['rg', '--files', '-g', '*.cs', 'Doroti', 'DorotiTestbedApp', 'tools'],
+        ['rg', '--files', '-g', '*.cs', 'Doroti', 'samples/DorotiTestbedApp', 'tools'],
         cwd=root, text=True
     ).splitlines()
     counts = {item: dict.fromkeys(
@@ -54,7 +54,7 @@ def main():
             group = 'validation'
         elif len(parts) > 1 and parts[:2] == ('Doroti', 'templates'):
             group = 'template'
-        elif parts[0] == 'DorotiTestbedApp':
+        elif parts[:2] == ('samples', 'DorotiTestbedApp'):
             group = 'sample'
         elif parts[0] == 'tools':
             group = 'tool'

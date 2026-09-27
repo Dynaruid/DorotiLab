@@ -65,7 +65,7 @@ Flutter의 `SystemContextMenu`는 웹에서 지원되지 않는다. 웹의 브�
 브라우저 GPU 실행은 순차로 수행한다.
 
 ```sh
-python3 Doroti/validation/run-with-timeout.py dotnet publish DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release -o Doroti/artifacts/web-mobile-selection/review-product
+python3 Doroti/validation/run-with-timeout.py dotnet publish samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release -o Doroti/artifacts/web-mobile-selection/review-product
 node Doroti/validation/web-mobile-selection/focus-contracts.mjs Doroti/artifacts/web-mobile-selection/review-product/wwwroot
 python3 Doroti/validation/run-with-timeout.py node Doroti/validation/web-mobile-selection/run.mjs Doroti/artifacts/web-mobile-selection/review-iphone Doroti/artifacts/web-mobile-selection/review-product/wwwroot iphone
 DOROTI_EARLY_INPUT=1 python3 Doroti/validation/run-with-timeout.py node Doroti/validation/web-mobile-selection/run.mjs Doroti/artifacts/web-mobile-selection/review-ipad-ime Doroti/artifacts/web-mobile-selection/review-product/wwwroot ipad worker-direct-webgl 820
@@ -106,7 +106,7 @@ failure는 없었다. 검색/일반 입력창 확대경 캡처를 열어 화면 
 ### 웹검색의 추가 모달 수정 검증
 
 ```sh
-python3 Doroti/validation/run-with-timeout.py dotnet publish DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release -o Doroti/artifacts/web-mobile-selection/search-gesture-product
+python3 Doroti/validation/run-with-timeout.py dotnet publish samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release -o Doroti/artifacts/web-mobile-selection/search-gesture-product
 node Doroti/validation/web-mobile-selection/search-contracts.mjs Doroti/artifacts/web-mobile-selection/search-gesture-product/wwwroot
 DOROTI_SEARCH_FIELD=1 python3 Doroti/validation/run-with-timeout.py node Doroti/validation/web-mobile-selection/run.mjs Doroti/artifacts/web-mobile-selection/search-gesture-search-final Doroti/artifacts/web-mobile-selection/search-gesture-product/wwwroot iphone
 python3 Doroti/validation/run-with-timeout.py node Doroti/validation/web-mobile-selection/run.mjs Doroti/artifacts/web-mobile-selection/search-gesture-iphone-final Doroti/artifacts/web-mobile-selection/search-gesture-product/wwwroot iphone
@@ -147,7 +147,7 @@ iOS 26.5 Simulator의 WKWebView에서 동일한 투명 입력창으로 비교했
 ```sh
 # Booted iOS Simulator UUID를 지정한다. Xcode/Apple Silicon 환경 필요.
 python3 Doroti/validation/web-mobile-selection/ios-keyboard-cursor-probe.py SIMULATOR_UUID Doroti/artifacts/web-mobile-selection/keyboard-cursor-webkit
-python3 Doroti/validation/run-with-timeout.py dotnet publish DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release -o Doroti/artifacts/web-mobile-selection/keyboard-cursor-product
+python3 Doroti/validation/run-with-timeout.py dotnet publish samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release -o Doroti/artifacts/web-mobile-selection/keyboard-cursor-product
 DOROTI_SEARCH_FIELD=1 python3 Doroti/validation/run-with-timeout.py node Doroti/validation/web-mobile-selection/run.mjs Doroti/artifacts/web-mobile-selection/keyboard-cursor-search Doroti/artifacts/web-mobile-selection/keyboard-cursor-product/wwwroot iphone
 python3 Doroti/validation/run-with-timeout.py node Doroti/validation/web-mobile-selection/run.mjs Doroti/artifacts/web-mobile-selection/keyboard-cursor-iphone Doroti/artifacts/web-mobile-selection/keyboard-cursor-product/wwwroot iphone
 ```
@@ -178,7 +178,7 @@ transform을 semantics 사각형으로 교체하는 문제도 함께 확인했�
   키보드 설정을 다시 쓰지 않는다. 새 입력 연결과 연결 종료 때 추적 상태를 초기화한다.
 
 ```sh
-python3 Doroti/validation/run-with-timeout.py dotnet publish DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release -o Doroti/artifacts/web-mobile-selection/cursor-race-product
+python3 Doroti/validation/run-with-timeout.py dotnet publish samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release -o Doroti/artifacts/web-mobile-selection/cursor-race-product
 DOROTI_SEARCH_FIELD=1 DOROTI_CURSOR_RACE=1 python3 Doroti/validation/run-with-timeout.py node Doroti/validation/web-mobile-selection/run.mjs Doroti/artifacts/web-mobile-selection/cursor-race-search-final Doroti/artifacts/web-mobile-selection/cursor-race-product/wwwroot iphone
 python3 Doroti/validation/run-with-timeout.py node Doroti/validation/web-mobile-selection/run.mjs Doroti/artifacts/web-mobile-selection/cursor-race-iphone Doroti/artifacts/web-mobile-selection/cursor-race-product/wwwroot iphone
 DOROTI_EARLY_INPUT=1 python3 Doroti/validation/run-with-timeout.py node Doroti/validation/web-mobile-selection/run.mjs Doroti/artifacts/web-mobile-selection/cursor-race-ipad-ime Doroti/artifacts/web-mobile-selection/cursor-race-product/wwwroot ipad worker-direct-webgl 820

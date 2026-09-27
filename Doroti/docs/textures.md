@@ -279,7 +279,7 @@ build/publish directory. Other applications keep this dependency disabled.
 Set `DOROTI_GSTREAMER_PLUGIN_DIR` to a dedicated directory of reviewed plugins
 before opening a camera. The adapter must initialize GStreamer first, restricts
 its process-wide search paths, and checks plugin names/licenses. See the native
-[plugin policy](../../DorotiTestbedApp/linux/native/README.md#license-policy-and-optional-gstreamer)
+[plugin policy](../../samples/DorotiTestbedApp/linux/native/README.md#license-policy-and-optional-gstreamer)
 for the allowlist. libav/x264/x265 and automatic playback are not enabled. Review
 the actual plugin binaries and their transitive dependencies before distribution;
 the runtime checks do not certify a vendor's build.

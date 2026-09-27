@@ -5,7 +5,7 @@ wrapper. Build shared .NET outputs sequentially; target devices explicitly.
 
 ```powershell
 python Doroti/validation/run-with-timeout.py pwsh -NoProfile -File Doroti/eng/doroti.ps1 build -App DorotiTestbedApp -Platform android -Rid android-arm64 -Configuration Release
-python Doroti/validation/run-with-timeout.py adb -s R3CY30KZA4B install -r DorotiTestbedApp/android/bin/android-arm64/Release/net10.0-android/android-arm64/dev.doroti.testbed-Signed.apk
+python Doroti/validation/run-with-timeout.py adb -s R3CY30KZA4B install -r samples/DorotiTestbedApp/android/bin/android-arm64/Release/net10.0-android/android-arm64/dev.doroti.testbed-Signed.apk
 python Doroti/validation/run-with-timeout.py python Doroti/validation/webview/verify-android.py --serial R3CY30KZA4B --out Doroti/artifacts/webview/2026-09-20/android/commands-new --mode commands
 python Doroti/validation/run-with-timeout.py python Doroti/validation/webview/verify-android.py --serial R3CY30KZA4B --out Doroti/artifacts/webview/2026-09-20/android/calibration-new --mode calibration
 python Doroti/validation/run-with-timeout.py python Doroti/validation/webview/verify-android-calibration.py Doroti/artifacts/webview/2026-09-20/android/calibration-new --scale 3 --row 820 --edge 930 --color-x 600 --require-color-edge

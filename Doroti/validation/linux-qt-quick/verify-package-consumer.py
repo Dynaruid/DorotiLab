@@ -111,7 +111,7 @@ def main():
             tree.getroot().insert(2, group)
             tree.write(project, encoding="unicode")
             # The package consumer compiles its own probe, with no source ProjectReference.
-            probe = (ROOT / "DorotiTestbedApp/desktop/LinuxDesktopProbe.cs").read_text()
+            probe = (ROOT / "samples/DorotiTestbedApp/desktop/LinuxDesktopProbe.cs").read_text()
             (app / "desktop/LinuxDesktopProbe.cs").write_text(probe.replace("DorotiTestbedApp.Desktop", "QtPackageProbe.Desktop"))
             startup = app / "desktop/LinuxDesktopStartup.cs"
             startup.write_text(startup.read_text().replace(

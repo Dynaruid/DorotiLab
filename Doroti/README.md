@@ -6,7 +6,7 @@
 
 Doroti provides a shared widget, layout, painting, semantics, and rendering pipeline for desktop, mobile, and the web. The project began by translating Flutter framework source into C#; today, `Doroti.Framework.*` is developed and maintained directly in C#.
 
-This guide covers the framework, development environment, application startup, and build tools. For runnable examples and platform launch commands, start with the [sample app guide](../DorotiTestbedApp/README.md).
+This guide covers the framework, development environment, application startup, and build tools. For runnable examples and platform launch commands, start with the [sample app guide](../samples/DorotiTestbedApp/README.md).
 
 > [!WARNING]
 > Doroti is experimental. APIs and project structure may change, and platform implementations have different levels of validation.
@@ -29,12 +29,12 @@ See the [platform implementation table](../README.md#platforms) for the host and
 
 - Install [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6) on Windows, macOS, or Linux to run repository scripts such as `eng/doroti.ps1`. Start the commands below in PowerShell at the **repository root, `DorotiLab`**.
 - **Platforms other than iOS: .NET SDK 10.0.400**, or a compatible patch in the same feature band, selected by the [root global.json](../global.json) and [Doroti/global.json](global.json).
-- **iOS Testbed: .NET SDK 11.0.100-rc.1.26425.128**, or a compatible patch, selected by [iOS global.json](../DorotiTestbedApp/ios/global.json). Install it alongside .NET 10.
+- **iOS Testbed: .NET SDK 11.0.100-rc.1.26425.128**, or a compatible patch, selected by [iOS global.json](../samples/DorotiTestbedApp/ios/global.json). Install it alongside .NET 10.
 - Restore the platform workloads and NuGet packages for the selected SDK. The .NET 10 paths use the project-pinned 10.0.11 runtime packs, restored as needed for each target.
 
-`dotnet` searches upward from the **current working directory** for `global.json`. Pointing `--project` at an iOS project does not change SDK selection. Run direct iOS commands from `DorotiTestbedApp/ios`, and other platform commands from the repository root. The workspace CLI's `build/run/publish -App ./DorotiTestbedApp -Platform ios` uses the iOS directory automatically.
+`dotnet` searches upward from the **current working directory** for `global.json`. Pointing `--project` at an iOS project does not change SDK selection. Run direct iOS commands from `samples/DorotiTestbedApp/ios`, and other platform commands from the repository root. The workspace CLI's `build/run/publish -App ./samples/DorotiTestbedApp -Platform ios` uses the iOS directory automatically.
 
-SDK selection is separate from the target framework. iOS device Release defaults to NativeAOT; use `-CompilationMode Mono` for the explicit recovery profile. NativeAOT uses `net11.0-ios` and MAUI `11.0.0-rc.1.26451.6`. Debug, simulators, and the explicit Mono profile currently retain `net10.0-ios`. Use `publish` to produce the signed device app; see [iOS sample instructions](../DorotiTestbedApp/README.md#ios-sample).
+SDK selection is separate from the target framework. iOS device Release defaults to NativeAOT; use `-CompilationMode Mono` for the explicit recovery profile. NativeAOT uses `net11.0-ios` and MAUI `11.0.0-rc.1.26451.6`. Debug, simulators, and the explicit Mono profile currently retain `net10.0-ios`. Use `publish` to produce the signed device app; see [iOS sample instructions](../samples/DorotiTestbedApp/README.md#ios-sample).
 
 ### Platform prerequisites
 
@@ -64,10 +64,10 @@ dotnet workload list
 pwsh -File ./Doroti/eng/doroti.ps1 doctor
 
 # macOS AppKit example: substitute the runner for the current host
-dotnet workload restore ./DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj
+dotnet workload restore ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj
 
 # iOS: check and restore from the directory that selects SDK 11
-Push-Location ./DorotiTestbedApp/ios
+Push-Location ./samples/DorotiTestbedApp/ios
 dotnet --version
 dotnet workload list
 dotnet workload restore ./DorotiTestbedApp.iOS.csproj
@@ -76,7 +76,7 @@ Pop-Location
 
 `workload restore` prepares .NET workloads for the selected SDK. It does not install external tools such as Xcode, Android SDK/JDK, MSVC, or Qt. `doctor` checks shared tools; it does not replace a complete platform build or device launch check.
 
-See [Testbed run instructions](../DorotiTestbedApp/README.md#material-sample-mode) for platform commands. The `reference/flutter-master` checkout is needed only for explicit Flutter comparisons; prepare it when needed with `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`.
+See [Testbed run instructions](../samples/DorotiTestbedApp/README.md#material-sample-mode) for platform commands. The `reference/flutter-master` checkout is needed only for explicit Flutter comparisons; prepare it when needed with `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`.
 
 ## Build and run
 
@@ -86,16 +86,16 @@ Run the following from the **repository root, `DorotiLab`**, after preparing the
 pwsh -File ./Doroti/eng/doroti.ps1 doctor
 
 $env:DOROTI_TESTBED_MODE = 'sample'
-pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows
+pwsh -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform windows
 ```
 
-`run` builds before launching. Windows uses Windows App SDK/`HwndExactCpp` by default; add `-WindowsBackend Maui` for the independent MAUI runner. Select `android`, `ios`, `macos`, `maccatalyst`, `linux`, or `web` with `-Platform` for other targets. Their prerequisites and device options are covered in the [sample app guide](../DorotiTestbedApp/README.md#run-by-platform).
+`run` builds before launching. Windows uses Windows App SDK/`HwndExactCpp` by default; add `-WindowsBackend Maui` for the independent MAUI runner. Select `android`, `ios`, `macos`, `maccatalyst`, `linux`, or `web` with `-Platform` for other targets. Their prerequisites and device options are covered in the [sample app guide](../samples/DorotiTestbedApp/README.md#run-by-platform).
 
 ### Build once and reuse
 
 ```powershell
-pwsh -File ./Doroti/eng/doroti.ps1 build -App ./DorotiTestbedApp -Platform web -Configuration Release
-pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform web -Configuration Release -LastSuccessful
+pwsh -File ./Doroti/eng/doroti.ps1 build -App ./samples/DorotiTestbedApp -Platform web -Configuration Release
+pwsh -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform web -Configuration Release -LastSuccessful
 ```
 
 `-LastSuccessful` and `-NoBuild` reuse an existing successful build only when its inputs, dependencies, toolchain, and output hashes still match. A missing or stale record requires another run without these flags. `-NoRestore` skips restore while still building and checking dependencies. These flags apply to `run` only.
@@ -142,7 +142,7 @@ new Doroti.Framework.DorotiWidgetEntrypoint(() => new MyApp())
 
 Material uses Material 3. Omit the removed `useMaterial3` argument from `ThemeData` constructors, factories, and `copyWith`. Use `Typography.Create` or `CreateMaterial2021` for typography.
 
-To follow system dark mode, provide `theme` and `darkTheme` to `MaterialApp` with `themeMode: ThemeMode.system`. Build palettes with `ColorScheme.CreateFromSeed` and `Brightness.light`/`Brightness.dark`; widgets read them through `Theme.of(context).colorScheme`. See the [complete theme example](../DorotiTestbedApp/README.md#system-dark-mode-and-color-palettes).
+To follow system dark mode, provide `theme` and `darkTheme` to `MaterialApp` with `themeMode: ThemeMode.system`. Build palettes with `ColorScheme.CreateFromSeed` and `Brightness.light`/`Brightness.dark`; widgets read them through `Theme.of(context).colorScheme`. See the [complete theme example](../samples/DorotiTestbedApp/README.md#system-dark-mode-and-color-palettes).
 
 ### Native bindings
 
@@ -169,7 +169,7 @@ The default path renders through Graphite/Vulkan and presents through D3D12/DXGI
 
 `auto` and unknown renderer values select WebGL2. GPU initialization failures do not trigger an automatic fallback. Both paths transfer the visible canvas once. Loader `started` signals runtime/GPU readiness, not the first visible content.
 
-Application bootstrap code lives in `web/src/**/*.ts`; framework Web code lives in `src/Doroti.Host.Web/Web/*.ts`. `Microsoft.TypeScript.MSBuild` compiles both into runner-local `obj` directories, and publishing includes the resulting JavaScript. Node, npm, Bun, and a bundler are not required. Testbed and templates preload the same-origin fallback font and use the import-mapped `dotnet.js`. See [Web renderer options](../DorotiTestbedApp/README.md#web-renderers-and-measurement-options).
+Application bootstrap code lives in `web/src/**/*.ts`; framework Web code lives in `src/Doroti.Host.Web/Web/*.ts`. `Microsoft.TypeScript.MSBuild` compiles both into runner-local `obj` directories, and publishing includes the resulting JavaScript. Node, npm, Bun, and a bundler are not required. Testbed and templates preload the same-origin fallback font and use the import-mapped `dotnet.js`. See [Web renderer options](../samples/DorotiTestbedApp/README.md#web-renderers-and-measurement-options).
 
 ### Window appearance
 

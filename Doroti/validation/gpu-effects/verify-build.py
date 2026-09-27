@@ -13,8 +13,8 @@ WORK.mkdir(parents=True)
 SDK = ROOT / 'Doroti/src/Doroti.App.Sdk/Sdk'
 UI = ROOT / 'Doroti/src/Doroti.Ui/Doroti.Ui.csproj'
 TOOL = ROOT / 'tools/Doroti.Wgsl/target/debug/doroti-wgsl.exe'
-SOURCE = (ROOT / 'DorotiTestbedApp/assets/effects/swap.wgsl').read_text()
-DEFINITION = json.loads((ROOT / 'DorotiTestbedApp/assets/effects/swap.effect.json').read_text())
+SOURCE = (ROOT / 'Doroti/validation/gpu-effects/assets/swap.wgsl').read_text()
+DEFINITION = json.loads((ROOT / 'Doroti/validation/gpu-effects/assets/swap.effect.json').read_text())
 DEFINITION['requiredBackends'] = ['vulkan-fragment']
 
 def project(name):

@@ -24,6 +24,6 @@
   "Doroti/src/Doroti.Skia.Vulkan/Doroti.Skia.Vulkan.csproj",
   "Doroti/src/Doroti.Ui/Doroti.Ui.csproj",
   "Doroti/tools/Doroti.Tooling/Doroti.Tooling.csproj",
-  "DorotiTestbedApp/DorotiTestbedApp.csproj",
+  "samples/DorotiTestbedApp/DorotiTestbedApp.csproj",
   "tools/Doroti.DartToCSharp/Doroti.DartToCSharp.csproj"
 ]

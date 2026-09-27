@@ -14,7 +14,7 @@ $ErrorActionPreference = 'Stop'
 $repositoryRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $composePath = Join-Path $PSScriptRoot 'compose.yaml'
 $urlPath = Join-Path $PSScriptRoot 'generated-url.txt'
-$webRoot = Join-Path $repositoryRoot 'DorotiTestbedApp/web/bin/Release/net10.0/publish/wwwroot'
+$webRoot = Join-Path $repositoryRoot 'samples/DorotiTestbedApp/web/bin/Release/net10.0/publish/wwwroot'
 
 function Invoke-Compose {
     & docker compose --project-name doroti-web-tunnel --project-directory $PSScriptRoot -f $composePath @args
@@ -70,7 +70,7 @@ switch ($Command) {
             Remove-Item -LiteralPath $urlPath -ErrorAction SilentlyContinue
             Push-Location $repositoryRoot
             try {
-                & pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 publish -App ./DorotiTestbedApp -Platform web -Configuration Release
+                & pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 publish -App ./samples/DorotiTestbedApp -Platform web -Configuration Release
                 if ($LASTEXITCODE -ne 0) { throw 'Doroti web Release publish failed.' }
             }
             finally { Pop-Location }

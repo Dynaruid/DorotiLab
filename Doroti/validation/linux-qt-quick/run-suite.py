@@ -3,7 +3,6 @@
 import argparse
 import hashlib
 import json
-import os
 from pathlib import Path
 import subprocess
 import sys
@@ -22,12 +21,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, required=True, help="New artifact directory")
     parser.add_argument("--shim", type=Path, help="libdoroti_qt_host.so from the build under test")
-    parser.add_argument("--app", type=Path, help="Product DLL from the same build")
-    parser.add_argument("--qpa", choices=("wayland", "xcb"))
-    parser.add_argument("--product", action="store_true", help="Run the actual product fixture")
     args = parser.parse_args()
-    if args.product and (not args.app or not args.qpa or not args.shim):
-        parser.error("--product requires --app, --qpa, and --shim")
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
     runs = []
@@ -36,13 +30,10 @@ def main():
         "createdUtc": datetime.now(timezone.utc).isoformat(),
         "sourceCommit": subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT,
                                        capture_output=True, text=True).stdout.strip(),
-        "qpa": args.qpa,
         "qtVersion": subprocess.run(["pkg-config", "--modversion", "Qt6Core"],
                                     capture_output=True, text=True).stdout.strip(),
         "shim": str(args.shim.resolve()) if args.shim else None,
         "shimSha256": digest(args.shim),
-        "app": str(args.app.resolve()) if args.app else None,
-        "appSha256": digest(args.app),
         "runs": runs,
     }
 
@@ -87,16 +78,8 @@ def main():
                                     ROOT / "Doroti/validation/linux-qt-contract/Contract.csproj",
                                     "--", build / "libproduct-driver.so"]):
             return 1
-        if args.product:
-            env = dict(os.environ, QT_QPA_PLATFORM=args.qpa)
-            if not run("product", [sys.executable, HERE / "verify-product.py", "--qpa", args.qpa,
-                                   "--app", args.app.resolve(), "--driver",
-                                   build / "libproduct-driver.so", "--output", output / "product"], env):
-                return 1
-        else:
-            skip("product", "Pass --product with a matching app and QPA")
     else:
-        for name in ("native-contract", "webview-contract", "gpu-contract", "product"):
+        for name in ("native-contract", "webview-contract", "gpu-contract"):
             skip(name, "Pass --shim from the build under test")
     for name in ("physical-input", "orca", "clean-vm-deployment"):
         skip(name, "Requires a recorded manual device or clean VM run")

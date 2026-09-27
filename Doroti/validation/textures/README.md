@@ -1,5 +1,7 @@
 # Texture validation — 2026-09-22
 
+> The Testbed Evidence/Fixture code was removed on 2026-09-27. The following runners were retired with it: `verify-android-sources.py`, `verify-windows.py`, `verify-web.mjs`, `verify-web-input.mjs`, `verify-web-loss.mjs`. Commands and results below that use them are historical; independent contracts and artifact analyzers remain available.
+
 All commands run from the repository root. Tests use `run-with-timeout.py`, which
 enforces the repository's 1,200-second process-tree deadline.
 
@@ -20,8 +22,8 @@ python Doroti/validation/run-with-timeout.py dotnet run --project Doroti/validat
 ## Android installation and acceptance
 
 ```powershell
-python Doroti/validation/run-with-timeout.py dotnet build DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj -c Release -r android-x64 -p:AndroidPackageFormats=apk
-python Doroti/validation/run-with-timeout.py adb -s emulator-5554 install -r DorotiTestbedApp/android/bin/android-x64/Release/net10.0-android/android-x64/dev.doroti.testbed-Signed.apk
+python Doroti/validation/run-with-timeout.py dotnet build samples/DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj -c Release -r android-x64 -p:AndroidPackageFormats=apk
+python Doroti/validation/run-with-timeout.py adb -s emulator-5554 install -r samples/DorotiTestbedApp/android/bin/android-x64/Release/net10.0-android/android-x64/dev.doroti.testbed-Signed.apk
 adb -s emulator-5554 shell pm grant dev.doroti.testbed android.permission.CAMERA
 adb -s emulator-5554 logcat -c
 adb -s emulator-5554 shell am start -n dev.doroti.testbed/crc64c80c495bd333b69c.MainActivity --es doroti_testbed_mode texture-native --es doroti_texture_source canvas
@@ -84,7 +86,7 @@ Only Windows was executed in this follow-up. Apple and Linux platform code was
 configured and reviewed statically; no target builds or runs were performed.
 
 ```powershell
-python Doroti/validation/run-with-timeout.py dotnet build DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Release
+python Doroti/validation/run-with-timeout.py dotnet build samples/DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Release
 python Doroti/validation/run-with-timeout.py python Doroti/validation/textures/verify-windows.py
 # Optional variants; set one before the same verifier, then remove it afterward:
 $env:DOROTI_WINDOWS_GPU_PREFERENCE = 'HighPerformancePreference'

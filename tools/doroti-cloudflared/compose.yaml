@@ -7,7 +7,7 @@ services:
       - "127.0.0.1:${DOROTI_PREVIEW_PORT:-5089}:80"
     volumes:
       - type: bind
-        source: ../../DorotiTestbedApp/web/bin/Release/net10.0/publish/wwwroot
+        source: ../../samples/DorotiTestbedApp/web/bin/Release/net10.0/publish/wwwroot
         target: /usr/share/nginx/html
         read_only: true
         bind:

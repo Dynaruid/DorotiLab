@@ -57,10 +57,10 @@ cd DorotiLab
 
 python Doroti/validation/run-with-timeout.py cargo build --locked --manifest-path tools/Doroti.Wgsl/Cargo.toml
 $env:DOROTI_TESTBED_MODE = 'sample'
-pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows
+pwsh -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform windows
 ```
 
-The command builds and launches the default Windows App SDK runner. Follow the [sample app guide](DorotiTestbedApp/README.md) for Android, iOS, macOS, Mac Catalyst, Linux, and Web commands, or the [framework guide](Doroti/README.md) for build and publish options.
+The command builds and launches the default Windows App SDK runner. Follow the [sample app guide](samples/DorotiTestbedApp/README.md) for Android, iOS, macOS, Mac Catalyst, Linux, and Web commands, or the [framework guide](Doroti/README.md) for build and publish options.
 
 ## How it works
 
@@ -85,7 +85,7 @@ The project began with a Dart-to-C# compiler to bootstrap framework code. Today,
 | Guide | Contents |
 | --- | --- |
 | [Framework guide](Doroti/README.md) | SDKs, workloads, build commands, packaging, and host configuration |
-| [Sample app guide](DorotiTestbedApp/README.md) | Platform launch commands, sample screens, renderer options, and troubleshooting |
+| [Sample app guide](samples/DorotiTestbedApp/README.md) | Platform launch commands, sample screens, renderer options, and troubleshooting |
 | [Dart-to-C# compiler](tools/Doroti.DartToCSharp/README.md) | Optional source import and migration tooling |
 | [WGSL GPU effects](Doroti/validation/gpu-effects/README.md) | Windows fragment implementation, source-tree compiler setup, and remaining platform work |
 | [Development history](history/) | Archived plans and validation records |
@@ -103,7 +103,7 @@ Current priorities include native desktop integration, automated Web behavior ch
 | Path | Contents |
 | --- | --- |
 | [`Doroti/src/`](Doroti/src/) | Framework, runtime, rendering, hosts, and SDK |
-| [`DorotiTestbedApp/`](DorotiTestbedApp/) | Shared sample application and platform runners |
+| [`samples/DorotiTestbedApp/`](samples/DorotiTestbedApp/) | Shared sample application and platform runners |
 | [`Doroti/templates/`](Doroti/templates/) | `dotnet new doroti-app` template |
 | [`Doroti/eng/`](Doroti/eng/) | Build, run, packaging, and diagnostic tools |
 | [`tools/Doroti.DartToCSharp/`](tools/Doroti.DartToCSharp/) | Optional Dart-to-C# compiler |

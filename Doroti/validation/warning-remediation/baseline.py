@@ -37,13 +37,13 @@ def main():
     isolated.mkdir(parents=True)
     tracked = subprocess.check_output(["git", "ls-files", "-z"], cwd=ROOT).decode().split("\0")
     selected = [p for p in tracked if p and (
-        p.startswith(("Doroti/src/", "DorotiTestbedApp/", "Doroti/eng/"))
+        p.startswith(("Doroti/src/", "samples/DorotiTestbedApp/", "Doroti/eng/"))
         or ("/" not in p or p.count("/") == 1 and p.startswith("Doroti/"))
         or p.startswith("reference/flutter_sample_app/assets/")
     )]
     # Include untracked product changes too; the baseline describes this working tree.
     selected += subprocess.check_output(
-        ["git", "ls-files", "--others", "--exclude-standard", "-z", "Doroti/src", "DorotiTestbedApp"],
+        ["git", "ls-files", "--others", "--exclude-standard", "-z", "Doroti/src", "samples/DorotiTestbedApp"],
         cwd=ROOT).decode().split("\0")
     hashes = {}
     for relative in sorted(set(selected) - {""}):
@@ -77,7 +77,7 @@ def main():
     write_json(out / "baseline.json", baseline)
     (out / "working-tree.patch").write_bytes(subprocess.check_output(["git", "diff", "HEAD", "--binary"], cwd=ROOT))
     (out.parent / "latest.txt").write_text(str(out), encoding="utf-8")
-    projects = ["DorotiTestbedApp/DorotiTestbedApp.csproj",
+    projects = ["samples/DorotiTestbedApp/DorotiTestbedApp.csproj",
                 "Doroti/src/Doroti.Framework.WidgetPreviews/Doroti.Framework.WidgetPreviews.csproj"]
     all_records = []
     commands = []

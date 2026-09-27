@@ -66,7 +66,7 @@ var recordingCanvas = pictureRecorder.BeginRecording(new SKRect(0, 0, 800, 100))
 Draw(recordingCanvas, original);
 using var recorded = pictureRecorder.EndRecording();
 var fontBytes = File.ReadAllBytes(
-    System.IO.Path.GetFullPath("DorotiTestbedApp/assets/fonts/Roboto-regular.ttf")
+    System.IO.Path.GetFullPath("samples/DorotiTestbedApp/assets/fonts/Roboto-regular.ttf")
 );
 await renderer.RegisterFontAsync(fontBytes, "MemoryFont");
 Check(renderer.CaptureCacheMemory().TextEntries == 0, "registration clears old resolution");

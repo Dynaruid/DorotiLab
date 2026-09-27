@@ -48,7 +48,7 @@ pwsh -NoProfile -File ./tools/doroti-cloudflared/tunnel.ps1 stop
   → https://<임의 이름>.trycloudflare.com
   → Docker cloudflared
   → Docker Nginx:80
-  → DorotiTestbedApp/web/bin/Release/net10.0/publish/wwwroot
+  → samples/DorotiTestbedApp/web/bin/Release/net10.0/publish/wwwroot
 ```
 
 - Nginx는 게시 결과를 읽기 전용으로 마운트합니다.

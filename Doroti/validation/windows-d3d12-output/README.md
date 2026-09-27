@@ -1,6 +1,6 @@
 # Windows Vulkan/D3D12 output gate
 
-Build `DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj` in
+Build `samples/DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj` in
 Release, then run from the repository root with the required 20-minute timeout:
 
 ```powershell

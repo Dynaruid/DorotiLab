@@ -5,7 +5,7 @@ import hashlib
 import sys
 
 ROOT = Path(__file__).resolve().parents[3]
-APP = ROOT / "DorotiTestbedApp/linux/native"
+APP = ROOT / "samples/DorotiTestbedApp/linux/native"
 TEMPLATE = ROOT / "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native"
 
 

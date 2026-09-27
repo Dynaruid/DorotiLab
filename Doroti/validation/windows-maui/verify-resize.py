@@ -16,7 +16,7 @@ from PIL import ImageGrab
 ROOT = Path(__file__).resolve().parents[3]
 OUT = ROOT / 'Doroti/artifacts/validation/windows-maui' / datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
 OUT.mkdir(parents=True)
-EXE = Path(os.environ.get('DOROTI_MAUI_VALIDATION_EXE', str(ROOT / 'DorotiTestbedApp/windows/bin/x64/Release/net10.0-windows10.0.19041.0/win-x64/DorotiTestbedApp.Windows.exe')))
+EXE = Path(os.environ.get('DOROTI_MAUI_VALIDATION_EXE', str(ROOT / 'samples/DorotiTestbedApp/windows/bin/x64/Release/net10.0-windows10.0.19041.0/win-x64/DorotiTestbedApp.Windows.exe')))
 u = c.WinDLL('user32', use_last_error=True)
 dwm = c.WinDLL('dwmapi')
 dwm.DwmGetWindowAttribute.argtypes = [w.HWND, w.DWORD, c.c_void_p, w.DWORD]

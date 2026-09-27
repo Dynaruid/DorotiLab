@@ -30,7 +30,7 @@
   </Folder>
   <Project Path="src/Doroti.App.Sdk/Doroti.App.Sdk.csproj" />
   <Folder Name="/samples/">
-    <Project Path="../DorotiTestbedApp/DorotiTestbedApp.csproj" />
+    <Project Path="../samples/DorotiTestbedApp/DorotiTestbedApp.csproj" />
   </Folder>
   <Folder Name="/templates/">
     <Project Path="templates/Doroti.Templates/Doroti.Templates.csproj" />

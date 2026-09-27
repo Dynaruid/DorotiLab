@@ -1,12 +1,14 @@
 # AppKit product validation
 
+> The Testbed Evidence/Fixture code was removed on 2026-09-27. The following runners were retired with it: `run-probe.py`. Commands and results below that use them are historical; independent contracts and artifact analyzers remain available.
+
 Run from the repository root on an interactive macOS desktop. All children use
 the repository's 20-minute process-tree wrapper. Use fresh output directories;
 failed runs are preserved. `screencapture` must be able to capture the app window.
 
 ```sh
 python3 Doroti/validation/run-with-timeout.py dotnet build \
-  DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Debug \
+  samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Debug \
   -p:RuntimeIdentifier=osx-arm64 -p:DorotiMacOSTargetFramework=net10.0-macos27.0
 
 python3 Doroti/validation/run-with-timeout.py dotnet run \
@@ -16,7 +18,7 @@ python3 Doroti/validation/run-with-timeout.py dotnet run \
 
 python3 Doroti/validation/run-with-timeout.py python3 \
   Doroti/validation/platform-views/macos/run-probe.py \
-  --app 'DorotiTestbedApp/macos/bin/Debug/net10.0-macos27.0/osx-arm64/Doroti Testbed (AppKit).app' \
+  --app 'samples/DorotiTestbedApp/macos/bin/Debug/net10.0-macos27.0/osx-arm64/Doroti Testbed (AppKit).app' \
   --output /tmp/doroti-macos-graphite --renderer graphite
 # Repeat with a fresh directory and --renderer ganesh.
 ```
@@ -87,7 +89,7 @@ fixture now also has radius, saturation and tint-opacity controls.
 ```sh
 python3 Doroti/validation/run-with-timeout.py env DOROTI_MACOS_CUSTOM_BLUR_PROBE=1 \
   python3 Doroti/validation/platform-views/macos/run-probe.py \
-  --app 'DorotiTestbedApp/macos/bin/Debug/net10.0-macos27.0/osx-arm64/Doroti Testbed (AppKit).app' \
+  --app 'samples/DorotiTestbedApp/macos/bin/Debug/net10.0-macos27.0/osx-arm64/Doroti Testbed (AppKit).app' \
   --output /tmp/doroti-custom-blur-graphite --renderer graphite
 python3 Doroti/validation/run-with-timeout.py /path/to/venv/bin/python \
   Doroti/validation/platform-views/macos/analyze-custom-blur.py /tmp/doroti-custom-blur-graphite

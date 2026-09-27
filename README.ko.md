@@ -57,10 +57,10 @@ cd DorotiLab
 
 python Doroti/validation/run-with-timeout.py cargo build --locked --manifest-path tools/Doroti.Wgsl/Cargo.toml
 $env:DOROTI_TESTBED_MODE = 'sample'
-pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows
+pwsh -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform windows
 ```
 
-이 명령은 기본 Windows App SDK 실행 프로젝트를 빌드하고 실행합니다. Android, iOS, macOS, Mac Catalyst, Linux, Web 실행 방법은 [샘플 앱 가이드](DorotiTestbedApp/README.ko.md), 빌드·배포 옵션은 [프레임워크 가이드](Doroti/README.ko.md)를 참고하세요.
+이 명령은 기본 Windows App SDK 실행 프로젝트를 빌드하고 실행합니다. Android, iOS, macOS, Mac Catalyst, Linux, Web 실행 방법은 [샘플 앱 가이드](samples/DorotiTestbedApp/README.ko.md), 빌드·배포 옵션은 [프레임워크 가이드](Doroti/README.ko.md)를 참고하세요.
 
 ## 동작 구조
 
@@ -85,7 +85,7 @@ Material·Cupertino API의 동작은 Flutter를 참고합니다. 실제 구현�
 | 가이드 | 내용 |
 | --- | --- |
 | [프레임워크 가이드](Doroti/README.ko.md) | SDK, 워크로드, 빌드 명령, 패키징, 호스트 설정 |
-| [샘플 앱 가이드](DorotiTestbedApp/README.ko.md) | 플랫폼별 실행, 샘플 화면, 렌더러 옵션, 문제 해결 |
+| [샘플 앱 가이드](samples/DorotiTestbedApp/README.ko.md) | 플랫폼별 실행, 샘플 화면, 렌더러 옵션, 문제 해결 |
 | [Dart-to-C# 컴파일러](tools/Doroti.DartToCSharp/README.ko.md) | 선택적 소스 가져오기 및 마이그레이션 도구 |
 | [WGSL GPU 효과](Doroti/validation/gpu-effects/README.md) | Windows fragment 구현·검증, 초기 도구 설치 및 남은 플랫폼 범위 |
 | [개발 이력](history/) | 지난 작업 계획과 검증 기록 |
@@ -103,7 +103,7 @@ Doroti는 개인이 개발하는 실험적 프로젝트입니다. 플랫폼 표�
 | 경로 | 내용 |
 | --- | --- |
 | [`Doroti/src/`](Doroti/src/) | 프레임워크, 런타임, 렌더링, 호스트, SDK |
-| [`DorotiTestbedApp/`](DorotiTestbedApp/) | 공통 샘플 앱과 플랫폼별 실행 프로젝트 |
+| [`samples/DorotiTestbedApp/`](samples/DorotiTestbedApp/) | 공통 샘플 앱과 플랫폼별 실행 프로젝트 |
 | [`Doroti/templates/`](Doroti/templates/) | `dotnet new doroti-app` 템플릿 |
 | [`Doroti/eng/`](Doroti/eng/) | 빌드, 실행, 패키징, 진단 도구 |
 | [`tools/Doroti.DartToCSharp/`](tools/Doroti.DartToCSharp/) | 선택적 Dart-to-C# 컴파일러 |

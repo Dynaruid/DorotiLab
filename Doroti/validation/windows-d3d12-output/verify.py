@@ -3,7 +3,6 @@ import argparse
 import ctypes as c
 from ctypes import wintypes as w
 import datetime
-import importlib.util
 import json
 import os
 import re
@@ -11,6 +10,7 @@ from pathlib import Path
 import subprocess
 import sys
 import time
+from PIL import ImageGrab
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.dont_write_bytecode = True
@@ -21,13 +21,51 @@ args = parser.parse_args()
 OUT = ROOT / 'Doroti/artifacts/validation/windows-d3d12-output' / (datetime.datetime.now().strftime('%Y%m%d-%H%M%S') + '-' + args.gpu)
 OUT.mkdir(parents=True)
 os.environ['DOROTI_PLATFORM_VIEW_GATE_OUTPUT'] = str(OUT)
-spec = importlib.util.spec_from_file_location('composition_helpers', ROOT / 'Doroti/validation/windows-acrylic-composition/verify.py')
-gate = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(gate)
-u = gate.u
+EXE = ROOT / 'samples/DorotiTestbedApp/windowsappsdk/bin/Release/net10.0-windows10.0.19041.0/win-x64/DorotiTestbedApp.WindowsAppSdk.exe'
+u = c.WinDLL('user32', use_last_error=True)
+k = c.WinDLL('kernel32', use_last_error=True)
+k.CreateFileW.argtypes = [w.LPCWSTR, w.DWORD, w.DWORD, w.LPVOID, w.DWORD, w.DWORD, w.HANDLE]
+k.CreateFileW.restype = w.HANDLE
+k.ReadFile.argtypes = [w.HANDLE, w.LPVOID, w.DWORD, c.POINTER(w.DWORD), w.LPVOID]
+k.CloseHandle.argtypes = [w.HANDLE]
+u.SetProcessDpiAwarenessContext.argtypes = [w.HANDLE]
+u.SetProcessDpiAwarenessContext(w.HANDLE(-4))
+u.GetWindowRect.argtypes = [w.HWND, c.POINTER(w.RECT)]
 u.GetClientRect.argtypes = [w.HWND, c.POINTER(w.RECT)]
 u.ShowWindow.argtypes = [w.HWND, c.c_int]
+u.SetWindowPos.argtypes = [w.HWND, w.HWND, c.c_int, c.c_int, c.c_int, c.c_int, w.UINT]
+u.SendMessageW.argtypes = [w.HWND, w.UINT, w.WPARAM, w.LPARAM]
+u.SendMessageW.restype = w.LPARAM
+u.PostMessageW.argtypes = [w.HWND, w.UINT, w.WPARAM, w.LPARAM]
 
+
+def read(path):
+    # Allow atomic replacement by the producer while the reader holds its handle.
+    handle = k.CreateFileW(str(path), 0x80000000, 7, None, 3, 0, None)
+    if handle == w.HANDLE(-1).value: return None
+    try:
+        buffer, count = c.create_string_buffer(65536), w.DWORD()
+        if not k.ReadFile(handle, buffer, len(buffer), c.byref(count), None): return None
+        try: return json.loads(buffer.raw[:count.value])
+        except (UnicodeDecodeError, json.JSONDecodeError): return None
+    finally: k.CloseHandle(handle)
+
+def wait_for(predicate, process, timeout=35):
+    end = time.monotonic() + timeout
+    while time.monotonic() < end:
+        value = predicate()
+        if value: return value
+        if process.poll() is not None:
+            raise RuntimeError(f'Product exited early: {process.returncode}')
+        time.sleep(.05)
+    raise TimeoutError('Product composition did not reach the requested state')
+
+def capture(hwnd, name):
+    rect = w.RECT()
+    if not u.GetWindowRect(hwnd, c.byref(rect)): raise c.WinError(c.get_last_error())
+    image = ImageGrab.grab((rect.left, rect.top, rect.right, rect.bottom), all_screens=True)
+    image.save(OUT / (name + '.png'))
+    return image, rect
 
 def main():
     environment = os.environ.copy()
@@ -43,9 +81,9 @@ def main():
     hwnd = 0
     samples = []
     with (OUT / 'product.log').open('w', encoding='utf-8') as log:
-        process = subprocess.Popen([str(gate.EXE)], cwd=gate.EXE.parent, env=environment, stdout=log, stderr=log)
+        process = subprocess.Popen([str(EXE)], cwd=EXE.parent, env=environment, stdout=log, stderr=log)
         try:
-            ready = gate.wait_for(lambda: gate.read(OUT / 'ready.json'), process)
+            ready = wait_for(lambda: read(OUT / 'ready.json'), process)
             hwnd = ready['hwnd']
             u.SetWindowPos(hwnd, w.HWND(-1), 0, 0, 0, 0, 0x43)
             time.sleep(.5)
@@ -62,7 +100,7 @@ def main():
                 assert process.poll() is None, 'Product failed during resize'
                 client = w.RECT()
                 assert u.GetClientRect(hwnd, c.byref(client))
-                image, _ = gate.capture(hwnd, f'resize-{len(samples)}')
+                image, _ = capture(hwnd, f'resize-{len(samples)}')
                 # Visible nonuniform content, not merely a live HWND or present counter.
                 colors = image.convert('RGB').getcolors(image.width * image.height)
                 assert colors and len(colors) > 100, 'Window lost its rendered content'
@@ -71,7 +109,7 @@ def main():
             time.sleep(.2)
             u.ShowWindow(hwnd, 9)  # restore
             time.sleep(.4)
-            gate.capture(hwnd, 'restored')
+            capture(hwnd, 'restored')
         finally:
             if process.poll() is None:
                 if hwnd:

@@ -8,7 +8,7 @@ runners. A process-tree timeout may leave a lock file; inspect the terminated
 run before removing that stale lock manually. No retry is automatic. Historical P runs are separate.
 
 ```sh
-python3 Doroti/validation/run-with-timeout.py dotnet publish DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release -o Doroti/artifacts/web-memory/final/product
+python3 Doroti/validation/run-with-timeout.py dotnet publish samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release -o Doroti/artifacts/web-memory/final/product
 python3 Doroti/validation/run-with-timeout.py node Doroti/validation/web-memory/contracts.mjs
 python3 Doroti/validation/run-with-timeout.py dotnet run --project Doroti/validation/web-memory/CacheContracts/CacheContracts.csproj -c Release
 python3 Doroti/validation/run-with-timeout.py node Doroti/validation/web-memory/run.mjs Doroti/artifacts/web-memory/run-example Doroti/artifacts/web-memory/final/product/wwwroot auto memory 1
@@ -17,15 +17,8 @@ python3 Doroti/validation/run-with-timeout.py node Doroti/validation/web-memory/
 Driver arguments: fresh output directory, published wwwroot, backend (`auto`,
 `worker-direct-webgl`, `worker-direct-webgpu`), mode, mobile policy emulation (`1`
 or `0`). Modes `memory`, `memory-off`, `minimal`, and `smoke` reuse the frame-cost
-driver. `textures` and `webview` use the existing product regression drivers
-via `run-contract.mjs`; pass an already-running local published-product server
-URL in place of wwwroot. The adapter selects host Chrome and, when mobile=1,
-the same iPhone UA (viewport remains that of each contract). These runs are
-headless functional contracts, not foreground performance observations.
-The WebView controller driver needs a separate publish with
-`-p:DorotiWebPlatformValidation=true`; its `WebPlatformExport` is intentionally
-absent from a normal product publish. Keep that validation output separate from
-normal benchmark/foreground assets. macOS and Windows installed Chrome are supported; `DOROTI_CHROME` overrides
+driver. The former `textures`/`webview` modes and `run-contract.mjs` were removed
+with the Testbed Fixture code on 2026-09-27. macOS and Windows installed Chrome are supported; `DOROTI_CHROME` overrides
 the executable. A mobile run uses an iPhone UA, 390×900, DPR 3. It is **desktop
 Chromium emulation, not iOS WebKit evidence**. Desktop uses 1280×900, DPR 1.
 

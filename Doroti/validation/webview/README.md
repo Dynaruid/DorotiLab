@@ -1,5 +1,7 @@
 # WebView validation
 
+> The Testbed Evidence/Fixture code was removed on 2026-09-27. The following runners were retired with it: `measure-qt-workloads.py`, `measure-web-workloads.mjs`, `measure-windows-workloads.py`, `verify-android.py`, `verify-android-input.py`, `verify-qt.py`, `verify-qt-input.py`, `verify-web-contract.mjs`, `verify-web-calibration.mjs`, `verify-web-product.mjs`, `verify-web-zero.mjs`, `verify-windows-calibration.py`, `verify-windows.py`. Commands and results below that use them are historical; independent contracts and artifact analyzers remain available.
+
 Android commands, calibration and workloads: [Android validation](../platform-views/android/README.md).
 
 Run from the repository root. Every build/test/run child must use the 1,200-second
@@ -7,7 +9,7 @@ wrapper. Keep shared-output builds and live UI gates sequential. Source lives he
 generated output lives under `Doroti/artifacts/webview/<date>/windows/`.
 
 ```powershell
-python Doroti/validation/run-with-timeout.py dotnet build DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Release
+python Doroti/validation/run-with-timeout.py dotnet build samples/DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Release
 python Doroti/validation/run-with-timeout.py dotnet run --project Doroti/validation/webview/Common/Common.csproj --artifacts-path Doroti/artifacts/webview/common-build
 python Doroti/validation/run-with-timeout.py python Doroti/validation/webview/verify-windows.py
 python Doroti/validation/run-with-timeout.py python Doroti/validation/platform-views/verify-windows-effects.py

@@ -1,5 +1,7 @@
 # Linux Qt Quick validation
 
+> The Testbed Evidence/Fixture code was removed on 2026-09-27. The following runners were retired with it: `verify-controls.py`, `verify-lifecycle.py`, `verify-product.py`, `verify-resize.py`. Commands and results below that use them are historical; independent contracts and artifact analyzers remain available.
+
 The Testbed uses `DorotiQtQuick=true`. Its Linux runner also enables
 `DorotiQtWebEngine=true`; other applications/templates keep both options opt-in.
 Build with Qt 6.6+ Core, Gui, Widgets, Quick, Qml, QuickControls2,
@@ -58,12 +60,12 @@ records exposed text/editable interface counts. Orca and physical input still
 require separately recorded manual results.
 
 ```sh
-python3 Doroti/validation/run-with-timeout.py dotnet build DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj
+python3 Doroti/validation/run-with-timeout.py dotnet build samples/DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj
 DOROTI_TESTBED_MODE=platform-effects \
-  python3 Doroti/validation/run-with-timeout.py dotnet DorotiTestbedApp/linux/bin/linux-x64/Debug/net10.0/linux-x64/DorotiTestbedApp.Linux.dll
+  python3 Doroti/validation/run-with-timeout.py dotnet samples/DorotiTestbedApp/linux/bin/linux-x64/Debug/net10.0/linux-x64/DorotiTestbedApp.Linux.dll
 
 qt_evidence="$PWD/Doroti/artifacts/platform-views/2026-09-14/linux-qt/rearchitecture"
-qt_app="$PWD/DorotiTestbedApp/linux/bin/linux-x64/Debug/net10.0/linux-x64"
+qt_app="$PWD/samples/DorotiTestbedApp/linux/bin/linux-x64/Debug/net10.0/linux-x64"
 python3 Doroti/validation/run-with-timeout.py cmake -S Doroti/validation/linux-qt-quick \
   -B "$qt_evidence/native-validation" -DDOROTI_SHIM="$qt_app/libdoroti_qt_host.so"
 python3 Doroti/validation/run-with-timeout.py cmake --build "$qt_evidence/native-validation" -j2
@@ -173,7 +175,7 @@ fresh recreation. These are native owner checks, not two full Doroti product own
 
 ```sh
 qt_current="$PWD/Doroti/artifacts/webview/2026-09-20/linux-qt"
-qt_app="$PWD/DorotiTestbedApp/linux/bin/linux-x64/Debug/net10.0/linux-x64"
+qt_app="$PWD/samples/DorotiTestbedApp/linux/bin/linux-x64/Debug/net10.0/linux-x64"
 # Build/configure the driver as above, with DOROTI_SHIM from this exact app directory.
 python3 Doroti/validation/run-with-timeout.py "$qt_current/driver/webview-contract"
 python3 Doroti/validation/run-with-timeout.py python3 Doroti/validation/webview/verify-qt.py \

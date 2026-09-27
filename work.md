@@ -351,7 +351,7 @@ WebGL2도 GLSL 소스를 패키징하며 브라우저가 compile/link를 수행�
 | Apple host 및 기존 native binding 프로젝트 | Metal shader library·texture·encoder 연결 |
 | `Doroti/src/Doroti.Host.Web/` 및 `Web/` | Worker/Dawn/JS WebGPU와 Ganesh/WebGL2 효과 실행·GL 상태·자원 수명 연동 |
 | `Doroti/validation/gpu-effects/` (신규 예정) | 계약·빌드·픽셀·수명·성능 fixture 및 결과 요약 |
-| `DorotiTestbedApp/src/`, `assets/effects/` (후자는 신규 예정) | 실제 위젯 예제·효과 WGSL·definition |
+| `Doroti/validation/gpu-effects/assets/` | 컴파일 계약용 WGSL·definition. Testbed의 효과 Fixture와 전용 실행 검증은 2026-09-27 제거 |
 | `Doroti/templates/Doroti.Templates/content/doroti-app/` | 신규 소비자 재현 예제 |
 
 공통 실행기 인터페이스를 별도 assembly로 분리할지는 G1에서 의존성 방향을 보고 확정한다. Ui/Framework 프로젝트가 Vulkan·Metal·Rust 도구에 직접 의존하지 않게 한다.

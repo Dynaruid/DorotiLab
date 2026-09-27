@@ -6,7 +6,7 @@
 
 Doroti는 데스크톱·모바일·웹에서 공유하는 위젯, 레이아웃, 페인팅, 시맨틱스, 렌더링 파이프라인을 제공합니다. Flutter 프레임워크 소스를 C#으로 변환하는 데서 시작했으며, 현재는 `Doroti.Framework.*`의 C# 코드를 직접 개발하고 유지보수합니다.
 
-이 문서는 프레임워크 구성, 개발 환경, 앱 시작 방법과 빌드 도구를 안내합니다. 실행 가능한 예제와 플랫폼별 실행 명령은 [샘플 앱 가이드](../DorotiTestbedApp/README.ko.md)에서 확인할 수 있습니다.
+이 문서는 프레임워크 구성, 개발 환경, 앱 시작 방법과 빌드 도구를 안내합니다. 실행 가능한 예제와 플랫폼별 실행 명령은 [샘플 앱 가이드](../samples/DorotiTestbedApp/README.ko.md)에서 확인할 수 있습니다.
 
 > [!WARNING]
 > Doroti는 실험적 프로젝트입니다. API와 프로젝트 구조는 변경될 수 있으며, 플랫폼별 구현과 검증 수준에는 차이가 있습니다.
@@ -29,12 +29,12 @@ Doroti는 데스크톱·모바일·웹에서 공유하는 위젯, 레이아웃, 
 
 - Windows·macOS·Linux에서 [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6)을 설치해 `eng/doroti.ps1` 등 저장소 스크립트 실행에 사용합니다. 아래 명령은 **저장소 루트 `DorotiLab`**에서 PowerShell로 시작합니다.
 - **iOS 외 플랫폼: .NET SDK 10.0.400** 또는 같은 기능 밴드의 호환 패치 버전. [루트 global.json](../global.json)과 [Doroti/global.json](global.json)이 선택합니다.
-- **iOS Testbed: .NET SDK 11.0.100-rc.1.26425.128** 또는 호환 패치 버전. [iOS global.json](../DorotiTestbedApp/ios/global.json)이 선택합니다. .NET 10과 함께 설치합니다.
+- **iOS Testbed: .NET SDK 11.0.100-rc.1.26425.128** 또는 호환 패치 버전. [iOS global.json](../samples/DorotiTestbedApp/ios/global.json)이 선택합니다. .NET 10과 함께 설치합니다.
 - 선택한 SDK에 맞는 플랫폼 워크로드와 NuGet 패키지 복원이 필요합니다. .NET 10 경로는 프로젝트가 지정한 10.0.11 런타임 팩을 사용하며, 필요한 팩은 대상별로 복원합니다.
 
-`dotnet`은 **현재 작업 폴더**에서 상위로 `global.json`을 찾습니다. `--project` 경로만 iOS로 지정해도 SDK가 바뀌지는 않습니다. iOS 직접 실행은 `DorotiTestbedApp/ios`에서 하고, 다른 플랫폼은 저장소 루트에서 실행합니다. workspace CLI의 `build/run/publish -App ./DorotiTestbedApp -Platform ios`는 iOS 폴더를 자동으로 사용합니다.
+`dotnet`은 **현재 작업 폴더**에서 상위로 `global.json`을 찾습니다. `--project` 경로만 iOS로 지정해도 SDK가 바뀌지는 않습니다. iOS 직접 실행은 `samples/DorotiTestbedApp/ios`에서 하고, 다른 플랫폼은 저장소 루트에서 실행합니다. workspace CLI의 `build/run/publish -App ./samples/DorotiTestbedApp -Platform ios`는 iOS 폴더를 자동으로 사용합니다.
 
-SDK 선택과 대상 프레임워크는 별개입니다. iOS 실기기 Release는 NativeAOT가 기본이며, `-CompilationMode Mono`로 복구 프로필을 선택합니다. NativeAOT는 `net11.0-ios`와 MAUI `11.0.0-rc.1.26451.6`을 사용합니다. 현재 Debug·시뮬레이터·명시적 Mono 프로필은 `net10.0-ios`를 유지합니다. 서명된 실기기 앱은 `publish`로 생성하며, 자세한 절차는 [iOS 샘플 안내](../DorotiTestbedApp/README.ko.md#ios-샘플)를 참고하세요.
+SDK 선택과 대상 프레임워크는 별개입니다. iOS 실기기 Release는 NativeAOT가 기본이며, `-CompilationMode Mono`로 복구 프로필을 선택합니다. NativeAOT는 `net11.0-ios`와 MAUI `11.0.0-rc.1.26451.6`을 사용합니다. 현재 Debug·시뮬레이터·명시적 Mono 프로필은 `net10.0-ios`를 유지합니다. 서명된 실기기 앱은 `publish`로 생성하며, 자세한 절차는 [iOS 샘플 안내](../samples/DorotiTestbedApp/README.ko.md#ios-샘플)를 참고하세요.
 
 ### 플랫폼별 구성
 
@@ -64,10 +64,10 @@ dotnet workload list
 pwsh -File ./Doroti/eng/doroti.ps1 doctor
 
 # macOS AppKit 예시: 현재 호스트에서 사용할 runner 경로로 변경
-dotnet workload restore ./DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj
+dotnet workload restore ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj
 
 # iOS: SDK 11을 선택한 위치에서 확인 및 복원
-Push-Location ./DorotiTestbedApp/ios
+Push-Location ./samples/DorotiTestbedApp/ios
 dotnet --version
 dotnet workload list
 dotnet workload restore ./DorotiTestbedApp.iOS.csproj
@@ -76,7 +76,7 @@ Pop-Location
 
 `workload restore`는 해당 SDK의 .NET workload를 준비합니다. 표에 있는 Xcode, Android SDK/JDK, MSVC, Qt 같은 외부 도구 설치까지 수행하지는 않습니다. `doctor`는 공통 도구 확인이며, 각 플랫폼의 전체 빌드·기기 실행 검증을 대신하지 않습니다.
 
-플랫폼별 실행 명령은 [Testbed 실행 안내](../DorotiTestbedApp/README.ko.md#material-샘플-모드)에 있습니다. `reference/flutter-master` checkout은 명시적인 Flutter 비교에만 필요하며, 필요할 때 `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`로 준비합니다.
+플랫폼별 실행 명령은 [Testbed 실행 안내](../samples/DorotiTestbedApp/README.ko.md#material-샘플-모드)에 있습니다. `reference/flutter-master` checkout은 명시적인 Flutter 비교에만 필요하며, 필요할 때 `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`로 준비합니다.
 
 ## 빌드와 실행
 
@@ -86,16 +86,16 @@ Pop-Location
 pwsh -File ./Doroti/eng/doroti.ps1 doctor
 
 $env:DOROTI_TESTBED_MODE = 'sample'
-pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows
+pwsh -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform windows
 ```
 
-`run`은 빌드한 뒤 앱을 실행합니다. Windows는 Windows App SDK/`HwndExactCpp`가 기본이며, 독립 MAUI 실행 프로젝트는 `-WindowsBackend Maui`로 선택합니다. 다른 대상은 `-Platform`에 `android`, `ios`, `macos`, `maccatalyst`, `linux`, `web`을 지정합니다. 준비 사항과 기기 옵션은 [샘플 앱 가이드](../DorotiTestbedApp/README.ko.md#플랫폼별-실행)를 참고하세요.
+`run`은 빌드한 뒤 앱을 실행합니다. Windows는 Windows App SDK/`HwndExactCpp`가 기본이며, 독립 MAUI 실행 프로젝트는 `-WindowsBackend Maui`로 선택합니다. 다른 대상은 `-Platform`에 `android`, `ios`, `macos`, `maccatalyst`, `linux`, `web`을 지정합니다. 준비 사항과 기기 옵션은 [샘플 앱 가이드](../samples/DorotiTestbedApp/README.ko.md#플랫폼별-실행)를 참고하세요.
 
 ### 빌드 결과 재사용
 
 ```powershell
-pwsh -File ./Doroti/eng/doroti.ps1 build -App ./DorotiTestbedApp -Platform web -Configuration Release
-pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform web -Configuration Release -LastSuccessful
+pwsh -File ./Doroti/eng/doroti.ps1 build -App ./samples/DorotiTestbedApp -Platform web -Configuration Release
+pwsh -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform web -Configuration Release -LastSuccessful
 ```
 
 `-LastSuccessful`과 `-NoBuild`는 입력, 의존성, 도구 버전과 출력 해시가 일치하는 기존 성공 빌드만 재사용합니다. 기록이 없거나 현재 구성과 다르면 이 옵션 없이 다시 실행해야 합니다. `-NoRestore`는 복원만 생략하며 빌드와 의존성 확인은 수행합니다. 이 옵션들은 `run`에만 적용됩니다.
@@ -142,7 +142,7 @@ new Doroti.Framework.DorotiWidgetEntrypoint(() => new MyApp())
 
 Material은 Material 3를 사용합니다. `ThemeData` 생성자, 팩터리, `copyWith`에서 제거된 `useMaterial3` 인자를 생략하세요. 타이포그래피는 `Typography.Create` 또는 `CreateMaterial2021`을 사용합니다.
 
-시스템 다크 모드를 따르려면 `MaterialApp`에 `theme`, `darkTheme`, `themeMode: ThemeMode.system`을 지정합니다. `ColorScheme.CreateFromSeed`와 `Brightness.light`/`Brightness.dark`로 팔레트를 만들고, 위젯에서는 `Theme.of(context).colorScheme`으로 읽습니다. [전체 테마 예제](../DorotiTestbedApp/README.ko.md#시스템-다크-모드와-색-팔레트)를 참고하세요.
+시스템 다크 모드를 따르려면 `MaterialApp`에 `theme`, `darkTheme`, `themeMode: ThemeMode.system`을 지정합니다. `ColorScheme.CreateFromSeed`와 `Brightness.light`/`Brightness.dark`로 팔레트를 만들고, 위젯에서는 `Theme.of(context).colorScheme`으로 읽습니다. [전체 테마 예제](../samples/DorotiTestbedApp/README.ko.md#시스템-다크-모드와-색-팔레트)를 참고하세요.
 
 ### 네이티브 바인딩
 
@@ -169,7 +169,7 @@ Android, iOS, AppKit macOS, Mac Catalyst 실행 프로젝트는 각각 앱 소�
 
 `auto`와 알 수 없는 렌더러 값은 WebGL2를 선택합니다. GPU 초기화 실패 시 자동으로 다른 렌더러로 전환하지 않습니다. 두 경로 모두 표시할 canvas를 한 번 이전합니다. 로더의 `started`는 런타임·GPU 준비 완료를 뜻하며, 첫 콘텐츠가 표시되었다는 의미는 아닙니다.
 
-앱의 부팅 코드는 `web/src/**/*.ts`, 프레임워크 웹 코드는 `src/Doroti.Host.Web/Web/*.ts`에 있습니다. `Microsoft.TypeScript.MSBuild`가 실행 프로젝트의 `obj`에 JavaScript를 만들고, 배포에는 결과 파일을 포함합니다. Node, npm, Bun, 번들러는 필요하지 않습니다. Testbed와 템플릿은 같은 출처의 대체 폰트를 미리 읽고 import map의 `dotnet.js`를 사용합니다. [웹 렌더러 옵션](../DorotiTestbedApp/README.ko.md#web-렌더러와-측정-옵션)을 참고하세요.
+앱의 부팅 코드는 `web/src/**/*.ts`, 프레임워크 웹 코드는 `src/Doroti.Host.Web/Web/*.ts`에 있습니다. `Microsoft.TypeScript.MSBuild`가 실행 프로젝트의 `obj`에 JavaScript를 만들고, 배포에는 결과 파일을 포함합니다. Node, npm, Bun, 번들러는 필요하지 않습니다. Testbed와 템플릿은 같은 출처의 대체 폰트를 미리 읽고 import map의 `dotnet.js`를 사용합니다. [웹 렌더러 옵션](../samples/DorotiTestbedApp/README.ko.md#web-렌더러와-측정-옵션)을 참고하세요.
 
 ### 창 외형
 

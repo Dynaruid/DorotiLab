@@ -8,7 +8,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[3]
 output = Path(sys.argv[1]).resolve()
 output.mkdir(parents=True, exist_ok=False)
-runner = ROOT / 'DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj'
+runner = ROOT / 'samples/DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj'
 generated = runner.parent / 'obj/linux-x64/Doroti.Generated'
 desktop = generated / 'DorotiBootstrap.Desktop.DorotiTestbedApp.Desktop.LinuxDesktopStartup.g.cs'
 legacy = generated / 'DorotiBootstrap.g.cs'

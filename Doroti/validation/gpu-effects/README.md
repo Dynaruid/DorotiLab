@@ -1,5 +1,7 @@
 # WGSL GPU effects — 2026-09-26–27
 
+> The Testbed Evidence/Fixture code was removed on 2026-09-27. The following runners were retired with it: `verify-windows.py`. Commands and results below that use them are historical; independent contracts and artifact analyzers remain available.
+
 Overall status: **PARTIAL**. WindowsAppSdk and MAUI Windows display a generated
 WGSL fragment effect through the real `GpuEffect` widget; WindowsAppSdk also
 displays `GpuBackdropEffect`. Metal/WebGPU/WebGL2 fragment host code is included.
@@ -81,7 +83,7 @@ Run .NET builds serially because project intermediates are shared.
 ```powershell
 python Doroti/validation/run-with-timeout.py cargo build --locked --manifest-path tools/Doroti.Wgsl/Cargo.toml
 python Doroti/validation/run-with-timeout.py cargo test --locked --manifest-path tools/Doroti.Wgsl/Cargo.toml
-python Doroti/validation/run-with-timeout.py tools/Doroti.Wgsl/target/debug/doroti-wgsl.exe compile DorotiTestbedApp/assets/effects/swap.wgsl DorotiTestbedApp/assets/effects/swap.effect.json Doroti/artifacts/gpu-effects/swap
+python Doroti/validation/run-with-timeout.py tools/Doroti.Wgsl/target/debug/doroti-wgsl.exe compile Doroti/validation/gpu-effects/assets/swap.wgsl Doroti/validation/gpu-effects/assets/swap.effect.json Doroti/artifacts/gpu-effects/swap
 python Doroti/validation/run-with-timeout.py dotnet run --project Doroti/validation/gpu-effects/GpuEffects.csproj -r win-x64 -- Doroti/artifacts/gpu-effects/swap
 python Doroti/validation/run-with-timeout.py tools/Doroti.Wgsl/target/debug/doroti-wgsl.exe compile Doroti/validation/gpu-effects/shaders/uniform.wgsl Doroti/validation/gpu-effects/shaders/uniform.effect.json Doroti/artifacts/gpu-effects/uniform
 python Doroti/validation/run-with-timeout.py dotnet run --project Doroti/validation/gpu-effects/GpuEffects.csproj -r win-x64 -- Doroti/artifacts/gpu-effects/uniform --uniform
@@ -90,10 +92,10 @@ python Doroti/validation/run-with-timeout.py dotnet run --project Doroti/validat
 python Doroti/validation/run-with-timeout.py dotnet build Doroti/src/Doroti.Host.Web/Doroti.Host.Web.csproj
 python Doroti/validation/run-with-timeout.py python Doroti/validation/gpu-effects/verify-webgl.py
 python Doroti/validation/run-with-timeout.py python Doroti/validation/gpu-effects/verify-webgl.py --complex
-python Doroti/validation/run-with-timeout.py dotnet build DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Release
+python Doroti/validation/run-with-timeout.py dotnet build samples/DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Release
 python Doroti/validation/run-with-timeout.py python Doroti/validation/gpu-effects/verify-windows.py
-python Doroti/validation/run-with-timeout.py dotnet build DorotiTestbedApp/windows/DorotiTestbedApp.Windows.csproj -c Release
-$env:DOROTI_GPU_EFFECT_EXE = (Resolve-Path DorotiTestbedApp/windows/bin/Release/net10.0-windows10.0.19041.0/win-x64/DorotiTestbedApp.Windows.exe).Path
+python Doroti/validation/run-with-timeout.py dotnet build samples/DorotiTestbedApp/windows/DorotiTestbedApp.Windows.csproj -c Release
+$env:DOROTI_GPU_EFFECT_EXE = (Resolve-Path samples/DorotiTestbedApp/windows/bin/Release/net10.0-windows10.0.19041.0/win-x64/DorotiTestbedApp.Windows.exe).Path
 $env:DOROTI_GPU_EFFECT_OUT = "$PWD/Doroti/artifacts/gpu-effects/windows-maui"
 python Doroti/validation/run-with-timeout.py python Doroti/validation/gpu-effects/verify-windows.py
 ```

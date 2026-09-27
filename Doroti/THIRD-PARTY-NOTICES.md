@@ -76,12 +76,12 @@ Distribution packaging must reproduce the applicable notice and license text for
 
 ## DorotiTestbedApp Material sample adaptation
 
-`DorotiTestbedApp/src/MaterialSample/` adapts the local Flutter Material sample
+`samples/DorotiTestbedApp/src/MaterialSample/` adapts the local Flutter Material sample
 in `reference/flutter_sample_app` (Flutter team, BSD-3-Clause). The original
 copyright headers and license are retained in `LICENSE.flutter` in that directory.
 The local Image demo and its WebP resource are the already retained reference extension.
 
-`DorotiTestbedApp/assets/fonts/MaterialIcons-Regular.otf` is copied from the pinned
+`samples/DorotiTestbedApp/assets/fonts/MaterialIcons-Regular.otf` is copied from the pinned
 local Flutter SDK `bin/cache/artifacts/material_fonts/materialicons-regular.otf`.
 Its pinned SDK license (CC BY 4.0) is retained alongside it as `LICENSE.materialicons.txt`.
 The Roboto regular/medium/bold fonts come from the same SDK directory; their

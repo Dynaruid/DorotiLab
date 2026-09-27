@@ -124,9 +124,9 @@ remain separate evidence categories.
 
 ### Web product gate
 
-Build `DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj` in Release under the timeout
+Build `samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj` in Release under the timeout
 wrapper. Start its dev server with `dotnet run --project
-DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release --no-build --no-launch-profile`.
+samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release --no-build --no-launch-profile`.
 Use the listening URL printed by that server (the SDK may ignore `--urls`).
 
 ```powershell

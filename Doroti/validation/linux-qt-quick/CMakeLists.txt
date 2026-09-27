@@ -8,7 +8,7 @@ set(DOROTI_SHIM "" CACHE FILEPATH "Path to the built product libdoroti_qt_host.s
 if(NOT EXISTS "${DOROTI_SHIM}")
   message(FATAL_ERROR "Set DOROTI_SHIM to the product native library")
 endif()
-set(native "${CMAKE_CURRENT_SOURCE_DIR}/../../../DorotiTestbedApp/linux/native")
+set(native "${CMAKE_CURRENT_SOURCE_DIR}/../../../samples/DorotiTestbedApp/linux/native")
 add_library(product-driver SHARED product-driver.cpp gpu-driver.cpp)
 add_executable(native-contract native-contract.cpp)
 foreach(target product-driver native-contract)

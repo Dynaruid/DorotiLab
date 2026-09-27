@@ -10,7 +10,7 @@ import sys
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[3]
-NATIVE = ROOT / "DorotiTestbedApp/linux/native"
+NATIVE = ROOT / "samples/DorotiTestbedApp/linux/native"
 
 
 def cmake_cases(work):

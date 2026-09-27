@@ -25,7 +25,7 @@ driver = out / 'libdesktop-driver.so'
 flags = subprocess.check_output(['pkg-config', '--cflags', '--libs', 'Qt6Quick', 'Qt6Widgets'], text=True).split()
 subprocess.run(['c++', '-std=c++20', '-shared', '-fPIC', '-pthread',
                 str(Path(__file__).with_name('qt-driver.cpp')),
-                '-I' + str(ROOT / 'DorotiTestbedApp/linux/native/include'),
+                '-I' + str(ROOT / 'samples/DorotiTestbedApp/linux/native/include'),
                 '-o', str(driver), *flags, '-ldl'], check=True, timeout=1200)
 env = dict(os.environ, QT_QPA_PLATFORM=args.qpa, DOROTI_QT_DESKTOP_PROBE=str(probe),
            LD_PRELOAD=str(driver), DOROTI_QT_DIAGNOSTICS='1')

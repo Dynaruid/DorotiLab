@@ -1,11 +1,13 @@
 # PlatformView rearchitecture validation
 
+> The Testbed Evidence/Fixture code was removed on 2026-09-27. The following runners were retired with it: `verify-windows-effects.py`, `verify-windows-hwnd-backdrop.py`, `verify-windows-winui-input.py`, `verify-windows-winui-continuity.py`, `verify-windows-winui-backdrop.py`. Commands and results below that use them are historical; independent contracts and artifact analyzers remain available.
+
 All build/test/run children use `../run-with-timeout.py` with a 1,200-second process-tree timeout. Run from the repository root. Generated outputs must stay outside this source directory.
 
 ```powershell
 python Doroti/validation/run-with-timeout.py dotnet run --project Doroti/validation/platform-views/Common/Common.csproj --artifacts-path Doroti/artifacts/platform-views/common-build
 python Doroti/validation/run-with-timeout.py pwsh -NoProfile -File Doroti/eng/build-hwnd-exact-cpp-native.ps1
-python Doroti/validation/run-with-timeout.py dotnet build DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Release
+python Doroti/validation/run-with-timeout.py dotnet build samples/DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Release
 python Doroti/validation/run-with-timeout.py python Doroti/validation/platform-views/verify-windows-effects.py
 python Doroti/validation/run-with-timeout.py python Doroti/validation/windows-acrylic-composition/verify-sample-input.py
 python Doroti/validation/run-with-timeout.py dotnet build Doroti/src/Doroti.Host.Web/Doroti.Host.Web.csproj
@@ -42,7 +44,7 @@ gate checks softened edges, native contribution, and unchanged pixels outside
 the clip, and writes `pixels.json` and `winui-blur-comparison.png`. This evidence
 does not qualify physical keyboard/pointer/IME input or atomic display timing.
 
-The same runner also opens the native page through the default gallery/sample
+The same runner also opens the native page through the default Material sample
 route and captures 30 consecutive client frames. `continuity.json` requires the
 editor and backdrop to remain stable while the spinner changes, with at most
 three initial placement batches. This detects transient layer disappearance

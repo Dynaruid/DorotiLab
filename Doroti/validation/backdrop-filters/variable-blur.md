@@ -147,7 +147,7 @@ python Doroti/validation/run-with-timeout.py dotnet run --project Doroti/validat
 python Doroti/validation/run-with-timeout.py dotnet run --project Doroti/validation/backdrop-filters/BackdropFilters.csproj -c Release -- --graphite
 python Doroti/validation/run-with-timeout.py dotnet run --project Doroti/validation/platform-views/Common/Common.csproj -c Release
 python Doroti/validation/run-with-timeout.py dotnet run --project Doroti/validation/shader-assets/ShaderAssets.csproj -c Release
-python Doroti/validation/run-with-timeout.py dotnet build DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Release
+python Doroti/validation/run-with-timeout.py dotnet build samples/DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Release
 python Doroti/validation/run-with-timeout.py python Doroti/validation/backdrop-filters/verify-variable-blur.py
 ```
 

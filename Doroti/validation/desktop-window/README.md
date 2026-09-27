@@ -1,5 +1,7 @@
 # Desktop window implementation evidence — 2026-09-25
 
+> The Testbed Evidence/Fixture code was removed on 2026-09-27. The following runners were retired with it: `verify-macos.py`, `verify-macos-package.py`, `verify-maccatalyst.py`, `verify-maccatalyst-package.py`. Commands and results below that use them are historical; independent contracts and artifact analyzers remain available.
+
 Overall **PARTIAL**. This implements the main-window desktop contract and a
 Windows MAUI, AppKit macOS, restricted Mac Catalyst and basic Linux Qt Quick adapters, not the entire W0–W5 plan. The authoritative remaining work
 is preserved in the [archived work summary](../../../history/26-09-26/desktop-window-api-summary.md) and the
@@ -34,7 +36,7 @@ stress test or physical-display qualification is claimed.
 
 ```powershell
 python Doroti/validation/run-with-timeout.py dotnet run --project Doroti/validation/desktop-window/Contract.csproj -c Release
-python Doroti/validation/run-with-timeout.py dotnet build DorotiTestbedApp/windows/DorotiTestbedApp.Windows.csproj -c Release -p:Platform=x64
+python Doroti/validation/run-with-timeout.py dotnet build samples/DorotiTestbedApp/windows/DorotiTestbedApp.Windows.csproj -c Release -p:Platform=x64
 python Doroti/validation/run-with-timeout.py python Doroti/validation/desktop-window/verify-windows.py
 python Doroti/validation/run-with-timeout.py python Doroti/validation/windows-maui/verify-acrylic.py
 $env:DOROTI_DESKTOP_CAPTION = 'Solid' # also test 'System'; remove for Backdrop
@@ -119,10 +121,10 @@ acceptance on the second, an empty manager registry, and exit code 0. The
 Explicit test verifies application survival before its final app-quit request.
 
 ```sh
-python3 Doroti/validation/run-with-timeout.py dotnet build DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -r osx-arm64 -p:DorotiMacOSTargetFramework=net10.0-macos27.0
-python3 Doroti/validation/run-with-timeout.py python3 Doroti/validation/desktop-window/verify-macos.py --app 'DorotiTestbedApp/macos/bin/Release/net10.0-macos27.0/osx-arm64/Doroti Testbed (AppKit).app' --output /tmp/doroti-appkit-normal --capture
-python3 Doroti/validation/run-with-timeout.py python3 Doroti/validation/desktop-window/verify-macos.py --app 'DorotiTestbedApp/macos/bin/Release/net10.0-macos27.0/osx-arm64/Doroti Testbed (AppKit).app' --output /tmp/doroti-appkit-quit --material acrylic --quit
-python3 Doroti/validation/run-with-timeout.py python3 Doroti/validation/desktop-window/verify-macos.py --app 'DorotiTestbedApp/macos/bin/Release/net10.0-macos27.0/osx-arm64/Doroti Testbed (AppKit).app' --output /tmp/doroti-appkit-ganesh --renderer ganesh --material acrylic --caption Solid --explicit
+python3 Doroti/validation/run-with-timeout.py dotnet build samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -r osx-arm64 -p:DorotiMacOSTargetFramework=net10.0-macos27.0
+python3 Doroti/validation/run-with-timeout.py python3 Doroti/validation/desktop-window/verify-macos.py --app 'samples/DorotiTestbedApp/macos/bin/Release/net10.0-macos27.0/osx-arm64/Doroti Testbed (AppKit).app' --output /tmp/doroti-appkit-normal --capture
+python3 Doroti/validation/run-with-timeout.py python3 Doroti/validation/desktop-window/verify-macos.py --app 'samples/DorotiTestbedApp/macos/bin/Release/net10.0-macos27.0/osx-arm64/Doroti Testbed (AppKit).app' --output /tmp/doroti-appkit-quit --material acrylic --quit
+python3 Doroti/validation/run-with-timeout.py python3 Doroti/validation/desktop-window/verify-macos.py --app 'samples/DorotiTestbedApp/macos/bin/Release/net10.0-macos27.0/osx-arm64/Doroti Testbed (AppKit).app' --output /tmp/doroti-appkit-ganesh --renderer ganesh --material acrylic --caption Solid --explicit
 python3 Doroti/validation/run-with-timeout.py python3 Doroti/validation/desktop-window/verify-package.py
 python3 Doroti/validation/run-with-timeout.py python3 Doroti/validation/desktop-window/verify-macos-package.py
 ```
@@ -203,9 +205,9 @@ managed closing decisions. Direct scene destruction tests disconnection, not
 physical traffic-light clicks or Cmd+W/Cmd+Q delivery.
 
 ```sh
-python3 Doroti/validation/run-with-timeout.py dotnet build DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj -c Release -r maccatalyst-arm64 -p:DorotiMacCatalystTargetFramework=net10.0-maccatalyst27.0
-python3 Doroti/validation/run-with-timeout.py python3 Doroti/validation/desktop-window/verify-maccatalyst.py --app 'DorotiTestbedApp/macos/bin/Release/net10.0-maccatalyst27.0/maccatalyst-arm64/Doroti Testbed.app' --output /tmp/doroti-catalyst-api
-python3 Doroti/validation/run-with-timeout.py python3 Doroti/validation/desktop-window/verify-maccatalyst.py --app 'DorotiTestbedApp/macos/bin/Release/net10.0-maccatalyst27.0/maccatalyst-arm64/Doroti Testbed.app' --output /tmp/doroti-catalyst-native --native-close
+python3 Doroti/validation/run-with-timeout.py dotnet build samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj -c Release -r maccatalyst-arm64 -p:DorotiMacCatalystTargetFramework=net10.0-maccatalyst27.0
+python3 Doroti/validation/run-with-timeout.py python3 Doroti/validation/desktop-window/verify-maccatalyst.py --app 'samples/DorotiTestbedApp/macos/bin/Release/net10.0-maccatalyst27.0/maccatalyst-arm64/Doroti Testbed.app' --output /tmp/doroti-catalyst-api
+python3 Doroti/validation/run-with-timeout.py python3 Doroti/validation/desktop-window/verify-maccatalyst.py --app 'samples/DorotiTestbedApp/macos/bin/Release/net10.0-maccatalyst27.0/maccatalyst-arm64/Doroti Testbed.app' --output /tmp/doroti-catalyst-native --native-close
 python3 Doroti/validation/run-with-timeout.py python3 Doroti/validation/desktop-window/verify-package.py
 python3 Doroti/validation/run-with-timeout.py python3 Doroti/validation/desktop-window/verify-maccatalyst-package.py
 ```
@@ -277,10 +279,10 @@ last window. Production does not install the driver or that exit behavior.
 
 ```sh
 python3 Doroti/validation/run-with-timeout.py dotnet build \
-  DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Release -r linux-x64 \
+  samples/DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Release -r linux-x64 \
   -p:DorotiLinuxDesktop=true
 python3 Doroti/validation/run-with-timeout.py python3 Doroti/validation/desktop-window/verify-linux.py \
-  --app DorotiTestbedApp/linux/bin/linux-x64/Release/net10.0/linux-x64/DorotiTestbedApp.Linux.dll \
+  --app samples/DorotiTestbedApp/linux/bin/linux-x64/Release/net10.0/linux-x64/DorotiTestbedApp.Linux.dll \
   --qpa wayland --native-close --output Doroti/artifacts/linux-qt-desktop/new-native-run
 ```
 

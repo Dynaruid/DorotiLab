@@ -1,5 +1,7 @@
 # Windows Acrylic and PlatformView composition regression
 
+> The Testbed Evidence/Fixture code was removed on 2026-09-27. The following runners were retired with it: `verify.py`, `verify-sample-input.py`, `verify-entry-frames.py`, `verify-scroll-frames.py`, `verify-motion.py`. Commands and results below that use them are historical; independent contracts and artifact analyzers remain available.
+
 The top-level Composition HWND retains `WS_EX_NOREDIRECTIONBITMAP`. One visible
 DirectComposition output composes premultiplied raster surfaces and live layered
 EDIT/BUTTON HWND wrappers. Original native HWNDs are visually cloaked; their real
@@ -22,7 +24,7 @@ Tab/Shift+Tab, three create/dispose cycles, GDI counts, and successful close.
 
 Input uses synthetic messages dispatched through actual HWND procedures.
 Physical mouse/keyboard delivery, IME, resize smoothness, mixed DPI, and display
-atomicity are not qualified. The ordinary gallery backdrop also needs a visual
+atomicity are not qualified. The Material sample backdrop also needs a visual
 check against a nonuniform desktop background; `Acrylic.Active` alone is not
 an appearance test.
 
@@ -33,7 +35,7 @@ than treating the requested stage as a completed frame.
 
 ## Acrylic sample input regression
 
-`verify-sample-input.py` opens the default gallery's Material sample, enables
+`verify-sample-input.py` opens the default Material sample, enables
 Acrylic, and enters Platform views twice. It uses OS `SendInput` with a 150 ms
 button hold across animation frames. It checks stable visible raster HWNDs,
 overlap controls, foreground clicks, native editor focus, wheel scrolling,
@@ -49,7 +51,7 @@ OS input injection does not qualify human-operated physical input or IME.
 
 ## Presented scroll frames
 
-`verify-scroll-frames.py` opens the same gallery path and captures unique DXGI
+`verify-scroll-frames.py` opens the same Material sample and captures unique DXGI
 desktop-duplication frames during wheel scrolling. It checks the green raster
 and native editor top-edge separation, editor coverage, and checkerboard presence.
 Missing content is a failure, not an omitted sample. The normal editor border
@@ -74,7 +76,7 @@ top-edge separation metric does not apply to partially clipped controls.
 
 ## Page entry and exit
 
-`verify-entry-frames.py` captures three Material gallery → Platform views → gallery
+`verify-entry-frames.py` captures three Material Components → Platform views → Components
 cycles. The persistent title must remain present across every handoff; native
 content must not disappear after first becoming visible. It uses the same DXGI
 capture dependencies and writes `entry-frames.json` and bounded screenshots to

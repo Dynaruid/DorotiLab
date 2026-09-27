@@ -1,5 +1,7 @@
 # UIKit PlatformView validation
 
+> The Testbed Evidence/Fixture code was removed on 2026-09-27. The following runners were retired with it: `run-probe.py`, `run-blur-calibration.py`, `capture-blur-appearance.py`. Commands and results below that use them are historical; independent contracts and artifact analyzers remain available.
+
 ## Public blur calibration
 
 `run-blur-calibration.py` launches the actual UIKit effect on reference patterns,
@@ -30,7 +32,7 @@ version validation or other project warnings.
 
 ```sh
 python3 Doroti/validation/run-with-timeout.py dotnet build \
-  DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Debug -r iossimulator-arm64 -m:1 \
+  samples/DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Debug -r iossimulator-arm64 -m:1 \
   --artifacts-path Doroti/artifacts/platform-views/2026-09-17/ios/ios27/build \
   -p:DorotiIosTargetFramework=net10.0-ios27.0
 
@@ -61,7 +63,7 @@ iOS 26.6.1 phone are recorded separately.
 
 ## Existing iOS / NativeAOT profile
 
-Run from `DorotiTestbedApp/ios` so its SDK selection applies. All children use the
+Run from `samples/DorotiTestbedApp/ios` so its SDK selection applies. All children use the
 repository's 1200-second process-tree timeout. Do not run .NET builds sharing
 output paths concurrently. Use a single MSBuild node and one explicit artifacts
 root; RID-less project queries otherwise use a different Host.Maui assets path.
@@ -133,7 +135,7 @@ python3 Doroti/validation/run-with-timeout.py python3 Doroti/validation/platform
 old result cannot satisfy a new run. Release NativeAOT validation uses a separate
 artifacts root to avoid mixing net10 Mono and net11 NativeAOT assemblies.
 
-Actual device NativeAOT publication (from `DorotiTestbedApp/ios`):
+Actual device NativeAOT publication (from `samples/DorotiTestbedApp/ios`):
 
 ```sh
 python3 ../../Doroti/validation/run-with-timeout.py dotnet publish DorotiTestbedApp.iOS.csproj \

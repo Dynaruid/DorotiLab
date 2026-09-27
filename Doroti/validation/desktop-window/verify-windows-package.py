@@ -49,7 +49,7 @@ public sealed class Program : IDorotiApplicationStartup {
 <TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable>
 </PropertyGroup><ItemGroup><PackageReference Include="Doroti.Desktop" Version="0.3.0-beta"/></ItemGroup></Project>''', encoding='utf-8')
 for file in ['DesktopStartup.cs', 'DesktopProbe.cs']:
-    shutil.copyfile(ROOT / f'DorotiTestbedApp/desktop/{file}', consumer / 'desktop' / file)
+    shutil.copyfile(ROOT / f'samples/DorotiTestbedApp/desktop/{file}', consumer / 'desktop' / file)
 runner = consumer / 'windows/Probe.Windows.csproj'
 runner.write_text('''<Project Sdk="Microsoft.NET.Sdk"><Sdk Name="Doroti.Runner.Sdk" Version="0.3.0-beta"/>
 <PropertyGroup>
@@ -64,7 +64,7 @@ runner.write_text('''<Project Sdk="Microsoft.NET.Sdk"><Sdk Name="Doroti.Runner.S
 <ApplicationManifest>app.manifest</ApplicationManifest><WindowsPackageType>None</WindowsPackageType>
 </PropertyGroup><ItemGroup><PackageReference Include="Doroti.Target.Windows.Maui.win-x64" Version="0.3.0-beta"/></ItemGroup></Project>''', encoding='utf-8')
 for file in ['App.xaml', 'App.xaml.cs', 'app.manifest']:
-    shutil.copyfile(ROOT / f'DorotiTestbedApp/windows/{file}', consumer / 'windows' / file)
+    shutil.copyfile(ROOT / f'samples/DorotiTestbedApp/windows/{file}', consumer / 'windows' / file)
 (consumer / 'windows/application-manifest.json').write_text(json.dumps(dict(schemaVersion='doroti.application-capabilities/v1', applicationId='dev.doroti.desktop.probe', targetRid='win-x64', resources=[], plugins=[])), encoding='utf-8')
 env = dict(os.environ, NUGET_PACKAGES=str(consumer / 'packages'))
 run(['dotnet', 'build', str(runner), '-c', 'Release', '-p:Platform=x64', '--nologo', '-v:q'], cwd=consumer, env=env)

@@ -1,5 +1,7 @@
 # Image and backdrop filter coverage
 
+> The Testbed Evidence/Fixture code was removed on 2026-09-27. The following runners were retired with it: `verify-variable-blur.py`. Commands and results below that use them are historical; independent contracts and artifact analyzers remain available.
+
 Doroti's shared Skia renderer implements Gaussian blur, matrix transforms,
 dilation, erosion, color filters and inner-to-outer composition for both
 `BackdropFilter` and `ImageFiltered`. Shader filters and compositions containing

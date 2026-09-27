@@ -8,7 +8,7 @@ From the repository root:
 ```powershell
 python Doroti/validation/run-with-timeout.py cargo build --locked --manifest-path tools/Doroti.Wgsl/Cargo.toml
 python Doroti/validation/run-with-timeout.py cargo test --locked --manifest-path tools/Doroti.Wgsl/Cargo.toml
-tools/Doroti.Wgsl/target/debug/doroti-wgsl.exe compile DorotiTestbedApp/assets/effects/swap.wgsl DorotiTestbedApp/assets/effects/swap.effect.json Doroti/artifacts/gpu-effects/swap
+tools/Doroti.Wgsl/target/debug/doroti-wgsl.exe compile Doroti/validation/gpu-effects/assets/swap.wgsl Doroti/validation/gpu-effects/assets/swap.effect.json Doroti/artifacts/gpu-effects/swap
 ```
 
 CLI: `validate|reflect|compile|generate source.wgsl definition.effect.json output-directory`.

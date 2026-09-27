@@ -67,7 +67,7 @@ def main():
                           "check-ide0002", solution, out / "ide0002-check.json"])
     for configuration in ("Debug", "Release"):
         for label, project in (
-            ("testbed", "DorotiTestbedApp/DorotiTestbedApp.csproj"),
+            ("testbed", "samples/DorotiTestbedApp/DorotiTestbedApp.csproj"),
             ("previews", "Doroti/src/Doroti.Framework.WidgetPreviews/Doroti.Framework.WidgetPreviews.csproj"),
             ("contracts-build", "Doroti/validation/warning-remediation/Contracts/Contracts.csproj"),
         ):
@@ -75,8 +75,7 @@ def main():
         step(f"contracts-{configuration.lower()}", ["dotnet", HERE / f"Contracts/bin/{configuration}/net10.0/Contracts.dll"])
     step("compiler-dispatch", ["pwsh", "-NoProfile", "-File", "tools/Doroti.DartToCSharp/validation/virtual-dispatch/validate.ps1"])
     if args.windows:
-        step("windows-release", ["dotnet", "build", "DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj", "-c", "Release", *build_args])
-        step("windows-product-input", [sys.executable, "Doroti/validation/platform-views/verify-windows-winui-input.py", out / "windows-winui-input"])
+        step("windows-release", ["dotnet", "build", "samples/DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj", "-c", "Release", *build_args])
     step("diff-check", ["git", "-c", "core.safecrlf=false", "diff", "--check"])
     if source_hashes() != before:
         raise SystemExit("Source changed during verification. Revalidate the affected gates.")
