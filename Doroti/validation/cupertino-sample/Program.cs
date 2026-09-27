@@ -62,7 +62,12 @@ Snapshot("components");
 var switchElement = Elements(binding.rootElement!).Single(element => element.widget is CupertinoSwitch);
 Check(Elements(switchElement).Select(element => element.widget).OfType<CustomPaint>().Any(paint => paint.painter is not null),
     "switch has a connected painter");
-Press("Show dialog");
+Find<CupertinoButton>().Single(button => (button.child as Text)?.data == "Show dialog").onPressed!();
+host.Pump(0);
+host.Pump(80);
+CheckDialogBackdrop("opening");
+Snapshot("dialog-opening");
+Pump();
 Check(Find<CupertinoAlertDialog>().Any(), "dialog opens");
 var messageBox = (RenderBox)Elements(binding.rootElement!).Single(element =>
     element.widget is Text text && text.data == "A Cupertino dialog in Doroti.").findRenderObject()!;
@@ -71,6 +76,10 @@ Check(messageBox.localToGlobal(new Offset(0, messageBox.size.height)).dy <= acti
     "dialog message fits above its action");
 Snapshot("dialog");
 Find<CupertinoDialogAction>().Single().onPressed!();
+host.Pump(0);
+host.Pump(80);
+CheckDialogBackdrop("closing");
+Snapshot("dialog-closing");
 Pump();
 Tab(0);
 Tab(1);
@@ -157,6 +166,33 @@ void Snapshot(string name)
         data.ToArray()
     );
 }
+void CheckDialogBackdrop(string phase)
+{
+    var dialog = Elements(binding.rootElement!).Single(element => element.widget is CupertinoAlertDialog);
+    var backdrop = (RenderBackdropFilter)Elements(dialog).Single(element => element.widget is BackdropFilter).findRenderObject()!;
+    var progress = ModalRoute<object>.of<object>(dialog)!.animation!.value;
+    Check(progress > 0 && progress < 1, $"{phase}: checking an intermediate fade frame ({progress:F3})");
+    using var filtered = Capture();
+    backdrop.enabled = false;
+    binding.rootPipelineOwner.flushPaint();
+    using var unfiltered = Capture();
+    var changed = filtered.Pixels.Zip(unfiltered.Pixels).Count(pair =>
+        Math.Abs(pair.First.Red - pair.Second.Red) + Math.Abs(pair.First.Green - pair.Second.Green)
+        + Math.Abs(pair.First.Blue - pair.Second.Blue) > 6);
+    Check(changed > 100, $"{phase}: backdrop affects {changed} pixels before fade completes");
+    backdrop.enabled = true;
+    binding.rootPipelineOwner.flushPaint();
+
+    SKBitmap Capture()
+    {
+        var size = host.Metrics.physicalSize;
+        using var surface = SKSurface.Create(new SKImageInfo((int)size.width, (int)size.height));
+        using var scene = binding.renderViews.Single().layer!.buildScene(new SceneBuilder(1));
+        renderer.DrawPlatformRasterSegment(surface.Canvas, scene.Commands, (int)size.width, (int)size.height);
+        using var image = surface.Snapshot();
+        return SKBitmap.FromImage(image);
+    }
+}
 static void Check(bool condition, string message)
 {
     if (!condition)
@@ -231,11 +267,11 @@ sealed class BuildHost(Size size)
 
     public void ScheduleFrame(Action<TimeSpan> callback) => _frame = callback;
 
-    public void Pump()
+    public void Pump(int milliseconds = 100)
     {
         var callback = _frame;
         _frame = null;
-        callback?.Invoke(TimeSpan.FromMilliseconds(_milliseconds += 100));
+        callback?.Invoke(TimeSpan.FromMilliseconds(_milliseconds += milliseconds));
     }
 
     public ValueTask<ReadOnlyMemory<byte>?> SendAsync(

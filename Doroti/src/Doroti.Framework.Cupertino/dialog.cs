@@ -583,8 +583,9 @@ public class CupertinoPopupSurface : StatelessWidget
         System.Diagnostics.Debug.Assert(__blurSigma >= 0L);
     }
 
-    internal virtual ImageFilterConfig? _buildFilter(Brightness? brightness)
+    internal virtual ImageFilterConfig? _buildFilter(Brightness? brightness, double progress = 1.0)
     {
+        var sigma = blurSigma * progress;
         var isVibrancePainted = true;
         DartRuntimePrimitives.Assert(() =>
         {
@@ -593,37 +594,54 @@ public class CupertinoPopupSurface : StatelessWidget
         });
         if (!isVibrancePainted)
         {
-            if (blurSigma == 0L)
+            if (sigma == 0L)
             {
                 return null;
             }
-            return ImageFilterConfig.CreateBlur(sigmaX: (blurSigma), sigmaY: (blurSigma));
+            return ImageFilterConfig.CreateBlur(sigmaX: sigma, sigmaY: sigma);
         }
         var colorFilter = ImageFilterConfig.Create(
             brightness switch
             {
-                Brightness.dark => ColorFilter.matrix(_darkSaturationMatrix),
-                Brightness.light => ColorFilter.matrix(_lightSaturationMatrix),
-                null => ColorFilter.matrix(_lightSaturationMatrix),
+                Brightness.dark => ColorFilter.matrix(InterpolateVibrance(_darkSaturationMatrix, progress)),
+                Brightness.light => ColorFilter.matrix(InterpolateVibrance(_lightSaturationMatrix, progress)),
+                null => ColorFilter.matrix(InterpolateVibrance(_lightSaturationMatrix, progress)),
                 _ => throw new InvalidOperationException(
                     "Switch expression did not handle the supplied value."
                 ),
             }
         );
-        if (blurSigma == 0L)
+        if (sigma == 0L)
         {
             return colorFilter;
         }
         return ImageFilterConfig.CreateCompose(
             inner: colorFilter,
-            outer: ImageFilterConfig.CreateBlur(sigmaX: (blurSigma), sigmaY: (blurSigma))
+            outer: ImageFilterConfig.CreateBlur(sigmaX: sigma, sigmaY: sigma)
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
     {
-        ImageFilterConfig? filter = _buildFilter(CupertinoTheme.maybeBrightnessOf(context));
+        var transition = context.dependOnInheritedWidgetOfExactType<_CupertinoDialogSurfaceTransition>();
+        return transition is null
+            ? BuildSurface(context, 1.0)
+            : new AnimatedBuilder(
+                animation: transition.animation,
+                builder: (context, _) => BuildSurface(context, Math.Clamp(transition.animation.value, 0.0, 1.0)));
+    }
+
+    private static List<double> InterpolateVibrance(List<double> matrix, double progress) =>
+        matrix.Select((value, index) =>
+        {
+            var identity = index is 0 or 6 or 12 or 18 ? 1.0 : 0.0;
+            return identity + (value - identity) * progress;
+        }).ToList();
+
+    private Widget BuildSurface(BuildContext context, double progress)
+    {
+        ImageFilterConfig? filter = _buildFilter(CupertinoTheme.maybeBrightnessOf(context), progress);
         Widget contents = child;
         if (isSurfacePainted)
         {
@@ -638,10 +656,10 @@ public class CupertinoPopupSurface : StatelessWidget
         {
             return new ClipRSuperellipse(
                 borderRadius: _clipper,
-                child: new BackdropFilter(filterConfig: filter, child: contents)
+                child: new BackdropFilter(filterConfig: filter, child: new Opacity(opacity: progress, child: contents))
             );
         }
-        return new ClipRSuperellipse(borderRadius: _clipper, child: contents);
+        return new ClipRSuperellipse(borderRadius: _clipper, child: new Opacity(opacity: progress, child: contents));
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
