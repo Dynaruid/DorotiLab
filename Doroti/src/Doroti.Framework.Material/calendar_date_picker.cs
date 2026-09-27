@@ -1507,7 +1507,7 @@ internal class _DayPickerState__calendar_date_picker : State<_DayPicker__calenda
         for (
             long i = localizations.firstDayOfWeekIndex;
             checked(result.Count) < 7L;
-            i = (i + 1L) % 7L
+            i = global::Doroti.Runtime.DartNumeric.Modulo((i + 1L), 7L)
         )
         {
             string weekday = localizations.narrowWeekdays[(int)i];

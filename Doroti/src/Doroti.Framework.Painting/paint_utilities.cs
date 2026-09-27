@@ -37,7 +37,8 @@ public static partial class Paint_utilitiesLibrary
         for (var index = 0L; index < zigs; index += 1L)
         {
             double x = ((index * 2.0) + 1.0) * spacing;
-            double y = width * ((index % 2.0 * 2.0) - 1.0);
+            double y =
+                width * ((global::Doroti.Runtime.DartNumeric.Modulo(index, 2.0) * 2.0) - 1.0);
             path.lineTo(x, y);
         }
         path.lineTo(length, 0.0);

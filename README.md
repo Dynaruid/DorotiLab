@@ -86,6 +86,7 @@ The project began with a Dart-to-C# compiler to bootstrap framework code. Today,
 | --- | --- |
 | [Framework guide](Doroti/README.md) | SDKs, workloads, build commands, packaging, and host configuration |
 | [Sample app guide](samples/DorotiTestbedApp/README.md) | Platform launch commands, sample screens, renderer options, and troubleshooting |
+| [Cupertino sample](samples/DorotiSampleApp2/README.md) | Cupertino components, profile input, and appearance settings on Windows / Web |
 | [Dart-to-C# compiler](tools/Doroti.DartToCSharp/README.md) | Optional source import and migration tooling |
 | [WGSL GPU effects](Doroti/validation/gpu-effects/README.md) | Windows fragment implementation, source-tree compiler setup, and remaining platform work |
 | [Development history](history/) | Archived plans and validation records |

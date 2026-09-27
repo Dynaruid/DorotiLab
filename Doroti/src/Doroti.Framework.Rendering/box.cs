@@ -402,10 +402,10 @@ public class BoxConstraints : Constraints
     public virtual BoxConstraints __(double value)
     {
         return new BoxConstraints(
-            minWidth: minWidth % value,
-            maxWidth: maxWidth % value,
-            minHeight: minHeight % value,
-            maxHeight: maxHeight % value
+            minWidth: global::Doroti.Runtime.DartNumeric.Modulo(minWidth, value),
+            maxWidth: global::Doroti.Runtime.DartNumeric.Modulo(maxWidth, value),
+            minHeight: global::Doroti.Runtime.DartNumeric.Modulo(minHeight, value),
+            maxHeight: global::Doroti.Runtime.DartNumeric.Modulo(maxHeight, value)
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }

@@ -139,7 +139,9 @@ public sealed class WriteBuffer
 
     private void Align(int alignment)
     {
-        var padding = (_size % alignment) is 0 ? 0 : alignment - (_size % alignment);
+        var padding = (global::Doroti.Runtime.DartNumeric.Modulo(_size, alignment)) is 0
+            ? 0
+            : alignment - (global::Doroti.Runtime.DartNumeric.Modulo(_size, alignment));
         EnsureWritable(padding);
         _buffer.AsSpan(_size, padding).Clear();
         _size += padding;
@@ -312,7 +314,9 @@ public sealed class ReadBuffer
 
     private void Align(int alignment)
     {
-        var padding = (_position % alignment) is 0 ? 0 : alignment - (_position % alignment);
+        var padding = (global::Doroti.Runtime.DartNumeric.Modulo(_position, alignment)) is 0
+            ? 0
+            : alignment - (global::Doroti.Runtime.DartNumeric.Modulo(_position, alignment));
         _ = ReadMemory(padding);
     }
 }

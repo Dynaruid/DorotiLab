@@ -492,7 +492,12 @@ public class EdgeInsets : EdgeInsetsGeometry
 
     public override EdgeInsets __(double other)
     {
-        return new EdgeInsets(left % other, top % other, right % other, bottom % other);
+        return new EdgeInsets(
+            global::Doroti.Runtime.DartNumeric.Modulo(left, other),
+            global::Doroti.Runtime.DartNumeric.Modulo(top, other),
+            global::Doroti.Runtime.DartNumeric.Modulo(right, other),
+            global::Doroti.Runtime.DartNumeric.Modulo(bottom, other)
+        );
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
@@ -690,7 +695,12 @@ public class EdgeInsetsDirectional : EdgeInsetsGeometry
 
     public override EdgeInsetsDirectional __(double other)
     {
-        return new EdgeInsetsDirectional(start % other, top % other, end % other, bottom % other);
+        return new EdgeInsetsDirectional(
+            global::Doroti.Runtime.DartNumeric.Modulo(start, other),
+            global::Doroti.Runtime.DartNumeric.Modulo(top, other),
+            global::Doroti.Runtime.DartNumeric.Modulo(end, other),
+            global::Doroti.Runtime.DartNumeric.Modulo(bottom, other)
+        );
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
@@ -883,12 +893,12 @@ internal class _MixedEdgeInsets__edge_insets : EdgeInsetsGeometry
     public override _MixedEdgeInsets__edge_insets __(double other)
     {
         return new _MixedEdgeInsets__edge_insets(
-            _left % other,
-            _right % other,
-            _start % other,
-            _end % other,
-            _top % other,
-            _bottom % other
+            global::Doroti.Runtime.DartNumeric.Modulo(_left, other),
+            global::Doroti.Runtime.DartNumeric.Modulo(_right, other),
+            global::Doroti.Runtime.DartNumeric.Modulo(_start, other),
+            global::Doroti.Runtime.DartNumeric.Modulo(_end, other),
+            global::Doroti.Runtime.DartNumeric.Modulo(_top, other),
+            global::Doroti.Runtime.DartNumeric.Modulo(_bottom, other)
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }

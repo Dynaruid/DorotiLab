@@ -3591,7 +3591,11 @@ internal class _TextSelectionGestureDetectorState__text_selection
             {
                 return (rawCount <= 3L)
                     ? rawCount
-                    : (((rawCount % 3L) == 0L) ? 3L : (rawCount % 3L));
+                    : (
+                        ((global::Doroti.Runtime.DartNumeric.Modulo(rawCount, 3L)) == 0L)
+                            ? 3L
+                            : (global::Doroti.Runtime.DartNumeric.Modulo(rawCount, 3L))
+                    );
             }
             case TargetPlatform.iOS:
             case TargetPlatform.macOS:
@@ -3600,7 +3604,9 @@ internal class _TextSelectionGestureDetectorState__text_selection
             }
             case TargetPlatform.windows:
             {
-                return (rawCount < 2L) ? rawCount : (2L + (rawCount % 2L));
+                return (rawCount < 2L)
+                    ? rawCount
+                    : (2L + (global::Doroti.Runtime.DartNumeric.Modulo(rawCount, 2L)));
             }
             default:
                 throw new InvalidOperationException(

@@ -480,7 +480,7 @@ public static class MaterialColorSchemeRuntime
 
     private static Palette P(double hue, double chroma) => new(Sanitize(hue), chroma);
 
-    private static double Sanitize(double degrees) => ((degrees % 360) + 360) % 360;
+    private static double Sanitize(double degrees) => DartNumeric.Modulo(degrees, 360.0);
 
     private static double Lerp(double start, double stop, double amount) =>
         start + ((stop - start) * amount);

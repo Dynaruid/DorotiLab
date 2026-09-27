@@ -161,6 +161,8 @@ public class CupertinoTabBar : StatelessWidget, PreferredSizeWidget
         CupertinoLocalizations localizations = CupertinoLocalizations.of(context);
         for (var index = 0L; index < checked(items.Count); index += 1L)
         {
+            // C# for-loop variables are shared by closures; retain this item's index.
+            var tabIndex = index;
             var activeLocal = index == currentIndex;
             result.Add(
                 _wrapActiveItem(
@@ -184,7 +186,7 @@ public class CupertinoTabBar : StatelessWidget, PreferredSizeWidget
                                             : (
                                                 () =>
                                                 {
-                                                    onTap!(index);
+                                                    onTap!(tabIndex);
                                                 }
                                             ),
                                         child: new Padding(

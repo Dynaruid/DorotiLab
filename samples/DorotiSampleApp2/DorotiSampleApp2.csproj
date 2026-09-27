@@ -1,0 +1,15 @@
+<Project>
+  <Import Project="..\..\Doroti\src\Doroti.App.Sdk\Sdk\Sdk.props" />
+  <PropertyGroup>
+    <AssemblyName>DorotiSampleApp2</AssemblyName>
+    <RootNamespace>DorotiSampleApp2</RootNamespace>
+    <DorotiUseRepositoryProjects>true</DorotiUseRepositoryProjects>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="assets/fonts/CupertinoIcons.ttf" LogicalName="CupertinoSample.icons.ttf" />
+    <ProjectReference Include="..\..\Doroti\src\Doroti.Hosting\Doroti.Hosting.csproj" />
+    <ProjectReference Include="..\..\Doroti\src\Doroti.Framework.Cupertino\Doroti.Framework.Cupertino.csproj" />
+  </ItemGroup>
+  <Import Project="..\..\Doroti\src\Doroti.App.Sdk\Sdk\Sdk.targets" />
+</Project>

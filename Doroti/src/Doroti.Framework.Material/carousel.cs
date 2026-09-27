@@ -378,7 +378,10 @@ internal class _CarouselViewState__carousel : State<CarouselView>
     {
         if (widget.infinite && Enumerable.Any(widget.children))
         {
-            index = index % checked(widget.children.Count);
+            index = global::Doroti.Runtime.DartNumeric.Modulo(
+                index,
+                checked(widget.children.Count)
+            );
         }
         CarouselViewThemeData carouselTheme = CarouselViewTheme.of(context);
         ColorScheme colorScheme = ColorScheme.of(context);
@@ -499,7 +502,10 @@ internal class _CarouselViewState__carousel : State<CarouselView>
                 );
                 effectiveBuilder = (context, index) =>
                 {
-                    return widget.itemBuilder!(context, index % itemCountLocal);
+                    return widget.itemBuilder!(
+                        context,
+                        global::Doroti.Runtime.DartNumeric.Modulo(index, itemCountLocal)
+                    );
                     throw new InvalidOperationException(
                         "Callback completed without returning a value."
                     );
@@ -710,7 +716,7 @@ public class _RenderSliverFixedExtentCarousel__carousel : RenderSliverFixedExten
         long offscreenItems = (constraints.scrollOffset / maxExtent).floor();
         double offscreenExtent = constraints.scrollOffset - (offscreenItems * maxExtent);
         double effectiveMinExtent = Math.Max(
-            constraints.remainingPaintExtent % maxExtent,
+            global::Doroti.Runtime.DartNumeric.Modulo(constraints.remainingPaintExtent, maxExtent),
             minExtent
         );
         if (index == firstVisibleIndex)
@@ -740,7 +746,7 @@ public class _RenderSliverFixedExtentCarousel__carousel : RenderSliverFixedExten
         }
         long firstVisibleIndex = (constraints.scrollOffset / maxExtent).floor();
         double effectiveMinExtent = Math.Max(
-            constraints.remainingPaintExtent % maxExtent,
+            global::Doroti.Runtime.DartNumeric.Modulo(constraints.remainingPaintExtent, maxExtent),
             minExtent
         );
         if (index == firstVisibleIndex)
@@ -1757,14 +1763,15 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
                     itemCount
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
-                leadingItem =
-                    leadingItem
-                    % (
+                leadingItem = global::Doroti.Runtime.DartNumeric.Modulo(
+                    leadingItem,
+                    (
                         itemCount
                         ?? throw new global::System.NullReferenceException(
                             "A required value was null."
                         )
-                    );
+                    )
+                );
             }
             return leadingItem;
         }

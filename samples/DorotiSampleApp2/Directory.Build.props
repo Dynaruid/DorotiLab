@@ -1,0 +1,8 @@
+<Project>
+  <PropertyGroup>
+    <ApplicationTitle>Doroti Cupertino Sample</ApplicationTitle>
+    <ApplicationId>dev.doroti.sample2</ApplicationId>
+    <ApplicationDisplayVersion>0.3.0</ApplicationDisplayVersion>
+    <ApplicationVersion>3</ApplicationVersion>
+  </PropertyGroup>
+</Project>

@@ -270,7 +270,12 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
     {
         if (month == 2L)
         {
-            bool isLeapYear = ((year % 4L) == 0L && (year % 100L) != 0L) || (year % 400L) == 0L;
+            bool isLeapYear =
+                (
+                    (global::Doroti.Runtime.DartNumeric.Modulo(year, 4L)) == 0L
+                    && (global::Doroti.Runtime.DartNumeric.Modulo(year, 100L)) != 0L
+                )
+                || (global::Doroti.Runtime.DartNumeric.Modulo(year, 400L)) == 0L;
             if (isLeapYear)
             {
                 return 29L;
@@ -559,7 +564,10 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
         for (var i = 0L; i <= maxDigitIndex; i += 1L)
         {
             result.Append(digits[(int)i].ToString());
-            if ((i < maxDigitIndex) && (((maxDigitIndex - i) % 3L) == 0L))
+            if (
+                (i < maxDigitIndex)
+                && ((global::Doroti.Runtime.DartNumeric.Modulo((maxDigitIndex - i), 3L)) == 0L)
+            )
             {
                 result.Append(",");
             }

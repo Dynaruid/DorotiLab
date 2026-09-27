@@ -265,7 +265,10 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
                 {
                     DebugLibrary.debugCurrentRepaintColor =
                         DebugLibrary.debugCurrentRepaintColor.withHue(
-                            (DebugLibrary.debugCurrentRepaintColor.hue + 2.0) % 360.0
+                            global::Doroti.Runtime.DartNumeric.Modulo(
+                                (DebugLibrary.debugCurrentRepaintColor.hue + 2.0),
+                                360.0
+                            )
                         );
                 }
                 return true;

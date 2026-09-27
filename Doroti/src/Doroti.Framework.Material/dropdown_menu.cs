@@ -712,7 +712,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
             _enableFilter = false;
             _enableSearch = false;
             currentHighlight ??= 0L;
-            currentHighlight =
+            currentHighlight = global::Doroti.Runtime.DartNumeric.Modulo(
                 (
                     (
                         currentHighlight
@@ -720,7 +720,9 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
                             "A required value was null."
                         )
                     ) - 1L
-                ) % checked(filteredEntries.Count);
+                ),
+                checked(filteredEntries.Count)
+            );
             while (
                 !filteredEntries[
                     (int)(
@@ -732,7 +734,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
                 ].enabled
             )
             {
-                currentHighlight =
+                currentHighlight = global::Doroti.Runtime.DartNumeric.Modulo(
                     (
                         (
                             currentHighlight
@@ -740,7 +742,9 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
                                 "A required value was null."
                             )
                         ) - 1L
-                    ) % checked(filteredEntries.Count);
+                    ),
+                    checked(filteredEntries.Count)
+                );
             }
             string currentLabel = filteredEntries[
                 (int)(
@@ -766,7 +770,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
             _enableFilter = false;
             _enableSearch = false;
             currentHighlight ??= -1L;
-            currentHighlight =
+            currentHighlight = global::Doroti.Runtime.DartNumeric.Modulo(
                 (
                     (
                         currentHighlight
@@ -774,7 +778,9 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
                             "A required value was null."
                         )
                     ) + 1L
-                ) % checked(filteredEntries.Count);
+                ),
+                checked(filteredEntries.Count)
+            );
             while (
                 !filteredEntries[
                     (int)(
@@ -786,7 +792,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
                 ].enabled
             )
             {
-                currentHighlight =
+                currentHighlight = global::Doroti.Runtime.DartNumeric.Modulo(
                     (
                         (
                             currentHighlight
@@ -794,7 +800,9 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
                                 "A required value was null."
                             )
                         ) + 1L
-                    ) % checked(filteredEntries.Count);
+                    ),
+                    checked(filteredEntries.Count)
+                );
             }
             string currentLabel = filteredEntries[
                 (int)(

@@ -260,15 +260,18 @@ public class IOSScrollViewFlingVelocityTracker : VelocityTracker
                     + $"than its predecessor: {previousPoint}."
             );
         });
-        _index = (_index + 1L) % _sampleSize;
+        _index = global::Doroti.Runtime.DartNumeric.Modulo((_index + 1L), _sampleSize);
         _touchSamples[(int)_index] = new _PointAtTime__velocity_tracker(position, time);
     }
 
     internal virtual Offset _previousVelocityAt(long index)
     {
         // Dart % wraps negative offsets into the ring; C# % keeps their sign.
-        long endIndex = (((_index + index) % _sampleSize) + _sampleSize) % _sampleSize;
-        long startIndex = (((_index + index - 1L) % _sampleSize) + _sampleSize) % _sampleSize;
+        long endIndex = global::Doroti.Runtime.DartNumeric.Modulo(_index + index, _sampleSize);
+        long startIndex = global::Doroti.Runtime.DartNumeric.Modulo(
+            _index + index - 1L,
+            _sampleSize
+        );
         _PointAtTime__velocity_tracker? end = _touchSamples[(int)endIndex];
         _PointAtTime__velocity_tracker? start = _touchSamples[(int)startIndex];
         if ((end is null) || (start is null))
@@ -302,7 +305,9 @@ public class IOSScrollViewFlingVelocityTracker : VelocityTracker
         _PointAtTime__velocity_tracker? oldestNonNullSample = default!;
         for (var i = 1L; i <= _sampleSize; i += 1L)
         {
-            oldestNonNullSample = _touchSamples[(int)((_index + i) % _sampleSize)];
+            oldestNonNullSample = _touchSamples[
+                (int)(global::Doroti.Runtime.DartNumeric.Modulo((_index + i), _sampleSize))
+            ];
             if (oldestNonNullSample is not null)
             {
                 break;
@@ -355,7 +360,9 @@ public class MacOSScrollViewFlingVelocityTracker : IOSScrollViewFlingVelocityTra
         _PointAtTime__velocity_tracker? oldestNonNullSample = default!;
         for (var i = 1L; i <= _sampleSize; i += 1L)
         {
-            oldestNonNullSample = _touchSamples[(int)((_index + i) % _sampleSize)];
+            oldestNonNullSample = _touchSamples[
+                (int)(global::Doroti.Runtime.DartNumeric.Modulo((_index + i), _sampleSize))
+            ];
             if (oldestNonNullSample is not null)
             {
                 break;

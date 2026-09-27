@@ -1941,7 +1941,10 @@ public class SemanticsNode : DiagnosticableTreeMixin
 
     internal static long _generateNewId()
     {
-        _lastIdentifier = (_lastIdentifier + 1L) % _maxFrameworkAccessibilityIdentifier;
+        _lastIdentifier = global::Doroti.Runtime.DartNumeric.Modulo(
+            (_lastIdentifier + 1L),
+            _maxFrameworkAccessibilityIdentifier
+        );
         return _lastIdentifier;
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }

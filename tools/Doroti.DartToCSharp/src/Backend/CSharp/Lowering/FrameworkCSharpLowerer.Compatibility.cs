@@ -4222,6 +4222,77 @@ internal sealed partial class FrameworkCSharpLowerer
                     : section;
             if (expression is not null)
             {
+                if (
+                    expression.Kind == CoreNodeKind.AssignmentExpression
+                    && expression.Text(CoreProperty.@operator) == "%="
+                    && expression.Child(CoreChildRole.leftOffset) is { } moduloLeft
+                    && expression.Child(CoreChildRole.rightOffset) is { } moduloRight
+                )
+                {
+                    var leftBuilder = new CsSyntaxBuilder();
+                    if (moduloLeft.Kind == CoreNodeKind.IndexExpression)
+                    {
+                        var index = moduloLeft.Children.First(item =>
+                            item.Category == "expression"
+                        );
+                        LowerExpression(
+                            leftBuilder,
+                            index,
+                            declaration,
+                            package,
+                            library,
+                            inputPath,
+                            diagnostics
+                        );
+                        var indexCode = string.Concat(
+                            leftBuilder.Build().Tokens.Select(token => token.Text)
+                        );
+                        var sequenceIndex = targetType.StartsWith("List<", StringComparison.Ordinal)
+                            ? $"(int)({indexCode})"
+                            : indexCode;
+                        EmitModulo(
+                            builder,
+                            expression,
+                            moduloLeft,
+                            moduloRight,
+                            declaration,
+                            package,
+                            library,
+                            inputPath,
+                            diagnostics,
+                            $"__cascade[{sequenceIndex}]"
+                        );
+                    }
+                    else
+                    {
+                        LowerExpression(
+                            leftBuilder,
+                            moduloLeft,
+                            declaration,
+                            package,
+                            library,
+                            inputPath,
+                            diagnostics
+                        );
+                        EmitModulo(
+                            builder,
+                            expression,
+                            moduloLeft,
+                            moduloRight,
+                            declaration,
+                            package,
+                            library,
+                            inputPath,
+                            diagnostics,
+                            "__cascade."
+                                + string.Concat(
+                                    leftBuilder.Build().Tokens.Select(token => token.Text)
+                                )
+                        );
+                    }
+                    builder.AppendLine(";");
+                    continue;
+                }
                 builder.Append("            __cascade");
                 var cascadeAssignmentLeft =
                     expression.Kind == CoreNodeKind.AssignmentExpression

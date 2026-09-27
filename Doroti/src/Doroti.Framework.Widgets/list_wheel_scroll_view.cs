@@ -62,7 +62,9 @@ public class ListWheelChildLoopingListDelegate : ListWheelChildDelegate
     public override long? estimatedChildCount => DartRuntimePrimitives.ConvertValue<long>(null);
 
     public override long trueIndexOf(long index) =>
-        DartRuntimePrimitives.ConvertValue<long>(index % checked(children.Count));
+        DartRuntimePrimitives.ConvertValue<long>(
+            global::Doroti.Runtime.DartNumeric.Modulo(index, checked(children.Count))
+        );
 
     public override Widget? build(BuildContext context, long index)
     {
@@ -73,7 +75,9 @@ public class ListWheelChildLoopingListDelegate : ListWheelChildDelegate
         return (Widget?)
             new IndexedSemantics(
                 index: index,
-                child: children[(int)(index % checked(children.Count))]
+                child: children[
+                    (int)(global::Doroti.Runtime.DartNumeric.Modulo(index, checked(children.Count)))
+                ]
             );
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }

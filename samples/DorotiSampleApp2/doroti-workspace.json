@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "doroti.workspace/v1",
+  "applicationProject": "DorotiSampleApp2.csproj",
+  "platforms": {
+    "windows": "windowsappsdk/DorotiSampleApp2.WindowsAppSdk.csproj",
+    "web": "web/DorotiSampleApp2.Web.csproj"
+  }
+}

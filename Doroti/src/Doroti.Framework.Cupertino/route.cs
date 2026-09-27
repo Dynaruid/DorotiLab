@@ -1174,7 +1174,8 @@ public class _CupertinoEdgeShadowPainter__route : BoxPainter
                         __cascade.color = DorotiUiLibrary.Color.lerp(
                             colors[(int)bandColorIndex],
                             colors[(int)(bandColorIndex + 1L)],
-                            dxLocal % bandWidth / bandWidth
+                            global::Doroti.Runtime.DartNumeric.Modulo(dxLocal, bandWidth)
+                                / bandWidth
                         )!;
                         return __cascade;
                     }

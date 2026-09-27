@@ -88,7 +88,10 @@ public class FractionalOffset : Alignment
 
     public override FractionalOffset __(double other)
     {
-        return new FractionalOffset(dx % other, dy % other);
+        return new FractionalOffset(
+            global::Doroti.Runtime.DartNumeric.Modulo(dx, other),
+            global::Doroti.Runtime.DartNumeric.Modulo(dy, other)
+        );
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 

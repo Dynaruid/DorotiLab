@@ -866,7 +866,9 @@ public class RenderTable : RenderBox
             markNeedsLayout();
             return;
         }
-        DartRuntimePrimitives.Assert(() => (checked(cells.Count) % (columns)) == 0L);
+        DartRuntimePrimitives.Assert(() =>
+            (global::Doroti.Runtime.DartNumeric.Modulo(checked(cells.Count), (columns))) == 0L
+        );
         HashSet<RenderBox> lostChildren = new HashSet<RenderBox>();
         for (var y = 0L; y < _rows; y += 1L)
         {

@@ -112,7 +112,8 @@ public class RenderRotatedBox : RenderBox, RenderObjectWithChildMixin<RenderBox>
                         var __cascade = Matrix4.identity();
                         __cascade.translateByDouble(size.width / 2.0, size.height / 2.0, 0, 1);
                         __cascade.rotateZ(
-                            Rotated_boxLibrary._kQuarterTurnsInRadians * (quarterTurns % 4L)
+                            Rotated_boxLibrary._kQuarterTurnsInRadians
+                                * (global::Doroti.Runtime.DartNumeric.Modulo(quarterTurns, 4L))
                         );
                         __cascade.translateByDouble(
                             -child!.size.width / 2.0,

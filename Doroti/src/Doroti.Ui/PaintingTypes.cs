@@ -177,7 +177,10 @@ public readonly record struct Radius(double x, double y)
         new(value.x / operand, value.y / operand);
 
     public static Radius operator %(Radius value, double operand) =>
-        new(value.x % operand, value.y % operand);
+        new(
+            global::Doroti.Runtime.DartNumeric.Modulo(value.x, operand),
+            global::Doroti.Runtime.DartNumeric.Modulo(value.y, operand)
+        );
 
     public Radius ___(double operand) =>
         new(Math.Truncate(x / operand), Math.Truncate(y / operand));

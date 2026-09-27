@@ -1,0 +1,7 @@
+{
+  "schemaVersion": "doroti.application/v1",
+  "applicationAssembly": "DorotiSampleApp2.Web.dll",
+  "entrypoint": "DorotiSampleApp2.Program",
+  "resources": [],
+  "plugins": []
+}

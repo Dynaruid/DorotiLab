@@ -2593,7 +2593,7 @@ public class _RenderPriorityColumn__dialog : RenderFlex
     {
         double width = constraints.maxWidth;
         double maxHeightLocal = constraints.maxHeight;
-        var (topChildHeight, bottomChildHeight) = _childrenHeights(width, maxHeightLocal);
+        var (bottomChildHeight, topChildHeight) = _childrenHeights(width, maxHeightLocal);
         return new Size(width, topChildHeight + bottomChildHeight);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
@@ -2602,7 +2602,7 @@ public class _RenderPriorityColumn__dialog : RenderFlex
     {
         double width = constraints.maxWidth;
         double maxHeightLocal = constraints.maxHeight;
-        var (topChildHeight, bottomChildHeight) = _childrenHeights(width, maxHeightLocal);
+        var (bottomChildHeight, topChildHeight) = _childrenHeights(width, maxHeightLocal);
         size = new Size(width, topChildHeight + bottomChildHeight);
         firstChild!.layout(
             BoxConstraints.CreateTight(new Size(width, topChildHeight)),

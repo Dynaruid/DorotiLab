@@ -2262,6 +2262,21 @@ internal sealed partial class FrameworkCSharpLowerer
             }
         }
         var opToken = node.Text(CoreProperty.@operator);
+        if (opToken is "%" or "%=")
+        {
+            EmitModulo(
+                builder,
+                node,
+                left,
+                right,
+                declaration,
+                package,
+                library,
+                inputPath,
+                diagnostics
+            );
+            return;
+        }
         static CoreAstNode UnwrapParentheses(CoreAstNode value)
         {
             while (

@@ -287,7 +287,10 @@ public class CupertinoDatePicker : StatefulWidget
         this.changeReportingBehavior = changeReportingBehavior;
         this.initialDateTime = initialDateTime ?? new DateTime();
         System.Diagnostics.Debug.Assert(__itemExtent > 0L);
-        System.Diagnostics.Debug.Assert((minuteInterval > 0L) && ((60L % minuteInterval) == 0L));
+        System.Diagnostics.Debug.Assert(
+            (minuteInterval > 0L)
+                && ((global::Doroti.Runtime.DartNumeric.Modulo(60L, minuteInterval)) == 0L)
+        );
         System.Diagnostics.Debug.Assert(
             (!Equals(mode, CupertinoDatePickerMode.dateAndTime))
                 || (minimumDate is null)
@@ -364,7 +367,12 @@ public class CupertinoDatePicker : StatefulWidget
             Equals(mode, CupertinoDatePickerMode.date) || !showDayOfWeek
         );
         System.Diagnostics.Debug.Assert(
-            ((initialDateTime ?? new DateTime()).Minute % minuteInterval) == 0L
+            (
+                global::Doroti.Runtime.DartNumeric.Modulo(
+                    (initialDateTime ?? new DateTime()).Minute,
+                    minuteInterval
+                )
+            ) == 0L
         );
         System.Diagnostics.Debug.Assert(
             !showTimeSeparator
@@ -588,11 +596,15 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
     }
     public virtual long selectedHour => _selectedHour(selectedAmPm, _selectedHourIndex);
     internal virtual long _selectedHourIndex =>
-        hourController.hasClients ? (hourController.selectedItem % 24L) : initialDateTime.Hour;
+        hourController.hasClients
+            ? (global::Doroti.Runtime.DartNumeric.Modulo(hourController.selectedItem, 24L))
+            : initialDateTime.Hour;
 
     internal virtual long _selectedHour(long selectedAmPm, long selectedHour)
     {
-        return _isHourRegionFlipped(selectedAmPm) ? ((selectedHour + 12L) % 24L) : selectedHour;
+        return _isHourRegionFlipped(selectedAmPm)
+            ? (global::Doroti.Runtime.DartNumeric.Modulo((selectedHour + 12L), 24L))
+            : selectedHour;
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
@@ -601,7 +613,12 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
         get
         {
             return minuteController.hasClients
-                ? (minuteController.selectedItem * widget.minuteInterval % 60L)
+                ? (
+                    global::Doroti.Runtime.DartNumeric.Modulo(
+                        minuteController.selectedItem * widget.minuteInterval,
+                        60L
+                    )
+                )
                 : initialDateTime.Minute;
         }
     }
@@ -908,10 +925,15 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
                         Enumerable.Range(0, checked((int)24L)),
                         (index) =>
                         {
-                            long hour = isHourRegionFlipped ? ((index + 12L) % 24L) : index;
+                            long hour = isHourRegionFlipped
+                                ? (global::Doroti.Runtime.DartNumeric.Modulo((index + 12L), 24L))
+                                : index;
                             long displayHour = widget.use24hFormat
                                 ? hour
-                                : (((hour + 11L) % 12L) + 1L);
+                                : (
+                                    (global::Doroti.Runtime.DartNumeric.Modulo((hour + 11L), 12L))
+                                    + 1L
+                                );
                             bool isDisabled = !_isValidHour(selectedAmPm, index);
                             Widget childLocal = itemPositioningBuilder(
                                 context,
@@ -1208,7 +1230,12 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
                         );
                         long newItem =
                             (checked(hourController.selectedItem / 12L) * 12L)
-                            + ((hourController.selectedItem + newDate.Hour - fromDate.Hour) % 12L);
+                            + (
+                                global::Doroti.Runtime.DartNumeric.Modulo(
+                                    (hourController.selectedItem + newDate.Hour - fromDate.Hour),
+                                    12L
+                                )
+                            );
                         Date_pickerLibrary._animateColumnControllerToItem(hourController, newItem);
                     }
                     else
@@ -2808,10 +2835,30 @@ public class CupertinoTimerPicker : StatefulWidget
         this.selectionOverlayBuilder = selectionOverlayBuilder;
         System.Diagnostics.Debug.Assert(initialTimerDuration >= Duration.zero);
         System.Diagnostics.Debug.Assert(initialTimerDuration < Duration.Create(days: 1L));
-        System.Diagnostics.Debug.Assert((minuteInterval > 0L) && ((60L % minuteInterval) == 0L));
-        System.Diagnostics.Debug.Assert((secondInterval > 0L) && ((60L % secondInterval) == 0L));
-        System.Diagnostics.Debug.Assert((initialTimerDuration.inMinutes % minuteInterval) == 0L);
-        System.Diagnostics.Debug.Assert((initialTimerDuration.inSeconds % secondInterval) == 0L);
+        System.Diagnostics.Debug.Assert(
+            (minuteInterval > 0L)
+                && ((global::Doroti.Runtime.DartNumeric.Modulo(60L, minuteInterval)) == 0L)
+        );
+        System.Diagnostics.Debug.Assert(
+            (secondInterval > 0L)
+                && ((global::Doroti.Runtime.DartNumeric.Modulo(60L, secondInterval)) == 0L)
+        );
+        System.Diagnostics.Debug.Assert(
+            (
+                global::Doroti.Runtime.DartNumeric.Modulo(
+                    initialTimerDuration.inMinutes,
+                    minuteInterval
+                )
+            ) == 0L
+        );
+        System.Diagnostics.Debug.Assert(
+            (
+                global::Doroti.Runtime.DartNumeric.Modulo(
+                    initialTimerDuration.inSeconds,
+                    secondInterval
+                )
+            ) == 0L
+        );
         System.Diagnostics.Debug.Assert(__itemExtent > 0L);
     }
 
@@ -2859,14 +2906,20 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
     public override void initState()
     {
         base.initState();
-        selectedMinute = widget.initialTimerDuration.inMinutes % 60L;
+        selectedMinute = global::Doroti.Runtime.DartNumeric.Modulo(
+            widget.initialTimerDuration.inMinutes,
+            60L
+        );
         if (!Equals(widget.mode, CupertinoTimerPickerMode.ms))
         {
             selectedHour = widget.initialTimerDuration.inHours;
         }
         if (!Equals(widget.mode, CupertinoTimerPickerMode.hm))
         {
-            selectedSecond = widget.initialTimerDuration.inSeconds % 60L;
+            selectedSecond = global::Doroti.Runtime.DartNumeric.Modulo(
+                widget.initialTimerDuration.inSeconds,
+                60L
+            );
         }
         PaintingBinding.instance.systemFonts.addListener(_handleSystemFontsChange);
     }

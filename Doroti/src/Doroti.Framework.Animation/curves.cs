@@ -591,7 +591,7 @@ public class CatmullRomSpline : Curve2D
         if (t < 1.0)
         {
             position = t * length;
-            localT = position % 1.0;
+            localT = global::Doroti.Runtime.DartNumeric.Modulo(position, 1.0);
             index = position.floor();
         }
         else

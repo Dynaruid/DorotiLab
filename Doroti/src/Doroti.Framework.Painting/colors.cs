@@ -19,7 +19,8 @@ public static partial class ColorsLibrary
         {
             if (max == red)
             {
-                hue = 60.0 * ((green - blue) / delta % 6L);
+                hue =
+                    60.0 * (global::Doroti.Runtime.DartNumeric.Modulo((green - blue) / delta, 6L));
             }
             else
             {
@@ -135,7 +136,9 @@ public class HSVColor
     public virtual Color toColor()
     {
         double chroma = saturation * value;
-        double secondary = chroma * (1.0 - ((hue / 60.0 % 2.0) - 1.0).abs());
+        double secondary =
+            chroma
+            * (1.0 - ((global::Doroti.Runtime.DartNumeric.Modulo(hue / 60.0, 2.0)) - 1.0).abs());
         double match = value - chroma;
         return ColorsLibrary._colorFromHue(alpha, hue, chroma, secondary, match);
         throw new InvalidOperationException("Control flow completed without returning a value.");
@@ -170,10 +173,13 @@ public class HSVColor
                 0.0,
                 1.0
             ),
-            (
-                DorotiUiLibrary.lerpDouble(a.hue, b.hue, t)
-                ?? throw new global::System.NullReferenceException("A required value was null.")
-            ) % 360.0,
+            global::Doroti.Runtime.DartNumeric.Modulo(
+                (
+                    DorotiUiLibrary.lerpDouble(a.hue, b.hue, t)
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
+                ),
+                360.0
+            ),
             DorotiUiLibrary.clampDouble(
                 (
                     DorotiUiLibrary.lerpDouble(a.saturation, b.saturation, t)
@@ -292,7 +298,9 @@ public class HSLColor
     public virtual Color toColor()
     {
         double chroma = (1.0 - ((2.0 * lightness) - 1.0).abs()) * saturation;
-        double secondary = chroma * (1.0 - ((hue / 60.0 % 2.0) - 1.0).abs());
+        double secondary =
+            chroma
+            * (1.0 - ((global::Doroti.Runtime.DartNumeric.Modulo(hue / 60.0, 2.0)) - 1.0).abs());
         double match = lightness - (chroma / 2.0);
         return ColorsLibrary._colorFromHue(alpha, hue, chroma, secondary, match);
         throw new InvalidOperationException("Control flow completed without returning a value.");
@@ -327,10 +335,13 @@ public class HSLColor
                 0.0,
                 1.0
             ),
-            (
-                DorotiUiLibrary.lerpDouble(a.hue, b.hue, t)
-                ?? throw new global::System.NullReferenceException("A required value was null.")
-            ) % 360.0,
+            global::Doroti.Runtime.DartNumeric.Modulo(
+                (
+                    DorotiUiLibrary.lerpDouble(a.hue, b.hue, t)
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
+                ),
+                360.0
+            ),
             DorotiUiLibrary.clampDouble(
                 (
                     DorotiUiLibrary.lerpDouble(a.saturation, b.saturation, t)

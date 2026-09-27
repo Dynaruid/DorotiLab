@@ -424,9 +424,17 @@ public class SelectableRegionState
                 return (rawCount <= maxConsecutiveTap)
                     ? rawCount
                     : (
-                        ((rawCount % maxConsecutiveTap) == 0L)
+                        (
+                            (global::Doroti.Runtime.DartNumeric.Modulo(rawCount, maxConsecutiveTap))
+                            == 0L
+                        )
                             ? maxConsecutiveTap
-                            : (rawCount % maxConsecutiveTap)
+                            : (
+                                global::Doroti.Runtime.DartNumeric.Modulo(
+                                    rawCount,
+                                    maxConsecutiveTap
+                                )
+                            )
                     );
             }
             case TargetPlatform.linux:
@@ -434,9 +442,17 @@ public class SelectableRegionState
                 return (rawCount <= maxConsecutiveTap)
                     ? rawCount
                     : (
-                        ((rawCount % maxConsecutiveTap) == 0L)
+                        (
+                            (global::Doroti.Runtime.DartNumeric.Modulo(rawCount, maxConsecutiveTap))
+                            == 0L
+                        )
                             ? maxConsecutiveTap
-                            : (rawCount % maxConsecutiveTap)
+                            : (
+                                global::Doroti.Runtime.DartNumeric.Modulo(
+                                    rawCount,
+                                    maxConsecutiveTap
+                                )
+                            )
                     );
             }
             case TargetPlatform.iOS:

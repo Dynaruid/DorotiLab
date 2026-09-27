@@ -233,8 +233,14 @@ public abstract class DateUtils
         long weekdayFromMonday =
             DartRuntimePrimitives.CreateDateTime(year, month).DayOfWeek.ToDartWeekday() - 1L;
         long firstDayOfWeekIndexLocal = localizations.firstDayOfWeekIndex;
-        firstDayOfWeekIndexLocal = (firstDayOfWeekIndexLocal + 6) % 7;
-        return (weekdayFromMonday - firstDayOfWeekIndexLocal + 7) % 7;
+        firstDayOfWeekIndexLocal = global::Doroti.Runtime.DartNumeric.Modulo(
+            (firstDayOfWeekIndexLocal + 6),
+            7
+        );
+        return global::Doroti.Runtime.DartNumeric.Modulo(
+            (weekdayFromMonday - firstDayOfWeekIndexLocal + 7),
+            7
+        );
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
@@ -242,7 +248,12 @@ public abstract class DateUtils
     {
         if (month == 2L)
         {
-            bool isLeapYear = ((year % 4L) == 0L && (year % 100L) != 0L) || (year % 400L) == 0L;
+            bool isLeapYear =
+                (
+                    (global::Doroti.Runtime.DartNumeric.Modulo(year, 4L)) == 0L
+                    && (global::Doroti.Runtime.DartNumeric.Modulo(year, 100L)) != 0L
+                )
+                || (global::Doroti.Runtime.DartNumeric.Modulo(year, 400L)) == 0L;
             return isLeapYear ? 29L : 28L;
         }
         var daysInMonth = new List<long>

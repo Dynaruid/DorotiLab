@@ -779,7 +779,9 @@ internal class _StarGenerator__star_border
         for (var i = 0L; i < checked(points.Count); i += 1L)
         {
             _PointInfo__star_border pointLocal = points[(int)i];
-            _PointInfo__star_border nextPoint = points[(int)((i + 1L) % checked(points.Count))];
+            _PointInfo__star_border nextPoint = points[
+                (int)(global::Doroti.Runtime.DartNumeric.Modulo((i + 1L), checked(points.Count)))
+            ];
             path.lineTo(pointLocal.pointArc1.dx, pointLocal.pointArc1.dy);
             if ((pointAngle != 180L) && (pointAngle != 0L))
             {
@@ -816,7 +818,7 @@ internal class _StarGenerator__star_border
 
     internal virtual double _getWeight(double angle)
     {
-        return Math.Cos(angle / 2L % (Math.PI / 2L));
+        return Math.Cos(global::Doroti.Runtime.DartNumeric.Modulo(angle / 2L, (Math.PI / 2L)));
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 

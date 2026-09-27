@@ -41,17 +41,39 @@ internal class _GridPaperPainter__grid_paper : CustomPainter
         for (var x = 0.0; x <= size.width; x += interval / allDivisions)
         {
             linePaint.strokeWidth =
-                ((x % interval) == 0.0)
+                ((global::Doroti.Runtime.DartNumeric.Modulo(x, interval)) == 0.0)
                     ? 1.0
-                    : (((x % (interval / subdivisions)) == 0.0) ? 0.5 : 0.25);
+                    : (
+                        (
+                            (
+                                global::Doroti.Runtime.DartNumeric.Modulo(
+                                    x,
+                                    (interval / subdivisions)
+                                )
+                            ) == 0.0
+                        )
+                            ? 0.5
+                            : 0.25
+                    );
             canvas.drawLine(new Offset(x, 0.0), new Offset(x, size.height), linePaint);
         }
         for (var y = 0.0; y <= size.height; y += interval / allDivisions)
         {
             linePaint.strokeWidth =
-                ((y % interval) == 0.0)
+                ((global::Doroti.Runtime.DartNumeric.Modulo(y, interval)) == 0.0)
                     ? 1.0
-                    : (((y % (interval / subdivisions)) == 0.0) ? 0.5 : 0.25);
+                    : (
+                        (
+                            (
+                                global::Doroti.Runtime.DartNumeric.Modulo(
+                                    y,
+                                    (interval / subdivisions)
+                                )
+                            ) == 0.0
+                        )
+                            ? 0.5
+                            : 0.25
+                    );
             canvas.drawLine(new Offset(0.0, y), new Offset(size.width, y), linePaint);
         }
     }

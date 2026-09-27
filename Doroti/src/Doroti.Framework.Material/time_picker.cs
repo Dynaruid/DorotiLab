@@ -602,8 +602,10 @@ internal class _DialHourControl__time_picker : StatelessWidget
                 {
                     long selectedHour = selectedTime.hour;
                     return selectedTime.replacing(
-                        hour: (selectedHour + hoursToAdd + TimeOfDay.hoursPerDay)
-                            % TimeOfDay.hoursPerDay
+                        hour: global::Doroti.Runtime.DartNumeric.Modulo(
+                            (selectedHour + hoursToAdd + TimeOfDay.hoursPerDay),
+                            TimeOfDay.hoursPerDay
+                        )
                     );
                 }
                 case _HourDialType__time_picker.twelveHour:
@@ -613,8 +615,10 @@ internal class _DialHourControl__time_picker : StatelessWidget
                     return selectedTime.replacing(
                         hour: periodOffsetLocal
                             + (
-                                (hours + hoursToAdd + TimeOfDay.hoursPerPeriod)
-                                % TimeOfDay.hoursPerPeriod
+                                global::Doroti.Runtime.DartNumeric.Modulo(
+                                    (hours + hoursToAdd + TimeOfDay.hoursPerPeriod),
+                                    TimeOfDay.hoursPerPeriod
+                                )
                             )
                     );
                 }
@@ -765,11 +769,17 @@ internal class _DialMinuteControl__time_picker : StatelessWidget
         TimeOfDay selectedTime = _TimePickerModel__time_picker.selectedTimeOf(context);
         string formattedMinute = localizations.formatMinute(selectedTime);
         TimeOfDay nextMinute = selectedTime.replacing(
-            minute: (selectedTime.minute + 1L) % TimeOfDay.minutesPerHour
+            minute: global::Doroti.Runtime.DartNumeric.Modulo(
+                (selectedTime.minute + 1L),
+                TimeOfDay.minutesPerHour
+            )
         );
         string formattedNextMinute = localizations.formatMinute(nextMinute);
         TimeOfDay previousMinute = selectedTime.replacing(
-            minute: (selectedTime.minute + TimeOfDay.minutesPerHour - 1L) % TimeOfDay.minutesPerHour
+            minute: global::Doroti.Runtime.DartNumeric.Modulo(
+                (selectedTime.minute + TimeOfDay.minutesPerHour - 1L),
+                TimeOfDay.minutesPerHour
+            )
         );
         string formattedPreviousMinute = localizations.formatMinute(previousMinute);
         return new Widgets.Semantics(
@@ -820,7 +830,10 @@ internal class _DayPeriodControl__time_picker : StatelessWidget
     internal virtual void _togglePeriod(BuildContext context)
     {
         TimeOfDay selectedTime = _TimePickerModel__time_picker.selectedTimeOf(context);
-        long newHour = (selectedTime.hour + TimeOfDay.hoursPerPeriod) % TimeOfDay.hoursPerDay;
+        long newHour = global::Doroti.Runtime.DartNumeric.Modulo(
+            (selectedTime.hour + TimeOfDay.hoursPerPeriod),
+            TimeOfDay.hoursPerDay
+        );
         TimeOfDay newTime = selectedTime.replacing(hour: newHour);
         if (onPeriodChanged is not null)
         {
@@ -1546,8 +1559,8 @@ public class _DialPainter__time_picker : CustomPainter
         double labelThetaIncrementLocal =
             -Time_pickerLibrary._kTwoPi / checked(primaryLabels.Count);
         if (
-            ((theta % labelThetaIncrementLocal) > 0.1)
-            && ((theta % labelThetaIncrementLocal) < 0.45)
+            ((global::Doroti.Runtime.DartNumeric.Modulo(theta, labelThetaIncrementLocal)) > 0.1)
+            && ((global::Doroti.Runtime.DartNumeric.Modulo(theta, labelThetaIncrementLocal)) < 0.45)
         )
         {
             canvas.drawCircle(
@@ -1909,7 +1922,9 @@ public class _DialState__time_picker
         };
         double fraction = widget.hourMinuteMode switch
         {
-            _HourMinuteMode__time_picker.hour => (double)(time.hour % hoursFactor) / hoursFactor,
+            _HourMinuteMode__time_picker.hour => (double)(
+                global::Doroti.Runtime.DartNumeric.Modulo(time.hour, hoursFactor)
+            ) / hoursFactor,
             _HourMinuteMode__time_picker.minute => (double)time.minute / TimeOfDay.minutesPerHour,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                 throw new InvalidOperationException(
@@ -1917,8 +1932,7 @@ public class _DialState__time_picker
                 ),
         };
         var theta = (Math.PI / 2) - (fraction * Time_pickerLibrary._kTwoPi);
-        return ((theta % Time_pickerLibrary._kTwoPi) + Time_pickerLibrary._kTwoPi)
-            % Time_pickerLibrary._kTwoPi;
+        return global::Doroti.Runtime.DartNumeric.Modulo(theta, Time_pickerLibrary._kTwoPi);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
@@ -1929,7 +1943,10 @@ public class _DialState__time_picker
     )
     {
         // Dart modulo is nonnegative; CLR remainder is negative on the left half of the dial.
-        double fraction = (((0.25 - (theta / Time_pickerLibrary._kTwoPi)) % 1) + 1) % 1;
+        double fraction = global::Doroti.Runtime.DartNumeric.Modulo(
+            0.25 - (theta / Time_pickerLibrary._kTwoPi),
+            1.0
+        );
         switch (widget.hourMinuteMode)
         {
             case _HourMinuteMode__time_picker.hour:
@@ -1939,9 +1956,10 @@ public class _DialState__time_picker
                 {
                     case _HourDialType__time_picker.twentyFourHourDoubleRing:
                     {
-                        newHour =
-                            (fraction * TimeOfDay.hoursPerPeriod).round()
-                            % TimeOfDay.hoursPerPeriod;
+                        newHour = global::Doroti.Runtime.DartNumeric.Modulo(
+                            (fraction * TimeOfDay.hoursPerPeriod).round(),
+                            TimeOfDay.hoursPerPeriod
+                        );
                         if (radius < 0.5)
                         {
                             newHour = newHour + TimeOfDay.hoursPerPeriod;
@@ -1950,9 +1968,10 @@ public class _DialState__time_picker
                     }
                     case _HourDialType__time_picker.twelveHour:
                     {
-                        newHour =
-                            (fraction * TimeOfDay.hoursPerPeriod).round()
-                            % TimeOfDay.hoursPerPeriod;
+                        newHour = global::Doroti.Runtime.DartNumeric.Modulo(
+                            (fraction * TimeOfDay.hoursPerPeriod).round(),
+                            TimeOfDay.hoursPerPeriod
+                        );
                         newHour = newHour + widget.selectedTime.periodOffset;
                         break;
                     }
@@ -1961,11 +1980,16 @@ public class _DialState__time_picker
             }
             case _HourMinuteMode__time_picker.minute:
             {
-                long minuteLocal =
-                    (fraction * TimeOfDay.minutesPerHour).round() % TimeOfDay.minutesPerHour;
+                long minuteLocal = global::Doroti.Runtime.DartNumeric.Modulo(
+                    (fraction * TimeOfDay.minutesPerHour).round(),
+                    TimeOfDay.minutesPerHour
+                );
                 if (roundMinutes)
                 {
-                    minuteLocal = checked((minuteLocal + 2L) / 5L) * 5L % TimeOfDay.minutesPerHour;
+                    minuteLocal = global::Doroti.Runtime.DartNumeric.Modulo(
+                        checked((minuteLocal + 2L) / 5L) * 5L,
+                        TimeOfDay.minutesPerHour
+                    );
                 }
                 return widget.selectedTime.replacing(minute: minuteLocal);
             }
@@ -2019,9 +2043,10 @@ public class _DialState__time_picker
                     ).shortestSide / 2L
                 ) - Time_pickerLibrary._kTimePickerDialPadding;
             double innerRadius = labelRadius - Time_pickerLibrary._kTimePickerInnerDialOffset;
-            double angle =
-                (Math.Atan2(offset.dx, offset.dy) - (Math.PI / 2L))
-                % Time_pickerLibrary._kTwoPi;
+            double angle = global::Doroti.Runtime.DartNumeric.Modulo(
+                (Math.Atan2(offset.dx, offset.dy) - (Math.PI / 2L)),
+                Time_pickerLibrary._kTwoPi
+            );
             double radiusLocal = DorotiUiLibrary.clampDouble(
                 (offset.distance - innerRadius) / Time_pickerLibrary._kTimePickerInnerDialOffset,
                 0,
@@ -2732,7 +2757,7 @@ internal class _TimePickerInputState__time_picker
                     )
                 )
                 {
-                    newHour =
+                    newHour = global::Doroti.Runtime.DartNumeric.Modulo(
                         (
                             (
                                 newHour
@@ -2740,7 +2765,9 @@ internal class _TimePickerInputState__time_picker
                                     "A required value was null."
                                 )
                             ) + TimeOfDay.hoursPerPeriod
-                        ) % TimeOfDay.hoursPerDay;
+                        ),
+                        TimeOfDay.hoursPerDay
+                    );
                 }
                 return (
                     newHour

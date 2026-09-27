@@ -123,7 +123,8 @@ public class SliverGridRegularTileLayout : SliverGridLayout
 
     public virtual SliverGridGeometry getGeometryForChildIndex(long index)
     {
-        double crossAxisStart = index % crossAxisCount * crossAxisStride;
+        double crossAxisStart =
+            global::Doroti.Runtime.DartNumeric.Modulo(index, crossAxisCount) * crossAxisStride;
         return new SliverGridGeometry(
             scrollOffset: checked(index / crossAxisCount) * mainAxisStride,
             crossAxisOffset: _getOffsetFromStartInCrossAxis(crossAxisStart),

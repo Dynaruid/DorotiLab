@@ -994,7 +994,7 @@ internal class _CupertinoSwitchState__switch
         bool autofocus = false,
         WidgetStateProperty<MouseCursor>? mouseCursor = null,
         Size size = default!,
-        object? painter = default!
+        ToggleablePainter painter = default!
     )
     {
         return buildToggleableWithChild(

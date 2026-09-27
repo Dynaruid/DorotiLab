@@ -362,7 +362,9 @@ public class _RenderCupertinoTextSelectionToolbarShape__text_selection_toolbar :
     internal static Path _addRRectToPath(Path path, RRect rrect, double startAngle)
     {
         double halfPI = Math.PI / 2L;
-        DartRuntimePrimitives.Assert(() => (startAngle % halfPI) == 0.0);
+        DartRuntimePrimitives.Assert(() =>
+            (global::Doroti.Runtime.DartNumeric.Modulo(startAngle, halfPI)) == 0.0
+        );
         Rect rect = rrect.outerRect;
         var rrectCorners = new List<(Offset, Radius)>
         {
@@ -381,7 +383,7 @@ public class _RenderCupertinoTextSelectionToolbarShape__text_selection_toolbar :
             // Dart modulo stays non-negative. A toolbar below the selection
             // starts at quadrant -1, whose corner is the top-right corner.
             var cornerIndex = (int)(
-                ((i % rrectCorners.Count) + rrectCorners.Count) % rrectCorners.Count
+                global::Doroti.Runtime.DartNumeric.Modulo(i, rrectCorners.Count)
             );
             var (vertex, rectCenterOffset) = rrectCorners[cornerIndex];
             var otherVertex = new Offset(

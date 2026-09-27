@@ -938,7 +938,10 @@ internal class _RepeatingSimulation__animation_controller : Physics.Simulation
     {
         DartRuntimePrimitives.Assert(() => time >= 0.0);
         double totalTimeInSeconds = time + _initialT;
-        double t = totalTimeInSeconds / _periodInSeconds % 1.0;
+        double t = global::Doroti.Runtime.DartNumeric.Modulo(
+            totalTimeInSeconds / _periodInSeconds,
+            1.0
+        );
         bool isPlayingReverse =
             (checked(checked((long)(totalTimeInSeconds / _periodInSeconds))) & 1L) != 0L;
         if (reverse && isPlayingReverse)

@@ -3407,7 +3407,7 @@ internal class _DayHeaders__date_picker : StatelessWidget
         for (
             long i = localizations.firstDayOfWeekIndex;
             checked(result.Count) < 7L;
-            i = (i + 1L) % 7L
+            i = global::Doroti.Runtime.DartNumeric.Modulo((i + 1L), 7L)
         )
         {
             string weekday = localizations.narrowWeekdays[(int)i];
@@ -3543,7 +3543,7 @@ internal class _MonthSliverGridLayout__date_picker : SliverGridLayout
 
     public virtual SliverGridGeometry getGeometryForChildIndex(long index)
     {
-        long adjustedIndex = index % crossAxisCount;
+        long adjustedIndex = global::Doroti.Runtime.DartNumeric.Modulo(index, crossAxisCount);
         bool isEdge = (adjustedIndex == 0L) || (adjustedIndex == (crossAxisCount - 1L));
         double crossAxisStart = Math.Max(
             0,
@@ -3903,7 +3903,13 @@ internal class _MonthItemState__date_picker : State<_MonthItem__date_picker>
             weekList.Insert(checked((int)0L), _buildEdgeBox(context, isLeadingInRange));
             if (
                 (end < checked(dayItems.Count))
-                || ((end == checked(dayItems.Count)) && ((checked(dayItems.Count) % 7L) == 0L))
+                || (
+                    (end == checked(dayItems.Count))
+                    && (
+                        (global::Doroti.Runtime.DartNumeric.Modulo(checked(dayItems.Count), 7L))
+                        == 0L
+                    )
+                )
             )
             {
                 DateTime dateBeforeTrailingPadding = widget.calendarDelegate.getDay(

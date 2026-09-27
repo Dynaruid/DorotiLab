@@ -86,6 +86,7 @@ Material·Cupertino API의 동작은 Flutter를 참고합니다. 실제 구현�
 | --- | --- |
 | [프레임워크 가이드](Doroti/README.ko.md) | SDK, 워크로드, 빌드 명령, 패키징, 호스트 설정 |
 | [샘플 앱 가이드](samples/DorotiTestbedApp/README.ko.md) | 플랫폼별 실행, 샘플 화면, 렌더러 옵션, 문제 해결 |
+| [Cupertino 샘플](samples/DorotiSampleApp2/README.md) | Windows / Web의 Cupertino 위젯, 프로필 입력, 테마 설정 |
 | [Dart-to-C# 컴파일러](tools/Doroti.DartToCSharp/README.ko.md) | 선택적 소스 가져오기 및 마이그레이션 도구 |
 | [WGSL GPU 효과](Doroti/validation/gpu-effects/README.md) | Windows fragment 구현·검증, 초기 도구 설치 및 남은 플랫폼 범위 |
 | [개발 이력](history/) | 지난 작업 계획과 검증 기록 |

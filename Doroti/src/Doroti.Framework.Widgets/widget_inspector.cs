@@ -1845,7 +1845,10 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
     {
         string jsonString = Dart_convertLibrary.json.encode(@object);
         _serializeRing[(int)_serializeRingIndex] = jsonString;
-        _serializeRingIndex = (_serializeRingIndex + 1L) % checked(_serializeRing.Count);
+        _serializeRingIndex = global::Doroti.Runtime.DartNumeric.Modulo(
+            (_serializeRingIndex + 1L),
+            checked(_serializeRing.Count)
+        );
         return jsonString;
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }

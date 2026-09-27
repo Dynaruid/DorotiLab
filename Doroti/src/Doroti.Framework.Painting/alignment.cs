@@ -198,7 +198,10 @@ public class Alignment : AlignmentGeometry
 
     public override Alignment __(double other)
     {
-        return new Alignment(x % other, y % other);
+        return new Alignment(
+            global::Doroti.Runtime.DartNumeric.Modulo(x, other),
+            global::Doroti.Runtime.DartNumeric.Modulo(y, other)
+        );
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
@@ -386,7 +389,10 @@ public class AlignmentDirectional : AlignmentGeometry
 
     public override AlignmentDirectional __(double other)
     {
-        return new AlignmentDirectional(start % other, y % other);
+        return new AlignmentDirectional(
+            global::Doroti.Runtime.DartNumeric.Modulo(start, other),
+            global::Doroti.Runtime.DartNumeric.Modulo(y, other)
+        );
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
@@ -537,7 +543,11 @@ internal class _MixedAlignment__alignment : AlignmentGeometry
 
     public override _MixedAlignment__alignment __(double other)
     {
-        return new _MixedAlignment__alignment(_x % other, _start % other, _y % other);
+        return new _MixedAlignment__alignment(
+            global::Doroti.Runtime.DartNumeric.Modulo(_x, other),
+            global::Doroti.Runtime.DartNumeric.Modulo(_start, other),
+            global::Doroti.Runtime.DartNumeric.Modulo(_y, other)
+        );
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 

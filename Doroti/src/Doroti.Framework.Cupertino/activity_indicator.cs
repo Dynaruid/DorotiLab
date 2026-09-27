@@ -307,7 +307,8 @@ internal class _CupertinoActivityIndicatorPainter__activity_indicator : CustomPa
         long activeTick = (tickCount * position.value).floor();
         for (var i = 0L; i < (tickCount * progress); ++i)
         {
-            long t = (i - activeTick) % tickCount;
+            // Dart's modulo is non-negative; C# remainder can be negative as the animation advances.
+            long t = global::Doroti.Runtime.DartNumeric.Modulo(i - activeTick, tickCount);
             paintLocal.color = activeColor.withAlpha(
                 (progress < 1L)
                     ? Activity_indicatorLibrary._partiallyRevealedAlpha
