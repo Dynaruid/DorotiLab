@@ -59,6 +59,132 @@ existing `ImageFilter(sigmaX, sigmaY)` terminology. Sampling extends to roughly
 
 ## Kernel and limits
 
+### Performance controls and measured results (2026-09-27)
+
+Both factories accept `resolutionScale` in `0.125..1` (default `1`) and
+`adaptiveResolution` (default `true`). Scale is the **minimum** working resolution
+when adaptive mode is enabled. For a fast large panel with sharp low-blur detail:
+
+```csharp
+ImageFilterConfig.CreateVariableBlur(
+    startSigma: 20,
+    endSigma: 0,
+    resolutionScale: 0.25,
+    adaptiveResolution: true);
+```
+
+For minimum scale `0.25`, working resolution follows device-pixel sigma:
+
+| Device sigma | Working resolution |
+| --- | --- |
+| 0..2 | Full resolution |
+| 2..4 | Blend full and half resolution |
+| 4..8 | Blend half and quarter resolution |
+| 8+ | Quarter resolution |
+
+Each level evaluates the same variable Gaussian, limited to the bounding box of
+its contributing band plus the required sampling halo. GPU gradient masks blend
+premultiplied RGBA with weights summing to one; bands are not independent hard
+clips. Reversed/diagonal gradients, alpha and the existing tile modes are retained.
+The smallest singular value of the affine transform converts sigma to device
+pixels, conservatively preserving detail under nonuniform scaling/shear. Other
+minimum scales use a doubling ladder up to full resolution (at most four levels).
+Entirely weak or strong filters skip unused levels and blending.
+
+Set `adaptiveResolution: false` for the previous fixed-resolution path. That
+path is cheaper but softens even clear regions and can alias fine detail.
+Both modes account for rounded working dimensions on X/Y and keep sigma in
+logical coordinates. Both-zero sigma retains full-resolution identity.
+`maxSamples` remains a separate per-side tap cap.
+
+Current Radeon 780M / Windows Vulkan Ganesh measurements, 1080p, sigma 0→20:
+
+| Coverage | Full resolution | Adaptive min 1/2 | Adaptive min 1/4 | Fixed 1/4 |
+| --- | ---: | ---: | ---: | ---: |
+| 100% | 6.321 ms | 3.122 ms | 2.988 ms | 1.454 ms |
+| 25% | 2.458 ms | 2.007 ms | 2.069 ms | 1.145 ms |
+
+Adaptive mode pays for extra passes to preserve sharp detail. It is not always
+faster than full resolution for small panels: the 640x360, 25%-coverage fixture
+took 0.743 ms full-resolution and 1.071 ms with adaptive min 1/4. The benchmark
+prints fixed and adaptive modes separately so callers can choose this tradeoff.
+
+On Ganesh and Graphite, seven adaptive pixel fixtures cover pixel-width strokes,
+alpha, vertical/reversed/horizontal/diagonal ramps, 200% DPI and constant sigmas.
+The low-sigma region matches full resolution exactly (max channel error 0);
+cross-resolution transition error is at most 1 against independently rendered
+full/half/quarter levels blended on CPU. On the vertical stroke fixture, the old
+fixed 1/4 path had low-sigma mean channel error 50.597/255; adaptive mode has 0.
+Twenty odd-size/shear/oversized-backing comparisons also pass at minimum scales
+1, 0.5, 0.25, 0.3 and 0.125. The 200%-DPI mounted sample comparison of exact and
+oversized buffers still has max channel error 0; its screenshot shows the clear
+end without the former pixelated text/rounded corners. Window presentation and
+other-platform execution remain unverified.
+
+Two bottlenecks were addressed:
+
+- Direct variable backdrop filters previously shaded the whole captured surface
+  even behind a small clip. They now shade only the visible output and the first
+  pass's required second-axis halo. Repeat/mirror retain full first-pass coverage
+  so wrapped samples stay valid. Composed filters retain full coverage because
+  subsequent stages can read beyond the final clip.
+- Gaussian weights now use a recurrence (one exponential per pixel), and the
+  bounded loop exits after the active tap count. The largest measured gains come
+  from reducing the shaded area/resolution, not from this arithmetic change.
+
+Historical fixed-resolution optimization measurements (before adaptive mode),
+Radeon 780M, Windows Vulkan Ganesh, 1920x1080, sigma 0→20, 32 taps per side:
+
+| Visible coverage | Before, full resolution | After, full resolution | After, half resolution | After, quarter resolution |
+| --- | ---: | ---: | ---: | ---: |
+| 100% | 6.096 ms | 5.845 ms | 2.325 ms | 1.597 ms |
+| 25% | 5.934 ms | 2.643 ms | 1.680 ms | 1.360 ms |
+
+Times are medians of 12 frames following 3 warmups, including synchronous GPU
+completion and filter capture/composition, excluding pixel readback and window
+presentation. Background geometry is rendered once and copied each frame to
+isolate filter cost. These are offscreen filter timings, **not displayed FPS**.
+An earlier geometry-heavy fixture spent roughly 8–11 ms recording its thousands
+of background rectangles; those times cannot be attributed to VariableBlur.
+Quarter resolution is not always fastest for a tiny region because extra
+downsample/reconstruction passes have overhead. Full-size capture/layer surfaces
+still exist; this change does not remove all allocation or composition cost.
+
+The historical fixed-resolution Graphite benchmark had 1080p full coverage of
+6.470 / 3.688 / 2.733 ms at full / half / quarter resolution; 25% coverage was
+3.739 / 2.733 / 2.239 ms. No pre-change Graphite timing was collected.
+
+Validation passed on both Ganesh and Graphite: 60 VariableBlur comparisons
+against an independent CPU 2D Gaussian plus bilinear resampling, 12 odd-sized
+fractional-clip/shear/tile-mode comparisons against full-frame GPU output, and
+the existing 159 filter comparisons. Full-resolution tolerances remain 2 channel
+levels (5 for diagonal resampling); reduced-resolution tolerances are 5 (8 for
+diagonal), including low-resolution sampling-count rounding. The cropped versus
+full-frame comparisons allow at most 1 channel level. Embedded shader hash/ABI
+checks passed. SampleApp2 defaults to Fast blur and exposes a switch for original
+quality; its mounted Vulkan test checks active scrolling and quality switching.
+Actual window presentation/FPS and other platform execution remain unverified.
+
+Follow-up viewport regression: Windows can retain a GPU surface larger than the
+current viewport. The initial fast path resized the entire backing snapshot,
+shrinking content inside the blur when spare capacity existed. Backdrop capture
+now snapshots only `(0, 0, viewportWidth, viewportHeight)` before filtering. This
+also keeps repeating/mirrored sampling confined to the viewport. The odd-size
+region test now uses oversized backing storage. The mounted sample can reproduce
+this host condition with `--variable-blur --high-dpi --oversized-backing`; at 200%
+DPI it compares oversized and exact-sized surfaces pixel-for-pixel before
+scrolling. The corrected mounted Ganesh comparison had maximum channel error 0.
+
+```powershell
+python Doroti/validation/run-with-timeout.py dotnet run --project Doroti/validation/backdrop-filters/BackdropFilters.csproj -c Release -- --gpu --variable-benchmark
+python Doroti/validation/run-with-timeout.py dotnet run --project Doroti/validation/backdrop-filters/BackdropFilters.csproj -c Release -- --graphite --variable-benchmark
+```
+
+Add `--full-resolution-only` for a single quality setting. Benchmark PNGs and
+local logs are disposable under `Doroti/artifacts/variable-blur-performance/`.
+
+### Shader implementation
+
 The shader source lives in
 [`Doroti.Skia.Rendering/Shaders/variable_blur.sksl`](../../src/Doroti.Skia.Rendering/Shaders/variable_blur.sksl),
 embedded by its owning renderer assembly. `FrameworkShaderManifest` registers

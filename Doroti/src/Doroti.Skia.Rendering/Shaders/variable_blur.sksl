@@ -14,16 +14,20 @@ half4 main(float2 p) {
     float stepSize = radius / count;
     float4 sum = float4(inputImage.eval(p));
     float weightSum = 1.0;
+    // Gaussian recurrence: one exponential per pixel instead of one per tap.
+    float zStep = 3.0 / count;
+    float ratio = exp(-0.5 * zStep * zStep);
+    float ratioStep = ratio * ratio;
+    float weight = 1.0;
     for (int i = 1; i <= 64; ++i) {
-        if (float(i) <= count) {
-            float d = float(i) * stepSize;
-            float z = d / sigma;
-            float weight = exp(-0.5 * z * z);
-            float2 offset = axis * d;
-            sum += weight * (float4(inputImage.eval(p + offset))
-                           + float4(inputImage.eval(p - offset)));
-            weightSum += 2.0 * weight;
-        }
+        if (float(i) > count) break;
+        float d = float(i) * stepSize;
+        weight *= ratio;
+        ratio *= ratioStep;
+        float2 offset = axis * d;
+        sum += weight * (float4(inputImage.eval(p + offset))
+                       + float4(inputImage.eval(p - offset)));
+        weightSum += 2.0 * weight;
     }
     return half4(sum / weightSum);
 }

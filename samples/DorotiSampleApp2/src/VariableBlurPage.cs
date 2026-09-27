@@ -16,6 +16,7 @@ internal sealed class VariableBlurPageState : State<VariableBlurPage>
 {
     private const double OverlayHeight = 180;
     private bool _enabled = true;
+    private bool _fast = true;
     private double _sigma = 20;
     private readonly ScrollController _scrollController = new();
     private static readonly Color[] RowColors =
@@ -51,6 +52,12 @@ internal sealed class VariableBlurPageState : State<VariableBlurPage>
                         }),
                         new CupertinoSlider(value: _sigma, min: 0, max: 32,
                             onChanged: value => setState(() => _sigma = value)),
+                        new Row(children: new List<Widget>
+                        {
+                            new Expanded(child: new Text("Adaptive fast blur")),
+                            new CupertinoSwitch(value: _fast,
+                                onChanged: value => setState(() => _fast = value)),
+                        }),
                         new Text("Scroll the list through the blur. Strong at the top, clear below.",
                             style: new TextStyle(fontSize: 14,
                                 color: CupertinoColors.secondaryLabel.resolveFrom(context))),
@@ -70,7 +77,8 @@ internal sealed class VariableBlurPageState : State<VariableBlurPage>
                             child: new IgnorePointer(child: new ClipRect(child: new BackdropFilter(
                                 enabled: _enabled && _sigma > 0,
                                 filterConfig: ImageFilterConfig.CreateVariableBlur(
-                                    startSigma: _sigma, endSigma: 0),
+                                    startSigma: _sigma, endSigma: 0,
+                                    resolutionScale: _fast ? 0.25 : 1),
                                 child: SizedBox.CreateExpand())))),
                     }))),
             }))

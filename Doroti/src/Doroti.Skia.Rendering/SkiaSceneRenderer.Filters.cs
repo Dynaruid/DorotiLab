@@ -274,14 +274,26 @@ public sealed partial class SkiaSceneRenderer
                 layerState.Add(
                     new(c => c.ClipRect(ToRect(bounds), SKClipOperation.Intersect, true), true)
                 );
-            using var input = target.Surface!.Snapshot();
+            // A retained host surface can be larger than its visible viewport.
+            // Exclude that spare capacity before resampling (or wrapping tiles),
+            // otherwise fast blur scales the entire backing into the viewport.
+            using var input = target.Surface!.Snapshot(new SKRectI(0, 0, width, height));
+            SKRect? variableOutputBounds = null;
+            if (backdrop.Filter.VariableBlur is not null)
+            {
+                SKRect visible = target.DeviceClipBounds;
+                if (backdrop.Filter.Bounds is { } variableBounds)
+                    visible.Intersect(target.TotalMatrix.MapRect(ToRect(variableBounds)));
+                variableOutputBounds = visible;
+            }
             using var filtered = ApplyGpuImageFilter(
                 target,
                 input,
                 backdrop.Filter,
                 width,
                 height,
-                true
+                true,
+                variableOutputBounds: variableOutputBounds
             );
             canvas.DrawImage(filtered, 0, 0, SKSamplingOptions.Default);
         }
@@ -336,7 +348,8 @@ public sealed partial class SkiaSceneRenderer
         int width,
         int height,
         bool isBackdrop = false,
-        SKMatrix? filterMatrix = null
+        SKMatrix? filterMatrix = null,
+        SKRect? variableOutputBounds = null
     )
     {
         if (filter.Outer is not null && filter.Inner is not null)
@@ -386,7 +399,8 @@ public sealed partial class SkiaSceneRenderer
                 filter.TileMode,
                 width,
                 height,
-                filterMatrix ?? target.TotalMatrix
+                filterMatrix ?? target.TotalMatrix,
+                variableOutputBounds
             );
         using var surface = CreateFilterSurface(target, width, height);
         var canvas = surface.Canvas;

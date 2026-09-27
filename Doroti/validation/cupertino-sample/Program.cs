@@ -15,8 +15,10 @@ using var dispatcher = new PlatformDispatcher();
 using var scope = dispatcher.EnterScope();
 var portrait = args.Contains("--portrait", StringComparer.Ordinal);
 var variableBlur = args.Contains("--variable-blur", StringComparer.Ordinal);
+var highDpi = args.Contains("--high-dpi", StringComparer.Ordinal);
+var oversizedBacking = args.Contains("--oversized-backing", StringComparer.Ordinal);
 using var gpu = variableBlur ? new VulkanFixture() : null;
-var host = new BuildHost(portrait ? new Size(400, 800) : new Size(720, 840));
+var host = new BuildHost(portrait ? new Size(400, 800) : new Size(720, 840), highDpi ? 2 : 1);
 using var renderer = new SkiaSceneRenderer(
     1,
     host,
@@ -65,6 +67,14 @@ if (variableBlur)
     binding.handlePointerEvent(new Doroti.Framework.Gestures.PointerPanZoomStartEvent(
         viewId: 1, pointer: 99, device: 99, position: position));
     using var before = CaptureVariableBlur();
+    if (oversizedBacking)
+    {
+        using var exact = CaptureVariableBlur(exactBacking: true);
+        var maxError = before.Pixels.Zip(exact.Pixels).Max(pair => Math.Max(
+            Math.Max(Math.Abs(pair.First.Red - pair.Second.Red), Math.Abs(pair.First.Green - pair.Second.Green)),
+            Math.Max(Math.Abs(pair.First.Blue - pair.Second.Blue), Math.Abs(pair.First.Alpha - pair.Second.Alpha))));
+        Check(maxError <= 1, $"oversized backing preserves viewport pixels (max error {maxError})");
+    }
     var lastPixels = before.Pixels;
     var lastOffset = controller.offset;
     for (var update = 1; update <= 8; update++)
@@ -96,6 +106,12 @@ if (variableBlur)
         viewId: 1, pointer: 99, device: 99, position: position,
         timeStamp: new Duration(microseconds: 144_000)));
     Pump();
+    using var fastBlur = CaptureVariableBlur();
+    Find<CupertinoSwitch>().Last().onChanged!(false);
+    Pump();
+    using var fullBlur = CaptureVariableBlur();
+    var qualityChanges = fastBlur.Pixels.Zip(fullBlur.Pixels).Count(pair => pair.First != pair.Second);
+    Check(qualityChanges > 100, $"Fast blur switch changes rendered quality ({qualityChanges} pixels)");
     Console.WriteLine("PASS Variable Blur synthetic trackpad updates and Vulkan pixels before gesture end");
     return;
 }
@@ -217,13 +233,21 @@ void Snapshot(string name)
         data.ToArray()
     );
 }
-SKBitmap CaptureVariableBlur()
+SKBitmap CaptureVariableBlur(bool exactBacking = false)
 {
     var size = host.Metrics.physicalSize;
-    using var surface = gpu!.CreateSurface(new SKImageInfo((int)size.width, (int)size.height));
-    Check(renderer.Paint(surface, (int)size.width, (int)size.height) is not null,
-        "Vulkan paints Variable Blur scene");
-    using var image = surface.Snapshot();
+    using var surface = gpu!.CreateSurface(new SKImageInfo(
+        (int)size.width * (oversizedBacking && !exactBacking ? 2 : 1),
+        (int)size.height * (oversizedBacking && !exactBacking ? 2 : 1)));
+    if (exactBacking)
+    {
+        using var scene = binding.renderViews.Single().layer!.buildScene(new SceneBuilder(1));
+        renderer.DrawPlatformRasterSegment(surface.Canvas, scene.Commands, (int)size.width, (int)size.height);
+    }
+    else
+        Check(renderer.Paint(surface, (int)size.width, (int)size.height) is not null,
+            "Vulkan paints Variable Blur scene");
+    using var image = surface.Snapshot(new SKRectI(0, 0, (int)size.width, (int)size.height));
     return SKBitmap.FromImage(image);
 }
 void CheckDialogBackdrop(string phase)
@@ -262,7 +286,7 @@ static void Check(bool condition, string message)
 
 // Deterministic host services; layout and raster use the production framework and Skia.
 // Native OS input, window presentation, and keyboard UI are outside this regression.
-sealed class BuildHost(Size size)
+sealed class BuildHost(Size size, double dpr)
     : IViewHostCapability,
         IFrameHostCapability,
         IPlatformMessageHostCapability,
@@ -275,8 +299,8 @@ sealed class BuildHost(Size size)
 {
     public ViewMetrics Metrics { get; } =
         new(
-            size,
-            1,
+            new Size(size.width * dpr, size.height * dpr),
+            dpr,
             ViewPadding.zero,
             ViewPadding.zero,
             ViewPadding.zero,
@@ -285,7 +309,7 @@ sealed class BuildHost(Size size)
             1
         );
     public DorotiViewEpoch ViewEpoch =>
-        new(1, 1, 1, size.width, size.height, (int)size.width, (int)size.height, 1, 1, 1);
+        new(1, 1, 1, size.width, size.height, (int)(size.width * dpr), (int)(size.height * dpr), dpr, dpr, 1);
     public PlatformConfiguration Configuration { get; } =
         new([new Locale("en", "US")], Brightness.light, true, false, HostOperatingSystem.windows);
     public event Action<ViewMetrics>? MetricsChanged
@@ -356,7 +380,7 @@ sealed class BuildHost(Size size)
     public long InputSequence => 0;
     public long SurfaceGeneration => 1;
     public DorotiResizeEpoch ResizeTarget =>
-        new(1, size.width, size.height, (int)size.width, (int)size.height, 1, 1);
+        new(1, size.width, size.height, (int)(size.width * dpr), (int)(size.height * dpr), dpr, 1);
     public event Action<int, SemanticsAction, object?>? SemanticsAction
     {
         add { }

@@ -17,6 +17,10 @@ internal static class VariableBlurValidation
         Reject(() => ImageFilter.variableBlur(Offset.zero, new Offset(double.NaN, 1)));
         Reject(() => ImageFilter.variableBlur(Offset.zero, new Offset(0, 32), maxSamples: 0));
         Reject(() => ImageFilter.variableBlur(Offset.zero, new Offset(0, 32), maxSamples: 65));
+        foreach (var invalid in new[] { 0, 0.124, 1.01, double.NaN, double.PositiveInfinity })
+            Reject(() =>
+                ImageFilter.variableBlur(Offset.zero, new Offset(0, 32), resolutionScale: invalid)
+            );
         var filter = ImageFilter.variableBlur(new Offset(0, 12), new Offset(0, 52), endSigma: 4);
         if (
             filter != ImageFilter.variableBlur(new Offset(0, 12), new Offset(0, 52), endSigma: 4)
@@ -36,6 +40,40 @@ internal static class VariableBlurValidation
         )
             throw new Exception("Relative variable blur did not follow painted bounds");
         config.resolve(new Doroti.Framework.Rendering.ImageFilterContext(new Rect(0, 0, 0, 0)));
+        var fastConfig = Doroti.Framework.Rendering.ImageFilterConfig.CreateVariableBlur(
+            endSigma: 4,
+            resolutionScale: 0.25
+        );
+        if (
+            fastConfig.Equals(config)
+            || fastConfig.resolve(new Doroti.Framework.Rendering.ImageFilterContext(box))
+                != ImageFilter.variableBlur(
+                    new Offset(10, 20),
+                    new Offset(10, 100),
+                    endSigma: 4,
+                    bounds: box,
+                    resolutionScale: 0.25
+                )
+        )
+            throw new Exception("Variable blur resolution scale was lost in config/equality");
+        var fixedConfig = Doroti.Framework.Rendering.ImageFilterConfig.CreateVariableBlur(
+            endSigma: 4,
+            resolutionScale: 0.25,
+            adaptiveResolution: false
+        );
+        if (
+            fixedConfig.Equals(fastConfig)
+            || fixedConfig.resolve(new Doroti.Framework.Rendering.ImageFilterContext(box))
+                != ImageFilter.variableBlur(
+                    new Offset(10, 20),
+                    new Offset(10, 100),
+                    endSigma: 4,
+                    bounds: box,
+                    resolutionScale: 0.25,
+                    adaptiveResolution: false
+                )
+        )
+            throw new Exception("Adaptive resolution was lost in config/equality");
         if (fixture is null)
         {
             using var surface = SKSurface.Create(new SKImageInfo(Size, Size));
@@ -77,6 +115,7 @@ internal static class VariableBlurValidation
             "clipped",
             "bounded",
         };
+        foreach (var scale in new[] { 1.0, 0.5, 0.25 })
         foreach (var name in cases)
         {
             var start = new Offset(0, 12);
@@ -115,7 +154,9 @@ internal static class VariableBlurValidation
                 firstSigma,
                 lastSigma,
                 tileMode: tile,
-                bounds: name == "bounded" ? new Rect(8, 9, 53, 54) : null
+                bounds: name == "bounded" ? new Rect(8, 9, 53, 54) : null,
+                resolutionScale: scale,
+                adaptiveResolution: false
             );
             if (name == "color-compose")
                 variable = new ImageFilter(ColorFilter.saturation(0), variable);
@@ -165,6 +206,22 @@ internal static class VariableBlurValidation
             actual.Canvas.Clear(SKColors.Transparent);
             renderer.DrawPlatformRasterSegment(actual.Canvas, scene.Commands, Size, Size);
             var expected = Reference(source, start, end, firstSigma, lastSigma, matrix, tile);
+            if (scale < 1 && lastSigma + firstSigma > 0)
+            {
+                var smallSize = (int)(Size * scale);
+                var reduced = Resample(source, Size, smallSize);
+                var smallExpected = Reference(
+                    reduced,
+                    start,
+                    end,
+                    firstSigma,
+                    lastSigma,
+                    SKMatrix.Concat(SKMatrix.CreateScale((float)scale, (float)scale), matrix),
+                    tile,
+                    smallSize
+                );
+                expected = Resample(smallExpected, smallSize, Size);
+            }
             for (var p = 0; p < Size * Size; p++)
             {
                 if (
@@ -197,7 +254,11 @@ internal static class VariableBlurValidation
                     expected[p * 4 + 3] = 255;
                 }
             }
-            Verify(name, expected, actual, fixture, graphite, name == "diagonal" ? 5 : 2);
+            // Compare with an independent 2D Gaussian at the working resolution,
+            // followed by bilinear reconstruction, not a relaxed full-size oracle.
+            var tolerance =
+                name == "diagonal" ? (scale == 1 ? 5 : 8) : (scale == 1 || name == "zero" ? 2 : 5);
+            Verify(name, expected, actual, fixture, graphite, tolerance);
             if (name == "retained")
             {
                 var replay = new SceneBuilder(1);
@@ -206,12 +267,14 @@ internal static class VariableBlurValidation
                 using var replayScene = replay.build();
                 actual.Canvas.Clear(SKColors.Transparent);
                 renderer.DrawPlatformRasterSegment(actual.Canvas, replayScene.Commands, Size, Size);
-                Verify("retained-replay", expected, actual, fixture, graphite, 2);
+                Verify("retained-replay", expected, actual, fixture, graphite, tolerance);
             }
         }
         Console.WriteLine(
-            "PASS variable blur: 20 GPU comparisons with independent 2D Gaussian reference"
+            "PASS variable blur: 60 GPU comparisons at full/half/quarter resolution with independent 2D Gaussian reference"
         );
+        VariableBlurRegionValidation.Run(renderer, fixture, graphite);
+        VariableBlurAdaptiveValidation.Run(renderer, fixture, graphite);
     }
 
     private static void Reject(Action action)
@@ -262,6 +325,23 @@ internal static class VariableBlurValidation
 
     // Brute-force 2D Gaussian at the OUTPUT pixel's sigma. Does not reuse the
     // production shader or its intermediate axis passes. Readback is test-only.
+    private static float[] Resample(float[] source, int from, int to)
+    {
+        var result = new float[to * to * 4];
+        for (var y = 0; y < to; y++)
+        for (var x = 0; x < to; x++)
+        for (var c = 0; c < 4; c++)
+            result[(y * to + x) * 4 + c] = (float)Sample(
+                source,
+                (x + .5) * from / to - .5,
+                (y + .5) * from / to - .5,
+                c,
+                TileMode.clamp,
+                from
+            );
+        return result;
+    }
+
     private static float[] Reference(
         float[] source,
         Offset start,
@@ -269,7 +349,8 @@ internal static class VariableBlurValidation
         double firstSigma,
         double lastSigma,
         SKMatrix matrix,
-        TileMode tile
+        TileMode tile,
+        int size = Size
     )
     {
         matrix.TryInvert(out var inverse);
@@ -283,8 +364,8 @@ internal static class VariableBlurValidation
         var bx = -matrix.ScaleX * uy + matrix.SkewX * ux;
         var by = -matrix.SkewY * uy + matrix.ScaleY * ux;
         var output = new float[source.Length];
-        for (var y = 0; y < Size; y++)
-        for (var x = 0; x < Size; x++)
+        for (var y = 0; y < size; y++)
+        for (var x = 0; x < size; x++)
         {
             var point = inverse.MapPoint(x + .5f, y + .5f);
             var t = Math.Clamp(
@@ -295,7 +376,7 @@ internal static class VariableBlurValidation
             var sigma = firstSigma + (lastSigma - firstSigma) * t;
             if (sigma < .0001)
             {
-                Array.Copy(source, (y * Size + x) * 4, output, (y * Size + x) * 4, 4);
+                Array.Copy(source, (y * size + x) * 4, output, (y * size + x) * 4, 4);
                 continue;
             }
             var na = Math.Min(
@@ -316,16 +397,24 @@ internal static class VariableBlurValidation
                 var weight = Math.Exp(-(a * a + b * b) / (2 * sigma * sigma));
                 for (var c = 0; c < 4; c++)
                     sum[c] +=
-                        weight * Sample(source, x + ax * a + bx * b, y + ay * a + by * b, c, tile);
+                        weight
+                        * Sample(source, x + ax * a + bx * b, y + ay * a + by * b, c, tile, size);
                 total += weight;
             }
             for (var c = 0; c < 4; c++)
-                output[(y * Size + x) * 4 + c] = (float)(sum[c] / total);
+                output[(y * size + x) * 4 + c] = (float)(sum[c] / total);
         }
         return output;
     }
 
-    private static double Sample(float[] data, double x, double y, int channel, TileMode tile)
+    private static double Sample(
+        float[] data,
+        double x,
+        double y,
+        int channel,
+        TileMode tile,
+        int size = Size
+    )
     {
         var ix = (int)Math.Floor(x);
         var iy = (int)Math.Floor(y);
@@ -336,16 +425,16 @@ internal static class VariableBlurValidation
             int Tile(int p) =>
                 tile switch
                 {
-                    TileMode.repeated => ((p % Size) + Size) % Size,
+                    TileMode.repeated => ((p % size) + size) % size,
                     TileMode.mirror => Math.Min(
-                        ((p % (2 * Size)) + 2 * Size) % (2 * Size),
-                        2 * Size - 1 - ((p % (2 * Size)) + 2 * Size) % (2 * Size)
+                        ((p % (2 * size)) + 2 * size) % (2 * size),
+                        2 * size - 1 - ((p % (2 * size)) + 2 * size) % (2 * size)
                     ),
-                    _ => Math.Clamp(p, 0, Size - 1),
+                    _ => Math.Clamp(p, 0, size - 1),
                 };
-            if (tile == TileMode.decal && (px < 0 || py < 0 || px >= Size || py >= Size))
+            if (tile == TileMode.decal && (px < 0 || py < 0 || px >= size || py >= size))
                 return 0;
-            return data[(Tile(py) * Size + Tile(px)) * 4 + channel];
+            return data[(Tile(py) * size + Tile(px)) * 4 + channel];
         }
         return (1 - fy) * ((1 - fx) * At(ix, iy) + fx * At(ix + 1, iy))
             + fy * ((1 - fx) * At(ix, iy + 1) + fx * At(ix + 1, iy + 1));

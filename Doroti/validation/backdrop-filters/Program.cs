@@ -17,6 +17,11 @@ using var renderer = new SkiaSceneRenderer(
     "backdrop-contract",
     enablePictureRasterCache: false
 );
+if (args.Contains("--variable-benchmark"))
+{
+    VariableBlurBenchmark.Run(renderer, fixture ?? throw new Exception("Use --gpu or --graphite"), args.Contains("--full-resolution-only"));
+    return;
+}
 if (args.Contains("--variable-only"))
 {
     VariableBlurValidation.Run(renderer, fixture, graphite);

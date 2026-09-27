@@ -8,7 +8,11 @@ Cupertino 스타일의 독립 Doroti 샘플 앱입니다. 공통 C# UI와 Window
 - **Variable Blur**: 60개 항목의 ListView 위에 상단 고정 VariableBlur 오버레이, 강도 조절과 켜기/끄기
 
 Variable Blur 페이지는 리스트 상단 180px에 `BackdropFilter`와
-`ImageFilterConfig.CreateVariableBlur(startSigma: 강도, endSigma: 0)`를 적용합니다.
+`ImageFilterConfig.CreateVariableBlur(startSigma: 강도, endSigma: 0, resolutionScale: 0.25)`를 적용합니다.
+기본으로 켜진 **Adaptive fast blur**는 약한 블러 구간을 원본 해상도로 유지하고,
+블러가 강해지면 1/2·1/4 해상도로 전환합니다. 경계는 겹쳐서 혼합합니다.
+스위치를 끄면 전체 구간을 원본 해상도로 비교할 수 있습니다.
+이전의 고정 저해상도 방식은 API에서 `adaptiveResolution: false`로 선택할 수 있습니다.
 위쪽은 흐리고 아래쪽은 선명하며, 블러 영역에서도 리스트를 스크롤할 수 있습니다.
 구현은 [src/VariableBlurPage.cs](src/VariableBlurPage.cs)에 있습니다.
 VariableBlur에는 GPU 렌더러가 필요하며, 기본 CPU 래스터 검증에는 이 탭의 블러 렌더링이 포함되지 않습니다.
@@ -56,6 +60,7 @@ Variable Blur는 Vulkan GPU가 있는 환경에서 별도로 검증합니다.
 ```powershell
 python ./Doroti/validation/run-with-timeout.py dotnet run --project ./Doroti/validation/cupertino-sample -c Release -- --variable-blur
 python ./Doroti/validation/run-with-timeout.py dotnet run --project ./Doroti/validation/cupertino-sample -c Release --no-build -- --variable-blur --portrait
+python ./Doroti/validation/run-with-timeout.py dotnet run --project ./Doroti/validation/cupertino-sample -c Release --no-build -- --variable-blur --high-dpi --oversized-backing
 ```
 
 블러 영역에서 합성 트랙패드 pan/zoom을 시작해 종료 이벤트 전의 리스트 위치와

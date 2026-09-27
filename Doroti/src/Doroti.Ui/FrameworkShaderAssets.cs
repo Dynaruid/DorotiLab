@@ -94,7 +94,7 @@ public static class FrameworkShaderManifest
             FlutterSourcePath: null,
             FlutterSourceSha256: null,
             AdaptedSourcePath: "Doroti/src/Doroti.Skia.Rendering/Shaders/variable_blur.sksl",
-            AdaptedSourceSha256: "69f5cd20f26761c2e1fabc74716524f9636c7f5290b335554b1da6af6d0bf08b",
+            AdaptedSourceSha256: "3a2fbdacc03147c7933d2019b9673dca26fcd94d416ea9ab2cb951fd202335b5",
             OwningAssembly: "Doroti.Skia.Rendering",
             EmbeddedResourceName: "Doroti.Skia.Rendering.Shaders.variable_blur.sksl",
             Uniforms:

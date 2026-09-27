@@ -45,7 +45,9 @@ public abstract class ImageFilterConfig
         Offset? end = null,
         int maxSamples = 32,
         TileMode tileMode = TileMode.clamp,
-        bool bounded = true
+        bool bounded = true,
+        double resolutionScale = 1,
+        bool adaptiveResolution = true
     ) =>
         new VariableBlurImageFilterConfig(
             start ?? Offset.zero,
@@ -54,7 +56,9 @@ public abstract class ImageFilterConfig
             endSigma,
             maxSamples,
             tileMode,
-            bounded
+            bounded,
+            resolutionScale,
+            adaptiveResolution
         );
 
     public abstract ImageFilter resolve(ImageFilterContext context);

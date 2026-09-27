@@ -12,6 +12,10 @@ public sealed partial record ImageFilter
     /// ImageFiltered and composition. Each pass takes at most 2 * maxSamples + 1
     /// samples; large sigma at a low sample budget can show banding. Arbitrary mask
     /// images and native PlatformView backdrop capture are not supported.
+    /// resolutionScale (0.125..1) is the minimum working resolution. By default,
+    /// adaptiveResolution preserves full resolution at low sigma and blends into
+    /// coarser levels as blur increases. Set adaptiveResolution to false to use
+    /// a fixed reduced resolution. The default scale 1 preserves full resolution.
     /// </remarks>
     public static ImageFilter variableBlur(
         Offset start,
@@ -20,7 +24,9 @@ public sealed partial record ImageFilter
         double endSigma = 20,
         int maxSamples = 32,
         TileMode tileMode = TileMode.clamp,
-        Rect? bounds = null
+        Rect? bounds = null,
+        double resolutionScale = 1,
+        bool adaptiveResolution = true
     )
     {
         static bool Finite(double value) => double.IsFinite(value) && float.IsFinite((float)value);
@@ -47,9 +53,19 @@ public sealed partial record ImageFilter
             );
         if (!Enum.IsDefined(tileMode))
             throw new ArgumentOutOfRangeException(nameof(tileMode));
+        if (!double.IsFinite(resolutionScale) || resolutionScale is < 0.125 or > 1)
+            throw new ArgumentOutOfRangeException(nameof(resolutionScale));
         return new ImageFilter(tileMode: tileMode, bounds: bounds)
         {
-            VariableBlur = new(start, end, startSigma, endSigma, maxSamples),
+            VariableBlur = new(
+                start,
+                end,
+                startSigma,
+                endSigma,
+                maxSamples,
+                resolutionScale,
+                adaptiveResolution
+            ),
         };
     }
 
@@ -61,5 +77,7 @@ internal sealed record VariableBlurSettings(
     Offset End,
     double StartSigma,
     double EndSigma,
-    int MaxSamples
+    int MaxSamples,
+    double ResolutionScale,
+    bool AdaptiveResolution
 );

@@ -110,11 +110,17 @@ sealed unsafe class VulkanFixture : IDisposable
             throw new Exception("Graphite insert failed");
         byte[]? e = null,
             a = null;
-        var info = new SKImageInfo(64, 64, SKColorType.Rgba8888, SKAlphaType.Premul);
+        var bounds = actual.Canvas.DeviceClipBounds;
+        var info = new SKImageInfo(
+            bounds.Width,
+            bounds.Height,
+            SKColorType.Rgba8888,
+            SKAlphaType.Premul
+        );
         graphite.RequestReadPixels(
             expected,
             info,
-            new SKRectI(0, 0, 64, 64),
+            new SKRectI(0, 0, info.Width, info.Height),
             SKImageRescaleGamma.Src,
             SKImageRescaleMode.Nearest,
             r => e = r?.ToArray(0)
@@ -122,7 +128,7 @@ sealed unsafe class VulkanFixture : IDisposable
         graphite.RequestReadPixels(
             actual,
             info,
-            new SKRectI(0, 0, 64, 64),
+            new SKRectI(0, 0, info.Width, info.Height),
             SKImageRescaleGamma.Src,
             SKImageRescaleMode.Nearest,
             r => a = r?.ToArray(0)
@@ -135,6 +141,22 @@ sealed unsafe class VulkanFixture : IDisposable
             e ?? throw new Exception("Expected readback missing"),
             a ?? throw new Exception("Actual readback missing")
         );
+    }
+
+    public void Complete()
+    {
+        if (recorder is null)
+        {
+            Context!.Flush(submit: true, synchronous: true);
+            return;
+        }
+        using var recording = recorder.Snap();
+        if (
+            graphite!.InsertRecording(recording) != SKGraphiteInsertStatus.Success
+            || !graphite.Submit(new SKGraphiteSubmitInfo { Sync = true })
+        )
+            throw new Exception("Graphite completion failed");
+        SkiaGpuSurfaces.CompleteRecording(recorder, false);
     }
 
     private nint GetProc(string name, Instance inst, VkDevice dev) =>
