@@ -10,7 +10,7 @@ public sealed class BrowserFrameworkHost : IDisposable
     public static IEnumerable<IPlatformViewFactory> PlatformViewFactories =>
         BrowserPlatformViewHost.Factories;
     private readonly string _targetIdentity;
-    private readonly Skia.Rendering.SkiaFallbackFontCollection _fallbackFonts = new("Roboto");
+    private readonly Skia.Rendering.SkiaFallbackFontCollection _fallbackFonts;
     private readonly Dictionary<
         ulong,
         (DorotiView View, BrowserHostAdapter Host, IBrowserGraphicsCapabilities Graphics)
@@ -24,7 +24,11 @@ public sealed class BrowserFrameworkHost : IDisposable
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         _fontFallbackLoader?.Dispose();
+        _fontFallbackLoader = null;
         options ??= new();
+        if (!options.Enabled) return;
+        if (options.DecoderUrl is null)
+            throw new ArgumentException("Automatic fallback downloads require a WOFF2 DecoderUrl.", nameof(options));
         options = options with { PreferredLanguage = options.PreferredLanguage
             ?? _views.Values.FirstOrDefault().Host?.Snapshot.LanguageTag ?? "en" };
         _fontFallbackLoader = new(_fallbackFonts, async (url, token) =>
@@ -48,13 +52,16 @@ public sealed class BrowserFrameworkHost : IDisposable
         }
     }
 
-    public BrowserFrameworkHost(string targetIdentity = "browser-wasm/auto") =>
+    public BrowserFrameworkHost(string targetIdentity = "browser-wasm/auto", string defaultFontFamily = "Roboto")
+    {
         _targetIdentity = targetIdentity;
+        _fallbackFonts = new(defaultFontFamily);
+    }
 
-    public string RegisterFont(ReadOnlyMemory<byte> bytes)
+    public string RegisterFont(ReadOnlyMemory<byte> bytes, string? family = null)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        return _fallbackFonts.Register(bytes);
+        return _fallbackFonts.Register(bytes, family);
     }
 
     public DorotiView CreateView(

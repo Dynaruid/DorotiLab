@@ -6,12 +6,25 @@ namespace Doroti.Host.Web;
 
 public sealed record BrowserFontFallbackOptions
 {
+    public bool LoadDefaultFontsFromCdn { get; init; } = true;
+    public string DefaultFamily { get; init; } = "Roboto";
+    public IReadOnlyList<BrowserFontAsset> Assets { get; init; } = [];
     public bool Enabled { get; init; } = true;
     /// <summary>Mirror must preserve the catalog's relative paths and allow CORS.</summary>
     public Uri BaseUrl { get; init; } = new("https://fonts.gstatic.com/s/");
-    public Uri DecoderUrl { get; init; } = new("https://cdn.jsdelivr.net/npm/woff2-encoder@2.0.0/dist/decompress.js");
+    public Uri? DecoderUrl { get; init; } = new("https://cdn.jsdelivr.net/npm/woff2-encoder@2.0.0/dist/decompress.js");
     public string? PreferredLanguage { get; init; }
     public TimeSpan DownloadTimeout { get; init; } = TimeSpan.FromSeconds(20);
+
+    /// <summary>No default CDN fonts, automatic fallback downloads, or implicit decoder CDN.</summary>
+    public static BrowserFontFallbackOptions AssetsOnly(string defaultFamily, params BrowserFontAsset[] assets) => new()
+    {
+        DefaultFamily = defaultFamily,
+        Assets = assets.ToArray(),
+        LoadDefaultFontsFromCdn = false,
+        Enabled = false,
+        DecoderUrl = null,
+    };
 }
 
 /// <summary>

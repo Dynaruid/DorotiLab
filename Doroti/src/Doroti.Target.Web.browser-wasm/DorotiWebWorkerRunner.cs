@@ -38,19 +38,23 @@ public static class DorotiWebWorkerRunner
             plugins,
             manifestAssembly
         );
-        _target = new BrowserWasmTarget();
+        fontFallbackOptions ??= new();
+        _target = new BrowserWasmTarget(defaultFontFamily: fontFallbackOptions.DefaultFamily);
         _http = new HttpClient { Timeout = Timeout.InfiniteTimeSpan };
-        using (
-            var fontTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(100), _timeProvider)
-        )
+        try
         {
-            // Load all faces before first layout. Registration order defines fallback
-            // family priority, independent of the order downloads finish in.
-            var fontBaseUrl = (fontFallbackOptions ?? new()).BaseUrl;
-            var fonts = await Task.WhenAll(BrowserDefaultFonts.Paths.Select(path =>
-                _http.GetByteArrayAsync(new Uri(fontBaseUrl, path), fontTimeout.Token)));
-            foreach (var font in fonts)
-                _target.RegisterFont(font);
+            using (
+                var fontTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(100), _timeProvider)
+            )
+            {
+                await BrowserStartupFonts.LoadBrowserAsync(fontFallbackOptions, _http, baseAddress,
+                    (bytes, family) => _target.RegisterFont(bytes, family), fontTimeout.Token);
+            }
+        }
+        catch
+        {
+            Dispose();
+            throw;
         }
 
         _session = new DorotiHostSession(descriptor.EntrypointFactory());

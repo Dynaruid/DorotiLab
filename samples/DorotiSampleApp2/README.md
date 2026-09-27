@@ -47,8 +47,19 @@ Noto 폰트 조각을 자동 다운로드합니다. Flutter의 CanvasKit/Skwasm�
 레이아웃도 자동 갱신됩니다. 네이티브의 기본/미해결 Cupertino 폰트는 플랫폼 UI 폰트로
 연결합니다. CDN 변경·다운로드 비활성화와 지원 범위는
 [자동 웹 폰트 안내](../../Doroti/src/Doroti.Host.Web/Fonts/README.md)에 있습니다.
-웹 빌드는 폰트 파일을 다운로드하거나 포함하지 않습니다. 네이티브 빌드는 Roboto를 CDN에서
+기본 CDN 모드의 웹 빌드는 폰트 파일을 다운로드하거나 포함하지 않습니다. 네이티브 빌드는 Roboto를 CDN에서
 받아 DLL에 포함하므로 실행 시에는 폰트 다운로드가 필요 없습니다.
+
+웹에서도 선택적으로 기본 폰트를 앱 에셋에 포함할 수 있습니다:
+
+```powershell
+dotnet run --project ./samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj -c Release -p:DorotiSampleWebFontSource=Assets
+```
+
+이 모드는 기존 샘플의 Roboto 3종과 라이선스를 웹 DLL에 포함하고, 기본 폰트 CDN 및
+언어·이모지 자동 다운로드를 끕니다. 설정은 [web/WebFonts.cs](web/WebFonts.cs)에 있습니다.
+한글 등 Roboto에 없는 글자는 필요한 폰트도 직접 에셋으로 추가해야 합니다.
+옵션을 생략하면 기존 CDN 모드로 실행됩니다. 모드를 바꿀 때는 개발 서버를 재시작합니다.
 
 워크스페이스 CLI에서도 `-App ./samples/DorotiSampleApp2 -Platform windows` 또는 `-Platform web`으로 선택할 수 있습니다.
 

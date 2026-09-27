@@ -17,6 +17,8 @@
     <DorotiSkiaInteropLibrary>$(MSBuildThisFileDirectory)..\..\..\Doroti\src\Doroti.Target.Web.browser-wasm\build\DorotiSkiaInterop.js</DorotiSkiaInteropLibrary>
   </PropertyGroup>
   <ItemGroup>
+    <EmbeddedResource Include="../../DorotiTestbedApp/assets/fonts/Roboto-*.ttf" LogicalName="AssetFonts.%(Filename)%(Extension)" Condition="'$(DorotiSampleWebFontSource)' == 'Assets'" />
+    <EmbeddedResource Include="../../DorotiTestbedApp/assets/fonts/LICENSE.roboto.txt" LogicalName="AssetFonts.LICENSE.roboto.txt" Condition="'$(DorotiSampleWebFontSource)' == 'Assets'" />
     <EmccExportedFunction Include="_wgpuDeviceRelease;_wgpuQueueRelease;_wgpuInstanceRelease" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.11" />
     <DorotiTargetDescriptor Include="Web" HostKind="BlazorWebAssembly" NativeEntryKind="Managed-Main"
@@ -25,6 +27,9 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.11" PrivateAssets="all" />
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="7.0.0" PrivateAssets="all" />
   </ItemGroup>
+  <PropertyGroup Condition="'$(DorotiSampleWebFontSource)' == 'Assets'">
+    <DorotiWebFontOptions>global::DorotiSampleApp2.Web.WebFonts.Options</DorotiWebFontOptions>
+  </PropertyGroup>
   <Import Project="..\..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.targets" />
 </Project>
 

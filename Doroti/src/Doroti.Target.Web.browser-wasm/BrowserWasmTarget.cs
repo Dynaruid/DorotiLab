@@ -40,7 +40,7 @@ public sealed class BrowserWasmTarget : IDorotiBrowserTarget
     private readonly BrowserFrameworkHost _host;
     private bool _disposed;
 
-    public BrowserWasmTarget(string? backendIdentity = null)
+    public BrowserWasmTarget(string? backendIdentity = null, string defaultFontFamily = "Roboto")
     {
         if (!OperatingSystem.IsBrowser())
         {
@@ -59,7 +59,7 @@ public sealed class BrowserWasmTarget : IDorotiBrowserTarget
             Manifest.PackageVersion,
             Manifest.FlutterRevision
         );
-        _host = new(backendIdentity ?? $"{Identity.Rid}/auto");
+        _host = new(backendIdentity ?? $"{Identity.Rid}/auto", defaultFontFamily);
     }
 
     public BrowserTargetPackageManifest Manifest { get; }
@@ -71,6 +71,12 @@ public sealed class BrowserWasmTarget : IDorotiBrowserTarget
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         return _host.RegisterFont(bytes);
+    }
+
+    public string RegisterFont(ReadOnlyMemory<byte> bytes, string family)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        return _host.RegisterFont(bytes, family);
     }
 
     public void EnableFontFallbacks(HttpClient http, BrowserFontFallbackOptions? options = null,

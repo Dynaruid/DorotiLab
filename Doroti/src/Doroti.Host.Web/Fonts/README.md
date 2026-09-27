@@ -38,15 +38,79 @@ A mirror must preserve catalog paths and `BrowserDefaultFonts.Paths`, return fon
 bytes and allow CORS. CSP must permit the font origin in `connect-src`, the decoder
 origin in `script-src`, and WebAssembly under the same policy as the application.
 `Enabled = false` disables missing-glyph downloads; the runner still needs its
-Roboto defaults. Fully offline web deployment requires a local font/decoder mirror
-or a custom runner that registers application assets.
+Roboto defaults unless `LoadDefaultFontsFromCdn` is also disabled. Use `AssetsOnly`
+below to disable both with one setting.
 
 There are no build-time font downloads or font/third-party decoder binaries in the
-web package. `wwwroot/fonts/` is ignored by Git and excluded from static web assets,
+host web package. The host's `wwwroot/fonts/` is ignored by Git and excluded from static web assets,
 even if an old local cache exists. The initial uncached web startup needs network
 access to the default fonts; failures are surfaced by the existing startup error UI.
 Subsequent loads use normal browser HTTP caching. Native hosts instead use the
 build-time bundled fonts in `Doroti.Skia.Fonts` and need no runtime font network.
+
+## App font assets instead of CDN defaults
+
+For the normal SDK-generated web runner, set a C# options expression in the **web
+project** (not the shared application project). No generated bootstrap edits are
+needed:
+
+```xml
+<PropertyGroup>
+  <DorotiWebFontOptions>global::MyApp.Web.WebFonts.Options</DorotiWebFontOptions>
+</PropertyGroup>
+```
+
+Add `WebFonts.cs` to that web project:
+
+```csharp
+using Doroti.Host.Web;
+namespace MyApp.Web;
+
+public static class WebFonts
+{
+    public static BrowserFontFallbackOptions Options =>
+        BrowserFontFallbackOptions.AssetsOnly("MySans",
+            new BrowserFontAsset("MySans", "fonts/MySans-Regular.ttf"),
+            new BrowserFontAsset("MySans", "fonts/MySans-Bold.ttf"));
+}
+```
+
+Place those files in the application's own `wwwroot/fonts/` directory. Relative
+URLs resolve against the application base URI, including deployment under a
+subpath. The host's Git ignore rule does not exclude application font assets.
+Each face registers under its declared family, and `DefaultFamily` is used when
+text does not specify a family or a requested family cannot be resolved.
+
+Alternatively, embed fonts in the web or shared application assembly:
+
+```xml
+<ItemGroup>
+  <EmbeddedResource Include="assets/fonts/MySans-Regular.ttf" LogicalName="MyApp.Fonts.Regular.ttf" />
+</ItemGroup>
+```
+
+```csharp
+BrowserFontFallbackOptions.AssetsOnly("MySans",
+    BrowserFontAsset.Embedded("MySans", typeof(WebFonts).Assembly,
+        "MyApp.Fonts.Regular.ttf"));
+```
+
+Use the assembly that owns the resource. Embedded startup fonts require no font
+HTTP requests. All assets load and register before the first view layout. Missing
+files/resources and an absent default family fail startup explicitly; the loader
+never switches to a CDN to hide a configuration error.
+
+`AssetsOnly` disables CDN defaults, automatic Noto downloads and the implicit WOFF2
+decoder CDN. Prefer TTF/OTF in this mode. WOFF2 assets require an explicitly supplied
+`DecoderUrl` (host the decoder locally for no external requests). Include every
+script/icon font the app needs: unsupported characters do not trigger downloads.
+These settings cover font requests, not offline installation/caching of the app.
+
+To combine custom defaults with automatic Noto fallback, use ordinary options with
+`LoadDefaultFontsFromCdn = false`, `DefaultFamily = "MySans"`, and `Assets = [...]`;
+leave `Enabled = true` and a decoder URL configured. To simply add asset families
+alongside CDN Roboto, set only `Assets`. Custom runners can pass the same options
+directly to `DorotiWebWorkerRunner.RunAsync`.
 
 Transient network failures get at most two attempts per font. HTTP 404 and invalid
 font data are terminal for that candidate. At most three candidates are attempted
