@@ -10,14 +10,23 @@ Cloudflare 계정, 도메인, 토큰, 공유기 포트 포워딩, 기기별 인�
 ## 시작
 
 필수: PowerShell 7, Docker Desktop의 Linux containers, 기존 Doroti 웹 빌드용
-.NET SDK 및 WASM 도구. 빌드는 호스트에서 기존 `Doroti/eng/doroti.ps1 publish`로
-수행하고, Docker는 게시된 정적 파일과 터널을 실행합니다.
+.NET SDK 및 WASM 도구. 빌드는 호스트에서 앱의 `doroti-workspace.json`에 선언된
+웹 프로젝트를 `dotnet publish -c Release`로 게시하고, Docker는 게시된 정적 파일과 터널을 실행합니다.
 
 저장소 루트에서 실행합니다.
 
 ```powershell
 pwsh -NoProfile -File ./tools/doroti-cloudflared/tunnel.ps1 start
 ```
+
+다른 샘플은 저장소 루트 기준 앱 폴더를 `-App`으로 지정합니다.
+
+```powershell
+pwsh -NoProfile -File ./tools/doroti-cloudflared/tunnel.ps1 start -App ./samples/DorotiSampleApp2
+```
+
+기본 앱은 `DorotiTestbedApp`입니다. `-SkipPublish`로 재실행할 때도 같은 `-App`을
+지정하세요. 이 도구는 한 번에 하나의 앱을 공유하며, 앱을 바꾸면 기존 공유를 대체합니다.
 
 스크립트는 게시 → Nginx 상태 확인 → 익명 터널 연결 → 공개 HTTPS 페이지와
 COOP/COEP 헤더 및 워커/WASM MIME 확인 후 주소를 출력합니다. 주소는 이 폴더의

@@ -6,6 +6,8 @@ param(
 
     [switch] $SkipPublish,
 
+    [string] $App = './samples/DorotiTestbedApp',
+
     [ValidateRange(15, 600)]
     [int] $TimeoutSeconds = 120
 )
@@ -14,12 +16,24 @@ $ErrorActionPreference = 'Stop'
 $repositoryRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $composePath = Join-Path $PSScriptRoot 'compose.yaml'
 $urlPath = Join-Path $PSScriptRoot 'generated-url.txt'
-$webRoot = Join-Path $repositoryRoot 'samples/DorotiTestbedApp/web/bin/Release/net10.0/publish/wwwroot'
+$appRoot = if ([IO.Path]::IsPathFullyQualified($App)) {
+    [IO.Path]::GetFullPath($App)
+} else {
+    [IO.Path]::GetFullPath((Join-Path $repositoryRoot $App))
+}
+$webRoot = Join-Path $appRoot 'web/bin/Release/net10.0/publish/wwwroot'
 
 function Invoke-Compose {
-    & docker compose --project-name doroti-web-tunnel --project-directory $PSScriptRoot -f $composePath @args
-    if ($LASTEXITCODE -ne 0) {
-        throw "Docker Compose failed (exit $LASTEXITCODE): $args"
+    $previousWebRoot = $env:DOROTI_PREVIEW_WEBROOT
+    try {
+        $env:DOROTI_PREVIEW_WEBROOT = $webRoot.Replace('\', '/')
+        & docker compose --project-name doroti-web-tunnel --project-directory $PSScriptRoot -f $composePath @args
+        if ($LASTEXITCODE -ne 0) {
+            throw "Docker Compose failed (exit $LASTEXITCODE): $args"
+        }
+    }
+    finally {
+        $env:DOROTI_PREVIEW_WEBROOT = $previousWebRoot
     }
 }
 
@@ -59,6 +73,17 @@ switch ($Command) {
         Save-TunnelUrl $url
     }
     'start' {
+        if (-not (Test-Path -LiteralPath (Join-Path $appRoot 'doroti-workspace.json') -PathType Leaf)) {
+            throw "Missing Doroti workspace: $appRoot"
+        }
+        $workspace = Get-Content -LiteralPath (Join-Path $appRoot 'doroti-workspace.json') -Raw | ConvertFrom-Json
+        if ([string]::IsNullOrWhiteSpace($workspace.platforms.web)) {
+            throw "Workspace has no web runner: $appRoot"
+        }
+        $webProject = Join-Path $appRoot $workspace.platforms.web
+        if (-not (Test-Path -LiteralPath $webProject -PathType Leaf)) {
+            throw "Missing web runner: $webProject"
+        }
         # Check Docker before spending time publishing the app.
         & docker info --format '{{.ServerVersion}}'
         if ($LASTEXITCODE -ne 0) { throw 'Start Docker Desktop with Linux containers first.' }
@@ -70,7 +95,9 @@ switch ($Command) {
             Remove-Item -LiteralPath $urlPath -ErrorAction SilentlyContinue
             Push-Location $repositoryRoot
             try {
-                & pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 publish -App ./samples/DorotiTestbedApp -Platform web -Configuration Release
+                # Publish the declared web runner even for samples that only
+                # provide a subset of the workspace CLI's platform aliases.
+                & dotnet publish $webProject -c Release --nologo -p:UseSharedCompilation=false
                 if ($LASTEXITCODE -ne 0) { throw 'Doroti web Release publish failed.' }
             }
             finally { Pop-Location }

@@ -41,6 +41,15 @@ dotnet run --project ./samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj 
 
 브라우저에서 `http://127.0.0.1:5089`에 접속합니다. WebAssembly 빌드에는 `wasm-tools` 워크로드가 필요합니다.
 
+Docker 기반 익명 HTTPS 터널로 다른 기기에서 열려면 다음을 실행합니다.
+
+```powershell
+pwsh -NoProfile -File ./tools/doroti-cloudflared/tunnel.ps1 start -App ./samples/DorotiSampleApp2
+```
+
+Release 게시 후 접속 주소가 출력됩니다. 종료는 `tunnel.ps1 stop`을 사용합니다.
+필수 도구와 관리 명령은 [터널 안내](../../tools/doroti-cloudflared/README.md)를 참고하세요.
+
 웹 글꼴은 첫 화면 전에 CDN에서 Roboto를 로드하고, 한글 등 다른 문자권과 컬러 이모지는 필요한
 Noto 폰트 조각을 자동 다운로드합니다. Flutter의 CanvasKit/Skwasm처럼 엔진에 폰트 파일을
 등록하며, CSS나 브라우저 기본 폰트를 직접 사용하지 않습니다. 폰트가 추가되면 글자 폭과
