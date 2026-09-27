@@ -6,7 +6,8 @@ Overall status: **PARTIAL**. WindowsAppSdk and MAUI Windows display a generated
 WGSL fragment effect through the real `GpuEffect` widget; WindowsAppSdk also
 displays `GpuBackdropEffect`. Metal/WebGPU/WebGL2 fragment host code is included.
 This is not completion
-of `work.md` G0–G9. Non-Windows execution is `notVerified`; performance is
+of G0–G9 in the [archived WGSL GPU effects plan](../../../history/26-09-26/wgsl-gpu-effects-summary.md).
+Non-Windows execution is `notVerified`; performance is
 `notMeasured`. The user's current scope defers non-Windows device/browser runs,
 but still requires their implementations.
 

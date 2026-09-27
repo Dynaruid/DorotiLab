@@ -41,7 +41,8 @@ Generated `Doroti.Generated.Effects.<AssetId>` currently embeds every declared
 variant in the application assembly. This is an initial
 source-tree integration, **not the final runner-specific resource catalog**.
 Compiler RID distribution, NuGet consumption, full graph schema, manifest ABI
-validation at load, and atomic output publication remain open in `work.md`.
+validation at load, and atomic output publication remain open in the
+[archived WGSL GPU effects plan](../../history/26-09-26/wgsl-gpu-effects-summary.md).
 
 The SDK uses an existing compiler via `DorotiWgslTool`; its repository default
 is this directory's `target/debug/doroti-wgsl[.exe]`. It never invokes Cargo or
