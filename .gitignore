@@ -5,6 +5,7 @@
 /reference/Avalonia-main/
 /reference/flutter-master/
 /reference/SUITE-Variable-woff2
+/reference/AvaloniaVSCode-ARCHIVE
 
 # .NET build output
 # Legacy local web font cache; production fonts/decoder load from CDN.
