@@ -1,0 +1,111 @@
+# M3. VS Code 실행 확장·작성 지원·Hot Reload
+
+원문: [개발 로드맵](../../plan.md) §3 M3 · 우선순위: **P1** · 작업 상태: **TODO** · 실행 검증: **notVerified**
+
+[작업 인덱스와 공통 완료 규칙](../README.md)
+
+## 담당 범위와 선행 작업
+
+확장·snippet/import·reload runtime과 세션 계약을 담당한다. 첫 실행 대상은 로컬 Windows App SDK와 Web이며 전체 플랫폼 IDE 지원은 후속이다.
+
+선행: M3-A/B는 [M0](00-foundation.md) 후 시작한다. M3-D는 생성 앱의 C# 프로젝트 로딩, M3-C는 [M1](01-testing.md)과 개발 호스트·실행 세션 관리에 의존한다.
+
+플랫폼별 연결·검증: [Windows](../platforms/windows.md) · [Web](../platforms/web.md)
+
+## 원문 작업과 완료 기준
+
+아래는 원문의 체크리스트와 완료 기준을 보존한 것이다. 특정 호스트를 명시한 항목은 연결된 플랫폼 문서에서 해당 구현·검증을 추적하고, 이 문서에는 공유 계약 및 통합 결과를 기록한다. 공통 구현 완료가 모든 플랫폼 검증 완료를 뜻하지 않는다.
+
+**현재 범위:** **새 프로젝트 생성 마법사 → Widget Snippets·import 지원으로 코드 작성 → 프로젝트·target 선택 → 실행 → 확장 전용 Hot Reload 버튼 → 로그 확인·중지**를 이번 확장 범위로 구현한다. 여기서 import는 C#의 `using` 자동 추가·누락 해결을 뜻한다. Preview는 후속 검토로 보류한다. 생성·실행 기능은 먼저 개발할 수 있지만, 이번 VSIX의 완료 조건에는 M3-C의 Hot Reload와 M3-D의 작성 지원까지 포함한다.
+
+### M3-A. AvaloniaVSCode 구조 검토와 최소 설계
+
+검토 대상은 로컬 `reference/AvaloniaVSCode-ARCHIVE` 체크아웃이다. 구조를 정적으로 참고했으며 해당 확장을 빌드하거나 실행해 검증한 결과는 아니다.
+
+| 참고 영역 | 확인한 역할 | 이번에 사용할 범위 |
+| --- | --- | --- |
+| `src/vscode-avalonia/package.json`, `src/extension.ts`, `src/commands/` | 명령·설정·메뉴 등록과 활성화 | Doroti용 manifest/명령 등록과 기능별 모듈 분리를 참고한다. |
+| `src/commands/createNewProject.ts` | 이름·폴더 입력 후 `dotnet new` 실행과 생성 폴더 열기 | Doroti 템플릿을 사용하는 생성 마법사로 구성하고 취소·이름 검증·기존 폴더 충돌·생성 실패 처리를 보완한다. |
+| `src/vscode-avalonia/csharp.json`, `package.json`의 snippets 등록 | C# 코드 snippet과 prefix·placeholder 제공 | 등록 구조를 참고해 Doroti Widget Snippets를 제공한다. Avalonia property/event 본문은 Doroti의 실제 widget API로 교체한다. |
+| `src/services/solutionParser.ts` | 솔루션 발견과 프로젝트 metadata cache | 발견·선택 책임 분리만 참고한다. Doroti는 `doroti-workspace.json`을 기준으로 앱과 runner를 선택한다. |
+| `src/commands/previewerProcess.ts`, `src/previewProcessManager.ts` | child process 기동·재사용·종료 | 실행 프로세스의 소유권·종료 관리만 참고하고 preview 전용 프로세스/통신은 만들지 않는다. |
+| `src/client.ts`, `src/runtimeManager.ts`, `src/AvaloniaLSP/` | .NET AXAML 언어 서버 연결 | 이식하지 않는다. C# 완성·진단·디버깅은 기존 C# 도구를 사용한다. |
+| `src/services/previewServer.ts`, `src/services/messageParser.ts`, `src/panels/WebPreviwerPanel.ts` | TCP/BSON designer 통신과 Webview preview | 현재 범위에서 제외한다. 별도 DevTools endpoint·PreviewHost·Webview도 확장 MVP에 필요하지 않다. |
+| `build.sh`, `src/test/`, `.gitmodules`, `LICENSE` | 보조 도구 빌드·테스트 진입점·submodule·MIT 고지 | Doroti 전용 빌드/VSIX 패키징과 실제 실행 검증을 구성하고, 코드 차용 시 원 저작권·라이선스 고지와 출처를 포함한다. |
+
+참고 구현의 `solutionParser.ts`는 첫 `.sln`/첫 workspace를 선택하고 cache를 솔루션 basename으로 구분한다. 이 선택 방식을 그대로 이식하지 않는다. `src/test/`의 테스트 본문은 예제 assertion 수준이며, 현재 로컬 `src/SolutionParser`와 `src/AvaloniaVS` submodule 디렉터리는 비어 있으므로 archive 전체가 바로 재빌드된다고 전제하지 않는다.
+
+제안하는 신규 배치는 아래와 같다. 모두 구현 예정 경로다.
+
+```text
+Doroti/tools/vscode-doroti/
+  package.json          # 명령·설정·지원 VS Code 버전
+  src/extension.ts      # 활성화와 disposable 정리
+  src/commands/         # create project, select project/target, run, hot reload, stop, show logs
+  src/services/         # manifest 발견, template/CLI adapter, 실행·reload 수명
+  src/editing/          # import 연동·snippet 삽입 보조
+  snippets/widgets.json # C# Widget Snippets와 placeholder
+  test/                 # 핵심 로직·Extension Development Host 검증
+  README.md             # 설치·실행·제한 안내
+```
+
+- [ ] archive 의존성 버전을 그대로 복사하지 않고 착수 시 지원 VS Code/Node 조합을 정한다. 패키지 관리자는 하나로 정하고 lockfile 및 빌드·테스트·VSIX 생성 명령을 고정한다.
+- [ ] VS Code 의존성을 framework에 추가하지 않는다. 별도 .NET 보조 서버·protocol·복잡한 plugin 계층은 실제 필요가 생길 때 도입한다.
+
+### M3-B. 프로젝트 생성 마법사·선택·실행·로그
+
+**선행:** M0의 CLI 실행 경로·실패 전파와 사용 가능한 Doroti 템플릿. 이 단계의 개발은 M1·Hot Reload 완료 전 시작할 수 있으며, 최종 VSIX 검증은 M3-C/D와 통합한다.
+
+- [ ] `Doroti: Create Project`, `Select Project`, `Select Target`, `Run`, `Hot Reload`, `Stop`, `Show Logs`와 선택 상태 표시를 구현한다. 별도 Build/Doctor 화면은 만들지 않는다.
+- [ ] 새 프로젝트 생성 마법사에서 프로젝트 이름·생성 위치를 입력받고 기존 `dotnet new doroti-app` 템플릿을 호출한다. 현재 템플릿의 기본값을 사용하며, 첫 실행 target 선택은 생성 후 manifest에 선언된 항목에서 제공한다. 생성할 플랫폼을 줄이는 새 템플릿 옵션은 이번 필수 범위에 넣지 않는다.
+- [ ] SDK·템플릿 누락 시 설치 방법을 안내하고, 잘못된 이름·기존 비어 있지 않은 폴더·입력 취소·생성 중 취소·생성 실패를 구분한다. 기존 파일을 덮어쓰지 않고 실패/취소 시 이번 생성으로 남은 경로를 알린다. 성공하면 생성 폴더 열기와 앱 선택으로 이어지게 한다.
+- [ ] `doroti-workspace.json`의 `applicationProject`/`platforms`에서 앱과 runner를 찾는다. 여러 후보가 있으면 선택하게 하고 첫 `.sln`을 임의 실행하지 않는다. 첫 버전은 선택한 앱 하나·실행 세션 하나만 지원하며 multi-root와 동시 다중 앱 실행은 후속으로 둔다.
+- [ ] 현재 CLI는 모든 플랫폼 alias를 요구하므로 일부 플랫폼만 선언한 앱의 검증 계약을 CLI에서 정리한다. 확장에는 선언된 target만 표시하고 runner 선택 로직을 중복 구현하지 않는다.
+- [ ] 기존 `Doroti/eng/doroti.ps1` 호출을 재사용하고 CLI 경로를 설정 가능하게 한다. 첫 버전은 저장소 CLI와 설치된 템플릿 사용을 명시하며, 마법사가 만든 앱도 이 구성으로 실행 검증한다. 독립 CLI 배포는 M7로 넘긴다. device discovery·범용 debug protocol은 제외하되 Hot Reload 요청·결과 전달에 필요한 최소 계약은 M3-C에서 구현한다.
+- [ ] 첫 대상은 로컬 Windows App SDK와 Web으로 잡고 개발 실행에는 `Debug`를 명시한다(현재 CLI 기본값은 `Release`). Windows는 실제 앱 창, Web은 외부 브라우저로 실행한다. Run에서 기존 build/run 흐름과 출력을 사용하고 추가 UI는 필요한 최소 상태만 표시한다.
+- [ ] PowerShell/.NET SDK/선택 target의 도구 누락, build 실패·실행 실패를 명확하게 보여 준다. 실패 종료 코드·중복 Run·실행 중 target 변경·Stop·확장 종료 시 자신이 시작한 프로세스 정리는 첫 버전에서도 구현한다. build와 앱 실행 사이 프로세스 소유권이 끊기는 host는 CLI 계약을 보완한다.
+- [ ] C# 완성·오류 표시·디버깅은 기존 C# 확장과 사용자 설정을 활용하고 Doroti import·Widget Snippets는 M3-D에서 연결한다. `launch.json`/`tasks.json` 자동 생성, 자체 LSP/debug adapter, Inspector UI는 추가하지 않는다.
+- [ ] Restricted Mode에서는 템플릿 실행·앱 실행·Hot Reload를 비활성화하고 workspace trust 변경을 반영한다. 실행 파일/인자는 배열로 전달하며 프로젝트 경로를 shell 문자열에 이어 붙이지 않는다. [Workspace Trust 공식 지침](https://code.visualstudio.com/api/extension-guides/workspace-trust)을 적용한다.
+- [ ] [VS Code 확장 테스트 지침](https://code.visualstudio.com/api/working-with-extensions/testing-extension)에 따라 생성 마법사·명령·앱 선택·실패 전파·실행/종료를 검증한다. 테스트는 20분 timeout을 적용하고, clean VS Code profile에 VSIX를 설치해 생성된 앱의 실제 Windows/Web 실행과 M3-C의 Hot Reload 버튼을 통합 검증한다.
+
+**완료 기준:** 마법사로 새 앱 생성 → 폴더 열기 → 앱/target 선택 → 실행 → 로그 확인 → 중지를 재현하고 기존 앱도 동일하게 실행한다. 한글/공백 경로·생성 취소·폴더 충돌·잘못된 manifest·누락 SDK/템플릿·build 실패·중복 실행·VS Code 종료를 처리하며 소유한 실행 프로세스가 남지 않는다. 이번 VSIX 완료에는 아래 M3-C/D 통합 검증도 필요하다.
+
+### M3-C. Hot Reload runtime과 확장 전용 버튼 — 이번 구현 범위
+
+**선행:** M1의 최소 회귀 경로와 검증 가능한 개발 호스트. 버튼 통합에는 M3-B의 실행 세션 관리가 필요하다.
+
+- [ ] .NET metadata update 지원 환경을 확정하고 update hook에서 소유 UI 문맥으로 `reassembleApplication()`을 요청한다. pending frame과 중복 reload를 직렬화한다.
+- [ ] 지원되는 코드 변경에서 State·입력 값·스크롤 위치를 보존한다. 지원되지 않는 변경은 재시작 필요를 표시하고 오류 후 재수정이 가능하게 한다.
+- [ ] 먼저 CLI/개발 호스트에서 코드 변경의 metadata update → UI 갱신을 검증하고, 같은 경로를 `Doroti: Hot Reload` 명령과 실행 중 표시되는 전용 버튼에 연결한다. 버튼은 저장되지 않은 변경의 저장/취소를 처리한 뒤 코드 갱신을 요청한다. `reassembleApplication()`만 호출해 변경 코드가 적용된 것으로 처리하지 않는다.
+- [ ] 현재 실행 세션의 지원 capability·요청 id·처리 중/성공/실패/재시작 필요 결과를 전달하는 최소 계약을 정한다. 기존 CLI 제어 경로를 우선 활용하고 부족한 연결만 추가한다. 연속 클릭과 저장 기반 reload가 중복 적용되지 않도록 직렬화하며 종료한 세션의 늦은 응답을 무시한다.
+- [ ] 실행 전·Release·미지원 host에서는 버튼을 비활성화하고 이유를 표시한다. 코드 컴파일 오류는 로그로 연결하고 수정 후 다시 시도할 수 있게 한다. 재시작이 필요한 변경은 상태 초기화를 알리는 Restart 동작으로 연결한다.
+
+**완료 기준:** 설치한 VSIX에서 마법사로 만든 앱 실행 → 코드 수정 → Hot Reload 버튼 클릭 → State·입력·스크롤을 보존한 UI 갱신을 재현한다. 컴파일 오류 후 재시도·연속 클릭·재시작 필요·실행 종료를 검증한다. Windows/Web의 지원 여부는 각각 기록하고 최소 한 개발 호스트에서 실제 갱신을 통과해야 이번 확장을 완료 처리한다. runtime 갱신 경로는 VS Code 밖에서도 사용할 수 있게 유지한다.
+
+### M3-D. import 지원·Widget Snippets — 이번 구현 범위
+
+**선행:** 실제 Doroti C# API와 M3-B에서 생성한 앱의 정상적인 C# 프로젝트 로딩. Hot Reload 구현 전 독립적으로 개발할 수 있다.
+
+- [ ] Doroti 타입의 완성 후보를 선택하면 필요한 `using`이 추가되고, 이미 입력한 미해결 타입은 Quick Fix로 import할 수 있게 구성한다. 기존 C# 언어 서비스의 완성·code action을 우선 연동하고 지원 확장·버전·설정을 명시한다. 프로젝트 로딩 실패·참조 누락·언어 서비스 미설치를 구분해 안내한다. 기본 편집 기능은 [VS Code C# 안내](https://code.visualstudio.com/docs/languages/csharp)를 기준으로 검토하되 Doroti 타입에 대한 실제 동작을 확인한다.
+- [ ] 중복 `using`, `global using`, alias, file-scoped/block namespace, 같은 이름의 다른 타입을 처리한다. 여러 namespace가 가능한 경우 사용자 선택을 제공하고 일괄 namespace 추가로 모호성을 만들지 않는다. 기존 C# 기능으로 충족되지 않는 Doroti 전용 import 보조만 추가하며 전체 C# 언어 서버는 만들지 않는다.
+- [ ] `snippets/widgets.json`을 `csharp` 언어용으로 등록한다. 첫 목록은 StatelessWidget, StatefulWidget + `State<T>`, `build`, `initState`/`dispose`/`setState`, Row/Column/Container/Text, Material/Cupertino 앱 뼈대로 정한다. prefix는 `dstateless`, `dstateful`, `drow`처럼 Doroti용으로 구분하고 클래스명·child/children·본문에 연결 placeholder와 최종 cursor 위치를 제공한다. [Snippet 등록 지침](https://code.visualstudio.com/api/language-extensions/snippet-guide)을 따른다.
+- [ ] snippet의 생성자·override 이름·반환형·namespace·수명 처리는 현재 C# 제품 API와 샘플에 맞춘다. Dart 문법이나 Avalonia 코드를 그대로 복사하지 않는다. 필요한 import를 각 snippet의 metadata/설명에 명시하고, 삽입 후 누락 import를 해결할 수 있게 연결한다. 정적 snippet JSON만으로 자동 `using` 편집이 완료된다고 가정하지 않고 필요한 삽입 보조·code action 경로를 함께 검증한다.
+- [ ] 새 파일과 기존 파일에서 prefix 완성·삽입·Tab 이동·연결된 이름 변경·Undo와 import 처리를 실제 에디터에서 검증한다. snippet별 최소 사용 예제를 생성해 build하고, 중복 import·타입 충돌·기존 C# snippet과의 충돌도 확인한다. 테스트는 공통 20분 timeout을 적용한다.
+
+**완료 기준:** 설치한 VSIX에서 마법사로 앱 생성 → StatefulWidget snippet 삽입 → 이름/본문 편집 → 필요한 `using` 추가 → build/run → 코드 수정 후 Hot Reload를 재현한다. 일반 타입 완성 시 auto-import와 미해결 타입의 Quick Fix도 각각 검증하며, snippet 텍스트 삽입만 성공한 상태를 작성 지원 완료로 간주하지 않는다.
+
+### 후속 후보 — 현재 구현·완료 기준에서 제외
+
+- **Preview 전체:** `WidgetPreviews` 실행 host, preview 등록/검색, Webview, 크기·테마·locale 제어. 현재는 별도 구현 계획을 확정하지 않는다.
+- **Inspector/DevTools UI:** 트리 탐색·highlight·소스 이동·성능 timeline·원격 진단 endpoint. 디버깅 필요가 구체화되면 범위를 다시 정한다.
+- **IDE 편의 기능:** CodeLens, `launch.json`/`tasks.json` 자동 생성.
+- **지원 범위 확대:** multi-root·동시 다중 앱, Android 기기 자동 검색·로그 통합, macOS/Linux 검증, WSL/SSH/Dev Container 및 browser-only VS Code.
+- **공개 배포:** 독립 CLI 제공, package-only 앱 통합 검증, Marketplace 공개는 M7에서 다룬다. 첫 산출물은 로컬 설치 가능한 VSIX다.
+
+## 산출물과 결과 기록
+
+- 공개 계약·구현 변경, 실행 가능한 샘플, 필요한 회귀 검증, 지원표 갱신을 함께 남긴다.
+- 이 문서의 완료 기준과 플랫폼별 적용 결과를 연결하고, 미실행 조합은 `notVerified`로 유지한다.
+- 결과는 [공통 기록 형식](../README.md#결과-기록-형식)에 revision·환경·명령·기대값·실제값·남은 작업을 남긴다.
+
+현재 기록: 문서 분리만 수행했다. 이 작업 묶음의 구현·실행 결과는 아직 기록하지 않았다.
