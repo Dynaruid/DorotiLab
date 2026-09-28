@@ -180,7 +180,16 @@ Ordinary links require no Doroti HTML attributes and no duplicate C# font list:
 <link rel="stylesheet" href="fonts/SUITE/SUITE-Variable.css">
 ```
 
-Copy SUITE's original CSS, WOFF2 and LICENSE into that application directory.
+The source files do not need to live in `web/wwwroot`. SampleApp2 keeps SUITE's
+original CSS, WOFF2 and LICENSE in `assets/fonts/SUITE`. Its web project maps
+`../assets/fonts/**/*` to `wwwroot/fonts/%(RecursiveDir)%(Filename)%(Extension)`
+using a `Content` item with `CopyToOutputDirectory` and `CopyToPublishDirectory`
+set to `PreserveNewest`. Thus `assets/fonts/SUITE/SUITE-Variable.woff2` is served
+as `fonts/SUITE/SUITE-Variable.woff2`; CSS-relative paths are preserved. Any other
+source folder can use the same `Content`/`Link` mapping. Merely placing a file
+outside wwwroot does not publish it without this mapping. The Doroti runner SDK
+sets a physical ContentRoot for linked web content so development serving also
+reads the external file instead of looking for a copy under web/wwwroot.
 Select `fontFamily: "Galmuri11"` or `fontFamily: "SUITE Variable"` in a widget
 `TextStyle`, or in the app's theme. Adding a link makes families available; it
 does not change the theme. HTML `body { font-family: ... }` is not inherited by
@@ -259,8 +268,8 @@ pinned 295,397-byte `woff2-encoder@2.0.0/dist/decompress.js` contains its WASM a
 base64 data payload and has no relative imports or separate WASM dependency.
 Its LICENSE is published beside it. These files belong to the opt-in **sample**,
 not the default Doroti.Host.Web package. SUITE 2.040 and Galmuri 2.40.3 use SIL OFL;
-ship their LICENSE files when copying fonts. Fixture hashes and upstream URLs
-are in `Doroti/validation/css-fonts/fixtures/manifest.json`.
+ship their LICENSE files when copying fonts. Sample Galmuri hashes and upstream URLs
+are in `samples/DorotiSampleApp2/assets/fonts/Galmuri/source.json`.
 
 The web host still requires COOP `same-origin` and COEP `require-corp` for shared
 memory. Browser CSS loading uses `style-src`/`font-src`; Doroti's byte loading

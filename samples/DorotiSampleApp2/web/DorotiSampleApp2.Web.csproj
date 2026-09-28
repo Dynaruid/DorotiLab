@@ -17,6 +17,14 @@
     <DefineConstants>$(DefineConstants);DOROTI_BROWSER</DefineConstants>
     <DorotiSkiaInteropLibrary>$(MSBuildThisFileDirectory)..\..\..\Doroti\src\Doroti.Target.Web.browser-wasm\build\DorotiSkiaInterop.js</DorotiSkiaInteropLibrary>
   </PropertyGroup>
+  <!-- Source files can live in the shared application assets directory.
+       Link defines their public web paths for both development and publish. -->
+  <ItemGroup>
+    <Content Include="../assets/fonts/**/*" Link="wwwroot/fonts/%(RecursiveDir)%(Filename)%(Extension)"
+             CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Remove="../assets/fonts/CupertinoIcons.*" />
+    <Content Remove="../assets/fonts/Galmuri/**/*" Condition="'$(DorotiSampleWebFontSource)' != 'Assets'" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="../../DorotiTestbedApp/assets/fonts/Roboto-*.ttf" LogicalName="AssetFonts.%(Filename)%(Extension)" Condition="'$(DorotiSampleWebFontSource)' == 'Assets'" />
     <EmbeddedResource Include="../../DorotiTestbedApp/assets/fonts/LICENSE.roboto.txt" LogicalName="AssetFonts.LICENSE.roboto.txt" Condition="'$(DorotiSampleWebFontSource)' == 'Assets'" />
@@ -44,8 +52,6 @@
   <ItemGroup Condition="'$(DorotiSampleWebFontSource)' == 'Assets'">
     <Content Remove="wwwroot/index.html" />
     <Content Include="Assets.index.html" Link="wwwroot/index.html" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
-    <Content Include="galmuri-local.css" Link="wwwroot/fonts/Galmuri/galmuri-local.css" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
-    <Content Include="../../../Doroti/validation/css-fonts/fixtures/*.woff2;../../../Doroti/validation/css-fonts/fixtures/LICENSE.Galmuri" Link="wwwroot/fonts/Galmuri/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup Condition="'$(DorotiWebFontValidation)' != 'true'">
     <Compile Remove="Validation/**/*.cs" />

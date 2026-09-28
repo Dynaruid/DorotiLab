@@ -397,6 +397,21 @@
     <WriteLinesToFile File="$(PublishDir)doroti-native-provenance.json" Lines="@(_DorotiPublishNativeProvenanceLine)" Overwrite="true" WriteOnlyWhenDifferent="true" />
   </Target>
 
+  <!-- Linked web content can live anywhere in the app. Development manifests
+       must resolve its physical source, rather than look under web/wwwroot.
+       Computed assets preserve Link as the public route and Identity as source. -->
+  <Target Name="DorotiResolveLinkedWebContentRoots"
+          Condition="'$(DorotiTarget)' == 'Web'"
+          BeforeTargets="ResolveProjectStaticWebAssets;ResolveCurrentProjectStaticWebAssetsInputs">
+    <ItemGroup>
+      <Content Update="@(Content)"
+               Condition="$([System.String]::Copy('%(Content.Link)').Replace('\', '/').StartsWith('wwwroot/')) and '%(Content.ContentRoot)' == ''">
+        <ContentRoot>$([MSBuild]::NormalizeDirectory('%(Content.RootDir)%(Content.Directory)'))</ContentRoot>
+        <SourceType Condition="'%(Content.SourceType)' == ''">Computed</SourceType>
+      </Content>
+    </ItemGroup>
+  </Target>
+
   <Target Name="DorotiRegisterRunnerWebWwwrootStaticAssets"
           Condition="'$(DorotiTarget)' == 'Web' and Exists('$(MSBuildProjectDirectory)\wwwroot')"
           DependsOnTargets="ResolveStaticWebAssetsConfiguration"

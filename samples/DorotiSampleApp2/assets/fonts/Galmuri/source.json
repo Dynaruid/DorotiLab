@@ -1,0 +1,18 @@
+{
+  "Galmuri11.woff2": {
+    "url": "https://cdn.jsdelivr.net/npm/galmuri@2.40.3/dist/Galmuri11.woff2",
+    "sha256": "f467d1b10e6b88dfa8399c9f93b38c7643e050abfe4fc15800ac0b000f5a57d6"
+  },
+  "Galmuri11-Bold.woff2": {
+    "url": "https://cdn.jsdelivr.net/npm/galmuri@2.40.3/dist/Galmuri11-Bold.woff2",
+    "sha256": "8643094f395aa2dbad6bc4385cc043314801eaec2e759d549435ec8ac4f2d078"
+  },
+  "Galmuri11-Condensed.woff2": {
+    "url": "https://cdn.jsdelivr.net/npm/galmuri@2.40.3/dist/Galmuri11-Condensed.woff2",
+    "sha256": "f44abb2cd768060665718c495e573e57aad0a7f296edd7f1e78cca07e11aca94"
+  },
+  "LICENSE.Galmuri": {
+    "url": "https://cdn.jsdelivr.net/npm/galmuri@2.40.3/dist/LICENSE.txt",
+    "sha256": "86a3ee9495f942f0243f18c103da9faca27adb88142613edb8bb852e56c892c1"
+  }
+}

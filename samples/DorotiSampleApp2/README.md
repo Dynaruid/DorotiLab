@@ -124,3 +124,52 @@ python Doroti/validation/run-with-timeout.py dotnet publish samples/DorotiSample
 base href도 `/sample/`로 바꿉니다. 디코더 CSP와 CSS 지원 범위는
 [폰트 사용 문서](../../Doroti/src/Doroti.Host.Web/Fonts/README.md#css-links-and-variable-fonts)를 참고하세요.
 검증 절차는 [css-fonts](../../Doroti/validation/css-fonts/README.md)에 있습니다.
+
+
+## 공통 assets 폴더의 웹폰트
+
+폰트 원본은 `web/wwwroot`가 아니라 **`assets/fonts/`**에 둡니다.
+웹 프로젝트의 `Content` + `Link` 매핑이 개발 서버와 publish에 같은 웹 경로를 만듭니다.
+Doroti 웹 SDK가 링크된 파일의 실제 원본 폴더를 개발용 정적 에셋 manifest에 기록합니다.
+예를 들어 아래 파일은 웹에서 `fonts/SUITE/SUITE-Variable.css`로 접근합니다.
+
+```text
+DorotiSampleApp2/
+  assets/fonts/SUITE/
+    SUITE-Variable.css
+    SUITE-Variable.woff2
+    LICENSE
+  assets/fonts/Galmuri/
+    galmuri-local.css
+    Galmuri11.woff2
+    Galmuri11-Bold.woff2
+    Galmuri11-Condensed.woff2
+    LICENSE.Galmuri
+```
+
+```xml
+<!-- web/DorotiSampleApp2.Web.csproj; Include는 프로젝트 파일 기준 상대 경로 -->
+<Content Include="../assets/fonts/**/*"
+         Link="wwwroot/fonts/%(RecursiveDir)%(Filename)%(Extension)"
+         CopyToOutputDirectory="PreserveNewest"
+         CopyToPublishDirectory="PreserveNewest" />
+```
+
+새 WOFF/WOFF2와 CSS도 `assets/fonts/원하는폴더/`에 함께 넣으면 같은 규칙으로 포함됩니다.
+CSS 안의 `url('./MyFont.woff2')`는 배포 후에도 같은 폴더를 가리킵니다.
+다른 원본 디렉터리를 쓰려면 `Include`만 해당 경로로 바꾸면 됩니다.
+
+```html
+<link rel="stylesheet" href="fonts/SUITE/SUITE-Variable.css">
+```
+
+CSS 없이 등록할 때도 실제 파일 시스템 경로가 아니라 웹 URL을 사용합니다.
+
+```csharp
+new BrowserFontAsset("SUITE Variable", "fonts/SUITE/SUITE-Variable.woff2")
+```
+
+샘플의 Galmuri는 `DorotiSampleWebFontSource=Assets`일 때만 로컬 파일을 포함합니다.
+기본 모드는 기존 CSS CDN 링크를 사용합니다. CupertinoIcons는 공통 앱 DLL의 내장
+리소스로 이미 등록하므로 웹 정적 파일 목록에서 제외합니다. `bin`/`obj` 안의 파일은
+빌드 산출물이므로 직접 수정하지 않습니다.
