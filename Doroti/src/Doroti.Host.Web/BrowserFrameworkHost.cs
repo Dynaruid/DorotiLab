@@ -64,6 +64,12 @@ public sealed class BrowserFrameworkHost : IDisposable
         return _fallbackFonts.Register(bytes, family);
     }
 
+    public string RegisterCssFont(ReadOnlyMemory<byte> bytes, string family, Skia.Rendering.SkiaFontFaceDescriptor descriptor)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        return _fallbackFonts.Register(bytes, family, descriptor: descriptor);
+    }
+
     public DorotiView CreateView(
         DorotiHostSession session,
         ulong viewId,

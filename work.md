@@ -1,6 +1,8 @@
-# Doroti 웹폰트 지원 작업계획
+# Doroti 웹폰트 지원 구현 결과
 
-검토일: 2026-09-28. 이번 변경은 조사와 계획 작성이며, 아래 구현 항목은 아직 수행하지 않았다.
+구현·검증일: 2026-09-28. 아래 1~5단계 구현을 완료했다. 실제 Chromium의 Doroti 캔버스와
+browser-wasm Skia에서 검증했으며, 물리 키보드/OS IME 검증은 별도 `notVerified`다.
+초기 조사 내용은 2~3절에 남겼고, 최신 결과는 8절에 기록한다.
 
 ## 1. 결론과 목표
 
@@ -13,7 +15,7 @@ CSS 링크를 추가하면 폰트가 **사용 가능한 상태로 등록**되는
 
 핵심 경로는 `CSS/에셋 선언 → 실제 폰트 바이트 → 필요 시 압축 해제 → Skia 등록 → 측정·렌더링`이다. 브라우저 CSS 폰트 로딩 완료만으로 Doroti의 Skia 렌더러가 그 폰트를 사용할 수 있는 것은 아니다.
 
-## 2. 현재 코드에서 확인한 상태
+## 2. 계획 작성 시점의 상태 (구현 전 기록)
 
 | 영역 | 현재 상태 | 필요한 작업 |
 | --- | --- | --- |
@@ -72,7 +74,7 @@ WOFF 1과 WOFF2는 별도 컨테이너 형식이다. WOFF2는 Brotli 및 폰트 
 
 ### A. 외부 CSS 링크
 
-구현 후 다음 HTML을 그대로 사용할 수 있게 한다. 별도 Doroti 전용 HTML 속성이나 C# 폰트 목록 중복 작성은 요구하지 않는다.
+다음 HTML을 그대로 사용할 수 있다. SampleApp2의 기본 모드도 이 URL을 사용한다. 별도 Doroti 전용 HTML 속성이나 C# 폰트 목록 중복 작성은 요구하지 않는다.
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri/dist/galmuri.css">
@@ -92,7 +94,7 @@ Doroti 위젯에서는 `fontFamily: "Galmuri11"`을 지정하고, 해당 family�
 
 ### C. CSS 없는 명시적 에셋 등록
 
-다음은 **이미 있는 API**다. WOFF2 해제용 `DecoderUrl`이 구성되어야 하며, 가변 굵기의 완전한 적용은 아래 구현 작업이 필요하다.
+다음은 **이미 있는 API**다. 현재 browser-wasm 빌드는 WOFF2를 직접 읽으며, 지원하지 않는 파일/백엔드에서는 `DecoderUrl`을 사용한다. 가변 굵기 적용도 연결했다.
 
 ```csharp
 new BrowserFontFallbackOptions
@@ -107,53 +109,53 @@ new BrowserFontFallbackOptions
 
 ### 1단계 — 실제 폰트와 백엔드 지원 범위 확정
 
-- [ ] Galmuri regular/bold WOFF2·TTF, SUITE Variable WOFF2, 유효한 WOFF 1을 검증 입력으로 확보한다. 원본 라이선스와 버전/해시를 기록한다.
-- [ ] 현재 browser-wasm SkiaSharp 빌드에서 TTF/OTF/WOFF/WOFF2 직접 등록 가능 여부를 작은 로딩 검증으로 구분한다. CanvasKit의 지원 결과를 Doroti의 SkiaSharp 지원 결과로 간주하지 않는다.
-- [ ] SUITE 해제 후 `fvar`/`gvar` 등 가변 정보 보존과 SkiaSharp clone API/네이티브 export를 확인한다. API가 없으면 바인딩 확장 또는 호환 버전 도입을 별도 변경으로 처리한다.
-- [ ] 앱 상대 URL을 실제 worker fetch로 읽어 200·정상 바이트·시그니처를 검증한다. HTML fallback 응답, 빈 응답, 하위 경로 배포를 확인한다.
+- [x] Galmuri regular/bold WOFF2·TTF, SUITE Variable WOFF2, 유효한 WOFF 1을 검증 입력으로 확보한다. 원본 라이선스와 버전/해시를 기록한다.
+- [x] 현재 browser-wasm SkiaSharp 빌드에서 TTF/OTF/WOFF/WOFF2 직접 등록 가능 여부를 작은 로딩 검증으로 구분한다. CanvasKit의 지원 결과를 Doroti의 SkiaSharp 지원 결과로 간주하지 않는다.
+- [x] SUITE 해제 후 `fvar`/`gvar` 등 가변 정보 보존과 SkiaSharp clone API/네이티브 export를 확인한다. API가 없으면 바인딩 확장 또는 호환 버전 도입을 별도 변경으로 처리한다.
+- [x] 앱 상대 URL을 실제 worker fetch로 읽어 200·정상 바이트·시그니처를 검증한다. HTML fallback 응답, 빈 응답, 하위 경로 배포를 확인한다.
 
 완료 기준: 포맷별 성공/실패 원인이 확인되고, SUITE를 원하는 축 좌표로 생성할 수 있는 구현 경로가 확정된다.
 
 ### 2단계 — CSS 폰트 선언 수집
 
-- [ ] 메인 스레드에 수집 모듈을 추가한다. 시작 시 활성 `<link rel="stylesheet">`, `<style>`, 접근 가능한 stylesheet를 조사하여 `@font-face`를 추출한다.
-- [ ] 일반 외부 링크의 CSSOM 접근 실패 시 CORS fetch를 수행한다. fetch의 최종 응답 URL을 기준으로 상대 폰트 URL과 `@import`를 해석한다. 인라인 CSS는 `document.baseURI` 기준으로 해석한다.
-- [ ] family, weight 범위, style, stretch, unicode-range, source 후보, variation 설정, 원본 CSS URL을 공통 descriptor로 보존한다. CSS alias와 폰트 내부 family 이름을 구분한다.
-- [ ] CSS 전체를 정규식 하나로 파싱하지 않는다. 검증된 파서 또는 CSSOM을 이용하되 `@import`, 중첩 조건, 주석/escape/따옴표/URL 쉼표를 다룬다. `CSSStyleSheet.replace()`는 `@import`를 제거하므로 import 탐색을 별도 처리한다.
-- [ ] `@media`/`@supports`와 disabled stylesheet의 활성 여부, import 순환/깊이/중복을 처리한다. 지원하지 않는 descriptor는 진단에 남기고 완전한 CSS 동작을 지원한다고 표기하지 않는다.
-- [ ] 신규 옵션 후보 `DiscoverCssFonts`로 자동 발견을 제어한다. 일반 모드는 기본 활성화하고 `AssetsOnly`는 자동 외부 CSS 탐색을 비활성화한다. 로컬 CSS를 쓰는 폐쇄형 구성에는 명시적인 로컬 stylesheet 목록/동일 출처 제한을 제공한다. 옵션명은 구현 시 확정한다.
+- [x] 메인 스레드에 수집 모듈을 추가한다. 시작 시 활성 `<link rel="stylesheet">`, `<style>`, 접근 가능한 stylesheet를 조사하여 `@font-face`를 추출한다.
+- [x] 일반 외부 링크의 CSSOM 접근 실패 시 CORS fetch를 수행한다. fetch의 최종 응답 URL을 기준으로 상대 폰트 URL과 `@import`를 해석한다. 인라인 CSS는 `document.baseURI` 기준으로 해석한다.
+- [x] family, weight 범위, style, stretch, unicode-range, source 후보, variation 설정, 원본 CSS URL을 공통 descriptor로 보존한다. CSS alias와 폰트 내부 family 이름을 구분한다.
+- [x] CSS 전체를 정규식 하나로 파싱하지 않는다. 검증된 파서 또는 CSSOM을 이용하되 `@import`, 중첩 조건, 주석/escape/따옴표/URL 쉼표를 다룬다. `CSSStyleSheet.replace()`는 `@import`를 제거하므로 import 탐색을 별도 처리한다.
+- [x] `@media`/`@supports`와 disabled stylesheet의 활성 여부, import 순환/깊이/중복을 처리한다. 지원하지 않는 descriptor는 진단에 남기고 완전한 CSS 동작을 지원한다고 표기하지 않는다.
+- [x] 신규 옵션 후보 `DiscoverCssFonts`로 자동 발견을 제어한다. 일반 모드는 기본 활성화하고 `AssetsOnly`는 자동 외부 CSS 탐색을 비활성화한다. 로컬 CSS를 쓰는 폐쇄형 구성에는 명시적인 로컬 stylesheet 목록/동일 출처 제한을 제공한다. 옵션명은 구현 시 확정한다.
 
 완료 기준: 사용자가 제시한 Galmuri 링크와 원본 SUITE CSS에서 올바른 descriptor·절대 URL을 생성한다.
 
 ### 3단계 — worker 전달과 공통 다운로드/등록
 
-- [ ] `doroti.web.ts` 및 실제 시작 메시지 경로에서 descriptor를 render worker로 전달한다. DOM 접근은 메인 스레드에서, 디코딩/Skia 등록은 폰트 컬렉션 소유 스레드에서 수행한다.
-- [ ] `DorotiWebWorkerRunner`/`BrowserStartupFonts`에 CSS 폰트를 합류시킨다. 명시적 앱 에셋을 우선하고, CSS face는 문서 순서를 보존한다. 기본 family 유효성 검사를 CSS 등록 목록까지 포함하도록 수정한다.
-- [ ] 최초 버전은 시작 시 발견한 유효 face를 제한된 동시성으로 로드하여 첫 레이아웃 전에 등록한다. CSS `font-display: swap`과 같은 브라우저 표시 시간 정책까지 동일하게 구현했다고 주장하지 않는다.
-- [ ] 파일 다운로드·디코딩은 URL/내용 기준으로 공유하고, alias/style별 등록은 별도로 유지한다. CSS source 후보 실패 시 다음 지원 후보로 넘어간다.
-- [ ] WOFF2는 기존 디코더를 공통 경로로 정리한다. WOFF 1 직접 지원이 없으면 검증된 해제 경로로 SFNT를 복원한다. 시그니처, 길이, 출력 크기, 손상 데이터, 취소/시간 제한을 검증한다.
-- [ ] 암묵적으로 발견한 CSS의 실패는 출처/family/이유를 진단하고 기존 폴백으로 계속한다. 앱이 필수로 지정한 에셋·기본 폰트 실패는 명시적 시작 오류로 유지한다.
-- [ ] 등록 완료 시 기존 `Changed`/`fontsChange` 경로를 이용한다. 여러 face 등록은 가능한 한 통지를 묶고, dispose 이후 지연 등록을 막는다.
-- [ ] CSP의 `style-src`/`font-src` 외에 직접 fetch의 `connect-src`, 디코더 모듈의 `script-src` 및 WASM 정책, 현재 worker의 COOP/COEP 조건을 실제 환경에서 확인한다.
+- [x] `doroti.web.ts` 및 실제 시작 메시지 경로에서 descriptor를 render worker로 전달한다. DOM 접근은 메인 스레드에서, 디코딩/Skia 등록은 폰트 컬렉션 소유 스레드에서 수행한다.
+- [x] `DorotiWebWorkerRunner`/`BrowserStartupFonts`에 CSS 폰트를 합류시킨다. 명시적 앱 에셋을 우선하고, CSS face는 문서 순서를 보존한다. 기본 family 유효성 검사를 CSS 등록 목록까지 포함하도록 수정한다.
+- [x] 최초 버전은 시작 시 발견한 유효 face를 제한된 동시성으로 로드하여 첫 레이아웃 전에 등록한다. CSS `font-display: swap`과 같은 브라우저 표시 시간 정책까지 동일하게 구현했다고 주장하지 않는다.
+- [x] 파일 다운로드·디코딩은 URL/내용 기준으로 공유하고, alias/style별 등록은 별도로 유지한다. CSS source 후보 실패 시 다음 지원 후보로 넘어간다.
+- [x] WOFF2는 기존 디코더를 공통 경로로 정리한다. WOFF 1 직접 지원이 없으면 검증된 해제 경로로 SFNT를 복원한다. 시그니처, 길이, 출력 크기, 손상 데이터, 취소/시간 제한을 검증한다.
+- [x] 암묵적으로 발견한 CSS의 실패는 출처/family/이유를 진단하고 기존 폴백으로 계속한다. 앱이 필수로 지정한 에셋·기본 폰트 실패는 명시적 시작 오류로 유지한다.
+- [x] 등록 완료 시 기존 `Changed`/`fontsChange` 경로를 이용한다. 여러 face 등록은 가능한 한 통지를 묶고, dispose 이후 지연 등록을 막는다.
+- [x] CSP의 `style-src`/`font-src` 외에 직접 fetch의 `connect-src`, 디코더 모듈의 `script-src` 및 WASM 정책, 현재 worker의 COOP/COEP 조건을 실제 환경에서 확인한다.
 
 완료 기준: CSS 링크만 추가한 Galmuri와 로컬 SUITE가 Doroti 텍스트에서 실제로 선택되며, 에셋 모드에서는 의도하지 않은 외부 요청이 없다.
 
 ### 4단계 — face 선택과 가변 굵기 적용
 
-- [ ] CSS weight/style/stretch와 파일 메타데이터를 구분해서 등록한다. Galmuri11의 normal/condensed가 같은 weight라는 이유로 잘못 선택되지 않도록 width matching을 반영한다. stretch를 지정할 공개 API가 없다면 normal 선택을 보장하고 condensed 선택 지원 범위를 명시한다.
-- [ ] family 요청과 glyph coverage를 함께 매칭한다. 동일 family의 여러 `unicode-range` subset이 뒤에 등록된 face 하나로 덮이지 않도록 한다.
-- [ ] `fontWeight`를 `wght` 좌표에 연결하고 `fontVariations`의 명시적 축 설정 우선순위 및 축 범위 처리를 정의한다. SUITE 기본 좌표 300 대신 요청한 400을 실제로 생성한다.
-- [ ] variation 좌표를 정규화하여 typeface/text/paragraph/picture 캐시 키와 필요한 worker 직렬화에 포함한다. 측정과 그리기에서 같은 typeface를 사용한다.
-- [ ] 가변 축으로 처리한 굵기에 synthetic bold를 중복 적용하지 않는다. clone 캐시는 상한/해제를 갖추고 등록 변경 시 관련 캐시를 무효화한다.
+- [x] CSS weight/style/stretch와 파일 메타데이터를 구분해서 등록한다. Galmuri11의 normal/condensed가 같은 weight라는 이유로 잘못 선택되지 않도록 width matching을 반영한다. stretch를 지정할 공개 API가 없다면 normal 선택을 보장하고 condensed 선택 지원 범위를 명시한다.
+- [x] family 요청과 glyph coverage를 함께 매칭한다. 동일 family의 여러 `unicode-range` subset이 뒤에 등록된 face 하나로 덮이지 않도록 한다.
+- [x] `fontWeight`를 `wght` 좌표에 연결하고 `fontVariations`의 명시적 축 설정 우선순위 및 축 범위 처리를 정의한다. SUITE 기본 좌표 300 대신 요청한 400을 실제로 생성한다.
+- [x] variation 좌표를 정규화하여 typeface/text/paragraph/picture 캐시 키와 필요한 worker 직렬화에 포함한다. 측정과 그리기에서 같은 typeface를 사용한다.
+- [x] 가변 축으로 처리한 굵기에 synthetic bold를 중복 적용하지 않는다. clone 캐시는 상한/해제를 갖추고 등록 변경 시 관련 캐시를 무효화한다.
 
 완료 기준: SUITE의 300/400/500/700/900과 명시적 중간 `wght` 좌표가 실제 outline에 반영되고, 폭·줄바꿈·커서/선택 영역이 표시 결과와 맞는다.
 
 ### 5단계 — 샘플과 사용 문서
 
-- [ ] SampleApp2에 Roboto/Galmuri11/SUITE Variable을 전환하고 굵기를 비교하는 화면을 추가한다. 한글/영문/숫자/줄바꿈과 편집 가능한 입력을 포함한다.
-- [ ] CSS CDN, 로컬 CSS+WOFF2, URL 에셋, 내장 리소스 예제를 제공한다. 기존 `DorotiSampleWebFontSource=Assets` 사용법과 기본 CDN 모드가 계속 동작하게 한다.
-- [ ] 로컬 decoder 패키징을 opt-in으로 제공하고 JS 상대 import/WASM 자산도 함께 publish되도록 한다. 기본 웹 패키지의 외부 폰트 번들 정책과 혼동하지 않는다.
-- [ ] `Fonts/README.md`에 family 선택, 가변 굵기, CORS 오류, 하위 경로 배포, 폴백, 지원 CSS 범위, 라이선스 포함 방법을 기록한다.
+- [x] SampleApp2에 Roboto/Galmuri11/SUITE Variable을 전환하고 굵기를 비교하는 화면을 추가한다. 한글/영문/숫자/줄바꿈과 편집 가능한 입력을 포함한다.
+- [x] CSS CDN, 로컬 CSS+WOFF2, URL 에셋, 내장 리소스 예제를 제공한다. 기존 `DorotiSampleWebFontSource=Assets` 사용법과 기본 CDN 모드가 계속 동작하게 한다.
+- [x] 로컬 decoder 패키징을 opt-in으로 제공하고 JS 상대 import/WASM 자산도 함께 publish되도록 한다. 기본 웹 패키지의 외부 폰트 번들 정책과 혼동하지 않는다.
+- [x] `Fonts/README.md`에 family 선택, 가변 굵기, CORS 오류, 하위 경로 배포, 폴백, 지원 CSS 범위, 라이선스 포함 방법을 기록한다.
 
 ## 6. 검증과 완료 기준
 
@@ -176,3 +178,102 @@ new BrowserFontFallbackOptions
 ## 7. 후속 확장 범위
 
 첫 완료 범위는 시작 시 선언된 CSS/에셋과 SUITE의 실제 가변 굵기다. 이후 동적 `<link>` 삽입·CSSOM 변경 감지/재스캔 API, family/weight/문자별 지연 다운로드를 추가할 수 있다. 대규모 unicode-range CSS는 최초 버전의 전체 preload가 비효율적일 수 있으므로 전송량/시작 시간을 측정하고 한계를 명시한다. 원격 폰트를 무제한 미리 받거나 브라우저 CSS 전체와 동일하다고 간주하지 않는다.
+
+
+## 8. 구현 결과와 검증 기록
+
+### 완료한 경로
+
+- `doroti.web.css-fonts.ts`: CSSOM 우선 수집, 외부 CSS CORS fetch, 최종 URL 기준
+  상대 주소, import 순환/깊이/중복, media/supports/layer, source 대안과 descriptor 보존.
+  CSS 전체를 단일 정규식으로 파싱하지 않고 브라우저 CSS parser와 경계 scanner를 사용한다.
+- `BrowserCssFonts` / worker `css-fonts` request: DOM 수집 결과를 기존 제어 채널로 넘긴다.
+  `DiscoverCssFonts`, `CssFontsSameOriginOnly`, `CssStylesheets`를 구현했다.
+  `AssetsOnly`에서는 자동 수집이 꺼지고, 명시한 로컬 CSS만 같은 출처 제한으로 처리한다.
+- `BrowserStartupFonts` / `BrowserFontAsset`: 4개 동시 다운로드, URL 및 내용 hash 공유,
+  source 실패 시 다음 후보, 크기/취소/시간 제한, HTML fallback 응답 거부,
+  CSS 기본 family 검사와 명시적 에셋 우선순위. 첫 뷰 생성 전 등록하므로 중간 face마다
+  레이아웃하지 않는다. 이후 등록은 기존 Changed/cache invalidation/fontsChange 경로를 쓴다.
+- `BrowserFontData`: 실제 브라우저 Skia의 WOFF2 직접 지원을 파일별로 확인한다.
+  미지원이면 기존 전용 디코더로 처리한다. WOFF1은 일관된 크기·테이블 checksum 검증을
+  위해 SFNT로 정규화한다. Windows native와 browser-wasm 지원 결과를 혼동하지 않는다.
+- `SkiaFontFaceDescriptor` / `SkiaFallbackFontCollection`: CSS alias, weight 범위,
+  slant/width, unicode-range와 실제 glyph coverage를 함께 매칭한다. Galmuri normal이
+  뒤의 condensed에 가려지지 않고 같은 family의 subset이 보존된다.
+- `SkiaFontVariations` / `SkiaSceneRenderer`: 요청 weight→wght, 명시 축 우선,
+  범위 clamp, 측정·그리기의 동일한 clone, 축 값을 포함한 정규화 text cache key,
+  가변 weight의 중복 synthetic bold 방지. Clone은 기존 256-entry text LRU에 소유되어
+  eviction/폰트 변경 때 해제된다. DisplayList/paragraph/picture의 기존 축 전달도 확인했다.
+- SampleApp2 **Fonts** 탭: 세 family 전환, 300/400/500/700/900 비교, 연속 wght,
+  한글/영문/숫자, 여러 줄 편집 입력. 기존 Components/Profile/Settings/Variable Blur 탭 유지.
+- 로컬 SUITE 원본 CSS/WOFF2/LICENSE, opt-in Galmuri 에셋, Roboto EmbeddedResource,
+  `DorotiBundleWoff2Decoder` 옵션을 제공한다. Assets 모드는 자동으로 로컬 디코더를 포함한다.
+  SDK에 `DorotiWebWwwrootExclude`를 추가하여 에셋 전용 HTML과 기본 HTML의 충돌을 해결했다.
+- 사용법과 CORS/CSP/하위 경로/지원 범위/라이선스는
+  `Doroti/src/Doroti.Host.Web/Fonts/README.md`, 실행 절차는
+  `Doroti/validation/css-fonts/README.md`에 기록했다.
+
+### 실제 포맷 및 축 결과
+
+browser-wasm **실제 render owner**에서 읽은 파일 결과:
+
+| 포맷/fixture | 원본 바이트 | 직접 등록한 glyph 수 | 결과 |
+| --- | ---: | ---: | --- |
+| Galmuri11 TTF | 5,376,428 | 20,968 | PASS |
+| MaterialIcons OTF | 1,645,184 | 8,661 | PASS |
+| Galmuri11 WOFF1 | 878,860 | 20,968 | PASS |
+| SUITE Variable WOFF2 | 535,788 | 2,953 | PASS |
+
+SUITE 2.040의 300/400/450/500/700/900은 요청한 좌표와 native typeface 좌표가
+모두 일치했고, 글리프 A의 outline SHA-256이 모두 달랐다. 직접 WOFF2 경로에서도
+535,788바이트를 그대로 등록해 이 결과를 얻었다. 별도 실제 JS/WASM 디코더 검증에서는
+SUITE를 1,332,100바이트 SFNT로 해제했고 fvar/gvar 및 300~900 축을 보존했다.
+Windows native 검사에서는 TTF 성공, WOFF/WOFF2 직접 로딩 실패였다.
+SkiaSharp 객체의 생성 여부만이 아니라 glyph 수와 실제 축/outline을 확인한 결과다.
+
+### 자동·화면 검증
+
+| 항목 | 결과 |
+| --- | --- |
+| 실제 CSS parser / CORS / import / redirect / source / same-origin | PASS — `collect.cjs` |
+| 실제 WOFF2 해제, malformed header 및 WOFF1 checksum/정규화 | PASS — `decode.mjs`, C# css-fonts |
+| native renderer 5개 굵기 픽셀, 중간 450, 측정, clamp, subset, condensed | PASS |
+| publish 루트 `/` | PASS — 실제 Doroti 캔버스, 폰트 전환/굵기 slider/입력 |
+| publish 하위 `/sample/` | PASS — base href 조정, 폰트/디코더 200 및 정상 바이트 |
+| 외부 통신 없는 폰트 구성 | PASS — 외부 origin 차단 상태에서 루트/하위 경로 각각 외부 요청 0건 |
+| 브라우저 입력/커서/선택/줄바꿈 | PASS — 144자 한글·영문 입력, CDP 조합 완료, 키보드 선택, viewport 재배치 |
+| 실제 물리 키보드·OS 한글 IME | **notVerified** — CDP 조합 입력과 구분 |
+| 기존 font-assets / font-downloads / font-resolution | PASS |
+| 기존 Cupertino 샘플 레이아웃/탭/입력/다이얼로그/테마 | PASS |
+| 원본 Galmuri URL 기본 CDN 모드 | PASS — `cdn.cjs`, 실제 캔버스에서 Galmuri/SUITE 전환 |
+
+모든 검증 프로세스에 `run-with-timeout.py`의 1,200초 제한을 적용했다.
+Disposable evidence: `Doroti/artifacts/css-fonts/browser-report.json`,
+`collector.json`, `offline-suite-{root,nested}.png`, `offline-galmuri-{root,nested}.png`,
+`selection-{root,nested}.png`, `wrap-{root,nested}.png`, `suite-{weight}.png`.
+산출물 정리 후 이 파일들이 남아 있다고 간주하지 않는다.
+
+### 지원 범위와 실제 확인한 제한
+
+- 브라우저 전체 CSS font matching/`font-display` 정책, 동적 link/CSSOM 재스캔,
+  glyph별 CSS lazy loading은 이번 완료 범위가 아니다. 시작 시 유효 face를 preload한다.
+- 최대 CSS 64개, 깊이 8, face 128개, CSS당 2 MB, 수집 20초, 폰트당 30 MB.
+  대규모 subset CSS는 전송량/시작 시간을 늘리므로 명시 에셋을 권장한다.
+- 일반 위젯 API는 normal width를 선택한다. condensed는 별도 family alias로 명시할 수 있다.
+  oblique 각도/stretch 범위는 완전 지원으로 주장하지 않는다.
+- 같은 출처 전용 CSS 모드는 외부 요청을 막기 위해 redirect 자체를 거부한다.
+- pin된 `woff2-encoder@2.0.0` JS는 WASM을 내부 base64로 포함한다. 상대 import나
+  별도 WASM 파일은 없고 JS와 LICENSE를 publish한다. 이 호환 디코더가 실행되는
+  구성은 CSP `script-src 'unsafe-eval'`도 필요하다. `wasm-unsafe-eval`만 허용한
+  구성의 실제 실패를 확인했으며, 문서와 성공 검증 policy에 반영했다.
+- 폰트/디코더는 sample opt-in 자산이며 Doroti.Host.Web 기본 패키지에 강제로 넣지 않는다.
+
+
+기본 CDN 모드 최종 확인: 원본 `https://cdn.jsdelivr.net/npm/galmuri/dist/galmuri.css`
+링크를 사용하고 Roboto/Noto 및 로컬 SUITE를 함께 표시했다. 이 실행의 폰트 응답은
+14개, 본문 합계 6,344,096바이트, 탐색 시작부터 worker ready까지 약 6.96초였다.
+WASM 초기화/네트워크를 포함한 단일 관측이며 성능 보장이나 반복 benchmark는 아니다.
+호환 디코더 CDN 요청도 실제 있었으므로 모든 WOFF2가 디코더 없이 동작한다고 주장하지 않는다.
+Assets 실행은 그 디코더까지 같은 출처로 제공하여 외부 요청 0건이었다.
+기본 웹 Release 빌드는 경고 0개/오류 0개로 완료했고, opt-in probe가 없는 일반 빌드로
+기존 개발 서버를 재시작해 최종 화면을 확인했다.

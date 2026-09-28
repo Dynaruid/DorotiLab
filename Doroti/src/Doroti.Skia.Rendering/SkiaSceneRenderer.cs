@@ -2426,7 +2426,8 @@ public sealed partial class SkiaSceneRenderer
             System.Text.Json.JsonSerializer.Serialize(
                 style?.fontFamilyFallback ?? [],
                 SkiaRenderingJsonContext.Default.IReadOnlyListString
-            )
+            ),
+            SkiaFontVariations.Key(style?.fontVariations)
         );
         if (_textRenderResources.TryGetValue(key, out var resources))
         {
@@ -2455,7 +2456,8 @@ public sealed partial class SkiaSceneRenderer
             color,
             _fallbackFonts,
             key,
-            style?.fontFamilyFallback
+            style?.fontFamilyFallback,
+            style?.fontVariations
         );
         resources.Node = _textRenderOrder.AddLast(key);
         _textRenderResources.Add(key, resources);
@@ -2575,7 +2577,8 @@ public sealed partial class SkiaSceneRenderer
         bool Italic,
         float LetterSpacing,
         float WordSpacing,
-        string FallbackFamilies
+        string FallbackFamilies,
+        string Variations
     );
 
     private sealed class TextRenderResources : IDisposable
@@ -2591,6 +2594,8 @@ public sealed partial class SkiaSceneRenderer
         private readonly SkiaFallbackFontCollection? _registeredFallbacks;
         private readonly SKFontStyle _fontStyle;
         private readonly string[] _preferredFamilies;
+        private readonly IReadOnlyList<FontVariation>? _variations;
+        private readonly SKTypeface _primarySource;
         private readonly float _letterSpacing,
             _wordSpacing;
         private readonly Dictionary<int, TextFontResource> _fallbackByCodePoint = [];
@@ -2604,10 +2609,12 @@ public sealed partial class SkiaSceneRenderer
             SKColor color,
             SkiaFallbackFontCollection? registeredFallbacks,
             TextRenderKey key,
-            IReadOnlyList<string>? fallbackFamilies
+            IReadOnlyList<string>? fallbackFamilies,
+            IReadOnlyList<FontVariation>? variations
         )
         {
             _registeredFallbacks = registeredFallbacks;
+            _variations = SkiaFontVariations.Normalize(variations);
             _letterSpacing = key.LetterSpacing;
             _wordSpacing = key.WordSpacing;
             _fontStyle = new SKFontStyle(
@@ -2649,6 +2656,7 @@ public sealed partial class SkiaSceneRenderer
                     ?? SKTypeface.FromFamilyName(null, _fontStyle);
                 ownsPrimary = true;
             }
+            _primarySource = primary;
             _primary = CreateFont(primary, fontSize, ownsPrimary);
             Paint = new SKPaint { Color = color, IsAntialias = true };
         }
@@ -2678,11 +2686,20 @@ public sealed partial class SkiaSceneRenderer
 
         private TextFontResource CreateFont(SKTypeface typeface, float size, bool ownsTypeface)
         {
+            var descriptor = _registeredFallbacks?.Descriptor(typeface);
+            var clone = SkiaFontVariations.Clone(typeface, _fontStyle.Weight,
+                (_registeredFallbacks?.Variations(typeface) ?? []).Concat(_variations ?? []).ToArray(), out var variableWeight);
+            if (clone is not null)
+            {
+                if (ownsTypeface) typeface.Dispose();
+                typeface = clone;
+                ownsTypeface = true;
+            }
             var resource = new TextFontResource(typeface, size, ownsTypeface);
             // Match Flutter/Skia's synthetic styles when a family lacks a face.
-            resource.Font.Embolden = _fontStyle.Weight >= 600 && typeface.FontWeight < 600;
+            resource.Font.Embolden = !variableWeight && _fontStyle.Weight >= 600 && (descriptor?.WeightMax ?? typeface.FontWeight) < 600;
             resource.Font.SkewX = _fontStyle.Slant != SKFontStyleSlant.Upright
-                && typeface.FontSlant == SKFontStyleSlant.Upright ? -.25f : 0;
+                && (descriptor?.Slant ?? typeface.FontSlant) == SKFontStyleSlant.Upright ? -.25f : 0;
             return resource;
         }
 
@@ -2828,7 +2845,7 @@ public sealed partial class SkiaSceneRenderer
 
         private TextFontResource ResolveFont(int codePoint)
         {
-            if (_primary.Font.ContainsGlyph(codePoint))
+            if (_primary.Font.ContainsGlyph(codePoint) && (_registeredFallbacks?.Covers(_primarySource, codePoint) ?? true))
             {
                 return _primary;
             }
@@ -2846,16 +2863,17 @@ public sealed partial class SkiaSceneRenderer
             // missing primary family. Keep it ahead of host/global fallbacks.
             foreach (var family in _preferredFamilies)
             {
-                if (!_fallbackByFamily.TryGetValue(family, out var preferred))
+                var face = _registeredFallbacks?.MatchFamily(family, _fontStyle, codePoint);
+                var ownsFace = face is null;
+                face ??= MatchPlatformFamily(family, _fontStyle);
+                if (face is null) continue;
+                var faceKey = $"preferred:{family}:{face.Handle}";
+                if (!_fallbackByFamily.TryGetValue(faceKey, out var preferred))
                 {
-                    var face = _registeredFallbacks?.MatchFamily(family, _fontStyle);
-                    var ownsFace = face is null;
-                    face ??= MatchPlatformFamily(family, _fontStyle);
-                    if (face is null)
-                        continue;
                     preferred = CreateFont(face, _primary.Font.Size, ownsFace);
-                    _fallbackByFamily.Add(family, preferred);
+                    _fallbackByFamily.Add(faceKey, preferred);
                 }
+                else if (ownsFace) face.Dispose();
                 if (preferred.Font.ContainsGlyph(codePoint))
                 {
                     _fallbackByCodePoint.Add(codePoint, preferred);

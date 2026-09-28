@@ -39,6 +39,8 @@ public static class DorotiWebWorkerRunner
             manifestAssembly
         );
         fontFallbackOptions ??= new();
+        if (fontFallbackOptions.DecoderUrl is { IsAbsoluteUri: false })
+            fontFallbackOptions = fontFallbackOptions with { DecoderUrl = new Uri(baseAddress, fontFallbackOptions.DecoderUrl) };
         _target = new BrowserWasmTarget(defaultFontFamily: fontFallbackOptions.DefaultFamily);
         _http = new HttpClient { Timeout = Timeout.InfiniteTimeSpan };
         try
@@ -48,7 +50,8 @@ public static class DorotiWebWorkerRunner
             )
             {
                 await BrowserStartupFonts.LoadBrowserAsync(fontFallbackOptions, _http, baseAddress,
-                    (bytes, family) => _target.RegisterFont(bytes, family), fontTimeout.Token);
+                    (bytes, family) => _target.RegisterFont(bytes, family), fontTimeout.Token,
+                    (bytes, family, face) => _target.RegisterCssFont(bytes, family, face));
             }
         }
         catch

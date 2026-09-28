@@ -56,11 +56,11 @@ CDN에서 Roboto와 전체 Noto Sans KR을 로드합니다. 한글 자모와 11,
 그 외 문자권과 컬러 이모지는 필요한 Noto 폰트 조각을 자동 다운로드합니다.
 힌트를 비우면 Roboto만 미리 로드하는 기본 동작으로 돌아갑니다.
 Flutter의 CanvasKit/Skwasm처럼 엔진에 폰트 파일을
-등록하며, CSS나 브라우저 기본 폰트를 직접 사용하지 않습니다. 폰트가 추가되면 글자 폭과
+등록합니다. CSS 링크의 @font-face도 바이트로 읽어 등록하며, DOM body의 font-family는 상속하지 않습니다. 폰트가 추가되면 글자 폭과
 레이아웃도 자동 갱신됩니다. 네이티브의 기본/미해결 Cupertino 폰트는 플랫폼 UI 폰트로
 연결합니다. CDN 변경·다운로드 비활성화와 지원 범위는
 [자동 웹 폰트 안내](../../Doroti/src/Doroti.Host.Web/Fonts/README.md)에 있습니다.
-기본 CDN 모드의 웹 빌드는 폰트 파일을 다운로드하거나 포함하지 않습니다. 네이티브 빌드는 Roboto를 CDN에서
+기본 CDN 모드는 Roboto/Noto와 Galmuri를 CDN에서 읽고, 비교용 SUITE는 로컬 CSS/WOFF2로 포함합니다. 네이티브 빌드는 Roboto를 CDN에서
 받아 DLL에 포함하므로 실행 시에는 폰트 다운로드가 필요 없습니다.
 
 웹에서도 선택적으로 기본 폰트를 앱 에셋에 포함할 수 있습니다:
@@ -71,7 +71,7 @@ dotnet run --project ./samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj 
 
 이 모드는 기존 샘플의 Roboto 3종과 라이선스를 웹 DLL에 포함하고, 기본 폰트 CDN 및
 언어·이모지 자동 다운로드를 끕니다. 설정은 [web/WebFonts.cs](web/WebFonts.cs)에 있습니다.
-한글 등 Roboto에 없는 글자는 필요한 폰트도 직접 에셋으로 추가해야 합니다.
+Fonts 탭의 Galmuri/SUITE와 디코더도 로컬로 포함하므로 이 화면은 외부 폰트 요청 없이 동작합니다. SUITE에 없는 한글은 Galmuri로 폴백합니다. 다른 문자/이모지가 필요하면 그 폰트도 직접 포함하세요.
 옵션을 생략하면 기존 CDN 모드로 실행됩니다. 모드를 바꿀 때는 개발 서버를 재시작합니다.
 
 워크스페이스 CLI에서도 `-App ./samples/DorotiSampleApp2 -Platform windows` 또는 `-Platform web`으로 선택할 수 있습니다.
@@ -106,3 +106,21 @@ GPU 렌더링 픽셀 변화를 확인합니다. 실제 물리 트랙패드 입�
 `--frame-benchmark`는 프레임 구성과 GPU 완료까지 측정하며 창 표시 FPS가 아닙니다.
 실제 Windows 창을 PowerShell로 조작하는 측정 절차와 결과는
 [VariableBlur 성능 기록](../../Doroti/validation/backdrop-filters/variable-blur-performance.md)에 있습니다.
+
+
+## 웹폰트 비교
+
+**Fonts** 탭에서 Roboto/Galmuri11/SUITE Variable을 전환합니다. 300/400/500/700/900
+행과 연속 wght 슬라이더, 한글·영문·숫자, 편집 가능한 여러 줄 입력을 제공합니다.
+Galmuri는 일반 HTML CSS 링크, SUITE는 원본 로컬 CSS/WOFF2 등록 예제입니다.
+일반 모드의 디코더만 로컬로 묶으려면 `-p:DorotiBundleWoff2Decoder=true`를 사용합니다.
+`Assets` 모드는 기본 폰트뿐 아니라 CSS와 디코더도 외부 요청 없이 제공합니다.
+
+```powershell
+python Doroti/validation/run-with-timeout.py dotnet publish samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj -c Release -p:DorotiSampleWebFontSource=Assets -o Doroti/artifacts/sample2-fonts
+```
+
+`wwwroot`를 COOP/COEP 헤더가 있는 서버로 제공하세요. `/sample/` 배포에서는 HTML의
+base href도 `/sample/`로 바꿉니다. 디코더 CSP와 CSS 지원 범위는
+[폰트 사용 문서](../../Doroti/src/Doroti.Host.Web/Fonts/README.md#css-links-and-variable-fonts)를 참고하세요.
+검증 절차는 [css-fonts](../../Doroti/validation/css-fonts/README.md)에 있습니다.

@@ -25,8 +25,15 @@ public static class App
         terminateAfterLastWindowClosed: true
     );
 
+#if DOROTI_FONT_PROBE
+    public static Func<Task>? ValidateFontsAsync { get; set; }
+#endif
+
     private static async Task LoadIconsAsync()
     {
+#if DOROTI_FONT_PROBE
+        if (ValidateFontsAsync is not null) await ValidateFontsAsync();
+#endif
         using var stream = typeof(App).Assembly.GetManifestResourceStream("CupertinoSample.icons.ttf")
             ?? throw new InvalidOperationException("Cupertino icon font is missing.");
         using var buffer = new MemoryStream();
@@ -67,12 +74,14 @@ internal sealed class CupertinoSampleState : State<CupertinoSample>
                 new(icon: new Icon(CupertinoIcons.person), label: "Profile"),
                 new(icon: new Icon(CupertinoIcons.settings), label: "Settings"),
                 new(icon: new Icon(CupertinoIcons.list_bullet), label: "Variable Blur"),
+                new(icon: new Icon(CupertinoIcons.textformat), label: "Fonts"),
             }),
             tabBuilder: (tabContext, index) => index switch
             {
                 1 => Profile(tabContext),
                 2 => Settings(tabContext),
                 3 => new VariableBlurPage(),
+                4 => new FontComparisonPage(),
                 _ => Components(tabContext),
             }
         )

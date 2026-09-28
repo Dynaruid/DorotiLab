@@ -6,6 +6,9 @@
     <DorotiUseRepositoryProjects>true</DorotiUseRepositoryProjects>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(DorotiWebFontValidation)' == 'true'">
+    <DefineConstants>$(DefineConstants);DOROTI_FONT_PROBE</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="assets/fonts/CupertinoIcons.ttf" LogicalName="CupertinoSample.icons.ttf" />
     <ProjectReference Include="..\..\Doroti\src\Doroti.Hosting\Doroti.Hosting.csproj" />

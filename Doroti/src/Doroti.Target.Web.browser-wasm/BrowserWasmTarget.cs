@@ -67,6 +67,9 @@ public sealed class BrowserWasmTarget : IDorotiBrowserTarget
     public string Rid => Identity.Rid;
     public string GraphicsBackend => Identity.GraphicsBackend;
 
+    public void RegisterCssFont(ReadOnlyMemory<byte> bytes, string family, Doroti.Skia.Rendering.SkiaFontFaceDescriptor descriptor) =>
+        _host.RegisterCssFont(bytes, family, descriptor);
+
     public string RegisterFont(ReadOnlyMemory<byte> bytes)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);

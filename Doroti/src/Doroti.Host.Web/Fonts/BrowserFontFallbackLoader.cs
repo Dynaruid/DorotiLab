@@ -6,6 +6,9 @@ namespace Doroti.Host.Web;
 
 public sealed record BrowserFontFallbackOptions
 {
+    public bool DiscoverCssFonts { get; init; } = true;
+    public bool CssFontsSameOriginOnly { get; init; }
+    public IReadOnlyList<string> CssStylesheets { get; init; } = [];
     public bool LoadDefaultFontsFromCdn { get; init; } = true;
     /// <summary>Language tags whose complete script fonts must load before the first view,
     /// e.g. ["ko", "en"]. Empty by default; unlisted scripts retain on-demand fallback.
@@ -28,6 +31,8 @@ public sealed record BrowserFontFallbackOptions
         LoadDefaultFontsFromCdn = false,
         Enabled = false,
         DecoderUrl = null,
+        DiscoverCssFonts = false,
+        CssFontsSameOriginOnly = true,
     };
 }
 

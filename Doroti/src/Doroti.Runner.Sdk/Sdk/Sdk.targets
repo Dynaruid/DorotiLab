@@ -405,7 +405,7 @@
       <_DorotiWebWwwrootDirectory>$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)\wwwroot'))</_DorotiWebWwwrootDirectory>
     </PropertyGroup>
     <ItemGroup>
-      <_DorotiWebWwwroot Include="wwwroot\**\*" />
+      <_DorotiWebWwwroot Include="wwwroot\**\*" Exclude="$(DorotiWebWwwrootExclude)" />
       <_DorotiWebWwwroot Update="@(_DorotiWebWwwroot)">
         <RelativePath>%(RecursiveDir)%(Filename)%(Extension)</RelativePath>
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

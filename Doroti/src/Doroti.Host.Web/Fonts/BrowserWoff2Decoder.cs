@@ -11,6 +11,7 @@ internal static partial class BrowserWoff2Decoder
     {
         if (bytes.Length < 4 || bytes[0] != 'w' || bytes[1] != 'O' || bytes[2] != 'F' || bytes[3] != '2')
             return bytes;
+        if (BrowserFontData.CanUseWoff2Directly(bytes)) return bytes;
         try
         {
             _module ??= JSHost.ImportAsync("doroti.fonts", "../_content/Doroti.Host.Web/doroti.web.fonts.js");

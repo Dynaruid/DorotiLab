@@ -1,3 +1,4 @@
+import { collectCssFonts, type CssFontOptions } from "./doroti.web.css-fonts.js";
 import { selectRendererPolicy, resolveRendererPolicy, initialCanvasCapacity } from "./doroti.web.policy.js";
 import type { RendererPolicy } from "./doroti.web.policy.js";
 import type { BrowserPlatformComposition, CompositionPacket, RasterPacket } from "./doroti.web.composition.js";
@@ -1284,6 +1285,11 @@ export function closeHost(hostId: number): void {
   hosts.delete(hostId);
 }
 
+export async function discoverCssFonts(optionsJson: string): Promise<string> {
+  if (activeWorkerBridge) return activeWorkerBridge.requestControl("css-fonts", { optionsJson });
+  return collectCssFonts(JSON.parse(optionsJson) as CssFontOptions);
+}
+
 export function resolveResourceUrl(relativeUrl: string): string {
   if (activeWorkerBridge) return activeWorkerBridge.resolveResourceUrl(relativeUrl);
   return new URL(relativeUrl, document.baseURI).href;
@@ -2254,6 +2260,7 @@ export async function startDorotiWorkerHost(
               const packet = payload as unknown as CompositionPacket;
               return (await requireComposition(packet.batch.owner)).commit(packet, host.resizeEpoch.generation);
             }
+            if (kind === "css-fonts") return discoverCssFonts(String(payload.optionsJson));
             if (kind === "url-launch") return launchExternalUrl(String(payload.url));
             if (kind === "text-action") return performTextAction(Number(payload.hostId), String(payload.action), String(payload.text));
             if (kind === "haptic-feedback") {
