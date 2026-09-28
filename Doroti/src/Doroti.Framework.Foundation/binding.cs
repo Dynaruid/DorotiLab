@@ -338,7 +338,7 @@ public abstract class BindingBase : IDisposable
 
     public event Action<string, IReadOnlyDictionary<string, object?>>? serviceExtensionEvent;
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         if (_disposed)
         {

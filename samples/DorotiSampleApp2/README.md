@@ -105,7 +105,7 @@ python ./Doroti/validation/run-with-timeout.py dotnet run --project ./Doroti/val
 GPU 렌더링 픽셀 변화를 확인합니다. 실제 물리 트랙패드 입력 및 화면 표시 지연은 별도 확인 대상입니다.
 `--frame-benchmark`는 프레임 구성과 GPU 완료까지 측정하며 창 표시 FPS가 아닙니다.
 실제 Windows 창을 PowerShell로 조작하는 측정 절차와 결과는
-[VariableBlur 성능 기록](../../Doroti/validation/backdrop-filters/variable-blur-performance.md)에 있습니다.
+[VariableBlur 성능 기록](../../history/26-09-26/wgsl-gpu-effects-summary.md)에 있습니다.
 
 
 ## 웹폰트 비교
@@ -123,7 +123,7 @@ python Doroti/validation/run-with-timeout.py dotnet publish samples/DorotiSample
 `wwwroot`를 COOP/COEP 헤더가 있는 서버로 제공하세요. `/sample/` 배포에서는 HTML의
 base href도 `/sample/`로 바꿉니다. 디코더 CSP와 CSS 지원 범위는
 [폰트 사용 문서](../../Doroti/src/Doroti.Host.Web/Fonts/README.md#css-links-and-variable-fonts)를 참고하세요.
-검증 절차는 [css-fonts](../../Doroti/validation/css-fonts/README.md)에 있습니다.
+검증 절차는 [css-fonts](../../history/26-09-28/web-fonts-summary.md)에 있습니다.
 
 
 ## 공통 assets 폴더의 웹폰트

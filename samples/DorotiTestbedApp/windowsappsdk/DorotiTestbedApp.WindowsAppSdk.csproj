@@ -9,6 +9,8 @@
     <DorotiAppProject>..\DorotiTestbedApp.csproj</DorotiAppProject>
     <DorotiTarget>Windows</DorotiTarget>
     <DorotiHostKind>WindowsAppSdk</DorotiHostKind>
+    <DorotiDesktopProject>../desktop/DorotiTestbedApp.Desktop.csproj</DorotiDesktopProject>
+    <DorotiDesktopStartupType>DorotiTestbedApp.Desktop.DesktopStartup</DorotiDesktopStartupType>
     <DorotiNativeEntryKind>Win32-WinMain</DorotiNativeEntryKind>
     <DorotiWindowsAdapterDefault>HwndExactCpp</DorotiWindowsAdapterDefault>
     <UseMaui>false</UseMaui>

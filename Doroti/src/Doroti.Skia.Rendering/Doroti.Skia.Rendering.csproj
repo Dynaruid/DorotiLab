@@ -8,6 +8,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <InternalsVisibleTo Include="Doroti.Tests" />
     <EmbeddedResource Include="Shaders\variable_blur.sksl" LogicalName="Doroti.Skia.Rendering.Shaders.variable_blur.sksl" />
     <PackageReference Include="SkiaSharp" />
     <ProjectReference Include="..\Doroti.Skia.RuntimeEffects\Doroti.Skia.RuntimeEffects.csproj" />

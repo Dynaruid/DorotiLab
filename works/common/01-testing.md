@@ -1,6 +1,6 @@
 # M1. 테스트 런타임과 핵심 회귀 장면
 
-원문: [개발 로드맵](../../plan.md) §3 M1 · 우선순위: **P0 → P1** · 작업 상태: **TODO** · 실행 검증: **notVerified**
+원문: [개발 로드맵](../../plan.md) §3 M1 · 우선순위: **P0 → P1** · 작업 상태: **PARTIAL** · 실행 검증: **범위별 PASS / 나머지 notVerified**
 
 [작업 인덱스와 공통 완료 규칙](../README.md)
 
@@ -19,10 +19,10 @@
 **선행:** M0의 실행기·산출물 규칙.
 
 - [ ] 아래 임시 작업 규칙을 M0 실행기와 연결한다. 기존 검증 스크립트·테스트 프로젝트·산출물을 먼저 분류하고, 일회성 파일을 새 영구 suite로 옮겨 쌓지 않는다.
-- [ ] `Doroti.Testing`의 최소 계약을 정한다: `pumpWidget`, `pump`, 제한 시간이 있는 `pumpAndSettle`, `find.byType/byKey/text`, `tap/drag`, 키·텍스트 입력, semantics 조회.
+- [x] `Doroti.Testing`의 최소 계약을 정한다: `pumpWidget`, `pump`, 제한 시간이 있는 `pumpAndSettle`, `find.byType/byKey/text`, `tap/drag`, 키·텍스트 입력, semantics 조회.
 - [ ] 테스트가 clock/frame scheduler를 제어하도록 하고, pending timer/animation과 처리되지 않은 예외를 실패 진단에 포함한다.
 - [ ] 테스트 종료 후 binding/root/focus/texture/native resource가 남지 않게 한다. 초기에는 직렬 실행을 허용하고 static binding 격리가 검증되기 전 병렬 실행을 약속하지 않는다.
-- [ ] pointer hit test → GestureArena → callback 경로를 통과시킨다. 위젯 콜백 직접 호출만으로 입력 테스트를 통과시키지 않는다.
+- [x] pointer hit test → GestureArena → callback 경로를 통과시킨다. 위젯 콜백 직접 호출만으로 입력 테스트를 통과시키지 않는다.
 - [ ] 우선 회귀 장면을 고정한다: Cupertino 탭 전환, ListView 스크롤, 한글 조합/selection, Dialog 중간 프레임, VariableBlur viewport/DPR/축소 렌더링 크기, PlatformView 생성·해제.
 - [ ] golden 비교는 폰트·DPR·renderer·색 공간·허용 오차를 고정한다. CPU 이미지 비교, GPU offscreen 비교, 실제 화면 캡처를 별도 결과로 기록한다.
 - [ ] 테스트 실패 시 비교 이미지, 트리, frame 정보와 재현 명령을 해당 실행의 `temp/testing/` 하위에 출력한다. 외부 앱도 패키지만 참조해 간단한 위젯 테스트를 작성할 수 있게 한다.
@@ -31,7 +31,7 @@
 
 ## 임시 테스트의 배치·실행·정리
 
-아래 경로와 동작은 구현할 계획이다. `temp`는 OS 임시 폴더가 아닌 **저장소 루트의 `temp/`**를 뜻한다.
+아래 경로와 동작을 실행기에 적용했다. 상세 잔여 항목은 체크박스와 실행 결과를 함께 확인한다. `temp`는 OS 임시 폴더가 아닌 **저장소 루트의 `temp/`**를 뜻한다.
 
 | 구분 | 위치·보존 원칙 |
 | --- | --- |
@@ -57,4 +57,14 @@
 - 이 문서의 완료 기준과 플랫폼별 적용 결과를 연결하고, 미실행 조합은 `notVerified`로 유지한다.
 - 결과는 [공통 기록 형식](../README.md#결과-기록-형식)에 revision·환경·명령·기대값·실제값·남은 작업과 임시 파일 정리 여부를 남긴다. 삭제할 스크립트 경로만 재현 명령으로 남기지 않고, 기존 샘플·영구 테스트 명령 또는 임시 재현 앱의 구성 절차를 적는다.
 
-현재 기록: 임시 테스트 배치·실행·정리 계획을 반영했다. 코드·ignore·실행기는 아직 변경하지 않았으며, 기존 파일 이동·삭제와 테스트 실행도 수행하지 않았다. 작업 상태는 **TODO**, 실행 검증은 **notVerified**다.
+## 2026-09-28 실행 결과
+
+- 상태: **최소 runtime PASS / 전체 M1 PARTIAL**. revision: a93c047fe2e93d93cff3e0a6bf3c2789862fea81 + 작업 트리 변경 (미커밋).
+- `Doroti.Testing` 제품 패키지에 `WidgetTester`, `TestClock`, CPU Skia host를 추가했다. pumpWidget/pump/pumpAndSettle, predicate/type/key/text finder, tap/drag, key/text packet, semantics 및 CPU PNG 진단 API를 제공한다. serial/non-nested 실행만 허용한다.
+- `python Doroti/eng/run-with-timeout.py dotnet run --project Doroti/tests/Doroti.Tests -c Debug`: CupertinoTabScaffold의 두 탭을 pointer로 전환하고 controller/page 상태를 확인한다. Hit test를 IgnorePointer로 막는 `--break-tab`은 의도한 실패다. 정상 경로 및 지속 timer bounded settle, 연속 tester 생성·해제 PASS.
+- 타이머는 TimeProvider를 통해 결정적으로 전진한다. pumpAndSettle은 pending timer도 기다리므로 cursor blink도 취소하지 않으면 timeout이다. timeout 진단은 frame/timer/scheduled 상태와 위젯 트리를 포함한다. 일반 framework error는 pump 실패로 보고한다.
+- 한글 `ㅎ → 한 → 한글` 합성 composing packet의 취소·selection 보존과 pointer focus, TextField unmount 후 native text-client 해제 PASS. 물리 IME 및 후보창 좌표를 시험한 것은 아니다.
+- 새 teardown은 root unmount → focus/image/semantics 정리 → binding별 static/scheduler/input 참조 해제 순서다. FocusManager는 dispose 뒤 남은 microtask를 무시한다. Windows host는 GPU preflight 이후 framework를 capability보다 먼저 정리한다.
+- 외부 PackageReference-only 소비 앱에서도 Testing/Cupertino 회귀 PASS. aggregate 테스트 원시 빌드는 실행 폴더에 두고 요약 후 자동 삭제했으며 상시 테스트는 제품 solution에 넣지 않았다. 초기 직접 실행의 tests/Doroti.Tests/bin·obj와 수동 확인 산출물은 최종 삭제가 자동 승인 정책에 차단되어 M0의 정리 보류 목록에 남겼다.
+- 남음: ListView, Dialog 중간 프레임, VariableBlur geometry/golden, GPU/texture/복수 owner 상세 수명, 플랫폼별 키·semantics 동작 검증. CPU 이미지 API를 golden 승인으로 표시하지 않는다. 단일 프로세스 binding 병렬 실행은 unsupported다.
+- 다음: [02 Desktop](02-desktop-contract.md), [03 입력](03-input-accessibility-platformview.md)의 미검증 범위를 계속 검증한다.

@@ -141,7 +141,42 @@ internal static class DesktopProbe
             path,
             JsonSerializer.Serialize(states, new JsonSerializerOptions { WriteIndented = true })
         );
+        var closeMode = Environment.GetEnvironmentVariable("DOROTI_DESKTOP_CLOSE_PROBE");
+        if (Environment.GetEnvironmentVariable("DOROTI_INPUT_PROBE") is { Length: > 0 } inputProbe)
+        {
+            var deadline = DateTime.UtcNow.AddSeconds(30);
+            while (!File.Exists(inputProbe))
+            {
+                if (File.Exists(inputProbe + ".error")) throw new InvalidOperationException(File.ReadAllText(inputProbe + ".error"));
+                if (DateTime.UtcNow >= deadline) throw new TimeoutException("Input scene did not finish its native lifetime probe.");
+                await Task.Delay(50, ct);
+            }
+        }
+        if (closeMode == "api")
+        {
+            if (await window.CloseAsync(ct)) throw new InvalidOperationException("First API close must be canceled.");
+            await window.SetTitleAsync("Doroti close cancellation survived", ct);
+            await window.CloseAsync();
+        }
+        else if (closeMode == "native" && OperatingSystem.IsWindows())
+        {
+            // Exercise the native WM_CLOSE path in our own sample window.
+            var hwnd = System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle;
+            if (hwnd == 0 || !PostMessageW(hwnd, 0x0010, 0, 0)) throw new InvalidOperationException("Cannot post native close.");
+            var deadline = DateTime.UtcNow.AddSeconds(10);
+            while (Volatile.Read(ref closes) == 0)
+            {
+                if (DateTime.UtcNow >= deadline) throw new TimeoutException("Native close callback missing.");
+                await Task.Delay(20, ct);
+            }
+            if (window.State.Closed) throw new InvalidOperationException("Native close cancellation failed.");
+            await window.SetTitleAsync("Doroti native close cancellation survived", ct);
+            if (!PostMessageW(hwnd, 0x0010, 0, 0)) throw new InvalidOperationException("Cannot post accepted native close.");
+        }
     }
+
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern bool PostMessageW(nint window, uint message, nuint wparam, nint lparam);
 
     private static object Snapshot(WindowState state) =>
         new

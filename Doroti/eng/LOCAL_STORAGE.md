@@ -1,8 +1,9 @@
 # Doroti local storage
 
-Doroti-owned transient state stays under the ignored workspace directory `.doroti` instead of the operating-system temporary directory.
+Doroti-owned tool caches stay under `.doroti`. New test workspaces and evidence use the repository-root `temp/testing/<task>/<run>/` policy in [the testing guide](../tests/README.md).
 
-- `.doroti/tmp`: invocation-owned build, package-consumer, and validation workspaces. The creating process removes its own directory in `finally` blocks.
+- `temp/testing`: invocation-owned test scripts/projects, package consumers, logs, captures and builds. Successful suites summarize then remove their run; failed runs remain only for investigation. This path is not relocated by `DOROTI_LOCAL_ROOT` and the legacy cleaner does not delete it.
+- `.doroti/tmp`: legacy tool/build workspaces. New test runners use `temp/testing`.
 - `.doroti/cache`: reusable analyzer, package-config, and Flutter SDK compatibility data. Cache entries are deterministic and shared instead of copied once per process.
 - `Doroti/artifacts`: disposable local build and validation output, including logs, traces, and screenshots. The local-state cleaner removes it with `-Action artifacts` or `-Action all`. Copy any evidence that must be retained elsewhere before cleaning.
 

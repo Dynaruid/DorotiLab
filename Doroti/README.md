@@ -126,6 +126,8 @@ Qt retains CMake dependency checks and copies the selected native library even i
 
 `build` without an app targets the product solution, which includes projects requiring different host operating systems. Use `-App` and `-Platform` for a single target. The `release` command validates and packs local artifacts; it does not publish a GitHub Release.
 
+The maintained suites, temporary evidence policy and external widget-test API are in the [testing guide](tests/README.md). Current per-host/renderer/build-mode results are centralized in [support status](docs/support-status.md).
+
 ## Application development
 
 ### Startup
@@ -224,11 +226,11 @@ The [development history](../history/) contains results from specific runs, not 
 | [`templates/`](templates/) | `doroti-app` application workspace template |
 | [`eng/`](eng/) | Build, run, validation, packaging, and diagnostic scripts |
 | [`tools/`](tools/) | Framework tooling |
-| [`validation/`](validation/) | Validation source and fixtures |
+| [`tests/`](tests/) | Selected permanent regression sources |
 | [`docs/`](docs/) | API documentation and scoped validation reports |
 | [`../tools/Doroti.DartToCSharp/`](../tools/Doroti.DartToCSharp/) | Optional Dart/Flutter import compiler |
 
-Keep generated tool and validation output under `.doroti/` or `artifacts/`, with validation output under `artifacts/validation/`. Retained milestone records belong in `../history/`. Compiler-owned `.g.cs` files are not compiled into `src/Doroti.Framework.*`. Repository JSON uses `System.Text.Json`.
+Keep generated tool output under `.doroti/` or `artifacts/`. Test sources and raw evidence for one-off runs belong under `../temp/testing/<task>/<run>/`; summarize results and delete that run directory. Maintained suites use `eng/validate.ps1` with a 20-minute timeout. Retained milestone records belong in `../history/`. Compiler-owned `.g.cs` files are not compiled into `src/Doroti.Framework.*`. Repository JSON uses `System.Text.Json`.
 
 ## License
 

@@ -1131,8 +1131,12 @@ public class FocusManager : ChangeNotifier, DiagnosticableTree
 
     public virtual void registerGlobalHandlers() => _highlightManager.registerGlobalHandlers();
 
+    private bool _managerDisposed;
+
     public override void dispose()
     {
+        if (_managerDisposed) return;
+        _managerDisposed = true;
         if (_appLifecycleListener is not null)
         {
             WidgetsBinding.instance.removeObserver(_appLifecycleListener!);
@@ -1275,6 +1279,7 @@ public class FocusManager : ChangeNotifier, DiagnosticableTree
 
     internal virtual void _markNeedsUpdate()
     {
+        if (_managerDisposed) return;
         DartRuntimePrimitives.Assert(() =>
             Focus_managerLibrary._focusDebug(() =>
                 $"Scheduling update, current focus is {_primaryFocus}, next focus will be {_markedForFocus}"
@@ -1292,6 +1297,7 @@ public class FocusManager : ChangeNotifier, DiagnosticableTree
     {
         lock (_focusUpdateGate)
         {
+            if (_managerDisposed) return;
             DartRuntimePrimitives.Assert(
                 () =>
                     !Equals(

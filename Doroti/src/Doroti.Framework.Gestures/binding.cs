@@ -217,6 +217,16 @@ public abstract class GestureBinding
 
     public static new GestureBinding instance => checkInstance(_instance);
 
+    public override void Dispose()
+    {
+        _pendingPointerEvents.Clear();
+        _hitTests.Clear();
+        platformDispatcher.onPointerDataPacket = null;
+        platformDispatcher.onHitTest = null;
+        if (ReferenceEquals(_instance, this)) _instance = null;
+        base.Dispose();
+    }
+
     protected override void unlocked()
     {
         base.unlocked();

@@ -1,0 +1,10 @@
+<Project>
+  <!-- Applies to loose repository projects; nested product/sample props also import it. -->
+  <PropertyGroup Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('$(MSBuildProjectDirectory)', '[/\\]temp([/\\]|$)'))">
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(MSBuildThisFileDirectory)temp/**;**/temp/**</DefaultItemExcludes>
+    <DefaultExcludesInProjectFolder>$(DefaultExcludesInProjectFolder);**/temp/**</DefaultExcludesInProjectFolder>
+  </PropertyGroup>
+  <ItemGroup>
+    <Watch Remove="$(MSBuildThisFileDirectory)temp/**;**/temp/**" />
+  </ItemGroup>
+</Project>

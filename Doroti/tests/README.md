@@ -1,0 +1,48 @@
+# Maintained regression tests
+
+Run from the repository root with Python, PowerShell 7, Node 24 and the pinned .NET SDK:
+
+```powershell
+pwsh -NoProfile -File Doroti/eng/doroti.ps1 validate -ValidationSuite Developer
+pwsh -NoProfile -File Doroti/eng/doroti.ps1 validate -ValidationSuite Targets
+pwsh -NoProfile -File Doroti/eng/doroti.ps1 validate -ValidationSuite WindowsSmoke
+pwsh -NoProfile -File Doroti/eng/doroti.ps1 validate -ValidationSuite Packages
+```
+
+| Suite | Scope |
+| --- | --- |
+| Source / audit | Current documentation links, tracked temp policy, timeout/exit tests, top-level validate/audit/release failure and missing-runner rejection |
+| Build | CPU widget regressions only; not the multi-platform product solution |
+| Developer | Source + Build + Web resize/admission/mobile backing policy tests |
+| Targets | Windows App SDK and Web Debug builds, Web HTTP startup/bootstrap asset smoke |
+| WindowsSmoke | Already-built default Debug Windows runner; actual native window state, API/native close cancellation and cleanup, editor/WebView recreation. Requires an interactive GPU Windows agent |
+| Packages | Package Testing/Cupertino/Desktop dependency graph; run a separate PackageReference-only widget consumer with its own restore cache |
+| Release | Source + widget regressions + target builds/startup. `doroti release` then audits and packs the product solution; all required platform toolchains are still necessary. No retired Fcr suite aliases silently pass |
+
+Each aggregate invocation has a 1,200-second limit via `eng/run-with-timeout.py`. Timeout kills the child process tree and returns 124. Raw logs, ad-hoc consumers and their builds live in `temp/testing/<suite>/<run>/`. Success prints its summary then deletes the owned run. Failure preserves the printed directory for investigation; delete it after recording the result, checking the resolved path stays under `temp/testing/`. Product runner build outputs retain their normal `bin/obj` policy. Tests are not in the default product solution. `Doroti.Testing` is a product package; the regression executable is not.
+
+Minimal external API example (also add the Skia native asset package for the test OS):
+
+```csharp
+using var tester = new Doroti.Testing.WidgetTester();
+tester.pumpWidget(app);
+tester.pumpAndSettle(timeout: TimeSpan.FromSeconds(5));
+tester.tap(tester.text("Second").Single());
+tester.pump();
+```
+
+`pump` advances virtual time and one queued framework frame, including Dart timers/microtasks. `pumpAndSettle` also waits for pending virtual timers, so a blinking cursor or periodic timer intentionally times out until canceled/unmounted. The tester is serial and non-nested; dispose it before creating the next. Framework exceptions fail a pump. `DumpTree`, `Frames`, `Clock.PendingTimers` and `WritePng` support failure diagnosis; PNGs are CPU renders, not native or GPU capture. `find`, `byType`, `byKey`, `text`, `center`, `tap`, `drag`, `sendKey`, `enterText` and semantics access form the initial contract. Finder results include mounted offstage elements; callers must disambiguate them.
+
+The permanent fixtures protect regressions in pointer tab routing, bounded settle, framework teardown and native close/resource ownership. To prove the Cupertino regression detects a broken hit-test path:
+
+```powershell
+python Doroti/eng/run-with-timeout.py dotnet run --project Doroti/tests/Doroti.Tests -c Debug -- --break-tab
+```
+
+That command must fail; without `--break-tab`, it must pass. Rendering fixtures now cover fixed DPR pixels, VariableBlur capture policy (not its GPU kernel), a 1,000-row list, reassemble offset preservation and zero engine-layer delta after disposal. GPU golden/blur/Dialog and physical IME/accessibility remain tracked in [M1](../../works/common/01-testing.md) and [M2-B](../../works/common/03-input-accessibility-platformview.md).
+
+For the installed VSIX and native metadata-update tests, use the commands in [development sessions](../docs/development-hot-reload.md). [Rendering baselines](../docs/rendering-baselines.md) specifies measurement boundaries and prospective budgets. Testbed `DOROTI_SAMPLE=reload` provides a counter, input and long list for manual reload testing.
+
+Web Hot Reload qualification uses `runHost.js ... --web`: a clean-profile installed VSIX, actual SDK metadata updates, request/frame acknowledgments, compile-error correction and duplicate-request serialization. Browser file gates allow real counter/input/scroll and pixel inspection. The standalone `web_rendering.mts` tests also cover the browser bridge endpoint parser; extension unit tests cover origin/session checks and prepare acknowledgment. WebGL/WebGPU evidence and unsupported combinations are tracked in the development contract.
+
+For manual Windows Korean IME/focus checks, set `$env:DOROTI_SAMPLE='input'` and launch the default Testbed windows alias. Compose and cancel Korean text in the first multiline field, move through the native editor or WebView with Tab/Shift+Tab, select/copy/paste, recreate the native view, and confirm the final framework field receives focus. The scene shows selection/composing ranges. Choose the native editor or WebView using the switch button: mixing both composition topologies in one frame remains unsupported.

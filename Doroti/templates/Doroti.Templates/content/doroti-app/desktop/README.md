@@ -1,10 +1,10 @@
 # Optional desktop companion
 
 This assembly is intentionally separate from the common app. It is currently
-available to **Windows MAUI**, **AppKit macOS**, **Mac Catalyst**, and **Linux Qt Quick** runners. The template's default WindowsAppSDK
-runner remains unchanged; its desktop controller adapter is not implemented yet.
+available to **Windows App SDK**, **Windows MAUI**, **AppKit macOS**, **Mac Catalyst**, and **Linux Qt Quick** runners. The template's default Windows App SDK
+runner connects this companion and uses the main-window controller.
 
-In a Windows MAUI or AppKit macOS runner, set:
+In a Windows App SDK, Windows MAUI or AppKit macOS runner, set:
 
 ```xml
 <DorotiDesktopProject>../desktop/DorotiTemplateApp.Desktop.csproj</DorotiDesktopProject>
@@ -13,8 +13,9 @@ In a Windows MAUI or AppKit macOS runner, set:
 
 The SDK registers the companion startup and references its assembly. Never add
 this project to the common app, Web, Android or iOS runner. These
-references fail with a `DOROTIDESKTOP` diagnostic. Custom/hidden title bars and
-the WindowsAppSDK desktop adapter remain pending.
+references fail with a `DOROTIDESKTOP` diagnostic. Custom/hidden title bars remain pending.
+The Windows App SDK adapter currently supports one window and `OnLastWindowClosed` lifetime;
+changing its backdrop or renderer background requires recreation.
 
 AppKit sizes are the unobscured client area in points. Per-window Dock hiding,
 global physical-pixel Position/SetBounds and programmatic resize initiation

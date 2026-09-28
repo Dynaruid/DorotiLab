@@ -98,7 +98,12 @@ internal sealed class MaterialDemoEntrypoint : IDorotiViewEntrypoint
     }
 
     private static Widget CreateRootApp() =>
-        new MaterialSample.SampleApp(App.SampleAcrylicAvailable);
+        Environment.GetEnvironmentVariable("DOROTI_SAMPLE") switch
+        {
+            "input" => new Doroti.Framework.Material.MaterialApp(home: new MaterialSample.InputLifetimeSample()),
+            "reload" => new Doroti.Framework.Material.MaterialApp(home: new MaterialSample.HotReloadSample()),
+            _ => new MaterialSample.SampleApp(App.SampleAcrylicAvailable),
+        };
 }
 
 internal static class App

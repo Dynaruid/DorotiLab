@@ -1,6 +1,6 @@
 # Web 작업 계획
 
-원문: [plan.md](../../plan.md) M0~M7 · 작업 상태: **TODO** · 새 실행 검증: **notVerified**
+원문: [plan.md](../../plan.md) M0~M7 · 작업 상태: **PARTIAL** · 새 실행 검증: **범위별 PASS / 나머지 notVerified**
 
 [전체 작업 인덱스](../README.md)
 
@@ -20,7 +20,7 @@ M0 → M1 최소 경로 → M2 → M4/M5 → M6(대상 플랫폼) → M7 순서�
 
 - [ ] Web build/기동 smoke와 실패 전파를 M0 실행기·CI에 연결하고 템플릿에서 생성한 앱의 초기 화면을 확인한다. 일부 target만 선언한 manifest도 공통 CLI 계약으로 처리한다.
 - [ ] 로컬 VSIX에서 앱 생성 → snippet/import → `Debug` 외부 브라우저 실행 → 로그 → 중지를 검증하고 startup 실패를 진단한다.
-- [ ] Web의 실제 metadata update 지원 범위를 정하고 Hot Reload 버튼·State/입력/스크롤 보존·컴파일 오류 후 재시도를 검증한다. 지원하지 않는 조합은 이유와 재시작 경로를 표시한다.
+- [x] Web의 실제 metadata update 지원 범위를 정하고 Hot Reload 버튼·State/입력/스크롤 보존·컴파일 오류 후 재시도를 검증한다. 지원하지 않는 조합은 이유와 재시작 경로를 표시한다.
 
 ## 2. 입력·접근성·DOM PlatformView — M2-B, P1
 
@@ -66,4 +66,10 @@ M0 → M1 최소 경로 → M2 → M4/M5 → M6(대상 플랫폼) → M7 순서�
 
 [공통 완료 규칙과 결과 형식](../README.md#결과-기록-형식)을 적용한다. 테스트는 20분 timeout을 사용하고 일반 반복 검증은 30회 이내로 설계한다. 원시 산출물은 삭제 가능한 `Doroti/artifacts`, 보존할 요약·fixture는 추적되는 tests/docs/history에 둔다.
 
-현재 기록: 작업 계획만 작성했다. 플랫폼 구현·build·실기기·성능 검증을 새로 실행하지 않았다. 각 항목의 완료 시 관련 공통 작업 문서와 플랫폼/호스트/renderer/build mode별 지원표를 함께 갱신한다.
+## 2026-09-28 갱신
+
+현재 공통 00~03의 실행 결과는 [지원표](../../Doroti/docs/support-status.md)와 각 공통 작업 문서에 기록했다. revision: a93c047fe2e93d93cff3e0a6bf3c2789862fea81 + 작업 트리 변경 (미커밋).
+
+Web Debug build 경고 0/오류 0, HTTP server/bootstrap asset smoke PASS. Chrome에서 Material Testbed 실제 화면과 semantics 트리 확인 PASS. 새 DOM PlatformView 입력/물리 IME/Release AOT·성능 검증은 수행하지 않았다.
+
+공통 04·05 추가: 제품 resize admission의 4 in-flight + latest 1 상한/ack/reset, 모바일 backing 축소·회전 메모리 정책 회귀 PASS. 템플릿 생성 앱의 Web Debug/CLI dev 및 Chrome 실제 버튼 클릭·한글 glyph·450×800 리사이즈 후 상태 유지 PASS. 이 결과는 물리 모바일이나 offline 폰트 검증이 아니다. 후속 Web Hot Reload는 main-owned threaded Debug의 Chrome WebGL/WebGPU에서 검증했다. 설치 VSIX Run/요청-응답/컴파일 오류 재시도/Stop과 상태·한글 값·스크롤 유지가 PASS이며, Release/AOT·worker-owned runtime·물리 모바일은 notVerified다. [렌더링 결과](../common/04-rendering-lifetime.md)·[VS Code 결과](../common/05-vscode-hot-reload.md) 참조.

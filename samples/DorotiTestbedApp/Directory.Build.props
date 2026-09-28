@@ -1,4 +1,5 @@
 <Project>
+  <Import Project="../../Directory.Build.props" />
   <PropertyGroup>
     <ApplicationTitle>Doroti Material Testbed</ApplicationTitle>
     <ApplicationId>dev.doroti.testbed</ApplicationId>

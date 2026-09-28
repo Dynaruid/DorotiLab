@@ -86,6 +86,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         DorotiApplicationBoundary? application = null;
         DorotiHostSession? session = null;
         WindowsManagedState? state = null;
+        WindowsAppSdkDesktopWindowHost? desktopHost = null;
+        Desktop.DorotiWindowController? desktopWindow = null;
         var handle = default(GCHandle);
         Exception? runFailure = null;
         try
@@ -98,7 +100,16 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 descriptor.NativePluginHandlers,
                 platformViews.CreateFactories()
             );
-            session = new DorotiHostSession(descriptor.EntrypointFactory());
+            if (Desktop.DesktopApplication.TryGetDefinition(descriptor, out var desktop))
+            {
+                if (desktop!.LifetimePolicy != Desktop.WindowLifetimePolicy.OnLastWindowClosed)
+                    throw new NotSupportedException("The Windows App SDK single-window runner requires OnLastWindowClosed lifetime.");
+                desktopHost = new WindowsAppSdkDesktopWindowHost();
+                var manager = new Desktop.DorotiWindowManager(desktopHost, desktop.LifetimePolicy);
+                manager.InitializationFailed += (_, error) => Console.Error.WriteLine(error);
+                desktopWindow = manager.CreateMainWindowAsync(desktop.MainWindow).GetAwaiter().GetResult();
+            }
+            session = new DorotiHostSession(desktopHost?.Content ?? descriptor.EntrypointFactory());
             state = new WindowsManagedState(
                 session,
                 application,
@@ -106,6 +117,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 selectedPresenter,
                 application.Manifest.PlatformViews.Length == 0 ? null : platformViews
             );
+            state.DesktopHost = desktopHost;
             // Presenter-specific Composition activation must occur on the HWND
             // thread during host-ready. Its process-wide DLL search restriction
             // is applied there immediately after attach and before first show.
@@ -258,6 +270,10 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     Cleanup(activeApplication.Dispose);
                 }
             }
+            if (desktopHost is { } activeDesktop)
+                Cleanup(() => activeDesktop.CompleteShutdown(runFailure ?? cleanupFailures.FirstOrDefault()));
+            if (desktopWindow is { } activeWindow)
+                Cleanup(() => activeWindow.CloseAsync().WaitAsync(TimeSpan.FromSeconds(10)).GetAwaiter().GetResult());
             if (cleanupFailures.Count != 0)
             {
                 if (runFailure is not null)
@@ -367,6 +383,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         }
 
         internal WindowsManagedProductHost? Host { get; private set; }
+        internal WindowsAppSdkDesktopWindowHost? DesktopHost { get; set; }
         internal WindowsManagedHwndPresenterBase Presenter { get; private set; }
         internal SkiaSceneRenderer? Renderer { get; private set; }
         internal DorotiView? View { get; private set; }
@@ -553,7 +570,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 renderer.AttachSurface(host.RequestInvalidate);
                 View = view;
                 _capabilities = capabilities;
-                host.Show();
+                if (DesktopHost is { } desktop) desktop.Attach(host);
+                else host.Show();
             }
             catch
             {
@@ -1068,6 +1086,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             switch ((WindowsNativeV1.FrameTerminalKind)terminal.TerminalKind)
             {
                 case WindowsNativeV1.FrameTerminalKind.Presented:
+                    if (compositionCommitted) DesktopHost?.Presented();
                     if (completion is { } painted)
                     {
                         if (compositionCommitted)
@@ -1515,6 +1534,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 QuarantineUnsafeGpuState(this);
             }
 
+            if (!UnsafeGpuCleanupQuarantined)
+                Cleanup(_session.ShutdownFramework);
             if (!UnsafeGpuCleanupQuarantined && _platformViews is { } platformViews)
             {
                 Cleanup(platformViews.Dispose);

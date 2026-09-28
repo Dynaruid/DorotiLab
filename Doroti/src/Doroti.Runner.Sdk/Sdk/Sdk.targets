@@ -150,8 +150,8 @@
            Text="Desktop companion/startup is only allowed in native desktop runners." />
     <Error Code="DOROTIDESKTOP003" Condition="'$(DorotiDesktopProject)' != '' and ('$(DorotiDesktopStartupType)' == '' or !Exists('$(DorotiDesktopProject)'))"
            Text="DorotiDesktopProject requires an existing companion project and DorotiDesktopStartupType." />
-    <Error Code="DOROTIDESKTOP005" Condition="'$(DorotiDesktopStartupType)' != '' and !(('$(DorotiHostKind)' == 'Maui' and ('$(DorotiTarget)' == 'Windows' or '$(DorotiTarget)' == 'macOS' or '$(DorotiTarget)' == 'MacCatalyst')) or ('$(DorotiTarget)' == 'Linux' and '$(DorotiHostKind)' == 'Qt' and '$(DorotiQtQuick)' == 'true'))"
-           Text="Desktop startup requires Windows MAUI, AppKit macOS, Mac Catalyst, or Linux Qt Quick. Other adapters are pending; refusing an ignored startup." />
+    <Error Code="DOROTIDESKTOP005" Condition="'$(DorotiDesktopStartupType)' != '' and !(('$(DorotiHostKind)' == 'Maui' and ('$(DorotiTarget)' == 'Windows' or '$(DorotiTarget)' == 'macOS' or '$(DorotiTarget)' == 'MacCatalyst')) or ('$(DorotiTarget)' == 'Windows' and '$(DorotiHostKind)' == 'WindowsAppSdk') or ('$(DorotiTarget)' == 'Linux' and '$(DorotiHostKind)' == 'Qt' and '$(DorotiQtQuick)' == 'true'))"
+           Text="Desktop startup requires Windows App SDK, Windows MAUI, AppKit macOS, Mac Catalyst, or Linux Qt Quick. Other adapters are pending; refusing an ignored startup." />
     <Error Code="DOROTIAPP201" Condition="'$(DorotiAppProject)' == '' or !Exists('$(DorotiAppProject)')"
            Text="DorotiAppProject must resolve to an existing platform-neutral application project; found '$(DorotiAppProject)'." />
     <Error Code="DOROTIAPP202" Condition="'$(DorotiTarget)' == '' or '$(DorotiHostKind)' == '' or '$(DorotiNativeEntryKind)' == ''"

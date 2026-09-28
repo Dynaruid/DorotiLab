@@ -114,12 +114,15 @@ public sealed class DorotiFrameTrace
     // Opt-in diagnostic wall-work clock. TimestampMicroseconds remains the
     // historical causally clamped host clock and must not time phase work.
     public bool MeasureRecordingTime { get; set; }
+    // Test hosts advance activity deadlines with their virtual frame clock.
+    // Work-duration diagnostics deliberately keep using the real monotonic clock.
+    internal Func<TimeSpan> ActivityClock { get; set; } = () => DorotiFrameClock.Now;
 
     public bool HasActiveScrollActivity
     {
         get
         {
-            var now = DorotiFrameClock.Now.Ticks / 10;
+            var now = ActivityClock().Ticks / 10;
             lock (_gate)
             {
                 return _activeScrollPositions.Count != 0
@@ -142,7 +145,7 @@ public sealed class DorotiFrameTrace
     {
         get
         {
-            var nowMicroseconds = DorotiFrameClock.Now.Ticks / 10;
+            var nowMicroseconds = ActivityClock().Ticks / 10;
             lock (_gate)
             {
                 return _previousMetricsTimestampMicroseconds > 0
@@ -183,7 +186,7 @@ public sealed class DorotiFrameTrace
         // domains and can therefore be ahead of DorotiFrameClock.Now; using
         // the clamped value here can make an activity appear active forever.
         var metricsArrivalMicroseconds =
-            phase == DorotiFramePhase.metrics ? DorotiFrameClock.Now.Ticks / 10 : 0;
+            phase == DorotiFramePhase.metrics ? ActivityClock().Ticks / 10 : 0;
         lock (_gate)
         {
             var timestampMicroseconds = Math.Max(_lastTimestampMicroseconds, timestamp.Ticks / 10);
@@ -277,7 +280,7 @@ public sealed class DorotiFrameTrace
             // rather than the causally clamped host trace timestamp.
             if (phase == DorotiFramePhase.scrollUpdate && scrollDelta is not (null or 0))
             {
-                _lastScrollUpdateArrivalMicroseconds = DorotiFrameClock.Now.Ticks / 10;
+                _lastScrollUpdateArrivalMicroseconds = ActivityClock().Ticks / 10;
             }
 
             if (phase == DorotiFramePhase.scrollStart)

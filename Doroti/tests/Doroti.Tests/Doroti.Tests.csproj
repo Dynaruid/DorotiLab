@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><DefineConstants>$(DefineConstants);DOROTI_REPO_TESTS</DefineConstants></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/Doroti.Testing/Doroti.Testing.csproj" />
+    <ProjectReference Include="../../src/Doroti.Desktop/Doroti.Desktop.csproj" />
+    <ProjectReference Include="../../src/Doroti.Framework.Cupertino/Doroti.Framework.Cupertino.csproj" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Win32" />
+  </ItemGroup>
+</Project>

@@ -135,27 +135,33 @@ public sealed class DorotiHostSession : IDisposable
         {
             return;
         }
-        var wasRunning = state == DorotiHostSessionState.running && _bootstrapped;
-        state = DorotiHostSessionState.shutDown;
         try
         {
-            if (wasRunning)
-            {
-                if (_entrypoint is IDorotiViewEntrypoint viewEntrypoint)
-                {
-                    foreach (var view in _views.Values.Reverse().ToArray())
-                    {
-                        viewEntrypoint.DetachView(view);
-                    }
-                }
-                _views.Clear();
-                _entrypoint.Shutdown();
-            }
+            ShutdownFramework();
         }
         finally
         {
+            state = DorotiHostSessionState.shutDown;
             dispatcher.Dispose();
         }
+    }
+
+    /// <summary>Unmount before the host retires its native/renderer capabilities; dispatcher disposal follows separately.</summary>
+    public void ShutdownFramework()
+    {
+        if (!_bootstrapped) return;
+        _bootstrapped = false;
+        using var scope = dispatcher.EnterScope();
+        var environmentView = _views.Values.FirstOrDefault();
+        using var environment = environmentView?.environmentConfiguration is not null
+            ? environmentView.EnterPlatformEnvironmentScope() : null;
+        try
+        {
+            if (_entrypoint is IDorotiViewEntrypoint viewEntrypoint)
+                foreach (var view in _views.Values.Reverse().ToArray()) viewEntrypoint.DetachView(view);
+            _entrypoint.Shutdown();
+        }
+        finally { _views.Clear(); }
     }
 
     public void Dispose() => Shutdown();

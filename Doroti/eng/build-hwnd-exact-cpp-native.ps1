@@ -49,6 +49,11 @@ $start.FileName = $msbuild
 $start.UseShellExecute = $false
 $start.RedirectStandardOutput = $true
 $start.RedirectStandardError = $true
+# dotnet watch's build host exports SDK MSBuild paths. The separate Visual Studio
+# C++ build must resolve its own toolset, not dotnet/sdk/.../Microsoft/VC.
+foreach ($name in @('MSBUILD_EXE_PATH', 'MSBuildExtensionsPath', 'MSBuildSDKsPath')) {
+    [void] $start.Environment.Remove($name)
+}
 foreach ($argument in $arguments) { [void] $start.ArgumentList.Add($argument) }
 $process = [Diagnostics.Process]::new()
 $process.StartInfo = $start

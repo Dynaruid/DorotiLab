@@ -882,7 +882,6 @@ public class RenderingFlutterBinding
         }
         scheduleWarmUpFrame();
         await endOfFrame;
-        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void hitTestInView(HitTestResult result, Offset position, long viewId)
@@ -979,6 +978,7 @@ internal class _DefaultRootPipelineOwner__binding : PipelineOwner
 
 internal class _ReusableRenderView__binding : RenderView
 {
+    internal void DisposePermanently() => base.dispose();
     internal virtual bool _initialFramePrepared { get; set; } = false;
 
     internal _ReusableRenderView__binding(DorotiView view)

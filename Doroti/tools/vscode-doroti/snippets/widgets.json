@@ -1,0 +1,14 @@
+{
+  "StatelessWidget": { "prefix": "dstateless", "description": "Doroti StatelessWidget; using Doroti.Framework.Widgets", "body": ["public sealed class ${1:MyWidget} : StatelessWidget", "{", "    public override Widget build(BuildContext context) =>", "        ${0:new Text(\"Hello\")};", "}"] },
+  "StatefulWidget": { "prefix": "dstateful", "description": "Doroti StatefulWidget and State<T>; using Doroti.Framework.Widgets", "body": ["public sealed class ${1:MyWidget} : StatefulWidget", "{", "    public override IState createState() => new ${1}State();", "}", "", "public sealed class ${1}State : State<${1}>", "{", "    public override Widget build(BuildContext context) =>", "        ${0:new Text(\"Hello\")};", "}"] },
+  "build": { "prefix": "dbuild", "description": "Doroti build override; using Doroti.Framework.Widgets", "body": ["public override Widget build(BuildContext context)", "{", "    return ${0:new SizedBox()};", "}"] },
+  "initState": { "prefix": "dinitstate", "description": "State initialization; call base first", "body": ["public override void initState()", "{", "    base.initState();", "    $0", "}"] },
+  "dispose": { "prefix": "ddispose", "description": "State resource cleanup; call base last", "body": ["public override void dispose()", "{", "    $0", "    base.dispose();", "}"] },
+  "setState": { "prefix": "dsetstate", "description": "State mutation", "body": ["setState(() =>", "{", "    $0", "});"] },
+  "Row": { "prefix": "drow", "description": "using Doroti.Framework.Widgets", "body": ["new Row(children:", "[", "    $0", "])"] },
+  "Column": { "prefix": "dcolumn", "description": "using Doroti.Framework.Widgets", "body": ["new Column(children:", "[", "    $0", "])"] },
+  "Container": { "prefix": "dcontainer", "description": "using Doroti.Framework.Widgets", "body": ["new Container(child: ${0:new SizedBox()})"] },
+  "Text": { "prefix": "dtext", "description": "using Doroti.Framework.Widgets", "body": ["new Text(\"${1:Hello}\")$0"] },
+  "Material app": { "prefix": "dmaterial", "description": "using Doroti.Framework.Material and Doroti.Framework.Widgets", "body": ["new MaterialApp(home: new Scaffold(body:", "    ${0:new Center(child: new Text(\"Hello\"))}", "))"] },
+  "Cupertino app": { "prefix": "dcupertino", "description": "using Doroti.Framework.Cupertino and Doroti.Framework.Widgets", "body": ["new CupertinoApp(home: new CupertinoPageScaffold(child:", "    ${0:new Center(child: new Text(\"Hello\"))}", "))"] }
+}

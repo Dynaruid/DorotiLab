@@ -1,4 +1,5 @@
 import { dorotiProtocolVersion } from "./doroti.web.protocol.js";
+import { developmentBridge, startBrowserHotReload } from "./doroti.web.hot-reload.js";
 
 export interface DorotiWorkerEndpoint extends EventTarget {
   postMessage(message: unknown, transfer?: Transferable[]): void;
@@ -9,7 +10,8 @@ interface MainRuntime {
   runtimeBuildInfo: { wasmEnableThreads: boolean; productVersion: string };
   localHeapViewU8(): Uint8Array;
   getAssemblyExports(name: string): Promise<{
-    Doroti: { Host: { Web: { BrowserManagedRenderThread: { StartAsync(url: string, token: string): Promise<void> } } } };
+    Doroti: { Host: { Web: { BrowserManagedRenderThread: { StartAsync(url: string, token: string): Promise<void> };
+      BrowserHotReload: { ReadStatusAsync(): Promise<string>; PrepareAsync(runtimeId: string, requestId: string): Promise<boolean> } } } };
   }>;
 }
 
@@ -80,7 +82,14 @@ async function initializeMainRuntime(dotnetUrl: string): Promise<MainRuntime> {
     const module = await import(dotnetUrl);
     const params = new URL(location.href).searchParams;
     const diagnostics = params.get("dorotiResizeDiagnostics") === "1";
+    // .NET 10's SDK Hot Reload agent uses synchronous JSExport entry points.
+    // The threaded runtime otherwise rejects them on the browser UI thread.
+    // Enable only for the SDK-injected development transport; blocking waits
+    // still throw, including during metadata handlers, rather than deadlocking.
+    if (document.querySelector("script[src*='aspnetcore-browser-refresh']"))
+      module.dotnet.withConfig({ jsThreadBlockingMode: "ThrowWhenBlockingWait" });
     const runtime = await module.dotnet.withEnvironmentVariables({
+      DOROTI_DEV_SESSION_ID: developmentBridge(location.search)?.sessionId ?? "browser",
       DOROTI_TESTBED_MODE: params.get("dorotiTestbedMode") ?? "diagnostics",
       DOROTI_LAYOUT_PROFILE: params.get("dorotiLayoutProfile") === "1" ? "1" : "0",
       DOROTI_ALLOCATION_PROFILE: params.get("dorotiAllocationProfile") === "1" ? "1" : "0",
@@ -92,6 +101,7 @@ async function initializeMainRuntime(dotnetUrl: string): Promise<MainRuntime> {
     if (!runtime.runtimeBuildInfo.wasmEnableThreads || !(runtime.localHeapViewU8().buffer instanceof SharedArrayBuffer))
       throw new Error("Doroti main-runtime rendering requires a threaded .NET build with a shared heap.");
     document.documentElement.dataset.dorotiRuntimeLocation = "main";
+    await startBrowserHotReload(runtime);
     return runtime;
   } catch (error) {
     globalThis.Worker = NativeWorker;

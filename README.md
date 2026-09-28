@@ -19,7 +19,7 @@ The project began by translating Flutter framework source code into C# and is no
 - **Shared application code** — keep your UI in a platform-neutral library with separate runners for each target.
 - **Material and Cupertino widgets** — build on Flutter-inspired APIs implemented and maintained in C#.
 - **SkiaSharp-based GPU rendering** — access Skia Graphite from C# through SkiaSharp, using Vulkan, Metal, or WebGPU depending on the platform.
-- **Image and backdrop filters** — Gaussian and progressive/variable blur, matrix transforms, dilation/erosion, saturation/color filters, and composed GPU shaders. See [API and validation coverage](Doroti/validation/backdrop-filters/README.md).
+- **Image and backdrop filters** — Gaussian and progressive/variable blur, matrix transforms, dilation/erosion, saturation/color filters, and composed GPU shaders. See [API and validation coverage](history/26-09-26/wgsl-gpu-effects-summary.md).
 - **Native integration** — platform hosts connect the UI to windows, input, text entry, clipboard, and accessibility services.
 - **A sample app and templates** — explore `DorotiTestbedApp` and the `doroti-app` project template.
 
@@ -55,7 +55,7 @@ Clone the repository and run the sample from its root:
 git clone https://github.com/Dynaruid/DorotiLab.git
 cd DorotiLab
 
-python Doroti/validation/run-with-timeout.py cargo build --locked --manifest-path tools/Doroti.Wgsl/Cargo.toml
+python Doroti/eng/run-with-timeout.py cargo build --locked --manifest-path tools/Doroti.Wgsl/Cargo.toml
 $env:DOROTI_TESTBED_MODE = 'sample'
 pwsh -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform windows
 ```
@@ -88,10 +88,12 @@ The project began with a Dart-to-C# compiler to bootstrap framework code. Today,
 | [Sample app guide](samples/DorotiTestbedApp/README.md) | Platform launch commands, sample screens, renderer options, and troubleshooting |
 | [Cupertino sample](samples/DorotiSampleApp2/README.md) | Cupertino components, profile input, and appearance settings on Windows / Web |
 | [Dart-to-C# compiler](tools/Doroti.DartToCSharp/README.md) | Optional source import and migration tooling |
-| [WGSL GPU effects](Doroti/validation/gpu-effects/README.md) | Windows fragment implementation, source-tree compiler setup, and remaining platform work |
+| [WGSL GPU effects](history/26-09-26/wgsl-gpu-effects-summary.md) | Windows fragment implementation, source-tree compiler setup, and remaining platform work |
 | [Development history](history/) | Archived plans and validation records |
 
 ## Project status
+
+Current host, renderer, build-mode and execution boundaries: [support status](Doroti/docs/support-status.md).
 
 Doroti is a personal, experimental project. The platform table describes implemented hosts and rendering defaults, not uniform production readiness.
 

@@ -1,14 +1,14 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0)]
-    [ValidateSet('doctor', 'build', 'run', 'publish', 'native', 'scaffold-interop', 'validate', 'audit', 'release', 'clean')]
+    [ValidateSet('doctor', 'build', 'run', 'dev', 'describe', 'publish', 'native', 'scaffold-interop', 'validate', 'audit', 'release', 'clean')]
     [string] $Command = 'doctor',
 
     [Parameter(Position = 1)]
     [ValidateSet('doctor', 'build', 'open', 'add')]
     [string] $NativeCommand,
 
-    [ValidateSet('Source', 'Build', 'Targets', 'Fcr0', 'Fcr1', 'Fcr2', 'Fcr3', 'Fcr4', 'Fcr5', 'Fcr6', 'Fcr7', 'Fcr8', 'Developer', 'Release')]
+    [ValidateSet('Source', 'Build', 'Targets', 'WindowsSmoke', 'Packages', 'Developer', 'Release')]
     [string] $ValidationSuite = 'Developer',
 
     [string] $App,
@@ -37,6 +37,9 @@ param(
 
     [switch] $Launch,
 
+    [string] $SessionDirectory,
+    [string] $SessionId,
+
     [ValidatePattern('^[A-Za-z][A-Za-z0-9_.-]*$')]
     [string] $InteropName = 'DorotiNativeInterop'
 )
@@ -48,6 +51,7 @@ $solution = Join-Path $dorotiRoot 'Doroti.slnx'
 $productSolution = Join-Path $dorotiRoot 'Doroti.Product.slnx'
 $artifacts = Join-Path $dorotiRoot 'artifacts'
 . (Join-Path $PSScriptRoot 'launch-identity.ps1')
+if ($Command -eq 'dev' -and -not $PSBoundParameters.ContainsKey('Configuration')) { $Configuration = 'Debug' }
 
 function Invoke-Checked {
     param(
@@ -147,8 +151,7 @@ function Resolve-DorotiWorkspace {
         if ($duplicateAliases.Count -gt 0) { throw "Duplicate platform aliases: $($duplicateAliases.Name -join ', ')." }
         $unexpectedAliases = @($platformEntries | Where-Object { $_.Name -cnotin $allowedAliases })
         if ($unexpectedAliases.Count -gt 0) { throw "Unknown or non-canonical platform aliases: $($unexpectedAliases.Name -join ', ')." }
-        $missingAliases = @($allowedAliases | Where-Object { $_ -cnotin $platformEntries.Name })
-        if ($missingAliases.Count -gt 0) { throw "Missing platform aliases: $($missingAliases -join ', ')." }
+        if ($platformEntries.Count -eq 0) { throw 'At least one platform alias is required.' }
 
         $runners = [ordered]@{}
         foreach ($entry in $platformEntries) {
@@ -180,6 +183,7 @@ function Invoke-WorkspaceDotNet {
     if ([string]::IsNullOrWhiteSpace($Platform) -or $Platform -ceq 'all') { throw "$Verb requires one --platform <name>." }
     $workspace = Resolve-DorotiWorkspace $App
     $runner = $workspace.Runners[$Platform]
+    if (-not $runner) { throw "Platform '$Platform' is not declared by this workspace." }
     if ($Platform -ceq 'windows' -and $WindowsBackend -ceq 'Maui') {
         $mauiBackend = @(Get-ChildItem -LiteralPath (Join-Path $workspace.Root 'windows') -Filter '*.csproj' -File |
             Where-Object { (Get-Content -LiteralPath $_.FullName -Raw) -match '<DorotiHostKind>Maui</DorotiHostKind>' } |
@@ -511,17 +515,58 @@ function Invoke-Build {
     }
 }
 
+function Invoke-Describe {
+    if (-not $App) { throw 'describe requires -App.' }
+    $workspace = Resolve-DorotiWorkspace $App
+    [ordered]@{
+        schemaVersion = 'doroti.cli-workspace/v1'
+        manifest = $workspace.Manifest
+        root = $workspace.Root
+        applicationProject = $workspace.ApplicationProject
+        platforms = $workspace.Runners
+        developmentTargets = @($workspace.Runners.Keys | Where-Object { $_ -in @('windows', 'web') })
+    } | ConvertTo-Json -Depth 5
+}
+
+function Invoke-Development {
+    if ($Configuration -ne 'Debug') { throw 'dev requires Debug; Release metadata updates are not supported.' }
+    if ($Platform -notin @('windows', 'web')) { throw 'dev currently supports Windows App SDK and Web.' }
+    $workspace = Resolve-DorotiWorkspace $App
+    $runner = $workspace.Runners[$Platform]
+    if (-not $runner) { throw "Platform '$Platform' is not declared by this workspace." }
+    if ($Platform -eq 'windows' -and $WindowsBackend -ne 'WindowsAppSdk') { throw 'dev supports the Windows App SDK backend only.' }
+    if (-not $SessionId) { $SessionId = [Guid]::NewGuid().ToString('N') }
+    if ($SessionId -notmatch '^[A-Za-z0-9-]{1,80}$') { throw 'Invalid development session ID.' }
+    if (-not $SessionDirectory) { $SessionDirectory = Join-Path $workspace.Root ".doroti/dev/$SessionId" }
+    $sessionPath = [IO.Path]::GetFullPath($SessionDirectory)
+    [IO.Directory]::CreateDirectory($sessionPath) | Out-Null
+    $names = @('DOROTI_DEV_SESSION', 'DOROTI_DEV_SESSION_ID', 'DOTNET_CLI_UI_LANGUAGE', 'DOTNET_WATCH_SUPPRESS_EMOJIS', 'DOTNET_WATCH_RESTART_ON_RUDE_EDIT')
+    $previous = @{}
+    foreach ($name in $names) { $previous[$name] = [Environment]::GetEnvironmentVariable($name) }
+    try {
+        $env:DOROTI_DEV_SESSION = $sessionPath
+        $env:DOROTI_DEV_SESSION_ID = $SessionId
+        $env:DOTNET_CLI_UI_LANGUAGE = 'en'
+        $env:DOTNET_WATCH_SUPPRESS_EMOJIS = '1'
+        $env:DOTNET_WATCH_RESTART_ON_RUDE_EDIT = 'false'
+        Write-Host "Doroti development session: $sessionPath"
+        $watchArguments = @('watch', '--project', $runner, 'run', '--configuration', 'Debug')
+        if ($Platform -eq 'windows') { $watchArguments += '--no-launch-profile' }
+        Invoke-Checked 'dotnet' $watchArguments $workspace.Root
+    }
+    finally { foreach ($name in $names) { [Environment]::SetEnvironmentVariable($name, $previous[$name]) } }
+}
+
 function Invoke-Validation {
-    & (Join-Path $PSScriptRoot 'validate.ps1') -Suite $ValidationSuite
+    Invoke-Checked 'pwsh' @('-NoProfile', '-File', (Join-Path $PSScriptRoot 'validate.ps1'), '-Suite', $ValidationSuite)
 }
 
 function Invoke-Audit {
-    & (Join-Path $PSScriptRoot 'validate-local-storage.ps1')
-    & (Join-Path $PSScriptRoot 'validate.ps1') -Suite Source
+    Invoke-Checked 'pwsh' @('-NoProfile', '-File', (Join-Path $PSScriptRoot 'validate.ps1'), '-Suite', 'Source')
 }
 
 function Invoke-Release {
-    & (Join-Path $PSScriptRoot 'validate.ps1') -Suite Release
+    Invoke-Checked 'pwsh' @('-NoProfile', '-File', (Join-Path $PSScriptRoot 'validate.ps1'), '-Suite', 'Release')
     Invoke-Audit
 
     $packageDirectory = Join-Path $artifacts 'packages'
@@ -575,6 +620,8 @@ function Invoke-Clean {
 }
 
 switch ($Command) {
+    'describe' { Invoke-Describe }
+    'dev' { Invoke-Development }
     'doctor' { Invoke-Doctor }
     'build' { Invoke-Build }
     'run' { Invoke-WorkspaceDotNet 'run' }

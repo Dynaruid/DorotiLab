@@ -181,6 +181,21 @@ public abstract class SchedulerBinding : BindingBase
 
     public static SchedulerBinding instance => checkInstance(_instance);
 
+    public override void Dispose()
+    {
+        _framesEnabled = false;
+        _hasScheduledFrame = false;
+        _transientCallbacks.Clear();
+        _persistentCallbacks.Clear();
+        _postFrameCallbacks.Clear();
+        _timingsCallbacks.Clear();
+        _taskQueue.Clear();
+        platformDispatcher.onBeginFrame = null;
+        platformDispatcher.onDrawFrame = null;
+        if (ReferenceEquals(_instance, this)) _instance = null;
+        base.Dispose();
+    }
+
     public virtual void addTimingsCallback(Action<List<FrameTiming>> callback)
     {
         _timingsCallbacks.Add(callback);

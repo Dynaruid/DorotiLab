@@ -3,6 +3,8 @@
 **English** | [한국어](README.ko.md)
 
 A sample app for Doroti's Material widgets and platform hosts.
+
+For the development reload scene, set `DOROTI_SAMPLE=reload` and run `Doroti/eng/doroti.ps1 dev -App samples/DorotiTestbedApp -Platform windows`. Increment the counter, enter text and scroll, then edit `HotReloadSample.Message()` and save. Supported metadata updates preserve those values. See [development sessions](../../Doroti/docs/development-hot-reload.md) for CLI/VS Code commands and current limitations.
 One shared C# application runs through Windows, macOS AppKit, Mac Catalyst, Linux, Android, iOS, and Web runners.
 
 The Material sample includes Components, Color, Typography, Elevation, Platform views, WebView, nine seed colors,
@@ -58,7 +60,7 @@ For the independent MAUI backend, replace the project in this command with
 Requires Apple Silicon, macOS 14 or later, and compatible Xcode/macOS workloads.
 The `macos` runner uses native AppKit.
 
-Add `-e DOROTI_MACOS_GRAPHITE=1` to the `dotnet run` command below to select the experimental Graphite/Metal candidate. Ganesh/Metal remains the default. See the [Apple execution report](../../Doroti/docs/validation/native-graphite-apple-2026-09-09.md) for verified scope and remaining gates. Omit the option to return to the existing path.
+Add `-e DOROTI_MACOS_GRAPHITE=1` to the `dotnet run` command below to select the experimental Graphite/Metal candidate. Ganesh/Metal remains the default. See the [Apple execution report](../../history/26-09-09/native-graphite-apple-execution.json) for verified scope and remaining gates. Omit the option to return to the existing path.
 
 ```powershell
 dotnet run --project ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -r osx-arm64
@@ -129,7 +131,7 @@ If automatic deployment fails, see [Android build and deployment errors](#androi
 
 Android Graphite exposes accessibility through virtual nodes on the render view,
 avoiding hidden MAUI controls per semantic node. GC settings and AOT defaults are unchanged.
-See [touch timing validation](../../Doroti/validation/app-runner/android-touch-timing.md) for the Galaxy comparison
+See [touch timing validation](../../history/26-09-10/native-graphite-and-android-scroll-summary.md) for the Galaxy comparison
 and the opt-in `DOROTI_INPUT_TIMING` diagnostic.
 
 ### iOS sample
@@ -156,7 +158,7 @@ For an Intel Mac simulator, use `-r iossimulator-x64`. A physical iPhone/iPad re
 Here, `--device` belongs to `dotnet run`; the `doroti.ps1` wrapper's `-Device` currently supports Android only.
 
 For the opt-in iPhone full-trimming experiment, size measurements and build/install
-commands, see the [iOS trimming report](../../Doroti/docs/validation/ios-trimming-2026-09-10.md).
+commands, see the [iOS trimming report](../../history/26-09-10/nativeaot-work2-summary.md).
 The default remains partial trimming; full trimming needs the dynamic-member preservation descriptor.
 
 ### Web sample
@@ -267,7 +269,7 @@ and platform-view overlays, and follows its size and window appearance. This is 
 background, not automatic Liquid Glass styling of individual canvas widgets.
 Native AppKit owns accessibility adaptations and material appearance; Windows-specific
 luminosity settings do not map to AppKit. `tintColor`/`tintOpacity` tint Liquid Glass;
-`acrylicKind` selects the blur material. See the [native validation fixture](../../Doroti/validation/appkit-backdrop/README.md).
+`acrylicKind` selects the blur material. See the [native validation fixture](../../history/26-09-26/desktop-window-api-summary.md).
 
 ### System dark mode and color palettes
 

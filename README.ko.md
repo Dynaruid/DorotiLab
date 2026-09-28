@@ -19,7 +19,7 @@ Flutter 프레임워크 소스를 C#으로 변환하는 데서 시작했으며, 
 - **애플리케이션 코드 공유** — 플랫폼 중립 라이브러리에 UI를 작성하고, 각 플랫폼의 실행 프로젝트에서 사용합니다.
 - **Material·Cupertino 위젯** — Flutter에서 익숙한 API를 C#으로 구현하고 유지보수합니다.
 - **SkiaSharp 기반 GPU 렌더링** — C#에서 SkiaSharp를 통해 Skia Graphite를 사용하며, 플랫폼에 따라 Vulkan, Metal, WebGPU로 렌더링합니다.
-- **이미지·배경 필터** — Gaussian·Progressive/Variable 블러, 행렬 변환, 팽창·침식, 채도·색상 필터와 GPU 셰이더 조합을 제공합니다. [API와 검증 범위](Doroti/validation/backdrop-filters/README.md)를 참고하세요.
+- **이미지·배경 필터** — Gaussian·Progressive/Variable 블러, 행렬 변환, 팽창·침식, 채도·색상 필터와 GPU 셰이더 조합을 제공합니다. [API와 검증 범위](history/26-09-26/wgsl-gpu-effects-summary.md)를 참고하세요.
 - **네이티브 연동** — 플랫폼 호스트가 창, 입력, 텍스트 입력, 클립보드, 접근성 서비스를 연결합니다.
 - **샘플 앱과 템플릿** — `DorotiTestbedApp`과 `doroti-app` 프로젝트 템플릿으로 구성을 살펴볼 수 있습니다.
 
@@ -55,7 +55,7 @@ Web에서는 Ganesh/WebGL2도 명시적으로 선택할 수 있습니다. 구현
 git clone https://github.com/Dynaruid/DorotiLab.git
 cd DorotiLab
 
-python Doroti/validation/run-with-timeout.py cargo build --locked --manifest-path tools/Doroti.Wgsl/Cargo.toml
+python Doroti/eng/run-with-timeout.py cargo build --locked --manifest-path tools/Doroti.Wgsl/Cargo.toml
 $env:DOROTI_TESTBED_MODE = 'sample'
 pwsh -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform windows
 ```
@@ -88,10 +88,12 @@ Material·Cupertino API의 동작은 Flutter를 참고합니다. 실제 구현�
 | [샘플 앱 가이드](samples/DorotiTestbedApp/README.ko.md) | 플랫폼별 실행, 샘플 화면, 렌더러 옵션, 문제 해결 |
 | [Cupertino 샘플](samples/DorotiSampleApp2/README.md) | Windows / Web의 Cupertino 위젯, 프로필 입력, 테마 설정 |
 | [Dart-to-C# 컴파일러](tools/Doroti.DartToCSharp/README.ko.md) | 선택적 소스 가져오기 및 마이그레이션 도구 |
-| [WGSL GPU 효과](Doroti/validation/gpu-effects/README.md) | Windows fragment 구현·검증, 초기 도구 설치 및 남은 플랫폼 범위 |
+| [WGSL GPU 효과](history/26-09-26/wgsl-gpu-effects-summary.md) | Windows fragment 구현·검증, 초기 도구 설치 및 남은 플랫폼 범위 |
 | [개발 이력](history/) | 지난 작업 계획과 검증 기록 |
 
 ## 프로젝트 상태
+
+현재 호스트·renderer·build mode별 구현과 검증 범위는 [지원표](Doroti/docs/support-status.md)를 참고하세요.
 
 Doroti는 개인이 개발하는 실험적 프로젝트입니다. 플랫폼 표는 구현된 호스트와 기본 렌더링 구성을 나타내며, 모든 플랫폼이 동일한 수준으로 제품 사용을 준비했다는 의미는 아닙니다.
 

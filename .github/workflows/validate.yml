@@ -1,0 +1,51 @@
+name: Product validation
+on:
+  push:
+    paths: ['Doroti/**', 'samples/**', 'works/**', 'README*', 'Directory.Build.props', '.github/workflows/validate.yml']
+  pull_request:
+    paths: ['Doroti/**', 'samples/**', 'works/**', 'README*', 'Directory.Build.props', '.github/workflows/validate.yml']
+  workflow_dispatch:
+    inputs:
+      native_smoke:
+        description: Run native smoke on an interactive Windows GPU agent
+        type: boolean
+        default: false
+jobs:
+  common:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: pwsh -NoProfile -File Doroti/eng/doroti.ps1 validate -ValidationSuite Developer
+      - run: python Doroti/eng/run-with-timeout.py npm.cmd ci --ignore-scripts --prefix Doroti/tools/vscode-doroti
+      - run: python Doroti/eng/run-with-timeout.py npm.cmd test --prefix Doroti/tools/vscode-doroti
+  targets:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - run: dotnet workload install wasm-tools
+      - run: pwsh -NoProfile -File Doroti/eng/doroti.ps1 validate -ValidationSuite Targets
+  native-smoke:
+    if: github.event_name == 'workflow_dispatch' && inputs.native_smoke
+    runs-on: [self-hosted, Windows, X64, doroti-gpu]
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - run: python Doroti/eng/run-with-timeout.py dotnet build samples/DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Debug
+      - run: pwsh -NoProfile -File Doroti/eng/doroti.ps1 validate -ValidationSuite WindowsSmoke

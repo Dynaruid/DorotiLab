@@ -1,6 +1,6 @@
 # Windows 작업 계획
 
-원문: [plan.md](../../plan.md) M0~M7 · 작업 상태: **TODO** · 새 실행 검증: **notVerified**
+원문: [plan.md](../../plan.md) M0~M7 · 작업 상태: **PARTIAL** · 새 실행 검증: **범위별 PASS / 나머지 notVerified**
 
 [전체 작업 인덱스](../README.md)
 
@@ -70,4 +70,10 @@ M0 → M1 최소 경로 → M2 → M4/M5 → M6(대상 플랫폼) → M7 순서�
 
 [공통 완료 규칙과 결과 형식](../README.md#결과-기록-형식)을 적용한다. 테스트는 20분 timeout을 사용하고 일반 반복 검증은 30회 이내로 설계한다. 원시 산출물은 삭제 가능한 `Doroti/artifacts`, 보존할 요약·fixture는 추적되는 tests/docs/history에 둔다.
 
-현재 기록: 작업 계획만 작성했다. 플랫폼 구현·build·실기기·성능 검증을 새로 실행하지 않았다. 각 항목의 완료 시 관련 공통 작업 문서와 플랫폼/호스트/renderer/build mode별 지원표를 함께 갱신한다.
+## 2026-09-28 갱신
+
+현재 공통 00~03의 실행 결과는 [지원표](../../Doroti/docs/support-status.md)와 각 공통 작업 문서에 기록했다. revision: a93c047fe2e93d93cff3e0a6bf3c2789862fea81 + 작업 트리 변경 (미커밋).
+
+Windows App SDK Debug build, 실제 창 API/native close 취소와 registry 정리, editor/WebView 각각의 생성·재생성 smoke PASS. 물리 IME/Tab/UIA·live resize 화면 검증은 native UI 도구 연결 오류로 notVerified. MAUI 및 다른 renderer/build mode로 통과 범위를 확대하지 않는다.
+
+공통 04·05 추가: 루트 renderer layer 영구 종료 후 잔여 0 회귀 PASS. 생성 앱·설치 VSIX에서 Windows metadata Hot Reload로 실제 문구 변경과 State/count/한글 값/scroll 유지, 컴파일 오류 후 수정·재시도, 중복 요청 직렬화, Stop을 확인했다. 자동 seed/VS Code API 경로이며 물리 입력·GPU 표시 시간 측정과 구분한다. [렌더링 결과](../common/04-rendering-lifetime.md)·[VS Code 결과](../common/05-vscode-hot-reload.md)에 범위와 미검증 조합을 기록했다.

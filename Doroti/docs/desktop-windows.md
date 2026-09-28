@@ -2,8 +2,8 @@
 
 The first implementation provides `Doroti.Desktop` and optional
 `Doroti.Desktop.Widgets`. **The complete W0–W5 plan is PARTIAL.** Windows MAUI
-and AppKit macOS have native main-window adapters. Mac Catalyst has a restricted UIKit scene adapter, and Linux Qt Quick has a basic main-window adapter. WindowsAppSDK raw and custom
-title-bar widgets are still unimplemented. Native multi-window execution is W6,
+and AppKit macOS have native main-window adapters. Mac Catalyst has a restricted UIKit scene adapter, and Linux Qt Quick has a basic main-window adapter. Windows App SDK now has a main-window adapter (2026-09-28); custom
+title-bar widgets remain unimplemented. Native multi-window execution is W6,
 outside this first implementation.
 
 ## Architecture and inventory
@@ -146,19 +146,19 @@ await child.CloseAsync(cancellationToken);
 
 ## Current support
 
-| Capability | Windows MAUI | Other native hosts |
+Current host/renderer/build-mode evidence is centralized in [support status](support-status.md).
+
+| Host | Main-window adapter | Current limitation |
 | --- | --- | --- |
-| Main-window manager/controller + companion | Implemented | Adapter pending, startup rejected |
-| Client size, physical bounds, center, min/max | Implemented; mixed-monitor matrix notVerified | Pending |
-| Show/hide/focus/title/topmost/taskbar/resizable | Implemented | Pending |
-| Minimize/maximize/restore/fullscreen | Implemented; not all states live-qualified | Pending |
-| Native System/Solid/Backdrop caption | Implemented; Acrylic pixel response verified separately | Pending |
-| Tint/kind/theme/reset | Snapshot replacement implemented | Pending |
-| Material mode or renderer background change | RequiresRecreation, rejected | Pending |
-| App theme bridge | Unsupported; System/Explicit supported | Pending |
-| Hidden/custom/frameless chrome | Unsupported | Pending |
-| Native pointer drag/resize commands | Pressed primary pointer required; command implemented, API-input matrix notVerified | Pending |
-| Actual multiple native windows / owners | Unsupported | Pending |
+| Windows App SDK | Implemented; Debug native state/lifetime smoke passed on 2026-09-28 | One window; OnLastWindowClosed; backdrop/background changes require recreation; physical resize/IME notVerified |
+| Windows MAUI | Implemented; historical results below | Separate native PlatformView wiring and current revalidation pending |
+| AppKit | Implemented; historical results below | Platform-specific capability restrictions; no new execution in this change |
+| Mac Catalyst | Restricted UIKit scene adapter | PlatformDefault startup; explicit unsupported commands; no new execution |
+| Qt Quick | Basic main-window adapter | Native bounds/focus/appearance limitations; no new execution |
+| Qt Widgets | No Desktop companion adapter | SDK rejects startup |
+
+Custom/hidden chrome and additional native windows remain unsupported. The App SDK adapter owns the existing HWND and content root; native/API close share controller cancellation and native render retirement. Readiness is completed by a successful native present, not a timer.
+
 
 The legacy records remain available; no blanket Obsolete attributes or Flutter
 API casing/Duration changes were introduced. WebGL2/WebGPU and renderer selection
@@ -209,7 +209,7 @@ closes; native window recreation remains unsupported.
 | Renderer base color | Changing BackgroundColor/DarkBackgroundColor at runtime returns RequiresRecreation. |
 
 Native operation tests and screenshots are listed in the
-[desktop validation record](../validation/desktop-window/README.md). They do
+[desktop validation record](../../history/26-09-26/desktop-window-api-summary.md). They do
 not qualify physical mixed-monitor input, VoiceOver/IME, a complete first-frame
 capture sequence, all OS accessibility settings, or notarized distribution.
 
@@ -265,7 +265,7 @@ Normal/FullScreen only, so PresentationState is not a minimized/maximized detect
 UIKit safe-area insets remain available to rendered content. Bounds remains
 null because global physical-pixel geometry is not mapped. Native caption
 reservation is owned by UIKit, so the adapter does not invent custom chrome
-metrics. Current results are in the [Catalyst validation record](../validation/desktop-window/README.md#mac-catalyst--2026-09-25).
+metrics. Current results are in the [Catalyst validation record](../../history/26-09-26/desktop-window-api-summary.md).
 
 The behavior boundaries follow Apple's public
 [geometry request](https://developer.apple.com/documentation/uikit/uiwindowscene/requestgeometryupdate(_:errorhandler:))
@@ -307,4 +307,4 @@ Legacy Wayland compositor blur/client caption and Quick in-app blur are retained
 They are not exposed as new Desktop Acrylic/Hidden+Native support. Custom chrome,
 App/Explicit theme, runtime background changes, physical input/Orca, mixed DPI,
 clean-machine deployment and the known xcb/XWayland Vulkan extent race remain
-outside the verified basic adapter. See the [Linux execution evidence](../validation/desktop-window/README.md#linux-qt-quick--2026-09-26).
+outside the verified basic adapter. See the [Linux execution evidence](../../history/26-09-26/desktop-window-api-summary.md).

@@ -91,7 +91,7 @@ public class CupertinoScrollbar : RawScrollbar
         Radius __radiusWhileDragging = radiusWhileDragging ?? defaultRadiusWhileDragging;
         this.thicknessWhileDragging = __thicknessWhileDragging;
         this.radiusWhileDragging = __radiusWhileDragging;
-        System.Diagnostics.Debug.Assert(thickness < double.PositiveInfinity);
+        System.Diagnostics.Debug.Assert(this.thickness < double.PositiveInfinity);
         System.Diagnostics.Debug.Assert(__thicknessWhileDragging < double.PositiveInfinity);
     }
 

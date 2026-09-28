@@ -28,6 +28,7 @@
 
 # Local converter/migration scratch and regenerable IR dumps.
 /.tmp/
+/temp/
 /migration/generated/.cache/
 **/migration-ir.json
 

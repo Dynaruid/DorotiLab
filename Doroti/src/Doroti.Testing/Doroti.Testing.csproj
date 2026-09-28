@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsDorotiProduct>true</IsDorotiProduct>
+    <Description>Serial deterministic widget tests using Doroti frame and pointer dispatch.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Doroti.Framework.Widgets/Doroti.Framework.Widgets.csproj" />
+    <ProjectReference Include="../Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj" />
+  </ItemGroup>
+</Project>

@@ -41,6 +41,14 @@ public abstract class ServicesBinding : SchedulerBinding
     }
 
     public static new ServicesBinding instance => checkInstance(_instance);
+
+    public override void Dispose()
+    {
+        platformDispatcher.onKeyData = null;
+        platformDispatcher.onViewFocusChange = null;
+        if (ReferenceEquals(_instance, this)) _instance = null;
+        base.Dispose();
+    }
     public virtual HardwareKeyboard keyboard => _keyboard;
     public virtual KeyEventManager keyEventManager => _keyEventManager;
 

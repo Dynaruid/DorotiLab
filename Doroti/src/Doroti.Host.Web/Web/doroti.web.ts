@@ -14,6 +14,7 @@ import { closeExternalLeases, createDorotiWorker } from "./doroti.web.worker-hos
 import { createManagedDorotiWorker, type DorotiWorkerEndpoint } from "./doroti.web.managed-worker.js";
 import { TextInputTapFocus } from "./doroti.web.text-focus.js";
 import { BrowserTextActions } from "./doroti.web.text-actions.js";
+import { ResizeAdmissionWindow } from "./doroti.web.admission.js";
 
 interface ManagedCallbacks {
   dispatchPlatformEvent(hostId: number, json: string): void;
@@ -1869,12 +1870,14 @@ export async function startDorotiWorkerHost(
   let snapshotInFlight = false;
   let snapshotInFlightGeneration = 0;
   let latestWorkerSnapshot: { hostId: number; value: Record<string, unknown> } | null = null;
-  const admissionInFlightGenerations = new Set<number>();
-  let latestDirectAdmission: {
+  const directAdmission = new ResizeAdmissionWindow<{
     hostId: number;
     hostGeneration: number;
     epoch: ResizeEpoch;
-  } | null = null;
+  }>(next => activeWorker.postMessage({
+    protocolVersion: dorotiProtocolVersion, kind: "admission-target",
+    generation: next.epoch.generation, resizeEpoch: next.epoch, hostGeneration: next.hostGeneration,
+  }));
   const sendLatestWorkerSnapshot = (): void => {
     if (snapshotInFlight || !latestWorkerSnapshot) return;
     const next = latestWorkerSnapshot;
@@ -1900,37 +1903,18 @@ export async function startDorotiWorkerHost(
     if (targetHost) recordResize(targetHost, "worker-snapshot-queued", "worker-mailbox");
     sendLatestWorkerSnapshot();
   };
-  const sendLatestDirectAdmission = (): void => {
-    // The browser/Worker message queue itself is not observable. A small fixed
-    // transport window covers the 2-4 ResizeObserver generations that can
-    // arrive while one complex frame is rasterizing; everything beyond it is
-    // still replaced in the local latest slot. Managed scheduling remains
-    // latest-only, so these cheap typed metrics never force stale raster work.
-    if (admissionInFlightGenerations.size >= 4 || !latestDirectAdmission) return;
-    const next = latestDirectAdmission;
-    latestDirectAdmission = null;
-    admissionInFlightGenerations.add(next.epoch.generation);
-    activeWorker.postMessage({
-      protocolVersion: dorotiProtocolVersion,
-      kind: "admission-target",
-      generation: next.epoch.generation,
-      resizeEpoch: next.epoch,
-      hostGeneration: next.hostGeneration,
-    });
-  };
   const queueWorkerResizeEpoch: ManagedCallbacks["dispatchResizeEpoch"] = (
     hostId, hostGeneration, generation,
     logicalWidth, logicalHeight, physicalWidth, physicalHeight,
     devicePixelRatio, timestampMicroseconds): void => {
-    latestDirectAdmission = {
+    directAdmission.queue({
       hostId,
       hostGeneration,
       epoch: {
         generation, logicalWidth, logicalHeight, physicalWidth, physicalHeight,
         devicePixelRatio, timestampMicroseconds,
       },
-    };
-    sendLatestDirectAdmission();
+    });
   };
   const frameCostPending = new Map<number, { resolve(value: unknown): void; reject(error: Error): void }>();
   let frameCostSequence = 0;
@@ -2104,9 +2088,7 @@ export async function startDorotiWorkerHost(
         }
         case "admission-applied": {
           const acknowledgedGeneration = Number(message.generation);
-          if (worker === activeWorker && admissionInFlightGenerations.delete(acknowledgedGeneration)) {
-            sendLatestDirectAdmission();
-          }
+          if (worker === activeWorker) directAdmission.acknowledge(acknowledgedGeneration);
           recordResize(host, "worker-admission-applied", "worker-resize-fast-lane", {
             detail: JSON.stringify({
               previousGeneration: Number(message.previousGeneration),
@@ -2291,8 +2273,7 @@ export async function startDorotiWorkerHost(
             snapshotInFlight = false;
             snapshotInFlightGeneration = 0;
             latestWorkerSnapshot = null;
-            admissionInFlightGenerations.clear();
-            latestDirectAdmission = null;
+            directAdmission.reset();
             closeExternalLeases(display.pendingLeases, (requestId, lease) => {
               recordResize(host, "ack", "worker-supervisor", {
                 requestId, rafId: requestId, terminal: "failed",

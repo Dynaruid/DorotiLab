@@ -221,7 +221,12 @@ public sealed class DorotiWindowController
         lock (_gate)
         {
             if (_closed != 0)
-                return Task.FromResult(true);
+                // CompleteClosed marks the state before invoking registry/lifetime
+                // subscribers. A concurrent waiter must still join the accepted
+                // close task, otherwise process exit can cut those callbacks short.
+                return _close is { IsCompleted: false } pending
+                    ? pending.WaitAsync(cancellationToken)
+                    : Task.FromResult(true);
             if (_close is null || _close.IsCompleted)
                 _close = CloseCoreAsync();
             // Canceling a waiter does not cancel another caller's shared close decision.

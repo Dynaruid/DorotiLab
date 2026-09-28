@@ -5,7 +5,7 @@ namespace Doroti.Skia.Rendering;
 
 public sealed partial class SkiaSceneRenderer
 {
-    private static SKRectI VariableBlurCaptureBounds(
+    internal static SKRectI VariableBlurCaptureBounds(
         SKRect visible,
         VariableBlurSettings settings,
         TileMode tile,

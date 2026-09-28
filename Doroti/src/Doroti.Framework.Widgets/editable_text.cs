@@ -73,9 +73,7 @@ internal class _CompositionCallback__editable_text : SingleChildRenderObjectWidg
     {
         var __renderObject = (_RenderCompositionCallback__editable_text)renderObject;
         base.updateRenderObject(context, __renderObject);
-        DartRuntimePrimitives.Assert(() =>
-            Equals(__renderObject.compositeCallback, compositeCallback)
-        );
+        __renderObject.UpdateCallback(compositeCallback);
         __renderObject.enabled = enabled;
     }
 }
@@ -85,6 +83,18 @@ public class _RenderCompositionCallback__editable_text : RenderProxyBox
     public virtual Action<Layer> compositeCallback { get; private set; } = default!;
     internal virtual Action? _cancelCallback { get; set; } = default;
     internal virtual bool _enabled { get; set; } = false;
+
+    internal void UpdateCallback(Action<Layer> callback)
+    {
+        if (Equals(compositeCallback, callback)) return;
+        // Mono metadata updates can replace a method delegate's identity while
+        // retaining its EditableText State. Release the old layer subscription
+        // and register the current callback on the next paint.
+        _cancelCallback?.Invoke();
+        _cancelCallback = null;
+        compositeCallback = callback;
+        if (_enabled) markNeedsPaint();
+    }
 
     internal _RenderCompositionCallback__editable_text(
         Action<Layer> compositeCallback,

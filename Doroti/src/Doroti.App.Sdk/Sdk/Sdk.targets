@@ -4,7 +4,7 @@
   <Import Project="../../Doroti.Runner.Sdk/Sdk/Doroti.DesktopBoundary.targets" Condition="!Exists('$(MSBuildThisFileDirectory)Doroti.DesktopBoundary.targets')" />
   <ItemGroup>
     <Compile Include="Program.cs" />
-    <Compile Include="src/**/*.cs" />
+    <Compile Include="src/**/*.cs" Exclude="src/**/temp/**;$(DefaultItemExcludes)" />
     <EmbeddedResource Include="assets/shaders/**/*.sksl"
                       LogicalName="Doroti.Shaders.%(RecursiveDir)%(Filename)%(Extension)"
                       Condition="Exists('assets/shaders')" />

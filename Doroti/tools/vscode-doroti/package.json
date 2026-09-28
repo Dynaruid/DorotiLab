@@ -1,0 +1,39 @@
+{
+  "name": "doroti",
+  "displayName": "Doroti",
+  "description": "Create, edit and run Doroti applications with metadata Hot Reload.",
+  "version": "0.1.0",
+  "publisher": "doroti-local",
+  "repository": { "type": "git", "url": "https://github.com/Dynaruid/DorotiLab.git", "directory": "Doroti/tools/vscode-doroti" },
+  "license": "BSD-3-Clause",
+  "engines": { "vscode": "^1.100.0" },
+  "categories": ["Programming Languages", "Snippets"],
+  "main": "./dist/extension.js",
+  "activationEvents": ["workspaceContains:**/doroti-workspace.json", "onLanguage:csharp"],
+  "capabilities": { "untrustedWorkspaces": { "supported": "limited", "description": "Project creation, CLI execution and Hot Reload require workspace trust." }, "virtualWorkspaces": false },
+  "contributes": {
+    "commands": [
+      { "command": "doroti.createProject", "title": "Doroti: Create Project", "enablement": "isWorkspaceTrusted" },
+      { "command": "doroti.selectProject", "title": "Doroti: Select Project", "enablement": "isWorkspaceTrusted && !doroti.running" },
+      { "command": "doroti.selectTarget", "title": "Doroti: Select Target", "enablement": "isWorkspaceTrusted && !doroti.running" },
+      { "command": "doroti.run", "title": "Doroti: Run", "icon": "$(play)", "enablement": "isWorkspaceTrusted && !doroti.running" },
+      { "command": "doroti.hotReload", "title": "Doroti: Hot Reload", "icon": "$(debug-restart)", "enablement": "isWorkspaceTrusted && doroti.reloadSupported && !doroti.reloading" },
+      { "command": "doroti.restart", "title": "Doroti: Restart (resets state)", "enablement": "isWorkspaceTrusted && doroti.running" },
+      { "command": "doroti.stop", "title": "Doroti: Stop", "icon": "$(debug-stop)", "enablement": "doroti.running" },
+      { "command": "doroti.showLogs", "title": "Doroti: Show Logs" }
+    ],
+    "menus": { "editor/title": [
+      { "command": "doroti.run", "when": "resourceLangId == csharp && !doroti.running", "group": "navigation@10" },
+      { "command": "doroti.hotReload", "when": "resourceLangId == csharp && doroti.running", "group": "navigation@11" },
+      { "command": "doroti.stop", "when": "doroti.running", "group": "navigation@12" }
+    ] },
+    "configuration": { "title": "Doroti", "properties": {
+      "doroti.cliPath": { "type": "string", "default": "", "description": "Absolute path to the repository Doroti/eng/doroti.ps1 (required for generated apps outside the repository).", "scope": "machine-overridable" },
+      "doroti.powerShellPath": { "type": "string", "default": "pwsh", "description": "PowerShell 7 executable.", "scope": "machine" },
+      "doroti.dotnetPath": { "type": "string", "default": "dotnet", "description": ".NET executable for project creation.", "scope": "machine" }
+    } },
+    "snippets": [{ "language": "csharp", "path": "./snippets/widgets.json" }]
+  },
+  "scripts": { "compile": "tsc -p .", "test": "npm run compile && node --test dist/test/*.test.js", "package": "npm run compile && vsce package --no-dependencies" },
+  "devDependencies": { "@types/node": "24.0.0", "@types/vscode": "1.100.0", "@vscode/test-electron": "3.1.0", "@vscode/vsce": "4.0.0", "typescript": "7.0.2" }
+}

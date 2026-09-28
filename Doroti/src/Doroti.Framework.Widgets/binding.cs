@@ -346,6 +346,54 @@ public class WidgetsFlutterBinding
     public WidgetsFlutterBinding(PlatformDispatcher? platformDispatcher = null)
         : base(platformDispatcher) { }
 
+    private bool _bindingDisposed;
+    private IDisposable? _hotReload;
+
+    public override void Dispose()
+    {
+        if (_bindingDisposed) return;
+        _bindingDisposed = true;
+        _hotReload?.Dispose();
+        _hotReload = null;
+        var failures = new List<Exception>();
+        void Cleanup(Action action)
+        {
+            try { action(); }
+            catch (Exception error) { failures.Add(error); }
+        }
+        // Unmount while this binding and its platform capabilities are still alive.
+        Cleanup(() =>
+        {
+            if (_rootElement is not null && _buildOwner is not null)
+            {
+                attachToBuildOwner(new RootWidget());
+                _buildOwner.buildScope(_rootElement);
+                _buildOwner.finalizeTree();
+            }
+        });
+        _rootElement = null;
+        if (__late_renderView_initialized && __late_renderView is _ReusableRenderView__binding reusable)
+            Cleanup(reusable.DisposePermanently);
+        if (__late_pipelineOwner_initialized) Cleanup(__late_pipelineOwner.dispose);
+        Cleanup(() => _deferredSemanticsFlush?.cancel());
+        _deferredSemanticsFlush = null;
+        Cleanup(() => _mouseTracker?.dispose());
+        _mouseTracker = null;
+        Cleanup(() => _semanticsHandle?.dispose());
+        _semanticsHandle = null;
+        Cleanup(() => _buildOwner?.focusManager.dispose());
+        _observers.Clear();
+        Cleanup(() => _imageCache?.clear());
+        Cleanup(() => _imageCache?.clearLiveImages());
+        if (ReferenceEquals(WidgetsBinding._instance, this)) WidgetsBinding._instance = null;
+        if (ReferenceEquals(RendererBinding._instance, this)) RendererBinding._instance = null;
+        if (ReferenceEquals(PaintingBinding._instance, this)) PaintingBinding._instance = null;
+        if (ReferenceEquals(Framework.Semantics.SemanticsBinding._instance, this))
+            Framework.Semantics.SemanticsBinding._instance = null;
+        Cleanup(base.Dispose);
+        if (failures.Count > 0) throw new AggregateException("Widget binding teardown failed.", failures);
+    }
+
     public virtual ImageCache _imageCache { get; set; } = default!;
     public virtual _SystemFontsNotifier__binding _systemFonts { get; set; } =
         new _SystemFontsNotifier__binding();
@@ -1397,6 +1445,7 @@ public class WidgetsFlutterBinding
     protected override async Task performReassemble()
     {
         await base.performReassemble();
+        if (rootElement is not null) buildOwner!.reassemble(rootElement);
         if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
             FlutterTimeline.startSync("Preparing Hot Reload (layout)");
@@ -1417,7 +1466,6 @@ public class WidgetsFlutterBinding
         }
         scheduleWarmUpFrame();
         await endOfFrame;
-        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void hitTestInView(HitTestResult result, Offset position, long viewId)
@@ -2201,6 +2249,8 @@ public class WidgetsFlutterBinding
 
     public virtual void attachToBuildOwner(RootWidget widget)
     {
+        if (!_bindingDisposed && _hotReload is null && platformDispatcher.implicitView is { } reloadView)
+            _hotReload = DorotiHotReload.Register(reloadView, reassembleApplication);
         var isBootstrapFrame = rootElement is null;
         _readyToProduceFrames = true;
         _rootElement = DartRuntimePrimitives.ConvertValue<Element>(

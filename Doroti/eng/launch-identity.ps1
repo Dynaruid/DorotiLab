@@ -15,7 +15,7 @@ function Get-DorotiCompilationArguments([string] $CompilationMode = '', [string]
 
 # Content identities for safe -NoBuild reuse. Dot-sourced by doroti.ps1 and contract tests.
 function Get-DorotiInputFiles([string[]] $Roots) {
-    $excluded = @('bin', 'obj', '.doroti', 'artifacts', '.git', '.gradle', '.idea', 'node_modules', '.vs')
+    $excluded = @('bin', 'obj', 'temp', '.doroti', 'artifacts', '.git', '.gradle', '.idea', 'node_modules', '.vs')
     $pending = [Collections.Generic.Stack[string]]::new()
     foreach ($root in $Roots) { if (Test-Path -LiteralPath $root -PathType Container) { $pending.Push($root) } }
     while ($pending.Count) {

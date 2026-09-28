@@ -1,5 +1,7 @@
 # PlatformView support matrix
 
+For current execution/build-mode distinctions, see [support status](../support-status.md). On 2026-09-28 the default Windows App SDK Debug runner passed native editor and WebView separate creation/recreation and clean close; physical IME/Tab/UIA remain notVerified. The table below retains dated historical coverage. The old Web Debug startup failure is not reproduced by the current Material Testbed browser smoke.
+
 2026-09-21. Overall work1 status: **PARTIAL**. Updates: [Windows](windows-webview.md), [Android](android-webview.md).
 
 | Runner / attachment | Source/build in this execution | Runtime evidence | Remaining |
@@ -25,7 +27,7 @@ See the [archived PlatformView/WebView summary](../../../history/26-09-21/platfo
 
 No build-only entry is a physical, accessibility, NativeAOT, or performance approval. Windows WebView and HWND scenes cannot be mixed within one owner composition frame. Current Windows effect limits are four isotropic regions, logical sigma <=32 and native physical sigma <=128. Backend/driver/OS sampling limitations are not resolved by setting the capability flag.
 
-Qt's [current contract](linux-qt.md) and [reproduction commands](../../validation/linux-qt-quick/README.md)
+Qt's [current contract](linux-qt.md) and [reproduction commands](../../../history/26-09-21/platformview-webview-summary.md)
 describe its separate limits: one isotropic effect, sigma <=32, <=4M physical sample
 pixels, and a 128 MiB R/P allocation guard. The Linux work1 scope remains **PARTIAL**.
 

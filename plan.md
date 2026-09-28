@@ -1,10 +1,10 @@
 # Doroti 작업 진행 순서
 
-기준일: 2026-09-28. 이 문서는 **무엇부터 시작하고, 어느 문서를 열고, 언제 다음 작업으로 넘어갈지** 정하는 진행 안내다. 상세 작업과 체크리스트는 [works/README.md](works/README.md) 아래의 공통·플랫폼 문서에서 관리한다. 기존 정적 검토 내용과 근거는 §2·§6에 보존했다. 이번 수정은 계획 정리이며 제품 구현·실행 검증 결과를 추가하지 않는다.
+기준일: 2026-09-28. 이 문서는 **무엇부터 시작하고, 어느 문서를 열고, 언제 다음 작업으로 넘어갈지** 정하는 진행 안내다. 상세 작업과 체크리스트는 [works/README.md](works/README.md) 아래의 공통·플랫폼 문서에서 관리한다. 기존 정적 검토 내용과 근거는 §2·§6에 보존했다. 현재 구현·실행 결과는 해당 works 문서와 지원표에 기록한다.
 
 ## 1. 지금 시작할 작업과 전체 순서
 
-**지금은 [00-foundation.md](works/common/00-foundation.md)부터 시작한다.** 첫 작업은 `doroti.ps1`의 `validate/audit/release` 호출 경로와 실패 종료 코드 복구다. 이어서 임시 테스트 경로·정리 규칙, 문서·지원표, Windows/Web 최소 build·기동 검증을 정리한다.
+**공통 00~05의 이번 구현·검증 결과를 먼저 확인한다.** [04 렌더링·수명](works/common/04-rendering-lifetime.md)에 CPU geometry/리소스 회귀·Web 정책·측정 예산을, [05 VS Code·Hot Reload](works/common/05-vscode-hot-reload.md)에 로컬 VSIX·실제 Windows metadata 갱신 결과를 추가했다. [02 Desktop](works/common/02-desktop-contract.md)·[03 입력](works/common/03-input-accessibility-platformview.md)의 물리·표시 검증과 04·05의 미검증 조합은 각 문서에서 계속 추적한다.
 
 한 작업씩 진행할 때는 아래 표를 위에서부터 따른다. `common/` 문서 하나와 표에 적힌 `platforms/` 문서의 **해당 단계 항목만** 함께 연다. 플랫폼 문서 전체를 한 번에 끝내려고 하지 않는다.
 
