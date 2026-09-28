@@ -102,6 +102,8 @@ internal sealed class MaterialDemoEntrypoint : IDorotiViewEntrypoint
         {
             "input" => new Doroti.Framework.Material.MaterialApp(home: new MaterialSample.InputLifetimeSample()),
             "reload" => new Doroti.Framework.Material.MaterialApp(home: new MaterialSample.HotReloadSample()),
+            "plugins" => new Doroti.Framework.Material.MaterialApp(home: new MaterialSample.PluginsSample()),
+            "drop" => new Doroti.Framework.Material.MaterialApp(home: new MaterialSample.OsDropSample()),
             _ => new MaterialSample.SampleApp(App.SampleAcrylicAvailable),
         };
 }

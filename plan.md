@@ -4,7 +4,7 @@
 
 ## 1. 지금 시작할 작업과 전체 순서
 
-**공통 00~05의 이번 구현·검증 결과를 먼저 확인한다.** [04 렌더링·수명](works/common/04-rendering-lifetime.md)에 CPU geometry/리소스 회귀·Web 정책·측정 예산을, [05 VS Code·Hot Reload](works/common/05-vscode-hot-reload.md)에 로컬 VSIX·실제 Windows metadata 갱신 결과를 추가했다. [02 Desktop](works/common/02-desktop-contract.md)·[03 입력](works/common/03-input-accessibility-platformview.md)의 물리·표시 검증과 04·05의 미검증 조합은 각 문서에서 계속 추적한다.
+**공통 00~07의 구현·검증 결과를 먼저 확인한다.** [07 OS Drag & Drop](works/common/07-os-drag-drop.md)에 공통 계약·Windows 수신·실제 OLE fixture·큰 파일·패키지 소비 결과를 추가했다. Explorer 교차 창 전달과 다른 플랫폼·송신 등 남은 범위는 해당 문서에 유지한다. 다음 독립 작업은 [08 Navigation/restoration](works/common/08-navigation-restoration.md)이다. 단계 착수 조건의 충족을 기능 전체 완료로 해석하지 않는다.
 
 한 작업씩 진행할 때는 아래 표를 위에서부터 따른다. `common/` 문서 하나와 표에 적힌 `platforms/` 문서의 **해당 단계 항목만** 함께 연다. 플랫폼 문서 전체를 한 번에 끝내려고 하지 않는다.
 

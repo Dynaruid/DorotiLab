@@ -108,6 +108,7 @@ internal sealed unsafe class WindowsManagedProductHost
 
     internal nint ChildHwnd => _native.ChildHwnd;
     internal nint TopLevelHwnd => _native.TopLevelHwnd;
+    internal IReadOnlyList<nint> DropWindows => [_native.TopLevelHwnd, _native.ChildHwnd, _native.OpaqueChildHwnd];
     internal WindowsResizeCoordinatorSnapshot ResizeSnapshot => _coordinator.Snapshot();
 
     internal bool IsLatestResizeGeneration(ulong generation) =>
@@ -124,17 +125,8 @@ internal sealed unsafe class WindowsManagedProductHost
     )
     {
         cancellationToken.ThrowIfCancellationRequested();
-        try
-        {
-            using var process = Process.Start(
-                new ProcessStartInfo(absoluteUrl) { UseShellExecute = true }
-            );
-            return ValueTask.FromResult(new UrlLaunchResult(UrlLaunchStatus.opened));
-        }
-        catch (Exception error)
-        {
-            return ValueTask.FromResult(new UrlLaunchResult(UrlLaunchStatus.failed, error.Message));
-        }
+        ObjectDisposedException.ThrowIf(_disposed || !_nativeActive, this);
+        return new WindowsUrlLauncher().LaunchUrlAsync(absoluteUrl, cancellationToken);
     }
 
     private long _resizeGeneration;

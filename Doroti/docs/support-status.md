@@ -1,5 +1,26 @@
 # Current support and evidence
 
+M5-A update (2026-09-28, same base revision + 07 working tree): Windows App SDK now
+registers a Copy-only OLE drop receiver for files, Unicode text and URI lists.
+Common routing/lifetime, real 5GB sparse-file reads at 4GB offsets, 96/192 DPI
+coordinate contexts and a NuGet-only Release consumer pass. Actual OLE drag source
+fixture delivery passes for two files, Korean text and a URI using computer-use input.
+Explorer-to-Testbed drag could not be performed because the UI tool restricts drag
+endpoints to the source window; it remains **notVerified**, as do live monitor-DPI
+changes and physical input. Other adapters, OS sending, move/link and virtual files
+are not implemented. See [OS drop contract](os-drag-drop.md) and [07 results](../../works/common/07-os-drag-drop.md).
+
+M4 update (2026-09-28, `36b566d11741d2f4971366a75169ce9c06044904` + local changes):
+`Doroti.Plugins` and the Windows App SDK FilePicker/URL adapters pass a separate
+NuGet-only Release consumer. Real OS dialog selection, user/caller cancellation,
+owner-close drain, read-grant disposal and default-browser loopback HTTP pass with
+synthetic dialog commands. The common plugin consumer also passes Release trimmed
+publish/run. ABI/RID/duplicates/missing handler/assets, denied/unsupported, late replies
+and large-file offsets have contract regressions. Native event streams and other
+platform adapters remain unfinished; physical input, actual ACL denial and full
+Windows renderer trimming/AOT are not qualified. See [plugin contract](plugins.md)
+and [M4 results](../../works/common/06-plugin-sdk.md).
+
 Updated 2026-09-28 against `a93c047fe2e93d93cff3e0a6bf3c2789862fea81` plus the local 00–05 changes. This is the current cross-host index. Older reports remain historical; a build or synthetic input test does not establish physical input, accessibility, performance or AOT support.
 
 | Platform / host / renderer | Implementation | Build mode verified now | Automated execution | Visible / physical evidence now | Remaining |

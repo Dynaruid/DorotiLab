@@ -12,6 +12,7 @@
     <EmbeddedResource Include="assets/fonts/Roboto-*.ttf" LogicalName="MaterialSample.%(Filename)%(Extension)" />
     <EmbeddedResource Include="../../reference/flutter_sample_app/assets/images/mae-mu-9002s2VnOAY-unsplash.webp" LogicalName="MaterialSample.image.webp" />
     <ProjectReference Include="..\..\Doroti\src\Doroti.Hosting\Doroti.Hosting.csproj" />
+    <ProjectReference Include="../../Doroti/src/Doroti.Plugins/Doroti.Plugins.csproj" />
     <ProjectReference Include="..\..\Doroti\src\Doroti.Framework.Widgets\Doroti.Framework.Widgets.csproj" />
     <ProjectReference Include="..\..\Doroti\src\Doroti.Framework.Material\Doroti.Framework.Material.csproj" />
   </ItemGroup>

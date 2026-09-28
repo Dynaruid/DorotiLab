@@ -4,6 +4,16 @@
 
 A sample app for Doroti's Material widgets and platform hosts.
 
+Set `DOROTI_SAMPLE=drop` for the Windows OS drop scene. It accepts files, text and URIs
+as Copy, displays event/action/client coordinates and previews file bytes without
+executing content. Unsupported hosts display their capability boundary. See
+[OS Drag & Drop](../../Doroti/docs/os-drag-drop.md) for data ownership and test coverage.
+
+Set `DOROTI_SAMPLE=plugins` for the Windows FilePicker/URL launcher scene. Choose one or
+more files to display their names, sizes and first 16 bytes; handles are released after
+reading. The URL button opens example.com. [Plugin contract and package tests](../../Doroti/docs/plugins.md)
+describe cancellation, ownership and unsupported hosts.
+
 For the development reload scene, set `DOROTI_SAMPLE=reload` and run `Doroti/eng/doroti.ps1 dev -App samples/DorotiTestbedApp -Platform windows`. Increment the counter, enter text and scroll, then edit `HotReloadSample.Message()` and save. Supported metadata updates preserve those values. See [development sessions](../../Doroti/docs/development-hot-reload.md) for CLI/VS Code commands and current limitations.
 One shared C# application runs through Windows, macOS AppKit, Mac Catalyst, Linux, Android, iOS, and Web runners.
 

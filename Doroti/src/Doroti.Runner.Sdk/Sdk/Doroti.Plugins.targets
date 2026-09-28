@@ -1,0 +1,21 @@
+<Project>
+  <!-- Imported packages contribute metadata, not reflection-based discovery. -->
+  <Target Name="GenerateDorotiPackagePlugins" BeforeTargets="GenerateDorotiRunnerBootstrap;PrepareForBuild" Condition="'@(DorotiNativePlugin)' != ''">
+    <Error Code="DOROTIPLUGIN001" Condition="'%(DorotiNativePlugin.HandlerType)' == '' or '%(DorotiNativePlugin.Channel)' == '' or '%(DorotiNativePlugin.AbiVersion)' == '' or '%(DorotiNativePlugin.PackageId)' == '' or '%(DorotiNativePlugin.Version)' == '' or '%(DorotiNativePlugin.Codec)' == ''"
+      Text="Plugin '%(DorotiNativePlugin.Identity)' requires HandlerType, Channel, Codec, AbiVersion, PackageId and Version." />
+    <Error Code="DOROTIPLUGIN002" Condition="'%(DorotiNativePlugin.Rid)' != '$(RuntimeIdentifier)'" Text="Plugin '%(DorotiNativePlugin.Identity)' targets RID '%(DorotiNativePlugin.Rid)', not '$(RuntimeIdentifier)'." />
+    <Error Code="DOROTIPLUGIN003" Condition="'@(DorotiNativePlugin->Count())' != '@(DorotiNativePlugin->Distinct()->Count())'" Text="Duplicate native plugin ids." />
+    <Error Code="DOROTIPLUGIN004" Condition="'@(DorotiNativePlugin->Count())' != '@(DorotiNativePlugin->Metadata('Channel')->Distinct()->Count())'" Text="Duplicate native plugin channels." />
+    <Error Code="DOROTIPLUGIN005" Condition="'@(DorotiPluginAsset)' != '' and !Exists('%(DorotiPluginAsset.Identity)')" Text="Plugin asset is missing: %(DorotiPluginAsset.Identity)" />
+    <Error Code="DOROTIPLUGIN006" Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('%(DorotiNativePlugin.Identity)%(DorotiNativePlugin.Channel)%(DorotiNativePlugin.Codec)%(DorotiNativePlugin.AbiVersion)%(DorotiNativePlugin.PackageId)%(DorotiNativePlugin.Version)%(DorotiNativePlugin.Rid)', '^[a-zA-Z0-9_./+:-]+$')) or !$([System.Text.RegularExpressions.Regex]::IsMatch('%(DorotiNativePlugin.HandlerType)', '^[a-zA-Z_][a-zA-Z0-9_.]*$'))" Text="Plugin '%(DorotiNativePlugin.Identity)' contains invalid metadata or a non-qualified C# handler type." />
+    <PropertyGroup><_DorotiPackagePluginManifest>$(_DorotiGeneratedDirectory)package-plugins.json</_DorotiPackagePluginManifest></PropertyGroup>
+    <ItemGroup>
+      <_DorotiPackagePluginJson Include="@(DorotiNativePlugin->'{&quot;Id&quot;:&quot;%(Identity)&quot;,&quot;Channel&quot;:&quot;%(Channel)&quot;,&quot;Codec&quot;:&quot;%(Codec)&quot;,&quot;CapabilityId&quot;:&quot;platform.plugins&quot;,&quot;NativePackage&quot;:{&quot;Rid&quot;:&quot;%(Rid)&quot;,&quot;PackageId&quot;:&quot;%(PackageId)&quot;,&quot;Version&quot;:&quot;%(Version)&quot;,&quot;AbiVersion&quot;:&quot;%(AbiVersion)&quot;,&quot;HandlerType&quot;:&quot;%(HandlerType)&quot;}}')" />
+      <EmbeddedResource Include="$(_DorotiPackagePluginManifest)" LogicalName="Doroti.Application.PackagePlugins" />
+      <Content Include="@(DorotiPluginAsset)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+      <FileWrites Include="$(_DorotiPackagePluginManifest)" />
+    </ItemGroup>
+    <PropertyGroup><_DorotiPackagePluginText>[@(_DorotiPackagePluginJson, ',')]</_DorotiPackagePluginText></PropertyGroup>
+    <WriteLinesToFile File="$(_DorotiPackagePluginManifest)" Lines="$(_DorotiPackagePluginText)" Overwrite="true" WriteOnlyWhenDifferent="true" />
+  </Target>
+</Project>

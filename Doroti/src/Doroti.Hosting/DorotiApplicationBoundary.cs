@@ -69,6 +69,7 @@ public sealed record DorotiEmbeddedResource(
 
 [JsonSourceGenerationOptions(PropertyNameCaseInsensitive = true)]
 [JsonSerializable(typeof(DorotiApplicationManifest))]
+[JsonSerializable(typeof(DorotiApplicationPlugin[]))]
 internal sealed partial class DorotiApplicationManifestJsonContext : JsonSerializerContext;
 
 /// <summary>Compiler-produced application resource and plugin boundary for one target RID.</summary>
@@ -93,6 +94,17 @@ public sealed class DorotiApplicationBoundary : IDisposable
 
     public DorotiApplicationManifest Manifest { get; }
     public IApplicationResourceHostCapability ApplicationResources => _resources;
+
+    /// <summary>Strongly typed alternative for generated hosts without an embedded manifest.</summary>
+    public static DorotiApplicationBoundary Create(DorotiApplicationManifest manifest, Assembly applicationAssembly,
+        IEnumerable<IDorotiNativePluginHandler>? handlers = null, IEnumerable<IPlatformViewFactory>? platformViewFactories = null)
+    {
+        ArgumentNullException.ThrowIfNull(manifest);
+        ArgumentNullException.ThrowIfNull(applicationAssembly);
+        if (manifest.SchemaVersion != "doroti.application-capabilities/v1")
+            throw new InvalidDataException($"Unsupported generated application manifest: {manifest.SchemaVersion}");
+        return new(manifest, applicationAssembly, handlers ?? [], platformViewFactories ?? []);
+    }
 
     public static DorotiApplicationBoundary Load(
         Assembly applicationAssembly,
@@ -139,6 +151,11 @@ public sealed class DorotiApplicationBoundary : IDisposable
                 targetRid
             );
         }
+
+        using var packagePlugins = manifestAssembly.GetManifestResourceStream("Doroti.Application.PackagePlugins");
+        if (packagePlugins is not null)
+            manifest = manifest with { Plugins = [..manifest.Plugins, ..JsonSerializer.Deserialize(packagePlugins,
+                DorotiApplicationManifestJsonContext.Default.DorotiApplicationPluginArray) ?? []] };
 
         return new(manifest, applicationAssembly, handlers ?? [], platformViewFactories ?? []);
     }
@@ -194,6 +211,7 @@ public sealed class DorotiApplicationBoundary : IDisposable
     public void Configure(DorotiViewCapabilities capabilities)
     {
         ArgumentNullException.ThrowIfNull(capabilities);
+        var plugins = _plugins.CreateScope(capabilities);
         capabilities
             .Register<IApplicationResourceHostCapability>(
                 DorotiCapabilityIds.ApplicationResources,
@@ -201,9 +219,9 @@ public sealed class DorotiApplicationBoundary : IDisposable
             )
             .Register<IPlatformMessageHostCapability>(
                 DorotiCapabilityIds.PlatformMessaging,
-                _plugins
+                plugins
             )
-            .Register<IPlatformPluginHostCapability>(DorotiCapabilityIds.PlatformPlugins, _plugins);
+            .Register<IPlatformPluginHostCapability>(DorotiCapabilityIds.PlatformPlugins, plugins);
     }
 
     public void Configure(
@@ -213,6 +231,7 @@ public sealed class DorotiApplicationBoundary : IDisposable
     {
         ArgumentNullException.ThrowIfNull(capabilities);
         ArgumentNullException.ThrowIfNull(frameworkChannels);
+        var plugins = _plugins.CreateScope(capabilities);
         capabilities
             .Register<IApplicationResourceHostCapability>(
                 DorotiCapabilityIds.ApplicationResources,
@@ -220,9 +239,9 @@ public sealed class DorotiApplicationBoundary : IDisposable
             )
             .Register<IPlatformMessageHostCapability>(
                 DorotiCapabilityIds.PlatformMessaging,
-                new RoutedPlatformMessageCapability(frameworkChannels, _plugins)
+                new RoutedPlatformMessageCapability(frameworkChannels, plugins)
             )
-            .Register<IPlatformPluginHostCapability>(DorotiCapabilityIds.PlatformPlugins, _plugins);
+            .Register<IPlatformPluginHostCapability>(DorotiCapabilityIds.PlatformPlugins, plugins);
     }
 
     public void Dispose()
@@ -324,6 +343,10 @@ public sealed class DorotiApplicationBoundary : IDisposable
             IDisposable
     {
         private readonly string _targetRid;
+        private readonly List<PluginScope> _scopes = [];
+        private bool _disposed;
+        private int _activeCalls;
+        private bool _handlersDisposed;
         private readonly Dictionary<
             string,
             (DorotiApplicationPlugin Descriptor, IDorotiNativePluginHandler Handler)
@@ -335,10 +358,20 @@ public sealed class DorotiApplicationBoundary : IDisposable
         )
         {
             _targetRid = manifest.TargetRid;
-            var handlersById = handlers.ToDictionary(item => item.PluginId, StringComparer.Ordinal);
+            var handlersById = new Dictionary<string, IDorotiNativePluginHandler>(StringComparer.Ordinal);
+            foreach (var handler in handlers)
+                if (!handlersById.TryAdd(handler.PluginId, handler))
+                    throw Missing(handler.PluginId, $"duplicate native handler id '{handler.PluginId}'");
             _handlers = new(StringComparer.Ordinal);
+            var ids = new HashSet<string>(StringComparer.Ordinal);
             foreach (var plugin in manifest.Plugins)
             {
+                if (string.IsNullOrWhiteSpace(plugin.Id) || string.IsNullOrWhiteSpace(plugin.Channel) || string.IsNullOrWhiteSpace(plugin.Codec))
+                    throw Missing(plugin.Channel ?? "<missing>", "plugin id, channel and codec must be nonempty");
+                if (!ids.Add(plugin.Id) || _handlers.ContainsKey(plugin.Channel))
+                    throw Missing(plugin.Channel, $"duplicate plugin id/channel '{plugin.Id}/{plugin.Channel}'");
+                if (plugin.Channel.StartsWith("flutter/", StringComparison.Ordinal))
+                    throw Missing(plugin.Channel, "the flutter/ channel prefix is reserved");
                 if (plugin.NativePackage is null)
                 {
                     throw Missing(
@@ -346,6 +379,9 @@ public sealed class DorotiApplicationBoundary : IDisposable
                         $"plugin '{plugin.Id}' has no native package for RID '{manifest.TargetRid}'"
                     );
                 }
+
+                if (plugin.NativePackage.Rid != manifest.TargetRid)
+                    throw Missing(plugin.Channel, $"plugin '{plugin.Id}' RID '{plugin.NativePackage.Rid}' does not match '{manifest.TargetRid}'");
 
                 if (!handlersById.TryGetValue(plugin.Id, out var handler))
                 {
@@ -363,7 +399,24 @@ public sealed class DorotiApplicationBoundary : IDisposable
                     );
                 }
 
+                if (!(manifest.TargetRid == "browser-wasm" && plugin.NativePackage.HandlerType == "generated-js-registration")
+                    && handler.GetType().FullName != plugin.NativePackage.HandlerType)
+                    throw Missing(plugin.Channel, $"handler type '{handler.GetType().FullName}' does not match '{plugin.NativePackage.HandlerType}'");
+
                 _handlers.Add(plugin.Channel, (plugin, handler));
+            }
+            foreach (var id in handlersById.Keys)
+                if (!ids.Contains(id)) throw Missing(id, $"native handler '{id}' has no manifest descriptor");
+        }
+
+        public PluginScope CreateScope(DorotiViewCapabilities capabilities)
+        {
+            lock (_scopes)
+            {
+                ObjectDisposedException.ThrowIf(_disposed, this);
+                var scope = new PluginScope(this, new(capabilities));
+                _scopes.Add(scope);
+                return scope;
             }
         }
 
@@ -400,6 +453,29 @@ public sealed class DorotiApplicationBoundary : IDisposable
 
         public void Dispose()
         {
+            PluginScope[] scopes;
+            lock (_scopes)
+            {
+                if (_disposed) return;
+                _disposed = true;
+                scopes = _scopes.ToArray();
+                _scopes.Clear();
+            }
+            List<Exception> errors = [];
+            foreach (var scope in scopes)
+                try { scope.Dispose(); } catch (Exception error) { errors.Add(error); }
+            try { TryDisposeHandlers(); } catch (Exception error) { errors.Add(error); }
+            if (errors.Count != 0) throw new AggregateException(errors);
+        }
+
+        private void TryDisposeHandlers()
+        {
+            lock (_scopes)
+            {
+                if (!_disposed || _activeCalls != 0 || _handlersDisposed) return;
+                _handlersDisposed = true;
+            }
+            List<Exception> errors = [];
             foreach (
                 var handler in _handlers
                     .Values.Select(item => item.Handler)
@@ -407,10 +483,71 @@ public sealed class DorotiApplicationBoundary : IDisposable
                     .OfType<IDisposable>()
             )
             {
-                handler.Dispose();
+                try { handler.Dispose(); } catch (Exception error) { errors.Add(error); }
             }
 
-            _handlers.Clear();
+            // Keep immutable bindings available to already-running continuations.
+            if (errors.Count != 0) throw new AggregateException(errors);
+        }
+
+        public sealed class PluginScope(ApplicationPluginCapability owner, DorotiPluginContext context)
+            : IPlatformMessageHostCapability, IPlatformPluginHostCapability, IDisposable
+        {
+            private readonly CancellationTokenSource _lifetime = new();
+            private readonly object _gate = new();
+            private bool _closed;
+            public IReadOnlyCollection<string> RegisteredChannels => owner.RegisteredChannels;
+
+            public async ValueTask<ReadOnlyMemory<byte>?> SendAsync(string channel, ReadOnlyMemory<byte>? data,
+                CancellationToken cancellationToken = default)
+            {
+                using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _lifetime.Token);
+                lock (_gate)
+                {
+                    ObjectDisposedException.ThrowIf(_closed, this);
+                    lock (owner._scopes)
+                    {
+                        ObjectDisposedException.ThrowIf(owner._disposed, owner);
+                        owner._activeCalls++;
+                    }
+                }
+                // Stop waiting even if an external handler ignores cancellation. Invoke still
+                // owns the handler until it exits; the view context rejects late retained grants.
+                return await Invoke(channel, data, linked.Token).WaitAsync(linked.Token).ConfigureAwait(false);
+            }
+
+            private async Task<ReadOnlyMemory<byte>?> Invoke(string channel, ReadOnlyMemory<byte>? data, CancellationToken token)
+            {
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (!owner._handlers.TryGetValue(channel, out var binding))
+                        throw owner.Missing(channel, "no generated plugin descriptor and native handler are registered");
+                    var result = binding.Handler is IDorotiViewPluginHandler viewHandler
+                        ? await viewHandler.HandleAsync(context, channel, binding.Descriptor.Codec, data, token).ConfigureAwait(false)
+                        : await binding.Handler.HandleAsync(channel, binding.Descriptor.Codec, data, token).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    return result;
+                }
+                finally
+                {
+                    lock (owner._scopes) { owner._activeCalls--; }
+                    owner.TryDisposeHandlers();
+                }
+            }
+
+            public void SetMessageHandler(string channel, PlatformMessageHandler? handler) => owner.SetMessageHandler(channel, handler);
+
+            public void Dispose()
+            {
+                lock (_gate) { if (_closed) return; _closed = true; }
+                try { _lifetime.Cancel(); }
+                finally
+                {
+                    try { context.Dispose(); }
+                    finally { lock (owner._scopes) { owner._scopes.Remove(this); } }
+                }
+            }
         }
 
         private DorotiCapabilityException Missing(string channel, string reason) =>

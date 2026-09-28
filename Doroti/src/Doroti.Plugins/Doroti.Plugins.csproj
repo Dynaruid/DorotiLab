@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><IsDorotiProduct>true</IsDorotiProduct><PackageId>Doroti.Plugins</PackageId></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Doroti.Hosting/Doroti.Hosting.csproj" />
+    <None Include="buildTransitive/Doroti.Plugins.targets" Pack="true" PackagePath="buildTransitive/" />
+  </ItemGroup>
+</Project>

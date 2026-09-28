@@ -11,6 +11,8 @@ public static class DorotiCapabilityIds
     public const string InputCursor = "input.cursor";
     public const string TextInput = "text.input";
     public const string UrlLauncher = "platform.url-launcher";
+    public const string FilePicker = "platform.file-picker";
+    public const string OsDragDrop = "platform.os-drag-drop";
     public const string PlatformServices = "platform.services";
     public const string PlatformEnvironment = "platform.environment";
     public const string PlatformMessaging = "platform.messaging";

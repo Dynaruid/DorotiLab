@@ -1,5 +1,6 @@
 <Project>
   <Import Project="Doroti.DesktopBoundary.targets" />
+  <Import Project="Doroti.Plugins.targets" />
   <!-- Set PublishAot on the executable, never as a global property on the
        platform-neutral ProjectReference graph (NETSDK1203 for ios-arm64). -->
   <PropertyGroup>
@@ -315,6 +316,7 @@
       <_DorotiNativePluginLines Include="{" />
       <_DorotiNativePluginLines Include="    internal static readonly global::Doroti.Hosting.IDorotiNativePluginHandler[] Items =" />
       <_DorotiNativePluginLines Include="    [" />
+      <_DorotiNativePluginLines Include="@(DorotiNativePlugin->'        new global::%(HandlerType)(),')" />
       <_DorotiNativePluginLines Include="        new global::$(RootNamespace).DorotiNativePlatformBridge()," Condition="'@(DorotiNativeBindingProject)' != ''" />
       <_DorotiNativePluginLines Include="    ]%3B" />
       <_DorotiNativePluginLines Include="}" />

@@ -60,6 +60,8 @@ def main(suite):
                     "Doroti/tests/Doroti.Tests/Doroti.Tests.csproj", "-c", "Debug",
                     "--artifacts-path", str(run / "build"))
         if suite in ("Developer", "Release"):
+            command("plugin-regressions", "dotnet", "run", "--project", "Doroti/tests/Doroti.Plugin.Tests/Doroti.Plugin.Tests.csproj")
+            command("os-drop-regressions", "dotnet", "run", "--project", "Doroti/tests/Doroti.Drop.Tests/Doroti.Drop.Tests.csproj")
             command("web-rendering", "node", "--experimental-transform-types", "--test", "Doroti/tests/web_rendering.mts")
         if suite in ("Targets", "Release"):
             for target in ("windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj", "web/DorotiTestbedApp.Web.csproj"):

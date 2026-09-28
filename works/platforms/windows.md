@@ -39,8 +39,9 @@ M0 → M1 최소 경로 → M2 → M4/M5 → M6(대상 플랫폼) → M7 순서�
 
 ## 4. 앱 기능과 추가 창 — M4/M5/M6, P2
 
-- [ ] FilePicker·URL launcher를 공통 플러그인 계약으로 연결하고 취소·파일 접근 수명·권한/오류·창 종료 중 응답을 검증한다.
+- [x] FilePicker·URL launcher를 공통 플러그인 계약으로 연결하고 취소·파일 접근 수명·권한/오류·창 종료 중 응답을 검증한다. 2026-09-28 첫 Windows App SDK 범위: 실제 OS picker·취소·파일 읽기·브라우저 loopback·NuGet-only Release 소비 PASS. 권한 거절은 synthetic 계약 회귀이며 실제 ACL/물리 입력/MAUI는 notVerified. [M4 상세 결과](../common/06-plugin-sdk.md)
 - [ ] Explorer의 파일/텍스트/URI 수신부터 구현한다. 다중/큰 파일·stream 읽기·DPI 좌표·취소를 확인한 뒤 OS 송신·drag 이미지·창 간 이동·move 책임을 확장한다.
+  - 2026-09-28 **PARTIAL**: 공통 OS drop capability와 Windows OLE 수신 연결, 실제 OLE fixture의 다중 파일/한글/URI drag, 실제 5GB sparse 파일·4GB offset·96/192 DPI·수명·NuGet-only Release 소비 PASS. Explorer 교차 창 입력은 UI 도구 범위 제한으로 notVerified. 송신/virtual files/실제 mixed-DPI 이동은 잔여. [M5-A 결과](../common/07-os-drag-drop.md)
 - [ ] Windows protocol activation의 cold/warm start를 Router 대기·중복 처리와 연결하고 상태 migration·강제 종료 후 복원을 검증한다.
 - [ ] 공통 창 문맥 ADR 이후 `CreateWindowAsync`와 fresh `WindowContent`를 실제 추가 창에 연결한다. 두 창의 독립 입력·IME·DPI·native content·렌더링·닫기 및 `OnLastWindowClosed`/`Explicit` 수명을 검증한다.
 - [ ] `_window_win32.cs` Satellite의 Desktop 연결 또는 지원 경계를 정리해 native 창 중복 소유를 막는다.

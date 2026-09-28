@@ -1,6 +1,6 @@
 # Doroti 작업 계획
 
-기준: [plan.md](../plan.md), 검토 기준일 2026-09-28.
+기준: [plan.md](../plan.md), 검토 기준일 2026-09-28. [07 OS Drag & Drop](common/07-os-drag-drop.md)의 공통 계약·Windows 수신 결과를 추가했다. 외부 source 교차 창 실측 등 잔여 항목은 유지하며 다음 독립 작업은 [08 Navigation/restoration](common/08-navigation-restoration.md)이다.
 
 이 폴더는 원본 로드맵을 공통 기능 작업과 플랫폼별 연결·검증 작업으로 나눈 실행 계획이다. 문서 작성 시점의 작업 상태는 **TODO**, 새 실행 검증은 **notVerified**다. 기존 구현이 없다는 뜻이 아니며, 착수할 때 현재 branch의 구현과 과거 증거를 확인해 중복 작업을 줄인다. 2026-09-28 공통 00~05 구현·실행 결과를 해당 문서에 추가했다. 초기 계획 상태와 현재 기록을 구분하며, 최신 범위는 [지원표](../Doroti/docs/support-status.md)를 따른다.
 

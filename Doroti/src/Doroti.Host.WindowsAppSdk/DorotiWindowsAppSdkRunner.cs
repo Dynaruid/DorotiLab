@@ -305,6 +305,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         private readonly Dictionary<ulong, SkiaPaintCompletion> _paintCompletions = [];
         private Exception? _fatal;
         private DorotiViewCapabilities? _capabilities;
+        private WindowsFilePicker? _filePicker;
+        private WindowsOsDropTarget? _dropTarget;
         private long _renderCallbacks;
         private long _presented;
         private long _superseded;
@@ -497,7 +499,11 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 );
             }
 
+            _filePicker = new WindowsFilePicker(host.TopLevelHwnd);
+            _dropTarget = new WindowsOsDropTarget(host.ChildHwnd, host.DispatchPlatformViewEvent, host.DropWindows);
             var capabilities = new DorotiViewCapabilities(target)
+                .Register<IOsDragDropHostCapability>(DorotiCapabilityIds.OsDragDrop, _dropTarget)
+                .Register<IFilePickerHostCapability>(DorotiCapabilityIds.FilePicker, _filePicker)
                 .Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)
                 .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, host)
                 .Register<IFrameHostCapability>(DorotiCapabilityIds.ViewFrameDispatch, host)
@@ -806,6 +812,11 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             // delayed qualification or metrics callback can enqueue work to
             // that HWND during shutdown.
             Host?.MarkNativeStopped();
+            if (_capabilities is { } pluginCapabilities)
+                (pluginCapabilities.Require<IPlatformPluginHostCapability>(1, DorotiCapabilityIds.PlatformPlugins,
+                    DorotiUiInvocation.Managed("Windows.plugins.shutdown")) as IDisposable)?.Dispose();
+            _filePicker?.Dispose();
+            _dropTarget?.Dispose();
             _platformViews?.ReleaseWinUiIslands();
             if (Presenter.UsesCompositionTopology)
             {
