@@ -373,18 +373,11 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
         }
 #endif
         // The renderer promotes a scene to its replay source at GPU completion. A
-        // second native composition before then could replay the older scene and
-        // overwrite a newly submitted idle update (e.g. removing a material).
+        // second native draw before then could replay the older scene and
+        // overwrite a newly submitted update (including selection handles).
+        // UIKit's system loupe can request those redraws without a PlatformView.
         // Defer invalidations, without blocking UIKit, until that promotion occurs.
-#if IOS || MACCATALYST
-        var maximumPending =
-            owner.PlatformViews?.HasComposition == true
-            || _pending.Any(pending => pending.PlatformFrame is not null)
-                ? 1
-                : 3;
-#else
-        const int maximumPending = 3;
-#endif
+        const int maximumPending = 1;
         if (_pending.Count >= maximumPending)
         {
             _frameBackpressure = true;

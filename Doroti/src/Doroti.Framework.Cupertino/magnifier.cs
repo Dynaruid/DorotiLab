@@ -51,6 +51,8 @@ internal class _CupertinoTextMagnifierState__magnifier
     internal virtual CurvedAnimation _ioCurvedAnimation { get; private set; } = default!;
     internal virtual Action _magnifierInfoListener { get; set; } = default!;
     internal virtual Action _tickerModeListener { get; set; } = default!;
+    private ITextMagnifierSession? _nativeMagnifier;
+    private DorotiView? _magnifierView;
     public virtual Scheduler.Ticker? _ticker { get; set; } = default;
     public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
@@ -87,6 +89,8 @@ internal class _CupertinoTextMagnifierState__magnifier
 
     public override void dispose()
     {
+        _nativeMagnifier?.Dispose();
+        _nativeMagnifier = null;
         widget.magnifierInfo.removeListener(_magnifierInfoListener);
         _tickerModeNotifier?.removeListener(_tickerModeListener);
         widget.controller.animationController = null;
@@ -134,6 +138,21 @@ internal class _CupertinoTextMagnifierState__magnifier
 
     public override void didChangeDependencies()
     {
+        var view = View.of(context);
+        if (!ReferenceEquals(view, _magnifierView))
+        {
+            _nativeMagnifier?.Dispose();
+            _magnifierView = view;
+            // Web hosts keep the Doroti magnifier, even when their target is iOS.
+            _nativeMagnifier =
+                !Foundation.ConstantsLibrary.kIsWeb
+                && view.registeredCapabilityIds.Contains(DorotiCapabilityIds.TextInput)
+                    ? view.RequireCapability<ITextInputHostCapability>(
+                        DorotiCapabilityIds.TextInput,
+                        DorotiUiInvocation.Managed("CupertinoTextMagnifier")
+                    ).CreateMagnifierSession()
+                    : null;
+        }
         _determineMagnifierPositionAndFocalPoint();
         base.didChangeDependencies();
     }
@@ -147,6 +166,7 @@ internal class _CupertinoTextMagnifierState__magnifier
             < -widget.hideBelowThreshold
         )
         {
+            _nativeMagnifier?.Hide();
             if (widget.controller.shown)
             {
                 DartRuntimePrimitives.Ignore(widget.controller.hide(removeFromOverlay: false));
@@ -156,6 +176,14 @@ internal class _CupertinoTextMagnifierState__magnifier
         if (!widget.controller.shown)
         {
             _ioAnimationController.forward();
+        }
+        if (_nativeMagnifier is not null)
+        {
+            _nativeMagnifier.Update(
+                textEditingContext.globalGesturePosition,
+                textEditingContext.caretRect
+            );
+            return;
         }
         double verticalPositionOfLens = Math.Max(
             verticalCenterOfCurrentLine,
@@ -199,6 +227,10 @@ internal class _CupertinoTextMagnifierState__magnifier
 
     public override Widget build(BuildContext context)
     {
+        if (_nativeMagnifier is not null)
+        {
+            return SizedBox.CreateShrink();
+        }
         CupertinoThemeData themeData = CupertinoTheme.of(context);
         return new AnimatedPositioned(
             duration: CupertinoTextMagnifier._kDragAnimationDuration,

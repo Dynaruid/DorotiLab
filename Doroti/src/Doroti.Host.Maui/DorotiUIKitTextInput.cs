@@ -160,6 +160,9 @@ public sealed partial class MauiTextInputBridge
 
     private void ResetUIKitInput()
     {
+#if IOS
+        ResetSystemMagnifier();
+#endif
         if (_active?.Handler?.PlatformView is IDorotiUIKitTextInput native)
         {
             native.ResetFloatingCursor();

@@ -173,6 +173,13 @@ public readonly record struct DorotiFloatingCursorEvent(
     Offset offset
 );
 
+/// <summary>A host magnifier owned by one framework overlay. Coordinates are view-local logical pixels.</summary>
+public interface ITextMagnifierSession : IDisposable
+{
+    void Update(Offset position, Rect caretRect);
+    void Hide();
+}
+
 /// <summary>Host-backed IME transport. Editing policy remains in Flutter Services.</summary>
 public interface ITextInputHostCapability
 {
@@ -213,6 +220,9 @@ public interface ITextInputHostCapability
     void SetEditableSizeAndTransform(Size logicalSize, Matrix4 transform) { }
 
     void SetCaretRect(Rect logicalRect);
+
+    /// <summary>Returns null when the host uses the framework magnifier.</summary>
+    ITextMagnifierSession? CreateMagnifierSession() => null;
 
     /// <summary>Requests that the native text input UI become visible for the attached client.</summary>
     void ShowTextInput() { }

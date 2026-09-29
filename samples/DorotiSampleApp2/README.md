@@ -64,6 +64,9 @@ x64 에뮬레이터에서는 `-p:RuntimeIdentifier=android-x64`를 사용합니�
 Mac, 선택한 .NET iOS 워크로드와 호환되는 Xcode가 필요합니다. 실제 기기는 서명 설정도 필요합니다.
 직접 프로젝트를 빌드할 때는 .NET 10 Mono와 ARM64 시뮬레이터가 기본입니다.
 
+텍스트 선택 magnifier는 iOS 17 이상 네이티브 앱에서 시스템 loupe를 사용합니다.
+iOS 15~16과 iOS 웹에서는 Doroti magnifier를 사용합니다.
+
 ```powershell
 dotnet build ./samples/DorotiSampleApp2/ios/DorotiSampleApp2.iOS.csproj -c Debug -t:Run -p:RuntimeIdentifier=iossimulator-arm64
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build -App ./samples/DorotiSampleApp2 -Platform ios -Configuration Release -Rid ios-arm64 -CompilationMode Mono

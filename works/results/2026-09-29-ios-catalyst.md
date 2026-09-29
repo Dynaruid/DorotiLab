@@ -209,3 +209,14 @@ python3 Doroti/eng/run-with-timeout.py --timeout 1200 dotnet build samples/Dorot
 - 이는 source Debug 실기기 설치/기동 결과다. package-only 실기기·Release/NativeAOT·물리 IME/VoiceOver·장기 수명 검증을 뜻하지 않는다.
 
 원시 build/install/launch 로그·캡처·기기 진단은 `temp/testing/ios-device-install/20260929/`에 수집했고 결과 기록 후 정리했다. 서명된 제품 빌드와 기기에 설치된 앱은 유지한다.
+
+
+## SampleApp2 선택 핸들 떨림 수정 — 2026-09-29
+
+- 환경: iPhone 12 / iOS 26.6.1, SampleApp2 Debug/Mono, `net10.0-ios27.0` / `ios-arm64`, Graphite-Metal.
+- 사용자 재현 구간에서 접근성 `setSelection`과 IME editing-state 역전 이벤트는 없었다. 선택값은 정상적으로 변하지만 표시된 화면 순서가 뒤로 돌아가는 문제였다.
+- `DorotiUIKitGraphiteView.Draw`가 최대 3개 프레임을 진행하던 동안, 새 장면의 GPU 완료 전 추가 native draw가 이전 `_presentedFrame`을 재생했다. 기존의 1개 제한은 PlatformView composition에만 적용돼 시스템 magnifier의 redraw는 보호하지 못했다.
+- UIKit Graphite에서는 장면의 GPU 완료·replay-source 승격 전 추가 draw를 기존 backpressure 경로로 미룬다. UI 스레드를 기다리게 하지 않으며 완료 콜백에서 다시 invalidate한다.
+- 임시 native probe로 Profile의 실제 EditableText/IME/magnifier에 양쪽 핸들 각각 25회 pointer move를 전달하고 `SkiaSceneRenderer.FrameReceipt`의 scene sequence를 비교했다. 수정 전 이전 장면 재표시 9회(예: `346 → 345 replay`), 수정 후 0회. 이는 해당 기기에서의 프레임 순서 회귀 검증이며 전체 플랫폼 성능 검증은 아니다.
+- 재현 빌드: `dotnet build samples/DorotiSampleApp2/ios/DorotiSampleApp2.iOS.csproj -c Debug -r ios-arm64 -p:DorotiIosTargetFramework=net10.0-ios27.0 -p:DorotiCompilationMode=Mono -p:EnableCodeSigning=true '-p:CodesignKey=Apple Development' -p:CodesignProvision=ecde6fbc-22e8-4096-98d0-aee6e261ec16`.
+- 임시 계측 소스를 제거한 최종 source Debug 빌드도 경고/오류 0으로 통과했다. iPhone 12에 재설치하고 진단 flag 없이 정상 실행했다. 원시 검증 자료와 임시 probe는 `temp/testing/selection-jitter/`에서 결과 요약 후 정리했다.

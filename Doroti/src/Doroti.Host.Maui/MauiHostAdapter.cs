@@ -851,6 +851,10 @@ internal sealed class MauiHostAdapter
 
     public void SetCaretRect(Rect logicalRect) => _textInput.SetCaretRect(logicalRect);
 
+#if IOS
+    public ITextMagnifierSession? CreateMagnifierSession() => _textInput.CreateMagnifierSession();
+#endif
+
     public void ShowTextInput() => _textInput.ShowTextInput();
 
     public void HideTextInput() => _textInput.HideTextInput();
