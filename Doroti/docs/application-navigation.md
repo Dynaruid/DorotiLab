@@ -39,7 +39,8 @@ flush. A forced kill can lose uncommitted work since the last checkpoint.
 | Web main-owned runtime | Same-origin URL/history push/replace/popstate; sessionStorage per restoration ID | Build and history/storage contract tests; real browser unavailable in this session. Worker-owned framework navigation not advertised |
 | Android MAUI | `DorotiMauiActivity` forwards OnCreate/OnNewIntent; runner declares IntentFilter; app-private atomic file | Galaxy S25 Android 16 Release/Mono AOT cold/warm/restart route display exercised through ADB intents, not physical user input |
 | Qt Linux | LaunchContext protocol argument, current-user IPC, atomic XDG_DATA_HOME checkpoint (absolute fallback to ~/.local/share), hashed application namespace | VM cold/warm, clean restart, committed checkpoint after forced kill, bad-version fallback and cold-link priority pass; OS association and input/selection migration remain notVerified |
-| iOS/AppKit/Catalyst | MAUI delivery API exists, native delegate/link association and other adapters are unfinished | notVerified; not claimed as implemented Universal Links |
+| AppKit macOS | OpenUrls delegate and launch URI argument; app-specific CFBundleURLTypes; main-owned atomic restoration in MAUI AppDataDirectory | Graphite/Ganesh cold argument, warm LaunchServices and route restart PASS; OS cold URL/input/selection/migration remain notVerified |
+| iOS/Catalyst | MAUI delivery API exists, native delegate/link association and other adapters are unfinished | notVerified; not claimed as implemented Universal Links |
 
 Android runners should inherit `Doroti.Host.Maui.DorotiMauiActivity` and declare
 their application-specific `IntentFilter`. The template now uses that base;

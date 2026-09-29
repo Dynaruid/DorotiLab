@@ -50,3 +50,17 @@ Application dispatch outlives the main window and ends with QApplication. A drop
 queued request receives a closed completion. Native surfaces retire before their
 callback GCHandles are released. Both last-window and Explicit reopen policies have
 [real Qt window evidence](../../works/results/2026-09-29-linux-qt.md).
+
+
+## AppKit ownership (2026-09-29)
+
+AppKit uses one main UI thread with a distinct framework dispatcher/session,
+PlatformView factory and Metal surface per NSWindow. Additional windows share
+the application boundary through leases; closing the main window does not dispose
+services still in use. The manager retains the application lease until app exit.
+The main view receives OS activation and owns persistent restoration; secondary
+views use independent in-memory navigation. Root unmount precedes view/capability
+disposal and Metal retirement completes before native close. OnLastWindowClosed
+and Explicit have [real two-window evidence](../../works/results/2026-09-29-macos-appkit.md).
+The framework `_window_macos.cs` Satellite API is not connected to this manager.
+Owned/modal/Satellite/popup/tooltip windows remain unsupported.

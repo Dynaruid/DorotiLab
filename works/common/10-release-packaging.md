@@ -96,3 +96,9 @@ ADB 목록에서 기기가 사라져, 마지막 재빌드 APK의 재설치는 �
 Linux 후보 0.3.0-beta.qt.20260929: 25개 패키지·격리 cache 소비·Release/JIT publish/run, portable install/update/변조 거절/remove·userdata 보존 PASS. 서명·clean OS·글로벌 protocol 등록·장기 soak는 notVerified.
 
 상세 명령·환경·지원 경계: [Linux Qt 결과](../results/2026-09-29-linux-qt.md).
+
+
+## 2026-09-29 macOS/AppKit 후속
+
+macOS 후보 생성/격리 NuGet template consumer/Release pkg 확장·실행/서명 검사 경로를 추가했다. macOS non-trim은 SDK 요구에 맞춰 PublishTrimmed=true + LinkMode=None이다. 최종 후보와 clean OS/Developer ID·공증 잔여를 아래 결과에 분리한다.
+[구현·명령·결과·잔여](../results/2026-09-29-macos-appkit.md)를 따른다.

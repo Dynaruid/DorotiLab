@@ -119,7 +119,8 @@ public sealed class MauiFrameworkHost : IDisposable
         DorotiViewConfiguration configuration,
         IMauiSemanticsBridge? semantics = null,
         DorotiApplicationBoundary? application = null,
-        MauiTextInputBridge? textInput = null
+        MauiTextInputBridge? textInput = null,
+        bool ownsApplicationActivation = true
     )
     {
         ArgumentNullException.ThrowIfNull(session);
@@ -194,6 +195,9 @@ public sealed class MauiFrameworkHost : IDisposable
         capabilities.Register<IFilePickerHostCapability>(DorotiCapabilityIds.FilePicker, new AndroidFilePicker());
 #endif
 #if MACOS
+        if (surface is DorotiMacOSMetalSurface pickerSurface)
+            capabilities.Register<IFilePickerHostCapability>(DorotiCapabilityIds.FilePicker,
+                new AppKitFilePicker(() => pickerSurface.NativeView?.Window));
         if (
             application?.Manifest.PlatformViews.Length > 0
             && surface is DorotiMacOSMetalSurface { PlatformViews: { } platformViews }
@@ -258,10 +262,23 @@ public sealed class MauiFrameworkHost : IDisposable
         DorotiView? view = null;
         try
         {
+#if MACOS
+            if (surface is DorotiMacOSMetalSurface dropSurface)
+            {
+                var dropClosed = false;
+                host.Closed += () => dropClosed = true;
+                dropSurface.OsDrop = new AppKitOsDrop(callback => AppKit.NSApplication.SharedApplication.BeginInvokeOnMainThread(() =>
+                {
+                    // The receiver revokes queued payloads on close; do not enter a disposed dispatcher first.
+                    if (!dropClosed) view?.DispatchPlatformEvent(callback);
+                }));
+                capabilities.Register<IOsDragDropHostCapability>(DorotiCapabilityIds.OsDragDrop, dropSurface.OsDrop);
+            }
+#endif
             ApplicationNavigationHost? navigation = null;
             if (configuration.Navigation is { } navigationOptions)
             {
-                var cold = MauiApplicationActivation.TakeCold();
+                var cold = ownsApplicationActivation ? MauiApplicationActivation.TakeCold() : null;
                 bool Allowed(string location) => Uri.TryCreate(location, UriKind.Absolute, out var uri) &&
                     (uri.Scheme is "https" or "http" || uri.Scheme.Equals(navigationOptions.ProtocolScheme, StringComparison.OrdinalIgnoreCase));
                 var store = navigationOptions.RestorationId is { } restorationId
@@ -275,7 +292,7 @@ public sealed class MauiFrameworkHost : IDisposable
             }
             using var dispatcherScope = session.dispatcher.EnterScope();
             view = session.dispatcher.RegisterView(viewId, capabilities);
-            if (navigation is not null)
+            if (navigation is not null && ownsApplicationActivation)
             {
                 var owner = view;
                 var disposed = false;

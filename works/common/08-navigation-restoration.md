@@ -82,3 +82,9 @@ Revision: `8834d7596597b3087a0139f527148baee9a46583` + 이번 작업 트리.
 Qt main-owned cold/warm IPC, XDG 절대 저장소, 정상 및 committed checkpoint 이후 강제 종료 복원·bad-version fallback·cold-link 우선순위 PASS. 실제 입력/selection·앱 migration·OS protocol association은 미검증.
 
 상세 명령·환경·지원 경계: [Linux Qt 결과](../results/2026-09-29-linux-qt.md).
+
+
+## 2026-09-29 macOS/AppKit 후속
+
+AppKit delegate/plist URL 전달과 main-owned navigation/restoration을 연결했다. cold 인자/warm LaunchServices/route 재시작 PASS; OS cold 배달·입력/selection·migration 전체는 남는다.
+[구현·명령·결과·잔여](../results/2026-09-29-macos-appkit.md)를 따른다.

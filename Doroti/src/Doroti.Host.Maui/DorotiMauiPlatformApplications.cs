@@ -172,11 +172,17 @@ public abstract class DorotiMacOSMauiApplication : MacOSMauiApplication, IPlatfo
     private IApplication? _desktopApplication;
     private Doroti.Desktop.DorotiWindowManager? _desktopManager;
     private bool _terminationPending;
+    private IMauiContext? _desktopContext;
+    private Action? _disposeDesktop;
+    private bool _launched;
     IApplication IPlatformApplication.Application => _desktopApplication ?? base.Application;
 
     public override void DidFinishLaunching(Foundation.NSNotification notification)
     {
         _descriptor = CreateApplicationDescriptor();
+        foreach (var location in Environment.GetCommandLineArgs().Skip(1).Where(value => value.Contains("://", StringComparison.Ordinal)))
+            DeliverUrl(location, true);
+        _launched = true;
         if (!Doroti.Desktop.DesktopApplication.TryGetDefinition(_descriptor, out _))
         {
             base.DidFinishLaunching(notification);
@@ -187,6 +193,7 @@ public abstract class DorotiMacOSMauiApplication : MacOSMauiApplication, IPlatfo
         IPlatformApplication.Current = this;
         var app = CreateMauiApp();
         var context = new MacOSMauiContext(app.Services).MakeApplicationScope(this);
+        _desktopContext = context;
         Services = context.Services;
         _desktopApplication =
             Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<IApplication>(
@@ -199,15 +206,40 @@ public abstract class DorotiMacOSMauiApplication : MacOSMauiApplication, IPlatfo
         applicationHandler.SetMauiContext(context);
         applicationHandler.SetVirtualView(_desktopApplication);
         var window = _desktopApplication.CreateWindow(new ActivationState(context));
-        var handler = new AppKitDesktopWindowHandler();
-        handler.SetMauiContext(context);
-        handler.SetVirtualView(window);
-        window.Created();
+        AttachDesktopWindow(window);
         OnStarted();
     }
 
-    internal void AttachDesktopManager(Doroti.Desktop.DorotiWindowManager manager)
+    internal void AttachDesktopWindow(IWindow window)
     {
+        var handler = new AppKitDesktopWindowHandler();
+        handler.SetMauiContext(_desktopContext!);
+        handler.SetVirtualView(window);
+        window.Created();
+    }
+
+    public override void OpenUrls(NSApplication application, Foundation.NSUrl[] urls)
+    {
+        foreach (var url in urls) DeliverUrl(url.AbsoluteString, !_launched);
+    }
+
+    private static void DeliverUrl(string? location, bool cold)
+    {
+        if (location is null) return;
+        try { MauiApplicationActivation.Deliver(location, Doroti.Ui.ApplicationActivationSource.Protocol, cold); }
+        catch (ArgumentException) { /* Invalid external URLs do not change application state. */ }
+        catch (InvalidOperationException error) { System.Diagnostics.Trace.TraceWarning(error.Message); }
+    }
+
+    public override void WillTerminate(Foundation.NSNotification notification)
+    {
+        _disposeDesktop?.Invoke();
+        _disposeDesktop = null;
+    }
+
+    internal void AttachDesktopManager(Doroti.Desktop.DorotiWindowManager manager, Action dispose)
+    {
+        _disposeDesktop = dispose;
         _desktopManager = manager;
         manager.ExitRequested += () =>
             NSApplication.SharedApplication.BeginInvokeOnMainThread(() =>

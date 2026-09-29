@@ -100,3 +100,9 @@ handler가 한 번만 dispose되는 공통 회귀를 추가해 통과했다. 플
 Qt FilePicker·descriptor handler·Linux package 등록·취소·regular-file grant·URL을 연결했다. 실제 Qt dialog 자동 선택/취소·파일 권한 거절 및 xdg-open 기본 브라우저 loopback GET PASS.
 
 상세 명령·환경·지원 경계: [Linux Qt 결과](../results/2026-09-29-linux-qt.md).
+
+
+## 2026-09-29 macOS/AppKit 후속
+
+AppKit NSOpenPanel/NSWorkspace adapter와 security-scoped bounded read grant를 연결했다. native sheet 취소·owner close·128 MiB offset 읽기 PASS; 물리 선택/권한 거절/native event source qualification은 남는다.
+[구현·명령·결과·잔여](../results/2026-09-29-macos-appkit.md)를 따른다.

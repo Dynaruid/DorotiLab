@@ -1,8 +1,10 @@
 # macOS / AppKit 작업 계획
 
-원문: [plan.md](../../plan.md) M0~M7 · 작업 상태: **TODO** · 새 실행 검증: **notVerified**
+원문: [plan.md](../../plan.md) M0~M7 · 작업 상태: **PARTIAL** · 새 실행 검증: **범위별 PASS / 잔여 notVerified**
 
 [전체 작업 인덱스](../README.md)
+
+2026-09-29: [AppKit 구현·실행 결과](../results/2026-09-29-macos-appkit.md). 아래 복합 체크리스트는 구현 완료 부분과 물리/전체 qualification 잔여를 함께 포함하므로 미검증 항목을 일괄 체크하지 않는다.
 
 AppKit 호스트를 대상으로 한다. Mac Catalyst 작업과 지원 결과는 별도 문서에서 관리한다.
 
@@ -18,7 +20,7 @@ M0 → M1 최소 경로 → M2 → M4/M5 → M6(대상 플랫폼) → M7 순서�
 
 ## 1. 실행·Desktop adapter — M0/M1/M2-A, P0 → P1
 
-- [ ] macOS runner·toolchain·renderer·build mode별 실행 경로를 확인하고 문서와 지원표를 맞춘다. M1 공통 회귀 fixture를 연결한다.
+- [x] macOS runner·toolchain·renderer·build mode별 실행 경로를 확인하고 문서와 지원표를 맞춘다. M1 공통 회귀 fixture를 연결한다.
 - [ ] 기존 AppKit adapter의 크기/DPI·제약·show/hide/focus·제목/caption/appearance·close 취소/render drain을 Desktop 계약에 맞춘다.
 - [ ] 첫 표시·live resize·최소화/복원·디스플레이 전환·pending GPU 작업 중 종료를 실제 화면과 자원 수명으로 검증한다. 미제공 동작은 capability로 표현한다.
 
@@ -37,11 +39,13 @@ M0 → M1 최소 경로 → M2 → M4/M5 → M6(대상 플랫폼) → M7 순서�
 
 ## 4. 추가 창 — M6, P2
 
-- [ ] 공통 창 문맥 ADR과 Windows 선행 연결을 바탕으로 AppKit 실제 추가 창을 구현한다. 창별 focus·입력·scheduler·Navigator·semantics·PlatformView·GPU surface와 공유 cache 소유권을 지킨다.
+- [x] 공통 창 문맥 ADR과 Windows 선행 연결을 바탕으로 AppKit 실제 추가 창을 구현했다. 창별 focus·입력·scheduler·Navigator·semantics·PlatformView·GPU surface와 공유 cache 소유권을 지킨다.
 - [ ] 두 창의 독립 스크롤·IME·DPI·native content·rendering·닫기, 마지막 창 정책과 닫힌 창의 pending 작업 종료를 검증한다.
-- [ ] `_window_macos.cs` Satellite를 Desktop 소유권으로 연결하거나 지원 경계를 명시한다. owner/modal/satellite·popup/tooltip은 기본 추가 창 이후 진행한다.
+- [x] `_window_macos.cs` Satellite의 지원 경계를 명시했다. Satellite는 Desktop manager와 연결하지 않으며 현재 unsupported다. owner/modal/satellite·popup/tooltip은 기본 추가 창 이후 진행한다.
 
 ## 5. 배포 — M7, P3
+
+완료한 부분: 격리 NuGet-only Release/CoreCLR 소비 앱, .pkg 확장 후 실제 추가 창 실행, ad-hoc app 서명 검사, 로컬 추출 앱의 설치/업데이트/제거·한글 userdata fixture 보존. 최종 후보 경로와 해시는 [실행 결과](../results/2026-09-29-macos-appkit.md)에 기록했다. 아래 clean 환경/실제 배포 전체 기준은 아직 미완료다.
 
 - [ ] package-only 소비 앱과 실제 지원 Release·trimming·AOT 조합을 clean 환경에서 검증한다.
 - [ ] 선택한 배포 방식의 서명·패키징·설치·업데이트·제거·데이터 유지·crash/로그와 장기 실행·리소스 누수 회귀를 검증한다.
@@ -64,4 +68,4 @@ AppKit 실제 창·VoiceOver·물리 입력·실제 표시와 clean 배포 결�
 
 [공통 완료 규칙과 결과 형식](../README.md#결과-기록-형식)을 적용한다. 테스트는 20분 timeout을 사용하고 일반 반복 검증은 30회 이내로 설계한다. 일회성 테스트·원시 로그·캡처·소비 앱은 `temp/testing/<작업-ID>/<실행-ID>/`에 모으고 요약 후 정리한다. 제품 빌드·release 후보 등 기존 `Doroti/artifacts`는 별도의 삭제 가능한 산출물이며, 필요한 요약·최소 상시 fixture만 추적되는 tests/docs/history에 보존한다.
 
-현재 기록: 작업 계획만 작성했다. 플랫폼 구현·build·실기기·성능 검증을 새로 실행하지 않았다. 각 항목의 완료 시 관련 공통 작업 문서와 플랫폼/호스트/renderer/build mode별 지원표를 함께 갱신한다.
+현재 기록: 실제 M1 Mac의 AppKit 두 창·Metal Graphite/Ganesh·Desktop 상태·NSOpenPanel 취소·native pasteboard·WKWebView 재생성·LaunchServices warm URL·route 복원을 새로 검증했다. 자세한 합격/잔여와 출시 결과는 [이번 실행 결과](../results/2026-09-29-macos-appkit.md)를 따른다. 각 항목의 완료 시 관련 공통 작업 문서와 플랫폼/호스트/renderer/build mode별 지원표를 함께 갱신한다.

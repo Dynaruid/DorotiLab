@@ -116,3 +116,22 @@ Installation, update, unlisted-file rejection, native launch and userdata-preser
 removal pass locally. Trimming/single-file/NativeAOT are unsupported. This unsigned
 VM-local result does not establish clean-OS or production release qualification.
 [Linux details and remaining gates](../../works/results/2026-09-29-linux-qt.md).
+
+
+## macOS AppKit candidate
+
+```sh
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/eng/release-candidate.py --targets macos --macos-tfm net10.0-macos27.0
+```
+
+This builds an osx-arm64 feed and a template consumer with isolated NuGet/HTTP
+caches. macOS and Android MAUI candidates use separate runs. The Xcode 27
+profile keeps SDK validation enabled. macOS requires PublishTrimmed=true;
+LinkMode=None expresses this candidate's non-trimmed CoreCLR scope. NativeAOT
+and full trimming remain outside its qualification. The generated .pkg is
+expanded and its .app is run to exercise actual native presentation, a second
+window, resize and orderly close. An explicit success marker and ad-hoc app
+signature verification are required. Candidate manifests record package/payload
+hashes and generation-time source/toolchain provenance. This is local package
+extraction, not Installer/Gatekeeper/Developer ID/notarization or clean OS
+installation qualification. See [current AppKit results](../../works/results/2026-09-29-macos-appkit.md).

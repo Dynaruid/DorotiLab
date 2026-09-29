@@ -232,9 +232,10 @@ public sealed class AppleGpuTextureCamera : IAsyncDisposable
         var attributes = new CVPixelBufferAttributes
         {
             PixelFormatType = CVPixelFormatType.CV32BGRA,
-            MetalCompatibility = true,
-            AllocateWithIOSurface = true,
         };
+        // Use the native keys also exposed by the supported .NET 10 macOS SDK.
+        attributes.Dictionary[CVPixelBuffer.MetalCompatibilityKey] = Foundation.NSNumber.FromBoolean(true);
+        attributes.Dictionary[CVPixelBuffer.IOSurfacePropertiesKey] = new Foundation.NSDictionary();
         _output.WeakVideoSettings = attributes.Dictionary;
         _output.AlwaysDiscardsLateVideoFrames = true;
         _output.SetSampleBufferDelegate(_receiver, _queue);

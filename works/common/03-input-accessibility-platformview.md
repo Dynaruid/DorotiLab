@@ -52,3 +52,9 @@
 Qt 공통 native editor 초기 text, Quick 두 창 editor, editor/WebView 각각 재생성 및 Widgets disjoint editor·합성 키를 검증했다. 물리 IME/Tab/Orca는 notVerified.
 
 상세 명령·환경·지원 경계: [Linux Qt 결과](../results/2026-09-29-linux-qt.md).
+
+
+## 2026-09-29 macOS/AppKit 후속
+
+AppKit native editor와 WKWebView를 각각 재생성하고 두 창의 native editor 표시·종료를 확인했다. 물리 IME·VoiceOver·전체 clip/transform/gesture 조합은 notVerified다.
+[구현·명령·결과·잔여](../results/2026-09-29-macos-appkit.md)를 따른다.

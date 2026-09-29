@@ -90,3 +90,9 @@ drag endpoint를 `outside window bounds`로 거절했다. Explorer→Testbed 전
 Qt Copy receiver 및 별도 IOsDragSourceHostCapability(QDrag text/URI/PNG/Copy·Move·Link)를 구현했다. native 합성 Copy/5GiB·해제·송신 취소 PASS; 외부 source/성공한 move·link/image/virtual-file 확대는 남는다.
 
 상세 명령·환경·지원 경계: [Linux Qt 결과](../results/2026-09-29-linux-qt.md).
+
+
+## 2026-09-29 macOS/AppKit 후속
+
+AppKit NSView의 파일/text/URI Copy 수신을 연결하고 native pasteboard 해석/파일 grant를 검증했다. Finder 교차 창 물리 전달은 notVerified, 송신/Move/Link/virtual file은 unsupported다.
+[구현·명령·결과·잔여](../results/2026-09-29-macos-appkit.md)를 따른다.

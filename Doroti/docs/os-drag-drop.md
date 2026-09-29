@@ -143,3 +143,15 @@ Testbed `DOROTI_SAMPLE=drop` exposes a draggable text/link area on supporting ho
 Copy delivery, 5GiB read lifetime and source cancellation. External file-manager
 reception and successful cross-application Move/Link/image delivery remain
 notVerified. Windows/Web receive capabilities do not imply this source capability.
+
+
+## AppKit macOS Copy receiver
+
+The Doroti Metal NSView registers native file URL, URL and UTF-8 pasteboard types.
+Enter/over/drop negotiation uses view-local logical coordinates and OsDropReceiver.
+Only accepted formats are acquired, with at most 1,024 items / 1 MiB text; file
+contents use bounded read grants instead of copying whole files into memory.
+Native editor/WKWebView children retain their own drop handling. CanReceive is
+true, CanSend is false, Actions is Copy. Move/Link, drag images, virtual files and
+OS drag source sessions remain unsupported. [Native pasteboard evidence](../../works/results/2026-09-29-macos-appkit.md)
+does not qualify physical Finder delivery across windows.

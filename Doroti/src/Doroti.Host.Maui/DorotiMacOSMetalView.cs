@@ -48,6 +48,10 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     private long _commandBuffersCompleted;
     private long _commandBuffersErrored;
     private long _staleCompletions;
+    private readonly object _presentationGate = new();
+    private readonly Queue<double> _presentationIntervals = new();
+    private double _lastPresentationTime;
+    private long _presentedDrawables;
     private double _logicalWidth;
     private double _logicalHeight;
     private double _pixelWidth;
@@ -78,6 +82,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         _trackpad = new(2, data => _owner?.RaisePointer(data));
         this.SetAllowedTouchTypes(NSTouchTypeMask.Indirect);
         WantsRestingTouches = true;
+        RegisterForDraggedTypes([AppKitOsDrop.FileType, AppKitOsDrop.TextType, AppKitOsDrop.UrlType]);
         _metalDevice =
             Device
             ?? throw new InvalidOperationException("MTKView did not retain its Metal device.");
@@ -546,6 +551,22 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
             platformFrame?.Commit();
             var transactionPresentation = _drawingLayout || compositionTransaction;
             var orderedOut = Window is { IsVisible: false };
+            // Metal reports actual drawable display time independently of GPU fence completion.
+            drawable.AddPresentedHandler(presented =>
+            {
+                var timestamp = presented.PresentedTime;
+                if (timestamp <= 0) return;
+                lock (_presentationGate)
+                {
+                    _presentedDrawables++;
+                    if (_lastPresentationTime > 0 && timestamp > _lastPresentationTime)
+                    {
+                        if (_presentationIntervals.Count == 30) _presentationIntervals.Dequeue();
+                        _presentationIntervals.Enqueue((timestamp - _lastPresentationTime) * 1000);
+                    }
+                    _lastPresentationTime = Math.Max(_lastPresentationTime, timestamp);
+                }
+            });
             if (!transactionPresentation && !orderedOut)
             {
                 commandBuffer.PresentDrawable(drawable);
@@ -785,6 +806,19 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
             _controlClick ? (Buttons() & ~1) | 2 : Buttons() | 1
         );
     }
+
+    public override NSDragOperation DraggingEntered(INSDraggingInfo sender) =>
+        _owner?.OsDrop?.Receive(this, sender, OsDropPhase.Enter) ?? NSDragOperation.None;
+    public override NSDragOperation DraggingUpdated(INSDraggingInfo sender) =>
+        _owner?.OsDrop?.Receive(this, sender, OsDropPhase.Over) ?? NSDragOperation.None;
+    public override void DraggingExited(INSDraggingInfo? sender)
+    {
+        if (sender is not null) _owner?.OsDrop?.Receive(this, sender, OsDropPhase.Leave);
+    }
+    public override bool PrepareForDragOperation(INSDraggingInfo sender) =>
+        _owner?.OsDrop?.Receive(this, sender, OsDropPhase.Over) == NSDragOperation.Copy;
+    public override bool PerformDragOperation(INSDraggingInfo sender) =>
+        _owner?.OsDrop?.Receive(this, sender, OsDropPhase.Drop) == NSDragOperation.Copy;
 
     public override void MouseDragged(NSEvent theEvent) =>
         DispatchPointer(
@@ -1165,8 +1199,12 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         );
     }
 
-    internal MauiSurfaceSnapshot CaptureSnapshot(MauiSurfaceSnapshot current) =>
-        current with
+    internal MauiSurfaceSnapshot CaptureSnapshot(MauiSurfaceSnapshot current)
+    {
+        double[] intervals;
+        long presented;
+        lock (_presentationGate) { intervals = _presentationIntervals.ToArray(); presented = _presentedDrawables; }
+        return current with
         {
             PixelWidth = checked((int)_pixelWidth),
             PixelHeight = checked((int)_pixelHeight),
@@ -1185,7 +1223,11 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
             FullFrameCopies = 0,
             LogicalWidth = _logicalWidth,
             LogicalHeight = _logicalHeight,
+            PresentedDrawables = presented,
+            PresentationIntervalsMilliseconds = intervals,
+            MetalAllocatedBytes = _resourcesReleased ? null : checked((long)_metalDevice.CurrentAllocatedSize),
         };
+    }
 
     private static IMTLDevice RequireMetalDevice() =>
         MTLDevice.SystemDefault

@@ -43,7 +43,10 @@ public sealed record MauiSurfaceSnapshot(
     MauiNativeViewSize? NativeEnvironmentPhysicalSize = null,
     ViewPadding RawViewPadding = default,
     ViewPadding RawViewInsets = default,
-    ViewPadding RawSystemGestureInsets = default
+    ViewPadding RawSystemGestureInsets = default,
+    long PresentedDrawables = 0,
+    IReadOnlyList<double>? PresentationIntervalsMilliseconds = null,
+    long? MetalAllocatedBytes = null
 );
 
 public sealed record MauiFrameDiagnostics(

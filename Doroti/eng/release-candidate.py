@@ -21,11 +21,15 @@ ROOT = Path(__file__).resolve().parents[2]
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--targets', nargs='+', choices=['windows', 'web', 'android'], default=['windows', 'web'])
+    parser.add_argument('--targets', nargs='+', choices=['windows', 'web', 'android', 'macos'], default=['windows', 'web'])
+    parser.add_argument('--macos-tfm', choices=['net10.0-macos', 'net10.0-macos27.0'], default='net10.0-macos')
     parser.add_argument('--android-rid', choices=['android-arm64', 'android-x64'], default='android-arm64')
     parser.add_argument('--output', type=Path)
     parser.add_argument('--version', default='0.3.0-beta.rc.' + datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S'))
     args = parser.parse_args()
+    if 'macos' in args.targets and 'android' in args.targets:
+        parser.error('Qualify the MAUI Android and macOS packs in separate candidate runs.')
+    mac_properties = ['-r', 'osx-arm64', '-p:DorotiMacOSTargetFramework=' + args.macos_tfm]
     if not re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?', args.version):
         parser.error('Version must be a NuGet semantic version.')
     output = (args.output or ROOT / 'Doroti/artifacts/release' / args.version).resolve()
@@ -65,7 +69,8 @@ def main():
                  ROOT / 'Doroti/src/Doroti.Plugins/Doroti.Plugins.csproj']
         for target in args.targets:
             package = {'windows': 'Doroti.Target.Windows.WindowsAppSdk.win-x64', 'web': 'Doroti.Target.Web.browser-wasm',
-                       'android': 'Doroti.Target.Android.Maui.' + args.android_rid}[target]
+                       'android': 'Doroti.Target.Android.Maui.' + args.android_rid,
+                       'macos': 'Doroti.Target.MacOS.Maui.osx-arm64'}[target]
             roots.append(ROOT / 'Doroti/src' / package / (package + '.csproj'))
         projects = set()
 
@@ -75,7 +80,9 @@ def main():
             projects.add(path)
             if path.stem == 'Doroti.Host.Maui':
                 evaluated = json.loads(subprocess.check_output(['dotnet', 'msbuild', str(path), '-getItem:ProjectReference',
-                    '-p:TargetFramework=net10.0-android', '-p:RuntimeIdentifier=' + args.android_rid], cwd=ROOT, text=True))
+                    '-p:TargetFramework=' + (args.macos_tfm if 'macos' in args.targets else 'net10.0-android'),
+                    '-p:DorotiMacOSTargetFramework=' + args.macos_tfm,
+                    '-p:RuntimeIdentifier=' + ('osx-arm64' if 'macos' in args.targets else args.android_rid)], cwd=ROOT, text=True))
                 for reference in evaluated['Items']['ProjectReference']:
                     visit(Path(reference['FullPath']))
             else:
@@ -83,7 +90,8 @@ def main():
                     visit(path.parent / reference.attrib['Include'].replace('\\', '/'))
         version = '-p:Version=' + args.version
         for project in roots:
-            command('build-' + project.stem, 'dotnet', 'build', str(project), '-c', 'Release', version, '--nologo')
+            properties = mac_properties if project.stem == 'Doroti.Target.MacOS.Maui.osx-arm64' else []
+            command('build-' + project.stem, 'dotnet', 'build', str(project), '-c', 'Release', version, '--nologo', *properties)
             visit(project)
         for sdk in ['Doroti.App.Sdk', 'Doroti.Runner.Sdk']:
             project = ROOT / 'Doroti/src' / sdk / (sdk + '.csproj')
@@ -93,6 +101,8 @@ def main():
         command('template', 'dotnet', 'pack', str(template), '-c', 'Release', version, '-o', str(packages), '--nologo')
         for project in sorted(projects):
             pack_properties = ['-p:RuntimeIdentifier=' + args.android_rid] if project.stem == 'Doroti.Host.Maui' else []
+            if 'macos' in args.targets and project.stem in ('Doroti.Host.Maui', 'Doroti.Target.MacOS.Maui.osx-arm64'):
+                pack_properties = ['-p:RuntimeIdentifier=osx-arm64', '-p:DorotiMacOSTargetFramework=' + args.macos_tfm]
             command('pack-' + project.stem, 'dotnet', 'pack', str(project), '-c', 'Release', '--no-build', version, '-o', str(packages), '--nologo', *pack_properties)
         consumer = run / 'consumer'
         hive = str(run / 'template-hive')
@@ -129,13 +139,40 @@ def main():
                 },
                 Options = new WindowOptions'''), encoding='utf-8')
         for target in args.targets:
-            project = consumer / target / f'CandidateApp.{target.title()}.csproj'
+            project = consumer / target / f'CandidateApp.{"MacOS" if target == "macos" else target.title()}.csproj'
             target_properties = ['-r', args.android_rid, '-p:EmbedAssembliesIntoApk=true'] if target == 'android' else []
+            if target == 'macos':
+                target_properties = mac_properties + ['-p:EnableCodeSigning=true', '-p:LinkMode=None']
+                project.write_text(project.read_text().replace('</PropertyGroup>', '''
+    <DorotiDesktopProject>../desktop/CandidateApp.Desktop.csproj</DorotiDesktopProject>
+    <DorotiDesktopStartupType>CandidateApp.Desktop.DesktopStartup</DorotiDesktopStartupType>
+  </PropertyGroup>''', 1))
             command('publish-' + target, 'dotnet', 'publish', str(project), '-c', 'Release', '--nologo',
-                    '-p:PublishTrimmed=false', '-p:RunAOTCompilation=false', '-o', str(output / target), *target_properties, cwd=consumer, env=environment)
+                    '-p:PublishTrimmed=' + ('true' if target == 'macos' else 'false'), '-p:RunAOTCompilation=false', '-o', str(output / target), *target_properties, cwd=consumer, env=environment)
             if target == 'windows':
                 command('native-package-consumer', 'dotnet', str(output / target / 'CandidateApp.Windows.dll'),
                         cwd=output / target, env={**environment, 'DOROTI_RELEASE_SMOKE': '1'})
+            elif target == 'macos':
+                apps = list((output / target).glob('*.app'))
+                if not apps:
+                    installers = list((output / target).glob('*.pkg'))
+                    if len(installers) != 1: raise RuntimeError('Expected one macOS installer payload.')
+                    expanded = run / 'expanded-pkg'
+                    command('expand-macos-package', 'pkgutil', '--expand-full', str(installers[0]), str(expanded))
+                    payloads = list(expanded.rglob('*.app'))
+                    if len(payloads) != 1: raise RuntimeError('Expected one app in the macOS installer.')
+                    installed = output / target / payloads[0].name
+                    command('extract-macos-app', 'ditto', str(payloads[0]), str(installed))
+                    apps = [installed]
+                if len(apps) != 1: raise RuntimeError('Expected one published macOS app bundle.')
+                command('native-package-consumer', str(apps[0] / 'Contents/MacOS/CandidateApp.MacOS'),
+                        cwd=output / target, env={**environment, 'DOROTI_RELEASE_SMOKE': '1'})
+                native_log = (run / 'native-package-consumer.log').read_text(encoding='utf-8', errors='replace')
+                if 'PASS: NuGet-only Release native presentation, second window, resize and close.' not in native_log:
+                    raise RuntimeError('The native consumer exited without completing its window qualification.')
+                command('macos-signature', 'codesign', '--verify', '--deep', '--strict', str(apps[0]))
+                record['macos'] = {'tfm': args.macos_tfm, 'rid': 'osx-arm64', 'signing': 'ad-hoc only',
+                    'notarization': 'notVerified', 'nativeAot': 'unsupported'}
             elif target == 'android':
                 if not any((output / target).glob('*-Signed.apk')):
                     raise RuntimeError('Android package-only publish produced no installable APK.')
@@ -163,7 +200,7 @@ def main():
                 os.chmod(path, stat.S_IWRITE | stat.S_IREAD)
                 function(path)
             try:
-                shutil.rmtree(run, onexc=remove_readonly)
+                shutil.rmtree(run, onerror=remove_readonly)
                 record['cleanup'] = 'removed owned raw consumer, cache and logs'
             except OSError as error:
                 record['cleanup'] = 'pending: ' + str(error)

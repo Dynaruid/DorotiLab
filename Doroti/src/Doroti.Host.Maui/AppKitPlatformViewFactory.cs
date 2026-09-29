@@ -148,6 +148,18 @@ public sealed class AppKitPlatformViewFactory : IPlatformViewFactory
         var text = parameters.IsEmpty
             ? (_editor ? "Native editor" : "Native button")
             : System.Text.Encoding.UTF8.GetString(parameters.Span);
+        // Shared testbed/native-editor descriptors use JSON; retain legacy raw text inputs.
+        if (_editor && text.TrimStart().StartsWith('{'))
+        {
+            try
+            {
+                using var settings = System.Text.Json.JsonDocument.Parse(text);
+                if (settings.RootElement.TryGetProperty("text", out var value)
+                    && value.ValueKind == System.Text.Json.JsonValueKind.String)
+                    text = value.GetString() ?? string.Empty;
+            }
+            catch (System.Text.Json.JsonException) { /* Legacy raw text can start with a brace. */ }
+        }
         return ValueTask.FromResult<IPlatformViewInstance>(
             new Instance(this, handle, text, onFocused)
         );

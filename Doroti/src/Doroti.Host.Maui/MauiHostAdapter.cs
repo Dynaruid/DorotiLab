@@ -31,13 +31,23 @@ internal sealed class MauiHostAdapter
         cancellationToken.ThrowIfCancellationRequested();
         try
         {
-            var opened = await MainThread.InvokeOnMainThreadAsync(() =>
-                Launcher.Default.TryOpenAsync(absoluteUrl)
-            );
+            var opened = false;
+#if MACOS
+            await AppKitUi.Invoke(() =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                ObjectDisposedException.ThrowIf(_disposed, this);
+                using var url = new Foundation.NSUrl(absoluteUrl);
+                opened = AppKit.NSWorkspace.SharedWorkspace.OpenUrl(url);
+            });
+#else
+            opened = await MainThread.InvokeOnMainThreadAsync(() => Launcher.Default.TryOpenAsync(absoluteUrl));
+#endif
             return opened
                 ? new(UrlLaunchStatus.opened)
                 : new(UrlLaunchStatus.failed, "No application accepted this URL.");
         }
+        catch (OperationCanceledException) { throw; }
         catch (Exception error)
         {
             return new(UrlLaunchStatus.failed, error.Message);

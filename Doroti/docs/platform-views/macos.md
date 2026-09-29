@@ -157,3 +157,15 @@ Release CoreCLR publish also passed. The generated package was expanded into a
 fresh temporary directory and that app passed the same Graphite and Ganesh
 product/pixel checks. This is local packaging evidence; notarization, Gatekeeper
 and installation on a clean second machine remain unverified.
+
+
+## 2026-09-29 AppKit window qualification
+
+The [work2 follow-up](../../../works/results/2026-09-29-macos-appkit.md) adds actual
+Desktop NSWindow owners with separate dispatcher/session/surface/native factories
+and shared application resource leases. Both Graphite and Ganesh show two native
+editor scenes, keep the survivor active after first-window close, and recreate
+native editor/WKWebView instances individually. Widgets unmount before view and
+GPU retirement. This supersedes the earlier lack of two-editor-owner evidence;
+full two-WKWebView input/composition, physical IME/VoiceOver and GPU loss remain
+separate. Desktop Satellite/owned windows are not supported.

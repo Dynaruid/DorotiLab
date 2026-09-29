@@ -72,6 +72,8 @@ def main(suite):
             command("web-startup", sys.executable, "Doroti/tests/web_smoke.py", str(run / "web"))
         if suite == "LinuxSmoke":
             command("linux-qt", sys.executable, "Doroti/tests/linux_qt_smoke.py", "--output", str(run / "qt"))
+        if suite == "MacOSSmoke":
+            command("macos-appkit", sys.executable, "Doroti/tests/macos_smoke.py", "--output", str(run / "appkit"))
         if suite == "WindowsSmoke":
             command("windows-smoke", sys.executable, "Doroti/tests/windows_smoke.py", str(run / "windows"))
         if suite == "Packages":
@@ -124,6 +126,6 @@ def main(suite):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2 or sys.argv[1] not in ("Source", "Build", "Targets", "WindowsSmoke", "LinuxSmoke", "Packages", "Developer", "Release"):
-        sys.exit("Unknown suite. Use Source, Build, Targets, WindowsSmoke, LinuxSmoke, Packages, Developer, or Release.")
+    if len(sys.argv) != 2 or sys.argv[1] not in ("Source", "Build", "Targets", "WindowsSmoke", "LinuxSmoke", "MacOSSmoke", "Packages", "Developer", "Release"):
+        sys.exit("Unknown suite. Use Source, Build, Targets, WindowsSmoke, LinuxSmoke, MacOSSmoke, Packages, Developer, or Release.")
     main(sys.argv[1])

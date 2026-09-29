@@ -6,5 +6,6 @@
     <ProjectReference Include="../../src/Doroti.Framework.Cupertino/Doroti.Framework.Cupertino.csproj" />
     <PackageReference Include="SkiaSharp.NativeAssets.Win32" />
     <PackageReference Include="SkiaSharp.NativeAssets.Linux" Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
+    <PackageReference Include="SkiaSharp.NativeAssets.macOS" Condition="$([MSBuild]::IsOSPlatform('OSX'))" />
   </ItemGroup>
 </Project>

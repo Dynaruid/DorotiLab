@@ -99,3 +99,26 @@ not physical IME/Orca or external file-manager drags. An optional
 `DOROTI_QT_URL_PROBE=http://127.0.0.1:PORT/` also opens the real default browser.
 Widgets OpenGL uses the separate ClipRect-only `qt-widgets` sample; see
 [Linux execution and reproduction](../../works/results/2026-09-29-linux-qt.md).
+
+
+macOS AppKit uses the installed Xcode 27/.NET 10 macOS27 profile:
+
+```sh
+pwsh -NoProfile -File Doroti/eng/doroti.ps1 validate -ValidationSuite MacOSSmoke
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/macos_smoke.py --renderer ganesh --output temp/testing/macos-appkit/ganesh
+```
+
+Use a fresh output directory. Native desktop automation, two-window screenshots,
+picker cancellation, pasteboard grants, WKWebView recreation and LaunchServices
+route restoration are distinct from physical IME/VoiceOver/Finder input. The
+opt-in automation lives only in the testbed runner. `--cases` selects
+`multi,desktop,services,input,navigation,rendering`; `--tfm net10.0-macos` selects
+the corresponding Xcode 26 toolchain. Direct scripts retain their raw output;
+MacOSSmoke cleans successful runs. See [AppKit results](../../works/results/2026-09-29-macos-appkit.md).
+
+The local macOS payload fixture is `tests/macos_package_smoke.py --candidate PATH
+--previous PATH --output temp/testing/macos-appkit/install`. Run it through the
+1,200-second timeout wrapper. It verifies recorded payload hashes and signatures,
+runs both extracted app versions with an empty NuGet cache, replaces the app,
+then removes it while preserving its own Unicode userdata fixture. It does not
+run macOS Installer or qualify Gatekeeper/notarization/clean-machine deployment.

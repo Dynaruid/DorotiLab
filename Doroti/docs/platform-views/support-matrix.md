@@ -39,3 +39,9 @@ Quick Wayland/XWayland real two-window native editors and separate editor/WebVie
 recreation pass. Widgets disjoint ClipRect editor and synthetic key/resize pass;
 Quick mixed composition still rejects. Physical input/Orca and physical GPU
 qualification remain open.
+
+
+2026-09-29 AppKit follow-up: [two native editor windows and per-owner lifetime](../../../works/results/2026-09-29-macos-appkit.md)
+now pass on physical M1 with both Graphite and Ganesh. Native editor and WKWebView
+recreation also pass independently. This is separate from full two-owner E3,
+physical IME/VoiceOver, mixed DPI, loss, blur golden and performance qualification.

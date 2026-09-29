@@ -67,3 +67,9 @@ GPU timing/present/VRAM budget을 측정한 결과는 아니며 기존 notMeasur
 Quick 두 QPA의 20회 resize/terminal ACK/종료 후 예약·retiring 0 및 software Vulkan phase 수치를 기록했다. Widgets OpenGL 비교도 PASS. scanout/물리 VRAM/전체 GPU golden은 notMeasured/notVerified.
 
 상세 명령·환경·지원 경계: [Linux Qt 결과](../results/2026-09-29-linux-qt.md).
+
+
+## 2026-09-29 macOS/AppKit 후속
+
+AppKit Graphite/Ganesh의 실제 화면·survivor resize·GPU retirement를 확인하고 Metal 실제 표시 callback 및 장치 할당량 진단을 추가했다. 전체 GPU golden/성능 예산과 loss/장기 회귀는 남는다.
+[구현·명령·결과·잔여](../results/2026-09-29-macos-appkit.md)를 따른다.

@@ -17,6 +17,10 @@ public sealed class AppKitDelegate : DorotiMacOSMauiApplication
     {
         base.DidFinishLaunching(notification);
         NSApplication.SharedApplication.Activate();
+        if (Environment.GetEnvironmentVariable("DOROTI_MACOS_SERVICES_PROBE") is { Length: > 0 } output)
+            _ = AppKitServicesProbe.RunAsync(output);
+        if (Environment.GetEnvironmentVariable("DOROTI_MACOS_AUTOMATION") is { Length: > 0 } directory)
+            _ = AppKitAutomation.RunAsync(directory);
     }
 }
 #endif

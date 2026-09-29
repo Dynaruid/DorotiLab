@@ -98,3 +98,9 @@
 Linux native Skia asset을 공통 CPU 테스트에 연결하고 widget/rendering/navigation/owner 격리 회귀를 실행했다. CPU PASS와 Qt native/GPU 자동 실행 증거는 구분한다.
 
 상세 명령·환경·지원 경계: [Linux Qt 결과](../results/2026-09-29-linux-qt.md).
+
+
+## 2026-09-29 macOS/AppKit 후속
+
+macOS에서 공통 CPU 회귀와 owner 격리를 재실행했다. native editor/WKWebView·실제 두 Metal 창의 수명은 별도 native smoke로 확인했다. GPU golden·물리 입력 전체 qualification은 남는다.
+[구현·명령·결과·잔여](../results/2026-09-29-macos-appkit.md)를 따른다.

@@ -28,6 +28,10 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
 #endif
 #if MACOS
     internal DorotiMacOSMetalSurface DesktopMetalSurface => (DorotiMacOSMetalSurface)_renderSurface;
+    internal void PrepareFrameworkClose() => _session?.ShutdownFramework();
+    internal DorotiApplicationBoundary? SharedApplication { get; init; }
+    internal Action<DorotiApplicationBoundary>? ApplicationAttached { get; init; }
+    internal bool OwnsApplicationActivation { get; init; } = true;
 #endif
 #if WINDOWS
     internal Task PrepareDesktopCloseAsync() =>
@@ -184,7 +188,13 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
                 ? uiKitGraphite.PlatformViews = new UIKitPlatformViewHost(uiKitGraphite, _textInput)
                 : null;
 #endif
-            _boundary = DorotiApplicationBoundary.Load(
+            _boundary =
+#if MACOS
+                SharedApplication is { } shared
+                    ? shared.CreateWindowBoundary(appKitSurface.PlatformViews.CreateFactories(() => _boundary!.ApplicationResources))
+                    :
+#endif
+                DorotiApplicationBoundary.Load(
                 _application.ManifestAssembly,
                 _application.ApplicationAssembly,
                 _application.LaunchContext.RuntimeIdentifier,
@@ -202,6 +212,9 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
                 uiKitPlatformViews?.CreateFactories()
 #endif
             );
+#if MACOS
+            ApplicationAttached?.Invoke(_boundary);
+#endif
             IMauiSemanticsBridge semantics =
 #if ANDROID
             DorotiGraphiteView.Enabled
@@ -217,6 +230,9 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
                 semantics,
                 _boundary,
                 _textInput
+#if MACOS
+                , ownsApplicationActivation: OwnsApplicationActivation
+#endif
             );
             using (var dispatcherScope = _session.dispatcher.EnterScope())
             {
@@ -525,6 +541,8 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         }
 
         DetachWindow();
+        // Unmount widgets before unregistering the view and retiring its capabilities.
+        _session?.ShutdownFramework();
         if (_host is null)
         {
             _renderSurface.Dispose();

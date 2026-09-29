@@ -191,6 +191,6 @@ internal static class App
             )
         )
         {
-            Navigation = new ApplicationNavigationOptions("testbed-navigation", "doroti-testbed"),
+            Navigation = new ApplicationNavigationOptions(Environment.GetEnvironmentVariable("DOROTI_RESTORATION_ID") ?? "testbed-navigation", "doroti-testbed"),
         };
 }

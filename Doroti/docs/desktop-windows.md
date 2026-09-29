@@ -153,7 +153,7 @@ Current host/renderer/build-mode evidence is centralized in [support status](sup
 | --- | --- | --- |
 | Windows App SDK | Main and additional HWNDs; Debug and NuGet-only Release native lifetime checks | OnLastWindowClosed/Explicit; backdrop/background changes require recreation; physical resize/IME/mixed-monitor and full native-content coverage notVerified |
 | Windows MAUI | Implemented; historical results below | Separate native PlatformView wiring and current revalidation pending |
-| AppKit | Implemented; historical results below | Platform-specific capability restrictions; no new execution in this change |
+| AppKit | Main/additional windows; Graphite and Ganesh native Desktop/lifetime qualification (2026-09-29) | Physical input/VoiceOver, mixed DPI and clean signed deployment remain separate |
 | Mac Catalyst | Restricted UIKit scene adapter | PlatformDefault startup; explicit unsupported commands; no new execution |
 | Qt Quick | Main/additional QQuickWindow, independent owner resources | Wayland/XWayland VM execution; physical input/mixed DPI and bounds/appearance restrictions remain |
 | Qt Widgets | No Desktop companion adapter | SDK rejects startup |
@@ -191,8 +191,11 @@ bar, and connects a controller before ordering the window. A hidden Metal
 frame completes GPU work without waiting for presentation. Its drawable is
 retained for first show. Close drains Metal work before surface disposal and
 native close. Cmd+Q uses AppKit's deferred termination reply and the same
-controller close decision. `Explicit` leaves the app running after its window
-closes; native window recreation remains unsupported.
+controller close decision. `Explicit` leaves the app running after the last window
+closes. The manager can create further independent top-level windows. Each window
+owns its dispatcher/session, native views and Metal surface; application resources
+and plugin handlers share an application lease. Widgets unmount before capabilities
+and GPU resources are retired. See the [2026-09-29 AppKit results](../../works/results/2026-09-29-macos-appkit.md).
 
 | Feature | AppKit behavior |
 | --- | --- |
@@ -206,7 +209,7 @@ closes; native window recreation remains unsupported.
 | Liquid Glass fallback | OS <26 uses the explicitly selected Solid/Transparent fallback. The legacy path retains its old Acrylic fallback. |
 | Tint | Acrylic tint/luminosity requests rejected. Glass accepts TintColor and optional TintOpacity; luminosity rejected. |
 | Accessibility policy | Reduce Transparency selects solid and reports SystemPolicyFallback; system/explicit appearance and effective theme are tracked. |
-| Unsupported | Hidden/custom/frameless chrome, app theme bridge, programmatic resize initiation, additional native windows/owners. |
+| Unsupported | Hidden/custom/frameless chrome, app theme bridge, programmatic resize initiation, owned/modal/Satellite windows. |
 | Renderer base color | Changing BackgroundColor/DarkBackgroundColor at runtime returns RequiresRecreation. |
 
 Native operation tests and screenshots are listed in the

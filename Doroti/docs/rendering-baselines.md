@@ -29,3 +29,13 @@ for Quick/Graphite software Vulkan on Wayland and XWayland. They report recordin
 fence waits, R/P reservation and retirement, not physical present FPS or VRAM.
 Widgets/OpenGL VMware SVGA3D remains a separate comparison. No physical Linux GPU
 budget or long-run memory baseline has been accepted.
+
+
+AppKit (2026-09-29) now records `PresentedDrawables`, up to 30
+`PresentationIntervalsMilliseconds` from positive MTLDrawable.PresentedTime
+callbacks, and `MetalAllocatedBytes`. These differ from GPU command-buffer
+completion. Metal allocation is device/process resource memory, not per-window
+VRAM. The [M1 Graphite/Ganesh resize measurements](../../works/results/2026-09-29-macos-appkit.md#metal-계측-수치)
+are driven by scripted resizes, so their p95 intervals are not a sustained FPS
+or 60 Hz performance gate. Native interleaving sometimes supplied too few
+presentation timestamps: report notMeasured rather than substituting GPU completion.

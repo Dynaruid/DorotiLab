@@ -79,3 +79,9 @@ AppKit/Qt 추가 창·Catalyst scene, owner/modal/satellite. native 화면 도�
 Qt 실제 QQuickWindow 추가 생성, 창별 dispatcher/session/PlatformView/GPU/plugin scope, main close 후 survivor와 추가 생성, Explicit의 zero-window reopen/exit 1회 PASS. Satellite/owner/modal은 unsupported 경계.
 
 상세 명령·환경·지원 경계: [Linux Qt 결과](../results/2026-09-29-linux-qt.md).
+
+
+## 2026-09-29 macOS/AppKit 후속
+
+AppKit 실제 두 NSWindow/독립 surface-session/factory·공유 application boundary와 OnLastWindowClosed/Explicit를 연결했다. 두 renderer의 화면·첫 창 종료 후 survivor 12회 resize PASS. Satellite/owned/modal은 unsupported다.
+[구현·명령·결과·잔여](../results/2026-09-29-macos-appkit.md)를 따른다.

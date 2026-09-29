@@ -42,6 +42,8 @@ internal sealed class AppKitDesktopWindowHost : IWindowHost
         _applyingAppearance,
         _active;
     private bool _nativeClosed;
+    private bool _additional;
+    private Factory? _factory;
     private TaskCompletionSource? _presentation;
     private TaskCompletionSource? _miniaturization;
     private long _revision;
@@ -76,9 +78,11 @@ internal sealed class AppKitDesktopWindowHost : IWindowHost
         var host = new AppKitDesktopWindowHost(descriptor);
         var window = new DesktopWindow { Host = host, Title = definition.MainWindow.Options.Title };
         host._window = window;
-        var manager = new DorotiWindowManager(new Factory(host), definition.LifetimePolicy);
+        var factory = new Factory(host);
+        host._factory = factory;
+        var manager = new DorotiWindowManager(factory, definition.LifetimePolicy);
         if (NSApplication.SharedApplication.Delegate is DorotiMacOSMauiApplication app)
-            app.AttachDesktopManager(manager);
+            app.AttachDesktopManager(manager, factory.Dispose);
         manager.InitializationFailed += (_, error) => DorotiMauiSurface.WriteFailure(error);
         _ = StartAsync();
         return window;
@@ -96,9 +100,13 @@ internal sealed class AppKitDesktopWindowHost : IWindowHost
         }
     }
 
-    private sealed class Factory(AppKitDesktopWindowHost host) : IWindowHostFactory
+    private sealed class Factory(AppKitDesktopWindowHost host) : IWindowHostFactory, IDisposable
     {
-        public WindowManagerCapabilities Capabilities { get; } = new(false);
+        private bool _allocated;
+        internal DorotiApplicationBoundary? Application { get; private set; }
+        internal void Attach(DorotiApplicationBoundary boundary) => Application ??= boundary.Retain();
+        public void Dispose() { Application?.Dispose(); Application = null; }
+        public WindowManagerCapabilities Capabilities { get; } = new(true, null);
 
         public WindowEvaluation Evaluate(WindowCreateOptions options) =>
             AppKitDesktopWindowPolicy.Evaluate(options.Options, null);
@@ -107,7 +115,14 @@ internal sealed class AppKitDesktopWindowHost : IWindowHost
             Doroti.Desktop.WindowId id,
             WindowCreateOptions options,
             CancellationToken cancellationToken
-        ) => ValueTask.FromResult<IWindowHost>(host);
+        )
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (!_allocated) { _allocated = true; return ValueTask.FromResult<IWindowHost>(host); }
+            if (Application is null) throw new InvalidOperationException("Initialize the main window before creating another window.");
+            return ValueTask.FromResult<IWindowHost>(new AppKitDesktopWindowHost(host._descriptor)
+            { _additional = true, _factory = this });
+        }
     }
 
     public WindowCapabilities Capabilities { get; } = new(AppKitDesktopWindowPolicy.Evaluate);
@@ -124,19 +139,33 @@ internal sealed class AppKitDesktopWindowHost : IWindowHost
         CancellationToken cancellationToken
     )
     {
-        _options = options;
-        _surface = new(_descriptor with { EntrypointFactory = () => content })
+        await OnUiAsync(() =>
         {
-            DesktopManaged = true,
-        };
-        _surface.DesktopFrameReady += FrameReady;
-        _surface.DesktopFrameFailed += FrameFailed;
-        _window.Page = new ContentPage
-        {
-            BackgroundColor = Microsoft.Maui.Graphics.Colors.Transparent,
-            SafeAreaEdges = Microsoft.Maui.SafeAreaEdges.None,
-            Content = _surface,
-        };
+            _options = options;
+            if (_additional) _window = new DesktopWindow { Host = this, Title = options.Title };
+            var configuration = DesktopApplication.ToViewConfiguration(options, context.Windows.LifetimePolicy);
+            configuration = configuration with { Navigation = _descriptor.ViewConfiguration.Navigation };
+            if (_additional && configuration.Navigation is { } navigation)
+                configuration = configuration with { Navigation = navigation with { ProtocolScheme = null, RestorationId = null } };
+            _surface = new(_descriptor with { EntrypointFactory = () => content, ViewConfiguration = configuration })
+            {
+                DesktopManaged = true,
+                SharedApplication = _additional ? _factory!.Application : null,
+                ApplicationAttached = boundary => _factory!.Attach(boundary),
+                OwnsApplicationActivation = !_additional,
+            };
+            _surface.DesktopFrameReady += FrameReady;
+            _surface.DesktopFrameFailed += FrameFailed;
+            _window.Page = new ContentPage
+            {
+                BackgroundColor = Microsoft.Maui.Graphics.Colors.Transparent,
+                SafeAreaEdges = Microsoft.Maui.SafeAreaEdges.None,
+                Content = _surface,
+            };
+            if (_additional)
+                ((DorotiMacOSMauiApplication)NSApplication.SharedApplication.Delegate!).AttachDesktopWindow(_window);
+            return true;
+        }, cancellationToken);
         await _attached.Task.WaitAsync(cancellationToken);
     }
 
@@ -598,7 +627,11 @@ internal sealed class AppKitDesktopWindowHost : IWindowHost
     public async Task CloseAsync(CancellationToken cancellationToken)
     {
         var retirement = await OnUiAsync(
-            () => _surface?.DesktopMetalSurface.NativeView?.RetireAsync() ?? Task.CompletedTask,
+            () =>
+            {
+                _surface?.PrepareFrameworkClose();
+                return _surface?.DesktopMetalSurface.NativeView?.RetireAsync() ?? Task.CompletedTask;
+            },
             cancellationToken
         );
         await retirement.WaitAsync(cancellationToken);
