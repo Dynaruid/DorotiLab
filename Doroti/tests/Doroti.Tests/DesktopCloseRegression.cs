@@ -28,6 +28,14 @@ internal static class DesktopCloseRegression
         await second!.WaitAsync(TimeSpan.FromSeconds(5));
         if (manager.GetWindows().Count != 0) throw new Exception("Closed window remained registered.");
         Console.WriteLine("PASS: concurrent close waiters join registry/lifetime completion (fake host contract).");
+        var explicitManager = new DorotiWindowManager(new Host(), WindowLifetimePolicy.Explicit);
+        var exitCount = 0;
+        explicitManager.ExitRequested += () => exitCount++;
+        await explicitManager.CreateMainWindowAsync(new() { Content = WindowContent.FromEntrypoint(() => new Entrypoint()) });
+        var exits = await Task.WhenAll(explicitManager.RequestExitAsync(), explicitManager.RequestExitAsync());
+        if (exits.Any(result => !result) || !await explicitManager.RequestExitAsync() || exitCount != 1)
+            throw new Exception($"Explicit exit must complete once; observed {exitCount} notifications.");
+        Console.WriteLine("PASS: repeated/concurrent Explicit exit requests emit one lifetime notification.");
     }
     private sealed class Entrypoint : IDorotiViewEntrypoint
     {

@@ -11,13 +11,13 @@ pwsh -NoProfile -File Doroti/eng/doroti.ps1 validate -ValidationSuite Packages
 
 | Suite | Scope |
 | --- | --- |
-| Source / audit | Current documentation links, tracked temp policy, timeout/exit tests, top-level validate/audit/release failure and missing-runner rejection |
+| Source / audit | Current documentation and plan links, tracked temp policy, timeout/exit tests, top-level failure propagation, portable install rollback/retry and integrity/userdata contracts |
 | Build | CPU widget regressions only; not the multi-platform product solution |
 | Developer | Source + Build + plugin lifetime/protocol and OS drop routing/lifetime regressions + Web resize/admission/mobile backing policy tests |
 | Targets | Windows App SDK and Web Debug builds, Web HTTP startup/bootstrap asset smoke |
 | WindowsSmoke | Already-built default Debug Windows runner; native state/close cancellation, editor/WebView recreation; two HWNDs and native editor islands, survivor resize and both lifetime policies. Requires an interactive GPU Windows agent |
 | Packages | Package Testing/Cupertino/Desktop dependency graph; run a separate PackageReference-only widget consumer with its own restore cache |
-| Release | Source + widget regressions + target builds/startup. `doroti release` then audits and packs the product solution; all required platform toolchains are still necessary. No retired Fcr suite aliases silently pass |
+| Release | Developer + target builds/startup. `doroti release` then audits and packs the product solution; all required platform toolchains are still necessary. No retired Fcr suite aliases silently pass |
 
 Each aggregate invocation has a 1,200-second limit via `eng/run-with-timeout.py`. Timeout kills the child process tree and returns 124. Raw logs, ad-hoc consumers and their builds live in `temp/testing/<suite>/<run>/`. Success prints its summary then deletes the owned run. Failure preserves the printed directory for investigation; delete it after recording the result, checking the resolved path stays under `temp/testing/`. Product runner build outputs retain their normal `bin/obj` policy. Tests are not in the default product solution. `Doroti.Testing` is a product package; the regression executable is not.
 

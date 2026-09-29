@@ -35,6 +35,10 @@ binding/view 모델과 창별 소유권·공유 cache 경계를 정한다. Windo
 
 ## 2026-09-29 구현·검증
 
+후속 보강: 반복/동시 `RequestExitAsync`가 Explicit 종료 이벤트를 3회 발생시키던 회귀를
+재현하고 완료 결과를 공유하도록 수정했다. 수정 후 1회 통지 회귀와 NuGet 소비 PASS.
+실제 창/물리 입력의 증거 경계는 [보강 검토](../README.md#2026-09-29-0010-보강-검토)를 따른다.
+
 Revision: `8834d7596597b3087a0139f527148baee9a46583` + 이번 작업 트리.
 [창 문맥 ADR](../../Doroti/docs/desktop-window-context.md)을 작성한 뒤 구현했다.
 

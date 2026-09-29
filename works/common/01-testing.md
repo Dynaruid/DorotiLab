@@ -73,6 +73,10 @@
 
 기존 회귀를 재실행하고 다음을 최소 상시 suite에 통합했다.
 
+후속 보강: 입력·semantics·reassemble·픽셀/PNG API도 실행 전 owner thread/disposed 검사를
+수행한다. 다른 thread 및 dispose 뒤 9개 작업을 거절하는 회귀 PASS.
+같은 thread nested 금지와 서로 다른 owner thread의 독립 실행을 구분한다.
+
 - 실제 pointer로 Cupertino Dialog를 열어 60 ms 중간 fade 값, 뒤쪽 버튼의 hit-test 차단,
   닫기 pointer와 route 제거를 확인했다(**CPU PASS**, GPU golden 아님).
 - 기존 Router/RestorationManager의 대기·중복·state checkpoint 및 한글 bucket 재생성 회귀 **PASS**.

@@ -8,6 +8,7 @@ internal static class WindowContextRegression
 {
     public static void Run()
     {
+        VerifyOwnerGuards();
         using var both = new Barrier(2);
         var errors = new System.Collections.Concurrent.ConcurrentQueue<Exception>();
         var threads = Enumerable.Range(0, 2).Select(index => new Thread(() =>
@@ -48,5 +49,42 @@ internal static class WindowContextRegression
         foreach (var thread in threads) if (!thread.Join(TimeSpan.FromSeconds(90))) throw new TimeoutException("Context teardown stalled.");
         if (!errors.IsEmpty) throw new AggregateException(errors);
         Console.WriteLine("PASS: two concurrent dispatcher contexts preserve binding, pointer focus, Korean text, reassemble, semantics and teardown (CPU).");
+    }
+    private static void VerifyOwnerGuards()
+    {
+        using var tester = new WidgetTester();
+        tester.pumpWidget(new SizedBox());
+        var element = tester.byType<SizedBox>().Single();
+        Action[] operations = [() => tester.sendKey(default),
+            () => tester.performSemanticsAction(0, Doroti.Ui.SemanticsAction.tap),
+            () => tester.enterText(new("wrong owner", new(0, 0), null)),
+            () => tester.tapAt(Doroti.Ui.Offset.zero), () => tester.drag(element, Doroti.Ui.Offset.zero),
+            () => tester.center(element), () => tester.pixel(0, 0), () => tester.reassemble(),
+            () => tester.WritePng("must-not-write.png")];
+        Exception? failure = null;
+        var other = new Thread(() =>
+        {
+            try
+            {
+                foreach (var operation in operations)
+                {
+                    try { operation(); }
+                    catch (InvalidOperationException error) when (error.Message.Contains("owning thread")) { continue; }
+                    throw new Exception("A WidgetTester operation bypassed owner-thread validation.");
+                }
+            }
+            catch (Exception error) { failure = error; }
+        });
+        other.Start();
+        if (!other.Join(TimeSpan.FromSeconds(5))) throw new TimeoutException("Owner guard check stalled.");
+        if (failure is not null) throw failure;
+        tester.Dispose();
+        foreach (var operation in operations)
+        {
+            try { operation(); }
+            catch (ObjectDisposedException) { continue; }
+            throw new Exception("A WidgetTester operation accepted a disposed owner.");
+        }
+        Console.WriteLine("PASS: input, semantics, reassemble and image APIs reject wrong-thread/disposed owners before work.");
     }
 }

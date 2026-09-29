@@ -25,7 +25,8 @@ closing the owner prevent late delivery to a removed Router.
 Checkpoint envelope v1 contains location, JSON route state, base64 Flutter
 restoration bytes and a clean-shutdown marker. Binary data is capped at 4 MiB.
 Unsupported envelope versions and corrupt envelopes fall back to `/` with empty
-state and expose `RestoreFailure`. v1 deliberately rejects unknown future
+state and expose `RestoreFailure`; invalid data also discards the saved
+clean-shutdown flag. v1 deliberately rejects unknown future
 versions instead of guessing a migration. Apps changing their bucket schema
 should change `RestorationId` or migrate their own values. A different explicit
 cold link discards the saved navigation stack so it cannot override that link.
@@ -45,6 +46,9 @@ it does not register a placeholder protocol for every generated app. Web storage
 denial/quota leaves navigation usable and reports a restoration diagnostic.
 Browser history has one document owner; full worker-owned runtime support remains
 separate from the existing render worker.
+Malformed or foreign browser history state is ignored while its URL is still
+delivered. Returning from the back/forward cache marks the checkpoint running
+again; closing the owner detaches popstate, pagehide and pageshow handlers.
 
 Run Testbed with `DOROTI_SAMPLE=navigation`; Windows protocol arguments use
 `doroti-testbed:/first` and `doroti-testbed:/second`. Web main-owned Debug uses

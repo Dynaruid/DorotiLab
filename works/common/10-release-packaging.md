@@ -35,6 +35,11 @@
 
 ## 2026-09-29 구현·검증
 
+후속 보강: installer는 staging 복사·checksum 검증 후 version 디렉터리로 승격한다.
+두 번째 파일 복사 실패 주입→이전 current 유지→같은 버전 재시도, 변조/추가 DLL 거절,
+제거 후 한글 userdata 보존 회귀 PASS. 개발 머신의 작은 fixture이며 실제 서명/clean VM
+배포 증거는 아니다. [보강 검토](../README.md#2026-09-29-0010-보강-검토).
+
 Revision: `8834d7596597b3087a0139f527148baee9a46583` + 이번 작업 트리.
 계약·재현·지원 조합: [release-candidates.md](../../Doroti/docs/release-candidates.md).
 

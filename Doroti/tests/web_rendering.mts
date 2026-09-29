@@ -32,12 +32,25 @@ test('browser navigation bridge preserves history state, isolates storage failur
     assert.equal(saveApplicationRestoration(7, '{"version":1,"cleanShutdown":false}'), null);
     events.dispatchEvent(new Event('pagehide'));
     assert.equal(JSON.parse(storage.values().next().value!).cleanShutdown, true);
+    events.dispatchEvent(new Event('pageshow'));
+    assert.equal(JSON.parse(storage.values().next().value!).cleanShutdown, false);
+    for (const invalid of [42, { text: 'foreign' }, '{']) {
+      state = { doroti: { state: invalid } };
+      events.dispatchEvent(new Event('popstate'));
+      assert.equal(received.at(-1).state, null);
+      assert.equal(received.at(-1).location, '/app#/first');
+    }
     globals.sessionStorage.setItem = () => { throw new Error('quota denied'); };
     assert.match(saveApplicationRestoration(7, '{}')!, /quota denied/);
     closeApplicationNavigation(7);
     events.dispatchEvent(new Event('popstate'));
-    assert.equal(received.length, 1);
+    assert.equal(received.length, 4);
+    globals.sessionStorage.setItem = (key: string, value: string) => storage.set(key, value);
+    events.dispatchEvent(new Event('pagehide'));
+    assert.equal(JSON.parse(storage.values().next().value!).cleanShutdown, false);
     assert.throws(() => reportApplicationRoute(7, '/', null, false), /closed/);
+    state = { doroti: { state: { text: 'foreign' } } };
+    assert.equal(JSON.parse(openApplicationNavigation(7, 'sample')!).state, null);
   } finally {
     closeApplicationNavigation(7);
     for (const [key, descriptor] of previous) {

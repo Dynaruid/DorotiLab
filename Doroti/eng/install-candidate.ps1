@@ -61,22 +61,46 @@ foreach ($file in $hashes.PSObject.Properties) {
     if ((Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash -ne $file.Value) { throw "Payload checksum mismatch: $($file.Name)" }
 }
 $target = Assert-OwnedPath (Join-Path $versions ($manifest.version + '-' + $Platform))
-if (-not (Test-Path -LiteralPath $target)) {
-    New-Item -ItemType Directory -Path $target -Force | Out-Null
+function Assert-InstalledPayload([string] $Directory) {
+    $expected = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
     foreach ($file in $hashes.PSObject.Properties) {
-        $path = Assert-OwnedPath (Join-Path $target $file.Name)
-        New-Item -ItemType Directory -Path ([IO.Path]::GetDirectoryName($path)) -Force | Out-Null
-        Copy-Item -LiteralPath (Join-Path $payload $file.Name) -Destination $path
+        $path = Assert-OwnedPath (Join-Path $Directory $file.Name)
+        if (-not $expected.Add($path)) { throw "Duplicate installed path: $($file.Name)" }
+        if ((Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash -ne $file.Value) { throw "Installed checksum mismatch: $($file.Name)" }
+    }
+    if ($expected.Count -eq 0) { throw 'Candidate payload cannot be empty.' }
+    Get-ChildItem -LiteralPath $Directory -Recurse -Force | ForEach-Object {
+        $path = Assert-OwnedPath $_.FullName
+        if (-not $_.PSIsContainer -and -not $expected.Contains($path)) { throw "Unlisted installed file: $path" }
     }
 }
-# Revalidate even an existing version before making it current.
-foreach ($file in $hashes.PSObject.Properties) {
-    $path = Assert-OwnedPath (Join-Path $target $file.Name)
-    if ((Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash -ne $file.Value) { throw "Installed checksum mismatch: $($file.Name)" }
+if (-not (Test-Path -LiteralPath $target)) {
+    # An interrupted copy must not reserve the immutable version directory.
+    $staging = Assert-OwnedPath (Join-Path $versions ('.staging-' + [Guid]::NewGuid().ToString('N')))
+    try {
+        New-Item -ItemType Directory -Path $staging -Force | Out-Null
+        foreach ($file in $hashes.PSObject.Properties) {
+            $path = Assert-OwnedPath (Join-Path $staging $file.Name)
+            New-Item -ItemType Directory -Path ([IO.Path]::GetDirectoryName($path)) -Force | Out-Null
+            Copy-Item -LiteralPath (Join-Path $payload $file.Name) -Destination $path
+        }
+        Assert-InstalledPayload $staging
+        [IO.Directory]::Move($staging, $target)
+    }
+    finally {
+        if (Test-Path -LiteralPath $staging) {
+            $ownedStaging = Assert-OwnedPath $staging
+            Get-ChildItem -LiteralPath $ownedStaging -Recurse -Force | ForEach-Object { $null = Assert-OwnedPath $_.FullName }
+            Remove-Item -LiteralPath $ownedStaging -Recurse -Force
+        }
+    }
 }
+# Revalidate even an existing version before making it current, including extra files.
+Assert-InstalledPayload $target
+$userdata = Assert-OwnedPath (Join-Path $destination 'userdata')
+New-Item -ItemType Directory -Path $userdata -Force | Out-Null
 $current = @{ version = $manifest.version; platform = $Platform; directory = $target; revision = $manifest.revision }
 $temporary = Assert-OwnedPath (Join-Path $destination 'current.json.tmp')
 $current | ConvertTo-Json | Set-Content -LiteralPath $temporary
 [IO.File]::Move($temporary, (Join-Path $destination 'current.json'), $true)
-New-Item -ItemType Directory -Path (Join-Path $destination 'userdata') -Force | Out-Null
 Write-Output ("Installed local candidate: " + $target)

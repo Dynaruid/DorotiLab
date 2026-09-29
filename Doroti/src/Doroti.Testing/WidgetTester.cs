@@ -8,7 +8,7 @@ using SkiaSharp;
 
 namespace Doroti.Testing;
 
-/// <summary>One serial test scope. Input uses platform packets, hit testing and GestureArena.</summary>
+/// <summary>One non-nested owner-thread scope. Input uses platform packets, hit testing and GestureArena.</summary>
 public sealed class WidgetTester : IDisposable
 {
     [ThreadStatic] private static int _active;
@@ -107,12 +107,14 @@ public sealed class WidgetTester : IDisposable
     }
     public SKColor pixel(int x, int y)
     {
+        CheckAlive();
         using var image = _surface.Snapshot();
         using var bitmap = SKBitmap.FromImage(image);
         return bitmap.GetPixel(x, y);
     }
     public Task reassemble()
     {
+        CheckAlive();
         Task? task = null;
         View.DispatchPlatformEvent(() => task = _binding.reassembleApplication());
         return task!;
@@ -159,6 +161,7 @@ public sealed class WidgetTester : IDisposable
     public IReadOnlyList<Element> text(string value) => find(widget => widget is Text text && text.data == value);
     public Offset center(Element element)
     {
+        CheckAlive();
         if (element.findRenderObject() is not RenderBox box || !box.hasSize)
             throw new InvalidOperationException("The element has no laid out RenderBox.");
         return box.localToGlobal(box.size.center(Offset.zero));
@@ -166,6 +169,7 @@ public sealed class WidgetTester : IDisposable
     public void tap(Element element) => tapAt(center(element));
     public void tapAt(Offset position)
     {
+        CheckAlive();
         var id = ++_pointer;
         Send(PointerChange.add, position, id);
         Send(PointerChange.down, position, id);
@@ -176,6 +180,7 @@ public sealed class WidgetTester : IDisposable
     }
     public void drag(Element element, Offset delta, int steps = 10)
     {
+        CheckAlive();
         if (steps is < 1 or > 30) throw new ArgumentOutOfRangeException(nameof(steps));
         var start = center(element);
         var id = ++_pointer;
@@ -193,12 +198,13 @@ public sealed class WidgetTester : IDisposable
         1, Clock.Elapsed, change, PointerDeviceKind.touch, id, point.dx * View.devicePixelRatio,
         point.dy * View.devicePixelRatio, 0, 0, change is PointerChange.down or PointerChange.move ? 1 : 0,
         pointerIdentifier: id));
-    public void sendKey(KeyData data) => _host.Key(data);
-    public void enterText(DorotiTextEditingState state) { _host.Edit(state); pump(); }
-    public void performSemanticsAction(int id, SemanticsAction action, object? args = null) => _host.PerformSemanticsAction(id, action, args);
+    public void sendKey(KeyData data) { CheckAlive(); _host.Key(data); }
+    public void enterText(DorotiTextEditingState state) { CheckAlive(); _host.Edit(state); pump(); }
+    public void performSemanticsAction(int id, SemanticsAction action, object? args = null) { CheckAlive(); _host.PerformSemanticsAction(id, action, args); }
     public string DumpTree() => string.Join("\n", find(_ => true).Select(e => e.widget.toStringShort()));
     public void WritePng(string path)
     {
+        CheckAlive();
         using var image = _surface.Snapshot();
         using var data = image.Encode(SKEncodedImageFormat.Png, 100);
         using var file = File.Create(path);

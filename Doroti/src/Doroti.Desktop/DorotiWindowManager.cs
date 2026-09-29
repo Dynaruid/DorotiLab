@@ -16,6 +16,7 @@ public sealed class DorotiWindowManager(
     private readonly object _gate = new();
     private readonly SemaphoreSlim _exitLock = new(1);
     private bool _exiting;
+    private bool _exitCompleted;
     private DorotiWindowController? _exitCandidate;
     public WindowManagerCapabilities Capabilities => _factory.Capabilities;
     public WindowLifetimePolicy LifetimePolicy { get; } = lifetimePolicy;
@@ -54,12 +55,16 @@ public sealed class DorotiWindowManager(
         var completed = false;
         try
         {
+            if (_exitCompleted) { completed = true; return true; }
             await _creation.WaitAsync(cancellationToken);
             try { lock (_gate) _exiting = true; }
             finally { _creation.Release(); }
             foreach (var window in GetWindows())
                 if (!await window.CloseAsync(cancellationToken)) return false;
             completed = GetWindows().Count == 0;
+            // Serialized exit callers join the same completed application lifetime.
+            // Set before notifying so a failing subscriber cannot trigger a second exit.
+            _exitCompleted = completed;
             if (completed && LifetimePolicy == WindowLifetimePolicy.Explicit) ExitRequested?.Invoke();
             return completed;
         }

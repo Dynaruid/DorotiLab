@@ -37,6 +37,10 @@ CLI 실패 전파, 테스트 위치, CI, 문서 경로와 지원표를 공통으
 
 ## 2026-09-28 실행 결과
 
+후속 2026-09-29: `plan.md` 링크 검사, portable installer 계약 회귀, 별도 CI Packages job과
+plan/global.json 변경 trigger를 추가했다. 로컬 Source/Packages PASS, 원격 CI notVerified.
+전체 비교는 [00~10 보강 검토](../README.md#2026-09-29-0010-보강-검토)를 따른다.
+
 - 상태: **로컬 최소 기반 완료 / PASS**. CI workflow 연결은 완료했으며 원격 CI 실행은 **notVerified**다.
 - revision: a93c047fe2e93d93cff3e0a6bf3c2789862fea81 + 작업 트리 변경 (미커밋). Windows 10.0.26200, .NET SDK 10.0.400, Python, PowerShell 7.
 - `doroti.ps1 validate -ValidationSuite Source`: 현재 README/works 링크, temp 추적 금지, 실패 종료·timeout 회귀 PASS. 별도 임시 CLI 복제본에서 하위 exit 7 및 실행기 누락을 넣어 validate/audit/release가 실패하고 Release: PASS를 출력하지 않음을 확인했다.

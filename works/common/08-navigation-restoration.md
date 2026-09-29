@@ -31,6 +31,11 @@ activation 대기·중복 처리, Router, 상태 형식·migration·복원 실�
 
 ## 2026-09-29 구현·검증
 
+후속 보강: 잘못된 restoration data 타입·base64는 cleanShutdown까지 포함해 checkpoint 전체를
+폐기한다. 브라우저의 외부/손상 history state는 null로 낮춰 URL 전달을 유지하며, bfcache 복귀 때
+running 표시를 복구하고 dispose 때 pageshow listener도 해제한다. 공통/Node 회귀 PASS이며
+실제 browser history 검증으로 확대하지 않는다. [보강 검토](../README.md#2026-09-29-0010-보강-검토).
+
 Revision: `8834d7596597b3087a0139f527148baee9a46583` + 이번 작업 트리.
 공개 계약과 재현 절차: [application-navigation.md](../../Doroti/docs/application-navigation.md).
 모든 테스트 실행은 `Doroti/eng/run-with-timeout.py`의 1,200초 제한을 사용했다.

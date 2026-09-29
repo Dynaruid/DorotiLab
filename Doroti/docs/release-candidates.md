@@ -32,7 +32,11 @@ pwsh -File Doroti/eng/install-candidate.ps1 -InstallRoot <dedicated-directory> -
 ```
 
 The portable installer verifies every payload checksum, copies a new version into
-`versions/`, then atomically changes `current.json`. It preserves `userdata/`
+an owned staging directory and verifies it before renaming it into `versions/`,
+then atomically changes `current.json`. Copy failures clean up that transaction's
+staging directory so the same version can be retried; the prior current version
+stays selected. Existing version directories must have matching checksums and no
+unlisted files. It preserves `userdata/`
 through updates and removal. It refuses unowned directories, path traversal and
 reparse points. Read `current.json` to find the executable directory. Web uses
 `-Platform web` and requires a server providing the existing COOP/COEP headers.

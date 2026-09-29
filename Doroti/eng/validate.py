@@ -18,7 +18,7 @@ def source():
     if forbidden:
         raise RuntimeError(f"Temporary files are tracked: {forbidden}")
     # Current entry points and plans, not archived reports of deleted probes.
-    docs = [ROOT / p for p in ("README.md", "README.ko.md", "Doroti/README.md", "works/README.md",
+    docs = [ROOT / p for p in ("plan.md", "README.md", "README.ko.md", "Doroti/README.md", "works/README.md",
         "Doroti/tests/README.md", "Doroti/docs/support-status.md", "Doroti/docs/desktop-windows.md",
         "Doroti/docs/rendering-baselines.md", "Doroti/docs/development-hot-reload.md", "Doroti/tools/vscode-doroti/README.md",
         "Doroti/docs/application-navigation.md", "Doroti/docs/desktop-window-context.md", "Doroti/docs/release-candidates.md",
@@ -56,6 +56,7 @@ def main(suite):
         if suite in ("Source", "Developer", "Release"):
             source()
             command("runner-contract", "python", "Doroti/tests/runner_contract.py", str(run / "runner"))
+            command("installer-contract", "python", "Doroti/tests/installer_contract.py", str(run / "installer"))
         if suite in ("Build", "Developer", "Release"):
             command("widget-regressions", "dotnet", "run", "--project",
                     "Doroti/tests/Doroti.Tests/Doroti.Tests.csproj", "-c", "Debug",

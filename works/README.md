@@ -99,6 +99,7 @@ OS·버전 / 호스트 / 기기 / renderer / configuration·AOT:
 
 기준 revision `8834d7596597b3087a0139f527148baee9a46583` + 미커밋 작업 트리.
 사용자 요청 범위는 00~10 전부이며, 아래 잔여 범위를 삭제하거나 완료로 바꾸지 않는다.
+아래는 앞선 실행 기록이며, 후속 변경은 [보강 검토](#2026-09-29-0010-보강-검토)를 따른다.
 
 | 문서 | 이번 실행 및 현재 상태 | 남은 범위 |
 | --- | --- | --- |
@@ -152,3 +153,52 @@ portable 설치·업데이트·변조 거절·제거·userdata 보존 결과를 
 위 목록만 삭제한다. 스크립트는 아직 삭제 모드로 실행하지 않았다. 없는 경로는 건너뛰고
 링크 경로는 거절하며, 잠긴 파일의 실패를 보고한다. 다른 프로세스를 강제 종료하지 않는다.
 최종 후보와 제품 소스는 이 보류 삭제 목록에 포함하지 않는다.
+
+## 2026-09-29 00~10 보강 검토
+
+기준 revision `c858ca9add07f20634c13d9e6177710811c1fc93` + 이번 미커밋 변경.
+11개 공통 문서의 완료 기준·기록과 검증기·주요 구현을 대조했다. 기존 Developer suite가
+통과하는 상태에서도 아래 종료·복원·설치 경계 조건의 누락이 발견됐다.
+
+| 문서 | 검토 및 이번 보강 | 여전히 남은 범위 |
+| --- | --- | --- |
+| 00 | Source가 `plan.md` 링크도 검사. CI에 Packages job 및 plan/SDK pin 변경 trigger 추가. 설치 계약을 Source에 연결 | 원격 CI 실행, clean OS smoke |
+| 01 | WidgetTester의 key/text/pointer/semantics/reassemble/이미지 API가 작업 전에 owner thread·disposed 상태를 검사하도록 수정 | GPU golden, 전체 native 자원 격리 |
+| 02 | 기존 native 창 계약을 유지하면서 Explicit 종료 요청의 중복 알림 수정 | live resize 픽셀·mixed-monitor·다른 adapter |
+| 03 | 기존 합성 한글·native view 수명 회귀 범위 확인. 입력 API의 잘못된 스레드 접근도 차단 | 물리 IME·Tab/focus·UIA와 전체 PlatformView 조합 |
+| 04 | CPU DPR/blur geometry/list/dialog/layer 및 Web admission 회귀 재실행 | GPU 품질·present/VRAM·device loss·실기기 장기 실행 |
+| 05 | 확장 단위 테스트 8개 및 동시 dispatcher reassemble 회귀 재실행 | 설치 VSIX의 실제 editor/metadata 흐름 재검증, 미완료 UI 예외 |
+| 06 | plugin 취소·오류·view/app 수명 회귀 재실행 | event stream, Web/Android 및 다른 native adapter |
+| 07 | OS drop 협상·queue·payload 수명 회귀 재실행 | Explorer 교차 창·송신·move/link·다른 플랫폼 |
+| 08 | 손상 checkpoint의 cleanShutdown flag도 폐기. 잘못된 data 타입 거절. foreign/malformed history state는 무시하고 URL 전달. bfcache 복귀 시 running 표시 복구·listener 해제 | 실제 브라우저 back/forward·새로고침, iOS/다른 desktop 연결 |
+| 09 | 직렬화된 Explicit 종료 요청이 완료 결과를 공유하고 ExitRequested를 한 번만 통지 | 물리 IME·DPI·전체 native content, AppKit/Qt/Catalyst 추가 창 |
+| 10 | 설치를 staging→검증→version 승격으로 변경. 복사 실패 정리·동일 버전 재시도, 기존 설치의 추가 파일 거절, userdata 경로 검사 | 서명·clean VM·실제 배포 업데이트·장기 soak·Android package-only |
+
+환경: Windows 10.0.26200 / .NET SDK 10.0.400 / Debug JIT / CPU 회귀와 Node 테스트.
+검증 명령은 `python Doroti/eng/run-with-timeout.py` 또는 이를 호출하는 `validate.ps1`을
+사용해 1,200초로 제한했다. 모두 로컬 검증이며 원격 CI·물리 입력의 통과를 뜻하지 않는다.
+
+- 수정 전 새 회귀에서 Explicit 종료 이벤트가 1회 대신 **3회** 발생해 실패했다.
+- 수정 후 `validate.ps1 -Suite Developer` **PASS**: 기존 widget/rendering/navigation/window,
+  plugin·drop·Web 회귀와 잘못된 thread/disposed API 접근·손상 checkpoint·중복 종료 검증.
+- `validate.ps1 -Suite Source` **PASS**: 링크·실패 전파·timeout 및 installer 계약.
+  작은 payload fixture의 두 번째 Copy-Item에서 실패를 주입해 current 유지·staging/실패 version
+  부재·재시도 성공을 확인했다. 변조/추가 DLL 거절과 update/remove 후 한글 userdata 보존도 확인했다.
+- `validate.ps1 -Suite Packages` **PASS**: 격리 NuGet cache의 Testing/Cupertino/Desktop 소비 앱.
+  이 suite는 의도적으로 repo 전용 회귀를 제외하며 전체 회귀는 Developer가 담당한다.
+- `npm.cmd test --prefix Doroti/tools/vscode-doroti` **8/8 PASS**. 설치 VSIX 실행 증거로 확대하지 않는다.
+- `validate.ps1 -Suite Targets` **PASS**: Windows App SDK/Web Debug build와 Web HTTP bootstrap smoke.
+- `validate.ps1 -Suite WindowsSmoke` **PASS**: API/native close 취소·정리, editor/WebView 각
+  생성·재생성, 실제 두 HWND/editor island의 독립 크기·survivor resize·종료와
+  OnLastWindowClosed/Explicit 수명. 기본 Windows GPU runner의 native 상태/실행 증거이며
+  화면 픽셀·물리 입력·mixed-monitor DPI 검증은 아니다.
+
+성공한 aggregate 실행 폴더는 자동 정리했다. 이번에 새 Release 후보는 만들지 않았으므로
+위의 기존 후보 버전에 이번 수정이 포함됐다고 해석하지 않는다. 기존 세션의 정리 보류 목록은
+이번 보강과 별개이며 그대로 보존한다.
+
+이번 수정 전 실패 재현 폴더 `temp/testing/build/fd3416cf43254cd09d5a3afc72173251/`의
+삭제는 절대 경로/소유 범위/link 검사와 함께 요청했지만 자동 승인 검토에서
+`blocked by policy`로 거절됐다. 구체적인 이유는 제공되지 않았다. 우회 삭제하지 않았으며
+결함은 수정 후 PASS지만 이 원시 자료는 정리 보류다. 삭제가 허용되는 사용자/후속 세션에서
+이 경로만 확인·정리한다. 제품 입력이나 CI에 포함되지 않는다.

@@ -31,6 +31,10 @@
 
 ## 2026-09-28 Windows App SDK 결과
 
+현재 상태 보충: 아래는 단일 창 구현 당시 기록이다. 2026-09-29에는
+[09](09-multiwindow.md)에서 추가 창/Explicit을 연결했고, 후속 보강에서 반복 Explicit 종료의
+중복 알림을 수정했다. [최신 보강 결과](../README.md#2026-09-29-0010-보강-검토)를 함께 읽는다.
+
 - 상태: **구현 및 native 상태/종료 회귀 PASS / 전체 PARTIAL**. revision: a93c047fe2e93d93cff3e0a6bf3c2789862fea81 + 작업 트리 변경 (미커밋).
 - `WindowsAppSdkDesktopWindowHost`가 기존 native HWND/entrypoint를 소유하는 IWindowHost/IWindowHostFactory adapter로 연결됐다. 별도 Window API나 두 번째 root를 만들지 않는다. SDK DOROTIDESKTOP005, 기본 Testbed WindowsAppSdk, 새 앱 템플릿의 Desktop companion을 연결했다.
 - Windows 10.0.26200, win-x64, .NET SDK 10.0.400, Debug JIT, 기본 Graphite/Vulkan/native D3D12 presentation. Windows build 경고 0, 오류 0.

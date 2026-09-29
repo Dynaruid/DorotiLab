@@ -48,6 +48,8 @@ public sealed class ApplicationNavigationHost : IApplicationNavigationHostCapabi
                     _restoration = Convert.FromBase64String(data.GetString()!);
                     if (_restoration.Length > MaximumCheckpointBytes) throw new FormatException("Restoration data is too large.");
                 }
+                else if (data.ValueKind is not (JsonValueKind.Null or JsonValueKind.Undefined))
+                    throw new FormatException("Restoration data must be base64 text or null.");
             }
             catch (Exception error) when (error is JsonException or FormatException or InvalidOperationException or KeyNotFoundException or ArgumentException)
             {
@@ -55,6 +57,7 @@ public sealed class ApplicationNavigationHost : IApplicationNavigationHostCapabi
                 location = "/";
                 state = null;
                 _restoration = null;
+                PreviousShutdownWasClean = false;
             }
         }
         if (initialLocation is not null)
@@ -143,7 +146,7 @@ public sealed class ApplicationNavigationHost : IApplicationNavigationHostCapabi
         _restoration = data.ToArray();
         Checkpoint();
     }
-    public void DiscardRestoration() { _restoration = null; Checkpoint(); }
+    public void DiscardRestoration() { ObjectDisposedException.ThrowIf(_disposed, this); _restoration = null; Checkpoint(); }
     public void Checkpoint()
     {
         try

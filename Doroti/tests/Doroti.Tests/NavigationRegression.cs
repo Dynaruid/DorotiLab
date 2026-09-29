@@ -50,9 +50,12 @@ internal static class NavigationRegression
         }
         using (var linked = new ApplicationNavigationHost("/explicit", checkpoint))
             Require(linked.Current.Location == "/explicit" && linked.ReadRestoration() is null, "Saved stack overrode explicit cold link.");
-        foreach (var invalid in new[] { "{", "{\"version\":99}", "{\"version\":1,\"location\":\"javascript:alert(1)\"}" })
+        foreach (var invalid in new[] { "{", "{\"version\":99}", "{\"version\":1,\"location\":\"javascript:alert(1)\"}",
+            "{\"version\":1,\"location\":\"/\",\"cleanShutdown\":true,\"data\":\"!invalid-base64!\"}",
+            "{\"version\":1,\"location\":\"/\",\"cleanShutdown\":true,\"data\":42}" })
         using (var fallback = new ApplicationNavigationHost(checkpoint: invalid))
-            Require(fallback.Current.Location == "/" && fallback.RestoreFailure is not null, "Corrupt/unsupported state did not fall back.");
+            Require(fallback.Current.Location == "/" && fallback.RestoreFailure is not null && !fallback.PreviousShutdownWasClean,
+                "Corrupt/unsupported state did not discard the complete checkpoint, including its clean-shutdown flag.");
         using (var host = new ApplicationNavigationHost())
         {
             for (var index = 0; index < 32; index++) host.Activate(new(index.ToString(), "/", ApplicationActivationSource.Protocol, false));

@@ -1,8 +1,15 @@
 /** Per-tab state. History changes are fed to the existing framework Router. */
-type NavigationOwner = { key: string | null; pop: () => void; pagehide: () => void };
+type NavigationOwner = { key: string | null; pop: () => void; pagehide: () => void; pageshow: () => void };
 const owners = new Map<number, NavigationOwner>();
 let dispatch: ((hostId: number, json: string) => void) | undefined;
 export function configureNavigation(callback: (hostId: number, json: string) => void): void { dispatch = callback; }
+
+function routeState(): string | null {
+  // Other scripts and earlier app versions may own existing history entries.
+  const state: unknown = history.state?.doroti?.state;
+  if (typeof state !== "string") return null;
+  try { JSON.parse(state); return state; } catch { return null; }
+}
 
 export function openApplicationNavigation(hostId: number, restorationId: string | null): string | null {
   if (typeof window === "undefined") return null; // worker-owned framework is separately qualified
@@ -13,21 +20,24 @@ export function openApplicationNavigation(hostId: number, restorationId: string 
   try { checkpoint = key ? sessionStorage.getItem(key) : null; } catch { /* storage can be denied */ }
   const pop = (): void => dispatch?.(hostId, JSON.stringify({
     id: crypto.randomUUID(), location: location.pathname + location.search + location.hash,
-    state: history.state?.doroti?.state ?? null,
+    state: routeState(),
   }));
-  const pagehide = (): void => {
+  const markShutdown = (cleanShutdown: boolean): void => {
     // Framework writes each completed restoration update. Do not depend on async unload work.
-    // A reload/navigation is graceful for this tab; a killed renderer leaves running=false absent.
     try {
       const raw = key ? sessionStorage.getItem(key) : null;
-      if (raw && key) sessionStorage.setItem(key, JSON.stringify({ ...JSON.parse(raw), cleanShutdown: true }));
+      if (raw && key) sessionStorage.setItem(key, JSON.stringify({ ...JSON.parse(raw), cleanShutdown }));
     } catch { /* browser storage failures never cancel navigation */ }
   };
-  owners.set(hostId, { key, pop, pagehide });
+  const pagehide = (): void => markShutdown(true);
+  // A bfcache return resumes the same runtime without calling open again.
+  const pageshow = (): void => markShutdown(false);
+  owners.set(hostId, { key, pop, pagehide, pageshow });
   window.addEventListener("popstate", pop);
   window.addEventListener("pagehide", pagehide);
+  window.addEventListener("pageshow", pageshow);
   return JSON.stringify({ location: location.pathname + location.search + location.hash, checkpoint,
-    state: history.state?.doroti?.state ?? null });
+    state: routeState() });
 }
 
 export function reportApplicationRoute(hostId: number, route: string, stateJson: string | null, replace: boolean): void {
@@ -52,5 +62,6 @@ export function closeApplicationNavigation(hostId: number): void {
   if (!owner) return;
   window.removeEventListener("popstate", owner.pop);
   window.removeEventListener("pagehide", owner.pagehide);
+  window.removeEventListener("pageshow", owner.pageshow);
   owners.delete(hostId);
 }

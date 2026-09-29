@@ -1,5 +1,12 @@
 # Current support and evidence
 
+2026-09-29 follow-up (`c858ca9add07f20634c13d9e6177710811c1fc93` + working tree):
+owner-thread/disposed test API guards, single-notification Explicit exit, corrupt
+checkpoint and browser history/bfcache handling, and transactional portable install
+retry/integrity regressions pass locally. Packages now has a dedicated CI job;
+remote CI, physical input, real browser history and signed clean-machine release
+remain unverified. [00–10 review](../../works/README.md#2026-09-29-0010-보강-검토).
+
 2026-09-29 update (`8834d7596597b3087a0139f527148baee9a46583` + working tree):
 Windows App SDK now supports additional native windows with dispatcher-scoped
 framework/input state and both OnLastWindowClosed/Explicit lifetime. Real two-window
