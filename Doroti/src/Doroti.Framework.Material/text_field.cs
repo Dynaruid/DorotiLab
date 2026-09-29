@@ -1522,6 +1522,7 @@ internal class _TextFieldState__text_field
                         builder: (context, child) =>
                         {
                             return new Widgets.Semantics(
+                                container: true,
                                 enabled: _isEnabled,
                                 maxValueLength: semanticsMaxValueLength,
                                 currentValueLength: _currentLength,

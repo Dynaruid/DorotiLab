@@ -64,3 +64,18 @@ Web Hot Reload qualification uses `runHost.js ... --web`: a clean-profile instal
 For manual Windows Korean IME/focus checks, set `$env:DOROTI_SAMPLE='input'` and launch the default Testbed windows alias. Compose and cancel Korean text in the first multiline field, move through the native editor or WebView with Tab/Shift+Tab, select/copy/paste, recreate the native view, and confirm the final framework field receives focus. The scene shows selection/composing ranges. Choose the native editor or WebView using the switch button: mixing both composition topologies in one frame remains unsupported.
 
 Navigation/restore, concurrent window contexts and the CPU Dialog intermediate frame are in Developer. Selected Release candidates and portable installation are documented in [release candidates](../docs/release-candidates.md).
+
+
+Browser services (picker/managed grants, Copy drop, real history and text restoration)
+are exercised through the threaded runtime with installed Chrome and Python Playwright:
+
+```powershell
+# Serve the built Testbed at the selected --url first.
+python Doroti/eng/run-with-timeout.py python Doroti/tests/web_services_smoke.py --url http://127.0.0.1:5199/ --renderer webgl --output temp/testing/browser-services/webgl
+# Repeat with --renderer webgpu and a separate output directory.
+```
+
+The test uses actual browser chooser/keyboard/mouse events. Its DataTransfer drop is
+synthetic DOM input, not Explorer-to-browser transfer. It asserts a native textbox
+semantics node cannot absorb sibling buttons, and that worker-side navigation and
+plugin calls reach DOM services. It preserves failure images; output is disposable.

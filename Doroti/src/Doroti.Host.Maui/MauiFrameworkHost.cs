@@ -190,6 +190,9 @@ public sealed class MauiFrameworkHost : IDisposable
                 DorotiCapabilityIds.AccessibilitySemantics,
                 graphics
             );
+#if ANDROID
+        capabilities.Register<IFilePickerHostCapability>(DorotiCapabilityIds.FilePicker, new AndroidFilePicker());
+#endif
 #if MACOS
         if (
             application?.Manifest.PlatformViews.Length > 0

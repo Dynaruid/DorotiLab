@@ -48,4 +48,5 @@
     </ItemGroup>
     <Message Importance="High" Text="Doroti partial AOT: Material remains interpreted; full AOT compiler failure is not reclassified." />
   </Target>
+  <Import Project="../../../Doroti/src/Doroti.Plugins/buildTransitive/Doroti.Plugins.targets" />
 </Project>

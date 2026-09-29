@@ -77,3 +77,9 @@ drag endpoint를 `outside window bounds`로 거절했다. Explorer→Testbed 전
   drop 동작을 Doroti view 수신으로 보장하지 않는다.
 - 공통/Windows 수신 기반은 준비됐다. 다음 독립 작업은 [08 Navigation/restoration](08-navigation-restoration.md)이며,
   위 07 잔여 항목과 전체 완료 기준은 계속 유지한다.
+
+
+## 2026-09-29 Web·Windows·Android 후속 실행
+
+[최신 구현·실행 근거와 잔여](../results/2026-09-29-web-windows-android.md)를 참조한다.
+이 문서의 이전 실행 결과를 새 PASS로 확대하지 않는다.

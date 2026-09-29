@@ -52,11 +52,11 @@ internal sealed class OsDropState : State<OsDropSample>
             catch (Exception error) { if (mounted) setState(() => _result = error.Message); }
         }
     }
-    public override Widget build(BuildContext context) => new M.Scaffold(body: new Column(children:
+    public override Widget build(BuildContext context) => new M.Scaffold(body: new SafeArea(child: new Column(children:
     [
         new Text("OS Drag & Drop"), new Text(_phase), new Text($"Completed drops: {_drops}"),
         new Expanded(child: new SingleChildScrollView(child: new Text(_result))),
-    ]));
+    ])));
     public override void dispose()
     {
         _lifetime.Cancel(); _registration?.Dispose(); _lifetime.Dispose(); base.dispose();

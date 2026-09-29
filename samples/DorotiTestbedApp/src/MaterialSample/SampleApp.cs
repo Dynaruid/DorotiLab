@@ -217,6 +217,7 @@ internal sealed class SampleAppState : State<SampleApp>
 
     public override Widget build(BuildContext context) =>
         new M.MaterialApp(
+            initialRoute: "/",
             title: "Doroti Material 3",
             debugShowCheckedModeBanner: false,
             locale: new Locale("en", "US"),

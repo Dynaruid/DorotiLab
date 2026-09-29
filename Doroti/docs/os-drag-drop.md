@@ -1,10 +1,11 @@
 # OS Drag & Drop reception
 
 The first implementation receives filesystem files, Unicode text and URI lists on
-Windows App SDK. It is independent of framework `Draggable`/`DragTarget` widgets.
+Windows App SDK and the browser DOM through the render-worker bridge. It is independent of framework `Draggable`/`DragTarget` widgets.
 The public contracts live in `Doroti.Ui`; `OsDropReceiver` in `Doroti.Hosting`
-handles negotiation, delivery and resource lifetime. Other hosts report no
-`platform.os-drag-drop` capability yet.
+handles negotiation, delivery and resource lifetime. Other hosts, including Android, report no
+`platform.os-drag-drop` capability yet. Browser regression uses synthetic DataTransfer
+events and does not establish Explorer gestures. Both adapters currently receive Copy only.
 
 ## Application API
 

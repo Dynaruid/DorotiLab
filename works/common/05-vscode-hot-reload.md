@@ -151,3 +151,9 @@ native `dotnet watch`에서 field `int`→`long` 변경의 ENC0009/restart 필�
 각 binding·focus·한글 값·semantics·종료가 독립적으로 유지되는 회귀를 추가해 통과했다.
 이번 세션에는 Windows UI/브라우저 연결이 없어 설치 VSIX의 실제 metadata update 흐름을
 재실행하지 않았다. 위 2026-09-28 결과와 이번 CPU 회귀의 증거 범위를 구분한다.
+
+
+## 2026-09-29 Web·Windows·Android 후속 실행
+
+[최신 구현·실행 근거와 잔여](../results/2026-09-29-web-windows-android.md)를 참조한다.
+이 문서의 이전 실행 결과를 새 PASS로 확대하지 않는다.

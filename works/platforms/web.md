@@ -80,3 +80,9 @@ M0 → M1 최소 경로 → M2 → M4/M5 → M6(대상 플랫폼) → M7 순서�
 Web Debug build 경고 0/오류 0, HTTP server/bootstrap asset smoke PASS. Chrome에서 Material Testbed 실제 화면과 semantics 트리 확인 PASS. 새 DOM PlatformView 입력/물리 IME/Release AOT·성능 검증은 수행하지 않았다.
 
 공통 04·05 추가: 제품 resize admission의 4 in-flight + latest 1 상한/ack/reset, 모바일 backing 축소·회전 메모리 정책 회귀 PASS. 템플릿 생성 앱의 Web Debug/CLI dev 및 Chrome 실제 버튼 클릭·한글 glyph·450×800 리사이즈 후 상태 유지 PASS. 이 결과는 물리 모바일이나 offline 폰트 검증이 아니다. 후속 Web Hot Reload는 main-owned threaded Debug의 Chrome WebGL/WebGPU에서 검증했다. 설치 VSIX Run/요청-응답/컴파일 오류 재시도/Stop과 상태·한글 값·스크롤 유지가 PASS이며, Release/AOT·worker-owned runtime·물리 모바일은 notVerified다. [렌더링 결과](../common/04-rendering-lifetime.md)·[VS Code 결과](../common/05-vscode-hot-reload.md) 참조.
+
+
+## 2026-09-29 후속 실행
+
+[이번 세 플랫폼 실행 기록](../results/2026-09-29-web-windows-android.md)에
+새 구현·실제 실행·후보와 미검증 경계를 기록했다. 전체 상태는 PARTIAL이다.

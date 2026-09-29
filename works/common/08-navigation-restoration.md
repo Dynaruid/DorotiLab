@@ -69,3 +69,9 @@ Revision: `8834d7596597b3087a0139f527148baee9a46583` + 이번 작업 트리.
 재시작 실증. Windows 단일 인스턴스는 opt-in protocol 앱에 적용한다.
 원시 증거는 `temp/testing/plan-all/`에서 생성했으며 최종 정리 상태는
 [이번 실행 인덱스](../README.md#2026-09-29-전체-실행-상태)를 따른다.
+
+
+## 2026-09-29 Web·Windows·Android 후속 실행
+
+[최신 구현·실행 근거와 잔여](../results/2026-09-29-web-windows-android.md)를 참조한다.
+이 문서의 이전 실행 결과를 새 PASS로 확대하지 않는다.

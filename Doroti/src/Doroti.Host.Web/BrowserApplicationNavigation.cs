@@ -9,6 +9,8 @@ namespace Doroti.Host.Web;
 [SupportedOSPlatform("browser")]
 internal static partial class BrowserInterop
 {
+    [JSImport("prepareApplicationNavigation", Module)]
+    internal static partial Task PrepareApplicationNavigation(string? restorationId);
     [JSImport("openApplicationNavigation", Module)]
     internal static partial string? OpenApplicationNavigation(int hostId, string? restorationId);
     [JSImport("reportApplicationRoute", Module)]
@@ -19,6 +21,8 @@ internal static partial class BrowserInterop
     internal static partial void CloseApplicationNavigation(int hostId);
     [JSExport]
     internal static void DispatchApplicationNavigation(int hostId, string json) => BrowserApplicationNavigation.Dispatch(hostId, json);
+    [JSExport]
+    internal static void DispatchApplicationPersistenceFailure(int hostId, string message) => BrowserApplicationNavigation.PersistenceFailed(hostId, message);
 }
 
 [SupportedOSPlatform("browser")]
@@ -52,6 +56,11 @@ internal sealed class BrowserApplicationNavigation : IDisposable
         catch { BrowserInterop.CloseApplicationNavigation(hostId); throw; }
     }
     public void Attach(DorotiView view) => _view = view;
+    public static void PersistenceFailed(int hostId, string message)
+    {
+        if (Owners.TryGetValue(hostId, out var owner))
+            owner.Navigation.ReportPersistenceFailure(message);
+    }
     public static void Dispatch(int hostId, string json)
     {
         if (!Owners.TryGetValue(hostId, out var owner)) return;

@@ -3,7 +3,7 @@
 The M4 increment reuses `IDorotiNativePluginHandler`, application manifests and
 the runner's generated registrations. `Doroti.Plugins` supplies the shared
 FilePicker/URL client and its stateless `NativeFeaturesHandler`. The first host
-adapter is Windows App SDK. Web/Android/other native adapters remain follow-up
+adapters are Windows App SDK, browser DOM through the render-worker bridge, and Android Storage Access Framework. Other native adapters remain follow-up
 work; `NativeFeatures.ForView(view)` reports unsupported when its channel is absent.
 
 ## Consume
@@ -112,10 +112,29 @@ thread and closes the real dialog on caller cancellation. The native HWND remain
 the dialog owner; results and read grants return through the same plugin channel.
 
 The current wire contract is request/reply JSON (`capabilities`, `pick`, `read`,
-`release`, `launch`). It does not advertise native push/event streams:
-`SetMessageHandler` on application plugin channels throws `NotSupportedException`.
-Event-producing plugins need a future explicit subscription/backpressure contract;
-an internal native subscription can already be attached to the view via `Retain`.
+`release`, `launch`). Event streams use the separate `platform.plugin-events` capability. Implement
+`IDorotiPluginEventHandler.SubscribeAsync(context, channel, codec, arguments, token)`
+and consume `IPlatformPluginEventsHostCapability.SubscribeAsync`. `EventChannels`
+reports which registered handlers implement the extension; unsupported channels throw
+`NotSupportedException`. The handler ABI and request/reply channels remain unchanged.
+
+Each subscription has a lossless bounded queue (default 16; allowed 1..1024), one
+pending producer item, and a 64 KiB limit per event. Delivery copies each payload.
+Producers must await demand and release native listeners in their iterator `finally`.
+Caller cancellation, early enumeration disposal and owner close stop delivery. A
+noncooperative native iterator retains the handler lease until it actually exits;
+it cannot deliver a late event into a closed view. App callbacks run on the reader's
+chosen context; marshal to the view dispatcher before touching widgets.
+
+Browser file selection requires transient user activation. Grants expose bounded
+reads and no local paths. Cancelling detaches the input and ignores late selections;
+programmatically dismissing the browser's OS chooser is not guaranteed. Android uses
+an unexported proxy Activity, closes its picker on cancellation and keeps grants
+view-scoped without taking persistent URI permissions. Unknown-length documents are
+rejected; nonseekable providers are reopened and skipped using bounded memory.
+Custom browser hosts with navigation must await
+`BrowserFrameworkHost.PrepareNavigationAsync(restorationId)` before `CreateView`;
+the generated runner does this automatically.
 
 ## Reproduce and evidence boundaries
 

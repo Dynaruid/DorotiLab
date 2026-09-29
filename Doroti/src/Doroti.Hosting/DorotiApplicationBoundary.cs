@@ -271,7 +271,8 @@ public sealed class DorotiApplicationBoundary : IDisposable
                 DorotiCapabilityIds.PlatformMessaging,
                 plugins
             )
-            .Register<IPlatformPluginHostCapability>(DorotiCapabilityIds.PlatformPlugins, plugins);
+            .Register<IPlatformPluginHostCapability>(DorotiCapabilityIds.PlatformPlugins, plugins)
+            .Register<IPlatformPluginEventsHostCapability>(DorotiCapabilityIds.PlatformPluginEvents, plugins);
     }
 
     public void Configure(
@@ -292,7 +293,8 @@ public sealed class DorotiApplicationBoundary : IDisposable
                 DorotiCapabilityIds.PlatformMessaging,
                 new RoutedPlatformMessageCapability(frameworkChannels, plugins)
             )
-            .Register<IPlatformPluginHostCapability>(DorotiCapabilityIds.PlatformPlugins, plugins);
+            .Register<IPlatformPluginHostCapability>(DorotiCapabilityIds.PlatformPlugins, plugins)
+            .Register<IPlatformPluginEventsHostCapability>(DorotiCapabilityIds.PlatformPluginEvents, plugins);
     }
 
     public void Dispose()
@@ -541,12 +543,79 @@ public sealed class DorotiApplicationBoundary : IDisposable
         }
 
         public sealed class PluginScope(ApplicationPluginCapability owner, DorotiPluginContext context)
-            : IPlatformMessageHostCapability, IPlatformPluginHostCapability, IDisposable
+            : IPlatformMessageHostCapability, IPlatformPluginHostCapability, IPlatformPluginEventsHostCapability, IDisposable
         {
             private readonly CancellationTokenSource _lifetime = new();
             private readonly object _gate = new();
             private bool _closed;
             public IReadOnlyCollection<string> RegisteredChannels => owner.RegisteredChannels;
+            public IReadOnlyCollection<string> EventChannels => owner._handlers
+                .Where(binding => binding.Value.Handler is IDorotiPluginEventHandler)
+                .Select(binding => binding.Key).Order(StringComparer.Ordinal).ToArray();
+
+            public async IAsyncEnumerable<ReadOnlyMemory<byte>> SubscribeAsync(string channel,
+                ReadOnlyMemory<byte>? arguments = null, int capacity = 16,
+                [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken = default)
+            {
+                if (capacity is < 1 or > 1024) throw new ArgumentOutOfRangeException(nameof(capacity));
+                if (!owner._handlers.TryGetValue(channel, out var binding) || binding.Handler is not IDorotiPluginEventHandler events)
+                    throw new NotSupportedException($"Plugin channel '{channel}' does not provide events.");
+                var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _lifetime.Token);
+                lock (_gate)
+                {
+                    if (_closed) { linked.Dispose(); throw new ObjectDisposedException(nameof(PluginScope)); }
+                    lock (owner._scopes)
+                    {
+                        if (owner._disposed) { linked.Dispose(); throw new ObjectDisposedException(nameof(ApplicationPluginCapability)); }
+                        owner._activeCalls++;
+                    }
+                }
+                var queue = System.Threading.Channels.Channel.CreateBounded<ReadOnlyMemory<byte>>(new System.Threading.Channels.BoundedChannelOptions(capacity)
+                {
+                    FullMode = System.Threading.Channels.BoundedChannelFullMode.Wait,
+                    SingleReader = true, SingleWriter = true, AllowSynchronousContinuations = false,
+                });
+                var token = linked.Token;
+                // Producer owns the handler lease and CTS until native enumeration actually exits.
+                _ = Produce();
+                try
+                {
+                    await foreach (var item in queue.Reader.ReadAllAsync(token).ConfigureAwait(false))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        yield return item;
+                    }
+                }
+                finally
+                {
+                    try { linked.Cancel(); } catch (ObjectDisposedException) { }
+                }
+
+                async Task Produce()
+                {
+                    Exception? failure = null;
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await foreach (var item in events.SubscribeAsync(context, channel, binding.Descriptor.Codec, arguments, token)
+                            .WithCancellation(token).ConfigureAwait(false))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (item.Length > 65536) throw new InvalidDataException("Plugin event exceeds 64 KiB.");
+                            await queue.Writer.WriteAsync(item.ToArray(), token).ConfigureAwait(false);
+                        }
+                    }
+                    catch (Exception error) { failure = error; }
+                    finally
+                    {
+                        lock (owner._scopes) { owner._activeCalls--; }
+                        try { owner.TryDisposeHandlers(); }
+                        catch (Exception error) { failure ??= error; }
+                        finally { linked.Dispose(); }
+                        queue.Writer.TryComplete(failure);
+                    }
+                }
+            }
 
             public async ValueTask<ReadOnlyMemory<byte>?> SendAsync(string channel, ReadOnlyMemory<byte>? data,
                 CancellationToken cancellationToken = default)

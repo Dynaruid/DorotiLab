@@ -16,9 +16,15 @@ import { TextInputTapFocus } from "./doroti.web.text-focus.js";
 import { BrowserTextActions } from "./doroti.web.text-actions.js";
 import { ResizeAdmissionWindow } from "./doroti.web.admission.js";
 import { configureNavigation } from "./doroti.web.navigation.js";
-export { openApplicationNavigation, reportApplicationRoute, saveApplicationRestoration, closeApplicationNavigation } from "./doroti.web.navigation.js";
+import { configureDrop } from "./doroti.web.drop.js";
+import { configureServiceBridge, configurePersistenceFailure, handleService, closeFileOwner, closeApplicationNavigation, closeBrowserDrop } from "./doroti.web.services.js";
+export { openBrowserDrop, closeBrowserDrop, prepareApplicationNavigation } from "./doroti.web.services.js";
+export { openFileOwner, pickBrowserFiles, cancelBrowserPicker, readBrowserFileBase64, releaseBrowserFile, closeFileOwner } from "./doroti.web.services.js";
+export { openApplicationNavigation, reportApplicationRoute, saveApplicationRestoration, closeApplicationNavigation } from "./doroti.web.services.js";
 
 interface ManagedCallbacks {
+  dispatchNavigation(hostId: number, json: string): void;
+  dispatchDrop(hostId: number, json: string): void;
   dispatchPlatformEvent(hostId: number, json: string): void;
   dispatchAnimationFrame(hostId: number, callbackId: number, timestamp: number): void;
   dispatchSnapshot(hostId: number, snapshotJson: string): void;
@@ -259,6 +265,8 @@ interface DorotiAssemblyExports {
         BrowserTimeProvider: { DispatchTimer(id: number, generation: number): void };
         BrowserInterop: {
           DispatchApplicationNavigation(hostId: number, json: string): void;
+          DispatchApplicationPersistenceFailure(hostId: number, message: string): void;
+          DispatchBrowserDrop(hostId: number, json: string): void;
           DrainPlatformViews(): Promise<void>;
           DispatchPlatformEvent: ManagedCallbacks["dispatchPlatformEvent"];
           DispatchAnimationFrame: ManagedCallbacks["dispatchAnimationFrame"];
@@ -287,6 +295,7 @@ let drainPlatformOwners: (() => Promise<void>) | undefined;
 export async function drainPlatformViews(): Promise<void> { await drainPlatformOwners?.(); }
 
 export function configureWorkerBridge(bridge: WorkerBridge): void {
+  configureServiceBridge(bridge);
   if (typeof document !== "undefined")
     throw new Error("Doroti worker bridge can only be installed in a Web Worker.");
   activeWorkerBridge = bridge;
@@ -315,6 +324,8 @@ export function dispatchWorkerInput(message: Record<string, unknown>): void {
   const id = Number(message.hostId);
   const payload = (message.payload ?? {}) as Record<string, unknown>;
   switch (message.inputKind) {
+    case "navigation": callbacks.dispatchNavigation(id, String(payload.json)); break;
+    case "drop": callbacks.dispatchDrop(id, String(payload.json)); break;
     case "platform": callbacks.dispatchPlatformEvent(id, String(payload.json)); break;
     case "pointer":
       callbacks.dispatchPointerBatch(
@@ -823,9 +834,13 @@ export async function initializeManagedCallbacks(): Promise<"ready"> {
   const exports = await runtime.getAssemblyExports("Doroti.Host.Web.dll") as DorotiAssemblyExports;
   const interop = exports.Doroti.Host.Web.BrowserInterop;
   configureNavigation(interop.DispatchApplicationNavigation);
+  configurePersistenceFailure(interop.DispatchApplicationPersistenceFailure);
+  configureDrop(interop.DispatchBrowserDrop);
   drainPlatformOwners = interop.DrainPlatformViews;
   initializeBrowserTimers(exports.Doroti.Host.Web.BrowserTimeProvider.DispatchTimer);
   configureManagedCallbacks({
+    dispatchNavigation: interop.DispatchApplicationNavigation,
+    dispatchDrop: interop.DispatchBrowserDrop,
     dispatchPlatformEvent: interop.DispatchPlatformEvent,
     dispatchAnimationFrame: interop.DispatchAnimationFrame,
     dispatchSnapshot: interop.DispatchSnapshot,
@@ -1269,6 +1284,9 @@ export function closeHost(hostId: number): void {
   }
   const host = hosts.get(hostId);
   if (!host) return;
+  closeBrowserDrop(hostId);
+  closeApplicationNavigation(hostId);
+  closeFileOwner(hostId);
   host.textActions.dispose();
   releasePressedKeys(host);
   if (host.pendingBlurConnectionCloseTimer !== 0)
@@ -1937,7 +1955,11 @@ export async function startDorotiWorkerHost(
     inputKind: string, hostId: number, inputSequence: number, payload: Record<string, unknown>): void =>
     activeWorker.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "input", inputKind, hostId, inputSequence, payload,
       ingressEpochMilliseconds: frameCostEnabled ? performance.timeOrigin + performance.now() : 0 });
+  configureNavigation((id, json) => postInput("navigation", id, 0, { json }));
+  configureDrop((id, json) => postInput("drop", id, 0, { json }));
   configureManagedCallbacks({
+    dispatchNavigation: (id, json) => postInput("navigation", id, 0, { json }),
+    dispatchDrop: (id, json) => postInput("drop", id, 0, { json }),
     dispatchPlatformEvent: (id, json) => postInput("platform", id, 0, { json }),
     dispatchAnimationFrame: () => { throw new Error("main worker host cannot receive managed frame callbacks"); },
     dispatchSnapshot: queueWorkerSnapshot,
@@ -2005,6 +2027,7 @@ export async function startDorotiWorkerHost(
   const handleControl = async (message: Record<string, unknown>): Promise<void> => {
     const kind = String(message.controlKind);
     const payload = (message.payload ?? {}) as Record<string, unknown>;
+    if (kind.startsWith("service-")) { await handleService(kind, payload); return; }
     switch (kind) {
       case "cursor": setCursor(Number(payload.hostId), String(payload.cursor)); break;
       case "focus-request": requestFocus(Number(payload.hostId), Boolean(payload.focused)); break;
@@ -2246,6 +2269,7 @@ export async function startDorotiWorkerHost(
               const packet = payload as unknown as CompositionPacket;
               return (await requireComposition(packet.batch.owner)).commit(packet, host.resizeEpoch.generation);
             }
+            if (kind.startsWith("service-")) return handleService(kind, payload);
             if (kind === "css-fonts") return discoverCssFonts(String(payload.optionsJson));
             if (kind === "url-launch") return launchExternalUrl(String(payload.url));
             if (kind === "text-action") return performTextAction(Number(payload.hostId), String(payload.action), String(payload.text));

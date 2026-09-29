@@ -9,7 +9,7 @@ as Copy, displays event/action/client coordinates and previews file bytes withou
 executing content. Unsupported hosts display their capability boundary. See
 [OS Drag & Drop](../../Doroti/docs/os-drag-drop.md) for data ownership and test coverage.
 
-Set `DOROTI_SAMPLE=plugins` for the Windows FilePicker/URL launcher scene. Choose one or
+Set `DOROTI_SAMPLE=plugins` for the Windows/Android FilePicker/URL launcher scene (Web: `?dorotiSample=plugins`). Choose one or
 more files to display their names, sizes and first 16 bytes; handles are released after
 reading. The URL button opens example.com. [Plugin contract and package tests](../../Doroti/docs/plugins.md)
 describe cancellation, ownership and unsupported hosts.

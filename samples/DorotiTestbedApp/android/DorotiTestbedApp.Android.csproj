@@ -27,4 +27,5 @@
         AdditionalProperties="RuntimeIdentifier=android-x64" Condition="'$(RuntimeIdentifier)' == 'android-x64'" />
   </ItemGroup>
   <Import Project="..\..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.targets" />
+  <Import Project="../../../Doroti/src/Doroti.Plugins/buildTransitive/Doroti.Plugins.targets" />
 </Project>

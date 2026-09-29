@@ -61,3 +61,9 @@ plan/global.json 변경 trigger를 추가했다. 로컬 Source/Packages PASS, �
 - `temp/testing-widget.log`, `temp/testing-windows-build.log`, `Doroti/tests/Doroti.Tests/bin/`, `Doroti/tests/Doroti.Tests/obj/`: 초기 직접 실행 산출물. Python bytecode도 ignore 대상이다.
 
 정리 시점: 삭제 정책이 허용하는 사용자/후속 세션에서 위 절대 경로가 이 workspace 내인지 확인한 뒤 이 목록만 삭제한다. 성공한 aggregate suite의 실행 폴더는 이미 자동 삭제됐으며 기본 CI/build/pack의 입력에 포함하지 않는다.
+
+
+## 2026-09-29 Web·Windows·Android 후속 실행
+
+[최신 구현·실행 근거와 잔여](../results/2026-09-29-web-windows-android.md)를 참조한다.
+이 문서의 이전 실행 결과를 새 PASS로 확대하지 않는다.

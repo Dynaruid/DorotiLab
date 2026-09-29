@@ -4,6 +4,12 @@ const owners = new Map<number, NavigationOwner>();
 let dispatch: ((hostId: number, json: string) => void) | undefined;
 export function configureNavigation(callback: (hostId: number, json: string) => void): void { dispatch = callback; }
 
+export function captureApplicationNavigation(restorationId: string | null): string {
+  let checkpoint: string | null = null;
+  try { checkpoint = restorationId ? sessionStorage.getItem(`doroti.restoration.v1:${restorationId}`) : null; } catch { }
+  return JSON.stringify({ location: location.pathname + location.search + location.hash, checkpoint, state: routeState() });
+}
+
 function routeState(): string | null {
   // Other scripts and earlier app versions may own existing history entries.
   const state: unknown = history.state?.doroti?.state;

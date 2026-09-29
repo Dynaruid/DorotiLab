@@ -3,8 +3,33 @@ import { test } from 'node:test';
 import { ResizeAdmissionWindow } from '../src/Doroti.Host.Web/Web/doroti.web.admission.ts';
 import { CanvasCapacityPolicy, applyCanvasCapacity, initialCanvasCapacity, selectRendererPolicy, resolveRendererPolicy } from '../src/Doroti.Host.Web/Web/doroti.web.policy.ts';
 import { developmentBridge } from '../src/Doroti.Host.Web/Web/doroti.web.hot-reload.ts';
+import { openFileOwner, retainBrowserFiles, readBrowserFile, releaseBrowserFile, closeFileOwner } from '../src/Doroti.Host.Web/Web/doroti.web.files.ts';
 import { configureNavigation, openApplicationNavigation, reportApplicationRoute,
   saveApplicationRestoration, closeApplicationNavigation } from '../src/Doroti.Host.Web/Web/doroti.web.navigation.ts';
+
+test('browser file grants isolate owners, bound reads and revoke pending reads', async () => {
+  const descriptor = Object.getOwnPropertyDescriptor(globalThis, 'document');
+  Object.defineProperty(globalThis, 'document', { configurable: true, value: {} });
+  try {
+    openFileOwner(801); openFileOwner(802);
+    const [file] = retainBrowserFiles(801, [new File([new Uint8Array(70000).fill(42)], '한글.bin')]);
+    assert.equal(file.length, 70000);
+    await assert.rejects(readBrowserFile(802, file.token, 0, 3), /unknown or revoked/);
+    assert.equal((await readBrowserFile(801, file.token, 65535, 65536)).length, 4465);
+    await assert.rejects(readBrowserFile(801, file.token, -1, 3), /Invalid bounded/);
+    await assert.rejects(readBrowserFile(801, file.token, 0, 65537), /Invalid bounded/);
+    const pending = readBrowserFile(801, file.token, 0, 65536);
+    releaseBrowserFile(801, file.token);
+    await assert.rejects(pending, /revoked/);
+    const [next] = retainBrowserFiles(801, [new File(['bye'], 'next.txt')]);
+    closeFileOwner(801);
+    await assert.rejects(readBrowserFile(801, next.token, 0, 3), /revoked/);
+  } finally {
+    closeFileOwner(801); closeFileOwner(802);
+    if (descriptor) Object.defineProperty(globalThis, 'document', descriptor);
+    else delete (globalThis as any).document;
+  }
+});
 
 test('browser navigation bridge preserves history state, isolates storage failure and detaches callbacks', () => {
   const globals = globalThis as any;

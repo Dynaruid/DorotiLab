@@ -18,7 +18,8 @@ public static class DorotiWebWorkerRunner
     public static async Task<string> RunAsync<TStartup>(
         System.Reflection.Assembly manifestAssembly,
         IEnumerable<DorotiApplicationPluginRegistration>? plugins = null,
-        BrowserFontFallbackOptions? fontFallbackOptions = null
+        BrowserFontFallbackOptions? fontFallbackOptions = null,
+        IEnumerable<IDorotiNativePluginHandler>? nativePlugins = null
     )
         where TStartup : IDorotiApplicationStartup, new()
     {
@@ -36,7 +37,8 @@ public static class DorotiWebWorkerRunner
         var descriptor = DorotiApplicationFactory.Create<TStartup>(
             DorotiLaunchContext.Create("Web", "browser-wasm", [], baseAddress),
             plugins,
-            manifestAssembly
+            manifestAssembly,
+            nativePlugins
         );
         fontFallbackOptions ??= new();
         if (fontFallbackOptions.DecoderUrl is { IsAbsoluteUri: false })
@@ -60,6 +62,8 @@ public static class DorotiWebWorkerRunner
             throw;
         }
 
+        if (descriptor.ViewConfiguration.Navigation is { } navigation)
+            await BrowserFrameworkHost.PrepareNavigationAsync(navigation.RestorationId);
         _session = new DorotiHostSession(descriptor.EntrypointFactory());
         using var dispatcherScope = _session.dispatcher.EnterScope();
         _session.Start(deferFrameworkBootstrap: true);
@@ -75,7 +79,8 @@ public static class DorotiWebWorkerRunner
         _boundary = _target.LoadApplicationBoundary(
             descriptor.ManifestAssembly,
             descriptor.ApplicationAssembly,
-            browserPlugins
+            browserPlugins,
+            descriptor.NativePluginHandlers
         );
         _view = _target.CreateView(
             _session,

@@ -83,3 +83,9 @@ migration이나 clean VM 설치·서명을 뜻하지 않는다.
 
 마지막 Android Release/Mono AOT 재빌드는 경고 0·오류 0이다. 앞선 route 실기기 검증 뒤
 ADB 목록에서 기기가 사라져, 마지막 재빌드 APK의 재설치는 수행하지 못했다.
+
+
+## 2026-09-29 Web·Windows·Android 후속 실행
+
+[최신 구현·실행 근거와 잔여](../results/2026-09-29-web-windows-android.md)를 참조한다.
+이 문서의 이전 실행 결과를 새 PASS로 확대하지 않는다.

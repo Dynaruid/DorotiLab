@@ -19,6 +19,7 @@ public static class DorotiCapabilityIds
     public const string PlatformMessaging = "platform.messaging";
     public const string ApplicationResources = "application.resources";
     public const string PlatformPlugins = "platform.plugins";
+    public const string PlatformPluginEvents = "platform.plugin-events";
     public const string PlatformViews = "platform.views";
     public const string DartPerformanceMode = "runtime.dart-performance-mode";
     public const string GraphicsScene = "graphics.scene";

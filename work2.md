@@ -1,5 +1,7 @@
 # works 미완료 작업 검토
 
+2026-09-29 후속 구현·검증: [Web·Windows·Android 실행 결과](works/results/2026-09-29-web-windows-android.md). 전체 **PARTIAL**, 범위별 PASS와 미완료를 분리한다. CI workflow는 사용자 지시로 삭제 상태를 유지한다.
+
 검토일: **2026-09-29** · 검토 기준 HEAD: `4b46e2c927339dfad4c728087c9545cda5dc5e2f`
 
 검토 범위는 [works 인덱스](works/README.md), 공통 문서 00~10, 플랫폼 문서 7개와 [지원표](Doroti/docs/support-status.md)다. 체크박스뿐 아니라 2026-09-28~29 실행 결과와 **00~10 보강 검토**를 함께 읽어 남은 범위를 정리했다. 이번 작업은 문서 검토이며 제품 실행·물리 입력·성능·배포를 새로 검증한 결과가 아니다.
@@ -100,7 +102,7 @@ Web Hot Reload의 기존 PASS 범위는 desktop Chrome, main-owned threaded Debu
 
 근거: [06-plugin-sdk](works/common/06-plugin-sdk.md).
 
-- [ ] **추가 구현:** 공개 event stream 구독·취소·backpressure·dispose 계약을 정하고 연결한다. 현재 요청/응답 v1은 event stream을 unsupported로 표시한다.
+- [x] **추가 구현:** 공개 event stream 구독·취소·bounded backpressure·dispose 계약을 추가했다. 요청/응답 ABI를 유지하는 별도 capability이며 공통 회귀 PASS. 실제 native event source의 플랫폼별 qualification은 남는다.
 - [ ] **추가 구현/검증:** Web·Android부터 FilePicker/URL launcher adapter와 파일 접근 수명·취소·권한·미지원 결과를 같은 C# 앱에 연결한다. 이후 AppKit/Qt/iOS/Catalyst를 확장한다.
 - [ ] **검증 잔여:** Web module 누락·무결성 진단, 실제 OS 권한 거절·물리 picker 입력, 여러 창과 지연 응답을 플랫폼별로 확인한다.
 - [ ] **검증 잔여:** 외부 NuGet-only 소비 앱에서 목표 플랫폼의 restore/build/run/publish·trimming·지원 AOT 조합을 확인한다. 공통 trimmed 소비 PASS를 Windows renderer 전체 trimming/NativeAOT 통과로 확대하지 않는다.

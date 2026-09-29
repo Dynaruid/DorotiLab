@@ -3,9 +3,13 @@ param(
     [Parameter(Mandatory)] [string] $InstallRoot,
     [string] $CandidateRoot,
     [ValidateSet('windows', 'web')] [string] $Platform = 'windows',
-    [ValidateSet('Install', 'Remove')] [string] $Action = 'Install'
+    [ValidateSet('Install', 'Remove')] [string] $Action = 'Install',
+    [string] $ProtocolScheme,
+    [string] $ProtocolExecutable
 )
 $ErrorActionPreference = 'Stop'
+if ([bool]$ProtocolScheme -ne [bool]$ProtocolExecutable) { throw 'ProtocolScheme and ProtocolExecutable must be supplied together.' }
+if ($ProtocolScheme -and $Platform -ne 'windows') { throw 'Protocol registration is Windows-only.' }
 $destination = [IO.Path]::GetFullPath($InstallRoot)
 if ($destination -eq [IO.Path]::GetPathRoot($destination)) { throw 'An installation must have a dedicated directory.' }
 $marker = Join-Path $destination '.doroti-candidate-install.json'
@@ -34,6 +38,12 @@ function Assert-OwnedPath([string] $Path) {
     return $resolved
 }
 if ($Action -eq 'Remove') {
+    $protocolFile = Assert-OwnedPath (Join-Path $destination 'protocol.json')
+    if (Test-Path -LiteralPath $protocolFile) {
+        $protocol = Get-Content -LiteralPath $protocolFile -Raw | ConvertFrom-Json
+        & (Join-Path $PSScriptRoot 'register-app-protocol.ps1') -InstallRoot $destination -Scheme $protocol.scheme -Action Remove
+        Remove-Item -LiteralPath $protocolFile -Force
+    }
     if (Test-Path -LiteralPath $versions) {
         $ownedVersions = Assert-OwnedPath $versions
         Get-ChildItem -LiteralPath $ownedVersions -Recurse -Force | ForEach-Object {
@@ -101,6 +111,37 @@ $userdata = Assert-OwnedPath (Join-Path $destination 'userdata')
 New-Item -ItemType Directory -Path $userdata -Force | Out-Null
 $current = @{ version = $manifest.version; platform = $Platform; directory = $target; revision = $manifest.revision }
 $temporary = Assert-OwnedPath (Join-Path $destination 'current.json.tmp')
+$currentFile = Assert-OwnedPath (Join-Path $destination 'current.json')
+$previousCurrent = if (Test-Path -LiteralPath $currentFile) { [IO.File]::ReadAllBytes($currentFile) } else { $null }
+$protocolFile = Assert-OwnedPath (Join-Path $destination 'protocol.json')
+$previousProtocol = if (Test-Path -LiteralPath $protocolFile) { Get-Content -LiteralPath $protocolFile -Raw | ConvertFrom-Json } else { $null }
+$protocol = if ($ProtocolScheme) { @{ scheme = $ProtocolScheme; executable = $ProtocolExecutable } }
+    elseif (Test-Path -LiteralPath $protocolFile) { Get-Content -LiteralPath $protocolFile -Raw | ConvertFrom-Json } else { $null }
+if ($protocol -and $Platform -ne 'windows') { throw 'A protocol-owning Windows installation cannot become a Web installation.' }
+if ($ProtocolScheme -and (Test-Path -LiteralPath $protocolFile)) {
+    $registered = Get-Content -LiteralPath $protocolFile -Raw | ConvertFrom-Json
+    if ($registered.scheme -ne $ProtocolScheme) { throw 'Remove the existing registration before changing the protocol scheme.' }
+}
 $current | ConvertTo-Json | Set-Content -LiteralPath $temporary
-[IO.File]::Move($temporary, (Join-Path $destination 'current.json'), $true)
+[IO.File]::Move($temporary, $currentFile, $true)
+try {
+    if ($protocol) {
+        & (Join-Path $PSScriptRoot 'register-app-protocol.ps1') -InstallRoot $destination -Scheme $protocol.scheme -Executable $protocol.executable
+        $protocolTemporary = Assert-OwnedPath (Join-Path $destination 'protocol.json.tmp')
+        $protocol | ConvertTo-Json | Set-Content -LiteralPath $protocolTemporary
+        [IO.File]::Move($protocolTemporary, $protocolFile, $true)
+    }
+} catch {
+    $installError = $_
+    if ($null -ne $previousCurrent) { [IO.File]::WriteAllBytes($currentFile, $previousCurrent) }
+    elseif (Test-Path -LiteralPath $currentFile) { Remove-Item -LiteralPath $currentFile -Force }
+    try {
+        if ($previousProtocol) {
+            & (Join-Path $PSScriptRoot 'register-app-protocol.ps1') -InstallRoot $destination -Scheme $previousProtocol.scheme -Executable $previousProtocol.executable
+        } elseif ($protocol) {
+            & (Join-Path $PSScriptRoot 'register-app-protocol.ps1') -InstallRoot $destination -Scheme $protocol.scheme -Action Remove
+        }
+    } catch { Write-Warning ('Protocol rollback: ' + $_.Exception.Message) }
+    throw $installError
+}
 Write-Output ("Installed local candidate: " + $target)

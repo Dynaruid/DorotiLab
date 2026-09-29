@@ -39,3 +39,9 @@
 - framework root/focus/binding 및 Windows render/resource shutdown 순서를 수정해 종료 중 남은 focus microtask와 종료 callback 누락을 방지했다.
 - 물리 Windows 앱 조작은 Computer Use의 native pipe 연결 오류로 진행하지 못했다. Korean IME cancel·focus 이동 중 조합, 후보창 좌표, selection/caret, Tab/Shift+Tab, 키 중복, UIA는 **notVerified**. 복수 owner/clip/transform/z-order/gesture·late-result 전체 matrix, Windows MAUI WebView/Catalyst 별도 adapter도 미완료다.
 - 현재 지원 경계는 [지원표](../../Doroti/docs/support-status.md)에 기록했다. 성공한 aggregate suite의 원시 실행 파일·로그·JSON은 자동 정리했다. 수동·실패 조사 폴더는 자동 승인 정책의 삭제 차단으로 M0의 정리 보류 목록에 남겼다. 다음은 위 전용 장면으로 물리 입력/보조기술 검증을 수행하고 기능별 결함을 수정하는 것이다.
+
+
+## 2026-09-29 Web·Windows·Android 후속 실행
+
+[최신 구현·실행 근거와 잔여](../results/2026-09-29-web-windows-android.md)를 참조한다.
+이 문서의 이전 실행 결과를 새 PASS로 확대하지 않는다.

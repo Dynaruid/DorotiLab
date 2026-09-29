@@ -1,9 +1,13 @@
 # Local release candidates
 
+2026-09-29 follow-up: candidate `0.3.0-beta.rc.20260929045407` qualifies Windows,
+Web and Android x64 package-only consumers. Chrome and the Android emulator also
+showed actual presentation and Increment 0→1. See [results](../../works/results/2026-09-29-web-windows-android.md).
+
 Create a selected candidate with a fresh package version and isolated restore cache:
 
 ```powershell
-python Doroti/eng/run-with-timeout.py python Doroti/eng/release-candidate.py --targets windows web
+python Doroti/eng/run-with-timeout.py python Doroti/eng/release-candidate.py --targets windows web android --android-rid android-x64
 # Or one platform through the CLI:
 pwsh -File Doroti/eng/doroti.ps1 release -Platform windows
 ```
@@ -11,7 +15,8 @@ pwsh -File Doroti/eng/doroti.ps1 release -Platform windows
 The script builds Release product dependencies, packs a local NuGet feed and the
 template, installs the template into a private hive, and runs `dotnet new doroti-app`.
 The generated app consumes only packages from that feed plus NuGet.org, with its
-own empty NuGet/HTTP caches. It publishes Windows self-contained JIT and Web
+own empty NuGet/HTTP caches. Android supports selected `android-arm64` or `android-x64`
+package-only publish with embedded assemblies and a development-signed APK. It publishes Windows self-contained JIT and Web
 without trimming/AOT. The Windows consumer creates two native windows, waits for
 presentation, resizes and closes both. Browser startup is a separate check; wasm
 payload presence is not browser rendering evidence.
@@ -77,3 +82,18 @@ Signing certificates, a clean deployment machine, production domain/service
 configuration and release-store credentials were not supplied. Signing,
 clean-machine installation, production updates and extended soak tests stay
 `notVerified` in [10 results](../../works/common/10-release-packaging.md).
+
+
+Windows app-specific protocol registration is optional and belongs to the installation:
+
+```powershell
+pwsh -File Doroti/eng/install-candidate.ps1 -InstallRoot C:/Apps/DorotiPreview -CandidateRoot <candidate> -Platform windows -ProtocolScheme my-doroti-app -ProtocolExecutable CandidateApp.Windows.exe
+```
+
+The app must configure the same `ApplicationNavigationOptions.ProtocolScheme`.
+Only HKCU is modified; an existing scheme with another owner is rejected. Subsequent
+updates reuse `protocol.json` and retarget the command to the new immutable version;
+Remove unregisters the owned scheme and preserves userdata. Failed protocol setup
+rolls back the current version pointer and prior registration. The OS-dispatch fixture
+is `python Doroti/eng/run-with-timeout.py python Doroti/tests/protocol_install.py temp/testing/protocol/new-run`.
+It does not qualify a production installer or GUI single-instance routing by itself.

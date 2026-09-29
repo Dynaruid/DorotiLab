@@ -1,5 +1,5 @@
 <Project>
-  <ItemGroup Condition="'$(DorotiTarget)' == 'Windows'">
+  <ItemGroup Condition="'$(DorotiTarget)' == 'Windows' or '$(DorotiTarget)' == 'Web' or '$(DorotiTarget)' == 'Android'">
     <DorotiNativePlugin Include="doroti.native-features" HandlerType="Doroti.Plugins.NativeFeaturesHandler"
       Channel="doroti/native-features" Codec="json" AbiVersion="1" PackageId="Doroti.Plugins" Version="0.3.0-beta" Rid="$(RuntimeIdentifier)" />
   </ItemGroup>

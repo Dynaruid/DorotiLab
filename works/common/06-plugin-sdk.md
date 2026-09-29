@@ -20,7 +20,7 @@
 
 - [x] 현재 manifest/handler/SDK 등록 구조를 문서화하고 외부 NuGet이 target별 구현·native asset·Web module을 제공하는 최소 패키지 형식을 정한다.
 - [x] 앱/view 수명·dispatch·취소·dispose·오류/거절/미지원 계약을 연결하고 창 종료 뒤 늦은 응답 폐기·handler 지연 dispose·여러 창의 application lease 공유 회귀를 검증했다.
-- [ ] 공개 event stream 구독·취소·backpressure·dispose 계약을 추가한다. 현재 요청/응답 v1에서는 unsupported다.
+- [x] 공개 event stream 구독·취소·backpressure·dispose 계약과 공통 회귀를 추가했다. 플랫폼별 native event source 검증은 후속이다.
 - [x] RID/ABI 불일치, 중복 id/channel, 누락된 handler/asset을 build 또는 초기화 단계에서 구체적으로 진단한다.
 - [x] 등록 생성은 기존 SDK 경로를 확장한다. Source Generator 도입은 reflection 회피·사용성·AOT 이득이 분명할 때 결정한다.
 - [x] 첫 대표 기능은 FilePicker와 URL launcher로 잡는다. 선택 취소와 외부 파일 접근 수명까지 포함한다. 이후 camera/notification/storage는 요구와 플랫폼 검증 장비에 맞춰 추가한다.
@@ -70,7 +70,9 @@
 
 공개 계약·패키지 작성법·재현 명령: [plugins.md](../../Doroti/docs/plugins.md).
 
-### 남은 항목과 다음 작업
+### 당시 남은 항목과 다음 작업
+
+아래는 후속 Web/Android·event stream 구현 전의 기록이다. 현재 범위는 문서 끝의 후속 실행 링크를 따른다.
 
 2026-09-29 M6 연계: application handler를 참조 횟수 있는 boundary lease로 공유했다.
 첫 창이 닫힌 뒤 살아 있는 창에서 호출 가능하고, 마지막 owner/active call 정리 뒤
@@ -85,3 +87,9 @@ handler가 한 번만 dispose되는 공통 회귀를 추가해 통과했다. 플
   NativeAOT 대상은 실험적 iOS ios-arm64이며 이번 Windows 단계의 지원 모드가 아니다.
 - 첫 Windows 패키지 기능·취소·오류·수명 조건을 충족했으므로 다음 문서는
   [07 OS Drag & Drop](07-os-drag-drop.md)다. 위 잔여 항목은 M4 전체 완료로 표시하지 않고 유지한다.
+
+
+## 2026-09-29 Web·Windows·Android 후속 실행
+
+[최신 구현·실행 근거와 잔여](../results/2026-09-29-web-windows-android.md)를 참조한다.
+이 문서의 이전 실행 결과를 새 PASS로 확대하지 않는다.

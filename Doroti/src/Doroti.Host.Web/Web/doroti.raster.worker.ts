@@ -728,7 +728,8 @@ configureWorkerBridge({
     if (pendingControls.size >= 256) return Promise.reject(new Error("Worker control mailbox is full."));
     const correlationId = ++controlSequence;
     const promise = new Promise<string>((resolve, reject) => {
-      const timer = globalThis.setTimeout(() => { pendingControls.delete(correlationId); reject(new Error("Worker control ACK exceeded 30 seconds.")); }, 30000);
+      // A user may keep the native chooser open; view shutdown cancels it and resolves this request.
+      const timer = kind === "service-file-pick" ? undefined : globalThis.setTimeout(() => { pendingControls.delete(correlationId); reject(new Error("Worker control ACK exceeded 30 seconds.")); }, 30000);
       pendingControls.set(correlationId, { resolve: value => { clearTimeout(timer); resolve(value); },
         reject: error => { clearTimeout(timer); reject(error); } });
     });

@@ -1,5 +1,7 @@
 # Current support and evidence
 
+2026-09-29 후속 구현·검증: [Web·Windows·Android 실행 결과](../../works/results/2026-09-29-web-windows-android.md). 전체 **PARTIAL**, 범위별 PASS와 미완료를 분리한다. CI workflow는 사용자 지시로 삭제 상태를 유지한다.
+
 2026-09-29 follow-up (`c858ca9add07f20634c13d9e6177710811c1fc93` + working tree):
 owner-thread/disposed test API guards, single-notification Explicit exit, corrupt
 checkpoint and browser history/bfcache handling, and transactional portable install
@@ -41,8 +43,8 @@ NuGet-only Release consumer. Real OS dialog selection, user/caller cancellation,
 owner-close drain, read-grant disposal and default-browser loopback HTTP pass with
 synthetic dialog commands. The common plugin consumer also passes Release trimmed
 publish/run. ABI/RID/duplicates/missing handler/assets, denied/unsupported, late replies
-and large-file offsets have contract regressions. Native event streams and other
-platform adapters remain unfinished; physical input, actual ACL denial and full
+and large-file offsets have contract regressions. At that time, native event streams and other
+platform adapters were unfinished (superseded by the linked follow-up); physical input, actual ACL denial and full
 Windows renderer trimming/AOT are not qualified. See [plugin contract](plugins.md)
 and [M4 results](../../works/common/06-plugin-sdk.md).
 

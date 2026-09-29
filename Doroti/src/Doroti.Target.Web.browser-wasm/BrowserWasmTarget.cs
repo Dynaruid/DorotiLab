@@ -159,9 +159,15 @@ public sealed class BrowserWasmTarget : IDorotiBrowserTarget
     }
 
     public DorotiApplicationBoundary LoadApplicationBoundary(
+        Assembly manifestAssembly, Assembly applicationAssembly,
+        IEnumerable<BrowserJavaScriptPluginDescriptor>? plugins = null
+    ) => LoadApplicationBoundary(manifestAssembly, applicationAssembly, plugins, null);
+
+    public DorotiApplicationBoundary LoadApplicationBoundary(
         Assembly manifestAssembly,
         Assembly applicationAssembly,
-        IEnumerable<BrowserJavaScriptPluginDescriptor>? plugins = null
+        IEnumerable<BrowserJavaScriptPluginDescriptor>? plugins,
+        IEnumerable<IDorotiNativePluginHandler>? nativePlugins
     )
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -169,7 +175,7 @@ public sealed class BrowserWasmTarget : IDorotiBrowserTarget
             manifestAssembly,
             applicationAssembly,
             Rid,
-            (plugins ?? []).Select(descriptor => new BrowserJavaScriptPluginHandler(descriptor)),
+            (plugins ?? []).Select(descriptor => (IDorotiNativePluginHandler)new BrowserJavaScriptPluginHandler(descriptor)).Concat(nativePlugins ?? []),
             BrowserFrameworkHost.PlatformViewFactories
         );
     }

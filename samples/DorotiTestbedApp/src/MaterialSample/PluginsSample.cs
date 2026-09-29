@@ -45,12 +45,12 @@ internal sealed class PluginsState : State<PluginsSample>
         catch (Exception error) { if (mounted) setState(() => _status = error.Message); }
         finally { if (mounted) setState(() => _busy = false); }
     }
-    public override Widget build(BuildContext context) => new M.Scaffold(body: new Column(children:
+    public override Widget build(BuildContext context) => new M.Scaffold(body: new SafeArea(child: new SingleChildScrollView(child: new Column(children:
     [
         new Text("Native plugins: FilePicker / URL launcher"),
         new M.TextButton(onPressed: _busy ? null : () => Run(true), child: new Text("Choose files")),
         new M.TextButton(onPressed: _busy ? null : () => Run(false), child: new Text("Open example.com")),
         new Text(_status),
-    ]));
+    ]))));
     public override void dispose() { _lifetime.Cancel(); _lifetime.Dispose(); base.dispose(); }
 }

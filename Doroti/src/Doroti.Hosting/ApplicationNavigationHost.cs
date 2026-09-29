@@ -21,6 +21,7 @@ public sealed class ApplicationNavigationHost : IApplicationNavigationHostCapabi
     public bool RestorationEnabled => _save is not null;
     public bool PreviousShutdownWasClean { get; }
     public string? RestoreFailure { get; private set; }
+    public void ReportPersistenceFailure(string message) { if (!_disposed) RestoreFailure = message; }
 
     public ApplicationNavigationHost(string? initialLocation = null, string? checkpoint = null,
         Action<string>? save = null, Action<string, string?, bool>? report = null, string? initialStateJson = null,

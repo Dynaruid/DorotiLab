@@ -134,6 +134,25 @@ using (var boundary = Boundary(Manifest(descriptor), handler))
 }
 Console.WriteLine("PASS: registration diagnostics; capability/denial/cancel; large bounded reads; grant release; late reply; deferred handler disposal.");
 
+// Event delivery has a bounded queue, immutable payload snapshots and view-owned cancellation.
+using (var eventHandler = new EventHandlerFixture())
+using (var boundary = Boundary(Manifest(Descriptor(eventHandler, "test/events")), eventHandler))
+{
+    using var view = new DorotiViewCapabilities();
+    boundary.Configure(view);
+    var events = view.Require<IPlatformPluginEventsHostCapability>(1, DorotiCapabilityIds.PlatformPluginEvents, new("events"));
+    Require(events.EventChannels.SequenceEqual(new[] { "test/events" }), "Event capabilities.");
+    await using var reader = events.SubscribeAsync("test/events", capacity: 1).GetAsyncEnumerator();
+    Require(await reader.MoveNextAsync() && reader.Current.Span[0] == 0, "First event.");
+    await eventHandler.ThirdProduced.Task.WaitAsync(TimeSpan.FromSeconds(3));
+    Require(eventHandler.Produced <= 3, "Producer did not backpressure at capacity plus one pending event.");
+    Require(reader.Current.Span[0] == 0, "Event reused mutable producer storage.");
+    view.Dispose();
+    await Cancelled(reader.MoveNextAsync().AsTask());
+    await eventHandler.Stopped.Task.WaitAsync(TimeSpan.FromSeconds(3));
+}
+Console.WriteLine("PASS: event capability, bounded backpressure, payload snapshot, owner cancellation and native unsubscribe.");
+
 sealed class FakePicker : IFilePickerHostCapability
 {
     public FilePickStatus Status = FilePickStatus.selected;
@@ -175,4 +194,33 @@ sealed class DelayedHandler : IDorotiNativePluginHandler, IDisposable
     public async ValueTask<ReadOnlyMemory<byte>?> HandleAsync(string channel, string codec, ReadOnlyMemory<byte>? message, CancellationToken cancellationToken = default)
     { await Completion.Task; return new byte[] { 1 }; }
     public void Dispose() { Interlocked.Increment(ref DisposeCalls); Disposed.TrySetResult(); }
+}
+
+sealed class EventHandlerFixture : IDorotiPluginEventHandler, IDisposable
+{
+    public string PluginId => "events";
+    public string AbiVersion => "1";
+    public int Produced;
+    public TaskCompletionSource ThirdProduced = new(TaskCreationOptions.RunContinuationsAsynchronously);
+    public TaskCompletionSource Stopped = new(TaskCreationOptions.RunContinuationsAsynchronously);
+    public ValueTask<ReadOnlyMemory<byte>?> HandleAsync(string channel, string codec, ReadOnlyMemory<byte>? message, CancellationToken cancellationToken = default) => throw new NotSupportedException();
+    public async IAsyncEnumerable<ReadOnlyMemory<byte>> SubscribeAsync(DorotiPluginContext context, string channel, string codec,
+        ReadOnlyMemory<byte>? arguments, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        var bytes = new byte[1];
+        try
+        {
+            for (var i = 0; i < 10; i++)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                bytes[0] = (byte)i;
+                Interlocked.Increment(ref Produced);
+                if (Produced == 3) ThirdProduced.TrySetResult();
+                yield return bytes;
+                await Task.Yield();
+            }
+        }
+        finally { Stopped.TrySetResult(); }
+    }
+    public void Dispose() { }
 }

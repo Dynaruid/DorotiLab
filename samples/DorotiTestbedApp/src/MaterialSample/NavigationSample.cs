@@ -72,7 +72,7 @@ internal sealed class SampleRouter : RouterDelegate<SampleRoute>, IDisposable
     {
         if (!OperatingSystem.IsBrowser() && Environment.GetEnvironmentVariable("DOROTI_NAVIGATION_PROBE") is { Length: > 0 } file)
             File.WriteAllText(file, _location + "\n" + _text.text);
-        return new M.Scaffold(body: new SafeArea(child: new Padding(padding: EdgeInsets.CreateAll(16), child: new Column(children:
+        var content = new M.Scaffold(body: new SafeArea(child: new Padding(padding: EdgeInsets.CreateAll(16), child: new Column(children:
         [
             new Text("Navigation and restoration"),
             new Text("Route: " + _location),
@@ -81,6 +81,8 @@ internal sealed class SampleRouter : RouterDelegate<SampleRoute>, IDisposable
             new M.TextField(controller: _text),
             new Text("Type text, navigate, use Back/Forward, then reload or restart."),
         ]))));
+        // Router delegates must provide a Navigator/Overlay for text selection and dialogs.
+        return new Navigator(pages: [new M.MaterialPage<object?>(child: content)], onDidRemovePage: _ => Go("home"));
     }
     public void Dispose() { _text.removeListener(Changed); _text.dispose(); _listeners.Clear(); }
 }

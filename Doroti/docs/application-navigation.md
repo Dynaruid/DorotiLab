@@ -62,3 +62,9 @@ adb shell am start -W -a android.intent.action.VIEW -d 'doroti-testbed:/second' 
 The sample displays the current URI and provides two navigation buttons plus
 editable text/selection in route state. [08 results](../../works/common/08-navigation-restoration.md)
 distinguishes common contracts, native callbacks and actual display evidence.
+
+
+2026-09-29: generated browser runners prepare navigation state asynchronously before
+view creation, then route DOM history and restoration through the render-worker control
+mailbox. Main-owned runtime does not imply framework JavaScript runs on the DOM thread.
+See [actual Chrome and Android follow-up](../../works/results/2026-09-29-web-windows-android.md).

@@ -88,3 +88,9 @@ M0 → M1 최소 경로 → M2 → M4/M5 → M6(대상 플랫폼) → M7 순서�
 Windows App SDK Debug build, 실제 창 API/native close 취소와 registry 정리, editor/WebView 각각의 생성·재생성 smoke PASS. 물리 IME/Tab/UIA·live resize 화면 검증은 native UI 도구 연결 오류로 notVerified. MAUI 및 다른 renderer/build mode로 통과 범위를 확대하지 않는다.
 
 공통 04·05 추가: 루트 renderer layer 영구 종료 후 잔여 0 회귀 PASS. 생성 앱·설치 VSIX에서 Windows metadata Hot Reload로 실제 문구 변경과 State/count/한글 값/scroll 유지, 컴파일 오류 후 수정·재시도, 중복 요청 직렬화, Stop을 확인했다. 자동 seed/VS Code API 경로이며 물리 입력·GPU 표시 시간 측정과 구분한다. [렌더링 결과](../common/04-rendering-lifetime.md)·[VS Code 결과](../common/05-vscode-hot-reload.md)에 범위와 미검증 조합을 기록했다.
+
+
+## 2026-09-29 후속 실행
+
+[이번 세 플랫폼 실행 기록](../results/2026-09-29-web-windows-android.md)에
+새 구현·실제 실행·후보와 미검증 경계를 기록했다. 전체 상태는 PARTIAL이다.

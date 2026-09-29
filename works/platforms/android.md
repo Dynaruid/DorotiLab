@@ -71,3 +71,9 @@ M0 → M1 최소 경로 → M2 → M4/M5 → M6(대상 플랫폼) → M7 순서�
 [공통 완료 규칙과 결과 형식](../README.md#결과-기록-형식)을 적용한다. 테스트는 20분 timeout을 사용하고 일반 반복 검증은 30회 이내로 설계한다. 일회성 테스트·원시 로그·캡처·소비 앱은 `temp/testing/<작업-ID>/<실행-ID>/`에 모으고 요약 후 정리한다. 제품 빌드·release 후보 등 기존 `Doroti/artifacts`는 별도의 삭제 가능한 산출물이며, 필요한 요약·최소 상시 fixture만 추적되는 tests/docs/history에 보존한다.
 
 현재 기록: 2026-09-29 소스 기반 Testbed Release Mono AOT의 설치/업데이트와 ADB intent·route 복원 화면은 PASS다. 이후 최종 공통 수명 수정 뒤 재빌드는 통과했지만 기기 연결이 끊겨 최종 APK의 재설치는 수행하지 못했다. 물리 IME·TalkBack·전체 PlatformView·성능·package-only·출시 서명은 notVerified다. [08 결과](../common/08-navigation-restoration.md)와 [10 결과](../common/10-release-packaging.md)의 revision별 범위를 따르며 관련 지원표를 함께 갱신한다.
+
+
+## 2026-09-29 후속 실행
+
+[이번 세 플랫폼 실행 기록](../results/2026-09-29-web-windows-android.md)에
+새 구현·실제 실행·후보와 미검증 경계를 기록했다. 전체 상태는 PARTIAL이다.

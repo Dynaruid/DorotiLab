@@ -21,7 +21,8 @@ ROOT = Path(__file__).resolve().parents[2]
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--targets', nargs='+', choices=['windows', 'web'], default=['windows', 'web'])
+    parser.add_argument('--targets', nargs='+', choices=['windows', 'web', 'android'], default=['windows', 'web'])
+    parser.add_argument('--android-rid', choices=['android-arm64', 'android-x64'], default='android-arm64')
     parser.add_argument('--output', type=Path)
     parser.add_argument('--version', default='0.3.0-beta.rc.' + datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S'))
     args = parser.parse_args()
@@ -60,9 +61,11 @@ def main():
             if name and path.is_file():
                 source.update(name.encode()); source.update(path.read_bytes())
         record['sourceTreeSha256'] = source.hexdigest()
-        roots = [ROOT / 'Doroti/src/Doroti.Framework.Material/Doroti.Framework.Material.csproj']
+        roots = [ROOT / 'Doroti/src/Doroti.Framework.Material/Doroti.Framework.Material.csproj',
+                 ROOT / 'Doroti/src/Doroti.Plugins/Doroti.Plugins.csproj']
         for target in args.targets:
-            package = 'Doroti.Target.Windows.WindowsAppSdk.win-x64' if target == 'windows' else 'Doroti.Target.Web.browser-wasm'
+            package = {'windows': 'Doroti.Target.Windows.WindowsAppSdk.win-x64', 'web': 'Doroti.Target.Web.browser-wasm',
+                       'android': 'Doroti.Target.Android.Maui.' + args.android_rid}[target]
             roots.append(ROOT / 'Doroti/src' / package / (package + '.csproj'))
         projects = set()
 
@@ -70,8 +73,14 @@ def main():
             path = path.resolve()
             if path in projects or path.suffix != '.csproj': return
             projects.add(path)
-            for reference in ET.parse(path).iter('ProjectReference'):
-                visit(path.parent / reference.attrib['Include'].replace('\\', '/'))
+            if path.stem == 'Doroti.Host.Maui':
+                evaluated = json.loads(subprocess.check_output(['dotnet', 'msbuild', str(path), '-getItem:ProjectReference',
+                    '-p:TargetFramework=net10.0-android', '-p:RuntimeIdentifier=' + args.android_rid], cwd=ROOT, text=True))
+                for reference in evaluated['Items']['ProjectReference']:
+                    visit(Path(reference['FullPath']))
+            else:
+                for reference in ET.parse(path).iter('ProjectReference'):
+                    visit(path.parent / reference.attrib['Include'].replace('\\', '/'))
         version = '-p:Version=' + args.version
         for project in roots:
             command('build-' + project.stem, 'dotnet', 'build', str(project), '-c', 'Release', version, '--nologo')
@@ -83,13 +92,17 @@ def main():
         template = ROOT / 'Doroti/templates/Doroti.Templates/Doroti.Templates.csproj'
         command('template', 'dotnet', 'pack', str(template), '-c', 'Release', version, '-o', str(packages), '--nologo')
         for project in sorted(projects):
-            command('pack-' + project.stem, 'dotnet', 'pack', str(project), '-c', 'Release', '--no-build', version, '-o', str(packages), '--nologo')
+            pack_properties = ['-p:RuntimeIdentifier=' + args.android_rid] if project.stem == 'Doroti.Host.Maui' else []
+            command('pack-' + project.stem, 'dotnet', 'pack', str(project), '-c', 'Release', '--no-build', version, '-o', str(packages), '--nologo', *pack_properties)
         consumer = run / 'consumer'
         hive = str(run / 'template-hive')
         command('template-install', 'dotnet', 'new', 'install', str(packages / f'Doroti.Templates.{args.version}.nupkg'), '--debug:custom-hive', hive)
         command('template-create', 'dotnet', 'new', 'doroti-app', '-n', 'CandidateApp', '-o', str(consumer), '--debug:custom-hive', hive)
         for path in consumer.rglob('*.csproj'):
             path.write_text(path.read_text(encoding='utf-8-sig').replace('0.3.0-beta', args.version), encoding='utf-8')
+        app_project = consumer / 'CandidateApp.csproj'
+        app_project.write_text(app_project.read_text().replace('</Project>',
+            f'<ItemGroup><PackageReference Include="Doroti.Plugins" Version="{args.version}" /></ItemGroup></Project>'))
         (consumer / 'Directory.Build.targets').write_text('<Project />')
         config = ET.Element('configuration')
         sources = ET.SubElement(config, 'packageSources')
@@ -116,12 +129,17 @@ def main():
                 },
                 Options = new WindowOptions'''), encoding='utf-8')
         for target in args.targets:
-            project = consumer / target / f'CandidateApp.{"Windows" if target == "windows" else "Web"}.csproj'
+            project = consumer / target / f'CandidateApp.{target.title()}.csproj'
+            target_properties = ['-r', args.android_rid, '-p:EmbedAssembliesIntoApk=true'] if target == 'android' else []
             command('publish-' + target, 'dotnet', 'publish', str(project), '-c', 'Release', '--nologo',
-                    '-p:PublishTrimmed=false', '-p:RunAOTCompilation=false', '-o', str(output / target), cwd=consumer, env=environment)
+                    '-p:PublishTrimmed=false', '-p:RunAOTCompilation=false', '-o', str(output / target), *target_properties, cwd=consumer, env=environment)
             if target == 'windows':
                 command('native-package-consumer', 'dotnet', str(output / target / 'CandidateApp.Windows.dll'),
                         cwd=output / target, env={**environment, 'DOROTI_RELEASE_SMOKE': '1'})
+            elif target == 'android':
+                if not any((output / target).glob('*-Signed.apk')):
+                    raise RuntimeError('Android package-only publish produced no installable APK.')
+                record['android'] = {'rid': args.android_rid, 'signing': 'development key only', 'deviceRuntime': 'notVerified'}
             else:
                 wwwroot = output / target / 'wwwroot'
                 if not (wwwroot / 'index.html').is_file() or not any((wwwroot / '_framework').glob('*.wasm')):

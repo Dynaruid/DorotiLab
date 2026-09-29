@@ -7,6 +7,7 @@ namespace Doroti.Host.Web;
 [System.Runtime.Versioning.SupportedOSPlatform("browser")]
 public sealed class BrowserFrameworkHost : IDisposable
 {
+    public static Task PrepareNavigationAsync(string? restorationId) => BrowserInterop.PrepareApplicationNavigation(restorationId);
     public static IEnumerable<IPlatformViewFactory> PlatformViewFactories =>
         BrowserPlatformViewHost.Factories;
     private readonly string _targetIdentity;
@@ -145,6 +146,19 @@ public sealed class BrowserFrameworkHost : IDisposable
                 DorotiCapabilityIds.AccessibilitySemantics,
                 graphics
             );
+        var picker = new BrowserFilePicker(host.HostId);
+        host.Closed += picker.Dispose;
+        if (picker.Available)
+        {
+            capabilities.Register<IFilePickerHostCapability>(DorotiCapabilityIds.FilePicker, picker);
+            var synchronization = SynchronizationContext.Current ?? throw new InvalidOperationException("Browser view requires its owner synchronization context.");
+            capabilities.Register<IOsDragDropHostCapability>(DorotiCapabilityIds.OsDragDrop,
+                new BrowserOsDrop(host.HostId, canvasId, callback => synchronization.Post(_ =>
+                {
+                    using var scope = session.dispatcher.EnterScope();
+                    callback();
+                }, null)));
+        }
         if (application is null)
         {
             capabilities.Register<IPlatformMessageHostCapability>(
