@@ -1119,6 +1119,16 @@ class ProductHost final {
       value.lpfnWndProc = entry.procedure;
       value.hInstance = instance;
       value.hCursor = LoadCursorW(nullptr, IDC_ARROW);
+      // The .NET apphost embeds ApplicationIcon as resource 32512. Shared
+      // handles belong to the module and remain valid for the window class.
+      if (entry.procedure == TopProcedure) {
+        value.hIcon = static_cast<HICON>(LoadImageW(instance,
+            MAKEINTRESOURCEW(32512), IMAGE_ICON, GetSystemMetrics(SM_CXICON),
+            GetSystemMetrics(SM_CYICON), LR_SHARED));
+        value.hIconSm = static_cast<HICON>(LoadImageW(instance,
+            MAKEINTRESOURCEW(32512), IMAGE_ICON, GetSystemMetrics(SM_CXSMICON),
+            GetSystemMetrics(SM_CYSMICON), LR_SHARED));
+      }
       value.hbrBackground = entry.background;
       value.lpszClassName = entry.name;
       if (!RegisterClassExW(&value) &&

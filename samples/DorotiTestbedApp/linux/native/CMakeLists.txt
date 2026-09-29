@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.24)
 project(doroti_qt_host VERSION 0.4.0 LANGUAGES C CXX)
 
+set(DOROTI_APP_ICON "" CACHE FILEPATH "Application PNG icon supplied by the Doroti runner")
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
@@ -82,6 +84,14 @@ endif()
 doroti_generate_wayland_client(ext-background-effect-v1
   "${CMAKE_CURRENT_SOURCE_DIR}/protocols/ext-background-effect-v1.xml")
 target_sources(doroti_qt_host PRIVATE src/doroti_qt_desktop.cpp)
+if(DOROTI_APP_ICON)
+  if(NOT EXISTS "${DOROTI_APP_ICON}")
+    message(FATAL_ERROR "Application icon does not exist: ${DOROTI_APP_ICON}")
+  endif()
+  set_source_files_properties("${DOROTI_APP_ICON}" PROPERTIES QT_RESOURCE_ALIAS "appicon.png")
+  qt_add_resources(doroti_qt_host app_icon PREFIX "/doroti" FILES "${DOROTI_APP_ICON}")
+endif()
+
 target_include_directories(doroti_qt_host PUBLIC include PRIVATE "${DOROTI_WAYLAND_GENERATED_DIR}")
 target_compile_definitions(doroti_qt_host PRIVATE DOROTI_QT_HOST_BUILD)
 if(DOROTI_QT_GRAPHITE)

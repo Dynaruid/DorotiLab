@@ -146,6 +146,10 @@ Material uses Material 3. Omit the removed `useMaterial3` argument from `ThemeDa
 
 To follow system dark mode, provide `theme` and `darkTheme` to `MaterialApp` with `themeMode: ThemeMode.system`. Build palettes with `ColorScheme.CreateFromSeed` and `Brightness.light`/`Brightness.dark`; widgets read them through `Theme.of(context).colorScheme`. See the [complete theme example](../samples/DorotiTestbedApp/README.md#system-dark-mode-and-color-palettes).
 
+### App icons
+
+Samples and new templates use the Doroti color symbol as their default platform icon. See [app icon defaults and overrides](docs/branding/README.md#앱의-기본-아이콘) to replace or disable it for an application.
+
 ### Native bindings
 
 Android, iOS, AppKit macOS, and Mac Catalyst runners each reference an app-owned native binding. Android uses `AndroidGradleProject`; Apple uses `XcodeProject`. The .NET runner owns the final application. The `native` commands inspect, build, locate, or extend these workspaces.

@@ -1,6 +1,7 @@
 <Project>
   <Import Project="Doroti.DesktopBoundary.targets" />
   <Import Project="Doroti.Plugins.targets" />
+  <Import Project="Doroti.AppIcons.targets" />
   <!-- Set PublishAot on the executable, never as a global property on the
        platform-neutral ProjectReference graph (NETSDK1203 for ios-arm64). -->
   <PropertyGroup>
@@ -116,8 +117,6 @@
                   Condition="'$(DorotiTarget)' == 'Android' and Exists('$(DorotiAndroidBaselineProfile)') and Exists('$(DorotiAndroidBaselineProfileMetadata)')" />
     <AndroidAsset Include="$(DorotiAndroidBaselineProfileMetadata)" Link="dexopt/baseline.profm"
                   Condition="'$(DorotiTarget)' == 'Android' and Exists('$(DorotiAndroidBaselineProfile)') and Exists('$(DorotiAndroidBaselineProfileMetadata)')" />
-    <MauiIcon Include="Resources/AppIcon/appicon.svg" ForegroundFile="Resources/AppIcon/appiconfg.svg" Color="#6750A4"
-              Condition="'$(UseMaui)' == 'true' and Exists('Resources/AppIcon/appicon.svg')" />
     <MauiSplashScreen Include="Resources/Splash/splash.svg" Color="#FFFBFE" BaseSize="128,128"
                       Condition="'$(UseMaui)' == 'true' and '$(DorotiTarget)' != 'macOS' and Exists('Resources/Splash/splash.svg')" />
   </ItemGroup>

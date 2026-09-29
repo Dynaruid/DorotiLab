@@ -1,0 +1,46 @@
+<Project>
+  <PropertyGroup>
+    <DorotiUseDefaultAppIcon Condition="'$(DorotiUseDefaultAppIcon)' == ''">true</DorotiUseDefaultAppIcon>
+    <_DorotiIconDirectory>$(MSBuildThisFileDirectory)Icons/</_DorotiIconDirectory>
+  </PropertyGroup>
+
+  <!-- Explicit MauiIcon items and the conventional local files take precedence. -->
+  <ItemGroup Condition="'$(UseMaui)' == 'true' and '$(DorotiTarget)' != 'macOS' and '@(MauiIcon)' == '' and Exists('Resources/AppIcon/appicon.svg')">
+    <MauiIcon Include="Resources/AppIcon/appicon.svg" Color="#6750A4">
+      <ForegroundFile Condition="Exists('Resources/AppIcon/appiconfg.svg')">Resources/AppIcon/appiconfg.svg</ForegroundFile>
+    </MauiIcon>
+  </ItemGroup>
+  <ItemGroup Condition="'$(UseMaui)' == 'true' and '$(DorotiTarget)' != 'macOS' and '@(MauiIcon)' == '' and '$(DorotiUseDefaultAppIcon)' == 'true'">
+    <!-- Raster foreground preserves the source SVG's overlapping luminance masks
+         independently of each platform's SVG decoder. Resizetizer makes the
+         opaque iOS catalog and Android adaptive/legacy icons from these layers. -->
+    <MauiIcon Include="$(_DorotiIconDirectory)appicon.svg" ForegroundFile="$(_DorotiIconDirectory)appiconfg.png" Color="#FFFBFE" BaseSize="1024,1024">
+      <ForegroundScale>0.8</ForegroundScale>
+      <ForegroundScale Condition="'$(DorotiTarget)' == 'Android'">0.65</ForegroundScale>
+    </MauiIcon>
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(DorotiTarget)' == 'Windows'">
+    <ApplicationIcon Condition="'$(ApplicationIcon)' == '' and Exists('Resources/AppIcon/appicon.ico')">Resources/AppIcon/appicon.ico</ApplicationIcon>
+    <!-- MAUI derives its executable icon from the selected MauiIcon. -->
+    <ApplicationIcon Condition="'$(ApplicationIcon)' == '' and '$(UseMaui)' != 'true' and '$(DorotiUseDefaultAppIcon)' == 'true'">$(_DorotiIconDirectory)appicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(DorotiTarget)' == 'macOS'">
+    <DorotiMacOSIcon Condition="'$(DorotiMacOSIcon)' == '' and Exists('Resources/AppIcon/appicon.icns')">Resources/AppIcon/appicon.icns</DorotiMacOSIcon>
+    <DorotiMacOSIcon Condition="'$(DorotiMacOSIcon)' == '' and '$(DorotiUseDefaultAppIcon)' == 'true'">$(_DorotiIconDirectory)appicon.icns</DorotiMacOSIcon>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(DorotiTarget)' == 'macOS' and '$(DorotiMacOSIcon)' != ''">
+    <BundleResource Include="$(DorotiMacOSIcon)" LogicalName="appicon.icns" />
+    <PartialAppManifest Include="$(_DorotiIconDirectory)AppIcon.plist" Overwrite="false" />
+  </ItemGroup>
+  <PropertyGroup Condition="'$(DorotiTarget)' == 'Linux'">
+    <DorotiLinuxIcon Condition="'$(DorotiLinuxIcon)' == '' and Exists('Resources/AppIcon/appicon.png')">$(MSBuildProjectDirectory)/Resources/AppIcon/appicon.png</DorotiLinuxIcon>
+    <DorotiLinuxIcon Condition="'$(DorotiLinuxIcon)' == '' and '$(DorotiUseDefaultAppIcon)' == 'true'">$(_DorotiIconDirectory)appicon.png</DorotiLinuxIcon>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(DorotiTarget)' == 'Linux' and '$(DorotiLinuxIcon)' != ''">
+    <Content Include="$(DorotiLinuxIcon)" Link="appicon.png" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(DorotiTarget)' == 'Web' and '$(DorotiUseDefaultAppIcon)' == 'true' and !Exists('wwwroot/favicon.svg')">
+    <Content Include="$(_DorotiIconDirectory)favicon.svg" Link="wwwroot/favicon.svg" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

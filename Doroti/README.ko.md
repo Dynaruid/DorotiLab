@@ -144,6 +144,10 @@ Material은 Material 3를 사용합니다. `ThemeData` 생성자, 팩터리, `co
 
 시스템 다크 모드를 따르려면 `MaterialApp`에 `theme`, `darkTheme`, `themeMode: ThemeMode.system`을 지정합니다. `ColorScheme.CreateFromSeed`와 `Brightness.light`/`Brightness.dark`로 팔레트를 만들고, 위젯에서는 `Theme.of(context).colorScheme`으로 읽습니다. [전체 테마 예제](../samples/DorotiTestbedApp/README.ko.md#시스템-다크-모드와-색-팔레트)를 참고하세요.
 
+### 앱 아이콘
+
+샘플과 새 템플릿은 플랫폼별 Doroti 컬러 아이콘을 기본으로 사용합니다. 앱별 교체 방법과 기본값 비활성화는 [앱 아이콘 안내](docs/branding/README.md#앱의-기본-아이콘)를 참고하세요.
+
 ### 네이티브 바인딩
 
 Android, iOS, AppKit macOS, Mac Catalyst 실행 프로젝트는 각각 앱 소유 네이티브 바인딩을 참조합니다. Android는 `AndroidGradleProject`, Apple은 `XcodeProject`를 사용하며, 최종 앱은 .NET 실행 프로젝트에서 만듭니다. `native` 명령으로 해당 작업 공간을 진단하고 빌드하거나 위치를 확인하고 확장할 수 있습니다.

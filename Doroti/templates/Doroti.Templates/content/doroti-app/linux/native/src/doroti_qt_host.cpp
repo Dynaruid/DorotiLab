@@ -16,6 +16,7 @@
 #include <atomic>
 
 #include <QApplication>
+#include <QIcon>
 #include <QAccessible>
 #include <QAccessibleEvent>
 #include <QClipboard>
@@ -2111,6 +2112,8 @@ extern "C" DOROTI_QT_EXPORT std::int32_t doroti_qt_run_v2(
 #endif
 #endif
     QApplication app(argc, argv);
+    const QIcon app_icon(QStringLiteral(":/doroti/appicon.png"));
+    if (!app_icon.isNull()) app.setWindowIcon(app_icon);
     struct AccessibleRegistration {
       AccessibleRegistration() { QAccessible::installFactory(&AccessibleFactory); }
       ~AccessibleRegistration() { QAccessible::removeFactory(&AccessibleFactory); }

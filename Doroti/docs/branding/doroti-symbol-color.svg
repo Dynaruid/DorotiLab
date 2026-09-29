@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" role="img" aria-labelledby="doroti-color-symbol-title-thin">
+  <title id="doroti-color-symbol-title-thin">Doroti color</title>
+  <desc>Color toolbar symbol based on doroti-outline.svg, preserving its five overlapping blocks.</desc>
+  <defs>
+    <path id="doroti-color-block-0-thin" d="M14.257 9.541 Q14.257 9.111 14.654 8.945 L16.466 8.191 Q16.863 8.026 17.223 8.26 L18.594 9.151 Q18.954 9.386 18.954 9.816 L18.954 14.809 Q18.954 15.239 18.557 15.405 L16.745 16.159 Q16.348 16.324 15.987 16.09 L14.617 15.199 Q14.257 14.964 14.257 14.534 Z"/>
+    <path id="doroti-color-block-1-thin" d="M7.786 18.358 Q7.786 17.928 8.183 17.763 L13.72 15.458 Q14.117 15.293 14.477 15.528 L15.854 16.423 Q16.214 16.657 16.214 17.087 L16.214 19.004 Q16.214 19.434 15.817 19.599 L10.28 21.903 Q9.883 22.068 9.523 21.834 L8.146 20.939 Q7.786 20.704 7.786 20.274 Z"/>
+    <path id="doroti-color-block-2-thin" d="M14.257 3.44 Q14.257 3.01 14.654 2.845 L16.466 2.091 Q16.863 1.926 17.223 2.16 L18.594 3.051 Q18.954 3.285 18.954 3.715 L18.954 8.709 Q18.954 9.139 18.557 9.304 L16.745 10.058 Q16.348 10.224 15.987 9.989 L14.617 9.098 Q14.257 8.864 14.257 8.434 Z"/>
+    <path id="doroti-color-block-3-thin" d="M7.786 10.691 Q7.786 10.261 8.183 10.095 L13.72 7.791 Q14.117 7.626 14.477 7.86 L15.854 8.755 Q16.214 8.99 16.214 9.42 L16.214 11.336 Q16.214 11.766 15.817 11.931 L10.28 14.236 Q9.883 14.401 9.523 14.166 L8.146 13.271 Q7.786 13.037 7.786 12.607 Z"/>
+    <path id="doroti-color-block-4-thin" d="M5.046 14.885 Q5.046 14.455 5.443 14.29 L7.255 13.535 Q7.652 13.37 8.013 13.604 L9.383 14.495 Q9.743 14.73 9.743 15.16 L9.743 20.153 Q9.743 20.583 9.346 20.749 L7.534 21.503 Q7.137 21.668 6.777 21.434 L5.406 20.543 Q5.046 20.308 5.046 19.878 Z"/>
+    <mask id="doroti-color-visible-0-thin" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style="mask-type:luminance">
+      <path fill="white" d="M0 0h24v24H0z"/>
+      <use href="#doroti-color-block-1-thin" fill="black"/>
+      <use href="#doroti-color-block-2-thin" fill="black"/>
+      <use href="#doroti-color-block-3-thin" fill="black"/>
+      <use href="#doroti-color-block-4-thin" fill="black"/>
+    </mask>
+    <mask id="doroti-color-visible-1-thin" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style="mask-type:luminance">
+      <path fill="white" d="M0 0h24v24H0z"/>
+      <use href="#doroti-color-block-2-thin" fill="black"/>
+      <use href="#doroti-color-block-3-thin" fill="black"/>
+      <use href="#doroti-color-block-4-thin" fill="black"/>
+    </mask>
+    <mask id="doroti-color-visible-2-thin" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style="mask-type:luminance">
+      <path fill="white" d="M0 0h24v24H0z"/>
+      <use href="#doroti-color-block-3-thin" fill="black"/>
+      <use href="#doroti-color-block-4-thin" fill="black"/>
+    </mask>
+    <mask id="doroti-color-visible-3-thin" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style="mask-type:luminance">
+      <path fill="white" d="M0 0h24v24H0z"/>
+      <use href="#doroti-color-block-4-thin" fill="black"/>
+    </mask>
+  </defs>
+  <g stroke="#7843bb" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round">
+    <use href="#doroti-color-block-0-thin" mask="url(#doroti-color-visible-0-thin)"/>
+    <use href="#doroti-color-block-1-thin" mask="url(#doroti-color-visible-1-thin)"/>
+    <use href="#doroti-color-block-2-thin" stroke="#ffc107" mask="url(#doroti-color-visible-2-thin)"/>
+    <use href="#doroti-color-block-3-thin" mask="url(#doroti-color-visible-3-thin)"/>
+    <use href="#doroti-color-block-4-thin"/>
+  </g>
+</svg>

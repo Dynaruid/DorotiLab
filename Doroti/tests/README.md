@@ -21,6 +21,8 @@ pwsh -NoProfile -File Doroti/eng/doroti.ps1 validate -ValidationSuite Packages
 
 Each aggregate invocation has a 1,200-second limit via `eng/run-with-timeout.py`. Timeout kills the child process tree and returns 124. Raw logs, ad-hoc consumers and their builds live in `temp/testing/<suite>/<run>/`. Success prints its summary then deletes the owned run. Failure preserves the printed directory for investigation; delete it after recording the result, checking the resolved path stays under `temp/testing/`. Product runner build outputs retain their normal `bin/obj` policy. Tests are not in the default product solution. `Doroti.Testing` is a product package; the regression executable is not.
 
+App icon defaults, custom overrides, opt-out and portable asset formats use `python Doroti/eng/run-with-timeout.py python Doroti/tests/app_icons.py`. An optional path to a built `Doroti.Runner.Sdk` nupkg also verifies its icon payload. Platform build/runtime verification is recorded in the [icon validation notes](../docs/branding/validation.md).
+
 M4 package qualification uses `python Doroti/eng/run-with-timeout.py python Doroti/tests/plugin_packages.py`
 for the NuGet-only common/trimmed consumer and SDK diagnostics. The interactive Windows suite is
 `python Doroti/eng/run-with-timeout.py python Doroti/tests/plugin_windows_packages.py`:
