@@ -14,7 +14,7 @@
     <!-- Raster foreground preserves the source SVG's overlapping luminance masks
          independently of each platform's SVG decoder. Resizetizer makes the
          opaque iOS catalog and Android adaptive/legacy icons from these layers. -->
-    <MauiIcon Include="$(_DorotiIconDirectory)appicon.svg" ForegroundFile="$(_DorotiIconDirectory)appiconfg.png" Color="#FFFBFE" BaseSize="1024,1024">
+    <MauiIcon Include="$(_DorotiIconDirectory)appicon.svg" ForegroundFile="$(_DorotiIconDirectory)appiconfg.png" Color="#512BD4" BaseSize="1024,1024">
       <ForegroundScale>0.8</ForegroundScale>
       <ForegroundScale Condition="'$(DorotiTarget)' == 'Android'">0.65</ForegroundScale>
     </MauiIcon>

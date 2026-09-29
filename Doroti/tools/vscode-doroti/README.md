@@ -2,7 +2,7 @@
 
 Local extension for VS Code 1.100+ desktop, PowerShell 7 and the repository's .NET 10 SDK. Build tools use Node 24 and npm with the checked-in lockfile. Windows App SDK and Web Debug runners support metadata Hot Reload.
 
-The extension icon (`images/icon.png`) is a transparent 256×256 PNG rendered from the [official Doroti color symbol](../../docs/branding/doroti-symbol-color.svg), preserving its colors, proportions and overlapping outlines. VS Code extension packages require a raster icon; the SVG remains the source of truth.
+The extension icon (`images/icon.png`) is a transparent 256×256 PNG rendered from the [official Doroti color symbol](../../docs/branding/doroti-symbol-color.svg), preserving its filled blocks and thin transparent cutout spacing. VS Code extension packages require a raster icon; the SVG remains the source of truth. Regenerate it together with the app icons using [the branding instructions](../../docs/branding/README.md#파생-자산-재생성).
 
 ```powershell
 dotnet new install <repository>/Doroti/templates/Doroti.Templates/content/doroti-app

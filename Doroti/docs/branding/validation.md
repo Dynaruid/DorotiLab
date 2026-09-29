@@ -1,6 +1,24 @@
 # 기본 앱 아이콘 검증 · 2026-09-29
 
-컬러 원본은 `doroti-symbol-color.svg`, SHA-256 `9eee7440bd6c2f8926f366e6f819b4eaf210b589a88211ff189280e8654a7511`입니다. 플랫폼별 기본값, 변경 방법, 재생성 명령은 [아이콘 안내](README.md)에 있습니다.
+플랫폼별 기본값, 변경 방법, 재생성 명령은 [아이콘 안내](README.md)에 있습니다.
+
+## 기본 앱 아이콘 교체 검증
+
+현재 앱 원본은 `doroti-app-icon.svg`, SHA-256 `be0ca1713bcea2c51738d9e25609610c70ad3a68f3413dc08254639902165c41`입니다. 전달된 `doroti-symbol-white-dotnet-purple-200.svg`의 도형과 색상을 유지하며, SVG 설명 문구만 정리했습니다. 컬러·단색 브랜드 원본도 각각 전달된 filled-cutout-thin-200 SVG와 바이트 일치를 확인했습니다.
+
+| 범위 | 이번 교체에서 확인한 결과 |
+| --- | --- |
+| 파생 자산 | PASS: Edge로 PNG·ICO·ICNS·파비콘, 투명 흰색 모바일 전경과 보라색 배경 재생성. 앱 PNG와 컬러 VS Code 확장 PNG 시각 확인 |
+| SDK 패키지 | PASS: Release 패키지 생성, `app_icons.py`의 플랫폼별 기본값·직접 지정 우선·비활성화·ICO/ICNS 구조·패키지 바이트 일치 검사 |
+| Android arm64 | PASS: Testbed Debug `ResizetizeImages`, 생성 PNG 시각 확인 및 일반 아이콘의 불투명 보라색 배경·흰색 심벌 픽셀 확인. 기기 런처 표시는 notVerified |
+| iOS simulator arm64 | PASS: Windows에서 Testbed Debug `ResizetizeImages`, 1024px artwork 시각 확인 및 카탈로그 PNG의 불투명 보라색 배경·흰색 심벌 픽셀 확인. Xcode 컴파일·기기 표시는 notVerified |
+| 기타 플랫폼 | SDK 기본 자산과 선택 규칙 검증 완료. 새 도안으로 Windows 실행 파일·창, macOS Dock, Linux Qt, Web 개발 서버를 다시 실행하는 검증은 notVerified |
+
+검증용 SDK 패키지는 `temp/testing/app-icons/replacement/packages`에 있습니다. 검사 후 삭제를 시도했으나 실행 정책에서 차단되어 남겨두었습니다. 플랫폼 `obj` 생성물도 유지합니다. 이번 교체의 PASS는 아래 이전 도안의 실행 검증을 새 도안으로 재수행했다는 뜻이 아닙니다.
+
+## 이전 컬러 윤곽 도안의 검증 기록
+
+아래는 교체 전 `doroti-symbol-color.svg`(SHA-256 `9eee7440bd6c2f8926f366e6f819b4eaf210b589a88211ff189280e8654a7511`) 기준 기록입니다.
 
 | 범위 | 결과와 확인한 내용 |
 | --- | --- |

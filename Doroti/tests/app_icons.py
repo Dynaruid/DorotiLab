@@ -6,6 +6,7 @@ import subprocess
 import tempfile
 import zipfile
 import sys
+import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[2]
 SDK = ROOT / "Doroti/src/Doroti.Runner.Sdk/Sdk"
@@ -37,6 +38,7 @@ with tempfile.TemporaryDirectory(prefix="contract-", dir=scratch_root) as scratc
     for target, scale in [("Android", "0.65"), ("iOS", "0.8"), ("MacCatalyst", "0.8")]:
         icons = evaluate(folder, target)["Items"]["MauiIcon"]
         assert len(icons) == 1 and icons[0]["ForegroundScale"] == scale
+        assert icons[0]["Color"] == "#512BD4"
         assert Path(icons[0]["Identity"]).is_file() and Path(icons[0]["ForegroundFile"]).is_file()
         custom = evaluate(folder, target, items='<MauiIcon Include="custom.png" />')["Items"]["MauiIcon"]
         assert len(custom) == 1 and custom[0]["Identity"] == "custom.png"
@@ -63,7 +65,12 @@ with tempfile.TemporaryDirectory(prefix="contract-", dir=scratch_root) as scratc
     assert len(custom) == 1 and custom[0]["Identity"] == "Resources/AppIcon/appicon.svg"
 
 icons = SDK / "Icons"
-assert (icons / "favicon.svg").read_bytes() == (ROOT / "Doroti/docs/branding/doroti-symbol-color.svg").read_bytes()
+assert (icons / "favicon.svg").read_bytes() == (ROOT / "Doroti/docs/branding/doroti-app-icon.svg").read_bytes()
+background = ET.parse(icons / "appicon.svg").getroot().find("{http://www.w3.org/2000/svg}rect")
+assert background.attrib["fill"] == "#512BD4"
+for name, size in [("appicon.png", 512), ("appiconfg.png", 1024)]:
+    png = (icons / name).read_bytes()
+    assert png[:8] == b"\x89PNG\r\n\x1a\n" and struct.unpack_from(">II", png, 16) == (size, size)
 ico = (icons / "appicon.ico").read_bytes()
 assert struct.unpack_from("<HHH", ico) == (0, 1, 7)
 for i, size in enumerate([16, 24, 32, 48, 64, 128, 256]):

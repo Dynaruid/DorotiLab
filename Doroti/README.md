@@ -148,7 +148,7 @@ To follow system dark mode, provide `theme` and `darkTheme` to `MaterialApp` wit
 
 ### App icons
 
-Samples and new templates use the Doroti color symbol as their default platform icon. See [app icon defaults and overrides](docs/branding/README.md#앱의-기본-아이콘) to replace or disable it for an application.
+Samples and new templates use the Doroti app icon by default. See [app icon defaults and overrides](docs/branding/README.md#앱의-기본-아이콘) to replace or disable it for an application.
 
 ### Native bindings
 
