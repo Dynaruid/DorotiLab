@@ -14,10 +14,11 @@
 
 ## 원문 작업과 완료 기준
 
-아래는 원문의 체크리스트와 완료 기준을 보존한 것이다. 특정 호스트를 명시한 항목은 연결된 플랫폼 문서에서 해당 구현·검증을 추적하고, 이 문서에는 공유 계약 및 통합 결과를 기록한다. 공통 구현 완료가 모든 플랫폼 검증 완료를 뜻하지 않는다.
+원문의 범위와 완료 기준을 유지하면서 2026-09-28~29 실행 기록에 따라 완료 부분과 잔여 부분을 분리했다. 체크된 항목은 명시한 호스트·검증 범위에 한정하며, 아래 날짜별 결과가 근거다. 공통 구현 완료가 모든 플랫폼 검증 완료를 뜻하지 않는다.
 
 - [x] Windows App SDK용 `IWindowHostFactory`/`IWindowHost`를 구현하고 SDK Desktop companion 허용 조건·템플릿·샘플을 함께 연결한다.
-- [ ] 크기/DPI/최소·최대 크기, show/hide/focus, 제목·native caption·appearance, close 취소·render drain을 기존 Desktop 계약으로 통합한다.
+- [x] Windows App SDK의 크기·show/hide/focus·제목/native caption·close 취소/render drain을 기존 Desktop 계약으로 연결하고 native 상태·종료 회귀를 검증했다.
+- [ ] 크기/DPI 제약·최소/최대 크기·appearance의 전체 지원 범위를 호스트별로 확인한다. 다른 adapter와 미지원 capability 정합은 아래 항목에서 추적한다.
 - [ ] 첫 표시, 창 resize, 최소화/복원, 디스플레이 전환, 종료 중 pending GPU 작업을 실제 화면과 리소스 수명으로 검증한다.
 - [ ] AppKit/Catalyst/Qt/Windows MAUI의 기존 adapter와 지원표를 맞춘다. 플랫폼이 제공하지 않는 동작은 capability와 명확한 거절 결과로 표현한다.
 
@@ -41,6 +42,6 @@
 - `pwsh -File Doroti/eng/doroti.ps1 validate -ValidationSuite WindowsSmoke` (먼저 Debug Windows build): 실제 창 제목, 500×650 DIP resize, show/hide/focus, 최대화/복원/최소화/전체화면, caption theme/reset을 확인한다. native WM_CLOSE와 API close 각각 첫 호출 취소·둘째 호출 종료, callback 2회·registry 0개·exit 0 PASS.
 - first readiness는 native 성공 present에서 완료하며, accepted close는 기존 native render worker retirement·platform 자원 정리·framework unmount 후 controller 완료를 기다린다. 프로세스가 먼저 종료돼 registry callback이 누락되던 경로도 수정했다. DorotiWindowController의 Closed 표시와 callback 완료 사이에 들어온 두 번째 CloseAsync도 기존 close task를 기다리며, callback을 의도적으로 보류하는 결정적 공통 회귀를 추가했다.
 - 실제 state.Scale=2 환경을 관찰했다. 450×800 요청은 모니터 작업영역 제약으로 실제 높이 779.5 DIP였고 상태에 요청값 대신 관찰값을 기록했다.
-- capability: 단일 창/OnLastWindowClosed, standard native chrome. Explicit lifetime·추가 창·custom chrome은 명확히 거절한다. backdrop/renderer 배경 변경은 RequiresRecreation이다. Windows MAUI/AppKit/Qt/Catalyst 지원표의 오래된 일괄 Pending 문구를 현재 host별 표로 교체했다.
+- 당시 capability는 단일 창/OnLastWindowClosed·standard native chrome이었으며 Explicit·추가 창은 거절했다. **2026-09-29에는 추가 창과 Explicit을 지원한다**([09 결과](09-multiwindow.md)). custom chrome 거절 및 backdrop/renderer 배경 변경의 RequiresRecreation 경계는 유지한다. Windows MAUI/AppKit/Qt/Catalyst 지원표의 오래된 일괄 Pending 문구도 host별 표로 교체했다.
 - 미검증: Computer Use native pipe unavailable로 live resize 화면·깜빡임, 물리 drag, mixed-monitor 이동을 검증하지 못했다. native state smoke를 화면 품질 PASS로 표시하지 않는다. 다른 adapter는 이번 재실행 없음.
 - 성공한 aggregate suite의 원시 로그/JSON은 자동 정리했다. 수동·실패 조사 폴더는 자동 승인 정책의 삭제 차단으로 M0의 정리 보류 목록에 남겼다. 다음은 [03 입력](03-input-accessibility-platformview.md)과 [04 렌더링](04-rendering-lifetime.md)의 물리/표시 검증이다.

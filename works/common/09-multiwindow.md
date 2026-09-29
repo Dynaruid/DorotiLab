@@ -14,14 +14,15 @@ binding/view 모델과 창별 소유권·공유 cache 경계를 정한다. Windo
 
 ## 원문 작업과 완료 기준
 
-아래는 원문의 체크리스트와 완료 기준을 보존한 것이다. 특정 호스트를 명시한 항목은 연결된 플랫폼 문서에서 해당 구현·검증을 추적하고, 이 문서에는 공유 계약 및 통합 결과를 기록한다. 공통 구현 완료가 모든 플랫폼 검증 완료를 뜻하지 않는다.
+원문의 범위와 완료 기준을 유지하면서 2026-09-28~29 실행 기록에 따라 완료 부분과 잔여 부분을 분리했다. 체크된 항목은 명시한 호스트·검증 범위에 한정하며, 아래 날짜별 결과가 근거다. 공통 구현 완료가 모든 플랫폼 검증 완료를 뜻하지 않는다.
 
 **선행:** M2-A, M1의 격리·수명 테스트. 구현 전에 창 문맥 설계를 짧은 ADR로 고정한다.
 
 - [x] `WidgetsBinding`, `SchedulerBinding`, `ServicesBinding`의 static 상태와 root/view 구조를 조사해, 하나의 binding 아래 여러 view를 둘지 독립 실행 문맥이 필요한지 결정한다. 무조건 singleton을 전부 분리하지 않는다.
 - [x] 창별 focus, pointer/keyboard, scheduler target, Navigator/restoration, semantics, PlatformView owner, texture/GPU surface 소유권을 정의한다. 공유 가능한 cache와 창 종료 시 해제할 자원을 구분한다.
 - [x] 기존 `DorotiWindowManager.CreateWindowAsync`와 fresh `WindowContent` factory를 실제 Windows App SDK 추가 창 생성에 연결한다.
-- [ ] 두 창의 독립 갱신·DPI·IME·렌더링·닫기와 `OnLastWindowClosed`/`Explicit` 수명을 검증한다. 닫힌 창으로 향하는 작업은 안전하게 종료한다.
+- [x] Windows 실제 두 HWND·native editor island·독립 크기·첫 창 종료 후 survivor resize·`OnLastWindowClosed`/`Explicit` 종료 및 NuGet 소비를 검증했다. 반복 Explicit 요청은 완료 결과를 공유하고 종료 이벤트를 한 번만 통지한다.
+- [ ] 두 창의 독립 스크롤·물리 IME/focus·mixed-monitor DPI·실제 화면 품질·WebView 등 전체 native content와 닫힌 창의 지연 작업을 검증한다. native 상태·CPU 격리 결과를 전체 입력/표시 PASS로 확대하지 않는다.
 - [ ] AppKit와 Qt에 확장하고 Catalyst는 scene 계약에 맞춰 별도 구현한다. owner/modal/satellite, popup/tooltip과 창 간 이동은 기본 추가 창 이후에 붙인다.
 - [ ] `_window_*`의 Satellite API는 Desktop 소유권으로 연결하거나 지원 경계를 문서화한다. 두 구현이 같은 native 창을 중복 소유하지 않게 한다.
 

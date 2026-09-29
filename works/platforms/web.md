@@ -23,9 +23,10 @@ M0 → M1 최소 경로 → M2 → M4/M5 → M6(대상 플랫폼) → M7 순서�
 
 ## 1. 실행·개발 도구 — M0/M1/M3, P0 → P1
 
-- [ ] Web build/기동 smoke와 실패 전파를 M0 실행기·CI에 연결하고 템플릿에서 생성한 앱의 초기 화면을 확인한다. 일부 target만 선언한 manifest도 공통 CLI 계약으로 처리한다.
-- [ ] 로컬 VSIX에서 앱 생성 → snippet/import → `Debug` 외부 브라우저 실행 → 로그 → 중지를 검증하고 startup 실패를 진단한다.
-- [x] Web의 실제 metadata update 지원 범위를 정하고 Hot Reload 버튼·State/입력/스크롤 보존·컴파일 오류 후 재시도를 검증한다. 지원하지 않는 조합은 이유와 재시작 경로를 표시한다.
+- [x] Web Debug build/HTTP bootstrap smoke·실패 전파를 M0 실행기·CI에 연결했다. 일부 target manifest와 생성 앱의 Chrome 초기 화면·버튼/한글 표시를 확인했다. [00](../common/00-foundation.md)·[04 결과](../common/04-rendering-lifetime.md)
+- [ ] 새 checkout/원격 CI 실행을 확인한다. CI 구성과 로컬 실행 PASS를 구분한다.
+- [x] clean profile의 설치 VSIX에서 Web Debug Run·외부 Chrome 연결·Hot Reload·Stop을 확인했다. main-owned threaded runtime의 WebGL/WebGPU에서 실제 metadata 갱신·State/입력/스크롤 유지·컴파일 오류 재시도 PASS(2026-09-28). [05 결과](../common/05-vscode-hot-reload.md)
+- [ ] 생성 마법사 전체 UI·실제 C# 서비스·snippet 편집 예외·startup 실패/종료 경합을 검증하고, 2026-09-29 창 문맥 변경 뒤 설치 VSIX의 실제 metadata 흐름을 재검증한다. 다른 브라우저·물리 모바일·worker-owned·Release/AOT로 기존 PASS를 확대하지 않는다.
 
 ## 2. 입력·접근성·DOM PlatformView — M2-B, P1
 
@@ -45,12 +46,13 @@ M0 → M1 최소 경로 → M2 → M4/M5 → M6(대상 플랫폼) → M7 순서�
 
 - [ ] FilePicker·URL launcher의 Web module, 취소·브라우저 권한/미지원 결과·파일 접근 수명을 공통 패키지 계약에 연결한다.
 - [ ] 브라우저 파일/텍스트/URI drop과 MIME/action·논리 좌표·비동기 읽기를 연결하고 큰 파일·여러 파일·취소·DPR 변화를 검증한다. 송신 등 브라우저가 제공하는 범위를 capability로 구분한다.
-- [ ] URL ↔ Router, back/forward/새로고침, Router 준비 전 activation, 중복 링크·잘못된 링크를 연결한다.
-- [ ] 기존 Web lifecycle을 활용해 route·입력·선택 상태의 저장/복원·version migration·실패 fallback을 확인한다.
+- [x] main-owned runtime의 URL ↔ Router, history push/replace/popstate, sessionStorage·lifecycle·listener 해제를 연결했다. 공통/Node의 준비 전 대기·중복·손상 history/checkpoint·bfcache 회귀 PASS. [08 결과](../common/08-navigation-restoration.md)
+- [ ] 실제 브라우저의 back/forward·새로고침·bfcache 복귀·잘못된 링크, route·입력·선택 상태 복원과 앱별 version migration/fallback을 검증한다. worker-owned framework navigation은 별도 미완료 범위다.
 
 ## 5. 배포 — M7, P3
 
-- [ ] package-only 앱을 clean 환경에서 Web publish·기동하고 SDK/runner/native/font/Web asset/플러그인 버전 정합과 실제 지원 publish·trimming·AOT 조합을 확인한다.
+- [x] private template hive와 격리 NuGet cache의 package-only Release publish 및 비어 있지 않은 bootstrap/wasm payload를 확인했다. trimming/AOT는 끈 조합이다. [10 결과](../common/10-release-packaging.md)
+- [ ] 후속 수정이 포함된 후보로 clean 배포 환경의 실제 브라우저 기동과 SDK/runner/native/font/Web asset/플러그인 정합을 검증한다. publish/payload PASS를 화면 표시나 trimming/AOT 검증으로 확대하지 않는다.
 - [ ] 배포·업데이트 후 자산과 저장 상태의 호환, 로그·오류 수집, 장기 실행·PlatformView 반복 생성·context loss 회귀를 검증한다. 설치·서명 등 해당 배포 형태에 적용되지 않는 항목은 적용 범위를 명시한다.
 
 ## 완료 기준
@@ -69,7 +71,7 @@ M0 → M1 최소 경로 → M2 → M4/M5 → M6(대상 플랫폼) → M7 순서�
 
 ## 검증·결과 기록
 
-[공통 완료 규칙과 결과 형식](../README.md#결과-기록-형식)을 적용한다. 테스트는 20분 timeout을 사용하고 일반 반복 검증은 30회 이내로 설계한다. 원시 산출물은 삭제 가능한 `Doroti/artifacts`, 보존할 요약·fixture는 추적되는 tests/docs/history에 둔다.
+[공통 완료 규칙과 결과 형식](../README.md#결과-기록-형식)을 적용한다. 테스트는 20분 timeout을 사용하고 일반 반복 검증은 30회 이내로 설계한다. 일회성 테스트·원시 로그·캡처·소비 앱은 `temp/testing/<작업-ID>/<실행-ID>/`에 모으고 요약 후 정리한다. 제품 빌드·release 후보 등 기존 `Doroti/artifacts`는 별도의 삭제 가능한 산출물이며, 필요한 요약·최소 상시 fixture만 추적되는 tests/docs/history에 보존한다.
 
 ## 2026-09-28 갱신
 

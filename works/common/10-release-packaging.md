@@ -14,11 +14,13 @@
 
 ## 원문 작업과 완료 기준
 
-아래는 원문의 체크리스트와 완료 기준을 보존한 것이다. 특정 호스트를 명시한 항목은 연결된 플랫폼 문서에서 해당 구현·검증을 추적하고, 이 문서에는 공유 계약 및 통합 결과를 기록한다. 공통 구현 완료가 모든 플랫폼 검증 완료를 뜻하지 않는다.
+원문의 범위와 완료 기준을 유지하면서 2026-09-28~29 실행 기록에 따라 완료 부분과 잔여 부분을 분리했다. 체크된 항목은 명시한 호스트·검증 범위에 한정하며, 아래 날짜별 결과가 근거다. 공통 구현 완료가 모든 플랫폼 검증 완료를 뜻하지 않는다.
 
 **선행:** 출시 대상 기능의 앞선 단계 완료. 모든 선택 기능 완료가 첫 배포의 필수 조건은 아니다.
 
-- [ ] `dotnet new doroti-app`에서 package-only 앱을 만들고 Windows/Web/Android부터 clean 환경 설치·실행을 검증한다. 나머지 host를 순차 확대한다.
+- [x] private template hive의 `dotnet new doroti-app`과 격리 NuGet cache로 Windows/Web package-only Release publish를 검증했다. Windows self-contained JIT 실제 창 실행 및 로컬 portable 설치/업데이트/제거는 아래 범위에서 PASS다.
+- [ ] 후속 보강을 포함한 새 후보를 만들고 같은 revision/toolchain·package/payload hash로 결과를 연결한다. 기존 후보에 이후 수정의 PASS를 합치지 않는다.
+- [ ] clean OS/VM의 Windows/Web 설치·실행·업데이트와 Android package-only 소비를 검증한다. 나머지 host를 순차 확대한다.
 - [x] SDK/runner/native library/font/Web asset/플러그인 버전의 호환 정책, API 변경 안내와 migration 문서를 정한다.
 - [ ] Release, trimming, Mono AOT/NativeAOT/Web publish 중 실제 지원하는 조합을 명시하고 각 조합을 검증한다.
 - [ ] 플랫폼별 서명·패키징·설치·업데이트·제거와 앱 데이터 유지, crash/로그 수집을 검증한다. 개발자 머신 성공을 clean 배포 성공으로 간주하지 않는다.
@@ -61,9 +63,11 @@ Revision: `8834d7596597b3087a0139f527148baee9a46583` + 이번 작업 트리.
 Android package-only 소비 및 장기 soak/device-loss는 **notVerified**다.
 개발자 머신의 격리 cache 성공을 clean OS 배포 완료로 체크하지 않는다.
 
-### 최종 후보와 로컬 설치 결과
+### 2026-09-29 후보 생성 당시의 최종 후보와 로컬 설치 결과
 
-최종 후보: `0.3.0-beta.rc.20260929010529`.
+후보 생성 당시 최종 버전: `0.3.0-beta.rc.20260929010529`.
+이후 00~10 보강에서는 새 Release 후보를 만들지 않았다. installer staging/retry·종료·복원
+수정의 로컬 회귀 PASS는 이 후보 payload의 검증 결과가 아니며, 출시에 앞서 새 후보가 필요하다.
 `Doroti/artifacts/release/0.3.0-beta.rc.20260929010529/`에 NuGet 27개,
 Windows payload 549개 파일, Web payload 796개 파일과 `candidate.json`을 생성했다.
 candidate의 source-tree SHA-256은

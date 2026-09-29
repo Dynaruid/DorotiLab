@@ -14,17 +14,19 @@
 
 ## 원문 작업과 완료 기준
 
-아래는 원문의 체크리스트와 완료 기준을 보존한 것이다. 특정 호스트를 명시한 항목은 연결된 플랫폼 문서에서 해당 구현·검증을 추적하고, 이 문서에는 공유 계약 및 통합 결과를 기록한다. 공통 구현 완료가 모든 플랫폼 검증 완료를 뜻하지 않는다.
+원문의 범위와 완료 기준을 유지하면서 2026-09-28~29 실행 기록에 따라 완료 부분과 잔여 부분을 분리했다. 체크된 항목은 명시한 호스트·검증 범위에 한정하며, 아래 날짜별 결과가 근거다. 공통 구현 완료가 모든 플랫폼 검증 완료를 뜻하지 않는다.
 
 **선행:** M0/M1, 창·view 문맥 계약은 M2/M6와 일치시킨다.
 
 - [x] 현재 manifest/handler/SDK 등록 구조를 문서화하고 외부 NuGet이 target별 구현·native asset·Web module을 제공하는 최소 패키지 형식을 정한다.
-- [ ] 앱 단위와 view/window 단위 플러그인 수명, UI thread dispatch, cancellation, event stream, dispose, 오류·권한 거절·미지원 결과를 정의한다.
+- [x] 앱/view 수명·dispatch·취소·dispose·오류/거절/미지원 계약을 연결하고 창 종료 뒤 늦은 응답 폐기·handler 지연 dispose·여러 창의 application lease 공유 회귀를 검증했다.
+- [ ] 공개 event stream 구독·취소·backpressure·dispose 계약을 추가한다. 현재 요청/응답 v1에서는 unsupported다.
 - [x] RID/ABI 불일치, 중복 id/channel, 누락된 handler/asset을 build 또는 초기화 단계에서 구체적으로 진단한다.
 - [x] 등록 생성은 기존 SDK 경로를 확장한다. Source Generator 도입은 reflection 회피·사용성·AOT 이득이 분명할 때 결정한다.
 - [x] 첫 대표 기능은 FilePicker와 URL launcher로 잡는다. 선택 취소와 외부 파일 접근 수명까지 포함한다. 이후 camera/notification/storage는 요구와 플랫폼 검증 장비에 맞춰 추가한다.
 - [ ] 네이티브/Web 구현을 같은 C# 앱에서 사용하고, 미지원 플랫폼은 capability 확인과 예측 가능한 오류를 제공한다.
-- [ ] 저장소 project reference 없이 패키지만 설치한 소비 앱에서 restore/build/run/publish, trimming과 목표 AOT 모드를 검증한다.
+- [x] 공통 NuGet-only 소비 앱의 Release trimmed publish/실행과 Windows host/plugin NuGet-only Release JIT 소비를 검증했다.
+- [ ] 나머지 목표 플랫폼의 package-only 소비와 지원 trimming/AOT 조합을 검증한다. Windows renderer 전체 trimming/NativeAOT·실제 OS 권한 거절·물리 입력은 기존 결과에 포함하지 않는다.
 
 **완료 기준:** 별도 앱과 별도 플러그인 패키지에서 코드 복사 없이 기능을 사용할 수 있다. 권한 거절·취소·창 종료 중 응답·ABI 불일치가 검증된다.
 

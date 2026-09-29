@@ -18,14 +18,17 @@
 
 **선행:** M0의 실행기·산출물 규칙.
 
-- [ ] 아래 임시 작업 규칙을 M0 실행기와 연결한다. 기존 검증 스크립트·테스트 프로젝트·산출물을 먼저 분류하고, 일회성 파일을 새 영구 suite로 옮겨 쌓지 않는다.
+- [x] 임시 실행 폴더·1,200초 timeout·성공 실행 요약 후 정리를 M0 실행기에 연결했다. 기존 누적 자료의 정리 보류는 아래 관리 항목에서 따로 추적한다.
 - [x] `Doroti.Testing`의 최소 계약을 정한다: `pumpWidget`, `pump`, 제한 시간이 있는 `pumpAndSettle`, `find.byType/byKey/text`, `tap/drag`, 키·텍스트 입력, semantics 조회.
-- [ ] 테스트가 clock/frame scheduler를 제어하도록 하고, pending timer/animation과 처리되지 않은 예외를 실패 진단에 포함한다.
-- [ ] 테스트 종료 후 binding/root/focus/texture/native resource가 남지 않게 한다. 초기에는 직렬 실행을 허용하고 static binding 격리가 검증되기 전 병렬 실행을 약속하지 않는다.
+- [x] clock/frame scheduler와 TimeProvider timer를 제어하고 bounded settle·frame/timer/scheduled·트리 진단 및 framework error 실패를 연결했다.
+- [x] CPU binding/root/focus·engine-layer 해제와 서로 다른 owner thread의 pointer·한글 값·semantics·reassemble 격리를 검증했다. 같은 thread의 nested tester와 다른 thread/dispose 후 API 접근은 거절한다.
+- [ ] GPU/texture/native resource·복수 owner의 전체 생성/재생성/종료 격리를 검증한다. CPU 회귀를 임의의 병렬 사용이나 전체 native 자원 수명 보장으로 확대하지 않는다.
 - [x] pointer hit test → GestureArena → callback 경로를 통과시킨다. 위젯 콜백 직접 호출만으로 입력 테스트를 통과시키지 않는다.
-- [ ] 우선 회귀 장면을 고정한다: Cupertino 탭 전환, ListView 스크롤, 한글 조합/selection, Dialog 중간 프레임, VariableBlur viewport/DPR/축소 렌더링 크기, PlatformView 생성·해제.
+- [x] Cupertino 탭·ListView 스크롤·합성 한글 조합/selection·Dialog 중간 프레임/모달 hit-test·VariableBlur geometry/DPR CPU 회귀를 고정했다. Windows editor/WebView 각각의 생성·재생성은 WindowsSmoke에서 확인했다.
+- [ ] 위 장면의 GPU 품질, 플랫폼별 실제 키/semantics·물리 입력과 PlatformView 전체 조합을 검증한다.
 - [ ] golden 비교는 폰트·DPR·renderer·색 공간·허용 오차를 고정한다. CPU 이미지 비교, GPU offscreen 비교, 실제 화면 캡처를 별도 결과로 기록한다.
-- [ ] 테스트 실패 시 비교 이미지, 트리, frame 정보와 재현 명령을 해당 실행의 `temp/testing/` 하위에 출력한다. 외부 앱도 패키지만 참조해 간단한 위젯 테스트를 작성할 수 있게 한다.
+- [x] 외부 PackageReference-only 앱의 Testing/Cupertino 회귀 실행을 검증했다.
+- [ ] 테스트 실패 시 비교 이미지·트리·frame 정보·재현 명령을 해당 실행의 `temp/testing/` 하위에 남기는 전체 장면을 확인한다. CPU PNG/timeout 진단 API 제공과 golden 실패 산출물의 전체 검증을 구분한다.
 
 **완료 기준:** 의도적으로 탭 대상·hit test·blur geometry를 깨뜨리면 해당 테스트가 실패하며, 복구 후 통과한다. 지속 animation에서는 `pumpAndSettle`이 무한 대기하지 않는다.
 
@@ -41,12 +44,13 @@
 | 상시 회귀 검증 | 반복 방지가 꼭 필요한 최소 테스트 소스·작은 fixture만 `Doroti/tests/`, 재사용하는 최소 실행기만 `Doroti/eng/`에 유지한다. 원시 실행 산출물은 `temp/testing/`에 둔다. |
 | 장기 기록 | 해당 작업 문서에 결과 요약·재현 절차·미검증 범위만 남긴다. 일회성 스크립트와 원시 산출물을 `docs/`나 `history/`로 통째로 복사하지 않는다. |
 
-- [ ] **기본은 임시 작성:** 버그 조사용 probe, API 확인, 성능 비교, 일회성 smoke는 처음부터 실행별 폴더에 작성한다. 작업마다 영구 테스트 프로젝트·검증 스크립트·결과 문서를 새로 추가하지 않는다.
-- [ ] **영구 보존은 선별:** 반복적으로 확인할 공개 계약·실제 회귀가 있고 기존 테스트로 다룰 수 없을 때만 최소 사례를 남긴다. 보존 이유와 실행 시점을 기록하고, 우선 기존 회귀 장면에 통합한다. 기능 검증 완료가 일회성 테스트 파일의 영구 보존을 요구하지는 않는다.
-- [ ] **기본 개발 경로에서 제외:** 구현 시 `/temp/`를 Git ignore와 관련 프로젝트 검색·소스 glob·watch·pack 대상에서 제외한다. 임시 프로젝트를 기본 solution·제품 참조·기본 빌드·전체 CI에 등록하지 않는다. Git ignore만으로 빌드나 감시에서 제외됐다고 판단하지 않는다.
-- [ ] **필요한 범위만 실행:** 변경과 관련된 최소 테스트를 명시적으로 실행한다. 이미 통과한 검증은 새 변경·실패·미해결 사항이 있을 때 재실행하며, 단순 문서 수정에 제품 빌드·전체 테스트를 요구하지 않는다. 테스트에는 20분 timeout을 적용하고 일반 반복 검증은 30회 이내로 제한한다.
-- [ ] **종료 후 정리:** 성공한 실행은 결과 요약을 기록한 뒤 소유한 프로세스·파일 핸들을 닫고 실행 폴더를 삭제한다. 실패·timeout·중단 시에는 실패 원인과 임시 경로를 기록하고, 조사에 필요한 동안만 남긴 뒤 해결 또는 작업 종료 시 삭제한다. 미해결로 보류할 경우 정리 시점을 작업 문서에 명시한다.
-- [ ] **삭제 범위 제한:** 정리 대상의 절대 경로가 `temp/testing/` 아래인지 확인하고, 해당 실행 폴더만 삭제한다. 동시 실행 중인 다른 작업, 제품 소스, 영구 fixture와 공유 캐시는 삭제 대상에 넣지 않는다. 기존 `Doroti/artifacts` 산출물은 M0와 저장소 정리 지침에 따라 별도로 정리한다.
+- **상시 규칙 — 기본은 임시 작성:** 버그 조사용 probe, API 확인, 성능 비교, 일회성 smoke는 처음부터 실행별 폴더에 작성한다. 작업마다 영구 테스트 프로젝트·검증 스크립트·결과 문서를 새로 추가하지 않는다.
+- **상시 규칙 — 영구 보존은 선별:** 반복적으로 확인할 공개 계약·실제 회귀가 있고 기존 테스트로 다룰 수 없을 때만 최소 사례를 남긴다. 보존 이유와 실행 시점을 기록하고, 우선 기존 회귀 장면에 통합한다. 기능 검증 완료가 일회성 테스트 파일의 영구 보존을 요구하지는 않는다.
+- [x] **기본 개발 경로에서 제외:** `/temp/`를 Git ignore·관련 source glob·프로젝트 검색·watch/launch fingerprint·pack에서 제외했다. 임시 프로젝트와 테스트 executable을 기본 제품 solution에 넣지 않았다. 적용 근거는 [M0 결과](00-foundation.md)를 따른다.
+- **상시 규칙 — 필요한 범위만 실행:** 변경과 관련된 최소 테스트를 명시적으로 실행한다. 이미 통과한 검증은 새 변경·실패·미해결 사항이 있을 때 재실행하며, 단순 문서 수정에 제품 빌드·전체 테스트를 요구하지 않는다. 테스트에는 20분 timeout을 적용하고 일반 반복 검증은 30회 이내로 제한한다.
+- [x] **성공 실행 정리:** aggregate 실행의 생성·실행·요약·소유 폴더 자동 삭제 사이클을 확인했다.
+- [ ] **정리 보류 해소:** 실패·timeout·중단·수동 조사 자료는 [M0](00-foundation.md#임시-정리-보류)와 [전체 실행 기록](../README.md)의 목록을 확인해 필요한 요약 후 정리한다. 미해결 자료의 사유·정리 시점을 남긴다.
+- **상시 규칙 — 삭제 범위 제한:** 정리 대상의 절대 경로가 `temp/testing/` 아래인지 확인하고, 해당 실행 폴더만 삭제한다. 동시 실행 중인 다른 작업, 제품 소스, 영구 fixture와 공유 캐시는 삭제 대상에 넣지 않는다. 기존 `Doroti/artifacts` 산출물은 M0와 저장소 정리 지침에 따라 별도로 정리한다.
 - [ ] **기존 누적 파일 정리:** 기존 파일을 상시 회귀·진행 중 조사·폐기 가능한 일회성 파일로 분류한다. 진행 중 조사만 `temp/testing/`으로 옮기고, 종료된 일회성 파일은 필요한 요약을 남긴 뒤 삭제한다. 경로를 참조하던 실행기·CI·문서도 함께 수정하며, 불필요한 파일 전체를 새 위치로 복제하지 않는다.
 
 **관리 완료 기준:** 임시 테스트를 생성·실행·요약·삭제하는 한 사이클을 확인한다. `temp/testing/`이 없는 새 체크아웃에서도 제품 빌드와 상시 회귀 검증이 동작하고 실행 시 필요한 폴더를 다시 생성한다. 임시 프로젝트가 기본 빌드·watch·패키지에 포함되지 않으며, 작업 종료 후 임시 파일은 삭제되거나 보류 사유·정리 시점이 기록돼 있다. 삭제한 파일을 남아 있는 증거로 링크하지 않는다.
@@ -60,13 +64,13 @@
 ## 2026-09-28 실행 결과
 
 - 상태: **최소 runtime PASS / 전체 M1 PARTIAL**. revision: a93c047fe2e93d93cff3e0a6bf3c2789862fea81 + 작업 트리 변경 (미커밋).
-- `Doroti.Testing` 제품 패키지에 `WidgetTester`, `TestClock`, CPU Skia host를 추가했다. pumpWidget/pump/pumpAndSettle, predicate/type/key/text finder, tap/drag, key/text packet, semantics 및 CPU PNG 진단 API를 제공한다. serial/non-nested 실행만 허용한다.
+- `Doroti.Testing` 제품 패키지에 `WidgetTester`, `TestClock`, CPU Skia host를 추가했다. pumpWidget/pump/pumpAndSettle, predicate/type/key/text finder, tap/drag, key/text packet, semantics 및 CPU PNG 진단 API를 제공한다. 초기 기록은 serial/non-nested 범위이며, 현재 독립 owner-thread 검증 범위는 아래 2026-09-29 결과를 따른다.
 - `python Doroti/eng/run-with-timeout.py dotnet run --project Doroti/tests/Doroti.Tests -c Debug`: CupertinoTabScaffold의 두 탭을 pointer로 전환하고 controller/page 상태를 확인한다. Hit test를 IgnorePointer로 막는 `--break-tab`은 의도한 실패다. 정상 경로 및 지속 timer bounded settle, 연속 tester 생성·해제 PASS.
 - 타이머는 TimeProvider를 통해 결정적으로 전진한다. pumpAndSettle은 pending timer도 기다리므로 cursor blink도 취소하지 않으면 timeout이다. timeout 진단은 frame/timer/scheduled 상태와 위젯 트리를 포함한다. 일반 framework error는 pump 실패로 보고한다.
 - 한글 `ㅎ → 한 → 한글` 합성 composing packet의 취소·selection 보존과 pointer focus, TextField unmount 후 native text-client 해제 PASS. 물리 IME 및 후보창 좌표를 시험한 것은 아니다.
 - 새 teardown은 root unmount → focus/image/semantics 정리 → binding별 static/scheduler/input 참조 해제 순서다. FocusManager는 dispose 뒤 남은 microtask를 무시한다. Windows host는 GPU preflight 이후 framework를 capability보다 먼저 정리한다.
 - 외부 PackageReference-only 소비 앱에서도 Testing/Cupertino 회귀 PASS. aggregate 테스트 원시 빌드는 실행 폴더에 두고 요약 후 자동 삭제했으며 상시 테스트는 제품 solution에 넣지 않았다. 초기 직접 실행의 tests/Doroti.Tests/bin·obj와 수동 확인 산출물은 최종 삭제가 자동 승인 정책에 차단되어 M0의 정리 보류 목록에 남겼다.
-- 남음: ListView, Dialog 중간 프레임, VariableBlur geometry/golden, GPU/texture/복수 owner 상세 수명, 플랫폼별 키·semantics 동작 검증. CPU 이미지 API를 golden 승인으로 표시하지 않는다. 단일 프로세스 binding 병렬 실행은 unsupported다.
+- 당시 잔여였던 ListView·VariableBlur geometry는 [04의 CPU 회귀](04-rendering-lifetime.md), Dialog 중간 프레임과 독립 owner-thread 격리는 아래 2026-09-29 결과로 보강했다. 현재 남은 범위는 GPU golden·GPU/texture/native 복수 owner 상세 수명·플랫폼별 키/semantics/물리 입력이다. CPU 이미지 API를 golden 승인으로 표시하지 않으며 같은 thread의 nested tester는 계속 거절한다.
 - 다음: [02 Desktop](02-desktop-contract.md), [03 입력](03-input-accessibility-platformview.md)의 미검증 범위를 계속 검증한다.
 
 ## 2026-09-29 추가 검증

@@ -24,9 +24,10 @@ M0 → M1 최소 경로 → M2 → M4/M5 → M6(대상 플랫폼) → M7 순서�
 
 ## 1. 기본 실행·Desktop 연결 — M0/M1/M2-A, P0 → P1
 
-- [ ] 기본 `windows` alias가 Windows App SDK runner를 선택하는지 확인하고 clean checkout의 build/기동 smoke를 M0 실행기·CI에 연결한다.
-- [ ] Windows App SDK용 `IWindowHostFactory`/`IWindowHost`를 구현하고 `DOROTIDESKTOP005`의 Desktop companion 허용 조건, 템플릿, Testbed를 함께 연결한다.
-- [ ] 크기·DPI·최소/최대 크기, show/hide/focus, 제목·native caption·appearance, close 취소·render drain을 공통 Desktop 계약으로 구현한다.
+- [x] 기본 Windows App SDK runner와 Desktop companion을 연결하고 로컬 Debug build·WindowsSmoke 및 CI 실행 경로를 구성했다. [00 결과](../common/00-foundation.md)
+- [ ] clean checkout/OS와 원격 CI에서 실행을 확인한다. GPU smoke는 interactive self-hosted runner 결과로 따로 기록한다.
+- [x] Windows App SDK용 `IWindowHostFactory`/`IWindowHost`, `DOROTIDESKTOP005` 허용 조건, 템플릿·Testbed를 연결했다. 실제 창 크기·제목·show/hide/focus·최소화/복원·caption 및 API/native close 취소·정리 회귀 PASS. [02 결과](../common/02-desktop-contract.md)
+- [ ] 최소/최대 크기·DPI 제약과 appearance의 전체 지원 범위를 확인하고 미지원 동작은 capability로 명시한다. 실제 화면·mixed-monitor 결과는 다음 항목에서 검증한다.
 - [ ] 첫 표시·live resize·최소화/복원·디스플레이 이동·종료 중 pending GPU 작업을 실제 화면과 자원 수명으로 검증한다. native 닫기와 API 닫기가 같은 취소·정리 경로를 거치는지 확인한다.
 
 ## 2. 입력·접근성·합성·렌더링 — M2-B/C, P1
@@ -39,22 +40,25 @@ M0 → M1 최소 경로 → M2 → M4/M5 → M6(대상 플랫폼) → M7 순서�
 
 ## 3. 개발 도구 — M3, P1
 
-- [ ] clean VS Code profile의 로컬 VSIX에서 앱 생성 → snippet/import → Windows App SDK `Debug` 실행 → 로그 → 중지를 검증한다.
-- [ ] 지원되는 metadata update 환경에서 전용 Hot Reload 버튼으로 실제 코드 갱신과 State·입력·스크롤 보존을 확인한다. 오류 후 재시도·연속 클릭·종료한 세션 응답·재시작 필요 상태도 확인한다.
-- [ ] 실행 전·Release·미지원 환경에서 버튼의 비활성화 사유를 표시하고 Windows 결과를 Web 결과와 별도로 기록한다.
+- [x] 생성 앱과 clean profile의 설치 VSIX에서 snippet/import의 editor API 경로, Windows App SDK Debug Run·중복 Run·Hot Reload·Stop을 확인했다(2026-09-28). 실제 C# 서비스가 아닌 공급된 Quick Fix 진단을 사용한 범위는 [05 결과](../common/05-vscode-hot-reload.md)를 따른다.
+- [x] 실제 metadata update 후 동일 runtime/State·입력·스크롤 유지, 컴파일 오류 후 수정·재시도, 중복 요청 직렬화를 확인했다. 미지원 편집은 restart 필요로 보고하고 실행 전·Release·미지원 환경의 버튼 비활성화 계약을 구현했다.
+- [ ] 실제 생성 마법사 전체 UI·C# 서비스 로딩/타입 충돌·모든 snippet 편집·restricted profile·Restart/종료 경합을 검증한다. 2026-09-29 창 문맥 변경 후 설치 VSIX의 실제 metadata 흐름도 재검증한다. Windows 결과와 Web 결과를 분리한다.
 
 ## 4. 앱 기능과 추가 창 — M4/M5/M6, P2
 
 - [x] FilePicker·URL launcher를 공통 플러그인 계약으로 연결하고 취소·파일 접근 수명·권한/오류·창 종료 중 응답을 검증한다. 2026-09-28 첫 Windows App SDK 범위: 실제 OS picker·취소·파일 읽기·브라우저 loopback·NuGet-only Release 소비 PASS. 권한 거절은 synthetic 계약 회귀이며 실제 ACL/물리 입력/MAUI는 notVerified. [M4 상세 결과](../common/06-plugin-sdk.md)
-- [ ] Explorer의 파일/텍스트/URI 수신부터 구현한다. 다중/큰 파일·stream 읽기·DPI 좌표·취소를 확인한 뒤 OS 송신·drag 이미지·창 간 이동·move 책임을 확장한다.
-  - 2026-09-28 **PARTIAL**: 공통 OS drop capability와 Windows OLE 수신 연결, 실제 OLE fixture의 다중 파일/한글/URI drag, 실제 5GB sparse 파일·4GB offset·96/192 DPI·수명·NuGet-only Release 소비 PASS. Explorer 교차 창 입력은 UI 도구 범위 제한으로 notVerified. 송신/virtual files/실제 mixed-DPI 이동은 잔여. [M5-A 결과](../common/07-os-drag-drop.md)
-- [ ] Windows protocol activation의 cold/warm start를 Router 대기·중복 처리와 연결하고 상태 migration·강제 종료 후 복원을 검증한다.
-- [ ] 공통 창 문맥 ADR 이후 `CreateWindowAsync`와 fresh `WindowContent`를 실제 추가 창에 연결한다. 두 창의 독립 입력·IME·DPI·native content·렌더링·닫기 및 `OnLastWindowClosed`/`Explicit` 수명을 검증한다.
+- [x] Windows OLE Copy 수신을 연결했다. 실제 OLE fixture의 다중 파일/한글/URI, 5GB sparse 파일·4GB offset·96/192 DPI·수명·NuGet-only Release 소비 PASS(2026-09-28). [M5-A 결과](../common/07-os-drag-drop.md)
+- [ ] Explorer 교차 창 전달·물리 입력·드래그 중 mixed-DPI·취소를 검증하고, OS 송신·drag 이미지·move/link·원본 처리 책임·virtual file·창 간 이동을 확장한다.
+- [x] opt-in Windows protocol 전달을 Router에 연결하고 실제 runner cold/warm·강제 종료 뒤 route 복원을 확인했다. [08 결과](../common/08-navigation-restoration.md)
+- [ ] 설치 단계의 OS protocol 등록·OS 링크 열기, 앱별 schema migration·사용자 입력/선택의 전체 복원 사례를 검증한다.
+- [x] 창 문맥 ADR과 `CreateWindowAsync`/fresh `WindowContent`를 실제 추가 창에 연결했다. 두 HWND·TextBox island·독립 크기·survivor resize·`OnLastWindowClosed`/`Explicit` 종료 및 NuGet 소비 PASS. [09 결과](../common/09-multiwindow.md)
+- [ ] 두 창의 물리 입력/IME·스크롤·mixed-monitor DPI·실제 화면 품질·WebView 등 전체 native content·창 간 이동을 검증한다.
 - [ ] `_window_win32.cs` Satellite의 Desktop 연결 또는 지원 경계를 정리해 native 창 중복 소유를 막는다.
 
 ## 5. 배포 — M7, P3
 
-- [ ] package-only 소비 앱을 clean 환경에서 restore/build/run/publish하고 실제 지원하는 Release·trimming·AOT 조합을 명시한다.
+- [x] 격리 NuGet cache의 package-only Release self-contained JIT 소비 앱과 두 실제 창 실행, 개발 머신의 portable 설치/업데이트/제거·userdata 보존을 검증했다. [10 결과](../common/10-release-packaging.md)
+- [ ] 후속 수정이 포함된 새 후보로 clean OS 설치/실행을 검증하고 실제 지원하는 Release·trimming·AOT 조합을 명시한다. 기존 후보에 이후 보강 결과를 합치지 않는다.
 - [ ] 선택한 Windows 배포 형식의 서명·설치·업데이트·제거·데이터 유지·crash/로그를 검증하고 장기 실행·반복 창/PlatformView 생성·GPU loss 회귀를 확인한다.
 
 ## 완료 기준
@@ -75,7 +79,7 @@ M0 → M1 최소 경로 → M2 → M4/M5 → M6(대상 플랫폼) → M7 순서�
 
 ## 검증·결과 기록
 
-[공통 완료 규칙과 결과 형식](../README.md#결과-기록-형식)을 적용한다. 테스트는 20분 timeout을 사용하고 일반 반복 검증은 30회 이내로 설계한다. 원시 산출물은 삭제 가능한 `Doroti/artifacts`, 보존할 요약·fixture는 추적되는 tests/docs/history에 둔다.
+[공통 완료 규칙과 결과 형식](../README.md#결과-기록-형식)을 적용한다. 테스트는 20분 timeout을 사용하고 일반 반복 검증은 30회 이내로 설계한다. 일회성 테스트·원시 로그·캡처·소비 앱은 `temp/testing/<작업-ID>/<실행-ID>/`에 모으고 요약 후 정리한다. 제품 빌드·release 후보 등 기존 `Doroti/artifacts`는 별도의 삭제 가능한 산출물이며, 필요한 요약·최소 상시 fixture만 추적되는 tests/docs/history에 보존한다.
 
 ## 2026-09-28 갱신
 

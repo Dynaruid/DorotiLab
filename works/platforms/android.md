@@ -5,7 +5,7 @@ IntentFilter를 연결했다. Galaxy S25(SM-S931N)/Android 16에 Release Mono AO
 cold `/first`·warm `/second`·강제 종료 후 `/second` 복원을 실제 화면으로 확인했다.
 ADB intent/실제 표시이며 물리 IME 입력과 구분한다. Android package-only·출시 서명은 아직 검증하지 않았다.
 
-원문: [plan.md](../../plan.md) M0~M7 · 작업 상태: **TODO** · 새 실행 검증: **notVerified**
+원문: [plan.md](../../plan.md) M0~M7 · 작업 상태: **PARTIAL — intent·route 복원 연결** · 실행 검증: **범위별 PASS / 나머지 notVerified**
 
 [전체 작업 인덱스](../README.md)
 
@@ -43,8 +43,8 @@ M0 → M1 최소 경로 → M2 → M4/M5 → M6(대상 플랫폼) → M7 순서�
 
 - [ ] FilePicker·URL launcher의 target별 handler/native asset·등록·취소·권한 거절·파일 접근 수명을 검증한다.
 - [ ] OS Drag & Drop의 제공 가능 범위를 조사하고 공통 capability에 연결한다. 지원하는 환경의 수신·좌표·stream·취소만 실행 결과로 기록한다.
-- [ ] Android intent의 cold/warm activation을 Router 준비 전 대기·중복 처리와 연결한다. 같은 링크·잘못된 링크·back 동작·기존 lifecycle과의 충돌을 검증한다.
-- [ ] route·입력·선택 상태 저장과 정상 재시작/강제 종료 후 복원, 오래된 상태 migration·실패 fallback을 확인한다.
+- [x] `DorotiMauiActivity`·Testbed IntentFilter를 공통 activation/Router에 연결한다. Galaxy S25 / Android 16 / Release Mono AOT에서 ADB intent cold `/first`·warm `/second`와 강제 종료 후 `/second` 화면 복원을 확인했다(2026-09-29, [08 결과](../common/08-navigation-restoration.md)).
+- [ ] 최종 공통 수명 수정 이후 재빌드한 APK를 다시 설치해 같은 경로를 재검증한다. 같은/잘못된 링크·back·lifecycle 충돌, 정상 재시작·입력/선택 상태 복원, 앱별 migration·실패 fallback을 확인한다. 기존 route 화면 PASS는 이 전체 범위를 포함하지 않는다.
 
 ## 5. 배포 — M7, P3
 
@@ -68,6 +68,6 @@ M0 → M1 최소 경로 → M2 → M4/M5 → M6(대상 플랫폼) → M7 순서�
 
 ## 검증·결과 기록
 
-[공통 완료 규칙과 결과 형식](../README.md#결과-기록-형식)을 적용한다. 테스트는 20분 timeout을 사용하고 일반 반복 검증은 30회 이내로 설계한다. 원시 산출물은 삭제 가능한 `Doroti/artifacts`, 보존할 요약·fixture는 추적되는 tests/docs/history에 둔다.
+[공통 완료 규칙과 결과 형식](../README.md#결과-기록-형식)을 적용한다. 테스트는 20분 timeout을 사용하고 일반 반복 검증은 30회 이내로 설계한다. 일회성 테스트·원시 로그·캡처·소비 앱은 `temp/testing/<작업-ID>/<실행-ID>/`에 모으고 요약 후 정리한다. 제품 빌드·release 후보 등 기존 `Doroti/artifacts`는 별도의 삭제 가능한 산출물이며, 필요한 요약·최소 상시 fixture만 추적되는 tests/docs/history에 보존한다.
 
-현재 기록: 작업 계획만 작성했다. 플랫폼 구현·build·실기기·성능 검증을 새로 실행하지 않았다. 각 항목의 완료 시 관련 공통 작업 문서와 플랫폼/호스트/renderer/build mode별 지원표를 함께 갱신한다.
+현재 기록: 2026-09-29 소스 기반 Testbed Release Mono AOT의 설치/업데이트와 ADB intent·route 복원 화면은 PASS다. 이후 최종 공통 수명 수정 뒤 재빌드는 통과했지만 기기 연결이 끊겨 최종 APK의 재설치는 수행하지 못했다. 물리 IME·TalkBack·전체 PlatformView·성능·package-only·출시 서명은 notVerified다. [08 결과](../common/08-navigation-restoration.md)와 [10 결과](../common/10-release-packaging.md)의 revision별 범위를 따르며 관련 지원표를 함께 갱신한다.

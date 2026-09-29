@@ -14,12 +14,14 @@ activation 대기·중복 처리, Router, 상태 형식·migration·복원 실�
 
 ## 원문 작업과 완료 기준
 
-아래는 원문의 체크리스트와 완료 기준을 보존한 것이다. 특정 호스트를 명시한 항목은 연결된 플랫폼 문서에서 해당 구현·검증을 추적하고, 이 문서에는 공유 계약 및 통합 결과를 기록한다. 공통 구현 완료가 모든 플랫폼 검증 완료를 뜻하지 않는다.
+원문의 범위와 완료 기준을 유지하면서 2026-09-28~29 실행 기록에 따라 완료 부분과 잔여 부분을 분리했다. 체크된 항목은 명시한 호스트·검증 범위에 한정하며, 아래 날짜별 결과가 근거다. 공통 구현 완료가 모든 플랫폼 검증 완료를 뜻하지 않는다.
 
 - [x] 공통 activation event에 URI·출처·cold/warm start를 전달하고 Router 준비 전 들어온 요청의 대기·중복 처리 규칙을 정한다.
-- [ ] Web URL ↔ Router와 back/forward/새로고침, Android intent, iOS Universal Link, Windows protocol activation을 순차 연결한다. 나머지 desktop activation도 지원표로 추적한다.
-- [ ] 기존 lifecycle 이벤트를 활용해 비활성화/복귀/종료 시 상태 저장 시점을 정한다. 강제 종료 후 복원과 정상 재시작을 구분한다.
-- [ ] route·사용자 입력·선택 상태의 저장 형식과 version migration을 정하고, 잘못된 링크·오래된 상태·복원 실패의 fallback을 제공한다.
+- [x] Windows opt-in protocol 전달·Web main-owned history/sessionStorage·Android intent를 공통 Router에 연결했다. Windows cold/warm/restart와 Galaxy route 화면, 공통/Node 계약 회귀는 아래 범위에서 PASS다.
+- [ ] 실제 브라우저 back/forward·새로고침·bfcache를 검증하고 Windows 설치 protocol 등록, iOS Universal Link·AppKit/Qt/Catalyst·Web worker-owned framework 연결을 마무리한다.
+- [x] checkpoint v1·크기 상한·원자적 파일 교체·lifecycle flush·정상 종료 표시·cold 링크 우선순위·손상/미지원 버전 fallback을 구현하고 공통 회귀를 통과했다.
+- [ ] 앱별 schema migration과 route·사용자 입력·선택 상태의 정상 재시작/강제 종료 후 복원을 전체 목표 호스트에서 검증한다. 미지원 버전의 빈 상태 fallback은 데이터 migration 구현과 구분한다.
+- [ ] 최종 공통 수명 수정 후 Android APK를 재설치해 cold/warm·복원을 재검증한다. 해당 APK는 재빌드만 통과했으며 앞선 기기 실행과 구분한다.
 
 **완료 기준:** 종료된 앱과 실행 중 앱에 같은 링크를 전달해 목적 화면으로 이동한다. Web back/forward와 새로고침, 프로세스 재시작 후 상태 복원이 서로 충돌하지 않는다.
 

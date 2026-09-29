@@ -24,6 +24,14 @@ These are local unsigned preview candidates, not signed production releases.
 Disposable consumer sources, caches and logs are under `temp/testing/`; cleanup
 failures are recorded explicitly instead of claiming removed evidence.
 
+The last candidate recorded by the 2026-09-29 generation run was
+`0.3.0-beta.rc.20260929010529`. The subsequent 00–10 follow-up changed shutdown,
+restoration and installer behavior and ran local regressions without generating
+a new Release candidate. The installer contract below describes the updated
+source; it does not establish that the earlier candidate contains those changes.
+Generate and validate a new candidate before using follow-up results as release
+evidence. See [dated results](../../works/common/10-release-packaging.md).
+
 Install/upgrade a candidate to a dedicated local preview directory:
 
 ```powershell
