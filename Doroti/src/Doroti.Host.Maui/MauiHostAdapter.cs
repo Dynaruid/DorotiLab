@@ -41,7 +41,12 @@ internal sealed class MauiHostAdapter
                 opened = AppKit.NSWorkspace.SharedWorkspace.OpenUrl(url);
             });
 #else
-            opened = await MainThread.InvokeOnMainThreadAsync(() => Launcher.Default.TryOpenAsync(absoluteUrl));
+            opened = await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                ObjectDisposedException.ThrowIf(_disposed, this);
+                return Launcher.Default.TryOpenAsync(absoluteUrl);
+            });
 #endif
             return opened
                 ? new(UrlLaunchStatus.opened)

@@ -53,7 +53,7 @@ internal sealed class AppKitOsDrop(Action<Action> dispatch) : IOsDragDropHostCap
                     if (uri.IsFile && formats.Contains(OsDropFormats.Files))
                     {
                         using var url = new NSUrl(location);
-                        files.Add(new AppKitReadFile(url));
+                        files.Add(new AppleReadFile(url));
                     }
                 }
                 if (formats.Contains(OsDropFormats.Text) && item.GetStringForType(TextType) is { } value)

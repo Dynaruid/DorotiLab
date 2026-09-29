@@ -135,3 +135,13 @@ signature verification are required. Candidate manifests record package/payload
 hashes and generation-time source/toolchain provenance. This is local package
 extraction, not Installer/Gatekeeper/Developer ID/notarization or clean OS
 installation qualification. See [current AppKit results](../../works/results/2026-09-29-macos-appkit.md).
+
+2026-09-29 UIKit/Catalyst: [implementation, smoke commands and remaining qualification](../../works/results/2026-09-29-ios-catalyst.md). iOS Simulator, device signing and Catalyst scenes have separate evidence; package-only publish does not imply clean signed distribution.
+
+Apple candidate options: `--targets maccatalyst` and `--targets ios` each build an
+isolated target feed. Catalyst performs Release publish, local ad-hoc signing and
+native frame qualification. iOS uses Release **simulator build/install/run**;
+Apple's SDK rejects simulator `publish`, and signed device publish remains a
+separate provisioning gate. These single-TFM local Host.Maui feeds must not be
+merged or published as a universal multi-platform NuGet release. No packages are
+pushed by this workflow. Candidate manifests retain the target TFM/RID and hashes.

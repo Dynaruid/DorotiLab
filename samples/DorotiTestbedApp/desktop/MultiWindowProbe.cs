@@ -13,7 +13,7 @@ internal static class MultiWindowProbe
         var second = await main.Windows.CreateWindowAsync(template with
         {
             Options = template.Options with { Title = "Doroti second window", Size = new Size(560, 600),
-                StartupVisibility = WindowStartupVisibility.WhenReady },
+                StartupVisibility = template.Options.StartupVisibility },
             OnCreated = null,
         }, ct);
         await second.WaitUntilReadyToShowAsync(ct);

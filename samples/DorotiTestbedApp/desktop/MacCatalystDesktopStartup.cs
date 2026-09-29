@@ -24,6 +24,14 @@ public sealed class MacCatalystDesktopStartup : IDorotiDesktopApplicationStartup
                 OnCreated = async (context, ct) =>
                 {
                     await context.Window.WaitUntilReadyToShowAsync(ct);
+                    if (Environment.GetEnvironmentVariable("DOROTI_MULTIWINDOW_PROBE") is { Length: > 0 } multi)
+                    {
+                        await MultiWindowProbe.RunAsync(context, desktop.LegacyMainWindow with
+                        {
+                            Options = new WindowOptions { Title = "Doroti second scene", MinimumSize = new Size(350, 300), Appearance = new() { BackgroundColor = new Color(0xffffffff) } } with { StartupVisibility = WindowStartupVisibility.PlatformDefault },
+                        }, multi);
+                        return;
+                    }
                     if (
                         Environment.GetEnvironmentVariable("DOROTI_CATALYST_DESKTOP_PROBE") is
                         { Length: > 0 } path

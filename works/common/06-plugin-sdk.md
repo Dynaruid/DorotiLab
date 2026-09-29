@@ -106,3 +106,5 @@ Qt FilePicker·descriptor handler·Linux package 등록·취소·regular-file gr
 
 AppKit NSOpenPanel/NSWorkspace adapter와 security-scoped bounded read grant를 연결했다. native sheet 취소·owner close·128 MiB offset 읽기 PASS; 물리 선택/권한 거절/native event source qualification은 남는다.
 [구현·명령·결과·잔여](../results/2026-09-29-macos-appkit.md)를 따른다.
+
+2026-09-29 iOS/Catalyst 후속: [별도 구현·실행 결과](../results/2026-09-29-ios-catalyst.md). UIKit 연결·native 재생성·Catalyst 두 scene·activation을 보강했으며 전체 물리 입력·GPU·배포 완료와 구분한다.

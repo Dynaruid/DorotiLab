@@ -85,3 +85,5 @@ Qt 실제 QQuickWindow 추가 생성, 창별 dispatcher/session/PlatformView/GPU
 
 AppKit 실제 두 NSWindow/독립 surface-session/factory·공유 application boundary와 OnLastWindowClosed/Explicit를 연결했다. 두 renderer의 화면·첫 창 종료 후 survivor 12회 resize PASS. Satellite/owned/modal은 unsupported다.
 [구현·명령·결과·잔여](../results/2026-09-29-macos-appkit.md)를 따른다.
+
+2026-09-29 iOS/Catalyst 후속: [별도 구현·실행 결과](../results/2026-09-29-ios-catalyst.md). UIKit 연결·native 재생성·Catalyst 두 scene·activation을 보강했으며 전체 물리 입력·GPU·배포 완료와 구분한다.

@@ -1,6 +1,6 @@
 # iOS 작업 계획
 
-원문: [plan.md](../../plan.md) M0~M7 · 작업 상태: **TODO** · 새 실행 검증: **notVerified**
+원문: [plan.md](../../plan.md) M0~M7 · 작업 상태: **PARTIAL** · 새 실행 검증: **범위별 PASS / 잔여 notVerified**
 
 [전체 작업 인덱스](../README.md)
 
@@ -62,4 +62,13 @@ M0 → M1 최소 경로 → M2 → M4/M5 → M6(대상 플랫폼) → M7 순서�
 
 [공통 완료 규칙과 결과 형식](../README.md#결과-기록-형식)을 적용한다. 테스트는 20분 timeout을 사용하고 일반 반복 검증은 30회 이내로 설계한다. 일회성 테스트·원시 로그·캡처·소비 앱은 `temp/testing/<작업-ID>/<실행-ID>/`에 모으고 요약 후 정리한다. 제품 빌드·release 후보 등 기존 `Doroti/artifacts`는 별도의 삭제 가능한 산출물이며, 필요한 요약·최소 상시 fixture만 추적되는 tests/docs/history에 보존한다.
 
-현재 기록: 작업 계획만 작성했다. 플랫폼 구현·build·실기기·성능 검증을 새로 실행하지 않았다. 각 항목의 완료 시 관련 공통 작업 문서와 플랫폼/호스트/renderer/build mode별 지원표를 함께 갱신한다.
+2026-09-29: [iOS/Catalyst 후속 결과](../results/2026-09-29-ios-catalyst.md)에 구현·build·실행 범위를 기록했다.
+아래 보강과 기존 체크리스트의 전체 완료는 구분한다. 물리 입력·VoiceOver·GPU 예산·실제 배포 잔여를 유지한다.
+
+- [x] UIKit FilePicker/URL·텍스트/URI Copy drop capability와 scene URL/Universal Link callback 연결.
+- [x] 별도 runner/renderer/TFM을 기록하는 유지보수 smoke 및 iOS RID/TFM 참조 경로 보강.
+- [x] native editor/WKWebView 각각 생성·재생성 실행.
+- [ ] 물리 입력·VoiceOver·권한 대화상자·OS drag/Universal Link의 전체 외부 전달 검증.
+- [ ] 실기기 서명/설치·AOT·clean 배포·성능 예산·장기 수명 검증.
+
+- [x] 2026-09-29 후속 요청으로 iPhone 12 / iOS 26.6.1에 source Debug/Mono 개발 서명·설치·기동·실제 화면 확인. Release/NativeAOT·물리 입력 qualification은 별도다.

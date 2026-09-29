@@ -8,7 +8,7 @@ param(
     [ValidateSet('doctor', 'build', 'open', 'add')]
     [string] $NativeCommand,
 
-    [ValidateSet('Source', 'Build', 'Targets', 'WindowsSmoke', 'LinuxSmoke', 'MacOSSmoke', 'Packages', 'Developer', 'Release')]
+    [ValidateSet('Source', 'Build', 'Targets', 'WindowsSmoke', 'LinuxSmoke', 'MacOSSmoke', 'IOSSmoke', 'CatalystSmoke', 'Packages', 'Developer', 'Release')]
     [string] $ValidationSuite = 'Developer',
 
     [string] $App,

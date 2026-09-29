@@ -13,7 +13,7 @@ public sealed class DorotiGraphiteView : SKGLView
 #if ANDROID
     internal AndroidPlatformViewHost? PlatformViews { get; set; }
 #endif
-#if IOS && !MACCATALYST
+#if IOS || MACCATALYST
     internal UIKitPlatformViewHost? PlatformViews { get; set; }
 #endif
     internal static bool Enabled =>

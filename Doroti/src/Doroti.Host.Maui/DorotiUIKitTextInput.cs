@@ -1,4 +1,4 @@
-#if IOS && !MACCATALYST
+#if IOS || MACCATALYST
 using CoreGraphics;
 using Doroti.Ui;
 using Microsoft.Maui.Controls;

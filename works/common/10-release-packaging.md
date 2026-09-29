@@ -102,3 +102,5 @@ Linux 후보 0.3.0-beta.qt.20260929: 25개 패키지·격리 cache 소비·Relea
 
 macOS 후보 생성/격리 NuGet template consumer/Release pkg 확장·실행/서명 검사 경로를 추가했다. macOS non-trim은 SDK 요구에 맞춰 PublishTrimmed=true + LinkMode=None이다. 최종 후보와 clean OS/Developer ID·공증 잔여를 아래 결과에 분리한다.
 [구현·명령·결과·잔여](../results/2026-09-29-macos-appkit.md)를 따른다.
+
+2026-09-29 iOS/Catalyst 후속: [별도 구현·실행 결과](../results/2026-09-29-ios-catalyst.md). UIKit 연결·native 재생성·Catalyst 두 scene·activation을 보강했으며 전체 물리 입력·GPU·배포 완료와 구분한다.

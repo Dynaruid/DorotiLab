@@ -58,3 +58,5 @@ Qt Quick의 실제 추가 창·두 lifetime·크기/제약/상태/close 취소�
 
 AppKit 실제 추가 창과 양 Metal renderer의 크기/focus/appearance/최소화/fullscreen/close 취소·render drain을 확인했다. mixed-monitor·물리 live resize는 별도 잔여다.
 [구현·명령·결과·잔여](../results/2026-09-29-macos-appkit.md)를 따른다.
+
+2026-09-29 iOS/Catalyst 후속: [별도 구현·실행 결과](../results/2026-09-29-ios-catalyst.md). UIKit 연결·native 재생성·Catalyst 두 scene·activation을 보강했으며 전체 물리 입력·GPU·배포 완료와 구분한다.

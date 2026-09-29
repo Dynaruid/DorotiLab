@@ -1,4 +1,4 @@
-#if IOS && !MACCATALYST
+#if IOS || MACCATALYST
 using UIKit;
 using CoreAnimation;
 using CoreGraphics;

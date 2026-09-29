@@ -1,4 +1,4 @@
-#if IOS && !MACCATALYST
+#if IOS || MACCATALYST
 using CoreGraphics;
 using Doroti.Hosting;
 using Doroti.Ui;
@@ -178,6 +178,16 @@ internal sealed class UIKitPlatformViewFactory(
             _beforeFocus = beforeFocus;
             _handle = handle;
             _focused = focused;
+            // Common samples encode initial content as JSON; retain raw text/HTML
+            // compatibility for existing UIKit callers.
+            if (text.TrimStart().StartsWith('{'))
+            {
+                using var settings = System.Text.Json.JsonDocument.Parse(text);
+                var key = type == "doroti/webview" ? "html" : "text";
+                if (settings.RootElement.TryGetProperty(key, out var value)
+                    && value.ValueKind == System.Text.Json.JsonValueKind.String)
+                    text = value.GetString()!;
+            }
             if (type == "doroti/native-editor")
             {
                 _control = new NativeEditor(BeforeFocus, Focused)

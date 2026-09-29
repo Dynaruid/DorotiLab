@@ -1,5 +1,7 @@
 # works 미완료 작업 검토
 
+2026-09-29 iOS/Mac Catalyst 후속: [구현·검증 결과](works/results/2026-09-29-ios-catalyst.md). UIKit 서비스·Catalyst PlatformView/추가 scene·activation 연결과 별도 smoke를 보강했다. 개발 provisioning profile을 발급했고, 후속 요청으로 iPhone 12에 source Debug 설치·기동·실제 화면을 확인했다. 물리 입력·VoiceOver·실제 배포 등은 남아 전체 **PARTIAL**이다.
+
 2026-09-29 macOS/AppKit 후속: [구현·검증 결과](works/results/2026-09-29-macos-appkit.md). 추가 창·Graphite/Ganesh·Desktop·native 재생성·파일 선택 취소·Copy drop 연결·activation/복원과 macOS 출시 후보 경로를 보강했다. 물리 입력/VoiceOver·OS 드롭 송신·clean 배포는 잔여이며 전체 **PARTIAL**이다.
 
 2026-09-29 Linux/Qt 후속: [구현·검증 결과](works/results/2026-09-29-linux-qt.md). 실제 추가 창·Qt FilePicker/URL·Copy drop/송신 취소·activation/복원·양 QPA·Widgets 비교·package-only/portable 설치를 구현·검증했다. Linux 전체 판정은 물리 입력/Orca·물리 GPU·clean OS/서명 잔여 때문에 **PARTIAL**이다.
@@ -165,11 +167,11 @@ Windows의 실제 두 HWND·native TextBox island·독립 크기·survivor resiz
 | [Web](works/platforms/web.md) | 실제 history·새로고침·복원, DOM/iframe 입력·접근성·합성, GPU/upload·모바일 메모리, 플러그인·drop adapter, publish 업데이트 | 브라우저·WebGL/WebGPU, main/worker-owned, desktop/물리 모바일, Debug/Release/AOT |
 | [Android](works/platforms/android.md) | 공통 fixture 연결, 물리 IME/TalkBack·PlatformView·복귀, 기기 성능, 플러그인·drop capability, 최종 APK 재설치·입력 복원, package-only/서명 | ADB intent·화면 캡처/물리 터치·키보드, 소스 APK/package-only, ABI·AOT |
 | [macOS / AppKit](works/platforms/macos.md) | Desktop·추가 창·양 Metal·native 재생성·picker 취소·Copy drop 연결·warm activation/route 복원 실행 완료. 물리 IME/VoiceOver·Finder 전달·송신·전체 GPU 예산·clean 배포 잔여 | AppKit/Catalyst, native 자동화/물리 입력, local pkg/clean 배포 |
-| [iOS](works/platforms/ios.md) | renderer별 adapter 확인, 실기기 IME/외부 키보드/VoiceOver·WKWebView, 성능·복귀, 플러그인/drop capability/Universal Link, 서명·AOT·배포 | 실기기/시뮬레이터, Graphite/Ganesh 등 renderer, iOS/Catalyst |
+| [iOS](works/platforms/ios.md) | Simulator Graphite native 재생성·picker 취소·callback/복원 및 package-only 양 renderer 기동 검증. 개발 profile 발급 및 iPhone 12 source Debug 설치·기동 확인; 물리 입력·VoiceOver·OS 링크/드롭·GPU 예산·배포 잔여 | 실기기/시뮬레이터, Graphite/Ganesh 등 renderer, iOS/Catalyst |
 | [Linux / Qt](works/platforms/linux.md) | Qt/native 의존성, Desktop 정합, IME/Orca·PlatformView, GPU 실측·수명, 파일 관리자 drop/플러그인/activation, 실제 추가 창, 패키지 배치 | Qt Quick/Widgets, Wayland/XWayland, VM/물리 GPU |
-| [Mac Catalyst](works/platforms/maccatalyst.md) | scene Desktop capability, 별도 native/WebView 연결, IME/VoiceOver·렌더링, 플러그인/drop/activation, 두 scene·종료, 독립 배포 | AppKit·iOS의 결과로 대체하지 않음 |
+| [Mac Catalyst](works/platforms/maccatalyst.md) | UIKit native/WebView·picker·Copy capability·OS activation/복원·두 native editor scene 수명 및 package-only Release 기동 검증. 물리 IME/VoiceOver·외부 drop·GPU 예산·clean 배포 잔여 | AppKit·iOS의 결과로 대체하지 않음 |
 
-iOS/Catalyst의 `TODO`는 **이번 works 계획의 새 실행 결과가 없다는 뜻**이다. 기존 host·adapter 전체가 미구현이라는 뜻은 아니다.
+초기 iOS/Catalyst `TODO`는 당시 새 실행 결과가 없다는 뜻이었다. 현재는 위 후속 결과의 **PARTIAL / 범위별 PASS**로 갱신했으며 기존 host·adapter 전체의 미구현을 뜻하지 않는다.
 
 ## 4. 먼저 진행할 순서
 

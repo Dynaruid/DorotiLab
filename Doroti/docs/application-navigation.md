@@ -70,3 +70,5 @@ distinguishes common contracts, native callbacks and actual display evidence.
 view creation, then route DOM history and restoration through the render-worker control
 mailbox. Main-owned runtime does not imply framework JavaScript runs on the DOM thread.
 See [actual Chrome and Android follow-up](../../works/results/2026-09-29-web-windows-android.md).
+
+2026-09-29 UIKit/Catalyst: [implementation, smoke commands and remaining qualification](../../works/results/2026-09-29-ios-catalyst.md). iOS Simulator, device signing and Catalyst scenes have separate evidence; package-only publish does not imply clean signed distribution.

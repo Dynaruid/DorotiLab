@@ -29,7 +29,7 @@ internal static class AppKitServicesProbe
                 stream.Position = stream.Length - 4;
                 await stream.WriteAsync(new byte[] { 1, 2, 3, 4 });
             }
-            AppKitReadFile? grant = null;
+            AppleReadFile? grant = null;
             await AppKitUi.Invoke(() => { using var url = NSUrl.FromFilename(path); grant = new(url); });
             var buffer = new byte[16];
             if (grant!.Length != 128 * 1024 * 1024 || await grant.ReadAsync(grant.Length - 4, buffer) != 4 || buffer[3] != 4)
@@ -40,13 +40,13 @@ internal static class AppKitServicesProbe
             await AppKitUi.Invoke(() =>
             {
                 using var directoryUrl = NSUrl.FromFilename(directory);
-                try { using var invalid = new AppKitReadFile(directoryUrl); throw new Exception("Directory grant accepted."); }
+                try { using var invalid = new AppleReadFile(directoryUrl); throw new Exception("Directory grant accepted."); }
                 catch (NotSupportedException) { }
                 File.SetUnixFileMode(path, UnixFileMode.None);
                 try
                 {
                     using var url = NSUrl.FromFilename(path);
-                    try { using var denied = new AppKitReadFile(url); throw new Exception("Unreadable file accepted."); }
+                    try { using var denied = new AppleReadFile(url); throw new Exception("Unreadable file accepted."); }
                     catch (UnauthorizedAccessException) { }
                 }
                 finally { File.SetUnixFileMode(path, UnixFileMode.UserRead | UnixFileMode.UserWrite); }

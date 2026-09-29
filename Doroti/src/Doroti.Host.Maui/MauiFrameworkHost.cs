@@ -166,7 +166,7 @@ public sealed class MauiFrameworkHost : IDisposable
             (kind, cancellationToken) =>
                 MauiHapticFeedback.PerformAsync(kind, surface, cancellationToken)
         );
-#if IOS && !MACCATALYST
+#if IOS || MACCATALYST
         var contextMenus = new MauiUIKitContextMenuChannel(messages, textInput);
         messages = contextMenus;
 #endif
@@ -193,6 +193,10 @@ public sealed class MauiFrameworkHost : IDisposable
             );
 #if ANDROID
         capabilities.Register<IFilePickerHostCapability>(DorotiCapabilityIds.FilePicker, new AndroidFilePicker());
+#endif
+#if IOS || MACCATALYST
+        capabilities.Register<IFilePickerHostCapability>(DorotiCapabilityIds.FilePicker,
+            new UIKitFilePicker(() => (surface.Element.Handler?.PlatformView as UIKit.UIView)?.Window?.RootViewController));
 #endif
 #if MACOS
         if (surface is DorotiMacOSMetalSurface pickerSurface)
@@ -233,7 +237,7 @@ public sealed class MauiFrameworkHost : IDisposable
             graphics.AttachPlatformViews(platformViews, channel);
         }
 #endif
-#if IOS && !MACCATALYST
+#if IOS || MACCATALYST
         if (
             application?.Manifest.PlatformViews.Length > 0
             && surface.Element is DorotiGraphiteView { PlatformViews: { } platformViews }
@@ -262,6 +266,17 @@ public sealed class MauiFrameworkHost : IDisposable
         DorotiView? view = null;
         try
         {
+#if IOS || MACCATALYST
+            {
+                var dropClosed = false;
+                host.Closed += () => dropClosed = true;
+                capabilities.Register<IOsDragDropHostCapability>(DorotiCapabilityIds.OsDragDrop,
+                    new UIKitOsDrop(surface.Element, callback => MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        if (!dropClosed) view?.DispatchPlatformEvent(callback);
+                    })));
+            }
+#endif
 #if MACOS
             if (surface is DorotiMacOSMetalSurface dropSurface)
             {
@@ -307,7 +322,7 @@ public sealed class MauiFrameworkHost : IDisposable
                     }));
                 host.Closed += () => { disposed = true; subscription.Dispose(); };
             }
-#if IOS && !MACCATALYST
+#if IOS || MACCATALYST
             contextMenus.Dispatch = callback => view.DispatchPlatformEvent(callback);
 #endif
             graphics.AttachFrameworkTrace(view.FrameTrace);

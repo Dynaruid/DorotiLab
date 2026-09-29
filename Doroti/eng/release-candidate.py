@@ -12,6 +12,7 @@ from pathlib import Path
 import re
 import shutil
 import stat
+import sys
 import subprocess
 import uuid
 import xml.etree.ElementTree as ET
@@ -21,15 +22,22 @@ ROOT = Path(__file__).resolve().parents[2]
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--targets', nargs='+', choices=['windows', 'web', 'android', 'macos'], default=['windows', 'web'])
+    parser.add_argument('--targets', nargs='+', choices=['windows', 'web', 'android', 'macos', 'ios', 'maccatalyst'], default=['windows', 'web'])
     parser.add_argument('--macos-tfm', choices=['net10.0-macos', 'net10.0-macos27.0'], default='net10.0-macos')
+    parser.add_argument('--ios-tfm', default='net10.0-ios27.0')
+    parser.add_argument('--catalyst-tfm', default='net10.0-maccatalyst27.0')
     parser.add_argument('--android-rid', choices=['android-arm64', 'android-x64'], default='android-arm64')
     parser.add_argument('--output', type=Path)
     parser.add_argument('--version', default='0.3.0-beta.rc.' + datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S'))
     args = parser.parse_args()
-    if 'macos' in args.targets and 'android' in args.targets:
-        parser.error('Qualify the MAUI Android and macOS packs in separate candidate runs.')
+    if len(set(args.targets) & {'macos', 'android', 'ios', 'maccatalyst'}) > 1:
+        parser.error('Qualify each MAUI platform pack in a separate candidate run.')
     mac_properties = ['-r', 'osx-arm64', '-p:DorotiMacOSTargetFramework=' + args.macos_tfm]
+    apple = next((target for target in args.targets if target in ('ios', 'maccatalyst')), None)
+    apple_rid = 'iossimulator-arm64' if apple == 'ios' else 'maccatalyst-arm64'
+    apple_tfm = args.ios_tfm if apple == 'ios' else args.catalyst_tfm
+    apple_properties = ['-r', apple_rid, '-p:' + ('DorotiIosTargetFramework' if apple == 'ios' else 'DorotiMacCatalystTargetFramework') + '=' + apple_tfm,
+                        '-p:DorotiCompilationMode=Mono'] if apple else []
     if not re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?', args.version):
         parser.error('Version must be a NuGet semantic version.')
     output = (args.output or ROOT / 'Doroti/artifacts/release' / args.version).resolve()
@@ -70,7 +78,9 @@ def main():
         for target in args.targets:
             package = {'windows': 'Doroti.Target.Windows.WindowsAppSdk.win-x64', 'web': 'Doroti.Target.Web.browser-wasm',
                        'android': 'Doroti.Target.Android.Maui.' + args.android_rid,
-                       'macos': 'Doroti.Target.MacOS.Maui.osx-arm64'}[target]
+                       'macos': 'Doroti.Target.MacOS.Maui.osx-arm64',
+                       'ios': 'Doroti.Target.iOS.Maui.iossimulator-arm64',
+                       'maccatalyst': 'Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64'}[target]
             roots.append(ROOT / 'Doroti/src' / package / (package + '.csproj'))
         projects = set()
 
@@ -80,9 +90,9 @@ def main():
             projects.add(path)
             if path.stem == 'Doroti.Host.Maui':
                 evaluated = json.loads(subprocess.check_output(['dotnet', 'msbuild', str(path), '-getItem:ProjectReference',
-                    '-p:TargetFramework=' + (args.macos_tfm if 'macos' in args.targets else 'net10.0-android'),
+                    '-p:TargetFramework=' + (apple_tfm if apple else args.macos_tfm if 'macos' in args.targets else 'net10.0-android'),
                     '-p:DorotiMacOSTargetFramework=' + args.macos_tfm,
-                    '-p:RuntimeIdentifier=' + ('osx-arm64' if 'macos' in args.targets else args.android_rid)], cwd=ROOT, text=True))
+                    '-p:RuntimeIdentifier=' + (apple_rid if apple else 'osx-arm64' if 'macos' in args.targets else args.android_rid)], cwd=ROOT, text=True))
                 for reference in evaluated['Items']['ProjectReference']:
                     visit(Path(reference['FullPath']))
             else:
@@ -91,6 +101,7 @@ def main():
         version = '-p:Version=' + args.version
         for project in roots:
             properties = mac_properties if project.stem == 'Doroti.Target.MacOS.Maui.osx-arm64' else []
+            if apple and project.stem.startswith(('Doroti.Target.iOS.', 'Doroti.Target.MacCatalyst.')): properties = apple_properties
             command('build-' + project.stem, 'dotnet', 'build', str(project), '-c', 'Release', version, '--nologo', *properties)
             visit(project)
         for sdk in ['Doroti.App.Sdk', 'Doroti.Runner.Sdk']:
@@ -103,6 +114,8 @@ def main():
             pack_properties = ['-p:RuntimeIdentifier=' + args.android_rid] if project.stem == 'Doroti.Host.Maui' else []
             if 'macos' in args.targets and project.stem in ('Doroti.Host.Maui', 'Doroti.Target.MacOS.Maui.osx-arm64'):
                 pack_properties = ['-p:RuntimeIdentifier=osx-arm64', '-p:DorotiMacOSTargetFramework=' + args.macos_tfm]
+            if apple and (project.stem == 'Doroti.Host.Maui' or project.stem.startswith(('Doroti.Target.iOS.', 'Doroti.Target.MacCatalyst.'))):
+                pack_properties = apple_properties
             command('pack-' + project.stem, 'dotnet', 'pack', str(project), '-c', 'Release', '--no-build', version, '-o', str(packages), '--nologo', *pack_properties)
         consumer = run / 'consumer'
         hive = str(run / 'template-hive')
@@ -139,7 +152,7 @@ def main():
                 },
                 Options = new WindowOptions'''), encoding='utf-8')
         for target in args.targets:
-            project = consumer / target / f'CandidateApp.{"MacOS" if target == "macos" else target.title()}.csproj'
+            project = consumer / ('macos' if target == 'maccatalyst' else target) / f'CandidateApp.{dict(macos="MacOS", ios="iOS", maccatalyst="MacCatalyst").get(target, target.title())}.csproj'
             target_properties = ['-r', args.android_rid, '-p:EmbedAssembliesIntoApk=true'] if target == 'android' else []
             if target == 'macos':
                 target_properties = mac_properties + ['-p:EnableCodeSigning=true', '-p:LinkMode=None']
@@ -147,8 +160,13 @@ def main():
     <DorotiDesktopProject>../desktop/CandidateApp.Desktop.csproj</DorotiDesktopProject>
     <DorotiDesktopStartupType>CandidateApp.Desktop.DesktopStartup</DorotiDesktopStartupType>
   </PropertyGroup>''', 1))
-            command('publish-' + target, 'dotnet', 'publish', str(project), '-c', 'Release', '--nologo',
-                    '-p:PublishTrimmed=' + ('true' if target == 'macos' else 'false'), '-p:RunAOTCompilation=false', '-o', str(output / target), *target_properties, cwd=consumer, env=environment)
+            if target in ('ios', 'maccatalyst'):
+                target_properties = apple_properties + ['-p:EnableCodeSigning=false', '-p:CreatePackage=false', '-p:LinkMode=None', '-p:PublishAot=false']
+            # Apple permits simulator build/run, but publish requires a signed device RID.
+            operation = 'build' if target == 'ios' else 'publish'
+            output_properties = [] if target == 'ios' else ['-o', str(output / target)]
+            command(operation + '-' + target, 'dotnet', operation, str(project), '-c', 'Release', '--nologo',
+                    '-p:PublishTrimmed=' + ('true' if target in ('macos', 'ios', 'maccatalyst') else 'false'), '-p:RunAOTCompilation=false', *output_properties, *target_properties, cwd=consumer, env=environment)
             if target == 'windows':
                 command('native-package-consumer', 'dotnet', str(output / target / 'CandidateApp.Windows.dll'),
                         cwd=output / target, env={**environment, 'DOROTI_RELEASE_SMOKE': '1'})
@@ -173,6 +191,30 @@ def main():
                 command('macos-signature', 'codesign', '--verify', '--deep', '--strict', str(apps[0]))
                 record['macos'] = {'tfm': args.macos_tfm, 'rid': 'osx-arm64', 'signing': 'ad-hoc only',
                     'notarization': 'notVerified', 'nativeAot': 'unsupported'}
+            elif target in ('ios', 'maccatalyst'):
+                apps = list((output / target).glob('*.app'))
+                if not apps:
+                    base_output = project.parent / ('bin/' + apple_rid if target == 'ios' else 'bin')
+                    apps = list((base_output / 'Release' / apple_tfm / apple_rid).glob('*.app'))
+                    if len(apps) == 1:
+                        installed = output / target / apps[0].name
+                        command('copy-apple-app', 'ditto', str(apps[0]), str(installed))
+                        apps = [installed]
+                if len(apps) != 1: raise RuntimeError('Expected one published Apple app bundle.')
+                if target in ('ios', 'maccatalyst'):
+                    # --deep alone treats loose Mono dylibs as resources and can
+                    # leave their post-link signatures invalid on Apple Silicon.
+                    for index, native in enumerate([*apps[0].rglob('*.dylib'), *apps[0].rglob('*.framework')]):
+                        command('apple-sign-native-' + str(index), 'codesign', '--force', '--sign', '-', str(native))
+                        command('apple-verify-native-' + str(index), 'codesign', '--verify', '--strict', str(native))
+                    command('apple-local-signature', 'codesign', '--force', '--deep', '--sign', '-', str(apps[0]))
+                    command('apple-verify-signature', 'codesign', '--verify', '--deep', '--strict', str(apps[0]))
+                command('apple-native-consumer', sys.executable, str(ROOT / 'Doroti/tests/apple_package_smoke.py'),
+                    '--target', target, '--app', str(apps[0]), '--output', str(run / 'apple-runtime'))
+                record[target] = {'tfm': apple_tfm, 'rid': apple_rid,
+                    'signing': 'ad-hoc only' if target == 'maccatalyst' else 'simulator ad-hoc only',
+                    'nativeRuntime': json.loads((run / 'apple-runtime/summary.json').read_text()), 'deviceAot': 'notVerified',
+                    'devicePublish': 'notVerified' if target == 'ios' else 'notApplicable'}
             elif target == 'android':
                 if not any((output / target).glob('*-Signed.apk')):
                     raise RuntimeError('Android package-only publish produced no installable APK.')
@@ -185,7 +227,7 @@ def main():
         record['packages'] = {path.name: hashlib.sha256(path.read_bytes()).hexdigest() for path in packages.glob('*.nupkg')}
         record['artifacts'] = {target: {path.relative_to(output / target).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
             for path in (output / target).rglob('*') if path.is_file()} for target in args.targets}
-        record['status'] = 'PASS: isolated package-only template restore/publish; deployment remains notVerified'
+        record['status'] = 'PASS: isolated package-only template restore/build; selected device/desktop publish and deployment have separate records'
         print(record['status'], flush=True)
     except BaseException as error:
         record['status'] = 'FAILED'

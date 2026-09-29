@@ -1,5 +1,7 @@
 # Doroti 작업 계획
 
+2026-09-29 iOS/Mac Catalyst 후속: [구현·검증 결과](results/2026-09-29-ios-catalyst.md). UIKit 서비스·Catalyst PlatformView/추가 scene·activation 연결과 별도 smoke를 보강했다. 개발 provisioning profile을 발급했고, 후속 요청으로 iPhone 12에 source Debug 설치·기동·실제 화면을 확인했다. 물리 입력·VoiceOver·실제 배포 등은 남아 전체 **PARTIAL**이다.
+
 2026-09-29 macOS 후속: [macOS AppKit 구현·실행 결과](results/2026-09-29-macos-appkit.md). 실제 추가 창·양 Metal renderer·native editor/WKWebView 재생성·파일 선택 취소·Copy drop 연결·activation/복원을 구현·검증했다. 전체는 물리 입력·VoiceOver·송신·clean 배포 잔여 때문에 **PARTIAL**이다.
 
 2026-09-29 Linux 후속: [Qt 구현·실행 결과](results/2026-09-29-linux-qt.md). Quick 양 QPA·Widgets 비교·실제 추가 창·플러그인/drop/navigation·Linux package-only와 portable 설치 PASS; 물리 입력·Orca·물리 GPU·clean 배포는 PARTIAL.

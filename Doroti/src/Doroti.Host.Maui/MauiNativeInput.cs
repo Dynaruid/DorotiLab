@@ -278,7 +278,45 @@ internal static class MauiNativeInput
 
     private sealed class DorotiKeyboardView(ulong viewId, Action<KeyData> dispatch) : UIView
     {
+        private readonly MauiKeyboardState _keyboard = new();
+        private NSObject? _deactivation;
+        public override void MovedToWindow()
+        {
+            base.MovedToWindow();
+            _deactivation?.Dispose();
+            _deactivation = Window is null ? null : NSNotificationCenter.DefaultCenter.AddObserver(
+                UIScene.WillDeactivateNotification, notification =>
+                {
+                    if (notification.Object == Window?.WindowScene) ReleasePressed();
+                });
+            if (Window is null) ReleasePressed();
+        }
         public override bool CanBecomeFirstResponder => true;
+        public override bool ResignFirstResponder()
+        {
+            var resigned = base.ResignFirstResponder();
+            if (resigned) ReleasePressed();
+            return resigned;
+        }
+        public override void PressesCancelled(NSSet<UIPress> presses, UIPressesEvent evt)
+        {
+            ReleasePressed();
+            base.PressesCancelled(presses, evt);
+        }
+        private void ReleasePressed()
+        {
+            foreach (var key in _keyboard.ReleaseAll(viewId, DorotiFrameClock.Now)) dispatch(key);
+        }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _deactivation?.Dispose();
+                _deactivation = null;
+                ReleasePressed();
+            }
+            base.Dispose(disposing);
+        }
 
         public override void PressesBegan(NSSet<UIPress> presses, UIPressesEvent evt)
         {
@@ -304,10 +342,10 @@ internal static class MauiNativeInput
                 var physical = 0x70000 | (long)key.KeyCode;
                 var characters = key.CharactersIgnoringModifiers ?? string.Empty;
                 var name = characters.Length == 0 ? key.KeyCode.ToString() : characters;
-                dispatch(
+                var translated = _keyboard.Apply(
                     new(
                         viewId,
-                        TimeSpan.FromTicks(DateTime.UtcNow.Ticks),
+                        DorotiFrameClock.Now,
                         type,
                         physical,
                         MauiKeyMap.Logical(name, physical),
@@ -319,6 +357,7 @@ internal static class MauiNativeInput
                             : null
                     )
                 );
+                if (translated is { } value) dispatch(value);
             }
         }
     }

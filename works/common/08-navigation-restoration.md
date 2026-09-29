@@ -88,3 +88,5 @@ Qt main-owned cold/warm IPC, XDG 절대 저장소, 정상 및 committed checkpoi
 
 AppKit delegate/plist URL 전달과 main-owned navigation/restoration을 연결했다. cold 인자/warm LaunchServices/route 재시작 PASS; OS cold 배달·입력/selection·migration 전체는 남는다.
 [구현·명령·결과·잔여](../results/2026-09-29-macos-appkit.md)를 따른다.
+
+2026-09-29 iOS/Catalyst 후속: [별도 구현·실행 결과](../results/2026-09-29-ios-catalyst.md). UIKit 연결·native 재생성·Catalyst 두 scene·activation을 보강했으며 전체 물리 입력·GPU·배포 완료와 구분한다.

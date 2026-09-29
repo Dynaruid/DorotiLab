@@ -14,23 +14,29 @@ public sealed class DorotiMacCatalystSceneDelegate : Microsoft.Maui.MauiUISceneD
         UISceneConnectionOptions connectionOptions
     )
     {
-        // UIKit requires multi-scene adoption even to destroy the only scene.
-        // Until the Desktop factory supports more windows, reject native new-window
-        // requests before MAUI allocates another independent main-window manager.
-        if (
-            IPlatformApplication.Current?.Application
-                is DorotiMauiApplication { UsesDesktop: true } app
-            && app.Windows.Count > 0
-        )
+        UIKitApplicationActivation.Connect(connectionOptions, IPlatformApplication.Current?.Application?.Windows.Count == 0);
+        // Native New Window/restored sessions have no Desktop content factory.
+        // Reject those sessions before MAUI can allocate a second main manager.
+        if (IPlatformApplication.Current?.Application is DorotiMauiApplication { UsesDesktop: true } app
+            && OperatingSystem.IsMacCatalystVersionAtLeast(16)
+            && app.Windows.Count > 0 && !MacCatalystDesktopWindowHost.HasPendingScene)
         {
-            UIApplication.SharedApplication.RequestSceneSessionDestruction(
-                session,
-                null,
-                error => DorotiMauiSurface.WriteFailure(new NSErrorException(error))
-            );
+            UIApplication.SharedApplication.RequestSceneSessionDestruction(session, null,
+                error => DorotiMauiSurface.WriteFailure(new NSErrorException(error)));
             return;
         }
         base.WillConnect(scene, session, connectionOptions);
+    }
+    public override bool OpenUrl(UIScene scene, NSSet<UIOpenUrlContext> contexts)
+    {
+        var handled = base.OpenUrl(scene, contexts);
+        foreach (var context in contexts) UIKitApplicationActivation.Deliver(context.Url, false, false);
+        return handled || contexts.Count > 0;
+    }
+    public override bool ContinueUserActivity(UIScene scene, NSUserActivity activity)
+    {
+        UIKitApplicationActivation.Continue(activity, false);
+        return base.ContinueUserActivity(scene, activity) || activity.ActivityType == NSUserActivityType.BrowsingWeb;
     }
 }
 #endif

@@ -28,6 +28,8 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
 #endif
 #if MACOS
     internal DorotiMacOSMetalSurface DesktopMetalSurface => (DorotiMacOSMetalSurface)_renderSurface;
+#endif
+#if MACOS || MACCATALYST
     internal void PrepareFrameworkClose() => _session?.ShutdownFramework();
     internal DorotiApplicationBoundary? SharedApplication { get; init; }
     internal Action<DorotiApplicationBoundary>? ApplicationAttached { get; init; }
@@ -89,7 +91,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
             InputTransparent = true,
             CascadeInputTransparent = false,
         };
-#if IOS && !MACCATALYST
+#if IOS || MACCATALYST
         _textInput = new(
             CreateHiddenInput<DorotiUIKitEntry>,
             CreateHiddenInput<DorotiUIKitEditor>,
@@ -183,7 +185,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
                 )
                 : null;
 #endif
-#if IOS && !MACCATALYST
+#if IOS || MACCATALYST
             var uiKitPlatformViews = _renderSurface.Element is DorotiGraphiteView uiKitGraphite
                 ? uiKitGraphite.PlatformViews = new UIKitPlatformViewHost(uiKitGraphite, _textInput)
                 : null;
@@ -192,6 +194,11 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
 #if MACOS
                 SharedApplication is { } shared
                     ? shared.CreateWindowBoundary(appKitSurface.PlatformViews.CreateFactories(() => _boundary!.ApplicationResources))
+                    :
+#endif
+#if MACCATALYST
+                SharedApplication is { } shared
+                    ? shared.CreateWindowBoundary(uiKitPlatformViews?.CreateFactories() ?? [])
                     :
 #endif
                 DorotiApplicationBoundary.Load(
@@ -207,12 +214,12 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
                 ,
                 androidPlatformViews?.CreateFactories(() => _boundary!.ApplicationResources)
 #endif
-#if IOS && !MACCATALYST
+#if IOS || MACCATALYST
                 ,
                 uiKitPlatformViews?.CreateFactories()
 #endif
             );
-#if MACOS
+#if MACOS || MACCATALYST
             ApplicationAttached?.Invoke(_boundary);
 #endif
             IMauiSemanticsBridge semantics =
@@ -230,7 +237,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
                 semantics,
                 _boundary,
                 _textInput
-#if MACOS
+#if MACOS || MACCATALYST
                 , ownsApplicationActivation: OwnsApplicationActivation
 #endif
             );

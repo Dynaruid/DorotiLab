@@ -1,4 +1,4 @@
-#if IOS && !MACCATALYST
+#if IOS || MACCATALYST
 using System.Runtime.Versioning;
 using System.Text.Json;
 using CoreGraphics;
@@ -134,7 +134,7 @@ public sealed partial class MauiTextInputBridge
     private UIView? _systemMenuView;
     private UIKitEditMenuDelegate? _systemMenuDelegate;
     internal bool SupportsSystemContextMenu =>
-        OperatingSystem.IsIOSVersionAtLeast(16) && _visualHost is not null;
+        (OperatingSystem.IsIOSVersionAtLeast(16) || OperatingSystem.IsMacCatalystVersionAtLeast(16)) && _visualHost is not null;
     internal event Action<string, string?>? SystemContextMenuEvent;
 
     internal Task RunUIKitMenuMutation(Action action)
@@ -161,7 +161,7 @@ public sealed partial class MauiTextInputBridge
 
     internal void ShowSystemContextMenu(CGRect target, IReadOnlyList<UIKitMenuItem> items)
     {
-        if (!OperatingSystem.IsIOSVersionAtLeast(16))
+        if (!(OperatingSystem.IsIOSVersionAtLeast(16) || OperatingSystem.IsMacCatalystVersionAtLeast(16)))
         {
             return;
         }
@@ -198,7 +198,7 @@ public sealed partial class MauiTextInputBridge
 
     internal void HideSystemContextMenu()
     {
-        if (!OperatingSystem.IsIOSVersionAtLeast(16))
+        if (!(OperatingSystem.IsIOSVersionAtLeast(16) || OperatingSystem.IsMacCatalystVersionAtLeast(16)))
         {
             return;
         }
@@ -252,6 +252,7 @@ public sealed partial class MauiTextInputBridge
     }
 
     [SupportedOSPlatform("ios16.0")]
+    [SupportedOSPlatform("maccatalyst16.0")]
     private sealed class UIKitEditMenuDelegate(
         MauiTextInputBridge owner,
         CGRect target,

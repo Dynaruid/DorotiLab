@@ -72,6 +72,9 @@ def main(suite):
             command("web-startup", sys.executable, "Doroti/tests/web_smoke.py", str(run / "web"))
         if suite == "LinuxSmoke":
             command("linux-qt", sys.executable, "Doroti/tests/linux_qt_smoke.py", "--output", str(run / "qt"))
+        if suite in ("IOSSmoke", "CatalystSmoke"):
+            target = "ios" if suite == "IOSSmoke" else "maccatalyst"
+            command("apple-" + target, sys.executable, "Doroti/tests/apple_smoke.py", "--target", target, "--activation", "native-callback" if target == "ios" else "os", "--output", str(run / target))
         if suite == "MacOSSmoke":
             command("macos-appkit", sys.executable, "Doroti/tests/macos_smoke.py", "--output", str(run / "appkit"))
         if suite == "WindowsSmoke":
@@ -126,6 +129,6 @@ def main(suite):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2 or sys.argv[1] not in ("Source", "Build", "Targets", "WindowsSmoke", "LinuxSmoke", "MacOSSmoke", "Packages", "Developer", "Release"):
-        sys.exit("Unknown suite. Use Source, Build, Targets, WindowsSmoke, LinuxSmoke, MacOSSmoke, Packages, Developer, or Release.")
+    if len(sys.argv) != 2 or sys.argv[1] not in ("Source", "Build", "Targets", "WindowsSmoke", "LinuxSmoke", "MacOSSmoke", "IOSSmoke", "CatalystSmoke", "Packages", "Developer", "Release"):
+        sys.exit("Unknown suite. Use Source, Build, Targets, WindowsSmoke, LinuxSmoke, MacOSSmoke, IOSSmoke, CatalystSmoke, Packages, Developer, or Release.")
     main(sys.argv[1])

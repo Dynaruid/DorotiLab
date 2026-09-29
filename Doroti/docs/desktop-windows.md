@@ -154,7 +154,7 @@ Current host/renderer/build-mode evidence is centralized in [support status](sup
 | Windows App SDK | Main and additional HWNDs; Debug and NuGet-only Release native lifetime checks | OnLastWindowClosed/Explicit; backdrop/background changes require recreation; physical resize/IME/mixed-monitor and full native-content coverage notVerified |
 | Windows MAUI | Implemented; historical results below | Separate native PlatformView wiring and current revalidation pending |
 | AppKit | Main/additional windows; Graphite and Ganesh native Desktop/lifetime qualification (2026-09-29) | Physical input/VoiceOver, mixed DPI and clean signed deployment remain separate |
-| Mac Catalyst | Restricted UIKit scene adapter | PlatformDefault startup; explicit unsupported commands; no new execution |
+| Mac Catalyst | UIKit scene adapter with common additional-window factory | PlatformDefault startup; two scenes/independent size/survivor/Explicit drain verified separately; native close cannot be cancelled; [Apple results](../../works/results/2026-09-29-ios-catalyst.md) |
 | Qt Quick | Main/additional QQuickWindow, independent owner resources | Wayland/XWayland VM execution; physical input/mixed DPI and bounds/appearance restrictions remain |
 | Qt Widgets | No Desktop companion adapter | SDK rejects startup |
 

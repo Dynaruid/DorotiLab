@@ -64,3 +64,5 @@ disposal and Metal retirement completes before native close. OnLastWindowClosed
 and Explicit have [real two-window evidence](../../works/results/2026-09-29-macos-appkit.md).
 The framework `_window_macos.cs` Satellite API is not connected to this manager.
 Owned/modal/Satellite/popup/tooltip windows remain unsupported.
+
+2026-09-29 UIKit/Catalyst: [implementation, smoke commands and remaining qualification](../../works/results/2026-09-29-ios-catalyst.md). iOS Simulator, device signing and Catalyst scenes have separate evidence; package-only publish does not imply clean signed distribution.

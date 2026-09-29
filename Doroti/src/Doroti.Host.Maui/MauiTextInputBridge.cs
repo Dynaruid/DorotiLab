@@ -83,7 +83,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
     private T Subscribe<T>(T input)
         where T : InputView
     {
-#if IOS && !MACCATALYST
+#if IOS || MACCATALYST
         input.HandlerChanged += HandleUIKitInputHandlerChanged;
         AttachUIKitInput(input);
 #endif
@@ -111,7 +111,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
     internal event Action<DorotiTextEditingState>? EditingStateChanged;
     internal event Action<DorotiTextInputAction>? ActionPerformed;
     internal event Action<bool>? FocusChanged;
-#if IOS && !MACCATALYST
+#if IOS || MACCATALYST
     internal event Action<DorotiFloatingCursorEvent>? FloatingCursorChanged;
 #else
     internal event Action<DorotiFloatingCursorEvent>? FloatingCursorChanged
@@ -147,7 +147,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
 #if MACOS
         _macOSNativeFocus = false;
 #endif
-#if IOS && !MACCATALYST
+#if IOS || MACCATALYST
         ResetUIKitInput();
 #endif
         _configuration = configuration;
@@ -301,7 +301,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
         var y = Math.Max(0, rect.top);
         var width = Math.Max(1, rect.width);
         var height = Math.Max(1, rect.height);
-#if IOS && !MACCATALYST
+#if IOS || MACCATALYST
         if (active.Handler?.PlatformView is IDorotiUIKitTextInput native && _visualHost is not null)
         {
             // UIKit clamps floating-cursor coordinates to the native view's
@@ -351,7 +351,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
         }
 
         _hasClient = false;
-#if IOS && !MACCATALYST
+#if IOS || MACCATALYST
         ResetUIKitInput();
 #endif
         _pendingNativeText = null;
@@ -374,7 +374,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
         {
             return;
         }
-#if IOS && !MACCATALYST
+#if IOS || MACCATALYST
         ResetUIKitInput();
 #endif
         _suspended = true;
@@ -415,7 +415,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
 
     internal void HideTextInput() => DispatchInputMutation(HideTextInputCore);
 
-#if IOS && !MACCATALYST
+#if IOS || MACCATALYST
     internal void YieldUIKitNativeFocus()
     {
         DeactivateActiveInput(clearFocus: true);
@@ -457,7 +457,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
                 _pendingClientChanges++;
             }
         }
-#if IOS && !MACCATALYST
+#if IOS || MACCATALYST
         // Becoming/resigning first responder synchronously publishes UIKit
         // keyboard metrics. Those callbacks can drain framework focus work
         // while TextInput is still attaching/detaching its client (for example
@@ -1018,14 +1018,14 @@ public sealed partial class MauiTextInputBridge : IDisposable
 
     private void DisposeCore()
     {
-#if IOS && !MACCATALYST
+#if IOS || MACCATALYST
         FloatingCursorChanged = null;
         ResetUIKitInput();
         SystemContextMenuEvent = null;
 #endif
         foreach (var input in Inputs)
         {
-#if IOS && !MACCATALYST
+#if IOS || MACCATALYST
             input.HandlerChanged -= HandleUIKitInputHandlerChanged;
             if (input.Handler?.PlatformView is IDorotiUIKitTextInput native)
             {

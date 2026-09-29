@@ -64,7 +64,7 @@ internal sealed class MauiSkiaCapabilities
             platformViews.Draw(_renderer, canvas, commands, descriptor, width, height);
     }
 #endif
-#if IOS && !MACCATALYST
+#if IOS || MACCATALYST
     private IDisposable? _platformViewChannel;
     private UIKitPlatformViewHost? _platformViews;
 
@@ -360,7 +360,7 @@ internal sealed class MauiSkiaCapabilities
         }
 
         _graphiteSurface = null;
-#if ANDROID || (IOS && !MACCATALYST)
+#if ANDROID || IOS || MACCATALYST
         _renderer.PlatformScenePainter = null;
         _platformViewChannel?.Dispose();
         _platformViewChannel = null;

@@ -1,7 +1,7 @@
 #Requires -Version 7.0
 [CmdletBinding()]
 param(
-    [ValidateSet('Source', 'Build', 'Targets', 'WindowsSmoke', 'LinuxSmoke', 'MacOSSmoke', 'Packages', 'Developer', 'Release')]
+    [ValidateSet('Source', 'Build', 'Targets', 'WindowsSmoke', 'LinuxSmoke', 'MacOSSmoke', 'IOSSmoke', 'CatalystSmoke', 'Packages', 'Developer', 'Release')]
     [string] $Suite = 'Developer'
 )
 $ErrorActionPreference = 'Stop'

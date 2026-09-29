@@ -15,7 +15,11 @@ namespace Doroti.Host.Maui;
 [SupportedOSPlatform("maccatalyst16.0")]
 internal sealed class MacCatalystDesktopWindowHost : IWindowHost
 {
+    private static readonly HashSet<Window> PendingScenes = [];
+    internal static bool HasPendingScene => PendingScenes.Count != 0;
     private readonly Window _window;
+    private bool _additional;
+    private Factory? _factory;
     private readonly DorotiApplicationDescriptor _descriptor;
     private readonly TaskCompletionSource _attached = new(
         TaskCreationOptions.RunContinuationsAsynchronously
@@ -72,7 +76,7 @@ internal sealed class MacCatalystDesktopWindowHost : IWindowHost
             );
         if (!UIApplication.SharedApplication.SupportsMultipleScenes)
             throw new NotSupportedException(
-                "Catalyst scene close requires UIApplicationSupportsMultipleScenes=true; the Desktop manager still permits one window."
+                "Catalyst scene close requires UIApplicationSupportsMultipleScenes=true; each Desktop window owns a separate scene."
             );
         if (!DorotiGraphiteView.Enabled)
             throw new NotSupportedException(
@@ -89,7 +93,10 @@ internal sealed class MacCatalystDesktopWindowHost : IWindowHost
             Height = definition.MainWindow.Options.Size.height,
         };
         var host = new MacCatalystDesktopWindowHost(window, descriptor);
-        var manager = new DorotiWindowManager(new Factory(host), definition.LifetimePolicy);
+        var factory = new Factory(host);
+        host._factory = factory;
+        var manager = new DorotiWindowManager(factory, definition.LifetimePolicy);
+        manager.ExitRequested += factory.Dispose;
         manager.InitializationFailed += (_, error) => DorotiMauiSurface.WriteFailure(error);
         _ = StartAsync();
         return window;
@@ -107,18 +114,28 @@ internal sealed class MacCatalystDesktopWindowHost : IWindowHost
         }
     }
 
-    private sealed class Factory(MacCatalystDesktopWindowHost host) : IWindowHostFactory
+    private sealed class Factory(MacCatalystDesktopWindowHost host) : IWindowHostFactory, IDisposable
     {
-        public WindowManagerCapabilities Capabilities { get; } = new(false);
-
+        private bool _allocated;
+        internal DorotiApplicationBoundary? Application { get; private set; }
+        internal void Attach(DorotiApplicationBoundary boundary) => Application ??= boundary.Retain();
+        public void Dispose() { Application?.Dispose(); Application = null; }
+        public WindowManagerCapabilities Capabilities { get; } = new(true, null);
         public WindowEvaluation Evaluate(WindowCreateOptions options) =>
             MacCatalystDesktopWindowPolicy.Evaluate(options.Options, null);
-
-        public ValueTask<IWindowHost> CreateAsync(
-            Doroti.Desktop.WindowId id,
-            WindowCreateOptions options,
-            CancellationToken cancellationToken
-        ) => ValueTask.FromResult<IWindowHost>(host);
+        public async ValueTask<IWindowHost> CreateAsync(
+            Doroti.Desktop.WindowId id, WindowCreateOptions options, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (!_allocated) { _allocated = true; return host; }
+            if (Application is null) throw new InvalidOperationException("Initialize the main scene before creating another window.");
+            return await OnUiAsync(() => new MacCatalystDesktopWindowHost(new Window
+            {
+                Title = options.Options.Title,
+                Width = options.Options.Size.width,
+                Height = options.Options.Size.height,
+            }, host._descriptor) { _additional = true, _factory = this }, cancellationToken);
+        }
     }
 
     public WindowCapabilities Capabilities { get; } =
@@ -143,24 +160,41 @@ internal sealed class MacCatalystDesktopWindowHost : IWindowHost
         CancellationToken cancellationToken
     )
     {
-        _options = options;
-        _window.HandlerChanged += HandlerChanged;
-        _surface = new(_descriptor with { EntrypointFactory = () => content })
+        await OnUiAsync(() =>
         {
-            DesktopManaged = true,
-        };
-        _surface.DesktopFrameReady += FrameReady;
-        _surface.DesktopFrameFailed += FrameFailed;
-        _surface.Loaded += Loaded;
-        _surface.SizeChanged += SurfaceSizeChanged;
-        _window.Page = new ContentPage
-        {
-            Title = options.Title,
-            SafeAreaEdges = Microsoft.Maui.SafeAreaEdges.None,
-            Content = _surface,
-        };
-        HandlerChanged(null, EventArgs.Empty);
-        await _attached.Task.WaitAsync(cancellationToken);
+            _options = options;
+            _window.HandlerChanged += HandlerChanged;
+            var configuration = DesktopApplication.ToViewConfiguration(options, context.Windows.LifetimePolicy)
+                with { Navigation = _descriptor.ViewConfiguration.Navigation };
+            if (_additional && configuration.Navigation is { } navigation)
+                configuration = configuration with { Navigation = navigation with { ProtocolScheme = null, RestorationId = null } };
+            _surface = new(_descriptor with { EntrypointFactory = () => content, ViewConfiguration = configuration })
+            {
+                DesktopManaged = true,
+                SharedApplication = _additional ? _factory!.Application : null,
+                ApplicationAttached = boundary => _factory!.Attach(boundary),
+                OwnsApplicationActivation = !_additional,
+            };
+            _surface.DesktopFrameReady += FrameReady;
+            _surface.DesktopFrameFailed += FrameFailed;
+            _surface.Loaded += Loaded;
+            _surface.SizeChanged += SurfaceSizeChanged;
+            _window.Page = new ContentPage
+            {
+                Title = options.Title,
+                SafeAreaEdges = Microsoft.Maui.SafeAreaEdges.None,
+                Content = _surface,
+            };
+            if (_additional)
+            {
+                PendingScenes.Add(_window);
+                try { Microsoft.Maui.Controls.Application.Current!.OpenWindow(_window); }
+                catch { PendingScenes.Remove(_window); throw; }
+            }
+            HandlerChanged(null, EventArgs.Empty);
+            return true;
+        }, cancellationToken);
+        await _attached.Task.WaitAsync(TimeSpan.FromSeconds(30), cancellationToken);
     }
 
     private void HandlerChanged(object? sender, EventArgs args)
@@ -169,6 +203,7 @@ internal sealed class MacCatalystDesktopWindowHost : IWindowHost
             return;
         try
         {
+            PendingScenes.Remove(_window);
             _native = native;
             _scene =
                 native.WindowScene
@@ -518,7 +553,11 @@ internal sealed class MacCatalystDesktopWindowHost : IWindowHost
         if (_disposed)
             return;
         var retirement = await OnUiAsync(
-            () => _surface?.DesktopCatalystSurface?.RetireAsync() ?? Task.CompletedTask,
+            () =>
+            {
+                _surface?.PrepareFrameworkClose();
+                return _surface?.DesktopCatalystSurface?.RetireAsync() ?? Task.CompletedTask;
+            },
             cancellationToken
         );
         await retirement.WaitAsync(cancellationToken);
@@ -563,6 +602,7 @@ internal sealed class MacCatalystDesktopWindowHost : IWindowHost
         if (_disposed)
             return;
         _disposed = true;
+        PendingScenes.Remove(_window);
         _window.HandlerChanged -= HandlerChanged;
         if (_surface is { } surface)
         {

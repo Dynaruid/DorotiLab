@@ -122,3 +122,16 @@ The local macOS payload fixture is `tests/macos_package_smoke.py --candidate PAT
 runs both extracted app versions with an empty NuGet cache, replaces the app,
 then removes it while preserving its own Unicode userdata fixture. It does not
 run macOS Installer or qualify Gatekeeper/notarization/clean-machine deployment.
+
+2026-09-29 UIKit/Catalyst: [implementation, smoke commands and remaining qualification](../../works/results/2026-09-29-ios-catalyst.md). iOS Simulator, device signing and Catalyst scenes have separate evidence; package-only publish does not imply clean signed distribution.
+
+Apple suites: `IOSSmoke` uses native scene activity callback injection for unattended
+navigation; `CatalystSmoke` uses LaunchServices URL delivery. Both use the maintained
+`apple_smoke.py`; raw results separate services, native recreation, navigation and
+restoration. Catalyst additionally creates/closes real scenes. `--activation os`
+on iOS may require confirming the OS Open dialog. This is not a physical-input test.
+
+```sh
+pwsh -NoProfile -File Doroti/eng/doroti.ps1 validate -ValidationSuite IOSSmoke
+pwsh -NoProfile -File Doroti/eng/doroti.ps1 validate -ValidationSuite CatalystSmoke
+```

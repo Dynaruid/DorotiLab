@@ -93,6 +93,8 @@ public static class DorotiMauiApplicationBuilderExtensions
 #elif MACCATALYST
             .ConfigureMauiHandlers(handlers =>
                 handlers
+                    .AddHandler<DorotiUIKitEntry, DorotiUIKitEntryHandler>()
+                    .AddHandler<DorotiUIKitEditor, DorotiUIKitEditorHandler>()
                     .AddHandler<SKGLView, DorotiMacCatalystSkglViewHandler>()
                     .AddHandler<DorotiGraphiteView, DorotiUIKitGraphiteViewHandler>()
             );
@@ -140,6 +142,8 @@ public sealed class DorotiMauiApplication(DorotiApplicationDescriptor descriptor
                 throw new PlatformNotSupportedException(
                     "The Catalyst Desktop adapter requires Mac Catalyst 16 or later."
                 );
+            if (Windows.Count > 0)
+                throw new NotSupportedException("Create additional Catalyst windows through DesktopWindowContext.Windows.");
             return MacCatalystDesktopWindowHost.CreateMainWindow(descriptor, desktop!);
         }
 #endif
