@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.props" />
+  <PropertyGroup>
+    <DorotiMacCatalystTargetFramework Condition="'$(DorotiMacCatalystTargetFramework)' == ''">net10.0-maccatalyst</DorotiMacCatalystTargetFramework>
+    <TargetFramework>$(DorotiMacCatalystTargetFramework)</TargetFramework>
+    <RuntimeIdentifier>maccatalyst-arm64</RuntimeIdentifier>
+    <AssemblyName>DorotiSampleApp2.MacCatalyst</AssemblyName>
+    <RootNamespace>DorotiSampleApp2.MacCatalyst</RootNamespace>
+    <DorotiAppProject>..\DorotiSampleApp2.csproj</DorotiAppProject>
+    <DorotiTarget>MacCatalyst</DorotiTarget>
+    <DorotiHostKind>Maui</DorotiHostKind>
+    <DorotiNativeEntryKind>UIKit-Main</DorotiNativeEntryKind>
+    <UseMaui>true</UseMaui>
+    <DefineConstants>$(DefineConstants);MACCATALYST;DOROTI_MAUI</DefineConstants>
+    <SupportedOSPlatformVersion>$(DorotiMacCatalystMinimumOSVersion)</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="'$(DorotiMacCatalystTargetFramework)' == 'net10.0-maccatalyst'">16.0</SupportedOSPlatformVersion>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <ApplicationTitle>Doroti Cupertino Sample</ApplicationTitle>
+    <ApplicationId>dev.doroti.sample2</ApplicationId>
+    <DorotiCompileExclude>AppKitDelegate.cs;DorotiNativePlatformBridge.MacOS.cs</DorotiCompileExclude>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Track plist edits as manifest inputs as well. The current Catalyst
+         SDK's incremental manifest target omits the primary plist file. -->
+    <PartialAppManifest Include="Info.plist" />
+    <DorotiNativeBindingProject Include="binding\DorotiSampleApp2.MacCatalyst.Native.csproj" />
+    <DorotiTargetDescriptor Include="MacCatalyst" HostKind="Maui" NativeEntryKind="UIKit-Main"
+        RuntimeIdentifier="maccatalyst-arm64" TargetFramework="$(DorotiMacCatalystTargetFramework)"
+        TargetPackage="Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64" />
+    <ProjectReference Include="..\..\..\Doroti\src\Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64\Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.csproj" />
+  </ItemGroup>
+  <Import Project="..\..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.targets" />
+</Project>

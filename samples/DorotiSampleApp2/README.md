@@ -1,6 +1,6 @@
 # DorotiSampleApp2
 
-Cupertino 스타일의 독립 Doroti 샘플 앱입니다. 공통 C# UI와 Windows / Web 실행 프로젝트로 구성됩니다.
+Cupertino 스타일의 독립 Doroti 샘플 앱입니다. 공통 C# UI와 Android, iOS, Linux, macOS, Mac Catalyst, Windows, Web 실행 프로젝트로 구성됩니다.
 
 - **Components**: 카운터 버튼, 스위치, 슬라이더, 활동 표시기, 다이얼로그
 - **Profile**: 이름 입력과 인사말, 탭 전환 시 입력 상태 유지
@@ -24,6 +24,74 @@ VariableBlur에는 GPU 렌더러가 필요하며, 기본 CPU 래스터 검증에
 설정과 입력값은 앱 실행 중에만 유지됩니다. Cupertino Icons 1.0.9 폰트와 해당 라이선스는 `assets/fonts`에 포함되어 있습니다.
 
 저장소 루트 `DorotiLab`에서 실행합니다. 루트 `global.json`에 지정된 .NET SDK와 플랫폼별 빌드 도구가 필요합니다.
+
+## 플랫폼 선택
+
+`doroti-workspace.json`에 모든 플랫폼 실행 프로젝트가 등록되어 있습니다.
+
+| CLI 플랫폼 | 실행 프로젝트 | 지원 RID / 호스트 |
+| --- | --- | --- |
+| `android` | `android/DorotiSampleApp2.Android.csproj` | `android-arm64` (기본), `android-x64` / MAUI |
+| `ios` | `ios/DorotiSampleApp2.iOS.csproj` | `iossimulator-arm64` (기본), `iossimulator-x64`, `ios-arm64` / UIKit |
+| `linux` | `linux/DorotiSampleApp2.Linux.csproj` | `linux-x64` / Qt Quick |
+| `macos` | `macos/DorotiSampleApp2.MacOS.csproj` | `osx-arm64` / AppKit |
+| `maccatalyst` | `macos/DorotiSampleApp2.MacCatalyst.csproj` | `maccatalyst-arm64` / MAUI |
+| `windows` | `windowsappsdk/DorotiSampleApp2.WindowsAppSdk.csproj` | `win-x64` / Windows App SDK |
+| `web` | `web/DorotiSampleApp2.Web.csproj` | `browser-wasm` / Blazor WebAssembly |
+
+```powershell
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 describe -App ./samples/DorotiSampleApp2
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build -App ./samples/DorotiSampleApp2 -Platform android -Configuration Debug
+```
+
+`-Platform`으로 위 표의 대상을 선택합니다. `build`는 빌드, `publish`는 배포 산출물 생성에 사용합니다.
+공통 UI, Cupertino 아이콘과 앱 ID(`dev.doroti.sample2`)를 공유하며 AppKit 앱 ID는 `dev.doroti.sample2.macos`입니다.
+
+## Android
+
+Android 워크로드, Android SDK와 JDK 17이 필요합니다. 네이티브 바인딩은 포함된 Gradle wrapper로 빌드합니다.
+Vulkan 1.2를 지원하는 기기 또는 에뮬레이터가 필요합니다.
+
+```powershell
+dotnet build ./samples/DorotiSampleApp2/android/DorotiSampleApp2.Android.csproj -c Debug
+dotnet build ./samples/DorotiSampleApp2/android/DorotiSampleApp2.Android.csproj -c Debug -t:Run -p:RuntimeIdentifier=android-arm64
+```
+
+x64 에뮬레이터에서는 `-p:RuntimeIdentifier=android-x64`를 사용합니다. RID별 빌드 산출물은 분리됩니다.
+
+## iOS
+
+Mac, 선택한 .NET iOS 워크로드와 호환되는 Xcode가 필요합니다. 실제 기기는 서명 설정도 필요합니다.
+직접 프로젝트를 빌드할 때는 .NET 10 Mono와 ARM64 시뮬레이터가 기본입니다.
+
+```powershell
+dotnet build ./samples/DorotiSampleApp2/ios/DorotiSampleApp2.iOS.csproj -c Debug -t:Run -p:RuntimeIdentifier=iossimulator-arm64
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build -App ./samples/DorotiSampleApp2 -Platform ios -Configuration Release -Rid ios-arm64 -CompilationMode Mono
+```
+
+Intel Mac 시뮬레이터는 `iossimulator-x64`를 선택합니다.
+CLI의 iOS Release 기본값은 실험적인 NativeAot이므로, 위 명령처럼 `-CompilationMode Mono`를 명시합니다.
+
+## Linux
+
+Linux x64에서 .NET SDK, CMake 3.24 이상, C++20 컴파일러, Qt 6.8 이상(Quick/QuickControls2/WebEngineQuick/WebChannel),
+Wayland 개발 도구와 Vulkan 1.2 지원 GPU가 필요합니다. 자세한 네이티브 의존성은 [Qt 호스트 안내](linux/native/README.md)를 참고하세요.
+
+```powershell
+dotnet run --project ./samples/DorotiSampleApp2/linux/DorotiSampleApp2.Linux.csproj -c Release
+```
+
+Linux에서 빌드하면 `linux/native`의 Qt 호스트도 CMake로 빌드하여 실행 파일 옆에 복사합니다.
+
+## macOS / Mac Catalyst
+
+Apple Silicon Mac, Xcode, 각각 `macos` / `maccatalyst` 워크로드가 필요합니다.
+두 실행 프로젝트는 공통 Cupertino UI를 각각 AppKit과 Mac Catalyst 호스트로 실행합니다.
+
+```powershell
+dotnet build ./samples/DorotiSampleApp2/macos/DorotiSampleApp2.MacOS.csproj -c Release -t:Run
+dotnet build ./samples/DorotiSampleApp2/macos/DorotiSampleApp2.MacCatalyst.csproj -c Release -t:Run
+```
 
 ## Windows
 
@@ -74,11 +142,23 @@ dotnet run --project ./samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj 
 Fonts 탭의 Galmuri/SUITE와 디코더도 로컬로 포함하므로 이 화면은 외부 폰트 요청 없이 동작합니다. SUITE에 없는 한글은 Galmuri로 폴백합니다. 다른 문자/이모지가 필요하면 그 폰트도 직접 포함하세요.
 옵션을 생략하면 기존 CDN 모드로 실행됩니다. 모드를 바꿀 때는 개발 서버를 재시작합니다.
 
-워크스페이스 CLI에서도 `-App ./samples/DorotiSampleApp2 -Platform windows` 또는 `-Platform web`으로 선택할 수 있습니다.
+워크스페이스 CLI에서도 위 플랫폼 표의 별칭으로 선택할 수 있습니다.
 
 화면 구현은 [src/App.cs](src/App.cs), 공통 진입점은 [Program.cs](Program.cs)에 있습니다.
 
 ## 검증
+
+플랫폼 확장 검증 (2026-09-29):
+
+| 범위 | 결과 |
+| --- | --- |
+| 워크스페이스 CLI / SDK 그래프 | **PASS**: 7개 플랫폼, Android 2개·iOS 3개 RID를 포함한 10개 구성 |
+| Android ARM64 Debug | **PASS**: 빌드·설치, SM-S931N에서 Vulkan 화면 표시와 Components → Profile 터치 탭 전환 |
+| Linux x64 Debug | **PARTIAL**: Windows에서 관리 코드 빌드 통과. Linux Qt 네이티브 빌드·실행은 **notVerified** |
+| iOS / macOS / Mac Catalyst | 그래프·네이티브 프로젝트 참조 검증 통과. Apple 호스트의 빌드·서명·실행은 **notVerified** |
+| 기존 Windows / Web | SDK 그래프 통과. 이번 확장 작업에서 실제 실행은 재검증하지 않음 |
+
+위 결과는 모든 화면·입력·GPU 효과의 전체 플랫폼 동작을 보증하지 않습니다.
 
 ```powershell
 python ./Doroti/validation/run-with-timeout.py dotnet run --project ./Doroti/validation/cupertino-sample -c Release

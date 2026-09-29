@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+  <attr path="/api/package[@name='dev.doroti.bridge']" name="managedName">Dev.Doroti.Bridge</attr>
+</metadata>

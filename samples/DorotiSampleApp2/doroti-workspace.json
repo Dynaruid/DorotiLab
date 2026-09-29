@@ -2,7 +2,12 @@
   "schemaVersion": "doroti.workspace/v1",
   "applicationProject": "DorotiSampleApp2.csproj",
   "platforms": {
-    "windows": "windowsappsdk/DorotiSampleApp2.WindowsAppSdk.csproj",
-    "web": "web/DorotiSampleApp2.Web.csproj"
+    "android": "android/DorotiSampleApp2.Android.csproj",
+    "ios": "ios/DorotiSampleApp2.iOS.csproj",
+    "linux": "linux/DorotiSampleApp2.Linux.csproj",
+    "macos": "macos/DorotiSampleApp2.MacOS.csproj",
+    "maccatalyst": "macos/DorotiSampleApp2.MacCatalyst.csproj",
+    "web": "web/DorotiSampleApp2.Web.csproj",
+    "windows": "windowsappsdk/DorotiSampleApp2.WindowsAppSdk.csproj"
   }
 }

@@ -1,0 +1,2 @@
+-keep class dev.doroti.bridge.DorotiNativeBridge { public *; }
+-keep interface dev.doroti.bridge.DorotiResultCallback { public *; }

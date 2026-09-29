@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "doroti.application-capabilities/v1",
+  "applicationId": "dev.doroti.sample2",
+  "targetRid": "linux-x64",
+  "resources": [],
+  "plugins": [],
+  "platformViews": []
+}

@@ -1,0 +1,2237 @@
+#include "doroti_qt_host_v2.h"
+#include "doroti_qt_platform_views.h"
+#include "doroti_qt_desktop.h"
+#ifdef DOROTI_QT_QUICK
+#include "doroti_qt_quick.h"
+#include <QQuickWindow>
+#include <QQuickGraphicsConfiguration>
+#include <QQuickItem>
+#ifdef DOROTI_QT_WEBENGINE
+#include "doroti_qt_webview.h"
+#endif
+#include <QSGRendererInterface>
+#endif
+#include <memory>
+#include <QSet>
+#include <atomic>
+
+#include <QApplication>
+#include <map>
+#include <QIcon>
+#include <QAccessible>
+#include <QAccessibleEvent>
+#include <QClipboard>
+#include <QCoreApplication>
+#include <QCursor>
+#include <QElapsedTimer>
+#include <QEvent>
+#include <QGuiApplication>
+#include <QtGui/qguiapplication_platform.h>
+#include <QInputMethod>
+#include <QInputMethodEvent>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QHash>
+#include <QKeyEvent>
+#include <QLocale>
+#include <QMetaObject>
+#include <QMouseEvent>
+#include <QNativeGestureEvent>
+#include <QOpenGLContext>
+#include <QOpenGLFunctions>
+#ifndef DOROTI_QT_QUICK
+#include <QOpenGLWindow>
+#endif
+#include <QPointerEvent>
+#include <QScreen>
+#include <QSurfaceFormat>
+#include <QStyleHints>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 10, 0)
+#include <QAccessibilityHints>
+#endif
+#include <QTabletEvent>
+#include <QThread>
+#include <QTimer>
+#include <QTouchEvent>
+#include <QWheelEvent>
+#include <QWindow>
+#ifdef DOROTI_QT_GRAPHITE
+#include <QVulkanInstance>
+#include <QPlatformSurfaceEvent>
+#include <QVersionNumber>
+#endif
+#include <QtCore/qglobal.h>
+#include <algorithm>
+#include <cmath>
+#include <cstring>
+#include <exception>
+#include <limits>
+#include <string>
+#include <stdexcept>
+#include <utility>
+#include <wayland-client.h>
+
+#include "ext-background-effect-v1-client-protocol.h"
+
+// Qt deliberately keeps the per-window native resource accessor in its QPA
+// compatibility surface. Keep the small ABI prefix used here isolated; the
+// public QWaylandApplication interface supplies the display and compositor.
+QT_BEGIN_NAMESPACE
+class QPlatformNativeInterface : public QObject {
+ public:
+  virtual void* nativeResourceForIntegration(const QByteArray& resource);
+  virtual void* nativeResourceForContext(const QByteArray& resource,
+                                         QOpenGLContext* context);
+  virtual void* nativeResourceForScreen(const QByteArray& resource, QScreen* screen);
+  virtual void* nativeResourceForWindow(const QByteArray& resource, QWindow* window);
+};
+QT_END_NAMESPACE
+
+namespace {
+constexpr std::uint32_t kAbiVersion = 4;
+std::atomic_bool run_active{false};
+// Acrylic covers the complete client surface. Wayland compositors clip effect
+// regions to the current surface bounds, so keep one deliberately oversized
+// region instead of replacing it after every resize. This also avoids the KDE
+// blur protocol retaining its first committed bounds across Qt surface resizes.
+constexpr int kFullSurfaceBackdropExtent = 1 << 20;
+constexpr std::uint64_t kSupportedFeatures =
+#ifdef DOROTI_QT_QUICK
+    DOROTI_QT_FEATURE_QUICK_COMPOSITION | DOROTI_QT_FEATURE_NATIVE_TEXTURE_EXTENSIONS |
+#endif
+#ifdef DOROTI_QT_GRAPHITE
+    DOROTI_QT_FEATURE_VULKAN_SURFACE | DOROTI_QT_FEATURE_VULKAN_API_VERSION | DOROTI_QT_FEATURE_GPU_POLL | DOROTI_QT_FEATURE_PRESENT_HOOK |
+#else
+    DOROTI_QT_FEATURE_OPENGL_FBO |
+#endif
+    DOROTI_QT_FEATURE_SWAP_ACK |
+    DOROTI_QT_FEATURE_CONTEXT_LIFETIME |
+    DOROTI_QT_FEATURE_LENGTH_PREFIXED_UTF8 |
+    DOROTI_QT_FEATURE_METRICS_LIFECYCLE |
+    DOROTI_QT_FEATURE_POINTER_INPUT |
+    DOROTI_QT_FEATURE_KEY_FOCUS_INPUT |
+    DOROTI_QT_FEATURE_TEXT_INPUT |
+    DOROTI_QT_FEATURE_PLATFORM_SERVICES |
+    DOROTI_QT_FEATURE_SEMANTICS | DOROTI_QT_FEATURE_TITLEBAR |
+    DOROTI_QT_FEATURE_PRE_APPLICATION | DOROTI_QT_FEATURE_PLATFORM_VIEWS |
+    DOROTI_QT_FEATURE_ACTIVATION_REQUEST | DOROTI_QT_FEATURE_IDLE_FRAME_ELISION;
+constexpr std::uint32_t kGlRgba8 = 0x8058;
+
+doroti_qt_utf8_v2 Utf8(const char* value) {
+  const auto length = value == nullptr ? 0 : std::char_traits<char>::length(value);
+  return {reinterpret_cast<const std::uint8_t*>(value), length};
+}
+
+doroti_qt_utf8_v2 Utf8(const QByteArray& value) {
+  return {reinterpret_cast<const std::uint8_t*>(value.constData()),
+          static_cast<std::uint64_t>(value.size())};
+}
+
+struct SemanticNode {
+  std::int64_t id = 0;
+  std::int64_t parent = -1;
+  QString label;
+  QString value;
+  QString role;
+  QRectF rect;
+  QList<std::int64_t> children;
+  std::int64_t actions = 0;
+  bool enabled = true;
+  bool focused = false;
+  bool hidden = false;
+  bool button = false;
+  bool text_field = false;
+  bool header = false;
+  bool image = false;
+  bool slider = false;
+  bool read_only = false;
+  bool selected = false;
+  bool selectable = false;
+  int checked_state = 0;
+  bool toggled = false;
+  bool toggleable = false;
+  bool expanded = false;
+  bool expandable = false;
+  bool obscured = false;
+  bool multiline = false;
+  int selection_base = -1;
+  int selection_extent = -1;
+};
+
+class DorotiAccessibleNode;
+QSet<QObject*> accessible_surfaces;
+
+QString String(doroti_qt_utf8_v2 value) {
+  if (value.data == nullptr || value.length == 0) return {};
+  if (value.length > static_cast<std::uint64_t>(std::numeric_limits<qsizetype>::max()))
+    return {};
+  return QString::fromUtf8(reinterpret_cast<const char*>(value.data),
+                           static_cast<qsizetype>(value.length));
+}
+
+#ifdef DOROTI_QT_QUICK
+using DorotiWindowBase = QQuickWindow;
+#elif defined(DOROTI_QT_GRAPHITE)
+using DorotiWindowBase = QWindow;
+#else
+using DorotiWindowBase = QOpenGLWindow;
+#endif
+class DorotiSurface final : public DorotiWindowBase {
+ public:
+  DorotiSurface(void* callback_context, const doroti_qt_callbacks_v2& callbacks,
+                std::uint32_t backdrop_mode, std::uint32_t backdrop_fallback,
+                std::uint32_t titlebar_style
+#ifdef DOROTI_QT_QUICK
+                , QVulkanInstance& quick_vulkan
+#endif
+                )
+      : DorotiWindowBase(),
+#ifdef DOROTI_QT_QUICK
+        vulkan_(quick_vulkan),
+#endif
+        callback_context_(callback_context), callbacks_(callbacks),
+        backdrop_mode_(backdrop_mode), backdrop_fallback_(backdrop_fallback),
+        unified_titlebar_(titlebar_style == DOROTI_QT_TITLEBAR_UNIFIED && backdrop_mode == DOROTI_QT_BACKDROP_ACRYLIC) {
+    // Linux server decorations cannot share the client's blur surface. Keep
+    // unified chrome in that surface; solid chrome stays compositor-owned.
+    if (unified_titlebar_) setFlag(Qt::FramelessWindowHint);
+    if (unified_titlebar_) setMinimumSize(QSize(200, 100));
+    // Wayland compositors can only preserve intentional transparent pixels when
+    // the wl_buffer has an alpha channel. Request it before the native surface is
+    // created, while retaining full-frame repaint semantics for every swapchain
+    // image.
+    auto surface_format = format();
+    surface_format.setAlphaBufferSize(8);
+    surface_format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
+    setFormat(surface_format);
+    clock_.start();
+#ifdef DOROTI_QT_GRAPHITE
+    setSurfaceType(QSurface::VulkanSurface);
+    vulkan_.setApiVersion(QVersionNumber(1, 2));
+#ifdef DOROTI_QT_QUICK
+    vulkan_.setExtensions(QQuickGraphicsConfiguration::preferredInstanceExtensions());
+#endif
+    if (!vulkan_.create()) throw std::runtime_error("Qt Vulkan instance creation failed; no OpenGL fallback");
+    setVulkanInstance(&vulkan_);
+    vulkan_extensions_ = vulkan_.extensions().join('\n');
+#ifdef DOROTI_QT_QUICK
+    if (qgetenv("DOROTI_LINUX_NATIVE_TEXTURES") == "1") {
+      QQuickGraphicsConfiguration configuration;
+      configuration.setDeviceExtensions({"VK_KHR_external_memory_fd", "VK_EXT_external_memory_dma_buf",
+        "VK_EXT_image_drm_format_modifier", "VK_EXT_queue_family_foreign"});
+      setGraphicsConfiguration(configuration);
+    }
+    setColor(Qt::transparent);
+    connect(this, &QQuickWindow::beforeSynchronizing, this, [this] {
+      try { RenderVulkan(); } catch (const std::exception& e) {
+        fatal_ = true; callbacks_.fatal(callback_context_, DOROTI_QT_ERROR_NATIVE_EXCEPTION, Utf8(e.what()));
+        QCoreApplication::exit(DOROTI_QT_ERROR_NATIVE_EXCEPTION);
+      }
+    }, Qt::DirectConnection);
+    connect(this, &QQuickWindow::frameSwapped, this, [this] { FrameSwapped(); }, Qt::DirectConnection);
+    connect(this, &QQuickWindow::sceneGraphInvalidated, this, [this] { ReleaseSurface(); }, Qt::DirectConnection);
+#endif
+    gpu_poll_timer_.setInterval(8);
+    connect(&gpu_poll_timer_, &QTimer::timeout, this, [this] {
+      if (closing_ || fatal_) { gpu_poll_timer_.stop(); return; }
+      const auto result = callbacks_.poll_gpu_work(callback_context_, this);
+      if (result == 1) return;
+      gpu_poll_timer_.stop();
+      if (result != DOROTI_QT_OK) {
+        fatal_ = true;
+        callbacks_.fatal(callback_context_, result, Utf8("managed GPU retirement callback failed"));
+        hide();
+        QCoreApplication::exit(result);
+      }
+    });
+#else
+    connect(this, &QOpenGLWindow::frameSwapped, this, [this] { FrameSwapped(); });
+#endif
+    connect(QGuiApplication::inputMethod(), &QInputMethod::keyboardRectangleChanged, this, [this] { SendMetrics(); requestUpdate(); });
+    connect(QGuiApplication::inputMethod(), &QInputMethod::visibleChanged, this, [this] { SendMetrics(); requestUpdate(); });
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
+    connect(this, &QWindow::safeAreaMarginsChanged, this, [this] { SendMetrics(); requestUpdate(); });
+#endif
+#if QT_VERSION >= QT_VERSION_CHECK(6, 10, 0)
+    connect(QGuiApplication::styleHints()->accessibility(), &QAccessibilityHints::contrastPreferenceChanged,
+            this, [this] { SendConfiguration(); requestUpdate(); });
+#endif
+    connect(QGuiApplication::styleHints(), &QStyleHints::startDragDistanceChanged, this, [this] { SendMetrics(); });
+    connect(this, &QWindow::screenChanged, this, [this](QScreen*) { SendMetrics(); });
+    connect(this, &QWindow::windowStateChanged, this, [this](Qt::WindowState) { UpdateWindowCursor(); SendMetrics(); RequestChromeFrame(); });
+    connect(QGuiApplication::styleHints(), &QStyleHints::colorSchemeChanged,
+            this, [this](Qt::ColorScheme) { SendConfiguration(); });
+  }
+
+  ~DorotiSurface() override {
+    accessible_surfaces.remove(this);
+#ifdef DOROTI_QT_QUICK
+    setPersistentSceneGraph(false); setPersistentGraphics(false);
+    hide(); releaseResources();
+#endif
+    DorotiQtClosePlatformOwner(this);
+    ClearSemanticsTree();
+    ReleaseBackdrop();
+    ReleaseSurface();
+#if defined(DOROTI_QT_GRAPHITE) && !defined(DOROTI_QT_QUICK)
+    // QWindow's VkSurface must die before the member QVulkanInstance.
+    destroy();
+#endif
+    callbacks_.lifecycle_changed(callback_context_, this, 0, Micros());
+    callbacks_.closed(callback_context_, this);
+  }
+
+  const SemanticNode* Semantic(std::int64_t id) const {
+    const auto found = semantics_.constFind(id);
+    return found == semantics_.cend() ? nullptr : &found.value();
+  }
+  QAccessibleInterface* Accessible(std::int64_t id) const;
+  void ApplySemantics(const QByteArray& json);
+  void ClearSemanticsTree();
+  void InitializeBackdrop() {
+    Diagnostic("titlebar.effective", unified_titlebar_ ? "unified-client" : "solid-native");
+    Diagnostic("backdrop.requested", BackdropModeName(backdrop_mode_));
+    Diagnostic("backdrop.fallback", BackdropFallbackName(backdrop_fallback_));
+    if (backdrop_mode_ != DOROTI_QT_BACKDROP_ACRYLIC) {
+      ReportBackdrop(backdrop_mode_ == DOROTI_QT_BACKDROP_TRANSPARENT
+                         ? "transparent"
+                         : "solid",
+                     "none", false);
+      return;
+    }
+    if (QGuiApplication::platformName().compare("wayland", Qt::CaseInsensitive) != 0) {
+      ApplyBackdropFallback();
+      return;
+    }
+    auto* application = qobject_cast<QGuiApplication*>(QCoreApplication::instance());
+    auto* wayland = application == nullptr
+                        ? nullptr
+                        : application->nativeInterface<QNativeInterface::QWaylandApplication>();
+    auto* native = QGuiApplication::platformNativeInterface();
+    if (wayland == nullptr || native == nullptr) {
+      ApplyBackdropFallback();
+      return;
+    }
+    wayland_display_ = wayland->display();
+    wayland_compositor_ = wayland->compositor();
+    wayland_surface_ = static_cast<wl_surface*>(
+        native->nativeResourceForWindow(QByteArrayLiteral("surface"), this));
+    if (wayland_display_ == nullptr || wayland_compositor_ == nullptr ||
+        wayland_surface_ == nullptr) {
+      ApplyBackdropFallback();
+      return;
+    }
+    wayland_registry_ = wl_display_get_registry(wayland_display_);
+    backdrop_event_queue_ = wl_display_create_queue(wayland_display_);
+    if (wayland_registry_ == nullptr || backdrop_event_queue_ == nullptr) {
+      ReleaseBackdrop();
+      ApplyBackdropFallback();
+      return;
+    }
+    wl_proxy_set_queue(reinterpret_cast<wl_proxy*>(wayland_registry_),
+                       backdrop_event_queue_);
+    if (wl_registry_add_listener(wayland_registry_, &kRegistryListener, this) != 0) {
+      ReleaseBackdrop();
+      ApplyBackdropFallback();
+      return;
+    }
+    ApplyBackdropFallback();
+    backdrop_event_timer_ = new QTimer(this);
+    connect(backdrop_event_timer_, &QTimer::timeout, this,
+            [this] { PumpBackdropEvents(); });
+    backdrop_event_timer_->start(16);
+    wl_display_flush(wayland_display_);
+  }
+  void DispatchSemanticsAction(std::int64_t id, std::int64_t action,
+                               const QByteArray& arguments = "null") {
+    // Accessibility requests are distinct from publishing node state. Recheck
+    // the current node when an AT action arrives; a retained provider may refer
+    // to a removed, disabled or no-longer-actionable node.
+    const auto* node = Semantic(id);
+    if (closing_ || node == nullptr || !node->enabled || node->hidden ||
+        action == 0 || (node->actions & action) != action) return;
+    if (node->read_only && (action == (1ll << 6) || action == (1ll << 7))) return;
+    for (std::uint32_t button = 1; button <= 3; ++button)
+      if (id == CaptionId(button) && action == 1) { ActivateCaptionButton(button); return; }
+    callbacks_.semantics_action(callback_context_, this, id, action, Utf8(arguments));
+  }
+
+  static void RequestFrame(void* view_handle, std::uint64_t frame_token) noexcept {
+    auto* surface = static_cast<DorotiSurface*>(view_handle);
+    if (surface == nullptr) return;
+    QMetaObject::invokeMethod(surface, [surface, frame_token] {
+      if (surface->closing_) return;
+      if (surface->pending_frame_token_ != 0) {
+        surface->Terminal(surface->pending_frame_token_, DOROTI_QT_TERMINAL_SUPERSEDED,
+                          surface->surface_generation_);
+      }
+      surface->pending_frame_token_ = frame_token;
+      surface->update();
+    }, Qt::QueuedConnection);
+  }
+
+  static void RequestClose(void* view_handle) noexcept {
+    auto* surface = static_cast<DorotiSurface*>(view_handle);
+    if (surface == nullptr) return;
+    QMetaObject::invokeMethod(surface, [surface] {
+      surface->close();
+    }, Qt::QueuedConnection);
+  }
+
+  static void* GetGlProcAddress(void* view_handle, doroti_qt_utf8_v2 name) noexcept {
+#ifdef DOROTI_QT_GRAPHITE
+    return nullptr;
+#else
+    auto* surface = static_cast<DorotiSurface*>(view_handle);
+    auto* current = QOpenGLContext::currentContext();
+    if (surface == nullptr || current == nullptr || current != surface->context() ||
+        name.data == nullptr || name.length == 0 || name.length > 4096)
+      return nullptr;
+    const QByteArray symbol(reinterpret_cast<const char*>(name.data),
+                            static_cast<qsizetype>(name.length));
+    return reinterpret_cast<void*>(current->getProcAddress(symbol));
+#endif
+  }
+
+  static void Resize(void* view_handle, double width, double height) noexcept {
+    auto* surface = static_cast<DorotiSurface*>(view_handle);
+    if (surface == nullptr || !std::isfinite(width) || !std::isfinite(height) ||
+        width <= 0 || height <= 0) return;
+    QMetaObject::invokeMethod(surface, [surface, width, height] {
+      if (!surface->closing_)
+        surface->resize(std::max(1, static_cast<int>(std::round(width))),
+                        std::max(1, static_cast<int>(std::round(height))));
+    }, Qt::QueuedConnection);
+  }
+
+  static void SetClipboardText(void* view_handle, doroti_qt_utf8_v2 text) noexcept {
+    auto* surface = static_cast<DorotiSurface*>(view_handle);
+    if (surface == nullptr) return;
+    const auto copied = String(text);
+    QMetaObject::invokeMethod(surface, [copied] {
+      if (auto* clipboard = QGuiApplication::clipboard()) clipboard->setText(copied);
+    }, Qt::QueuedConnection);
+  }
+
+  static void RequestClipboardText(void* view_handle, std::uint64_t request_id) noexcept {
+    auto* surface = static_cast<DorotiSurface*>(view_handle);
+    if (surface == nullptr) return;
+    QMetaObject::invokeMethod(surface, [surface, request_id] {
+      const auto value = QGuiApplication::clipboard() == nullptr
+                             ? QByteArray{}
+                             : QGuiApplication::clipboard()->text().toUtf8();
+      surface->callbacks_.clipboard_text(surface->callback_context_, surface,
+                                         request_id, Utf8(value));
+    }, Qt::QueuedConnection);
+  }
+
+  static void SetCursor(void* view_handle, std::uint32_t cursor) noexcept {
+    auto* surface = static_cast<DorotiSurface*>(view_handle);
+    if (surface == nullptr) return;
+    QMetaObject::invokeMethod(surface, [surface, cursor] {
+      Qt::CursorShape shape = Qt::ArrowCursor;
+      switch (cursor) {
+        case 1: shape = Qt::PointingHandCursor; break;
+        case 2: shape = Qt::ForbiddenCursor; break;
+        case 3: shape = Qt::WaitCursor; break;
+        case 4: shape = Qt::BusyCursor; break;
+        case 6: shape = Qt::WhatsThisCursor; break;
+        case 7: shape = Qt::IBeamCursor; break;
+        case 8: shape = Qt::SizeVerCursor; break;
+        case 10: shape = Qt::CrossCursor; break;
+        case 11: case 17: shape = Qt::SizeAllCursor; break;
+        case 12: shape = Qt::OpenHandCursor; break;
+        case 13: shape = Qt::ClosedHandCursor; break;
+        case 18: shape = Qt::SizeHorCursor; break;
+        case 19: shape = Qt::SizeVerCursor; break;
+        case 20: shape = Qt::SizeFDiagCursor; break;
+        case 21: shape = Qt::SizeBDiagCursor; break;
+        case 34: shape = Qt::BlankCursor; break;
+        default: break;
+      }
+      surface->client_cursor_ = shape;
+      surface->UpdateWindowCursor();
+    }, Qt::QueuedConnection);
+  }
+
+  static void SetTextClient(void* view_handle,
+                            const doroti_qt_text_configuration_v2* configuration,
+                            const doroti_qt_text_state_v2* state) noexcept {
+    auto* surface = static_cast<DorotiSurface*>(view_handle);
+    if (surface == nullptr || configuration == nullptr || state == nullptr) return;
+    const auto config = *configuration;
+    const auto text = String(state->text);
+    const auto selection_base = state->selection_base;
+    const auto selection_extent = state->selection_extent;
+    const auto composing_base = state->composing_base;
+    const auto composing_extent = state->composing_extent;
+    QMetaObject::invokeMethod(surface, [surface, config, text, selection_base,
+                                        selection_extent, composing_base, composing_extent] {
+#ifdef DOROTI_QT_QUICK
+      DorotiQtQuickClearFocus(surface);
+#endif
+      surface->text_client_active_ = true;
+      surface->text_configuration_ = config;
+      surface->ApplyTextState(text, selection_base, selection_extent,
+                              composing_base, composing_extent);
+      surface->setFlag(Qt::WindowDoesNotAcceptFocus, false);
+      surface->requestActivate();
+      QGuiApplication::inputMethod()->show();
+    }, Qt::QueuedConnection);
+  }
+
+  static void UpdateTextState(void* view_handle,
+                              const doroti_qt_text_state_v2* state) noexcept {
+    auto* surface = static_cast<DorotiSurface*>(view_handle);
+    if (surface == nullptr || state == nullptr) return;
+    const auto text = String(state->text);
+    const auto selection_base = state->selection_base;
+    const auto selection_extent = state->selection_extent;
+    const auto composing_base = state->composing_base;
+    const auto composing_extent = state->composing_extent;
+    QMetaObject::invokeMethod(surface, [surface, text, selection_base,
+                                        selection_extent, composing_base, composing_extent] {
+      surface->ApplyTextState(text, selection_base, selection_extent,
+                              composing_base, composing_extent);
+    }, Qt::QueuedConnection);
+  }
+
+  static void SetCaretRect(void* view_handle, double left, double top,
+                           double width, double height) noexcept {
+    auto* surface = static_cast<DorotiSurface*>(view_handle);
+    if (surface == nullptr) return;
+    QMetaObject::invokeMethod(surface, [surface, left, top, width, height] {
+      surface->caret_rect_ = QRectF(left, top, width, height);
+      QGuiApplication::inputMethod()->update(Qt::ImCursorRectangle);
+    }, Qt::QueuedConnection);
+  }
+
+  static void ClearTextClient(void* view_handle) noexcept {
+    auto* surface = static_cast<DorotiSurface*>(view_handle);
+    if (surface == nullptr) return;
+    QMetaObject::invokeMethod(surface, [surface] {
+      surface->text_client_active_ = false;
+      surface->composing_base_ = surface->composing_extent_ = -1;
+      QGuiApplication::inputMethod()->reset();
+      QGuiApplication::inputMethod()->hide();
+    }, Qt::QueuedConnection);
+  }
+
+  static void UpdateSemantics(void* view_handle, doroti_qt_utf8_v2 json) noexcept {
+    auto* surface = static_cast<DorotiSurface*>(view_handle);
+    if (surface == nullptr || json.data == nullptr || json.length == 0 ||
+        json.length > 16 * 1024 * 1024) return;
+    const QByteArray copied(reinterpret_cast<const char*>(json.data),
+                            static_cast<qsizetype>(json.length));
+    QMetaObject::invokeMethod(surface, [surface, copied] {
+      QJsonParseError error;
+      const auto document = QJsonDocument::fromJson(copied, &error);
+      if (error.error != QJsonParseError::NoError || !document.isObject()) {
+        surface->callbacks_.fatal(surface->callback_context_, DOROTI_QT_ERROR_INVALID_ARGUMENT,
+                                  Utf8("invalid managed semantics JSON"));
+        return;
+      }
+      surface->ApplySemantics(copied);
+      const auto nodes = document.object().value("nodes").toArray().size();
+      const auto count = QByteArray::number(nodes);
+      surface->Diagnostic("semantics.nodes", count.constData());
+    }, Qt::QueuedConnection);
+  }
+
+  static void ClearSemantics(void* view_handle) noexcept {
+    auto* surface = static_cast<DorotiSurface*>(view_handle);
+    if (surface == nullptr) return;
+    QMetaObject::invokeMethod(surface, [surface] {
+      surface->ClearSemanticsTree();
+      surface->RefreshCaptionSemantics();
+    },
+                              Qt::QueuedConnection);
+  }
+
+  static void PreparePresent(void* view_handle) noexcept {
+#ifdef DOROTI_QT_GRAPHITE
+    auto* surface = static_cast<DorotiSurface*>(view_handle);
+    surface->vulkan_.presentAboutToBeQueued(surface);
+#else
+    (void)view_handle;
+#endif
+  }
+
+ protected:
+#ifdef DOROTI_QT_GRAPHITE
+#ifdef DOROTI_QT_QUICK
+  // The instance must outlive QQuickWindow's base destructor and its QRhi.
+  QVulkanInstance& vulkan_;
+#else
+  QVulkanInstance vulkan_;
+#endif
+  QByteArray vulkan_extensions_;
+  QTimer gpu_poll_timer_;
+  bool render_retry_pending_ = false;
+#ifdef DOROTI_QT_QUICK
+  bool quick_has_frame_ = false;
+#endif
+  double devicePixelRatioF() const { return devicePixelRatio(); }
+  void update() {
+#ifdef DOROTI_QT_QUICK
+    QQuickWindow::update();
+#else
+    requestUpdate();
+#endif
+  }
+  void RenderVulkan() {
+    if (!isExposed() || width() <= 0 || height() <= 0 || fatal_ || closing_) return;
+#ifdef DOROTI_QT_QUICK
+    if (quick_has_frame_ && pending_frame_token_ == 0) return;
+#endif
+    const auto surface = QVulkanInstance::surfaceForWindow(this);
+    if (surface == VK_NULL_HANDLE) throw std::runtime_error("Qt Vulkan surface creation failed");
+    if (context_identity_ == 0) {
+      context_identity_ = reinterpret_cast<std::uintptr_t>(vulkan_.vkInstance());
+      ++surface_generation_;
+      surface_released_ = false;
+      Diagnostic("qpa", QGuiApplication::platformName().toUtf8().constData());
+#ifdef DOROTI_QT_QUICK
+      Diagnostic("graphics.backend", "QtQuick-Graphite-Vulkan");
+      Diagnostic("composition", "interleaved-gpu-images");
+      Diagnostic("raster.cpuReadback", "false");
+#else
+      Diagnostic("graphics.backend", "Graphite-Vulkan");
+#endif
+      Diagnostic("presentation.completion", "queue-present-accepted-not-scanout");
+      Diagnostic("vulkan.instance.apiVersion", vulkan_.apiVersion().toString().toUtf8().constData());
+      Diagnostic("vulkan.instance.extensions", vulkan_.extensions().join(',').constData());
+    }
+    if (pending_frame_token_ == 0) pending_frame_token_ = next_automatic_frame_token_++;
+    const auto token = std::exchange(pending_frame_token_, 0);
+    const auto scale = devicePixelRatioF();
+    doroti_qt_surface_v2 descriptor{};
+    descriptor.abi_version = kAbiVersion;
+    descriptor.struct_size = sizeof(descriptor);
+    descriptor.surface_generation = surface_generation_;
+    descriptor.context_identity = context_identity_;
+    descriptor.pixel_width = std::max(1, static_cast<int>(width() * scale));
+    descriptor.pixel_height = std::max(1, static_cast<int>(height() * scale));
+    descriptor.device_pixel_ratio = scale;
+    descriptor.timestamp_microseconds = Micros();
+    descriptor.vulkan_surface = reinterpret_cast<std::uintptr_t>(surface);
+    descriptor.vulkan_instance = vulkan_.vkInstance();
+    descriptor.vulkan_instance_extensions = Utf8(vulkan_extensions_);
+    descriptor.vulkan_instance_api_version = VK_MAKE_VERSION(vulkan_.apiVersion().majorVersion(), vulkan_.apiVersion().minorVersion(), vulkan_.apiVersion().microVersion());
+    DescribeTitlebar(descriptor);
+#ifdef DOROTI_QT_QUICK
+    // A render-only pass (for example grabWindow), or a superseded scene, may
+    // never emit frameSwapped. Retire that token BEFORE managed admission of
+    // the next frame, while its placement reservation still identifies it.
+    if (rasterized_frame_token_ != 0)
+      Terminal(std::exchange(rasterized_frame_token_, 0), DOROTI_QT_TERMINAL_SUPERSEDED, rasterized_generation_);
+#endif
+    const auto result = callbacks_.render(callback_context_, this, &descriptor, token);
+    if (result == 1 || result == 2) {
+      Terminal(token, DOROTI_QT_TERMINAL_SUPERSEDED, surface_generation_);
+      // No buffer was committed, so no compositor frame callback is promised.
+      // A known empty scene at the published extent needs no retry.
+#ifdef DOROTI_QT_QUICK
+      const bool retry = result == 1 || !quick_has_frame_ ||
+          descriptor.pixel_width != published_pixel_width_ ||
+          descriptor.pixel_height != published_pixel_height_;
+#else
+      const bool retry = true;
+#endif
+      if (retry && !render_retry_pending_) {
+        render_retry_pending_ = true;
+        QTimer::singleShot(8, this, [this] {
+          render_retry_pending_ = false;
+          if (!closing_ && !fatal_) {
+#ifdef DOROTI_QT_QUICK
+            if (pending_frame_token_ == 0) pending_frame_token_ = next_automatic_frame_token_++;
+            update();
+#else
+            QEvent retry(QEvent::UpdateRequest);
+            QCoreApplication::sendEvent(this, &retry);
+#endif
+          }
+        });
+      }
+      return;
+    }
+    if (result != DOROTI_QT_OK) {
+      const auto details = QJsonDocument(QJsonObject{
+          {"qt", QString::fromLatin1(qVersion())},
+          {"qpa", QGuiApplication::platformName()},
+          {"logicalWidth", width()}, {"logicalHeight", height()},
+          {"pixelWidth", descriptor.pixel_width}, {"pixelHeight", descriptor.pixel_height},
+          {"dpr", descriptor.device_pixel_ratio},
+          {"surfaceGeneration", qint64(surface_generation_)},
+          {"metricsGeneration", qint64(metrics_generation_)},
+          {"frameToken", QString::number(token)}, {"status", result}
+      }).toJson(QJsonDocument::Compact);
+      Diagnostic("render.failure", details.constData());
+      fatal_ = true;
+      Terminal(token, DOROTI_QT_TERMINAL_FAILED, surface_generation_);
+      callbacks_.fatal(callback_context_, result, Utf8("managed Vulkan render callback failed"));
+      hide();
+      QCoreApplication::exit(result);
+      RequestClose(this);
+      return;
+    }
+#ifndef DOROTI_QT_QUICK
+    vulkan_.presentQueued(this);
+#endif
+#ifdef DOROTI_QT_QUICK
+    quick_has_frame_ = true;
+    published_pixel_width_ = descriptor.pixel_width;
+    published_pixel_height_ = descriptor.pixel_height;
+    if (rasterized_frame_token_ != 0)
+      Terminal(std::exchange(rasterized_frame_token_, 0), DOROTI_QT_TERMINAL_SUPERSEDED, rasterized_generation_);
+#endif
+    rasterized_frame_token_ = token;
+    rasterized_generation_ = surface_generation_;
+    if (!gpu_poll_timer_.isActive()) gpu_poll_timer_.start();
+    #ifndef DOROTI_QT_QUICK
+    FrameSwapped();
+    #endif
+  }
+#else
+  void initializeGL() override {
+    ++surface_generation_;
+    surface_released_ = false;
+    surface_diagnostics_reported_ = false;
+    auto* current = QOpenGLContext::currentContext();
+    context_identity_ = reinterpret_cast<std::uintptr_t>(current);
+    if (current != nullptr) {
+      connect(current, &QOpenGLContext::aboutToBeDestroyed, this,
+              [this] { ReleaseSurface(); }, Qt::DirectConnection);
+    }
+    const auto qpa = QGuiApplication::platformName().toUtf8();
+    Diagnostic("qpa", qpa.constData());
+    const auto generation = QByteArray::number(surface_generation_);
+    Diagnostic("surface.generation", generation.constData());
+    if (current != nullptr) {
+      auto* functions = current->functions();
+      Diagnostic("gl.vendor", reinterpret_cast<const char*>(functions->glGetString(GL_VENDOR)));
+      const auto* renderer = reinterpret_cast<const char*>(functions->glGetString(GL_RENDERER));
+      Diagnostic("gl.renderer", renderer);
+      Diagnostic("gl.version", reinterpret_cast<const char*>(functions->glGetString(GL_VERSION)));
+      const auto normalized = QByteArray(renderer == nullptr ? "" : renderer).toLower();
+      const bool software_renderer = normalized.contains("llvmpipe") || normalized.contains("softpipe") ||
+                                     normalized.contains("swiftshader");
+      Diagnostic("gl.softwareRenderer", software_renderer ? "true" : "false");
+      const auto alpha_bits = QByteArray::number(current->format().alphaBufferSize());
+      Diagnostic("surface.alphaBits", alpha_bits.constData());
+      Diagnostic("surface.repaint", "full-transparent-clear");
+    }
+  }
+
+  void paintGL() override {
+    if (pending_frame_token_ == 0 || fatal_) return;
+    const auto token = std::exchange(pending_frame_token_, 0);
+    const auto scale = devicePixelRatioF();
+    const auto format = context() == nullptr ? QSurfaceFormat{} : context()->format();
+    doroti_qt_surface_v2 descriptor{
+        kAbiVersion,
+        sizeof(doroti_qt_surface_v2),
+        surface_generation_,
+        context_identity_,
+        defaultFramebufferObject(),
+        std::max(1, static_cast<int>(width() * scale)),
+        std::max(1, static_cast<int>(height() * scale)),
+        scale,
+        std::max(0, format.samples()),
+        std::max(0, format.stencilBufferSize()),
+        kGlRgba8,
+        context() != nullptr && context()->isOpenGLES() ? 2u : 1u,
+        static_cast<std::uint32_t>(format.profile()),
+        format.majorVersion(),
+        format.minorVersion(),
+        Micros(),
+    };
+    DescribeTitlebar(descriptor);
+    if (!surface_diagnostics_reported_ ||
+        reported_framebuffer_object_ != descriptor.framebuffer_object ||
+        reported_sample_count_ != descriptor.sample_count ||
+        reported_stencil_bits_ != descriptor.stencil_bits ||
+        reported_device_pixel_ratio_ != descriptor.device_pixel_ratio) {
+      const auto fbo = QByteArray::number(descriptor.framebuffer_object);
+      const auto samples = QByteArray::number(descriptor.sample_count);
+      const auto stencil = QByteArray::number(descriptor.stencil_bits);
+      const auto dpr = QByteArray::number(descriptor.device_pixel_ratio, 'f', 3);
+      Diagnostic("surface.fbo", fbo.constData());
+      Diagnostic("surface.samples", samples.constData());
+      Diagnostic("surface.stencil", stencil.constData());
+      Diagnostic("surface.dpr", dpr.constData());
+      reported_framebuffer_object_ = descriptor.framebuffer_object;
+      reported_sample_count_ = descriptor.sample_count;
+      reported_stencil_bits_ = descriptor.stencil_bits;
+      reported_device_pixel_ratio_ = descriptor.device_pixel_ratio;
+      surface_diagnostics_reported_ = true;
+    }
+    // A Wayland/EGL swapchain does not promise that a newly acquired buffer is
+    // zeroed. Clear the complete native target before handing it to Skia so a
+    // transparent framework background means transparent *this frame*, rather
+    // than blending with pixels left in an older swapchain image. Reset the GL
+    // write state explicitly because paintGL may follow arbitrary Skia state.
+    auto* functions = context()->functions();
+    functions->glBindFramebuffer(GL_FRAMEBUFFER, descriptor.framebuffer_object);
+    functions->glDisable(GL_SCISSOR_TEST);
+    functions->glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    functions->glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    functions->glClear(GL_COLOR_BUFFER_BIT);
+    const auto result = callbacks_.render(callback_context_, this, &descriptor, token);
+    if (result != DOROTI_QT_OK) {
+      fatal_ = true;
+      Terminal(token, DOROTI_QT_TERMINAL_FAILED, surface_generation_);
+      callbacks_.fatal(callback_context_, result, Utf8("managed render callback failed"));
+      QCoreApplication::exit(result);
+      RequestClose(this);
+      return;
+    }
+#ifdef DOROTI_QT_QUICK
+    quick_has_frame_ = true;
+    if (rasterized_frame_token_ != 0)
+      Terminal(std::exchange(rasterized_frame_token_, 0), DOROTI_QT_TERMINAL_SUPERSEDED, rasterized_generation_);
+#endif
+    rasterized_frame_token_ = token;
+    rasterized_generation_ = surface_generation_;
+  }
+
+  void resizeGL(int, int) override {
+    if (next_automatic_frame_token_ == 0) next_automatic_frame_token_ = 1;
+    // QOpenGLWindow calls resizeGL immediately before paintGL. Posting through
+    // RequestFrame here defers the token until the next event-loop turn, so the
+    // current paintGL returns without drawing and Qt swaps an empty resized
+    // back buffer. Install a reserved low-range replay token synchronously;
+    // keep any already-pending framework token, which is the newer work.
+    if (pending_frame_token_ == 0)
+      pending_frame_token_ = next_automatic_frame_token_++;
+  }
+
+#endif
+  bool event(QEvent* event) override {
+#ifdef DOROTI_QT_QUICK
+    if (DorotiQtQuickNativeInput(this, event)) return DorotiWindowBase::event(event);
+    if (event->type() == QEvent::MouseButtonPress) DorotiQtQuickClearFocus(this);
+#endif
+    switch (event->type()) {
+#if defined(DOROTI_QT_GRAPHITE) && !defined(DOROTI_QT_QUICK)
+      case QEvent::UpdateRequest:
+        try { RenderVulkan(); }
+        catch (const std::exception& exception) {
+          fatal_ = true;
+          callbacks_.fatal(callback_context_, DOROTI_QT_ERROR_NATIVE_EXCEPTION, Utf8(exception.what()));
+          QCoreApplication::exit(DOROTI_QT_ERROR_NATIVE_EXCEPTION);
+        }
+        return true;
+      case QEvent::Expose:
+        if (isExposed()) update();
+        break;
+      case QEvent::PlatformSurface:
+        if (static_cast<QPlatformSurfaceEvent*>(event)->surfaceEventType() == QPlatformSurfaceEvent::SurfaceAboutToBeDestroyed)
+          ReleaseSurface();
+        break;
+#endif
+      case QEvent::Show:
+        lifecycle_state_ = 1;
+        callbacks_.lifecycle_changed(callback_context_, this, lifecycle_state_, Micros());
+        SendMetrics();
+        SendConfiguration();
+        break;
+      case QEvent::Hide:
+        ResetTrackpad();
+#ifdef DOROTI_QT_QUICK
+        DorotiQtQuickCancelNativeInput(this);
+#endif
+        lifecycle_state_ = 3;
+        callbacks_.lifecycle_changed(callback_context_, this, lifecycle_state_, Micros());
+        SendMetrics();
+        break;
+      case QEvent::Resize:
+        SendMetrics();
+#ifdef DOROTI_QT_GRAPHITE
+        update();
+#endif
+        break;
+      case QEvent::WindowActivate:
+        lifecycle_state_ = 1;
+        callbacks_.lifecycle_changed(callback_context_, this, lifecycle_state_, Micros());
+        callbacks_.focus(callback_context_, this, 1, Micros());
+        RequestChromeFrame();
+        break;
+      case QEvent::WindowDeactivate:
+        ResetTrackpad();
+#ifdef DOROTI_QT_QUICK
+        DorotiQtQuickCancelNativeInput(this);
+#endif
+        lifecycle_state_ = 2;
+        callbacks_.lifecycle_changed(callback_context_, this, lifecycle_state_, Micros());
+        callbacks_.focus(callback_context_, this, 0, Micros());
+        caption_pressed_ = 0;
+        RequestChromeFrame();
+        break;
+      case QEvent::WindowStateChange:
+        UpdateWindowCursor();
+        SendMetrics();
+        RequestChromeFrame();
+        break;
+      case QEvent::Close:
+        ResetTrackpad();
+#ifdef DOROTI_QT_QUICK
+        DorotiQtQuickCancelNativeInput(this);
+#endif
+        if (!close_requested_) {
+          close_requested_ = true;
+          callbacks_.close_requested(callback_context_, this);
+        }
+        closing_ = true;
+#ifndef DOROTI_QT_QUICK
+        DorotiQtClosePlatformOwner(this);
+#endif
+        break;
+      case QEvent::Enter: {
+        auto* enter = static_cast<QEnterEvent*>(event);
+        cursor_inside_ = true;
+        cursor_position_ = enter->position();
+        UpdateWindowCursor();
+        SendPointer(enter->position(), QPointF{}, 1, 1, 0, 1, 0, 0, 0, 0);
+        break;
+      }
+      case QEvent::Leave:
+        cursor_inside_ = false;
+        UpdateWindowCursor();
+        caption_hovered_ = 0;
+        RequestChromeFrame();
+        SendPointer(last_pointer_position_, QPointF{}, 2, 1, 0, 1, 0, 0, 0, 0);
+        break;
+      case QEvent::MouseButtonPress:
+      case QEvent::MouseButtonRelease:
+      case QEvent::MouseButtonDblClick:
+      case QEvent::MouseMove: {
+        auto* mouse = static_cast<QMouseEvent*>(event);
+        cursor_inside_ = true;
+        cursor_position_ = mouse->position();
+        UpdateWindowCursor();
+        if (HandleCaptionMouse(mouse)) { event->accept(); return true; }
+        const auto change = (event->type() == QEvent::MouseButtonPress || event->type() == QEvent::MouseButtonDblClick) ? 4u
+                            : event->type() == QEvent::MouseButtonRelease ? 6u
+                            : mouse->buttons() == Qt::NoButton ? 3u : 5u;
+        const auto delta = mouse->position() - last_pointer_position_;
+        SendPointer(mouse->position(), delta, change, 1,
+                    static_cast<std::int64_t>(mouse->buttons()), 1, 0, 0,
+                    static_cast<std::uint32_t>(mouse->modifiers()), 0);
+        break;
+      }
+      case QEvent::Wheel: {
+        auto* wheel = static_cast<QWheelEvent*>(event);
+        if (wheel->position().y() < CaptionHeight()) { event->accept(); return true; }
+        auto scroll = wheel->pixelDelta();
+        if (scroll.isNull()) scroll = wheel->angleDelta() / 8;
+        if (wheel->pointingDevice()->type() == QInputDevice::DeviceType::TouchPad) {
+          if (wheel->phase() == Qt::ScrollMomentum) {
+            EndTrackpad(1);
+            trackpad_momentum_ = true;
+          } else if (wheel->phase() == Qt::ScrollEnd) {
+            EndTrackpad(1);
+          } else {
+            BeginTrackpad(wheel->position(), 1);
+            const auto delta = QPointF(scroll);
+            trackpad_pan_ += delta;
+            SendTrackpad(8, delta);
+            // Some Qt platform plugins expose no scroll-stop phase. Bound that
+            // stream by inactivity instead of leaving a recognizer down forever.
+            const auto epoch = ++trackpad_wheel_epoch_;
+            if (wheel->phase() == Qt::NoScrollPhase)
+              QTimer::singleShot(100, this, [this, epoch] {
+                if (trackpad_wheel_epoch_ == epoch) EndTrackpad(1);
+              });
+          }
+          event->accept();
+          return true;
+        }
+        const auto factor = wheel->inverted() ? 1.0 : -1.0;
+        SendPointer(wheel->position(), QPointF{}, 3, 1,
+                    static_cast<std::int64_t>(wheel->buttons()), 1, 0, 1,
+                    static_cast<std::uint32_t>(wheel->modifiers()),
+                    wheel->phase(), scroll.x() * factor, scroll.y() * factor);
+        break;
+      }
+      case QEvent::NativeGesture: {
+        auto* gesture = static_cast<QNativeGestureEvent*>(event);
+        const auto type = gesture->gestureType();
+        if (type == Qt::EndNativeGesture) EndTrackpad(2);
+        else if (type == Qt::BeginNativeGesture || type == Qt::PanNativeGesture ||
+                 type == Qt::ZoomNativeGesture || type == Qt::RotateNativeGesture) {
+          BeginTrackpad(gesture->position(), 2);
+          QPointF delta;
+          if (type == Qt::PanNativeGesture) { delta = gesture->delta(); trackpad_pan_ += delta; }
+          if (type == Qt::ZoomNativeGesture) trackpad_scale_ *= 1 + gesture->value();
+          if (type == Qt::RotateNativeGesture) trackpad_rotation_ += gesture->value() * 3.141592653589793 / 180;
+          if (type != Qt::BeginNativeGesture) SendTrackpad(8, delta);
+        } else break;
+        event->accept();
+        return true;
+      }
+      case QEvent::TabletPress:
+      case QEvent::TabletMove:
+      case QEvent::TabletRelease: {
+        auto* tablet = static_cast<QTabletEvent*>(event);
+        const auto change = event->type() == QEvent::TabletPress ? 4u
+                            : event->type() == QEvent::TabletRelease ? 6u
+                            : tablet->buttons() == Qt::NoButton ? 3u : 5u;
+        const auto delta = tablet->position() - last_pointer_position_;
+        const auto kind = tablet->pointerType() == QPointingDevice::PointerType::Eraser ? 3u : 2u;
+        SendPointer(tablet->position(), delta, change, kind,
+                    static_cast<std::int64_t>(tablet->buttons()),
+                    static_cast<std::uint64_t>(tablet->device()->systemId()),
+                    static_cast<std::uint64_t>(tablet->pointingDevice()->uniqueId().numericId()),
+                    0, static_cast<std::uint32_t>(tablet->modifiers()), 0, 0, 0,
+                    tablet->pressure(), std::hypot(tablet->xTilt(), tablet->yTilt()));
+        break;
+      }
+      case QEvent::TouchBegin:
+      case QEvent::TouchUpdate:
+      case QEvent::TouchEnd:
+      case QEvent::TouchCancel: {
+        auto* touch = static_cast<QTouchEvent*>(event);
+        for (const auto& point : touch->points()) {
+          std::uint32_t change = 5;
+          if (event->type() == QEvent::TouchCancel) change = 0;
+          else if (point.state() == QEventPoint::Pressed) change = 4;
+          else if (point.state() == QEventPoint::Released) change = 6;
+          SendPointer(point.position(), point.position() - point.lastPosition(), change, 0,
+                      change == 6 ? 0 : 1,
+                      static_cast<std::uint64_t>(touch->pointingDevice()->systemId()),
+                      static_cast<std::uint64_t>(point.id()), 0,
+                      static_cast<std::uint32_t>(touch->modifiers()), 0, 0, 0,
+                      point.pressure(), 0);
+        }
+        break;
+      }
+      case QEvent::KeyPress:
+      case QEvent::KeyRelease: {
+        auto* key = static_cast<QKeyEvent*>(event);
+        if (unified_titlebar_ && event->type() == QEvent::KeyPress &&
+            key->key() == Qt::Key_F4 && key->modifiers().testFlag(Qt::AltModifier)) {
+          close();
+          return true;
+        }
+        const auto text = key->text().toUtf8();
+        const doroti_qt_key_v2 descriptor{
+            kAbiVersion, sizeof(doroti_qt_key_v2),
+            static_cast<std::int64_t>(key->nativeScanCode()),
+            static_cast<std::int64_t>(key->key()),
+            event->type() == QEvent::KeyRelease ? 1u : key->isAutoRepeat() ? 2u : 0u,
+            static_cast<std::uint32_t>(key->modifiers()), Utf8(text), Micros()};
+        if (qEnvironmentVariableIsSet("DOROTI_QT_VALIDATION_KEYCODES")) {
+          const auto detail = QJsonDocument(QJsonObject{
+              {"qpa", QGuiApplication::platformName()},
+              {"nativeScanCode", qint64(key->nativeScanCode())},
+              {"qtKey", key->key()},
+              {"modifiers", qint64(static_cast<int>(key->modifiers()))},
+              {"release", event->type() == QEvent::KeyRelease},
+              {"repeat", key->isAutoRepeat()}
+          }).toJson(QJsonDocument::Compact);
+          Diagnostic("input.key", detail.constData());
+        }
+        callbacks_.key(callback_context_, this, &descriptor);
+        if (text_client_active_ && event->type() == QEvent::KeyPress &&
+            (key->key() == Qt::Key_Return || key->key() == Qt::Key_Enter) &&
+            text_configuration_.input_action != 0 && text_configuration_.input_action != 12) {
+          callbacks_.text_action(callback_context_, this, text_configuration_.input_action);
+          event->accept();
+          return true;
+        }
+        break;
+      }
+      case QEvent::InputMethod:
+        HandleInputMethod(static_cast<QInputMethodEvent*>(event));
+        return true;
+      case QEvent::InputMethodQuery: {
+        auto* query = static_cast<QInputMethodQueryEvent*>(event);
+        for (auto item : {Qt::ImEnabled, Qt::ImCursorRectangle, Qt::ImCursorPosition,
+                          Qt::ImAnchorPosition, Qt::ImSurroundingText,
+                          Qt::ImCurrentSelection, Qt::ImHints})
+          query->setValue(item, inputMethodQuery(item));
+        query->accept();
+        return true;
+      }
+      case QEvent::LocaleChange:
+      case QEvent::ApplicationPaletteChange:
+      case QEvent::ThemeChange:
+        SendConfiguration();
+        RequestChromeFrame();
+        break;
+      case QEvent::DevicePixelRatioChange:
+        SendMetrics();
+        break;
+      default:
+        break;
+    }
+#ifdef DOROTI_QT_QUICK
+    // Native-target events returned above. Never deliver a managed press/key a
+    // second time to the Quick controls underneath a Doroti input shield.
+    switch (event->type()) {
+      case QEvent::MouseButtonPress: case QEvent::MouseButtonRelease: case QEvent::MouseButtonDblClick:
+      case QEvent::MouseMove: case QEvent::Wheel: case QEvent::TouchBegin: case QEvent::TouchUpdate:
+      case QEvent::TouchEnd: case QEvent::TouchCancel: case QEvent::KeyPress: case QEvent::KeyRelease:
+        event->accept(); return true;
+      default: break;
+    }
+#endif
+    return DorotiWindowBase::event(event);
+  }
+
+  QVariant inputMethodQuery(Qt::InputMethodQuery query) const {
+    switch (query) {
+      case Qt::ImEnabled: return text_client_active_ && !text_configuration_.read_only;
+      case Qt::ImCursorRectangle: return caret_rect_;
+      case Qt::ImCursorPosition: return selection_extent_;
+      case Qt::ImAnchorPosition: return selection_base_;
+      case Qt::ImSurroundingText: return text_;
+      case Qt::ImCurrentSelection: {
+        const auto start = std::min(selection_base_, selection_extent_);
+        return text_.mid(start, std::abs(selection_extent_ - selection_base_));
+      }
+      case Qt::ImHints: return static_cast<int>(InputMethodHints());
+      default: return {};
+    }
+  }
+
+ private:
+  std::uint32_t CaptionHeight() const {
+    return unified_titlebar_ && windowState() != Qt::WindowFullScreen ? 32u : 0u;
+  }
+
+  Qt::Edges ResizeEdges(const QPointF& point) const {
+    if (CaptionHeight() == 0 || windowState() == Qt::WindowMaximized ||
+        point.x() < 0 || point.y() < 0 || point.x() >= width() || point.y() >= height()) return {};
+    constexpr int border = 5;  // Qt logical pixels, shared by hover and resize initiation.
+    Qt::Edges edges;
+    if (point.x() < border) edges |= Qt::LeftEdge;
+    if (point.x() >= width() - border) edges |= Qt::RightEdge;
+    if (point.y() < border) edges |= Qt::TopEdge;
+    if (point.y() >= height() - border) edges |= Qt::BottomEdge;
+    return edges;
+  }
+
+  void UpdateWindowCursor() {
+    auto shape = client_cursor_;
+    if (cursor_inside_) {
+      const auto edges = ResizeEdges(cursor_position_);
+      const bool horizontal = edges.testFlag(Qt::LeftEdge) || edges.testFlag(Qt::RightEdge);
+      const bool vertical = edges.testFlag(Qt::TopEdge) || edges.testFlag(Qt::BottomEdge);
+      if (horizontal && vertical) {
+        shape = edges.testFlag(Qt::LeftEdge) == edges.testFlag(Qt::TopEdge)
+            ? Qt::SizeFDiagCursor : Qt::SizeBDiagCursor;
+      } else if (horizontal) shape = Qt::SizeHorCursor;
+      else if (vertical) shape = Qt::SizeVerCursor;
+      else if (cursor_position_.y() >= 0 && cursor_position_.y() < CaptionHeight())
+        shape = Qt::ArrowCursor;
+    }
+    // Managed cursor changes arrive asynchronously; chrome takes precedence while
+    // retaining the latest client cursor to restore when the pointer returns.
+    if (cursor().shape() != shape) setCursor(shape);
+  }
+
+  void DescribeTitlebar(doroti_qt_surface_v2& descriptor) const {
+    descriptor.titlebar_height = CaptionHeight();
+    descriptor.titlebar_state = (QGuiApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark ? 1u : 0u) |
+        (isActive() ? 2u : 0u) | (windowState() == Qt::WindowMaximized ? 4u : 0u);
+    descriptor.titlebar_hovered = caption_hovered_;
+    descriptor.titlebar_pressed = caption_pressed_;
+  }
+
+  void RequestChromeFrame() {
+    if (!unified_titlebar_ || closing_ || fatal_) return;
+    if (pending_frame_token_ == 0) pending_frame_token_ = next_automatic_frame_token_++;
+    update();
+  }
+
+  std::uint32_t CaptionButton(const QPointF& point) const {
+    if (point.y() < 0 || point.y() >= CaptionHeight() || point.x() < width() - 138 || point.x() >= width()) return 0;
+    return 1u + static_cast<std::uint32_t>((point.x() - (width() - 138)) / 46);
+  }
+
+  void ActivateCaptionButton(std::uint32_t button) {
+    if (button == 1) showMinimized();
+    else if (button == 2) {
+      if (windowState() == Qt::WindowMaximized) showNormal();
+      else showMaximized();
+    } else if (button == 3) close();
+  }
+
+  bool HandleCaptionMouse(QMouseEvent* mouse) {
+    if (CaptionHeight() == 0) return false;
+    const auto point = mouse->position();
+    const auto button = CaptionButton(point);
+    if (caption_hovered_ != button) { caption_hovered_ = button; RequestChromeFrame(); }
+    if (mouse->type() == QEvent::MouseButtonRelease && caption_pressed_ != 0) {
+      const auto pressed = std::exchange(caption_pressed_, 0);
+      RequestChromeFrame();
+      if (pressed == button) ActivateCaptionButton(button);
+      return true;
+    }
+    if (caption_pressed_ != 0) return true;
+    if (mouse->type() == QEvent::MouseButtonPress && mouse->button() == Qt::LeftButton) {
+      const auto edges = ResizeEdges(point);
+      if (edges != Qt::Edges{} && startSystemResize(edges)) return true;
+      if (point.y() < CaptionHeight()) {
+        if (button != 0) { caption_pressed_ = button; RequestChromeFrame(); }
+        else startSystemMove();
+        return true;
+      }
+    }
+    if (mouse->type() == QEvent::MouseButtonDblClick && mouse->button() == Qt::LeftButton &&
+        point.y() < CaptionHeight() && button == 0) {
+      ActivateCaptionButton(2);
+      return true;
+    }
+    // Preserve client drags that cross the caption while a button is held.
+    return point.y() < CaptionHeight() && mouse->buttons() == Qt::NoButton;
+  }
+
+  static std::int64_t CaptionId(std::uint32_t button) {
+    return std::numeric_limits<std::int64_t>::min() + button;
+  }
+
+  void RefreshCaptionSemantics() {
+    if (!unified_titlebar_) return;
+    // Native window controls remain accessible even when the app has not
+    // published (or has cleared) its widget semantics tree.
+    if (!semantics_.contains(0)) {
+      SemanticNode root;
+      root.label = title();
+      root.rect = QRectF(0, 0, width(), height());
+      semantics_.insert(0, root);
+    }
+    for (std::uint32_t button = 1; button <= 3; ++button) {
+      SemanticNode node;
+      node.id = CaptionId(button);
+      node.label = button == 1 ? tr("Minimize") : button == 2
+          ? (windowState() == Qt::WindowMaximized ? tr("Restore") : tr("Maximize")) : tr("Close");
+      node.button = true;
+      node.actions = 1;
+      node.hidden = CaptionHeight() == 0;
+      node.rect = QRectF(width() - (4 - button) * 46, 0, 46, CaptionHeight());
+      semantics_.insert(node.id, node);
+      if (!semantics_[0].children.contains(node.id)) semantics_[0].children.append(node.id);
+    }
+  }
+
+  std::int64_t Micros() const { return clock_.nsecsElapsed() / 1000; }
+
+  void SendMetrics() {
+    const auto scale = devicePixelRatio();
+    doroti_qt_metrics_v2 metrics{
+        kAbiVersion, sizeof(doroti_qt_metrics_v2), surface_generation_,
+        std::max(1, static_cast<int>(std::round(width() * scale))),
+        std::max(1, static_cast<int>(std::round(height() * scale))),
+        scale, lifecycle_state_, 0, ++metrics_generation_, Micros()};
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
+    const auto safe = safeAreaMargins();
+    metrics.view_padding = {safe.left() * scale, safe.top() * scale, safe.right() * scale, safe.bottom() * scale};
+#endif
+    metrics.view_padding.top = std::max(metrics.view_padding.top, CaptionHeight() * scale);
+    RefreshCaptionSemantics();
+    // QInputMethod's rectangle is in window coordinates. A floating keyboard
+    // cannot be represented by a full-width bottom inset.
+    const auto keyboard = QGuiApplication::inputMethod()->keyboardRectangle();
+    if (QGuiApplication::inputMethod()->isVisible() && !keyboard.isEmpty() &&
+        keyboard.left() <= 0 && keyboard.right() >= width() && keyboard.bottom() >= height())
+      metrics.view_insets.bottom = std::clamp(height() - keyboard.top(), 0.0, double(height())) * scale;
+    metrics.physical_touch_slop = QGuiApplication::styleHints()->startDragDistance() * scale;
+    callbacks_.metrics_changed(callback_context_, this, &metrics);
+  }
+
+  void SendConfiguration() {
+    const auto languages = QLocale::system().uiLanguages().join('\n').toUtf8();
+    const auto dark = QGuiApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark;
+    const auto time_format = QLocale::system().timeFormat(QLocale::ShortFormat);
+    const auto always_24 = !time_format.contains("AP", Qt::CaseInsensitive) &&
+                           !time_format.contains('a', Qt::CaseInsensitive);
+    std::uint32_t high_contrast = 0;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 10, 0)
+    high_contrast = QGuiApplication::styleHints()->accessibility()->contrastPreference() == Qt::ContrastPreference::HighContrast;
+#endif
+    callbacks_.configuration_changed(callback_context_, this, Utf8(languages),
+                                     dark ? 0u : 1u, always_24 ? 1u : 0u, high_contrast);
+  }
+
+  void SendPointer(const QPointF& logical_position, const QPointF& logical_delta,
+                   std::uint32_t change, std::uint32_t kind, std::int64_t buttons,
+                   std::uint64_t device, std::uint64_t pointer_identifier,
+                   std::uint32_t signal_kind, std::uint32_t modifiers,
+                   std::uint32_t phase, double scroll_x = 0, double scroll_y = 0,
+                   double pressure = 1, double tilt = 0) {
+    const auto scale = devicePixelRatio();
+    last_pointer_position_ = logical_position;
+    const doroti_qt_pointer_v2 descriptor{
+        kAbiVersion, sizeof(doroti_qt_pointer_v2), device, pointer_identifier,
+        change, kind, buttons, logical_position.x() * scale,
+        logical_position.y() * scale, logical_delta.x() * scale,
+        logical_delta.y() * scale, pressure, tilt, signal_kind,
+        modifiers | (phase << 24), scroll_x * scale, scroll_y * scale, Micros()};
+    callbacks_.pointer(callback_context_, this, &descriptor);
+  }
+
+  void SendTrackpad(std::uint32_t change, QPointF delta = {}, std::uint32_t signal = 0) {
+    const auto ratio = devicePixelRatio();
+    doroti_qt_pointer_v2 data{};
+    data.abi_version = kAbiVersion; data.struct_size = sizeof(data);
+    data.device = 0x4000000000000001ULL;
+    data.pointer_identifier = trackpad_pointer_; data.kind = 4; data.change = change;
+    data.physical_x = trackpad_origin_.x() * ratio; data.physical_y = trackpad_origin_.y() * ratio;
+    data.pan_x = trackpad_pan_.x() * ratio; data.pan_y = trackpad_pan_.y() * ratio;
+    data.pan_delta_x = delta.x() * ratio; data.pan_delta_y = delta.y() * ratio;
+    data.scale = trackpad_scale_; data.rotation = trackpad_rotation_;
+    data.signal_kind = signal; data.timestamp_microseconds = Micros();
+    callbacks_.pointer(callback_context_, this, &data);
+  }
+  void BeginTrackpad(QPointF position, unsigned source) {
+    if (trackpad_momentum_) { SendTrackpad(3, {}, 2); trackpad_momentum_ = false; }
+    if (trackpad_sources_ == 0) {
+      trackpad_origin_ = position; trackpad_pan_ = {}; trackpad_scale_ = 1; trackpad_rotation_ = 0;
+      ++trackpad_pointer_;
+      if (!trackpad_added_) { SendTrackpad(1); trackpad_added_ = true; }
+      SendTrackpad(7);
+    }
+    trackpad_sources_ |= source;
+  }
+  void EndTrackpad(unsigned source) {
+    if ((trackpad_sources_ & source) == 0) return;
+    trackpad_sources_ &= ~source;
+    if (trackpad_sources_ == 0) SendTrackpad(9);
+  }
+  void ResetTrackpad() {
+    if (trackpad_sources_ != 0) SendTrackpad(9);
+    if (trackpad_added_) SendTrackpad(2);
+    trackpad_sources_ = 0; trackpad_added_ = false; trackpad_momentum_ = false;
+    ++trackpad_wheel_epoch_;
+  }
+
+  Qt::InputMethodHints InputMethodHints() const {
+    Qt::InputMethodHints hints = Qt::ImhNone;
+    switch (text_configuration_.input_type) {
+      case 2: hints |= Qt::ImhFormattedNumbersOnly; break;
+      case 3: hints |= Qt::ImhDialableCharactersOnly; break;
+      case 5: hints |= Qt::ImhEmailCharactersOnly; break;
+      case 6: hints |= Qt::ImhUrlCharactersOnly; break;
+      case 7: hints |= Qt::ImhSensitiveData; break;
+      default: break;
+    }
+    if (text_configuration_.obscure_text) hints |= Qt::ImhHiddenText | Qt::ImhSensitiveData;
+    if (!text_configuration_.autocorrect) hints |= Qt::ImhNoAutoUppercase;
+    if (!text_configuration_.enable_suggestions) hints |= Qt::ImhNoPredictiveText;
+    return hints;
+  }
+
+  void ApplyTextState(const QString& text, int selection_base, int selection_extent,
+                      int composing_base, int composing_extent) {
+    text_ = text;
+    const auto text_size = static_cast<int>(text_.size());
+    selection_base_ = std::clamp(selection_base, 0, text_size);
+    selection_extent_ = std::clamp(selection_extent, 0, text_size);
+    composing_base_ = composing_base < 0 ? -1 : std::clamp(composing_base, 0, text_size);
+    composing_extent_ = composing_extent < 0 ? -1 : std::clamp(composing_extent, 0, text_size);
+    QGuiApplication::inputMethod()->update(
+        Qt::ImEnabled | Qt::ImCursorRectangle | Qt::ImCursorPosition |
+        Qt::ImAnchorPosition | Qt::ImSurroundingText | Qt::ImCurrentSelection | Qt::ImHints);
+  }
+
+  void HandleInputMethod(QInputMethodEvent* event) {
+    if (!text_client_active_ || text_configuration_.read_only) {
+      event->ignore();
+      return;
+    }
+    if (composing_base_ >= 0 && composing_extent_ >= composing_base_) {
+      text_.remove(composing_base_, composing_extent_ - composing_base_);
+      selection_base_ = selection_extent_ = composing_base_;
+    }
+    composing_base_ = composing_extent_ = -1;
+    auto start = std::min(selection_base_, selection_extent_);
+    auto length = std::abs(selection_extent_ - selection_base_);
+    if (event->replacementLength() != 0) {
+      const auto text_size = static_cast<int>(text_.size());
+      start = std::clamp(selection_extent_ + event->replacementStart(), 0, text_size);
+      length = std::clamp(event->replacementLength(), 0, text_size - start);
+    }
+    text_.replace(start, length, event->commitString());
+    auto cursor = start + event->commitString().size();
+    if (!event->preeditString().isEmpty()) {
+      text_.insert(cursor, event->preeditString());
+      composing_base_ = cursor;
+      composing_extent_ = cursor + event->preeditString().size();
+      selection_base_ = selection_extent_ = composing_extent_;
+      for (const auto& attribute : event->attributes()) {
+        if (attribute.type == QInputMethodEvent::Cursor) {
+          selection_base_ = selection_extent_ =
+              std::clamp(composing_base_ + attribute.start, composing_base_, composing_extent_);
+        } else if (attribute.type == QInputMethodEvent::Selection) {
+          const auto text_size = static_cast<int>(text_.size());
+          selection_base_ = std::clamp(attribute.start, 0, text_size);
+          selection_extent_ = std::clamp(attribute.start + attribute.length, 0, text_size);
+        }
+      }
+    } else {
+      selection_base_ = selection_extent_ = cursor;
+    }
+    const auto utf8 = text_.toUtf8();
+    const doroti_qt_text_state_v2 state{
+        kAbiVersion, sizeof(doroti_qt_text_state_v2), Utf8(utf8),
+        selection_base_, selection_extent_, composing_base_, composing_extent_};
+    callbacks_.text_editing(callback_context_, this, &state);
+    event->accept();
+  }
+
+  void FrameSwapped() {
+    if (rasterized_frame_token_ == 0) return;
+    const auto token = std::exchange(rasterized_frame_token_, 0);
+    Terminal(token, DOROTI_QT_TERMINAL_PRESENTED, rasterized_generation_);
+  }
+
+  void Terminal(std::uint64_t token, std::uint32_t state, std::uint64_t generation) {
+    callbacks_.frame_terminal(callback_context_, this, token, state, generation, Micros());
+  }
+
+  void ReleaseSurface() {
+#ifdef DOROTI_QT_QUICK
+    if (rasterized_frame_token_ != 0)
+      Terminal(std::exchange(rasterized_frame_token_, 0), DOROTI_QT_TERMINAL_SUPERSEDED, rasterized_generation_);
+    if (pending_frame_token_ != 0)
+      Terminal(std::exchange(pending_frame_token_, 0), DOROTI_QT_TERMINAL_SUPERSEDED, surface_generation_);
+#endif
+    if (surface_released_ || context_identity_ == 0) return;
+    surface_released_ = true;
+#ifdef DOROTI_QT_QUICK
+    quick_has_frame_ = false;
+    published_pixel_width_ = published_pixel_height_ = 0;
+#endif
+#ifdef DOROTI_QT_GRAPHITE
+    gpu_poll_timer_.stop();
+#endif
+#ifndef DOROTI_QT_GRAPHITE
+    if (context() != nullptr && QOpenGLContext::currentContext() != context()) makeCurrent();
+#endif
+    callbacks_.surface_destroying(callback_context_, this, surface_generation_, context_identity_);
+#ifndef DOROTI_QT_GRAPHITE
+    if (context() != nullptr && QOpenGLContext::currentContext() == context()) doneCurrent();
+#endif
+    context_identity_ = 0;
+  }
+
+  static const char* BackdropModeName(std::uint32_t mode) {
+    switch (mode) {
+      case DOROTI_QT_BACKDROP_SOLID: return "solid";
+      case DOROTI_QT_BACKDROP_TRANSPARENT: return "transparent";
+      case DOROTI_QT_BACKDROP_ACRYLIC: return "acrylic";
+      default: return "system";
+    }
+  }
+
+  static const char* BackdropFallbackName(std::uint32_t fallback) {
+    return fallback == DOROTI_QT_BACKDROP_FALLBACK_SOLID ? "solid" : "transparent";
+  }
+
+  static void RegistryGlobal(void* data, wl_registry* registry, std::uint32_t name,
+                             const char* interface, std::uint32_t version) {
+    auto* surface = static_cast<DorotiSurface*>(data);
+    if (std::strcmp(interface, ext_background_effect_manager_v1_interface.name) == 0) {
+      surface->ext_manager_name_ = name;
+      surface->ext_manager_ = static_cast<ext_background_effect_manager_v1*>(
+          wl_registry_bind(registry, name, &ext_background_effect_manager_v1_interface,
+                           std::min(version, 1u)));
+      if (surface->ext_manager_ != nullptr)
+        ext_background_effect_manager_v1_add_listener(
+            surface->ext_manager_, &kExtManagerListener, surface);
+    }
+  }
+
+  static void RegistryGlobalRemove(void* data, wl_registry*, std::uint32_t name) {
+    auto* surface = static_cast<DorotiSurface*>(data);
+    if (name == surface->ext_manager_name_) {
+      surface->DestroyExtBackdrop();
+      if (surface->ext_manager_ != nullptr)
+        ext_background_effect_manager_v1_destroy(surface->ext_manager_);
+      surface->ext_manager_ = nullptr;
+      surface->ext_manager_name_ = 0;
+      surface->ext_blur_available_ = false;
+      surface->ApplyBackdrop();
+    }
+  }
+
+  static void ExtCapabilities(void* data, ext_background_effect_manager_v1*,
+                              std::uint32_t flags) {
+    auto* surface = static_cast<DorotiSurface*>(data);
+    surface->ext_blur_available_ =
+        (flags & EXT_BACKGROUND_EFFECT_MANAGER_V1_CAPABILITY_BLUR) != 0;
+    surface->ApplyBackdrop();
+  }
+
+  void ApplyBackdrop() {
+    if (backdrop_mode_ != DOROTI_QT_BACKDROP_ACRYLIC || wayland_surface_ == nullptr) return;
+    if (ext_manager_ != nullptr && ext_blur_available_) {
+      if (ext_effect_ == nullptr)
+        ext_effect_ = ext_background_effect_manager_v1_get_background_effect(
+            ext_manager_, wayland_surface_);
+      ApplyFullSurfaceBackdropRegion();
+      ReportBackdrop("acrylic", "ext-background-effect-v1", true);
+      return;
+    }
+    DestroyExtBackdrop();
+    ApplyBackdropFallback();
+  }
+
+  void PumpBackdropEvents() {
+    if (wayland_display_ == nullptr) return;
+    // Qt owns reads from the shared display socket. Our proxies use an isolated
+    // queue, so dispatching their already-pending events is non-blocking and
+    // cannot consume Qt's own Wayland events.
+    if (backdrop_event_queue_ == nullptr ||
+        wl_display_dispatch_queue_pending(wayland_display_, backdrop_event_queue_) < 0) {
+      backdrop_event_timer_->stop();
+      ApplyBackdropFallback();
+      return;
+    }
+    wl_display_flush(wayland_display_);
+  }
+
+  void ApplyBackdropFallback() {
+    ReportBackdrop(BackdropFallbackName(backdrop_fallback_), "none", false);
+  }
+
+  void ApplyFullSurfaceBackdropRegion() {
+    if (wayland_compositor_ == nullptr || wayland_surface_ == nullptr ||
+        ext_effect_ == nullptr) return;
+    auto* region = wl_compositor_create_region(wayland_compositor_);
+    if (region == nullptr) return;
+    wl_region_add(region, 0, 0, kFullSurfaceBackdropExtent,
+                  kFullSurfaceBackdropExtent);
+    if (ext_effect_ != nullptr)
+      ext_background_effect_surface_v1_set_blur_region(ext_effect_, region);
+    wl_region_destroy(region);
+    update();
+  }
+
+  void DestroyExtBackdrop() {
+    if (ext_effect_ == nullptr) return;
+    ext_background_effect_surface_v1_destroy(ext_effect_);
+    ext_effect_ = nullptr;
+  }
+
+  void ReleaseBackdrop() {
+    if (backdrop_event_timer_ != nullptr) backdrop_event_timer_->stop();
+    DestroyExtBackdrop();
+    if (ext_manager_ != nullptr) ext_background_effect_manager_v1_destroy(ext_manager_);
+    if (wayland_registry_ != nullptr) wl_registry_destroy(wayland_registry_);
+    if (backdrop_event_queue_ != nullptr) wl_event_queue_destroy(backdrop_event_queue_);
+    ext_manager_ = nullptr;
+    wayland_registry_ = nullptr;
+    backdrop_event_queue_ = nullptr;
+    wayland_surface_ = nullptr;
+    wayland_compositor_ = nullptr;
+    wayland_display_ = nullptr;
+  }
+
+  void ReportBackdrop(const char* effective, const char* provider, bool supported) {
+    const QByteArray next_effective(effective);
+    const QByteArray next_provider(provider);
+    if (next_effective == backdrop_effective_ && next_provider == backdrop_provider_) return;
+    backdrop_effective_ = next_effective;
+    backdrop_provider_ = next_provider;
+    Diagnostic("backdrop.effective", backdrop_effective_.constData());
+    Diagnostic("backdrop.provider", backdrop_provider_.constData());
+    Diagnostic("backdrop.compositorBlur", supported ? "true" : "false");
+  }
+
+  inline static const wl_registry_listener kRegistryListener{
+      &DorotiSurface::RegistryGlobal, &DorotiSurface::RegistryGlobalRemove};
+  inline static const ext_background_effect_manager_v1_listener kExtManagerListener{
+      &DorotiSurface::ExtCapabilities};
+
+  void Diagnostic(const char* key, const char* value) {
+    callbacks_.diagnostic(callback_context_, Utf8(key), Utf8(value == nullptr ? "unknown" : value));
+  }
+
+  void* callback_context_;
+  doroti_qt_callbacks_v2 callbacks_;
+  QElapsedTimer clock_;
+  std::uint64_t surface_generation_ = 0;
+  std::uint64_t context_identity_ = 0;
+  std::uint64_t pending_frame_token_ = 0;
+  std::uint64_t rasterized_frame_token_ = 0;
+  std::uint64_t rasterized_generation_ = 0;
+  std::uint64_t next_automatic_frame_token_ = 1;
+  bool surface_released_ = true;
+  int published_pixel_width_ = 0, published_pixel_height_ = 0;
+  bool surface_diagnostics_reported_ = false;
+  std::uint32_t reported_framebuffer_object_ = 0;
+  int reported_sample_count_ = 0;
+  int reported_stencil_bits_ = 0;
+  double reported_device_pixel_ratio_ = 0.0;
+  std::uint32_t backdrop_mode_ = DOROTI_QT_BACKDROP_SYSTEM;
+  std::uint32_t backdrop_fallback_ = DOROTI_QT_BACKDROP_FALLBACK_TRANSPARENT;
+  bool unified_titlebar_ = false;
+  std::uint32_t caption_hovered_ = 0;
+  std::uint32_t caption_pressed_ = 0;
+  wl_display* wayland_display_ = nullptr;
+  wl_compositor* wayland_compositor_ = nullptr;
+  wl_surface* wayland_surface_ = nullptr;
+  wl_registry* wayland_registry_ = nullptr;
+  wl_event_queue* backdrop_event_queue_ = nullptr;
+  ext_background_effect_manager_v1* ext_manager_ = nullptr;
+  ext_background_effect_surface_v1* ext_effect_ = nullptr;
+  std::uint32_t ext_manager_name_ = 0;
+  bool ext_blur_available_ = false;
+  QByteArray backdrop_effective_;
+  QByteArray backdrop_provider_;
+  QTimer* backdrop_event_timer_ = nullptr;
+  bool fatal_ = false;
+  bool closing_ = false;
+  bool close_requested_ = false;
+  bool text_client_active_ = false;
+  std::uint32_t lifecycle_state_ = 0;
+  std::uint64_t metrics_generation_ = 0;
+  Qt::CursorShape client_cursor_ = Qt::ArrowCursor;
+  bool cursor_inside_ = false;
+  QPointF cursor_position_;
+  QPointF last_pointer_position_;
+  QPointF trackpad_origin_, trackpad_pan_;
+  double trackpad_scale_ = 1, trackpad_rotation_ = 0;
+  std::uint64_t trackpad_pointer_ = 0x100000000000000ULL, trackpad_wheel_epoch_ = 0;
+  unsigned trackpad_sources_ = 0;
+  bool trackpad_added_ = false, trackpad_momentum_ = false;
+  QString text_;
+  int selection_base_ = 0;
+  int selection_extent_ = 0;
+  int composing_base_ = -1;
+  int composing_extent_ = -1;
+  QRectF caret_rect_;
+  doroti_qt_text_configuration_v2 text_configuration_{};
+  QHash<std::int64_t, SemanticNode> semantics_;
+  mutable QHash<std::int64_t, QAccessible::Id> accessible_ids_;
+};
+
+class DorotiAccessibleNode final : public QAccessibleInterface,
+                                   public QAccessibleActionInterface,
+                                   public QAccessibleTextInterface,
+                                   public QAccessibleEditableTextInterface {
+ public:
+  DorotiAccessibleNode(DorotiSurface* surface, std::int64_t id)
+      : surface_(surface), id_(id) {}
+  ~DorotiAccessibleNode() override = default;
+
+  bool isValid() const override { return surface_ != nullptr && Node() != nullptr; }
+  QObject* object() const override { return id_ == 0 ? surface_ : nullptr; }
+  QWindow* window() const override { return surface_; }
+
+  QAccessibleInterface* childAt(int x, int y) const override {
+    const auto* node = Node();
+    if (node == nullptr) return nullptr;
+    for (auto it = node->children.crbegin(); it != node->children.crend(); ++it) {
+      auto* child = surface_->Accessible(*it);
+      if (child != nullptr && child->rect().contains(x, y)) return child;
+    }
+    return nullptr;
+  }
+
+  QAccessibleInterface* parent() const override {
+    const auto* node = Node();
+    return node == nullptr || node->parent < 0 ? nullptr : surface_->Accessible(node->parent);
+  }
+  QAccessibleInterface* child(int index) const override {
+    const auto* node = Node();
+    return node == nullptr || index < 0 || index >= node->children.size()
+               ? nullptr : surface_->Accessible(node->children[index]);
+  }
+  int childCount() const override {
+    const auto* node = Node();
+    return node == nullptr ? 0 : node->children.size();
+  }
+  int indexOfChild(const QAccessibleInterface* child) const override {
+    const auto* node = Node();
+    if (!node || !child) return -1;
+    for (int index = 0; index < node->children.size(); ++index)
+      if (surface_->Accessible(node->children[index]) == child) return index;
+    return -1;
+  }
+
+  QString text(QAccessible::Text type) const override {
+    const auto* node = Node();
+    if (node == nullptr) return {};
+    if (type == QAccessible::Name) return node->label;
+    if (type == QAccessible::Value) return node->obscured ? QString() : node->value;
+    return {};
+  }
+  void setText(QAccessible::Text type, const QString& value) override {
+    if (type == QAccessible::Value) ReplaceValue(value);
+  }
+
+  QRect rect() const override {
+    const auto* node = Node();
+    if (node == nullptr || surface_ == nullptr) return {};
+    const auto origin = surface_->mapToGlobal(
+        QPoint(qRound(node->rect.left()), qRound(node->rect.top())));
+    return {origin, QSize(qRound(node->rect.width()), qRound(node->rect.height()))};
+  }
+
+  QAccessible::Role role() const override {
+    const auto* node = Node();
+    if (node == nullptr) return QAccessible::NoRole;
+    if (id_ == 0) return QAccessible::Client;
+    if (node->button) return QAccessible::Button;
+    if (node->text_field) return QAccessible::EditableText;
+    if (node->checked_state != 0) return QAccessible::CheckBox;
+    if (node->toggleable) return QAccessible::CheckBox;
+    if (node->header) return QAccessible::Heading;
+    if (node->image) return QAccessible::Graphic;
+    if (node->slider) return QAccessible::Slider;
+    if (node->role == "dialog" || node->role == "alertDialog") return QAccessible::Dialog;
+    if (node->role == "table") return QAccessible::Table;
+    if (node->role == "cell") return QAccessible::Cell;
+    if (node->role == "row") return QAccessible::Row;
+    if (node->role == "columnHeader") return QAccessible::ColumnHeader;
+    if (node->role == "list") return QAccessible::List;
+    if (node->role == "listItem") return QAccessible::ListItem;
+    if (node->role == "tab") return QAccessible::PageTab;
+    if (node->role == "tabBar") return QAccessible::PageTabList;
+    if (node->role == "menu") return QAccessible::PopupMenu;
+    if (node->role.startsWith("menuItem")) return QAccessible::MenuItem;
+    if (node->role == "progressBar") return QAccessible::ProgressBar;
+    if (node->role == "form") return QAccessible::Form;
+    if (node->role == "tooltip") return QAccessible::ToolTip;
+    if (node->role == "status") return QAccessible::StatusBar;
+    if (node->role == "alert") return QAccessible::AlertMessage;
+    return node->label.isEmpty() ? QAccessible::Grouping : QAccessible::StaticText;
+  }
+
+  QAccessible::State state() const override {
+    QAccessible::State state;
+    const auto* node = Node();
+    if (node == nullptr) {
+      state.invalid = true;
+      return state;
+    }
+    state.disabled = !node->enabled;
+    state.focused = node->focused;
+    state.focusable = (node->actions & (1ll << 22)) != 0 || node->text_field;
+    state.invisible = node->hidden;
+    state.readOnly = node->read_only;
+    state.editable = node->text_field && !node->read_only;
+    state.selectableText = node->text_field;
+    state.selected = node->selected;
+    state.selectable = node->selectable;
+    state.checkable = node->checked_state != 0 || node->toggleable;
+    state.checked = node->checked_state == 1 || node->toggled;
+    state.checkStateMixed = node->checked_state == 3;
+    state.expandable = node->expandable;
+    state.expanded = node->expandable && node->expanded;
+    state.collapsed = node->expandable && !node->expanded;
+    state.passwordEdit = node->obscured;
+    state.multiLine = node->multiline;
+    return state;
+  }
+
+  void* interface_cast(QAccessible::InterfaceType type) override {
+    if (type == QAccessible::ActionInterface)
+      return static_cast<QAccessibleActionInterface*>(this);
+    const auto* node = Node();
+    if (node == nullptr || !node->text_field) return nullptr;
+    if (type == QAccessible::TextInterface)
+      return static_cast<QAccessibleTextInterface*>(this);
+    if (type == QAccessible::EditableTextInterface && !node->read_only &&
+        (node->actions & (1ll << 21)) != 0)
+      return static_cast<QAccessibleEditableTextInterface*>(this);
+    return nullptr;
+  }
+
+  void selection(int index, int* start, int* end) const override {
+    const auto* node = Node();
+    if (!node || index != 0 || node->selection_base < 0 ||
+        node->selection_base == node->selection_extent) { *start = *end = -1; return; }
+    *start = std::min(node->selection_base, node->selection_extent);
+    *end = std::max(node->selection_base, node->selection_extent);
+  }
+  int selectionCount() const override {
+    const auto* node = Node();
+    return node && node->selection_base >= 0 &&
+        node->selection_base != node->selection_extent ? 1 : 0;
+  }
+  void addSelection(int start, int end) override { SendSelection(start, end); }
+  void removeSelection(int index) override {
+    if (index == 0) setCursorPosition(cursorPosition());
+  }
+  void setSelection(int index, int start, int end) override {
+    if (index == 0) SendSelection(start, end);
+  }
+  int cursorPosition() const override {
+    const auto* node = Node();
+    return node ? std::clamp(node->selection_extent, 0, int(node->value.size())) : 0;
+  }
+  void setCursorPosition(int offset) override { SendSelection(offset, offset); }
+  QString text(int start, int end) const override {
+    const auto* node = Node();
+    if (!node || node->obscured) return {};
+    const int begin = std::clamp(start, 0, int(node->value.size()));
+    const int finish = std::clamp(end, begin, int(node->value.size()));
+    return node->value.mid(begin, finish - begin);
+  }
+  int characterCount() const override {
+    const auto* node = Node(); return node ? node->value.size() : 0;
+  }
+  QRect characterRect(int) const override { return {}; }
+  int offsetAtPoint(const QPoint&) const override { return -1; }
+  void scrollToSubstring(int, int) override {}
+  QString attributes(int, int* start, int* end) const override {
+    *start = 0; *end = characterCount(); return {};
+  }
+  void deleteText(int start, int end) override { replaceText(start, end, {}); }
+  void insertText(int offset, const QString& value) override {
+    replaceText(offset, offset, value);
+  }
+  void replaceText(int start, int end, const QString& value) override {
+    const auto* node = Node();
+    if (!node || node->read_only) return;
+    const int begin = std::clamp(start, 0, int(node->value.size()));
+    const int finish = std::clamp(end, begin, int(node->value.size()));
+    QString next = node->value;
+    next.replace(begin, finish - begin, value);
+    ReplaceValue(next);
+  }
+
+  QStringList actionNames() const override {
+    QStringList result;
+    const auto* node = Node();
+    if (node == nullptr) return result;
+    if ((node->actions & 1) != 0) result << pressAction();
+    if ((node->actions & 1) != 0 &&
+        (node->checked_state != 0 || node->toggleable)) result << toggleAction();
+    if ((node->actions & (1ll << 6)) != 0) result << increaseAction();
+    if ((node->actions & (1ll << 7)) != 0) result << decreaseAction();
+    if ((node->actions & (1ll << 22)) != 0) result << setFocusAction();
+    if ((node->actions & (1ll << 2)) != 0) result << scrollLeftAction();
+    if ((node->actions & (1ll << 3)) != 0) result << scrollRightAction();
+    if ((node->actions & (1ll << 4)) != 0) result << scrollUpAction();
+    if ((node->actions & (1ll << 5)) != 0) result << scrollDownAction();
+    return result;
+  }
+
+  void doAction(const QString& name) override {
+    std::int64_t action = 0;
+    if (name == pressAction()) action = 1;
+    else if (name == toggleAction()) action = 1;
+    else if (name == increaseAction()) action = 1ll << 6;
+    else if (name == decreaseAction()) action = 1ll << 7;
+    else if (name == setFocusAction()) action = 1ll << 22;
+    else if (name == scrollLeftAction()) action = 1ll << 2;
+    else if (name == scrollRightAction()) action = 1ll << 3;
+    else if (name == scrollUpAction()) action = 1ll << 4;
+    else if (name == scrollDownAction()) action = 1ll << 5;
+    if (action != 0 && surface_ != nullptr) surface_->DispatchSemanticsAction(id_, action);
+  }
+  QStringList keyBindingsForAction(const QString&) const override { return {}; }
+
+ private:
+  void SendSelection(int start, int end) {
+    const auto* node = Node();
+    if (!node || surface_ == nullptr) return;
+    QJsonObject args{{"base", std::clamp(start, 0, int(node->value.size()))},
+                     {"extent", std::clamp(end, 0, int(node->value.size()))}};
+    surface_->DispatchSemanticsAction(id_, 1ll << 11,
+        QJsonDocument(args).toJson(QJsonDocument::Compact));
+  }
+  void ReplaceValue(const QString& value) {
+    const auto* node = Node();
+    if (!node || node->read_only || surface_ == nullptr) return;
+    const auto encoded = QJsonDocument(QJsonArray{value}).toJson(QJsonDocument::Compact);
+    surface_->DispatchSemanticsAction(id_, 1ll << 21, encoded.mid(1, encoded.size() - 2));
+  }
+  const SemanticNode* Node() const { return surface_ == nullptr ? nullptr : surface_->Semantic(id_); }
+  DorotiSurface* surface_;
+  std::int64_t id_;
+};
+
+QAccessibleInterface* DorotiSurface::Accessible(std::int64_t id) const {
+  if (Semantic(id) == nullptr) return nullptr;
+  if (id == 0) return QAccessible::queryAccessibleInterface(const_cast<DorotiSurface*>(this));
+  const auto found = accessible_ids_.constFind(id);
+  if (found != accessible_ids_.cend()) return QAccessible::accessibleInterface(found.value());
+  auto* interface = new DorotiAccessibleNode(const_cast<DorotiSurface*>(this), id);
+  accessible_ids_.insert(id, QAccessible::registerAccessibleInterface(interface));
+  return interface;
+}
+
+void DorotiSurface::ClearSemanticsTree() {
+  for (const auto accessible_id : std::as_const(accessible_ids_))
+    QAccessible::deleteAccessibleInterface(accessible_id);
+  accessible_ids_.clear();
+  semantics_.clear();
+}
+
+void DorotiSurface::ApplySemantics(const QByteArray& json) {
+  const auto document = QJsonDocument::fromJson(json);
+  const auto array = document.object().value("nodes").toArray();
+  QHash<std::int64_t, SemanticNode> next;
+  for (const auto value : array) {
+    const auto object = value.toObject();
+    SemanticNode node;
+    node.id = object.value("id").toInteger();
+    node.label = object.value("label").toString();
+    node.value = object.value("value").toString();
+    node.role = object.value("role").toString();
+    node.actions = object.value("actions").toInteger();
+    for (const auto child : object.value("children").toArray())
+      node.children.append(child.toInteger());
+    const auto rect = object.value("rect").toArray();
+    if (rect.size() == 4)
+      node.rect = QRectF(rect[0].toDouble(), rect[1].toDouble(),
+                         rect[2].toDouble() - rect[0].toDouble(),
+                         rect[3].toDouble() - rect[1].toDouble());
+    const auto flags = object.value("flags").toObject();
+    node.enabled = !flags.contains("enabled") || flags.value("enabled").isNull() ||
+                   flags.value("enabled").toBool();
+    node.focused = flags.value("focused").toBool();
+    node.hidden = flags.value("hidden").toBool();
+    node.button = flags.value("button").toBool();
+    node.text_field = flags.value("textField").toBool();
+    node.header = flags.value("header").toBool();
+    node.image = flags.value("image").toBool();
+    node.slider = flags.value("slider").toBool();
+    node.read_only = flags.value("readOnly").toBool();
+    node.selectable = flags.contains("selected") && !flags.value("selected").isNull();
+    node.selected = flags.value("selected").toBool();
+    node.checked_state = flags.value("checkedState").toInt();
+    node.toggleable = flags.contains("toggled") && !flags.value("toggled").isNull();
+    node.toggled = flags.value("toggled").toBool();
+    node.expandable = flags.contains("expanded") && !flags.value("expanded").isNull();
+    node.expanded = flags.value("expanded").toBool();
+    node.obscured = flags.value("obscured").toBool();
+    node.multiline = flags.value("multiline").toBool();
+    node.selection_base = object.value("textSelectionBase").toInt(-1);
+    node.selection_extent = object.value("textSelectionExtent").toInt(-1);
+    next.insert(node.id, node);
+  }
+  for (auto parent = next.begin(); parent != next.end(); ++parent)
+    for (const auto child_id : parent->children)
+      if (auto child = next.find(child_id); child != next.end()) child->parent = parent->id;
+  const auto previous = semantics_;
+  bool reordered = previous.size() != next.size();
+  for (auto it = next.cbegin(); it != next.cend(); ++it) {
+    const auto before = previous.constFind(it.key());
+    if (before == previous.cend() || before->children != it->children ||
+        before->parent != it->parent) reordered = true;
+  }
+  for (auto it = accessible_ids_.begin(); it != accessible_ids_.end();) {
+    if (next.contains(it.key())) { ++it; continue; }
+    QAccessible::deleteAccessibleInterface(it.value());
+    it = accessible_ids_.erase(it);
+  }
+  semantics_ = std::move(next);
+  RefreshCaptionSemantics();
+  if (reordered) {
+    QAccessibleEvent changed(this, QAccessible::ObjectReorder);
+    QAccessible::updateAccessibility(&changed);
+  }
+  for (auto it = semantics_.cbegin(); it != semantics_.cend(); ++it) {
+    const auto old = previous.constFind(it.key());
+    if (old == previous.cend()) continue;
+    auto* iface = Accessible(it.key());
+    if (iface == nullptr) continue;
+    if (old->label != it->label) {
+      QAccessibleEvent changed(iface, QAccessible::NameChanged);
+      QAccessible::updateAccessibility(&changed);
+    }
+    if (old->value != it->value) {
+      if (it->text_field && !it->obscured) {
+        QAccessibleTextUpdateEvent changed(iface, 0, old->value, it->value);
+        QAccessible::updateAccessibility(&changed);
+      } else {
+        QAccessibleValueChangeEvent changed(iface, it->obscured ? QString() : it->value);
+        QAccessible::updateAccessibility(&changed);
+      }
+    }
+    if (old->selection_base != it->selection_base ||
+        old->selection_extent != it->selection_extent) {
+      QAccessibleTextSelectionEvent changed(iface, it->selection_base, it->selection_extent);
+      QAccessible::updateAccessibility(&changed);
+    }
+    if (old->focused != it->focused) {
+      QAccessible::State states;
+      states.focused = true;
+      QAccessibleStateChangeEvent changed(iface, states);
+      QAccessible::updateAccessibility(&changed);
+      if (it->focused) {
+        QAccessibleEvent focus(iface, QAccessible::Focus);
+        QAccessible::updateAccessibility(&focus);
+      }
+    }
+    if (old->selected != it->selected || old->checked_state != it->checked_state ||
+        old->toggled != it->toggled || old->expanded != it->expanded ||
+        old->enabled != it->enabled || old->hidden != it->hidden) {
+      QAccessible::State states;
+      states.selected = old->selected != it->selected;
+      states.checked = old->checked_state != it->checked_state || old->toggled != it->toggled;
+      states.checkStateMixed = old->checked_state != it->checked_state;
+      states.expanded = old->expanded != it->expanded;
+      states.collapsed = old->expanded != it->expanded;
+      states.disabled = old->enabled != it->enabled;
+      states.invisible = old->hidden != it->hidden;
+      QAccessibleStateChangeEvent changed(iface, states);
+      QAccessible::updateAccessibility(&changed);
+    }
+  }
+  if (qEnvironmentVariableIsSet("DOROTI_QT_VALIDATION_ACCESSIBILITY_DUMP")) {
+    auto* root = Accessible(0);
+    const auto children = QByteArray::number(root == nullptr ? 0 : root->childCount());
+    Diagnostic("accessibility.rootChildren", children.constData());
+    int text_interfaces = 0, editable_interfaces = 0, selected_nodes = 0;
+    for (auto it = semantics_.cbegin(); it != semantics_.cend(); ++it) {
+      auto* iface = Accessible(it.key());
+      if (iface == nullptr) continue;
+      if (iface->interface_cast(QAccessible::TextInterface)) ++text_interfaces;
+      if (iface->interface_cast(QAccessible::EditableTextInterface)) ++editable_interfaces;
+      if (iface->state().selected) ++selected_nodes;
+    }
+    const auto detail = QJsonDocument(QJsonObject{
+        {"textInterfaces", text_interfaces}, {"editableTextInterfaces", editable_interfaces},
+        {"selectedNodes", selected_nodes}
+    }).toJson(QJsonDocument::Compact);
+    Diagnostic("accessibility.interfaces", detail.constData());
+  }
+}
+
+QAccessibleInterface* AccessibleFactory(const QString&, QObject* object) {
+  auto* surface = accessible_surfaces.contains(object) ? static_cast<DorotiSurface*>(object) : nullptr;
+  return surface == nullptr || surface->Semantic(0) == nullptr
+             ? nullptr : new DorotiAccessibleNode(surface, 0);
+}
+
+const doroti_qt_host_api_v2 kHostApi{
+    kAbiVersion,
+    sizeof(doroti_qt_host_api_v2),
+    kSupportedFeatures,
+    &DorotiSurface::RequestFrame,
+    &DorotiSurface::RequestClose,
+    &DorotiSurface::GetGlProcAddress,
+    &DorotiSurface::Resize,
+    &DorotiSurface::SetClipboardText,
+    &DorotiSurface::RequestClipboardText,
+    &DorotiSurface::SetCursor,
+    &DorotiSurface::SetTextClient,
+    &DorotiSurface::UpdateTextState,
+    &DorotiSurface::SetCaretRect,
+    &DorotiSurface::ClearTextClient,
+    &DorotiSurface::UpdateSemantics,
+    &DorotiSurface::ClearSemantics,
+    &DorotiSurface::PreparePresent,
+};
+
+std::int32_t Validate(const doroti_qt_configuration_v2* configuration,
+                      const doroti_qt_callbacks_v2* callbacks) {
+  if (configuration == nullptr || callbacks == nullptr) return DOROTI_QT_ERROR_INVALID_ARGUMENT;
+  if (configuration->abi_version != kAbiVersion || callbacks->abi_version != kAbiVersion)
+    return DOROTI_QT_ERROR_ABI_VERSION;
+  if (configuration->struct_size < sizeof(doroti_qt_configuration_v2) ||
+      callbacks->struct_size < sizeof(doroti_qt_callbacks_v2))
+    return DOROTI_QT_ERROR_ABI_SIZE;
+  const auto required = configuration->required_features | callbacks->required_features;
+  if ((required & ~kSupportedFeatures) != 0) return DOROTI_QT_ERROR_UNSUPPORTED_FEATURE;
+#ifdef DOROTI_QT_QUICK
+  if ((callbacks->feature_bits & DOROTI_QT_FEATURE_QUICK_COMPOSITION) == 0)
+    return DOROTI_QT_ERROR_UNSUPPORTED_FEATURE;
+#endif
+  if (callbacks->view_created == nullptr || callbacks->render == nullptr ||
+      callbacks->frame_terminal == nullptr || callbacks->surface_destroying == nullptr ||
+      callbacks->diagnostic == nullptr || callbacks->fatal == nullptr ||
+      callbacks->metrics_changed == nullptr || callbacks->lifecycle_changed == nullptr ||
+      callbacks->close_requested == nullptr || callbacks->closed == nullptr ||
+      callbacks->pointer == nullptr || callbacks->key == nullptr || callbacks->focus == nullptr ||
+      callbacks->text_editing == nullptr || callbacks->text_action == nullptr ||
+      callbacks->clipboard_text == nullptr || callbacks->configuration_changed == nullptr ||
+      callbacks->semantics_action == nullptr)
+    return DOROTI_QT_ERROR_REQUIRED_CALLBACK;
+#ifdef DOROTI_QT_GRAPHITE
+  if ((callbacks->feature_bits & DOROTI_QT_FEATURE_PRESENT_HOOK) == 0)
+    return DOROTI_QT_ERROR_UNSUPPORTED_FEATURE;
+  if ((callbacks->feature_bits & DOROTI_QT_FEATURE_GPU_POLL) == 0 || callbacks->poll_gpu_work == nullptr)
+    return DOROTI_QT_ERROR_REQUIRED_CALLBACK;
+#endif
+  if ((required & DOROTI_QT_FEATURE_PRE_APPLICATION) != 0 &&
+      (callbacks->feature_bits & DOROTI_QT_FEATURE_PRE_APPLICATION) == 0)
+    return DOROTI_QT_ERROR_UNSUPPORTED_FEATURE;
+  if ((callbacks->feature_bits & DOROTI_QT_FEATURE_PRE_APPLICATION) != 0 &&
+      callbacks->prepare_application == nullptr) return DOROTI_QT_ERROR_REQUIRED_CALLBACK;
+  if (configuration->title.data == nullptr || configuration->title.length == 0 ||
+      configuration->logical_width <= 0 || configuration->logical_height <= 0)
+    return DOROTI_QT_ERROR_INVALID_ARGUMENT;
+  if (configuration->backdrop_mode > DOROTI_QT_BACKDROP_ACRYLIC ||
+      configuration->backdrop_fallback > DOROTI_QT_BACKDROP_FALLBACK_SOLID ||
+      configuration->titlebar_style > DOROTI_QT_TITLEBAR_SOLID)
+    return DOROTI_QT_ERROR_INVALID_ARGUMENT;
+  return DOROTI_QT_OK;
+}
+#ifdef DOROTI_QT_QUICK
+// Each additional surface owns its Vulkan instance until QWindow teardown ends.
+struct AdditionalWindow {
+  QVulkanInstance vulkan;
+  std::unique_ptr<DorotiSurface> surface;
+  ~AdditionalWindow() {
+    auto* window = surface.get();
+    surface.reset();
+    if (window) DorotiQtReleaseDesktopWindow(window);
+  }
+};
+std::map<QWindow*, std::unique_ptr<AdditionalWindow>> additional_windows;
+#endif
+}  // namespace
+
+extern "C" DOROTI_QT_EXPORT std::int32_t doroti_qt_create_window_v2(
+    const doroti_qt_configuration_v2* configuration, const doroti_qt_callbacks_v2* callbacks) {
+#ifndef DOROTI_QT_QUICK
+  return DOROTI_QT_PV_UNSUPPORTED;
+#else
+  if (!qApp || QThread::currentThread() != qApp->thread()) return DOROTI_QT_PV_WRONG_THREAD;
+  const auto validation = Validate(configuration, callbacks);
+  if (validation) return validation;
+  try {
+    auto owner = std::make_unique<AdditionalWindow>();
+    owner->surface = std::make_unique<DorotiSurface>(callbacks->callback_context, *callbacks,
+      configuration->backdrop_mode, configuration->backdrop_fallback,
+      configuration->titlebar_style, owner->vulkan);
+    auto* surface = owner->surface.get();
+    accessible_surfaces.insert(surface);
+    DorotiQtRegisterPlatformOwner(surface);
+    DorotiQtRegisterDesktopWindow(surface, [surface] { additional_windows.erase(surface); });
+    additional_windows.emplace(surface, std::move(owner));
+    surface->setTitle(QString::fromUtf8(reinterpret_cast<const char*>(configuration->title.data),
+      qsizetype(configuration->title.length)));
+    const auto created = callbacks->view_created(callbacks->callback_context, surface, &kHostApi);
+    if (created) { additional_windows.erase(surface); return created; }
+    // Desktop.Attach has already applied size limits and presentation state.
+    surface->show();
+    surface->InitializeBackdrop();
+    return 0;
+  } catch (...) { return DOROTI_QT_ERROR_NATIVE_EXCEPTION; }
+#endif
+}
+
+extern "C" DOROTI_QT_EXPORT std::int32_t doroti_qt_request_focus_v2(void* view_handle) {
+  if (!QCoreApplication::instance() ||
+      QThread::currentThread() != QCoreApplication::instance()->thread())
+    return DOROTI_QT_PV_WRONG_THREAD;
+  if (view_handle == nullptr || !accessible_surfaces.contains(static_cast<QObject*>(view_handle)))
+    return DOROTI_QT_PV_STALE;
+  static_cast<DorotiSurface*>(view_handle)->requestActivate();
+  return DOROTI_QT_OK;
+}
+
+extern "C" DOROTI_QT_EXPORT std::int32_t doroti_qt_run_v2(
+    const doroti_qt_configuration_v2* configuration,
+    const doroti_qt_callbacks_v2* callbacks) {
+  try {
+    const auto validation = Validate(configuration, callbacks);
+    if (validation != DOROTI_QT_OK) return validation;
+
+    if (run_active.exchange(true)) return DOROTI_QT_ERROR_INVALID_ARGUMENT;
+    struct RunAdmission { ~RunAdmission() { run_active = false; } } run_admission;
+    // The process owns one QApplication. Reject nesting before invoking plugin
+    // preparation; schemes and graphics API selection must precede QApplication.
+    if (QCoreApplication::instance()) return DOROTI_QT_ERROR_INVALID_ARGUMENT;
+    if ((callbacks->feature_bits & DOROTI_QT_FEATURE_PRE_APPLICATION) != 0) {
+      if (!callbacks->prepare_application) return DOROTI_QT_ERROR_REQUIRED_CALLBACK;
+      const auto prepared = callbacks->prepare_application(callbacks->callback_context);
+      if (prepared != DOROTI_QT_OK) return prepared;
+    }
+    int argc = 1;
+    char app_name[] = "doroti";
+    char* argv[] = {app_name, nullptr};
+#ifdef DOROTI_QT_QUICK
+    // The managed owner/coordinator and Qt native controls currently share the
+    // basic GUI/render loop. Reject a conflicting loop instead of racing them.
+    if (!qgetenv("QSG_RENDER_LOOP").isEmpty() && qgetenv("QSG_RENDER_LOOP") != "basic")
+      return DOROTI_QT_ERROR_UNSUPPORTED_FEATURE;
+    qputenv("QSG_RENDER_LOOP", "basic");
+    QQuickWindow::setGraphicsApi(QSGRendererInterface::Vulkan);
+#ifdef DOROTI_QT_WEBENGINE
+    if(const auto status=DorotiWebInitialize();status!=0)return status;
+#endif
+#endif
+    QApplication app(argc, argv);
+    DorotiQtStartApplicationDispatch();
+    struct DispatchLifetime { ~DispatchLifetime() { DorotiQtStopApplicationDispatch(); } } dispatch_lifetime;
+    const QIcon app_icon(QStringLiteral(":/doroti/appicon.png"));
+    if (!app_icon.isNull()) app.setWindowIcon(app_icon);
+    struct AccessibleRegistration {
+      AccessibleRegistration() { QAccessible::installFactory(&AccessibleFactory); }
+      ~AccessibleRegistration() { QAccessible::removeFactory(&AccessibleFactory); }
+    } accessible_registration;
+    const auto title = QString::fromUtf8(
+        reinterpret_cast<const char*>(configuration->title.data),
+        static_cast<qsizetype>(configuration->title.length));
+#ifdef DOROTI_QT_QUICK
+    QVulkanInstance quick_vulkan;
+#endif
+    auto surface_owner = std::make_unique<DorotiSurface>(callbacks->callback_context, *callbacks,
+                                      configuration->backdrop_mode,
+                                      configuration->backdrop_fallback,
+                                      configuration->titlebar_style
+#ifdef DOROTI_QT_QUICK
+                                      , quick_vulkan
+#endif
+                                      );
+    auto* surface = surface_owner.get();
+    accessible_surfaces.insert(surface);
+    DorotiQtRegisterPlatformOwner(surface);
+    DorotiQtRegisterDesktopWindow(surface, [&surface_owner] { surface_owner.reset(); });
+    struct DesktopCleanup {
+      std::unique_ptr<DorotiSurface>& owner;
+      QWindow* window;
+      ~DesktopCleanup() { owner.reset(); DorotiQtReleaseDesktopWindow(window); }
+    } desktop_cleanup{surface_owner, surface};
+    surface->setTitle(title);
+    const auto created = callbacks->view_created(
+        callbacks->callback_context, surface, &kHostApi);
+    if (created != DOROTI_QT_OK) {
+      surface_owner.reset();
+      DorotiQtReleaseDesktopWindow(surface);
+      return created;
+    }
+    surface->resize(configuration->logical_width, configuration->logical_height);
+    surface->show();
+    surface->InitializeBackdrop();
+    bool stress_ok = false;
+    const auto stress_cycles = qEnvironmentVariableIntValue(
+        "DOROTI_QT_VALIDATION_RESIZE_CYCLES", &stress_ok);
+    if (stress_ok && stress_cycles > 0) {
+      auto* timer = new QTimer(surface);
+      auto* completed = new int(0);
+      QObject::connect(timer, &QTimer::timeout, surface,
+                       [surface, timer, completed, stress_cycles,
+                        base_width = configuration->logical_width,
+                        base_height = configuration->logical_height] {
+        if (*completed >= stress_cycles) {
+          surface->setProperty("doroti.validation.resizeCycles", *completed);
+          timer->stop();
+          DorotiQtRecordPlatformOwner(surface, qgetenv("DOROTI_QT_VALIDATION_PLATFORM_VIEWS").constData());
+          delete completed;
+          DorotiSurface::RequestClose(surface);
+          return;
+        }
+        const auto delta = (*completed % 2 == 0) ? 37 : 0;
+        surface->resize(base_width + delta, base_height + delta);
+        ++*completed;
+      });
+      timer->start(80);
+    }
+    const auto result = app.exec();
+#ifdef DOROTI_QT_QUICK
+    additional_windows.clear();
+#endif
+    surface_owner.reset();
+    DorotiQtReleaseDesktopWindow(surface);
+    return result;
+  } catch (const std::exception&) {
+    return DOROTI_QT_ERROR_NATIVE_EXCEPTION;
+  } catch (...) {
+    return DOROTI_QT_ERROR_NATIVE_EXCEPTION;
+  }
+}

@@ -1,0 +1,9 @@
+<Project>
+  <Import Project="../Directory.Build.props" />
+  <PropertyGroup>
+    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">linux-x64</RuntimeIdentifier>
+    <BaseIntermediateOutputPath Condition="'$(ArtifactsPath)' == ''">obj\$(RuntimeIdentifier)\</BaseIntermediateOutputPath>
+    <BaseOutputPath Condition="'$(ArtifactsPath)' == ''">bin\$(RuntimeIdentifier)\</BaseOutputPath>
+    <NuGetLockFilePath>packages.$(RuntimeIdentifier).lock.json</NuGetLockFilePath>
+  </PropertyGroup>
+</Project>
