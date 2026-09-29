@@ -59,6 +59,64 @@ dotnet build ./samples/DorotiSampleApp2/android/DorotiSampleApp2.Android.csproj 
 
 x64 에뮬레이터에서는 `-p:RuntimeIdentifier=android-x64`를 사용합니다. RID별 빌드 산출물은 분리됩니다.
 
+### Android 기기에 Release 설치
+
+[android/deploy-android.ps1](android/deploy-android.ps1)이 구성 선택부터 빌드, APK 업데이트 설치,
+앱 실행과 프로세스 확인까지 처리합니다. 특정 제조사에 한정되지 않으며 **ARM64 Android 기기**를 대상으로 합니다.
+위의 Android 도구 외에 PowerShell 7과 Python이 필요하며, `dotnet`, `python`, `adb`가 PATH에 있어야 합니다.
+
+기기에서 **USB 디버깅**을 켜고 연결한 뒤 디버깅 허용 창을 승인합니다.
+`adb devices -l`에서 `device` 상태인지 확인하세요. `unauthorized`이면 기기에서 연결을 허용해야 합니다.
+
+아래 예시는 **저장소 루트 `DorotiLab`**에서 실행합니다. 스크립트 자체는 호출한 작업 폴더에 관계없이
+저장소와 프로젝트 경로를 찾습니다. 연결된 기기가 하나면 시리얼을 자동 선택합니다.
+
+```powershell
+# 기본 Release: Mono Profiled AOT + 필요한 코드의 JIT
+pwsh -NoProfile -File ./samples/DorotiSampleApp2/android/deploy-android.ps1 -Mode MonoAot
+
+# CoreCLR JIT: 앱의 ReadyToRun 사전 컴파일 비활성화
+pwsh -NoProfile -File ./samples/DorotiSampleApp2/android/deploy-android.ps1 -Mode CoreClrJit
+
+# CoreCLR ReadyToRun: R2R 사전 컴파일 코드 + JIT
+pwsh -NoProfile -File ./samples/DorotiSampleApp2/android/deploy-android.ps1 -Mode CoreClrR2R
+```
+
+세 명령 중 원하는 구성 하나를 실행합니다. `-Mode`를 생략하면 `MonoAot`입니다.
+.NET 10의 Android CoreCLR은 실험적 기능이며, ReadyToRun은 JIT를 유지하는 방식으로 NativeAOT와 다릅니다.
+
+기기가 여러 대이면 `-Serial`로 선택합니다. **`R3CY30KZA4B`는 예시**이며,
+제조사와 관계없이 `adb devices -l`에 표시된 실제 대상 시리얼로 바꿉니다.
+
+```powershell
+adb devices -l
+pwsh -NoProfile -File ./samples/DorotiSampleApp2/android/deploy-android.ps1 -Mode CoreClrR2R -Serial R3CY30KZA4B
+```
+
+| `-Mode` | 런타임 / 사전 컴파일 설정 | 산출물 폴더 |
+| --- | --- | --- |
+| `MonoAot` | Mono, `RunAOTCompilation=true`, `AndroidEnableProfiledAot=true` | `Doroti/artifacts/sample2-mono-aot` |
+| `CoreClrJit` | CoreCLR, `PublishReadyToRun=false`, Mono AOT 비활성화 | `Doroti/artifacts/sample2-coreclr-jit` |
+| `CoreClrR2R` | CoreCLR, `PublishReadyToRun=true`, Mono AOT 비활성화 | `Doroti/artifacts/sample2-coreclr-r2r` |
+
+모두 `net10.0-android`, `Release`, `android-arm64`를 사용하며 프로젝트 기본 설정은 변경하지 않습니다.
+빌드 중간 파일과 APK는 구성별로 분리합니다. 빌드는 20분 제한으로 실행하고,
+빌드 또는 설치가 실패하면 다음 단계로 진행하지 않습니다. ARM64가 아닌 기기는 빌드 전에 거부합니다.
+x64 에뮬레이터는 이 스크립트 대신 위의 직접 빌드 명령을 사용합니다.
+
+앱 ID는 모두 `dev.doroti.sample2`이므로 선택한 구성이 기존 설치를 업데이트합니다.
+`install -r`은 앱 데이터를 유지하지만 재실행하면 메모리에만 있는 화면 상태와 입력값은 초기화됩니다.
+APK는 로컬 기기 테스트용이며 스토어 배포용 서명 설정은 별도입니다.
+성공하면 APK 경로, 실행 중인 PID와 해당 프로세스의 `adb logcat` 명령을 출력합니다.
+프로세스 실행 확인과 별도로 화면 표시·터치 동작은 기기에서 확인하세요.
+
+2026-09-29 Galaxy S25 (`SM-S931N`)에서 CoreCLR JIT와 CoreCLR ReadyToRun 모두
+빌드·업데이트 설치·화면 표시·터치 동작을 확인했습니다.
+JIT는 탭 전환, R2R은 버튼 카운터 `0 → 1`을 확인했으며, 전체 기능 및 성능 비교 검증은 포함하지 않습니다.
+Mono AOT는 이 비교 작업에서 다시 빌드·실행하지 않았습니다.
+배포 스크립트는 `CoreClrR2R`로 기기 자동 선택, 저장소 루트 밖에서 호출,
+빌드·설치·프로세스 실행까지 검증했으며, 존재하지 않는 시리얼 지정 시 빌드 전 중단도 확인했습니다.
+
 ## iOS
 
 Mac, 선택한 .NET iOS 워크로드와 호환되는 Xcode가 필요합니다. 실제 기기는 서명 설정도 필요합니다.
