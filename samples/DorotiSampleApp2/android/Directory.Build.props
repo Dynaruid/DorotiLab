@@ -1,6 +1,7 @@
 <Project>
   <Import Project="..\Directory.Build.props" />
   <PropertyGroup>
+    <DorotiAndroidTargetFramework Condition="'$(DorotiAndroidTargetFramework)' == ''">net10.0-android</DorotiAndroidTargetFramework>
     <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">android-arm64</RuntimeIdentifier>
     <BaseIntermediateOutputPath Condition="'$(ArtifactsPath)' == ''">obj\$(RuntimeIdentifier)\</BaseIntermediateOutputPath>
     <MSBuildProjectExtensionsPath Condition="'$(ArtifactsPath)' == ''">$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>

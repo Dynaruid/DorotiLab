@@ -5,16 +5,27 @@ Build, install and launch DorotiSampleApp2 Release on an ARM64 Android device.
 ./deploy-android.ps1 -Mode CoreClrR2R
 .EXAMPLE
 ./deploy-android.ps1 -Mode CoreClrJit -Serial YOUR_DEVICE_SERIAL
+.EXAMPLE
+./deploy-android.ps1 -DotnetVersion 11 -Mode CoreClrR2R
 #>
 [CmdletBinding()]
 param(
+    [ValidateSet(10, 11)]
+    [int]$DotnetVersion = 10,
     [ValidateSet('MonoAot', 'CoreClrJit', 'CoreClrR2R')]
-    [string]$Mode = 'MonoAot',
+    [string]$Mode,
     [string]$Serial
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+
+if (-not $Mode) {
+    $Mode = if ($DotnetVersion -eq 11) { 'CoreClrR2R' } else { 'MonoAot' }
+}
+if ($DotnetVersion -eq 11 -and $Mode -eq 'MonoAot') {
+    throw '.NET 11 supports CoreClrJit or CoreClrR2R in this script; use -DotnetVersion 10 for MonoAot.'
+}
 
 function Invoke-Checked {
     param([string]$Program, [string[]]$Arguments)
@@ -32,6 +43,15 @@ try {
     $python = (Get-Command python -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source
     $adb = (Get-Command adb -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source
     $env:DOTNET_HOST_PATH = $dotnet
+
+    # Select the CLI SDK without changing the repository's .NET 10 global.json.
+    if ($DotnetVersion -eq 11) {
+        Set-Location (Join-Path $PSScriptRoot 'sdk/net11')
+    }
+    $sdkVersion = ((Invoke-Checked $dotnet @('--version')) -join '').Trim()
+    if (-not $sdkVersion.StartsWith("$DotnetVersion.")) {
+        throw "Expected .NET $DotnetVersion SDK, but selected $sdkVersion."
+    }
 
     $deviceLines = @(Invoke-Checked $adb @('devices', '-l'))
     $devices = @(
@@ -73,13 +93,22 @@ try {
                 '-p:RunAOTCompilation=false', '-p:AndroidEnableProfiledAot=false')
         }
     }
+    $versionOptions = @()
+    if ($DotnetVersion -eq 11) {
+        $variant += '-net11'
+        $versionOptions = @(
+            '-p:DorotiAndroidTargetFramework=net11.0-android'
+            '-p:DorotiAndroidMauiVersion=11.0.0-rc.1.26451.6'
+            '-p:MauiVersion=11.0.0-rc.1.26451.6'
+        )
+    }
     $artifacts = Join-Path $repoRoot "Doroti/artifacts/$variant"
     $project = Join-Path $PSScriptRoot 'DorotiSampleApp2.Android.csproj'
     $timeoutRunner = Join-Path $repoRoot 'Doroti/eng/run-with-timeout.py'
     $buildArguments = @($timeoutRunner, $dotnet, 'build', $project, '-c', 'Release', '-r', 'android-arm64') +
-        $runtimeOptions + @('-p:AndroidPackageFormats=apk', "-p:ArtifactsPath=$artifacts")
+        $runtimeOptions + $versionOptions + @('-p:AndroidPackageFormats=apk', "-p:ArtifactsPath=$artifacts")
 
-    Write-Host "Building $Mode Release for $Serial (20-minute limit)..."
+    Write-Host "Building .NET $DotnetVersion / $Mode Release with SDK $sdkVersion for $Serial (20-minute limit)..."
     Invoke-Checked $python $buildArguments
 
     $apk = Join-Path $artifacts 'bin/DorotiSampleApp2.Android/release_android-arm64/dev.doroti.sample2-Signed.apk'
@@ -106,7 +135,7 @@ try {
         throw 'App process did not start. Inspect adb logcat for startup errors.'
     }
 
-    Write-Host "Installed and launched: $Mode / $Serial / PID $appProcessId"
+    Write-Host "Installed and launched: .NET $DotnetVersion / $Mode / $Serial / PID $appProcessId"
     Write-Host "APK: $apk"
     Write-Host "Logs: adb -s $Serial logcat --pid=$appProcessId"
 }

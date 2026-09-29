@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.props" />
   <PropertyGroup>
-    <TargetFramework>net10.0-android</TargetFramework>
+    <TargetFramework>$(DorotiAndroidTargetFramework)</TargetFramework>
     <AssemblyName>DorotiSampleApp2.Android</AssemblyName>
     <RootNamespace>DorotiSampleApp2.Android</RootNamespace>
     <DorotiAppProject>..\DorotiSampleApp2.csproj</DorotiAppProject>
@@ -15,10 +15,10 @@
   <ItemGroup>
     <DorotiNativeBindingProject Include="binding\DorotiSampleApp2.Android.Native.csproj" />
     <DorotiTargetDescriptor Include="Android" HostKind="Maui" NativeEntryKind="Android-Application"
-        RuntimeIdentifier="android-arm64" TargetFramework="net10.0-android"
+        RuntimeIdentifier="android-arm64" TargetFramework="$(DorotiAndroidTargetFramework)"
         TargetPackage="Doroti.Target.Android.Maui.android-arm64" Condition="'$(RuntimeIdentifier)' == 'android-arm64'" />
     <DorotiTargetDescriptor Include="Android" HostKind="Maui" NativeEntryKind="Android-Application"
-        RuntimeIdentifier="android-x64" TargetFramework="net10.0-android"
+        RuntimeIdentifier="android-x64" TargetFramework="$(DorotiAndroidTargetFramework)"
         TargetPackage="Doroti.Target.Android.Maui.android-x64" Condition="'$(RuntimeIdentifier)' == 'android-x64'" />
     <ProjectReference Include="..\..\..\Doroti\src\Doroti.Target.Android.Maui.android-arm64\Doroti.Target.Android.Maui.android-arm64.csproj"
         AdditionalProperties="RuntimeIdentifier=android-arm64" Condition="'$(RuntimeIdentifier)' == 'android-arm64'" />

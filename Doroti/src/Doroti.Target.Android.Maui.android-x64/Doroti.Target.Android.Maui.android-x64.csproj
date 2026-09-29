@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0-android</TargetFramework>
+    <TargetFramework>$(DorotiAndroidTargetFramework)</TargetFramework>
     <RuntimeIdentifier>android-x64</RuntimeIdentifier>
     <AssemblyName>Doroti.Target.Android.Maui</AssemblyName>
     <RootNamespace>Doroti.Target.Android.Maui</RootNamespace>
@@ -15,7 +15,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Doroti.Host.Maui\Doroti.Host.Maui.csproj" AdditionalProperties="RuntimeIdentifier=android-x64"
-                      SetTargetFramework="TargetFramework=net10.0-android" SkipGetTargetFrameworkProperties="true" />
+                      SetTargetFramework="TargetFramework=$(DorotiAndroidTargetFramework)" SkipGetTargetFrameworkProperties="true" />
     <EmbeddedResource Include="doroti-target-manifest.json" LogicalName="Doroti.Target.Manifest" />
     <None Include="doroti-target-manifest.json" Pack="true" PackagePath="doroti\" />
     <None Include="buildTransitive\Doroti.Target.Android.Maui.android-x64.targets" Pack="true" PackagePath="buildTransitive\Doroti.Target.Android.Maui.android-x64.targets" />

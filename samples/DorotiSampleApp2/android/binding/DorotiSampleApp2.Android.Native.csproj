@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0-android</TargetFramework>
+    <TargetFramework>$(DorotiAndroidTargetFramework)</TargetFramework>
     <SupportedOSPlatformVersion>21</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net11.0-android'">24</SupportedOSPlatformVersion>
     <AssemblyName>DorotiSampleApp2.Android.Native</AssemblyName>
     <RootNamespace>DorotiSampleApp2.Android.Native</RootNamespace>
     <Nullable>enable</Nullable>

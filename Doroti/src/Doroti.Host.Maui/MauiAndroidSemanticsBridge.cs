@@ -318,9 +318,17 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
             info.Focusable = flags?.isAccessibilityFocusBlocked != true;
             info.Focused = flags?.isFocused == Tristate.isTrue;
             info.Checkable = checkable;
-            info.Checked = toggled
+            var isChecked = toggled
                 ? flags?.isToggled == Tristate.isTrue
                 : flags?.isChecked is CheckedState.isTrue or CheckedState.mixed;
+#if NET11_0_OR_GREATER
+            // MAUI 11's AndroidX binding exposes an integer checked state.
+            info.Checked = isChecked
+                ? AccessibilityNodeInfoCompat.CheckedStateTrue
+                : AccessibilityNodeInfoCompat.CheckedStateFalse;
+#else
+            info.Checked = isChecked;
+#endif
             info.Selected = flags?.isSelected == Tristate.isTrue;
             info.Password = flags?.isObscured == true;
             info.Editable = textField && flags?.isReadOnly != true;

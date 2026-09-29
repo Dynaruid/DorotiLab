@@ -82,8 +82,25 @@ pwsh -NoProfile -File ./samples/DorotiSampleApp2/android/deploy-android.ps1 -Mod
 pwsh -NoProfile -File ./samples/DorotiSampleApp2/android/deploy-android.ps1 -Mode CoreClrR2R
 ```
 
-세 명령 중 원하는 구성 하나를 실행합니다. `-Mode`를 생략하면 `MonoAot`입니다.
+세 명령 중 원하는 구성 하나를 실행합니다. `-DotnetVersion`을 생략하면 .NET 10이며,
+.NET 10에서 `-Mode`를 생략하면 `MonoAot`입니다.
 .NET 10의 Android CoreCLR은 실험적 기능이며, ReadyToRun은 JIT를 유지하는 방식으로 NativeAOT와 다릅니다.
+
+**.NET 11**은 `-DotnetVersion 11`로 선택합니다. `-Mode`를 생략하면 `CoreClrR2R`이며,
+`MonoAot` 조합은 지원하지 않아 빌드 전에 중단합니다.
+
+```powershell
+# .NET 11 CoreCLR JIT
+pwsh -NoProfile -File ./samples/DorotiSampleApp2/android/deploy-android.ps1 -DotnetVersion 11 -Mode CoreClrJit
+
+# .NET 11 CoreCLR ReadyToRun (11의 기본 모드)
+pwsh -NoProfile -File ./samples/DorotiSampleApp2/android/deploy-android.ps1 -DotnetVersion 11
+```
+
+.NET 11 프로필은 [전용 global.json](android/sdk/net11/global.json)의
+SDK `11.0.100-rc.1.26425.128`과 MAUI `11.0.0-rc.1.26451.6`을 사용합니다.
+해당 SDK 및 호환되는 Android/MAUI 워크로드를 미리 설치해야 합니다. 이 프로필은 RC 버전입니다.
+저장소 루트의 `global.json`은 바꾸지 않고, 11을 선택한 호출에서만 전용 SDK를 사용합니다.
 
 기기가 여러 대이면 `-Serial`로 선택합니다. **`R3CY30KZA4B`는 예시**이며,
 제조사와 관계없이 `adb devices -l`에 표시된 실제 대상 시리얼로 바꿉니다.
@@ -93,14 +110,17 @@ adb devices -l
 pwsh -NoProfile -File ./samples/DorotiSampleApp2/android/deploy-android.ps1 -Mode CoreClrR2R -Serial R3CY30KZA4B
 ```
 
-| `-Mode` | 런타임 / 사전 컴파일 설정 | 산출물 폴더 |
+| `-Mode` | 런타임 / 사전 컴파일 설정 | .NET 10 산출물 폴더 |
 | --- | --- | --- |
 | `MonoAot` | Mono, `RunAOTCompilation=true`, `AndroidEnableProfiledAot=true` | `Doroti/artifacts/sample2-mono-aot` |
 | `CoreClrJit` | CoreCLR, `PublishReadyToRun=false`, Mono AOT 비활성화 | `Doroti/artifacts/sample2-coreclr-jit` |
 | `CoreClrR2R` | CoreCLR, `PublishReadyToRun=true`, Mono AOT 비활성화 | `Doroti/artifacts/sample2-coreclr-r2r` |
 
-모두 `net10.0-android`, `Release`, `android-arm64`를 사용하며 프로젝트 기본 설정은 변경하지 않습니다.
-빌드 중간 파일과 APK는 구성별로 분리합니다. 빌드는 20분 제한으로 실행하고,
+.NET 11의 산출물 폴더에는 `-net11`이 붙습니다. 예: `Doroti/artifacts/sample2-coreclr-r2r-net11`.
+10은 `net10.0-android`, 11은 `net11.0-android` 앱·Android 호스트·바인딩을 빌드합니다.
+공통 UI 및 플랫폼 독립 라이브러리는 호환되는 `net10.0`을 유지합니다.
+모두 `Release`, `android-arm64`를 사용하며 프로젝트 기본 설정은 변경하지 않습니다.
+빌드 중간 파일과 APK는 SDK 버전 및 구성별로 분리합니다. 빌드는 20분 제한으로 실행하고,
 빌드 또는 설치가 실패하면 다음 단계로 진행하지 않습니다. ARM64가 아닌 기기는 빌드 전에 거부합니다.
 x64 에뮬레이터는 이 스크립트 대신 위의 직접 빌드 명령을 사용합니다.
 
@@ -116,6 +136,11 @@ JIT는 탭 전환, R2R은 버튼 카운터 `0 → 1`을 확인했으며, 전체 
 Mono AOT는 이 비교 작업에서 다시 빌드·실행하지 않았습니다.
 배포 스크립트는 `CoreClrR2R`로 기기 자동 선택, 저장소 루트 밖에서 호출,
 빌드·설치·프로세스 실행까지 검증했으며, 존재하지 않는 시리얼 지정 시 빌드 전 중단도 확인했습니다.
+
+2026-09-30 같은 기기에서 **.NET 11 RC의 CoreCLR JIT / R2R 모두 PASS**:
+스크립트 빌드·업데이트 설치·화면 표시·버튼 카운터 `0 → 1`을 확인했습니다.
+두 APK의 CoreCLR/JIT 라이브러리는 .NET 11 런타임 파일과 일치하며, R2R 구성의 사전 컴파일 산출물도 확인했습니다.
+.NET 10 기본 설정과 Android 호스트 재빌드는 통과했습니다. .NET 11의 전체 기능·TalkBack·성능 비교는 별도 검증 대상입니다.
 
 ## iOS
 

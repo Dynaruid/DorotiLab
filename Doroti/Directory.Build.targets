@@ -20,6 +20,22 @@
     <None Include="$(MSBuildThisFileDirectory)THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="licenses/" Link="THIRD-PARTY-NOTICES.md" />
     <None Include="$(MSBuildThisFileDirectory)LICENSES/SkiaSharp*.txt" Pack="true" PackagePath="licenses/" />
   </ItemGroup>
+  <!-- Keep the embedded/packed Android target contract in sync for opt-in TFMs. -->
+  <Target Name="GenerateDorotiAndroidTargetManifest" BeforeTargets="AssignTargetPaths"
+          Condition="'$(TargetFramework)' == '$(DorotiAndroidTargetFramework)' and '$(TargetFramework)' != 'net10.0-android' and Exists('$(MSBuildProjectDirectory)/doroti-target-manifest.json')">
+    <PropertyGroup>
+      <_DorotiAndroidManifestPath>$(IntermediateOutputPath)doroti-target-manifest.json</_DorotiAndroidManifestPath>
+      <_DorotiAndroidManifestText>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)/doroti-target-manifest.json').Replace('net10.0-android', '$(TargetFramework)'))</_DorotiAndroidManifestText>
+    </PropertyGroup>
+    <WriteLinesToFile File="$(_DorotiAndroidManifestPath)" Lines="$(_DorotiAndroidManifestText)" Overwrite="true" WriteOnlyWhenDifferent="true" />
+    <ItemGroup>
+      <EmbeddedResource Remove="doroti-target-manifest.json" />
+      <EmbeddedResource Include="$(_DorotiAndroidManifestPath)" LogicalName="Doroti.Target.Manifest" />
+      <None Remove="doroti-target-manifest.json" />
+      <None Include="$(_DorotiAndroidManifestPath)" Pack="true" PackagePath="doroti/doroti-target-manifest.json" />
+      <FileWrites Include="$(_DorotiAndroidManifestPath)" />
+    </ItemGroup>
+  </Target>
   <Target Name="RejectMechanicalCandidatesInProductCompile" BeforeTargets="CoreCompile" Condition="'$(IsDorotiProduct)' == 'true'">
     <ItemGroup>
       <_DorotiMechanicalCandidate Include="@(Compile)"
