@@ -812,7 +812,8 @@ public class TextInputConnection
     internal virtual Rect? _cachedCaretRect { get; set; } = default;
     internal virtual List<SelectionRect> _cachedSelectionRects { get; set; } =
         new List<SelectionRect>();
-    internal static long _nextId = 1L;
+    private static readonly Doroti.Ui.DispatcherLocal<long> _contextLocal_nextId = new(() => 1L);
+    internal static long _nextId { get => _contextLocal_nextId.Value; set => _contextLocal_nextId.Value = value; }
     internal virtual long _id { get; private set; } = default!;
     internal virtual TextInputClient _client { get; private set; } = default!;
 
@@ -1053,7 +1054,8 @@ public static partial class Text_inputLibrary
 
 public class TextInput
 {
-    internal static TextInput _instance = new TextInput();
+    private static readonly Doroti.Ui.DispatcherLocal<TextInput> _contextLocal_instance = new(() => new TextInput());
+    internal static TextInput _instance { get => _contextLocal_instance.Value; set => _contextLocal_instance.Value = value; }
 
     // Keep the singleton initialization tied to the first explicit TextInput
     // access. Without an explicit type initializer the CLR marks this type as
@@ -1727,7 +1729,8 @@ public abstract class TextInputControl
 /// </summary>
 internal sealed class _HostTextInputControl : TextInputControl
 {
-    public static _HostTextInputControl instance { get; } = new();
+    private static readonly Doroti.Ui.DispatcherLocal<_HostTextInputControl> _contextLocalinstance = new(() => new _HostTextInputControl());
+    public static _HostTextInputControl instance { get => _contextLocalinstance.Value; set => _contextLocalinstance.Value = value; }
 
     private ITextInputHostCapability? _capability;
     private TextInputClient? _client;
@@ -1983,7 +1986,8 @@ internal sealed class _HostTextInputControl : TextInputControl
 
 internal class _PlatformTextInputControl : TextInputControl
 {
-    public static _PlatformTextInputControl instance = new _PlatformTextInputControl();
+    private static readonly Doroti.Ui.DispatcherLocal<_PlatformTextInputControl> _contextLocalinstance = new(() => new _PlatformTextInputControl());
+    public static _PlatformTextInputControl instance { get => _contextLocalinstance.Value; set => _contextLocalinstance.Value = value; }
 
     internal _PlatformTextInputControl() { }
 

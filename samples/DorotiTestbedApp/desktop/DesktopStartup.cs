@@ -80,10 +80,25 @@ public sealed class DesktopStartup : IDorotiDesktopApplicationStartup
                     await context.Window.EnsureInitializedAsync(cancellationToken);
                     await context.Window.WaitUntilReadyToShowAsync(cancellationToken);
                     var beforeShow = context.Window.State;
+                    if (Environment.GetEnvironmentVariable("DOROTI_MULTIWINDOW_PROBE") is { Length: > 0 } multiwindowProbe)
+                    {
+                        await context.Window.ShowAsync(cancellationToken);
+                        await MultiWindowProbe.RunAsync(context, legacy with { Options = options }, multiwindowProbe);
+                        return;
+                    }
                     // The WhenReady auto-show and this hook run concurrently. Explicitly
                     // await the idempotent show before asking the native host for focus.
                     await context.Window.ShowAsync(cancellationToken);
                     await context.Window.FocusAsync(cancellationToken);
+                    if (Environment.GetEnvironmentVariable("DOROTI_MULTIWINDOW_SAMPLE") == "1")
+                    {
+                        await context.Windows.CreateWindowAsync(legacy with
+                        {
+                            Options = options with { Title = "Doroti second window", Size = new Size(560, 650),
+                                StartupVisibility = WindowStartupVisibility.WhenReady },
+                            OnCreated = null,
+                        }, cancellationToken);
+                    }
                     if (
                         Environment.GetEnvironmentVariable("DOROTI_DESKTOP_PROBE") is
                         { Length: > 0 } probe

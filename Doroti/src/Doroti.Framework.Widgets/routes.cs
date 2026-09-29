@@ -1113,7 +1113,7 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
         {
             return ((object?)route is ModalRoute<T> typedRoute)
                 && !typedRoute.willHandlePopInternally
-                && (typedRoute.settings.ToString() == name);
+                && (typedRoute.settings.name == name);
             throw new InvalidOperationException("Callback completed without returning a value.");
         };
         throw new InvalidOperationException("Control flow completed without returning a value.");

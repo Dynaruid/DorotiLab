@@ -163,7 +163,8 @@ public class SensitiveContentHost
     internal virtual ContentSensitivity? _fallbackContentSensitivitySetting { get; set; } = default;
     internal virtual SensitiveContentService _sensitiveContentService { get; private set; } =
         new SensitiveContentService();
-    public static SensitiveContentHost instance = new SensitiveContentHost();
+    private static readonly Doroti.Ui.DispatcherLocal<SensitiveContentHost> _contextLocalinstance = new(() => new SensitiveContentHost());
+    public static SensitiveContentHost instance { get => _contextLocalinstance.Value; set => _contextLocalinstance.Value = value; }
 
     public SensitiveContentHost() { }
 

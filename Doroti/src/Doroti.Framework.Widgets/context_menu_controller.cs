@@ -7,10 +7,14 @@ namespace Doroti.Framework.Widgets;
 public class ContextMenuController
 {
     public virtual Action? onRemove { get; private set; }
-    internal static Func<BuildContext, Widget>? _contextMenuBuilder = default;
-    internal static CapturedThemes? _capturedThemes;
-    internal static ContextMenuController? _shownInstance = default;
-    internal static OverlayEntry? _menuOverlayEntry = default;
+    private static readonly Doroti.Ui.DispatcherLocal<Func<BuildContext, Widget>?> _contextLocal_contextMenuBuilder = new(() => default);
+    internal static Func<BuildContext, Widget>? _contextMenuBuilder { get => _contextLocal_contextMenuBuilder.Value; set => _contextLocal_contextMenuBuilder.Value = value; }
+    private static readonly Doroti.Ui.DispatcherLocal<CapturedThemes?> _contextLocal_capturedThemes = new(() => default);
+    internal static CapturedThemes? _capturedThemes { get => _contextLocal_capturedThemes.Value; set => _contextLocal_capturedThemes.Value = value; }
+    private static readonly Doroti.Ui.DispatcherLocal<ContextMenuController?> _contextLocal_shownInstance = new(() => default);
+    internal static ContextMenuController? _shownInstance { get => _contextLocal_shownInstance.Value; set => _contextLocal_shownInstance.Value = value; }
+    private static readonly Doroti.Ui.DispatcherLocal<OverlayEntry?> _contextLocal_menuOverlayEntry = new(() => default);
+    internal static OverlayEntry? _menuOverlayEntry { get => _contextLocal_menuOverlayEntry.Value; set => _contextLocal_menuOverlayEntry.Value = value; }
 
     public ContextMenuController(Action? onRemove = null)
     {

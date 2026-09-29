@@ -3,8 +3,9 @@
 The first implementation provides `Doroti.Desktop` and optional
 `Doroti.Desktop.Widgets`. **The complete W0–W5 plan is PARTIAL.** Windows MAUI
 and AppKit macOS have native main-window adapters. Mac Catalyst has a restricted UIKit scene adapter, and Linux Qt Quick has a basic main-window adapter. Windows App SDK now has a main-window adapter (2026-09-28); custom
-title-bar widgets remain unimplemented. Native multi-window execution is W6,
-outside this first implementation.
+title-bar widgets remain unimplemented. The 2026-09-29 Windows App SDK increment
+adds native multi-window execution and Explicit lifetime; see the
+[window context ADR](desktop-window-context.md) and [M6 evidence](../../works/common/09-multiwindow.md).
 
 ## Architecture and inventory
 
@@ -150,14 +151,14 @@ Current host/renderer/build-mode evidence is centralized in [support status](sup
 
 | Host | Main-window adapter | Current limitation |
 | --- | --- | --- |
-| Windows App SDK | Implemented; Debug native state/lifetime smoke passed on 2026-09-28 | One window; OnLastWindowClosed; backdrop/background changes require recreation; physical resize/IME notVerified |
+| Windows App SDK | Main and additional HWNDs; Debug and NuGet-only Release native lifetime checks | OnLastWindowClosed/Explicit; backdrop/background changes require recreation; physical resize/IME/mixed-monitor and full native-content coverage notVerified |
 | Windows MAUI | Implemented; historical results below | Separate native PlatformView wiring and current revalidation pending |
 | AppKit | Implemented; historical results below | Platform-specific capability restrictions; no new execution in this change |
 | Mac Catalyst | Restricted UIKit scene adapter | PlatformDefault startup; explicit unsupported commands; no new execution |
 | Qt Quick | Basic main-window adapter | Native bounds/focus/appearance limitations; no new execution |
 | Qt Widgets | No Desktop companion adapter | SDK rejects startup |
 
-Custom/hidden chrome and additional native windows remain unsupported. The App SDK adapter owns the existing HWND and content root; native/API close share controller cancellation and native render retirement. Readiness is completed by a successful native present, not a timer.
+Custom/hidden chrome remains unsupported. Additional native windows are implemented for Windows App SDK only. Each App SDK adapter owns one HWND and content root; native/API close share controller cancellation and native render retirement. Readiness is completed by a successful native present, not a timer.
 
 
 The legacy records remain available; no blanket Obsolete attributes or Flutter

@@ -296,13 +296,19 @@ internal sealed class WindowsPlatformViewHost : IDisposable
             Environment.GetEnvironmentVariable("DOROTI_PLATFORM_VIEW_COMPOSITION") == "overlay"
                 ? PlatformViewComposition.NativeOverlay
                 : PlatformViewComposition.InterleavedComposition;
-        var plan = PlatformCompositionPlanner.Build(
-            commands,
-            token,
-            _coordinator!,
-            composition,
-            effects: WindowsWebViewComposition.Effects
-        );
+        PlatformCompositionPlan plan;
+        try
+        {
+            plan = PlatformCompositionPlanner.Build(commands, token, _coordinator!, composition,
+                effects: WindowsWebViewComposition.Effects);
+        }
+        catch (DorotiCapabilityException) when (_coordinator!.ReferencesRetiredHandle(commands))
+        {
+            // A queued/replayed scene can outlive widget removal. Request the new
+            // framework scene and retire this raster attempt without presenting it.
+            RequestFrameworkFrame?.Invoke();
+            throw new DorotiFrameSupersededException("A PlatformView in the recorded scene was retired before raster admission.");
+        }
         var nativeParts = plan.Parts.OfType<PlatformNativeSegment>().ToArray();
         if (
             nativeParts.Any(p => _webViews!.Contains(p.Placement.Handle))
@@ -1561,8 +1567,11 @@ internal sealed class WindowsPlatformViewHost : IDisposable
             },
         };
         var json = System.Text.Json.JsonSerializer.Serialize(payload);
-        File.WriteAllText(path + ".tmp", json);
-        File.Move(path + ".tmp", path, true);
+        // Multiple native windows can publish diagnostics concurrently. Each
+        // writer needs its own staging file before atomically replacing the report.
+        var temporary = path + "." + _parent.ToString("x") + ".tmp";
+        File.WriteAllText(temporary, json);
+        File.Move(temporary, path, true);
     }
 
     private static double[] Coordinates(Rect rect) =>

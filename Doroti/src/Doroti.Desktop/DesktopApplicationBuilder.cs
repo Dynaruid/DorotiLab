@@ -70,7 +70,7 @@ public static class DesktopApplication
             ViewConfiguration = ToViewConfiguration(
                 definition.MainWindow.Options,
                 definition.LifetimePolicy
-            ),
+            ) with { Navigation = application.ViewConfiguration.Navigation },
             // A host must explicitly consume the desktop definition and install its
             // content. Reflection/manual bootstrap cannot silently fall back to the common app.
             EntrypointFactory = () =>

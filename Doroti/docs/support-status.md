@@ -1,5 +1,22 @@
 # Current support and evidence
 
+2026-09-29 update (`8834d7596597b3087a0139f527148baee9a46583` + working tree):
+Windows App SDK now supports additional native windows with dispatcher-scoped
+framework/input state and both OnLastWindowClosed/Explicit lifetime. Real two-window
+presentation, independent size, first-window close/survivor resize and final drain
+pass, including a NuGet-only Release consumer. Physical IME, mixed-monitor DPI and
+full native-content coverage remain unqualified. [Window context](desktop-window-context.md).
+
+Opt-in navigation/restoration connects the existing Router and restoration buckets
+to Windows protocol delivery, Web main-owned history and Android intents. Common
+queue/dedup/corruption/round-trip tests pass. Windows cold/warm/restart works; Galaxy
+S25 Android 16 Release Mono AOT shows the expected cold/warm/restarted routes on
+screen. Browser tools were unavailable, so Web UI history is notVerified.
+[Navigation contract](application-navigation.md), [release candidates](release-candidates.md).
+Selected Windows/Web package-only Release publish now has a private feed/cache and
+template workflow. Signing, clean-VM deployment and production updates remain
+notVerified. The dated tables below retain the earlier evidence scope.
+
 M5-A update (2026-09-28, same base revision + 07 working tree): Windows App SDK now
 registers a Copy-only OLE drop receiver for files, Unicode text and URI lists.
 Common routing/lifetime, real 5GB sparse-file reads at 4GB offsets, 96/192 DPI
@@ -25,9 +42,9 @@ Updated 2026-09-28 against `a93c047fe2e93d93cff3e0a6bf3c2789862fea81` plus the l
 
 | Platform / host / renderer | Implementation | Build mode verified now | Automated execution | Visible / physical evidence now | Remaining |
 | --- | --- | --- | --- | --- | --- |
-| Windows App SDK / default Graphite Vulkan + native D3D12 presentation | Main Desktop companion, existing native editor/WebView adapters | Debug JIT, win-x64, .NET SDK 10.0.400, Windows 10.0.26200 | Actual HWND resize 500×650 DIP, title/state, hide/show, minimize/restore/maximize/fullscreen, caption theme/reset; native and API close cancel then allow, registry empty; editor and WebView each created/recreated | Native state and successful presentation receipts; desktop UI automation unavailable (`native pipe is unavailable`), live resize pixels and physical IME **notVerified** | Mixed-monitor DPI, live drag/flicker, physical Korean candidate/caret, Tab/Shift+Tab, UIA, GPU-loss/AOT. Single window and OnLastWindowClosed only. Backdrop/background mutation requires recreation; transparent backdrop is unsupported. HWND editor + WebView in one composition frame unsupported |
+| Windows App SDK / default Graphite Vulkan + native D3D12 presentation | Main Desktop companion, existing native editor/WebView adapters | Debug JIT, win-x64, .NET SDK 10.0.400, Windows 10.0.26200 | Actual HWND resize 500×650 DIP, title/state, hide/show, minimize/restore/maximize/fullscreen, caption theme/reset; native and API close cancel then allow, registry empty; editor and WebView each created/recreated | Native state and successful presentation receipts; desktop UI automation unavailable (`native pipe is unavailable`), live resize pixels and physical IME **notVerified** | Mixed-monitor DPI, live drag/flicker, physical Korean candidate/caret, Tab/Shift+Tab, UIA, GPU-loss/AOT. Additional windows and Explicit lifetime were added on 2026-09-29; see the increment above. Backdrop/background mutation requires recreation; transparent backdrop is unsupported. HWND editor + WebView in one composition frame unsupported |
 | Web / Chromium / requested worker-direct-webgl | Existing browser host and DOM semantics | Debug browser-wasm build | HTTP startup and nonempty runtime JS | Chrome displayed Material Testbed and populated semantics tree at localhost; physical input **notVerified** | Other browsers/devices, release/AOT, performance; current smoke does not requalify DOM PlatformView input |
-| Host-neutral / Doroti.Testing / Skia CPU | Serial virtual clock, frame dispatch, pointer packets, finder/drag/key/text/semantics API, resize/pixels/traces/cache | Debug net10.0; separate NuGet-only consumer | Cupertino pointer tabs, bounded settle, Hangul synthetic editing, unmount; DPR pixels, blur capture policy, 1,000-row scroll/reassemble, zero layer delta | CPU offscreen only | Full GPU blur/golden quality, Dialog, GPU/native/physical coverage; static binding parallelism is deliberately rejected |
+| Host-neutral / Doroti.Testing / Skia CPU | Serial virtual clock, frame dispatch, pointer packets, finder/drag/key/text/semantics API, resize/pixels/traces/cache | Debug net10.0; separate NuGet-only consumer | Cupertino pointer tabs, bounded settle, Hangul synthetic editing, unmount; DPR pixels, blur capture policy, 1,000-row scroll/reassemble, zero layer delta | CPU offscreen only | Full GPU blur/golden quality, Dialog, GPU/native/physical coverage; independent owner-thread contexts now have focused isolation tests; same-thread nesting is rejected |
 | Windows MAUI | Existing main-window Desktop adapter | **notVerified** in this change | Historical evidence in [Desktop](desktop-windows.md) | **notVerified** | Separate WebView wiring and host qualification |
 | AppKit / Metal | Existing main-window Desktop and native view adapters | **notVerified** | [Historical Desktop summary](../../history/26-09-26/desktop-window-api-summary.md) | **notVerified** | AppKit capability restrictions, VoiceOver, physical input and additional windows |
 | Mac Catalyst | Existing restricted scene Desktop adapter | **notVerified** | Historical summary above | **notVerified** | Separate scene and native view qualification |

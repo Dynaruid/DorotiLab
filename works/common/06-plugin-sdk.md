@@ -70,6 +70,11 @@
 
 ### 남은 항목과 다음 작업
 
+2026-09-29 M6 연계: application handler를 참조 횟수 있는 boundary lease로 공유했다.
+첫 창이 닫힌 뒤 살아 있는 창에서 호출 가능하고, 마지막 owner/active call 정리 뒤
+handler가 한 번만 dispose되는 공통 회귀를 추가해 통과했다. 플랫폼별 물리 picker 결과를
+확대한 것은 아니다.
+
 - event stream은 현재 요청/응답 v1에서 **unsupported**다. native subscription 자원은
   view context에 붙일 수 있지만 공개 구독·backpressure API는 아직 없다.
 - Web/Android/다른 native FilePicker adapter와 같은 앱의 플랫폼 간 실증, Web module

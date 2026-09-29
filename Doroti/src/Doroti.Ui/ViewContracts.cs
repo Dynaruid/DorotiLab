@@ -959,6 +959,8 @@ public sealed record DorotiViewConfiguration(
 {
     /// <summary>Explicit appearance takes precedence over the legacy backdrop-only option.</summary>
     public WindowAppearanceOptions ResolveAppearance() => appearance ?? new(backdrop);
+
+    public ApplicationNavigationOptions? Navigation { get; init; }
 }
 
 /// <summary>Legacy window facade bound to one explicit view rather than a process-global current window.</summary>

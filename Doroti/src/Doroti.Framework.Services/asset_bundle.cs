@@ -303,5 +303,6 @@ public static partial class Asset_bundleLibrary
 
 public static partial class Asset_bundleLibrary
 {
-    public static AssetBundle rootBundle = _initRootBundle();
+    private static readonly Doroti.Ui.DispatcherLocal<AssetBundle> _contextLocalrootBundle = new(() => _initRootBundle());
+    public static AssetBundle rootBundle { get => _contextLocalrootBundle.Value; set => _contextLocalrootBundle.Value = value; }
 }

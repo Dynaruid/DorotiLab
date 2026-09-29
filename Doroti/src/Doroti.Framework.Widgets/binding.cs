@@ -45,7 +45,8 @@ public interface WidgetsBindingObserver
 
 public interface WidgetsBinding
 {
-    public static WidgetsBinding? _instance = default;
+    private static readonly Doroti.Ui.DispatcherLocal<WidgetsBinding?> _contextLocal_instance = new(() => default);
+    public static WidgetsBinding? _instance { get => _contextLocal_instance.Value; set => _contextLocal_instance.Value = value; }
     ValueNotifier<bool>? _debugShowWidgetInspectorOverrideNotifierObject { get; set; }
     ValueNotifier<bool>? _debugWidgetInspectorSelectionOnTapEnabledNotifierObject { get; set; }
     bool _debugExcludeRootWidgetInspector { get; set; }

@@ -2,6 +2,9 @@ using System.Diagnostics;
 
 namespace Doroti.Ui;
 
+/// <summary>A valid recorded frame lost one of its native resources before raster admission.</summary>
+public sealed class DorotiFrameSupersededException(string reason) : InvalidOperationException(reason);
+
 /// <summary>
 /// The common, monotonic time domain for native input, vsync, framework work,
 /// and terminal rendering.  Host wall clocks must not be used for frame data:

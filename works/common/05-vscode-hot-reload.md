@@ -140,3 +140,8 @@ native `dotnet watch`에서 field `int`→`long` 변경의 ENC0009/restart 필�
 - 별도 WebGPU 페이지: `WebGPU reload verified` 표시, counter=1 / `WebGPU 한글 유지` / Row 4 유지. runtimeId=`6fa85417-5019-4b08-b442-3878cedd8580` 불변, revision=0→1, applied. 브라우저 자동 입력이며 물리 IME 조합이나 성능 계측은 아니다.
 
 재현: [개발 세션 문서](../../Doroti/docs/development-hot-reload.md), `runHost.js <fixture> <evidence> --web`. 테스트 파일 게이트는 브라우저 도구의 실제 입력/화면 검사와 확장 명령을 연결한다. raw 로그·결과는 `temp/testing/web-reload/`의 disposable evidence이며 지속되는 요약은 본 문서다. npm 단위 테스트 8개, Web 정책/bridge 파서 테스트 4개와 focused input 포함 widget 회귀가 통과했다.
+
+2026-09-29: 창 문맥 분리 후 두 owner-thread CPU runtime을 동시에 reassemble하고
+각 binding·focus·한글 값·semantics·종료가 독립적으로 유지되는 회귀를 추가해 통과했다.
+이번 세션에는 Windows UI/브라우저 연결이 없어 설치 VSIX의 실제 metadata update 흐름을
+재실행하지 않았다. 위 2026-09-28 결과와 이번 CPU 회귀의 증거 범위를 구분한다.

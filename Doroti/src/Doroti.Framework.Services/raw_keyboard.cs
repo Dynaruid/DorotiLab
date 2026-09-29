@@ -332,7 +332,8 @@ public delegate bool RawKeyEventHandler(RawKeyEvent @event);
 
 public class RawKeyboard
 {
-    public static RawKeyboard instance = new RawKeyboard();
+    private static readonly Doroti.Ui.DispatcherLocal<RawKeyboard> _contextLocalinstance = new(() => new RawKeyboard());
+    public static RawKeyboard instance { get => _contextLocalinstance.Value; set => _contextLocalinstance.Value = value; }
     internal virtual List<Action<RawKeyEvent>> _listeners { get; private set; } =
         new List<Action<RawKeyEvent>>();
     internal virtual Func<RawKeyEvent, bool>? _cachedKeyEventHandler { get; set; } = default;

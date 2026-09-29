@@ -91,6 +91,8 @@ public sealed class PlatformViewCoordinator
 
     private readonly object _gate = new();
     private readonly Dictionary<long, Entry> _entries = [];
+    private readonly HashSet<PlatformViewHandle> _retiredHandles = [];
+    private readonly Queue<PlatformViewHandle> _retiredOrder = new();
     private readonly PlatformViewFactoryRegistry _factories;
     private readonly IPlatformViewDispatcher _dispatcher;
     private readonly string _backend;
@@ -125,6 +127,23 @@ public sealed class PlatformViewCoordinator
         }
     }
     public event Action<PlatformViewHandle>? ViewFocused;
+
+    /// <summary>Only known retired identities qualify as a stale frame; foreign/fabricated handles still fail.</summary>
+    public bool ReferencesRetiredHandle(IReadOnlyList<SceneCommand> commands)
+    {
+        bool Contains(IReadOnlyList<SceneCommand> nested, int depth)
+        {
+            if (depth > 256) return false;
+            foreach (var command in nested)
+            {
+                if (command.Operation == "platformView" && command.HostPayload is ScenePlatformViewPayload native && _retiredHandles.Contains(native.Handle)) return true;
+                if (command.Operation == "retained" && command.HostPayload is SceneRetainedPayload retained && retained.ViewId == OwnerViewId &&
+                    retained.Generation > 0 && Contains(retained.Commands, depth + 1)) return true;
+            }
+            return false;
+        }
+        lock (_gate) return Contains(commands, 0);
+    }
     public event Action<WebViewEvent>? WebViewChanged;
 
     public async Task<WebViewResult> ExecuteWebViewAsync(
@@ -896,6 +915,11 @@ public sealed class PlatformViewCoordinator
             if (entry.State != PlatformViewState.Failed)
             {
                 entry.State = PlatformViewState.Disposing;
+            }
+            if (_retiredHandles.Add(entry.Handle))
+            {
+                _retiredOrder.Enqueue(entry.Handle);
+                if (_retiredOrder.Count > 256) _retiredHandles.Remove(_retiredOrder.Dequeue());
             }
 
             entry.Ready.TrySetCanceled();

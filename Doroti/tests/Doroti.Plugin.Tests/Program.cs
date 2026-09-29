@@ -103,6 +103,24 @@ using (var boundary = Boundary(Manifest(Descriptor(delayed, "test/delayed")), de
     await delayed.Disposed.Task.WaitAsync(TimeSpan.FromSeconds(3));
 }
 // Cancellation during an OS picker must dispose files returned after cancellation.
+var sharedHandler = new DelayedHandler();
+sharedHandler.Completion.SetResult();
+using (var firstWindow = Boundary(Manifest(Descriptor(sharedHandler, "test/delayed")), sharedHandler))
+using (var initializingWindow = firstWindow.Retain())
+using (var secondWindow = initializingWindow.CreateWindowBoundary([]))
+using (var firstView = new DorotiViewCapabilities())
+using (var secondView = new DorotiViewCapabilities())
+{
+    firstWindow.Configure(firstView);
+    secondWindow.Configure(secondView);
+    firstView.Dispose(); firstWindow.Dispose(); initializingWindow.Dispose();
+    Require(!sharedHandler.Disposed.Task.IsCompleted, "First window disposed the surviving window's handler.");
+    var messages = secondView.Require<IPlatformMessageHostCapability>(1, DorotiCapabilityIds.PlatformMessaging, new("two-window"));
+    Require((await messages.SendAsync("test/delayed", null))?.Span[0] == 1, "Survivor plugin dispatch failed.");
+    secondView.Dispose(); secondWindow.Dispose();
+    Require(sharedHandler.Disposed.Task.IsCompleted && sharedHandler.DisposeCalls == 1, "Last window did not dispose the handler exactly once.");
+}
+Console.WriteLine("PASS: shared application handler survives first-window close and disposes once after the last owner.");
 var latePicker = new FakePicker { Delay = new(TaskCreationOptions.RunContinuationsAsynchronously) };
 using (var boundary = Boundary(Manifest(descriptor), handler))
 {
@@ -153,7 +171,8 @@ sealed class DelayedHandler : IDorotiNativePluginHandler, IDisposable
     public string AbiVersion => "1";
     public TaskCompletionSource Completion = new(TaskCreationOptions.RunContinuationsAsynchronously);
     public TaskCompletionSource Disposed = new(TaskCreationOptions.RunContinuationsAsynchronously);
+    public int DisposeCalls;
     public async ValueTask<ReadOnlyMemory<byte>?> HandleAsync(string channel, string codec, ReadOnlyMemory<byte>? message, CancellationToken cancellationToken = default)
     { await Completion.Task; return new byte[] { 1 }; }
-    public void Dispose() => Disposed.TrySetResult();
+    public void Dispose() { Interlocked.Increment(ref DisposeCalls); Disposed.TrySetResult(); }
 }

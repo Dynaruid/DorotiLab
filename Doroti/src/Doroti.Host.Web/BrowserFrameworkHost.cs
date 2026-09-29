@@ -89,6 +89,14 @@ public sealed class BrowserFrameworkHost : IDisposable
         }
 
         var host = new BrowserHostAdapter(viewId, canvasId, configuration.logicalSize);
+        BrowserApplicationNavigation? navigation;
+        try
+        {
+            navigation = configuration.Navigation is { } navigationOptions
+                ? BrowserApplicationNavigation.Create(host.HostId, navigationOptions) : null;
+        }
+        catch { host.Dispose(); throw; }
+        if (navigation is not null) host.Closed += navigation.Dispose;
         var platform = new BrowserPlatformViewHost(
             viewId,
             host.HostId,
@@ -152,7 +160,13 @@ public sealed class BrowserFrameworkHost : IDisposable
         DorotiView? view = null;
         try
         {
+            if (navigation is not null)
+            {
+                capabilities.Register<IApplicationNavigationHostCapability>(DorotiCapabilityIds.ApplicationNavigation, navigation.Navigation);
+                session.dispatcher.defaultRouteName = navigation.Navigation.Current.Location;
+            }
             view = session.dispatcher.RegisterView(viewId, capabilities);
+            navigation?.Attach(view);
             graphics.AttachFrameworkTrace(session.dispatcher.frameTrace);
             session.AttachView(view);
             _views.Add(viewId, (view, host, graphics));

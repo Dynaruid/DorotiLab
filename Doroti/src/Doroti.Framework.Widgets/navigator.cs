@@ -2146,10 +2146,10 @@ public class NavigatorState
                                     pageBased: false,
                                     initialState: _RouteLifecycle__navigator.add,
                                     restorationInformation: (
-                                        typedRoute.settings.ToString() is not null
+                                        typedRoute.settings.name is not null
                                     )
                                         ? _RestorationInformation__navigator.CreateNamed(
-                                            name: typedRoute.settings.ToString()!,
+                                            name: typedRoute.settings.name!,
                                             arguments: null,
                                             restorationScopeId: _nextPagelessRestorationScopeId
                                         )
@@ -2995,7 +2995,7 @@ public class NavigatorState
         _lastTopmostRoute = lastEntry;
         if (widget.reportsRouteUpdateToEngine)
         {
-            string? routeName = lastEntry?.route.settings.ToString();
+            string? routeName = lastEntry?.route.settings.name;
             if ((routeName is not null) && (routeName != _lastAnnouncedRouteName))
             {
                 DartRuntimePrimitives.Ignore(

@@ -9,7 +9,8 @@ public delegate Offset PointTransformer(Offset position);
 
 public static partial class Platform_viewsLibrary
 {
-    public static PlatformViewsRegistry platformViewsRegistry = new PlatformViewsRegistry();
+    private static readonly Doroti.Ui.DispatcherLocal<PlatformViewsRegistry> _contextLocalplatformViewsRegistry = new(() => new PlatformViewsRegistry());
+    public static PlatformViewsRegistry platformViewsRegistry { get => _contextLocalplatformViewsRegistry.Value; set => _contextLocalplatformViewsRegistry.Value = value; }
 }
 
 public class PlatformViewsRegistry

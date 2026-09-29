@@ -15,6 +15,8 @@ import { createManagedDorotiWorker, type DorotiWorkerEndpoint } from "./doroti.w
 import { TextInputTapFocus } from "./doroti.web.text-focus.js";
 import { BrowserTextActions } from "./doroti.web.text-actions.js";
 import { ResizeAdmissionWindow } from "./doroti.web.admission.js";
+import { configureNavigation } from "./doroti.web.navigation.js";
+export { openApplicationNavigation, reportApplicationRoute, saveApplicationRestoration, closeApplicationNavigation } from "./doroti.web.navigation.js";
 
 interface ManagedCallbacks {
   dispatchPlatformEvent(hostId: number, json: string): void;
@@ -256,6 +258,7 @@ interface DorotiAssemblyExports {
       Web: {
         BrowserTimeProvider: { DispatchTimer(id: number, generation: number): void };
         BrowserInterop: {
+          DispatchApplicationNavigation(hostId: number, json: string): void;
           DrainPlatformViews(): Promise<void>;
           DispatchPlatformEvent: ManagedCallbacks["dispatchPlatformEvent"];
           DispatchAnimationFrame: ManagedCallbacks["dispatchAnimationFrame"];
@@ -819,6 +822,7 @@ export async function initializeManagedCallbacks(): Promise<"ready"> {
   if (!runtime) throw new Error("Doroti could not resolve the active Web runtime.");
   const exports = await runtime.getAssemblyExports("Doroti.Host.Web.dll") as DorotiAssemblyExports;
   const interop = exports.Doroti.Host.Web.BrowserInterop;
+  configureNavigation(interop.DispatchApplicationNavigation);
   drainPlatformOwners = interop.DrainPlatformViews;
   initializeBrowserTimers(exports.Doroti.Host.Web.BrowserTimeProvider.DispatchTimer);
   configureManagedCallbacks({

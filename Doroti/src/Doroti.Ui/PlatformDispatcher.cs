@@ -836,6 +836,11 @@ public sealed class DorotiView : IDisposable
 
     public IReadOnlyCollection<string> registeredCapabilityIds => _capabilities.RegisteredIds;
 
+    public IApplicationNavigationHostCapability? applicationNavigation =>
+        registeredCapabilityIds.Contains(DorotiCapabilityIds.ApplicationNavigation)
+            ? RequireCapability<IApplicationNavigationHostCapability>(DorotiCapabilityIds.ApplicationNavigation,
+                DorotiUiInvocation.Managed("Doroti.Ui#DorotiView.applicationNavigation")) : null;
+
     /// <summary>Enters this view's platform environment for an externally initiated framework callback.</summary>
     public IDisposable EnterPlatformEnvironmentScope()
     {

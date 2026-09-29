@@ -7,7 +7,8 @@ namespace Doroti.Framework.Painting;
 
 public interface PaintingBinding
 {
-    public static PaintingBinding? _instance = default;
+    private static readonly Doroti.Ui.DispatcherLocal<PaintingBinding?> _contextLocal_instance = new(() => default);
+    public static PaintingBinding? _instance { get => _contextLocal_instance.Value; set => _contextLocal_instance.Value = value; }
     public static ShaderWarmUp? shaderWarmUp = default;
     ImageCache _imageCache { get; set; }
     _SystemFontsNotifier__binding _systemFonts { get; }

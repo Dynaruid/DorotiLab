@@ -1,5 +1,10 @@
 # Web 작업 계획
 
+2026-09-29: [08](../common/08-navigation-restoration.md)의 main-owned runtime history/저장 경로와
+[10](../common/10-release-packaging.md)의 격리 NuGet cache template Release publish를 추가했다.
+Node history/storage 계약은 통과했다. Chrome/IAB가 사용 불가이고 browser inventory가 비어
+이번 실제 history UI는 notVerified다. worker-owned framework navigation과 Web AOT는 미지원/미검증 범위를 유지한다.
+
 원문: [plan.md](../../plan.md) M0~M7 · 작업 상태: **PARTIAL** · 새 실행 검증: **범위별 PASS / 나머지 notVerified**
 
 [전체 작업 인덱스](../README.md)

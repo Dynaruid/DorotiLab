@@ -37,6 +37,17 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
     public static int Run(DorotiApplicationDescriptor descriptor)
     {
         ArgumentNullException.ThrowIfNull(descriptor);
+        try { return RunWindows(descriptor); }
+        catch (Exception error)
+        {
+            DorotiCrashLog.Write(descriptor.ApplicationAssembly.GetName().Name ?? "application", error);
+            throw;
+        }
+    }
+
+    private static int RunWindows(DorotiApplicationDescriptor descriptor)
+    {
+        ArgumentNullException.ThrowIfNull(descriptor);
         if (!OperatingSystem.IsWindows())
         {
             throw new PlatformNotSupportedException(
@@ -80,32 +91,47 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         }
     }
 
-    private static int RunCore(DorotiApplicationDescriptor descriptor, string selectedPresenter)
+    internal static void RunAdditionalWindow(DorotiApplicationDescriptor descriptor, string presenter,
+        WindowsAppSdkDesktopWindowHost host, DorotiApplicationBoundary application)
     {
+        var result = RoInitialize(0);
+        if (result < 0) Marshal.ThrowExceptionForHR(result);
+        try { RunCore(descriptor, presenter, host, application); }
+        finally { RoUninitialize(); }
+    }
+
+    private static int RunCore(DorotiApplicationDescriptor descriptor, string selectedPresenter,
+        WindowsAppSdkDesktopWindowHost? suppliedHost = null, DorotiApplicationBoundary? sourceApplication = null)
+    {
+        using var activation = descriptor.ViewConfiguration.Navigation?.ProtocolScheme is { } scheme
+            ? new WindowsApplicationActivation(descriptor.ApplicationAssembly.GetName().Name!, scheme, descriptor.LaunchContext.Arguments) : null;
+        if (activation?.Redirected == true) return 0;
         LastRunDiagnostics = null;
         DorotiApplicationBoundary? application = null;
         DorotiHostSession? session = null;
         WindowsManagedState? state = null;
-        WindowsAppSdkDesktopWindowHost? desktopHost = null;
+        WindowsAppSdkDesktopWindowHost? desktopHost = suppliedHost;
+        WindowsDesktopWindowFactory? windows = null;
         Desktop.DorotiWindowController? desktopWindow = null;
         var handle = default(GCHandle);
         Exception? runFailure = null;
         try
         {
             var platformViews = new WindowsPlatformViewHost();
-            application = DorotiApplicationBoundary.Load(
+            application = sourceApplication?.CreateWindowBoundary(platformViews.CreateFactories()) ?? DorotiApplicationBoundary.Load(
                 descriptor.ManifestAssembly,
                 descriptor.ApplicationAssembly,
                 descriptor.LaunchContext.RuntimeIdentifier,
                 descriptor.NativePluginHandlers,
                 platformViews.CreateFactories()
             );
-            if (Desktop.DesktopApplication.TryGetDefinition(descriptor, out var desktop))
+            if (suppliedHost is null && Desktop.DesktopApplication.TryGetDefinition(descriptor, out var desktop))
             {
-                if (desktop!.LifetimePolicy != Desktop.WindowLifetimePolicy.OnLastWindowClosed)
-                    throw new NotSupportedException("The Windows App SDK single-window runner requires OnLastWindowClosed lifetime.");
                 desktopHost = new WindowsAppSdkDesktopWindowHost();
-                var manager = new Desktop.DorotiWindowManager(desktopHost, desktop.LifetimePolicy);
+                windows = new WindowsDesktopWindowFactory(descriptor, selectedPresenter, desktopHost, application);
+                var manager = new Desktop.DorotiWindowManager(windows, desktop!.LifetimePolicy);
+                manager.ExitRequested += windows.Exit;
+                manager.WindowCreated += windows.Track;
                 manager.InitializationFailed += (_, error) => Console.Error.WriteLine(error);
                 desktopWindow = manager.CreateMainWindowAsync(desktop.MainWindow).GetAwaiter().GetResult();
             }
@@ -118,6 +144,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 application.Manifest.PlatformViews.Length == 0 ? null : platformViews
             );
             state.DesktopHost = desktopHost;
+            state.Activation = activation;
             // Presenter-specific Composition activation must occur on the HWND
             // thread during host-ready. Its process-wide DLL search restriction
             // is applied there immediately after attach and before first show.
@@ -274,6 +301,9 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 Cleanup(() => activeDesktop.CompleteShutdown(runFailure ?? cleanupFailures.FirstOrDefault()));
             if (desktopWindow is { } activeWindow)
                 Cleanup(() => activeWindow.CloseAsync().WaitAsync(TimeSpan.FromSeconds(10)).GetAwaiter().GetResult());
+            if (runFailure is null && cleanupFailures.Count == 0 && windows is not null)
+                Cleanup(windows.WaitForExit);
+            else if (windows is not null) Cleanup(windows.Abort);
             if (cleanupFailures.Count != 0)
             {
                 if (runFailure is not null)
@@ -298,6 +328,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
 
     private sealed class WindowsManagedState : IDisposable
     {
+        internal WindowsApplicationActivation? Activation;
         private readonly object _gate = new();
         private readonly DorotiHostSession _session;
         private readonly DorotiApplicationBoundary _application;
@@ -523,6 +554,18 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 .Register<IFontHostCapability>(DorotiCapabilityIds.GraphicsFont, renderer)
                 .Register<ITextureHostCapability>(DorotiCapabilityIds.GraphicsTexture, renderer)
                 .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, renderer);
+            ApplicationNavigationHost? navigation = null;
+            if (_configuration.Navigation is { } navigationOptions)
+            {
+                var store = navigationOptions.RestorationId is { } restorationId
+                    ? new FileRestorationStore(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                        "Doroti", _application.Manifest.ApplicationId, "restoration"), restorationId) : null;
+                navigation = new(Activation?.InitialLocation, store?.Read(), store is null ? null : store.Write,
+                    initialSource: Activation?.InitialLocation is null ? ApplicationActivationSource.Launch : ApplicationActivationSource.Protocol);
+                capabilities.Register<IApplicationNavigationHostCapability>(DorotiCapabilityIds.ApplicationNavigation, navigation);
+                _session.dispatcher.defaultRouteName = navigation.Current.Location;
+                host.LifecycleChanged += _ => navigation.Checkpoint();
+            }
             capabilities.Register<ISemanticsHostCapability>(
                 DorotiCapabilityIds.AccessibilitySemantics,
                 renderer
@@ -559,6 +602,14 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             {
                 using var scope = _session.dispatcher.EnterScope();
                 view = _session.dispatcher.RegisterView(1, capabilities);
+                if (navigation is not null)
+                {
+                    var owner = view;
+                    Activation?.Attach(activation => host.DispatchPlatformViewEvent(() =>
+                    {
+                        if (!_disposed) owner.DispatchPlatformEvent(() => navigation.Activate(activation));
+                    }));
+                }
                 if (_platformViews is { } nativeViews)
                 {
                     var platformViewOwner = view;
@@ -1496,6 +1547,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             }
 
             _disposed = true;
+
+            Activation?.Detach();
 
             var failures = new List<Exception>();
             void Cleanup(Action action)

@@ -91,6 +91,7 @@ async function initializeMainRuntime(dotnetUrl: string): Promise<MainRuntime> {
     const runtime = await module.dotnet.withEnvironmentVariables({
       DOROTI_DEV_SESSION_ID: developmentBridge(location.search)?.sessionId ?? "browser",
       DOROTI_TESTBED_MODE: params.get("dorotiTestbedMode") ?? "diagnostics",
+      DOROTI_SAMPLE: params.get("dorotiSample") ?? "",
       DOROTI_LAYOUT_PROFILE: params.get("dorotiLayoutProfile") === "1" ? "1" : "0",
       DOROTI_ALLOCATION_PROFILE: params.get("dorotiAllocationProfile") === "1" ? "1" : "0",
       DOROTI_WEB_DIRECT_TRACE: diagnostics ? "1" : "0", DOROTI_STAGE_TRACE: diagnostics ? "1" : "0",

@@ -78,6 +78,54 @@ public sealed class DorotiApplicationBoundary : IDisposable
     private readonly ApplicationResourceCapability _resources;
     private readonly ApplicationPluginCapability _plugins;
     private readonly PlatformViewFactoryRegistry _platformViews;
+    private readonly SharedApplicationServices _shared;
+    private int _disposed;
+
+    private sealed class SharedApplicationServices(ApplicationResourceCapability resources, ApplicationPluginCapability plugins)
+    {
+        private int _owners = 1;
+        private readonly object _gate = new();
+        public ApplicationResourceCapability Resources => resources;
+        public ApplicationPluginCapability Plugins => plugins;
+        public void Retain()
+        {
+            lock (_gate)
+            {
+                ObjectDisposedException.ThrowIf(_owners == 0, this);
+                _owners++;
+            }
+        }
+        public void Release()
+        {
+            lock (_gate) { if (--_owners != 0) return; }
+            try { plugins.Dispose(); }
+            finally { resources.Dispose(); }
+        }
+    }
+
+    private DorotiApplicationBoundary(DorotiApplicationBoundary source, PlatformViewFactoryRegistry factories)
+    {
+        _shared = source._shared;
+        _shared.Retain();
+        Manifest = source.Manifest;
+        _resources = _shared.Resources;
+        _plugins = _shared.Plugins;
+        _platformViews = factories;
+    }
+
+    /// <summary>Retains application-owned handlers while a new native window is being initialized.</summary>
+    public DorotiApplicationBoundary Retain()
+    {
+        ObjectDisposedException.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
+        return new(this, _platformViews);
+    }
+
+    /// <summary>Shares application services, but binds native view factories to the new window.</summary>
+    public DorotiApplicationBoundary CreateWindowBoundary(IEnumerable<IPlatformViewFactory> factories)
+    {
+        ObjectDisposedException.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
+        return new(this, CreatePlatformViewRegistry(Manifest, factories));
+    }
 
     private DorotiApplicationBoundary(
         DorotiApplicationManifest manifest,
@@ -90,6 +138,7 @@ public sealed class DorotiApplicationBoundary : IDisposable
         _resources = new(manifest, assembly);
         _plugins = new(manifest, handlers);
         _platformViews = CreatePlatformViewRegistry(manifest, platformViewFactories);
+        _shared = new(_resources, _plugins);
     }
 
     public DorotiApplicationManifest Manifest { get; }
@@ -210,6 +259,7 @@ public sealed class DorotiApplicationBoundary : IDisposable
 
     public void Configure(DorotiViewCapabilities capabilities)
     {
+        ObjectDisposedException.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
         ArgumentNullException.ThrowIfNull(capabilities);
         var plugins = _plugins.CreateScope(capabilities);
         capabilities
@@ -229,6 +279,7 @@ public sealed class DorotiApplicationBoundary : IDisposable
         IPlatformMessageHostCapability frameworkChannels
     )
     {
+        ObjectDisposedException.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
         ArgumentNullException.ThrowIfNull(capabilities);
         ArgumentNullException.ThrowIfNull(frameworkChannels);
         var plugins = _plugins.CreateScope(capabilities);
@@ -246,8 +297,7 @@ public sealed class DorotiApplicationBoundary : IDisposable
 
     public void Dispose()
     {
-        _resources.Dispose();
-        _plugins.Dispose();
+        if (Interlocked.Exchange(ref _disposed, 1) == 0) _shared.Release();
     }
 
     private sealed class ApplicationResourceCapability

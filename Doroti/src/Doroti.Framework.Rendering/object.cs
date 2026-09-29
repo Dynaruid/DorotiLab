@@ -1433,7 +1433,8 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     public virtual object? debugCreator { get; set; } = default;
     internal virtual bool _debugDoingThisResize { get; set; } = false;
     internal virtual bool _debugDoingThisLayout { get; set; } = false;
-    internal static RenderObject? _debugActiveLayout = default;
+    private static readonly Doroti.Ui.DispatcherLocal<RenderObject?> _contextLocal_debugActiveLayout = new(() => default);
+    internal static RenderObject? _debugActiveLayout { get => _contextLocal_debugActiveLayout.Value; set => _contextLocal_debugActiveLayout.Value = value; }
     internal virtual bool? _debugCanParentUseSize { get; set; } = default;
     internal virtual bool _debugMutationsLocked { get; set; } = false;
     internal virtual PipelineOwner? _owner { get; set; } = default;
@@ -1444,7 +1445,8 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     internal virtual Constraints? _constraints { get; set; } = default;
     public static bool debugCheckingIntrinsics = false;
     internal virtual bool _debugDoingThisPaint { get; set; } = false;
-    internal static RenderObject? _debugActivePaint = default;
+    private static readonly Doroti.Ui.DispatcherLocal<RenderObject?> _contextLocal_debugActivePaint = new(() => default);
+    internal static RenderObject? _debugActivePaint { get => _contextLocal_debugActivePaint.Value; set => _contextLocal_debugActivePaint.Value = value; }
     internal virtual bool _wasRepaintBoundary { get; set; } = default!;
     public virtual LayerHandle<ContainerLayer> _layerHandle { get; private set; } =
         new LayerHandle<ContainerLayer>();

@@ -59,6 +59,7 @@ public sealed class DorotiHostSession : IDisposable
         }
         try
         {
+            using var scope = dispatcher.EnterScope();
             _entrypoint.Bootstrap(dispatcher);
             _bootstrapped = true;
         }
@@ -73,6 +74,7 @@ public sealed class DorotiHostSession : IDisposable
     public void AttachView(DorotiView view)
     {
         ArgumentNullException.ThrowIfNull(view);
+        using var scope = dispatcher.EnterScope();
         if (state != DorotiHostSessionState.running)
         {
             throw new InvalidOperationException(
@@ -123,6 +125,7 @@ public sealed class DorotiHostSession : IDisposable
     public void DetachView(DorotiView view)
     {
         ArgumentNullException.ThrowIfNull(view);
+        using var scope = dispatcher.EnterScope();
         if (_views.Remove(view.viewId) && _entrypoint is IDorotiViewEntrypoint viewEntrypoint)
         {
             viewEntrypoint.DetachView(view);

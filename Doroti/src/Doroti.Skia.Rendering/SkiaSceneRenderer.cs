@@ -700,6 +700,14 @@ public sealed partial class SkiaSceneRenderer
                 match
             );
         }
+        catch (DorotiFrameSupersededException superseded)
+        {
+            lock (_gate)
+            {
+                if (isNewFrame) MarkTerminal(frame, DorotiFrameTerminal.superseded, superseded.Message);
+            }
+            return new(SkiaPaintDisposition.superseded, null, frame.Descriptor, match);
+        }
         catch
         {
             lock (_gate)

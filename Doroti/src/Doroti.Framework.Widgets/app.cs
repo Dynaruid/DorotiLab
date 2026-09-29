@@ -372,7 +372,7 @@ public class WidgetsApp : StatefulWidget
             type: ScrollIncrementType.page
         ),
     };
-    public static DartMap<Type, dynamic> defaultActions = new DartMap<Type, dynamic>
+    private static readonly Doroti.Ui.DispatcherLocal<DartMap<Type, dynamic>> DefaultActions = new(() => new DartMap<Type, dynamic>
     {
         [typeof(DoNothingIntent)] = new DoNothingAction(),
         [typeof(DoNothingAndStopPropagationIntent)] = new DoNothingAction(consumesKey: false),
@@ -383,7 +383,8 @@ public class WidgetsApp : StatefulWidget
         [typeof(ScrollIntent)] = new ScrollAction(),
         [typeof(PrioritizedIntents)] = new PrioritizedAction(),
         [typeof(VoidCallbackIntent)] = new VoidCallbackAction(),
-    };
+    });
+    public static DartMap<Type, dynamic> defaultActions { get => DefaultActions.Value; set => DefaultActions.Value = value; }
 
     internal static DartMap<Type, dynamic> defaultActionsForContext(BuildContext context)
     {

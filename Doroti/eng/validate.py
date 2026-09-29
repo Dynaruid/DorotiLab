@@ -21,6 +21,7 @@ def source():
     docs = [ROOT / p for p in ("README.md", "README.ko.md", "Doroti/README.md", "works/README.md",
         "Doroti/tests/README.md", "Doroti/docs/support-status.md", "Doroti/docs/desktop-windows.md",
         "Doroti/docs/rendering-baselines.md", "Doroti/docs/development-hot-reload.md", "Doroti/tools/vscode-doroti/README.md",
+        "Doroti/docs/application-navigation.md", "Doroti/docs/desktop-window-context.md", "Doroti/docs/release-candidates.md",
         "Doroti/docs/platform-views/support-matrix.md", "samples/DorotiTestbedApp/README.md", "samples/DorotiSampleApp2/README.md")]
     docs += list((ROOT / "works").rglob("*.md"))
     broken = []
@@ -60,8 +61,8 @@ def main(suite):
                     "Doroti/tests/Doroti.Tests/Doroti.Tests.csproj", "-c", "Debug",
                     "--artifacts-path", str(run / "build"))
         if suite in ("Developer", "Release"):
-            command("plugin-regressions", "dotnet", "run", "--project", "Doroti/tests/Doroti.Plugin.Tests/Doroti.Plugin.Tests.csproj")
-            command("os-drop-regressions", "dotnet", "run", "--project", "Doroti/tests/Doroti.Drop.Tests/Doroti.Drop.Tests.csproj")
+            command("plugin-regressions", "dotnet", "run", "--project", "Doroti/tests/Doroti.Plugin.Tests/Doroti.Plugin.Tests.csproj", "--artifacts-path", str(run / "plugin-build"))
+            command("os-drop-regressions", "dotnet", "run", "--project", "Doroti/tests/Doroti.Drop.Tests/Doroti.Drop.Tests.csproj", "--artifacts-path", str(run / "drop-build"))
             command("web-rendering", "node", "--experimental-transform-types", "--test", "Doroti/tests/web_rendering.mts")
         if suite in ("Targets", "Release"):
             for target in ("windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj", "web/DorotiTestbedApp.Web.csproj"):

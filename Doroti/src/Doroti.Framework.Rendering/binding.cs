@@ -8,7 +8,8 @@ namespace Doroti.Framework.Rendering;
 
 public interface RendererBinding
 {
-    public static RendererBinding? _instance = default;
+    private static readonly Doroti.Ui.DispatcherLocal<RendererBinding?> _contextLocal_instance = new(() => default);
+    public static RendererBinding? _instance { get => _contextLocal_instance.Value; set => _contextLocal_instance.Value = value; }
     PipelineManifold _manifold { get; }
     MouseTracker? _mouseTracker { get; set; }
     PipelineOwner pipelineOwner { get; }

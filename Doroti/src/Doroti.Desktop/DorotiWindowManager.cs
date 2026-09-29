@@ -14,6 +14,8 @@ public sealed class DorotiWindowManager(
     private readonly ConditionalWeakTable<IDorotiViewEntrypoint, object> _usedContent = new();
     private readonly SemaphoreSlim _creation = new(1);
     private readonly object _gate = new();
+    private readonly SemaphoreSlim _exitLock = new(1);
+    private bool _exiting;
     private DorotiWindowController? _exitCandidate;
     public WindowManagerCapabilities Capabilities => _factory.Capabilities;
     public WindowLifetimePolicy LifetimePolicy { get; } = lifetimePolicy;
@@ -45,6 +47,29 @@ public sealed class DorotiWindowManager(
         CancellationToken cancellationToken = default
     ) => CreateAsync(options, true, cancellationToken);
 
+    /// <summary>Closes current windows through their cancellable close policy, then exits an Explicit lifetime.</summary>
+    public async Task<bool> RequestExitAsync(CancellationToken cancellationToken = default)
+    {
+        await _exitLock.WaitAsync(cancellationToken);
+        var completed = false;
+        try
+        {
+            await _creation.WaitAsync(cancellationToken);
+            try { lock (_gate) _exiting = true; }
+            finally { _creation.Release(); }
+            foreach (var window in GetWindows())
+                if (!await window.CloseAsync(cancellationToken)) return false;
+            completed = GetWindows().Count == 0;
+            if (completed && LifetimePolicy == WindowLifetimePolicy.Explicit) ExitRequested?.Invoke();
+            return completed;
+        }
+        finally
+        {
+            if (!completed) { lock (_gate) _exiting = false; }
+            _exitLock.Release();
+        }
+    }
+
     private async Task<DorotiWindowController> CreateAsync(
         WindowCreateOptions request,
         bool main,
@@ -64,6 +89,7 @@ public sealed class DorotiWindowManager(
         {
             lock (_gate)
             {
+                if (_exiting) throw new InvalidOperationException("The desktop application is exiting.");
                 if (main && MainWindowId is not null)
                     throw new InvalidOperationException("Main window has already been assigned.");
                 if (
@@ -138,6 +164,7 @@ public sealed class DorotiWindowManager(
                 return;
             controller = _exitCandidate;
             _exitCandidate = null;
+            if (controller is not null && LifetimePolicy == WindowLifetimePolicy.OnLastWindowClosed) _exiting = true;
         }
         if (controller is not null && LifetimePolicy == WindowLifetimePolicy.OnLastWindowClosed)
             foreach (var callback in ExitRequested?.GetInvocationList() ?? [])

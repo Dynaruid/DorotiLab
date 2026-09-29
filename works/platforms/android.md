@@ -1,5 +1,10 @@
 # Android 작업 계획
 
+2026-09-29: [08](../common/08-navigation-restoration.md)에서 `DorotiMauiActivity`와 Testbed protocol
+IntentFilter를 연결했다. Galaxy S25(SM-S931N)/Android 16에 Release Mono AOT APK를 업데이트 설치하고
+cold `/first`·warm `/second`·강제 종료 후 `/second` 복원을 실제 화면으로 확인했다.
+ADB intent/실제 표시이며 물리 IME 입력과 구분한다. Android package-only·출시 서명은 아직 검증하지 않았다.
+
 원문: [plan.md](../../plan.md) M0~M7 · 작업 상태: **TODO** · 새 실행 검증: **notVerified**
 
 [전체 작업 인덱스](../README.md)

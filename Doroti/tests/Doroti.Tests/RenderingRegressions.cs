@@ -12,6 +12,33 @@ internal static class RenderingRegressions
 {
     public static void Run()
     {
+        using (var dialogTester = new WidgetTester())
+        {
+            var opened = 0;
+            dialogTester.pumpWidget(new CupertinoApp(home: new CupertinoPageScaffold(child:
+                new Builder(builder: context => new Align(alignment: Alignment.topLeft, child: new CupertinoButton(
+                    child: new Text("Open dialog"), onPressed: () =>
+                    {
+                        opened++;
+                        _ = Doroti.Framework.Cupertino.RouteLibrary.showCupertinoDialog<object>(context,
+                            builder: dialogContext => new CupertinoAlertDialog(title: new Text("Dialog frame"),
+                                actions: [new CupertinoDialogAction(child: new Text("Close dialog"),
+                                    onPressed: () => Navigator.of(dialogContext).pop<object>())]));
+                    }))))));
+            dialogTester.pumpAndSettle();
+            dialogTester.tap(dialogTester.text("Open dialog").Single());
+            dialogTester.pump(TimeSpan.FromMilliseconds(60));
+            if (!dialogTester.byType<FadeTransition>().Any(element =>
+                ((FadeTransition)element.widget).opacity.value is > 0 and < 1))
+                throw new Exception("Dialog did not expose an intermediate animation frame.");
+            dialogTester.tap(dialogTester.text("Open dialog").Single());
+            if (opened != 1) throw new Exception("Dialog barrier did not block the underlying pointer.");
+            dialogTester.pumpAndSettle();
+            dialogTester.tap(dialogTester.text("Close dialog").Single());
+            dialogTester.pumpAndSettle();
+            if (dialogTester.text("Dialog frame").Count != 0) throw new Exception("Closed dialog retained its route.");
+        }
+        Console.WriteLine("PASS: pointer-opened dialog intermediate fade frame, modal hit testing and route teardown (CPU).");
         // An independent expected capture rectangle protects halo rounding and pixel phase.
         var settings = new VariableBlurSettings(new(0, 0), new(0, 100), 4, 0, 32, .25, true, VariableBlurKernel.gaussian);
         var capture = SkiaSceneRenderer.VariableBlurCaptureBounds(new SKRect(100, 80, 180, 140), settings,

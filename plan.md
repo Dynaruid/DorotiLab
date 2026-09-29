@@ -4,7 +4,13 @@
 
 ## 1. 지금 시작할 작업과 전체 순서
 
-**공통 00~07의 구현·검증 결과를 먼저 확인한다.** [07 OS Drag & Drop](works/common/07-os-drag-drop.md)에 공통 계약·Windows 수신·실제 OLE fixture·큰 파일·패키지 소비 결과를 추가했다. Explorer 교차 창 전달과 다른 플랫폼·송신 등 남은 범위는 해당 문서에 유지한다. 다음 독립 작업은 [08 Navigation/restoration](works/common/08-navigation-restoration.md)이다. 단계 착수 조건의 충족을 기능 전체 완료로 해석하지 않는다.
+**2026-09-29에 00~10 전체 실행을 진행했다. 전체 완료는 아니다.** 기존 기반 회귀를 재검증하고
+[08 Navigation/restoration](works/common/08-navigation-restoration.md),
+[09 실제 Windows 추가 창](works/common/09-multiwindow.md),
+[10 선택 플랫폼 후보 패키지](works/common/10-release-packaging.md)를 구현·검증했다.
+단계별 현재 결과와 미완료 범위는 [전체 실행 상태](works/README.md#2026-09-29-전체-실행-상태)에 정리했다.
+실제 브라우저·Windows 물리 입력·다른 desktop adapter·출시 서명/clean 설치 등은 남아 있다.
+단계 착수 조건의 충족을 기능 전체 완료로 해석하지 않는다.
 
 한 작업씩 진행할 때는 아래 표를 위에서부터 따른다. `common/` 문서 하나와 표에 적힌 `platforms/` 문서의 **해당 단계 항목만** 함께 연다. 플랫폼 문서 전체를 한 번에 끝내려고 하지 않는다.
 

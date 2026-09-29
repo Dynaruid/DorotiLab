@@ -40,12 +40,16 @@ public abstract class SystemNavigator
 
     public static Future selectSingleEntryHistory()
     {
+        if (ServicesBinding.instance.platformDispatcher.implicitView?.applicationNavigation is not null)
+            return Future.value();
         return SystemChannels.navigation.invokeMethod<object?>("selectSingleEntryHistory");
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Future selectMultiEntryHistory()
     {
+        if (ServicesBinding.instance.platformDispatcher.implicitView?.applicationNavigation is not null)
+            return Future.value();
         return SystemChannels.navigation.invokeMethod<object?>("selectMultiEntryHistory");
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
@@ -59,6 +63,11 @@ public abstract class SystemNavigator
     {
         DartRuntimePrimitives.Assert(() => (location is not null) != (uri is not null));
         uri ??= DartUri.parse(location!);
+        if (ServicesBinding.instance.platformDispatcher.implicitView?.applicationNavigation is { } navigation)
+        {
+            navigation.ReportRoute(uri.ToString(), state is null ? null : Dart_convertLibrary.json.encode(state), replace);
+            return Future.value();
+        }
         return SystemChannels.navigation.invokeMethod<object?>(
             "routeInformationUpdated",
             new DartMap<string, object?>

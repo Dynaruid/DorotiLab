@@ -98,12 +98,15 @@ internal sealed class MaterialDemoEntrypoint : IDorotiViewEntrypoint
     }
 
     private static Widget CreateRootApp() =>
-        Environment.GetEnvironmentVariable("DOROTI_SAMPLE") switch
+        (Environment.GetEnvironmentVariable("DOROTI_SAMPLE") ??
+            (WidgetsBinding.instance.platformDispatcher.implicitView?.applicationNavigation?.Current.Location.StartsWith("doroti-testbed:", StringComparison.Ordinal) == true
+                ? "navigation" : "")) switch
         {
             "input" => new Doroti.Framework.Material.MaterialApp(home: new MaterialSample.InputLifetimeSample()),
             "reload" => new Doroti.Framework.Material.MaterialApp(home: new MaterialSample.HotReloadSample()),
             "plugins" => new Doroti.Framework.Material.MaterialApp(home: new MaterialSample.PluginsSample()),
             "drop" => new Doroti.Framework.Material.MaterialApp(home: new MaterialSample.OsDropSample()),
+            "navigation" => new MaterialSample.NavigationSample(),
             _ => new MaterialSample.SampleApp(App.SampleAcrylicAvailable),
         };
 }
@@ -179,5 +182,8 @@ internal static class App
                         : WindowBackdropMode.acrylic
                 )
             )
-        );
+        )
+        {
+            Navigation = new ApplicationNavigationOptions("testbed-navigation", "doroti-testbed"),
+        };
 }

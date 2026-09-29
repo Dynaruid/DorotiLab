@@ -24,5 +24,6 @@
     <None Include="Sdk\Doroti.Web.targets" Pack="true" PackagePath="Sdk\Doroti.Web.targets" />
     <None Include="..\Doroti.App.Sdk\Sdk\Doroti.TypeScript.targets" Pack="true" PackagePath="Sdk\Doroti.TypeScript.targets" Link="Sdk\Doroti.TypeScript.targets" />
     <None Include="..\Doroti.Host.Web\Web\types\doroti-loader\index.d.ts" Pack="true" PackagePath="Sdk\types\doroti-loader\index.d.ts" Link="Sdk\types\doroti-loader\index.d.ts" />
+    <None Include="..\Doroti.Host.Web\Web\types\doroti-textures\index.d.ts" Pack="true" PackagePath="Sdk\types\doroti-textures\index.d.ts" Link="Sdk\types\doroti-textures\index.d.ts" />
   </ItemGroup>
 </Project>

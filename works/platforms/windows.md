@@ -1,5 +1,11 @@
 # Windows 작업 계획
 
+2026-09-29: [08](../common/08-navigation-restoration.md) protocol cold/warm/restart,
+[09](../common/09-multiwindow.md) 실제 HWND 2개·native TextBox island·독립 resize·두 lifetime,
+[10](../common/10-release-packaging.md) NuGet-only Release 소비를 추가했다.
+기존 WindowsSmoke의 API/native close와 editor/WebView 재생성도 다시 통과했다.
+native UI 도구 pipe가 없어 물리 IME·화면 resize 품질·mixed-monitor 판정은 미검증이다.
+
 원문: [plan.md](../../plan.md) M0~M7 · 작업 상태: **PARTIAL** · 새 실행 검증: **범위별 PASS / 나머지 notVerified**
 
 [전체 작업 인덱스](../README.md)

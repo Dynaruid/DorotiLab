@@ -6,7 +6,8 @@ namespace Doroti.Framework.Services;
 
 public class BrowserContextMenu
 {
-    internal static BrowserContextMenu _instance = new BrowserContextMenu();
+    private static readonly Doroti.Ui.DispatcherLocal<BrowserContextMenu> _contextLocal_instance = new(() => new BrowserContextMenu());
+    internal static BrowserContextMenu _instance { get => _contextLocal_instance.Value; set => _contextLocal_instance.Value = value; }
     internal virtual bool _enabled { get; set; } = true;
     internal virtual MethodChannel _channel { get; private set; } = SystemChannels.contextMenu;
 

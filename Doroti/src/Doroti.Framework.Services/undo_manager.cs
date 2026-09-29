@@ -12,7 +12,8 @@ public enum UndoDirection
 
 public class UndoManager
 {
-    internal static UndoManager _instance = new UndoManager();
+    private static readonly Doroti.Ui.DispatcherLocal<UndoManager> _contextLocal_instance = new(() => new UndoManager());
+    internal static UndoManager _instance { get => _contextLocal_instance.Value; set => _contextLocal_instance.Value = value; }
     internal virtual MethodChannel _channel { get; set; } = default!;
     internal virtual UndoManagerClient? _currentClient { get; set; } = default;
 

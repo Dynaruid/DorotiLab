@@ -16,4 +16,4 @@ namespace DorotiTemplateApp.Android;
         | ConfigChanges.SmallestScreenSize
         | ConfigChanges.Density
 )]
-public sealed class MainActivity : MauiAppCompatActivity;
+public sealed class MainActivity : Doroti.Host.Maui.DorotiMauiActivity;

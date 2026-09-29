@@ -1,6 +1,7 @@
 # Doroti 작업 계획
 
-기준: [plan.md](../plan.md), 검토 기준일 2026-09-28. [07 OS Drag & Drop](common/07-os-drag-drop.md)의 공통 계약·Windows 수신 결과를 추가했다. 외부 source 교차 창 실측 등 잔여 항목은 유지하며 다음 독립 작업은 [08 Navigation/restoration](common/08-navigation-restoration.md)이다.
+기준: [plan.md](../plan.md), 실행 갱신일 2026-09-29. 00~10 전체 실행의 구현·검증 및 미완료 범위는
+[이번 실행 상태](#2026-09-29-전체-실행-상태)에 정리했다. 다음 단계 착수 조건과 전체 완료를 구분한다.
 
 이 폴더는 원본 로드맵을 공통 기능 작업과 플랫폼별 연결·검증 작업으로 나눈 실행 계획이다. 문서 작성 시점의 작업 상태는 **TODO**, 새 실행 검증은 **notVerified**다. 기존 구현이 없다는 뜻이 아니며, 착수할 때 현재 branch의 구현과 과거 증거를 확인해 중복 작업을 줄인다. 2026-09-28 공통 00~05 구현·실행 결과를 해당 문서에 추가했다. 초기 계획 상태와 현재 기록을 구분하며, 최신 범위는 [지원표](../Doroti/docs/support-status.md)를 따른다.
 
@@ -93,3 +94,61 @@ OS·버전 / 호스트 / 기기 / renderer / configuration·AOT:
 - [Desktop 현황](../Doroti/docs/desktop-windows.md), [PlatformView 지원표](../Doroti/docs/platform-views/support-matrix.md)
 
 지원 문서도 과거 기록과 현재 상태가 섞여 있을 수 있다. 최신 지원표 정리와 깨진 실행·문서 경로 복구는 M0 작업으로 추적한다.
+
+## 2026-09-29 전체 실행 상태
+
+기준 revision `8834d7596597b3087a0139f527148baee9a46583` + 미커밋 작업 트리.
+사용자 요청 범위는 00~10 전부이며, 아래 잔여 범위를 삭제하거나 완료로 바꾸지 않는다.
+
+| 문서 | 이번 실행 및 현재 상태 | 남은 범위 |
+| --- | --- | --- |
+| 00 | Source/CLI 실패 전파 및 기존 Developer 경로 재검증, 선택 플랫폼 후보 release 추가 | 원격 CI·clean OS 배포 |
+| 01 | 기존 widget/CPU 수명 + Dialog 중간 프레임/모달 hit-test + 탐색/복원 + 동시 dispatcher pointer·IME·semantics 회귀 | GPU golden, 전체 native 자원 격리 |
+| 02 | 기존 Desktop에 실제 Windows 추가 창과 Explicit 종료 연결 | 실제 live resize 픽셀·mixed-monitor·다른 호스트 재검증 |
+| 03 | 입력/PlatformView 장면 유지, 창별 text/keyboard/context menu 상태 격리 | Windows 화면 도구 pipe unavailable; 물리 IME·보조기술·전체 native content |
+| 04 | CPU DPR/blur geometry/list/reassemble/layer 회귀, 중첩 retained scene의 native view 해제 경쟁 수정 | GPU 품질·present/VRAM 예산·device loss·장기 실기기 |
+| 05 | 기존 설치 VSIX/Hot Reload 구현 유지; 창별 binding 수정은 별도 회귀 수행 | 이번 세션 editor/browser 도구 연결 미제공; 통합 IDE 재실행 및 기존 미완료 UI 사례 |
+| 06 | 기존 plugin 취소·오류·수명 회귀 유지 | Web/Android FilePicker, event stream, 다른 native adapter |
+| 07 | 기존 OS drop 계약 회귀 유지 | Explorer 교차 창, 송신·move/link·다른 플랫폼 |
+| 08 | 공통·Windows·Web·Android 연결, Windows cold/warm/restart 및 Galaxy 실제 route 화면 PASS | 실제 browser history, iOS Universal Links·다른 desktop |
+| 09 | 창 문맥 ADR·Windows 실제 2창, 독립 크기·종료·Explicit 및 NuGet 소비 PASS | 물리 IME·DPI·native content 전체, AppKit/Qt/Catalyst 추가 창 |
+| 10 | 새 버전 feed·template·격리 cache 소비·Windows/Web Release publish·portable installer | 서명·clean VM·실제 배포 업데이트·장기 soak·Android package-only |
+
+현재 도구/장비: Windows 10.0.26200, .NET SDK 10.0.400, Galaxy S25 Android 16.
+Windows 화면 도구는 `native pipe is unavailable`, 브라우저 도구의 브라우저 목록은 `[]`였다.
+이 실패를 회피해 native/API 테스트를 화면·물리 입력 PASS로 승격하지 않았다.
+Android는 ADB intent와 실제 화면 캡처를 사용했고 손가락/물리 키보드 입력과 구분했다.
+
+모든 검증은 1,200초 timeout을 사용한다. 원시 로그·소비 앱·스크린샷은
+`temp/testing/plan-all/`, `temp/testing/release-candidate/`의 이번 실행 폴더에 생성한다.
+최종 후보 패키지는 삭제 가능한 `Doroti/artifacts/release/<version>/`에 보존하며
+각 `candidate.json`의 payload/package hash·toolchain·cleanup 상태를 확인한다.
+이전 후보의 cache 정리는 MSBuild가 NuGet DLL을 보유해 한 번 실패했다.
+수정 실행기는 MSBuild node reuse를 끄고 실패 시 정리 보류 경로를 기록한다.
+
+### 최종 산출물·정리 보류
+
+최종 검증 후보는 `Doroti/artifacts/release/0.3.0-beta.rc.20260929010529/`이다.
+이 후보의 자체 raw 소비 앱/cache/log는 자동 정리됐고, manifest에 native 실행과
+portable 설치·업데이트·변조 거절·제거·userdata 보존 결과를 기록했다.
+
+후속 수동 정리 명령은 경로를 workspace 내부로 제한했지만 자동 승인 검토가
+`blocked by policy`로 거절했다. 구체적 이유는 제공되지 않았고 다른 도구로 우회하지 않았다.
+다음 실패 조사/이전 후보를 정리 보류한다. `plan-all`의 원시 검증 자료도 이번 정리 단계에서 남겨 두었다.
+
+- `temp/testing/plan-all/`: 이번 로그·Android 캡처·portable 설치 fixture/canary.
+- `temp/testing/developer/d410872debb0425c81716f57d527bd4c/`: 공유 action listener 경쟁 조사(수정 후 PASS).
+- `temp/testing/developer/b46c2df3346342a087eb0bca556a1b85/`: retirement fixture overload 수정 전 build 조사(수정 후 PASS).
+- `temp/testing/release-candidate/1c38349e85f7/`: SDK type declaration 누락 조사(수정 후 PASS).
+- `temp/testing/release-candidate/db7bd448acbd/`: 소비 검증 PASS 후 readonly/보유 NuGet DLL 정리 실패.
+- `temp/navigation-build.log`: 초기 컴파일 로그.
+- `Doroti/artifacts/release/`의 이전 버전 `0.3.0-beta.rc.20260929000428`,
+  `0.3.0-beta.rc.20260929000744`, `0.3.0-beta.rc.20260929001602`,
+  `0.3.0-beta.rc.20260929002556`, `0.3.0-beta.rc.20260929004147`,
+  `0.3.0-beta.rc.20260929005641`. 마지막 두 후보는 이후 수정으로 대체되어 남겨 두었다.
+
+사용자 직접 실행용 [cleanup-plan-all.ps1](../cleanup-plan-all.ps1)을 저장소 루트에 두었다.
+기본 실행은 대상 미리보기이며, `pwsh -NoProfile -File ./cleanup-plan-all.ps1 -Execute`로
+위 목록만 삭제한다. 스크립트는 아직 삭제 모드로 실행하지 않았다. 없는 경로는 건너뛰고
+링크 경로는 거절하며, 잠긴 파일의 실패를 보고한다. 다른 프로세스를 강제 종료하지 않는다.
+최종 후보와 제품 소스는 이 보류 삭제 목록에 포함하지 않는다.

@@ -301,7 +301,8 @@ public class FlutterError : Exception
     public DiagnosticsNode diagnostics { get; }
     public StackTrace stackTrace => new(this, true);
 
-    public static FlutterExceptionHandler? onError { get; set; }
+    private static readonly Doroti.Ui.DispatcherLocal<FlutterExceptionHandler?> _contextLocalonError = new(() => default);
+    public static FlutterExceptionHandler? onError { get => _contextLocalonError.Value; set => _contextLocalonError.Value = value; }
 
     public static StackTrace demangleStackTrace(StackTrace stack) => stack;
 

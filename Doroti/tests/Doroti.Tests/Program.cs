@@ -61,4 +61,7 @@ Console.WriteLine("PASS: pointer focus; synthetic Hangul start/update/commit/can
 await DesktopCloseRegression.Run();
 #if DOROTI_REPO_TESTS
 RenderingRegressions.Run();
+NavigationRegression.Run();
+WindowContextRegression.Run();
+await PlatformRetirementRegression.Run();
 #endif

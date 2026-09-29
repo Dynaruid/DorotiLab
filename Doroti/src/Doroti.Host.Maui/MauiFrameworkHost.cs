@@ -255,8 +255,38 @@ public sealed class MauiFrameworkHost : IDisposable
         DorotiView? view = null;
         try
         {
+            ApplicationNavigationHost? navigation = null;
+            if (configuration.Navigation is { } navigationOptions)
+            {
+                var cold = MauiApplicationActivation.TakeCold();
+                bool Allowed(string location) => Uri.TryCreate(location, UriKind.Absolute, out var uri) &&
+                    (uri.Scheme is "https" or "http" || uri.Scheme.Equals(navigationOptions.ProtocolScheme, StringComparison.OrdinalIgnoreCase));
+                var store = navigationOptions.RestorationId is { } restorationId
+                    ? new FileRestorationStore(System.IO.Path.Combine(Microsoft.Maui.Storage.FileSystem.AppDataDirectory, "restoration"), restorationId) : null;
+                navigation = new(cold is not null && Allowed(cold.Location) ? cold.Location : null,
+                    store?.Read(), store is null ? null : store.Write,
+                    initialSource: cold?.Source ?? ApplicationActivationSource.Launch);
+                capabilities.Register<IApplicationNavigationHostCapability>(DorotiCapabilityIds.ApplicationNavigation, navigation);
+                session.dispatcher.defaultRouteName = navigation.Current.Location;
+                host.LifecycleChanged += _ => navigation.Checkpoint();
+            }
             using var dispatcherScope = session.dispatcher.EnterScope();
             view = session.dispatcher.RegisterView(viewId, capabilities);
+            if (navigation is not null)
+            {
+                var owner = view;
+                var disposed = false;
+                var subscription = MauiApplicationActivation.Attach(activation =>
+                    Microsoft.Maui.ApplicationModel.MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        if (disposed) return;
+                        var scheme = configuration.Navigation!.ProtocolScheme;
+                        if (Uri.TryCreate(activation.Location, UriKind.Absolute, out var uri) &&
+                            (uri.Scheme is "https" or "http" || uri.Scheme.Equals(scheme, StringComparison.OrdinalIgnoreCase)))
+                            owner.DispatchPlatformEvent(() => navigation.Activate(activation));
+                    }));
+                host.Closed += () => { disposed = true; subscription.Dispose(); };
+            }
 #if IOS && !MACCATALYST
             contextMenus.Dispatch = callback => view.DispatchPlatformEvent(callback);
 #endif

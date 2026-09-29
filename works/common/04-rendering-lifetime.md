@@ -45,3 +45,17 @@ revision: `a93c047fe2e93d93cff3e0a6bf3c2789862fea81` + 이번 working tree. Wind
 6개 CPU resize 표본의 전체 dispatch+surface 재할당+raster p95는 **1.8107 ms**였다. 단계별 범위는 build **0.002–0.043 ms**, layout+compositing **0.008–0.051 ms**, paint **0.003–0.037 ms**, CPU raster **0.018–0.063 ms**. 작은 고정 장면·단일 로컬 실행의 baseline이며 GPU 성능 향상률이나 표시 FPS로 일반화하지 않는다. teardown 후 engine-layer delta=**0**, 검사 시 text cache estimate=**1,536 bytes**, raster cache=**0/67,108,864 bytes**. 최초 실패에서는 tester당 루트 engine layer **1개**가 남았고 수정 후 **0개**다.
 
 남은 검증: VariableBlur GPU 픽셀/품질·다중 효과·WebView overlay·실제 영상 texture의 같은 기기 전후 timing, 실제 present/VRAM, 모바일 실기기 memory/lifecycle/context/device loss, CDN/local/offline 전체 조합과 cold-start 글꼴 교체. 이 항목은 **notVerified/notMeasured**이며 전체 완료로 체크하지 않는다. raw evidence는 `temp/testing/m4-m5/`의 disposable 파일이고 유지되는 결과는 본 문서다.
+
+### 2026-09-29 수명 회귀 수정
+
+Windows 입력 장면의 native view 재생성 후 이전 scene이 raster에 남아
+`stale native identity`로 프로세스를 종료하는 경쟁 조건을 재현했다.
+Coordinator가 실제 해제한 handle의 제한된 이력을 유지하고, 해당 scene만 superseded로
+종료해 새 framework frame을 요청하도록 수정했다. retained layer 내부의 중첩 command도
+동일하게 검사하며, 이 경로를 빠뜨렸을 때의 재현도 별도 회귀로 추가했다. 다른 owner/잘못 만든 handle과
+지원하지 않는 geometry는 계속 실패한다. 취소된 raster는 화면에 제출하지 않는다.
+
+해제 handle·같은 ID의 새 generation·다른 owner 분류 회귀를 추가했다.
+수정 뒤 WindowsSmoke의 API/native close, editor/WebView 4회 생성·재생성,
+실제 2창/editor island·OnLastWindowClosed/Explicit 종료가 모두 **PASS**다.
+GPU timing/present/VRAM budget을 측정한 결과는 아니며 기존 notMeasured 항목은 유지한다.

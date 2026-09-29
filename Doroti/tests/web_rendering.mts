@@ -3,6 +3,48 @@ import { test } from 'node:test';
 import { ResizeAdmissionWindow } from '../src/Doroti.Host.Web/Web/doroti.web.admission.ts';
 import { CanvasCapacityPolicy, applyCanvasCapacity, initialCanvasCapacity, selectRendererPolicy, resolveRendererPolicy } from '../src/Doroti.Host.Web/Web/doroti.web.policy.ts';
 import { developmentBridge } from '../src/Doroti.Host.Web/Web/doroti.web.hot-reload.ts';
+import { configureNavigation, openApplicationNavigation, reportApplicationRoute,
+  saveApplicationRestoration, closeApplicationNavigation } from '../src/Doroti.Host.Web/Web/doroti.web.navigation.ts';
+
+test('browser navigation bridge preserves history state, isolates storage failure and detaches callbacks', () => {
+  const globals = globalThis as any;
+  const previous = new Map(['window', 'location', 'history', 'sessionStorage'].map(key => [key, Object.getOwnPropertyDescriptor(globals, key)]));
+  const events = new EventTarget();
+  const storage = new Map<string, string>();
+  const entries: { state: any; url: string }[] = [];
+  let state: any = { unrelated: 'keep' };
+  try {
+    Object.assign(globals, { window: events, location: new URL('https://app.example/app?mode=test'),
+      history: { get state() { return state; }, pushState(next: any, _: string, url: URL) { state = next; entries.push({ state, url: String(url) }); },
+        replaceState(next: any, _: string, url: URL) { state = next; entries[entries.length - 1] = { state, url: String(url) }; } },
+      sessionStorage: { getItem(key: string) { return storage.get(key) ?? null; }, setItem(key: string, value: string) { storage.set(key, value); } } });
+    const received: any[] = [];
+    configureNavigation((id, json) => received.push({ id, ...JSON.parse(json) }));
+    assert.equal(JSON.parse(openApplicationNavigation(7, 'sample')!).location, '/app?mode=test');
+    reportApplicationRoute(7, '/app#/first', '{"text":"한글"}', false);
+    reportApplicationRoute(7, '/app#/second', '{"text":"second"}', false);
+    assert.equal(entries.length, 2);
+    assert.throws(() => reportApplicationRoute(7, 'https://external.example/', null, false), /same-origin/);
+    globals.location = new URL(entries[0].url); state = entries[0].state;
+    events.dispatchEvent(new Event('popstate'));
+    assert.equal(received[0].location, '/app#/first');
+    assert.equal(received[0].state, '{"text":"한글"}');
+    assert.equal(saveApplicationRestoration(7, '{"version":1,"cleanShutdown":false}'), null);
+    events.dispatchEvent(new Event('pagehide'));
+    assert.equal(JSON.parse(storage.values().next().value!).cleanShutdown, true);
+    globals.sessionStorage.setItem = () => { throw new Error('quota denied'); };
+    assert.match(saveApplicationRestoration(7, '{}')!, /quota denied/);
+    closeApplicationNavigation(7);
+    events.dispatchEvent(new Event('popstate'));
+    assert.equal(received.length, 1);
+    assert.throws(() => reportApplicationRoute(7, '/', null, false), /closed/);
+  } finally {
+    closeApplicationNavigation(7);
+    for (const [key, descriptor] of previous) {
+      if (descriptor) Object.defineProperty(globals, key, descriptor); else delete globals[key];
+    }
+  }
+});
 
 test('development status bridge only accepts an explicit local session endpoint', () => {
   const token = 'a'.repeat(48), session = 'b'.repeat(32);

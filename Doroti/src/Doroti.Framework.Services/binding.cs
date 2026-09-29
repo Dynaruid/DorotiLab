@@ -7,7 +7,8 @@ namespace Doroti.Framework.Services;
 
 public abstract class ServicesBinding : SchedulerBinding
 {
-    internal static ServicesBinding? _instance = default;
+    private static readonly Doroti.Ui.DispatcherLocal<ServicesBinding?> _contextLocal_instance = new(() => default);
+    internal static ServicesBinding? _instance { get => _contextLocal_instance.Value; set => _contextLocal_instance.Value = value; }
     internal virtual HardwareKeyboard _keyboard { get; private set; } = default!;
     internal virtual KeyEventManager _keyEventManager { get; private set; } = default!;
     internal virtual BinaryMessenger _defaultBinaryMessenger { get; private set; } = default!;
@@ -44,6 +45,8 @@ public abstract class ServicesBinding : SchedulerBinding
 
     public override void Dispose()
     {
+        _restorationManager.flushData();
+        _restorationManager.dispose();
         platformDispatcher.onKeyData = null;
         platformDispatcher.onViewFocusChange = null;
         if (ReferenceEquals(_instance, this)) _instance = null;
@@ -206,6 +209,8 @@ public abstract class ServicesBinding : SchedulerBinding
         foreach (var stateChange in generated)
         {
             handleAppLifecycleStateChanged(stateChange);
+            if (stateChange is AppLifecycleState.inactive or AppLifecycleState.hidden or AppLifecycleState.paused or AppLifecycleState.detached)
+                _restorationManager.flushData();
             SystemChrome.handleAppLifecycleStateChanged(stateChange);
         }
         return null;

@@ -7,7 +7,8 @@ namespace Doroti.Framework.Semantics;
 
 public interface SemanticsBinding
 {
-    public static SemanticsBinding? _instance = default;
+    private static readonly Doroti.Ui.DispatcherLocal<SemanticsBinding?> _contextLocal_instance = new(() => default);
+    public static SemanticsBinding? _instance { get => _contextLocal_instance.Value; set => _contextLocal_instance.Value = value; }
     ValueNotifier<bool> _semanticsEnabled { get; }
     ObserverList<Action<SemanticsActionEvent>> _semanticsActionListeners { get; }
     long _outstandingHandles { get; set; }

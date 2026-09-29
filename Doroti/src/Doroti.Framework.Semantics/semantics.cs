@@ -733,11 +733,12 @@ public class CustomSemanticsAction
     public virtual string? label { get; private set; }
     public virtual string? hint { get; private set; }
     public virtual SemanticsAction? action { get; private set; }
-    internal static long _nextId = 0L;
-    internal static DartMap<long, CustomSemanticsAction> _actions =
-        new DartMap<long, CustomSemanticsAction>();
-    internal static DartMap<CustomSemanticsAction, long> _ids =
-        new DartMap<CustomSemanticsAction, long>();
+    private static readonly Doroti.Ui.DispatcherLocal<long> NextId = new(() => 0L);
+    internal static long _nextId { get => NextId.Value; set => NextId.Value = value; }
+    private static readonly Doroti.Ui.DispatcherLocal<DartMap<long, CustomSemanticsAction>> Actions = new(() => new());
+    internal static DartMap<long, CustomSemanticsAction> _actions => Actions.Value;
+    private static readonly Doroti.Ui.DispatcherLocal<DartMap<CustomSemanticsAction, long>> Ids = new(() => new());
+    internal static DartMap<CustomSemanticsAction, long> _ids => Ids.Value;
 
     public CustomSemanticsAction(string label)
     {
@@ -1846,7 +1847,8 @@ public static partial class SemanticsLibrary
 public class SemanticsNode : DiagnosticableTreeMixin
 {
     internal static long _maxFrameworkAccessibilityIdentifier = (1L << (int)16L) - 1L;
-    internal static long _lastIdentifier = 0L;
+    private static readonly Doroti.Ui.DispatcherLocal<long> LastIdentifier = new(() => 0L);
+    internal static long _lastIdentifier { get => LastIdentifier.Value; set => LastIdentifier.Value = value; }
     public virtual Key? key { get; private set; }
     internal virtual long _id { get; set; } = default!;
     internal virtual Action? _showOnScreen { get; private set; }

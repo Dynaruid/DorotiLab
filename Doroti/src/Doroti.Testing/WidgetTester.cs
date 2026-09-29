@@ -11,7 +11,7 @@ namespace Doroti.Testing;
 /// <summary>One serial test scope. Input uses platform packets, hit testing and GestureArena.</summary>
 public sealed class WidgetTester : IDisposable
 {
-    private static int _active;
+    [ThreadStatic] private static int _active;
     private readonly TestHost _host;
     private readonly PlatformDispatcher _dispatcher;
     private readonly WidgetsFlutterBinding _binding;
@@ -22,6 +22,7 @@ public sealed class WidgetTester : IDisposable
     private readonly FlutterExceptionHandler? _previousError;
     private readonly List<Exception> _errors = [];
     private bool _disposed;
+    private readonly int _ownerThread = Environment.CurrentManagedThreadId;
     private ulong _pointer;
     public TestClock Clock { get; } = new();
     public DorotiView View { get; }
@@ -32,7 +33,8 @@ public sealed class WidgetTester : IDisposable
     public SkiaCacheMemoryDiagnostics CacheMemory => _renderer.CaptureCacheMemory();
     public IReadOnlyList<DorotiFrameTraceEntry> FrameTrace => _dispatcher.frameTrace.Snapshot();
 
-    public WidgetTester(Size? size = null, double devicePixelRatio = 1)
+    public WidgetTester(Size? size = null, double devicePixelRatio = 1,
+        IApplicationNavigationHostCapability? navigation = null)
     {
         if (!double.IsFinite(devicePixelRatio) || devicePixelRatio <= 0 ||
             size is { IsFinite: false } || size is { IsEmpty: true })
@@ -61,6 +63,11 @@ public sealed class WidgetTester : IDisposable
             .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, _renderer)
             .Register<ITextureHostCapability>(DorotiCapabilityIds.GraphicsTexture, _renderer)
             .Register<ISemanticsHostCapability>(DorotiCapabilityIds.AccessibilitySemantics, _renderer);
+        if (navigation is not null)
+        {
+            capabilities.Register<IApplicationNavigationHostCapability>(DorotiCapabilityIds.ApplicationNavigation, navigation);
+            _dispatcher.defaultRouteName = navigation.Current.Location;
+        }
         View = _dispatcher.RegisterView(1, capabilities);
         _dispatcher.frameTrace.MeasureRecordingTime = true;
         _dispatcher.frameTrace.ActivityClock = () => Clock.Elapsed;
@@ -197,7 +204,12 @@ public sealed class WidgetTester : IDisposable
         using var file = File.Create(path);
         data.SaveTo(file);
     }
-    private void CheckAlive() => ObjectDisposedException.ThrowIf(_disposed, this);
+    private void CheckAlive()
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (Environment.CurrentManagedThreadId != _ownerThread)
+            throw new InvalidOperationException("Use WidgetTester on its owning thread.");
+    }
     private void ThrowErrors()
     {
         if (_errors.Count == 0) return;
@@ -208,6 +220,7 @@ public sealed class WidgetTester : IDisposable
     public void Dispose()
     {
         if (_disposed) return;
+        CheckAlive();
         _disposed = true;
         try { View.DispatchPlatformEvent(_binding.Dispose); }
         catch (Exception error) { _errors.Add(error); }

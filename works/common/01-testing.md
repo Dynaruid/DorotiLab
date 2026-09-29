@@ -68,3 +68,18 @@
 - 외부 PackageReference-only 소비 앱에서도 Testing/Cupertino 회귀 PASS. aggregate 테스트 원시 빌드는 실행 폴더에 두고 요약 후 자동 삭제했으며 상시 테스트는 제품 solution에 넣지 않았다. 초기 직접 실행의 tests/Doroti.Tests/bin·obj와 수동 확인 산출물은 최종 삭제가 자동 승인 정책에 차단되어 M0의 정리 보류 목록에 남겼다.
 - 남음: ListView, Dialog 중간 프레임, VariableBlur geometry/golden, GPU/texture/복수 owner 상세 수명, 플랫폼별 키·semantics 동작 검증. CPU 이미지 API를 golden 승인으로 표시하지 않는다. 단일 프로세스 binding 병렬 실행은 unsupported다.
 - 다음: [02 Desktop](02-desktop-contract.md), [03 입력](03-input-accessibility-platformview.md)의 미검증 범위를 계속 검증한다.
+
+## 2026-09-29 추가 검증
+
+기존 회귀를 재실행하고 다음을 최소 상시 suite에 통합했다.
+
+- 실제 pointer로 Cupertino Dialog를 열어 60 ms 중간 fade 값, 뒤쪽 버튼의 hit-test 차단,
+  닫기 pointer와 route 제거를 확인했다(**CPU PASS**, GPU golden 아님).
+- 기존 Router/RestorationManager의 대기·중복·state checkpoint 및 한글 bucket 재생성 회귀 **PASS**.
+- owner thread가 다른 두 WidgetTester를 동시 실행해 binding·pointer focus·서로 다른 한글 값·
+  custom semantics action·해제를 확인했다(**CPU PASS**). 동시 dispose에서 드러난 공유
+  default action listener 경쟁은 dispatcher별 action 인스턴스로 수정했다.
+- 같은 thread의 nested tester를 거절하고 pump/dispose에서 owner thread를 확인한다.
+  앱 callback은 각 dispatcher scope를 사용하며 테스트도 owner thread에서 수행한다.
+
+전체 GPU golden·실제 물리 입력·모든 native 자원 격리를 완료한 결과는 아니다.

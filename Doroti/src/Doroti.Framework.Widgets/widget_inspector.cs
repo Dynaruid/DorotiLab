@@ -2794,9 +2794,10 @@ public interface WidgetInspectorService
 {
     List<string?> _serializeRing { get; }
     long _serializeRingIndex { get; set; }
-    public static WidgetInspectorService _instance =
-        new _WidgetInspectorService__widget_inspector();
-    internal static bool _debugServiceExtensionsRegistered = false;
+    private static readonly Doroti.Ui.DispatcherLocal<WidgetInspectorService> _contextLocal_instance = new(() => new _WidgetInspectorService__widget_inspector());
+    public static WidgetInspectorService _instance { get => _contextLocal_instance.Value; set => _contextLocal_instance.Value = value; }
+    private static readonly Doroti.Ui.DispatcherLocal<bool> _contextLocal_debugServiceExtensionsRegistered = new(() => false);
+    internal static bool _debugServiceExtensionsRegistered { get => _contextLocal_debugServiceExtensionsRegistered.Value; set => _contextLocal_debugServiceExtensionsRegistered.Value = value; }
     InspectorSelection selection { get; }
     Action? selectionChangedCallback { get; set; }
     DartMap<string, HashSet<InspectorReferenceData>> _groups { get; }

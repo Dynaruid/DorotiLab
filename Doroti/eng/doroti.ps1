@@ -566,6 +566,12 @@ function Invoke-Audit {
 }
 
 function Invoke-Release {
+    if ($Platform -in @('windows', 'web')) {
+        Invoke-Checked 'python' @((Join-Path $PSScriptRoot 'run-with-timeout.py'), 'python',
+            (Join-Path $PSScriptRoot 'release-candidate.py'), '--targets', $Platform.ToLowerInvariant())
+        return
+    }
+    if ($Platform -and $Platform -ne 'all') { throw "Selected release qualification is not implemented for '$Platform'." }
     Invoke-Checked 'pwsh' @('-NoProfile', '-File', (Join-Path $PSScriptRoot 'validate.ps1'), '-Suite', 'Release')
     Invoke-Audit
 

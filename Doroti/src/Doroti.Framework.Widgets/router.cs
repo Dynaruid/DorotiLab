@@ -1170,6 +1170,9 @@ public abstract class RouteInformationProvider : ValueListenable<RouteInformatio
 
 public class PlatformRouteInformationProvider : RouteInformationProvider, WidgetsBindingObserver
 {
+    private readonly Doroti.Ui.IApplicationNavigationHostCapability? _hostNavigation =
+        WidgetsBinding.instance.platformDispatcher.implicitView?.applicationNavigation;
+    private IDisposable? _navigationSubscription;
     internal virtual RouteInformation _value { get; set; } = default!;
     internal virtual RouteInformation _valueInEngine { get; set; } =
         new RouteInformation(
@@ -1178,8 +1181,13 @@ public class PlatformRouteInformationProvider : RouteInformationProvider, Widget
 
     public PlatformRouteInformationProvider(RouteInformation initialRouteInformation)
     {
-        _value = initialRouteInformation;
+        _value = _hostNavigation is { } navigation ? FromActivation(navigation.Current) : initialRouteInformation;
+        _valueInEngine = _value;
     }
+
+    private static RouteInformation FromActivation(Doroti.Ui.ApplicationActivation activation) =>
+        new(uri: DartUri.parse(activation.Location), state: activation.StateJson is null
+            ? null : Dart_convertLibrary.json.decode(activation.StateJson));
 
     internal static bool _equals(DartUri a, DartUri b)
     {
@@ -1232,11 +1240,15 @@ public class PlatformRouteInformationProvider : RouteInformationProvider, Widget
 
     public override void addListener(Action listener)
     {
+        var first = !hasListeners;
         if (!hasListeners)
         {
             WidgetsBinding.instance.addObserver(this);
         }
         base.addListener(listener);
+        if (first && _hostNavigation is not null)
+            _navigationSubscription = _hostNavigation.Subscribe(activation =>
+                _platformReportsNewRouteInformation(FromActivation(activation)));
     }
 
     public override void removeListener(Action listener)
@@ -1244,12 +1256,16 @@ public class PlatformRouteInformationProvider : RouteInformationProvider, Widget
         base.removeListener(listener);
         if (!hasListeners)
         {
+            _navigationSubscription?.Dispose();
+            _navigationSubscription = null;
             WidgetsBinding.instance.removeObserver(this);
         }
     }
 
     public override void dispose()
     {
+        _navigationSubscription?.Dispose();
+        _navigationSubscription = null;
         if (hasListeners)
         {
             WidgetsBinding.instance.removeObserver(this);

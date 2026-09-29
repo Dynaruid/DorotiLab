@@ -164,7 +164,8 @@ public abstract class GestureBinding
         HitTestDispatcher,
         HitTestTarget
 {
-    internal static GestureBinding? _instance = default;
+    private static readonly Doroti.Ui.DispatcherLocal<GestureBinding?> _contextLocal_instance = new(() => default);
+    internal static GestureBinding? _instance { get => _contextLocal_instance.Value; set => _contextLocal_instance.Value = value; }
     internal virtual Queue<PointerEvent> _pendingPointerEvents { get; private set; } =
         new Queue<PointerEvent>();
     public virtual PointerRouter pointerRouter { get; private set; } = new PointerRouter();

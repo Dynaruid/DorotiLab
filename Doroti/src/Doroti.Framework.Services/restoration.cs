@@ -35,7 +35,10 @@ public class RestorationManager : ChangeNotifier
             if (_pendingRootBucket is null)
             {
                 _pendingRootBucket = new Completer<RestorationBucket?>();
+                var pending = _pendingRootBucket.future;
                 _ = _getRootBucketFromEngine();
+                // A typed host may answer synchronously and clear the completer.
+                return pending;
             }
             return _pendingRootBucket!.future;
         }
@@ -44,6 +47,21 @@ public class RestorationManager : ChangeNotifier
 
     internal virtual async Future _getRootBucketFromEngine()
     {
+        if (ServicesBinding.instance.platformDispatcher.implicitView?.applicationNavigation is { } navigation)
+        {
+            var bytes = navigation.ReadRestoration();
+            try
+            {
+                handleRestorationUpdateFromEngine(navigation.RestorationEnabled,
+                    bytes is null ? null : new Uint8List(bytes.Value.ToArray()));
+            }
+            catch (Exception error) when (error is FormatException or ArgumentException or IndexOutOfRangeException)
+            {
+                navigation.DiscardRestoration();
+                handleRestorationUpdateFromEngine(navigation.RestorationEnabled, null);
+            }
+            return;
+        }
         DartMap<object?, object?>? config = await SystemChannels.restoration.invokeMethod<
             DartMap<object?, object?>
         >("get");
@@ -98,6 +116,11 @@ public class RestorationManager : ChangeNotifier
 
     public virtual Future sendToEngine(Uint8List encodedData)
     {
+        if (ServicesBinding.instance.platformDispatcher.implicitView?.applicationNavigation is { } navigation)
+        {
+            navigation.WriteRestoration(encodedData.Select(value => checked((byte)value)).ToArray());
+            return Future.value();
+        }
         return SystemChannels.restoration.invokeMethod<object?>("put", encodedData);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }

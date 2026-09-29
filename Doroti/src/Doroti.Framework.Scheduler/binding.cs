@@ -124,7 +124,8 @@ public class PerformanceModeRequestHandle
 
 public abstract class SchedulerBinding : BindingBase
 {
-    internal static SchedulerBinding? _instance = default;
+    private static readonly Doroti.Ui.DispatcherLocal<SchedulerBinding?> _contextLocal_instance = new(() => default);
+    internal static SchedulerBinding? _instance { get => _contextLocal_instance.Value; set => _contextLocal_instance.Value = value; }
     internal virtual List<Action<List<FrameTiming>>> _timingsCallbacks { get; private set; } =
         new List<Action<List<FrameTiming>>>();
     internal virtual AppLifecycleState? _lifecycleState { get; set; } = default;
