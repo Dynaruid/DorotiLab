@@ -45,3 +45,10 @@
 - 당시 capability는 단일 창/OnLastWindowClosed·standard native chrome이었으며 Explicit·추가 창은 거절했다. **2026-09-29에는 추가 창과 Explicit을 지원한다**([09 결과](09-multiwindow.md)). custom chrome 거절 및 backdrop/renderer 배경 변경의 RequiresRecreation 경계는 유지한다. Windows MAUI/AppKit/Qt/Catalyst 지원표의 오래된 일괄 Pending 문구도 host별 표로 교체했다.
 - 미검증: Computer Use native pipe unavailable로 live resize 화면·깜빡임, 물리 drag, mixed-monitor 이동을 검증하지 못했다. native state smoke를 화면 품질 PASS로 표시하지 않는다. 다른 adapter는 이번 재실행 없음.
 - 성공한 aggregate suite의 원시 로그/JSON은 자동 정리했다. 수동·실패 조사 폴더는 자동 승인 정책의 삭제 차단으로 M0의 정리 보류 목록에 남겼다. 다음은 [03 입력](03-input-accessibility-platformview.md)과 [04 렌더링](04-rendering-lifetime.md)의 물리/표시 검증이다.
+
+
+## 2026-09-29 Linux / Qt 후속
+
+Qt Quick의 실제 추가 창·두 lifetime·크기/제약/상태/close 취소와 drain을 Wayland/XWayland VM에서 검증했다. 물리 표시/mixed-DPI와 기존 appearance/placement 제한은 남는다.
+
+상세 명령·환경·지원 경계: [Linux Qt 결과](../results/2026-09-29-linux-qt.md).

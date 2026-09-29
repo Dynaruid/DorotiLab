@@ -435,3 +435,12 @@ Replace `device-serial` with the connected device's serial. `--user 0` installs 
 If another profile, such as Galaxy Secure Folder, causes a shell permission error, scope package queries too:
 `adb -s device-serial shell pm list packages --user 0 dev.doroti.testbed`.
 
+
+
+Linux Qt follow-up: build with `-p:DorotiLinuxDesktop=true` for the Desktop companion
+and real additional windows. `DOROTI_SAMPLE=plugins`, `drop`, `navigation` and `input`
+exercise Qt services; the drop page also has a native text/link drag source.
+`DOROTI_SAMPLE=qt-widgets` is a separate disjoint native-editor fixture for a
+Widgets/OpenGL shim (`DOROTI_LINUX_GRAPHITE=0`), without the Desktop companion.
+Quick composition is required for the full mixed input/WebView scene.
+See [Linux qualification and commands](../../works/results/2026-09-29-linux-qt.md).

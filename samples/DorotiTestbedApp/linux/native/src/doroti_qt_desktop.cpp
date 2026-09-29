@@ -11,6 +11,7 @@
 #include <cmath>
 #include <map>
 #include <memory>
+#include <mutex>
 #include <stdexcept>
 
 namespace {
@@ -194,7 +195,7 @@ void DorotiQtRegisterDesktopWindow(QWindow* window, std::function<void()> destro
 #endif
 }
 void DorotiQtReleaseDesktopWindow(QWindow* window) {
-  // QPointer is already cleared after destruction; there is one product window.
+  // QPointer is cleared after destruction; live sibling windows remain registered.
   // Non-null entries belong to a still-live window and must not be released.
   for (auto it = windows.begin(); it != windows.end();) {
     auto& item = it->second;
@@ -217,3 +218,25 @@ extern "C" std::int32_t doroti_qt_get_desktop(void* window, std::uint32_t versio
   return 0;
 }
 extern "C" void doroti_qt_desktop_quit() { QCoreApplication::quit(); }
+
+namespace {
+std::mutex dispatch_gate;
+QCoreApplication* dispatch_application = nullptr;
+}
+void DorotiQtStartApplicationDispatch() { std::lock_guard lock(dispatch_gate); dispatch_application = qApp; }
+void DorotiQtStopApplicationDispatch() { std::lock_guard lock(dispatch_gate); dispatch_application = nullptr; }
+
+// Application dispatch stays available after the main window closes (Explicit
+// lifetime and survivor-created windows). A dropped queue item completes closed.
+extern "C" DOROTI_QT_EXPORT int doroti_qt_post_v2(void (*callback)(void*, int), void* context) {
+  std::lock_guard lock(dispatch_gate);
+  if (!dispatch_application || !callback) return DOROTI_QT_PV_CLOSED;
+  struct Work {
+    void (*callback)(void*, int); void* context; bool called = false;
+    ~Work() { if (!called) callback(context, DOROTI_QT_PV_CLOSED); }
+  };
+  auto work = std::make_shared<Work>(); work->callback = callback; work->context = context;
+  // Once admitted, Work owns completion even if Qt discards its posted event.
+  QMetaObject::invokeMethod(dispatch_application, [work] { work->called = true; work->callback(work->context, 0); }, Qt::QueuedConnection);
+  return 0;
+}

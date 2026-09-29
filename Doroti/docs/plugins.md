@@ -3,13 +3,13 @@
 The M4 increment reuses `IDorotiNativePluginHandler`, application manifests and
 the runner's generated registrations. `Doroti.Plugins` supplies the shared
 FilePicker/URL client and its stateless `NativeFeaturesHandler`. The first host
-adapters are Windows App SDK, browser DOM through the render-worker bridge, and Android Storage Access Framework. Other native adapters remain follow-up
+adapters are Windows App SDK, browser DOM through the render-worker bridge, Android Storage Access Framework, and Linux Qt FilePicker/xdg-open. Other native adapters remain follow-up
 work; `NativeFeatures.ForView(view)` reports unsupported when its channel is absent.
 
 ## Consume
 
 Reference `Doroti.Plugins` version `0.3.0-beta` from the application. Its
-`buildTransitive` target contributes the handler to Windows runners; the runner
+`buildTransitive` target contributes the handler to Windows, Web, Android and Linux runners; the runner
 must use the matching updated `Doroti.Runner.Sdk`. No product source copying,
 reflection discovery, or new Source Generator is required.
 
@@ -156,3 +156,16 @@ remove raw evidence after success. On failure they print the investigation path.
 
 Recorded results and remaining work: [M4](../../works/common/06-plugin-sdk.md),
 [Windows](../../works/platforms/windows.md), [support index](support-status.md).
+
+
+## Linux Qt
+
+The host passes generated `NativePluginHandlers` to the application boundary.
+The app-owned shim implements asynchronous QFileDialog selection with view/caller
+cancellation. Selected files become CLOEXEC regular-file read grants; FIFO/device/
+directory selection is rejected without blocking. `NativeFeatures` retains grants
+in its view scope and releases them with the owner. The URL adapter accepts
+http/https/mailto and uses xdg-open. [Linux qualification](../../works/results/2026-09-29-linux-qt.md)
+records actual dialog automation, cancellation, denied file access, Unicode reads
+and plugin-to-default-browser loopback delivery. Physical dialog/portal permission
+flows remain separate. Rebuild the template/sample native shim with the host.

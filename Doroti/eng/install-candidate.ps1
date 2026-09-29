@@ -15,7 +15,7 @@ if ($destination -eq [IO.Path]::GetPathRoot($destination)) { throw 'An installat
 $marker = Join-Path $destination '.doroti-candidate-install.json'
 $markerValue = 'Doroti local candidate installer v1'
 if (Test-Path -LiteralPath $destination) {
-    if ((Get-Item -LiteralPath $destination).Attributes -band [IO.FileAttributes]::ReparsePoint) { throw 'Installation root cannot be a reparse point.' }
+    if ((Get-Item -Force -LiteralPath $destination).Attributes -band [IO.FileAttributes]::ReparsePoint) { throw 'Installation root cannot be a reparse point.' }
     if (-not (Test-Path -LiteralPath $marker) -or (Get-Content -LiteralPath $marker -Raw).Trim() -ne $markerValue) {
         throw 'Refusing to modify a directory not owned by this installer.'
     }
@@ -30,7 +30,7 @@ function Assert-OwnedPath([string] $Path) {
     if (-not $resolved.StartsWith($prefix, [StringComparison]::OrdinalIgnoreCase)) { throw "Path leaves installation root: $Path" }
     $ancestor = $resolved
     while ($ancestor.StartsWith($prefix, [StringComparison]::OrdinalIgnoreCase)) {
-        if ((Test-Path -LiteralPath $ancestor) -and ((Get-Item -LiteralPath $ancestor).Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+        if ((Test-Path -LiteralPath $ancestor) -and ((Get-Item -Force -LiteralPath $ancestor).Attributes -band [IO.FileAttributes]::ReparsePoint)) {
             throw "Reparse points are not installation directories: $ancestor"
         }
         $ancestor = [IO.Path]::GetDirectoryName($ancestor)

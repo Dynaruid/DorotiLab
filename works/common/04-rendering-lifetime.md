@@ -60,3 +60,10 @@ Coordinator가 실제 해제한 handle의 제한된 이력을 유지하고, 해�
 수정 뒤 WindowsSmoke의 API/native close, editor/WebView 4회 생성·재생성,
 실제 2창/editor island·OnLastWindowClosed/Explicit 종료가 모두 **PASS**다.
 GPU timing/present/VRAM budget을 측정한 결과는 아니며 기존 notMeasured 항목은 유지한다.
+
+
+## 2026-09-29 Linux / Qt 후속
+
+Quick 두 QPA의 20회 resize/terminal ACK/종료 후 예약·retiring 0 및 software Vulkan phase 수치를 기록했다. Widgets OpenGL 비교도 PASS. scanout/물리 VRAM/전체 GPU golden은 notMeasured/notVerified.
+
+상세 명령·환경·지원 경계: [Linux Qt 결과](../results/2026-09-29-linux-qt.md).

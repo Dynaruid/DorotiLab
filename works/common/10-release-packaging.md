@@ -89,3 +89,10 @@ ADB 목록에서 기기가 사라져, 마지막 재빌드 APK의 재설치는 �
 
 [최신 구현·실행 근거와 잔여](../results/2026-09-29-web-windows-android.md)를 참조한다.
 이 문서의 이전 실행 결과를 새 PASS로 확대하지 않는다.
+
+
+## 2026-09-29 Linux / Qt 후속
+
+Linux 후보 0.3.0-beta.qt.20260929: 25개 패키지·격리 cache 소비·Release/JIT publish/run, portable install/update/변조 거절/remove·userdata 보존 PASS. 서명·clean OS·글로벌 protocol 등록·장기 soak는 notVerified.
+
+상세 명령·환경·지원 경계: [Linux Qt 결과](../results/2026-09-29-linux-qt.md).

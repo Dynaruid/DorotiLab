@@ -29,6 +29,11 @@ struct doroti_qt_desktop_api {
 DOROTI_QT_EXPORT std::int32_t doroti_qt_get_desktop(
     void*, std::uint32_t, std::uint32_t, std::uint64_t*, doroti_qt_desktop_api*);
 DOROTI_QT_EXPORT void doroti_qt_desktop_quit();
+// Queues work on QApplication from any thread; rejection does not retain context.
+// Admitted work completes with closed if the loop discards it during shutdown.
+DOROTI_QT_EXPORT int doroti_qt_post_v2(void (*callback)(void*, int), void* context);
+// GUI thread; new independent Quick owner in the existing QApplication.
+DOROTI_QT_EXPORT int doroti_qt_create_window_v2(const doroti_qt_configuration_v2*, const doroti_qt_callbacks_v2*);
 }
 static_assert(sizeof(doroti_qt_desktop_state) == 40);
 static_assert(sizeof(doroti_qt_desktop_command) == 40);
@@ -37,6 +42,8 @@ static_assert(sizeof(doroti_qt_desktop_api) == 48);
 #ifdef DOROTI_QT_HOST_BUILD
 #include <functional>
 class QWindow;
+void DorotiQtStartApplicationDispatch();
+void DorotiQtStopApplicationDispatch();
 void DorotiQtRegisterDesktopWindow(QWindow*, std::function<void()> destroy);
 void DorotiQtReleaseDesktopWindow(QWindow*);
 #endif

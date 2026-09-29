@@ -64,3 +64,19 @@ public interface IOsDragDropHostCapability
     OsDropSupport Support { get; }
     IOsDropRegistration Register(OsDropOptions options, Action<OsDropEvent> onEvent);
 }
+
+/// <summary>Export text and URI references. The caller keeps source data alive until completion.
+/// File URIs refer to existing files; virtual file providers are a separate unsupported feature.</summary>
+public sealed record OsDragSourceData(string? Text = null, IReadOnlyList<Uri>? Uris = null,
+    ReadOnlyMemory<byte> ImagePng = default, Offset? ImageHotspot = null);
+
+public sealed record OsDragResult(OsDropAction Action, bool Canceled);
+
+/// <summary>Start from a user drag gesture. A returned Move only reports negotiation;
+/// the application decides whether and how to remove its original data.</summary>
+public interface IOsDragSourceHostCapability
+{
+    OsDropAction Actions { get; }
+    ValueTask<OsDragResult> StartDragAsync(OsDragSourceData data, OsDropAction actions = OsDropAction.Copy,
+        CancellationToken cancellationToken = default);
+}

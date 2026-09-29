@@ -67,3 +67,10 @@ plan/global.json 변경 trigger를 추가했다. 로컬 Source/Packages PASS, �
 
 [최신 구현·실행 근거와 잔여](../results/2026-09-29-web-windows-android.md)를 참조한다.
 이 문서의 이전 실행 결과를 새 PASS로 확대하지 않는다.
+
+
+## 2026-09-29 Linux / Qt 후속
+
+LinuxSmoke 진입점과 python3 실행, Source의 숨김 staging 경로 검사를 보완했다. Linux Source PASS; 원격 CI/clean OS 판정은 바꾸지 않는다.
+
+상세 명령·환경·지원 경계: [Linux Qt 결과](../results/2026-09-29-linux-qt.md).

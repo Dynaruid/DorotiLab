@@ -10,6 +10,9 @@ internal static class QtUrlLauncher
     )
     {
         cancellationToken.ThrowIfCancellationRequested();
+        if (!Uri.TryCreate(absoluteUrl, UriKind.Absolute, out var uri)) return new(UrlLaunchStatus.invalidUrl);
+        if (uri.Scheme is not ("http" or "https" or "mailto"))
+            return new(UrlLaunchStatus.unsupported, "Supported schemes: http, https, mailto.");
         try
         {
             var info = new System.Diagnostics.ProcessStartInfo("xdg-open")

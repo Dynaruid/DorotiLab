@@ -91,3 +91,10 @@
   앱 callback은 각 dispatcher scope를 사용하며 테스트도 owner thread에서 수행한다.
 
 전체 GPU golden·실제 물리 입력·모든 native 자원 격리를 완료한 결과는 아니다.
+
+
+## 2026-09-29 Linux / Qt 후속
+
+Linux native Skia asset을 공통 CPU 테스트에 연결하고 widget/rendering/navigation/owner 격리 회귀를 실행했다. CPU PASS와 Qt native/GPU 자동 실행 증거는 구분한다.
+
+상세 명령·환경·지원 경계: [Linux Qt 결과](../results/2026-09-29-linux-qt.md).

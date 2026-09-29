@@ -105,6 +105,9 @@ internal sealed class MaterialDemoEntrypoint : IDorotiViewEntrypoint
         if (sample != "navigation") WidgetsBinding.instance.platformDispatcher.defaultRouteName = "/";
         return sample switch
         {
+            "qt-widgets" => new Directionality(textDirection: TextDirection.ltr,
+                child: new ClipRect(child: new PlatformView(PlatformDispatcher.instance.implicitView!,
+                    new PlatformViewDescriptor("doroti/native-editor", System.Text.Encoding.UTF8.GetBytes("{\"text\":\"Qt Widgets editor\"}"))))),
             "input" => new Doroti.Framework.Material.MaterialApp(initialRoute: "/", home: new MaterialSample.InputLifetimeSample()),
             "reload" => new Doroti.Framework.Material.MaterialApp(initialRoute: "/", home: new MaterialSample.HotReloadSample()),
             "plugins" => new Doroti.Framework.Material.MaterialApp(initialRoute: "/", home: new MaterialSample.PluginsSample()),

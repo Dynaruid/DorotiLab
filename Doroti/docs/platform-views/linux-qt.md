@@ -145,3 +145,16 @@ defines live source capture and recursion/input behavior;
 [QtWebEngineQuick initialization](https://doc.qt.io/qt-6/qtwebenginequick.html)
 must precede QApplication; [Qt WebEngine graphics configuration](https://doc.qt.io/qt-6/qtwebengine-features.html)
 describes its separate Chromium GPU backend and import constraints.
+
+
+## 2026-09-29 host integration
+
+Qt built-in button/editor creation accepts an optional JSON `text` string, matching
+the common input fixture. Quick supports separate native control owners in actual
+additional windows; editor/WebView recreation and two editor-bearing rendered
+surfaces pass in the VM on Wayland and XWayland. Widgets has a separate
+`DOROTI_SAMPLE=qt-widgets` ClipRect-only scene; native parent identity, initial text,
+synthetic key input and resize pass. The full Quick input scene is deliberately
+rejected on Widgets because its foreground raster is not proven disjoint. None of
+these runs qualifies physical IME, Tab traversal or Orca. See the
+[Linux result](../../../works/results/2026-09-29-linux-qt.md).

@@ -1,5 +1,7 @@
 # works 미완료 작업 검토
 
+2026-09-29 Linux/Qt 후속: [구현·검증 결과](works/results/2026-09-29-linux-qt.md). 실제 추가 창·Qt FilePicker/URL·Copy drop/송신 취소·activation/복원·양 QPA·Widgets 비교·package-only/portable 설치를 구현·검증했다. Linux 전체 판정은 물리 입력/Orca·물리 GPU·clean OS/서명 잔여 때문에 **PARTIAL**이다.
+
 2026-09-29 후속 구현·검증: [Web·Windows·Android 실행 결과](works/results/2026-09-29-web-windows-android.md). 전체 **PARTIAL**, 범위별 PASS와 미완료를 분리한다. CI workflow는 사용자 지시로 삭제 상태를 유지한다.
 
 검토일: **2026-09-29** · 검토 기준 HEAD: `4b46e2c927339dfad4c728087c9545cda5dc5e2f`
@@ -165,7 +167,7 @@ Windows의 실제 두 HWND·native TextBox island·독립 크기·survivor resiz
 | [Linux / Qt](works/platforms/linux.md) | Qt/native 의존성, Desktop 정합, IME/Orca·PlatformView, GPU 실측·수명, 파일 관리자 drop/플러그인/activation, 실제 추가 창, 패키지 배치 | Qt Quick/Widgets, Wayland/XWayland, VM/물리 GPU |
 | [Mac Catalyst](works/platforms/maccatalyst.md) | scene Desktop capability, 별도 native/WebView 연결, IME/VoiceOver·렌더링, 플러그인/drop/activation, 두 scene·종료, 독립 배포 | AppKit·iOS의 결과로 대체하지 않음 |
 
-macOS/iOS/Linux/Catalyst의 `TODO`는 **이번 works 계획의 새 실행 결과가 없다는 뜻**이다. 기존 host·adapter 전체가 미구현이라는 뜻은 아니다.
+macOS/iOS/Catalyst의 `TODO`는 **이번 works 계획의 새 실행 결과가 없다는 뜻**이다. 기존 host·adapter 전체가 미구현이라는 뜻은 아니다.
 
 ## 4. 먼저 진행할 순서
 

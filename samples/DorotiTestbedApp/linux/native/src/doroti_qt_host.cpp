@@ -16,6 +16,7 @@
 #include <atomic>
 
 #include <QApplication>
+#include <map>
 #include <QIcon>
 #include <QAccessible>
 #include <QAccessibleEvent>
@@ -2068,7 +2069,50 @@ std::int32_t Validate(const doroti_qt_configuration_v2* configuration,
     return DOROTI_QT_ERROR_INVALID_ARGUMENT;
   return DOROTI_QT_OK;
 }
+#ifdef DOROTI_QT_QUICK
+// Each additional surface owns its Vulkan instance until QWindow teardown ends.
+struct AdditionalWindow {
+  QVulkanInstance vulkan;
+  std::unique_ptr<DorotiSurface> surface;
+  ~AdditionalWindow() {
+    auto* window = surface.get();
+    surface.reset();
+    if (window) DorotiQtReleaseDesktopWindow(window);
+  }
+};
+std::map<QWindow*, std::unique_ptr<AdditionalWindow>> additional_windows;
+#endif
 }  // namespace
+
+extern "C" DOROTI_QT_EXPORT std::int32_t doroti_qt_create_window_v2(
+    const doroti_qt_configuration_v2* configuration, const doroti_qt_callbacks_v2* callbacks) {
+#ifndef DOROTI_QT_QUICK
+  return DOROTI_QT_PV_UNSUPPORTED;
+#else
+  if (!qApp || QThread::currentThread() != qApp->thread()) return DOROTI_QT_PV_WRONG_THREAD;
+  const auto validation = Validate(configuration, callbacks);
+  if (validation) return validation;
+  try {
+    auto owner = std::make_unique<AdditionalWindow>();
+    owner->surface = std::make_unique<DorotiSurface>(callbacks->callback_context, *callbacks,
+      configuration->backdrop_mode, configuration->backdrop_fallback,
+      configuration->titlebar_style, owner->vulkan);
+    auto* surface = owner->surface.get();
+    accessible_surfaces.insert(surface);
+    DorotiQtRegisterPlatformOwner(surface);
+    DorotiQtRegisterDesktopWindow(surface, [surface] { additional_windows.erase(surface); });
+    additional_windows.emplace(surface, std::move(owner));
+    surface->setTitle(QString::fromUtf8(reinterpret_cast<const char*>(configuration->title.data),
+      qsizetype(configuration->title.length)));
+    const auto created = callbacks->view_created(callbacks->callback_context, surface, &kHostApi);
+    if (created) { additional_windows.erase(surface); return created; }
+    // Desktop.Attach has already applied size limits and presentation state.
+    surface->show();
+    surface->InitializeBackdrop();
+    return 0;
+  } catch (...) { return DOROTI_QT_ERROR_NATIVE_EXCEPTION; }
+#endif
+}
 
 extern "C" DOROTI_QT_EXPORT std::int32_t doroti_qt_request_focus_v2(void* view_handle) {
   if (!QCoreApplication::instance() ||
@@ -2112,6 +2156,8 @@ extern "C" DOROTI_QT_EXPORT std::int32_t doroti_qt_run_v2(
 #endif
 #endif
     QApplication app(argc, argv);
+    DorotiQtStartApplicationDispatch();
+    struct DispatchLifetime { ~DispatchLifetime() { DorotiQtStopApplicationDispatch(); } } dispatch_lifetime;
     const QIcon app_icon(QStringLiteral(":/doroti/appicon.png"));
     if (!app_icon.isNull()) app.setWindowIcon(app_icon);
     struct AccessibleRegistration {
@@ -2177,6 +2223,9 @@ extern "C" DOROTI_QT_EXPORT std::int32_t doroti_qt_run_v2(
       timer->start(80);
     }
     const auto result = app.exec();
+#ifdef DOROTI_QT_QUICK
+    additional_windows.clear();
+#endif
     surface_owner.reset();
     DorotiQtReleaseDesktopWindow(surface);
     return result;

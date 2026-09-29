@@ -18,10 +18,24 @@ internal sealed class OsDropState : State<OsDropSample>
     private string _phase = "Drop files, text or a URI anywhere in this view.";
     private string _result = "Copy only. Dropped content is never executed.";
     private int _drops;
+    private IOsDragSourceHostCapability? _source;
+    private async void Send()
+    {
+        if (_source is null) return;
+        try
+        {
+            var result = await _source.StartDragAsync(new(Text: "Hello from Doroti", Uris: [new Uri("https://example.com")]), cancellationToken: _lifetime.Token);
+            if (mounted) setState(() => _result = result.Canceled ? "Drag canceled" : $"Sent: {result.Action}");
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception error) { if (mounted) setState(() => _result = error.Message); }
+    }
     public override void initState()
     {
         base.initState();
         var view = PlatformDispatcher.instance.implicitView!;
+        if (view.registeredCapabilityIds.Contains(DorotiCapabilityIds.OsDragSource))
+            _source = view.RequireCapability<IOsDragSourceHostCapability>(DorotiCapabilityIds.OsDragSource, DorotiUiInvocation.Managed("OS drag source sample"));
         if (!OsDragDrop.support(view).CanReceive) { _phase = "OS drop reception is unsupported on this host."; return; }
         _registration = OsDragDrop.register(view, new(OsDropAction.Copy,
             [OsDropFormats.Files, OsDropFormats.Text, OsDropFormats.UriList]), Receive);
@@ -54,6 +68,8 @@ internal sealed class OsDropState : State<OsDropSample>
     }
     public override Widget build(BuildContext context) => new M.Scaffold(body: new SafeArea(child: new Column(children:
     [
+        .. _source is not null ? new Widget[] { new GestureDetector(onPanStart: _ => Send(), child: new SizedBox(height: 64,
+            child: new Center(child: new Text("Drag this text and link to another app")))) } : [],
         new Text("OS Drag & Drop"), new Text(_phase), new Text($"Completed drops: {_drops}"),
         new Expanded(child: new SingleChildScrollView(child: new Text(_result))),
     ])));

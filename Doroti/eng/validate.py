@@ -55,8 +55,8 @@ def main(suite):
     try:
         if suite in ("Source", "Developer", "Release"):
             source()
-            command("runner-contract", "python", "Doroti/tests/runner_contract.py", str(run / "runner"))
-            command("installer-contract", "python", "Doroti/tests/installer_contract.py", str(run / "installer"))
+            command("runner-contract", sys.executable, "Doroti/tests/runner_contract.py", str(run / "runner"))
+            command("installer-contract", sys.executable, "Doroti/tests/installer_contract.py", str(run / "installer"))
         if suite in ("Build", "Developer", "Release"):
             command("widget-regressions", "dotnet", "run", "--project",
                     "Doroti/tests/Doroti.Tests/Doroti.Tests.csproj", "-c", "Debug",
@@ -69,9 +69,11 @@ def main(suite):
             for target in ("windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj", "web/DorotiTestbedApp.Web.csproj"):
                 command(target.split('/')[0], "dotnet", "build", "samples/DorotiTestbedApp/" + target,
                         "-c", "Debug", "--nologo")
-            command("web-startup", "python", "Doroti/tests/web_smoke.py", str(run / "web"))
+            command("web-startup", sys.executable, "Doroti/tests/web_smoke.py", str(run / "web"))
+        if suite == "LinuxSmoke":
+            command("linux-qt", sys.executable, "Doroti/tests/linux_qt_smoke.py", "--output", str(run / "qt"))
         if suite == "WindowsSmoke":
-            command("windows-smoke", "python", "Doroti/tests/windows_smoke.py", str(run / "windows"))
+            command("windows-smoke", sys.executable, "Doroti/tests/windows_smoke.py", str(run / "windows"))
         if suite == "Packages":
             command("package-build", "dotnet", "build", "Doroti/tests/Doroti.Tests/Doroti.Tests.csproj", "-c", "Debug", "--nologo")
             projects = {}
@@ -122,6 +124,6 @@ def main(suite):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2 or sys.argv[1] not in ("Source", "Build", "Targets", "WindowsSmoke", "Packages", "Developer", "Release"):
-        sys.exit("Unknown suite. Use Source, Build, Targets, WindowsSmoke, Packages, Developer, or Release.")
+    if len(sys.argv) != 2 or sys.argv[1] not in ("Source", "Build", "Targets", "WindowsSmoke", "LinuxSmoke", "Packages", "Developer", "Release"):
+        sys.exit("Unknown suite. Use Source, Build, Targets, WindowsSmoke, LinuxSmoke, Packages, Developer, or Release.")
     main(sys.argv[1])

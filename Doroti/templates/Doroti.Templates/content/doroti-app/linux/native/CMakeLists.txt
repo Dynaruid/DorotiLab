@@ -83,7 +83,7 @@ else()
 endif()
 doroti_generate_wayland_client(ext-background-effect-v1
   "${CMAKE_CURRENT_SOURCE_DIR}/protocols/ext-background-effect-v1.xml")
-target_sources(doroti_qt_host PRIVATE src/doroti_qt_desktop.cpp)
+target_sources(doroti_qt_host PRIVATE src/doroti_qt_desktop.cpp src/doroti_qt_services.cpp)
 if(DOROTI_APP_ICON)
   if(NOT EXISTS "${DOROTI_APP_ICON}")
     message(FATAL_ERROR "Application icon does not exist: ${DOROTI_APP_ICON}")

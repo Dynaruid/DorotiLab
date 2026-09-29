@@ -83,3 +83,10 @@ drag endpoint를 `outside window bounds`로 거절했다. Explorer→Testbed 전
 
 [최신 구현·실행 근거와 잔여](../results/2026-09-29-web-windows-android.md)를 참조한다.
 이 문서의 이전 실행 결과를 새 PASS로 확대하지 않는다.
+
+
+## 2026-09-29 Linux / Qt 후속
+
+Qt Copy receiver 및 별도 IOsDragSourceHostCapability(QDrag text/URI/PNG/Copy·Move·Link)를 구현했다. native 합성 Copy/5GiB·해제·송신 취소 PASS; 외부 source/성공한 move·link/image/virtual-file 확대는 남는다.
+
+상세 명령·환경·지원 경계: [Linux Qt 결과](../results/2026-09-29-linux-qt.md).

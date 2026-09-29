@@ -15,6 +15,13 @@ internal sealed class PluginsState : State<PluginsSample>
     private readonly CancellationTokenSource _lifetime = new();
     private NativeFeatures? _features;
     private bool _busy;
+    private bool _probeStarted;
+    public override void didChangeDependencies()
+    {
+        base.didChangeDependencies();
+        if (!_probeStarted && OperatingSystem.IsLinux() && Environment.GetEnvironmentVariable("DOROTI_QT_SERVICES_PROBE") is { Length: > 0 } path)
+        { _probeStarted = true; _ = LinuxServicesProbe.RunAsync(View.of(context), path); }
+    }
     private string _status = "Choose files to read their first bytes, or open a URL.";
     private async void Run(bool pick)
     {

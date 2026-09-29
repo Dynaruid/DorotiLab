@@ -93,3 +93,10 @@ handler가 한 번만 dispose되는 공통 회귀를 추가해 통과했다. 플
 
 [최신 구현·실행 근거와 잔여](../results/2026-09-29-web-windows-android.md)를 참조한다.
 이 문서의 이전 실행 결과를 새 PASS로 확대하지 않는다.
+
+
+## 2026-09-29 Linux / Qt 후속
+
+Qt FilePicker·descriptor handler·Linux package 등록·취소·regular-file grant·URL을 연결했다. 실제 Qt dialog 자동 선택/취소·파일 권한 거절 및 xdg-open 기본 브라우저 loopback GET PASS.
+
+상세 명령·환경·지원 경계: [Linux Qt 결과](../results/2026-09-29-linux-qt.md).

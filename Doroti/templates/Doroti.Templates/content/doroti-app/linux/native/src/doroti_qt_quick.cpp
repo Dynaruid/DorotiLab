@@ -114,6 +114,7 @@ int Create(std::uint64_t id,std::uint32_t kind,doroti_qt_utf8_v2 text,void(*focu
       kind==1?QByteArray("import QtQuick\nimport QtQuick.Controls\nTextField { objectName: 'doroti-quick-editor'; text: 'Edit native Qt Quick text'; selectByMouse: true; property int pressCount: 0; onPressed: pressCount++ }"):
       QByteArray("import QtQuick\nimport QtQuick.Controls\nButton { objectName: 'doroti-quick-button'; text: 'Native Qt Quick button'; property int clickCount: 0; onClicked: clickCount++ }"),QUrl());
   QVariantMap properties;
+  if(kind!=2)properties.insert("text",QString::fromUtf8(reinterpret_cast<const char*>(text.data),qsizetype(text.length)));
   if(kind==2)properties.insert("initialHtml",QString::fromUtf8(reinterpret_cast<const char*>(text.data),qsizetype(text.length)));
   std::unique_ptr<QObject> created;
 #ifdef DOROTI_QT_WEBENGINE

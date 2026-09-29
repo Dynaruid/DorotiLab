@@ -32,3 +32,10 @@ describe its separate limits: one isotropic effect, sigma <=32, <=4M physical sa
 pixels, and a 128 MiB R/P allocation guard. The Linux work1 scope remains **PARTIAL**.
 
 Current transport limits are defensive allocation guards, not accepted frame-rate budgets. The Windows staging/active atlas estimate is limited to 256 MiB and 16,384 pixels per atlas dimension. CPU readback and upload remain measurable costs. The source keeps the 0-native fast path; effect-free applications do not initialize a WebView compositor or allocate its D3D/D2D resources.
+
+
+2026-09-29 [Linux Qt follow-up](../../../works/results/2026-09-29-linux-qt.md):
+Quick Wayland/XWayland real two-window native editors and separate editor/WebView
+recreation pass. Widgets disjoint ClipRect editor and synthetic key/resize pass;
+Quick mixed composition still rejects. Physical input/Orca and physical GPU
+qualification remain open.

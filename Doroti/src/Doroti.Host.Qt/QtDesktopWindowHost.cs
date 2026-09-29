@@ -8,8 +8,8 @@ using Appearance = Doroti.Desktop.WindowAppearanceOptions;
 
 namespace Doroti.Host.Qt;
 
-/// <summary>Single Quick window. Native QObject access runs through its generation-scoped GUI queue.</summary>
-internal sealed class QtDesktopWindowHost : IWindowHost, IWindowHostFactory
+/// <summary>One Quick window. Native QObject access runs through its generation-scoped GUI queue.</summary>
+internal sealed class QtDesktopWindowHost(Func<QtDesktopWindowHost, WindowOptions, CancellationToken, Task>? start = null) : IWindowHost
 {
     [StructLayout(LayoutKind.Sequential)]
     internal struct NativeState
@@ -50,13 +50,11 @@ internal sealed class QtDesktopWindowHost : IWindowHost, IWindowHostFactory
     private WindowState _state = new(null, new(800, 600), 1, false, false,
         WindowPresentationState.Normal, new(), new(new()), new(0, ViewPadding.zero, 0, 0, 0));
     private long _revision;
-    private int _allocated;
     private readonly object _closeGate = new();
     private Task? _closeWork;
     internal IDorotiViewEntrypoint Content { get; private set; } = null!;
     internal Action<Exception>? Fatal { get; set; }
     public WindowCapabilities Capabilities { get; } = new(QtDesktopWindowPolicy.Evaluate);
-    WindowManagerCapabilities IWindowHostFactory.Capabilities => new(false, 1);
     public WindowState State => Volatile.Read(ref _state);
     public Task ReadyToShow => _ready.Task;
     public event Action<WindowState>? StateChanged;
@@ -64,14 +62,6 @@ internal sealed class QtDesktopWindowHost : IWindowHost, IWindowHostFactory
     public event Action? Closed;
 
     public WindowEvaluation Evaluate(WindowCreateOptions options) => Capabilities.Evaluate(options.Options);
-    public ValueTask<IWindowHost> CreateAsync(WindowId id, WindowCreateOptions options, CancellationToken ct)
-    {
-        ct.ThrowIfCancellationRequested();
-        Evaluate(options).ThrowIfUnsupported();
-        if (Interlocked.Exchange(ref _allocated, 1) != 0)
-            throw new NotSupportedException("Qt Desktop cannot reopen or create additional native windows.");
-        return ValueTask.FromResult<IWindowHost>(this);
-    }
     public Task InitializeAsync(WindowOptions options, DesktopWindowContext context,
         IDorotiViewEntrypoint content, CancellationToken ct)
     {
@@ -81,7 +71,7 @@ internal sealed class QtDesktopWindowHost : IWindowHost, IWindowHostFactory
         Content = content;
         _state = State with { ClientSize = options.Size, RequestedAppearance = options.Appearance,
             EffectiveAppearance = new(options.Appearance) };
-        return Task.CompletedTask;
+        return start?.Invoke(this, options, ct) ?? Task.CompletedTask;
     }
 
     internal unsafe void Attach(nint window)

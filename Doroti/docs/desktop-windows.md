@@ -2,7 +2,7 @@
 
 The first implementation provides `Doroti.Desktop` and optional
 `Doroti.Desktop.Widgets`. **The complete W0–W5 plan is PARTIAL.** Windows MAUI
-and AppKit macOS have native main-window adapters. Mac Catalyst has a restricted UIKit scene adapter, and Linux Qt Quick has a basic main-window adapter. Windows App SDK now has a main-window adapter (2026-09-28); custom
+and AppKit macOS have native main-window adapters. Mac Catalyst has a restricted UIKit scene adapter, and Linux Qt Quick has main/additional-window adapters. Windows App SDK now has a main-window adapter (2026-09-28); custom
 title-bar widgets remain unimplemented. The 2026-09-29 Windows App SDK increment
 adds native multi-window execution and Explicit lifetime; see the
 [window context ADR](desktop-window-context.md) and [M6 evidence](../../works/common/09-multiwindow.md).
@@ -21,7 +21,7 @@ adds native multi-window execution and Explicit lifetime; see the
 | Material/caption | `WindowsWindowBackdrop`, `WindowsNativeCaption` | Same appearance snapshot, native System/Solid/Backdrop caption |
 | Existing raw Acrylic channel | `WindowsAcrylicOptionsState` | Existing implementation retained; controller adapter still pending |
 | AppKit | `AppKitDesktopWindowHost`, `AppKitDesktopWindowPolicy`, macOS platform application | Opt-in desktop launch, ordered-out Metal preparation, native controls/materials and cancellable window/app exit |
-| Qt | `QtDesktopWindowHost`, `QtDesktopWindowPolicy`, optional Desktop ABI 1 | Quick main window, PlatformDefault startup, native chrome; legacy paths retained |
+| Qt | `QtDesktopWindowHost`, `QtDesktopWindowPolicy`, optional Desktop ABI 1 | Quick main/additional windows, PlatformDefault startup, native chrome; legacy paths retained |
 | Legacy facade | `SingletonDorotiWindow`, Ui metrics, `WindowTitlebar` | Unchanged; not promoted to process-wide window manager |
 
 SDK properties `DorotiDesktopProject` and `DorotiDesktopStartupType` compile the
@@ -155,7 +155,7 @@ Current host/renderer/build-mode evidence is centralized in [support status](sup
 | Windows MAUI | Implemented; historical results below | Separate native PlatformView wiring and current revalidation pending |
 | AppKit | Implemented; historical results below | Platform-specific capability restrictions; no new execution in this change |
 | Mac Catalyst | Restricted UIKit scene adapter | PlatformDefault startup; explicit unsupported commands; no new execution |
-| Qt Quick | Basic main-window adapter | Native bounds/focus/appearance limitations; no new execution |
+| Qt Quick | Main/additional QQuickWindow, independent owner resources | Wayland/XWayland VM execution; physical input/mixed DPI and bounds/appearance restrictions remain |
 | Qt Widgets | No Desktop companion adapter | SDK rejects startup |
 
 Custom/hidden chrome remains unsupported. Additional native windows are implemented for Windows App SDK only. Each App SDK adapter owns one HWND and content root; native/API close share controller cancellation and native render retirement. Readiness is completed by a successful native present, not a timer.
@@ -273,7 +273,7 @@ The behavior boundaries follow Apple's public
 and [scene lifecycle](https://developer.apple.com/documentation/uikit/uiwindowscene)
 contracts. Native AppKit window selectors are not used to fill gaps in UIKit.
 
-## Linux Qt Quick — 2026-09-26
+## Linux Qt Quick — 2026-09-29
 
 Enable `DorotiQtQuick=true` and select the template's
 `LinuxDesktopStartup` companion. The source Testbed uses the opt-in build property
@@ -282,12 +282,11 @@ The adapter requires Graphite/Vulkan and the rebuilt app-owned native shim.
 Desktop ABI 1 (48-byte table, 40-byte command/state) is separate from host ABI 4.
 Desktop bootstrap sources use a startup-specific filename, so a legacy build or
 evaluation cannot overwrite the source selected by a Desktop build.
-Old shims still run legacy apps; a Desktop launch rejects a missing export before
-first show. Non-Quick Desktop startup is rejected at the SDK and native boundaries.
+The current managed host requires rebuilt app-owned shims for services and additional-window exports; do not mix it with older native payloads. Non-Quick Desktop startup is rejected at the SDK and native boundaries.
 
 | Feature | Current behavior |
 | --- | --- |
-| Creation | One main window, fresh content factory, manager registration; additional windows/reopen rejected |
+| Creation | Main and additional QQuickWindow, fresh content factory and independent dispatcher/session/native owner; one QApplication. Explicit can reopen after all windows close |
 | Startup | `PlatformDefault`; readiness follows the first composed `frameSwapped`, including a valid replay. No hidden-first-frame promise. Manual/WhenReady and initially minimized startup rejected |
 | Size | Integral logical client size/min/max in [1, 16777215], resizability and null limit restoration; native decorations excluded |
 | Commands | Title, show/hide, focus request, maximize/restore/full-screen; presentation commands wait for an observed platform state, with a five-second failure deadline |
@@ -309,3 +308,11 @@ They are not exposed as new Desktop Acrylic/Hidden+Native support. Custom chrome
 App/Explicit theme, runtime background changes, physical input/Orca, mixed DPI,
 clean-machine deployment and the known xcb/XWayland Vulkan extent race remain
 outside the verified basic adapter. See the [Linux execution evidence](../../history/26-09-26/desktop-window-api-summary.md).
+
+
+The [2026-09-29 Linux run](../../works/results/2026-09-29-linux-qt.md) exercises
+both QPA paths, native editor owners, main-close/survivor resize and new-window
+creation, zero-window Explicit reopen and one exit notification. Application-wide
+queued work survives main-window closure. Owner/modal/Satellite/popup/tooltip and
+cross-window reparenting remain unsupported. `_window_linux.cs` is not a second
+supported Desktop creation path.

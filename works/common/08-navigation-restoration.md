@@ -75,3 +75,10 @@ Revision: `8834d7596597b3087a0139f527148baee9a46583` + 이번 작업 트리.
 
 [최신 구현·실행 근거와 잔여](../results/2026-09-29-web-windows-android.md)를 참조한다.
 이 문서의 이전 실행 결과를 새 PASS로 확대하지 않는다.
+
+
+## 2026-09-29 Linux / Qt 후속
+
+Qt main-owned cold/warm IPC, XDG 절대 저장소, 정상 및 committed checkpoint 이후 강제 종료 복원·bad-version fallback·cold-link 우선순위 PASS. 실제 입력/selection·앱 migration·OS protocol association은 미검증.
+
+상세 명령·환경·지원 경계: [Linux Qt 결과](../results/2026-09-29-linux-qt.md).

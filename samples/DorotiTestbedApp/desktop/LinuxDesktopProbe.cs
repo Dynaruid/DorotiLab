@@ -87,11 +87,6 @@ internal static class LinuxDesktopProbe
         await Reject("Topmost", () => window.SetAlwaysOnTopAsync(true, ct));
         await Reject("Taskbar", () => window.SetSkipTaskbarAsync(true, ct));
         await Reject("Drag", () => window.StartDraggingAsync(ct));
-        await Reject("AdditionalWindow", () => context.Windows.CreateWindowAsync(new()
-        {
-            Options = new() { StartupVisibility = WindowStartupVisibility.PlatformDefault },
-            Content = WindowContent.FromEntrypoint(() => throw new Exception("Must not allocate content")),
-        }, ct));
         var appearance = await window.ApplyAppearanceAsync(window.State.RequestedAppearance with
         {
             BackgroundColor = new Color(0xffeeeeee),

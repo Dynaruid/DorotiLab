@@ -202,11 +202,15 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
         )
         {
             cancellationToken.ThrowIfCancellationRequested();
+            var label = kind == 1 ? "Edit native Qt text" : "Native Qt button";
             if (kind != 2 && parameters.Length != 0)
             {
-                throw new NotSupportedException(
-                    "Qt built-in controls do not accept creation parameters."
-                );
+                if (parameters.Length > 1024 * 1024) throw new InvalidDataException("Qt control parameters exceed 1 MiB.");
+                using var json = System.Text.Json.JsonDocument.Parse(parameters);
+                if (json.RootElement.ValueKind != System.Text.Json.JsonValueKind.Object)
+                    throw new InvalidDataException("Qt control parameters must be a JSON object.");
+                if (json.RootElement.TryGetProperty("text", out var text))
+                    label = text.GetString() ?? "";
             }
 
             if (kind == 2 && !host.HasWebEngine)
@@ -227,9 +231,7 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
                             cancellationToken
                         )
                         .ConfigureAwait(false)
-                    : Encoding.UTF8.GetBytes(
-                        kind == 1 ? "Edit native Qt text" : "Native Qt button"
-                    );
+                    : Encoding.UTF8.GetBytes(label);
             IPlatformViewInstance? result = null;
             await host.InvokeAsync(() =>
             {

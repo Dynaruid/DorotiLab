@@ -72,3 +72,10 @@ AppKit/Qt 추가 창·Catalyst scene, owner/modal/satellite. native 화면 도�
 각 창 종료 후 `shutdown-islands=0` 2회, framework 오류 없음과 exit 0을 확인했다.
 실제 화면·물리 focus/IME·WebView·여러 DPI의 전체 PlatformView 완료로 확대하지 않는다.
 이 과정에서 드러난 Navigator route-name 보고 결함은 08과 함께 수정했다.
+
+
+## 2026-09-29 Linux / Qt 후속
+
+Qt 실제 QQuickWindow 추가 생성, 창별 dispatcher/session/PlatformView/GPU/plugin scope, main close 후 survivor와 추가 생성, Explicit의 zero-window reopen/exit 1회 PASS. Satellite/owner/modal은 unsupported 경계.
+
+상세 명령·환경·지원 경계: [Linux Qt 결과](../results/2026-09-29-linux-qt.md).

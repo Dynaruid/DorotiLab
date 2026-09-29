@@ -1,5 +1,11 @@
 # Current support and evidence
 
+2026-09-29 Linux update: [Qt implementation and execution](../../works/results/2026-09-29-linux-qt.md).
+Ubuntu 26.04/Qt 6.10.2 VM: Quick Wayland/XWayland, real additional windows,
+FilePicker/URL, Copy drop, drag-source cancellation, navigation and package-only
+Release/portable install pass. Physical IME/Orca, physical GPU and signed clean-OS
+release remain unqualified.
+
 2026-09-29 후속 구현·검증: [Web·Windows·Android 실행 결과](../../works/results/2026-09-29-web-windows-android.md). 전체 **PARTIAL**, 범위별 PASS와 미완료를 분리한다. CI workflow는 사용자 지시로 삭제 상태를 유지한다.
 
 2026-09-29 follow-up (`c858ca9add07f20634c13d9e6177710811c1fc93` + working tree):
@@ -58,8 +64,8 @@ Cross-host index reconciled from the 2026-09-28 results (`a93c047fe2e93d93cff3e0
 | Windows MAUI | Existing main-window Desktop adapter | **notVerified** in this change | Historical evidence in [Desktop](desktop-windows.md) | **notVerified** | Separate WebView wiring and host qualification |
 | AppKit / Metal | Existing main-window Desktop and native view adapters | **notVerified** | [Historical Desktop summary](../../history/26-09-26/desktop-window-api-summary.md) | **notVerified** | AppKit capability restrictions, VoiceOver, physical input and additional windows |
 | Mac Catalyst | Existing restricted scene Desktop adapter | **notVerified** | Historical summary above | **notVerified** | Separate scene and native view qualification |
-| Linux / Qt Quick | Existing basic Desktop and native view adapters | **notVerified** | [Historical PlatformView summary](../../history/26-09-21/platformview-webview-summary.md) | **notVerified** | Physical IME/Orca, packaging and additional windows |
-| Linux / Qt Widgets | Native child-view path; Desktop companion unsupported | **notVerified** | Historical PlatformView summary above | **notVerified** | No Quick/WebEngine/effects parity claim |
+| Linux / Qt Quick / Graphite Vulkan | Main/additional windows, isolated owners, native services/drop/navigation | Debug and isolated NuGet-only Release/JIT, Qt 6.10.2 | Wayland and xcb/XWayland Desktop/lifetimes, native editor/WebView recreation, picker/cancel/5GiB drop, IPC/restore, 20 resize cycles, portable install/update | Two rendered QQuickWindow captures in VM; software Vulkan, physical input/Orca **notVerified** | External drag success, mixed DPI, physical GPU/loss/soak, full input restoration, OS protocol registration and clean signed deployment |
+| Linux / Qt Widgets / OpenGL | Disjoint native child-view path; Desktop companion unsupported | Debug native/managed Qt 6.10.2 | Wayland and XWayland QLineEdit parent/text/synthetic key plus 20 resize cycles | VMware SVGA3D; XWayland window capture, Wayland capture unavailable | Quick mixed input scene rejected by NativeOverlay contract; no interleaving/WebEngine/effects/Desktop parity claim |
 | Android / MAUI / Vulkan | Existing mobile host/native views plus Activity intent/Router/restoration connection | Source-based Testbed Release Mono AOT, Galaxy S25 / Android 16 (2026-09-29); final revised APK rebuilt but not reinstalled | ADB VIEW intent cold/warm and force-stop/restart | Expected `/first` → `/second` → restored `/second` captured on device; physical touch/IME **notVerified** | Reinstall/retest final revised APK, IME/TalkBack, full PlatformView/lifecycle/input-state restoration and performance, Android package-only, signing and clean release qualification |
 | iOS / UIKit / Graphite Metal | Existing native-view adapter | **notVerified** | [PlatformView matrix](platform-views/support-matrix.md) retains simulator history | **notVerified** | Physical VoiceOver/IME/device/AOT; Ganesh and Catalyst are separate |
 

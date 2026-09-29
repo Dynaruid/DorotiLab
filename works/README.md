@@ -1,11 +1,13 @@
 # Doroti 작업 계획
 
+2026-09-29 Linux 후속: [Qt 구현·실행 결과](results/2026-09-29-linux-qt.md). Quick 양 QPA·Widgets 비교·실제 추가 창·플러그인/drop/navigation·Linux package-only와 portable 설치 PASS; 물리 입력·Orca·물리 GPU·clean 배포는 PARTIAL.
+
 2026-09-29 후속 구현·검증: [Web·Windows·Android 실행 결과](results/2026-09-29-web-windows-android.md). 전체 **PARTIAL**, 범위별 PASS와 미완료를 분리한다. CI workflow는 사용자 지시로 삭제 상태를 유지한다.
 
 기준: [plan.md](../plan.md), 실행 갱신일 2026-09-29. 00~10 전체 실행의 구현·검증 및 미완료 범위는
 [이번 실행 상태](#2026-09-29-전체-실행-상태)에 정리했다. 다음 단계 착수 조건과 전체 완료를 구분한다.
 
-이 폴더는 원본 로드맵을 공통 기능 작업과 플랫폼별 연결·검증 작업으로 나눈 실행 계획이다. 초기 작성 상태는 TODO/notVerified였으며, 2026-09-28~29 결과를 반영한 현재 상태는 **M0 로컬 기반 완료, M1~M7 PARTIAL**이다. Windows/Web/Android에는 범위별 실행 결과가 있고, 나머지 플랫폼의 TODO는 이번 계획에서 새로 검증하지 않았다는 뜻이다. 기존 구현의 부재를 뜻하지 않는다. 최신 범위는 아래 실행 기록과 [지원표](../Doroti/docs/support-status.md)를 따른다.
+이 폴더는 원본 로드맵을 공통 기능 작업과 플랫폼별 연결·검증 작업으로 나눈 실행 계획이다. 초기 작성 상태는 TODO/notVerified였으며, 2026-09-28~29 결과를 반영한 현재 상태는 **M0 로컬 기반 완료, M1~M7 PARTIAL**이다. Windows/Web/Android/Linux에는 범위별 실행 결과가 있고, 나머지 플랫폼의 TODO는 이번 계획에서 새로 검증하지 않았다는 뜻이다. 기존 구현의 부재를 뜻하지 않는다. 최신 범위는 아래 실행 기록과 [지원표](../Doroti/docs/support-status.md)를 따른다.
 
 2026-09-29 문서 정합 갱신: 기존 실행 근거로 구현 완료와 검증 잔여 체크박스를 분리하고 Android·CPU 테스트·추가 창 상태를 맞췄다. 새 제품 실행은 하지 않았다. 후속 작업은 [미완료 목록](../work2.md)을 참고한다. 기존 release 후보와 이후 소스 보강의 검증 결과는 합치지 않는다.
 

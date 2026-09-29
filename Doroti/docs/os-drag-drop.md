@@ -120,3 +120,26 @@ Actual cross-process Explorer drops, live mixed-monitor DPI changes, cancellatio
 during an external drag and physical input remain distinct from these results.
 See [M5-A results](../../works/common/07-os-drag-drop.md) for executed coverage and
 remaining AppKit/Qt/Web/mobile/sending work.
+
+
+## Qt receiver and optional drag source (2026-09-29)
+
+Linux registers a view-owned Copy receiver using the same `OsDropReceiver` as the
+other adapters. Native MIME offers use logical window coordinates. Only selected
+formats are acquired; regular-file handles remain bounded/random-access and are
+revoked on receiver or window disposal. Native controls retain their own drop
+handling when the framework receiver does not accept the offer.
+
+The separate `platform.os-drag-source` capability implements
+`IOsDragSourceHostCapability`. `StartDragAsync(new OsDragSourceData(Text: "text",
+Uris: [new Uri("https://example.com")]))` starts QDrag from an application drag
+gesture. Optional `ImagePng`/`ImageHotspot` provide a drag image. Copy/Move/Link are
+negotiated; `OsDragResult.Action` reports the destination decision. The application
+owns any source deletion after Move. Existing file URIs are supported references;
+virtual-file stream providers are unsupported. There is one native drag per process.
+
+Testbed `DOROTI_SAMPLE=drop` exposes a draggable text/link area on supporting hosts.
+[Linux evidence](../../works/results/2026-09-29-linux-qt.md) covers synthetic native
+Copy delivery, 5GiB read lifetime and source cancellation. External file-manager
+reception and successful cross-application Move/Link/image delivery remain
+notVerified. Windows/Web receive capabilities do not imply this source capability.

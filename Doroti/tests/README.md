@@ -15,6 +15,7 @@ pwsh -NoProfile -File Doroti/eng/doroti.ps1 validate -ValidationSuite Packages
 | Build | CPU widget regressions only; not the multi-platform product solution |
 | Developer | Source + Build + plugin lifetime/protocol and OS drop routing/lifetime regressions + Web resize/admission/mobile backing policy tests |
 | Targets | Windows App SDK and Web Debug builds, Web HTTP startup/bootstrap asset smoke |
+| LinuxSmoke | Build and execute Qt Quick on the available Wayland/xcb session: Desktop/two-window lifetimes, picker/drop/source cancellation, navigation/restore, editor/WebView recreation and 20 resize cycles; VM/software GPU results are explicit |
 | WindowsSmoke | Already-built default Debug Windows runner; native state/close cancellation, editor/WebView recreation; two HWNDs and native editor islands, survivor resize and both lifetime policies. Requires an interactive GPU Windows agent |
 | Packages | Package Testing/Cupertino/Desktop dependency graph; run a separate PackageReference-only widget consumer with its own restore cache |
 | Release | Developer + target builds/startup. `doroti release` then audits and packs the product solution; all required platform toolchains are still necessary. No retired Fcr suite aliases silently pass |
@@ -79,3 +80,22 @@ The test uses actual browser chooser/keyboard/mouse events. Its DataTransfer dro
 synthetic DOM input, not Explorer-to-browser transfer. It asserts a native textbox
 semantics node cannot absorb sibling buttons, and that worker-side navigation and
 plugin calls reach DOM services. It preserves failure images; output is disposable.
+
+
+Linux Qt uses Python 3 and system Qt 6 development/QML/WebEngine dependencies:
+
+```sh
+pwsh -NoProfile -File Doroti/eng/doroti.ps1 validate -ValidationSuite LinuxSmoke
+python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/linux_qt_smoke.py --qpa xcb --output temp/testing/linux-qt/manual-xcb
+python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/linux_qt_packages.py temp/testing/linux-qt/manual-packages
+```
+
+Choose a fresh `--output` path. Direct scripts retain raw evidence for review;
+the aggregate LinuxSmoke removes successful runs. `--cases` selects
+`multi,desktop,services,navigation,input,resize`. The native evidence driver is
+compiled only for the test and injected with LD_PRELOAD, never shipped in the
+host/template. Dialog selection and QDropEvent input are synthetic native tests,
+not physical IME/Orca or external file-manager drags. An optional
+`DOROTI_QT_URL_PROBE=http://127.0.0.1:PORT/` also opens the real default browser.
+Widgets OpenGL uses the separate ClipRect-only `qt-widgets` sample; see
+[Linux execution and reproduction](../../works/results/2026-09-29-linux-qt.md).

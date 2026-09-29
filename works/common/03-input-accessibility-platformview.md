@@ -45,3 +45,10 @@
 
 [최신 구현·실행 근거와 잔여](../results/2026-09-29-web-windows-android.md)를 참조한다.
 이 문서의 이전 실행 결과를 새 PASS로 확대하지 않는다.
+
+
+## 2026-09-29 Linux / Qt 후속
+
+Qt 공통 native editor 초기 text, Quick 두 창 editor, editor/WebView 각각 재생성 및 Widgets disjoint editor·합성 키를 검증했다. 물리 IME/Tab/Orca는 notVerified.
+
+상세 명령·환경·지원 경계: [Linux Qt 결과](../results/2026-09-29-linux-qt.md).

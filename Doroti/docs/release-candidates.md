@@ -97,3 +97,22 @@ Remove unregisters the owned scheme and preserves userdata. Failed protocol setu
 rolls back the current version pointer and prior registration. The OS-dispatch fixture
 is `python Doroti/eng/run-with-timeout.py python Doroti/tests/protocol_install.py temp/testing/protocol/new-run`.
 It does not qualify a production installer or GUI single-instance routing by itself.
+
+
+## Linux Qt local candidate (2026-09-29)
+
+`Doroti/artifacts/linux/0.3.0-beta.qt.20260929/` is a separate Linux candidate:
+25 private-feed packages, isolated-cache template consumption and a 45-file
+Release/JIT framework-dependent payload. Its `candidate.json` records package/
+payload SHA-256, base revision and modified source hashes, SDK/Qt and actual
+native startup/resize and portable install results. System Qt/.NET remain required;
+optional WebEngine is disabled in this minimal package consumer. The source
+Testbed separately qualifies Quick WebEngine recreation.
+
+Use `python3 Doroti/eng/install-linux-qt.py install --candidate CANDIDATE --root INSTALL`
+then `INSTALL/run`. `--protocol-scheme myapp` emits a desktop-entry artifact without
+registering a global association. `remove --root INSTALL` preserves userdata.
+Installation, update, unlisted-file rejection, native launch and userdata-preserving
+removal pass locally. Trimming/single-file/NativeAOT are unsupported. This unsigned
+VM-local result does not establish clean-OS or production release qualification.
+[Linux details and remaining gates](../../works/results/2026-09-29-linux-qt.md).

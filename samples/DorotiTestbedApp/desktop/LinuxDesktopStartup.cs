@@ -22,6 +22,17 @@ public sealed class LinuxDesktopStartup : IDorotiDesktopApplicationStartup
             OnCreated = async (context, ct) =>
             {
                 await context.Window.WaitUntilReadyToShowAsync(ct);
+                if (Environment.GetEnvironmentVariable("DOROTI_QT_AUTOCLOSE_FILE") is { Length: > 0 } completed)
+                {
+                    using var limit = new CancellationTokenSource(TimeSpan.FromSeconds(90));
+                    while (!File.Exists(completed) && !File.Exists(completed + ".error")) await Task.Delay(50, limit.Token);
+                    await context.Window.CloseAsync();
+                    if (context.Windows.LifetimePolicy == WindowLifetimePolicy.Explicit) await context.Windows.RequestExitAsync();
+                    return;
+                }
+                if (Environment.GetEnvironmentVariable("DOROTI_MULTIWINDOW_PROBE") is { Length: > 0 } multi)
+                { await LinuxMultiWindowProbe.RunAsync(context, desktop.LegacyMainWindow with { Options = new WindowOptions
+                  { StartupVisibility = WindowStartupVisibility.PlatformDefault } }, multi); return; }
                 if (Environment.GetEnvironmentVariable("DOROTI_QT_DESKTOP_PROBE") is { Length: > 0 } path)
                     await LinuxDesktopProbe.RunAsync(context, path, ct);
             },

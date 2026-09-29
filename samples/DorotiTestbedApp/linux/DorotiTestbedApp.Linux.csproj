@@ -22,5 +22,6 @@
         TargetPackage="Doroti.Target.Linux.Qt.linux-x64" />
     <ProjectReference Include="..\..\..\Doroti\src\Doroti.Target.Linux.Qt.linux-x64\Doroti.Target.Linux.Qt.linux-x64.csproj" />
   </ItemGroup>
+  <Import Project="../../../Doroti/src/Doroti.Plugins/buildTransitive/Doroti.Plugins.targets" />
   <Import Project="..\..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.targets" />
 </Project>

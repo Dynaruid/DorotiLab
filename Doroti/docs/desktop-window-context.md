@@ -36,3 +36,17 @@ Validation must include two real HWNDs, independent framework updates, one-windo
 close with survivor activity and last-window cleanup. Context isolation tests
 are a prerequisite, not a replacement for that native evidence. Mixed-monitor
 DPI, physical IME and other host adapters retain separate qualification.
+
+
+## Qt ownership (2026-09-29)
+
+Qt uses **one QApplication/GUI thread** with a separate dispatcher/session for each
+QQuickWindow. Rendering, input and lifecycle callbacks enter their window's dispatcher scope. Separate
+PlatformView factories, renderer, Vulkan instance, plugin view scope and surface
+prevent native identities from crossing owners. Immutable application resources
+and handlers share the existing application lease. Additional windows have
+independent in-memory navigation; main-window XDG restoration remains main-owned.
+Application dispatch outlives the main window and ends with QApplication. A dropped
+queued request receives a closed completion. Native surfaces retire before their
+callback GCHandles are released. Both last-window and Explicit reopen policies have
+[real Qt window evidence](../../works/results/2026-09-29-linux-qt.md).

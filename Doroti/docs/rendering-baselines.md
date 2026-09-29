@@ -22,3 +22,10 @@ Web transport admits four resize messages plus one replaceable latest slot. `Res
 Font checks must observe bytes registered with Skia, the rendered Korean glyphs and network requests. SampleApp2 exposes CDN mode and `-p:DorotiSampleWebFontSource=Assets` with local decoder/CSS assets; use a cold profile and block external networking for the offline case. Verify every font response is nonempty, that local mode has no required CDN requests, and that initial fallback/replacement does not lose text. The template no longer preloads the removed host `NanumGothic-Regular.ttf` URL. Default language preloading remains opt-in.
 
 Run `python Doroti/eng/run-with-timeout.py dotnet run --project Doroti/tests/Doroti.Tests -c Debug` and `python Doroti/eng/run-with-timeout.py node --experimental-transform-types --test Doroti/tests/web_rendering.mts`. Node 24's TypeScript transformation is used only for these source-level policy tests. See [04 work results](../../works/common/04-rendering-lifetime.md) for measured values and remaining host qualifications.
+
+
+2026-09-29 Linux Qt recorded [VM phase timings and lifetime results](../../works/results/2026-09-29-linux-qt.md#렌더링-수치의-범위)
+for Quick/Graphite software Vulkan on Wayland and XWayland. They report recording,
+fence waits, R/P reservation and retirement, not physical present FPS or VRAM.
+Widgets/OpenGL VMware SVGA3D remains a separate comparison. No physical Linux GPU
+budget or long-run memory baseline has been accepted.
