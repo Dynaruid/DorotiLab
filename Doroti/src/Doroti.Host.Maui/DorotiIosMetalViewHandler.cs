@@ -57,6 +57,10 @@ public sealed class DorotiIosMetalViewHandler : ViewHandler<ISKGLView, SKMetalVi
 
     protected override void DisconnectHandler(SKMetalView platformView)
     {
+        if (platformView is DorotiIosMetalView metalView)
+        {
+            metalView.StopViewportAnimation();
+        }
         _pendingDisplayLink?.Invalidate();
         _pendingDisplayLink?.Dispose();
         _pendingDisplayLink = null;
@@ -187,9 +191,21 @@ public sealed class DorotiIosMetalViewHandler : ViewHandler<ISKGLView, SKMetalVi
         return new((float)x, (float)y);
     }
 
-    private sealed class DorotiIosMetalView : SKMetalView
+    private sealed class DorotiIosMetalView : SKMetalView, IUIKitAnimatedViewport
     {
-        private CGSize _lastLayoutSize;
+        private readonly UIKitAnimatedViewport _animatedViewport;
+        UIKitAnimatedViewport IUIKitAnimatedViewport.AnimatedViewport => _animatedViewport;
+
+        public DorotiIosMetalView()
+        {
+            AutoResizeDrawable = false;
+            ContentMode = UIViewContentMode.Center;
+            Layer.ContentsGravity = CALayer.GravityCenter;
+            Layer.MasksToBounds = true;
+            _animatedViewport = new(this, RenderViewport);
+        }
+
+        internal void StopViewportAnimation() => _animatedViewport.Stop();
 
         internal bool IgnorePixelScaling { get; set; }
 
@@ -198,27 +214,68 @@ public sealed class DorotiIosMetalViewHandler : ViewHandler<ISKGLView, SKMetalVi
             base.MovedToWindow();
             if (Window is not null)
             {
+                _animatedViewport.LayoutChanged();
                 SetNeedsDisplay();
+            }
+            else
+            {
+                _animatedViewport.Stop();
             }
         }
 
         public override void LayoutSubviews()
         {
             base.LayoutSubviews();
-            if (Window is null || Bounds.Size.Equals(_lastLayoutSize))
-            {
-                return;
-            }
+            _animatedViewport.LayoutChanged();
+        }
 
-            _lastLayoutSize = Bounds.Size;
+        public override void SafeAreaInsetsDidChange()
+        {
+            base.SafeAreaInsetsDidChange();
+            _animatedViewport?.LayoutChanged();
+        }
+
+        private void RenderViewport(CGSize size)
+        {
+            CATransaction.Begin();
+            try
+            {
+                CATransaction.DisableActions = true;
+                Layer.ContentsGravity = CALayer.GravityCenter;
+                var scale = _animatedViewport.Scale;
+                DrawableSize = new CGSize(
+                    Math.Max(1, Math.Round(size.Width * scale)),
+                    Math.Max(1, Math.Round(size.Height * scale))
+                );
+                Layer.ContentsScale = scale;
+                // SKMetalView owns command-buffer presentation; do not enable
+                // PresentsWithTransaction without changing its submit protocol.
+                Draw();
+            }
+            finally
+            {
+                CATransaction.Commit();
+            }
             SetNeedsDisplay();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _animatedViewport.Dispose();
+            }
+            base.Dispose(disposing);
         }
 
         protected override void OnPaintSurface(SKPaintMetalSurfaceEventArgs args)
         {
             if (IgnorePixelScaling)
             {
-                var logicalSize = new SKSizeI((int)Bounds.Width, (int)Bounds.Height);
+                var logicalSize = new SKSizeI(
+                    (int)(args.Info.Width / ContentScaleFactor),
+                    (int)(args.Info.Height / ContentScaleFactor)
+                );
                 args.Surface.Canvas.Scale((float)ContentScaleFactor);
                 args.Surface.Canvas.Save();
                 args = new(

@@ -71,6 +71,15 @@ internal sealed partial class MauiViewEnvironment
             return;
         }
 
+#if IOS && !MACCATALYST
+        if (native is IUIKitAnimatedViewport animated)
+        {
+            void RefreshViewport() => Refresh();
+            animated.AnimatedViewport.Changed += RefreshViewport;
+            _detach.Add(() => animated.AnimatedViewport.Changed -= RefreshViewport);
+        }
+#endif
+
         var sentinel = new EnvironmentView(() => Refresh())
         {
             Frame = native.Bounds,
@@ -170,11 +179,19 @@ internal sealed partial class MauiViewEnvironment
         }
 
         var scale = (double)window.Screen.Scale;
-        NativePhysicalSize = new(
-            Math.Round(native.Bounds.Width * scale),
-            Math.Round(native.Bounds.Height * scale)
-        );
+        var viewportSize = native.Bounds.Size;
         var safe = native.SafeAreaInsets;
+#if IOS && !MACCATALYST
+        if (native is IUIKitAnimatedViewport animated && animated.AnimatedViewport.Size.Width > 0)
+        {
+            viewportSize = animated.AnimatedViewport.Size;
+            safe = animated.AnimatedViewport.SafeAreaInsets;
+        }
+#endif
+        NativePhysicalSize = new(
+            Math.Round(viewportSize.Width * scale),
+            Math.Round(viewportSize.Height * scale)
+        );
         Padding = ViewOcclusion.Scale(new(safe.Left, safe.Top, safe.Right, safe.Bottom), scale);
         Insets = ViewPadding.zero;
         if (_keyboardWindow == window && !_keyboardScreenFrame.IsEmpty)

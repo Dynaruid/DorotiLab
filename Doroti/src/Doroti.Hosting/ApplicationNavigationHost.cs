@@ -150,13 +150,22 @@ public sealed class ApplicationNavigationHost : IApplicationNavigationHostCapabi
     public void DiscardRestoration() { ObjectDisposedException.ThrowIf(_disposed, this); _restoration = null; Checkpoint(); }
     public void Checkpoint()
     {
+        if (_save is null) return;
         try
         {
-            _save?.Invoke(JsonSerializer.Serialize(new Dictionary<string, object?>
+            using var buffer = new MemoryStream();
+            using (var writer = new Utf8JsonWriter(buffer))
             {
-                ["version"] = 1, ["location"] = Current.Location, ["state"] = Current.StateJson,
-                ["data"] = _restoration is null ? null : Convert.ToBase64String(_restoration), ["cleanShutdown"] = _cleanShutdown,
-            }));
+                writer.WriteStartObject();
+                writer.WriteNumber("version", 1);
+                writer.WriteString("location", Current.Location);
+                writer.WriteString("state", Current.StateJson);
+                if (_restoration is null) writer.WriteNull("data");
+                else writer.WriteBase64String("data", _restoration);
+                writer.WriteBoolean("cleanShutdown", _cleanShutdown);
+                writer.WriteEndObject();
+            }
+            _save(System.Text.Encoding.UTF8.GetString(buffer.GetBuffer(), 0, checked((int)buffer.Length)));
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException)
         { RestoreFailure = error.Message; }

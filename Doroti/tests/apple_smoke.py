@@ -83,6 +83,7 @@ def wait(path, process, content=None):
 
 for case in a.cases.split(','):
     if ios and case == 'multi': continue
+    if not ios and case == 'rotation': raise ValueError('Rotation probe requires iOS.')
     directory = native_output / case
     directory.mkdir(exist_ok=True)
     marker = directory / 'result.json'
@@ -90,6 +91,7 @@ for case in a.cases.split(','):
     if case == 'multi': extra |= {'DOROTI_MULTIWINDOW_PROBE': str(marker), 'DOROTI_SAMPLE': 'input'}
     elif case == 'services': extra['DOROTI_UIKIT_SERVICES_PROBE'] = str(marker)
     elif case == 'input': extra |= {'DOROTI_SAMPLE': 'input', 'DOROTI_INPUT_PROBE': str(marker)}
+    elif case == 'rotation': extra['DOROTI_UIKIT_ROTATION_PROBE'] = str(marker)
     elif case in ('navigation', 'restoration'): extra |= {'DOROTI_SAMPLE': 'navigation', 'DOROTI_NAVIGATION_PROBE': str(marker)}
     else: raise ValueError(case)
     if case == 'navigation' and a.activation == 'native-callback':

@@ -158,6 +158,8 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build -App ./samples/DorotiSampleA
 Intel Mac 시뮬레이터는 `iossimulator-x64`를 선택합니다.
 CLI의 iOS Release 기본값은 실험적인 NativeAot이므로, 위 명령처럼 `-CompilationMode Mono`를 명시합니다.
 
+`net10.0-ios27.0`의 실기기(`ios-arm64`) Debug/Mono 프로필은 레이아웃·렌더링 엔진을 Mono AOT로 컴파일하고 앱과 iOS 진입 어셈블리만 해석합니다. 회전 중 매 프레임 실행되는 엔진까지 해석해서 표시 시점을 놓치는 것을 방지합니다. 시뮬레이터는 기존 빠른 빌드 프로필을 유지합니다. 앱 어셈블리 이름을 별도로 지정했거나 추가 개발 어셈블리의 해석이 필요하면 `DorotiIosDebugInterpretedAssemblies`에 쉼표로 구분한 이름을 지정할 수 있습니다. 명시적인 `MtouchInterpreter` 설정은 기본값보다 우선하며 NativeAOT 프로필은 별개입니다.
+
 ## Linux
 
 Linux x64에서 .NET SDK, CMake 3.24 이상, C++20 컴파일러, Qt 6.8 이상(Quick/QuickControls2/WebEngineQuick/WebChannel),

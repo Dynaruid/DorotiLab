@@ -46,7 +46,21 @@ public sealed class DorotiUIKitGraphiteViewHandler
 
 /// <summary>UIKit owns input/layout; this view owns the Metal queue and Graphite recorder.</summary>
 public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
+#if IOS && !MACCATALYST
+        , IUIKitAnimatedViewport
+#endif
 {
+#if IOS && !MACCATALYST
+    private readonly UIKitAnimatedViewport _animatedViewport;
+    private bool _renderingViewport;
+    private SKSizeI _viewportPixels;
+    private readonly System.Collections.Concurrent.ConcurrentQueue<(
+        PendingFrame Frame,
+        MTLCommandBufferStatus Status,
+        string? Error
+    )> _completedFrames = new();
+    UIKitAnimatedViewport IUIKitAnimatedViewport.AnimatedViewport => _animatedViewport;
+#endif
     private readonly IMTLCommandQueue _queue;
     private SkiaGraphiteSession? _session;
     private DorotiGraphiteView? _owner;
@@ -65,8 +79,10 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
     private bool _resourcesReleased;
     private bool _faulted;
     private bool _frameBackpressure;
+#if MACCATALYST
     private nfloat _lastScale;
     private CGSize _lastSize;
+#endif
     private long _generation;
     private bool _drawing;
     private NSTimer? _retirementTimer;
@@ -94,9 +110,11 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
         FramebufferOnly = false;
         AutoResizeDrawable = false;
 #if IOS && !MACCATALYST
+        _animatedViewport = new(this, RenderViewport, CanRenderViewport);
+        _animatedViewport.AnimationChanged += active => EnableSetNeedsDisplay = !active;
         // Keep text and controls at their rendered size as UIKit interpolates
         // rotation bounds. Center the image without stretching either axis;
-        // LayoutSubviews renders the new layout at the exact drawable size.
+        // the viewport follows presentation bounds for the entire transition.
         ContentMode = UIViewContentMode.Center;
         Layer.ContentsGravity = CALayer.GravityCenter;
 #else
@@ -198,6 +216,9 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
         }
 
         _releaseRequested = true;
+#if IOS && !MACCATALYST
+        _animatedViewport.Dispose();
+#endif
         _generation++;
         _owner = null;
 #if IOS || MACCATALYST
@@ -251,7 +272,9 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
     private bool OwnerIsActive =>
         Window?.WindowScene is { } scene
 #if MACCATALYST
-            ? scene.ActivationState is UISceneActivationState.ForegroundActive or UISceneActivationState.ForegroundInactive
+            ? scene.ActivationState
+                is UISceneActivationState.ForegroundActive
+                    or UISceneActivationState.ForegroundInactive
 #else
             ? scene.ActivationState == UISceneActivationState.ForegroundActive
 #endif
@@ -259,6 +282,9 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
 
     private void SuspendRendering()
     {
+#if IOS && !MACCATALYST
+        _animatedViewport.Stop();
+#endif
         if (!_suspended)
         {
             _generation++;
@@ -272,6 +298,9 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
         _suspended = !OwnerIsActive;
         if (!_suspended && !_releaseRequested && !_faulted)
         {
+#if IOS && !MACCATALYST
+            _animatedViewport.LayoutChanged();
+#endif
             SetNeedsDisplay();
         }
     }
@@ -292,11 +321,20 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
     public override void MovedToWindow()
     {
         base.MovedToWindow();
+#if IOS && !MACCATALYST
+        if (Window is null)
+        {
+            _animatedViewport.Stop();
+        }
+#endif
 #if IOS || MACCATALYST
         _suspended = !OwnerIsActive;
 #endif
         if (!_releaseRequested && Window is not null)
         {
+#if IOS && !MACCATALYST
+            _animatedViewport.LayoutChanged();
+#endif
             SetNeedsDisplay();
         }
     }
@@ -304,6 +342,29 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
     public override void LayoutSubviews()
     {
         base.LayoutSubviews();
+#if IOS && !MACCATALYST
+        if (!_releaseRequested)
+        {
+            _animatedViewport.LayoutChanged();
+        }
+    }
+
+    public override void SafeAreaInsetsDidChange()
+    {
+        base.SafeAreaInsetsDidChange();
+        if (!_releaseRequested)
+        {
+            _animatedViewport?.LayoutChanged();
+        }
+    }
+
+    private void RenderViewport(CGSize size)
+    {
+        if (_releaseRequested || Window is null)
+        {
+            return;
+        }
+#else
         if (
             _releaseRequested
             || Window is null
@@ -317,6 +378,8 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
 
         _lastSize = Bounds.Size;
         _lastScale = ContentScaleFactor;
+        var size = Bounds.Size;
+#endif
 #if IOS || MACCATALYST
         var previousPresentation = PresentsWithTransaction;
 #endif
@@ -329,21 +392,51 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
 #else
             Layer.ContentsGravity = CALayer.GravityTopLeft;
 #endif
-            Layer.ContentsScale = ContentScaleFactor;
-            DrawableSize = new CGSize(
-                Math.Max(1, Math.Round(Bounds.Width * ContentScaleFactor)),
-                Math.Max(1, Math.Round(Bounds.Height * ContentScaleFactor))
+#if IOS && !MACCATALYST
+            var scale = _animatedViewport.Scale;
+            _viewportPixels = new SKSizeI(
+                Math.Max(1, (int)Math.Round(size.Width * scale)),
+                Math.Max(1, (int)Math.Round(size.Height * scale))
             );
+            // Reallocating the drawable pool every pulse can stall nextDrawable
+            // past the next display. Keep capacity through rotation and draw
+            // an unscaled, centered viewport; UIKit clips the animated bounds.
+            // Native overlay composition retains its exact-size surface contract.
+            var backingSize =
+                _animatedViewport.IsAnimating && _owner?.PlatformViews?.HasComposition != true
+                    ? _animatedViewport.AnimationExtent
+                    : size;
+#else
+            var scale = ContentScaleFactor;
+            var backingSize = size;
+#endif
+            var drawableSize = new CGSize(
+                Math.Max(1, Math.Round(backingSize.Width * scale)),
+                Math.Max(1, Math.Round(backingSize.Height * scale))
+            );
+            if (!DrawableSize.Equals(drawableSize))
+                DrawableSize = drawableSize;
+            // MTKView derives a contents scale from drawable/model bounds.
+            // During rotation those sizes intentionally differ. Restore the
+            // owning screen's scale after resizing so it cannot feed back into
+            // the next drawable size, text density, or pointer conversion.
+            Layer.ContentsScale = scale;
 #if IOS || MACCATALYST
             // The new drawable must accompany UIKit's rotation geometry. An
             // independently queued present can otherwise replace the old image
             // partway through the rotation, making the layout visibly jump.
             PresentsWithTransaction = true;
 #endif
+#if IOS && !MACCATALYST
+            _renderingViewport = true;
+#endif
             Draw();
         }
         finally
         {
+#if IOS && !MACCATALYST
+            _renderingViewport = false;
+#endif
             CATransaction.Commit();
 #if IOS || MACCATALYST
             PresentsWithTransaction = previousPresentation;
@@ -352,6 +445,22 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
         SetNeedsDisplay();
     }
 
+#if IOS && !MACCATALYST
+    private bool CanRenderViewport()
+    {
+        DrainCompletedFrames();
+        return !_drawing && (_pending.Count == 0 || _faulted || _releaseRequested);
+    }
+
+    private void DrainCompletedFrames()
+    {
+        if (_drawing)
+            return;
+        while (_completedFrames.TryDequeue(out var completed))
+            Retire(completed.Frame, completed.Status, completed.Error);
+    }
+#endif
+
     public void DrawableSizeWillChange(MTKView view, CGSize size)
     {
         _generation++;
@@ -359,6 +468,13 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
 
     public void Draw(MTKView view)
     {
+#if IOS && !MACCATALYST
+        // One display link owns rotation frames. A queued SetNeedsDisplay must
+        // not add an old-size replay between geometry updates.
+        if (_animatedViewport.IsAnimating && !_renderingViewport)
+            return;
+        DrainCompletedFrames();
+#endif
         var owner = _owner;
         if (_drawing || _releaseRequested || _faulted || Window is null || owner is null)
         {
@@ -421,13 +537,31 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
             var height = checked((int)drawable.Texture.Height);
             frame = _session.BeginMetalFrame(width, height, drawable.Texture.Handle);
             frame.Surface.Canvas.Clear(SKColors.Transparent);
+#if IOS && !MACCATALYST
+            if (_viewportPixels.Width > 0 && _viewportPixels.Height > 0)
+            {
+                var viewportWidth = Math.Min(width, _viewportPixels.Width);
+                var viewportHeight = Math.Min(height, _viewportPixels.Height);
+                frame.Surface.Canvas.Translate(
+                    (width - viewportWidth) / 2f,
+                    (height - viewportHeight) / 2f
+                );
+                frame.Surface.Canvas.ClipRect(SKRect.Create(viewportWidth, viewportHeight));
+                width = viewportWidth;
+                height = viewportHeight;
+            }
+#endif
             var generation = _generation;
             paint = new(
                 frame.Surface,
                 _session,
                 width,
                 height,
+#if IOS && !MACCATALYST
+                Math.Max(1, (double)_animatedViewport.Scale),
+#else
                 Math.Max(1, (double)ContentScaleFactor),
+#endif
                 generation,
                 GetType().FullName!,
                 "UIKit/MTKView/Graphite-Metal"
@@ -454,7 +588,12 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
             frame.Submit();
             // Transfer ownership before attempting the terminal marker. Even a
             // failed commit must retain textures; it is not GPU completion.
-            var pending = new PendingFrame(frame, drawable, owner, paint.Completion, generation
+            var pending = new PendingFrame(
+                frame,
+                drawable,
+                owner,
+                paint.Completion,
+                generation
 #if IOS || MACCATALYST
                 ,
                 platformFrame
@@ -492,7 +631,12 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
                     frame?.CancelRecording();
                     frame = null;
                 }
-                var pending = new PendingFrame(frame, drawable!, owner, null, _generation
+                var pending = new PendingFrame(
+                    frame,
+                    drawable!,
+                    owner,
+                    null,
+                    _generation
 #if IOS || MACCATALYST
                     ,
                     platformFrame
@@ -569,11 +713,19 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
             {
                 var status = completed.Status;
                 var error = completed.Error?.LocalizedDescription;
+#if IOS && !MACCATALYST
+                // A display pulse can run before the posted main-thread callback.
+                // Publish completion now, then drain on the owner thread before
+                // changing drawable generation for that pulse.
+                _completedFrames.Enqueue((pending, status, error));
+                UIApplication.SharedApplication.BeginInvokeOnMainThread(DrainCompletedFrames);
+#else
                 // Dispatch via the application, since the native view may have
                 // been disposed while its borrowed drawable remains in flight.
                 UIApplication.SharedApplication.BeginInvokeOnMainThread(() =>
                     Retire(pending, status, error)
                 );
+#endif
             });
 #if IOS || MACCATALYST
             if (present)

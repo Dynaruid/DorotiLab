@@ -236,7 +236,13 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
             // SKTouchHandler's conversion from UIKit points to pixels.
             if (_view.Handler?.PlatformView is UIView nativeView)
             {
+#if IOS && !MACCATALYST
+                density = MauiViewEnvironment.ValidScale(
+                    (double)(nativeView.Window?.Screen.Scale ?? nativeView.ContentScaleFactor)
+                );
+#else
                 density = MauiViewEnvironment.ValidScale((double)nativeView.ContentScaleFactor);
+#endif
             }
 #endif
 #if MACCATALYST || IOS || ANDROID
