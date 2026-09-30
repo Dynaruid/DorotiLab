@@ -170,7 +170,9 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 dev -App ./samples/DorotiSampleApp
 
 앱 C# 메서드를 수정하고 저장하면 SDK가 metadata delta를 적용합니다. VS Code 확장에서도 `ios` 선택 → Run → Hot Reload를 사용할 수 있습니다. `doroti.iosTargetFramework`는 위 명령과 같은 값으로 설정합니다. 지원하지 않는 편집은 명시적 Restart가 필요하며 상태가 초기화됩니다. 네이티브 Swift/바인딩 변경, Release/NativeAOT는 이 핫리로드 경로의 대상이 아닙니다. 준비 조건과 검증 범위는 [개발 세션 계약](../../Doroti/docs/development-hot-reload.md)을 참고하세요.
 
-실기기는 `-Rid ios-arm64 -Device <UDID> -IosTargetFramework net11.0-ios -IosSdkVersion 11.0.100-rc.1.26425.128`을 지정합니다. 프로젝트의 `global.json`은 바꾸지 않습니다. 현재 RC1 SDK에는 수정된 runtime/crossgen2 `11.0.0-rc.2.26478.114`를 개발 모드에서만 사용합니다. 개발 서명, Xcode 27 사용 시 `ValidateXcodeVersion=false`, 바인딩 도구용 런타임과 `-DotnetPath` 준비는 [실기기 개발 명령](../../Doroti/docs/development-hot-reload.md)을 따릅니다. 이 프로필은 Debug 핫리로드 검증용이며 아래 Native AOT 게시 프로필과 구분합니다.
+.NET 10 실기기는 `-Rid ios-arm64 -Device <UDID> -IosTargetFramework net10.0-ios27.0`을 지정하고 Mac과 iPhone을 같은 네트워크에 연결합니다. 개발 서명 프로필이 필요하며, iPhone의 로컬 네트워크 접근을 허용해야 합니다. 기본 네트워크 주소가 맞지 않으면 `-IosHotReloadHost <Mac의 LAN IPv4>` 또는 VS Code의 `doroti.iosHotReloadHost`를 지정합니다. 앱 설치·상태 확인은 기존 기기 연결을 사용하며 코드 변경은 네트워크로 전송합니다. 이 개발 모드에서는 Mono의 AOT/metadata update 충돌을 피하려고 UIKit 호스트 외의 프레임워크도 해석하므로 일반 실행보다 느릴 수 있습니다. 성능 측정은 일반 빌드로 진행하세요.
+
+.NET 11의 USB 전용 경로는 `-Rid ios-arm64 -Device <UDID> -IosTargetFramework net11.0-ios -IosSdkVersion 11.0.100-rc.1.26425.128`을 지정합니다. 프로젝트의 `global.json`은 바꾸지 않습니다. 현재 RC1 SDK에는 수정된 runtime/crossgen2 `11.0.0-rc.2.26478.114`를 개발 모드에서만 사용합니다. 개발 서명, Xcode 27 사용 시 `ValidateXcodeVersion=false`, 바인딩 도구용 런타임과 `-DotnetPath` 준비는 [실기기 개발 명령](../../Doroti/docs/development-hot-reload.md)을 따릅니다. 이 프로필은 Debug 핫리로드 검증용이며 아래 Native AOT 게시 프로필과 구분합니다.
 
 ### .NET 11 RC1 + Xcode 27 Native AOT
 

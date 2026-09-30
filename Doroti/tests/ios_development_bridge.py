@@ -3,6 +3,7 @@ import importlib.util
 import json
 from pathlib import Path
 import tempfile
+import socket
 import threading
 import unittest
 from unittest.mock import patch
@@ -15,6 +16,35 @@ spec.loader.exec_module(bridge)
 
 
 class BridgeTests(unittest.TestCase):
+    def test_network_relay_preserves_bidirectional_bytes(self):
+        with socket.socket() as listener:
+            listener.bind(('127.0.0.1', 0))
+            listener.listen()
+            listener.settimeout(5)
+            relay = bridge.network_relay('127.0.0.1', listener.getsockname()[1])
+            thread = threading.Thread(target=relay.serve_forever, daemon=True)
+            thread.start()
+            try:
+                with socket.create_connection(relay.server_address, timeout=5) as client:
+                    upstream, _ = listener.accept()
+                    with upstream:
+                        upstream.settimeout(5)
+                        payload = bytes(range(256)) * 513
+                        client.sendall(payload)
+                        received = bytearray()
+                        while len(received) < len(payload):
+                            received.extend(upstream.recv(65536))
+                        self.assertEqual(received, payload)
+                        upstream.sendall(b'SDK capability and delta acknowledgment')
+                        self.assertEqual(client.recv(1024), b'SDK capability and delta acknowledgment')
+                        relay.shutdown()
+                        self.assertEqual(upstream.recv(1), b'')
+                    self.assertEqual(client.recv(1), b'')
+            finally:
+                relay.shutdown()
+                relay.server_close()
+                thread.join(5)
+
     def test_device_delivery_and_disconnect(self):
         with tempfile.TemporaryDirectory() as directory:
             session = bridge.DeviceSession(directory, 'session', 'device')

@@ -142,7 +142,7 @@ export function activate(context: vscode.ExtensionContext) {
         const args = ['-NoProfile', '-File', script, 'dev', '-App', project.root, '-Platform', target, '-Configuration', 'Debug', '-SessionDirectory', directory, '-SessionId', id];
         if (target === 'ios') {
             args.push('-DotnetPath', config().get<string>('dotnetPath', 'dotnet'));
-            for (const [setting, option] of [['iosDevice', '-Device'], ['iosTargetFramework', '-IosTargetFramework'], ['iosRuntimeIdentifier', '-Rid'], ['iosSdkVersion', '-IosSdkVersion']]) {
+            for (const [setting, option] of [['iosDevice', '-Device'], ['iosTargetFramework', '-IosTargetFramework'], ['iosRuntimeIdentifier', '-Rid'], ['iosSdkVersion', '-IosSdkVersion'], ['iosHotReloadHost', '-IosHotReloadHost']]) {
                 const value = config().get<string>(setting);
                 if (value) args.push(option, value);
             }

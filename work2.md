@@ -96,7 +96,7 @@ Windows HWND editor와 WebView의 같은 프레임 혼합은 현재 미지원 �
 
 근거: [05-vscode-hot-reload](works/common/05-vscode-hot-reload.md).
 
-2026-09-30 후속: iOS 개발 CLI·VS Code target을 추가했다. iPhone 18 Pro Simulator의 실제 metadata update·State/입력/스크롤 보존, 컴파일 오류 복구, rude edit 유지, 설치 VSIX의 Run/Hot Reload/Stop은 PASS다. 2026-10-01 후속으로 실기기 USB도 .NET 11 CoreCLR 개발 프로필에서 실제 delta·상태 보존·오류 복구·Stop과 설치 VSIX 흐름을 확인했다. .NET 10 실기기 경로의 제한은 유지한다. 세부 범위는 [iOS 검증 기록](works/platforms/ios.md#2026-09-30-ios-metadata-hot-reload)을 따른다. 아래 Windows/Web 재검증 및 일반 IDE UI 잔여와 구분한다.
+2026-09-30 후속: iOS 개발 CLI·VS Code target을 추가했다. iPhone 18 Pro Simulator의 실제 metadata update·State/입력/스크롤 보존, 컴파일 오류 복구, rude edit 유지, 설치 VSIX의 Run/Hot Reload/Stop은 PASS다. 2026-10-01 후속으로 실기기 USB도 .NET 11 CoreCLR 개발 프로필에서 실제 delta·상태 보존·오류 복구·Stop과 설치 VSIX 흐름을 확인했다. 추가로 .NET 10 Mono 실기기의 같은 네트워크 경로에서 실제 delta·상태 보존·오류 복구·Stop 및 설치 VSIX 흐름을 확인했다. .NET 10 USB-only 제한은 유지한다. 세부 범위는 [iOS 검증 기록](works/platforms/ios.md#2026-09-30-ios-metadata-hot-reload)을 따른다. 아래 Windows/Web 재검증 및 일반 IDE UI 잔여와 구분한다.
 
 - [ ] **검증 잔여:** clean profile에 설치한 VSIX에서 생성 마법사의 실제 폴더 dialog, 잘못된 이름·기존 폴더 충돌, SDK/템플릿/도구 누락, 취소·생성 실패·확장 종료 중 취소를 확인한다.
 - [ ] **검증 잔여:** 실제 Microsoft C# 언어 서비스의 버전·설정과 프로젝트 로딩을 기준으로 auto-import/Quick Fix를 확인한다. 참조 누락·서비스 미설치, 중복/global using·alias·namespace 형태·동명 타입 선택을 포함한다.

@@ -147,3 +147,18 @@ python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/apple
 단위/설정 검사: HTTP 인증·세션 만료/복구, 실기기 요청 전달 실패 시 저장 금지, 실제 bundle container를 구분하는 종료, 기존 확장 테스트 8개, Apple 프로필 및 runtime/crossgen2·Apple pack 버전 분리, Source 계약 PASS. 자동 seed를 사용했으며 물리 IME·터치 입력이나 장기 성능 시험은 아니다. 재현 명령은 [개발 세션 계약](../../Doroti/docs/development-hot-reload.md), 원시 증거는 `temp/testing/ios-device-reload/`에 둔다.
 
 최종 회귀: 실기기 확장을 포함한 코드로 .NET 10 iPhone 18 Pro Simulator CLI 테스트를 재실행했다. metadata update 2회, 동일 PID/State·카운터/한글/스크롤, 컴파일 오류 복구, rude edit 유지, Stop 모두 PASS (`simulator-regression`).
+
+## 2026-10-01 .NET 10 실기기 네트워크 Hot Reload
+
+.NET 10을 유지하는 실기기 개발 경로를 추가했다. iPhone과 Mac을 같은 네트워크에 연결하고 `-Rid ios-arm64 -Device <UDID> -IosTargetFramework net10.0-ios27.0`으로 실행한다. 별도 SDK/런타임 패치 없이 설치된 SDK의 WebSocket agent와 실제 metadata delta를 사용한다. USB-only 전송은 기존 .NET 11 CoreCLR 프로필을 유지한다.
+
+- Python launcher가 Mac의 선택한 LAN IPv4에 세션 전용 TCP relay를 열어 SDK loopback WebSocket 서버로 바이트를 전달한다. SDK 인증·delta 프로토콜은 유지한다. `-IosHotReloadHost` / `doroti.iosHotReloadHost`로 네트워크 어댑터를 지정할 수 있다. 요청 ID·상태는 기존 CoreDevice Documents 경로를 사용하며, 요청 복사 완료 → 저장 → 완료 frame 응답 순서를 유지한다.
+- .NET 10 native runtime에는 mlaunch의 USB forwarding 구현이 없다. 해당 실행 인자를 제거하면서 SDK agent를 개발 앱에 원본 그대로 번들하고 startup hook의 Mac 절대 경로를 assembly 이름으로 바꾼다. 경로를 바꾸지 않으면 `mono_runtime_run_startup_hooks`에서 앱이 종료되는 것을 재현했다. 개발 빌드에만 Local Network 사용 설명 plist를 포함한다.
+- 앱만 해석하고 framework를 AOT로 실행한 첫 delta는 `StatefulElement.reassemble`의 virtual call에서 Mono 10.0.12 `hot_reload.c:1218` assertion으로 종료됐다. `dev`는 `all,-Doroti.Host.Maui`로 framework 호출자까지 해석하며, 이와 다른 실기기 Mono interpreter 조합을 거부한다. 일반 Debug의 앱 전용 interpreter 분리, Release Mono·NativeAOT는 유지한다. 개발 실행 속도와 일반 빌드 성능을 구분한다.
+- 개발 산출물은 `.doroti/cache/development/10.0.401/ios-arm64/mono-interpreter`로 분리한다. 과거 AOT 모듈과 새 interpreter 프로필을 섞지 않는다.
+
+**CLI PASS:** iPhone 12 / iOS 26.6.1 / `net10.0-ios27.0` / `ios-arm64` / Debug Mono 10.0.12 / UIKit·Graphite-Metal, SDK 10.0.401·iOS workload 27.0.10722. 실제 method-body delta 2회와 완료 프레임을 확인했다. PID 5327, State ID `1cf8f954-d2dd-4b8e-be4f-7e97ad741a26`, count 5·`한글 유지`·scroll 160을 유지하며 revision 0→1→2. CS0103 오류에서는 revision 불변, 수정 후 적용 성공. ENC0009 변경은 기존 process/State를 유지하고 Restart 필요로 남겼다. Stop 후 세션 closed 및 실제 PID 소멸을 확인했고 테스트 소스를 복원했다.
+
+HTTP/file relay 및 실제 TCP 양방향 전송·종료 검사 4개, 기존 VS Code 단위 검사 8개, 실제 MSBuild의 일반/개발/명시적/Release/NativeAOT/.NET 11 프로필과 agent 번들·실행 경로 검사 PASS. SDK 패키지에 개발 plist 포함을 확인했다. 자동 seed 기반 상태 보존 검사이며 물리 IME·터치 입력·장기 성능·모든 framework 변경의 qualification은 아니다. 원시 증거: `temp/testing/ios-net10-reload/run5/`. 재현 명령과 사전 조건은 [개발 세션 계약](../../Doroti/docs/development-hot-reload.md)을 따른다.
+
+**설치 VSIX PASS:** 같은 .NET 10/iPhone 조합에서 별도 VS Code profile에 새 VSIX를 설치하고 Run → Hot Reload 명령 → Stop을 실행했다. PID 5328 및 State ID `20556444-6a6a-4bde-9b1b-573ad78e7581`, count 5·한글·scroll 160을 유지하면서 `iOS VSIX Hot Reload passed`와 revision 1을 확인했다. extension host exit 0, 소스 복원 및 실제 기기 PID 소멸을 확인했다. 원시 증거: `temp/testing/ios-net10-reload/editor/`. 번들 agent SHA256 `6fac27006b42ea061df345b17164c26e51eaacd510d3b56d85545159c9d18761`은 SDK 10.0.401 원본과 동일하다.

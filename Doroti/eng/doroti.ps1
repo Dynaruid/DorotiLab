@@ -46,6 +46,8 @@ param(
     [ValidatePattern('^[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.-]+)?$')]
     [string] $IosSdkVersion,
 
+    [string] $IosHotReloadHost,
+
     [string] $DotnetPath = 'dotnet',
 
     [ValidatePattern('^[A-Za-z][A-Za-z0-9_.-]*$')]
@@ -565,7 +567,7 @@ function Invoke-Development {
             if ($Rid -notin @('ios-arm64', 'iossimulator-arm64', 'iossimulator-x64')) {
                 throw 'iOS development requires ios-arm64, iossimulator-arm64 or iossimulator-x64.'
             }
-            if ($Rid -eq 'ios-arm64' -and $CompilationMode -eq 'Mono') {
+            if ($Rid -eq 'ios-arm64' -and $CompilationMode -eq 'Mono' -and $IosTargetFramework -like 'net11.*') {
                 throw 'Device Hot Reload uses .NET 11 CoreCLR. Omit -CompilationMode Mono for this development session.'
             }
             if (!$Device) {
@@ -581,6 +583,7 @@ function Invoke-Development {
                 '--session-directory', $sessionPath, '--session-id', $SessionId, '--rid', $Rid, '--device', $Device)
             if ($IosTargetFramework) { $iosArguments += @('--framework', $IosTargetFramework) }
             if ($IosSdkVersion) { $iosArguments += @('--sdk-version', $IosSdkVersion) }
+            if ($IosHotReloadHost) { $iosArguments += @('--host', $IosHotReloadHost) }
             $iosArguments += @('--dotnet', $DotnetPath)
             Invoke-Checked 'python3' $iosArguments (Split-Path -Parent $runner)
             return

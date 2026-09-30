@@ -42,13 +42,40 @@ template = ROOT / "Doroti/templates/Doroti.Templates/content/doroti-app/ios/Doro
 assert profile.read_text() == template.read_text(), "Template iOS profile differs from SDK profile."
 print("PASS template profile parity")
 
-for overrides in [["-p:Configuration=Release"], ["-p:UseInterpreter=false"], ["-p:DorotiCompilationMode=NativeAot"], ["-p:RuntimeIdentifier=ios-arm64"]]:
+for overrides in [["-p:Configuration=Release"], ["-p:UseInterpreter=false"], ["-p:DorotiCompilationMode=NativeAot"], ["-p:RuntimeIdentifier=ios-arm64"], ["-p:RuntimeIdentifier=ios-arm64", "-p:MtouchInterpreter=-all", "-p:DOROTI_DEV_HOTRELOAD_ENDPOINT=ws://192.168.1.2:5678"]]:
     result = subprocess.run(['dotnet', 'msbuild', str(PROJECT), '-nologo',
         '-t:ValidateDorotiIosDevelopment', '-p:DorotiIosDevelopment=true',
         '-p:DorotiIosTargetFramework=net10.0-ios27.0', '-p:RuntimeIdentifier=iossimulator-arm64'] + overrides,
         cwd=ROOT, capture_output=True, text=True, timeout=60)
     assert result.returncode != 0 and 'iOS development sessions' in result.stdout, result.stdout + result.stderr
-print('PASS development rejects Release, interpreter opt-out, NativeAOT and .NET 10 device sessions')
+print('PASS development rejects Release, interpreter opt-out, NativeAOT and unconfigured/mixed-AOT .NET 10 device sessions')
+
+network_base = ['dotnet', 'msbuild', str(PROJECT), '-nologo',
+    '-p:Configuration=Debug', '-p:DorotiIosDevelopment=true', '-p:DorotiCompilationMode=Mono',
+    '-p:DorotiIosTargetFramework=net10.0-ios27.0', '-p:RuntimeIdentifier=ios-arm64',
+    '-p:DOROTI_DEV_HOTRELOAD_ENDPOINT=ws://192.168.1.2:5678']
+items = json.loads(subprocess.check_output(network_base + ['-getItem:_DorotiIosHotReloadAgent,BundleResource'],
+    cwd=ROOT, text=True, timeout=60))['Items']
+agent = items['_DorotiIosHotReloadAgent'][0]['Identity']
+assert Path(agent).is_file(), agent
+assert any(item['Identity'] == agent and item['LogicalName'] == 'Microsoft.Extensions.DotNetDeltaApplier.dll'
+           for item in items['BundleResource']), items
+result = subprocess.run(network_base + [
+    '-t:ValidateDorotiIosDevelopment;ValidateDorotiCompilationMode;DorotiConfigureDeviceHotReloadNetwork',
+    '-p:RunArguments=--setenv=DOTNET_STARTUP_HOOKS=' + agent + ' --setenv=DOTNET_WATCH_HOTRELOAD_WEBSOCKET_ENDPOINT=ws://localhost:123 --setenv=DOTNET_WATCH_HOTRELOAD_WEBSOCKET_KEY=key --hotreload-url=ws://localhost:123 --hotreload-connection-mode=usb --',
+    '-getProperty:UseMonoRuntime,MtouchInterpreter,MtouchLink,StartupHookSupport,RunArguments'],
+    cwd=ROOT, capture_output=True, text=True, check=True, timeout=60)
+network_profile = json.loads(result.stdout)['Properties']
+assert network_profile['UseMonoRuntime'] == 'true', network_profile
+assert network_profile['MtouchInterpreter'] == 'all,-Doroti.Host.Maui', network_profile
+assert network_profile['MtouchLink'] == 'None' and network_profile['StartupHookSupport'] == 'true', network_profile
+launch = network_profile['RunArguments']
+assert '--hotreload-' not in launch and 'ws://localhost' not in launch, launch
+assert '--setenv=DOTNET_WATCH_HOTRELOAD_WEBSOCKET_ENDPOINT=ws://192.168.1.2:5678' in launch, launch
+assert '--setenv=DOTNET_WATCH_HOTRELOAD_WEBSOCKET_KEY=key' in launch, launch
+assert '--setenv=DOTNET_STARTUP_HOOKS=Microsoft.Extensions.DotNetDeltaApplier ' in launch, launch
+assert agent not in launch, launch
+print('PASS .NET 10 device Mono/interpreter and SDK agent network launch')
 
 if args.device_sdk:
     (ROOT / 'temp/testing').mkdir(parents=True, exist_ok=True)

@@ -5,6 +5,7 @@ file relays only exchange doroti.dev/v1 status and pre-save request correlation.
 """
 import argparse
 import hmac
+import ipaddress
 import json
 import os
 import re
@@ -12,11 +13,53 @@ from pathlib import Path
 import secrets
 import shutil
 import signal
+import socket
+import socketserver
+import select
 import subprocess
 import threading
 import time
 from urllib.parse import unquote
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+
+def network_relay(host, port):
+    """Forward opaque SDK WebSocket bytes; authentication stays in the SDK."""
+    class Handler(socketserver.BaseRequestHandler):
+        def handle(self):
+            self.request.settimeout(5)
+            try:
+                with socket.create_connection(('127.0.0.1', port), timeout=5) as upstream:
+                    peers = [self.request, upstream]
+                    while not self.server.stopping.is_set():
+                        readable, _, _ = select.select(peers, [], [], 1)
+                        for source in readable:
+                            data = source.recv(65536)
+                            if not data:
+                                return
+                            peers[1 - peers.index(source)].sendall(data)
+            except OSError:
+                return
+
+    class Server(socketserver.ThreadingTCPServer):
+        daemon_threads = True
+
+        def __init__(self, *args):
+            self.stopping = threading.Event()
+            super().__init__(*args)
+
+        def shutdown(self):
+            self.stopping.set()
+            super().shutdown()
+
+    return Server((host, 0), Handler)
+
+
+def local_network_address():
+    # UDP connect selects the default route without sending a packet.
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as probe:
+        probe.connect(('192.0.2.1', 9))
+        return probe.getsockname()[0]
 
 
 def atomic_json(path, value):
@@ -113,7 +156,7 @@ def stop_device_app(device, bundle_id):
 
 
 class DeviceSession(Session):
-    """Relay status files through CoreDevice; the Apple SDK owns the USB delta channel."""
+    """Relay status through CoreDevice; SDK deltas use a separate connection."""
     def __init__(self, directory, session_id, device):
         super().__init__(directory, session_id)
         self.device = device
@@ -168,12 +211,18 @@ def main():
     parser.add_argument('--framework')
     parser.add_argument('--sdk-version')
     parser.add_argument('--dotnet', default='dotnet')
+    parser.add_argument('--host', help='Mac LAN IPv4 address reachable from a .NET 10 device')
     args = parser.parse_args()
     dotnet = shutil.which(args.dotnet)
     if not dotnet:
         raise ValueError('The configured .NET executable was not found: ' + args.dotnet)
     args.dotnet = str(Path(dotnet).resolve())
     physical = args.rid == 'ios-arm64'
+    if physical and not args.framework and (args.sdk_version or '').startswith('11.'):
+        args.framework = 'net11.0-ios'
+    coreclr = physical and (args.framework or '').startswith('net11.')
+    network_device = physical and not coreclr
+    relay = None
     session = DeviceSession(args.session_directory, args.session_id, args.device) if physical else Session(args.session_directory, args.session_id)
     server = None if physical else make_server(session)
     if server:
@@ -188,7 +237,7 @@ def main():
     environment.pop('DOROTI_DEV_SESSION', None)
     command = [args.dotnet, 'watch', '--project', args.runner, '--configuration', 'Debug',
         '--runtime', args.rid, '--device', args.device, '--no-launch-profile',
-        '--property:DorotiIosDevelopment=true', '--property:DorotiCompilationMode=' + ('CoreClr' if physical else 'Mono'),
+        '--property:DorotiIosDevelopment=true', '--property:DorotiCompilationMode=' + ('CoreClr' if coreclr else 'Mono'),
         '--property:BuildInParallel=false', '--property:RestoreDisableParallel=true']
     if environment.get('DOTNET_CLI_CONTEXT_VERBOSE', '').lower() in ('true', '1', 'trace'):
         command.append('--verbose')
@@ -202,12 +251,6 @@ def main():
         working_directory.mkdir(exist_ok=True)
         atomic_json(working_directory / 'global.json', {'sdk': {
             'version': args.sdk_version, 'rollForward': 'disable', 'allowPrerelease': True}})
-    if physical:
-        args.framework = args.framework or 'net11.0-ios'
-        if args.framework != 'net11.0-ios':
-            raise ValueError('Device Hot Reload requires the qualified net11.0-ios profile.')
-        if not any(arg.startswith('--property:DorotiIosTargetFramework=') for arg in command):
-            command.append('--property:DorotiIosTargetFramework=' + args.framework)
     child = None
     bundle_id = None
     stop = threading.Event()
@@ -218,14 +261,29 @@ def main():
                                       env=environment, text=True, timeout=30).strip()
         if tuple(int(part) for part in sdk.split('-')[0].split('.')) < (10, 0, 400):
             raise ValueError('iOS Hot Reload requires .NET SDK 10.0.400 or newer with mobile dotnet-watch support.')
-        if physical and int(sdk.split('.')[0]) < 11:
+        if coreclr and int(sdk.split('.')[0]) < 11:
             raise ValueError('Device Hot Reload requires .NET SDK 11; select an installed version with -IosSdkVersion.')
+        if network_device:
+            host = args.host or local_network_address()
+            address = ipaddress.IPv4Address(host)
+            if address.is_loopback or address.is_unspecified or address.is_multicast:
+                raise ValueError('-IosHotReloadHost must be a Mac LAN IPv4 address reachable from the iPhone.')
+            with socket.socket() as reservation:
+                reservation.bind(('127.0.0.1', 0))
+                port = reservation.getsockname()[1]
+            relay = network_relay(host, port)
+            threading.Thread(target=relay.serve_forever, daemon=True).start()
+            environment['DOTNET_WATCH_AGENT_WEBSOCKET_PORT'] = str(port)
+            environment['DOROTI_DEV_HOTRELOAD_ENDPOINT'] = f'ws://{host}:{relay.server_address[1]}'
+            print(f'.NET 10 device Hot Reload: connect the iPhone and Mac to the same network ({host}). Allow local network access on the iPhone.', flush=True)
         # Native registrar/AOT caches are incompatible across Apple SDK/runtime
         # profiles. Never reuse normal Mono or NativeAOT build intermediates.
         artifacts = Path(args.app_root) / '.doroti/cache/development' / sdk / args.rid
+        if network_device:
+            artifacts /= 'mono-interpreter'
         query = [args.dotnet, 'msbuild', args.runner, '-nologo', '-getProperty:ApplicationId,DorotiIosDevelopmentRuntimeVersion',
                  '-p:Configuration=Debug', '-p:RuntimeIdentifier=' + args.rid,
-                 '-p:DorotiIosDevelopment=true', '-p:DorotiCompilationMode=' + ('CoreClr' if physical else 'Mono'), '-p:ArtifactsPath=' + str(artifacts)]
+                 '-p:DorotiIosDevelopment=true', '-p:DorotiCompilationMode=' + ('CoreClr' if coreclr else 'Mono'), '-p:ArtifactsPath=' + str(artifacts)]
         if args.framework:
             query.append('-p:DorotiIosTargetFramework=' + args.framework)
         query_environment = dict(environment, DOTNET_CLI_CONTEXT_VERBOSE='false')
@@ -234,13 +292,14 @@ def main():
         bundle_id = properties['ApplicationId']
         if not bundle_id or any(c.isspace() for c in bundle_id):
             raise ValueError('The iOS runner must declare ApplicationId for session cleanup.')
-        if physical:
+        if coreclr:
             runtime_version = properties['DorotiIosDevelopmentRuntimeVersion']
             if not re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.-]+)?', runtime_version):
                 raise ValueError('The device development profile must specify a runtime version.')
             # Apple framework copy/R2R caches may retain a previously bundled
             # native CoreCLR even after NuGet selects a different runtime pack.
             artifacts /= 'coreclr-' + runtime_version
+        if physical:
             session.bundle_id = bundle_id
         command.append('--property:ArtifactsPath=' + str(artifacts))
         child = subprocess.Popen(command, cwd=working_directory, env=environment,
@@ -275,6 +334,9 @@ def main():
             if server:
                 server.shutdown()
                 server.server_close()
+            if relay:
+                relay.shutdown()
+                relay.server_close()
             session.expire(force=True)
 
 

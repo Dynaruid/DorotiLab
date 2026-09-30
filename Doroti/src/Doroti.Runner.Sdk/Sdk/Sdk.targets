@@ -15,10 +15,30 @@
     <_DorotiIosDebugInterpreterDefault Condition="'$(DorotiCompilationMode)' != 'CoreClr' and '$(MtouchInterpreter)' == '' and '$(UseInterpreter)' != 'false'">true</_DorotiIosDebugInterpreterDefault>
     <RunWorkingDirectory>$(MSBuildProjectDirectory)</RunWorkingDirectory>
   </PropertyGroup>
+  <ItemGroup Condition="'$(DorotiIosDevelopment)' == 'true' and '$(RuntimeIdentifier)' == 'ios-arm64' and '$(DorotiCompilationMode)' == 'Mono'">
+    <PartialAppManifest Include="$(MSBuildThisFileDirectory)IosDevelopmentNetwork.plist" Overwrite="false" />
+    <!-- mlaunch normally copies/rebases this hook as part of USB forwarding.
+         Bundle the selected SDK's unmodified agent for direct network launch. -->
+    <_DorotiIosHotReloadAgent Include="$(MSBuildToolsPath)/DotnetTools/dotnet-watch/*/tools/net10.0/any/hotreload/net10.0/Microsoft.Extensions.DotNetDeltaApplier.dll" />
+    <BundleResource Include="@(_DorotiIosHotReloadAgent)" LogicalName="Microsoft.Extensions.DotNetDeltaApplier.dll" />
+  </ItemGroup>
   <Target Name="ValidateDorotiIosDevelopment" BeforeTargets="PrepareForBuild;CollectPackageReferences" Condition="'$(DorotiIosDevelopment)' == 'true'">
-    <Error Condition="'$(RuntimeIdentifier)' == 'ios-arm64' and $([MSBuild]::VersionLessThan('$(TargetFrameworkVersion)', '11.0'))" Text="iOS development sessions on devices require .NET 11 or newer with native USB forwarding support." />
+    <Error Condition="'$(RuntimeIdentifier)' == 'ios-arm64' and '$(DorotiCompilationMode)' == 'Mono' and '$(DOROTI_DEV_HOTRELOAD_ENDPOINT)' == ''" Text="iOS development sessions on .NET 10 devices require the Doroti network Hot Reload launcher." />
+    <Error Condition="'$(RuntimeIdentifier)' == 'ios-arm64' and '$(DorotiCompilationMode)' == 'Mono' and '@(_DorotiIosHotReloadAgent->Count())' != '1'" Text="iOS development sessions require one .NET 10 SDK WebSocket Hot Reload agent." />
+    <Error Condition="'$(RuntimeIdentifier)' == 'ios-arm64' and '$(DorotiCompilationMode)' == 'Mono' and '$(MtouchInterpreter)' != 'all,-Doroti.Host.Maui'" Text="iOS development sessions on .NET 10 devices require MtouchInterpreter=all,-Doroti.Host.Maui. Mixed framework AOT can crash Mono when invoking updated virtual methods." />
     <Error Condition="'$(DorotiTarget)' != 'iOS' or '$(Configuration)' != 'Debug' or '$(DorotiCompilationMode)' == 'NativeAot' or '$(PublishAot)' == 'true' or ('$(DorotiCompilationMode)' == 'Mono' and '$(UseInterpreter)' == 'false')"
-           Text="iOS development sessions require iOS Debug with Mono/interpreter on simulators or CoreCLR on .NET 11 devices." />
+           Text="iOS development sessions require iOS Debug with Mono/interpreter or the .NET 11 device CoreCLR profile." />
+  </Target>
+  <Target Name="DorotiConfigureDeviceHotReloadNetwork" AfterTargets="ComputeMlaunchRunArguments"
+          Condition="'$(DorotiIosDevelopment)' == 'true' and '$(RuntimeIdentifier)' == 'ios-arm64' and '$(DorotiCompilationMode)' == 'Mono' and '$(DOROTI_DEV_HOTRELOAD_ENDPOINT)' != ''">
+    <!-- .NET 10's native runtime cannot service mlaunch's USB forward command.
+         Keep the SDK startup hook/key, but connect directly through the relay. -->
+    <PropertyGroup>
+      <_DorotiIosHotReloadAgentPath>@(_DorotiIosHotReloadAgent)</_DorotiIosHotReloadAgentPath>
+      <RunArguments>$([System.Text.RegularExpressions.Regex]::Replace('$(RunArguments)', '--hotreload-[^ =]+=[^ ]+', ''))</RunArguments>
+      <RunArguments>$([System.Text.RegularExpressions.Regex]::Replace('$(RunArguments)', '--setenv=DOTNET_WATCH_HOTRELOAD_WEBSOCKET_ENDPOINT=[^ ]+', '--setenv=DOTNET_WATCH_HOTRELOAD_WEBSOCKET_ENDPOINT=$(DOROTI_DEV_HOTRELOAD_ENDPOINT)'))</RunArguments>
+      <RunArguments>$(RunArguments.Replace('$(_DorotiIosHotReloadAgentPath)', 'Microsoft.Extensions.DotNetDeltaApplier'))</RunArguments>
+    </PropertyGroup>
   </Target>
   <Target Name="DorotiTrackIosDevelopmentAotDependencies" BeforeTargets="_GenerateAOTCompileDependencyCache"
           Condition="'$(DorotiIosDevelopment)' == 'true' and '$(DesignTimeBuild)' != 'true'">
@@ -103,6 +123,10 @@
          editable, compile framework dependencies, and retain dynamic-code
          interpreter support. Custom app assembly names can override this list. -->
     <DorotiIosDebugInterpretedAssemblies Condition="'$(_DorotiIosDebugInterpreterDefault)' == 'true' and '$(DorotiIosDebugInterpretedAssemblies)' == ''">$(DorotiApplicationProjectName),$(AssemblyName)</DorotiIosDebugInterpretedAssemblies>
+    <!-- Mono 10's AOT virtual-call trampoline can assert after a real metadata
+         delta. Interpret the widget/framework callers in development sessions;
+         retain the native UIKit host's AOT lifetime behavior. -->
+    <MtouchInterpreter Condition="'$(DorotiIosDevelopment)' == 'true' and '$(_DorotiIosDebugInterpreterDefault)' == 'true' and '$(MtouchInterpreter)' == ''">all,-Doroti.Host.Maui</MtouchInterpreter>
     <MtouchInterpreter Condition="'$(_DorotiIosDebugInterpreterDefault)' == 'true' and '$(MtouchInterpreter)' == '' and '$(RuntimeIdentifier)' == 'ios-arm64'">-all,$(DorotiIosDebugInterpretedAssemblies)</MtouchInterpreter>
     <!-- Preserve the fast simulator build and AOT UIKit host lifetime fix. -->
     <MtouchInterpreter Condition="'$(_DorotiIosDebugInterpreterDefault)' == 'true' and '$(MtouchInterpreter)' == ''">all,-Doroti.Host.Maui</MtouchInterpreter>
