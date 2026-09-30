@@ -160,6 +160,49 @@ CLI의 iOS Release 기본값은 실험적인 NativeAot이므로, 위 명령처�
 
 `net10.0-ios27.0`의 실기기(`ios-arm64`) Debug/Mono 프로필은 레이아웃·렌더링 엔진을 Mono AOT로 컴파일하고 앱과 iOS 진입 어셈블리만 해석합니다. 회전 중 매 프레임 실행되는 엔진까지 해석해서 표시 시점을 놓치는 것을 방지합니다. 시뮬레이터는 기존 빠른 빌드 프로필을 유지합니다. 앱 어셈블리 이름을 별도로 지정했거나 추가 개발 어셈블리의 해석이 필요하면 `DorotiIosDebugInterpretedAssemblies`에 쉼표로 구분한 이름을 지정할 수 있습니다. 명시적인 `MtouchInterpreter` 설정은 기본값보다 우선하며 NativeAOT 프로필은 별개입니다.
 
+### .NET 11 RC1 + Xcode 27 Native AOT
+
+2026-09-30 기준 [.NET 11 RC1 iOS 워크로드](https://github.com/dotnet/macios/releases/tag/dotnet-11.0.1xx-rc1-12193)는
+**Xcode 26.6**을 요구합니다. Xcode 27에서 이 프로필을 빌드·게시하려면 직접
+`dotnet build` / `dotnet publish` 명령에 **`-p:ValidateXcodeVersion=false`**를 추가해야 합니다.
+Native AOT 앱 생성에는 `dotnet publish`를 사용합니다. 이 옵션은 버전 검사만 건너뛰며,
+[Microsoft가 지원하는 Xcode 조합](https://learn.microsoft.com/en-us/dotnet/ios/troubleshooting/xcode-requirement)으로 바꾸지는 않습니다.
+서명·네이티브 링크·설치·실행 오류는 별도로 확인해야 합니다.
+
+다음은 **저장소 루트 `DorotiLab`의 PowerShell**에서 실행하는 예제입니다.
+SampleApp2에는 .NET 11 선택용 `global.json`이 없으므로, 기존 Testbed iOS 폴더의
+`global.json`으로 SDK를 선택한 뒤 SampleApp2 프로젝트를 지정합니다.
+인증서 이름과 provisioning profile UUID는 로컬 개발 서명 값으로 바꾸세요.
+
+```powershell
+$aotArtifacts = Join-Path (Get-Location).Path 'Doroti/artifacts/sample2-ios-nativeaot'
+Push-Location ./samples/DorotiTestbedApp/ios
+try {
+    dotnet --version # 11.0.100-rc.1.26425.128 또는 해당 global.json이 허용하는 패치
+    dotnet publish ../../DorotiSampleApp2/ios/DorotiSampleApp2.iOS.csproj `
+        -c Release -r ios-arm64 `
+        -p:DorotiCompilationMode=NativeAot `
+        -p:ValidateXcodeVersion=false `
+        "-p:ArtifactsPath=$aotArtifacts" `
+        '-p:CodesignKey=YOUR_DEVELOPMENT_CERTIFICATE' `
+        '-p:CodesignProvision=YOUR_PROVISIONING_PROFILE_UUID'
+    if ($LASTEXITCODE -ne 0) { throw 'Native AOT publish failed.' }
+} finally {
+    Pop-Location
+}
+```
+
+우회는 해당 명령에만 적용합니다. 공통 프로젝트 설정에서 검사를 끄지 않습니다.
+Xcode 26.6을 선택한 .NET 11 빌드나 Xcode 27을 지원하는 .NET 10 워크로드에는 이 옵션이 필요 없습니다.
+[도구 업데이트 스크립트](../../scripts/update-dotnet-macos.py)로 .NET 11 워크로드를 RC1으로 업데이트해도
+RC1의 Xcode 26.6 요구 사항은 유지됩니다.
+
+2026-09-30 검증: .NET SDK `11.0.100-rc.1.26425.128`, iOS SDK pack `26.5.11720-net11-p6`,
+Xcode 27.0에서 위 우회를 적용한 Release Native AOT publish·서명·iPhone 12/iOS 26.6.1 설치와
+Components 화면 표시를 확인했습니다. `PublishAot=true`, `UseNativeAot=true`, `UseMonoRuntime=false`,
+앱 번들 내 관리 DLL 0개를 확인했습니다. 이 결과는 RC1 iOS SDK pack `26.5.12193-net11-rc.1`의
+검증 결과가 아니며, 전체 터치·회전 동작과 배포 적합성 검증도 포함하지 않습니다.
+
 ## Linux
 
 Linux x64에서 .NET SDK, CMake 3.24 이상, C++20 컴파일러, Qt 6.8 이상(Quick/QuickControls2/WebEngineQuick/WebChannel),

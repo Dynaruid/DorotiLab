@@ -36,6 +36,8 @@ See the [platform implementation table](../README.md#platforms) for the host and
 
 SDK selection is separate from the target framework. iOS device Release defaults to NativeAOT; use `-CompilationMode Mono` for the explicit recovery profile. NativeAOT uses `net11.0-ios` and MAUI `11.0.0-rc.1.26451.6`. Debug, simulators, and the explicit Mono profile currently retain `net10.0-ios`. Use `publish` to produce the signed device app; see [iOS sample instructions](../samples/DorotiTestbedApp/README.md#ios-sample).
 
+**.NET 11 RC1 + Xcode 27 (2026-09-30):** The RC1 iOS workload requires Xcode 26.6. To attempt a build or publish with Xcode 27, append `-p:ValidateXcodeVersion=false` to a direct `dotnet build` / `dotnet publish` command. This temporary workaround only skips the version check; it does not establish supported compatibility. Do not apply it to the supported Xcode 26.6 combination or to .NET 10 workloads that support Xcode 27. See the [SampleApp2 example and verification scope](../samples/DorotiSampleApp2/README.md#net-11-rc1--xcode-27-native-aot) and [official RC1 requirements](https://github.com/dotnet/macios/releases/tag/dotnet-11.0.1xx-rc1-12193).
+
 ### Platform prerequisites
 
 Prepare the tools for the selected platform. Workload names identify .NET installation components; native SDKs and system libraries must also be installed.

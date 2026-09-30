@@ -36,6 +36,8 @@ Doroti는 데스크톱·모바일·웹에서 공유하는 위젯, 레이아웃, 
 
 SDK 선택과 대상 프레임워크는 별개입니다. iOS 실기기 Release는 NativeAOT가 기본이며, `-CompilationMode Mono`로 복구 프로필을 선택합니다. NativeAOT는 `net11.0-ios`와 MAUI `11.0.0-rc.1.26451.6`을 사용합니다. 현재 Debug·시뮬레이터·명시적 Mono 프로필은 `net10.0-ios`를 유지합니다. 서명된 실기기 앱은 `publish`로 생성하며, 자세한 절차는 [iOS 샘플 안내](../samples/DorotiTestbedApp/README.ko.md#ios-샘플)를 참고하세요.
 
+**.NET 11 RC1 + Xcode 27 (2026-09-30):** RC1 iOS 워크로드는 Xcode 26.6을 요구하므로, Xcode 27에서 빌드·게시를 시도할 때는 직접 `dotnet build` / `dotnet publish` 명령에 `-p:ValidateXcodeVersion=false`를 추가해야 합니다. 이는 버전 검사만 건너뛰는 임시 우회이며 공식 호환성 보장은 아닙니다. Xcode 26.6을 사용하는 지원 조합 또는 .NET 10의 Xcode 27 지원 워크로드에서는 이 우회를 적용하지 않습니다. [SampleApp2 실행 예제와 검증 범위](../samples/DorotiSampleApp2/README.md#net-11-rc1--xcode-27-native-aot), [RC1 공식 요구 사항](https://github.com/dotnet/macios/releases/tag/dotnet-11.0.1xx-rc1-12193)을 참고하세요.
+
 ### 플랫폼별 구성
 
 선택한 플랫폼 행의 도구를 준비합니다. workload 이름은 설치 항목이며, 네이티브 SDK와 시스템 라이브러리는 별도로 준비해야 합니다.
