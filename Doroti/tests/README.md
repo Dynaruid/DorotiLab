@@ -137,3 +137,19 @@ on iOS may require confirming the OS Open dialog. This is not a physical-input t
 pwsh -NoProfile -File Doroti/eng/doroti.ps1 validate -ValidationSuite IOSSmoke
 pwsh -NoProfile -File Doroti/eng/doroti.ps1 validate -ValidationSuite CatalystSmoke
 ```
+
+
+iOS development validation (macOS, booted simulator, matching iOS workload):
+
+```sh
+python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/ios_development_bridge.py
+python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/apple_build_profiles.py
+python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/ios_hot_reload_smoke.py temp/testing/ios-reload-run --device <simulator-UDID>
+python3 Doroti/eng/run-with-timeout.py node Doroti/tools/vscode-doroti/dist/test/runHost.js samples/DorotiTestbedApp temp/testing/ios-editor-run --ios
+```
+
+The smoke test temporarily edits the Testbed reload scene and restores it in `finally`; use a fresh evidence directory and do not edit that scene concurrently. It verifies actual deltas, PID/State/count/text/scroll preservation, compiler-error recovery, rude edits and Stop. State is seeded automatically. The editor test uses a separately installed VSIX/profile; run `npm run package` in the extension folder first. See [iOS qualification](../../works/platforms/ios.md#2026-09-30-ios-metadata-hot-reload).
+
+Physical-device Hot Reload uses the same smoke test with `--rid ios-arm64 --framework net11.0-ios --sdk-version 11.0.100-rc.1.26425.128 --dotnet <prepared-dotnet-host>`. It copies the automatically seeded state probe out of Documents and requires matching completed-frame responses for real SDK deltas. Pair the device, enable Developer Mode, and supply signing/toolchain environment variables described in the [development contract](../docs/development-hot-reload.md).
+
+For installed-VSIX device validation, set `DOROTI_TEST_IOS_RID=ios-arm64`, `DOROTI_TEST_IOS_DEVICE=<UDID>`, `DOROTI_TEST_IOS_TFM=net11.0-ios`, `DOROTI_TEST_IOS_SDK=11.0.100-rc.1.26425.128`, and `DOROTI_TEST_DOTNET=<prepared-dotnet-host>`, then run `runHost.js <Testbed> <fresh-evidence> --ios` through the timeout wrapper. Do not run the CLI and editor smoke simultaneously: both temporarily edit the same scene. `apple_build_profiles.py --device-sdk <installed-version>` also checks CoreCLR, registrar, runtime/crossgen2 alignment and unchanged Apple runtime pack selection.

@@ -16,6 +16,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Doroti.Host.Maui\Doroti.Host.Maui.csproj" AdditionalProperties="RuntimeIdentifier=ios-arm64;DorotiCompilationMode=$(DorotiCompilationMode);DorotiIosTargetFramework=$(TargetFramework);DorotiIosMauiVersion=$(DorotiIosMauiVersion)"
                       SetTargetFramework="TargetFramework=$(TargetFramework)" SkipGetTargetFrameworkProperties="true" />
+    <!-- Development properties already flow globally; avoid duplicate watch graph nodes. -->
+    <ProjectReference Update="..\Doroti.Host.Maui\Doroti.Host.Maui.csproj" Condition="'$(DorotiIosDevelopment)' == 'true'"
+                      AdditionalProperties="RuntimeIdentifier=ios-arm64" />
     <EmbeddedResource Include="doroti-target-manifest.ios27.json" LogicalName="Doroti.Target.Manifest" Condition="'$(TargetFramework)' == 'net10.0-ios27.0'" />
     <None Include="doroti-target-manifest.ios27.json" Pack="true" PackagePath="doroti/doroti-target-manifest.json" Condition="'$(TargetFramework)' == 'net10.0-ios27.0'" />
     <EmbeddedResource Include="doroti-target-manifest.json" LogicalName="Doroti.Target.Manifest" Condition="'$(TargetFramework)' == 'net10.0-ios'" />

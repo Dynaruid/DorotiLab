@@ -16,6 +16,11 @@
   <PropertyGroup Condition="'$(DorotiCompilationMode)' == '' and '$(PublishAot)' != 'false' and '$(Configuration)' == 'Release' and ('$(RuntimeIdentifier)' == 'ios-arm64' or '$(MSBuildProjectName)' == 'Doroti.Target.iOS.Maui.ios-arm64')">
     <DorotiCompilationMode>NativeAot</DorotiCompilationMode>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(DorotiIosDevelopment)' == 'true' and '$(DorotiIosTargetFramework)' == 'net11.0-ios'">
+    <DorotiIosMauiVersion Condition="'$(DorotiIosMauiVersion)' == ''">11.0.0-rc.1.26451.6</DorotiIosMauiVersion>
+    <DorotiHostTargetFrameworks>$(DorotiIosTargetFramework)</DorotiHostTargetFrameworks>
+    <Registrar>partial-static</Registrar>
+  </PropertyGroup>
   <!-- Selected before target-framework discovery, including RID-less restore.
        PublishAot belongs on the executable and is deliberately not set here. -->
   <PropertyGroup Condition="'$(DorotiCompilationMode)' == 'NativeAot'">

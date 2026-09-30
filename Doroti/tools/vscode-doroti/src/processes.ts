@@ -19,7 +19,17 @@ export async function stop(child: ChildProcess): Promise<void> {
             });
         });
     } else {
-        try { process.kill(-child.pid, 'SIGTERM'); } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ESRCH') throw error; }
+        await new Promise<void>((resolve, reject) => {
+            // iOS also owns a simulator app outside the process group. Let its
+            // launcher finish cleanup before a Restart launches the same bundle.
+            const timer = setTimeout(() => reject(new Error('Doroti did not finish stopping. Check the session logs.')), 30000);
+            child.once('close', () => { clearTimeout(timer); resolve(); });
+            try { process.kill(-child.pid!, 'SIGTERM'); }
+            catch (error) {
+                clearTimeout(timer);
+                if ((error as NodeJS.ErrnoException).code === 'ESRCH') resolve(); else reject(error);
+            }
+        });
     }
 }
 export function completion(child: ChildProcess): Promise<void> {

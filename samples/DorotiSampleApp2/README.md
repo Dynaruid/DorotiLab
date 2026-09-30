@@ -160,6 +160,18 @@ CLI의 iOS Release 기본값은 실험적인 NativeAot이므로, 위 명령처�
 
 `net10.0-ios27.0`의 실기기(`ios-arm64`) Debug/Mono 프로필은 레이아웃·렌더링 엔진을 Mono AOT로 컴파일하고 앱과 iOS 진입 어셈블리만 해석합니다. 회전 중 매 프레임 실행되는 엔진까지 해석해서 표시 시점을 놓치는 것을 방지합니다. 시뮬레이터는 기존 빠른 빌드 프로필을 유지합니다. 앱 어셈블리 이름을 별도로 지정했거나 추가 개발 어셈블리의 해석이 필요하면 `DorotiIosDebugInterpretedAssemblies`에 쉼표로 구분한 이름을 지정할 수 있습니다. 명시적인 `MtouchInterpreter` 설정은 기본값보다 우선하며 NativeAOT 프로필은 별개입니다.
 
+### iOS Hot Reload
+
+기본 .NET 10 개발 경로는 iOS 시뮬레이터를 사용합니다. 실기기 USB는 .NET 11 CoreCLR 개발 프로필로 연결합니다. 시뮬레이터를 하나 부팅한 뒤 Debug 개발 세션을 시작합니다. 여러 시뮬레이터가 켜져 있으면 `-Device <UDID>`를 지정합니다.
+
+```powershell
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 dev -App ./samples/DorotiSampleApp2 -Platform ios -IosTargetFramework net10.0-ios27.0
+```
+
+앱 C# 메서드를 수정하고 저장하면 SDK가 metadata delta를 적용합니다. VS Code 확장에서도 `ios` 선택 → Run → Hot Reload를 사용할 수 있습니다. `doroti.iosTargetFramework`는 위 명령과 같은 값으로 설정합니다. 지원하지 않는 편집은 명시적 Restart가 필요하며 상태가 초기화됩니다. 네이티브 Swift/바인딩 변경, Release/NativeAOT는 이 핫리로드 경로의 대상이 아닙니다. 준비 조건과 검증 범위는 [개발 세션 계약](../../Doroti/docs/development-hot-reload.md)을 참고하세요.
+
+실기기는 `-Rid ios-arm64 -Device <UDID> -IosTargetFramework net11.0-ios -IosSdkVersion 11.0.100-rc.1.26425.128`을 지정합니다. 프로젝트의 `global.json`은 바꾸지 않습니다. 현재 RC1 SDK에는 수정된 runtime/crossgen2 `11.0.0-rc.2.26478.114`를 개발 모드에서만 사용합니다. 개발 서명, Xcode 27 사용 시 `ValidateXcodeVersion=false`, 바인딩 도구용 런타임과 `-DotnetPath` 준비는 [실기기 개발 명령](../../Doroti/docs/development-hot-reload.md)을 따릅니다. 이 프로필은 Debug 핫리로드 검증용이며 아래 Native AOT 게시 프로필과 구분합니다.
+
 ### .NET 11 RC1 + Xcode 27 Native AOT
 
 2026-09-30 기준 [.NET 11 RC1 iOS 워크로드](https://github.com/dotnet/macios/releases/tag/dotnet-11.0.1xx-rc1-12193)는

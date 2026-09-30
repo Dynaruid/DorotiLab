@@ -113,3 +113,37 @@ python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/apple
 - 최종 SampleApp2는 개발 서명 검사 후 기존 데이터를 유지하여 같은 아이폰에 재설치·실행했다. 일반 앱 실행에는 probe 환경변수를 주입하지 않았다. 정착 후 1170×2532 세로 및 2532×1170 가로 캡처에서 Components 화면을 확인하고 기기를 원래 방향으로 복구했다.
 
 재현 시 기존 실기기 build 명령에 `MtouchInterpreter` override를 붙이지 않는다. Testbed에 `DOROTI_SAMPLE=reload`, `DOROTI_UIKIT_ROTATION_PROBE=rotation-qualified.json`, `DOROTI_UIKIT_ROTATION_ASSERT_SYNC=1`을 지정하면 Documents에 결과 또는 `.error`가 생성된다. 로컬 원시 자료는 `temp/testing/ios-native-rotation/`에서 결과 요약 후 정리했다. 실기기 Testbed의 Documents에 생성한 회전·입력 probe JSON은 남아 있다. devicectl은 개별 파일 삭제를 제공하지 않고 debugger 정리도 완료하지 못했으므로 앱 데이터를 초기화하지 않았다. SampleApp2에는 이 probe 결과가 생성되지 않는다.
+
+
+## 2026-09-30 iOS metadata Hot Reload
+
+`dev -Platform ios`와 VS Code iOS target을 연결했다. SDK의 실제 WebSocket metadata agent를 사용하고, Doroti 세션 relay는 요청 ID·기능 상태·완료된 프레임 응답만 전달한다. 저장 전에 앱의 요청 수락을 확인하며 Release/NativeAOT는 거부한다.
+
+수정한 개발 경로는 RID가 섞인 watch graph의 중복 프로젝트, runner 작업 디렉터리, 일반 실행과 개발 빌드의 네이티브 캐시 혼용, design-time binding 컴파일의 빈 native resource package, AOT 모듈에 기록된 의존 어셈블리 MVID 무효화다. Mono 10.0.12의 `IsSupported` false 결과는 실제 delta 적용을 확인한 뒤 SDK와 같은 capability 조회로 보완했다. 일반 Release/NativeAOT 프로필과 구분하는 opt-in 개발 설정이다.
+
+- **Simulator CLI PASS:** iPhone 18 Pro / iOS 27.0 / `net10.0-ios27.0` / `iossimulator-arm64` / Debug Mono / Graphite-Metal. SDK 10.0.401, Mono 10.0.12, iOS workload 27.0.10722.
+- 실제 메서드 문구 변경 후 같은 PID·State ID, count 5·한글 텍스트·scroll 160 유지. revision 0→1→2 및 화면 캡처 확인. 실기기 제한을 반영한 최종 코드로 같은 CLI 시나리오를 재실행해 전 항목 PASS를 확인했다.
+- CS0103 컴파일 오류 시 revision 증가 없음, 수정 후 재적용 PASS. 필드 타입 변경 ENC0009는 Restart 필요로 남기고 기존 프로세스·State 유지.
+- **설치 VSIX PASS:** 별도 VS Code profile에서 iOS 선택 → Run → 실제 Hot Reload 명령 → 요청/프레임 응답 → 상태 보존 → Stop. 최종 simulator 전용 코드와 새 VSIX로 재실행해 같은 결과를 확인했다. 실제 사용자 마우스/키보드 입력 검증은 아니다.
+- HTTP relay의 인증·오래된 runtime 요청·저장 전 수락·연결 만료/복구, 기존 확장 단위 테스트 8개, Apple 빌드 프로필 8개와 잘못된 개발 설정 거부, Runner SDK 패키지에 binding hook 포함을 확인했다.
+- **실기기 USB 제한:** iPhone 12 / iOS 26.6.1에서 개발 서명·기동·SDK agent 로드와 상태 파일 통신까지 확인했지만 코드 delta 연결은 실패했다. 설치된 .NET 10 iOS native runtime 27.0.10722에는 USB `forward port:` 구현이 없고 .NET 11 프리뷰 runtime에는 해당 코드가 존재함을 확인했다. 당시에는 `ios-arm64` 개발 세션을 거부했다. 아래 2026-10-01 후속에서 .NET 11 CoreCLR 실기기 경로를 구현·검증했다.
+- 생성 템플릿의 package-only 개발 실행, Ganesh, Intel simulator, Swift/바인딩 편집 및 Release/NativeAOT 핫리로드를 이 결과로 확대하지 않는다.
+
+재현 명령과 제약은 [개발 세션 계약](../../Doroti/docs/development-hot-reload.md)을 따른다. 자동 seed를 사용한 상태 보존 증거이며 물리 IME·포인터 입력 qualification과 구분한다. 원시 자료는 `temp/testing/ios-hot-reload/`에 둔다.
+
+
+## 2026-10-01 실기기 USB Hot Reload
+
+사용자 요청에 따라 `ios-arm64` 개발 세션을 .NET 11 CoreCLR로 연결했다. 앱 root의 .NET 10 설정을 바꾸지 않고 `-IosSdkVersion`으로 세션별 SDK를 고른다. `-DotnetPath`는 Apple 바인딩 도구에도 전달한다. 시뮬레이터는 기존 .NET 10 Mono 경로를 유지한다.
+
+- **실기기 CLI PASS:** iPhone 12 / iOS 26.6.1 / `net11.0-ios` / Debug CoreCLR / UIKit·Graphite-Metal. 실제 method-body delta와 완료 frame 응답을 확인했다. PID 5247, State ID `19f560d8-22c7-4135-aaba-d81a43382455`를 유지하면서 revision 0→1→2, count 5·`한글 유지`·scroll 160 유지.
+- 컴파일 오류 CS0103에서는 revision 불변, 수정 뒤 두 번째 metadata update PASS. 필드 타입 변경 ENC0009에서는 자동 재시작 없이 이전 앱/State 유지. Stop 뒤 세션 closed 및 실제 기기 PID 소멸 확인. 테스트 중 수정한 소스는 복원했다.
+- **설치 VSIX 실기기 PASS:** 별도 profile에 설치한 확장에서 iOS/실기기/SDK/dotnet host를 설정하고 Run → Hot Reload → Stop을 실행했다. PID 5248·State ID `eabe3128-edea-49ff-9fda-2f1332049469`, count 5·한글·scroll 160을 유지하며 `iOS VSIX Hot Reload passed`와 revision 1을 확인했다. Stop 뒤 해당 PID 소멸을 확인했다.
+- SDK `11.0.100-rc.1.26425.128`, iOS pack `26.5.12193-net11-rc.1`, MAUI `11.0.0-rc.1.26451.6`. 이 RC1 SDK는 iOS Mono를 거부하므로 CoreCLR을 명시하고, 사용자 assembly MVID를 보존하는 `partial-static` registrar를 사용한다.
+- 최초 CoreCLR 런타임은 delta 적용 직후 `Bad IL range`를 재현했다. [상류 수정](https://github.com/dotnet/runtime/pull/132837)이 포함된 runtime/crossgen2 `11.0.0-rc.2.26478.114`로 개발 프로필만 고정했다. 패키지 소스 commit `0710df333c4b13d48f0be8e79550d66e988a7112`의 수정 코드를 확인했고, 앱의 실제 `libcoreclr` 버전도 대조했다. Apple runtime pack 버전은 그대로 유지한다.
+- 런타임 선택만 바꾸면 기존 네이티브 framework 캐시가 남을 수 있어 출력 경로를 `coreclr-<runtime-version>`으로도 분리했다. 코드 delta는 Apple SDK의 USB WebSocket 연결이 전송하고, Doroti 요청/응답만 CoreDevice의 앱 Documents 파일 복사로 전달한다. 요청 복사 완료 후 저장, 완료 프레임 후 성공 순서를 지킨다.
+- 바인딩 도구가 요구하는 데스크톱 runtime `11.0.0-rc.1.26426.105`는 사용자 영역의 별도 dotnet host에 추가했다. `prepare-ios-device-dotnet.py`로 재현하며 시스템 SDK/워크로드 설치는 수정하지 않는다. Xcode 27에서는 기존 RC1 제약에 따라 실행 환경에 `ValidateXcodeVersion=false`를 명시했다. 공식 Xcode 지원 조합이나 출시 배포 검증으로 확대하지 않는다.
+
+단위/설정 검사: HTTP 인증·세션 만료/복구, 실기기 요청 전달 실패 시 저장 금지, 실제 bundle container를 구분하는 종료, 기존 확장 테스트 8개, Apple 프로필 및 runtime/crossgen2·Apple pack 버전 분리, Source 계약 PASS. 자동 seed를 사용했으며 물리 IME·터치 입력이나 장기 성능 시험은 아니다. 재현 명령은 [개발 세션 계약](../../Doroti/docs/development-hot-reload.md), 원시 증거는 `temp/testing/ios-device-reload/`에 둔다.
+
+최종 회귀: 실기기 확장을 포함한 코드로 .NET 10 iPhone 18 Pro Simulator CLI 테스트를 재실행했다. metadata update 2회, 동일 PID/State·카운터/한글/스크롤, 컴파일 오류 복구, rude edit 유지, Stop 모두 PASS (`simulator-regression`).

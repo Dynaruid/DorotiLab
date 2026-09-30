@@ -157,3 +157,12 @@ native `dotnet watch`에서 field `int`→`long` 변경의 ENC0009/restart 필�
 
 [최신 구현·실행 근거와 잔여](../results/2026-09-29-web-windows-android.md)를 참조한다.
 이 문서의 이전 실행 결과를 새 PASS로 확대하지 않는다.
+
+
+## 2026-09-30 iOS 개발 세션 확장
+
+CLI `developmentTargets`에 선언된 iOS를 포함하고, macOS의 SDK mobile `dotnet watch` 실행·앱 요청 수락·완료 프레임 응답을 VS Code에 연결했다. `iosDevice`, `iosTargetFramework`, `iosRuntimeIdentifier` 설정을 제공한다. macOS용 설치 VSIX 테스트 경로도 추가했다.
+
+소스 Testbed의 iPhone 18 Pro Simulator에서 실제 metadata 갱신, 같은 PID/State·카운터·한글 텍스트·스크롤 보존, 컴파일 오류 후 복구, ENC0009의 명시적 재시작 요구, Stop PASS. 별도 profile에 설치한 VSIX의 Run → Hot Reload 명령 → 상태 보존 → Stop도 PASS. 당시 .NET 10 실기기 USB는 forwarding 미지원으로 거부했다. 2026-10-01에 SDK 선택·dotnet host 설정·CoreDevice 요청 전달을 추가하고 .NET 11 CoreCLR 실기기의 실제 delta/상태 보존/오류 복구/Stop을 확인했다. SDK/runtime과 남은 조합은 [iOS 결과](../platforms/ios.md#2026-09-30-ios-metadata-hot-reload)를 따른다. 기존 Windows/Web 결과나 마법사·Restart 확인 대화상자 전체 UI의 미검증 범위를 바꾸지 않는다.
+
+2026-10-01: 실기기에서도 새 설치 VSIX의 Run → 실제 Hot Reload 명령 → 동일 PID/State·count/한글/scroll 보존 → Stop/PID 소멸을 확인했다. SDK·런타임 수정 버전과 Xcode RC 제약은 [실기기 결과](../platforms/ios.md#2026-10-01-실기기-usb-hot-reload)를 따른다.

@@ -59,6 +59,14 @@
     <PackageReference Include="Xamarin.AndroidX.WebKit" />
     <PackageReference Include="SkiaSharp.NativeAssets.Android" />
   </ItemGroup>
+  <!-- Mirror MSBuild's RID-agnostic reference handling during graph evaluation.
+       dotnet watch identifies a project by path + TFM; propagating the native
+       RID here creates a second instance of every shared framework dependency. -->
+  <ItemGroup Condition="'$(DorotiIosDevelopment)' == 'true' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+    <ProjectReference Update="@(ProjectReference)">
+      <GlobalPropertiesToRemove>%(ProjectReference.GlobalPropertiesToRemove);RuntimeIdentifier;RuntimeIdentifiers;SelfContained</GlobalPropertiesToRemove>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Doroti.Graphics.DirectX\Doroti.Graphics.DirectX.csproj" GlobalPropertiesToRemove="WindowsAppSdkUndockedRegFreeWinRTInitialize;WindowsAppSdkAutoInitialize" Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-windows'))" />
   </ItemGroup>

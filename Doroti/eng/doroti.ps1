@@ -40,6 +40,14 @@ param(
     [string] $SessionDirectory,
     [string] $SessionId,
 
+    [ValidatePattern('^net[0-9]+\.[0-9]+-ios([0-9]+\.[0-9]+)?$')]
+    [string] $IosTargetFramework,
+
+    [ValidatePattern('^[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.-]+)?$')]
+    [string] $IosSdkVersion,
+
+    [string] $DotnetPath = 'dotnet',
+
     [ValidatePattern('^[A-Za-z][A-Za-z0-9_.-]*$')]
     [string] $InteropName = 'DorotiNativeInterop'
 )
@@ -524,13 +532,15 @@ function Invoke-Describe {
         root = $workspace.Root
         applicationProject = $workspace.ApplicationProject
         platforms = $workspace.Runners
-        developmentTargets = @($workspace.Runners.Keys | Where-Object { $_ -in @('windows', 'web') })
+        developmentTargets = @($workspace.Runners.Keys | Where-Object { $_ -in @('windows', 'web', 'ios') })
     } | ConvertTo-Json -Depth 5
 }
 
 function Invoke-Development {
     if ($Configuration -ne 'Debug') { throw 'dev requires Debug; Release metadata updates are not supported.' }
-    if ($Platform -notin @('windows', 'web')) { throw 'dev currently supports Windows App SDK and Web.' }
+    if ($Platform -notin @('windows', 'web', 'ios')) { throw 'dev currently supports Windows App SDK, Web and iOS.' }
+    if ($Platform -eq 'ios' -and !$IsMacOS) { throw 'iOS development sessions require macOS and Xcode.' }
+    if ($Platform -eq 'ios' -and $CompilationMode -eq 'NativeAot') { throw 'iOS Hot Reload requires Debug/Mono; NativeAot is not supported.' }
     $workspace = Resolve-DorotiWorkspace $App
     $runner = $workspace.Runners[$Platform]
     if (-not $runner) { throw "Platform '$Platform' is not declared by this workspace." }
@@ -550,6 +560,31 @@ function Invoke-Development {
         $env:DOTNET_WATCH_SUPPRESS_EMOJIS = '1'
         $env:DOTNET_WATCH_RESTART_ON_RUDE_EDIT = 'false'
         Write-Host "Doroti development session: $sessionPath"
+        if ($Platform -eq 'ios') {
+            if (!$Rid) { $Rid = if ([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture -eq 'Arm64') { 'iossimulator-arm64' } else { 'iossimulator-x64' } }
+            if ($Rid -notin @('ios-arm64', 'iossimulator-arm64', 'iossimulator-x64')) {
+                throw 'iOS development requires ios-arm64, iossimulator-arm64 or iossimulator-x64.'
+            }
+            if ($Rid -eq 'ios-arm64' -and $CompilationMode -eq 'Mono') {
+                throw 'Device Hot Reload uses .NET 11 CoreCLR. Omit -CompilationMode Mono for this development session.'
+            }
+            if (!$Device) {
+                if ($Rid -eq 'ios-arm64') { throw 'Specify the paired iPhone/iPad UDID with -Device.' }
+                $devices = (& xcrun simctl list devices booted --json | ConvertFrom-Json).devices
+                if ($LASTEXITCODE -ne 0) { throw 'Unable to query iOS simulators.' }
+                $booted = @($devices.PSObject.Properties | Where-Object { $_.Name -like '*.iOS-*' } |
+                    ForEach-Object { $_.Value } | Where-Object { $_.isAvailable -and $_.state -eq 'Booted' })
+                if ($booted.Count -ne 1) { throw 'Boot one iOS simulator or specify its UDID with -Device.' }
+                $Device = $booted[0].udid
+            }
+            $iosArguments = @((Join-Path $PSScriptRoot 'ios-development.py'), '--runner', $runner, '--app-root', $workspace.Root,
+                '--session-directory', $sessionPath, '--session-id', $SessionId, '--rid', $Rid, '--device', $Device)
+            if ($IosTargetFramework) { $iosArguments += @('--framework', $IosTargetFramework) }
+            if ($IosSdkVersion) { $iosArguments += @('--sdk-version', $IosSdkVersion) }
+            $iosArguments += @('--dotnet', $DotnetPath)
+            Invoke-Checked 'python3' $iosArguments (Split-Path -Parent $runner)
+            return
+        }
         $watchArguments = @('watch', '--project', $runner, 'run', '--configuration', 'Debug')
         if ($Platform -eq 'windows') { $watchArguments += '--no-launch-profile' }
         Invoke-Checked 'dotnet' $watchArguments $workspace.Root

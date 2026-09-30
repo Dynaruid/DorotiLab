@@ -1,0 +1,11 @@
+<Project>
+  <!-- dotnet watch invokes Compile directly for its design-time graph. The
+       Apple binding Compile target otherwise packages an empty NativeReference
+       list and replaces the real Xcode resource bundle with an empty stamp. -->
+  <PropertyGroup Condition="'$(DorotiIosDevelopment)' == 'true' and '$(IsBindingProject)' == 'true' and '$(DesignTimeBuild)' == 'true'">
+    <_DisableBindingProjectBuild>true</_DisableBindingProjectBuild>
+  </PropertyGroup>
+  <Target Name="DorotiBuildIosDevelopmentBindingResources" BeforeTargets="_CreateBindingResourcePackage"
+          DependsOnTargets="_BuildXcodeProjects"
+          Condition="'$(DorotiIosDevelopment)' == 'true' and '$(IsBindingProject)' == 'true' and '$(DesignTimeBuild)' != 'true'" />
+</Project>

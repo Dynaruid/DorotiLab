@@ -40,6 +40,8 @@ public sealed class HotReloadState : State<HotReloadSample>
     {
         if (!OperatingSystem.IsBrowser() && Environment.GetEnvironmentVariable("DOROTI_RELOAD_PROBE") is { Length: > 0 } file)
         {
+            if (OperatingSystem.IsIOS() && !System.IO.Path.IsPathRooted(file))
+                file = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), file);
             using var output = File.Create(file);
             using var writer = new Utf8JsonWriter(output);
             writer.WriteStartObject();

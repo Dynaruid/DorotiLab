@@ -2,6 +2,7 @@ import { runTests } from '@vscode/test-electron';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { randomUUID } from 'node:crypto';
 
 async function main() {
     const extension = path.resolve(__dirname, '../..');
@@ -12,8 +13,10 @@ async function main() {
     const harness = path.join(evidence, 'harness');
     await fs.mkdir(harness, { recursive: true });
     await fs.writeFile(path.join(harness, 'package.json'), JSON.stringify({ name: 'doroti-test-harness', publisher: 'local', version: '0.0.0', engines: { vscode: '^1.100.0' } }));
-    const code = path.join(process.env.LOCALAPPDATA!, 'Programs/Microsoft VS Code/Code.exe');
-    let cli = path.join(path.dirname(code), 'resources/app/out/cli.js');
+    const code = process.env.DOROTI_TEST_CODE ?? (process.platform === 'darwin'
+        ? '/Applications/Visual Studio Code.app/Contents/MacOS/Code'
+        : path.join(process.env.LOCALAPPDATA!, 'Programs/Microsoft VS Code/Code.exe'));
+    let cli = process.platform === 'darwin' ? path.resolve(path.dirname(code), '../Resources/app/out/cli.js') : path.join(path.dirname(code), 'resources/app/out/cli.js');
     try { await fs.access(cli); } catch {
         for (const name of await fs.readdir(path.dirname(code))) {
             const candidate = path.join(path.dirname(code), name, 'resources/app/out/cli.js');
@@ -26,8 +29,9 @@ async function main() {
     delete process.env.ELECTRON_RUN_AS_NODE;
     delete process.env.VSCODE_IPC_HOOK_CLI;
     const web = process.argv.includes('--web');
-    await runTests({ vscodeExecutablePath: code, extensionDevelopmentPath: harness, extensionTestsPath: path.join(__dirname, web ? 'webHost.js' : 'host.js'),
+    const ios = process.argv.includes('--ios');
+    await runTests({ vscodeExecutablePath: code, extensionDevelopmentPath: harness, extensionTestsPath: path.join(__dirname, ios ? 'iosHost.js' : web ? 'webHost.js' : 'host.js'),
         launchArgs: [app, '--user-data-dir', profile, '--extensions-dir', extensions, '--disable-workspace-trust', '--skip-welcome', '--skip-release-notes', '--disable-updates'],
-        extensionTestsEnv: { DOROTI_TEST_CLI: path.join(repo, 'Doroti/eng/doroti.ps1'), DOROTI_RELOAD_PROBE: path.join(evidence, 'state.json'), DOROTI_TEST_RESULT: path.join(evidence, 'result.json'), DOROTI_TEST_EVIDENCE: evidence } });
+        extensionTestsEnv: { DOROTI_TEST_CLI: path.join(repo, 'Doroti/eng/doroti.ps1'), DOROTI_RELOAD_PROBE: process.env.DOROTI_TEST_IOS_RID === 'ios-arm64' ? `reload-vsix-${randomUUID()}.json` : path.join(evidence, 'state.json'), DOROTI_TEST_RESULT: path.join(evidence, 'result.json'), DOROTI_TEST_EVIDENCE: evidence, ...(ios ? { DOROTI_SAMPLE: 'reload' } : {}) } });
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

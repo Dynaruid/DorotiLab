@@ -12,6 +12,36 @@ namespace Doroti.Framework.Widgets;
 public static class DorotiHotReload
 {
     private static readonly ConcurrentDictionary<Guid, Registration> Views = new();
+    private static bool SupportsMetadataUpdates()
+    {
+        if (MetadataUpdater.IsSupported) return true;
+        // Mono 10's hot_reload_update_enabled returns false after its initial
+        // check (including when actual ApplyUpdate succeeds). Use the same
+        // component capability query as the SDK agent, only in opted-in iOS
+        // sessions with updates enabled before runtime startup.
+        if (!OperatingSystem.IsIOS() || (!DorotiDevelopmentSession.IsRemote && Environment.GetEnvironmentVariable("DOROTI_DEV_SESSION") is null) ||
+            !string.Equals(Environment.GetEnvironmentVariable("DOTNET_MODIFIABLE_ASSEMBLIES"), "debug", StringComparison.OrdinalIgnoreCase))
+            return false;
+        try
+        {
+            var capabilities = typeof(MetadataUpdater).GetMethod("GetCapabilities",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)?.Invoke(null, null) as string;
+            return capabilities?.Split(' ').Contains("Baseline") == true;
+        }
+        catch (Exception error)
+        {
+            System.Diagnostics.Trace.TraceWarning($"Could not query iOS metadata capabilities: {error.Message}");
+            return false;
+        }
+    }
+    private static string? SessionDirectory()
+    {
+        if (OperatingSystem.IsBrowser()) return null;
+        var directory = Environment.GetEnvironmentVariable("DOROTI_DEV_SESSION");
+        return OperatingSystem.IsIOS() && directory is { Length: > 0 } && !System.IO.Path.IsPathRooted(directory)
+            ? System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), directory)
+            : directory;
+    }
     public static void ClearCache(Type[]? updatedTypes) { }
     public static void UpdateApplication(Type[]? updatedTypes)
     {
@@ -46,7 +76,7 @@ public static class DorotiHotReload
     {
         private readonly SemaphoreSlim _serial = new(1);
         private readonly CancellationTokenSource _lifetime = new();
-        private readonly string? _directory = OperatingSystem.IsBrowser() ? null : Environment.GetEnvironmentVariable("DOROTI_DEV_SESSION");
+        private readonly string? _directory = SessionDirectory();
         private readonly string? _session = Environment.GetEnvironmentVariable("DOROTI_DEV_SESSION_ID");
         private long _revision;
         public Guid Id { get; } = Guid.NewGuid();
@@ -60,7 +90,7 @@ public static class DorotiHotReload
             {
                 await _serial.WaitAsync(_lifetime.Token).ConfigureAwait(false);
                 entered = true;
-                if (OperatingSystem.IsBrowser()) requestId = DorotiDevelopmentSession.Request(Id.ToString());
+                if (OperatingSystem.IsBrowser() || DorotiDevelopmentSession.IsRemote) requestId = DorotiDevelopmentSession.Request(Id.ToString());
                 // A partial/stale editor request must not prevent a save-triggered
                 // metadata update from refreshing the UI.
                 try
@@ -126,7 +156,7 @@ public static class DorotiHotReload
         internal void Publish(string status, string? requestId, string? error)
         {
             if (_lifetime.IsCancellationRequested ||
-                (!OperatingSystem.IsBrowser() && (_directory is null || _session is null))) return;
+                (!OperatingSystem.IsBrowser() && !DorotiDevelopmentSession.IsRemote && (_directory is null || _session is null))) return;
             try
             {
                 using var stream = new MemoryStream();
@@ -137,7 +167,7 @@ public static class DorotiHotReload
                     writer.WriteString("sessionId", _session ?? "browser");
                     writer.WriteString("runtimeId", Id.ToString());
                     writer.WriteNumber("processId", Environment.ProcessId);
-                    writer.WriteBoolean("supported", status != "closed" && MetadataUpdater.IsSupported && !Foundation.ConstantsLibrary.kReleaseMode);
+                    writer.WriteBoolean("supported", status != "closed" && SupportsMetadataUpdates() && !Foundation.ConstantsLibrary.kReleaseMode);
                     writer.WriteString("host", view.targetIdentity);
                     writer.WriteNumber("revision", Interlocked.Read(ref _revision));
                     writer.WriteString("status", status);
@@ -146,7 +176,7 @@ public static class DorotiHotReload
                     writer.WriteEndObject();
                 }
                 var bytes = stream.ToArray();
-                if (OperatingSystem.IsBrowser())
+                if (OperatingSystem.IsBrowser() || DorotiDevelopmentSession.IsRemote)
                     DorotiDevelopmentSession.Publish(Id.ToString(), System.Text.Encoding.UTF8.GetString(bytes));
                 else
                 {

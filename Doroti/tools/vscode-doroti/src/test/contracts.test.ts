@@ -11,6 +11,7 @@ test('CLI is authoritative for partial platform manifests', () => {
     const project = { schemaVersion: 'doroti.cli-workspace/v1', root: path.resolve('.'), applicationProject: 'app.csproj', platforms: { web: 'web.csproj' }, developmentTargets: ['web'] };
     assert.deepEqual(parseProject(JSON.stringify(project)).developmentTargets, ['web']);
     assert.throws(() => parseProject(JSON.stringify({ ...project, developmentTargets: ['windows'] })));
+    assert.deepEqual(parseProject(JSON.stringify({ ...project, platforms: { ios: 'ios.csproj' }, developmentTargets: ['ios'] })).developmentTargets, ['ios']);
 });
 test('watcher errors do not masquerade as applied reloads', () => {
     assert.equal(classifyOutput('error CS1002: ; expected'), 'compile-error');

@@ -31,7 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
         status.command = 'doroti.selectProject'; status.show();
         const supported = !!session?.runtime?.supported && !session.restartRequired;
         reload.text = session?.pending ? '$(sync~spin) Reloading' : '$(debug-restart) Hot Reload';
-        reload.tooltip = supported ? 'Save pending C# edits and apply metadata updates' : 'Run a Windows or Web Debug session; Web also needs its connected browser page.';
+        reload.tooltip = supported ? 'Save pending C# edits and apply metadata updates' : 'Run a connected Windows, Web or iOS Debug session.';
         reload.command = supported && !session?.pending ? 'doroti.hotReload' : 'doroti.showLogs';
         if (session) reload.show(); else reload.hide();
         void vscode.commands.executeCommand('setContext', 'doroti.running', !!session || busy);
@@ -68,7 +68,7 @@ export function activate(context: vscode.ExtensionContext) {
     async function selectTarget(requested?: unknown) {
         trusted(); if (session) throw new Error('Stop the running app before changing target.');
         if (!project) await selectProject(); if (!project) return;
-        if (!project.developmentTargets.length) throw new Error('This manifest declares no Windows/Web development targets.');
+        if (!project.developmentTargets.length) throw new Error('This manifest declares no Windows/Web/iOS development targets.');
         const choice = typeof requested === 'string' ? requested : await vscode.window.showQuickPick(project.developmentTargets, { title: 'Select Doroti target' });
         if (choice && !project.developmentTargets.includes(choice)) throw new Error('Target is not declared by this workspace.');
         if (choice) { target = choice; await context.workspaceState.update('target', target); display(); }
@@ -139,7 +139,15 @@ export function activate(context: vscode.ExtensionContext) {
         const bridge = target === 'web' ? await WebBridge.start(id) : undefined;
         if (generation !== lifetime) { await bridge?.close(); return; }
         let opened = false; let tail = '';
-        const child = start(config().get('powerShellPath', 'pwsh'), ['-NoProfile', '-File', script, 'dev', '-App', project.root, '-Platform', target, '-Configuration', 'Debug', '-SessionDirectory', directory, '-SessionId', id], project.root, text => {
+        const args = ['-NoProfile', '-File', script, 'dev', '-App', project.root, '-Platform', target, '-Configuration', 'Debug', '-SessionDirectory', directory, '-SessionId', id];
+        if (target === 'ios') {
+            args.push('-DotnetPath', config().get<string>('dotnetPath', 'dotnet'));
+            for (const [setting, option] of [['iosDevice', '-Device'], ['iosTargetFramework', '-IosTargetFramework'], ['iosRuntimeIdentifier', '-Rid'], ['iosSdkVersion', '-IosSdkVersion']]) {
+                const value = config().get<string>(setting);
+                if (value) args.push(option, value);
+            }
+        }
+        const child = start(config().get('powerShellPath', 'pwsh'), args, project.root, text => {
             logs.append(text); tail = (tail + text).slice(-8192);
             if (target === 'web' && !opened) {
                 const url = /Now listening on:\s*(https?:\/\/[^\s]+)[\r\n]/.exec(tail)?.[1];
@@ -164,7 +172,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
     async function hotReload(save?: unknown) {
         trusted(); const current = session;
-        if (!current?.runtime?.supported || current.restartRequired) throw new Error('Hot Reload unavailable. Run Windows/Web Debug with a connected runtime, or use Restart (resets state).');
+        if (!current?.runtime?.supported || current.restartRequired) throw new Error('Hot Reload unavailable. Run Windows/Web/iOS Debug with a connected runtime, or use Restart (resets state).');
         if (current.pending) return;
         const dirty = vscode.workspace.textDocuments.filter(doc => doc.isDirty && doc.languageId === 'csharp' && project && within(project.root, doc.uri.fsPath));
         if (!dirty.length) { void vscode.window.showInformationMessage('No unsaved C# edits. Saved changes are applied by dotnet watch automatically.'); return; }
@@ -174,7 +182,21 @@ export function activate(context: vscode.ExtensionContext) {
         current.problem = undefined;
         try {
             if (current.bridge) await current.bridge.prepare(current.runtime.runtimeId, current.pending);
-            else await fs.writeFile(path.join(current.directory, 'request.json'), JSON.stringify({ schemaVersion: 'doroti.dev/v1', sessionId: current.id, runtimeId: current.runtime.runtimeId, requestId: current.pending }));
+            else {
+                await fs.writeFile(path.join(current.directory, 'request.json'), JSON.stringify({ schemaVersion: 'doroti.dev/v1', sessionId: current.id, runtimeId: current.runtime.runtimeId, requestId: current.pending }));
+                if (target === 'ios') {
+                    const deadline = Date.now() + 15000;
+                    while (true) {
+                        if (session !== current || current.stopping) return;
+                        let prepared: Runtime | undefined;
+                        try { prepared = JSON.parse(await fs.readFile(path.join(current.directory, 'prepared.json'), 'utf8')); }
+                        catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT' && !(error instanceof SyntaxError)) throw error; }
+                        if (prepared?.sessionId === current.id && prepared.runtimeId === current.runtime.runtimeId && prepared.requestId === current.pending) break;
+                        if (Date.now() > deadline) throw new Error('iOS runtime did not accept the reload request. Edits have not been saved.');
+                        await new Promise(resolve => setTimeout(resolve, 50));
+                    }
+                }
+            }
             if (session !== current || current.stopping) return;
             for (const doc of dirty) if (!await doc.save()) throw new Error(`Could not save ${doc.fileName}`);
         } catch (error) { current.pending = undefined; display('Reload failed'); throw error; }

@@ -2,7 +2,15 @@
   <Import Project="Doroti.MacCatalyst.props" Condition="'$(DorotiMacCatalystProfileImported)' != 'true'" />
   <Import Project="Doroti.MacOS.props" Condition="'$(DorotiMacOSProfileImported)' != 'true'" />
   <Import Project="Doroti.IosNativeAot.props" Condition="'$(DorotiIosNativeAotProfileImported)' != 'true'" />
+  <PropertyGroup Condition="'$(DorotiIosDevelopment)' == 'true' and '$(DorotiCompilationMode)' == 'CoreClr'">
+    <!-- RC1's original interpreter loses the active EnC IL version. Pin the
+         serviced runtime and matching crossgen2: dotnet/runtime#132837. -->
+    <DorotiIosDevelopmentRuntimeVersion Condition="'$(DorotiIosDevelopmentRuntimeVersion)' == ''">11.0.0-rc.2.26478.114</DorotiIosDevelopmentRuntimeVersion>
+    <RestoreAdditionalProjectSources>$(RestoreAdditionalProjectSources);https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet11/nuget/v3/index.json</RestoreAdditionalProjectSources>
+  </PropertyGroup>
   <PropertyGroup>
+    <MtouchLink Condition="'$(DorotiIosDevelopment)' == 'true'">None</MtouchLink>
+    <StartupHookSupport Condition="'$(DorotiIosDevelopment)' == 'true'">true</StartupHookSupport>
     <OutputType>Exe</OutputType>
     <!-- Decide before Microsoft.Common targets compute _DebugSymbolsProduced.
          Changing this in SDK targets leaves a nonexistent PDB in fresh Web assets. -->
@@ -10,7 +18,7 @@
     <DebugType Condition="'$(Configuration)' == 'Release' and '$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true'">none</DebugType>
     <!-- Apple runtime selection happens while Microsoft.NET.Sdk targets are imported. -->
     <PublishAot Condition="'$(DorotiCompilationMode)' == 'NativeAot'">true</PublishAot>
-    <UseMonoRuntime Condition="'$(DorotiCompilationMode)' == 'NativeAot'">false</UseMonoRuntime>
+    <UseMonoRuntime Condition="'$(DorotiCompilationMode)' == 'NativeAot' or '$(DorotiCompilationMode)' == 'CoreClr'">false</UseMonoRuntime>
     <UseMonoRuntime Condition="('$(DorotiCompilationMode)' == 'Mono' or ('$(DorotiCompilationMode)' == '' and '$(PublishAot)' != 'true')) and ($([System.String]::Copy('$(RuntimeIdentifier)').StartsWith('ios-')) or $([System.String]::Copy('$(RuntimeIdentifier)').StartsWith('iossimulator-')))">true</UseMonoRuntime>
     <IsPackable>false</IsPackable>
     <LangVersion>14.0</LangVersion>
