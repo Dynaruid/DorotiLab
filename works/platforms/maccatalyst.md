@@ -75,3 +75,16 @@ Catalyst의 실제 adapter·scene·물리 입력·VoiceOver·표시·배포 결�
 - [ ] 실기기 서명/설치·AOT·clean 배포·성능 예산·장기 수명 검증.
 
 - [x] 공통 창 manager → 실제 MAUI scene 생성·독립 크기·survivor 유지·registry 정리. UIKit native close 취소와 프로세스 종료 경계는 결과 문서 참고.
+
+
+## 2026-10-01 Mac Catalyst metadata Hot Reload
+
+`dev -Platform maccatalyst`와 VS Code `maccatalyst` 타겟을 연결했다. .NET SDK 10.0.401, Xcode 27 workload의 `net10.0-maccatalyst27.0/maccatalyst-arm64`, Mono Debug, Graphite Metal에서 소스 Testbed를 실행했다. 개발 세션은 `MtouchInterpreter=all,-Doroti.Host.Maui`, `MtouchLink=None`과 별도 캐시를 사용한다. 일반 Debug/Release 프로필은 유지한다.
+
+SDK WebSocket agent가 UIKit 초기화 중 연결을 잃는 현상을 재현했다([upstream issue](https://github.com/dotnet/sdk/issues/55488)). 로컬 자식 프로세스로 실행되는 Catalyst에는 SDK 기본 named-pipe 전송을 선택했다. SDK 설치나 agent 바이너리는 변경하지 않는다. SDK의 성공 문자열 대신 실제 완료 프레임·메서드 결과로 검증한다.
+
+- **PASS:** 실제 metadata 변경과 두 번째 delta, 동일 PID/State/count/한글 텍스트/scroll 보존, 컴파일 오류 복구, ENC0009 뒤 기존 앱·상태 유지, Stop과 앱 PID 소멸.
+- **PASS:** 별도 profile에 설치한 VSIX의 Run → Hot Reload 명령 → 상태 보존 → Stop. CLI smoke는 `temp/testing/mac-hot-reload/catalyst-3`, 설치 VSIX는 `catalyst-vsix`에 원시 근거를 남겼다.
+- **PASS:** Apple 빌드 프로필·기존 iOS 회귀, 일반 Mac Debug/Release 유지, 확장 단위 테스트, SDK/VSIX 패키징과 새 빌드 hook 포함 확인.
+
+입력 상태는 자동으로 주입했다. 물리 IME·VoiceOver·다른 renderer·Release/NativeAOT·모든 native host/binding 편집까지 검증한 결과는 아니다. native 변경은 재빌드/재시작이 필요하다. [개발 계약](../../Doroti/docs/development-hot-reload.md)과 [테스트 문서](../../Doroti/tests/README.md)에 재현 명령을 기록했다.

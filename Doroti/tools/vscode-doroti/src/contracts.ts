@@ -8,7 +8,7 @@ export function parseProject(text: string): Project {
         !Array.isArray(value.developmentTargets) || !value.platforms || !value.applicationProject)
         throw new Error('Invalid response from Doroti CLI describe. Update the repository CLI.');
     for (const target of value.developmentTargets)
-        if (!['windows', 'web', 'ios'].includes(target) || !value.platforms[target]) throw new Error('Invalid development target.');
+        if (!['windows', 'web', 'ios', 'macos', 'maccatalyst'].includes(target) || !value.platforms[target]) throw new Error('Invalid development target.');
     return value;
 }
 export function validateName(name: string): string | undefined {
@@ -19,7 +19,7 @@ export function validateName(name: string): string | undefined {
     return undefined;
 }
 export function classifyOutput(text: string): 'compile-error' | 'restart-required' | undefined {
-    if (/rude edit|error ENC\d+|restart.*(?:required|needed)|Do you want to restart/i.test(text)) return 'restart-required';
+    if (/rude edit|error ENC\d+|restart.*(?:required|needed)|Do you want to restart|Further changes won.t be applied/i.test(text)) return 'restart-required';
     if (/error CS\d+|Build failed|Failed to build project|Unable to apply hot reload due to compilation/i.test(text)) return 'compile-error';
     return undefined;
 }

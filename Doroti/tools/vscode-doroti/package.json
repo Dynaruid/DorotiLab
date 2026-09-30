@@ -31,7 +31,9 @@
     "configuration": { "title": "Doroti", "properties": {
       "doroti.cliPath": { "type": "string", "default": "", "description": "Absolute path to the repository Doroti/eng/doroti.ps1 (required for generated apps outside the repository).", "scope": "machine-overridable" },
       "doroti.powerShellPath": { "type": "string", "default": "pwsh", "description": "PowerShell 7 executable.", "scope": "machine" },
-      "doroti.dotnetPath": { "type": "string", "default": "dotnet", "description": ".NET executable for project creation and iOS development sessions.", "scope": "machine" },
+      "doroti.dotnetPath": { "type": "string", "default": "dotnet", "description": ".NET executable for project creation and Apple development sessions.", "scope": "machine" },
+      "doroti.macosTargetFramework": { "type": "string", "default": "", "description": "Optional AppKit target framework override, for example net10.0-macos27.0.", "scope": "machine-overridable" },
+      "doroti.macCatalystTargetFramework": { "type": "string", "default": "", "description": "Optional Mac Catalyst target framework override, for example net10.0-maccatalyst27.0.", "scope": "machine-overridable" },
       "doroti.iosDevice": { "type": "string", "default": "", "description": "Paired iOS device or simulator UDID. Empty selects the single booted simulator.", "scope": "machine-overridable" },
       "doroti.iosRuntimeIdentifier": { "type": "string", "enum": ["", "ios-arm64", "iossimulator-arm64", "iossimulator-x64"], "default": "", "description": "iOS runtime. Empty uses the simulator matching this Mac; devices use ios-arm64 and .NET 11.", "scope": "machine-overridable" },
       "doroti.iosSdkVersion": { "type": "string", "default": "", "description": "Optional installed .NET SDK version for this development session. .NET 10 devices use the local network; net11.0-ios uses CoreCLR and USB forwarding. Does not change project global.json.", "scope": "machine-overridable" },

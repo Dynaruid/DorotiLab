@@ -1,0 +1,21 @@
+<Project>
+  <PropertyGroup Condition="'$(DorotiMacDevelopment)' == 'true'">
+    <!-- Run the bundle executable as a child, so Stop owns its lifetime. -->
+    <RunWithOpen>false</RunWithOpen>
+    <RunWorkingDirectory>$(MSBuildProjectDirectory)</RunWorkingDirectory>
+    <TrimMode>copy</TrimMode>
+    <MtouchInterpreter Condition="'$(DorotiTarget)' == 'MacCatalyst'">all,-Doroti.Host.Maui</MtouchInterpreter>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(DorotiMacDevelopment)' == 'true' and '$(DorotiTarget)' == 'MacCatalyst'">
+    <_DorotiMacPreviousCommonTargets>$(CustomAfterMicrosoftCommonTargets)</_DorotiMacPreviousCommonTargets>
+    <CustomAfterMicrosoftCommonTargets>$(MSBuildThisFileDirectory)Doroti.MacDevelopment.Common.targets</CustomAfterMicrosoftCommonTargets>
+  </PropertyGroup>
+  <Target Name="ValidateDorotiMacDevelopment" BeforeTargets="PrepareForBuild;CollectPackageReferences" Condition="'$(DorotiMacDevelopment)' == 'true'">
+    <Error Condition="('$(DorotiTarget)' != 'macOS' and '$(DorotiTarget)' != 'MacCatalyst') or '$(Configuration)' != 'Debug' or '$(PublishAot)' == 'true' or '$(DorotiCompilationMode)' == 'NativeAot' or '$(Optimize)' == 'true'"
+           Text="Mac development sessions require unoptimized AppKit or Mac Catalyst Debug assemblies; NativeAot is unsupported." />
+    <Error Condition="'$(DorotiTarget)' == 'MacCatalyst' and ('$(MtouchInterpreter)' != 'all,-Doroti.Host.Maui' or '$(UseInterpreter)' == 'false')"
+           Text="Mac Catalyst development requires MtouchInterpreter=all,-Doroti.Host.Maui." />
+    <Error Condition="'$(StartupHookSupport)' != 'true' or '$(RunWithOpen)' != 'false' or '$(TrimMode)' != 'copy' or ('$(DorotiTarget)' == 'macOS' and '$(LinkMode)' != 'None') or ('$(DorotiTarget)' == 'MacCatalyst' and '$(MtouchLink)' != 'None')"
+           Text="Mac development requires startup hooks, direct process launch and untrimmed assemblies (LinkMode/MtouchLink=None, TrimMode=copy)." />
+  </Target>
+</Project>

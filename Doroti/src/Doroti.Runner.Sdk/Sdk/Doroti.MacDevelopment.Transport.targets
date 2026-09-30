@@ -1,0 +1,8 @@
+<Project>
+  <!-- Catalyst runs locally as an owned child and supports named pipes. Use the
+       SDK's stock local transport: Mono's WebSocket connection can close during
+       UIKit startup (dotnet/sdk#55488). No agent or SDK installation is patched. -->
+  <ItemGroup Condition="'$(DorotiMacDevelopment)' == 'true' and '$(DorotiTarget)' == 'MacCatalyst'">
+    <ProjectCapability Remove="HotReloadWebSockets" />
+  </ItemGroup>
+</Project>

@@ -94,6 +94,8 @@ Windows HWND editor와 WebView의 같은 프레임 혼합은 현재 미지원 �
 
 ### 05. VS Code 통합 사용 흐름 — P1
 
+2026-10-01 후속: AppKit(`macos`)·Mac Catalyst(`maccatalyst`)의 CLI/VS Code metadata Hot Reload 지원을 추가했다. 두 실제 앱과 별도 설치 VSIX에서 코드 반영·State/입력/스크롤 보존·Stop을 확인했고, CLI 컴파일 오류 복구·rude edit 유지도 PASS다. [공통 기록](works/common/05-vscode-hot-reload.md#2026-10-01-appkitmac-catalyst-개발-세션)을 따른다.
+
 근거: [05-vscode-hot-reload](works/common/05-vscode-hot-reload.md).
 
 2026-09-30 후속: iOS 개발 CLI·VS Code target을 추가했다. iPhone 18 Pro Simulator의 실제 metadata update·State/입력/스크롤 보존, 컴파일 오류 복구, rude edit 유지, 설치 VSIX의 Run/Hot Reload/Stop은 PASS다. 2026-10-01 후속으로 실기기 USB도 .NET 11 CoreCLR 개발 프로필에서 실제 delta·상태 보존·오류 복구·Stop과 설치 VSIX 흐름을 확인했다. 추가로 .NET 10 Mono 실기기의 같은 네트워크 경로에서 실제 delta·상태 보존·오류 복구·Stop 및 설치 VSIX 흐름을 확인했다. .NET 10 USB-only 제한은 유지한다. 세부 범위는 [iOS 검증 기록](works/platforms/ios.md#2026-09-30-ios-metadata-hot-reload)을 따른다. 아래 Windows/Web 재검증 및 일반 IDE UI 잔여와 구분한다.

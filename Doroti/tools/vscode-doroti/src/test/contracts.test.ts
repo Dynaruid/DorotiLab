@@ -11,11 +11,16 @@ test('CLI is authoritative for partial platform manifests', () => {
     const project = { schemaVersion: 'doroti.cli-workspace/v1', root: path.resolve('.'), applicationProject: 'app.csproj', platforms: { web: 'web.csproj' }, developmentTargets: ['web'] };
     assert.deepEqual(parseProject(JSON.stringify(project)).developmentTargets, ['web']);
     assert.throws(() => parseProject(JSON.stringify({ ...project, developmentTargets: ['windows'] })));
-    assert.deepEqual(parseProject(JSON.stringify({ ...project, platforms: { ios: 'ios.csproj' }, developmentTargets: ['ios'] })).developmentTargets, ['ios']);
+    for (const target of ['ios', 'macos', 'maccatalyst']) {
+        assert.deepEqual(parseProject(JSON.stringify({ ...project, platforms: { [target]: target + '.csproj' }, developmentTargets: [target] })).developmentTargets, [target]);
+        assert.throws(() => parseProject(JSON.stringify({ ...project, developmentTargets: [target] })));
+    }
+    assert.throws(() => parseProject(JSON.stringify({ ...project, platforms: { linux: 'linux.csproj' }, developmentTargets: ['linux'] })));
 });
 test('watcher errors do not masquerade as applied reloads', () => {
     assert.equal(classifyOutput('error CS1002: ; expected'), 'compile-error');
     assert.equal(classifyOutput('Do you want to restart your app?'), 'restart-required');
+    assert.equal(classifyOutput("Further changes won't be applied to this process."), 'restart-required');
     assert.equal(classifyOutput('Hot reload succeeded'), undefined);
 });
 test('imports avoid duplicates, aliases and local type conflicts', () => {

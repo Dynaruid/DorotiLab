@@ -30,8 +30,9 @@ async function main() {
     delete process.env.VSCODE_IPC_HOOK_CLI;
     const web = process.argv.includes('--web');
     const ios = process.argv.includes('--ios');
-    await runTests({ vscodeExecutablePath: code, extensionDevelopmentPath: harness, extensionTestsPath: path.join(__dirname, ios ? 'iosHost.js' : web ? 'webHost.js' : 'host.js'),
+    const mac = process.argv.includes('--mac');
+    await runTests({ vscodeExecutablePath: code, extensionDevelopmentPath: harness, extensionTestsPath: path.join(__dirname, mac ? 'macHost.js' : ios ? 'iosHost.js' : web ? 'webHost.js' : 'host.js'),
         launchArgs: [app, '--user-data-dir', profile, '--extensions-dir', extensions, '--disable-workspace-trust', '--skip-welcome', '--skip-release-notes', '--disable-updates'],
-        extensionTestsEnv: { DOROTI_TEST_CLI: path.join(repo, 'Doroti/eng/doroti.ps1'), DOROTI_RELOAD_PROBE: process.env.DOROTI_TEST_IOS_RID === 'ios-arm64' ? `reload-vsix-${randomUUID()}.json` : path.join(evidence, 'state.json'), DOROTI_TEST_RESULT: path.join(evidence, 'result.json'), DOROTI_TEST_EVIDENCE: evidence, ...(ios ? { DOROTI_SAMPLE: 'reload' } : {}) } });
+        extensionTestsEnv: { DOROTI_TEST_CLI: path.join(repo, 'Doroti/eng/doroti.ps1'), DOROTI_RELOAD_PROBE: ios && process.env.DOROTI_TEST_IOS_RID === 'ios-arm64' ? `reload-vsix-${randomUUID()}.json` : path.join(evidence, 'state.json'), DOROTI_TEST_RESULT: path.join(evidence, 'result.json'), DOROTI_TEST_EVIDENCE: evidence, ...(ios || mac ? { DOROTI_SAMPLE: 'reload' } : {}) } });
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

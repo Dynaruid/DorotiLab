@@ -1,4 +1,5 @@
 <Project>
+  <Import Project="Doroti.MacDevelopment.targets" />
   <Import Project="Doroti.DesktopBoundary.targets" />
   <Import Project="Doroti.Plugins.targets" />
   <Import Project="Doroti.AppIcons.targets" />
@@ -177,7 +178,7 @@
     <ProjectReference Include="@(DorotiNativeBindingProject)" ReferenceOutputAssembly="true">
       <DorotiNativeBinding>true</DorotiNativeBinding>
       <GlobalPropertiesToRemove>DorotiTarget;DorotiHostKind;DorotiNativeEntryKind</GlobalPropertiesToRemove>
-      <AdditionalProperties Condition="'$(DorotiIosDevelopment)' == 'true'">CustomAfterMicrosoftCommonTargets=$(MSBuildThisFileDirectory)Doroti.IosDevelopmentBinding.targets</AdditionalProperties>
+      <AdditionalProperties Condition="'$(DorotiIosDevelopment)' == 'true' or '$(DorotiMacDevelopment)' == 'true'">CustomAfterMicrosoftCommonTargets=$(MSBuildThisFileDirectory)Doroti.IosDevelopmentBinding.targets</AdditionalProperties>
     </ProjectReference>
     <Compile Include="*.cs" Exclude="$(DorotiCompileExclude)" />
     <Compile Include="src/**/*.cs" />

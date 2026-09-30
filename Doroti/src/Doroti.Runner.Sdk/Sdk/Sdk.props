@@ -9,8 +9,9 @@
     <RestoreAdditionalProjectSources>$(RestoreAdditionalProjectSources);https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet11/nuget/v3/index.json</RestoreAdditionalProjectSources>
   </PropertyGroup>
   <PropertyGroup>
-    <MtouchLink Condition="'$(DorotiIosDevelopment)' == 'true'">None</MtouchLink>
-    <StartupHookSupport Condition="'$(DorotiIosDevelopment)' == 'true'">true</StartupHookSupport>
+    <LinkMode Condition="'$(DorotiMacDevelopment)' == 'true'">None</LinkMode>
+    <MtouchLink Condition="'$(DorotiIosDevelopment)' == 'true' or '$(DorotiMacDevelopment)' == 'true'">None</MtouchLink>
+    <StartupHookSupport Condition="'$(DorotiIosDevelopment)' == 'true' or '$(DorotiMacDevelopment)' == 'true'">true</StartupHookSupport>
     <OutputType>Exe</OutputType>
     <!-- Decide before Microsoft.Common targets compute _DebugSymbolsProduced.
          Changing this in SDK targets leaves a nonexistent PDB in fresh Web assets. -->

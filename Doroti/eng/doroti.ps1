@@ -48,6 +48,12 @@ param(
 
     [string] $IosHotReloadHost,
 
+    [ValidatePattern('^net[0-9]+\.[0-9]+-macos([0-9]+\.[0-9]+)?$')]
+    [string] $MacOSTargetFramework,
+
+    [ValidatePattern('^net[0-9]+\.[0-9]+-maccatalyst([0-9]+\.[0-9]+)?$')]
+    [string] $MacCatalystTargetFramework,
+
     [string] $DotnetPath = 'dotnet',
 
     [ValidatePattern('^[A-Za-z][A-Za-z0-9_.-]*$')]
@@ -534,15 +540,15 @@ function Invoke-Describe {
         root = $workspace.Root
         applicationProject = $workspace.ApplicationProject
         platforms = $workspace.Runners
-        developmentTargets = @($workspace.Runners.Keys | Where-Object { $_ -in @('windows', 'web', 'ios') })
+        developmentTargets = @($workspace.Runners.Keys | Where-Object { $_ -in @('windows', 'web', 'ios', 'macos', 'maccatalyst') })
     } | ConvertTo-Json -Depth 5
 }
 
 function Invoke-Development {
     if ($Configuration -ne 'Debug') { throw 'dev requires Debug; Release metadata updates are not supported.' }
-    if ($Platform -notin @('windows', 'web', 'ios')) { throw 'dev currently supports Windows App SDK, Web and iOS.' }
-    if ($Platform -eq 'ios' -and !$IsMacOS) { throw 'iOS development sessions require macOS and Xcode.' }
-    if ($Platform -eq 'ios' -and $CompilationMode -eq 'NativeAot') { throw 'iOS Hot Reload requires Debug/Mono; NativeAot is not supported.' }
+    if ($Platform -notin @('windows', 'web', 'ios', 'macos', 'maccatalyst')) { throw 'dev supports Windows App SDK, Web, iOS, macOS (AppKit) and Mac Catalyst.' }
+    if ($Platform -in @('ios', 'macos', 'maccatalyst') -and !$IsMacOS) { throw 'Apple development sessions require macOS and Xcode.' }
+    if ($CompilationMode -eq 'NativeAot') { throw 'Hot Reload requires Debug with metadata updates; NativeAot is not supported.' }
     $workspace = Resolve-DorotiWorkspace $App
     $runner = $workspace.Runners[$Platform]
     if (-not $runner) { throw "Platform '$Platform' is not declared by this workspace." }
@@ -586,6 +592,15 @@ function Invoke-Development {
             if ($IosHotReloadHost) { $iosArguments += @('--host', $IosHotReloadHost) }
             $iosArguments += @('--dotnet', $DotnetPath)
             Invoke-Checked 'python3' $iosArguments (Split-Path -Parent $runner)
+            return
+        }
+        if ($Platform -in @('macos', 'maccatalyst')) {
+            $macArguments = @((Join-Path $PSScriptRoot 'mac-development.py'), '--runner', $runner, '--app-root', $workspace.Root,
+                '--platform', $Platform, '--session-directory', $sessionPath, '--session-id', $SessionId, '--dotnet', $DotnetPath)
+            if ($Rid) { $macArguments += @('--rid', $Rid) }
+            $framework = if ($Platform -eq 'macos') { $MacOSTargetFramework } else { $MacCatalystTargetFramework }
+            if ($framework) { $macArguments += @('--framework', $framework) }
+            Invoke-Checked 'python3' $macArguments $workspace.Root
             return
         }
         $watchArguments = @('watch', '--project', $runner, 'run', '--configuration', 'Debug')

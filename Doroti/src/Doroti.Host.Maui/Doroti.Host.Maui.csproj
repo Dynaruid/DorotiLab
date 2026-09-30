@@ -62,7 +62,7 @@
   <!-- Mirror MSBuild's RID-agnostic reference handling during graph evaluation.
        dotnet watch identifies a project by path + TFM; propagating the native
        RID here creates a second instance of every shared framework dependency. -->
-  <ItemGroup Condition="'$(DorotiIosDevelopment)' == 'true' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+  <ItemGroup Condition="('$(DorotiIosDevelopment)' == 'true' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios') or '$(DorotiMacDevelopment)' == 'true'">
     <ProjectReference Update="@(ProjectReference)">
       <GlobalPropertiesToRemove>%(ProjectReference.GlobalPropertiesToRemove);RuntimeIdentifier;RuntimeIdentifiers;SelfContained</GlobalPropertiesToRemove>
     </ProjectReference>

@@ -17,9 +17,9 @@ public static class DorotiHotReload
         if (MetadataUpdater.IsSupported) return true;
         // Mono 10's hot_reload_update_enabled returns false after its initial
         // check (including when actual ApplyUpdate succeeds). Use the same
-        // component capability query as the SDK agent, only in opted-in iOS
+        // component capability query as the SDK agent, only in opted-in Apple
         // sessions with updates enabled before runtime startup.
-        if (!OperatingSystem.IsIOS() || (!DorotiDevelopmentSession.IsRemote && Environment.GetEnvironmentVariable("DOROTI_DEV_SESSION") is null) ||
+        if (!(OperatingSystem.IsIOS() || OperatingSystem.IsMacCatalyst() || OperatingSystem.IsMacOS()) || (!DorotiDevelopmentSession.IsRemote && Environment.GetEnvironmentVariable("DOROTI_DEV_SESSION") is null) ||
             !string.Equals(Environment.GetEnvironmentVariable("DOTNET_MODIFIABLE_ASSEMBLIES"), "debug", StringComparison.OrdinalIgnoreCase))
             return false;
         try
@@ -30,7 +30,7 @@ public static class DorotiHotReload
         }
         catch (Exception error)
         {
-            System.Diagnostics.Trace.TraceWarning($"Could not query iOS metadata capabilities: {error.Message}");
+            System.Diagnostics.Trace.TraceWarning($"Could not query Apple metadata capabilities: {error.Message}");
             return false;
         }
     }

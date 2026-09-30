@@ -52,7 +52,7 @@ M0 → M1 최소 경로 → M2 → M4/M5 → M6(대상 플랫폼) → M7 순서�
 
 ## 완료 기준
 
-AppKit 실제 창·VoiceOver·물리 입력·실제 표시와 clean 배포 결과로 판정한다. 다른 Apple 호스트의 통과 근거를 재사용하지 않는다. macOS VS Code 확장 검증은 M3 후속 후보로 유지한다.
+AppKit 실제 창·VoiceOver·물리 입력·실제 표시와 clean 배포 결과로 판정한다. 다른 Apple 호스트의 통과 근거를 재사용하지 않는다. macOS VS Code의 Run/Hot Reload/Stop 검증은 아래 2026-10-01 결과를 따른다. 마법사와 전체 IDE 예외 UI 검증은 별도 잔여다.
 
 ## 착수 시 확인할 코드·문서
 
@@ -69,3 +69,14 @@ AppKit 실제 창·VoiceOver·물리 입력·실제 표시와 clean 배포 결�
 [공통 완료 규칙과 결과 형식](../README.md#결과-기록-형식)을 적용한다. 테스트는 20분 timeout을 사용하고 일반 반복 검증은 30회 이내로 설계한다. 일회성 테스트·원시 로그·캡처·소비 앱은 `temp/testing/<작업-ID>/<실행-ID>/`에 모으고 요약 후 정리한다. 제품 빌드·release 후보 등 기존 `Doroti/artifacts`는 별도의 삭제 가능한 산출물이며, 필요한 요약·최소 상시 fixture만 추적되는 tests/docs/history에 보존한다.
 
 현재 기록: 실제 M1 Mac의 AppKit 두 창·Metal Graphite/Ganesh·Desktop 상태·NSOpenPanel 취소·native pasteboard·WKWebView 재생성·LaunchServices warm URL·route 복원을 새로 검증했다. 자세한 합격/잔여와 출시 결과는 [이번 실행 결과](../results/2026-09-29-macos-appkit.md)를 따른다. 각 항목의 완료 시 관련 공통 작업 문서와 플랫폼/호스트/renderer/build mode별 지원표를 함께 갱신한다.
+
+
+## 2026-10-01 AppKit metadata Hot Reload
+
+`dev -Platform macos`와 VS Code `macos` 타겟을 연결했다. .NET SDK 10.0.401, Xcode 27 workload의 `net10.0-macos27.0/osx-arm64`, CoreCLR Debug, Graphite Metal에서 소스 Testbed를 실행했다. SDK WebSocket agent가 실제 metadata delta를 적용하고 Doroti가 완료 프레임을 응답한다. `LinkMode=None`과 별도 개발 캐시를 사용하며 일반 Debug/Release 프로필은 유지한다.
+
+- **PASS:** 실제 코드 변경과 두 번째 delta, 동일 PID/State/count/한글 텍스트/scroll 보존, 컴파일 오류 복구, ENC0009 뒤 기존 앱·상태 유지, Stop과 앱 PID 소멸.
+- **PASS:** 별도 profile에 설치한 VSIX의 Run → Hot Reload 명령 → 상태 보존 → Stop. CLI smoke는 `temp/testing/mac-hot-reload/appkit-5`, 설치 VSIX는 `appkit-vsix`에 원시 근거를 남겼다.
+- **PASS:** Apple 빌드 프로필 회귀, 기존 iOS 설정, 일반 Mac Debug/Release 유지, 확장 단위 테스트와 SDK/VSIX 패키징.
+
+입력 상태는 자동으로 주입했다. 물리 IME·VoiceOver·다른 renderer·Release/NativeAOT·모든 native host/binding 편집까지 검증한 결과는 아니다. native 변경은 재빌드/재시작이 필요하다. 재현 명령은 [개발 계약](../../Doroti/docs/development-hot-reload.md), [테스트 문서](../../Doroti/tests/README.md)를 따른다.

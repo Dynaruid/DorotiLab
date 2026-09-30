@@ -1,4 +1,4 @@
-"""Evaluate real iOS runner profiles without compiling an application.
+"""Evaluate real Apple runner profiles without compiling an application.
 
 Run on the pinned Apple toolchain via eng/run-with-timeout.py --timeout 1200.
 """
@@ -105,3 +105,36 @@ if args.device_sdk:
             if pack['TargetFramework'] == 'net11.0':
                 assert pack['Crossgen2PackVersion'] == profile['DorotiIosDevelopmentRuntimeVersion'], pack
     print('PASS .NET 11 device CoreCLR/untrimmed-compatible registrar profile')
+
+
+for platform, suffix, property_name, runtime, interpreter in [
+    ('macos', 'MacOS', 'DorotiMacOSTargetFramework', 'false', ''),
+    ('maccatalyst', 'MacCatalyst', 'DorotiMacCatalystTargetFramework', 'true', 'all,-Doroti.Host.Maui'),
+]:
+    project = ROOT / f'samples/DorotiTestbedApp/macos/DorotiTestbedApp.{suffix}.csproj'
+    base = ['dotnet', 'msbuild', str(project), '-nologo',
+            '-p:' + property_name + '=net10.0-' + platform + '27.0']
+    query = ['-getProperty:UseMonoRuntime,MtouchInterpreter,TrimMode,RunWithOpen,StartupHookSupport,LinkMode,MtouchLink']
+    development = ['-p:DorotiMacDevelopment=true', '-p:Configuration=Debug']
+    profile = json.loads(subprocess.check_output(base + development + query,
+        cwd=ROOT, text=True, timeout=60))['Properties']
+    assert profile['UseMonoRuntime'] == runtime, profile
+    assert profile['MtouchInterpreter'] == interpreter, profile
+    assert profile['TrimMode'] == 'copy' and profile['RunWithOpen'] == 'false', profile
+    assert profile['StartupHookSupport'] == 'true', profile
+    assert profile['LinkMode'] == 'None' and profile['MtouchLink'] == 'None', profile
+    capabilities = json.loads(subprocess.check_output(base + development + ['-getItem:ProjectCapability'],
+        cwd=ROOT, text=True, timeout=60))['Items']['ProjectCapability']
+    assert ('HotReloadWebSockets' in [item['Identity'] for item in capabilities]) == (platform == 'macos'), capabilities
+    for configuration in ['Debug', 'Release']:
+        normal = json.loads(subprocess.check_output(base + ['-p:Configuration=' + configuration] + query,
+            cwd=ROOT, text=True, timeout=60))['Properties']
+        assert normal['RunWithOpen'] != 'false', normal
+        assert normal['MtouchInterpreter'] == ('-all' if platform == 'maccatalyst' else ''), normal
+    for invalid in ['-p:Configuration=Release', '-p:PublishAot=true', '-p:Optimize=true', '-p:StartupHookSupport=false',
+                    '-p:TrimMode=full', '-p:' + ('LinkMode' if platform == 'macos' else 'MtouchLink') + '=Full'] + (
+            ['-p:UseInterpreter=false', '-p:MtouchInterpreter=-all'] if platform == 'maccatalyst' else []):
+        result = subprocess.run(base + development + ['-t:ValidateDorotiMacDevelopment', invalid],
+            cwd=ROOT, capture_output=True, text=True, timeout=60)
+        assert result.returncode != 0 and 'development' in result.stdout, result.stdout + result.stderr
+    print(f'PASS {platform} development profile, invalid modes rejected, ordinary Debug/Release unchanged')

@@ -1,6 +1,6 @@
 # M3. VS Code 실행 확장·작성 지원·Hot Reload
 
-원문: [개발 로드맵](../../plan.md) §3 M3 · 우선순위: **P1** · 작업 상태: **PARTIAL** · 실행 검증: 로컬 VSIX/Windows·Web metadata reload **PASS**, 마법사 전체 UI·모든 예외 조합 **notVerified**
+원문: [개발 로드맵](../../plan.md) §3 M3 · 우선순위: **P1** · 작업 상태: **PARTIAL** · 실행 검증: 로컬 VSIX/Windows·Web·iOS·AppKit·Mac Catalyst metadata reload **PASS**, 마법사 전체 UI·모든 예외 조합 **notVerified**
 
 [작업 인덱스와 공통 완료 규칙](../README.md)
 
@@ -166,3 +166,12 @@ CLI `developmentTargets`에 선언된 iOS를 포함하고, macOS의 SDK mobile `
 소스 Testbed의 iPhone 18 Pro Simulator에서 실제 metadata 갱신, 같은 PID/State·카운터·한글 텍스트·스크롤 보존, 컴파일 오류 후 복구, ENC0009의 명시적 재시작 요구, Stop PASS. 별도 profile에 설치한 VSIX의 Run → Hot Reload 명령 → 상태 보존 → Stop도 PASS. 당시 .NET 10 실기기 USB는 forwarding 미지원으로 거부했다. 2026-10-01에 SDK 선택·dotnet host 설정·CoreDevice 요청 전달을 추가하고 .NET 11 CoreCLR 실기기의 실제 delta/상태 보존/오류 복구/Stop을 확인했다. SDK/runtime과 남은 조합은 [iOS 결과](../platforms/ios.md#2026-09-30-ios-metadata-hot-reload)를 따른다. 기존 Windows/Web 결과나 마법사·Restart 확인 대화상자 전체 UI의 미검증 범위를 바꾸지 않는다.
 
 2026-10-01: 실기기에서도 새 설치 VSIX의 Run → 실제 Hot Reload 명령 → 동일 PID/State·count/한글/scroll 보존 → Stop/PID 소멸을 확인했다. SDK·런타임 수정 버전과 Xcode RC 제약은 [실기기 결과](../platforms/ios.md#2026-10-01-실기기-usb-hot-reload)를 따른다.
+
+
+## 2026-10-01 AppKit·Mac Catalyst 개발 세션
+
+CLI `developmentTargets`와 VS Code 타겟 선택에 `macos`, `maccatalyst`를 추가했다. 두 타겟은 Debug 전용이며 별도 개발 캐시·native binding의 design-time 보호·프로세스 그룹 정리를 사용한다. AppKit은 CoreCLR/WebSocket, Catalyst는 Mono/interpreter와 SDK 기본 named pipe로 실제 metadata delta를 받는다. 새 `macosTargetFramework`, `macCatalystTargetFramework` 설정은 설치된 Apple workload의 TFM을 선택한다.
+
+두 타겟 모두 실제 코드 변경과 재조립 프레임, 같은 PID/State/count/한글 텍스트/scroll, 컴파일 오류 복구, rude edit 유지, Stop/PID 소멸 **PASS**. 별도 profile에 설치한 새 VSIX의 Run → Hot Reload → Stop도 각각 **PASS**. SDK의 `Further changes won't be applied` 출력은 확장에서 재시작 필요 상태로 분류한다. Apple 빌드 프로필·기존 iOS 회귀·확장 단위 테스트 8개·SDK/VSIX 패키징도 통과했다.
+
+세부 근거: [AppKit](../platforms/macos.md#2026-10-01-appkit-metadata-hot-reload), [Mac Catalyst](../platforms/maccatalyst.md#2026-10-01-mac-catalyst-metadata-hot-reload). 자동 주입 상태를 사용했으며 마법사·물리 입력·Restart 확인 대화상자 전체 UI의 잔여를 완료 처리하지 않는다.

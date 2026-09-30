@@ -1,0 +1,8 @@
+<Project>
+  <Import Project="$(_DorotiMacPreviousCommonTargets)" Condition="'$(_DorotiMacPreviousCommonTargets)' != '' and Exists('$(_DorotiMacPreviousCommonTargets)')" />
+  <!-- The Apple workload appends its targets during TFM inference. Append our
+       capability override afterwards, so graph evaluation sees the final list. -->
+  <PropertyGroup>
+    <AfterMicrosoftNETSdkTargets>$(AfterMicrosoftNETSdkTargets);$(MSBuildThisFileDirectory)Doroti.MacDevelopment.Transport.targets</AfterMicrosoftNETSdkTargets>
+  </PropertyGroup>
+</Project>
