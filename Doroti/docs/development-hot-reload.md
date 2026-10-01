@@ -39,7 +39,7 @@ This machine's .NET 10/Xcode 27 workload uses `net10.0-ios27.0`; use the TFM mat
 
 The .NET 11 device development profile uses the Apple SDK's `partial-static` registrar, which preserves user assembly MVIDs for metadata updates. Runtime and crossgen2 are pinned to `11.0.0-rc.2.26478.114` from Microsoft's public `dotnet11` feed: the original RC1 runtime throws `Bad IL range` after applying a delta, fixed by [dotnet/runtime#132837](https://github.com/dotnet/runtime/pull/132837). The override and extra restore source apply only to this development profile. `.NET 11 RC1` uses CoreCLR on iOS; `MtouchInterpreter`/Mono options do not apply to it. This opt-in development profile is separate from normal .NET 10 Mono and NativeAOT builds.
 
-Current .NET 11 device toolchain: SDK `11.0.100-rc.1.26425.128`, iOS workload `26.5.12193-net11-rc.1`, MAUI `11.0.0-rc.1.26451.6`. That iOS pack's binding tool requires desktop runtime `11.0.0-rc.1.26426.105`, newer than the runtime bundled with this SDK. Use a dotnet installation containing both runtimes. The local validation host is `$HOME/.local/share/doroti/dotnet-ios-development/dotnet`; it shares the installed SDK/workload files and adds the required runtime from Microsoft's public `dotnet11` NuGet feed. The system installation is unchanged. Recreate that user-owned host with `python3 Doroti/eng/prepare-ios-device-dotnet.py` after installing the SDK/workload; `--base` selects a nonstandard system installation. The setup downloads the required tool runtime and records its source and hash.
+Current .NET 11 device toolchain: SDK `11.0.100-rc.1.26425.128`, iOS workload `26.5.12193-net11-rc.1`, MAUI `11.0.0-rc.1.26451.6`. That iOS pack's binding tool requires desktop runtime `11.0.0-rc.1.26426.105`, newer than the runtime bundled with this SDK. The toolchain was unified under `/usr/local/share/dotnet` on 2026-10-01: both desktop runtimes are installed there, and the standard host's SDK/workload selection and bgen execution were verified. The previous `$HOME/.local/share/doroti/dotnet-ios-development` host is no longer required. Use `/usr/local/share/dotnet/dotnet` for `-DotnetPath` and `doroti.dotnetPath`. For a deliberately separate installation, `python3 Doroti/eng/prepare-ios-device-dotnet.py` remains available; it does not modify the system installation.
 
 The RC1 workload targets Xcode 26.6. With Xcode 27, the current experiment explicitly uses `ValidateXcodeVersion=false` for that invocation, matching the existing [sample's toolchain override](../../samples/DorotiSampleApp2/README.md#net-11-rc1--xcode-27-native-aot). This does not make the Xcode combination officially supported. Configure a development signing identity and profile for your bundle ID, then run:
 
@@ -48,7 +48,7 @@ env ValidateXcodeVersion=false CodesignKey='Apple Development' CodesignProvision
   pwsh -NoProfile -File Doroti/eng/doroti.ps1 dev -App samples/DorotiSampleApp2 \
     -Platform ios -Rid ios-arm64 -Device '<UDID>' -IosTargetFramework net11.0-ios \
     -IosSdkVersion 11.0.100-rc.1.26425.128 \
-    -DotnetPath "$HOME/.local/share/doroti/dotnet-ios-development/dotnet"
+    -DotnetPath /usr/local/share/dotnet/dotnet
 ```
 
 Use the normal `dotnet` executable instead when its installed runtimes satisfy the workload. USB pairing and Developer Mode are required. Follow the runtime/workload requirements of the SDK you select; the simulator path continues to use the application's SDK unless explicitly overridden.

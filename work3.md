@@ -225,3 +225,10 @@ benchmark 미설정 일반 Components 시작을 확인하고 앱을 실행 상�
 Variable Blur 첫 진입·실제 조작 smoke와 P3 수동 게이트는 여전히 미완료다.
 
 사용자 추가 관찰: 최종 자동 검증 뒤 현재 iPhone이 차갑고 배터리 100%라고 보고했다. 밝기·앞선 측정 기간의 조건 유지와 수동 조작/10분 결과는 미확인이다.
+
+후속 NativeAOT 설치: 도구 정리 뒤 기본 `/usr/local/share/dotnet`의 .NET 11 RC1 SDK/워크로드/bgen 실행을 확인했다.
+현재 Fixed 후보 소스를 Release/NativeAOT로 게시·서명 검증하고 iPhone 12에 설치했다.
+`PublishAot=true`, `UseNativeAot=true`, `UseMonoRuntime=false`, 번들 관리 DLL 0개를 확인했다.
+첫 시작은 iOS 보안 오류로 차단됐으나 사용자가 개발자 신뢰를 처리한 뒤 일반 실행에 성공했다.
+Components 화면 표시와 앱 프로세스 유지를 확인했다. NativeAOT 성능·전체 수동 조작은 미검증이다.
+남은 RC1 ILC 진단과 게시 옵션, 설치/실행 결과는 [NativeAOT 설치 기록](works/results/2026-10-01-sample2-nativeaot-rc1.md)에 보관한다.

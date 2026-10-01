@@ -219,6 +219,13 @@ Components 화면 표시를 확인했습니다. `PublishAot=true`, `UseNativeAot
 앱 번들 내 관리 DLL 0개를 확인했습니다. 이 결과는 RC1 iOS SDK pack `26.5.12193-net11-rc.1`의
 검증 결과가 아니며, 전체 터치·회전 동작과 배포 적합성 검증도 포함하지 않습니다.
 
+2026-10-01 RC1 pack 검증: 기본 `/usr/local/share/dotnet` 경로로 도구를 통합한 뒤
+`net11.0-ios` Release/NativeAOT publish·서명 검증·iPhone 설치를 완료했습니다.
+이 빌드는 preservation/class lookup 우회 옵션을 해당 명령에만 추가했으며 ILC 진단이 남았습니다.
+첫 실행의 iOS 보안 오류는 사용자 개발자 신뢰 처리 후 해소됐고 Components 화면 표시와
+프로세스 유지를 확인했습니다. NativeAOT 성능·전체 수동 조작은 미검증입니다.
+정확한 게시 명령과 한계는 [설치 기록](../../works/results/2026-10-01-sample2-nativeaot-rc1.md)을 참고하세요.
+
 ## Linux
 
 Linux x64에서 .NET SDK, CMake 3.24 이상, C++20 컴파일러, Qt 6.8 이상(Quick/QuickControls2/WebEngineQuick/WebChannel),
