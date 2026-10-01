@@ -219,6 +219,11 @@ export function releaseNative(): void {
 }
 export function loseDevice(): void { device?.destroy(); }
 
+export function textureDimensionLimit(): number {
+  if (!device || failure || disposed) throw failure ?? new Error("WebGPU texture owner unavailable.");
+  return device.limits.maxTextureDimension2D;
+}
+
 // Sampling textures share the presenter's exact device/queue. Source capture is
 // consumed by copyExternalImageToTexture; destination retirement is separate.
 export function copyTextureSource(source: VideoFrame | ImageBitmap | OffscreenCanvas, width: number, height: number) {

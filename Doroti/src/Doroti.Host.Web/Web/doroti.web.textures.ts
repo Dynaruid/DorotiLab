@@ -1,4 +1,5 @@
 import { dorotiProtocolVersion } from "./doroti.web.protocol.js";
+import { textureSourceBytes, textureViewBudget } from "./doroti.web.texture-budget.js";
 
 /** Decimal Int64 wire ID; convert with long.Parse on the owning managed view. */
 export type BrowserTextureId = string;
@@ -27,6 +28,8 @@ export class BrowserTextureRegistry {
   #sequence = 0;
   #disposed = false;
   #sourceBytes = 0;
+  #sourceBudget = textureViewBudget(0);
+  #maxTextureDimension = 0;
   #requests = new Map<number, { resolve(value: Record<string, unknown>): void; reject(error: Error): void }>();
   #entries = new Map<string, BrowserTextureEntry>();
   readonly #message = (event: Event): void => {
@@ -48,7 +51,7 @@ export class BrowserTextureRegistry {
   constructor(readonly endpoint: TextureEndpoint) { endpoint.addEventListener("message", this.#message); }
   /** @internal Includes candidates, unacknowledged transfers and outstanding snapshots. */
   adjustSourceBytes(delta: number): boolean {
-    if (delta > 0 && this.#sourceBytes + delta > 64 * 1024 * 1024) return false;
+    if (delta > 0 && this.#sourceBytes + delta > this.#sourceBudget) return false;
     this.#sourceBytes += delta;
     if (delta < 0 && !this.#disposed) queueMicrotask(() => {
       for (const entry of this.#entries.values()) entry.retrySnapshot();
@@ -56,6 +59,14 @@ export class BrowserTextureRegistry {
     return true;
   }
   get sourceBytes(): number { return this.#sourceBytes; }
+  /** @internal Validate before taking ownership or creating a canvas snapshot. */
+  validateSourceSize(width: number, height: number): number {
+    let size: number;
+    try { size = textureSourceBytes(width, height, this.#maxTextureDimension); }
+    catch (error) { throw new BrowserTextureError("Size", (error as Error).message); }
+    this.#sourceBudget = Math.max(this.#sourceBudget, textureViewBudget(size));
+    return size;
+  }
   request(operation: string, payload: Record<string, unknown> = {}, transfer: Transferable[] = [], onPosted?: () => void): Promise<Record<string, unknown>> {
     if (this.#disposed) return Promise.reject(new BrowserTextureError("Disposed", "Texture view has closed; rebind to a new view."));
     if (this.#requests.size >= 64) return Promise.reject(new BrowserTextureError("Budget", "Texture control limit reached."));
@@ -78,6 +89,10 @@ export class BrowserTextureRegistry {
     const result = await this.request("register");
     const id = String(result.textureId);
     if (!/^[1-9][0-9]*$/.test(id) || BigInt(id) > 9223372036854775807n) throw new BrowserTextureError("Protocol", "Invalid texture ID.");
+    const maxDimension = Number(result.maxTextureDimension);
+    if (!Number.isSafeInteger(maxDimension) || maxDimension <= 0 || !Number.isSafeInteger(maxDimension * maxDimension * 16))
+      throw new BrowserTextureError("Protocol", "Invalid texture device dimension limit.");
+    this.#maxTextureDimension = maxDimension;
     const entry = new BrowserTextureEntry(this, id, Number(result.generation));
     this.#entries.set(id, entry);
     return entry;
@@ -155,9 +170,7 @@ export class BrowserTextureEntry {
       throw new BrowserTextureError("Unsupported", "Expected VideoFrame or ImageBitmap.");
     const width = video ? frame.displayWidth : (frame as ImageBitmap).width;
     const height = video ? frame.displayHeight : (frame as ImageBitmap).height;
-    if (!width || !height || width * height * 4 > 16 * 1024 * 1024)
-      throw new BrowserTextureError("Size", "Frame is empty or exceeds the 16 MiB source budget.");
-    const size = width * height * 4;
+    const size = this.registry.validateSourceSize(width, height);
     if (!this.registry.adjustSourceBytes(size - this.#latestBytes)) return false;
     if (this.#latest) { this.#close(this.#latest); this.counters.replaced++; }
     this.#latest = frame; this.#latestBytes = size; this.counters.accepted++; this.#pump(); return true;
@@ -198,7 +211,11 @@ export class BrowserTextureEntry {
     const capture = (): void => {
       if (this.#disposed || generation !== this.#sourceGeneration || video.readyState < 2 || !this.ready) return;
       this.#videoDirty = false;
-      try { const frame = new VideoFrame(video); if (!this.pushFrame(frame)) frame.close(); }
+      try {
+        const frame = new VideoFrame(video);
+        try { if (!this.pushFrame(frame)) frame.close(); }
+        catch (error) { frame.close(); throw error; }
+      }
       catch (error) { this.#error(error); }
     };
     const tick: VideoFrameRequestCallback = () => { capture(); callback = video.requestVideoFrameCallback(tick); };
@@ -226,8 +243,9 @@ export class BrowserTextureEntry {
   retrySnapshot(): void { this.#snapshotCanvas(); }
   #snapshotCanvas(): void {
     if (this.#disposed || !this.#canvas || !this.#dirty || this.#snapshot || !this.ready) return;
-    const bytes = this.#canvas.width * this.#canvas.height * 4;
-    if (!bytes || bytes > 16 * 1024 * 1024) { this.#dirty = false; this.#error(new BrowserTextureError("Size", "Canvas dimensions exceed the source budget.")); return; }
+    let bytes: number;
+    try { bytes = this.registry.validateSourceSize(this.#canvas.width, this.#canvas.height); }
+    catch (error) { this.#dirty = false; this.#error(error); return; }
     if (!this.registry.adjustSourceBytes(bytes)) return;
     const generation = this.#sourceGeneration; this.#snapshot = true; this.#dirty = false;
     this.#snapshotTask = createImageBitmap(this.#canvas, { premultiplyAlpha: "premultiply", colorSpaceConversion: "default" }).then(frame => {

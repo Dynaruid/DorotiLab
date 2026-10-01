@@ -65,6 +65,7 @@ def main(suite):
             command("plugin-regressions", "dotnet", "run", "--project", "Doroti/tests/Doroti.Plugin.Tests/Doroti.Plugin.Tests.csproj", "--artifacts-path", str(run / "plugin-build"))
             command("os-drop-regressions", "dotnet", "run", "--project", "Doroti/tests/Doroti.Drop.Tests/Doroti.Drop.Tests.csproj", "--artifacts-path", str(run / "drop-build"))
             command("web-rendering", "node", "--experimental-transform-types", "--test", "Doroti/tests/web_rendering.mts")
+            command("web-textures", "node", "--experimental-transform-types", "--experimental-vm-modules", "--test", "Doroti/tests/web_textures.mts")
         if suite in ("Targets", "Release"):
             for target in ("windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj", "web/DorotiTestbedApp.Web.csproj"):
                 command(target.split('/')[0], "dotnet", "build", "samples/DorotiTestbedApp/" + target,

@@ -20,6 +20,8 @@ declare module "*_content/Doroti.Host.Web/doroti.web.textures.js" {
       /** @internal Includes candidates, unacknowledged transfers and outstanding snapshots. */
       adjustSourceBytes(delta: number): boolean;
       get sourceBytes(): number;
+      /** @internal Validate before taking ownership or creating a canvas snapshot. */
+      validateSourceSize(width: number, height: number): number;
       request(operation: string, payload?: Record<string, unknown>, transfer?: Transferable[], onPosted?: () => void): Promise<Record<string, unknown>>;
       createFrameProducer(): Promise<BrowserTextureEntry>;
       registerCanvas(canvas: HTMLCanvasElement): Promise<BrowserTextureEntry>;

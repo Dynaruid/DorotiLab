@@ -1,6 +1,7 @@
 import type { BrowserTextureFrame } from "./doroti.web.textures.js";
 import { stagePlatformBitmap } from "./doroti.web.js";
 import { releaseEffectPrograms } from "./doroti.web.gpu-effects.js";
+import { textureSourceBytes, textureViewBudget } from "./doroti.web.texture-budget.js";
 
 export interface TextureSurface {
   RegisterBrowserTexture(): string;
@@ -33,8 +34,8 @@ const allocations = new Map<number, Allocation>();
 const retired = new Set<number>();
 const completions = new Set<Promise<void>>();
 const counts = { received: 0, accepted: 0, rejected: 0, closed: 0, dropped: 0, imported: 0, drawn: 0, retired: 0, errors: 0 };
-const sourceBudget = 16 * 1024 * 1024;
-const viewBudget = 64 * 1024 * 1024;
+let maxTextureDimension = 0;
+let viewBudget = textureViewBudget(0);
 export { allocateEffect, executeEffect } from "./doroti.web.gpu-effects.js";
 export function effectGl(): GlTable {
   if (closed || lost || gpu) throw new Error("WebGL effect requires the live Ganesh render owner.");
@@ -61,6 +62,10 @@ export function registerEffectAllocation(size: number, handle: number, destroy: 
 export function initializeTextures(exports: TextureSurface, webgpu: typeof gpu, gl: () => GlTable, canvas?: () => OffscreenCanvas,
   onError?: (id: string, error: unknown) => void): void {
   surface = exports; gpu = webgpu; getGl = gl; getCanvas = canvas!;
+  maxTextureDimension = gpu ? gpu.textureDimensionLimit() : (() => {
+    const context = getGl().currentContext.GLctx;
+    return context.getParameter(context.MAX_TEXTURE_SIZE) as number;
+  })();
   if (onError) reportError = onError;
 }
 export function captureTextureRaster(order: number, left: number, top: number, width: number, height: number, scaleX: number, scaleY: number): void {
@@ -102,7 +107,7 @@ export async function textureMessage(message: Record<string, unknown>): Promise<
       if (entries.size >= 16) throw new Error("View registration budget exceeded.");
       const textureId = surface.RegisterBrowserTexture();
       const entry = { generation: ++generation, sourceGeneration: 1, sequence: 0, allocations: 0 };
-      entries.set(textureId, entry); return { textureId, generation: entry.generation };
+      entries.set(textureId, entry); return { textureId, generation: entry.generation, maxTextureDimension };
     }
     const [id, entry] = requireEntry(message);
     if (message.operation === "unregister") {
@@ -136,8 +141,8 @@ function dimensions(source: BrowserTextureFrame | OffscreenCanvas): [number, num
     ? [source.displayWidth, source.displayHeight] : [(source as ImageBitmap).width, (source as ImageBitmap).height];
 }
 function validateSize(width: number, height: number): void {
-  if (!Number.isSafeInteger(width) || !Number.isSafeInteger(height) || width <= 0 || height <= 0 || width * height * 4 > sourceBudget)
-    throw new Error("Texture source dimensions exceed the 16 MiB limit.");
+  const size = textureSourceBytes(width, height, maxTextureDimension);
+  viewBudget = Math.max(viewBudget, textureViewBudget(size));
 }
 /** Owner-local input. Canvas ownership stays here; no transferToImageBitmap clears its backing. */
 export function registerLocalCanvas(canvas: OffscreenCanvas): { textureId: string; markFrameAvailable(): void; dispose(): Promise<void> } {
@@ -248,5 +253,6 @@ export function diagnostics(): Record<string, unknown> {
     inFlightRetirements: [...allocations.values()].filter(allocation => allocation.retiring).length,
     sources: [...entries].map(([textureId, entry]) => ({ textureId, generation: entry.generation,
       sourceGeneration: entry.sourceGeneration, sequence: entry.sequence, pending: !!entry.pending, allocations: entry.allocations })),
-    sourceBudget, viewBudget, ownerLost: lost, backend: gpu ? "webgpu" : "webgl", gpu: gpu?.diagnostics() ?? null };
+    sourceBudget: maxTextureDimension * maxTextureDimension * 4, maxTextureDimension,
+    viewBudget, ownerLost: lost, backend: gpu ? "webgpu" : "webgl", gpu: gpu?.diagnostics() ?? null };
 }

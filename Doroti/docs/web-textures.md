@@ -95,11 +95,25 @@ Source errors reach `lastError`/`onError`. ACK returns credit, not presentation 
 | Resource | Limit / ownership |
 |---|---|
 | Registrations | 16 per view |
-| Dimensions | Positive, within device limit, at most 16 MiB estimated RGBA per source |
-| Main source ownership | One transfer and one latest candidate per entry; outstanding snapshots/candidates/transfers share 64 MiB |
-| Worker source ownership | One latest pending frame per entry; combined 64 MiB |
-| GPU destinations | At most three per entry, 64 MiB combined including retired allocations |
+| Dimensions | Positive integer backing pixels within the active WebGL `MAX_TEXTURE_SIZE` / WebGPU device `maxTextureDimension2D`; no fixed 16 MiB source cap |
+| Main source ownership | One transfer and one latest candidate per entry; outstanding snapshots/candidates/transfers share the adaptive view budget |
+| Worker source ownership | One latest pending frame per entry; combined adaptive view budget |
+| GPU destinations | At most three per entry; combined adaptive view budget including retired allocations and effects |
 | Composition snapshots | Existing 64 MiB raster-frame limit; one composition packet in flight |
+
+Each owner starts with a 64 MiB view budget and raises its ceiling to four times
+the largest valid source's estimated RGBA bytes (`width * height * 4`). This leaves
+room for current, replacement and retiring destinations without imposing a fixed
+monitor-resolution ceiling. A 3840x2160 source needs about 31.6 MiB; a 7680x4320
+source (also a 4K canvas at DPR 2) needs about 126.6 MiB. Both pass source admission
+when the device dimensions allow them. Dimensions describe the source backing,
+not CSS size. Main learns the owning device limit during registration and validates
+before taking frame ownership or creating snapshots; Worker revalidates transfers
+and local canvases, including resizes. The ceiling stays at its high-water value
+for the view lifetime so downsizing cannot strand outstanding resources. Raising
+the ceiling does not allocate memory; GPU allocation can still fail and is reported.
+The separate composition-snapshot and individual GPU-effect limits are unchanged;
+source admission alone does not qualify an entire high-resolution composition.
 
 These bounds cover application-owned resources, not decoder/driver allocations or
 total process memory. Budget pressure rejects caller-owned frames or retains a
@@ -131,7 +145,9 @@ are validation only.
 
 `await textures.diagnostics()` schema 1 reports received/accepted/rejected/closed,
 dropped/imported/drawn/retired, pending/current/retiring allocations, current/peak
-GPU bytes and source generations. Entry counters separately record accepted,
+GPU bytes and source generations. `maxTextureDimension` reports the active device
+limit; `sourceBudget` is its maximum square RGBA estimate, and `viewBudget` reports
+the current adaptive ceiling. Entry counters separately record accepted,
 posted, acknowledged and locally closed input. A transferred object is no longer
 main-owned; sender and receiver close counts are not two leases on the same object.
 
