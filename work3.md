@@ -1,168 +1,196 @@
-# Variable Blur FPS 개선 — 전체 재평가와 실행
+# Variable Blur 작업계획 — Fixed 1/4 우선 채택
 
-재평가일: **2026-10-01** · 시작 HEAD: `8c7127e3` · 대상: SampleApp2 / 공통 Skia 렌더러 / Graphite-Metal
+수정일: **2026-10-01** · 대상: SampleApp2 / 공통 Skia 렌더러 / iPhone 12 Graphite-Metal, 60Hz
+상태: **계획 수정 완료. 아래 P0~P3의 새 실행은 아직 시작하지 않았다.**
 
-**중간 마무리:** 렌더러 최적화와 기기 비교를 여기서 정리하고 추가 실험을 멈춘다.
-iPhone 12의 모드별 3회 측정은 Adaptive **33.22–34.07 FPS**, Fast **33.69–33.81 FPS**,
-Dual Kawase **36.15–36.79 FPS**였다. 60 FPS 목표는 미달이며 샘플 기본값은 Adaptive로 유지한다.
-iOS 프레임 연결 실험은 추가 이득이 확인되지 않아 기본 비활성화한다.
+**목표:** 현재 사용자에게 허용 가능한 화질을 유지하면서, Fixed 1/4의 약 59 FPS를 현재 소스에서도 확인하고 샘플 기본값으로 채택한다.
+원본 해상도의 선명한 끝부분이 필요한 경우에는 Adaptive를 선택한다.
+기존의 “Adaptive/Kawase를 계속 최적화해 60 FPS에 도달”하는 순서에서
+**Fixed 검증 → 같은 바이너리 성능·화질 비교 → 샘플 기본값 전환 → 장시간 사용 확인**으로 작업 순서를 바꾼다.
 
-이번 목표는 스크롤 중 실제 표시 FPS를 높이면서 선명한 끝부분을 유지하는 것이다.
-기존 P0~P4를 일괄 구현하는 계획을 **같은 바이너리에서 후보를 비교하고, 효과가 있는 경로를 선택하는 작업**으로 바꾼다.
-현재 구현·검증 결과와 미검증 범위는 [재평가 실행 기록](works/results/2026-10-01-variable-blur-reassessment.md)에 모은다.
+## 1. 재분석 근거와 남은 불확실성
 
-## 1. 재평가 결론
+사용자는 현재 앱에서 **Fixed 1/4가 블러 옵션 중 가장 부드럽고, 체감상 60 FPS에 가까우며, 육안으로 큰 이질감은 없다**고 평가했다.
+이는 현재 샘플의 수동 사용에 대한 중간 평가이며, 기존 표시 간격 계측과도 일치한다.
 
-캡처 면적 축소만으로 FPS가 개선된다는 가설은 기존 iPhone 기록에서 지지되지 않았다.
-Fast의 반복 윤곽 수정 이후에는 강도에 따라 샘플 수가 늘어난다. 이전 고정 7회 커널의 성능 표를 현재 커널에 적용할 수 없다.
-따라서 우선순위를 **부분 캡처 → 영역·합성 최적화 → 강한 블러의 연산량을 줄이는 공유 단계 → 조건부 Metal 비교**로 정한다.
+아래는 Gaussian backing 축소 이전의 **같은 바이너리·같은 합성 스크롤·모드별 3회** 비교다.
 
-| 현재 구성 | 재평가 | 이번 조치 |
+| 모드 | 평균 표시 FPS 범위 | 표시 p95 ms | 이번 계획에서의 역할 |
+| --- | ---: | ---: | --- |
+| Off | 59.41–59.58 | 16.72 | 블러 없는 표시 성능 기준 |
+| Fixed 1/4 | 58.81–58.91 | 16.72 | 우선 채택 후보 |
+| Adaptive | 31.51–32.14 | 33.44 | 약한 블러의 선명도를 보존하는 품질 선택 |
+| Fast adaptive | 31.64–32.61 | 33.44 | 기존 선택 유지, 추가 최적화는 조건부 |
+| Dual Kawase | 32.24–32.98 | 33.44 | 공유 단계의 근사 선택, 추가 최적화는 조건부 |
+| Full quality | 29.67–29.71 | 50.16 | 원본 해상도 품질 기준 |
+
+이후 backing을 줄인 후보에서 Adaptive 33.22–34.07, Fast 33.69–33.81, Kawase 36.15–36.79 FPS를 확인했지만,
+**그 마지막 비교에는 Fixed가 없다.** 단계가 다른 수치를 최종 동일 바이너리의 순위로 사용하지 않는다.
+Fixed의 이전 표시 p99는 약 33.44ms, 25ms 초과 표시 간격 비율은 1.19–1.36%였다.
+엄밀한 60 FPS 고정 달성이 아니라 **60Hz 화면에서 대부분 한 표시 주기로 갱신되는 실용적인 결과**로 평가한다.
+
+코드 재검토로 확인한 내용:
+
+- Fixed도 sigma가 위치에 따라 바뀌는 Variable Blur다. 가로·세로를 각각 약 1/4로 줄여 작업 픽셀이 약 1/16이 된다.
+- 현재 빈 child의 BackdropFilter 경로는 `keepWorkingResolution: true`로 축소 결과를 최종 타깃에 직접 linear sampling한다.
+  Fixed에 원본 크기 복원 Surface를 없애는 최적화를 다시 계획할 필요가 없다.
+- Adaptive는 1·1/2·1/4 레벨과 가중 합성을 사용한다. Kawase도 여러 강도 결과의 재구성과 약한 블러의 Gaussian 처리가 필요하다.
+  이 작업량 차이는 성능 차이의 유력한 설명이지만, GPU 단독 계측으로 주 병목을 확인한 것은 아니다.
+- 기존 raster 캡처 검사는 Fixed 설정과 축소 레벨을 검사했다. 그러나 production GPU 비교의 설정은
+  `adaptiveResolution: true` 중심이고, Fixed의 실제 직접 합성 경로를 독립적으로 검증하지 않았다.
+- 마지막 iOS 기기 빌드 이후 프레임 연결의 기본 비활성화가 반영되었다. 현재 소스를 새로 빌드해야 그 설정까지 검증할 수 있다.
+- 낮은 sigma에서도 Fixed의 필터 출력은 축소 입력을 사용한다. 작은 글자·가는 선·사진의 세부가 부드러워지거나
+  sigma를 0으로 바꿔 필터를 끌 때 선명도가 달라질 수 있다. 현재 사용자 관찰을 이 모든 조건의 검증으로 확대하지 않는다.
+
+현재 코드의 샘플 기본값은 Adaptive다. 구현·기기 측정·수동 품질 평가의 결과를 각각 기록한다.
+
+## 2. 이번 작업의 범위와 채택 기준
+
+우선 대상은 **현재 SampleApp2의 180 논리 단위 오버레이, Clamp, iPhone 12 / DPR 3 / 60Hz / Release Mono**다.
+블러 강도는 기본 sigma 20과 슬라이더 상한 32를 성능 비교하고, 낮은 강도와 전환은 수동으로 검토한다.
+공개 API의 Gaussian·원본 해상도 기본값과 각 커널의 의미는 유지한다.
+샘플 기본값 변경만으로 모든 플랫폼이나 모든 tile/transform/child 조합이 검증되었다고 표시하지 않는다.
+
+다음은 **이번 계획에서 정한 잠정 채택 기준**이며, 새 빌드가 이미 통과한 결과가 아니다.
+기존 Fixed의 약 58.9 FPS·p95 16.72ms·긴 간격 약 1.3%를 재현할 수 있도록 작은 여유를 둔다.
+
+| 항목 | 60Hz 대상의 기준 |
+| --- | --- |
+| 평균 표시 FPS | sigma 20/32 각각 Fixed 3회 모두 58 이상, 각 강도의 Fixed 평균이 Off 평균의 97% 이상 |
+| 표시 p95 | 각 실행 17.5ms 이하 |
+| 표시 p99 | 각 실행 34.2ms 이하 |
+| 긴 표시 간격 | 수집기 정의인 25ms 초과 간격이 각 실행 2% 이하 |
+| 오류·실행 상태 | renderer/terminal Metal 오류 0, 완전한 30초 표시 이력, 요청한 모드의 작업 경로 확인 |
+| 체감 화질 | 현재 장면에서 큰 이질감 없음. 약한 구간·끝 경계·강도 변경·스크롤에서 눈에 띄는 깜빡임이나 반복 윤곽 없음 |
+| 지속 사용 | 10분 연속 사용에서 반복되는 멈춤·화질 이상·렌더러 오류 없이 사용 가능 |
+
+Off도 평소의 약 59 FPS를 크게 벗어나면 열·전원·계측 조건을 확인하고 해당 비교 묶음을 다시 수집한다.
+실패한 실행과 재실행 사유도 남기며, 좋은 실행만 골라 채택하지 않는다.
+표시 간격은 GPU 실행 시간이 아니다. 종료 시 Metal 할당량은 device 전체 값이며 블러의 peak/live VRAM이나 누수 판정으로 사용하지 않는다.
+
+## 3. P0 — 현재 소스와 Fixed 검증 기반 확정
+
+**목적:** 이전 바이너리의 결과와 현재 Fixed 경로 사이의 검증 공백을 닫는다.
+
+- [ ] 현재 소스를 Release/Mono로 새로 빌드하고 설치한다. pipeline 기본 비활성화를 포함한 빌드임을 확인한다.
+- [ ] source hash·app payload hash·기기/OS·backend·DPR·표시 Hz를 기록한다.
+- [ ] 기존 `VariableBlurGpuRegression`에 `adaptiveResolution: false`, `resolutionScale: 0.25`, Gaussian인 Fixed 비교를 추가한다.
+  실제 `ApplyVariableBlur`의 축소 출력과 최종 linear sampling을 사용하며 Adaptive shader 경로로 대체하지 않는다.
+- [ ] Fixed의 crop/full domain 및 축소 결과 직접 합성/기존 복원 결과를 GPU에서 비교한다.
+  DPR 1/2/3, 반전, fractional ROI, 비배수 크기, 반투명 입력, 지원하는 Clamp/Decal을 포함한다.
+  같은 의미의 비교에는 기존 GPU 검사의 채널 오차 상한 3/255를 적용하고 실제 최대 차이를 남긴다.
+- [ ] Full Gaussian과 Fixed의 화질 차이는 별도로 검토한다. 원본 해상도 출력과 픽셀 동등성을 요구하지 않는다.
+- [ ] 기존 Gaussian kernel·capture 회귀와 macOS Metal GPU 검사를 실행한다.
+  GPU 비교가 실패하면 좌표·배율·halo·투명도 문제를 먼저 해결하고 P1로 진행한다.
+
+대상 파일:
+[GPU 회귀](Doroti/tests/Doroti.Tests/VariableBlurGpuRegression.cs),
+[필터 라우팅](Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.Filters.cs),
+[Fixed/Gaussian 처리](Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.VariableBlur.cs).
+
+**완료 조건:** 현재 소스의 빌드 identity를 확보하고, Fixed의 실제 처리·합성 경로에서 동일 의미 GPU 비교를 통과한다.
+일반 ImageFiltered나 비어 있지 않은 child의 복원 Surface 제거는 이번 기본값 채택 작업에 포함하지 않는다.
+
+## 4. P1 — 같은 바이너리에서 표시 성능과 체감 화질 확인
+
+**목적:** Fixed를 선택할 실용적인 근거를 최종 후보에서 확보한다.
+
+- [ ] 같은 바이너리에서 **Off / Fixed / Adaptive**, sigma **20 / 32**, 모드별 **3회**를 비교한다. 총 18회다.
+  기존 수집기의 두 번째 반복 역순을 사용한다. Fast/Kawase/Full 전 모드 반복은 이번 채택의 필수 작업에서 제외한다.
+- [ ] 각 실행 40초 중 첫 표시 이후 5~35초를 집계한다. `--serial-frames`로 기존 직렬 기준을 명시하고 pipeline 실험은 끈다.
+- [ ] 전원 연결·밝기·기기 온도/냉각 상태·진단 활성 조건을 기록하고 비교 중 유지한다.
+  성능 측정 중에는 profiler·스크린샷·화면 녹화를 사용하지 않는다.
+- [ ] 평균 FPS, 표시 p50/p95/p99, 긴 간격 비율, 오류, 작업 크기·패스 수를 실행별로 보고하고 2절의 기준으로 판정한다.
+  Fixed가 단일 축소 해상도의 Gaussian 두 패스를 실행하는지 확인한다.
+- [ ] 자동 스크롤과 별도로 실제 손가락 스크롤의 느린 이동·빠른 이동·방향 전환을 확인한다.
+- [ ] sigma **0 / 1 / 2 / 4 / 8 / 20 / 32**와 연속 슬라이더 변경, 블러 켜기/끄기, 모드 변경을 검토한다.
+  특히 0↔작은 sigma에서 필터 비활성화에 따른 선명도 변화와 끝 경계의 이음새를 확인한다.
+- [ ] 현재 리스트의 글자·숫자·색상 경계를 검토하고, 별도 검증 장면에서 작은 글자·1px 선·고주파 무늬·사진을 비교한다.
+  정지/움직임 결과와 콘텐츠 조건을 기록한다. 기존 샘플 화면을 계측 정보로 확장하지 않는다.
+- [ ] 품질 비교용 캡처/녹화는 성능 수집과 분리한다. 낮은 sigma에서 끊김이 관찰되면 해당 강도만 추가 계측한다.
+
+**판정:** 기준을 충족하면 P2로 진행한다. 성능 또는 필요한 화질이 미달하면 실패 조건을 기록하고 7절의 해당 분기로 들어간다.
+사용자의 이번 체감 평가는 채택의 근거에 포함하고, 추가 품질 확인은 낮은 sigma·전환·새 콘텐츠 조건에 집중한다.
+
+## 5. P2 — Fixed 1/4를 샘플 기본값으로 전환
+
+**목적:** 확인된 성능 선택을 앱을 열었을 때 바로 사용할 수 있게 한다.
+
+- [ ] `VariableBlurPageState._mode` 기본값을 `"fixed"`로 바꾼다.
+  benchmark 미설정 경로와 Off를 선택한 뒤 다시 블러를 켜는 경로의 초기 모드도 일치시킨다.
+- [ ] Fixed 설정은 `resolutionScale: 0.25`, `adaptiveResolution: false`, `kernel: gaussian`으로 유지한다.
+  새로운 커널·공개 preset·자동 모드 선택을 추가하지 않는다.
+- [ ] 기존 모드 선택은 유지하고 설명 문구에서 Fixed의 부드러운 스크롤과 Adaptive의 약한 블러 선명도를 구분한다.
+- [ ] SampleApp2 README의 기본 모드·사용 예제·benchmark 설명을 현재 동작에 맞춘다.
+  공개 `ImageFilter.variableBlur`와 `ImageFilterConfig.CreateVariableBlur` 기본값은 변경하지 않는다.
+- [ ] 후보를 새로 빌드해 benchmark 환경변수 없이 첫 진입·슬라이더·켜기/끄기·모드 전환·페이지 재진입을 smoke 확인한다.
+  렌더러·셰이더·호스트가 P1과 같으면 최종 빌드의 Fixed/sigma 20을 1회 수집해 작업 경로와 표시 상태를 확인하고,
+  채택의 반복 성능 근거는 P1 기록을 사용한다. 해당 구현이 바뀌었거나 smoke에서 이상이 발견되면 P1 비교를 다시 수행한다.
+
+대상 파일: [VariableBlurPage.cs](samples/DorotiSampleApp2/src/VariableBlurPage.cs), [README](samples/DorotiSampleApp2/README.md).
+
+**완료 조건:** 일반 앱 진입에서 Fixed가 기본 선택되고, 기존 조작이 정상 동작하며, 최종 빌드의 smoke와 P1의 채택 근거를 연결해 기록한다.
+단순 초기값 변경을 검사하는 테스트를 새로 만들지 않고, 실제 기기 진입과 기존 검증을 사용한다.
+
+## 6. P3 — 장시간 사용 확인과 결과 정리
+
+- [ ] 최종 후보로 10분 연속 스크롤을 확인한다. 동일 전원·밝기 조건의 Off도 비교해 열·공통 렌더링 영향을 구분한다.
+  기존 자동 수집기는 실행당 40초이므로 10분 검증은 별도 수동 연속 사용으로 진행한다.
+- [ ] 시작/종료의 자원 진단과 오류, 반복되는 끊김·화질 이상을 기록한다.
+  단일 종료 할당량으로 누수를 확정하지 않는다. 자원 증가가 의심되면 GPU 완료 후 회수·풀 상한을 별도로 조사한다.
+- [ ] 품질 허용 조건, 실제 표시 성능, 빌드 identity, 기본값 변경, 미검증 범위를 실행 기록에 반영한다.
+- [ ] `git diff --check`와 변경에 해당하는 기존 검사로 마무리한다.
+  렌더러를 수정했다면 공통 CPU 회귀도 실행하고, 수집기를 수정했다면 Python 집계 검사도 실행한다.
+
+**이번 계획의 완료:** P0~P3를 통과하고 iPhone 12/60Hz의 현재 샘플에서 Fixed를 기본으로 사용한다.
+다른 플랫폼·120Hz·NativeAOT·전체 affine/tile/child/opacity 행렬은 별도 검증 범위로 남긴다.
+
+## 7. 실패 조건에 따른 후속 작업
+
+| 확인된 문제 | 다음 작업 | 채택 조건 |
 | --- | --- | --- |
-| Full Gaussian | 기준 품질이지만 강한 구간의 샘플 수가 큼 | 품질 비교 경로 유지 |
-| Adaptive / Fast | 1·1/2·1/4 각각 두 Gaussian 패스. 높은 sigma에서 여전히 많은 읽기 필요 | working 이미지로 직접 샘플링하고 최종 합성에서 가중치 합산 |
-| Fast 커널 | 겹침 수정 후 sigma 15/24에서 47/73회 읽기. 고정 비용 모드가 아님 | 기존 품질 수정 유지. 샘플 간격을 벌리는 7회 커널로 되돌리지 않음 |
-| 부분 캡처 | 축별 crop으로 1170×2532 → 1170×920 감소했지만 이전 비교에서 표시 p95 개선 없음 | 유지하되 단독 FPS 성과로 집계하지 않음 |
-| Adaptive 출력 | capture 크기의 중간 출력과 레벨별 복원/합성 비용 | 빈 backdrop child에서 shader 합성 후 타깃에 한 번 그리기 |
-| Dual Kawase | 작업 트리에 셰이더·enum만 있고 렌더러 연결 없음 | 공유 down 체인, 강도별 up 재구성, sigma 보정과 보간을 연결 |
-| Surface 풀 | 기존 풀과 픽셀 예산이 있음 | 슬롯 상한 48, 기존 32M pixel 예산 유지. 새 풀 추가 없이 단계 자원 재사용 |
-| scene 전체 라우팅 | VariableBlur가 하나 있으면 무관한 형제 scope까지 owned Surface 경로를 사용함. 최초 smoke에서 추가 full-frame Surface 4개 확인 | 셰이더 없는 형제는 native Skia 경로, 캡처가 있는 조상만 owned 경로 |
-| iOS 프레임 연결 | pending frame 1개 제한 + coordinator 설정만으로 transaction presentation을 사용 | 조건부 2-frame 실험 구현, 1회 smoke에서 추가 이득 미확인. 기본 비활성화 |
-| iOS Metal | 이미 Skia Graphite-Metal 실행 | 별도 device/queue나 외부 제출 경로는 추가 이득 근거가 생길 때 검토 |
+| 현재 Fixed의 성능이 이전보다 나빠짐 | source/app identity와 프레임 설정, 캡처·작업 크기·패스 수·scene Surface부터 비교. 필요할 때 profiler 부하 A/B와 GPU 구간 측정 | 같은 입력의 표시 성능 회복. CPU 호출 시간 감소만으로 채택하지 않음 |
+| Fixed의 약한 구간/끝 경계가 실제 요구 화질에 미달 | 먼저 해당 사용처에서 Adaptive 선택. 성능과 선명도가 모두 필요하면 별도 후보로 원본 입력과 Fixed 출력의 약한 구간 연속 합성 또는 제한된 고해상도 처리를 비교 | 반복 윤곽·alpha·경계·강도 연속성 확인과 Fixed 대비 표시 비용 검증. 단순 원본 혼합을 정확한 Gaussian으로 표시하지 않음 |
+| sigma 32나 특정 콘텐츠에서만 실패 | 조건을 분리해 재현하고 그 조건의 샘플 비용·움직임을 분석 | 실패 범위를 숨기거나 슬라이더를 임의로 줄이지 않고 수정 또는 명확한 적용 범위 기록 |
+| 특정 고품질 사용처에서 Adaptive/Kawase가 필요하지만 표시 목표에 미달 | 해당 사용처를 고정해 비교하고 GPU/제출 비용을 계측. 근거가 생기면 같은 품질의 Metal fragment/MPS를 비교 | 생성·합성·자원 연결을 포함한 전체 표시 성능 개선 |
+| 제출/표시 연결이 병목으로 확인됨 | 기존 pipeline opt-in의 같은 바이너리 반복 A/B와 수명·native/resize 검증 | 반복 이득과 올바른 완료 순서·자원 회수 확인 전에는 기본 활성화하지 않음 |
 
-기존 결과: [P0·Fast 윤곽 수정](works/results/2026-09-30-variable-blur.md),
-[축별 부분 캡처](works/results/2026-10-01-variable-blur-per-axis.md).
-이전 기록은 당시 코드와 빌드의 결과이며 새 경로의 성능을 대신하지 않는다.
+Full/Fast/Kawase 선택과 기존 품질 수정을 유지한다.
+정지 화면 캐시·갱신 빈도 감소·과거 고정 7회 Fast 커널 복원·새 Surface 풀·외부 device/queue는 현재 채택 작업의 해결책으로 추가하지 않는다.
+외부 GPU가 필요하면 기존 device/queue, premultiplied alpha, Skia 자원 가시성 및 GPU 완료 후 회수 계약을 보존한다.
 
-## 2. P0 — 실제 표시 기준으로 비교
+## 8. 실행 진입점과 기존 완료 범위
 
-- [x] CPU 호출 시간, GPU 실행 시간, 실제 표시 간격을 구분하는 기존 진단 유지.
-- [x] 수집기에 평균 표시 FPS와 Kawase down/up 패스 개수 추가.
-- [x] Off / Full / Adaptive / Fast / Fixed / Kawase를 같은 바이너리에서 선택 가능하게 연결.
-- [x] `--intermediate` / `--full-capture` / `--owned-subtrees` / `--full-stages`로 합성·캡처·형제 scope·단계 영역을 각각 선택하는 A/B 진입점 추가.
-- [x] iPhone Release/Mono에서 예열 5초 이후 30초 표시 구간을 3회 교차 비교. 중간 후보 6모드 18회, Gaussian backing 축소 후보 4모드 12회 완료.
-- [ ] profiler 부하 A/B와 블러 단독 GPU p95 확보. 표시 간격을 GPU 실행 시간으로 사용하지 않음.
+다음 명령은 **후속 실행용**이며 이번 계획 수정에서 실행한 결과가 아니다.
+저장소 루트에서 서명된 Release/Mono 앱을 만든 뒤, 매 측정은 새 출력 폴더를 사용한다.
+sigma 32 비교에도 같은 바이너리의 `--app`을 지정해 payload hash를 남긴다.
 
-판정은 평균 FPS, 표시 p50/p95/p99, 긴 표시 간격 비율, 오류, 끝 시점 Metal 할당량을 함께 사용한다.
-전원·열·밝기를 완전히 통제하지 못한 결과는 제한된 조건의 비교로 표시한다.
-종료 시 device 할당량은 블러의 peak/live VRAM이나 누수 검사와 구분한다.
+```sh
+dotnet build samples/DorotiSampleApp2/ios/DorotiSampleApp2.iOS.csproj -c Release -r ios-arm64 -p:DorotiIosTargetFramework=net10.0-ios27.0 -p:DorotiCompilationMode=Mono -p:ArtifactsPath=/Users/ceramic/Labo/DorotiLab/Doroti/artifacts/variable-blur-fixed-adoption-mono
+dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-kernel
+dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-capture
+dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-gpu
+python3 Doroti/tests/variable_blur_device.py --device <DEVICE_UDID> --app <SIGNED_APP_PATH> --output temp/testing/variable-blur/fixed-adoption-sigma20 --hz 60 --repeats 3 --modes off fixed adaptive --sigma 20 --serial-frames --conditions '<전원·열·밝기·진단 조건>'
+python3 Doroti/tests/variable_blur_device.py --device <DEVICE_UDID> --app <SIGNED_APP_PATH> --output temp/testing/variable-blur/fixed-adoption-sigma32 --hz 60 --repeats 3 --modes off fixed adaptive --sigma 32 --serial-frames --conditions '<전원·열·밝기·진단 조건>'
+```
 
-## 3. P1 — 캡처 좌표와 경계
+정지 화면은 `DOROTI_VARIABLE_BLUR_BENCHMARK_STATIC=1`과 benchmark 모드/sigma로 별도 실행한다.
+자동 스크롤 수집기와 정지 옵션을 함께 사용하지 않는다.
+`--full-capture`는 필요할 때 Fixed의 같은 바이너리 캡처 A/B에 사용한다.
 
-Gaussian의 기존 축별 crop은 비배수 축을 유지하여 `ceil(size × scale) / size` 비율을 보존한다.
-Repeat/Mirror 및 미지원 격자는 기존 전체 도메인 경로를 사용한다.
+이전 P0~P4는 새 계획과 구분한다.
 
-Kawase는 자체 dyadic 격자를 사용한다. crop 원점을 가장 깊은 단계 격자에 정렬하고,
-모든 down/up/reconstruction의 지원 범위보다 큰 halo를 확보한다.
-비배수 크기는 Clamp 가장자리로 padding하며 **원본을 padding 크기로 늘려 그리지 않는다**.
-이렇게 해서 각 축의 다운샘플 비율을 정확히 2:1로 유지한다.
+| 이전 작업 | 기존 완료·결과 | 현재 처리 |
+| --- | --- | --- |
+| 표시 진단·6모드 비교 | 평균 FPS, 표시 간격, 해시, A/B 진입점과 반복 기기 기록 확보 | 재사용. 새 Fixed 비교를 기존 완료로 대신하지 않음 |
+| 축별 부분 캡처 | raster 48조건, production GPU 비교. 처리 면적 감소만으로 표시 p95 이득은 미확인 | 유지. Fixed의 실제 GPU 경로 보완 |
+| scene 라우팅·Adaptive backing/합성 | native 형제 scope, 축소 결과 직접 합성, Gaussian 저장 영역 제한 구현 | 유지. 불필요한 재구현 제외 |
+| Dual Kawase | 공유 down/up, sigma 보정·분산 보간·fallback 연결과 회귀 | 명시적 근사 선택 유지 |
+| iOS 프레임 연결 | 조건부 2-frame 실험과 회귀. Adaptive 1회 smoke의 추가 이득 미확인 | 기본 비활성화, 현재 소스 빌드 확인 |
+| 외부 Metal/MPS/Compute | 별도 경로 구현·비교 미수행 | 7절의 계측 근거가 생길 때 진행 |
 
-- [x] 기존 raster crop/full 비교 48조건, 최대 채널 차이 2/255 확인.
-- [x] 실제 macOS Graphite-Metal에서 production renderer의 crop/full 비교: DPR 1/2/3, 방향 반전, 부분 픽셀 ROI, 비배수 가로, 반투명 입력.
-- [ ] rotation/shear·oversized backing·화면 가장자리 전체 행렬과 iPhone GPU 픽셀 비교.
-
-P1의 처리 면적 감소와 P0의 표시 성능 개선은 별도로 판정한다.
-
-## 4. P2 — 같은 Gaussian 의미의 비용 감소
-
-Adaptive 각 레벨의 이미지를 원래 작업 해상도로 보관하고 최종 shader에서 linear sampling한다.
-가중치는 기존 gradient mask를 유지하고 투명 바탕에서 `Plus`로 합산한다.
-최종 clip/blend/opacity는 기존 합성 위치에서 한 번 적용한다.
-기존 backdrop에 레벨들을 차례로 SrcOver하는 방식은 사용하지 않는다.
-
-- [x] 레벨별 full-size 복원 Surface 제거.
-- [x] Gaussian 띠와 선명한 끝부분의 backing 자체를 줄이기. 전체 backing 기준과 GPU 픽셀 비교 통과.
-- [x] Repeat/Mirror는 기존 전역 저장 경로 유지, Clamp/Decal에서만 적용.
-- [x] 빈 backdrop child에서 capture 크기의 Adaptive 출력 Surface 제거.
-- [x] 중간 출력이 필요한 일반 ImageFiltered/child 경로 유지.
-- [x] macOS 실제 GPU에서 직접 합성/중간 합성 비교, 최대 채널 차이 1/255.
-- [x] 셰이더 없는 형제 scope의 native 라우팅. opacity 안의 VariableBlur는 owned 경로 유지. mixed-scene GPU 비교 최대 차이 0/255.
-- [x] Kawase 단계는 소비되는 띠 + 최종 linear footprint만 재구성하고, 다음 up 패스가 읽는 1.5 texel halo를 역산. GPU 전체 단계/부분 단계 비교 최대 차이 0/255.
-- [ ] opacity·비어 있지 않은 child·Decal·전체 affine 조합 및 장기 수명 검증.
-
-각 레벨의 입력 도메인과 실제 축소 비율은 유지하되 두 Gaussian 패스의 출력 저장 영역을 필요한 띠 + halo로 줄인다.
-shader는 원래 working 좌표에서 계산하고 로컬 Surface 원점만 별도로 보정한다.
-Kawase의 선명한 끝부분도 같은 경로를 사용한다. 읽지 않는 픽셀의 clear 제거는 이번에 적용하지 않는다.
-현재 좌표·투명도 기준을 통과한 합성 변경부터 사용한다.
-정지 화면 캐시와 갱신 빈도 축소는 스크롤 FPS 해법의 우선순위에서 제외한다.
-
-## 5. P3 — 공유 Dual Kawase 근사 모드
-
-공개 선택은 `VariableBlurKernel.dualKawase`, 샘플 이름은 **Dual Kawase**다.
-Gaussian과 Fast의 의미는 유지한다. Kawase는 `resolutionScale`과 별도로 자체 피라미드를 사용한다.
-
-최초 full-stage Kawase smoke는 평균 29.30 FPS / 표시 p95 50.16ms였다.
-형제 scope·up 영역만 수정한 중간 후보는 약 33 FPS / p95 33.44ms였지만 여전히 full-size Gaussian backing이 남았다.
-형제 scope·재구성 영역·Gaussian backing까지 줄인 후보는 3회 측정에서 36.15–36.79 FPS였다.
-단계 공유만의 성과와 전체 최적화 결과를 구분한다.
-
-1. 원본을 dyadic 격자에 Clamp padding한다.
-2. 입력을 한 번의 공유 down 체인으로 축소한다. down 패스는 5회 읽는다.
-3. 각 강도 단계는 up 패스로 재구성한다. up 패스는 8회 읽는다.
-4. 첫 강도 결과는 1/2, 이후 결과는 1/4까지 재구성한다. raw mip를 완성된 블러 결과로 사용하지 않는다.
-5. 최종 픽셀의 sigma에 따라 인접 결과의 **분산**을 보간한다. 반열린 구간으로 alpha 중복 합성을 막는다.
-6. 두 device pixel 이하의 sigma는 위치별 Gaussian을 사용한다. 그 이후 첫 Kawase 단계로 연결한다.
-
-| 깊이 | 최종 linear reconstruction까지 포함한 device sigma |
-| --- | ---: |
-| 2 | 3.5824 |
-| 3 | 7.1995 |
-| 4 | 15.2698 |
-| 5 | 30.9597 |
-| 6 | 62.1276 |
-| 7 | 124.3597 |
-
-이 값은 실제 embedded 셰이더의 독립 impulse 측정으로 검사한다.
-단계 번호를 sigma로 사용하지 않으며, 보간 결과를 정확한 Gaussian으로 표시하지 않는다.
-Clamp와 similarity transform(회전·반사·균일 scale)을 지원한다.
-다른 tile, 비균일 scale/shear, 범위를 넘는 sigma는 Gaussian으로 대체하며 사유를 진단에 남긴다.
-
-- [x] 셰이더 manifest SHA-256/ABI와 추가 child image 바인딩 연결.
-- [x] impulse sigma·에너지·여러 픽셀 phase·반복 윤곽 검사.
-- [x] 단계 구간의 premultiplied alpha 및 방향 반전 검사.
-- [x] macOS GPU에서 선명한 끝부분과 Gaussian 기준 비교, 최대 채널 차이 0/255.
-- [x] iPhone FPS 3회 비교. 기본 Adaptive 유지, Kawase는 명시적 근사 선택으로 남김.
-- [ ] iPhone 정지/움직임 화질 검토.
-- [ ] 사진·1px 선·작은 글자·sigma 연속 변경·긴 스크롤의 전체 품질 행렬.
-
-## 6. P4 — iOS 제출·표시 연결과 외부 GPU 재판정
-
-Gaussian backing을 줄인 뒤에도 Adaptive 약 33–34 FPS, Kawase 약 36 FPS에 머무는 3회 비교를 확보했다.
-호스트의 `maximumPending=1` 및 불필요한 transaction presentation을 확인해 동일 커널의 프레임 연결 실험을 구현했다.
-
-- [x] 새 셰이더 장면이며 native/shield가 없는 경우만 최대 2개 GPU frame 허용.
-- [x] paint admission 시 같은 조건을 다시 확인하고, 재표시/새 native 장면이면 소비하지 않고 대기.
-- [x] native composition·resize·rotation은 기존 직렬/transaction 경로 유지.
-- [x] 역순 GPU 완료가 최신 replay source를 덮지 않는 회귀와 fresh/native/replay admission 회귀 통과.
-- [x] Release/Mono 기기 빌드 및 Adaptive 1회 smoke: 33.69 FPS / 표시 p95 33.44ms / 오류 0. 직렬 후보 대비 추가 이득은 확인하지 못함.
-- [x] 기본 비활성화. `DOROTI_VARIABLE_BLUR_PIPELINE=1` 또는 수집기의 `--pipeline-frames`에서만 활성화하며 `--serial-frames`가 우선함.
-- [ ] 같은 바이너리의 반복 A/B와 수명 검증. 기본 비활성화 전환 이후 iOS 재빌드는 이번 중간 마무리에서 생략.
-
-
-**조건부 보류.** 현재 GPU backend는 이미 Metal이고, 강한 Gaussian의 반복 연산량을 줄이는 공통 경로가 먼저다.
-새 공통 경로에서도 표시 목표를 놓치거나 남은 제출/GPU 비용이 확인되면 동일 품질의 Metal fragment/MPS 비교로 진입한다.
-MPS는 고정 sigma 단계 생성과 최종 Variable Blur 합성 비용을 포함해 비교한다.
-Compute는 입력 재사용 이득과 halo/barrier 비용을 측정할 근거가 있을 때만 진행한다.
-
-외부 GPU 경로가 필요해지면 기존 device/queue, Linear sampler, premultiplied alpha,
-Skia→외부 패스→Skia 자원 가시성 및 GPU 완료 후 회수 계약을 보존한다.
-이 단계의 보류는 구현 완료나 성능 검증으로 집계하지 않는다.
-
-## 7. 검증·채택·남은 범위
-
-동일 의미 변경은 같은 커널의 crop/full 및 직접/중간 합성으로 비교한다.
-근사 모드는 impulse/edge, 선명한 구간, 움직임 안정성과 전체 표시 FPS를 함께 평가한다.
-60Hz 기준 전체 표시 예산은 16.67ms다. GPU 단독 15% 개선 목표는 별도 계측이 없으면 달성으로 표시하지 않는다.
-
-이번 결과와 다음 검증을 구분한다:
-
-- **이번:** 공통 빌드, Gaussian/Kawase raster 검사, macOS Metal GPU 픽셀 비교, iPhone Release/Mono 실행·표시 비교.
-- **후속:** NativeAOT, 120Hz, Android/Windows/Linux/Web GPU, 모든 tile/affine/child/opacity 조합, 10분 열·자원 수명 검사.
-
-재현 명령은 [SampleApp2 README](samples/DorotiSampleApp2/README.md)와
-[이번 실행 기록](works/results/2026-10-01-variable-blur-reassessment.md)을 따른다.
-부분 구현, 테스트 통과, 실제 FPS 개선, 전체 플랫폼 완료를 서로 구분하여 기록한다.
-
-조사 근거: [Android RenderEngine의 Skia 기반 Kawase 구현](https://android.googlesource.com/platform/frameworks/native/+/d647d6cde7f28d83dd03aeff48c3f1bdfe4622df/libs/renderengine/skia/filters/KawaseBlurDualFilter.cpp).
-이 자료의 방향을 참고했으며 Doroti의 커널·단계 보정·Variable Blur 합성은 자체 구현이다.
-다른 구현의 성능 수치를 Doroti의 예상 성과로 사용하지 않는다.
+기존 구현·측정 원본은 [재평가 실행 기록](works/results/2026-10-01-variable-blur-reassessment.md),
+[집계 JSON](works/results/variable-blur-2026-10-01-reassessment-summary.json),
+[축별 부분 캡처](works/results/2026-10-01-variable-blur-per-axis.md),
+[Fast 윤곽 수정](works/results/2026-09-30-variable-blur.md)에 보관한다.
+빌드·테스트 통과, 표시 FPS 개선, 사용자 체감 화질, 전체 플랫폼 검증을 구분해 기록한다.
