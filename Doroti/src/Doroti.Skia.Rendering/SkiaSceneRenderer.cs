@@ -509,6 +509,29 @@ public sealed partial class SkiaSceneRenderer
         int pixelHeight,
         DorotiResizeEpoch desiredTarget,
         long causalFrameId
+    ) => Paint(surface, pixelWidth, pixelHeight, desiredTarget, causalFrameId, false);
+
+    /// <summary>Only consumes a new shader scene without native composition.
+    /// An unavailable/ineligible scene stays pending; the host must not present a replay.</summary>
+    public SkiaPaintResult PaintNewShaderScene(SKSurface surface, int pixelWidth, int pixelHeight,
+        DorotiResizeEpoch desiredTarget) => Paint(surface, pixelWidth, pixelHeight, desiredTarget, 0, true);
+
+    public bool CanRecordShaderSceneAhead
+    {
+        get { lock (_gate) return !_disposed && _pendingFrame is { } frame && IsShaderSceneWithoutPlatformViews(frame.Commands); }
+    }
+
+    private static bool IsShaderSceneWithoutPlatformViews(IReadOnlyList<SceneCommand> commands)
+    {
+        static bool HasNative(IReadOnlyList<SceneCommand> items, int depth = 0) => depth > 256
+            || items.Any(c => c.Operation is "platformView" or "inputShield"
+                || c.HostPayload is SceneRetainedPayload retained && HasNative(retained.Commands, depth + 1));
+        return !HasNative(commands) && RequiresGpuFilterLayers(commands, 0, commands.Count);
+    }
+
+    private SkiaPaintResult Paint(
+        SKSurface surface, int pixelWidth, int pixelHeight, DorotiResizeEpoch desiredTarget,
+        long causalFrameId, bool requireNewShaderScene
     )
     {
         ArgumentNullException.ThrowIfNull(surface);
@@ -525,7 +548,7 @@ public sealed partial class SkiaSceneRenderer
             _shadowDeviceScale = desiredTarget.DeviceScaleY;
             try
             {
-                return PaintCore(surface, pixelWidth, pixelHeight, desiredTarget, causalFrameId);
+                return PaintCore(surface, pixelWidth, pixelHeight, desiredTarget, causalFrameId, requireNewShaderScene);
             }
             finally
             {
@@ -539,13 +562,17 @@ public sealed partial class SkiaSceneRenderer
         int pixelWidth,
         int pixelHeight,
         DorotiResizeEpoch desiredTarget,
-        long causalFrameId
+        long causalFrameId,
+        bool requireNewShaderScene
     )
     {
         SceneFrame? frame;
         bool isNewFrame;
         lock (_gate)
         {
+            if (requireNewShaderScene && (_pendingFrame is null
+                || !IsShaderSceneWithoutPlatformViews(_pendingFrame.Commands)))
+                return new(SkiaPaintDisposition.superseded, null, _pendingFrame?.Descriptor, DorotiFrameMatchResult.Exact);
             frame = _pendingFrame;
             isNewFrame = frame is not null;
             if (isNewFrame)
@@ -747,41 +774,53 @@ public sealed partial class SkiaSceneRenderer
                     return;
                 }
 
-                try
+                // Completion callbacks can arrive out of order even when queue
+                // work is ordered. Never promote an older scene for later replay.
+                if (_presentedFrame is { } latest && frame.Descriptor.CompareAdmissionTo(latest.Descriptor) < 0)
                 {
-                    frame.FrameTransaction?.VisibleSurfaceCommitted(
-                        frame.FrameTransaction.VisibleTargetIdentity
-                    );
+                    MarkTerminal(frame, DorotiFrameTerminal.superseded,
+                        "a newer completed scene is already the replay source", completion.SurfaceGeneration);
+                    receipt = CreateFrameReceipt(completion, DorotiFrameTerminal.superseded,
+                        SkiaPaintDisposition.superseded, "older completion did not replace the replay source");
                 }
-                catch
+                else
                 {
-                    MarkTerminal(
-                        frame,
-                        DorotiFrameTerminal.failed,
-                        "visible surface transaction commit failed",
-                        completion.SurfaceGeneration
-                    );
-                    throw;
-                }
-                if (
-                    !MarkTerminal(
-                        frame,
-                        terminal,
-                        "native frame submitted",
-                        completion.SurfaceGeneration
+                    try
+                    {
+                        frame.FrameTransaction?.VisibleSurfaceCommitted(
+                            frame.FrameTransaction.VisibleTargetIdentity
+                        );
+                    }
+                    catch
+                    {
+                        MarkTerminal(
+                            frame,
+                            DorotiFrameTerminal.failed,
+                            "visible surface transaction commit failed",
+                            completion.SurfaceGeneration
+                        );
+                        throw;
+                    }
+                    if (
+                        !MarkTerminal(
+                            frame,
+                            terminal,
+                            "native frame submitted",
+                            completion.SurfaceGeneration
+                        )
                     )
-                )
-                {
-                    return;
-                }
+                    {
+                        return;
+                    }
 
-                _presentedFrame = frame;
-                receipt = CreateFrameReceipt(
-                    completion,
-                    terminal,
-                    SkiaPaintDisposition.exact,
-                    "new scene crossed the host submission boundary"
-                );
+                    _presentedFrame = frame;
+                    receipt = CreateFrameReceipt(
+                        completion,
+                        terminal,
+                        SkiaPaintDisposition.exact,
+                        "new scene crossed the host submission boundary"
+                    );
+                }
             }
             else
             {

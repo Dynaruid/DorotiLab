@@ -120,7 +120,9 @@ public static partial class DorotiSkiaRuntimeEffects
         string backend = ValidationBackend,
         long contextGeneration = 0,
         object? contextOwner = null,
-        SKShaderTileMode inputTileMode = SKShaderTileMode.Decal
+        SKShaderTileMode inputTileMode = SKShaderTileMode.Decal,
+        IReadOnlyList<SKImage>? additionalInputs = null,
+        SKMatrix? inputLocalMatrix = null
     )
     {
         ArgumentNullException.ThrowIfNull(snapshot);
@@ -158,13 +160,24 @@ public static partial class DorotiSkiaRuntimeEffects
             var inputShader = input.ToShader(
                 inputTileMode,
                 inputTileMode,
-                inputSampling
+                inputSampling,
+                inputLocalMatrix ?? SKMatrix.Identity
             );
             childShaders.Add(inputShader);
             children[effect.Children[0]] = inputShader;
 
+            if (additionalInputs is not null && additionalInputs.Count != effect.Children.Count - 1)
+                throw new InvalidDataException("Image filter child count differs from its manifest.");
             for (var index = 1; index < effect.Children.Count; index++)
             {
+                if (additionalInputs is not null)
+                {
+                    var additional = additionalInputs[index - 1].ToShader(inputTileMode,
+                        inputTileMode, inputSampling);
+                    childShaders.Add(additional);
+                    children[effect.Children[index]] = additional;
+                    continue;
+                }
                 if (!state.Samplers.TryGetValue(index, out var image))
                 {
                     throw new InvalidDataException(

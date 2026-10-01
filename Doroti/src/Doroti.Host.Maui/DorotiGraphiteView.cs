@@ -28,6 +28,7 @@ public sealed class DorotiGraphiteView : SKGLView
     internal event Action<MauiPaintCompletion, bool>? GraphitePresentCompleted;
     internal event Action<MauiPaintCompletion?, Exception>? GraphiteFailed;
     internal event Action? GpuResourcesReleasing;
+    internal Func<bool>? NewShaderSceneAvailable { get; set; }
 
     // SKTouchDeviceType cannot represent invertedStylus or unknown. Preserve
     // native device identity across the Graphite surface boundary.

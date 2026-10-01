@@ -502,13 +502,29 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
         // overwrite a newly submitted update (including selection handles).
         // UIKit's system loupe can request those redraws without a PlatformView.
         // Defer invalidations, without blocking UIKit, until that promotion occurs.
-        const int maximumPending = 1;
+        var maximumPending = 1;
+        var shaderFramePipeline = false;
+#if IOS && !MACCATALYST
+        // Permit CPU recording to overlap GPU work only for a NEW shader scene.
+        // Rotation and native composition retain their one-frame transaction.
+        if (Environment.GetEnvironmentVariable("DOROTI_VARIABLE_BLUR_PIPELINE") == "1"
+            && Environment.GetEnvironmentVariable("DOROTI_VARIABLE_BLUR_SERIAL_FRAMES") != "1"
+            && !_renderingViewport && !_animatedViewport.IsAnimating
+            && owner.PlatformViews?.HasComposition != true
+            && _pending.All(p => p.PlatformFrame is null)
+            && owner.NewShaderSceneAvailable?.Invoke() == true)
+        {
+            shaderFramePipeline = true;
+            maximumPending = 2;
+        }
+#endif
         if (_pending.Count >= maximumPending)
         {
             _frameBackpressure = true;
             return;
         }
         _drawing = true;
+        var recordingAhead = _pending.Count > 0;
         SkiaGraphiteSession.Frame? frame = null;
         ICAMetalDrawable? drawable = null;
         MauiSkiaPaintContext? paint = null;
@@ -521,7 +537,10 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
         {
             CATransaction.Begin();
             CATransaction.DisableActions = true;
-            PresentsWithTransaction = true;
+            // A configured coordinator alone does not mean native overlays are
+            // changing. Shader-only frames use normal asynchronous presentation;
+            // their atomic paint admission rejects a newly inserted native scene.
+            PresentsWithTransaction = shaderFramePipeline ? previousPresentation : true;
         }
 #endif
         try
@@ -575,12 +594,16 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
                 GetType().FullName!,
                 "UIKit/MTKView/Graphite-Metal"
             );
+            paint.RequireNewShaderScene = shaderFramePipeline;
             owner.PaintGraphite(paint);
 #if IOS || MACCATALYST
             platformFrame = owner.PlatformViews?.TakePending();
 #endif
-            if (paint.SkipPresent || _releaseRequested || generation != _generation)
+            if (paint.SkipPresent || _releaseRequested || generation != _generation
+                || recordingAhead && paint.Completion?.IsNewFrame != true)
             {
+                _frameBackpressure |= recordingAhead;
+                if (shaderFramePipeline && _pending.Count == 0) SetNeedsDisplay();
                 frame.CancelRecording();
                 frame = null;
                 if (paint.Completion is { } stale)

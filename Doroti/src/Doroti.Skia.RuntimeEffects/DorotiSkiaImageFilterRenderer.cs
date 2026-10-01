@@ -5,7 +5,8 @@ namespace Doroti.Skia.RuntimeEffects;
 
 internal static class DorotiSkiaImageFilterRenderer
 {
-    private const int MaxPooledSurfacesPerFrame = 16;
+    // Multi-stage blur needs more slots, still bounded by the existing pixel budget.
+    private const int MaxPooledSurfacesPerFrame = 48;
     private const long MaxPooledSurfacePixels = 32L * 1024 * 1024;
     private const int MaxCachedImages = 32;
     private const int StableCacheFrames = 3;

@@ -248,6 +248,7 @@ internal sealed class MauiSkiaCapabilities
     }
 
     internal void AttachSurface(Action invalidate) => _renderer.AttachSurface(invalidate);
+    internal bool CanRecordShaderSceneAhead => _renderer.CanRecordShaderSceneAhead;
 
     public void Submit(
         ulong viewId,
@@ -259,10 +260,13 @@ internal sealed class MauiSkiaCapabilities
         SKSurface surface,
         int pixelWidth,
         int pixelHeight,
-        out bool shouldPresent
+        out bool shouldPresent,
+        bool requireNewShaderScene = false
     )
     {
-        var result = _renderer.Paint(surface, pixelWidth, pixelHeight, _host.ResizeTarget);
+        var result = requireNewShaderScene
+            ? _renderer.PaintNewShaderScene(surface, pixelWidth, pixelHeight, _host.ResizeTarget)
+            : _renderer.Paint(surface, pixelWidth, pixelHeight, _host.ResizeTarget);
         shouldPresent = result.Disposition != SkiaPaintDisposition.superseded;
         return result.Completion is { } completion
             ? new(

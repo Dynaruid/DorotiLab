@@ -54,6 +54,8 @@ internal static class RenderingRegressions
         foreach (var (width, height, scale, tile, expectedReason) in new[]
         {
             (401, 301, .25, TileMode.clamp, "rounded-working-grid"),
+            (401, 300, .25, TileMode.clamp, "cropped-y"),
+            (400, 301, .25, TileMode.clamp, "cropped-x"),
             (400, 300, .25, TileMode.repeated, "wrapped-domain"),
             (400, 300, .125, TileMode.clamp, "unsupported-grid"),
             (400, 300, .25, TileMode.clamp, "cropped"),
@@ -66,6 +68,31 @@ internal static class RenderingRegressions
                 new(100, 80, 180, 140), configuration, tile, SKMatrix.Identity, width, height))
                 throw new Exception($"Capture diagnosis changed geometry or reason: {reason}");
         }
+        foreach (var (width, height, expected) in new[]
+        {
+            (401, 300, new SKRectI(0, 60, 401, 160)),
+            (400, 301, new SKRectI(80, 0, 200, 301)),
+        })
+        {
+            var partial = SkiaSceneRenderer.VariableBlurCaptureBounds(new(100, 80, 180, 140),
+                settings, TileMode.clamp, SKMatrix.Identity, width, height);
+            if (partial != expected) throw new Exception($"Per-axis capture changed sampling grid: {partial}");
+            foreach (var scale in new[] { 1d, .5, .25 })
+            {
+                var fullX = Math.Ceiling(width * scale) / width;
+                var fullY = Math.Ceiling(height * scale) / height;
+                if (Math.Ceiling(partial.Width * scale) / partial.Width != fullX ||
+                    Math.Ceiling(partial.Height * scale) / partial.Height != fullY ||
+                    partial.Left * fullX != Math.Floor(partial.Left * fullX) ||
+                    partial.Top * fullY != Math.Floor(partial.Top * fullY))
+                    throw new Exception("Adaptive level changed global scale or texel phase.");
+            }
+        }
+        var phoneCapture = SkiaSceneRenderer.VariableBlurCaptureBounds(new(0, 981, 1170, 1520.7832f),
+            settings with { StartSigma = 20 }, TileMode.clamp, SKMatrix.CreateScale(3, 3),
+            1170, 2532, out var phoneReason);
+        if (phoneCapture != new SKRectI(0, 792, 1170, 1712) || phoneReason != "cropped-y")
+            throw new Exception($"iPhone DPR3 capture retained unnecessary full height: {phoneCapture}/{phoneReason}");
 
         var baseline = EngineLayer.debugResourceDiagnostics.ActiveEngineLayers;
         var timings = new List<double>();

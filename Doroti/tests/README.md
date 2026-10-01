@@ -58,7 +58,15 @@ The permanent fixtures protect regressions in pointer tab routing, bounded settl
 python Doroti/eng/run-with-timeout.py dotnet run --project Doroti/tests/Doroti.Tests -c Debug -- --break-tab
 ```
 
-That command must fail; without `--break-tab`, it must pass. Rendering fixtures now cover fixed DPR pixels, VariableBlur capture policy (not its GPU kernel), a 1,000-row list, reassemble offset preservation and zero engine-layer delta after disposal. GPU golden/blur and physical IME/accessibility remain tracked in [M1](../../works/common/01-testing.md) and [M2-B](../../works/common/03-input-accessibility-platformview.md).
+That command must fail; without `--break-tab`, it must pass. Rendering fixtures cover fixed DPR pixels, VariableBlur raster kernels/capture coordinates, a 1,000-row list, reassemble offset preservation and zero engine-layer delta after disposal. Physical IME/accessibility and the full GPU/platform matrix remain tracked in [M1](../../works/common/01-testing.md) and [M2-B](../../works/common/03-input-accessibility-platformview.md).
+
+On macOS with a Metal GPU, run the production renderer pixel checks explicitly:
+
+```sh
+dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-gpu
+```
+
+This command compares crop/full and direct/intermediate composition at DPR 1/2/3, Gaussian detail at the clear edge, bounded/full Kawase reconstruction, and native/owned sibling scopes with a VariableBlur inside opacity. It uses synchronous readback only in validation and does not measure FPS or qualify iPhone, other GPU backends, or the full transform/tile/child matrix. The default suite stays on raster surfaces; `--variable-blur-kernel`, `--variable-blur-capture`, and `--variable-blur-kawase` isolate the embedded production SkSL and its manifest/ABI.
 
 For the installed VSIX and native metadata-update tests, use the commands in [development sessions](../docs/development-hot-reload.md). [Rendering baselines](../docs/rendering-baselines.md) specifies measurement boundaries and prospective budgets. Testbed `DOROTI_SAMPLE=reload` provides a counter, input and long list for manual reload testing.
 

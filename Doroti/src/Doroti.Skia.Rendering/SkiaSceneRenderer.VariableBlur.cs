@@ -38,6 +38,25 @@ public sealed partial class SkiaSceneRenderer
                 "ImageFilter.variableBlur requires an invertible affine transform."
             );
 
+        if (settings.Kernel == VariableBlurKernel.dualKawase)
+        {
+            if (VariableBlurKawaseGeometry(settings, tileMode, matrix,
+                out var deviceScale, out var depth, out var reason))
+            {
+                using var shader = CreateDualKawaseVariableBlurShader(target, input, settings,
+                    width, height, matrix, outputBounds, deviceScale, depth);
+                using var output = CreateFilterSurface(target, width, height);
+                using var paint = new SKPaint { Shader = shader, BlendMode = SKBlendMode.Src };
+                output.Canvas.DrawRect(outputBounds ?? SKRect.Create(width, height), paint);
+                return output.Snapshot();
+            }
+            RecordVariableBlurWork("kawase-fallback", width, height, width, height,
+                outputBounds ?? SKRect.Create(width, height), reason);
+            settings = settings with { Kernel = VariableBlurKernel.gaussian };
+            if (reason == "kawase-weak-gaussian")
+                settings = settings with { ResolutionScale = 1, AdaptiveResolution = false };
+        }
+
         if (settings.ResolutionScale < 1 && settings.AdaptiveResolution)
             return ApplyAdaptiveVariableBlur(
                 target,

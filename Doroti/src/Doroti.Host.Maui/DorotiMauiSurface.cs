@@ -274,7 +274,8 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
                         paint.Surface,
                         paint.PixelWidth,
                         paint.PixelHeight,
-                        out var shouldPresent
+                        out var shouldPresent,
+                        paint.RequireNewShaderScene
                     );
                     paint.SkipPresent = !shouldPresent;
                 }

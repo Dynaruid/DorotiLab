@@ -39,6 +39,7 @@ internal sealed class MauiSkiaPaintContext(
     internal string GraphicsBackend { get; } = graphicsBackend;
     internal bool SkipRaster { get; set; }
     internal bool SkipPresent { get; set; }
+    internal bool RequireNewShaderScene { get; set; }
     internal MauiPaintCompletion? Completion { get; set; }
 }
 
@@ -164,6 +165,11 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
     {
         PublishDrawableMetrics(context.PixelWidth, context.PixelHeight, context.Density);
         Paint?.Invoke(context);
+    }
+
+    internal void SetShaderSceneQuery(Func<bool> query)
+    {
+        if (_view is DorotiGraphiteView graphite) graphite.NewShaderSceneAvailable = query;
     }
 
     public void InvalidateSurface() => _view.InvalidateSurface();
@@ -433,6 +439,7 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
             // Native GPU owner releases while renderer callbacks are still attached.
             _view.Handler?.DisconnectHandler();
             graphite.GraphitePaint -= HandleGraphitePaint;
+            graphite.NewShaderSceneAvailable = null;
             graphite.NativePointer -= HandleNativePointer;
             graphite.GraphitePresentCompleted -= HandleGraphiteCompleted;
             graphite.GraphiteFailed -= HandleGraphiteFailed;

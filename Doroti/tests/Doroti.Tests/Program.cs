@@ -5,6 +5,26 @@ using Doroti.Ui;
 
 static void Require(bool value, string message) { if (!value) throw new Exception(message); }
 #if DOROTI_REPO_TESTS
+if (args.Contains("--shader-frame-pipeline"))
+{
+    ShaderFramePipelineRegression.Run();
+    return;
+}
+if (args.Contains("--variable-blur-gpu"))
+{
+    VariableBlurGpuRegression.Run();
+    return;
+}
+if (args.Contains("--variable-blur-kawase"))
+{
+    VariableBlurKawaseRegression.Run();
+    return;
+}
+if (args.Contains("--variable-blur-capture"))
+{
+    VariableBlurCaptureRegression.Run();
+    return;
+}
 if (args.Contains("--variable-blur-kernel"))
 {
     VariableBlurKernelRegression.Run();
@@ -68,7 +88,10 @@ Console.WriteLine("PASS: pointer focus; synthetic Hangul start/update/commit/can
 await DesktopCloseRegression.Run();
 #if DOROTI_REPO_TESTS
 RenderingRegressions.Run();
+VariableBlurCaptureRegression.Run();
 VariableBlurKernelRegression.Run();
+VariableBlurKawaseRegression.Run();
+ShaderFramePipelineRegression.Run();
 NavigationRegression.Run();
 WindowContextRegression.Run();
 await PlatformRetirementRegression.Run();

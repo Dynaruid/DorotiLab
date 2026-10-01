@@ -24,6 +24,7 @@ class PresentationSummaryTests(unittest.TestCase):
     def test_warm_window_excludes_launch_stall(self):
         result = summarize(self.evidence([5000] + [20] * 1600), 50)
         self.assertEqual(result["intervalSamples"], 1500)
+        self.assertEqual(result["presentationMeanFps"], 50)
         self.assertEqual(result["presentationP99Ms"], 20)
         self.assertEqual(result["longIntervalFraction"], 0)
         self.assertIsNone(result["gpuMilliseconds"])

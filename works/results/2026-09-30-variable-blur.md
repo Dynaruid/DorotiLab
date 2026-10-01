@@ -197,3 +197,10 @@ Fast sigma 0/20/32와 Adaptive sigma 20/32의 정지 화면을 확인했다. Fas
 수정 후 Fast 40초 반복 스크롤도 완료했다(`ghosting/scroll/`). 렌더러·Metal 오류 0,
 warm 30초 표시 간격 p95는 50.16ms였다. 1회 smoke이므로 정식 성능 채택 결과로 사용하지 않는다.
 최종 iOS 서명 빌드는 경고·오류 0(`ios-build-final.log`)이었다.
+
+
+## 축별 부분 캡처 후속
+
+[2026-10-01 후속 결과](2026-10-01-variable-blur-per-axis.md): 비배수 가로축을 유지하며 세로 캡처를 축소했다.
+iPhone Release/Mono에서 처리 면적 감소를 확인했으나 1회 예비 비교의 표시 p95 개선은 없었다.
+Native AOT 게시 실패와 미검증 범위는 후속 문서를 따른다.

@@ -4,6 +4,7 @@ Build the Release app first. No frame readbacks or GPU completion waits are adde
 This reports actual presentation intervals and CPU recording calls, NOT GPU time.
 """
 import argparse
+import hashlib
 import json
 import math
 import subprocess
@@ -12,7 +13,7 @@ import uuid
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-MODES = ["off", "full", "adaptive", "fast", "fixed"]
+MODES = ["off", "full", "adaptive", "fast", "fixed", "kawase"]
 
 
 def summarize(evidence, hz):
@@ -53,6 +54,7 @@ def summarize(evidence, hz):
         "configuredDisplayHz": hz,
         "presentationWindowMs": [5000, 35000],
         "intervalSamples": len(warm),
+        "presentationMeanFps": 1000 * len(warm) / sum(warm),
         "presentationP50Ms": percentile(.5),
         "presentationP95Ms": percentile(.95),
         "presentationP99Ms": percentile(.99),
@@ -63,6 +65,7 @@ def summarize(evidence, hz):
         "capture": [x for x in work if x["stage"] == "backdrop-capture"],
         "captureDecisions": blur.get("captureDecisions"),
         "gaussianPassesLastFrame": sum(x["stage"] == "gaussian-pass" for x in work),
+        "kawasePassesLastFrame": sum(x["stage"] in ("kawase-down", "kawase-up") for x in work),
         "surfacesLastFrame": [x for x in work if x["stage"] == "scene-surface-clear"],
         "cpuStagesIncludingWarmup": blur.get("cpuStages"),
         "cpuRasterTraceTail": raster_summary,
@@ -80,11 +83,22 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--hz", type=float, required=True, help="Actual configured display rate, not marketing maximum.")
     parser.add_argument("--repeats", type=int, default=3)
+    parser.add_argument("--sigma", type=float, default=20, help="Logical blur sigma, 0..32.")
+    parser.add_argument("--full-capture", action="store_true", help="Disable ROI capture for a same-binary domain comparison.")
+    parser.add_argument("--intermediate", action="store_true", help="Use the original Adaptive intermediate composition for A/B.")
+    parser.add_argument("--owned-subtrees", action="store_true", help="Force shader-free sibling scopes through owned full-frame layers.")
+    parser.add_argument("--full-stages", action="store_true", help="Reconstruct Kawase stages over their entire padded domain.")
+    parser.add_argument("--full-detail", action="store_true", help="Use capture-sized surfaces for the Gaussian detail.")
+    parser.add_argument("--full-bands", action="store_true", help="Use whole-domain backing for Adaptive Gaussian bands.")
+    parser.add_argument("--serial-frames", action="store_true", help="Wait for GPU completion before recording the next shader scene.")
+    parser.add_argument("--pipeline-frames", action="store_true", help="Opt in to the experimental fresh-shader frame pipeline.")
     parser.add_argument("--modes", nargs="+", choices=MODES, default=MODES)
     parser.add_argument("--conditions", required=True, help="Power, thermal, brightness and instrumentation conditions.")
     args = parser.parse_args()
     if args.hz <= 0 or args.repeats < 1:
         parser.error("hz and repeats must be positive")
+    if not math.isfinite(args.sigma) or not 0 <= args.sigma <= 32:
+        parser.error("sigma must be finite and between 0 and 32")
     out = args.output.resolve()
     if not out.is_relative_to(ROOT / "temp/testing") or out.exists():
         parser.error("Use a fresh directory under temp/testing")
@@ -100,8 +114,37 @@ def main():
         installed = run("xcrun", "devicectl", "device", "install", "app", "--device", args.device, str(args.app.resolve()))
         (out / "install.log").write_text(installed.stdout)
     summary = {"commit": run("git", "rev-parse", "HEAD").stdout.strip(),
+               "fullCapture": args.full_capture,
+               "intermediate": args.intermediate,
+               "sigma": args.sigma,
+               "ownedSubtrees": args.owned_subtrees, "fullStages": args.full_stages,
+               "fullDetail": args.full_detail,
+               "fullBands": args.full_bands,
+               "serialFrames": args.serial_frames,
+               "pipelineFrames": args.pipeline_frames,
                "dirty": bool(run("git", "status", "--porcelain").stdout),
                "conditions": args.conditions, "runs": [], "gpuTiming": "not measured"}
+    # New renderer/shader files can be untracked during an experiment. git diff
+    # alone does not identify the implementation that produced a measurement.
+    inputs = list((ROOT / "Doroti/src/Doroti.Skia.Rendering").glob("SkiaSceneRenderer*.cs"))
+    inputs += list((ROOT / "Doroti/src/Doroti.Skia.Rendering/Shaders").glob("*.sksl"))
+    inputs += [ROOT / "samples/DorotiSampleApp2/src/VariableBlurPage.cs",
+               ROOT / "Doroti/src/Doroti.Ui/FrameworkShaderAssets.cs",
+               ROOT / "Doroti/src/Doroti.Ui/ImageFilter.VariableBlur.cs",
+               ROOT / "Doroti/src/Doroti.Skia.RuntimeEffects/DorotiSkiaRuntimeEffects.cs",
+               ROOT / "Doroti/src/Doroti.Skia.RuntimeEffects/DorotiSkiaImageFilterRenderer.cs"]
+    inputs += [ROOT / "Doroti/src/Doroti.Host.Maui" / name for name in
+               ["DorotiUIKitGraphiteViewHandler.cs", "DorotiGraphiteView.cs", "MauiSkiaSurface.cs",
+                "MauiSkiaCapabilities.cs", "MauiFrameworkHost.cs", "DorotiMauiSurface.cs"]]
+    summary["sourceInputsSha256"] = {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
+                                     for p in sorted(inputs)}
+    if args.app:
+        payload = hashlib.sha256()
+        for path in sorted(args.app.resolve().rglob("*")):
+            if path.is_file():
+                payload.update(str(path.relative_to(args.app.resolve())).encode())
+                payload.update(hashlib.sha256(path.read_bytes()).digest())
+        summary["installedAppPayloadSha256"] = payload.hexdigest()
     (out / "working-tree.diff").write_text(run("git", "diff").stdout)
     for repeat in range(args.repeats):
         modes = args.modes if repeat % 2 == 0 else list(reversed(args.modes))
@@ -109,7 +152,16 @@ def main():
             name = f"{repeat + 1}-{mode}"
             remote = "variable-blur-" + uuid.uuid4().hex + ".json"
             environment = {"DOROTI_IOS_GRAPHITE": "1", "DOROTI_VARIABLE_BLUR_PROFILE": "1",
+                           "DOROTI_VARIABLE_BLUR_DISABLE_CROP": "1" if args.full_capture else "0",
+                           "DOROTI_VARIABLE_BLUR_INTERMEDIATE": "1" if args.intermediate else "0",
+                           "DOROTI_VARIABLE_BLUR_OWNED_SUBTREES": "1" if args.owned_subtrees else "0",
+                           "DOROTI_VARIABLE_BLUR_FULL_STAGES": "1" if args.full_stages else "0",
+                           "DOROTI_VARIABLE_BLUR_FULL_DETAIL": "1" if args.full_detail else "0",
+                           "DOROTI_VARIABLE_BLUR_FULL_BANDS": "1" if args.full_bands else "0",
+                           "DOROTI_VARIABLE_BLUR_SERIAL_FRAMES": "1" if args.serial_frames else "0",
+                           "DOROTI_VARIABLE_BLUR_PIPELINE": "1" if args.pipeline_frames else "0",
                            "DOROTI_VARIABLE_BLUR_BENCHMARK": mode, "DOROTI_MAUI_EVIDENCE": remote}
+            environment["DOROTI_VARIABLE_BLUR_BENCHMARK_SIGMA"] = str(args.sigma)
             log_path = out / (name + ".log")
             print("RUN " + name, flush=True)
             with log_path.open("w") as log:
@@ -125,18 +177,30 @@ def main():
                             raise TimeoutError(f"Scroll did not finish; see {log_path}")
                         time.sleep(.5)
                     destination = out / (name + ".json")
-                    run("xcrun", "devicectl", "device", "copy", "from", "--device", args.device,
-                        "--domain-type", "appDataContainer", "--domain-identifier", bundle,
-                        "--source", "Documents/" + remote, "--destination", str(destination))
+                    # Evidence is written asynchronously to the app container.
+                    # A transient copy failure must not kill a completed run
+                    # before the writer/container service makes it available.
+                    copy_attempts = 0
+                    for copy_attempts in range(1, 6):
+                        try:
+                            run("xcrun", "devicectl", "device", "copy", "from", "--device", args.device,
+                                "--domain-type", "appDataContainer", "--domain-identifier", bundle,
+                                "--source", "Documents/" + remote, "--destination", str(destination))
+                            break
+                        except subprocess.CalledProcessError as error:
+                            (out / (name + f"-copy-{copy_attempts}.log")).write_text(error.stdout + error.stderr)
+                            if copy_attempts == 5:
+                                raise
+                            time.sleep(.5)
                     result = summarize(json.loads(destination.read_text()), args.hz)
-                    result.update(mode=mode, repeat=repeat + 1)
+                    result.update(mode=mode, repeat=repeat + 1, evidenceCopyAttempts=copy_attempts)
                     summary["runs"].append(result)
                     (out / "summary.json").write_text(json.dumps(summary, indent=2))
                     if result["failedFrames"] or result["terminalBufferErrors"]:
                         raise RuntimeError(f"Renderer errors; see {destination}")
                     if "Graphite-Metal" not in result["backend"]:
                         raise RuntimeError(f"Unexpected renderer; see {destination}")
-                    if (result["gaussianPassesLastFrame"] > 0) != (mode != "off"):
+                    if (result["gaussianPassesLastFrame"] + result["kawasePassesLastFrame"] > 0) != (mode != "off" and args.sigma > 0):
                         raise RuntimeError(f"Blur mode did not render as requested; see {destination}")
                     print(f"DONE {name}: presentation p95 {result['presentationP95Ms']:.2f} ms", flush=True)
                 finally:

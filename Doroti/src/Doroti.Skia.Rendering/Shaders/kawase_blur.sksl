@@ -1,0 +1,25 @@
+// Doroti-original Dual Kawase kernels. Pixel coordinates use actual image ratios.
+uniform float2 size;
+uniform shader inputImage;
+uniform float2 ratio;
+uniform float upsample;
+half4 main(float2 p) {
+    float2 q = p * ratio;
+    if (upsample < 0.5) {
+        float4 c = 4.0 * float4(inputImage.eval(q));
+        c += float4(inputImage.eval(q + float2(-1, -1)));
+        c += float4(inputImage.eval(q + float2( 1, -1)));
+        c += float4(inputImage.eval(q + float2(-1,  1)));
+        c += float4(inputImage.eval(q + float2( 1,  1)));
+        return half4(c * 0.125);
+    }
+    float4 c = float4(inputImage.eval(q + float2(-1, 0)));
+    c += float4(inputImage.eval(q + float2(1, 0)));
+    c += float4(inputImage.eval(q + float2(0, -1)));
+    c += float4(inputImage.eval(q + float2(0, 1)));
+    c += 2.0 * float4(inputImage.eval(q + float2(-0.5, -0.5)));
+    c += 2.0 * float4(inputImage.eval(q + float2( 0.5, -0.5)));
+    c += 2.0 * float4(inputImage.eval(q + float2(-0.5,  0.5)));
+    c += 2.0 * float4(inputImage.eval(q + float2( 0.5,  0.5)));
+    return half4(c / 12.0);
+}

@@ -148,6 +148,10 @@ public sealed class MauiFrameworkHost : IDisposable
             configuration.backgroundColor,
             configuration.darkBackgroundColor
         );
+#if IOS && !MACCATALYST
+        if (surface is MauiSkglSurface shaderSurface)
+            shaderSurface.SetShaderSceneQuery(() => graphics.CanRecordShaderSceneAhead);
+#endif
         if (surface is IMauiGraphiteSurface graphiteSurface)
         {
             graphics.AttachGraphiteLifecycle(graphiteSurface);
@@ -374,7 +378,8 @@ public sealed class MauiFrameworkHost : IDisposable
         SkiaSharp.SKSurface surface,
         int pixelWidth,
         int pixelHeight,
-        out bool shouldPresent
+        out bool shouldPresent,
+        bool requireNewShaderScene = false
     )
     {
         if (!_views.TryGetValue(viewId, out var value))
@@ -382,7 +387,7 @@ public sealed class MauiFrameworkHost : IDisposable
             throw new KeyNotFoundException($"MAUI Doroti view {viewId} is not registered.");
         }
 
-        return value.Graphics.Paint(surface, pixelWidth, pixelHeight, out shouldPresent);
+        return value.Graphics.Paint(surface, pixelWidth, pixelHeight, out shouldPresent, requireNewShaderScene);
     }
 
     internal void CompletePaint(ulong viewId, MauiPaintCompletion completion)

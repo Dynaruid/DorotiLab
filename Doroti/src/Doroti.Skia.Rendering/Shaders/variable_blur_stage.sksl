@@ -1,0 +1,24 @@
+// Interpolating calibrated variances is a Gaussian approximation, not an exact Gaussian.
+uniform float2 size;
+uniform shader inputImage;
+uniform shader upperImage;
+uniform float3 ramp;
+uniform float2 sigmas;
+uniform float2 interval;
+uniform float2 lowerRatio;
+uniform float2 upperRatio;
+uniform float lastInterval;
+uniform float firstInterval;
+uniform float2 lowerOffset;
+half4 main(float2 p) {
+    float sigma = mix(sigmas.x, sigmas.y, clamp(dot(ramp.xy, p) + ramp.z, 0.0, 1.0));
+    // Half-open bands prevent duplicate premultiplied coverage at boundaries.
+    if ((firstInterval < 0.5 && sigma < interval.x)
+        || (lastInterval < 0.5 && sigma >= interval.y)) return half4(0);
+    half4 lower = inputImage.eval(p * lowerRatio + lowerOffset);
+    float variance = sigma * sigma;
+    float lo = interval.x * interval.x;
+    float hi = interval.y * interval.y;
+    float weight = clamp((variance - lo) / (hi - lo), 0.0, 1.0);
+    return mix(lower, upperImage.eval(p * upperRatio), half(weight));
+}

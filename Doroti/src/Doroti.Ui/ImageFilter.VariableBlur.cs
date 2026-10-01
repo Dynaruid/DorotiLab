@@ -9,6 +9,14 @@ public enum VariableBlurKernel
     /// the tap count with working sigma. Preserves the Gaussian kernel below two
     /// working pixels of sigma. Approximate when the sampling budget is exhausted.</summary>
     fastGaussian,
+
+    /// <summary>Explicit Gaussian approximation using shared Dual Kawase stages,
+    /// variance interpolation and Gaussian detail below two device pixels.
+    /// Uses its own dyadic pyramid (independently of resolutionScale).
+    /// Supports Clamp and similarity transforms up to 124 device pixels of sigma.
+    /// Unsupported configurations fall back to Gaussian and are recorded in
+    /// renderer diagnostics. This is an explicit quality/performance option.</summary>
+    dualKawase,
 }
 
 public sealed partial record ImageFilter
@@ -30,6 +38,9 @@ public sealed partial record ImageFilter
     /// adaptiveResolution preserves full resolution at low sigma and blends into
     /// coarser levels as blur increases. Set adaptiveResolution to false to use
     /// a fixed reduced resolution. The default scale 1 preserves full resolution.
+    /// dualKawase instead shares downsample stages and reconstructs fixed-strength
+    /// results before variance interpolation; it is not an exact Gaussian.
+    /// Its own pyramid keeps Gaussian detail below two device pixels of sigma.
     /// </remarks>
     public static ImageFilter variableBlur(
         Offset start,

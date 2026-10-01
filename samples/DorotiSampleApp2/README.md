@@ -9,12 +9,13 @@ Cupertino 스타일의 독립 Doroti 샘플 앱입니다. 공통 C# UI와 Androi
 
 Variable Blur 페이지는 리스트 상단 180 논리 단위에 `BackdropFilter`와
 `ImageFilterConfig.CreateVariableBlur(startSigma: 강도, endSigma: 0, resolutionScale: 0.25)`를 적용합니다.
-라디오 버튼으로 다음 네 가지 모드를 비교할 수 있습니다.
+라디오 버튼으로 다음 다섯 가지 모드를 비교할 수 있습니다.
 
 - **Full quality**: 전체 구간을 원본 해상도로 처리합니다.
 - **Adaptive** (기본): 약한 블러는 원본 해상도, 강한 블러는 1/2·1/4 해상도로 처리하고 경계를 혼합합니다.
 - **Fast adaptive**: 강도에 맞춰 Gaussian 가중치를 계산하고 인접 샘플 쌍을 bilinear 샘플링으로 묶습니다. 강한 구간에서도 윤곽이 여러 장 겹치지 않도록 샘플 수를 늘립니다. 작업 해상도 sigma 2~3에서는 기존 커널과 혼합합니다. 과거 고정 7회 커널보다 강한 블러의 처리 비용이 증가할 수 있습니다.
 - **Fixed 1/4**: 전체 구간을 1/4 해상도로 처리합니다. 선명한 구간도 저해상도가 됩니다.
+- **Dual Kawase**: 강도별 결과를 공유 피라미드에서 생성하고 분산을 보간합니다. 선명한 끝부분에는 Gaussian을 사용합니다. 정확한 Gaussian과는 다른 근사 모드입니다.
 
 별도의 스위치로 블러 전체를 켜고 끕니다.
 위쪽은 흐리고 아래쪽은 선명하며, 블러 영역에서도 리스트를 스크롤할 수 있습니다.
@@ -311,6 +312,9 @@ Fonts 탭의 Galmuri/SUITE와 디코더도 로컬로 포함하므로 이 화면�
 ```sh
 python3 Doroti/eng/run-with-timeout.py dotnet run --project Doroti/tests/Doroti.Tests -c Release
 dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-kernel
+dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-capture
+dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-kawase
+dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-gpu # macOS Metal only
 python3 -m unittest discover -s Doroti/tests -p test_variable_blur_device.py
 ```
 
@@ -325,19 +329,36 @@ dotnet build samples/DorotiSampleApp2/ios/DorotiSampleApp2.iOS.csproj -c Release
 python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/variable_blur_device.py --device <DEVICE_UDID> --app samples/DorotiSampleApp2/ios/bin/ios-arm64/Release/net10.0-ios27.0/ios-arm64/DorotiSampleApp2.iOS.app --output temp/testing/variable-blur/new-run --hz 60 --conditions '전원·밝기·온도 조건 기록'
 ```
 
-기본 5개 모드를 각각 3회 실행하고 두 번째 반복은 역순으로 진행합니다.
+기본 6개 모드(Off/Full/Adaptive/Fast/Fixed/Kawase)를 각각 3회 실행하고 두 번째 반복은 역순으로 진행합니다.
 `--hz`에는 실제 설정된 표시 주사율을 입력합니다. 각 실행은 40초이며 최초 표시 이후
 5~35초 구간의 실제 drawable 표시 간격을 집계합니다. 합성 스크롤이므로 물리 입력 검증은 아닙니다.
 완료 표식·30초 표시 이력·렌더러 오류 여부를 검사하며 불완전한 실행을 PASS로 집계하지 않습니다.
 앱 설치는 기존 `dev.doroti.sample2`를 업데이트하며 실행마다 해당 앱을 재시작합니다.
 
-수동 프로파일링에서는 `DOROTI_VARIABLE_BLUR_BENCHMARK=off|full|adaptive|fast|fixed`로
+수동 프로파일링에서는 `DOROTI_VARIABLE_BLUR_BENCHMARK=off|full|adaptive|fast|fixed|kawase`로
 탭·모드·반복 경로를 선택합니다. 미설정 시 기존 UI/Adaptive 기본값을 유지합니다.
 정지 화면 비교에는 `DOROTI_VARIABLE_BLUR_BENCHMARK_STATIC=1`을 함께 지정하고,
 강도는 `DOROTI_VARIABLE_BLUR_BENCHMARK_SIGMA=0..32`로 지정할 수 있습니다.
 정지 모드는 자동 스크롤 수집기와 함께 사용하지 않습니다.
 `DOROTI_VARIABLE_BLUR_PROFILE=1`과 `DOROTI_MAUI_EVIDENCE=blur.json`을 함께 설정하면
 iOS 앱의 Documents에 진단 JSON을 기록합니다.
+
+Dual Kawase는 공유 down 체인에서 강도별 결과를 up 재구성하고, device sigma에 맞춰 분산을 보간하는
+명시적 근사 모드입니다. 두 device pixel 이하에서는 Gaussian을 사용해 선명한 끝부분을 유지합니다.
+Clamp·회전/반사/균일 scale·최대 약 124 device sigma를 지원하며 다른 설정은 Gaussian으로 대체합니다.
+`VariableBlurKernel.dualKawase`는 자체 해상도 피라미드를 사용하므로 `resolutionScale`과 독립적입니다.
+공개 API의 Gaussian 기본값은 유지합니다. [전체 재평가](../../work3.md)와
+[실행·측정 결과](../../works/results/2026-10-01-variable-blur-reassessment.md)를 참조합니다.
+
+`--intermediate`는 Adaptive의 중간 출력 합성을, `--full-capture`는 전체 캡처를 강제하는 같은 바이너리 A/B 옵션입니다.
+`--owned-subtrees`는 셰이더 없는 형제 scope도 별도 Surface로 처리하며,
+`--full-stages`는 Kawase 강도 결과를 전체 캡처에 재구성합니다. 기본 실행은 native 형제 scope와 필요한 띠만 사용합니다.
+`--full-bands` / `--full-detail`은 Gaussian 띠·선명한 구간의 기존 전체 크기 backing을 유지하는 A/B 옵션입니다.
+`--pipeline-frames`는 iOS의 새 셰이더·native 없는 장면에 한해 최대 2개 GPU frame을 허용하는 실험입니다.
+1회 smoke에서 추가 FPS 이득을 확인하지 못해 기본 비활성화했습니다. 직접 실행할 때는 `DOROTI_VARIABLE_BLUR_PIPELINE=1`로 켭니다.
+`--serial-frames`는 실험을 끄고 GPU 완료 후 기록하는 기존 직렬 프레임 기준을 강제합니다.
+`--sigma 32`로 최대 강도를 측정할 수 있습니다.
+수집기의 평균 FPS는 warm 구간의 실제 표시 간격으로 계산하며 CPU stage나 GPU 실행 시간에서 추정하지 않습니다.
 
 진단에는 캡처 fallback 사유, 작업 해상도·draw bounds, Surface pool hit/miss/temporary,
 CPU stage p50/p95/p99, 실제 표시 간격과 Metal 할당량을 포함합니다.
@@ -346,6 +367,13 @@ Surface 정보는 마지막 프레임의 scene filter 전체를 포함합니다.
 해석하지 않습니다. UIKit command buffer 카운터는 terminal marker만 세며 Skia 내부 제출 횟수는 아닙니다.
 GPU 구간 시간과 peak 메모리는 별도 Metal System Trace가 필요합니다.
 [작업 결과·미검증 범위](../../works/results/2026-09-30-variable-blur.md)를 참고하세요.
+
+2026-10-01 후속: 축소 격자가 정렬 가능한 축만 부분 캡처하도록 개선했습니다.
+`--variable-blur-capture`는 실제 embedded SkSL의 1·1/2·1/4 레벨을 래스터에서 실행하여
+전체 도메인과 부분 캡처의 픽셀을 비교합니다. Graphite GPU 픽셀 비교나 Adaptive 마스크 검증을 대신하지 않습니다.
+실기기 측정 스크립트의 `--full-capture` 옵션은 `DOROTI_VARIABLE_BLUR_DISABLE_CROP=1`로
+같은 바이너리의 전체 도메인 기준을 실행합니다. 기본 실행과 각각 새 출력 폴더로 비교하세요.
+[부분 캡처 후속 결과](../../works/results/2026-10-01-variable-blur-per-axis.md)에 실행 범위와 미검증 사항을 기록합니다.
 
 
 ## 웹폰트 비교

@@ -6,6 +6,8 @@ namespace Doroti.Skia.Rendering;
 
 public sealed partial class SkiaSceneRenderer
 {
+    private readonly bool _nativeVariableBlurSubtrees =
+        Environment.GetEnvironmentVariable("DOROTI_VARIABLE_BLUR_OWNED_SUBTREES") != "1";
     private sealed record FilterCanvasState(Action<SKCanvas> Apply, bool IsClip = false);
 
     private static bool ContainsShader(ImageFilterSnapshot filter) =>
@@ -91,6 +93,12 @@ public sealed partial class SkiaSceneRenderer
             }
             if (command.HostPayload is SceneRetainedPayload retained)
             {
+                if (_nativeVariableBlurSubtrees
+                    && !RequiresGpuFilterLayers(retained.Commands, 0, retained.Commands.Count))
+                {
+                    DrawScene(target, retained.Commands, width, height);
+                    continue;
+                }
                 DrawGpuFilterScene(
                     target,
                     retained.Commands,
@@ -109,6 +117,15 @@ public sealed partial class SkiaSceneRenderer
 
             var pop = FindMatchingPop(commands, i, end);
             var childStart = i + 1;
+            // Ownership is needed for ancestors of a shader capture. Sibling
+            // subtrees without one can keep native saveLayer/filter/cache paths;
+            // promoting them too creates unrelated full-frame copies and clears.
+            if (_nativeVariableBlurSubtrees && !RequiresGpuFilterLayers(commands, i, pop + 1))
+            {
+                DrawScene(target, commands, i, pop + 1, width, height);
+                i = pop;
+                continue;
+            }
             Action<SKCanvas>? change = command.HostPayload switch
             {
                 SceneOffsetPayload offset => c => c.Translate((float)offset.Dx, (float)offset.Dy),
@@ -359,7 +376,19 @@ public sealed partial class SkiaSceneRenderer
                 target.TotalMatrix
             );
             var filterStarted = StartVariableBlurStage();
-            using var filtered = ApplyVariableBlur(
+            using var adaptiveShader = variable.Kernel == VariableBlurKernel.dualKawase
+                && VariableBlurKawaseGeometry(variable, direct.Filter.TileMode, localMatrix,
+                    out var kawaseScale, out var kawaseDepth, out _)
+                ? CreateDualKawaseVariableBlurShader(target, input, variable, capture.Width,
+                    capture.Height, localMatrix, localVisible, kawaseScale, kawaseDepth)
+                : variable.AdaptiveResolution && variable.ResolutionScale < 1
+                    && variable.Kernel != VariableBlurKernel.dualKawase
+                    && Environment.GetEnvironmentVariable("DOROTI_VARIABLE_BLUR_INTERMEDIATE") != "1"
+                    && localMatrix.TryInvert(out var localInverse)
+                    ? CreateAdaptiveVariableBlurShader(target, input, variable, direct.Filter.TileMode,
+                        capture.Width, capture.Height, localMatrix, localInverse, localVisible)
+                    : null;
+            using var filtered = adaptiveShader is null ? ApplyVariableBlur(
                 target,
                 input,
                 variable,
@@ -369,7 +398,7 @@ public sealed partial class SkiaSceneRenderer
                 localMatrix,
                 localVisible,
                 keepWorkingResolution: true
-            );
+            ) : null;
             EndVariableBlurStage("filter-total", filterStarted);
             using var blend = new SKPaint { BlendMode = ToBlend(direct.BlendMode) };
             target.Save();
@@ -378,21 +407,22 @@ public sealed partial class SkiaSceneRenderer
                 if (direct.Filter.Bounds is { } bounds)
                     target.ClipRect(ToRect(bounds), SKClipOperation.Intersect, true);
                 target.ResetMatrix();
-                RecordVariableBlurWork(
-                    "final-composite",
-                    filtered.Width,
-                    filtered.Height,
-                    width,
-                    height,
-                    visible,
-                    "direct-backdrop"
-                );
-                target.DrawImage(
-                    filtered,
-                    (SKRect)capture,
-                    new SKSamplingOptions(SKFilterMode.Linear),
-                    blend
-                );
+                RecordVariableBlurWork("final-composite", filtered?.Width ?? capture.Width,
+                    filtered?.Height ?? capture.Height, width, height, visible,
+                    adaptiveShader is null ? "direct-backdrop"
+                        : variable.Kernel == VariableBlurKernel.dualKawase
+                            ? "direct-kawase-shader" : "direct-adaptive-shader");
+                if (adaptiveShader is not null)
+                {
+                    using var translated = adaptiveShader.WithLocalMatrix(
+                        SKMatrix.CreateTranslation(capture.Left, capture.Top));
+                    blend.Shader = translated;
+                    target.DrawRect(capture, blend);
+                }
+                else
+                    target.DrawImage(filtered!, (SKRect)capture,
+                        new SKSamplingOptions(SKFilterMode.Linear), blend);
+
             }
             finally
             {
@@ -401,6 +431,8 @@ public sealed partial class SkiaSceneRenderer
             return;
         }
         using var layer = CreateFilterSurface(target, width, height);
+        RecordVariableBlurWork("owned-scene-layer", width, height, width, height,
+            target.DeviceClipBounds, command.Operation);
         var canvas = layer.Canvas;
         // Image filters may read beyond the output clip (blur/morphology halos).
         // Apply ancestor clips when compositing the result, not to the input.

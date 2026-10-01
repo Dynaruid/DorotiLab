@@ -32,9 +32,9 @@ internal sealed class VariableBlurPageState : State<VariableBlurPage>
         base.initState();
         if (BenchmarkMode is not { } mode)
             return;
-        if (mode is not ("off" or "full" or "adaptive" or "fast" or "fixed"))
+        if (mode is not ("off" or "full" or "adaptive" or "fast" or "fixed" or "kawase"))
             throw new ArgumentException(
-                "DOROTI_VARIABLE_BLUR_BENCHMARK must be off/full/adaptive/fast/fixed."
+                "DOROTI_VARIABLE_BLUR_BENCHMARK must be off/full/adaptive/fast/fixed/kawase."
             );
         _mode = mode == "off" ? "adaptive" : mode;
         _enabled = mode != "off";
@@ -151,6 +151,10 @@ internal sealed class VariableBlurPageState : State<VariableBlurPage>
                                                         ModeChoice("fixed", "Fixed 1/4"),
                                                     }
                                                 ),
+                                                new Row(children: new List<Widget>
+                                                {
+                                                    ModeChoice("kawase", "Dual Kawase"),
+                                                }),
                                             }
                                         )
                                     ),
@@ -162,6 +166,7 @@ internal sealed class VariableBlurPageState : State<VariableBlurPage>
                                                 "Sharp detail with adaptive Gaussian blur.",
                                             "fast" =>
                                                 "Sharp detail with a faster, approximate blur.",
+                                            "kawase" => "Shared blur stages; Gaussian detail at the clear edge.",
                                             _ => "Lowest cost; fine detail becomes softer.",
                                         },
                                         style: new TextStyle(
@@ -218,9 +223,12 @@ internal sealed class VariableBlurPageState : State<VariableBlurPage>
                                                                 ? 1
                                                                 : 0.25,
                                                             adaptiveResolution: _mode != "fixed",
-                                                            kernel: _mode == "fast"
-                                                                ? VariableBlurKernel.fastGaussian
-                                                                : VariableBlurKernel.gaussian
+                                                            kernel: _mode switch
+                                                            {
+                                                                "fast" => VariableBlurKernel.fastGaussian,
+                                                                "kawase" => VariableBlurKernel.dualKawase,
+                                                                _ => VariableBlurKernel.gaussian,
+                                                            }
                                                         ),
                                                         child: SizedBox.CreateExpand()
                                                     )

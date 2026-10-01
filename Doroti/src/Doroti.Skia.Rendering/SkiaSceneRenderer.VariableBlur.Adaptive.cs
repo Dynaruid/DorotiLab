@@ -5,7 +5,35 @@ namespace Doroti.Skia.Rendering;
 
 public sealed partial class SkiaSceneRenderer
 {
-    private SKImage ApplyAdaptiveVariableBlur(
+    private readonly bool _croppedAdaptiveBands =
+        Environment.GetEnvironmentVariable("DOROTI_VARIABLE_BLUR_FULL_BANDS") != "1";
+
+    private SKShader CreateVariableBlurBandShader(SKCanvas target, SKImage input,
+        VariableBlurSettings settings, TileMode tileMode, SKMatrix matrix, SKRect region)
+    {
+        var width = Math.Max(1, (int)Math.Ceiling(input.Width * settings.ResolutionScale));
+        var height = Math.Max(1, (int)Math.Ceiling(input.Height * settings.ResolutionScale));
+        var sx = (float)width / input.Width;
+        var sy = (float)height / input.Height;
+        using var reducedSurface = settings.ResolutionScale < 1 ? CreateFilterSurface(target, width, height) : null;
+        if (reducedSurface is not null)
+        {
+            reducedSurface.Canvas.DrawImage(input, SKRect.Create(width, height), new SKSamplingOptions(SKFilterMode.Linear));
+            RecordVariableBlurWork("downsample", input.Width, input.Height, width, height, SKRect.Create(width, height));
+        }
+        using var reduced = reducedSurface?.Snapshot();
+        var bounds = new SKRect(region.Left * sx, region.Top * sy, region.Right * sx, region.Bottom * sy);
+        bounds.Inflate(1, 1); // final sampling also needs neighbouring working pixels
+        using var blurred = ApplyVariableBlurRegion(target, reduced ?? input,
+            settings with { ResolutionScale = 1 },
+            SKMatrix.Concat(SKMatrix.CreateScale(sx, sy), matrix), bounds, out var origin, tileMode);
+        // The image's storage origin differs from its working-domain origin.
+        // Map capture p to p * actualRatio - origin, never scale by crop extent.
+        return blurred.ToShader(SKShaderTileMode.Clamp, SKShaderTileMode.Clamp,
+            new SKSamplingOptions(SKFilterMode.Linear), SKMatrix.Concat(
+                SKMatrix.CreateScale(1 / sx, 1 / sy), SKMatrix.CreateTranslation(origin.X, origin.Y)));
+    }
+    private IEnumerable<(SKShader Shader, SKRect Region)> VariableBlurBands(
         SKCanvas target,
         SKImage input,
         VariableBlurSettings settings,
@@ -54,7 +82,8 @@ public sealed partial class SkiaSceneRenderer
             || deviceScale <= 0
             || Math.Max(firstSigma, lastSigma) <= 1 / levels[1]
         )
-            return ApplyVariableBlur(
+        {
+            using var fallbackImage = ApplyVariableBlur(
                 target,
                 input,
                 fixedSettings with
@@ -65,10 +94,16 @@ public sealed partial class SkiaSceneRenderer
                 width,
                 height,
                 matrix,
-                outputBounds
+                outputBounds,
+                keepWorkingResolution: true
             );
+            using var fallbackShader = VariableBlurImageShader(fallbackImage, width, height);
+            yield return (fallbackShader, outputBounds ?? SKRect.Create(width, height));
+            yield break;
+        }
         if (Math.Min(firstSigma, lastSigma) >= 2 / levels[^1])
-            return ApplyVariableBlur(
+        {
+            using var fallbackImage = ApplyVariableBlur(
                 target,
                 input,
                 fixedSettings,
@@ -76,8 +111,13 @@ public sealed partial class SkiaSceneRenderer
                 width,
                 height,
                 matrix,
-                outputBounds
+                outputBounds,
+                keepWorkingResolution: true
             );
+            using var fallbackShader = VariableBlurImageShader(fallbackImage, width, height);
+            yield return (fallbackShader, outputBounds ?? SKRect.Create(width, height));
+            yield break;
+        }
 
         var norm = rx * rx + ry * ry;
         var gradientStart = new SKPoint((float)(-rz * rx / norm), (float)(-rz * ry / norm));
@@ -91,7 +131,8 @@ public sealed partial class SkiaSceneRenderer
             || !float.IsFinite(gradientEnd.Y)
             || gradientStart == gradientEnd
         )
-            return ApplyVariableBlur(
+        {
+            using var fallbackImage = ApplyVariableBlur(
                 target,
                 input,
                 fixedSettings with
@@ -102,8 +143,13 @@ public sealed partial class SkiaSceneRenderer
                 width,
                 height,
                 matrix,
-                outputBounds
+                outputBounds,
+                keepWorkingResolution: true
             );
+            using var fallbackShader = VariableBlurImageShader(fallbackImage, width, height);
+            yield return (fallbackShader, outputBounds ?? SKRect.Create(width, height));
+            yield break;
+        }
 
         var visible = outputBounds ?? SKRect.Create(width, height);
         visible = new SKRect(
@@ -113,7 +159,7 @@ public sealed partial class SkiaSceneRenderer
             MathF.Ceiling(visible.Bottom)
         );
         visible.Intersect(SKRect.Create(width, height));
-        using var output = CreateFilterSurface(target, width, height);
+
         for (var level = 0; level < levels.Count; level++)
         {
             // Transition into a coarser level only when its sigma is 1..2 working
@@ -165,7 +211,7 @@ public sealed partial class SkiaSceneRenderer
 
             // All levels share the same capture domain and pixel origin. Cropping
             // the input per band shifts sampling on retained Graphite snapshots.
-            using var blurred = ApplyVariableBlur(
+            using var blurred = _croppedAdaptiveBands && tileMode is TileMode.clamp or TileMode.decal ? null : ApplyVariableBlur(
                 target,
                 input,
                 fixedSettings with
@@ -179,12 +225,10 @@ public sealed partial class SkiaSceneRenderer
                 region,
                 keepWorkingResolution: true
             );
-            using var image = blurred.ToShader(
-                SKShaderTileMode.Clamp,
-                SKShaderTileMode.Clamp,
-                new SKSamplingOptions(SKFilterMode.Linear),
-                SKMatrix.CreateScale((float)width / blurred.Width, (float)height / blurred.Height)
-            );
+            using var image = blurred is null
+                ? CreateVariableBlurBandShader(target, input,
+                    fixedSettings with { ResolutionScale = levels[level] }, tileMode, matrix, region)
+                : VariableBlurImageShader(blurred, width, height);
             using var mask = SKShader.CreateLinearGradient(
                 gradientStart,
                 gradientEnd,
@@ -193,24 +237,55 @@ public sealed partial class SkiaSceneRenderer
                 SKShaderTileMode.Clamp
             );
             using var weighted = SKShader.CreateBlend(SKBlendMode.DstIn, image, mask);
-            using var paint = new SKPaint { Shader = weighted, BlendMode = SKBlendMode.Plus };
-            // Coverage comes from the gradient mask, not an antialiased band edge.
-            var blendStarted = StartVariableBlurStage();
-            RecordVariableBlurWork(
-                "adaptive-band",
-                blurred.Width,
-                blurred.Height,
-                width,
-                height,
-                region
-            );
-            output.Canvas.DrawRect(region, paint);
-            EndVariableBlurStage("band-blend", blendStarted);
+            yield return (weighted, region);
         }
-        var outputStarted = StartVariableBlurStage();
-        var outputImage = output.Snapshot();
-        EndVariableBlurStage("adaptive-snapshot", outputStarted);
-        return outputImage;
+    }
+
+    private static SKShader VariableBlurImageShader(SKImage image, int width, int height) =>
+        image.ToShader(SKShaderTileMode.Clamp, SKShaderTileMode.Clamp,
+            new SKSamplingOptions(SKFilterMode.Linear),
+            SKMatrix.CreateScale((float)width / image.Width, (float)height / image.Height));
+
+    // Accumulate only over transparent storage; Plus must never be applied to
+    // the existing backdrop. The final clip/blend/opacity still applies once.
+    private SKImage ApplyAdaptiveVariableBlur(SKCanvas target, SKImage input,
+        VariableBlurSettings settings, TileMode tileMode, int width, int height,
+        SKMatrix matrix, SKMatrix inverse, SKRect? outputBounds)
+    {
+        using var output = CreateFilterSurface(target, width, height);
+        foreach (var band in VariableBlurBands(target, input, settings, tileMode,
+            width, height, matrix, inverse, outputBounds))
+        {
+            using var paint = new SKPaint { Shader = band.Shader, BlendMode = SKBlendMode.Plus };
+            var started = StartVariableBlurStage();
+            output.Canvas.DrawRect(band.Region, paint);
+            EndVariableBlurStage("band-blend", started);
+        }
+        return output.Snapshot();
+    }
+
+    private SKShader CreateAdaptiveVariableBlurShader(SKCanvas target, SKImage input,
+        VariableBlurSettings settings, TileMode tileMode, int width, int height,
+        SKMatrix matrix, SKMatrix inverse, SKRect? outputBounds)
+    {
+        SKShader? combined = null;
+        try
+        {
+            foreach (var band in VariableBlurBands(target, input, settings, tileMode,
+                width, height, matrix, inverse, outputBounds))
+            {
+                // The loop's shaders retain their images. Disposing the managed
+                // snapshots does not retire an image still referenced by a shader.
+                using var empty = combined is null ? SKShader.CreateColor(SKColors.Transparent) : null;
+                var next = SKShader.CreateBlend(SKBlendMode.Plus, combined ?? empty!, band.Shader);
+                combined?.Dispose();
+                combined = next;
+            }
+            var result = combined ?? SKShader.CreateColor(SKColors.Transparent);
+            combined = null;
+            return result;
+        }
+        finally { combined?.Dispose(); }
     }
 
     private static SKRect VariableBlurBandBounds(
