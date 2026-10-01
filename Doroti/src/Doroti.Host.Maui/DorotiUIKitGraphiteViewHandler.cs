@@ -62,6 +62,15 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
     UIKitAnimatedViewport IUIKitAnimatedViewport.AnimatedViewport => _animatedViewport;
 #endif
     private readonly IMTLCommandQueue _queue;
+    private readonly bool _profileBlur =
+        Environment.GetEnvironmentVariable("DOROTI_VARIABLE_BLUR_PROFILE") == "1";
+    private readonly object _presentationGate = new();
+    private readonly Queue<double> _presentationIntervals = new();
+    private double _lastPresentationTime;
+    private long _presentedDrawables;
+    private long _commandBuffersCommitted;
+    private long _commandBuffersCompleted;
+    private long _commandBuffersErrored;
     private SkiaGraphiteSession? _session;
     private DorotiGraphiteView? _owner;
 
@@ -701,6 +710,28 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
                     "Metal terminal buffer creation failed; retaining GPU resources."
                 );
             var transactionPresentation = false;
+            if (present && _profileBlur)
+            {
+                pending.Drawable.AddPresentedHandler(drawable =>
+                {
+                    var timestamp = drawable.PresentedTime;
+                    if (timestamp <= 0)
+                        return;
+                    lock (_presentationGate)
+                    {
+                        _presentedDrawables++;
+                        if (_lastPresentationTime > 0 && timestamp > _lastPresentationTime)
+                        {
+                            if (_presentationIntervals.Count == 4096)
+                                _presentationIntervals.Dequeue();
+                            _presentationIntervals.Enqueue(
+                                (timestamp - _lastPresentationTime) * 1000
+                            );
+                        }
+                        _lastPresentationTime = Math.Max(_lastPresentationTime, timestamp);
+                    }
+                });
+            }
 #if IOS || MACCATALYST
             transactionPresentation = present && PresentsWithTransaction;
 #endif
@@ -713,6 +744,12 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
             {
                 var status = completed.Status;
                 var error = completed.Error?.LocalizedDescription;
+                if (_profileBlur)
+                {
+                    Interlocked.Increment(ref _commandBuffersCompleted);
+                    if (status == MTLCommandBufferStatus.Error)
+                        Interlocked.Increment(ref _commandBuffersErrored);
+                }
 #if IOS && !MACCATALYST
                 // A display pulse can run before the posted main-thread callback.
                 // Publish completion now, then drain on the owner thread before
@@ -734,6 +771,8 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
             }
 #endif
             command.Commit();
+            if (_profileBlur)
+                Interlocked.Increment(ref _commandBuffersCommitted);
             if (transactionPresentation)
             {
                 // Apple's transaction presentation contract requires scheduling
@@ -774,6 +813,27 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
             }
             throw;
         }
+    }
+
+    internal MauiSurfaceSnapshot CaptureSnapshot(MauiSurfaceSnapshot current)
+    {
+        if (!_profileBlur)
+            return current;
+        lock (_presentationGate)
+            return current with
+            {
+                MetalDevice = Device?.Name,
+                PixelFormat = ColorPixelFormat.ToString(),
+                PresentedDrawables = _presentedDrawables,
+                PresentationIntervalsMilliseconds = _presentationIntervals.ToArray(),
+                // These are terminal markers only; Graphite's internal submissions are separate.
+                CommandBuffersCommitted = Interlocked.Read(ref _commandBuffersCommitted),
+                CommandBuffersCompleted = Interlocked.Read(ref _commandBuffersCompleted),
+                CommandBuffersErrored = Interlocked.Read(ref _commandBuffersErrored),
+                MetalAllocatedBytes = _resourcesReleased
+                    ? null
+                    : checked((long)(Device?.CurrentAllocatedSize ?? 0)),
+            };
     }
 
     private void Retire(PendingFrame pending, MTLCommandBufferStatus status, string? error)

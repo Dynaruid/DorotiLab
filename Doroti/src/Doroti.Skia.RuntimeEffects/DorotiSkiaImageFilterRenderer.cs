@@ -575,7 +575,7 @@ internal static class DorotiSkiaImageFilterRenderer
             contextOwner,
             properties
         );
-        return new SceneSurfaceLease(lease.Surface, lease.IsTemporary);
+        return new SceneSurfaceLease(lease.Surface, lease.IsTemporary, lease.IsReused);
     }
 
     internal sealed class SceneSurfaceLease : IDisposable
@@ -583,10 +583,14 @@ internal static class DorotiSkiaImageFilterRenderer
         private readonly SKSurface _surface;
         private readonly bool _temporary;
 
-        internal SceneSurfaceLease(SKSurface surface, bool temporary)
+        internal bool IsTemporary => _temporary;
+        internal bool IsReused { get; }
+
+        internal SceneSurfaceLease(SKSurface surface, bool temporary, bool reused)
         {
             _surface = surface;
             _temporary = temporary;
+            IsReused = reused;
             surface.Canvas.Save();
             surface.Canvas.ResetMatrix();
         }
@@ -645,6 +649,7 @@ internal static class DorotiSkiaImageFilterRenderer
             // surface after a shrink asks the backend for a subset snapshot,
             // which is not reliable for the D3D12 render target path and can
             // return null during rapid small-window layout changes.
+            var reused = false;
             if (
                 surface is null
                 || !SameSurfacePolicy(surface, properties)
@@ -662,8 +667,9 @@ internal static class DorotiSkiaImageFilterRenderer
             else
             {
                 Interlocked.Increment(ref _surfaceReuses);
+                reused = true;
             }
-            return new(surface, false);
+            return new(surface, false, reused);
         }
     }
 
@@ -706,7 +712,11 @@ internal static class DorotiSkiaImageFilterRenderer
         return pool;
     }
 
-    private readonly record struct SurfaceLease(SKSurface Surface, bool IsTemporary);
+    private readonly record struct SurfaceLease(
+        SKSurface Surface,
+        bool IsTemporary,
+        bool IsReused = false
+    );
 
     private readonly record struct TransformSignature(
         float ScaleX,

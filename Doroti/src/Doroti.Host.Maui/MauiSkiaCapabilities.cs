@@ -19,6 +19,8 @@ internal sealed class MauiSkiaCapabilities
     private readonly MauiHostAdapter _host;
     private readonly SkiaSceneRenderer _renderer;
     public TextureRegistry Textures => _renderer.Textures;
+    internal VariableBlurDiagnostics? VariableBlurDiagnostics =>
+        _renderer.CaptureVariableBlurDiagnostics();
     private IMauiGraphiteSurface? _graphiteSurface;
 
     internal void AttachGraphiteLifecycle(IMauiGraphiteSurface surface)

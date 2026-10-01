@@ -478,6 +478,10 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     private static string? ResolveEvidencePath()
     {
         var path = Environment.GetEnvironmentVariable("DOROTI_MAUI_EVIDENCE");
+#if IOS || MACCATALYST
+        if (path is { Length: > 0 } && path != "1" && !System.IO.Path.IsPathRooted(path))
+            return System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), path);
+#endif
         return path == "1"
             ? System.IO.Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),

@@ -196,6 +196,14 @@ public sealed partial class SkiaSceneRenderer
             using var paint = new SKPaint { Shader = weighted, BlendMode = SKBlendMode.Plus };
             // Coverage comes from the gradient mask, not an antialiased band edge.
             var blendStarted = StartVariableBlurStage();
+            RecordVariableBlurWork(
+                "adaptive-band",
+                blurred.Width,
+                blurred.Height,
+                width,
+                height,
+                region
+            );
             output.Canvas.DrawRect(region, paint);
             EndVariableBlurStage("band-blend", blendStarted);
         }

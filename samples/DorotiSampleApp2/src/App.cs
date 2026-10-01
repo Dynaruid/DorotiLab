@@ -50,6 +50,7 @@ internal sealed class CupertinoSample : StatefulWidget
 
 internal sealed class CupertinoSampleState : State<CupertinoSample>
 {
+    private readonly CupertinoTabController _tabs = new(initialIndex: VariableBlurPageState.BenchmarkMode is null ? 0 : 3);
     private Brightness? _brightness;
     private bool _notifications = true;
     private double _volume = 0.5;
@@ -59,6 +60,7 @@ internal sealed class CupertinoSampleState : State<CupertinoSample>
 
     public override void dispose()
     {
+        _tabs.dispose();
         _nameController.dispose();
         base.dispose();
     }
@@ -68,6 +70,7 @@ internal sealed class CupertinoSampleState : State<CupertinoSample>
         debugShowCheckedModeBanner: false,
         theme: new CupertinoThemeData(brightness: _brightness, primaryColor: CupertinoColors.systemBlue),
         home: new CupertinoTabScaffold(
+            controller: _tabs,
             tabBar: new CupertinoTabBar(items: new List<BottomNavigationBarItem>
             {
                 new(icon: new Icon(CupertinoIcons.square_grid_2x2), label: "Components"),

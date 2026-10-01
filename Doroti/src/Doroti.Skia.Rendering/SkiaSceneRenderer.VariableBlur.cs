@@ -61,6 +61,14 @@ public sealed partial class SkiaSceneRenderer
             var sx = (float)smallWidth / width;
             var sy = (float)smallHeight / height;
             using var small = CreateFilterSurface(target, smallWidth, smallHeight);
+            RecordVariableBlurWork(
+                "downsample",
+                input.Width,
+                input.Height,
+                smallWidth,
+                smallHeight,
+                SKRect.Create(smallWidth, smallHeight)
+            );
             var downsampleStarted = StartVariableBlurStage();
             small.Canvas.DrawImage(
                 input,
@@ -103,6 +111,14 @@ public sealed partial class SkiaSceneRenderer
             using (blurred)
             {
                 using var restored = CreateFilterSurface(target, width, height);
+                RecordVariableBlurWork(
+                    "restore",
+                    blurred.Width,
+                    blurred.Height,
+                    width,
+                    height,
+                    SKRect.Create(width, height)
+                );
                 restored.Canvas.DrawImage(
                     blurred,
                     SKRect.Create(width, height),
@@ -204,6 +220,15 @@ public sealed partial class SkiaSceneRenderer
             EndVariableBlurStage("gaussian-bind-shader", stageStarted);
             using var output = CreateFilterSurface(target, width, height);
             using var paint = new SKPaint { Shader = shader, BlendMode = SKBlendMode.Src };
+            RecordVariableBlurWork(
+                "gaussian-pass",
+                source.Width,
+                source.Height,
+                width,
+                height,
+                drawRect,
+                settings.Kernel == VariableBlurKernel.fastGaussian ? "fast-gaussian" : "gaussian"
+            );
             stageStarted = StartVariableBlurStage();
             output.Canvas.DrawRect(drawRect, paint);
             EndVariableBlurStage("gaussian-draw", stageStarted);

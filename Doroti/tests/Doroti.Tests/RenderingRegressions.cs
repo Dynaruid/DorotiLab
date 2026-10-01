@@ -51,6 +51,21 @@ internal static class RenderingRegressions
         if (SkiaSceneRenderer.VariableBlurCaptureBounds(new(100, 80, 180, 140), settings, TileMode.clamp,
             SKMatrix.Identity, 401, 301) != new SKRectI(0, 0, 401, 301))
             throw new Exception("Odd-size reduced blur changed sampling phase.");
+        foreach (var (width, height, scale, tile, expectedReason) in new[]
+        {
+            (401, 301, .25, TileMode.clamp, "rounded-working-grid"),
+            (400, 300, .25, TileMode.repeated, "wrapped-domain"),
+            (400, 300, .125, TileMode.clamp, "unsupported-grid"),
+            (400, 300, .25, TileMode.clamp, "cropped"),
+        })
+        {
+            var configuration = settings with { ResolutionScale = scale };
+            var diagnosed = SkiaSceneRenderer.VariableBlurCaptureBounds(new(100, 80, 180, 140),
+                configuration, tile, SKMatrix.Identity, width, height, out var reason);
+            if (reason != expectedReason || diagnosed != SkiaSceneRenderer.VariableBlurCaptureBounds(
+                new(100, 80, 180, 140), configuration, tile, SKMatrix.Identity, width, height))
+                throw new Exception($"Capture diagnosis changed geometry or reason: {reason}");
+        }
 
         var baseline = EngineLayer.debugResourceDiagnostics.ActiveEngineLayers;
         var timings = new List<double>();

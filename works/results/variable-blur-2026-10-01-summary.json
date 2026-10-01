@@ -1,0 +1,896 @@
+{
+  "baseCommit": "8c7127e3c332933b9244806771e045cc7ee6ce7a",
+  "workingTreeChanges": true,
+  "device": "iPhone 12 / iPhone13,2",
+  "os": "iOS 26.6.1",
+  "gpu": "Apple A14 GPU",
+  "configuration": "Release / Mono",
+  "tfm": "net10.0-ios27.0",
+  "sdk": "10.0.401",
+  "conditions": "Physical iPhone 12; profile enabled; no screen recording or GPU profiler; power/brightness/thermal state not controlled; preliminary diagnostic comparison, not an adoption baseline",
+  "rawEvidence": "temp/testing/variable-blur/2026-10-01/comparison",
+  "runs": [
+    {
+      "backend": "UIKit/MTKView/Graphite-Metal",
+      "metalDevice": "Apple A14 GPU",
+      "viewportPixels": [
+        1170,
+        2532
+      ],
+      "dpr": 3,
+      "configuredDisplayHz": 60,
+      "presentationWindowMs": [
+        5000,
+        35000
+      ],
+      "intervalSamples": 1774,
+      "presentationP50Ms": 16.715583333279938,
+      "presentationP95Ms": 16.7174166708719,
+      "presentationP99Ms": 16.7187083279714,
+      "longIntervalFraction": 0.008455467869222097,
+      "metalAllocatedBytesAtEnd": 54771712,
+      "capture": [],
+      "captureDecisions": [],
+      "gaussianPassesLastFrame": 0,
+      "cpuRasterTraceTail": {
+        "samples": 353,
+        "p50Ms": 3.584,
+        "p95Ms": 4.629,
+        "p99Ms": 5.215,
+        "scope": "retained frame trace tail; includes replay; not the 30-second presentation window"
+      },
+      "gpuMilliseconds": null,
+      "failedFrames": 0,
+      "terminalBufferErrors": 0,
+      "omittedWorkItems": 0,
+      "mode": "off",
+      "repeat": 1,
+      "cpuFilterP95MsIncludingWarmup": null,
+      "sceneSurfaceCountsLastFrame": {
+        "pool-hit": 0,
+        "pool-miss": 0,
+        "temporary": 0
+      }
+    },
+    {
+      "backend": "UIKit/MTKView/Graphite-Metal",
+      "metalDevice": "Apple A14 GPU",
+      "viewportPixels": [
+        1170,
+        2532
+      ],
+      "dpr": 3,
+      "configuredDisplayHz": 60,
+      "presentationWindowMs": [
+        5000,
+        35000
+      ],
+      "intervalSamples": 714,
+      "presentationP50Ms": 50.14354165177792,
+      "presentationP95Ms": 50.15283331158571,
+      "presentationP99Ms": 50.15670834109187,
+      "longIntervalFraction": 0.9649859943977591,
+      "metalAllocatedBytesAtEnd": 227098624,
+      "capture": [
+        {
+          "stage": "backdrop-capture",
+          "inputWidth": 1170,
+          "inputHeight": 2532,
+          "outputWidth": 1170,
+          "outputHeight": 904,
+          "left": 0,
+          "top": 799,
+          "right": 1170,
+          "bottom": 1703,
+          "detail": "cropped",
+          "estimatedRgbaBytes": 4230720
+        }
+      ],
+      "captureDecisions": [
+        {
+          "reason": "cropped",
+          "calls": 941,
+          "capturedPixels": 995276880,
+          "fullDomainPixels": 2787656040
+        }
+      ],
+      "gaussianPassesLastFrame": 2,
+      "cpuRasterTraceTail": {
+        "samples": 350,
+        "p50Ms": 7.689,
+        "p95Ms": 10.798,
+        "p99Ms": 12.321,
+        "scope": "retained frame trace tail; includes replay; not the 30-second presentation window"
+      },
+      "gpuMilliseconds": null,
+      "failedFrames": 0,
+      "terminalBufferErrors": 0,
+      "omittedWorkItems": 0,
+      "mode": "full",
+      "repeat": 1,
+      "cpuFilterP95MsIncludingWarmup": 1.6086,
+      "sceneSurfaceCountsLastFrame": {
+        "pool-hit": 6,
+        "pool-miss": 0,
+        "temporary": 0
+      }
+    },
+    {
+      "backend": "UIKit/MTKView/Graphite-Metal",
+      "metalDevice": "Apple A14 GPU",
+      "viewportPixels": [
+        1170,
+        2532
+      ],
+      "dpr": 3,
+      "configuredDisplayHz": 60,
+      "presentationWindowMs": [
+        5000,
+        35000
+      ],
+      "intervalSamples": 882,
+      "presentationP50Ms": 33.43574999598786,
+      "presentationP95Ms": 50.15500000445172,
+      "presentationP99Ms": 50.16208335291594,
+      "longIntervalFraction": 0.8741496598639455,
+      "metalAllocatedBytesAtEnd": 312803328,
+      "capture": [
+        {
+          "stage": "backdrop-capture",
+          "inputWidth": 1170,
+          "inputHeight": 2532,
+          "outputWidth": 1170,
+          "outputHeight": 2532,
+          "left": 0,
+          "top": 0,
+          "right": 1170,
+          "bottom": 2532,
+          "detail": "rounded-working-grid",
+          "estimatedRgbaBytes": 11849760
+        }
+      ],
+      "captureDecisions": [
+        {
+          "reason": "rounded-working-grid",
+          "calls": 1177,
+          "capturedPixels": 3486791880,
+          "fullDomainPixels": 3486791880
+        }
+      ],
+      "gaussianPassesLastFrame": 6,
+      "cpuRasterTraceTail": {
+        "samples": 352,
+        "p50Ms": 4.871,
+        "p95Ms": 6.689,
+        "p99Ms": 7.547,
+        "scope": "retained frame trace tail; includes replay; not the 30-second presentation window"
+      },
+      "gpuMilliseconds": null,
+      "failedFrames": 0,
+      "terminalBufferErrors": 0,
+      "omittedWorkItems": 0,
+      "mode": "adaptive",
+      "repeat": 1,
+      "cpuFilterP95MsIncludingWarmup": 1.5901,
+      "sceneSurfaceCountsLastFrame": {
+        "pool-hit": 13,
+        "pool-miss": 0,
+        "temporary": 0
+      }
+    },
+    {
+      "backend": "UIKit/MTKView/Graphite-Metal",
+      "metalDevice": "Apple A14 GPU",
+      "viewportPixels": [
+        1170,
+        2532
+      ],
+      "dpr": 3,
+      "configuredDisplayHz": 60,
+      "presentationWindowMs": [
+        5000,
+        35000
+      ],
+      "intervalSamples": 889,
+      "presentationP50Ms": 33.43483331263997,
+      "presentationP95Ms": 50.15333334449679,
+      "presentationP99Ms": 50.15691666631028,
+      "longIntervalFraction": 0.8650168728908887,
+      "metalAllocatedBytesAtEnd": 312786944,
+      "capture": [
+        {
+          "stage": "backdrop-capture",
+          "inputWidth": 1170,
+          "inputHeight": 2532,
+          "outputWidth": 1170,
+          "outputHeight": 2532,
+          "left": 0,
+          "top": 0,
+          "right": 1170,
+          "bottom": 2532,
+          "detail": "rounded-working-grid",
+          "estimatedRgbaBytes": 11849760
+        }
+      ],
+      "captureDecisions": [
+        {
+          "reason": "rounded-working-grid",
+          "calls": 1187,
+          "capturedPixels": 3516416280,
+          "fullDomainPixels": 3516416280
+        }
+      ],
+      "gaussianPassesLastFrame": 6,
+      "cpuRasterTraceTail": {
+        "samples": 351,
+        "p50Ms": 5.067,
+        "p95Ms": 7.053,
+        "p99Ms": 8.265,
+        "scope": "retained frame trace tail; includes replay; not the 30-second presentation window"
+      },
+      "gpuMilliseconds": null,
+      "failedFrames": 0,
+      "terminalBufferErrors": 0,
+      "omittedWorkItems": 0,
+      "mode": "fast",
+      "repeat": 1,
+      "cpuFilterP95MsIncludingWarmup": 1.601,
+      "sceneSurfaceCountsLastFrame": {
+        "pool-hit": 13,
+        "pool-miss": 0,
+        "temporary": 0
+      }
+    },
+    {
+      "backend": "UIKit/MTKView/Graphite-Metal",
+      "metalDevice": "Apple A14 GPU",
+      "viewportPixels": [
+        1170,
+        2532
+      ],
+      "dpr": 3,
+      "configuredDisplayHz": 60,
+      "presentationWindowMs": [
+        5000,
+        35000
+      ],
+      "intervalSamples": 889,
+      "presentationP50Ms": 33.43420830788091,
+      "presentationP95Ms": 50.152999989222735,
+      "presentationP99Ms": 50.157499994384125,
+      "longIntervalFraction": 0.8515185601799775,
+      "metalAllocatedBytesAtEnd": 197115904,
+      "capture": [
+        {
+          "stage": "backdrop-capture",
+          "inputWidth": 1170,
+          "inputHeight": 2532,
+          "outputWidth": 1170,
+          "outputHeight": 2532,
+          "left": 0,
+          "top": 0,
+          "right": 1170,
+          "bottom": 2532,
+          "detail": "rounded-working-grid",
+          "estimatedRgbaBytes": 11849760
+        }
+      ],
+      "captureDecisions": [
+        {
+          "reason": "rounded-working-grid",
+          "calls": 1184,
+          "capturedPixels": 3507528960,
+          "fullDomainPixels": 3507528960
+        }
+      ],
+      "gaussianPassesLastFrame": 2,
+      "cpuRasterTraceTail": {
+        "samples": 348,
+        "p50Ms": 5.039,
+        "p95Ms": 6.945,
+        "p99Ms": 8.214,
+        "scope": "retained frame trace tail; includes replay; not the 30-second presentation window"
+      },
+      "gpuMilliseconds": null,
+      "failedFrames": 0,
+      "terminalBufferErrors": 0,
+      "omittedWorkItems": 0,
+      "mode": "fixed",
+      "repeat": 1,
+      "cpuFilterP95MsIncludingWarmup": 1.1775,
+      "sceneSurfaceCountsLastFrame": {
+        "pool-hit": 7,
+        "pool-miss": 0,
+        "temporary": 0
+      }
+    },
+    {
+      "backend": "UIKit/MTKView/Graphite-Metal",
+      "metalDevice": "Apple A14 GPU",
+      "viewportPixels": [
+        1170,
+        2532
+      ],
+      "dpr": 3,
+      "configuredDisplayHz": 60,
+      "presentationWindowMs": [
+        5000,
+        35000
+      ],
+      "intervalSamples": 887,
+      "presentationP50Ms": 33.435249992180616,
+      "presentationP95Ms": 50.15424999874085,
+      "presentationP99Ms": 50.159958336735144,
+      "longIntervalFraction": 0.8556933483652762,
+      "metalAllocatedBytesAtEnd": 197230592,
+      "capture": [
+        {
+          "stage": "backdrop-capture",
+          "inputWidth": 1170,
+          "inputHeight": 2532,
+          "outputWidth": 1170,
+          "outputHeight": 2532,
+          "left": 0,
+          "top": 0,
+          "right": 1170,
+          "bottom": 2532,
+          "detail": "rounded-working-grid",
+          "estimatedRgbaBytes": 11849760
+        }
+      ],
+      "captureDecisions": [
+        {
+          "reason": "rounded-working-grid",
+          "calls": 1186,
+          "capturedPixels": 3513453840,
+          "fullDomainPixels": 3513453840
+        }
+      ],
+      "gaussianPassesLastFrame": 2,
+      "cpuRasterTraceTail": {
+        "samples": 349,
+        "p50Ms": 5.038,
+        "p95Ms": 6.986,
+        "p99Ms": 8.857,
+        "scope": "retained frame trace tail; includes replay; not the 30-second presentation window"
+      },
+      "gpuMilliseconds": null,
+      "failedFrames": 0,
+      "terminalBufferErrors": 0,
+      "omittedWorkItems": 0,
+      "mode": "fixed",
+      "repeat": 2,
+      "cpuFilterP95MsIncludingWarmup": 1.3375,
+      "sceneSurfaceCountsLastFrame": {
+        "pool-hit": 7,
+        "pool-miss": 0,
+        "temporary": 0
+      }
+    },
+    {
+      "backend": "UIKit/MTKView/Graphite-Metal",
+      "metalDevice": "Apple A14 GPU",
+      "viewportPixels": [
+        1170,
+        2532
+      ],
+      "dpr": 3,
+      "configuredDisplayHz": 60,
+      "presentationWindowMs": [
+        5000,
+        35000
+      ],
+      "intervalSamples": 885,
+      "presentationP50Ms": 33.4339999826625,
+      "presentationP95Ms": 50.15229166019708,
+      "presentationP99Ms": 50.157083343947306,
+      "longIntervalFraction": 0.8576271186440678,
+      "metalAllocatedBytesAtEnd": 312786944,
+      "capture": [
+        {
+          "stage": "backdrop-capture",
+          "inputWidth": 1170,
+          "inputHeight": 2532,
+          "outputWidth": 1170,
+          "outputHeight": 2532,
+          "left": 0,
+          "top": 0,
+          "right": 1170,
+          "bottom": 2532,
+          "detail": "rounded-working-grid",
+          "estimatedRgbaBytes": 11849760
+        }
+      ],
+      "captureDecisions": [
+        {
+          "reason": "rounded-working-grid",
+          "calls": 1181,
+          "capturedPixels": 3498641640,
+          "fullDomainPixels": 3498641640
+        }
+      ],
+      "gaussianPassesLastFrame": 6,
+      "cpuRasterTraceTail": {
+        "samples": 351,
+        "p50Ms": 5.02,
+        "p95Ms": 6.805,
+        "p99Ms": 7.553,
+        "scope": "retained frame trace tail; includes replay; not the 30-second presentation window"
+      },
+      "gpuMilliseconds": null,
+      "failedFrames": 0,
+      "terminalBufferErrors": 0,
+      "omittedWorkItems": 0,
+      "mode": "fast",
+      "repeat": 2,
+      "cpuFilterP95MsIncludingWarmup": 1.6105,
+      "sceneSurfaceCountsLastFrame": {
+        "pool-hit": 13,
+        "pool-miss": 0,
+        "temporary": 0
+      }
+    },
+    {
+      "backend": "UIKit/MTKView/Graphite-Metal",
+      "metalDevice": "Apple A14 GPU",
+      "viewportPixels": [
+        1170,
+        2532
+      ],
+      "dpr": 3,
+      "configuredDisplayHz": 60,
+      "presentationWindowMs": [
+        5000,
+        35000
+      ],
+      "intervalSamples": 889,
+      "presentationP50Ms": 33.43562499503605,
+      "presentationP95Ms": 50.15424999874085,
+      "presentationP99Ms": 50.157708348706365,
+      "longIntervalFraction": 0.8740157480314961,
+      "metalAllocatedBytesAtEnd": 312803328,
+      "capture": [
+        {
+          "stage": "backdrop-capture",
+          "inputWidth": 1170,
+          "inputHeight": 2532,
+          "outputWidth": 1170,
+          "outputHeight": 2532,
+          "left": 0,
+          "top": 0,
+          "right": 1170,
+          "bottom": 2532,
+          "detail": "rounded-working-grid",
+          "estimatedRgbaBytes": 11849760
+        }
+      ],
+      "captureDecisions": [
+        {
+          "reason": "rounded-working-grid",
+          "calls": 1185,
+          "capturedPixels": 3510491400,
+          "fullDomainPixels": 3510491400
+        }
+      ],
+      "gaussianPassesLastFrame": 6,
+      "cpuRasterTraceTail": {
+        "samples": 351,
+        "p50Ms": 5.054,
+        "p95Ms": 6.868,
+        "p99Ms": 9.748,
+        "scope": "retained frame trace tail; includes replay; not the 30-second presentation window"
+      },
+      "gpuMilliseconds": null,
+      "failedFrames": 0,
+      "terminalBufferErrors": 0,
+      "omittedWorkItems": 0,
+      "mode": "adaptive",
+      "repeat": 2,
+      "cpuFilterP95MsIncludingWarmup": 1.6391,
+      "sceneSurfaceCountsLastFrame": {
+        "pool-hit": 13,
+        "pool-miss": 0,
+        "temporary": 0
+      }
+    },
+    {
+      "backend": "UIKit/MTKView/Graphite-Metal",
+      "metalDevice": "Apple A14 GPU",
+      "viewportPixels": [
+        1170,
+        2532
+      ],
+      "dpr": 3,
+      "configuredDisplayHz": 60,
+      "presentationWindowMs": [
+        5000,
+        35000
+      ],
+      "intervalSamples": 701,
+      "presentationP50Ms": 50.14716665027663,
+      "presentationP95Ms": 50.15691666631028,
+      "presentationP99Ms": 50.16058331239037,
+      "longIntervalFraction": 0.9614835948644793,
+      "metalAllocatedBytesAtEnd": 227082240,
+      "capture": [
+        {
+          "stage": "backdrop-capture",
+          "inputWidth": 1170,
+          "inputHeight": 2532,
+          "outputWidth": 1170,
+          "outputHeight": 904,
+          "left": 0,
+          "top": 799,
+          "right": 1170,
+          "bottom": 1703,
+          "detail": "cropped",
+          "estimatedRgbaBytes": 4230720
+        }
+      ],
+      "captureDecisions": [
+        {
+          "reason": "cropped",
+          "calls": 942,
+          "capturedPixels": 996334560,
+          "fullDomainPixels": 2790618480
+        }
+      ],
+      "gaussianPassesLastFrame": 2,
+      "cpuRasterTraceTail": {
+        "samples": 350,
+        "p50Ms": 7.741,
+        "p95Ms": 11.063,
+        "p99Ms": 12.239,
+        "scope": "retained frame trace tail; includes replay; not the 30-second presentation window"
+      },
+      "gpuMilliseconds": null,
+      "failedFrames": 0,
+      "terminalBufferErrors": 0,
+      "omittedWorkItems": 0,
+      "mode": "full",
+      "repeat": 2,
+      "cpuFilterP95MsIncludingWarmup": 1.5772,
+      "sceneSurfaceCountsLastFrame": {
+        "pool-hit": 6,
+        "pool-miss": 0,
+        "temporary": 0
+      }
+    },
+    {
+      "backend": "UIKit/MTKView/Graphite-Metal",
+      "metalDevice": "Apple A14 GPU",
+      "viewportPixels": [
+        1170,
+        2532
+      ],
+      "dpr": 3,
+      "configuredDisplayHz": 60,
+      "presentationWindowMs": [
+        5000,
+        35000
+      ],
+      "intervalSamples": 1764,
+      "presentationP50Ms": 16.7165833117906,
+      "presentationP95Ms": 16.71850000275299,
+      "presentationP99Ms": 16.719750012271106,
+      "longIntervalFraction": 0.007936507936507936,
+      "metalAllocatedBytesAtEnd": 54591488,
+      "capture": [],
+      "captureDecisions": [],
+      "gaussianPassesLastFrame": 0,
+      "cpuRasterTraceTail": {
+        "samples": 353,
+        "p50Ms": 3.555,
+        "p95Ms": 4.553,
+        "p99Ms": 5.054,
+        "scope": "retained frame trace tail; includes replay; not the 30-second presentation window"
+      },
+      "gpuMilliseconds": null,
+      "failedFrames": 0,
+      "terminalBufferErrors": 0,
+      "omittedWorkItems": 0,
+      "mode": "off",
+      "repeat": 2,
+      "cpuFilterP95MsIncludingWarmup": null,
+      "sceneSurfaceCountsLastFrame": {
+        "pool-hit": 0,
+        "pool-miss": 0,
+        "temporary": 0
+      }
+    },
+    {
+      "backend": "UIKit/MTKView/Graphite-Metal",
+      "metalDevice": "Apple A14 GPU",
+      "viewportPixels": [
+        1170,
+        2532
+      ],
+      "dpr": 3,
+      "configuredDisplayHz": 60,
+      "presentationWindowMs": [
+        5000,
+        35000
+      ],
+      "intervalSamples": 1789,
+      "presentationP50Ms": 16.717083344701678,
+      "presentationP95Ms": 16.71904168324545,
+      "presentationP99Ms": 16.719750012271106,
+      "longIntervalFraction": 0.0022358859698155395,
+      "metalAllocatedBytesAtEnd": 54771712,
+      "capture": [],
+      "captureDecisions": [],
+      "gaussianPassesLastFrame": 0,
+      "cpuRasterTraceTail": {
+        "samples": 353,
+        "p50Ms": 3.559,
+        "p95Ms": 4.657,
+        "p99Ms": 5.173,
+        "scope": "retained frame trace tail; includes replay; not the 30-second presentation window"
+      },
+      "gpuMilliseconds": null,
+      "failedFrames": 0,
+      "terminalBufferErrors": 0,
+      "omittedWorkItems": 0,
+      "mode": "off",
+      "repeat": 3,
+      "cpuFilterP95MsIncludingWarmup": null,
+      "sceneSurfaceCountsLastFrame": {
+        "pool-hit": 0,
+        "pool-miss": 0,
+        "temporary": 0
+      }
+    },
+    {
+      "backend": "UIKit/MTKView/Graphite-Metal",
+      "metalDevice": "Apple A14 GPU",
+      "viewportPixels": [
+        1170,
+        2532
+      ],
+      "dpr": 3,
+      "configuredDisplayHz": 60,
+      "presentationWindowMs": [
+        5000,
+        35000
+      ],
+      "intervalSamples": 710,
+      "presentationP50Ms": 50.14554166700691,
+      "presentationP95Ms": 50.15466664917767,
+      "presentationP99Ms": 50.15720831579529,
+      "longIntervalFraction": 0.9591549295774648,
+      "metalAllocatedBytesAtEnd": 227082240,
+      "capture": [
+        {
+          "stage": "backdrop-capture",
+          "inputWidth": 1170,
+          "inputHeight": 2532,
+          "outputWidth": 1170,
+          "outputHeight": 904,
+          "left": 0,
+          "top": 799,
+          "right": 1170,
+          "bottom": 1703,
+          "detail": "cropped",
+          "estimatedRgbaBytes": 4230720
+        }
+      ],
+      "captureDecisions": [
+        {
+          "reason": "cropped",
+          "calls": 943,
+          "capturedPixels": 997392240,
+          "fullDomainPixels": 2793580920
+        }
+      ],
+      "gaussianPassesLastFrame": 2,
+      "cpuRasterTraceTail": {
+        "samples": 350,
+        "p50Ms": 7.293,
+        "p95Ms": 10.54,
+        "p99Ms": 12.809,
+        "scope": "retained frame trace tail; includes replay; not the 30-second presentation window"
+      },
+      "gpuMilliseconds": null,
+      "failedFrames": 0,
+      "terminalBufferErrors": 0,
+      "omittedWorkItems": 0,
+      "mode": "full",
+      "repeat": 3,
+      "cpuFilterP95MsIncludingWarmup": 1.5274,
+      "sceneSurfaceCountsLastFrame": {
+        "pool-hit": 6,
+        "pool-miss": 0,
+        "temporary": 0
+      }
+    },
+    {
+      "backend": "UIKit/MTKView/Graphite-Metal",
+      "metalDevice": "Apple A14 GPU",
+      "viewportPixels": [
+        1170,
+        2532
+      ],
+      "dpr": 3,
+      "configuredDisplayHz": 60,
+      "presentationWindowMs": [
+        5000,
+        35000
+      ],
+      "intervalSamples": 886,
+      "presentationP50Ms": 33.43500001938082,
+      "presentationP95Ms": 50.15349999302998,
+      "presentationP99Ms": 50.156749988673255,
+      "longIntervalFraction": 0.871331828442438,
+      "metalAllocatedBytesAtEnd": 312803328,
+      "capture": [
+        {
+          "stage": "backdrop-capture",
+          "inputWidth": 1170,
+          "inputHeight": 2532,
+          "outputWidth": 1170,
+          "outputHeight": 2532,
+          "left": 0,
+          "top": 0,
+          "right": 1170,
+          "bottom": 2532,
+          "detail": "rounded-working-grid",
+          "estimatedRgbaBytes": 11849760
+        }
+      ],
+      "captureDecisions": [
+        {
+          "reason": "rounded-working-grid",
+          "calls": 1182,
+          "capturedPixels": 3501604080,
+          "fullDomainPixels": 3501604080
+        }
+      ],
+      "gaussianPassesLastFrame": 6,
+      "cpuRasterTraceTail": {
+        "samples": 351,
+        "p50Ms": 5.029,
+        "p95Ms": 6.9,
+        "p99Ms": 7.687,
+        "scope": "retained frame trace tail; includes replay; not the 30-second presentation window"
+      },
+      "gpuMilliseconds": null,
+      "failedFrames": 0,
+      "terminalBufferErrors": 0,
+      "omittedWorkItems": 0,
+      "mode": "adaptive",
+      "repeat": 3,
+      "cpuFilterP95MsIncludingWarmup": 1.6294,
+      "sceneSurfaceCountsLastFrame": {
+        "pool-hit": 13,
+        "pool-miss": 0,
+        "temporary": 0
+      }
+    },
+    {
+      "backend": "UIKit/MTKView/Graphite-Metal",
+      "metalDevice": "Apple A14 GPU",
+      "viewportPixels": [
+        1170,
+        2532
+      ],
+      "dpr": 3,
+      "configuredDisplayHz": 60,
+      "presentationWindowMs": [
+        5000,
+        35000
+      ],
+      "intervalSamples": 886,
+      "presentationP50Ms": 33.434375014621764,
+      "presentationP95Ms": 50.15337499207817,
+      "presentationP99Ms": 50.15612501301803,
+      "longIntervalFraction": 0.8611738148984198,
+      "metalAllocatedBytesAtEnd": 312786944,
+      "capture": [
+        {
+          "stage": "backdrop-capture",
+          "inputWidth": 1170,
+          "inputHeight": 2532,
+          "outputWidth": 1170,
+          "outputHeight": 2532,
+          "left": 0,
+          "top": 0,
+          "right": 1170,
+          "bottom": 2532,
+          "detail": "rounded-working-grid",
+          "estimatedRgbaBytes": 11849760
+        }
+      ],
+      "captureDecisions": [
+        {
+          "reason": "rounded-working-grid",
+          "calls": 1185,
+          "capturedPixels": 3510491400,
+          "fullDomainPixels": 3510491400
+        }
+      ],
+      "gaussianPassesLastFrame": 6,
+      "cpuRasterTraceTail": {
+        "samples": 351,
+        "p50Ms": 4.954,
+        "p95Ms": 6.825,
+        "p99Ms": 7.366,
+        "scope": "retained frame trace tail; includes replay; not the 30-second presentation window"
+      },
+      "gpuMilliseconds": null,
+      "failedFrames": 0,
+      "terminalBufferErrors": 0,
+      "omittedWorkItems": 0,
+      "mode": "fast",
+      "repeat": 3,
+      "cpuFilterP95MsIncludingWarmup": 1.6746,
+      "sceneSurfaceCountsLastFrame": {
+        "pool-hit": 13,
+        "pool-miss": 0,
+        "temporary": 0
+      }
+    },
+    {
+      "backend": "UIKit/MTKView/Graphite-Metal",
+      "metalDevice": "Apple A14 GPU",
+      "viewportPixels": [
+        1170,
+        2532
+      ],
+      "dpr": 3,
+      "configuredDisplayHz": 60,
+      "presentationWindowMs": [
+        5000,
+        35000
+      ],
+      "intervalSamples": 885,
+      "presentationP50Ms": 33.43445830978453,
+      "presentationP95Ms": 50.15441667637788,
+      "presentationP99Ms": 50.15766667202115,
+      "longIntervalFraction": 0.8463276836158192,
+      "metalAllocatedBytesAtEnd": 197230592,
+      "capture": [
+        {
+          "stage": "backdrop-capture",
+          "inputWidth": 1170,
+          "inputHeight": 2532,
+          "outputWidth": 1170,
+          "outputHeight": 2532,
+          "left": 0,
+          "top": 0,
+          "right": 1170,
+          "bottom": 2532,
+          "detail": "rounded-working-grid",
+          "estimatedRgbaBytes": 11849760
+        }
+      ],
+      "captureDecisions": [
+        {
+          "reason": "rounded-working-grid",
+          "calls": 1187,
+          "capturedPixels": 3516416280,
+          "fullDomainPixels": 3516416280
+        }
+      ],
+      "gaussianPassesLastFrame": 2,
+      "cpuRasterTraceTail": {
+        "samples": 349,
+        "p50Ms": 5.111,
+        "p95Ms": 7.385,
+        "p99Ms": 9.73,
+        "scope": "retained frame trace tail; includes replay; not the 30-second presentation window"
+      },
+      "gpuMilliseconds": null,
+      "failedFrames": 0,
+      "terminalBufferErrors": 0,
+      "omittedWorkItems": 0,
+      "mode": "fixed",
+      "repeat": 3,
+      "cpuFilterP95MsIncludingWarmup": 1.2706,
+      "sceneSurfaceCountsLastFrame": {
+        "pool-hit": 7,
+        "pool-miss": 0,
+        "temporary": 0
+      }
+    }
+  ]
+}

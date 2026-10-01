@@ -191,6 +191,17 @@ public sealed partial class SkiaSceneRenderer
             properties
         );
         surface.Canvas.Clear(SKColors.Transparent);
+        RecordVariableBlurWork(
+            "scene-surface-clear",
+            width,
+            height,
+            width,
+            height,
+            SKRect.Create(width, height),
+            surface.IsTemporary ? "temporary"
+                : surface.IsReused ? "pool-hit"
+                : "pool-miss"
+        );
         EndVariableBlurStage("surface-create-clear", stageStarted);
         return surface;
     }
@@ -326,7 +337,17 @@ public sealed partial class SkiaSceneRenderer
                 direct.Filter.TileMode,
                 target.TotalMatrix,
                 width,
-                height
+                height,
+                out var captureReason
+            );
+            RecordVariableBlurWork(
+                "backdrop-capture",
+                width,
+                height,
+                capture.Width,
+                capture.Height,
+                capture,
+                captureReason
             );
             var captureStarted = StartVariableBlurStage();
             using var input = target.Surface!.Snapshot(capture);
@@ -357,6 +378,15 @@ public sealed partial class SkiaSceneRenderer
                 if (direct.Filter.Bounds is { } bounds)
                     target.ClipRect(ToRect(bounds), SKClipOperation.Intersect, true);
                 target.ResetMatrix();
+                RecordVariableBlurWork(
+                    "final-composite",
+                    filtered.Width,
+                    filtered.Height,
+                    width,
+                    height,
+                    visible,
+                    "direct-backdrop"
+                );
                 target.DrawImage(
                     filtered,
                     (SKRect)capture,
@@ -407,7 +437,18 @@ public sealed partial class SkiaSceneRenderer
             using var input = target.Surface!.Snapshot(new SKRectI(0, 0, width, height));
             SKRect? variableOutputBounds = null;
             if (backdrop.Filter.VariableBlur is not null)
+            {
                 variableOutputBounds = VariableBlurOutputBounds(target, backdrop.Filter);
+                RecordVariableBlurWork(
+                    "backdrop-capture",
+                    width,
+                    height,
+                    width,
+                    height,
+                    SKRect.Create(width, height),
+                    "backdrop-with-child"
+                );
+            }
             using var filtered = ApplyGpuImageFilter(
                 target,
                 input,

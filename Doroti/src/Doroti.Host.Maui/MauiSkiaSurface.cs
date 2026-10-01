@@ -206,6 +206,10 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
     {
 #if WINDOWS
         return _resizeContinuity.CaptureSnapshot(current);
+#elif IOS || MACCATALYST
+        return _view.Handler?.PlatformView is DorotiUIKitGraphiteView graphite
+            ? graphite.CaptureSnapshot(current)
+            : current;
 #else
         return current;
 #endif

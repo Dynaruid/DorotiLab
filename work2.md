@@ -86,6 +86,8 @@ Windows HWND editor와 WebView의 같은 프레임 혼합은 현재 미지원 �
 
 근거: [04-rendering-lifetime](works/common/04-rendering-lifetime.md), [측정 기준](Doroti/docs/rendering-baselines.md).
 
+2026-10-01 Variable Blur: 캡처/패스/Surface 풀 진단과 iPhone 반복 스크롤 진입점을 추가했다. [P0 결과와 미검증 범위](works/results/2026-09-30-variable-blur.md)를 따르며 아래 GPU 품질·수명 항목은 유지한다.
+
 - [ ] **검증 잔여:** 긴 리스트·VariableBlur·다중 효과·WebView overlay·이미지/실제 영상 texture·resize/DPR를 목표 기기와 renderer에서 비교한다. CPU로 확인한 장면 외의 GPU/합성 장면을 완성한다.
 - [ ] **측정 잔여:** build/layout/paint, GPU 작업, readback/upload, 실제 present 간격, 메모리/VRAM을 분리 측정하고 기기·해상도별 baseline/허용 예산을 채운다. GPU 완료 시간이나 작은 CPU 장면의 수치를 표시 FPS로 사용하지 않는다.
 - [ ] **검증 잔여:** blur 축소/adaptive 처리에서 capture 영역·pixel origin·viewport와 픽셀 품질을 확인한다. Web PlatformView CPU upload와 admission/backpressure의 실제 부하 결과도 측정한다.

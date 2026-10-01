@@ -5,8 +5,9 @@ public enum VariableBlurKernel
 {
     gaussian,
 
-    /// <summary>Seven bilinear reads per pass at strong blur; preserves the
-    /// Gaussian kernel below two working pixels of sigma. Approximate at large radii.</summary>
+    /// <summary>Pairs neighbouring Gaussian taps with bilinear reads, increasing
+    /// the tap count with working sigma. Preserves the Gaussian kernel below two
+    /// working pixels of sigma. Approximate when the sampling budget is exhausted.</summary>
     fastGaussian,
 }
 
@@ -21,8 +22,9 @@ public sealed partial record ImageFilter
     /// Use an ancestor clip to bound a BackdropFilter. Supports affine transforms,
     /// ImageFiltered and composition. Gaussian passes take at most 2 * maxSamples + 1
     /// samples; large sigma at a low sample budget can show banding. fastGaussian
-    /// uses seven reads at strong blur and blends with the Gaussian at working
-    /// sigma 2..3 (up to seven extra reads in that transition). Arbitrary mask
+    /// pairs adjacent weights using up to min(4 * maxSamples + 1, 129) reads per pass and
+    /// blends with the Gaussian at working sigma 2..3 (both kernels run in that
+    /// transition). Fixed-cost widely spaced taps are not used. Arbitrary mask
     /// images and native PlatformView backdrop capture are not supported.
     /// resolutionScale (0.125..1) is the minimum working resolution. By default,
     /// adaptiveResolution preserves full resolution at low sigma and blends into

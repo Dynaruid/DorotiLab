@@ -607,6 +607,7 @@ public sealed partial class SkiaSceneRenderer
             // into physical pixels. Applying host DPR here would scale twice.
             var rasterStart = DorotiFrameClock.Now;
             BeginPictureRasterFrame();
+            BeginVariableBlurProfileFrame();
             DorotiSkiaImageFilterRenderer.BeginFrame(
                 RuntimeEffectBackend,
                 _contextGeneration,

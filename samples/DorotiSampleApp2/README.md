@@ -7,13 +7,13 @@ Cupertino 스타일의 독립 Doroti 샘플 앱입니다. 공통 C# UI와 Androi
 - **Settings**: 시스템 / 라이트 / 다크 테마 선택
 - **Variable Blur**: 60개 항목의 ListView 위에 상단 고정 VariableBlur 오버레이, 강도 조절과 켜기/끄기
 
-Variable Blur 페이지는 리스트 상단 180px에 `BackdropFilter`와
+Variable Blur 페이지는 리스트 상단 180 논리 단위에 `BackdropFilter`와
 `ImageFilterConfig.CreateVariableBlur(startSigma: 강도, endSigma: 0, resolutionScale: 0.25)`를 적용합니다.
 라디오 버튼으로 다음 네 가지 모드를 비교할 수 있습니다.
 
 - **Full quality**: 전체 구간을 원본 해상도로 처리합니다.
 - **Adaptive** (기본): 약한 블러는 원본 해상도, 강한 블러는 1/2·1/4 해상도로 처리하고 경계를 혼합합니다.
-- **Fast adaptive**: Adaptive에 7회 샘플링 근사 커널을 적용합니다. 강한 블러에서 품질이 낮아질 수 있습니다.
+- **Fast adaptive**: 강도에 맞춰 Gaussian 가중치를 계산하고 인접 샘플 쌍을 bilinear 샘플링으로 묶습니다. 강한 구간에서도 윤곽이 여러 장 겹치지 않도록 샘플 수를 늘립니다. 작업 해상도 sigma 2~3에서는 기존 커널과 혼합합니다. 과거 고정 7회 커널보다 강한 블러의 처리 비용이 증가할 수 있습니다.
 - **Fixed 1/4**: 전체 구간을 1/4 해상도로 처리합니다. 선명한 구간도 저해상도가 됩니다.
 
 별도의 스위치로 블러 전체를 켜고 끕니다.
@@ -305,32 +305,47 @@ Fonts 탭의 Galmuri/SUITE와 디코더도 로컬로 포함하므로 이 화면�
 
 위 결과는 모든 화면·입력·GPU 효과의 전체 플랫폼 동작을 보증하지 않습니다.
 
-```powershell
-python ./Doroti/validation/run-with-timeout.py dotnet run --project ./Doroti/validation/cupertino-sample -c Release
-python ./Doroti/validation/run-with-timeout.py dotnet run --project ./Doroti/validation/cupertino-sample -c Release --no-build -- --portrait
+현재 CPU 회귀 진입점은 다음과 같습니다. 포인터 탭·입력·다이얼로그·viewport/DPR·리스트 수명과
+캡처 정책을 확인하며, GPU Variable Blur 픽셀 비교는 포함하지 않습니다.
+
+```sh
+python3 Doroti/eng/run-with-timeout.py dotnet run --project Doroti/tests/Doroti.Tests -c Release
+dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-kernel
+python3 -m unittest discover -s Doroti/tests -p test_variable_blur_device.py
 ```
 
-실제 위젯과 Skia 렌더러로 720×840 / 400×800 화면을 그려 카운터, 탭 간 상태 유지,
-입력 콜백, 다이얼로그 배치, 테마 전환, 활동 표시기 애니메이션을 검증합니다.
-탭 전환은 좌표 기반 마우스 / 터치 포인터 이벤트를 위젯 입력 경로로 전달해
-히트 테스트, 선택된 탭 번호, 표시된 페이지와 같은 탭 재선택까지 확인합니다.
-PNG는 검증 프로젝트의 `bin/Release/net10.0/snapshots`에 생성됩니다.
-이 검증에는 실제 OS 입력 및 Windows / 브라우저 화면 표시 확인은 포함되지 않습니다.
+과거 `Doroti/validation/cupertino-sample` 프로젝트는 현재 트리에 없습니다.
+해당 프로젝트의 `--variable-blur`, `--high-dpi`, `--frame-benchmark` 명령을 현재 검증으로 사용하지 않습니다.
 
-Variable Blur는 Vulkan GPU가 있는 환경에서 별도로 검증합니다.
+Variable Blur의 iPhone 반복 스크롤 측정은 서명된 **Release/Mono** 앱을 먼저 빌드한 뒤 실행합니다.
+`--app`은 빌드 산출물 경로, `--device`는 연결된 실기기 식별자입니다.
 
-```powershell
-python ./Doroti/validation/run-with-timeout.py dotnet run --project ./Doroti/validation/cupertino-sample -c Release -- --variable-blur
-python ./Doroti/validation/run-with-timeout.py dotnet run --project ./Doroti/validation/cupertino-sample -c Release --no-build -- --variable-blur --portrait
-python ./Doroti/validation/run-with-timeout.py dotnet run --project ./Doroti/validation/cupertino-sample -c Release --no-build -- --variable-blur --high-dpi --oversized-backing
-python ./Doroti/validation/run-with-timeout.py dotnet run --project ./Doroti/validation/cupertino-sample -c Release --no-build -- --variable-blur --high-dpi --oversized-backing --2560x1600 --frame-benchmark
+```sh
+dotnet build samples/DorotiSampleApp2/ios/DorotiSampleApp2.iOS.csproj -c Release -r ios-arm64 -p:DorotiIosTargetFramework=net10.0-ios27.0 -p:DorotiCompilationMode=Mono -p:EnableCodeSigning=true '-p:CodesignKey=Apple Development' -p:CodesignProvision=<PROFILE_UUID>
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/variable_blur_device.py --device <DEVICE_UDID> --app samples/DorotiSampleApp2/ios/bin/ios-arm64/Release/net10.0-ios27.0/ios-arm64/DorotiSampleApp2.iOS.app --output temp/testing/variable-blur/new-run --hz 60 --conditions '전원·밝기·온도 조건 기록'
 ```
 
-블러 영역에서 합성 트랙패드 pan/zoom을 시작해 종료 이벤트 전의 리스트 위치와
-GPU 렌더링 픽셀 변화를 확인합니다. 실제 물리 트랙패드 입력 및 화면 표시 지연은 별도 확인 대상입니다.
-`--frame-benchmark`는 프레임 구성과 GPU 완료까지 측정하며 창 표시 FPS가 아닙니다.
-실제 Windows 창을 PowerShell로 조작하는 측정 절차와 결과는
-[VariableBlur 성능 기록](../../history/26-09-26/wgsl-gpu-effects-summary.md)에 있습니다.
+기본 5개 모드를 각각 3회 실행하고 두 번째 반복은 역순으로 진행합니다.
+`--hz`에는 실제 설정된 표시 주사율을 입력합니다. 각 실행은 40초이며 최초 표시 이후
+5~35초 구간의 실제 drawable 표시 간격을 집계합니다. 합성 스크롤이므로 물리 입력 검증은 아닙니다.
+완료 표식·30초 표시 이력·렌더러 오류 여부를 검사하며 불완전한 실행을 PASS로 집계하지 않습니다.
+앱 설치는 기존 `dev.doroti.sample2`를 업데이트하며 실행마다 해당 앱을 재시작합니다.
+
+수동 프로파일링에서는 `DOROTI_VARIABLE_BLUR_BENCHMARK=off|full|adaptive|fast|fixed`로
+탭·모드·반복 경로를 선택합니다. 미설정 시 기존 UI/Adaptive 기본값을 유지합니다.
+정지 화면 비교에는 `DOROTI_VARIABLE_BLUR_BENCHMARK_STATIC=1`을 함께 지정하고,
+강도는 `DOROTI_VARIABLE_BLUR_BENCHMARK_SIGMA=0..32`로 지정할 수 있습니다.
+정지 모드는 자동 스크롤 수집기와 함께 사용하지 않습니다.
+`DOROTI_VARIABLE_BLUR_PROFILE=1`과 `DOROTI_MAUI_EVIDENCE=blur.json`을 함께 설정하면
+iOS 앱의 Documents에 진단 JSON을 기록합니다.
+
+진단에는 캡처 fallback 사유, 작업 해상도·draw bounds, Surface pool hit/miss/temporary,
+CPU stage p50/p95/p99, 실제 표시 간격과 Metal 할당량을 포함합니다.
+CPU stage는 최대 최근 4,096회 호출이며 초기 준비를 포함하고, `filter-total`은 내부 stage와 중첩됩니다.
+Surface 정보는 마지막 프레임의 scene filter 전체를 포함합니다. RGBA 추정 바이트를 합산해 live/peak VRAM으로
+해석하지 않습니다. UIKit command buffer 카운터는 terminal marker만 세며 Skia 내부 제출 횟수는 아닙니다.
+GPU 구간 시간과 peak 메모리는 별도 Metal System Trace가 필요합니다.
+[작업 결과·미검증 범위](../../works/results/2026-09-30-variable-blur.md)를 참고하세요.
 
 
 ## 웹폰트 비교

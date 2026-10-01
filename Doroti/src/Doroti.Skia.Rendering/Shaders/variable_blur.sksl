@@ -5,18 +5,43 @@ uniform float2 sigmas;
 uniform float2 axis;
 uniform float samples;
 uniform float fastKernel;
-// Pair adjacent weights of a normalized 13-tap Gaussian (sigma 2).
-// Bilinear sampling collapses each pair into one read. Scaling the offsets
-// approximates wider kernels; adaptive resolution limits undersampling.
-half4 fastGaussian(float2 p, float2 spread) {
-    float4 sum = 0.1996756275 * float4(inputImage.eval(p));
-    float2 d = spread * 0.7036667000;
-    sum += 0.2973225129 * (float4(inputImage.eval(p + d)) + float4(inputImage.eval(p - d)));
-    d = spread * 1.6471074861;
-    sum += 0.0918483427 * (float4(inputImage.eval(p + d)) + float4(inputImage.eval(p - d)));
-    d = spread * 2.6009066111;
-    sum += 0.0109913306 * (float4(inputImage.eval(p + d)) + float4(inputImage.eval(p - d)));
-    return half4(sum);
+// Pair neighbouring Gaussian weights, keeping their spacing at one working
+// pixel until the sample budget is exhausted. Dilating a fixed seven-read
+// kernel leaves isolated copies of the input at large sigma (including its
+// overly sharp centre). Recompute both weights and tap count for this sigma.
+half4 fastGaussian(float2 p, float sigma, float deviceScale) {
+    float deviceRadius = 3.0 * sigma * deviceScale;
+    // Pairing sparse taps is not equivalent to pairing adjacent texels. Allow
+    // twice the read budget before increasing spacing, including sigma 24 at
+    // DPR 3 / quarter resolution. The loop remains bounded at 64 pairs.
+    float budget = min(128.0, 4.0 * samples);
+    float count = min(budget, floor(deviceRadius));
+    float stepSize = max(1.0, deviceRadius / budget) / deviceScale;
+    float zStep = stepSize / sigma;
+    float ratio = exp(-0.5 * zStep * zStep);
+    float ratioStep = ratio * ratio;
+    float weight = 1.0;
+    float weightSum = 1.0;
+    float4 sum = float4(inputImage.eval(p));
+    for (int i = 0; i < 64; ++i) {
+        float tap = 2.0 * float(i) + 1.0;
+        if (tap > count) break;
+        weight *= ratio;
+        ratio *= ratioStep;
+        float first = weight;
+        float second = 0.0;
+        if (tap + 1.0 <= count) {
+            weight *= ratio;
+            ratio *= ratioStep;
+            second = weight;
+        }
+        float paired = first + second;
+        float2 offset = axis * (stepSize * (tap + second / paired));
+        sum += paired * (float4(inputImage.eval(p + offset))
+                       + float4(inputImage.eval(p - offset)));
+        weightSum += 2.0 * paired;
+    }
+    return half4(sum / weightSum);
 }
 half4 main(float2 p) {
     float t = clamp(dot(ramp.xy, p) + ramp.z, 0.0, 1.0);
@@ -27,7 +52,7 @@ half4 main(float2 p) {
     half4 fast = half4(0);
     bool useFast = fastKernel > 0.5 && samples >= 3.0 && deviceSigma > 2.0;
     if (useFast) {
-        fast = fastGaussian(p, axis * sigma);
+        fast = fastGaussian(p, sigma, deviceScale);
         if (deviceSigma >= 3.0) return fast;
     }
     float radius = 3.0 * sigma;

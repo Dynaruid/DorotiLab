@@ -4,6 +4,13 @@ using Doroti.Testing;
 using Doroti.Ui;
 
 static void Require(bool value, string message) { if (!value) throw new Exception(message); }
+#if DOROTI_REPO_TESTS
+if (args.Contains("--variable-blur-kernel"))
+{
+    VariableBlurKernelRegression.Run();
+    return;
+}
+#endif
 for (var run = 0; run < 2; run++)
 {
     using var tester = new WidgetTester();
@@ -61,6 +68,7 @@ Console.WriteLine("PASS: pointer focus; synthetic Hangul start/update/commit/can
 await DesktopCloseRegression.Run();
 #if DOROTI_REPO_TESTS
 RenderingRegressions.Run();
+VariableBlurKernelRegression.Run();
 NavigationRegression.Run();
 WindowContextRegression.Run();
 await PlatformRetirementRegression.Run();

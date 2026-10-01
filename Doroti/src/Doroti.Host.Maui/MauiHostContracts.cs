@@ -107,7 +107,10 @@ public sealed record MauiHostDiagnostics(
     long FrameRequestsCoalesced,
     MauiSemanticsDiagnostics Semantics,
     long SoftwareFallbackFrames
-);
+)
+{
+    public Doroti.Skia.Rendering.VariableBlurDiagnostics? VariableBlur { get; init; }
+}
 
 public interface IMauiSemanticsBridge
 {

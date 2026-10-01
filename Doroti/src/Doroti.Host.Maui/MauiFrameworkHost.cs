@@ -468,7 +468,7 @@ public sealed class MauiFrameworkHost : IDisposable
             value.Host.FrameRequestsCoalesced,
             value.Host.SemanticsDiagnostics,
             0
-        );
+        ) { VariableBlur = value.Graphics.VariableBlurDiagnostics };
     }
 
 #if ANDROID
