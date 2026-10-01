@@ -16,7 +16,7 @@ internal sealed class VariableBlurPageState : State<VariableBlurPage>
 {
     private const double OverlayHeight = 180;
     private bool _enabled = true;
-    private string _mode = "adaptive";
+    private string _mode = "fixed";
     private double _sigma = 20;
     private readonly ScrollController _scrollController = new();
 
@@ -36,7 +36,7 @@ internal sealed class VariableBlurPageState : State<VariableBlurPage>
             throw new ArgumentException(
                 "DOROTI_VARIABLE_BLUR_BENCHMARK must be off/full/adaptive/fast/fixed/kawase."
             );
-        _mode = mode == "off" ? "adaptive" : mode;
+        _mode = mode == "off" ? "fixed" : mode;
         _enabled = mode != "off";
         if (Environment.GetEnvironmentVariable("DOROTI_VARIABLE_BLUR_BENCHMARK_SIGMA") is { } sigma)
         {
@@ -163,11 +163,11 @@ internal sealed class VariableBlurPageState : State<VariableBlurPage>
                                         {
                                             "full" => "Full-resolution Gaussian throughout.",
                                             "adaptive" =>
-                                                "Sharp detail with adaptive Gaussian blur.",
+                                                "Sharp detail near the clear edge; higher cost.",
                                             "fast" =>
                                                 "Sharp detail with a faster, approximate blur.",
                                             "kawase" => "Shared blur stages; Gaussian detail at the clear edge.",
-                                            _ => "Lowest cost; fine detail becomes softer.",
+                                            _ => "Smooth scrolling; fine detail becomes softer.",
                                         },
                                         style: new TextStyle(
                                             fontSize: 13,

@@ -15,6 +15,13 @@ if (args.Contains("--variable-blur-gpu"))
     VariableBlurGpuRegression.Run();
     return;
 }
+if (Array.IndexOf(args, "--variable-blur-quality") is var qualityIndex && qualityIndex >= 0)
+{
+    if (qualityIndex + 1 >= args.Length || args[qualityIndex + 1].StartsWith("--"))
+        throw new ArgumentException("--variable-blur-quality requires an output directory.");
+    VariableBlurGpuRegression.Run(args[qualityIndex + 1]);
+    return;
+}
 if (args.Contains("--variable-blur-kawase"))
 {
     VariableBlurKawaseRegression.Run();

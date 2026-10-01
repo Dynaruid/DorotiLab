@@ -66,7 +66,15 @@ On macOS with a Metal GPU, run the production renderer pixel checks explicitly:
 dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-gpu
 ```
 
-This command compares crop/full and direct/intermediate composition at DPR 1/2/3, Gaussian detail at the clear edge, bounded/full Kawase reconstruction, and native/owned sibling scopes with a VariableBlur inside opacity. It uses synchronous readback only in validation and does not measure FPS or qualify iPhone, other GPU backends, or the full transform/tile/child matrix. The default suite stays on raster surfaces; `--variable-blur-kernel`, `--variable-blur-capture`, and `--variable-blur-kawase` isolate the embedded production SkSL and its manifest/ABI.
+This command compares crop/full and direct/intermediate composition at DPR 1/2/3, Gaussian detail at the clear edge, bounded/full Kawase reconstruction, and native/owned sibling scopes with a VariableBlur inside opacity. Fixed Gaussian also exercises the actual `ApplyVariableBlur` reduced output and final linear sampling: 72 conditions cover both gradient directions, fractional interior/edge ROIs, translucent input, Clamp/Decal, and nondivisible sizes including full-domain fallback. Each equivalent comparison has a maximum channel-error limit of 3/255. It uses synchronous readback only in validation and does not measure FPS or qualify iPhone, other GPU backends, or the full transform/tile/child matrix. The default suite stays on raster surfaces; `--variable-blur-kernel`, `--variable-blur-capture`, and `--variable-blur-kawase` isolate the embedded production SkSL and its manifest/ABI.
+
+For separate Full/Fixed still-image quality review, run from the repository root:
+
+```sh
+dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-quality temp/testing/variable-blur/quality-review
+```
+
+This macOS Metal command saves 14 PNGs at DPR 3 with sigma 0/1/2/4/8/20/32, small text, 1px lines, a high-frequency pattern, and the repository's reference photograph. Sigma zero bypasses the filter as in SampleApp2. These captures document downsampling softness and the clear-edge/disabled-filter transition; Full and Fixed are not required to be pixel-equivalent. Still-image review does not establish motion quality, physical input behavior, or performance. Keep captures separate from device presentation measurements.
 
 For the installed VSIX and native metadata-update tests, use the commands in [development sessions](../docs/development-hot-reload.md). [Rendering baselines](../docs/rendering-baselines.md) specifies measurement boundaries and prospective budgets. Testbed `DOROTI_SAMPLE=reload` provides a counter, input and long list for manual reload testing.
 

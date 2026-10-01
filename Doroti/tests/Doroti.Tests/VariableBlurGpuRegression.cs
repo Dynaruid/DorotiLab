@@ -11,7 +11,7 @@ using SkiaSharp;
 // Readbacks and completion waits exist only in this validation command.
 internal static class VariableBlurGpuRegression
 {
-    public static void Run()
+    public static void Run(string? qualityOutputDirectory = null)
     {
         if (!OperatingSystem.IsMacOS())
             throw new PlatformNotSupportedException("Variable Blur GPU validation requires macOS Metal.");
@@ -43,6 +43,164 @@ internal static class VariableBlurGpuRegression
             SkiaGpuSurfaces.CompleteRecording(recorder!,false);
             return pixels ?? throw new Exception("Readback failed");
         }
+        // Separate, opt-in still-image review. Never enable readbacks while
+        // collecting device presentation performance. These are not pixel-
+        // equivalence assertions between Full Gaussian and Fixed.
+        if (qualityOutputDirectory is { } outputDirectory)
+        {
+            Directory.CreateDirectory(outputDirectory);
+            const int qualityWidth = 1170, qualityHeight = 1080;
+            using var scene = Surface(qualityWidth, qualityHeight);
+            scene.Canvas.Clear(new SKColor(245, 245, 245));
+            using var decodedPhoto = SKImage.FromEncodedData(
+                "reference/flutter_sample_app/assets/images/mae-mu-9002s2VnOAY-unsplash.webp");
+            using var photo = decodedPhoto.ToTextureImage(recorder!)
+                ?? throw new Exception("Quality scene photograph upload failed.");
+            using var typeface = SKTypeface.FromFamilyName("Helvetica");
+            using var font = new SKFont(typeface, 27);
+            using var paint = new SKPaint { Color = SKColors.Black, IsAntialias = true };
+            for (var y = 0; y < qualityHeight; y += 90)
+            {
+                scene.Canvas.DrawText("Small text 0123456789 AaBb", 12, y + 35, SKTextAlign.Left, font, paint);
+                paint.IsAntialias = false;
+                for (var x = 440; x < 650; x += 4)
+                    scene.Canvas.DrawRect(x, y + 5, 1, 65, paint);
+                for (var yy = y + 5; yy < y + 70; yy += 2)
+                for (var x = 680; x < 810; x += 2)
+                    scene.Canvas.DrawRect(x + (yy % 4 == 0 ? 0 : 1), yy, 1, 1, paint);
+                scene.Canvas.DrawImage(photo, new SKRect(840, y, qualityWidth, y + 90),
+                    new SKSamplingOptions(SKFilterMode.Linear));
+                paint.IsAntialias = true;
+            }
+            void SavePixels(byte[] pixels, string name)
+            {
+                using var bitmap = new SKBitmap(new SKImageInfo(qualityWidth, qualityHeight));
+                Marshal.Copy(pixels, 0, bitmap.GetPixels(), pixels.Length);
+                using var image = SKImage.FromBitmap(bitmap);
+                using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+                using var file = File.Create(System.IO.Path.Combine(outputDirectory, name));
+                data.SaveTo(file);
+            }
+            foreach (var sigma in new[] { 0d, 1d, 2d, 4d, 8d, 20d, 32d })
+            foreach (var fixedResolution in new[] { false, true })
+            {
+                begin.Invoke(null, new[] { runtimeBackend, 0L, owner });
+                using var input = scene.Snapshot();
+                using var result = Surface(qualityWidth, qualityHeight);
+                result.Canvas.DrawImage(input, 0, 0, SKSamplingOptions.Default);
+                // The sample disables its BackdropFilter at exactly zero.
+                if (sigma > 0)
+                {
+                    var settings = Activator.CreateInstance(settingsType,
+                        BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null,
+                        new object[] { new Offset(0, 0), new Offset(0, 180), sigma, 0d,
+                            32, fixedResolution ? .25 : 1d, false, VariableBlurKernel.gaussian }, null)!;
+                    var visible = new SKRect(0, 0, qualityWidth, 540);
+                    using var filtered = (SKImage)Call("ApplyVariableBlur", result.Canvas, input,
+                        settings, TileMode.clamp, qualityWidth, qualityHeight,
+                        SKMatrix.CreateScale(3, 3), visible, fixedResolution);
+                    result.Canvas.ClipRect(visible);
+                    result.Canvas.DrawImage(filtered, SKRect.Create(qualityWidth, qualityHeight),
+                        new SKSamplingOptions(SKFilterMode.Linear));
+                }
+                SavePixels(Read(result, qualityWidth, qualityHeight),
+                    $"{(fixedResolution ? "fixed" : "full")}-sigma{sigma}.png");
+            }
+            Console.WriteLine($"Saved 14 Full/Fixed stills at DPR 3 to {outputDirectory}; manual quality review, not equivalence or motion validation.");
+            return;
+        }
+        // Fixed must exercise ApplyVariableBlur's reduced output and the same
+        // final linear sampling as the empty-child BackdropFilter. An Adaptive
+        // shader is not a reference for this path.
+        var fixedCases = 0;
+        var fixedMax = 0;
+        foreach (var (w, h) in new[] { (385, 1536), (1536, 385), (385, 1537) })
+        {
+            using var fixedSource = Surface(w, h);
+            fixedSource.Canvas.Clear(SKColors.Transparent);
+            using (var paint = new SKPaint())
+            for (var y = 0; y < h; y += 3)
+            for (var x = 0; x < w; x += 3)
+            {
+                paint.Color = new SKColor((byte)(x * 37 + y * 11),
+                    (byte)(x * 13 + y * 29), (byte)(x * 7 + y * 43),
+                    (byte)(80 + (x + y) % 176));
+                fixedSource.Canvas.DrawRect(x, y, 3, 3, paint);
+            }
+            foreach (var reverse in new[] { false, true })
+            foreach (var dpr in new[] { 1d, 2d, 3d })
+            foreach (var tile in new[] { TileMode.clamp, TileMode.decal })
+            foreach (var edge in new[] { false, true })
+            {
+                var vertical = h > w;
+                var start = edge ? 0 : 615;
+                var end = start + 111;
+                var visible = vertical
+                    ? new SKRect(.25f, start + .25f, w - .25f, end - .25f)
+                    : new SKRect(start + .25f, .25f, end - .25f, h - .25f);
+                var settings = Activator.CreateInstance(settingsType,
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null,
+                    new object[] { vertical ? new Offset(0, start / dpr) : new Offset(start / dpr, 0),
+                        vertical ? new Offset(0, end / dpr) : new Offset(end / dpr, 0),
+                        reverse ? 0d : 20d, reverse ? 20d : 0d,
+                        32, .25, false, VariableBlurKernel.gaussian }, null)!;
+                var globalMatrix = SKMatrix.CreateScale((float)dpr, (float)dpr);
+                var capture = (SKRectI)typeof(SkiaSceneRenderer)
+                    .GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
+                    .Single(m => m.Name == "VariableBlurCaptureBounds" && m.GetParameters().Length == 6)
+                    .Invoke(null, new object[] { visible, settings, tile, globalMatrix, w, h })!;
+                if ((w % 4 == 0 || h % 4 == 0) && capture == new SKRectI(0, 0, w, h))
+                    throw new Exception("Fixed GPU comparison did not exercise partial capture.");
+                byte[] RenderFixed(bool crop, bool direct)
+                {
+                    begin.Invoke(null, new[] { runtimeBackend, 0L, owner });
+                    var rect = crop ? capture : new SKRectI(0, 0, w, h);
+                    using var input = fixedSource.Snapshot(rect);
+                    var localVisible = visible;
+                    localVisible.Offset(-rect.Left, -rect.Top);
+                    var matrix = SKMatrix.Concat(SKMatrix.CreateTranslation(-rect.Left, -rect.Top), globalMatrix);
+                    using var result = Surface(w, h);
+                    result.Canvas.Clear(SKColors.Transparent);
+                    using var filtered = (SKImage)Call("ApplyVariableBlur", result.Canvas,
+                        input, settings, tile, rect.Width, rect.Height, matrix, localVisible, direct);
+                    var expectedWidth = direct ? (int)Math.Ceiling(rect.Width * .25) : rect.Width;
+                    var expectedHeight = direct ? (int)Math.Ceiling(rect.Height * .25) : rect.Height;
+                    if (filtered.Width != expectedWidth || filtered.Height != expectedHeight)
+                        throw new Exception("Fixed did not return the requested working/restored resolution.");
+                    // Apply the fractional ROI clip once, at composition, and
+                    // compare its partially covered edge pixels as well.
+                    result.Canvas.ClipRect(visible, SKClipOperation.Intersect, true);
+                    result.Canvas.DrawImage(filtered, rect, new SKSamplingOptions(SKFilterMode.Linear));
+                    return Read(result, w, h);
+                }
+                int Difference(byte[] a, byte[] b)
+                {
+                    var maximum = 0;
+                    for (var y = (int)Math.Floor(visible.Top); y < Math.Ceiling(visible.Bottom); y++)
+                    for (var x = (int)Math.Floor(visible.Left); x < Math.Ceiling(visible.Right); x++)
+                    for (var c = 0; c < 4; c++)
+                        maximum = Math.Max(maximum, Math.Abs(a[(y * w + x) * 4 + c] - b[(y * w + x) * 4 + c]));
+                    return maximum;
+                }
+                var fullDirect = RenderFixed(false, true);
+                var cropDirect = RenderFixed(true, true);
+                var fullRestored = RenderFixed(false, false);
+                var cropRestored = RenderFixed(true, false);
+                var directDomain = Difference(fullDirect, cropDirect);
+                var restoredDomain = Difference(fullRestored, cropRestored);
+                var fullComposition = Difference(fullDirect, fullRestored);
+                var cropComposition = Difference(cropDirect, cropRestored);
+                var maximum = new[] { directDomain, restoredDomain, fullComposition, cropComposition }.Max();
+                Console.WriteLine($"Fixed Gaussian {w}x{h} reverse={reverse} DPR={dpr} tile={tile} edge={edge} " +
+                    $"capture={capture} direct crop/full={directDomain}/255 restored crop/full={restoredDomain}/255 " +
+                    $"direct/restored full={fullComposition}/255 crop={cropComposition}/255");
+                if (maximum > 3)
+                    throw new Exception("Fixed GPU capture/composition mismatch (limit 3/255).");
+                fixedMax = Math.Max(fixedMax, maximum);
+                fixedCases++;
+            }
+        }
+        Console.WriteLine($"PASS: Fixed Gaussian actual reduced-output GPU path ({fixedCases} cases, max channel error {fixedMax}/255).");
         const int width=385,height=1536;
         using var source=Surface(width,height);
         source.Canvas.Clear(new SKColor(30,40,60,128));

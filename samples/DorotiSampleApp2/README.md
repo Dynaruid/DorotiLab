@@ -8,13 +8,14 @@ Cupertino 스타일의 독립 Doroti 샘플 앱입니다. 공통 C# UI와 Androi
 - **Variable Blur**: 60개 항목의 ListView 위에 상단 고정 VariableBlur 오버레이, 강도 조절과 켜기/끄기
 
 Variable Blur 페이지는 리스트 상단 180 논리 단위에 `BackdropFilter`와
-`ImageFilterConfig.CreateVariableBlur(startSigma: 강도, endSigma: 0, resolutionScale: 0.25)`를 적용합니다.
+`ImageFilterConfig.CreateVariableBlur(startSigma: 강도, endSigma: 0, resolutionScale: 0.25,
+adaptiveResolution: false, kernel: VariableBlurKernel.gaussian)`를 기본으로 적용합니다.
 라디오 버튼으로 다음 다섯 가지 모드를 비교할 수 있습니다.
 
 - **Full quality**: 전체 구간을 원본 해상도로 처리합니다.
-- **Adaptive** (기본): 약한 블러는 원본 해상도, 강한 블러는 1/2·1/4 해상도로 처리하고 경계를 혼합합니다.
+- **Adaptive**: 약한 블러와 선명한 끝부분의 세부를 보존할 때 선택합니다. 약한 블러는 원본 해상도, 강한 블러는 1/2·1/4 해상도로 처리하고 경계를 혼합합니다.
 - **Fast adaptive**: 강도에 맞춰 Gaussian 가중치를 계산하고 인접 샘플 쌍을 bilinear 샘플링으로 묶습니다. 강한 구간에서도 윤곽이 여러 장 겹치지 않도록 샘플 수를 늘립니다. 작업 해상도 sigma 2~3에서는 기존 커널과 혼합합니다. 과거 고정 7회 커널보다 강한 블러의 처리 비용이 증가할 수 있습니다.
-- **Fixed 1/4**: 전체 구간을 1/4 해상도로 처리합니다. 선명한 구간도 저해상도가 됩니다.
+- **Fixed 1/4** (기본): 부드러운 스크롤을 우선하는 선택입니다. 전체 구간을 가로·세로 각각 약 1/4 해상도의 Gaussian으로 처리합니다. 약한 구간과 선명한 끝부분도 축소 입력을 사용해 작은 글자·가는 선·사진 세부가 부드러워질 수 있습니다.
 - **Dual Kawase**: 강도별 결과를 공유 피라미드에서 생성하고 분산을 보간합니다. 선명한 끝부분에는 Gaussian을 사용합니다. 정확한 Gaussian과는 다른 근사 모드입니다.
 
 별도의 스위치로 블러 전체를 켜고 끕니다.
@@ -315,6 +316,7 @@ dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-ker
 dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-capture
 dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-kawase
 dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-gpu # macOS Metal only
+dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-quality temp/testing/variable-blur/quality-review # separate still-image review
 python3 -m unittest discover -s Doroti/tests -p test_variable_blur_device.py
 ```
 
@@ -326,20 +328,26 @@ Variable Blur의 iPhone 반복 스크롤 측정은 서명된 **Release/Mono** �
 
 ```sh
 dotnet build samples/DorotiSampleApp2/ios/DorotiSampleApp2.iOS.csproj -c Release -r ios-arm64 -p:DorotiIosTargetFramework=net10.0-ios27.0 -p:DorotiCompilationMode=Mono -p:EnableCodeSigning=true '-p:CodesignKey=Apple Development' -p:CodesignProvision=<PROFILE_UUID>
-python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/variable_blur_device.py --device <DEVICE_UDID> --app samples/DorotiSampleApp2/ios/bin/ios-arm64/Release/net10.0-ios27.0/ios-arm64/DorotiSampleApp2.iOS.app --output temp/testing/variable-blur/new-run --hz 60 --conditions '전원·밝기·온도 조건 기록'
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/variable_blur_device.py --device <DEVICE_UDID> --app samples/DorotiSampleApp2/ios/bin/ios-arm64/Release/net10.0-ios27.0/ios-arm64/DorotiSampleApp2.iOS.app --output temp/testing/variable-blur/new-run-sigma20 --hz 60 --repeats 3 --modes off fixed adaptive --sigma 20 --serial-frames --conditions '전원·밝기·온도 조건 기록'
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/variable_blur_device.py --device <DEVICE_UDID> --app samples/DorotiSampleApp2/ios/bin/ios-arm64/Release/net10.0-ios27.0/ios-arm64/DorotiSampleApp2.iOS.app --output temp/testing/variable-blur/new-run-sigma32 --hz 60 --repeats 3 --modes off fixed adaptive --sigma 32 --serial-frames --conditions '동일 전원·밝기·온도 조건 기록'
 ```
 
-기본 6개 모드(Off/Full/Adaptive/Fast/Fixed/Kawase)를 각각 3회 실행하고 두 번째 반복은 역순으로 진행합니다.
+위 명령은 같은 바이너리에서 Off/Fixed/Adaptive, sigma 20/32를 각각 3회씩 총 18회 비교하고
+두 번째 반복은 역순으로 진행합니다. 수집기에서 `--modes`를 생략하면 기존 6개 모드(Off/Full/Adaptive/Fast/Fixed/Kawase)를 각각 3회 실행합니다.
 `--hz`에는 실제 설정된 표시 주사율을 입력합니다. 각 실행은 40초이며 최초 표시 이후
 5~35초 구간의 실제 drawable 표시 간격을 집계합니다. 합성 스크롤이므로 물리 입력 검증은 아닙니다.
 완료 표식·30초 표시 이력·렌더러 오류 여부를 검사하며 불완전한 실행을 PASS로 집계하지 않습니다.
 앱 설치는 기존 `dev.doroti.sample2`를 업데이트하며 실행마다 해당 앱을 재시작합니다.
 
 수동 프로파일링에서는 `DOROTI_VARIABLE_BLUR_BENCHMARK=off|full|adaptive|fast|fixed|kawase`로
-탭·모드·반복 경로를 선택합니다. 미설정 시 기존 UI/Adaptive 기본값을 유지합니다.
+탭·모드·반복 경로를 선택합니다. 미설정 시 일반 UI/Fixed 기본값을 사용합니다.
+Off로 benchmark를 시작한 뒤 블러를 다시 켜도 초기 선택은 Fixed입니다.
 정지 화면 비교에는 `DOROTI_VARIABLE_BLUR_BENCHMARK_STATIC=1`을 함께 지정하고,
 강도는 `DOROTI_VARIABLE_BLUR_BENCHMARK_SIGMA=0..32`로 지정할 수 있습니다.
 정지 모드는 자동 스크롤 수집기와 함께 사용하지 않습니다.
+`--variable-blur-quality`는 macOS Metal에서 DPR 3, sigma 0/1/2/4/8/20/32의 Full/Fixed PNG 14장을
+별도 저장합니다. 작은 글자·1px 선·고주파 무늬·참조 사진의 축소 손실을 검토하는 장면이며,
+Full과 Fixed의 픽셀 동등성이나 iPhone의 움직임 화질 검증을 뜻하지 않습니다.
 `DOROTI_VARIABLE_BLUR_PROFILE=1`과 `DOROTI_MAUI_EVIDENCE=blur.json`을 함께 설정하면
 iOS 앱의 Documents에 진단 JSON을 기록합니다.
 
@@ -349,6 +357,9 @@ Clamp·회전/반사/균일 scale·최대 약 124 device sigma를 지원하며 �
 `VariableBlurKernel.dualKawase`는 자체 해상도 피라미드를 사용하므로 `resolutionScale`과 독립적입니다.
 공개 API의 Gaussian 기본값은 유지합니다. [전체 재평가](../../work3.md)와
 [실행·측정 결과](../../works/results/2026-10-01-variable-blur-reassessment.md)를 참조합니다.
+공개 `ImageFilter.variableBlur`와 `ImageFilterConfig.CreateVariableBlur`의 원본 해상도 기본값은 그대로이며,
+Fixed는 이 샘플의 초기 선택입니다. [Fixed 검증 결과](../../works/results/2026-10-01-variable-blur-fixed-adoption.md)에
+현재 iPhone 12의 반복 성능, 정지 화질과 남은 수동 검증을 구분해 기록합니다.
 
 `--intermediate`는 Adaptive의 중간 출력 합성을, `--full-capture`는 전체 캡처를 강제하는 같은 바이너리 A/B 옵션입니다.
 `--owned-subtrees`는 셰이더 없는 형제 scope도 별도 Surface로 처리하며,
