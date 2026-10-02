@@ -21,6 +21,24 @@ namespace Doroti.Host.Maui;
 
 public static class DorotiMauiApplicationBuilderExtensions
 {
+    private static void ValidateFrameConfiguration()
+    {
+        try
+        {
+            Doroti.Skia.Rendering.NativeFrameConfiguration.ValidateEnvironment();
+#if ANDROID
+            Doroti.Skia.Rendering.NativeFrameConfiguration.ValidateSettings(name =>
+                Microsoft.Maui.ApplicationModel.Platform.CurrentActivity?.Intent?.GetStringExtra(name));
+#endif
+        }
+        catch (ArgumentException error)
+        {
+            Console.Error.WriteLine(error.Message);
+            DorotiMauiSurface.WriteFailure(error);
+            throw;
+        }
+    }
+
     public static MauiAppBuilder UseDorotiApplication<TStartup>(
         this MauiAppBuilder builder,
         DorotiLaunchContext launchContext
@@ -29,6 +47,7 @@ public static class DorotiMauiApplicationBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(launchContext);
+        ValidateFrameConfiguration();
 #if ANDROID
         if (DorotiGraphiteView.Enabled)
         {
@@ -56,6 +75,7 @@ public static class DorotiMauiApplicationBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(descriptor);
+        ValidateFrameConfiguration();
 #if ANDROID
         if (DorotiGraphiteView.Enabled)
         {

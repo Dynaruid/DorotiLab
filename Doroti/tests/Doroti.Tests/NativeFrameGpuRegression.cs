@@ -29,7 +29,7 @@ internal static class NativeFrameGpuRegression
         using var renderer = new SkiaSceneRenderer(1, host, null, null, "native-frame-gpu",
             DorotiSkiaRuntimeEffects.NativeGraphiteVulkanBackend, "Vulkan", false);
         long sequence = 0;
-        (Task<SkiaGraphiteReadback> Readback, SkiaPaintCompletion Completion) Record(string mode, double sigma, bool green, bool asynchronous)
+        (Task<SkiaGraphiteReadback> Readback, SkiaPaintCompletion Completion) Record(string mode, double sigma, bool green)
         {
             var paths = new List<PathCommand>();
             var canvas = new Doroti.Ui.Canvas(paths);
@@ -59,7 +59,7 @@ internal static class NativeFrameGpuRegression
             var frame = (SkiaGraphiteSession.Frame)typeof(GraphiteVulkanQuick)
                 .GetField("_frame", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(quick)!;
             var read = frame.RequestReadback(surface, new SKImageInfo(96, 80, SKColorType.Rgba8888));
-            quick.Complete(asynchronous);
+            quick.Complete(asynchronous: true);
             quick.MarkPublished();
             quick.QtConsumerSubmitted();
             return (read, paint.Completion ?? throw new Exception("Missing fresh GPU scene."));
@@ -78,40 +78,90 @@ internal static class NativeFrameGpuRegression
         foreach (var sigma in mode == "off" ? new[] { 0d } : mode == "kawase" ? new[] { 20d, 32d }
             : new[] { 0d, 1d, 2d, 4d, 8d, 20d, 32d })
         {
-            var aRed = Record(mode, sigma, false, false); Drain();
-            renderer.CompletePaint(aRed.Completion);
-            var aGreen = Record(mode, sigma, true, false); Drain();
-            renderer.CompletePaint(aGreen.Completion);
+            var referenceRed = Record(mode, sigma, false); Drain();
+            renderer.CompletePaint(referenceRed.Completion);
+            var referenceGreen = Record(mode, sigma, true); Drain();
+            renderer.CompletePaint(referenceGreen.Completion);
             gpu.Hold();
             var released = false;
             try
             {
-                var cRed = Record(mode, sigma, false, true);
-                var cGreen = Record(mode, sigma, true, true);
+                var cRed = Record(mode, sigma, false);
+                var cGreen = Record(mode, sigma, true);
                 if (gpu.WatchdogFired) throw new Exception("Recording blocked on the previous GPU workload.");
                 if (quick.FramesInFlight != 2) throw new Exception("The GPU blocker did not retain both recordings.");
-                var denied = NativeFrameAdmissionPolicy.PrepareAndDecide(true, true, () => { },
+                var denied = NativeFrameAdmissionPolicy.PrepareAndDecide(() => { },
                     () => SkiaShaderSceneAdmission.eligible, () => quick.FramesInFlight, false, false, false);
                 if (denied.Admitted) throw new Exception("A third GPU frame was admitted.");
                 gpu.Release(); released = true; Drain();
                 var red = cRed.Readback.GetAwaiter().GetResult().Pixels;
                 var green = cGreen.Readback.GetAwaiter().GetResult().Pixels;
-                if (!red.SequenceEqual(aRed.Readback.GetAwaiter().GetResult().Pixels)
-                    || !green.SequenceEqual(aGreen.Readback.GetAwaiter().GetResult().Pixels))
-                    throw new Exception($"A/C pixel mismatch or snapshot contamination: {mode} sigma={sigma}.");
+                if (!red.SequenceEqual(referenceRed.Readback.GetAwaiter().GetResult().Pixels)
+                    || !green.SequenceEqual(referenceGreen.Readback.GetAwaiter().GetResult().Pixels))
+                    throw new Exception($"C sequential/overlapped pixel mismatch or snapshot contamination: {mode} sigma={sigma}.");
                 if (red.SequenceEqual(green)) throw new Exception("Different scenes produced identical pixels.");
                 renderer.CompletePaint(cGreen.Completion);
                 renderer.CompletePaint(cRed.Completion);
                 checks.Add(new { mode, sigma, redSha256 = Convert.ToHexString(SHA256.HashData(red)),
                     greenSha256 = Convert.ToHexString(SHA256.HashData(green)), maximumPending = quick.MaximumFramesInFlight });
-                Console.WriteLine($"PASS Vulkan A/C pixels and isolated recordings: {mode} sigma={sigma}");
+                Console.WriteLine($"PASS Vulkan C sequential/overlapped pixels and isolated recordings: {mode} sigma={sigma}");
             }
             finally { if (!released) gpu.Release(); }
         }
         Drain();
+        object dynamicBudget;
+        using (var large = new GraphiteVulkanQuick(gpu.Instance.Handle, gpu.Physical.Handle,
+            gpu.Device.Handle, gpu.Queue.Handle, gpu.Family, (1u << 22) | (2u << 12)))
+        {
+            void RecordLayers(int width, int height, int count)
+            {
+                large.Begin(width, height);
+                for (var index = 0; index < count; index++) large.Canvas(index).Clear(SKColors.Red);
+                large.Complete(asynchronous: true);
+                large.MarkPublished();
+                large.QtConsumerSubmitted();
+            }
+            void DrainLarge()
+            {
+                var started = Stopwatch.GetTimestamp();
+                while (!large.PollGpuWork())
+                {
+                    if (Stopwatch.GetElapsedTime(started) > TimeSpan.FromSeconds(10))
+                        throw new TimeoutException("Large texture consumer drain.");
+                    Thread.Sleep(1);
+                }
+            }
+            gpu.Hold();
+            try
+            {
+                RecordLayers(1600, 1200, 5);
+                RecordLayers(1600, 1200, 5);
+                if (gpu.WatchdogFired || large.FramesInFlight != 2 || large.ReservedBytes <= 128UL * 1024 * 1024
+                    || large.TextureBudgetBytes < large.ReservedBytes)
+                    throw new Exception("Dynamic texture allowance failed two GPU-owned banks above 128 MiB.");
+            }
+            finally { gpu.Release(); }
+            DrainLarge();
+            var peak = large.PeakReservedBytes;
+            RecordLayers(96, 80, 1); DrainLarge();
+            RecordLayers(96, 80, 1); DrainLarge();
+            if (large.ReservedBytes >= peak || large.TextureBudgetBytes >= peak)
+                throw new Exception("Texture allocations/allowance did not shrink after safe resize retirement.");
+            var heaps = large.TextureBudgets;
+            var peakBudget = large.PeakTextureBudgetBytes;
+            large.Dispose();
+            if (large.ReservedBytes != 0 || large.TextureBudgetBytes != 0
+                || large.ConsumerSubmissions != large.CompletedConsumers)
+                throw new Exception("Texture budget shutdown retained unretired allocations.");
+            dynamicBudget = new { peakReservedBytes = peak, peakBudgetBytes = peakBudget, heaps,
+                finalReservedBytes = large.ReservedBytes, finalBudgetBytes = large.TextureBudgetBytes,
+                consumerSubmissions = large.ConsumerSubmissions, completedConsumers = large.CompletedConsumers };
+            Console.WriteLine("PASS Vulkan dynamic texture allowance above 128 MiB, two held GPU banks, resize shrink and final consumer drain.");
+        }
         Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(output))!);
         File.WriteAllText(output, JsonSerializer.Serialize(new { gpu = gpu.Name, software = gpu.Software,
-            checks, quick.MaximumFramesInFlight, quick.ConsumerSubmissions, quick.CompletedConsumers,
+            policy = NativeFrameConfiguration.Mode, reference = "C submission with drain between scenes",
+            checks, dynamicBudget, quick.MaximumFramesInFlight, quick.ConsumerSubmissions, quick.CompletedConsumers,
             scanout = "notMeasured", hardwareOverlap = "notMeasured", physicalInput = "notVerified" },
             new JsonSerializerOptions { WriteIndented = true }));
     }

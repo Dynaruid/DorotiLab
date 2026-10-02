@@ -6,6 +6,8 @@
 
 Linux Qt 구성 후속 검토: **SDK·샘플·템플릿 Quick/C 기본값, 옵션별 빌드 격리, 누락된 네이티브 산출물 거절 및 package-only Release 검증 PASS.** [후속 결과](works/results/2026-10-02-linux-qt-configuration-review.md)와 §14를 참조한다. 물리 GPU·표시·입력 인수와 OpenGL Wayland 제한은 유지한다.
 
+후속 작업: [work6 — A/B 제거 및 C 경로 단일화](work6.md)의 **구현·실행 가능한 자동 검증 완료**, 사용자 추가 요청의 동적 texture 예산도 반영했다. [후속 결과](works/results/2026-10-02-native-frame-c-only.md)를 참조한다. 아래 계획의 A/B·legacy 옵션 유지와 같은 바이너리 A/C 비교 요구는 C 단일 정책·변경 전/후 C 회귀 기준으로 대체했다. native/replay/resize의 C 내부 직렬 처리와 기존 실행 증거·미완료 인수는 유지한다.
+
 **목표:** 모든 네이티브 제품 호스트에 C의 프레임 생성·제출 원칙을 공통 기본 구조로 적용한다. 앞 프레임의 GPU 작업이 다음 framework 장면 준비를 막지 않게 하고, 새 shader-only 장면은 최대 2개 GPU 프레임과 플랫폼의 비동기 표시 경로를 사용한다. native view 합성·resize·rotation·replay는 각 플랫폼에 필요한 직렬 처리와 표시 동기화를 유지한다.
 
 작업 순서: **플랫폼별 경로 확인 → 공통 정책 추출 → Apple 연결 → Android 연결 → Windows 연결 → Linux 연결 → 통합 검증·기본 적용**.
@@ -47,7 +49,7 @@ Linux Qt 구성 후속 검토: **SDK·샘플·템플릿 Quick/C 기본값, 옵�
 
 주요 근거:
 
-- [iOS 정책](Doroti/src/Doroti.Host.Maui/IosFrameAdmissionPolicy.cs), [기본 옵션](Doroti/src/Doroti.Host.Maui/IosFrameLoopOptions.cs), [MAUI 준비 연결](Doroti/src/Doroti.Host.Maui/MauiFrameworkHost.cs)
+- [현재 공통 정책](Doroti/src/Doroti.Skia.Rendering/NativeFramePipeline.cs) (기존 iOS 정책·옵션 래퍼는 work6에서 제거), [MAUI 준비 연결](Doroti/src/Doroti.Host.Maui/MauiFrameworkHost.cs)
 - [AppKit draw](Doroti/src/Doroti.Host.Maui/DorotiMacOSMetalView.cs), [Android draw](Doroti/src/Doroti.Host.Maui/DorotiAndroidVulkanViewHandler.cs)
 - [Vulkan window 제출](Doroti/src/Doroti.Skia.Vulkan/GraphiteVulkanWindow.cs), [Vulkan frame 슬롯](Doroti/src/Doroti.Skia.Vulkan/GraphiteVulkanWindow.Frames.cs)
 - [Windows runner](Doroti/src/Doroti.Host.WindowsAppSdk/DorotiWindowsAppSdkRunner.cs), [Windows Vulkan presenter](Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.cs), [MAUI DXGI surface](Doroti/src/Doroti.Host.Maui/DorotiWindowsDxgiSurface.cs)

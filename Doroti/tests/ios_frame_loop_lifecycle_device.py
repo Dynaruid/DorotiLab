@@ -22,7 +22,6 @@ def main():
     parser.add_argument('--app', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--cycles', type=int, default=3)
-    parser.add_argument('--default-path', action='store_true', help='Do not pass pipeline/serial/presentation overrides; verify the shipped iOS default.')
     args = parser.parse_args()
     out = args.output.resolve()
     if out.exists() or not out.is_relative_to(ROOT / 'temp/testing') or args.cycles < 1:
@@ -30,16 +29,13 @@ def main():
     out.mkdir(parents=True)
     remote = 'ios-frame-loop-lifecycle-' + uuid.uuid4().hex + '.json'
     env = {'DOROTI_VARIABLE_BLUR_PROFILE': '1', 'DOROTI_MAUI_EVIDENCE': remote}
-    if not args.default_path:
-        env.update(DOROTI_IOS_GRAPHITE='1', DOROTI_VARIABLE_BLUR_PIPELINE='1', DOROTI_VARIABLE_BLUR_SERIAL_FRAMES='0',
-                   DOROTI_IOS_SHADER_PRESENTATION='async')
     payload = hashlib.sha256()
     for path in sorted(args.app.resolve().rglob('*')):
         if path.is_file():
             payload.update(str(path.relative_to(args.app.resolve())).encode())
             payload.update(hashlib.sha256(path.read_bytes()).digest())
     summary = {'runtime': 'NativeAOT' if not list(args.app.rglob('*.dll')) else 'Mono',
-               'payloadSha256': payload.hexdigest(), 'benchmark': False, 'defaultPath': args.default_path,
+               'payloadSha256': payload.hexdigest(), 'benchmark': False, 'defaultPath': True,
                'remoteEvidence': 'Documents/' + remote, 'environment': env, 'cycles': [],
                'hostSourceSha256': hashlib.sha256((ROOT / 'Doroti/src/Doroti.Host.Maui/DorotiUIKitGraphiteViewHandler.cs').read_bytes()).hexdigest()}
 

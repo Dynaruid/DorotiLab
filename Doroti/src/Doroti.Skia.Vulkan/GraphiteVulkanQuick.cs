@@ -1,5 +1,6 @@
 using Doroti.Skia.Rendering;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Silk.NET.Vulkan;
 using SkiaSharp;
 using VkImage = Silk.NET.Vulkan.Image;
@@ -34,7 +35,14 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
     // Keep those allocations and their dispatch owners alive until process exit.
     private static readonly List<GraphiteVulkanQuick> Quarantined = [];
     private const ulong Timeout = 5_000_000_000;
-    private const ulong Budget = 128UL * 1024 * 1024;
+    private readonly Dictionary<uint, DynamicTextureBudget> _textureBudgets = [];
+    private readonly ulong[] _heapBytes = new ulong[16];
+    private readonly bool _supportsMemoryBudget;
+    public sealed record HeapTextureBudget(uint HeapIndex, TextureBudgetSnapshot Budget);
+    public IReadOnlyList<HeapTextureBudget> TextureBudgets =>
+        _textureBudgets.OrderBy(pair => pair.Key).Select(pair => new HeapTextureBudget(pair.Key, pair.Value.Snapshot)).ToArray();
+    public ulong TextureBudgetBytes => _textureBudgets.Values.Aggregate(0UL, (bytes, value) => checked(bytes + value.Snapshot.BudgetBytes));
+    public ulong PeakTextureBudgetBytes { get; private set; }
     private readonly int _owner = Environment.CurrentManagedThreadId;
     private readonly Vk _vk = Vk.GetApi();
     private readonly Device _device;
@@ -100,7 +108,8 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
             P;
         internal DeviceMemory RMemory,
             PMemory;
-        internal ulong Bytes;
+        internal ulong RBytes, PBytes;
+        internal uint RHeap, PHeap;
         internal SkiaGraphiteSession.VulkanTarget? Target;
         internal bool Initialized;
         internal ulong Identity;
@@ -137,6 +146,7 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
             }
 
             IsSoftwareDevice = properties.DeviceType == PhysicalDeviceType.Cpu;
+            _supportsMemoryBudget = SupportsMemoryBudget();
             _observer = new(_vk, new(instance), _device, _queue, family);
             _session = SkiaGraphiteSession.CreateVulkan(
                 new(
@@ -662,7 +672,7 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
                     | ImageUsageFlags.TransferDstBit
                     | ImageUsageFlags.SampledBit,
             };
-            Allocate(info, out layer.R, out layer.RMemory, layer);
+            Allocate(info, out layer.R, out layer.RMemory, out layer.RHeap, out layer.RBytes);
             _observer.RegisterHostTarget(layer.R.Handle, info);
             layer.Target = _session.CreateVulkanTarget(
                 width,
@@ -681,7 +691,7 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
                 SKColorType.Rgba8888
             );
             info.Usage = ImageUsageFlags.TransferDstBit | ImageUsageFlags.SampledBit;
-            Allocate(info, out layer.P, out layer.PMemory, layer);
+            Allocate(info, out layer.P, out layer.PMemory, out layer.PHeap, out layer.PBytes);
             // P participates only in host copy observation. Qt promises to sample
             // the imported RGBA texture in the supplied SHADER_READ_ONLY layout.
             _observer.RegisterHostTarget(layer.P.Handle, info);
@@ -698,39 +708,55 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
         ImageCreateInfo info,
         out VkImage image,
         out DeviceMemory memory,
-        Layer layer
+        out uint heapIndex,
+        out ulong allocatedBytes
     )
     {
         memory = default;
+        heapIndex = 0;
+        allocatedBytes = 0;
         Check(_vk.CreateImage(_device, &info, null, out image), "Quick image");
         _vk.GetImageMemoryRequirements(_device, image, out var requirements);
-        if (requirements.Size > Budget || _bytes > Budget - requirements.Size)
-        {
-            throw new NotSupportedException(
-                "Quick R/P and retiring images exceed the 128 MiB budget."
-            );
-        }
-
         _vk.GetPhysicalDeviceMemoryProperties(_physical, out var properties);
+        var current = new PhysicalDeviceMemoryBudgetPropertiesEXT
+        { SType = StructureType.PhysicalDeviceMemoryBudgetPropertiesExt };
+        if (_supportsMemoryBudget)
+        {
+            var extended = new PhysicalDeviceMemoryProperties2
+            { SType = StructureType.PhysicalDeviceMemoryProperties2, PNext = &current };
+            _vk.GetPhysicalDeviceMemoryProperties2(_physical, &extended);
+        }
         uint type = uint.MaxValue;
+        DynamicTextureBudget? budget = null;
         for (uint i = 0; i < properties.MemoryTypeCount; i++)
         {
-            if (
-                (requirements.MemoryTypeBits & (1u << (int)i)) != 0
-                && (
-                    properties.MemoryTypes[(int)i].PropertyFlags
-                    & MemoryPropertyFlags.DeviceLocalBit
-                ) != 0
-            )
-            {
-                type = i;
-                break;
-            }
+            var flags = properties.MemoryTypes[(int)i].PropertyFlags;
+            if ((requirements.MemoryTypeBits & (1u << (int)i)) == 0
+                || (flags & MemoryPropertyFlags.DeviceLocalBit) == 0) continue;
+            var heap = properties.MemoryTypes[(int)i].HeapIndex;
+            if (!_textureBudgets.TryGetValue(heap, out var candidate))
+                _textureBudgets.Add(heap, candidate = new());
+            // UMA/software also consumes host RAM. This is a capacity estimate,
+            // not a claim to have measured current free system memory.
+            var hostCapacity = IsSoftwareDevice || (flags & MemoryPropertyFlags.HostVisibleBit) != 0
+                ? GC.GetGCMemoryInfo().TotalAvailableMemoryBytes : 0;
+            if (!candidate.TryReserve(_heapBytes[heap], requirements.Size,
+                properties.MemoryHeaps[(int)heap].Size,
+                _supportsMemoryBudget ? current.HeapBudget[(int)heap] : null,
+                _supportsMemoryBudget ? current.HeapUsage[(int)heap] : null,
+                hostCapacity > 0 ? (ulong)hostCapacity : null)) continue;
+            type = i;
+            heapIndex = heap;
+            budget = candidate;
+            break;
         }
-
-        if (type == uint.MaxValue)
+        PeakTextureBudgetBytes = Math.Max(PeakTextureBudgetBytes, TextureBudgetBytes);
+        if (budget is null)
         {
-            throw new NotSupportedException("No device-local Quick image memory.");
+            var limits = string.Join("; ", _textureBudgets.Select(pair =>
+                $"heap={pair.Key}, owned={pair.Value.Snapshot.AllocatedBytes}, limit={pair.Value.Snapshot.LimitBytes}, source={pair.Value.Snapshot.Source}"));
+            throw new NotSupportedException($"Quick texture allocation needs {requirements.Size} bytes; no compatible device-local heap has headroom. "
+                + limits + ". Published and GPU-owned images remain held until consumer completion.");
         }
 
         var allocate = new MemoryAllocateInfo
@@ -740,8 +766,10 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
             MemoryTypeIndex = type,
         };
         Check(_vk.AllocateMemory(_device, &allocate, null, out memory), "Quick image memory");
-        _bytes += requirements.Size;
-        layer.Bytes += requirements.Size;
+        allocatedBytes = requirements.Size;
+        _heapBytes[heapIndex] += allocatedBytes;
+        _bytes += allocatedBytes;
+        budget.ObserveAllocated(_heapBytes[heapIndex]);
         PeakReservedBytes = Math.Max(PeakReservedBytes, _bytes);
         Check(_vk.BindImageMemory(_device, image, memory, 0), "Quick image bind");
     }
@@ -768,7 +796,28 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
             _vk.FreeMemory(_device, layer.PMemory, null);
         }
 
-        _bytes -= layer.Bytes;
+        _heapBytes[layer.RHeap] -= layer.RBytes;
+        _heapBytes[layer.PHeap] -= layer.PBytes;
+        _bytes -= layer.RBytes + layer.PBytes;
+        foreach (var heap in new[] { layer.RHeap, layer.PHeap }.Distinct())
+            if (_textureBudgets.TryGetValue(heap, out var budget)) budget.ObserveAllocated(_heapBytes[heap]);
+    }
+
+    private bool SupportsMemoryBudget()
+    {
+        uint count = 0;
+        if (_vk.EnumerateDeviceExtensionProperties(_physical, (byte*)null, &count, null) != Result.Success)
+            return false;
+        var properties = new ExtensionProperties[count];
+        fixed (ExtensionProperties* data = properties)
+            if (_vk.EnumerateDeviceExtensionProperties(_physical, (byte*)null, &count, data) != Result.Success)
+                return false;
+        foreach (var value in properties)
+        {
+            var copy = value;
+            if (Marshal.PtrToStringUTF8((nint)copy.ExtensionName) == "VK_EXT_memory_budget") return true;
+        }
+        return false;
     }
 
     private void WaitQueue(string operation, List<double>? samples = null)

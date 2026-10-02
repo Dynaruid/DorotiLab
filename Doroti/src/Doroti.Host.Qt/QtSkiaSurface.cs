@@ -21,6 +21,9 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
     internal bool ViewportChanged(in QtNativeV2.Surface descriptor) => _surfaceGeneration != descriptor.SurfaceGeneration
         || _pixelWidth != descriptor.PixelWidth || _pixelHeight != descriptor.PixelHeight;
     internal ulong QuickPeakReservedBytes { get; private set; }
+    internal ulong QuickPeakTextureBudgetBytes { get; private set; }
+    internal ulong QuickTextureBudgetBytes { get; private set; }
+    internal IReadOnlyList<GraphiteVulkanQuick.HeapTextureBudget>? QuickTextureBudgets { get; private set; }
     internal int QuickPeakRetiringLayers { get; private set; }
     internal int QuickMaximumFrames { get; private set; }
     internal long QuickConsumerSubmissions { get; private set; }
@@ -350,12 +353,15 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
         if (QuickGpu is { } quick)
         {
             QuickPeakReservedBytes = Math.Max(QuickPeakReservedBytes, quick.PeakReservedBytes);
+            QuickPeakTextureBudgetBytes = Math.Max(QuickPeakTextureBudgetBytes, quick.PeakTextureBudgetBytes);
             QuickPeakRetiringLayers = Math.Max(QuickPeakRetiringLayers, quick.PeakRetiringLayers);
             QuickTimings = quick.Timings;
             QuickMaximumFrames = Math.Max(QuickMaximumFrames, quick.MaximumFramesInFlight);
             QuickConsumerSubmissions += quick.ConsumerSubmissions;
             try { quick.Dispose(); }
             catch (Exception error) { quickError = error; }
+            QuickTextureBudgetBytes = quick.TextureBudgetBytes;
+            QuickTextureBudgets = quick.TextureBudgets;
             QuickCompletedConsumers += quick.CompletedConsumers;
         }
         QuickGpu = null;

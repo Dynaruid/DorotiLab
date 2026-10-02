@@ -34,6 +34,7 @@ public static unsafe partial class DorotiQtRunner
             );
         }
 
+        NativeFrameConfiguration.ValidateEnvironment();
         QtNativeV2.ValidateLayout();
         if (QtSkiaSurface.GraphiteEnabled)
         {
@@ -632,6 +633,10 @@ public static unsafe partial class DorotiQtRunner
                     compositionFrames = PlatformViews.CommittedFrames,
                     quickPeakReservedBytes = Surface.QuickPeakReservedBytes,
                     quickReservedBytes = Surface.QuickGpu?.ReservedBytes ?? 0,
+                    quickTextureBudgetBytes = Surface.QuickGpu?.TextureBudgetBytes ?? Surface.QuickTextureBudgetBytes,
+                    quickPeakTextureBudgetBytes = Math.Max(Surface.QuickPeakTextureBudgetBytes,
+                        Surface.QuickGpu?.PeakTextureBudgetBytes ?? 0),
+                    quickTextureBudgets = Surface.QuickTextureBudgets ?? Surface.QuickGpu?.TextureBudgets,
                     quickRetiringLayers = Surface.QuickGpu?.RetiringLayers ?? 0,
                     quickPeakRetiringLayers = Math.Max(Surface.QuickPeakRetiringLayers,
                         Surface.QuickGpu?.PeakRetiringLayers ?? 0),
@@ -642,7 +647,7 @@ public static unsafe partial class DorotiQtRunner
                     softwareFallback = false,
                     softwareVulkan = Surface.SoftwareVulkan,
                     fullFrameCpuCopies = 0,
-                    nativeFrameMode = NativeFrameLoopOptions.FromEnvironment().Mode,
+                    nativeFrameMode = NativeFrameConfiguration.Mode,
                     frameworkPreparedPulses = PreparedPulses,
                     quickMaximumPending = Surface.QuickGpu?.MaximumFramesInFlight ?? Surface.QuickMaximumFrames,
                     quickConsumersSubmitted = Surface.QuickGpu?.ConsumerSubmissions ?? Surface.QuickConsumerSubmissions,
@@ -808,9 +813,8 @@ public static unsafe partial class DorotiQtRunner
                 var prepared = state.PreparedFrameToken == frameToken;
                 state.PreparedFrameToken = 0;
                 state.Host.BeginFrame(in *surface, prepareFramework: !prepared);
-                var options = NativeFrameLoopOptions.FromEnvironment();
                 state.Surface.PollGpuWork();
-                var admission = NativeFrameAdmissionPolicy.Decide(options.Pipeline, options.Asynchronous,
+                var admission = NativeFrameAdmissionPolicy.Decide(
                     state.Renderer.ShaderSceneAdmission, state.Surface.PendingGpuFrames,
                     state.PlatformViews.HasComposition, state.Surface.HasSerialGpuFrames,
                     state.Surface.ViewportChanged(in *surface), supportsTwoFrames: QtSkiaSurface.GraphiteEnabled);
@@ -827,7 +831,7 @@ public static unsafe partial class DorotiQtRunner
                     (skiaSurface, width, height) =>
                     {
                         attemptedPaint = true;
-                        paint = admission.FreshOnly || !admission.SynchronizePresentation ? state.Renderer.PaintNewShaderScene(
+                        paint = admission.FreshOnly ? state.Renderer.PaintNewShaderScene(
                             skiaSurface, width, height, state.Host.ResizeTarget) : state.Renderer.Paint(
                             skiaSurface,
                             width,

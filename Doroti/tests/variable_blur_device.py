@@ -16,15 +16,11 @@ ROOT = Path(__file__).resolve().parents[2]
 MODES = ["off", "full", "adaptive", "fast", "fixed", "kawase"]
 
 
-def run_order(modes, policies, repeats, start_repeat=1):
+def run_order(modes, repeats, start_repeat=1):
     for repeat in range(start_repeat - 1, start_repeat - 1 + repeats):
         ordered_modes = modes if repeat % 2 == 0 else list(reversed(modes))
-        for index, mode in enumerate(ordered_modes):
-            base = list(reversed(policies)) if repeat % 2 else policies
-            offset = (repeat // 2 + index) % len(policies)
-            ordered_policies = base[offset:] + base[:offset]
-            for policy in ordered_policies:
-                yield repeat + 1, mode, policy
+        for mode in ordered_modes:
+            yield repeat + 1, mode, "C"
 
 
 def distribution(values):
@@ -191,22 +187,9 @@ def main():
     parser.add_argument("--full-stages", action="store_true", help="Reconstruct Kawase stages over their entire padded domain.")
     parser.add_argument("--full-detail", action="store_true", help="Use capture-sized surfaces for the Gaussian detail.")
     parser.add_argument("--full-bands", action="store_true", help="Use whole-domain backing for Adaptive Gaussian bands.")
-    frame_policy = parser.add_mutually_exclusive_group()
-    frame_policy.add_argument("--serial-frames", action="store_true", help="Wait for GPU completion before recording the next shader scene.")
-    frame_policy.add_argument("--pipeline-frames", action="store_true", help="Explicitly select the default fresh-shader frame pipeline (C).")
-    frame_policy.add_argument("--policies", nargs="+", choices=["A", "B", "C"], help="Interleave same-binary A serial/transaction, B serial/async, C prepared pipeline/async.")
-    parser.add_argument("--shader-presentation", choices=["transaction", "async"], help="Transaction selects A; serial plus async selects B; otherwise the default is C.")
     parser.add_argument("--modes", nargs="+", choices=MODES, default=MODES)
     parser.add_argument("--conditions", required=True, help="Power, thermal, brightness and instrumentation conditions.")
     args = parser.parse_args()
-    if args.pipeline_frames and args.shader_presentation == "transaction":
-        parser.error("pipeline-frames requires async shader presentation")
-    if args.policies and args.shader_presentation:
-        parser.error("policies already select shader presentation")
-    policies = args.policies or (["B" if args.shader_presentation == "async" else "A"]
-        if args.serial_frames or args.shader_presentation == "transaction" else ["C"])
-    if len(set(policies)) != len(policies):
-        parser.error("policies must be distinct")
     if args.hz <= 0 or args.repeats < 1 or args.repeat_start < 1:
         parser.error("hz and repeats must be positive")
     if not math.isfinite(args.sigma) or not 0 <= args.sigma <= 32:
@@ -232,9 +215,7 @@ def main():
                "ownedSubtrees": args.owned_subtrees, "fullStages": args.full_stages,
                "fullDetail": args.full_detail,
                "fullBands": args.full_bands,
-               "serialFrames": args.serial_frames,
-               "pipelineFrames": args.pipeline_frames,
-               "policies": policies,
+               "policy": "C",
                "repeatStart": args.repeat_start,
                "dirty": bool(run("git", "status", "--porcelain").stdout),
                "conditions": args.conditions, "runs": [], "attempts": [],
@@ -254,7 +235,7 @@ def main():
                ROOT / "Doroti/src/Doroti.Skia.RuntimeEffects/DorotiSkiaImageFilterRenderer.cs"]
     inputs += [ROOT / "Doroti/src/Doroti.Host.Maui" / name for name in
                ["DorotiUIKitGraphiteViewHandler.cs", "DorotiGraphiteView.cs", "MauiSkiaSurface.cs",
-                "MauiHostAdapter.cs", "MauiFrameCallbackQueue.cs", "IosFrameLifetime.cs", "IosFrameAdmissionPolicy.cs", "IosFrameLoopOptions.cs", "IosFrameLoopDiagnostics.cs", "MauiHostContracts.cs",
+                "MauiHostAdapter.cs", "MauiFrameCallbackQueue.cs", "IosFrameLifetime.cs", "IosFrameLoopDiagnostics.cs", "MauiHostContracts.cs",
                 "MauiSkiaCapabilities.cs", "MauiFrameworkHost.cs", "DorotiMauiSurface.cs"]]
     inputs += list((ROOT / "Doroti/src/Doroti.Skia.Rendering").glob("SkiaGraphiteSession*.cs"))
     inputs += [ROOT / "Doroti/src/Doroti.Skia.Rendering/SkiaShaderSceneAdmission.cs"]
@@ -271,11 +252,11 @@ def main():
         summary["runtimeFromPayload"] = "Mono" if list(args.app.rglob("*.dll")) else "NativeAOT"
         summary["managedAssemblyCount"] = len(list(args.app.rglob("*.dll")))
     (out / "working-tree.diff").write_text(run("git", "diff").stdout)
-    order = list(run_order(args.modes, policies, args.repeats, args.repeat_start))
+    order = list(run_order(args.modes, args.repeats, args.repeat_start))
     summary["runOrder"] = [{"repeat": r, "mode": m, "policy": p} for r, m, p in order]
     (out / "summary.json").write_text(json.dumps(summary, indent=2))
     for repeat, mode, policy in order:
-        name = f"{repeat}-{mode}-{policy}" if args.policies else f"{repeat}-{mode}"
+        name = f"{repeat}-{mode}-C"
         remote = "variable-blur-" + uuid.uuid4().hex + ".json"
         environment = {"DOROTI_IOS_GRAPHITE": "1", "DOROTI_VARIABLE_BLUR_PROFILE": "1",
                        "DOROTI_VARIABLE_BLUR_DISABLE_CROP": "1" if args.full_capture else "0",
@@ -284,9 +265,6 @@ def main():
                        "DOROTI_VARIABLE_BLUR_FULL_STAGES": "1" if args.full_stages else "0",
                        "DOROTI_VARIABLE_BLUR_FULL_DETAIL": "1" if args.full_detail else "0",
                        "DOROTI_VARIABLE_BLUR_FULL_BANDS": "1" if args.full_bands else "0",
-                       "DOROTI_VARIABLE_BLUR_SERIAL_FRAMES": "0" if policy == "C" else "1",
-                       "DOROTI_VARIABLE_BLUR_PIPELINE": "1" if policy == "C" else "0",
-                       "DOROTI_IOS_SHADER_PRESENTATION": "transaction" if policy == "A" else "async",
                        "DOROTI_VARIABLE_BLUR_BENCHMARK": mode, "DOROTI_MAUI_EVIDENCE": remote}
         environment["DOROTI_VARIABLE_BLUR_BENCHMARK_SIGMA"] = str(args.sigma)
         summary["attempts"].append({"repeat": repeat, "mode": mode, "policy": policy,
@@ -325,7 +303,7 @@ def main():
                 result = summarize(json.loads(destination.read_text()), args.hz)
                 result.update(mode=mode, repeat=repeat, policy=policy, evidenceCopyAttempts=copy_attempts)
                 loop = result["iosFrameLoop"]
-                if args.policies and not loop:
+                if not loop:
                     raise RuntimeError(f"App has no iOS frame-loop diagnostics; see {destination}")
                 if loop and loop["policy"] != policy:
                     raise RuntimeError(f"Requested policy {policy} did not execute; see {destination}")

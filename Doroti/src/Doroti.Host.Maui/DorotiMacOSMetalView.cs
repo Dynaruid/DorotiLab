@@ -448,7 +448,6 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         {
             return;
         }
-        var options = NativeFrameLoopOptions.FromEnvironment();
         var frameworkPrepared = false;
         NativeFrameAdmission admission;
         _drawingFrame = true;
@@ -456,7 +455,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         {
             EnsureContext();
             PublishDrawableMetrics(size);
-            admission = NativeFrameAdmissionPolicy.PrepareAndDecide(options.Pipeline, options.Asynchronous,
+            admission = NativeFrameAdmissionPolicy.PrepareAndDecide(
                 () =>
                 {
                     owner.PrepareFrameworkFrame?.Invoke(new((object?)_graphite ?? _grContext,
@@ -1259,11 +1258,12 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         };
     }
 
-    private static IMTLDevice RequireMetalDevice() =>
-        MTLDevice.SystemDefault
-        ?? throw new PlatformNotSupportedException(
-            "Doroti AppKit requires a Metal-capable device."
-        );
+    private static IMTLDevice RequireMetalDevice()
+    {
+        NativeFrameConfiguration.ValidateEnvironment();
+        return MTLDevice.SystemDefault
+            ?? throw new PlatformNotSupportedException("Doroti AppKit requires a Metal-capable device.");
+    }
 
     private void ReleaseGpuResources()
     {

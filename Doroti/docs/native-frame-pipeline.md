@@ -1,21 +1,20 @@
 # Native frame pipeline
 
-The shared [policy](../src/Doroti.Skia.Rendering/NativeFramePipeline.cs) defaults
-to C for native hosts. Web is independent. VariableBlur's Fast adaptive kernel,
-sigma, capture bounds, DPR and default scale 0.25 are unchanged.
+The shared [policy](../src/Doroti.Skia.Rendering/NativeFramePipeline.cs) uses
+C as the only native frame policy. Web is independent. VariableBlur's Fast
+adaptive kernel, sigma, capture bounds, DPR and default scale 0.25 are unchanged.
 
-| Selector | Framework preparation | New shader scene | Native, replay or resize |
-| --- | --- | --- | --- |
-| `DOROTI_NATIVE_FRAME_MODE=A` | Host's serial path | One logical GPU frame, synchronized output | Serial |
-| `DOROTI_NATIVE_FRAME_MODE=B` | Host preparation, one frame | Asynchronous output where supported | Serial |
-| `DOROTI_NATIVE_FRAME_MODE=C`, or unset | Preparation before normal GPU admission | Up to two, asynchronous output where supported | Drain outstanding work, then serial |
+Framework preparation precedes normal GPU admission. New shader-only scenes
+use up to two logical GPU frames and asynchronous output where supported.
+Native/shield, replay and resize/rotation work drains outstanding frames before
+serial admission and required output synchronization. A backend without
+two-frame capability uses one frame within the same C policy.
 
-The explicit common mode wins over legacy `DOROTI_VARIABLE_BLUR_SERIAL_FRAMES`,
-`DOROTI_VARIABLE_BLUR_PIPELINE`, `DOROTI_NATIVE_PRESENTATION` and the iOS
-presentation alias. Invalid common modes fail configuration. Android reads
-string Intent extras with the same names before falling back to environment
-settings; restart the process when changing a mode. Other native hosts read
-environment settings. B is a diagnostic option, with host-specific output APIs.
+Use no frame selector, or `DOROTI_NATIVE_FRAME_MODE=C`. A/B and unknown values
+fail configuration. All nonempty legacy frame/presentation selectors were
+removed, including values that previously selected C. Hosts validate settings
+during initialization; Android checks both environment and Intent extras.
+See the [API and configuration migration](migrations/native-frame-c-only.md).
 
 Framework requests coalesce into one pending callback and renderer submissions
 retain one newest pending scene. GPU retries rasterize a prepared scene without
@@ -29,6 +28,10 @@ completion retires the recording; D3D12 copy completion or Qt sampling completio
 separately permits a shared texture bank to be reused. A present receipt is not
 scanout or GPU completion. Timeouts retain GPU-owned resources; only confirmed
 completion or context loss permits retirement.
+
+Qt R/P image allocations use a [dynamic texture allowance](dynamic-texture-budget.md)
+based on actual image demand, heap/host capacity and available driver budget.
+An allowance change never authorizes early release of GPU-owned images.
 
 | Host | Normal C ownership and retirement | Serial fallback |
 | --- | --- | --- |

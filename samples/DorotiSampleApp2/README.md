@@ -51,8 +51,9 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build -App ./samples/DorotiSampleA
 
 Windows MAUI 비교용 프로젝트는 `windows/DorotiSampleApp2.Windows.csproj`입니다.
 workspace CLI의 Windows 기본 대상은 위 표의 Windows App SDK를 유지합니다.
-네이티브 호스트는 공통 C 정책을 기본으로 사용하며,
-`DOROTI_NATIVE_FRAME_MODE=A|B|C`로 동일 바이너리의 비교 경로를 선택합니다.
+네이티브 호스트는 공통 C 정책만 사용합니다. 프레임 설정 없이 실행하거나
+`DOROTI_NATIVE_FRAME_MODE=C`를 지정합니다. A/B와 legacy 프레임 설정은 시작 시 거절합니다.
+[설정·API 변경 안내](../../Doroti/docs/migrations/native-frame-c-only.md)를 참고하세요.
 GPU consumer 수명과 직렬 fallback은 [공통 프레임 문서](../../Doroti/docs/native-frame-pipeline.md)를 참고하세요.
 Android는 같은 이름의 `--es` Intent 인자를 사용합니다. Sample2의
 `DOROTI_VARIABLE_BLUR_BENCHMARK`, `DOROTI_VARIABLE_BLUR_BENCHMARK_SIGMA`,
@@ -345,8 +346,8 @@ Variable Blur의 iPhone 반복 스크롤 측정은 서명된 **Release/Mono** �
 
 ```sh
 dotnet build samples/DorotiSampleApp2/ios/DorotiSampleApp2.iOS.csproj -c Release -r ios-arm64 -p:DorotiIosTargetFramework=net10.0-ios27.0 -p:DorotiCompilationMode=Mono -p:EnableCodeSigning=true '-p:CodesignKey=Apple Development' -p:CodesignProvision=<PROFILE_UUID>
-python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/variable_blur_device.py --device <DEVICE_UDID> --app samples/DorotiSampleApp2/ios/bin/ios-arm64/Release/net10.0-ios27.0/ios-arm64/DorotiSampleApp2.iOS.app --output temp/testing/variable-blur/new-run-sigma20 --hz 60 --repeats 3 --modes off fixed adaptive --sigma 20 --serial-frames --conditions '전원·밝기·온도 조건 기록'
-python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/variable_blur_device.py --device <DEVICE_UDID> --app samples/DorotiSampleApp2/ios/bin/ios-arm64/Release/net10.0-ios27.0/ios-arm64/DorotiSampleApp2.iOS.app --output temp/testing/variable-blur/new-run-sigma32 --hz 60 --repeats 3 --modes off fixed adaptive --sigma 32 --serial-frames --conditions '동일 전원·밝기·온도 조건 기록'
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/variable_blur_device.py --device <DEVICE_UDID> --app samples/DorotiSampleApp2/ios/bin/ios-arm64/Release/net10.0-ios27.0/ios-arm64/DorotiSampleApp2.iOS.app --output temp/testing/variable-blur/new-run-sigma20 --hz 60 --repeats 3 --modes off fixed adaptive --sigma 20 --conditions '전원·밝기·온도 조건 기록'
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/variable_blur_device.py --device <DEVICE_UDID> --app samples/DorotiSampleApp2/ios/bin/ios-arm64/Release/net10.0-ios27.0/ios-arm64/DorotiSampleApp2.iOS.app --output temp/testing/variable-blur/new-run-sigma32 --hz 60 --repeats 3 --modes off fixed adaptive --sigma 32 --conditions '동일 전원·밝기·온도 조건 기록'
 ```
 
 위 명령은 같은 바이너리에서 Off/Fixed/Adaptive, sigma 20/32를 각각 3회씩 총 18회 비교하고
@@ -386,13 +387,10 @@ Fixed와 Dual Kawase도 개별 옵션으로 선택할 수 있습니다.
 `--full-bands` / `--full-detail`은 Gaussian 띠·선명한 구간의 기존 전체 크기 backing을 유지하는 A/B 옵션입니다.
 iOS는 새 shader-only 장면에 최대 2개 GPU frame과 비동기 표시를 사용하는 C 경로가 기본입니다.
 native·회전·replay는 직렬 admission과 필요한 transaction 표시를 유지합니다.
-`--pipeline-frames`는 같은 경로를 명시적으로 선택합니다.
-직접 실행 시 `DOROTI_VARIABLE_BLUR_SERIAL_FRAMES=1` 또는 `DOROTI_VARIABLE_BLUR_PIPELINE=0`으로
-기존 A 경로를 선택할 수 있습니다. `DOROTI_IOS_SHADER_PRESENTATION=transaction`도 A를 선택하며,
-serial 설정에 `DOROTI_IOS_SHADER_PRESENTATION=async`를 함께 지정하면 비교용 B 경로입니다.
+프레임 정책 선택 옵션은 제거했습니다. iOS 수집기는 설정 없이 C를 측정하며,
+과거 A/B 선택과 legacy presentation 설정은 사용할 수 없습니다.
 프레임 준비·표시·복귀 수정과 이후 실기기 결과는 [프레임 연결 결과](../../works/results/2026-10-02-ios-frame-loop.md)를 참조합니다.
 수집기도 별도 정책 옵션이 없으면 C를 측정합니다.
-`--serial-frames`는 GPU 완료 후 기록하는 기존 직렬 프레임 기준을 강제합니다.
 `--sigma 32`로 최대 강도를 측정할 수 있습니다.
 수집기의 평균 FPS는 warm 구간의 실제 표시 간격으로 계산하며 CPU stage나 GPU 실행 시간에서 추정하지 않습니다.
 

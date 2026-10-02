@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using Doroti.Hosting;
+using Doroti.Skia.Rendering;
 using Doroti.Ui;
 using Microsoft.Maui.Controls;
 #if IOS && !MACCATALYST
@@ -51,7 +52,13 @@ public sealed class MauiFrameworkHost : IDisposable
     private bool _disposed;
 
 #if WINDOWS || MACCATALYST || IOS || ANDROID || MACOS
-    public MauiFrameworkHost(string? targetIdentity = null) =>
+    public MauiFrameworkHost(string? targetIdentity = null)
+    {
+        NativeFrameConfiguration.ValidateEnvironment();
+#if ANDROID
+        NativeFrameConfiguration.ValidateSettings(name =>
+            Microsoft.Maui.ApplicationModel.Platform.CurrentActivity?.Intent?.GetStringExtra(name));
+#endif
         _targetIdentity =
             targetIdentity
             ??
@@ -82,6 +89,7 @@ public sealed class MauiFrameworkHost : IDisposable
 #elif MACOS
             $"osx-arm64/{DorotiMacOSMetalView.GraphicsBackendId}";
 #endif
+    }
 #else
 #error Doroti.Host.Maui requires an explicit platform identity.
 #endif

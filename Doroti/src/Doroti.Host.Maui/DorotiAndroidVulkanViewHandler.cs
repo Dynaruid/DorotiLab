@@ -67,14 +67,13 @@ public sealed class DorotiAndroidViewContainer : Android.Widget.FrameLayout
 
 public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallback
 {
-    private NativeFrameLoopOptions? _frameLoopOptions;
     private long _preparedFrameworkPulses;
     private long _preparedWhileGpuFull;
     private long _rejectedAdmissions;
     internal MauiSurfaceSnapshot CaptureSnapshot(MauiSurfaceSnapshot current) => current with
     {
         GpuDevice = _window?.DeviceName,
-        NativeFramePipeline = new(_frameLoopOptions?.Mode ?? "C", _preparedFrameworkPulses,
+        NativeFramePipeline = new(NativeFrameConfiguration.Mode, _preparedFrameworkPulses,
             _window?.WindowFramesInFlight ?? 0, _window?.MaximumWindowFramesInFlight ?? 0,
             _window?.CompletedWindowFrames ?? 0, "Vulkan producer-copy fence; SurfaceView present is a separate receipt",
             PreparedWhileGpuFull: _preparedWhileGpuFull, RejectedAdmissions: _rejectedAdmissions),
@@ -117,6 +116,9 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
     public DorotiAndroidVulkanView(Context context)
         : base(context)
     {
+        NativeFrameConfiguration.ValidateEnvironment();
+        NativeFrameConfiguration.ValidateSettings(name =>
+            Microsoft.Maui.ApplicationModel.Platform.CurrentActivity?.Intent?.GetStringExtra(name));
         _trackpadInput = new(data => _owner?.DispatchNativePointer(data));
         _drawCallback = new(DrawFrame);
         _gpuCompletionCallback = new(PollGpuCompletion);
@@ -298,12 +300,8 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
                 );
             }
             _window.PrepareViewport(_width, _height);
-            var options = _frameLoopOptions ??= NativeFrameLoopOptions.FromSettings(name =>
-                Microsoft.Maui.ApplicationModel.Platform.CurrentActivity?.Intent?.GetStringExtra(name)
-                    ?? Environment.GetEnvironmentVariable(name));
             var prepared = false;
             var admission = NativeFrameAdmissionPolicy.PrepareAndDecide(
-                options.Pipeline, options.Asynchronous,
                 () =>
                 {
                     _preparedFrameworkPulses++;
@@ -341,7 +339,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
                         "Android/SurfaceView/Graphite-Vulkan"
                     );
                     paint.FrameworkPrepared = prepared;
-                    paint.RequireNewShaderScene = admission.FreshOnly || !admission.SynchronizePresentation;
+                    paint.RequireNewShaderScene = admission.FreshOnly;
                     _owner.PaintGraphite(paint);
                 },
                 () =>

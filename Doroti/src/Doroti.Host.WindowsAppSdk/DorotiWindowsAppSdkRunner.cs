@@ -55,6 +55,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             );
         }
 
+        NativeFrameConfiguration.ValidateEnvironment();
         var adapter = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_ADAPTER");
         if (
             !string.IsNullOrWhiteSpace(adapter)
@@ -976,11 +977,10 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 renderer.InvalidateWindowSurfaceResources();
             }
 
-            var frameOptions = NativeFrameLoopOptions.FromEnvironment();
             NativeFrameAdmission frameAdmission;
             if (Presenter is WindowsManagedVulkanPresenter nativePipeline)
             {
-                frameAdmission = NativeFrameAdmissionPolicy.Decide(frameOptions.Pipeline, frameOptions.Asynchronous,
+                frameAdmission = NativeFrameAdmissionPolicy.Decide(
                     renderer.ShaderSceneAdmission, nativePipeline.PendingPipelineFrames,
                     _platformViews?.HasComposition == true, false,
                     windowSurfaceChanged || _presenterResizeGeneration != resizeGeneration,
@@ -994,7 +994,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     return (uint)WindowsNativeV1.FrameTerminalKind.Superseded;
                 }
             }
-            else frameAdmission = NativeFrameAdmissionPolicy.Decide(false, false,
+            else frameAdmission = NativeFrameAdmissionPolicy.Decide(
                 renderer.ShaderSceneAdmission, 0, false, false, windowSurfaceChanged, supportsTwoFrames: false);
             if (!Presenter.EnsureTarget(host.ChildHwnd, width, height))
             {
@@ -1016,7 +1016,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
 
             SkiaPaintResult Paint(SKSurface surface)
             {
-                var paintResult = frameAdmission.FreshOnly || !frameAdmission.SynchronizePresentation ? renderer.PaintNewShaderScene(
+                var paintResult = frameAdmission.FreshOnly ? renderer.PaintNewShaderScene(
                     surface, width, height, host.ResizeTarget, causalFrameId) : renderer.Paint(
                     surface,
                     width,
@@ -1577,7 +1577,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 variableBlurProfile = Renderer?.VariableBlurProfile,
                 nativeFramePipeline = new
                 {
-                    mode = NativeFrameLoopOptions.FromEnvironment().Mode,
+                    mode = NativeFrameConfiguration.Mode,
                     maximumPending = (Presenter as WindowsManagedVulkanPresenter)?.MaximumPipelineFrames ?? 0,
                     pending = (Presenter as WindowsManagedVulkanPresenter)?.PendingPipelineFrames ?? 0,
                     supportsTwoFrames = (Presenter as WindowsManagedVulkanPresenter)?.SupportsFramePipeline == true,

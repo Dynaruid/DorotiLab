@@ -65,9 +65,6 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
     private readonly IMTLCommandQueue _queue;
     private readonly bool _profileBlur =
         Environment.GetEnvironmentVariable("DOROTI_VARIABLE_BLUR_PROFILE") == "1";
-    private readonly NativeFrameLoopOptions _frameLoopOptions = NativeFrameLoopOptions.FromEnvironment("DOROTI_IOS_SHADER_PRESENTATION");
-    private bool _pipelineFrames => _frameLoopOptions.Pipeline;
-    private bool _asynchronousShaderPresentation => _frameLoopOptions.Asynchronous;
     private IosFrameLoopDiagnostics? _frameLoop;
     private long _pulseId;
     private long _activePulse;
@@ -114,13 +111,17 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
     private bool _suspended;
 #endif
 
+    private static IMTLDevice RequireMetalDevice()
+    {
+        NativeFrameConfiguration.ValidateEnvironment();
+        return MTLDevice.SystemDefault
+            ?? throw new PlatformNotSupportedException("Doroti Graphite requires a Metal-capable device.");
+    }
+
     public DorotiUIKitGraphiteView()
         : base(
             CGRect.Empty,
-            MTLDevice.SystemDefault
-                ?? throw new PlatformNotSupportedException(
-                    "Doroti Graphite requires a Metal-capable device."
-                )
+            RequireMetalDevice()
         )
     {
         _queue =
@@ -215,7 +216,7 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
     internal void RequestFramePulse()
     {
 #if IOS && !MACCATALYST
-        if (_pipelineFrames && !_renderingViewport && !_animatedViewport.IsAnimating
+        if (!_renderingViewport && !_animatedViewport.IsAnimating
             && _owner?.PlatformViews?.HasComposition != true
             && !_suspended && OwnerIsActive && !_releaseRequested && !_faulted)
         {
@@ -597,7 +598,7 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
 #endif
         var pulse = _activePulse = ++_pulseId;
         _frameLoop ??= _profileBlur ? new(
-            _pipelineFrames ? "C" : _asynchronousShaderPresentation ? "B" : "A",
+            NativeFrameConfiguration.Mode,
             CAAnimation.CurrentMediaTime()) : null;
         _frameLoop?.Record(prepareFramework ? "pulse" : "raster-wake", pulse, _generation, _pending.Count);
         var shaderFramePipeline = false;
@@ -606,7 +607,6 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
         try
         {
             var admission = NativeFrameAdmissionPolicy.PrepareAndDecide(
-                _pipelineFrames, _asynchronousShaderPresentation,
                 () =>
                 {
                     EnsureSession();
@@ -774,9 +774,8 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
 #if IOS || MACCATALYST
             platformFrame = owner.PlatformViews?.TakePending();
 #if IOS && !MACCATALYST
-            // B dispatches the callback from BeginPaint, preserving serial
-            // preparation. Choose presentation only after that scene is known.
-            PresentsWithTransaction = !_asynchronousShaderPresentation || _renderingViewport
+            // Recheck the recorded scene before selecting native/rotation synchronization.
+            PresentsWithTransaction = _renderingViewport
                 || _animatedViewport.IsAnimating || !paint.ShaderOnly || platformFrame is not null
                 || owner.PlatformViews?.HasComposition == true;
 #endif
@@ -896,13 +895,12 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
     {
         if (!_frameBackpressure || _releaseRequested || _faulted) return;
 #if IOS && !MACCATALYST
-        if (_pipelineFrames && _pipelineDisplayLink)
+        if (_pipelineDisplayLink)
         {
             RequestFramePulse();
             return;
         }
 #endif
-        if (!_pipelineFrames) _frameBackpressure = false;
         SetNeedsDisplay();
     }
 
@@ -950,7 +948,7 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
                     "Metal terminal buffer creation failed; retaining GPU resources."
                 );
             var transactionPresentation = false;
-            if (present && (_profileBlur || _pipelineFrames))
+            if (present)
             {
                 pending.Drawable.AddPresentedHandler(drawable =>
                 {

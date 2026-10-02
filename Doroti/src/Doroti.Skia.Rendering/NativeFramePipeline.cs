@@ -5,34 +5,32 @@ public sealed record SkiaFramePreparation(object? ContextIdentity, int PixelWidt
     double Density, long SurfaceGeneration, string NativeViewType, string GraphicsBackend,
     TimeSpan Timestamp, Action<string, double>? CpuStageMeasured = null);
 
-public readonly record struct NativeFrameLoopOptions(bool Pipeline, bool Asynchronous)
+/// <summary>C is the only native frame policy. Reject obsolete selectors before creating GPU resources.</summary>
+public static class NativeFrameConfiguration
 {
-    public string Mode => Pipeline ? "C" : Asynchronous ? "B" : "A";
+    public const string Mode = "C";
 
-    public static NativeFrameLoopOptions Resolve(string? serial, string? pipeline, string? presentation)
-    {
-        var enabled = serial != "1" && pipeline != "0" && presentation != "transaction";
-        return new(enabled, enabled || presentation == "async");
-    }
+    private static readonly string[] RemovedSelectors =
+    [
+        "DOROTI_VARIABLE_BLUR_SERIAL_FRAMES", "DOROTI_VARIABLE_BLUR_PIPELINE",
+        "DOROTI_NATIVE_PRESENTATION", "DOROTI_IOS_SHADER_PRESENTATION",
+    ];
 
-    /// <summary>Explicit common mode overrides legacy selectors. The delegate also supports Android intent extras.</summary>
-    public static NativeFrameLoopOptions FromSettings(Func<string, string?> read, string? presentationAlias = null)
+    /// <summary>Also validates Android Intent extras; no setting can select a different frame policy.</summary>
+    public static void ValidateSettings(Func<string, string?> read)
     {
+        ArgumentNullException.ThrowIfNull(read);
         var mode = read("DOROTI_NATIVE_FRAME_MODE");
-        return mode switch
+        if (mode is not (null or "" or Mode))
+            throw new ArgumentException("Native frame modes A/B were removed. Unset DOROTI_NATIVE_FRAME_MODE or set it to C.");
+        foreach (var selector in RemovedSelectors)
         {
-            "A" => new(false, false),
-            "B" => new(false, true),
-            "C" => new(true, true),
-            null or "" => Resolve(read("DOROTI_VARIABLE_BLUR_SERIAL_FRAMES"),
-                read("DOROTI_VARIABLE_BLUR_PIPELINE"), read("DOROTI_NATIVE_PRESENTATION")
-                    ?? (presentationAlias is null ? null : read(presentationAlias))),
-            _ => throw new ArgumentException("DOROTI_NATIVE_FRAME_MODE must be A, B or C."),
-        };
+            if (!string.IsNullOrEmpty(read(selector)))
+                throw new ArgumentException($"{selector} was removed. Delete this setting; native hosts always use frame policy C.");
+        }
     }
 
-    public static NativeFrameLoopOptions FromEnvironment(string? presentationAlias = null) =>
-        FromSettings(Environment.GetEnvironmentVariable, presentationAlias);
+    public static void ValidateEnvironment() => ValidateSettings(Environment.GetEnvironmentVariable);
 }
 
 public readonly record struct NativeFrameAdmission(bool Admitted, bool FreshOnly,
@@ -47,32 +45,28 @@ public static class NativeFrameAdmissionPolicy
 {
     public const int ShaderFrameLimit = 2;
 
-    public static NativeFrameAdmission Decide(bool pipeline, bool asynchronous,
-        SkiaShaderSceneAdmission scene, int pending, bool native, bool pendingNative,
+    public static NativeFrameAdmission Decide(SkiaShaderSceneAdmission scene, int pending, bool native, bool pendingNative,
         bool resizing, bool supportsTwoFrames = true)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(pending);
-        var fresh = pipeline && supportsTwoFrames && !resizing && !native && !pendingNative
+        var fresh = supportsTwoFrames && !resizing && !native && !pendingNative
             && scene == SkiaShaderSceneAdmission.eligible;
         var limit = fresh ? ShaderFrameLimit : 1;
         var reason = resizing ? "resize" : native || pendingNative ? "native-active"
             : !supportsTwoFrames ? "serial-backend" : scene.ToString();
-        return new(pending < limit, fresh, limit,
-            !asynchronous || resizing || native || pendingNative
-                || scene != SkiaShaderSceneAdmission.eligible || !supportsTwoFrames,
+        return new(pending < limit, fresh, limit, !fresh,
             pending >= limit ? "slots-full/" + reason : reason);
     }
 
-    public static NativeFrameAdmission PrepareAndDecide(bool pipeline, bool asynchronous,
-        Action prepare, Func<SkiaShaderSceneAdmission> query, Func<int> pendingCount,
+    public static NativeFrameAdmission PrepareAndDecide(Action prepare, Func<SkiaShaderSceneAdmission> query, Func<int> pendingCount,
         bool native, bool pendingNative, bool resizing, bool prepareFramework = true,
         bool supportsTwoFrames = true)
     {
-        if (pipeline && !resizing && prepareFramework) prepare();
+        if (!resizing && prepareFramework) prepare();
         // Completion and native insertion can occur during preparation. Query the
         // actual retained scene and slot count afterwards, never a cached admission.
         var pending = pendingCount();
-        return Decide(pipeline, asynchronous, query(), pending, native, pendingNative,
+        return Decide(query(), pending, native, pendingNative,
             resizing, supportsTwoFrames);
     }
 }

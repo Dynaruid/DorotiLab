@@ -1,11 +1,11 @@
 # Maintained regression tests
 
-Native common A/B/C policy, GPU-full preparation, coalescing, native insertion,
+Native C-only configuration and policy, GPU-full preparation, coalescing, native insertion,
 generation changes and out-of-order retirement are part of the CPU `Build` suite.
-For actual Vulkan A/C pixels and two unfinished recordings on the same recorder:
+For actual Vulkan C sequential/overlapped pixels and two unfinished recordings on the same recorder:
 
 ```powershell
-python Doroti/eng/run-with-timeout.py dotnet run --project Doroti/tests/Doroti.Tests -c Debug -r win-x64 -- --native-frame-gpu temp/testing/native-frame-pipeline/windows/gpu-pixels.json
+python Doroti/eng/run-with-timeout.py dotnet run --project Doroti/tests/Doroti.Tests -c Debug -r win-x64 -- --native-frame-gpu temp/testing/native-frame-c-only/windows/gpu-pixels.json
 ```
 
 On Linux, use `-r linux-x64` and a Linux output path for that GPU fixture.
@@ -15,16 +15,26 @@ a RID-less CPU test build does not provide that Graphite payload layout.
 This opt-in GPU fixture deliberately stalls the same queue with a timeline
 semaphore while recording two independent scenes. It checks Off, Gaussian,
 Adaptive, Fast, Fixed sigma 0/1/2/4/8/20/32 and Kawase 20/32, a third-frame
-rejection and byte-identical A/C pixels. It does not exercise actual Qt sampling,
+rejection and byte-identical sequential/overlapped C pixels. It does not exercise actual Qt sampling,
 native composition, scanout, input latency or hardware execution overlap.
 
+The same fixture checks dynamic texture allowance with two multi-layer GPU-owned
+banks above 128 MiB, safe resize shrink and final consumer retirement. CPU `Build`
+also covers driver pressure, live-allocation floors, capacity bounds and overflow.
+
 `native_frame_pipeline_collect.py` accepts an already-built Sample2 payload.
-Each invocation collects one repeat of Off, Fast 20/32 and Adaptive 20/32, A/C,
-alternating policy order. Run `--repeat 1`, `2`, `3` separately under the 1,200s
-wrapper for 30 runs. `--conditions fast:20 --policies default,A,B,C --seconds 12`
-is a short mode/queue smoke. Supply `--platform windows --exe <exe>`,
-`--platform android --device <owned-device> --adb <adb>` or
+Each invocation collects one repeat of Off, Fast 20/32 and Adaptive 20/32 in C.
+`--baseline-exe <preserved-before-C-exe>` pairs desktop before/after candidates
+and alternates their order. Three invocations (`--repeat 1`, `2`, `3`) produce
+30 paired runs under the 1,200s wrapper. Without a baseline, results are after-only.
+`--conditions fast:20 --setting C --seconds 12` checks explicit C; the default
+`--setting unset` checks no-selector execution. Supply `--platform windows
+--exe <exe>`, `--platform android --device <owned-device> --adb <adb>` or
 `--platform qt --exe <exe> --driver <test-only-libevidence.so>`.
+`native_frame_configuration.py --exe <exe> --output <fresh-raw-dir>` separately
+checks desktop initialization rejects A/B, unknown modes and removed selectors.
+Run it under the same wrapper. CPU tests check configuration without environment
+mutation. Old frame-policy CLI options are no longer accepted.
 The Qt driver is compiled from `native/qt_evidence.cpp` using Qt6Quick/Qt6Widgets
 pkg-config flags, as in `linux_qt_smoke.py`. Only the probe's own windows close.
 Every run retains its log, evidence, payload hash and failures; output must be

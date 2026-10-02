@@ -128,7 +128,6 @@ public sealed class DorotiWindowsDxgiElementHandler
 internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphiteSurface
 {
     private Func<SkiaShaderSceneAdmission>? _frameQuery;
-    private readonly NativeFrameLoopOptions _frameLoopOptions = NativeFrameLoopOptions.FromEnvironment();
     private long _pipelineViewportGeneration;
     private int _pipelineRetryScheduled;
     private long _preparedFrameworkPulses;
@@ -206,6 +205,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
 
     internal DorotiWindowsDxgiSurface()
     {
+        NativeFrameConfiguration.ValidateEnvironment();
         _view = new(this);
         _keyboardWindowFocus = new(_view, ReleasePressedKeys);
         _compositionDispatch = new(action =>
@@ -466,7 +466,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
             EglSwapIntervalPolicy = "not-applicable-dxgi-owned",
             ExactSwapTimingAvailable = true,
             ResizeTrace = _trace.Snapshot(),
-            NativeFramePipeline = new(_frameLoopOptions.Mode, Interlocked.Read(ref _preparedFrameworkPulses),
+            NativeFramePipeline = new(NativeFrameConfiguration.Mode, Interlocked.Read(ref _preparedFrameworkPulses),
                 _compositionPresenter?.PendingPipelineFrames ?? 0,
                 _compositionPresenter?.MaximumPipelineFrames ?? 0,
                 _compositionPresenter?.CompletedPipelineFrames ?? 0,
@@ -1175,7 +1175,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
             try
             {
                 compositionPresenter?.PollPipelineFrames(() => _latestTarget?.Generation ?? 0);
-                var admission = NativeFrameAdmissionPolicy.Decide(_frameLoopOptions.Pipeline, _frameLoopOptions.Asynchronous,
+                var admission = NativeFrameAdmissionPolicy.Decide(
                     _frameQuery?.Invoke() ?? SkiaShaderSceneAdmission.noNewScene,
                     compositionPresenter?.PendingPipelineFrames ?? 0, false, false,
                     _pipelineViewportGeneration != target.Generation,

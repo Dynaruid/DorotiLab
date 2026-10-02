@@ -1,7 +1,7 @@
-"""Bounded A/C queue/lifecycle probes; submission counts are never displayed FPS.
+"""Bounded C-only queue/lifecycle and before/after probes; submission counts are never displayed FPS.
 
 Run each repeat under eng/run-with-timeout.py. Three repeats of the default five
-conditions and two policies produce 30 runs, with alternating A/C order. Genuine
+conditions and two C payloads produce 30 runs, with alternating candidate order. Genuine
 display events can be attached as display-events.json in each run directory:
 {method, timestampsNanoseconds:[...]}. Keep the capture tool's original output.
 No events means notMeasured, never a performance PASS.
@@ -86,39 +86,45 @@ def main():
     parser.add_argument('--package', default='dev.doroti.sample2')
     parser.add_argument('--activity', default='crc6467bcc435301192e0.MainActivity')
     parser.add_argument('--conditions', default='off:0,fast:20,fast:32,adaptive:20,adaptive:32')
-    parser.add_argument('--policies', default='A,C', help='default is also supported for a no-selector probe')
+    parser.add_argument('--setting', choices=['unset', 'C'], default='unset', help='Probe the only policy, with no selector or explicit C')
+    parser.add_argument('--candidate', choices=['before', 'after'], default='after', help='Payload label without a baseline')
+    parser.add_argument('--baseline-exe', type=Path, help='Preserved before-C desktop executable for paired regression')
     parser.add_argument('--repeat', type=int, choices=[1,2,3], default=1)
     parser.add_argument('--seconds', type=float, default=38)
     args = parser.parse_args()
     out = args.output.resolve()
     assert out.is_relative_to(ROOT / 'temp/testing'), 'Raw evidence must be under temp/testing'
+    if out.exists():
+        parser.error('Use a fresh output directory; earlier runs and failures are preserved')
     assert 5 <= args.seconds <= 45
     if args.platform != 'android' and (args.exe is None or not args.exe.exists()):
         parser.error('--exe must identify an existing built payload')
     out.mkdir(parents=True, exist_ok=True)
-    identity = payload_identity(args.exe) if args.platform != 'android' else None
-    if identity:
-        (out/'payload-manifest.json').write_text(json.dumps(identity,indent=2))
+    if args.baseline_exe and (args.platform == 'android' or not args.baseline_exe.exists()):
+        parser.error('--baseline-exe requires an existing desktop executable')
+    candidates = [('before', args.baseline_exe), ('after', args.exe)] if args.baseline_exe else [(args.candidate, args.exe)]
+    identities = {label: payload_identity(exe) for label, exe in candidates if exe}
+    if identities:
+        (out/'payload-manifest.json').write_text(json.dumps(identities,indent=2))
     results = []
     def adb(*command, **kwargs):
         assert args.device, 'Use an explicit owned device ID'
         return subprocess.run([args.adb, '-s', args.device, *command], check=True, timeout=30, **kwargs)
     conditions = args.conditions.split(',')
-    policies = args.policies.split(',')
-    assert all(x in ('A','B','C','default') for x in policies)
-    if args.repeat % 2 == 0: conditions.reverse(); policies.reverse()
+    if args.repeat % 2 == 0: conditions.reverse(); candidates.reverse()
     try:
         for index, condition in enumerate(conditions):
             mode, sigma = condition.split(':')
             assert mode in ('off','full','adaptive','fast','fixed','kawase') and 0 <= float(sigma) <= 32
-            order = policies[index % len(policies):] + policies[:index % len(policies)]
-            for policy in order:
-                run = out / f'r{args.repeat}-{mode}-{sigma}-{policy}'
+            order = candidates[index % len(candidates):] + candidates[:index % len(candidates)]
+            for candidate, exe in order:
+                identity = identities.get(candidate)
+                run = out / f'r{args.repeat}-{mode}-{sigma}-{candidate}-{args.setting}'
                 run.mkdir()  # Never overwrite an earlier failure/run.
                 settings = {'DOROTI_VARIABLE_BLUR_BENCHMARK': mode,
                             'DOROTI_VARIABLE_BLUR_BENCHMARK_SIGMA': sigma}
-                if policy != 'default': settings['DOROTI_NATIVE_FRAME_MODE'] = policy
-                result = {'condition': condition, 'policy': policy, 'repeat': args.repeat,
+                if args.setting == 'C': settings['DOROTI_NATIVE_FRAME_MODE'] = 'C'
+                result = {'condition': condition, 'policy': 'C', 'candidate': candidate, 'setting': args.setting, 'repeat': args.repeat,
                           'seconds': args.seconds, 'physicalInput': 'notVerified'}
                 results.append(result)
                 try:
@@ -137,10 +143,10 @@ def main():
                         result['pipeline'] = document['surface']['nativeFramePipeline']
                         result['frames'] = document['frame']
                     else:
-                        assert args.exe and args.exe.exists()
+                        assert exe and exe.exists()
                         environment = os.environ.copy()
                         for key in ('DOROTI_NATIVE_FRAME_MODE','DOROTI_VARIABLE_BLUR_SERIAL_FRAMES',
-                                    'DOROTI_VARIABLE_BLUR_PIPELINE','DOROTI_NATIVE_PRESENTATION',
+                                    'DOROTI_VARIABLE_BLUR_PIPELINE','DOROTI_NATIVE_PRESENTATION','DOROTI_IOS_SHADER_PRESENTATION',
                                     'DOROTI_VARIABLE_BLUR_BENCHMARK_STATIC','DOROTI_SAMPLE'):
                             environment.pop(key, None)
                         environment.update(settings)
@@ -153,7 +159,7 @@ def main():
                             environment['DOROTI_QT_DIAGNOSTICS'] = '1'
                             environment['DOROTI_QT_PIPELINE_DURATION_MS'] = str(int(args.seconds*1000))
                         with (run/'application.log').open('w', encoding='utf-8') as log:
-                            process = subprocess.Popen([str(args.exe.resolve())], env=environment, cwd=ROOT,
+                            process = subprocess.Popen([str(exe.resolve())], env=environment, cwd=ROOT,
                                                        stdout=log,stderr=subprocess.STDOUT)
                             try:
                                 if args.platform == 'windows':
@@ -165,7 +171,7 @@ def main():
                                 if process.poll() is None: process.kill(); process.wait()
                         output = (run/'application.log').read_text(encoding='utf-8',errors='replace')
                         assert not any(x in output for x in ('Unhandled exception','managed.fatal=','doroti.qt.fatal=','PlatformView creation failed.'))
-                        result['apphostSha256'] = digest(args.exe)
+                        result['apphostSha256'] = digest(exe)
                         result['payloadSha256'] = identity['sha256']
                         if args.platform == 'qt':
                             prefix = 'doroti.qt.summary='
@@ -183,9 +189,9 @@ def main():
                             result['frames'] = document.get('frames') or document['frame']
                     pipeline = result['pipeline']
                     actual = pipeline.get('mode') or pipeline.get('nativeFrameMode')
-                    assert actual == ('C' if policy == 'default' else policy), (actual,policy)
+                    assert actual == 'C', actual
                     maximum = pipeline.get('maximumPending',pipeline.get('maximumGpuFrames',pipeline.get('quickMaximumPending',0)))
-                    assert maximum <= (2 if actual == 'C' else 1), pipeline
+                    assert maximum <= 2, pipeline
                     frames = result['frames']
                     failed = frames.get('failed', frames.get('failedTerminals', 0))
                     presented = frames.get('presented', frames.get('presentedTerminals', 0))

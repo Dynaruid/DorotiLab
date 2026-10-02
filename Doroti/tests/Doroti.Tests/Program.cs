@@ -13,6 +13,7 @@ if (Array.IndexOf(args, "--native-frame-gpu") is var nativeGpuIndex && nativeGpu
 if (args.Contains("--shader-frame-pipeline"))
 {
     ShaderFramePipelineRegression.Run();
+    TextureBudgetRegression.Run();
     return;
 }
 if (args.Contains("--variable-blur-gpu"))
@@ -104,6 +105,7 @@ VariableBlurCaptureRegression.Run();
 VariableBlurKernelRegression.Run();
 VariableBlurKawaseRegression.Run();
 ShaderFramePipelineRegression.Run();
+TextureBudgetRegression.Run();
 NavigationRegression.Run();
 WindowContextRegression.Run();
 await PlatformRetirementRegression.Run();
