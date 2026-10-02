@@ -37,7 +37,8 @@ public abstract class ImageFilterConfig
     ) => new _ComposeImageFilterConfig__image_filter_config(outer, inner);
 
     /// <summary>Progressive blur with endpoints relative to the painted bounds:
-    /// (0,0) is top-left and (1,1) is bottom-right. Defaults to clear top, blurred bottom.</summary>
+    /// (0,0) is top-left and (1,1) is bottom-right. Defaults to clear top, blurred bottom,
+    /// with Fast adaptive sampling and a minimum working resolution of 0.25.</summary>
     public static ImageFilterConfig CreateVariableBlur(
         double startSigma = 0,
         double endSigma = 20,
@@ -46,9 +47,9 @@ public abstract class ImageFilterConfig
         int maxSamples = 32,
         TileMode tileMode = TileMode.clamp,
         bool bounded = true,
-        double resolutionScale = 1,
+        double resolutionScale = 0.25,
         bool adaptiveResolution = true,
-        VariableBlurKernel kernel = VariableBlurKernel.gaussian
+        VariableBlurKernel kernel = VariableBlurKernel.fastGaussian
     ) =>
         new VariableBlurImageFilterConfig(
             start ?? Offset.zero,

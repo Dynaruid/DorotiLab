@@ -350,6 +350,71 @@ internal static class VariableBlurGpuRegression
         var sceneMax=ownedScene.Zip(nativeScene).Max(p=>Math.Abs(p.First-p.Second));
         Console.WriteLine($"Native/owned sibling scopes maxError={sceneMax}/255");
         if(sceneMax>3)throw new Exception("Native sibling routing changed nested shader composition");
+        // Preserve two async recordings while the same renderer/recorder and
+        // filter caches record the next scene. Compare with serial readbacks.
+        foreach (var scale in new[] { 1d, .25 })
+        {
+            IReadOnlyList<SceneCommand> PipelineScene(int index)
+            {
+                var paths = new List<PathCommand>();
+                var canvas = new Doroti.Ui.Canvas(paths);
+                for (var x = 0; x < 80; x += 5)
+                    canvas.drawRect(new Rect(x, 0, x + 5, 60), new Doroti.Ui.Paint
+                    { color = new Color(index == 0 ? (x % 10 == 0 ? 0xffff0000 : 0xff0000ff)
+                        : (x % 10 == 0 ? 0xff00ff00 : 0xffffff00)) });
+                return new SceneCommand[]
+                {
+                    Op("picture", new ScenePicturePayload(8000 + index, new(0, 0), paths, null, false, true)),
+                    Op("backdropFilter", new SceneBackdropFilterPayload(
+                        ImageFilterSnapshot.Capture(ImageFilter.variableBlur(new(0, 0), new(0, 60),
+                            8, 0, resolutionScale: scale)), BlendMode.srcOver, null)), new("pop", null),
+                };
+            }
+            byte[] Serial(int index)
+            {
+                begin.Invoke(null, new[] { runtimeBackend, 0L, owner });
+                using var output = Surface(80, 60);
+                output.Canvas.Clear(SKColors.Transparent);
+                renderer.DrawPlatformRasterSegment(output.Canvas, PipelineScene(index), 80, 60);
+                return Read(output, 80, 60);
+            }
+            var reference = new[] { Serial(0), Serial(1) };
+            var outputs = new[] { Surface(80, 60), Surface(80, 60) };
+            var recordings = new List<SKGraphiteRecording>();
+            byte[]?[] pixels = new byte[2][];
+            try
+            {
+                for (var index = 0; index < 2; index++)
+                {
+                    begin.Invoke(null, new[] { runtimeBackend, 0L, owner });
+                    outputs[index].Canvas.Clear(SKColors.Transparent);
+                    renderer.DrawPlatformRasterSegment(outputs[index].Canvas, PipelineScene(index), 80, 60);
+                    var recording = recorder!.Snap() ?? throw new Exception("Pipeline snap failed.");
+                    recordings.Add(recording);
+                    if (context.InsertRecording(recording) != SKGraphiteInsertStatus.Success)
+                        throw new Exception("Pipeline insert failed.");
+                    var capturedIndex = index;
+                    context.RequestReadPixels(outputs[index], new SKImageInfo(80, 60), new SKRectI(0, 0, 80, 60),
+                        SKImageRescaleGamma.Src, SKImageRescaleMode.Nearest, r => pixels[capturedIndex] = r!.ToArray(0));
+                    if (!context.Submit(new SKGraphiteSubmitInfo { Sync = false })) throw new Exception("Pipeline submit failed.");
+                    SkiaGpuSurfaces.CompleteRecording(recorder, false);
+                }
+                if (!context.Submit(new SKGraphiteSubmitInfo { Sync = true })) throw new Exception("Pipeline final fence failed.");
+                context.CheckAsyncWorkCompletion();
+                for (var index = 0; index < 2; index++)
+                {
+                    if (pixels[index] is not { } actual) throw new Exception("Pipeline readback missing.");
+                    var max = actual.Zip(reference[index]).Max(p => Math.Abs(p.First - p.Second));
+                    if (max > 3) throw new Exception($"Pipeline cache/snapshot reuse changed frame {index}: {max}/255.");
+                    Console.WriteLine($"Async retained recordings scale={scale} frame={index} maxError={max}/255");
+                }
+            }
+            finally
+            {
+                foreach (var recording in recordings) recording.Dispose();
+                foreach (var output in outputs) output.Dispose();
+            }
+        }
         Console.WriteLine("PASS: production renderer Graphite-Metal crop/full and direct/intermediate pixels on macOS GPU.");
     }
 

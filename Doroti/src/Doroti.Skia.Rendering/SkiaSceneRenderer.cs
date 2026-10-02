@@ -516,9 +516,40 @@ public sealed partial class SkiaSceneRenderer
     public SkiaPaintResult PaintNewShaderScene(SKSurface surface, int pixelWidth, int pixelHeight,
         DorotiResizeEpoch desiredTarget) => Paint(surface, pixelWidth, pixelHeight, desiredTarget, 0, true);
 
-    public bool CanRecordShaderSceneAhead
+    public bool CanRecordShaderSceneAhead => ShaderSceneAdmission == SkiaShaderSceneAdmission.eligible;
+
+    public bool CanPresentWithoutNativeComposition
     {
-        get { lock (_gate) return !_disposed && _pendingFrame is { } frame && IsShaderSceneWithoutPlatformViews(frame.Commands); }
+        get { lock (_gate) return !_disposed && (_pendingFrame ?? _presentedFrame) is { } frame
+            && IsShaderSceneWithoutPlatformViews(frame.Commands); }
+    }
+
+    public Action<string, double>? PaintCpuStageMeasured { get; set; }
+
+    public SkiaPaintCompletion? PendingSceneCompletion
+    {
+        get
+        {
+            lock (_gate) return !_disposed && _pendingFrame is { } frame
+                ? new(frame.InputSequence, frame.SceneSequence, _host.SurfaceGeneration, true, frame.Descriptor)
+                : null;
+        }
+    }
+
+    public SkiaShaderSceneAdmission ShaderSceneAdmission
+    {
+        get
+        {
+            lock (_gate)
+            {
+                if (_disposed || _pendingFrame is not { } frame) return SkiaShaderSceneAdmission.noNewScene;
+                if (!IsShaderSceneWithoutPlatformViews(frame.Commands)) return SkiaShaderSceneAdmission.nativeScene;
+                var target = _host.ResizeTarget;
+                return frame.Descriptor.MatchExact(_host.ViewEpoch, target,
+                    target.PhysicalWidth, target.PhysicalHeight, target.DeviceScaleX, target.DeviceScaleY).IsExact
+                    ? SkiaShaderSceneAdmission.eligible : SkiaShaderSceneAdmission.viewportMismatch;
+            }
+        }
     }
 
     private static bool IsShaderSceneWithoutPlatformViews(IReadOnlyList<SceneCommand> commands)
@@ -526,7 +557,7 @@ public sealed partial class SkiaSceneRenderer
         static bool HasNative(IReadOnlyList<SceneCommand> items, int depth = 0) => depth > 256
             || items.Any(c => c.Operation is "platformView" or "inputShield"
                 || c.HostPayload is SceneRetainedPayload retained && HasNative(retained.Commands, depth + 1));
-        return !HasNative(commands) && RequiresGpuFilterLayers(commands, 0, commands.Count);
+        return !HasNative(commands);
     }
 
     private SkiaPaintResult Paint(
@@ -693,7 +724,9 @@ public sealed partial class SkiaSceneRenderer
                 contextGeneration: _contextGeneration
             );
 #if !WINDOWS
+            var flushStart = System.Diagnostics.Stopwatch.GetTimestamp();
             canvas.Flush();
+            PaintCpuStageMeasured?.Invoke("flush", System.Diagnostics.Stopwatch.GetElapsedTime(flushStart).TotalMilliseconds);
 #endif
             var surfaceGeneration = _host.SurfaceGeneration;
             if (isNewFrame)

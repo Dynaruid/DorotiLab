@@ -124,6 +124,10 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
 #endif
         Children.Add(_renderSurface.Element);
         Children.Add(_semanticsLayer);
+#if IOS && !MACCATALYST
+        if (_renderSurface is MauiSkglSurface graphitePulse)
+            graphitePulse.FrameworkFramePrepared += ScheduleEvidenceWrite;
+#endif
         _renderSurface.Paint += PaintGpuSurface;
         _renderSurface.PresentCompleted += CompleteNativePaint;
         _renderSurface.PaintFailed += HandlePaintFailure;
@@ -269,6 +273,9 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
                 _host.BeginPaint(_viewId, paint);
                 if (!paint.SkipRaster)
                 {
+                    if (paint.ScenePrepared is { } observe && _host.PreparedScene(_viewId) is { } scene) observe(scene);
+                    paint.ShaderOnly = _host.CanPresentWithoutNativeComposition(_viewId);
+                    _host.SetPaintCpuStageMeasured(_viewId, paint.CpuStageMeasured);
                     paint.Completion = _host.PaintSkiaSurface(
                         _viewId,
                         paint.Surface,
@@ -517,6 +524,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
             return;
         }
 
+        string? temporary = null;
         try
         {
             var directory = System.IO.Path.GetDirectoryName(path);
@@ -525,11 +533,28 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
                 Directory.CreateDirectory(directory);
             }
 
+#if IOS && !MACCATALYST
+            // Keep a container read on one complete version while the next
+            // diagnostic snapshot is written. Never truncate the visible file.
+            temporary = path + "." + Guid.NewGuid().ToString("N") + ".tmp";
+            File.WriteAllText(temporary, contents);
+            File.Move(temporary, path, overwrite: true);
+            temporary = null;
+#else
             File.WriteAllText(path, contents);
+#endif
         }
         catch (Exception)
         {
             // Evidence must never fail the GPU paint or startup path.
+        }
+        finally
+        {
+            if (temporary is not null)
+            {
+                try { File.Delete(temporary); }
+                catch (Exception) { }
+            }
         }
     }
 
@@ -541,6 +566,10 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         }
 
         _disposed = true;
+#if IOS && !MACCATALYST
+        if (_renderSurface is MauiSkglSurface graphitePulse)
+            graphitePulse.FrameworkFramePrepared -= ScheduleEvidenceWrite;
+#endif
         _renderSurface.Paint -= PaintGpuSurface;
         _renderSurface.PresentCompleted -= CompleteNativePaint;
         _renderSurface.PaintFailed -= HandlePaintFailure;

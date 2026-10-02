@@ -2,9 +2,24 @@ using CoreAnimation;
 using Doroti.Host.Maui;
 using Foundation;
 using MetalKit;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using UIKit;
 
 namespace DorotiTestbedApp.iOS;
+
+internal sealed record UIKitViewportUpdate(double Time, double TargetTime, double Width, double Height);
+internal sealed record UIKitRotationSample(double Time, double Width, double Height,
+    double DrawableWidth, double DrawableHeight, double BoundsWidth, double PresentationWidth,
+    double SafeTop, bool Animating, double Scale);
+internal sealed record UIKitRotationResult(string Orientation, int DistinctWidths,
+    double MeanPhaseError, double MaxPhaseError, List<string> Animations,
+    List<UIKitViewportUpdate> Updates, List<UIKitRotationSample> Samples);
+
+[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
+[JsonSerializable(typeof(List<UIKitRotationResult>))]
+[JsonSerializable(typeof(List<UIKitRotationSample>))]
+internal partial class UIKitRotationJsonContext : JsonSerializerContext;
 
 // Opt-in native regression: request real scene rotations and verify that the
 // renderer consumes intermediate viewports, then settles at exact pixels.
@@ -19,7 +34,7 @@ internal static class UIKitRotationProbe
             );
         try
         {
-            var results = new List<object>();
+            var results = new List<UIKitRotationResult>();
             await MainThread.InvokeOnMainThreadAsync(async () =>
             {
                 CheckNativeTiming();
@@ -68,20 +83,16 @@ internal static class UIKitRotationProbe
                 )
                 {
                     var initial = view.DrawableSize;
-                    var samples = new List<object>();
+                    var samples = new List<UIKitRotationSample>();
                     var widths = new HashSet<double>();
                     var phaseErrors = new List<double>();
                     var animations = new List<string>();
-                    var updates = new List<object>();
+                    var updates = new List<UIKitViewportUpdate>();
                     void RecordViewport() =>
                         updates.Add(
-                            new
-                            {
-                                time = CAAnimation.CurrentMediaTime(),
-                                targetTime = viewport.FrameTargetTimestamp,
-                                width = (double)viewport.Size.Width,
-                                height = (double)viewport.Size.Height,
-                            }
+                            new UIKitViewportUpdate(CAAnimation.CurrentMediaTime(),
+                                viewport.FrameTargetTimestamp, (double)viewport.Size.Width,
+                                (double)viewport.Size.Height)
                         );
                     viewport.Changed += RecordViewport;
                     using var display = CADisplayLink.Create(() =>
@@ -117,19 +128,12 @@ internal static class UIKitRotationProbe
                                 )
                             );
                         samples.Add(
-                            new
-                            {
-                                time = CAAnimation.CurrentMediaTime(),
-                                width = (double)rendered.PixelWidth,
-                                height = (double)rendered.PixelHeight,
-                                drawableWidth = (double)view.DrawableSize.Width,
-                                drawableHeight = (double)view.DrawableSize.Height,
-                                boundsWidth = (double)view.Bounds.Width,
-                                presentationWidth,
-                                safeTop = (double)viewport.SafeAreaInsets.Top,
-                                animating = viewport.IsAnimating,
-                                scale = (double)view.ContentScaleFactor,
-                            }
+                            new UIKitRotationSample(CAAnimation.CurrentMediaTime(),
+                                rendered.PixelWidth, rendered.PixelHeight,
+                                (double)view.DrawableSize.Width, (double)view.DrawableSize.Height,
+                                (double)view.Bounds.Width, presentationWidth,
+                                (double)viewport.SafeAreaInsets.Top, viewport.IsAnimating,
+                                (double)view.ContentScaleFactor)
                         );
                     });
                     display.AddToRunLoop(NSRunLoop.Main, NSRunLoopMode.Common);
@@ -168,7 +172,7 @@ internal static class UIKitRotationProbe
                     var final = view.DrawableSize;
                     if (initial.Equals(final) || widths.Count < 4)
                         throw new InvalidOperationException(
-                            $"Rotation skipped intermediate layouts: {widths.Count} widths. Samples: {System.Text.Json.JsonSerializer.Serialize(samples)}"
+                            $"Rotation skipped intermediate layouts: {widths.Count} widths. Samples: {JsonSerializer.Serialize(samples, UIKitRotationJsonContext.Default.ListUIKitRotationSample)}"
                         );
                     if (
                         final.Width != Math.Round(view.Bounds.Width * screenScale)
@@ -199,20 +203,12 @@ internal static class UIKitRotationProbe
                             );
                     }
                     results.Add(
-                        new
-                        {
-                            orientation = orientation.ToString(),
-                            distinctWidths = widths.Count,
-                            meanPhaseError,
-                            maxPhaseError,
-                            animations,
-                            updates,
-                            samples,
-                        }
+                        new UIKitRotationResult(orientation.ToString(), widths.Count,
+                            meanPhaseError, maxPhaseError, animations, updates, samples)
                     );
                 }
             });
-            File.WriteAllText(output, System.Text.Json.JsonSerializer.Serialize(results));
+            File.WriteAllText(output, JsonSerializer.Serialize(results, UIKitRotationJsonContext.Default.ListUIKitRotationResult));
         }
         catch (Exception error)
         {

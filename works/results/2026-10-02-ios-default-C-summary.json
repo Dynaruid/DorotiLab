@@ -1,0 +1,195 @@
+{
+  "clientDate": "2026-10-02",
+  "userDecision": "한번 아이폰확인했는데 잘 되네 기본경로로하자",
+  "defaults": {
+    "platform": "iOS Graphite/Metal",
+    "framePolicy": "C",
+    "shaderGpuFramesMaximum": 2,
+    "shaderPresentation": "async",
+    "nativeRotationReplay": "serial with transaction as required",
+    "blur": {
+      "resolutionScale": 0.25,
+      "adaptiveResolution": true,
+      "kernel": "fastGaussian",
+      "sampleMode": "fast"
+    }
+  },
+  "explicitOverrides": {
+    "SERIAL_FRAMES=1": "A",
+    "PIPELINE=0": "A",
+    "SHADER_PRESENTATION=transaction": "A",
+    "serial plus SHADER_PRESENTATION=async": "B",
+    "PIPELINE=1": "C",
+    "prefixes": [
+      "DOROTI_VARIABLE_BLUR_",
+      "DOROTI_IOS_"
+    ]
+  },
+  "runtime": "NativeAOT",
+  "app": "Doroti/artifacts/ios-frame-loop-default-C/bin/DorotiSampleApp2.iOS/release_ios-arm64/DorotiSampleApp2.iOS.app",
+  "payloadSha256": "3b2d6b7afe6fee2eedccfb010d4ac294f27a3541457515291d2d603b7a189b75",
+  "buildIdentity": {
+    "clientDate": "2026-10-02",
+    "sdk": "11.0.100-rc.1.26425.128",
+    "workloadSet": "11.0.100-rc.1.26458.5",
+    "iosSdk": "26.5.12193-net11-rc.1",
+    "maui": "11.0.0-rc.1.26451.6",
+    "tfm": "net11.0-ios",
+    "runtime": "NativeAOT",
+    "xcode": "27.0/27A266a",
+    "buildLog": "temp/testing/variable-blur/ios-default-C-build.log",
+    "commandOverrides": {
+      "ValidateXcodeVersion": "false",
+      "PrepareAssemblies": "false",
+      "_UseDynamicDependenciesForMarkNSObjects": "false",
+      "InlineClassGetHandle": "disabled"
+    },
+    "overrideReason": "Verified unchanged SDK/workload profile from prior NativeAOT install record; no global toolchain modification",
+    "knownIlcDiagnostic": "NSLayoutAnchor<T> proxy CreateObject always throws; full native manual behavior remains to be verified",
+    "candidate": "user-approved iOS C default; shader-only max2/async, native/rotation/replay serial; explicit A/B overrides; Fast adaptive API/sample defaults"
+  },
+  "sourceInputsSha256": {
+    "Doroti/src/Doroti.Framework.Rendering/image_filter_config.cs": "06e7d282a87c8acd0d88fb7ae47697eaa48ca38078c057f888c3b54cd5f14c35",
+    "Doroti/src/Doroti.Host.Maui/DorotiGraphiteView.cs": "f1b4ab9f6275b1cc5295d7e3bb03f5af1b15a484c63295ac445462552fcf8f2c",
+    "Doroti/src/Doroti.Host.Maui/DorotiMauiSurface.cs": "ad15d33186fb409b4ae450890247f9cc6fd253f6e71d1c6fa95dd0ce9f8f5462",
+    "Doroti/src/Doroti.Host.Maui/DorotiUIKitGraphiteViewHandler.cs": "97a06fb667a125742e087b504c3e352cf60f5a0dc0f01ccfdb23c0c8a6122275",
+    "Doroti/src/Doroti.Host.Maui/IosFrameAdmissionPolicy.cs": "1a2fd587ea45062150ea3247a4235cfc40b3a635ade4d4e9bb7beda918f1c200",
+    "Doroti/src/Doroti.Host.Maui/IosFrameLifetime.cs": "9fe49c84fcbbbecee292bd77a3bf77c8a5408e5804ddcc2b9be274a09f7c139d",
+    "Doroti/src/Doroti.Host.Maui/IosFrameLoopDiagnostics.cs": "14af82fb0defe5533c7b039143bd1fc5c3a8fc52b90b1091c9acf89e07200cac",
+    "Doroti/src/Doroti.Host.Maui/IosFrameLoopOptions.cs": "706b6f73cc8a1f2338fe2d307c89b4d6d0e40b5dae66403a27ec94099356bd64",
+    "Doroti/src/Doroti.Host.Maui/MauiFrameCallbackQueue.cs": "52e3eb0810b9b540914524991aea6cdf3f1cd3ac10501de2e5c3695b10c82ce4",
+    "Doroti/src/Doroti.Host.Maui/MauiFrameworkHost.cs": "9ca4ea0e6e9dd17fdc8a028b8e365f3b9670a27402dc35435c39e71a3a9a632e",
+    "Doroti/src/Doroti.Host.Maui/MauiHostAdapter.cs": "b2ccf441466bc533650e02cb2737e9b9ee055e0dd4a78c788c36f001eb7dbe76",
+    "Doroti/src/Doroti.Host.Maui/MauiHostContracts.cs": "f0ecc3a4dbde4e62a3039b27ef4baa82fbf7653cd2c7b13e48f1d12b4859fbdf",
+    "Doroti/src/Doroti.Host.Maui/MauiSkiaCapabilities.cs": "f4f032d139bed5070ade7554a27ce859ae8f1809095dd4eacf2f1c03d7dab2cd",
+    "Doroti/src/Doroti.Host.Maui/MauiSkiaSurface.cs": "84f96ece4a3a0921f5941439048dd32fbfd38d39855d0e9e8d1d42cc98ea37ad",
+    "Doroti/src/Doroti.Skia.Rendering/Shaders/kawase_blur.sksl": "8f446677e2283572fefd7f10472fb623877f23b0eaf7386cf6c0ac71dfec58bf",
+    "Doroti/src/Doroti.Skia.Rendering/Shaders/variable_blur.sksl": "c89e5f6cdf5147011faa05cdb94f9b6eb0dc04748d38c148c2ec5c0fde7fdfeb",
+    "Doroti/src/Doroti.Skia.Rendering/Shaders/variable_blur_stage.sksl": "fd526bcae79ba633faad919a85a42384b5938c898d379ec980558da2fa2578cd",
+    "Doroti/src/Doroti.Skia.Rendering/SkiaGraphiteSession.NativeTextures.cs": "2968429b8e51917c20aaac73018b5af60e27ccbb3a1d37af380c014ac39cbe87",
+    "Doroti/src/Doroti.Skia.Rendering/SkiaGraphiteSession.Segments.cs": "d5a14508b20ae4b5a0740468b6560489a66d1c18f2a374f542802ede8ca9761b",
+    "Doroti/src/Doroti.Skia.Rendering/SkiaGraphiteSession.Vulkan.cs": "0a7ba82c622957762575b2b3f76c21101eb9a948e254ca5afe4f7ed904687f33",
+    "Doroti/src/Doroti.Skia.Rendering/SkiaGraphiteSession.cs": "95a0f688b35510b666aa3b874a24ab8d44559447cd7aa84057d06ba4f8c57244",
+    "Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.Filters.cs": "d0d2322d8313e0625131674414f4f8f4c1ae2b67d0c9c53d8c50b033e9926637",
+    "Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.Textures.cs": "9259627213a659de2efde3be50c94abdceb0b164f7173f7e192a5e4f196e81a0",
+    "Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.VariableBlur.Adaptive.cs": "c714e7a2765c0aeafa8aed53c757c2c7d6522a2278766ee2f5ba8e4fbf2fa7e2",
+    "Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.VariableBlur.Capture.cs": "4dddf8047c58bef829ac6c6a58bebbcafe219def3f7de8bd388c6e9ca4f95044",
+    "Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.VariableBlur.Kawase.cs": "99a075cd9e329a718466448e5844a0d94ea0924b307ef77ce4a1101680ef1d78",
+    "Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.VariableBlur.Profile.cs": "3151c09f05b28173db31ed9b376c4757508c5ad1a3dbba598d8bb1eafcb3bbd4",
+    "Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.VariableBlur.Region.cs": "7d02451f6396be24a9ba489055f6971666b7c53fb2ede16c596e22e6d5540d14",
+    "Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.VariableBlur.cs": "a7369d1bc2513bc4df5f69a15da528d66d92ba202516c583c5226b145780438a",
+    "Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.cs": "5ee1cae8d5ad8b047c130b97bb6e95fe4755b7b92fccb9fc57242cd4782527ea",
+    "Doroti/src/Doroti.Skia.Rendering/SkiaShaderSceneAdmission.cs": "ca01693a54a460db0934804e9db0e01e40e38669053ce39fb9e3704d568b6a35",
+    "Doroti/src/Doroti.Skia.RuntimeEffects/DorotiSkiaImageFilterRenderer.cs": "9ea2087935caea512866aca2b53dee3a58340d92a6c3ed8bf75461694fc46b8b",
+    "Doroti/src/Doroti.Skia.RuntimeEffects/DorotiSkiaRuntimeEffects.cs": "77746be2b5b16fcaabdf103e7c41ea1c752bb50514830502128f589c179e6309",
+    "Doroti/src/Doroti.Ui/FrameworkShaderAssets.cs": "c37a0c1bcb1177071a1eb97aa86b35d7d6174193f8ba0aba2904c7984ea31ee8",
+    "Doroti/src/Doroti.Ui/ImageFilter.VariableBlur.cs": "515751a5e51d69a32b0b8738955c62ef7571e15d49b785d3879f9d5dabc0ca23",
+    "samples/DorotiSampleApp2/src/VariableBlurPage.cs": "bf80cde342a1a786795bd2a92da3cf8d44e9618333158999bd9d5e63e65c25ce"
+  },
+  "defaultPathLifecycle": {
+    "rawDirectory": "temp/testing/variable-blur/ios-default-C-lifecycle",
+    "summary": {
+      "runtime": "NativeAOT",
+      "payloadSha256": "3b2d6b7afe6fee2eedccfb010d4ac294f27a3541457515291d2d603b7a189b75",
+      "benchmark": false,
+      "defaultPath": true,
+      "remoteEvidence": "Documents/ios-frame-loop-lifecycle-e5faaff4774443eda7b85fbb420e8fdc.json",
+      "environment": {
+        "DOROTI_VARIABLE_BLUR_PROFILE": "1",
+        "DOROTI_MAUI_EVIDENCE": "ios-frame-loop-lifecycle-e5faaff4774443eda7b85fbb420e8fdc.json"
+      },
+      "cycles": [
+        {
+          "cycle": 1,
+          "samePid": true,
+          "earlyCompleted": 584,
+          "lateCompleted": 904,
+          "continuedFrames": 320,
+          "earlyState": "drawing=True; suspended=False; faulted=False; release=False; gpuPending=0; generation=3; paused=False; needsDisplay=False; pulseRunning=True; ownerActive=True; frameRequested=True",
+          "lateState": "drawing=False; suspended=False; faulted=False; release=False; gpuPending=1; generation=3; paused=False; needsDisplay=False; pulseRunning=True; ownerActive=True; frameRequested=True",
+          "failedFrames": 0,
+          "terminalErrors": 0
+        },
+        {
+          "cycle": 2,
+          "samePid": true,
+          "earlyCompleted": 1060,
+          "lateCompleted": 1383,
+          "continuedFrames": 323,
+          "earlyState": "drawing=False; suspended=False; faulted=False; release=False; gpuPending=0; generation=4; paused=False; needsDisplay=False; pulseRunning=True; ownerActive=True; frameRequested=True",
+          "lateState": "drawing=True; suspended=False; faulted=False; release=False; gpuPending=0; generation=4; paused=False; needsDisplay=False; pulseRunning=True; ownerActive=True; frameRequested=True",
+          "failedFrames": 0,
+          "terminalErrors": 0
+        },
+        {
+          "cycle": 3,
+          "samePid": true,
+          "earlyCompleted": 1543,
+          "lateCompleted": 1867,
+          "continuedFrames": 324,
+          "earlyState": "drawing=False; suspended=False; faulted=False; release=False; gpuPending=0; generation=5; paused=False; needsDisplay=False; pulseRunning=True; ownerActive=True; frameRequested=True",
+          "lateState": "drawing=True; suspended=False; faulted=False; release=False; gpuPending=1; generation=5; paused=False; needsDisplay=False; pulseRunning=True; ownerActive=True; frameRequested=True",
+          "failedFrames": 0,
+          "terminalErrors": 0
+        }
+      ],
+      "hostSourceSha256": "97a06fb667a125742e087b504c3e352cf60f5a0dc0f01ccfdb23c0c8a6122275",
+      "pid": 6912,
+      "result": "passed"
+    },
+    "initialEarlyCompleted": 181,
+    "initialLateCompleted": 433,
+    "observedPolicy": "C",
+    "maximumPending": 2,
+    "failedFrames": 0,
+    "terminalErrors": 0
+  },
+  "normalLaunch": {
+    "rawDirectory": "temp/testing/variable-blur/ios-default-C-normal",
+    "pid": 6920,
+    "environmentOverrides": {},
+    "benchmark": false,
+    "profiling": false,
+    "runningAfterFourSeconds": true,
+    "process": {
+      "executable": "file:///private/var/containers/Bundle/Application/E430C3BA-A275-45E5-8002-80D74665CE22/DorotiSampleApp2.iOS.app/DorotiSampleApp2.iOS",
+      "processIdentifier": 6920
+    },
+    "launchCommand": [
+      "xcrun",
+      "devicectl",
+      "device",
+      "process",
+      "launch",
+      "--device",
+      "00008101-001144CA3642001E",
+      "--terminate-existing",
+      "--json-output",
+      "temp/testing/variable-blur/ios-default-C-normal/launch.json",
+      "dev.doroti.sample2"
+    ]
+  },
+  "validation": {
+    "cpuPolicyAndFrameContract": {
+      "result": "passed",
+      "defaultAndOverrideCases": 8,
+      "log": "temp/testing/variable-blur/ios-default-C-policy.log"
+    },
+    "pythonCollector": {
+      "result": "passed",
+      "tests": 8,
+      "log": "temp/testing/variable-blur/ios-default-C-collector.log"
+    },
+    "priorFastDefaultPixelAndPerformance": {
+      "report": "works/results/2026-10-02-fast-adaptive-default-summary.json",
+      "payloadDifferent": true,
+      "newPerformanceMatrixRun": false
+    },
+    "gitDiffCheck": "passed"
+  },
+  "limitations": [
+    "User confirmed general iPhone behavior; no quantitative physical-input protocol inferred.",
+    "No 10-minute Off comparison or complete repeated all-mode matrix performed on this payload.",
+    "Prior native generation/rotation and FPS evidence remain attributed to their original payloads."
+  ]
+}

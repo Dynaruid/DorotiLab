@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Doroti.Skia.RuntimeEffects;
 using SkiaSharp;
 
@@ -45,6 +46,7 @@ public sealed partial class SkiaGraphiteSession : IDisposable
         }
     }
 
+    public Action<string, double>? CpuStageMeasured { get; set; }
     public long Generation { get; }
     public (long Uploads, long Hits, long Discarded) ImageCacheDiagnostics
     {
@@ -353,9 +355,12 @@ public sealed partial class SkiaGraphiteSession : IDisposable
             _submissionAttempted = true;
             try
             {
+                var stageStart = Stopwatch.GetTimestamp();
                 _recording =
                     _session._recorder.Snap()
                     ?? throw new InvalidOperationException("Graphite Snap failed.");
+                _session.CpuStageMeasured?.Invoke("snap", Stopwatch.GetElapsedTime(stageStart).TotalMilliseconds);
+                stageStart = Stopwatch.GetTimestamp();
                 if (_vulkanTarget is not null)
                 {
                     if (
@@ -380,6 +385,7 @@ public sealed partial class SkiaGraphiteSession : IDisposable
                         );
                     }
                 }
+                _session.CpuStageMeasured?.Invoke("insert", Stopwatch.GetElapsedTime(stageStart).TotalMilliseconds);
                 if (_readbackInfo is { } info)
                 {
                     _session._pendingReadbacks++;
@@ -428,11 +434,13 @@ public sealed partial class SkiaGraphiteSession : IDisposable
                         throw;
                     }
                 }
+                stageStart = Stopwatch.GetTimestamp();
                 if (!_session._context.Submit(new SKGraphiteSubmitInfo { Sync = false }))
                 {
                     throw new InvalidOperationException("Graphite Submit failed.");
                 }
 
+                _session.CpuStageMeasured?.Invoke("submit", Stopwatch.GetElapsedTime(stageStart).TotalMilliseconds);
                 _session._vulkanOwner?.CheckHostState();
                 _session._images.Commit();
                 SkiaGpuSurfaces.CompleteRecording(_session._recorder, discarded: false);

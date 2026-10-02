@@ -37,7 +37,8 @@ public sealed partial record ImageFilter
     /// resolutionScale (0.125..1) is the minimum working resolution. By default,
     /// adaptiveResolution preserves full resolution at low sigma and blends into
     /// coarser levels as blur increases. Set adaptiveResolution to false to use
-    /// a fixed reduced resolution. The default scale 1 preserves full resolution.
+    /// a fixed reduced resolution. Defaults to fastGaussian with a minimum scale
+    /// of 0.25. Use resolutionScale: 1 and kernel: gaussian for full-resolution Gaussian.
     /// dualKawase instead shares downsample stages and reconstructs fixed-strength
     /// results before variance interpolation; it is not an exact Gaussian.
     /// Its own pyramid keeps Gaussian detail below two device pixels of sigma.
@@ -50,9 +51,9 @@ public sealed partial record ImageFilter
         int maxSamples = 32,
         TileMode tileMode = TileMode.clamp,
         Rect? bounds = null,
-        double resolutionScale = 1,
+        double resolutionScale = 0.25,
         bool adaptiveResolution = true,
-        VariableBlurKernel kernel = VariableBlurKernel.gaussian
+        VariableBlurKernel kernel = VariableBlurKernel.fastGaussian
     )
     {
         static bool Finite(double value) => double.IsFinite(value) && float.IsFinite((float)value);

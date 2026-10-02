@@ -1,4 +1,5 @@
 using System.Reflection;
+using Doroti.Host.Maui;
 using Doroti.Framework.Widgets;
 using Doroti.Skia.Rendering;
 using Doroti.Testing;
@@ -9,6 +10,22 @@ internal static class ShaderFramePipelineRegression
 {
     public static void Run()
     {
+        foreach (var (serial, pipeline, presentation, expectedPipeline, expectedAsync) in new[]
+        {
+            ((string?)null, (string?)null, (string?)null, true, true),
+            ("1", null, null, false, false),
+            (null, "0", null, false, false),
+            (null, null, "transaction", false, false),
+            ("1", "1", null, false, false),
+            (null, "1", "transaction", false, false),
+            ("1", "0", "async", false, true),
+            ("0", "1", "async", true, true),
+        })
+        {
+            var options = IosFrameLoopOptions.Resolve(serial, pipeline, presentation);
+            if (options.Pipeline != expectedPipeline || options.Asynchronous != expectedAsync)
+                throw new Exception("iOS default/serial/async policy selection lost its override contract.");
+        }
         using var tester = new WidgetTester(new Size(80, 60));
         var host = (ISkiaSceneRendererHost)typeof(WidgetTester)
             .GetField("_host", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(tester)!;
@@ -20,6 +37,79 @@ internal static class ShaderFramePipelineRegression
             renderer.Submit(1, new(scene, new(host.ViewEpoch, ++frameworkFrame, 80, 60)),
                 DorotiUiInvocation.Managed("ShaderFramePipelineRegression"));
         }
+        // Run the production host ordering with no scene submitted beforehand.
+        var callbacks = new MauiFrameCallbackQueue();
+        var callbackCount = 0;
+        void Prepare()
+        {
+            callbacks.Take()?.Invoke(TimeSpan.Zero);
+        }
+        callbacks.TrySchedule(_ =>
+        {
+            callbackCount++;
+            Submit([new("pushOffset", new object[] { 0d, 0d }), new("pop", null)]);
+            callbacks.TrySchedule(__ => callbackCount++);
+        });
+        if (callbacks.TrySchedule(_ => throw new Exception("Duplicate callback")))
+            throw new Exception("Framework requests did not coalesce.");
+        if (renderer.CanRecordShaderSceneAhead) throw new Exception("Expected an initially empty pending scene.");
+        var admission = IosFrameAdmissionPolicy.PrepareAndDecide(true, true, Prepare,
+            () => renderer.ShaderSceneAdmission, () => 1, false, false, false);
+        if (!admission.Admitted || !admission.FreshOnly || admission.Transaction || callbackCount != 1 || !callbacks.HasPending)
+            throw new Exception("Callback-created scene did not enter the host pipeline or re-request was consumed twice.");
+        var full = IosFrameAdmissionPolicy.PrepareAndDecide(true, true, Prepare,
+            () => renderer.ShaderSceneAdmission, () => 2, false, false, false);
+        if (full.Admitted || callbackCount != 2) throw new Exception("Two-frame cap blocked framework preparation or admitted a third frame.");
+        foreach (var native in new[] { (true, false), (false, true) })
+        {
+            var fallback = IosFrameAdmissionPolicy.PrepareAndDecide(true, true, Prepare,
+                () => SkiaShaderSceneAdmission.eligible, () => 1, native.Item1, native.Item2, false);
+            if (fallback.Admitted || fallback.FreshOnly || !fallback.Transaction)
+                throw new Exception("Native transition did not drain shader work first.");
+        }
+        foreach (var reason in new[] { SkiaShaderSceneAdmission.noNewScene, SkiaShaderSceneAdmission.nativeScene, SkiaShaderSceneAdmission.viewportMismatch })
+        {
+            var fallback = IosFrameAdmissionPolicy.PrepareAndDecide(true, true, Prepare, () => reason, () => 1, false, false, false);
+            if (fallback.Admitted || fallback.FreshOnly) throw new Exception("Replay/native/stale scene recorded ahead.");
+        }
+        var resize = IosFrameAdmissionPolicy.PrepareAndDecide(true, true,
+            () => throw new Exception("Rotation preparation bypassed its serial gate."),
+            () => SkiaShaderSceneAdmission.eligible, () => 1, false, false, true);
+        if (resize.Admitted || !resize.Transaction) throw new Exception("Resize did not keep serial transaction semantics.");
+        var failedSubmission = new IosFrameLifetime();
+        if (failedSubmission.CanRetire(false, false)) throw new Exception("Failed submission allowed early resource retirement.");
+        failedSubmission.MarkTerminalCommitted();
+        if (failedSubmission.CanRetire(false, false)) throw new Exception("Terminal commit/scheduling was mistaken for completion.");
+        failedSubmission.MarkRetired(true, false);
+        if (failedSubmission.CanRetire(true, false)) throw new Exception("Duplicate completion retired resources twice.");
+        var lostDevice = new IosFrameLifetime();
+        if (!lostDevice.CanRetire(false, true)) throw new Exception("Confirmed context loss did not allow retirement.");
+        lostDevice.MarkRetired(false, true);
+        var disposedCallbacks = new MauiFrameCallbackQueue();
+        disposedCallbacks.TrySchedule(_ => throw new Exception("Disposed callback executed."));
+        disposedCallbacks.Clear();
+        if (disposedCallbacks.Take() is not null) throw new Exception("Shutdown retained a framework callback.");
+        callbacks.TrySchedule(_ => Submit([new("inputShield", null)]));
+        var callbackNative = IosFrameAdmissionPolicy.PrepareAndDecide(true, true, Prepare,
+            () => renderer.ShaderSceneAdmission, () => 1, false, false, false);
+        if (callbackNative.Admitted || callbackNative.FreshOnly || !renderer.Diagnostics.PendingScene)
+            throw new Exception("Callback-created native scene was consumed before shader frames drained.");
+        Submit([new("pushOffset", new object[] { 0d, 0d }), new("pop", null)]);
+        ((IViewHostCapability)host).Resize(new Size(81, 60));
+        if (renderer.ShaderSceneAdmission != SkiaShaderSceneAdmission.viewportMismatch)
+            throw new Exception("A viewport generation change retained shader-ahead eligibility.");
+        ((IViewHostCapability)host).Resize(new Size(80, 60));
+        var slots = 2;
+        var afterCompletion = IosFrameAdmissionPolicy.PrepareAndDecide(true, true, () => slots--,
+            () => SkiaShaderSceneAdmission.eligible, () => slots, false, false, false);
+        if (!afterCompletion.Admitted) throw new Exception("Admission used a slot count captured before framework preparation.");
+        callbacks.TrySchedule(_ => throw new Exception("Raster wake ran a framework re-request in the same pulse."));
+        var rasterWake = IosFrameAdmissionPolicy.PrepareAndDecide(true, true,
+            () => callbacks.Take()?.Invoke(TimeSpan.Zero), () => SkiaShaderSceneAdmission.eligible,
+            () => 1, false, false, false, prepareFramework: false);
+        if (!rasterWake.Admitted || !rasterWake.FreshOnly || !callbacks.HasPending)
+            throw new Exception("Prepared-scene wake failed admission or consumed the next pulse callback.");
+        callbacks.Clear();
         var variable = new SceneCommand("backdropFilter", null)
         {
             HostPayload = new SceneBackdropFilterPayload(ImageFilterSnapshot.Capture(

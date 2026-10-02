@@ -1,6 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><OutputType>Exe</OutputType><DefineConstants>$(DefineConstants);DOROTI_REPO_TESTS</DefineConstants></PropertyGroup>
   <ItemGroup>
+    <Compile Include="../../src/Doroti.Host.Maui/IosFrameLifetime.cs" Link="IosFrameLifetime.cs" />
+    <Compile Include="../../src/Doroti.Host.Maui/IosFrameAdmissionPolicy.cs" Link="IosFrameAdmissionPolicy.cs" />
+    <Compile Include="../../src/Doroti.Host.Maui/IosFrameLoopOptions.cs" Link="IosFrameLoopOptions.cs" />
+    <Compile Include="../../src/Doroti.Host.Maui/MauiFrameCallbackQueue.cs" Link="MauiFrameCallbackQueue.cs" />
     <ProjectReference Include="../../src/Doroti.Testing/Doroti.Testing.csproj" />
     <ProjectReference Include="../../src/Doroti.Desktop/Doroti.Desktop.csproj" />
     <ProjectReference Include="../../src/Doroti.Framework.Cupertino/Doroti.Framework.Cupertino.csproj" />

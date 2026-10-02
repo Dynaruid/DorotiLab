@@ -9,13 +9,13 @@ Cupertino 스타일의 독립 Doroti 샘플 앱입니다. 공통 C# UI와 Androi
 
 Variable Blur 페이지는 리스트 상단 180 논리 단위에 `BackdropFilter`와
 `ImageFilterConfig.CreateVariableBlur(startSigma: 강도, endSigma: 0, resolutionScale: 0.25,
-adaptiveResolution: false, kernel: VariableBlurKernel.gaussian)`를 기본으로 적용합니다.
+adaptiveResolution: true, kernel: VariableBlurKernel.fastGaussian)`를 기본으로 적용합니다.
 라디오 버튼으로 다음 다섯 가지 모드를 비교할 수 있습니다.
 
 - **Full quality**: 전체 구간을 원본 해상도로 처리합니다.
 - **Adaptive**: 약한 블러와 선명한 끝부분의 세부를 보존할 때 선택합니다. 약한 블러는 원본 해상도, 강한 블러는 1/2·1/4 해상도로 처리하고 경계를 혼합합니다.
-- **Fast adaptive**: 강도에 맞춰 Gaussian 가중치를 계산하고 인접 샘플 쌍을 bilinear 샘플링으로 묶습니다. 강한 구간에서도 윤곽이 여러 장 겹치지 않도록 샘플 수를 늘립니다. 작업 해상도 sigma 2~3에서는 기존 커널과 혼합합니다. 과거 고정 7회 커널보다 강한 블러의 처리 비용이 증가할 수 있습니다.
-- **Fixed 1/4** (기본): 부드러운 스크롤을 우선하는 선택입니다. 전체 구간을 가로·세로 각각 약 1/4 해상도의 Gaussian으로 처리합니다. 약한 구간과 선명한 끝부분도 축소 입력을 사용해 작은 글자·가는 선·사진 세부가 부드러워질 수 있습니다.
+- **Fast adaptive** (기본): 강도에 맞춰 Gaussian 가중치를 계산하고 인접 샘플 쌍을 bilinear 샘플링으로 묶습니다. 강한 구간에서도 윤곽이 여러 장 겹치지 않도록 샘플 수를 늘립니다. 작업 해상도 sigma 2~3에서는 기존 커널과 혼합합니다. 과거 고정 7회 커널보다 강한 블러의 처리 비용이 증가할 수 있습니다.
+- **Fixed 1/4**: 부드러운 스크롤을 우선하는 선택입니다. 전체 구간을 가로·세로 각각 약 1/4 해상도의 Gaussian으로 처리합니다. 약한 구간과 선명한 끝부분도 축소 입력을 사용해 작은 글자·가는 선·사진 세부가 부드러워질 수 있습니다.
 - **Dual Kawase**: 강도별 결과를 공유 피라미드에서 생성하고 분산을 보간합니다. 선명한 끝부분에는 Gaussian을 사용합니다. 정확한 Gaussian과는 다른 근사 모드입니다.
 
 별도의 스위치로 블러 전체를 켜고 끕니다.
@@ -347,8 +347,8 @@ python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/varia
 앱 설치는 기존 `dev.doroti.sample2`를 업데이트하며 실행마다 해당 앱을 재시작합니다.
 
 수동 프로파일링에서는 `DOROTI_VARIABLE_BLUR_BENCHMARK=off|full|adaptive|fast|fixed|kawase`로
-탭·모드·반복 경로를 선택합니다. 미설정 시 일반 UI/Fixed 기본값을 사용합니다.
-Off로 benchmark를 시작한 뒤 블러를 다시 켜도 초기 선택은 Fixed입니다.
+탭·모드·반복 경로를 선택합니다. 미설정 시 일반 UI/Fast adaptive 기본값을 사용합니다.
+Off로 benchmark를 시작한 뒤 블러를 다시 켜도 초기 선택은 Fast adaptive입니다.
 정지 화면 비교에는 `DOROTI_VARIABLE_BLUR_BENCHMARK_STATIC=1`을 함께 지정하고,
 강도는 `DOROTI_VARIABLE_BLUR_BENCHMARK_SIGMA=0..32`로 지정할 수 있습니다.
 정지 모드는 자동 스크롤 수집기와 함께 사용하지 않습니다.
@@ -362,19 +362,27 @@ Dual Kawase는 공유 down 체인에서 강도별 결과를 up 재구성하고, 
 명시적 근사 모드입니다. 두 device pixel 이하에서는 Gaussian을 사용해 선명한 끝부분을 유지합니다.
 Clamp·회전/반사/균일 scale·최대 약 124 device sigma를 지원하며 다른 설정은 Gaussian으로 대체합니다.
 `VariableBlurKernel.dualKawase`는 자체 해상도 피라미드를 사용하므로 `resolutionScale`과 독립적입니다.
-공개 API의 Gaussian 기본값은 유지합니다. [전체 재평가](../../work3.md)와
-[실행·측정 결과](../../works/results/2026-10-01-variable-blur-reassessment.md)를 참조합니다.
-공개 `ImageFilter.variableBlur`와 `ImageFilterConfig.CreateVariableBlur`의 원본 해상도 기본값은 그대로이며,
-Fixed는 이 샘플의 초기 선택입니다. [Fixed 검증 결과](../../works/results/2026-10-01-variable-blur-fixed-adoption.md)에
-현재 iPhone 12의 반복 성능, 정지 화질과 남은 수동 검증을 구분해 기록합니다.
+공개 `ImageFilter.variableBlur`와 `ImageFilterConfig.CreateVariableBlur` 및 샘플의 초기 선택은
+**Fast adaptive**입니다. 기본 조합은 `resolutionScale: 0.25`, `adaptiveResolution: true`,
+`kernel: VariableBlurKernel.fastGaussian`입니다. 약한 구간의 원본 해상도와 선명한 끝부분을 보존합니다.
+원본 해상도 Gaussian은 `resolutionScale: 1, kernel: VariableBlurKernel.gaussian`으로 명시할 수 있습니다.
+Fixed와 Dual Kawase도 개별 옵션으로 선택할 수 있습니다.
+이전 [Fixed 검증](../../works/results/2026-10-01-variable-blur-fixed-adoption.md)은 당시 기본 선택의 기록이며,
+[현재 iOS 프레임 연결 결과](../../works/results/2026-10-02-ios-frame-loop.md)와 구분합니다.
 
 `--intermediate`는 Adaptive의 중간 출력 합성을, `--full-capture`는 전체 캡처를 강제하는 같은 바이너리 A/B 옵션입니다.
 `--owned-subtrees`는 셰이더 없는 형제 scope도 별도 Surface로 처리하며,
 `--full-stages`는 Kawase 강도 결과를 전체 캡처에 재구성합니다. 기본 실행은 native 형제 scope와 필요한 띠만 사용합니다.
 `--full-bands` / `--full-detail`은 Gaussian 띠·선명한 구간의 기존 전체 크기 backing을 유지하는 A/B 옵션입니다.
-`--pipeline-frames`는 iOS의 새 셰이더·native 없는 장면에 한해 최대 2개 GPU frame을 허용하는 실험입니다.
-1회 smoke에서 추가 FPS 이득을 확인하지 못해 기본 비활성화했습니다. 직접 실행할 때는 `DOROTI_VARIABLE_BLUR_PIPELINE=1`로 켭니다.
-`--serial-frames`는 실험을 끄고 GPU 완료 후 기록하는 기존 직렬 프레임 기준을 강제합니다.
+iOS는 새 shader-only 장면에 최대 2개 GPU frame과 비동기 표시를 사용하는 C 경로가 기본입니다.
+native·회전·replay는 직렬 admission과 필요한 transaction 표시를 유지합니다.
+`--pipeline-frames`는 같은 경로를 명시적으로 선택합니다.
+직접 실행 시 `DOROTI_VARIABLE_BLUR_SERIAL_FRAMES=1` 또는 `DOROTI_VARIABLE_BLUR_PIPELINE=0`으로
+기존 A 경로를 선택할 수 있습니다. `DOROTI_IOS_SHADER_PRESENTATION=transaction`도 A를 선택하며,
+serial 설정에 `DOROTI_IOS_SHADER_PRESENTATION=async`를 함께 지정하면 비교용 B 경로입니다.
+프레임 준비·표시·복귀 수정과 이후 실기기 결과는 [프레임 연결 결과](../../works/results/2026-10-02-ios-frame-loop.md)를 참조합니다.
+수집기도 별도 정책 옵션이 없으면 C를 측정합니다.
+`--serial-frames`는 GPU 완료 후 기록하는 기존 직렬 프레임 기준을 강제합니다.
 `--sigma 32`로 최대 강도를 측정할 수 있습니다.
 수집기의 평균 FPS는 warm 구간의 실제 표시 간격으로 계산하며 CPU stage나 GPU 실행 시간에서 추정하지 않습니다.
 

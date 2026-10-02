@@ -150,7 +150,7 @@ public sealed class MauiFrameworkHost : IDisposable
         );
 #if IOS && !MACCATALYST
         if (surface is MauiSkglSurface shaderSurface)
-            shaderSurface.SetShaderSceneQuery(() => graphics.CanRecordShaderSceneAhead);
+            shaderSurface.SetFramePreparation(host.PrepareFrame, () => graphics.ShaderSceneAdmission, () => graphics.PreparedScene, () => host.HasPendingFrame);
 #endif
         if (surface is IMauiGraphiteSurface graphiteSurface)
         {
@@ -372,6 +372,11 @@ public sealed class MauiFrameworkHost : IDisposable
 
         value.Host.EndPaint();
     }
+
+    internal MauiPaintCompletion? PreparedScene(ulong viewId) => _views[viewId].Graphics.PreparedScene;
+    internal bool CanPresentWithoutNativeComposition(ulong viewId) => _views[viewId].Graphics.CanPresentWithoutNativeComposition;
+    internal void SetPaintCpuStageMeasured(ulong viewId, Action<string, double>? measure) =>
+        _views[viewId].Graphics.PaintCpuStageMeasured = measure;
 
     internal MauiPaintCompletion? PaintSkiaSurface(
         ulong viewId,

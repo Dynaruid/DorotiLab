@@ -248,7 +248,12 @@ internal sealed class MauiSkiaCapabilities
     }
 
     internal void AttachSurface(Action invalidate) => _renderer.AttachSurface(invalidate);
-    internal bool CanRecordShaderSceneAhead => _renderer.CanRecordShaderSceneAhead;
+    internal bool CanPresentWithoutNativeComposition => _renderer.CanPresentWithoutNativeComposition;
+    internal Action<string, double>? PaintCpuStageMeasured { set => _renderer.PaintCpuStageMeasured = value; }
+    internal MauiPaintCompletion? PreparedScene => _renderer.PendingSceneCompletion is { } value
+        ? new(value.InputSequence, value.SceneSequence, value.SurfaceGeneration, value.IsNewFrame, value.Descriptor)
+        : null;
+    internal SkiaShaderSceneAdmission ShaderSceneAdmission => _renderer.ShaderSceneAdmission;
 
     public void Submit(
         ulong viewId,
@@ -394,7 +399,12 @@ internal sealed class MauiSkiaCapabilities
         private readonly MauiHostAdapter _host = host;
 
         public long InputSequence => _host.InputSequence;
-        public long SurfaceGeneration => _host.Snapshot.SurfaceGeneration;
+        public long SurfaceGeneration =>
+#if IOS && !MACCATALYST
+            _host.CurrentSurfaceGeneration;
+#else
+            _host.Snapshot.SurfaceGeneration;
+#endif
         public DorotiViewEpoch ViewEpoch => _host.ViewEpoch;
         public DorotiResizeEpoch ResizeTarget => _host.ResizeTarget;
         public PlatformConfiguration Configuration => _host.Configuration;

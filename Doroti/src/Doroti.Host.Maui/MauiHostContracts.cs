@@ -46,7 +46,9 @@ public sealed record MauiSurfaceSnapshot(
     ViewPadding RawSystemGestureInsets = default,
     long PresentedDrawables = 0,
     IReadOnlyList<double>? PresentationIntervalsMilliseconds = null,
-    long? MetalAllocatedBytes = null
+    long? MetalAllocatedBytes = null,
+    IosFrameLoopSnapshot? IosFrameLoop = null,
+    string? IosFrameLoopState = null
 );
 
 public sealed record MauiFrameDiagnostics(

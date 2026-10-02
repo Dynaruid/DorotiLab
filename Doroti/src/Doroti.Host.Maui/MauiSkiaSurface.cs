@@ -40,8 +40,15 @@ internal sealed class MauiSkiaPaintContext(
     internal bool SkipRaster { get; set; }
     internal bool SkipPresent { get; set; }
     internal bool RequireNewShaderScene { get; set; }
+    internal bool FrameworkPrepared { get; set; }
+    internal bool ShaderOnly { get; set; }
+    internal Action<string, double>? CpuStageMeasured { get; set; }
+    internal Action<MauiPaintCompletion>? ScenePrepared { get; set; }
     internal MauiPaintCompletion? Completion { get; set; }
 }
+
+internal sealed record MauiFramePreparation(object? ContextIdentity, int PixelWidth, int PixelHeight,
+    double Density, long SurfaceGeneration, string NativeViewType, string GraphicsBackend, TimeSpan Timestamp, Action<string, double>? CpuStageMeasured = null);
 
 /// <summary>
 /// Small platform surface boundary shared by the SKGLView and AppKit Metal paths.
@@ -149,6 +156,7 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
     public event Action<KeyData>? Key;
     public event Action<bool>? FocusChanged;
     public event Action<DorotiResizeEpoch?>? SizeChanged;
+    internal event Action? FrameworkFramePrepared;
     public event Action? GpuResourcesReleasing;
 
     private void HandleGraphiteRelease() => GpuResourcesReleasing?.Invoke();
@@ -167,9 +175,20 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
         Paint?.Invoke(context);
     }
 
-    internal void SetShaderSceneQuery(Func<bool> query)
+    internal void SetFramePreparation(Action<MauiFramePreparation> prepare, Func<Doroti.Skia.Rendering.SkiaShaderSceneAdmission> query, Func<MauiPaintCompletion?> preparedScene, Func<bool> frameRequested)
     {
-        if (_view is DorotiGraphiteView graphite) graphite.NewShaderSceneAvailable = query;
+        if (_view is DorotiGraphiteView graphite)
+        {
+            graphite.ShaderSceneAdmission = query;
+            graphite.PreparedScene = preparedScene;
+            graphite.FrameworkFrameRequested = frameRequested;
+            graphite.PrepareFrameworkFrame = metrics =>
+            {
+                PublishDrawableMetrics(metrics.PixelWidth, metrics.PixelHeight, metrics.Density);
+                try { prepare(metrics); }
+                finally { FrameworkFramePrepared?.Invoke(); }
+            };
+        }
     }
 
     public void InvalidateSurface() => _view.InvalidateSurface();
@@ -439,7 +458,10 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
             // Native GPU owner releases while renderer callbacks are still attached.
             _view.Handler?.DisconnectHandler();
             graphite.GraphitePaint -= HandleGraphitePaint;
-            graphite.NewShaderSceneAvailable = null;
+            graphite.ShaderSceneAdmission = null;
+            graphite.PrepareFrameworkFrame = null;
+            graphite.PreparedScene = null;
+            graphite.FrameworkFrameRequested = null;
             graphite.NativePointer -= HandleNativePointer;
             graphite.GraphitePresentCompleted -= HandleGraphiteCompleted;
             graphite.GraphiteFailed -= HandleGraphiteFailed;

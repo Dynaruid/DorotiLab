@@ -39,6 +39,22 @@ internal static class RenderingRegressions
             if (dialogTester.text("Dialog frame").Count != 0) throw new Exception("Closed dialog retained its route.");
         }
         Console.WriteLine("PASS: pointer-opened dialog intermediate fade frame, modal hit testing and route teardown (CPU).");
+        // Both public entry points must resolve to the same Fast adaptive filter,
+        // including the normalized endpoints and bounds used by BackdropFilter.
+        var defaultBounds = new Rect(10, 20, 210, 120);
+        var defaultConfig = Doroti.Framework.Rendering.ImageFilterConfig.CreateVariableBlur()
+            .resolve(new Doroti.Framework.Rendering.ImageFilterContext(defaultBounds));
+        var defaultDirect = ImageFilter.variableBlur(new(10, 20), new(10, 120), bounds: defaultBounds);
+        var explicitFast = ImageFilter.variableBlur(new(10, 20), new(10, 120), bounds: defaultBounds,
+            resolutionScale: .25, adaptiveResolution: true, kernel: VariableBlurKernel.fastGaussian);
+        if (ImageFilterSnapshot.Capture(defaultConfig) != ImageFilterSnapshot.Capture(explicitFast)
+            || ImageFilterSnapshot.Capture(defaultDirect) != ImageFilterSnapshot.Capture(explicitFast))
+            throw new Exception("VariableBlur defaults diverged between the public filter and normalized config.");
+        var fullQuality = ImageFilter.variableBlur(new(10, 20), new(10, 120), bounds: defaultBounds,
+            resolutionScale: 1, kernel: VariableBlurKernel.gaussian);
+        if (fullQuality.VariableBlur is not { ResolutionScale: 1, Kernel: VariableBlurKernel.gaussian }
+            || ImageFilterSnapshot.Capture(fullQuality) == ImageFilterSnapshot.Capture(defaultDirect))
+            throw new Exception("Explicit full-resolution Gaussian was lost after default adoption.");
         // An independent expected capture rectangle protects halo rounding and pixel phase.
         var settings = new VariableBlurSettings(new(0, 0), new(0, 100), 4, 0, 32, .25, true, VariableBlurKernel.gaussian);
         var capture = SkiaSceneRenderer.VariableBlurCaptureBounds(new SKRect(100, 80, 180, 140), settings,

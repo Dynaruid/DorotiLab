@@ -63,7 +63,8 @@ internal sealed class MauiHostAdapter
     private readonly IMauiSkiaSurface _surface;
     private readonly MauiViewEnvironment _environment;
     private readonly object _gate = new();
-    private Action<TimeSpan>? _pendingFrameCallback;
+    private long _frameRequestedAt;
+    private readonly MauiFrameCallbackQueue _frameCallbacks = new();
     private readonly IMauiSemanticsBridge _semantics;
     private readonly MauiTextInputBridge _textInput;
     private readonly Dictionary<ulong, (double X, double Y)> _pointerPositions = [];
@@ -160,6 +161,7 @@ internal sealed class MauiHostAdapter
             RawSystemGestureInsets = _environment.Gestures,
         };
 
+    internal long CurrentSurfaceGeneration => Interlocked.Read(ref _surfaceGeneration);
     internal long InvalidationsRequested => Interlocked.Read(ref _invalidationsRequested);
     internal long InvalidationsCoalesced => Interlocked.Read(ref _invalidationsCoalesced);
     internal long NativePointerEvents => Interlocked.Read(ref _nativePointerEvents);
@@ -296,12 +298,12 @@ internal sealed class MauiHostAdapter
         {
             // Keep one host request pending. A delayed native paint must not
             // accumulate framework callbacks behind it.
-            if (_pendingFrameCallback is not null)
+            if (!_frameCallbacks.TrySchedule(callback))
             {
                 Interlocked.Increment(ref _frameRequestsCoalesced);
                 return;
             }
-            _pendingFrameCallback = callback;
+            _frameRequestedAt = System.Diagnostics.Stopwatch.GetTimestamp();
             requestFrame = true;
         }
         if (!requestFrame)
@@ -364,48 +366,8 @@ internal sealed class MauiHostAdapter
             _invalidatePending = false;
             _isPainting = true;
         }
-        var previous = Snapshot;
-        if (
-            paint.ContextIdentity is not null
-            && !ReferenceEquals(paint.ContextIdentity, _lastContext)
-        )
-        {
-            _lastContext = paint.ContextIdentity;
-            _contextGeneration++;
-            _surfaceGeneration++;
-        }
-        var pixelSizeChanged =
-            previous.PixelWidth != paint.PixelWidth || previous.PixelHeight != paint.PixelHeight;
-        if (paint.SurfaceGeneration > 0)
-        {
-            _surfaceGeneration = paint.SurfaceGeneration;
-        }
-        else if (pixelSizeChanged)
-        {
-            _surfaceGeneration++;
-        }
-
-        var density = MauiViewEnvironment.ValidScale(paint.Density);
-        _density = density;
-        var expectedWidth = Math.Max(0, checked((int)Math.Round(_logicalSize.width * density)));
-        var expectedHeight = Math.Max(0, checked((int)Math.Round(_logicalSize.height * density)));
-        _snapshot = new(
-            paint.PixelWidth,
-            paint.PixelHeight,
-            density,
-            _metricsGeneration,
-            _contextGeneration,
-            _surfaceGeneration,
-            paint.NativeViewType,
-            paint.GraphicsBackend,
-            LogicalWidth: _logicalSize.width,
-            LogicalHeight: _logicalSize.height
-        );
-        _ = expectedWidth == paint.PixelWidth && expectedHeight == paint.PixelHeight;
-        if (previous.SurfaceGeneration != _surfaceGeneration)
-        {
-            MetricsChanged?.Invoke(Metrics);
-        }
+        UpdatePaintMetrics(new(paint.ContextIdentity, paint.PixelWidth, paint.PixelHeight,
+            paint.Density, paint.SurfaceGeneration, paint.NativeViewType, paint.GraphicsBackend, DorotiFrameClock.Now));
 #if !WINDOWS
         TimeSpan? nativeVsyncTimestamp = null;
 #endif
@@ -417,8 +379,72 @@ internal sealed class MauiHostAdapter
         }
 #endif
 #if !WINDOWS
-        DispatchPendingFrame(nativeVsyncTimestamp ?? DorotiFrameClock.Now);
+        if (!paint.FrameworkPrepared) DispatchPendingFrame(nativeVsyncTimestamp ?? DorotiFrameClock.Now, paint.CpuStageMeasured);
 #endif
+    }
+
+    internal bool HasPendingFrame => _frameCallbacks.HasPending;
+
+    internal void PrepareFrame(MauiFramePreparation metrics)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        lock (_gate)
+        {
+            _invalidatePending = false;
+            _isPainting = true;
+        }
+        try
+        {
+            UpdatePaintMetrics(metrics);
+            DispatchPendingFrame(metrics.Timestamp, metrics.CpuStageMeasured);
+        }
+        finally { EndPaint(); }
+    }
+
+    private void UpdatePaintMetrics(MauiFramePreparation metrics)
+    {
+        var previous = _snapshot;
+        if (
+            metrics.ContextIdentity is not null
+            && !ReferenceEquals(metrics.ContextIdentity, _lastContext)
+        )
+        {
+            _lastContext = metrics.ContextIdentity;
+            _contextGeneration++;
+            _surfaceGeneration++;
+        }
+        var pixelSizeChanged =
+            previous.PixelWidth != metrics.PixelWidth || previous.PixelHeight != metrics.PixelHeight;
+        if (metrics.SurfaceGeneration > 0)
+        {
+            _surfaceGeneration = metrics.SurfaceGeneration;
+        }
+        else if (pixelSizeChanged)
+        {
+            _surfaceGeneration++;
+        }
+
+        var density = MauiViewEnvironment.ValidScale(metrics.Density);
+        _density = density;
+        var expectedWidth = Math.Max(0, checked((int)Math.Round(_logicalSize.width * density)));
+        var expectedHeight = Math.Max(0, checked((int)Math.Round(_logicalSize.height * density)));
+        _snapshot = new(
+            metrics.PixelWidth,
+            metrics.PixelHeight,
+            density,
+            _metricsGeneration,
+            _contextGeneration,
+            _surfaceGeneration,
+            metrics.NativeViewType,
+            metrics.GraphicsBackend,
+            LogicalWidth: _logicalSize.width,
+            LogicalHeight: _logicalSize.height
+        );
+        _ = expectedWidth == metrics.PixelWidth && expectedHeight == metrics.PixelHeight;
+        if (previous.SurfaceGeneration != _surfaceGeneration)
+        {
+            MetricsChanged?.Invoke(Metrics);
+        }
     }
 
     internal void EndPaint()
@@ -436,7 +462,7 @@ internal sealed class MauiHostAdapter
         {
             _isPainting = false;
 #if WINDOWS
-            if (_pendingFrameCallback is null && _compositionVsyncRequested)
+            if (!_frameCallbacks.HasPending && _compositionVsyncRequested)
             {
                 unsubscribeVsync = true;
             }
@@ -551,7 +577,7 @@ internal sealed class MauiHostAdapter
         {
             if (
                 _disposed
-                || (_pendingFrameCallback is null && _androidActiveTouchPointers.Count == 0)
+                || (!_frameCallbacks.HasPending && _androidActiveTouchPointers.Count == 0)
             )
             {
                 _androidFrameCallbackPosted = false;
@@ -575,7 +601,7 @@ internal sealed class MauiHostAdapter
             }
 
             var touchActive = _androidActiveTouchPointers.Count > 0;
-            if (_pendingFrameCallback is null)
+            if (!_frameCallbacks.HasPending)
             {
                 // Keep the display waiter armed while a finger is down. Input
                 // arriving late in this pulse can then use the very next pulse
@@ -678,7 +704,7 @@ internal sealed class MauiHostAdapter
     {
         lock (_gate)
         {
-            if (!_compositionVsyncRequested || _pendingFrameCallback is not null)
+            if (!_compositionVsyncRequested || _frameCallbacks.HasPending)
             {
                 return;
             }
@@ -734,7 +760,7 @@ internal sealed class MauiHostAdapter
         var timestamp = DorotiFrameClock.Now;
         lock (_gate)
         {
-            if (_pendingFrameCallback is null || _invalidatePending)
+            if (!_frameCallbacks.HasPending || _invalidatePending)
             {
                 return;
             }
@@ -755,13 +781,14 @@ internal sealed class MauiHostAdapter
     }
 #endif
 
-    private void DispatchPendingFrame(TimeSpan timestamp)
+    private void DispatchPendingFrame(TimeSpan timestamp, Action<string, double>? measure = null)
     {
         Action<TimeSpan>? callback;
+        long requestedAt;
         lock (_gate)
         {
-            callback = _pendingFrameCallback;
-            _pendingFrameCallback = null;
+            callback = _frameCallbacks.Take();
+            requestedAt = _frameRequestedAt;
         }
         if (callback is null)
         {
@@ -770,7 +797,10 @@ internal sealed class MauiHostAdapter
 
         var now = DorotiFrameClock.ClampForward(timestamp, _lastVsyncTimestamp);
         _lastVsyncTimestamp = now;
+        measure?.Invoke("callback-wait", System.Diagnostics.Stopwatch.GetElapsedTime(requestedAt).TotalMilliseconds);
+        var callbackStart = System.Diagnostics.Stopwatch.GetTimestamp();
         callback(now);
+        measure?.Invoke("callback", System.Diagnostics.Stopwatch.GetElapsedTime(callbackStart).TotalMilliseconds);
     }
 
 #if WINDOWS
@@ -778,7 +808,7 @@ internal sealed class MauiHostAdapter
     {
         lock (_gate)
         {
-            if (_disposed || _pendingFrameCallback is null)
+            if (_disposed || !_frameCallbacks.HasPending)
             {
                 return;
             }
@@ -917,7 +947,7 @@ internal sealed class MauiHostAdapter
 
         lock (_gate)
         {
-            _pendingFrameCallback = null;
+            _frameCallbacks.Clear();
             _invalidateAfterPaint = false;
             _isPainting = false;
         }

@@ -16,7 +16,7 @@ internal sealed class VariableBlurPageState : State<VariableBlurPage>
 {
     private const double OverlayHeight = 180;
     private bool _enabled = true;
-    private string _mode = "fixed";
+    private string _mode = "fast";
     private double _sigma = 20;
     private readonly ScrollController _scrollController = new();
 
@@ -36,7 +36,7 @@ internal sealed class VariableBlurPageState : State<VariableBlurPage>
             throw new ArgumentException(
                 "DOROTI_VARIABLE_BLUR_BENCHMARK must be off/full/adaptive/fast/fixed/kawase."
             );
-        _mode = mode == "off" ? "fixed" : mode;
+        _mode = mode == "off" ? "fast" : mode;
         _enabled = mode != "off";
         if (Environment.GetEnvironmentVariable("DOROTI_VARIABLE_BLUR_BENCHMARK_SIGMA") is { } sigma)
         {
