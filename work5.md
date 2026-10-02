@@ -166,6 +166,7 @@ terminal은 한 번만 처리한다. 역순 completion에서도 오래된 장면
 - [x] bridge ABI가 바뀌면 version/struct size 검사를 갱신하고 Sample2·Testbed·템플릿의 native 소스를 함께 맞춘다.
 - [x] SDK·새 템플릿·CMake 기본값을 Quick/Graphite로 맞추고, Quick/WebEngine/Graphite/Desktop 옵션 오류와 누락된 native build/publish 산출물을 거절한다. 옵션별 캐시와 `publish --no-build` 경계를 회귀검사한다.
 - [x] Linux package-only 새 템플릿의 무설정 C, Release publish·설치/업데이트/제거, Wayland 20회 resize와 Qt consumer 종료 회수를 검증한다. 확대 배율 실측 DPR 2.25 및 xcb 입력/resize smoke를 별도 기록한다.
+- [x] Linux Qt Debug 핫리로드를 CLI·VS Code에 연결한다. 실제 metadata update의 PID/State/입력값/스크롤 유지, 컴파일 오류 복구, 명시 Restart와 Stop을 검증한다. 상세 범위는 §15와 [핫리로드 결과](works/results/2026-10-02-linux-qt-hot-reload.md)를 따른다.
 - [ ] 기본 지원 Wayland 환경의 resize·DPR·minimize/restore·WebView/IME와 지원하는 대체 환경을 확인한다. shutdown 뒤 미회수 GPU/Qt lease가 남지 않는지 검사한다.
 
 **완료 조건:** Qt consumer 완료를 증명하는 비동기 수명이 실제 연결되고, 기본 Quick 경로에서 C 동작·화질·native 합성·복귀를 통과한다.
@@ -267,3 +268,19 @@ Apple 검증 관련 미체크 항목은 **SKIPPED(사용자 요청)**이며 재�
 검증은 Ubuntu 26.04, .NET SDK 10.0.400/runtime 10.0.11, Qt 6.10.2, Wayland/KDE와 llvmpipe에서 수행했다. Testbed Debug·Sample2 Release build, CPU 회귀, Vulkan 31조건 A/C 픽셀·두 recording, Wayland 전체 smoke·20회 resize, 확대 배율(DPR 2.25), xcb 입력/resize, Sample2 default/A/B/C, OpenGL/xcb serial, 격리 NuGet-only 템플릿 publish·설치 검사를 통과했다. Sample2 무설정 C에서 pending 최대 2를 관찰했고 종료 consumer 제출/완료가 일치했다.
 
 물리 GPU·실제 표시 FPS/overlap·30회 성능 비교·물리 IME/Orca·동적 DPR/화면 이동·최소화/복원·10분 사용·clean OS 배포는 별도 인수다. 확대 배율 실행을 동적 DPR 전환으로, xcb smoke를 기존 Qt WSI 경쟁 조건 해결로 간주하지 않는다. OpenGL Wayland 문제도 수정 완료로 표시하지 않는다.
+
+## 15. Linux Qt 핫리로드 — 2026-10-02
+
+추가 요청에 따라 Linux Qt를 `describe`/`dev` 및 VS Code 개발 대상 목록에 연결했다. `dev -Platform linux`는 `DorotiQtDevelopment=true`, 최적화하지 않은 Debug·portable 심볼·startup hook을 사용한다. Release/AOT/trim/single-file 등의 개발 실행은 거절한다. 기존 Quick/Graphite·공통 C 프레임 정책은 유지한다.
+
+현재 환경의 inotify 인스턴스 제한(128)으로 watcher 시작 실패를 재현하여, Linux `dev`는 `DOTNET_USE_POLLING_FILE_WATCHER`가 없을 때 `1`을 설정한다. 명시한 환경 설정은 보존한다. 지원하지 않는 수정은 기존 앱을 유지하며 사용자가 Restart를 선택할 때 새 프로세스와 상태를 만든다.
+
+CLI와 격리 프로필에 설치한 VSIX에서 실제 C# method-body 변경, 같은 PID/State·카운터·한글 텍스트·스크롤 유지, 컴파일 오류 복구, rude edit, 명시 Restart 및 Stop을 통과했다. 검사에는 별도 생성한 소스 템플릿과 repository ProjectReference를 사용했다. NuGet-only 핫리로드, 여러 창·대체 renderer, native C++/QML/assets 변경, 물리 입력이나 실제 표시 성능 인수로 확대하지 않는다.
+
+검증한 로컬 확장 `doroti-local.doroti@0.1.0`을 현재 VS Code에 설치했고 `.vscode/settings.json`에 이 워크스페이스의 CLI와 .NET 경로를 구성했다. **Doroti: Select Project → Select Target(`linux`) → Run**으로 시작하고 C# 저장 또는 **Hot Reload**로 반영한다.
+
+```sh
+pwsh -NoProfile -File Doroti/eng/doroti.ps1 dev -App samples/DorotiSampleApp2 -Platform linux
+```
+
+[상세 실행 결과](works/results/2026-10-02-linux-qt-hot-reload.md) · [개발 실행 계약](Doroti/docs/development-hot-reload.md).

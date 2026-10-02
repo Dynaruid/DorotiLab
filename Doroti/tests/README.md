@@ -118,6 +118,23 @@ This macOS Metal command saves 14 PNGs at DPR 3 with sigma 0/1/2/4/8/20/32, smal
 
 For the installed VSIX and native metadata-update tests, use the commands in [development sessions](../docs/development-hot-reload.md). [Rendering baselines](../docs/rendering-baselines.md) specifies measurement boundaries and prospective budgets. Testbed `DOROTI_SAMPLE=reload` provides a counter, input and long list for manual reload testing.
 
+Linux Qt metadata Hot Reload uses an isolated source-template fixture and keeps
+user sample sources untouched:
+
+```sh
+python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/linux_hot_reload_smoke.py --qpa wayland --output temp/testing/linux-hot-reload/manual
+# After npm test / npm run package in Doroti/tools/vscode-doroti, use the generated fixture:
+python3 Doroti/eng/run-with-timeout.py node Doroti/tools/vscode-doroti/dist/test/runHost.js 'temp/testing/linux-hot-reload/manual/한글 경로/ReloadApp' temp/testing/linux-hot-reload/manual-vsix --linux
+```
+
+The CLI test verifies real metadata updates, same PID/State/count/Hangul text/
+scroll, compile-error recovery, rude-edit deferral and process-tree Stop. The
+installed VSIX test additionally checks the Hot Reload command, concurrent
+clicks, explicit Restart and Stop in an isolated editor profile. Linux build
+profiles check the Debug guard, polling default/override and custom .NET path.
+The source-template test uses repository ProjectReferences; it does not claim
+NuGet-only development or Hot Reload of native C++/QML/assets.
+
 Web Hot Reload qualification uses `runHost.js ... --web`: a clean-profile installed VSIX, actual SDK metadata updates, request/frame acknowledgments, compile-error correction and duplicate-request serialization. Browser file gates allow real counter/input/scroll and pixel inspection. The standalone `web_rendering.mts` tests also cover the browser bridge endpoint parser; extension unit tests cover origin/session checks and prepare acknowledgment. WebGL/WebGPU evidence and unsupported combinations are tracked in the development contract.
 
 For manual Windows Korean IME/focus checks, set `$env:DOROTI_SAMPLE='input'` and launch the default Testbed windows alias. Compose and cancel Korean text in the first multiline field, move through the native editor or WebView with Tab/Shift+Tab, select/copy/paste, recreate the native view, and confirm the final framework field receives focus. The scene shows selection/composing ranges. Choose the native editor or WebView using the switch button: mixing both composition topologies in one frame remains unsupported.

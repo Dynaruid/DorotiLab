@@ -15,6 +15,10 @@ SDK·새 템플릿·CMake의 Quick/Graphite 기본값, 옵션별 native cache와
 Wayland·확대 배율·xcb smoke, 31조건 Vulkan fixture, 무설정 C·NuGet-only Release/설치 검증 PASS.
 물리 표시·입력·GPU와 동적 DPR/복귀 등 전체 인수는 PARTIAL이다.
 
+2026-10-02 핫리로드 후속: [Linux Qt Debug 핫리로드](../results/2026-10-02-linux-qt-hot-reload.md).
+CLI/VS Code Linux 대상·Debug profile·polling watcher를 연결했다. 실제 metadata delta,
+State/입력값/스크롤 유지, 오류 복구, 명시 Restart·Stop과 현재 VS Code 로컬 설치 PASS.
+
 ## 공통 작업과 의존성
 
 M0 → M1 최소 경로 → M2 → M4/M5 → M6(대상 플랫폼) → M7 순서로 진행한다. M3의 생성·실행은 M0 후, Hot Reload는 M1과 개발 호스트·실행 세션 준비 후 연결한다. package-only smoke는 M0부터 시작한다. 아래 공통 문서에서 계약을 정하고 이 문서에서 플랫폼별 연결·실측 결과를 추적한다. M3/M6의 플랫폼 적용 범위는 본문의 경계를 따른다.

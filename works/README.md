@@ -1,5 +1,7 @@
 # Doroti 작업 계획
 
+2026-10-02 Linux Qt 핫리로드: [구성·실행 결과](results/2026-10-02-linux-qt-hot-reload.md). CLI·설치한 VSIX에서 실제 metadata update, 상태 유지, 오류 복구, 명시 Restart·Stop PASS. Linux Quick Debug 소스 앱 범위이며 native/assets·다중 창·NuGet-only 개발 인수는 별도다.
+
 2026-10-02 Linux Qt 구성 후속: [검토·보완 결과](results/2026-10-02-linux-qt-configuration-review.md). SDK·샘플·템플릿 Quick/C 기본값, 옵션별 native cache·오류 거절, package-only Release/설치와 consumer 회수 검증 PASS. 물리 GPU·표시/입력 및 전체 플랫폼 인수는 PARTIAL.
 
 2026-09-29 iOS/Mac Catalyst 후속: [구현·검증 결과](results/2026-09-29-ios-catalyst.md). UIKit 서비스·Catalyst PlatformView/추가 scene·activation 연결과 별도 smoke를 보강했다. 개발 provisioning profile을 발급했고, 후속 요청으로 iPhone 12에 source Debug 설치·기동·실제 화면을 확인했다. 물리 입력·VoiceOver·실제 배포 등은 남아 전체 **PARTIAL**이다.

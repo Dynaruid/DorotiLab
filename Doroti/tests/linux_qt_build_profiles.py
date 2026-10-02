@@ -61,6 +61,41 @@ for name in ['DorotiSampleApp2', 'DorotiTestbedApp']:
     profile = run(name, ROOT / f'samples/{name}/linux/{name}.Linux.csproj', query=query)
     assert profile['DorotiQtQuick'] == profile['DorotiQtGraphite'] == profile['DorotiQtWebEngine'] == 'true'
 
+runner = ROOT / 'samples/DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj'
+development = run('development-profile', runner, switches=['-p:DorotiQtDevelopment=true'],
+    target='ValidateDorotiQtDevelopment', query='Optimize,DebugType,StartupHookSupport')
+assert development == {'Optimize': 'false', 'DebugType': 'portable', 'StartupHookSupport': 'true'}
+for option in ['Configuration=Release', 'PublishAot=true', 'PublishTrimmed=true',
+               'PublishSingleFile=true', 'Optimize=true', 'StartupHookSupport=false', 'DebugType=none']:
+    run('reject-development-' + option.split('=')[0], runner,
+        switches=['-p:DorotiQtDevelopment=true', '-p:' + option],
+        target='ValidateDorotiQtDevelopment', error='DOROTIQT007')
+
+# Capture the real CLI's command and environment without launching a watcher.
+capture = out / 'cli-capture.json'
+dotnet = out / '한글 도구/dotnet'
+dotnet.parent.mkdir()
+dotnet.write_text('#!/usr/bin/env python3\nimport json, os, sys\n'
+    + 'with open(' + repr(str(capture)) + ', "w") as output:\n'
+    + '    json.dump({"args": sys.argv[1:], "polling": os.getenv("DOTNET_USE_POLLING_FILE_WATCHER"), '
+      '"rudeRestart": os.getenv("DOTNET_WATCH_RESTART_ON_RUDE_EDIT"), "session": os.getenv("DOROTI_DEV_SESSION_ID")}, output)\n')
+dotnet.chmod(0o755)
+command = ['pwsh', '-NoProfile', '-File', str(ROOT / 'Doroti/eng/doroti.ps1'), 'dev',
+    '-App', str(ROOT / 'samples/DorotiTestbedApp'), '-Platform', 'linux', '-DotnetPath', str(dotnet),
+    '-SessionDirectory', str(out / 'cli-session'), '-SessionId', 'linux-profiles']
+env = os.environ.copy()
+env.pop('DOTNET_USE_POLLING_FILE_WATCHER', None)
+subprocess.run(command, cwd=ROOT, env=env, check=True, capture_output=True, text=True, timeout=60)
+invocation = json.loads(capture.read_text())
+assert '--property:DorotiQtDevelopment=true' in invocation['args'] and '--no-launch-profile' in invocation['args']
+assert invocation['polling'] == '1' and invocation['rudeRestart'] == 'false' and invocation['session'] == 'linux-profiles'
+subprocess.run(command, cwd=ROOT, env=env | {'DOTNET_USE_POLLING_FILE_WATCHER': 'false'}, check=True, capture_output=True, text=True, timeout=60)
+assert json.loads(capture.read_text())['polling'] == 'false', 'Explicit watcher preference was overwritten'
+capture.unlink()
+result = subprocess.run(command + ['-Configuration', 'Release'], cwd=ROOT, env=env, capture_output=True, text=True, timeout=60)
+assert result.returncode != 0 and 'dev requires Debug' in result.stderr and not capture.exists(), result.stdout + result.stderr
+print('PASS CLI Linux development arguments, polling override, custom tool path and Release rejection', flush=True)
+
 # Evaluate the actual template against the source SDK; package qualification
 # separately restores this same project against the freshly packed SDK.
 template = ROOT / 'Doroti/templates/Doroti.Templates/content/doroti-app/linux/DorotiTemplateApp.Linux.csproj'

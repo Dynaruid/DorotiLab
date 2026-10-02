@@ -11,11 +11,14 @@ import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[2]
 
-def create(destination):
+def create(destination, template_hive=None):
     destination = Path(destination).resolve()
     assert destination.is_relative_to(ROOT / 'temp/testing') and not destination.exists()
-    subprocess.run(['dotnet', 'new', 'doroti-app', '-n', 'ReloadApp', '-o', str(destination)], check=True)
-    for relative in ['ReloadApp.csproj', 'desktop/ReloadApp.Desktop.csproj', 'windows/ReloadApp.Windows.csproj', 'web/ReloadApp.Web.csproj']:
+    hive_args = ['--debug:custom-hive', str(template_hive)] if template_hive else []
+    if template_hive:
+        subprocess.run(['dotnet', 'new', 'install', str(ROOT / 'Doroti/templates/Doroti.Templates/content/doroti-app'), *hive_args], check=True, timeout=60)
+    subprocess.run(['dotnet', 'new', 'doroti-app', '-n', 'ReloadApp', '-o', str(destination), *hive_args], check=True, timeout=60)
+    for relative in ['ReloadApp.csproj', 'desktop/ReloadApp.Desktop.csproj', 'windows/ReloadApp.Windows.csproj', 'web/ReloadApp.Web.csproj', 'linux/ReloadApp.Linux.csproj']:
         file = destination / relative
         tree = ET.parse(file)
         project = tree.getroot()

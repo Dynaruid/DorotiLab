@@ -17,6 +17,18 @@
          default. Explicit prebuilt directories are still supported. -->
     <DorotiQtNativeBuildDirectory Condition="'$(DorotiQtNativeBuildDirectory)' == ''">$(BaseIntermediateOutputPath)$(Configuration)/qt-native/quick-$(_DorotiQtQuickFlag)-graphite-$(_DorotiQtGraphiteFlag)-webengine-$(_DorotiQtWebEngineFlag)-gstreamer-$(_DorotiGStreamerTexturesFlag)</DorotiQtNativeBuildDirectory>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(DorotiQtDevelopment)' == 'true' and '$(DorotiHostKind)' == 'Qt'">
+    <Optimize>false</Optimize>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <StartupHookSupport Condition="'$(StartupHookSupport)' == ''">true</StartupHookSupport>
+  </PropertyGroup>
+  <Target Name="ValidateDorotiQtDevelopment" BeforeTargets="PrepareForBuild;PrepareForPublish"
+          Condition="'$(DorotiQtDevelopment)' == 'true'">
+    <Error Code="DOROTIQT007"
+           Condition="!$([MSBuild]::IsOSPlatform('Linux')) or '$(DorotiTarget)' != 'Linux' or '$(DorotiHostKind)' != 'Qt' or '$(Configuration)' != 'Debug' or '$(RuntimeIdentifier)' != 'linux-x64' or '$(PublishAot)' == 'true' or '$(PublishTrimmed)' == 'true' or '$(PublishSingleFile)' == 'true' or '$(Optimize)' == 'true' or '$(DebugType)' != 'portable' or '$(StartupHookSupport)' == 'false'"
+           Text="Linux Qt Hot Reload requires Linux/linux-x64, an unoptimized Debug Qt runner with portable symbols and startup hooks, and untrimmed directory output. Release, NativeAOT, trimming and single-file output are unsupported for development sessions." />
+  </Target>
   <Target Name="ValidateDorotiQtConfiguration" BeforeTargets="PrepareForBuild;PrepareForPublish"
           Condition="'$(DorotiHostKind)' == 'Qt'">
     <Error Code="DOROTIQT002"

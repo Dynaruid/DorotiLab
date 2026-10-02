@@ -15,6 +15,7 @@ async function main() {
     await fs.writeFile(path.join(harness, 'package.json'), JSON.stringify({ name: 'doroti-test-harness', publisher: 'local', version: '0.0.0', engines: { vscode: '^1.100.0' } }));
     const code = process.env.DOROTI_TEST_CODE ?? (process.platform === 'darwin'
         ? '/Applications/Visual Studio Code.app/Contents/MacOS/Code'
+        : process.platform === 'linux' ? '/usr/share/code/code'
         : path.join(process.env.LOCALAPPDATA!, 'Programs/Microsoft VS Code/Code.exe'));
     let cli = process.platform === 'darwin' ? path.resolve(path.dirname(code), '../Resources/app/out/cli.js') : path.join(path.dirname(code), 'resources/app/out/cli.js');
     try { await fs.access(cli); } catch {
@@ -31,7 +32,8 @@ async function main() {
     const web = process.argv.includes('--web');
     const ios = process.argv.includes('--ios');
     const mac = process.argv.includes('--mac');
-    await runTests({ vscodeExecutablePath: code, extensionDevelopmentPath: harness, extensionTestsPath: path.join(__dirname, mac ? 'macHost.js' : ios ? 'iosHost.js' : web ? 'webHost.js' : 'host.js'),
+    const linux = process.argv.includes('--linux');
+    await runTests({ vscodeExecutablePath: code, extensionDevelopmentPath: harness, extensionTestsPath: path.join(__dirname, linux ? 'linuxHost.js' : mac ? 'macHost.js' : ios ? 'iosHost.js' : web ? 'webHost.js' : 'host.js'),
         launchArgs: [app, '--user-data-dir', profile, '--extensions-dir', extensions, '--disable-workspace-trust', '--skip-welcome', '--skip-release-notes', '--disable-updates'],
         extensionTestsEnv: { DOROTI_TEST_CLI: path.join(repo, 'Doroti/eng/doroti.ps1'), DOROTI_RELOAD_PROBE: ios && process.env.DOROTI_TEST_IOS_RID === 'ios-arm64' ? `reload-vsix-${randomUUID()}.json` : path.join(evidence, 'state.json'), DOROTI_TEST_RESULT: path.join(evidence, 'result.json'), DOROTI_TEST_EVIDENCE: evidence, ...(ios || mac ? { DOROTI_SAMPLE: 'reload' } : {}) } });
 }

@@ -31,7 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
         status.command = 'doroti.selectProject'; status.show();
         const supported = !!session?.runtime?.supported && !session.restartRequired;
         reload.text = session?.pending ? '$(sync~spin) Reloading' : '$(debug-restart) Hot Reload';
-        reload.tooltip = supported ? 'Save pending C# edits and apply metadata updates' : 'Run a connected Windows, Web, iOS, AppKit or Mac Catalyst Debug session.';
+        reload.tooltip = supported ? 'Save pending C# edits and apply metadata updates' : 'Run a connected Windows, Web, iOS, AppKit, Mac Catalyst or Linux Qt Debug session.';
         reload.command = supported && !session?.pending ? 'doroti.hotReload' : 'doroti.showLogs';
         if (session) reload.show(); else reload.hide();
         void vscode.commands.executeCommand('setContext', 'doroti.running', !!session || busy);
@@ -68,7 +68,7 @@ export function activate(context: vscode.ExtensionContext) {
     async function selectTarget(requested?: unknown) {
         trusted(); if (session) throw new Error('Stop the running app before changing target.');
         if (!project) await selectProject(); if (!project) return;
-        if (!project.developmentTargets.length) throw new Error('This manifest declares no Windows/Web/iOS/AppKit/Mac Catalyst development targets.');
+        if (!project.developmentTargets.length) throw new Error('This manifest declares no Windows/Web/iOS/AppKit/Mac Catalyst/Linux Qt development targets.');
         const choice = typeof requested === 'string' ? requested : await vscode.window.showQuickPick(project.developmentTargets, { title: 'Select Doroti target' });
         if (choice && !project.developmentTargets.includes(choice)) throw new Error('Target is not declared by this workspace.');
         if (choice) { target = choice; await context.workspaceState.update('target', target); display(); }
@@ -140,8 +140,7 @@ export function activate(context: vscode.ExtensionContext) {
         if (generation !== lifetime) { await bridge?.close(); return; }
         let opened = false; let tail = '';
         const args = ['-NoProfile', '-File', script, 'dev', '-App', project.root, '-Platform', target, '-Configuration', 'Debug', '-SessionDirectory', directory, '-SessionId', id];
-        if (['ios', 'macos', 'maccatalyst'].includes(target))
-            args.push('-DotnetPath', config().get<string>('dotnetPath', 'dotnet'));
+        args.push('-DotnetPath', config().get<string>('dotnetPath', 'dotnet'));
         if (target === 'macos' || target === 'maccatalyst') {
             const setting = target === 'macos' ? 'macosTargetFramework' : 'macCatalystTargetFramework';
             const framework = config().get<string>(setting);
@@ -178,7 +177,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
     async function hotReload(save?: unknown) {
         trusted(); const current = session;
-        if (!current?.runtime?.supported || current.restartRequired) throw new Error('Hot Reload unavailable. Run Windows/Web/iOS/AppKit/Mac Catalyst Debug with a connected runtime, or use Restart (resets state).');
+        if (!current?.runtime?.supported || current.restartRequired) throw new Error('Hot Reload unavailable. Run Windows/Web/iOS/AppKit/Mac Catalyst/Linux Qt Debug with a connected runtime, or use Restart (resets state).');
         if (current.pending) return;
         const dirty = vscode.workspace.textDocuments.filter(doc => doc.isDirty && doc.languageId === 'csharp' && project && within(project.root, doc.uri.fsPath));
         if (!dirty.length) { void vscode.window.showInformationMessage('No unsaved C# edits. Saved changes are applied by dotnet watch automatically.'); return; }
@@ -209,7 +208,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
     const commands: Record<string, (arg?: unknown) => unknown> = {
         createProject, selectProject, selectTarget, run, hotReload, stop: endSession,
-        restart: async () => { trusted(); if (await vscode.window.showWarningMessage('Restart resets widget state, input and scroll position.', { modal: true }, 'Restart') === 'Restart') { await endSession(); await run(); } },
+        restart: async (confirmed?: unknown) => { trusted(); if (confirmed === true || await vscode.window.showWarningMessage('Restart resets widget state, input and scroll position.', { modal: true }, 'Restart') === 'Restart') { await endSession(); await run(); } },
         showLogs: () => logs.show(),
     };
     for (const [name, action] of Object.entries(commands)) context.subscriptions.push(vscode.commands.registerCommand(`doroti.${name}`, async (arg?: unknown) => {

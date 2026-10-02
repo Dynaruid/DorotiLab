@@ -540,13 +540,14 @@ function Invoke-Describe {
         root = $workspace.Root
         applicationProject = $workspace.ApplicationProject
         platforms = $workspace.Runners
-        developmentTargets = @($workspace.Runners.Keys | Where-Object { $_ -in @('windows', 'web', 'ios', 'macos', 'maccatalyst') })
+        developmentTargets = @($workspace.Runners.Keys | Where-Object { $_ -in @('windows', 'web', 'ios', 'macos', 'maccatalyst', 'linux') })
     } | ConvertTo-Json -Depth 5
 }
 
 function Invoke-Development {
     if ($Configuration -ne 'Debug') { throw 'dev requires Debug; Release metadata updates are not supported.' }
-    if ($Platform -notin @('windows', 'web', 'ios', 'macos', 'maccatalyst')) { throw 'dev supports Windows App SDK, Web, iOS, macOS (AppKit) and Mac Catalyst.' }
+    if ($Platform -notin @('windows', 'web', 'ios', 'macos', 'maccatalyst', 'linux')) { throw 'dev supports Windows App SDK, Web, iOS, macOS (AppKit), Mac Catalyst and Linux Qt.' }
+    if ($Platform -eq 'linux' -and !$IsLinux) { throw 'Linux Qt development sessions require a Linux host with Qt and an active display.' }
     if ($Platform -in @('ios', 'macos', 'maccatalyst') -and !$IsMacOS) { throw 'Apple development sessions require macOS and Xcode.' }
     if ($CompilationMode -eq 'NativeAot') { throw 'Hot Reload requires Debug with metadata updates; NativeAot is not supported.' }
     $workspace = Resolve-DorotiWorkspace $App
@@ -558,7 +559,7 @@ function Invoke-Development {
     if (-not $SessionDirectory) { $SessionDirectory = Join-Path $workspace.Root ".doroti/dev/$SessionId" }
     $sessionPath = [IO.Path]::GetFullPath($SessionDirectory)
     [IO.Directory]::CreateDirectory($sessionPath) | Out-Null
-    $names = @('DOROTI_DEV_SESSION', 'DOROTI_DEV_SESSION_ID', 'DOTNET_CLI_UI_LANGUAGE', 'DOTNET_WATCH_SUPPRESS_EMOJIS', 'DOTNET_WATCH_RESTART_ON_RUDE_EDIT')
+    $names = @('DOROTI_DEV_SESSION', 'DOROTI_DEV_SESSION_ID', 'DOTNET_CLI_UI_LANGUAGE', 'DOTNET_WATCH_SUPPRESS_EMOJIS', 'DOTNET_WATCH_RESTART_ON_RUDE_EDIT', 'DOTNET_USE_POLLING_FILE_WATCHER')
     $previous = @{}
     foreach ($name in $names) { $previous[$name] = [Environment]::GetEnvironmentVariable($name) }
     try {
@@ -567,6 +568,11 @@ function Invoke-Development {
         $env:DOTNET_CLI_UI_LANGUAGE = 'en'
         $env:DOTNET_WATCH_SUPPRESS_EMOJIS = '1'
         $env:DOTNET_WATCH_RESTART_ON_RUDE_EDIT = 'false'
+        # A full framework graph plus the editor can exhaust the default Linux
+        # inotify instance limit. Polling also works on mounted source trees.
+        if ($Platform -eq 'linux' -and !$env:DOTNET_USE_POLLING_FILE_WATCHER) {
+            $env:DOTNET_USE_POLLING_FILE_WATCHER = '1'
+        }
         Write-Host "Doroti development session: $sessionPath"
         if ($Platform -eq 'ios') {
             if (!$Rid) { $Rid = if ([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture -eq 'Arm64') { 'iossimulator-arm64' } else { 'iossimulator-x64' } }
@@ -604,8 +610,9 @@ function Invoke-Development {
             return
         }
         $watchArguments = @('watch', '--project', $runner, 'run', '--configuration', 'Debug')
-        if ($Platform -eq 'windows') { $watchArguments += '--no-launch-profile' }
-        Invoke-Checked 'dotnet' $watchArguments $workspace.Root
+        if ($Platform -in @('windows', 'linux')) { $watchArguments += '--no-launch-profile' }
+        if ($Platform -eq 'linux') { $watchArguments += '--property:DorotiQtDevelopment=true' }
+        Invoke-Checked $DotnetPath $watchArguments $workspace.Root
     }
     finally { foreach ($name in $names) { [Environment]::SetEnvironmentVariable($name, $previous[$name]) } }
 }

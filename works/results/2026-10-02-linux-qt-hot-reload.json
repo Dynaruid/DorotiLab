@@ -1,0 +1,144 @@
+{
+  "schema": "doroti.linux-qt-hot-reload/v1",
+  "date": "2026-10-02",
+  "recordedUtc": "2026-10-02T11:47:06.419134+00:00",
+  "status": "PASS",
+  "scope": "Linux x64 / Qt Quick / single window / Debug / source-template repository references",
+  "baseCommit": "241feedb33d97c5d333cec8c32ffc61d9e26b25d",
+  "workingTree": true,
+  "rawRoot": "temp/testing/linux-hot-reload",
+  "sourceSha256": "0ad97be825fa9ff204faaf2b62464c6973c692f3d998ec6432ede7764ad8f390",
+  "sourceManifest": "temp/testing/linux-hot-reload/source-manifest.json",
+  "runtime": {
+    "sdk": "10.0.400",
+    "dotnet": "10.0.11",
+    "qt": "6.10.2",
+    "qpa": "wayland",
+    "gpu": "llvmpipe / software Vulkan",
+    "vscode": "1.139.1"
+  },
+  "checks": {
+    "cli": {
+      "qpa": "wayland",
+      "fixture": "source template / repository references",
+      "status": "PASS",
+      "before": {
+        "stateId": "ffdb9984-6e85-43d5-922a-3195701d48dd",
+        "message": "Before reload",
+        "text": "한글 유지",
+        "count": 5,
+        "scroll": 160,
+        "reassembles": 0,
+        "processId": 50865
+      },
+      "after": {
+        "stateId": "ffdb9984-6e85-43d5-922a-3195701d48dd",
+        "message": "Linux Qt compiler recovery passed",
+        "text": "한글 유지",
+        "count": 5,
+        "scroll": 160,
+        "reassembles": 2,
+        "processId": 50865
+      },
+      "runtime": {
+        "schemaVersion": "doroti.dev/v1",
+        "sessionId": "304f840c78e7498ebd3d16d07dceee0b",
+        "runtimeId": "a6f96533-5c3b-4125-b77d-e7a1114e89f2",
+        "processId": 50865,
+        "supported": true,
+        "host": "linux-x64/qt6-vulkan/graphite",
+        "revision": 2,
+        "status": "applied",
+        "requestId": "7a9c8399aa00453ca597d9c51c5b94e9",
+        "error": null
+      },
+      "compileRecovery": true,
+      "rudeEdit": "restart required / previous state retained",
+      "stop": "PASS / Qt process exited"
+    },
+    "installedVsix": {
+      "installedVsix": "/home/orange/workspace/DorotiLab/temp/testing/linux-hot-reload/vsix-final/extensions/doroti-local.doroti-0.1.0",
+      "before": {
+        "stateId": "ce63b73a-1e1b-424c-ba76-777ba59e887c",
+        "message": "Before reload",
+        "text": "한글 유지",
+        "count": 5,
+        "scroll": 160,
+        "reassembles": 0,
+        "processId": 59110
+      },
+      "after": {
+        "stateId": "ce63b73a-1e1b-424c-ba76-777ba59e887c",
+        "message": "Linux VSIX Hot Reload passed",
+        "text": "한글 유지",
+        "count": 5,
+        "scroll": 160,
+        "reassembles": 1,
+        "processId": 59110
+      },
+      "reload": "PASS",
+      "compileRecovery": "PASS",
+      "concurrentClicks": "PASS",
+      "rudeEdit": "PASS",
+      "explicitRestart": "PASS / new runtime and State",
+      "runtime": {
+        "schemaVersion": "doroti.dev/v1",
+        "sessionId": "3029a742-639f-4b7d-928f-c627d8899393",
+        "runtimeId": "be449b4f-1adc-4f2f-871e-279d8a19aedf",
+        "processId": 59772,
+        "supported": true,
+        "host": "linux-x64/qt6-vulkan/graphite",
+        "revision": 0,
+        "status": "ready",
+        "requestId": null,
+        "error": null
+      }
+    },
+    "installedVsixStop": "PASS / full test exit 0 and Qt PID absent",
+    "buildProfiles": "PASS / development profile guards, real CLI argument/environment capture, native cache/copy contracts",
+    "extensionUnitTests": {
+      "passed": 8,
+      "failed": 0,
+      "log": "extension-tests-qualified.log"
+    },
+    "sourceAudit": "PASS",
+    "gitDiffCheck": "PASS"
+  },
+  "localConfiguration": {
+    "installedExtension": "doroti-local.doroti@0.1.0",
+    "vsix": "Doroti/tools/vscode-doroti/doroti-0.1.0.vsix",
+    "vsixSha256": "665ca2af8693883397a97621ad2162a21a942bbb1c182a5f39c9e2e11067f55e",
+    "workspaceSettings": ".vscode/settings.json",
+    "settings": {
+      "doroti.cliPath": "/home/orange/workspace/DorotiLab/Doroti/eng/doroti.ps1",
+      "doroti.dotnetPath": "/home/orange/dotnet/dotnet"
+    },
+    "publication": "local install / no Marketplace publication"
+  },
+  "failedAttempts": [
+    {
+      "raw": "wayland",
+      "reason": "-p MSBuild switch was parsed as watch project alias; corrected to --property."
+    },
+    {
+      "raw": "wayland-2",
+      "reason": "inotify instance limit 128 exhausted; Linux dev now defaults to SDK polling."
+    },
+    {
+      "raw": "wayland-3",
+      "reason": "Metadata/state/compile recovery passed; immediate PID check raced child termination. Final test waits for PID exit."
+    },
+    {
+      "raw": "vsix",
+      "reason": "Editor test mode refused the Restart modal; test interrupted. Explicit confirmed command argument added; normal interactive confirmation retained."
+    }
+  ],
+  "notQualified": [
+    "NuGet-only development",
+    "multiple windows",
+    "Widgets/OpenGL/Vulkan-window Hot Reload",
+    "native C++/QML/baked shader asset Hot Reload",
+    "physical input/IME",
+    "actual display timing or physical GPU performance"
+  ]
+}
