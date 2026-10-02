@@ -251,14 +251,15 @@ internal sealed record UploadPreview(string Name, long Length, byte[]? ImageByte
 internal static class UploadPreviewReader
 {
     internal const int MaxFiles = 8;
-    internal static readonly string[] Extensions = ["png", "jpg", "jpeg", "gif", "webp", "bmp", "txt", "md", "csv", "json", "log"];
+    // Windows and Qt require dotted extensions; the browser and mobile hosts also accept them.
+    internal static readonly string[] Extensions = [".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".txt", ".md", ".csv", ".json", ".log"];
     private const int TextPreviewLength = 4000;
 
     internal static async Task<UploadPreview> ReadAsync(IPickedFile file, CancellationToken token)
     {
-        var extension = System.IO.Path.GetExtension(file.Name).TrimStart('.').ToLowerInvariant();
+        var extension = System.IO.Path.GetExtension(file.Name).ToLowerInvariant();
         if (!Extensions.Contains(extension)) throw new InvalidDataException("지원하지 않는 파일 형식입니다.");
-        var image = extension is "png" or "jpg" or "jpeg" or "gif" or "webp" or "bmp";
+        var image = extension is ".png" or ".jpg" or ".jpeg" or ".gif" or ".webp" or ".bmp";
         var limit = (image ? 10 : 1) * 1024 * 1024;
         if (file.Length < 0 || file.Length > limit)
             throw new InvalidDataException($"파일 크기를 확인할 수 없거나 최대 {(image ? 10 : 1)} MiB를 초과했습니다.");
