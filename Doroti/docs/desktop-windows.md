@@ -11,7 +11,7 @@ The first implementation provides `Doroti.Desktop` and optional
 and AppKit macOS have native main-window adapters. Mac Catalyst has a restricted UIKit scene adapter, and Linux Qt Quick has main/additional-window adapters. Windows App SDK now has a main-window adapter (2026-09-28); custom
 title-bar widgets remain unimplemented. The 2026-09-29 Windows App SDK increment
 adds native multi-window execution and Explicit lifetime; see the
-[window context ADR](desktop-window-context.md) and [M6 evidence](../../works/common/09-multiwindow.md).
+[window context ADR](desktop-window-context.md) and [M6 evidence](../../history/26-10-03/works/common/09-multiwindow.md).
 
 ## Architecture and inventory
 
@@ -160,7 +160,7 @@ Current host/renderer/build-mode evidence is centralized in [support status](sup
 | Windows App SDK | Main and additional HWNDs; Debug and NuGet-only Release native lifetime checks | OnLastWindowClosed/Explicit; backdrop/background changes require recreation; physical resize/IME/mixed-monitor and full native-content coverage notVerified |
 | Windows MAUI | Implemented; historical results below | Separate native PlatformView wiring and current revalidation pending |
 | AppKit | Main/additional windows; Graphite and Ganesh native Desktop/lifetime qualification (2026-09-29) | Physical input/VoiceOver, mixed DPI and clean signed deployment remain separate |
-| Mac Catalyst | UIKit scene adapter with common additional-window factory | PlatformDefault startup; two scenes/independent size/survivor/Explicit drain verified separately; native close cannot be cancelled; [Apple results](../../works/results/2026-09-29-ios-catalyst.md) |
+| Mac Catalyst | UIKit scene adapter with common additional-window factory | PlatformDefault startup; two scenes/independent size/survivor/Explicit drain verified separately; native close cannot be cancelled; [Apple results](../../history/26-10-03/works/results/2026-09-29-ios-catalyst.md) |
 | Qt Quick | Main/additional QQuickWindow, independent owner resources | Wayland/XWayland VM execution; physical input/mixed DPI and bounds/appearance restrictions remain |
 | Qt Widgets | No Desktop companion adapter | SDK rejects startup |
 
@@ -201,7 +201,7 @@ controller close decision. `Explicit` leaves the app running after the last wind
 closes. The manager can create further independent top-level windows. Each window
 owns its dispatcher/session, native views and Metal surface; application resources
 and plugin handlers share an application lease. Widgets unmount before capabilities
-and GPU resources are retired. See the [2026-09-29 AppKit results](../../works/results/2026-09-29-macos-appkit.md).
+and GPU resources are retired. See the [2026-09-29 AppKit results](../../history/26-10-03/works/results/2026-09-29-macos-appkit.md).
 
 | Feature | AppKit behavior |
 | --- | --- |
@@ -319,7 +319,7 @@ clean-machine deployment and the known xcb/XWayland Vulkan extent race remain
 outside the verified basic adapter. See the [Linux execution evidence](../../history/26-09-26/desktop-window-api-summary.md).
 
 
-The [2026-09-29 Linux run](../../works/results/2026-09-29-linux-qt.md) exercises
+The [2026-09-29 Linux run](../../history/26-10-03/works/results/2026-09-29-linux-qt.md) exercises
 both QPA paths, native editor owners, main-close/survivor resize and new-window
 creation, zero-window Explicit reopen and one exit notification. Application-wide
 queued work survives main-window closure. Owner/modal/Satellite/popup/tooltip and

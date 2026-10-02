@@ -116,7 +116,7 @@ advertised QPA/GPU. The recorded apt candidate is an observation, not a guarante
 that the distro package contains every current Chromium security fix.
 
 Reproduction and evidence: [maintained Qt tests](../../tests/README.md)
-and [Linux product results](../../../works/results/2026-09-29-linux-qt.md).
+and [Linux product results](../../../history/26-10-03/works/results/2026-09-29-linux-qt.md).
 Native-origin GestureArena, full Tab/IME/Orca, physical GPU/device loss, permission
 policy UI, full profile clear, all C/E scenarios, package-only clean-machine
 installation and Linux NativeAOT are separate remaining gates.

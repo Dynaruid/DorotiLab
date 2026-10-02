@@ -161,7 +161,7 @@ and installation on a clean second machine remain unverified.
 
 ## 2026-09-29 AppKit window qualification
 
-The [work2 follow-up](../../../works/results/2026-09-29-macos-appkit.md) adds actual
+The [work2 follow-up](../../../history/26-10-03/works/results/2026-09-29-macos-appkit.md) adds actual
 Desktop NSWindow owners with separate dispatcher/session/surface/native factories
 and shared application resource leases. Both Graphite and Ganesh show two native
 editor scenes, keep the survivor active after first-window close, and recreate

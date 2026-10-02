@@ -154,8 +154,8 @@ dialog messages; this is actual OS dialog/handle execution with synthetic input,
 not physical mouse/keyboard evidence. Package suites isolate the NuGet cache and
 remove raw evidence after success. On failure they print the investigation path.
 
-Recorded results and remaining work: [M4](../../works/common/06-plugin-sdk.md),
-[Windows](../../works/platforms/windows.md), [support index](support-status.md).
+Recorded results and remaining work: [M4](../../history/26-10-03/works/common/06-plugin-sdk.md),
+[Windows](../../history/26-10-03/works/platforms/windows.md), [support index](support-status.md).
 
 
 ## Linux Qt
@@ -165,7 +165,7 @@ The app-owned shim implements asynchronous QFileDialog selection with view/calle
 cancellation. Selected files become CLOEXEC regular-file read grants; FIFO/device/
 directory selection is rejected without blocking. `NativeFeatures` retains grants
 in its view scope and releases them with the owner. The URL adapter accepts
-http/https/mailto and uses xdg-open. [Linux qualification](../../works/results/2026-09-29-linux-qt.md)
+http/https/mailto and uses xdg-open. [Linux qualification](../../history/26-10-03/works/results/2026-09-29-linux-qt.md)
 records actual dialog automation, cancellation, denied file access, Unicode reads
 and plugin-to-default-browser loopback delivery. Physical dialog/portal permission
 flows remain separate. Rebuild the template/sample native shim with the host.
@@ -177,6 +177,6 @@ NSOpenPanel sheets belong to the requesting view's NSWindow. Caller cancellation
 and owner disposal cancel the panel. Security-scoped URLs and open file handles
 provide bounded random-access grants; release or view closure revokes them.
 NSWorkspace implements the URL launcher; the common NativeFeatures client keeps
-its http/https/mailto policy. [AppKit results](../../works/results/2026-09-29-macos-appkit.md)
+its http/https/mailto policy. [AppKit results](../../history/26-10-03/works/results/2026-09-29-macos-appkit.md)
 separate actual native panel cancellation and 128 MiB file reads from physical
 selection, permission denial and native event source qualification.

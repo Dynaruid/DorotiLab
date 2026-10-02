@@ -15,7 +15,7 @@ For current execution/build-mode distinctions, see [support status](../support-s
 | Web Worker + DOM iframe | same coordinator/controller, stable DOM, bounded CPU raster canvas upload and ACK retirement; strict TS, Release build/publish | WebGPU/WebGL product API, two iframes, native/shield input, identity, ten lifecycle cycles, DPR + resize; native/raster sigma 4/16 = 3.999/15.996, reset 0; message/profile/cancel/close and context-loss terminal | CPU upload performance unapproved (~30 ms active raster p95); default Debug startup failure; two full product owners, pure DPR/monitor, physical IME/accessibility, other browsers/protected media, clean-machine/AOT; local package template publish/run passed; [Web contract](web-webview.md) |
 | Windows MAUI | host build passed with common contracts | not run | separate native hierarchy and WebView composition wiring; WindowsAppSdk evidence does not apply |
 | iOS UIKit Graphite Metal | UIView/UIButton/UITextField/WKWebView, transparent Metal segments, common session, public UIKit property-animator material intensity and committed shields; current iOS 27 Debug/Mono simulator build passed; host AOT avoids the full-interpreter calibration GC crash | Current public adapter: four-strength/two-theme pixel checks, zero resume ROI difference and seven effect/input/lifetime scenes plus three full calibrations (zero/decreasing intensity) on iPhone 18 Pro Simulator; earlier private-filter NativeAOT/device evidence is historical | residual UIKit colour bias, other OS/device calibration, native-origin GestureArena, full IME/VoiceOver/Tab, two product owners, device loss, visual equivalence and performance budgets; see [iOS contract](ios.md) |
-| Catalyst / Graphite Metal | Separate UIKit native hierarchy, transparent raster segments, editor/WKWebView and per-scene owners | Debug native editor/WKWebView recreation and two-scene lifecycle (2026-09-29) | Physical input/VoiceOver, full two-scene native content/GPU budgets; [Apple follow-up](../../../works/results/2026-09-29-ios-catalyst.md) |
+| Catalyst / Graphite Metal | Separate UIKit native hierarchy, transparent raster segments, editor/WKWebView and per-scene owners | Debug native editor/WKWebView recreation and two-scene lifecycle (2026-09-29) | Physical input/VoiceOver, full two-scene native content/GPU budgets; [Apple follow-up](../../../history/26-10-03/works/results/2026-09-29-ios-catalyst.md) |
 | iOS Ganesh | Existing runner without the Graphite PlatformView compositor | No new PlatformView qualification | Native hierarchy composition unsupported on this renderer |
 
 iOS follow-up (2026-09-18): the current blur uses public `UIBlurEffect` and
@@ -35,14 +35,14 @@ pixels, and a 128 MiB R/P allocation guard. The Linux work1 scope remains **PART
 Current transport limits are defensive allocation guards, not accepted frame-rate budgets. The Windows staging/active atlas estimate is limited to 256 MiB and 16,384 pixels per atlas dimension. CPU readback and upload remain measurable costs. The source keeps the 0-native fast path; effect-free applications do not initialize a WebView compositor or allocate its D3D/D2D resources.
 
 
-2026-09-29 [Linux Qt follow-up](../../../works/results/2026-09-29-linux-qt.md):
+2026-09-29 [Linux Qt follow-up](../../../history/26-10-03/works/results/2026-09-29-linux-qt.md):
 Quick Wayland/XWayland real two-window native editors and separate editor/WebView
 recreation pass. Widgets disjoint ClipRect editor and synthetic key/resize pass;
 Quick mixed composition still rejects. Physical input/Orca and physical GPU
 qualification remain open.
 
 
-2026-09-29 AppKit follow-up: [two native editor windows and per-owner lifetime](../../../works/results/2026-09-29-macos-appkit.md)
+2026-09-29 AppKit follow-up: [two native editor windows and per-owner lifetime](../../../history/26-10-03/works/results/2026-09-29-macos-appkit.md)
 now pass on physical M1 with both Graphite and Ganesh. Native editor and WKWebView
 recreation also pass independently. This is separate from full two-owner E3,
 physical IME/VoiceOver, mixed DPI, loss, blur golden and performance qualification.

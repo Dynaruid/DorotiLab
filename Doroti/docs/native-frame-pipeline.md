@@ -74,7 +74,7 @@ retirement evidence. They describe submission/consumer state, not displayed FPS
 or hardware execution overlap. The bounded collector and physical-input limits
 are described in [tests](../tests/README.md). Current builds, raw failures,
 source/payload identities and open acceptance items are in the
-[2026-10-02 result](../../works/results/2026-10-02-native-frame-pipeline.md) and
-[Apple follow-up](../../works/results/2026-10-03-apple-frame-configuration-review.md).
-The separate [AppKit review](../../works/results/2026-10-03-appkit-configuration-review.md)
+[2026-10-02 result](../../history/26-10-03/works/results/2026-10-02-native-frame-pipeline.md) and
+[Apple follow-up](../../history/26-10-03/works/results/2026-10-03-apple-frame-configuration-review.md).
+The separate [AppKit review](../../history/26-10-03/works/results/2026-10-03-appkit-configuration-review.md)
 records native owner retirement, visibility and synthetic scale checks.

@@ -37,5 +37,5 @@ GPU pixel tests compare C with an intervening drain against two unfinished C
 recordings. Archived A/B/C reports retain their original meaning and hashes.
 
 See the [frame contract](../native-frame-pipeline.md),
-[follow-up plan](../../../work6.md) and
-[execution result](../../../works/results/2026-10-02-native-frame-c-only.md).
+[archived follow-up summary](../../../history/26-10-02/work6-summary.md) and
+[execution result](../../../history/26-10-03/works/results/2026-10-02-native-frame-c-only.md).

@@ -202,4 +202,4 @@ surfaces pass in the VM on Wayland and XWayland. Widgets has a separate
 synthetic key input and resize pass. The full Quick input scene is deliberately
 rejected on Widgets because its foreground raster is not proven disjoint. None of
 these runs qualifies physical IME, Tab traversal or Orca. See the
-[Linux result](../../../works/results/2026-09-29-linux-qt.md).
+[Linux result](../../../history/26-10-03/works/results/2026-09-29-linux-qt.md).

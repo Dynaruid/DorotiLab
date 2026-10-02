@@ -235,7 +235,7 @@ Components 화면 표시를 확인했습니다. `PublishAot=true`, `UseNativeAot
 이 빌드는 preservation/class lookup 우회 옵션을 해당 명령에만 추가했으며 ILC 진단이 남았습니다.
 첫 실행의 iOS 보안 오류는 사용자 개발자 신뢰 처리 후 해소됐고 Components 화면 표시와
 프로세스 유지를 확인했습니다. NativeAOT 성능·전체 수동 조작은 미검증입니다.
-정확한 게시 명령과 한계는 [설치 기록](../../works/results/2026-10-01-sample2-nativeaot-rc1.md)을 참고하세요.
+정확한 게시 명령과 한계는 [설치 기록](../../history/26-10-03/works/results/2026-10-01-sample2-nativeaot-rc1.md)을 참고하세요.
 
 ## Linux
 
@@ -378,8 +378,8 @@ Clamp·회전/반사/균일 scale·최대 약 124 device sigma를 지원하며 �
 `kernel: VariableBlurKernel.fastGaussian`입니다. 약한 구간의 원본 해상도와 선명한 끝부분을 보존합니다.
 원본 해상도 Gaussian은 `resolutionScale: 1, kernel: VariableBlurKernel.gaussian`으로 명시할 수 있습니다.
 Fixed와 Dual Kawase도 개별 옵션으로 선택할 수 있습니다.
-이전 [Fixed 검증](../../works/results/2026-10-01-variable-blur-fixed-adoption.md)은 당시 기본 선택의 기록이며,
-[현재 iOS 프레임 연결 결과](../../works/results/2026-10-02-ios-frame-loop.md)와 구분합니다.
+이전 [Fixed 검증](../../history/26-10-03/works/results/2026-10-01-variable-blur-fixed-adoption.md)은 당시 기본 선택의 기록이며,
+[현재 iOS 프레임 연결 결과](../../history/26-10-03/works/results/2026-10-02-ios-frame-loop.md)와 구분합니다.
 
 `--intermediate`는 Adaptive의 중간 출력 합성을, `--full-capture`는 전체 캡처를 강제하는 같은 바이너리 A/B 옵션입니다.
 `--owned-subtrees`는 셰이더 없는 형제 scope도 별도 Surface로 처리하며,
@@ -389,7 +389,7 @@ iOS는 새 shader-only 장면에 최대 2개 GPU frame과 비동기 표시를 �
 native·회전·replay는 직렬 admission과 필요한 transaction 표시를 유지합니다.
 프레임 정책 선택 옵션은 제거했습니다. iOS 수집기는 설정 없이 C를 측정하며,
 과거 A/B 선택과 legacy presentation 설정은 사용할 수 없습니다.
-프레임 준비·표시·복귀 수정과 이후 실기기 결과는 [프레임 연결 결과](../../works/results/2026-10-02-ios-frame-loop.md)를 참조합니다.
+프레임 준비·표시·복귀 수정과 이후 실기기 결과는 [프레임 연결 결과](../../history/26-10-03/works/results/2026-10-02-ios-frame-loop.md)를 참조합니다.
 수집기도 별도 정책 옵션이 없으면 C를 측정합니다.
 `--sigma 32`로 최대 강도를 측정할 수 있습니다.
 수집기의 평균 FPS는 warm 구간의 실제 표시 간격으로 계산하며 CPU stage나 GPU 실행 시간에서 추정하지 않습니다.
@@ -400,14 +400,14 @@ CPU stage는 최대 최근 4,096회 호출이며 초기 준비를 포함하고, 
 Surface 정보는 마지막 프레임의 scene filter 전체를 포함합니다. RGBA 추정 바이트를 합산해 live/peak VRAM으로
 해석하지 않습니다. UIKit command buffer 카운터는 terminal marker만 세며 Skia 내부 제출 횟수는 아닙니다.
 GPU 구간 시간과 peak 메모리는 별도 Metal System Trace가 필요합니다.
-[작업 결과·미검증 범위](../../works/results/2026-09-30-variable-blur.md)를 참고하세요.
+[작업 결과·미검증 범위](../../history/26-10-03/works/results/2026-09-30-variable-blur.md)를 참고하세요.
 
 2026-10-01 후속: 축소 격자가 정렬 가능한 축만 부분 캡처하도록 개선했습니다.
 `--variable-blur-capture`는 실제 embedded SkSL의 1·1/2·1/4 레벨을 래스터에서 실행하여
 전체 도메인과 부분 캡처의 픽셀을 비교합니다. Graphite GPU 픽셀 비교나 Adaptive 마스크 검증을 대신하지 않습니다.
 실기기 측정 스크립트의 `--full-capture` 옵션은 `DOROTI_VARIABLE_BLUR_DISABLE_CROP=1`로
 같은 바이너리의 전체 도메인 기준을 실행합니다. 기본 실행과 각각 새 출력 폴더로 비교하세요.
-[부분 캡처 후속 결과](../../works/results/2026-10-01-variable-blur-per-axis.md)에 실행 범위와 미검증 사항을 기록합니다.
+[부분 캡처 후속 결과](../../history/26-10-03/works/results/2026-10-01-variable-blur-per-axis.md)에 실행 범위와 미검증 사항을 기록합니다.
 
 
 ## 웹폰트 비교

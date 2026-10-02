@@ -443,4 +443,4 @@ exercise Qt services; the drop page also has a native text/link drag source.
 `DOROTI_SAMPLE=qt-widgets` is a separate disjoint native-editor fixture for a
 Widgets/OpenGL shim (`DOROTI_LINUX_GRAPHITE=0`), without the Desktop companion.
 Quick composition is required for the full mixed input/WebView scene.
-See [Linux qualification and commands](../../works/results/2026-09-29-linux-qt.md).
+See [Linux qualification and commands](../../history/26-10-03/works/results/2026-09-29-linux-qt.md).

@@ -62,13 +62,13 @@ adb shell am start -W -a android.intent.action.VIEW -d 'doroti-testbed:/second' 
 ```
 
 The sample displays the current URI and provides two navigation buttons plus
-editable text/selection in route state. [08 results](../../works/common/08-navigation-restoration.md)
+editable text/selection in route state. [08 results](../../history/26-10-03/works/common/08-navigation-restoration.md)
 distinguishes common contracts, native callbacks and actual display evidence.
 
 
 2026-09-29: generated browser runners prepare navigation state asynchronously before
 view creation, then route DOM history and restoration through the render-worker control
 mailbox. Main-owned runtime does not imply framework JavaScript runs on the DOM thread.
-See [actual Chrome and Android follow-up](../../works/results/2026-09-29-web-windows-android.md).
+See [actual Chrome and Android follow-up](../../history/26-10-03/works/results/2026-09-29-web-windows-android.md).
 
-2026-09-29 UIKit/Catalyst: [implementation, smoke commands and remaining qualification](../../works/results/2026-09-29-ios-catalyst.md). iOS Simulator, device signing and Catalyst scenes have separate evidence; package-only publish does not imply clean signed distribution.
+2026-09-29 UIKit/Catalyst: [implementation, smoke commands and remaining qualification](../../history/26-10-03/works/results/2026-09-29-ios-catalyst.md). iOS Simulator, device signing and Catalyst scenes have separate evidence; package-only publish does not imply clean signed distribution.

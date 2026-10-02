@@ -68,8 +68,8 @@ checks three continuing resumes with at least 5s between snapshots, rotation,
 process/surface recreation and a screenshot. Rotation settings are restored.
 This is synthetic automation. Physical finger, IME, selection and 10-minute use
 require their own evidence. Apple validation was skipped for the October 2
-candidate; see that [result](../../works/results/2026-10-02-native-frame-pipeline.md).
-The later [Apple review](../../works/results/2026-10-03-apple-frame-configuration-review.md)
+candidate; see that [result](../../history/26-10-03/works/results/2026-10-02-native-frame-pipeline.md).
+The later [Apple review](../../history/26-10-03/works/results/2026-10-03-apple-frame-configuration-review.md)
 records new builds and execution separately.
 
 Run from the repository root with Python, PowerShell 7, Node 24 and the pinned .NET SDK:
@@ -130,7 +130,7 @@ The permanent fixtures protect regressions in pointer tab routing, bounded settl
 python Doroti/eng/run-with-timeout.py dotnet run --project Doroti/tests/Doroti.Tests -c Debug -- --break-tab
 ```
 
-That command must fail; without `--break-tab`, it must pass. Rendering fixtures cover fixed DPR pixels, VariableBlur raster kernels/capture coordinates, a 1,000-row list, reassemble offset preservation and zero engine-layer delta after disposal. Physical IME/accessibility and the full GPU/platform matrix remain tracked in [M1](../../works/common/01-testing.md) and [M2-B](../../works/common/03-input-accessibility-platformview.md).
+That command must fail; without `--break-tab`, it must pass. Rendering fixtures cover fixed DPR pixels, VariableBlur raster kernels/capture coordinates, a 1,000-row list, reassemble offset preservation and zero engine-layer delta after disposal. Physical IME/accessibility and the full GPU/platform matrix remain tracked in [M1](../../history/26-10-03/works/common/01-testing.md) and [M2-B](../../history/26-10-03/works/common/03-input-accessibility-platformview.md).
 
 On macOS with a Metal GPU, run the production renderer pixel checks explicitly:
 
@@ -215,7 +215,7 @@ host/template. Dialog selection and QDropEvent input are synthetic native tests,
 not physical IME/Orca or external file-manager drags. An optional
 `DOROTI_QT_URL_PROBE=http://127.0.0.1:PORT/` also opens the real default browser.
 Widgets OpenGL uses the separate ClipRect-only `qt-widgets` sample; see
-[Linux execution and reproduction](../../works/results/2026-09-29-linux-qt.md).
+[Linux execution and reproduction](../../history/26-10-03/works/results/2026-09-29-linux-qt.md).
 
 
 macOS AppKit uses the installed Xcode 27/.NET 10 macOS27 profile:
@@ -231,7 +231,7 @@ route restoration are distinct from physical IME/VoiceOver/Finder input. The
 opt-in automation lives only in the testbed runner. `--cases` selects
 `multi,desktop,services,input,navigation,rendering,lifecycle`; `--tfm net10.0-macos` selects
 the corresponding Xcode 26 toolchain. Direct scripts retain their raw output;
-MacOSSmoke cleans successful runs. See [AppKit results](../../works/results/2026-09-29-macos-appkit.md).
+MacOSSmoke cleans successful runs. See [AppKit results](../../history/26-10-03/works/results/2026-09-29-macos-appkit.md).
 
 The `lifecycle` fixture uses actual Metal submissions and terminal callbacks to
 check same-owner replacement gating, independent-window connection while an old
@@ -240,7 +240,7 @@ times and native detach/reattach. Native keyboard events and window backing
 factors 1/1.5/2 are synthetic. They verify key-up synthesis and exact pixel extents,
 and do not qualify physical keyboard/IME input or a real monitor transition.
 The fixture never blocks the GPU to claim hardware overlap. See the separate
-[AppKit review](../../works/results/2026-10-03-appkit-configuration-review.md).
+[AppKit review](../../history/26-10-03/works/results/2026-10-03-appkit-configuration-review.md).
 
 The local macOS payload fixture is `tests/macos_package_smoke.py --candidate PATH
 --previous PATH --output temp/testing/macos-appkit/install`. Run it through the
@@ -249,7 +249,7 @@ runs both extracted app versions with an empty NuGet cache, replaces the app,
 then removes it while preserving its own Unicode userdata fixture. It does not
 run macOS Installer or qualify Gatekeeper/notarization/clean-machine deployment.
 
-2026-09-29 UIKit/Catalyst: [implementation, smoke commands and remaining qualification](../../works/results/2026-09-29-ios-catalyst.md). iOS Simulator, device signing and Catalyst scenes have separate evidence; package-only publish does not imply clean signed distribution.
+2026-09-29 UIKit/Catalyst: [implementation, smoke commands and remaining qualification](../../history/26-10-03/works/results/2026-09-29-ios-catalyst.md). iOS Simulator, device signing and Catalyst scenes have separate evidence; package-only publish does not imply clean signed distribution.
 
 Apple suites: `IOSSmoke` uses native scene activity callback injection for unattended
 navigation; `CatalystSmoke` uses LaunchServices URL delivery. Both use the maintained
@@ -272,7 +272,7 @@ python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/ios_hot_reload_smoke
 python3 Doroti/eng/run-with-timeout.py node Doroti/tools/vscode-doroti/dist/test/runHost.js samples/DorotiTestbedApp temp/testing/ios-editor-run --ios
 ```
 
-The smoke test temporarily edits the Testbed reload scene and restores it in `finally`; use a fresh evidence directory and do not edit that scene concurrently. It verifies actual deltas, PID/State/count/text/scroll preservation, compiler-error recovery, rude edits and Stop. State is seeded automatically. The editor test uses a separately installed VSIX/profile; run `npm run package` in the extension folder first. See [iOS qualification](../../works/platforms/ios.md#2026-09-30-ios-metadata-hot-reload).
+The smoke test temporarily edits the Testbed reload scene and restores it in `finally`; use a fresh evidence directory and do not edit that scene concurrently. It verifies actual deltas, PID/State/count/text/scroll preservation, compiler-error recovery, rude edits and Stop. State is seeded automatically. The editor test uses a separately installed VSIX/profile; run `npm run package` in the extension folder first. See [iOS qualification](../../history/26-10-03/works/platforms/ios.md#2026-09-30-ios-metadata-hot-reload).
 
 Physical-device Hot Reload uses the same smoke test with `--rid ios-arm64 --framework net11.0-ios --sdk-version 11.0.100-rc.1.26425.128 --dotnet <prepared-dotnet-host>`. It copies the automatically seeded state probe out of Documents and requires matching completed-frame responses for real SDK deltas. Pair the device, enable Developer Mode, and supply signing/toolchain environment variables described in the [development contract](../docs/development-hot-reload.md).
 

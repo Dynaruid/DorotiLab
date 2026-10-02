@@ -2,7 +2,7 @@
 
 2026-09-29 follow-up: candidate `0.3.0-beta.rc.20260929045407` qualifies Windows,
 Web and Android x64 package-only consumers. Chrome and the Android emulator also
-showed actual presentation and Increment 0→1. See [results](../../works/results/2026-09-29-web-windows-android.md).
+showed actual presentation and Increment 0→1. See [results](../../history/26-10-03/works/results/2026-09-29-web-windows-android.md).
 
 Create a selected candidate with a fresh package version and isolated restore cache:
 
@@ -35,7 +35,7 @@ restoration and installer behavior and ran local regressions without generating
 a new Release candidate. The installer contract below describes the updated
 source; it does not establish that the earlier candidate contains those changes.
 Generate and validate a new candidate before using follow-up results as release
-evidence. See [dated results](../../works/common/10-release-packaging.md).
+evidence. See [dated results](../../history/26-10-03/works/common/10-release-packaging.md).
 
 Install/upgrade a candidate to a dedicated local preview directory:
 
@@ -81,7 +81,7 @@ local crash log. Do not include credentials or private app contents.
 Signing certificates, a clean deployment machine, production domain/service
 configuration and release-store credentials were not supplied. Signing,
 clean-machine installation, production updates and extended soak tests stay
-`notVerified` in [10 results](../../works/common/10-release-packaging.md).
+`notVerified` in [10 results](../../history/26-10-03/works/common/10-release-packaging.md).
 
 
 Windows app-specific protocol registration is optional and belongs to the installation:
@@ -115,7 +115,7 @@ registering a global association. `remove --root INSTALL` preserves userdata.
 Installation, update, unlisted-file rejection, native launch and userdata-preserving
 removal pass locally. Trimming/single-file/NativeAOT are unsupported. This unsigned
 VM-local result does not establish clean-OS or production release qualification.
-[Linux details and remaining gates](../../works/results/2026-09-29-linux-qt.md).
+[Linux details and remaining gates](../../history/26-10-03/works/results/2026-09-29-linux-qt.md).
 
 
 ## macOS AppKit candidate
@@ -134,9 +134,9 @@ window, resize and orderly close. An explicit success marker and ad-hoc app
 signature verification are required. Candidate manifests record package/payload
 hashes and generation-time source/toolchain provenance. This is local package
 extraction, not Installer/Gatekeeper/Developer ID/notarization or clean OS
-installation qualification. See [current AppKit results](../../works/results/2026-09-29-macos-appkit.md).
+installation qualification. See [current AppKit results](../../history/26-10-03/works/results/2026-09-29-macos-appkit.md).
 
-2026-09-29 UIKit/Catalyst: [implementation, smoke commands and remaining qualification](../../works/results/2026-09-29-ios-catalyst.md). iOS Simulator, device signing and Catalyst scenes have separate evidence; package-only publish does not imply clean signed distribution.
+2026-09-29 UIKit/Catalyst: [implementation, smoke commands and remaining qualification](../../history/26-10-03/works/results/2026-09-29-ios-catalyst.md). iOS Simulator, device signing and Catalyst scenes have separate evidence; package-only publish does not imply clean signed distribution.
 
 Apple candidate options: `--targets maccatalyst` and `--targets ios` each build an
 isolated target feed. Catalyst performs Release publish, local ad-hoc signing and

@@ -17,13 +17,13 @@ def source():
     forbidden = [p for p in tracked if p.startswith("temp/")]
     if forbidden:
         raise RuntimeError(f"Temporary files are tracked: {forbidden}")
-    # Current entry points and plans, not archived reports of deleted probes.
-    docs = [ROOT / p for p in ("plan.md", "README.md", "README.ko.md", "Doroti/README.md", "works/README.md",
+    # Current entry points and referenced planning archives, not deleted probe reports.
+    docs = [ROOT / p for p in ("history/26-09-28/plan-summary.md", "README.md", "README.ko.md", "Doroti/README.md", "history/26-10-03/works/README.md",
         "Doroti/tests/README.md", "Doroti/docs/support-status.md", "Doroti/docs/desktop-windows.md",
         "Doroti/docs/rendering-baselines.md", "Doroti/docs/development-hot-reload.md", "Doroti/tools/vscode-doroti/README.md",
         "Doroti/docs/application-navigation.md", "Doroti/docs/desktop-window-context.md", "Doroti/docs/release-candidates.md",
         "Doroti/docs/platform-views/support-matrix.md", "samples/DorotiTestbedApp/README.md", "samples/DorotiSampleApp2/README.md")]
-    docs += list((ROOT / "works").rglob("*.md"))
+    docs += list((ROOT / "history/26-10-03/works").rglob("*.md"))
     broken = []
     for doc in set(docs):
         for target in re.findall(r"\]\(([^)]+)\)", doc.read_text(encoding="utf-8-sig")):

@@ -49,7 +49,7 @@ independent in-memory navigation; main-window XDG restoration remains main-owned
 Application dispatch outlives the main window and ends with QApplication. A dropped
 queued request receives a closed completion. Native surfaces retire before their
 callback GCHandles are released. Both last-window and Explicit reopen policies have
-[real Qt window evidence](../../works/results/2026-09-29-linux-qt.md).
+[real Qt window evidence](../../history/26-10-03/works/results/2026-09-29-linux-qt.md).
 
 
 ## AppKit ownership (2026-09-29)
@@ -61,8 +61,8 @@ services still in use. The manager retains the application lease until app exit.
 The main view receives OS activation and owns persistent restoration; secondary
 views use independent in-memory navigation. Root unmount precedes view/capability
 disposal and Metal retirement completes before native close. OnLastWindowClosed
-and Explicit have [real two-window evidence](../../works/results/2026-09-29-macos-appkit.md).
+and Explicit have [real two-window evidence](../../history/26-10-03/works/results/2026-09-29-macos-appkit.md).
 The framework `_window_macos.cs` Satellite API is not connected to this manager.
 Owned/modal/Satellite/popup/tooltip windows remain unsupported.
 
-2026-09-29 UIKit/Catalyst: [implementation, smoke commands and remaining qualification](../../works/results/2026-09-29-ios-catalyst.md). iOS Simulator, device signing and Catalyst scenes have separate evidence; package-only publish does not imply clean signed distribution.
+2026-09-29 UIKit/Catalyst: [implementation, smoke commands and remaining qualification](../../history/26-10-03/works/results/2026-09-29-ios-catalyst.md). iOS Simulator, device signing and Catalyst scenes have separate evidence; package-only publish does not imply clean signed distribution.

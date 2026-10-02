@@ -51,4 +51,4 @@ managed windows/resources; UIKit owns process termination. Native New Window and
 automatic restoration of extra scenes have no content factory and are rejected.
 
 For repeatable native smoke commands and precise evidence boundaries see
-[the Apple work2 results](../../works/results/2026-09-29-ios-catalyst.md).
+[the Apple work2 results](../../history/26-10-03/works/results/2026-09-29-ios-catalyst.md).

@@ -2,7 +2,7 @@
 
 The adapter is limited to the Graphite Metal runner. Catalyst now connects the
 same UIKit composition implementation through its own host path; [separate execution
-results](../../../works/results/2026-09-29-ios-catalyst.md) qualify that path. Ganesh
+results](../../../history/26-10-03/works/results/2026-09-29-ios-catalyst.md) qualify that path. Ganesh
 does not provide this compositor. UIButton, UITextField and WKWebView instances remain in an
 owner-local clipped UIView alongside the MTKView. Transparent CAMetalLayer
 segments carry intervening/foreground Doroti pixels. Committed native, raster,

@@ -118,7 +118,7 @@ for inspection; record results and remove it after use.
 
 Actual cross-process Explorer drops, live mixed-monitor DPI changes, cancellation
 during an external drag and physical input remain distinct from these results.
-See [M5-A results](../../works/common/07-os-drag-drop.md) for executed coverage and
+See [M5-A results](../../history/26-10-03/works/common/07-os-drag-drop.md) for executed coverage and
 remaining AppKit/Qt/Web/mobile/sending work.
 
 
@@ -139,7 +139,7 @@ owns any source deletion after Move. Existing file URIs are supported references
 virtual-file stream providers are unsupported. There is one native drag per process.
 
 Testbed `DOROTI_SAMPLE=drop` exposes a draggable text/link area on supporting hosts.
-[Linux evidence](../../works/results/2026-09-29-linux-qt.md) covers synthetic native
+[Linux evidence](../../history/26-10-03/works/results/2026-09-29-linux-qt.md) covers synthetic native
 Copy delivery, 5GiB read lifetime and source cancellation. External file-manager
 reception and successful cross-application Move/Link/image delivery remain
 notVerified. Windows/Web receive capabilities do not imply this source capability.
@@ -153,5 +153,5 @@ Only accepted formats are acquired, with at most 1,024 items / 1 MiB text; file
 contents use bounded read grants instead of copying whole files into memory.
 Native editor/WKWebView children retain their own drop handling. CanReceive is
 true, CanSend is false, Actions is Copy. Move/Link, drag images, virtual files and
-OS drag source sessions remain unsupported. [Native pasteboard evidence](../../works/results/2026-09-29-macos-appkit.md)
+OS drag source sessions remain unsupported. [Native pasteboard evidence](../../history/26-10-03/works/results/2026-09-29-macos-appkit.md)
 does not qualify physical Finder delivery across windows.
