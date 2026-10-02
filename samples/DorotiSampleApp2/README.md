@@ -6,6 +6,28 @@ Cupertino 스타일의 독립 Doroti 샘플 앱입니다. 공통 C# UI와 Androi
 - **Profile**: 이름 입력과 인사말, 탭 전환 시 입력 상태 유지
 - **Settings**: 시스템 / 라이트 / 다크 테마 선택
 - **Variable Blur**: 60개 항목의 ListView 위에 상단 고정 VariableBlur 오버레이, 강도 조절과 켜기/끄기
+- **Upload**: 이미지·텍스트 파일 다중 선택과 OS 드래그 앤 드롭, 이미지 미리보기·텍스트 내용·파일 이름/크기 표시, 개별 삭제·전체 지우기
+
+## 파일 업로드 예제
+
+**Upload** 탭에서 **파일 선택**을 누르거나 페이지 안에 파일을 드래그해서 놓습니다.
+PNG/JPG/JPEG/GIF/WEBP/BMP 이미지는 최대 10 MiB, TXT/MD/CSV/JSON/LOG 텍스트는
+최대 1 MiB이며 목록은 8개까지 유지합니다. UTF-8 또는 BOM이 있는 UTF-16 텍스트를
+읽고, 긴 내용은 처음 4,000자까지만 표시합니다. 이미지 디코딩에 실패하면 해당 카드에 오류를 표시합니다.
+
+이 예제는 파일을 앱 메모리로 읽어 미리 보는 동작이며 서버 업로드나 디스크 저장은 포함하지 않습니다.
+파일 선택·드롭의 지원 여부는 실행 호스트에서 확인하며, 파일 드롭이 없는 환경에서는 선택 버튼을 사용합니다.
+드롭은 Upload 탭이 보일 때만 Copy로 수신합니다. 파일 읽기 권한은 읽기 완료/취소 후 해제하고,
+목록은 탭을 전환해도 유지되며 앱을 닫으면 초기화됩니다.
+구현은 [src/FileUploadPage.cs](src/FileUploadPage.cs)에 있습니다.
+
+검증 (2026-10-03): 공통 앱·Windows App SDK·Web Release 빌드 **PASS**.
+CPU 자동 검증에서 실제 위젯 포인터 경로의 탭/버튼 전환, 합성 파일 선택·드롭과 미리보기,
+읽기 권한 해제, 탭 상태 유지·수신 해제, 375px 레이아웃을 확인했습니다.
+부분 읽기·UTF-8/UTF-16·빈 텍스트와 크기/형식 제한·읽기 취소도 **PASS**.
+실제 OS 파일 선택 창, 탐색기 드래그 조작, 모바일 기기·브라우저에서의 파일 입력은 **notVerified**입니다.
+
+## Variable Blur 예제
 
 Variable Blur 페이지는 리스트 상단 180 논리 단위에 `BackdropFilter`와
 `ImageFilterConfig.CreateVariableBlur(startSigma: 강도, endSigma: 0, resolutionScale: 0.25,

@@ -78,6 +78,7 @@ internal sealed class CupertinoSampleState : State<CupertinoSample>
                 new(icon: new Icon(CupertinoIcons.settings), label: "Settings"),
                 new(icon: new Icon(CupertinoIcons.list_bullet), label: "Variable Blur"),
                 new(icon: new Icon(CupertinoIcons.textformat), label: "Fonts"),
+                new(icon: new Icon(CupertinoIcons.tray_arrow_up), label: "Upload"),
             }),
             tabBuilder: (tabContext, index) => index switch
             {
@@ -85,6 +86,7 @@ internal sealed class CupertinoSampleState : State<CupertinoSample>
                 2 => Settings(tabContext),
                 3 => new VariableBlurPage(),
                 4 => new FontComparisonPage(),
+                5 => new FileUploadPage(),
                 _ => Components(tabContext),
             }
         )
