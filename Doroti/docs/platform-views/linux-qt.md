@@ -13,12 +13,17 @@ rendering/import strategy is separately selected by Qt WebEngine; this statement
 does not claim that Chromium never copies pixels.
 
 The published P bank is never reused as staging, including frames of unchanged
-size. Queue drain precedes reuse; successful copy completion precedes native
-batch publication. Cancelled recordings, rejected commits and superseded resize
+size. Producer/copy fences retire recordings and `afterFrameEnd` submits a
+same-queue fence covering Qt's sampling. A replaced bank is reused only after
+all its consumers complete. Shader-only C publication follows copy submission;
+the same-queue barriers order Qt sampling after the copy. Serial/native frames
+wait for copy completion before batch publication. Cancelled recordings,
+rejected commits and superseded resize
 preserve the previous published bank. Active/staging/retiring R/P allocations
 share a 128 MiB guard. Replaced QSG nodes destroy their owned texture wrappers;
 removed raster items release wrappers rather than retaining hidden old images.
-The basic GUI/render loop and queue drain remain mandatory.
+The basic GUI/render loop remains mandatory. Normal C frames use nonblocking
+fence polls; queue idle is reserved for failed-submission cleanup and teardown.
 GPU failure is terminal for the current Quick generation. A failed idle/fence
 wait records the Vulkan result, operation, owner thread and frame token; no new
 frame is admitted. If completion cannot be proven, the managed generation keeps
@@ -31,7 +36,7 @@ Common composition completion follows Qt's actual `frameSwapped` token.
 A new render supersedes a previous token that never swapped before admitting
 another frame (including render-only capture passes). Close/scene-graph
 invalidation also terminates pending tokens. The copy fence retires Graphite
-reads; Qt resource lifetime and next-frame queue drain protect QSG reads.
+reads; the separate Qt consumer fence protects QSG reads.
 `frameSwapped` is not a GPU fence or physical scanout receipt, and the common
 observation remains `BackendAccepted`. Diagnostic `compositionFrames` records
 actual shared-session completions.
@@ -89,7 +94,7 @@ version. Native WebView statuses retain status, operation and owner in
 `Unsupported`.
 
 `doroti/webview` is an optional WebEngine Quick item, never a QWidget or a static
-snapshot. Enable `DorotiQtQuick=true` and `DorotiQtWebEngine=true`, register the
+snapshot. Quick is the runner/template default. Enable `DorotiQtWebEngine=true`, register the
 view type in the application manifest, and rebuild the native shim. The Testbed
 enables it by default when Quick is enabled. The same native item now implements
 the public controller, navigation/JSON JS, profiles and trusted manifest app content;
@@ -119,7 +124,7 @@ applies common luminance coefficients after both blur passes, supports saturatio
 sharp foreground. Native/raster edge widths, reset, saturation and tint have live
 pixel evidence; full cross-platform color-space equivalence is not claimed.
 
-The new [validation sources](../../validation/linux-qt-quick/README.md) separate
+The maintained [validation sources](../../tests/README.md) separate
 managed/native/GPU contracts, live product input/captures, and physical tests.
 Current VM observations use llvmpipe, not a physical GPU performance baseline.
 Rapid XWayland resize reproduced `VUID-VkSwapchainCreateInfoKHR-pNext-07781`
@@ -134,7 +139,7 @@ A Qt-only Quick/Vulkan fixture reproduced that exact mismatch when its sync
 callback took 50 ms, without Doroti or WebEngine. An undelayed 10-cycle fixture
 did not reproduce it. The Qt/XWayland WSI issue remains open; this evidence
 does not justify removing the queue drain or declaring a Qt version workaround.
-The [2026-09-24 follow-up](../../validation/linux-qt-quick/wsi-investigation-2026-09-24.md)
+The [2026-09-24 follow-up](../../../history/26-09-24/linux-qt-improvements-summary.md)
 reproduced the same extent VUID in the Qt-only xcb/XWayland fixture after
 matching the product's Vulkan instance extensions. Delaying resize delivery
 by 10/30/60 ms did not prevent it. A mapped-layer native Wayland product run
@@ -151,6 +156,40 @@ defines live source capture and recursion/input behavior;
 [QtWebEngineQuick initialization](https://doc.qt.io/qt-6/qtwebenginequick.html)
 must precede QApplication; [Qt WebEngine graphics configuration](https://doc.qt.io/qt-6/qtwebengine-features.html)
 describes its separate Chromium GPU backend and import constraints.
+
+## Build configuration
+
+The runner SDK, Sample2, Testbed and new app template select Quick/Graphite
+Vulkan by default. WebEngine is optional in the SDK/template and enabled in the
+two samples. GStreamer textures remain optional. Use these build profiles:
+
+| Backend | MSBuild properties | Minimum Qt API | Runtime selection |
+| --- | --- | --- | --- |
+| Quick / Graphite Vulkan | defaults | 6.6 | default C, basic render loop |
+| Quick with WebView | `DorotiQtWebEngine=true` | 6.8 | default C, native scenes serial |
+| Widgets / Vulkan window | `DorotiQtQuick=false`, `DorotiQtWebEngine=false` | 6.5 | separate Vulkan-window contract |
+| Widgets / OpenGL comparison | the Widgets properties plus `DorotiQtGraphite=false` | 6.5 | `DOROTI_LINUX_GRAPHITE=0`, serial; Wayland remains unqualified |
+
+Quick requires Core/Gui/Widgets/Quick/Qml/QuickControls2 development libraries
+and the QtQuick/QtQuick.Controls runtime QML modules. WebEngine adds
+WebEngineQuick/WebChannel, their QML modules and system Chromium helpers/data.
+Only the OpenGL comparison directly requires the Qt OpenGL component. All
+profiles currently require Wayland client development files and
+`wayland-scanner`, including xcb builds. Vulkan profiles require Vulkan headers
+and a Vulkan 1.2 device; software Vulkan is accepted separately from hardware
+performance qualification. Use the native Wayland QPA on Wayland sessions.
+
+Native build caches are separated by configuration and Quick/Graphite/
+WebEngine/GStreamer choices. Switching options recompiles the selected shim
+and removes disabled optional libraries from build/publish output. Invalid
+boolean values, Quick without Graphite, WebEngine without Quick, and the Linux
+Desktop adapter without Quick fail with `DOROTIQT002`–`DOROTIQT005`.
+`DOROTIQT006` rejects missing native output, including `publish --no-build`
+for a profile that has never been built. With `DorotiBuildQtNative=false`, set
+`DorotiQtNativeBuildDirectory` to a matching prebuilt directory containing the
+host and every enabled optional shim/manifest. Rebuild older app-owned native
+sources together with managed ABI 6; an existing directory name is not proof
+of ABI or backend compatibility.
 
 
 ## 2026-09-29 host integration

@@ -72,6 +72,7 @@ def main(suite):
                         "-c", "Debug", "--nologo")
             command("web-startup", sys.executable, "Doroti/tests/web_smoke.py", str(run / "web"))
         if suite == "LinuxSmoke":
+            command("linux-qt-profiles", sys.executable, "Doroti/tests/linux_qt_build_profiles.py", "--output", str(run / "profiles"))
             command("linux-qt", sys.executable, "Doroti/tests/linux_qt_smoke.py", "--output", str(run / "qt"))
         if suite in ("IOSSmoke", "CatalystSmoke"):
             target = "ios" if suite == "IOSSmoke" else "maccatalyst"

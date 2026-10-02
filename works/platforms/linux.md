@@ -10,6 +10,11 @@ Qt Quick와 Qt Widgets, Wayland/XWayland 및 GPU/소프트웨어 렌더링 환�
 Ubuntu 26.04/Qt 6.10.2 VM에서 Quick/Graphite software Vulkan 및 Widgets/OpenGL을 실행했다.
 물리 IME/Orca·물리 GPU·clean OS/서명 완료로 확대하지 않는다.
 
+2026-10-02 구성 후속: [Qt 구성 검토·보완](../results/2026-10-02-linux-qt-configuration-review.md).
+SDK·새 템플릿·CMake의 Quick/Graphite 기본값, 옵션별 native cache와 누락/오류 거절을 일치시켰다.
+Wayland·확대 배율·xcb smoke, 31조건 Vulkan fixture, 무설정 C·NuGet-only Release/설치 검증 PASS.
+물리 표시·입력·GPU와 동적 DPR/복귀 등 전체 인수는 PARTIAL이다.
+
 ## 공통 작업과 의존성
 
 M0 → M1 최소 경로 → M2 → M4/M5 → M6(대상 플랫폼) → M7 순서로 진행한다. M3의 생성·실행은 M0 후, Hot Reload는 M1과 개발 호스트·실행 세션 준비 후 연결한다. package-only smoke는 M0부터 시작한다. 아래 공통 문서에서 계약을 정하고 이 문서에서 플랫폼별 연결·실측 결과를 추적한다. M3/M6의 플랫폼 적용 범위는 본문의 경계를 따른다.

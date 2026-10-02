@@ -4,6 +4,8 @@
 
 상태: **구현 및 실행 가능한 자동 검증 완료, 전체 인수 PARTIAL.** Apple(iOS/Mac Catalyst/macOS) 검증은 사용자 요청으로 SKIPPED다. 공통 C 연결과 CPU/GPU·Windows·Android·Qt 자동 검증은 수행했다. 실제 표시 성능·물리 입력·10분 사용, Windows MAUI native 입력 adapter와 OpenGL Wayland compatibility는 미완료다. [실행 결과와 플랫폼 JSON](works/results/2026-10-02-native-frame-pipeline.md)을 기준으로 체크하며, 과거 iOS 수치를 새 payload에 소급하지 않는다.
 
+Linux Qt 구성 후속 검토: **SDK·샘플·템플릿 Quick/C 기본값, 옵션별 빌드 격리, 누락된 네이티브 산출물 거절 및 package-only Release 검증 PASS.** [후속 결과](works/results/2026-10-02-linux-qt-configuration-review.md)와 §14를 참조한다. 물리 GPU·표시·입력 인수와 OpenGL Wayland 제한은 유지한다.
+
 **목표:** 모든 네이티브 제품 호스트에 C의 프레임 생성·제출 원칙을 공통 기본 구조로 적용한다. 앞 프레임의 GPU 작업이 다음 framework 장면 준비를 막지 않게 하고, 새 shader-only 장면은 최대 2개 GPU 프레임과 플랫폼의 비동기 표시 경로를 사용한다. native view 합성·resize·rotation·replay는 각 플랫폼에 필요한 직렬 처리와 표시 동기화를 유지한다.
 
 작업 순서: **플랫폼별 경로 확인 → 공통 정책 추출 → Apple 연결 → Android 연결 → Windows 연결 → Linux 연결 → 통합 검증·기본 적용**.
@@ -162,6 +164,8 @@ terminal은 한 번만 처리한다. 역순 completion에서도 오래된 장면
 - [x] Qt GUI/sync/render thread 사이의 Vulkan queue 접근·신호 순서를 보존한다. 단순히 `WaitQueue`/`WaitForFences`를 삭제하지 않는다.
 - [x] 공통 callback 준비와 fresh-only admission을 Quick 및 Vulkan window 경로에 연결한다. native WebView/shield·resize는 직렬 경계를 유지한다.
 - [x] bridge ABI가 바뀌면 version/struct size 검사를 갱신하고 Sample2·Testbed·템플릿의 native 소스를 함께 맞춘다.
+- [x] SDK·새 템플릿·CMake 기본값을 Quick/Graphite로 맞추고, Quick/WebEngine/Graphite/Desktop 옵션 오류와 누락된 native build/publish 산출물을 거절한다. 옵션별 캐시와 `publish --no-build` 경계를 회귀검사한다.
+- [x] Linux package-only 새 템플릿의 무설정 C, Release publish·설치/업데이트/제거, Wayland 20회 resize와 Qt consumer 종료 회수를 검증한다. 확대 배율 실측 DPR 2.25 및 xcb 입력/resize smoke를 별도 기록한다.
 - [ ] 기본 지원 Wayland 환경의 resize·DPR·minimize/restore·WebView/IME와 지원하는 대체 환경을 확인한다. shutdown 뒤 미회수 GPU/Qt lease가 남지 않는지 검사한다.
 
 **완료 조건:** Qt consumer 완료를 증명하는 비동기 수명이 실제 연결되고, 기본 Quick 경로에서 C 동작·화질·native 합성·복귀를 통과한다.
@@ -247,3 +251,19 @@ terminal은 한 번만 처리한다. 역순 completion에서도 오래된 장면
 
 Apple 검증 관련 미체크 항목은 **SKIPPED(사용자 요청)**이며 재검증을 시도하지 않았다.
 그 밖의 미체크 항목은 부분 증거만 있거나 실제 환경/사람의 관찰이 필요한 인수다.
+
+## 14. Linux Qt 구성 후속 검토 — 2026-10-02
+
+이번 요청의 범위는 Linux Qt 구성 검토·보완이다. 다른 OS의 인수나 기존 전체 완료 조건을 새로 통과 처리하지 않는다. 기존 플랫폼 JSON은 이전 payload의 증거로 보존하며 새 결과를 [구성 검토 보고서](works/results/2026-10-02-linux-qt-configuration-review.md)와 [JSON](works/results/2026-10-02-linux-qt-configuration-review.json)에 추가했다.
+
+확인한 미흡 사항과 수정:
+
+- 샘플은 Quick을 사용하지만 SDK·템플릿·직접 CMake 빌드는 Widgets 기본값이었다. 모두 Quick/Graphite 기본값으로 맞췄다. WebEngine은 SDK·템플릿에서 선택 사항, 샘플에서 기본 활성화다.
+- 옵션을 바꿔도 같은 native build 디렉터리를 사용했다. Configuration과 Quick/Graphite/WebEngine/GStreamer 조합별로 분리하여 다른 옵션의 `--no-build` 게시가 캐시를 대신 사용하지 못하게 했다.
+- 네이티브 라이브러리가 없으면 복사 target을 건너뛰었다. `DOROTIQT006`으로 실패하게 하고 잘못된 boolean·지원하지 않는 조합도 먼저 거절한다. 명시적인 prebuilt 디렉터리는 동일 옵션·ABI의 산출물을 제공해야 한다.
+- OpenGL 비교를 위한 Graphite 옵션을 MSBuild에서 CMake에 전달하지 않았다. `DorotiQtGraphite=false`를 연결하고 Quick/WebEngine 비활성화 및 `DOROTI_LINUX_GRAPHITE=0` 실행 조건을 문서화했다.
+- 문서의 매 프레임 queue idle·copy fence wait 설명과 Qt 최소 버전을 현재 구현에 맞췄다. 기본 C는 producer/copy fence 및 `afterFrameEnd` 이후 Qt consumer fence로 회수하며, native/resize와 종료 시 동기화는 유지한다. ABI 6/208바이트는 변경하지 않았다.
+
+검증은 Ubuntu 26.04, .NET SDK 10.0.400/runtime 10.0.11, Qt 6.10.2, Wayland/KDE와 llvmpipe에서 수행했다. Testbed Debug·Sample2 Release build, CPU 회귀, Vulkan 31조건 A/C 픽셀·두 recording, Wayland 전체 smoke·20회 resize, 확대 배율(DPR 2.25), xcb 입력/resize, Sample2 default/A/B/C, OpenGL/xcb serial, 격리 NuGet-only 템플릿 publish·설치 검사를 통과했다. Sample2 무설정 C에서 pending 최대 2를 관찰했고 종료 consumer 제출/완료가 일치했다.
+
+물리 GPU·실제 표시 FPS/overlap·30회 성능 비교·물리 IME/Orca·동적 DPR/화면 이동·최소화/복원·10분 사용·clean OS 배포는 별도 인수다. 확대 배율 실행을 동적 DPR 전환으로, xcb smoke를 기존 Qt WSI 경쟁 조건 해결로 간주하지 않는다. OpenGL Wayland 문제도 수정 완료로 표시하지 않는다.

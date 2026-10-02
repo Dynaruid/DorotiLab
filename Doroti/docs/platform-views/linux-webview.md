@@ -96,7 +96,7 @@ dependency, including stale copied outputs when switching the option off.
 
 Ubuntu development dependencies include `qt6-base-dev`, `qt6-declarative-dev`,
 `qt6-webengine-dev`, `qt6-webchannel-dev`, Vulkan and Wayland development packages.
-Runtime closure includes Qt Core/Gui/Widgets/OpenGL/Quick/Qml/QuickControls2,
+Runtime closure includes Qt Core/Gui/Widgets/Quick/Qml/QuickControls2,
 WebEngineQuick/Core, WebChannel, the QtQuick/Controls/QtWebEngine/QtWebChannel QML
 modules and their distro dependencies, active xcb/Wayland QPA, `QtWebEngineProcess`,
 WebEngine .pak data and `qtwebengine_locales`. Do not copy these into the app.
@@ -115,8 +115,8 @@ API, composition/input, Gaussian/color calibration and deployment checks on each
 advertised QPA/GPU. The recorded apt candidate is an observation, not a guarantee
 that the distro package contains every current Chromium security fix.
 
-Reproduction and evidence: [Qt validation](../../validation/linux-qt-quick/README.md)
-and [2026-09-20 results](../../validation/webview/linux-results-2026-09-20.md).
+Reproduction and evidence: [maintained Qt tests](../../tests/README.md)
+and [Linux product results](../../../works/results/2026-09-29-linux-qt.md).
 Native-origin GestureArena, full Tab/IME/Orca, physical GPU/device loss, permission
 policy UI, full profile clear, all C/E scenarios, package-only clean-machine
 installation and Linux NativeAOT are separate remaining gates.

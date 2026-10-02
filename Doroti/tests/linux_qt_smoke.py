@@ -55,6 +55,12 @@ def finish(process, name):
         assert error not in text, (name, error)
     summaries = [json.loads(line.split('=', 1)[1]) for line in text.splitlines() if line.startswith('doroti.qt.summary=')]
     assert summaries and all(item['frames']['failed'] == 0 for item in summaries), name
+    for item in summaries:
+        assert item['gpuRetirement'] == 'producer-copy-fence-and-Qt-afterFrameEnd-consumer-fence', (name, item)
+        assert 0 < item['quickMaximumPending'] <= 2, (name, item)
+        assert item['quickConsumersSubmitted'] > 0, (name, item)
+        assert item['quickConsumersSubmitted'] == item['quickConsumersCompleted'], (name, item)
+        assert item['quickReservedBytes'] == item['quickRetiringLayers'] == 0, (name, item)
     return summaries
 
 def wait_file(file, process, expected=None):

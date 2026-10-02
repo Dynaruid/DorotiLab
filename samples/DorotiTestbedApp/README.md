@@ -94,8 +94,8 @@ dotnet run --project ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacCataly
 
 ### Linux sample
 
-Run on a Linux x64 host. Requires Qt 6.6 or later Core/Gui/Widgets/OpenGL/Quick/Qml/QuickControls2/WebEngineQuick,
-the `QtQuick`, `QtQuick.Controls` and `QtWebEngine` runtime QML modules, CMake,
+Run on a Linux x64 host. Requires Qt 6.8 or later Core/Gui/Widgets/Quick/Qml/QuickControls2/WebEngineQuick/WebChannel,
+the `QtQuick`, `QtQuick.Controls` `QtWebEngine` and `QtWebChannel` runtime QML modules, CMake,
 a C++ compiler, `pkg-config`, Wayland client development files, `wayland-scanner`,
 the `wayland` or `xcb` QPA plugin, Vulkan development headers, a Vulkan 1.2 device, and fontconfig. The command also builds the native shim. Hardware and software Vulkan devices are accepted based on API capabilities. The command below runs on llvmpipe VMs without environment overrides or launch profiles; published executables use the same policy.
 
@@ -107,7 +107,7 @@ The **Platform views** tab demonstrates native buttons/editors and Doroti layers
 Its page lives in [src/MaterialSample/PlatformViewsPage.cs](src/MaterialSample/PlatformViewsPage.cs).
 The independent **WebView** tab demonstrates browser content. Disable the optional
 WebEngine dependency with `-p:DorotiQtWebEngine=false`.
-Select the legacy Widgets overlay backend with `-p:DorotiQtQuick=false`.
+Without WebEngine, Qt 6.6+ is sufficient. Quick/Graphite Vulkan and frame mode C are also the SDK/template defaults. Select the legacy Widgets overlay backend with `-p:DorotiQtQuick=false -p:DorotiQtWebEngine=false`. Native Wayland is the preferred QPA on Wayland sessions; xcb/XWayland has a recorded Qt Vulkan resize race. See the [Linux Qt build profiles](../../Doroti/docs/platform-views/linux-qt.md#build-configuration).
 
 ### Android sample
 

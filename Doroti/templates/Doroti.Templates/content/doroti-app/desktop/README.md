@@ -53,7 +53,7 @@ set in the template plist). The Desktop adapter still rejects additional native
 windows. UIKit can restore the previous initial size; use SetSizeAsync after
 readiness when an exact post-launch size is required.
 
-For Linux Qt, use the separate startup and explicitly enable Quick:
+For Linux Qt, use the separate startup with the default Quick backend:
 
 ```xml
 <DorotiQtQuick>true</DorotiQtQuick>

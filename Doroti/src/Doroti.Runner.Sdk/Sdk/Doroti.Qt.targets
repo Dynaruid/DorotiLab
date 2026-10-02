@@ -1,17 +1,34 @@
 <Project>
   <PropertyGroup Condition="'$(DorotiHostKind)' == 'Qt'">
     <DorotiBuildQtNative Condition="'$(DorotiBuildQtNative)' == '' and $([MSBuild]::IsOSPlatform('Linux'))">true</DorotiBuildQtNative>
-    <DorotiQtNativeBuildDirectory Condition="'$(DorotiQtNativeBuildDirectory)' == ''">$(BaseIntermediateOutputPath)$(Configuration)/qt-native</DorotiQtNativeBuildDirectory>
     <DorotiGStreamerTextures Condition="'$(DorotiGStreamerTextures)' == ''">false</DorotiGStreamerTextures>
     <_DorotiGStreamerTexturesFlag Condition="'$(DorotiGStreamerTextures)' == 'true'">ON</_DorotiGStreamerTexturesFlag>
     <_DorotiGStreamerTexturesFlag Condition="'$(DorotiGStreamerTextures)' != 'true'">OFF</_DorotiGStreamerTexturesFlag>
-    <DorotiQtQuick Condition="'$(DorotiQtQuick)' == ''">false</DorotiQtQuick>
+    <DorotiQtQuick Condition="'$(DorotiQtQuick)' == ''">true</DorotiQtQuick>
+    <DorotiQtGraphite Condition="'$(DorotiQtGraphite)' == ''">true</DorotiQtGraphite>
     <DorotiQtWebEngine Condition="'$(DorotiQtWebEngine)' == ''">false</DorotiQtWebEngine>
     <_DorotiQtWebEngineFlag Condition="'$(DorotiQtWebEngine)' == 'true'">ON</_DorotiQtWebEngineFlag>
     <_DorotiQtWebEngineFlag Condition="'$(DorotiQtWebEngine)' != 'true'">OFF</_DorotiQtWebEngineFlag>
     <_DorotiQtQuickFlag Condition="'$(DorotiQtQuick)' == 'true'">ON</_DorotiQtQuickFlag>
     <_DorotiQtQuickFlag Condition="'$(DorotiQtQuick)' != 'true'">OFF</_DorotiQtQuickFlag>
+    <_DorotiQtGraphiteFlag Condition="'$(DorotiQtGraphite)' == 'true'">ON</_DorotiQtGraphiteFlag>
+    <_DorotiQtGraphiteFlag Condition="'$(DorotiQtGraphite)' != 'true'">OFF</_DorotiQtGraphiteFlag>
+    <!-- A prebuilt shim from another backend must never become this profile's
+         default. Explicit prebuilt directories are still supported. -->
+    <DorotiQtNativeBuildDirectory Condition="'$(DorotiQtNativeBuildDirectory)' == ''">$(BaseIntermediateOutputPath)$(Configuration)/qt-native/quick-$(_DorotiQtQuickFlag)-graphite-$(_DorotiQtGraphiteFlag)-webengine-$(_DorotiQtWebEngineFlag)-gstreamer-$(_DorotiGStreamerTexturesFlag)</DorotiQtNativeBuildDirectory>
   </PropertyGroup>
+  <Target Name="ValidateDorotiQtConfiguration" BeforeTargets="PrepareForBuild;PrepareForPublish"
+          Condition="'$(DorotiHostKind)' == 'Qt'">
+    <Error Code="DOROTIQT002"
+           Condition="('$(DorotiQtQuick)' != 'true' and '$(DorotiQtQuick)' != 'false') or ('$(DorotiQtGraphite)' != 'true' and '$(DorotiQtGraphite)' != 'false') or ('$(DorotiQtWebEngine)' != 'true' and '$(DorotiQtWebEngine)' != 'false') or ('$(DorotiGStreamerTextures)' != 'true' and '$(DorotiGStreamerTextures)' != 'false') or ('$(DorotiBuildQtNative)' != '' and '$(DorotiBuildQtNative)' != 'true' and '$(DorotiBuildQtNative)' != 'false')"
+           Text="Doroti Qt switches require true or false: DorotiQtQuick, DorotiQtGraphite, DorotiQtWebEngine, DorotiGStreamerTextures and DorotiBuildQtNative." />
+    <Error Code="DOROTIQT003" Condition="'$(DorotiQtQuick)' == 'true' and '$(DorotiQtGraphite)' != 'true'"
+           Text="Qt Quick requires Graphite Vulkan. For the serial OpenGL comparison set DorotiQtQuick=false, DorotiQtGraphite=false and DorotiQtWebEngine=false; launch with DOROTI_LINUX_GRAPHITE=0." />
+    <Error Code="DOROTIQT004" Condition="'$(DorotiQtWebEngine)' == 'true' and '$(DorotiQtQuick)' != 'true'"
+           Text="Qt WebEngine requires DorotiQtQuick=true. Disable DorotiQtWebEngine when selecting the Widgets backend." />
+    <Error Code="DOROTIQT005" Condition="'$(DorotiLinuxDesktop)' == 'true' and '$(DorotiQtQuick)' != 'true'"
+           Text="The Linux Desktop adapter requires DorotiQtQuick=true." />
+  </Target>
   <Target Name="ValidateDorotiQtPublishMode" BeforeTargets="PrepareForBuild;PrepareForPublish"
           Condition="'$(DorotiHostKind)' == 'Qt'">
     <Error Code="DOROTIQT001" Condition="'$(PublishTrimmed)' == 'true' or '$(PublishSingleFile)' == 'true'"
@@ -20,16 +37,20 @@
   <!-- CMake owns dependency/toolchain discovery and its incremental native graph.
        Keep configuration outputs separate and do not replace it with an mtime stamp. -->
   <Target Name="BuildDorotiQtNative" BeforeTargets="Build"
+          DependsOnTargets="ValidateDorotiQtConfiguration"
           Condition="'$(DorotiHostKind)' == 'Qt' and '$(DorotiBuildQtNative)' == 'true'">
     <MakeDir Directories="$(DorotiQtNativeBuildDirectory)" />
-    <Exec Command="cmake -S &quot;$(MSBuildProjectDirectory)/native&quot; -B &quot;$(DorotiQtNativeBuildDirectory)&quot; -DCMAKE_BUILD_TYPE=$(Configuration) -DDOROTI_QT_QUICK=$(_DorotiQtQuickFlag) -DDOROTI_QT_WEBENGINE=$(_DorotiQtWebEngineFlag) -DDOROTI_GSTREAMER_TEXTURES=$(_DorotiGStreamerTexturesFlag) -DDOROTI_APP_ICON=&quot;$(DorotiLinuxIcon)&quot;" Timeout="1200000" />
+    <Exec Command="cmake -S &quot;$(MSBuildProjectDirectory)/native&quot; -B &quot;$(DorotiQtNativeBuildDirectory)&quot; -DCMAKE_BUILD_TYPE=$(Configuration) -DDOROTI_QT_GRAPHITE=$(_DorotiQtGraphiteFlag) -DDOROTI_QT_QUICK=$(_DorotiQtQuickFlag) -DDOROTI_QT_WEBENGINE=$(_DorotiQtWebEngineFlag) -DDOROTI_GSTREAMER_TEXTURES=$(_DorotiGStreamerTexturesFlag) -DDOROTI_APP_ICON=&quot;$(DorotiLinuxIcon)&quot;" Timeout="1200000" />
     <PropertyGroup>
       <_DorotiQtCleanFirst Condition="'$(DorotiRebuildDependencies)' == 'true'">--clean-first</_DorotiQtCleanFirst>
     </PropertyGroup>
     <Exec Command="cmake --build &quot;$(DorotiQtNativeBuildDirectory)&quot; --config $(Configuration) $(_DorotiQtCleanFirst)" Timeout="1200000" />
   </Target>
   <Target Name="CopyDorotiQtNative" AfterTargets="Build;Publish"
-          Condition="'$(DorotiHostKind)' == 'Qt' and Exists('$(DorotiQtNativeBuildDirectory)/libdoroti_qt_host.so')">
+          DependsOnTargets="ValidateDorotiQtConfiguration"
+          Condition="'$(DorotiHostKind)' == 'Qt'">
+    <Error Code="DOROTIQT006" Condition="!Exists('$(DorotiQtNativeBuildDirectory)/libdoroti_qt_host.so')"
+           Text="The selected Qt native shim is missing from $(DorotiQtNativeBuildDirectory). Build it on Linux, or set DorotiQtNativeBuildDirectory to a prebuilt directory matching these Qt options when DorotiBuildQtNative=false or publishing with --no-build." />
     <!-- Equal length/mtime does not imply equal native code (restored artifacts
          can preserve both). Always copy the library selected by this build. -->
     <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_qt_host.so" DestinationFolder="$(TargetDir)" />

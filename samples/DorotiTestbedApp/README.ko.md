@@ -81,8 +81,8 @@ dotnet run --project ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacCataly
 
 ### Linux 샘플
 
-Linux x64 호스트에서 실행합니다. Qt 6.6 이상 Core/Gui/Widgets/OpenGL/Quick/Qml/QuickControls2/WebEngineQuick,
-`QtQuick`·`QtQuick.Controls`·`QtWebEngine` 런타임 QML 모듈, CMake,
+Linux x64 호스트에서 실행합니다. Qt 6.8 이상 Core/Gui/Widgets/Quick/Qml/QuickControls2/WebEngineQuick/WebChannel,
+`QtQuick`·`QtQuick.Controls`·`QtWebEngine`·`QtWebChannel` 런타임 QML 모듈, CMake,
 C++ compiler, `pkg-config`, Wayland client 개발 파일, `wayland-scanner`,
 `wayland` 또는 `xcb` QPA plugin, Vulkan 개발 헤더, Vulkan 1.2 장치와 fontconfig가 필요하며 native shim도 함께 빌드합니다. 하드웨어 GPU 여부로 실행을 차단하지 않으므로 llvmpipe VM에서도 별도 환경변수나 실행 프로필 없이 아래 명령으로 실행할 수 있습니다. 게시한 실행 파일에도 같은 정책을 적용합니다.
 
@@ -94,7 +94,7 @@ dotnet run --project ./samples/DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csp
 페이지 코드는 [src/MaterialSample/PlatformViewsPage.cs](src/MaterialSample/PlatformViewsPage.cs)에 있습니다.
 독립적인 **WebView** 탭에서는 브라우저 콘텐츠를 확인할 수 있습니다.
 WebEngine 의존성은 `-p:DorotiQtWebEngine=false`로 제외합니다.
-기존 QWidget 기본 배치는 `-p:DorotiQtQuick=false`로 선택할 수 있습니다.
+WebEngine을 제외하면 Qt 6.6 이상으로 빌드할 수 있습니다. SDK와 새 템플릿도 Quick/Graphite Vulkan 및 프레임 C를 기본으로 사용합니다. 기존 QWidget 배치는 `-p:DorotiQtQuick=false -p:DorotiQtWebEngine=false`로 선택합니다. Wayland 세션에서는 native Wayland QPA를 우선 사용합니다. xcb/XWayland에는 Qt Vulkan resize 경쟁 조건이 남아 있습니다. [Linux Qt 빌드 구성](../../Doroti/docs/platform-views/linux-qt.md#build-configuration)에 옵션별 조건을 정리했습니다.
 
 ### Android 샘플
 

@@ -1,0 +1,387 @@
+{
+  "schema": "doroti.linux-qt-configuration-review/v1",
+  "date": "2026-10-02",
+  "recordedUtc": "2026-10-02T11:24:01.287132+00:00",
+  "baseCommit": "eac3fb9de7efcfc9a03235158ee061a6be717ffb",
+  "workingTree": true,
+  "configurationReview": "PASS",
+  "platformQualification": "PARTIAL",
+  "rawRoot": "temp/testing/linux-qt-config",
+  "sourceSha256": "397bbed32035f2dd3c4cbddf223e99fba31756088862167f3eab0227eeed80d0",
+  "sourceManifest": "temp/testing/linux-qt-config/source-manifest.json",
+  "runtime": {
+    "os": "Ubuntu 26.04.1 LTS",
+    "sdk": "10.0.400",
+    "dotnetRuntime": "10.0.11",
+    "qt": "6.10.2",
+    "qpa": [
+      "wayland",
+      "xcb"
+    ],
+    "desktop": "KDE",
+    "gpu": "llvmpipe (LLVM 21.1.8, 256 bits)",
+    "softwareVulkan": true,
+    "baseDpr": 1.5
+  },
+  "abi": {
+    "hostVersion": 6,
+    "callbackBytes": 208,
+    "changed": false
+  },
+  "checks": {
+    "buildProfiles": {
+      "status": "PASS",
+      "msbuildCases": 22,
+      "nativeCopiesIdentical": true
+    },
+    "cpu": {
+      "status": "PASS",
+      "log": "logs/linux-qt-cpu.log"
+    },
+    "gpu": {
+      "status": "PASS",
+      "conditions": 31,
+      "maximumPending": 2,
+      "consumersSubmitted": 124,
+      "consumersCompleted": 124,
+      "raw": "gpu-pixels.json",
+      "actualQtSampling": false
+    },
+    "wayland": {
+      "status": "PASS",
+      "cases": [
+        "multi-OnLastWindowClosed",
+        "multi-Explicit",
+        "desktop",
+        "services",
+        "navigation",
+        "input",
+        "resize"
+      ],
+      "raw": "wayland/results.json"
+    },
+    "scaledWayland": {
+      "status": "PASS",
+      "scaleFactor": 1.5,
+      "actualDpr": 2.25,
+      "raw": "wayland-dpr-1.5/results.json"
+    },
+    "xcb": {
+      "status": "PASS",
+      "cases": [
+        "input",
+        "resize20"
+      ],
+      "validationLayer": "notAvailable",
+      "qtWsiRaceResolved": false,
+      "raw": "xcb/results.json"
+    },
+    "sample2Modes": {
+      "status": "PASS",
+      "runs": [
+        {
+          "condition": "fast:20",
+          "policy": "default",
+          "repeat": 1,
+          "seconds": 8.0,
+          "physicalInput": "notVerified",
+          "apphostSha256": "1d4b2289686f7128373d7c50b016d717271eb2a258afdaa86669c00512e2db65",
+          "payloadSha256": "5464c9cec3e803cdc517c777a1063e4d8198507e9c2884f79a61ff0109352735",
+          "pipeline": {
+            "nativeFrameMode": "C",
+            "frameworkPreparedPulses": 86,
+            "quickMaximumPending": 2,
+            "quickConsumersSubmitted": 86,
+            "quickConsumersCompleted": 86,
+            "gpuRetirement": "producer-copy-fence-and-Qt-afterFrameEnd-consumer-fence"
+          },
+          "frames": {
+            "rasterized": 81,
+            "presented": 81,
+            "replayed": 0,
+            "rasterizedSuperseded": 0,
+            "superseded": 181,
+            "failed": 0,
+            "rendererSubmitted": 0,
+            "rendererPending": false,
+            "mismatchCount": 5,
+            "lastMismatch": "metricsGeneration: scene=125; current=150"
+          },
+          "status": "PASS",
+          "display": {
+            "status": "notMeasured",
+            "fps": null,
+            "inputToDisplay": null,
+            "hardwareOverlap": "notMeasured"
+          }
+        },
+        {
+          "condition": "fast:20",
+          "policy": "A",
+          "repeat": 1,
+          "seconds": 8.0,
+          "physicalInput": "notVerified",
+          "apphostSha256": "1d4b2289686f7128373d7c50b016d717271eb2a258afdaa86669c00512e2db65",
+          "payloadSha256": "5464c9cec3e803cdc517c777a1063e4d8198507e9c2884f79a61ff0109352735",
+          "pipeline": {
+            "nativeFrameMode": "A",
+            "frameworkPreparedPulses": 105,
+            "quickMaximumPending": 1,
+            "quickConsumersSubmitted": 104,
+            "quickConsumersCompleted": 104,
+            "gpuRetirement": "producer-copy-fence-and-Qt-afterFrameEnd-consumer-fence"
+          },
+          "frames": {
+            "rasterized": 104,
+            "presented": 104,
+            "replayed": 0,
+            "rasterizedSuperseded": 0,
+            "superseded": 216,
+            "failed": 0,
+            "rendererSubmitted": 0,
+            "rendererPending": false,
+            "mismatchCount": 2,
+            "lastMismatch": "metricsGeneration: scene=6; current=9"
+          },
+          "status": "PASS",
+          "display": {
+            "status": "notMeasured",
+            "fps": null,
+            "inputToDisplay": null,
+            "hardwareOverlap": "notMeasured"
+          }
+        },
+        {
+          "condition": "fast:20",
+          "policy": "B",
+          "repeat": 1,
+          "seconds": 8.0,
+          "physicalInput": "notVerified",
+          "apphostSha256": "1d4b2289686f7128373d7c50b016d717271eb2a258afdaa86669c00512e2db65",
+          "payloadSha256": "5464c9cec3e803cdc517c777a1063e4d8198507e9c2884f79a61ff0109352735",
+          "pipeline": {
+            "nativeFrameMode": "B",
+            "frameworkPreparedPulses": 90,
+            "quickMaximumPending": 1,
+            "quickConsumersSubmitted": 90,
+            "quickConsumersCompleted": 90,
+            "gpuRetirement": "producer-copy-fence-and-Qt-afterFrameEnd-consumer-fence"
+          },
+          "frames": {
+            "rasterized": 89,
+            "presented": 89,
+            "replayed": 0,
+            "rasterizedSuperseded": 0,
+            "superseded": 187,
+            "failed": 0,
+            "rendererSubmitted": 0,
+            "rendererPending": false,
+            "mismatchCount": 2,
+            "lastMismatch": "metricsGeneration: scene=6; current=10"
+          },
+          "status": "PASS",
+          "display": {
+            "status": "notMeasured",
+            "fps": null,
+            "inputToDisplay": null,
+            "hardwareOverlap": "notMeasured"
+          }
+        },
+        {
+          "condition": "fast:20",
+          "policy": "C",
+          "repeat": 1,
+          "seconds": 8.0,
+          "physicalInput": "notVerified",
+          "apphostSha256": "1d4b2289686f7128373d7c50b016d717271eb2a258afdaa86669c00512e2db65",
+          "payloadSha256": "5464c9cec3e803cdc517c777a1063e4d8198507e9c2884f79a61ff0109352735",
+          "pipeline": {
+            "nativeFrameMode": "C",
+            "frameworkPreparedPulses": 106,
+            "quickMaximumPending": 1,
+            "quickConsumersSubmitted": 105,
+            "quickConsumersCompleted": 105,
+            "gpuRetirement": "producer-copy-fence-and-Qt-afterFrameEnd-consumer-fence"
+          },
+          "frames": {
+            "rasterized": 104,
+            "presented": 104,
+            "replayed": 0,
+            "rasterizedSuperseded": 0,
+            "superseded": 216,
+            "failed": 0,
+            "rendererSubmitted": 0,
+            "rendererPending": false,
+            "mismatchCount": 2,
+            "lastMismatch": "metricsGeneration: scene=6; current=11"
+          },
+          "status": "PASS",
+          "display": {
+            "status": "notMeasured",
+            "fps": null,
+            "inputToDisplay": null,
+            "hardwareOverlap": "notMeasured"
+          }
+        }
+      ]
+    },
+    "openGlXcb": {
+      "status": "PASS",
+      "actualAdmission": "serial",
+      "raw": "opengl-xcb/results.json"
+    },
+    "packageOnly": {
+      "status": "PASS",
+      "version": "0.3.0-beta.qt.96935d13a339",
+      "configuration": "Release/JIT/framework-dependent",
+      "summary": {
+        "schemaVersion": "doroti.linux-qt-diagnostics/v1",
+        "native": {
+          "titlebar.effective": "solid-native",
+          "backdrop.requested": "system",
+          "backdrop.fallback": "transparent",
+          "backdrop.effective": "solid",
+          "backdrop.provider": "none",
+          "backdrop.compositorBlur": "false",
+          "qpa": "wayland",
+          "graphics.backend": "QtQuick-Graphite-Vulkan",
+          "composition": "interleaved-gpu-images",
+          "raster.cpuReadback": "false",
+          "presentation.completion": "queue-present-accepted-not-scanout",
+          "vulkan.instance.apiVersion": "1.2",
+          "vulkan.instance.extensions": "VK_KHR_get_physical_device_properties2,VK_EXT_swapchain_colorspace,VK_KHR_surface,VK_KHR_portability_enumeration,VK_EXT_debug_utils,VK_KHR_wayland_surface",
+          "semantics.nodes": "9"
+        },
+        "metrics": {
+          "width": 1080,
+          "height": 960,
+          "dpr": 1.5,
+          "generation": 124,
+          "surfaceGeneration": 1,
+          "lifecycle": "detached"
+        },
+        "frames": {
+          "rasterized": 34,
+          "presented": 18,
+          "replayed": 16,
+          "rasterizedSuperseded": 0,
+          "superseded": 39,
+          "failed": 0,
+          "rendererSubmitted": 0,
+          "rendererPending": false,
+          "mismatchCount": 12,
+          "lastMismatch": "resizeTargetGeneration: scene=30; current=31; target=31"
+        },
+        "inputCount": 0,
+        "compositionFrames": 0,
+        "quickPeakReservedBytes": 18466816,
+        "quickReservedBytes": 0,
+        "quickRetiringLayers": 0,
+        "quickPeakRetiringLayers": 2,
+        "quickTimings": {
+          "QueueIdle": {
+            "Samples": 0,
+            "P50Ms": null,
+            "P95Ms": null,
+            "P99Ms": null
+          },
+          "Recording": {
+            "Samples": 34,
+            "P50Ms": 1.3516,
+            "P95Ms": 3.2392,
+            "P99Ms": 63.4659
+          },
+          "CopySubmit": {
+            "Samples": 34,
+            "P50Ms": 0.0048,
+            "P95Ms": 0.0149,
+            "P99Ms": 0.0234
+          },
+          "FenceWait": {
+            "Samples": 26,
+            "P50Ms": 11.4887,
+            "P95Ms": 18.6624,
+            "P99Ms": 19.8526
+          }
+        },
+        "quickNativeCommitTimings": {
+          "Samples": 34,
+          "P50Ms": 0.0219,
+          "P95Ms": 0.052899999999999996,
+          "P99Ms": 0.2712
+        },
+        "semanticsNodes": "9",
+        "renderer": "Qt/Quick/Graphite-Vulkan",
+        "softwareFallback": false,
+        "softwareVulkan": true,
+        "fullFrameCpuCopies": 0,
+        "nativeFrameMode": "C",
+        "frameworkPreparedPulses": 48,
+        "quickMaximumPending": 1,
+        "quickConsumersSubmitted": 64,
+        "quickConsumersCompleted": 64,
+        "gpuRetirement": "producer-copy-fence-and-Qt-afterFrameEnd-consumer-fence"
+      },
+      "sameProfileNoBuildPublish": true,
+      "unbuiltOtherProfileRejected": true,
+      "portableInstall": {
+        "launch": true,
+        "update": true,
+        "unlistedFileRejected": true,
+        "uninstallPreservesData": true,
+        "globalProtocolRegistration": "notVerified"
+      },
+      "raw": "packages/candidate.json"
+    },
+    "sourceAudit": "PASS",
+    "gitDiffCheck": "PASS"
+  },
+  "payloads": [
+    {
+      "name": "TestbedQuickDebug",
+      "root": "temp/testing/linux-qt-config/testbed-artifacts/bin/DorotiTestbedApp.Linux/debug_linux-x64",
+      "sha256": "66060fc9007c35dc91e00a5ea35be15c80514ed579cb8c7970bd086c9c8ceda0",
+      "manifest": "temp/testing/linux-qt-config/payload-TestbedQuickDebug.json"
+    },
+    {
+      "name": "Sample2QuickRelease",
+      "root": "samples/DorotiSampleApp2/linux/bin/linux-x64/Release/net10.0/linux-x64",
+      "sha256": "5464c9cec3e803cdc517c777a1063e4d8198507e9c2884f79a61ff0109352735",
+      "manifest": "temp/testing/linux-qt-config/payload-Sample2QuickRelease.json"
+    },
+    {
+      "name": "TemplatePackageRelease",
+      "root": "temp/testing/linux-qt-config/packages/publish",
+      "sha256": "ca77d573bdc4177d74b1dbf7d080a592a6a2add9e4ddaa4e20ef633ec0683286",
+      "manifest": "temp/testing/linux-qt-config/payload-TemplatePackageRelease.json"
+    },
+    {
+      "name": "Sample2OpenGl",
+      "root": "temp/testing/linux-qt-config/opengl-payload",
+      "sha256": "f54dcfbcf41c5ed5c64ab1cb7dab6eb6f62dfa0e2dc85fd5acd36780bb357ee9",
+      "manifest": "temp/testing/linux-qt-config/payload-Sample2OpenGl.json"
+    }
+  ],
+  "failedAttempts": [
+    {
+      "log": "logs/linux-qt-gpu.log",
+      "status": "FAIL",
+      "reason": "RID-less CPU build did not stage libSkiaSharp.so beside the executable. No GPU work started.",
+      "retry": "Explicit -r linux-x64 build/run PASS; logs/linux-qt-gpu-linux-x64.log"
+    }
+  ],
+  "remaining": {
+    "physicalGpu": "notVerified",
+    "deviceLoss": "notVerified",
+    "displayFps": "notMeasured",
+    "hardwareOverlap": "notMeasured",
+    "performance30Runs": "notMeasured",
+    "physicalImeOrca": "notVerified",
+    "dynamicDprDisplayMove": "notVerified",
+    "minimizeRestoreAndContinuingResume": "notVerified",
+    "tenMinuteUse": "notVerified",
+    "cleanSignedOsDeployment": "notVerified",
+    "qtXcbWsiRace": "open",
+    "openGlWayland": "previousFailurePreserved/notRequalified"
+  }
+}

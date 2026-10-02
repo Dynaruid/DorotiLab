@@ -2,15 +2,15 @@
 
 This directory is the app-owned CMake customization point. The managed runner owns process startup and calls the append-only `doroti.qt-host/v2` C ABI exported by `libdoroti_qt_host.so`.
 
-The default native host uses a Qt 6 `QWindow` and `QVulkanInstance`. It retains metrics/lifecycle, pointer/touch/tablet, key/focus, editing-state IME, clipboard, cursor, accessibility and resize contracts. C ABI v2 (ABI version 6) feature bits 10/11 supply the Vulkan instance, surface, actual enabled instance extensions and API version in the surface descriptor (now 144 bytes). Feature bit 12 requires the appended GPU polling callback (208-byte callback table); rebuild the shim when updating the managed host. Managed Graphite/Vulkan owns the device and swapchain, and reports queue-present acceptance separately from physical scan-out.
+The default native host uses a Qt 6 `QQuickWindow` and Qt-owned Vulkan device/queue/WSI. Graphite renders private R images and copies them into separate P images sampled by Qt. `DorotiQtQuick=false` selects the separate `QWindow`/`QVulkanInstance` comparison backend. It retains metrics/lifecycle, pointer/touch/tablet, key/focus, editing-state IME, clipboard, cursor, accessibility and resize contracts. C ABI v2 (ABI version 6) feature bits 10/11 supply the Vulkan instance, surface, actual enabled instance extensions and API version in the surface descriptor (now 144 bytes). Feature bit 12 requires the appended GPU polling callback (208-byte callback table); rebuild the shim when updating the managed host. In the QWindow comparison backend, managed Graphite/Vulkan owns the device and swapchain and reports queue-present acceptance separately from physical scan-out.
 
-Feature bit 13 requires `prepare_present` in the appended 128-byte host API table. Managed rendering calls it only immediately before queuing a Vulkan presentation, after rejecting empty or superseded scenes. Qt completes its presentation notification only on success. A skipped frame retries on an owner-thread timer because no compositor frame callback is promised. Rebuild the shim together with the managed host.
+Feature bit 13 requires `prepare_present` in the appended 128-byte host API table. The QWindow comparison calls it only immediately before queuing a Vulkan presentation, after rejecting empty or superseded scenes. Qt completes its presentation notification only on success. A skipped frame retries on an owner-thread timer because no compositor frame callback is promised. Rebuild the shim together with the managed host.
 
-Graphite clears its persistent GPU backing to transparent before a complete frame; a GPU copy reaches the acquired swapchain image. Resizing passes the current swapchain as `oldSwapchain` when creating its replacement before destroying the old handle. Vulkan 1.2 and Vulkan development headers are required. Two bounded frame slots use nonblocking acquisition and fence polling. A Qt owner-thread timer polls pending GPU work every 8 ms, including after the last frame and while hidden, and stops once complete. Close blocks new rendering and hides the window before teardown. Native window teardown drains and destroys the managed swapchain before Qt releases its VkSurfaceKHR. For an explicit legacy comparison, configure CMake with `-DDOROTI_QT_GRAPHITE=OFF` and also set `DOROTI_LINUX_GRAPHITE=0` for the managed process. This builds the retained QOpenGLWindow/FBO implementation; there is no automatic fallback.
+In the QWindow comparison, Graphite clears its persistent GPU backing to transparent before a complete frame; a GPU copy reaches the acquired swapchain image. Resizing passes the current swapchain as `oldSwapchain` when creating its replacement before destroying the old handle. Vulkan 1.2 and Vulkan development headers are required. Two bounded frame slots use nonblocking acquisition and fence polling. A Qt owner-thread timer polls pending GPU work every 8 ms, including after the last frame and while hidden, and stops once complete. Close blocks new rendering and hides the window before teardown. Native window teardown drains and destroys the managed swapchain before Qt releases its VkSurfaceKHR. For an explicit OpenGL comparison, set `DorotiQtQuick=false`, `DorotiQtGraphite=false` and `DorotiQtWebEngine=false` (or configure CMake with `-DDOROTI_QT_QUICK=OFF -DDOROTI_QT_GRAPHITE=OFF`) and set `DOROTI_LINUX_GRAPHITE=0` for the managed process. Its Wayland path remains unqualified; use xcb for the recorded serial comparison. This builds the retained QOpenGLWindow/FBO implementation; there is no automatic fallback.
 
 `WindowBackdropMode.acrylic` requests compositor blur for the complete client surface. Wayland uses the MIT-licensed `ext-background-effect-v1` protocol and applies the configured transparent or solid policy when that protocol or its blur capability is unavailable. The LGPL-licensed legacy KDE blur protocol is not included, so older KWin compositors may use the fallback. The framework background colors remain responsible for the acrylic tint and alpha.
 
-Qt is a system dependency for this target. Build and runtime require a Vulkan-enabled Qt 6.5 or newer with Core, Gui, Widgets, OpenGL (for the retained comparison build), the active platform plugin (`wayland` or `xcb`), Wayland client development files, `pkg-config`, and `wayland-scanner`. The shim has no embedded build-path RUNPATH; the system loader and Qt plugin search rules select those libraries. Accessibility, physical Linux IME, and X11 evidence remain separate acceptance gates.
+Qt is a system dependency for this target. The default Quick build requires Qt 6.6 or newer with Core, Gui, Widgets, Quick, Qml and QuickControls2, plus QtQuick/QtQuick.Controls runtime QML modules. The QWindow comparison requires Qt 6.5+, with OpenGL for its OpenGL build. All profiles require the active platform plugin (`wayland` or `xcb`), Wayland client development files, `pkg-config`, and `wayland-scanner`. The shim has no embedded build-path RUNPATH; the system loader and Qt plugin search rules select those libraries. Accessibility, physical Linux IME, and X11 evidence remain separate acceptance gates.
 
 The Quick build no longer requests the Qt OpenGL or OpenGLWidgets CMake components directly; `QOpenGLWindow` and its Qt OpenGL include/link are confined to the Widgets comparison build. Quick still needs Widgets for `QApplication`. Source include and `DT_NEEDED` inspection found no use of OpenGLWidgets. Both QPA targets currently build the Wayland backdrop protocol code, so an xcb-only development dependency profile would need a separate compile path and build matrix; it is not offered without a consumer need. Running with `QT_QPA_PLATFORM=xcb` still requires the published shim's Wayland client runtime dependency.
 
@@ -45,17 +45,17 @@ Qt-driven native window recreation rebinds each clip container to the same owner
 Callers must keep adopted-widget and callback modules loaded until owner teardown ends.
 See `Doroti/validation/linux-qt-contract/README.md` for current contract checks.
 
-## Optional Qt Quick GPU composition
+## Default Qt Quick GPU composition
 
-`-DDOROTI_QT_QUICK=ON` builds the Quick/Qml/QuickControls2 backend (Qt 6.6+).
+`DOROTI_QT_QUICK=ON` is the CMake default and builds the Quick/Qml/QuickControls2 backend (Qt 6.6+). The SDK, both samples and template also default to `DorotiQtQuick=true`.
 Its bundled Gaussian shader is embedded without ShaderTools or `qsb` at build
 time. These tools are needed only to regenerate the shader after source edits;
 see `shaders/README.md`. Debug and Release use the same hash-checked asset.
-The Testbed selects it through `DorotiQtQuick=true`; the generic runner/template
-keeps it optional. Runtime QML modules `QtQuick` and `QtQuick.Controls` are required.
+Select the retained Widgets/QWindow backend explicitly with `DorotiQtQuick=false`
+and `DorotiQtWebEngine=false`. Runtime QML modules `QtQuick` and `QtQuick.Controls` are required.
 
 Feature bit 17 negotiates the Quick path without changing callback ABI 6. Qt owns
-Vulkan device/queue/WSI; the managed renderer lends completed GPU images through
+Vulkan device/queue/WSI; the managed renderer publishes GPU images with same-queue copy/sampling ordering through
 the separate 48-byte GPU / 96-byte part API in `doroti_qt_quick.h`. Old managed
 callbacks without bit 17 are rejected before startup. Quick controls are live QML
 items, and QWidget adoption is explicitly unsupported by this backend.
@@ -85,7 +85,7 @@ are unsupported; see `Doroti/docs/platform-views/linux-webview.md`.
 
 Quick retains separate published/staging P banks and uses the actual frameSwapped
 terminal for common session completion. A superseded render-only pass is closed
-before admitting the next frame. The basic loop and queue drain remain; 1,024
+before admitting the next frame. The basic loop remains required; producer/copy and Qt consumer fences protect each bank. Normal shader-only C frames poll completion without queue-idle or copy-fence waits; 1,024
 pending GUI operations and 128 MiB of active/staging/retiring R/P images are
 defensive bounds, not accepted frame-time budgets. No effect host/sample textures
 remain at zero native effects. Rapid XWayland resize still has an observed Qt WSI
@@ -125,3 +125,5 @@ obligations. System Qt/GStreamer binaries are not bundled by this build.
 Native frame pipeline: host ABI 6 appends the afterFrameEnd consumer callback at offset 192 (208-byte table), negotiated by feature bit 21. The basic Qt render loop submits a same-queue consumer fence after Qt sampling. Producer/copy slots and unpublished banks are retired with nonblocking fence polls; front banks remain immutable until replaced and all consumer fences complete. Normal shader C frames do not wait for queue idle or copy fences. Native/replay/resize keep serial admission. Rebuild the Sample2, Testbed and template shim together.
 
 Host ABI 6 additionally appends prepare_frame at offset 200, feature bit 22. beforeFrameBegin freezes the current token and prepares the framework before QRhi::beginFrame; beforeSynchronizing records that prepared scene. Callback re-requests keep their next-pulse token. afterFrameEnd handles producer/Qt consumer retirement independently of frameSwapped.
+
+Native build caches are separated by configuration and Quick/Graphite/WebEngine/GStreamer options. Invalid switches and backend combinations fail before compilation. A missing host shim fails with `DOROTIQT006`, including `publish --no-build` for an unbuilt profile. For a prebuilt native host set `DorotiBuildQtNative=false` and `DorotiQtNativeBuildDirectory` to its matching directory; enabled WebEngine needs both its sibling library and runtime manifest. See `Doroti/docs/platform-views/linux-qt.md` for the complete profile table.

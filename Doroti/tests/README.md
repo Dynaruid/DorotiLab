@@ -8,6 +8,10 @@ For actual Vulkan A/C pixels and two unfinished recordings on the same recorder:
 python Doroti/eng/run-with-timeout.py dotnet run --project Doroti/tests/Doroti.Tests -c Debug -r win-x64 -- --native-frame-gpu temp/testing/native-frame-pipeline/windows/gpu-pixels.json
 ```
 
+On Linux, use `-r linux-x64` and a Linux output path for that GPU fixture.
+The explicit RID stages the pinned native Skia library beside the executable;
+a RID-less CPU test build does not provide that Graphite payload layout.
+
 This opt-in GPU fixture deliberately stalls the same queue with a timeline
 semaphore while recording two independent scenes. It checks Off, Gaussian,
 Adaptive, Fast, Fixed sigma 0/1/2/4/8/20/32 and Kawase 20/32, a third-frame
@@ -139,10 +143,20 @@ plugin calls reach DOM services. It preserves failure images; output is disposab
 Linux Qt uses Python 3 and system Qt 6 development/QML/WebEngine dependencies:
 
 ```sh
+python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/linux_qt_build_profiles.py --output temp/testing/linux-qt/manual-profiles
 pwsh -NoProfile -File Doroti/eng/doroti.ps1 validate -ValidationSuite LinuxSmoke
 python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/linux_qt_smoke.py --qpa xcb --output temp/testing/linux-qt/manual-xcb
 python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/linux_qt_packages.py temp/testing/linux-qt/manual-packages
 ```
+
+The profile fixture evaluates SDK/sample/template defaults and invalid option
+combinations, separates native caches, rejects missing and unbuilt-profile
+output, replaces equal-size/equal-mtime libraries and removes disabled optional
+outputs. `LinuxSmoke` includes it and checks the two-frame bound and complete Qt
+consumer retirement at shutdown. Package qualification uses the template's
+default Quick/C configuration without overrides and exercises matching and
+wrong-profile `publish --no-build` with an isolated NuGet cache. These checks
+do not qualify physical display timing, GPU execution overlap or physical IME.
 
 Choose a fresh `--output` path. Direct scripts retain raw evidence for review;
 the aggregate LinuxSmoke removes successful runs. `--cases` selects

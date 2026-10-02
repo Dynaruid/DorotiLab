@@ -8,13 +8,14 @@ import os
 import shutil
 import subprocess
 import sys
+import uuid
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[2]
 out = Path(sys.argv[1]).resolve()
 assert out.is_relative_to(ROOT / 'temp/testing') and not out.exists()
 out.mkdir(parents=True)
-version = '0.3.0-beta.qt.20260929'
+version = '0.3.0-beta.qt.' + uuid.uuid4().hex[:12]
 feed = out / 'feed'
 
 def command(name, args, env=None, cwd=ROOT, success=True):
@@ -54,7 +55,8 @@ ET.SubElement(sources, 'add', key='nuget', value='https://api.nuget.org/v3/index
 ET.ElementTree(config).write(consumer / 'NuGet.Config', encoding='utf-8', xml_declaration=True)
 env = os.environ | {'NUGET_PACKAGES': str(out / 'nuget')}
 project = consumer / 'linux/DorotiTemplateApp.Linux.csproj'
-props = ['-p:DorotiQtQuick=true', '-p:DorotiQtWebEngine=false']
+# Qualify the template and packaged SDK defaults without forcing Quick on.
+props = []
 command('restore', ['dotnet', 'restore', str(project), *props], env, consumer)
 command('publish', ['dotnet', 'publish', str(project), '-c', 'Release', *props, '-o', str(out / 'publish'), '-v:q'], env, consumer)
 assets = json.loads((consumer / 'linux/obj/linux-x64/project.assets.json').read_text())
@@ -66,6 +68,15 @@ command('published-run', [str(out / 'publish/DorotiTemplateApp.Linux')], env | {
 log = (out / 'published-run.log').read_text()
 summary = json.loads(next(line.split('=', 1)[1] for line in log.splitlines() if line.startswith('doroti.qt.summary=')))
 assert summary['frames']['presented'] > 0 and summary['frames']['failed'] == 0
+assert summary['nativeFrameMode'] == 'C' and 0 < summary['quickMaximumPending'] <= 2
+assert summary['quickConsumersSubmitted'] == summary['quickConsumersCompleted'] > 0
+assert summary['quickReservedBytes'] == summary['quickRetiringLayers'] == 0
+command('publish-no-build', ['dotnet', 'publish', str(project), '-c', 'Release', '--no-build',
+    '-o', str(out / 'publish-no-build'), '-v:q'], env, consumer)
+assert (out / 'publish-no-build/libdoroti_qt_host.so').read_bytes() == (out / 'publish/libdoroti_qt_host.so').read_bytes()
+command('reject-other-profile-no-build', ['dotnet', 'publish', str(project), '-c', 'Release', '--no-build',
+    '-p:DorotiQtQuick=false', '-o', str(out / 'publish-wrong-profile'), '-v:q'], env, consumer, success=False)
+assert 'DOROTIQT006' in (out / 'reject-other-profile-no-build.log').read_text()
 command('reject-trimming', ['dotnet', 'publish', str(project), '-c', 'Release', *props, '-p:PublishTrimmed=true', '-v:q'], env, consumer, success=False)
 assert 'DOROTIQT001' in (out / 'reject-trimming.log').read_text()
 report = {'version': version, 'revision': subprocess.check_output(['git','rev-parse','HEAD'], cwd=ROOT, text=True).strip(),
