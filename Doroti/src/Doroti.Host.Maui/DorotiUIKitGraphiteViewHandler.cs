@@ -70,8 +70,10 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
     private long _activePulse;
     private long _preparedGeneration = -1;
     private long _lastPreparedScene;
+#if IOS && !MACCATALYST
     private bool _pipelineDisplayLink;
     private bool _replayRequested;
+#endif
     private readonly object _presentationGate = new();
     private readonly Queue<double> _presentationIntervals = new();
     private double _lastPresentationTime;
@@ -96,6 +98,13 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
     private bool _resourcesReleased;
     private bool _faulted;
     private bool _frameBackpressure;
+    private readonly MauiFrameWakeQueue _frameWakes = new();
+    private long _preparedFrameworkPulses;
+    private long _preparedWhileGpuFull;
+    private long _rejectedAdmissions;
+    private long _completedGpuFrames;
+    private int _maximumGpuFrames;
+    private string? _frameFallback;
 #if MACCATALYST
     private nfloat _lastScale;
     private CGSize _lastSize;
@@ -109,6 +118,7 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
     private NSObject? _sceneInactiveObserver;
     private NSObject? _sceneActiveObserver;
     private bool _suspended;
+    private volatile bool _ownerActiveSnapshot;
 #endif
 
     private static IMTLDevice RequireMetalDevice()
@@ -215,6 +225,7 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
 
     internal void RequestFramePulse()
     {
+        _frameWakes.Request(prepareFramework: true);
 #if IOS && !MACCATALYST
         if (!_renderingViewport && !_animatedViewport.IsAnimating
             && _owner?.PlatformViews?.HasComposition != true
@@ -329,7 +340,7 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
 
 #if IOS || MACCATALYST
     private bool OwnerIsActive =>
-        Window?.WindowScene is { } scene
+        _ownerActiveSnapshot = Window?.WindowScene is { } scene
 #if MACCATALYST
             ? scene.ActivationState
                 is UISceneActivationState.ForegroundActive
@@ -347,6 +358,7 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
         }
 
         _suspended = true;
+        _ownerActiveSnapshot = false;
 #if IOS && !MACCATALYST
         StopPipelineDisplayLink();
 #endif
@@ -366,11 +378,7 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
 #if IOS && !MACCATALYST
             _animatedViewport.LayoutChanged();
 #endif
-#if IOS && !MACCATALYST
             RequestFramePulse();
-#else
-            SetNeedsDisplay();
-#endif
         }
     }
 
@@ -405,11 +413,7 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
 #if IOS && !MACCATALYST
             _animatedViewport.LayoutChanged();
 #endif
-#if IOS && !MACCATALYST
             RequestFramePulse();
-#else
-            SetNeedsDisplay();
-#endif
         }
     }
 
@@ -504,6 +508,7 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
 #if IOS && !MACCATALYST
             _renderingViewport = true;
 #endif
+            _frameWakes.Request(prepareFramework: true);
             Draw();
         }
         finally
@@ -516,7 +521,7 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
             PresentsWithTransaction = previousPresentation;
 #endif
         }
-        SetNeedsDisplay();
+        RequestFramePulse();
     }
 
 #if IOS && !MACCATALYST
@@ -541,7 +546,10 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
         _generation++;
     }
 
-    public void Draw(MTKView view) => DrawFrame(prepareFramework: true);
+    public void Draw(MTKView view)
+    {
+        if (!_drawing) DrawFrame(_frameWakes.Take());
+    }
 
     private void DrawFrame(bool prepareFramework)
     {
@@ -589,13 +597,10 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
             return;
         }
 #endif
-#if IOS && !MACCATALYST
         if (!prepareFramework && _preparedGeneration != _generation)
         {
-            SetNeedsDisplay();
-            return;
+            prepareFramework = true;
         }
-#endif
         var pulse = _activePulse = ++_pulseId;
         _frameLoop ??= _profileBlur ? new(
             NativeFrameConfiguration.Mode,
@@ -609,6 +614,8 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
             var admission = NativeFrameAdmissionPolicy.PrepareAndDecide(
                 () =>
                 {
+                    _preparedFrameworkPulses++;
+                    if (_pending.Count >= NativeFrameAdmissionPolicy.ShaderFrameLimit) _preparedWhileGpuFull++;
                     EnsureSession();
 #if IOS && !MACCATALYST
                     var pixels = _viewportPixels.Width > 0 ? _viewportPixels
@@ -656,9 +663,11 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
                 prepareFramework);
             shaderFramePipeline = admission.FreshOnly;
             needsTransaction = admission.SynchronizePresentation;
+            _frameFallback = admission.FreshOnly ? null : admission.Reason;
             _frameLoop?.Record("admission", pulse, _generation, _pending.Count, reason: admission.Reason);
             if (!admission.Admitted)
             {
+                _rejectedAdmissions++;
                 _frameBackpressure = true;
                 return;
             }
@@ -715,6 +724,7 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
                 duration: Stopwatch.GetElapsedTime(drawableStart).TotalMilliseconds);
             if (drawable is null)
             {
+                _frameWakes.Request(prepareFramework: false);
                 SetNeedsDisplay();
                 return;
             }
@@ -817,6 +827,7 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
             platformFrame = null;
 #endif
             _pending.Add(pending);
+            _maximumGpuFrames = Math.Max(_maximumGpuFrames, _pending.Count);
             _frameLoop?.Record("submitted", pulse, generation, _pending.Count, pending.Completion,
                 reason: pending.Completion?.IsNewFrame == true ? "new" : "replay");
             frame = null;
@@ -863,6 +874,7 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
                 platformFrame = null;
 #endif
                 _pending.Add(pending);
+                _maximumGpuFrames = Math.Max(_maximumGpuFrames, _pending.Count);
                 frame = null;
                 drawable = null;
                 try
@@ -901,6 +913,7 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
             return;
         }
 #endif
+        _frameWakes.Request(prepareFramework: false);
         SetNeedsDisplay();
     }
 
@@ -948,7 +961,7 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
                     "Metal terminal buffer creation failed; retaining GPU resources."
                 );
             var transactionPresentation = false;
-            if (present)
+            if (present && AppleMetalPresentation.CanObserve(pending.Drawable))
             {
                 pending.Drawable.AddPresentedHandler(drawable =>
                 {
@@ -987,7 +1000,7 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
             command.AddCompletedHandler(completed =>
             {
                 _frameLoop?.Record("gpu-arrived", pending.PulseId, pending.Generation, completion: pending.Completion);
-                if (completed.GpuEndTime > 0)
+                if (_frameLoop is not null && AppleMetalPresentation.CanReadGpuEndTime(completed) && completed.GpuEndTime > 0)
                     _frameLoop?.Record("gpu-ended", pending.PulseId, pending.Generation,
                         completion: pending.Completion, presentedTime: completed.GpuEndTime);
                 var status = completed.Status;
@@ -1073,15 +1086,22 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
 
     internal MauiSurfaceSnapshot CaptureSnapshot(MauiSurfaceSnapshot current)
     {
+        current = current with
+        {
+            NativeFramePipeline = new(NativeFrameConfiguration.Mode, _preparedFrameworkPulses,
+                _pending.Count, _maximumGpuFrames, _completedGpuFrames,
+                "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+                _frameFallback, _preparedWhileGpuFull, _rejectedAdmissions),
+        };
         if (!_profileBlur)
             return current;
         lock (_presentationGate)
             return current with
             {
                 IosFrameLoop = _frameLoop?.Snapshot(),
-                IosFrameLoopState = $"drawing={_drawing}; suspended={_suspended}; faulted={_faulted}; release={_releaseRequested}; gpuPending={_pending.Count}; generation={_generation}; paused={Paused}; needsDisplay={EnableSetNeedsDisplay}"
+                IosFrameLoopState = $"drawing={_drawing}; suspended={_suspended}; faulted={_faulted}; release={_releaseRequested}; gpuPending={_pending.Count}; generation={_generation}; paused={Paused}; needsDisplay={EnableSetNeedsDisplay}; ownerActive={_ownerActiveSnapshot}"
 #if IOS && !MACCATALYST
-                    + $"; pulseRunning={_pipelineDisplayLink}; ownerActive={OwnerIsActive}; frameRequested={_owner?.FrameworkFrameRequested?.Invoke() == true}"
+                    + $"; pulseRunning={_pipelineDisplayLink}; frameRequested={_owner?.FrameworkFrameRequested?.Invoke() == true}"
 #endif
                     ,
                 MetalDevice = Device?.Name,
@@ -1124,6 +1144,7 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
             pending.Lifetime.MarkRetired(status == MTLCommandBufferStatus.Completed, _session?.IsDeviceLost == true);
             pending.ReleaseDrawableIfSafe();
             _pending.Remove(pending);
+            if (status == MTLCommandBufferStatus.Completed) _completedGpuFrames++;
             if (status != MTLCommandBufferStatus.Completed)
             {
                 throw new InvalidOperationException(

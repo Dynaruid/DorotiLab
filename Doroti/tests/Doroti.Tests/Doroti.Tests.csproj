@@ -3,6 +3,7 @@
   <ItemGroup>
     <Compile Include="../../src/Doroti.Host.Maui/IosFrameLifetime.cs" Link="IosFrameLifetime.cs" />
     <Compile Include="../../src/Doroti.Host.Maui/MauiFrameCallbackQueue.cs" Link="MauiFrameCallbackQueue.cs" />
+    <Compile Include="../../src/Doroti.Host.Maui/MauiFrameWakeQueue.cs" Link="MauiFrameWakeQueue.cs" />
     <ProjectReference Include="../../src/Doroti.Testing/Doroti.Testing.csproj" />
     <ProjectReference Include="../../src/Doroti.Skia.Vulkan/Doroti.Skia.Vulkan.csproj" />
     <ProjectReference Include="../../src/Doroti.Desktop/Doroti.Desktop.csproj" />

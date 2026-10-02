@@ -303,6 +303,7 @@ internal sealed class AppKitDesktopWindowHost : IWindowHost
                     case WindowCommandKind.Show:
                         _surface!.DesktopMetalSurface.NativeView?.PresentPreparedFrame();
                         w.OrderFront(null);
+                        ((IWindow)_window).Resumed();
                         _surface.DesktopMetalSurface.NativeView?.RequestFrame();
                         if (!_shown)
                         {
@@ -320,6 +321,7 @@ internal sealed class AppKitDesktopWindowHost : IWindowHost
                         break;
                     case WindowCommandKind.Hide:
                         w.OrderOut(null);
+                        ((IWindow)_window).Stopped();
                         break;
                     case WindowCommandKind.Focus:
                         if (!w.IsVisible)
@@ -765,11 +767,21 @@ internal sealed class AppKitDesktopWindowHost : IWindowHost
         public override void DidChangeBackingProperties(NSNotification notification) =>
             host.Publish();
 
-        public override void DidMiniaturize(NSNotification notification) =>
+        public override void DidMiniaturize(NSNotification notification)
+        {
+            if (!host._destroying) ((IWindow)host._window).Stopped();
             host.MiniaturizationFinished();
+        }
 
-        public override void DidDeminiaturize(NSNotification notification) =>
+        public override void DidDeminiaturize(NSNotification notification)
+        {
+            if (!host._destroying)
+            {
+                ((IWindow)host._window).Resumed();
+                host._surface?.DesktopMetalSurface.NativeView?.RequestFrame();
+            }
             host.MiniaturizationFinished();
+        }
 
         public override void DidEnterFullScreen(NSNotification notification) =>
             host.PresentationFinished();

@@ -235,8 +235,10 @@ def main():
                ROOT / "Doroti/src/Doroti.Skia.RuntimeEffects/DorotiSkiaImageFilterRenderer.cs"]
     inputs += [ROOT / "Doroti/src/Doroti.Host.Maui" / name for name in
                ["DorotiUIKitGraphiteViewHandler.cs", "DorotiGraphiteView.cs", "MauiSkiaSurface.cs",
-                "MauiHostAdapter.cs", "MauiFrameCallbackQueue.cs", "IosFrameLifetime.cs", "IosFrameLoopDiagnostics.cs", "MauiHostContracts.cs",
+                "MauiHostAdapter.cs", "MauiFrameCallbackQueue.cs", "MauiFrameWakeQueue.cs", "IosFrameLifetime.cs", "IosFrameLoopDiagnostics.cs", "MauiHostContracts.cs",
                 "MauiSkiaCapabilities.cs", "MauiFrameworkHost.cs", "DorotiMauiSurface.cs"]]
+    inputs += [ROOT / "Doroti/src/Doroti.Host.Maui" / name for name in
+               ["AppleGpuEffects.cs", "AppleMetalPresentation.cs"]]
     inputs += list((ROOT / "Doroti/src/Doroti.Skia.Rendering").glob("SkiaGraphiteSession*.cs"))
     inputs += [ROOT / "Doroti/src/Doroti.Skia.Rendering/SkiaShaderSceneAdmission.cs"]
     inputs += [ROOT / "Doroti/src/Doroti.Skia.Rendering/NativeFramePipeline.cs"]

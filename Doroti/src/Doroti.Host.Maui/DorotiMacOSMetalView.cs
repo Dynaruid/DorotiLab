@@ -17,11 +17,13 @@ namespace Doroti.Host.Maui;
 /// </summary>
 public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
 {
-    private static readonly HashSet<DorotiMacOSMetalView> RetiringViews = [];
+    private static readonly HashSet<DorotiMacOSMetalView> RetiringViews = new(ReferenceEqualityComparer.Instance);
+    internal static int RetiringViewCount => RetiringViews.Count;
     private readonly List<object> _heldGpuWork = [];
     private bool _faulted;
     private readonly object _resourceGate = new();
     private readonly IMTLDevice _metalDevice;
+    private readonly string _metalDeviceName;
     private readonly IMTLCommandQueue _commandQueue;
     private readonly GRMtlBackendContext _backendContext;
     internal static readonly bool UseGraphite =
@@ -44,6 +46,9 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     private double _lastLayoutScale;
     private long _surfaceGeneration = 1;
     private long _contextGeneration = 1;
+    private long _preparedGeneration = -1;
+    private long _submittedGeneration = -1;
+    private bool _initialFrameReady;
     private long _commandBuffersCommitted;
     private long _commandBuffersCompleted;
     private long _commandBuffersErrored;
@@ -66,6 +71,12 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     private bool _drawingLayout;
     private bool _drawingFrame;
     private int _frameRequestPending;
+    private readonly MauiFrameWakeQueue _frameWakes = new();
+    private long _preparedFrameworkPulses;
+    private long _preparedWhileGpuFull;
+    private long _rejectedAdmissions;
+    private int _maximumGpuFrames;
+    private string? _frameFallback;
     private readonly AppKitWindowBackdrop _backdrop;
     private readonly MauiTrackpadGesture _trackpad;
     private int _trackpadParts;
@@ -86,6 +97,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         _metalDevice =
             Device
             ?? throw new InvalidOperationException("MTKView did not retain its Metal device.");
+        _metalDeviceName = _metalDevice.Name;
         _commandQueue =
             _metalDevice.CreateCommandQueue()
             ?? throw new InvalidOperationException("Metal command queue creation failed.");
@@ -143,6 +155,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
 
     internal void Connect(DorotiMacOSMetalSurface owner)
     {
+        AppKitPlatformViewDispatcher.VerifyThread();
         if (_resourcesReleased || _releaseRequested)
         {
             throw new InvalidOperationException(
@@ -150,13 +163,8 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
             );
         }
 
-        if (RetiringViews.Count != 0)
-        {
-            throw new InvalidOperationException(
-                "Previous AppKit Metal resources are still retiring."
-            );
-        }
-
+        // Independent surfaces own different queues/recorders. The surface
+        // guards replacement of its own context until its previous view retires.
         _owner = owner ?? throw new ArgumentNullException(nameof(owner));
         _resourceOwner = owner;
         _releaseRequested = false;
@@ -178,7 +186,10 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
 
     internal void Disconnect()
     {
+        AppKitPlatformViewDispatcher.VerifyThread();
         ResetTrackpad();
+        ReleasePressedKeys();
+        _owner?.RaiseFocus(false);
         var owner = _owner;
         _owner = null;
         _backdrop.Dispose();
@@ -213,17 +224,20 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     internal void PresentPreparedFrame()
     {
         AppKitPlatformViewDispatcher.VerifyThread();
-        _preparedDrawable?.Present();
+        var drawable = _preparedDrawable;
         _preparedDrawable = null;
+        try { drawable?.Present(); }
+        finally { drawable?.Dispose(); }
     }
 
-    internal void RequestFrame()
+    internal void RequestFrame(bool prepareFramework = true)
     {
         if (_releaseRequested)
         {
             return;
         }
 
+        _frameWakes.Request(prepareFramework);
         if (Interlocked.Exchange(ref _frameRequestPending, 1) != 0)
         {
             return;
@@ -296,6 +310,11 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         }
 
         AttachWindowObservers();
+        if (_owner is not null && Window is null)
+        {
+            ResetTrackpad();
+            ReleasePressedKeys();
+        }
         _owner?.RaiseFocus(
             Window?.IsKeyWindow == true && ReferenceEquals(Window.FirstResponder, this)
         );
@@ -439,6 +458,13 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         var size = DrawableSize;
         if (
             owner is null
+            || Window is not { } window
+            || window.IsMiniaturized
+            || NSApplication.SharedApplication.Hidden
+            // Layout can submit an empty bootstrap frame before the framework
+            // attaches. Keep ordered-out startup drawing until real content
+            // completes; ReadyToShow depends on that later receipt.
+            || !window.IsVisible && _initialFrameReady
             || _releaseRequested
             || _faulted
             || _drawingFrame
@@ -448,6 +474,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         {
             return;
         }
+        var prepareFramework = _frameWakes.Take();
         var frameworkPrepared = false;
         NativeFrameAdmission admission;
         _drawingFrame = true;
@@ -455,18 +482,27 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         {
             EnsureContext();
             PublishDrawableMetrics(size);
+            var preparationGeneration = Interlocked.Read(ref _surfaceGeneration);
+            // Layout may be deferred behind old-size GPU work. Keep the resize
+            // gate until an exact-generation frame has actually been submitted.
+            var resizing = _drawingLayout || _submittedGeneration >= 0 && _submittedGeneration != preparationGeneration;
+            prepareFramework |= _preparedGeneration != preparationGeneration;
+            frameworkPrepared = !prepareFramework && !resizing;
             admission = NativeFrameAdmissionPolicy.PrepareAndDecide(
                 () =>
                 {
+                    _preparedFrameworkPulses++;
+                    if (_inFlight >= NativeFrameAdmissionPolicy.ShaderFrameLimit) _preparedWhileGpuFull++;
                     owner.PrepareFrameworkFrame?.Invoke(new((object?)_graphite ?? _grContext,
                         checked((int)size.Width), checked((int)size.Height),
-                        (double)(Window?.Screen?.BackingScaleFactor ?? NSScreen.MainScreen?.BackingScaleFactor ?? 1),
+                        BackingScale(),
                         Interlocked.Read(ref _surfaceGeneration), GetType().FullName!, GraphicsBackendId,
                         DorotiFrameClock.Now));
                     frameworkPrepared = true;
+                    _preparedGeneration = preparationGeneration;
                 }, () => owner.ShaderSceneAdmission?.Invoke() ?? SkiaShaderSceneAdmission.noNewScene,
                 () => _inFlight, owner.PlatformViews?.HasComposition == true, _platformInFlight != 0,
-                _drawingLayout, supportsTwoFrames: UseGraphite);
+                resizing, prepareFramework, supportsTwoFrames: UseGraphite);
         }
         catch (Exception exception)
         {
@@ -475,8 +511,10 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
             return;
         }
         finally { _drawingFrame = false; }
+        _frameFallback = admission.FreshOnly ? null : admission.Reason;
         if (!admission.Admitted)
         {
+            _rejectedAdmissions++;
             _frameBackpressure = true;
             return;
         }
@@ -486,7 +524,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
             // The first AppKit invalidation can arrive before CAMetalLayer has
             // made a drawable available. Keep the request alive for the next
             // main-run-loop turn instead of consuming the framework wake.
-            RequestFrame();
+            RequestFrame(prepareFramework: false);
             return;
         }
 
@@ -532,13 +570,15 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
                     SKColorType.Bgra8888
                 ) ?? throw new InvalidOperationException("Skia Metal SKSurface creation failed.");
             var surface = graphiteFrame?.Surface ?? ganeshSurface!;
-            var scale =
-                Window?.Screen?.BackingScaleFactor ?? NSScreen.MainScreen?.BackingScaleFactor ?? 1;
-            _logicalWidth = Bounds.Width;
-            _logicalHeight = Bounds.Height;
-            _pixelWidth = size.Width;
-            _pixelHeight = size.Height;
-            _density = (double)scale;
+            var scale = BackingScale();
+            lock (_resourceGate)
+            {
+                _logicalWidth = Bounds.Width;
+                _logicalHeight = Bounds.Height;
+                _pixelWidth = size.Width;
+                _pixelHeight = size.Height;
+                _density = scale;
+            }
             PublishDrawableMetrics(size);
             generation = Interlocked.Read(ref _surfaceGeneration);
             var paint = new MauiSkiaPaintContext(
@@ -554,6 +594,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
             paint.FrameworkPrepared = frameworkPrepared;
             paint.RequireNewShaderScene = admission.FreshOnly;
             completion = owner.RaisePaint(paint);
+            _preparedGeneration = generation;
             platformFrame = owner.PlatformViews?.TakePending();
             if (paint.SkipPresent || generation != Interlocked.Read(ref _surfaceGeneration))
             {
@@ -581,7 +622,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
             var transactionPresentation = _drawingLayout || compositionTransaction;
             var orderedOut = Window is { IsVisible: false };
             // Metal reports actual drawable display time independently of GPU fence completion.
-            drawable.AddPresentedHandler(presented =>
+            if (AppleMetalPresentation.CanObserve(drawable)) drawable.AddPresentedHandler(presented =>
             {
                 var timestamp = presented.PresentedTime;
                 if (timestamp <= 0) return;
@@ -613,6 +654,9 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
             );
             commandBufferTracked = true;
             commandBuffer.Commit();
+            _submittedGeneration = generation;
+            if (!orderedOut) _initialFrameReady = true;
+            _frameBackpressure = false;
             var presentationFrame = platformFrame;
             graphiteFrame = null; // The committed buffer now owns retirement, including if Present fails.
             platformFrame = null;
@@ -729,7 +773,6 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
                 {
                     graphiteFrame?.CompleteGpuWork();
                     platformFrame?.Dispose();
-                    GC.KeepAlive(drawable);
                 }
                 catch (Exception retirementError)
                 {
@@ -764,7 +807,11 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
                     if (completion is { } value)
                     {
                         if (prepareHidden && !stale)
+                        {
+                            _preparedDrawable?.Dispose();
                             _preparedDrawable = drawable;
+                            _initialFrameReady = true;
+                        }
                         owner.RaisePresent(value, stale);
                     }
                 }
@@ -776,16 +823,18 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
                         completion
                     );
                 }
+                if (!prepareHidden || stale || completion is null) drawable.Dispose();
                 if (_frameBackpressure && !_releaseRequested && !_faulted)
                 {
                     _frameBackpressure = false;
-                    RequestFrame();
+                    RequestFrame(prepareFramework: false);
                 }
             });
         });
         lock (_resourceGate)
         {
             _inFlight++;
+            _maximumGpuFrames = Math.Max(_maximumGpuFrames, _inFlight);
             if (platformFrame is not null)
             {
                 _platformInFlight++;
@@ -1125,7 +1174,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
 
     private double BackingScale() =>
         (double)(
-            Window?.Screen?.BackingScaleFactor ?? NSScreen.MainScreen?.BackingScaleFactor ?? 1
+            Window?.BackingScaleFactor ?? NSScreen.MainScreen?.BackingScaleFactor ?? 1
         );
 
     private static int Buttons()
@@ -1233,6 +1282,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         double[] intervals;
         long presented;
         lock (_presentationGate) { intervals = _presentationIntervals.ToArray(); presented = _presentedDrawables; }
+        lock (_resourceGate)
         return current with
         {
             PixelWidth = checked((int)_pixelWidth),
@@ -1242,8 +1292,8 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
             SurfaceGeneration = Interlocked.Read(ref _surfaceGeneration),
             NativeViewType = GetType().FullName ?? nameof(DorotiMacOSMetalView),
             GraphicsBackend = GraphicsBackendId,
-            MetalDevice = _metalDevice.Name,
-            PixelFormat = ColorPixelFormat.ToString(),
+            MetalDevice = _metalDeviceName,
+            PixelFormat = MTLPixelFormat.BGRA8Unorm.ToString(),
             CommandBuffersCommitted = Interlocked.Read(ref _commandBuffersCommitted),
             CommandBuffersCompleted = Interlocked.Read(ref _commandBuffersCompleted),
             CommandBuffersErrored = Interlocked.Read(ref _commandBuffersErrored),
@@ -1255,6 +1305,10 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
             PresentedDrawables = presented,
             PresentationIntervalsMilliseconds = intervals,
             MetalAllocatedBytes = _resourcesReleased ? null : checked((long)_metalDevice.CurrentAllocatedSize),
+            NativeFramePipeline = new(NativeFrameConfiguration.Mode, _preparedFrameworkPulses,
+                _inFlight, _maximumGpuFrames, Interlocked.Read(ref _commandBuffersCompleted),
+                "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+                _frameFallback, _preparedWhileGpuFull, _rejectedAdmissions),
         };
     }
 
@@ -1266,6 +1320,12 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     }
 
     private void ReleaseGpuResources()
+    {
+        lock (_resourceGate)
+            ReleaseGpuResourcesCore();
+    }
+
+    private void ReleaseGpuResourcesCore()
     {
         if (_resourcesReleased)
         {
@@ -1281,6 +1341,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         _backendContext.Dispose();
         _commandQueue.Dispose();
         _metalDevice.Dispose();
+        _preparedDrawable?.Dispose();
         _preparedDrawable = null;
         _resourcesReleased = true;
         RetiringViews.Remove(this);

@@ -11,6 +11,7 @@ public sealed class DorotiMacOSMetalSurface : View, IMauiSkiaSurface
     private readonly ulong _viewId;
     private readonly DorotiResizeTargetCoordinator _targets = new();
     private DorotiMacOSMetalView? _nativeView;
+    private Task _retirement = Task.CompletedTask;
     private bool _disposed;
 
     internal DorotiMacOSMetalSurface(ulong viewId) => _viewId = viewId;
@@ -84,13 +85,20 @@ public sealed class DorotiMacOSMetalSurface : View, IMauiSkiaSurface
 
     internal void Connect(DorotiMacOSMetalView nativeView)
     {
+        AppKitPlatformViewDispatcher.VerifyThread();
         ObjectDisposedException.ThrowIf(_disposed, this);
-        _nativeView = nativeView;
+        if (ReferenceEquals(_nativeView, nativeView)) return;
+        if (_nativeView is not null)
+            throw new InvalidOperationException("Disconnect this AppKit surface before connecting a replacement view.");
+        if (!_retirement.IsCompletedSuccessfully)
+            throw new InvalidOperationException("This AppKit surface's previous Metal resources are still retiring.");
         nativeView.Connect(this);
+        _nativeView = nativeView;
     }
 
     internal void Disconnect(DorotiMacOSMetalView nativeView)
     {
+        AppKitPlatformViewDispatcher.VerifyThread();
         if (!ReferenceEquals(_nativeView, nativeView))
         {
             return;
@@ -98,7 +106,7 @@ public sealed class DorotiMacOSMetalSurface : View, IMauiSkiaSurface
 
         _nativeView = null;
         PlatformViews?.DetachSurface();
-        nativeView.Disconnect();
+        _retirement = nativeView.RetireAsync();
     }
 
     internal MauiPaintCompletion? RaisePaint(MauiSkiaPaintContext context)

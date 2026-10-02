@@ -16,7 +16,7 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--output', type=Path, required=True)
 parser.add_argument('--tfm', default='net10.0-macos27.0')
 parser.add_argument('--skip-build', action='store_true')
-parser.add_argument('--cases', default='multi,desktop,services,input,navigation,rendering')
+parser.add_argument('--cases', default='multi,desktop,services,input,navigation,rendering,lifecycle')
 parser.add_argument('--renderer', choices=['graphite', 'ganesh'], default='graphite')
 args = parser.parse_args()
 out = args.output.resolve()
@@ -140,9 +140,24 @@ try:
             after = windows(process, 1)
             assert after[0]['views'][0]['CommandBuffersErrored'] == 0
             assert after[0]['views'][0]['CommandBuffersCompleted'] > before[0]['views'][0]['CommandBuffersCompleted']
+            view = after[0]['views'][0]
+            pipeline = view['NativeFramePipeline']
+            assert pipeline['Mode'] == 'C' and 0 < pipeline['MaximumGpuFrames'] <= 2, pipeline
+            if args.renderer == 'ganesh': assert pipeline['MaximumGpuFrames'] == 1, pipeline
+            assert pipeline['CompletedGpuFrames'] > 0, pipeline
+            assert view['PresentedDrawables'] > 0, 'Supported AppKit drawable observation stopped reporting displays'
+            assert view['PixelWidth'] == round(after[0]['width'] * after[0]['scale']), view
+            assert view['PixelHeight'] == round(after[0]['height'] * after[0]['scale']), view
             results['checks'][case] = {'before': before, 'after': after, 'sustainedFps': 'notMeasured', 'resizeCount': 24}
             command(process, 'exit')
             finish(process)
+        elif case == 'lifecycle':
+            path = out / 'lifecycle.json'
+            process = start(case, {'DOROTI_MACOS_FRAME_PROBE': str(path)})
+            finish(process)
+            report = json.loads(path.read_text())
+            assert report['status'] == 'PASS', report
+            results['checks'][case] = report
         elif case == 'desktop':
             path = out / 'desktop.json'
             process = start(case, {'DOROTI_DESKTOP_PROBE': str(path), 'DOROTI_DESKTOP_CLOSE_PROBE': 'api'})

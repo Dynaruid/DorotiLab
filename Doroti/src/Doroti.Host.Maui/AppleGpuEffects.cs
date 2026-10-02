@@ -130,9 +130,10 @@ internal sealed unsafe class AppleGpuEffects(IMTLDevice device, IMTLCommandQueue
         }
         if (!_cancellationCompleted!.Task.Wait(TimeSpan.FromSeconds(5)))
             throw new TimeoutException("Metal effect cancellation timed out; frame resources remain retained.");
-        var error = _cancellation.Status != MTLCommandBufferStatus.Completed ? _cancellation.Error?.ToString() : null;
+        if (_cancellation.Status != MTLCommandBufferStatus.Completed)
+            throw new InvalidOperationException(
+                $"Metal cancellation did not complete; frame resources remain retained: {_cancellation.Status}: {_cancellation.Error}");
         _cancellation.Dispose(); _cancellation = null; _cancellationCompleted = null;
-        if (error is not null) throw new InvalidOperationException($"Metal cancellation completion failed: {error}");
     }
 
     public void Dispose()

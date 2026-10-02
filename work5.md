@@ -8,6 +8,10 @@ Linux Qt 구성 후속 검토: **SDK·샘플·템플릿 Quick/C 기본값, 옵�
 
 후속 작업: [work6 — A/B 제거 및 C 경로 단일화](work6.md)의 **구현·실행 가능한 자동 검증 완료**, 사용자 추가 요청의 동적 texture 예산도 반영했다. [후속 결과](works/results/2026-10-02-native-frame-c-only.md)를 참조한다. 아래 계획의 A/B·legacy 옵션 유지와 같은 바이너리 A/C 비교 요구는 C 단일 정책·변경 전/후 C 회귀 기준으로 대체했다. native/replay/resize의 C 내부 직렬 처리와 기존 실행 증거·미완료 인수는 유지한다.
 
+2026-10-03 Apple 후속 검토: 현재 요청에 따라 이전에 생략한 Apple 검증을 별도로 수행하고 Catalyst 컴파일 조건, UIKit/AppKit 재시도 및 AppKit deferred resize를 보강했다. [새 후보의 검토·실행 결과](works/results/2026-10-03-apple-frame-configuration-review.md)를 참조한다. 위의 Apple SKIPPED는 10월 2일 후보의 이력이며 새 후보에 대한 판정은 후속 결과로 구분한다.
+
+2026-10-03 AppKit 별도 요청: window별 Metal retirement·재연결, background 진단, 분리 시 키/focus, backing factor와 숨김/복귀를 추가 보강했다. [AppKit 별도 결과](works/results/2026-10-03-appkit-configuration-review.md)는 Graphite/Ganesh native 자동 검사와 합성 fixture의 한계를 구분한다.
+
 **목표:** 모든 네이티브 제품 호스트에 C의 프레임 생성·제출 원칙을 공통 기본 구조로 적용한다. 앞 프레임의 GPU 작업이 다음 framework 장면 준비를 막지 않게 하고, 새 shader-only 장면은 최대 2개 GPU 프레임과 플랫폼의 비동기 표시 경로를 사용한다. native view 합성·resize·rotation·replay는 각 플랫폼에 필요한 직렬 처리와 표시 동기화를 유지한다.
 
 작업 순서: **플랫폼별 경로 확인 → 공통 정책 추출 → Apple 연결 → Android 연결 → Windows 연결 → Linux 연결 → 통합 검증·기본 적용**.

@@ -4,6 +4,8 @@
 
 상태: **C 단일화·동적 texture 예산 구현 및 실행 가능한 자동 검증 완료, 전체 인수 PARTIAL.** 제품의 A/B 실행 옵션·분기는 제거했다. [실행 결과와 source/payload JSON](works/results/2026-10-02-native-frame-c-only.md)을 기준으로 확인한다. Apple 실행 SKIPPED와 실제 표시·물리 입력·10분 사용의 미검증 범위, 선행 [기존 결과](works/results/2026-10-02-native-frame-pipeline.md)는 유지한다.
 
+2026-10-03 Apple 후속 보강: 사용자 추가 요청으로 Apple 구성을 재검토하고 실제 컴파일·Metal 검사와 가능한 native 실행을 수행해 **자동 검증 PASS**를 확인했다. [새 후보의 검토·실행 결과](works/results/2026-10-03-apple-frame-configuration-review.md)와 §12를 참조한다. 앞 문단의 SKIPPED는 10월 2일 후보의 당시 상태로 보존한다.
+
 **목표:** 모든 범위 내 네이티브 호스트에서 A·B 실행 모드와 이를 선택하는 분기를 제거하고, framework 준비 → 실제 장면 조회 → GPU admission → 제출 → 마지막 소비자 완료의 C 구조를 유일한 프레임 정책으로 사용한다. C의 기본 적용은 이미 완료됐으므로, 이번 작업은 선택 옵션·분기·도구·문서를 정리하고 변경 전 C와의 회귀를 확인하는 후속 작업이다.
 
 작업 순서: **기존 C 기준 확보 → 공통 정책 단일화 → 플랫폼 호스트 정리 → 검사·수집 도구 전환 → 문서·패키지 반영 → 회귀 및 결과 기록**.
@@ -157,3 +159,28 @@
 - Windows 최종 후보는 `0.3.0-beta.rc.20261002.conly.dynamic`다. Linux는 별도의 새 isolated Qt package feed와 portable install을 검증했다. Apple·물리 GPU/입력/표시·30회 정량 성능·10분 사용·서명/clean OS는 전체 인수와 구분한다.
 
 체크된 성능 collector 항목은 before/after C 수집 기능의 구현과 queue smoke를 뜻한다. 실제 표시 계측 없는 실행을 정량 성능 PASS로 처리하지 않았다. 기존 work5의 전체 인수 PARTIAL은 유지한다.
+
+## 12. Apple 플랫폼 구성 후속 검토 — 2026-10-03
+
+- [x] Catalyst 실제 컴파일에서 드러난 iOS 전용 `_pipelineDisplayLink`·`_replayRequested` 필드의 전처리 조건 누락을 수정한다. 미사용 필드 오류 CS0169를 경고 억제로 우회하지 않는다.
+- [x] UIKit/Catalyst와 AppKit의 GPU 완료·drawable 재시도를 framework pulse와 구분한다. 재시도만 있으면 준비한 장면을 재사용하고, 새 framework 요청이 합쳐졌으면 다음 draw에서 우선 처리한다. generation 변경·활성화·layout은 새 준비를 요구한다.
+- [x] AppKit layout이 이전 GPU 작업 때문에 거절돼도 새 generation의 제출까지 resize 직렬 gate를 유지한다.
+- [x] Metal effect cancellation이 NSError의 존재와 관계없이 marker의 실제 `Completed` 상태를 확인하도록 보강한다. 실패·timeout의 fence와 frame resource hold는 유지한다.
+- [x] iOS simulator에서 미지원 `addPresentedHandler:` 호출로 발생한 중단을 수정한다. optional drawable 관측·GPU timestamp의 runtime selector 지원을 확인하며 미지원 환경에 표시 시점을 만들어 넣지 않는다.
+- [x] iOS profile의 background snapshot이 `UIView.Window`를 읽지 않도록 UI 소유 스레드에서 관측한 활성 상태를 게시한다. event history와 JSON은 별도 writer에 유지한다.
+- [x] Apple의 공통 `NativeFramePipeline` snapshot을 제공한다. C, 준비 횟수, GPU pending/최댓값·완료, 거절·fallback과 마지막 소비자 계약을 기록한다. 상세 event history와 JSON 출력은 기존 opt-in 경로에서만 수행한다.
+- [x] 실제 Graphite-Metal session의 31조건 sequential C / 두 retained asynchronous submission 픽셀·snapshot 격리, GPU full 준비·third admission 거절·역순 회수·종료 drain 검사를 추가하고 통과한다. fixture의 wait/readback과 hardware overlap·표시 인수를 구분한다.
+- [x] iOS collector의 오래된 A/C 단위 테스트를 C 조건 교차·중간 반복 재개 검사로 갱신하고 새 wake queue를 source hash에 포함한다.
+- [x] Apple payload 해시에 실행 파일 밖의 managed assembly·dylib·확장자 없는 framework·plist/resources를 포함하고 변경 감지 회귀를 통과한다.
+
+실제 플랫폼별 build/native 실행, 후보별 source/payload identity와 실패·재시도는 [후속 결과](works/results/2026-10-03-apple-frame-configuration-review.md)에 기록한다. Sample2 물리 iPhone/배포 runtime·30회 정량 성능·물리 IME·10분 사용·서명 배포 인수는 수행한 검사와 구분하고 자동 완료로 처리하지 않는다. F6의 동적 texture 예산 범위는 기존 Qt allocator로 유지한다.
+
+## 13. AppKit 별도 후속 검토 — 2026-10-03
+
+- [x] 이전 view의 Metal 회수 대기를 같은 surface의 재연결에 한정한다. 다른 창의 queue/recorder 연결까지 전역으로 거절하지 않는다. 회수 중 view의 강한 참조는 native handle과 무관한 reference identity로 유지한다.
+- [x] AppKit 소유 스레드에서 연결·분리하고, 이전 연결이 살아 있으면 새 view를 덮어쓰지 않는다. handler/native window 분리 때 눌린 키의 합성 key-up과 focus 해제를 전달한다.
+- [x] background snapshot의 device identity를 캐시하고 Metal allocation 조회와 실제 resource 해제를 같은 lock으로 보호한다. GPU 완료 후 drawable wrapper를 회수하며 hidden 첫 프레임은 표시 준비까지 유지한다.
+- [x] layout·frame 준비·pointer에 window의 backing factor를 일관되게 사용한다. 숨김·최소화·native window 분리에서는 새 GPU 제출을 멈추되 pending wake와 첫 `ReadyToShow` 준비를 보존한다. Show/복원에서 MAUI lifecycle과 frame 요청을 재개한다.
+- [x] 실제 Metal submission/terminal callback의 같은 owner 재연결 거절·다른 owner 연결·종료 drain, background/retired snapshot, 숨김·복귀 3회 및 detach/reattach 검사를 추가한다. 합성 키와 1/1.5/2 backing factor 검사는 물리 입력·실제 모니터 이동 인수와 구분한다.
+
+빌드·Graphite/Ganesh 자동 검사와 후보 identity는 [AppKit 결과](works/results/2026-10-03-appkit-configuration-review.md)에 별도로 기록한다. 이전 Apple 보고서와 raw 실패 이력은 보존하며 정량 성능·물리 IME·실제 모니터 이동·10분 사용·배포 인수의 PARTIAL은 유지한다.

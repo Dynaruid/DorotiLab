@@ -1,7 +1,10 @@
 import unittest
+import tempfile
+from pathlib import Path
 
 from variable_blur_device import summarize, run_order, frame_loop_summary
 from variable_blur_metal import interval_union
+from native_frame_pipeline_collect import payload_identity
 
 
 class PresentationSummaryTests(unittest.TestCase):
@@ -9,15 +12,32 @@ class PresentationSummaryTests(unittest.TestCase):
         self.assertEqual(interval_union([(20, 25), (0, 10), (5, 15), (2, 3)]), 20)
         self.assertEqual(interval_union([(0, 10), (10, 20)]), 20)
 
-    def test_policy_order_alternates_and_preserves_every_pair(self):
-        order = list(run_order(["off", "fixed", "adaptive"], ["A", "C"], 3))
-        self.assertEqual(len(order), 18)
-        self.assertEqual(len(set(order)), 18)
-        self.assertEqual(order[:4], [(1, "off", "A"), (1, "off", "C"), (1, "fixed", "C"), (1, "fixed", "A")])
-        self.assertEqual(order[6][1], "adaptive")
-        abc = list(run_order(["adaptive"], ["A", "B", "C"], 3))
-        self.assertEqual([p for _, _, p in abc[:6]], ["A", "B", "C", "C", "B", "A"])
-        self.assertEqual(list(run_order(["adaptive"], ["A", "B", "C"], 2, 2)), abc[3:])
+    def test_c_conditions_alternate_and_resume_without_duplicates(self):
+        modes = ["off", "fixed", "adaptive"]
+        order = list(run_order(modes, 3))
+        self.assertEqual(len(order), 9)
+        self.assertEqual(len(set(order)), 9)
+        self.assertEqual(order[:3], [(1, mode, "C") for mode in modes])
+        self.assertEqual(order[3:6], [(2, mode, "C") for mode in reversed(modes)])
+        self.assertTrue(all(policy == "C" for _, _, policy in order))
+        self.assertEqual(list(run_order(modes, 2, 2)), order[3:])
+
+    def test_apple_payload_tracks_assets_outside_the_executable_directory(self):
+        with tempfile.TemporaryDirectory() as directory:
+            bundle = Path(directory) / "Fixture.app"
+            exe = bundle / "Contents/MacOS/Fixture"
+            exe.parent.mkdir(parents=True)
+            exe.write_bytes(b"executable")
+            for relative in ("Contents/MonoBundle/Host.dll", "Contents/MonoBundle/libSkiaSharp.dylib",
+                             "Contents/Frameworks/Native.framework/Native", "Contents/Info.plist"):
+                asset = bundle / relative
+                asset.parent.mkdir(parents=True, exist_ok=True)
+                asset.write_bytes(b"before")
+                before = payload_identity(exe)
+                asset.write_bytes(b"after")
+                after = payload_identity(exe)
+                self.assertNotEqual(before["sha256"], after["sha256"], relative)
+                self.assertIn(relative, [entry["path"] for entry in after["files"]])
 
     def test_overlap_uses_gpu_arrival_and_complete_warm_history(self):
         def event(phase, frame, timestamp, scene=1, duration=0):

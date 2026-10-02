@@ -20,15 +20,23 @@ ROOT = Path(__file__).resolve().parents[2]
 
 def digest(path):
     with path.open('rb') as stream:
-        return hashlib.file_digest(stream, 'sha256').hexdigest()
+        value = hashlib.sha256()
+        for chunk in iter(lambda: stream.read(1024 * 1024), b''):
+            value.update(chunk)
+        return value.hexdigest()
 
 
 def payload_identity(exe):
     # Apphosts alone can be byte-identical across source changes. Include the
     # managed dependencies, native shim/Skia and actual runtime/deps manifests.
-    root = exe.resolve().parent
+    executable = exe.resolve()
+    bundle = next((p for p in executable.parents if p.suffix == '.app'), None)
+    root = bundle or executable.parent
+    # Apple assemblies live in Contents/MonoBundle and native frameworks can
+    # have no extension. Hash the complete bundle, including plist/resources.
     files = sorted(p for p in root.rglob('*') if p.is_file() and
-                   (p.suffix in ('.exe','.dll','.so','.json') or '.so.' in p.name))
+                   (bundle is not None or p == executable
+                    or p.suffix in ('.exe', '.dll', '.so', '.dylib', '.json') or '.so.' in p.name))
     entries = [{'path':p.relative_to(root).as_posix(),'sha256':digest(p)} for p in files]
     value = hashlib.sha256(''.join(x['path']+'\0'+x['sha256']+'\n' for x in entries).encode()).hexdigest()
     return {'sha256':value,'files':entries}

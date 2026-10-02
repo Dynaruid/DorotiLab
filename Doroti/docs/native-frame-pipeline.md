@@ -22,6 +22,25 @@ consuming a callback scheduled for the next pulse. The renderer atomically
 rechecks fresh shader eligibility against current viewport/context generations.
 Native insertion, shields, replay and resize do not record ahead of old GPU work.
 
+UIKit/Catalyst and AppKit coalesce raster retries separately from framework
+pulses. A normal framework request wins when both arrive before the next draw;
+a retry alone reuses the prepared scene. Changed generations require fresh
+preparation. AppKit retains a deferred resize's serial gate until a frame of the
+new generation is submitted, including when the layout callback has returned.
+Optional Metal drawable observation and GPU timestamps are checked at runtime.
+An unsupported simulator/remote drawable continues rendering and retiring from
+GPU completion; it supplies no displayed-frame timestamps.
+
+AppKit surfaces guard replacement of their own Metal context until the previous
+view's terminal callbacks retire it. Other windows use independent queues and
+can connect during that retirement. Retiring views remain rooted by reference
+identity, including when their native handles change during disposal. Snapshots
+cache device identity and synchronize allocation queries with resource release.
+The window's backing scale drives layout, input and frame preparation. Detached,
+minimized and hidden windows preserve pending wakes without submitting drawables;
+the first ordered-out frame remains available for `ReadyToShow`. Show/restore
+resumes the MAUI window and requests a frame. Detach clears pressed keys and focus.
+
 Two logical frames are distinct from front images, Qt texture banks and DXGI
 back buffers. Each producer recording keeps private resources. Vulkan copy
 completion retires the recording; D3D12 copy completion or Qt sampling completion
@@ -55,4 +74,7 @@ retirement evidence. They describe submission/consumer state, not displayed FPS
 or hardware execution overlap. The bounded collector and physical-input limits
 are described in [tests](../tests/README.md). Current builds, raw failures,
 source/payload identities and open acceptance items are in the
-[2026-10-02 result](../../works/results/2026-10-02-native-frame-pipeline.md).
+[2026-10-02 result](../../works/results/2026-10-02-native-frame-pipeline.md) and
+[Apple follow-up](../../works/results/2026-10-03-apple-frame-configuration-review.md).
+The separate [AppKit review](../../works/results/2026-10-03-appkit-configuration-review.md)
+records native owner retirement, visibility and synthetic scale checks.

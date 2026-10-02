@@ -5,6 +5,13 @@ using Doroti.Ui;
 
 static void Require(bool value, string message) { if (!value) throw new Exception(message); }
 #if DOROTI_REPO_TESTS
+if (Array.IndexOf(args, "--native-frame-metal-gpu") is var metalGpuIndex && metalGpuIndex >= 0)
+{
+    if (metalGpuIndex + 1 >= args.Length || args[metalGpuIndex + 1].StartsWith("--"))
+        throw new ArgumentException("--native-frame-metal-gpu requires an output JSON path.");
+    NativeFrameMetalGpuRegression.Run(args[metalGpuIndex + 1]);
+    return;
+}
 if (Array.IndexOf(args, "--native-frame-gpu") is var nativeGpuIndex && nativeGpuIndex >= 0)
 {
     NativeFrameGpuRegression.Run(args[nativeGpuIndex + 1]);

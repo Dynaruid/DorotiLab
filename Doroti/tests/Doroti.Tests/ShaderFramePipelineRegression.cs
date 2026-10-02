@@ -10,6 +10,21 @@ internal static class ShaderFramePipelineRegression
 {
     public static void Run()
     {
+        var wakes = new MauiFrameWakeQueue();
+        if (!wakes.Take()) throw new Exception("Native display pulses must prepare the framework.");
+        wakes.Request(prepareFramework: false);
+        wakes.Request(prepareFramework: false);
+        if (wakes.Take()) throw new Exception("Coalesced GPU completions became a framework pulse.");
+        foreach (var order in new[] { new[] { true, false }, new[] { false, true } })
+        {
+            foreach (var prepare in order) wakes.Request(prepare);
+            if (!wakes.Take()) throw new Exception("A GPU retry erased a pending framework request.");
+        }
+        wakes.Request(prepareFramework: true);
+        if (!wakes.Take()) throw new Exception("Framework pulse was lost.");
+        wakes.Request(prepareFramework: true); // Re-request made during preparation.
+        wakes.Request(prepareFramework: false); // Completion made after preparation.
+        if (!wakes.Take()) throw new Exception("Preparation re-request was consumed by a raster retry.");
         foreach (var mode in new string?[] { null, "", "C" })
             NativeFrameConfiguration.ValidateSettings(name => name == "DOROTI_NATIVE_FRAME_MODE" ? mode : null);
         foreach (var mode in new[] { "A", "B", "invalid", "c", " " })

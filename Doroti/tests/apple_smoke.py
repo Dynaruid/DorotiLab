@@ -22,6 +22,7 @@ p.add_argument('--cases', default='services,input,navigation,restoration,multi')
 p.add_argument('--activation', choices=['os', 'native-callback'], default='os')
 p.add_argument('--renderer', choices=['graphite', 'ganesh'], default='graphite')
 p.add_argument('--skip-build', action='store_true')
+p.add_argument('--app', type=Path, help='Already-built app bundle, including an isolated ArtifactsPath build.')
 a = p.parse_args()
 out = a.output.resolve()
 if not out.is_relative_to(ROOT / 'temp/testing'): p.error('Output must be under temp/testing.')
@@ -39,14 +40,15 @@ name = 'iOS' if ios else 'MacCatalyst'
 rid = 'iossimulator-arm64' if ios else 'maccatalyst-arm64'
 tfm = 'net10.0-ios27.0' if ios else 'net10.0-maccatalyst27.0'
 project = ROOT / f'samples/DorotiTestbedApp/{platform}/DorotiTestbedApp.{name}.csproj'
-if not a.skip_build:
+if not a.skip_build and a.app is None:
     with (out / 'build.log').open('w') as log:
         subprocess.run(['dotnet', 'build', str(project), '-c', 'Debug', '-r', rid,
             '-p:' + ('DorotiIosTargetFramework' if ios else 'DorotiMacCatalystTargetFramework') + '=' + tfm],
             cwd=ROOT, stdout=log, stderr=subprocess.STDOUT, check=True, timeout=1200)
-apps = list((project.parent / ('bin/' + rid if ios else 'bin') / 'Debug' / tfm / rid).glob('*.app'))
+apps = [a.app.resolve()] if a.app else list((project.parent / ('bin/' + rid if ios else 'bin') / 'Debug' / tfm / rid).glob('*.app'))
 if len(apps) != 1: raise RuntimeError(f'Expected one app: {apps}')
 app = apps[0]
+if not app.is_dir() or app.suffix != '.app': p.error('Supply an existing .app bundle.')
 runid = 'apple-smoke-' + uuid.uuid4().hex
 results = {'restorationId': runid, 'target': a.target, 'tfm': tfm, 'rid': rid, 'renderer': a.renderer, 'activation': a.activation, 'physicalInput': 'notVerified', 'checks': {}}
 base = os.environ | {'DOROTI_IOS_GRAPHITE': '1' if a.renderer == 'graphite' else '0', 'DOROTI_SAMPLE': 'reload', 'DOROTI_RESTORATION_ID': runid}
@@ -126,6 +128,24 @@ for case in a.cases.split(','):
                 time.sleep(.1)
             else: raise TimeoutError('Route/restoration checkpoint did not commit: ' + str(saved))
         if case == 'restoration': wait(marker, process, 'apple-smoke')
+        # The multiwindow probe closes all windows before its result marker.
+        # Its shared evidence path can contain a pre-close snapshot from another
+        # view; it cannot establish live GPU progress after the views detach.
+        if a.renderer == 'graphite' and case != 'multi':
+            evidence = directory / 'evidence.json'
+            wait(evidence, process)
+            deadline = time.monotonic() + 30
+            while time.monotonic() < deadline:
+                try:
+                    pipeline = json.loads(evidence.read_text())['surface']['nativeFramePipeline']
+                    if pipeline and pipeline['completedGpuFrames'] > 0:
+                        assert pipeline['mode'] == 'C' and 0 < pipeline['maximumGpuFrames'] <= 2, pipeline
+                        results.setdefault('framePipelines', {})[case] = pipeline
+                        break
+                except json.JSONDecodeError:
+                    pass
+                time.sleep(.1)
+            else: raise TimeoutError('Missing completed C-only Metal pipeline evidence: ' + str(evidence))
         results['checks'][case] = marker.read_text()
         if ios:
             subprocess.run(['xcrun', 'simctl', 'io', a.simulator, 'screenshot', str(out / (case + '.png'))], check=True, timeout=20)

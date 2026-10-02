@@ -22,6 +22,21 @@ The same fixture checks dynamic texture allowance with two multi-layer GPU-owned
 banks above 128 MiB, safe resize shrink and final consumer retirement. CPU `Build`
 also covers driver pressure, live-allocation floors, capacity bounds and overflow.
 
+On macOS, validate the production Metal session separately:
+
+```sh
+python3 Doroti/eng/run-with-timeout.py dotnet run --project Doroti/tests/Doroti.Tests -c Debug -- --native-frame-metal-gpu temp/testing/apple-frame-review/metal-gpu.json
+```
+
+This checks the same 31 blur/sigma conditions, byte-identical sequential C pixels
+against two retained asynchronous submissions, GPU-full preparation, third-frame
+admission rejection, reverse retirement and final drain. Its terminal waits and
+readbacks are fixture-only. It retains two logical frames without a hardware
+queue blocker, and does not claim scanout, hardware overlap or native composition.
+Apple snapshots now include `nativeFramePipeline` without enabling the detailed
+`DOROTI_VARIABLE_BLUR_PROFILE` event history. CPU tests also cover Apple raster
+wakes coalescing with normal framework requests.
+
 `native_frame_pipeline_collect.py` accepts an already-built Sample2 payload.
 Each invocation collects one repeat of Off, Fast 20/32 and Adaptive 20/32 in C.
 `--baseline-exe <preserved-before-C-exe>` pairs desktop before/after candidates
@@ -35,6 +50,11 @@ and alternates their order. Three invocations (`--repeat 1`, `2`, `3`) produce
 checks desktop initialization rejects A/B, unknown modes and removed selectors.
 Run it under the same wrapper. CPU tests check configuration without environment
 mutation. Old frame-policy CLI options are no longer accepted.
+For an Apple desktop app executable, add `--apple-receipt`: the native event
+loop can remain alive after the builder throws. The probe requires the explicit
+startup `ArgumentException` receipt and no normal render evidence, records the
+exit state before cleanup, and terminates only its own rejected process.
+`apple_smoke.py --app <built-bundle.app>` also accepts isolated build outputs.
 The Qt driver is compiled from `native/qt_evidence.cpp` using Qt6Quick/Qt6Widgets
 pkg-config flags, as in `linux_qt_smoke.py`. Only the probe's own windows close.
 Every run retains its log, evidence, payload hash and failures; output must be
@@ -47,8 +67,10 @@ provenance. Missing display events report `notMeasured`.
 checks three continuing resumes with at least 5s between snapshots, rotation,
 process/surface recreation and a screenshot. Rotation settings are restored.
 This is synthetic automation. Physical finger, IME, selection and 10-minute use
-require their own evidence. Apple validation for this candidate was skipped at
-the user's request; see the [result](../../works/results/2026-10-02-native-frame-pipeline.md).
+require their own evidence. Apple validation was skipped for the October 2
+candidate; see that [result](../../works/results/2026-10-02-native-frame-pipeline.md).
+The later [Apple review](../../works/results/2026-10-03-apple-frame-configuration-review.md)
+records new builds and execution separately.
 
 Run from the repository root with Python, PowerShell 7, Node 24 and the pinned .NET SDK:
 
@@ -207,9 +229,18 @@ Use a fresh output directory. Native desktop automation, two-window screenshots,
 picker cancellation, pasteboard grants, WKWebView recreation and LaunchServices
 route restoration are distinct from physical IME/VoiceOver/Finder input. The
 opt-in automation lives only in the testbed runner. `--cases` selects
-`multi,desktop,services,input,navigation,rendering`; `--tfm net10.0-macos` selects
+`multi,desktop,services,input,navigation,rendering,lifecycle`; `--tfm net10.0-macos` selects
 the corresponding Xcode 26 toolchain. Direct scripts retain their raw output;
 MacOSSmoke cleans successful runs. See [AppKit results](../../works/results/2026-09-29-macos-appkit.md).
+
+The `lifecycle` fixture uses actual Metal submissions and terminal callbacks to
+check same-owner replacement gating, independent-window connection while an old
+owner retires, retirement roots, background/retired snapshots, hide/resume three
+times and native detach/reattach. Native keyboard events and window backing
+factors 1/1.5/2 are synthetic. They verify key-up synthesis and exact pixel extents,
+and do not qualify physical keyboard/IME input or a real monitor transition.
+The fixture never blocks the GPU to claim hardware overlap. See the separate
+[AppKit review](../../works/results/2026-10-03-appkit-configuration-review.md).
 
 The local macOS payload fixture is `tests/macos_package_smoke.py --candidate PATH
 --previous PATH --output temp/testing/macos-appkit/install`. Run it through the
