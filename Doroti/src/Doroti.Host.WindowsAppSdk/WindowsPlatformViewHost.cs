@@ -56,6 +56,7 @@ internal sealed class WindowsPlatformViewHost : IDisposable
     internal bool NeedsReplay =>
         Volatile.Read(ref _needsReplay)
         || Interlocked.Read(ref _nativeRevision) != Interlocked.Read(ref _committedNativeRevision);
+    internal bool HasComposition => _hasVisibleParts || _winUiSceneVisible || NeedsReplay;
     internal Action? RequestFrameworkFrame { get; set; }
     private long _commits;
     private const long _readbackBytes = 0;

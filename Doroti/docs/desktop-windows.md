@@ -1,5 +1,11 @@
 # Desktop window API — implementation status, 2026-09-26
 
+The 2026-10-02 [native frame pipeline](native-frame-pipeline.md) adds common C
+admission and separately tracks Vulkan producer and D3D12 consumer completion in
+both Windows hosts. Embedded MAUI composition and Ganesh retain serial fallback.
+This does not add native MAUI Windows Editor/WebView adapters; the new input
+probe's unsupported result is retained in the candidate report.
+
 The first implementation provides `Doroti.Desktop` and optional
 `Doroti.Desktop.Widgets`. **The complete W0–W5 plan is PARTIAL.** Windows MAUI
 and AppKit macOS have native main-window adapters. Mac Catalyst has a restricted UIKit scene adapter, and Linux Qt Quick has main/additional-window adapters. Windows App SDK now has a main-window adapter (2026-09-28); custom
@@ -282,7 +288,7 @@ Enable `DorotiQtQuick=true` and select the template's
 `LinuxDesktopStartup` companion. The source Testbed uses the opt-in build property
 `-p:DorotiLinuxDesktop=true`; its default legacy runner is preserved.
 The adapter requires Graphite/Vulkan and the rebuilt app-owned native shim.
-Desktop ABI 1 (48-byte table, 40-byte command/state) is separate from host ABI 4.
+Desktop ABI 1 (48-byte table, 40-byte command/state) is separate from host ABI 6.
 Desktop bootstrap sources use a startup-specific filename, so a legacy build or
 evaluation cannot overwrite the source selected by a Desktop build.
 The current managed host requires rebuilt app-owned shims for services and additional-window exports; do not mix it with older native payloads. Non-Quick Desktop startup is rejected at the SDK and native boundaries.

@@ -397,6 +397,31 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         base.UpdateTrackingAreas();
     }
 
+    private void EnsureContext()
+    {
+        if (UseGraphite && _graphite is null)
+        {
+            _graphite = SkiaGraphiteSession.CreateMetal(
+                _metalDevice.Handle,
+                _commandQueue.Handle,
+                Interlocked.Increment(ref _contextGeneration)
+            );
+            _graphite.GpuEffects = new AppleGpuEffects(_metalDevice, _commandQueue, _graphite);
+        }
+        if (_graphite is not null)
+            _graphite.NativeTextureImporter ??= new AppleNativeTextureImporter(
+                _graphite,
+                _metalDevice.Handle
+            );
+        if (!UseGraphite && _grContext is null)
+        {
+            _grContext =
+                GRContext.CreateMetal(_backendContext)
+                ?? throw new InvalidOperationException("Skia Metal GRContext creation failed.");
+            Interlocked.Increment(ref _contextGeneration);
+        }
+    }
+
     void IMTKViewDelegate.DrawableSizeWillChange(MTKView view, CGSize size)
     {
         _ = view;
@@ -423,12 +448,35 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         {
             return;
         }
-        // Native composition/removal cannot replay an older completed scene over
-        // the next material/color update. Keep one such frame pending, as on UIKit.
-        // The GPU completion requests the deferred frame without blocking AppKit.
-        var maximumPending =
-            owner.PlatformViews?.HasComposition == true || _platformInFlight != 0 ? 1 : 3;
-        if (_inFlight >= maximumPending)
+        var options = NativeFrameLoopOptions.FromEnvironment();
+        var frameworkPrepared = false;
+        NativeFrameAdmission admission;
+        _drawingFrame = true;
+        try
+        {
+            EnsureContext();
+            PublishDrawableMetrics(size);
+            admission = NativeFrameAdmissionPolicy.PrepareAndDecide(options.Pipeline, options.Asynchronous,
+                () =>
+                {
+                    owner.PrepareFrameworkFrame?.Invoke(new((object?)_graphite ?? _grContext,
+                        checked((int)size.Width), checked((int)size.Height),
+                        (double)(Window?.Screen?.BackingScaleFactor ?? NSScreen.MainScreen?.BackingScaleFactor ?? 1),
+                        Interlocked.Read(ref _surfaceGeneration), GetType().FullName!, GraphicsBackendId,
+                        DorotiFrameClock.Now));
+                    frameworkPrepared = true;
+                }, () => owner.ShaderSceneAdmission?.Invoke() ?? SkiaShaderSceneAdmission.noNewScene,
+                () => _inFlight, owner.PlatformViews?.HasComposition == true, _platformInFlight != 0,
+                _drawingLayout, supportsTwoFrames: UseGraphite);
+        }
+        catch (Exception exception)
+        {
+            _faulted = true;
+            owner.RaiseFailure(exception);
+            return;
+        }
+        finally { _drawingFrame = false; }
+        if (!admission.Admitted)
         {
             _frameBackpressure = true;
             return;
@@ -450,7 +498,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         AppKitPlatformViewHost.PreparedFrame? platformFrame = null;
         SkiaGraphiteSession.Frame? graphiteFrame = null;
         var graphiteSubmissionAttempted = false;
-        var compositionTransaction = owner.PlatformViews is not null;
+        var compositionTransaction = admission.SynchronizePresentation;
         if (compositionTransaction)
         {
             CATransaction.Begin();
@@ -459,27 +507,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         }
         try
         {
-            if (UseGraphite && _graphite is null)
-            {
-                _graphite = SkiaGraphiteSession.CreateMetal(
-                    _metalDevice.Handle,
-                    _commandQueue.Handle,
-                    Interlocked.Increment(ref _contextGeneration)
-                );
-                _graphite.GpuEffects = new AppleGpuEffects(_metalDevice, _commandQueue, _graphite);
-            }
-            if (_graphite is not null)
-                _graphite.NativeTextureImporter ??= new AppleNativeTextureImporter(
-                    _graphite,
-                    _metalDevice.Handle
-                );
-            if (!UseGraphite && _grContext is null)
-            {
-                _grContext =
-                    GRContext.CreateMetal(_backendContext)
-                    ?? throw new InvalidOperationException("Skia Metal GRContext creation failed.");
-                Interlocked.Increment(ref _contextGeneration);
-            }
+            EnsureContext();
             using var renderTarget = UseGraphite
                 ? null
                 : new GRBackendRenderTarget(
@@ -524,6 +552,8 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
                 GetType().FullName ?? nameof(DorotiMacOSMetalView),
                 GraphicsBackendId
             );
+            paint.FrameworkPrepared = frameworkPrepared;
+            paint.RequireNewShaderScene = admission.FreshOnly;
             completion = owner.RaisePaint(paint);
             platformFrame = owner.PlatformViews?.TakePending();
             if (paint.SkipPresent || generation != Interlocked.Read(ref _surfaceGeneration))

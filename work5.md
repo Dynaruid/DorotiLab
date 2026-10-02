@@ -2,7 +2,7 @@
 
 작성일: **2026-10-02** · 대상: iOS / Mac Catalyst / macOS / Android / Windows / Linux
 
-상태: **계획 작성 완료, 구현 착수 전.** iOS의 C 기본 경로와 Fast adaptive 기본값은 이미 채택된 기준이다. 다른 플랫폼의 구현·실행·성능 통과를 이 문서 작성으로 체크하지 않는다.
+상태: **구현 및 실행 가능한 자동 검증 완료, 전체 인수 PARTIAL.** Apple(iOS/Mac Catalyst/macOS) 검증은 사용자 요청으로 SKIPPED다. 공통 C 연결과 CPU/GPU·Windows·Android·Qt 자동 검증은 수행했다. 실제 표시 성능·물리 입력·10분 사용, Windows MAUI native 입력 adapter와 OpenGL Wayland compatibility는 미완료다. [실행 결과와 플랫폼 JSON](works/results/2026-10-02-native-frame-pipeline.md)을 기준으로 체크하며, 과거 iOS 수치를 새 payload에 소급하지 않는다.
 
 **목표:** 모든 네이티브 제품 호스트에 C의 프레임 생성·제출 원칙을 공통 기본 구조로 적용한다. 앞 프레임의 GPU 작업이 다음 framework 장면 준비를 막지 않게 하고, 새 shader-only 장면은 최대 2개 GPU 프레임과 플랫폼의 비동기 표시 경로를 사용한다. native view 합성·resize·rotation·replay는 각 플랫폼에 필요한 직렬 처리와 표시 동기화를 유지한다.
 
@@ -98,9 +98,9 @@ terminal은 한 번만 처리한다. 역순 completion에서도 오래된 장면
 
 ## 4. P0 — 실행 경로와 기준 확보
 
-- [ ] 제품 target과 실제 기본 backend를 플랫폼별로 확정한다. Windows App SDK/MAUI, macOS/Mac Catalyst, Linux Quick/Vulkan window를 각각 구분한다.
-- [ ] framework callback 앞뒤, native scheduler, 슬롯 검사, drawable/acquire, GPU submit, copy/consumer 완료와 표시 API의 순서를 기록한다.
-- [ ] 정상 프레임의 CPU 대기를 찾아 목적을 분류한다. 타깃 확보·producer 완료·consumer retirement·resize·종료 대기를 구분하고, 각 대기를 제거할 대체 신호를 먼저 정한다.
+- [x] 제품 target과 실제 기본 backend를 플랫폼별로 확정한다. Windows App SDK/MAUI, macOS/Mac Catalyst, Linux Quick/Vulkan window를 각각 구분한다.
+- [x] framework callback 앞뒤, native scheduler, 슬롯 검사, drawable/acquire, GPU submit, copy/consumer 완료와 표시 API의 순서를 기록한다.
+- [x] 정상 프레임의 CPU 대기를 찾아 목적을 분류한다. 타깃 확보·producer 완료·consumer retirement·resize·종료 대기를 구분하고, 각 대기를 제거할 대체 신호를 먼저 정한다.
 - [ ] 각 플랫폼의 현재 사용 runtime·SDK/TFM·OS·GPU·backend·실제 Hz·DPR·pixel extent와 source/payload hash를 기록한다. 사용자 지시에 따라 기기 상태는 양호하게 가정한다.
 - [ ] 기본 Fast adaptive와 Off, 일반 애니메이션·스크롤, native 입력·WebView·resize의 기준 동작을 확보한다.
 - [ ] frame별 진단을 opt-in으로 연결한다. scene/frame/input ID와 generation, 거절 이유, pending 최대값, 완료·표시 시점을 보존한다. hot path에서 전체 이력 복사나 console/JSON 출력을 하지 않는다.
@@ -109,21 +109,21 @@ terminal은 한 번만 처리한다. 역순 completion에서도 오래된 장면
 
 ## 5. P1 — 공통 정책 추출과 iOS 기준 보존
 
-- [ ] 공통 admission 결과에 fresh-only 여부, GPU 상한, 표시 동기화 필요, 거절 이유를 표현한다.
-- [ ] 기본 C와 serial/async 비교 옵션의 우선순위를 공통 규칙으로 정하고 플랫폼별 설정 전달을 연결한다.
-- [ ] callback 준비와 renderer 조회·슬롯 검사 순서를 분리한다. immutable 준비 descriptor를 모든 어댑터가 전달할 수 있게 한다.
-- [ ] terminal·generation·역순 완료·폐기 규칙 중 공유할 부분을 추출한다. 플랫폼 native 객체의 수명은 어댑터가 소유한다.
-- [ ] 기존 `ShaderFramePipelineRegression`을 실제 공통 정책으로 연결한다. GPU full에서도 callback 실행, callback에서 native 삽입, raster-only wake, 두 슬롯 상한, resize/context 변경, 실패·역순 완료를 검증한다.
+- [x] 공통 admission 결과에 fresh-only 여부, GPU 상한, 표시 동기화 필요, 거절 이유를 표현한다.
+- [x] 기본 C와 serial/async 비교 옵션의 우선순위를 공통 규칙으로 정하고 플랫폼별 설정 전달을 연결한다.
+- [x] callback 준비와 renderer 조회·슬롯 검사 순서를 분리한다. immutable 준비 descriptor를 모든 어댑터가 전달할 수 있게 한다.
+- [x] terminal·generation·역순 완료·폐기 규칙 중 공유할 부분을 추출한다. 플랫폼 native 객체의 수명은 어댑터가 소유한다.
+- [x] 기존 `ShaderFramePipelineRegression`을 실제 공통 정책으로 연결한다. GPU full에서도 callback 실행, callback에서 native 삽입, raster-only wake, 두 슬롯 상한, resize/context 변경, 실패·역순 완료를 검증한다.
 - [ ] iOS C 기본값·명시 A/B·Fast API 기본값을 유지하고 공통 CPU/Metal 검사와 기존 lifecycle 도구를 통과한다.
 
 **완료 조건:** iOS가 추출한 공통 정책을 실제 사용하며 기존 동작을 유지한다. 다른 플랫폼에서도 같은 규칙을 사용할 수 있고 UIKit 종속성이 없다.
 
 ## 6. P2 — macOS와 Mac Catalyst 연결
 
-- [ ] AppKit surface에 준비/query/pending 연결을 제공하고 `_inFlight`·drawable 검사 앞에서 정상 frame 준비를 수행한다.
-- [ ] macOS의 shader-only 상한 3을 공통 상한 2로 맞춘다. native 작업과 replay·layout 전환은 직렬로 유지한다.
-- [ ] configured coordinator의 존재와 실제 native 합성을 구분하여 shader-only 비동기 표시를 선택한다.
-- [ ] Mac Catalyst의 준비/admission을 iOS 전용 조건 밖의 공통 연결로 옮긴다. iOS 회전 처리와 Catalyst resize 처리는 각 구현을 유지한다.
+- [x] AppKit surface에 준비/query/pending 연결을 제공하고 `_inFlight`·drawable 검사 앞에서 정상 frame 준비를 수행한다.
+- [x] macOS의 shader-only 상한 3을 공통 상한 2로 맞춘다. native 작업과 replay·layout 전환은 직렬로 유지한다.
+- [x] configured coordinator의 존재와 실제 native 합성을 구분하여 shader-only 비동기 표시를 선택한다.
+- [x] Mac Catalyst의 준비/admission을 iOS 전용 조건 밖의 공통 연결로 옮긴다. iOS 회전 처리와 Catalyst resize 처리는 각 구현을 유지한다.
 - [ ] active/inactive, 창 detach/reattach, minimize/restore, 화면 이동·DPR 변경, live resize의 시작·정지·재시작을 확인한다.
 - [ ] native Editor/WebView 생성·삭제·재생성, selection/IME, resize와 새 shader 장면의 경계를 검증한다.
 
@@ -131,11 +131,11 @@ terminal은 한 번만 처리한다. 역순 completion에서도 오래된 장면
 
 ## 7. P3 — Android 연결
 
-- [ ] Choreographer timestamp와 유효한 window metrics를 사용하여 framework를 먼저 준비한다. window bootstrap/resize와 일반 슬롯 획득을 분리한다.
-- [ ] `GraphiteVulkanWindow.Render`의 슬롯/acquire 실패가 callback을 막지 않게 한다. render 전에 준비한 장면을 paint에서 다시 만들지 않는다.
-- [ ] 현재 2-slot 구조에 공통 fresh-only admission을 연결하고 native/shield/replay 전환 시 실제 GPU 완료까지 drain한다.
-- [ ] swapchain acquire는 정상 C에서 비차단 재시도를 사용하며 GPU full/이미지 부족 시 busy loop 없이 다음 pulse·완료 신호로 깨운다.
-- [ ] Vulkan fence 완료, renderer terminal, SurfaceView/native view 합성을 구분한다. present 요청 성공만으로 GPU 자원 회수를 통보하지 않는다.
+- [x] Choreographer timestamp와 유효한 window metrics를 사용하여 framework를 먼저 준비한다. window bootstrap/resize와 일반 슬롯 획득을 분리한다.
+- [x] `GraphiteVulkanWindow.Render`의 슬롯/acquire 실패가 callback을 막지 않게 한다. render 전에 준비한 장면을 paint에서 다시 만들지 않는다.
+- [x] 현재 2-slot 구조에 공통 fresh-only admission을 연결하고 native/shield/replay 전환 시 실제 GPU 완료까지 drain한다.
+- [x] swapchain acquire는 정상 C에서 비차단 재시도를 사용하며 GPU full/이미지 부족 시 busy loop 없이 다음 pulse·완료 신호로 깨운다.
+- [x] Vulkan fence 완료, renderer terminal, SurfaceView/native view 합성을 구분한다. present 요청 성공만으로 GPU 자원 회수를 통보하지 않는다.
 - [ ] Activity pause/resume·재생성, surface destroy/recreate, 회전·IME inset 변경을 확인한다. 이전 view의 GPU retirement hold를 새 view가 우회하지 못하게 한다.
 - [ ] 실제 제품 runtime으로 Sample2와 Testbed를 빌드·설치하고 손가락 스크롤·입력·WebView를 확인한다.
 
@@ -143,11 +143,11 @@ terminal은 한 번만 처리한다. 역순 completion에서도 오래된 장면
 
 ## 8. P4 — Windows 연결
 
-- [ ] Windows App SDK native scheduler부터 managed `BeginFrame`까지 확인한다. presenter backpressure로 render callback 자체가 막히면 준비 pulse를 별도 연결한다.
-- [ ] Windows MAUI에도 같은 준비/query 연결을 제공한다. 두 호스트의 resize generation·ACK·정확한 출력 크기 계약을 각각 유지한다.
-- [ ] Vulkan recording/producer와 D3D12 copy/output 슬롯의 ownership·fence를 frame별로 추적한다. producer 완료와 shared source 재사용 가능 시점을 분리한다.
-- [ ] GPU-only 신호/대기를 사용하는 비동기 경로에 공통 2-frame admission을 연결한다. 정상 프레임의 CPU fence 대기는 자원별 완료 조회·deferred retry로 대체한다.
-- [ ] native composition의 BeginDraw/EndDraw·commit·front adoption과 frame terminal을 보존한다. native 작업과 resize 중에는 필요한 동기화를 사용한다.
+- [x] Windows App SDK native scheduler부터 managed `BeginFrame`까지 확인한다. presenter backpressure로 render callback 자체가 막히면 준비 pulse를 별도 연결한다.
+- [x] Windows MAUI에도 같은 준비/query 연결을 제공한다. 두 호스트의 resize generation·ACK·정확한 출력 크기 계약을 각각 유지한다.
+- [x] Vulkan recording/producer와 D3D12 copy/output 슬롯의 ownership·fence를 frame별로 추적한다. producer 완료와 shared source 재사용 가능 시점을 분리한다.
+- [x] GPU-only 신호/대기를 사용하는 비동기 경로에 공통 2-frame admission을 연결한다. 정상 프레임의 CPU fence 대기는 자원별 완료 조회·deferred retry로 대체한다.
+- [x] native composition의 BeginDraw/EndDraw·commit·front adoption과 frame terminal을 보존한다. native 작업과 resize 중에는 필요한 동기화를 사용한다.
 - [ ] 연속 resize, move, minimize/restore, 여러 모니터의 DPI 전환, Editor/IME/WebView·native 삽입/삭제, 종료·device reset을 확인한다.
 - [ ] Vulkan direct 출력과 D3D12/composition 출력이 지원되는 구성을 구분해 검증하고 다른 출력 방식의 수명 결과를 대신 사용하지 않는다.
 
@@ -155,13 +155,13 @@ terminal은 한 번만 처리한다. 역순 completion에서도 오래된 장면
 
 ## 9. P5 — Linux Qt 연결
 
-- [ ] **기본 Qt Quick 경로**를 우선 적용한다. Vulkan window 대체 경로를 바꾸는 것만으로 Linux 완료를 판정하지 않는다.
-- [ ] `GraphiteVulkanQuick.Begin/Complete`의 queue idle·copy fence wait를 frame별 producer/Qt consumer 완료 신호로 대체할 설계를 만든다.
-- [ ] Qt native bridge에서 texture bank의 publication·sampling·retirement를 연결한다. front bank와 pending frame이 동시에 사용하는 자원을 식별하고 두 pending frame의 자원을 격리한다.
-- [ ] Qt가 아직 sampling 중인 texture를 덮거나 해제하지 않는다. 실패·거절된 commit은 이전 front pixels와 geometry를 유지한다.
-- [ ] Qt GUI/sync/render thread 사이의 Vulkan queue 접근·신호 순서를 보존한다. 단순히 `WaitQueue`/`WaitForFences`를 삭제하지 않는다.
-- [ ] 공통 callback 준비와 fresh-only admission을 Quick 및 Vulkan window 경로에 연결한다. native WebView/shield·resize는 직렬 경계를 유지한다.
-- [ ] bridge ABI가 바뀌면 version/struct size 검사를 갱신하고 Sample2·Testbed·템플릿의 native 소스를 함께 맞춘다.
+- [x] **기본 Qt Quick 경로**를 우선 적용한다. Vulkan window 대체 경로를 바꾸는 것만으로 Linux 완료를 판정하지 않는다.
+- [x] `GraphiteVulkanQuick.Begin/Complete`의 queue idle·copy fence wait를 frame별 producer/Qt consumer 완료 신호로 대체할 설계를 만든다.
+- [x] Qt native bridge에서 texture bank의 publication·sampling·retirement를 연결한다. front bank와 pending frame이 동시에 사용하는 자원을 식별하고 두 pending frame의 자원을 격리한다.
+- [x] Qt가 아직 sampling 중인 texture를 덮거나 해제하지 않는다. 실패·거절된 commit은 이전 front pixels와 geometry를 유지한다.
+- [x] Qt GUI/sync/render thread 사이의 Vulkan queue 접근·신호 순서를 보존한다. 단순히 `WaitQueue`/`WaitForFences`를 삭제하지 않는다.
+- [x] 공통 callback 준비와 fresh-only admission을 Quick 및 Vulkan window 경로에 연결한다. native WebView/shield·resize는 직렬 경계를 유지한다.
+- [x] bridge ABI가 바뀌면 version/struct size 검사를 갱신하고 Sample2·Testbed·템플릿의 native 소스를 함께 맞춘다.
 - [ ] 기본 지원 Wayland 환경의 resize·DPR·minimize/restore·WebView/IME와 지원하는 대체 환경을 확인한다. shutdown 뒤 미회수 GPU/Qt lease가 남지 않는지 검사한다.
 
 **완료 조건:** Qt consumer 완료를 증명하는 비동기 수명이 실제 연결되고, 기본 Quick 경로에서 C 동작·화질·native 합성·복귀를 통과한다.
@@ -170,9 +170,9 @@ terminal은 한 번만 처리한다. 역순 completion에서도 오래된 장면
 
 ### 10.1 정확성과 수명
 
-- [ ] 공통 CPU 계약 검사에서 callback 순서·coalescing·GPU full·native 전환·replay·generation·역순/중복 완료·실패를 통과한다.
+- [x] 공통 CPU 계약 검사에서 callback 순서·coalescing·GPU full·native 전환·replay·generation·역순/중복 완료·실패를 통과한다.
 - [ ] 플랫폼의 실제 GPU에서 A/C 정지 픽셀을 비교한다. Off와 Full/Adaptive/Fast/Fixed/Kawase, sigma 0/1/2/4/8/20/32, 변환·경계·native 합성을 포함한다.
-- [ ] 같은 cache/recorder를 사용하는 두 미완료 recording을 유지해 장면별 snapshot·중간 surface가 서로 오염되지 않는지 확인한다.
+- [x] 같은 cache/recorder를 사용하는 두 미완료 recording을 유지해 장면별 snapshot·중간 surface가 서로 오염되지 않는지 확인한다.
 - [ ] 생성→재생성→종료, 제출 실패·device loss, native 삽입/삭제, resize/DPR 변경에서 terminal 누락·중복·미완료 자원 재사용이 없음을 확인한다.
 - [ ] iOS부터 발견했던 복귀 직후 몇 프레임만 증가하는 문제를 검사한다. 복귀 3회마다 초기 snapshot과 최소 5초 후 snapshot을 비교해 지속 렌더링을 확인한다.
 
@@ -207,13 +207,13 @@ terminal은 한 번만 처리한다. 역순 completion에서도 오래된 장면
 
 ## 11. P7 — 기본 적용과 결과 정리
 
-- [ ] 각 제품 호스트가 같은 공통 C 규칙을 실제 사용하도록 기본값을 적용한다. capability 부족·device recovery·native/resize fallback 이유를 진단에 남긴다.
-- [ ] 환경 설정 없이 실행한 정책을 확인하고 A 복귀 옵션, 지원하는 B 비교 옵션을 검증한다.
+- [x] 각 제품 호스트가 같은 공통 C 규칙을 실제 사용하도록 기본값을 적용한다. capability 부족·device recovery·native/resize fallback 이유를 진단에 남긴다.
+- [x] 환경 설정 없이 실행한 정책을 확인하고 A 복귀 옵션, 지원하는 B 비교 옵션을 검증한다. 비Apple 실제 실행, Apple 검증은 사용자 요청 SKIPPED.
 - [ ] Sample2/Testbed, host package, CLI·새 프로젝트 템플릿의 설정과 설명을 일치시킨다. 개발 runtime의 결과를 배포 runtime 검증으로 대신 사용하지 않는다.
 - [ ] 공통 CPU/GPU 및 변경한 플랫폼의 기존 build·native bridge·resize·입력 검사를 통과한다. 다른 OS의 실행 환경이 없으면 빌드·소스 검사와 실제 실행 미검증 상태를 구분한다.
-- [ ] 결과를 `works/results/<실행일>-native-frame-pipeline.md`와 플랫폼별 JSON으로 기록한다. 원본은 `temp/testing/native-frame-pipeline/<platform>/<run>/`에 보존한다.
-- [ ] 실제 payload/source hash, runtime/SDK, 표시 구성, 정책·fallback, 성공·실패 실행, 재시도 이유, 수동 결과를 보존한다. 실패 실행을 제거해 통과 평균을 만들지 않는다.
-- [ ] `git diff --check`를 통과하고 `work4.md`의 과거 수치·미검증 항목은 보존한다. 새 결과를 기존 payload의 결과로 소급하지 않는다.
+- [x] 결과를 `works/results/<실행일>-native-frame-pipeline.md`와 플랫폼별 JSON으로 기록한다. 원본은 `temp/testing/native-frame-pipeline/<platform>/<run>/`에 보존한다.
+- [x] 실제 payload/source hash, runtime/SDK, 표시 구성, 정책·fallback, 성공·실패 실행, 재시도 이유, 수동 결과를 보존한다. 실패 실행을 제거해 통과 평균을 만들지 않는다.
+- [x] `git diff --check`를 통과하고 `work4.md`의 과거 수치·미검증 항목은 보존한다. 새 결과를 기존 payload의 결과로 소급하지 않는다.
 
 **전체 완료 조건:** 모든 범위 내 네이티브 제품 호스트에 공통 준비·admission·완료 계약이 연결되고 C가 기본으로 선택된다. 플랫폼별 실제 GPU·native 합성·lifecycle·기본 Fast 성능과 일반 사용을 검증한 최종 앱 및 결과 자료를 제공한다. 대체 경로의 제한과 목표에 미달한 옵션은 별도로 명시한다.
 
@@ -231,3 +231,19 @@ terminal은 한 번만 처리한다. 역순 completion에서도 오래된 장면
 | P7 | 기본 C 앱/패키지·템플릿·문서와 최종 집계 | 무설정 실행·rollback·제품 runtime 검증 완료 |
 
 이 계획의 우선 해결 대상은 **host 연결과 자원 수명**이다. iOS의 flag 이름을 다른 OS에 추가하는 작업이나 GPU 상한만 2로 바꾸는 작업으로 전체 완료를 판정하지 않는다.
+
+## 13. 실행 상태 — 2026-10-02
+
+| 단계 | 최종 상태 |
+| --- | --- |
+| P0 | host/backend/owner/wait/retirement 표와 identity 기록. 일부 host의 전체 frame별 timing·input/display 연결은 미완료 |
+| P1 | 공통 계약·CPU 회귀 PASS, iOS 옵션 호환 유지. Apple Metal/lifecycle SKIPPED |
+| P2 | AppKit/Catalyst 연결 구현. Apple build/runtime/사용 검증 SKIPPED |
+| P3 | x64·arm64 Release APK build, emulator A/B/C·native 재생성·3회 지속 복귀 PASS. physical Android GPU/입력 미검증 |
+| P4 | 두 Windows 호스트 C/A/B, Release shader smoke, AppSDK native·resize·reset/recovery PASS. MAUI native 입력 adapter·physical DPI/IME 미완료 |
+| P5 | 기본 Quick ABI 6 및 Qt consumer drain PASS. Vulkan-window와 OpenGL xcb 별도 smoke. software Vulkan, OpenGL Wayland 실패 보존 |
+| P6 | CPU 및 실제 Radeon Vulkan 31조건 A/C 픽셀·두 recording PASS. 실제 표시 계측 권한 부족; 정량 30회·물리 입력·10분 사용 미완료 |
+| P7 | 기본 C·옵션·샘플·템플릿·문서·플랫폼 JSON 반영. 제품 runtime 제한과 실패 원본 보존. 전체 인수 PARTIAL |
+
+Apple 검증 관련 미체크 항목은 **SKIPPED(사용자 요청)**이며 재검증을 시도하지 않았다.
+그 밖의 미체크 항목은 부분 증거만 있거나 실제 환경/사람의 관찰이 필요한 인수다.

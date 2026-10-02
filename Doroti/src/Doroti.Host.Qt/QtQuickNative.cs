@@ -6,6 +6,8 @@ internal static partial class QtQuickNative
 {
     internal const ulong NativeTexturesFeature = 1UL << 18;
     internal const ulong Feature = 1UL << 17;
+    internal const ulong ConsumerCompletionFeature = 1UL << 21;
+    internal const ulong FramePreparationFeature = 1UL << 22;
 
     [StructLayout(LayoutKind.Sequential)]
     internal struct Gpu

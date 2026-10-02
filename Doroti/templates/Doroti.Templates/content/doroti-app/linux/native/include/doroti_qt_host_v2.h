@@ -45,6 +45,8 @@ enum doroti_qt_feature_v2 : std::uint64_t {
   DOROTI_QT_FEATURE_NATIVE_TEXTURE_EXTENSIONS = 1ull << 18,
   DOROTI_QT_FEATURE_ACTIVATION_REQUEST = 1ull << 19,
   DOROTI_QT_FEATURE_IDLE_FRAME_ELISION = 1ull << 20,
+  DOROTI_QT_FEATURE_CONSUMER_COMPLETION = 1ull << 21,
+  DOROTI_QT_FEATURE_FRAME_PREPARATION = 1ull << 22,
 };
 
 enum doroti_qt_terminal_state_v2 : std::uint32_t {
@@ -279,6 +281,11 @@ struct doroti_qt_callbacks_v2 {
   std::int32_t (*poll_gpu_work)(void* callback_context, void* view_handle);
   // Optional when feature bit 15 is absent; runs before QApplication creation.
   std::int32_t (*prepare_application)(void* callback_context);
+  // Qt afterFrameEnd: managed places a same-queue retirement fence after Qt sampling.
+  std::int32_t (*qt_consumer_submitted)(void* callback_context, void* view_handle);
+  // Qt beforeFrameBegin, before RHI drawable/fence acquisition. No GPU operations.
+  std::int32_t (*prepare_frame)(void* callback_context, void* view_handle,
+                               const doroti_qt_surface_v2* surface, std::uint64_t frame_token);
 };
 
 DOROTI_QT_EXPORT std::int32_t doroti_qt_run_v2(
@@ -304,4 +311,6 @@ static_assert(sizeof(doroti_qt_host_api_v2) == 128);
 static_assert(offsetof(doroti_qt_surface_v2, vulkan_instance_api_version) == 120);
 static_assert(offsetof(doroti_qt_callbacks_v2, poll_gpu_work) == 176);
 static_assert(offsetof(doroti_qt_callbacks_v2, prepare_application) == 184);
-static_assert(sizeof(doroti_qt_callbacks_v2) == 192);
+static_assert(offsetof(doroti_qt_callbacks_v2, qt_consumer_submitted) == 192);
+static_assert(offsetof(doroti_qt_callbacks_v2, prepare_frame) == 200);
+static_assert(sizeof(doroti_qt_callbacks_v2) == 208);

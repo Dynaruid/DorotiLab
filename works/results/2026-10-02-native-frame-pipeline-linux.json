@@ -1,0 +1,400 @@
+{
+  "schema": "doroti.native-frame-pipeline/v1",
+  "date": "2026-10-02",
+  "recordedUtc": "2026-10-02T10:58:20.954387+00:00",
+  "baseCommit": "f1beafc8fc84954c9d24c4bf57a06b3b883f9f68",
+  "sourceSha256": "bac01de0d62350086ea32601dfb05e01b4f3a61a3b27f7e40227bea2a2cea98f",
+  "sourceManifest": "temp/testing/native-frame-pipeline/source-manifest.json",
+  "work4UnchangedSha256": "64f2a54f4607f74ef4a68a32aee6f79f12c0a17b52e0ea16960163cce23bfc6a",
+  "qtAbi": 6,
+  "qtCallbackSize": 208,
+  "qtCopies": [
+    {
+      "name": "src/doroti_qt_host.cpp",
+      "sha256": "8d1dc232d5598592e5e9e3b35c062e30ae4cbde8dcd006321481b16f751dbf75",
+      "copies": [
+        "samples/DorotiSampleApp2/linux/native/src/doroti_qt_host.cpp",
+        "samples/DorotiTestbedApp/linux/native/src/doroti_qt_host.cpp",
+        "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/src/doroti_qt_host.cpp"
+      ]
+    },
+    {
+      "name": "include/doroti_qt_host_v2.h",
+      "sha256": "eed8ebc6f0fb3ae7fcb3de11764da31a55cbb2e06f857f582ca2cbae05ac0f00",
+      "copies": [
+        "samples/DorotiSampleApp2/linux/native/include/doroti_qt_host_v2.h",
+        "samples/DorotiTestbedApp/linux/native/include/doroti_qt_host_v2.h",
+        "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/include/doroti_qt_host_v2.h"
+      ]
+    },
+    {
+      "name": "include/doroti_qt_desktop.h",
+      "sha256": "0ab829b2ffaec5064527f7f1412cb3aeec78d419af730f751145a48779444654",
+      "copies": [
+        "samples/DorotiSampleApp2/linux/native/include/doroti_qt_desktop.h",
+        "samples/DorotiTestbedApp/linux/native/include/doroti_qt_desktop.h",
+        "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/include/doroti_qt_desktop.h"
+      ]
+    },
+    {
+      "name": "include/doroti_qt_webview.h",
+      "sha256": "fdc72e736575239b71d57ff4f7d83607808e09b209de1447c676b697922decb8",
+      "copies": [
+        "samples/DorotiSampleApp2/linux/native/include/doroti_qt_webview.h",
+        "samples/DorotiTestbedApp/linux/native/include/doroti_qt_webview.h",
+        "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/include/doroti_qt_webview.h"
+      ]
+    }
+  ],
+  "platform": "Linux",
+  "status": "PARTIAL",
+  "runtimeIdentity": "temp/testing/native-frame-pipeline/linux/runtime.txt",
+  "qpa": "wayland WSLg",
+  "gpu": "llvmpipe LLVM 21.1.8 software Vulkan",
+  "hardwareGpu": "notVerified",
+  "physicalDisplayHz": null,
+  "checks": {
+    "quickNative": "PASS multi/desktop/input/resize20; raw linux/smoke-final/results.json",
+    "quickModes": "PASS default C/A/B/C",
+    "vulkanWindow": "PASS default/A; separate consumer contract",
+    "openGlXcb": "PASS serial Off",
+    "openGlWayland": "FAIL unconfigured xdg_surface",
+    "physicalImeOrca": "notVerified",
+    "tenMinuteUse": "notVerified",
+    "performance30Runs": "notVerified"
+  },
+  "rawChecks": [
+    "linux/smoke",
+    "linux/smoke-2",
+    "linux/smoke-3",
+    "linux/smoke-final",
+    "linux/smoke-token-final",
+    "linux-sample2-build.log"
+  ],
+  "beforeTokenRetryFix": {
+    "sourceManifest": "temp/testing/native-frame-pipeline/source-manifest-before-token-retry-fix.json",
+    "sample2PayloadManifest": "temp/testing/native-frame-pipeline/payload-LinuxSample2Quick-before-token-retry-fix.json",
+    "testbedPayloadManifest": "temp/testing/native-frame-pipeline/payload-LinuxTestbedQuick-before-token-retry-fix.json",
+    "note": "Prior A/B/C and 20-resize evidence used the previous shim; token-preserving final shim has separate mode and native smoke."
+  },
+  "runs": [
+    {
+      "run": "temp/testing/native-frame-pipeline/linux/mode-smoke/r1-fast-20-default",
+      "status": "FAIL",
+      "condition": "fast:20",
+      "policy": "default",
+      "seconds": 12.0,
+      "pipeline": null,
+      "display": {
+        "status": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "93d978b385a1d6d029043b3bea0c3c736ae27c57666b05cc05b9d2f2f1cbb44d"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/linux/mode-smoke-final/r1-fast-20-A",
+      "status": "PASS",
+      "condition": "fast:20",
+      "policy": "A",
+      "seconds": 12.0,
+      "pipeline": {
+        "nativeFrameMode": "A",
+        "frameworkPreparedPulses": 43,
+        "quickMaximumPending": 1,
+        "quickConsumersSubmitted": 43,
+        "quickConsumersCompleted": 43,
+        "gpuRetirement": "producer-copy-fence-and-Qt-afterFrameEnd-consumer-fence"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "b0727293423f9d81eb0c3e7530eb621cd8a69d7814312d0593a94fae568d2961"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/linux/mode-smoke-final/r1-fast-20-B",
+      "status": "PASS",
+      "condition": "fast:20",
+      "policy": "B",
+      "seconds": 12.0,
+      "pipeline": {
+        "nativeFrameMode": "B",
+        "frameworkPreparedPulses": 71,
+        "quickMaximumPending": 1,
+        "quickConsumersSubmitted": 70,
+        "quickConsumersCompleted": 70,
+        "gpuRetirement": "producer-copy-fence-and-Qt-afterFrameEnd-consumer-fence"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "c814e1e37065b1a5fc7530c87592841028583fe2bd692d861f77f8420d0de034"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/linux/mode-smoke-final/r1-fast-20-C",
+      "status": "PASS",
+      "condition": "fast:20",
+      "policy": "C",
+      "seconds": 12.0,
+      "pipeline": {
+        "nativeFrameMode": "C",
+        "frameworkPreparedPulses": 73,
+        "quickMaximumPending": 1,
+        "quickConsumersSubmitted": 73,
+        "quickConsumersCompleted": 73,
+        "gpuRetirement": "producer-copy-fence-and-Qt-afterFrameEnd-consumer-fence"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "8bb1efece938b294a8ba825f3bb31d5dfc10480b4317e6473211f2b4bd3eea4e"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/linux/mode-smoke-final/r1-fast-20-default",
+      "status": "PASS",
+      "condition": "fast:20",
+      "policy": "default",
+      "seconds": 12.0,
+      "pipeline": {
+        "nativeFrameMode": "C",
+        "frameworkPreparedPulses": 84,
+        "quickMaximumPending": 1,
+        "quickConsumersSubmitted": 84,
+        "quickConsumersCompleted": 84,
+        "gpuRetirement": "producer-copy-fence-and-Qt-afterFrameEnd-consumer-fence"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "2c1e1803be34c64f3581cb96d0bf8986c4e7999646848fac33ffe4fe49145d61"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/linux/mode-smoke-token-final/r1-fast-20-A",
+      "status": "PASS",
+      "condition": "fast:20",
+      "policy": "A",
+      "seconds": 12.0,
+      "pipeline": {
+        "nativeFrameMode": "A",
+        "frameworkPreparedPulses": 97,
+        "quickMaximumPending": 1,
+        "quickConsumersSubmitted": 97,
+        "quickConsumersCompleted": 97,
+        "gpuRetirement": "producer-copy-fence-and-Qt-afterFrameEnd-consumer-fence"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "567b1bb326313af2464975beb3c7c85e681ae54b3a1872413524e5898f30d788"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/linux/mode-smoke-token-final/r1-fast-20-B",
+      "status": "PASS",
+      "condition": "fast:20",
+      "policy": "B",
+      "seconds": 12.0,
+      "pipeline": {
+        "nativeFrameMode": "B",
+        "frameworkPreparedPulses": 129,
+        "quickMaximumPending": 1,
+        "quickConsumersSubmitted": 131,
+        "quickConsumersCompleted": 131,
+        "gpuRetirement": "producer-copy-fence-and-Qt-afterFrameEnd-consumer-fence"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "5fbde02bab35ce24313cfaffeb85a345019812b1ff9bcba4614ae7974be1ce3f"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/linux/mode-smoke-token-final/r1-fast-20-C",
+      "status": "PASS",
+      "condition": "fast:20",
+      "policy": "C",
+      "seconds": 12.0,
+      "pipeline": {
+        "nativeFrameMode": "C",
+        "frameworkPreparedPulses": 131,
+        "quickMaximumPending": 1,
+        "quickConsumersSubmitted": 131,
+        "quickConsumersCompleted": 131,
+        "gpuRetirement": "producer-copy-fence-and-Qt-afterFrameEnd-consumer-fence"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "590549b1f9061d3d653d330581654a407bdb95d0206fd01ab8c9c213543fa202"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/linux/mode-smoke-token-final/r1-fast-20-default",
+      "status": "PASS",
+      "condition": "fast:20",
+      "policy": "default",
+      "seconds": 12.0,
+      "pipeline": {
+        "nativeFrameMode": "C",
+        "frameworkPreparedPulses": 108,
+        "quickMaximumPending": 1,
+        "quickConsumersSubmitted": 108,
+        "quickConsumersCompleted": 108,
+        "gpuRetirement": "producer-copy-fence-and-Qt-afterFrameEnd-consumer-fence"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "f71844265ad3d3b8d6f89346ca7ec9025d8822c99091f66d90856e282d13c445"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/linux/vulkan-window-smoke/r1-fast-20-A",
+      "status": "PASS",
+      "condition": "fast:20",
+      "policy": "A",
+      "seconds": 12.0,
+      "pipeline": {
+        "nativeFrameMode": "A",
+        "frameworkPreparedPulses": 0,
+        "quickMaximumPending": 0,
+        "quickConsumersSubmitted": 0,
+        "quickConsumersCompleted": 0,
+        "gpuRetirement": "owner-thread-poll"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "52578b4f44138b6439d8a786ba996f1165feba1794e4bf4f4d977b95648f884c"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/linux/vulkan-window-smoke/r1-fast-20-default",
+      "status": "PASS",
+      "condition": "fast:20",
+      "policy": "default",
+      "seconds": 12.0,
+      "pipeline": {
+        "nativeFrameMode": "C",
+        "frameworkPreparedPulses": 0,
+        "quickMaximumPending": 0,
+        "quickConsumersSubmitted": 0,
+        "quickConsumersCompleted": 0,
+        "gpuRetirement": "owner-thread-poll"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "d7e4bf93e57987ed818e991dc272b28cb23897bf5f1165f35912c35c7884c8e7"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/linux/opengl-serial-smoke/r1-off-0-default",
+      "status": "FAIL",
+      "condition": "off:0",
+      "policy": "default",
+      "seconds": 12.0,
+      "pipeline": null,
+      "display": {
+        "status": "notMeasured"
+      },
+      "error": "Application exit -6",
+      "resultSha256": "8cb7d2ef70942be7d398065ec579e5edf6f9b9ac8565144cdc6b6bd1cd4afee7"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/linux/opengl-serial-smoke-2/r1-off-0-default",
+      "status": "FAIL",
+      "condition": "off:0",
+      "policy": "default",
+      "seconds": 12.0,
+      "pipeline": null,
+      "display": {
+        "status": "notMeasured"
+      },
+      "error": "Application exit 255",
+      "resultSha256": "41eaf836cd6c11a61eca6b263e7fb8e7b4e87a5a88063d7090dfc6e953e79925"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/linux/opengl-xcb-serial-smoke/r1-off-0-default",
+      "status": "PASS",
+      "condition": "off:0",
+      "policy": "default",
+      "seconds": 12.0,
+      "pipeline": {
+        "nativeFrameMode": "C",
+        "frameworkPreparedPulses": 0,
+        "quickMaximumPending": 0,
+        "quickConsumersSubmitted": 0,
+        "quickConsumersCompleted": 0,
+        "gpuRetirement": "OpenGL"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "22ce9b3b00b1ad03166eab118ff4ee185df015b94ebd693c2b28275de1f2c4bf"
+    }
+  ],
+  "payloads": [
+    {
+      "name": "LinuxSample2Quick",
+      "root": "temp/testing/native-frame-pipeline/linux/artifacts-sample2/bin/DorotiSampleApp2.Linux/release_linux-x64",
+      "payloadSha256": "bb5845d77bc393a4da3694902d0139974fc0fe17d06f1d3bf8050eb23df80c0f",
+      "manifest": "temp/testing/native-frame-pipeline/payload-LinuxSample2Quick.json"
+    },
+    {
+      "name": "LinuxTestbedQuick",
+      "root": "temp/testing/native-frame-pipeline/linux/artifacts-testbed/bin/DorotiTestbedApp.Linux/debug_linux-x64",
+      "payloadSha256": "e4b4d8f4b4b9d28f9f2a08bad703f2009da7ee1058bcedb65bc7112742d8cf7d",
+      "manifest": "temp/testing/native-frame-pipeline/payload-LinuxTestbedQuick.json"
+    },
+    {
+      "name": "LinuxSample2VulkanWindow",
+      "root": "temp/testing/native-frame-pipeline/linux/artifacts-vulkan-window/bin/DorotiSampleApp2.Linux/release_linux-x64",
+      "payloadSha256": "71f7a11e9839c2ba5597e98b550398675c1d12f36dfac3a38e65b0900710e8a1",
+      "manifest": "temp/testing/native-frame-pipeline/payload-LinuxSample2VulkanWindow.json"
+    },
+    {
+      "name": "LinuxSample2OpenGL",
+      "root": "temp/testing/native-frame-pipeline/linux/gl-payload",
+      "payloadSha256": "6dacbc32a831166adb5f9851e3ca548b568b8490a0cd4a415d1b75d141570a4f",
+      "manifest": "temp/testing/native-frame-pipeline/payload-LinuxSample2OpenGL.json"
+    }
+  ]
+}

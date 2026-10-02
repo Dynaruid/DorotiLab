@@ -4,7 +4,7 @@ namespace Doroti.Host.Qt;
 
 internal static unsafe class QtNativeV2
 {
-    internal const uint AbiVersion = 4;
+    internal const uint AbiVersion = 6;
     internal static ulong RequiredFeatures =>
         (
             QtSkiaSurface.GraphiteEnabled
@@ -295,13 +295,15 @@ internal static unsafe class QtNativeV2
         internal readonly delegate* unmanaged[Cdecl]<nint, nint, int> PollGpuWork;
 
         internal readonly delegate* unmanaged[Cdecl]<nint, int> PrepareApplication;
+        internal readonly delegate* unmanaged[Cdecl]<nint, nint, int> QtConsumerSubmitted;
+        internal readonly delegate* unmanaged[Cdecl]<nint, nint, Surface*, ulong, int> PrepareFrame;
 
         internal Callbacks(nint callbackContext)
         {
             AbiVersion = QtNativeV2.AbiVersion;
             StructSize = checked((uint)sizeof(Callbacks));
             RequiredFeatures = QtNativeV2.RequiredFeatures;
-            FeatureBits = QtNativeV2.RequiredFeatures | QtQuickNative.Feature;
+            FeatureBits = QtNativeV2.RequiredFeatures | QtQuickNative.Feature | QtQuickNative.ConsumerCompletionFeature | QtQuickNative.FramePreparationFeature;
             CallbackContext = callbackContext;
             ViewCreated = &DorotiQtRunner.OnViewCreated;
             Render = &DorotiQtRunner.OnRender;
@@ -323,6 +325,8 @@ internal static unsafe class QtNativeV2
             SemanticsAction = &DorotiQtRunner.OnSemanticsAction;
             PollGpuWork = &DorotiQtRunner.OnPollGpuWork;
             PrepareApplication = &DorotiQtRunner.OnPrepareApplication;
+            QtConsumerSubmitted = &DorotiQtRunner.OnQtConsumerSubmitted;
+            PrepareFrame = &DorotiQtRunner.OnPrepareFrame;
         }
     }
 
@@ -341,7 +345,7 @@ internal static unsafe class QtNativeV2
         RequireSize<TextConfiguration>(40);
         RequireSize<TextState>(40);
         RequireSize<HostApi>(128);
-        RequireSize<Callbacks>(192);
+        RequireSize<Callbacks>(208);
         RequireOffset<Surface>(nameof(Surface.SurfaceGeneration), 8);
         RequireOffset<Surface>(nameof(Surface.FramebufferObject), 24);
         RequireOffset<Surface>(nameof(Surface.DevicePixelRatio), 40);
@@ -351,6 +355,8 @@ internal static unsafe class QtNativeV2
         RequireOffset<Configuration>(nameof(Configuration.TitlebarStyle), 48);
         RequireOffset<Callbacks>(nameof(Callbacks.PollGpuWork), 176);
         RequireOffset<Callbacks>(nameof(Callbacks.PrepareApplication), 184);
+        RequireOffset<Callbacks>(nameof(Callbacks.QtConsumerSubmitted), 192);
+        RequireOffset<Callbacks>(nameof(Callbacks.PrepareFrame), 200);
         RequireOffset<Callbacks>(nameof(Callbacks.CallbackContext), 24);
     }
 

@@ -148,9 +148,13 @@ public sealed class MauiFrameworkHost : IDisposable
             configuration.backgroundColor,
             configuration.darkBackgroundColor
         );
-#if IOS && !MACCATALYST
+#if IOS || MACCATALYST || ANDROID
         if (surface is MauiSkglSurface shaderSurface)
             shaderSurface.SetFramePreparation(host.PrepareFrame, () => graphics.ShaderSceneAdmission, () => graphics.PreparedScene, () => host.HasPendingFrame);
+#endif
+#if WINDOWS
+        if (surface is DorotiWindowsDxgiSurface windowsShaderSurface)
+            windowsShaderSurface.SetFrameQuery(() => graphics.ShaderSceneAdmission);
 #endif
         if (surface is IMauiGraphiteSurface graphiteSurface)
         {
@@ -159,6 +163,7 @@ public sealed class MauiFrameworkHost : IDisposable
 #if MACOS
         if (surface is DorotiMacOSMetalSurface metalSurface)
         {
+            metalSurface.SetFramePreparation(host.PrepareFrame, () => graphics.ShaderSceneAdmission, () => host.HasPendingFrame);
             graphics.AttachNativeLifecycle(metalSurface);
         }
 #endif

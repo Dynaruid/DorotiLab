@@ -255,6 +255,9 @@ public static unsafe partial class DorotiQtRunner
                 || hostApi.UpdateSemantics == null
                 || hostApi.ClearSemantics == null
                 || (QtSkiaSurface.GraphiteEnabled && hostApi.PreparePresent == null)
+                || (hostApi.FeatureBits & QtQuickNative.Feature) != 0
+                    && (hostApi.FeatureBits & (QtQuickNative.ConsumerCompletionFeature | QtQuickNative.FramePreparationFeature))
+                        != (QtQuickNative.ConsumerCompletionFeature | QtQuickNative.FramePreparationFeature)
             )
             {
                 throw new InvalidDataException(
@@ -519,6 +522,8 @@ public static unsafe partial class DorotiQtRunner
         }
 
         private ulong _quickCompositionToken;
+        internal ulong PreparedFrameToken;
+        internal long PreparedPulses;
 
         internal void AwaitQuickCompositionTerminal(ulong token)
         {
@@ -637,7 +642,12 @@ public static unsafe partial class DorotiQtRunner
                     softwareFallback = false,
                     softwareVulkan = Surface.SoftwareVulkan,
                     fullFrameCpuCopies = 0,
-                    gpuRetirement = Surface.QuickEnabled ? "Qt-queue-drain-and-copy-fence"
+                    nativeFrameMode = NativeFrameLoopOptions.FromEnvironment().Mode,
+                    frameworkPreparedPulses = PreparedPulses,
+                    quickMaximumPending = Surface.QuickGpu?.MaximumFramesInFlight ?? Surface.QuickMaximumFrames,
+                    quickConsumersSubmitted = Surface.QuickGpu?.ConsumerSubmissions ?? Surface.QuickConsumerSubmissions,
+                    quickConsumersCompleted = Surface.QuickGpu?.CompletedConsumers ?? Surface.QuickCompletedConsumers,
+                    gpuRetirement = Surface.QuickEnabled ? "producer-copy-fence-and-Qt-afterFrameEnd-consumer-fence"
                     : QtSkiaSurface.GraphiteEnabled ? "owner-thread-poll"
                     : "OpenGL",
                 };
@@ -795,7 +805,17 @@ public static unsafe partial class DorotiQtRunner
                     state.Renderer.AttachSurface(state.Host.RequestInvalidate);
                     state.RendererContextIdentity = surface->ContextIdentity;
                 }
-                state.Host.BeginFrame(in *surface);
+                var prepared = state.PreparedFrameToken == frameToken;
+                state.PreparedFrameToken = 0;
+                state.Host.BeginFrame(in *surface, prepareFramework: !prepared);
+                var options = NativeFrameLoopOptions.FromEnvironment();
+                state.Surface.PollGpuWork();
+                var admission = NativeFrameAdmissionPolicy.Decide(options.Pipeline, options.Asynchronous,
+                    state.Renderer.ShaderSceneAdmission, state.Surface.PendingGpuFrames,
+                    state.PlatformViews.HasComposition, state.Surface.HasSerialGpuFrames,
+                    state.Surface.ViewportChanged(in *surface), supportsTwoFrames: QtSkiaSurface.GraphiteEnabled);
+                state.Surface.FrameAdmission = admission;
+                if (!admission.Admitted) return;
                 if (!state.PlatformViews.TryBeginFrame())
                 {
                     return;
@@ -807,7 +827,8 @@ public static unsafe partial class DorotiQtRunner
                     (skiaSurface, width, height) =>
                     {
                         attemptedPaint = true;
-                        paint = state.Renderer.Paint(
+                        paint = admission.FreshOnly || !admission.SynchronizePresentation ? state.Renderer.PaintNewShaderScene(
+                            skiaSurface, width, height, state.Host.ResizeTarget) : state.Renderer.Paint(
                             skiaSurface,
                             width,
                             height,
@@ -868,6 +889,21 @@ public static unsafe partial class DorotiQtRunner
         var result = Guard(context, state => complete = state.Surface.PollGpuWork());
         return result == 0 && !complete ? 1 : result;
     }
+
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+    internal static int OnQtConsumerSubmitted(nint context, nint viewHandle) =>
+        Guard(context, state => state.Surface.QuickGpu?.QtConsumerSubmitted());
+
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+    internal static int OnPrepareFrame(nint context, nint viewHandle, QtNativeV2.Surface* surface, ulong token) =>
+        Guard(context, state =>
+        {
+            if (surface == null || surface->AbiVersion != QtNativeV2.AbiVersion || surface->StructSize < sizeof(QtNativeV2.Surface))
+                throw new InvalidDataException("Qt framework preparation descriptor is invalid.");
+            state.PreparedFrameToken = token;
+            state.PreparedPulses++;
+            state.Host?.BeginFrame(in *surface);
+        });
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     internal static void OnFrameTerminal(

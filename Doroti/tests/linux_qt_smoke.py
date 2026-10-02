@@ -17,12 +17,13 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--output', required=True, type=Path)
 parser.add_argument('--qpa', choices=['wayland', 'xcb'], default='wayland' if os.environ.get('WAYLAND_DISPLAY') else 'xcb')
 parser.add_argument('--skip-build', action='store_true')
+parser.add_argument('--exe', type=Path, help='Explicit isolated build payload to qualify.')
 parser.add_argument('--cases', default='multi,desktop,services,navigation,input,resize')
 args = parser.parse_args()
 out = args.output.resolve()
 assert out.is_relative_to(ROOT / 'temp/testing')
 out.mkdir(parents=True, exist_ok=True)
-exe = ROOT / 'samples/DorotiTestbedApp/linux/bin/linux-x64/Debug/net10.0/linux-x64/DorotiTestbedApp.Linux'
+exe = args.exe.resolve() if args.exe else ROOT / 'samples/DorotiTestbedApp/linux/bin/linux-x64/Debug/net10.0/linux-x64/DorotiTestbedApp.Linux'
 if not args.skip_build:
     with (out / 'build.log').open('w') as log:
         subprocess.run(['dotnet', 'build', str(ROOT / 'samples/DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj'),

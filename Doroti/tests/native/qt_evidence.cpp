@@ -14,6 +14,15 @@
 #include <QUrl>
 
 static void Start() {
+  // Bounded pipeline probes close only windows in this injected test process.
+  // This uses Qt's normal close/retirement path and is never linked into apps.
+  bool duration_ok = false;
+  const auto duration = qgetenv("DOROTI_QT_PIPELINE_DURATION_MS").toInt(&duration_ok);
+  if (duration_ok && duration > 0 && duration <= 120000)
+    QTimer::singleShot(duration, qApp, [] {
+      for (auto* window : QGuiApplication::topLevelWindows())
+        if (window->isVisible()) window->close();
+    });
   auto* timer = new QTimer(qApp);
   QObject::connect(timer, &QTimer::timeout, qApp, [timer] {
     const auto services = qgetenv("DOROTI_QT_SERVICES_PROBE");

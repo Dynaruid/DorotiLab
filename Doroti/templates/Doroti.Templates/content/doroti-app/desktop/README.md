@@ -74,6 +74,10 @@ is retained for apps without a Desktop companion.
 OnLastWindowClosed ends the Qt loop after window teardown and registry removal.
 Explicit keeps the process alive; additional windows/reopen are unsupported.
 Use the companion only when that lifetime fits the application. Rebuild the
-app-owned native shim: Desktop ABI 1 is separate from unchanged host ABI 4.
+app-owned native shim: Desktop ABI 1 is separate from host ABI 6.
+Native hosts default to common frame mode C. `DOROTI_NATIVE_FRAME_MODE=A` selects
+the serial baseline; B selects asynchronous output with one frame where supported.
+Shader-only C permits at most two logical frames; native/replay/resize and
+capability-limited backends retain serial admission. Rebuild host/shim together.
 Native Wayland and xcb/XWayland require separate qualification; the known
 XWayland Vulkan resize issue remains open.

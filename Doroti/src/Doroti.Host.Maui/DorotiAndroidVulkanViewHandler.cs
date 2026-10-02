@@ -6,6 +6,7 @@ using Android.Graphics;
 using Android.Runtime;
 using Android.Views;
 using Doroti.Skia.Vulkan;
+using Doroti.Skia.Rendering;
 using Doroti.Ui;
 using Microsoft.Maui;
 using Microsoft.Maui.Handlers;
@@ -66,6 +67,18 @@ public sealed class DorotiAndroidViewContainer : Android.Widget.FrameLayout
 
 public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallback
 {
+    private NativeFrameLoopOptions? _frameLoopOptions;
+    private long _preparedFrameworkPulses;
+    private long _preparedWhileGpuFull;
+    private long _rejectedAdmissions;
+    internal MauiSurfaceSnapshot CaptureSnapshot(MauiSurfaceSnapshot current) => current with
+    {
+        GpuDevice = _window?.DeviceName,
+        NativeFramePipeline = new(_frameLoopOptions?.Mode ?? "C", _preparedFrameworkPulses,
+            _window?.WindowFramesInFlight ?? 0, _window?.MaximumWindowFramesInFlight ?? 0,
+            _window?.CompletedWindowFrames ?? 0, "Vulkan producer-copy fence; SurfaceView present is a separate receipt",
+            PreparedWhileGpuFull: _preparedWhileGpuFull, RejectedAdmissions: _rejectedAdmissions),
+    };
     private DorotiGraphiteView? _owner;
     private GraphiteVulkanWindow? _window;
     private nint _nativeWindow;
@@ -284,6 +297,34 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
                     $"Vulkan device={_window.DeviceName} generation={_generation}"
                 );
             }
+            _window.PrepareViewport(_width, _height);
+            var options = _frameLoopOptions ??= NativeFrameLoopOptions.FromSettings(name =>
+                Microsoft.Maui.ApplicationModel.Platform.CurrentActivity?.Intent?.GetStringExtra(name)
+                    ?? Environment.GetEnvironmentVariable(name));
+            var prepared = false;
+            var admission = NativeFrameAdmissionPolicy.PrepareAndDecide(
+                options.Pipeline, options.Asynchronous,
+                () =>
+                {
+                    _preparedFrameworkPulses++;
+                    _owner.PrepareFrameworkFrame?.Invoke(new(_window.ContextIdentity,
+                        _window.Width, _window.Height, _density,
+                        (_generation << 32) | _window.Generation, GetType().FullName!,
+                        "Android/SurfaceView/Graphite-Vulkan", DorotiFrameClock.Now));
+                    prepared = true;
+                },
+                () => _owner.ShaderSceneAdmission?.Invoke() ?? SkiaShaderSceneAdmission.noNewScene,
+                () => { _window.PollGpuWork(); return _window.WindowFramesInFlight; },
+                _owner.PlatformViews?.HasComposition == true,
+                _owner.PlatformViews?.HasPendingComposition == true, false);
+            if (!admission.Admitted)
+            {
+                _rejectedAdmissions++;
+                if (prepared && admission.GpuLimit == 2) _preparedWhileGpuFull++;
+                ScheduleGpuCompletion();
+                RequestFrame();
+                return;
+            }
             var presented = _window.Render(
                 _width,
                 _height,
@@ -299,11 +340,15 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
                         GetType().FullName!,
                         "Android/SurfaceView/Graphite-Vulkan"
                     );
+                    paint.FrameworkPrepared = prepared;
+                    paint.RequireNewShaderScene = admission.FreshOnly || !admission.SynchronizePresentation;
                     _owner.PaintGraphite(paint);
                 },
                 () =>
                     paint is { SkipPresent: false, SkipRaster: false }
-                    && _owner.PlatformViews?.RejectFrame != true
+                    && _owner.PlatformViews?.RejectFrame != true,
+                maximumFramesInFlight: admission.GpuLimit,
+                asynchronous: !admission.SynchronizePresentation
             );
             if (_owner.PlatformViews is { } platformViews)
             {

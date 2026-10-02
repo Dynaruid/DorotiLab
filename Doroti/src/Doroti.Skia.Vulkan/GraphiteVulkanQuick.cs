@@ -46,6 +46,29 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
     private CommandPool _pool;
     private CommandBuffer _command;
     private Fence _fence;
+    private readonly List<CopySlot> _copySlots = [];
+    private readonly List<Consumer> _consumers = [];
+    private CopySlot? _activeSlot;
+    private CopySlot? _publicationSlot;
+    private CopySlot? _publishedSlot;
+    public int FramesInFlight => _copySlots.Count(slot => slot.Pending);
+    public bool HasSerialFrames => _copySlots.Any(slot => slot.Pending && slot.Serial);
+    public int MaximumFramesInFlight { get; private set; }
+    public long ConsumerSubmissions { get; private set; }
+    public long CompletedConsumers { get; private set; }
+    private sealed class CopySlot
+    {
+        internal CommandBuffer Command;
+        internal Fence Fence;
+        internal SkiaGraphiteSession.Frame? Frame;
+        internal Layer[] Layers = [];
+        internal long SubmittedAt;
+        internal bool Serial;
+        internal bool AwaitingConsumer;
+        internal Consumer? Consumer;
+        internal bool Pending => Frame is not null || AwaitingConsumer || Consumer is not null;
+    }
+    private sealed record Consumer(Fence Fence, Layer[] Layers, long SubmittedAt);
     private SkiaGraphiteSession.Frame? _frame;
     private bool _submitted,
         _disposed;
@@ -132,7 +155,7 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
                     _observer.Check
                 ),
                 1,
-                1
+                NativeFrameAdmissionPolicy.ShaderFrameLimit
             );
             _session.GpuEffects = new VulkanGpuEffect(_vk, _physical, _device, _queue,
                 _family, _observer, _session);
@@ -157,20 +180,20 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
                 Flags = CommandPoolCreateFlags.ResetCommandBufferBit,
             };
             Check(_vk.CreateCommandPool(_device, &pool, null, out _pool), "Quick copy pool");
-            var allocation = new CommandBufferAllocateInfo
+            for (var index = 0; index < NativeFrameAdmissionPolicy.ShaderFrameLimit; index++)
             {
-                SType = StructureType.CommandBufferAllocateInfo,
-                CommandPool = _pool,
-                Level = CommandBufferLevel.Primary,
-                CommandBufferCount = 1,
-            };
-            Check(
-                _vk.AllocateCommandBuffers(_device, &allocation, out _command),
-                "Quick copy command"
-            );
-            _observer.Journal.Allocate(_command.Handle, _pool.Handle);
-            var fence = new FenceCreateInfo { SType = StructureType.FenceCreateInfo };
-            Check(_vk.CreateFence(_device, &fence, null, out _fence), "Quick copy fence");
+                var slot = new CopySlot();
+                _copySlots.Add(slot);
+                var allocation = new CommandBufferAllocateInfo
+                {
+                    SType = StructureType.CommandBufferAllocateInfo, CommandPool = _pool,
+                    Level = CommandBufferLevel.Primary, CommandBufferCount = 1,
+                };
+                Check(_vk.AllocateCommandBuffers(_device, &allocation, out slot.Command), "Quick copy command");
+                _observer.Journal.Allocate(slot.Command.Handle, _pool.Handle);
+                var fence = new FenceCreateInfo { SType = StructureType.FenceCreateInfo };
+                Check(_vk.CreateFence(_device, &fence, null, out slot.Fence), "Quick copy fence");
+            }
         }
         catch
         {
@@ -200,9 +223,11 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
         {
             throw new NotSupportedException("Quick raster extent exceeds limits.");
         }
-        // Qt submitted the preceding scene-graph frame before this GUI-thread sync.
-        // Do not overwrite or free any P while Qt can still sample it.
-        WaitQueue("Qt sampling retirement", _queueIdleMs);
+        PollGpuWork();
+        _activeSlot = _copySlots.FirstOrDefault(slot => !slot.Pending)
+            ?? throw new InvalidOperationException("Quick GPU admission is full.");
+        _command = _activeSlot.Command;
+        _fence = _activeSlot.Fence;
         _borrowed.Clear();
         // Never render/copy into the published bank, even at the same extent.
         // A rejected native commit must leave its pixels as well as geometry intact.
@@ -212,7 +237,7 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
         var resized = _width != width || _height != height;
         _width = width;
         _height = height;
-        foreach (var old in _retired.Where(layer => !_published.Contains(layer)).ToArray())
+        foreach (var old in _retired.Where(layer => !_published.Contains(layer) && !IsGpuOwned(layer)).ToArray())
         {
             _retired.Remove(old);
             if (resized)
@@ -307,6 +332,9 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
     {
         Verify();
         _published = Enumerable.Range(0, _used).Select(Output).ToHashSet();
+        _publishedSlot = _publicationSlot;
+        _publishedSlot!.AwaitingConsumer = true;
+        _publicationSlot = null;
         // Unused staging targets have never been handed to QSG this frame.
         foreach (var unused in _layers.Skip(_used).ToArray())
         {
@@ -338,9 +366,11 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
         _submitted = false;
     }
 
-    public void Complete()
+    public void Complete() => Complete(asynchronous: false);
+
+    public void Complete(bool asynchronous)
     {
-        try { CompleteCore(); }
+        try { CompleteCore(asynchronous); }
         catch
         {
             RecordFailure(FailureKind.SubmissionError, "Quick frame submission");
@@ -348,7 +378,7 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
         }
     }
 
-    private void CompleteCore()
+    private void CompleteCore(bool asynchronous)
     {
         Verify();
         if (_frame is null)
@@ -478,6 +508,21 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
             );
         }
         finally { Sample(_copySubmitMs, submitStart); }
+        var slot = _activeSlot ?? throw new InvalidOperationException("No Quick copy slot.");
+        slot.Frame = _frame;
+        slot.Layers = _layers.Take(_used).Where((_, index) => !_borrowed.ContainsKey(index)).ToArray();
+        slot.SubmittedAt = Stopwatch.GetTimestamp();
+        slot.Serial = !asynchronous;
+        _publicationSlot = slot;
+        _frame = null;
+        _submitted = false;
+        _activeSlot = null;
+        MaximumFramesInFlight = Math.Max(MaximumFramesInFlight, FramesInFlight);
+        if (asynchronous)
+        {
+            Frames++;
+            return;
+        }
         var fenceStart = Stopwatch.GetTimestamp();
         Result fenceResult;
         try { fenceResult = _vk.WaitForFences(_device, 1, in _fence, true, Timeout); }
@@ -491,22 +536,82 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
         if (_fenceWaitMs.Count < 10000) _fenceWaitMs.Add(fenceMs);
         Check(fenceResult, "Quick copy completion", fenceMs);
         _observer.Check();
-        _frame.CompleteGpuWork();
-        _frame = null;
-        _submitted = false;
-        for (int i = 0; i < _used; i++)
-        {
-            if (_borrowed.ContainsKey(i))
-            {
-                continue;
-            }
+        Retire(slot);
+        Frames++;
+    }
 
-            var layer = _layers[i];
+    private bool IsGpuOwned(Layer layer) => _copySlots.Any(slot => slot.Frame is not null && slot.Layers.Contains(layer))
+        || _consumers.Any(consumer => consumer.Layers.Contains(layer));
+
+    private void Retire(CopySlot slot)
+    {
+        slot.Frame!.CompleteGpuWork();
+        foreach (var layer in slot.Layers)
+        {
             var state = layer.Target!.GetState();
             layer.Target.SetStateAfterGpuCompletion(state.Layout, state.QueueFamily);
             layer.Initialized = true;
         }
-        Frames++;
+        slot.Frame = null;
+        slot.Layers = [];
+    }
+
+    /// <summary>Called from Qt afterFrameEnd, after Qt submitted sampling to this same queue.
+    /// A frameSwapped receipt alone never authorizes image reuse.</summary>
+    public void QtConsumerSubmitted()
+    {
+        Verify();
+        if (_published.Count == 0) return;
+        var info = new FenceCreateInfo { SType = StructureType.FenceCreateInfo };
+        Check(_vk.CreateFence(_device, &info, null, out var fence), "Qt consumer fence");
+        var result = _observer.Call<VulkanObserver.QueueSubmitDelegate>("vkQueueSubmit")(_queue, 0, null, fence);
+        if (result != Result.Success)
+        {
+            _vk.DestroyFence(_device, fence, null);
+            Check(result, "Qt consumer retirement marker");
+        }
+        var consumer = new Consumer(fence, _published.ToArray(), Stopwatch.GetTimestamp());
+        _consumers.Add(consumer);
+        if (_publishedSlot is { AwaitingConsumer: true } slot)
+        {
+            slot.Consumer = consumer;
+            slot.AwaitingConsumer = false;
+        }
+        ConsumerSubmissions++;
+        PollGpuWork();
+    }
+
+    /// <summary>Nonblocking producer/copy and Qt consumer retirement on the basic render-loop owner.</summary>
+    public bool PollGpuWork()
+    {
+        Verify();
+        bool Ready(Fence fence, long started)
+        {
+            var result = _vk.GetFenceStatus(_device, fence);
+            if (result == Result.NotReady)
+            {
+                if (Stopwatch.GetElapsedTime(started) > TimeSpan.FromSeconds(5))
+                {
+                    RecordFailure(FailureKind.Timeout, "Quick retirement timeout");
+                    throw new TimeoutException("Quick GPU retirement exceeded five seconds; allocations remain held.");
+                }
+                return false;
+            }
+            Check(result, "Quick retirement poll");
+            return true;
+        }
+        foreach (var slot in _copySlots)
+            if (slot.Frame is not null && Ready(slot.Fence, slot.SubmittedAt)) Retire(slot);
+        foreach (var consumer in _consumers.ToArray())
+        {
+            if (!Ready(consumer.Fence, consumer.SubmittedAt)) continue;
+            _vk.DestroyFence(_device, consumer.Fence, null);
+            _consumers.Remove(consumer);
+            foreach (var slot in _copySlots)
+                if (ReferenceEquals(slot.Consumer, consumer)) slot.Consumer = null;
+            CompletedConsumers++;
+        }
+        return FramesInFlight == 0 && _consumers.Count == 0;
     }
 
     private static ImageMemoryBarrier Transition(
@@ -765,6 +870,8 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
                 }
                 catch (Exception error) { cleanupError ??= error; }
             }
+            foreach (var slot in _copySlots)
+                if (slot.Frame is not null) Retire(slot);
             try { ResourcesReleasing?.Invoke(); }
             catch (Exception error) { cleanupError ??= error; }
             foreach (var layer in _layers.Concat(_retired).Distinct())
@@ -776,7 +883,15 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
             _retired.Clear();
             try { _session?.Dispose(); }
             catch (Exception error) { cleanupError ??= error; }
-            if (_fence.Handle != 0) _vk.DestroyFence(_device, _fence, null);
+            foreach (var slot in _copySlots)
+            {
+                slot.AwaitingConsumer = false;
+                slot.Consumer = null;
+                if (slot.Fence.Handle != 0) _vk.DestroyFence(_device, slot.Fence, null);
+            }
+            foreach (var consumer in _consumers) _vk.DestroyFence(_device, consumer.Fence, null);
+            CompletedConsumers += _consumers.Count;
+            _consumers.Clear();
             if (_pool.Handle != 0) _vk.DestroyCommandPool(_device, _pool, null);
             _observer?.Journal.FreePool(_pool.Handle);
             try { _observer?.Check(); }

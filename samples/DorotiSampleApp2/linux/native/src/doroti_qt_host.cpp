@@ -89,7 +89,7 @@ class QPlatformNativeInterface : public QObject {
 QT_END_NAMESPACE
 
 namespace {
-constexpr std::uint32_t kAbiVersion = 4;
+constexpr std::uint32_t kAbiVersion = 6;
 std::atomic_bool run_active{false};
 // Acrylic covers the complete client surface. Wayland compositors clip effect
 // regions to the current surface bounds, so keep one deliberately oversized
@@ -98,7 +98,7 @@ std::atomic_bool run_active{false};
 constexpr int kFullSurfaceBackdropExtent = 1 << 20;
 constexpr std::uint64_t kSupportedFeatures =
 #ifdef DOROTI_QT_QUICK
-    DOROTI_QT_FEATURE_QUICK_COMPOSITION | DOROTI_QT_FEATURE_NATIVE_TEXTURE_EXTENSIONS |
+    DOROTI_QT_FEATURE_QUICK_COMPOSITION | DOROTI_QT_FEATURE_NATIVE_TEXTURE_EXTENSIONS | DOROTI_QT_FEATURE_CONSUMER_COMPLETION | DOROTI_QT_FEATURE_FRAME_PREPARATION |
 #endif
 #ifdef DOROTI_QT_GRAPHITE
     DOROTI_QT_FEATURE_VULKAN_SURFACE | DOROTI_QT_FEATURE_VULKAN_API_VERSION | DOROTI_QT_FEATURE_GPU_POLL | DOROTI_QT_FEATURE_PRESENT_HOOK |
@@ -223,6 +223,7 @@ class DorotiSurface final : public DorotiWindowBase {
       setGraphicsConfiguration(configuration);
     }
     setColor(Qt::transparent);
+    connect(this, &QQuickWindow::beforeFrameBegin, this, [this] { PrepareVulkanFramework(); }, Qt::DirectConnection);
     connect(this, &QQuickWindow::beforeSynchronizing, this, [this] {
       try { RenderVulkan(); } catch (const std::exception& e) {
         fatal_ = true; callbacks_.fatal(callback_context_, DOROTI_QT_ERROR_NATIVE_EXCEPTION, Utf8(e.what()));
@@ -230,6 +231,19 @@ class DorotiSurface final : public DorotiWindowBase {
       }
     }, Qt::DirectConnection);
     connect(this, &QQuickWindow::frameSwapped, this, [this] { FrameSwapped(); }, Qt::DirectConnection);
+    connect(this, &QQuickWindow::afterFrameEnd, this, [this] {
+      if (closing_ || fatal_ || context_identity_ == 0) return;
+      if (prepared_frame_token_ != 0 && !render_retry_pending_) {
+        render_retry_pending_ = true;
+        QTimer::singleShot(8, this, [this] { render_retry_pending_ = false; if (!closing_ && !fatal_) update(); });
+      }
+      const auto result = callbacks_.qt_consumer_submitted(callback_context_, this);
+      if (result != DOROTI_QT_OK) {
+        fatal_ = true;
+        callbacks_.fatal(callback_context_, result, Utf8("Qt consumer retirement marker failed"));
+        QCoreApplication::exit(result);
+      } else if (!gpu_poll_timer_.isActive()) gpu_poll_timer_.start();
+    }, Qt::DirectConnection);
     connect(this, &QQuickWindow::sceneGraphInvalidated, this, [this] { ReleaseSurface(); }, Qt::DirectConnection);
 #endif
     gpu_poll_timer_.setInterval(8);
@@ -580,10 +594,36 @@ class DorotiSurface final : public DorotiWindowBase {
     requestUpdate();
 #endif
   }
+  void PrepareVulkanFramework() {
+#ifdef DOROTI_QT_QUICK
+    if (!isExposed() || width() <= 0 || height() <= 0 || fatal_ || closing_ || context_identity_ == 0) return;
+    // QRhi may reject beginFrame after preparation. Keep that frozen token
+    // for a raster-only retry until a newer request actually replaces it.
+    if (pending_frame_token_ == 0) return;
+    if (prepared_frame_token_ != 0)
+      Terminal(std::exchange(prepared_frame_token_, 0), DOROTI_QT_TERMINAL_SUPERSEDED, surface_generation_);
+    const auto token = prepared_frame_token_ = std::exchange(pending_frame_token_, 0);
+    doroti_qt_surface_v2 descriptor{};
+    descriptor.abi_version = kAbiVersion;
+    descriptor.struct_size = sizeof(descriptor);
+    descriptor.surface_generation = surface_generation_;
+    descriptor.context_identity = context_identity_;
+    descriptor.pixel_width = std::max(1, static_cast<int>(width() * devicePixelRatioF()));
+    descriptor.pixel_height = std::max(1, static_cast<int>(height() * devicePixelRatioF()));
+    descriptor.device_pixel_ratio = devicePixelRatioF();
+    descriptor.timestamp_microseconds = Micros();
+    const auto result = callbacks_.prepare_frame(callback_context_, this, &descriptor, token);
+    if (result != DOROTI_QT_OK) {
+      fatal_ = true;
+      callbacks_.fatal(callback_context_, result, Utf8("managed framework preparation failed"));
+      QCoreApplication::exit(result);
+    }
+#endif
+  }
   void RenderVulkan() {
     if (!isExposed() || width() <= 0 || height() <= 0 || fatal_ || closing_) return;
 #ifdef DOROTI_QT_QUICK
-    if (quick_has_frame_ && pending_frame_token_ == 0) return;
+    if (quick_has_frame_ && pending_frame_token_ == 0 && prepared_frame_token_ == 0) return;
 #endif
     const auto surface = QVulkanInstance::surfaceForWindow(this);
     if (surface == VK_NULL_HANDLE) throw std::runtime_error("Qt Vulkan surface creation failed");
@@ -603,8 +643,8 @@ class DorotiSurface final : public DorotiWindowBase {
       Diagnostic("vulkan.instance.apiVersion", vulkan_.apiVersion().toString().toUtf8().constData());
       Diagnostic("vulkan.instance.extensions", vulkan_.extensions().join(',').constData());
     }
-    if (pending_frame_token_ == 0) pending_frame_token_ = next_automatic_frame_token_++;
-    const auto token = std::exchange(pending_frame_token_, 0);
+    if (pending_frame_token_ == 0 && prepared_frame_token_ == 0) pending_frame_token_ = next_automatic_frame_token_++;
+    const auto token = prepared_frame_token_ != 0 ? std::exchange(prepared_frame_token_, 0) : std::exchange(pending_frame_token_, 0);
     const auto scale = devicePixelRatioF();
     doroti_qt_surface_v2 descriptor{};
     descriptor.abi_version = kAbiVersion;
@@ -1399,6 +1439,8 @@ class DorotiSurface final : public DorotiWindowBase {
       Terminal(std::exchange(rasterized_frame_token_, 0), DOROTI_QT_TERMINAL_SUPERSEDED, rasterized_generation_);
     if (pending_frame_token_ != 0)
       Terminal(std::exchange(pending_frame_token_, 0), DOROTI_QT_TERMINAL_SUPERSEDED, surface_generation_);
+    if (prepared_frame_token_ != 0)
+      Terminal(std::exchange(prepared_frame_token_, 0), DOROTI_QT_TERMINAL_SUPERSEDED, surface_generation_);
 #endif
     if (surface_released_ || context_identity_ == 0) return;
     surface_released_ = true;
@@ -1558,6 +1600,7 @@ class DorotiSurface final : public DorotiWindowBase {
   std::uint64_t surface_generation_ = 0;
   std::uint64_t context_identity_ = 0;
   std::uint64_t pending_frame_token_ = 0;
+  std::uint64_t prepared_frame_token_ = 0;
   std::uint64_t rasterized_frame_token_ = 0;
   std::uint64_t rasterized_generation_ = 0;
   std::uint64_t next_automatic_frame_token_ = 1;
@@ -2038,6 +2081,10 @@ std::int32_t Validate(const doroti_qt_configuration_v2* configuration,
 #ifdef DOROTI_QT_QUICK
   if ((callbacks->feature_bits & DOROTI_QT_FEATURE_QUICK_COMPOSITION) == 0)
     return DOROTI_QT_ERROR_UNSUPPORTED_FEATURE;
+  if ((callbacks->feature_bits & DOROTI_QT_FEATURE_CONSUMER_COMPLETION) == 0 || callbacks->qt_consumer_submitted == nullptr)
+    return DOROTI_QT_ERROR_REQUIRED_CALLBACK;
+  if ((callbacks->feature_bits & DOROTI_QT_FEATURE_FRAME_PREPARATION) == 0 || callbacks->prepare_frame == nullptr)
+    return DOROTI_QT_ERROR_REQUIRED_CALLBACK;
 #endif
   if (callbacks->view_created == nullptr || callbacks->render == nullptr ||
       callbacks->frame_terminal == nullptr || callbacks->surface_destroying == nullptr ||

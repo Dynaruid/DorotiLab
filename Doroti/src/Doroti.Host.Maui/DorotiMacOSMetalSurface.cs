@@ -1,5 +1,6 @@
 #if MACOS
 using Doroti.Ui;
+using Doroti.Skia.Rendering;
 using Microsoft.Maui.Dispatching;
 
 namespace Doroti.Host.Maui;
@@ -61,6 +62,17 @@ public sealed class DorotiMacOSMetalSurface : View, IMauiSkiaSurface
     private event Action<bool>? FocusChanged;
     private event Action<DorotiResizeEpoch?>? SurfaceSizeChanged;
     internal event Action? GpuResourcesReleasing;
+    internal Action<SkiaFramePreparation>? PrepareFrameworkFrame { get; private set; }
+    internal Func<SkiaShaderSceneAdmission>? ShaderSceneAdmission { get; private set; }
+    internal Func<bool>? FrameworkFrameRequested { get; private set; }
+
+    internal void SetFramePreparation(Action<SkiaFramePreparation> prepare,
+        Func<SkiaShaderSceneAdmission> query, Func<bool> requested)
+    {
+        PrepareFrameworkFrame = prepare;
+        ShaderSceneAdmission = query;
+        FrameworkFrameRequested = requested;
+    }
 
     internal void RaiseGpuResourcesReleasing() => GpuResourcesReleasing?.Invoke();
 

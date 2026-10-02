@@ -1,0 +1,1300 @@
+{
+  "schema": "doroti.native-frame-pipeline/v1",
+  "date": "2026-10-02",
+  "recordedUtc": "2026-10-02T10:58:20.954387+00:00",
+  "baseCommit": "f1beafc8fc84954c9d24c4bf57a06b3b883f9f68",
+  "sourceSha256": "bac01de0d62350086ea32601dfb05e01b4f3a61a3b27f7e40227bea2a2cea98f",
+  "sourceManifest": "temp/testing/native-frame-pipeline/source-manifest.json",
+  "work4UnchangedSha256": "64f2a54f4607f74ef4a68a32aee6f79f12c0a17b52e0ea16960163cce23bfc6a",
+  "qtAbi": 6,
+  "qtCallbackSize": 208,
+  "qtCopies": [
+    {
+      "name": "src/doroti_qt_host.cpp",
+      "sha256": "8d1dc232d5598592e5e9e3b35c062e30ae4cbde8dcd006321481b16f751dbf75",
+      "copies": [
+        "samples/DorotiSampleApp2/linux/native/src/doroti_qt_host.cpp",
+        "samples/DorotiTestbedApp/linux/native/src/doroti_qt_host.cpp",
+        "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/src/doroti_qt_host.cpp"
+      ]
+    },
+    {
+      "name": "include/doroti_qt_host_v2.h",
+      "sha256": "eed8ebc6f0fb3ae7fcb3de11764da31a55cbb2e06f857f582ca2cbae05ac0f00",
+      "copies": [
+        "samples/DorotiSampleApp2/linux/native/include/doroti_qt_host_v2.h",
+        "samples/DorotiTestbedApp/linux/native/include/doroti_qt_host_v2.h",
+        "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/include/doroti_qt_host_v2.h"
+      ]
+    },
+    {
+      "name": "include/doroti_qt_desktop.h",
+      "sha256": "0ab829b2ffaec5064527f7f1412cb3aeec78d419af730f751145a48779444654",
+      "copies": [
+        "samples/DorotiSampleApp2/linux/native/include/doroti_qt_desktop.h",
+        "samples/DorotiTestbedApp/linux/native/include/doroti_qt_desktop.h",
+        "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/include/doroti_qt_desktop.h"
+      ]
+    },
+    {
+      "name": "include/doroti_qt_webview.h",
+      "sha256": "fdc72e736575239b71d57ff4f7d83607808e09b209de1447c676b697922decb8",
+      "copies": [
+        "samples/DorotiSampleApp2/linux/native/include/doroti_qt_webview.h",
+        "samples/DorotiTestbedApp/linux/native/include/doroti_qt_webview.h",
+        "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/include/doroti_qt_webview.h"
+      ]
+    }
+  ],
+  "platform": "Windows",
+  "status": "PARTIAL",
+  "appleVerification": "SKIPPED at user request",
+  "runtimeIdentity": "temp/testing/native-frame-pipeline/windows/runtime.txt",
+  "display": {
+    "source": "EnumDisplaySettingsW primary current settings",
+    "width": 2560,
+    "height": 1600,
+    "nominalHz": 165,
+    "displayedFps": null
+  },
+  "gpu": "AMD Radeon 780M Graphics",
+  "pixelContract": {
+    "gpu": "AMD Radeon 780M Graphics",
+    "software": false,
+    "checks": [
+      {
+        "mode": "off",
+        "sigma": 0,
+        "redSha256": "1A707D559BFB62E4CA8900DE13F884A90F74A08C8204EC90334B3B5D212946C4",
+        "greenSha256": "062BEEC68D2EAC44C295C8134AE2D9189E1CC7CE3E78DF3EF343670D009C235A",
+        "maximumPending": 2
+      },
+      {
+        "mode": "full",
+        "sigma": 0,
+        "redSha256": "1A707D559BFB62E4CA8900DE13F884A90F74A08C8204EC90334B3B5D212946C4",
+        "greenSha256": "062BEEC68D2EAC44C295C8134AE2D9189E1CC7CE3E78DF3EF343670D009C235A",
+        "maximumPending": 2
+      },
+      {
+        "mode": "full",
+        "sigma": 1,
+        "redSha256": "3C2E36B8C96F55E52C19ED7276F2E21CC1ABB725AD4155D4899C559690679784",
+        "greenSha256": "F3116CE17466B1FC3D939195AA2B472C360FAD62CFC53179B8E3EA9516A892E7",
+        "maximumPending": 2
+      },
+      {
+        "mode": "full",
+        "sigma": 2,
+        "redSha256": "412611E5ABC4029C65FE7D9D6BB303B5C1248A4F60B0209D1683E8FDFD43DCC5",
+        "greenSha256": "DF58BB52B59EFE63F469B3EEF16F0CA81ECE08C964EB420F17EA16F198A8C723",
+        "maximumPending": 2
+      },
+      {
+        "mode": "full",
+        "sigma": 4,
+        "redSha256": "BFF0BD891C62D3453DDDFAE0BFD355EC4F1D98F6865B6764089E53A7050C9E37",
+        "greenSha256": "BC5F7CF243858AF2AFF9E1CAE09AC82D04330C4DA888CB76AF08E7A39C3C2CE3",
+        "maximumPending": 2
+      },
+      {
+        "mode": "full",
+        "sigma": 8,
+        "redSha256": "7F9B76CA690DF714D099DAF25835332F457A11D1ACA31E14A4DF65CC089D6CEE",
+        "greenSha256": "A0790917EFC88031C12C297D855D580A495C52E90AD08E8CFC587DB7DFDF94C8",
+        "maximumPending": 2
+      },
+      {
+        "mode": "full",
+        "sigma": 20,
+        "redSha256": "32058C39B7A51994B13661E5694C02ACD2CD6C2623846FB67C90EEE2965BF290",
+        "greenSha256": "84EAE9A7585D6245CD5B8DA342B6BDB615D08D302DA9CD4278C0D73A150E4A49",
+        "maximumPending": 2
+      },
+      {
+        "mode": "full",
+        "sigma": 32,
+        "redSha256": "47CD7642862701737CF4ED79A26DDF8C3C2A6AEC78526E9F9F48C80B584B9FAA",
+        "greenSha256": "5556CF87C92645DF8A23EF67EF0DDF63F5AF30ED1C20DA2BE6420D51A0C5E07C",
+        "maximumPending": 2
+      },
+      {
+        "mode": "adaptive",
+        "sigma": 0,
+        "redSha256": "1A707D559BFB62E4CA8900DE13F884A90F74A08C8204EC90334B3B5D212946C4",
+        "greenSha256": "062BEEC68D2EAC44C295C8134AE2D9189E1CC7CE3E78DF3EF343670D009C235A",
+        "maximumPending": 2
+      },
+      {
+        "mode": "adaptive",
+        "sigma": 1,
+        "redSha256": "3C2E36B8C96F55E52C19ED7276F2E21CC1ABB725AD4155D4899C559690679784",
+        "greenSha256": "F3116CE17466B1FC3D939195AA2B472C360FAD62CFC53179B8E3EA9516A892E7",
+        "maximumPending": 2
+      },
+      {
+        "mode": "adaptive",
+        "sigma": 2,
+        "redSha256": "412611E5ABC4029C65FE7D9D6BB303B5C1248A4F60B0209D1683E8FDFD43DCC5",
+        "greenSha256": "DF58BB52B59EFE63F469B3EEF16F0CA81ECE08C964EB420F17EA16F198A8C723",
+        "maximumPending": 2
+      },
+      {
+        "mode": "adaptive",
+        "sigma": 4,
+        "redSha256": "4542E23E3D616707925E725A0F46F8C64590FB97F9077FDB7056884C3B420611",
+        "greenSha256": "C0FC24570BE4A1DC3CE3591DE72FA0A4E9D1D1D1C7A953DF3E831F6A43F6F4A9",
+        "maximumPending": 2
+      },
+      {
+        "mode": "adaptive",
+        "sigma": 8,
+        "redSha256": "9EEE7AE8E6CD6F3B65842669F5B3C322BC6A1DA3FE179AF7F9188C346EE7EA06",
+        "greenSha256": "975B836ED8039C0569938DF81F961B65A1983F7AD7A9C6806BF3A0621234359D",
+        "maximumPending": 2
+      },
+      {
+        "mode": "adaptive",
+        "sigma": 20,
+        "redSha256": "99B62E6839E9AB2B5C0FCCC4F39CC8E588D662DB5AC1D1AF935F1F90588212A9",
+        "greenSha256": "558041BFD5215CB0B08EEF7CD0F66F30BE6C8AB73FFD8503373C3EFE0D98620B",
+        "maximumPending": 2
+      },
+      {
+        "mode": "adaptive",
+        "sigma": 32,
+        "redSha256": "C4D564D8905EF5AF0F90A3151C310A0768F89B936763AD67309DD5D7569B4AFA",
+        "greenSha256": "134723DFC21668D2D9899B6684984D5FCC281149CB67BEF7473B69E88006FA90",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fast",
+        "sigma": 0,
+        "redSha256": "1A707D559BFB62E4CA8900DE13F884A90F74A08C8204EC90334B3B5D212946C4",
+        "greenSha256": "062BEEC68D2EAC44C295C8134AE2D9189E1CC7CE3E78DF3EF343670D009C235A",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fast",
+        "sigma": 1,
+        "redSha256": "3C2E36B8C96F55E52C19ED7276F2E21CC1ABB725AD4155D4899C559690679784",
+        "greenSha256": "F3116CE17466B1FC3D939195AA2B472C360FAD62CFC53179B8E3EA9516A892E7",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fast",
+        "sigma": 2,
+        "redSha256": "412611E5ABC4029C65FE7D9D6BB303B5C1248A4F60B0209D1683E8FDFD43DCC5",
+        "greenSha256": "DF58BB52B59EFE63F469B3EEF16F0CA81ECE08C964EB420F17EA16F198A8C723",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fast",
+        "sigma": 4,
+        "redSha256": "966EEBDB3442FECDEC4DA6DE5C377AE038FB39A21E91AF7EB9A52C1B8F4280E3",
+        "greenSha256": "B324A04ECC5C4753A408872D86A88613EF68623B21593DCAD5C6DC39C90F8006",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fast",
+        "sigma": 8,
+        "redSha256": "E5CB60CFDBEF2ECD8AADF4DC68BDDE0F9C2ACAF453A005EDFD1139B4052F64BF",
+        "greenSha256": "2E43BEBF4841BFCF93A8CAD889E6A89E958690E3B3ED3386890BB456792F2613",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fast",
+        "sigma": 20,
+        "redSha256": "A471872CEBB61E26FD89A1E7DE386D8B5C141E2071E1F96F43DDC169A8190CBA",
+        "greenSha256": "53946AFFAFB51884C10B11725996A558EBA4D88D4BB4F24B3FE9BBF1B7E24E8D",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fast",
+        "sigma": 32,
+        "redSha256": "FA3D1430898BD85FC4DD8465227F08360BB9A3F8BB80DE0ED0A37137A6F0C96A",
+        "greenSha256": "585270C6649A686BB04C6459FE74C6765036245067BCC72D19CD66BC0CC60270",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fixed",
+        "sigma": 0,
+        "redSha256": "1A707D559BFB62E4CA8900DE13F884A90F74A08C8204EC90334B3B5D212946C4",
+        "greenSha256": "062BEEC68D2EAC44C295C8134AE2D9189E1CC7CE3E78DF3EF343670D009C235A",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fixed",
+        "sigma": 1,
+        "redSha256": "CEFC2E5DD1B4D1CECE867B349CE5D2092A4EB553CAD6C6FDCF5B784ADF93CB74",
+        "greenSha256": "BA6E1C9BBBB90EF6D2B734C822CB966A4BA4FC110407A00A07E2BA4795139F38",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fixed",
+        "sigma": 2,
+        "redSha256": "12494C1E2C2D0AE730E054ED056D8E75E644094B3540ED2909341E530E4E6F68",
+        "greenSha256": "51C782839698B6881549DA64FEAF483290F9055C76B7049CA8ADD1B2302C3A98",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fixed",
+        "sigma": 4,
+        "redSha256": "266B901D96FB9CCEBBABD065948B31F432C7E9D4720D8832467B2B39AE3E8C1F",
+        "greenSha256": "FBCFE1F73189CC110078ADD27321D87DAA8E81C8015CC56E847C6B6984048DFD",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fixed",
+        "sigma": 8,
+        "redSha256": "BAEAF124B1C00B5A8031967FA64CF2C23376B68DCC7A5D0AA45A8D3F82DECAAC",
+        "greenSha256": "419F31DEDEE66DB7536F39D73D103C0DB1E29121E4DF1FAC33255E0CE7704A68",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fixed",
+        "sigma": 20,
+        "redSha256": "6B4F26902ADFAC1517543C5BE5B0033402A5C8E970144FBC05C910CAC8A809EE",
+        "greenSha256": "EA73D016E16659F283C856AC0F7DE9E7186BA4ED402CAD447E079BE817045FFA",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fixed",
+        "sigma": 32,
+        "redSha256": "1B5734519D5A08137C7DC01E5982EC6D31A3E17F88013A650212FB2EFEB674E3",
+        "greenSha256": "187C349D4FF53AE58600B749EED822081369A9C97CFE8B1739C09EA621CBEE69",
+        "maximumPending": 2
+      },
+      {
+        "mode": "kawase",
+        "sigma": 20,
+        "redSha256": "DAD59FA61A9FDA891FF7B74BC39988B23540CD47B52B31A1892F216E227B34D3",
+        "greenSha256": "DB581CD2AB2CB9C947F1F2EA903067E48D15A73AAC5AE278BDD865492BF3767F",
+        "maximumPending": 2
+      },
+      {
+        "mode": "kawase",
+        "sigma": 32,
+        "redSha256": "41D06783A74A7B6DD1847C70E7AA57A260D7274E4190D004CDE2363F04914F28",
+        "greenSha256": "5D8EAEC265A7F11A17B96856F3917F2A46CA0FBE312894C3E2054879B5D75523",
+        "maximumPending": 2
+      }
+    ],
+    "MaximumFramesInFlight": 2,
+    "ConsumerSubmissions": 124,
+    "CompletedConsumers": 124,
+    "scanout": "notMeasured",
+    "hardwareOverlap": "notMeasured",
+    "physicalInput": "notVerified"
+  },
+  "checks": {
+    "commonCpu": "PASS, Build session 32094; validate.py cleaned successful raw build artifacts",
+    "runnerAndInstaller": "PASS, Source session 48963; successful raw artifacts cleaned by existing suite",
+    "windowsNativeDebug": "PASS five cases",
+    "windowsNativeRelease": "PASS five cases",
+    "windowsMauiWindow": "PASS API/native window cases, Debug and Release",
+    "windowsMauiInput": "FAIL unsupported/unregistered native adapter",
+    "displayTrace": "BLOCKED access denied",
+    "performance30Runs": "notVerified",
+    "physicalInput": "notVerified",
+    "tenMinuteUse": "notVerified"
+  },
+  "rawChecks": [
+    "windows/smoke-final",
+    "windows/release-native-smoke",
+    "windows-maui/smoke-final",
+    "windows-maui/release-native-smoke",
+    "windows-maui/smoke-2/input-lifetime.json.error",
+    "windows/display-probe.log"
+  ],
+  "runs": [
+    {
+      "run": "temp/testing/native-frame-pipeline/windows/mode-smoke/r1-fast-20-default",
+      "status": "FAIL",
+      "condition": "fast:20",
+      "policy": "default",
+      "seconds": 8.0,
+      "pipeline": null,
+      "display": {
+        "status": "notMeasured"
+      },
+      "error": "Command '['C:\\\\Users\\\\parti\\\\Labo\\\\DorotiLab\\\\samples\\\\DorotiSampleApp2\\\\windowsappsdk\\\\bin\\\\Debug\\\\net10.0-windows10.0.19041.0\\\\win-x64\\\\DorotiSampleApp2.WindowsAppSdk.exe']' timed out after 38.0 seconds",
+      "resultSha256": "a247a6e3251be5c8836523de633cce791acd1318cac6e1ff61f9c7b1242d4d3f"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows/mode-smoke-2/r1-fast-20-default",
+      "status": "FAIL",
+      "condition": "fast:20",
+      "policy": "default",
+      "seconds": 12.0,
+      "pipeline": {
+        "mode": "C",
+        "maximumPending": 2,
+        "pending": 2,
+        "supportsTwoFrames": true,
+        "preparedWhileGpuFull": 2,
+        "rejectedAdmissions": 2,
+        "normalCopyRetirement": "nonblocking Vulkan fence poll; D3D12 slot consumer fence",
+        "displayFps": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "display": {
+        "status": "notMeasured"
+      },
+      "error": "{'presenterBackend': 'Graphite/Vulkan/D3D12/DXGI', 'presenterDiagnosticCoverage': 'Vulkan 1.2 retained offscreen backing, exact-LUID D3D12 output resources, dedicated D3D12_RESOURCE imports and DXGI swapchain, external queue-family ownership transfers, shared Vulkan timeline signal and D3D12 queue wait, CPU Vulkan frame completion, three shared source slots retired by the D3D12 copy fence, exact proposed-size Skia raster with non-visible moving-origin preparation, bounded pre-geometry compositor-clock alignment and immediate WM_WINDOWPOSCHANGED commit; fixed-origin submission retains its pre-g",
+      "resultSha256": "2334de4ffb6d9d0448f44f99922ec7424231ec91d2792955e2948153d86ca6a1"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows/mode-smoke-final/r1-fast-20-A",
+      "status": "PASS",
+      "condition": "fast:20",
+      "policy": "A",
+      "seconds": 12.0,
+      "pipeline": {
+        "mode": "A",
+        "maximumPending": 1,
+        "pending": 1,
+        "supportsTwoFrames": true,
+        "preparedWhileGpuFull": 0,
+        "rejectedAdmissions": 28,
+        "normalCopyRetirement": "nonblocking Vulkan fence poll; D3D12 slot consumer fence",
+        "displayFps": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "754780d07f7e1535bc0704e9353cc35c3672e43a7a4035a4cb4f22b097681772"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows/mode-smoke-final/r1-fast-20-B",
+      "status": "PASS",
+      "condition": "fast:20",
+      "policy": "B",
+      "seconds": 12.0,
+      "pipeline": {
+        "mode": "B",
+        "maximumPending": 1,
+        "pending": 1,
+        "supportsTwoFrames": true,
+        "preparedWhileGpuFull": 0,
+        "rejectedAdmissions": 6821,
+        "normalCopyRetirement": "nonblocking Vulkan fence poll; D3D12 slot consumer fence",
+        "displayFps": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "3be7a29057a1c2e1f951560f6a63b9cd2c60fbf5e0f521297bab57d12f26c6a5"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows/mode-smoke-final/r1-fast-20-C",
+      "status": "PASS",
+      "condition": "fast:20",
+      "policy": "C",
+      "seconds": 12.0,
+      "pipeline": {
+        "mode": "C",
+        "maximumPending": 2,
+        "pending": 1,
+        "supportsTwoFrames": true,
+        "preparedWhileGpuFull": 17,
+        "rejectedAdmissions": 17,
+        "normalCopyRetirement": "nonblocking Vulkan fence poll; D3D12 slot consumer fence",
+        "displayFps": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "96ac7e283fca3f624bdb06cf6ab7d7965345e257c039f665a1bb1b8fae546ae3"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows/mode-smoke-final/r1-fast-20-default",
+      "status": "PASS",
+      "condition": "fast:20",
+      "policy": "default",
+      "seconds": 12.0,
+      "pipeline": {
+        "mode": "C",
+        "maximumPending": 2,
+        "pending": 2,
+        "supportsTwoFrames": true,
+        "preparedWhileGpuFull": 19,
+        "rejectedAdmissions": 19,
+        "normalCopyRetirement": "nonblocking Vulkan fence poll; D3D12 slot consumer fence",
+        "displayFps": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "9038dfa7dc58ec80d766022719e4b2acb9e6d6178fe534bae2e201f65ebd832a"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows/release-mode-smoke/r1-fast-20-default",
+      "status": "PASS",
+      "condition": "fast:20",
+      "policy": "default",
+      "seconds": 10.0,
+      "pipeline": {
+        "mode": "C",
+        "maximumPending": 2,
+        "pending": 2,
+        "supportsTwoFrames": true,
+        "preparedWhileGpuFull": 0,
+        "rejectedAdmissions": 0,
+        "normalCopyRetirement": "nonblocking Vulkan fence poll; D3D12 slot consumer fence",
+        "displayFps": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "f0ff67457eee8630b5060a925208703e636e3cafbf0d8d72cb596ad6864fbeb7"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows/release-mode-smoke/r1-fixed-20-default",
+      "status": "PASS",
+      "condition": "fixed:20",
+      "policy": "default",
+      "seconds": 10.0,
+      "pipeline": {
+        "mode": "C",
+        "maximumPending": 2,
+        "pending": 2,
+        "supportsTwoFrames": true,
+        "preparedWhileGpuFull": 0,
+        "rejectedAdmissions": 0,
+        "normalCopyRetirement": "nonblocking Vulkan fence poll; D3D12 slot consumer fence",
+        "displayFps": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "4ec79bb179c9b55506040fa8739f43e51b0ad336b0094c7bc1e3376c3c8f0452"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows/release-mode-smoke/r1-full-20-default",
+      "status": "PASS",
+      "condition": "full:20",
+      "policy": "default",
+      "seconds": 10.0,
+      "pipeline": {
+        "mode": "C",
+        "maximumPending": 2,
+        "pending": 2,
+        "supportsTwoFrames": true,
+        "preparedWhileGpuFull": 6,
+        "rejectedAdmissions": 6,
+        "normalCopyRetirement": "nonblocking Vulkan fence poll; D3D12 slot consumer fence",
+        "displayFps": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "f43b64f540821d40a4b0a2ed08cc4320cdd9b05a4152b49d73f6622ba9d0f53d"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows/release-mode-smoke/r1-kawase-20-default",
+      "status": "PASS",
+      "condition": "kawase:20",
+      "policy": "default",
+      "seconds": 10.0,
+      "pipeline": {
+        "mode": "C",
+        "maximumPending": 2,
+        "pending": 1,
+        "supportsTwoFrames": true,
+        "preparedWhileGpuFull": 0,
+        "rejectedAdmissions": 0,
+        "normalCopyRetirement": "nonblocking Vulkan fence poll; D3D12 slot consumer fence",
+        "displayFps": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "9bd8f5094ffbd6cdbf5630557a8ed42a6c4d813df37d4a893fa5da012abe1cb4"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows/release-extra-smoke/r1-adaptive-20-default",
+      "status": "PASS",
+      "condition": "adaptive:20",
+      "policy": "default",
+      "seconds": 8.0,
+      "pipeline": {
+        "mode": "C",
+        "maximumPending": 2,
+        "pending": 2,
+        "supportsTwoFrames": true,
+        "preparedWhileGpuFull": 1,
+        "rejectedAdmissions": 1,
+        "normalCopyRetirement": "nonblocking Vulkan fence poll; D3D12 slot consumer fence",
+        "displayFps": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "bdc9ac8766c78de81925be85c99919d6092acd6ac91a67e5dd2a3f1bd9e00831"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows/release-extra-smoke/r1-adaptive-32-default",
+      "status": "PASS",
+      "condition": "adaptive:32",
+      "policy": "default",
+      "seconds": 8.0,
+      "pipeline": {
+        "mode": "C",
+        "maximumPending": 2,
+        "pending": 2,
+        "supportsTwoFrames": true,
+        "preparedWhileGpuFull": 5,
+        "rejectedAdmissions": 5,
+        "normalCopyRetirement": "nonblocking Vulkan fence poll; D3D12 slot consumer fence",
+        "displayFps": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "89cb8fd3cd4e9c00a62814e254ad3af910e80bead9de9e1ca9046c9d05335352"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows/release-extra-smoke/r1-fast-32-default",
+      "status": "PASS",
+      "condition": "fast:32",
+      "policy": "default",
+      "seconds": 8.0,
+      "pipeline": {
+        "mode": "C",
+        "maximumPending": 2,
+        "pending": 2,
+        "supportsTwoFrames": true,
+        "preparedWhileGpuFull": 2,
+        "rejectedAdmissions": 2,
+        "normalCopyRetirement": "nonblocking Vulkan fence poll; D3D12 slot consumer fence",
+        "displayFps": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "8b501168016dafd729bb1a69146c0f09bd165819aa3a6c7225b5661ee7f26f52"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows/release-extra-smoke/r1-fixed-32-default",
+      "status": "PASS",
+      "condition": "fixed:32",
+      "policy": "default",
+      "seconds": 8.0,
+      "pipeline": {
+        "mode": "C",
+        "maximumPending": 2,
+        "pending": 2,
+        "supportsTwoFrames": true,
+        "preparedWhileGpuFull": 1,
+        "rejectedAdmissions": 1,
+        "normalCopyRetirement": "nonblocking Vulkan fence poll; D3D12 slot consumer fence",
+        "displayFps": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "1d97fdbddaade68b7cd040bdc434e4c57bac55a16ecd3e0d54ed51f8a06af77e"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows/release-extra-smoke/r1-full-32-default",
+      "status": "PASS",
+      "condition": "full:32",
+      "policy": "default",
+      "seconds": 8.0,
+      "pipeline": {
+        "mode": "C",
+        "maximumPending": 2,
+        "pending": 2,
+        "supportsTwoFrames": true,
+        "preparedWhileGpuFull": 18,
+        "rejectedAdmissions": 18,
+        "normalCopyRetirement": "nonblocking Vulkan fence poll; D3D12 slot consumer fence",
+        "displayFps": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "00e6de574b56e2f1571075afad03ab04753f0a12111bb8f5b1f7d9dc4c18bbf0"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows/release-extra-smoke/r1-kawase-32-default",
+      "status": "PASS",
+      "condition": "kawase:32",
+      "policy": "default",
+      "seconds": 8.0,
+      "pipeline": {
+        "mode": "C",
+        "maximumPending": 2,
+        "pending": 2,
+        "supportsTwoFrames": true,
+        "preparedWhileGpuFull": 4,
+        "rejectedAdmissions": 4,
+        "normalCopyRetirement": "nonblocking Vulkan fence poll; D3D12 slot consumer fence",
+        "displayFps": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "85609d07e1604eecfafbb6354babf440c0f4d650e3bcd9d10261edde4e7126d8"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows/release-extra-smoke/r1-off-0-default",
+      "status": "PASS",
+      "condition": "off:0",
+      "policy": "default",
+      "seconds": 8.0,
+      "pipeline": {
+        "mode": "C",
+        "maximumPending": 2,
+        "pending": 2,
+        "supportsTwoFrames": true,
+        "preparedWhileGpuFull": 0,
+        "rejectedAdmissions": 0,
+        "normalCopyRetirement": "nonblocking Vulkan fence poll; D3D12 slot consumer fence",
+        "displayFps": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "1e0dfd94653871eb84140db556976cba53696ee714bc976b18d83a62b6081514"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows/release-reset/r1-fast-20-C",
+      "status": "PASS",
+      "condition": "fast:20",
+      "policy": "C",
+      "seconds": 10.0,
+      "pipeline": {
+        "mode": "C",
+        "maximumPending": 2,
+        "pending": 2,
+        "supportsTwoFrames": true,
+        "preparedWhileGpuFull": 2,
+        "rejectedAdmissions": 2,
+        "normalCopyRetirement": "nonblocking Vulkan fence poll; D3D12 slot consumer fence",
+        "displayFps": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "a012055b188185df0e0834c9cf78582bb34f5ddbf2717ac1b50f6af49bd37c20"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows/release-injected-loss/r1-fast-20-C",
+      "status": "PASS",
+      "condition": "fast:20",
+      "policy": "C",
+      "seconds": 10.0,
+      "pipeline": {
+        "mode": "C",
+        "maximumPending": 2,
+        "pending": 2,
+        "supportsTwoFrames": true,
+        "preparedWhileGpuFull": 9,
+        "rejectedAdmissions": 9,
+        "normalCopyRetirement": "nonblocking Vulkan fence poll; D3D12 slot consumer fence",
+        "displayFps": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "2279388254ab568a9211be01cbf4f436d9eb6f7a4730bb21bbf8ed6278b10843"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows/release-device-loss/r1-fast-20-C",
+      "status": "FAIL",
+      "condition": "fast:20",
+      "policy": "C",
+      "seconds": 10.0,
+      "pipeline": {
+        "mode": "C",
+        "maximumPending": 2,
+        "pending": 2,
+        "supportsTwoFrames": true,
+        "preparedWhileGpuFull": 2,
+        "rejectedAdmissions": 2,
+        "normalCopyRetirement": "nonblocking Vulkan fence poll; D3D12 slot consumer fence",
+        "displayFps": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "display": {
+        "status": "notMeasured"
+      },
+      "error": "1 failed frames",
+      "resultSha256": "e139b9b070ccb66529252d3c55a9335b7c324dbf81c799243fb158dcd1aa0f3b"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows/ganesh-serial-smoke/r1-off-0-default",
+      "status": "PASS",
+      "condition": "off:0",
+      "policy": "default",
+      "seconds": 8.0,
+      "pipeline": {
+        "mode": "C",
+        "maximumPending": 1,
+        "pending": 1,
+        "supportsTwoFrames": false,
+        "preparedWhileGpuFull": 0,
+        "rejectedAdmissions": 91,
+        "normalCopyRetirement": "nonblocking Vulkan fence poll; D3D12 slot consumer fence",
+        "displayFps": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "e4105bde940faf1f43f4ce18a189ba39e0a69a85c26db4c7506c0872e9944332"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows-maui/mode-smoke/r1-fast-20-A",
+      "status": "PASS",
+      "condition": "fast:20",
+      "policy": "A",
+      "seconds": 12.0,
+      "pipeline": {
+        "mode": "A",
+        "preparedPulses": 1114,
+        "pendingGpuFrames": 0,
+        "maximumGpuFrames": 0,
+        "completedGpuFrames": 0,
+        "retirement": "Vulkan producer-copy poll; D3D12 final consumer fence",
+        "fallback": null,
+        "preparedWhileGpuFull": 0,
+        "rejectedAdmissions": 0
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "4cffa031fd77b3895a62f18e53d232a6640fb382ce9406e95ebefba0412d9668"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows-maui/mode-smoke/r1-fast-20-B",
+      "status": "PASS",
+      "condition": "fast:20",
+      "policy": "B",
+      "seconds": 12.0,
+      "pipeline": {
+        "mode": "B",
+        "preparedPulses": 1212,
+        "pendingGpuFrames": 0,
+        "maximumGpuFrames": 1,
+        "completedGpuFrames": 971,
+        "retirement": "Vulkan producer-copy poll; D3D12 final consumer fence",
+        "fallback": null,
+        "preparedWhileGpuFull": 0,
+        "rejectedAdmissions": 0
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "a01a866f1bb48eaa7c9fa0c6df5ee9c3f2d93872318416d1899d031639e7ed4f"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows-maui/mode-smoke/r1-fast-20-C",
+      "status": "PASS",
+      "condition": "fast:20",
+      "policy": "C",
+      "seconds": 12.0,
+      "pipeline": {
+        "mode": "C",
+        "preparedPulses": 1125,
+        "pendingGpuFrames": 1,
+        "maximumGpuFrames": 2,
+        "completedGpuFrames": 1119,
+        "retirement": "Vulkan producer-copy poll; D3D12 final consumer fence",
+        "fallback": null,
+        "preparedWhileGpuFull": 0,
+        "rejectedAdmissions": 0
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "48fa722189add5da8fca402aa00a959ab31255165821d627212457e8b0d29481"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows-maui/mode-smoke/r1-fast-20-default",
+      "status": "PASS",
+      "condition": "fast:20",
+      "policy": "default",
+      "seconds": 12.0,
+      "pipeline": {
+        "mode": "C",
+        "preparedPulses": 752,
+        "pendingGpuFrames": 1,
+        "maximumGpuFrames": 2,
+        "completedGpuFrames": 557,
+        "retirement": "Vulkan producer-copy poll; D3D12 final consumer fence",
+        "fallback": null,
+        "preparedWhileGpuFull": 0,
+        "rejectedAdmissions": 0
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "5e3761d1ee84d026209da2df502df48c072261da58bda4cb3ba5a27a83e3c6fe"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows-maui/release-mode-smoke/r1-fast-20-default",
+      "status": "PASS",
+      "condition": "fast:20",
+      "policy": "default",
+      "seconds": 10.0,
+      "pipeline": {
+        "mode": "C",
+        "preparedPulses": 204,
+        "pendingGpuFrames": 1,
+        "maximumGpuFrames": 2,
+        "completedGpuFrames": 72,
+        "retirement": "Vulkan producer-copy poll; D3D12 final consumer fence",
+        "fallback": null,
+        "preparedWhileGpuFull": 0,
+        "rejectedAdmissions": 0
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "5a50959dac41b5509ee6b367a866a64513e62e20a915b0e89579587b1a31c13f"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows-maui/release-mode-smoke/r1-fixed-32-default",
+      "status": "PASS",
+      "condition": "fixed:32",
+      "policy": "default",
+      "seconds": 10.0,
+      "pipeline": {
+        "mode": "C",
+        "preparedPulses": 709,
+        "pendingGpuFrames": 2,
+        "maximumGpuFrames": 2,
+        "completedGpuFrames": 646,
+        "retirement": "Vulkan producer-copy poll; D3D12 final consumer fence",
+        "fallback": null,
+        "preparedWhileGpuFull": 0,
+        "rejectedAdmissions": 0
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "153706ae288af87c2471ec58f65ca53a5ce3449fd2538d4ab114f3246557b311"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows-maui/release-mode-smoke/r1-full-32-default",
+      "status": "PASS",
+      "condition": "full:32",
+      "policy": "default",
+      "seconds": 10.0,
+      "pipeline": {
+        "mode": "C",
+        "preparedPulses": 570,
+        "pendingGpuFrames": 1,
+        "maximumGpuFrames": 2,
+        "completedGpuFrames": 499,
+        "retirement": "Vulkan producer-copy poll; D3D12 final consumer fence",
+        "fallback": null,
+        "preparedWhileGpuFull": 0,
+        "rejectedAdmissions": 0
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "51c34961f353007db0c94cec4eb1db91be0e4bf93af7617565e632adb58560a9"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows-maui/release-mode-smoke/r1-kawase-32-default",
+      "status": "PASS",
+      "condition": "kawase:32",
+      "policy": "default",
+      "seconds": 10.0,
+      "pipeline": {
+        "mode": "C",
+        "preparedPulses": 500,
+        "pendingGpuFrames": 1,
+        "maximumGpuFrames": 2,
+        "completedGpuFrames": 429,
+        "retirement": "Vulkan producer-copy poll; D3D12 final consumer fence",
+        "fallback": null,
+        "preparedWhileGpuFull": 0,
+        "rejectedAdmissions": 0
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "896f65fa6ff966bce0612beb8ec8457ae934d55b0f4039c97ebdc14c8103de2f"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows-maui/release-extra-smoke/r1-adaptive-20-default",
+      "status": "PASS",
+      "condition": "adaptive:20",
+      "policy": "default",
+      "seconds": 8.0,
+      "pipeline": {
+        "mode": "C",
+        "preparedPulses": 456,
+        "pendingGpuFrames": 1,
+        "maximumGpuFrames": 2,
+        "completedGpuFrames": 381,
+        "retirement": "Vulkan producer-copy poll; D3D12 final consumer fence",
+        "fallback": null,
+        "preparedWhileGpuFull": 0,
+        "rejectedAdmissions": 0
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "7fadb9c03387390f81f2e69b07793ed41433033de5ca191a712a3cb92691a2e2"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows-maui/release-extra-smoke/r1-adaptive-32-default",
+      "status": "PASS",
+      "condition": "adaptive:32",
+      "policy": "default",
+      "seconds": 8.0,
+      "pipeline": {
+        "mode": "C",
+        "preparedPulses": 334,
+        "pendingGpuFrames": 1,
+        "maximumGpuFrames": 2,
+        "completedGpuFrames": 284,
+        "retirement": "Vulkan producer-copy poll; D3D12 final consumer fence",
+        "fallback": null,
+        "preparedWhileGpuFull": 0,
+        "rejectedAdmissions": 0
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "e0ea443a08458c0d5056c1f85b6ffee3907e0ee62ae7459599dd3338d64fb3c9"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows-maui/release-extra-smoke/r1-fast-32-default",
+      "status": "PASS",
+      "condition": "fast:32",
+      "policy": "default",
+      "seconds": 8.0,
+      "pipeline": {
+        "mode": "C",
+        "preparedPulses": 572,
+        "pendingGpuFrames": 1,
+        "maximumGpuFrames": 2,
+        "completedGpuFrames": 462,
+        "retirement": "Vulkan producer-copy poll; D3D12 final consumer fence",
+        "fallback": null,
+        "preparedWhileGpuFull": 0,
+        "rejectedAdmissions": 0
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "50630132cbdfaded2e925d78d793fee352cfeac824198410eb2a84f805ff2cc4"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows-maui/release-extra-smoke/r1-fixed-20-default",
+      "status": "PASS",
+      "condition": "fixed:20",
+      "policy": "default",
+      "seconds": 8.0,
+      "pipeline": {
+        "mode": "C",
+        "preparedPulses": 534,
+        "pendingGpuFrames": 1,
+        "maximumGpuFrames": 2,
+        "completedGpuFrames": 476,
+        "retirement": "Vulkan producer-copy poll; D3D12 final consumer fence",
+        "fallback": null,
+        "preparedWhileGpuFull": 0,
+        "rejectedAdmissions": 0
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "971902fcf37e5534c188783907ebe4dcb41af6b7c4f22df1e589f0e9e9f549a4"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows-maui/release-extra-smoke/r1-full-20-default",
+      "status": "PASS",
+      "condition": "full:20",
+      "policy": "default",
+      "seconds": 8.0,
+      "pipeline": {
+        "mode": "C",
+        "preparedPulses": 518,
+        "pendingGpuFrames": 0,
+        "maximumGpuFrames": 2,
+        "completedGpuFrames": 470,
+        "retirement": "Vulkan producer-copy poll; D3D12 final consumer fence",
+        "fallback": null,
+        "preparedWhileGpuFull": 0,
+        "rejectedAdmissions": 0
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "a3afbc1b0d119cc5c617b818605cf53477d1b1050e940dd07e6a6f71e60ff1f4"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows-maui/release-extra-smoke/r1-kawase-20-default",
+      "status": "PASS",
+      "condition": "kawase:20",
+      "policy": "default",
+      "seconds": 8.0,
+      "pipeline": {
+        "mode": "C",
+        "preparedPulses": 428,
+        "pendingGpuFrames": 1,
+        "maximumGpuFrames": 2,
+        "completedGpuFrames": 416,
+        "retirement": "Vulkan producer-copy poll; D3D12 final consumer fence",
+        "fallback": null,
+        "preparedWhileGpuFull": 0,
+        "rejectedAdmissions": 0
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "48c7324473f537a82d5b1e923b87869a9c0a98a75a28e9e99cf8a59b849c4329"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows-maui/release-extra-smoke/r1-off-0-default",
+      "status": "PASS",
+      "condition": "off:0",
+      "policy": "default",
+      "seconds": 8.0,
+      "pipeline": {
+        "mode": "C",
+        "preparedPulses": 216,
+        "pendingGpuFrames": 1,
+        "maximumGpuFrames": 2,
+        "completedGpuFrames": 110,
+        "retirement": "Vulkan producer-copy poll; D3D12 final consumer fence",
+        "fallback": null,
+        "preparedWhileGpuFull": 0,
+        "rejectedAdmissions": 0
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "394822762d82324ec6f156ba167e0d291f12e3775fcbc3b2bb75323bdebf5bc8"
+    },
+    {
+      "run": "temp/testing/native-frame-pipeline/windows-maui/ganesh-serial-smoke/r1-off-0-default",
+      "status": "PASS",
+      "condition": "off:0",
+      "policy": "default",
+      "seconds": 8.0,
+      "pipeline": {
+        "mode": "C",
+        "preparedPulses": 644,
+        "pendingGpuFrames": 0,
+        "maximumGpuFrames": 0,
+        "completedGpuFrames": 0,
+        "retirement": "Vulkan producer-copy poll; D3D12 final consumer fence",
+        "fallback": "serial composition-surface or Ganesh backend",
+        "preparedWhileGpuFull": 0,
+        "rejectedAdmissions": 0
+      },
+      "display": {
+        "status": "notMeasured",
+        "fps": null,
+        "inputToDisplay": null,
+        "hardwareOverlap": "notMeasured"
+      },
+      "error": "",
+      "resultSha256": "6a9ac7ff459f395dbf57f82f614ba5ef645839e78aad72095ceb3c0a212c6af0"
+    }
+  ],
+  "faultInjection": {
+    "status": "EXPECTED_FAULT_RECOVERED",
+    "source": "windows/release-device-loss",
+    "note": "zero-failure collector retains FAIL; one induced terminal and one recovery are checked separately",
+    "counts": {
+      "vulkanDeviceLossRecoveries": 1,
+      "failedTerminals": 1,
+      "deviceGenerations": 2,
+      "rendererPresented": 662,
+      "unterminatedResizeGenerations": 0,
+      "duplicateResizeTerminals": 0
+    }
+  },
+  "invalidInjectionAttempt": {
+    "source": "windows/release-injected-loss",
+    "selector": "device-lost",
+    "recoveryCount": 0,
+    "status": "INVALID_PROBE"
+  },
+  "payloads": [
+    {
+      "name": "DorotiSampleApp2.WindowsAppSdk",
+      "root": "samples/DorotiSampleApp2/windowsappsdk/bin/Release/net10.0-windows10.0.19041.0/win-x64",
+      "payloadSha256": "24f4cf19951f302483f9cd4383c8049dd72ab591a63d54997561231832295ea8",
+      "manifest": "temp/testing/native-frame-pipeline/payload-DorotiSampleApp2.WindowsAppSdk.json"
+    },
+    {
+      "name": "DorotiSampleApp2.Windows",
+      "root": "samples/DorotiSampleApp2/windows/bin/Release/net10.0-windows10.0.19041.0/win-x64",
+      "payloadSha256": "642041cf711323e7c5979e601eb0074555a14908040cf2a5d3641d65f4d5f6fb",
+      "manifest": "temp/testing/native-frame-pipeline/payload-DorotiSampleApp2.Windows.json"
+    },
+    {
+      "name": "DorotiTestbedApp.WindowsAppSdk",
+      "root": "samples/DorotiTestbedApp/windowsappsdk/bin/Release/net10.0-windows10.0.19041.0/win-x64",
+      "payloadSha256": "46440a8081e071e7bdbe185f217afbe6f14ef87b64140d3029acaf2e2cbe084a",
+      "manifest": "temp/testing/native-frame-pipeline/payload-DorotiTestbedApp.WindowsAppSdk.json"
+    },
+    {
+      "name": "DorotiTestbedApp.Windows",
+      "root": "samples/DorotiTestbedApp/windows/bin/Release/net10.0-windows10.0.19041.0/win-x64",
+      "payloadSha256": "eaba4ce8b01c606302472fbec337b95028e88d16bc47ec5f7a7893bcd224babb",
+      "manifest": "temp/testing/native-frame-pipeline/payload-DorotiTestbedApp.Windows.json"
+    }
+  ]
+}

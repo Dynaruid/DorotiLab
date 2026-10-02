@@ -1,0 +1,62 @@
+{
+  "schema": "doroti.native-frame-pipeline/v1",
+  "date": "2026-10-02",
+  "recordedUtc": "2026-10-02T10:58:20.954387+00:00",
+  "baseCommit": "f1beafc8fc84954c9d24c4bf57a06b3b883f9f68",
+  "sourceSha256": "bac01de0d62350086ea32601dfb05e01b4f3a61a3b27f7e40227bea2a2cea98f",
+  "sourceManifest": "temp/testing/native-frame-pipeline/source-manifest.json",
+  "work4UnchangedSha256": "64f2a54f4607f74ef4a68a32aee6f79f12c0a17b52e0ea16960163cce23bfc6a",
+  "qtAbi": 6,
+  "qtCallbackSize": 208,
+  "qtCopies": [
+    {
+      "name": "src/doroti_qt_host.cpp",
+      "sha256": "8d1dc232d5598592e5e9e3b35c062e30ae4cbde8dcd006321481b16f751dbf75",
+      "copies": [
+        "samples/DorotiSampleApp2/linux/native/src/doroti_qt_host.cpp",
+        "samples/DorotiTestbedApp/linux/native/src/doroti_qt_host.cpp",
+        "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/src/doroti_qt_host.cpp"
+      ]
+    },
+    {
+      "name": "include/doroti_qt_host_v2.h",
+      "sha256": "eed8ebc6f0fb3ae7fcb3de11764da31a55cbb2e06f857f582ca2cbae05ac0f00",
+      "copies": [
+        "samples/DorotiSampleApp2/linux/native/include/doroti_qt_host_v2.h",
+        "samples/DorotiTestbedApp/linux/native/include/doroti_qt_host_v2.h",
+        "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/include/doroti_qt_host_v2.h"
+      ]
+    },
+    {
+      "name": "include/doroti_qt_desktop.h",
+      "sha256": "0ab829b2ffaec5064527f7f1412cb3aeec78d419af730f751145a48779444654",
+      "copies": [
+        "samples/DorotiSampleApp2/linux/native/include/doroti_qt_desktop.h",
+        "samples/DorotiTestbedApp/linux/native/include/doroti_qt_desktop.h",
+        "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/include/doroti_qt_desktop.h"
+      ]
+    },
+    {
+      "name": "include/doroti_qt_webview.h",
+      "sha256": "fdc72e736575239b71d57ff4f7d83607808e09b209de1447c676b697922decb8",
+      "copies": [
+        "samples/DorotiSampleApp2/linux/native/include/doroti_qt_webview.h",
+        "samples/DorotiTestbedApp/linux/native/include/doroti_qt_webview.h",
+        "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/include/doroti_qt_webview.h"
+      ]
+    }
+  ],
+  "platform": [
+    "iOS",
+    "Mac Catalyst",
+    "macOS"
+  ],
+  "status": "SKIPPED",
+  "reason": "User explicitly requested no Apple platform verification",
+  "implementation": "common C policy and host preparation/admission connected",
+  "build": "SKIPPED",
+  "metalGpu": "SKIPPED",
+  "runtimeLifecycle": "SKIPPED",
+  "payloads": [],
+  "priorIosEvidenceReusedAsAcceptance": false
+}

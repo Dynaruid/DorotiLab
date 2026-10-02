@@ -90,7 +90,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
                 _stockObserver.Check
             ),
             checked((long)DeviceGeneration + 1),
-            maxFrames: 1
+            maxFrames: NativeFrameAdmissionPolicy.ShaderFrameLimit
         );
         _graphite.GpuEffects = new VulkanGpuEffect(_vk, _physicalDevice, _device, _queue,
             _queueFamily, _stockObserver, _graphite);
@@ -205,6 +205,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
         }
 
         ReturnGraphiteFrameAfterGpuCompletion();
+        RetireSpareFrame();
     }
 
     private void ObservedPipelineBarrier(

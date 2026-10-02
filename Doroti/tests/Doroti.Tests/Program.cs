@@ -5,6 +5,11 @@ using Doroti.Ui;
 
 static void Require(bool value, string message) { if (!value) throw new Exception(message); }
 #if DOROTI_REPO_TESTS
+if (Array.IndexOf(args, "--native-frame-gpu") is var nativeGpuIndex && nativeGpuIndex >= 0)
+{
+    NativeFrameGpuRegression.Run(args[nativeGpuIndex + 1]);
+    return;
+}
 if (args.Contains("--shader-frame-pipeline"))
 {
     ShaderFramePipelineRegression.Run();

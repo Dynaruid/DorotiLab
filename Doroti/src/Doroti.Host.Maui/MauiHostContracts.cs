@@ -48,7 +48,9 @@ public sealed record MauiSurfaceSnapshot(
     IReadOnlyList<double>? PresentationIntervalsMilliseconds = null,
     long? MetalAllocatedBytes = null,
     IosFrameLoopSnapshot? IosFrameLoop = null,
-    string? IosFrameLoopState = null
+    string? IosFrameLoopState = null,
+    Doroti.Skia.Rendering.NativeFramePipelineSnapshot? NativeFramePipeline = null,
+    string? GpuDevice = null
 );
 
 public sealed record MauiFrameDiagnostics(

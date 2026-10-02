@@ -2,7 +2,7 @@
 
 This directory is the app-owned CMake customization point. The managed runner owns process startup and calls the append-only `doroti.qt-host/v2` C ABI exported by `libdoroti_qt_host.so`.
 
-The default native host uses a Qt 6 `QWindow` and `QVulkanInstance`. It retains metrics/lifecycle, pointer/touch/tablet, key/focus, editing-state IME, clipboard, cursor, accessibility and resize contracts. C ABI v2 (ABI version 4) feature bits 10/11 supply the Vulkan instance, surface, actual enabled instance extensions and API version in the surface descriptor (now 144 bytes). Feature bit 12 requires the appended GPU polling callback (192-byte callback table); rebuild the shim when updating the managed host. Managed Graphite/Vulkan owns the device and swapchain, and reports queue-present acceptance separately from physical scan-out.
+The default native host uses a Qt 6 `QWindow` and `QVulkanInstance`. It retains metrics/lifecycle, pointer/touch/tablet, key/focus, editing-state IME, clipboard, cursor, accessibility and resize contracts. C ABI v2 (ABI version 6) feature bits 10/11 supply the Vulkan instance, surface, actual enabled instance extensions and API version in the surface descriptor (now 144 bytes). Feature bit 12 requires the appended GPU polling callback (208-byte callback table); rebuild the shim when updating the managed host. Managed Graphite/Vulkan owns the device and swapchain, and reports queue-present acceptance separately from physical scan-out.
 
 Feature bit 13 requires `prepare_present` in the appended 128-byte host API table. Managed rendering calls it only immediately before queuing a Vulkan presentation, after rejecting empty or superseded scenes. Qt completes its presentation notification only on success. A skipped frame retries on an owner-thread timer because no compositor frame callback is promised. Rebuild the shim together with the managed host.
 
@@ -54,7 +54,7 @@ see `shaders/README.md`. Debug and Release use the same hash-checked asset.
 The Testbed selects it through `DorotiQtQuick=true`; the generic runner/template
 keeps it optional. Runtime QML modules `QtQuick` and `QtQuick.Controls` are required.
 
-Feature bit 17 negotiates the Quick path without changing callback ABI 4. Qt owns
+Feature bit 17 negotiates the Quick path without changing callback ABI 6. Qt owns
 Vulkan device/queue/WSI; the managed renderer lends completed GPU images through
 the separate 48-byte GPU / 96-byte part API in `doroti_qt_quick.h`. Old managed
 callbacks without bit 17 are rejected before startup. Quick controls are live QML
@@ -68,7 +68,7 @@ validation for input, overlap, lifetime and Vulkan-layer checks.
 `-DDOROTI_QT_WEBENGINE=ON` builds the sibling `libdoroti_webview_qt.so` against
 system Qt 6.8+ WebEngineQuick/WebChannel and initializes schemes/WebEngine before
 QApplication. The independent WebView command ABI is version 1 / 32 bytes;
-host callbacks remain ABI 4 / 192 bytes. The generated runtime manifest records
+host callbacks remain ABI 6 / 208 bytes. The generated runtime manifest records
 the build versions and system helper/data/QML closure. No Qt engine is bundled. MSBuild exposes this as `DorotiQtWebEngine=true`; the
 Testbed enables it with Quick, while templates keep it optional. PV feature bit
 2 negotiates `create` kind 2 (HTML or versioned WebView options); bit 3 negotiates a
@@ -121,3 +121,7 @@ before copying plugins into this directory or redistributing them.
 `licenses/` is copied into build/publish output by the runner and installed by
 CMake. See `licenses/README.md` for notices, source availability and distribution
 obligations. System Qt/GStreamer binaries are not bundled by this build.
+
+Native frame pipeline: host ABI 6 appends the afterFrameEnd consumer callback at offset 192 (208-byte table), negotiated by feature bit 21. The basic Qt render loop submits a same-queue consumer fence after Qt sampling. Producer/copy slots and unpublished banks are retired with nonblocking fence polls; front banks remain immutable until replaced and all consumer fences complete. Normal shader C frames do not wait for queue idle or copy fences. Native/replay/resize keep serial admission. Rebuild the Sample2, Testbed and template shim together.
+
+Host ABI 6 additionally appends prepare_frame at offset 200, feature bit 22. beforeFrameBegin freezes the current token and prepares the framework before QRhi::beginFrame; beforeSynchronizing records that prepared scene. Callback re-requests keep their next-pulse token. afterFrameEnd handles producer/Qt consumer retirement independently of frameSwapped.

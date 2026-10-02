@@ -29,7 +29,7 @@ public sealed unsafe partial class GraphiteVulkanWindow
         var instance = CreateInstance(vk, [], Api12);
         try
         {
-            return new(vk, instance, default, [], true, false, adapterLuid);
+            return new(vk, instance, default, [], true, false, adapterLuid, pipelinedWindowFrames: true);
         }
         catch
         {
@@ -173,7 +173,9 @@ public sealed unsafe partial class GraphiteVulkanWindow
         return _externalFrame.Surface;
     }
 
-    public void FlushD3D12Frame()
+    public void FlushD3D12Frame() => FlushD3D12Frame(asynchronous: false);
+
+    public void FlushD3D12Frame(bool asynchronous)
     {
         CheckOwner();
         if (_externalFrame is null)
@@ -183,7 +185,7 @@ public sealed unsafe partial class GraphiteVulkanWindow
 
         _externalSubmitted = true;
         _externalFrame.Submit();
-        CopyIntermediateTargetToD3D12();
+        CopyIntermediateTargetToD3D12(asynchronous);
     }
 
     public void ReleaseD3D12Frame()

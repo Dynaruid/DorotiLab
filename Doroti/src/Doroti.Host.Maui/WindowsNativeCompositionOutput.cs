@@ -95,17 +95,29 @@ internal sealed unsafe class WindowsNativeCompositionOutput : IDisposable
     internal long Copies { get; private set; }
     internal long Presents { get; private set; }
     internal long ResizeBuffers { get; private set; }
+    internal ulong SubmittedCopy => _fenceValue;
+    internal ulong CompletedCopy
+    {
+        get
+        {
+            var completed = _fence.CompletedValue;
+            if (completed == ulong.MaxValue) throw new InvalidOperationException("D3D12 output device was removed.");
+            return completed;
+        }
+    }
 
-    internal void Prepare(
+    internal bool Prepare(
         ID3D12Resource source,
         int width,
         int height,
-        D3D.ResourceStates sourceState
+        D3D.ResourceStates sourceState,
+        bool asynchronous = false
     )
     {
         lock (_gate)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
+            if (asynchronous && CompletedCopy < _fenceValue) return false;
             WaitForCopy();
             var slot = _slot;
             // Reserve the current monitor's physical extent once. Ordinary
@@ -213,12 +225,13 @@ internal sealed unsafe class WindowsNativeCompositionOutput : IDisposable
                 _queue.ExecuteCommandList(_commands);
             }
             _queue.Signal(_fence, _fenceValue).CheckError();
-            WaitForCopy();
+            if (!asynchronous) WaitForCopy();
             Copies++;
+            return true;
         }
     }
 
-    internal bool Present(int top, long generation)
+    internal bool Present(int top, long generation, bool asynchronous = false)
     {
         lock (_gate)
         {
@@ -265,7 +278,7 @@ internal sealed unsafe class WindowsNativeCompositionOutput : IDisposable
             // or teardown, not just the copy recorded before Present.
             _copyPending = true;
             _queue.Signal(_fence, ++_fenceValue).CheckError();
-            WaitForCopy();
+            if (!asynchronous) WaitForCopy();
             // Do not call DwmFlush inside the nested WM_SIZE transaction.
             // USER32/WinUI must finish their geometry handling before the next
             // desktop frame. Flushing here displayed new pixels at old bounds.

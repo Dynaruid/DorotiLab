@@ -258,6 +258,7 @@ def main():
                 "MauiSkiaCapabilities.cs", "MauiFrameworkHost.cs", "DorotiMauiSurface.cs"]]
     inputs += list((ROOT / "Doroti/src/Doroti.Skia.Rendering").glob("SkiaGraphiteSession*.cs"))
     inputs += [ROOT / "Doroti/src/Doroti.Skia.Rendering/SkiaShaderSceneAdmission.cs"]
+    inputs += [ROOT / "Doroti/src/Doroti.Skia.Rendering/NativeFramePipeline.cs"]
     summary["sourceInputsSha256"] = {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
                                      for p in sorted(inputs)}
     if args.app:

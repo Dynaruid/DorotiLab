@@ -1,3 +1,4 @@
+using Doroti.Skia.Rendering;
 #if IOS && !MACCATALYST
 using SKGLView = Doroti.Host.Maui.DorotiSkiaView;
 #endif
@@ -31,7 +32,7 @@ public sealed class DorotiGraphiteView : SKGLView
     internal Func<Doroti.Skia.Rendering.SkiaShaderSceneAdmission>? ShaderSceneAdmission { get; set; }
     internal Func<bool>? FrameworkFrameRequested { get; set; }
     internal Func<MauiPaintCompletion?>? PreparedScene { get; set; }
-    internal Action<MauiFramePreparation>? PrepareFrameworkFrame { get; set; }
+    internal Action<SkiaFramePreparation>? PrepareFrameworkFrame { get; set; }
 
     // SKTouchDeviceType cannot represent invertedStylus or unknown. Preserve
     // native device identity across the Graphite surface boundary.

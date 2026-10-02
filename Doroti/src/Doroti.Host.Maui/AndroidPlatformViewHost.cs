@@ -83,6 +83,8 @@ internal sealed class AndroidPlatformViewHost(
         ) == "1";
     private const int SliceStride = 128;
     internal bool RejectFrame { get; private set; }
+    internal bool HasComposition => _visible.Length != 0 || _shields.Count != 0 || _backdrop is not null;
+    internal bool HasPendingComposition => _pending is not null;
 
     internal IEnumerable<IPlatformViewFactory> CreateFactories(
         Func<IApplicationResourceHostCapability> resources

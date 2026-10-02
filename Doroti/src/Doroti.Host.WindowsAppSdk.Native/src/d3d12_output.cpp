@@ -104,6 +104,8 @@ struct Output {
     if (poisoned) return DXGI_ERROR_DEVICE_REMOVED;
     const auto done = completion->GetCompletedValue();
     if (done == UINT64_MAX) return DXGI_ERROR_DEVICE_REMOVED;
+    // The destination allocator must also be complete before admission.
+    if (swapchain && done < frames[swapchain->GetCurrentBackBufferIndex()].copied) return S_OK;
     if (slot.resource && done >= slot.copied) {
       *available = 1;
       if (!SetEvent(slot.available.value)) return HRESULT_FROM_WIN32(GetLastError());

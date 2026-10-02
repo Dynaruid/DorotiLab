@@ -187,7 +187,7 @@ internal sealed unsafe class QtHostAdapter
         // publishes the actual window focus state to the framework.
     }
 
-    internal void BeginFrame(in QtNativeV2.Surface surface)
+    internal void BeginFrame(in QtNativeV2.Surface surface, bool prepareFramework = true)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         var next = new ViewMetrics(
@@ -221,6 +221,7 @@ internal sealed unsafe class QtHostAdapter
             MetricsChanged?.Invoke(next);
         }
         Action<TimeSpan>? callback;
+        if (!prepareFramework) return;
         lock (_gate)
         {
             callback = _pendingFrame;

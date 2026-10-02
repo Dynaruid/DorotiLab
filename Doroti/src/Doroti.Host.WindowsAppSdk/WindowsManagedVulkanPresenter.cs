@@ -706,6 +706,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
 
         _window = childWindow;
         EnsureDevice(childWindow);
+        if (_useGraphite && !TrySelectPipelineBank()) return false;
 
         var capacityWidth = width;
         var capacityHeight = height;
@@ -735,7 +736,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
             _backingCapacityWidth,
             _backingCapacityHeight
         );
-        if (_selectedSlot < 0 && WaitForAnyPresentationSlot())
+        if (_selectedSlot < 0 && FrameAdmission.SynchronizePresentation && WaitForAnyPresentationSlot())
         {
             _selectedSlot = SelectAvailablePresentationSlot(
                 _backingCapacityWidth,
@@ -911,7 +912,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
                     GpuSubmitCount++;
                 }
                 CopyBackingToPresentation(slot);
-                if (_graphiteFrame is not null)
+                if (_graphiteFrame is not null && !_copySubmissionPending)
                 {
                     ReturnGraphiteFrameAfterGpuCompletion();
                     _graphiteTarget!.SetStateAfterGpuCompletion(
@@ -997,6 +998,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
             out var presentId,
             out var retiringFenceValue
         );
+        _pipelineConsumerSlot = slotIndex;
+        MaximumPipelineFrames = Math.Max(MaximumPipelineFrames, PendingPipelineFrames);
         if (present < 0)
         {
             slot.Poisoned = true;
@@ -1606,7 +1609,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
         SubmitCommands(
             "Vulkan D3D12 output copy",
             signalSemaphore: _d3d12ProducerSemaphore,
-            waitForCompletion: true,
+            waitForCompletion: FrameAdmission.SynchronizePresentation || !_useGraphite,
             signalValue: producerValue
         );
         Marshal.ThrowExceptionForHR(
@@ -1623,7 +1626,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
             _maximumCopyFenceWaitMicroseconds,
             _lastCopyFenceWaitMicroseconds
         );
-        _copyFenceWaitCount++;
+        if (FrameAdmission.SynchronizePresentation || !_useGraphite) _copyFenceWaitCount++;
         _retainedFrameLayout = ImageLayout.TransferSrcOptimal;
         _retainedFrameInitialized = true;
         slot.Layout = ImageLayout.General;
@@ -1854,6 +1857,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
         {
             WaitIdle();
             ReturnGraphiteFrameAfterGpuCompletion();
+            RetireSpareFrame();
             _copySubmissionPending = false;
             return false;
         }
@@ -1862,6 +1866,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
             _rendererReleasePreflightReportedDeviceLoss = true;
             AbandonContextForDeviceLossCore();
             ReturnGraphiteFrameAfterGpuCompletion();
+            RetireSpareFrame();
             TryRecordEvent("device-loss context abandoned before renderer invalidation");
             TryRecordEvent("device loss observed during renderer-release preflight");
             return true;
@@ -2913,7 +2918,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
         }
         Check(createResult, "vkCreateImage(backing)");
         _vk.GetImageMemoryRequirements(_device, _backingImage, out var requirements);
-        if (requirements.Size > MaximumRetainedStorageAllocationBytes)
+        if (OtherPipelineBytes > MaximumRetainedStorageAllocationBytes
+            || requirements.Size > MaximumRetainedStorageAllocationBytes - OtherPipelineBytes)
         {
             // No command references this candidate yet, so it can be rejected
             // safely before allocation/submission. The caller retries with the
@@ -3007,8 +3013,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
 
         _vk.GetImageMemoryRequirements(_device, _retainedFrameImage, out var requirements);
         if (
-            _backingAllocationSize > MaximumRetainedStorageAllocationBytes
-            || requirements.Size > MaximumRetainedStorageAllocationBytes - _backingAllocationSize
+            _backingAllocationSize + OtherPipelineBytes > MaximumRetainedStorageAllocationBytes
+            || requirements.Size > MaximumRetainedStorageAllocationBytes - _backingAllocationSize - OtherPipelineBytes
         )
         {
             _vk.DestroyImage(_device, _retainedFrameImage, null);
@@ -3392,6 +3398,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
         else
         {
             _copySubmissionPending = true;
+            _activeCopySubmittedAt = Stopwatch.GetTimestamp();
+            MaximumPipelineFrames = Math.Max(MaximumPipelineFrames, PendingPipelineFrames);
             _deferredCopySubmissionCount++;
         }
     }
@@ -3681,12 +3689,15 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
         }
         UnbindPresentationSurfaceForRetirement();
         WaitForPresentationRetirement();
+        _pipelineConsumerSlot = -1;
+        _spareBank.ConsumerSlot = -1;
         if (deviceLost)
         {
             // A lost backend must be abandoned before any Skia-owned wrapper
             // is disposed so its destructors make no Vulkan calls.
             AbandonContextForDeviceLossCore();
         }
+        ReleaseSparePipelineBankAfterDrain();
         if (deviceLost || _contextAbandoned)
         {
             ReleaseBackingSurface();

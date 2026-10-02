@@ -74,6 +74,8 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
     private object? _quickCacheOwner;
     internal long CommittedFrames { get; private set; }
     private PlatformCompositionPlan? _pending;
+    internal bool HasComposition => _nextPlacements.Length != 0 || _lastPlanHadNative;
+    private bool _lastPlanHadNative;
     private IPlatformViewPlacementBatch? _reservation;
     private Placement[] _next = [];
     private PlatformViewPlacement[] _nextPlacements = [];
@@ -859,6 +861,7 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
             )
         )
         {
+            _lastPlanHadNative = plan.HasNativeContent;
             CommittedFrames++;
         }
     }

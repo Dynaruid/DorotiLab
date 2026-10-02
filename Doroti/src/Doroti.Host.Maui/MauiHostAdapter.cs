@@ -1,3 +1,4 @@
+using Doroti.Skia.Rendering;
 using System.Globalization;
 using Doroti.Ui;
 using Microsoft.Maui.ApplicationModel;
@@ -385,7 +386,7 @@ internal sealed class MauiHostAdapter
 
     internal bool HasPendingFrame => _frameCallbacks.HasPending;
 
-    internal void PrepareFrame(MauiFramePreparation metrics)
+    internal void PrepareFrame(SkiaFramePreparation metrics)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         lock (_gate)
@@ -396,12 +397,20 @@ internal sealed class MauiHostAdapter
         try
         {
             UpdatePaintMetrics(metrics);
-            DispatchPendingFrame(metrics.Timestamp, metrics.CpuStageMeasured);
+            var timestamp = metrics.Timestamp;
+#if ANDROID
+            lock (_gate)
+            {
+                timestamp = _androidVsyncTimestamp ?? timestamp;
+                _androidVsyncTimestamp = null;
+            }
+#endif
+            DispatchPendingFrame(timestamp, metrics.CpuStageMeasured);
         }
         finally { EndPaint(); }
     }
 
-    private void UpdatePaintMetrics(MauiFramePreparation metrics)
+    private void UpdatePaintMetrics(SkiaFramePreparation metrics)
     {
         var previous = _snapshot;
         if (
@@ -776,8 +785,12 @@ internal sealed class MauiHostAdapter
             _invalidatePending = true;
         }
         DispatchPendingFrame(timestamp);
+        if (_surface is DorotiWindowsDxgiSurface preparedSurface) preparedSurface.RecordPreparedPulse();
         Interlocked.Increment(ref _invalidationsRequested);
         _surface.InvalidateSurface();
+        // Raster coalesces its own latest request. A full GPU queue must not
+        // retain this UI pulse's flag and suppress the next framework pulse.
+        lock (_gate) { _invalidatePending = false; }
     }
 #endif
 

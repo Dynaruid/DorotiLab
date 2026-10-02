@@ -58,7 +58,7 @@ internal static class WindowsCompositionSurfaceFeature
 /// backing store; this owner copies that resource into a bounded pool of
 /// CompositionDrawingSurface fronts without CPU readback.
 /// </summary>
-internal sealed class WindowsCompositionSurfacePresenter : IDisposable
+internal sealed partial class WindowsCompositionSurfacePresenter : IDisposable
 {
     private const int MaximumSurfaceSlots = 3;
     private readonly Compositor _compositor;
@@ -198,11 +198,11 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
         Height = height;
     }
 
-    internal void Flush()
+    internal void Flush(bool asynchronous = false)
     {
         if (_graphite is not null)
         {
-            _graphite.FlushD3D12Frame();
+            _graphite.FlushD3D12Frame(asynchronous);
             _graphiteSurface = null;
             return;
         }
@@ -841,6 +841,7 @@ internal sealed class WindowsCompositionSurfacePresenter : IDisposable
         _graphite = null;
         _graphiteSurface = null;
         _backingStore?.Dispose();
+        ReleasePipelineStores();
         _backingStore = null;
         _on12?.Dispose();
         _on12 = null;

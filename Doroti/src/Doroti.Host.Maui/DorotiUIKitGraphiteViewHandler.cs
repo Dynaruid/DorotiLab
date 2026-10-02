@@ -65,22 +65,9 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
     private readonly IMTLCommandQueue _queue;
     private readonly bool _profileBlur =
         Environment.GetEnvironmentVariable("DOROTI_VARIABLE_BLUR_PROFILE") == "1";
-#if IOS && !MACCATALYST
-    private readonly IosFrameLoopOptions _frameLoopOptions = IosFrameLoopOptions.Resolve(
-        Environment.GetEnvironmentVariable("DOROTI_VARIABLE_BLUR_SERIAL_FRAMES"),
-        Environment.GetEnvironmentVariable("DOROTI_VARIABLE_BLUR_PIPELINE"),
-        Environment.GetEnvironmentVariable("DOROTI_IOS_SHADER_PRESENTATION"));
+    private readonly NativeFrameLoopOptions _frameLoopOptions = NativeFrameLoopOptions.FromEnvironment("DOROTI_IOS_SHADER_PRESENTATION");
     private bool _pipelineFrames => _frameLoopOptions.Pipeline;
     private bool _asynchronousShaderPresentation => _frameLoopOptions.Asynchronous;
-#else
-    private readonly bool _pipelineFrames =
-        Environment.GetEnvironmentVariable("DOROTI_VARIABLE_BLUR_PIPELINE") == "1"
-        && Environment.GetEnvironmentVariable("DOROTI_VARIABLE_BLUR_SERIAL_FRAMES") != "1";
-    private readonly bool _asynchronousShaderPresentation =
-        Environment.GetEnvironmentVariable("DOROTI_IOS_SHADER_PRESENTATION") == "async"
-        || Environment.GetEnvironmentVariable("DOROTI_VARIABLE_BLUR_PIPELINE") == "1"
-            && Environment.GetEnvironmentVariable("DOROTI_VARIABLE_BLUR_SERIAL_FRAMES") != "1";
-#endif
     private IosFrameLoopDiagnostics? _frameLoop;
     private long _pulseId;
     private long _activePulse;
@@ -618,18 +605,26 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
         var needsTransaction = owner.PlatformViews?.IsConfigured == true;
         try
         {
-#if IOS && !MACCATALYST
-            var admission = IosFrameAdmissionPolicy.PrepareAndDecide(
+            var admission = NativeFrameAdmissionPolicy.PrepareAndDecide(
                 _pipelineFrames, _asynchronousShaderPresentation,
                 () =>
                 {
                     EnsureSession();
+#if IOS && !MACCATALYST
                     var pixels = _viewportPixels.Width > 0 ? _viewportPixels
                         : new SKSizeI((int)DrawableSize.Width, (int)DrawableSize.Height);
+#else
+                    var pixels = new SKSizeI((int)DrawableSize.Width, (int)DrawableSize.Height);
+#endif
                     var start = Stopwatch.GetTimestamp();
                     _frameLoop?.Record("framework-start", pulse, _generation, _pending.Count);
                     owner.PrepareFrameworkFrame?.Invoke(new(_session, pixels.Width, pixels.Height,
-                        Math.Max(1, (double)_animatedViewport.Scale), _generation,
+#if IOS && !MACCATALYST
+                        Math.Max(1, (double)_animatedViewport.Scale),
+#else
+                        Math.Max(1, (double)ContentScaleFactor),
+#endif
+                        _generation,
                         GetType().FullName!, "UIKit/MTKView/Graphite-Metal", DorotiFrameClock.Now,
                         _frameLoop is null ? null : (stage, duration) =>
                             _frameLoop.Record(stage, pulse, _generation, _pending.Count, duration: duration)));
@@ -646,18 +641,23 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
                 () => owner.ShaderSceneAdmission?.Invoke() ?? SkiaShaderSceneAdmission.noNewScene,
                 () =>
                 {
+#if IOS && !MACCATALYST
                     DrainCompletedFramesCore(allowDuringDraw: true);
-                                return _pending.Count;
+#endif
+                    return _pending.Count;
                 }, owner.PlatformViews?.HasComposition == true,
                 _pending.Any(p => p.PlatformFrame is not null),
-                _renderingViewport || _animatedViewport.IsAnimating, prepareFramework);
+
+#if IOS && !MACCATALYST
+                _renderingViewport || _animatedViewport.IsAnimating,
+#else
+                _preparedGeneration >= 0 && _preparedGeneration != _generation,
+#endif
+                prepareFramework);
             shaderFramePipeline = admission.FreshOnly;
-            needsTransaction = admission.Transaction;
+            needsTransaction = admission.SynchronizePresentation;
             _frameLoop?.Record("admission", pulse, _generation, _pending.Count, reason: admission.Reason);
             if (!admission.Admitted)
-#else
-            if (_pending.Count >= 1)
-#endif
             {
                 _frameBackpressure = true;
                 return;
@@ -768,6 +768,7 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
             var rasterStart = Stopwatch.GetTimestamp();
             _frameLoop?.Record("raster-start", pulse, generation, _pending.Count);
             owner.PaintGraphite(paint);
+            _preparedGeneration = generation;
             _frameLoop?.Record("raster-end", pulse, generation, _pending.Count, paint.Completion,
                 duration: Stopwatch.GetElapsedTime(rasterStart).TotalMilliseconds);
 #if IOS || MACCATALYST

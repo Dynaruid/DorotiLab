@@ -101,7 +101,7 @@ public sealed unsafe partial class GraphiteVulkanWindow
         }
     }
 
-    private void CopyIntermediateTargetToD3D12()
+    private void CopyIntermediateTargetToD3D12(bool asynchronous)
     {
         var observer = _stockObserver!;
         var state = _target!.GetState();
@@ -246,6 +246,8 @@ public sealed unsafe partial class GraphiteVulkanWindow
             ),
             "official D3D12 copy submit"
         );
+        _externalSubmittedAt = System.Diagnostics.Stopwatch.GetTimestamp();
+        if (asynchronous) return;
         Check(_vk.WaitForFences(_device, 1, in _fence, true, Timeout), "official D3D12 copy fence");
         observer.Check();
         _externalFrame!.CompleteGpuWork();

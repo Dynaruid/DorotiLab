@@ -516,6 +516,9 @@ public sealed partial class SkiaSceneRenderer
     public SkiaPaintResult PaintNewShaderScene(SKSurface surface, int pixelWidth, int pixelHeight,
         DorotiResizeEpoch desiredTarget) => Paint(surface, pixelWidth, pixelHeight, desiredTarget, 0, true);
 
+    public SkiaPaintResult PaintNewShaderScene(SKSurface surface, int pixelWidth, int pixelHeight,
+        DorotiResizeEpoch desiredTarget, long causalFrameId) => Paint(surface, pixelWidth, pixelHeight, desiredTarget, causalFrameId, true);
+
     public bool CanRecordShaderSceneAhead => ShaderSceneAdmission == SkiaShaderSceneAdmission.eligible;
 
     public bool CanPresentWithoutNativeComposition

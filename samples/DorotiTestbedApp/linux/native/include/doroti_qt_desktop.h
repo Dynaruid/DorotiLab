@@ -1,7 +1,7 @@
 #pragma once
 #include "doroti_qt_platform_views.h"
 
-// Optional Desktop ABI, independent of the unchanged host ABI 4. GUI-thread
+// Optional Desktop ABI, independent of the host ABI 6. GUI-thread
 // commands use a generation token; post has the platform-owner exactly-once contract.
 extern "C" {
 struct doroti_qt_desktop_state {

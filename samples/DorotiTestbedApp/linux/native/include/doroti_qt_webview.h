@@ -1,6 +1,6 @@
 #pragma once
 #include "doroti_qt_platform_views.h"
-// Independent optional ABI. Does not change host callbacks ABI 4 or Quick part size.
+// Independent optional ABI. Does not change host callbacks ABI 6 or Quick part size.
 // All operations are GUI-thread only. UTF-8 payloads are borrowed for the callback.
 // bind(null) synchronously disconnects callbacks before the managed context is freed.
 using doroti_web_callback = void(*)(void*, doroti_qt_utf8_v2);

@@ -10,8 +10,9 @@ run = Path(sys.argv[1]).resolve()
 if not run.is_relative_to(ROOT / "temp/testing"):
     raise RuntimeError("Evidence directory must be under temp/testing.")
 run.mkdir(parents=True, exist_ok=True)
-exe = ROOT / "samples/DorotiTestbedApp/windowsappsdk/bin/Debug/net10.0-windows10.0.19041.0/win-x64/DorotiTestbedApp.WindowsAppSdk.exe"
-for mode in ("api", "native", "input"):
+exe = Path(sys.argv[2]).resolve() if len(sys.argv) > 2 else ROOT / "samples/DorotiTestbedApp/windowsappsdk/bin/Debug/net10.0-windows10.0.19041.0/win-x64/DorotiTestbedApp.WindowsAppSdk.exe"
+modes = ("api", "native") if "--window-only" in sys.argv else ("api", "native", "input")
+for mode in modes:
     report = run / f"{mode}.json"
     environment = os.environ.copy()
     for key in ("DOROTI_SAMPLE", "DOROTI_INPUT_PROBE", "DOROTI_DESKTOP_LIFETIME"):
@@ -40,7 +41,7 @@ for mode in ("api", "native", "input"):
         assert json.loads((run / "input-lifetime.json").read_text())["created"] == 4
     print(f"{mode}: PASS (native window state/lifetime; physical input and visible resize quality not measured)", flush=True)
 
-for lifetime in ('OnLastWindowClosed', 'Explicit'):
+for lifetime in (() if '--basic' in sys.argv else ('OnLastWindowClosed', 'Explicit')):
     report = run / (lifetime + '.json')
     environment = os.environ.copy()
     for key in ('DOROTI_DESKTOP_PROBE', 'DOROTI_INPUT_PROBE', 'DOROTI_DESKTOP_CLOSE_PROBE'):

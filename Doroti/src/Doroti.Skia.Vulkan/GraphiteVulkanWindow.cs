@@ -496,12 +496,27 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
         return result;
     }
 
+    /// <summary>Bootstrap/resize is a lifecycle boundary, before preparing a scene at this generation.</summary>
+    public void PrepareViewport(int width, int height)
+    {
+        CheckOwner();
+        if (_terminalShutdown) throw new InvalidOperationException("Vulkan surface admission is closed.");
+        if (width > 0 && height > 0 && (_recreate || Width != width || Height != height))
+            Resize(width, height);
+    }
+
+    public bool Render(int width, int height, Action<SKSurface, int, int> paint,
+        Func<bool>? shouldPresent = null, Action? beforePresent = null) =>
+        Render(width, height, paint, shouldPresent, beforePresent, NativeFrameAdmissionPolicy.ShaderFrameLimit, true);
+
     public bool Render(
         int width,
         int height,
         Action<SKSurface, int, int> paint,
         Func<bool>? shouldPresent = null,
-        Action? beforePresent = null
+        Action? beforePresent = null,
+        int maximumFramesInFlight = NativeFrameAdmissionPolicy.ShaderFrameLimit,
+        bool asynchronous = true
     )
     {
         CheckOwner();
@@ -522,6 +537,13 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
 
         var startTime = FrameTimestamp();
         PollGpuWork();
+        ArgumentOutOfRangeException.ThrowIfLessThan(maximumFramesInFlight, 1);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(maximumFramesInFlight, WindowFrameLimit);
+        if (WindowFramesInFlight >= maximumFramesInFlight)
+        {
+            BusyWindowFrames++;
+            return false;
+        }
         var slot = _windowFrames[_nextWindowFrame];
         if (slot.Frame is not null)
         {
@@ -689,7 +711,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
                 WindowFramesInFlight
             );
             if (
-                !_pipelinedWindowFrames
+                !_pipelinedWindowFrames || !asynchronous
                 || _platformReadback
                 || _platformShared.Count != 0
                 || _textureInputs.Count != 0
@@ -1190,6 +1212,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
         }
 
         ReleaseD3D12Frame();
+        ReleaseExternalSlotsAfterDrain();
         DrainWindowFrames();
         ReleaseTextureInputs(completed: true);
         foreach (var raster in _platformShared)

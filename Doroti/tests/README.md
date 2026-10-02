@@ -1,5 +1,41 @@
 # Maintained regression tests
 
+Native common A/B/C policy, GPU-full preparation, coalescing, native insertion,
+generation changes and out-of-order retirement are part of the CPU `Build` suite.
+For actual Vulkan A/C pixels and two unfinished recordings on the same recorder:
+
+```powershell
+python Doroti/eng/run-with-timeout.py dotnet run --project Doroti/tests/Doroti.Tests -c Debug -r win-x64 -- --native-frame-gpu temp/testing/native-frame-pipeline/windows/gpu-pixels.json
+```
+
+This opt-in GPU fixture deliberately stalls the same queue with a timeline
+semaphore while recording two independent scenes. It checks Off, Gaussian,
+Adaptive, Fast, Fixed sigma 0/1/2/4/8/20/32 and Kawase 20/32, a third-frame
+rejection and byte-identical A/C pixels. It does not exercise actual Qt sampling,
+native composition, scanout, input latency or hardware execution overlap.
+
+`native_frame_pipeline_collect.py` accepts an already-built Sample2 payload.
+Each invocation collects one repeat of Off, Fast 20/32 and Adaptive 20/32, A/C,
+alternating policy order. Run `--repeat 1`, `2`, `3` separately under the 1,200s
+wrapper for 30 runs. `--conditions fast:20 --policies default,A,B,C --seconds 12`
+is a short mode/queue smoke. Supply `--platform windows --exe <exe>`,
+`--platform android --device <owned-device> --adb <adb>` or
+`--platform qt --exe <exe> --driver <test-only-libevidence.so>`.
+The Qt driver is compiled from `native/qt_evidence.cpp` using Qt6Quick/Qt6Widgets
+pkg-config flags, as in `linux_qt_smoke.py`. Only the probe's own windows close.
+Every run retains its log, evidence, payload hash and failures; output must be
+under `temp/testing`. Presentation receipt counters are never converted to FPS.
+Only genuine displayed-frame timestamps in `display-events.json` enable a
+5s-warmup/30s display summary; retain original capture-tool output and clock
+provenance. Missing display events report `notMeasured`.
+
+`native_frame_android_lifecycle.py --device <owned-device> --output <raw-dir>`
+checks three continuing resumes with at least 5s between snapshots, rotation,
+process/surface recreation and a screenshot. Rotation settings are restored.
+This is synthetic automation. Physical finger, IME, selection and 10-minute use
+require their own evidence. Apple validation for this candidate was skipped at
+the user's request; see the [result](../../works/results/2026-10-02-native-frame-pipeline.md).
+
 Run from the repository root with Python, PowerShell 7, Node 24 and the pinned .NET SDK:
 
 ```powershell

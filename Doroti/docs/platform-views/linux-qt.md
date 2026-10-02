@@ -1,5 +1,11 @@
 # Linux Qt PlatformView contract
 
+Host ABI 6 adds framework preparation before QRhi admission and Qt consumer
+retirement after `afterFrameEnd`; see the [native pipeline](../native-frame-pipeline.md).
+Sample2, Testbed and template shims must be rebuilt together. The basic render
+loop remains required. Software Vulkan evidence is separate from hardware and
+physical-input qualification.
+
 The Qt Quick backend uses live QML items and Qt-owned Vulkan device/queue/WSI.
 Graphite renders private R images and copies to distinct P images sampled by QSG.
 There is no Doroti CPU raster upload/readback in this path. Chromium's internal
@@ -65,7 +71,7 @@ returned. Character rectangles and hit-test offsets are not available from the
 current semantics payload. The native Quick/WebView accessibility descendants
 have not been shown to connect to this root, and Orca reading remains unverified.
 
-Host ABI 4 requires its documented mask and function pointers. Feature bit 19
+Host ABI 6 requires its documented mask and function pointers. Feature bit 19
 advertises the optional `doroti_qt_request_focus_v2` export; a request asks Qt
 to activate the window, while only a subsequent Qt focus callback changes the
 framework's observed window focus. A compositor may refuse activation. Bit 20

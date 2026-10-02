@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Doroti.Skia.Vulkan;
+using Doroti.Skia.Rendering;
 using SkiaSharp;
 
 namespace Doroti.Host.Qt;
@@ -14,8 +15,16 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
     internal GraphiteVulkanQuick? QuickGpu { get; private set; }
     internal QtQuickNative.Part[] QuickParts { get; set; } = [];
     internal bool QuickEnabled { get; private set; }
+    internal int PendingGpuFrames => QuickGpu?.FramesInFlight ?? _vulkan?.WindowFramesInFlight ?? 0;
+    internal bool HasSerialGpuFrames => QuickGpu?.HasSerialFrames == true;
+    internal NativeFrameAdmission FrameAdmission { get; set; }
+    internal bool ViewportChanged(in QtNativeV2.Surface descriptor) => _surfaceGeneration != descriptor.SurfaceGeneration
+        || _pixelWidth != descriptor.PixelWidth || _pixelHeight != descriptor.PixelHeight;
     internal ulong QuickPeakReservedBytes { get; private set; }
     internal int QuickPeakRetiringLayers { get; private set; }
+    internal int QuickMaximumFrames { get; private set; }
+    internal long QuickConsumerSubmissions { get; private set; }
+    internal long QuickCompletedConsumers { get; private set; }
     internal GraphiteVulkanQuick.TimingSummary? QuickTimings { get; private set; }
     private readonly List<double> _quickCommitMs = [];
     internal GraphiteVulkanQuick.Percentiles QuickNativeCommitTimings
@@ -118,6 +127,9 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
             }
             var width = descriptor.PixelWidth;
             var height = descriptor.PixelHeight;
+            _pixelWidth = width;
+            _pixelHeight = height;
+            _surfaceGeneration = descriptor.SurfaceGeneration;
             QuickGpu.FrameToken = frameToken;
             var target = QuickGpu.Begin(width, height);
             var bounds = new QtPlatformViewHost.NativeRect(
@@ -151,7 +163,7 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
                 var commitStart = Stopwatch.GetTimestamp();
                 QtQuickNative.Commit(_quickWindow, QuickParts, apply: false);
                 var prepareMs = Stopwatch.GetElapsedTime(commitStart).TotalMilliseconds;
-                QuickGpu.Complete();
+                QuickGpu.Complete(asynchronous: !FrameAdmission.SynchronizePresentation);
                 commitStart = Stopwatch.GetTimestamp();
                 QtQuickNative.Commit(_quickWindow, QuickParts, apply: true);
                 if (_quickCommitMs.Count < 10000)
@@ -214,7 +226,9 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
                 descriptor.PixelHeight,
                 render,
                 shouldPresent,
-                beforePresent
+                beforePresent,
+                maximumFramesInFlight: FrameAdmission.GpuLimit,
+                asynchronous: !FrameAdmission.SynchronizePresentation
             );
         }
         if (RequiresRecreate(descriptor))
@@ -248,7 +262,7 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
     }
 
     // Qt invokes this on the render owner even when no new frame is requested.
-    internal bool PollGpuWork() => _vulkan?.PollGpuWork() ?? true;
+    internal bool PollGpuWork() => QuickGpu?.PollGpuWork() ?? _vulkan?.PollGpuWork() ?? true;
 
     internal void SetQpaPlatform(string platform) =>
         _usePlatformGlResolver = string.Equals(platform, "xcb", StringComparison.OrdinalIgnoreCase);
@@ -338,8 +352,11 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
             QuickPeakReservedBytes = Math.Max(QuickPeakReservedBytes, quick.PeakReservedBytes);
             QuickPeakRetiringLayers = Math.Max(QuickPeakRetiringLayers, quick.PeakRetiringLayers);
             QuickTimings = quick.Timings;
+            QuickMaximumFrames = Math.Max(QuickMaximumFrames, quick.MaximumFramesInFlight);
+            QuickConsumerSubmissions += quick.ConsumerSubmissions;
             try { quick.Dispose(); }
             catch (Exception error) { quickError = error; }
+            QuickCompletedConsumers += quick.CompletedConsumers;
         }
         QuickGpu = null;
         QuickParts = [];

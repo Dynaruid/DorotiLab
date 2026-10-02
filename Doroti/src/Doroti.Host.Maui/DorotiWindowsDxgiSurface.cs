@@ -3,6 +3,7 @@ using System.Diagnostics.Tracing;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using Doroti.Graphics.DirectX;
+using Doroti.Skia.Rendering;
 using Doroti.Ui;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Dispatching;
@@ -126,6 +127,30 @@ public sealed class DorotiWindowsDxgiElementHandler
 /// </summary>
 internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphiteSurface
 {
+    private Func<SkiaShaderSceneAdmission>? _frameQuery;
+    private readonly NativeFrameLoopOptions _frameLoopOptions = NativeFrameLoopOptions.FromEnvironment();
+    private long _pipelineViewportGeneration;
+    private int _pipelineRetryScheduled;
+    private long _preparedFrameworkPulses;
+    internal void RecordPreparedPulse() => Interlocked.Increment(ref _preparedFrameworkPulses);
+    internal void SetFrameQuery(Func<SkiaShaderSceneAdmission> query) => _frameQuery = query;
+
+    private void RequestPipelineRetry()
+    {
+        if (Interlocked.Exchange(ref _pipelineRetryScheduled, 1) != 0) return;
+        _ = Task.Delay(8).ContinueWith(_ =>
+        {
+            Interlocked.Exchange(ref _pipelineRetryScheduled, 0);
+            WakeCompositionRetry();
+        }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+    }
+
+    private void CompletePipelinePaint(MauiPaintCompletion completion, bool stale)
+    {
+        if (stale) Interlocked.Increment(ref _superseded);
+        else Interlocked.Increment(ref _presented);
+        PresentCompleted?.Invoke(completion, stale);
+    }
     internal event Action? CaptureNativeEnvironment;
     private readonly object _gate = new();
     private readonly DorotiWindowsDxgiElement _view;
@@ -441,6 +466,12 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
             EglSwapIntervalPolicy = "not-applicable-dxgi-owned",
             ExactSwapTimingAvailable = true,
             ResizeTrace = _trace.Snapshot(),
+            NativeFramePipeline = new(_frameLoopOptions.Mode, Interlocked.Read(ref _preparedFrameworkPulses),
+                _compositionPresenter?.PendingPipelineFrames ?? 0,
+                _compositionPresenter?.MaximumPipelineFrames ?? 0,
+                _compositionPresenter?.CompletedPipelineFrames ?? 0,
+                "Vulkan producer-copy poll; D3D12 final consumer fence",
+                _compositionPresenter?.SupportsPipeline == true ? null : "serial composition-surface or Ganesh backend"),
         };
     }
 
@@ -1143,6 +1174,43 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
             var nativeResizePrepared = false;
             try
             {
+                compositionPresenter?.PollPipelineFrames(() => _latestTarget?.Generation ?? 0);
+                var admission = NativeFrameAdmissionPolicy.Decide(_frameLoopOptions.Pipeline, _frameLoopOptions.Asynchronous,
+                    _frameQuery?.Invoke() ?? SkiaShaderSceneAdmission.noNewScene,
+                    compositionPresenter?.PendingPipelineFrames ?? 0, false, false,
+                    _pipelineViewportGeneration != target.Generation,
+                    supportsTwoFrames: compositionPresenter?.SupportsPipeline == true);
+                if (!admission.Admitted)
+                {
+                    processedSerial = serial;
+                    RequestPipelineRetry();
+                    continue;
+                }
+                if (!admission.SynchronizePresentation && compositionPresenter?.SupportsPipeline == true)
+                {
+                    if (!compositionPresenter.TryBeginPipelineFrame(host!, target))
+                    {
+                        processedSerial = serial;
+                        RequestPipelineRetry();
+                        continue;
+                    }
+                    var pipelinePaint = new MauiSkiaPaintContext(compositionPresenter.Surface, compositionPresenter.Context,
+                        target.PhysicalWidth, target.PhysicalHeight, target.DeviceScaleX,
+                        _surfaceGeneration, CompositionViewType, CompositionBackend)
+                    { FrameworkPrepared = true, RequireNewShaderScene = true };
+                    Paint?.Invoke(pipelinePaint);
+                    if (pipelinePaint.Completion is { } ready && !pipelinePaint.SkipPresent
+                        && !pipelinePaint.SkipRaster && _latestTarget?.Generation == target.Generation)
+                        compositionPresenter.QueuePipelineFrame(ready, target, CompletePipelinePaint);
+                    else
+                    {
+                        compositionPresenter.CancelPipelineRecording();
+                        if (pipelinePaint.Completion is { } cancelled) CompletePipelinePaint(cancelled, true);
+                    }
+                    processedSerial = serial;
+                    RequestPipelineRetry();
+                    continue;
+                }
                 var surfacePrepareStarted = DorotiFrameClock.Now;
                 if (compositionCandidate)
                 {
@@ -1514,6 +1582,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
                     );
                 }
                 Interlocked.Increment(ref _presented);
+                _pipelineViewportGeneration = target.Generation;
                 Record("ack", target, "D3D12 raster thread", terminal: "presented");
                 PresentCompleted?.Invoke(completion, false);
                 if (!compositionCandidate)

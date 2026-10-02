@@ -887,6 +887,19 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             }
         }
 
+        private int _pipelineRetryScheduled;
+        private long _frameworkPreparedWhileGpuFull;
+        private long _pipelineRejectedAdmissions;
+        private void RequestPipelineRetry()
+        {
+            if (Interlocked.Exchange(ref _pipelineRetryScheduled, 1) != 0) return;
+            _ = Task.Delay(8).ContinueWith(_ =>
+            {
+                Interlocked.Exchange(ref _pipelineRetryScheduled, 0);
+                Host?.RequestInvalidate();
+            }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+        }
+
         internal uint Render(in WindowsNativeV1.FrameRequest request)
         {
             RecordThread(ref _rasterThreadId, "raster");
@@ -899,6 +912,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             var causalFrameId = checked((long)request.CausalFrameId);
             var resizeGeneration = request.Generation;
             var dispatchedFrameworkFrame = host.BeginFrame(in request);
+            if (Presenter is WindowsManagedVulkanPresenter pipelinePresenter) pipelinePresenter.PollPipelineFrames();
             var textureRevision = renderer.TextureRevision;
             var requiresPresenterQualification =
                 _platformViews is { NeedsReplay: true }
@@ -907,6 +921,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 || Presenter is WindowsManagedVulkanPresenter { HasPendingInjectedResult: true };
             if (
                 !dispatchedFrameworkFrame
+                && renderer.PendingSceneCompletion is null
                 && !requiresPresenterQualification
                 && _lastPresentedTextureRevision == textureRevision
                 && _lastPresentedResizeGeneration == resizeGeneration
@@ -919,6 +934,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 // the wakeup as satisfied without replaying the retained scene
                 // through the GPU and presentation queue a second time.
                 Interlocked.Increment(ref _renderCallbacks);
+                if (Presenter is WindowsManagedVulkanPresenter { PendingPipelineFrames: > 0 }) RequestPipelineRetry();
                 return (uint)WindowsNativeV1.FrameTerminalKind.Presented;
             }
             if (
@@ -960,8 +976,29 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 renderer.InvalidateWindowSurfaceResources();
             }
 
+            var frameOptions = NativeFrameLoopOptions.FromEnvironment();
+            NativeFrameAdmission frameAdmission;
+            if (Presenter is WindowsManagedVulkanPresenter nativePipeline)
+            {
+                frameAdmission = NativeFrameAdmissionPolicy.Decide(frameOptions.Pipeline, frameOptions.Asynchronous,
+                    renderer.ShaderSceneAdmission, nativePipeline.PendingPipelineFrames,
+                    _platformViews?.HasComposition == true, false,
+                    windowSurfaceChanged || _presenterResizeGeneration != resizeGeneration,
+                    nativePipeline.SupportsFramePipeline);
+                nativePipeline.FrameAdmission = frameAdmission;
+                if (!frameAdmission.Admitted)
+                {
+                    _pipelineRejectedAdmissions++;
+                    if (dispatchedFrameworkFrame && frameAdmission.GpuLimit == 2) _frameworkPreparedWhileGpuFull++;
+                    RequestPipelineRetry();
+                    return (uint)WindowsNativeV1.FrameTerminalKind.Superseded;
+                }
+            }
+            else frameAdmission = NativeFrameAdmissionPolicy.Decide(false, false,
+                renderer.ShaderSceneAdmission, 0, false, false, windowSurfaceChanged, supportsTwoFrames: false);
             if (!Presenter.EnsureTarget(host.ChildHwnd, width, height))
             {
+                RequestPipelineRetry();
                 Interlocked.Increment(ref _renderCallbacks);
                 return (uint)WindowsNativeV1.FrameTerminalKind.Superseded;
             }
@@ -979,7 +1016,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
 
             SkiaPaintResult Paint(SKSurface surface)
             {
-                var paintResult = renderer.Paint(
+                var paintResult = frameAdmission.FreshOnly || !frameAdmission.SynchronizePresentation ? renderer.PaintNewShaderScene(
+                    surface, width, height, host.ResizeTarget, causalFrameId) : renderer.Paint(
                     surface,
                     width,
                     height,
@@ -1049,6 +1087,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             }
 
             Interlocked.Increment(ref _renderCallbacks);
+            if (Presenter is WindowsManagedVulkanPresenter { PendingPipelineFrames: > 0 }) RequestPipelineRetry();
             if (presented)
             {
                 _lastPresentedResizeGeneration = resizeGeneration;
@@ -1536,6 +1575,18 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 resize = Host?.ResizeSnapshot,
                 renderer = Renderer?.Diagnostics,
                 variableBlurProfile = Renderer?.VariableBlurProfile,
+                nativeFramePipeline = new
+                {
+                    mode = NativeFrameLoopOptions.FromEnvironment().Mode,
+                    maximumPending = (Presenter as WindowsManagedVulkanPresenter)?.MaximumPipelineFrames ?? 0,
+                    pending = (Presenter as WindowsManagedVulkanPresenter)?.PendingPipelineFrames ?? 0,
+                    supportsTwoFrames = (Presenter as WindowsManagedVulkanPresenter)?.SupportsFramePipeline == true,
+                    preparedWhileGpuFull = _frameworkPreparedWhileGpuFull,
+                    rejectedAdmissions = _pipelineRejectedAdmissions,
+                    normalCopyRetirement = "nonblocking Vulkan fence poll; D3D12 slot consumer fence",
+                    displayFps = (double?)null,
+                    hardwareOverlap = "notMeasured",
+                },
             };
         }
 

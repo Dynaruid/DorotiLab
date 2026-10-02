@@ -1,3 +1,4 @@
+using Doroti.Skia.Rendering;
 using Doroti.Ui;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Dispatching;
@@ -46,9 +47,6 @@ internal sealed class MauiSkiaPaintContext(
     internal Action<MauiPaintCompletion>? ScenePrepared { get; set; }
     internal MauiPaintCompletion? Completion { get; set; }
 }
-
-internal sealed record MauiFramePreparation(object? ContextIdentity, int PixelWidth, int PixelHeight,
-    double Density, long SurfaceGeneration, string NativeViewType, string GraphicsBackend, TimeSpan Timestamp, Action<string, double>? CpuStageMeasured = null);
 
 /// <summary>
 /// Small platform surface boundary shared by the SKGLView and AppKit Metal paths.
@@ -175,7 +173,7 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
         Paint?.Invoke(context);
     }
 
-    internal void SetFramePreparation(Action<MauiFramePreparation> prepare, Func<Doroti.Skia.Rendering.SkiaShaderSceneAdmission> query, Func<MauiPaintCompletion?> preparedScene, Func<bool> frameRequested)
+    internal void SetFramePreparation(Action<SkiaFramePreparation> prepare, Func<Doroti.Skia.Rendering.SkiaShaderSceneAdmission> query, Func<MauiPaintCompletion?> preparedScene, Func<bool> frameRequested)
     {
         if (_view is DorotiGraphiteView graphite)
         {
@@ -235,6 +233,9 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
         return _view.Handler?.PlatformView is DorotiUIKitGraphiteView graphite
             ? graphite.CaptureSnapshot(current)
             : current;
+#elif ANDROID
+        return _view.Handler?.PlatformView is DorotiAndroidViewContainer graphite
+            ? graphite.Surface.CaptureSnapshot(current) : current;
 #else
         return current;
 #endif

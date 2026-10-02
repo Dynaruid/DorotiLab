@@ -49,6 +49,16 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build -App ./samples/DorotiSampleA
 `-Platform`으로 위 표의 대상을 선택합니다. `build`는 빌드, `publish`는 배포 산출물 생성에 사용합니다.
 공통 UI, Cupertino 아이콘과 앱 ID(`dev.doroti.sample2`)를 공유하며 AppKit 앱 ID는 `dev.doroti.sample2.macos`입니다.
 
+Windows MAUI 비교용 프로젝트는 `windows/DorotiSampleApp2.Windows.csproj`입니다.
+workspace CLI의 Windows 기본 대상은 위 표의 Windows App SDK를 유지합니다.
+네이티브 호스트는 공통 C 정책을 기본으로 사용하며,
+`DOROTI_NATIVE_FRAME_MODE=A|B|C`로 동일 바이너리의 비교 경로를 선택합니다.
+GPU consumer 수명과 직렬 fallback은 [공통 프레임 문서](../../Doroti/docs/native-frame-pipeline.md)를 참고하세요.
+Android는 같은 이름의 `--es` Intent 인자를 사용합니다. Sample2의
+`DOROTI_VARIABLE_BLUR_BENCHMARK`, `DOROTI_VARIABLE_BLUR_BENCHMARK_SIGMA`,
+`DOROTI_VARIABLE_BLUR_BENCHMARK_STATIC`도 cold launch의 `--es`로 전달할 수 있습니다.
+이 인자 없이 실행하면 일반 Cupertino 페이지와 Fast adaptive 기본값을 사용합니다.
+
 ## Android
 
 Android 워크로드, Android SDK와 JDK 17이 필요합니다. 네이티브 바인딩은 포함된 Gradle wrapper로 빌드합니다.
