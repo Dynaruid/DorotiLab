@@ -23,6 +23,8 @@
     <SelfContained>true</SelfContained>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="maui/**/*" />
+    <None Remove="maui/**/*" />
     <DorotiTargetDescriptor Include="Windows" HostKind="WindowsAppSdk" NativeEntryKind="Win32-WinMain" RuntimeIdentifier="win-x64" TargetFramework="net10.0-windows10.0.19041.0" TargetPackage="Doroti.Target.Windows.WindowsAppSdk.win-x64" AdapterDefault="$(DorotiWindowsAdapterDefault)" AdapterCapabilities="HwndExactCpp" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.4.0" />
     <PackageReference Include="Doroti.Target.Windows.WindowsAppSdk.win-x64" Version="0.3.0-beta" />

@@ -21,7 +21,8 @@ internal sealed class UIKitPlatformBlurView : UIVisualEffectView
             1,
             16,
             false,
-            "UIKit calibrated public material interpolation: one isotropic MatchCommon blur; intrinsic tint remains, ExactSigma/saturation are not supported."
+            "UIKit calibrated public material interpolation: one isotropic MatchCommon blur; intrinsic tint remains, ExactSigma/saturation are not supported.",
+            ExactSigma: false
         );
 
     private readonly NSObject _resumeObserver;

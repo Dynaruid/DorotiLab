@@ -31,6 +31,13 @@ and a counter. Hosts exposing the WebView command adapter also show URL navigati
 reload, local-content reset, and JavaScript evaluation controls; attachment-only hosts keep the
 interactive local page and a reset action.
 
+The optional Windows MAUI runner now connects button/editor/WebView2 through disjoint
+WinUI native overlays and exposes WebView commands and the HWND file picker. It does
+not provide interleaving/native backdrop or multiple-window support. The `DOROTI_SAMPLE=webview`
+route opens the basic WebView scene directly; `input` exercises separate editor/WebView
+recreation. [Windows MAUI execution](../../Doroti/docs/validation/2026-10-03-windows-maui-basic-connections.md)
+records its own checks and unverified physical-input/display boundaries.
+
 - [Prerequisites](#prerequisites)
 - [Platform sample commands](#material-sample-mode)
 - [Screen and renderer settings](#screen-and-renderer-settings)

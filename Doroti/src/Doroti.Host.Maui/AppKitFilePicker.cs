@@ -19,6 +19,7 @@ internal sealed class AppKitFilePicker(Func<NSWindow?> window) : IFilePickerHost
     public async ValueTask<FilePickResult> PickFilesAsync(FilePickOptions options, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(options);
+        options = options.Normalize();
         ObjectDisposedException.ThrowIf(_disposed, this);
         using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _lifetime.Token);
         linked.Token.ThrowIfCancellationRequested();
@@ -36,8 +37,10 @@ internal sealed class AppKitFilePicker(Func<NSWindow?> window) : IFilePickerHost
                 panel.CanChooseDirectories = false;
                 panel.AllowsMultipleSelection = options.AllowMultiple;
                 if (options.Extensions is { Length: > 0 } extensions && !extensions.Contains("*"))
-                    panel.AllowedContentTypes = extensions.Select(extension =>
-                        UTType.CreateFromExtension(extension.TrimStart('.')) ?? throw new ArgumentException("Unknown file extension: " + extension)).ToArray();
+                {
+                    var types = extensions.Select(extension => UTType.CreateFromExtension(extension.TrimStart('.'))).ToArray();
+                    if (types.All(type => type is not null)) panel.AllowedContentTypes = types.OfType<UTType>().ToArray();
+                }
                 panel.BeginSheet(owner, response =>
                 {
                     List<IPickedFile> acquired = [];
@@ -53,6 +56,7 @@ internal sealed class AppKitFilePicker(Func<NSWindow?> window) : IFilePickerHost
                                 {
                                     var file = new AppleReadFile(url);
                                     acquired.Add(file);
+                                    if (!FilePickFilters.Matches(file.Name, options.Extensions ?? [])) throw new IOException("Selected file does not match the requested extensions.");
                                     _files.Add(file);
                                     file.Released += () => { lock (_gate) _files.Remove(file); };
                                 }

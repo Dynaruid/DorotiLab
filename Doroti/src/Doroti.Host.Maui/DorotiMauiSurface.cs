@@ -29,13 +29,15 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
 #if MACOS
     internal DorotiMacOSMetalSurface DesktopMetalSurface => (DorotiMacOSMetalSurface)_renderSurface;
 #endif
-#if MACOS || MACCATALYST
+#if WINDOWS || MACOS || MACCATALYST
     internal void PrepareFrameworkClose() => _session?.ShutdownFramework();
     internal DorotiApplicationBoundary? SharedApplication { get; init; }
     internal Action<DorotiApplicationBoundary>? ApplicationAttached { get; init; }
     internal bool OwnsApplicationActivation { get; init; } = true;
 #endif
 #if WINDOWS
+    internal DorotiView? FrameworkView { get; private set; }
+    internal DorotiWindowsDxgiSurface WindowsSurface => (DorotiWindowsDxgiSurface)_renderSurface;
     internal Task PrepareDesktopCloseAsync() =>
         ((DorotiWindowsDxgiSurface)_renderSurface).PrepareForCloseAsync();
 
@@ -177,6 +179,10 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
             _session = new(_application.EntrypointFactory());
             _host = new();
             _session.Start(deferFrameworkBootstrap: true);
+#if WINDOWS
+            var windowsSurface = (DorotiWindowsDxgiSurface)_renderSurface;
+            windowsSurface.PlatformViews = new WindowsMauiPlatformViewHost(windowsSurface, _textInput);
+#endif
 #if MACOS
             var appKitSurface = (DorotiMacOSMetalSurface)_renderSurface;
             appKitSurface.PlatformViews = new AppKitPlatformViewHost(appKitSurface, _textInput);
@@ -195,6 +201,11 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
                 : null;
 #endif
             _boundary =
+#if WINDOWS
+                SharedApplication is { } shared
+                    ? shared.CreateWindowBoundary(windowsSurface.PlatformViews.CreateFactories(() => _boundary!.ApplicationResources))
+                    :
+#endif
 #if MACOS
                 SharedApplication is { } shared
                     ? shared.CreateWindowBoundary(appKitSurface.PlatformViews.CreateFactories(() => _boundary!.ApplicationResources))
@@ -202,7 +213,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
 #endif
 #if MACCATALYST
                 SharedApplication is { } shared
-                    ? shared.CreateWindowBoundary(uiKitPlatformViews?.CreateFactories() ?? [])
+                    ? shared.CreateWindowBoundary(uiKitPlatformViews?.CreateFactories(() => _boundary!.ApplicationResources) ?? [])
                     :
 #endif
                 DorotiApplicationBoundary.Load(
@@ -210,6 +221,9 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
                 _application.ApplicationAssembly,
                 _application.LaunchContext.RuntimeIdentifier,
                 _application.NativePluginHandlers
+#if WINDOWS
+                , windowsSurface.PlatformViews.CreateFactories(() => _boundary!.ApplicationResources)
+#endif
 #if MACOS
                 ,
                 appKitSurface.PlatformViews.CreateFactories(() => _boundary!.ApplicationResources)
@@ -220,10 +234,10 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
 #endif
 #if IOS || MACCATALYST
                 ,
-                uiKitPlatformViews?.CreateFactories()
+                uiKitPlatformViews?.CreateFactories(() => _boundary!.ApplicationResources)
 #endif
             );
-#if MACOS || MACCATALYST
+#if WINDOWS || MACOS || MACCATALYST
             ApplicationAttached?.Invoke(_boundary);
 #endif
             IMauiSemanticsBridge semantics =
@@ -233,6 +247,9 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
                 :
 #endif
                 new MauiSemanticsBridge(_semanticsLayer);
+#if WINDOWS
+            FrameworkView =
+#endif
             _host.CreateView(
                 _session,
                 _viewId,
@@ -241,7 +258,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
                 semantics,
                 _boundary,
                 _textInput
-#if MACOS || MACCATALYST
+#if WINDOWS || MACOS || MACCATALYST
                 , ownsApplicationActivation: OwnsApplicationActivation
 #endif
             );

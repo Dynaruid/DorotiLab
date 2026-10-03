@@ -8,7 +8,7 @@ export function parseProject(text: string): Project {
         !Array.isArray(value.developmentTargets) || !value.platforms || !value.applicationProject)
         throw new Error('Invalid response from Doroti CLI describe. Update the repository CLI.');
     for (const target of value.developmentTargets)
-        if (!['windows', 'web', 'ios', 'macos', 'maccatalyst', 'linux'].includes(target) || !value.platforms[target]) throw new Error('Invalid development target.');
+        if (!['windows', 'web', 'android', 'ios', 'macos', 'maccatalyst', 'linux'].includes(target) || !value.platforms[target]) throw new Error('Invalid development target.');
     return value;
 }
 export function validateName(name: string): string | undefined {

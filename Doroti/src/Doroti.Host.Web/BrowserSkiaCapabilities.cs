@@ -15,6 +15,17 @@ internal sealed class BrowserSkiaCapabilities : IBrowserGraphicsCapabilities
     private readonly BrowserHostAdapter _host;
     private readonly SkiaSceneRenderer _renderer;
     public TextureRegistry Textures => _renderer.Textures;
+    GraphicsFeatureSupport ISceneHostCapability.Features => _renderer.SceneFeatures with
+    {
+        Backend = _host.Snapshot.Gpu.Api, Generation = _host.Snapshot.Gpu.ContextGeneration,
+        Wgsl = _host.Snapshot.Gpu.Api == "webgpu", EffectBudgetBytes = 64L * 1024 * 1024,
+    };
+    SemanticsFeatureSupport ISemanticsHostCapability.Features => new(true, false,
+        [SemanticsRole.dialog, SemanticsRole.alertDialog, SemanticsRole.list, SemanticsRole.listItem,
+         SemanticsRole.tab, SemanticsRole.tabBar, SemanticsRole.menu, SemanticsRole.menuItem],
+        [SemanticsAction.tap, SemanticsAction.setText, SemanticsAction.setSelection, SemanticsAction.focus,
+         SemanticsAction.increase, SemanticsAction.decrease, SemanticsAction.expand, SemanticsAction.collapse],
+        "DOM accessibility geometry represents semantic bounds; native glyph text ranges are not exposed.");
     private readonly BrowserPlatformViewHost _platform;
     private readonly object _paintGate = new();
     private readonly Dictionary<long, SkiaPaintCompletion> _pendingPaints = [];
@@ -50,6 +61,9 @@ internal sealed class BrowserSkiaCapabilities : IBrowserGraphicsCapabilities
         _renderer.PlatformScenePainter = (canvas, commands, descriptor, width, height) =>
             _platform.Draw(_renderer, canvas, commands, descriptor, width, height);
         DorotiWebWorkerSurface.AttachTextureRenderer(viewId, _renderer);
+        _renderer.TextureFeatureProvider = () => new(BrowserVideo: _host.Snapshot.Gpu.ContextGeneration > 0,
+            Reason: "Browser video/canvas sources use browser GPU handles; native OS handles and Android producer Surface are unsupported.",
+            Generation: _host.Snapshot.Gpu.ContextGeneration);
     }
 
     public event Action<SemanticsActionEvent>? Action

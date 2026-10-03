@@ -249,8 +249,10 @@ public sealed class DorotiWindowController
         await _commands.WaitAsync();
         try
         {
-            await _host.CloseAsync(CancellationToken.None);
-            await _host.DisposeAsync();
+            // The host retires the view dispatcher during close. Final registry/lifetime
+            // notifications cannot depend on a continuation in that retired context.
+            await _host.CloseAsync(CancellationToken.None).ConfigureAwait(false);
+            await _host.DisposeAsync().ConfigureAwait(false);
             CompleteClosed();
             return true;
         }

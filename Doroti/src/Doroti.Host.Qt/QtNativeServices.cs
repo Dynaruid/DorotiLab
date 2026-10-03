@@ -86,14 +86,12 @@ internal sealed class QtNativeServices : IFilePickerHostCapability, IOsDragSourc
         ArgumentNullException.ThrowIfNull(options);
         cancellationToken.ThrowIfCancellationRequested();
         ObjectDisposedException.ThrowIf(_disposed, this);
-        var extensions = options.Extensions?.ToArray() ?? ["*"];
-        foreach (var extension in extensions)
-            if (extension is null || (extension != "*" && (extension.Length < 2 || extension[0] != '.' || extension[1..].Any(c => !char.IsLetterOrDigit(c)))))
-                throw new ArgumentException("File filters must be '*' or extensions such as '.txt'.", nameof(options));
+        var normalized = FilePickFilters.Normalize(options.Extensions);
+        var extensions = normalized.Length == 0 ? ["*"] : normalized;
         if (Interlocked.Exchange(ref _picking, 1) != 0)
             return new(FilePickStatus.failed, [], "A file picker is already open for this window.");
         using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _lifetime.Token);
-        var request = new PickRequest(this, (ulong)Interlocked.Increment(ref _nextRequest), linked.Token);
+        var request = new PickRequest(this, (ulong)Interlocked.Increment(ref _nextRequest), linked.Token, normalized);
         try
         {
             await QtApplicationDispatcher.Post(() => Start(request, options.AllowMultiple, extensions), linked.Token).ConfigureAwait(false);
@@ -126,7 +124,7 @@ internal sealed class QtNativeServices : IFilePickerHostCapability, IOsDragSourc
         }
         catch { _requests.Remove(request.Id); handle.Free(); throw; }
     }
-    private sealed record PickRequest(QtNativeServices Owner, ulong Id, CancellationToken Token)
+    private sealed record PickRequest(QtNativeServices Owner, ulong Id, CancellationToken Token, string[] Extensions)
     {
         internal TaskCompletionSource<FilePickResult> Completion { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
     }
@@ -146,7 +144,8 @@ internal sealed class QtNativeServices : IFilePickerHostCapability, IOsDragSourc
                 using var document = Parse(json);
                 foreach (var path in document.RootElement.EnumerateArray()) files.Add(new QtReadFile(path.GetString()!));
             }
-            request.Completion.TrySetResult(new(status == 0 ? FilePickStatus.selected : FilePickStatus.cancelled, files));
+            var result = FilePickFilters.Enforce(new(status == 0 ? FilePickStatus.selected : FilePickStatus.cancelled, files), request.Extensions);
+            if (!request.Completion.TrySetResult(result)) foreach (var file in result.Files) file.Dispose();
         }
         catch (Exception error)
         {

@@ -75,6 +75,9 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build -App ./samples/DorotiSampleA
 공통 UI, Cupertino 아이콘과 앱 ID(`dev.doroti.sample2`)를 공유하며 AppKit 앱 ID는 `dev.doroti.sample2.macos`입니다.
 
 Windows MAUI 비교용 프로젝트는 `windows/DorotiSampleApp2.Windows.csproj`입니다.
+Windows MAUI의 Upload 탭도 실제 HWND 파일 선택·읽기·미리보기를 연결하며,
+[2026-10-03 기본 연결 기록](../../Doroti/docs/validation/2026-10-03-windows-maui-basic-connections.md)에
+synthetic dialog 선택·preview·정리와 미검증 범위를 남겼습니다.
 workspace CLI의 Windows 기본 대상은 위 표의 Windows App SDK를 유지합니다.
 네이티브 호스트는 공통 C 정책만 사용합니다. 프레임 설정 없이 실행하거나
 `DOROTI_NATIVE_FRAME_MODE=C`를 지정합니다. A/B와 legacy 프레임 설정은 시작 시 거절합니다.

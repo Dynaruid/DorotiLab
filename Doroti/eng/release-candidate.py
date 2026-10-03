@@ -27,10 +27,13 @@ def main():
     parser.add_argument('--ios-tfm', default='net10.0-ios27.0')
     parser.add_argument('--catalyst-tfm', default='net10.0-maccatalyst27.0')
     parser.add_argument('--android-rid', choices=['android-arm64', 'android-x64'], default='android-arm64')
+    parser.add_argument('--windows-backend', choices=['WindowsAppSdk', 'Maui'], default='WindowsAppSdk')
+    parser.add_argument('--web-font-preset', choices=['Default', 'Offline'], default='Default')
     parser.add_argument('--output', type=Path)
     parser.add_argument('--version', default='0.3.0-beta.rc.' + datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S'))
     args = parser.parse_args()
-    if len(set(args.targets) & {'macos', 'android', 'ios', 'maccatalyst'}) > 1:
+    windows_maui = 'windows' in args.targets and args.windows_backend == 'Maui'
+    if len(set(args.targets) & {'macos', 'android', 'ios', 'maccatalyst'}) + int(windows_maui) > 1:
         parser.error('Qualify each MAUI platform pack in a separate candidate run.')
     mac_properties = ['-r', 'osx-arm64', '-p:DorotiMacOSTargetFramework=' + args.macos_tfm]
     apple = next((target for target in args.targets if target in ('ios', 'maccatalyst')), None)
@@ -49,7 +52,7 @@ def main():
     packages = output / 'packages'
     packages.mkdir()
     record = {'revision': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
-              'version': args.version, 'targets': args.targets, 'configuration': 'Release', 'signing': 'notVerified',
+              'version': args.version, 'targets': args.targets, 'windowsBackend': args.windows_backend, 'configuration': 'Release', 'signing': 'notVerified',
               'cleanMachineInstall': 'notVerified', 'physicalInput': 'notVerified', 'checks': [], 'status': 'running'}
 
     def command(name, *command_args, cwd=ROOT, env=None):
@@ -76,7 +79,7 @@ def main():
         roots = [ROOT / 'Doroti/src/Doroti.Framework.Material/Doroti.Framework.Material.csproj',
                  ROOT / 'Doroti/src/Doroti.Plugins/Doroti.Plugins.csproj']
         for target in args.targets:
-            package = {'windows': 'Doroti.Target.Windows.WindowsAppSdk.win-x64', 'web': 'Doroti.Target.Web.browser-wasm',
+            package = {'windows': 'Doroti.Target.Windows.' + args.windows_backend + '.win-x64', 'web': 'Doroti.Target.Web.browser-wasm',
                        'android': 'Doroti.Target.Android.Maui.' + args.android_rid,
                        'macos': 'Doroti.Target.MacOS.Maui.osx-arm64',
                        'ios': 'Doroti.Target.iOS.Maui.iossimulator-arm64',
@@ -90,9 +93,9 @@ def main():
             projects.add(path)
             if path.stem == 'Doroti.Host.Maui':
                 evaluated = json.loads(subprocess.check_output(['dotnet', 'msbuild', str(path), '-getItem:ProjectReference',
-                    '-p:TargetFramework=' + (apple_tfm if apple else args.macos_tfm if 'macos' in args.targets else 'net10.0-android'),
+                    '-p:TargetFramework=' + ('net10.0-windows10.0.19041.0' if windows_maui else apple_tfm if apple else args.macos_tfm if 'macos' in args.targets else 'net10.0-android'),
                     '-p:DorotiMacOSTargetFramework=' + args.macos_tfm,
-                    '-p:RuntimeIdentifier=' + (apple_rid if apple else 'osx-arm64' if 'macos' in args.targets else args.android_rid)], cwd=ROOT, text=True))
+                    '-p:RuntimeIdentifier=' + ('win-x64' if windows_maui else apple_rid if apple else 'osx-arm64' if 'macos' in args.targets else args.android_rid)], cwd=ROOT, text=True))
                 for reference in evaluated['Items']['ProjectReference']:
                     visit(Path(reference['FullPath']))
             else:
@@ -111,11 +114,16 @@ def main():
         template = ROOT / 'Doroti/templates/Doroti.Templates/Doroti.Templates.csproj'
         command('template', 'dotnet', 'pack', str(template), '-c', 'Release', version, '-o', str(packages), '--nologo')
         for project in sorted(projects):
-            pack_properties = ['-p:RuntimeIdentifier=' + args.android_rid] if project.stem == 'Doroti.Host.Maui' else []
+            pack_properties = ['-p:RuntimeIdentifier=' + ('win-x64' if windows_maui else args.android_rid)] if project.stem == 'Doroti.Host.Maui' else []
             if 'macos' in args.targets and project.stem in ('Doroti.Host.Maui', 'Doroti.Target.MacOS.Maui.osx-arm64'):
                 pack_properties = ['-p:RuntimeIdentifier=osx-arm64', '-p:DorotiMacOSTargetFramework=' + args.macos_tfm]
             if apple and (project.stem == 'Doroti.Host.Maui' or project.stem.startswith(('Doroti.Target.iOS.', 'Doroti.Target.MacCatalyst.'))):
                 pack_properties = apple_properties
+            if windows_maui and project.stem == 'Doroti.Host.Maui':
+                # Target project references build the RID-neutral host assembly;
+                # the selected native pack must be built under its own RID.
+                command('build-windows-maui-pack', 'dotnet', 'build', str(project), '-c', 'Release',
+                        version, '--nologo', *pack_properties)
             command('pack-' + project.stem, 'dotnet', 'pack', str(project), '-c', 'Release', '--no-build', version, '-o', str(packages), '--nologo', *pack_properties)
         consumer = run / 'consumer'
         hive = str(run / 'template-hive')
@@ -147,13 +155,22 @@ def main():
                     await second.WaitUntilReadyToShowAsync(ct);
                     await second.SetSizeAsync(new Size(520, 620), ct);
                     await second.CloseAsync();
+                    if (!second.State.Closed || context.Windows.GetWindows().Count != 1)
+                        throw new InvalidOperationException("Package consumer second window did not retire.");
+                    System.IO.File.WriteAllText(Environment.GetEnvironmentVariable("DOROTI_RELEASE_RECEIPT")!,
+                        System.Text.Json.JsonSerializer.Serialize(new { nativeFirstFrame = true, twoWindows = true,
+                            secondResizedAndClosed = true, survivorsBeforeMainClose = 1 }));
                     await context.Window.CloseAsync();
                     Console.WriteLine("PASS: NuGet-only Release native presentation, second window, resize and close.");
                 },
                 Options = new WindowOptions'''), encoding='utf-8')
         for target in args.targets:
             project = consumer / ('macos' if target == 'maccatalyst' else target) / f'CandidateApp.{dict(macos="MacOS", ios="iOS", maccatalyst="MacCatalyst").get(target, target.title())}.csproj'
+            if target == 'windows' and windows_maui:
+                project = consumer / 'windows/maui/CandidateApp.Windows.Maui.csproj'
             target_properties = ['-r', args.android_rid, '-p:EmbedAssembliesIntoApk=true'] if target == 'android' else []
+            if target == 'web':
+                target_properties.append('-p:DorotiWebFontPreset=' + args.web_font_preset)
             if target == 'macos':
                 target_properties = mac_properties + ['-p:EnableCodeSigning=true', '-p:LinkMode=None']
                 project.write_text(project.read_text().replace('</PropertyGroup>', '''
@@ -168,8 +185,16 @@ def main():
             command(operation + '-' + target, 'dotnet', operation, str(project), '-c', 'Release', '--nologo',
                     '-p:PublishTrimmed=' + ('true' if target in ('macos', 'ios', 'maccatalyst') else 'false'), '-p:RunAOTCompilation=false', *output_properties, *target_properties, cwd=consumer, env=environment)
             if target == 'windows':
-                command('native-package-consumer', 'dotnet', str(output / target / 'CandidateApp.Windows.dll'),
-                        cwd=output / target, env={**environment, 'DOROTI_RELEASE_SMOKE': '1'})
+                launch = [str(output / target / 'CandidateApp.Windows.Maui.exe')] if windows_maui else ['dotnet', str(output / target / 'CandidateApp.Windows.dll')]
+                command('native-package-consumer', *launch,
+                        cwd=output / target, env={**environment, 'DOROTI_RELEASE_SMOKE': '1',
+                            'DOROTI_RELEASE_RECEIPT': str(output / 'native-consumer.json'),
+                            'DOROTI_MAUI_EVIDENCE': str(run / 'maui-native.json')} if windows_maui else
+                            {**environment, 'DOROTI_RELEASE_SMOKE': '1', 'DOROTI_RELEASE_RECEIPT': str(output / 'native-consumer.json')})
+                receipt = json.loads((output / 'native-consumer.json').read_text())
+                if not all(receipt.get(key) is True for key in ('nativeFirstFrame', 'twoWindows', 'secondResizedAndClosed')):
+                    raise RuntimeError('Native consumer did not complete the actual two-window fixture.')
+                record['nativeConsumer'] = receipt
             elif target == 'macos':
                 apps = list((output / target).glob('*.app'))
                 if not apps:

@@ -97,4 +97,12 @@ public static partial class WebTextureExport
 
     [JSExport]
     public static Task<int> Builds() => Task.FromResult(TextureSampleProbe.Builds);
+
+    [JSExport]
+    public static Task<string> ClipboardAvailability() => OnOwner(async () =>
+        (await Doroti.Framework.Services.Clipboard.queryTextAvailability()).ToString());
+
+    [JSExport]
+    public static Task<bool> ClipboardHasStrings() => OnOwner(async () =>
+        await Doroti.Framework.Services.Clipboard.hasStrings());
 }

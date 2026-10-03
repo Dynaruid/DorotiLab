@@ -4,7 +4,7 @@ namespace Doroti.Host.Qt;
 
 internal static unsafe class QtNativeV2
 {
-    internal const uint AbiVersion = 6;
+    internal const uint AbiVersion = 7;
     internal static ulong RequiredFeatures =>
         (
             QtSkiaSurface.GraphiteEnabled
@@ -22,7 +22,7 @@ internal static unsafe class QtNativeV2
         | (1UL << 9)
         | (1UL << 14)
         | (1UL << 15)
-        | (1UL << 16);
+        | (1UL << 16) | (1UL << 23) | (1UL << 24);
 
     internal enum Result : int
     {
@@ -142,6 +142,9 @@ internal static unsafe class QtNativeV2
         internal readonly double PanDeltaY;
         internal readonly double Scale;
         internal readonly double Rotation;
+        internal readonly double Orientation;
+        internal readonly uint PenFields;
+        internal readonly uint PenReserved;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -239,6 +242,7 @@ internal static unsafe class QtNativeV2
         internal readonly delegate* unmanaged[Cdecl]<nint, Utf8, void> UpdateSemantics;
         internal readonly delegate* unmanaged[Cdecl]<nint, void> ClearSemantics;
         internal readonly delegate* unmanaged[Cdecl]<nint, void> PreparePresent;
+        internal readonly delegate* unmanaged[Cdecl]<nint, TextConfiguration*, void> UpdateTextConfiguration;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -338,13 +342,13 @@ internal static unsafe class QtNativeV2
         RequireSize<Metrics>(160);
         RequireOffset<Metrics>(nameof(Metrics.ViewInsets), 88);
         RequireOffset<Metrics>(nameof(Metrics.PhysicalTouchSlop), 152);
-        RequireSize<Pointer>(168);
+        RequireSize<Pointer>(184);
         RequireOffset<Pointer>(nameof(Pointer.PanX), 120);
         RequireOffset<Pointer>(nameof(Pointer.Rotation), 160);
         RequireSize<Key>(56);
         RequireSize<TextConfiguration>(40);
         RequireSize<TextState>(40);
-        RequireSize<HostApi>(128);
+        RequireSize<HostApi>(136);
         RequireSize<Callbacks>(208);
         RequireOffset<Surface>(nameof(Surface.SurfaceGeneration), 8);
         RequireOffset<Surface>(nameof(Surface.FramebufferObject), 24);

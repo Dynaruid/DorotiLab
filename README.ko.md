@@ -10,6 +10,10 @@ Flutter 프레임워크 소스를 C#으로 변환하는 데서 시작했으며, 
 
 [시작하기](#시작하기) · [플랫폼별 구현](#플랫폼별-구현) · [문서](#문서)
 
+선택 backend인 Windows MAUI에 HWND 파일 선택과 disjoint WinUI native button/editor/WebView2
+overlay를 연결했습니다. [2026-10-03 실행 기록](Doroti/docs/validation/2026-10-03-windows-maui-basic-connections.md)에서
+MAUI 전용 native/위젯/업로드 검사와 물리 입력·고급 합성의 미검증 범위를 확인할 수 있습니다.
+
 > [!WARNING]
 > Doroti는 활발히 개발 중인 실험적 프로젝트입니다. API, 동작, 프로젝트 구조는 하위 호환성 보장 없이 변경될 수 있으며, 플랫폼별 완성도에는 차이가 있습니다.
 
@@ -35,10 +39,10 @@ Flutter 프레임워크 소스를 C#으로 변환하는 데서 시작했으며, 
 | iOS | .NET MAUI / UIKit | `Doroti.Host.Maui` | Skia Graphite / Metal |
 | macOS | 네이티브 AppKit / MetalKit (`MTKView`) | `Doroti.Host.Maui`의 AppKit 어댑터 | Skia Graphite / Metal |
 | Mac Catalyst | .NET MAUI / UIKit (Mac Catalyst) | `Doroti.Host.Maui` | Skia Graphite / Metal |
-| Web | .NET WebAssembly, 렌더링 Worker / canvas | `Doroti.Host.Web` | Skia Graphite / Dawn / WebGPU |
+| Web | .NET WebAssembly, 렌더링 Worker / canvas | `Doroti.Host.Web` | desktop/iOS: Ganesh/WebGL2, Android: Graphite/Dawn/WebGPU 우선 |
 | Linux | Qt 6 `QWindow`, 네이티브 C ABI 브리지 | `Doroti.Host.Qt` | Skia Graphite / Vulkan |
 
-Web에서는 Ganesh/WebGL2도 명시적으로 선택할 수 있습니다. 구현체별 검증 범위에는 차이가 있으므로 [프로젝트 상태](#프로젝트-상태)를 함께 참고하세요.
+Web 자동 선택은 desktop/iOS에서 WebGL2, Android에서 WebGPU를 우선하며 초기 fallback 조건을 평가합니다. `dorotiRenderer=worker-direct-webgl` 또는 `worker-direct-webgpu`로 명시 선택할 수 있습니다. 실행 중 graphics loss는 새 endpoint가 필요합니다. [전체 구현 기록](Doroti/docs/validation/2026-10-03-platform-gap-implementation.md)과 [프로젝트 상태](#프로젝트-상태)에 검증 범위를 기록합니다.
 
 ## 시작하기
 
@@ -120,3 +124,5 @@ Doroti는 개인적으로 즐기며 만들고 있는 취미 프로젝트입니�
 ## 라이선스
 
 Doroti는 [BSD 3-Clause 라이선스](LICENSE)를 따릅니다. 외부 소스와 패키지의 저작권 표기는 [서드파티 고지](Doroti/THIRD-PARTY-NOTICES.md)를 참고하세요.
+
+2026-10-03: Windows MAUI 기본 native 서비스·GPU import/복수 창, App SDK opt-in WebView/editor 혼합, layout 접근성 geometry, Web 복구/offline font·개발/release 진입점은 [현재 실행 기록](Doroti/docs/validation/2026-10-03-platform-gap-implementation.md)을 따른다. Apple 변경 검증은 사용자 요청으로 생략했고, 물리 입력·AT·표시·서명 배포 인수는 별도다.

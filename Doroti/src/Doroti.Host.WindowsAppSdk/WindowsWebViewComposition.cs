@@ -227,8 +227,8 @@ internal sealed partial class WindowsWebViewComposition : IPlatformViewFactory, 
     )
     {
         cancellationToken.ThrowIfCancellationRequested();
-        var options = ParseOptions(parameters);
-        var content = await LoadContent(options, cancellationToken);
+        var options = WindowsWebViewSession.ParseOptions(parameters);
+        var content = await WindowsWebViewSession.LoadContent(_resources, options, cancellationToken);
         if (_disposed)
         {
             throw new WebViewException(WebViewError.Closed, "WebView owner is closed.");
@@ -242,7 +242,7 @@ internal sealed partial class WindowsWebViewComposition : IPlatformViewFactory, 
                 "Doroti",
                 "WebView2"
             );
-        _environment ??= CreateEnvironment(folder);
+        _environment ??= WindowsWebViewSession.CreateEnvironment(folder);
         var environment = await _environment;
         cancellationToken.ThrowIfCancellationRequested();
         if (_disposed)
@@ -816,23 +816,18 @@ internal sealed partial class WindowsWebViewComposition : IPlatformViewFactory, 
     private static Rect ShieldBounds(PlatformInputShield shield) =>
         Bounds(new(default, shield.Bounds, shield.Transform, shield.Clip, shield.PaintOrder));
 
-    private sealed partial class Instance : IPlatformViewInstance, IPlatformWebViewInstance
+    private sealed class Instance : WindowsWebViewSession, IPlatformViewInstance, IPlatformWebViewInstance
     {
         private readonly WindowsWebViewComposition _owner;
-        private readonly PlatformViewHandle _handle;
         private readonly Action<PlatformViewHandle> _focused;
         internal readonly CoreWebView2CompositionController Controller;
 
         // WinRT event callbacks require environment and core wrappers to outlive the attachment.
-        private readonly CoreWebView2Environment _environment;
-        internal readonly CoreWebView2 Core;
         internal readonly C.ContainerVisual Visual;
         internal PlatformViewPlacement? Placement;
         private bool _disposed;
         private bool _hasFocus;
-        internal bool Loaded { get; private set; }
         internal string NavigationStatus { get; private set; } = "Pending";
-        internal string? InitialHtml;
         private double _scale;
 
         internal Instance(
@@ -844,22 +839,16 @@ internal sealed partial class WindowsWebViewComposition : IPlatformViewFactory, 
             Action<PlatformViewHandle> focused,
             WebViewOptions options,
             Dictionary<string, byte[]> content
-        )
+        ) : base(handle, environment, controller.CoreWebView2, options, content)
         {
             _owner = owner;
-            _handle = handle;
-            _environment = environment;
             Controller = controller;
-            Core = controller.CoreWebView2;
             Visual = visual;
             _focused = focused;
             controller.GotFocus += Focused;
             controller.LostFocus += LostFocus;
             Core.NavigationCompleted += Navigated;
             Core.WebMessageReceived += MessageReceived;
-            _options = options;
-            _content = content;
-            ConnectCommands();
         }
 
         private void Focused(object? sender, object args)

@@ -86,6 +86,16 @@ public sealed record WebViewFeatures(
 )
 {
     public bool BrowserDefaultProfile { get; init; }
+    public bool BackForward { get; init; }
+    public bool Supports(WebViewOperation operation) => operation switch
+    {
+        WebViewOperation.Features or WebViewOperation.State => true,
+        WebViewOperation.Navigate or WebViewOperation.LoadHtml or WebViewOperation.Reload or WebViewOperation.Stop => Navigation,
+        WebViewOperation.Back or WebViewOperation.Forward => Navigation && BackForward,
+        WebViewOperation.EvaluateJavaScript => JavaScript,
+        WebViewOperation.ClearData => ClearAllData,
+        _ => false,
+    };
 }
 
 public sealed record WebViewResult(

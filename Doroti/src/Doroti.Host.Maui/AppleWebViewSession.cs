@@ -1,5 +1,7 @@
+#if MACOS || IOS || MACCATALYST
 #if MACOS
 using AppKit;
+#endif
 using CoreGraphics;
 using Doroti.Ui;
 using Foundation;
@@ -8,9 +10,9 @@ using WebKit;
 
 namespace Doroti.Host.Maui;
 
-/// <summary>Commands/delegates for the WKWebView owned by AppKitPlatformViewFactory.
+/// <summary>Commands/delegates for the WKWebView owned by the AppKit/UIKit adapters.
 /// No second view, compositor, private WebKit API, or reflection serialization.</summary>
-internal sealed class AppKitWebViewSession : IDisposable
+internal sealed class AppleWebViewSession : IDisposable
 {
     private sealed class NativeWebView(
         WKWebViewConfiguration configuration,
@@ -30,14 +32,16 @@ internal sealed class AppKitWebViewSession : IDisposable
             return accepted;
         }
 
+#if MACOS
         public override void MouseDown(NSEvent theEvent)
         {
             beforeFocus();
             base.MouseDown(theEvent);
         }
+#endif
     }
 
-    private sealed class NavigationDelegate(AppKitWebViewSession owner) : WKNavigationDelegate
+    private sealed class NavigationDelegate(AppleWebViewSession owner) : WKNavigationDelegate
     {
         public override void DecidePolicy(
             WKWebView webView,
@@ -102,7 +106,7 @@ internal sealed class AppKitWebViewSession : IDisposable
         ) => null;
     }
 
-    private sealed class MessageHandler(AppKitWebViewSession owner)
+    private sealed class MessageHandler(AppleWebViewSession owner)
         : NSObject,
             IWKScriptMessageHandler
     {
@@ -120,7 +124,7 @@ internal sealed class AppKitWebViewSession : IDisposable
     private readonly NavigationDelegate _navigation;
     private readonly UiDelegate _ui = new();
     private readonly MessageHandler? _messages;
-    private readonly AppKitWebViewContent? _content;
+    private readonly AppleWebViewContent? _content;
     private readonly List<WKNavigation> _navigations = [];
     private readonly Dictionary<long, TaskCompletionSource<WebViewResult>> _pending = [];
     private long _requestId,
@@ -131,7 +135,7 @@ internal sealed class AppKitWebViewSession : IDisposable
         _failed;
     internal WKWebView View { get; }
 
-    internal AppKitWebViewSession(
+    internal AppleWebViewSession(
         PlatformViewHandle handle,
         string parameters,
         Action beforeFocus,
@@ -163,6 +167,11 @@ internal sealed class AppKitWebViewSession : IDisposable
                     "Missing WebView settings."
                 )
             : new WebViewOptions(parameters);
+        if (!parameters.StartsWith(WebViewOptions.Prefix, StringComparison.Ordinal) && parameters.StartsWith('{'))
+        {
+            using var legacy = JsonDocument.Parse(parameters);
+            if (legacy.RootElement.TryGetProperty("html", out var html)) _options = new(html.GetString());
+        }
         _options.Validate();
         if (_options.Resources is { Count: > 0 } && resources is null)
         {
@@ -177,9 +186,12 @@ internal sealed class AppKitWebViewSession : IDisposable
                 ? WKWebsiteDataStore.DefaultDataStore
                 : WKWebsiteDataStore.NonPersistentDataStore;
         _configuration = new WKWebViewConfiguration { WebsiteDataStore = _store };
+#if IOS || MACCATALYST
+        _configuration.AllowsInlineMediaPlayback = true;
+#endif
         if (_options.Resources is { Count: > 0 } routes)
         {
-            _content = new AppKitWebViewContent(
+            _content = new AppleWebViewContent(
                 resources
                     ?? throw new WebViewException(
                         WebViewError.Unsupported,
@@ -200,9 +212,13 @@ internal sealed class AppKitWebViewSession : IDisposable
             NavigationDelegate = _navigation,
             UIDelegate = _ui,
         };
-        BeginNavigation(
-            View.LoadHtmlString(_options.Html ?? "<!doctype html><meta charset=utf-8>", null!)
-        );
+#if IOS || MACCATALYST
+        var bundleId = NSBundle.MainBundle.BundleIdentifier;
+        using var initialBaseUrl = string.IsNullOrWhiteSpace(bundleId) ? null : new NSUrl($"https://{bundleId.ToLowerInvariant()}/");
+#else
+        NSUrl? initialBaseUrl = null;
+#endif
+        BeginNavigation(View.LoadHtmlString(_options.Html ?? "<!doctype html><meta charset=utf-8>", initialBaseUrl!));
     }
 
     private bool Allows(string? url)
@@ -439,7 +455,7 @@ internal sealed class AppKitWebViewSession : IDisposable
         CancellationToken cancellationToken
     )
     {
-        AppKitPlatformViewDispatcher.VerifyThread();
+        AppleWebViewUi.VerifyThread();
         cancellationToken.ThrowIfCancellationRequested();
         if (_closed)
         {
@@ -484,7 +500,7 @@ internal sealed class AppKitWebViewSession : IDisposable
                             true,
                             ScriptMessages: _messages is not null,
                             AppContentScheme: _content is not null
-                        )
+                        ) { BackForward = true }
                     )
                 );
             case WebViewOperation.State:
@@ -674,7 +690,7 @@ internal sealed class AppKitWebViewSession : IDisposable
         }
         finally
         {
-            await new AppKitPlatformViewDispatcher().InvokeAsync(() =>
+            await AppleWebViewUi.Dispatcher.InvokeAsync(() =>
             {
                 if (_pending.Remove(request, out var pending))
                 {

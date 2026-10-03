@@ -50,7 +50,9 @@ internal sealed class CupertinoSample : StatefulWidget
 
 internal sealed class CupertinoSampleState : State<CupertinoSample>
 {
-    private readonly CupertinoTabController _tabs = new(initialIndex: VariableBlurPageState.BenchmarkMode is null ? 0 : 3);
+    private readonly CupertinoTabController _tabs = new(initialIndex:
+        Environment.GetEnvironmentVariable("DOROTI_UPLOAD_PROBE") is { Length: > 0 } ? 5
+        : VariableBlurPageState.BenchmarkMode is null ? 0 : 3);
     private Brightness? _brightness;
     private bool _notifications = true;
     private double _volume = 0.5;

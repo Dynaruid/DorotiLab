@@ -109,6 +109,7 @@ public static class DorotiMauiApplicationBuilderExtensions
 #if WINDOWS
             .ConfigureMauiHandlers(handlers =>
                 handlers.AddHandler<DorotiWindowsDxgiElement, DorotiWindowsDxgiElementHandler>()
+                    .AddHandler<MauiSemanticsLayout, MauiSemanticsLayoutHandler>()
             );
 #elif MACCATALYST
             .ConfigureMauiHandlers(handlers =>

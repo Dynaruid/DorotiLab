@@ -847,6 +847,7 @@ public class RenderParagraph
 
     public override void performLayout()
     {
+        markNeedsSemanticsUpdate();
         _lastSelectableFragments?.forEach((element) => element.didChangeParagraphLayout());
         BoxConstraints constraintsLocal = constraints;
         _placeholderDimensions = layoutInlineChildren(
@@ -1124,6 +1125,9 @@ public class RenderParagraph
     public override void describeSemanticsConfiguration(SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
+        config.hostTextGeometry = RenderSemanticsTextGeometry.Capture(_textPainter, Offset.zero);
+        config.hostScrollToTextRange = (start, end) => RenderSemanticsTextGeometry.ShowRange(config.hostTextGeometry, start, end,
+            bounds => showOnScreen(rect: bounds));
         _semanticsInfo = text.getSemanticsInformation();
         var needsAssembleSemanticsNode = false;
         var needsChildConfigurationsDelegate = false;
@@ -1289,6 +1293,9 @@ public class RenderParagraph
         IEnumerable<SemanticsNode> children
     )
     {
+        node.hostTextGeometry = RenderSemanticsTextGeometry.Capture(_textPainter, Offset.zero);
+        node.hostScrollToTextRange = (start, end) => RenderSemanticsTextGeometry.ShowRange(node.hostTextGeometry, start, end,
+            bounds => showOnScreen(rect: bounds));
         DartRuntimePrimitives.Assert(() =>
             (_semanticsInfo is not null) && (checked((long)_semanticsInfo!.Count) != 0)
         );

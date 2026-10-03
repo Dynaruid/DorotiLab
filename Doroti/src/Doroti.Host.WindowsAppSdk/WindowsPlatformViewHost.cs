@@ -22,6 +22,8 @@ internal sealed class WindowsPlatformViewHost : IDisposable
     private long _rasterCacheRevision;
     private WindowsWebViewComposition? _webViews;
     private readonly WindowsWinUiControls _winUiControls = new();
+    private readonly HashSet<PlatformViewHandle> _xamlWebHandles = [];
+    private long _mixedXamlCommits;
     private WindowsWinUiBackdrop? _winUiBackdrop;
     private Task<int>? _captureProbe;
     private readonly List<CompositionRaster>[] _banks =
@@ -159,7 +161,8 @@ internal sealed class WindowsPlatformViewHost : IDisposable
             resources,
             () => _presenter!.RasterAdapter
         );
-        _factories.Add(_webViews.ViewType, _webViews);
+        var mixedXaml = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_MIXED_NATIVE_VIEWS") == "1" && presenter is not null;
+        if (!mixedXaml) _factories.Add(_webViews.ViewType, _webViews);
         if (presenter is not null)
         {
             Native.SetWindowLongPtrW(
@@ -183,10 +186,12 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                 )
             );
         }
-        foreach (var editor in new[] { false, true })
+        foreach (var kind in mixedXaml ? new[] { 0, 1, 2 } : new[] { 0, 1 })
         {
-            var factory = new WindowsHwndPlatformViewFactory(_parent, editor, false)
+            var factory = new WindowsHwndPlatformViewFactory(_parent, kind == 1, false)
             {
+                ViewTypeOverride = kind == 2 ? "doroti/webview" : null,
+                XamlWebView = kind == 2,
                 WinUiControls = _winUiControls,
                 Interleaved = presenter is not null,
                 SiblingRasterTopology = presenter is not null,
@@ -195,10 +200,12 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                 {
                     // WinUI owns a live composition island, not a layered GDI bitmap.
                     _controls.Add(handle, hwnd);
+                    if (kind == 2) _xamlWebHandles.Add(handle);
                     Volatile.Write(ref _liveHwndSources, _controls.Count);
                 },
                 Destroyed = handle =>
                 {
+                    _xamlWebHandles.Remove(handle);
                     if (_controls.Remove(handle, out var hwnd))
                     {
                         _nativeSourcesToPaint.Remove(hwnd);
@@ -241,7 +248,8 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                     ),
                 SourceSurfaceChanged = hwnd => _nativeSourcesToPaint.Add(hwnd),
             };
-            _factories.Add(factory.ViewType, factory);
+            _factories.Add(factory.ViewType, kind == 2 ? new WindowsXamlWebViewFactory(factory,
+                handle => _winUiControls.GetWebView(_controls[handle]), resources) : factory);
         }
         return _dispatcher;
     }
@@ -1464,6 +1472,9 @@ internal sealed class WindowsPlatformViewHost : IDisposable
         {
             return;
         }
+        var nativeHandles = frame.Plan.Parts.OfType<PlatformNativeSegment>().Select(p => p.Placement.Handle).ToArray();
+        if (nativeHandles.Any(_xamlWebHandles.Contains) && nativeHandles.Any(h => !_xamlWebHandles.Contains(h)))
+            _mixedXamlCommits++;
 
         if (
             _captureProbe is null
@@ -1495,6 +1506,7 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                 ? "Graphite/Vulkan atlas -> Windows.UI.Composition/WebView2/backdrop"
             : "Graphite/Vulkan GPU atlas -> single DirectComposition scene with live HWND surfaces",
             commits = _commits,
+            mixedXamlCommits = _mixedXamlCommits,
             readbackBytes = _readbackBytes,
             dpi = Native.GetDpiForWindow(_parent),
             uploadedBytes = _uploadedBytes + (_webViews?.RasterUploadBytes ?? 0),

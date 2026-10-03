@@ -11,6 +11,7 @@ public static partial class DorotiWebWorkerSurface
 {
     private sealed class BrowserGpuEffectBackend : ISkiaGpuEffectBackend
     {
+        public long AvailableCaptureBytes => (long)BrowserEffectAvailableBytes();
         public void Draw(SKCanvas destination, int width, int height, Action<SKCanvas> capture,
             GpuEffectProgram program, GpuEffectParameters parameters, float logicalWidth = 0, float logicalHeight = 0)
         {
@@ -101,6 +102,8 @@ public static partial class DorotiWebWorkerSurface
 
     [JSImport("allocateEffect", "doroti-textures")]
     private static partial JSObject AllocateBrowserEffect(int width, int height);
+    [JSImport("effectAvailableBytes", "doroti-textures")]
+    private static partial double BrowserEffectAvailableBytes();
 
     [JSImport("executeEffect", "doroti-textures")]
     private static partial void ExecuteBrowserEffect(int token, string key, string vertex,

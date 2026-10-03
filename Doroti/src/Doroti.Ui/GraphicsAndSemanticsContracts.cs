@@ -524,6 +524,7 @@ public sealed record PathCommand(string Operation, IReadOnlyList<double> Argumen
 
 public interface ISceneHostCapability
 {
+    GraphicsFeatureSupport Features => new("unknown", Reason: "The current renderer does not expose feature support.");
     void Submit(ulong viewId, DorotiSceneSubmission submission, DorotiUiInvocation invocation);
 }
 
@@ -586,7 +587,14 @@ internal sealed record ScenePicturePayload(
     Rect? CanvasBounds,
     bool IsComplexHint,
     bool WillChangeHint
-);
+)
+{
+    // State-only recordings around composited children have no pixels. Grouped blends
+    // and unknown operations remain drawing because they may affect the destination.
+    internal bool HasDrawing => Commands.Any(command => command.Operation is not (
+        "save" or "restore" or "translate" or "scale" or "rotate" or "skew" or "transform"
+        or "clipRect" or "clipRRect" or "clipRSuperellipse" or "clipPath"));
+}
 
 internal sealed record SceneOffsetPayload(double Dx, double Dy);
 
@@ -2752,6 +2760,7 @@ public enum SemanticsAction : long
     scrollToOffset = 1L << 23,
     expand = 1L << 24,
     collapse = 1L << 25,
+    scrollToTextRange = 1L << 26,
 }
 
 public enum SemanticsRole
@@ -3173,7 +3182,8 @@ public sealed record SemanticsNodeUpdate(
     IReadOnlyList<string>? controlsNodes = null,
     Locale? locale = null,
     IReadOnlyList<double>? coordinateTransform = null,
-    long? platformViewId = null
+    long? platformViewId = null,
+    SemanticsTextGeometry? textGeometry = null
 );
 
 public enum SemanticsUpdateUrgency
@@ -3269,7 +3279,8 @@ public static class SemanticsGeometryProjection
         }
 
         var rect = TransformRect(node.rect, transform);
-        projected[id] = node with { rect = rect, coordinateTransform = null };
+        projected[id] = node with { rect = rect, coordinateTransform = null,
+            textGeometry = node.flags?.isObscured == true ? null : node.textGeometry?.Transform(r => TransformRect(r, transform), rect) };
         // Legacy manually supplied nodes use a rect-relative child origin. Framework
         // nodes carry a coordinate transform: a clipped rect must never move that origin.
         if (!explicitTransform)
@@ -3462,6 +3473,12 @@ public static class SemanticsUpdateDiffer
         }
 
         hash.Add(node.locale);
+        if (node.textGeometry is { } geometry)
+        {
+            hash.Add(geometry.Text, StringComparer.Ordinal);
+            hash.Add(geometry.Revision);
+            foreach (var run in geometry.Runs) hash.Add(run);
+        }
         foreach (var child in node.children)
         {
             hash.Add(child);
@@ -3489,6 +3506,8 @@ public static class SemanticsUpdateDiffer
     )
     {
         var result = SemanticsNodeProperty.none;
+        if (previous.textGeometry is { } oldGeometry ? !oldGeometry.ContentEquals(current.textGeometry) : current.textGeometry is not null)
+            result |= SemanticsNodeProperty.metadata | SemanticsNodeProperty.bounds;
         if (
             previous.rect != current.rect
             || !(previous.coordinateTransform ?? []).SequenceEqual(
@@ -3610,6 +3629,16 @@ public sealed class SemanticsUpdateBuilder
     {
         ArgumentNullException.ThrowIfNull(node);
         _nodes[node.id] = node;
+    }
+
+    public void UpdateTextGeometry(int id, SemanticsTextGeometry? geometry)
+    {
+        if (_nodes.TryGetValue(id, out var node))
+        {
+            var safe = node.flags?.isObscured == true ? null : geometry;
+            _nodes[id] = node with { textGeometry = safe,
+                actions = safe is null ? node.actions : node.actions | SemanticsAction.scrollToTextRange };
+        }
     }
 
     public void updateNode(
@@ -3768,6 +3797,7 @@ public readonly record struct SemanticsActionEvent(
 
 public interface ISemanticsHostCapability
 {
+    SemanticsFeatureSupport Features => new(Reason: "The active semantics provider does not expose detailed support.");
     event Action<SemanticsActionEvent>? Action;
 
     /// <summary>

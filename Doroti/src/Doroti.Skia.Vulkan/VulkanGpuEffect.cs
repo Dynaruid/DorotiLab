@@ -28,6 +28,7 @@ internal sealed unsafe class VulkanGpuEffect(
     internal long PeakBytes { get; private set; }
     internal long CancellationFences { get; private set; }
     private const long Budget = 128L * 1024 * 1024;
+    public long AvailableCaptureBytes => Math.Max(0, Budget - LiveBytes);
 
     internal void Draw(SKCanvas destination, int width, int height, Action<SKCanvas> capture,
         ReadOnlySpan<byte> vertex, ReadOnlySpan<byte> fragment, string entryPoint = "main",

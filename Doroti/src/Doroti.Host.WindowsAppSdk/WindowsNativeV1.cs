@@ -8,7 +8,7 @@ namespace Doroti.Host.WindowsAppSdk;
 
 internal static partial class WindowsNativeV1
 {
-    internal const uint AbiVersion = 2;
+    internal const uint AbiVersion = 3;
     internal const ulong ExperimentalAcrylicFeature = 1UL << 0;
     internal const ulong PostPresentDwmFlushFeature = 1UL << 1;
     internal const ulong RetainedOversizedChildSurfaceFeature = 1UL << 2;
@@ -18,6 +18,8 @@ internal static partial class WindowsNativeV1
     internal const ulong UnifiedTitlebarFeature = 1UL << 6;
     internal const ulong SolidTitlebarFeature = 1UL << 7;
     internal const ulong PlatformViewSiblingWindowsFeature = 1UL << 8;
+    internal const ulong TextConfigurationUpdateFeature = 1UL << 9;
+    internal const ulong TextGeometryFeature = 1UL << 10;
     internal const string LibraryName = "doroti_windows_appsdk_host_v1";
     private const uint LoadLibrarySearchDllLoadDir = 0x00000100;
     private const uint LoadLibrarySearchApplicationDir = 0x00000200;
@@ -193,6 +195,7 @@ internal static partial class WindowsNativeV1
         internal nint ClearSemantics;
         internal uint InitialPlatformBrightness;
         internal nint SetCompositionChild;
+        internal nint UpdateTextConfiguration;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 8)]

@@ -320,7 +320,13 @@ internal sealed unsafe class QtHostAdapter
                         : PointerSignalKind.unknown,
                     value.PointerIdentifier,
                     pressure: value.Pressure,
-                    tilt: value.Tilt,
+                    tilt: PenMeasurements.Tilt(value.Tilt),
+                    orientation: PenMeasurements.Orientation(value.Orientation),
+                    penSupport: value.Kind is 2 or 3 ? new(
+                        (value.PenFields & 1) != 0 ? PenFieldSupport.Supported : PenFieldSupport.Unsupported,
+                        (value.PenFields & 2) != 0 ? PenFieldSupport.Supported : PenFieldSupport.Unsupported,
+                        (value.PenFields & 4) != 0 ? PenFieldSupport.Supported : PenFieldSupport.Unsupported,
+                        PenOrientationReference.BarrelRotation) : null,
                     platformData: value.PlatformData,
                     panX: value.StructSize >= 168 ? value.PanX : 0,
                     panY: value.StructSize >= 168 ? value.PanY : 0,
@@ -467,6 +473,16 @@ internal sealed unsafe class QtHostAdapter
         );
     }
 
+    public TextInputFeatures Features => new(true, true, true, true);
+
+    public void UpdateConfiguration(DorotiTextInputConfiguration configuration)
+    {
+        var native = new QtNativeV2.TextConfiguration((uint)configuration.inputType,
+            (uint)configuration.inputAction, (uint)configuration.textCapitalization,
+            configuration.readOnly, configuration.obscureText, configuration.autocorrect, configuration.enableSuggestions);
+        _hostApi.UpdateTextConfiguration(_viewHandle, &native);
+    }
+
     public void UpdateState(DorotiTextEditingState state) =>
         WithTextState(state, native => _hostApi.UpdateTextState(_viewHandle, native));
 
@@ -538,6 +554,9 @@ internal sealed unsafe class QtHostAdapter
             node.id,
             node.label,
             node.value,
+            node.textSelectionBase,
+            node.textSelectionExtent,
+            textGeometry = node.flags?.isObscured == true ? null : node.textGeometry?.ToWire(),
             role = node.role.ToString(),
             actions = (long)node.actions,
             children = node.children,
@@ -561,8 +580,6 @@ internal sealed unsafe class QtHostAdapter
                     obscured = node.flags.isObscured,
                     multiline = node.flags.isMultiline,
                 },
-            node.textSelectionBase,
-            node.textSelectionExtent,
             rect = new[] { node.rect.left, node.rect.top, node.rect.right, node.rect.bottom },
         });
         WithUtf8(

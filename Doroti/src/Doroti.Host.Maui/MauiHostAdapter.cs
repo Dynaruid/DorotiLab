@@ -62,6 +62,7 @@ internal sealed class MauiHostAdapter
 
     private readonly ulong _viewId;
     private readonly IMauiSkiaSurface _surface;
+    internal IMauiSkiaSurface Surface => _surface;
     private readonly MauiViewEnvironment _environment;
     private readonly object _gate = new();
     private long _frameRequestedAt;
@@ -890,6 +891,9 @@ internal sealed class MauiHostAdapter
         DorotiTextEditingState initialState
     ) => _textInput.SetClient(configuration, initialState);
 
+    public TextInputFeatures Features => _textInput.Features;
+    public void UpdateConfiguration(DorotiTextInputConfiguration configuration) => _textInput.UpdateConfiguration(configuration);
+
     public void UpdateState(DorotiTextEditingState state) => _textInput.UpdateState(state);
 
     public void SetCaretRect(Rect logicalRect) => _textInput.SetCaretRect(logicalRect);
@@ -1137,7 +1141,7 @@ internal sealed class MauiHostAdapter
                             scrollDeltaY: args.ScrollDeltaY,
                             signalKind: args.SignalKind,
                             pointerIdentifier: pointer,
-                            pressure: args.Pressure,
+                            pressure: PenMeasurements.Pressure(args.Pressure),
                             pressureMin: 0,
                             pressureMax: 1,
                             panX: args.PanX,
@@ -1146,8 +1150,9 @@ internal sealed class MauiHostAdapter
                             panDeltaY: args.PanDeltaY,
                             scale: args.Scale,
                             rotation: args.Rotation,
-                            orientation: args.Orientation,
-                            tilt: args.Tilt
+                            orientation: PenMeasurements.Orientation(args.Orientation),
+                            tilt: PenMeasurements.Tilt(args.Tilt),
+                            penSupport: args.PenSupport
                         ),
                     ]
             )

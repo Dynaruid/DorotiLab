@@ -301,6 +301,7 @@ public sealed partial class SkiaSceneRenderer
     /// </summary>
     public void InvalidateGpuContextResources()
     {
+        _featureGpuBackend = null;
         ObjectDisposedException.ThrowIf(_disposed, this);
         long contextGeneration;
         lock (_paintGate)
@@ -579,6 +580,7 @@ public sealed partial class SkiaSceneRenderer
         lock (_paintGate)
         {
             var previousScale = _shadowDeviceScale;
+            _featureGpuBackend = SkiaGraphiteSession.CurrentRecording?.GpuEffects ?? SkiaGpuEffectScope.Current;
             _shadowDeviceScale = desiredTarget.DeviceScaleY;
             try
             {

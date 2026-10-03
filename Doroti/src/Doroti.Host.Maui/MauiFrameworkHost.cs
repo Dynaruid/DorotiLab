@@ -211,6 +211,27 @@ public sealed class MauiFrameworkHost : IDisposable
 #if ANDROID
         capabilities.Register<IFilePickerHostCapability>(DorotiCapabilityIds.FilePicker, new AndroidFilePicker());
 #endif
+#if WINDOWS
+        if (surface is DorotiWindowsDxgiSurface windowsSurface)
+        {
+            var picker = new MauiWindowsFilePicker(() => windowsSurface.WindowHandle);
+            capabilities.Register<IFilePickerHostCapability>(DorotiCapabilityIds.FilePicker, picker);
+            host.Closed += picker.Dispose;
+            if (application?.Manifest.PlatformViews.Length > 0 && windowsSurface.PlatformViews is { } platformViews)
+            {
+                var coordinator = application.ConfigurePlatformViews(capabilities, viewId, platformViews.Dispatcher);
+                platformViews.Configure(coordinator);
+                var channel = new Framework.Services.PlatformViewChannelAdapter(coordinator, messages);
+                messages = channel;
+                graphics.AttachPlatformViews(platformViews, channel);
+            }
+            else if (windowsSurface.PlatformViews is { } unusedPlatformViews)
+            {
+                unusedPlatformViews.Dispose();
+                windowsSurface.PlatformViews = null;
+            }
+        }
+#endif
 #if IOS || MACCATALYST
         capabilities.Register<IFilePickerHostCapability>(DorotiCapabilityIds.FilePicker,
             new UIKitFilePicker(() => (surface.Element.Handler?.PlatformView as UIKit.UIView)?.Window?.RootViewController));

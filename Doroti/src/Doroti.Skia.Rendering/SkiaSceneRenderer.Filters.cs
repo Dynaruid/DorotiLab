@@ -269,6 +269,13 @@ public sealed partial class SkiaSceneRenderer
                 var captureHeight = checked((int)(MathF.Ceiling(mapped.Bottom) - top));
                 if (captureWidth <= 0 || captureHeight <= 0)
                     return;
+                if (backend.AvailableCaptureBytes > 0)
+                {
+                    var admission = EffectAllocationPreflight.Evaluate(
+                        Rect.fromLTWH(0, 0, captureWidth, captureHeight), PlatformViewTransform.Identity,
+                        1, 1, null, 4, 2, backend.AvailableCaptureBytes);
+                    if (!admission.Supported) throw new NotSupportedException(admission.Reason);
+                }
                 var captureMatrix = SKMatrix.Concat(
                     SKMatrix.CreateTranslation(-left, -top),
                     matrix

@@ -2,11 +2,15 @@ using Doroti.Desktop;
 using Doroti.Ui;
 using Appearance = Doroti.Desktop.WindowAppearanceOptions;
 using BackdropMode = Doroti.Desktop.WindowBackdropMode;
+using System.Runtime.InteropServices;
 
 namespace Doroti.Host.Qt;
 
 internal static class QtDesktopWindowPolicy
 {
+    [DllImport("doroti_qt_host", EntryPoint = "doroti_qt_desktop_qpa", CallingConvention = CallingConvention.Cdecl)]
+    private static extern int NativeQpa();
+    internal static bool CanPlace { get { try { return NativeQpa() == 1; } catch (EntryPointNotFoundException) { return false; } } }
     internal static WindowEvaluation Evaluate(WindowOptions options, WindowOptions? current)
     {
         options.Validate();
@@ -15,8 +19,8 @@ internal static class QtDesktopWindowPolicy
             return No("Qt Quick currently requires PlatformDefault startup; hidden first-frame readiness is unsupported.");
         if (current is null && options.PresentationState == WindowPresentationState.Minimized)
             return No("Qt Desktop cannot prepare its first frame while initially minimized.");
-        if (options.Position is not null || options.Centered)
-            return No("Qt Desktop does not expose global physical-pixel placement or centering.");
+        if ((options.Position is not null || options.Centered) && !CanPlace)
+            return No("Global physical placement/centering requires attached X11 xcb with DPR 1; Wayland/XWayland sessions, unknown QPA and mixed-DPR coordinates are unsupported.");
         if (options.AlwaysOnTop || options.SkipTaskbar)
             return No("Qt Desktop does not guarantee topmost or taskbar policy across QPA/compositors.");
         foreach (var size in new[] { options.Size, options.MinimumSize, options.MaximumSize })

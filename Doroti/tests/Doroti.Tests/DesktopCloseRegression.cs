@@ -1,11 +1,27 @@
 using Doroti.Desktop;
 using Doroti.Hosting;
 using Doroti.Ui;
+using Path = System.IO.Path;
 
 internal static class DesktopCloseRegression
 {
     internal static async Task Run()
     {
+        var noNativeVeto = new WindowCapabilities((_, _) => WindowEvaluation.Supported, false);
+        if (noNativeVeto.Evaluate(new() { RequireNativeCloseCancellation = true }).Support != WindowSupport.Unsupported)
+            throw new Exception("Required native close protection must fail before creation.");
+        var draftPath = Path.Combine(Path.GetTempPath(), "doroti-draft-" + Guid.NewGuid() + ".json");
+        try
+        {
+            var recovery = new DocumentRecoveryStore(draftPath);
+            recovery.Save("dirty 한글 😀");
+            if (!recovery.TryRead(out var text) || text != "dirty 한글 😀") throw new Exception("Draft checkpoint lost text.");
+            File.WriteAllText(draftPath, "{\"Version\":99,\"Text\":\"obsolete\"}");
+            if (recovery.TryRead(out _)) throw new Exception("Unknown recovery version admitted.");
+            File.WriteAllText(draftPath, "corrupt");
+            if (recovery.TryRead(out _)) throw new Exception("Corrupt draft admitted.");
+        }
+        finally { File.Delete(draftPath); }
         var host = new Host();
         var manager = new DorotiWindowManager(host);
         var window = await manager.CreateMainWindowAsync(new()
@@ -36,6 +52,38 @@ internal static class DesktopCloseRegression
         if (exits.Any(result => !result) || !await explicitManager.RequestExitAsync() || exitCount != 1)
             throw new Exception($"Explicit exit must complete once; observed {exitCount} notifications.");
         Console.WriteLine("PASS: repeated/concurrent Explicit exit requests emit one lifetime notification.");
+        var context = new RetiringContext();
+        var retiringManager = new DorotiWindowManager(new Host
+        {
+            CloseAction = async () => { await Task.Delay(20).ConfigureAwait(false); context.Retired = true; },
+        });
+        var retiringWindow = await retiringManager.CreateMainWindowAsync(new()
+        {
+            Content = WindowContent.FromEntrypoint(() => new Entrypoint()),
+        });
+        var previous = SynchronizationContext.Current;
+        Task<bool> retiringClose;
+        try { SynchronizationContext.SetSynchronizationContext(context); retiringClose = retiringWindow.CloseAsync(); }
+        finally { SynchronizationContext.SetSynchronizationContext(previous); }
+        await retiringClose.WaitAsync(TimeSpan.FromSeconds(5));
+        if (!retiringWindow.State.Closed || context.StrandedPosts != 0)
+            throw new Exception("Close completion depended on its retired view dispatcher.");
+        Console.WriteLine("PASS: close registry/lifetime completion survives view dispatcher retirement.");
+    }
+    private sealed class RetiringContext : SynchronizationContext
+    {
+        internal volatile bool Retired;
+        internal int StrandedPosts;
+        public override void Post(SendOrPostCallback callback, object? state)
+        {
+            if (Retired) { Interlocked.Increment(ref StrandedPosts); return; }
+            ThreadPool.QueueUserWorkItem(_ =>
+            {
+                var previous = Current;
+                try { SetSynchronizationContext(this); callback(state); }
+                finally { SetSynchronizationContext(previous); }
+            });
+        }
     }
     private sealed class Entrypoint : IDorotiViewEntrypoint
     {
@@ -59,7 +107,8 @@ internal static class DesktopCloseRegression
         public Task InitializeAsync(WindowOptions options, DesktopWindowContext context, IDorotiViewEntrypoint content, CancellationToken cancellationToken) => Task.CompletedTask;
         public Task<WindowState> ExecuteAsync(WindowCommand command, CancellationToken cancellationToken) => Task.FromResult(State);
         public Task<WindowState> ApplyAppearanceAsync(Doroti.Desktop.WindowAppearanceOptions appearance, CancellationToken cancellationToken) => Task.FromResult(State);
-        public Task CloseAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+        internal Func<Task>? CloseAction { get; init; }
+        public Task CloseAsync(CancellationToken cancellationToken) => CloseAction?.Invoke() ?? Task.CompletedTask;
         public ValueTask DisposeAsync() => ValueTask.CompletedTask;
     }
 }

@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 
-enum { DOROTI_WINDOWS_ABI_VERSION_V1 = 2 };
+enum { DOROTI_WINDOWS_ABI_VERSION_V1 = 3 };
 
 typedef enum doroti_windows_required_feature_v1 {
   DOROTI_WINDOWS_FEATURE_NONE_V1 = 0,
@@ -28,6 +28,8 @@ typedef enum doroti_windows_required_feature_v1 {
   DOROTI_WINDOWS_FEATURE_UNIFIED_TITLEBAR_V1 = 1ull << 6,
   DOROTI_WINDOWS_FEATURE_SOLID_TITLEBAR_V1 = 1ull << 7,
   DOROTI_WINDOWS_FEATURE_PLATFORM_VIEW_SIBLINGS_V1 = 1ull << 8,
+  DOROTI_WINDOWS_FEATURE_TEXT_CONFIGURATION_UPDATE_V1 = 1ull << 9,
+  DOROTI_WINDOWS_FEATURE_TEXT_GEOMETRY_V1 = 1ull << 10,
 } doroti_windows_required_feature_v1;
 
 typedef enum doroti_windows_status_v1 {
@@ -210,6 +212,8 @@ typedef struct doroti_windows_host_v1 {
   doroti_windows_clear_semantics_v1 clear_semantics;
   uint32_t initial_platform_brightness;
   doroti_windows_set_composition_child_v1 set_composition_child;
+  uint32_t(DOROTI_WINDOWS_CALL* update_text_configuration)(void* host_context,
+      const doroti_windows_text_configuration_v1* configuration);
 } doroti_windows_host_v1;
 
 typedef void(DOROTI_WINDOWS_CALL* doroti_windows_host_ready_callback_v1)(

@@ -86,6 +86,7 @@ internal sealed partial class WindowsCompositionSurfacePresenter : IDisposable
     private GRContext? _skiaContext;
     private WindowsD3D12BackingStore? _backingStore;
     private GraphiteVulkanWindow? _graphite;
+    internal long NativeTextureAdapterLuid => _graphite?.SupportsNativeTextureImport == true ? _graphite.NativeTextureAdapterLuid : 0;
     private SKSurface? _graphiteSurface;
     internal event Action? GpuResourcesReleasing;
     private ID3D12CommandAllocator? _copyAllocator;
@@ -406,7 +407,12 @@ internal sealed partial class WindowsCompositionSurfacePresenter : IDisposable
                         _visual?.StopAnimation("Opacity");
                     }
 
-                    batch.Completed -= handler;
+                    try { batch.Completed -= handler; }
+                    catch (ObjectDisposedException) when (batchTask.IsCompletedSuccessfully)
+                    {
+                        // WinUI can close the native commit batch after delivering Completed.
+                        // Only a confirmed terminal notification permits this cleanup case.
+                    }
                     animation.Dispose();
                     batch.Dispose();
                 }
@@ -721,10 +727,10 @@ internal sealed partial class WindowsCompositionSurfacePresenter : IDisposable
             {
                 if (_attachedHost is not null)
                 {
-                    ElementCompositionPreview.SetElementChildVisual(_attachedHost, null);
+                    ElementCompositionPreview.SetElementChildVisual(_attachedHost.CompositionTarget, null);
                 }
 
-                ElementCompositionPreview.SetElementChildVisual(host, _visual);
+                ElementCompositionPreview.SetElementChildVisual(host.CompositionTarget, _visual);
                 _uiTeardown = false;
             });
             _attachedHost = host;
@@ -768,7 +774,7 @@ internal sealed partial class WindowsCompositionSurfacePresenter : IDisposable
         }
         else
         {
-            ElementCompositionPreview.SetElementChildVisual(host, null);
+            ElementCompositionPreview.SetElementChildVisual(host.CompositionTarget, null);
         }
         _attachedHost = null;
         _uiTeardown = true;
@@ -820,7 +826,7 @@ internal sealed partial class WindowsCompositionSurfacePresenter : IDisposable
         {
             if (_attachedHost is not null && _nativeWindow == 0)
             {
-                ElementCompositionPreview.SetElementChildVisual(_attachedHost, null);
+                ElementCompositionPreview.SetElementChildVisual(_attachedHost.CompositionTarget, null);
                 _attachedHost = null;
             }
             foreach (var slot in _slots)

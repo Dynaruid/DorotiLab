@@ -18,6 +18,7 @@ internal sealed class UIKitFilePicker(Func<UIViewController?> owner) : IFilePick
     public async ValueTask<FilePickResult> PickFilesAsync(FilePickOptions options, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(options);
+        options = options.Normalize();
         lock (_gate) ObjectDisposedException.ThrowIf(_disposed, this);
         using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _lifetime.Token);
         linked.Token.ThrowIfCancellationRequested();
@@ -36,7 +37,7 @@ internal sealed class UIKitFilePicker(Func<UIViewController?> owner) : IFilePick
                     throw new InvalidOperationException("The requesting window already presents a controller.");
                 var types = options.Extensions is { Length: > 0 } extensions && !extensions.Contains("*")
                     ? extensions.Select(extension => UTType.CreateFromExtension(extension.TrimStart('.'))
-                        ?? throw new ArgumentException("Unknown file extension: " + extension)).ToArray()
+                        ?? UTTypes.Item).ToArray()
                     : new[] { UTTypes.Item };
                 picker = new UIDocumentPickerViewController(types, asCopy: false) { AllowsMultipleSelection = options.AllowMultiple };
                 callbacks = new PickerDelegate(urls =>
@@ -52,6 +53,7 @@ internal sealed class UIKitFilePicker(Func<UIViewController?> owner) : IFilePick
                             {
                                 var file = new AppleReadFile(url);
                                 acquired.Add(file);
+                                if (!FilePickFilters.Matches(file.Name, options.Extensions ?? [])) throw new IOException("Selected file does not match the requested extensions.");
                                 _files.Add(file);
                                 file.Released += () => { lock (_gate) _files.Remove(file); };
                             }

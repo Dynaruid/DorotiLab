@@ -19,6 +19,27 @@ internal sealed class MauiSkiaCapabilities
     private readonly MauiHostAdapter _host;
     private readonly SkiaSceneRenderer _renderer;
     public TextureRegistry Textures => _renderer.Textures;
+    GraphicsFeatureSupport ISceneHostCapability.Features => _renderer.SceneFeatures;
+    SemanticsFeatureSupport ISemanticsHostCapability.Features => new(true, false,
+#if WINDOWS
+        [SemanticsRole.dialog, SemanticsRole.alertDialog, SemanticsRole.list, SemanticsRole.listItem, SemanticsRole.table,
+         SemanticsRole.cell, SemanticsRole.row, SemanticsRole.columnHeader, SemanticsRole.menu, SemanticsRole.menuItem,
+         SemanticsRole.menuItemCheckbox, SemanticsRole.menuItemRadio, SemanticsRole.tab, SemanticsRole.tabBar,
+         SemanticsRole.comboBox, SemanticsRole.progressBar, SemanticsRole.loadingSpinner],
+#elif ANDROID
+        [SemanticsRole.dialog, SemanticsRole.alertDialog, SemanticsRole.list, SemanticsRole.tabBar,
+         SemanticsRole.menu, SemanticsRole.menuBar, SemanticsRole.progressBar, SemanticsRole.loadingSpinner],
+#else
+        [SemanticsRole.none],
+#endif
+#if IOS || MACCATALYST
+        [SemanticsAction.tap, SemanticsAction.longPress, SemanticsAction.increase, SemanticsAction.decrease,
+         SemanticsAction.expand, SemanticsAction.collapse, SemanticsAction.showOnScreen],
+#else
+        [SemanticsAction.tap, SemanticsAction.setText, SemanticsAction.setSelection, SemanticsAction.expand,
+         SemanticsAction.collapse, SemanticsAction.showOnScreen],
+#endif
+        "Native semantic hierarchy; text glyph geometry/range patterns await the MAUI native provider. Role/action lists describe the implemented subset.");
     internal VariableBlurDiagnostics? VariableBlurDiagnostics =>
         _renderer.CaptureVariableBlurDiagnostics();
     private IMauiGraphiteSurface? _graphiteSurface;
@@ -84,6 +105,18 @@ internal sealed class MauiSkiaCapabilities
                 height,
                 _host.Configuration.platformBrightness
             );
+    }
+#endif
+#if WINDOWS
+    private IDisposable? _platformViewChannel;
+    private WindowsMauiPlatformViewHost? _platformViews;
+
+    internal void AttachPlatformViews(WindowsMauiPlatformViewHost platformViews, IDisposable channel)
+    {
+        _platformViews = platformViews;
+        _platformViewChannel = channel;
+        _renderer.PlatformScenePainter = (canvas, commands, descriptor, width, height) =>
+            platformViews.Draw(_renderer, canvas, commands, descriptor, width, height);
     }
 #endif
 #if MACOS
@@ -196,6 +229,9 @@ internal sealed class MauiSkiaCapabilities
 #elif MACOS
         if (DorotiMacOSMetalView.UseGraphite)
             _renderer.EnableNativeTextures(NativeTexturePlatform.Apple);
+#elif WINDOWS
+        if (WindowsCompositionSurfaceFeature.GraphiteEnabled && host.Surface is DorotiWindowsDxgiSurface windowsSurface)
+            _renderer.EnableNativeTextures(NativeTexturePlatform.Windows, () => windowsSurface.NativeTextureAdapterLuid);
 #endif
     }
 
@@ -371,7 +407,7 @@ internal sealed class MauiSkiaCapabilities
         }
 
         _graphiteSurface = null;
-#if ANDROID || IOS || MACCATALYST
+#if ANDROID || IOS || MACCATALYST || WINDOWS
         _renderer.PlatformScenePainter = null;
         _platformViewChannel?.Dispose();
         _platformViewChannel = null;

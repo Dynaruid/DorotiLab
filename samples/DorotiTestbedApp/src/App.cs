@@ -105,10 +105,19 @@ internal sealed class MaterialDemoEntrypoint : IDorotiViewEntrypoint
         if (sample != "navigation") WidgetsBinding.instance.platformDispatcher.defaultRouteName = "/";
         return sample switch
         {
+            "platform-effect" => new MaterialSample.PlatformEffectSample(),
+            "document-recovery" when !OperatingSystem.IsBrowser() => new MaterialSample.DocumentRecoverySample(),
+            "native-texture-probe" => new Doroti.Framework.Material.MaterialApp(debugShowCheckedModeBanner: false,
+                initialRoute: "/", home: new MaterialSample.TextureSample()),
             "qt-widgets" => new Directionality(textDirection: TextDirection.ltr,
                 child: new ClipRect(child: new PlatformView(PlatformDispatcher.instance.implicitView!,
                     new PlatformViewDescriptor("doroti/native-editor", System.Text.Encoding.UTF8.GetBytes("{\"text\":\"Qt Widgets editor\"}"))))),
-            "input" => new Doroti.Framework.Material.MaterialApp(initialRoute: "/", home: new MaterialSample.InputLifetimeSample()),
+            "input" => new Doroti.Framework.Material.MaterialApp(debugShowCheckedModeBanner: false, initialRoute: "/", home: new MaterialSample.InputLifetimeSample()),
+            "webview" => new Doroti.Framework.Material.MaterialApp(debugShowCheckedModeBanner: false, initialRoute: "/", home:
+                new Doroti.Framework.Material.Scaffold(
+                    appBar: new PreferredSize(preferredSize: Size.fromHeight(56),
+                        child: new ClipRect(child: new Doroti.Framework.Material.AppBar(title: new Text("WebView")))),
+                    body: new MaterialSample.WebViewSample())),
             "reload" => new Doroti.Framework.Material.MaterialApp(initialRoute: "/", home: new MaterialSample.HotReloadSample()),
             "plugins" => new Doroti.Framework.Material.MaterialApp(initialRoute: "/", home: new MaterialSample.PluginsSample()),
             "drop" => new Doroti.Framework.Material.MaterialApp(initialRoute: "/", home: new MaterialSample.OsDropSample()),

@@ -1,4 +1,6 @@
 import { effectGl, effectGpu, registerEffectAllocation, accountEffectBytes } from "./doroti.web.texture-worker.js";
+import { effectAvailableBytes } from "./doroti.web.texture-worker.js";
+export { effectAvailableBytes } from "./doroti.web.texture-worker.js";
 
 interface Pipeline { program: WebGLProgram; vao: WebGLVertexArrayObject; blocks: { index: number; slot: number; size: number; copies: { source: number; destination: number }[] }[]; }
 interface Effect { gl: WebGL2RenderingContext; input: WebGLTexture; output: WebGLTexture; framebuffer: WebGLFramebuffer; width: number; height: number; buffers: WebGLBuffer[]; }
@@ -50,6 +52,9 @@ function state<T>(gl: WebGL2RenderingContext, action: () => T): T {
 }
 
 export function allocateEffect(width: number, height: number): { token: number; input: number; output: number } {
+  if (!Number.isSafeInteger(width) || !Number.isSafeInteger(height) || width < 1 || height < 1 ||
+      !Number.isSafeInteger(width * height * 8) || width * height * 8 > effectAvailableBytes())
+    throw new Error("Effect capture exceeds the current owner memory budget before allocation.");
   const gpu = effectGpu();
   if (gpu) {
     const allocation = gpu.allocateGpuEffect(width, height);

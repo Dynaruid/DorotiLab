@@ -1,4 +1,36 @@
 <Project>
+  <Target Name="DorotiWriteWebRuntimeProfile"
+          Condition="'$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true'"
+          BeforeTargets="ResolveProjectStaticWebAssets;ResolveCurrentProjectStaticWebAssetsInputs">
+    <PropertyGroup>
+      <_DorotiWebProfileRoot>$([MSBuild]::NormalizeDirectory('$(IntermediateOutputPath)', 'Doroti.RuntimeProfile'))</_DorotiWebProfileRoot>
+      <_DorotiWebThreads>false</_DorotiWebThreads>
+      <_DorotiWebThreads Condition="'$(WasmEnableThreads)' == 'true'">true</_DorotiWebThreads>
+    </PropertyGroup>
+    <WriteLinesToFile File="$(_DorotiWebProfileRoot)doroti.runtime-profile.json"
+                      Lines="{&quot;schemaVersion&quot;:1,&quot;threads&quot;:$(_DorotiWebThreads)}"
+                      Overwrite="true" WriteOnlyWhenDifferent="true" />
+    <ItemGroup>
+      <_DorotiWebProfileAsset Include="$(_DorotiWebProfileRoot)doroti.runtime-profile.json">
+        <RelativePath>doroti.runtime-profile.json</RelativePath>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </_DorotiWebProfileAsset>
+      <FileWrites Include="$(_DorotiWebProfileRoot)doroti.runtime-profile.json" />
+    </ItemGroup>
+    <DefineStaticWebAssets CandidateAssets="@(_DorotiWebProfileAsset)"
+        SourceId="$(PackageId)" SourceType="Computed" ContentRoot="$(_DorotiWebProfileRoot)" BasePath="/">
+      <Output TaskParameter="Assets" ItemName="StaticWebAsset" />
+      <Output TaskParameter="Assets" ItemName="_DorotiWebProfileStaticAsset" />
+    </DefineStaticWebAssets>
+    <DefineStaticWebAssetEndpoints CandidateAssets="@(_DorotiWebProfileStaticAsset)"
+                                  ContentTypeMappings="@(StaticWebAssetContentTypeMapping)">
+      <Output TaskParameter="Endpoints" ItemName="StaticWebAssetEndpoint" />
+    </DefineStaticWebAssetEndpoints>
+  </Target>
+  <ItemGroup Condition="'$(UseMaui)' == 'true' and $([System.String]::Copy('$(TargetFramework)').Contains('-windows'))">
+    <PublishReadyToRunExclude Include="SkiaSharp.dll" />
+  </ItemGroup>
   <Import Project="Doroti.MacDevelopment.targets" />
   <Import Project="Doroti.DesktopBoundary.targets" />
   <Import Project="Doroti.Plugins.targets" />

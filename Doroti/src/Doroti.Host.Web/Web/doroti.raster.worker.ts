@@ -903,6 +903,7 @@ if (!(globalThis as unknown as { getDotnetRuntime?: (id: number) => unknown }).g
 
 async function startManagedRuntime(): Promise<void> {
   try {
+    post("runtime-stage", { stage: "dotnet-create" });
     const dotnetUrl = dotnetModuleUrl || new URL("../../_framework/dotnet.js", import.meta.url).href;
     const dotnetModule = managedPort ? null : await import(dotnetUrl) as { dotnet: {
       withEnvironmentVariables(values: Record<string, string>): { create(): Promise<DotnetRuntime> };
@@ -913,8 +914,10 @@ async function startManagedRuntime(): Promise<void> {
       DOROTI_TESTBED_MODE: testbedMode, DOROTI_WEB_DIRECT_TRACE: diagnosticsEnabled ? "1" : "0",
       DOROTI_STAGE_TRACE: diagnosticsEnabled ? "1" : "0",
       DOROTI_SAMPLE_PROGRESS_SCOPE: progressScope,
+      DOROTI_STANDALONE_WORKER: "1",
     }).create();
     managedRuntime = runtime;
+    post("runtime-stage", { stage: "managed-callbacks" });
     await initializeManagedCallbacks();
     const hostExports = await runtime.getAssemblyExports("Doroti.Host.Web.dll") as {
       Doroti: { Host: { Web: { DorotiWebWorkerSurface: SurfaceExports;
@@ -967,7 +970,9 @@ async function startManagedRuntime(): Promise<void> {
       Doroti: { Generated: { DorotiBootstrap: { StartWorker(): Promise<string>; StopWorker(): void } } };
     };
     stopManagedRuntime = appExports.Doroti.Generated.DorotiBootstrap.StopWorker;
+    post("runtime-stage", { stage: "application-start" });
     const result = await appExports.Doroti.Generated.DorotiBootstrap.StartWorker();
+    post("runtime-stage", { stage: "application-started" });
     await surface.InitializeBrowserTextures(new URL("./doroti.web.texture-worker.js", import.meta.url).href);
     textures.initializeTextures(surface, webgpu, () => {
       currentGl(ensurePresenter());

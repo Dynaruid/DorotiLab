@@ -11,6 +11,7 @@ public sealed partial class SkiaSceneRenderer
     private long _textureRevision;
     public long TextureRevision => Interlocked.Read(ref _textureRevision);
     public TextureRegistry Textures => _textures;
+    public Func<TextureFeatureSupport>? TextureFeatureProvider { set => _textures.FeatureProvider = value; }
 
     private void RequestTextureFrame()
     {
@@ -95,6 +96,11 @@ public sealed partial class SkiaSceneRenderer
         internal Func<int, int, CancellationToken, ValueTask<SurfaceTextureEntry>>? SurfaceFactory;
         private bool _disposed;
         internal Func<NativeTextureEntry>? NativeFactory;
+        internal Func<TextureFeatureSupport>? FeatureProvider;
+        public override TextureFeatureSupport Features => _disposed
+            ? new(false, Reason: "Texture owner is retired.")
+            : FeatureProvider?.Invoke() ?? new(AndroidProducerSurface: SurfaceFactory is not null,
+                Reason: NativeFactory is null ? "No native GPU importer attached." : "Native importer device has not been exposed.");
 
         public override NativeTextureEntry CreateNativeTexture()
         {

@@ -12,6 +12,11 @@
 
 namespace doroti::windows {
 
+struct AccessibilityTextRun {
+  int start{}, end{}, line_start{}, line_end{};
+  double left{}, top{}, right{}, bottom{};
+  bool rtl{};
+};
 struct AccessibilityNode {
   int id{};
   double left{};
@@ -51,6 +56,12 @@ struct AccessibilityNode {
   int toggled{-1};
   int expanded{-1};
   int heading_level{};
+  bool text_geometry{};
+  uint64_t text_revision{};
+  std::wstring layout_text;
+  std::vector<int> text_boundaries;
+  std::vector<AccessibilityTextRun> text_runs;
+  int selection_base{-1}, selection_extent{-1};
 };
 
 class AccessibilityBridge final {
@@ -71,6 +82,7 @@ class AccessibilityBridge final {
   void Clear();
   void SetScale(double scale);
   bool ValidateAndInvokeForTest();
+  bool ValidateTextForTest();
   LRESULT HandleGetObject(WPARAM wparam, LPARAM lparam);
 
  private:

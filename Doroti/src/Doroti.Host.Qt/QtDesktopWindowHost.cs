@@ -17,6 +17,8 @@ internal sealed class QtDesktopWindowHost(Func<QtDesktopWindowHost, WindowOption
         internal uint Size, Flags;
         internal double Width, Height, Scale;
         internal uint Presentation, Reserved;
+        internal double X, Y;
+        internal double FrameWidth, FrameHeight;
     }
     [StructLayout(LayoutKind.Sequential)]
     internal struct NativeCommand
@@ -24,6 +26,7 @@ internal sealed class QtDesktopWindowHost(Func<QtDesktopWindowHost, WindowOption
         internal uint Size, Kind;
         internal double X, Y;
         internal QtNativeV2.Utf8 Text;
+        internal double Width, Height;
     }
     [StructLayout(LayoutKind.Sequential)]
     internal unsafe struct Api
@@ -76,12 +79,12 @@ internal sealed class QtDesktopWindowHost(Func<QtDesktopWindowHost, WindowOption
 
     internal unsafe void Attach(nint window)
     {
-        try { Check(GetApi(window, 1, (uint)sizeof(Api), out _owner, out _api), "get desktop ABI"); }
+        try { Check(GetApi(window, 2, (uint)sizeof(Api), out _owner, out _api), "get desktop ABI"); }
         catch (EntryPointNotFoundException error)
         {
-            throw new NotSupportedException("The Qt shim predates Desktop ABI 1. Rebuild the app-owned shim and template.", error);
+            throw new NotSupportedException("The Qt shim predates Desktop ABI 2. Rebuild the app-owned shim and template.", error);
         }
-        if (_api.Version != 1 || _api.Size != sizeof(Api) || (_api.Features & 1) == 0
+        if (_api.Version != 2 || _api.Size != sizeof(Api) || (_api.Features & 1) == 0
             || _api.Post == null || _api.Observe == null || _api.Command == null || _api.Snapshot == null)
             throw new InvalidDataException("Invalid Qt Desktop ABI 1 table.");
         _context = GCHandle.Alloc(this);
@@ -91,6 +94,11 @@ internal sealed class QtDesktopWindowHost(Func<QtDesktopWindowHost, WindowOption
         Send(new(WindowCommandKind.MaximumSize, _options.MaximumSize));
         Send(new(WindowCommandKind.Size, _options.Size));
         Send(new(WindowCommandKind.Resizable, _options.Resizable));
+        if (_options.Position is { } position) {
+            var placement = new NativeCommand { Size = (uint)sizeof(NativeCommand), Kind = 103, X = position.dx, Y = position.dy };
+            Check(_api.Command(_owner, &placement), "initial outer frame position");
+        }
+        if (_options.Centered) Send(new(WindowCommandKind.Center));
         var initial = new NativeCommand { Size = (uint)sizeof(NativeCommand), Kind = 102,
             X = (uint)_options.PresentationState };
         Check(_api.Command(_owner, &initial), "initial presentation");
@@ -140,7 +148,7 @@ internal sealed class QtDesktopWindowHost(Func<QtDesktopWindowHost, WindowOption
     {
         var state = new NativeState { Size = (uint)sizeof(NativeState) };
         Check(_api.Snapshot(_owner, &state), "snapshot");
-        var next = State with { Bounds = null, ClientSize = new(state.Width, state.Height), Scale = state.Scale,
+        var next = State with { Bounds = (state.Flags & 4) != 0 ? Rect.fromLTWH(state.X, state.Y, state.FrameWidth, state.FrameHeight) : null, ClientSize = new(state.Width, state.Height), Scale = state.Scale,
             Visible = (state.Flags & 1) != 0, Focused = (state.Flags & 2) != 0,
             PresentationState = (WindowPresentationState)state.Presentation, Revision = ++_revision };
         Volatile.Write(ref _state, next);
@@ -152,6 +160,7 @@ internal sealed class QtDesktopWindowHost(Func<QtDesktopWindowHost, WindowOption
         var native = new NativeCommand { Size = (uint)sizeof(NativeCommand), Kind = (uint)command.Kind };
         if (command.Value is Size size) { native.X = size.width; native.Y = size.height; }
         if (command.Value is bool enabled) native.X = enabled ? 1 : 0;
+        if (command.Value is Rect bounds) { native.X = bounds.left; native.Y = bounds.top; native.Width = bounds.width; native.Height = bounds.height; }
         if (command.Kind == WindowCommandKind.MaximumSize && command.Value is null)
             native.X = native.Y = 16777215;
         var text = command.Value is string title ? Encoding.UTF8.GetBytes(title) : [];
@@ -195,10 +204,11 @@ internal sealed class QtDesktopWindowHost(Func<QtDesktopWindowHost, WindowOption
 
     public async Task<WindowState> ExecuteAsync(WindowCommand command, CancellationToken ct)
     {
-        if (command.Kind is WindowCommandKind.Bounds or WindowCommandKind.Center
-            or WindowCommandKind.AlwaysOnTop or WindowCommandKind.SkipTaskbar
+        if (command.Kind is WindowCommandKind.AlwaysOnTop or WindowCommandKind.SkipTaskbar
             or WindowCommandKind.Drag or WindowCommandKind.Resize)
             throw new NotSupportedException("Qt Desktop placement, topmost/taskbar commands and deferred system drag/resize are unsupported.");
+        if (command.Kind is WindowCommandKind.Bounds or WindowCommandKind.Center && !QtDesktopWindowPolicy.CanPlace)
+            throw new NotSupportedException("Placement/centering requires attached xcb DPR 1; Wayland and mixed-DPR placement are unsupported.");
         await _attached.Task.WaitAsync(ct);
         WindowPresentationState? expected = command.Kind switch
         {
@@ -210,21 +220,29 @@ internal sealed class QtDesktopWindowHost(Func<QtDesktopWindowHost, WindowOption
             _ => null,
         };
         var observed = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var requestedBounds = command.Kind == WindowCommandKind.Bounds ? (Rect?)command.Value : null;
         void Changed(WindowState state)
         {
-            if (state.PresentationState == expected) observed.TrySetResult();
+            if (expected is not null && state.PresentationState == expected
+                || requestedBounds is not null && state.Bounds == requestedBounds) observed.TrySetResult();
         }
-        if (expected is not null) StateChanged += Changed;
+        if (expected is not null || requestedBounds is not null) StateChanged += Changed;
         try
         {
             await Post(() => { Send(command); ReadState(); }, ct);
             // Completion follows a platform state event, not QWindow's requested
             // state signal. A compositor that declines a request cannot hang the queue.
-            if (expected is not null)
+            if (expected is not null || requestedBounds is not null)
                 await observed.Task.WaitAsync(TimeSpan.FromSeconds(5), ct);
             return State;
         }
-        finally { if (expected is not null) StateChanged -= Changed; }
+        catch (TimeoutException error) when (requestedBounds is not null)
+        {
+            await Post(() => ReadState(), ct);
+            if (State.Bounds == requestedBounds) return State;
+            throw new NotSupportedException($"The X11 compositor did not acknowledge outer-frame placement {requestedBounds}; observed {State.Bounds}. Global positioning is unavailable in this session.", error);
+        }
+        finally { if (expected is not null || requestedBounds is not null) StateChanged -= Changed; }
     }
     public Task<WindowState> ApplyAppearanceAsync(Appearance appearance, CancellationToken ct)
     {

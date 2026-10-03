@@ -17,10 +17,12 @@
     <WindowsPackageType>None</WindowsPackageType>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../../../Doroti/src/Doroti.Plugins/Doroti.Plugins.csproj" />
     <DorotiTargetDescriptor Include="Windows" HostKind="Maui" NativeEntryKind="WinUI-Xaml"
         RuntimeIdentifier="win-x64" TargetFramework="net10.0-windows10.0.19041.0"
         TargetPackage="Doroti.Target.Windows.Maui.win-x64" />
     <ProjectReference Include="..\..\..\Doroti\src\Doroti.Target.Windows.Maui.win-x64\Doroti.Target.Windows.Maui.win-x64.csproj" />
   </ItemGroup>
   <Import Project="..\..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.targets" />
+  <Import Project="../../../Doroti/src/Doroti.Plugins/buildTransitive/Doroti.Plugins.targets" />
 </Project>

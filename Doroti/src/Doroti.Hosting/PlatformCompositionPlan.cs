@@ -305,6 +305,9 @@ public static class PlatformCompositionPlanner
                         filter.SigmaY * state.Transform.M22,
                         parts.Count(p => p is PlatformBackdropSegment) + 1
                     );
+                    effects.ValidateIntent(filter.PlatformEffectIntent,
+                        filter.SigmaX * state.Transform.M11 * token.DeviceScaleX,
+                        filter.SigmaY * state.Transform.M22 * token.DeviceScaleY);
                 }
                 catch (NotSupportedException error)
                 {
@@ -441,7 +444,7 @@ public static class PlatformCompositionPlanner
             }
             else if (
                 precedingNativeBounds.Count != 0
-                && !(command.HostPayload is ScenePicturePayload { Commands.Count: 0 })
+                && !(command.HostPayload is ScenePicturePayload { HasDrawing: false })
             )
             {
                 // A picture's cull hint is not a clip (Canvas currently ignores cullRect).

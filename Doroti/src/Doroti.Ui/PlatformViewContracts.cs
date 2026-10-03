@@ -64,7 +64,8 @@ public sealed record PlatformViewSupport(
     string? Reason = null,
     bool NativeBackdropBlur = false,
     PlatformViewCapabilities? Capabilities = null,
-    bool WebViewCommands = false
+    bool WebViewCommands = false,
+    bool MixedScene = false
 );
 
 /// <summary>Column-vector 2D affine transform in logical pixels.</summary>
@@ -154,6 +155,18 @@ public interface IPlatformViewHostCapability
 {
     ulong OwnerViewId { get; }
     PlatformViewSupport QuerySupport(PlatformViewRequest request);
+    PlatformSceneSupport QuerySceneSupport(PlatformSceneRequest request)
+    {
+        var support = request.Views.Select(QuerySupport).ToArray();
+        if (support.FirstOrDefault(s => !s.Supported) is { } failed) return new(false, failed.Reason);
+        if (request.HasBackdrop && support.Any(s => !s.NativeBackdropBlur && s.Capabilities?.Effect.LiveSourceSampling != true))
+            return new(false, "Native content in this scene cannot participate in live backdrop sampling.");
+        if (request.HasForegroundRaster && request.Views.Any(v => v.Composition == PlatformViewComposition.NativeOverlay))
+            return new(false, "NativeOverlay cannot preserve raster foreground ordering.");
+        if (request.Views.Select(v => v.ViewType).Distinct().Count() > 1 && support.Any(s => !s.MixedScene))
+            return new(false, "The current owner does not support this mixed native scene topology.");
+        return new(true);
+    }
     ValueTask<PlatformViewHandle> CreateAsync(
         PlatformViewDescriptor descriptor,
         CancellationToken cancellationToken = default

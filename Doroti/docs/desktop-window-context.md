@@ -1,5 +1,7 @@
 # Window execution contexts
 
+2026-10-03 Windows MAUI: additional windows now own distinct MAUI Window/surface/session/input/semantics/PlatformView registries on the shared UI dispatcher. They retain the shared application boundary; secondary windows use independent navigation without the main persistent IDs. Both lifetime policies, main close/survivor resize and registry drain pass on two real windows. [Evidence](validation/2026-10-03-platform-gap-implementation.md); physical IME, mixed-monitor DPI and full two-window picker/WebView remain unqualified.
+
 Decision (2026-09-29): Windows App SDK additional top-level windows use one
 framework dispatcher/session and one native UI thread per window. This extends
 `DorotiWindowManager` and its fresh `WindowContent` factory; it does not introduce

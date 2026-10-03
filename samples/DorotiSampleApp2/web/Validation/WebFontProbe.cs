@@ -23,7 +23,7 @@ public static class WebFontProbe
             json.WriteStartObject(); json.WriteBoolean("isBrowser", OperatingSystem.IsBrowser());
             json.WriteStartObject("directFormats");
             byte[] compressed = [];
-            foreach (var (format, url) in new[] { ("TTF", "font-probe/Galmuri11.ttf"), ("OTF", "font-probe/icons.otf"), ("WOFF", "font-probe/Galmuri11.woff"), ("WOFF2", "fonts/SUITE/SUITE-Variable.woff2") })
+            foreach (var (format, url) in new[] { ("TTF", "font-probe/Roboto-regular.ttf"), ("OTF", "font-probe/icons.otf"), ("WOFF2", "fonts/SUITE/SUITE-Variable.woff2") })
             {
                 var bytes = await http.GetByteArrayAsync(new Uri(baseUri, url));
                 using var data = SKData.CreateCopy(bytes); using var face = SKTypeface.FromData(data);
@@ -39,6 +39,8 @@ public static class WebFontProbe
             json.WriteNumber("registeredBytes", decoded.Length);
             json.WriteBoolean("directWoff2", BrowserFontData.CanUseWoff2Directly(compressed));
             using var variableData = SKData.CreateCopy(decoded); using var variable = SKTypeface.FromData(variableData)!;
+            using (var korean = new SKFont(variable, 32))
+                json.WriteBoolean("koreanGlyphs", korean.GetGlyphs("한글 가나다라마바사").All(glyph => glyph != 0));
             json.WriteStartArray("axes");
             foreach (var value in new[] { 300, 400, 450, 500, 700, 900 })
             {

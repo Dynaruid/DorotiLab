@@ -54,6 +54,14 @@ async function initializeMainRuntime(dotnetUrl: string): Promise<MainRuntime> {
     throw new Error("Doroti main-runtime rendering requires COOP/COEP isolation and shared memory.");
   const runtimeBase = new URL("./", dotnetUrl);
   const NativeWorker = globalThis.Worker;
+  let rejectStartup!: (error: Error) => void;
+  const interrupted = new Promise<never>((_, reject) => { rejectStartup = reject; });
+  const policyViolation = (event: SecurityPolicyViolationEvent): void => {
+    if (event.effectiveDirective === "worker-src")
+      rejectStartup(new Error("Doroti threaded runtime worker was blocked by Content Security Policy (worker-src)."));
+  };
+  globalThis.addEventListener("securitypolicyviolation", policyViolation);
+  const startupTimer = setTimeout(() => rejectStartup(new Error("Doroti threaded runtime startup timed out; restart the page after checking worker/CSP/network diagnostics.")), 120000);
   // The public Worker constructor is the boundary where the host can receive a
   // transferable port from a runtime-owned pthread. No PThread/Mono internals are
   // inspected or patched. All .NET/Emscripten control messages pass through.
@@ -64,6 +72,7 @@ async function initializeMainRuntime(dotnetUrl: string): Promise<MainRuntime> {
       if (resolved.origin !== runtimeBase.origin ||
           !resolved.pathname.startsWith(`${runtimeBase.pathname}dotnet.native.worker`) ||
           !resolved.pathname.endsWith(".mjs")) return;
+      this.addEventListener("error", event => rejectStartup(new Error(`Doroti .NET runtime worker failed during startup: ${event.message || String(event.error)}`)));
       this.addEventListener("message", event => {
         const data = event.data;
         if (data?.kind !== "doroti-managed-port") return;
@@ -88,7 +97,7 @@ async function initializeMainRuntime(dotnetUrl: string): Promise<MainRuntime> {
     // still throw, including during metadata handlers, rather than deadlocking.
     if (document.querySelector("script[src*='aspnetcore-browser-refresh']"))
       module.dotnet.withConfig({ jsThreadBlockingMode: "ThrowWhenBlockingWait" });
-    const runtime = await module.dotnet.withEnvironmentVariables({
+    const runtime = await Promise.race([module.dotnet.withEnvironmentVariables({
       DOROTI_DEV_SESSION_ID: developmentBridge(location.search)?.sessionId ?? "browser",
       DOROTI_TESTBED_MODE: params.get("dorotiTestbedMode") ?? "diagnostics",
       DOROTI_SAMPLE: params.get("dorotiSample") ?? "",
@@ -98,7 +107,7 @@ async function initializeMainRuntime(dotnetUrl: string): Promise<MainRuntime> {
       DOROTI_WEBVIEW_COUNT: params.get("dorotiWebViewCount") ?? "1",
       DOROTI_WEBVIEW_WORKLOAD: params.get("dorotiWebViewWorkload") ?? "idle",
       DOROTI_SAMPLE_PROGRESS_SCOPE: params.get("dorotiProgressScope") ?? "local",
-    }).create() as MainRuntime;
+    }).create() as Promise<MainRuntime>, interrupted]);
     if (!runtime.runtimeBuildInfo.wasmEnableThreads || !(runtime.localHeapViewU8().buffer instanceof SharedArrayBuffer))
       throw new Error("Doroti main-runtime rendering requires a threaded .NET build with a shared heap.");
     document.documentElement.dataset.dorotiRuntimeLocation = "main";
@@ -107,6 +116,9 @@ async function initializeMainRuntime(dotnetUrl: string): Promise<MainRuntime> {
   } catch (error) {
     globalThis.Worker = NativeWorker;
     throw error;
+  } finally {
+    clearTimeout(startupTimer);
+    globalThis.removeEventListener("securitypolicyviolation", policyViolation);
   }
 }
 

@@ -89,7 +89,7 @@ class QPlatformNativeInterface : public QObject {
 QT_END_NAMESPACE
 
 namespace {
-constexpr std::uint32_t kAbiVersion = 6;
+constexpr std::uint32_t kAbiVersion = 7;
 std::atomic_bool run_active{false};
 // Acrylic covers the complete client surface. Wayland compositors clip effect
 // regions to the current surface bounds, so keep one deliberately oversized
@@ -97,6 +97,8 @@ std::atomic_bool run_active{false};
 // blur protocol retaining its first committed bounds across Qt surface resizes.
 constexpr int kFullSurfaceBackdropExtent = 1 << 20;
 constexpr std::uint64_t kSupportedFeatures =
+    DOROTI_QT_FEATURE_TEXT_CONFIGURATION_UPDATE |
+    DOROTI_QT_FEATURE_TEXT_GEOMETRY |
 #ifdef DOROTI_QT_QUICK
     DOROTI_QT_FEATURE_QUICK_COMPOSITION | DOROTI_QT_FEATURE_NATIVE_TEXTURE_EXTENSIONS | DOROTI_QT_FEATURE_CONSUMER_COMPLETION | DOROTI_QT_FEATURE_FRAME_PREPARATION |
 #endif
@@ -128,6 +130,7 @@ doroti_qt_utf8_v2 Utf8(const QByteArray& value) {
           static_cast<std::uint64_t>(value.size())};
 }
 
+struct SemanticTextRun { int start{}, end{}; QRectF bounds; bool rtl{}; };
 struct SemanticNode {
   std::int64_t id = 0;
   std::int64_t parent = -1;
@@ -157,6 +160,9 @@ struct SemanticNode {
   bool multiline = false;
   int selection_base = -1;
   int selection_extent = -1;
+  bool text_geometry = false;
+  QString layout_text;
+  QList<SemanticTextRun> text_runs;
 };
 
 class DorotiAccessibleNode;
@@ -492,6 +498,19 @@ class DorotiSurface final : public DorotiWindowBase {
       surface->setFlag(Qt::WindowDoesNotAcceptFocus, false);
       surface->requestActivate();
       QGuiApplication::inputMethod()->show();
+    }, Qt::QueuedConnection);
+  }
+
+  static void UpdateTextConfiguration(void* view_handle,
+      const doroti_qt_text_configuration_v2* configuration) noexcept {
+    auto* surface = static_cast<DorotiSurface*>(view_handle);
+    if (surface == nullptr || configuration == nullptr) return;
+    const auto config = *configuration;
+    QMetaObject::invokeMethod(surface, [surface, config] {
+      if (!surface->text_client_active_) return;
+      surface->text_configuration_ = config;
+      // Notify hint policy without resetting the native preedit or stealing focus.
+      QGuiApplication::inputMethod()->update(Qt::ImHints | Qt::ImEnabled);
     }, Qt::QueuedConnection);
   }
 
@@ -1025,7 +1044,11 @@ class DorotiSurface final : public DorotiWindowBase {
                     static_cast<std::uint64_t>(tablet->device()->systemId()),
                     static_cast<std::uint64_t>(tablet->pointingDevice()->uniqueId().numericId()),
                     0, static_cast<std::uint32_t>(tablet->modifiers()), 0, 0, 0,
-                    tablet->pressure(), std::hypot(tablet->xTilt(), tablet->yTilt()));
+                    tablet->pressure(), tablet->xTilt(), tablet->yTilt(), tablet->rotation(),
+                    (tablet->pointingDevice()->capabilities().testFlag(QInputDevice::Capability::Pressure) ? 1u : 0u) |
+                    (tablet->pointingDevice()->capabilities().testFlag(QInputDevice::Capability::XTilt) &&
+                     tablet->pointingDevice()->capabilities().testFlag(QInputDevice::Capability::YTilt) ? 2u : 0u) |
+                    (tablet->pointingDevice()->capabilities().testFlag(QInputDevice::Capability::Rotation) ? 4u : 0u));
         break;
       }
       case QEvent::TouchBegin:
@@ -1302,15 +1325,22 @@ class DorotiSurface final : public DorotiWindowBase {
                    std::uint64_t device, std::uint64_t pointer_identifier,
                    std::uint32_t signal_kind, std::uint32_t modifiers,
                    std::uint32_t phase, double scroll_x = 0, double scroll_y = 0,
-                   double pressure = 1, double tilt = 0) {
+                   double pressure = 1, double x_tilt = 0, double y_tilt = 0,
+                   double orientation_degrees = 0, std::uint32_t pen_fields = 0) {
     const auto scale = devicePixelRatio();
     last_pointer_position_ = logical_position;
-    const doroti_qt_pointer_v2 descriptor{
+    constexpr double radians = 3.141592653589793 / 180;
+    const double x = std::clamp(x_tilt, -90.0, 90.0) * radians;
+    const double y = std::clamp(y_tilt, -90.0, 90.0) * radians;
+    const double tilt = std::atan2(std::hypot(std::sin(x) * std::cos(y), std::sin(y) * std::cos(x)), std::cos(x) * std::cos(y));
+    doroti_qt_pointer_v2 descriptor{
         kAbiVersion, sizeof(doroti_qt_pointer_v2), device, pointer_identifier,
         change, kind, buttons, logical_position.x() * scale,
         logical_position.y() * scale, logical_delta.x() * scale,
         logical_delta.y() * scale, pressure, tilt, signal_kind,
         modifiers | (phase << 24), scroll_x * scale, scroll_y * scale, Micros()};
+    descriptor.orientation = orientation_degrees * radians;
+    descriptor.pen_fields = pen_fields;
     callbacks_.pointer(callback_context_, this, &descriptor);
   }
 
@@ -1721,13 +1751,13 @@ class DorotiAccessibleNode final : public QAccessibleInterface,
     const auto* node = Node();
     if (node == nullptr) return QAccessible::NoRole;
     if (id_ == 0) return QAccessible::Client;
-    if (node->button) return QAccessible::Button;
-    if (node->text_field) return QAccessible::EditableText;
-    if (node->checked_state != 0) return QAccessible::CheckBox;
-    if (node->toggleable) return QAccessible::CheckBox;
+    if (node->button && node->role == "none") return QAccessible::Button;
+    if (node->text_field && node->role == "none") return QAccessible::EditableText;
+    if (node->checked_state != 0 && node->role == "none") return QAccessible::CheckBox;
+    if (node->toggleable && node->role == "none") return QAccessible::CheckBox;
     if (node->header) return QAccessible::Heading;
     if (node->image) return QAccessible::Graphic;
-    if (node->slider) return QAccessible::Slider;
+    if (node->slider && node->role == "none") return QAccessible::Slider;
     if (node->role == "dialog" || node->role == "alertDialog") return QAccessible::Dialog;
     if (node->role == "table") return QAccessible::Table;
     if (node->role == "cell") return QAccessible::Cell;
@@ -1778,10 +1808,10 @@ class DorotiAccessibleNode final : public QAccessibleInterface,
     if (type == QAccessible::ActionInterface)
       return static_cast<QAccessibleActionInterface*>(this);
     const auto* node = Node();
-    if (node == nullptr || !node->text_field) return nullptr;
+    if (node == nullptr || (!node->text_field && !node->text_geometry)) return nullptr;
     if (type == QAccessible::TextInterface)
       return static_cast<QAccessibleTextInterface*>(this);
-    if (type == QAccessible::EditableTextInterface && !node->read_only &&
+    if (type == QAccessible::EditableTextInterface && node->text_field && !node->read_only &&
         (node->actions & (1ll << 21)) != 0)
       return static_cast<QAccessibleEditableTextInterface*>(this);
     return nullptr;
@@ -1814,16 +1844,41 @@ class DorotiAccessibleNode final : public QAccessibleInterface,
   QString text(int start, int end) const override {
     const auto* node = Node();
     if (!node || node->obscured) return {};
-    const int begin = std::clamp(start, 0, int(node->value.size()));
-    const int finish = std::clamp(end, begin, int(node->value.size()));
-    return node->value.mid(begin, finish - begin);
+    const auto value = node->text_geometry ? node->layout_text : node->value;
+    const int begin = std::clamp(start, 0, int(value.size()));
+    const int finish = end == -1 ? int(value.size()) : std::clamp(end, begin, int(value.size()));
+    return value.mid(begin, finish - begin);
   }
   int characterCount() const override {
-    const auto* node = Node(); return node ? node->value.size() : 0;
+    const auto* node = Node(); return node && !node->obscured ? (node->text_geometry ? node->layout_text.size() : node->value.size()) : 0;
   }
-  QRect characterRect(int) const override { return {}; }
-  int offsetAtPoint(const QPoint&) const override { return -1; }
-  void scrollToSubstring(int, int) override {}
+  QRect characterRect(int offset) const override {
+    const auto* node = Node();
+    if (!node || node->obscured || !node->text_geometry || !surface_) return {};
+    QRectF bounds;
+    for (const auto& run : node->text_runs)
+      if (run.start <= offset && offset < run.end && !run.bounds.isEmpty())
+        bounds = bounds.isEmpty() ? run.bounds : bounds.united(run.bounds);
+    if (bounds.isEmpty()) return {};
+    return {surface_->mapToGlobal(bounds.topLeft().toPoint()), bounds.size().toSize()};
+  }
+  int offsetAtPoint(const QPoint& point) const override {
+    const auto* node = Node();
+    if (!node || node->obscured || !node->text_geometry || !surface_) return -1;
+    const auto local = surface_->mapFromGlobal(point);
+    for (const auto& run : node->text_runs) {
+      if (!run.bounds.contains(local)) continue;
+      const bool trailing = (local.x() >= run.bounds.center().x()) != run.rtl;
+      return trailing ? run.end : run.start;
+    }
+    return node->layout_text.isEmpty() ? 0 : -1;
+  }
+  void scrollToSubstring(int start, int end) override {
+    const auto* node = Node();
+    if (!node || node->obscured || !node->text_geometry || start < 0 || end < start || end > node->layout_text.size()) return;
+    surface_->DispatchSemanticsAction(id_, 1ll << 26,
+        QJsonDocument(QJsonObject{{"base", start}, {"extent", end}}).toJson(QJsonDocument::Compact));
+  }
   QString attributes(int, int* start, int* end) const override {
     *start = 0; *end = characterCount(); return {};
   }
@@ -1889,7 +1944,7 @@ class DorotiAccessibleNode final : public QAccessibleInterface,
     surface_->DispatchSemanticsAction(id_, 1ll << 21, encoded.mid(1, encoded.size() - 2));
   }
   const SemanticNode* Node() const { return surface_ == nullptr ? nullptr : surface_->Semantic(id_); }
-  DorotiSurface* surface_;
+  QPointer<DorotiSurface> surface_;
   std::int64_t id_;
 };
 
@@ -1951,6 +2006,20 @@ void DorotiSurface::ApplySemantics(const QByteArray& json) {
     node.multiline = flags.value("multiline").toBool();
     node.selection_base = object.value("textSelectionBase").toInt(-1);
     node.selection_extent = object.value("textSelectionExtent").toInt(-1);
+    const auto geometry = object.value("textGeometry").toObject();
+    if (!node.obscured && !geometry.isEmpty()) {
+      node.text_geometry = true;
+      node.layout_text = geometry.value("text").toString();
+      for (const auto value : geometry.value("runs").toArray()) {
+        const auto run = value.toObject();
+        const int start = run.value("start").toInt(-1), end = run.value("end").toInt(-1);
+        const double left = run.value("left").toDouble(), top = run.value("top").toDouble();
+        const double right = run.value("right").toDouble(), bottom = run.value("bottom").toDouble();
+        if (start < 0 || end < start || end > node.layout_text.size() || !std::isfinite(left) || !std::isfinite(top)
+            || !std::isfinite(right) || !std::isfinite(bottom)) { node.text_geometry = false; node.text_runs.clear(); break; }
+        node.text_runs.append({start, end, QRectF(left, top, right - left, bottom - top), run.value("rtl").toBool()});
+      }
+    }
     next.insert(node.id, node);
   }
   for (auto parent = next.begin(); parent != next.end(); ++parent)
@@ -2040,6 +2109,27 @@ void DorotiSurface::ApplySemantics(const QByteArray& json) {
     }).toJson(QJsonDocument::Compact);
     Diagnostic("accessibility.interfaces", detail.constData());
   }
+  if (qEnvironmentVariableIsSet("DOROTI_QT_TEXT_GEOMETRY_SMOKE")) {
+    static bool verified = false;
+    if (!verified) for (auto it = semantics_.cbegin(); it != semantics_.cend(); ++it) {
+      if (it->obscured || !it->text_geometry || it->text_runs.empty()) continue;
+      auto* iface = Accessible(it.key());
+      auto* text = iface ? iface->textInterface() : nullptr;
+      if (!text || text->characterCount() != it->layout_text.size() || text->text(0, text->characterCount()) != it->layout_text)
+        throw std::runtime_error("QAccessible layout text mismatch");
+      for (const auto& run : it->text_runs) {
+        if (run.bounds.isEmpty()) continue;
+        const auto rect = text->characterRect(run.start);
+        const int offset = text->offsetAtPoint(rect.center());
+        if (rect.isEmpty() || (offset != run.start && offset != run.end))
+          throw std::runtime_error("QAccessible glyph geometry/hit-test mismatch");
+        Diagnostic("accessibility.layoutText", "PASS glyph rect/UTF-16 point/text from current layout");
+        verified = true;
+        break;
+      }
+      if (verified) break;
+    }
+  }
 }
 
 QAccessibleInterface* AccessibleFactory(const QString&, QObject* object) {
@@ -2066,6 +2156,7 @@ const doroti_qt_host_api_v2 kHostApi{
     &DorotiSurface::UpdateSemantics,
     &DorotiSurface::ClearSemantics,
     &DorotiSurface::PreparePresent,
+    &DorotiSurface::UpdateTextConfiguration,
 };
 
 std::int32_t Validate(const doroti_qt_configuration_v2* configuration,

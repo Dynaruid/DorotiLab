@@ -29,6 +29,7 @@
     <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Shared\Windows\*.cs" Link="Shared\Windows\%(Filename)%(Extension)" />
     <Compile Remove="WindowsManagedHwndPresenter.cs" />
     <None Include="buildTransitive\Doroti.Host.WindowsAppSdk.targets" Pack="true" PackagePath="buildTransitive\" />
   </ItemGroup>

@@ -146,8 +146,6 @@ public sealed class WindowsNativePointerInput : IDisposable
             info.Type == 3 && (pen.Mask & 1) != 0 ? pen.Pressure / 1024d
             : contact ? 1
             : 0;
-        var tiltX = (pen.Mask & 4) != 0 ? pen.TiltX * Math.PI / 180 : 0;
-        var tiltY = (pen.Mask & 8) != 0 ? pen.TiltY * Math.PI / 180 : 0;
         var packet = new PointerData(
             _viewId,
             DorotiFrameClock.Now,
@@ -160,11 +158,16 @@ public sealed class WindowsNativePointerInput : IDisposable
             exists ? y - previous.physicalY : 0,
             buttons,
             pointerIdentifier: exists ? previous.pointerIdentifier : 0,
-            pressure: pressure,
+            pressure: PenMeasurements.Pressure(pressure),
             pressureMin: 0,
             pressureMax: 1,
-            orientation: (pen.Mask & 2) != 0 ? pen.Rotation * Math.PI / 180 : 0,
-            tilt: Math.Acos(Math.Clamp(Math.Cos(tiltX) * Math.Cos(tiltY), -1, 1))
+            orientation: (pen.Mask & 2) != 0 ? PenMeasurements.Orientation(PenMeasurements.Radians(pen.Rotation)) : 0,
+            tilt: PenMeasurements.FromAxes((pen.Mask & 4) != 0 ? pen.TiltX : 0, (pen.Mask & 8) != 0 ? pen.TiltY : 0),
+            penSupport: info.Type == 3 ? new(
+                (pen.Mask & 1) != 0 ? PenFieldSupport.Supported : PenFieldSupport.Unsupported,
+                (pen.Mask & 12) == 12 ? PenFieldSupport.Supported : PenFieldSupport.Unknown,
+                (pen.Mask & 2) != 0 ? PenFieldSupport.Supported : PenFieldSupport.Unsupported,
+                PenOrientationReference.BarrelRotation) : null
         );
         if (!exists)
         {

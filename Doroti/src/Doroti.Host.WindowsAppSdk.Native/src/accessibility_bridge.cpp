@@ -7,6 +7,8 @@
 #include <atomic>
 #include <cmath>
 #include <cwchar>
+#include <cwctype>
+#include <limits>
 #include <mutex>
 #include <unordered_map>
 #include <unordered_set>
@@ -56,6 +58,15 @@ struct AccessibilityBridge::State {
     return true;
   }
 
+  bool SnapshotText(int id, AccessibilityNode& node, uint64_t& revision) {
+    std::lock_guard lock(mutex);
+    const auto found = nodes.find(id);
+    if (!alive || found == nodes.end() || !found->second.text_geometry || found->second.obscured) return false;
+    node = found->second;
+    revision = generation;
+    return true;
+  }
+
   std::vector<int> Children(int id) {
     std::lock_guard lock(mutex);
     if (!alive) return {};
@@ -91,7 +102,10 @@ struct AccessibilityBridge::State {
     ActionCallback callback;
     {
       std::lock_guard lock(mutex);
-      if (!alive) return;
+      const auto node = nodes.find(id);
+      if (!alive || node == nodes.end() || node->second.hidden || !node->second.enabled || (node->second.actions & action_id) == 0) return;
+      if (node->second.read_only && (action_id == (1ll << 21) || action_id == (1ll << 13) || action_id == (1ll << 14))) return;
+      if (node->second.obscured && (action_id == (1ll << 12) || action_id == (1ll << 13))) return;
       callback = action;
     }
     if (callback) callback(id, action_id, arguments);
@@ -105,7 +119,8 @@ class Provider final : public IRawElementProviderSimple,
                        public IValueProvider,
                        public IToggleProvider,
                        public ISelectionItemProvider,
-                       public IRangeValueProvider {
+                       public IRangeValueProvider,
+                       public ITextProvider, public IExpandCollapseProvider, public IScrollItemProvider {
  public:
   Provider(std::shared_ptr<AccessibilityBridge::State> state, int id)
       : state_(std::move(state)), id_(id) {}
@@ -129,6 +144,12 @@ class Provider final : public IRawElementProviderSimple,
       *result = static_cast<ISelectionItemProvider*>(this);
     else if (iid == __uuidof(IRangeValueProvider) && IsSlider())
       *result = static_cast<IRangeValueProvider*>(this);
+    else if (iid == __uuidof(ITextProvider) && HasTextGeometry())
+      *result = static_cast<ITextProvider*>(this);
+    else if (iid == __uuidof(IExpandCollapseProvider) && (Supports(1ll << 24) || Supports(1ll << 25)))
+      *result = static_cast<IExpandCollapseProvider*>(this);
+    else if (iid == __uuidof(IScrollItemProvider) && Supports(1ll << 8))
+      *result = static_cast<IScrollItemProvider*>(this);
     else
       return E_NOINTERFACE;
     AddRef();
@@ -161,6 +182,12 @@ class Provider final : public IRawElementProviderSimple,
       return QueryInterface(__uuidof(ISelectionItemProvider), reinterpret_cast<void**>(result));
     if (pattern == UIA_RangeValuePatternId && IsSlider())
       return QueryInterface(__uuidof(IRangeValueProvider), reinterpret_cast<void**>(result));
+    if (pattern == UIA_TextPatternId && HasTextGeometry())
+      return QueryInterface(__uuidof(ITextProvider), reinterpret_cast<void**>(result));
+    if (pattern == UIA_ExpandCollapsePatternId && (Supports(1ll << 24) || Supports(1ll << 25)))
+      return QueryInterface(__uuidof(IExpandCollapseProvider), reinterpret_cast<void**>(result));
+    if (pattern == UIA_ScrollItemPatternId && Supports(1ll << 8))
+      return QueryInterface(__uuidof(IScrollItemProvider), reinterpret_cast<void**>(result));
     return S_OK;
   }
 
@@ -524,8 +551,23 @@ class Provider final : public IRawElementProviderSimple,
     return S_OK;
   }
 
+  IFACEMETHODIMP GetSelection(SAFEARRAY** result) override;
+  IFACEMETHODIMP GetVisibleRanges(SAFEARRAY** result) override;
+  IFACEMETHODIMP RangeFromChild(IRawElementProviderSimple* child, ITextRangeProvider** result) override;
+  IFACEMETHODIMP RangeFromPoint(UiaPoint point, ITextRangeProvider** result) override;
+  IFACEMETHODIMP get_DocumentRange(ITextRangeProvider** result) override;
+  IFACEMETHODIMP get_SupportedTextSelection(SupportedTextSelection* result) override;
+  IFACEMETHODIMP Expand() override { if (!Supports(1ll << 24)) return UIA_E_NOTSUPPORTED; state_->Invoke(id_, 1ll << 24); return S_OK; }
+  IFACEMETHODIMP Collapse() override { if (!Supports(1ll << 25)) return UIA_E_NOTSUPPORTED; state_->Invoke(id_, 1ll << 25); return S_OK; }
+  IFACEMETHODIMP get_ExpandCollapseState(ExpandCollapseState* result) override {
+    if (!result) return E_POINTER; AccessibilityNode node; if (!state_->Snapshot(id_, node)) return UIA_E_ELEMENTNOTAVAILABLE;
+    *result = node.expanded == 1 ? ExpandCollapseState_Expanded : ExpandCollapseState_Collapsed; return S_OK;
+  }
+  IFACEMETHODIMP ScrollIntoView() override { if (!Supports(1ll << 8)) return UIA_E_NOTSUPPORTED; state_->Invoke(id_, 1ll << 8); return S_OK; }
+
  private:
   ~Provider() = default;
+  bool HasTextGeometry() { AccessibilityNode node; return state_->Snapshot(id_, node) && node.text_geometry && !node.obscured; }
 
   bool Supports(int64_t action) {
     AccessibilityNode node;
@@ -597,13 +639,15 @@ class Provider final : public IRawElementProviderSimple,
   }
 
   static CONTROLTYPEID ControlType(const AccessibilityNode& node) {
-    if (node.text_field) return UIA_EditControlTypeId;
-    if (IsRadio(node)) return UIA_RadioButtonControlTypeId;
-    if (IsToggle(node)) return node.toggled >= 0 ? UIA_ButtonControlTypeId : UIA_CheckBoxControlTypeId;
+    if (node.text_field && node.role == L"none") return UIA_EditControlTypeId;
+    if (IsRadio(node) && node.role == L"none") return UIA_RadioButtonControlTypeId;
+    if (IsToggle(node) && node.role == L"none") return node.toggled >= 0 ? UIA_ButtonControlTypeId : UIA_CheckBoxControlTypeId;
     if (node.link || node.role == L"link") return UIA_HyperlinkControlTypeId;
     if (node.image) return UIA_ImageControlTypeId;
-    if (node.button || Supports(node, kTapAction)) return UIA_ButtonControlTypeId;
-    if (node.slider) return UIA_SliderControlTypeId;
+    if (node.role == L"none" && (node.button || Supports(node, kTapAction))) return UIA_ButtonControlTypeId;
+    if (node.slider && node.role == L"none") return UIA_SliderControlTypeId;
+    if (node.role == L"comboBox") return UIA_ComboBoxControlTypeId;
+    if (node.role == L"spinButton") return UIA_SpinnerControlTypeId;
     if (node.role == L"tab") return UIA_TabItemControlTypeId;
     if (node.role == L"tabBar") return UIA_TabControlTypeId;
     if (node.role == L"table") return UIA_TableControlTypeId;
@@ -628,6 +672,8 @@ class Provider final : public IRawElementProviderSimple,
 
   friend class AccessibilityBridge;
 };
+
+#include "accessibility_text.inc"
 
 AccessibilityBridge::AccessibilityBridge() : state_(std::make_shared<State>()) {}
 

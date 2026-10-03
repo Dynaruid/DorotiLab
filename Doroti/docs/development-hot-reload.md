@@ -1,6 +1,8 @@
 # Development sessions and metadata Hot Reload
 
-`doroti.ps1 describe -App <folder>` returns `doroti.cli-workspace/v1` JSON. The manifest may declare any nonempty subset of the known platform aliases. `developmentTargets` is the declared Windows/Web/iOS/macOS/Mac Catalyst/Linux Qt intersection; consumers must not invent missing runners.
+`doroti.ps1 describe -App <folder>` returns `doroti.cli-workspace/v1` JSON. The manifest may declare any nonempty subset of the known platform aliases. `developmentTargets` and detailed backend/mode support use the same runner list, including Windows App SDK/MAUI and Android restart mode; consumers must not invent missing runners.
+
+2026-10-03: Windows MAUI Debug Run/Reload/Restart/Stop passes on an actual WinUI host, preserving State/Hangul/scroll during metadata reload. Select `-WindowsBackend Maui` (VS Code `doroti.windowsBackend`). Android evaluates TFM/RID/runtime/AOT before launch and uses an explicit restart/deploy/watch loop; metadata transport is unqualified, so it does not advertise Hot Reload. Select `-Device <serial>` (VS Code `doroti.androidDevice`). No Android device was attached in this run. [Current evidence](validation/2026-10-03-platform-gap-implementation.md). Apple validation for these changes is SKIPPED by user request.
 
 ```powershell
 pwsh -NoProfile -File Doroti/eng/doroti.ps1 dev -App samples/DorotiTestbedApp -Platform windows

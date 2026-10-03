@@ -317,23 +317,7 @@ public static class SkiaPlatformRasterContent
     // Recording transform/clip scopes around composited children produces pictures
     // containing no drawing. They must not allocate full-window transparent bitmaps.
     // saveLayer and unknown operations remain conservative (their blend can affect pixels).
-    private static bool PictureHasDrawing(ScenePicturePayload picture) =>
-        picture.Commands.Any(c =>
-            c.Operation
-                is not (
-                    "save"
-                    or "restore"
-                    or "translate"
-                    or "scale"
-                    or "rotate"
-                    or "skew"
-                    or "transform"
-                    or "clipRect"
-                    or "clipRRect"
-                    or "clipRSuperellipse"
-                    or "clipPath"
-                )
-        );
+    private static bool PictureHasDrawing(ScenePicturePayload picture) => picture.HasDrawing;
 
     public static bool Equivalent(
         IReadOnlyList<SceneCommand> previous,

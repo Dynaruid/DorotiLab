@@ -1309,6 +1309,9 @@ public class RenderEditable
     public override void describeSemanticsConfiguration(SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
+        config.hostTextGeometry = RenderSemanticsTextGeometry.Capture(_textPainter, _paintOffset, obscureText);
+        config.hostScrollToTextRange = (start, end) => RenderSemanticsTextGeometry.ShowRange(config.hostTextGeometry, start, end,
+            bounds => showOnScreen(rect: bounds));
         _semanticsInfo = _textPainter.text!.getSemanticsInformation();
         if (
             _semanticsInfo!.any((info) => info.recognizer is not null)
@@ -1445,6 +1448,9 @@ public class RenderEditable
         IEnumerable<SemanticsNode> children
     )
     {
+        node.hostTextGeometry = RenderSemanticsTextGeometry.Capture(_textPainter, _paintOffset, obscureText);
+        node.hostScrollToTextRange = (start, end) => RenderSemanticsTextGeometry.ShowRange(node.hostTextGeometry, start, end,
+            bounds => showOnScreen(rect: bounds));
         DartRuntimePrimitives.Assert(() =>
             (_semanticsInfo is not null) && (checked((long)_semanticsInfo!.Count) != 0)
         );
@@ -2657,6 +2663,7 @@ public class RenderEditable
 
     public override void performLayout()
     {
+        markNeedsSemanticsUpdate();
         BoxConstraints constraintsLocal = constraints;
         _placeholderDimensions = layoutInlineChildren(
             constraintsLocal.maxWidth,

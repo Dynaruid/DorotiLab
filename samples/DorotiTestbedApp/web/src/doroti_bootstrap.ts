@@ -5,13 +5,17 @@ import {
   type DorotiBootstrapContext,
 } from "./_content/Doroti.Host.Web/doroti.loader.js";
 
+// Navigation can replace the URL during managed startup. Keep the selected
+// runtime owner independent of those application route changes.
+const runtimeLocation = new URL(location.href).searchParams.get("dorotiRuntimeLocation") === "worker" ? "worker" : "main";
+
 await startDoroti({
   configure(context: DorotiBootstrapContext) {
-    context.runtimeLocation = "main";
+    context.runtimeLocation = runtimeLocation;
     document.documentElement.dataset.dorotiBootstrapConfigured = "true";
   },
   onStage(stage) {
-    if (stage === "started") {
+    if (stage === "started" && runtimeLocation === "main") {
       const runtime = (globalThis as unknown as { getDotnetRuntime(id: number): { getAssemblyExports(name: string): Promise<{ DorotiTestbedApp: { Web: { Validation: { WebTextureExport: { Initialize(): void } } } } }> } }).getDotnetRuntime(0);
       void runtime.getAssemblyExports("DorotiTestbedApp.Web.dll").then(exports => exports.DorotiTestbedApp.Web.Validation.WebTextureExport.Initialize());
     }

@@ -8,7 +8,25 @@ public sealed partial class SkiaSceneRenderer
     public void EnableNativeTextures(
         NativeTexturePlatform platform,
         Func<long>? adapterLuid = null
-    ) => _textures.NativeFactory = () => new SkiaNativeTextureEntry(this, platform, adapterLuid);
+    )
+    {
+        _textures.NativeFactory = () =>
+        {
+            if (platform == NativeTexturePlatform.Windows && (adapterLuid?.Invoke() ?? 0) == 0)
+                throw new PlatformNotSupportedException("Native GPU input requires an attached Windows Graphite adapter.");
+            return new SkiaNativeTextureEntry(this, platform, adapterLuid);
+        };
+        _textures.FeatureProvider = () =>
+        {
+            var luid = adapterLuid?.Invoke() ?? 0;
+            var ready = platform != NativeTexturePlatform.Windows || luid != 0;
+            return new(NativeHandleImport: ready, AndroidProducerSurface: _textures.SurfaceFactory is not null,
+                Device: ready ? new(platform, luid) : null,
+                Formats: [NativeTextureFormat.Rgba8888, NativeTextureFormat.Bgra8888],
+                Reason: ready ? null : "The Windows GPU importer has no attached adapter identity.",
+                Generation: Interlocked.Read(ref _contextGeneration));
+        };
+    }
 }
 
 internal sealed class SkiaNativeTextureEntry : NativeTextureEntry
@@ -41,6 +59,9 @@ internal sealed class SkiaNativeTextureEntry : NativeTextureEntry
                 "Native buffer belongs to another platform.",
                 nameof(frame)
             );
+        if (_platform == NativeTexturePlatform.Windows && (frame.Buffer.Device is not { AdapterLuid: not 0 } producer
+            || producer.AdapterLuid != (_adapterLuid?.Invoke() ?? 0)))
+            throw new PlatformNotSupportedException("The producer texture must belong to the current Windows raster adapter.");
         _source.Push(frame);
         _registration.MarkFrameAvailable();
     }

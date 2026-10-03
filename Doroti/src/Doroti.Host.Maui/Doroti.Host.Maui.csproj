@@ -35,10 +35,12 @@
     <InternalsVisibleTo Include="DorotiTestbedApp.iOS" />
     <InternalsVisibleTo Include="DorotiTestbedApp.MacCatalyst" />
     <InternalsVisibleTo Include="DorotiTestbedApp.MacOS" />
+    <InternalsVisibleTo Include="DorotiTestbedApp.Windows" />
     <ProjectReference Include="..\Doroti.Skia.Vulkan\Doroti.Skia.Vulkan.csproj" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'" />
     <ProjectReference Include="..\Doroti.Skia.Rendering\Doroti.Skia.Rendering.csproj" />
     <ProjectReference Include="..\Doroti.Skia.Fonts\Doroti.Skia.Fonts.csproj" />
     <PackageReference Include="Microsoft.Maui.Controls" Condition="'$(DorotiIosMauiVersion)' == '' or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'ios'" />
+    <PackageReference Include="Microsoft.Web.WebView2" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'" />
     <PackageReference Include="Microsoft.Maui.Controls" VersionOverride="$(DorotiIosMauiVersion)" Condition="'$(DorotiIosMauiVersion)' != '' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'" />
     <PackageReference Include="Xamarin.AndroidX.Window.WindowJava" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" />
     <PackageReference Include="SkiaSharp.Views.Maui.Controls" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'macos'" />
@@ -51,7 +53,7 @@
     <PackageReference Include="SkiaSharp.NativeAssets.MacCatalyst" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'" />
     <PackageReference Include="SkiaSharp.NativeAssets.macOS" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'" />
     <ProjectReference Include="..\Doroti.Hosting\Doroti.Hosting.csproj" />
-    <ProjectReference Include="..\Doroti.Framework.Services\Doroti.Framework.Services.csproj" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos' or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst' or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'" />
+    <ProjectReference Include="..\Doroti.Framework.Services\Doroti.Framework.Services.csproj" />
     <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
     <ProjectReference Include="..\Doroti.Skia.RuntimeEffects\Doroti.Skia.RuntimeEffects.csproj" />
   </ItemGroup>
@@ -68,6 +70,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Shared\Windows\*.cs" Link="Shared\Windows\%(Filename)%(Extension)" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'" />
     <ProjectReference Include="..\Doroti.Graphics.DirectX\Doroti.Graphics.DirectX.csproj" GlobalPropertiesToRemove="WindowsAppSdkUndockedRegFreeWinRTInitialize;WindowsAppSdkAutoInitialize" Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-windows'))" />
   </ItemGroup>
 </Project>

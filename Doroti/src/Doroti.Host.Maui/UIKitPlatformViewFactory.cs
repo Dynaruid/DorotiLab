@@ -49,7 +49,8 @@ public sealed class UIKitPlatformViewDispatcher : IPlatformViewDispatcher
 internal sealed class UIKitPlatformViewFactory(
     Func<UIView> parent,
     string viewType,
-    Action beforeFocus
+    Action beforeFocus,
+    Func<IApplicationResourceHostCapability>? resources = null
 ) : IPlatformViewFactory
 {
     public string ViewType => viewType;
@@ -77,7 +78,8 @@ internal sealed class UIKitPlatformViewFactory(
             ),
             Reason: supported
                 ? null
-                : "UIKit supports translation, rectangular clip and direct native input on Graphite Metal."
+                : "UIKit supports translation, rectangular clip and direct native input on Graphite Metal.",
+            WebViewCommands: ViewType == "doroti/webview", MixedScene: true
         );
     }
 
@@ -99,7 +101,8 @@ internal sealed class UIKitPlatformViewFactory(
                 parameters.IsEmpty
                     ? "Native control"
                     : System.Text.Encoding.UTF8.GetString(parameters.Span),
-                onFocused
+                onFocused,
+                resources?.Invoke()
             )
         );
     }
@@ -119,36 +122,7 @@ internal sealed class UIKitPlatformViewFactory(
         }
     }
 
-    private sealed class NativeWebView : WKWebView
-    {
-        private readonly Action _beforeFocus;
-        private readonly Action _focused;
-
-        internal NativeWebView(
-            Action beforeFocus,
-            Action focused,
-            WKWebViewConfiguration configuration
-        )
-            : base(CGRect.Empty, configuration)
-        {
-            _beforeFocus = beforeFocus;
-            _focused = focused;
-        }
-
-        public override bool BecomeFirstResponder()
-        {
-            _beforeFocus();
-            var result = base.BecomeFirstResponder();
-            if (result)
-            {
-                _focused();
-            }
-
-            return result;
-        }
-    }
-
-    private sealed class Instance : IPlatformViewInstance
+    private sealed class Instance : IPlatformViewInstance, IPlatformWebViewInstance
     {
         private readonly Func<UIView> _parent;
         private readonly Action _beforeFocus;
@@ -164,6 +138,10 @@ internal sealed class UIKitPlatformViewFactory(
         private bool _disabled,
             _disposed;
         private int _clicks;
+        private readonly AppleWebViewSession? _webSession;
+        public event Action<WebViewEvent>? WebViewChanged;
+        public Task<WebViewResult> ExecuteAsync(WebViewCommand command, CancellationToken token) =>
+            _webSession?.ExecuteAsync(command, token) ?? throw new NotSupportedException("This native view is not a WebView.");
 
         internal Instance(
             Func<UIView> parent,
@@ -171,7 +149,8 @@ internal sealed class UIKitPlatformViewFactory(
             Action beforeFocus,
             PlatformViewHandle handle,
             string text,
-            Action<PlatformViewHandle> focused
+            Action<PlatformViewHandle> focused,
+            IApplicationResourceHostCapability? resources
         )
         {
             _parent = parent;
@@ -200,19 +179,9 @@ internal sealed class UIKitPlatformViewFactory(
             }
             else if (type == "doroti/webview")
             {
-                using var configuration = new WKWebViewConfiguration
-                {
-                    AllowsInlineMediaPlayback = true,
-                };
-                var web = new NativeWebView(BeforeFocus, Focused, configuration);
-                // Local HTML has no HTTP Referer without a base URL. Embedded media
-                // providers use the installed app's identity (not a third-party origin).
-                var bundleId = NSBundle.MainBundle.BundleIdentifier;
-                using var baseUrl = string.IsNullOrWhiteSpace(bundleId)
-                    ? null
-                    : new NSUrl($"https://{bundleId.ToLowerInvariant()}/");
-                web.LoadHtmlString(text, baseUrl!);
-                _control = web;
+                _webSession = new AppleWebViewSession(handle, text, BeforeFocus, Focused,
+                    value => WebViewChanged?.Invoke(value), resources);
+                _control = _webSession.View;
             }
             else
             {
@@ -370,6 +339,7 @@ internal sealed class UIKitPlatformViewFactory(
             }
 
             _disabled = true;
+            _webSession?.Close();
             _clip.UserInteractionEnabled = false;
             return DetachAsync();
         }
@@ -395,6 +365,7 @@ internal sealed class UIKitPlatformViewFactory(
             }
 
             _control.RemoveFromSuperview();
+            _webSession?.Dispose();
             _control.Dispose();
             _clip.Dispose();
             return ValueTask.CompletedTask;

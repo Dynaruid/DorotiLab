@@ -29,11 +29,9 @@ internal sealed class BrowserFilePicker(int hostId) : IFilePickerHostCapability,
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         cancellationToken.ThrowIfCancellationRequested();
-        var extensions = options.Extensions ?? [];
-        if (extensions.Any(e => !System.Text.RegularExpressions.Regex.IsMatch(e, @"^\.?[a-zA-Z0-9]+$")))
-            throw new ArgumentException("Extensions must be simple file extensions.", nameof(options));
+        var extensions = FilePickFilters.Normalize(options.Extensions);
         var task = BrowserInterop.PickBrowserFiles(hostId, options.AllowMultiple,
-            string.Join(",", extensions.Select(e => "." + e.TrimStart('.'))));
+            string.Join(",", extensions));
         var dispatcher = SynchronizationContext.Current;
         using var cancel = cancellationToken.Register(() =>
         {
@@ -50,8 +48,8 @@ internal sealed class BrowserFilePicker(int hostId) : IFilePickerHostCapability,
             cancellationToken.ThrowIfCancellationRequested();
             throw new ObjectDisposedException(nameof(BrowserFilePicker));
         }
-        return new(Enum.Parse<FilePickStatus>(root.GetProperty("status").GetString()!), files,
-            root.TryGetProperty("message", out var message) ? message.GetString() : null);
+        return FilePickFilters.Enforce(new(Enum.Parse<FilePickStatus>(root.GetProperty("status").GetString()!), files,
+            root.TryGetProperty("message", out var message) ? message.GetString() : null), extensions);
     }
     public void Dispose() { if (_disposed) return; _disposed = true; BrowserInterop.CloseFileOwner(hostId); }
 }

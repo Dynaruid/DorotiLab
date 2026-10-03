@@ -38,5 +38,6 @@
     <PackageVersion Include="SkiaSharp.Views" Version="4.154.0-preview.1.26454.9" />
     <PackageVersion Include="SkiaSharp.Views.Maui.Controls" Version="4.154.0-preview.1.26454.9" />
     <PackageVersion Include="Microsoft.WindowsAppSDK" Version="1.8.260508005" />
+    <PackageVersion Include="Microsoft.Web.WebView2" Version="1.0.3179.45" />
   </ItemGroup>
 </Project>

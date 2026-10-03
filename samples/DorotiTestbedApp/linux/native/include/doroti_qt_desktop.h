@@ -1,18 +1,21 @@
 #pragma once
 #include "doroti_qt_platform_views.h"
 
-// Optional Desktop ABI, independent of the host ABI 6. GUI-thread
+// Optional Desktop ABI, independent of the host ABI 7. GUI-thread
 // commands use a generation token; post has the platform-owner exactly-once contract.
 extern "C" {
 struct doroti_qt_desktop_state {
   std::uint32_t struct_size, flags; // visible=1, active=2
   double width, height, scale;
   std::uint32_t presentation, reserved; // normal/minimized/maximized/fullscreen
+  double x, y; // actual global position, flags bit 2 means xcb/DPR1 placement supported
+  double frame_width, frame_height;
 };
 struct doroti_qt_desktop_command {
   std::uint32_t struct_size, kind;
   double x, y;
   doroti_qt_utf8_v2 text;
+  double width, height;
 };
 struct doroti_qt_desktop_api {
   std::uint32_t abi_version, struct_size;
@@ -24,19 +27,21 @@ struct doroti_qt_desktop_api {
 };
 // Events: 0 state changed, 1 close requested (deferred), 2 destruction finished.
 // Commands 0..17 match WindowCommandKind; 100 destroys an approved window,
-// 102 sets the initial presentation before showing it.
+// 102 sets the initial presentation; 103 sets only the initial frame position.
 // Observe only once, before first show. Context survives through event 2.
 DOROTI_QT_EXPORT std::int32_t doroti_qt_get_desktop(
     void*, std::uint32_t, std::uint32_t, std::uint64_t*, doroti_qt_desktop_api*);
 DOROTI_QT_EXPORT void doroti_qt_desktop_quit();
+// Snapshot set by native GUI owner: 0 unknown, 1 xcb/DPR1, 2 Wayland, 3 other/mixed-DPR.
+DOROTI_QT_EXPORT int doroti_qt_desktop_qpa();
 // Queues work on QApplication from any thread; rejection does not retain context.
 // Admitted work completes with closed if the loop discards it during shutdown.
 DOROTI_QT_EXPORT int doroti_qt_post_v2(void (*callback)(void*, int), void* context);
 // GUI thread; new independent Quick owner in the existing QApplication.
 DOROTI_QT_EXPORT int doroti_qt_create_window_v2(const doroti_qt_configuration_v2*, const doroti_qt_callbacks_v2*);
 }
-static_assert(sizeof(doroti_qt_desktop_state) == 40);
-static_assert(sizeof(doroti_qt_desktop_command) == 40);
+static_assert(sizeof(doroti_qt_desktop_state) == 72);
+static_assert(sizeof(doroti_qt_desktop_command) == 56);
 static_assert(sizeof(doroti_qt_desktop_api) == 48);
 
 #ifdef DOROTI_QT_HOST_BUILD

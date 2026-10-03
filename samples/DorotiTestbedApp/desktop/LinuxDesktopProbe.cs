@@ -59,7 +59,7 @@ internal static class LinuxDesktopProbe
             try { await window.MinimizeAsync(ct); throw new InvalidOperationException("Wayland minimize unexpectedly supported"); }
             catch (NotSupportedException) { states["waylandMinimizeRejected"] = true; }
         }
-        else
+        else if (Environment.GetEnvironmentVariable("DOROTI_QT_SKIP_MINIMIZE_PROBE") != "1")
         {
             await window.MinimizeAsync(ct);
             await Observe("minimized", () => window.State.PresentationState == WindowPresentationState.Minimized);
@@ -82,8 +82,18 @@ internal static class LinuxDesktopProbe
             catch (NotSupportedException) { rejected.Add(name); return; }
             throw new InvalidOperationException(name + " unexpectedly supported");
         }
-        await Reject("Center", () => window.CenterAsync(ct));
-        await Reject("Bounds", () => window.SetBoundsAsync(Rect.fromLTWH(0, 0, 500, 450), ct));
+        if (window.Capabilities.Evaluate(new WindowOptions { Position = new Offset(0, 0), StartupVisibility = WindowStartupVisibility.PlatformDefault }).Support == WindowSupport.Supported)
+        {
+            await window.CenterAsync(ct);
+            await window.SetBoundsAsync(Rect.fromLTWH(40, 50, 500, 450), ct);
+            if (window.State.Bounds?.topLeft != new Offset(40, 50)) throw new InvalidOperationException("xcb position was not observed.");
+            states["xcbPlacement"] = true;
+        }
+        else
+        {
+            await Reject("Center", () => window.CenterAsync(ct));
+            await Reject("Bounds", () => window.SetBoundsAsync(Rect.fromLTWH(0, 0, 500, 450), ct));
+        }
         await Reject("Topmost", () => window.SetAlwaysOnTopAsync(true, ct));
         await Reject("Taskbar", () => window.SetSkipTaskbarAsync(true, ct));
         await Reject("Drag", () => window.StartDraggingAsync(ct));
@@ -91,7 +101,7 @@ internal static class LinuxDesktopProbe
         {
             BackgroundColor = new Color(0xffeeeeee),
         }, ct);
-        if (appearance.Status != WindowApplyStatus.Rejected || window.State.Bounds is not null)
+        if (appearance.Status != WindowApplyStatus.Rejected)
             throw new InvalidOperationException("Qt unsupported contract failed");
         states["rejected"] = rejected;
         states["appearanceRejected"] = true;

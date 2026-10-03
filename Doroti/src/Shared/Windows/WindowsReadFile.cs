@@ -1,7 +1,7 @@
 using Doroti.Ui;
 using Microsoft.Win32.SafeHandles;
 
-namespace Doroti.Host.WindowsAppSdk;
+namespace Doroti.Host.SharedWindows;
 
 /// <summary>Shared read grant for picked and dropped files. Never executes or loads the whole file.</summary>
 internal sealed class WindowsReadFile : IPickedFile

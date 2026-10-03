@@ -36,6 +36,7 @@ const completions = new Set<Promise<void>>();
 const counts = { received: 0, accepted: 0, rejected: 0, closed: 0, dropped: 0, imported: 0, drawn: 0, retired: 0, errors: 0 };
 let maxTextureDimension = 0;
 let viewBudget = textureViewBudget(0);
+export function effectAvailableBytes(): number { return closed || lost ? 0 : Math.max(0, Math.min(64 * 1024 * 1024, viewBudget - bytes)); }
 export { allocateEffect, executeEffect } from "./doroti.web.gpu-effects.js";
 export function effectGl(): GlTable {
   if (closed || lost || gpu) throw new Error("WebGL effect requires the live Ganesh render owner.");

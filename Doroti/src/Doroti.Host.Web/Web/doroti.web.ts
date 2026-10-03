@@ -826,6 +826,13 @@ export function getRendererIdentity(): string {
   return activeWorkerBridge?.rendererIdentity() ?? presenterPolicy().selected;
 }
 
+let ownerCallbackDispatch: ((id: number) => void) | undefined;
+export function postOwnerCallback(id: number): void {
+  const dispatch = ownerCallbackDispatch;
+  if (!dispatch) throw new Error("Browser owner callbacks have not been initialized.");
+  queueMicrotask(() => dispatch(id));
+}
+
 export async function initializeManagedCallbacks(): Promise<"ready"> {
   if (managed) return "ready";
   const getDotnetRuntime = (globalThis as typeof globalThis & { getDotnetRuntime?: (index: number) => DotnetRuntime }).getDotnetRuntime;
@@ -833,6 +840,9 @@ export async function initializeManagedCallbacks(): Promise<"ready"> {
   if (!runtime) throw new Error("Doroti could not resolve the active Web runtime.");
   const exports = await runtime.getAssemblyExports("Doroti.Host.Web.dll") as DorotiAssemblyExports;
   const interop = exports.Doroti.Host.Web.BrowserInterop;
+  ownerCallbackDispatch = (exports as unknown as {
+    Doroti: { Host: { Web: { BrowserOwnerSynchronizationContext: { Dispatch(id: number): void } } } }
+  }).Doroti.Host.Web.BrowserOwnerSynchronizationContext.Dispatch;
   configureNavigation(interop.DispatchApplicationNavigation);
   configurePersistenceFailure(interop.DispatchApplicationPersistenceFailure);
   configureDrop(interop.DispatchBrowserDrop);
@@ -1530,10 +1540,16 @@ export function clearTextInput(hostId: number): void {
 
 export async function launchExternalUrl(url: string): Promise<string> {
   if (activeWorkerBridge) return activeWorkerBridge.requestControl("url-launch", { url });
-  const parsed = new URL(url);
-  if (parsed.protocol !== "https:" && parsed.protocol !== "http:") throw new Error("Unsupported URL scheme");
+  let parsed: URL;
+  try { parsed = new URL(url); } catch { return "invalidUrl"; }
+  if (!["https:", "http:", "mailto:"].includes(parsed.protocol)) return "unsupported";
+  if (parsed.protocol === "mailto:") {
+    if (!navigator.userActivation?.isActive) return "blocked";
+    try { window.location.assign(parsed.href); return "opened"; } catch { return "failed"; }
+  }
   // A Worker round trip can lose transient activation. Report the browser result explicitly.
-  const opened = window.open(parsed.href, "_blank");
+  let opened: Window | null;
+  try { opened = window.open(parsed.href, "_blank"); } catch { return "failed"; }
   if (!opened) return "blocked";
   opened.opener = null;
   return "opened";
@@ -1849,6 +1865,24 @@ export async function invokePlugin(moduleUrl: string, exportName: string, channe
   throw new Error(`Doroti JavaScript plugin '${exportName}' returned an unsupported response type.`);
 }
 
+export interface DorotiRuntimeState {
+  state: "lost" | "restarting" | "ready" | "failed";
+  generation: number;
+  renderer: string;
+  restartScope: "page" | "worker-session";
+  reason?: string;
+}
+let restartWebRuntime: (() => void) | undefined;
+let webRuntimeState: DorotiRuntimeState | undefined;
+export function getDorotiRuntimeState(): DorotiRuntimeState | undefined {
+  return webRuntimeState ? { ...webRuntimeState } : undefined;
+}
+/** Main-runtime restart reloads the page; only explicitly serialized restoration survives. */
+export function restartDorotiWebHost(): void {
+  if (!restartWebRuntime) throw new Error("Doroti Web runtime is not attached.");
+  restartWebRuntime();
+}
+
 export async function startDorotiWorkerHost(
   mode?: "worker-direct-webgl" | "worker-direct-webgpu",
   runtimeLocation: "main" | "worker" = "main",
@@ -1865,6 +1899,14 @@ export async function startDorotiWorkerHost(
     dorotiRendererReason: selectedRendererPolicy.reason, dorotiMemoryProfile: selectedRendererPolicy.memoryProfile });
   if (mode === "worker-direct-webgpu" && runtimeLocation !== "main")
     throw new Error("Doroti WebGPU requires runtimeLocation=main and a threaded build.");
+  if (runtimeLocation === "worker") {
+    const response = await fetch(new URL("./doroti.runtime-profile.json", document.baseURI), { cache: "no-store" });
+    const profile = response.ok ? await response.json() as { schemaVersion?: number; threads?: boolean } : undefined;
+    if (profile?.schemaVersion !== 1 || typeof profile.threads !== "boolean")
+      throw new Error("Standalone worker ownership requires a build profile from the matching Doroti.Runner.Sdk.");
+    if (profile.threads)
+      throw new Error("Standalone worker ownership requires WasmEnableThreads=false. Use runtimeLocation=main for the threaded build.");
+  }
   if (typeof Worker === "undefined" || typeof OffscreenCanvas === "undefined" ||
       typeof HTMLCanvasElement.prototype.transferControlToOffscreen !== "function")
     throw new Error(`Doroti ${mode} required browser capabilities are unavailable.`);
@@ -1876,10 +1918,16 @@ export async function startDorotiWorkerHost(
   const dotnetModuleUrl = resolveCurrentDotnetModuleUrl();
 
   let activeWorker: DorotiWorkerEndpoint;
-  const placeholder = runtimeLocation === "main"
-    ? await createManagedDorotiWorker(dotnetModuleUrl, new URL("./doroti.raster.worker.js", import.meta.url))
-    : createDorotiWorker(new URL("./doroti.raster.worker.js", import.meta.url));
-  activeWorker = placeholder;
+  try {
+    activeWorker = runtimeLocation === "main"
+      ? await createManagedDorotiWorker(dotnetModuleUrl, new URL("./doroti.raster.worker.js", import.meta.url))
+      : createDorotiWorker(new URL("./doroti.raster.worker.js", import.meta.url));
+  } catch (error) {
+    webRuntimeState = { state: "failed", generation: 1, renderer: mode, restartScope: "page", reason: String(error) };
+    restartWebRuntime = () => location.reload();
+    globalThis.dispatchEvent(new CustomEvent("doroti-runtime-state", { detail: getDorotiRuntimeState() }));
+    throw error;
+  }
   const display: WorkerDisplayPresenter = {
     worker: activeWorker, runtimeLocation, mode,
     currentRequestId: null, latestRequestId: null,
@@ -1889,6 +1937,11 @@ export async function startDorotiWorkerHost(
     restartCount: 0, runtimeSessionId: 1, pendingLeases: new Map(),
   };
   workerDisplayPresenters.set(canvas.id, display);
+  const publishRuntimeState = (state: DorotiRuntimeState["state"], reason?: string): void => {
+    webRuntimeState = { state, generation: display.runtimeSessionId, renderer: mode!,
+      restartScope: runtimeLocation === "main" ? "page" : "worker-session", reason };
+    globalThis.dispatchEvent(new CustomEvent("doroti-runtime-state", { detail: getDorotiRuntimeState() }));
+  };
   let snapshotInFlight = false;
   let snapshotInFlightGeneration = 0;
   let latestWorkerSnapshot: { hostId: number; value: Record<string, unknown> } | null = null;
@@ -2069,10 +2122,16 @@ export async function startDorotiWorkerHost(
 
   const attachWorker = (worker: DorotiWorkerEndpoint): void => {
     worker.addEventListener("message", (event) => {
+      if (worker !== activeWorker) {
+        // A retired endpoint can finish an asynchronous bitmap/request after replacement.
+        const stale = (event as MessageEvent).data;
+        if (stale?.bitmap instanceof ImageBitmap) stale.bitmap.close();
+        return;
+      }
       let message: Record<string, unknown>;
       try {
         message = decodeDorotiMessage((event as MessageEvent).data, new Set([
-          "frame-cost", "runtime-ready", "gpu-ready", "snapshot-applied", "admission-applied", "managed-raster",
+          "frame-cost", "runtime-stage", "runtime-ready", "gpu-ready", "snapshot-applied", "admission-applied", "managed-raster",
           "present-requested", "direct-commit", "terminal", "resource", "context-lost", "gpu-disposed", "texture-response", "texture-error",
         "context-restored", "control", "control-request", "closed", "disposed", "fatal",
         ]));
@@ -2080,6 +2139,7 @@ export async function startDorotiWorkerHost(
         message = { kind: "fatal", error: `protocol violation: ${String(error)}` };
       }
       switch (message.kind) {
+        case "runtime-stage": root.dataset.dorotiWorkerStage = String(message.stage); break;
         case "frame-cost": {
           const pending = frameCostPending.get(Number(message.request));
           frameCostPending.delete(Number(message.request));
@@ -2095,6 +2155,7 @@ export async function startDorotiWorkerHost(
           root.dataset.dorotiRenderThreadId = String(message.renderThreadId ?? 0);
           root.dataset.dorotiRenderWorkerIsolated = String(message.workerIsolated === true);
           resolveReady("started");
+          publishRuntimeState("ready");
           break;
         case "gpu-ready":
           host.gpu = message.gpu as GpuIdentity;
@@ -2250,7 +2311,11 @@ export async function startDorotiWorkerHost(
           display.displayWidth = Number(message.displayWidth ?? message.rasterWidth);
           display.displayHeight = Number(message.displayHeight ?? message.rasterHeight);
           break;
-        case "context-lost": display.contextLost = true; root.dataset.dorotiPlatformContextLost = "true"; break;
+        case "context-lost":
+          display.contextLost = true;
+          root.dataset.dorotiPlatformContextLost = "true";
+          publishRuntimeState("lost", "Graphics context/device lost; a new runtime endpoint is required.");
+          break;
         case "context-restored":
           display.contextLost = false;
           display.contextGeneration = Number(message.contextGeneration);
@@ -2289,9 +2354,16 @@ export async function startDorotiWorkerHost(
         }
         case "fatal": {
           const error = new Error(`Doroti worker runtime failed: ${String(message.error)}`);
-          if (runtimeLocation !== "main" && display.restartCount < 1) {
+          publishRuntimeState("lost", error.message);
+          if (runtimeLocation !== "main" && (display.restartCount < 1 || message.explicitRestart === true)) {
             display.restartCount++;
             display.runtimeSessionId++;
+            publishRuntimeState("restarting", error.message);
+            terminalFailure = null;
+            delete document.documentElement.dataset.dorotiRendererError;
+            for (const request of frameCostPending.values()) request.reject(error);
+            frameCostPending.clear();
+            try { texturesForCanvas(canvas.id).disconnect(); } catch { /* endpoint already closed */ }
             worker.terminate();
             display.currentRequestId = null;
             display.latestRequestId = null;
@@ -2334,6 +2406,8 @@ export async function startDorotiWorkerHost(
             replacement.postMessage({
               protocolVersion: dorotiProtocolVersion, kind: "init", snapshot: JSON.parse(snapshot(host)),
               dotnetModuleUrl, mode, canvas: replacementOffscreen,
+              policy: selectedRendererPolicy,
+              rendererContractVersion: mode === "worker-direct-webgpu" ? dorotiWebGpuRendererVersion : undefined,
               testbedMode: new URL(location.href).searchParams.get("dorotiTestbedMode") ?? "diagnostics",
     progressScope: new URL(location.href).searchParams.get("dorotiProgressScope") ?? "local",
               resizeDiagnostics: diagnosticsEnabled(),
@@ -2341,6 +2415,7 @@ export async function startDorotiWorkerHost(
             }, replacementOffscreen ? [replacementOffscreen] : []);
           } else {
             terminalFailure = error;
+            publishRuntimeState("failed", error.message);
             document.documentElement.dataset.dorotiRendererError = error.message;
             if (runtimeLocation === "main") worker.terminate();
             if (!ready) rejectReady(error);
@@ -2355,12 +2430,38 @@ export async function startDorotiWorkerHost(
       scheduleResizeDiagnosticsPublish(host);
     });
     worker.addEventListener("error", (event) => {
+      if (worker !== activeWorker) return;
       const error = event as ErrorEvent;
-      if (!ready && (runtimeLocation === "main" || display.restartCount >= 1))
-        rejectReady(error.error ?? new Error(error.message));
+      // An initial isolated-worker module failure used to leave readiness pending
+      // forever. Use the same bounded supervisor/loss path as protocol failures.
+      worker.dispatchEvent(new MessageEvent("message", { data: {
+        protocolVersion: dorotiProtocolVersion, kind: "fatal",
+        error: error.message || String(error.error ?? "Worker module initialization failed."),
+      } }));
     });
   };
   attachWorker(activeWorker);
+  restartWebRuntime = () => {
+    if (runtimeLocation === "worker") {
+      activeWorker.dispatchEvent(new MessageEvent("message", { data: {
+        protocolVersion: dorotiProtocolVersion, kind: "fatal", error: "explicit application restart", explicitRestart: true,
+      } }));
+      return;
+    }
+    publishRuntimeState("restarting", "explicit page restart");
+    try { texturesForCanvas(canvas.id).disconnect(); } catch { /* endpoint already closed */ }
+    closeExternalLeases(display.pendingLeases, () => {});
+    for (const request of frameCostPending.values()) request.reject(new Error("Runtime restarted."));
+    frameCostPending.clear();
+    closeComposition();
+    activeWorker.terminate();
+    // A threaded managed main runtime cannot be instantiated twice in the same
+    // realm. Navigation retires all its clients/requests and allocates fresh DOM.
+    const restartUrl = new URL(location.href);
+    restartUrl.searchParams.set("dorotiRenderer", mode);
+    restartUrl.searchParams.set("dorotiRuntimeLocation", runtimeLocation);
+    location.replace(restartUrl.href);
+  };
   const initialOffscreen = createWorkerVisibleSurface(canvas).offscreen;
   const initialMessage = {
     protocolVersion: dorotiProtocolVersion, kind: "init", snapshot: JSON.parse(snapshot(host)),
@@ -2373,6 +2474,7 @@ export async function startDorotiWorkerHost(
   };
   activeWorker.postMessage(initialMessage, initialOffscreen ? [initialOffscreen] : []);
   globalThis.addEventListener("pagehide", () => {
+    restartWebRuntime = undefined;
     try { texturesForCanvas(canvas.id).disconnect(); } catch { /* Already closed. */ }
     closeComposition();
     if (runtimeLocation === "main") {

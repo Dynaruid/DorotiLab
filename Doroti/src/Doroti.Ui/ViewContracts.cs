@@ -691,7 +691,8 @@ public readonly record struct PointerData(
     double panDeltaY = 0,
     double scale = 1,
     double rotation = 0,
-    Action<bool>? respond = null
+    Action<bool>? respond = null,
+    PenMeasurementSupport? penSupport = null
 );
 
 public sealed record PointerDataPacket(IReadOnlyList<PointerData> data);

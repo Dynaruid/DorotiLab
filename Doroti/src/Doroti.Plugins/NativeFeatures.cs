@@ -5,7 +5,7 @@ using Doroti.Ui;
 
 namespace Doroti.Plugins;
 
-public sealed record NativeFeatureCapabilities(bool FilePicker, bool UrlLauncher);
+public sealed record NativeFeatureCapabilities(bool FilePicker, bool UrlLauncher, UrlSchemeSupport[]? UrlSchemes = null);
 public sealed record PickedFileInfo(string Token, string Name, long Length);
 internal sealed record FeatureRequest(string Operation, FilePickOptions? Options = null,
     string? Value = null, long Offset = 0, int Count = 0);
@@ -51,11 +51,15 @@ public sealed class NativeFeaturesHandler : IDorotiViewPluginHandler
         switch (request.Operation)
         {
             case "capabilities":
-                return new("ok", Capabilities: new(Has(DorotiCapabilityIds.FilePicker), Has(DorotiCapabilityIds.UrlLauncher)));
+                return new("ok", Capabilities: new(Has(DorotiCapabilityIds.FilePicker), Has(DorotiCapabilityIds.UrlLauncher),
+                    Has(DorotiCapabilityIds.UrlLauncher) ? new[] { "http", "https", "mailto" }.Select(
+                        Host<IUrlLauncherHostCapability>(DorotiCapabilityIds.UrlLauncher).QueryScheme).ToArray() : []));
             case "pick":
                 if (!Has(DorotiCapabilityIds.FilePicker)) return new("unsupported");
+                var options = (request.Options ?? new()).Normalize();
                 var result = await Host<IFilePickerHostCapability>(DorotiCapabilityIds.FilePicker)
-                    .PickFilesAsync(request.Options ?? new(), token).ConfigureAwait(false);
+                    .PickFilesAsync(options, token).ConfigureAwait(false);
+                result = FilePickFilters.Enforce(result, options.Extensions!);
                 var retained = new List<string>();
                 try
                 {
@@ -84,10 +88,11 @@ public sealed class NativeFeaturesHandler : IDorotiViewPluginHandler
                 context.Release(request.Value ?? "");
                 return new("ok");
             case "launch":
-                if (!Uri.TryCreate(request.Value, UriKind.Absolute, out var uri)) return new("invalidUrl");
-                // External programs/files require a separate explicit capability.
-                if (uri.Scheme is not ("http" or "https" or "mailto")) return new("unsupported", "Supported schemes: http, https, mailto.");
+                if (UrlLaunchPolicy.Validate(request.Value, out var uri) is { } invalid)
+                    return new(invalid.Status.ToString(), invalid.Message);
                 if (!Has(DorotiCapabilityIds.UrlLauncher)) return new("unsupported");
+                var scheme = Host<IUrlLauncherHostCapability>(DorotiCapabilityIds.UrlLauncher).QueryScheme(uri!.Scheme);
+                if (!scheme.Supported) return new("unsupported", scheme.Reason);
                 var launched = await Host<IUrlLauncherHostCapability>(DorotiCapabilityIds.UrlLauncher)
                     .LaunchUrlAsync(uri.AbsoluteUri, token).ConfigureAwait(false);
                 return new(launched.Status.ToString(), launched.Message);

@@ -622,6 +622,20 @@ public sealed class BrowserHostAdapter
     internal Task<string> PerformTextActionAsync(string action, string text) =>
         BrowserInterop.PerformTextActionAsync(HostId, action, text);
 
+    public ValueTask<ClipboardTextAvailability> QueryClipboardTextAsync(CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        // Browsers expose no permission-free clipboard-content availability API.
+        return ValueTask.FromResult(ClipboardTextAvailability.Unknown);
+    }
+
+    public ValueTask<bool> HasClipboardTextAsync(CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        // Optimistically offer Paste. Only the explicit paste request performs readText.
+        return ValueTask.FromResult(true);
+    }
+
     public async ValueTask<string?> GetClipboardTextAsync(
         CancellationToken cancellationToken = default
     )
@@ -649,12 +663,8 @@ public sealed class BrowserHostAdapter
     {
         cancellationToken.ThrowIfCancellationRequested();
         var status = await BrowserInterop.LaunchExternalUrlAsync(absoluteUrl);
-        return status == "opened"
-            ? new(UrlLaunchStatus.opened)
-            : new(
-                UrlLaunchStatus.blocked,
-                "The browser blocked the new tab. Allow popups and retry the link."
-            );
+        cancellationToken.ThrowIfCancellationRequested();
+        return UrlLaunchPolicy.FromStatus(status);
     }
 
     public void SetCursor(DorotiMouseCursorKind cursor) =>
@@ -1020,14 +1030,12 @@ public sealed class BrowserHostAdapter
                         : y - previous.Y,
                     buttons,
                     pointerIdentifier: pointer,
-                    pressure: samples[index + 2],
+                    pressure: PenMeasurements.Pressure(samples[index + 2]),
                     pressureMin: 0,
                     pressureMax: 1,
-                    orientation: samples[index + 5],
-                    tilt: Math.Sqrt(
-                        (samples[index + 3] * samples[index + 3])
-                            + (samples[index + 4] * samples[index + 4])
-                    )
+                    orientation: PenMeasurements.Orientation(PenMeasurements.Radians(samples[index + 5])),
+                    tilt: PenMeasurements.FromAxes(samples[index + 3], samples[index + 4]),
+                    penSupport: kind == 2 ? new(OrientationReference: PenOrientationReference.BarrelRotation) : null
                 )
             );
             if (change is PointerChange.remove or PointerChange.cancel)

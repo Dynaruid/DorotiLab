@@ -94,7 +94,13 @@ public sealed record PlatformEffectSupport(
     int MaximumEffects = 0,
     double MaximumSigma = 0,
     bool Saturation = false,
-    string? Reason = null
+    string? Reason = null,
+    bool MatchCommon = true,
+    bool ExactSigma = true,
+    bool SolidTint = true,
+    bool AffineTransform = false,
+    PlatformViewEffects Clips = PlatformViewEffects.RectClip,
+    double MaximumPhysicalSigma = double.PositiveInfinity
 )
 {
     public static PlatformEffectSupport Unsupported { get; } =
@@ -103,7 +109,8 @@ public sealed record PlatformEffectSupport(
     public void Validate(double sigmaX, double sigmaY, int effectCount)
     {
         if (
-            !LiveSourceSampling
+            !double.IsFinite(sigmaX) || !double.IsFinite(sigmaY) || sigmaX < 0 || sigmaY < 0 || effectCount < 0
+            || !LiveSourceSampling
             || effectCount > MaximumEffects
             || sigmaX > MaximumSigma
             || sigmaY > MaximumSigma
@@ -113,6 +120,17 @@ public sealed record PlatformEffectSupport(
                 Reason ?? "Native effect exceeds this backend's sampling limits."
             );
         }
+    }
+
+    public void ValidateIntent(PlatformEffectStyle? style, double physicalSigmaX, double physicalSigmaY)
+    {
+        style?.Validate();
+        if (style is { Match: PlatformEffectMatchPolicy.ExactSigma } && !ExactSigma
+            || style is { Match: PlatformEffectMatchPolicy.MatchCommon } && !MatchCommon
+            || style is { Match: PlatformEffectMatchPolicy.SolidTint } && !SolidTint
+            || style is { Saturation: not 1 } && !Saturation
+            || physicalSigmaX > MaximumPhysicalSigma || physicalSigmaY > MaximumPhysicalSigma)
+            throw new NotSupportedException(Reason ?? "Native backdrop intent exceeds this backend's physical/matching limits.");
     }
 }
 

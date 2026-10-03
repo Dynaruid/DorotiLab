@@ -61,7 +61,7 @@
   </PropertyGroup>
   <ItemGroup Condition="'$(DorotiWebFontValidation)' == 'true'">
     <Compile Include="Validation/WebFontProbe.cs" />
-    <Content Include="../../../Doroti/validation/css-fonts/fixtures/Galmuri11.woff;../../../Doroti/validation/css-fonts/fixtures/Galmuri11.ttf" Link="wwwroot/font-probe/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="../../DorotiTestbedApp/assets/fonts/Roboto-regular.ttf" Link="wwwroot/font-probe/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="../../DorotiTestbedApp/assets/fonts/MaterialIcons-Regular.otf" Link="wwwroot/font-probe/icons.otf" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
   <Import Project="..\..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.targets" />

@@ -567,6 +567,7 @@ internal class _LineCaretMetrics__text_painter
 public class TextPainter
 {
     internal virtual bool _debugNeedsRelayout { get; set; } = true;
+    public bool hasLayoutGeometry => _layoutCache is not null;
     internal virtual _TextPainterLayoutCacheWithOffset__text_painter? _layoutCache { get; set; } =
         default;
     internal virtual bool _rebuildParagraphForPaint { get; set; } = true;

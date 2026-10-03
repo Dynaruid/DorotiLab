@@ -305,6 +305,14 @@ public static unsafe partial class DorotiQtRunner
                 enablePictureRasterCache: !QtSkiaSurface.GraphiteEnabled
             );
             Doroti.Skia.Fonts.NativeDefaultFonts.Register(renderer);
+            renderer.SemanticsFeatures = new(true, true,
+                [SemanticsRole.dialog, SemanticsRole.alertDialog, SemanticsRole.table, SemanticsRole.row, SemanticsRole.cell,
+                 SemanticsRole.columnHeader, SemanticsRole.list, SemanticsRole.listItem, SemanticsRole.tab, SemanticsRole.tabBar,
+                 SemanticsRole.menu, SemanticsRole.menuItem, SemanticsRole.menuItemCheckbox, SemanticsRole.menuItemRadio,
+                 SemanticsRole.progressBar, SemanticsRole.form, SemanticsRole.tooltip, SemanticsRole.status, SemanticsRole.alert],
+                [SemanticsAction.tap, SemanticsAction.setText, SemanticsAction.setSelection, SemanticsAction.expand,
+                 SemanticsAction.collapse, SemanticsAction.showOnScreen, SemanticsAction.scrollToTextRange],
+                "QAccessible text coordinates require current layout runs; password text geometry is suppressed.");
             if (QtSkiaSurface.GraphiteEnabled && Surface.NativeTexturesConfigured)
                 renderer.EnableNativeTextures(NativeTexturePlatform.Linux);
             Surface.GpuResourcesReleasing += renderer.InvalidateGpuContextResources;

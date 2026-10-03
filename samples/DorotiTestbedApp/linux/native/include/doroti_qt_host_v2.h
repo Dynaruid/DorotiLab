@@ -47,6 +47,8 @@ enum doroti_qt_feature_v2 : std::uint64_t {
   DOROTI_QT_FEATURE_IDLE_FRAME_ELISION = 1ull << 20,
   DOROTI_QT_FEATURE_CONSUMER_COMPLETION = 1ull << 21,
   DOROTI_QT_FEATURE_FRAME_PREPARATION = 1ull << 22,
+  DOROTI_QT_FEATURE_TEXT_CONFIGURATION_UPDATE = 1ull << 23,
+  DOROTI_QT_FEATURE_TEXT_GEOMETRY = 1ull << 24,
 };
 
 enum doroti_qt_terminal_state_v2 : std::uint32_t {
@@ -163,6 +165,9 @@ struct doroti_qt_pointer_v2 {
   double pan_x, pan_y, pan_delta_x, pan_delta_y;
   double scale = 1;
   double rotation = 0;
+  double orientation = 0;
+  std::uint32_t pen_fields = 0;
+  std::uint32_t pen_reserved = 0;
 };
 
 struct doroti_qt_key_v2 {
@@ -221,6 +226,8 @@ struct doroti_qt_host_api_v2 {
   void (*update_semantics)(void* view_handle, doroti_qt_utf8_v2 json);
   void (*clear_semantics)(void* view_handle);
   void (*prepare_present)(void* view_handle);
+  void (*update_text_configuration)(void* view_handle,
+      const doroti_qt_text_configuration_v2* configuration);
 };
 
 // Requests OS window activation. Completion is reported only by the existing
@@ -302,12 +309,12 @@ static_assert(offsetof(doroti_qt_surface_v2, device_pixel_ratio) == 40);
 static_assert(offsetof(doroti_qt_surface_v2, timestamp_microseconds) == 80);
 static_assert(sizeof(doroti_qt_surface_v2) == 144);
 static_assert(sizeof(doroti_qt_metrics_v2) == 160);
-static_assert(sizeof(doroti_qt_pointer_v2) == 168);
+static_assert(sizeof(doroti_qt_pointer_v2) == 184);
 static_assert(sizeof(doroti_qt_key_v2) == 56);
 static_assert(sizeof(doroti_qt_text_configuration_v2) == 40);
 static_assert(sizeof(doroti_qt_text_state_v2) == 40);
 static_assert(offsetof(doroti_qt_callbacks_v2, callback_context) == 24);
-static_assert(sizeof(doroti_qt_host_api_v2) == 128);
+static_assert(sizeof(doroti_qt_host_api_v2) == 136);
 static_assert(offsetof(doroti_qt_surface_v2, vulkan_instance_api_version) == 120);
 static_assert(offsetof(doroti_qt_callbacks_v2, poll_gpu_work) == 176);
 static_assert(offsetof(doroti_qt_callbacks_v2, prepare_application) == 184);

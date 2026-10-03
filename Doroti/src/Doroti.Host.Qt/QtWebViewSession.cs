@@ -360,7 +360,7 @@ internal sealed partial class QtWebViewSession : IDisposable
                 false,
                 feature.GetProperty("messages").GetBoolean(),
                 feature.GetProperty("content").GetBoolean()
-            )
+            ) { BackForward = true }
             : null;
         completion.TrySetResult(
             new(

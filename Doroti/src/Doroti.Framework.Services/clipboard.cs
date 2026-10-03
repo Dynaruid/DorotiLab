@@ -40,6 +40,9 @@ public abstract class Clipboard
         return await RequireHost("hasStrings").HasClipboardTextAsync();
     }
 
+    public static async Future<ClipboardTextAvailability> queryTextAvailability() =>
+        await RequireHost("queryTextAvailability").QueryClipboardTextAsync();
+
     private static IPlatformServicesHostCapability RequireHost(string operation)
     {
         var invocation = DorotiUiInvocation.Managed(

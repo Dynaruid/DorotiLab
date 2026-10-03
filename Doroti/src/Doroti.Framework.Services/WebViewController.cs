@@ -34,6 +34,8 @@ public sealed class WebViewController : IAsyncDisposable
                 PlatformViewComposition.InterleavedComposition
             )
         );
+        if (!support.Supported)
+            support = host.QuerySupport(new PlatformViewRequest(0, "doroti/webview", PlatformViewComposition.NativeOverlay));
         if (!support.Supported || !support.WebViewCommands)
         {
             throw new WebViewException(
@@ -53,7 +55,8 @@ public sealed class WebViewController : IAsyncDisposable
             new PlatformViewDescriptor(
                 "doroti/webview",
                 options.Encode(),
-                PlatformViewStrategyPolicy.RequireRequested
+                PlatformViewStrategyPolicy.RequireRequested,
+                support.Composition
             )
         );
         _web.WebViewChanged += OnChanged;

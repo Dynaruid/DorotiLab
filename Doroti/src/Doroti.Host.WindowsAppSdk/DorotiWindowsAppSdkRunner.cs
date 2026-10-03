@@ -178,6 +178,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     NCmdShow = 1,
                     RequiredFeatures =
                         state.NativeRequiredFeatures
+                        | WindowsNativeV1.TextConfigurationUpdateFeature | WindowsNativeV1.TextGeometryFeature
                         | (
                             descriptor.ViewConfiguration.ResolveAppearance().titlebarStyle
                             == WindowTitlebarStyle.unified
@@ -510,6 +511,15 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     != DorotiSkiaRuntimeEffects.NativeGraphiteVulkanBackend
             );
             Doroti.Skia.Fonts.NativeDefaultFonts.Register(renderer);
+            renderer.SemanticsFeatures = new(true, true,
+                [SemanticsRole.tab, SemanticsRole.tabBar, SemanticsRole.table, SemanticsRole.row, SemanticsRole.cell,
+                 SemanticsRole.columnHeader, SemanticsRole.menu, SemanticsRole.menuBar, SemanticsRole.menuItem,
+                 SemanticsRole.menuItemCheckbox, SemanticsRole.menuItemRadio, SemanticsRole.list, SemanticsRole.listItem,
+                 SemanticsRole.dialog, SemanticsRole.alertDialog, SemanticsRole.progressBar, SemanticsRole.loadingSpinner],
+                [SemanticsAction.tap, SemanticsAction.setText, SemanticsAction.setSelection, SemanticsAction.showOnScreen,
+                 SemanticsAction.scrollToTextRange, SemanticsAction.expand, SemanticsAction.collapse,
+                 SemanticsAction.increase, SemanticsAction.decrease],
+                "UIA text ranges require current non-obscured layout geometry; unsupported attributes/child ranges remain explicit.");
             if (
                 Presenter is WindowsManagedVulkanPresenter nativeTexturePresenter
                 && WindowsManagedVulkanPresenter.GraphiteEnabled

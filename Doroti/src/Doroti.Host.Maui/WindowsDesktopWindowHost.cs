@@ -17,6 +17,9 @@ internal sealed class WindowsDesktopWindowHost : IWindowHost
 {
     private readonly Window _window;
     private readonly DorotiApplicationDescriptor _descriptor;
+    private Factory? _factory;
+    private bool _additional;
+    private ulong _viewId = 1;
     private readonly TaskCompletionSource _attached = new(
         TaskCreationOptions.RunContinuationsAsynchronously
     );
@@ -63,9 +66,14 @@ internal sealed class WindowsDesktopWindowHost : IWindowHost
         EvaluateOptions(definition.MainWindow.Options, null).ThrowIfUnsupported();
         var window = new Window { Title = definition.MainWindow.Options.Title };
         var host = new WindowsDesktopWindowHost(window, descriptor);
-        var manager = new DorotiWindowManager(new Factory(host), definition.LifetimePolicy);
-        manager.ExitRequested += () =>
-            window.Dispatcher.Dispatch(() => Microsoft.UI.Xaml.Application.Current.Exit());
+        var factory = new Factory(host);
+        host._factory = factory;
+        var manager = new DorotiWindowManager(factory, definition.LifetimePolicy);
+        manager.ExitRequested += () => window.Dispatcher.Dispatch(() =>
+        {
+            factory.Dispose();
+            Microsoft.UI.Xaml.Application.Current.Exit();
+        });
         manager.InitializationFailed += (_, error) => DorotiMauiSurface.WriteFailure(error);
         // Initialization assigns Page before yielding for the native handler. No UI-thread wait.
         _ = StartAsync();
@@ -84,18 +92,34 @@ internal sealed class WindowsDesktopWindowHost : IWindowHost
         }
     }
 
-    private sealed class Factory(WindowsDesktopWindowHost host) : IWindowHostFactory
+    private sealed class Factory(WindowsDesktopWindowHost host) : IWindowHostFactory, IDisposable
     {
-        public WindowManagerCapabilities Capabilities { get; } = new(false);
+        private bool _allocated;
+        private long _nextViewId = 1;
+        internal DorotiApplicationBoundary? Application { get; private set; }
+        internal void Attach(DorotiApplicationBoundary boundary) => Application ??= boundary.Retain();
+        public void Dispose() { Application?.Dispose(); Application = null; }
+        public WindowManagerCapabilities Capabilities { get; } = new(true, null);
 
         public WindowEvaluation Evaluate(WindowCreateOptions options) =>
             EvaluateOptions(options.Options, null);
 
-        public ValueTask<IWindowHost> CreateAsync(
+        public async ValueTask<IWindowHost> CreateAsync(
             Doroti.Desktop.WindowId id,
             WindowCreateOptions options,
             CancellationToken cancellationToken
-        ) => ValueTask.FromResult<IWindowHost>(host);
+        )
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (!_allocated) { _allocated = true; return host; }
+            if (Application is null) throw new InvalidOperationException("Initialize the main MAUI window before creating another owner.");
+            return await host.OnUiAsync(() => new WindowsDesktopWindowHost(new Window
+            {
+                Title = options.Options.Title,
+                Width = options.Options.Size.width,
+                Height = options.Options.Size.height,
+            }, host._descriptor) { _additional = true, _factory = this, _viewId = checked((ulong)Interlocked.Increment(ref _nextViewId)) }, cancellationToken);
+        }
     }
 
     internal static void PrepareNativeWindow(NativeWindow window)
@@ -182,10 +206,21 @@ internal sealed class WindowsDesktopWindowHost : IWindowHost
         CancellationToken cancellationToken
     )
     {
+        await OnUiAsync(() =>
+        {
         _options = options;
         _window.HandlerChanged += HandleHandlerChanged;
-        var descriptor = _descriptor with { EntrypointFactory = () => content };
-        _surface = new(descriptor) { OwnsWindowContent = true, DesktopManaged = true };
+        var configuration = DesktopApplication.ToViewConfiguration(options, context.Windows.LifetimePolicy)
+            with { Navigation = _descriptor.ViewConfiguration.Navigation };
+        if (_additional && configuration.Navigation is { } navigation)
+            configuration = configuration with { Navigation = navigation with { ProtocolScheme = null, RestorationId = null } };
+        var descriptor = _descriptor with { EntrypointFactory = () => content, ViewConfiguration = configuration };
+        _surface = new(descriptor, _viewId)
+        {
+            OwnsWindowContent = true, DesktopManaged = true,
+            SharedApplication = _additional ? _factory!.Application : null,
+            ApplicationAttached = boundary => _factory!.Attach(boundary), OwnsApplicationActivation = !_additional,
+        };
         _surface.DesktopFrameReady += OnFrameReady;
         _surface.DesktopFrameFailed += OnFrameFailed;
         _surface.Loaded += HandleContentLoaded;
@@ -195,7 +230,10 @@ internal sealed class WindowsDesktopWindowHost : IWindowHost
             SafeAreaEdges = Microsoft.Maui.SafeAreaEdges.None,
             Content = _surface,
         };
+        if (_additional) Microsoft.Maui.Controls.Application.Current!.OpenWindow(_window);
         HandleHandlerChanged(null, EventArgs.Empty);
+        return true;
+        }, cancellationToken).ConfigureAwait(false);
         await _attached.Task.WaitAsync(cancellationToken);
     }
 
@@ -550,8 +588,8 @@ internal sealed class WindowsDesktopWindowHost : IWindowHost
         var retirement = await OnUiAsync(
             () => _surface?.PrepareDesktopCloseAsync() ?? Task.CompletedTask,
             cancellationToken
-        );
-        await retirement.WaitAsync(cancellationToken);
+        ).ConfigureAwait(false);
+        await retirement.WaitAsync(cancellationToken).ConfigureAwait(false);
         await OnUiAsync(
             () =>
             {
@@ -561,7 +599,7 @@ internal sealed class WindowsDesktopWindowHost : IWindowHost
                 return true;
             },
             cancellationToken
-        );
+        ).ConfigureAwait(false);
     }
 
     public async ValueTask DisposeAsync()

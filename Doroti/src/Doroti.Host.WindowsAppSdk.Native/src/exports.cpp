@@ -51,6 +51,7 @@ constexpr UINT kRequestClose = WM_APP + 0x403;
 constexpr UINT kRequestShow = WM_APP + 0x404;
 constexpr UINT kRenderCompleted = WM_APP + 0x405;
 constexpr UINT kSetTextClient = WM_APP + 0x406;
+constexpr UINT kUpdateTextConfiguration = WM_APP + 0x420;
 constexpr UINT kUpdateTextState = WM_APP + 0x407;
 constexpr UINT kSetCaretRect = WM_APP + 0x408;
 constexpr UINT kClearTextClient = WM_APP + 0x409;
@@ -236,6 +237,7 @@ class ProductHost final {
         &ClearSemantics,
         platform_brightness_,
         &SetCompositionChild,
+        &UpdateTextConfiguration,
     };
     callbacks_.host_ready(callbacks_.callback_context, &host);
     // Host-ready attaches the managed Composition tree synchronously. Publish
@@ -644,6 +646,15 @@ class ProductHost final {
         if (command) ApplyTextCommand(*command, true);
         return 0;
       }
+      case kUpdateTextConfiguration: {
+        std::unique_ptr<TextCommand> command(reinterpret_cast<TextCommand*>(lparam));
+        if (command && text_client_active_) {
+          // Configuration-only: preserve IMM association, client, selection and preedit.
+          text_configuration_ = command->configuration;
+          ApplyImeWindowPosition();
+        }
+        return 0;
+      }
       case kUpdateTextState: {
         std::unique_ptr<TextCommand> command(reinterpret_cast<TextCommand*>(lparam));
         if (command) ApplyTextCommand(*command, false);
@@ -1013,6 +1024,17 @@ class ProductHost final {
     } catch (...) {
       return 4;
     }
+  }
+
+  static uint32_t DOROTI_WINDOWS_CALL UpdateTextConfiguration(
+      void* context, const doroti_windows_text_configuration_v1* configuration) {
+    auto* host = static_cast<ProductHost*>(context);
+    if (host == nullptr || !ValidHeader(configuration)) return 1;
+    try {
+      auto command = std::make_unique<TextCommand>();
+      command->configuration = *configuration;
+      return host->PostOwned(kUpdateTextConfiguration, std::move(command));
+    } catch (...) { return 4; }
   }
 
   static uint32_t DOROTI_WINDOWS_CALL UpdateTextState(
@@ -1802,9 +1824,45 @@ class ProductHost final {
           node.toggled = JsonState(flags, L"toggled");
           node.expanded = JsonState(flags, L"expanded");
         }
+        node.selection_base = static_cast<int>(JsonNumber(source, L"textSelectionBase", -1));
+        node.selection_extent = static_cast<int>(JsonNumber(source, L"textSelectionExtent", -1));
+        if (!node.obscured && source.HasKey(L"textGeometry") && source.GetNamedValue(L"textGeometry").ValueType() ==
+            winrt::Windows::Data::Json::JsonValueType::Object) {
+          const auto geometry = source.GetNamedObject(L"textGeometry");
+          node.layout_text = JsonString(geometry, L"text");
+          node.text_revision = static_cast<uint64_t>(JsonNumber(geometry, L"revision"));
+          const auto boundaries = geometry.GetNamedArray(L"boundaries");
+          for (uint32_t i = 0; i < boundaries.Size(); ++i) node.text_boundaries.push_back(static_cast<int>(boundaries.GetNumberAt(i)));
+          const auto runs = geometry.GetNamedArray(L"runs");
+          if (node.layout_text.size() > 32768 || runs.Size() > 65536) throw std::invalid_argument("text geometry size");
+          for (const auto geometry_value : runs) {
+            const auto source_run = geometry_value.GetObject();
+            doroti::windows::AccessibilityTextRun run;
+            run.start = static_cast<int>(JsonNumber(source_run, L"start")); run.end = static_cast<int>(JsonNumber(source_run, L"end"));
+            run.line_start = static_cast<int>(JsonNumber(source_run, L"lineStart")); run.line_end = static_cast<int>(JsonNumber(source_run, L"lineEnd"));
+            run.left = JsonNumber(source_run, L"left"); run.top = JsonNumber(source_run, L"top");
+            run.right = JsonNumber(source_run, L"right"); run.bottom = JsonNumber(source_run, L"bottom"); run.rtl = JsonBool(source_run, L"rtl");
+            if (run.start < 0 || run.end < run.start || run.end > node.layout_text.size() ||
+                !std::isfinite(run.left) || !std::isfinite(run.top) || !std::isfinite(run.right) || !std::isfinite(run.bottom))
+              throw std::invalid_argument("text geometry range");
+            node.text_runs.push_back(run);
+          }
+          if (node.text_boundaries.empty() || node.text_boundaries.front() != 0 || node.text_boundaries.back() != node.layout_text.size()
+              || !std::is_sorted(node.text_boundaries.begin(), node.text_boundaries.end())
+              || node.text_boundaries.size() > 32769) throw std::invalid_argument("text geometry boundaries");
+          node.text_geometry = true;
+        }
         nodes.push_back(std::move(node));
       }
+      const bool text_geometry_ready = std::any_of(nodes.begin(), nodes.end(), [](const auto& node) {
+        return node.text_geometry && !node.layout_text.empty() && !node.text_runs.empty();
+      });
       accessibility_.Update(generation, std::move(nodes), current_scale_);
+      if (!_text_geometry_smoke_emitted_ && text_geometry_ready && EnvironmentOne(L"DOROTI_WINDOWS_APPSDK_TEXT_SMOKE")) {
+        _text_geometry_smoke_emitted_ = true;
+        if (!accessibility_.ValidateTextForTest()) throw std::runtime_error("UIA text range regression failed");
+        fprintf(stderr, "UIA layout text range: PASS (geometry/UTF-16/revision/owner/password)\n"); fflush(stderr);
+      }
       if (!semantics_smoke_emitted_ &&
           EnvironmentOne(L"DOROTI_WINDOWS_APPSDK_C7_SMOKE")) {
         semantics_smoke_emitted_ = true;
@@ -2505,6 +2563,7 @@ class ProductHost final {
   bool ime_composing_{};
   bool text_smoke_emitted_{};
   bool semantics_smoke_emitted_{};
+  bool _text_geometry_smoke_emitted_{};
   bool minimized_{};
   bool interactive_move_{};
   bool post_present_dwm_flush_{};
@@ -2654,7 +2713,9 @@ doroti_windows_status_v1 DOROTI_WINDOWS_CALL doroti_windows_run_v1(
            DOROTI_WINDOWS_FEATURE_PREPARED_GEOMETRY_RECEIPT_V1 |
            DOROTI_WINDOWS_FEATURE_UNIFIED_TITLEBAR_V1 |
            DOROTI_WINDOWS_FEATURE_SOLID_TITLEBAR_V1 |
-           DOROTI_WINDOWS_FEATURE_PLATFORM_VIEW_SIBLINGS_V1)) != 0)
+           DOROTI_WINDOWS_FEATURE_PLATFORM_VIEW_SIBLINGS_V1 |
+           DOROTI_WINDOWS_FEATURE_TEXT_CONFIGURATION_UPDATE_V1 |
+           DOROTI_WINDOWS_FEATURE_TEXT_GEOMETRY_V1)) != 0)
     return DOROTI_WINDOWS_STATUS_NOT_IMPLEMENTED_V1;
   if ((configuration->required_features & DOROTI_WINDOWS_FEATURE_UNIFIED_TITLEBAR_V1) != 0 &&
       (configuration->required_features & DOROTI_WINDOWS_FEATURE_SOLID_TITLEBAR_V1) != 0)

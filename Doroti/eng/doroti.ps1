@@ -192,23 +192,35 @@ function Resolve-DorotiWorkspace {
     }
 }
 
+function Resolve-WorkspaceRunner($workspace, [string] $alias, [string] $backend) {
+    $runner = $workspace.Runners[$alias]
+    if (-not $runner) { throw "Platform '$alias' is not declared by this workspace." }
+    if ($alias -eq 'windows' -and $backend -eq 'Maui') {
+        $mauiRunners = @(Get-ChildItem -LiteralPath (Join-Path $workspace.Root 'windows') -Filter '*.csproj' -File -Recurse |
+            Where-Object { (Get-Content -LiteralPath $_.FullName -Raw) -match '<DorotiHostKind>Maui</DorotiHostKind>' } |
+            Select-Object -ExpandProperty FullName)
+        if ($mauiRunners.Count -ne 1) { throw "The workspace must provide exactly one Windows MAUI runner; found $($mauiRunners.Count)." }
+        $runner = [IO.Path]::GetFullPath($mauiRunners[0])
+    }
+    return $runner
+}
+
+function Get-DevelopmentSupport($workspace) {
+    foreach ($alias in $workspace.Runners.Keys) {
+        [ordered]@{ platform = $alias; runner = $workspace.Runners[$alias];
+            backends = @(if ($alias -eq 'windows') { 'WindowsAppSdk'; if (@(Get-ChildItem -LiteralPath (Join-Path $workspace.Root 'windows') -Filter '*.csproj' -File -Recurse | Where-Object { (Get-Content -LiteralPath $_.FullName -Raw) -match '<DorotiHostKind>Maui</DorotiHostKind>' }).Count -eq 1) { 'Maui' } });
+            mode = if ($alias -eq 'android') { 'restart' } else { 'metadata' };
+            reason = if ($alias -eq 'android') { 'Device metadata update transport is not qualified; runtime evaluated before restart/deploy.' } else { $null } }
+    }
+}
+
 function Invoke-WorkspaceDotNet {
     param([Parameter(Mandatory)] [ValidateSet('build', 'run', 'publish')] [string] $Verb)
 
     if ([string]::IsNullOrWhiteSpace($App)) { throw "$Verb requires --app <path>." }
     if ([string]::IsNullOrWhiteSpace($Platform) -or $Platform -ceq 'all') { throw "$Verb requires one --platform <name>." }
     $workspace = Resolve-DorotiWorkspace $App
-    $runner = $workspace.Runners[$Platform]
-    if (-not $runner) { throw "Platform '$Platform' is not declared by this workspace." }
-    if ($Platform -ceq 'windows' -and $WindowsBackend -ceq 'Maui') {
-        $mauiBackend = @(Get-ChildItem -LiteralPath (Join-Path $workspace.Root 'windows') -Filter '*.csproj' -File |
-            Where-Object { (Get-Content -LiteralPath $_.FullName -Raw) -match '<DorotiHostKind>Maui</DorotiHostKind>' } |
-            Select-Object -ExpandProperty FullName)
-        if ($mauiBackend.Count -ne 1) {
-            throw "The workspace must provide exactly one MAUI backend runner under windows; found $($mauiBackend.Count)."
-        }
-        $runner = [IO.Path]::GetFullPath($mauiBackend[0])
-    }
+    $runner = Resolve-WorkspaceRunner $workspace $Platform $WindowsBackend
     # The dotnet CLI selects global.json from its working directory.
     $dotnetWorkingDirectory = if ($Platform -ceq 'ios') { Split-Path -Parent $runner } else { $workspace.Root }
     $CompilationMode = Resolve-DorotiCompilationMode $Platform $Configuration $CompilationMode $Rid
@@ -540,20 +552,19 @@ function Invoke-Describe {
         root = $workspace.Root
         applicationProject = $workspace.ApplicationProject
         platforms = $workspace.Runners
-        developmentTargets = @($workspace.Runners.Keys | Where-Object { $_ -in @('windows', 'web', 'ios', 'macos', 'maccatalyst', 'linux') })
+        developmentTargets = @(Get-DevelopmentSupport $workspace | ForEach-Object { $_.platform })
+        developmentSupport = @(Get-DevelopmentSupport $workspace)
     } | ConvertTo-Json -Depth 5
 }
 
 function Invoke-Development {
     if ($Configuration -ne 'Debug') { throw 'dev requires Debug; Release metadata updates are not supported.' }
-    if ($Platform -notin @('windows', 'web', 'ios', 'macos', 'maccatalyst', 'linux')) { throw 'dev supports Windows App SDK, Web, iOS, macOS (AppKit), Mac Catalyst and Linux Qt.' }
+    if ($Platform -notin @('windows', 'web', 'android', 'ios', 'macos', 'maccatalyst', 'linux')) { throw 'dev requires a declared platform.' }
     if ($Platform -eq 'linux' -and !$IsLinux) { throw 'Linux Qt development sessions require a Linux host with Qt and an active display.' }
     if ($Platform -in @('ios', 'macos', 'maccatalyst') -and !$IsMacOS) { throw 'Apple development sessions require macOS and Xcode.' }
     if ($CompilationMode -eq 'NativeAot') { throw 'Hot Reload requires Debug with metadata updates; NativeAot is not supported.' }
     $workspace = Resolve-DorotiWorkspace $App
-    $runner = $workspace.Runners[$Platform]
-    if (-not $runner) { throw "Platform '$Platform' is not declared by this workspace." }
-    if ($Platform -eq 'windows' -and $WindowsBackend -ne 'WindowsAppSdk') { throw 'dev supports the Windows App SDK backend only.' }
+    $runner = Resolve-WorkspaceRunner $workspace $Platform $WindowsBackend
     if (-not $SessionId) { $SessionId = [Guid]::NewGuid().ToString('N') }
     if ($SessionId -notmatch '^[A-Za-z0-9-]{1,80}$') { throw 'Invalid development session ID.' }
     if (-not $SessionDirectory) { $SessionDirectory = Join-Path $workspace.Root ".doroti/dev/$SessionId" }
@@ -574,6 +585,14 @@ function Invoke-Development {
             $env:DOTNET_USE_POLLING_FILE_WATCHER = '1'
         }
         Write-Host "Doroti development session: $sessionPath"
+        if ($Platform -eq 'android') {
+            $androidArguments = @((Join-Path $PSScriptRoot 'android-development.py'), '--runner', $runner, '--app-root', $workspace.Root,
+                '--session-directory', $sessionPath, '--session-id', $SessionId, '--dotnet', $DotnetPath)
+            if ($Device) { $androidArguments += @('--device', $Device) }
+            if ($Rid) { $androidArguments += @('--rid', $Rid) }
+            Invoke-Checked 'python' $androidArguments $workspace.Root
+            return
+        }
         if ($Platform -eq 'ios') {
             if (!$Rid) { $Rid = if ([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture -eq 'Arm64') { 'iossimulator-arm64' } else { 'iossimulator-x64' } }
             if ($Rid -notin @('ios-arm64', 'iossimulator-arm64', 'iossimulator-x64')) {
@@ -626,11 +645,18 @@ function Invoke-Audit {
 }
 
 function Invoke-Release {
-    if ($Platform -in @('windows', 'web')) {
-        Invoke-Checked 'python' @((Join-Path $PSScriptRoot 'run-with-timeout.py'), 'python',
+    if ($Platform -in @('windows', 'web', 'android', 'macos', 'ios', 'maccatalyst')) {
+        $candidateArguments = @((Join-Path $PSScriptRoot 'run-with-timeout.py'), '--timeout', '1200', 'python',
             (Join-Path $PSScriptRoot 'release-candidate.py'), '--targets', $Platform.ToLowerInvariant())
+        if ($Platform -eq 'windows') { $candidateArguments += @('--windows-backend', $WindowsBackend) }
+        if ($Platform -eq 'android' -and $Rid) { $candidateArguments += @('--android-rid', $Rid) }
+        if ($Platform -eq 'macos' -and $MacOSTargetFramework) { $candidateArguments += @('--macos-tfm', $MacOSTargetFramework) }
+        if ($Platform -eq 'ios' -and $IosTargetFramework) { $candidateArguments += @('--ios-tfm', $IosTargetFramework) }
+        if ($Platform -eq 'maccatalyst' -and $MacCatalystTargetFramework) { $candidateArguments += @('--catalyst-tfm', $MacCatalystTargetFramework) }
+        Invoke-Checked 'python' $candidateArguments
         return
     }
+    if ($Platform -eq 'linux') { throw 'Linux candidates use dotnet publish on the Qt runner and eng/install-linux-qt.py for portable installation; no MAUI candidate is mapped to Linux.' }
     if ($Platform -and $Platform -ne 'all') { throw "Selected release qualification is not implemented for '$Platform'." }
     Invoke-Checked 'pwsh' @('-NoProfile', '-File', (Join-Path $PSScriptRoot 'validate.ps1'), '-Suite', 'Release')
     Invoke-Audit

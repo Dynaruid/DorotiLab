@@ -83,6 +83,10 @@ public sealed partial class MauiTextInputBridge : IDisposable
     private T Subscribe<T>(T input)
         where T : InputView
     {
+#if WINDOWS
+        input.HandlerChanged += HandleWindowsInputHandlerChanged;
+        AttachWindowsInput(input);
+#endif
 #if IOS || MACCATALYST
         input.HandlerChanged += HandleUIKitInputHandlerChanged;
         AttachUIKitInput(input);
@@ -144,6 +148,9 @@ public sealed partial class MauiTextInputBridge : IDisposable
         {
             return;
         }
+#if WINDOWS
+        _windowsComposing = null;
+#endif
 #if MACOS
         _macOSNativeFocus = false;
 #endif
@@ -153,7 +160,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
         _configuration = configuration;
         _hasClient = true;
         var next =
-            configuration.inputType == DorotiTextInputType.multiline
+            configuration.inputType == DorotiTextInputType.multiline && !configuration.obscureText
                 ? (InputView)(_editor ??= Subscribe(_editorFactory()))
                 : (_entry ??= Subscribe(_entryFactory()));
         if (!ReferenceEquals(_active, next))
@@ -165,6 +172,48 @@ public sealed partial class MauiTextInputBridge : IDisposable
         UpdateStateCore(state);
         AttachActiveInput(requestFocus: true);
     }
+
+    internal TextInputFeatures Features => new(UpdateConfiguration: true,
+#if WINDOWS
+        Composing: !_configuration.obscureText && _active?.Handler?.PlatformView is Microsoft.UI.Xaml.Controls.TextBox,
+#else
+        Composing: true,
+#endif
+        SelectionDirection: false, PreservesCompositionOnEndpointChange: false,
+        Reason: "MAUI selection exposes an ordered range. Native endpoint changes can commit/cancel composition.");
+
+    internal void UpdateConfiguration(DorotiTextInputConfiguration configuration) => DispatchInputMutation(() =>
+    {
+        if (_disposed || !_hasClient || _active is null) return;
+        var old = _active;
+        var text = old.Text ?? "";
+        var start = Math.Clamp(old.CursorPosition, 0, text.Length);
+        var end = Math.Clamp(start + Math.Max(0, old.SelectionLength), start, text.Length);
+        var focus = old.IsFocused;
+        var next = configuration.inputType == DorotiTextInputType.multiline && !configuration.obscureText
+            ? (InputView)(_editor ??= Subscribe(_editorFactory())) : (_entry ??= Subscribe(_entryFactory()));
+        _updating = true;
+        try
+        {
+            _configuration = configuration;
+            if (!ReferenceEquals(old, next))
+            {
+                old.Unfocus();
+                _active = next;
+#if WINDOWS
+                _windowsComposing = null;
+#endif
+            }
+            Configure(next, configuration);
+        }
+        finally { _updating = false; }
+        if (!ReferenceEquals(old, next))
+        {
+            UpdateStateCore(new(text, new(start, end), null));
+            AttachActiveInput(requestFocus: focus && !_suspended);
+        }
+        QueueNativeEditingState(next, next.Text ?? "");
+    });
 
     internal void UpdateState(DorotiTextEditingState state)
     {
@@ -351,6 +400,9 @@ public sealed partial class MauiTextInputBridge : IDisposable
         }
 
         _hasClient = false;
+#if WINDOWS
+        _windowsComposing = null;
+#endif
 #if IOS || MACCATALYST
         ResetUIKitInput();
 #endif
@@ -374,6 +426,9 @@ public sealed partial class MauiTextInputBridge : IDisposable
         {
             return;
         }
+#if WINDOWS
+        _windowsComposing = null;
+#endif
 #if IOS || MACCATALYST
         ResetUIKitInput();
 #endif
@@ -423,6 +478,13 @@ public sealed partial class MauiTextInputBridge : IDisposable
     }
 #endif
 
+#if WINDOWS
+    internal void YieldWindowsNativeFocus()
+    {
+        DeactivateActiveInput(clearFocus: true);
+        DetachInputs();
+    }
+#endif
 #if ANDROID
     internal void YieldAndroidNativeFocus()
     {
@@ -925,9 +987,13 @@ public sealed partial class MauiTextInputBridge : IDisposable
         return newText.Length - suffixLength;
     }
 
-    private static DorotiTextSelection? ReadNativeComposingRange(InputView input, int textLength)
+    private DorotiTextSelection? ReadNativeComposingRange(InputView input, int textLength)
     {
-#if ANDROID
+#if WINDOWS
+        if (_windowsComposing is { } range && ReferenceEquals(input, _active)
+            && range.baseOffset >= 0 && range.extentOffset <= textLength && range.extentOffset > range.baseOffset)
+            return range;
+#elif ANDROID
         if (
             input.Handler?.PlatformView is Android.Widget.EditText nativeView
             && nativeView.EditableText is Android.Text.ISpannable editable
@@ -991,7 +1057,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
 
     private void HandleFocused(object? sender, FocusEventArgs args)
     {
-        if (ReferenceEquals(sender, _active))
+        if (!_updating && ReferenceEquals(sender, _active))
         {
             FocusChanged?.Invoke(true);
         }
@@ -999,8 +1065,11 @@ public sealed partial class MauiTextInputBridge : IDisposable
 
     private void HandleUnfocused(object? sender, FocusEventArgs args)
     {
-        if (ReferenceEquals(sender, _active))
+        if (!_updating && ReferenceEquals(sender, _active))
         {
+#if WINDOWS
+            _windowsComposing = null;
+#endif
             FocusChanged?.Invoke(false);
         }
     }
@@ -1025,6 +1094,10 @@ public sealed partial class MauiTextInputBridge : IDisposable
 #endif
         foreach (var input in Inputs)
         {
+#if WINDOWS
+            input.HandlerChanged -= HandleWindowsInputHandlerChanged;
+            DetachWindowsInput(input);
+#endif
 #if IOS || MACCATALYST
             input.HandlerChanged -= HandleUIKitInputHandlerChanged;
             if (input.Handler?.PlatformView is IDorotiUIKitTextInput native)

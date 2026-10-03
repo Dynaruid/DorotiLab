@@ -233,7 +233,7 @@ public sealed class AppKitPlatformViewFactory : IPlatformViewFactory
         private readonly Action<PlatformViewHandle> _focused;
         private readonly ClipView _clip = new();
         private readonly NSView _control;
-        private readonly AppKitWebViewSession? _web;
+        private readonly AppleWebViewSession? _web;
         public event Action<WebViewEvent>? WebViewChanged;
 
         public Task<WebViewResult> ExecuteAsync(
@@ -264,7 +264,7 @@ public sealed class AppKitPlatformViewFactory : IPlatformViewFactory
             {
                 try
                 {
-                    _web = new AppKitWebViewSession(
+                    _web = new AppleWebViewSession(
                         handle,
                         text,
                         BeforeFocus,

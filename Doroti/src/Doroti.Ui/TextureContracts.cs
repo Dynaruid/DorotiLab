@@ -8,6 +8,7 @@ public interface ITextureHostCapability
 
 public abstract class TextureRegistry
 {
+    public virtual TextureFeatureSupport Features => new(Reason: "Native handle import/producer surface/video are not exposed by this texture registry.");
     public static TextureRegistry ForView(DorotiView view) =>
         view.RequireCapability<ITextureHostCapability>(
             DorotiCapabilityIds.GraphicsTexture,

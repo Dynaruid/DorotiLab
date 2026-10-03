@@ -5,6 +5,9 @@
 #include <QThread>
 #include <QTimer>
 #include <QWindow>
+#include <QScreen>
+#include <atomic>
+#include <algorithm>
 #ifdef DOROTI_QT_QUICK
 #include <QQuickWindow>
 #endif
@@ -15,6 +18,7 @@
 #include <stdexcept>
 
 namespace {
+std::atomic<int> qpa_policy{0};
 bool Gui() { return qApp && QThread::currentThread() == qApp->thread(); }
 class DesktopWindow final : public QObject {
  public:
@@ -70,11 +74,13 @@ int Snapshot(std::uint64_t owner, doroti_qt_desktop_state* state) {
   if (!value || !value->window || value->closing) return DOROTI_QT_PV_CLOSED;
   if (!state || state->struct_size != sizeof(*state)) return DOROTI_QT_ERROR_INVALID_ARGUMENT;
   auto* w = value->window.data();
-  *state = {sizeof(*state), (w->isVisible() ? 1u : 0u) | (w->isActive() ? 2u : 0u),
+  *state = {sizeof(*state), (w->isVisible() ? 1u : 0u) | (w->isActive() ? 2u : 0u) | (qpa_policy == 1 ? 4u : 0u),
             double(w->width()), double(w->height()), w->devicePixelRatio(),
             value->observed_state == Qt::WindowFullScreen ? 3u :
             value->observed_state == Qt::WindowMaximized ? 2u :
-            value->observed_state == Qt::WindowMinimized ? 1u : 0u, 0};
+            value->observed_state == Qt::WindowMinimized ? 1u : 0u, 0,
+            double(w->framePosition().x()), double(w->framePosition().y()),
+            double(w->frameGeometry().width()), double(w->frameGeometry().height())};
   return 0;
 }
 int Observe(std::uint64_t owner, void (*callback)(void*, std::uint32_t), void* context) {
@@ -113,6 +119,22 @@ int Command(std::uint64_t owner, const doroti_qt_desktop_command* command) {
           w->setMinimumSize(QSize(0, 0)); w->setMaximumSize(QSize(16777215, 16777215));
         }
         w->resize(int(command->x), int(command->y)); value->Limits(); break;
+      case 4:
+        if (qpa_policy != 1) return DOROTI_QT_PV_UNSUPPORTED;
+        if (!std::isfinite(command->x) || !std::isfinite(command->y) || std::abs(command->x) > 16777215 || std::abs(command->y) > 16777215)
+          return DOROTI_QT_ERROR_INVALID_ARGUMENT;
+        {
+          const auto margins = w->frameMargins();
+          const double width = command->width - margins.left() - margins.right();
+          const double height = command->height - margins.top() - margins.bottom();
+          if (!Size(width, height) || width < value->minimum.width() || height < value->minimum.height()
+              || width > value->maximum.width() || height > value->maximum.height()) return DOROTI_QT_ERROR_INVALID_ARGUMENT;
+          w->resize(int(width), int(height)); value->Limits();
+          w->setFramePosition(QPoint(int(command->x), int(command->y))); break;
+        }
+      case 5:
+        if (qpa_policy != 1 || !w->screen()) return DOROTI_QT_PV_UNSUPPORTED;
+        w->setFramePosition(w->screen()->availableGeometry().center() - QPoint(w->frameGeometry().width()/2, w->frameGeometry().height()/2)); break;
       case 6:
       case 7: {
         if (!Size(command->x, command->y, true)) return DOROTI_QT_ERROR_INVALID_ARGUMENT;
@@ -169,6 +191,9 @@ int Command(std::uint64_t owner, const doroti_qt_desktop_command* command) {
         w->setWindowState(command->x == 3 ? Qt::WindowFullScreen : command->x == 2 ? Qt::WindowMaximized
             : command->x == 1 ? Qt::WindowMinimized : Qt::WindowNoState);
         break;
+      case 103:
+        if (qpa_policy != 1 || !std::isfinite(command->x) || !std::isfinite(command->y)) return DOROTI_QT_PV_UNSUPPORTED;
+        w->setFramePosition(QPoint(int(command->x), int(command->y))); break;
     }
     value->Changed();
     return 0;
@@ -177,6 +202,24 @@ int Command(std::uint64_t owner, const doroti_qt_desktop_command* command) {
 }
 
 void DorotiQtRegisterDesktopWindow(QWindow* window, std::function<void()> destroy) {
+  auto update_qpa = [] {
+    const auto name = QGuiApplication::platformName();
+    const auto screens = QGuiApplication::screens();
+    const bool unit_scale = std::all_of(screens.begin(), screens.end(), [](QScreen* screen) { return screen->devicePixelRatio() == 1; });
+    const bool wayland_session = !qEnvironmentVariableIsEmpty("WAYLAND_DISPLAY");
+    qpa_policy = name == "xcb" && unit_scale && !wayland_session ? 1 : name.startsWith("wayland") ? 2 : 3;
+  };
+  update_qpa();
+  QObject::connect(window, &QWindow::screenChanged, window, [update_qpa](QScreen*) { update_qpa(); });
+  // Same-screen scale changes and screen hotplug also invalidate placement.
+  for (auto* screen : QGuiApplication::screens()) {
+    QObject::connect(screen, &QScreen::logicalDotsPerInchChanged, window, [update_qpa](qreal) { update_qpa(); });
+  }
+  QObject::connect(qApp, &QGuiApplication::screenAdded, window, [window, update_qpa](QScreen* screen) {
+    update_qpa();
+    QObject::connect(screen, &QScreen::logicalDotsPerInchChanged, window, [update_qpa](qreal) { update_qpa(); });
+  });
+  QObject::connect(qApp, &QGuiApplication::screenRemoved, window, [update_qpa](QScreen*) { update_qpa(); });
 #ifdef DOROTI_QT_QUICK
   doroti_qt_pv_api pv{};
   std::uint64_t owner = 0;
@@ -189,11 +232,14 @@ void DorotiQtRegisterDesktopWindow(QWindow* window, std::function<void()> destro
   QObject::connect(window, &QWindow::activeChanged, value, changed);
   QObject::connect(window, &QWindow::widthChanged, value, changed);
   QObject::connect(window, &QWindow::heightChanged, value, changed);
+  QObject::connect(window, &QWindow::xChanged, value, changed);
+  QObject::connect(window, &QWindow::yChanged, value, changed);
   QObject::connect(window, &QWindow::windowStateChanged, value, changed);
   QObject::connect(window, &QWindow::screenChanged, value, changed);
   windows.emplace(owner, std::move(item));
 #endif
 }
+extern "C" int doroti_qt_desktop_qpa() { return qpa_policy.load(); }
 void DorotiQtReleaseDesktopWindow(QWindow* window) {
   // QPointer is cleared after destruction; live sibling windows remain registered.
   // Non-null entries belong to a still-live window and must not be released.
@@ -209,12 +255,12 @@ void DorotiQtReleaseDesktopWindow(QWindow* window) {
 extern "C" std::int32_t doroti_qt_get_desktop(void* window, std::uint32_t version,
     std::uint32_t size, std::uint64_t* owner, doroti_qt_desktop_api* api) {
   if (!Gui()) return DOROTI_QT_PV_WRONG_THREAD;
-  if (!owner || !api || version != 1 || size != sizeof(*api)) return DOROTI_QT_ERROR_INVALID_ARGUMENT;
+  if (!owner || !api || version != 2 || size != sizeof(*api)) return DOROTI_QT_ERROR_INVALID_ARGUMENT;
   doroti_qt_pv_api pv{};
   const auto status = doroti_qt_get_platform_views(window, 1, sizeof(pv), owner, &pv);
   if (status != 0) return status;
   if (!(pv.feature_bits & 2) || !Find(*owner)) return DOROTI_QT_PV_UNSUPPORTED;
-  *api = {1, sizeof(*api), 1, pv.post, Observe, Command, Snapshot};
+  *api = {2, sizeof(*api), 1, pv.post, Observe, Command, Snapshot};
   return 0;
 }
 extern "C" void doroti_qt_desktop_quit() { QCoreApplication::quit(); }

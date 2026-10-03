@@ -78,12 +78,13 @@ internal sealed class UIKitPlatformViewHost : IDisposable
         _textInput = textInput;
     }
 
-    internal IEnumerable<IPlatformViewFactory> CreateFactories() =>
+    internal IEnumerable<IPlatformViewFactory> CreateFactories(Func<IApplicationResourceHostCapability> resources) =>
         new[] { "doroti/native-button", "doroti/native-editor", "doroti/webview" }.Select(
             type => new UIKitPlatformViewFactory(
                 GetContainer,
                 type,
-                _textInput.YieldUIKitNativeFocus
+                _textInput.YieldUIKitNativeFocus,
+                resources
             )
         );
 

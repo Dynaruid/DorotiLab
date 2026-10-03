@@ -70,6 +70,9 @@ public enum DorotiMouseCursorKind
 /// <summary>Native platform services used by Flutter Services without exposing platform types.</summary>
 public interface IPlatformServicesHostCapability
 {
+    /// <summary>Unknown means content cannot be inspected without an explicit read/permission request.</summary>
+    ValueTask<ClipboardTextAvailability> QueryClipboardTextAsync(CancellationToken cancellationToken = default) =>
+        ValueTask.FromResult(ClipboardTextAvailability.Unknown);
     ValueTask<string?> GetClipboardTextAsync(CancellationToken cancellationToken = default);
 
     ValueTask SetClipboardTextAsync(string text, CancellationToken cancellationToken = default);
@@ -80,6 +83,8 @@ public interface IPlatformServicesHostCapability
 
     void SetCursor(DorotiMouseCursorKind cursor);
 }
+
+public enum ClipboardTextAvailability { Unknown, Empty, Available, Unsupported }
 
 public readonly record struct DorotiTextSelection(int baseOffset, int extentOffset);
 
@@ -183,6 +188,7 @@ public interface ITextMagnifierSession : IDisposable
 /// <summary>Host-backed IME transport. Editing policy remains in Flutter Services.</summary>
 public interface ITextInputHostCapability
 {
+    TextInputFeatures Features => new();
     event Action<DorotiTextEditingState>? EditingStateChanged;
 
     event Action<DorotiTextInputAction>? ActionPerformed;
@@ -232,6 +238,9 @@ public interface ITextInputHostCapability
 
     void ClearClient();
 }
+
+public sealed record TextInputFeatures(bool UpdateConfiguration = false, bool Composing = false,
+    bool SelectionDirection = false, bool PreservesCompositionOnEndpointChange = false, string? Reason = null);
 
 public sealed class RootIsolateToken
 {

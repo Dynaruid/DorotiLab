@@ -368,7 +368,7 @@ internal sealed class AndroidWebViewSession : IAsyncDisposable
                             CanClear,
                             ScriptMessages: _messages is not null,
                             AppContentScheme: _content.Count > 0
-                        )
+                        ) { BackForward = true }
                     )
                 );
             case WebViewOperation.State:

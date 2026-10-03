@@ -1,4 +1,9 @@
 <Project>
+  <!-- R2R rewrites assembly bytes. Preserve the official SkiaSharp managed
+       payload whose SHA-256 is paired with the pinned Graphite native asset. -->
+  <ItemGroup>
+    <PublishReadyToRunExclude Include="SkiaSharp.dll" />
+  </ItemGroup>
   <ItemGroup Condition="'$(DorotiTarget)' == 'Windows' and '@(DorotiTargetDescriptor)' == ''">
     <DorotiTargetDescriptor Include="Windows" HostKind="Maui" NativeEntryKind="WinUI-Xaml" RuntimeIdentifier="win-x64" TargetFramework="net10.0-windows10.0.19041.0" TargetPackage="Doroti.Target.Windows.Maui.win-x64" />
   </ItemGroup>

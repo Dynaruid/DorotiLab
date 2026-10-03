@@ -9,6 +9,8 @@ internal static class MacCatalystDesktopWindowPolicy
     internal static WindowEvaluation Evaluate(WindowOptions options, WindowOptions? current)
     {
         options.Validate();
+        if (options.RequireNativeCloseCancellation)
+            return Reject("Catalyst native scene close cannot be vetoed with the current public UIKit bridge. Use autosave/recovery or programmatic CloseAsync.");
         if (options.StartupVisibility != WindowStartupVisibility.PlatformDefault)
             return Reject(
                 "Catalyst owns scene visibility at launch. Select PlatformDefault; hidden first-frame preparation is not supported."

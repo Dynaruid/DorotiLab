@@ -141,6 +141,11 @@ export function activate(context: vscode.ExtensionContext) {
         let opened = false; let tail = '';
         const args = ['-NoProfile', '-File', script, 'dev', '-App', project.root, '-Platform', target, '-Configuration', 'Debug', '-SessionDirectory', directory, '-SessionId', id];
         args.push('-DotnetPath', config().get<string>('dotnetPath', 'dotnet'));
+        if (target === 'windows') args.push('-WindowsBackend', config().get<string>('windowsBackend', 'WindowsAppSdk'));
+        if (target === 'android') {
+            const device = config().get<string>('androidDevice');
+            if (device) args.push('-Device', device);
+        }
         if (target === 'macos' || target === 'maccatalyst') {
             const setting = target === 'macos' ? 'macosTargetFramework' : 'macCatalystTargetFramework';
             const framework = config().get<string>(setting);

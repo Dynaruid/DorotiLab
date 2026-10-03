@@ -1,4 +1,4 @@
-#if MACOS
+#if MACOS || IOS || MACCATALYST
 using Doroti.Ui;
 using Foundation;
 using WebKit;
@@ -6,7 +6,7 @@ using WebKit;
 namespace Doroti.Host.Maui;
 
 /// <summary>Exact manifest-key mapping; never reads arbitrary filesystem paths.</summary>
-internal sealed class AppKitWebViewContent(
+internal sealed class AppleWebViewContent(
     IApplicationResourceHostCapability resources,
     IReadOnlyDictionary<string, WebViewResource> routes
 ) : NSObject, IWKUrlSchemeHandler
@@ -80,7 +80,7 @@ internal sealed class AppKitWebViewContent(
             var bytes = await resources
                 .LoadAsync(route.ResourceKey, cancellation.Token)
                 .ConfigureAwait(false);
-            await new AppKitPlatformViewDispatcher().InvokeAsync(() =>
+            await AppleWebViewUi.Dispatcher.InvokeAsync(() =>
             {
                 if (_closed || cancellation.IsCancellationRequested || !_tasks.Remove(key))
                 {
@@ -102,7 +102,7 @@ internal sealed class AppKitWebViewContent(
         }
         catch (Exception error)
         {
-            await new AppKitPlatformViewDispatcher().InvokeAsync(() =>
+            await AppleWebViewUi.Dispatcher.InvokeAsync(() =>
             {
                 if (!_closed && !cancellation.IsCancellationRequested && _tasks.Remove(key))
                 {

@@ -738,6 +738,25 @@ internal sealed unsafe class WindowsManagedProductHost
         }
     }
 
+    public TextInputFeatures Features => new(true, true, true, true);
+
+    public void UpdateConfiguration(DorotiTextInputConfiguration configuration)
+    {
+        var native = new WindowsNativeV1.TextConfiguration
+        {
+            AbiVersion = WindowsNativeV1.AbiVersion,
+            StructSize = checked((uint)sizeof(WindowsNativeV1.TextConfiguration)),
+            InputType = (uint)configuration.inputType, InputAction = (uint)configuration.inputAction,
+            Capitalization = (uint)configuration.textCapitalization,
+            Flags = (configuration.readOnly ? 1u : 0u) | (configuration.obscureText ? 2u : 0u)
+                | (configuration.autocorrect ? 4u : 0u) | (configuration.enableSuggestions ? 8u : 0u),
+        };
+        var function = (delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.TextConfiguration*, uint>)_native.UpdateTextConfiguration;
+        if (function == null) throw new NotSupportedException("The native host lacks configuration-only text updates.");
+        var status = function(_native.HostContext, &native);
+        if (status != 0) throw new InvalidOperationException($"Native text configuration update failed: {status}.");
+    }
+
     public void UpdateState(DorotiTextEditingState state) =>
         InvokeTextState(
             state,
@@ -796,6 +815,7 @@ internal sealed unsafe class WindowsManagedProductHost
             node.id,
             node.label,
             node.value,
+            textGeometry = node.flags?.isObscured == true ? null : node.textGeometry?.ToWire(),
             role = node.role.ToString(),
             actions = (long)node.actions,
             children = node.children,

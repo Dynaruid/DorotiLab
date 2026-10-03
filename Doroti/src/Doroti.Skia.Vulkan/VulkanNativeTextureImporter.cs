@@ -16,6 +16,7 @@ public sealed record WindowsSharedTextureBuffer(
 ) : NativeTextureBuffer(Width, Height, Format)
 {
     public override NativeTexturePlatform Platform => NativeTexturePlatform.Windows;
+    public override NativeTextureDevice Device => new(Platform, AdapterLuid);
 }
 
 public sealed record LinuxDmaBufTextureBuffer(

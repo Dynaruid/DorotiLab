@@ -2,7 +2,7 @@
 
 This directory is the app-owned CMake customization point. The managed runner owns process startup and calls the append-only `doroti.qt-host/v2` C ABI exported by `libdoroti_qt_host.so`.
 
-The default native host uses a Qt 6 `QQuickWindow` and Qt-owned Vulkan device/queue/WSI. Graphite renders private R images and copies them into separate P images sampled by Qt. `DorotiQtQuick=false` selects the separate `QWindow`/`QVulkanInstance` comparison backend. It retains metrics/lifecycle, pointer/touch/tablet, key/focus, editing-state IME, clipboard, cursor, accessibility and resize contracts. C ABI v2 (ABI version 6) feature bits 10/11 supply the Vulkan instance, surface, actual enabled instance extensions and API version in the surface descriptor (now 144 bytes). Feature bit 12 requires the appended GPU polling callback (208-byte callback table); rebuild the shim when updating the managed host. In the QWindow comparison backend, managed Graphite/Vulkan owns the device and swapchain and reports queue-present acceptance separately from physical scan-out.
+The default native host uses a Qt 6 `QQuickWindow` and Qt-owned Vulkan device/queue/WSI. Graphite renders private R images and copies them into separate P images sampled by Qt. `DorotiQtQuick=false` selects the separate `QWindow`/`QVulkanInstance` comparison backend. It retains metrics/lifecycle, pointer/touch/tablet, key/focus, editing-state IME, clipboard, cursor, accessibility and resize contracts. C ABI v2 (ABI version 7) feature bits 10/11 supply the Vulkan instance, surface, actual enabled instance extensions and API version in the surface descriptor (now 144 bytes). Feature bit 12 requires the appended GPU polling callback (208-byte callback table); rebuild the shim when updating the managed host. In the QWindow comparison backend, managed Graphite/Vulkan owns the device and swapchain and reports queue-present acceptance separately from physical scan-out.
 
 Feature bit 13 requires `prepare_present` in the appended 128-byte host API table. The QWindow comparison calls it only immediately before queuing a Vulkan presentation, after rejecting empty or superseded scenes. Qt completes its presentation notification only on success. A skipped frame retries on an owner-thread timer because no compositor frame callback is promised. Rebuild the shim together with the managed host.
 
@@ -54,7 +54,7 @@ see `shaders/README.md`. Debug and Release use the same hash-checked asset.
 Select the retained Widgets/QWindow backend explicitly with `DorotiQtQuick=false`
 and `DorotiQtWebEngine=false`. Runtime QML modules `QtQuick` and `QtQuick.Controls` are required.
 
-Feature bit 17 negotiates the Quick path without changing callback ABI 6. Qt owns
+Feature bit 17 negotiates the Quick path without changing the 208-byte callback table. Qt owns
 Vulkan device/queue/WSI; the managed renderer publishes GPU images with same-queue copy/sampling ordering through
 the separate 48-byte GPU / 96-byte part API in `doroti_qt_quick.h`. Old managed
 callbacks without bit 17 are rejected before startup. Quick controls are live QML
@@ -68,7 +68,7 @@ validation for input, overlap, lifetime and Vulkan-layer checks.
 `-DDOROTI_QT_WEBENGINE=ON` builds the sibling `libdoroti_webview_qt.so` against
 system Qt 6.8+ WebEngineQuick/WebChannel and initializes schemes/WebEngine before
 QApplication. The independent WebView command ABI is version 1 / 32 bytes;
-host callbacks remain ABI 6 / 208 bytes. The generated runtime manifest records
+host callbacks remain ABI 7 / 208 bytes. The generated runtime manifest records
 the build versions and system helper/data/QML closure. No Qt engine is bundled. MSBuild exposes this as `DorotiQtWebEngine=true`; the
 Testbed enables it with Quick, while templates keep it optional. PV feature bit
 2 negotiates `create` kind 2 (HTML or versioned WebView options); bit 3 negotiates a
@@ -127,3 +127,5 @@ Native frame pipeline: host ABI 6 appends the afterFrameEnd consumer callback at
 Host ABI 6 additionally appends prepare_frame at offset 200, feature bit 22. beforeFrameBegin freezes the current token and prepares the framework before QRhi::beginFrame; beforeSynchronizing records that prepared scene. Callback re-requests keep their next-pulse token. afterFrameEnd handles producer/Qt consumer retirement independently of frameSwapped.
 
 Native build caches are separated by configuration and Quick/Graphite/WebEngine/GStreamer options. Invalid switches and backend combinations fail before compilation. A missing host shim fails with `DOROTIQT006`, including `publish --no-build` for an unbuilt profile. For a prebuilt native host set `DorotiBuildQtNative=false` and `DorotiQtNativeBuildDirectory` to its matching directory; enabled WebEngine needs both its sibling library and runtime manifest. See `Doroti/docs/platform-views/linux-qt.md` for the complete profile table.
+
+2026-10-03: host ABI 7 adds configuration-only updates (feature 23, 136-byte host API), real layout text geometry (feature 24) and pen availability/orientation (184-byte pointer payload). Optional Desktop ABI 2 uses State72/Command56/API48 bytes; placement is conditional pure X11 xcb/DPR1 (Wayland/XWayland sessions are rejected) and outer-frame physical geometry. Rebuild managed host, template and sample shims together. Apple verification is unrelated and skipped for this request.

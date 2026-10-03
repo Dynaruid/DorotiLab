@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Doroti.Ui;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Layouts;
 
 namespace Doroti.Host.Maui;
 
@@ -139,6 +140,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
             }
 
             _disposed = true;
+            foreach (var state in _elements.Values) { state.Container.Node = null; state.Container.DispatchAction = null; }
             _pending = null;
             _applyScheduled = false;
             _scheduleGeneration++;
@@ -160,6 +162,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
             _applyScheduled = false;
             _scheduleGeneration++;
             _appliedNodes.Clear();
+            foreach (var state in _elements.Values) { state.Container.Node = null; state.Container.DispatchAction = null; }
             _elements.Clear();
             _recycledElements.Clear();
             _lastReceivedGeneration = -1;
@@ -178,13 +181,11 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
             .Where(node => node.flags?.isHidden == true)
             .Select(node => node.id)
             .ToHashSet();
-#if MACOS
-        // AppKit exposes the real NSControl subtree. A transparent MAUI placeholder would
+        // Native platform views expose their own accessibility subtree. A transparent MAUI placeholder would
         // duplicate it in accessibility and can steal native hit tests / keyboard navigation.
         hidden.UnionWith(
             nodes.Where(node => node.platformViewId is not null).Select(node => node.id)
         );
-#endif
         var changed = true;
         while (changed)
         {
@@ -325,7 +326,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
             {
                 if (_elements.TryGetValue(staleId, out var staleState))
                 {
-                    _layer.Children.Remove(staleState.Element);
+                    DetachContainer(staleState);
                     RecycleState(staleState);
                 }
                 _elements.Remove(staleId);
@@ -339,7 +340,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
                 {
                     if (state is not null)
                     {
-                        _layer.Children.Remove(state.Element);
+                        DetachContainer(state);
                         RecycleState(state);
                     }
                     state = AcquireState(kind);
@@ -358,6 +359,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
             {
                 SynchronizeChildOrder(update.nodes);
             }
+            LayoutHierarchy(update.nodes);
             Interlocked.Exchange(ref _activeElements, _elements.Count);
             Interlocked.Exchange(ref _retainedNodes, _appliedNodes.Count);
         }
@@ -387,8 +389,13 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
 
     private void RecycleState(NativeElementState state)
     {
+        state.Container.Node = null;
+        state.Container.DispatchAction = null;
+        foreach (var child in state.Container.Children.OfType<MauiSemanticsLayout>().ToArray()) state.Container.Children.Remove(child);
         state.Node = null;
         state.PerformAction = null;
+        // An exposed native peer must never become a different node through pooling.
+        if (state.Container.Handler is not null) return;
         if (!_recycledElements.TryGetValue(state.Kind, out var recycled))
         {
             recycled = new Stack<NativeElementState>();
@@ -399,29 +406,27 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
 
     private void SynchronizeChildOrder(IReadOnlyList<SemanticsNodeUpdate> nodes)
     {
-        var index = 0;
-        foreach (
-            var node in nodes
-                .OrderBy(node => node.indexInParent ?? int.MaxValue)
-                .ThenBy(node => node.id)
-        )
-        {
-            var element = _elements[node.id].Element;
-            var currentIndex = _layer.Children.IndexOf(element);
-            if (currentIndex != index)
-            {
-                if (currentIndex >= 0)
-                {
-                    _layer.Children.RemoveAt(currentIndex);
-                }
+        var tree = new SemanticsTreeSnapshot(nodes);
+        foreach (var state in _elements.Values) DetachContainer(state);
+        foreach (var root in tree.Roots) _layer.Children.Add(_elements[root].Container);
+        foreach (var node in nodes)
+            foreach (var child in tree.Children(node.id)) _elements[node.id].Container.Children.Add(_elements[child].Container);
+    }
 
-                _layer.Children.Insert(index, element);
-            }
-            index++;
-        }
-        while (_layer.Children.Count > index)
+    private static void DetachContainer(NativeElementState state)
+    {
+        if (state.Container.Parent is Layout parent) parent.Children.Remove(state.Container);
+    }
+
+    private void LayoutHierarchy(IReadOnlyList<SemanticsNodeUpdate> nodes)
+    {
+        var tree = new SemanticsTreeSnapshot(nodes);
+        foreach (var node in nodes)
         {
-            _layer.Children.RemoveAt(_layer.Children.Count - 1);
+            var state = _elements[node.id];
+            var origin = tree.Parents.TryGetValue(node.id, out var parent) ? tree.Nodes[parent].rect.topLeft : Doroti.Ui.Offset.zero;
+            AbsoluteLayout.SetLayoutBounds(state.Container, new(node.rect.left - origin.dx, node.rect.top - origin.dy,
+                Math.Max(0, node.rect.width), Math.Max(0, node.rect.height)));
         }
     }
 
@@ -445,6 +450,9 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
             _ => new Label { Opacity = 0 },
         };
         var state = new NativeElementState(kind, element);
+        state.Container.Children.Add(element);
+        AbsoluteLayout.SetLayoutBounds(element, new(0, 0, 1, 1));
+        AbsoluteLayout.SetLayoutFlags(element, AbsoluteLayoutFlags.All);
         if (element is Entry entry)
         {
             entry.TextChanged += (_, args) =>
@@ -586,8 +594,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
             || state.Node is not { } node
             || !_elements.TryGetValue(node.id, out var current)
             || !ReferenceEquals(current, state)
-            || !node.actions.HasFlag(action)
-            || node.flags?.isEnabled == Tristate.isFalse
+            || !SemanticsActionPolicy.Allows(node, action)
         )
         {
             return;
@@ -644,6 +651,15 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
         {
             state.Node = node;
             state.PerformAction = performAction;
+            state.Container.Node = node;
+            state.Container.DispatchAction = (action, arguments) =>
+            {
+                if (_disposed || _projectionDepth != 0 || state.Node is not { } currentNode
+                    || !_elements.TryGetValue(currentNode.id, out var live) || !ReferenceEquals(live, state)
+                    || !SemanticsActionPolicy.Allows(currentNode, action)) return false;
+                PerformAction(state, action, arguments);
+                return true;
+            };
             if (!state.Element.InputTransparent)
             {
                 state.Element.InputTransparent = true;
@@ -859,14 +875,14 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
                 );
                 if (state.LayoutBounds != bounds)
                 {
-                    AbsoluteLayout.SetLayoutBounds(state.Element, bounds);
+                    AbsoluteLayout.SetLayoutBounds(state.Container, bounds);
                     state.LayoutBounds = bounds;
                     Interlocked.Increment(ref _nativePropertyWrites);
                 }
                 if (!state.LayoutFlagsInitialized)
                 {
                     AbsoluteLayout.SetLayoutFlags(
-                        state.Element,
+                        state.Container,
                         Microsoft.Maui.Layouts.AbsoluteLayoutFlags.None
                     );
                     state.LayoutFlagsInitialized = true;
@@ -899,11 +915,11 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
     private static NativeElementKind ElementKindFor(SemanticsNodeUpdate node) =>
         node.flags?.isTextField == true ? NativeElementKind.TextField
         : node.flags?.isSlider == true ? NativeElementKind.Slider
-        : node.flags?.isToggled != Tristate.none ? NativeElementKind.Toggle
+        : node.flags?.isToggled is Tristate.isTrue or Tristate.isFalse ? NativeElementKind.Toggle
         : node.flags?.isInMutuallyExclusiveGroup == true
         && (node.flags.isChecked != CheckedState.none || node.flags.isSelected != Tristate.none)
             ? NativeElementKind.Radio
-        : node.flags?.isChecked != CheckedState.none ? NativeElementKind.Checkbox
+        : node.flags?.isChecked is CheckedState.isTrue or CheckedState.isFalse or CheckedState.mixed ? NativeElementKind.Checkbox
         : node.actions.HasFlag(SemanticsAction.tap) ? NativeElementKind.Button
         : NativeElementKind.Label;
 
@@ -978,6 +994,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
     {
         internal NativeElementKind Kind { get; } = kind;
         internal View Element { get; } = element;
+        internal MauiSemanticsLayout Container { get; } = new() { InputTransparent = true, CascadeInputTransparent = false };
         internal SemanticsNodeUpdate? Node { get; set; }
         internal Action<int, SemanticsAction, object?>? PerformAction { get; set; }
         internal string? Description { get; set; }

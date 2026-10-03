@@ -1,0 +1,137 @@
+{
+  "baseHead": "96d30290500a7a82e714377537d8b1bcbd74ce13",
+  "worktree": "uncommitted",
+  "appleValidation": "SKIPPED by user request",
+  "physicalAcceptance": "PARTIAL",
+  "candidates": [
+    {
+      "label": "Windows MAUI",
+      "version": "0.3.0-beta.audit.20261003.3",
+      "status": "PASS: isolated package-only template restore/build; selected device/desktop publish and deployment have separate records",
+      "sourceTreeSha256": "146a6dbfebe1e269131536bf31d5c8de6f13bb3ad4a806f1a97eba1c6bd4a28c",
+      "nativeConsumer": {
+        "nativeFirstFrame": true,
+        "twoWindows": true,
+        "secondResizedAndClosed": true,
+        "survivorsBeforeMainClose": 1
+      },
+      "packageCount": 27,
+      "packagesSha256": "fdc846e7f6725bc7d20275a106dc4812c78a22d073b46f34c1b4d821dcb9ed9e",
+      "selectedPackages": {
+        "Doroti.Host.Maui.0.3.0-beta.audit.20261003.3.nupkg": "354b6be1db990d2b1ce7cd03b95f4ee705c764072f5e61bdf403cb0912a839bc",
+        "Doroti.Runner.Sdk.0.3.0-beta.audit.20261003.3.nupkg": "bf21632dfd43bae159f89b34fa3a72a975161f005fccf61f084ac8a724ca4d64",
+        "Doroti.Target.Windows.Maui.win-x64.0.3.0-beta.audit.20261003.3.nupkg": "2f746b2a42daa337ec7fb8fa34154e099dbde5ec9593316e7109fed22a175596",
+        "Doroti.Templates.0.3.0-beta.audit.20261003.3.nupkg": "5aa7d11f1f7edb4ccea1a435b73cce4b0138c52de9bb7bf1182b227d2dac7eb4"
+      },
+      "artifactCount": 468,
+      "artifactsSha256": "e9ca65cb507de3c5c7d3da6d96dd93aa04bafb8e3a0d07b27c08f1dd6d898251",
+      "selectedPayloads": {
+        "windows": {
+          "Doroti.Host.Maui.dll": "00dad53f60bcc7f1af22dd5883914293ec836f28a360929075bc4996c90ab6a2",
+          "libSkiaSharp.dll": "07ce51fd59e099b9561b0327223c27b21aa5605b5b8f4484dd297fdb8c8725a1",
+          "SkiaSharp.dll": "702657b10552a9aa75dd65ca63fac752e0bb795a9cab3fb169ff52cb2ecee7b9"
+        }
+      },
+      "signing": "notVerified",
+      "cleanMachineInstall": "notVerified"
+    },
+    {
+      "label": "Windows App SDK",
+      "version": "0.3.0-beta.audit.20261003.4",
+      "status": "PASS: isolated package-only template restore/build; selected device/desktop publish and deployment have separate records",
+      "sourceTreeSha256": "da67aa228d93b5a1c76ca5b0cca2154b4961e8b18e2c61bac578ef311cf12b24",
+      "nativeConsumer": {
+        "nativeFirstFrame": true,
+        "twoWindows": true,
+        "secondResizedAndClosed": true,
+        "survivorsBeforeMainClose": 1
+      },
+      "packageCount": 26,
+      "packagesSha256": "6f6117054cc21b2e3198e03f28e147eb326557a2f5b8ea1bd85458d31f49fb13",
+      "selectedPackages": {
+        "Doroti.Host.WindowsAppSdk.0.3.0-beta.audit.20261003.4.nupkg": "cb81270a942e1a9654a3c38d37ed370d05ce4c2f5432b40d22516b56c06451b4",
+        "Doroti.Runner.Sdk.0.3.0-beta.audit.20261003.4.nupkg": "c8e1f34698858a9a68c26580a31d9327a68bbbc3d1ee35d0ed6f66759a5b52b3",
+        "Doroti.Target.Windows.WindowsAppSdk.win-x64.0.3.0-beta.audit.20261003.4.nupkg": "8785d8323e580da873e5c39b68588972f2d795f0570eb71062c343a06195a002",
+        "Doroti.Templates.0.3.0-beta.audit.20261003.4.nupkg": "d8323d5a24760fab5c3ea560b3776067a1833805bc9ad4d3bb1b9b1a3ada8b61"
+      },
+      "artifactCount": 550,
+      "artifactsSha256": "3328414c3052daa72e4e397c7a4db1495587069894a90db679a593c0bf87ad2c",
+      "selectedPayloads": {
+        "windows": {
+          "Doroti.Host.WindowsAppSdk.dll": "657dc33f6c0136ec801453592dfe4fdab971bc445d98129671b65dda8b00eaf8",
+          "doroti_windows_appsdk_host_v1.dll": "f430bf20f5256b298412143baebdec41117939ddd188b0d300dcabe00eb1475e",
+          "libSkiaSharp.dll": "07ce51fd59e099b9561b0327223c27b21aa5605b5b8f4484dd297fdb8c8725a1",
+          "SkiaSharp.dll": "702657b10552a9aa75dd65ca63fac752e0bb795a9cab3fb169ff52cb2ecee7b9"
+        }
+      },
+      "signing": "notVerified",
+      "cleanMachineInstall": "notVerified"
+    },
+    {
+      "label": "Web Offline",
+      "version": "0.3.0-beta.audit.20261003.5",
+      "status": "PASS: isolated package-only template restore/build; selected device/desktop publish and deployment have separate records",
+      "sourceTreeSha256": "70a267d8e5412591af8c30695dae26ed32bfcf33ad332ad8ab488a79fab7f950",
+      "nativeConsumer": null,
+      "packageCount": 23,
+      "packagesSha256": "a29937af6acab323f485f04bf1aedb42b514c8ca0afd85aa81d45eb3623416f4",
+      "selectedPackages": {
+        "Doroti.Host.Web.0.3.0-beta.audit.20261003.5.nupkg": "8a069a98c97763c4342eb337fe9cc7737510d8c70e047c0d830152275effe8e4",
+        "Doroti.Runner.Sdk.0.3.0-beta.audit.20261003.5.nupkg": "00ba5efa70f0dcb272f52df2eeb99d46ff9bae8827c2c440582e5026bc3c5411",
+        "Doroti.Target.Web.browser-wasm.0.3.0-beta.audit.20261003.5.nupkg": "1a7aa2ada940867b2df69c01fb5589f88dbb34d80ec5fd107ec281efa0398b45",
+        "Doroti.Templates.0.3.0-beta.audit.20261003.5.nupkg": "421b1ef90e8cb63e16efa5447b27cb9a0f649667e81f83a444687039da3acf39"
+      },
+      "artifactCount": 823,
+      "artifactsSha256": "7b70791be94f9b9ee4198cb116cc97167b5eda764640fea333cfdf550bab5c83",
+      "selectedPayloads": {
+        "web": {
+          "wwwroot/doroti.runtime-profile.json": "6900351b25e9be0945f5391fcf31d2eb3d54a9670b80a0b86277688a28ff4b9c",
+          "wwwroot/_content/Doroti.Host.Web/doroti.raster.worker.js": "2d2678305907b429582b346944acb5a28ac9e0610bbf1c4eb1e246863349b474",
+          "wwwroot/_content/Doroti.Host.Web/doroti.web.js": "e6bf3163e12e027ca729fb4c1ac0afdcff441509c9ede038b8ec05ffa5984cb1",
+          "wwwroot/_content/Doroti.Host.Web/doroti.web.managed-worker.js": "7e4aa0c9becad9677ee7b1406ccbd292aa5b743f1edf90c5de7a170e230c718f",
+          "wwwroot/fonts/decoder/decompress.js": "6910ba38d0a981513b297701d309fa2efc4f67a311815bcc4de5837085d2ee46",
+          "wwwroot/fonts/offline/SUITE-Variable.woff2": "fc5e0648d5413b55b79ebbab0f50de561a026574cba3a9c8eb03d5bddd432263"
+        }
+      },
+      "signing": "notVerified",
+      "cleanMachineInstall": "notVerified"
+    },
+    {
+      "label": "Windows MAUI final scene preflight",
+      "version": "0.3.0-beta.audit.20261003.6",
+      "status": "PASS: isolated package-only template restore/build; selected device/desktop publish and deployment have separate records",
+      "sourceTreeSha256": "1222f4a3b69a3753e51e42d9ede0269a45fcfc5e3f6ccfddc8de7428ed66f329",
+      "nativeConsumer": {
+        "nativeFirstFrame": true,
+        "twoWindows": true,
+        "secondResizedAndClosed": true,
+        "survivorsBeforeMainClose": 1
+      },
+      "packageCount": 27,
+      "packagesSha256": "8f0917283a8bf4325bc8027d560c24afa6dad363874c97df3d7b874ba51d7ff6",
+      "selectedPackages": {
+        "Doroti.Host.Maui.0.3.0-beta.audit.20261003.6.nupkg": "70cb0ea0d0faf5ed6f9a9879de0c63ce067294014fd7e162354ab89f80ea4ee5",
+        "Doroti.Runner.Sdk.0.3.0-beta.audit.20261003.6.nupkg": "d5d7cdd5a19e71d23d7c6ccf04597b6c6106303e94f9f17295c7f25aed9ffcdf",
+        "Doroti.Target.Windows.Maui.win-x64.0.3.0-beta.audit.20261003.6.nupkg": "7d3ca9e8e5d08b9d04d96536c78b2552bc86b48c2cd8d44f741cc91526740128",
+        "Doroti.Templates.0.3.0-beta.audit.20261003.6.nupkg": "5457915eb108dca8f10f615c21612a89cc15a42b52768a6161d5db7bd5fa4bd9"
+      },
+      "artifactCount": 468,
+      "artifactsSha256": "a7caca419666d0a3d1fb746fdd0774c57331ab45405d9a6dd9dee28e75ae5307",
+      "selectedPayloads": {
+        "windows": {
+          "Doroti.Host.Maui.dll": "d3014723d456cdc172244797b85f9a59d7f08294a393095a06d088a9f40a2eb8",
+          "Doroti.Hosting.dll": "20817d05c4ef0727238a4d8f6bf0b671e31d4e6bba8eeff6f9492c70456c0cf4",
+          "Doroti.Ui.dll": "eb7aa7a018472ed1a7c083138d9bc63d1903acaeefdbac26843543ed38c25988",
+          "libSkiaSharp.dll": "07ce51fd59e099b9561b0327223c27b21aa5605b5b8f4484dd297fdb8c8725a1",
+          "SkiaSharp.dll": "702657b10552a9aa75dd65ca63fac752e0bb795a9cab3fb169ff52cb2ecee7b9"
+        }
+      },
+      "signing": "notVerified",
+      "cleanMachineInstall": "notVerified"
+    }
+  ],
+  "linuxPayloads": {
+    "libdoroti_qt_host.so": "2b550860f29172993b27033e45386e724cf0351233c754a09359ad799c49512b",
+    "Doroti.Host.Qt.dll": "11a71b1796306f568be334e876ee0b442bd4e238498c8ca0f39484b2f679666a"
+  }
+}

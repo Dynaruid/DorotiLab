@@ -1,10 +1,11 @@
-# Desktop window API — implementation status, 2026-09-26
+# Desktop window API — implementation status
+
+2026-10-03: Windows MAUI now creates actual additional windows with separate owners and shared application leases. Both lifetime policies/survivor resize/drain pass, and same-adapter GPU import is available conditionally. [Current evidence](validation/2026-10-03-platform-gap-implementation.md). Apple new-code verification is SKIPPED.
 
 The 2026-10-02 [native frame pipeline](native-frame-pipeline.md) adds common C
 admission and separately tracks Vulkan producer and D3D12 consumer completion in
 both Windows hosts. Embedded MAUI composition and Ganesh retain serial fallback.
-This does not add native MAUI Windows Editor/WebView adapters; the new input
-probe's unsupported result is retained in the candidate report.
+That 2026-10-02 frame change did not add MAUI Editor/WebView adapters. The later 2026-10-03 W4/W8 implementation and checks are recorded separately.
 
 The first implementation provides `Doroti.Desktop` and optional
 `Doroti.Desktop.Widgets`. **The complete W0–W5 plan is PARTIAL.** Windows MAUI
@@ -21,7 +22,7 @@ adds native multi-window execution and Explicit lifetime; see the
 | Desktop declaration | `DesktopApplication.Configure<TStartup>`, separate companion project | Implemented; descriptor-scoped registration |
 | Window identity/lifetime | `DorotiWindowManager`, `DorotiWindowController` | Implemented; fake two-window contracts |
 | Content | `WindowContent.FromEntrypoint`, `WidgetWindowContent.Create`, `DesktopWindowScope.Of` | Fresh factory and explicit window context; no current-window singleton |
-| Windows MAUI creation | `DorotiMauiApplication.CreateWindow`, `WindowsDesktopWindowHost` | Main window uses manager; native additional creation rejected before allocation |
+| Windows MAUI creation | `DorotiMauiApplication.CreateWindow`, `WindowsDesktopWindowHost` | Main and actual additional MAUI windows use the manager, independent view resources and a shared application lease |
 | First display | `DorotiMauiPlatformApplications` before native activation; `DorotiMauiSurface.CompleteNativePaint` | DWM cloak until first non-stale present; no readiness timer |
 | Close | AppWindow Closing → controller decision → render drain → detach/dispose → native close → registry removal | Native/API close share one cancellable decision |
 | Material/caption | `WindowsWindowBackdrop`, `WindowsNativeCaption` | Same appearance snapshot, native System/Solid/Backdrop caption |
@@ -139,8 +140,7 @@ currently returns Unsupported before native allocation. Custom buttons and
 frameless mode are also rejected. No helper with unverified hit testing or
 accessibility is advertised as native-equivalent.
 
-Future additional-window call (the signature compiles, Windows MAUI rejects it
-before allocation until W6):
+Additional-window call (Windows MAUI native execution qualified separately on 2026-10-03):
 
 ```csharp
 var child = await context.Windows.CreateWindowAsync(new WindowCreateOptions
@@ -158,7 +158,7 @@ Current host/renderer/build-mode evidence is centralized in [support status](sup
 | Host | Main-window adapter | Current limitation |
 | --- | --- | --- |
 | Windows App SDK | Main and additional HWNDs; Debug and NuGet-only Release native lifetime checks | OnLastWindowClosed/Explicit; backdrop/background changes require recreation; physical resize/IME/mixed-monitor and full native-content coverage notVerified |
-| Windows MAUI | Implemented; historical results below | Separate native PlatformView wiring and current revalidation pending |
+| Windows MAUI | Implemented; historical results below | Disjoint native overlays/WebView, actual additional owners and conditional GPU import; physical input/DPI/loss/soak remain open |
 | AppKit | Main/additional windows; Graphite and Ganesh native Desktop/lifetime qualification (2026-09-29) | Physical input/VoiceOver, mixed DPI and clean signed deployment remain separate |
 | Mac Catalyst | UIKit scene adapter with common additional-window factory | PlatformDefault startup; two scenes/independent size/survivor/Explicit drain verified separately; native close cannot be cancelled; [Apple results](../../history/26-10-03/works/results/2026-09-29-ios-catalyst.md) |
 | Qt Quick | Main/additional QQuickWindow, independent owner resources | Wayland/XWayland VM execution; physical input/mixed DPI and bounds/appearance restrictions remain |

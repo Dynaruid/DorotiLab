@@ -32,6 +32,8 @@
       "doroti.cliPath": { "type": "string", "default": "", "description": "Absolute path to the repository Doroti/eng/doroti.ps1 (required for generated apps outside the repository).", "scope": "machine-overridable" },
       "doroti.powerShellPath": { "type": "string", "default": "pwsh", "description": "PowerShell 7 executable.", "scope": "machine" },
       "doroti.dotnetPath": { "type": "string", "default": "dotnet", "description": ".NET executable for project creation and development sessions.", "scope": "machine-overridable" },
+      "doroti.windowsBackend": { "type": "string", "enum": ["WindowsAppSdk", "Maui"], "default": "WindowsAppSdk", "description": "Windows development runner backend.", "scope": "machine-overridable" },
+      "doroti.androidDevice": { "type": "string", "default": "", "description": "ADB device serial for the Android restart/deploy loop.", "scope": "machine-overridable" },
       "doroti.macosTargetFramework": { "type": "string", "default": "", "description": "Optional AppKit target framework override, for example net10.0-macos27.0.", "scope": "machine-overridable" },
       "doroti.macCatalystTargetFramework": { "type": "string", "default": "", "description": "Optional Mac Catalyst target framework override, for example net10.0-maccatalyst27.0.", "scope": "machine-overridable" },
       "doroti.iosDevice": { "type": "string", "default": "", "description": "Paired iOS device or simulator UDID. Empty selects the single booted simulator.", "scope": "machine-overridable" },

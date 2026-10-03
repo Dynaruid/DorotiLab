@@ -1846,6 +1846,8 @@ public static partial class SemanticsLibrary
 
 public class SemanticsNode : DiagnosticableTreeMixin
 {
+    public SemanticsTextGeometry? hostTextGeometry { get; set; }
+    public Action<int, int>? hostScrollToTextRange { get; set; }
     internal static long _maxFrameworkAccessibilityIdentifier = (1L << (int)16L) - 1L;
     private static readonly Doroti.Ui.DispatcherLocal<long> LastIdentifier = new(() => 0L);
     internal static long _lastIdentifier { get => LastIdentifier.Value; set => LastIdentifier.Value = value; }
@@ -2490,6 +2492,9 @@ public class SemanticsNode : DiagnosticableTreeMixin
     )
     {
         config ??= _kEmptyConfig;
+        if (hostTextGeometry?.Revision != config.hostTextGeometry?.Revision) _markDirty();
+        hostTextGeometry = config.hostTextGeometry;
+        hostScrollToTextRange = config.hostScrollToTextRange;
         if (_isDifferentFromCurrentSemanticAnnotation(config))
         {
             _markDirty();
@@ -3050,6 +3055,13 @@ public class SemanticsNode : DiagnosticableTreeMixin
             minValue: data.minValue ?? "",
             maxValue: data.maxValue ?? ""
         );
+        builder.UpdateTextGeometry(checked((int)id), hostTextGeometry);
+        if (hostTextGeometry is not null && hostScrollToTextRange is not null)
+            _actions[SemanticsAction.scrollToTextRange] = arguments =>
+            {
+                if (arguments is System.Collections.IDictionary values && values.Contains("base") && values.Contains("extent"))
+                    hostScrollToTextRange?.Invoke(Convert.ToInt32(values["base"]), Convert.ToInt32(values["extent"]));
+            };
         _dirty = false;
     }
 
@@ -4178,6 +4190,8 @@ public class SemanticsOwner : ChangeNotifier
 
 public class SemanticsConfiguration
 {
+    public SemanticsTextGeometry? hostTextGeometry { get; set; }
+    public Action<int, int>? hostScrollToTextRange { get; set; }
     internal virtual bool _isSemanticBoundary { get; set; } = false;
     internal virtual Locale? _localeForSubtree { get; set; } = default;
     public virtual Locale? locale { get; set; } = default;
@@ -5625,6 +5639,8 @@ public class SemanticsConfiguration
                 {
                     var __cascade = new SemanticsConfiguration();
                     __cascade._isSemanticBoundary = _isSemanticBoundary;
+                    __cascade.hostTextGeometry = hostTextGeometry;
+                    __cascade.hostScrollToTextRange = hostScrollToTextRange;
                     __cascade.explicitChildNodes = explicitChildNodes;
                     __cascade.isBlockingSemanticsOfPreviouslyPaintedNodes =
                         isBlockingSemanticsOfPreviouslyPaintedNodes;

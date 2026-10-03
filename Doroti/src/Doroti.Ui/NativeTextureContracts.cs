@@ -20,6 +20,7 @@ public sealed record NativeTextureDevice(NativeTexturePlatform Platform, long Ad
 public abstract record NativeTextureBuffer(int Width, int Height, NativeTextureFormat Format)
 {
     public abstract NativeTexturePlatform Platform { get; }
+    public virtual NativeTextureDevice? Device => null;
 }
 
 /// <summary>Reference-counted native ownership. Each retained handle must be disposed once.

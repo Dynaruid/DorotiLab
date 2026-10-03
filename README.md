@@ -10,6 +10,10 @@ The project began by translating Flutter framework source code into C# and is no
 
 [Get started](#get-started) · [Platforms](#platforms) · [Documentation](#documentation)
 
+The optional Windows MAUI backend connects HWND file picking and disjoint WinUI native
+button/editor/WebView2 overlays. [2026-10-03 checks](Doroti/docs/validation/2026-10-03-windows-maui-basic-connections.md)
+record its own native/widget/upload execution; physical input and advanced composition remain unqualified.
+
 > [!WARNING]
 > Doroti is under active development. APIs, behavior, and project structure may change without backward-compatibility guarantees. Platform maturity varies.
 
@@ -35,10 +39,10 @@ Doroti shares its widget, layout, painting, and semantics layers across platform
 | iOS | .NET MAUI / UIKit | `Doroti.Host.Maui` | Skia Graphite / Metal |
 | macOS | Native AppKit / MetalKit (`MTKView`) | AppKit adapter in `Doroti.Host.Maui` | Skia Graphite / Metal |
 | Mac Catalyst | .NET MAUI / UIKit (Mac Catalyst) | `Doroti.Host.Maui` | Skia Graphite / Metal |
-| Web | .NET WebAssembly, render Worker / canvas | `Doroti.Host.Web` | Skia Graphite / Dawn / WebGPU |
+| Web | .NET WebAssembly, render Worker / canvas | `Doroti.Host.Web` | Desktop/iOS: Ganesh/WebGL2; Android: Graphite/Dawn/WebGPU preferred |
 | Linux | Qt 6 `QWindow`, native C ABI bridge | `Doroti.Host.Qt` | Skia Graphite / Vulkan |
 
-Web also offers an explicitly selected Ganesh/WebGL2 path. These implementations have different levels of validation; see [project status](#project-status).
+Web auto selection prefers WebGL2 on desktop/iOS and WebGPU on Android, with initial fallback when available. Explicit `dorotiRenderer=worker-direct-webgl` or `worker-direct-webgpu` overrides auto selection. Runtime graphics loss requires a fresh endpoint; see [platform gap implementation](Doroti/docs/validation/2026-10-03-platform-gap-implementation.md) and [project status](#project-status).
 
 ## Get started
 
@@ -120,3 +124,5 @@ Ideas and bug reports are welcome, as are forks that use Doroti to experiment or
 ## License
 
 Doroti is licensed under the [BSD 3-Clause License](LICENSE). See [third-party notices](Doroti/THIRD-PARTY-NOTICES.md) for upstream attribution.
+
+2026-10-03: Windows MAUI basic native services, GPU import/multiwindow, App SDK opt-in mixed WebView/editor, layout accessibility geometry, Web recovery/offline fonts and development/release entry points are covered in [current results](Doroti/docs/validation/2026-10-03-platform-gap-implementation.md). Apple validation of these changes was explicitly skipped; physical input/accessibility/display and signed deployment remain separate.

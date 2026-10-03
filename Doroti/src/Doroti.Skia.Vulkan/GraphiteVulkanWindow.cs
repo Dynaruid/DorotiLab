@@ -46,6 +46,8 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
     private bool _recreate = true;
     private Format _format;
     private VulkanObserver? _stockObserver;
+    public long NativeTextureAdapterLuid { get; private set; }
+    public bool SupportsNativeTextureImport => _session?.NativeTextureImporter is not null && !_disposed;
 
     public int Width { get; private set; }
     public int Height { get; private set; }
@@ -414,6 +416,13 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
                     _stockObserver,
                     Doroti.Ui.NativeTexturePlatform.Linux
                 );
+            if (OperatingSystem.IsWindows() && adapterLuid is { } windowsAdapter && windowsAdapter != 0
+                && extensionNames.Contains("VK_KHR_external_memory_win32"))
+            {
+                _session.NativeTextureImporter = new VulkanNativeTextureImporter(_session, _vk, _physical,
+                    _device, _queue, _family, _stockObserver, Doroti.Ui.NativeTexturePlatform.Windows);
+                NativeTextureAdapterLuid = windowsAdapter;
+            }
             var poolInfo = new CommandPoolCreateInfo
             {
                 SType = StructureType.CommandPoolCreateInfo,

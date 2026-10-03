@@ -17,6 +17,8 @@ public sealed class WindowsHwndPlatformViewFactory : IPlatformViewFactory
     internal bool SiblingRasterTopology { get; init; }
     internal bool KeepCompositionSourceAlive { get; init; }
     internal WindowsWinUiControls? WinUiControls { get; init; }
+    internal string? ViewTypeOverride { get; init; }
+    internal bool XamlWebView { get; init; }
     private bool SupportsNativePlacement => _lowerCompositionTarget || SiblingRasterTopology;
     internal Action<PlatformViewHandle, nint>? Created { get; init; }
     internal Action<PlatformViewHandle>? Destroyed { get; init; }
@@ -41,7 +43,7 @@ public sealed class WindowsHwndPlatformViewFactory : IPlatformViewFactory
         }
     }
 
-    public string ViewType => _editor ? "doroti/native-editor" : "doroti/native-button";
+    public string ViewType => ViewTypeOverride ?? (_editor ? "doroti/native-editor" : "doroti/native-button");
 
     public PlatformViewSupport QuerySupport(PlatformViewRequest request)
     {
@@ -69,6 +71,7 @@ public sealed class WindowsHwndPlatformViewFactory : IPlatformViewFactory
             supported ? request.Composition : PlatformViewComposition.NativeOverlay,
             PlatformViewEffects.RectClip,
             NativeBackdropBlur: backdrop,
+            MixedScene: supported,
             Capabilities: new(
                 PlatformViewRepresentation.NativeHierarchy,
                 WinUiControls is null
@@ -112,7 +115,7 @@ public sealed class WindowsHwndPlatformViewFactory : IPlatformViewFactory
         var text = parameters.IsEmpty
             ? (_editor ? "Native editor" : "Native button")
             : System.Text.Encoding.UTF8.GetString(parameters.Span);
-        var island = WinUiControls?.Create(_parent, _editor, text);
+        var island = WinUiControls?.Create(_parent, _editor, text, XamlWebView);
         var hwnd =
             island?.Hwnd
             ?? Native.CreateWindowExW(

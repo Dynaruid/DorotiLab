@@ -22,5 +22,6 @@ internal readonly record struct MauiSurfacePointerData(
     double Rotation = 0,
     ulong? Device = null,
     double Orientation = 0,
-    double Tilt = 0
+    double Tilt = 0,
+    PenMeasurementSupport? PenSupport = null
 );

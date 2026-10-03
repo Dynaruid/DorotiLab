@@ -25,4 +25,5 @@
     <ProjectReference Include="..\..\..\Doroti\src\Doroti.Target.Windows.Maui.win-x64\Doroti.Target.Windows.Maui.win-x64.csproj" />
   </ItemGroup>
   <Import Project="..\..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.targets" />
+  <Import Project="../../../Doroti/src/Doroti.Plugins/buildTransitive/Doroti.Plugins.targets" />
 </Project>

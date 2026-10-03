@@ -1,5 +1,13 @@
 # Maintained regression tests
 
+Windows MAUI basic services and native views use `windows_maui_smoke.py`, which
+selects the MAUI executable explicitly. Modes `graphite`, `embedded`, `ganesh`,
+`webview`, and `upload` check separate native owner/widget/upload paths. Build the
+Testbed `windows` runner first; `upload` also needs Sample2 `windows`. Run with
+the 1200-second wrapper and a fresh `temp/testing/` output directory. See
+[2026-10-03 W4 execution](../docs/validation/2026-10-03-windows-maui-basic-connections.md)
+for commands, package identity, supported overlay topology and physical evidence boundaries.
+
 Native C-only configuration and policy, GPU-full preparation, coalescing, native insertion,
 generation changes and out-of-order retirement are part of the CPU `Build` suite.
 For actual Vulkan C sequential/overlapped pixels and two unfinished recordings on the same recorder:
@@ -288,3 +296,15 @@ DOROTI_TEST_MAC_TARGET=maccatalyst python3 Doroti/eng/run-with-timeout.py node D
 ```
 
 Run these sequentially: they temporarily edit the same Testbed scene, restoring it on exit. The CLI smoke checks real metadata updates, seeded state preservation, compile recovery, rude edits and Stop/PID exit. The editor smoke installs the packaged VSIX in an isolated profile and invokes its Run/Hot Reload/Stop commands. `DOROTI_TEST_MAC_TFM` overrides the editor test's Xcode 27 TFM. `apple_build_profiles.py` also checks both Mac development profiles, rejects incompatible settings and verifies ordinary Debug/Release interpreter defaults remain unchanged.
+
+2026-10-03 platform gaps: [commands/results and limits](../docs/validation/2026-10-03-platform-gap-implementation.md).
+Use windows_maui_smoke.py for W4 owner/services, windows_native_texture_smoke.py for actual MAUI GPU import,
+windows_smoke.py for explicit App SDK/MAUI multiwindow and the opt-in mixed scene.
+web_runtime_recovery.py requires a completed Testbed Web build; --main-only uses the default threaded build,
+--worker-only requires -p:WasmEnableThreads=false. Restore the default threaded build afterward.
+web_offline_fonts.py requires Sample2 Assets + DorotiWebFontValidation=true; it checks real Korean glyphs,
+zero external requests and decoder-denial diagnostics. Do not build shared TS assets while a browser probe runs.
+hot_reload_smoke.py accepts backend Maui and --verify-restart to check actual Run/Reload/Stop/Run/Stop.
+All commands use the 1200-second wrapper. Apple validation is SKIPPED for this request.
+
+`web_package_runtime.py <candidate> <fresh-output>` serves the published NuGet-only Offline Web payload with explicit COOP/COEP and JavaScript `.mjs` MIME, then checks first frame/focus and zero external requests. Runtime ownership uses the SDK-generated `doroti.runtime-profile.json`; standalone worker requires a single-thread build. `web_runtime_recovery.py --worker-only --expect-threaded-rejection` checks early rejection of the ordinary threaded profile. Changing threading profiles in a shared SDK output requires clean/rebuild or isolated artifacts; the normal Testbed profile is threaded.

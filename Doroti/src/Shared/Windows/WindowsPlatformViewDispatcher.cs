@@ -2,7 +2,7 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using Doroti.Hosting;
 
-namespace Doroti.Host.WindowsAppSdk;
+namespace Doroti.Host.SharedWindows;
 
 /// <summary>Owner UI queue independent of the render worker and WinForms/WinUI contexts.</summary>
 internal sealed class WindowsPlatformViewDispatcher
@@ -91,10 +91,8 @@ internal sealed class WindowsPlatformViewDispatcher
         var completion = new TaskCompletionSource(
             TaskCreationOptions.RunContinuationsAsynchronously
         );
-        async void Run()
+        async Task Execute()
         {
-            var previous = Current;
-            SetSynchronizationContext(this);
             try
             {
                 await action();
@@ -104,10 +102,13 @@ internal sealed class WindowsPlatformViewDispatcher
             {
                 completion.TrySetException(error);
             }
-            finally
-            {
-                SetSynchronizationContext(previous);
-            }
+        }
+        void Run()
+        {
+            var previous = Current;
+            SetSynchronizationContext(this);
+            try { _ = Execute(); }
+            finally { SetSynchronizationContext(previous); }
         }
         if (Native.GetCurrentThreadId() == _thread)
         {

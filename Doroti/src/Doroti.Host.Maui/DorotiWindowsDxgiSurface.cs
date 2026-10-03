@@ -59,6 +59,8 @@ public sealed class DorotiWindowsDxgiHost : Microsoft.UI.Xaml.Controls.Grid
     {
         Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Transparent);
         UsesCompositionSurface = WindowsCompositionSurfaceFeature.Enabled;
+        CompositionTarget = new Microsoft.UI.Xaml.Controls.Grid { IsHitTestVisible = false };
+        Children.Add(CompositionTarget);
         if (!UsesCompositionSurface)
         {
             Presenter = new SwapChainPanel
@@ -91,6 +93,7 @@ public sealed class DorotiWindowsDxgiHost : Microsoft.UI.Xaml.Controls.Grid
     }
 
     internal bool UsesCompositionSurface { get; }
+    internal FrameworkElement CompositionTarget { get; }
     internal SwapChainPanel? Presenter { get; }
     internal UIElement InputOwner { get; }
 }
@@ -189,13 +192,21 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
     private bool _compositionResizePending;
     private bool _compositionNativeAuthority;
     internal bool OwnsWindowContent { get; set; }
+    internal WindowsMauiPlatformViewHost? PlatformViews { get; set; }
+    internal DorotiWindowsDxgiHost? NativeHost => _host;
+    internal long NativeTextureAdapterLuid => _compositionPresenter?.NativeTextureAdapterLuid ?? 0;
+    internal nint WindowHandle => _view.Window?.Handler?.PlatformView is Microsoft.UI.Xaml.Window window
+        ? WinRT.Interop.WindowNative.GetWindowHandle(window) : 0;
+    // Native overlays share the existing XAML tree, including on a dedicated page.
+    // They cannot be placed above this host's topmost full-window DComp raster target.
+    internal bool UsesNativeWindowOutput => OwnsWindowContent && PlatformViews?.Enabled != true;
     private int _compositionContentTop;
     private string CompositionViewType =>
-        OwnsWindowContent
+        UsesNativeWindowOutput
             ? "HWND-attached DirectComposition with WinUI input"
             : "WinUI attached Composition visual hosted by DorotiWindowsDxgiHost";
     private string CompositionBackend =>
-        OwnsWindowContent
+        UsesNativeWindowOutput
             ? WindowsCompositionSurfaceFeature.GraphiteEnabled
                 ? "HWND/DirectComposition/DXGI/Graphite-Vulkan"
                 : "HWND/DirectComposition/DXGI/D3D12-Skia"
@@ -287,6 +298,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
         inputOwner.LostFocus += HandleLostFocus;
         inputOwner.KeyDown += HandleKeyDown;
         inputOwner.KeyUp += HandleKeyUp;
+        PlatformViews?.Connect(host);
         if (host.IsLoaded)
         {
             AttachNativeResizeSource();
@@ -296,6 +308,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
 
     internal void Disconnect(DorotiWindowsDxgiHost host)
     {
+        PlatformViews?.Disconnect(host);
         ReleasePressedKeys();
         _compositionPresenter?.PrepareForUiTeardown(host);
         var panel = host.Presenter;
@@ -557,7 +570,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
                     return;
                 }
                 _topLevelResizeSource = topLevelSource;
-                _compositionNativeAuthority = OwnsWindowContent;
+                _compositionNativeAuthority = UsesNativeWindowOutput;
             }
             topLevelSource.Start();
             if (_compositionNativeAuthority)
@@ -1704,6 +1717,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
 
     private void HandlePointer(object sender, PointerRoutedEventArgs args, PointerChange change)
     {
+        if (PlatformViews?.OwnsElement(args.OriginalSource) == true) return;
         var host = (DorotiWindowsDxgiHost)sender;
         var inputOwner = _inputOwner;
         if (inputOwner is null)
@@ -1847,10 +1861,10 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
         {
             _metricsThread.Join();
             _rasterThread.Join();
-        });
+        }).ConfigureAwait(false);
         if (_compositionPresenter is { } presenter)
         {
-            await presenter.DrainForCloseAsync();
+            await presenter.DrainForCloseAsync().ConfigureAwait(false);
         }
     }
 
@@ -1993,7 +2007,7 @@ internal sealed class WindowsTopLevelResizeSource : IDisposable
         );
         if (source._attached)
         {
-            if (view.Owner.OwnsWindowContent)
+            if (view.Owner.UsesNativeWindowOutput)
             {
                 try
                 {

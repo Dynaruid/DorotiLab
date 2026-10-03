@@ -21,7 +21,7 @@ internal sealed class WindowsWinUiControls : IDisposable
     private Exception? _initializationError;
     private readonly List<Island> _islands = [];
 
-    internal Island Create(nint parent, bool editor, string text)
+    internal Island Create(nint parent, bool editor, string text, bool webView = false)
     {
         try
         {
@@ -68,7 +68,7 @@ internal sealed class WindowsWinUiControls : IDisposable
                     throw;
                 }
             }
-            var island = new Island(parent, editor, text, item => _islands.Remove(item));
+            var island = new Island(parent, editor, text, item => _islands.Remove(item), webView);
             _islands.Add(island);
             return island;
         }
@@ -85,6 +85,7 @@ internal sealed class WindowsWinUiControls : IDisposable
 
     internal Microsoft.UI.Composition.Visual GetVisual(nint hwnd) =>
         _islands.Single(island => island.Hwnd == hwnd).Visual;
+    internal WebView2 GetWebView(nint hwnd) => (WebView2)_islands.Single(island => island.Hwnd == hwnd).Control;
 
     internal void SetInputShields(nint hwnd, DRect[] shields) =>
         _islands.Single(island => island.Hwnd == hwnd).SetInputShields(shields);
@@ -152,7 +153,7 @@ internal sealed class WindowsWinUiControls : IDisposable
     internal sealed class Island : IDisposable
     {
         private readonly DesktopWindowXamlSource _source;
-        private readonly Control _control;
+        private readonly FrameworkElement _control;
         private readonly Grid _root = new();
         private readonly Canvas _shields = new();
         private DRect[] _shieldBounds = [];
@@ -165,10 +166,11 @@ internal sealed class WindowsWinUiControls : IDisposable
         internal Action? TakeFocus { get; set; }
         internal Action<uint, nuint, nint>? ModifierKey { get; set; }
         internal bool HasFocus => _source.HasFocus;
+        internal FrameworkElement Control => _control;
         internal Microsoft.UI.Composition.Visual Visual =>
             ElementCompositionPreview.GetElementVisual(_control);
 
-        internal Island(nint parent, bool editor, string text, Action<Island> disposed)
+        internal Island(nint parent, bool editor, string text, Action<Island> disposed, bool webView = false)
         {
             _disposed = disposed;
             _parent = parent;
@@ -180,13 +182,13 @@ internal sealed class WindowsWinUiControls : IDisposable
                 _source.SiteBridge.Hide();
                 Trace("source-initialized");
                 Hwnd = Win32Interop.GetWindowFromWindowId(_source.SiteBridge.WindowId);
-                _control = editor ? new TextBox { Text = text } : new Button { Content = text };
+                _control = webView ? new WebView2() : editor ? new TextBox { Text = text } : new Button { Content = text };
                 if (_control is Button button)
                 {
                     button.Click += (_, _) => _clicks++;
                 }
 
-                Trace(editor ? "textbox-created" : "button-created");
+                Trace(webView ? "webview-created" : editor ? "textbox-created" : "button-created");
                 _control.HorizontalAlignment = HorizontalAlignment.Stretch;
                 _control.VerticalAlignment = VerticalAlignment.Stretch;
                 _control.PreviewKeyDown += OnModifierKey;
@@ -388,7 +390,8 @@ internal sealed class WindowsWinUiControls : IDisposable
         {
             if (!_isDisposed)
             {
-                _control.IsEnabled = false;
+                _control.IsHitTestVisible = false;
+                if (_control is Control control) control.IsEnabled = false;
             }
         }
 
@@ -404,8 +407,8 @@ internal sealed class WindowsWinUiControls : IDisposable
                     _control
                 ),
                 theme = _control.ActualTheme.ToString(),
-                font = _control.FontFamily.Source,
-                cornerRadius = _control.CornerRadius.TopLeft,
+                font = (_control as Control)?.FontFamily.Source,
+                cornerRadius = _control is Control styled ? styled.CornerRadius.TopLeft : 0,
                 hasFocus = HasFocus,
                 text = (_control as TextBox)?.Text,
                 clicks = _clicks,

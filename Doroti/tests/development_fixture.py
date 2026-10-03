@@ -18,7 +18,8 @@ def create(destination, template_hive=None):
     if template_hive:
         subprocess.run(['dotnet', 'new', 'install', str(ROOT / 'Doroti/templates/Doroti.Templates/content/doroti-app'), *hive_args], check=True, timeout=60)
     subprocess.run(['dotnet', 'new', 'doroti-app', '-n', 'ReloadApp', '-o', str(destination), *hive_args], check=True, timeout=60)
-    for relative in ['ReloadApp.csproj', 'desktop/ReloadApp.Desktop.csproj', 'windows/ReloadApp.Windows.csproj', 'web/ReloadApp.Web.csproj', 'linux/ReloadApp.Linux.csproj']:
+    for relative in ['ReloadApp.csproj', 'desktop/ReloadApp.Desktop.csproj', 'windows/ReloadApp.Windows.csproj',
+                     'windows/maui/ReloadApp.Windows.Maui.csproj', 'web/ReloadApp.Web.csproj', 'linux/ReloadApp.Linux.csproj']:
         file = destination / relative
         tree = ET.parse(file)
         project = tree.getroot()
@@ -70,4 +71,4 @@ def create(destination, template_hive=None):
     return destination
 
 if __name__ == '__main__':
-    create(sys.argv[1])
+    create(sys.argv[1], Path(sys.argv[1]).parent / 'template-hive')

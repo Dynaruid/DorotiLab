@@ -15,7 +15,7 @@ test('CLI is authoritative for partial platform manifests', () => {
         assert.deepEqual(parseProject(JSON.stringify({ ...project, platforms: { [target]: target + '.csproj' }, developmentTargets: [target] })).developmentTargets, [target]);
         assert.throws(() => parseProject(JSON.stringify({ ...project, developmentTargets: [target] })));
     }
-    assert.throws(() => parseProject(JSON.stringify({ ...project, platforms: { android: 'android.csproj' }, developmentTargets: ['android'] })));
+    assert.deepEqual(parseProject(JSON.stringify({ ...project, platforms: { android: 'android.csproj' }, developmentTargets: ['android'] })).developmentTargets, ['android']);
 });
 test('watcher errors do not masquerade as applied reloads', () => {
     assert.equal(classifyOutput('error CS1002: ; expected'), 'compile-error');

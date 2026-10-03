@@ -1235,7 +1235,13 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
                     0,
                     0,
                     PointerSignalKind.none,
-                    touch.MaximumPossibleForce > 0 ? touch.Force / touch.MaximumPossibleForce : 1
+                    touch.MaximumPossibleForce > 0 ? PenMeasurements.Pressure(touch.Force / touch.MaximumPossibleForce) : 1,
+                    Orientation: kind == PointerDeviceKind.stylus ? PenMeasurements.Orientation(touch.GetAzimuthAngle(this)) : 0,
+                    Tilt: kind == PointerDeviceKind.stylus ? PenMeasurements.FromAltitude(touch.AltitudeAngle) : 0,
+                    PenSupport: kind == PointerDeviceKind.stylus ? new(
+                        touch.MaximumPossibleForce > 0 ? PenFieldSupport.Supported : PenFieldSupport.Unknown,
+                        PenFieldSupport.Supported, PenFieldSupport.Supported,
+                        PenOrientationReference.ScreenAzimuth) : null
                 )
             );
         }

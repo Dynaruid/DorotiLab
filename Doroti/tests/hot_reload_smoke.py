@@ -41,7 +41,9 @@ def wait(predicate, description, seconds=180):
 
 with (run / 'watch.log').open('w', encoding='utf-8') as log:
     process = subprocess.Popen(['pwsh', '-NoProfile', '-File', str(ROOT / 'Doroti/eng/doroti.ps1'),
-        'dev', '-App', str(app), '-Platform', 'windows', '-SessionDirectory', str(run), '-SessionId', session],
+        'dev', '-App', str(app), '-Platform', 'windows', '-Configuration', 'Debug',
+        '-WindowsBackend', sys.argv[3] if len(sys.argv) > 3 else 'WindowsAppSdk',
+        '-SessionDirectory', str(run), '-SessionId', session],
         cwd=ROOT, env=environment, stdout=log, stderr=subprocess.STDOUT, stdin=subprocess.PIPE,
         creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
     try:
@@ -75,3 +77,31 @@ with (run / 'watch.log').open('w', encoding='utf-8') as log:
             subprocess.run(['taskkill', '/PID', str(process.pid), '/T', '/F'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         process.wait(timeout=15)
         source.write_text(original, encoding='utf-8')
+
+if '--verify-restart' in sys.argv:
+    # Editor Restart owns Stop followed by a fresh CLI Run. Verify the same
+    # process boundary using the actual selected runner and new session ID.
+    session = uuid.uuid4().hex
+    with (run / 'restart.log').open('w', encoding='utf-8') as log:
+        process = subprocess.Popen(['pwsh','-NoProfile','-File',str(ROOT / 'Doroti/eng/doroti.ps1'),
+            'dev','-App',str(app),'-Platform','windows','-Configuration','Debug',
+            '-WindowsBackend',sys.argv[3] if len(sys.argv) > 3 else 'WindowsAppSdk',
+            '-SessionDirectory',str(run),'-SessionId',session],cwd=ROOT,env=environment,
+            stdout=log,stderr=subprocess.STDOUT,stdin=subprocess.PIPE,
+            creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
+        try:
+            restarted = wait(lambda: (v if (v := read('runtime.json')).get('supported') and v.get('sessionId') == session else None),'Restart runtime capability',300)
+            new_state = wait(lambda: (v if (v := read('state.json')).get('processId') != before['processId'] and v.get('scroll') == 160 else None),'Fresh restarted UI state')
+            assert restarted['runtimeId'] != runtime['runtimeId'] and new_state['processId'] != before['processId']
+        finally:
+            if process.poll() is None:
+                subprocess.run(['taskkill','/PID',str(process.pid),'/T','/F'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+            process.wait(timeout=15)
+    for pid in (before['processId'],new_state['processId']):
+        listing = subprocess.check_output(['tasklist','/FI',f'PID eq {pid}','/FO','CSV'],text=True)
+        assert f'"{pid}"' not in listing, ('Stop left host alive',pid)
+    receipt = read('result.json')
+    receipt['restart'] = dict(runtime=restarted,state=new_state,changedPid=True,changedRuntime=True)
+    receipt['stop'] = dict(hostPids=[before['processId'],new_state['processId']],allExited=True)
+    (run / 'result.json').write_text(json.dumps(receipt,indent=2),encoding='utf-8')
+    print('PASS: explicit Stop/Run restart creates a new PID/runtime; Stop exits both owned hosts.',flush=True)

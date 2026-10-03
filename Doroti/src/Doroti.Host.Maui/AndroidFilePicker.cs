@@ -17,6 +17,7 @@ internal sealed class AndroidFilePicker : IFilePickerHostCapability, IDisposable
     private bool _disposed;
     public async ValueTask<FilePickResult> PickFilesAsync(FilePickOptions options, CancellationToken cancellationToken = default)
     {
+        options = options.Normalize();
         ObjectDisposedException.ThrowIf(_disposed, this);
         using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _lifetime.Token);
         linked.Token.ThrowIfCancellationRequested();
@@ -107,7 +108,7 @@ public sealed class AndroidFilePickerActivity : Activity
                 {
                     var file = new AndroidPickedFile(uri);
                     files.Add(file);
-                    if (request.Options.Extensions is { Length: > 0 } extensions && !extensions.Any(e => file.Name.EndsWith("." + e.TrimStart('.'), StringComparison.OrdinalIgnoreCase)))
+                    if (!FilePickFilters.Matches(file.Name, request.Options.Extensions ?? []))
                         throw new NotSupportedException("The selected file does not match the requested extensions.");
                     if (!request.Options.AllowMultiple) break;
                 }

@@ -116,6 +116,20 @@ public sealed class PlatformViewCoordinator
     }
 
     public ulong OwnerViewId { get; }
+    public Func<PlatformSceneRequest, PlatformSceneSupport>? SceneSupportEvaluator { get; set; }
+    public PlatformSceneSupport QuerySceneSupport(PlatformSceneRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        var supported = request.Views.Select(QuerySupport).ToArray();
+        if (supported.FirstOrDefault(s => !s.Supported) is { } failure) return new(false, failure.Reason);
+        if (request.HasBackdrop && supported.Any(s => !s.NativeBackdropBlur && s.Capabilities?.Effect.LiveSourceSampling != true))
+            return new(false, "This scene contains native content that cannot participate in live backdrop sampling.");
+        if (request.HasForegroundRaster && request.Views.Any(v => v.Composition == PlatformViewComposition.NativeOverlay))
+            return new(false, "NativeOverlay cannot preserve raster foreground ordering; request an interleaved representation.");
+        if (SceneSupportEvaluator is { } evaluate) return evaluate(request);
+        return request.Views.Select(v => v.ViewType).Distinct().Count() > 1 && supported.Any(s => !s.MixedScene)
+            ? new(false, "This owner's native representations cannot share the requested scene topology.") : new(true);
+    }
     public int LiveInstanceCount
     {
         get

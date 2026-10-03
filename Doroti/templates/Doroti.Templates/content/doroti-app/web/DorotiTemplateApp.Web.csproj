@@ -12,6 +12,8 @@
     <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
     <WasmEnableThreads>true</WasmEnableThreads>
     <DefineConstants>$(DefineConstants);DOROTI_BROWSER</DefineConstants>
+    <DorotiWebFontPreset Condition="'$(DorotiWebFontPreset)' == ''">Default</DorotiWebFontPreset>
+    <DorotiWebFontOptions Condition="'$(DorotiWebFontPreset)' == 'Offline'">global::DorotiTemplateApp.Web.WebFonts.Offline</DorotiWebFontOptions>
   </PropertyGroup>
   <ItemGroup>
     <DorotiTargetDescriptor Include="Web" HostKind="BlazorWebAssembly" NativeEntryKind="Managed-Main" RuntimeIdentifier="browser-wasm" TargetFramework="net10.0" TargetPackage="Doroti.Target.Web.browser-wasm" />
@@ -21,4 +23,10 @@
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="7.0.0" PrivateAssets="all" />
     <DorotiJavaScriptPlugin Include="echo" Channel="doroti.example/echo" ExportName="invoke" ModuleUrl="./plugins/echo.js" />
   </ItemGroup>
+  <ItemGroup Condition="'$(DorotiWebFontPreset)' != 'Offline'">
+    <Content Remove="wwwroot/fonts/offline/**/*;wwwroot/fonts/decoder/**/*" />
+  </ItemGroup>
+  <Target Name="ValidateDorotiFontPreset" BeforeTargets="PrepareForBuild">
+    <Error Condition="'$(DorotiWebFontPreset)' != 'Default' and '$(DorotiWebFontPreset)' != 'Offline'" Text="DorotiWebFontPreset must be Default or Offline." />
+  </Target>
 </Project>

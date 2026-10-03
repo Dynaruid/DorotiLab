@@ -5,6 +5,7 @@ namespace Doroti.Skia.Rendering;
 
 public interface ISkiaGpuEffectBackend
 {
+    long AvailableCaptureBytes => 0;
     void Draw(SKCanvas destination, int width, int height, Action<SKCanvas> capture,
         GpuEffectProgram program, GpuEffectParameters parameters, float logicalWidth = 0, float logicalHeight = 0);
 }

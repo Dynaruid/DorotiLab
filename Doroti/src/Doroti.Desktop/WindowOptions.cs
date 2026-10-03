@@ -170,6 +170,8 @@ public sealed record WindowOptions
     public bool AlwaysOnTop { get; init; }
     public bool SkipTaskbar { get; init; }
     public bool Resizable { get; init; } = true;
+    /// <summary>Reject creation when native close cannot participate in the application's decision.</summary>
+    public bool RequireNativeCloseCancellation { get; init; }
     public WindowPresentationState PresentationState { get; init; }
     public WindowStartupVisibility StartupVisibility { get; init; }
     public WindowAppearanceOptions Appearance { get; init; } = new();
@@ -277,6 +279,8 @@ public sealed class WindowCapabilities(
     public WindowEvaluation Evaluate(WindowOptions options, WindowOptions? current = null)
     {
         options.Validate();
+        if (options.RequireNativeCloseCancellation && !CanCancelNativeClose)
+            return new(WindowSupport.Unsupported, "This host cannot cancel native close. Use continuous autosave/recovery or an explicit programmatic close workflow.");
         return evaluate(options, current);
     }
 }
