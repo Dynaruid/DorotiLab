@@ -74,7 +74,8 @@ _ReSharper*/
 **/.project
 
 # Local editor state
-/.vscode/
+/.vscode/*
+!/.vscode/tasks.json
 *.code-workspace
 *.swp
 *.swo

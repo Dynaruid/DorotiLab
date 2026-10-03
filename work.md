@@ -29,13 +29,15 @@ Windows App SDK를 Windows 기본 backend로 유지한다. Windows MAUI도 기�
 | W8 | MAUI 실제 GPU texture12 frame import/release·wrong-adapter 거절, 실제 두 창·두 lifetime PASS |
 | W9 | main WebGL/WebGPU 복구·single-thread worker 재생성, offline 한글 glyph/외부요청0·decoder 진단, clipboard 비의도 read0 PASS |
 | W10 | close 생성 전 정책·draft recovery·pen 정규화·Qt QPA 위치 계약 구현. 수치/draft/Wayland PASS; 물리 pen 미검증 |
-| W11 | MAUI Run/Reload/Restart/Stop PASS, Android Debug 평가+restart loop 구현(기기 없음); Windows MAUI/App SDK·Offline Web의 격리 NuGet/template consumer PASS |
+| W11 | MAUI Run/Reload/Restart/Stop PASS. Android 후속에서 Debug metadata Hot Reload·컴파일 복구·상태 보존·Stop의 Galaxy S25 자동 검사와 설치 VSIX Run/Hot Reload/Restart/Stop PASS. Windows MAUI/App SDK·Offline Web의 격리 NuGet/template consumer PASS |
 
 앞선 W0~W11 전체 구현 후보의 PASS에는 Apple 빌드·runtime이 포함되지 않았다. 이번 Apple 후속의 빌드·native 자동 검사 결과는 별도 후속 기록을 따른다. VoiceOver·물리 IME/AT/pen·monitor 전환·표시 FPS·장기 사용·서명/clean OS 배포 인수는 계속 미완료다. 앞선 후보별 명령·실패 수정·identity는 [전체 실행 기록](Doroti/docs/validation/2026-10-03-platform-gap-implementation.md)을 따른다.
 
 **2026-10-03 Apple 후속 검토:** AppKit / Mac Catalyst / iOS의 남은 공백을 보강하는 새 요청에 따라 W2 입력 선택·Return action·callback 수명, W5 native accessibility provider·암호 보호·UIKit 컴파일 오류를 수정하고 W3 실제 WebKit 명령 검사를 추가했다. 이전 Apple SKIPPED 기록과 이번 후보는 구분하며, 새 검증·identity·잔여 인수는 [Apple 플랫폼 기능 공백 후속 기록](Doroti/docs/validation/2026-10-03-apple-platform-gap-followup.md)을 따른다.
 
 ## 2. 감사 이후 바뀐 상태
+
+**2026-10-03~04 Android 핫리로드 후속:** 사용자 요청에 따라 Android의 restart-only 개발 루프를 SDK metadata Hot Reload와 ADB private-file 세션으로 교체했다. Galaxy S25의 실제 메서드 변경·같은 PID/State/count/한글 텍스트/scroll 보존·컴파일 오류 복구·미지원 변경의 기존 상태 유지·Stop 정리 PASS. VS Code 설정/실행 작업과 SDK 프로필 회귀를 추가했다. 앞선 기기 없음 기록을 덮어쓰지 않으며 후보별 결과·잔여 검증은 [Android 핫리로드 기록](Doroti/docs/validation/2026-10-03-android-hot-reload.md)을 따른다.
 
 | 항목 | 현재 확인한 상태 | 계획에 반영할 사항 |
 | --- | --- | --- |
@@ -231,7 +233,7 @@ P1은 일반 기능 경로의 실패·입력/접근성 계약 누락, P2는 고�
 대상: doroti.ps1, release-candidate.py, development bridge·VS Code extension, templates·test manifest·문서.
 
 - [x] workspace runner/backend 목록과 `developmentTargets`를 같은 지원 데이터에서 만든다. Windows MAUI Debug의 metadata update·reassemble·session 명령 연결을 구현하고 Run/Reload/Restart/Stop을 실제 backend에서 확인한다.
-- [x] Android는 runtime·metadata update 지원을 먼저 평가한다. 지원 profile이면 기존 development session/transport를 연결하고 state/error/retry를 확인한다. 지원되지 않는 profile은 restart 개발 루프와 명확한 이유를 제공하며 Hot Reload 지원으로 광고하지 않는다. Release/NativeAOT metadata reload를 허용하지 않는다.
+- [x] Android는 runtime·metadata update 지원을 먼저 평가한다. 후속에서 Debug Mono profile에 SDK/ADB development session을 연결하고 state/error/retry를 실기기로 확인했다. 지원되지 않는 profile은 배포 전 명확한 이유로 거절하며 Hot Reload 지원으로 광고하지 않는다. 일반 run/build 경로는 유지하고 Release/NativeAOT metadata reload를 허용하지 않는다.
 - [x] 상위 release의 개별 android/macos/ios/maccatalyst 선택을 기존 하위 candidate 도구에 연결하고 platform/TFM/RID/host/toolchain 인자를 전달한다. 모든 MAUI pack을 한 실행에 합치는 하위 제한을 존중한다. Linux는 기존 Qt package/portable 경로와 별도로 매핑한다.
 - [x] capability·source·payload·package identity, template dependency·native ABI를 최종 후보에서 확인한다. 수정 전 후보의 결과를 새 후보에 소급하지 않는다.
 - [x] 각 단계의 실행 결과를 `Doroti/docs/validation/`의 새 날짜별 문서로 남기고 README/support-status/platform-view 표에서 연결한다. 기존 history를 현재 작업 기록으로 수정하거나 삭제하지 않는다.

@@ -54,6 +54,14 @@ VariableBlur에는 GPU 렌더러가 필요하며, 기본 CPU 래스터 검증에
 
 ## 플랫폼 선택
 
+Android 개발 중 C# 변경을 적용하려면 USB 기기 또는 emulator 하나를 연결하고 다음 명령을 실행합니다. Debug Mono 메타데이터 핫리로드 세션을 시작하며, 지원되는 메서드 본문 변경은 저장하면 앱 상태를 유지하면서 적용됩니다.
+
+```powershell
+pwsh -NoProfile -File Doroti/eng/doroti.ps1 dev -App samples/DorotiSampleApp2 -Platform android
+```
+
+여러 기기가 연결되어 있으면 `-Device <ADB serial>`을 추가합니다. VS Code의 **Terminal → Run Task → Doroti: Android Hot Reload**에서 `DorotiSampleApp2`를 선택하거나, Doroti 확장 기능의 **Select Project → Select Target → android → Run**을 사용합니다. 확장 기능의 **Hot Reload** 버튼은 기기에서 변경된 화면 프레임이 완료된 뒤 성공을 표시합니다. .NET SDK 10.0.400+, Android workload/platform-tools와 Python 3이 필요합니다. Kotlin/Java·Android 리소스·프로젝트 변경과 미지원 C# 변경은 Restart가 필요하고, 종료는 확장 기능의 Stop 또는 CLI Ctrl+C를 사용합니다. [개발 계약과 검증 범위](../../Doroti/docs/development-hot-reload.md)를 참고하세요.
+
 `doroti-workspace.json`에 모든 플랫폼 실행 프로젝트가 등록되어 있습니다.
 
 | CLI 플랫폼 | 실행 프로젝트 | 지원 RID / 호스트 |

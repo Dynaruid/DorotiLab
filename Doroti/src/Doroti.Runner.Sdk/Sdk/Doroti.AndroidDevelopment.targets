@@ -1,0 +1,45 @@
+<Project>
+  <!-- dotnet watch supplies the SDK agent and authenticated WebSocket endpoint.
+       The Android workload packages the agent and owns USB reverse forwarding. -->
+  <PropertyGroup Condition="'$(DorotiAndroidDevelopment)' == 'true' and '$(DorotiTarget)' == 'Android'">
+    <StartupHookSupport>true</StartupHookSupport>
+    <Optimize>false</Optimize>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <AndroidLinkMode>None</AndroidLinkMode>
+    <PublishTrimmed>false</PublishTrimmed>
+    <RunAOTCompilation>false</RunAOTCompilation>
+    <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+    <AndroidPackageFormats>apk</AndroidPackageFormats>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(DorotiAndroidDevelopment)' == 'true' and '$(DorotiTarget)' == 'Android'">
+    <RuntimeEnvironmentVariable Include="DOROTI_DEV_SESSION" Value="$(DOROTI_DEV_DEVICE_SESSION)" />
+    <RuntimeEnvironmentVariable Include="DOROTI_DEV_SESSION_ID" Value="$(DOROTI_DEV_SESSION_ID)" />
+    <RuntimeEnvironmentVariable Include="DOROTI_SAMPLE" Value="$(DOROTI_SAMPLE)" Condition="'$(DOROTI_SAMPLE)' != ''" />
+    <RuntimeEnvironmentVariable Include="DOROTI_RELOAD_PROBE" Value="$(DOROTI_RELOAD_PROBE)" Condition="'$(DOROTI_RELOAD_PROBE)' != ''" />
+    <RuntimeEnvironmentVariable Include="HOTRELOAD_DELTA_CLIENT_LOG_MESSAGES" Value="Android Hot Reload:" />
+  </ItemGroup>
+  <!-- Mono reads STARTUP_HOOKS from runtimeconfig.bin. dotnet run injects the
+       SDK agent environment after the first runtimeconfig generation. Declare
+       the rebased assembly name before the input cache; the workload still
+       resolves/packages the original SDK agent during its normal build stages. -->
+  <Target Name="DorotiConfigureAndroidDevelopmentStartupHook" BeforeTargets="_GenerateRuntimeConfigurationFilesInputCache;GenerateBuildRuntimeConfigurationFiles"
+          Condition="'$(DorotiAndroidDevelopment)' == 'true' and '$(DorotiTarget)' == 'Android'">
+    <ItemGroup>
+      <RuntimeHostConfigurationOption Remove="STARTUP_HOOKS" />
+      <RuntimeHostConfigurationOption Include="STARTUP_HOOKS" Value="Microsoft.Extensions.DotNetDeltaApplier" />
+    </ItemGroup>
+  </Target>
+  <Target Name="ValidateDorotiAndroidDevelopment" BeforeTargets="PrepareForBuild;CollectPackageReferences"
+          Condition="'$(DorotiAndroidDevelopment)' == 'true' and '$(DorotiTarget)' == 'Android'">
+    <Error Code="DOROTIANDROIDDEV001" Condition="'$(Configuration)' != 'Debug' or '$(PublishAot)' == 'true' or '$(UseMonoRuntime)' != 'true' or '$(Optimize)' != 'false' or '$(PublishTrimmed)' == 'true' or '$(RunAOTCompilation)' == 'true'"
+           Text="Android Hot Reload requires unoptimized, untrimmed Debug Mono assemblies without AOT." />
+    <Error Code="DOROTIANDROIDDEV002" Condition="'$(NETCoreSdkVersion)' &lt; '10.0.400'"
+           Text="Android Hot Reload requires .NET SDK 10.0.400+ and an Android workload with HotReloadWebSockets support." />
+  </Target>
+  <Target Name="DorotiRecordAndroidDevelopmentPort" AfterTargets="_AndroidConfigureAdbReverse"
+          Condition="'$(DorotiAndroidDevelopment)' == 'true' and '$(_AndroidWebSocketPort)' != '' and '$(DOROTI_DEV_SESSION)' != ''">
+    <WriteLinesToFile File="$(DOROTI_DEV_SESSION)/android-hot-reload-port.txt" Lines="$(_AndroidWebSocketPort)" Overwrite="true" />
+  </Target>
+</Project>

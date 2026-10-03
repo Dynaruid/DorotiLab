@@ -32,6 +32,7 @@
     <PublishReadyToRunExclude Include="SkiaSharp.dll" />
   </ItemGroup>
   <Import Project="Doroti.MacDevelopment.targets" />
+  <Import Project="Doroti.AndroidDevelopment.targets" />
   <Import Project="Doroti.DesktopBoundary.targets" />
   <Import Project="Doroti.Plugins.targets" />
   <Import Project="Doroti.AppIcons.targets" />
@@ -173,7 +174,7 @@
          eligible methods for x64 Release. Normal Mono AOT retains JIT support
          for dynamic/DLR code; explicit caller overrides remain supported. -->
     <AndroidEnableProfiledAot Condition="'$(DorotiTarget)' == 'Android' and '$(RuntimeIdentifier)' == 'android-x64' and '$(Configuration)' == 'Release' and '$(AndroidEnableProfiledAot)' == ''">false</AndroidEnableProfiledAot>
-    <PublishTrimmed Condition="'$(DorotiTarget)' == 'Android' and '$(RuntimeIdentifier)' == 'android-x64'">true</PublishTrimmed>
+    <PublishTrimmed Condition="'$(DorotiTarget)' == 'Android' and '$(RuntimeIdentifier)' == 'android-x64' and '$(DorotiAndroidDevelopment)' != 'true'">true</PublishTrimmed>
     <!-- .NET 10 marshal methods can fault inside Mono before managed startup on
          Android devices. Disable that JNI startup optimization for Android;
          Release runners still use Mono AOT and trimming. -->

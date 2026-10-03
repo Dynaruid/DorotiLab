@@ -1,5 +1,16 @@
 # Maintained regression tests
 
+Android metadata Hot Reload uses `android_development_bridge.py` for session/request
+isolation and port cleanup, `android_development_profile.py` for the actual SDK
+startup config and Debug/Release guards, and `android_hot_reload_smoke.py` for
+real device deltas, retained State/text/scroll, compile recovery and Stop. Run each
+with the 1,200-second wrapper. The device test temporarily edits the Testbed reload
+scene and restores it in `finally`; its state is automatically seeded, so it does
+not establish physical touch/IME evidence. The installed VSIX regression uses
+`dist/test/runHost.js ... --android` with `DOROTI_TEST_ANDROID_DEVICE=<serial>`.
+Use fresh output folders under `Doroti/artifacts/android-hot-reload`. See the
+[Android follow-up](../docs/validation/2026-10-03-android-hot-reload.md).
+
 Windows MAUI basic services and native views use `windows_maui_smoke.py`, which
 selects the MAUI executable explicitly. Modes `graphite`, `embedded`, `ganesh`,
 `webview`, and `upload` check separate native owner/widget/upload paths. Build the

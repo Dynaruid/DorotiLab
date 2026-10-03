@@ -42,6 +42,8 @@ public sealed class HotReloadState : State<HotReloadSample>
         {
             if (OperatingSystem.IsIOS() && !System.IO.Path.IsPathRooted(file))
                 file = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), file);
+            if (OperatingSystem.IsAndroid() && !System.IO.Path.IsPathRooted(file))
+                file = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), file);
             using var output = File.Create(file);
             using var writer = new Utf8JsonWriter(output);
             writer.WriteStartObject();

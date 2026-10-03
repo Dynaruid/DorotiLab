@@ -17,9 +17,9 @@ public static class DorotiHotReload
         if (MetadataUpdater.IsSupported) return true;
         // Mono 10's hot_reload_update_enabled returns false after its initial
         // check (including when actual ApplyUpdate succeeds). Use the same
-        // component capability query as the SDK agent, only in opted-in Apple
+        // component capability query as the SDK agent, only in opted-in mobile
         // sessions with updates enabled before runtime startup.
-        if (!(OperatingSystem.IsIOS() || OperatingSystem.IsMacCatalyst() || OperatingSystem.IsMacOS()) || (!DorotiDevelopmentSession.IsRemote && Environment.GetEnvironmentVariable("DOROTI_DEV_SESSION") is null) ||
+        if (!(OperatingSystem.IsAndroid() || OperatingSystem.IsIOS() || OperatingSystem.IsMacCatalyst() || OperatingSystem.IsMacOS()) || (!DorotiDevelopmentSession.IsRemote && Environment.GetEnvironmentVariable("DOROTI_DEV_SESSION") is null) ||
             !string.Equals(Environment.GetEnvironmentVariable("DOTNET_MODIFIABLE_ASSEMBLIES"), "debug", StringComparison.OrdinalIgnoreCase))
             return false;
         try
@@ -30,7 +30,7 @@ public static class DorotiHotReload
         }
         catch (Exception error)
         {
-            System.Diagnostics.Trace.TraceWarning($"Could not query Apple metadata capabilities: {error.Message}");
+            System.Diagnostics.Trace.TraceWarning($"Could not query mobile metadata capabilities: {error.Message}");
             return false;
         }
     }
@@ -38,6 +38,8 @@ public static class DorotiHotReload
     {
         if (OperatingSystem.IsBrowser()) return null;
         var directory = Environment.GetEnvironmentVariable("DOROTI_DEV_SESSION");
+        if (OperatingSystem.IsAndroid() && directory is { Length: > 0 } && !System.IO.Path.IsPathRooted(directory))
+            return System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), directory);
         return OperatingSystem.IsIOS() && directory is { Length: > 0 } && !System.IO.Path.IsPathRooted(directory)
             ? System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), directory)
             : directory;

@@ -209,8 +209,8 @@ function Get-DevelopmentSupport($workspace) {
     foreach ($alias in $workspace.Runners.Keys) {
         [ordered]@{ platform = $alias; runner = $workspace.Runners[$alias];
             backends = @(if ($alias -eq 'windows') { 'WindowsAppSdk'; if (@(Get-ChildItem -LiteralPath (Join-Path $workspace.Root 'windows') -Filter '*.csproj' -File -Recurse | Where-Object { (Get-Content -LiteralPath $_.FullName -Raw) -match '<DorotiHostKind>Maui</DorotiHostKind>' }).Count -eq 1) { 'Maui' } });
-            mode = if ($alias -eq 'android') { 'restart' } else { 'metadata' };
-            reason = if ($alias -eq 'android') { 'Device metadata update transport is not qualified; runtime evaluated before restart/deploy.' } else { $null } }
+            mode = 'metadata';
+            reason = if ($alias -eq 'android') { 'Requires Debug Mono, .NET SDK 10.0.400+ and a connected ADB device; runtime evaluated before launch.' } else { $null } }
     }
 }
 

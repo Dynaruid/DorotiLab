@@ -31,7 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
         status.command = 'doroti.selectProject'; status.show();
         const supported = !!session?.runtime?.supported && !session.restartRequired;
         reload.text = session?.pending ? '$(sync~spin) Reloading' : '$(debug-restart) Hot Reload';
-        reload.tooltip = supported ? 'Save pending C# edits and apply metadata updates' : 'Run a connected Windows, Web, iOS, AppKit, Mac Catalyst or Linux Qt Debug session.';
+        reload.tooltip = supported ? 'Save pending C# edits and apply metadata updates' : 'Run a connected Windows, Web, Android, iOS, AppKit, Mac Catalyst or Linux Qt Debug session.';
         reload.command = supported && !session?.pending ? 'doroti.hotReload' : 'doroti.showLogs';
         if (session) reload.show(); else reload.hide();
         void vscode.commands.executeCommand('setContext', 'doroti.running', !!session || busy);
@@ -68,7 +68,7 @@ export function activate(context: vscode.ExtensionContext) {
     async function selectTarget(requested?: unknown) {
         trusted(); if (session) throw new Error('Stop the running app before changing target.');
         if (!project) await selectProject(); if (!project) return;
-        if (!project.developmentTargets.length) throw new Error('This manifest declares no Windows/Web/iOS/AppKit/Mac Catalyst/Linux Qt development targets.');
+        if (!project.developmentTargets.length) throw new Error('This manifest declares no Windows/Web/Android/iOS/AppKit/Mac Catalyst/Linux Qt development targets.');
         const choice = typeof requested === 'string' ? requested : await vscode.window.showQuickPick(project.developmentTargets, { title: 'Select Doroti target' });
         if (choice && !project.developmentTargets.includes(choice)) throw new Error('Target is not declared by this workspace.');
         if (choice) { target = choice; await context.workspaceState.update('target', target); display(); }
@@ -99,7 +99,16 @@ export function activate(context: vscode.ExtensionContext) {
     async function endSession() {
         lifetime++;
         const current = session;
-        if (current) { current.stopping = true; clearInterval(current.timer); await current.bridge?.close(); await stop(current.child); if (session === current) session = undefined; }
+        if (current) {
+            current.stopping = true; clearInterval(current.timer); await current.bridge?.close();
+            if (target === 'android' && current.child.exitCode === null && current.child.signalCode === null) {
+                await fs.writeFile(path.join(current.directory, 'stop.json'), JSON.stringify({ sessionId: current.id }));
+                const deadline = Date.now() + 30000;
+                while (current.child.exitCode === null && current.child.signalCode === null && Date.now() < deadline)
+                    await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            await stop(current.child); if (session === current) session = undefined;
+        }
         if (operation) { await stop(operation); operation = undefined; }
         display('Stopped');
     }
@@ -182,7 +191,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
     async function hotReload(save?: unknown) {
         trusted(); const current = session;
-        if (!current?.runtime?.supported || current.restartRequired) throw new Error('Hot Reload unavailable. Run Windows/Web/iOS/AppKit/Mac Catalyst/Linux Qt Debug with a connected runtime, or use Restart (resets state).');
+        if (!current?.runtime?.supported || current.restartRequired) throw new Error('Hot Reload unavailable. Run Windows/Web/Android/iOS/AppKit/Mac Catalyst/Linux Qt Debug with a connected runtime, or use Restart (resets state).');
         if (current.pending) return;
         const dirty = vscode.workspace.textDocuments.filter(doc => doc.isDirty && doc.languageId === 'csharp' && project && within(project.root, doc.uri.fsPath));
         if (!dirty.length) { void vscode.window.showInformationMessage('No unsaved C# edits. Saved changes are applied by dotnet watch automatically.'); return; }
@@ -194,7 +203,7 @@ export function activate(context: vscode.ExtensionContext) {
             if (current.bridge) await current.bridge.prepare(current.runtime.runtimeId, current.pending);
             else {
                 await fs.writeFile(path.join(current.directory, 'request.json'), JSON.stringify({ schemaVersion: 'doroti.dev/v1', sessionId: current.id, runtimeId: current.runtime.runtimeId, requestId: current.pending }));
-                if (target === 'ios') {
+                if (target === 'ios' || target === 'android') {
                     const deadline = Date.now() + 15000;
                     while (true) {
                         if (session !== current || current.stopping) return;
@@ -202,7 +211,7 @@ export function activate(context: vscode.ExtensionContext) {
                         try { prepared = JSON.parse(await fs.readFile(path.join(current.directory, 'prepared.json'), 'utf8')); }
                         catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT' && !(error instanceof SyntaxError)) throw error; }
                         if (prepared?.sessionId === current.id && prepared.runtimeId === current.runtime.runtimeId && prepared.requestId === current.pending) break;
-                        if (Date.now() > deadline) throw new Error('iOS runtime did not accept the reload request. Edits have not been saved.');
+                        if (Date.now() > deadline) throw new Error(`${target} runtime did not accept the reload request. Edits have not been saved.`);
                         await new Promise(resolve => setTimeout(resolve, 50));
                     }
                 }

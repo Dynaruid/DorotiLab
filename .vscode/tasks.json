@@ -1,0 +1,18 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Doroti: Android Hot Reload",
+      "type": "process",
+      "command": "pwsh",
+      "args": ["-NoProfile", "-File", "${workspaceFolder}/Doroti/eng/doroti.ps1", "dev", "-App", "${workspaceFolder}/samples/${input:androidApp}", "-Platform", "android"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "isBackground": true,
+      "problemMatcher": "$msCompile",
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    }
+  ],
+  "inputs": [
+    { "id": "androidApp", "type": "pickString", "description": "Android 앱", "options": ["DorotiSampleApp2", "DorotiTestbedApp"], "default": "DorotiSampleApp2" }
+  ]
+}
