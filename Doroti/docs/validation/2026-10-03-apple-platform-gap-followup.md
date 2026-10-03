@@ -1,6 +1,6 @@
 # Apple 플랫폼 기능 공백 후속 검토 — 2026-10-03
 
-대상은 root [work.md](../../../work.md)의 AppKit macOS / Mac Catalyst / iOS다. 기준 HEAD는 `55d075af1b6bc2fac59b9a8c811b985d0291c3e4`이며 변경은 미커밋이다. [앞선 전체 구현](2026-10-03-platform-gap-implementation.md)의 Apple SKIPPED 이력은 보존하고 이번 후보를 별도로 검증한다. 제품 인수는 PARTIAL이다.
+대상은 보관된 [W0~W11 작업 요약](../../../history/26-10-03/platform-gap-summary.md)의 AppKit macOS / Mac Catalyst / iOS다. 기준 HEAD는 `55d075af1b6bc2fac59b9a8c811b985d0291c3e4`이며 변경은 미커밋이다. [앞선 전체 구현](2026-10-03-platform-gap-implementation.md)의 Apple SKIPPED 이력은 보존하고 이번 후보를 별도로 검증한다. 제품 인수는 PARTIAL이다.
 
 ## 발견한 공백과 보강
 
@@ -53,6 +53,6 @@ python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/eng/validat
 
 물리 한글 IME·VoiceOver·pen, 실제 monitor 이동/DPR·표시 FPS·장기 사용, 실제 iPhone Release/NativeAOT, package-only 새 소비 앱·서명/공증·clean OS 배포는 이번 자동 검사의 통과 범위에 포함하지 않는다. UIKit native glyph range/MAUI text geometry는 false다. UIKit semantics의 setText/setSelection/focus는 지원 action 목록에 없으며 이 subset을 완전한 VoiceOver 텍스트 편집 지원으로 확대하지 않는다. iOS URL 검사는 scene callback 주입이며 OS association 인수가 아니다.
 
-Catalyst의 native scene close 취소·전역 위치·topmost/Dock 제어 등은 work.md의 명시적 제한을 유지한다. `RequireNativeCloseCancellation`을 충족하는 것처럼 광고하지 않는다. programmatic CloseAsync와 autosave/recovery 경로, AppKit의 application-scoped Dock 정책 및 위치 제한도 구분한다. 이 제한을 구현 누락이나 전체 PASS로 바꾸지 않는다.
+Catalyst의 native scene close 취소·전역 위치·topmost/Dock 제어 등은 작업 요약의 명시적 제한을 유지한다. `RequireNativeCloseCancellation`을 충족하는 것처럼 광고하지 않는다. programmatic CloseAsync와 autosave/recovery 경로, AppKit의 application-scoped Dock 정책 및 위치 제한도 구분한다. 이 제한을 구현 누락이나 전체 PASS로 바꾸지 않는다.
 
 원시 파일은 `temp/testing/platform-audit/apple-followup/`와 `temp/apple-*.log`의 삭제 가능한 로컬 산출물이다. 필요한 결과·실패·identity는 추적 문서/JSON에 보존한다.
