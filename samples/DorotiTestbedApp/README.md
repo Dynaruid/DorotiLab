@@ -31,12 +31,12 @@ and a counter. Hosts exposing the WebView command adapter also show URL navigati
 reload, local-content reset, and JavaScript evaluation controls; attachment-only hosts keep the
 interactive local page and a reset action.
 
-The optional Windows MAUI runner now connects button/editor/WebView2 through disjoint
+The optional Windows MAUI runner connects button/editor/WebView2 through disjoint
 WinUI native overlays and exposes WebView commands and the HWND file picker. It does
 not provide interleaving/native backdrop or multiple-window support. The `DOROTI_SAMPLE=webview`
 route opens the basic WebView scene directly; `input` exercises separate editor/WebView
-recreation. [Windows MAUI execution](../../Doroti/docs/validation/2026-10-03-windows-maui-basic-connections.md)
-records its own checks and unverified physical-input/display boundaries.
+recreation. See the [PlatformView support matrix](../../Doroti/docs/platform-views/support-matrix.md)
+for host-specific constraints.
 
 - [Prerequisites](#prerequisites)
 - [Platform sample commands](#material-sample-mode)
@@ -77,7 +77,7 @@ For the independent MAUI backend, replace the project in this command with
 Requires Apple Silicon, macOS 14 or later, and compatible Xcode/macOS workloads.
 The `macos` runner uses native AppKit.
 
-Add `-e DOROTI_MACOS_GRAPHITE=1` to the `dotnet run` command below to select the experimental Graphite/Metal candidate. Ganesh/Metal remains the default. See the [Apple execution report](../../history/26-09-09/native-graphite-apple-execution.json) for verified scope and remaining gates. Omit the option to return to the existing path.
+Add `-e DOROTI_MACOS_GRAPHITE=1` to the `dotnet run` command below to select the experimental Graphite/Metal candidate. Ganesh/Metal remains the default. Omit the option to use the default renderer.
 
 ```powershell
 dotnet run --project ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -r osx-arm64
@@ -114,7 +114,7 @@ The **Platform views** tab demonstrates native buttons/editors and Doroti layers
 Its page lives in [src/MaterialSample/PlatformViewsPage.cs](src/MaterialSample/PlatformViewsPage.cs).
 The independent **WebView** tab demonstrates browser content. Disable the optional
 WebEngine dependency with `-p:DorotiQtWebEngine=false`.
-Without WebEngine, Qt 6.6+ is sufficient. Quick/Graphite Vulkan and frame mode C are also the SDK/template defaults. Select the legacy Widgets overlay backend with `-p:DorotiQtQuick=false -p:DorotiQtWebEngine=false`. Native Wayland is the preferred QPA on Wayland sessions; xcb/XWayland has a recorded Qt Vulkan resize race. See the [Linux Qt build profiles](../../Doroti/docs/platform-views/linux-qt.md#build-configuration).
+Without WebEngine, Qt 6.6+ is sufficient. Quick/Graphite Vulkan and frame mode C are also the SDK/template defaults. Select the legacy Widgets overlay backend with `-p:DorotiQtQuick=false -p:DorotiQtWebEngine=false`. Native Wayland is the preferred QPA on Wayland sessions; xcb/XWayland has a Qt Vulkan resize race. See the [Linux Qt build profiles](../../Doroti/docs/platform-views/linux-qt.md#build-configuration).
 
 ### Android sample
 
@@ -142,14 +142,11 @@ dotnet run --project ./samples/DorotiTestbedApp/android/DorotiTestbedApp.Android
 ```
 
 After installation, reopen **Doroti Material Testbed** from the app drawer.
-On 2026-09-09, a Release AOT APK was installed on a Galaxy `SM-S931N` using the ADB method below,
-and the `Doroti Material 3` Components screen was visually confirmed. This did not validate all widgets, input, or performance.
 If automatic deployment fails, see [Android build and deployment errors](#android-build-and-deployment-errors).
 
 Android Graphite exposes accessibility through virtual nodes on the render view,
-avoiding hidden MAUI controls per semantic node. GC settings and AOT defaults are unchanged.
-See [touch timing validation](../../history/26-09-10/native-graphite-and-android-scroll-summary.md) for the Galaxy comparison
-and the opt-in `DOROTI_INPUT_TIMING` diagnostic.
+avoiding hidden MAUI controls per semantic node. Use `DOROTI_INPUT_TIMING` for
+optional touch-timing diagnostics.
 
 ### iOS sample
 
@@ -174,8 +171,6 @@ For an Intel Mac simulator, use `-r iossimulator-x64`. A physical iPhone/iPad re
 `-r ios-arm64`, its device ID, and separate signing/provisioning configuration.
 Here, `--device` belongs to `dotnet run`; the `doroti.ps1` wrapper's `-Device` currently supports Android only.
 
-For the opt-in iPhone full-trimming experiment, size measurements and build/install
-commands, see the [iOS trimming report](../../history/26-09-10/nativeaot-work2-summary.md).
 The default remains partial trimming; full trimming needs the dynamic-member preservation descriptor.
 
 ### Web sample
@@ -286,7 +281,7 @@ and platform-view overlays, and follows its size and window appearance. This is 
 background, not automatic Liquid Glass styling of individual canvas widgets.
 Native AppKit owns accessibility adaptations and material appearance; Windows-specific
 luminosity settings do not map to AppKit. `tintColor`/`tintOpacity` tint Liquid Glass;
-`acrylicKind` selects the blur material. See the [native validation fixture](../../history/26-09-26/desktop-window-api-summary.md).
+`acrylicKind` selects the blur material. See the [window appearance API](../../Doroti/docs/window-appearance.md).
 
 ### System dark mode and color palettes
 
@@ -406,7 +401,7 @@ adb devices -l
 | Signing conflict | If you can discard the app's data, run `adb -s device-serial uninstall dev.doroti.testbed` and reinstall |
 
 `android-x64` Release uses Mono AOT for all eligible methods, including Doroti's framework.
-The old AOT opt-out caused startup input-dispatch ANRs on the x64 emulator. Debug retains
+Debug retains
 the SDK's interpreter default; dynamic code can still use JIT in Release's normal AOT mode.
 The first Release build takes longer and produces a larger APK. `-p:RunAOTCompilation=false`
 is available for explicit diagnostic comparisons. Android JNI marshal methods remain disabled.
@@ -416,7 +411,7 @@ Validate arm64 Release AOT separately on a physical `android-arm64` device.
 
 **SkiaSharp version conflict (`MSB3277`, `CS1705`)**: if the Android host references an older
 SkiaSharp version than the current package configuration, refresh both restore caches below,
-then repeat the sample run command. This resolved a `4.152` / `4.154` conflict on 2026-09-09.
+then repeat the sample run command.
 
 ```powershell
 dotnet restore ./Doroti/src/Doroti.Host.Maui/Doroti.Host.Maui.csproj `
@@ -426,7 +421,6 @@ dotnet restore ./Doroti/src/Doroti.Host.Maui/Doroti.Host.Maui.csproj `
 ```
 
 **Automatic deployment fails after APK creation (`DOTNET_HOST_PATH`, `MSB4221`, `MSB4027`)**:
-on 2026-09-09, these errors stopped the `DeployToDevice` stage of `dotnet run`.
 If a signed APK has just been built, install and launch it directly with ADB.
 The path below is the `android-arm64` Release output; distinguish it from an older APK in `publish/`.
 Check that its modification time matches the current build before installing.
@@ -442,12 +436,12 @@ Replace `device-serial` with the connected device's serial. `--user 0` installs 
 If another profile, such as Galaxy Secure Folder, causes a shell permission error, scope package queries too:
 `adb -s device-serial shell pm list packages --user 0 dev.doroti.testbed`.
 
+### Linux Qt sample options
 
-
-Linux Qt follow-up: build with `-p:DorotiLinuxDesktop=true` for the Desktop companion
+Build with `-p:DorotiLinuxDesktop=true` for the Desktop companion
 and real additional windows. `DOROTI_SAMPLE=plugins`, `drop`, `navigation` and `input`
 exercise Qt services; the drop page also has a native text/link drag source.
 `DOROTI_SAMPLE=qt-widgets` is a separate disjoint native-editor fixture for a
 Widgets/OpenGL shim (`DOROTI_LINUX_GRAPHITE=0`), without the Desktop companion.
 Quick composition is required for the full mixed input/WebView scene.
-See [Linux qualification and commands](../../history/26-10-03/works/results/2026-09-29-linux-qt.md).
+See the [Linux Qt guide](../../Doroti/docs/platform-views/linux-qt.md).

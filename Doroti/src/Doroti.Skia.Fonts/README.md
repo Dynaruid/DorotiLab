@@ -30,9 +30,3 @@ its default fonts. These settings govern font restoration, not NuGet restore.
 
 Web does not reference this package. Its defaults and missing-glyph fonts load
 from CDN at runtime; see `../Doroti.Host.Web/Fonts/README.md`.
-
-Validation (2026-09-28): clean CDN restore, embedded-font registration and metrics,
-offline corruption rejection/online repair/cache reuse, and NuGet assembly/license
-contents passed. Windows App SDK sample, MAUI Windows, MAUI Android and Qt host
-builds passed with zero warnings/errors. Apple compilation and actual native-device
-display are not verified by these checks.

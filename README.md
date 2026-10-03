@@ -6,13 +6,9 @@
 
 Doroti is an experimental UI framework built with C# and .NET. Write widgets, layouts, and UI behavior directly in C#, and share application code across desktop, mobile, and the web.
 
-The project began by translating Flutter framework source code into C# and is now developed and maintained directly in C#. It brings familiar Material and Cupertino APIs together with a shared rendering pipeline built on SkiaSharp and native platform integration.
+Doroti brings familiar Flutter-inspired Material and Cupertino APIs together with a shared rendering pipeline built on SkiaSharp and native platform integration. Its framework code is developed and maintained directly in C#.
 
 [Get started](#get-started) · [Platforms](#platforms) · [Documentation](#documentation)
-
-The optional Windows MAUI backend connects HWND file picking and disjoint WinUI native
-button/editor/WebView2 overlays. [2026-10-03 checks](Doroti/docs/validation/2026-10-03-windows-maui-basic-connections.md)
-record its own native/widget/upload execution; physical input and advanced composition remain unqualified.
 
 > [!WARNING]
 > Doroti is under active development. APIs, behavior, and project structure may change without backward-compatibility guarantees. Platform maturity varies.
@@ -23,7 +19,7 @@ record its own native/widget/upload execution; physical input and advanced compo
 - **Shared application code** — keep your UI in a platform-neutral library with separate runners for each target.
 - **Material and Cupertino widgets** — build on Flutter-inspired APIs implemented and maintained in C#.
 - **SkiaSharp-based GPU rendering** — access Skia Graphite from C# through SkiaSharp, using Vulkan, Metal, or WebGPU depending on the platform.
-- **Image and backdrop filters** — Gaussian and progressive/variable blur, matrix transforms, dilation/erosion, saturation/color filters, and composed GPU shaders. See [API and validation coverage](history/26-09-26/wgsl-gpu-effects-summary.md).
+- **Image and backdrop filters** — Gaussian and progressive/variable blur, matrix transforms, dilation/erosion, saturation/color filters, and composed GPU shaders. See the [WGSL compiler guide](tools/Doroti.Wgsl/README.md).
 - **Native integration** — platform hosts connect the UI to windows, input, text entry, clipboard, and accessibility services.
 - **A sample app and templates** — explore `DorotiTestbedApp` and the `doroti-app` project template.
 
@@ -42,7 +38,7 @@ Doroti shares its widget, layout, painting, and semantics layers across platform
 | Web | .NET WebAssembly, render Worker / canvas | `Doroti.Host.Web` | Desktop/iOS: Ganesh/WebGL2; Android: Graphite/Dawn/WebGPU preferred |
 | Linux | Qt 6 `QWindow`, native C ABI bridge | `Doroti.Host.Qt` | Skia Graphite / Vulkan |
 
-Web auto selection prefers WebGL2 on desktop/iOS and WebGPU on Android, with initial fallback when available. Explicit `dorotiRenderer=worker-direct-webgl` or `worker-direct-webgpu` overrides auto selection. Runtime graphics loss requires a fresh endpoint; see [platform gap implementation](Doroti/docs/validation/2026-10-03-platform-gap-implementation.md) and [project status](#project-status).
+Web auto selection prefers WebGL2 on desktop/iOS and WebGPU on Android, with initial fallback when available. Explicit `dorotiRenderer=worker-direct-webgl` or `worker-direct-webgpu` overrides auto selection. Runtime graphics loss requires a fresh endpoint; see the [Web configuration guide](Doroti/README.md#web).
 
 ## Get started
 
@@ -82,7 +78,7 @@ Platform host + GPU surface
 
 Flutter is the behavior reference for the Material and Cupertino APIs. Doroti maintains its own C# implementation in `Doroti.Framework.*`; it does not embed the Flutter runtime in a WebView.
 
-The project began with a Dart-to-C# compiler to bootstrap framework code. Today, feature work happens directly in C#. The compiler remains an optional import and comparison tool.
+The Dart-to-C# compiler is an optional source import and behavior-comparison tool.
 
 ## Documentation
 
@@ -92,8 +88,7 @@ The project began with a Dart-to-C# compiler to bootstrap framework code. Today,
 | [Sample app guide](samples/DorotiTestbedApp/README.md) | Platform launch commands, sample screens, renderer options, and troubleshooting |
 | [Cupertino sample](samples/DorotiSampleApp2/README.md) | Cupertino components, profile input, and appearance settings on Windows / Web |
 | [Dart-to-C# compiler](tools/Doroti.DartToCSharp/README.md) | Optional source import and migration tooling |
-| [WGSL GPU effects](history/26-09-26/wgsl-gpu-effects-summary.md) | Windows fragment implementation, source-tree compiler setup, and remaining platform work |
-| [Development history](history/) | Archived plans and validation records |
+| [WGSL compiler](tools/Doroti.Wgsl/README.md) | Shader compilation, backend profiles, and application integration |
 
 ## Project status
 
@@ -101,9 +96,7 @@ Current host, renderer, build-mode and execution boundaries: [support status](Do
 
 Doroti is a personal, experimental project. The platform table describes implemented hosts and rendering defaults, not uniform production readiness.
 
-Build checks, native or browser execution, and physical-device testing are tracked separately. GPU compatibility, input methods, accessibility, performance, signing, and store distribution still require platform-specific validation. Consult the [framework guide](Doroti/README.md#platform-evidence-boundaries) and recorded results before choosing a target.
-
-Current priorities include native desktop integration, automated Web behavior checks, and representative release and physical-device testing for each target.
+GPU compatibility, input methods, accessibility, performance, signing, and store distribution depend on the target platform and configuration. Consult the [framework guide](Doroti/README.md#platform-support) before choosing a target.
 
 ## Repository layout
 
@@ -124,5 +117,3 @@ Ideas and bug reports are welcome, as are forks that use Doroti to experiment or
 ## License
 
 Doroti is licensed under the [BSD 3-Clause License](LICENSE). See [third-party notices](Doroti/THIRD-PARTY-NOTICES.md) for upstream attribution.
-
-2026-10-03: Windows MAUI basic native services, GPU import/multiwindow, App SDK opt-in mixed WebView/editor, layout accessibility geometry, Web recovery/offline fonts and development/release entry points are covered in [current results](Doroti/docs/validation/2026-10-03-platform-gap-implementation.md). Apple validation of that candidate was explicitly skipped; the subsequent [Apple follow-up](Doroti/docs/validation/2026-10-03-apple-platform-gap-followup.md) fixes native accessibility/input gaps and records new builds and native API checks. Physical input/accessibility/display and signed deployment remain separate.

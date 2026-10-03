@@ -57,7 +57,7 @@ dotnet run --project ./samples/DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.W
 Apple Silicon, macOS 14 이상과 호환되는 Xcode/macOS workload가 필요합니다.
 `macos`는 native AppKit runner입니다.
 
-Graphite/Metal 실험 후보는 아래 `dotnet run` 명령에 `-e DOROTI_MACOS_GRAPHITE=1`을 추가해 선택합니다. 기본값은 Ganesh/Metal이며, 후보의 실행 범위와 미검증 항목은 [Apple 전환 보고서](../../Doroti/docs/validation/native-graphite-apple-2026-09-09.md)에 있습니다. 해당 옵션을 빼면 기존 경로로 복귀합니다.
+Graphite/Metal 실험 후보는 아래 `dotnet run` 명령에 `-e DOROTI_MACOS_GRAPHITE=1`을 추가해 선택합니다. 기본값은 Ganesh/Metal이며, 해당 옵션을 빼면 기본 렌더러를 사용합니다.
 
 ```powershell
 dotnet run --project ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -r osx-arm64
@@ -122,8 +122,6 @@ dotnet run --project ./samples/DorotiTestbedApp/android/DorotiTestbedApp.Android
 ```
 
 설치 후 앱 목록의 **Doroti Material Testbed**로 다시 열 수 있습니다.
-2026-09-09 갤럭시 `SM-S931N`에서 Release AOT APK를 아래 ADB 방법으로 설치하고
-`Doroti Material 3`의 Components 화면 표시까지 확인했습니다. 전체 위젯·입력·성능 검증은 포함하지 않습니다.
 자동 배포가 실패하면 [Android 빌드·배포 오류](#android-빌드배포-오류)를 참고하세요.
 
 ### iOS 샘플
@@ -149,8 +147,6 @@ Intel Mac의 시뮬레이터는 `-r iossimulator-x64`를 사용합니다. 실제
 `-r ios-arm64`와 해당 기기의 ID를 지정하며 별도 코드 서명·프로비저닝 설정이 필요합니다.
 여기서 `--device`는 `dotnet run` 옵션입니다. `doroti.ps1`의 `-Device`는 현재 Android 전용입니다.
 
-iPhone 전체 트리밍 실험의 크기 측정과 빌드·설치 명령은
-[iOS 트리밍 보고서](../../Doroti/docs/validation/ios-trimming-2026-09-10.md)를 참고하세요.
 기본값은 부분 트리밍이며, 전체 트리밍에는 동적 호출 멤버의 보존 설정이 필요합니다.
 
 ### Web 샘플
@@ -259,7 +255,7 @@ Qt/Linux 통합형은 창 버튼을 같은 GPU 표면에 그려 본문과 같은
 이는 창 배경 효과이며 캔버스의 개별 위젯을 자동으로 Liquid Glass로 바꾸지는 않습니다.
 접근성 설정에 따른 조정은 AppKit이 담당합니다. Windows 전용 luminosity 설정은 AppKit에
 대응하지 않습니다. `tintColor`/`tintOpacity`는 Liquid Glass 색조, `acrylicKind`는 블러 재질을
-선택합니다. [네이티브 검증 fixture](../../Doroti/validation/appkit-backdrop/README.md)를 참고하세요.
+선택합니다. [창 외형 API](../../Doroti/docs/window-appearance.md)를 참고하세요.
 
 ### 시스템 다크 모드와 색 팔레트
 
@@ -378,7 +374,6 @@ adb devices -l
 | 설치 서명 충돌 | 앱 데이터 삭제를 감수할 수 있을 때 `adb -s device-serial uninstall dev.doroti.testbed` 후 재설치 |
 
 `android-x64` Release는 Doroti 프레임워크를 포함한 사전 컴파일 가능한 메서드에 Mono AOT를 사용합니다.
-기존 AOT 비활성화 설정은 x64 에뮬레이터의 시작 시 입력 응답 지연(ANR)을 유발했습니다.
 Debug는 SDK의 인터프리터 기본값을 유지하며, Release의 normal AOT 모드에서도 동적 코드는 JIT로 실행할 수 있습니다.
 첫 Release 빌드는 더 오래 걸리고 APK 크기가 커집니다. 진단 비교 시에는 `-p:RunAOTCompilation=false`를 명시할 수 있습니다.
 Android JNI marshal methods는 계속 비활성화되어 있습니다.
@@ -388,7 +383,6 @@ arm64 Release AOT는 `android-arm64` 실기기에서 별도로 확인합니다.
 
 **SkiaSharp 버전 충돌 (`MSB3277`, `CS1705`)**: 현재 패키지 설정과 달리 Android 호스트가
 이전 SkiaSharp를 참조한다면 다음 두 복원 캐시를 갱신한 뒤 샘플 실행 명령을 다시 실행합니다.
-2026-09-09에는 이 방법으로 `4.152`와 `4.154` 충돌을 해결했습니다.
 
 ```powershell
 dotnet restore ./Doroti/src/Doroti.Host.Maui/Doroti.Host.Maui.csproj `
@@ -398,7 +392,6 @@ dotnet restore ./Doroti/src/Doroti.Host.Maui/Doroti.Host.Maui.csproj `
 ```
 
 **APK 생성 후 자동 배포 실패 (`DOTNET_HOST_PATH`, `MSB4221`, `MSB4027`)**:
-2026-09-09에는 `dotnet run`의 `DeployToDevice` 단계가 이 오류로 실패했습니다.
 방금 생성된 서명 APK가 있다면 ADB로 직접 설치·실행할 수 있습니다.
 아래 경로는 `android-arm64` Release 출력이며, `publish/`의 이전 APK와 구별합니다.
 수정 시각이 이번 빌드와 일치하는지 확인한 뒤 설치하세요.
@@ -413,4 +406,3 @@ adb -s device-serial shell monkey -p dev.doroti.testbed -c android.intent.catego
 `device-serial`은 연결된 기기의 serial로 바꿉니다. `--user 0`은 기본 사용자에 설치합니다.
 갤럭시 보안 폴더 등 다른 프로필에 대한 shell 권한 오류가 발생하면 패키지 조회도
 `adb -s device-serial shell pm list packages --user 0 dev.doroti.testbed`로 범위를 지정합니다.
-

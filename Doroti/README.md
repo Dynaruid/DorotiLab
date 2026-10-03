@@ -4,7 +4,7 @@
 
 ### Build cross-platform UIs in C#, without XAML
 
-Doroti provides a shared widget, layout, painting, semantics, and rendering pipeline for desktop, mobile, and the web. The project began by translating Flutter framework source into C#; today, `Doroti.Framework.*` is developed and maintained directly in C#.
+Doroti provides a shared widget, layout, painting, semantics, and rendering pipeline for desktop, mobile, and the web. Its Flutter-inspired APIs are developed and maintained directly in C# in `Doroti.Framework.*`.
 
 This guide covers the framework, development environment, application startup, and build tools. For runnable examples and platform launch commands, start with the [sample app guide](../samples/DorotiTestbedApp/README.md).
 
@@ -36,7 +36,7 @@ See the [platform implementation table](../README.md#platforms) for the host and
 
 SDK selection is separate from the target framework. iOS device Release defaults to NativeAOT; use `-CompilationMode Mono` for the explicit recovery profile. NativeAOT uses `net11.0-ios` and MAUI `11.0.0-rc.1.26451.6`. Debug, simulators, and the explicit Mono profile currently retain `net10.0-ios`. Use `publish` to produce the signed device app; see [iOS sample instructions](../samples/DorotiTestbedApp/README.md#ios-sample).
 
-**.NET 11 RC1 + Xcode 27 (2026-09-30):** The RC1 iOS workload requires Xcode 26.6. To attempt a build or publish with Xcode 27, append `-p:ValidateXcodeVersion=false` to a direct `dotnet build` / `dotnet publish` command. This temporary workaround only skips the version check; it does not establish supported compatibility. Do not apply it to the supported Xcode 26.6 combination or to .NET 10 workloads that support Xcode 27. See the [SampleApp2 example and verification scope](../samples/DorotiSampleApp2/README.md#net-11-rc1--xcode-27-native-aot) and [official RC1 requirements](https://github.com/dotnet/macios/releases/tag/dotnet-11.0.1xx-rc1-12193).
+**.NET 11 RC1 + Xcode 27:** The RC1 iOS workload requires Xcode 26.6. To attempt a build or publish with Xcode 27, append `-p:ValidateXcodeVersion=false` to a direct `dotnet build` / `dotnet publish` command. This temporary workaround only skips the version check; it does not establish supported compatibility. Do not apply it to the supported Xcode 26.6 combination or to .NET 10 workloads that support Xcode 27. See the [SampleApp2 build example](../samples/DorotiSampleApp2/README.md#net-11-rc1--xcode-27-native-aot) and [official RC1 requirements](https://github.com/dotnet/macios/releases/tag/dotnet-11.0.1xx-rc1-12193).
 
 ### Platform prerequisites
 
@@ -166,7 +166,7 @@ Android, iOS, AppKit macOS, and Mac Catalyst runners each reference an app-owned
 | `DOROTI_WINDOWS_GPU_PREFERENCE` | `NoPreference` by default; `LowPowerPreference` or `HighPerformancePreference` applies to Vulkan |
 | `DOROTI_WINDOWS_VULKAN_DEVICE` | Select a Vulkan device by its exact name or a unique name fragment |
 
-The default path renders through Graphite/Vulkan and presents through D3D12/DXGI DirectComposition on the same adapter. There is no automatic presenter fallback. Native PlatformView raster slices retain their D3D11 drawing API. Synchronization and resize details are documented in the [D3D12 output report](docs/validation/windows-d3d12-output-2026-09-14.md).
+The default path renders through Graphite/Vulkan and presents through D3D12/DXGI DirectComposition on the same adapter. There is no automatic presenter fallback. Native PlatformView raster slices retain their D3D11 drawing API. See the [native frame pipeline](docs/native-frame-pipeline.md) for synchronization and frame lifetime.
 
 ### Web
 
@@ -209,20 +209,11 @@ On Windows 11 24H2 or later, request `new WindowBackdropOptions(WindowBackdropMo
 
 Features and fixes belong directly in the owning framework, runtime, renderer, or host project. Update consumers when shared contracts change. The Dart-to-C# compiler and pinned Flutter checkout remain optional import and behavior-comparison tools; they do not overwrite maintained framework source and are not required for ordinary builds.
 
-## Platform evidence boundaries
+## Platform support
 
-Build, native execution, browser execution, physical-device behavior, accessibility, and cross-platform parity are separate checks. A successful build does not establish signing, store readiness, device behavior, or performance. Unrun combinations remain `notVerified`.
+Host, renderer, and build-mode support varies by target. Consult [support status](docs/support-status.md) for the available configurations and limitations. Signing, store distribution, input methods, accessibility, and performance require checks on the intended device and configuration.
 
-| Area | Scope and further reading |
-| --- | --- |
-| Windows | Some physical resize and mixed-DPI scenarios received user acceptance; synthetic pixel/cadence failures remain separate. See the [D3D12 output report](docs/validation/windows-d3d12-output-2026-09-14.md) for scoped results. |
-| Linux | Historical OpenGL runs under VMware Wayland/XWayland do not qualify the current Vulkan path or physical hardware. See the [Linux Qt record](../history/26-08-20/linux-qt-backend-summary.md). IME, Orca, context recovery, and long-running performance need separate coverage. |
-| AppKit | Native execution and remaining conditions are recorded in the [AppKit summary](../history/26-08-20/macos-appkit-dual-backend-summary.md). |
-| iOS | NativeAOT build, deployment, and device observations are recorded in the [NativeAOT summary](../history/26-09-10/nativeaot-work2-summary.md); they apply to the documented configurations. |
-| Native controls and WebView | Consult the [PlatformView support matrix](docs/platform-views/support-matrix.md) for implementation and validation boundaries. |
-| Texture | [Frame textures](docs/textures.md): CPU RGBA, Android Surface/AHB, Windows D3D11, and [Web Canvas/video/frame GPU input](docs/web-textures.md) on WebGPU or explicit WebGL. Web physical camera qualification remains separate. Windows camera and AMD/NVIDIA composition tested; iOS/macOS Metal and Linux DMA-BUF camera adapters are source-only, not runtime-qualified. |
-
-The [development history](../history/) contains results from specific runs, not guarantees for every current device or configuration.
+Native controls and WebView have host-specific composition constraints; see the [PlatformView support matrix](docs/platform-views/support-matrix.md). [Frame textures](docs/textures.md) support CPU RGBA, Android Surface/AHB, and Windows D3D11 inputs. [Web textures](docs/web-textures.md) accept Canvas/video/frame GPU input on WebGPU or explicit WebGL. iOS/macOS Metal and Linux DMA-BUF camera adapters require runtime verification before use.
 
 ## Development and repository layout
 

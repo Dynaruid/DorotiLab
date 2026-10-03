@@ -4,7 +4,7 @@
 
 ### XAML 없이 C#으로 만드는 크로스 플랫폼 UI
 
-Doroti는 데스크톱·모바일·웹에서 공유하는 위젯, 레이아웃, 페인팅, 시맨틱스, 렌더링 파이프라인을 제공합니다. Flutter 프레임워크 소스를 C#으로 변환하는 데서 시작했으며, 현재는 `Doroti.Framework.*`의 C# 코드를 직접 개발하고 유지보수합니다.
+Doroti는 데스크톱·모바일·웹에서 공유하는 위젯, 레이아웃, 페인팅, 시맨틱스, 렌더링 파이프라인을 제공합니다. Flutter를 참고한 API를 `Doroti.Framework.*`의 C# 코드로 직접 개발하고 유지보수합니다.
 
 이 문서는 프레임워크 구성, 개발 환경, 앱 시작 방법과 빌드 도구를 안내합니다. 실행 가능한 예제와 플랫폼별 실행 명령은 [샘플 앱 가이드](../samples/DorotiTestbedApp/README.ko.md)에서 확인할 수 있습니다.
 
@@ -36,7 +36,7 @@ Doroti는 데스크톱·모바일·웹에서 공유하는 위젯, 레이아웃, 
 
 SDK 선택과 대상 프레임워크는 별개입니다. iOS 실기기 Release는 NativeAOT가 기본이며, `-CompilationMode Mono`로 복구 프로필을 선택합니다. NativeAOT는 `net11.0-ios`와 MAUI `11.0.0-rc.1.26451.6`을 사용합니다. 현재 Debug·시뮬레이터·명시적 Mono 프로필은 `net10.0-ios`를 유지합니다. 서명된 실기기 앱은 `publish`로 생성하며, 자세한 절차는 [iOS 샘플 안내](../samples/DorotiTestbedApp/README.ko.md#ios-샘플)를 참고하세요.
 
-**.NET 11 RC1 + Xcode 27 (2026-09-30):** RC1 iOS 워크로드는 Xcode 26.6을 요구하므로, Xcode 27에서 빌드·게시를 시도할 때는 직접 `dotnet build` / `dotnet publish` 명령에 `-p:ValidateXcodeVersion=false`를 추가해야 합니다. 이는 버전 검사만 건너뛰는 임시 우회이며 공식 호환성 보장은 아닙니다. Xcode 26.6을 사용하는 지원 조합 또는 .NET 10의 Xcode 27 지원 워크로드에서는 이 우회를 적용하지 않습니다. [SampleApp2 실행 예제와 검증 범위](../samples/DorotiSampleApp2/README.md#net-11-rc1--xcode-27-native-aot), [RC1 공식 요구 사항](https://github.com/dotnet/macios/releases/tag/dotnet-11.0.1xx-rc1-12193)을 참고하세요.
+**.NET 11 RC1 + Xcode 27:** RC1 iOS 워크로드는 Xcode 26.6을 요구하므로, Xcode 27에서 빌드·게시를 시도할 때는 직접 `dotnet build` / `dotnet publish` 명령에 `-p:ValidateXcodeVersion=false`를 추가해야 합니다. 이는 버전 검사만 건너뛰는 임시 우회이며 공식 호환성 보장은 아닙니다. Xcode 26.6을 사용하는 지원 조합 또는 .NET 10의 Xcode 27 지원 워크로드에서는 이 우회를 적용하지 않습니다. [SampleApp2 빌드 예제](../samples/DorotiSampleApp2/README.md#net-11-rc1--xcode-27-native-aot), [RC1 공식 요구 사항](https://github.com/dotnet/macios/releases/tag/dotnet-11.0.1xx-rc1-12193)을 참고하세요.
 
 ### 플랫폼별 구성
 
@@ -164,7 +164,7 @@ Android, iOS, AppKit macOS, Mac Catalyst 실행 프로젝트는 각각 앱 소�
 | `DOROTI_WINDOWS_GPU_PREFERENCE` | 기본값은 `NoPreference`, `LowPowerPreference`·`HighPerformancePreference`는 Vulkan에 적용 |
 | `DOROTI_WINDOWS_VULKAN_DEVICE` | 정확한 장치 이름 또는 유일한 이름 일부로 Vulkan 장치 선택 |
 
-기본 경로는 Graphite/Vulkan으로 렌더링하고 같은 GPU의 D3D12/DXGI DirectComposition으로 화면에 표시합니다. 자동 출력 경로 전환은 없습니다. 네이티브 PlatformView의 래스터 조각은 D3D11 그리기 API를 유지합니다. 동기화와 창 크기 변경에 관한 세부 사항은 [D3D12 출력 보고서](docs/validation/windows-d3d12-output-2026-09-14.md)에 있습니다.
+기본 경로는 Graphite/Vulkan으로 렌더링하고 같은 GPU의 D3D12/DXGI DirectComposition으로 화면에 표시합니다. 자동 출력 경로 전환은 없습니다. 네이티브 PlatformView의 래스터 조각은 D3D11 그리기 API를 유지합니다. 동기화와 프레임 수명은 [네이티브 프레임 파이프라인](docs/native-frame-pipeline.md)을 참고하세요.
 
 ### Web
 
@@ -207,20 +207,11 @@ Windows 11 24H2 이상에서는 실험 플래그 없이 `new WindowBackdropOptio
 
 기능 추가와 수정은 해당 기능을 담당하는 프레임워크, 런타임, 렌더러, 호스트 프로젝트에서 직접 수행합니다. 공통 계약이 바뀌면 사용하는 쪽도 함께 수정합니다. Dart-to-C# 컴파일러와 고정 Flutter 소스는 선택적인 소스 가져오기·동작 비교 도구이며, 유지보수 중인 프레임워크 소스를 덮어쓰지 않고 일반 빌드에도 필요하지 않습니다.
 
-## 플랫폼별 검증 범위
+## 플랫폼 지원 범위
 
-빌드, 네이티브 실행, 브라우저 실행, 실제 기기 동작, 접근성, 플랫폼 간 일관성은 각각 별도로 확인합니다. 빌드 성공이 서명, 스토어 배포 준비, 기기 동작, 성능을 보장하지 않습니다. 실행하지 않은 조합은 `notVerified`로 남깁니다.
+호스트, 렌더러와 빌드 모드의 지원 범위는 플랫폼마다 다릅니다. 사용 가능한 구성과 제약은 [지원표](docs/support-status.md)를 참고하세요. 서명, 스토어 배포, 입력기, 접근성과 성능은 사용할 기기와 구성에서 확인해야 합니다.
 
-| 영역 | 범위와 관련 기록 |
-| --- | --- |
-| Windows | 일부 실제 창 크기 변경·혼합 DPI 조건은 사용자 확인을 받았으며, 자동화된 픽셀·프레임 간격 검사 실패는 별도로 유지합니다. [D3D12 출력 보고서](docs/validation/windows-d3d12-output-2026-09-14.md)의 검증 범위를 참고하세요. |
-| Linux | 과거 VMware Wayland/XWayland의 OpenGL 실행 결과가 현재 Vulkan 경로나 실제 하드웨어를 검증하지는 않습니다. [Linux Qt 기록](../history/26-08-20/linux-qt-backend-summary.md)을 참고하세요. IME, Orca, 컨텍스트 복구, 장기 성능은 별도 검증이 필요합니다. |
-| AppKit | 네이티브 실행 범위와 남은 조건은 [AppKit 요약](../history/26-08-20/macos-appkit-dual-backend-summary.md)에 기록되어 있습니다. |
-| iOS | NativeAOT 빌드·배포·기기 관측 결과는 [NativeAOT 요약](../history/26-09-10/nativeaot-work2-summary.md)에 있으며, 문서에 기록된 구성에 한정됩니다. |
-| 네이티브 컨트롤·WebView | [PlatformView 지원표](docs/platform-views/support-matrix.md)에서 구현과 검증 범위를 확인하세요. |
-| Texture | [프레임 텍스처](docs/textures.md): CPU RGBA, Android Surface/AHB, Windows D3D11 GPU 입력. Windows 카메라와 AMD/NVIDIA 합성 검증 완료. iOS/macOS Metal·Linux DMA-BUF 카메라 어댑터는 코드 구성 완료, 실행 미검증. |
-
-[개발 이력](../history/)에는 특정 실행의 결과를 보관합니다. 모든 현재 기기와 구성에 대한 보장을 뜻하지 않습니다.
+네이티브 컨트롤과 WebView에는 호스트별 합성 제약이 있으며, [PlatformView 지원표](docs/platform-views/support-matrix.md)에 정리되어 있습니다. [프레임 텍스처](docs/textures.md)는 CPU RGBA, Android Surface/AHB, Windows D3D11 입력을 지원합니다. [웹 텍스처](docs/web-textures.md)는 WebGPU 또는 명시적인 WebGL에서 Canvas·비디오·프레임 GPU 입력을 받습니다. iOS/macOS Metal·Linux DMA-BUF 카메라 어댑터는 사용 전에 실행 검증이 필요합니다.
 
 ## 개발과 디렉터리 구성
 
@@ -230,7 +221,7 @@ Windows 11 24H2 이상에서는 실험 플래그 없이 `new WindowBackdropOptio
 | [`templates/`](templates/) | `doroti-app` 앱 작업 공간 템플릿 |
 | [`eng/`](eng/) | 빌드, 실행, 검증, 패키징, 진단 스크립트 |
 | [`tools/`](tools/) | 프레임워크 도구 |
-| [`validation/`](validation/) | 검증 소스와 테스트용 자료 |
+| [`tests/`](tests/) | 유지보수하는 회귀 테스트 소스 |
 | [`docs/`](docs/) | API 문서와 범위를 명시한 검증 보고서 |
 | [`../tools/Doroti.DartToCSharp/`](../tools/Doroti.DartToCSharp/) | 선택적 Dart·Flutter 소스 변환 컴파일러 |
 

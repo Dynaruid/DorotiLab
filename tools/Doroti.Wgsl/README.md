@@ -1,4 +1,4 @@
-# Doroti WGSL compiler — initial fragment implementation
+# Doroti WGSL compiler
 
 Rust 1.95.0, Naga 30.0.1 and Cargo.lock are pinned. This is a build-time tool;
 the application does not load Rust or create a second wgpu device.
@@ -37,12 +37,10 @@ vectors/matrices/arrays by index; `Snapshot()` writes each scalar at its Naga
 offset with explicit little-endian writes. Padding remains zero. A vec3/mat3x3/
 array/i32 golden checks offsets through byte 112 in a 128-byte block.
 
-Generated `Doroti.Generated.Effects.<AssetId>` currently embeds every declared
-variant in the application assembly. This is an initial
-source-tree integration, **not the final runner-specific resource catalog**.
-Compiler RID distribution, NuGet consumption, full graph schema, manifest ABI
-validation at load, and atomic output publication remain open in the
-[archived WGSL GPU effects plan](../../history/26-09-26/wgsl-gpu-effects-summary.md).
+Generated `Doroti.Generated.Effects.<AssetId>` embeds every declared variant in
+the application assembly. Integration uses a source-tree compiler; compiler RID
+distribution, NuGet consumption, a full graph schema, manifest ABI validation at
+load, and atomic output publication are not available.
 
 The SDK uses an existing compiler via `DorotiWgslTool`; its repository default
 is this directory's `target/debug/doroti-wgsl[.exe]`. It never invokes Cargo or

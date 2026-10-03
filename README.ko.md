@@ -6,13 +6,9 @@
 
 Doroti는 C#과 .NET으로 개발하는 실험적인 UI 프레임워크입니다. 위젯, 레이아웃, UI 동작을 C# 코드로 직접 작성하고, 데스크톱·모바일·웹에서 애플리케이션 코드를 공유할 수 있습니다.
 
-Flutter 프레임워크 소스를 C#으로 변환하는 데서 시작했으며, 현재는 C# 코드를 직접 개발하고 유지보수합니다. 익숙한 Material·Cupertino API에 SkiaSharp 기반의 공통 렌더링 파이프라인과 플랫폼별 네이티브 연동을 제공합니다.
+Flutter에서 익숙한 Material·Cupertino API에 SkiaSharp 기반의 공통 렌더링 파이프라인과 플랫폼별 네이티브 연동을 제공합니다. 프레임워크 코드는 C#으로 직접 개발하고 유지보수합니다.
 
 [시작하기](#시작하기) · [플랫폼별 구현](#플랫폼별-구현) · [문서](#문서)
-
-선택 backend인 Windows MAUI에 HWND 파일 선택과 disjoint WinUI native button/editor/WebView2
-overlay를 연결했습니다. [2026-10-03 실행 기록](Doroti/docs/validation/2026-10-03-windows-maui-basic-connections.md)에서
-MAUI 전용 native/위젯/업로드 검사와 물리 입력·고급 합성의 미검증 범위를 확인할 수 있습니다.
 
 > [!WARNING]
 > Doroti는 활발히 개발 중인 실험적 프로젝트입니다. API, 동작, 프로젝트 구조는 하위 호환성 보장 없이 변경될 수 있으며, 플랫폼별 완성도에는 차이가 있습니다.
@@ -23,7 +19,7 @@ MAUI 전용 native/위젯/업로드 검사와 물리 입력·고급 합성의 �
 - **애플리케이션 코드 공유** — 플랫폼 중립 라이브러리에 UI를 작성하고, 각 플랫폼의 실행 프로젝트에서 사용합니다.
 - **Material·Cupertino 위젯** — Flutter에서 익숙한 API를 C#으로 구현하고 유지보수합니다.
 - **SkiaSharp 기반 GPU 렌더링** — C#에서 SkiaSharp를 통해 Skia Graphite를 사용하며, 플랫폼에 따라 Vulkan, Metal, WebGPU로 렌더링합니다.
-- **이미지·배경 필터** — Gaussian·Progressive/Variable 블러, 행렬 변환, 팽창·침식, 채도·색상 필터와 GPU 셰이더 조합을 제공합니다. [API와 검증 범위](history/26-09-26/wgsl-gpu-effects-summary.md)를 참고하세요.
+- **이미지·배경 필터** — Gaussian·Progressive/Variable 블러, 행렬 변환, 팽창·침식, 채도·색상 필터와 GPU 셰이더 조합을 제공합니다. [WGSL 컴파일러 가이드](tools/Doroti.Wgsl/README.md)를 참고하세요.
 - **네이티브 연동** — 플랫폼 호스트가 창, 입력, 텍스트 입력, 클립보드, 접근성 서비스를 연결합니다.
 - **샘플 앱과 템플릿** — `DorotiTestbedApp`과 `doroti-app` 프로젝트 템플릿으로 구성을 살펴볼 수 있습니다.
 
@@ -42,7 +38,7 @@ MAUI 전용 native/위젯/업로드 검사와 물리 입력·고급 합성의 �
 | Web | .NET WebAssembly, 렌더링 Worker / canvas | `Doroti.Host.Web` | desktop/iOS: Ganesh/WebGL2, Android: Graphite/Dawn/WebGPU 우선 |
 | Linux | Qt 6 `QWindow`, 네이티브 C ABI 브리지 | `Doroti.Host.Qt` | Skia Graphite / Vulkan |
 
-Web 자동 선택은 desktop/iOS에서 WebGL2, Android에서 WebGPU를 우선하며 초기 fallback 조건을 평가합니다. `dorotiRenderer=worker-direct-webgl` 또는 `worker-direct-webgpu`로 명시 선택할 수 있습니다. 실행 중 graphics loss는 새 endpoint가 필요합니다. [전체 구현 기록](Doroti/docs/validation/2026-10-03-platform-gap-implementation.md)과 [프로젝트 상태](#프로젝트-상태)에 검증 범위를 기록합니다.
+Web 자동 선택은 desktop/iOS에서 WebGL2, Android에서 WebGPU를 우선하며 초기 fallback 조건을 평가합니다. `dorotiRenderer=worker-direct-webgl` 또는 `worker-direct-webgpu`로 명시 선택할 수 있습니다. 실행 중 graphics loss는 새 endpoint가 필요합니다. [Web 설정 가이드](Doroti/README.ko.md#web)를 참고하세요.
 
 ## 시작하기
 
@@ -82,7 +78,7 @@ Doroti 위젯, 레이아웃, 상태
 
 Material·Cupertino API의 동작은 Flutter를 참고합니다. 실제 구현은 `Doroti.Framework.*`의 C# 코드로 유지보수하며, Flutter 런타임을 WebView에 넣어 실행하는 방식은 아닙니다.
 
-프로젝트 초반에는 Dart-to-C# 컴파일러로 프레임워크의 기반을 만들었습니다. 현재는 C# 코드를 직접 개발하며, 컴파일러는 필요한 소스를 가져오거나 동작을 비교하는 선택적 도구로 남아 있습니다.
+Dart-to-C# 컴파일러는 필요한 소스를 가져오거나 동작을 비교하는 선택적 도구입니다.
 
 ## 문서
 
@@ -92,8 +88,7 @@ Material·Cupertino API의 동작은 Flutter를 참고합니다. 실제 구현�
 | [샘플 앱 가이드](samples/DorotiTestbedApp/README.ko.md) | 플랫폼별 실행, 샘플 화면, 렌더러 옵션, 문제 해결 |
 | [Cupertino 샘플](samples/DorotiSampleApp2/README.md) | Windows / Web의 Cupertino 위젯, 프로필 입력, 테마 설정 |
 | [Dart-to-C# 컴파일러](tools/Doroti.DartToCSharp/README.ko.md) | 선택적 소스 가져오기 및 마이그레이션 도구 |
-| [WGSL GPU 효과](history/26-09-26/wgsl-gpu-effects-summary.md) | Windows fragment 구현·검증, 초기 도구 설치 및 남은 플랫폼 범위 |
-| [개발 이력](history/) | 지난 작업 계획과 검증 기록 |
+| [WGSL 컴파일러](tools/Doroti.Wgsl/README.md) | 셰이더 컴파일, 백엔드 프로필, 앱 연동 |
 
 ## 프로젝트 상태
 
@@ -101,9 +96,7 @@ Material·Cupertino API의 동작은 Flutter를 참고합니다. 실제 구현�
 
 Doroti는 개인이 개발하는 실험적 프로젝트입니다. 플랫폼 표는 구현된 호스트와 기본 렌더링 구성을 나타내며, 모든 플랫폼이 동일한 수준으로 제품 사용을 준비했다는 의미는 아닙니다.
 
-빌드 검사, 네이티브·브라우저 실행, 실제 기기 테스트는 구분하여 기록합니다. GPU 호환성, 입력기, 접근성, 성능, 서명과 스토어 배포는 플랫폼별 검증이 더 필요합니다. 사용할 플랫폼을 선택하기 전에 [프레임워크 가이드](Doroti/README.ko.md)와 검증 기록을 확인하세요.
-
-현재는 네이티브 데스크톱 연동, 웹 동작 검증 자동화, 각 플랫폼의 대표적인 릴리스·실제 기기 테스트를 우선 진행하고 있습니다.
+GPU 호환성, 입력기, 접근성, 성능, 서명과 스토어 배포는 플랫폼과 구성에 따라 다릅니다. 사용할 플랫폼을 선택하기 전에 [프레임워크 가이드](Doroti/README.ko.md#플랫폼-지원-범위)를 확인하세요.
 
 ## 저장소 구성
 
@@ -124,5 +117,3 @@ Doroti는 개인적으로 즐기며 만들고 있는 취미 프로젝트입니�
 ## 라이선스
 
 Doroti는 [BSD 3-Clause 라이선스](LICENSE)를 따릅니다. 외부 소스와 패키지의 저작권 표기는 [서드파티 고지](Doroti/THIRD-PARTY-NOTICES.md)를 참고하세요.
-
-2026-10-03: Windows MAUI 기본 native 서비스·GPU import/복수 창, App SDK opt-in WebView/editor 혼합, layout 접근성 geometry, Web 복구/offline font·개발/release 진입점은 [현재 실행 기록](Doroti/docs/validation/2026-10-03-platform-gap-implementation.md)을 따른다. 당시 Apple 후보의 검증 생략 이력은 보존하고, 이후 [Apple 후속 검토](Doroti/docs/validation/2026-10-03-apple-platform-gap-followup.md)에 native 접근성·입력 보강과 새 빌드·API 검사를 기록했다. 물리 입력·AT·표시·서명 배포 인수는 별도다.

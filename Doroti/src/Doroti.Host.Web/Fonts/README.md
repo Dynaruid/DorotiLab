@@ -221,7 +221,7 @@ complete CSS font matching or `font-display` timing model.
 Discovery is bounded to 64 fetched stylesheets, import depth 8, 128 faces, 2 MB
 per fetched CSS response and a 20-second discovery budget. All discovered faces
 are preloaded, so large subset catalogs should use explicit assets. Dynamic
-link insertion/CSSOM changes and per-glyph CSS lazy loading are follow-up scope.
+link insertion/CSSOM changes and per-glyph CSS lazy loading are unsupported.
 Downloads share URL tasks and decoded content hashes; each file is limited to
 30 MB and `DownloadTimeout`. TTF/OTF signatures and WOFF lengths are checked;
 WOFF1 tables are reconstructed with bounded zlib output and checksums. WOFF2

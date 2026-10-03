@@ -21,15 +21,6 @@ PNG/JPG/JPEG/GIF/WEBP/BMP 이미지는 최대 10 MiB, TXT/MD/CSV/JSON/LOG 텍스
 목록은 탭을 전환해도 유지되며 앱을 닫으면 초기화됩니다.
 구현은 [src/FileUploadPage.cs](src/FileUploadPage.cs)에 있습니다.
 
-검증 (2026-10-03): 공통 앱·Windows App SDK·Web Release 빌드 **PASS**.
-CPU 자동 검증에서 실제 위젯 포인터 경로의 탭/버튼 전환, 합성 파일 선택·드롭과 미리보기,
-읽기 권한 해제, 탭 상태 유지·수신 해제, 375px 레이아웃을 확인했습니다.
-부분 읽기·UTF-8/UTF-16·빈 텍스트와 크기/형식 제한·읽기 취소도 **PASS**.
-후속 수정: Windows/Qt가 요구하는 `.txt`, `.png` 형식의 확장자 필터를 전달하도록 고쳤습니다.
-Windows 네이티브 파일 선택 창은 샘플의 실제 필터로 TXT·PNG 다중 선택, 파일 읽기·권한 해제,
-취소를 자동 검증하여 **PASS**입니다(합성 다이얼로그 명령).
-물리 마우스를 통한 앱→선택 창 조작, 탐색기 드래그, 모바일 기기·브라우저에서의 파일 입력은 **notVerified**입니다.
-
 ## Variable Blur 예제
 
 Variable Blur 페이지는 리스트 상단 180 논리 단위에 `BackdropFilter`와
@@ -39,7 +30,7 @@ adaptiveResolution: true, kernel: VariableBlurKernel.fastGaussian)`를 기본으
 
 - **Full quality**: 전체 구간을 원본 해상도로 처리합니다.
 - **Adaptive**: 약한 블러와 선명한 끝부분의 세부를 보존할 때 선택합니다. 약한 블러는 원본 해상도, 강한 블러는 1/2·1/4 해상도로 처리하고 경계를 혼합합니다.
-- **Fast adaptive** (기본): 강도에 맞춰 Gaussian 가중치를 계산하고 인접 샘플 쌍을 bilinear 샘플링으로 묶습니다. 강한 구간에서도 윤곽이 여러 장 겹치지 않도록 샘플 수를 늘립니다. 작업 해상도 sigma 2~3에서는 기존 커널과 혼합합니다. 과거 고정 7회 커널보다 강한 블러의 처리 비용이 증가할 수 있습니다.
+- **Fast adaptive** (기본): 강도에 맞춰 Gaussian 가중치를 계산하고 인접 샘플 쌍을 bilinear 샘플링으로 묶습니다. 강한 구간에서도 윤곽이 여러 장 겹치지 않도록 샘플 수를 늘립니다. 작업 해상도 sigma 2~3에서는 Gaussian 커널과 혼합합니다. 강도가 높아지면 처리 비용도 증가할 수 있습니다.
 - **Fixed 1/4**: 부드러운 스크롤을 우선하는 선택입니다. 전체 구간을 가로·세로 각각 약 1/4 해상도의 Gaussian으로 처리합니다. 약한 구간과 선명한 끝부분도 축소 입력을 사용해 작은 글자·가는 선·사진 세부가 부드러워질 수 있습니다.
 - **Dual Kawase**: 강도별 결과를 공유 피라미드에서 생성하고 분산을 보간합니다. 선명한 끝부분에는 Gaussian을 사용합니다. 정확한 Gaussian과는 다른 근사 모드입니다.
 
@@ -83,9 +74,7 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build -App ./samples/DorotiSampleA
 공통 UI, Cupertino 아이콘과 앱 ID(`dev.doroti.sample2`)를 공유하며 AppKit 앱 ID는 `dev.doroti.sample2.macos`입니다.
 
 Windows MAUI 비교용 프로젝트는 `windows/DorotiSampleApp2.Windows.csproj`입니다.
-Windows MAUI의 Upload 탭도 실제 HWND 파일 선택·읽기·미리보기를 연결하며,
-[2026-10-03 기본 연결 기록](../../Doroti/docs/validation/2026-10-03-windows-maui-basic-connections.md)에
-synthetic dialog 선택·preview·정리와 미검증 범위를 남겼습니다.
+Windows MAUI의 Upload 탭도 HWND 파일 선택·읽기·미리보기를 제공합니다.
 workspace CLI의 Windows 기본 대상은 위 표의 Windows App SDK를 유지합니다.
 네이티브 호스트는 공통 C 정책만 사용합니다. 프레임 설정 없이 실행하거나
 `DOROTI_NATIVE_FRAME_MODE=C`를 지정합니다. A/B와 legacy 프레임 설정은 시작 시 거절합니다.
@@ -179,18 +168,6 @@ APK는 로컬 기기 테스트용이며 스토어 배포용 서명 설정은 별
 성공하면 APK 경로, 실행 중인 PID와 해당 프로세스의 `adb logcat` 명령을 출력합니다.
 프로세스 실행 확인과 별도로 화면 표시·터치 동작은 기기에서 확인하세요.
 
-2026-09-29 Galaxy S25 (`SM-S931N`)에서 CoreCLR JIT와 CoreCLR ReadyToRun 모두
-빌드·업데이트 설치·화면 표시·터치 동작을 확인했습니다.
-JIT는 탭 전환, R2R은 버튼 카운터 `0 → 1`을 확인했으며, 전체 기능 및 성능 비교 검증은 포함하지 않습니다.
-Mono AOT는 이 비교 작업에서 다시 빌드·실행하지 않았습니다.
-배포 스크립트는 `CoreClrR2R`로 기기 자동 선택, 저장소 루트 밖에서 호출,
-빌드·설치·프로세스 실행까지 검증했으며, 존재하지 않는 시리얼 지정 시 빌드 전 중단도 확인했습니다.
-
-2026-09-30 같은 기기에서 **.NET 11 RC의 CoreCLR JIT / R2R 모두 PASS**:
-스크립트 빌드·업데이트 설치·화면 표시·버튼 카운터 `0 → 1`을 확인했습니다.
-두 APK의 CoreCLR/JIT 라이브러리는 .NET 11 런타임 파일과 일치하며, R2R 구성의 사전 컴파일 산출물도 확인했습니다.
-.NET 10 기본 설정과 Android 호스트 재빌드는 통과했습니다. .NET 11의 전체 기능·TalkBack·성능 비교는 별도 검증 대상입니다.
-
 ## iOS
 
 Mac, 선택한 .NET iOS 워크로드와 호환되는 Xcode가 필요합니다. 실제 기기는 서명 설정도 필요합니다.
@@ -225,7 +202,7 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 dev -App ./samples/DorotiSampleApp
 
 ### .NET 11 RC1 + Xcode 27 Native AOT
 
-2026-09-30 기준 [.NET 11 RC1 iOS 워크로드](https://github.com/dotnet/macios/releases/tag/dotnet-11.0.1xx-rc1-12193)는
+[.NET 11 RC1 iOS 워크로드](https://github.com/dotnet/macios/releases/tag/dotnet-11.0.1xx-rc1-12193)는
 **Xcode 26.6**을 요구합니다. Xcode 27에서 이 프로필을 빌드·게시하려면 직접
 `dotnet build` / `dotnet publish` 명령에 **`-p:ValidateXcodeVersion=false`**를 추가해야 합니다.
 Native AOT 앱 생성에는 `dotnet publish`를 사용합니다. 이 옵션은 버전 검사만 건너뛰며,
@@ -259,19 +236,6 @@ try {
 Xcode 26.6을 선택한 .NET 11 빌드나 Xcode 27을 지원하는 .NET 10 워크로드에는 이 옵션이 필요 없습니다.
 [도구 업데이트 스크립트](../../scripts/update-dotnet-macos.py)로 .NET 11 워크로드를 RC1으로 업데이트해도
 RC1의 Xcode 26.6 요구 사항은 유지됩니다.
-
-2026-09-30 검증: .NET SDK `11.0.100-rc.1.26425.128`, iOS SDK pack `26.5.11720-net11-p6`,
-Xcode 27.0에서 위 우회를 적용한 Release Native AOT publish·서명·iPhone 12/iOS 26.6.1 설치와
-Components 화면 표시를 확인했습니다. `PublishAot=true`, `UseNativeAot=true`, `UseMonoRuntime=false`,
-앱 번들 내 관리 DLL 0개를 확인했습니다. 이 결과는 RC1 iOS SDK pack `26.5.12193-net11-rc.1`의
-검증 결과가 아니며, 전체 터치·회전 동작과 배포 적합성 검증도 포함하지 않습니다.
-
-2026-10-01 RC1 pack 검증: 기본 `/usr/local/share/dotnet` 경로로 도구를 통합한 뒤
-`net11.0-ios` Release/NativeAOT publish·서명 검증·iPhone 설치를 완료했습니다.
-이 빌드는 preservation/class lookup 우회 옵션을 해당 명령에만 추가했으며 ILC 진단이 남았습니다.
-첫 실행의 iOS 보안 오류는 사용자 개발자 신뢰 처리 후 해소됐고 Components 화면 표시와
-프로세스 유지를 확인했습니다. NativeAOT 성능·전체 수동 조작은 미검증입니다.
-정확한 게시 명령과 한계는 [설치 기록](../../history/26-10-03/works/results/2026-10-01-sample2-nativeaot-rc1.md)을 참고하세요.
 
 ## Linux
 
@@ -349,18 +313,6 @@ Fonts 탭의 Galmuri/SUITE와 디코더도 로컬로 포함하므로 이 화면�
 
 ## 검증
 
-플랫폼 확장 검증 (2026-09-29):
-
-| 범위 | 결과 |
-| --- | --- |
-| 워크스페이스 CLI / SDK 그래프 | **PASS**: 7개 플랫폼, Android 2개·iOS 3개 RID를 포함한 10개 구성 |
-| Android ARM64 Debug | **PASS**: 빌드·설치, SM-S931N에서 Vulkan 화면 표시와 Components → Profile 터치 탭 전환 |
-| Linux x64 Debug | **PARTIAL**: Windows에서 관리 코드 빌드 통과. Linux Qt 네이티브 빌드·실행은 **notVerified** |
-| iOS / macOS / Mac Catalyst | 그래프·네이티브 프로젝트 참조 검증 통과. Apple 호스트의 빌드·서명·실행은 **notVerified** |
-| 기존 Windows / Web | SDK 그래프 통과. 이번 확장 작업에서 실제 실행은 재검증하지 않음 |
-
-위 결과는 모든 화면·입력·GPU 효과의 전체 플랫폼 동작을 보증하지 않습니다.
-
 현재 CPU 회귀 진입점은 다음과 같습니다. 포인터 탭·입력·다이얼로그·viewport/DPR·리스트 수명과
 캡처 정책을 확인하며, GPU Variable Blur 픽셀 비교는 포함하지 않습니다.
 
@@ -373,9 +325,6 @@ dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-gpu
 dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-quality temp/testing/variable-blur/quality-review # separate still-image review
 python3 -m unittest discover -s Doroti/tests -p test_variable_blur_device.py
 ```
-
-과거 `Doroti/validation/cupertino-sample` 프로젝트는 현재 트리에 없습니다.
-해당 프로젝트의 `--variable-blur`, `--high-dpi`, `--frame-benchmark` 명령을 현재 검증으로 사용하지 않습니다.
 
 Variable Blur의 iPhone 반복 스크롤 측정은 서명된 **Release/Mono** 앱을 먼저 빌드한 뒤 실행합니다.
 `--app`은 빌드 산출물 경로, `--device`는 연결된 실기기 식별자입니다.
@@ -414,8 +363,6 @@ Clamp·회전/반사/균일 scale·최대 약 124 device sigma를 지원하며 �
 `kernel: VariableBlurKernel.fastGaussian`입니다. 약한 구간의 원본 해상도와 선명한 끝부분을 보존합니다.
 원본 해상도 Gaussian은 `resolutionScale: 1, kernel: VariableBlurKernel.gaussian`으로 명시할 수 있습니다.
 Fixed와 Dual Kawase도 개별 옵션으로 선택할 수 있습니다.
-이전 [Fixed 검증](../../history/26-10-03/works/results/2026-10-01-variable-blur-fixed-adoption.md)은 당시 기본 선택의 기록이며,
-[현재 iOS 프레임 연결 결과](../../history/26-10-03/works/results/2026-10-02-ios-frame-loop.md)와 구분합니다.
 
 `--intermediate`는 Adaptive의 중간 출력 합성을, `--full-capture`는 전체 캡처를 강제하는 같은 바이너리 A/B 옵션입니다.
 `--owned-subtrees`는 셰이더 없는 형제 scope도 별도 Surface로 처리하며,
@@ -423,10 +370,7 @@ Fixed와 Dual Kawase도 개별 옵션으로 선택할 수 있습니다.
 `--full-bands` / `--full-detail`은 Gaussian 띠·선명한 구간의 기존 전체 크기 backing을 유지하는 A/B 옵션입니다.
 iOS는 새 shader-only 장면에 최대 2개 GPU frame과 비동기 표시를 사용하는 C 경로가 기본입니다.
 native·회전·replay는 직렬 admission과 필요한 transaction 표시를 유지합니다.
-프레임 정책 선택 옵션은 제거했습니다. iOS 수집기는 설정 없이 C를 측정하며,
-과거 A/B 선택과 legacy presentation 설정은 사용할 수 없습니다.
-프레임 준비·표시·복귀 수정과 이후 실기기 결과는 [프레임 연결 결과](../../history/26-10-03/works/results/2026-10-02-ios-frame-loop.md)를 참조합니다.
-수집기도 별도 정책 옵션이 없으면 C를 측정합니다.
+iOS 수집기는 프레임 정책 선택 옵션 없이 C를 측정합니다.
 `--sigma 32`로 최대 강도를 측정할 수 있습니다.
 수집기의 평균 FPS는 warm 구간의 실제 표시 간격으로 계산하며 CPU stage나 GPU 실행 시간에서 추정하지 않습니다.
 
@@ -436,15 +380,12 @@ CPU stage는 최대 최근 4,096회 호출이며 초기 준비를 포함하고, 
 Surface 정보는 마지막 프레임의 scene filter 전체를 포함합니다. RGBA 추정 바이트를 합산해 live/peak VRAM으로
 해석하지 않습니다. UIKit command buffer 카운터는 terminal marker만 세며 Skia 내부 제출 횟수는 아닙니다.
 GPU 구간 시간과 peak 메모리는 별도 Metal System Trace가 필요합니다.
-[작업 결과·미검증 범위](../../history/26-10-03/works/results/2026-09-30-variable-blur.md)를 참고하세요.
 
-2026-10-01 후속: 축소 격자가 정렬 가능한 축만 부분 캡처하도록 개선했습니다.
+부분 캡처는 축소 격자가 정렬 가능한 축에만 적용합니다.
 `--variable-blur-capture`는 실제 embedded SkSL의 1·1/2·1/4 레벨을 래스터에서 실행하여
 전체 도메인과 부분 캡처의 픽셀을 비교합니다. Graphite GPU 픽셀 비교나 Adaptive 마스크 검증을 대신하지 않습니다.
 실기기 측정 스크립트의 `--full-capture` 옵션은 `DOROTI_VARIABLE_BLUR_DISABLE_CROP=1`로
 같은 바이너리의 전체 도메인 기준을 실행합니다. 기본 실행과 각각 새 출력 폴더로 비교하세요.
-[부분 캡처 후속 결과](../../history/26-10-03/works/results/2026-10-01-variable-blur-per-axis.md)에 실행 범위와 미검증 사항을 기록합니다.
-
 
 ## 웹폰트 비교
 
@@ -461,8 +402,6 @@ python Doroti/validation/run-with-timeout.py dotnet publish samples/DorotiSample
 `wwwroot`를 COOP/COEP 헤더가 있는 서버로 제공하세요. `/sample/` 배포에서는 HTML의
 base href도 `/sample/`로 바꿉니다. 디코더 CSP와 CSS 지원 범위는
 [폰트 사용 문서](../../Doroti/src/Doroti.Host.Web/Fonts/README.md#css-links-and-variable-fonts)를 참고하세요.
-검증 절차는 [css-fonts](../../history/26-09-28/web-fonts-summary.md)에 있습니다.
-
 
 ## 공통 assets 폴더의 웹폰트
 

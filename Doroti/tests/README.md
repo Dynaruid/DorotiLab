@@ -8,16 +8,16 @@ with the 1,200-second wrapper. The device test temporarily edits the Testbed rel
 scene and restores it in `finally`; its state is automatically seeded, so it does
 not establish physical touch/IME evidence. The installed VSIX regression uses
 `dist/test/runHost.js ... --android` with `DOROTI_TEST_ANDROID_DEVICE=<serial>`.
-Use fresh output folders under `Doroti/artifacts/android-hot-reload`. See the
-[Android follow-up](../docs/validation/2026-10-03-android-hot-reload.md).
+Use fresh output folders under `Doroti/artifacts/android-hot-reload`. See
+[development sessions](../docs/development-hot-reload.md) for prerequisites and commands.
 
 Windows MAUI basic services and native views use `windows_maui_smoke.py`, which
 selects the MAUI executable explicitly. Modes `graphite`, `embedded`, `ganesh`,
 `webview`, and `upload` check separate native owner/widget/upload paths. Build the
 Testbed `windows` runner first; `upload` also needs Sample2 `windows`. Run with
-the 1200-second wrapper and a fresh `temp/testing/` output directory. See
-[2026-10-03 W4 execution](../docs/validation/2026-10-03-windows-maui-basic-connections.md)
-for commands, package identity, supported overlay topology and physical evidence boundaries.
+the 1200-second wrapper and a fresh `temp/testing/` output directory. See the
+[PlatformView support matrix](../docs/platform-views/support-matrix.md)
+for supported overlay topology and host constraints.
 
 Native C-only configuration and policy, GPU-full preparation, coalescing, native insertion,
 generation changes and out-of-order retirement are part of the CPU `Build` suite.
@@ -52,7 +52,7 @@ against two retained asynchronous submissions, GPU-full preparation, third-frame
 admission rejection, reverse retirement and final drain. Its terminal waits and
 readbacks are fixture-only. It retains two logical frames without a hardware
 queue blocker, and does not claim scanout, hardware overlap or native composition.
-Apple snapshots now include `nativeFramePipeline` without enabling the detailed
+Apple snapshots include `nativeFramePipeline` without enabling the detailed
 `DOROTI_VARIABLE_BLUR_PROFILE` event history. CPU tests also cover Apple raster
 wakes coalescing with normal framework requests.
 
@@ -86,10 +86,7 @@ provenance. Missing display events report `notMeasured`.
 checks three continuing resumes with at least 5s between snapshots, rotation,
 process/surface recreation and a screenshot. Rotation settings are restored.
 This is synthetic automation. Physical finger, IME, selection and 10-minute use
-require their own evidence. Apple validation was skipped for the October 2
-candidate; see that [result](../../history/26-10-03/works/results/2026-10-02-native-frame-pipeline.md).
-The later [Apple review](../../history/26-10-03/works/results/2026-10-03-apple-frame-configuration-review.md)
-records new builds and execution separately.
+require their own evidence.
 
 Run from the repository root with Python, PowerShell 7, Node 24 and the pinned .NET SDK:
 
@@ -115,9 +112,9 @@ Each aggregate invocation has a 1,200-second limit via `eng/run-with-timeout.py`
 
 On the Apple toolchain, `python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/apple_build_profiles.py` checks real MSBuild evaluation of iOS device/simulator Debug profiles, caller overrides, custom app assemblies, Release Mono, NativeAOT, and template parity. The optional Apple smoke `rotation` case checks native timing, intermediate raster sizes, final pixels/safe areas and display-link shutdown. For device performance qualification, set `DOROTI_UIKIT_ROTATION_ASSERT_SYNC=1` when launching the Testbed rotation probe; it bounds mean/peak viewport phase error relative to the rotation's size change. Simulator interpreter runs do not claim the same performance budget.
 
-App icon defaults, custom overrides, opt-out and portable asset formats use `python Doroti/eng/run-with-timeout.py python Doroti/tests/app_icons.py`. An optional path to a built `Doroti.Runner.Sdk` nupkg also verifies its icon payload. Platform build/runtime verification is recorded in the [icon validation notes](../docs/branding/validation.md).
+App icon defaults, custom overrides, opt-out and portable asset formats use `python Doroti/eng/run-with-timeout.py python Doroti/tests/app_icons.py`. An optional path to a built `Doroti.Runner.Sdk` nupkg also verifies its icon payload. See [app icon configuration](../docs/branding/README.md) for defaults and overrides.
 
-M4 package qualification uses `python Doroti/eng/run-with-timeout.py python Doroti/tests/plugin_packages.py`
+Plugin package qualification uses `python Doroti/eng/run-with-timeout.py python Doroti/tests/plugin_packages.py`
 for the NuGet-only common/trimmed consumer and SDK diagnostics. The interactive Windows suite is
 `python Doroti/eng/run-with-timeout.py python Doroti/tests/plugin_windows_packages.py`:
 it publishes a NuGet-only host/plugin consumer, selects its own temporary file through real
@@ -125,7 +122,7 @@ OS dialog commands, verifies caller/owner cancellation and opens a loopback URL 
 browser. It removes successful raw runs. This is synthetic UI automation, not physical input.
 See [plugin contract and boundaries](../docs/plugins.md).
 
-M5-A uses `python Doroti/eng/run-with-timeout.py python Doroti/tests/plugin_windows_packages.py --drop`
+OS drop package qualification uses `python Doroti/eng/run-with-timeout.py python Doroti/tests/plugin_windows_packages.py --drop`
 for the NuGet-only Windows receiver, real read handles/5GB sparse file, Unicode/URI,
 revoke/cleanup and 96/192 DPI contexts. It exercises native callbacks with standard
 Windows IDataObject, not Explorer gestures. `Doroti.Drop.Windows.Tests` additionally
@@ -149,7 +146,7 @@ The permanent fixtures protect regressions in pointer tab routing, bounded settl
 python Doroti/eng/run-with-timeout.py dotnet run --project Doroti/tests/Doroti.Tests -c Debug -- --break-tab
 ```
 
-That command must fail; without `--break-tab`, it must pass. Rendering fixtures cover fixed DPR pixels, VariableBlur raster kernels/capture coordinates, a 1,000-row list, reassemble offset preservation and zero engine-layer delta after disposal. Physical IME/accessibility and the full GPU/platform matrix remain tracked in [M1](../../history/26-10-03/works/common/01-testing.md) and [M2-B](../../history/26-10-03/works/common/03-input-accessibility-platformview.md).
+That command must fail; without `--break-tab`, it must pass. Rendering fixtures cover fixed DPR pixels, VariableBlur raster kernels/capture coordinates, a 1,000-row list, reassemble offset preservation and zero engine-layer delta after disposal. Physical IME/accessibility and other GPU/platform combinations need separate checks; consult [support status](../docs/support-status.md).
 
 On macOS with a Metal GPU, run the production renderer pixel checks explicitly:
 
@@ -192,7 +189,6 @@ For manual Windows Korean IME/focus checks, set `$env:DOROTI_SAMPLE='input'` and
 
 Navigation/restore, concurrent window contexts and the CPU Dialog intermediate frame are in Developer. Selected Release candidates and portable installation are documented in [release candidates](../docs/release-candidates.md).
 
-
 Browser services (picker/managed grants, Copy drop, real history and text restoration)
 are exercised through the threaded runtime with installed Chrome and Python Playwright:
 
@@ -206,7 +202,6 @@ The test uses actual browser chooser/keyboard/mouse events. Its DataTransfer dro
 synthetic DOM input, not Explorer-to-browser transfer. It asserts a native textbox
 semantics node cannot absorb sibling buttons, and that worker-side navigation and
 plugin calls reach DOM services. It preserves failure images; output is disposable.
-
 
 Linux Qt uses Python 3 and system Qt 6 development/QML/WebEngine dependencies:
 
@@ -233,9 +228,8 @@ compiled only for the test and injected with LD_PRELOAD, never shipped in the
 host/template. Dialog selection and QDropEvent input are synthetic native tests,
 not physical IME/Orca or external file-manager drags. An optional
 `DOROTI_QT_URL_PROBE=http://127.0.0.1:PORT/` also opens the real default browser.
-Widgets OpenGL uses the separate ClipRect-only `qt-widgets` sample; see
-[Linux execution and reproduction](../../history/26-10-03/works/results/2026-09-29-linux-qt.md).
-
+Widgets OpenGL uses the separate ClipRect-only `qt-widgets` sample; see the
+[Linux Qt guide](../docs/platform-views/linux-qt.md).
 
 macOS AppKit uses the installed Xcode 27/.NET 10 macOS27 profile:
 
@@ -250,7 +244,7 @@ route restoration are distinct from physical IME/VoiceOver/Finder input. The
 opt-in automation lives only in the testbed runner. `--cases` selects
 `multi,desktop,services,input,navigation,rendering,lifecycle`; `--tfm net10.0-macos` selects
 the corresponding Xcode 26 toolchain. Direct scripts retain their raw output;
-MacOSSmoke cleans successful runs. See [AppKit results](../../history/26-10-03/works/results/2026-09-29-macos-appkit.md).
+MacOSSmoke cleans successful runs.
 
 The `lifecycle` fixture uses actual Metal submissions and terminal callbacks to
 check same-owner replacement gating, independent-window connection while an old
@@ -258,8 +252,7 @@ owner retires, retirement roots, background/retired snapshots, hide/resume three
 times and native detach/reattach. Native keyboard events and window backing
 factors 1/1.5/2 are synthetic. They verify key-up synthesis and exact pixel extents,
 and do not qualify physical keyboard/IME input or a real monitor transition.
-The fixture never blocks the GPU to claim hardware overlap. See the separate
-[AppKit review](../../history/26-10-03/works/results/2026-10-03-appkit-configuration-review.md).
+The fixture never blocks the GPU to claim hardware overlap.
 
 The local macOS payload fixture is `tests/macos_package_smoke.py --candidate PATH
 --previous PATH --output temp/testing/macos-appkit/install`. Run it through the
@@ -268,7 +261,7 @@ runs both extracted app versions with an empty NuGet cache, replaces the app,
 then removes it while preserving its own Unicode userdata fixture. It does not
 run macOS Installer or qualify Gatekeeper/notarization/clean-machine deployment.
 
-2026-09-29 UIKit/Catalyst: [implementation, smoke commands and remaining qualification](../../history/26-10-03/works/results/2026-09-29-ios-catalyst.md). iOS Simulator, device signing and Catalyst scenes have separate evidence; package-only publish does not imply clean signed distribution.
+iOS Simulator, device signing and Catalyst scenes require separate checks; package-only publish does not imply clean signed distribution.
 
 Apple suites: `IOSSmoke` uses native scene activity callback injection for unattended
 navigation; `CatalystSmoke` uses LaunchServices URL delivery. Both use the maintained
@@ -281,7 +274,6 @@ pwsh -NoProfile -File Doroti/eng/doroti.ps1 validate -ValidationSuite IOSSmoke
 pwsh -NoProfile -File Doroti/eng/doroti.ps1 validate -ValidationSuite CatalystSmoke
 ```
 
-
 iOS development validation (macOS, booted simulator, matching iOS workload):
 
 ```sh
@@ -291,7 +283,7 @@ python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/ios_hot_reload_smoke
 python3 Doroti/eng/run-with-timeout.py node Doroti/tools/vscode-doroti/dist/test/runHost.js samples/DorotiTestbedApp temp/testing/ios-editor-run --ios
 ```
 
-The smoke test temporarily edits the Testbed reload scene and restores it in `finally`; use a fresh evidence directory and do not edit that scene concurrently. It verifies actual deltas, PID/State/count/text/scroll preservation, compiler-error recovery, rude edits and Stop. State is seeded automatically. The editor test uses a separately installed VSIX/profile; run `npm run package` in the extension folder first. See [iOS qualification](../../history/26-10-03/works/platforms/ios.md#2026-09-30-ios-metadata-hot-reload).
+The smoke test temporarily edits the Testbed reload scene and restores it in `finally`; use a fresh evidence directory and do not edit that scene concurrently. It verifies actual deltas, PID/State/count/text/scroll preservation, compiler-error recovery, rude edits and Stop. State is seeded automatically. The editor test uses a separately installed VSIX/profile; run `npm run package` in the extension folder first. See [development sessions](../docs/development-hot-reload.md).
 
 Physical-device Hot Reload uses the same smoke test with `--rid ios-arm64 --framework net11.0-ios --sdk-version 11.0.100-rc.1.26425.128 --dotnet <prepared-dotnet-host>`. It copies the automatically seeded state probe out of Documents and requires matching completed-frame responses for real SDK deltas. Pair the device, enable Developer Mode, and supply signing/toolchain environment variables described in the [development contract](../docs/development-hot-reload.md).
 
@@ -308,14 +300,13 @@ DOROTI_TEST_MAC_TARGET=maccatalyst python3 Doroti/eng/run-with-timeout.py node D
 
 Run these sequentially: they temporarily edit the same Testbed scene, restoring it on exit. The CLI smoke checks real metadata updates, seeded state preservation, compile recovery, rude edits and Stop/PID exit. The editor smoke installs the packaged VSIX in an isolated profile and invokes its Run/Hot Reload/Stop commands. `DOROTI_TEST_MAC_TFM` overrides the editor test's Xcode 27 TFM. `apple_build_profiles.py` also checks both Mac development profiles, rejects incompatible settings and verifies ordinary Debug/Release interpreter defaults remain unchanged.
 
-2026-10-03 platform gaps: [commands/results and limits](../docs/validation/2026-10-03-platform-gap-implementation.md).
-Use windows_maui_smoke.py for W4 owner/services, windows_native_texture_smoke.py for actual MAUI GPU import,
+Use windows_maui_smoke.py for MAUI owner/services, windows_native_texture_smoke.py for actual MAUI GPU import,
 windows_smoke.py for explicit App SDK/MAUI multiwindow and the opt-in mixed scene.
 web_runtime_recovery.py requires a completed Testbed Web build; --main-only uses the default threaded build,
 --worker-only requires -p:WasmEnableThreads=false. Restore the default threaded build afterward.
 web_offline_fonts.py requires Sample2 Assets + DorotiWebFontValidation=true; it checks real Korean glyphs,
 zero external requests and decoder-denial diagnostics. Do not build shared TS assets while a browser probe runs.
 hot_reload_smoke.py accepts backend Maui and --verify-restart to check actual Run/Reload/Stop/Run/Stop.
-All commands use the 1200-second wrapper. Apple validation was SKIPPED for that implementation candidate; [the subsequent Apple follow-up](../docs/validation/2026-10-03-apple-platform-gap-followup.md) records new builds and native checks. The default `features` case covers actual Apple WebView commands, accessibility hierarchy/actions/password guards, and input configuration/Return behavior. iOS/macOS testbed probe copies must match; `apple_build_profiles.py` checks this parity.
+All commands use the 1200-second wrapper. The default Apple smoke `features` case covers actual Apple WebView commands, accessibility hierarchy/actions/password guards, and input configuration/Return behavior. iOS/macOS testbed probe copies must match; `apple_build_profiles.py` checks this parity.
 
 `web_package_runtime.py <candidate> <fresh-output>` serves the published NuGet-only Offline Web payload with explicit COOP/COEP and JavaScript `.mjs` MIME, then checks first frame/focus and zero external requests. Runtime ownership uses the SDK-generated `doroti.runtime-profile.json`; standalone worker requires a single-thread build. `web_runtime_recovery.py --worker-only --expect-threaded-rejection` checks early rejection of the ordinary threaded profile. Changing threading profiles in a shared SDK output requires clean/rebuild or isolated artifacts; the normal Testbed profile is threaded.
