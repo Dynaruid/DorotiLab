@@ -20,9 +20,10 @@ def source():
     # Current entry points and referenced planning archives, not deleted probe reports.
     docs = [ROOT / p for p in ("history/26-10-03/platform-gap-summary.md", "history/26-09-28/plan-summary.md", "README.md", "README.ko.md", "Doroti/README.md", "history/26-10-03/works/README.md",
         "Doroti/tests/README.md", "Doroti/docs/support-status.md", "Doroti/docs/desktop-windows.md",
-        "Doroti/docs/rendering-baselines.md", "Doroti/docs/development-hot-reload.md", "Doroti/tools/vscode-doroti/README.md",
+        "Doroti/docs/rendering-baselines.md", "Doroti/docs/web-host-architecture.md", "Doroti/docs/development-hot-reload.md", "Doroti/tools/vscode-doroti/README.md",
         "Doroti/docs/application-navigation.md", "Doroti/docs/desktop-window-context.md", "Doroti/docs/release-candidates.md",
-        "Doroti/docs/platform-views/support-matrix.md", "samples/DorotiTestbedApp/README.md", "samples/DorotiSampleApp2/README.md")]
+        "Doroti/docs/platform-views/support-matrix.md", "Doroti/docs/validation/2026-10-04-web-structure.md",
+        "samples/DorotiTestbedApp/README.md", "samples/DorotiSampleApp2/README.md")]
     docs += list((ROOT / "history/26-10-03/works").rglob("*.md"))
     broken = []
     for doc in set(docs):
@@ -65,6 +66,7 @@ def main(suite):
             command("plugin-regressions", "dotnet", "run", "--project", "Doroti/tests/Doroti.Plugin.Tests/Doroti.Plugin.Tests.csproj", "--artifacts-path", str(run / "plugin-build"))
             command("os-drop-regressions", "dotnet", "run", "--project", "Doroti/tests/Doroti.Drop.Tests/Doroti.Drop.Tests.csproj", "--artifacts-path", str(run / "drop-build"))
             command("web-rendering", "node", "--experimental-transform-types", "--test", "Doroti/tests/web_rendering.mts")
+            command("web-worker-lifecycle", "node", "--experimental-transform-types", "--test", "Doroti/tests/web_worker_lifecycle.mts")
             command("web-textures", "node", "--experimental-transform-types", "--experimental-vm-modules", "--test", "Doroti/tests/web_textures.mts")
         if suite in ("Targets", "Release"):
             for target in ("windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj", "web/DorotiTestbedApp.Web.csproj"):

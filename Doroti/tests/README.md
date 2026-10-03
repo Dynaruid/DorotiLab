@@ -104,7 +104,7 @@ pwsh -NoProfile -File Doroti/eng/doroti.ps1 validate -ValidationSuite Packages
 | --- | --- |
 | Source / audit | Current documentation and plan links, tracked temp policy, timeout/exit tests, top-level failure propagation, portable install rollback/retry and integrity/userdata contracts |
 | Build | CPU widget regressions only; not the multi-platform product solution |
-| Developer | Source + Build + plugin lifetime/protocol and OS drop routing/lifetime regressions + Web resize/admission/mobile backing and high-resolution texture ownership tests |
+| Developer | Source + Build + plugin lifetime/protocol and OS drop routing/lifetime regressions + Web resize/admission/mobile backing, Worker request/capture lifecycle and high-resolution texture ownership tests |
 | Targets | Windows App SDK and Web Debug builds, Web HTTP startup/bootstrap asset smoke |
 | LinuxSmoke | Build and execute Qt Quick on the available Wayland/xcb session: Desktop/two-window lifetimes, picker/drop/source cancellation, navigation/restore, editor/WebView recreation and 20 resize cycles; VM/software GPU results are explicit |
 | WindowsSmoke | Already-built default Debug Windows runner; native state/close cancellation, editor/WebView recreation; two HWNDs and native editor islands, survivor resize and both lifetime policies. Requires an interactive GPU Windows agent |

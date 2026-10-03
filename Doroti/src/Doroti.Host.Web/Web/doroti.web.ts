@@ -1,7 +1,9 @@
 import { collectCssFonts, type CssFontOptions } from "./doroti.web.css-fonts.js";
 import { selectRendererPolicy, resolveRendererPolicy, initialCanvasCapacity } from "./doroti.web.policy.js";
 import type { RendererPolicy } from "./doroti.web.policy.js";
-import type { BrowserPlatformComposition, CompositionPacket, RasterPacket } from "./doroti.web.composition.js";
+import type { BrowserPlatformComposition, CompositionPacket } from "./doroti.web.composition.js";
+import { PlatformFrameStager } from "./doroti.web.platform-frames.js";
+import { WorkerRequestMailbox } from "./doroti.web.requests.js";
 import { BrowserViewEnvironment } from "./doroti.web.environment.js";
 import { attachTextureRegistry, texturesForCanvas } from "./doroti.web.textures.js";
 import { decodeDorotiMessage, dorotiProtocolVersion, dorotiWebGpuRendererVersion } from "./doroti.web.protocol.js";
@@ -1991,19 +1993,16 @@ export async function startDorotiWorkerHost(
       },
     });
   };
-  const frameCostPending = new Map<number, { resolve(value: unknown): void; reject(error: Error): void }>();
-  let frameCostSequence = 0;
+  const frameCostRequests = new WorkerRequestMailbox<unknown>(4, 15000, {
+    full: () => new Error("Frame cost capture already pending."),
+    closed: () => new Error("Frame cost owner is closed."),
+    timeout: () => new Error("Frame cost capture timed out."),
+  });
   const frameCostEnabled = new URL(location.href).searchParams.get("dorotiFrameCost") === "1";
-  if (frameCostEnabled) Object.assign(globalThis, { __dorotiFrameCost: (action: string) => {
-    if (frameCostPending.size >= 4) return Promise.reject(new Error("Frame cost capture already pending."));
-    const request = ++frameCostSequence;
-    return new Promise<unknown>((resolve, reject) => {
-      const timer = setTimeout(() => { frameCostPending.delete(request); reject(new Error("Frame cost capture timed out.")); }, 15000);
-      frameCostPending.set(request, { resolve: value => { clearTimeout(timer); resolve(value); },
-        reject: error => { clearTimeout(timer); reject(error); } });
-      activeWorker.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "frame-cost", request, action });
-    });
-  } });
+  if (frameCostEnabled) Object.assign(globalThis, { __dorotiFrameCost: (action: string) =>
+    frameCostRequests.request(request => activeWorker.postMessage({
+      protocolVersion: dorotiProtocolVersion, kind: "frame-cost", request, action,
+    })) });
   const postInput = (
     inputKind: string, hostId: number, inputSequence: number, payload: Record<string, unknown>): void =>
     activeWorker.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "input", inputKind, hostId, inputSequence, payload,
@@ -2141,10 +2140,9 @@ export async function startDorotiWorkerHost(
       switch (message.kind) {
         case "runtime-stage": root.dataset.dorotiWorkerStage = String(message.stage); break;
         case "frame-cost": {
-          const pending = frameCostPending.get(Number(message.request));
-          frameCostPending.delete(Number(message.request));
-          if (message.error) pending?.reject(new Error(String(message.error)));
-          else pending?.resolve(message.value);
+          const request = Number(message.request);
+          if (message.error) frameCostRequests.reject(request, new Error(String(message.error)));
+          else frameCostRequests.resolve(request, message.value);
           break;
         }
         case "runtime-ready":
@@ -2286,6 +2284,7 @@ export async function startDorotiWorkerHost(
           // Only "disposed" ends the renderer role and retires DOM endpoints.
           break;
         case "disposed":
+          frameCostRequests.close();
           closeComposition();
           root.dataset.dorotiWorkerRuntime = "disposed";
           if (display.pendingLeases.size !== 0)
@@ -2354,6 +2353,7 @@ export async function startDorotiWorkerHost(
         }
         case "fatal": {
           const error = new Error(`Doroti worker runtime failed: ${String(message.error)}`);
+          frameCostRequests.rejectAll(error);
           publishRuntimeState("lost", error.message);
           if (runtimeLocation !== "main" && (display.restartCount < 1 || message.explicitRestart === true)) {
             display.restartCount++;
@@ -2361,8 +2361,6 @@ export async function startDorotiWorkerHost(
             publishRuntimeState("restarting", error.message);
             terminalFailure = null;
             delete document.documentElement.dataset.dorotiRendererError;
-            for (const request of frameCostPending.values()) request.reject(error);
-            frameCostPending.clear();
             try { texturesForCanvas(canvas.id).disconnect(); } catch { /* endpoint already closed */ }
             worker.terminate();
             display.currentRequestId = null;
@@ -2451,8 +2449,7 @@ export async function startDorotiWorkerHost(
     publishRuntimeState("restarting", "explicit page restart");
     try { texturesForCanvas(canvas.id).disconnect(); } catch { /* endpoint already closed */ }
     closeExternalLeases(display.pendingLeases, () => {});
-    for (const request of frameCostPending.values()) request.reject(new Error("Runtime restarted."));
-    frameCostPending.clear();
+    frameCostRequests.close(new Error("Runtime restarted."));
     closeComposition();
     activeWorker.terminate();
     // A threaded managed main runtime cannot be instantiated twice in the same
@@ -2475,6 +2472,7 @@ export async function startDorotiWorkerHost(
   activeWorker.postMessage(initialMessage, initialOffscreen ? [initialOffscreen] : []);
   globalThis.addEventListener("pagehide", () => {
     restartWebRuntime = undefined;
+    frameCostRequests.close();
     try { texturesForCanvas(canvas.id).disconnect(); } catch { /* Already closed. */ }
     closeComposition();
     if (runtimeLocation === "main") {
@@ -2896,48 +2894,27 @@ function semanticsRole(node: SemanticsNode): string {
   return "group";
 }
 
-// Staging belongs to the rendering Worker. Exactly one bounded packet may be in flight.
-let platformRasters: RasterPacket[] = [];
-let platformFrame: CompositionPacket | null = null;
-let platformBitmapTasks: Promise<void>[] = [];
-const pendingPlatformCaptures = new Set<Promise<void>>();
-let platformCaptureGeneration = 0;
+// One owner-local staging object in the rendering Worker; the JS interop names stay stable.
+const platformFrames = new PlatformFrameStager();
 export function stagePlatformBitmap(order: number, left: number, top: number, width: number, height: number,
   pixelWidth: number, pixelHeight: number, bitmap: Promise<ImageBitmap>): void {
-  const raster: RasterPacket = { order, bounds: { left, top, width, height }, width: pixelWidth, height: pixelHeight, pixels: new Uint8Array() };
-  platformRasters.push(raster);
-  const generation = platformCaptureGeneration;
-  const task = bitmap.then(value => { if (generation !== platformCaptureGeneration) value.close(); else raster.bitmap = value; });
-  // Observe immediately: render failure can discard the packet before commit.
-  pendingPlatformCaptures.add(task);
-  void task.then(() => pendingPlatformCaptures.delete(task), () => pendingPlatformCaptures.delete(task));
-  platformBitmapTasks.push(task);
+  platformFrames.stageBitmap({ order, bounds: { left, top, width, height }, width: pixelWidth, height: pixelHeight,
+    pixels: new Uint8Array() }, bitmap);
 }
-export async function drainPlatformCaptures(): Promise<void> { await Promise.allSettled([...pendingPlatformCaptures]); }
+export function drainPlatformCaptures(): Promise<void> { return platformFrames.drainCaptures(); }
 export function stagePlatformRaster(order: number, left: number, top: number, width: number, height: number,
   pixelWidth: number, pixelHeight: number, pixels: Uint8Array): void {
-  platformRasters.push({ order, bounds: { left, top, width, height }, width: pixelWidth, height: pixelHeight, pixels });
+  platformFrames.stageRaster({ order, bounds: { left, top, width, height }, width: pixelWidth, height: pixelHeight, pixels });
 }
 export function stagePlatformFrame(json: string): void {
-  platformFrame = { batch: JSON.parse(json), rasters: platformRasters }; platformRasters = [];
+  platformFrames.stageFrame(JSON.parse(json));
 }
-export function discardPlatformFrame(): void {
-  platformCaptureGeneration++;
-  for (const raster of [...platformRasters, ...(platformFrame?.rasters ?? [])]) raster.bitmap?.close();
-  platformFrame = null; platformRasters = []; platformBitmapTasks = [];
-}
-export async function commitPlatformFrame(): Promise<boolean> {
-  const frame = platformFrame; platformFrame = null;
-  if (!frame) return true;
-  const tasks = platformBitmapTasks; platformBitmapTasks = [];
-  const generation = platformCaptureGeneration;
-  try {
-    await Promise.all(tasks);
-    if (generation !== platformCaptureGeneration) return false;
-    const transfer = frame.rasters.flatMap(raster => raster.bitmap ? [raster.bitmap] : []);
+export function discardPlatformFrame(): void { platformFrames.discard(); }
+export function commitPlatformFrame(): Promise<boolean> {
+  return platformFrames.commit(async (frame, transfer) => {
     const receipt = JSON.parse(await activeWorkerBridge!.requestControl("platform-frame", frame as unknown as Record<string, unknown>, transfer));
     return receipt.accepted === true;
-  } finally { for (const raster of frame.rasters) raster.bitmap?.close(); }
+  });
 }
 export function platformViewRequest(hostId: number, json: string): Promise<string> {
   return activeWorkerBridge!.requestControl("platform", { ...JSON.parse(json), hostId });

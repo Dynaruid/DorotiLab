@@ -203,7 +203,7 @@ On Windows 11 24H2 or later, request `new WindowBackdropOptions(WindowBackdropMo
 | `Doroti.Skia.Rendering`, `Doroti.Skia.RuntimeEffects` | Shared GPU rendering, scenes, text, images, effects, and SkSL compilation |
 | `Doroti.Host.WindowsAppSdk` + `.Native` | Managed framework integration and native C++ window/input handling |
 | `Doroti.Host.Maui` | Android, UIKit, AppKit, Mac Catalyst, and optional Windows MAUI adapters |
-| `Doroti.Host.Web` | Worker/canvas startup, input, accessibility, and resources |
+| `Doroti.Host.Web` | Worker/canvas startup, input, accessibility, and resources; [ownership/module boundaries](docs/web-host-architecture.md) |
 | `Doroti.Host.Qt` | Qt 6 `QWindow`, C ABI bridge, input, IME, desktop services, and accessibility |
 | `Doroti.Target.*` | Platform-specific package composition and deployment |
 

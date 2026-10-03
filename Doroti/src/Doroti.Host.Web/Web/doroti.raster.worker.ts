@@ -23,6 +23,7 @@ import {
 } from "./doroti.web.protocol.js";
 import { captureBrowserTimers } from "./doroti.web.timers.js";
 import * as textures from "./doroti.web.texture-worker.js";
+import { WorkerRequestMailbox } from "./doroti.web.requests.js";
 
 const protocolVersion = dorotiProtocolVersion;
 const inboundKinds = new Set([
@@ -163,9 +164,11 @@ let resizeWakeBudget = 0;
 const pendingManagedInputs: Record<string, unknown>[] = [];
 let lastDispatchedInputSequence = 0;
 let requestSequence = 0;
-let controlSequence = 0;
-const pendingControls = new Map<number, { resolve(value: string): void; reject(reason: unknown): void }>();
-const pendingControlTasks = new Set<Promise<string>>();
+const controls = new WorkerRequestMailbox<string>(256, 30000, {
+  full: () => new Error("Worker control mailbox is full."),
+  closed: () => new Error("Worker control owner is closed."),
+  timeout: () => new Error("Worker control ACK exceeded 30 seconds."),
+});
 let managedPort: MessagePort | null = null;
 let finishManagedRole: (() => void) | null = null;
 
@@ -725,19 +728,9 @@ configureWorkerBridge({
   },
   postControl(kind, payload) { post("control", { controlKind: kind, payload }); },
   requestControl(kind, payload, transfer = []) {
-    if (pendingControls.size >= 256) return Promise.reject(new Error("Worker control mailbox is full."));
-    const correlationId = ++controlSequence;
-    const promise = new Promise<string>((resolve, reject) => {
-      // A user may keep the native chooser open; view shutdown cancels it and resolves this request.
-      const timer = kind === "service-file-pick" ? undefined : globalThis.setTimeout(() => { pendingControls.delete(correlationId); reject(new Error("Worker control ACK exceeded 30 seconds.")); }, 30000);
-      pendingControls.set(correlationId, { resolve: value => { clearTimeout(timer); resolve(value); },
-        reject: error => { clearTimeout(timer); reject(error); } });
-    });
-    try { post("control-request", { correlationId, controlKind: kind, payload }, transfer); }
-    catch (error) { pendingControls.get(correlationId)?.reject(error); pendingControls.delete(correlationId); }
-    const completion = promise.finally(() => pendingControlTasks.delete(completion));
-    pendingControlTasks.add(completion);
-    return completion;
+    // A user may keep the chooser open; owner shutdown cancels remaining requests.
+    return controls.request(correlationId => post("control-request", { correlationId, controlKind: kind, payload }, transfer),
+      kind === "service-file-pick" ? null : controls.timeoutMilliseconds);
   },
 });
 
@@ -817,12 +810,9 @@ function handleHostMessage(event: MessageEvent): void {
       }
       break;
     case "control-response": {
-      const pending = pendingControls.get(Number(message.correlationId));
-      if (pending) {
-        pendingControls.delete(Number(message.correlationId));
-        if (message.error) pending.reject(new Error(String(message.error)));
-        else pending.resolve(String(message.result ?? ""));
-      }
+      const correlationId = Number(message.correlationId);
+      if (message.error) controls.reject(correlationId, new Error(String(message.error)));
+      else controls.resolve(correlationId, String(message.result ?? ""));
       break;
     }
     case "context":
@@ -871,7 +861,10 @@ function handleHostMessage(event: MessageEvent): void {
           stopManagedRuntime?.();
           stopManagedRuntime = null;
           await drainPlatformViews();
-          await Promise.allSettled([...pendingControlTasks]);
+          // Native/GPU owners have completed their own shutdown above. Cancellation
+          // here only ends callers, including chooser requests with no deadline.
+          controls.close();
+          await controls.drain();
           if (webgpu) {
             await surface?.DisposeGraphite();
             post("gpu-disposed", { diagnostics: webgpu.diagnostics() });
@@ -881,7 +874,7 @@ function handleHostMessage(event: MessageEvent): void {
           if (!managedPort) managedRuntime?.exit(0);
           managedRuntime = null;
           runtimeState.transition("disposed");
-          post("disposed", { textures: textures.diagnostics(), activeRequests: pendingControlTasks.size, activeReceipts: 0,
+          post("disposed", { textures: textures.diagnostics(), activeRequests: controls.pendingCount, activeReceipts: 0,
             timers: { ...JSON.parse(captureManagedTimers?.() ?? "{}"), ...captureBrowserTimers() } });
           if (managedPort) {
             managedPort.removeEventListener("message", handleHostMessage);

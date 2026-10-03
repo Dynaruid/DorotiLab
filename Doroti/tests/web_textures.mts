@@ -17,7 +17,7 @@ class VideoFrame extends Frame {
   get displayHeight() { return this.height; }
 }
 const tick = () => new Promise(resolve => setImmediate(resolve));
-async function modules() {
+async function modules(timers: Record<string, unknown> = {}) {
   const snapshots: Frame[] = [], videoFrames: VideoFrame[] = [];
   class CapturedVideoFrame extends VideoFrame {
     constructor(source: { videoWidth: number; videoHeight: number }) { super(source); videoFrames.push(this); }
@@ -26,7 +26,7 @@ async function modules() {
     queueMicrotask, performance, ImageBitmap: Frame, VideoFrame: CapturedVideoFrame,
     createImageBitmap: async (canvas: Frame) => {
       const frame = new Frame(canvas.width, canvas.height); snapshots.push(frame); return frame;
-    } });
+    }, ...timers });
   const cache = new Map<string, vm.SourceTextModule>();
   async function load(url: URL): Promise<vm.SourceTextModule> {
     const key = url.href;
@@ -63,6 +63,28 @@ function initialize(worker: any, backend: string, limit = 8192) {
   () => ({ textures: [], getNewId: () => ++handle, currentContext: { GLctx: gl } }));
   return { released, completions, get destroyed() { return destroyed; } };
 }
+
+test('main texture timeout preserves Timeout and cancels siblings without retaining timers', async () => {
+  const timers = new Map<number, () => void>();
+  let nextTimer = 0;
+  const { main } = await modules({ setTimeout(callback: () => void) { const id = ++nextTimer; timers.set(id, callback); return id; },
+    clearTimeout(id: number) { timers.delete(id); } });
+  class Endpoint extends EventTarget {
+    sent: any[] = [];
+    postMessage(message: any) { this.sent.push(message); }
+  }
+  const endpoint = new Endpoint(), registry = new main.BrowserTextureRegistry(endpoint);
+  const first = registry.request('diagnostics'), second = registry.request('diagnostics');
+  const firstCheck = assert.rejects(first, (error: any) => error.code === 'Timeout');
+  const secondCheck = assert.rejects(second, (error: any) => error.code === 'Disposed');
+  assert.equal(timers.size, 2);
+  timers.values().next().value!();
+  await Promise.all([firstCheck, secondCheck]);
+  assert.equal(timers.size, 0);
+  endpoint.dispatchEvent(new MessageEvent('message', { data: { protocolVersion: 5, kind: 'texture-response', request: 1 } }));
+  await assert.rejects(registry.request('diagnostics'), (error: any) => error.code === 'Disposed');
+  assert.equal(endpoint.sent.length, 2);
+});
 
 for (const backend of ['webgl', 'webgpu']) {
   test(`${backend}: 4K, 5K and 8K retain bounded destinations through retirement and resize`, async () => {

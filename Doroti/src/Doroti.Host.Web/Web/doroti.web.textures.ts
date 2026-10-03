@@ -1,5 +1,6 @@
 import { dorotiProtocolVersion } from "./doroti.web.protocol.js";
 import { textureSourceBytes, textureViewBudget } from "./doroti.web.texture-budget.js";
+import { WorkerRequestMailbox } from "./doroti.web.requests.js";
 
 /** Decimal Int64 wire ID; convert with long.Parse on the owning managed view. */
 export type BrowserTextureId = string;
@@ -25,12 +26,15 @@ export function attachTextureRegistry(canvasId: string, endpoint: TextureEndpoin
 
 /** Owns sources for one render endpoint. No frame payload uses the JSON control channel. */
 export class BrowserTextureRegistry {
-  #sequence = 0;
   #disposed = false;
   #sourceBytes = 0;
   #sourceBudget = textureViewBudget(0);
   #maxTextureDimension = 0;
-  #requests = new Map<number, { resolve(value: Record<string, unknown>): void; reject(error: Error): void }>();
+  readonly #requests = new WorkerRequestMailbox<Record<string, unknown>>(64, 30000, {
+    full: () => new BrowserTextureError("Budget", "Texture control limit reached."),
+    closed: () => new BrowserTextureError("Disposed", "Texture owner closed or lost its context."),
+    timeout: () => new BrowserTextureError("Timeout", "Texture owner did not acknowledge."),
+  }, () => this.disconnect());
   #entries = new Map<string, BrowserTextureEntry>();
   readonly #message = (event: Event): void => {
     const message = (event as MessageEvent).data;
@@ -42,11 +46,8 @@ export class BrowserTextureRegistry {
       this.disconnect(); return;
     }
     if (message?.kind !== "texture-response" || message.protocolVersion !== dorotiProtocolVersion) return;
-    const request = this.#requests.get(message.request);
-    if (!request) return;
-    this.#requests.delete(message.request);
-    if (message.error) request.reject(new BrowserTextureError(message.code ?? "Source", message.error));
-    else request.resolve(message);
+    if (message.error) this.#requests.reject(message.request, new BrowserTextureError(message.code ?? "Source", message.error));
+    else this.#requests.resolve(message.request, message);
   };
   constructor(readonly endpoint: TextureEndpoint) { endpoint.addEventListener("message", this.#message); }
   /** @internal Includes candidates, unacknowledged transfers and outstanding snapshots. */
@@ -69,19 +70,11 @@ export class BrowserTextureRegistry {
   }
   request(operation: string, payload: Record<string, unknown> = {}, transfer: Transferable[] = [], onPosted?: () => void): Promise<Record<string, unknown>> {
     if (this.#disposed) return Promise.reject(new BrowserTextureError("Disposed", "Texture view has closed; rebind to a new view."));
-    if (this.#requests.size >= 64) return Promise.reject(new BrowserTextureError("Budget", "Texture control limit reached."));
-    const request = ++this.#sequence;
-    return new Promise((resolve, reject) => {
-      // A lost owner cannot leave registration/disposal callers waiting forever.
-      const timeout = setTimeout(() => { this.disconnect(); reject(new BrowserTextureError("Timeout", "Texture owner did not acknowledge.")); }, 30000);
-      this.#requests.set(request, {
-        resolve: value => { clearTimeout(timeout); resolve(value); },
-        reject: error => { clearTimeout(timeout); reject(error); },
-      });
+    return this.#requests.request(request => {
       try { this.endpoint.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "texture", operation, request, ...payload }, transfer); onPosted?.(); }
       catch (error) {
         const code = typeof DOMException !== "undefined" && error instanceof DOMException ? error.name : "Transfer";
-        this.#requests.get(request)!.reject(new BrowserTextureError(code, String(error))); this.#requests.delete(request);
+        throw new BrowserTextureError(code, String(error));
       }
     });
   }
@@ -125,8 +118,7 @@ export class BrowserTextureRegistry {
     this.#disposed = true;
     for (const entry of this.#entries.values()) entry.stopLocal();
     this.#entries.clear();
-    for (const request of this.#requests.values()) request.reject(new BrowserTextureError("Disposed", "Texture owner closed or lost its context."));
-    this.#requests.clear(); this.endpoint.removeEventListener("message", this.#message);
+    this.#requests.close(); this.endpoint.removeEventListener("message", this.#message);
     for (const [key, value] of registries) if (value === this) registries.delete(key);
   }
 }

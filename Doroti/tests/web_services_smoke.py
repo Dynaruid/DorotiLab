@@ -32,8 +32,10 @@ with sync_playwright() as p:
         return page.locator('[aria-label]').evaluate_all('(es)=>es.map(e=>e.getAttribute("aria-label"))')
 
     def open_sample(name):
-        page.goto(args.url + '?dorotiSample=' + name + '&dorotiRenderer=' + args.renderer, wait_until='networkidle')
+        renderer = 'worker-direct-' + args.renderer
+        page.goto(args.url + '?dorotiSample=' + name + '&dorotiRenderer=' + renderer, wait_until='networkidle')
         page.wait_for_function('document.documentElement.dataset.dorotiBootstrapStage === "started"')
+        assert page.evaluate('document.documentElement.dataset.dorotiRenderer') == renderer
         page.wait_for_timeout(500)
 
     def click(name):
@@ -60,8 +62,8 @@ with sync_playwright() as p:
         open_sample('navigation')
         click('First page'); page.wait_for_url('**#/first')
         click('Second page'); page.wait_for_url('**#/second')
-        page.go_back(); label_contains('#/first')
-        page.go_forward(); label_contains('#/second')
+        page.go_back(); page.wait_for_url('**#/first'); label_contains('#/first')
+        page.go_forward(); page.wait_for_url('**#/second'); label_contains('#/second')
         box = page.get_by_role('textbox').bounding_box()
         assert box and box['height'] < 200, 'TextField semantics absorbed the whole page.'
         page.mouse.click(box['x'] + 30, box['y'] + box['height'] / 2, delay=100)
@@ -71,17 +73,27 @@ with sync_playwright() as p:
         page.wait_for_function('history.state?.doroti?.state?.includes("restore")')
         page.reload(wait_until='networkidle')
         page.wait_for_function('document.querySelector("[role=textbox]")?.value === "restore 한글"')
-        assert '#/second' in page.url
+        page.wait_for_url('**#/second')
         print('PASS: URL/Router, real Back/Forward, text and route reload restoration, isolated text semantics', flush=True)
 
         open_sample('drop')
+        # The worker can publish semantics before its DOM service-open message
+        # arrives. Wait for acceptance on the owning canvas, not a fixed delay.
+        page.wait_for_function('''() => {
+            const canvas = document.getElementById('doroti-surface');
+            if (!canvas) return false;
+            const transfer = new DataTransfer();
+            Object.defineProperty(transfer, 'effectAllowed', { value: 'copy' });
+            transfer.setData('text/plain', 'ready');
+            return !canvas.dispatchEvent(new DragEvent('dragover', {dataTransfer:transfer,clientX:100,clientY:100,bubbles:true,cancelable:true}));
+        }''')
         page.evaluate('''() => {
             const transfer = new DataTransfer();
             Object.defineProperty(transfer, 'effectAllowed', { value: 'copy' });
             transfer.items.add(new File(['drop bytes'], 'drop.txt', {type:'text/plain'}));
             transfer.setData('text/plain', '한글 drop');
             transfer.setData('text/uri-list', 'https://example.com/drop');
-            const canvas = document.querySelector('canvas');
+            const canvas = document.getElementById('doroti-surface');
             canvas.dispatchEvent(new DragEvent('dragover', {dataTransfer:transfer,clientX:100,clientY:100,bubbles:true,cancelable:true}));
             canvas.dispatchEvent(new DragEvent('drop', {dataTransfer:transfer,clientX:100,clientY:100,bubbles:true,cancelable:true}));
         }''')
@@ -93,7 +105,9 @@ with sync_playwright() as p:
             'status': 'PASS', 'physicalInput': 'notVerified', 'errors': errors}, indent=2))
     except BaseException:
         page.screenshot(path=str(run / 'failure.png'))
-        (run / 'errors.json').write_text(json.dumps({'errors': errors, 'labels': labels()}, ensure_ascii=False, indent=2))
+        (run / 'errors.json').write_text(json.dumps({'errors': errors, 'labels': labels(), 'url': page.url,
+            'history': page.evaluate('history.state'),
+            'root': page.evaluate('({...document.querySelector(".doroti-root")?.dataset})')}, ensure_ascii=False, indent=2))
         raise
     finally:
         browser.close()
