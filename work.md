@@ -21,17 +21,19 @@ Windows App SDK를 Windows 기본 backend로 유지한다. Windows MAUI도 기�
 | 작업 | 현재 결과 |
 |---|---|
 | W0/W1 | owner 세부 query·물리 effect preflight·공통 filter/URL 구현, CPU 계약 PASS |
-| W2 | MAUI configuration/composing·Windows ABI3·Qt ABI7 구현, 비Apple 빌드/input PASS; 물리 IME 미검증 |
-| W3 | 동일 UIKit WKWebView의 Apple 공통 controller/session 구현; Apple 전체 검증 SKIPPED |
+| W2 | MAUI configuration/composing·Windows ABI3·Qt ABI7 구현, 비Apple 빌드/input PASS. Apple 선택·Return/callback 보강과 native 자동 검사 PASS, 범위는 후속 기록 참조; 물리 IME 미검증 |
+| W3 | 동일 WKWebView의 Apple 공통 controller/session 구현. 앞선 후보는 SKIPPED; 새 AppKit/Catalyst/iOS simulator factory 명령 검사 PASS, 범위는 Apple 후속 기록 참조 |
 | W4 | Windows MAUI picker/native overlay/WebView 기본 연결 및 전용 실행 PASS |
-| W5/W6 | native 계층/역할/action subset·실제 layout geometry, Windows UIA/Qt QAccessible provider 자동 검사 PASS; 실제 AT 미검증 |
+| W5/W6 | native 계층/역할/action subset·실제 layout geometry, Windows UIA/Qt QAccessible provider 자동 검사 PASS. Apple provider·암호 보호 native 자동 검사 PASS, 범위는 후속 기록 참조; MAUI glyph range false, 실제 AT 미검증 |
 | W7 | App SDK opt-in WinUI WebView+editor 동시 HTML/JS·frame retirement PASS; 전체 ordering/effect/물리 입력 인수 PARTIAL |
 | W8 | MAUI 실제 GPU texture12 frame import/release·wrong-adapter 거절, 실제 두 창·두 lifetime PASS |
 | W9 | main WebGL/WebGPU 복구·single-thread worker 재생성, offline 한글 glyph/외부요청0·decoder 진단, clipboard 비의도 read0 PASS |
 | W10 | close 생성 전 정책·draft recovery·pen 정규화·Qt QPA 위치 계약 구현. 수치/draft/Wayland PASS; 물리 pen 미검증 |
 | W11 | MAUI Run/Reload/Restart/Stop PASS, Android Debug 평가+restart loop 구현(기기 없음); Windows MAUI/App SDK·Offline Web의 격리 NuGet/template consumer PASS |
 
-Apple 빌드·runtime·VoiceOver와 물리 IME/AT/pen·monitor 전환·표시 FPS·장기 사용·서명/clean OS 배포는 이번 PASS에 포함하지 않는다. 후보별 명령·실패 수정·identity는 [전체 실행 기록](Doroti/docs/validation/2026-10-03-platform-gap-implementation.md)을 따른다.
+앞선 W0~W11 전체 구현 후보의 PASS에는 Apple 빌드·runtime이 포함되지 않았다. 이번 Apple 후속의 빌드·native 자동 검사 결과는 별도 후속 기록을 따른다. VoiceOver·물리 IME/AT/pen·monitor 전환·표시 FPS·장기 사용·서명/clean OS 배포 인수는 계속 미완료다. 앞선 후보별 명령·실패 수정·identity는 [전체 실행 기록](Doroti/docs/validation/2026-10-03-platform-gap-implementation.md)을 따른다.
+
+**2026-10-03 Apple 후속 검토:** AppKit / Mac Catalyst / iOS의 남은 공백을 보강하는 새 요청에 따라 W2 입력 선택·Return action·callback 수명, W5 native accessibility provider·암호 보호·UIKit 컴파일 오류를 수정하고 W3 실제 WebKit 명령 검사를 추가했다. 이전 Apple SKIPPED 기록과 이번 후보는 구분하며, 새 검증·identity·잔여 인수는 [Apple 플랫폼 기능 공백 후속 기록](Doroti/docs/validation/2026-10-03-apple-platform-gap-followup.md)을 따른다.
 
 ## 2. 감사 이후 바뀐 상태
 
@@ -253,7 +255,7 @@ python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project Doroti
 python Doroti/eng/run-with-timeout.py --timeout 1200 node --experimental-transform-types --test Doroti/tests/web_rendering.mts
 ```
 
-`Source` suite의 현재 문서 목록에는 새 root `work.md`가 포함돼 있지 않다. 이 계획의 상대 링크는 별도로 검사한다. capability query 테스트·mock provider·synthetic input·GPU receipt는 실제 native 연결이나 물리 사용자 경험의 통과와 구분한다.
+`Source` suite는 Apple 후속 검토에서 root `work.md`를 문서 목록에 추가해 이 계획의 상대 링크도 검사한다. capability query 테스트·mock provider·synthetic input·GPU receipt는 실제 native 연결이나 물리 사용자 경험의 통과와 구분한다.
 
 | 상태 | 이 계획에서의 의미 |
 | --- | --- |
@@ -274,7 +276,7 @@ python Doroti/eng/run-with-timeout.py --timeout 1200 node --experimental-transfo
 - [x] 현재 지원표·샘플·CLI·템플릿·패키지의 backend/renderer 계약이 일치한다.
 - [x] 물리 IME·screen reader·pen·실제 모니터 이동·실제 표시 성능·장기 사용·배포 인수의 미완료 상태를 그대로 남긴다. 전체 PASS는 필수 인수가 모두 완료된 경우에만 사용한다.
 
-이번 후속 계획에는 A/B 프레임 정책 복원, Qt 동적 예산 재구현, 모든 backend의 WGSL 신규 구현, native view의 임의 affine transform/효과 보장, UIKit material의 Gaussian 픽셀 동등성, browser 보안·OS 창 정책 우회, 새 기능과 무관한 광범위 성능 실험을 포함하지 않는다. Apple의 과거 SKIPPED 검사를 자동 재개하는 작업도 만들지 않으며, W3/W5/W6에서 변경한 기능의 새 후보 검증을 별도로 기록한다.
+이번 후속 계획에는 A/B 프레임 정책 복원, Qt 동적 예산 재구현, 모든 backend의 WGSL 신규 구현, native view의 임의 affine transform/효과 보장, UIKit material의 Gaussian 픽셀 동등성, browser 보안·OS 창 정책 우회, 새 기능과 무관한 광범위 성능 실험을 포함하지 않는다. 당초 실행의 Apple SKIPPED 기록은 보존한다. 이후 명시적인 Apple 후속 요청에 따른 새 W2/W3/W5 후보의 검증은 별도 후속 기록에 남긴다.
 
 W0~W11 구현을 반영했다. 남은 체크와 각 완료 기준의 물리/배포 인수는 전체 실행 기록의 PARTIAL/notVerified/SKIPPED 범위를 따른다.
 

@@ -261,7 +261,7 @@ run macOS Installer or qualify Gatekeeper/notarization/clean-machine deployment.
 
 Apple suites: `IOSSmoke` uses native scene activity callback injection for unattended
 navigation; `CatalystSmoke` uses LaunchServices URL delivery. Both use the maintained
-`apple_smoke.py`; raw results separate services, native recreation, navigation and
+`apple_smoke.py`; raw results separate services, native recreation, features, navigation and
 restoration. Catalyst additionally creates/closes real scenes. `--activation os`
 on iOS may require confirming the OS Open dialog. This is not a physical-input test.
 
@@ -305,6 +305,6 @@ web_runtime_recovery.py requires a completed Testbed Web build; --main-only uses
 web_offline_fonts.py requires Sample2 Assets + DorotiWebFontValidation=true; it checks real Korean glyphs,
 zero external requests and decoder-denial diagnostics. Do not build shared TS assets while a browser probe runs.
 hot_reload_smoke.py accepts backend Maui and --verify-restart to check actual Run/Reload/Stop/Run/Stop.
-All commands use the 1200-second wrapper. Apple validation is SKIPPED for this request.
+All commands use the 1200-second wrapper. Apple validation was SKIPPED for that implementation candidate; [the subsequent Apple follow-up](../docs/validation/2026-10-03-apple-platform-gap-followup.md) records new builds and native checks. The default `features` case covers actual Apple WebView commands, accessibility hierarchy/actions/password guards, and input configuration/Return behavior. iOS/macOS testbed probe copies must match; `apple_build_profiles.py` checks this parity.
 
 `web_package_runtime.py <candidate> <fresh-output>` serves the published NuGet-only Offline Web payload with explicit COOP/COEP and JavaScript `.mjs` MIME, then checks first frame/focus and zero external requests. Runtime ownership uses the SDK-generated `doroti.runtime-profile.json`; standalone worker requires a single-thread build. `web_runtime_recovery.py --worker-only --expect-threaded-rejection` checks early rejection of the ordinary threaded profile. Changing threading profiles in a shared SDK output requires clean/rebuild or isolated artifacts; the normal Testbed profile is threaded.

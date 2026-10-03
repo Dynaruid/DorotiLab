@@ -16,7 +16,7 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--output', type=Path, required=True)
 parser.add_argument('--tfm', default='net10.0-macos27.0')
 parser.add_argument('--skip-build', action='store_true')
-parser.add_argument('--cases', default='multi,desktop,services,input,navigation,rendering,lifecycle')
+parser.add_argument('--cases', default='multi,desktop,services,input,features,navigation,rendering,lifecycle')
 parser.add_argument('--renderer', choices=['graphite', 'ganesh'], default='graphite')
 args = parser.parse_args()
 out = args.output.resolve()
@@ -173,6 +173,15 @@ try:
             finish(process)
             assert not Path(str(path) + '.error').exists(), Path(str(path) + '.error').read_text() if Path(str(path) + '.error').exists() else ''
             results['checks'][case] = json.loads(path.read_text())
+        elif case == 'features':
+            path = out / 'features.json'
+            process = start(case, {'DOROTI_APPLE_FEATURE_PROBE': str(path)})
+            wait_file(process, path)
+            report = json.loads(path.read_text())
+            assert report['status'] == 'PASS', report
+            results['checks'][case] = report
+            command(process, 'exit')
+            finish(process)
         elif case == 'input':
             path = out / 'input.json'
             process = start(case, {'DOROTI_SAMPLE': 'input', 'DOROTI_INPUT_PROBE': str(path)})

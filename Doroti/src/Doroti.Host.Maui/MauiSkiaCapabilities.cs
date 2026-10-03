@@ -29,12 +29,19 @@ internal sealed class MauiSkiaCapabilities
 #elif ANDROID
         [SemanticsRole.dialog, SemanticsRole.alertDialog, SemanticsRole.list, SemanticsRole.tabBar,
          SemanticsRole.menu, SemanticsRole.menuBar, SemanticsRole.progressBar, SemanticsRole.loadingSpinner],
+#elif MACOS
+        [SemanticsRole.dialog, SemanticsRole.alertDialog, SemanticsRole.list, SemanticsRole.listItem,
+         SemanticsRole.table, SemanticsRole.cell, SemanticsRole.row, SemanticsRole.columnHeader,
+         SemanticsRole.menu, SemanticsRole.menuBar, SemanticsRole.menuItem, SemanticsRole.menuItemCheckbox,
+         SemanticsRole.menuItemRadio, SemanticsRole.tabBar, SemanticsRole.tab, SemanticsRole.comboBox,
+         SemanticsRole.progressBar, SemanticsRole.loadingSpinner],
+#elif IOS || MACCATALYST
+        [SemanticsRole.list, SemanticsRole.table],
 #else
         [SemanticsRole.none],
 #endif
-#if IOS || MACCATALYST
-        [SemanticsAction.tap, SemanticsAction.longPress, SemanticsAction.increase, SemanticsAction.decrease,
-         SemanticsAction.expand, SemanticsAction.collapse, SemanticsAction.showOnScreen],
+#if MACOS || IOS || MACCATALYST
+        MauiSemanticsLayout.AppleActions.ToArray(),
 #else
         [SemanticsAction.tap, SemanticsAction.setText, SemanticsAction.setSelection, SemanticsAction.expand,
          SemanticsAction.collapse, SemanticsAction.showOnScreen],

@@ -100,6 +100,16 @@ internal sealed class DorotiUIKitTextField : MauiTextField, IDorotiUIKitTextInpu
 internal sealed class DorotiUIKitTextView : MauiTextView, IDorotiUIKitTextInput
 {
     public DorotiUIKitTextView() => SmartInsertDeleteType = UITextSmartInsertDeleteType.No;
+    internal Func<bool>? PerformInputAction { get; set; }
+
+    public override void InsertText(string text)
+    {
+        if (text == "\n" && MarkedTextRange is null && PerformInputAction?.Invoke() == true)
+        {
+            return;
+        }
+        base.InsertText(text);
+    }
 
     private readonly UIKitFloatingCursor _cursor = new();
     public CGRect CaretRect { get; set; }
@@ -137,6 +147,24 @@ public sealed partial class MauiTextInputBridge
 
     private void AttachUIKitInput(InputView input)
     {
+        if (_hasClient && ReferenceEquals(input, _active))
+        {
+            ConfigureUIKitInputTraits(input, _configuration);
+        }
+        if (input.Handler?.PlatformView is DorotiUIKitTextView editor)
+        {
+            editor.PerformInputAction = () =>
+            {
+                if (_disposed || _updating || _drainingInputMutations || HasPendingClientChange
+                    || !_hasClient || !ReferenceEquals(input, _active)
+                    || !ReferenceEquals(input.Handler?.PlatformView, editor)
+                    || _configuration.inputAction is DorotiTextInputAction.none
+                        or DorotiTextInputAction.unspecified or DorotiTextInputAction.newline)
+                    return false;
+                ActionPerformed?.Invoke(_configuration.inputAction);
+                return true;
+            };
+        }
         if (input.Handler?.PlatformView is not IDorotiUIKitTextInput native)
         {
             return;
@@ -149,6 +177,7 @@ public sealed partial class MauiTextInputBridge
                 || !_hasClient
                 || HasPendingClientChange
                 || !ReferenceEquals(input, _active)
+                || !ReferenceEquals(input.Handler?.PlatformView, native)
             )
             {
                 return;
@@ -156,6 +185,35 @@ public sealed partial class MauiTextInputBridge
 
             FloatingCursorChanged?.Invoke(point);
         };
+    }
+
+    private static void ConfigureUIKitInputTraits(InputView input, DorotiTextInputConfiguration configuration)
+    {
+        var key = configuration.inputAction switch
+        {
+            DorotiTextInputAction.done => UIReturnKeyType.Done,
+            DorotiTextInputAction.go => UIReturnKeyType.Go,
+            DorotiTextInputAction.search => UIReturnKeyType.Search,
+            DorotiTextInputAction.send => UIReturnKeyType.Send,
+            DorotiTextInputAction.next => UIReturnKeyType.Next,
+            DorotiTextInputAction.continueAction => UIReturnKeyType.Continue,
+            DorotiTextInputAction.join => UIReturnKeyType.Join,
+            DorotiTextInputAction.route => UIReturnKeyType.Route,
+            DorotiTextInputAction.emergencyCall => UIReturnKeyType.EmergencyCall,
+            _ => UIReturnKeyType.Default,
+        };
+        if (input.Handler?.PlatformView is UITextField field)
+        {
+            var changed = field.SecureTextEntry != configuration.obscureText || field.ReturnKeyType != key;
+            if (field.SecureTextEntry != configuration.obscureText) field.SecureTextEntry = configuration.obscureText;
+            field.ReturnKeyType = key;
+            if (changed && field.IsFirstResponder) field.ReloadInputViews();
+        }
+        else if (input.Handler?.PlatformView is UITextView view && view.ReturnKeyType != key)
+        {
+            view.ReturnKeyType = key;
+            if (view.IsFirstResponder) view.ReloadInputViews();
+        }
     }
 
     private void ResetUIKitInput()

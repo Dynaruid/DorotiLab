@@ -125,4 +125,4 @@ Doroti는 개인적으로 즐기며 만들고 있는 취미 프로젝트입니�
 
 Doroti는 [BSD 3-Clause 라이선스](LICENSE)를 따릅니다. 외부 소스와 패키지의 저작권 표기는 [서드파티 고지](Doroti/THIRD-PARTY-NOTICES.md)를 참고하세요.
 
-2026-10-03: Windows MAUI 기본 native 서비스·GPU import/복수 창, App SDK opt-in WebView/editor 혼합, layout 접근성 geometry, Web 복구/offline font·개발/release 진입점은 [현재 실행 기록](Doroti/docs/validation/2026-10-03-platform-gap-implementation.md)을 따른다. Apple 변경 검증은 사용자 요청으로 생략했고, 물리 입력·AT·표시·서명 배포 인수는 별도다.
+2026-10-03: Windows MAUI 기본 native 서비스·GPU import/복수 창, App SDK opt-in WebView/editor 혼합, layout 접근성 geometry, Web 복구/offline font·개발/release 진입점은 [현재 실행 기록](Doroti/docs/validation/2026-10-03-platform-gap-implementation.md)을 따른다. 당시 Apple 후보의 검증 생략 이력은 보존하고, 이후 [Apple 후속 검토](Doroti/docs/validation/2026-10-03-apple-platform-gap-followup.md)에 native 접근성·입력 보강과 새 빌드·API 검사를 기록했다. 물리 입력·AT·표시·서명 배포 인수는 별도다.

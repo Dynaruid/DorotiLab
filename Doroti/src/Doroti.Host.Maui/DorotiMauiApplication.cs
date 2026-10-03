@@ -100,6 +100,8 @@ public static class DorotiMauiApplicationBuilderExtensions
                 handlers
                     .AddHandler<DorotiMacOSMetalSurface, DorotiMacOSMetalSurfaceHandler>()
                     .AddHandler<DorotiMauiSurface, DorotiMacOSLayoutHandler>()
+                    .AddHandler<AbsoluteLayout, DorotiMacOSLayoutHandler>()
+                    .AddHandler<MauiSemanticsLayout, MauiSemanticsLayoutHandler>()
             );
 #else
             .UseMauiApp<DorotiMauiApplication>()
@@ -116,6 +118,7 @@ public static class DorotiMauiApplicationBuilderExtensions
                 handlers
                     .AddHandler<DorotiUIKitEntry, DorotiUIKitEntryHandler>()
                     .AddHandler<DorotiUIKitEditor, DorotiUIKitEditorHandler>()
+                    .AddHandler<MauiSemanticsLayout, MauiSemanticsLayoutHandler>()
                     .AddHandler<SKGLView, DorotiMacCatalystSkglViewHandler>()
                     .AddHandler<DorotiGraphiteView, DorotiUIKitGraphiteViewHandler>()
             );
@@ -124,6 +127,7 @@ public static class DorotiMauiApplicationBuilderExtensions
                 handlers
                     .AddHandler<DorotiUIKitEntry, DorotiUIKitEntryHandler>()
                     .AddHandler<DorotiUIKitEditor, DorotiUIKitEditorHandler>()
+                    .AddHandler<MauiSemanticsLayout, MauiSemanticsLayoutHandler>()
                     .AddHandler<SKGLView, DorotiIosMetalViewHandler>()
                     .AddHandler<DorotiGraphiteView, DorotiUIKitGraphiteViewHandler>()
             );

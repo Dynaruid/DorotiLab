@@ -7,7 +7,7 @@ namespace Doroti.Host.Maui;
 /// Connects MAUI's dynamic layout commands to the AppKit layout implementation.
 /// The preview backend exposes these methods but does not map the commands.
 /// </summary>
-public sealed class DorotiMacOSLayoutHandler : Microsoft.Maui.Platforms.MacOS.Handlers.LayoutHandler
+public class DorotiMacOSLayoutHandler : Microsoft.Maui.Platforms.MacOS.Handlers.LayoutHandler
 {
     public override void Invoke(string command, object? args)
     {

@@ -17,6 +17,8 @@ public sealed class AppKitDelegate : DorotiMacOSMauiApplication
     {
         base.DidFinishLaunching(notification);
         NSApplication.SharedApplication.Activate();
+        if (Environment.GetEnvironmentVariable("DOROTI_APPLE_FEATURE_PROBE") is { Length: > 0 } featureOutput)
+            _ = DorotiTestbedApp.Apple.AppleFeatureProbe.RunAsync(featureOutput);
         if (Environment.GetEnvironmentVariable("DOROTI_MACOS_FRAME_PROBE") is { Length: > 0 } frameOutput)
             _ = AppKitFrameLifecycleProbe.RunAsync(frameOutput);
         if (Environment.GetEnvironmentVariable("DOROTI_MACOS_SERVICES_PROBE") is { Length: > 0 } output)

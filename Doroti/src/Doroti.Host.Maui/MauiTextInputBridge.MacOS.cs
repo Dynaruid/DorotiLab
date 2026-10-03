@@ -106,20 +106,20 @@ public sealed partial class MauiTextInputBridge
                 return;
             }
 
+            var start = Math.Clamp(
+                input.CursorPosition,
+                0,
+                (input.Text ?? string.Empty).Length
+            );
+            var length = Math.Clamp(
+                input.SelectionLength,
+                0,
+                (input.Text ?? string.Empty).Length - start
+            );
             var focused = input.Focus();
             editor = NativeMacOSTextView(native);
             if (focused && editor is not null)
             {
-                var start = Math.Clamp(
-                    input.CursorPosition,
-                    0,
-                    (input.Text ?? string.Empty).Length
-                );
-                var length = Math.Clamp(
-                    input.SelectionLength,
-                    0,
-                    (input.Text ?? string.Empty).Length - start
-                );
                 editor.SetSelectedRange(new NSRange(start, length));
             }
             if (Environment.GetEnvironmentVariable("DOROTI_TRACE_MAC_INPUT") == "1")

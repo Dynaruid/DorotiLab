@@ -18,7 +18,7 @@ p = argparse.ArgumentParser(description=__doc__)
 p.add_argument('--target', choices=['ios', 'maccatalyst'], required=True)
 p.add_argument('--output', type=Path, required=True)
 p.add_argument('--simulator', help='Simulator UUID; defaults to a booted or latest available iPhone.')
-p.add_argument('--cases', default='services,input,navigation,restoration,multi')
+p.add_argument('--cases', default='services,input,features,navigation,restoration,multi')
 p.add_argument('--activation', choices=['os', 'native-callback'], default='os')
 p.add_argument('--renderer', choices=['graphite', 'ganesh'], default='graphite')
 p.add_argument('--skip-build', action='store_true')
@@ -51,6 +51,7 @@ app = apps[0]
 if not app.is_dir() or app.suffix != '.app': p.error('Supply an existing .app bundle.')
 runid = 'apple-smoke-' + uuid.uuid4().hex
 results = {'restorationId': runid, 'target': a.target, 'tfm': tfm, 'rid': rid, 'renderer': a.renderer, 'activation': a.activation, 'physicalInput': 'notVerified', 'checks': {}}
+(out / 'run.json').write_text(json.dumps(results, indent=2))
 base = os.environ | {'DOROTI_IOS_GRAPHITE': '1' if a.renderer == 'graphite' else '0', 'DOROTI_SAMPLE': 'reload', 'DOROTI_RESTORATION_ID': runid}
 bundle = 'dev.doroti.testbed'
 if ios:
@@ -67,7 +68,7 @@ checkpoint = (container / 'Library' if ios else Path.home() / 'Library') / 'rest
 def stop(process):
     if ios:
         subprocess.run(['xcrun', 'simctl', 'terminate', a.simulator, bundle], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=20)
-    elif process.poll() is None:
+    elif process is not None and process.poll() is None:
         process.terminate()
         process.wait(timeout=20)
 
@@ -92,6 +93,7 @@ for case in a.cases.split(','):
     extra = {'DOROTI_MAUI_EVIDENCE': str(directory / 'evidence.json')}
     if case == 'multi': extra |= {'DOROTI_MULTIWINDOW_PROBE': str(marker), 'DOROTI_SAMPLE': 'input'}
     elif case == 'services': extra['DOROTI_UIKIT_SERVICES_PROBE'] = str(marker)
+    elif case == 'features': extra['DOROTI_APPLE_FEATURE_PROBE'] = str(marker)
     elif case == 'input': extra |= {'DOROTI_SAMPLE': 'input', 'DOROTI_INPUT_PROBE': str(marker)}
     elif case == 'rotation': extra['DOROTI_UIKIT_ROTATION_PROBE'] = str(marker)
     elif case in ('navigation', 'restoration'): extra |= {'DOROTI_SAMPLE': 'navigation', 'DOROTI_NAVIGATION_PROBE': str(marker)}
@@ -99,15 +101,16 @@ for case in a.cases.split(','):
     if case == 'navigation' and a.activation == 'native-callback':
         extra['DOROTI_UIKIT_ACTIVATION_PROBE'] = 'https://doroti.example/details/apple-smoke'
     log = (out / (case + '.log')).open('w')
-    if ios:
-        environment = os.environ | {'SIMCTL_CHILD_' + k: v for k, v in (base | extra).items() if k.startswith('DOROTI_')}
-        subprocess.run(['xcrun', 'simctl', 'launch', '--terminate-running-process', a.simulator, bundle], env=environment,
-            stdout=log, stderr=subprocess.STDOUT, check=True, timeout=30)
-        process = None
-    else:
-        process = subprocess.Popen([str(app / 'Contents/MacOS' / ('DorotiTestbedApp.' + name))],
-            env=base | extra, stdout=log, stderr=subprocess.STDOUT)
+    process = None
     try:
+        if ios:
+            environment = os.environ | {'SIMCTL_CHILD_' + k: v for k, v in (base | extra).items() if k.startswith('DOROTI_')}
+            subprocess.run(['xcrun', 'simctl', 'launch', '--terminate-running-process', a.simulator, bundle], env=environment,
+                stdout=log, stderr=subprocess.STDOUT, check=True, timeout=120)
+            process = None
+        else:
+            process = subprocess.Popen([str(app / 'Contents/MacOS' / ('DorotiTestbedApp.' + name))],
+                env=base | extra, stdout=log, stderr=subprocess.STDOUT)
         wait(marker, process)
         if case == 'navigation':
             link = 'doroti-testbed://app/details/apple-smoke'

@@ -41,6 +41,8 @@ profile = ROOT / "Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.IosNativeAot.props"
 template = ROOT / "Doroti/templates/Doroti.Templates/content/doroti-app/ios/Doroti.IosNativeAot.props"
 assert profile.read_text() == template.read_text(), "Template iOS profile differs from SDK profile."
 print("PASS template profile parity")
+assert (ROOT / "samples/DorotiTestbedApp/ios/AppleFeatureProbe.cs").read_bytes() == (ROOT / "samples/DorotiTestbedApp/macos/AppleFeatureProbe.cs").read_bytes(), "Apple feature probes differ between runner directories."
+print("PASS Apple feature probe parity")
 
 for overrides in [["-p:Configuration=Release"], ["-p:UseInterpreter=false"], ["-p:DorotiCompilationMode=NativeAot"], ["-p:RuntimeIdentifier=ios-arm64"], ["-p:RuntimeIdentifier=ios-arm64", "-p:MtouchInterpreter=-all", "-p:DOROTI_DEV_HOTRELOAD_ENDPOINT=ws://192.168.1.2:5678"]]:
     result = subprocess.run(['dotnet', 'msbuild', str(PROJECT), '-nologo',

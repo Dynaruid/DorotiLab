@@ -13,6 +13,8 @@ public sealed class AppDelegate : DorotiMauiUIApplicationDelegate
     public override bool FinishedLaunching(UIKit.UIApplication application, NSDictionary? options)
     {
         var result = base.FinishedLaunching(application, options);
+        if (Environment.GetEnvironmentVariable("DOROTI_APPLE_FEATURE_PROBE") is { Length: > 0 } featureOutput)
+            _ = DorotiTestbedApp.Apple.AppleFeatureProbe.RunAsync(featureOutput);
         if (Environment.GetEnvironmentVariable("DOROTI_UIKIT_SERVICES_PROBE") is { Length: > 0 } output)
             _ = DorotiTestbedApp.Apple.UIKitServicesProbe.RunAsync(output);
         if (Environment.GetEnvironmentVariable("DOROTI_UIKIT_ACTIVATION_PROBE") is { Length: > 0 } link)

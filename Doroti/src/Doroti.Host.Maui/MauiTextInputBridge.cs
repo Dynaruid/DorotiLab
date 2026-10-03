@@ -106,7 +106,9 @@ public sealed partial class MauiTextInputBridge : IDisposable
 #endif
         if (input is Editor editor)
         {
+#if !IOS && !MACCATALYST
             editor.Completed += HandleCompleted;
+#endif
         }
 
         return input;
@@ -207,9 +209,12 @@ public sealed partial class MauiTextInputBridge : IDisposable
             Configure(next, configuration);
         }
         finally { _updating = false; }
+        // Trait changes (including secure entry) can normalize native selection
+        // even when MAUI retains the same InputView. Only write changed state so
+        // an unaffected native composing range is left intact.
+        UpdateStateCore(new(text, new(start, end), null));
         if (!ReferenceEquals(old, next))
         {
-            UpdateStateCore(new(text, new(start, end), null));
             AttachActiveInput(requestFocus: focus && !_suspended);
         }
         QueueNativeEditingState(next, next.Text ?? "");
@@ -614,6 +619,10 @@ public sealed partial class MauiTextInputBridge : IDisposable
         }
 
         var expected = _active;
+        var text = expected.Text ?? string.Empty;
+        var start = Math.Clamp(expected.CursorPosition, 0, text.Length);
+        var end = Math.Clamp(start + Math.Max(0, expected.SelectionLength), start, text.Length);
+        var state = new DorotiTextEditingState(text, new(start, end), null);
         if (!_attachOnDemand)
         {
             if (requestFocus)
@@ -627,7 +636,11 @@ public sealed partial class MauiTextInputBridge : IDisposable
                         && ReferenceEquals(expected, _active)
                     )
                     {
+                        var currentText = expected.Text ?? string.Empty;
+                        var currentStart = Math.Clamp(expected.CursorPosition, 0, currentText.Length);
+                        var currentEnd = Math.Clamp(currentStart + Math.Max(0, expected.SelectionLength), currentStart, currentText.Length);
                         FocusInput(expected);
+                        UpdateStateCore(new(currentText, new(currentStart, currentEnd), null));
                     }
                 });
             }
@@ -664,6 +677,14 @@ public sealed partial class MauiTextInputBridge : IDisposable
             {
                 FocusInput(expected);
             }
+#if IOS || MACCATALYST
+            // Reapply traits after native attachment/focus; MAUI may recreate an endpoint
+            // whose managed properties already have the requested values.
+            AttachUIKitInput(expected);
+#endif
+            // Handler creation and becoming first responder may move the native
+            // cursor. Restore the accepted state after both operations complete.
+            UpdateStateCore(state);
         });
     }
 
@@ -834,6 +855,10 @@ public sealed partial class MauiTextInputBridge : IDisposable
                 _ => ReturnType.Default,
             };
         }
+#if IOS || MACCATALYST
+        // Editor has no MAUI ReturnType mapper; apply the native action to both endpoints.
+        ConfigureUIKitInputTraits(input, configuration);
+#endif
     }
 
     private void HandleTextChanged(object? sender, TextChangedEventArgs args)
@@ -1049,7 +1074,8 @@ public sealed partial class MauiTextInputBridge : IDisposable
     private void HandleCompleted(object? sender, EventArgs args)
     {
         _ = args;
-        if (ReferenceEquals(sender, _active))
+        if (!_disposed && !_updating && !_drainingInputMutations && !HasPendingClientChange
+            && _hasClient && ReferenceEquals(sender, _active))
         {
             ActionPerformed?.Invoke(_configuration.inputAction);
         }
@@ -1104,6 +1130,10 @@ public sealed partial class MauiTextInputBridge : IDisposable
             {
                 native.FloatingCursorChanged = null;
             }
+            if (input.Handler?.PlatformView is DorotiUIKitTextView nativeEditor)
+            {
+                nativeEditor.PerformInputAction = null;
+            }
 #endif
             input.TextChanged -= HandleTextChanged;
             input.PropertyChanged -= HandleInputPropertyChanged;
@@ -1118,10 +1148,12 @@ public sealed partial class MauiTextInputBridge : IDisposable
                 entry.Completed -= HandleCompleted;
             }
 #endif
+#if !IOS && !MACCATALYST
             if (input is Editor editor)
             {
                 editor.Completed -= HandleCompleted;
             }
+#endif
         }
         DetachInputs();
     }

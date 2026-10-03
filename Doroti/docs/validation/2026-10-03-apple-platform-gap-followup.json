@@ -1,0 +1,1662 @@
+{
+  "baseHead": "55d075af1b6bc2fac59b9a8c811b985d0291c3e4",
+  "uncommitted": true,
+  "environment": {
+    "os": "macOS 26.6.2 arm64",
+    "sdk": "10.0.401",
+    "xcode": "27.0 (27A266a)",
+    "appleWorkload": "27.0.10722",
+    "iosSimulator": "iPhone 17 / iOS 27.0 / F7858412-E238-4ADD-8CB7-C6450E6D1849"
+  },
+  "acceptance": "PARTIAL",
+  "sourceSha256": "78af1edf156de160a955f756c2c8e107c861f4c126610c8966e9c24633f3b7bf",
+  "sourceFiles": {
+    "Doroti/eng/validate.py": "3e308840f70fcb2c989f8a5cf8c07d6d07f69f91a030b41bc0c2505d919522f0",
+    "Doroti/src/Doroti.Host.Maui/DorotiMacOSLayoutHandler.cs": "4df21d64bfad3bdfcd4d375a922e95b7275b7ad9d86ae37b68469bd84e848eef",
+    "Doroti/src/Doroti.Host.Maui/DorotiMauiApplication.cs": "45717d1513bf26a3644ea1d2d74e0fa9081ae97758c9ba95d9813c5072eeb41f",
+    "Doroti/src/Doroti.Host.Maui/DorotiUIKitTextInput.cs": "78dcdfdf9ae9647b6e3043262f784c75f1ece15040adbab6752d269427b7008a",
+    "Doroti/src/Doroti.Host.Maui/MauiSemanticsBridge.cs": "7258768bfb0ef3a6c798299928baff6313b70cbde1b0ad861e5bc8e3aea51f6c",
+    "Doroti/src/Doroti.Host.Maui/MauiSemanticsLayout.Apple.cs": "22208a95b5d51c7ae82027666542ba44f3fd88508bfb5d0f4cee504f79a07f1e",
+    "Doroti/src/Doroti.Host.Maui/MauiSemanticsLayout.cs": "92eb69adf9ed05453b0b8bbf7f9e53d91235feb2d585b9cc87be6be9b6ff385b",
+    "Doroti/src/Doroti.Host.Maui/MauiSkiaCapabilities.cs": "ee80f48d474c46c6a8e9207eca417eca3cea1ece0de8e9f4564e22aa605021c4",
+    "Doroti/src/Doroti.Host.Maui/MauiTextInputBridge.MacOS.cs": "3b1512c27641f8f084805b5d697989cc1bafbdfbd37027de69475b3982787f34",
+    "Doroti/src/Doroti.Host.Maui/MauiTextInputBridge.cs": "7b74d95633296ac53b60a1098bb7e9f327162000a1f93a9fd3056a3d6db869df",
+    "Doroti/tests/apple_build_profiles.py": "2381e8fa35ec6f2fab7f3caa6dae1fe083b0d44ba028823134798fb3ac4935b9",
+    "Doroti/tests/apple_smoke.py": "25ae434521854f81e51cf10762d9a21a9cb4a2797e29cbf2d8f0c93a290ccc80",
+    "Doroti/tests/macos_smoke.py": "6465993031db51cd3d92dc518f1487c8eeba70736b292250f5d269c9f690a14e",
+    "samples/DorotiTestbedApp/ios/AppDelegate.cs": "66cb6c077a313f511d6a4cb213bdc1c70336c8bcbd33d5de3b90046b31e6e621",
+    "samples/DorotiTestbedApp/ios/AppleFeatureProbe.cs": "becd45a1eb47655c70577c225d8989a11f975524e1f44ee4cc49cfea24a6fb05",
+    "samples/DorotiTestbedApp/macos/AppDelegate.cs": "90da452d7e245d55baa73a9eb715ba64b398373d637b4b8d2922060ac20f442f",
+    "samples/DorotiTestbedApp/macos/AppKitDelegate.cs": "9c978634f29760ff891274a3ca9cf484db90a1ed5ada2fd3bd19e9267b24b321",
+    "samples/DorotiTestbedApp/macos/AppleFeatureProbe.cs": "becd45a1eb47655c70577c225d8989a11f975524e1f44ee4cc49cfea24a6fb05"
+  },
+  "platforms": {
+    "appkit": {
+      "build": "PASS",
+      "warnings": 0,
+      "errors": 0,
+      "bundle": "samples/DorotiTestbedApp/macos/bin/Debug/net10.0-macos27.0/osx-arm64/Doroti Testbed (AppKit).app",
+      "bundleSha256": "ef87752fbf806e76b4093c794a18ba7d4a16c79020c1964f96575b00b5fff04c",
+      "bundleFiles": 307,
+      "bundleBytes": 202130408,
+      "keyPayloads": {
+        "Contents/Frameworks/DorotiTestbedAppNative-macOS.framework/Versions/A/Resources/Info.plist": {
+          "sha256": "92b5e8786c147bf7e3885053be684a4f47b345fdb2fe9fa56f53596ee0a19003",
+          "bytes": 1331
+        },
+        "Contents/Info.plist": {
+          "sha256": "d91f212a9b5d4e36841fb9f9e71f2b3a6df523db0107c04717561264eb33f8b4",
+          "bytes": 1065
+        },
+        "Contents/MacOS/DorotiTestbedApp.MacOS": {
+          "sha256": "536bc1d9dd03194b318efbaf6be96d1522be11f29becd5599922db057705ca6e",
+          "bytes": 3936656
+        },
+        "Contents/MonoBundle/Doroti.Host.Maui.dll": {
+          "sha256": "056b4422e6d5ed6fa74cc1a021202787f8ad6da9908c057aba8046a5f265fc34",
+          "bytes": 591872
+        }
+      },
+      "buildLogSha256": "6d263e91571dfb4177d08cad1af1580d6a358b203090e5b44be22472626201c3",
+      "nativeRuns": {
+        "appkit-final-2": {
+          "renderer": "graphite",
+          "physicalInput": "notVerified",
+          "restorationId": "macos-smoke-a8a662929907441aab715b1e87d0ce96",
+          "checks": {
+            "multi-OnLastWindowClosed": {
+              "before": [
+                {
+                  "id": 1554,
+                  "Title": "Doroti second window",
+                  "IsVisible": true,
+                  "IsKeyWindow": false,
+                  "width": 560,
+                  "height": 650,
+                  "scale": 2,
+                  "views": [
+                    {
+                      "PixelWidth": 1120,
+                      "PixelHeight": 1300,
+                      "DevicePixelRatio": 2,
+                      "MetricsGeneration": 0,
+                      "ContextGeneration": 2,
+                      "SurfaceGeneration": 2,
+                      "NativeViewType": "Doroti.Host.Maui.DorotiMacOSMetalView",
+                      "GraphicsBackend": "AppKit/MTKView/Graphite-Metal",
+                      "MetalDevice": "Apple M1",
+                      "PixelFormat": "BGRA8Unorm",
+                      "CommandBuffersCommitted": 2,
+                      "CommandBuffersCompleted": 2,
+                      "CommandBuffersErrored": 0,
+                      "StaleCompletions": 0,
+                      "CpuReadbacks": 0,
+                      "FullFrameCopies": 0,
+                      "LogicalWidth": 560,
+                      "LogicalHeight": 650,
+                      "ResizeContinuityActivations": 0,
+                      "ResizeContinuityDeactivations": 0,
+                      "ResizeContinuityActive": false,
+                      "ResizeSynchronousPresents": 0,
+                      "ResizeSynchronousMisses": 0,
+                      "DwmCompositionEnabled": false,
+                      "EglSwapIntervalPolicy": "not-applicable",
+                      "ExactSwapTimingAvailable": false,
+                      "ResizeTrace": null,
+                      "NativeEnvironmentPhysicalSize": null,
+                      "RawViewPadding": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "RawViewInsets": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "RawSystemGestureInsets": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "PresentedDrawables": 0,
+                      "PresentationIntervalsMilliseconds": [],
+                      "MetalAllocatedBytes": 41828352,
+                      "IosFrameLoop": null,
+                      "IosFrameLoopState": null,
+                      "NativeFramePipeline": {
+                        "Mode": "C",
+                        "PreparedPulses": 1,
+                        "PendingGpuFrames": 0,
+                        "MaximumGpuFrames": 2,
+                        "CompletedGpuFrames": 2,
+                        "Retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+                        "Fallback": null,
+                        "PreparedWhileGpuFull": 0,
+                        "RejectedAdmissions": 0
+                      },
+                      "GpuDevice": null
+                    }
+                  ]
+                },
+                {
+                  "id": 1553,
+                  "Title": "Doroti Desktop · Sudoku",
+                  "IsVisible": true,
+                  "IsKeyWindow": true,
+                  "width": 450,
+                  "height": 800,
+                  "scale": 2,
+                  "views": [
+                    {
+                      "PixelWidth": 900,
+                      "PixelHeight": 1600,
+                      "DevicePixelRatio": 2,
+                      "MetricsGeneration": 0,
+                      "ContextGeneration": 2,
+                      "SurfaceGeneration": 2,
+                      "NativeViewType": "Doroti.Host.Maui.DorotiMacOSMetalView",
+                      "GraphicsBackend": "AppKit/MTKView/Graphite-Metal",
+                      "MetalDevice": "Apple M1",
+                      "PixelFormat": "BGRA8Unorm",
+                      "CommandBuffersCommitted": 3,
+                      "CommandBuffersCompleted": 2,
+                      "CommandBuffersErrored": 0,
+                      "StaleCompletions": 0,
+                      "CpuReadbacks": 0,
+                      "FullFrameCopies": 0,
+                      "LogicalWidth": 450,
+                      "LogicalHeight": 800,
+                      "ResizeContinuityActivations": 0,
+                      "ResizeContinuityDeactivations": 0,
+                      "ResizeContinuityActive": false,
+                      "ResizeSynchronousPresents": 0,
+                      "ResizeSynchronousMisses": 0,
+                      "DwmCompositionEnabled": false,
+                      "EglSwapIntervalPolicy": "not-applicable",
+                      "ExactSwapTimingAvailable": false,
+                      "ResizeTrace": null,
+                      "NativeEnvironmentPhysicalSize": null,
+                      "RawViewPadding": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "RawViewInsets": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "RawSystemGestureInsets": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "PresentedDrawables": 0,
+                      "PresentationIntervalsMilliseconds": [],
+                      "MetalAllocatedBytes": 41828352,
+                      "IosFrameLoop": null,
+                      "IosFrameLoopState": null,
+                      "NativeFramePipeline": {
+                        "Mode": "C",
+                        "PreparedPulses": 2,
+                        "PendingGpuFrames": 1,
+                        "MaximumGpuFrames": 2,
+                        "CompletedGpuFrames": 2,
+                        "Retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+                        "Fallback": "nativeScene",
+                        "PreparedWhileGpuFull": 0,
+                        "RejectedAdmissions": 0
+                      },
+                      "GpuDevice": null
+                    }
+                  ]
+                }
+              ],
+              "survivor": [
+                {
+                  "id": 1554,
+                  "Title": "Doroti second window",
+                  "IsVisible": true,
+                  "IsKeyWindow": true,
+                  "width": 602,
+                  "height": 650,
+                  "scale": 2,
+                  "views": [
+                    {
+                      "PixelWidth": 1204,
+                      "PixelHeight": 1300,
+                      "DevicePixelRatio": 2,
+                      "MetricsGeneration": 0,
+                      "ContextGeneration": 2,
+                      "SurfaceGeneration": 14,
+                      "NativeViewType": "Doroti.Host.Maui.DorotiMacOSMetalView",
+                      "GraphicsBackend": "AppKit/MTKView/Graphite-Metal",
+                      "MetalDevice": "Apple M1",
+                      "PixelFormat": "BGRA8Unorm",
+                      "CommandBuffersCommitted": 39,
+                      "CommandBuffersCompleted": 39,
+                      "CommandBuffersErrored": 0,
+                      "StaleCompletions": 4,
+                      "CpuReadbacks": 0,
+                      "FullFrameCopies": 0,
+                      "LogicalWidth": 602,
+                      "LogicalHeight": 650,
+                      "ResizeContinuityActivations": 0,
+                      "ResizeContinuityDeactivations": 0,
+                      "ResizeContinuityActive": false,
+                      "ResizeSynchronousPresents": 0,
+                      "ResizeSynchronousMisses": 0,
+                      "DwmCompositionEnabled": false,
+                      "EglSwapIntervalPolicy": "not-applicable",
+                      "ExactSwapTimingAvailable": false,
+                      "ResizeTrace": null,
+                      "NativeEnvironmentPhysicalSize": null,
+                      "RawViewPadding": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "RawViewInsets": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "RawSystemGestureInsets": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "PresentedDrawables": 17,
+                      "PresentationIntervalsMilliseconds": [
+                        33.332333332509734,
+                        16.666166666254867,
+                        16.66608333471231,
+                        16.666208335664123,
+                        16.66612499684561,
+                        16.666208335664123,
+                        16.66612499684561,
+                        16.666166666254867,
+                        16.666125004121568,
+                        466.65233332896605,
+                        16.666125004121568,
+                        566.6492083328194,
+                        16.666208328388166,
+                        133.32920833636308,
+                        716.6446666669799,
+                        16.666166666254867
+                      ],
+                      "MetalAllocatedBytes": 85590016,
+                      "IosFrameLoop": null,
+                      "IosFrameLoopState": null,
+                      "NativeFramePipeline": {
+                        "Mode": "C",
+                        "PreparedPulses": 26,
+                        "PendingGpuFrames": 0,
+                        "MaximumGpuFrames": 2,
+                        "CompletedGpuFrames": 39,
+                        "Retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+                        "Fallback": "native-active",
+                        "PreparedWhileGpuFull": 0,
+                        "RejectedAdmissions": 9
+                      },
+                      "GpuDevice": null
+                    }
+                  ]
+                }
+              ],
+              "screenshots": [
+                "captured",
+                "captured"
+              ]
+            },
+            "multi-Explicit": {
+              "before": [
+                {
+                  "id": 1563,
+                  "Title": "Doroti second window",
+                  "IsVisible": true,
+                  "IsKeyWindow": false,
+                  "width": 560,
+                  "height": 650,
+                  "scale": 2,
+                  "views": [
+                    {
+                      "PixelWidth": 1120,
+                      "PixelHeight": 1300,
+                      "DevicePixelRatio": 2,
+                      "MetricsGeneration": 0,
+                      "ContextGeneration": 2,
+                      "SurfaceGeneration": 2,
+                      "NativeViewType": "Doroti.Host.Maui.DorotiMacOSMetalView",
+                      "GraphicsBackend": "AppKit/MTKView/Graphite-Metal",
+                      "MetalDevice": "Apple M1",
+                      "PixelFormat": "BGRA8Unorm",
+                      "CommandBuffersCommitted": 2,
+                      "CommandBuffersCompleted": 2,
+                      "CommandBuffersErrored": 0,
+                      "StaleCompletions": 0,
+                      "CpuReadbacks": 0,
+                      "FullFrameCopies": 0,
+                      "LogicalWidth": 560,
+                      "LogicalHeight": 650,
+                      "ResizeContinuityActivations": 0,
+                      "ResizeContinuityDeactivations": 0,
+                      "ResizeContinuityActive": false,
+                      "ResizeSynchronousPresents": 0,
+                      "ResizeSynchronousMisses": 0,
+                      "DwmCompositionEnabled": false,
+                      "EglSwapIntervalPolicy": "not-applicable",
+                      "ExactSwapTimingAvailable": false,
+                      "ResizeTrace": null,
+                      "NativeEnvironmentPhysicalSize": null,
+                      "RawViewPadding": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "RawViewInsets": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "RawSystemGestureInsets": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "PresentedDrawables": 0,
+                      "PresentationIntervalsMilliseconds": [],
+                      "MetalAllocatedBytes": 41828352,
+                      "IosFrameLoop": null,
+                      "IosFrameLoopState": null,
+                      "NativeFramePipeline": {
+                        "Mode": "C",
+                        "PreparedPulses": 1,
+                        "PendingGpuFrames": 0,
+                        "MaximumGpuFrames": 2,
+                        "CompletedGpuFrames": 2,
+                        "Retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+                        "Fallback": null,
+                        "PreparedWhileGpuFull": 0,
+                        "RejectedAdmissions": 0
+                      },
+                      "GpuDevice": null
+                    }
+                  ]
+                },
+                {
+                  "id": 1562,
+                  "Title": "Doroti Desktop · Sudoku",
+                  "IsVisible": true,
+                  "IsKeyWindow": true,
+                  "width": 450,
+                  "height": 800,
+                  "scale": 2,
+                  "views": [
+                    {
+                      "PixelWidth": 900,
+                      "PixelHeight": 1600,
+                      "DevicePixelRatio": 2,
+                      "MetricsGeneration": 0,
+                      "ContextGeneration": 2,
+                      "SurfaceGeneration": 2,
+                      "NativeViewType": "Doroti.Host.Maui.DorotiMacOSMetalView",
+                      "GraphicsBackend": "AppKit/MTKView/Graphite-Metal",
+                      "MetalDevice": "Apple M1",
+                      "PixelFormat": "BGRA8Unorm",
+                      "CommandBuffersCommitted": 3,
+                      "CommandBuffersCompleted": 2,
+                      "CommandBuffersErrored": 0,
+                      "StaleCompletions": 0,
+                      "CpuReadbacks": 0,
+                      "FullFrameCopies": 0,
+                      "LogicalWidth": 450,
+                      "LogicalHeight": 800,
+                      "ResizeContinuityActivations": 0,
+                      "ResizeContinuityDeactivations": 0,
+                      "ResizeContinuityActive": false,
+                      "ResizeSynchronousPresents": 0,
+                      "ResizeSynchronousMisses": 0,
+                      "DwmCompositionEnabled": false,
+                      "EglSwapIntervalPolicy": "not-applicable",
+                      "ExactSwapTimingAvailable": false,
+                      "ResizeTrace": null,
+                      "NativeEnvironmentPhysicalSize": null,
+                      "RawViewPadding": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "RawViewInsets": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "RawSystemGestureInsets": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "PresentedDrawables": 0,
+                      "PresentationIntervalsMilliseconds": [],
+                      "MetalAllocatedBytes": 41828352,
+                      "IosFrameLoop": null,
+                      "IosFrameLoopState": null,
+                      "NativeFramePipeline": {
+                        "Mode": "C",
+                        "PreparedPulses": 2,
+                        "PendingGpuFrames": 1,
+                        "MaximumGpuFrames": 2,
+                        "CompletedGpuFrames": 2,
+                        "Retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+                        "Fallback": "nativeScene",
+                        "PreparedWhileGpuFull": 0,
+                        "RejectedAdmissions": 0
+                      },
+                      "GpuDevice": null
+                    }
+                  ]
+                }
+              ],
+              "survivor": [
+                {
+                  "id": 1563,
+                  "Title": "Doroti second window",
+                  "IsVisible": true,
+                  "IsKeyWindow": true,
+                  "width": 602,
+                  "height": 650,
+                  "scale": 2,
+                  "views": [
+                    {
+                      "PixelWidth": 1204,
+                      "PixelHeight": 1300,
+                      "DevicePixelRatio": 2,
+                      "MetricsGeneration": 0,
+                      "ContextGeneration": 2,
+                      "SurfaceGeneration": 14,
+                      "NativeViewType": "Doroti.Host.Maui.DorotiMacOSMetalView",
+                      "GraphicsBackend": "AppKit/MTKView/Graphite-Metal",
+                      "MetalDevice": "Apple M1",
+                      "PixelFormat": "BGRA8Unorm",
+                      "CommandBuffersCommitted": 35,
+                      "CommandBuffersCompleted": 35,
+                      "CommandBuffersErrored": 0,
+                      "StaleCompletions": 6,
+                      "CpuReadbacks": 0,
+                      "FullFrameCopies": 0,
+                      "LogicalWidth": 602,
+                      "LogicalHeight": 650,
+                      "ResizeContinuityActivations": 0,
+                      "ResizeContinuityDeactivations": 0,
+                      "ResizeContinuityActive": false,
+                      "ResizeSynchronousPresents": 0,
+                      "ResizeSynchronousMisses": 0,
+                      "DwmCompositionEnabled": false,
+                      "EglSwapIntervalPolicy": "not-applicable",
+                      "ExactSwapTimingAvailable": false,
+                      "ResizeTrace": null,
+                      "NativeEnvironmentPhysicalSize": null,
+                      "RawViewPadding": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "RawViewInsets": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "RawSystemGestureInsets": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "PresentedDrawables": 17,
+                      "PresentationIntervalsMilliseconds": [
+                        16.666125004121568,
+                        16.666208328388166,
+                        16.666166666254867,
+                        16.666125004121568,
+                        16.66612499684561,
+                        16.666125004121568,
+                        16.666166666254867,
+                        16.66612499684561,
+                        433.32008333527483,
+                        16.66612499684561,
+                        599.9815416653291,
+                        133.32925000577234,
+                        466.6523749983753,
+                        149.99537500261795,
+                        216.66016666131327,
+                        16.66608333471231
+                      ],
+                      "MetalAllocatedBytes": 85704704,
+                      "IosFrameLoop": null,
+                      "IosFrameLoopState": null,
+                      "NativeFramePipeline": {
+                        "Mode": "C",
+                        "PreparedPulses": 23,
+                        "PendingGpuFrames": 0,
+                        "MaximumGpuFrames": 2,
+                        "CompletedGpuFrames": 35,
+                        "Retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+                        "Fallback": "native-active",
+                        "PreparedWhileGpuFull": 0,
+                        "RejectedAdmissions": 8
+                      },
+                      "GpuDevice": null
+                    }
+                  ]
+                }
+              ],
+              "screenshots": [
+                "captured",
+                "captured"
+              ]
+            },
+            "desktop": {
+              "beforeShow": {
+                "size": [
+                  450,
+                  800
+                ],
+                "Scale": 2,
+                "Visible": false,
+                "Focused": false,
+                "presentation": "Normal",
+                "Closed": false
+              },
+              "shown": {
+                "size": [
+                  450,
+                  800
+                ],
+                "Scale": 2,
+                "Visible": true,
+                "Focused": false,
+                "presentation": "Normal",
+                "Closed": false
+              },
+              "resize": {
+                "size": [
+                  500,
+                  650
+                ],
+                "Scale": 2,
+                "Visible": true,
+                "Focused": false,
+                "presentation": "Normal",
+                "Closed": false
+              },
+              "skipTaskbarRejected": true,
+              "maximized": {
+                "size": [
+                  1440,
+                  755
+                ],
+                "Scale": 2,
+                "Visible": true,
+                "Focused": false,
+                "presentation": "Maximized",
+                "Closed": false
+              },
+              "restored": {
+                "size": [
+                  500,
+                  650
+                ],
+                "Scale": 2,
+                "Visible": true,
+                "Focused": false,
+                "presentation": "Normal",
+                "Closed": false
+              },
+              "minimized": {
+                "size": [
+                  500,
+                  650
+                ],
+                "Scale": 2,
+                "Visible": false,
+                "Focused": false,
+                "presentation": "Minimized",
+                "Closed": false
+              },
+              "fullscreen": {
+                "size": [
+                  1440,
+                  900
+                ],
+                "Scale": 2,
+                "Visible": true,
+                "Focused": true,
+                "presentation": "FullScreen",
+                "Closed": false
+              },
+              "windowed": {
+                "size": [
+                  500,
+                  650
+                ],
+                "Scale": 2,
+                "Visible": true,
+                "Focused": true,
+                "presentation": "Normal",
+                "Closed": false
+              },
+              "hidden": {
+                "size": [
+                  500,
+                  650
+                ],
+                "Scale": 2,
+                "Visible": false,
+                "Focused": false,
+                "presentation": "Normal",
+                "Closed": false
+              },
+              "appearance": {
+                "changed": "Applied",
+                "reset": "Applied"
+              },
+              "materialTransitions": {
+                "Solid": {
+                  "status": "Applied",
+                  "effective": "Solid"
+                },
+                "Transparent": {
+                  "status": "Applied",
+                  "effective": "Transparent"
+                },
+                "Acrylic": {
+                  "status": "Applied",
+                  "effective": "Acrylic"
+                },
+                "LiquidGlass": {
+                  "status": "Applied",
+                  "effective": "LiquidGlass"
+                }
+              },
+              "final": {
+                "size": [
+                  450,
+                  800
+                ],
+                "Scale": 2,
+                "Visible": true,
+                "Focused": true,
+                "presentation": "Normal",
+                "Closed": false
+              }
+            },
+            "services": {
+              "fileGrant": "PASS",
+              "pickerCancellation": "PASS",
+              "pickerOwnerClose": "PASS",
+              "pasteboard": "PASS",
+              "deniedFile": "PASS",
+              "directoryRejected": "PASS",
+              "fileBytes": 134217728,
+              "physicalInput": "notVerified"
+            },
+            "input": {
+              "created": 4,
+              "editorRecreated": true,
+              "webViewRecreated": true,
+              "mixedScene": false,
+              "physicalIme": "notVerified"
+            },
+            "features": {
+              "status": "PASS",
+              "webView": "native factory commands/HTML/JS/app resource/message/stale generation/close",
+              "semantics": "hierarchy/order/role/native action/disabled/password/removal/owner disposal",
+              "input": "configuration-only text/selection and multiline/password endpoint transitions",
+              "physicalIme": "notVerified",
+              "voiceOver": "notVerified"
+            },
+            "navigation": {
+              "coldArgument": "doroti-testbed://navigation/#/cold",
+              "warmLaunchServices": "doroti-testbed://navigation/#/warm",
+              "restored": "doroti-testbed://navigation/#/warm\n"
+            },
+            "rendering": {
+              "before": [
+                {
+                  "id": 1654,
+                  "Title": "Doroti Desktop · Sudoku",
+                  "IsVisible": true,
+                  "IsKeyWindow": false,
+                  "width": 450,
+                  "height": 800,
+                  "scale": 2,
+                  "views": [
+                    {
+                      "PixelWidth": 900,
+                      "PixelHeight": 1600,
+                      "DevicePixelRatio": 2,
+                      "MetricsGeneration": 0,
+                      "ContextGeneration": 2,
+                      "SurfaceGeneration": 2,
+                      "NativeViewType": "Doroti.Host.Maui.DorotiMacOSMetalView",
+                      "GraphicsBackend": "AppKit/MTKView/Graphite-Metal",
+                      "MetalDevice": "Apple M1",
+                      "PixelFormat": "BGRA8Unorm",
+                      "CommandBuffersCommitted": 2,
+                      "CommandBuffersCompleted": 2,
+                      "CommandBuffersErrored": 0,
+                      "StaleCompletions": 0,
+                      "CpuReadbacks": 0,
+                      "FullFrameCopies": 0,
+                      "LogicalWidth": 450,
+                      "LogicalHeight": 800,
+                      "ResizeContinuityActivations": 0,
+                      "ResizeContinuityDeactivations": 0,
+                      "ResizeContinuityActive": false,
+                      "ResizeSynchronousPresents": 0,
+                      "ResizeSynchronousMisses": 0,
+                      "DwmCompositionEnabled": false,
+                      "EglSwapIntervalPolicy": "not-applicable",
+                      "ExactSwapTimingAvailable": false,
+                      "ResizeTrace": null,
+                      "NativeEnvironmentPhysicalSize": null,
+                      "RawViewPadding": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "RawViewInsets": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "RawSystemGestureInsets": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "PresentedDrawables": 0,
+                      "PresentationIntervalsMilliseconds": [],
+                      "MetalAllocatedBytes": 17498112,
+                      "IosFrameLoop": null,
+                      "IosFrameLoopState": null,
+                      "NativeFramePipeline": {
+                        "Mode": "C",
+                        "PreparedPulses": 1,
+                        "PendingGpuFrames": 0,
+                        "MaximumGpuFrames": 2,
+                        "CompletedGpuFrames": 2,
+                        "Retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+                        "Fallback": null,
+                        "PreparedWhileGpuFull": 0,
+                        "RejectedAdmissions": 0
+                      },
+                      "GpuDevice": null
+                    }
+                  ]
+                }
+              ],
+              "after": [
+                {
+                  "id": 1654,
+                  "Title": "Doroti Desktop · Sudoku",
+                  "IsVisible": true,
+                  "IsKeyWindow": true,
+                  "width": 556,
+                  "height": 690,
+                  "scale": 2,
+                  "views": [
+                    {
+                      "PixelWidth": 1112,
+                      "PixelHeight": 1380,
+                      "DevicePixelRatio": 2,
+                      "MetricsGeneration": 0,
+                      "ContextGeneration": 2,
+                      "SurfaceGeneration": 26,
+                      "NativeViewType": "Doroti.Host.Maui.DorotiMacOSMetalView",
+                      "GraphicsBackend": "AppKit/MTKView/Graphite-Metal",
+                      "MetalDevice": "Apple M1",
+                      "PixelFormat": "BGRA8Unorm",
+                      "CommandBuffersCommitted": 35,
+                      "CommandBuffersCompleted": 35,
+                      "CommandBuffersErrored": 0,
+                      "StaleCompletions": 13,
+                      "CpuReadbacks": 0,
+                      "FullFrameCopies": 0,
+                      "LogicalWidth": 556,
+                      "LogicalHeight": 690,
+                      "ResizeContinuityActivations": 0,
+                      "ResizeContinuityDeactivations": 0,
+                      "ResizeContinuityActive": false,
+                      "ResizeSynchronousPresents": 0,
+                      "ResizeSynchronousMisses": 0,
+                      "DwmCompositionEnabled": false,
+                      "EglSwapIntervalPolicy": "not-applicable",
+                      "ExactSwapTimingAvailable": false,
+                      "ResizeTrace": null,
+                      "NativeEnvironmentPhysicalSize": null,
+                      "RawViewPadding": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "RawViewInsets": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "RawSystemGestureInsets": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "PresentedDrawables": 14,
+                      "PresentationIntervalsMilliseconds": [
+                        149.99524999439018,
+                        16.666125004121568,
+                        599.9807916668942,
+                        1199.9613333318848,
+                        116.6629166691564,
+                        1183.2951249962207,
+                        16.666125004121568,
+                        16.66612499684561,
+                        166.66137499851175,
+                        16.666125004121568,
+                        149.99508333130507,
+                        16.66612499684561
+                      ],
+                      "MetalAllocatedBytes": 37027840,
+                      "IosFrameLoop": null,
+                      "IosFrameLoopState": null,
+                      "NativeFramePipeline": {
+                        "Mode": "C",
+                        "PreparedPulses": 14,
+                        "PendingGpuFrames": 0,
+                        "MaximumGpuFrames": 2,
+                        "CompletedGpuFrames": 35,
+                        "Retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+                        "Fallback": "noNewScene",
+                        "PreparedWhileGpuFull": 0,
+                        "RejectedAdmissions": 17
+                      },
+                      "GpuDevice": null
+                    }
+                  ]
+                }
+              ],
+              "sustainedFps": "notMeasured",
+              "resizeCount": 24
+            },
+            "lifecycle": {
+              "status": "PASS",
+              "checks": {
+                "ownerIsolation": {
+                  "status": "PASS",
+                  "pendingAtDetach": 1,
+                  "sameOwnerRejected": true,
+                  "independentOwnerConnected": true,
+                  "hardwareOverlap": "notMeasured"
+                },
+                "disconnectInput": {
+                  "status": "PASS",
+                  "synthesizedKeyUp": true,
+                  "focusCleared": true
+                },
+                "retiredSnapshot": {
+                  "status": "PASS",
+                  "backgroundSamples": 20,
+                  "snapshot": {
+                    "PixelWidth": 640,
+                    "PixelHeight": 440,
+                    "DevicePixelRatio": 2,
+                    "MetricsGeneration": 0,
+                    "ContextGeneration": 2,
+                    "SurfaceGeneration": 3,
+                    "NativeViewType": "Doroti.Host.Maui.DorotiMacOSMetalView",
+                    "GraphicsBackend": "AppKit/MTKView/Graphite-Metal",
+                    "MetalDevice": "Apple M1",
+                    "PixelFormat": "BGRA8Unorm",
+                    "CommandBuffersCommitted": 2,
+                    "CommandBuffersCompleted": 2,
+                    "CommandBuffersErrored": 0,
+                    "StaleCompletions": 1,
+                    "CpuReadbacks": 0,
+                    "FullFrameCopies": 0,
+                    "LogicalWidth": 320,
+                    "LogicalHeight": 220,
+                    "ResizeContinuityActivations": 0,
+                    "ResizeContinuityDeactivations": 0,
+                    "ResizeContinuityActive": false,
+                    "ResizeSynchronousPresents": 0,
+                    "ResizeSynchronousMisses": 0,
+                    "DwmCompositionEnabled": false,
+                    "EglSwapIntervalPolicy": "not-applicable",
+                    "ExactSwapTimingAvailable": false,
+                    "ResizeTrace": null,
+                    "NativeEnvironmentPhysicalSize": null,
+                    "RawViewPadding": {
+                      "left": 0,
+                      "top": 0,
+                      "right": 0,
+                      "bottom": 0
+                    },
+                    "RawViewInsets": {
+                      "left": 0,
+                      "top": 0,
+                      "right": 0,
+                      "bottom": 0
+                    },
+                    "RawSystemGestureInsets": {
+                      "left": 0,
+                      "top": 0,
+                      "right": 0,
+                      "bottom": 0
+                    },
+                    "PresentedDrawables": 0,
+                    "PresentationIntervalsMilliseconds": [],
+                    "MetalAllocatedBytes": null,
+                    "IosFrameLoop": null,
+                    "IosFrameLoopState": null,
+                    "NativeFramePipeline": {
+                      "Mode": "C",
+                      "PreparedPulses": 1,
+                      "PendingGpuFrames": 0,
+                      "MaximumGpuFrames": 1,
+                      "CompletedGpuFrames": 2,
+                      "Retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+                      "Fallback": "noNewScene",
+                      "PreparedWhileGpuFull": 0,
+                      "RejectedAdmissions": 0
+                    },
+                    "GpuDevice": null
+                  }
+                },
+                "hideResume": {
+                  "status": "PASS",
+                  "cycles": 3,
+                  "resume": {
+                    "PixelWidth": 640,
+                    "PixelHeight": 440,
+                    "DevicePixelRatio": 2,
+                    "MetricsGeneration": 0,
+                    "ContextGeneration": 2,
+                    "SurfaceGeneration": 2,
+                    "NativeViewType": "Doroti.Host.Maui.DorotiMacOSMetalView",
+                    "GraphicsBackend": "AppKit/MTKView/Graphite-Metal",
+                    "MetalDevice": "Apple M1",
+                    "PixelFormat": "BGRA8Unorm",
+                    "CommandBuffersCommitted": 4,
+                    "CommandBuffersCompleted": 4,
+                    "CommandBuffersErrored": 0,
+                    "StaleCompletions": 0,
+                    "CpuReadbacks": 0,
+                    "FullFrameCopies": 0,
+                    "LogicalWidth": 320,
+                    "LogicalHeight": 220,
+                    "ResizeContinuityActivations": 0,
+                    "ResizeContinuityDeactivations": 0,
+                    "ResizeContinuityActive": false,
+                    "ResizeSynchronousPresents": 0,
+                    "ResizeSynchronousMisses": 0,
+                    "DwmCompositionEnabled": false,
+                    "EglSwapIntervalPolicy": "not-applicable",
+                    "ExactSwapTimingAvailable": false,
+                    "ResizeTrace": null,
+                    "NativeEnvironmentPhysicalSize": null,
+                    "RawViewPadding": {
+                      "left": 0,
+                      "top": 0,
+                      "right": 0,
+                      "bottom": 0
+                    },
+                    "RawViewInsets": {
+                      "left": 0,
+                      "top": 0,
+                      "right": 0,
+                      "bottom": 0
+                    },
+                    "RawSystemGestureInsets": {
+                      "left": 0,
+                      "top": 0,
+                      "right": 0,
+                      "bottom": 0
+                    },
+                    "PresentedDrawables": 1,
+                    "PresentationIntervalsMilliseconds": [],
+                    "MetalAllocatedBytes": 29425664,
+                    "IosFrameLoop": null,
+                    "IosFrameLoopState": null,
+                    "NativeFramePipeline": {
+                      "Mode": "C",
+                      "PreparedPulses": 3,
+                      "PendingGpuFrames": 0,
+                      "MaximumGpuFrames": 1,
+                      "CompletedGpuFrames": 4,
+                      "Retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+                      "Fallback": "noNewScene",
+                      "PreparedWhileGpuFull": 0,
+                      "RejectedAdmissions": 0
+                    },
+                    "GpuDevice": null
+                  }
+                },
+                "detachReattach": {
+                  "status": "PASS",
+                  "snapshot": {
+                    "PixelWidth": 640,
+                    "PixelHeight": 440,
+                    "DevicePixelRatio": 2,
+                    "MetricsGeneration": 0,
+                    "ContextGeneration": 2,
+                    "SurfaceGeneration": 4,
+                    "NativeViewType": "Doroti.Host.Maui.DorotiMacOSMetalView",
+                    "GraphicsBackend": "AppKit/MTKView/Graphite-Metal",
+                    "MetalDevice": "Apple M1",
+                    "PixelFormat": "BGRA8Unorm",
+                    "CommandBuffersCommitted": 7,
+                    "CommandBuffersCompleted": 7,
+                    "CommandBuffersErrored": 0,
+                    "StaleCompletions": 0,
+                    "CpuReadbacks": 0,
+                    "FullFrameCopies": 0,
+                    "LogicalWidth": 320,
+                    "LogicalHeight": 220,
+                    "ResizeContinuityActivations": 0,
+                    "ResizeContinuityDeactivations": 0,
+                    "ResizeContinuityActive": false,
+                    "ResizeSynchronousPresents": 0,
+                    "ResizeSynchronousMisses": 0,
+                    "DwmCompositionEnabled": false,
+                    "EglSwapIntervalPolicy": "not-applicable",
+                    "ExactSwapTimingAvailable": false,
+                    "ResizeTrace": null,
+                    "NativeEnvironmentPhysicalSize": null,
+                    "RawViewPadding": {
+                      "left": 0,
+                      "top": 0,
+                      "right": 0,
+                      "bottom": 0
+                    },
+                    "RawViewInsets": {
+                      "left": 0,
+                      "top": 0,
+                      "right": 0,
+                      "bottom": 0
+                    },
+                    "RawSystemGestureInsets": {
+                      "left": 0,
+                      "top": 0,
+                      "right": 0,
+                      "bottom": 0
+                    },
+                    "PresentedDrawables": 4,
+                    "PresentationIntervalsMilliseconds": [
+                      399.98729166109115,
+                      16.66625000507338
+                    ],
+                    "MetalAllocatedBytes": 30556160,
+                    "IosFrameLoop": null,
+                    "IosFrameLoopState": null,
+                    "NativeFramePipeline": {
+                      "Mode": "C",
+                      "PreparedPulses": 5,
+                      "PendingGpuFrames": 0,
+                      "MaximumGpuFrames": 1,
+                      "CompletedGpuFrames": 7,
+                      "Retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+                      "Fallback": "noNewScene",
+                      "PreparedWhileGpuFull": 0,
+                      "RejectedAdmissions": 0
+                    },
+                    "GpuDevice": null
+                  },
+                  "synthesizedKeyUp": true
+                },
+                "syntheticBackingScale": {
+                  "status": "PASS",
+                  "windowFactors": [
+                    {
+                      "PixelWidth": 320,
+                      "PixelHeight": 220,
+                      "DevicePixelRatio": 1,
+                      "MetricsGeneration": 0,
+                      "ContextGeneration": 2,
+                      "SurfaceGeneration": 5,
+                      "NativeViewType": "Doroti.Host.Maui.DorotiMacOSMetalView",
+                      "GraphicsBackend": "AppKit/MTKView/Graphite-Metal",
+                      "MetalDevice": "Apple M1",
+                      "PixelFormat": "BGRA8Unorm",
+                      "CommandBuffersCommitted": 9,
+                      "CommandBuffersCompleted": 9,
+                      "CommandBuffersErrored": 0,
+                      "StaleCompletions": 0,
+                      "CpuReadbacks": 0,
+                      "FullFrameCopies": 0,
+                      "LogicalWidth": 320,
+                      "LogicalHeight": 220,
+                      "ResizeContinuityActivations": 0,
+                      "ResizeContinuityDeactivations": 0,
+                      "ResizeContinuityActive": false,
+                      "ResizeSynchronousPresents": 0,
+                      "ResizeSynchronousMisses": 0,
+                      "DwmCompositionEnabled": false,
+                      "EglSwapIntervalPolicy": "not-applicable",
+                      "ExactSwapTimingAvailable": false,
+                      "ResizeTrace": null,
+                      "NativeEnvironmentPhysicalSize": null,
+                      "RawViewPadding": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "RawViewInsets": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "RawSystemGestureInsets": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "PresentedDrawables": 5,
+                      "PresentationIntervalsMilliseconds": [
+                        399.98729166109115,
+                        16.66625000507338,
+                        99.99679166503483
+                      ],
+                      "MetalAllocatedBytes": 31145984,
+                      "IosFrameLoop": null,
+                      "IosFrameLoopState": null,
+                      "NativeFramePipeline": {
+                        "Mode": "C",
+                        "PreparedPulses": 6,
+                        "PendingGpuFrames": 0,
+                        "MaximumGpuFrames": 1,
+                        "CompletedGpuFrames": 9,
+                        "Retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+                        "Fallback": "noNewScene",
+                        "PreparedWhileGpuFull": 0,
+                        "RejectedAdmissions": 0
+                      },
+                      "GpuDevice": null
+                    },
+                    {
+                      "PixelWidth": 480,
+                      "PixelHeight": 330,
+                      "DevicePixelRatio": 1.5,
+                      "MetricsGeneration": 0,
+                      "ContextGeneration": 2,
+                      "SurfaceGeneration": 6,
+                      "NativeViewType": "Doroti.Host.Maui.DorotiMacOSMetalView",
+                      "GraphicsBackend": "AppKit/MTKView/Graphite-Metal",
+                      "MetalDevice": "Apple M1",
+                      "PixelFormat": "BGRA8Unorm",
+                      "CommandBuffersCommitted": 11,
+                      "CommandBuffersCompleted": 11,
+                      "CommandBuffersErrored": 0,
+                      "StaleCompletions": 0,
+                      "CpuReadbacks": 0,
+                      "FullFrameCopies": 0,
+                      "LogicalWidth": 320,
+                      "LogicalHeight": 220,
+                      "ResizeContinuityActivations": 0,
+                      "ResizeContinuityDeactivations": 0,
+                      "ResizeContinuityActive": false,
+                      "ResizeSynchronousPresents": 0,
+                      "ResizeSynchronousMisses": 0,
+                      "DwmCompositionEnabled": false,
+                      "EglSwapIntervalPolicy": "not-applicable",
+                      "ExactSwapTimingAvailable": false,
+                      "ResizeTrace": null,
+                      "NativeEnvironmentPhysicalSize": null,
+                      "RawViewPadding": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "RawViewInsets": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "RawSystemGestureInsets": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "PresentedDrawables": 6,
+                      "PresentationIntervalsMilliseconds": [
+                        399.98729166109115,
+                        16.66625000507338,
+                        99.99679166503483,
+                        99.99687499657739
+                      ],
+                      "MetalAllocatedBytes": 32522240,
+                      "IosFrameLoop": null,
+                      "IosFrameLoopState": null,
+                      "NativeFramePipeline": {
+                        "Mode": "C",
+                        "PreparedPulses": 7,
+                        "PendingGpuFrames": 0,
+                        "MaximumGpuFrames": 1,
+                        "CompletedGpuFrames": 11,
+                        "Retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+                        "Fallback": "noNewScene",
+                        "PreparedWhileGpuFull": 0,
+                        "RejectedAdmissions": 0
+                      },
+                      "GpuDevice": null
+                    },
+                    {
+                      "PixelWidth": 640,
+                      "PixelHeight": 440,
+                      "DevicePixelRatio": 2,
+                      "MetricsGeneration": 0,
+                      "ContextGeneration": 2,
+                      "SurfaceGeneration": 7,
+                      "NativeViewType": "Doroti.Host.Maui.DorotiMacOSMetalView",
+                      "GraphicsBackend": "AppKit/MTKView/Graphite-Metal",
+                      "MetalDevice": "Apple M1",
+                      "PixelFormat": "BGRA8Unorm",
+                      "CommandBuffersCommitted": 13,
+                      "CommandBuffersCompleted": 13,
+                      "CommandBuffersErrored": 0,
+                      "StaleCompletions": 0,
+                      "CpuReadbacks": 0,
+                      "FullFrameCopies": 0,
+                      "LogicalWidth": 320,
+                      "LogicalHeight": 220,
+                      "ResizeContinuityActivations": 0,
+                      "ResizeContinuityDeactivations": 0,
+                      "ResizeContinuityActive": false,
+                      "ResizeSynchronousPresents": 0,
+                      "ResizeSynchronousMisses": 0,
+                      "DwmCompositionEnabled": false,
+                      "EglSwapIntervalPolicy": "not-applicable",
+                      "ExactSwapTimingAvailable": false,
+                      "ResizeTrace": null,
+                      "NativeEnvironmentPhysicalSize": null,
+                      "RawViewPadding": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "RawViewInsets": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "RawSystemGestureInsets": {
+                        "left": 0,
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0
+                      },
+                      "PresentedDrawables": 8,
+                      "PresentationIntervalsMilliseconds": [
+                        399.98729166109115,
+                        16.66625000507338,
+                        99.99679166503483,
+                        99.99687499657739,
+                        99.99679167231079,
+                        16.66612499684561
+                      ],
+                      "MetalAllocatedBytes": 34783232,
+                      "IosFrameLoop": null,
+                      "IosFrameLoopState": null,
+                      "NativeFramePipeline": {
+                        "Mode": "C",
+                        "PreparedPulses": 8,
+                        "PendingGpuFrames": 0,
+                        "MaximumGpuFrames": 1,
+                        "CompletedGpuFrames": 13,
+                        "Retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+                        "Fallback": "noNewScene",
+                        "PreparedWhileGpuFull": 0,
+                        "RejectedAdmissions": 0
+                      },
+                      "GpuDevice": null
+                    }
+                  ],
+                  "physicalMonitorTransition": "notVerified"
+                },
+                "finalDrain": {
+                  "status": "PASS",
+                  "retiringOwners": 0
+                }
+              },
+              "physicalInput": "notVerified"
+            }
+          },
+          "status": "PASS (native automation only)"
+        }
+      }
+    },
+    "catalyst": {
+      "build": "PASS",
+      "warnings": 0,
+      "errors": 0,
+      "bundle": "samples/DorotiTestbedApp/macos/bin/Debug/net10.0-maccatalyst27.0/maccatalyst-arm64/Doroti Testbed.app",
+      "bundleSha256": "59368eeed28888b04b8738c218ac0d0a924908812308040d18727a39119efebe",
+      "bundleFiles": 520,
+      "bundleBytes": 656088686,
+      "keyPayloads": {
+        "Contents/Frameworks/DorotiTestbedAppNative.framework/Versions/A/Resources/Info.plist": {
+          "sha256": "75843ee0fbc568396077c24b4765b61b9d2bddd0a48857575da81d8034a58e8f",
+          "bytes": 1394
+        },
+        "Contents/Frameworks/libSkiaSharp.framework/Versions/A/Resources/Info.plist": {
+          "sha256": "05c4e0c8af7fd4da9c594dcbfb934bc574bbbf2f33b7b8e42cc65c9d94413ecd",
+          "bytes": 1417
+        },
+        "Contents/Info.plist": {
+          "sha256": "24dbdf26ebd866bd43967cfb845fb1ffed346ec01c5243d3ec7297dd4f23bf46",
+          "bytes": 1822
+        },
+        "Contents/MacOS/DorotiTestbedApp.MacCatalyst": {
+          "sha256": "b8c82860a29c549b535f81a7e1afe2b5f1ecd164c5da2146e8e1a0613ece936c",
+          "bytes": 423104448
+        },
+        "Contents/MonoBundle/Doroti.Host.Maui.dll": {
+          "sha256": "ebadabdb748f5c66e3669308796984994af46b97ec2d2968268619fea50b460f",
+          "bytes": 628736
+        }
+      },
+      "buildLogSha256": "2d324b222735dd814a62229f2847d652e32b2f0f515ed5db5e2e6650a2533995",
+      "nativeRuns": {
+        "catalyst-final": {
+          "restorationId": "apple-smoke-2caddca97a0d4d12a9ae237201d3c733",
+          "target": "maccatalyst",
+          "tfm": "net10.0-maccatalyst27.0",
+          "rid": "maccatalyst-arm64",
+          "renderer": "graphite",
+          "activation": "os",
+          "physicalInput": "notVerified",
+          "checks": {
+            "services": "{\"fileRead128MiB\":true,\"cancel\":true,\"ownerDispose\":true,\"dropCapability\":true,\"physicalInput\":\"notVerified\"}",
+            "input": "{\"created\":4,\"editorRecreated\":true,\"webViewRecreated\":true,\"mixedScene\":false,\"physicalIme\":\"notVerified\"}",
+            "features": "{\"status\":\"PASS\",\"webView\":\"native factory commands/HTML/JS/app resource/message/stale generation/close\",\"semantics\":\"hierarchy/order/role/native action/disabled/password/removal/owner disposal\",\"input\":\"configuration-only text/selection and multiline/password endpoint transitions\",\"physicalIme\":\"notVerified\",\"voiceOver\":\"notVerified\"}",
+            "navigation": "doroti-testbed://app/details/apple-smoke\n",
+            "restoration": "doroti-testbed://app/details/apple-smoke\n",
+            "multi": "{\"before\":{\"first\":[470,650],\"second\":[580,620],\"firstScale\":2,\"secondScale\":2},\"survivor\":true,\"remaining\":0,\"lifetime\":\"Explicit\"}"
+          },
+          "framePipelines": {
+            "services": {
+              "mode": "C",
+              "preparedPulses": 5,
+              "pendingGpuFrames": 0,
+              "maximumGpuFrames": 2,
+              "completedGpuFrames": 5,
+              "retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+              "fallback": "noNewScene",
+              "preparedWhileGpuFull": 1,
+              "rejectedAdmissions": 1
+            },
+            "input": {
+              "mode": "C",
+              "preparedPulses": 9,
+              "pendingGpuFrames": 0,
+              "maximumGpuFrames": 2,
+              "completedGpuFrames": 7,
+              "retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+              "fallback": "noNewScene",
+              "preparedWhileGpuFull": 1,
+              "rejectedAdmissions": 2
+            },
+            "features": {
+              "mode": "C",
+              "preparedPulses": 7,
+              "pendingGpuFrames": 0,
+              "maximumGpuFrames": 2,
+              "completedGpuFrames": 7,
+              "retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+              "fallback": "noNewScene",
+              "preparedWhileGpuFull": 1,
+              "rejectedAdmissions": 1
+            },
+            "navigation": {
+              "mode": "C",
+              "preparedPulses": 10,
+              "pendingGpuFrames": 0,
+              "maximumGpuFrames": 2,
+              "completedGpuFrames": 8,
+              "retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+              "fallback": "noNewScene",
+              "preparedWhileGpuFull": 1,
+              "rejectedAdmissions": 3
+            },
+            "restoration": {
+              "mode": "C",
+              "preparedPulses": 9,
+              "pendingGpuFrames": 0,
+              "maximumGpuFrames": 2,
+              "completedGpuFrames": 8,
+              "retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+              "fallback": "noNewScene",
+              "preparedWhileGpuFull": 1,
+              "rejectedAdmissions": 2
+            }
+          }
+        }
+      }
+    },
+    "ios-simulator": {
+      "build": "PASS",
+      "warnings": 0,
+      "errors": 0,
+      "bundle": "samples/DorotiTestbedApp/ios/bin/iossimulator-arm64/Debug/net10.0-ios27.0/iossimulator-arm64/DorotiTestbedApp.iOS.app",
+      "bundleSha256": "8488e0ff2f1080a1b957b968ed6e09c235728c1717c373b8375af37ed54c3c34",
+      "bundleFiles": 315,
+      "bundleBytes": 190672917,
+      "keyPayloads": {
+        "Doroti.Host.Maui.dll": {
+          "sha256": "058f3ed52563b0d05fe74b5bd0683045edd64a74afb2ec74b149fd767829bdd1",
+          "bytes": 609280
+        },
+        "DorotiTestbedApp.iOS": {
+          "sha256": "d3cd9a4f3625ce701120ae1ee9732f1104e55f915ae14be52114c7c8e2f58ccd",
+          "bytes": 46144512
+        },
+        "Frameworks/DorotiTestbedAppNative.framework/Info.plist": {
+          "sha256": "15cf6887f4599a37303233dc04c620d1f4db9608cee06d692998d79ed815e0e2",
+          "bytes": 757
+        },
+        "Frameworks/libSkiaSharp.framework/Info.plist": {
+          "sha256": "1c4dd4a65b4a0559d5b32ec4f61c3da9c07283b5f1286fe2cf6abec949b6c3a3",
+          "bytes": 775
+        },
+        "Info.plist": {
+          "sha256": "8a7ecfd974a51118c56dd2563d8c349562c0ea9c7d1bcd21adb576cec31031a9",
+          "bytes": 1918
+        },
+        "MauiSplash.storyboardc/Info.plist": {
+          "sha256": "1f255d5cc53b531e3f29a9406a8df49a958e2bf9443d3e20bd8374f707f7d5c8",
+          "bytes": 258
+        }
+      },
+      "buildLogSha256": "458415598638482cac89716f900e2001ac7a53c8d955ea3ade5691656bcccf6b",
+      "nativeRuns": {
+        "ios-features-3": {
+          "restorationId": "apple-smoke-0746ec2e90c844dd854e65d684c449cd",
+          "target": "ios",
+          "tfm": "net10.0-ios27.0",
+          "rid": "iossimulator-arm64",
+          "renderer": "graphite",
+          "activation": "native-callback",
+          "physicalInput": "notVerified",
+          "checks": {
+            "features": "{\"status\":\"PASS\",\"webView\":\"native factory commands/HTML/JS/app resource/message/stale generation/close\",\"semantics\":\"hierarchy/order/role/native action/disabled/password/removal/owner disposal\",\"input\":\"configuration-only text/selection and multiline/password endpoint transitions\",\"physicalIme\":\"notVerified\",\"voiceOver\":\"notVerified\"}"
+          },
+          "framePipelines": {
+            "features": {
+              "mode": "C",
+              "preparedPulses": 5,
+              "pendingGpuFrames": 0,
+              "maximumGpuFrames": 1,
+              "completedGpuFrames": 4,
+              "retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+              "fallback": "noNewScene",
+              "preparedWhileGpuFull": 0,
+              "rejectedAdmissions": 0
+            }
+          }
+        },
+        "ios-regressions": {
+          "restorationId": "apple-smoke-6b1da76d1f744932b46525fb6022ed7f",
+          "target": "ios",
+          "tfm": "net10.0-ios27.0",
+          "rid": "iossimulator-arm64",
+          "renderer": "graphite",
+          "activation": "native-callback",
+          "physicalInput": "notVerified",
+          "checks": {
+            "input": "{\"created\":4,\"editorRecreated\":true,\"webViewRecreated\":true,\"mixedScene\":false,\"physicalIme\":\"notVerified\"}",
+            "services": "{\"fileRead128MiB\":true,\"cancel\":true,\"ownerDispose\":true,\"dropCapability\":true,\"physicalInput\":\"notVerified\"}",
+            "rotation": "[{\"orientation\":\"LandscapeLeft\",\"distinctWidths\":4,\"meanPhaseError\":157.67911657194296,\"maxPhaseError\":448.07361539204913,\"animations\":[\"position: \\u003CCABasicAnimation: 0x1209cfae0\\u003E begin=59599.969661750016 duration=0.3 from=NSPoint: {-236, 236} to=NSPoint: {0, 0} additive=True curve=easeInEaseOut\",\"bounds.size: \\u003CCABasicAnimation: 0x1209cfb60\\u003E begin=59599.969661750016 duration=0.3 from=NSSize: {-472, 472} to=NSSize: {0, 0} additive=True curve=easeInEaseOut\"],\"updates\":[{\"time\":59600.00612537501,\"targetTime\":59600.00151237501,\"width\":412.51837272315595,\"height\":863.481627276844},{\"time\":59600.24178987501,\"targetTime\":59600.23614700001,\"width\":862.3287115917874,\"height\":413.6712884082126},{\"time\":59600.37139466668,\"targetTime\":59600.38212233334,\"width\":874,\"height\":402}],\"samples\":[{\"time\":59599.65130250001,\"width\":1206,\"height\":2622,\"drawableWidth\":1206,\"drawableHeight\":2622,\"boundsWidth\":402,\"presentationWidth\":402,\"safeTop\":62,\"animating\":false,\"scale\":3},{\"time\":59599.66781537501,\"width\":1206,\"height\":2622,\"drawableWidth\":1206,\"drawableHeight\":2622,\"boundsWidth\":402,\"presentationWidth\":402,\"safeTop\":62,\"animating\":false,\"scale\":3},{\"time\":59599.68403541668,\"width\":1206,\"height\":2622,\"drawableWidth\":1206,\"drawableHeight\":2622,\"boundsWidth\":402,\"presentationWidth\":402,\"safeTop\":62,\"animating\":false,\"scale\":3},{\"time\":59599.70111875001,\"width\":1206,\"height\":2622,\"drawableWidth\":1206,\"drawableHeight\":2622,\"boundsWidth\":402,\"presentationWidth\":402,\"safeTop\":62,\"animating\":false,\"scale\":3},{\"time\":59599.71753104168,\"width\":1206,\"height\":2622,\"drawableWidth\":1206,\"drawableHeight\":2622,\"boundsWidth\":402,\"presentationWidth\":402,\"safeTop\":62,\"animating\":false,\"scale\":3},{\"time\":59599.73518716668,\"width\":1206,\"height\":2622,\"drawableWidth\":1206,\"drawableHeight\":2622,\"boundsWidth\":402,\"presentationWidth\":402,\"safeTop\":62,\"animating\":false,\"scale\":3},{\"time\":59599.75076595835,\"width\":1206,\"height\":2622,\"drawableWidth\":1206,\"drawableHeight\":2622,\"boundsWidth\":402,\"presentationWidth\":402,\"safeTop\":62,\"animating\":false,\"scale\":3},{\"time\":59600.005453375015,\"width\":1206,\"height\":2622,\"drawableWidth\":1206,\"drawableHeight\":2622,\"boundsWidth\":874,\"presentationWidth\":415.2970676571131,\"safeTop\":62,\"animating\":true,\"scale\":3},{\"time\":59600.238828708345,\"width\":1238,\"height\":2590,\"drawableWidth\":2622,\"drawableHeight\":2622,\"boundsWidth\":874,\"presentationWidth\":860.7402820587158,\"safeTop\":60.61834934568714,\"animating\":true,\"scale\":3},{\"time\":59600.369368000014,\"width\":2587,\"height\":1241,\"drawableWidth\":2622,\"drawableHeight\":2622,\"boundsWidth\":874,\"presentationWidth\":874,\"safeTop\":1.533092968875387,\"animating\":true,\"scale\":3},{\"time\":59600.524961500014,\"width\":2622,\"height\":1206,\"drawableWidth\":2622,\"drawableHeight\":1206,\"boundsWidth\":874,\"presentationWidth\":874,\"safeTop\":0,\"animating\":false,\"scale\":3},{\"time\":59600.53769470835,\"width\":2622,\"height\":1206,\"drawableWidth\":2622,\"drawableHeight\":1206,\"boundsWidth\":874,\"presentationWidth\":874,\"safeTop\":0,\"animating\":false,\"scale\":3},{\"time\":59600.55085691668,\"width\":2622,\"height\":1206,\"drawableWidth\":2622,\"drawableHeight\":1206,\"boundsWidth\":874,\"presentationWidth\":874,\"safeTop\":0,\"animating\":false,\"scale\":3},{\"time\":59600.56816858335,\"width\":2622,\"height\":1206,\"drawableWidth\":2622,\"drawableHeight\":1206,\"boundsWidth\":874,\"presentationWidth\":874,\"safeTop\":0,\"animating\":false,\"scale\":3},{\"time\":59600.583965333346,\"width\":2622,\"height\":1206,\"drawableWidth\":2622,\"drawableHeight\":1206,\"boundsWidth\":874,\"presentationWidth\":874,\"safeTop\":0,\"animating\":false,\"scale\":3},{\"time\":59600.617305958345,\"width\":2622,\"height\":1206,\"drawableWidth\":2622,\"drawableHeight\":1206,\"boundsWidth\":874,\"presentationWidth\":874,\"safeTop\":0,\"animating\":false,\"scale\":3},{\"time\":59600.63400662501,\"width\":2622,\"height\":1206,\"drawableWidth\":2622,\"drawableHeight\":1206,\"boundsWidth\":874,\"presentationWidth\":874,\"safeTop\":0,\"animating\":false,\"scale\":3},{\"time\":59600.65058487502,\"width\":2622,\"height\":1206,\"drawableWidth\":2622,\"drawableHeight\":1206,\"boundsWidth\":874,\"presentationWidth\":874,\"safeTop\":0,\"animating\":false,\"scale\":3},{\"time\":59600.66725041668,\"width\":2622,\"height\":1206,\"drawableWidth\":2622,\"drawableHeight\":1206,\"boundsWidth\":874,\"presentationWidth\":874,\"safeTop\":0,\"animating\":false,\"scale\":3},{\"time\":59600.68387162501,\"width\":2622,\"height\":1206,\"drawableWidth\":2622,\"drawableHeight\":1206,\"boundsWidth\":874,\"presentationWidth\":874,\"safeTop\":0,\"animating\":false,\"scale\":3},{\"time\":59600.70054345835,\"width\":2622,\"height\":1206,\"drawableWidth\":2622,\"drawableHeight\":1206,\"boundsWidth\":874,\"presentationWidth\":874,\"safeTop\":0,\"animating\":false,\"scale\":3},{\"time\":59600.717248833345,\"width\":2622,\"height\":1206,\"drawableWidth\":2622,\"drawableHeight\":1206,\"boundsWidth\":874,\"presentationWidth\":874,\"safeTop\":0,\"animating\":false,\"scale\":3},{\"time\":59600.74154454168,\"width\":2622,\"height\":1206,\"drawableWidth\":2622,\"drawableHeight\":1206,\"boundsWidth\":874,\"presentationWidth\":874,\"safeTop\":0,\"animating\":false,\"scale\":3},{\"time\":59600.77195812501,\"width\":2622,\"height\":1206,\"drawableWidth\":2622,\"drawableHeight\":1206,\"boundsWidth\":874,\"presentationWidth\":874,\"safeTop\":0,\"animating\":false,\"scale\":3}]},{\"orientation\":\"Portrait\",\"distinctWidths\":4,\"meanPhaseError\":108.55431585085655,\"maxPhaseError\":364.3483854929606,\"animations\":[\"position: \\u003CCABasicAnimation: 0x120b978a0\\u003E begin=0 duration=0.3 from=NSPoint: {236, -236} to=NSPoint: {0, 0} additive=True curve=easeInEaseOut\",\"bounds.size: \\u003CCABasicAnimation: 0x120b97920\\u003E begin=0 duration=0.3 from=NSSize: {472, -472} to=NSSize: {0, 0} additive=True curve=easeInEaseOut\"],\"updates\":[{\"time\":59600.85323500001,\"targetTime\":59600.81666666668,\"width\":874,\"height\":402},{\"time\":59600.86785958335,\"targetTime\":59600.881106958346,\"width\":870.5704614717496,\"height\":405.4295385282504},{\"time\":59601.07122587501,\"targetTime\":59601.08270241668,\"width\":471.6673313516445,\"height\":804.3326686483555},{\"time\":59601.217794375014,\"targetTime\":59601.22334775001,\"width\":402,\"height\":874}],\"samples\":[{\"time\":59600.78675704168,\"width\":2622,\"height\":1206,\"drawableWidth\":2622,\"drawableHeight\":1206,\"boundsWidth\":874,\"presentationWidth\":874,\"safeTop\":0,\"animating\":false,\"scale\":3},{\"time\":59600.85275879168,\"width\":2622,\"height\":1206,\"drawableWidth\":2622,\"drawableHeight\":1206,\"boundsWidth\":402,\"presentationWidth\":874,\"safeTop\":0,\"animating\":true,\"scale\":3},{\"time\":59600.86731325001,\"width\":2622,\"height\":1206,\"drawableWidth\":2622,\"drawableHeight\":2622,\"boundsWidth\":402,\"presentationWidth\":873.797788756201,\"safeTop\":0,\"animating\":true,\"scale\":3},{\"time\":59601.07034516668,\"width\":2612,\"height\":1216,\"drawableWidth\":2622,\"drawableHeight\":2622,\"boundsWidth\":402,\"presentationWidth\":506.31828117370605,\"safeTop\":0.45049023040577535,\"animating\":true,\"scale\":3},{\"time\":59601.217302458346,\"width\":1415,\"height\":2413,\"drawableWidth\":2622,\"drawableHeight\":2622,\"boundsWidth\":402,\"presentationWidth\":402,\"safeTop\":52.84878274618229,\"animating\":true,\"scale\":3},{\"time\":59601.37754958335,\"width\":1206,\"height\":2622,\"drawableWidth\":1206,\"drawableHeight\":2622,\"boundsWidth\":402,\"presentationWidth\":402,\"safeTop\":62,\"animating\":false,\"scale\":3},{\"time\":59601.39101433335,\"width\":1206,\"height\":2622,\"drawableWidth\":1206,\"drawableHeight\":2622,\"boundsWidth\":402,\"presentationWidth\":402,\"safeTop\":62,\"animating\":false,\"scale\":3},{\"time\":59601.401395125016,\"width\":1206,\"height\":2622,\"drawableWidth\":1206,\"drawableHeight\":2622,\"boundsWidth\":402,\"presentationWidth\":402,\"safeTop\":62,\"animating\":false,\"scale\":3},{\"time\":59601.41742854168,\"width\":1206,\"height\":2622,\"drawableWidth\":1206,\"drawableHeight\":2622,\"boundsWidth\":402,\"presentationWidth\":402,\"safeTop\":62,\"animating\":false,\"scale\":3},{\"time\":59601.434763208345,\"width\":1206,\"height\":2622,\"drawableWidth\":1206,\"drawableHeight\":2622,\"boundsWidth\":402,\"presentationWidth\":402,\"safeTop\":62,\"animating\":false,\"scale\":3},{\"time\":59601.45070808335,\"width\":1206,\"height\":2622,\"drawableWidth\":1206,\"drawableHeight\":2622,\"boundsWidth\":402,\"presentationWidth\":402,\"safeTop\":62,\"animating\":false,\"scale\":3},{\"time\":59601.46731420835,\"width\":1206,\"height\":2622,\"drawableWidth\":1206,\"drawableHeight\":2622,\"boundsWidth\":402,\"presentationWidth\":402,\"safeTop\":62,\"animating\":false,\"scale\":3},{\"time\":59601.483956583346,\"width\":1206,\"height\":2622,\"drawableWidth\":1206,\"drawableHeight\":2622,\"boundsWidth\":402,\"presentationWidth\":402,\"safeTop\":62,\"animating\":false,\"scale\":3},{\"time\":59601.500659333346,\"width\":1206,\"height\":2622,\"drawableWidth\":1206,\"drawableHeight\":2622,\"boundsWidth\":402,\"presentationWidth\":402,\"safeTop\":62,\"animating\":false,\"scale\":3},{\"time\":59601.51727670835,\"width\":1206,\"height\":2622,\"drawableWidth\":1206,\"drawableHeight\":2622,\"boundsWidth\":402,\"presentationWidth\":402,\"safeTop\":62,\"animating\":false,\"scale\":3},{\"time\":59601.53388787501,\"width\":1206,\"height\":2622,\"drawableWidth\":1206,\"drawableHeight\":2622,\"boundsWidth\":402,\"presentationWidth\":402,\"safeTop\":62,\"animating\":false,\"scale\":3},{\"time\":59601.55089616668,\"width\":1206,\"height\":2622,\"drawableWidth\":1206,\"drawableHeight\":2622,\"boundsWidth\":402,\"presentationWidth\":402,\"safeTop\":62,\"animating\":false,\"scale\":3},{\"time\":59601.56732045834,\"width\":1206,\"height\":2622,\"drawableWidth\":1206,\"drawableHeight\":2622,\"boundsWidth\":402,\"presentationWidth\":402,\"safeTop\":62,\"animating\":false,\"scale\":3},{\"time\":59601.58388937501,\"width\":1206,\"height\":2622,\"drawableWidth\":1206,\"drawableHeight\":2622,\"boundsWidth\":402,\"presentationWidth\":402,\"safeTop\":62,\"animating\":false,\"scale\":3}]}]",
+            "navigation": "https://doroti.example/details/apple-smoke\n",
+            "restoration": "https://doroti.example/details/apple-smoke\n"
+          },
+          "framePipelines": {
+            "input": {
+              "mode": "C",
+              "preparedPulses": 10,
+              "pendingGpuFrames": 0,
+              "maximumGpuFrames": 1,
+              "completedGpuFrames": 8,
+              "retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+              "fallback": "noNewScene",
+              "preparedWhileGpuFull": 0,
+              "rejectedAdmissions": 0
+            },
+            "services": {
+              "mode": "C",
+              "preparedPulses": 5,
+              "pendingGpuFrames": 0,
+              "maximumGpuFrames": 1,
+              "completedGpuFrames": 4,
+              "retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+              "fallback": "noNewScene",
+              "preparedWhileGpuFull": 0,
+              "rejectedAdmissions": 0
+            },
+            "rotation": {
+              "mode": "C",
+              "preparedPulses": 8,
+              "pendingGpuFrames": 0,
+              "maximumGpuFrames": 1,
+              "completedGpuFrames": 9,
+              "retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+              "fallback": "noNewScene",
+              "preparedWhileGpuFull": 0,
+              "rejectedAdmissions": 0
+            },
+            "navigation": {
+              "mode": "C",
+              "preparedPulses": 3,
+              "pendingGpuFrames": 1,
+              "maximumGpuFrames": 1,
+              "completedGpuFrames": 2,
+              "retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+              "fallback": null,
+              "preparedWhileGpuFull": 0,
+              "rejectedAdmissions": 0
+            },
+            "restoration": {
+              "mode": "C",
+              "preparedPulses": 3,
+              "pendingGpuFrames": 1,
+              "maximumGpuFrames": 1,
+              "completedGpuFrames": 2,
+              "retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+              "fallback": null,
+              "preparedWhileGpuFull": 0,
+              "rejectedAdmissions": 0
+            }
+          }
+        }
+      }
+    }
+  },
+  "failures": [
+    {
+      "name": "baseline-catalyst-build",
+      "reason": "CS0121: UIAccessibilityCustomAction constructor overload ambiguity.",
+      "logSha256": "ac35cfbe02cbaea781ce746f426bfc4f8a8b43e019959dcca5db06acb8dddece"
+    },
+    {
+      "name": "catalyst-selection",
+      "reason": "Native configuration/attachment changed selection 2:4 to cursor 7, length 2.",
+      "logSha256": "adcdcd5e509a9f702740001d6c057672268ad3df3b5db11857aaa3c0fada196d"
+    },
+    {
+      "name": "ios-cold-launch",
+      "reason": "Cold simulator launch exceeded previous 30-second limit; cleanup/120-second launch handling added.",
+      "logSha256": "bd827c63a95eeb91322f212a6a753662c4083db3154369a96e084535015c6387"
+    },
+    {
+      "name": "ios-traits",
+      "reason": "Native secure/Return traits did not match after endpoint transition; traits reapplied after attachment/focus.",
+      "logSha256": "8537dcc9d30f8544af6399590b61f8f85613ce91df5e058bb7c0b6ca0da94228"
+    }
+  ],
+  "contracts": {
+    "status": "PASS",
+    "logSha256": "372f22dc1b20e566a586fc78567baefe0c9492f1a498ec388a57d09eb9758e0b"
+  },
+  "profiles": {
+    "status": "PASS",
+    "logSha256": "caf0bf75e5912289cfc03272c62478a0fd673041342db0192603a3d54f634407",
+    "finalProbeParity": true
+  },
+  "sourceSuite": {
+    "status": "PASS",
+    "includesRootWork": true,
+    "logSha256": "0c6fff29010b716f2f27c9a04ef9305e4fcfe55eec2579d3da9faa330eca45b1"
+  },
+  "notVerified": [
+    "physical IME",
+    "VoiceOver",
+    "physical pen",
+    "physical monitor/DPR transition",
+    "display FPS/long use",
+    "iPhone Release/NativeAOT",
+    "package-only consumer",
+    "signed/notarized clean OS distribution"
+  ],
+  "finalDocumentationLinks": 58,
+  "diffCheck": "PASS"
+}

@@ -23,6 +23,8 @@ public sealed class AppDelegate : DorotiMauiUIApplicationDelegate
                 )
             );
         var result = base.FinishedLaunching(application, options);
+        if (Environment.GetEnvironmentVariable("DOROTI_APPLE_FEATURE_PROBE") is { Length: > 0 } featureOutput)
+            _ = DorotiTestbedApp.Apple.AppleFeatureProbe.RunAsync(featureOutput);
         if (
             Environment.GetEnvironmentVariable("DOROTI_UIKIT_SERVICES_PROBE") is
             { Length: > 0 } output

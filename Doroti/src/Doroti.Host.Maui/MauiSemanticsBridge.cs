@@ -676,7 +676,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
                 && state.Element is Entry entry
             )
             {
-                var text = node.value ?? string.Empty;
+                var text = node.flags?.isObscured == true ? string.Empty : node.value ?? string.Empty;
                 if (!string.Equals(entry.Text, text, StringComparison.Ordinal))
                 {
                     entry.Text = text;
@@ -720,7 +720,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
                 && state.Element is Button button
             )
             {
-                var text = node.label ?? node.value ?? string.Empty;
+                var text = node.label ?? (node.flags?.isObscured == true ? null : node.value) ?? string.Empty;
                 if (!string.Equals(button.Text, text, StringComparison.Ordinal))
                 {
                     button.Text = text;
@@ -728,11 +728,11 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
                 }
             }
             if (
-                (properties & (SemanticsNodeProperty.label | SemanticsNodeProperty.value)) != 0
+                (properties & (SemanticsNodeProperty.label | SemanticsNodeProperty.value | SemanticsNodeProperty.flags)) != 0
                 && state.Element is Label label
             )
             {
-                var text = node.label ?? node.value ?? string.Empty;
+                var text = node.label ?? (node.flags?.isObscured == true ? null : node.value) ?? string.Empty;
                 if (!string.Equals(label.Text, text, StringComparison.Ordinal))
                 {
                     label.Text = text;
@@ -754,7 +754,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
             {
                 var description = string.Join(
                     " ",
-                    new[] { node.label, node.flags?.isTextField == true ? null : node.value }.Where(
+                    new[] { node.label, node.flags?.isTextField == true || node.flags?.isObscured == true ? null : node.value }.Where(
                         value => !string.IsNullOrWhiteSpace(value)
                     )
                 );
