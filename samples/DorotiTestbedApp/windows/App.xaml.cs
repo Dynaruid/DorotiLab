@@ -15,7 +15,7 @@ public sealed partial class App : DorotiMauiWinUIApplication
     {
         builder.Services.AddSingleton<WindowsPlatformHook>();
         builder.ConfigureLifecycleEvents(events => events.AddWindows(windows =>
-            windows.OnWindowCreated(window => { WindowsConnectionProbe.Start(window); WindowsNativeTextureProbe.Start(window); })));
+            windows.OnWindowCreated(window => { WindowsConnectionProbe.Start(window); WindowsNativeTextureProbe.Start(window); TextInputFocusProbe.Start(window); })));
     }
 }
 

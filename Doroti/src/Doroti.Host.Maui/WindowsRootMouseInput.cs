@@ -13,6 +13,7 @@ internal sealed class WindowsRootMouseInput : IDisposable
     private readonly nint _window;
     private readonly Func<int> _contentTop;
     private readonly Action<MauiSurfacePointerData> _pointer;
+    private readonly Func<bool> _textInputOwnsFocus;
     private readonly Procedure _procedure;
     private readonly nuint _id;
     private static long _nextId;
@@ -26,12 +27,14 @@ internal sealed class WindowsRootMouseInput : IDisposable
     internal WindowsRootMouseInput(
         nint window,
         Func<int> contentTop,
-        Action<MauiSurfacePointerData> pointer
+        Action<MauiSurfacePointerData> pointer,
+        Func<bool> textInputOwnsFocus
     )
     {
         _window = window;
         _contentTop = contentTop;
         _pointer = pointer;
+        _textInputOwnsFocus = textInputOwnsFocus;
         _procedure = Message;
         _id = (nuint)Interlocked.Increment(ref _nextId);
         SetCursor(DorotiMouseCursorKind.basic);
@@ -96,10 +99,10 @@ internal sealed class WindowsRootMouseInput : IDisposable
                 Remove();
                 return DefSubclassProc(window, message, wParam, lParam);
             }
-            if (_buttons == 0 && message is 0x0201 or 0x0204 or 0x0207 or 0x020b)
+            if (_buttons == 0 && !_textInputOwnsFocus() && message is 0x0201 or 0x0204 or 0x0207 or 0x020b)
             {
-                // Establish HWND focus before beginning the pointer sequence;
-                // the framework may then focus WinUI's IME endpoint on down.
+                // Establish HWND focus only when no native text endpoint owns
+                // it. Pointer routing must not end the retained IME session.
                 SetFocus(window);
             }
             _last = point;

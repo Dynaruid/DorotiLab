@@ -11,6 +11,7 @@ namespace Doroti.Host.Maui;
 // never construct a SkiaSharp GL/Ganesh platform view or publish a fake GRContext.
 public sealed class DorotiGraphiteView : SKGLView
 {
+    internal MauiTextInputBridge? TextInput { get; set; }
 #if ANDROID
     internal AndroidPlatformViewHost? PlatformViews { get; set; }
 #endif

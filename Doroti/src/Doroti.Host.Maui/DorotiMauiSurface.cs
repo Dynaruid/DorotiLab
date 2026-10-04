@@ -58,6 +58,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     private MauiFrameworkHost? _host;
     private readonly IMauiSkiaSurface _renderSurface;
     private readonly MauiTextInputBridge _textInput;
+    internal MauiTextInputBridge TextInput => _textInput;
     private readonly AbsoluteLayout _semanticsLayer;
     private bool _attached;
     private bool _disposed;
@@ -109,7 +110,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         );
 #endif
 #if MACOS
-        _renderSurface = new DorotiMacOSMetalSurface(_viewId)
+        _renderSurface = new DorotiMacOSMetalSurface(_viewId, _textInput)
         {
             Appearance = _application.ViewConfiguration.ResolveAppearance(),
         };
@@ -117,7 +118,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         // background would cover the native material behind its Metal surface.
         BackgroundColor = Microsoft.Maui.Graphics.Colors.Transparent;
 #elif WINDOWS
-        _renderSurface = new DorotiWindowsDxgiSurface();
+        _renderSurface = new DorotiWindowsDxgiSurface(_textInput);
         // Skia already applies the configured base color. Keep the MAUI
         // container transparent so it does not cover the system material.
         BackgroundColor = Microsoft.Maui.Graphics.Colors.Transparent;

@@ -621,7 +621,9 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
         var queuedMs = _inputTiming
             ? Math.Max(0, Android.OS.SystemClock.UptimeMillis() - e.EventTime)
             : 0;
-        if (e.ActionMasked == MotionEventActions.Down)
+        // Pointer dispatch and native text focus are separate. A background tap
+        // may retain the framework TextField, so keep its served EditText too.
+        if (e.ActionMasked == MotionEventActions.Down && _owner.TextInput?.OwnsNativeFocus != true)
         {
             RequestFocus();
         }

@@ -9,12 +9,19 @@ namespace Doroti.Host.Maui;
 public sealed class DorotiMacOSMetalSurface : View, IMauiSkiaSurface
 {
     private readonly ulong _viewId;
+    private readonly MauiTextInputBridge? _textInput;
     private readonly DorotiResizeTargetCoordinator _targets = new();
     private DorotiMacOSMetalView? _nativeView;
     private Task _retirement = Task.CompletedTask;
     private bool _disposed;
 
-    internal DorotiMacOSMetalSurface(ulong viewId) => _viewId = viewId;
+    internal DorotiMacOSMetalSurface(ulong viewId, MauiTextInputBridge? textInput = null)
+    {
+        _viewId = viewId;
+        _textInput = textInput;
+    }
+
+    internal bool TextInputOwnsFocus => _textInput?.OwnsNativeFocus == true;
 
     View IMauiSkiaSurface.Element => this;
     IDispatcher IMauiSkiaSurface.Dispatcher => Dispatcher;

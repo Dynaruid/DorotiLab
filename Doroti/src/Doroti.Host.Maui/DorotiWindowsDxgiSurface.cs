@@ -65,6 +65,7 @@ public sealed class DorotiWindowsDxgiHost : Microsoft.UI.Xaml.Controls.Grid
         {
             Presenter = new SwapChainPanel
             {
+                AllowFocusOnInteraction = false,
                 Width = 0,
                 Height = 0,
                 HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Left,
@@ -78,6 +79,8 @@ public sealed class DorotiWindowsDxgiHost : Microsoft.UI.Xaml.Controls.Grid
         {
             var inputOwner = new ContentControl
             {
+                // Focus is assigned by the host only after checking the IME owner.
+                AllowFocusOnInteraction = false,
                 Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(
                     Microsoft.UI.Colors.Transparent
                 ),
@@ -214,8 +217,11 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
                 ? "WinUI/CompositionDrawingSurface/Graphite-Vulkan"
                 : "WinUI/CompositionDrawingSurface/D3D11On12-D3D12-Skia";
 
-    internal DorotiWindowsDxgiSurface()
+    private readonly MauiTextInputBridge _textInput;
+
+    internal DorotiWindowsDxgiSurface(MauiTextInputBridge textInput)
     {
+        _textInput = textInput;
         NativeFrameConfiguration.ValidateEnvironment();
         _view = new(this);
         _keyboardWindowFocus = new(_view, ReleasePressedKeys);
@@ -373,6 +379,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
     {
         void Apply()
         {
+            if (focused && _textInput.OwnsNativeFocus) return;
             var inputOwner = _inputOwner;
             if (inputOwner is null)
             {
@@ -587,7 +594,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
                 {
                     throw new InvalidOperationException("The WinUI input HWND is unavailable.");
                 }
-                _rootMouse = new(inputWindow, () => _compositionContentTop, HandleNativePointer);
+                _rootMouse = new(inputWindow, () => _compositionContentTop, HandleNativePointer, () => _textInput.OwnsNativeFocus);
                 _nativePointers = new(inputWindow, 1, DispatchNativePointerPacket);
             }
             if (_view.Window?.Handler?.PlatformView is Microsoft.UI.Xaml.Window window)
@@ -821,9 +828,9 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
         // this for a cancelled drag that never applies the proposed rectangle.
     }
 
-    private void HandleNativePointer(MauiSurfacePointerData pointer)
+    internal void HandleNativePointer(MauiSurfacePointerData pointer)
     {
-        if (pointer.Change == PointerChange.down && _inputOwner is { } inputOwner)
+        if (pointer.Change == PointerChange.down && !_textInput.OwnsNativeFocus && _inputOwner is { } inputOwner)
         {
             var focused = inputOwner.Focus(FocusState.Pointer);
             if (_latestTarget is { } target)
@@ -1725,7 +1732,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
             return;
         }
 
-        if (change == PointerChange.down)
+        if (change == PointerChange.down && !_textInput.OwnsNativeFocus)
         {
             _ = inputOwner.Focus(FocusState.Pointer);
         }

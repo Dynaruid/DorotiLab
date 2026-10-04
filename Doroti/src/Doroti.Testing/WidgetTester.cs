@@ -34,7 +34,7 @@ public sealed class WidgetTester : IDisposable
     public IReadOnlyList<DorotiFrameTraceEntry> FrameTrace => _dispatcher.frameTrace.Snapshot();
 
     public WidgetTester(Size? size = null, double devicePixelRatio = 1,
-        IApplicationNavigationHostCapability? navigation = null)
+        IApplicationNavigationHostCapability? navigation = null, HostOperatingSystem operatingSystem = HostOperatingSystem.windows)
     {
         if (!double.IsFinite(devicePixelRatio) || devicePixelRatio <= 0 ||
             size is { IsFinite: false } || size is { IsEmpty: true })
@@ -47,7 +47,7 @@ public sealed class WidgetTester : IDisposable
         _clockScope = DartAsyncRuntime.enterTimeProvider(Clock);
         _dispatcher = new();
         _dispatcherScope = _dispatcher.EnterScope();
-        _host = new(size ?? new Size(800, 600), devicePixelRatio);
+        _host = new(size ?? new Size(800, 600), devicePixelRatio, operatingSystem);
         _renderer = new(1, _host, new Color(0xffffffff), null, "Testing/CPU", "cpu", "cpu", false);
         var capabilities = new DorotiViewCapabilities("Testing/CPU")
             .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, _host)

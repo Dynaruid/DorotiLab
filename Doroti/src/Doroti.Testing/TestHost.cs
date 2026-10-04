@@ -7,8 +7,12 @@ internal sealed class TestHost : IViewHostCapability, IFrameHostCapability, ILat
     IInputHostCapability, IViewFocusRequestCapability, IPlatformEnvironmentHostCapability,
     IPlatformMessageHostCapability, ITextInputHostCapability, ISkiaSceneRendererHost, IPlatformServicesHostCapability
 {
-    public TestHost(Size size, double dpr) => Metrics = new(size * dpr, dpr,
-        ViewPadding.zero, ViewPadding.zero, ViewPadding.zero, AppLifecycleState.resumed, 0, 0);
+    public TestHost(Size size, double dpr, HostOperatingSystem operatingSystem = HostOperatingSystem.windows)
+    {
+        Metrics = new(size * dpr, dpr,
+            ViewPadding.zero, ViewPadding.zero, ViewPadding.zero, AppLifecycleState.resumed, 0, 0);
+        Configuration = new([new Locale("en", "US")], Brightness.light, false, false, operatingSystem);
+    }
     public ViewMetrics Metrics { get; private set; }
     public DorotiViewEpoch ViewEpoch => new(1, Metrics.generation, Metrics.generation,
         Metrics.physicalSize.width / Metrics.devicePixelRatio, Metrics.physicalSize.height / Metrics.devicePixelRatio,
@@ -17,7 +21,7 @@ internal sealed class TestHost : IViewHostCapability, IFrameHostCapability, ILat
     public DorotiResizeEpoch ResizeTarget => new(ViewEpoch.ResizeTargetGeneration,
         ViewEpoch.LogicalWidth, ViewEpoch.LogicalHeight, ViewEpoch.PhysicalWidth, ViewEpoch.PhysicalHeight,
         ViewEpoch.DevicePixelRatio, 0);
-    public PlatformConfiguration Configuration { get; } = new([new Locale("en", "US")], Brightness.light, false, false, HostOperatingSystem.windows);
+    public PlatformConfiguration Configuration { get; }
     public long SurfaceGeneration => Metrics.surfaceGeneration;
     public long InputSequence { get; private set; }
     public Action<TimeSpan>? PendingFrame { get; private set; }

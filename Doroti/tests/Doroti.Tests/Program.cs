@@ -109,6 +109,7 @@ using (var tester = new WidgetTester())
 }
 Console.WriteLine("PASS: real Cupertino pointer routing; bounded settle; serial teardown/recreation.");
 Console.WriteLine("PASS: pointer focus; synthetic Hangul start/update/commit/cancel/selection; IME teardown.");
+TextInputFocusRegression.Run();
 await DesktopCloseRegression.Run();
 PlatformPolicyRegression.Run();
 #if DOROTI_REPO_TESTS

@@ -123,7 +123,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         Delegate = this;
     }
 
-    public override bool AcceptsFirstResponder() => true;
+    public override bool AcceptsFirstResponder() => _owner?.TextInputOwnsFocus != true;
 
     public override bool IsOpaque => false;
 
@@ -260,11 +260,11 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     {
         BeginInvokeOnMainThread(() =>
         {
-            if (focused)
+            if (focused && _owner?.TextInputOwnsFocus != true)
             {
                 Window?.MakeFirstResponder(this);
             }
-            else if (ReferenceEquals(Window?.FirstResponder, this))
+            else if (!focused && ReferenceEquals(Window?.FirstResponder, this))
             {
                 Window?.MakeFirstResponder(null);
             }

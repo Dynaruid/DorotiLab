@@ -36,6 +36,7 @@
     <InternalsVisibleTo Include="DorotiTestbedApp.MacCatalyst" />
     <InternalsVisibleTo Include="DorotiTestbedApp.MacOS" />
     <InternalsVisibleTo Include="DorotiTestbedApp.Windows" />
+    <InternalsVisibleTo Include="DorotiTestbedApp.Android" />
     <ProjectReference Include="..\Doroti.Skia.Vulkan\Doroti.Skia.Vulkan.csproj" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'" />
     <ProjectReference Include="..\Doroti.Skia.Rendering\Doroti.Skia.Rendering.csproj" />
     <ProjectReference Include="..\Doroti.Skia.Fonts\Doroti.Skia.Fonts.csproj" />

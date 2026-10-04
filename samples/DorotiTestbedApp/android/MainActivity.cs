@@ -33,5 +33,7 @@ public sealed class MainActivity : Doroti.Host.Maui.DorotiMauiActivity
             Environment.SetEnvironmentVariable("DOROTI_INPUT_PROBE", System.IO.Path.Combine(ExternalCacheDir!.AbsolutePath!, "input-probe.json"));
 
         base.OnCreate(savedInstanceState);
+        if (Intent?.GetStringExtra("doroti_text_focus_probe") == "1")
+            TextInputFocusProbe.Start(this);
     }
 }

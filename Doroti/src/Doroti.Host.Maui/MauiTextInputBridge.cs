@@ -132,6 +132,30 @@ public sealed partial class MauiTextInputBridge : IDisposable
             : (_editor is null ? new InputView[] { _entry } : new InputView[] { _entry, _editor });
     internal bool HasClient => _hasClient;
 
+    // Query on the platform UI thread. A retained framework client alone does
+    // not own native focus: a PlatformView may have explicitly taken it.
+    internal bool OwnsNativeFocus
+    {
+        get
+        {
+            if (_disposed || _suspended || !_hasClient || _active is null) return false;
+#if ANDROID
+            return _active.Handler?.PlatformView is Android.Views.View { IsFocused: true, IsAttachedToWindow: true };
+#elif WINDOWS
+            return _active.Handler?.PlatformView is Microsoft.UI.Xaml.UIElement native
+                && MauiWindowsKeyboard.OwnsFocus(native);
+#elif IOS || MACCATALYST
+            return _active.Handler?.PlatformView is UIView { IsFirstResponder: true };
+#elif MACOS
+            if (_active.Handler?.PlatformView is not NSView native || native.Window is not { } window) return false;
+            return ReferenceEquals(window.FirstResponder, native)
+                || NativeMacOSTextView(native) is { } editor && ReferenceEquals(window.FirstResponder, editor);
+#else
+            return _active.IsFocused;
+#endif
+        }
+    }
+
     internal void SetClient(
         DorotiTextInputConfiguration configuration,
         DorotiTextEditingState state

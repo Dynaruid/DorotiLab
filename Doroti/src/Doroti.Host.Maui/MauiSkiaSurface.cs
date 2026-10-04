@@ -85,6 +85,7 @@ internal interface IMauiGraphiteSurface
 internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
 {
     private readonly SKGLView _view;
+    private readonly MauiTextInputBridge _textInput;
     private readonly IDisposable _nativeInput;
 #if ANDROID
     private readonly AndroidPointerSubscription? _fallbackPointers;
@@ -104,11 +105,13 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
 
     internal MauiSkglSurface(MauiTextInputBridge textInput, ulong viewId)
     {
+        _textInput = textInput;
         _view = DorotiGraphiteView.Enabled ? new DorotiGraphiteView() : new SKGLView();
         _view.HasRenderLoop = false;
         _view.EnableTouchEvents = true;
         if (_view is DorotiGraphiteView graphite)
         {
+            graphite.TextInput = textInput;
             graphite.GraphitePaint += HandleGraphitePaint;
             graphite.GraphitePresentCompleted += HandleGraphiteCompleted;
             graphite.GraphiteFailed += HandleGraphiteFailed;
@@ -205,22 +208,24 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
 
     public void RequestFocus(bool focused)
     {
+        void Apply()
+        {
+            // Focus activation belongs to the whole framework view. Its native
+            // IME endpoint already satisfies it and must keep its connection.
+            if (_disposed || (focused && _textInput.OwnsNativeFocus)) return;
 #if ANDROID
-        // Framework focus activation also runs when a native PlatformView's
-        // FocusNode becomes primary. Preserve its already-focused descendant.
-        if (focused && _view.Handler?.PlatformView is DorotiAndroidViewContainer { HasFocus: true })
-        {
-            return;
-        }
+            // Framework focus activation also runs when a native PlatformView's
+            // FocusNode becomes primary. Preserve its already-focused descendant.
+            if (focused && _view.Handler?.PlatformView is DorotiAndroidViewContainer { HasFocus: true })
+            {
+                return;
+            }
 #endif
-        if (focused)
-        {
-            _view.Focus();
+            if (focused) _view.Focus();
+            else _view.Unfocus();
         }
-        else
-        {
-            _view.Unfocus();
-        }
+        if (_view.Dispatcher.IsDispatchRequired) _view.Dispatcher.Dispatch(Apply);
+        else Apply();
     }
 
     public void SetCursor(DorotiMouseCursorKind cursor) => MauiNativeInput.SetCursor(_view, cursor);
@@ -458,6 +463,7 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
         {
             // Native GPU owner releases while renderer callbacks are still attached.
             _view.Handler?.DisconnectHandler();
+            graphite.TextInput = null;
             graphite.GraphitePaint -= HandleGraphitePaint;
             graphite.ShaderSceneAdmission = null;
             graphite.PrepareFrameworkFrame = null;
