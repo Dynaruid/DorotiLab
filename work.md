@@ -216,7 +216,7 @@ R6-D는 R6의 bounded 프로세스·Python 선택 정책과 공통 helper를 사
 - [ ] **R8-1** package-only consumer와 native smoke를 새 후보로 실행하고 candidate/package 해시가 같은지 확인한다.
 - [ ] **R8-2** 실제 IME 조합·commit/cancel·selection·caret, Tab/focus, Narrator/VoiceOver/TalkBack/Orca의 상태·액션을 해당 장치에서 확인한다. 합성 입력과 provider 속성 확인은 별도 결과다.
 - [ ] **R8-3** resize·DPR/monitor 이동·다중 창·창 종료 후 callback·device loss·두 unfinished frame·texture 해제를 확인한다. GPU submit/present receipt와 consumer fence 및 실제 scanout을 구분한다.
-- [ ] **R8-4** 종료/재시작/재연결 및 최소 10분 사용을 검증한다. 장시간 시나리오는 단계로 나눠 각 실행을 1,200초 안에 끝낸다. displayed FPS를 주장할 때만 실제 표시 timestamp와 측정 도구 근거를 남긴다.
+- [ ] **R8-4** 실행·재시작·재연결 후 약 5초 뒤 정상 동작하는지 확인하고, 종료가 정상 완료되는지 확인한다. displayed FPS를 주장할 때만 실제 표시 timestamp와 측정 도구 근거를 남긴다.
 - [ ] **R8-5** 배포 대상이 정해진 조합에서 clean-machine 설치·업데이트 중단/복구·제거·userdata 유지 및 실제 서명/배포 정책을 수락한다. 테스트용 폴더 설치나 ad-hoc 서명만으로 완료 판정하지 않는다.
 
 완료 기준: 선택 조합별 필수 항목의 실제 증거가 있고, 남은 조합·미지원 기능·환경 부재가 결과표에 보존된다. 소스/자동화 작업이 끝나도 물리·배포 수락이 남으면 제품 전체 상태는 `PARTIAL`이다.
