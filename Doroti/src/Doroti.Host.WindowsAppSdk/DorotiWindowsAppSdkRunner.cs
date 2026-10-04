@@ -564,7 +564,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 .Register<IParagraphHostCapability>(DorotiCapabilityIds.GraphicsText, renderer)
                 .Register<IFontHostCapability>(DorotiCapabilityIds.GraphicsFont, renderer)
                 .Register<ITextureHostCapability>(DorotiCapabilityIds.GraphicsTexture, renderer)
-                .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, renderer);
+                .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, renderer)
+            .Register<ISceneRasterizationHostCapability>(DorotiCapabilityIds.GraphicsSceneSnapshot, renderer);
             ApplicationNavigationHost? navigation = null;
             if (_configuration.Navigation is { } navigationOptions)
             {

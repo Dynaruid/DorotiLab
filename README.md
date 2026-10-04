@@ -1,5 +1,7 @@
 # Doroti
 
+Before launching a target, run `pwsh -File Doroti/eng/doroti.ps1 doctor -App samples/DorotiTestbedApp -Platform windows -DoctorProfile build`. [Doctor profiles](Doroti/docs/doctor.md) report prerequisites; device and deployment acceptance are separate.
+
 **English** | [한국어](README.ko.md)
 
 ### Cross-platform UIs in C#, without XAML

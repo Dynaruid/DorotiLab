@@ -1,5 +1,7 @@
 # DorotiTestbedApp
 
+`doctor -App ... -Platform ...` now checks the selected build prerequisites. Add `-DoctorProfile dev|validation|release` for operation-specific requirements and `-WindowsBackend Maui` for that runner. `-Platform all` includes foreign-host/unresolved targets and exits nonzero until the complete declared scope is ready. See [doctor v4](../../Doroti/docs/doctor.md).
+
 **English** | [한국어](README.ko.md)
 
 A sample app for Doroti's Material widgets and platform hosts.

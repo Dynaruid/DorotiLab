@@ -35,6 +35,8 @@ const retired = new Set<number>();
 const completions = new Set<Promise<void>>();
 const counts = { received: 0, accepted: 0, rejected: 0, closed: 0, dropped: 0, imported: 0, drawn: 0, retired: 0, errors: 0 };
 let maxTextureDimension = 0;
+let initialized = false;
+let disposal: Promise<void> | undefined;
 let viewBudget = textureViewBudget(0);
 export function effectAvailableBytes(): number { return closed || lost ? 0 : Math.max(0, Math.min(64 * 1024 * 1024, viewBudget - bytes)); }
 export { allocateEffect, executeEffect } from "./doroti.web.gpu-effects.js";
@@ -62,12 +64,14 @@ export function registerEffectAllocation(size: number, handle: number, destroy: 
 
 export function initializeTextures(exports: TextureSurface, webgpu: typeof gpu, gl: () => GlTable, canvas?: () => OffscreenCanvas,
   onError?: (id: string, error: unknown) => void): void {
+  if (closed) throw new Error("Texture owner closed during startup.");
   surface = exports; gpu = webgpu; getGl = gl; getCanvas = canvas!;
   maxTextureDimension = gpu ? gpu.textureDimensionLimit() : (() => {
     const context = getGl().currentContext.GLctx;
     return context.getParameter(context.MAX_TEXTURE_SIZE) as number;
   })();
   if (onError) reportError = onError;
+  initialized = true;
 }
 export function captureTextureRaster(order: number, left: number, top: number, width: number, height: number, scaleX: number, scaleY: number): void {
   stagePlatformBitmap(order, left / scaleX, top / scaleY, width / scaleX, height / scaleY, width, height,
@@ -241,11 +245,21 @@ export function flushRetired(): Promise<void> {
   completions.add(completion); void completion.then(() => completions.delete(completion), () => completions.delete(completion));
   return completion;
 }
-export async function disposeTextures(contextLost = false): Promise<void> {
-  closed = true; lost = contextLost;
-  for (const [id, entry] of entries) { clearPending(entry); surface.UnregisterBrowserTexture(id); }
-  entries.clear(); await flushRetired(); await Promise.all(completions);
-  if (!gpu) releaseEffectPrograms(getGl().currentContext.GLctx);
+export function disposeTextures(contextLost = false): Promise<void> {
+  closed = true; lost ||= contextLost;
+  return disposal ??= (async () => {
+    const errors: unknown[] = [];
+    for (const [id, entry] of entries) {
+      try { clearPending(entry); surface.UnregisterBrowserTexture(id); } catch (error) { errors.push(error); }
+    }
+    entries.clear();
+    try { await flushRetired(); await Promise.all(completions); } catch (error) { errors.push(error); }
+    // No GL lookup before initialization or after verified context loss.
+    if (initialized && !gpu && !lost) {
+      try { releaseEffectPrograms(getGl().currentContext.GLctx); } catch (error) { errors.push(error); }
+    }
+    if (errors.length) throw new AggregateError(errors, "Texture cleanup failed; unfinished allocations remain owned.");
+  })();
 }
 export function diagnostics(): Record<string, unknown> {
   return { schema: 1, ...counts, registrations: entries.size, pending: [...entries.values()].filter(e => e.pending).length,

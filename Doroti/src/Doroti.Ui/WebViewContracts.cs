@@ -121,7 +121,9 @@ public sealed record WebViewResource(string ResourceKey, string MimeType);
 
 /// <summary>Copied, versioned creation settings. Default profile is private and isolated per view.
 /// Browser hosts require explicit BrowserDefault and reject native private-profile requests.
-/// Remote navigation is limited to HTTP(S). No file access, popup or external protocol launch.</summary>
+/// Remote navigation is limited to HTTP(S). AllowedOrigins null leaves the origin
+/// restriction unset; an empty list denies all HTTP(S) controller navigation.
+/// HTML/app content has its own policy. No file access, popup or external protocol launch.</summary>
 public sealed record WebViewOptions(
     string? Html = null,
     WebViewProfile Profile = WebViewProfile.Ephemeral,

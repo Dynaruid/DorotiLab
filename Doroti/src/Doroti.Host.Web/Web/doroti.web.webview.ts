@@ -117,7 +117,7 @@ export class BrowserWebView implements NativeResource {
         let url: URL;
         try { url = new URL(command.Text ?? ""); } catch { return fail(3, "Navigation requires an absolute HTTP(S) URL."); }
         if (!["https:", "http:"].includes(url.protocol) || url.username || url.password) fail(3, "Only HTTP(S) navigation is allowed.");
-        if (this.options.AllowedOrigins?.length && !this.options.AllowedOrigins.includes(url.origin)) fail(3, "Navigation origin was not allowed.");
+        if (this.options.AllowedOrigins != null && !this.options.AllowedOrigins.includes(url.origin)) fail(3, "Navigation origin was not allowed.");
         this.#begin(url.href); this.element.removeAttribute("srcdoc"); this.element.src = url.href; break;
       }
       case 3: this.#html(command.Text ?? ""); break;

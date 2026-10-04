@@ -18,13 +18,14 @@ if len(sys.argv) > 1:
     assert scratch.is_relative_to(root / "temp/testing")
     eng = scratch / "Doroti/eng"
     eng.mkdir(parents=True)
-    for name in ("doroti.ps1", "launch-identity.ps1"):
+    for name in ("doroti.ps1", "launch-identity.ps1", "doctor.ps1", "python-tools.ps1"):
         shutil.copyfile(root / "Doroti/eng" / name, eng / name)
     validation = eng / "validate.ps1"
     validation.write_text("param([string] $Suite)\nexit 7\n")
     for verb in ("validate", "audit", "release"):
         result = subprocess.run(["pwsh", "-NoProfile", "-File", str(eng / "doroti.ps1"), verb], capture_output=True, text=True)
         assert result.returncode != 0 and "Release: PASS" not in result.stdout, (verb, result.stdout)
+        assert "exit code 7" in result.stderr, (verb, result.stderr)
     validation.unlink()
     result = subprocess.run(["pwsh", "-NoProfile", "-File", str(eng / "doroti.ps1"), "validate"], capture_output=True, text=True)
     assert result.returncode != 0, "Missing validation script was accepted"

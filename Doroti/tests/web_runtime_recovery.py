@@ -16,8 +16,13 @@ with socket.socket() as sock:
     sock.bind(('127.0.0.1', 0)); port = sock.getsockname()[1]
 url = f'http://127.0.0.1:{port}/'
 log = (out / 'server.log').open('w', encoding='utf-8')
-server = subprocess.Popen(['dotnet', 'run', '--project', str(ROOT / 'samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj'),
-    '-c', 'Debug', '--no-build', '--no-launch-profile'], cwd=ROOT, env=os.environ | {'ASPNETCORE_URLS': url.rstrip('/')}, stdout=log, stderr=subprocess.STDOUT)
+server_command = ['dotnet', 'run', '--project', str(ROOT / 'samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj'),
+    '-c', 'Debug', '--no-build', '--no-launch-profile']
+if os.environ.get('DOROTI_WEB_TEST_ARTIFACTS'):
+    artifacts = Path(os.environ['DOROTI_WEB_TEST_ARTIFACTS']).resolve()
+    assert artifacts.is_relative_to(ROOT / 'temp/testing')
+    server_command += ['--artifacts-path', str(artifacts)]
+server = subprocess.Popen(server_command, cwd=ROOT, env=os.environ | {'ASPNETCORE_URLS': url.rstrip('/')}, stdout=log, stderr=subprocess.STDOUT)
 try:
     deadline = time.monotonic() + 60
     while True:
@@ -79,9 +84,14 @@ try:
                         state=page.evaluate('runtimeApi.getDorotiRuntimeState()'), events=page.evaluate('runtimeEvents'),
                         dataset=page.evaluate('({...document.documentElement.dataset})')),indent=2))
                     raise
-                page.evaluate('runtimeApi.restartDorotiWebHost()')
-                page.wait_for_load_state('load')
-                page.wait_for_function('document.documentElement.dataset.dorotiBootstrapStage === "started"', timeout=90000)
+                with page.expect_navigation(wait_until='load',timeout=30000):
+                    page.evaluate('runtimeApi.restartDorotiWebHost()')
+                page.wait_for_function('["started","failed"].includes(document.documentElement.dataset.dorotiBootstrapStage)', timeout=90000)
+                stage = page.evaluate('document.documentElement.dataset.dorotiBootstrapStage')
+                if stage!='started':
+                    (out / 'restart-failure.json').write_text(json.dumps(dict(renderer=renderer,errors=errors,requests=requests,
+                        dataset=page.evaluate('({...document.documentElement.dataset})')),indent=2))
+                    raise RuntimeError('Restart bootstrap failed: '+repr(errors))
                 page.evaluate('async()=>{window.runtimeApi=await import("./_content/Doroti.Host.Web/doroti.web.js");}')
             else:
                 page.evaluate('window.oldCanvas=document.getElementById("doroti-surface"); __dorotiResizeDiagnostics.crashWorker("doroti-surface")')
@@ -97,7 +107,45 @@ try:
             assert page.evaluate('document.activeElement.id') == 'doroti-surface'
             receipt = page.evaluate('JSON.parse(__dorotiResizeDiagnostics.presenter("doroti-surface"))')
             assert state['state'] == 'ready' and receipt['unpairedRequestCount'] <= 1, (state,receipt)
-            records.append(dict(renderer=renderer,runtime=runtime,before=before,after=state,receipt=receipt,errors=errors))
+            page.set_viewport_size({'width':1000,'height':1700})
+            page.wait_for_function('JSON.parse(__dorotiResizeDiagnostics.presenter("doroti-surface")).rasterHeight >= 1700', timeout=30000)
+            resized = page.evaluate('JSON.parse(__dorotiResizeDiagnostics.presenter("doroti-surface"))')
+            assert resized['displayWidth'] == receipt['displayWidth'], (receipt,resized)
+            assert resized['displayHeight'] >= resized['rasterHeight'], resized
+            fixture_requests = []
+            page.on('request', lambda request: fixture_requests.append(request.url) if '/doroti-webview-fixture/' in request.url else None)
+            page.route('**/doroti-webview-fixture/**', lambda route: route.fulfill(status=200,content_type='text/html',body='<title>loopback fixture</title>'))
+            origins = page.evaluate('''async()=>{
+                const {BrowserWebView}=await import('./_content/Doroti.Host.Web/doroti.web.webview.js');
+                const result=[];
+                for (const [name,allowed] of [['empty',[]],['match',[location.origin]],['null',null]]) {
+                    const view=new BrowserWebView({viewId:1}, {Profile:2,AllowedOrigins:allowed}, ()=>{}, document);
+                    const loaded=new Promise(resolve=>view.element.addEventListener('load',resolve,{once:true}));
+                    document.body.append(view.element); await loaded;
+                    const before=await view.execute({Operation:1}); const src=view.element.getAttribute('src');
+                    const url=location.origin+'/doroti-webview-fixture/'+name;
+                    let error=null;
+                    try {await view.execute({Operation:2,Text:url});} catch(e) {error=e.code;}
+                    const after=await view.execute({Operation:1});
+                    if (name==='empty') {
+                        if (error!==3 || src!==view.element.getAttribute('src') || before.NavigationId!==after.NavigationId || before.DocumentGeneration!==after.DocumentGeneration)
+                            throw Error('Rejected origin mutated navigation state');
+                    } else {
+                        if(error!==null || view.element.src!==url || after.NavigationId!==before.NavigationId+1) throw Error('Allowed loopback navigation failed');
+                        await new Promise(resolve=>view.element.addEventListener('load',resolve,{once:true}));
+                    }
+                    result.push({name,error,before,after}); view.dispose();
+                }
+                return result;
+            }''')
+            assert len(fixture_requests)==2 and not any(url.endswith('/empty') for url in fixture_requests), fixture_requests
+            print(f'Checking {renderer}/{runtime} for 60 seconds after restart.', flush=True)
+            page.wait_for_timeout(60000)
+            stable = page.evaluate('runtimeApi.getDorotiRuntimeState()')
+            assert stable['state']=='ready' and stable['renderer']==before['renderer'], stable
+            page.screenshot(path=str(out / f'{renderer}-{runtime}-after-soak.png'))
+            records.append(dict(renderer=renderer,runtime=runtime,before=before,after=state,receipt=receipt,resized=resized,
+                originChecks=origins,loopbackRequests=fixture_requests,stableAfterSeconds=60,stable=stable,errors=errors))
             (out / 'checks.json').write_text(json.dumps(records,indent=2))
             page.close()
         (out / 'result.json').write_text(json.dumps(dict(status='PASS', browser=browser.version, checks=records,

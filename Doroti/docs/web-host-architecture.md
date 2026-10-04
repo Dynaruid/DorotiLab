@@ -1,5 +1,7 @@
 # Web host ownership and module boundaries
 
+Full-review follow-up: empty `AllowedOrigins` denies controller HTTP(S) navigation; null leaves origin restrictions unset. Iframe internal redirects retain their documented observability limitations. Startup lifetime checks each await; late resources are retired, managed role ports use accept/reject ACKs and cancellation, and disposal errors report fatal with retained resources where consumer completion is unconfirmed. Canvas growth is per-axis and dimension/byte bounded. See [dated evidence](validation/2026-10-04-full-review.md).
+
 `Doroti.Host.Web` keeps DOM services on the browser thread and rendering on the
 render endpoint. `doroti.web.ts` is the JavaScript interop facade: its exported
 names remain the entry points used by C# and the render Worker.

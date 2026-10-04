@@ -17,11 +17,14 @@ import subprocess
 import uuid
 import xml.etree.ElementTree as ET
 
+from release_receipt import receipt_environment, validate_receipt
+
 ROOT = Path(__file__).resolve().parents[2]
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--dotnet', default='dotnet')
     parser.add_argument('--targets', nargs='+', choices=['windows', 'web', 'android', 'macos', 'ios', 'maccatalyst'], default=['windows', 'web'])
     parser.add_argument('--macos-tfm', choices=['net10.0-macos', 'net10.0-macos27.0'], default='net10.0-macos')
     parser.add_argument('--ios-tfm', default='net10.0-ios27.0')
@@ -56,6 +59,7 @@ def main():
               'cleanMachineInstall': 'notVerified', 'physicalInput': 'notVerified', 'checks': [], 'status': 'running'}
 
     def command(name, *command_args, cwd=ROOT, env=None):
+        if command_args[0] == 'dotnet': command_args = (args.dotnet, *command_args[1:])
         print('Running ' + name, flush=True)
         log_path = run / (name + '.log')
         with log_path.open('w', encoding='utf-8') as log:
@@ -67,7 +71,7 @@ def main():
         record['checks'].append(name)
 
     try:
-        (output / 'dotnet-info.txt').write_bytes(subprocess.check_output(['dotnet', '--info'], cwd=ROOT))
+        (output / 'dotnet-info.txt').write_bytes(subprocess.check_output([args.dotnet, '--info'], cwd=ROOT))
         # Include uncommitted/new product source in the provenance, not only HEAD.
         files = subprocess.check_output(['git', 'ls-files', '-co', '--exclude-standard', '-z'], cwd=ROOT).decode().split('\0')
         source = hashlib.sha256()
@@ -92,7 +96,7 @@ def main():
             if path in projects or path.suffix != '.csproj': return
             projects.add(path)
             if path.stem == 'Doroti.Host.Maui':
-                evaluated = json.loads(subprocess.check_output(['dotnet', 'msbuild', str(path), '-getItem:ProjectReference',
+                evaluated = json.loads(subprocess.check_output([args.dotnet, 'msbuild', str(path), '-getItem:ProjectReference',
                     '-p:TargetFramework=' + ('net10.0-windows10.0.19041.0' if windows_maui else apple_tfm if apple else args.macos_tfm if 'macos' in args.targets else 'net10.0-android'),
                     '-p:DorotiMacOSTargetFramework=' + args.macos_tfm,
                     '-p:RuntimeIdentifier=' + ('win-x64' if windows_maui else apple_rid if apple else 'osx-arm64' if 'macos' in args.targets else args.android_rid)], cwd=ROOT, text=True))
@@ -159,7 +163,9 @@ def main():
                         throw new InvalidOperationException("Package consumer second window did not retire.");
                     System.IO.File.WriteAllText(Environment.GetEnvironmentVariable("DOROTI_RELEASE_RECEIPT")!,
                         System.Text.Json.JsonSerializer.Serialize(new { nativeFirstFrame = true, twoWindows = true,
-                            secondResizedAndClosed = true, survivorsBeforeMainClose = 1 }));
+                            secondResizedAndClosed = true, survivorsBeforeMainClose = 1,
+                            runId = Environment.GetEnvironmentVariable("DOROTI_RELEASE_RUN_ID"),
+                            version = Environment.GetEnvironmentVariable("DOROTI_RELEASE_VERSION") }));
                     await context.Window.CloseAsync();
                     Console.WriteLine("PASS: NuGet-only Release native presentation, second window, resize and close.");
                 },
@@ -185,16 +191,12 @@ def main():
             command(operation + '-' + target, 'dotnet', operation, str(project), '-c', 'Release', '--nologo',
                     '-p:PublishTrimmed=' + ('true' if target in ('macos', 'ios', 'maccatalyst') else 'false'), '-p:RunAOTCompilation=false', *output_properties, *target_properties, cwd=consumer, env=environment)
             if target == 'windows':
-                launch = [str(output / target / 'CandidateApp.Windows.Maui.exe')] if windows_maui else ['dotnet', str(output / target / 'CandidateApp.Windows.dll')]
-                command('native-package-consumer', *launch,
-                        cwd=output / target, env={**environment, 'DOROTI_RELEASE_SMOKE': '1',
-                            'DOROTI_RELEASE_RECEIPT': str(output / 'native-consumer.json'),
-                            'DOROTI_MAUI_EVIDENCE': str(run / 'maui-native.json')} if windows_maui else
-                            {**environment, 'DOROTI_RELEASE_SMOKE': '1', 'DOROTI_RELEASE_RECEIPT': str(output / 'native-consumer.json')})
-                receipt = json.loads((output / 'native-consumer.json').read_text())
-                if not all(receipt.get(key) is True for key in ('nativeFirstFrame', 'twoWindows', 'secondResizedAndClosed')):
-                    raise RuntimeError('Native consumer did not complete the actual two-window fixture.')
-                record['nativeConsumer'] = receipt
+                launch = [str(output / target / 'CandidateApp.Windows.Maui.exe')] if windows_maui else [args.dotnet, str(output / target / 'CandidateApp.Windows.dll')]
+                receipt_path = output / 'native-consumer.json'
+                receipt_path.unlink(missing_ok=True)
+                command('native-package-consumer', *launch, cwd=output / target,
+                        env=receipt_environment({**environment, 'DOROTI_MAUI_EVIDENCE': str(run / 'maui-native.json')}, receipt_path, run.name, args.version))
+                record['nativeConsumer'] = validate_receipt(receipt_path, run.name, args.version)
             elif target == 'macos':
                 apps = list((output / target).glob('*.app'))
                 if not apps:
@@ -209,10 +211,8 @@ def main():
                     apps = [installed]
                 if len(apps) != 1: raise RuntimeError('Expected one published macOS app bundle.')
                 command('native-package-consumer', str(apps[0] / 'Contents/MacOS/CandidateApp.MacOS'),
-                        cwd=output / target, env={**environment, 'DOROTI_RELEASE_SMOKE': '1'})
-                native_log = (run / 'native-package-consumer.log').read_text(encoding='utf-8', errors='replace')
-                if 'PASS: NuGet-only Release native presentation, second window, resize and close.' not in native_log:
-                    raise RuntimeError('The native consumer exited without completing its window qualification.')
+                        cwd=output / target, env=receipt_environment(environment, output / 'native-consumer.json', run.name, args.version))
+                record['nativeConsumer'] = validate_receipt(output / 'native-consumer.json', run.name, args.version)
                 command('macos-signature', 'codesign', '--verify', '--deep', '--strict', str(apps[0]))
                 record['macos'] = {'tfm': args.macos_tfm, 'rid': 'osx-arm64', 'signing': 'ad-hoc only',
                     'notarization': 'notVerified', 'nativeAot': 'unsupported'}

@@ -204,6 +204,7 @@ public sealed class MauiFrameworkHost : IDisposable
             .Register<IFontHostCapability>(DorotiCapabilityIds.GraphicsFont, graphics)
             .Register<ITextureHostCapability>(DorotiCapabilityIds.GraphicsTexture, graphics)
             .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, graphics)
+            .Register<ISceneRasterizationHostCapability>(DorotiCapabilityIds.GraphicsSceneSnapshot, graphics)
             .Register<ISemanticsHostCapability>(
                 DorotiCapabilityIds.AccessibilitySemantics,
                 graphics

@@ -23,7 +23,9 @@ def source():
         "Doroti/docs/rendering-baselines.md", "Doroti/docs/web-host-architecture.md", "Doroti/docs/development-hot-reload.md", "Doroti/tools/vscode-doroti/README.md",
         "Doroti/docs/application-navigation.md", "Doroti/docs/desktop-window-context.md", "Doroti/docs/release-candidates.md",
         "Doroti/docs/platform-views/support-matrix.md", "Doroti/docs/validation/2026-10-04-web-structure.md",
-        "samples/DorotiTestbedApp/README.md", "samples/DorotiSampleApp2/README.md")]
+        "samples/DorotiTestbedApp/README.md", "samples/DorotiSampleApp2/README.md",
+        "work.md", "Doroti/docs/doctor.md", "Doroti/docs/validation/2026-10-04-full-review.md",
+        "Doroti/templates/Doroti.Templates/content/doroti-app/desktop/README.md")]
     docs += list((ROOT / "history/26-10-03/works").rglob("*.md"))
     broken = []
     for doc in set(docs):
@@ -58,6 +60,9 @@ def main(suite):
             source()
             command("runner-contract", sys.executable, "Doroti/tests/runner_contract.py", str(run / "runner"))
             command("installer-contract", sys.executable, "Doroti/tests/installer_contract.py", str(run / "installer"))
+            command("doctor-contract", sys.executable, "Doroti/tests/doctor_contract.py")
+            command("full-review-tools", sys.executable, "Doroti/tests/full_review_tools.py")
+            command("android-development-bridge", sys.executable, "Doroti/tests/android_development_bridge.py")
         if suite in ("Build", "Developer", "Release"):
             command("widget-regressions", "dotnet", "run", "--project",
                     "Doroti/tests/Doroti.Tests/Doroti.Tests.csproj", "-c", "Debug",
@@ -68,6 +73,8 @@ def main(suite):
             command("web-rendering", "node", "--experimental-transform-types", "--test", "Doroti/tests/web_rendering.mts")
             command("web-worker-lifecycle", "node", "--experimental-transform-types", "--test", "Doroti/tests/web_worker_lifecycle.mts")
             command("web-textures", "node", "--experimental-transform-types", "--experimental-vm-modules", "--test", "Doroti/tests/web_textures.mts")
+            command("web-full-review", "node", "--experimental-transform-types", "--experimental-vm-modules", "--test", "Doroti/tests/web_full_review.mts")
+            command("web-managed-connection", "node", "--experimental-transform-types", "--experimental-vm-modules", "--test", "Doroti/tests/web_managed_connection.mts")
         if suite in ("Targets", "Release"):
             for target in ("windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj", "web/DorotiTestbedApp.Web.csproj"):
                 command(target.split('/')[0], "dotnet", "build", "samples/DorotiTestbedApp/" + target,
@@ -97,19 +104,24 @@ def main(suite):
             visit(ROOT / "Doroti/src/Doroti.Framework.Cupertino/Doroti.Framework.Cupertino.csproj")
             visit(ROOT / "Doroti/src/Doroti.Desktop/Doroti.Desktop.csproj")
             packages = run / "packages"
+            candidate_version = '0.3.0-beta.review.' + uuid.uuid4().hex[:12]
             for project in projects:
-                command("pack-" + project.stem, "dotnet", "pack", str(project), "-c", "Debug", "--no-build", "--output", str(packages), "--nologo")
+                command("pack-" + project.stem, "dotnet", "pack", str(project), "-c", "Debug", "--no-build", "--output", str(packages), "--nologo", "-p:Version=" + candidate_version)
             consumer = run / "consumer"
             consumer.mkdir()
             shutil.copyfile(ROOT / "Doroti/tests/Doroti.Tests/Program.cs", consumer / "Program.cs")
             shutil.copyfile(ROOT / "Doroti/tests/Doroti.Tests/DesktopCloseRegression.cs", consumer / "DesktopCloseRegression.cs")
+            shutil.copyfile(ROOT / "Doroti/tests/Doroti.Tests/PlatformPolicyRegression.cs", consumer / "PlatformPolicyRegression.cs")
+            shutil.copyfile(ROOT / "Doroti/tests/Doroti.Tests/FullReviewRegression.cs", consumer / "FullReviewRegression.cs")
+            shutil.copyfile(ROOT / "Doroti/src/Doroti.Host.Maui/AppleSemanticsState.cs", consumer / "AppleSemanticsState.cs")
+            with (consumer / "Program.cs").open('a', encoding='utf-8') as stream: stream.write('\nFullReviewRegression.Run();\n')
             (consumer / "Consumer.csproj").write_text('''<Project Sdk="Microsoft.NET.Sdk">
 <PropertyGroup><TargetFramework>net10.0</TargetFramework><OutputType>Exe</OutputType><ImplicitUsings>enable</ImplicitUsings>
-<EnableDefaultCompileItems>false</EnableDefaultCompileItems></PropertyGroup>
-<ItemGroup><Compile Include="Program.cs;DesktopCloseRegression.cs" /><PackageReference Include="Doroti.Testing" Version="0.3.0-beta" />
+<EnableDefaultCompileItems>false</EnableDefaultCompileItems><Nullable>enable</Nullable></PropertyGroup>
+<ItemGroup><Compile Include="Program.cs;DesktopCloseRegression.cs;PlatformPolicyRegression.cs;FullReviewRegression.cs;AppleSemanticsState.cs" /><PackageReference Include="Doroti.Testing" Version="0.3.0-beta" />
 <PackageReference Include="Doroti.Desktop" Version="0.3.0-beta" />
 <PackageReference Include="Doroti.Framework.Cupertino" Version="0.3.0-beta" />
-<PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="4.154.0-preview.1.26454.9" /></ItemGroup></Project>''')
+<PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="4.154.0-preview.1.26454.9" /></ItemGroup></Project>'''.replace('0.3.0-beta', candidate_version))
             # Keep the consumer's restore cache independent of installed Doroti packages.
             cache = run / "nuget"
             configuration = ET.Element("configuration")

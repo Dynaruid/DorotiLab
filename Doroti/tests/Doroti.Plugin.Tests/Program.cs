@@ -50,7 +50,8 @@ using (var boundary = Boundary(Manifest(descriptor), handler))
     using var unsupported = new DorotiViewCapabilities();
     boundary.Configure(unsupported);
     var client = Client(unsupported);
-    Require(await client.GetCapabilitiesAsync() == new NativeFeatureCapabilities(false, false), "Unsupported capabilities.");
+    var unsupportedFeatures = await client.GetCapabilitiesAsync();
+    Require(!unsupportedFeatures.FilePicker && !unsupportedFeatures.UrlLauncher && unsupportedFeatures.UrlSchemes is { Length: 0 }, "Unsupported capabilities.");
     Require((await client.PickFilesAsync()).Status == FilePickStatus.unsupported, "Unsupported picker.");
     Require((await client.LaunchUrlAsync("bad url")).Status == UrlLaunchStatus.invalidUrl, "Invalid URL.");
     Require((await client.LaunchUrlAsync("file:///C:/Windows/notepad.exe")).Status == UrlLaunchStatus.unsupported, "File launch allowed.");
@@ -62,7 +63,8 @@ using (var boundary = Boundary(Manifest(descriptor), handler))
         .Register<IUrlLauncherHostCapability>(DorotiCapabilityIds.UrlLauncher, launcher);
     boundary.Configure(view);
     client = Client(view);
-    Require(await client.GetCapabilitiesAsync() == new NativeFeatureCapabilities(true, true), "Registered capabilities.");
+    var registeredFeatures = await client.GetCapabilitiesAsync();
+    Require(registeredFeatures.FilePicker && registeredFeatures.UrlLauncher && registeredFeatures.UrlSchemes is { Length: 3 }, "Registered capabilities.");
     Require((await client.LaunchUrlAsync("https://example.com")).Succeeded && launcher.Calls == 1, "URL routing.");
     launcher.Denied = true;
     Require((await client.LaunchUrlAsync("https://example.com")).Status == UrlLaunchStatus.blocked, "Denied launch.");

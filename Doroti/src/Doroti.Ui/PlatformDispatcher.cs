@@ -145,8 +145,11 @@ public sealed class PlatformDispatcher : IDisposable
         var registeredViews = views;
         if (registeredViews.Count == 0)
         {
-            beginFrame();
-            drawFrame();
+            lock (_dispatchGate)
+            {
+                using var scope = EnterScope();
+                DispatchAndDrainMicrotasks(() => DorotiCleanup.Run(beginFrame, _microtasks.drain, drawFrame));
+            }
             return;
         }
         var frameNumber = Interlocked.Increment(ref _frameNumber);
@@ -155,8 +158,9 @@ public sealed class PlatformDispatcher : IDisposable
             .ToArray();
         try
         {
-            beginFrame();
-            drawFrame();
+            DispatchWithEnvironment(registeredViews[0], () => DorotiCleanup.Run(
+                beginFrame, _microtasks.drain,
+                () => { if (!registeredViews[0].CallbackLifetime.IsCancellationRequested) drawFrame(); }));
         }
         finally
         {
@@ -598,10 +602,17 @@ public sealed class PlatformDispatcher : IDisposable
                     transaction
                 );
                 _frameTrace.Record(DorotiFramePhase.beginFrame, view.viewId, timestamp);
-                onBeginFrame?.Invoke(timestamp);
-                beginFrame?.Invoke(view, timestamp);
-                onDrawFrame?.Invoke();
-                drawFrame?.Invoke(view);
+                // Keep the build transaction and owner scope active while the
+                // transient callbacks' microtasks update this frame's state.
+                // Draw also unwinds SchedulerBinding's phase after a failing
+                // begin observer or microtask; preserve every failure for the host.
+                DorotiCleanup.Run(
+                    () => onBeginFrame?.Invoke(timestamp),
+                    () => beginFrame?.Invoke(view, timestamp),
+                    _microtasks.drain,
+                    () => { if (!view.CallbackLifetime.IsCancellationRequested) onDrawFrame?.Invoke(); },
+                    () => { if (!view.CallbackLifetime.IsCancellationRequested) drawFrame?.Invoke(view); }
+                );
                 _frameTrace.Record(DorotiFramePhase.drawFrame, view.viewId, DorotiFrameClock.Now);
             }
         );
@@ -700,13 +711,9 @@ public sealed class PlatformDispatcher : IDisposable
             _disposed = true;
             viewsToDispose = _views.Values.ToArray();
             _views.Clear();
-            _callbackLifetime.Cancel();
             _microtasks.clear();
         }
-        foreach (var view in viewsToDispose)
-        {
-            view.DisposeFromDispatcher();
-        }
+        DorotiCleanup.Run([_callbackLifetime.Cancel, ..viewsToDispose.Select<DorotiView, Action>(view => view.DisposeFromDispatcher)]);
     }
 
     private sealed class DispatcherScope(
@@ -1225,9 +1232,7 @@ public sealed class DorotiView : IDisposable
         {
             return;
         }
-        _callbackLifetime.Cancel();
-        _dispatcher.Remove(this);
-        DisposeCore(closeHost: true);
+        DorotiCleanup.Run(() => _callbackLifetime.Cancel(), () => _dispatcher.Remove(this), () => DisposeCore(closeHost: true));
     }
 
     internal void DisposeFromDispatcher() => DisposeCore(closeHost: true);
@@ -1239,7 +1244,8 @@ public sealed class DorotiView : IDisposable
             return;
         }
         _disposed = true;
-        _callbackLifetime.Cancel();
+        Exception? cancellationFailure = null;
+        try { _callbackLifetime.Cancel(); } catch (Exception error) { cancellationFailure = error; }
         _viewHost.MetricsChanged -= HandleMetricsChanged;
         _viewHost.LifecycleChanged -= HandleLifecycleChanged;
         _viewHost.CloseRequested -= HandleCloseRequested;
@@ -1258,11 +1264,10 @@ public sealed class DorotiView : IDisposable
         {
             _semanticsHost.Action -= HandleSemanticsAction;
         }
-        if (closeHost)
-        {
-            _viewHost.Close();
-        }
-        _capabilities.Dispose();
+        DorotiCleanup.Run(
+            () => { if (cancellationFailure is not null) throw cancellationFailure; },
+            () => { if (closeHost) _viewHost.Close(); },
+            _capabilities.Dispose);
     }
 
     private void HandleMetricsChanged(ViewMetrics metrics)

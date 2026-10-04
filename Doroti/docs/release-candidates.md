@@ -1,5 +1,7 @@
 # Local release candidates
 
+The [full-review follow-up](validation/2026-10-04-full-review.md) binds Windows/macOS native receipts to the current candidate version and unique run ID, requires first-frame/two-window/resize/close and exactly one survivor, and rejects missing/corrupt/stale receipts. Candidate tools use the wrapper's resolved Python interpreter and support `--dotnet` for the selected SDK executable. Linux installer retry/remove recovers verified owned temporaries and retains userdata. Signing and clean-machine deployment remain separate acceptance.
+
 2026-10-03: `release-candidate.py --targets windows --windows-backend Maui` selects the MAUI template runner and a single Windows Host.Maui pack. Upper `doroti.ps1 release` routes individual Windows/backend, Web, Android, macOS, iOS and Catalyst choices to candidate options; each MAUI platform uses a separate run. Linux retains its Qt publish/package/installer path. Windows MAUI excludes pinned SkiaSharp managed bytes from ReadyToRun rewriting to retain native provenance hashes. [Current evidence](validation/2026-10-03-platform-gap-implementation.md). Apple builds/runs are SKIPPED for this request.
 
 `release-candidate.py --targets web --web-font-preset Offline` builds the self-contained font preset through the isolated feed/template consumer. The dated results separate publish and actual browser execution. Deploy `.mjs` as JavaScript with the required COOP/COEP headers; default Windows MIME registry associations are insufficient.

@@ -9,7 +9,7 @@ export type DorotiProtocolEnvelope = Readonly<Record<string, unknown>> & {
 export type DorotiRuntimeState = "created" | "booting" | "ready" | "disposing" | "disposed" | "fatal";
 
 const transitions: Readonly<Record<DorotiRuntimeState, readonly DorotiRuntimeState[]>> = {
-  created: ["booting", "fatal"],
+  created: ["booting", "disposing", "fatal"],
   booting: ["ready", "disposing", "fatal"],
   ready: ["disposing", "fatal"],
   disposing: ["disposed", "fatal"],

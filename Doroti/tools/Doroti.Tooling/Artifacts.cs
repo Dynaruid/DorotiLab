@@ -58,9 +58,18 @@ public static class ProcessRunner
         string fileName,
         IEnumerable<string> arguments,
         string workingDirectory,
-        IReadOnlyDictionary<string, string?>? environment = null
-    )
+        IReadOnlyDictionary<string, string?>? environment = null,
+        TimeSpan? timeout = null,
+        CancellationToken cancellationToken = default
+    ) => RunAsync(fileName, arguments, workingDirectory, environment, timeout, cancellationToken).GetAwaiter().GetResult();
+
+    public static async Task<ProcessResult> RunAsync(string fileName, IEnumerable<string> arguments,
+        string workingDirectory, IReadOnlyDictionary<string, string?>? environment = null,
+        TimeSpan? timeout = null, CancellationToken cancellationToken = default)
     {
+        var limit = timeout ?? TimeSpan.FromMinutes(20);
+        if (limit <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(timeout));
+        cancellationToken.ThrowIfCancellationRequested();
         var startInfo = new ProcessStartInfo(ResolveExecutable(fileName))
         {
             WorkingDirectory = workingDirectory,
@@ -92,9 +101,33 @@ public static class ProcessRunner
         using var process =
             Process.Start(startInfo)
             ?? throw new InvalidOperationException($"Could not start {fileName}.");
-        var stdout = process.StandardOutput.ReadToEnd();
-        var stderr = process.StandardError.ReadToEnd();
-        process.WaitForExit();
+        var stdoutTask = process.StandardOutput.ReadToEndAsync();
+        var stderrTask = process.StandardError.ReadToEndAsync();
+        using var deadline = new CancellationTokenSource(limit);
+        using var combined = CancellationTokenSource.CreateLinkedTokenSource(deadline.Token, cancellationToken);
+        try { await process.WaitForExitAsync(combined.Token).ConfigureAwait(false); }
+        catch (OperationCanceledException)
+        {
+            try { if (!process.HasExited) process.Kill(entireProcessTree: true); } catch (InvalidOperationException) { }
+            await process.WaitForExitAsync().ConfigureAwait(false);
+            // Descendants may inherit the pipes. The bounded read wait also prevents
+            // an escaped descendant from keeping this caller alive indefinitely.
+            try { await Task.WhenAll(stdoutTask, stderrTask).WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false); }
+            catch (TimeoutException) { }
+            cancellationToken.ThrowIfCancellationRequested();
+            throw new TimeoutException($"Process {fileName} exceeded {timeout ?? TimeSpan.FromMinutes(20)}.");
+        }
+        string stdout, stderr;
+        try
+        {
+            await Task.WhenAll(stdoutTask, stderrTask).WaitAsync(combined.Token).ConfigureAwait(false);
+            stdout = await stdoutTask.ConfigureAwait(false); stderr = await stderrTask.ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            throw new TimeoutException($"Process {fileName} left inherited output pipes open.");
+        }
         return new ProcessResult(process.ExitCode, stdout.Trim(), stderr.Trim());
     }
 

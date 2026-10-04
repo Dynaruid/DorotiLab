@@ -1,5 +1,7 @@
 # Maintained regression tests
 
+The [2026-10-04 full-review follow-up](../docs/validation/2026-10-04-full-review.md) adds Future terminal/error owner context, mid-frame microtasks, CPU scene snapshot/PNG/repaint/DPR/lifetime and concurrent process-pipe regressions to Build/Developer. Source/Developer runs actual doctor CLI fake-tool fixtures, MSBuild Build/Clean sentinels, Android lease/Stop identity and release receipt checks. Linux installer failure injection requires a Linux filesystem and reports SKIPPED elsewhere. Node executes production raster startup barriers and managed accept/reject/timeout protocol; these doubles do not establish .NET Worker boot. Windows MAUI smoke includes the actual A-B-A bridge/action-generation regression. Use the 1200-second wrapper for direct entries.
+
 Android metadata Hot Reload uses `android_development_bridge.py` for session/request
 isolation and port cleanup, `android_development_profile.py` for the actual SDK
 startup config and Debug/Release guards, and `android_hot_reload_smoke.py` for
@@ -303,7 +305,11 @@ Run these sequentially: they temporarily edit the same Testbed scene, restoring 
 Use windows_maui_smoke.py for MAUI owner/services, windows_native_texture_smoke.py for actual MAUI GPU import,
 windows_smoke.py for explicit App SDK/MAUI multiwindow and the opt-in mixed scene.
 web_runtime_recovery.py requires a completed Testbed Web build; --main-only uses the default threaded build,
---worker-only requires -p:WasmEnableThreads=false. Restore the default threaded build afterward.
+--worker-only requires -p:WasmEnableThreads=false. For an isolated --artifacts-path build,
+set DOROTI_WEB_TEST_ARTIFACTS to that same absolute directory; retain the default threaded
+build for --main-only. Recovery checks also cover loopback origin admission, independent
+canvas-axis growth and 60-second stability after restart. Captures are headless browser
+evidence, not physical monitor or input qualification.
 web_offline_fonts.py requires Sample2 Assets + DorotiWebFontValidation=true; it checks real Korean glyphs,
 zero external requests and decoder-denial diagnostics. Do not build shared TS assets while a browser probe runs.
 hot_reload_smoke.py accepts backend Maui and --verify-restart to check actual Run/Reload/Stop/Run/Stop.

@@ -10,7 +10,7 @@ interface MainRuntime {
   runtimeBuildInfo: { wasmEnableThreads: boolean; productVersion: string };
   localHeapViewU8(): Uint8Array;
   getAssemblyExports(name: string): Promise<{
-    Doroti: { Host: { Web: { BrowserManagedRenderThread: { StartAsync(url: string, token: string): Promise<void> };
+    Doroti: { Host: { Web: { BrowserManagedRenderThread: { StartAsync(url: string, token: string): Promise<void>; CancelAsync(token: string): Promise<void> };
       BrowserHotReload: { ReadStatusAsync(): Promise<string>; PrepareAsync(runtimeId: string, requestId: string): Promise<boolean> } } } };
   }>;
 }
@@ -24,8 +24,10 @@ class ManagedEndpoint extends EventTarget implements DorotiWorkerEndpoint {
   constructor(readonly port: MessagePort, readonly nativeWorker: Worker) {
     super();
     port.addEventListener("message", event => {
+      const terminal = event.data?.kind === "disposed" || (event.data?.kind === "fatal" && typeof event.data.cleanupComplete === "boolean");
+      if (terminal) this.#disposing = true;
       this.dispatchEvent(new MessageEvent("message", { data: event.data }));
-      if (event.data?.kind === "disposed") {
+      if (terminal) {
         port.close();
         nativeWorker.removeEventListener("error", this.#onError);
       }
@@ -79,7 +81,10 @@ async function initializeMainRuntime(dotnetUrl: string): Promise<MainRuntime> {
         event.stopImmediatePropagation();
         const accept = connections.get(data.sessionToken);
         if (data.protocolVersion !== dorotiProtocolVersion || !accept || !(data.port instanceof MessagePort)) {
-          if (data.port instanceof MessagePort) data.port.close();
+          if (data.port instanceof MessagePort) {
+            data.port.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "managed-rejected", sessionToken: data.sessionToken });
+            data.port.close();
+          }
           return;
         }
         connections.delete(data.sessionToken);
@@ -122,7 +127,7 @@ async function initializeMainRuntime(dotnetUrl: string): Promise<MainRuntime> {
   }
 }
 
-export async function createManagedDorotiWorker(dotnetUrl: string, roleUrl: URL): Promise<DorotiWorkerEndpoint> {
+export async function createManagedDorotiWorker(dotnetUrl: string, roleUrl: URL, signal?: AbortSignal): Promise<DorotiWorkerEndpoint> {
   const runtime = await (runtimePromise ??= initializeMainRuntime(dotnetUrl));
   const exports = await runtime.getAssemblyExports("Doroti.Host.Web.dll");
   const token = crypto.randomUUID();
@@ -132,13 +137,18 @@ export async function createManagedDorotiWorker(dotnetUrl: string, roleUrl: URL)
     rejectConnection = reject;
     connections.set(token, (port, worker) => {
       endpoint = new ManagedEndpoint(port, worker);
+      port.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "managed-accepted", sessionToken: token });
       resolve(endpoint);
     });
   });
-  const timer = setTimeout(() => {
+  const cancel = (): void => {
     connections.delete(token);
-    rejectConnection(new Error("Timed out connecting the managed render thread."));
-  }, 120000);
+    endpoint?.terminate();
+    void exports.Doroti.Host.Web.BrowserManagedRenderThread.CancelAsync(token).catch(error => endpoint?.fail(error));
+    rejectConnection(new Error("Managed render connection canceled or timed out."));
+  };
+  const timer = setTimeout(cancel, 120000);
+  signal?.addEventListener("abort", cancel, { once: true });
   // A distinct role module instance is needed if .NET reuses a pthread Worker.
   roleUrl.searchParams.set("session", token);
   void exports.Doroti.Host.Web.BrowserManagedRenderThread.StartAsync(roleUrl.href, token).catch(error => {
@@ -146,5 +156,6 @@ export async function createManagedDorotiWorker(dotnetUrl: string, roleUrl: URL)
     if (endpoint) endpoint.fail(error);
     else rejectConnection(error);
   });
-  return connected.finally(() => clearTimeout(timer));
+  if (signal?.aborted) cancel();
+  return connected.finally(() => { clearTimeout(timer); signal?.removeEventListener("abort", cancel); });
 }

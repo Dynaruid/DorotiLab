@@ -64,6 +64,15 @@ function initialize(worker: any, backend: string, limit = 8192) {
   return { released, completions, get destroyed() { return destroyed; } };
 }
 
+test('texture disposal before initialization does not create a GL context and repeats the same terminal', async () => {
+  const { worker } = await modules();
+  const first = worker.disposeTextures();
+  assert.equal(worker.disposeTextures(), first);
+  await first;
+  assert.equal(worker.diagnostics().registrations, 0);
+  assert.throws(() => initialize(worker, 'webgl'), /closed during startup/);
+});
+
 test('main texture timeout preserves Timeout and cancels siblings without retaining timers', async () => {
   const timers = new Map<number, () => void>();
   let nextTimer = 0;

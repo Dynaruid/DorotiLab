@@ -1,10 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><OutputType>Exe</OutputType><AllowUnsafeBlocks>true</AllowUnsafeBlocks><DefineConstants>$(DefineConstants);DOROTI_REPO_TESTS</DefineConstants></PropertyGroup>
   <ItemGroup>
+    <Compile Include="../../src/Doroti.Host.Maui/AppleSemanticsState.cs" Link="AppleSemanticsState.cs" />
     <Compile Include="../../src/Doroti.Host.Maui/IosFrameLifetime.cs" Link="IosFrameLifetime.cs" />
     <Compile Include="../../src/Doroti.Host.Maui/MauiFrameCallbackQueue.cs" Link="MauiFrameCallbackQueue.cs" />
     <Compile Include="../../src/Doroti.Host.Maui/MauiFrameWakeQueue.cs" Link="MauiFrameWakeQueue.cs" />
     <ProjectReference Include="../../src/Doroti.Testing/Doroti.Testing.csproj" />
+    <ProjectReference Include="../../tools/Doroti.Tooling/Doroti.Tooling.csproj" />
     <ProjectReference Include="../../src/Doroti.Skia.Vulkan/Doroti.Skia.Vulkan.csproj" />
     <ProjectReference Include="../../src/Doroti.Desktop/Doroti.Desktop.csproj" />
     <ProjectReference Include="../../src/Doroti.Framework.Cupertino/Doroti.Framework.Cupertino.csproj" />

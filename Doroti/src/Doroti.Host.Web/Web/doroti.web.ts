@@ -620,15 +620,18 @@ function configureDirectCanvasCapacity(
   const screenWidth = Number(globalThis.screen?.availWidth ?? globalThis.screen?.width ?? 0);
   const screenHeight = Number(globalThis.screen?.availHeight ?? globalThis.screen?.height ?? 0);
   const initial = initialCanvasCapacity(logicalWidth, logicalHeight, ratio,
-    presenterPolicy().memoryProfile === "mobile", screenWidth, screenHeight);
+    presenterPolicy().memoryProfile === "mobile", screenWidth, screenHeight,
+    { dimension: 2147483647, bytes: 256 * 1024 * 1024 });
   const capacityWidth = physicalWidth ?? initial.width;
   const capacityHeight = physicalHeight ?? initial.height;
   // width/height cannot be assigned from main after control was transferred.
   // Worker capacity growth is reported here only to update the matching CSS
   // pixel ratio; initial/replacement canvases opt in before transfer.
   if (initializeBacking) {
-    host.canvas.width = capacityWidth;
-    host.canvas.height = capacityHeight;
+    // The Worker discovers the active GPU limit before the first real backing
+    // allocation. Keep only a minimal canvas until ownership is transferred.
+    host.canvas.width = 1;
+    host.canvas.height = 1;
   }
   // Let the browser update intrinsic geometry together with the transferred
   // bitmap. Explicit CSS capacity dimensions arrive via a separate Worker
@@ -1920,9 +1923,11 @@ export async function startDorotiWorkerHost(
   const dotnetModuleUrl = resolveCurrentDotnetModuleUrl();
 
   let activeWorker: DorotiWorkerEndpoint;
+  const connectionLifetime = new AbortController();
+  globalThis.addEventListener("pagehide", () => connectionLifetime.abort(), { once: true });
   try {
     activeWorker = runtimeLocation === "main"
-      ? await createManagedDorotiWorker(dotnetModuleUrl, new URL("./doroti.raster.worker.js", import.meta.url))
+      ? await createManagedDorotiWorker(dotnetModuleUrl, new URL("./doroti.raster.worker.js", import.meta.url), connectionLifetime.signal)
       : createDorotiWorker(new URL("./doroti.raster.worker.js", import.meta.url));
   } catch (error) {
     webRuntimeState = { state: "failed", generation: 1, renderer: mode, restartScope: "page", reason: String(error) };
@@ -2464,6 +2469,7 @@ export async function startDorotiWorkerHost(
     protocolVersion: dorotiProtocolVersion, kind: "init", snapshot: JSON.parse(snapshot(host)),
     rendererContractVersion: mode === "worker-direct-webgpu" ? dorotiWebGpuRendererVersion : undefined,
     dotnetModuleUrl, mode, policy: selectedRendererPolicy, canvas: initialOffscreen,
+    initialCapacity: { width: Number(canvas.dataset.dorotiCapacityWidth), height: Number(canvas.dataset.dorotiCapacityHeight) },
     testbedMode: new URL(location.href).searchParams.get("dorotiTestbedMode") ?? "diagnostics",
     progressScope: new URL(location.href).searchParams.get("dorotiProgressScope") ?? "local",
     resizeDiagnostics: diagnosticsEnabled(),

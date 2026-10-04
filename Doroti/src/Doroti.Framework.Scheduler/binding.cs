@@ -61,20 +61,28 @@ internal class _TaskEntry<T> : IScheduledTaskEntry
 
     public virtual void run()
     {
-        if (!ConstantsLibrary.kReleaseMode)
+        try
         {
-            Timeline.timeSync(
-                debugLabel ?? "Scheduled Task",
-                () =>
-                {
-                    completer.complete(task());
-                },
-                flow: (flow is not null) ? Flow.step(flow!.id) : null
-            );
+            if (!ConstantsLibrary.kReleaseMode)
+            {
+                Timeline.timeSync(
+                    debugLabel ?? "Scheduled Task",
+                    () =>
+                    {
+                        completer.complete(task());
+                    },
+                    flow: (flow is not null) ? Flow.step(flow!.id) : null
+                );
+            }
+            else
+            {
+                completer.complete(task());
+            }
         }
-        else
+        catch (Exception error)
         {
-            completer.complete(task());
+            completer.completeError(error);
+            throw; // The scheduler still reports this failure and advances its queue.
         }
     }
 }

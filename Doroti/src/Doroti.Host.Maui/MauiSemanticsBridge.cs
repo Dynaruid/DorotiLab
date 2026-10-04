@@ -6,7 +6,7 @@ using Microsoft.Maui.Layouts;
 namespace Doroti.Host.Maui;
 
 /// <summary>Mirrors retained semantics into native accessibility views without creating a second touch tree.</summary>
-internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemanticsBridge, IDisposable
+internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, TimeSpan>? schedule = null) : IMauiSemanticsBridge, IDisposable
 {
     private static readonly TimeSpan MinimumApplyInterval = TimeSpan.FromMilliseconds(
         1000.0 / 15.0
@@ -88,18 +88,15 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
             }
             _lastReceivedGeneration = update.generation;
             var delta = SemanticsUpdateDiffer.Diff(_appliedNodes, visibleNodes);
-            if (!delta.HasChanges)
-            {
-                Interlocked.Increment(ref _updatesSuppressed);
-                return;
-            }
-
+            // Even an applied-equivalent update replaces older pending work and
+            // refreshes its action owner on the native dispatcher.
+            if (!delta.HasChanges) Interlocked.Increment(ref _updatesSuppressed);
             _pending = new(update with { nodes = visibleNodes }, performAction);
             var immediate =
                 update.urgency
                     is SemanticsUpdateUrgency.immediate
                         or SemanticsUpdateUrgency.scrollEnd
-                || delta.RequiresImmediateFlush;
+                || delta.RequiresImmediateFlush || !delta.HasChanges;
             if (_applyScheduled)
             {
                 Interlocked.Increment(ref _updatesCoalesced);
@@ -244,8 +241,12 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
         );
         try
         {
-            Apply(pending.Update, pending.PerformAction);
-            Interlocked.Increment(ref _updatesApplied);
+            lock (_gate)
+            {
+                if (_disposed || scheduleId != _scheduleGeneration) return;
+                Apply(pending.Update, pending.PerformAction);
+                Interlocked.Increment(ref _updatesApplied);
+            }
         }
         finally
         {
@@ -277,6 +278,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
 
     private void ScheduleApply(long scheduleId, TimeSpan delay)
     {
+        if (schedule is not null) { schedule(() => ApplyLatest(scheduleId), delay); return; }
         if (delay <= TimeSpan.Zero)
         {
             _layer.Dispatcher.Dispatch(() => ApplyLatest(scheduleId));
@@ -352,6 +354,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
                 {
                     UpdateState(state, node, performAction, nodeDelta.changedProperties);
                 }
+                else UpdateState(state, node, performAction, SemanticsNodeProperty.none);
                 _appliedNodes[node.id] = node;
             }
 

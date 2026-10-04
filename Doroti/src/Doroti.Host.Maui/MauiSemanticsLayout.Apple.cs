@@ -65,12 +65,15 @@ internal sealed partial class MauiSemanticsLayout
             return;
         native.AccessibilityElement = node is not null;
         native.AccessibilityLabel = node?.label;
-        using var value =
-            node?.flags?.isObscured == true || node?.value is null
-                ? null
-                : new NSString(node.value);
+        // AXCheckBox uses a numeric state (0 off, 1 on, 2 mixed), independent
+        // of AXSelected. Preserve any textual value in the help description.
+        var state = AppleSemanticsState.NumericValue(node);
+        using NSObject? value = node?.flags?.isObscured == true ? null
+            : state is { } number ? new NSNumber(number)
+            : node?.value is { } text ? new NSString(text) : null;
         native.SetProjectedValue(value);
-        native.AccessibilityHelp = node?.hint ?? node?.tooltip;
+        native.AccessibilityHelp = string.Join(" ", new[] { node?.hint ?? node?.tooltip,
+            state is not null && node?.flags?.isObscured != true ? node?.value : null }.Where(text => !string.IsNullOrWhiteSpace(text)));
         native.AccessibilityIdentifier = node?.identifier;
         native.AccessibilityEnabled = node?.flags?.isEnabled != Tristate.isFalse;
         native.AccessibilitySelected = node?.flags?.isSelected == Tristate.isTrue;
@@ -108,7 +111,8 @@ internal sealed partial class MauiSemanticsLayout
             .Select(child => child.Handler?.PlatformView).OfType<NSObject>().ToArray();
         native.IsAccessibilityElement = node is not null && children.Length == 0;
         native.AccessibilityLabel = node?.label;
-        native.AccessibilityValue = node?.flags?.isObscured == true ? null : node?.value;
+        native.AccessibilityValue = AppleSemanticsState.TextValue(node,
+            key => NSBundle.MainBundle.GetLocalizedString(key, key));
         native.AccessibilityHint = node?.hint ?? node?.tooltip;
         var traits = UIAccessibilityTrait.None;
         if (node?.flags?.isLink == true) traits |= UIAccessibilityTrait.Link;

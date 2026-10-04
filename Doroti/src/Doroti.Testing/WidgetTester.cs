@@ -61,6 +61,7 @@ public sealed class WidgetTester : IDisposable
             .Register<IParagraphHostCapability>(DorotiCapabilityIds.GraphicsText, _renderer)
             .Register<IFontHostCapability>(DorotiCapabilityIds.GraphicsFont, _renderer)
             .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, _renderer)
+            .Register<ISceneRasterizationHostCapability>(DorotiCapabilityIds.GraphicsSceneSnapshot, _renderer)
             .Register<ITextureHostCapability>(DorotiCapabilityIds.GraphicsTexture, _renderer)
             .Register<ISemanticsHostCapability>(DorotiCapabilityIds.AccessibilitySemantics, _renderer);
         if (navigation is not null)

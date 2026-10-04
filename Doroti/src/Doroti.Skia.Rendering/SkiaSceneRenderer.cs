@@ -14,6 +14,7 @@ public sealed partial class SkiaSceneRenderer
         IParagraphHostCapability,
         IFontHostCapability,
         IImageHostCapability,
+        ISceneRasterizationHostCapability,
         ITextureHostCapability,
         ISemanticsHostCapability,
         IDisposable
@@ -1205,6 +1206,56 @@ public sealed partial class SkiaSceneRenderer
         {
             bitmap.Dispose();
             throw;
+        }
+    }
+
+    public ValueTask<UiImage> RasterizeSceneAsync(Scene scene, int width, int height,
+        DorotiUiInvocation invocation, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        return ValueTask.FromResult(RasterizeSceneCore(scene, width, height, invocation, cancellationToken));
+    }
+
+    public UiImage RasterizeScene(Scene scene, int width, int height, DorotiUiInvocation invocation) =>
+        RasterizeSceneCore(scene, width, height, invocation, default);
+
+    private UiImage RasterizeSceneCore(Scene scene, int width, int height,
+        DorotiUiInvocation invocation, CancellationToken cancellationToken)
+    {
+        lock (_paintGate)
+        {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            ObjectDisposedException.ThrowIf(scene.debugDisposed, scene);
+            cancellationToken.ThrowIfCancellationRequested();
+            if (scene.viewId != _viewId)
+                throw new DorotiCapabilityException(DorotiCapabilityIds.GraphicsSceneSnapshot, scene.viewId, invocation, "scene owner mismatch");
+            if (width <= 0 || height <= 0 || (long)width * height > 64L * 1024 * 1024 / 4)
+                throw new ArgumentOutOfRangeException(nameof(width));
+            void Validate(IReadOnlyList<SceneCommand> commands, int depth = 0)
+            {
+                if (depth > 256) throw new InvalidDataException("Scene snapshot nesting exceeds 256.");
+                if (RequiresGpuFilterLayers(commands, 0, commands.Count))
+                    throw new DorotiCapabilityException(DorotiCapabilityIds.GraphicsSceneSnapshot, _viewId, invocation, "GPU filter snapshots require a renderer-specific async capability");
+                foreach (var command in commands)
+                {
+                    if (command.Operation is "platformView" or "inputShield" or "texture")
+                        throw new DorotiCapabilityException(DorotiCapabilityIds.GraphicsSceneSnapshot, _viewId, invocation, "CPU snapshot cannot capture native views or GPU textures");
+                    if (command.HostPayload is SceneRetainedPayload retained) Validate(retained.Commands, depth + 1);
+                }
+            }
+            Validate(scene.Commands);
+            using var colorSpace = SKColorSpace.CreateSrgb();
+            using var surface = SKSurface.Create(new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul, colorSpace))
+                ?? throw new InvalidOperationException("Cannot allocate scene snapshot storage.");
+            surface.Canvas.Clear(SKColors.Transparent);
+            var previous = _shadowDeviceScale;
+            _shadowDeviceScale = 1;
+            try { DrawScene(surface.Canvas, scene.Commands, width, height); }
+            finally { _shadowDeviceScale = previous; }
+            cancellationToken.ThrowIfCancellationRequested();
+            ObjectDisposedException.ThrowIf(scene.debugDisposed, scene);
+            var handle = new SkiaImageHandle(surface.Snapshot());
+            return new UiImage(_viewId, width, height, handle.Release) { HostHandle = handle };
         }
     }
 
@@ -3676,6 +3727,7 @@ public sealed partial class SkiaSceneRenderer
         }
 
         internal SKImage Image => _shared.Image;
+        public object StorageIdentity => _shared;
 
         public IDorotiImageHandle Clone() => new SkiaImageHandle(_shared);
 

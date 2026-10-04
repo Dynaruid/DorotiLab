@@ -24,6 +24,7 @@ public static class DorotiCapabilityIds
     public const string PlatformViews = "platform.views";
     public const string DartPerformanceMode = "runtime.dart-performance-mode";
     public const string GraphicsScene = "graphics.scene";
+    public const string GraphicsSceneSnapshot = "graphics.scene-snapshot";
     public const string GraphicsFont = "graphics.font";
     public const string GraphicsText = "graphics.text";
     public const string GraphicsTexture = "graphics.texture";
@@ -164,14 +165,10 @@ public sealed class DorotiViewCapabilities : IDisposable
             return;
         }
         _disposed = true;
-        foreach (
-            var item in _values
+        var disposables = _values
                 .Values.Distinct(ReferenceEqualityComparer.Instance)
-                .OfType<IDisposable>()
-        )
-        {
-            item.Dispose();
-        }
+                .OfType<IDisposable>().ToArray();
         _values.Clear();
+        Doroti.Runtime.DorotiCleanup.Run(disposables.Select<IDisposable, Action>(item => item.Dispose).ToArray());
     }
 }

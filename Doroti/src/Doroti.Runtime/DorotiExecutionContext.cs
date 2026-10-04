@@ -19,7 +19,7 @@ public static class DorotiExecutionContext
                 : TimeProvider.System
         );
 
-    public static DorotiCallbackDispatcher? CaptureDispatcher() => ActiveDispatcher.Value;
+    public static DorotiCallbackDispatcher? CaptureDispatcher() => ActiveDispatcher.Value?.Capture();
 
     public static IDisposable EnterDispatcher(
         Func<Action, bool> tryPost,
@@ -72,12 +72,18 @@ public sealed class DorotiCallbackDispatcher
 {
     private readonly Func<Action, bool> _tryPost;
     private readonly CancellationToken _lifetime;
+    private readonly ExecutionContext? _context;
 
-    internal DorotiCallbackDispatcher(Func<Action, bool> tryPost, CancellationToken lifetime)
+    public CancellationToken Lifetime => _lifetime;
+
+    internal DorotiCallbackDispatcher(Func<Action, bool> tryPost, CancellationToken lifetime, ExecutionContext? context = null)
     {
         _tryPost = tryPost;
         _lifetime = lifetime;
+        _context = context;
     }
+
+    internal DorotiCallbackDispatcher Capture() => new(_tryPost, _lifetime, ExecutionContext.Capture());
 
     public bool TryPost(Action callback)
     {
@@ -87,15 +93,18 @@ public sealed class DorotiCallbackDispatcher
             {
                 if (!_lifetime.IsCancellationRequested)
                 {
-                    callback();
+                    if (_context is null) callback();
+                    else ExecutionContext.Run(_context, _ => callback(), null);
                 }
             });
     }
 
-    public async Task PostAsync(Action callback)
+    public Task PostAsync(Action callback) => PostAsync(() => { callback(); return true; });
+
+    public async Task<T> PostAsync<T>(Func<T> callback)
     {
         ArgumentNullException.ThrowIfNull(callback);
-        var completion = new TaskCompletionSource(
+        var completion = new TaskCompletionSource<T>(
             TaskCreationOptions.RunContinuationsAsynchronously
         );
         using var registration = _lifetime.Register(() => completion.TrySetCanceled(_lifetime));
@@ -105,8 +114,7 @@ public sealed class DorotiCallbackDispatcher
                 {
                     try
                     {
-                        callback();
-                        completion.TrySetResult();
+                        completion.TrySetResult(callback());
                     }
                     catch (Exception error)
                     {
@@ -121,6 +129,6 @@ public sealed class DorotiCallbackDispatcher
         {
             completion.TrySetException(error);
         }
-        await completion.Task.ConfigureAwait(false);
+        return await completion.Task.ConfigureAwait(false);
     }
 }

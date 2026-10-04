@@ -76,7 +76,7 @@ dotnet workload restore ./DorotiTestbedApp.iOS.csproj
 Pop-Location
 ```
 
-`workload restore`는 해당 SDK의 .NET workload를 준비합니다. 표에 있는 Xcode, Android SDK/JDK, MSVC, Qt 같은 외부 도구 설치까지 수행하지는 않습니다. `doctor`는 공통 도구 확인이며, 각 플랫폼의 전체 빌드·기기 실행 검증을 대신하지 않습니다.
+`workload restore`는 해당 SDK의 .NET workload를 준비합니다. 표에 있는 Xcode, Android SDK/JDK, MSVC, Qt 같은 외부 도구 설치까지 수행하지는 않습니다. `doctor` 기본은 공통 도구 확인이며 `-App`/`-Platform` 지정 시 빌드 준비 조건, `-DoctorProfile dev|validation|release` 지정 시 해당 작업의 조건을 검사합니다. 필수 FAIL/PARTIAL은 nonzero exit입니다. [doctor v4](docs/doctor.md)의 PASS는 빌드·기기 수락을 대신하지 않습니다.
 
 플랫폼별 실행 명령은 [Testbed 실행 안내](../samples/DorotiTestbedApp/README.ko.md#material-샘플-모드)에 있습니다. `reference/flutter-master` checkout은 명시적인 Flutter 비교에만 필요하며, 필요할 때 `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`로 준비합니다.
 
@@ -117,7 +117,7 @@ Qt는 CMake 의존성 검사를 유지하고 파일 크기와 시간이 같더�
 
 | 명령 | 용도 |
 | --- | --- |
-| `doctor` | 필수 .NET·PowerShell 도구와 선택적 참조 소스 상태 확인 |
+| `doctor` | 공통 또는 선택 runner·SDK·profile의 준비 조건, v4 JSON/Markdown 및 FAIL/PARTIAL nonzero exit |
 | `build` | `Doroti.Product.slnx` 빌드 |
 | `build/run/publish -App <path> -Platform <alias>` | `doroti-workspace.json`에서 대상 실행 프로젝트를 찾아 빌드·실행·배포 |
 | `native doctor\|build\|open\|add -App <path> -Platform android\|ios\|macos\|maccatalyst` | 기본 네이티브 바인딩 작업 공간 진단, 빌드, 위치 출력, 확장 |

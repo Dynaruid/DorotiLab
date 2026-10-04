@@ -56,18 +56,28 @@ param(
 
     [string] $DotnetPath = 'dotnet',
 
+    [ValidateSet('common', 'build', 'dev', 'validation', 'release', 'compiler-development')]
+    [string] $DoctorProfile,
+    [string] $DoctorReportDirectory,
+    [string] $DoctorCancellationFile,
+    [ValidateRange(1, 30)] [int] $DoctorProbeTimeoutSeconds = 15,
+
     [ValidatePattern('^[A-Za-z][A-Za-z0-9_.-]*$')]
     [string] $InteropName = 'DorotiNativeInterop'
 )
 
 $ErrorActionPreference = 'Stop'
+$resolvedDotnet = Get-Command $DotnetPath -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+if ($resolvedDotnet) { $DotnetPath = $resolvedDotnet.Source }
 $dorotiRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $repositoryRoot = [System.IO.Path]::GetFullPath((Join-Path $dorotiRoot '..'))
 $solution = Join-Path $dorotiRoot 'Doroti.slnx'
 $productSolution = Join-Path $dorotiRoot 'Doroti.Product.slnx'
 $artifacts = Join-Path $dorotiRoot 'artifacts'
 . (Join-Path $PSScriptRoot 'launch-identity.ps1')
-if ($Command -eq 'dev' -and -not $PSBoundParameters.ContainsKey('Configuration')) { $Configuration = 'Debug' }
+. (Join-Path $PSScriptRoot 'python-tools.ps1')
+. (Join-Path $PSScriptRoot 'doctor.ps1')
+if (($Command -eq 'dev' -or $Command -eq 'doctor' -and $DoctorProfile -eq 'dev') -and -not $PSBoundParameters.ContainsKey('Configuration')) { $Configuration = 'Debug' }
 
 function Invoke-Checked {
     param(
@@ -111,13 +121,7 @@ function Invoke-CheckedCapture {
 
 function Get-CommandResult {
     param([string] $File, [string[]] $Arguments)
-    try {
-        $output = (& $File @Arguments 2>&1 | Out-String).Trim()
-        return [ordered]@{ available = ($LASTEXITCODE -eq 0); output = $output }
-    }
-    catch {
-        return [ordered]@{ available = $false; output = $_.Exception.Message }
-    }
+    Invoke-DorotiProbe $File $Arguments (Get-Location).Path $DoctorProbeTimeoutSeconds
 }
 
 function Resolve-DorotiWorkspace {
@@ -246,7 +250,7 @@ function Invoke-WorkspaceDotNet {
         $restoreArguments = @('restore', $runner, '--nologo', "-p:Configuration=$Configuration")
         if ($Rid) { $restoreArguments += "-p:RuntimeIdentifier=$Rid" }
         $restoreArguments += $compilationArguments
-        Invoke-Checked 'dotnet' $restoreArguments $dotnetWorkingDirectory
+        Invoke-Checked $DotnetPath $restoreArguments $dotnetWorkingDirectory
     }
     $fingerprintWatch = [Diagnostics.Stopwatch]::StartNew()
     $launchFingerprint = Get-DorotiLaunchFingerprint $workspace $runner $compilationArtifacts $dotnetWorkingDirectory
@@ -318,7 +322,7 @@ function Invoke-WorkspaceDotNet {
             }
             if ($Rid) { $buildArguments += "-p:RuntimeIdentifier=$Rid" }
             $buildArguments += $compilationArguments
-            Invoke-Checked 'dotnet' $buildArguments $dotnetWorkingDirectory
+            Invoke-Checked $DotnetPath $buildArguments $dotnetWorkingDirectory
             if ($Verb -ceq 'run') { $arguments += '--no-build' }
         }
         if ($Verb -cne 'run') {
@@ -326,7 +330,7 @@ function Invoke-WorkspaceDotNet {
                 Write-Host 'Doroti dependencies/toolchain changed or untracked: rebuilding before recording success.'
                 $arguments += @('-t:Rebuild', '-p:DorotiRebuildDependencies=true')
             }
-            Invoke-Checked 'dotnet' $arguments $dotnetWorkingDirectory
+            Invoke-Checked $DotnetPath $arguments $dotnetWorkingDirectory
         }
         if (-not $effectiveNoBuild) {
             $builtDependencies = Get-DorotiDependencyIdentity $runner $Configuration $Rid $dotnetWorkingDirectory $CompilationMode $compilationArtifacts
@@ -353,7 +357,7 @@ function Invoke-WorkspaceDotNet {
             [IO.File]::Move($temporaryStatePath, $statePath, $true)
             Write-Host "Doroti successful artifact record: $statePath"
         }
-        if ($Verb -ceq 'run') { Invoke-Checked 'dotnet' $arguments $dotnetWorkingDirectory }
+        if ($Verb -ceq 'run') { Invoke-Checked $DotnetPath $arguments $dotnetWorkingDirectory }
     }
     finally {
         if ($hadAdapter) { $env:DOROTI_WINDOWS_ADAPTER = $previousAdapter }
@@ -415,8 +419,9 @@ function Resolve-AndroidJavaHome {
     foreach ($candidate in @($candidates | Select-Object -Unique)) {
         $java = Join-Path $candidate "bin/java$(if ($IsWindows) { '.exe' })"
         if (-not (Test-Path -LiteralPath $java -PathType Leaf)) { continue }
-        $version = (& $java -version 2>&1 | Out-String).Trim()
-        if ($LASTEXITCODE -eq 0 -and $version -match 'version "(?<major>\d+)' -and
+        $probe = Get-CommandResult $java @('-version')
+        $version = ($probe.output + $probe.stderr).Trim()
+        if ($probe.available -and $version -match 'version "(?<major>\d+)' -and
             [int]$Matches.major -ge 17 -and [int]$Matches.major -le 21 -and $version -notmatch 'GraalVM') {
             return [pscustomobject]@{ Home = $candidate; Version = $version.Split("`n")[0].Trim() }
         }
@@ -426,30 +431,13 @@ function Resolve-AndroidJavaHome {
 
 function Invoke-DorotiNative {
     if ([string]::IsNullOrWhiteSpace($NativeCommand)) { throw 'native requires doctor, build, open, or add.' }
+    if ($NativeCommand -eq 'doctor') { Invoke-DorotiDoctorV4 -NativeBinding; return }
     $nativeWorkspace = Resolve-DorotiNativeWorkspace
     switch ($NativeCommand) {
-        'doctor' {
-            $dotnet = Get-CommandResult 'dotnet' @('--version')
-            if ($Platform -ceq 'android') {
-                $java = Resolve-AndroidJavaHome
-                $wrapper = Join-Path $nativeWorkspace.Native 'gradlew.bat'
-                if (-not $dotnet.available -or -not (Test-Path -LiteralPath $wrapper -PathType Leaf)) {
-                    throw "Android native prerequisites are incomplete. dotnet=$($dotnet.available), wrapper=$(Test-Path -LiteralPath $wrapper)."
-                }
-                Write-Host "Native doctor: PASS (Android; dotnet=$($dotnet.output); java=$($java.Version); javaHome=$($java.Home); wrapper=$wrapper)"
-            }
-            else {
-                $xcode = Get-CommandResult 'xcode-select' @('-p')
-                if (-not $dotnet.available -or -not $xcode.available) {
-                    throw "Apple native prerequisites are incomplete. dotnet=$($dotnet.available), xcode-select=$($xcode.available). Run this command on a Mac with Xcode."
-                }
-                Write-Host "Native doctor: PASS ($Platform; dotnet=$($dotnet.output); xcode=$($xcode.output))"
-            }
-        }
         'build' {
             $arguments = @('build', $nativeWorkspace.Binding, '--configuration', $Configuration, '--nologo')
             if (-not [string]::IsNullOrWhiteSpace($Rid)) { $arguments += "-p:RuntimeIdentifier=$Rid" }
-            Invoke-Checked 'dotnet' $arguments $nativeWorkspace.PlatformRoot
+            Invoke-Checked $DotnetPath $arguments $nativeWorkspace.PlatformRoot
             Write-Host "Native binding build: PASS ($Platform, $Configuration, $($nativeWorkspace.Binding))"
         }
         'open' {
@@ -484,59 +472,11 @@ function Write-InteropMigrationDiagnostic {
     throw 'scaffold-interop is obsolete because Android, iOS, native macOS, and Mac Catalyst bridges are generated by default. Use: doroti native doctor|build|open|add --app <path> --platform <name>.'
 }
 
-function Invoke-Doctor {
-    if (-not [string]::IsNullOrWhiteSpace($App)) {
-        $workspace = Resolve-DorotiWorkspace $App
-        $selected = if ([string]::IsNullOrWhiteSpace($Platform) -or $Platform -ceq 'all') { @($workspace.Runners.Keys) } else { @($Platform) }
-        foreach ($alias in $selected) {
-            Write-Host "$alias=$($workspace.Runners[$alias])"
-        }
-    }
-    $dotnet = Get-CommandResult 'dotnet' @('--version')
-    $workloads = Get-CommandResult 'dotnet' @('workload', 'list')
-    $xcode = if ($IsMacOS) { Get-CommandResult 'xcodebuild' @('-version') } else { [ordered]@{ available=$false; output='notAvailable' } }
-    $macosSdk = if ($IsMacOS) { Get-CommandResult 'xcrun' @('--sdk', 'macosx', '--show-sdk-version') } else { [ordered]@{ available=$false; output='notAvailable' } }
-    $powerShell = [ordered]@{ available = $PSVersionTable.PSVersion.Major -ge 7; output = $PSVersionTable.PSVersion.ToString() }
-    $flutterCheckout = Test-Path -LiteralPath (Join-Path $repositoryRoot 'reference/flutter-master') -PathType Container
-    $success = $dotnet.available -and $powerShell.available
-    $report = [ordered]@{
-        schemaVersion = 'doroti.doctor/v3'
-        success = $success
-        dotnet = $dotnet
-        workloads = $workloads
-        xcode = $xcode
-        macosSdk = $macosSdk
-        hostArchitecture = [Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString()
-        appKitBackend = [ordered]@{ minimumOS='14.0'; runtimeIdentifier='osx-arm64'; packageVersion='0.1.0-preview.12.26368.2'; experimental=$true }
-        powerShell = $powerShell
-        referenceTools = [ordered]@{
-            requiredForProductDevelopment = $false
-            flutterCheckout = $flutterCheckout
-            note = 'The pinned Flutter source is optional for reference comparison and migration work.'
-        }
-    }
-
-    $outputDirectory = Join-Path $artifacts 'doctor'
-    New-Item -ItemType Directory -Force -Path $outputDirectory | Out-Null
-    $json = $report | ConvertTo-Json -Depth 8
-    [System.IO.File]::WriteAllText((Join-Path $outputDirectory 'doctor.json'), ($json -replace "`r`n", "`n") + "`n", [System.Text.UTF8Encoding]::new($false))
-    $markdown = @(
-        '# Doroti doctor',
-        '',
-        "Status: **$(if ($success) { 'PASS' } else { 'FAIL' })**",
-        '',
-        "- .NET SDK: $($dotnet.output)",
-        "- PowerShell: $($powerShell.output)",
-        "- Flutter reference checkout (optional): $flutterCheckout"
-    ) -join "`n"
-    [System.IO.File]::WriteAllText((Join-Path $outputDirectory 'doctor.md'), $markdown + "`n", [System.Text.UTF8Encoding]::new($false))
-    Write-Host "Doctor: $(if ($success) { 'PASS' } else { 'FAIL' })"
-    if (-not $success) { throw 'Development environment is missing a required product-development tool. See artifacts/doctor/doctor.json.' }
-}
+function Invoke-Doctor { Invoke-DorotiDoctorV4 }
 
 function Invoke-Build {
     if ([string]::IsNullOrWhiteSpace($App)) {
-        Invoke-Checked 'dotnet' @('build', $productSolution, '--nologo')
+        Invoke-Checked $DotnetPath @('build', $productSolution, '--nologo')
     }
     else {
         Invoke-WorkspaceDotNet 'build'
@@ -590,7 +530,7 @@ function Invoke-Development {
                 '--session-directory', $sessionPath, '--session-id', $SessionId, '--dotnet', $DotnetPath)
             if ($Device) { $androidArguments += @('--device', $Device) }
             if ($Rid) { $androidArguments += @('--rid', $Rid) }
-            Invoke-Checked 'python' $androidArguments $workspace.Root
+            Invoke-Checked (Resolve-DorotiPython) $androidArguments $workspace.Root
             return
         }
         if ($Platform -eq 'ios') {
@@ -616,7 +556,7 @@ function Invoke-Development {
             if ($IosSdkVersion) { $iosArguments += @('--sdk-version', $IosSdkVersion) }
             if ($IosHotReloadHost) { $iosArguments += @('--host', $IosHotReloadHost) }
             $iosArguments += @('--dotnet', $DotnetPath)
-            Invoke-Checked 'python3' $iosArguments (Split-Path -Parent $runner)
+            Invoke-Checked (Resolve-DorotiPython) $iosArguments (Split-Path -Parent $runner)
             return
         }
         if ($Platform -in @('macos', 'maccatalyst')) {
@@ -625,7 +565,7 @@ function Invoke-Development {
             if ($Rid) { $macArguments += @('--rid', $Rid) }
             $framework = if ($Platform -eq 'macos') { $MacOSTargetFramework } else { $MacCatalystTargetFramework }
             if ($framework) { $macArguments += @('--framework', $framework) }
-            Invoke-Checked 'python3' $macArguments $workspace.Root
+            Invoke-Checked (Resolve-DorotiPython) $macArguments $workspace.Root
             return
         }
         $watchArguments = @('watch', '--project', $runner, 'run', '--configuration', 'Debug')
@@ -646,14 +586,15 @@ function Invoke-Audit {
 
 function Invoke-Release {
     if ($Platform -in @('windows', 'web', 'android', 'macos', 'ios', 'maccatalyst')) {
-        $candidateArguments = @((Join-Path $PSScriptRoot 'run-with-timeout.py'), '--timeout', '1200', 'python',
-            (Join-Path $PSScriptRoot 'release-candidate.py'), '--targets', $Platform.ToLowerInvariant())
+        $python = Resolve-DorotiPython
+        $candidateArguments = @((Join-Path $PSScriptRoot 'run-with-timeout.py'), '--timeout', '1200', $python,
+            (Join-Path $PSScriptRoot 'release-candidate.py'), '--dotnet', $DotnetPath, '--targets', $Platform.ToLowerInvariant())
         if ($Platform -eq 'windows') { $candidateArguments += @('--windows-backend', $WindowsBackend) }
         if ($Platform -eq 'android' -and $Rid) { $candidateArguments += @('--android-rid', $Rid) }
         if ($Platform -eq 'macos' -and $MacOSTargetFramework) { $candidateArguments += @('--macos-tfm', $MacOSTargetFramework) }
         if ($Platform -eq 'ios' -and $IosTargetFramework) { $candidateArguments += @('--ios-tfm', $IosTargetFramework) }
         if ($Platform -eq 'maccatalyst' -and $MacCatalystTargetFramework) { $candidateArguments += @('--catalyst-tfm', $MacCatalystTargetFramework) }
-        Invoke-Checked 'python' $candidateArguments
+        Invoke-Checked $python $candidateArguments
         return
     }
     if ($Platform -eq 'linux') { throw 'Linux candidates use dotnet publish on the Qt runner and eng/install-linux-qt.py for portable installation; no MAUI candidate is mapped to Linux.' }
@@ -666,7 +607,7 @@ function Invoke-Release {
     Get-ChildItem -LiteralPath $packageDirectory -File |
         Where-Object { $_.Extension -in @('.nupkg', '.snupkg') } |
         Remove-Item -Force
-    Invoke-Checked 'dotnet' @('pack', $productSolution, '--configuration', 'Release', '--output', $packageDirectory, '--nologo')
+    Invoke-Checked $DotnetPath @('pack', $productSolution, '--configuration', 'Release', '--output', $packageDirectory, '--nologo')
     Add-Type -AssemblyName System.IO.Compression.FileSystem
     foreach ($packagePath in (Get-ChildItem -LiteralPath $packageDirectory -Filter '*.nupkg' -File)) {
         $archive = [System.IO.Compression.ZipFile]::OpenRead($packagePath.FullName)
@@ -687,7 +628,7 @@ function Invoke-Release {
 }
 
 function Invoke-Clean {
-    Invoke-Checked 'dotnet' @('clean', $solution, '--nologo')
+    Invoke-Checked $DotnetPath @('clean', $solution, '--nologo')
     $allowedRoot = $dorotiRoot.TrimEnd([System.IO.Path]::DirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar
     $targets = @()
     foreach ($project in (Get-ChildItem -LiteralPath $dorotiRoot -Recurse -Filter '*.csproj' -File)) {

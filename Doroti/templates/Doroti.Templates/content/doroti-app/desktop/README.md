@@ -1,5 +1,13 @@
 # Optional desktop companion
 
+Before building a generated app, run `doroti doctor -App <app-directory>
+-Platform <platform> -DoctorProfile build` (select `-WindowsBackend Maui` for
+that runner). Doctor reports the selected runner/SDK prerequisites and writes
+JSON and Markdown evidence; required unknowns return PARTIAL/nonzero. A PASS
+does not qualify native runtime, physical input, signing or deployment. Use
+`-DoctorProfile dev` or `release` for those tool prerequisites, then run the
+corresponding build and acceptance checks separately.
+
 This assembly is intentionally separate from the common app. It is currently
 available to **Windows App SDK**, **Windows MAUI**, **AppKit macOS**, **Mac Catalyst**, and **Linux Qt Quick** runners. The template's default Windows App SDK
 runner connects this companion and uses the main-window controller.

@@ -31,6 +31,7 @@ internal static class WindowsConnectionProbe
                     return surface?.FrameworkView is not null && surface.WindowsSurface.NativeHost?.IsLoaded == true;
                 }));
                 var owner = surface!.FrameworkView!;
+                await MainThread.InvokeOnMainThreadAsync(() => MauiSemanticsRegression.Run(new Microsoft.Maui.Controls.AbsoluteLayout()));
                 var native = surface.WindowsSurface;
                 if (Environment.GetEnvironmentVariable("DOROTI_MAUI_EMBEDDED_PROBE") == "1")
                     await MainThread.InvokeOnMainThreadAsync(() =>

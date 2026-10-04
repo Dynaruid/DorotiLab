@@ -6,6 +6,44 @@ import { developmentBridge } from '../src/Doroti.Host.Web/Web/doroti.web.hot-rel
 import { openFileOwner, retainBrowserFiles, readBrowserFile, releaseBrowserFile, closeFileOwner } from '../src/Doroti.Host.Web/Web/doroti.web.files.ts';
 import { configureNavigation, openApplicationNavigation, reportApplicationRoute,
   saveApplicationRestoration, closeApplicationNavigation } from '../src/Doroti.Host.Web/Web/doroti.web.navigation.ts';
+import { BrowserWebView, WebViewFailure } from '../src/Doroti.Host.Web/Web/doroti.web.webview.ts';
+
+test('WebView controller empty allowlist rejects before src or document state mutation', async () => {
+  for (const allowed of [null, [], ['http://127.0.0.1:12345']]) {
+    const changes: unknown[] = [], requests: string[] = [];
+    const element = Object.assign(new EventTarget(), { style: {}, sandbox: { add() {} }, contentWindow: null,
+      title: '', referrerPolicy: '', srcdoc: '', removeAttribute() {}, remove() {}, ownerDocument: { defaultView: new EventTarget() } });
+    Object.defineProperty(element, 'src', { set(value) { requests.push(value); } });
+    const view = new BrowserWebView({ owner: 1, id: 1, generation: 1 } as any, { Profile: 2, AllowedOrigins: allowed as any },
+      event => changes.push(event), { createElement: () => element, defaultView: element.ownerDocument.defaultView } as any);
+    const initial = await view.execute({ Operation: 1 });
+    for (const url of ['invalid', 'file:///tmp/test', 'http://127.0.0.1:12346/a', 'https://127.0.0.1:12345/a', 'http://127.0.0.1:12345/a']) {
+      const permitted = url.startsWith('http') && (allowed === null || allowed.includes(new URL(url).origin));
+      const before = await view.execute({ Operation: 1 }), count = changes.length, requestCount = requests.length;
+      if (permitted) await view.execute({ Operation: 2, Text: url });
+      else {
+        await assert.rejects(view.execute({ Operation: 2, Text: url }), (error: any) => error instanceof WebViewFailure && error.code === 3);
+        assert.deepEqual(await view.execute({ Operation: 1 }), before);
+        assert.equal(changes.length, count); assert.equal(requests.length, requestCount);
+      }
+    }
+    if (allowed?.length === 0) assert.deepEqual(await view.execute({ Operation: 1 }), initial);
+    view.dispose();
+  }
+});
+
+test('desktop canvas grows only the deficient axis and bounds DPR/device/byte headroom', () => {
+  const policy = new CanvasCapacityPolicy(false);
+  let width = 1000;
+  for (const requested of [1001, 1501, 2251]) {
+    const next = policy.next(requested, 1000, width, 1000, 0);
+    assert.equal(next.height, 1000); assert.ok(next.width >= requested); width = next.width;
+  }
+  assert.equal(policy.next(1000, 1001, 1000, 1000, 0).width, 1000);
+  assert.deepEqual(initialCanvasCapacity(4000, 2000, 2, false, 0, 0, { dimension: 8192, bytes: 128 * 1024 * 1024 }), { width: 8000, height: 4000 });
+  assert.throws(() => initialCanvasCapacity(5000, 1, 2, true), /dimension/);
+  assert.throws(() => policy.next(10000, 10000, 1, 1, 0), /admission/);
+});
 
 test('browser file grants isolate owners, bound reads and revoke pending reads', async () => {
   const descriptor = Object.getOwnPropertyDescriptor(globalThis, 'document');

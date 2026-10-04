@@ -1053,11 +1053,21 @@ public class OffsetLayer : ContainerLayer
 
     internal virtual Scene _createSceneForImage(Rect bounds, double pixelRatio = 1.0)
     {
-        var builder = new SceneBuilder();
+        if (!double.IsFinite(pixelRatio) || pixelRatio <= 0 || !bounds.isFinite || bounds.isEmpty)
+            throw new ArgumentOutOfRangeException(nameof(pixelRatio));
+        var viewId = engineLayer?.ownerViewId is > 0 ? engineLayer.ownerViewId
+            : PlatformDispatcher.instance.implicitView?.viewId
+                ?? throw new InvalidOperationException("Snapshot requires an unambiguous live layer owner.");
+        var builder = new SceneBuilder(viewId);
         var transform = Matrix4.diagonal3Values(pixelRatio, pixelRatio, 1);
         transform.translateByDouble(-(bounds.left + offset.dx), -(bounds.top + offset.dy), 0, 1);
-        builder.pushTransform(transform.storage);
-        return buildScene(builder);
+        using var snapshotTransform = builder.pushTransform(transform.storage);
+        updateSubtreeNeedsAddToScene();
+        addToScene(builder);
+        builder.pop();
+        if (subtreeHasCompositionCallbacks) _fireCompositionCallbacks(includeChildren: true);
+        _needsAddToScene = false;
+        return builder.build();
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 

@@ -14,6 +14,8 @@ import shutil
 import signal
 import subprocess
 import threading
+from android_session_ownership import AndroidSessionOwnership
+from android_port_ownership import listener_identity
 
 
 def atomic_json(path, value):
@@ -49,7 +51,7 @@ def select_device(adb, requested):
 
 
 class DeviceSession:
-    def __init__(self, directory, session_id, adb, device, package):
+    def __init__(self, directory, session_id, adb, device, package, ownership=None):
         if not re.fullmatch(r'[A-Za-z0-9-]{1,80}', session_id):
             raise ValueError('Invalid development session ID.')
         if not re.fullmatch(r'[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z][A-Za-z0-9_]*)+', package):
@@ -61,6 +63,16 @@ class DeviceSession:
         self.device_directory = 'files/Doroti.Dev/' + session_id
         self.runtime = None
         self.delivered = None
+        self.ownership = ownership
+        self.process_start = None
+        self.port_identity = None
+        self.port = None
+
+    def process_identity(self, pid):
+        result = self.shell('exec-out', 'run-as', self.package, 'cat', '/proc/' + str(pid) + '/stat')
+        if result.returncode: return None
+        fields = result.stdout.rsplit(b')', 1)[-1].split()
+        return fields[19] if len(fields) > 19 else None  # field 22, after pid and comm
 
     def shell(self, *arguments, **kwargs):
         return subprocess.run([*self.adb, *arguments], capture_output=True, timeout=5, **kwargs)
@@ -72,6 +84,7 @@ class DeviceSession:
                     'status': status, 'error': error})
 
     def poll(self):
+        if self.ownership is not None and not self.ownership.owns(): return
         try:
             result = self.shell('exec-out', 'run-as', self.package, 'cat', self.device_directory + '/runtime.json')
             if result.returncode:
@@ -91,6 +104,12 @@ class DeviceSession:
                 self.close()
                 return
             self.runtime = runtime
+            if self.ownership is not None: self.process_start = self.process_identity(pid)
+            port_file = self.directory / 'android-hot-reload-port.txt'
+            if self.ownership is not None and port_file.is_file():
+                port = port_file.read_text(encoding='utf-8-sig').strip()
+                if port.isdecimal() and 0 < int(port) < 65536:
+                    self.port = port; self.port_identity = listener_identity(int(port))
             atomic_json(self.directory / 'runtime.json', runtime)
             try:
                 request = json.loads((self.directory / 'request.json').read_text(encoding='utf-8'))
@@ -119,20 +138,32 @@ class DeviceSession:
 
     def stop(self):
         try:
+            if self.ownership is None or not self.ownership.owns(): return
             try:
-                self.shell('shell', 'am', 'force-stop', self.package)
-            except (OSError, subprocess.SubprocessError) as error:
+                if self.runtime is not None and self.process_start is not None:
+                    result = self.shell('exec-out', 'run-as', self.package, 'cat', self.device_directory + '/runtime.json')
+                    current = json.loads(result.stdout) if result.returncode == 0 else {}
+                    processes = self.shell('shell', 'pidof', self.package)
+                    pid = self.runtime['processId']
+                    if (current.get('sessionId') == self.session_id and current.get('runtimeId') == self.runtime['runtimeId']
+                            and current.get('processId') == pid and str(pid).encode() in processes.stdout.split()
+                            and self.process_identity(pid) == self.process_start):
+                        self.shell('shell', 'am', 'force-stop', self.package)
+            except (OSError, ValueError, subprocess.SubprocessError) as error:
                 print(f'Android Stop: {error}', flush=True)
             port_file = self.directory / 'android-hot-reload-port.txt'
             if port_file.exists():
                 port = port_file.read_text(encoding='utf-8-sig').strip()
-                if port.isdecimal() and 0 < int(port) < 65536:
+                current_listener = listener_identity(int(port)) if port.isdecimal() and 0 < int(port) < 65536 else None
+                if port == self.port and self.port_identity is not None and current_listener in (None, self.port_identity):
                     try:
                         self.shell('reverse', '--remove', 'tcp:' + port)
                     except (OSError, subprocess.SubprocessError) as error:
                         print(f'Android USB cleanup: {error}', flush=True)
         finally:
-            self.close()
+            try: self.close()
+            finally:
+                if self.ownership is not None: self.ownership.release()
 
 
 def main():
@@ -182,7 +213,9 @@ def main():
     print(json.dumps(dict(mode='metadata', device=device, profile=profile), indent=2), flush=True)
     if args.inspect:
         return 0
-    session = DeviceSession(args.session_directory, args.session_id, adb, device, profile['ApplicationId'])
+    ownership = AndroidSessionOwnership(Path(__file__).resolve().parents[1] / 'artifacts/development/android-owners',
+        device, profile['ApplicationId'], args.session_id)
+    session = DeviceSession(args.session_directory, args.session_id, adb, device, profile['ApplicationId'], ownership)
     session.close('Waiting for Android SDK build and runtime connection.', 'starting')
     stop = threading.Event()
     for sig in (signal.SIGINT, signal.SIGTERM):

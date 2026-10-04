@@ -76,7 +76,7 @@ dotnet workload restore ./DorotiTestbedApp.iOS.csproj
 Pop-Location
 ```
 
-`workload restore` prepares .NET workloads for the selected SDK. It does not install external tools such as Xcode, Android SDK/JDK, MSVC, or Qt. `doctor` checks shared tools; it does not replace a complete platform build or device launch check.
+`workload restore` prepares .NET workloads for the selected SDK. It does not install external tools such as Xcode, Android SDK/JDK, MSVC, or Qt. `doctor` checks common tools by default; `-App`/`-Platform` select build prerequisites, and `-DoctorProfile dev|validation|release` checks that operation. Required FAIL/PARTIAL exits nonzero. See [doctor v4](docs/doctor.md); prerequisite PASS does not replace build/device acceptance.
 
 See [Testbed run instructions](../samples/DorotiTestbedApp/README.md#material-sample-mode) for platform commands. The `reference/flutter-master` checkout is needed only for explicit Flutter comparisons; prepare it when needed with `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`.
 
@@ -117,7 +117,7 @@ Qt retains CMake dependency checks and copies the selected native library even i
 
 | Command | Purpose |
 | --- | --- |
-| `doctor` | Check required .NET/PowerShell tools and report optional reference checkouts |
+| `doctor` | Report common or selected runner/SDK/profile prerequisites; JSON/Markdown v4 and nonzero FAIL/PARTIAL |
 | `build` | Build `Doroti.Product.slnx` |
 | `build/run/publish -App <path> -Platform <alias>` | Resolve and execute one runner from `doroti-workspace.json` |
 | `native doctor\|build\|open\|add -App <path> -Platform android\|ios\|macos\|maccatalyst` | Inspect, build, locate, or extend the default native bridge workspace |

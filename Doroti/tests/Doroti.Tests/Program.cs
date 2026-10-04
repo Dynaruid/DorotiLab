@@ -5,6 +5,10 @@ using Doroti.Ui;
 
 static void Require(bool value, string message) { if (!value) throw new Exception(message); }
 #if DOROTI_REPO_TESTS
+if (args.FirstOrDefault() == "--full-review-process-child") { ProcessRunnerRegression.Child(args[1]); return; }
+FullReviewRegression.Run();
+ImageReadbackLifetimeRegression.Run();
+ProcessRunnerRegression.Run();
 if (Array.IndexOf(args, "--native-frame-metal-gpu") is var metalGpuIndex && metalGpuIndex >= 0)
 {
     if (metalGpuIndex + 1 >= args.Length || args[metalGpuIndex + 1].StartsWith("--"))

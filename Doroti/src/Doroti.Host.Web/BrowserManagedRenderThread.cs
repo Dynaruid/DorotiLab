@@ -9,6 +9,8 @@ namespace Doroti.Host.Web;
 [SupportedOSPlatform("browser")]
 public static partial class BrowserManagedRenderThread
 {
+    private static readonly object Gate = new();
+    private static readonly Dictionary<string, CancellationTokenSource> Sessions = [];
     // JSWebWorker is experimental and omitted from the ordinary browser reference
     // assembly. The runtime explicitly supplies RunAsyncVoid for reflection callers.
     // Pin this boundary to the .NET 10 contract; never replace it with Task.Run,
@@ -21,6 +23,25 @@ public static partial class BrowserManagedRenderThread
     [JSExport]
     public static Task StartAsync(string moduleUrl, string sessionToken)
     {
+        lock (Gate)
+        {
+            if (Sessions.ContainsKey(sessionToken)) throw new InvalidOperationException("Duplicate render role token.");
+            var cancellation = new CancellationTokenSource();
+            Sessions.Add(sessionToken, cancellation);
+            return StartCore(moduleUrl, sessionToken, cancellation);
+        }
+    }
+
+    [JSExport]
+    public static Task CancelAsync(string sessionToken)
+    {
+        lock (Gate) return Sessions.TryGetValue(sessionToken, out var source) ? source.CancelAsync() : Task.CompletedTask;
+    }
+
+    private static async Task StartCore(string moduleUrl, string sessionToken, CancellationTokenSource cancellation)
+    {
+        try
+        {
         var worker =
             typeof(JSHost).Assembly.GetType("System.Runtime.InteropServices.JavaScript.JSWebWorker")
             ?? throw new PlatformNotSupportedException(
@@ -33,10 +54,13 @@ public static partial class BrowserManagedRenderThread
             );
         Func<Task> body = async () =>
         {
-            using var module = await JSHost.ImportAsync("doroti-managed-render-thread", moduleUrl);
-            await RunRole(sessionToken);
+            using var module = await JSHost.ImportAsync("doroti-managed-render-thread", moduleUrl, cancellation.Token);
+            cancellation.Token.ThrowIfCancellationRequested();
+            await RunRole(sessionToken).WaitAsync(cancellation.Token);
         };
-        return (Task)start.Invoke(null, [body, CancellationToken.None])!;
+        await (Task)start.Invoke(null, [body, cancellation.Token])!;
+        }
+        finally { lock (Gate) { Sessions.Remove(sessionToken); cancellation.Dispose(); } }
     }
 
     [JSImport("startSharedRuntimeRole", "doroti-managed-render-thread")]

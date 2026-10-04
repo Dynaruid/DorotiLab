@@ -350,6 +350,7 @@ public static unsafe partial class DorotiQtRunner
                 .Register<IFontHostCapability>(DorotiCapabilityIds.GraphicsFont, renderer)
                 .Register<ITextureHostCapability>(DorotiCapabilityIds.GraphicsTexture, renderer)
                 .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, renderer)
+            .Register<ISceneRasterizationHostCapability>(DorotiCapabilityIds.GraphicsSceneSnapshot, renderer)
                 .Register<ISemanticsHostCapability>(
                     DorotiCapabilityIds.AccessibilitySemantics,
                     renderer

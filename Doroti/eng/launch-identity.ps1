@@ -1,3 +1,4 @@
+function Get-DorotiDotnetCommand { if ($DotnetPath) { $DotnetPath } else { "dotnet" } }
 # Resolve once before choosing mode-specific caches and launch identities.
 function Resolve-DorotiCompilationMode([string] $Platform, [string] $Configuration, [string] $RequestedMode, [string] $Rid) {
     if ($RequestedMode) { return $RequestedMode }
@@ -67,7 +68,7 @@ function Get-DorotiEvaluatedInputFiles([string[]] $Projects, [string] $Configura
                 "-p:CustomAfterMicrosoftCommonTargets=$collector", '-getTargetResult:DorotiCollectLaunchInputs')
             if ($Rid) { $arguments += "-p:RuntimeIdentifier=$Rid" }
             $arguments += Get-DorotiCompilationArguments $CompilationMode $CompilationArtifacts
-            $json = & dotnet @arguments
+            $json = & (Get-DorotiDotnetCommand) @arguments
             if ($LASTEXITCODE -ne 0) { throw "Cannot establish evaluated build inputs: $project" }
             $result = ($json -join "`n" | ConvertFrom-Json -Depth 100).TargetResults.DorotiCollectLaunchInputs
             if ($result.Result -ne 'Success') { throw "Build input discovery failed: $project" }
@@ -90,7 +91,7 @@ function Get-DorotiDependencyIdentity([string] $Runner, [string] $Configuration,
     Push-Location $WorkingDirectory
     try {
         $arguments += Get-DorotiCompilationArguments $CompilationMode $CompilationArtifacts
-        $json = & dotnet @arguments
+        $json = & (Get-DorotiDotnetCommand) @arguments
         if ($LASTEXITCODE -ne 0) { throw 'Cannot establish restored dependency identity. Restore/build before using -NoBuild.' }
         $result = ($json -join "`n" | ConvertFrom-Json -Depth 100).TargetResults.DorotiCollectLaunchDependencies
         if ($result.Result -ne 'Success') { throw 'Dependency discovery failed.' }
@@ -114,7 +115,8 @@ function Test-DorotiDependencyRebuild($State, [string] $Dependencies, [string] $
 function Get-DorotiToolchainIdentity([string] $WorkingDirectory) {
     Push-Location $WorkingDirectory
     try {
-        $info = (& dotnet --info 2>&1 | Out-String)
+        $selectedDotnet = if ($DotnetPath) { $DotnetPath } else { 'dotnet' }
+        $info = (& $selectedDotnet --info 2>&1 | Out-String)
         if ($LASTEXITCODE -ne 0) { throw 'Cannot establish dotnet SDK/workload identity.' }
         if ($IsMacOS) {
             $info += (& xcode-select -p 2>&1 | Out-String)
@@ -123,7 +125,7 @@ function Get-DorotiToolchainIdentity([string] $WorkingDirectory) {
             if ($LASTEXITCODE -ne 0) { throw 'Cannot establish Xcode version.' }
         }
         # Tool paths and bytes catch replacement at the same SDK/native-tool version.
-        $tools = foreach ($name in @('dotnet','node','cmake','ninja','java','clang','cl','msbuild')) {
+        $tools = foreach ($name in @($selectedDotnet,'node','cmake','ninja','java','clang','cl','msbuild')) {
             $command = Get-Command $name -ErrorAction SilentlyContinue | Select-Object -First 1
             if ($command -and (Test-Path -LiteralPath $command.Source -PathType Leaf)) { Get-Item -LiteralPath $command.Source -Force }
         }
@@ -138,7 +140,7 @@ function Get-DorotiArtifactIdentity([string] $Runner, [string] $Configuration, [
     Push-Location $WorkingDirectory
     try {
         $arguments += Get-DorotiCompilationArguments $CompilationMode $CompilationArtifacts
-        $json = & dotnet @arguments
+        $json = & (Get-DorotiDotnetCommand) @arguments
         if ($LASTEXITCODE -ne 0) { throw 'Cannot evaluate artifact identity.' }
     } finally { Pop-Location }
     $properties = ($json -join "`n" | ConvertFrom-Json).Properties

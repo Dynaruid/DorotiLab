@@ -143,88 +143,55 @@ public static class DartAsyncRuntime
         }
         else
         {
-            scheduler(callback);
+            scheduler.TryPost(callback);
         }
     }
 
-    internal static Action<Action>? captureMicrotaskScheduler()
-    {
-        var dispatcher = DorotiExecutionContext.CaptureDispatcher();
-        return dispatcher is null ? null : callback => dispatcher.TryPost(callback);
-    }
+    internal static DorotiCallbackDispatcher? captureMicrotaskScheduler() =>
+        DorotiExecutionContext.CaptureDispatcher();
 
-    internal static void dispatchCaptured(Action<Action>? scheduler, Action callback)
+    internal static void dispatchCaptured(DorotiCallbackDispatcher? scheduler, Action callback)
     {
         if (scheduler is null)
-        {
             DartRuntimePrimitives.ObserveTask(Task.Run(callback), "captured async callback");
-            return;
-        }
-        scheduler(callback);
+        else
+            scheduler.TryPost(callback);
     }
 
-    internal static Task dispatchCapturedAsync(Action<Action>? scheduler, Action callback)
-    {
-        if (scheduler is null)
-        {
-            return Task.Run(callback);
-        }
+    internal static Task dispatchCapturedAsync(DorotiCallbackDispatcher? scheduler, Action callback) =>
+        scheduler is null ? Task.Run(callback) : scheduler.PostAsync(callback);
 
-        var completion = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously
-        );
-        try
+    internal static Task<T> dispatchCapturedAsync<T>(DorotiCallbackDispatcher? scheduler, Func<T> callback) =>
+        scheduler is null ? Task.Run(callback) : scheduler.PostAsync(callback);
+
+    internal static Task awaitCaptured(Task task, DorotiCallbackDispatcher? scheduler) =>
+        scheduler is null ? task : task.WaitAsync(scheduler.Lifetime);
+
+    internal static Task<T> awaitCaptured<T>(Task<T> task, DorotiCallbackDispatcher? scheduler) =>
+        scheduler is null ? task : task.WaitAsync(scheduler.Lifetime);
+
+    internal static async Task<T> recoverCaptured<T>(DorotiCallbackDispatcher? scheduler,
+        Delegate handler, Exception error, Func<object, bool>? test = null)
+    {
+        var recovery = await dispatchCapturedAsync(scheduler, () =>
         {
-            scheduler(() =>
-            {
-                try
-                {
-                    callback();
-                    completion.TrySetResult();
-                }
-                catch (Exception exception)
-                {
-                    completion.TrySetException(exception);
-                }
-            });
-        }
-        catch (Exception exception)
-        {
-            completion.TrySetException(exception);
-        }
-        return completion.Task;
+            if (!(test?.Invoke(error) ?? true))
+                System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(error).Throw();
+            return DartErrorHandlers.Recover<T>(handler, error);
+        }).ConfigureAwait(false);
+        return await awaitCaptured(recovery, scheduler).ConfigureAwait(false);
     }
 
-    internal static Task<T> dispatchCapturedAsync<T>(Action<Action>? scheduler, Func<T> callback)
+    internal static async Task observeCaptured(DorotiCallbackDispatcher? scheduler,
+        Delegate handler, Exception error, Func<object, bool>? test = null)
     {
-        ArgumentNullException.ThrowIfNull(callback);
-        if (scheduler is null)
+        var recovery = await dispatchCapturedAsync(scheduler, () =>
         {
-            return Task.Run(callback);
-        }
-
-        var completion = new TaskCompletionSource<T>(
-            TaskCreationOptions.RunContinuationsAsynchronously
-        );
-        try
-        {
-            scheduler(() =>
-            {
-                try
-                {
-                    completion.TrySetResult(callback());
-                }
-                catch (Exception exception)
-                {
-                    completion.TrySetException(exception);
-                }
-            });
-        }
-        catch (Exception exception)
-        {
-            completion.TrySetException(exception);
-        }
-        return completion.Task;
+            if (!(test?.Invoke(error) ?? true))
+                System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(error).Throw();
+            return DartErrorHandlers.Observe(handler, error);
+        }).ConfigureAwait(false);
+        await awaitCaptured(recovery, scheduler).ConfigureAwait(false);
     }
 
     public static void scheduleMicrotask(Action<Duration?> callback) =>
@@ -455,7 +422,7 @@ public class Future<T> : Future
     }
 
     public new Future<T> catchError(Delegate onError, Func<object, bool>? test = null) =>
-        fromTask(CatchAsync(_typedTask, onError, test));
+        fromTask(CatchAsync(_typedTask, onError, test, DartAsyncRuntime.captureMicrotaskScheduler()));
 
     public new Future<T> catchError(
         Func<object, System.Diagnostics.StackTrace?, Future> onError,
@@ -508,10 +475,10 @@ public class Future<T> : Future
     private static async Task<TResult> ThenAsync<TResult>(
         Task<T> task,
         Func<T, TResult> callback,
-        Action<Action>? scheduler
+        DorotiCallbackDispatcher? scheduler
     )
     {
-        var value = await task.ConfigureAwait(false);
+        var value = await DartAsyncRuntime.awaitCaptured(task, scheduler).ConfigureAwait(false);
         return await DartAsyncRuntime
             .dispatchCapturedAsync(scheduler, () => callback(value))
             .ConfigureAwait(false);
@@ -521,20 +488,20 @@ public class Future<T> : Future
         Task<T> task,
         Func<T, Future<TResult>> callback,
         Delegate? onError,
-        Action<Action>? scheduler
+        DorotiCallbackDispatcher? scheduler
     )
     {
         try
         {
-            var value = await task.ConfigureAwait(false);
+            var value = await DartAsyncRuntime.awaitCaptured(task, scheduler).ConfigureAwait(false);
             var next = await DartAsyncRuntime
                 .dispatchCapturedAsync(scheduler, () => callback(value))
                 .ConfigureAwait(false);
-            return await next.asTask().ConfigureAwait(false);
+            return await DartAsyncRuntime.awaitCaptured(next.asTask(), scheduler).ConfigureAwait(false);
         }
         catch (Exception error) when (onError is not null)
         {
-            return await DartErrorHandlers.Recover<TResult>(onError, error).ConfigureAwait(false);
+            return await DartAsyncRuntime.recoverCaptured<TResult>(scheduler, onError, error).ConfigureAwait(false);
         }
     }
 
@@ -542,25 +509,25 @@ public class Future<T> : Future
         Task<T> task,
         Func<T, object?> callback,
         Delegate? onError,
-        Action<Action>? scheduler
+        DorotiCallbackDispatcher? scheduler
     )
     {
         try
         {
-            var value = await task.ConfigureAwait(false);
+            var value = await DartAsyncRuntime.awaitCaptured(task, scheduler).ConfigureAwait(false);
             var result = await DartAsyncRuntime
                 .dispatchCapturedAsync(scheduler, () => callback(value))
                 .ConfigureAwait(false);
             return result switch
             {
-                Future<TResult> future => await future,
+                Future<TResult> future => await DartAsyncRuntime.awaitCaptured(future.asTask(), scheduler).ConfigureAwait(false),
                 TResult typedResult => typedResult,
                 _ => default!,
             };
         }
         catch (Exception error) when (onError is not null)
         {
-            return await DartErrorHandlers.Recover<TResult>(onError, error).ConfigureAwait(false);
+            return await DartAsyncRuntime.recoverCaptured<TResult>(scheduler, onError, error).ConfigureAwait(false);
         }
     }
 
@@ -568,39 +535,40 @@ public class Future<T> : Future
         Task<T> task,
         Action<T> callback,
         Delegate? onError,
-        Action<Action>? scheduler
+        DorotiCallbackDispatcher? scheduler
     )
     {
         try
         {
-            var value = await task.ConfigureAwait(false);
+            var value = await DartAsyncRuntime.awaitCaptured(task, scheduler).ConfigureAwait(false);
             await DartAsyncRuntime
                 .dispatchCapturedAsync(scheduler, () => callback(value))
                 .ConfigureAwait(false);
         }
         catch (Exception error) when (onError is not null)
         {
-            await DartAsyncRuntime.InvokeErrorHandlerAsync(onError!, error);
+            await DartAsyncRuntime.observeCaptured(scheduler, onError!, error);
         }
     }
 
     private static async Task<T> CatchAsync(
         Task<T> task,
         Delegate onError,
-        Func<object, bool>? test
+        Func<object, bool>? test,
+        DorotiCallbackDispatcher? scheduler
     )
     {
         try
         {
-            return await task.ConfigureAwait(false);
+            return await DartAsyncRuntime.awaitCaptured(task, scheduler).ConfigureAwait(false);
         }
-        catch (Exception error) when (test?.Invoke(error) ?? true)
+        catch (Exception error)
         {
-            return await DartErrorHandlers.Recover<T>(onError, error).ConfigureAwait(false);
+            return await DartAsyncRuntime.recoverCaptured<T>(scheduler, onError, error, test).ConfigureAwait(false);
         }
     }
 
-    private static async Task<bool> CompletesBeforeDeadlineAsync(Task<T> task, Duration limit)
+    private static async Task<bool> CompletesBeforeDeadlineAsync(Task<T> task, Duration limit, DorotiCallbackDispatcher? scheduler)
     {
         using var cancellation = new CancellationTokenSource();
         var deadline = Task.Delay(
@@ -608,7 +576,9 @@ public class Future<T> : Future
             DartAsyncRuntime.timeProvider,
             cancellation.Token
         );
-        var completed = await Task.WhenAny(task, deadline).ConfigureAwait(false);
+        Task completed;
+        try { completed = await DartAsyncRuntime.awaitCaptured(Task.WhenAny(task, deadline), scheduler).ConfigureAwait(false); }
+        finally { await cancellation.CancelAsync().ConfigureAwait(false); }
         if (completed != task)
         {
             return false;
@@ -621,9 +591,9 @@ public class Future<T> : Future
     private static async Task<T> TimeoutAsync(Task<T> task, Duration limit, Func<Future>? onTimeout)
     {
         var scheduler = DartAsyncRuntime.captureMicrotaskScheduler();
-        if (await CompletesBeforeDeadlineAsync(task, limit).ConfigureAwait(false))
+        if (await CompletesBeforeDeadlineAsync(task, limit, scheduler).ConfigureAwait(false))
         {
-            return await task.ConfigureAwait(false);
+            return await DartAsyncRuntime.awaitCaptured(task, scheduler).ConfigureAwait(false);
         }
 
         if (onTimeout is null)
@@ -636,10 +606,10 @@ public class Future<T> : Future
             .ConfigureAwait(false);
         if (recovery is Future<T> typedRecovery)
         {
-            return await typedRecovery;
+            return await DartAsyncRuntime.awaitCaptured(typedRecovery.asTask(), scheduler).ConfigureAwait(false);
         }
 
-        await recovery;
+        await DartAsyncRuntime.awaitCaptured(recovery.asTask(), scheduler).ConfigureAwait(false);
         return default!;
     }
 
@@ -650,9 +620,9 @@ public class Future<T> : Future
     )
     {
         var scheduler = DartAsyncRuntime.captureMicrotaskScheduler();
-        if (await CompletesBeforeDeadlineAsync(task, limit).ConfigureAwait(false))
+        if (await CompletesBeforeDeadlineAsync(task, limit, scheduler).ConfigureAwait(false))
         {
-            return await task.ConfigureAwait(false);
+            return await DartAsyncRuntime.awaitCaptured(task, scheduler).ConfigureAwait(false);
         }
 
         if (onTimeout is null)
@@ -665,7 +635,7 @@ public class Future<T> : Future
             .ConfigureAwait(false);
         return result switch
         {
-            Future<T> future => await future,
+            Future<T> future => await DartAsyncRuntime.awaitCaptured(future.asTask(), scheduler).ConfigureAwait(false),
             T value => value,
             _ => default!,
         };
@@ -674,12 +644,12 @@ public class Future<T> : Future
     private static async Task<T> WhenCompleteAsync(
         Task<T> task,
         Func<object> action,
-        Action<Action>? scheduler
+        DorotiCallbackDispatcher? scheduler
     )
     {
         try
         {
-            return await task.ConfigureAwait(false);
+            return await DartAsyncRuntime.awaitCaptured(task, scheduler).ConfigureAwait(false);
         }
         finally
         {
@@ -687,9 +657,9 @@ public class Future<T> : Future
             // loop. A .NET Task continuation otherwise runs on the ThreadPool,
             // outside PlatformDispatcher scope, which stops repeating tickers
             // such as EditableText's iOS caret animation after one cycle.
-            await DartAsyncRuntime
-                .dispatchCapturedAsync(scheduler, () => _ = action())
-                .ConfigureAwait(false);
+            var result = await DartAsyncRuntime.dispatchCapturedAsync(scheduler, action).ConfigureAwait(false);
+            if (result is Future future) await DartAsyncRuntime.awaitCaptured(future.asTask(), scheduler).ConfigureAwait(false);
+            else if (result is Task completion) await DartAsyncRuntime.awaitCaptured(completion, scheduler).ConfigureAwait(false);
         }
     }
 }
@@ -737,11 +707,11 @@ public class Future
         );
     }
 
-    private static async Task WhenCompleteAsync(Task task, Action action, Action<Action>? scheduler)
+    private static async Task WhenCompleteAsync(Task task, Action action, DorotiCallbackDispatcher? scheduler)
     {
         try
         {
-            await task.ConfigureAwait(false);
+            await DartAsyncRuntime.awaitCaptured(task, scheduler).ConfigureAwait(false);
         }
         finally
         {
@@ -796,7 +766,7 @@ public class Future
     ) => then(onValue, (Delegate)onError);
 
     public Future catchError(Delegate onError, Func<object, bool>? test = null) =>
-        fromTask(CatchAsync(_task, onError, test));
+        fromTask(CatchAsync(_task, onError, test, DartAsyncRuntime.captureMicrotaskScheduler()));
 
     public Future catchError(
         Func<object, System.Diagnostics.StackTrace?, Future> onError,
@@ -820,19 +790,19 @@ public class Future
         Task<object?> task,
         Action<object> onValue,
         Delegate? onError,
-        Action<Action>? scheduler
+        DorotiCallbackDispatcher? scheduler
     )
     {
         try
         {
-            var value = await task.ConfigureAwait(false);
+            var value = await DartAsyncRuntime.awaitCaptured(task, scheduler).ConfigureAwait(false);
             await DartAsyncRuntime
                 .dispatchCapturedAsync(scheduler, () => onValue(value!))
                 .ConfigureAwait(false);
         }
         catch (Exception error) when (onError is not null)
         {
-            await DartAsyncRuntime.InvokeErrorHandlerAsync(onError, error);
+            await DartAsyncRuntime.observeCaptured(scheduler, onError, error);
         }
     }
 
@@ -840,37 +810,37 @@ public class Future
         Task<object?> task,
         Func<object?, object?> onValue,
         Delegate? onError,
-        Action<Action>? scheduler
+        DorotiCallbackDispatcher? scheduler
     )
     {
         try
         {
-            var value = await task.ConfigureAwait(false);
+            var value = await DartAsyncRuntime.awaitCaptured(task, scheduler).ConfigureAwait(false);
             var result = await DartAsyncRuntime
                 .dispatchCapturedAsync(scheduler, () => onValue(value))
                 .ConfigureAwait(false);
             return result switch
             {
-                Future<TResult> future => await future,
+                Future<TResult> future => await DartAsyncRuntime.awaitCaptured(future.asTask(), scheduler).ConfigureAwait(false),
                 TResult typedResult => typedResult,
                 _ => default!,
             };
         }
         catch (Exception error) when (onError is not null)
         {
-            return await DartErrorHandlers.Recover<TResult>(onError, error).ConfigureAwait(false);
+            return await DartAsyncRuntime.recoverCaptured<TResult>(scheduler, onError, error).ConfigureAwait(false);
         }
     }
 
-    private static async Task CatchAsync(Task task, Delegate onError, Func<object, bool>? test)
+    private static async Task CatchAsync(Task task, Delegate onError, Func<object, bool>? test, DorotiCallbackDispatcher? scheduler)
     {
         try
         {
-            await task.ConfigureAwait(false);
+            await DartAsyncRuntime.awaitCaptured(task, scheduler).ConfigureAwait(false);
         }
-        catch (Exception error) when (test?.Invoke(error) ?? true)
+        catch (Exception error)
         {
-            await DartErrorHandlers.Observe(onError, error).ConfigureAwait(false);
+            await DartAsyncRuntime.observeCaptured(scheduler, onError, error, test).ConfigureAwait(false);
         }
     }
 }

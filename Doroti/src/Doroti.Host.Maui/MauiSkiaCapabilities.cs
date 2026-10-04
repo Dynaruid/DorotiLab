@@ -12,6 +12,7 @@ internal sealed class MauiSkiaCapabilities
         IParagraphHostCapability,
         IFontHostCapability,
         IImageHostCapability,
+        ISceneRasterizationHostCapability,
         ITextureHostCapability,
         ISemanticsHostCapability,
         IDisposable
@@ -379,6 +380,11 @@ internal sealed class MauiSkiaCapabilities
             invocation,
             cancellationToken
         );
+
+    public UiImage RasterizeScene(Scene scene, int width, int height, DorotiUiInvocation invocation) =>
+        _renderer.RasterizeScene(scene, width, height, invocation);
+    public ValueTask<UiImage> RasterizeSceneAsync(Scene scene, int width, int height, DorotiUiInvocation invocation,
+        CancellationToken cancellationToken = default) => _renderer.RasterizeSceneAsync(scene, width, height, invocation, cancellationToken);
 
     public ValueTask<UiImage> RasterizeAsync(
         Picture picture,

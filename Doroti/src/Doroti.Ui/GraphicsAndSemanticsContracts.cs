@@ -542,6 +542,7 @@ public sealed record DorotiSceneSubmission(
 public sealed class Scene : IDisposable
 {
     private int _disposed;
+    private readonly PlatformDispatcher? _owner = PlatformDispatcher.current;
 
     public Scene(ulong viewId, IReadOnlyList<SceneCommand> commands)
         : this(viewId, commands?.ToArray() ?? throw new ArgumentNullException(nameof(commands))) { }
@@ -561,13 +562,29 @@ public sealed class Scene : IDisposable
 
     public bool debugDisposed => Volatile.Read(ref _disposed) != 0;
 
-    public Future<Image> toImage(long width, long height) =>
-        Future<Image>.value(toImageSync(width, height));
+    public async Future<Image> toImage(long width, long height)
+    {
+        var capability = SnapshotCapability(width, height, out var invocation);
+        return await capability.RasterizeSceneAsync(this, checked((int)width), checked((int)height), invocation);
+    }
 
     public Image toImageSync(long width, long height)
     {
+        var capability = SnapshotCapability(width, height, out var invocation);
+        return capability.RasterizeScene(this, checked((int)width), checked((int)height), invocation);
+    }
+
+    private ISceneRasterizationHostCapability SnapshotCapability(long width, long height, out DorotiUiInvocation invocation)
+    {
         ObjectDisposedException.ThrowIf(debugDisposed, this);
-        return new Image(viewId, checked((int)width), checked((int)height));
+        if (width <= 0 || height <= 0 || width > int.MaxValue || height > int.MaxValue || width > (64L * 1024 * 1024 / 4) / height)
+            throw new ArgumentOutOfRangeException(nameof(width), "Scene snapshot exceeds the 64 MiB RGBA admission limit.");
+        invocation = DorotiUiInvocation.Managed("Doroti.Ui#Scene.toImage");
+        if (_owner is not null && !ReferenceEquals(_owner, PlatformDispatcher.instance))
+            throw new DorotiCapabilityException(DorotiCapabilityIds.GraphicsSceneSnapshot, viewId, invocation, "scene belongs to another dispatcher");
+        var view = PlatformDispatcher.instance.views.SingleOrDefault(view => view.viewId == viewId)
+            ?? throw new DorotiCapabilityException(DorotiCapabilityIds.GraphicsSceneSnapshot, viewId, invocation, "scene owner is closed or belongs to another dispatcher");
+        return view.RequireCapability<ISceneRasterizationHostCapability>(DorotiCapabilityIds.GraphicsSceneSnapshot, invocation);
     }
 
     public void Dispose() => Interlocked.Exchange(ref _disposed, 1);
@@ -872,6 +889,7 @@ internal sealed record ImageFilterSnapshot(
 
 internal interface IDorotiImageHandle
 {
+    object StorageIdentity => this;
     IDorotiImageHandle Clone();
 
     ValueTask<ByteData> ReadBytesAsync(ImageByteFormat format) =>
@@ -908,6 +926,7 @@ public class EngineLayer : IDisposable
     internal string? Operation { get; set; }
     internal IReadOnlyList<SceneCommand>? RetainedCommands { get; set; }
     internal ulong OwnerViewId { get; set; }
+    public ulong ownerViewId => OwnerViewId;
     internal long Generation { get; set; }
     public long debugGeneration => Generation;
     public bool debugDisposed => Volatile.Read(ref _disposed) != 0;
@@ -2509,6 +2528,14 @@ public sealed class Paragraph : IDisposable
     }
 }
 
+/// <summary>Owned scene pixels; sync support is explicit and never implemented by blocking an async GPU operation.</summary>
+public interface ISceneRasterizationHostCapability
+{
+    ValueTask<Image> RasterizeSceneAsync(Scene scene, int width, int height, DorotiUiInvocation invocation, CancellationToken cancellationToken = default);
+    Image RasterizeScene(Scene scene, int width, int height, DorotiUiInvocation invocation) =>
+        throw new DorotiCapabilityException(DorotiCapabilityIds.GraphicsSceneSnapshot, scene.viewId, invocation, "synchronous scene snapshot is unsupported by this renderer");
+}
+
 public interface IImageHostCapability
 {
     ValueTask<Image> DecodeAsync(
@@ -2644,7 +2671,8 @@ public static class ImageDecodeSizing
 
 public sealed class Image : IDisposable
 {
-    private readonly Action? _release;
+    private readonly object _gate = new();
+    private SharedRelease _storage;
     private int _disposed;
 
     internal object? HostHandle { get; init; }
@@ -2654,7 +2682,7 @@ public sealed class Image : IDisposable
         this.viewId = viewId;
         this.width = width;
         this.height = height;
-        _release = release;
+        _storage = new(release);
     }
 
     public ulong viewId { get; }
@@ -2667,33 +2695,41 @@ public sealed class Image : IDisposable
 
     public Image clone()
     {
-        ObjectDisposedException.ThrowIf(debugDisposed, this);
-        if (HostHandle is IDorotiImageHandle handle)
+        lock (_gate)
         {
-            var clone = handle.Clone();
-            return new(viewId, width, height, clone.Release) { HostHandle = clone };
+            ObjectDisposedException.ThrowIf(debugDisposed, this);
+            if (HostHandle is IDorotiImageHandle handle)
+            {
+                var clone = handle.Clone();
+                return new(viewId, width, height, clone.Release) { HostHandle = clone };
+            }
+            return new(viewId, width, height) { HostHandle = HostHandle, _storage = _storage.Retain() };
         }
-        return new(viewId, width, height, _release) { HostHandle = HostHandle };
     }
 
     public bool isCloneOf(Image other) =>
-        ReferenceEquals(this, other)
-        || (viewId == other.viewId && width == other.width && height == other.height);
+        other is not null && ReferenceEquals(StorageIdentity, other.StorageIdentity);
+
+    private object StorageIdentity => (HostHandle as IDorotiImageHandle)?.StorageIdentity ?? _storage;
 
     public static IReadOnlyList<string> debugGetOpenHandleStackTraces() => [];
 
     public async Future<ByteData?> toByteData(ImageByteFormat format = ImageByteFormat.rawRgba)
     {
-        ObjectDisposedException.ThrowIf(debugDisposed, this);
-        if (!Enum.IsDefined(format))
+        IDorotiImageHandle? lease;
+        lock (_gate)
         {
-            throw new ArgumentOutOfRangeException(nameof(format));
-        }
+            ObjectDisposedException.ThrowIf(debugDisposed, this);
+            if (!Enum.IsDefined(format))
+            {
+                throw new ArgumentOutOfRangeException(nameof(format));
+            }
 
-        if (HostHandle is IDorotiImageHandle handle)
+            lease = (HostHandle as IDorotiImageHandle)?.Clone();
+        }
+        if (lease is not null)
         {
             // Pin storage across an asynchronous host read even if the caller releases this handle.
-            var lease = handle.Clone();
             try
             {
                 return await lease.ReadBytesAsync(format);
@@ -2715,10 +2751,19 @@ public sealed class Image : IDisposable
 
     public void Dispose()
     {
-        if (Interlocked.Exchange(ref _disposed, 1) == 0)
+        lock (_gate)
         {
-            _release?.Invoke();
+            if (_disposed != 0) return;
+            Volatile.Write(ref _disposed, 1);
         }
+        _storage.Release();
+    }
+
+    private sealed class SharedRelease(Action? release)
+    {
+        private int _references = 1;
+        public SharedRelease Retain() { Interlocked.Increment(ref _references); return this; }
+        public void Release() { if (Interlocked.Decrement(ref _references) == 0) release?.Invoke(); }
     }
 }
 

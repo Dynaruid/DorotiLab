@@ -3,6 +3,22 @@ import { test } from 'node:test';
 import { WorkerRequestMailbox } from '../src/Doroti.Host.Web/Web/doroti.web.requests.ts';
 import { PlatformFrameStager } from '../src/Doroti.Host.Web/Web/doroti.web.platform-frames.ts';
 import type { CompositionPacket, RasterPacket } from '../src/Doroti.Host.Web/Web/doroti.web.composition.ts';
+import { WorkerStartupLifetime, cleanupAll } from '../src/Doroti.Host.Web/Web/doroti.web.lifetime.ts';
+
+test('startup cancellation terminates awaiting caller and retires every late resource exactly once', async () => {
+  for (const stage of ['runtime-create','exports','gpu-initialize','surface-initialize','application-start','texture-initialize']) {
+    const lifetime = new WorkerStartupLifetime();
+    const pending = deferred<number>(); let disposed = 0;
+    const waiting = lifetime.wait(pending.promise, () => { disposed++; });
+    const rejected = assert.rejects(waiting, /closed during startup/);
+    lifetime.close(); lifetime.close(); await rejected;
+    pending.resolve(1); await tick(); assert.equal(disposed, 1, stage);
+    assert.throws(() => lifetime.check(), /closed/);
+  }
+  let second = 0;
+  const errors = await cleanupAll([() => { throw new Error('first'); }, () => { second++; }, () => { throw new Error('last'); }]);
+  assert.equal(second, 1); assert.equal(errors.length, 2);
+});
 
 const errors = { full: () => new Error('full'), closed: () => new Error('closed'), timeout: () => new Error('timeout') };
 const tick = () => new Promise<void>(resolve => setImmediate(resolve));

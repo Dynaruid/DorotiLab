@@ -1,4 +1,58 @@
 <Project>
+  <!-- The same guard runs immediately before every destructive operation, even
+       for Clean before restore. Never follow a link in an output ancestor. -->
+  <UsingTask TaskName="DorotiValidateGeneratedDirectory" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <ProjectDirectory ParameterType="System.String" Required="true" />
+      <IntermediateRoot ParameterType="System.String" Required="true" />
+      <OutputRoot ParameterType="System.String" Required="true" />
+      <ValidatedOutput ParameterType="System.String" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.IO" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+        try {
+          var comparison = Path.DirectorySeparatorChar == '\\' ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+          var root = Path.GetFullPath(Path.IsPathRooted(IntermediateRoot) ? IntermediateRoot : Path.Combine(ProjectDirectory, IntermediateRoot)).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+          var output = Path.GetFullPath(Path.IsPathRooted(OutputRoot) ? OutputRoot : Path.Combine(ProjectDirectory, OutputRoot)).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+          if (string.IsNullOrEmpty(root) || string.Equals(root, Path.GetPathRoot(root).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar), comparison))
+            throw new InvalidOperationException("A filesystem root is not an intermediate directory.");
+          if (!output.StartsWith(root + Path.DirectorySeparatorChar, comparison))
+            throw new InvalidOperationException("Output must be a strict child of the intermediate root.");
+          foreach (var path in new [] { root, output }) {
+            for (var current = path; !string.IsNullOrEmpty(current); current = Path.GetDirectoryName(current)) {
+              // GetAttributes also detects dangling links; missing future directories are allowed.
+              try {
+                if ((File.GetAttributes(current) & FileAttributes.ReparsePoint) != 0)
+                  throw new InvalidOperationException("Linked output ancestor is forbidden: " + current);
+              } catch (FileNotFoundException) { } catch (DirectoryNotFoundException) { }
+            }
+          }
+          if (Directory.Exists(output)) {
+            var pending = new System.Collections.Generic.Stack<string>(); pending.Push(output);
+            while (pending.Count != 0) {
+              foreach (var entry in Directory.EnumerateFileSystemEntries(pending.Pop())) {
+                var attributes = File.GetAttributes(entry);
+                if ((attributes & FileAttributes.ReparsePoint) != 0)
+                  throw new InvalidOperationException("Linked generated output entry is forbidden: " + entry);
+                if ((attributes & FileAttributes.Directory) != 0) pending.Push(entry);
+              }
+            }
+          }
+          ValidatedOutput = output;
+        } catch (Exception error) {
+          Log.LogError("DOROTIWEB014: Unsafe TypeScript output: " + error.Message);
+          return false;
+        }
+      ]]></Code>
+    </Task>
+  </UsingTask>
+  <Target Name="DorotiValidateTypeScriptOutput" Condition="'$(DorotiWebTypeScript)' == 'true'">
+    <DorotiValidateGeneratedDirectory ProjectDirectory="$(MSBuildProjectDirectory)" IntermediateRoot="$(BaseIntermediateOutputPath)" OutputRoot="$(DorotiTypeScriptOutputRoot)">
+      <Output TaskParameter="ValidatedOutput" PropertyName="_DorotiValidatedTypeScriptOutput" />
+    </DorotiValidateGeneratedDirectory>
+  </Target>
   <PropertyGroup Condition="'$(DorotiWebTypeScript)' == 'true'">
     <DorotiTypeScriptCompilerExecutable Condition="'$(DorotiTypeScriptCompilerExecutable)' == ''">$(TscExe)</DorotiTypeScriptCompilerExecutable>
     <TscExe></TscExe>
@@ -20,19 +74,17 @@
     <Error Code="DOROTIWEB011" Condition="!Exists('$(DorotiTypeScriptConfig)')" Text="Doroti Web TypeScript config is missing: $(DorotiTypeScriptConfig)." />
     <Error Code="DOROTIWEB012" Condition="'@(DorotiTypeScriptSource)' == ''" Text="Doroti Web TypeScript source set is empty under $(DorotiTypeScriptSourceRoot)." />
     <Error Code="DOROTIWEB013" Condition="'$(DorotiTypeScriptCompilerExecutable)' == '' or !Exists('$(DorotiTypeScriptCompilerExecutable)')" Text="Doroti Web TypeScript compiler executable is unavailable for this build host: $(DorotiTypeScriptCompilerExecutable)." />
-    <Error Code="DOROTIWEB014" Condition="'$(DorotiTypeScriptOutputRoot)' == '' or !$([System.IO.Path]::GetFullPath('$(DorotiTypeScriptOutputRoot)').StartsWith($([System.IO.Path]::GetFullPath('$(BaseIntermediateOutputPath)')), System.StringComparison.OrdinalIgnoreCase))" Text="Doroti Web TypeScript output must remain under the target intermediate root: $(DorotiTypeScriptOutputRoot)." />
-    <Error Code="DOROTIWEB014" Condition="!$([MSBuild]::NormalizeDirectory('$(DorotiTypeScriptOutputRoot)').StartsWith($([MSBuild]::NormalizeDirectory('$(BaseIntermediateOutputPath)')), System.StringComparison.OrdinalIgnoreCase)) or $([System.String]::Equals($([MSBuild]::NormalizeDirectory('$(DorotiTypeScriptOutputRoot)')), $([MSBuild]::NormalizeDirectory('$(BaseIntermediateOutputPath)')), System.StringComparison.OrdinalIgnoreCase))" Text="Doroti Web TypeScript output must be a child directory of the target intermediate root." />
     <Error Code="DOROTIWEB015" Condition="'$(DorotiTypeScriptTypeRoots)' != '' and !Exists('$(DorotiTypeScriptTypeRoots)')" Text="Doroti Web public TypeScript declarations are unavailable: $(DorotiTypeScriptTypeRoots)." />
   </Target>
 
   <Target Name="DorotiCompileTypeScript"
           Condition="'$(DorotiWebTypeScript)' == 'true'"
-          DependsOnTargets="DorotiValidateTypeScriptToolchain"
+          DependsOnTargets="DorotiValidateTypeScriptOutput;DorotiValidateTypeScriptToolchain"
           BeforeTargets="Compile;ResolveProjectStaticWebAssets;ResolveCurrentProjectStaticWebAssetsInputs">
     <!-- This directory contains only generated TypeScript output. Removed source
          modules must not survive the compile and re-enter static assets/publish. -->
-    <RemoveDir Directories="$(DorotiTypeScriptOutputRoot)" />
-    <MakeDir Directories="$(DorotiTypeScriptOutputRoot)" />
+    <RemoveDir Directories="$(_DorotiValidatedTypeScriptOutput)" />
+    <MakeDir Directories="$(_DorotiValidatedTypeScriptOutput)" />
     <Exec Command="&quot;$(DorotiTypeScriptCompilerExecutable)&quot; --project &quot;$(DorotiTypeScriptConfig)&quot; $(DorotiTypeScriptAdditionalArguments) --listEmittedFiles"
           IgnoreExitCode="true" ConsoleToMSBuild="true">
       <Output TaskParameter="ExitCode" PropertyName="DorotiTypeScriptExitCode" />
@@ -84,8 +136,7 @@
     </DefineStaticWebAssetEndpoints>
   </Target>
 
-  <Target Name="DorotiCleanTypeScript" Condition="'$(DorotiWebTypeScript)' == 'true'" AfterTargets="Clean">
-    <RemoveDir Directories="$(DorotiTypeScriptOutputRoot)"
-               Condition="Exists('$(DorotiTypeScriptOutputRoot)') and $([System.IO.Path]::GetFullPath('$(DorotiTypeScriptOutputRoot)').StartsWith($([System.IO.Path]::GetFullPath('$(BaseIntermediateOutputPath)')), System.StringComparison.OrdinalIgnoreCase))" />
+  <Target Name="DorotiCleanTypeScript" Condition="'$(DorotiWebTypeScript)' == 'true'" DependsOnTargets="DorotiValidateTypeScriptOutput" AfterTargets="Clean">
+    <RemoveDir Directories="$(_DorotiValidatedTypeScriptOutput)" />
   </Target>
 </Project>

@@ -274,26 +274,33 @@ internal class _RenderSnapshotWidget__snapshot_widget : RenderProxyBox
     {
         var offsetLayer = new OffsetLayer();
         var context = new PaintingContext(offsetLayer, Offset.zero & size);
-        base.paint(context, Offset.zero);
-        context.stopRecordingIfNeeded();
-        if ((!Equals(mode, SnapshotMode.forced)) && !offsetLayer.supportsRasterization())
+        try
         {
-            offsetLayer.dispose();
-            if (Equals(mode, SnapshotMode.normal))
+            base.paint(context, Offset.zero);
+            context.stopRecordingIfNeeded();
+            if ((!Equals(mode, SnapshotMode.forced)) && !offsetLayer.supportsRasterization())
             {
-                throw DartRuntimePrimitives.AsException(
-                    FlutterError.Create(
-                        "SnapshotWidget used with a child that contains a PlatformView."
-                    )
-                );
+                if (Equals(mode, SnapshotMode.normal))
+                {
+                    throw DartRuntimePrimitives.AsException(
+                        FlutterError.Create(
+                            "SnapshotWidget used with a child that contains a PlatformView."
+                        )
+                    );
+                }
+                _disableSnapshotAttempt = true;
+                return null;
             }
+            Ui.Image image = offsetLayer.toImageSync(Offset.zero & size, pixelRatio: devicePixelRatio);
+            _lastCachedSize = size;
+            return image;
+        }
+        catch (DorotiCapabilityException) when (mode == SnapshotMode.permissive)
+        {
             _disableSnapshotAttempt = true;
             return null;
         }
-        Ui.Image image = offsetLayer.toImageSync(Offset.zero & size, pixelRatio: devicePixelRatio);
-        offsetLayer.dispose();
-        _lastCachedSize = size;
-        return image;
+        finally { offsetLayer.dispose(); }
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
