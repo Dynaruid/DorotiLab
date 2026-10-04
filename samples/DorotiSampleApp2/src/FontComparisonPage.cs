@@ -18,8 +18,9 @@ internal sealed class FontComparisonState : State<FontComparisonPage>
     private string _family = "SUITE Variable";
     private double _weight = 450;
     private readonly TextEditingController _controller = new(text: "한글 입력과 선택 · Hello 0123456789");
+    private readonly FocusNode _focusNode = new();
 
-    public override void dispose() { _controller.dispose(); base.dispose(); }
+    public override void dispose() { _focusNode.dispose(); _controller.dispose(); base.dispose(); }
 
     public override Widget build(BuildContext context)
     {
@@ -33,7 +34,8 @@ internal sealed class FontComparisonState : State<FontComparisonPage>
             new Text("가변 글꼴 ABC abc 0123456789\n폭에 맞춰 줄바꿈되는 한글과 English text.", style: new TextStyle(
                 fontFamily: _family, fontSize: 28, fontVariations: new List<FontVariation> { new("wght", _weight) })),
             new SizedBox(height: 16),
-            new CupertinoTextField(controller: _controller, maxLines: 3, padding: EdgeInsets.CreateAll(12),
+            new CupertinoTextField(controller: _controller, focusNode: _focusNode,
+                onTapOutside: _ => _focusNode.unfocus(), maxLines: 3, padding: EdgeInsets.CreateAll(12),
                 style: new TextStyle(fontFamily: _family, fontSize: 24, fontVariations: new List<FontVariation> { new("wght", _weight) })),
             new SizedBox(height: 20),
         };

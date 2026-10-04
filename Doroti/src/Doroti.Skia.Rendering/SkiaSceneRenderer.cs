@@ -1658,7 +1658,8 @@ public sealed partial class SkiaSceneRenderer
         void DrawCommands(
             IReadOnlyList<SceneCommand> source,
             int sourceStart = 0,
-            int sourceEnd = -1
+            int sourceEnd = -1,
+            double inheritedBackdropOpacity = 1
         )
         {
             if (sourceEnd < 0)
@@ -1732,6 +1733,23 @@ public sealed partial class SkiaSceneRenderer
                         Concat(canvas, transform.Matrix4);
                         break;
                     case "opacity" when command.HostPayload is SceneOpacityPayload opacity:
+                        var opacityPop = FindMatchingPop(source, commandIndex, sourceEnd);
+                        if (CanInheritBackdropOpacity(source, commandIndex + 1, opacityPop))
+                        {
+                            canvas.Save();
+                            try
+                            {
+                                canvas.Translate((float)opacity.Offset.dx, (float)opacity.Offset.dy);
+                                DrawCommands(source, commandIndex + 1, opacityPop,
+                                    inheritedBackdropOpacity * opacity.Opacity);
+                            }
+                            finally
+                            {
+                                canvas.Restore();
+                            }
+                            commandIndex = opacityPop;
+                            break;
+                        }
                         using (
                             var paint = new SKPaint
                             {
@@ -1858,7 +1876,12 @@ public sealed partial class SkiaSceneRenderer
                         break;
                     case "backdropFilter"
                         when command.HostPayload is SceneBackdropFilterPayload backdrop:
-                        using (var paint = new SKPaint { BlendMode = ToBlend(backdrop.BlendMode) })
+                        using (var paint = new SKPaint
+                        {
+                            BlendMode = ToBlend(backdrop.BlendMode),
+                            Color = SKColors.White.WithAlpha(
+                                (byte)Math.Clamp(Math.Round(inheritedBackdropOpacity * 255), 0, 255))
+                        })
                         {
                             var restoreCount = 1;
                             if (backdrop.Filter.Bounds is { } clipBounds)
@@ -1880,11 +1903,21 @@ public sealed partial class SkiaSceneRenderer
                                 Paint = paint,
                             };
                             canvas.SaveLayer(layer);
-                            restoreCounts.Push(restoreCount);
+                            var backdropPop = FindMatchingPop(source, commandIndex, sourceEnd);
+                            try
+                            {
+                                DrawCommands(source, commandIndex + 1, backdropPop);
+                            }
+                            finally
+                            {
+                                for (var count = 0; count < restoreCount; count++)
+                                    canvas.Restore();
+                            }
+                            commandIndex = backdropPop;
                         }
                         break;
                     case "retained" when command.HostPayload is SceneRetainedPayload retained:
-                        DrawCommands(retained.Commands);
+                        DrawCommands(retained.Commands, inheritedBackdropOpacity: inheritedBackdropOpacity);
                         break;
                     case "platformView":
                     case "inputShield":

@@ -117,6 +117,15 @@ public sealed partial class SkiaSceneRenderer
 
             var pop = FindMatchingPop(commands, i, end);
             var childStart = i + 1;
+            // Ordinary backdrop layers can inherit alpha even in a scene with
+            // shader siblings. Keep the same composite in both replay paths.
+            if (command.HostPayload is SceneOpacityPayload
+                && CanInheritBackdropOpacity(commands, childStart, pop))
+            {
+                DrawScene(target, commands, i, pop + 1, width, height);
+                i = pop;
+                continue;
+            }
             // Ownership is needed for ancestors of a shader capture. Sibling
             // subtrees without one can keep native saveLayer/filter/cache paths;
             // promoting them too creates unrelated full-frame copies and clears.

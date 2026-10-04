@@ -166,7 +166,7 @@ internal static class NativeFrameGpuRegression
             new JsonSerializerOptions { WriteIndented = true }));
     }
 
-    private sealed unsafe class DeviceOwner : IDisposable
+    internal sealed unsafe class DeviceOwner : IDisposable
     {
         private readonly Vk _vk = Vk.GetApi();
         internal Instance Instance;

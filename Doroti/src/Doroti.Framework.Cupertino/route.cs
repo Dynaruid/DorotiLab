@@ -1390,36 +1390,6 @@ public static partial class RouteLibrary
     }
 }
 
-// A popup surface must sample the page outside the fade's transparent saveLayer.
-// It fades its foreground and animates its backdrop filter independently.
-internal sealed class _CupertinoDialogSurfaceTransition(Animation<double> animation, Widget child)
-    : InheritedWidget(child: child)
-{
-    internal Animation<double> animation { get; } = animation;
-
-    public override bool updateShouldNotify(InheritedWidget oldWidget) =>
-        !ReferenceEquals(animation, ((_CupertinoDialogSurfaceTransition)oldWidget).animation);
-}
-
-internal sealed class _CupertinoDialogTransition(Animation<double> animation, Widget child)
-    : StatelessWidget
-{
-    public override Widget build(BuildContext context) => new AnimatedBuilder(
-        animation: animation,
-        child: child,
-        builder: (context, dialog) =>
-        {
-            Widget contents = dialog is CupertinoAlertDialog or CupertinoPopupSurface
-                ? new _CupertinoDialogSurfaceTransition(animation, dialog)
-                : new FadeTransition(opacity: animation, child: dialog);
-            return animation.status == AnimationStatus.reverse
-                ? contents
-                : new ScaleTransition(
-                    scale: animation.drive(new Tween<double>(begin: 1.3, end: 1.0)),
-                    child: contents);
-        });
-}
-
 public class CupertinoDialogRoute<T> : RawDialogRoute<T>
 {
     public virtual Func<
@@ -1458,10 +1428,7 @@ public class CupertinoDialogRoute<T> : RawDialogRoute<T>
             anchorPoint: anchorPoint,
             pageBuilder: (context, animation, secondaryAnimation) =>
             {
-                Widget dialog = builder(context);
-                return transitionBuilder is null
-                    ? new _CupertinoDialogTransition(animation, dialog)
-                    : dialog;
+                return builder(context);
                 throw new InvalidOperationException(
                     "Callback completed without returning a value."
                 );
@@ -1506,7 +1473,13 @@ public class CupertinoDialogRoute<T> : RawDialogRoute<T>
         {
             return base.buildTransitions(context, animation, secondaryAnimation, child);
         }
-        return child;
+        // Rebuild on direction changes as well as values: closing uses only
+        // the fade, while opening also scales from 1.3 to 1.0, as in Flutter.
+        return new AnimatedBuilder(animation: animation, child: child, builder: (context, dialog) =>
+            new FadeTransition(opacity: animation,
+                child: animation.status == AnimationStatus.reverse
+                    ? dialog
+                    : new ScaleTransition(scale: animation.drive(_dialogScaleTween), child: dialog)));
     }
 
     public override void dispose()

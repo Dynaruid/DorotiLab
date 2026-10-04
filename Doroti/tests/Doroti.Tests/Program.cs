@@ -6,6 +6,16 @@ using Doroti.Ui;
 static void Require(bool value, string message) { if (!value) throw new Exception(message); }
 #if DOROTI_REPO_TESTS
 if (args.FirstOrDefault() == "--full-review-process-child") { ProcessRunnerRegression.Child(args[1]); return; }
+if (args.Contains("--cupertino-dialog"))
+{
+    CupertinoDialogRegression.Run();
+    return;
+}
+if (args.Contains("--cupertino-dialog-gpu"))
+{
+    CupertinoDialogRegression.RunGpu();
+    return;
+}
 FullReviewRegression.Run();
 ImageReadbackLifetimeRegression.Run();
 ProcessRunnerRegression.Run();
@@ -114,6 +124,7 @@ await DesktopCloseRegression.Run();
 PlatformPolicyRegression.Run();
 #if DOROTI_REPO_TESTS
 RenderingRegressions.Run();
+CupertinoDialogRegression.Run();
 VariableBlurCaptureRegression.Run();
 VariableBlurKernelRegression.Run();
 VariableBlurKawaseRegression.Run();

@@ -59,10 +59,12 @@ internal sealed class CupertinoSampleState : State<CupertinoSample>
     private int _count;
     private string _name = "";
     private readonly TextEditingController _nameController = new();
+    private readonly FocusNode _nameFocusNode = new();
 
     public override void dispose()
     {
         _tabs.dispose();
+        _nameFocusNode.dispose();
         _nameController.dispose();
         base.dispose();
     }
@@ -150,10 +152,12 @@ internal sealed class CupertinoSampleState : State<CupertinoSample>
         Section("YOUR PROFILE",
             Inset(new CupertinoTextField(
                 controller: _nameController,
+                focusNode: _nameFocusNode,
                 placeholder: "Your name",
                 padding: EdgeInsets.CreateAll(12),
                 onChanged: value => setState(() => _name = value)
-            ))
+            )),
+            Inset(CupertinoButton.CreateTinted(child: new Text("Done"), onPressed: () => _nameFocusNode.unfocus()))
         ),
         Inset(new Text("Try typing a name, then switch tabs. Your input and control values stay here during this session.",
             textAlign: TextAlign.center))
