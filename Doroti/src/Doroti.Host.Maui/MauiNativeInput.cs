@@ -439,6 +439,7 @@ internal static class MauiNativeInput
         private readonly ulong _viewId;
         private readonly Action<KeyData> _dispatch;
         private readonly List<Android.Views.View> _native = [];
+        private readonly HashSet<Microsoft.Maui.Controls.InputView> _inputs = [];
         private readonly List<Android.Views.ViewTreeObserver> _observers = [];
         private readonly MauiKeyboardState _keyboard = new();
         private readonly WindowFocusListener _windowFocusListener;
@@ -465,8 +466,10 @@ internal static class MauiNativeInput
             _dispatch = dispatch;
             _windowFocusListener = new(ReleasePressed);
             _view.HandlerChanged += HandleHandlerChanged;
+            _textInput.InputCreated += HandleInputCreated;
             foreach (var input in _textInput.Inputs)
             {
+                _inputs.Add(input);
                 input.HandlerChanged += HandleHandlerChanged;
             }
 
@@ -474,6 +477,13 @@ internal static class MauiNativeInput
         }
 
         private void HandleHandlerChanged(object? sender, EventArgs args) => AttachCurrent();
+
+        private void HandleInputCreated(Microsoft.Maui.Controls.InputView input)
+        {
+            // The IME endpoints are created lazily, after this subscription.
+            if (_inputs.Add(input)) input.HandlerChanged += HandleHandlerChanged;
+            AttachCurrent();
+        }
 
         private void AttachCurrent()
         {
@@ -484,7 +494,7 @@ internal static class MauiNativeInput
                     _view.Handler?.PlatformView,
                     (_view.Handler?.PlatformView as DorotiAndroidViewContainer)?.Surface,
                 }
-                    .Concat(_textInput.Inputs.Select(input => input.Handler?.PlatformView))
+                    .Concat(_inputs.Select(input => input.Handler?.PlatformView))
                     .OfType<Android.Views.View>()
                     .Distinct()
             )
@@ -514,7 +524,13 @@ internal static class MauiNativeInput
             // edits so TextChanged can publish the resulting text, selection,
             // and composing range. Consuming these events here prevents
             // Samsung Keyboard's Backspace (and physical typing) outright.
-            if (_textInput.HasClient && sender is Android.Widget.EditText)
+            // Vertical IME keys must use Doroti's rendered lines. The hidden
+            // caret-sized EditText has a different layout (often one glyph per
+            // line), so its native up/down movement cannot match the field.
+            var frameworkVerticalKey = _textInput.HasMultilineClient
+                && nativeEvent.HasNoModifiers
+                && args.KeyCode is Android.Views.Keycode.DpadUp or Android.Views.Keycode.DpadDown;
+            if (_textInput.HasClient && sender is Android.Widget.EditText && !frameworkVerticalKey)
             {
                 args.Handled = false;
                 return;
@@ -596,7 +612,8 @@ internal static class MauiNativeInput
         public void Dispose()
         {
             _view.HandlerChanged -= HandleHandlerChanged;
-            foreach (var input in _textInput.Inputs)
+            _textInput.InputCreated -= HandleInputCreated;
+            foreach (var input in _inputs)
             {
                 input.HandlerChanged -= HandleHandlerChanged;
             }

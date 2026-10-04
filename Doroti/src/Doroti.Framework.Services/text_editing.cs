@@ -34,21 +34,12 @@ public class TextSelection : TextRange
         TextAffinity affinity = TextAffinity.downstream
     )
     {
-        var __instance = new TextSelection(default!, default!, affinity, default!);
-        __instance.baseOffset = offset;
-        __instance.extentOffset = offset;
-        __instance.isDirectional = false;
-        return __instance;
+        return new TextSelection(offset, offset, affinity);
     }
 
     public static TextSelection CreateFromPosition(TextPosition position)
     {
-        var __instance = new TextSelection(default!, default!, default!, default!);
-        __instance.baseOffset = position.offset;
-        __instance.extentOffset = position.offset;
-        __instance.affinity = position.affinity;
-        __instance.isDirectional = false;
-        return __instance;
+        return new TextSelection(position.offset, position.offset, position.affinity);
     }
 
     public virtual TextPosition @base

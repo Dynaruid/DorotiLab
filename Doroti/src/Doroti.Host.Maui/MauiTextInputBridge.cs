@@ -111,6 +111,9 @@ public sealed partial class MauiTextInputBridge : IDisposable
 #endif
         }
 
+#if ANDROID
+        InputCreated?.Invoke(input);
+#endif
         return input;
     }
 
@@ -131,6 +134,10 @@ public sealed partial class MauiTextInputBridge : IDisposable
             ? (_editor is null ? Array.Empty<InputView>() : new InputView[] { _editor })
             : (_editor is null ? new InputView[] { _entry } : new InputView[] { _entry, _editor });
     internal bool HasClient => _hasClient;
+#if ANDROID
+    internal event Action<InputView>? InputCreated;
+    internal bool HasMultilineClient => _hasClient && _active is Editor;
+#endif
 
     // Query on the platform UI thread. A retained framework client alone does
     // not own native focus: a PlatformView may have explicitly taken it.

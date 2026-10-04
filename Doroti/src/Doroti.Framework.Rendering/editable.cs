@@ -132,16 +132,11 @@ public class VerticalCaretMovementRun : IEnumerator<TextPosition>
     {
         DartRuntimePrimitives.Assert(() => isValid);
         DartRuntimePrimitives.Assert(() => lineNumber >= 0L);
-        MapEntry<Offset, TextPosition>? cachedPosition = _positionCache.GetValueOrDefault(
-            lineNumber
-        );
-        if (cachedPosition is not null)
+        // MapEntry is a value type here. A missing key's default entry is not
+        // a cached position and contains a null TextPosition.
+        if (_positionCache.TryGetValue(lineNumber, out var cachedPosition))
         {
-            MapEntry<Offset, TextPosition> cachedPosition__6901__value6954 = (
-                cachedPosition
-                ?? throw new global::System.NullReferenceException("A required value was null.")
-            );
-            return (cachedPosition__6901__value6954);
+            return cachedPosition;
         }
         DartRuntimePrimitives.Assert(() => lineNumber != _currentLine);
         var newOffset = new Offset(_currentOffset.dx, _lineMetrics[(int)lineNumber].baseline);

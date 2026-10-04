@@ -6591,7 +6591,7 @@ internal class _UpdateTextSelectionVerticallyAction__editable_text<T> : ContextA
             _verticalMovementRun = currentRun;
             _runSelection = newSelection;
         }
-        throw new InvalidOperationException("Control flow completed without returning a value.");
+        return null;
     }
 
     public override bool isActionEnabled
