@@ -187,6 +187,39 @@ CLI의 iOS Release 기본값은 실험적인 NativeAot이므로, 위 명령처�
 
 `net10.0-ios27.0`의 실기기(`ios-arm64`) Debug/Mono 프로필은 레이아웃·렌더링 엔진을 Mono AOT로 컴파일하고 앱과 iOS 진입 어셈블리만 해석합니다. 회전 중 매 프레임 실행되는 엔진까지 해석해서 표시 시점을 놓치는 것을 방지합니다. 시뮬레이터는 기존 빠른 빌드 프로필을 유지합니다. 앱 어셈블리 이름을 별도로 지정했거나 추가 개발 어셈블리의 해석이 필요하면 `DorotiIosDebugInterpretedAssemblies`에 쉼표로 구분한 이름을 지정할 수 있습니다. 명시적인 `MtouchInterpreter` 설정은 기본값보다 우선하며 NativeAOT 프로필은 별개입니다.
 
+### 기기·인증서 선택 후 빌드·설치·실행
+
+[공용 iOS 설치 스크립트](../../helpers/deploy-ios.ps1)가 iPhone/iPad 또는 사용 가능한 iOS 시뮬레이터를
+번호로 선택하고 빌드·설치·실행합니다. 실기기는 Keychain의 유효한 개발 인증서와
+앱 ID `dev.doroti.sample2`·기기 UDID·인증서에 맞는 만료되지 않은 개발 프로필을 선택합니다.
+선택지가 하나면 해당 항목을 사용합니다. CLI는 .NET 10으로 실행하며 PowerShell 진입점은 PowerShell 7이 필요합니다.
+실기기는 Mac 신뢰와 개발자 모드를 허용하고, Xcode에서 인증서와 프로필을 미리 준비하세요.
+
+저장소 루트 `DorotiLab`에서 실행합니다.
+
+```powershell
+# 실기기: 기본 .NET 10 / Release / NativeAot, 인증서·프로필 선택
+pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -App Sample2 -Target device
+
+# 시뮬레이터: 기본 .NET 10 / Debug / Mono, 자동 부팅·설치·실행
+pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -App Sample2 -Target simulator
+
+# .NET 11 RC1 / Xcode 27: SDK 선택 위치와 버전 검사 우회를 이번 호출에 적용
+pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -App Sample2 -Target device -DotnetVersion 11 -Mode NativeAot -SkipXcodeValidation
+
+# 목록만 출력 / 선택과 빌드 명령만 확인
+pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -List
+pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -App Sample2 -DryRun
+```
+
+`-Target`을 생략하면 실기기와 시뮬레이터를 함께 표시합니다. `-Device <UDID>`,
+`-CodesignKey '<인증서 이름 또는 SHA-1>'`, `-CodesignProvision <UUID>`로 선택을 고정할 수 있습니다.
+Mono 실기기 Debug는 `-Mode Mono -Configuration Debug`를 사용합니다.
+앱 실행 환경변수는 `-Environment 'DOROTI_IOS_GRAPHITE=1'`로 전달합니다.
+빌드 실패 시 설치를 중단하며 기본 실행은 기존 앱 프로세스를 종료하고 다시 시작합니다.
+.NET 10은 아래 검증된 Xcode 27 NativeAOT 설정, .NET 11은 Testbed iOS의 `global.json`을 사용합니다.
+산출물 분리 경로와 전체 옵션, `dotnet run` 직접 실행 방법은 [helpers 사용법](../../helpers/README.md)을 참고하세요.
+
 ### iOS Hot Reload
 
 기본 .NET 10 개발 경로는 iOS 시뮬레이터를 사용합니다. 실기기 USB는 .NET 11 CoreCLR 개발 프로필로 연결합니다. 시뮬레이터를 하나 부팅한 뒤 Debug 개발 세션을 시작합니다. 여러 시뮬레이터가 켜져 있으면 `-Device <UDID>`를 지정합니다.
@@ -263,6 +296,11 @@ try {
         -c Release -r ios-arm64 `
         -p:DorotiCompilationMode=NativeAot `
         -p:ValidateXcodeVersion=false `
+        -p:Registrar=managed-static `
+        -p:_UseDynamicDependenciesForMarkNSObjects=false `
+        '-p:MtouchExtraArgs=--skip-marking-nsobjects-in-user-assemblies=true' `
+        -p:PrepareAssemblies=false `
+        -p:PostProcessAssemblies=false `
         "-p:ArtifactsPath=$aotArtifacts" `
         '-p:CodesignKey=YOUR_DEVELOPMENT_CERTIFICATE' `
         '-p:CodesignProvision=YOUR_PROVISIONING_PROFILE_UUID'
@@ -272,7 +310,12 @@ try {
 }
 ```
 
-우회는 해당 명령에만 적용합니다. 공통 프로젝트 설정에서 검사를 끄지 않습니다.
+위의 registrar·NSObject 보존 옵션은 .NET 11 RC1 NativeAOT에서 잘못 생성된 인터페이스 멤버 참조로
+발생하는 `IL2037`을 피합니다. [ios/NativeAotRoots.xml](ios/NativeAotRoots.xml)이 UIKit 진입점과 native 뷰·델리게이트를
+명시적으로 보존하며, 공용 설치 CLI도 같은 옵션을 적용합니다.
+.NET 11 RC1의 assembly-preparer에서는 같은 설정으로 `MarkNSObjects` 오류(`MT2080`)가 발생하므로
+`PrepareAssemblies=false`, `PostProcessAssemblies=false`로 ILLink의 managed registrar 경로를 사용합니다.
+버전 검사 우회는 해당 명령에만 적용합니다. 공통 프로젝트 설정에서 검사를 끄지 않습니다.
 Xcode 26.6을 선택한 .NET 11 빌드나 Xcode 27을 지원하는 .NET 10 워크로드에는 이 옵션이 필요 없습니다.
 [도구 업데이트 스크립트](../../scripts/update-dotnet-macos.py)로 .NET 11 워크로드를 RC1으로 업데이트해도
 RC1의 Xcode 26.6 요구 사항은 유지됩니다.

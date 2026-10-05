@@ -29,7 +29,7 @@ JavaScript 실행 컨트롤도 표시합니다. attachment만 제공하는 호�
 Windows·macOS·Linux에서 [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6)을 설치하세요. 모든 명령은 **저장소 루트 `DorotiLab`**에서 PowerShell로 실행합니다.
 macOS/Linux의 기본 셸이 zsh/bash라면 먼저 `pwsh -NoProfile`을 실행하세요.
 iOS 외 대상은 저장소 루트 [global.json](../../global.json)이 선택하는 **.NET SDK 10.0.400 계열**을 사용합니다.
-iOS용으로는 .NET 10과 함께 [ios/global.json](ios/global.json)이 선택하는 **.NET SDK 11.0.100-rc.1.26425.128**을 설치합니다.
+아래 iOS 직접 실행 명령이나 공용 설치 스크립트의 `-DotnetVersion 11`을 사용하려면 .NET 10과 함께 [ios/global.json](ios/global.json)이 선택하는 **.NET SDK 11.0.100-rc.1.26425.128**을 설치합니다.
 각 플랫폼에 필요한 workload와 도구는 아래 실행 항목에서 확인하세요.
 
 첫 실행은 패키지 복원과 빌드, 필요한 경우 기기 설치를 포함합니다. 예제는 모두 Release 구성입니다.
@@ -125,6 +125,46 @@ dotnet run --project ./samples/DorotiTestbedApp/android/DorotiTestbedApp.Android
 자동 배포가 실패하면 [Android 빌드·배포 오류](#android-빌드배포-오류)를 참고하세요.
 
 ### iOS 샘플
+
+#### 기기·인증서 선택 후 빌드·설치·실행
+
+[공용 iOS 설치 스크립트](../../helpers/deploy-ios.ps1)가 iPhone/iPad와 사용 가능한 iOS 시뮬레이터를
+번호로 선택하고 빌드·설치·실행합니다. CLI는 .NET 10으로 실행하며 macOS,
+Xcode와 선택한 .NET SDK의 iOS/MAUI workload가 필요합니다. PowerShell 진입점은 PowerShell 7도 필요하며
+`dotnet run`으로 직접 실행할 수 있습니다. 실기기는 Mac 신뢰와 개발자 모드를
+허용하고 Xcode에서 개발 인증서와 provisioning profile을 준비하세요.
+
+저장소 루트 `DorotiLab`에서 실행합니다.
+
+```powershell
+# 실기기: 기본 .NET 10 / Release / NativeAot, 인증서·프로필 선택
+pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -App Testbed -Target device
+
+# 시뮬레이터: 기본 .NET 10 / Debug / Mono, 자동 부팅·설치·실행
+pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -App Testbed -Target simulator
+
+# .NET 11 RC1 / Xcode 27: SDK 선택과 버전 검사 우회는 이번 호출에만 적용
+pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -App Testbed -Target device -DotnetVersion 11 -Mode NativeAot -SkipXcodeValidation
+
+pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -List
+pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -App Testbed -DryRun
+```
+
+`-Target`을 생략하면 실기기와 시뮬레이터를 함께 표시합니다. 실기기는 개인 키를 가진 유효한 개발 인증서와
+앱 ID `dev.doroti.testbed`·기기 UDID·인증서에 맞는 만료되지 않은 개발 프로필을 선택합니다.
+선택지가 하나면 해당 항목을 사용하며 시뮬레이터에서는 서명 선택을 생략합니다.
+`-Device <UDID>`, `-CodesignKey '<인증서 이름 또는 SHA-1>'`, `-CodesignProvision <UUID>`로 선택을 고정합니다.
+Mono 실기기 Debug는 `-Mode Mono -Configuration Debug`, 앱 실행 환경변수는
+`-Environment 'DOROTI_SAMPLE=input'`으로 지정합니다. 여러 환경변수 전달 방법은 공용 사용법에 있습니다.
+
+.NET 10은 루트 `global.json`, .NET 11은 `ios/global.json`으로 SDK를 선택하며 파일을 수정하지 않습니다.
+산출물은 앱·SDK·모드·구성·RID별로 분리하고 빌드 실패 시 설치를 중단합니다.
+기본 실행은 기존 앱 프로세스를 종료하고 다시 시작합니다. `-SkipXcodeValidation`은 버전 검사만 우회하며
+.NET 11 RC1 / Xcode 27을 공식 지원 조합으로 바꾸지는 않습니다.
+전체 옵션과 `dotnet run` 직접 실행은 [helpers 사용법](../../helpers/README.md)을 참고하세요.
+Hot Reload는 개발 CLI를 사용합니다.
+
+#### .NET 11 직접 실행
 
 Apple Silicon macOS에서 .NET 11 SDK와 Xcode/iOS workload를 준비하고 Simulator를 먼저 시작합니다.
 SDK는 현재 작업 폴더를 기준으로 선택되므로, 직접 실행할 때는 먼저 `samples/DorotiTestbedApp/ios`로 이동합니다.

@@ -51,7 +51,7 @@ for host-specific constraints.
 Install [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6) on Windows, macOS, or Linux, then run all commands in PowerShell from the **repository root, `DorotiLab`**.
 If your macOS/Linux shell is zsh/bash, enter `pwsh -NoProfile` first.
 Use the **.NET SDK 10.0.400 feature band** selected by the repository root [global.json](../../global.json) for targets other than iOS.
-For iOS, also install **.NET SDK 11.0.100-rc.1.26425.128** from [ios/global.json](ios/global.json) alongside .NET 10.
+For the direct iOS commands below or the helper's `-DotnetVersion 11`, also install **.NET SDK 11.0.100-rc.1.26425.128** from [ios/global.json](ios/global.json) alongside .NET 10.
 Platform-specific workloads and tools are listed with each command below.
 
 The first run restores packages, builds, and deploys to a device where needed. All examples use Release.
@@ -151,6 +151,45 @@ avoiding hidden MAUI controls per semantic node. Use `DOROTI_INPUT_TIMING` for
 optional touch-timing diagnostics.
 
 ### iOS sample
+
+#### Select a device and signing certificate, then build and deploy
+
+The shared [iOS deployment helper](../../helpers/deploy-ios.ps1) lists known iPhones/iPads and available
+iOS simulators, then builds, installs and launches the selected app. The CLI runs on .NET 10 and requires macOS,
+Xcode and the selected .NET SDK's iOS/MAUI workloads. The PowerShell entry point also requires PowerShell 7; direct `dotnet run` is available. For a physical device,
+trust the Mac, enable Developer Mode, and prepare a development certificate and provisioning profile in Xcode.
+
+Run from the repository root `DorotiLab`:
+
+```powershell
+# Physical device: .NET 10 / Release / NativeAot by default
+pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -App Testbed -Target device
+
+# Simulator: .NET 10 / Debug / Mono; boots the selected simulator before installation
+pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -App Testbed -Target simulator
+
+# .NET 11 RC1 with Xcode 27: select the SDK and skip version validation for this invocation
+pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -App Testbed -Target device -DotnetVersion 11 -Mode NativeAot -SkipXcodeValidation
+
+# Inventory only / select and inspect the build command without deploying
+pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -List
+pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -App Testbed -DryRun
+```
+
+Omit `-Target` to select from a combined device/simulator list. Physical-device signing lists valid development
+identities with private keys, followed by unexpired iOS development profiles matching `dev.doroti.testbed`,
+the device UDID and the certificate. A single entry is selected automatically. Simulator builds skip signing selection.
+Use `-Device <UDID>`, `-CodesignKey '<name or SHA-1>'` and `-CodesignProvision <UUID>` to select explicitly.
+For a Mono device Debug build, add `-Mode Mono -Configuration Debug`.
+Launch variables use `-Environment 'DOROTI_SAMPLE=input'`; the helper documentation shows how to pass multiple variables.
+
+The helper selects .NET 10 from the root `global.json` and .NET 11 from `ios/global.json` without editing either file.
+Artifacts are separated by app, SDK, mode, configuration and RID. Failed builds stop deployment;
+the default launch restarts the existing app process. `-SkipXcodeValidation` bypasses a version check
+for this invocation and does not make .NET 11 RC1 / Xcode 27 an officially supported combination.
+See [all options and direct .NET commands](../../helpers/README.md). Use the development CLI for Hot Reload.
+
+#### Direct .NET 11 commands
 
 Use Apple Silicon macOS with the .NET 11 SDK and Xcode/iOS workloads, and start Simulator first.
 The SDK is selected from the current working directory, so enter `samples/DorotiTestbedApp/ios` before invoking `dotnet` directly.
