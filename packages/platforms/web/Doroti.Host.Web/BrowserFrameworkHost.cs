@@ -1,0 +1,410 @@
+using System.Text.Json;
+using Doroti.Hosting;
+using Doroti.Ui;
+
+namespace Doroti.Host.Web;
+
+[System.Runtime.Versioning.SupportedOSPlatform("browser")]
+public sealed class BrowserFrameworkHost : IDisposable
+{
+    public static Task PrepareNavigationAsync(string? restorationId) => BrowserInterop.PrepareApplicationNavigation(restorationId);
+    public static IEnumerable<IPlatformViewFactory> PlatformViewFactories =>
+        BrowserPlatformViewHost.Factories;
+    private readonly string _targetIdentity;
+    private readonly Skia.Rendering.SkiaFallbackFontCollection _fallbackFonts;
+    private readonly Dictionary<
+        ulong,
+        (DorotiView View, BrowserHostAdapter Host, IBrowserGraphicsCapabilities Graphics)
+    > _views = [];
+    private readonly Dictionary<ulong, DorotiHostSession> _sessions = [];
+    private bool _disposed;
+    private BrowserFontFallbackLoader? _fontFallbackLoader;
+
+    public void EnableFontFallbacks(HttpClient http, BrowserFontFallbackOptions? options = null,
+        TimeProvider? timeProvider = null)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        _fontFallbackLoader?.Dispose();
+        _fontFallbackLoader = null;
+        options ??= new();
+        if (!options.Enabled) return;
+        if (options.DecoderUrl is null)
+            throw new ArgumentException("Automatic fallback downloads require a WOFF2 DecoderUrl.", nameof(options));
+        options = options with { PreferredLanguage = options.PreferredLanguage
+            ?? _views.Values.FirstOrDefault().Host?.Snapshot.LanguageTag ?? "en" };
+        _fontFallbackLoader = new(_fallbackFonts, async (url, token) =>
+        {
+            var bytes = await http.GetByteArrayAsync(url, token);
+            if (bytes.Length > 30 * 1024 * 1024)
+                throw new InvalidDataException("Compressed fallback font exceeds 30 MB.");
+            return await BrowserWoff2Decoder.DecodeAsync(bytes, options.DecoderUrl, token);
+        }, NotifyFontsChanged, options, timeProvider);
+    }
+
+    private void NotifyFontsChanged()
+    {
+        if (_disposed) return;
+        foreach (var session in _sessions.Values.Distinct())
+        {
+            Doroti.Runtime.DartRuntimePrimitives.ObserveTask(session.dispatcher.NotifyFontsChangedAsync().AsTask(), "browser fonts changed");
+        }
+    }
+
+    public BrowserFrameworkHost(string targetIdentity = "browser-wasm/auto", string defaultFontFamily = "Roboto")
+    {
+        _targetIdentity = targetIdentity;
+        _fallbackFonts = new(defaultFontFamily);
+    }
+
+    public string RegisterFont(ReadOnlyMemory<byte> bytes, string? family = null)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        return _fallbackFonts.Register(bytes, family);
+    }
+
+    public string RegisterCssFont(ReadOnlyMemory<byte> bytes, string family, Skia.Rendering.SkiaFontFaceDescriptor descriptor)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        return _fallbackFonts.Register(bytes, family, descriptor: descriptor);
+    }
+
+    public DorotiView CreateView(
+        DorotiHostSession session,
+        ulong viewId,
+        string canvasId,
+        DorotiViewConfiguration configuration,
+        DorotiApplicationBoundary? application = null, DorotiSharedHostSession? sharedFramework = null
+    )
+    {
+        ArgumentNullException.ThrowIfNull(session);
+        ArgumentNullException.ThrowIfNull(configuration);
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (session.state != DorotiHostSessionState.running)
+        {
+            throw new InvalidOperationException(
+                "The Doroti host session must be running before a browser view is created."
+            );
+        }
+
+        var host = new BrowserHostAdapter(viewId, canvasId, configuration.logicalSize);
+        BrowserApplicationNavigation? navigation;
+        try
+        {
+            navigation = configuration.Navigation is { } navigationOptions
+                ? BrowserApplicationNavigation.Create(host.HostId, navigationOptions) : null;
+        }
+        catch { host.Dispose(); throw; }
+        if (navigation is not null) host.Closed += navigation.Dispose;
+        var platform = new BrowserPlatformViewHost(
+            viewId,
+            host.HostId,
+            application?.Manifest.PlatformViews.Any(v => v.ViewType == "doroti/webview") == true,
+            host.Snapshot.PlatformBackdrop
+        );
+        var backendIdentity =
+            _targetIdentity == "browser-wasm/auto"
+                ? $"browser-wasm/{BrowserHostRuntime.RendererIdentity}"
+                : _targetIdentity;
+        IBrowserGraphicsCapabilities graphics = new BrowserSkiaCapabilities(
+            viewId,
+            host,
+            configuration.backgroundColor,
+            configuration.darkBackgroundColor,
+            backendIdentity,
+            _fallbackFonts,
+            platform
+        );
+        var messages = new BrowserPlatformMessageCapability(host);
+        var capabilities = new DorotiViewCapabilities(_targetIdentity, sharedFramework?.Capabilities)
+            .Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)
+            .Register<IPlatformViewHostCapability>(
+                DorotiCapabilityIds.PlatformViews,
+                platform.Coordinator
+            )
+            .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, host)
+            .Register<IFrameHostCapability>(DorotiCapabilityIds.ViewFrameDispatch, host)
+            .Register<IInputHostCapability>(DorotiCapabilityIds.InputEvents, host)
+            .Register<ITextInputHostCapability>(DorotiCapabilityIds.TextInput, host)
+            .Register<IPlatformServicesHostCapability>(DorotiCapabilityIds.PlatformServices, host)
+            .Register<IUrlLauncherHostCapability>(DorotiCapabilityIds.UrlLauncher, host)
+            .Register<IPlatformFeedbackHostCapability>(DorotiCapabilityIds.PlatformFeedback, new BrowserFeedback())
+            .Register<IPlatformEnvironmentHostCapability>(
+                DorotiCapabilityIds.PlatformEnvironment,
+                host
+            )
+            .Register<ISceneHostCapability>(DorotiCapabilityIds.GraphicsScene, graphics)
+            .Register<IParagraphHostCapability>(DorotiCapabilityIds.GraphicsText, graphics)
+            .Register<IFontHostCapability>(DorotiCapabilityIds.GraphicsFont, graphics)
+            .Register<ITextureHostCapability>(DorotiCapabilityIds.GraphicsTexture, graphics)
+            .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, graphics)
+            .Register<ISemanticsHostCapability>(
+                DorotiCapabilityIds.AccessibilitySemantics,
+                graphics
+            );
+        var picker = new BrowserFilePicker(host.HostId);
+        host.Closed += picker.Dispose;
+        if (picker.Available)
+        {
+            capabilities.Register<IFilePickerHostCapability>(DorotiCapabilityIds.FilePicker, picker);
+            var synchronization = SynchronizationContext.Current ?? throw new InvalidOperationException("Browser view requires its owner synchronization context.");
+            capabilities.Register<IOsDragDropHostCapability>(DorotiCapabilityIds.OsDragDrop,
+                new BrowserOsDrop(host.HostId, canvasId, callback => synchronization.Post(_ =>
+                {
+                    using var scope = session.dispatcher.EnterScope();
+                    callback();
+                }, null)));
+        }
+        if (application is null)
+        {
+            capabilities.Register<IPlatformMessageHostCapability>(
+                DorotiCapabilityIds.PlatformMessaging,
+                messages
+            );
+        }
+        else
+        {
+            sharedFramework?.OwnService(application.ApplicationResources);
+            application.Configure(capabilities, messages, sharedFramework is null ? DorotiCapabilityOwnership.Owned : DorotiCapabilityOwnership.Borrowed);
+        }
+
+        sharedFramework?.RegisterManagedPlugins(capabilities);
+        DorotiView? view = null;
+        try
+        {
+            if (navigation is not null)
+            {
+                capabilities.Register<IApplicationNavigationHostCapability>(DorotiCapabilityIds.ApplicationNavigation, navigation.Navigation);
+                session.dispatcher.defaultRouteName = navigation.Navigation.Current.Location;
+            }
+            view = session.dispatcher.RegisterView(viewId, capabilities);
+            navigation?.Attach(view);
+            graphics.AttachFrameworkTrace(session.dispatcher.frameTrace);
+            session.AttachView(view);
+            _views.Add(viewId, (view, host, graphics));
+            _sessions.Add(viewId, session);
+            return view;
+        }
+        catch
+        {
+            if (view is null)
+            {
+                capabilities.Dispose();
+            }
+            else
+            {
+                view.Dispose();
+            }
+
+            throw;
+        }
+    }
+
+    public BrowserHostSnapshot CaptureSnapshot(ulong viewId) =>
+        _views.TryGetValue(viewId, out var value)
+            ? value.Host.Snapshot
+            : throw new KeyNotFoundException($"Browser Doroti view {viewId} is not registered.");
+
+    public IReadOnlyList<DorotiResizeTraceEntry> CaptureResizeTrace(ulong viewId) =>
+        _views.TryGetValue(viewId, out var value)
+            ? value.Host.CaptureResizeTrace()
+            : throw new KeyNotFoundException($"Browser Doroti view {viewId} is not registered.");
+
+    public BrowserFrameDiagnostics CaptureFrameDiagnostics(ulong viewId) =>
+        _views.TryGetValue(viewId, out var value)
+            ? value.Graphics.Diagnostics
+            : throw new KeyNotFoundException($"Browser Doroti view {viewId} is not registered.");
+
+    public void AttachSkiaSurface(ulong viewId, Action invalidate)
+    {
+        if (!_views.TryGetValue(viewId, out var value))
+        {
+            throw new KeyNotFoundException($"Browser Doroti view {viewId} is not registered.");
+        }
+
+        value.Graphics.AttachSurface(invalidate);
+    }
+
+    public string PaintSkiaSurface(
+        ulong viewId,
+        SkiaSharp.SKSurface surface,
+        int pixelWidth,
+        int pixelHeight,
+        DorotiResizeEpoch target,
+        long requestId
+    )
+    {
+        if (!_views.TryGetValue(viewId, out var value))
+        {
+            throw new KeyNotFoundException($"Browser Doroti view {viewId} is not registered.");
+        }
+
+        return value.Graphics.Paint(surface, pixelWidth, pixelHeight, target, requestId);
+    }
+
+    public void CompleteSkiaSurfacePaint(
+        ulong viewId,
+        long requestId,
+        long generation,
+        string terminal,
+        string reason
+    )
+    {
+        if (!_views.TryGetValue(viewId, out var value))
+        {
+            return;
+        }
+
+        value.Graphics.CompletePaint(requestId, terminal, reason);
+    }
+
+    public void InvalidateSkiaGpuContext(ulong viewId, long requestId, string reason)
+    {
+        if (_views.TryGetValue(viewId, out var value))
+        {
+            value.Graphics.InvalidateGpuContext(requestId, reason);
+        }
+    }
+
+    public void InvalidateSkiaWindowSurface(ulong viewId)
+    {
+        if (_views.TryGetValue(viewId, out var value))
+        {
+            value.Graphics.InvalidateWindowSurfaceResources();
+        }
+    }
+
+    public string ResolveResourceUrl(ulong viewId, string relativeUrl) =>
+        _views.TryGetValue(viewId, out var value)
+            ? value.Host.ResolveResourceUrl(relativeUrl)
+            : throw new KeyNotFoundException($"Browser Doroti view {viewId} is not registered.");
+
+    public void Dispose()
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        _disposed = true;
+        _fontFallbackLoader?.Dispose();
+        foreach (var (viewId, value) in _views.Reverse().ToArray())
+        {
+            if (_sessions.Remove(viewId, out var session))
+            {
+                session.DetachView(value.View);
+            }
+
+            value.View.Dispose();
+        }
+        _views.Clear();
+        _sessions.Clear();
+        _fallbackFonts.Dispose();
+    }
+
+    private sealed class BrowserPlatformMessageCapability : IPlatformMessageHostCapability
+    {
+        private const string ContextMenuChannel = "flutter/contextmenu";
+        private static readonly ReadOnlyMemory<byte> SuccessEnvelope =
+            JsonSerializer.SerializeToUtf8Bytes(new object?[] { true });
+
+        private readonly object _gate = new();
+        private readonly BrowserHostAdapter _host;
+        private readonly Dictionary<string, PlatformMessageHandler> _handlers = new(
+            StringComparer.Ordinal
+        );
+
+        public BrowserPlatformMessageCapability(BrowserHostAdapter host) => _host = host;
+
+        public ValueTask<ReadOnlyMemory<byte>?> SendAsync(
+            string channel,
+            ReadOnlyMemory<byte>? data,
+            CancellationToken cancellationToken = default
+        )
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(channel);
+            cancellationToken.ThrowIfCancellationRequested();
+            if (string.Equals(channel, ContextMenuChannel, StringComparison.Ordinal))
+            {
+                return HandleContextMenuMessage(data);
+            }
+            if (channel == "flutter/platform" && data is not null)
+            {
+                using var document = JsonDocument.Parse(data.Value);
+                var root = document.RootElement;
+                if (root.TryGetProperty("method", out var method) &&
+                    method.GetString() is "SearchWeb.invoke" or "Share.invoke")
+                {
+                    return HandleTextActionAsync(method.GetString()!, root.GetProperty("args").GetString() ?? "");
+                }
+            }
+
+            PlatformMessageHandler? handler;
+            lock (_gate)
+            {
+                _handlers.TryGetValue(channel, out handler);
+            }
+            return handler is null
+                ? ValueTask.FromResult<ReadOnlyMemory<byte>?>(null)
+                : handler(data, cancellationToken);
+        }
+
+        private async ValueTask<ReadOnlyMemory<byte>?> HandleTextActionAsync(string action, string text)
+        {
+            try
+            {
+                await _host.PerformTextActionAsync(action, text);
+                return JsonSerializer.SerializeToUtf8Bytes(new object?[] { null });
+            }
+            catch (Exception exception)
+            {
+                return JsonSerializer.SerializeToUtf8Bytes(new object?[] { "text-action-failed", exception.Message, null });
+            }
+        }
+
+        private ValueTask<ReadOnlyMemory<byte>?> HandleContextMenuMessage(
+            ReadOnlyMemory<byte>? data
+        )
+        {
+            if (data is null)
+            {
+                return ValueTask.FromResult<ReadOnlyMemory<byte>?>(null);
+            }
+
+            using var document = JsonDocument.Parse(data.Value);
+            if (!document.RootElement.TryGetProperty("method", out var methodElement))
+            {
+                return ValueTask.FromResult<ReadOnlyMemory<byte>?>(null);
+            }
+
+            var enabled = methodElement.GetString() switch
+            {
+                "enableContextMenu" => true,
+                "disableContextMenu" => false,
+                _ => (bool?)null,
+            };
+            if (enabled is null)
+            {
+                return ValueTask.FromResult<ReadOnlyMemory<byte>?>(null);
+            }
+
+            _host.SetBrowserContextMenuEnabled(enabled.Value);
+            return ValueTask.FromResult<ReadOnlyMemory<byte>?>(SuccessEnvelope);
+        }
+
+        public void SetMessageHandler(string channel, PlatformMessageHandler? handler)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(channel);
+            lock (_gate)
+            {
+                if (handler is null)
+                {
+                    _handlers.Remove(channel);
+                }
+                else
+                {
+                    _handlers[channel] = handler;
+                }
+            }
+        }
+    }
+}

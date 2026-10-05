@@ -88,6 +88,36 @@ internal sealed class SkiaNativeTextureEntry : NativeTextureEntry
             dropped?.Dispose();
         }
 
+        public SkiaExternalTextureFrame CaptureFrame(bool freeze)
+        {
+            NativeTextureFrame? captured, retired = null;
+            lock (_gate)
+            {
+                ObjectDisposedException.ThrowIf(_disposed, this);
+                if (_pending is not null && (!freeze || _current is null))
+                {
+                    retired = _current;
+                    _current = _pending;
+                    _pending = null;
+                }
+                captured = _current?.Retain();
+            }
+            retired?.Dispose();
+            return new Snapshot(captured);
+        }
+
+        private sealed class Snapshot(NativeTextureFrame? frame) : SkiaExternalTextureFrame
+        {
+            private NativeTextureFrame? _frame = frame;
+            public override void Draw(SKCanvas canvas, SKRect destination, SKSamplingOptions sampling)
+            {
+                if (_frame is { } captured)
+                    (SkiaGraphiteSession.CurrentRecording ?? throw new PlatformNotSupportedException(
+                        "Native textures require a Graphite recording.")).DrawNativeTexture(canvas, captured, destination, sampling);
+            }
+            public override void Dispose() => Interlocked.Exchange(ref _frame, null)?.Dispose();
+        }
+
         public void Draw(
             SKCanvas canvas,
             SKRect destination,

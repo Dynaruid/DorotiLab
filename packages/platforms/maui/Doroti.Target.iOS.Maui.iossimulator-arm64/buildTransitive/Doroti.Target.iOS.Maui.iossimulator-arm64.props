@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <DorotiProviderBuildDirectory>$(MSBuildThisFileDirectory)../provider-build/</DorotiProviderBuildDirectory>
+    <DorotiProviderSdkProps>$(DorotiProviderBuildDirectory)Sdk.props</DorotiProviderSdkProps>
+  </PropertyGroup>
+</Project>

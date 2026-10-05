@@ -1,69 +1,13 @@
 <Project>
   <Import Project="../Directory.Build.props" />
-  <Import Project="src/Doroti.Runner.Sdk/Sdk/Doroti.MacCatalyst.props" />
-  <Import Project="src/Doroti.Runner.Sdk/Sdk/Doroti.MacOS.props" />
-  <Import Project="src/Doroti.Runner.Sdk/Sdk/Doroti.IosNativeAot.props" />
+  <Import Project="eng/Doroti.Common.props" />
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <DorotiAndroidTargetFramework Condition="'$(DorotiAndroidTargetFramework)' == ''">net10.0-android</DorotiAndroidTargetFramework>
-    <VersionPrefix>0.3.0</VersionPrefix>
-    <VersionSuffix>beta</VersionSuffix>
-    <LangVersion>14.0</LangVersion>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <AnalysisLevel>10.0</AnalysisLevel>
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Deterministic>true</Deterministic>
-    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+    <VersionPrefix>0.4.0</VersionPrefix>
+    <VersionSuffix>alpha.1</VersionSuffix>
+    <DorotiCoreVersion Condition="'$(DorotiCoreVersion)' == ''">0.4.0-alpha.1</DorotiCoreVersion>
+    <Version Condition="'$(Version)' == ''">$(DorotiCoreVersion)</Version>
     <IsPackable>false</IsPackable>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(MSBuildThisFileDirectory)artifacts\**</DefaultItemExcludes>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(IsDorotiProduct)' == 'true'">
-    <IsPackable>true</IsPackable>
-    <Authors>Doroti contributors</Authors>
-    <Description>Independent .NET runtime package for the Doroti UI framework.</Description>
-    <PackageTags>doroti;ui;flutter-framework</PackageTags>
-    <RepositoryUrl>https://github.com/Dynaruid/DorotiLab</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <DebugType>portable</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageReleaseNotes>Product-owned Doroti framework sources with fixed runners for MAUI Windows, Android, iOS, native AppKit macOS, Mac Catalyst, Web, and Linux Qt.</PackageReleaseNotes>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and ('$(RuntimeIdentifier)' == 'win-x64' or '$(TargetFramework)' == 'net10.0-windows10.0.19041.0')">
-    <BaseIntermediateOutputPath Condition="'$(ArtifactsPath)' == ''">obj\windows\</BaseIntermediateOutputPath>
-    <MSBuildProjectExtensionsPath Condition="'$(ArtifactsPath)' == ''">$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and ('$(RuntimeIdentifier)' == 'maccatalyst-arm64' or '$(TargetFramework)' == 'net10.0-maccatalyst')">
-    <BaseIntermediateOutputPath Condition="'$(ArtifactsPath)' == ''">obj\maccatalyst\</BaseIntermediateOutputPath>
-    <MSBuildProjectExtensionsPath Condition="'$(ArtifactsPath)' == ''">$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and ('$(RuntimeIdentifier)' == 'osx-arm64' or '$(TargetFramework)' == 'net10.0-macos')">
-    <BaseIntermediateOutputPath Condition="'$(ArtifactsPath)' == ''">obj\macos\</BaseIntermediateOutputPath>
-    <MSBuildProjectExtensionsPath Condition="'$(ArtifactsPath)' == ''">$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and ('$(RuntimeIdentifier)' == 'android-arm64' or '$(RuntimeIdentifier)' == 'android-x64')">
-    <BaseIntermediateOutputPath Condition="'$(ArtifactsPath)' == ''">obj\$(RuntimeIdentifier)\</BaseIntermediateOutputPath>
-    <MSBuildProjectExtensionsPath Condition="'$(ArtifactsPath)' == ''">$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and ('$(RuntimeIdentifier)' == 'ios-arm64' or '$(RuntimeIdentifier)' == 'iossimulator-arm64' or '$(RuntimeIdentifier)' == 'iossimulator-x64')">
-    <BaseIntermediateOutputPath Condition="'$(ArtifactsPath)' == ''">obj\$(RuntimeIdentifier)\</BaseIntermediateOutputPath>
-    <MSBuildProjectExtensionsPath Condition="'$(ArtifactsPath)' == ''">$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and '$(RuntimeIdentifier)' == '' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
-    <BaseIntermediateOutputPath Condition="'$(ArtifactsPath)' == ''">obj\android\</BaseIntermediateOutputPath>
-    <MSBuildProjectExtensionsPath Condition="'$(ArtifactsPath)' == ''">$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
-  </PropertyGroup>
-  <!-- Restore evaluates the multi-target outer project before TargetFramework is
-       selected. Keep RID-less Maui assets at the same path for outer restore and
-       inner compilation; SDK output paths already include the target framework. -->
-  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and '$(RuntimeIdentifier)' == '' and '$(ArtifactsPath)' == ''">
-    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
-    <MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
   </PropertyGroup>
 </Project>

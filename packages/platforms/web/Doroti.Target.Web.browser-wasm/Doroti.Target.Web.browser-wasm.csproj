@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>Doroti.Target.Web</AssemblyName>
+    <RootNamespace>Doroti.Target.Web</RootNamespace>
+    <PackageId>Doroti.Target.Web.browser-wasm</PackageId>
+    <Description>Doroti browser-wasm composition root and target-aware web manifest.</Description>
+    <IsDorotiProduct>true</IsDorotiProduct>
+    <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+    <ProjectReference Include="../../../../Doroti/src/Doroti.Hosting/Doroti.Hosting.csproj" />
+    <ProjectReference Include="../../../../Doroti/src/Doroti.Runtime/Doroti.Runtime.csproj" />
+    <ProjectReference Include="../../../../Doroti/src/Doroti.Ui/Doroti.Ui.csproj" />
+    <ProjectReference Include="../../../../Doroti/src/Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj" />
+    <ProjectReference Include="../Doroti.Host.Web/Doroti.Host.Web.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(IntermediateOutputPath)doroti-target-manifest.json" LogicalName="Doroti.Target.Manifest" />
+    <None Include="$(IntermediateOutputPath)doroti-target-manifest.json" Pack="true" PackagePath="doroti" />
+    <None Include="build/Doroti.Target.Web.browser-wasm.props" Pack="true" PackagePath="build/Doroti.Target.Web.browser-wasm.props" />
+    <None Include="build/DorotiSkiaInterop.js" Pack="true" PackagePath="build/DorotiSkiaInterop.js" />
+    <None Include="buildTransitive/Doroti.Target.Web.browser-wasm.targets" Pack="true" PackagePath="buildTransitive/Doroti.Target.Web.browser-wasm.targets" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(IntermediateOutputPath)Doroti.Provider.Bootstrap.targets" Pack="true" PackagePath="bootstrap/" />
+  </ItemGroup>
+  <PropertyGroup>
+    <DorotiProviderMetadataSource>$(MSBuildProjectDirectory)/doroti-target-manifest.json</DorotiProviderMetadataSource>
+    <DorotiProviderMetadataFile>doroti-target-manifest.json</DorotiProviderMetadataFile>
+  </PropertyGroup>
+  <Import Project="../../Doroti.Provider.PackageMetadata.targets" />
+  <ItemGroup>
+    <None Include="../Doroti.Host.Web/Web/types/**/*.d.ts" Pack="true" PackagePath="bootstrap/types/%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="../../build/**/*" Pack="true" PackagePath="provider-build/%(RecursiveDir)%(Filename)%(Extension)" />
+    <None Include="buildTransitive/Doroti.Target.Web.browser-wasm.props" Pack="true" PackagePath="buildTransitive/" />
+  </ItemGroup>
+</Project>

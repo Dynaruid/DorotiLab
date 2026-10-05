@@ -67,8 +67,8 @@ M0 → M1 최소 경로 → M2 → M4/M5 → M6(대상 플랫폼) → M7 순서�
 
 ## 착수 시 확인할 코드·문서
 
-- [Doroti/src/Doroti.Host.WindowsAppSdk](../../../../Doroti/src/Doroti.Host.WindowsAppSdk)
-- [Doroti/src/Doroti.Host.Maui](../../../../Doroti/src/Doroti.Host.Maui)
+- [Doroti/src/Doroti.Host.WindowsAppSdk](../../../../packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk)
+- [Doroti/src/Doroti.Host.Maui](../../../../packages/platforms/maui/Doroti.Host.Maui)
 - [Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.targets](../../../../Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.targets)
 - [Doroti/src/Doroti.Desktop](../../../../Doroti/src/Doroti.Desktop)
 - [Doroti/docs/platform-views/windows-webview.md](../../../../Doroti/docs/platform-views/windows-webview.md)
@@ -94,3 +94,5 @@ Windows App SDK Debug build, 실제 창 API/native close 취소와 registry 정�
 
 [이번 세 플랫폼 실행 기록](../results/2026-09-29-web-windows-android.md)에
 새 구현·실제 실행·후보와 미검증 경계를 기록했다. 전체 상태는 PARTIAL이다.
+
+Source relocation note: this historical result used `Doroti/src/Doroti.Host.WindowsAppSdk`; the source link now follows its moved location. The recorded validation scope is unchanged.

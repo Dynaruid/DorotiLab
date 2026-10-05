@@ -90,17 +90,37 @@ internal class _ViewState__view : State<View>, WidgetsBindingObserver
     internal virtual FocusTraversalPolicy _policy { get; private set; } =
         new ReadingOrderTraversalPolicy();
     internal virtual bool _viewHasFocus { get; set; } = false;
+    private IWindowService? _windows;
+    private int _windowUpdateQueued;
+    private void HandleWindowChanged(WindowEvent value)
+    {
+        if (value.Window.ViewId != widget.view.viewId || value.Window.Closed || widget.view.InvocationLifetime.IsCancellationRequested || Interlocked.Exchange(ref _windowUpdateQueued, 1) != 0) return;
+        _ = UpdateWindowAsync();
+    }
+    private async Task UpdateWindowAsync()
+    {
+        try
+        {
+            await widget.view.DispatchPlatformEventAsync(() => { Interlocked.Exchange(ref _windowUpdateQueued, 0); if (mounted) setState(() => { }); }, widget.view.InvocationLifetime).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) { Interlocked.Exchange(ref _windowUpdateQueued, 0); }
+        catch (ObjectDisposedException) { Interlocked.Exchange(ref _windowUpdateQueued, 0); }
+    }
 
     public override void initState()
     {
         base.initState();
         WidgetsBinding.instance.addObserver(this);
         _scopeNode.addListener(_scopeFocusChangeListener);
+        _windows = widget.view.GetCapabilityOrDefault<IWindowService>(DorotiCapabilityIds.WindowService);
+        if (_windows is not null) _windows.Changed += HandleWindowChanged;
     }
 
     public override void dispose()
     {
         WidgetsBinding.instance.removeObserver(this);
+        if (_windows is not null) _windows.Changed -= HandleWindowChanged;
+        _windows = null;
         _scopeNode.removeListener(_scopeFocusChangeListener);
         _scopeNode.dispose();
         base.dispose();
@@ -121,6 +141,7 @@ internal class _ViewState__view : State<View>, WidgetsBindingObserver
 
     public virtual void didChangeViewFocus(ViewFocusEvent @event)
     {
+        if (checked(@event.viewId) != checked((long)widget.view.viewId)) return;
         _viewHasFocus = @event.state switch
         {
             var __constant10380 when Equals(__constant10380, ViewFocusState.focused) => checked(
@@ -168,7 +189,9 @@ internal class _ViewState__view : State<View>, WidgetsBindingObserver
             }
             case var __constant11086 when Equals(__constant11086, ViewFocusState.unfocused):
             {
-                FocusManager.instance.rootScope.requestScopeFocus();
+                // A delayed unfocused event from another native window must
+                // not remove the current survivor's focus.
+                if (_scopeNode.hasFocus) FocusManager.instance.rootScope.requestScopeFocus();
                 break;
             }
         }
@@ -176,6 +199,10 @@ internal class _ViewState__view : State<View>, WidgetsBindingObserver
 
     public override Widget build(BuildContext context)
     {
+        Widget content = widget.child;
+        var windows = widget.view.GetCapabilityOrDefault<IWindowService>(DorotiCapabilityIds.WindowService);
+        var window = windows?.GetWindows().SingleOrDefault(value => value.ViewId == widget.view.viewId && !value.Closed);
+        if (window is not null) content = new WindowScope(window, content);
         return new RawView(
             view: widget.view,
             deprecatedDoNotUseWillBeRemovedWithoutNoticePipelineOwner: widget._deprecatedPipelineOwner,
@@ -188,7 +215,7 @@ internal class _ViewState__view : State<View>, WidgetsBindingObserver
                     child: FocusScope.CreateWithExternalFocusNode(
                         includeSemantics: false,
                         focusScopeNode: _scopeNode,
-                        child: widget.child
+                        child: content
                     )
                 )
             )
@@ -304,7 +331,8 @@ internal class _RawViewElement__view : RenderTreeRootElement
                 __late__pipelineOwner = new PipelineOwner(
                     onSemanticsOwnerCreated: () => _handleSemanticsOwnerCreated(),
                     onSemanticsUpdate: _handleSemanticsUpdate,
-                    onSemanticsOwnerDisposed: () => _handleSemanticsOwnerDisposed()
+                    onSemanticsOwnerDisposed: () => _handleSemanticsOwnerDisposed(),
+                    enterOwnerScope: () => ((_RawViewInternal__view)widget).view.EnterInvocationScope()
                 );
                 __late__pipelineOwner_initialized = true;
             }
@@ -341,6 +369,7 @@ internal class _RawViewElement__view : RenderTreeRootElement
 
     internal virtual void _updateChild()
     {
+        using var invocationScope = ((_RawViewInternal__view)widget).view.EnterInvocationScope();
         try
         {
             Widget child = ((_RawViewInternal__view?)widget)!.builder(

@@ -385,9 +385,9 @@ arm64 Release AOT는 `android-arm64` 실기기에서 별도로 확인합니다.
 이전 SkiaSharp를 참조한다면 다음 두 복원 캐시를 갱신한 뒤 샘플 실행 명령을 다시 실행합니다.
 
 ```powershell
-dotnet restore ./Doroti/src/Doroti.Host.Maui/Doroti.Host.Maui.csproj `
+dotnet restore ./packages/platforms/maui/Doroti.Host.Maui/Doroti.Host.Maui.csproj `
   -p:RuntimeIdentifier=android-arm64 -p:TargetFramework=net10.0-android --force-evaluate -v minimal
-dotnet restore ./Doroti/src/Doroti.Host.Maui/Doroti.Host.Maui.csproj `
+dotnet restore ./packages/platforms/maui/Doroti.Host.Maui/Doroti.Host.Maui.csproj `
   -p:TargetFramework=net10.0-android -p:DorotiHostTargetFrameworks=net10.0-android --force-evaluate -v minimal
 ```
 

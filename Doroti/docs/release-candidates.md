@@ -1,5 +1,18 @@
 # Local release candidates
 
+The 0.4 structure uses workspace/provider metadata and independent version arguments:
+
+```powershell
+python Doroti/eng/run-with-timeout.py --timeout 1200 python Doroti/eng/release-candidate.py `
+  --targets windows --design material --runtime-targets windows `
+  --core-version 0.4.0-alpha.2 --material-version 1.0.0-alpha.3 `
+  --cupertino-version 1.0.0-alpha.2 --provider-version windowsappsdk=0.4.0-alpha.4
+```
+
+`--targets` accepts aliases declared in `--workspace`, whose default is the template workspace. Each provider profile is qualified separately. Core/design/provider versions are passed to their owning build properties; the old global `--version` and fixed target dictionary are removed. The generated consumer uses only local nupkgs and an isolated NuGet cache. Material consumers explicitly pin the selected compatible Cupertino candidate when testing an independent newer version.
+
+`candidate.json` v2 records evaluated projects, actual nuspec dependencies, provider/core ranges, native asset hashes, the source hash and alias-specific runtime results. Pack/publish success does not imply runtime, signing or clean-machine acceptance. `--runtime-targets` selects native desktop consumers that emit a first-frame/two-window/resize/close receipt; browser and device qualification use their separate runtime probes. Failed runs retain their investigation directory and are not PASS evidence. Dated entries below describe the former tool and source structure.
+
 The [full-review follow-up](validation/2026-10-04-full-review.md) binds Windows/macOS native receipts to the current candidate version and unique run ID, requires first-frame/two-window/resize/close and exactly one survivor, and rejects missing/corrupt/stale receipts. Candidate tools use the wrapper's resolved Python interpreter and support `--dotnet` for the selected SDK executable. Linux installer retry/remove recovers verified owned temporaries and retains userdata. Signing and clean-machine deployment remain separate acceptance.
 
 2026-10-03: `release-candidate.py --targets windows --windows-backend Maui` selects the MAUI template runner and a single Windows Host.Maui pack. Upper `doroti.ps1 release` routes individual Windows/backend, Web, Android, macOS, iOS and Catalyst choices to candidate options; each MAUI platform uses a separate run. Linux retains its Qt publish/package/installer path. Windows MAUI excludes pinned SkiaSharp managed bytes from ReadyToRun rewriting to retain native provenance hashes. [Current evidence](validation/2026-10-03-platform-gap-implementation.md). Apple builds/runs are SKIPPED for this request.

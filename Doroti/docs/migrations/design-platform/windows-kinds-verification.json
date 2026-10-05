@@ -1,0 +1,55 @@
+{
+  "schema": "doroti.windows-kinds-verification/v1",
+  "result": "PASS",
+  "scope": "actual HWND per kind, native owner, modal owner input disable/restore, popup native style, tooltip no-activate, unique view mappings and per-window cleanup completion",
+  "probe": {
+    "schemaVersion": "doroti.windows-kinds-probe/v1",
+    "result": "PASS",
+    "windows": [
+      {
+        "kind": "Regular",
+        "nativeOwner": true,
+        "viewId": "2",
+        "native": true,
+        "drained": true
+      },
+      {
+        "kind": "Dialog",
+        "nativeOwner": true,
+        "viewId": "3",
+        "native": true,
+        "drained": true
+      },
+      {
+        "kind": "Popup",
+        "nativeOwner": true,
+        "viewId": "4",
+        "native": true,
+        "drained": true
+      },
+      {
+        "kind": "Tooltip",
+        "nativeOwner": true,
+        "viewId": "5",
+        "native": true,
+        "drained": true
+      },
+      {
+        "kind": "Satellite",
+        "nativeOwner": true,
+        "viewId": "6",
+        "native": true,
+        "drained": true
+      }
+    ],
+    "remaining": 1
+  },
+  "artifacts": "temp\\testing\\platform-decoupling\\window-kinds\\21b37ba5eb8e4aa38005aac5926c3fce",
+  "notVerified": [
+    "physical IME/focus restoration",
+    "mixed monitor DPI",
+    "nested modal reentrancy",
+    "design dialog/menu result bridge",
+    "OS menu interaction"
+  ]
+}

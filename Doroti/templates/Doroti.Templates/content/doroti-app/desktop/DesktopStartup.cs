@@ -7,7 +7,7 @@ public sealed class DesktopStartup : IDorotiDesktopApplicationStartup
 {
     public void Configure(DesktopApplicationBuilder desktop) =>
         desktop.UseMainWindow(
-            desktop.LegacyMainWindow with
+            desktop.DefaultMainWindow with
             {
                 Options = new WindowOptions
                 {

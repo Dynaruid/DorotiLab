@@ -9,7 +9,7 @@ public sealed class LinuxDesktopStartup : IDorotiDesktopApplicationStartup
     {
         if (Environment.GetEnvironmentVariable("DOROTI_DESKTOP_LIFETIME") == "Explicit")
             desktop.LifetimePolicy = WindowLifetimePolicy.Explicit;
-        desktop.UseMainWindow(desktop.LegacyMainWindow with
+        desktop.UseMainWindow(desktop.DefaultMainWindow with
         {
             Options = new WindowOptions
             {
@@ -31,7 +31,7 @@ public sealed class LinuxDesktopStartup : IDorotiDesktopApplicationStartup
                     return;
                 }
                 if (Environment.GetEnvironmentVariable("DOROTI_MULTIWINDOW_PROBE") is { Length: > 0 } multi)
-                { await LinuxMultiWindowProbe.RunAsync(context, desktop.LegacyMainWindow with { Options = new WindowOptions
+                { await LinuxMultiWindowProbe.RunAsync(context, desktop.DefaultMainWindow with { Options = new WindowOptions
                   { StartupVisibility = WindowStartupVisibility.PlatformDefault } }, multi); return; }
                 if (Environment.GetEnvironmentVariable("DOROTI_QT_DESKTOP_PROBE") is { Length: > 0 } path)
                     await LinuxDesktopProbe.RunAsync(context, path, ct);

@@ -23,6 +23,8 @@ export function activate(context: vscode.ExtensionContext) {
     let operation: ChildProcess | undefined;
     let lifetime = 0;
     const config = () => vscode.workspace.getConfiguration('doroti');
+    const development = () => project?.developmentSupport.find(value => value.platform === target)?.development;
+
     const trusted = () => { if (!vscode.workspace.isTrusted) throw new Error('Trust this workspace before running Doroti tools.'); };
     const singleRoot = () => { if ((vscode.workspace.workspaceFolders?.length ?? 0) !== 1) throw new Error('Open one local workspace folder. Multi-root is not supported.'); };
     const showError = (e: unknown) => { logs.appendLine(String(e)); logs.show(true); void vscode.window.showErrorMessage(String(e)); };
@@ -31,7 +33,7 @@ export function activate(context: vscode.ExtensionContext) {
         status.command = 'doroti.selectProject'; status.show();
         const supported = !!session?.runtime?.supported && !session.restartRequired;
         reload.text = session?.pending ? '$(sync~spin) Reloading' : '$(debug-restart) Hot Reload';
-        reload.tooltip = supported ? 'Save pending C# edits and apply metadata updates' : 'Run a connected Windows, Web, Android, iOS, AppKit, Mac Catalyst or Linux Qt Debug session.';
+        reload.tooltip = supported ? 'Save pending C# edits and apply metadata updates' : 'Run a connected provider Debug session.';
         reload.command = supported && !session?.pending ? 'doroti.hotReload' : 'doroti.showLogs';
         if (session) reload.show(); else reload.hide();
         void vscode.commands.executeCommand('setContext', 'doroti.running', !!session || busy);
@@ -68,7 +70,7 @@ export function activate(context: vscode.ExtensionContext) {
     async function selectTarget(requested?: unknown) {
         trusted(); if (session) throw new Error('Stop the running app before changing target.');
         if (!project) await selectProject(); if (!project) return;
-        if (!project.developmentTargets.length) throw new Error('This manifest declares no Windows/Web/Android/iOS/AppKit/Mac Catalyst/Linux Qt development targets.');
+        if (!project.developmentTargets.length) throw new Error('This manifest declares no provider development operations on this host.');
         const choice = typeof requested === 'string' ? requested : await vscode.window.showQuickPick(project.developmentTargets, { title: 'Select Doroti target' });
         if (choice && !project.developmentTargets.includes(choice)) throw new Error('Target is not declared by this workspace.');
         if (choice) { target = choice; await context.workspaceState.update('target', target); display(); }
@@ -101,7 +103,7 @@ export function activate(context: vscode.ExtensionContext) {
         const current = session;
         if (current) {
             current.stopping = true; clearInterval(current.timer); await current.bridge?.close();
-            if (target === 'android' && current.child.exitCode === null && current.child.signalCode === null) {
+            if (development()?.usesStopSignal && current.child.exitCode === null && current.child.signalCode === null) {
                 await fs.writeFile(path.join(current.directory, 'stop.json'), JSON.stringify({ sessionId: current.id }));
                 const deadline = Date.now() + 30000;
                 while (current.child.exitCode === null && current.child.signalCode === null && Date.now() < deadline)
@@ -145,30 +147,16 @@ export function activate(context: vscode.ExtensionContext) {
         const id = randomUUID(); const directory = path.join(project.root, '.doroti', 'dev', id);
         await fs.mkdir(directory, { recursive: true });
         if (generation !== lifetime) return;
-        const bridge = target === 'web' ? await WebBridge.start(id) : undefined;
+        const bridge = development()?.transport === 'browser' ? await WebBridge.start(id) : undefined;
         if (generation !== lifetime) { await bridge?.close(); return; }
         let opened = false; let tail = '';
         const args = ['-NoProfile', '-File', script, 'dev', '-App', project.root, '-Platform', target, '-Configuration', 'Debug', '-SessionDirectory', directory, '-SessionId', id];
         args.push('-DotnetPath', config().get<string>('dotnetPath', 'dotnet'));
-        if (target === 'windows') args.push('-WindowsBackend', config().get<string>('windowsBackend', 'WindowsAppSdk'));
-        if (target === 'android') {
-            const device = config().get<string>('androidDevice');
-            if (device) args.push('-Device', device);
-        }
-        if (target === 'macos' || target === 'maccatalyst') {
-            const setting = target === 'macos' ? 'macosTargetFramework' : 'macCatalystTargetFramework';
-            const framework = config().get<string>(setting);
-            if (framework) args.push(target === 'macos' ? '-MacOSTargetFramework' : '-MacCatalystTargetFramework', framework);
-        }
-        if (target === 'ios') {
-            for (const [setting, option] of [['iosDevice', '-Device'], ['iosTargetFramework', '-IosTargetFramework'], ['iosRuntimeIdentifier', '-Rid'], ['iosSdkVersion', '-IosSdkVersion'], ['iosHotReloadHost', '-IosHotReloadHost']]) {
-                const value = config().get<string>(setting);
-                if (value) args.push(option, value);
-            }
-        }
+        const device = config().get<string>('device');
+        if (device) args.push('-Device', device);
         const child = start(config().get('powerShellPath', 'pwsh'), args, project.root, text => {
             logs.append(text); tail = (tail + text).slice(-8192);
-            if (target === 'web' && !opened) {
+            if (development()?.launchBrowser && !opened) {
                 const url = /Now listening on:\s*(https?:\/\/[^\s]+)[\r\n]/.exec(tail)?.[1];
                 if (url) { opened = true; void vscode.env.openExternal(vscode.Uri.parse(bridge ? bridge.browserUrl(url) : url)); }
             }
@@ -191,7 +179,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
     async function hotReload(save?: unknown) {
         trusted(); const current = session;
-        if (!current?.runtime?.supported || current.restartRequired) throw new Error('Hot Reload unavailable. Run Windows/Web/Android/iOS/AppKit/Mac Catalyst/Linux Qt Debug with a connected runtime, or use Restart (resets state).');
+        if (!current?.runtime?.supported || current.restartRequired) throw new Error('Hot Reload unavailable. Run a provider Debug session with a connected runtime, or use Restart (resets state).');
         if (current.pending) return;
         const dirty = vscode.workspace.textDocuments.filter(doc => doc.isDirty && doc.languageId === 'csharp' && project && within(project.root, doc.uri.fsPath));
         if (!dirty.length) { void vscode.window.showInformationMessage('No unsaved C# edits. Saved changes are applied by dotnet watch automatically.'); return; }
@@ -203,7 +191,7 @@ export function activate(context: vscode.ExtensionContext) {
             if (current.bridge) await current.bridge.prepare(current.runtime.runtimeId, current.pending);
             else {
                 await fs.writeFile(path.join(current.directory, 'request.json'), JSON.stringify({ schemaVersion: 'doroti.dev/v1', sessionId: current.id, runtimeId: current.runtime.runtimeId, requestId: current.pending }));
-                if (target === 'ios' || target === 'android') {
+                if (development()?.requiresPreparedAcknowledgment) {
                     const deadline = Date.now() + 15000;
                     while (true) {
                         if (session !== current || current.stopping) return;

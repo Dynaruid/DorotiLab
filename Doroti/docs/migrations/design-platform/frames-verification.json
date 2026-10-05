@@ -1,0 +1,17 @@
+{
+  "schema": "doroti.frames-verification/v1",
+  "verifiedUtc": "2026-10-05T00:46:24.453418+00:00",
+  "command": "python Doroti/eng/run-with-timeout.py --timeout 1200 python Doroti/tests/frame_submission_contract.py",
+  "result": "PASS",
+  "scope": "managed/headless contracts and real shared widget tree/CPU rendering; G0 partial",
+  "results": [
+    "PASS: frozen command/image storage, consumer ownership, bounded pending/raster admission, late completion, renderer close and simulated device-loss cleanup (CPU; native GPU fence acceptance remains separate)."
+  ],
+  "notVerified": [
+    "native windows G1",
+    "physical IME/native focus",
+    "GPU fence and native owner/frame bridge acceptance"
+  ],
+  "runId": "89bcf102203940a7965851e4c20358e7",
+  "rawArtifacts": "removed after successful summary"
+}

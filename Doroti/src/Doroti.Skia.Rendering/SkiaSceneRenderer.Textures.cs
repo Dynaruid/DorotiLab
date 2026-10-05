@@ -65,6 +65,11 @@ public sealed partial class SkiaSceneRenderer
 
     private void DrawTexture(SKCanvas canvas, SceneTexturePayload texture)
     {
+        if (texture.FrozenFrame is SkiaExternalTextureFrame frozen)
+        {
+            frozen.Draw(canvas, ToRect(texture.Bounds), ToSamplingOptions(texture.FilterQuality));
+            return;
+        }
         if (_textures.DrawExternal(canvas, texture))
             return;
         var frame = _textures.Acquire(texture.TextureId, texture.Freeze);
@@ -136,6 +141,28 @@ public sealed partial class SkiaSceneRenderer
                 _external.Add(entry.Id, entry);
                 return entry;
             }
+        }
+
+        internal IDisposable CaptureFrame(long id, bool freeze)
+        {
+            lock (_gate)
+            {
+                ObjectDisposedException.ThrowIf(_disposed, this);
+                if (_external.TryGetValue(id, out var external)) return external.CaptureFrame(freeze);
+                if (!_entries.ContainsKey(id))
+                    throw new InvalidOperationException("Texture submission belongs to a retired or different view registry.");
+                return new PixelFrame(Acquire(id, freeze));
+            }
+        }
+
+        private sealed class PixelFrame(SkiaImageHandle? image) : SkiaExternalTextureFrame
+        {
+            private SkiaImageHandle? _image = image;
+            public override void Draw(SKCanvas canvas, SKRect destination, SKSamplingOptions sampling)
+            {
+                if (_image is { } frame) canvas.DrawImage(frame.Image, destination, sampling);
+            }
+            public override void Dispose() => Interlocked.Exchange(ref _image, null)?.Release();
         }
 
         internal bool DrawExternal(SKCanvas canvas, SceneTexturePayload texture)
@@ -210,6 +237,15 @@ public sealed partial class SkiaSceneRenderer
             {
                 if (!Volatile.Read(ref _released))
                     owner._invalidate();
+            }
+
+            internal SkiaExternalTextureFrame CaptureFrame(bool freeze)
+            {
+                lock (_drawGate)
+                {
+                    ObjectDisposedException.ThrowIf(_released, this);
+                    return source.CaptureFrame(freeze);
+                }
             }
 
             internal void Draw(SKCanvas canvas, SceneTexturePayload texture)

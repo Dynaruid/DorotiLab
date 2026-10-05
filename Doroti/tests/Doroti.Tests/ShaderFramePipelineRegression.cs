@@ -64,7 +64,8 @@ internal static class ShaderFramePipelineRegression
         void Submit(IReadOnlyList<SceneCommand> commands)
         {
             using var scene = new Scene(1, commands);
-            renderer.Submit(1, new(scene, new(host.ViewEpoch, ++frameworkFrame, 80, 60)),
+            using var submission = new DorotiSceneSubmission(scene, new(host.ViewEpoch, ++frameworkFrame, 80, 60));
+            renderer.Submit(1, submission,
                 DorotiUiInvocation.Managed("ShaderFramePipelineRegression"));
         }
         // Run the production host ordering with no scene submitted beforehand.

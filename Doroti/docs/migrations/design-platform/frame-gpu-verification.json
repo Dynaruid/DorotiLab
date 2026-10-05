@@ -1,0 +1,262 @@
+{
+  "schema": "doroti.frame-gpu-verification/v1",
+  "verifiedUtc": "2026-10-04T18:16:57.572967+00:00",
+  "command": "python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project Doroti/tests/Doroti.Tests -c Debug -r win-x64 -- --native-frame-gpu <owned-run>/gpu.json",
+  "result": "PASS",
+  "scope": "actual Vulkan/Graphite pixels and GPU recording/retirement under deliberate queue stalls; no native windows, DWM scanout, physical input or G1 acceptance",
+  "runId": "c28841a0a135464d9bbfadaf1cd6881d",
+  "rawArtifacts": "removed after successful summary",
+  "gpuEvidence": {
+    "gpu": "AMD Radeon 780M Graphics",
+    "software": false,
+    "policy": "C",
+    "reference": "C submission with drain between scenes",
+    "checks": [
+      {
+        "mode": "off",
+        "sigma": 0,
+        "redSha256": "1A707D559BFB62E4CA8900DE13F884A90F74A08C8204EC90334B3B5D212946C4",
+        "greenSha256": "062BEEC68D2EAC44C295C8134AE2D9189E1CC7CE3E78DF3EF343670D009C235A",
+        "maximumPending": 2
+      },
+      {
+        "mode": "full",
+        "sigma": 0,
+        "redSha256": "1A707D559BFB62E4CA8900DE13F884A90F74A08C8204EC90334B3B5D212946C4",
+        "greenSha256": "062BEEC68D2EAC44C295C8134AE2D9189E1CC7CE3E78DF3EF343670D009C235A",
+        "maximumPending": 2
+      },
+      {
+        "mode": "full",
+        "sigma": 1,
+        "redSha256": "3C2E36B8C96F55E52C19ED7276F2E21CC1ABB725AD4155D4899C559690679784",
+        "greenSha256": "F3116CE17466B1FC3D939195AA2B472C360FAD62CFC53179B8E3EA9516A892E7",
+        "maximumPending": 2
+      },
+      {
+        "mode": "full",
+        "sigma": 2,
+        "redSha256": "412611E5ABC4029C65FE7D9D6BB303B5C1248A4F60B0209D1683E8FDFD43DCC5",
+        "greenSha256": "DF58BB52B59EFE63F469B3EEF16F0CA81ECE08C964EB420F17EA16F198A8C723",
+        "maximumPending": 2
+      },
+      {
+        "mode": "full",
+        "sigma": 4,
+        "redSha256": "BFF0BD891C62D3453DDDFAE0BFD355EC4F1D98F6865B6764089E53A7050C9E37",
+        "greenSha256": "BC5F7CF243858AF2AFF9E1CAE09AC82D04330C4DA888CB76AF08E7A39C3C2CE3",
+        "maximumPending": 2
+      },
+      {
+        "mode": "full",
+        "sigma": 8,
+        "redSha256": "7F9B76CA690DF714D099DAF25835332F457A11D1ACA31E14A4DF65CC089D6CEE",
+        "greenSha256": "A0790917EFC88031C12C297D855D580A495C52E90AD08E8CFC587DB7DFDF94C8",
+        "maximumPending": 2
+      },
+      {
+        "mode": "full",
+        "sigma": 20,
+        "redSha256": "32058C39B7A51994B13661E5694C02ACD2CD6C2623846FB67C90EEE2965BF290",
+        "greenSha256": "84EAE9A7585D6245CD5B8DA342B6BDB615D08D302DA9CD4278C0D73A150E4A49",
+        "maximumPending": 2
+      },
+      {
+        "mode": "full",
+        "sigma": 32,
+        "redSha256": "47CD7642862701737CF4ED79A26DDF8C3C2A6AEC78526E9F9F48C80B584B9FAA",
+        "greenSha256": "5556CF87C92645DF8A23EF67EF0DDF63F5AF30ED1C20DA2BE6420D51A0C5E07C",
+        "maximumPending": 2
+      },
+      {
+        "mode": "adaptive",
+        "sigma": 0,
+        "redSha256": "1A707D559BFB62E4CA8900DE13F884A90F74A08C8204EC90334B3B5D212946C4",
+        "greenSha256": "062BEEC68D2EAC44C295C8134AE2D9189E1CC7CE3E78DF3EF343670D009C235A",
+        "maximumPending": 2
+      },
+      {
+        "mode": "adaptive",
+        "sigma": 1,
+        "redSha256": "3C2E36B8C96F55E52C19ED7276F2E21CC1ABB725AD4155D4899C559690679784",
+        "greenSha256": "F3116CE17466B1FC3D939195AA2B472C360FAD62CFC53179B8E3EA9516A892E7",
+        "maximumPending": 2
+      },
+      {
+        "mode": "adaptive",
+        "sigma": 2,
+        "redSha256": "412611E5ABC4029C65FE7D9D6BB303B5C1248A4F60B0209D1683E8FDFD43DCC5",
+        "greenSha256": "DF58BB52B59EFE63F469B3EEF16F0CA81ECE08C964EB420F17EA16F198A8C723",
+        "maximumPending": 2
+      },
+      {
+        "mode": "adaptive",
+        "sigma": 4,
+        "redSha256": "4542E23E3D616707925E725A0F46F8C64590FB97F9077FDB7056884C3B420611",
+        "greenSha256": "C0FC24570BE4A1DC3CE3591DE72FA0A4E9D1D1D1C7A953DF3E831F6A43F6F4A9",
+        "maximumPending": 2
+      },
+      {
+        "mode": "adaptive",
+        "sigma": 8,
+        "redSha256": "9EEE7AE8E6CD6F3B65842669F5B3C322BC6A1DA3FE179AF7F9188C346EE7EA06",
+        "greenSha256": "975B836ED8039C0569938DF81F961B65A1983F7AD7A9C6806BF3A0621234359D",
+        "maximumPending": 2
+      },
+      {
+        "mode": "adaptive",
+        "sigma": 20,
+        "redSha256": "99B62E6839E9AB2B5C0FCCC4F39CC8E588D662DB5AC1D1AF935F1F90588212A9",
+        "greenSha256": "558041BFD5215CB0B08EEF7CD0F66F30BE6C8AB73FFD8503373C3EFE0D98620B",
+        "maximumPending": 2
+      },
+      {
+        "mode": "adaptive",
+        "sigma": 32,
+        "redSha256": "C4D564D8905EF5AF0F90A3151C310A0768F89B936763AD67309DD5D7569B4AFA",
+        "greenSha256": "134723DFC21668D2D9899B6684984D5FCC281149CB67BEF7473B69E88006FA90",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fast",
+        "sigma": 0,
+        "redSha256": "1A707D559BFB62E4CA8900DE13F884A90F74A08C8204EC90334B3B5D212946C4",
+        "greenSha256": "062BEEC68D2EAC44C295C8134AE2D9189E1CC7CE3E78DF3EF343670D009C235A",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fast",
+        "sigma": 1,
+        "redSha256": "3C2E36B8C96F55E52C19ED7276F2E21CC1ABB725AD4155D4899C559690679784",
+        "greenSha256": "F3116CE17466B1FC3D939195AA2B472C360FAD62CFC53179B8E3EA9516A892E7",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fast",
+        "sigma": 2,
+        "redSha256": "412611E5ABC4029C65FE7D9D6BB303B5C1248A4F60B0209D1683E8FDFD43DCC5",
+        "greenSha256": "DF58BB52B59EFE63F469B3EEF16F0CA81ECE08C964EB420F17EA16F198A8C723",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fast",
+        "sigma": 4,
+        "redSha256": "966EEBDB3442FECDEC4DA6DE5C377AE038FB39A21E91AF7EB9A52C1B8F4280E3",
+        "greenSha256": "B324A04ECC5C4753A408872D86A88613EF68623B21593DCAD5C6DC39C90F8006",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fast",
+        "sigma": 8,
+        "redSha256": "E5CB60CFDBEF2ECD8AADF4DC68BDDE0F9C2ACAF453A005EDFD1139B4052F64BF",
+        "greenSha256": "2E43BEBF4841BFCF93A8CAD889E6A89E958690E3B3ED3386890BB456792F2613",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fast",
+        "sigma": 20,
+        "redSha256": "A471872CEBB61E26FD89A1E7DE386D8B5C141E2071E1F96F43DDC169A8190CBA",
+        "greenSha256": "53946AFFAFB51884C10B11725996A558EBA4D88D4BB4F24B3FE9BBF1B7E24E8D",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fast",
+        "sigma": 32,
+        "redSha256": "FA3D1430898BD85FC4DD8465227F08360BB9A3F8BB80DE0ED0A37137A6F0C96A",
+        "greenSha256": "585270C6649A686BB04C6459FE74C6765036245067BCC72D19CD66BC0CC60270",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fixed",
+        "sigma": 0,
+        "redSha256": "1A707D559BFB62E4CA8900DE13F884A90F74A08C8204EC90334B3B5D212946C4",
+        "greenSha256": "062BEEC68D2EAC44C295C8134AE2D9189E1CC7CE3E78DF3EF343670D009C235A",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fixed",
+        "sigma": 1,
+        "redSha256": "CEFC2E5DD1B4D1CECE867B349CE5D2092A4EB553CAD6C6FDCF5B784ADF93CB74",
+        "greenSha256": "BA6E1C9BBBB90EF6D2B734C822CB966A4BA4FC110407A00A07E2BA4795139F38",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fixed",
+        "sigma": 2,
+        "redSha256": "12494C1E2C2D0AE730E054ED056D8E75E644094B3540ED2909341E530E4E6F68",
+        "greenSha256": "51C782839698B6881549DA64FEAF483290F9055C76B7049CA8ADD1B2302C3A98",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fixed",
+        "sigma": 4,
+        "redSha256": "266B901D96FB9CCEBBABD065948B31F432C7E9D4720D8832467B2B39AE3E8C1F",
+        "greenSha256": "FBCFE1F73189CC110078ADD27321D87DAA8E81C8015CC56E847C6B6984048DFD",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fixed",
+        "sigma": 8,
+        "redSha256": "BAEAF124B1C00B5A8031967FA64CF2C23376B68DCC7A5D0AA45A8D3F82DECAAC",
+        "greenSha256": "419F31DEDEE66DB7536F39D73D103C0DB1E29121E4DF1FAC33255E0CE7704A68",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fixed",
+        "sigma": 20,
+        "redSha256": "6B4F26902ADFAC1517543C5BE5B0033402A5C8E970144FBC05C910CAC8A809EE",
+        "greenSha256": "EA73D016E16659F283C856AC0F7DE9E7186BA4ED402CAD447E079BE817045FFA",
+        "maximumPending": 2
+      },
+      {
+        "mode": "fixed",
+        "sigma": 32,
+        "redSha256": "1B5734519D5A08137C7DC01E5982EC6D31A3E17F88013A650212FB2EFEB674E3",
+        "greenSha256": "187C349D4FF53AE58600B749EED822081369A9C97CFE8B1739C09EA621CBEE69",
+        "maximumPending": 2
+      },
+      {
+        "mode": "kawase",
+        "sigma": 20,
+        "redSha256": "DAD59FA61A9FDA891FF7B74BC39988B23540CD47B52B31A1892F216E227B34D3",
+        "greenSha256": "DB581CD2AB2CB9C947F1F2EA903067E48D15A73AAC5AE278BDD865492BF3767F",
+        "maximumPending": 2
+      },
+      {
+        "mode": "kawase",
+        "sigma": 32,
+        "redSha256": "41D06783A74A7B6DD1847C70E7AA57A260D7274E4190D004CDE2363F04914F28",
+        "greenSha256": "5D8EAEC265A7F11A17B96856F3917F2A46CA0FBE312894C3E2054879B5D75523",
+        "maximumPending": 2
+      }
+    ],
+    "dynamicBudget": {
+      "peakReservedBytes": 170888800,
+      "peakBudgetBytes": 213647360,
+      "heaps": [
+        {
+          "HeapIndex": 0,
+          "Budget": {
+            "AllocatedBytes": 147456,
+            "BudgetBytes": 196608,
+            "PeakBudgetBytes": 213647360,
+            "LimitBytes": 204164429,
+            "RequiredBytes": 68502976,
+            "Source": "VK_EXT_memory_budget",
+            "RejectedAllocations": 0
+          }
+        }
+      ],
+      "finalReservedBytes": 0,
+      "finalBudgetBytes": 0,
+      "consumerSubmissions": 4,
+      "completedConsumers": 4
+    },
+    "MaximumFramesInFlight": 2,
+    "ConsumerSubmissions": 124,
+    "CompletedConsumers": 124,
+    "scanout": "notMeasured",
+    "hardwareOverlap": "notMeasured",
+    "physicalInput": "notVerified"
+  }
+}

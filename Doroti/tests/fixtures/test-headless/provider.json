@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "doroti.platform-provider/v1",
+  "id": "test-headless",
+  "version": "0.4.0-alpha.1",
+  "coreRange": "[0.4.0-alpha.1,0.5.0)",
+  "protocolVersion": 1,
+  "registrationType": "Doroti.TestProvider.Runtime.HeadlessApplication",
+  "hostOperatingSystems": [
+    "windows",
+    "linux",
+    "macos"
+  ],
+  "operations": [
+    "build",
+    "run",
+    "publish",
+    "dev"
+  ],
+  "services": [
+    "Configuration",
+    "Diagnostics",
+    "Devices",
+    "Templates",
+    "Operations"
+  ],
+  "tool": {
+    "mode": "DotnetInproc",
+    "assembly": "tooling/bin/Debug/net10.0/TestHeadless.Tool.dll",
+    "entryType": "TestHeadless.Extension",
+    "executable": null,
+    "arguments": []
+  }
+}

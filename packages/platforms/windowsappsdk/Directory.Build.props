@@ -1,0 +1,1 @@
+<Project TreatAsLocalProperty="Version;PackageVersion;VersionPrefix;VersionSuffix"><Import Project="../../Directory.Build.props"/><Import Project="Version.props"/></Project>

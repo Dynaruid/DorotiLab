@@ -1,0 +1,35 @@
+<Project>
+  <PropertyGroup>
+    <DorotiProductRoot>$(MSBuildThisFileDirectory)..\</DorotiProductRoot>
+    <DorotiPackageReadmeSource Condition="'$(DorotiPackageReadmeSource)' == ''">$(DorotiProductRoot)README.md</DorotiPackageReadmeSource>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(IsDorotiProduct)' == 'true'">
+    <IsPackable>true</IsPackable>
+    <Authors Condition="'$(Authors)' == ''">Doroti contributors</Authors>
+    <Description Condition="'$(Description)' == ''">Independent .NET runtime package for the Doroti UI framework.</Description>
+    <PackageTags Condition="'$(PackageTags)' == ''">doroti;ui;flutter-framework</PackageTags>
+    <RepositoryUrl Condition="'$(RepositoryUrl)' == ''">https://github.com/Dynaruid/DorotiLab</RepositoryUrl>
+    <RepositoryType Condition="'$(RepositoryType)' == ''">git</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <PackageReadmeFile Condition="'$(PackageReadmeFile)' == ''">README.md</PackageReadmeFile>
+    <PackageReleaseNotes Condition="'$(PackageReleaseNotes)' == ''">Platform-neutral applications with fixed MAUI, Web, and Linux Qt runners.</PackageReleaseNotes>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(IsDorotiProduct)' == 'true'">
+    <None Include="$(DorotiPackageReadmeSource)" Pack="true" PackagePath="/" Link="README.md" />
+    <None Include="$(DorotiProductRoot)THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="licenses/" Link="THIRD-PARTY-NOTICES.md" />
+    <None Include="$(DorotiProductRoot)LICENSES/SkiaSharp*.txt" Pack="true" PackagePath="licenses/" />
+  </ItemGroup>
+  <Target Name="RejectMechanicalCandidatesInProductCompile" BeforeTargets="CoreCompile" Condition="'$(IsDorotiProduct)' == 'true'">
+    <ItemGroup>
+      <_DorotiMechanicalCandidate Include="@(Compile)"
+                                  Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(Compile.Identity)', '\.g\.cs$')) and !$([System.Text.RegularExpressions.Regex]::IsMatch('%(Compile.Identity)', '(^|[\\/])obj[\\/]'))" />
+    </ItemGroup>
+    <Error Condition="'@(_DorotiMechanicalCandidate)' != ''"
+           Text="Mechanical .g.cs candidates cannot enter a Doroti product compile graph: @(_DorotiMechanicalCandidate)" />
+  </Target>
+</Project>

@@ -31,7 +31,7 @@ try:
         projects.add(project)
         for reference in ET.parse(project).iter('ProjectReference'):
             visit(project.parent / reference.attrib['Include'].replace('\\', '/'))
-    visit(ROOT / 'Doroti/src/Doroti.Host.WindowsAppSdk/Doroti.Host.WindowsAppSdk.csproj')
+    visit(ROOT / 'packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/Doroti.Host.WindowsAppSdk.csproj')
     if not drop: visit(ROOT / 'Doroti/src/Doroti.Plugins/Doroti.Plugins.csproj')
     packages = run / 'packages'
     for project in sorted(projects):

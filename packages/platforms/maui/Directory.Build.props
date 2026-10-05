@@ -1,0 +1,38 @@
+<Project TreatAsLocalProperty="Version;PackageVersion;VersionPrefix;VersionSuffix">
+  <Import Project="../../Directory.Build.props" />
+  <Import Project="Version.props" />
+  <Import Project="../build/Doroti.MacCatalyst.props" />
+  <Import Project="../build/Doroti.MacOS.props" />
+  <Import Project="../build/Doroti.IosNativeAot.props" />
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and ('$(RuntimeIdentifier)' == 'win-x64' or '$(TargetFramework)' == 'net10.0-windows10.0.19041.0')">
+    <BaseIntermediateOutputPath Condition="'$(ArtifactsPath)' == ''">obj\windows\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath Condition="'$(ArtifactsPath)' == ''">$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and ('$(RuntimeIdentifier)' == 'maccatalyst-arm64' or '$(TargetFramework)' == 'net10.0-maccatalyst')">
+    <BaseIntermediateOutputPath Condition="'$(ArtifactsPath)' == ''">obj\maccatalyst\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath Condition="'$(ArtifactsPath)' == ''">$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and ('$(RuntimeIdentifier)' == 'osx-arm64' or '$(TargetFramework)' == 'net10.0-macos')">
+    <BaseIntermediateOutputPath Condition="'$(ArtifactsPath)' == ''">obj\macos\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath Condition="'$(ArtifactsPath)' == ''">$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and ('$(RuntimeIdentifier)' == 'android-arm64' or '$(RuntimeIdentifier)' == 'android-x64')">
+    <BaseIntermediateOutputPath Condition="'$(ArtifactsPath)' == ''">obj\$(RuntimeIdentifier)\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath Condition="'$(ArtifactsPath)' == ''">$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and ('$(RuntimeIdentifier)' == 'ios-arm64' or '$(RuntimeIdentifier)' == 'iossimulator-arm64' or '$(RuntimeIdentifier)' == 'iossimulator-x64')">
+    <BaseIntermediateOutputPath Condition="'$(ArtifactsPath)' == ''">obj\$(RuntimeIdentifier)\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath Condition="'$(ArtifactsPath)' == ''">$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and '$(RuntimeIdentifier)' == '' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+    <BaseIntermediateOutputPath Condition="'$(ArtifactsPath)' == ''">obj\android\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath Condition="'$(ArtifactsPath)' == ''">$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and '$(RuntimeIdentifier)' == '' and '$(ArtifactsPath)' == ''">
+    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DorotiAndroidTargetFramework Condition="'$(DorotiAndroidTargetFramework)' == ''">net10.0-android</DorotiAndroidTargetFramework>
+  </PropertyGroup>
+</Project>

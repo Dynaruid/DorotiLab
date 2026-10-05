@@ -1,0 +1,21 @@
+{
+  "packageId": "Doroti.Target.Android.Maui.android-arm64",
+  "targetFramework": "net10.0-android",
+  "rid": "android-arm64",
+  "nativeViewType": "Doroti.Host.Maui.DorotiAndroidVulkanView",
+  "graphicsBackend": "Android/SurfaceView/Graphite-Vulkan",
+  "softwareFallback": false,
+  "minimumApi": 24,
+  "requiredVulkanVersion": "1.2",
+  "defaultSkiaEngine": "Graphite",
+  "nativeSkiaPackage": "SkiaSharp.NativeAssets.Android",
+  "nativeSkiaVersion": "4.154.0-preview.1.26454.9",
+  "nativeSkiaApi": "public-Graphite",
+  "schemaVersion": "doroti.target-package/v2",
+  "provider": "maui",
+  "providerVersion": "0.4.0-alpha.1",
+  "coreRange": "[0.4.0-alpha.1,0.5.0)",
+  "protocolVersion": 1,
+  "providerProfile": "default:android-arm64",
+  "packageVersion": "0.4.0-alpha.1"
+}

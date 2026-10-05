@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "doroti.target-package/v2",
+  "packageId": "Doroti.Target.Web.browser-wasm",
+  "packageVersion": "0.4.0-alpha.1",
+  "rid": "browser-wasm",
+  "host": "managed-render-worker",
+  "defaultRenderer": "worker-direct-webgl",
+  "graphicsBackend": "worker-direct-webgl2-or-worker-direct-webgpu-graphite-dawn",
+  "blazorWebAssemblyVersion": "10.0.11",
+  "skiaSharpVersion": "4.154.0-preview.1.26454.9",
+  "skiaSharpManagedPackage": "SkiaSharp",
+  "skiaSharpNativePackage": "SkiaSharp.NativeAssets.WebAssembly",
+  "bootLoader": "_framework/dotnet.js",
+  "frameworkPreloadPlaceholderId": "webassembly",
+  "hostComponents": [
+    "Doroti.Host.Web.DorotiWebWorkerSurface"
+  ],
+  "rendererModes": [
+    "worker-direct-webgl",
+    "worker-direct-webgpu"
+  ],
+  "workerRuntimeOwnership": "single-managed-runtime; bootstrap-main-or-render-worker; framework-and-skia-on-render-worker",
+  "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "managedCallbackAbi": "doroti.browser-managed-callbacks/v1",
+  "javaScriptPluginAbi": "doroti.browser-js-plugin/v1",
+  "resourceBasePolicy": "document-base-uri",
+  "resourceKinds": [
+    "asset",
+    "font",
+    "localization"
+  ],
+  "supportedPublishModes": [
+    "interpreter",
+    "aot-build-probe",
+    "persistent-dotnet-web-worker"
+  ],
+  "requiredCapabilities": [
+    "window.lifecycle",
+    "view.lifecycle-metrics",
+    "view.frame-dispatch",
+    "input.events",
+    "text.input",
+    "platform.services",
+    "platform.environment",
+    "platform.messaging",
+    "graphics.scene",
+    "graphics.text",
+    "graphics.image",
+    "accessibility.semantics"
+  ],
+  "unsupportedModes": [
+    "software-canvas-2d",
+    "software-webgl-renderer",
+    "native-desktop-plugin",
+    "trimmed-generated-product"
+  ],
+  "nativeSkiaPackage": "SkiaSharp.NativeAssets.WebAssembly",
+  "nativeSkiaVersion": "4.154.0-preview.1.26454.9",
+  "nativeSkiaApi": "public-Graphite",
+  "provider": "web",
+  "providerVersion": "0.4.0-alpha.1",
+  "coreRange": "[0.4.0-alpha.1,0.5.0)",
+  "protocolVersion": 1,
+  "providerProfile": "default:browser-wasm",
+  "targetFramework": "net10.0"
+}

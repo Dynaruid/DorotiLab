@@ -5,7 +5,7 @@ using Doroti.Framework.Rendering;
 using Doroti.Framework.Services;
 using Doroti.Framework.Widgets;
 using Doroti.Ui;
-using M = Doroti.Framework.Material;
+using M = Doroti.Material;
 
 namespace MaterialSample;
 

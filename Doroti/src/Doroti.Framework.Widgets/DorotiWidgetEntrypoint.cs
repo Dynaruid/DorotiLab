@@ -5,73 +5,64 @@ using Doroti.Ui;
 
 namespace Doroti.Framework;
 
-/// <summary>
-/// Hosts a widget root behind the stable Doroti application-entrypoint contract.
-/// </summary>
+/// <summary>One framework binding and logical root with independently owned View branches.</summary>
 public sealed class DorotiWidgetEntrypoint : IDorotiViewEntrypoint
 {
-    private readonly Func<Widget> _rootFactory;
+    private readonly Func<DorotiApplicationViews, Widget> _rootFactory;
     private readonly Func<Task>? _initialize;
+    private readonly DorotiApplicationViews _applicationViews = new();
     private WidgetsFlutterBinding? _binding;
-    private DorotiView? _view;
-    private long _attachmentGeneration;
+    private bool _rootScheduled;
+    private long _generation;
 
-    public DorotiWidgetEntrypoint(Func<Widget> rootFactory) =>
-        _rootFactory = rootFactory ?? throw new ArgumentNullException(nameof(rootFactory));
+    public DorotiWidgetEntrypoint(Func<Widget> rootFactory)
+    {
+        ArgumentNullException.ThrowIfNull(rootFactory);
+        _rootFactory = views => new DorotiApplicationViewCollection(views, (_, _) => rootFactory());
+    }
 
-    /// <summary>Prepares resources in the attached view before creating its root widget.</summary>
-    public DorotiWidgetEntrypoint(Func<Widget> rootFactory, Func<Task> initialize)
-        : this(rootFactory) =>
+    /// <summary>Creates a shared application root. State above the collection survives primary close.</summary>
+    public DorotiWidgetEntrypoint(Func<DorotiApplicationViews, Widget> applicationRootFactory) =>
+        _rootFactory = applicationRootFactory ?? throw new ArgumentNullException(nameof(applicationRootFactory));
+
+    public DorotiWidgetEntrypoint(Func<Widget> rootFactory, Func<Task> initialize) : this(rootFactory) =>
         _initialize = initialize ?? throw new ArgumentNullException(nameof(initialize));
 
-    public void Bootstrap(PlatformDispatcher dispatcher) =>
+    public DorotiWidgetEntrypoint(Func<DorotiApplicationViews, Widget> rootFactory, Func<Task> initialize) : this(rootFactory) =>
+        _initialize = initialize ?? throw new ArgumentNullException(nameof(initialize));
+
+    public void Bootstrap(PlatformDispatcher dispatcher)
+    {
+        if (_binding is not null) throw new InvalidOperationException("The application binding is already bootstrapped.");
         _binding = new WidgetsFlutterBinding(dispatcher);
+        _generation++;
+    }
 
     public void AttachView(DorotiView view)
     {
         ArgumentNullException.ThrowIfNull(view);
-        if (_binding is null)
+        var binding = _binding ?? throw new InvalidOperationException("The widget application is not bootstrapped.");
+        _applicationViews.Attach(view);
+        if (_rootScheduled)
         {
-            throw new InvalidOperationException("The Doroti widget runtime is not bootstrapped.");
+            binding.scheduleForcedFrame();
+            return;
         }
-
-        if (_view is not null)
-        {
-            throw new InvalidOperationException(
-                "This Doroti widget entrypoint already owns a view."
-            );
-        }
-
-        _view = view;
-        var binding = _binding;
-        var generation = ++_attachmentGeneration;
-        bool IsAttached() =>
-            ReferenceEquals(_view, view)
-            && ReferenceEquals(_binding, binding)
-            && _attachmentGeneration == generation;
+        _rootScheduled = true;
+        var generation = _generation;
+        bool IsAlive() => ReferenceEquals(_binding, binding) && generation == _generation && _applicationViews.Views.Count != 0;
         void AttachRoot()
         {
-            if (IsAttached())
-            {
-                binding.attachRootWidget(binding.wrapWithDefaultView(_rootFactory()));
-            }
+            if (IsAlive()) binding.attachRootWidget(_rootFactory(_applicationViews));
         }
         async Task InitializeAsync()
         {
             try
             {
                 await _initialize!();
-                // Async resource completion must return to the view's event
-                // loop, including when there is no root producing frames yet.
                 DartAsyncRuntime.scheduleMicrotask(() =>
                 {
-                    if (!IsAttached())
-                    {
-                        return;
-                    }
-                    // An idle microtask can run between native pointer events.
-                    // Attach during a frame so layout completes before input
-                    // can hit-test the newly created render tree.
+                    if (!IsAlive()) return;
                     binding.scheduleFrameCallback(_ => AttachRoot(), scheduleNewFrame: false);
                     binding.scheduleForcedFrame();
                 });
@@ -80,53 +71,38 @@ public sealed class DorotiWidgetEntrypoint : IDorotiViewEntrypoint
             {
                 DartAsyncRuntime.scheduleMicrotask(() =>
                 {
-                    if (IsAttached())
-                    {
-                        FlutterError.reportError(
-                            new FlutterErrorDetails(error, library: "Doroti widget bootstrap")
-                        );
-                    }
+                    if (IsAlive()) FlutterError.reportError(new FlutterErrorDetails(error, library: "Doroti application bootstrap"));
                 });
             }
         }
-        binding.scheduleFrameCallback(
-            timestamp =>
-            {
-                if (!IsAttached())
-                {
-                    return;
-                }
-
-                if (_initialize is null)
-                {
-                    AttachRoot();
-                }
-                else
-                {
-                    _ = InitializeAsync();
-                }
-            },
-            scheduleNewFrame: false
-        );
-        // Ordinary frames are disabled until a root exists. Bootstrap is the
-        // entrypoint's responsibility, just as runApp owns Flutter's warm-up.
+        binding.scheduleFrameCallback(timestamp =>
+        {
+            if (!IsAlive()) return;
+            if (_initialize is null) AttachRoot();
+            else _ = InitializeAsync();
+        }, scheduleNewFrame: false);
         binding.scheduleForcedFrame();
     }
 
     public void DetachView(DorotiView view)
     {
-        if (ReferenceEquals(_view, view))
+        ArgumentNullException.ThrowIfNull(view);
+        _applicationViews.Detach(view);
+        // Unmount the removed branch while its capabilities still exist, before native drain/disposal.
+        if (_binding?.rootElement is { } root)
         {
-            _view = null;
-            _attachmentGeneration++;
+            _binding.buildOwner!.buildScope(root);
+            _binding.buildOwner.finalizeTree();
         }
+        _binding?.ReleaseViewImageCache(view);
     }
 
     public void Shutdown()
     {
-        _attachmentGeneration++;
+        _generation++;
+        if (_binding is { } binding) NativeWindowPresentation.Shutdown(binding.platformDispatcher);
         _binding?.Dispose();
         _binding = null;
-        _view = null;
+        _applicationViews.Dispose();
     }
 }

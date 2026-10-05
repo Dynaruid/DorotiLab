@@ -1,4 +1,4 @@
-using Doroti.Hosting;
+using WindowId = Doroti.Ui.WindowId;
 
 namespace Doroti.Desktop;
 
@@ -38,7 +38,6 @@ public interface IWindowHost : IAsyncDisposable
     Task InitializeAsync(
         WindowOptions options,
         DesktopWindowContext context,
-        IDorotiViewEntrypoint content,
         CancellationToken cancellationToken
     );
     Task<WindowState> ExecuteAsync(WindowCommand command, CancellationToken cancellationToken);
@@ -67,33 +66,11 @@ public sealed record DesktopWindowContext(
     DorotiWindowManager Windows
 );
 
-public sealed class WindowContent
-{
-    private readonly Func<DesktopWindowContext, IDorotiViewEntrypoint> _factory;
-
-    private WindowContent(Func<DesktopWindowContext, IDorotiViewEntrypoint> factory) =>
-        _factory = factory;
-
-    public static WindowContent FromEntrypoint(Func<IDorotiViewEntrypoint> factory)
-    {
-        ArgumentNullException.ThrowIfNull(factory);
-        return new(_ => factory());
-    }
-
-    public static WindowContent FromEntrypoint(
-        Func<DesktopWindowContext, IDorotiViewEntrypoint> factory
-    ) => new(factory ?? throw new ArgumentNullException(nameof(factory)));
-
-    internal IDorotiViewEntrypoint Create(DesktopWindowContext context) =>
-        _factory(context) ?? throw new InvalidOperationException("Content factory returned null.");
-}
-
 public sealed record WindowCreateOptions
 {
     public WindowOptions Options { get; init; } = new();
-    public required WindowContent Content { get; init; }
 
-    // Owned windows are deliberately reserved and rejected until host ownership is implemented.
+    // Native ownership is evaluated by the selected provider before allocation.
     public WindowId? OwnerWindowId { get; init; }
     public Func<DesktopWindowContext, CancellationToken, Task>? OnCreated { get; init; }
 }

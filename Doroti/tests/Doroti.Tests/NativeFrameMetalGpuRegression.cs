@@ -49,7 +49,8 @@ internal static class NativeFrameMetalGpuRegression
                 commands.Add(new("pop", null));
             }
             using var scene = new Scene(1, commands);
-            renderer.Submit(1, new(scene, new(host.ViewEpoch, sequence, 96, 80)),
+            using var submission = new DorotiSceneSubmission(scene, new(host.ViewEpoch, sequence, 96, 80));
+            renderer.Submit(1, submission,
                 DorotiUiInvocation.Managed("native-frame-metal-gpu"));
             var texture = gpu.CreateTexture();
             var frame = session.BeginMetalFrame(96, 80, texture);

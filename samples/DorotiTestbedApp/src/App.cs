@@ -22,10 +22,9 @@ internal sealed class MaterialDemoEntrypoint : IDorotiViewEntrypoint
         {
             Console.Error.WriteLine(details.exceptionThrown);
         };
-        _widgetEntrypoint = new Doroti.Framework.DorotiWidgetEntrypoint(
-            () => RootApp,
-            PrepareSampleResourcesAsync
-        );
+        _widgetEntrypoint = Environment.GetEnvironmentVariable("DOROTI_SAMPLE") == "shared-tree"
+            ? new Doroti.Framework.DorotiWidgetEntrypoint(views => new SharedNativeTreeProbe(views))
+            : new Doroti.Framework.DorotiWidgetEntrypoint(() => CreateRootApp(), PrepareSampleResourcesAsync);
         _widgetEntrypoint.Bootstrap(dispatcher);
         _binding = (WidgetsFlutterBinding)WidgetsFlutterBinding.ensureInitialized();
     }
@@ -38,10 +37,7 @@ internal sealed class MaterialDemoEntrypoint : IDorotiViewEntrypoint
                 "The Material framework binding was not bootstrapped."
             );
         }
-        if (_view is not null)
-        {
-            throw new InvalidOperationException("DorotiTestbedApp owns exactly one Doroti view.");
-        }
+
 
         _view = view;
         _widgetEntrypoint!.AttachView(view);
@@ -105,22 +101,25 @@ internal sealed class MaterialDemoEntrypoint : IDorotiViewEntrypoint
         if (sample != "navigation") WidgetsBinding.instance.platformDispatcher.defaultRouteName = "/";
         return sample switch
         {
+            "native-design" => Environment.GetEnvironmentVariable("DOROTI_DESIGN_PROBE") == "cupertino"
+                ? new Doroti.Cupertino.CupertinoApp(home: new Doroti.Cupertino.CupertinoTheme(data: new Doroti.Cupertino.CupertinoThemeData(primaryColor: new UiColor(0xffee7722)), child: new NativeDesignPresentationProbe()))
+                : new Doroti.Material.MaterialApp(home: new Doroti.Material.Theme(data: Doroti.Material.ThemeData.Create(primaryColor: new UiColor(0xffee7722)), child: new NativeDesignPresentationProbe())),
             "platform-effect" => new MaterialSample.PlatformEffectSample(),
             "document-recovery" when !OperatingSystem.IsBrowser() => new MaterialSample.DocumentRecoverySample(),
-            "native-texture-probe" => new Doroti.Framework.Material.MaterialApp(debugShowCheckedModeBanner: false,
+            "native-texture-probe" => new Doroti.Material.MaterialApp(debugShowCheckedModeBanner: false,
                 initialRoute: "/", home: new MaterialSample.TextureSample()),
             "qt-widgets" => new Directionality(textDirection: TextDirection.ltr,
                 child: new ClipRect(child: new PlatformView(PlatformDispatcher.instance.implicitView!,
                     new PlatformViewDescriptor("doroti/native-editor", System.Text.Encoding.UTF8.GetBytes("{\"text\":\"Qt Widgets editor\"}"))))),
-            "input" => new Doroti.Framework.Material.MaterialApp(debugShowCheckedModeBanner: false, initialRoute: "/", home: new MaterialSample.InputLifetimeSample()),
-            "webview" => new Doroti.Framework.Material.MaterialApp(debugShowCheckedModeBanner: false, initialRoute: "/", home:
-                new Doroti.Framework.Material.Scaffold(
+            "input" => new Doroti.Material.MaterialApp(debugShowCheckedModeBanner: false, initialRoute: "/", home: new MaterialSample.InputLifetimeSample()),
+            "webview" => new Doroti.Material.MaterialApp(debugShowCheckedModeBanner: false, initialRoute: "/", home:
+                new Doroti.Material.Scaffold(
                     appBar: new PreferredSize(preferredSize: Size.fromHeight(56),
-                        child: new ClipRect(child: new Doroti.Framework.Material.AppBar(title: new Text("WebView")))),
+                        child: new ClipRect(child: new Doroti.Material.AppBar(title: new Text("WebView")))),
                     body: new MaterialSample.WebViewSample())),
-            "reload" => new Doroti.Framework.Material.MaterialApp(initialRoute: "/", home: new MaterialSample.HotReloadSample()),
-            "plugins" => new Doroti.Framework.Material.MaterialApp(initialRoute: "/", home: new MaterialSample.PluginsSample()),
-            "drop" => new Doroti.Framework.Material.MaterialApp(initialRoute: "/", home: new MaterialSample.OsDropSample()),
+            "reload" => new Doroti.Material.MaterialApp(initialRoute: "/", home: new MaterialSample.HotReloadSample()),
+            "plugins" => new Doroti.Material.MaterialApp(initialRoute: "/", home: new MaterialSample.PluginsSample()),
+            "drop" => new Doroti.Material.MaterialApp(initialRoute: "/", home: new MaterialSample.OsDropSample()),
             "navigation" => new MaterialSample.NavigationSample(),
             _ => new MaterialSample.SampleApp(App.SampleAcrylicAvailable),
         };

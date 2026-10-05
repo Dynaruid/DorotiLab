@@ -7,7 +7,7 @@ public sealed class LinuxDesktopStartup : IDorotiDesktopApplicationStartup
 {
     public void Configure(DesktopApplicationBuilder desktop)
     {
-        desktop.UseMainWindow(desktop.LegacyMainWindow with
+        desktop.UseMainWindow(desktop.DefaultMainWindow with
         {
             Options = new WindowOptions
             {

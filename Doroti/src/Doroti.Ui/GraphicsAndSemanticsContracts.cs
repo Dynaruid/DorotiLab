@@ -525,6 +525,7 @@ public sealed record PathCommand(string Operation, IReadOnlyList<double> Argumen
 public interface ISceneHostCapability
 {
     GraphicsFeatureSupport Features => new("unknown", Reason: "The current renderer does not expose feature support.");
+    void BindOwner(DorotiSceneOwner owner) { }
     void Submit(ulong viewId, DorotiSceneSubmission submission, DorotiUiInvocation invocation);
 }
 
@@ -533,16 +534,34 @@ public interface ISceneHostCapability
 /// token means the scene was submitted outside a dispatcher frame and must not
 /// be accepted as resize-exact by a resize-aware host.
 /// </summary>
-public sealed record DorotiSceneSubmission(
-    Scene Scene,
-    DorotiSceneBuildToken? BuildToken,
-    DorotiFrameTransaction? FrameTransaction = null
-);
+public sealed class DorotiSceneSubmission : IDisposable
+{
+    public DorotiSceneSubmission(Scene scene, DorotiSceneBuildToken? buildToken,
+        DorotiFrameTransaction? frameTransaction = null)
+    {
+        Scene = DorotiFrozenScene.Capture(scene);
+        BuildToken = buildToken;
+        FrameTransaction = frameTransaction;
+    }
+    public DorotiFrozenScene Scene { get; }
+    public DorotiSceneBuildToken? BuildToken { get; }
+    public DorotiFrameTransaction? FrameTransaction { get; }
+    public void Dispose() => Scene.Dispose();
+}
 
 public sealed class Scene : IDisposable
 {
     private int _disposed;
     private readonly PlatformDispatcher? _owner = PlatformDispatcher.current;
+    private readonly int _compositionThreadId = Environment.CurrentManagedThreadId;
+    internal void ValidateFreezeOwner()
+    {
+        ObjectDisposedException.ThrowIf(debugDisposed, this);
+        if (_compositionThreadId != Environment.CurrentManagedThreadId ||
+            (_owner is not null && !ReferenceEquals(_owner, PlatformDispatcher.current)) ||
+            (Owner is { } owner && _owner?.views.SingleOrDefault(view => view.viewId == viewId)?.SceneOwner != owner))
+            throw new InvalidOperationException("Freeze a Scene on its composition owner before dispatching it to a consumer.");
+    }
 
     public Scene(ulong viewId, IReadOnlyList<SceneCommand> commands)
         : this(viewId, commands?.ToArray() ?? throw new ArgumentNullException(nameof(commands))) { }
@@ -550,13 +569,15 @@ public sealed class Scene : IDisposable
     private Scene(ulong viewId, SceneCommand[] ownedCommands)
     {
         this.viewId = viewId;
-        Commands = ownedCommands;
+        Commands = Array.AsReadOnly(ownedCommands);
+        Owner = _owner?.views.SingleOrDefault(view => view.viewId == viewId)?.SceneOwner;
     }
 
     internal static Scene FromOwnedCommands(ulong viewId, SceneCommand[] ownedCommands) =>
         new(viewId, ownedCommands ?? throw new ArgumentNullException(nameof(ownedCommands)));
 
     public ulong viewId { get; }
+    internal DorotiSceneOwner? Owner { get; }
 
     public IReadOnlyList<SceneCommand> Commands { get; }
 
@@ -595,6 +616,9 @@ public sealed class Scene : IDisposable
 public sealed record SceneCommand(string Operation, object? Payload)
 {
     internal object? HostPayload { get; init; }
+    /// <summary>Typed retained scene traversal for provider composition. The submission owns the resource lease.</summary>
+    public IReadOnlyList<SceneCommand>? RetainedCommands => (HostPayload as SceneRetainedPayload)?.Commands;
+    public PlatformViewHandle? PlatformView => (HostPayload as ScenePlatformViewPayload)?.Handle;
 }
 
 internal sealed record ScenePicturePayload(
@@ -990,8 +1014,12 @@ public sealed class SceneBuilder
 
     public SceneBuilder(ulong viewId = 0) => _viewId = viewId;
 
-    public void addPicture(Offset offset, IReadOnlyList<PathCommand> picture) =>
-        _commands.Add(new("picture", new { offset, picture }));
+    public void addPicture(Offset offset, IReadOnlyList<PathCommand> picture)
+    {
+        ArgumentNullException.ThrowIfNull(picture);
+        using var recording = new Picture(picture);
+        AddPicture(offset, recording, null, false, false);
+    }
 
     public void addPicture(
         Offset offset,

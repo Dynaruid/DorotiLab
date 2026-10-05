@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Sdk Name="Doroti.Runner.Sdk" Version="0.3.0-beta" />
+  <Sdk Name="Doroti.Runner.Sdk" Version="0.4.0-alpha.1" />
   <PropertyGroup>
     <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
@@ -20,6 +20,6 @@
   </PropertyGroup>
   <ItemGroup>
     <DorotiTargetDescriptor Include="Windows" HostKind="Maui" NativeEntryKind="WinUI-Xaml" RuntimeIdentifier="win-x64" TargetFramework="net10.0-windows10.0.19041.0" TargetPackage="Doroti.Target.Windows.Maui.win-x64" />
-    <PackageReference Include="Doroti.Target.Windows.Maui.win-x64" Version="0.3.0-beta" />
+    <PackageReference Include="Doroti.Target.Windows.Maui.win-x64" Version="0.4.0-alpha.1" />
   </ItemGroup>
 </Project>

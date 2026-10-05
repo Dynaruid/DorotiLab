@@ -12,7 +12,7 @@ public sealed partial class SkiaSceneRenderer
     // The finite, bilinearly sampled kernel is an approximation to a Gaussian.
     private static readonly Lazy<FragmentProgram> VariableBlurProgram = new(() =>
     {
-        FrameworkShaderLoader.RegisterResourceOwner(typeof(SkiaSceneRenderer).Assembly);
+        RenderingShaderAssets.Register();
         return FrameworkShaderLoader.LoadEmbeddedProgram("rendering.variable-blur");
     });
 

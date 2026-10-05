@@ -3,7 +3,7 @@
 using Doroti.Framework.Painting;
 using Doroti.Framework.Rendering;
 using Doroti.Framework.Widgets;
-using M = Doroti.Framework.Material;
+using M = Doroti.Material;
 
 namespace MaterialSample;
 

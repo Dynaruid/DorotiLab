@@ -1,0 +1,597 @@
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
+using Doroti.Hosting;
+using Doroti.Skia.Rendering;
+using Doroti.Ui;
+using Microsoft.Maui.Controls;
+#if IOS && !MACCATALYST
+using SKGLView = Doroti.Host.Maui.DorotiSkiaView;
+#endif
+
+#if !MACOS
+using SkiaSharp.Views.Maui.Controls;
+#endif
+
+namespace Doroti.Host.Maui;
+
+public sealed class MauiFrameworkHost : IDisposable
+{
+    // Inspect only known assembly metadata; do not report stale hardcoded SDK/package versions.
+    private static readonly string BuildFrameworkIdentity =
+        (
+            typeof(MauiFrameworkHost)
+                .Assembly.GetCustomAttribute<TargetFrameworkAttribute>()
+                ?.FrameworkName
+            ?? "unknown"
+        )
+        + "/"
+        + (
+            typeof(MauiFrameworkHost)
+                .Assembly.GetCustomAttribute<TargetPlatformAttribute>()
+                ?.PlatformName
+            ?? "unknown"
+        );
+    private static readonly string MauiPackageIdentity =
+        typeof(Application)
+            .Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+            ?.InformationalVersion.Split('+')[0]
+        ?? "unknown";
+    private static readonly string SkiaPackageIdentity =
+        typeof(SkiaSharp.SKCanvas)
+            .Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+            ?.InformationalVersion.Split('+')[0]
+        ?? "unknown";
+
+    private readonly string _targetIdentity;
+    private readonly Dictionary<
+        ulong,
+        (DorotiView View, MauiHostAdapter Host, MauiSkiaCapabilities Graphics)
+    > _views = [];
+    private readonly Dictionary<ulong, DorotiHostSession> _sessions = [];
+    private bool _disposed;
+
+#if WINDOWS || MACCATALYST || IOS || ANDROID || MACOS
+    public MauiFrameworkHost(string? targetIdentity = null)
+    {
+        NativeFrameConfiguration.ValidateEnvironment();
+#if ANDROID
+        NativeFrameConfiguration.ValidateSettings(name =>
+            Microsoft.Maui.ApplicationModel.Platform.CurrentActivity?.Intent?.GetStringExtra(name));
+#endif
+        _targetIdentity =
+            targetIdentity
+            ??
+#if WINDOWS
+            (
+                WindowsCompositionSurfaceFeature.GraphiteEnabled
+                    ? "win-x64/WinUI/CompositionDrawingSurface/Graphite-Vulkan"
+                    : "win-x64/win32-child-hwnd/offscreen-copy/Doroti-owned-D3D12-Skia"
+            );
+#elif MACCATALYST
+            (
+                DorotiGraphiteView.Enabled
+                    ? "maccatalyst-arm64/UIKit/MTKView/Graphite-Metal"
+                    : "maccatalyst-arm64/UIKit-MacCatalyst/SKMetalView/Metal-Skia"
+            );
+#elif IOS
+            (
+                DorotiGraphiteView.Enabled
+                    ? "ios/UIKit/MTKView/Graphite-Metal"
+                    : "ios/UIKit-iOS/SKMetalView/Metal-Skia"
+            );
+#elif ANDROID
+            (
+                DorotiGraphiteView.Enabled
+                    ? $"{AndroidRuntimeIdentifier}/Android/SurfaceView/Graphite-Vulkan"
+                    : $"{AndroidRuntimeIdentifier}/Android/MauiSKGLTextureView/OpenGL-ES-Skia"
+            );
+#elif MACOS
+            $"osx-arm64/{DorotiMacOSMetalView.GraphicsBackendId}";
+#endif
+    }
+#else
+#error Doroti.Host.Maui requires an explicit platform identity.
+#endif
+
+#if !MACOS && !WINDOWS
+    public DorotiView CreateView(
+        DorotiHostSession session,
+        ulong viewId,
+        SKGLView nativeView,
+        DorotiViewConfiguration configuration,
+        IMauiSemanticsBridge? semantics = null,
+        DorotiApplicationBoundary? application = null,
+        MauiTextInputBridge? textInput = null
+    )
+    {
+        ArgumentNullException.ThrowIfNull(session);
+        ArgumentNullException.ThrowIfNull(nativeView);
+        textInput ??= new(new Entry(), new Editor());
+        return CreateView(
+            session,
+            viewId,
+            new MauiSkglSurface(textInput, viewId),
+            configuration,
+            semantics,
+            application,
+            textInput
+        );
+    }
+#endif
+
+    internal DorotiView CreateView(
+        DorotiHostSession session,
+        ulong viewId,
+        IMauiSkiaSurface surface,
+        DorotiViewConfiguration configuration,
+        IMauiSemanticsBridge? semantics = null,
+        DorotiApplicationBoundary? application = null,
+        MauiTextInputBridge? textInput = null,
+        bool ownsApplicationActivation = true,
+        DorotiSharedHostSession? sharedFramework = null
+#if WINDOWS || MACOS || MACCATALYST
+        , Doroti.Desktop.DesktopWindowContext? windowContext = null
+#endif
+    )
+    {
+        ArgumentNullException.ThrowIfNull(session);
+        ArgumentNullException.ThrowIfNull(surface);
+        ArgumentNullException.ThrowIfNull(configuration);
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (session.state != DorotiHostSessionState.running)
+        {
+            throw new InvalidOperationException(
+                "The Doroti host session must be running before a MAUI view is created."
+            );
+        }
+
+        textInput ??= new(new Entry(), new Editor());
+        var host = new MauiHostAdapter(
+            viewId,
+            surface,
+            textInput,
+            configuration.logicalSize,
+            semantics
+        );
+        var graphics = new MauiSkiaCapabilities(
+            viewId,
+            host,
+            configuration.backgroundColor,
+            configuration.darkBackgroundColor
+        );
+#if IOS || MACCATALYST || ANDROID
+        if (surface is MauiSkglSurface shaderSurface)
+            shaderSurface.SetFramePreparation(host.PrepareFrame, () => graphics.ShaderSceneAdmission, () => graphics.PreparedScene, () => host.HasPendingFrame);
+#endif
+#if WINDOWS
+        if (surface is DorotiWindowsDxgiSurface windowsShaderSurface)
+            windowsShaderSurface.SetFrameQuery(() => graphics.ShaderSceneAdmission);
+#endif
+        if (surface is IMauiGraphiteSurface graphiteSurface)
+        {
+            graphics.AttachGraphiteLifecycle(graphiteSurface);
+        }
+#if MACOS
+        if (surface is DorotiMacOSMetalSurface metalSurface)
+        {
+            metalSurface.SetFramePreparation(host.PrepareFrame, () => graphics.ShaderSceneAdmission, () => host.HasPendingFrame);
+            graphics.AttachNativeLifecycle(metalSurface);
+        }
+#endif
+        IPlatformMessageHostCapability messages = new MauiPlatformMessageCapability();
+#if IOS || MACCATALYST
+        var contextMenus = new MauiUIKitContextMenuChannel(messages, textInput);
+        messages = contextMenus;
+#endif
+        var capabilities = new DorotiViewCapabilities(_targetIdentity, sharedFramework?.Capabilities)
+            .Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)
+            .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, host)
+            .Register<IFrameHostCapability>(DorotiCapabilityIds.ViewFrameDispatch, host)
+            .Register<IInputHostCapability>(DorotiCapabilityIds.InputEvents, host)
+            .Register<ITextInputHostCapability>(DorotiCapabilityIds.TextInput, host)
+            .Register<IPlatformServicesHostCapability>(DorotiCapabilityIds.PlatformServices, host)
+            .Register<IUrlLauncherHostCapability>(DorotiCapabilityIds.UrlLauncher, host)
+            .Register<IPlatformFeedbackHostCapability>(DorotiCapabilityIds.PlatformFeedback, new MauiFeedback(surface))
+            .Register<IPlatformEnvironmentHostCapability>(
+                DorotiCapabilityIds.PlatformEnvironment,
+                host
+            )
+            .Register<ISceneHostCapability>(DorotiCapabilityIds.GraphicsScene, graphics)
+            .Register<IParagraphHostCapability>(DorotiCapabilityIds.GraphicsText, graphics)
+            .Register<IFontHostCapability>(DorotiCapabilityIds.GraphicsFont, graphics)
+            .Register<ITextureHostCapability>(DorotiCapabilityIds.GraphicsTexture, graphics)
+            .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, graphics)
+            .Register<ISceneRasterizationHostCapability>(DorotiCapabilityIds.GraphicsSceneSnapshot, graphics)
+            .Register<ISemanticsHostCapability>(
+                DorotiCapabilityIds.AccessibilitySemantics,
+                graphics
+            );
+#if ANDROID
+        capabilities.Register<IFilePickerHostCapability>(DorotiCapabilityIds.FilePicker, new AndroidFilePicker());
+#endif
+#if WINDOWS
+        if (surface is DorotiWindowsDxgiSurface windowsSurface)
+        {
+            var picker = new MauiWindowsFilePicker(() => windowsSurface.WindowHandle);
+            capabilities.Register<IFilePickerHostCapability>(DorotiCapabilityIds.FilePicker, picker);
+            host.Closed += picker.Dispose;
+            if (application?.Manifest.PlatformViews.Length > 0 && windowsSurface.PlatformViews is { } platformViews)
+            {
+                var coordinator = application.ConfigurePlatformViews(capabilities, viewId, platformViews.Dispatcher);
+                platformViews.Configure(coordinator);
+                var channel = new Framework.Services.PlatformViewChannelAdapter(coordinator, messages);
+                messages = channel;
+                graphics.AttachPlatformViews(platformViews, channel);
+            }
+            else if (windowsSurface.PlatformViews is { } unusedPlatformViews)
+            {
+                unusedPlatformViews.Dispose();
+                windowsSurface.PlatformViews = null;
+            }
+        }
+#endif
+#if IOS || MACCATALYST
+        capabilities.Register<IFilePickerHostCapability>(DorotiCapabilityIds.FilePicker,
+            new UIKitFilePicker(() => (surface.Element.Handler?.PlatformView as UIKit.UIView)?.Window?.RootViewController));
+#endif
+#if MACOS
+        if (surface is DorotiMacOSMetalSurface pickerSurface)
+            capabilities.Register<IFilePickerHostCapability>(DorotiCapabilityIds.FilePicker,
+                new AppKitFilePicker(() => pickerSurface.NativeView?.Window));
+        if (
+            application?.Manifest.PlatformViews.Length > 0
+            && surface is DorotiMacOSMetalSurface { PlatformViews: { } platformViews }
+        )
+        {
+            var coordinator = application.ConfigurePlatformViews(
+                capabilities,
+                viewId,
+                new AppKitPlatformViewDispatcher()
+            );
+            platformViews.Configure(coordinator);
+            var channel = new Framework.Services.PlatformViewChannelAdapter(coordinator, messages);
+            messages = channel;
+            graphics.AttachPlatformViews(platformViews, channel);
+        }
+#endif
+#if ANDROID
+        if (surface.Element is DorotiGraphiteView textureView)
+            graphics.AttachSurfaceTextures(textureView);
+        if (
+            application?.Manifest.PlatformViews.Length > 0
+            && surface.Element is DorotiGraphiteView { PlatformViews: { } platformViews }
+        )
+        {
+            var coordinator = application.ConfigurePlatformViews(
+                capabilities,
+                viewId,
+                new AndroidPlatformViewDispatcher()
+            );
+            platformViews.Configure(coordinator);
+            var channel = new Framework.Services.PlatformViewChannelAdapter(coordinator, messages);
+            messages = channel;
+            graphics.AttachPlatformViews(platformViews, channel);
+        }
+#endif
+#if IOS || MACCATALYST
+        if (
+            application?.Manifest.PlatformViews.Length > 0
+            && surface.Element is DorotiGraphiteView { PlatformViews: { } platformViews }
+        )
+        {
+            var coordinator = application.ConfigurePlatformViews(
+                capabilities,
+                viewId,
+                new UIKitPlatformViewDispatcher()
+            );
+            platformViews.Configure(coordinator);
+            var channel = new Framework.Services.PlatformViewChannelAdapter(coordinator, messages);
+            messages = channel;
+            graphics.AttachPlatformViews(platformViews, channel);
+        }
+#endif
+        sharedFramework?.RegisterManagedPlugins(capabilities);
+        if (application is null)
+        {
+            capabilities.Register(DorotiCapabilityIds.PlatformMessaging, messages);
+        }
+        else
+        {
+            if (sharedFramework is not null) sharedFramework.OwnService(application.ApplicationResources);
+            application.Configure(capabilities, messages,
+                sharedFramework is null ? DorotiCapabilityOwnership.Owned : DorotiCapabilityOwnership.Borrowed);
+        }
+
+
+#if WINDOWS || MACOS || MACCATALYST
+        if (windowContext is not null)
+        {
+            if (sharedFramework is null) throw new InvalidOperationException("Windowing requires an application service owner.");
+            sharedFramework.OwnService(windowContext.Windows);
+            capabilities.Register<IWindowService>(DorotiCapabilityIds.WindowService, windowContext.Windows, DorotiCapabilityOwnership.Borrowed);
+                capabilities.Register<IWindowingHostCapability>(DorotiCapabilityIds.Windowing, windowContext.Windows, DorotiCapabilityOwnership.Borrowed);
+        }
+
+#endif
+        DorotiView? view = null;
+        try
+        {
+#if IOS || MACCATALYST
+            {
+                var dropClosed = false;
+                host.Closed += () => dropClosed = true;
+                capabilities.Register<IOsDragDropHostCapability>(DorotiCapabilityIds.OsDragDrop,
+                    new UIKitOsDrop(surface.Element, callback => MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        if (!dropClosed) view?.DispatchPlatformEvent(callback);
+                    })));
+            }
+#endif
+#if MACOS
+            if (surface is DorotiMacOSMetalSurface dropSurface)
+            {
+                var dropClosed = false;
+                host.Closed += () => dropClosed = true;
+                dropSurface.OsDrop = new AppKitOsDrop(callback => AppKit.NSApplication.SharedApplication.BeginInvokeOnMainThread(() =>
+                {
+                    // The receiver revokes queued payloads on close; do not enter a disposed dispatcher first.
+                    if (!dropClosed) view?.DispatchPlatformEvent(callback);
+                }));
+                capabilities.Register<IOsDragDropHostCapability>(DorotiCapabilityIds.OsDragDrop, dropSurface.OsDrop);
+            }
+#endif
+            ApplicationNavigationHost? navigation = null;
+            if (configuration.Navigation is { } navigationOptions)
+            {
+                var cold = ownsApplicationActivation ? MauiApplicationActivation.TakeCold() : null;
+                bool Allowed(string location) => Uri.TryCreate(location, UriKind.Absolute, out var uri) &&
+                    (uri.Scheme is "https" or "http" || uri.Scheme.Equals(navigationOptions.ProtocolScheme, StringComparison.OrdinalIgnoreCase));
+                var store = navigationOptions.RestorationId is { } restorationId
+                    ? new FileRestorationStore(System.IO.Path.Combine(Microsoft.Maui.Storage.FileSystem.AppDataDirectory, "restoration"), restorationId) : null;
+                navigation = new(cold is not null && Allowed(cold.Location) ? cold.Location : null,
+                    store?.Read(), store is null ? null : store.Write,
+                    initialSource: cold?.Source ?? ApplicationActivationSource.Launch);
+                capabilities.Register<IApplicationNavigationHostCapability>(DorotiCapabilityIds.ApplicationNavigation, navigation);
+                session.dispatcher.defaultRouteName = navigation.Current.Location;
+                host.LifecycleChanged += _ => navigation.Checkpoint();
+            }
+            using var dispatcherScope = session.dispatcher.EnterScope();
+            view = session.dispatcher.RegisterView(viewId, capabilities);
+            if (navigation is not null && ownsApplicationActivation)
+            {
+                var owner = view;
+                var disposed = false;
+                var subscription = MauiApplicationActivation.Attach(activation =>
+                    Microsoft.Maui.ApplicationModel.MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        if (disposed) return;
+                        var scheme = configuration.Navigation!.ProtocolScheme;
+                        if (Uri.TryCreate(activation.Location, UriKind.Absolute, out var uri) &&
+                            (uri.Scheme is "https" or "http" || uri.Scheme.Equals(scheme, StringComparison.OrdinalIgnoreCase)))
+                            owner.DispatchPlatformEvent(() => navigation.Activate(activation));
+                    }));
+                host.Closed += () => { disposed = true; subscription.Dispose(); };
+            }
+#if IOS || MACCATALYST
+            contextMenus.Dispatch = callback => view.DispatchPlatformEvent(callback);
+#endif
+            graphics.AttachFrameworkTrace(view.FrameTrace);
+            host.AttachFrameworkTrace(view.FrameTrace);
+
+#if WINDOWS || MACOS || MACCATALYST
+            windowContext?.Windows.AttachView(windowContext.Window.Id, view);
+#endif
+            session.AttachView(view);
+            _views.Add(viewId, (view, host, graphics));
+            _sessions.Add(viewId, session);
+            graphics.AttachSurface(host.RequestInvalidate);
+            host.Show();
+            return view;
+        }
+        catch
+        {
+            if (view is null)
+            {
+                capabilities.Dispose();
+            }
+            else
+            {
+                view.Dispose();
+            }
+
+            throw;
+        }
+    }
+
+    internal void BeginPaint(ulong viewId, MauiSkiaPaintContext paint)
+    {
+        if (!_views.TryGetValue(viewId, out var value))
+        {
+            throw new KeyNotFoundException($"MAUI Doroti view {viewId} is not registered.");
+        }
+
+        value.Host.BeginPaint(paint);
+    }
+
+    internal void EndPaint(ulong viewId)
+    {
+        if (!_views.TryGetValue(viewId, out var value))
+        {
+            throw new KeyNotFoundException($"MAUI Doroti view {viewId} is not registered.");
+        }
+
+        value.Host.EndPaint();
+    }
+
+    internal MauiPaintCompletion? PreparedScene(ulong viewId) => _views[viewId].Graphics.PreparedScene;
+    internal bool CanPresentWithoutNativeComposition(ulong viewId) => _views[viewId].Graphics.CanPresentWithoutNativeComposition;
+    internal void SetPaintCpuStageMeasured(ulong viewId, Action<string, double>? measure) =>
+        _views[viewId].Graphics.PaintCpuStageMeasured = measure;
+
+    internal MauiPaintCompletion? PaintSkiaSurface(
+        ulong viewId,
+        SkiaSharp.SKSurface surface,
+        int pixelWidth,
+        int pixelHeight,
+        out bool shouldPresent,
+        bool requireNewShaderScene = false
+    )
+    {
+        if (!_views.TryGetValue(viewId, out var value))
+        {
+            throw new KeyNotFoundException($"MAUI Doroti view {viewId} is not registered.");
+        }
+
+        return value.Graphics.Paint(surface, pixelWidth, pixelHeight, out shouldPresent, requireNewShaderScene);
+    }
+
+    internal void CompletePaint(ulong viewId, MauiPaintCompletion completion)
+    {
+        if (_views.TryGetValue(viewId, out var value))
+        {
+            value.Graphics.CompletePaint(completion);
+        }
+    }
+
+    internal void FailPaint(ulong viewId, MauiPaintCompletion completion, string reason)
+    {
+        if (_views.TryGetValue(viewId, out var value))
+        {
+            value.Graphics.FailPaint(completion, reason);
+        }
+    }
+
+    internal void SupersedePaint(ulong viewId, MauiPaintCompletion completion, string reason)
+    {
+        if (_views.TryGetValue(viewId, out var value))
+        {
+            value.Graphics.SupersedePaint(completion, reason);
+        }
+    }
+
+    internal void NotifyLifecycle(ulong viewId, AppLifecycleState state)
+    {
+        if (_views.TryGetValue(viewId, out var value))
+        {
+            value.Host.NotifyLifecycle(state);
+        }
+    }
+
+    internal void NotifyCloseRequested(ulong viewId)
+    {
+        if (_views.TryGetValue(viewId, out var value))
+        {
+            value.Host.NotifyCloseRequested();
+        }
+    }
+
+    public MauiFrameDiagnostics CaptureFrameDiagnostics(ulong viewId) =>
+        _views.TryGetValue(viewId, out var value)
+            ? value.Graphics.Diagnostics
+            : throw new KeyNotFoundException($"MAUI Doroti view {viewId} is not registered.");
+
+    public MauiHostDiagnostics CaptureDiagnostics(
+        ulong viewId,
+        string applicationSource,
+        string bootstrapSource
+    )
+    {
+        if (!_views.TryGetValue(viewId, out var value))
+        {
+            throw new KeyNotFoundException($"MAUI Doroti view {viewId} is not registered.");
+        }
+
+        return new(
+            applicationSource,
+            bootstrapSource,
+            BuildFrameworkIdentity,
+#if WINDOWS
+            "win-x64",
+#elif MACCATALYST
+            "maccatalyst-arm64",
+#elif IOS
+            RuntimeInformation.RuntimeIdentifier,
+#elif ANDROID
+            AndroidRuntimeIdentifier,
+#elif MACOS
+            "osx-arm64",
+#else
+#error Doroti.Host.Maui requires an explicit runtime identifier.
+#endif
+            MauiPackageIdentity,
+            SkiaPackageIdentity,
+            value.Host.Snapshot,
+            value.Graphics.Diagnostics,
+            value.Host.InvalidationsRequested,
+            value.Host.InvalidationsCoalesced,
+            value.Host.NativePointerEvents,
+            value.Host.FrameRequestsCoalesced,
+            value.Host.SemanticsDiagnostics,
+            0
+        ) { VariableBlur = value.Graphics.VariableBlurDiagnostics };
+    }
+
+#if ANDROID
+    private static string AndroidRuntimeIdentifier =>
+        RuntimeInformation.ProcessArchitecture switch
+        {
+            Architecture.Arm64 => "android-arm64",
+            Architecture.X64 => "android-x64",
+            var architecture => throw new PlatformNotSupportedException(
+                $"Doroti MAUI does not support Android process architecture '{architecture}'."
+            ),
+        };
+#endif
+
+    public void Dispose()
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        _disposed = true;
+        foreach (var (viewId, value) in _views.Reverse().ToArray())
+        {
+            if (_sessions.Remove(viewId, out var session))
+            {
+                session.DetachView(value.View);
+            }
+
+            value.View.Dispose();
+        }
+        _views.Clear();
+    }
+
+    private sealed class MauiPlatformMessageCapability : IPlatformMessageHostCapability
+    {
+        private readonly Dictionary<string, PlatformMessageHandler> _handlers = new(
+            StringComparer.Ordinal
+        );
+
+        public ValueTask<ReadOnlyMemory<byte>?> SendAsync(
+            string channel,
+            ReadOnlyMemory<byte>? data,
+            CancellationToken cancellationToken = default
+        )
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return _handlers.TryGetValue(channel, out var handler)
+                ? handler(data, cancellationToken)
+                : ValueTask.FromResult<ReadOnlyMemory<byte>?>(null);
+        }
+
+        public void SetMessageHandler(string channel, PlatformMessageHandler? handler)
+        {
+            if (handler is null)
+            {
+                _handlers.Remove(channel);
+            }
+            else
+            {
+                _handlers[channel] = handler;
+            }
+        }
+    }
+}

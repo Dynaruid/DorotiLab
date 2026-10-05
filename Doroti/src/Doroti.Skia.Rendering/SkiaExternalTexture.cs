@@ -7,6 +7,16 @@ namespace Doroti.Skia.Rendering;
 public interface ISkiaExternalTextureSource : IDisposable
 {
     void Draw(SKCanvas canvas, SKRect destination, SKSamplingOptions sampling, bool freeze);
+    /// <summary>Captures immutable producer storage without importing it on the
+    /// framework thread. The returned lease survives source/registration disposal.</summary>
+    SkiaExternalTextureFrame CaptureFrame(bool freeze) =>
+        throw new PlatformNotSupportedException("This external texture source has no immutable submission snapshot.");
+}
+
+public abstract class SkiaExternalTextureFrame : IDisposable
+{
+    public abstract void Draw(SKCanvas canvas, SKRect destination, SKSamplingOptions sampling);
+    public abstract void Dispose();
 }
 
 public abstract class SkiaExternalTextureRegistration : IDisposable

@@ -16,6 +16,7 @@ public sealed class PlatformDispatcher : IDisposable
     private readonly TimeProvider _timeProvider;
     private readonly HashSet<Guid> _backgroundIsolates = [];
     private ChannelBuffers? _channelBuffers;
+    private readonly AsyncLocal<DorotiView?> _invocationView = new();
     private AccessibilityFeatures _accessibilityFeatures = new(
         false,
         false,
@@ -30,9 +31,13 @@ public sealed class PlatformDispatcher : IDisposable
     private int _dispatchDepth;
     private bool _disposed;
 
-    public PlatformDispatcher(IDartPerformanceModeCapability? performanceModeCapability = null)
+    private readonly IDorotiApplicationDispatcher? _applicationDispatcher;
+    public PlatformDispatcher(IDartPerformanceModeCapability? performanceModeCapability = null,
+        IDorotiApplicationDispatcher? applicationDispatcher = null, Guid? applicationId = null)
     {
         _performanceModeCapability = performanceModeCapability;
+        _applicationDispatcher = applicationDispatcher;
+        ApplicationId = applicationId ?? Guid.NewGuid();
         _timeProvider = DorotiExecutionContext.TimeProvider;
     }
 
@@ -51,11 +56,16 @@ public sealed class PlatformDispatcher : IDisposable
 
     internal static PlatformDispatcher? current => ActiveDispatcher.Value;
 
+    public Guid ApplicationId { get; }
+    private long _nextViewGeneration;
     public DorotiFrameTrace frameTrace => _frameTrace;
+    public long CurrentFrameNumber => Volatile.Read(ref _frameNumber);
 
     public IDisposable EnterScope()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
+        if (_applicationDispatcher?.HasThreadAccess == false)
+            throw new InvalidOperationException("Framework access requires its application owner. Enqueue typed asynchronous work before entering the view scope.");
         var previous = ActiveDispatcher.Value;
         ActiveDispatcher.Value = this;
         return new DispatcherScope(
@@ -87,11 +97,34 @@ public sealed class PlatformDispatcher : IDisposable
 
             registered = _views.Values.ToArray();
         }
+        if (_applicationDispatcher is not null)
+        {
+            _ = DrainApplicationMicrotasksAsync();
+            return true;
+        }
         foreach (var view in registered)
         {
             view.ScheduleFrame(DorotiUiInvocation.Managed("Doroti.Ui#PlatformDispatcher.microtask"));
         }
         return true;
+    }
+    private async Task DrainApplicationMicrotasksAsync()
+    {
+        try
+        {
+            await _applicationDispatcher!.InvokeAsync(() =>
+            {
+                lock (_dispatchGate)
+                {
+                    if (_disposed) return;
+                    using var scope = EnterScope();
+                    DispatchAndDrainMicrotasks(() => { });
+                }
+            }, _callbackLifetime.Token);
+        }
+        catch (OperationCanceledException) when (_callbackLifetime.IsCancellationRequested) { }
+        catch (ObjectDisposedException) when (_disposed) { }
+        catch (Exception error) { UnhandledOwnerCallback?.Invoke(error); }
     }
 
     /// <summary>Whether the host provides optional Dart VM performance hints.</summary>
@@ -355,7 +388,7 @@ public sealed class PlatformDispatcher : IDisposable
         }
     }
 
-    public ChannelBuffers channelBuffers => _channelBuffers ??= new(RequireMessagingView());
+    public ChannelBuffers channelBuffers => _channelBuffers ??= new(RequireMessagingView);
 
     public void registerBackgroundIsolate(RootIsolateToken token)
     {
@@ -425,7 +458,7 @@ public sealed class PlatformDispatcher : IDisposable
         }
     }
 
-    public DorotiView RegisterView(ulong viewId, DorotiViewCapabilities capabilities)
+    public DorotiView RegisterView(ulong viewId, DorotiViewCapabilities capabilities, long generation = 0)
     {
         if (viewId == 0)
         {
@@ -452,11 +485,15 @@ public sealed class PlatformDispatcher : IDisposable
             DorotiView view;
             try
             {
-                view = new DorotiView(this, viewId, capabilities);
+                if (generation == 0) generation = _nextViewGeneration + 1;
+                if (generation <= _nextViewGeneration) throw new InvalidOperationException("A view incarnation must advance the application generation.");
+                _nextViewGeneration = generation;
+                view = new DorotiView(this, viewId, capabilities, generation);
             }
             catch
             {
-                capabilities.Dispose();
+                // Application coordinators must drain native consumers before releasing these registrations.
+                if (!capabilities.HasApplicationLifetime) capabilities.Dispose();
                 throw;
             }
             _views.Add(viewId, view);
@@ -620,15 +657,74 @@ public sealed class PlatformDispatcher : IDisposable
 
     internal long NextFrameTransactionId() => Interlocked.Increment(ref _frameTransactionNumber);
 
+    /// <summary>Runs application-owned work even after its originating view has closed.
+    /// View-specific input and rendering must use DorotiView.DispatchPlatformEventAsync.</summary>
+    public async ValueTask DispatchApplicationEventAsync(Action callback, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(callback);
+        using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _callbackLifetime.Token);
+        linked.Token.ThrowIfCancellationRequested();
+        void Dispatch()
+        {
+            lock (_dispatchGate)
+            {
+                ObjectDisposedException.ThrowIf(_disposed, this);
+                using var scope = EnterScope();
+                var previous = _invocationView.Value;
+                _invocationView.Value = null;
+                try { DispatchAndDrainMicrotasks(callback); }
+                finally { _invocationView.Value = previous; }
+            }
+        }
+        if (_applicationDispatcher is null) Dispatch();
+        else await _applicationDispatcher.InvokeAsync(Dispatch, linked.Token);
+    }
+
+    internal async ValueTask DispatchPlatformEventAsync(DorotiView view, Action callback, CancellationToken cancellationToken)
+    {
+        using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, view.CallbackLifetime);
+        linked.Token.ThrowIfCancellationRequested();
+        if (_applicationDispatcher is null)
+        {
+            DispatchWithEnvironment(view, callback);
+            return;
+        }
+        await _applicationDispatcher.InvokeAsync(() => DispatchWithEnvironment(view, callback), linked.Token);
+    }
+
+    public event Action<Exception>? UnhandledOwnerCallback;
+    /// <summary>Typed application-owned font invalidation; providers do not encode a platform channel message.</summary>
+    public event Action? FontsChanged;
+    public ValueTask NotifyFontsChangedAsync(CancellationToken cancellationToken = default) =>
+        DispatchApplicationEventAsync(() => FontsChanged?.Invoke(), cancellationToken);
+
+    private async Task DeliverOwnerCallbackAsync(DorotiView view, Action callback)
+    {
+        try { await DispatchPlatformEventAsync(view, callback, view.InvocationLifetime); }
+        catch (OperationCanceledException) when (view.InvocationLifetime.IsCancellationRequested) { }
+        catch (Exception error) { UnhandledOwnerCallback?.Invoke(error); }
+    }
+
     internal void DispatchWithEnvironment(DorotiView view, Action callback)
     {
+        if (_applicationDispatcher?.HasThreadAccess == false)
+        {
+            _ = DeliverOwnerCallbackAsync(view, callback);
+            return;
+        }
         // A Flutter isolate has one event loop. Android delivers TextureView
         // paints on its GL thread while touch, semantics, and lifecycle events
         // arrive on the UI thread, so serialize their framework callbacks here.
         // The monitor is reentrant for nested framework dispatch on one thread.
         lock (_dispatchGate)
         {
+            lock (_gate)
+            {
+                if (_disposed || view.CallbackLifetime.IsCancellationRequested ||
+                    !_views.TryGetValue(view.viewId, out var current) || !ReferenceEquals(current, view)) return;
+            }
             using var dispatcherScope = EnterScope();
+            using var invocationScope = EnterViewScope(view);
             using var viewScope = DorotiExecutionContext.EnterDispatcher(
                 EnqueueMicrotask,
                 view.CallbackLifetime
@@ -666,23 +762,49 @@ public sealed class PlatformDispatcher : IDisposable
         }
     }
 
-    private DorotiView RequireMessagingView()
+    internal IDisposable EnterViewScope(DorotiView view)
+    {
+        ObjectDisposedException.ThrowIf(view.CallbackLifetime.IsCancellationRequested, view);
+        var dispatcherScope = EnterScope();
+        var previous = _invocationView.Value;
+        _invocationView.Value = view;
+        var callbackScope = DorotiExecutionContext.EnterDispatcher(EnqueueMicrotask, view.CallbackLifetime);
+        var environmentScope = view.environmentConfiguration is { } configuration
+            ? PlatformEnvironmentContext.Enter(configuration) : null;
+        return new ViewInvocationScope(this, previous, dispatcherScope, callbackScope, environmentScope);
+    }
+
+    private sealed class ViewInvocationScope(PlatformDispatcher dispatcher, DorotiView? previous,
+        IDisposable dispatcherScope, IDisposable callbackScope, IDisposable? environmentScope) : IDisposable
+    {
+        private int _disposed;
+        public void Dispose()
+        {
+            if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
+            dispatcher._invocationView.Value = previous;
+            DorotiCleanup.Run(() => environmentScope?.Dispose(), callbackScope.Dispose, dispatcherScope.Dispose);
+        }
+    }
+
+    public DorotiView RequireInvocationView(DorotiUiInvocation invocation)
     {
         lock (_gate)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
-            if (_views.Count == 1)
+            if (_invocationView.Value is { } selected)
             {
-                return _views.Values.Single();
+                if (_views.TryGetValue(selected.viewId, out var current) && ReferenceEquals(selected, current)) return selected;
+                throw new DorotiCapabilityException(DorotiCapabilityIds.PlatformMessaging, selected.viewId, invocation,
+                    "the explicit invocation owner has been detached");
             }
+            if (_views.Count == 1) return _views.Values.Single();
         }
-        throw new DorotiCapabilityException(
-            DorotiCapabilityIds.PlatformMessaging,
-            null,
-            DorotiUiInvocation.Managed("Doroti.Ui#PlatformDispatcher.platformMessaging"),
-            "platform messaging requires exactly one active view in this host-neutral dispatcher scope"
-        );
+        throw new DorotiCapabilityException(DorotiCapabilityIds.PlatformMessaging, null, invocation,
+            "multi-view operations require an explicit originating view scope");
     }
+
+    private DorotiView RequireMessagingView() =>
+        RequireInvocationView(DorotiUiInvocation.Managed("Doroti.Ui#PlatformDispatcher.platformMessaging"));
 
     internal ValueTask<ReadOnlyMemory<byte>> LoadApplicationResourceAsync(
         string key,
@@ -772,9 +894,11 @@ public sealed class DorotiView : IDisposable
     internal DorotiView(
         PlatformDispatcher dispatcher,
         ulong viewId,
-        DorotiViewCapabilities capabilities
+        DorotiViewCapabilities capabilities,
+        long generation
     )
     {
+        SceneOwner = new(dispatcher.ApplicationId, viewId, generation);
         _dispatcher = dispatcher;
         this.viewId = viewId;
         _capabilities = capabilities;
@@ -783,61 +907,99 @@ public sealed class DorotiView : IDisposable
             DorotiCapabilityIds.ViewLifecycleMetrics,
             DorotiUiInvocation.Managed("Doroti.Ui#DorotiView")
         );
-        _metrics = _viewHost.Metrics.Validate();
-        _viewHost.MetricsChanged += HandleMetricsChanged;
-        _viewHost.LifecycleChanged += HandleLifecycleChanged;
-        _viewHost.CloseRequested += HandleCloseRequested;
-        _viewHost.Closed += HandleClosed;
-        if (
-            capabilities.RegisteredIds.Contains(
-                DorotiCapabilityIds.InputEvents,
-                StringComparer.Ordinal
-            )
-        )
+        try
         {
-            _inputHost = capabilities.Require<IInputHostCapability>(
-                viewId,
-                DorotiCapabilityIds.InputEvents,
-                DorotiUiInvocation.Managed("Doroti.Ui#PointerDataPacket")
-            );
-            _inputHost.PointerData += HandlePointerData;
-            _inputHost.KeyData += HandleKeyData;
-            _inputHost.FocusData += HandleFocusData;
+            _metrics = _viewHost.Metrics.Validate();
+            if (capabilities.RegisteredIds.Contains(DorotiCapabilityIds.GraphicsScene, StringComparer.Ordinal))
+                capabilities.Require<ISceneHostCapability>(viewId, DorotiCapabilityIds.GraphicsScene, new("bind-scene-owner"))
+                    .BindOwner(SceneOwner);
+            _viewHost.MetricsChanged += HandleMetricsChanged;
+            _viewHost.LifecycleChanged += HandleLifecycleChanged;
+            _viewHost.CloseRequested += HandleCloseRequested;
+            _viewHost.Closed += HandleClosed;
+            if (
+                capabilities.RegisteredIds.Contains(
+                    DorotiCapabilityIds.InputEvents,
+                    StringComparer.Ordinal
+                )
+            )
+            {
+                _inputHost = capabilities.Require<IInputHostCapability>(
+                    viewId,
+                    DorotiCapabilityIds.InputEvents,
+                    DorotiUiInvocation.Managed("Doroti.Ui#PointerDataPacket")
+                );
+                _inputHost.PointerData += HandlePointerData;
+                _inputHost.KeyData += HandleKeyData;
+                _inputHost.FocusData += HandleFocusData;
+            }
+            if (
+                capabilities.RegisteredIds.Contains(
+                    DorotiCapabilityIds.PlatformEnvironment,
+                    StringComparer.Ordinal
+                )
+            )
+            {
+                _environmentHost = capabilities.Require<IPlatformEnvironmentHostCapability>(
+                    viewId,
+                    DorotiCapabilityIds.PlatformEnvironment,
+                    DorotiUiInvocation.Managed("Doroti.Ui#PlatformConfiguration")
+                );
+                _environmentConfiguration = _environmentHost.Configuration.Snapshot();
+                _environmentHost.ConfigurationChanged += HandlePlatformConfigurationChanged;
+            }
+            if (
+                capabilities.RegisteredIds.Contains(
+                    DorotiCapabilityIds.AccessibilitySemantics,
+                    StringComparer.Ordinal
+                )
+            )
+            {
+                _semanticsHost = capabilities.Require<ISemanticsHostCapability>(
+                    viewId,
+                    DorotiCapabilityIds.AccessibilitySemantics,
+                    DorotiUiInvocation.Managed("Doroti.Ui#SemanticsUpdate")
+                );
+                _semanticsHost.Action += HandleSemanticsAction;
+            }
         }
-        if (
-            capabilities.RegisteredIds.Contains(
-                DorotiCapabilityIds.PlatformEnvironment,
-                StringComparer.Ordinal
-            )
-        )
+        catch (Exception setupError)
         {
-            _environmentHost = capabilities.Require<IPlatformEnvironmentHostCapability>(
-                viewId,
-                DorotiCapabilityIds.PlatformEnvironment,
-                DorotiUiInvocation.Managed("Doroti.Ui#PlatformConfiguration")
-            );
-            _environmentConfiguration = _environmentHost.Configuration.Snapshot();
-            _environmentHost.ConfigurationChanged += HandlePlatformConfigurationChanged;
-        }
-        if (
-            capabilities.RegisteredIds.Contains(
-                DorotiCapabilityIds.AccessibilitySemantics,
-                StringComparer.Ordinal
-            )
-        )
-        {
-            _semanticsHost = capabilities.Require<ISemanticsHostCapability>(
-                viewId,
-                DorotiCapabilityIds.AccessibilitySemantics,
-                DorotiUiInvocation.Managed("Doroti.Ui#SemanticsUpdate")
-            );
-            _semanticsHost.Action += HandleSemanticsAction;
+            try
+            {
+                DorotiCleanup.Run(
+                    () => { _viewHost.MetricsChanged -= HandleMetricsChanged; _viewHost.LifecycleChanged -= HandleLifecycleChanged;
+                        _viewHost.CloseRequested -= HandleCloseRequested; _viewHost.Closed -= HandleClosed; },
+                    () => { if (_inputHost is not null) { _inputHost.PointerData -= HandlePointerData;
+                        _inputHost.KeyData -= HandleKeyData; _inputHost.FocusData -= HandleFocusData; } },
+                    () => { if (_environmentHost is not null) _environmentHost.ConfigurationChanged -= HandlePlatformConfigurationChanged; },
+                    () => { if (_semanticsHost is not null) _semanticsHost.Action -= HandleSemanticsAction; });
+            }
+            catch (Exception unsubscribeError) { throw new AggregateException(setupError, unsubscribeError); }
+            throw;
         }
     }
 
+    /// <summary>Selects this live view explicitly for callbacks and view-owned services.</summary>
+    public DorotiSceneOwner SceneOwner { get; }
+    public IDisposable EnterInvocationScope() => _dispatcher.EnterViewScope(this);
+
     public ulong viewId { get; }
     internal CancellationToken CallbackLifetime => _callbackLifetime.Token;
-    internal DorotiFrameTrace FrameTrace => _dispatcher.frameTrace;
+    public CancellationToken InvocationLifetime => _callbackLifetime.Token;
+    /// <summary>Provider shutdown must quiesce callbacks, then wait for actual typed invocation completion.</summary>
+    public ValueTask DrainInvocationsAsync(CancellationToken cancellationToken = default) => new(_capabilities.WaitForInvocationDrainAsync().WaitAsync(cancellationToken));
+
+    public async ValueTask<TResult> InvokeManagedPluginAsync<TRequest, TResult>(string pluginId, TRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        var invocation = DorotiUiInvocation.Managed("Doroti.Ui#managed-plugin");
+        using var lease = _capabilities.Acquire<IDorotiManagedPluginInvoker>(viewId, DorotiCapabilityIds.ManagedPlugins, invocation);
+        return await lease.Value.InvokeAsync<TRequest, TResult>(this, pluginId, request, invocation, cancellationToken);
+    }
+    /// <summary>Bounded application trace; entries preserve their view/frame identity.</summary>
+    public DorotiFrameTrace FrameTrace => _dispatcher.frameTrace;
 
     public string targetIdentity => _capabilities.TargetIdentity;
 
@@ -874,6 +1036,15 @@ public sealed class DorotiView : IDisposable
         ObjectDisposedException.ThrowIf(_disposed, this);
         ArgumentNullException.ThrowIfNull(callback);
         _dispatcher.DispatchWithEnvironment(this, callback);
+    }
+
+    /// <summary>Enqueues one typed platform callback on the application owner;
+    /// completion/exception/cancellation are returned to the caller exactly once.</summary>
+    public ValueTask DispatchPlatformEventAsync(Action callback, CancellationToken cancellationToken = default)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        ArgumentNullException.ThrowIfNull(callback);
+        return _dispatcher.DispatchPlatformEventAsync(this, callback, cancellationToken);
     }
 
     internal void requestFocusChange(ViewFocusState state, ViewFocusDirection direction)
@@ -935,6 +1106,12 @@ public sealed class DorotiView : IDisposable
         }
     }
 
+    /// <summary>Uses this view's exact epoch even when another view triggered the shared framework frame.</summary>
+    public IDisposable EnterSceneSubmissionScope() => EnterSceneBuildScope(
+        _activeBuildToken.Value?.ViewEpoch ?? CaptureViewEpoch(),
+        _activeBuildToken.Value?.FrameworkFrameNumber ?? _dispatcher.CurrentFrameNumber,
+        _activeFrameTransaction.Value);
+
     internal DorotiViewEpoch CaptureViewEpoch()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -957,7 +1134,7 @@ public sealed class DorotiView : IDisposable
 
         var previous = _activeBuildToken.Value;
         var previousTransaction = _activeFrameTransaction.Value;
-        _activeBuildToken.Value = new(epoch, frameNumber, 0, 0);
+        _activeBuildToken.Value = new(epoch, frameNumber, 0, 0, SceneOwner);
         _activeFrameTransaction.Value = transaction;
         return new SceneBuildScope(this, previous, previousTransaction);
     }
@@ -1119,6 +1296,24 @@ public sealed class DorotiView : IDisposable
             .ConfigureAwait(false);
     }
 
+    /// <summary>Retains the registered service until its actual typed completion and rejects results after view cancellation.</summary>
+    public async ValueTask<TResult> InvokeCapabilityAsync<TCapability, TResult>(string id, DorotiUiInvocation invocation,
+        Func<TCapability, CancellationToken, ValueTask<TResult>> operation, CancellationToken cancellationToken = default) where TCapability : class
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        ArgumentNullException.ThrowIfNull(operation);
+        using var cancel = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, InvocationLifetime);
+        using var lease = _capabilities.Acquire<TCapability>(viewId, id, invocation);
+        var result = await operation(lease.Value, cancel.Token).ConfigureAwait(false);
+        cancel.Token.ThrowIfCancellationRequested();
+        return result;
+    }
+    public TCapability? GetCapabilityOrDefault<TCapability>(string id) where TCapability : class
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        return registeredCapabilityIds.Contains(id) ? RequireCapability<TCapability>(id, DorotiUiInvocation.Managed("Doroti.Ui#capability-evaluation")) : null;
+    }
+
     public TCapability RequireCapability<TCapability>(string id, DorotiUiInvocation invocation)
         where TCapability : class
     {
@@ -1155,9 +1350,10 @@ public sealed class DorotiView : IDisposable
                 : ToPhysicalDimension(rootPhysicalSize.height, nameof(rootPhysicalSize));
             token = token.WithRootPhysicalSize(width, height);
         }
+        using var submission = new DorotiSceneSubmission(scene, token, _activeFrameTransaction.Value);
         _capabilities
             .Require<ISceneHostCapability>(viewId, DorotiCapabilityIds.GraphicsScene, invocation)
-            .Submit(viewId, new(scene, token, _activeFrameTransaction.Value), invocation);
+            .Submit(viewId, submission, invocation);
     }
 
     public void render(Scene scene) =>
@@ -1230,10 +1426,18 @@ public sealed class DorotiView : IDisposable
     {
         if (_disposed)
         {
+            _capabilities.Dispose();
             return;
         }
         DorotiCleanup.Run(() => _callbackLifetime.Cancel(), () => _dispatcher.Remove(this), () => DisposeCore(closeHost: true));
     }
+
+    internal void QuiesceCallbacks()
+    {
+        _capabilities.BeginClose();
+        DorotiCleanup.Run(_callbackLifetime.Cancel, () => _dispatcher.Remove(this));
+    }
+    internal Task WaitForInvocationDrainAsync() => _capabilities.WaitForInvocationDrainAsync();
 
     internal void DisposeFromDispatcher() => DisposeCore(closeHost: true);
 
@@ -1241,6 +1445,7 @@ public sealed class DorotiView : IDisposable
     {
         if (_disposed)
         {
+            _capabilities.Dispose();
             return;
         }
         _disposed = true;

@@ -19,29 +19,29 @@
     <Project Path="src/Doroti.Framework.Semantics/Doroti.Framework.Semantics.csproj" />
     <Project Path="src/Doroti.Framework.Rendering/Doroti.Framework.Rendering.csproj" />
     <Project Path="src/Doroti.Framework.Widgets/Doroti.Framework.Widgets.csproj" />
-    <Project Path="src/Doroti.Framework.Cupertino/Doroti.Framework.Cupertino.csproj" />
-    <Project Path="src/Doroti.Framework.Material/Doroti.Framework.Material.csproj" />
-    <Project Path="src/Doroti.Host.Web/Doroti.Host.Web.csproj" />
-    <Project Path="src/Doroti.Host.Maui/Doroti.Host.Maui.csproj" />
-    <Project Path="src/Doroti.Host.WindowsAppSdk/Doroti.Host.WindowsAppSdk.csproj" />
-    <Project Path="src/Doroti.Host.WindowsAppSdk.Diagnostics/Doroti.Host.WindowsAppSdk.Diagnostics.csproj" />
-    <Project Path="src/Doroti.Host.Qt/Doroti.Host.Qt.csproj" />
+    <Project Path="../packages/Doroti.Cupertino/Doroti.Cupertino.csproj" />
+    <Project Path="../packages/Doroti.Material/Doroti.Material.csproj" />
+    <Project Path="../packages/platforms/web/Doroti.Host.Web/Doroti.Host.Web.csproj" />
+    <Project Path="../packages/platforms/maui/Doroti.Host.Maui/Doroti.Host.Maui.csproj" />
+    <Project Path="../packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/Doroti.Host.WindowsAppSdk.csproj" />
+    <Project Path="../packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk.Diagnostics/Doroti.Host.WindowsAppSdk.Diagnostics.csproj" />
+    <Project Path="../packages/platforms/qt/Doroti.Host.Qt/Doroti.Host.Qt.csproj" />
     <Project Path="src/Doroti.Runner.Sdk/Doroti.Runner.Sdk.csproj" />
     <Project Path="src/Doroti.Skia.RuntimeEffects/Doroti.Skia.RuntimeEffects.csproj" />
     <Project Path="src/Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj" />
     <Project Path="src/Doroti.Skia.Fonts/Doroti.Skia.Fonts.csproj" />
     <Project Path="src/Doroti.Skia.Vulkan/Doroti.Skia.Vulkan.csproj" />
-    <Project Path="src/Doroti.Target.Windows.Maui.win-x64/Doroti.Target.Windows.Maui.win-x64.csproj" />
-    <Project Path="src/Doroti.Target.Windows.WindowsAppSdk.win-x64/Doroti.Target.Windows.WindowsAppSdk.win-x64.csproj" />
-    <Project Path="src/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.csproj" />
-    <Project Path="src/Doroti.Target.MacOS.Maui.osx-arm64/Doroti.Target.MacOS.Maui.osx-arm64.csproj" />
-    <Project Path="src/Doroti.Target.iOS.Maui.ios-arm64/Doroti.Target.iOS.Maui.ios-arm64.csproj" />
-    <Project Path="src/Doroti.Target.iOS.Maui.iossimulator-arm64/Doroti.Target.iOS.Maui.iossimulator-arm64.csproj" />
-    <Project Path="src/Doroti.Target.iOS.Maui.iossimulator-x64/Doroti.Target.iOS.Maui.iossimulator-x64.csproj" />
-    <Project Path="src/Doroti.Target.Android.Maui.android-arm64/Doroti.Target.Android.Maui.android-arm64.csproj" />
-    <Project Path="src/Doroti.Target.Android.Maui.android-x64/Doroti.Target.Android.Maui.android-x64.csproj" />
-    <Project Path="src/Doroti.Target.Web.browser-wasm/Doroti.Target.Web.browser-wasm.csproj" />
-    <Project Path="src/Doroti.Target.Linux.Qt.linux-x64/Doroti.Target.Linux.Qt.linux-x64.csproj" />
+    <Project Path="../packages/platforms/maui/Doroti.Target.Windows.Maui.win-x64/Doroti.Target.Windows.Maui.win-x64.csproj" />
+    <Project Path="../packages/platforms/windowsappsdk/Doroti.Target.Windows.WindowsAppSdk.win-x64/Doroti.Target.Windows.WindowsAppSdk.win-x64.csproj" />
+    <Project Path="../packages/platforms/maui/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.csproj" />
+    <Project Path="../packages/platforms/maui/Doroti.Target.MacOS.Maui.osx-arm64/Doroti.Target.MacOS.Maui.osx-arm64.csproj" />
+    <Project Path="../packages/platforms/maui/Doroti.Target.iOS.Maui.ios-arm64/Doroti.Target.iOS.Maui.ios-arm64.csproj" />
+    <Project Path="../packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-arm64/Doroti.Target.iOS.Maui.iossimulator-arm64.csproj" />
+    <Project Path="../packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-x64/Doroti.Target.iOS.Maui.iossimulator-x64.csproj" />
+    <Project Path="../packages/platforms/maui/Doroti.Target.Android.Maui.android-arm64/Doroti.Target.Android.Maui.android-arm64.csproj" />
+    <Project Path="../packages/platforms/maui/Doroti.Target.Android.Maui.android-x64/Doroti.Target.Android.Maui.android-x64.csproj" />
+    <Project Path="../packages/platforms/web/Doroti.Target.Web.browser-wasm/Doroti.Target.Web.browser-wasm.csproj" />
+    <Project Path="../packages/platforms/qt/Doroti.Target.Linux.Qt.linux-x64/Doroti.Target.Linux.Qt.linux-x64.csproj" />
   </Folder>
   <Project Path="src/Doroti.App.Sdk/Doroti.App.Sdk.csproj" />
   <Folder Name="/samples/">
@@ -61,5 +61,12 @@
   </Folder>
   <Folder Name="/templates/">
     <Project Path="templates/Doroti.Templates/Doroti.Templates.csproj" />
+  </Folder>
+  <Folder Name="/Tool contracts/"><Project Path="src/Doroti.Tooling.Contracts/Doroti.Tooling.Contracts.csproj"/><Project Path="src/Doroti.Tooling.Extension.Sdk/Doroti.Tooling.Extension.Sdk.csproj"/></Folder>
+  <Folder Name="/Platform Tooling/">
+    <Project Path="../packages/platforms/windowsappsdk/tooling/Doroti.Tool.WindowsAppSdk.csproj" />
+    <Project Path="../packages/platforms/web/tooling/Doroti.Tool.Web.csproj" />
+    <Project Path="../packages/platforms/qt/tooling/Doroti.Tool.Qt.csproj" />
+    <Project Path="../packages/platforms/maui/tooling/Doroti.Tool.Maui.csproj" />
   </Folder>
 </Solution>

@@ -51,8 +51,8 @@ M0 → M1 최소 경로 → M2 → M4/M5 → M6(대상 플랫폼) → M7 순서�
 
 ## 착수 시 확인할 코드·문서
 
-- [Doroti/src/Doroti.Host.Maui](../../../../Doroti/src/Doroti.Host.Maui)
-- [Doroti/src/Doroti.Target.iOS.Maui.ios-arm64](../../../../Doroti/src/Doroti.Target.iOS.Maui.ios-arm64)
+- [Doroti/src/Doroti.Host.Maui](../../../../packages/platforms/maui/Doroti.Host.Maui)
+- [Doroti/src/Doroti.Target.iOS.Maui.ios-arm64](../../../../packages/platforms/maui/Doroti.Target.iOS.Maui.ios-arm64)
 - [Doroti/docs/platform-views/ios.md](../../../../Doroti/docs/platform-views/ios.md)
 - [samples/DorotiTestbedApp/ios](../../../../samples/DorotiTestbedApp/ios)
 

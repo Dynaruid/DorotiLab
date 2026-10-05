@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { WorkerRequestMailbox } from '../src/Doroti.Host.Web/Web/doroti.web.requests.ts';
-import { PlatformFrameStager } from '../src/Doroti.Host.Web/Web/doroti.web.platform-frames.ts';
-import type { CompositionPacket, RasterPacket } from '../src/Doroti.Host.Web/Web/doroti.web.composition.ts';
-import { WorkerStartupLifetime, cleanupAll } from '../src/Doroti.Host.Web/Web/doroti.web.lifetime.ts';
+import { WorkerRequestMailbox } from '../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.requests.ts';
+import { PlatformFrameStager } from '../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.platform-frames.ts';
+import type { CompositionPacket, RasterPacket } from '../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.composition.ts';
+import { WorkerStartupLifetime, cleanupAll } from '../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.lifetime.ts';
 
 test('startup cancellation terminates awaiting caller and retires every late resource exactly once', async () => {
   for (const stage of ['runtime-create','exports','gpu-initialize','surface-initialize','application-start','texture-initialize']) {

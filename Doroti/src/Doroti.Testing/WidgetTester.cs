@@ -125,7 +125,8 @@ public sealed class WidgetTester : IDisposable
         CheckAlive();
         View.DispatchPlatformEvent(() => Clock.Advance(duration ?? TimeSpan.Zero));
         _host.Frame(Clock.Elapsed);
-        _renderer.Paint(_surface, (int)View.physicalSize.width, (int)View.physicalSize.height);
+        if (_renderer.Paint(_surface, (int)View.physicalSize.width, (int)View.physicalSize.height) is { } completion)
+            _renderer.CompletePaint(completion);
         Frames++;
         ThrowErrors();
     }
@@ -144,6 +145,21 @@ public sealed class WidgetTester : IDisposable
             count++;
         } while (_host.PendingFrame is not null || _binding.hasScheduledFrame || Clock.PendingTimers > 0);
         return count;
+    }
+    /// <summary>Pumps an asynchronous owner operation and its queued continuations.
+    /// A synchronous Wait alone cannot advance this headless view's event loop.</summary>
+    public void pumpUntilComplete(Task operation, int maximumFrames = 30)
+    {
+        CheckAlive();
+        ArgumentNullException.ThrowIfNull(operation);
+        if (maximumFrames is < 1 or > 30) throw new ArgumentOutOfRangeException(nameof(maximumFrames));
+        for (var frame = 0; frame < maximumFrames && !operation.IsCompleted; frame++)
+        {
+            pump(TimeSpan.FromMilliseconds(16));
+            if (!operation.IsCompleted) Thread.Sleep(10);
+        }
+        if (!operation.IsCompleted) throw new TimeoutException("The owner operation did not finish within the bounded headless event-loop pump.");
+        operation.GetAwaiter().GetResult();
     }
     public IReadOnlyList<Element> find(Func<Widget, bool> predicate)
     {

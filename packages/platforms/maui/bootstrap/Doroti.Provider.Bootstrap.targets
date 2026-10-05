@@ -1,0 +1,30 @@
+<Project>
+  <PropertyGroup>
+    <DorotiProviderBuildDirectory Condition="'$(DorotiProviderBuildDirectory)' == '' and Exists('$(MSBuildThisFileDirectory)../provider-build/Sdk.targets')">$(MSBuildThisFileDirectory)../provider-build/</DorotiProviderBuildDirectory>
+    <DorotiProviderBuildDirectory Condition="'$(DorotiProviderBuildDirectory)' == ''">$(MSBuildThisFileDirectory)../../build/</DorotiProviderBuildDirectory>
+    <DorotiProviderSdkProps>$(DorotiProviderBuildDirectory)Sdk.props</DorotiProviderSdkProps>
+    <DorotiProviderSupportsDesktop>true</DorotiProviderSupportsDesktop>
+    <DorotiProviderExcludePublishSymbols>false</DorotiProviderExcludePublishSymbols>
+    <DorotiProviderReferenceProperties Condition="'$(DorotiIosDevelopment)' == 'true' or '$(DorotiMacDevelopment)' == 'true'">CustomAfterMicrosoftCommonTargets=$(DorotiProviderBuildDirectory)Doroti.IosDevelopmentBinding.targets</DorotiProviderReferenceProperties>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DorotiProviderId>maui</DorotiProviderId>
+    <DorotiProviderVersion Condition="'$(DorotiProviderVersion)' == ''">0.4.0-alpha.1</DorotiProviderVersion>
+    <DorotiProviderCoreRange>[0.4.0-alpha.1,0.5.0)</DorotiProviderCoreRange>
+    <DorotiProviderProtocolVersion>1</DorotiProviderProtocolVersion>
+    <DorotiProviderToolPackage>Doroti.Tool.Maui</DorotiProviderToolPackage>
+    <DorotiProviderProfile Condition="'$(DorotiProviderProfile)' == ''">default:$(RuntimeIdentifier)</DorotiProviderProfile>
+    <DorotiProviderSuppliesBootstrap>true</DorotiProviderSuppliesBootstrap>
+  </PropertyGroup>
+  <ItemGroup>
+    <DorotiProviderEntryLine Include="    public static void Main(string[] args) =&gt;" Condition="'$(DorotiNativeEntryKind)' == 'UIKit-Main'" />
+    <DorotiProviderEntryLine Include="        global::UIKit.UIApplication.Main(args, null, typeof(global::$(RootNamespace).AppDelegate))%3B" Condition="'$(DorotiNativeEntryKind)' == 'UIKit-Main'" />
+    <DorotiProviderEntryLine Include="    public static void Main(string[] args)" Condition="'$(DorotiNativeEntryKind)' == 'AppKit-Main'" />
+    <DorotiProviderEntryLine Include="    {" Condition="'$(DorotiNativeEntryKind)' == 'AppKit-Main'" />
+    <DorotiProviderEntryLine Include="        global::AppKit.NSApplication.Init()%3B" Condition="'$(DorotiNativeEntryKind)' == 'AppKit-Main'" />
+    <DorotiProviderEntryLine Include="        global::AppKit.NSApplication.SharedApplication.Delegate = new global::$(RootNamespace).AppKitDelegate()%3B" Condition="'$(DorotiNativeEntryKind)' == 'AppKit-Main'" />
+    <DorotiProviderEntryLine Include="        global::AppKit.NSApplication.Main(args)%3B" Condition="'$(DorotiNativeEntryKind)' == 'AppKit-Main'" />
+    <DorotiProviderEntryLine Include="    }" Condition="'$(DorotiNativeEntryKind)' == 'AppKit-Main'" />
+  </ItemGroup>
+  <Import Project="$(DorotiProviderBuildDirectory)Sdk.targets" Condition="'$(DorotiRunnerSdkActive)' == 'true'" />
+</Project>

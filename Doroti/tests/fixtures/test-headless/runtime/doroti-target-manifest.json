@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "doroti.target-package/v2",
+  "packageId": "Doroti.TestProvider.Runtime",
+  "packageVersion": "0.4.0-alpha.1",
+  "provider": "test-headless",
+  "providerVersion": "0.4.0-alpha.1",
+  "providerProfile": "default",
+  "coreRange": "[0.4.0-alpha.1,0.5.0)",
+  "protocolVersion": 1,
+  "targetFramework": "net10.0",
+  "rid": ""
+}

@@ -1,14 +1,26 @@
 import * as path from 'node:path';
 
-export interface Project { schemaVersion: string; manifest: string; root: string; applicationProject: string; platforms: Record<string, string>; developmentTargets: string[]; }
+export interface Development { transport: string; debug: boolean; requiresPreparedAcknowledgment: boolean; usesStopSignal: boolean; launchBrowser: boolean; }
+export interface DevelopmentSupport { platform: string; runner: string; provider: string; version: string; operations: string[]; development: Development; }
+export interface Project { schemaVersion: string; manifest: string; root: string; applicationProject: string; platforms: Record<string, string>; developmentTargets: string[]; developmentSupport: DevelopmentSupport[]; }
 export interface Runtime { schemaVersion: string; sessionId: string; runtimeId: string; processId: number; supported: boolean; status: string; requestId?: string; revision: number; error?: string; }
 export function parseProject(text: string): Project {
     const value = JSON.parse(text) as Project;
-    if (value.schemaVersion !== 'doroti.cli-workspace/v1' || !path.isAbsolute(value.root) ||
+    if (value.schemaVersion !== 'doroti.cli-workspace/v2' || !path.isAbsolute(value.root) ||
         !Array.isArray(value.developmentTargets) || !value.platforms || !value.applicationProject)
         throw new Error('Invalid response from Doroti CLI describe. Update the repository CLI.');
+    if (!Array.isArray(value.developmentSupport)) throw new Error('Missing provider development capabilities.');
+    const seen = new Set<string>();
+    for (const [alias, runner] of Object.entries(value.platforms)) {
+        if (!/^[A-Za-z][A-Za-z0-9_-]{0,63}$/.test(alias) || !path.isAbsolute(runner)) throw new Error('Invalid declared platform.');
+    }
+    for (const support of value.developmentSupport) {
+        if (seen.has(support.platform) || !value.platforms[support.platform] || !Array.isArray(support.operations) || !support.development ||
+            !['none', 'file', 'browser', 'device'].includes(support.development.transport)) throw new Error('Invalid provider development capabilities.');
+        seen.add(support.platform);
+    }
     for (const target of value.developmentTargets)
-        if (!['windows', 'web', 'android', 'ios', 'macos', 'maccatalyst', 'linux'].includes(target) || !value.platforms[target]) throw new Error('Invalid development target.');
+        if (!value.platforms[target] || !value.developmentSupport.some(support => support.platform === target && support.operations.includes('dev'))) throw new Error('Invalid development target.');
     return value;
 }
 export function validateName(name: string): string | undefined {

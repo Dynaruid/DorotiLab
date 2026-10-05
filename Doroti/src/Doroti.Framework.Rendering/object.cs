@@ -700,6 +700,7 @@ internal class _LocalSemanticsHandle__object : SemanticsHandle
 
 public class PipelineOwner : DiagnosticableTreeMixin
 {
+    private readonly Func<IDisposable>? _enterOwnerScope;
     public virtual Action? onNeedVisualUpdate { get; private set; }
     public virtual Action? onSemanticsOwnerCreated { get; private set; }
     public virtual Action<SemanticsUpdate>? onSemanticsUpdate { get; private set; }
@@ -736,9 +737,11 @@ public class PipelineOwner : DiagnosticableTreeMixin
         Action? onNeedVisualUpdate = null,
         Action? onSemanticsOwnerCreated = null,
         Action<SemanticsUpdate>? onSemanticsUpdate = null,
-        Action? onSemanticsOwnerDisposed = null
+        Action? onSemanticsOwnerDisposed = null,
+        Func<IDisposable>? enterOwnerScope = null
     )
     {
+        _enterOwnerScope = enterOwnerScope;
         this.onNeedVisualUpdate = onNeedVisualUpdate;
         this.onSemanticsOwnerCreated = onSemanticsOwnerCreated;
         this.onSemanticsUpdate = onSemanticsUpdate;
@@ -777,6 +780,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
 
     public virtual void flushLayout()
     {
+        using var ownerScope = _enterOwnerScope?.Invoke();
         if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
             DartMap<string, string>? debugTimelineArguments = default!;
@@ -889,6 +893,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
 
     public virtual void flushCompositingBits()
     {
+        using var ownerScope = _enterOwnerScope?.Invoke();
         if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
             FlutterTimeline.startSync(
@@ -922,6 +927,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
 
     public virtual void flushPaint()
     {
+        using var ownerScope = _enterOwnerScope?.Invoke();
         if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
             DartMap<string, string>? debugTimelineArguments = default!;
@@ -1053,6 +1059,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
 
     public virtual void flushSemantics()
     {
+        using var ownerScope = _enterOwnerScope?.Invoke();
         using var allocationProfile = FrameworkWorkProfile.AllocationEnabled
             ? FrameworkWorkProfile.Begin(GetType(), 15)
             : default;

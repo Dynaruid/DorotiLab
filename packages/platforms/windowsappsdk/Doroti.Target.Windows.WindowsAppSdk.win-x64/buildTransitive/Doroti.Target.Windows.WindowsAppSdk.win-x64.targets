@@ -1,0 +1,58 @@
+<Project>
+  <PropertyGroup><DorotiProviderBootstrapTargets>$(MSBuildThisFileDirectory)../bootstrap/Doroti.Provider.Bootstrap.targets</DorotiProviderBootstrapTargets></PropertyGroup>
+  <Import Project="$(DorotiProviderBootstrapTargets)" Condition="'$(DorotiProviderSuppliesBootstrap)' != 'true'" />
+  <PropertyGroup Condition="'$(DorotiTarget)' == 'Windows'">
+    <WindowsPackageType>None</WindowsPackageType>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <SelfContained>true</SelfContained>
+    <DorotiWindowsAdapterDefault Condition="'$(DorotiWindowsAdapterDefault)' == ''">HwndExactCpp</DorotiWindowsAdapterDefault>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(DorotiTarget)' == 'Windows' and '@(DorotiTargetDescriptor)' == ''">
+    <DorotiTargetDescriptor Include="Windows" HostKind="WindowsAppSdk" NativeEntryKind="Win32-WinMain"
+        RuntimeIdentifier="win-x64" TargetFramework="net10.0-windows10.0.19041.0"
+        TargetPackage="Doroti.Target.Windows.WindowsAppSdk.win-x64"
+        AdapterDefault="$(DorotiWindowsAdapterDefault)"
+        AdapterCapabilities="HwndExactCpp" />
+  </ItemGroup>
+
+  <Target Name="DorotiWriteWindowsNativeBuildProvenance"
+          AfterTargets="CopyFilesToOutputDirectory"
+          Condition="'$(DorotiTarget)' == 'Windows' and Exists('$(TargetDir)doroti_windows_appsdk_host_v1.dll') and Exists('$(TargetDir)Microsoft.WindowsAppRuntime.Bootstrap.dll')">
+    <GetFileHash Files="$(TargetDir)doroti_windows_appsdk_host_v1.dll" Algorithm="SHA256">
+      <Output TaskParameter="Items" ItemName="_DorotiNativeHostHash" />
+    </GetFileHash>
+    <GetFileHash Files="$(TargetDir)Microsoft.WindowsAppRuntime.Bootstrap.dll" Algorithm="SHA256">
+      <Output TaskParameter="Items" ItemName="_DorotiBootstrapHash" />
+    </GetFileHash>
+    <PropertyGroup>
+      <_DorotiNativeHostHashValue>@(_DorotiNativeHostHash->'%(FileHash)')</_DorotiNativeHostHashValue>
+      <_DorotiBootstrapHashValue>@(_DorotiBootstrapHash->'%(FileHash)')</_DorotiBootstrapHashValue>
+    </PropertyGroup>
+    <ItemGroup>
+      <_DorotiNativeProvenanceLine Include="{&quot;schemaVersion&quot;:&quot;doroti.windows.native-provenance/v2&quot;,&quot;nativeHostSha256&quot;:&quot;$(_DorotiNativeHostHashValue)&quot;,&quot;bootstrapSha256&quot;:&quot;$(_DorotiBootstrapHashValue)&quot;}" />
+    </ItemGroup>
+    <WriteLinesToFile File="$(TargetDir)doroti-native-provenance.json" Lines="@(_DorotiNativeProvenanceLine)" Overwrite="true" WriteOnlyWhenDifferent="true" />
+    <ItemGroup>
+      <FileWrites Include="$(TargetDir)doroti-native-provenance.json" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="DorotiWriteWindowsNativePublishProvenance"
+          AfterTargets="Publish"
+          Condition="'$(DorotiTarget)' == 'Windows' and Exists('$(PublishDir)doroti_windows_appsdk_host_v1.dll') and Exists('$(PublishDir)Microsoft.WindowsAppRuntime.Bootstrap.dll')">
+    <GetFileHash Files="$(PublishDir)doroti_windows_appsdk_host_v1.dll" Algorithm="SHA256">
+      <Output TaskParameter="Items" ItemName="_DorotiPublishNativeHostHash" />
+    </GetFileHash>
+    <GetFileHash Files="$(PublishDir)Microsoft.WindowsAppRuntime.Bootstrap.dll" Algorithm="SHA256">
+      <Output TaskParameter="Items" ItemName="_DorotiPublishBootstrapHash" />
+    </GetFileHash>
+    <PropertyGroup>
+      <_DorotiPublishNativeHostHashValue>@(_DorotiPublishNativeHostHash->'%(FileHash)')</_DorotiPublishNativeHostHashValue>
+      <_DorotiPublishBootstrapHashValue>@(_DorotiPublishBootstrapHash->'%(FileHash)')</_DorotiPublishBootstrapHashValue>
+    </PropertyGroup>
+    <ItemGroup>
+      <_DorotiPublishNativeProvenanceLine Include="{&quot;schemaVersion&quot;:&quot;doroti.windows.native-provenance/v2&quot;,&quot;nativeHostSha256&quot;:&quot;$(_DorotiPublishNativeHostHashValue)&quot;,&quot;bootstrapSha256&quot;:&quot;$(_DorotiPublishBootstrapHashValue)&quot;}" />
+    </ItemGroup>
+    <WriteLinesToFile File="$(PublishDir)doroti-native-provenance.json" Lines="@(_DorotiPublishNativeProvenanceLine)" Overwrite="true" WriteOnlyWhenDifferent="true" />
+  </Target>
+</Project>

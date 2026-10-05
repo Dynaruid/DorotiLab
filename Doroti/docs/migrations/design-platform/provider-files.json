@@ -1,0 +1,3021 @@
+{
+  "schema": "doroti.provider-source-migration/v1",
+  "files": [
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AndroidFilePicker.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AndroidFilePicker.cs",
+      "sha256": "1eb554bb1fd3540c9d14b1b3886838caf5c8268f8e10f0ac9d4fc91f0a0a2f24",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AndroidPlatformBackdropSourceView.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AndroidPlatformBackdropSourceView.cs",
+      "sha256": "415f3f17e5c81ad9c3643b4cd89527e4bf455a200c4f5053edc0447e3becdc38",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AndroidPlatformBackdropView.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AndroidPlatformBackdropView.cs",
+      "sha256": "c4aeeaba924862015968419196f9694a286ea09660808cad5e1fc71cf5650293",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AndroidPlatformViewHost.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AndroidPlatformViewHost.cs",
+      "sha256": "65ab7aa333640f63cc16f06c09374fa3da23222c1c7c0e612a8f44e8fae0a37b",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AndroidPointerMapping.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AndroidPointerMapping.cs",
+      "sha256": "fb9ce9147b9e0062e60892c15572efb9ac7caff3d20643cab0599b0af7daa264",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AndroidPointerSubscription.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AndroidPointerSubscription.cs",
+      "sha256": "4f177cdd7956ac8c526de04f5d5b2f07acfb3a93eaa5b8a74725f827135a4ac4",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AndroidSharedRaster.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AndroidSharedRaster.cs",
+      "sha256": "83db040aab304bdcbfd3c011248878797df8aa323a07cdf2e2cc96e7ab257264",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AndroidSurfaceTextureEntry.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AndroidSurfaceTextureEntry.cs",
+      "sha256": "d4b8649d06c1d950eeeff42e48762f6f54b60658f2a8565a37b0e59d0a08f310",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AndroidTrackpadGesture.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AndroidTrackpadGesture.cs",
+      "sha256": "e6af19fe256bd9029f9ac2f68864ba9db4fe90ad3d7221aabe445575a3259c90",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AndroidWebViewSession.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AndroidWebViewSession.cs",
+      "sha256": "4280cf97bf77a04fffdc9b18d66b050a746dc70e58088c71d184b0f24e32fd63",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AppKitDesktopWindowHost.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AppKitDesktopWindowHost.cs",
+      "sha256": "94c22e6276db0d54a5ae7050d93ebdb08dad8be82c4e1e08e457d1d28355c3fb",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AppKitDesktopWindowPolicy.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AppKitDesktopWindowPolicy.cs",
+      "sha256": "b7d305ba2c8b7494d5d5b2f4f20310a6a213c6cef1a151e4aafc0478f4356dfa",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AppKitFilePicker.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AppKitFilePicker.cs",
+      "sha256": "21ee9b7dac2906a03e13cd85d26d4beb4c72a0b49c0cca99ac64e24a785c799e",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AppKitOsDrop.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AppKitOsDrop.cs",
+      "sha256": "5fec10b9f30fe3c347620ba6e012ad3cd8386f0eb32665611f9fdd43b163a45e",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AppKitPlatformBlurView.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AppKitPlatformBlurView.cs",
+      "sha256": "ab2afd5d3bf1c3bf3873af3629e19f639d07274c2002c116b3b370bd43260f81",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AppKitPlatformRasterSurface.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AppKitPlatformRasterSurface.cs",
+      "sha256": "12ba4cf0c041771dc801594bed477100b0277844c439ba05ead447414d186fdd",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AppKitPlatformViewFactory.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AppKitPlatformViewFactory.cs",
+      "sha256": "18630f8cd4ec76ec71d78a40945420ccb446baa91c7496350e8ee6d3a0908880",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AppKitPlatformViewHost.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AppKitPlatformViewHost.cs",
+      "sha256": "e9a4b7e0932d96d30c9f1e415c3767abc7559f6ff522ac703d00edcfb79f65ec",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AppKitWindowBackdrop.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AppKitWindowBackdrop.cs",
+      "sha256": "746ec09390644848e406d0e2dfcef216ce2c51eb24a8682003c3c03f88092bb2",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AppleGpuEffects.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AppleGpuEffects.cs",
+      "sha256": "0dd8ddb9dd073dda77ef9f86fddbc8e4f648abac46042270850b6a8d216edcc4",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AppleGpuTextureFrames.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AppleGpuTextureFrames.cs",
+      "sha256": "6d13b4f4fc6c1e2bd517d38d7e81d14ed94cade4835ee4ea81a0787bc96184b0",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AppleMetalPresentation.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AppleMetalPresentation.cs",
+      "sha256": "3608ac9628e6d7296975e2017810d921476d48165c72f90ddc8f3a278459f800",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AppleReadFile.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AppleReadFile.cs",
+      "sha256": "ec0bb8966b1c93532df3375c7dd1b7f4142691c1f78772a71e6422d46071af32",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AppleSemanticsState.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AppleSemanticsState.cs",
+      "sha256": "7d3fe3a452279552b67af5328f9a27ee13fb3c16645e1a9952f99161a0c1c80e",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AppleWebViewContent.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AppleWebViewContent.cs",
+      "sha256": "9686926c7abd4bf982b471485ac23d9ae1819f0f510854ccef925319ec3b078c",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AppleWebViewSession.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AppleWebViewSession.cs",
+      "sha256": "89e09341df4ae7e30ad390d1fd821ab689d5b555987708f71076f8ac196cc046",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/AppleWebViewUi.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/AppleWebViewUi.cs",
+      "sha256": "300980ef3c78cdd6916bd305789611d52d1983641eb37ec7fef81341d1ec49ab",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/Doroti.Host.Maui.csproj",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/Doroti.Host.Maui.csproj",
+      "sha256": "00b48956a94deece4c02de6a936f10930bb8d49878e41422a067a3acc640b760",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/DorotiAndroidVulkanViewHandler.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/DorotiAndroidVulkanViewHandler.cs",
+      "sha256": "4111c343c0a956c737bf01356d076cb820828db8138f0fb63b97d5aab0a8ded1",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/DorotiGraphiteView.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/DorotiGraphiteView.cs",
+      "sha256": "2432516114b889ae9af822081ee83c0722fa799881afca8eb6e12a68a480dc34",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/DorotiIosMetalViewHandler.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/DorotiIosMetalViewHandler.cs",
+      "sha256": "80b685205ea7d3fba02d5bc259102af64c26115cbf1afd4f1770ec4ca35836f1",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/DorotiMacCatalystSceneDelegate.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/DorotiMacCatalystSceneDelegate.cs",
+      "sha256": "353425ddc2d7c8e9ffc153b815e3623caf11181f817451c74236d909627f1223",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/DorotiMacCatalystSkglViewHandler.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/DorotiMacCatalystSkglViewHandler.cs",
+      "sha256": "1c5f618c705258dfeec231bbcd83029df083ecb258a62931006119cfd46e726d",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/DorotiMacOSLayoutHandler.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/DorotiMacOSLayoutHandler.cs",
+      "sha256": "4df21d64bfad3bdfcd4d375a922e95b7275b7ad9d86ae37b68469bd84e848eef",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/DorotiMacOSMetalSurface.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/DorotiMacOSMetalSurface.cs",
+      "sha256": "f8bad95193980de0feb9461b14408a9e850b5e62ac21f949fd10ccbda69a6ce5",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/DorotiMacOSMetalSurfaceHandler.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/DorotiMacOSMetalSurfaceHandler.cs",
+      "sha256": "9c3077058b3a4daf955d4eb8668456b30fb5485265d40624b5389c949411b391",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/DorotiMacOSMetalView.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/DorotiMacOSMetalView.cs",
+      "sha256": "b15981f533682157f2d96a1e58bf2045a048e09c9276ba1e980d0fd8252ee350",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/DorotiMauiApplication.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/DorotiMauiApplication.cs",
+      "sha256": "45717d1513bf26a3644ea1d2d74e0fa9081ae97758c9ba95d9813c5072eeb41f",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/DorotiMauiPlatformApplications.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/DorotiMauiPlatformApplications.cs",
+      "sha256": "4b4bc85bd502878ae2ba4b6dd5ed51f35565a9eab3c1656a29d4dad6e66fb6c3",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/DorotiMauiSceneDelegate.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/DorotiMauiSceneDelegate.cs",
+      "sha256": "142318b0ff286ce9fdf268c9dfa30f7dbfb608f3803c487830523265111446c4",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/DorotiMauiSurface.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/DorotiMauiSurface.cs",
+      "sha256": "3410a10e6a17a5243dde1c8741bf98b782b3374b35490e078b19f23d7f2e1ee1",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/DorotiSkiaView.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/DorotiSkiaView.cs",
+      "sha256": "a0b63346f2a13f3a8abd0cd0f6604ba4199b197131128697bc7fb15be1f7cf34",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/DorotiUIKitGraphiteViewHandler.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/DorotiUIKitGraphiteViewHandler.cs",
+      "sha256": "f0eecec5d4936cdd1499366c5b20c18341cd4435788c7d9c1c5a6c8f8de0740a",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/DorotiUIKitTextInput.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/DorotiUIKitTextInput.cs",
+      "sha256": "78dcdfdf9ae9647b6e3043262f784c75f1ece15040adbab6752d269427b7008a",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/DorotiWindowsDxgiSurface.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/DorotiWindowsDxgiSurface.cs",
+      "sha256": "0b29c4de2b6469b14dec297af188b8af18d71e1d0ba4520767e7e31ed94108ec",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/IosFrameLifetime.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/IosFrameLifetime.cs",
+      "sha256": "3f9e12d906bd5ac26bb6a998aa155affe97a3ff69ad07bb46ca7aeebf1dc9f04",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/IosFrameLoopDiagnostics.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/IosFrameLoopDiagnostics.cs",
+      "sha256": "14af82fb0defe5533c7b039143bd1fc5c3a8fc52b90b1091c9acf89e07200cac",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MacCatalystDesktopWindowHost.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MacCatalystDesktopWindowHost.cs",
+      "sha256": "a5e0f3fb62aed9951986b310e790065629a69547bcc7460d043ed0f648d93c43",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MacCatalystDesktopWindowPolicy.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MacCatalystDesktopWindowPolicy.cs",
+      "sha256": "27ab84d6c238d401a074ba2ccb782f629b27863a017b474803ed6490612374fd",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MacOSKeyMap.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MacOSKeyMap.cs",
+      "sha256": "b052e2c270ebf39c2531740f31d9e2bb3a248163b84cca16e1b21b04e91a214e",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiAndroidSemanticsBridge.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiAndroidSemanticsBridge.cs",
+      "sha256": "d9600da0c0c724c66c3dc26e8c3a4f846b9bd087b2e154158fddd327a95af918",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiApplicationNavigation.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiApplicationNavigation.cs",
+      "sha256": "22119b602a4ea46075da2af7b49b0dbbd6e4052a9a3532aff35078b50583381d",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiFrameCallbackQueue.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiFrameCallbackQueue.cs",
+      "sha256": "52e3eb0810b9b540914524991aea6cdf3f1cd3ac10501de2e5c3695b10c82ce4",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiFrameWakeQueue.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiFrameWakeQueue.cs",
+      "sha256": "75c1ce2ffe2708f091283217feb8fc2a9c8a6c0163ac06c3c35f134d746e717b",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiFrameworkHost.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiFrameworkHost.cs",
+      "sha256": "a31ae01c21feadee904e5f70b9789e652ac2dd988a6d7d56b7642f661f4c2757",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiHapticFeedback.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiHapticFeedback.cs",
+      "sha256": "41f3d4df18a74829bbb9c0582986afddccb909d434f8231eeaf4410c835a26d3",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiHostAdapter.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiHostAdapter.cs",
+      "sha256": "fe9e17f4a56b94d3b114ae0df35ad78d5c74121629e6f63a137dd57e4d80cb51",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiHostContracts.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiHostContracts.cs",
+      "sha256": "a90101fc95ff467c2eb3e6ec9a11d6d67082df8fdf575ab1cea7b1ad094805e0",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiKeyMap.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiKeyMap.cs",
+      "sha256": "76b0dc24dd5461e7f3ce827a59b59d93a6ef43023ce1355edd03e97fc3c1b09e",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiKeyboardState.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiKeyboardState.cs",
+      "sha256": "b9d652e33ffad1ce61a8fa46a2b7d1a719d0937d47cbb088c9d5c6f54f40560a",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiNativeInput.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiNativeInput.cs",
+      "sha256": "79061c809fbaf2d8486c5bbacc8a539b0b1e1a69e7e842e5b842539966f30c8d",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiSemanticsBridge.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiSemanticsBridge.cs",
+      "sha256": "51d59fe534ecf0cf489aecef95e5f67ad7bb249a91dc11d8e3fb8bbee5407857",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiSemanticsLayout.Android.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiSemanticsLayout.Android.cs",
+      "sha256": "229788299f6622a10515f74363fdf404eb552cd3b32d211df0f509ee2c4523d0",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiSemanticsLayout.Apple.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiSemanticsLayout.Apple.cs",
+      "sha256": "86889c4259526080d09219371064f09089690b91984a2cb68d5a4179ede9e52a",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiSemanticsLayout.Windows.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiSemanticsLayout.Windows.cs",
+      "sha256": "f986b829b401095922f58092f9b9b08ccfb97d81f84932c1f608c3ba5154b210",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiSemanticsLayout.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiSemanticsLayout.cs",
+      "sha256": "92eb69adf9ed05453b0b8bbf7f9e53d91235feb2d585b9cc87be6be9b6ff385b",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiSettingsObserver.Android.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiSettingsObserver.Android.cs",
+      "sha256": "8fb8048b16018e3f29e394fcf7ae5577601df58554e32fe5f0520ba9fdb6058c",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiSkiaCapabilities.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiSkiaCapabilities.cs",
+      "sha256": "080acad742fdea6fc2a9601fe20df76b8fdd8e76636cfb16bb2724647881f255",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiSkiaSurface.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiSkiaSurface.cs",
+      "sha256": "979f2f18c1cc85e5a9acf6cce9a36acfb37ea708ae659beb96fbc4df7682c2dc",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiSurfacePointerData.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiSurfacePointerData.cs",
+      "sha256": "7988fac9f8f309819571ae9b8ba0ae04d383b6a0a1510c06e6610f60152d7a47",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiSystemSound.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiSystemSound.cs",
+      "sha256": "5563421e5f4ab1d370e8d1d09e36a5db1bff39f95c106d30a473e35f2bcf7704",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.MacOS.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.MacOS.cs",
+      "sha256": "3b1512c27641f8f084805b5d697989cc1bafbdfbd37027de69475b3982787f34",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.Windows.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.Windows.cs",
+      "sha256": "5eee52d404055c4bd8223d7d78018cd22dc9bb7087db87a05ec74d6e74a29f51",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.cs",
+      "sha256": "cd2950a1a61639a4c8a955fdd501620857dc9c6cd74cdf29fe32009c1167c4b5",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiTrackpadGesture.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiTrackpadGesture.cs",
+      "sha256": "9cfa05c30093b0ce2b21c4d33daa60b7a90ea5d59e8b2e9ea6c2249c435e6641",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiUIKitContextMenu.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiUIKitContextMenu.cs",
+      "sha256": "6215fbb71efc3c7a7e4c15bc9dd1bf8804b5de326747e4cbd2a6f3c15ec79978",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiUIKitTextMagnifier.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiUIKitTextMagnifier.cs",
+      "sha256": "90cb0fb04d1cd3755e71dbc89e84a2c9841f1d94df49f050901e28dd4f675907",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiViewEnvironment.Android.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiViewEnvironment.Android.cs",
+      "sha256": "57496d2e7d15cd693f0e7a0d4e72b19423be8571d0db9bca83eac345a7156b4b",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiViewEnvironment.MacOS.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiViewEnvironment.MacOS.cs",
+      "sha256": "665e90a56383e10b15c215879816ac17faa0d63d3a6f0fc79bb3ce8794471704",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiViewEnvironment.UIKit.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiViewEnvironment.UIKit.cs",
+      "sha256": "22e69105c16857aa04f1d67c1bfd42e85dcb02b65870962eb699b159e227dd38",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiViewEnvironment.Windows.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiViewEnvironment.Windows.cs",
+      "sha256": "0fba5ba04afd20f71db53eb888531913a4c9ea760f5f7228e3d37d17b17cf6c6",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiViewEnvironment.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiViewEnvironment.cs",
+      "sha256": "9d0b17804dbd8cd0244eccfabf754146a647512f887802f530d10128566f65f2",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiWindowsFilePicker.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiWindowsFilePicker.cs",
+      "sha256": "ffc9a87e0e1597c580a673d107600aabaec90ab86003c5bf3980d7ae9d30e6e6",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/MauiWindowsKeyboard.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/MauiWindowsKeyboard.cs",
+      "sha256": "60adae967e8c7591ea49e0365b6088cbc304dbeb247381d987794e462027170a",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/UIKitAnimatedViewport.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/UIKitAnimatedViewport.cs",
+      "sha256": "53e037bb6c3d9dd91194d55b731c55df03aa4681fb54e93cdee84f9a06098067",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/UIKitApplicationActivation.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/UIKitApplicationActivation.cs",
+      "sha256": "82f7d6cbbbc2ac5d3ad1d80c126fc5303df61c874c9f0d14ab7e232e852f7fa6",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/UIKitBoundsAnimation.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/UIKitBoundsAnimation.cs",
+      "sha256": "7648d49ab91b881d8b835c441a49f0ba0016d4d2b8dafc3d109ff429c78fef27",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/UIKitFilePicker.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/UIKitFilePicker.cs",
+      "sha256": "bdb807460a58097a9f9b24ddfec4021b8860c899376a4b446f3fa740926e961b",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/UIKitOsDrop.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/UIKitOsDrop.cs",
+      "sha256": "ccb9dd2e5c5e80f8a19d02906ae0c750195808404253e29a1bcb08cc3aa7765f",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/UIKitPlatformBlurView.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/UIKitPlatformBlurView.cs",
+      "sha256": "b9da0524699e64c1078e604520c02f9f4e6a0891b2f2e66519e24f8e15f2bda8",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/UIKitPlatformRasterSurface.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/UIKitPlatformRasterSurface.cs",
+      "sha256": "8e58f931eeb0d97c252b41cb9dd5c5aeba14d0b711bf171e15feaf940cf9f962",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/UIKitPlatformViewFactory.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/UIKitPlatformViewFactory.cs",
+      "sha256": "d1484ba481490446e79c42ad52d836f80fa64da8fcc5fcf0c3384aff3f61a782",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/UIKitPlatformViewHost.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/UIKitPlatformViewHost.cs",
+      "sha256": "5002e54b617f07faedc7e7be9dc3bb0727595f7b80497ef1614d037fa1558cab",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/UIKitTrackpadInput.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/UIKitTrackpadInput.cs",
+      "sha256": "659e9dd4d1f32f5681dfb1d3320e0d6c9f816934c9f376bdc013a81a16481fda",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/WindowsCompositionSurfacePresenter.Pipeline.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/WindowsCompositionSurfacePresenter.Pipeline.cs",
+      "sha256": "d7c22dd02ff3f68c45c765ec6c47012660570cc9bbdc8a88c189c53907c88232",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/WindowsCompositionSurfacePresenter.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/WindowsCompositionSurfacePresenter.cs",
+      "sha256": "3183d47c0178c8a7bce0e4f968da32818f5d6b9c3ec02e6ed6eda70a446ccb4a",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/WindowsDesktopWindowHost.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/WindowsDesktopWindowHost.cs",
+      "sha256": "5fcc51056d8d3946369007289c447499be6bdeec692902c0fd7450fa39789325",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/WindowsMauiPlatformViewFactory.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/WindowsMauiPlatformViewFactory.cs",
+      "sha256": "de41e156ecddb616b1aa29cc745ddc86e4c9b7bd3fdb81ee2494a799bbd12455",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/WindowsMauiPlatformViewHost.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/WindowsMauiPlatformViewHost.cs",
+      "sha256": "f4b87b6f7d5ccb48d4e24de992c2686ebed21c7041c8eeb9a50b3474a9fee0d3",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/WindowsNativeCaption.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/WindowsNativeCaption.cs",
+      "sha256": "17205148b67584b5ef842032160fa13c86f6638d5e558a0255788662b60c69ca",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/WindowsNativeCompositionOutput.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/WindowsNativeCompositionOutput.cs",
+      "sha256": "245eb2e90e998faa8b5fa9d25bb5e487317c51ca82a004f1c10acf0e6f81cbc3",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/WindowsPointerMapping.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/WindowsPointerMapping.cs",
+      "sha256": "beee50bdae90df4c570ec8d59a1077ecd239d67fb94e2b65137bd298da8be6cb",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/WindowsResizeDispatchQueue.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/WindowsResizeDispatchQueue.cs",
+      "sha256": "604da865f925858c5fbc70a9e66c17388b1cece7c0bdce075df8608457a8a9de",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/WindowsResizeEtw.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/WindowsResizeEtw.cs",
+      "sha256": "436cb054be51735c2a0c2656455335d57ad284a8531ceee9a46ee4c10f353ad6",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/WindowsResizeTimeline.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/WindowsResizeTimeline.cs",
+      "sha256": "3c3eb0fce4a78e5a39d2d60f540bcac17e6e3d4e6ccc565674ffdb4d683281eb",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/WindowsRootMouseInput.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/WindowsRootMouseInput.cs",
+      "sha256": "e53bc9ee7de73a7afb94243ed407542a0d81d953b64a9e4109d5713de69a262f",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/WindowsRootRedirection.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/WindowsRootRedirection.cs",
+      "sha256": "056a69e553b3c6975d0711fb64ff81cb63d6830dec5d6ba194e2589defbca13b",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/WindowsWindowBackdrop.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/WindowsWindowBackdrop.cs",
+      "sha256": "009aefc7121682db574f2b59ea45ecb4f3d157defa1899c2d2c4aae5301a4624",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Host.Maui/buildTransitive/Doroti.Host.Maui.targets",
+      "plannedTo": "packages/platforms/maui/Doroti.Host.Maui/buildTransitive/Doroti.Host.Maui.targets",
+      "sha256": "0bd55ff7234b39b3e35d63a64281d06213cec65bee7e1e79449ede7453606c73",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "packages/platforms/qt/Doroti.Host.Qt/Doroti.Host.Qt.csproj",
+      "plannedTo": "packages/platforms/qt/Doroti.Host.Qt/Doroti.Host.Qt.csproj",
+      "sha256": "49a14add2aa3563d082c25d9532656d0c2afc54cec78119f423d203944f90463",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "packages/platforms/qt/Doroti.Host.Qt/DorotiQtRunner.cs",
+      "plannedTo": "packages/platforms/qt/Doroti.Host.Qt/DorotiQtRunner.cs",
+      "sha256": "6a1a980b7a8ed1c42e1bc19d7bfc5bd586a1e605653d04ca3e4cb271dc2162f3",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "packages/platforms/qt/Doroti.Host.Qt/LinuxGpuTextureFrames.cs",
+      "plannedTo": "packages/platforms/qt/Doroti.Host.Qt/LinuxGpuTextureFrames.cs",
+      "sha256": "b0b961ef852fa014155e143d6d37740dcb019fc10aba079df9b8aaa1f7213ab2",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "packages/platforms/qt/Doroti.Host.Qt/QtApplicationActivation.cs",
+      "plannedTo": "packages/platforms/qt/Doroti.Host.Qt/QtApplicationActivation.cs",
+      "sha256": "1475e09ab4a8fd3f4ff6fc78912059f6d432ee243d319f71fd46927d4320a112",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "packages/platforms/qt/Doroti.Host.Qt/QtApplicationDispatcher.cs",
+      "plannedTo": "packages/platforms/qt/Doroti.Host.Qt/QtApplicationDispatcher.cs",
+      "sha256": "0ce14e92d1778adc130fc3974c79aacd82aefa8f8c896f6298e3c3f12157935d",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "packages/platforms/qt/Doroti.Host.Qt/QtApplicationStorage.cs",
+      "plannedTo": "packages/platforms/qt/Doroti.Host.Qt/QtApplicationStorage.cs",
+      "sha256": "0adcccb13e1fbe7e0eb75ad27e129ee5d3becc2453b5f436f62ac578acc9194a",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "packages/platforms/qt/Doroti.Host.Qt/QtDesktopWindowFactory.cs",
+      "plannedTo": "packages/platforms/qt/Doroti.Host.Qt/QtDesktopWindowFactory.cs",
+      "sha256": "b4e0410a9225fc856dff9a59c192202cfb33fef0a31808be0fd5cdfdf7e73ad3",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "packages/platforms/qt/Doroti.Host.Qt/QtDesktopWindowHost.cs",
+      "plannedTo": "packages/platforms/qt/Doroti.Host.Qt/QtDesktopWindowHost.cs",
+      "sha256": "111a4892657efaac1f80b80eaae9b0991cb4b48f890cbaba0abab2bf51000f99",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "packages/platforms/qt/Doroti.Host.Qt/QtDesktopWindowPolicy.cs",
+      "plannedTo": "packages/platforms/qt/Doroti.Host.Qt/QtDesktopWindowPolicy.cs",
+      "sha256": "a8f7abd0ecd0da551966184fd76218e46697706807fd8cecaadaea39ec90613e",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "packages/platforms/qt/Doroti.Host.Qt/QtHostAdapter.cs",
+      "plannedTo": "packages/platforms/qt/Doroti.Host.Qt/QtHostAdapter.cs",
+      "sha256": "2fa4adfd878d31f11d0bc553b3e998c4e8891e284a3e812ffdb922c0a88b400f",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "packages/platforms/qt/Doroti.Host.Qt/QtKeyMap.cs",
+      "plannedTo": "packages/platforms/qt/Doroti.Host.Qt/QtKeyMap.cs",
+      "sha256": "4762b3ed191d86649b6978cf2e1b0b6d82bfbfdb40b9618d328645a018a69880",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "packages/platforms/qt/Doroti.Host.Qt/QtNativeServices.cs",
+      "plannedTo": "packages/platforms/qt/Doroti.Host.Qt/QtNativeServices.cs",
+      "sha256": "8f6e4a0f140b15e58ab6bce70ccb8337e369fab2fa097a46d536cc1a70689056",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "packages/platforms/qt/Doroti.Host.Qt/QtNativeV2.cs",
+      "plannedTo": "packages/platforms/qt/Doroti.Host.Qt/QtNativeV2.cs",
+      "sha256": "6271cb44544c53b65b31af776611f02d606997d4630a90f3fc9fa22a71ca8ff0",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "packages/platforms/qt/Doroti.Host.Qt/QtPlatformMessageCapability.cs",
+      "plannedTo": "packages/platforms/qt/Doroti.Host.Qt/QtPlatformMessageCapability.cs",
+      "sha256": "556b051bb14c8245954a81c7323a5d2dea3f6d522fad1cc453c3d1a7e14d7931",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "packages/platforms/qt/Doroti.Host.Qt/QtPlatformViewHost.cs",
+      "plannedTo": "packages/platforms/qt/Doroti.Host.Qt/QtPlatformViewHost.cs",
+      "sha256": "a112ced4565206b8b79f7200c4dfe3e4abdf194824ede8a35a797554a7803bd1",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "packages/platforms/qt/Doroti.Host.Qt/QtQuickNative.cs",
+      "plannedTo": "packages/platforms/qt/Doroti.Host.Qt/QtQuickNative.cs",
+      "sha256": "2ef698d3afffaa672944d9a7fd5dca16009c30944a6b3500989fc286fd485dca",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "packages/platforms/qt/Doroti.Host.Qt/QtSkiaSurface.cs",
+      "plannedTo": "packages/platforms/qt/Doroti.Host.Qt/QtSkiaSurface.cs",
+      "sha256": "6973dc1d35a74b35f25f49b42e521188df6cfcaf104162ff2150f0fd6125537f",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "packages/platforms/qt/Doroti.Host.Qt/QtTitlebarAppearance.cs",
+      "plannedTo": "packages/platforms/qt/Doroti.Host.Qt/QtTitlebarAppearance.cs",
+      "sha256": "34a2a61e1db52702a2df0b38451a575fc76d2a4fa5426fb339901026f94c1519",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "packages/platforms/qt/Doroti.Host.Qt/QtTitlebarPainter.cs",
+      "plannedTo": "packages/platforms/qt/Doroti.Host.Qt/QtTitlebarPainter.cs",
+      "sha256": "de0f1c0ce2c927de1795cbac34f7ee001169f530b4f4b4277f0ad69559930dfe",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "packages/platforms/qt/Doroti.Host.Qt/QtUrlLauncher.cs",
+      "plannedTo": "packages/platforms/qt/Doroti.Host.Qt/QtUrlLauncher.cs",
+      "sha256": "c22baa28ed0ec628964171ec9a02c70aa22fe12455a6af5884c2a481ffcd468c",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "packages/platforms/qt/Doroti.Host.Qt/QtWebViewSession.cs",
+      "plannedTo": "packages/platforms/qt/Doroti.Host.Qt/QtWebViewSession.cs",
+      "sha256": "10a05b6a0fe90e3c2dd3aca39970c4a1d6c0b21ab897df45b8e72fd9dede30cd",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "packages/platforms/qt/Doroti.Host.Qt/buildTransitive/Doroti.Host.Qt.targets",
+      "plannedTo": "packages/platforms/qt/Doroti.Host.Qt/buildTransitive/Doroti.Host.Qt.targets",
+      "sha256": "f3823556d939086d7d99e025ff66a26e7df8f570ec0ff183b6d16b62fabe2b77",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/BrowserApplicationNavigation.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/BrowserApplicationNavigation.cs",
+      "sha256": "899918d0aebbc9b4687d2febb63515ad46c0f516cdbfd561b84c82adc727fed5",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/BrowserFilePicker.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/BrowserFilePicker.cs",
+      "sha256": "d99a7d4e21fe9c9cf85212184ee2b111d64e68408b88fc0a60b7a2e39058e8a6",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/BrowserFrameworkHost.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/BrowserFrameworkHost.cs",
+      "sha256": "a81714c1495da3fa43b38e4c8ebf02fcf478c248f8b1043f26cad66a8deef904",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/BrowserHapticFeedback.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/BrowserHapticFeedback.cs",
+      "sha256": "e2f8be1b6ccbd525006dde9f77969eaeff7ddd5c75773d191b2953ab0bf018fe",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/BrowserHostContracts.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/BrowserHostContracts.cs",
+      "sha256": "cb44672134bfc2b44eb9e3a91340ab5d527e18c99514f82befbfea1b69a41f52",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/BrowserHotReload.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/BrowserHotReload.cs",
+      "sha256": "e27e36aeb76cd1feb72272b01d769625a2e4a5449be6a68388093599eb1853b6",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/BrowserKeyMap.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/BrowserKeyMap.cs",
+      "sha256": "2f2008c1153d4ad9b87eecc7a1e4177c3d9e4eae13d01f6dc175bf3a020b4044",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/BrowserManagedRenderThread.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/BrowserManagedRenderThread.cs",
+      "sha256": "ef0ced31351c42079f1282f2bcb0365b70e0825e9513afe623cbb20f4a8568e9",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/BrowserOsDrop.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/BrowserOsDrop.cs",
+      "sha256": "6d97fabacbcbd786718b7ac200198286fd052cce29346728332d8a8d131dac10",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/BrowserOwnerSynchronizationContext.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/BrowserOwnerSynchronizationContext.cs",
+      "sha256": "b4b8124aa324ecee5298066c584ff9331fc39e4aaf407a466d59265e4f5a6725",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/BrowserPlatformViewHost.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/BrowserPlatformViewHost.cs",
+      "sha256": "87cbd79e3790b7e1e61c099cdf4e34230f70f30232b87408a809251f443a8ce3",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/BrowserSkiaCapabilities.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/BrowserSkiaCapabilities.cs",
+      "sha256": "b3048c295f73b65c7e0f24379d13b88ec3d0115819c6328bb66dcb5f96c834c8",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/BrowserTimeProvider.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/BrowserTimeProvider.cs",
+      "sha256": "298896af4c3bdeafe5e7f16fdb646bafac0879ec04c6d96c77200f3944742910",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Doroti.Host.Web.csproj",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Doroti.Host.Web.csproj",
+      "sha256": "15fadb6d098d44a17b39447b04bf58717c8d4b04f759e9f767fd46c870da4fc2",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/DorotiWebApplication.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/DorotiWebApplication.cs",
+      "sha256": "505bc557f22e5b9ea2b9feb22888fdca42097e757997f5f0adfef6eda7f1bfbc",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/DorotiWebWorkerSurface.GpuEffects.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/DorotiWebWorkerSurface.GpuEffects.cs",
+      "sha256": "767aa66eff77f6930420952649b1708571900316ed13a069a7461669194d8001",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/DorotiWebWorkerSurface.Graphite.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/DorotiWebWorkerSurface.Graphite.cs",
+      "sha256": "52b368a3d4e0451efc8ad75f06bb4bbac1b8ab9483184041677f980217dcf82a",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/DorotiWebWorkerSurface.Textures.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/DorotiWebWorkerSurface.Textures.cs",
+      "sha256": "3c3c5a33d3223610aef9d6d6781432dad7785cfe9ec10fd893907e878ade7b0f",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/DorotiWebWorkerSurface.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/DorotiWebWorkerSurface.cs",
+      "sha256": "cdfb6a24b3f43d99298f643017e92f30ba38cc8e653aa28952c8d5760d0ddd6d",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Fonts/BrowserCssFonts.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Fonts/BrowserCssFonts.cs",
+      "sha256": "cdd9ee675963af53f149ac61ca1177afea781149d559654e006428e5816b6a08",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Fonts/BrowserDefaultFonts.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Fonts/BrowserDefaultFonts.cs",
+      "sha256": "8b614e4f3677acc36ab30a1c170791d8b77e4abba8be3d5b10110e41965e487b",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Fonts/BrowserFontAsset.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Fonts/BrowserFontAsset.cs",
+      "sha256": "ec2b51374a8cabfc1e7a76e8b11719dfdee165f3c4e87a26a1390b76fa71d73f",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Fonts/BrowserFontData.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Fonts/BrowserFontData.cs",
+      "sha256": "38f474f8327fcf2f09357db04ecc06870a96b55f58a9a51925b47ba363ae1c50",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Fonts/BrowserFontFallbackLoader.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Fonts/BrowserFontFallbackLoader.cs",
+      "sha256": "5a4c985aff76b9144207787a92df3d7d3ad2260d86b57e55317a0833a0a5231b",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Fonts/BrowserLanguageFonts.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Fonts/BrowserLanguageFonts.cs",
+      "sha256": "45e8e35a4608efc986dd74223a6165d286f33186c92620ddefc0a96ac548dfaa",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Fonts/BrowserStartupFonts.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Fonts/BrowserStartupFonts.cs",
+      "sha256": "d52bf8b3a06a106564e893e3ee39097a6becafba479479bf4a7a7436ff270f3a",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Fonts/BrowserWoff2Decoder.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Fonts/BrowserWoff2Decoder.cs",
+      "sha256": "94ef2cf30da91e9898841d526dfbc0d8ade0f7bb219a588c393951050ce3eee2",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Fonts/FontFallbackCatalog.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Fonts/FontFallbackCatalog.cs",
+      "sha256": "02177cd3000cc55c5e1073742d8f6a9c1fb27623465a9fa49ba4ea05986e3aee",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Fonts/LICENSE.flutter.txt",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Fonts/LICENSE.flutter.txt",
+      "sha256": "a3a9fd82f800a47377f7d3f60c60a5c91cae0495be8f329031e1448ce0f5dab9",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Fonts/README.md",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Fonts/README.md",
+      "sha256": "e1ff8c2a945676b6b4e05b4d5713d2d5a1979b1a6dc6cb8e6247691b3dbff714",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Fonts/catalog-source.txt",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Fonts/catalog-source.txt",
+      "sha256": "ae7ef82025c3575467742ef837d0086d0a3baa7fca831ab1693f39d753ebdd58",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Fonts/fallbacks.bin",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Fonts/fallbacks.bin",
+      "sha256": "4117d63f564c43576b914697d1d7b6174d9a504ca80652b93c841221f40f792b",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/IBrowserGraphicsCapabilities.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/IBrowserGraphicsCapabilities.cs",
+      "sha256": "6f2f3b371965704f673d7893b238f683578b8fef4f5e098bfb3ed4dbac8ff990",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.frame-cost.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.frame-cost.ts",
+      "sha256": "dcfe073d3c628f3fd865da2960303b8bf34dac55e7c39a79002df8ed3afa801d",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.loader.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.loader.ts",
+      "sha256": "e27e69ca39ef71e1d98f4a2190fc67efe1ed4c713c4ad73ee4f187b9262e0835",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.raster.worker.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.raster.worker.ts",
+      "sha256": "74a74cbc62a6b0a80364ca5b300dc892ff788682e3548380668bc354b810938f",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.admission.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.admission.ts",
+      "sha256": "c744a80bfe81217ccb31b8e1bbae5c1e9ac6a607b15fc9707a9277e57557f3c0",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.composition.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.composition.ts",
+      "sha256": "01c1208b3e3b361cc3029f1180627c019eaf1a42b22bf655c477ffc90bea3d10",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.css-fonts.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.css-fonts.ts",
+      "sha256": "141233bb0ba101c5fe0581cd429c1259d7a65ea99cbd28108bc008dd866d7f04",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.diagnostics.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.diagnostics.ts",
+      "sha256": "4ea1daa631a7dcb876b6fa5292a151233c461fea2694a5fbb6fc7d807a088c4e",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.dom.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.dom.ts",
+      "sha256": "6b3169c173b9bb6ce7b054eadd1cd9a231d45ad5116d7da477918aa7fff7c7b6",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.drop.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.drop.ts",
+      "sha256": "e960be6a0b93b2d443f425fdae46359a43f1288585117ab079746f449803d2b9",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.environment.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.environment.ts",
+      "sha256": "fc66b2d7a8bb77e3cb947b97267f084f236cb00e123ab63bd51ab1d400a31f20",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.files.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.files.ts",
+      "sha256": "87f05de6af4650c2b6d81caa17524850561a17a42c78ec4e7f00aa35cc811d5b",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.fonts.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.fonts.ts",
+      "sha256": "953704e0fdac17b69fd9c103cb6f52a2c625a958f5819d13e9cf26e488c6b966",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.gpu-effects.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.gpu-effects.ts",
+      "sha256": "f406565ac83e46a9865b1a48f02e3029f8ecb604c056cacda75a4863a7580394",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.hot-reload.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.hot-reload.ts",
+      "sha256": "a83b11119b920abf194a0072dc88be5bc0e2e4343b058985440af22ee5dea485",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.lifetime.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.lifetime.ts",
+      "sha256": "0c5ea8489cc6b732d7f1e5eade4df3c7e7f9eaa18f63bbcad530da307992c1b8",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.managed-worker.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.managed-worker.ts",
+      "sha256": "3fb67e86834bfccda21a476cde18ae576821001b70b9d9f37da768516431bf80",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.navigation.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.navigation.ts",
+      "sha256": "6a72bd2bfc93a518550ad6883a92f754c98b3ced7d8671cb990395dd860ce783",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.platform-frames.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.platform-frames.ts",
+      "sha256": "3c9934725a6634d6adfc832a789da1e44287794d0ae954b28116b0bac495e6eb",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.platform-views.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.platform-views.ts",
+      "sha256": "6bef59b1a1482e22a4888d952012e603b08a1aaa5d0e3fce6149bf0be7537721",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.policy.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.policy.ts",
+      "sha256": "07cab9c7bab064bbdb14540f9ea28b4a5ac2ede74ef54c35cdf08bbdaea8902c",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.protocol.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.protocol.ts",
+      "sha256": "e29a4346ad27d557236b8f5ee327e9aac746d502d9bc71adfe4b2fdf79ea0567",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.requests.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.requests.ts",
+      "sha256": "8926f971931d3d5b0916918c4de7b5ef963f669f12955cede4ee2ccba32b63ad",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.services.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.services.ts",
+      "sha256": "f19aff605ed677d218093edf016875df61000ac23443fabbe27b086afdbac483",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.surface.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.surface.ts",
+      "sha256": "2f403f82bf3ab9e54a4bf509840256f3a2af507a63cae50bb17b86da74cdf162",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.text-actions.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.text-actions.ts",
+      "sha256": "926f43ea5023856763de99d6bdf50b583c985f9eb2a4690df6c55042334f1dca",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.text-focus.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.text-focus.ts",
+      "sha256": "8605da5942aab47f1740247dfc7202f681b9e037584467ce3e2c6fdb45b4f247",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.texture-budget.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.texture-budget.ts",
+      "sha256": "50c916c0e22141f7c14ce8d6ff7492b20bbe153bcb659ea4c8fe57607bb5a466",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.texture-worker.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.texture-worker.ts",
+      "sha256": "c68f039b95fffea0abf23effbb5d664fd863d2978bccab0c04941d3bd58447a1",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.textures.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.textures.ts",
+      "sha256": "b40d8345422436020f366172ef062fe219fd173dc85c03bdd5fc53b2eea7cef0",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.timers.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.timers.ts",
+      "sha256": "44c01777f384e1707067455d96570b56694c2edf5ed7757da4c3101f37f71c46",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.ts",
+      "sha256": "3137b9f5728783fa2dd7adfc597f8975d1a0234b3bb8da416c7e0ddf27b3fc8c",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.webview.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.webview.ts",
+      "sha256": "26824e4aa8fe9d7b39ac776edb2840db814f813b9694e491989f37f7c5537aed",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.worker-host.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.worker-host.ts",
+      "sha256": "79eab0a588e25178f69e52e7f4b9422d0997b43dc06d704b71ef03ad71bacd32",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/doroti.webgpu.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/doroti.webgpu.ts",
+      "sha256": "0b12ddeec8a779a5e72a7c0ece18fa27bbffb1bc08d763c59b2a88862de4a134",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/tsconfig.json",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/tsconfig.json",
+      "sha256": "61ce1027c4e6e5cf36491171930c624314ce7b4801955706510d9ca5fdb2b7cb",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/types/doroti-loader/index.d.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/types/doroti-loader/index.d.ts",
+      "sha256": "5d388e531bbec5c6ce78df8ed67bd2cf2612d2c473fbbc1205d6c9e6137ae5f2",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/Web/types/doroti-textures/index.d.ts",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/Web/types/doroti-textures/index.d.ts",
+      "sha256": "33cc09a927f2e0e2a91c291ad317c065fb78540efbe2102cf7857e4e67e661d6",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Host.Web/wwwroot/doroti.web.css",
+      "plannedTo": "packages/platforms/web/Doroti.Host.Web/wwwroot/doroti.web.css",
+      "sha256": "f3d4feca0c66631f23053d7f2153a7f173817055a17949a0a5ea0d8a76dc7da1",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk.Diagnostics/Doroti.Host.WindowsAppSdk.Diagnostics.csproj",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk.Diagnostics/Doroti.Host.WindowsAppSdk.Diagnostics.csproj",
+      "sha256": "b8ff138d60860c4056a7363cb9243a1c02e0481be17a219fe44559d9f3601b07",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/native/Doroti.CppWinRT.targets",
+      "plannedTo": "packages/platforms/windowsappsdk/native/Doroti.CppWinRT.targets",
+      "sha256": "67612ca09550f42dbf5b7e09dc9af1613653411543727045f6041ba9cfb468c7",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/native/Doroti.Host.WindowsAppSdk.Native.vcxproj",
+      "plannedTo": "packages/platforms/windowsappsdk/native/Doroti.Host.WindowsAppSdk.Native.vcxproj",
+      "sha256": "60771a15d25658d1ead74e01afc4868603de71570e0660d445a388c5088fc415",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/native/Doroti.NativeVersions.props",
+      "plannedTo": "packages/platforms/windowsappsdk/native/Doroti.NativeVersions.props",
+      "sha256": "92f950c1ddebce368abc41b8d0ed0432f650f8cd14ebb4dcf9cf09491703c18a",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/native/include/doroti_windows_acrylic_composition_v1.h",
+      "plannedTo": "packages/platforms/windowsappsdk/native/include/doroti_windows_acrylic_composition_v1.h",
+      "sha256": "59c3b04183b27468df9b55755cd9c41777c20c2942244f06ccb7e7d3cf79796f",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/native/include/doroti_windows_composition_raster_v1.h",
+      "plannedTo": "packages/platforms/windowsappsdk/native/include/doroti_windows_composition_raster_v1.h",
+      "sha256": "9ea9b8a5da4a02c0f471553ede66fbdc17ea944c13df9ddb2948e87ecf7c0c25",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/native/include/doroti_windows_d3d12_output_v1.h",
+      "plannedTo": "packages/platforms/windowsappsdk/native/include/doroti_windows_d3d12_output_v1.h",
+      "sha256": "e8884bda2dd6dcc4135175303735b29e09262f3669c0cf4258ffc01eaf97a3a2",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/native/include/doroti_windows_gpu_selection_v1.h",
+      "plannedTo": "packages/platforms/windowsappsdk/native/include/doroti_windows_gpu_selection_v1.h",
+      "sha256": "07814c5a1ac2959c5d2bf0b83f0460318341edabacdf9609625edc5b454a93d5",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/native/include/doroti_windows_host_v1.h",
+      "plannedTo": "packages/platforms/windowsappsdk/native/include/doroti_windows_host_v1.h",
+      "sha256": "6f3192db413ebfb9c120e4d17de7c8c5573718b7d9ec8e8df2f592c9df51fbbd",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/native/src/accessibility_bridge.cpp",
+      "plannedTo": "packages/platforms/windowsappsdk/native/src/accessibility_bridge.cpp",
+      "sha256": "47e8a58af16aebed5de69f9902d8d1afbd3eda345d9777c1401df5d75bd3bc2a",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/native/src/accessibility_bridge.h",
+      "plannedTo": "packages/platforms/windowsappsdk/native/src/accessibility_bridge.h",
+      "sha256": "72c014c618247a570d76e68d85f4dfa58541afb577fd719419f6c0187a18aa97",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/native/src/accessibility_text.inc",
+      "plannedTo": "packages/platforms/windowsappsdk/native/src/accessibility_text.inc",
+      "sha256": "8b08aaa1b32de39031523eea5b9b5e06583f0581256a0fcace768b72529a9624",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/native/src/acrylic_composition.cpp",
+      "plannedTo": "packages/platforms/windowsappsdk/native/src/acrylic_composition.cpp",
+      "sha256": "1e7a52854f84c0a25f0ed2ed19b18209b4af749cdce794ad43c041f38346e349",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/native/src/composition_raster.cpp",
+      "plannedTo": "packages/platforms/windowsappsdk/native/src/composition_raster.cpp",
+      "sha256": "8b300323bc033666245262e4ca96d19ce38bcfd120ab162b162ff377b866fdbe",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/native/src/d3d12_output.cpp",
+      "plannedTo": "packages/platforms/windowsappsdk/native/src/d3d12_output.cpp",
+      "sha256": "5789a37ac5c85204f67627a0a759ec437f7acfbd50a563b9cccdb11d5b26a8b8",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/native/src/exports.cpp",
+      "plannedTo": "packages/platforms/windowsappsdk/native/src/exports.cpp",
+      "sha256": "f7432f8a33534e3566e4321150dca8aa297c4b734b544a32e407b0817716e5e6",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/native/src/gpu_selection.cpp",
+      "plannedTo": "packages/platforms/windowsappsdk/native/src/gpu_selection.cpp",
+      "sha256": "57bc1fe74d9ade907c91387b4edf2cc177988083ff8da68b4083fc3f1f517d51",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/native/src/platform_capture_probe.cpp",
+      "plannedTo": "packages/platforms/windowsappsdk/native/src/platform_capture_probe.cpp",
+      "sha256": "596e3be6273e452289c86d1ae06ab16f7ce9a354101534584a295978b551dc19",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/native/src/platform_composition.cpp",
+      "plannedTo": "packages/platforms/windowsappsdk/native/src/platform_composition.cpp",
+      "sha256": "cc1ba40edf58fa5bfeae52868226b93baa0abdf2d78d5c00fdc54ec424b96dc1",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/native/src/resize_order_trace.h",
+      "plannedTo": "packages/platforms/windowsappsdk/native/src/resize_order_trace.h",
+      "sha256": "6ed34a751e08374c64eb96f191ee133731c4c76f252b609c457d5f1000469885",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/native/src/shared_raster.h",
+      "plannedTo": "packages/platforms/windowsappsdk/native/src/shared_raster.h",
+      "sha256": "9b11bd64ae100d8de3276ca6f5c5429fd5b5a1a4d26fde916989d48d5fe18147",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/native/src/texture_input.cpp",
+      "plannedTo": "packages/platforms/windowsappsdk/native/src/texture_input.cpp",
+      "sha256": "157f394d58f6f45fb5de5035ec0e7079710d65f673730e36212d2e9a16e929a9",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/native/src/winui_composition.cpp",
+      "plannedTo": "packages/platforms/windowsappsdk/native/src/winui_composition.cpp",
+      "sha256": "818721a241f11fa69aac4c1bb80c7c66d18dc5829327ab62988ddfc829a35596",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/AcrylicPresenterSnapshot.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/AcrylicPresenterSnapshot.cs",
+      "sha256": "7d5d666d97a4749c7712068eb6310f5ab89c537ad78a75dbed3629b4f4377243",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/AssemblyInfo.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/AssemblyInfo.cs",
+      "sha256": "152c791dbe83e3f79f76432ebc2bedd0b540b95f132ed8bc3b263484cb9bc323",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/Doroti.Host.WindowsAppSdk.csproj",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/Doroti.Host.WindowsAppSdk.csproj",
+      "sha256": "9aa6524dab9ab71f2e4da87b0039ab88625b6ddf4cd5953d8aea841c1dc22677",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/DorotiWindowsAppSdkRunner.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/DorotiWindowsAppSdkRunner.cs",
+      "sha256": "f5c8bdbfef36cee5d6bfd08b5fb9fb11a7a99d72fe12e5c445baef6b90c72ca2",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/Properties/AssemblyInfo.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/Properties/AssemblyInfo.cs",
+      "sha256": "244c6335070c48f714aba7b76896b58c775a7d0130d67edc08782849500f16d8",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsAcrylicOptionsState.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsAcrylicOptionsState.cs",
+      "sha256": "e76d51ec148b0a78bb75e0300972246c579011e9e7f6d64a497d1e2512eec724",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsAppSdkDesktopWindowHost.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsAppSdkDesktopWindowHost.cs",
+      "sha256": "59962d64f88a91f762bb6ca9bbf87d70ef9a75930a74d93962e6136968a8ad9d",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsAppSdkPlatformMessageCapability.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsAppSdkPlatformMessageCapability.cs",
+      "sha256": "ecbd65273ad91654a9e26d3134adfe9d3109c6f15003daed38b81b7d1a382c1e",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsApplicationActivation.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsApplicationActivation.cs",
+      "sha256": "b211e7c11d80e7560b028b28ff64818cc3326bafaa322af49d509a7144ccaad4",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsDesktopWindowFactory.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsDesktopWindowFactory.cs",
+      "sha256": "ef01fcfcd7a4802423e47a0d09e8640d8a99e9f2fb6ac7ab7db2664ae3ad1c98",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsDropData.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsDropData.cs",
+      "sha256": "f6b810b198c6f953802fd2f6aa81af8032c51cd7c16a0e6b32e99e7d6b502f4e",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsFilePicker.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsFilePicker.cs",
+      "sha256": "0fd70959d953d8e77538307fdad346752b823f39956298667db2e28b82e0c211",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsFrameInputState.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsFrameInputState.cs",
+      "sha256": "e16488b47d2a3be16fe2b76fa04b54840f7a0a8a70d7e22780d7749ab9295d7a",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsGpuSelection.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsGpuSelection.cs",
+      "sha256": "15df7f34727e02e246f15b140afd8dd62f87fef4b779b236f928e64b81316ce2",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsGpuTextureFrames.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsGpuTextureFrames.cs",
+      "sha256": "4dbd8415df7fc8aeda14cd7229c71a31c62fcf65fb41fa7eef0dd784929f4ec8",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsHwndPlatformViewFactory.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsHwndPlatformViewFactory.cs",
+      "sha256": "9a9d0b8082be3da1147a6477db501846c77eb2ed2225247b795b1ffc98cda4d8",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsKeyMap.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsKeyMap.cs",
+      "sha256": "8c1443d8e0bc6864131753772334e058ec980737ab8975ec3bff62ca10096631",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsKeyboardState.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsKeyboardState.cs",
+      "sha256": "e9179394d730efbcf5cbb123e9aecfb1366d2dd9ee84c416aae3592758ea3b4f",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedHwndPresenter.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedHwndPresenter.cs",
+      "sha256": "ed2e8a2a37563ecced7b43a78809a7a79b51bc7a19c9b68f5e8d89b97045ff69",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedHwndPresenterBase.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedHwndPresenterBase.cs",
+      "sha256": "efb4c7a0d4c06e2fc2c14b514a5b9f1d4da4968f079bda9a37becfcbfdc4c274",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedProductHost.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedProductHost.cs",
+      "sha256": "6bbef89ac6c16a519f9757935e098ab0534db73da42c9e7b0499ac992c575e37",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedResizeCoordinator.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedResizeCoordinator.cs",
+      "sha256": "9dac47fe683478f8d5fb69477a64702c3aff6f918a0e6f1a6b56d82fda65f8c0",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.D3D12.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.D3D12.cs",
+      "sha256": "47371c6f9ff4797eb089d348611791aec2f7eeb31101eeeaed37337fb067ce92",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.DelayProbe.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.DelayProbe.cs",
+      "sha256": "def6e8601ebd6e10982698f9f000ed05b24bfb8f025807079ffd8902698d490e",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.Graphite.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.Graphite.cs",
+      "sha256": "52ae51cda2f96dd5a9c09cac7304a10acc223d002204b3512fec84ccf20d8b99",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.Pipeline.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.Pipeline.cs",
+      "sha256": "f0483a485916a322c5ca4627aa75f51083b6346b6d3508ca967178da43686c6b",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.Prepared.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.Prepared.cs",
+      "sha256": "c4761c7dbf2cab05d202cc3236c63cf0de5df793af21af751f36fe80d048df7b",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.Validation.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.Validation.cs",
+      "sha256": "56a6c71e144132e1ea1868c2c56e966b18f50d71ddbecaeba5ce2dca3a6dfe80",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.cs",
+      "sha256": "dcefa86aae56a59cb25df7a6fc6ba4b9e98c793a2bd94927e80da285a227fd1d",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsNativeV1.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsNativeV1.cs",
+      "sha256": "2ba7feb4969d418eab2457a379aad7b704b10fa0273c858d478da792b81d77bd",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsOsDropTarget.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsOsDropTarget.cs",
+      "sha256": "6dd359036d35b62f14ca752d53d73e5814ab604b56fe4b37013706b54b371365",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsPlatformViewHost.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsPlatformViewHost.cs",
+      "sha256": "3e1dc89660b3f1de04d403524ac1bf31e96f5b29e937d9cec2649cc63443b865",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsPreparedMovingFrame.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsPreparedMovingFrame.cs",
+      "sha256": "8ed1cca0ad42808cb02769180487e2aaa869b7669836f91c4cc52057bc299a57",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsSharedImports.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsSharedImports.cs",
+      "sha256": "25f148fd71bda6240509e1b3ac356d12f295c8700abceeba2f1c6ec2ab9602ec",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsSharedRaster.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsSharedRaster.cs",
+      "sha256": "3e9a25a1cf09e491a20da1be0777f07d130c424e69072001067156982dd6733c",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsUrlLauncher.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsUrlLauncher.cs",
+      "sha256": "b9c6c8e22177c96f0b08f45713324ce2b2bf9e3e82d4411124b7dc1b7f8f2396",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsWebViewComposition.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsWebViewComposition.cs",
+      "sha256": "1d7915d566173731ab247ff8fda68bf0b611eec1a13d938668e2235e765d6cb0",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsWebViewPointer.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsWebViewPointer.cs",
+      "sha256": "1b646ae3fc8ebd36753ba036082238d6f3f282a56c5247331993634717b7b22b",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsWinUiBackdrop.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsWinUiBackdrop.cs",
+      "sha256": "a0fa08cad88ef6c396b19fb8d08eab980523417fdc4e49a4d3b0091319b066f1",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsWinUiControls.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsWinUiControls.cs",
+      "sha256": "36213ab03fd03390cdbcf70f60e22c9bd17fb9a27c2eb913170b379cca096522",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsXamlWebViewFactory.cs",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsXamlWebViewFactory.cs",
+      "sha256": "f62c84bc542d69d6b2b5a9d3f75f19aa0703726dbc82656e24eb5b81f72dd27e",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/buildTransitive/Doroti.Host.WindowsAppSdk.targets",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/buildTransitive/Doroti.Host.WindowsAppSdk.targets",
+      "sha256": "bab837c82eb18bc65bf8a843ddd0f3e4806573d6d9ad7e8796c5b561c0cf5c68",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.Android.Maui.android-arm64/AndroidMauiTarget.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.Android.Maui.android-arm64/AndroidMauiTarget.cs",
+      "sha256": "1c68ba1aea99444ed6f66e8da4166dc5a667a9a8e0ad3092008921a37c05f782",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.Android.Maui.android-arm64/Doroti.Target.Android.Maui.android-arm64.csproj",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.Android.Maui.android-arm64/Doroti.Target.Android.Maui.android-arm64.csproj",
+      "sha256": "da810d5ff758ae5906f38a2091c13e127840a1cda3547c064e09e6897fb87bc0",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.Android.Maui.android-arm64/buildTransitive/Doroti.Target.Android.Maui.android-arm64.targets",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.Android.Maui.android-arm64/buildTransitive/Doroti.Target.Android.Maui.android-arm64.targets",
+      "sha256": "af32adf9363e1220ed03be71fff50f124bf00f9110bd0fe0eb713e856e48dc5d",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.Android.Maui.android-arm64/doroti-target-manifest.json",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.Android.Maui.android-arm64/doroti-target-manifest.json",
+      "sha256": "c49e8e492c2bca1af602d307330a56d721d358df6996d7409b219e67c040e016",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.Android.Maui.android-x64/AndroidMauiTarget.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.Android.Maui.android-x64/AndroidMauiTarget.cs",
+      "sha256": "42f5bdbb108cf6d691da1b0f533d69b76b268d36270e43b370d336783bb6cc02",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.Android.Maui.android-x64/Doroti.Target.Android.Maui.android-x64.csproj",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.Android.Maui.android-x64/Doroti.Target.Android.Maui.android-x64.csproj",
+      "sha256": "4f5c15fc637da9b3d3d1c850de88b90cd2da7ff6e63d212aa006bfd5160a80b9",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.Android.Maui.android-x64/buildTransitive/Doroti.Target.Android.Maui.android-x64.targets",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.Android.Maui.android-x64/buildTransitive/Doroti.Target.Android.Maui.android-x64.targets",
+      "sha256": "6e968fe512778afd5e299fbcce4c42998a3c18c107b402a03de3ea9da04f5aa8",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.Android.Maui.android-x64/doroti-target-manifest.json",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.Android.Maui.android-x64/doroti-target-manifest.json",
+      "sha256": "2bcb02c7ae28ec6dc3197e9d67b7416c2cae9074307682ada9a372f8bfce42cd",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "packages/platforms/qt/Doroti.Target.Linux.Qt.linux-x64/Doroti.Target.Linux.Qt.linux-x64.csproj",
+      "plannedTo": "packages/platforms/qt/Doroti.Target.Linux.Qt.linux-x64/Doroti.Target.Linux.Qt.linux-x64.csproj",
+      "sha256": "00d0e2a3dac39e8c9f6de3ce76ae234cda9e5387c43202b7901f1d92f97137ee",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "packages/platforms/qt/Doroti.Target.Linux.Qt.linux-x64/buildTransitive/Doroti.Target.Linux.Qt.linux-x64.targets",
+      "plannedTo": "packages/platforms/qt/Doroti.Target.Linux.Qt.linux-x64/buildTransitive/Doroti.Target.Linux.Qt.linux-x64.targets",
+      "sha256": "235284476762df0e4e90be1d2d82ea35a09e76b426bfe8c4cd6dd85bd92f5798",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "packages/platforms/qt/Doroti.Target.Linux.Qt.linux-x64/doroti-target-manifest.json",
+      "plannedTo": "packages/platforms/qt/Doroti.Target.Linux.Qt.linux-x64/doroti-target-manifest.json",
+      "sha256": "1d1144e31096ae8ee8a51f7e02c961ecbe9f917b1b43c74ed74ecfcb9ce4f1ab",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.csproj",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.csproj",
+      "sha256": "53d9034b9500c32d23c7c858ff4dd19a3de4ede153633cfd772ccf51591cca63",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/MacCatalystMauiTarget.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/MacCatalystMauiTarget.cs",
+      "sha256": "a8831b86dafc764273d729b46958b05d387c8479b05caea727ec9f05371a4343",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/buildTransitive/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.targets",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/buildTransitive/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.targets",
+      "sha256": "13c65e55a49610dab00a0128765436981381e80e77de6eb421ddbc50ba0a049a",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/doroti-target-manifest.json",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/doroti-target-manifest.json",
+      "sha256": "404037818aee3e7e079cfc18327ff34485eab1c16a3ffccf2bb0745fbf9995bf",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/doroti-target-manifest.maccatalyst27.json",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/doroti-target-manifest.maccatalyst27.json",
+      "sha256": "9052a493c4d86cb0505ffa9fe71acaf619728f8cb4e3b4fcb0e0fe5bafee92f4",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.MacOS.Maui.osx-arm64/Doroti.Target.MacOS.Maui.osx-arm64.csproj",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.MacOS.Maui.osx-arm64/Doroti.Target.MacOS.Maui.osx-arm64.csproj",
+      "sha256": "17eeb4fe4e7e49686c0f16861f064a3bd7210a28ed8c53d100e6040562dd9246",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.MacOS.Maui.osx-arm64/MacOSMauiTarget.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.MacOS.Maui.osx-arm64/MacOSMauiTarget.cs",
+      "sha256": "4fd36f9f0da58c06646977fc2085f32d4c5b999371a45085d45f9d17f957f9ff",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.MacOS.Maui.osx-arm64/buildTransitive/Doroti.Target.MacOS.Maui.osx-arm64.targets",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.MacOS.Maui.osx-arm64/buildTransitive/Doroti.Target.MacOS.Maui.osx-arm64.targets",
+      "sha256": "6f6e29edeb83f1690fcf5baec47396e3a95f0062c6d3958dd3181bf8724d1e6c",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.MacOS.Maui.osx-arm64/doroti-target-manifest.json",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.MacOS.Maui.osx-arm64/doroti-target-manifest.json",
+      "sha256": "b2bbbc173c44323b2f36d85cdcc60d34a7a348e207fff36e2808138b53d95ca0",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.MacOS.Maui.osx-arm64/doroti-target-manifest.macos27.json",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.MacOS.Maui.osx-arm64/doroti-target-manifest.macos27.json",
+      "sha256": "45e63d61fd20ba6dc333ec03505741e8da2f914277290dbae293b0c9fa26500d",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Target.Web.browser-wasm/BrowserWasmTarget.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Target.Web.browser-wasm/BrowserWasmTarget.cs",
+      "sha256": "36c945d611e193e0acb5709c0fe7bbb0b0854888d0394e3d261b2ba97e19b12e",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Target.Web.browser-wasm/Doroti.Target.Web.browser-wasm.csproj",
+      "plannedTo": "packages/platforms/web/Doroti.Target.Web.browser-wasm/Doroti.Target.Web.browser-wasm.csproj",
+      "sha256": "2d8dab3aeef57dffd413ff2386e0e5be887e6c99940226aa86d9a822c58735ce",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Target.Web.browser-wasm/DorotiWebWorkerRunner.cs",
+      "plannedTo": "packages/platforms/web/Doroti.Target.Web.browser-wasm/DorotiWebWorkerRunner.cs",
+      "sha256": "efda9d32265adc450b0672a8f4a38aac81969c8563bfdcd14c25f4fdec7d9bf1",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Target.Web.browser-wasm/build/Doroti.Target.Web.browser-wasm.props",
+      "plannedTo": "packages/platforms/web/Doroti.Target.Web.browser-wasm/build/Doroti.Target.Web.browser-wasm.props",
+      "sha256": "6c39b87b72e3212354ee23409c0d020bb087978607fd82edf52c4cff53908c25",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Target.Web.browser-wasm/build/DorotiSkiaInterop.js",
+      "plannedTo": "packages/platforms/web/Doroti.Target.Web.browser-wasm/build/DorotiSkiaInterop.js",
+      "sha256": "cfed909a6175d94ef5c07e76a11a2312fe58afd01e6e89f3e7634a16479b0dfe",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Target.Web.browser-wasm/buildTransitive/Doroti.Target.Web.browser-wasm.targets",
+      "plannedTo": "packages/platforms/web/Doroti.Target.Web.browser-wasm/buildTransitive/Doroti.Target.Web.browser-wasm.targets",
+      "sha256": "5503e0824037d43079739ec49a7e143edd857edd7ffebcfdc7cc6045788ca79c",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "web",
+      "from": "packages/platforms/web/Doroti.Target.Web.browser-wasm/doroti-target-manifest.json",
+      "plannedTo": "packages/platforms/web/Doroti.Target.Web.browser-wasm/doroti-target-manifest.json",
+      "sha256": "f89e47d6908d398cdd33e538569033cd9763cd7e2970f85fac4c3f6af947c87f",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.Windows.Maui.win-x64/Doroti.Target.Windows.Maui.win-x64.csproj",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.Windows.Maui.win-x64/Doroti.Target.Windows.Maui.win-x64.csproj",
+      "sha256": "27df191c075a3fecc81ac0861111f0a1f1f9d91bedf6effac74ef995fd3e4f01",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.Windows.Maui.win-x64/WindowsMauiTarget.cs",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.Windows.Maui.win-x64/WindowsMauiTarget.cs",
+      "sha256": "4ff4d5bf5f46d41773a599ca66583f35a684a0c325d94c101a01b3b792be8f73",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.Windows.Maui.win-x64/buildTransitive/Doroti.Target.Windows.Maui.win-x64.targets",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.Windows.Maui.win-x64/buildTransitive/Doroti.Target.Windows.Maui.win-x64.targets",
+      "sha256": "20df74a23996538e2fcea1435e839a821095b9378fa69e3578b935e78cb32a74",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.Windows.Maui.win-x64/doroti-target-manifest.json",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.Windows.Maui.win-x64/doroti-target-manifest.json",
+      "sha256": "3ff12f6520778bcd06363f12b5ff37091afb7d15a1affd71a1146662bf4ac3c4",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Target.Windows.WindowsAppSdk.win-x64/Doroti.Target.Windows.WindowsAppSdk.win-x64.csproj",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Target.Windows.WindowsAppSdk.win-x64/Doroti.Target.Windows.WindowsAppSdk.win-x64.csproj",
+      "sha256": "4202500fbc31d1d4637af7eb62087002da28a1c5fe8f5f5d53ad5f9e3328b4d5",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Target.Windows.WindowsAppSdk.win-x64/buildTransitive/Doroti.Target.Windows.WindowsAppSdk.win-x64.targets",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Target.Windows.WindowsAppSdk.win-x64/buildTransitive/Doroti.Target.Windows.WindowsAppSdk.win-x64.targets",
+      "sha256": "04651e8330df4df226ebe5a1c5b230f7cdf6cf260907e2f8de51765e633520cc",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "windowsappsdk",
+      "from": "packages/platforms/windowsappsdk/Doroti.Target.Windows.WindowsAppSdk.win-x64/doroti-target-manifest.json",
+      "plannedTo": "packages/platforms/windowsappsdk/Doroti.Target.Windows.WindowsAppSdk.win-x64/doroti-target-manifest.json",
+      "sha256": "eefc9901a8157dd94644eec00d1a69a99c780591e6d93a2b3f30d40fa80eadb0",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.iOS.Maui.ios-arm64/Doroti.Target.iOS.Maui.ios-arm64.csproj",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.iOS.Maui.ios-arm64/Doroti.Target.iOS.Maui.ios-arm64.csproj",
+      "sha256": "e1c351046be2fd0c8ade6956157f48d63216f201ba978e8eb3a8b6d3a29dae99",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.iOS.Maui.ios-arm64/buildTransitive/Doroti.Target.iOS.Maui.ios-arm64.targets",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.iOS.Maui.ios-arm64/buildTransitive/Doroti.Target.iOS.Maui.ios-arm64.targets",
+      "sha256": "d67e11191031a063f9695297391ce7601eb4408e92a923d39d17d246e9347d1a",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.iOS.Maui.ios-arm64/doroti-target-manifest.ios27.json",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.iOS.Maui.ios-arm64/doroti-target-manifest.ios27.json",
+      "sha256": "593d9ae4c6c6c09037fe5826dca1cbb9f3b361c25ba035bbbaea9b7ecbc500c0",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.iOS.Maui.ios-arm64/doroti-target-manifest.json",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.iOS.Maui.ios-arm64/doroti-target-manifest.json",
+      "sha256": "d5f37f2b5f1a1f571ec821eba1067678089d6f2028a347855248ee406594e59a",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.iOS.Maui.ios-arm64/doroti-target-manifest.net11.json",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.iOS.Maui.ios-arm64/doroti-target-manifest.net11.json",
+      "sha256": "aaae3a01a6b6809b00863d5f5f12e50f3542c731c48763aebf85962e2b905a1a",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-arm64/Doroti.Target.iOS.Maui.iossimulator-arm64.csproj",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-arm64/Doroti.Target.iOS.Maui.iossimulator-arm64.csproj",
+      "sha256": "31db09d757781706540866cba85f0a9b0d30e2db03af349fd145c46852d0b7ab",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-arm64/buildTransitive/Doroti.Target.iOS.Maui.iossimulator-arm64.targets",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-arm64/buildTransitive/Doroti.Target.iOS.Maui.iossimulator-arm64.targets",
+      "sha256": "f9b9efffe5dfe8ba456ca98da26b239c072ea9a1b95231d07020970caac5b097",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-arm64/doroti-target-manifest.ios27.json",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-arm64/doroti-target-manifest.ios27.json",
+      "sha256": "898697426abb122b2a606e8b293b74c417c6214a420baa8f333dcf9e2991686c",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-arm64/doroti-target-manifest.json",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-arm64/doroti-target-manifest.json",
+      "sha256": "4c65fbc5f0513716a18142ccd84be8022b74316423533040774690e3df8f3937",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-x64/Doroti.Target.iOS.Maui.iossimulator-x64.csproj",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-x64/Doroti.Target.iOS.Maui.iossimulator-x64.csproj",
+      "sha256": "c131a995909cd67777ab66ef3ed106758027278a4b602709fc31f06d7655bc92",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-x64/buildTransitive/Doroti.Target.iOS.Maui.iossimulator-x64.targets",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-x64/buildTransitive/Doroti.Target.iOS.Maui.iossimulator-x64.targets",
+      "sha256": "a0f8c488c4276372e2cb90a264ce7311852e8663fdabba96395414659ef8ecff",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-x64/doroti-target-manifest.ios27.json",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-x64/doroti-target-manifest.ios27.json",
+      "sha256": "c155034feba34786b614840e783d0bccd1f5b14a162f0ea9641267261502b31b",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "maui",
+      "from": "packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-x64/doroti-target-manifest.json",
+      "plannedTo": "packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-x64/doroti-target-manifest.json",
+      "sha256": "a7b4a7e4a1bd50abfbc2e60585446c793cdbfabaf66e4adbfc56757f91f01b70",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/.clang-format",
+      "plannedTo": "packages/platforms/qt/native/.clang-format",
+      "sha256": "46f0fdd69971c30d5735c82656c81d73ba41427025be190a04237da6e3411e03",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/CMakeLists.txt",
+      "plannedTo": "packages/platforms/qt/native/CMakeLists.txt",
+      "sha256": "19b4943bef4e93da1cf07e5fb52efbe33c5e5791606ae383148ca6b77112a4b7",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/README.md",
+      "plannedTo": "packages/platforms/qt/native/README.md",
+      "sha256": "2d0264b789fe48e7712f8a2c151cb340432adf40f080fb505fdc00be75b99985",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/cmake/DorotiLicensePolicy.cmake",
+      "plannedTo": "packages/platforms/qt/native/cmake/DorotiLicensePolicy.cmake",
+      "sha256": "296b478ffba54d5dfcdce5743be76150ee9206a3c7499940f8ef7ed2b3695767",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/include/doroti_gstreamer_policy.h",
+      "plannedTo": "packages/platforms/qt/native/include/doroti_gstreamer_policy.h",
+      "sha256": "830b6ec23a97f0ad58d432945f011ccbc508b025c6335e594c5950110a6e55cf",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/include/doroti_qt_desktop.h",
+      "plannedTo": "packages/platforms/qt/native/include/doroti_qt_desktop.h",
+      "sha256": "ddedafed25df951758e2457cc93eb05c8a99739c75f05382545a1ce44bb64852",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/include/doroti_qt_host_v2.h",
+      "plannedTo": "packages/platforms/qt/native/include/doroti_qt_host_v2.h",
+      "sha256": "323800957b787530c66cf0c257aa896927c852c36de4e9d73f7543ddd66592f9",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/include/doroti_qt_platform_views.h",
+      "plannedTo": "packages/platforms/qt/native/include/doroti_qt_platform_views.h",
+      "sha256": "8a4bddad56494ef566fdce90245bfaa140172a02ec3238fbf32f2e2a604ee090",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/include/doroti_qt_quick.h",
+      "plannedTo": "packages/platforms/qt/native/include/doroti_qt_quick.h",
+      "sha256": "5de178b378e79880fa3e445f6e158301e8923d7761f89049e3de4d6f9c494d2c",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/include/doroti_qt_services.h",
+      "plannedTo": "packages/platforms/qt/native/include/doroti_qt_services.h",
+      "sha256": "feb20e3b943b432dc64e3ea13e5e2fa7ff2880d5260d0e2b8834975a19f3ddd2",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/include/doroti_qt_webview.h",
+      "plannedTo": "packages/platforms/qt/native/include/doroti_qt_webview.h",
+      "sha256": "fdc72e736575239b71d57ff4f7d83607808e09b209de1447c676b697922decb8",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/licenses/GPL-3.txt",
+      "plannedTo": "packages/platforms/qt/native/licenses/GPL-3.txt",
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/licenses/LGPL-2.1.txt",
+      "plannedTo": "packages/platforms/qt/native/licenses/LGPL-2.1.txt",
+      "sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/licenses/LGPL-3.txt",
+      "plannedTo": "packages/platforms/qt/native/licenses/LGPL-3.txt",
+      "sha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/licenses/README.md",
+      "plannedTo": "packages/platforms/qt/native/licenses/README.md",
+      "sha256": "329f1752bb795a1083617b412585fb454dca7a6b063c4c8648dbd41213ba6ada",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/licenses/Wayland-background-effect-MIT.txt",
+      "plannedTo": "packages/platforms/qt/native/licenses/Wayland-background-effect-MIT.txt",
+      "sha256": "16ca243570233f0cf3f60d6225bf7fa02080a0a3d215551b65adc7188a8a022b",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/protocols/ext-background-effect-v1.xml",
+      "plannedTo": "packages/platforms/qt/native/protocols/ext-background-effect-v1.xml",
+      "sha256": "163babe6bd3d0faea37a1b5906045f95f44d64e552832270287c626ce8711402",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/qml/Backdrop.qml",
+      "plannedTo": "packages/platforms/qt/native/qml/Backdrop.qml",
+      "sha256": "faa3594b39f371165251124b32eac8e44b7d38df85be6ac079b80b89b71de589",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/qml/WebView.qml",
+      "plannedTo": "packages/platforms/qt/native/qml/WebView.qml",
+      "sha256": "21e60f4c1ade847f9fb038ef4b53c969a63b5a9c2ddd4d08bbda1fb034fb8164",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/shaders/README.md",
+      "plannedTo": "packages/platforms/qt/native/shaders/README.md",
+      "sha256": "1fac1ae7a620f430a4cb618a5c7ab76aa7cef5943071c12f2fc601e04a4b7934",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/shaders/bake.py",
+      "plannedTo": "packages/platforms/qt/native/shaders/bake.py",
+      "sha256": "627e9932b720df621046f50afb0e7aee19fbc0d8709e2c24ad30de67d14847f5",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/shaders/gaussian.frag",
+      "plannedTo": "packages/platforms/qt/native/shaders/gaussian.frag",
+      "sha256": "1b260344fc935482a6d609187bde0f86dd45201c778202c3725003dff2e93073",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/shaders/gaussian.frag.json",
+      "plannedTo": "packages/platforms/qt/native/shaders/gaussian.frag.json",
+      "sha256": "e90f06e4c45419b44085e8b8c1936537e63965442de48d97b4211f4610f494b7",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/shaders/gaussian.frag.qsb",
+      "plannedTo": "packages/platforms/qt/native/shaders/gaussian.frag.qsb",
+      "sha256": "ce35948d5fa56868e855fd0732ccd98c88b2c60e83978bf7fd754ff08c46f053",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/src/doroti_qt_desktop.cpp",
+      "plannedTo": "packages/platforms/qt/native/src/doroti_qt_desktop.cpp",
+      "sha256": "406beddcadfe4fb9efd25566a808a8274c2bf4dbbc3821e9c30284dc7c6fc23b",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/src/doroti_qt_host.cpp",
+      "plannedTo": "packages/platforms/qt/native/src/doroti_qt_host.cpp",
+      "sha256": "a3fafe1cea663dc34cdbd566948cda40065424cbae0394c35324154ff76d83d3",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/src/doroti_qt_platform_views.cpp",
+      "plannedTo": "packages/platforms/qt/native/src/doroti_qt_platform_views.cpp",
+      "sha256": "69903e971013f91976b197e3b3cc1025b84117637589d0e28b2df46452601750",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/src/doroti_qt_quick.cpp",
+      "plannedTo": "packages/platforms/qt/native/src/doroti_qt_quick.cpp",
+      "sha256": "e635f64b95fd14909d914f7511ec6edee385111e4b4db7345ea7f9bc3fa1d06e",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/src/doroti_qt_services.cpp",
+      "plannedTo": "packages/platforms/qt/native/src/doroti_qt_services.cpp",
+      "sha256": "00a21b92dfcf1313b507f8769e47e8c580b798142640a0f60e1ac4acda8a009e",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/src/doroti_texture_gstreamer.cpp",
+      "plannedTo": "packages/platforms/qt/native/src/doroti_texture_gstreamer.cpp",
+      "sha256": "544d8ba9c04c5affe1b4fc26468091f74d1d7803a7e391d88e6849f5202f7c96",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/src/doroti_webview_qt.cpp",
+      "plannedTo": "packages/platforms/qt/native/src/doroti_webview_qt.cpp",
+      "sha256": "cce0b88b119afbe33cc170d6895c1f982ce0f5923d89b0c84caa6bb566d9680d",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/.clang-format",
+      "plannedTo": "packages/platforms/qt/native/.clang-format",
+      "sha256": "46f0fdd69971c30d5735c82656c81d73ba41427025be190a04237da6e3411e03",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/CMakeLists.txt",
+      "plannedTo": "packages/platforms/qt/native/CMakeLists.txt",
+      "sha256": "19b4943bef4e93da1cf07e5fb52efbe33c5e5791606ae383148ca6b77112a4b7",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/README.md",
+      "plannedTo": "packages/platforms/qt/native/README.md",
+      "sha256": "2d0264b789fe48e7712f8a2c151cb340432adf40f080fb505fdc00be75b99985",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/cmake/DorotiLicensePolicy.cmake",
+      "plannedTo": "packages/platforms/qt/native/cmake/DorotiLicensePolicy.cmake",
+      "sha256": "296b478ffba54d5dfcdce5743be76150ee9206a3c7499940f8ef7ed2b3695767",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/include/doroti_gstreamer_policy.h",
+      "plannedTo": "packages/platforms/qt/native/include/doroti_gstreamer_policy.h",
+      "sha256": "830b6ec23a97f0ad58d432945f011ccbc508b025c6335e594c5950110a6e55cf",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/include/doroti_qt_desktop.h",
+      "plannedTo": "packages/platforms/qt/native/include/doroti_qt_desktop.h",
+      "sha256": "ddedafed25df951758e2457cc93eb05c8a99739c75f05382545a1ce44bb64852",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/include/doroti_qt_host_v2.h",
+      "plannedTo": "packages/platforms/qt/native/include/doroti_qt_host_v2.h",
+      "sha256": "323800957b787530c66cf0c257aa896927c852c36de4e9d73f7543ddd66592f9",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/include/doroti_qt_platform_views.h",
+      "plannedTo": "packages/platforms/qt/native/include/doroti_qt_platform_views.h",
+      "sha256": "8a4bddad56494ef566fdce90245bfaa140172a02ec3238fbf32f2e2a604ee090",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/include/doroti_qt_quick.h",
+      "plannedTo": "packages/platforms/qt/native/include/doroti_qt_quick.h",
+      "sha256": "5de178b378e79880fa3e445f6e158301e8923d7761f89049e3de4d6f9c494d2c",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/include/doroti_qt_services.h",
+      "plannedTo": "packages/platforms/qt/native/include/doroti_qt_services.h",
+      "sha256": "feb20e3b943b432dc64e3ea13e5e2fa7ff2880d5260d0e2b8834975a19f3ddd2",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/include/doroti_qt_webview.h",
+      "plannedTo": "packages/platforms/qt/native/include/doroti_qt_webview.h",
+      "sha256": "fdc72e736575239b71d57ff4f7d83607808e09b209de1447c676b697922decb8",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/licenses/GPL-3.txt",
+      "plannedTo": "packages/platforms/qt/native/licenses/GPL-3.txt",
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/licenses/LGPL-2.1.txt",
+      "plannedTo": "packages/platforms/qt/native/licenses/LGPL-2.1.txt",
+      "sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/licenses/LGPL-3.txt",
+      "plannedTo": "packages/platforms/qt/native/licenses/LGPL-3.txt",
+      "sha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/licenses/README.md",
+      "plannedTo": "packages/platforms/qt/native/licenses/README.md",
+      "sha256": "329f1752bb795a1083617b412585fb454dca7a6b063c4c8648dbd41213ba6ada",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/licenses/Wayland-background-effect-MIT.txt",
+      "plannedTo": "packages/platforms/qt/native/licenses/Wayland-background-effect-MIT.txt",
+      "sha256": "16ca243570233f0cf3f60d6225bf7fa02080a0a3d215551b65adc7188a8a022b",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/protocols/ext-background-effect-v1.xml",
+      "plannedTo": "packages/platforms/qt/native/protocols/ext-background-effect-v1.xml",
+      "sha256": "163babe6bd3d0faea37a1b5906045f95f44d64e552832270287c626ce8711402",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/qml/Backdrop.qml",
+      "plannedTo": "packages/platforms/qt/native/qml/Backdrop.qml",
+      "sha256": "faa3594b39f371165251124b32eac8e44b7d38df85be6ac079b80b89b71de589",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/qml/WebView.qml",
+      "plannedTo": "packages/platforms/qt/native/qml/WebView.qml",
+      "sha256": "21e60f4c1ade847f9fb038ef4b53c969a63b5a9c2ddd4d08bbda1fb034fb8164",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/shaders/README.md",
+      "plannedTo": "packages/platforms/qt/native/shaders/README.md",
+      "sha256": "1fac1ae7a620f430a4cb618a5c7ab76aa7cef5943071c12f2fc601e04a4b7934",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/shaders/bake.py",
+      "plannedTo": "packages/platforms/qt/native/shaders/bake.py",
+      "sha256": "627e9932b720df621046f50afb0e7aee19fbc0d8709e2c24ad30de67d14847f5",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/shaders/gaussian.frag",
+      "plannedTo": "packages/platforms/qt/native/shaders/gaussian.frag",
+      "sha256": "1b260344fc935482a6d609187bde0f86dd45201c778202c3725003dff2e93073",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/shaders/gaussian.frag.json",
+      "plannedTo": "packages/platforms/qt/native/shaders/gaussian.frag.json",
+      "sha256": "e90f06e4c45419b44085e8b8c1936537e63965442de48d97b4211f4610f494b7",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/shaders/gaussian.frag.qsb",
+      "plannedTo": "packages/platforms/qt/native/shaders/gaussian.frag.qsb",
+      "sha256": "ce35948d5fa56868e855fd0732ccd98c88b2c60e83978bf7fd754ff08c46f053",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/src/doroti_qt_desktop.cpp",
+      "plannedTo": "packages/platforms/qt/native/src/doroti_qt_desktop.cpp",
+      "sha256": "406beddcadfe4fb9efd25566a808a8274c2bf4dbbc3821e9c30284dc7c6fc23b",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/src/doroti_qt_host.cpp",
+      "plannedTo": "packages/platforms/qt/native/src/doroti_qt_host.cpp",
+      "sha256": "a3fafe1cea663dc34cdbd566948cda40065424cbae0394c35324154ff76d83d3",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/src/doroti_qt_platform_views.cpp",
+      "plannedTo": "packages/platforms/qt/native/src/doroti_qt_platform_views.cpp",
+      "sha256": "69903e971013f91976b197e3b3cc1025b84117637589d0e28b2df46452601750",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/src/doroti_qt_quick.cpp",
+      "plannedTo": "packages/platforms/qt/native/src/doroti_qt_quick.cpp",
+      "sha256": "e635f64b95fd14909d914f7511ec6edee385111e4b4db7345ea7f9bc3fa1d06e",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/src/doroti_qt_services.cpp",
+      "plannedTo": "packages/platforms/qt/native/src/doroti_qt_services.cpp",
+      "sha256": "00a21b92dfcf1313b507f8769e47e8c580b798142640a0f60e1ac4acda8a009e",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/src/doroti_texture_gstreamer.cpp",
+      "plannedTo": "packages/platforms/qt/native/src/doroti_texture_gstreamer.cpp",
+      "sha256": "544d8ba9c04c5affe1b4fc26468091f74d1d7803a7e391d88e6849f5202f7c96",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    },
+    {
+      "provider": "qt",
+      "from": "samples/DorotiSampleApp2/linux/native/src/doroti_webview_qt.cpp",
+      "plannedTo": "packages/platforms/qt/native/src/doroti_webview_qt.cpp",
+      "sha256": "cce0b88b119afbe33cc170d6895c1f982ce0f5923d89b0c84caa6bb566d9680d",
+      "state": "notMoved",
+      "nativeAcceptance": "notVerified"
+    }
+  ]
+}

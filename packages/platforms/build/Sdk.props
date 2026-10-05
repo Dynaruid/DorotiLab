@@ -1,0 +1,30 @@
+<Project>
+  <PropertyGroup>
+    <DorotiProviderSdkPropsImported>true</DorotiProviderSdkPropsImported>
+    <DorotiAndroidTargetFramework Condition="'$(DorotiAndroidTargetFramework)' == ''">net10.0-android</DorotiAndroidTargetFramework>
+  </PropertyGroup>
+  <Import Project="Doroti.MacCatalyst.props" Condition="'$(DorotiMacCatalystProfileImported)' != 'true'" />
+  <Import Project="Doroti.MacOS.props" Condition="'$(DorotiMacOSProfileImported)' != 'true'" />
+  <Import Project="Doroti.IosNativeAot.props" Condition="'$(DorotiIosNativeAotProfileImported)' != 'true'" />
+  <PropertyGroup Condition="'$(DorotiIosDevelopment)' == 'true' and '$(DorotiCompilationMode)' == 'CoreClr'">
+    <DorotiIosDevelopmentRuntimeVersion Condition="'$(DorotiIosDevelopmentRuntimeVersion)' == ''">11.0.0-rc.2.26478.114</DorotiIosDevelopmentRuntimeVersion>
+    <RestoreAdditionalProjectSources>$(RestoreAdditionalProjectSources);https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet11/nuget/v3/index.json</RestoreAdditionalProjectSources>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LinkMode Condition="'$(DorotiMacDevelopment)' == 'true'">None</LinkMode>
+    <MtouchLink Condition="'$(DorotiIosDevelopment)' == 'true' or '$(DorotiMacDevelopment)' == 'true'">None</MtouchLink>
+    <StartupHookSupport Condition="'$(DorotiIosDevelopment)' == 'true' or '$(DorotiMacDevelopment)' == 'true' or '$(DorotiAndroidDevelopment)' == 'true'">true</StartupHookSupport>
+    <DebugSymbols Condition="'$(Configuration)' == 'Release' and '$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true'">false</DebugSymbols>
+    <DebugType Condition="'$(Configuration)' == 'Release' and '$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true'">none</DebugType>
+    <PublishAot Condition="'$(DorotiCompilationMode)' == 'NativeAot'">true</PublishAot>
+    <UseMonoRuntime Condition="'$(DorotiCompilationMode)' == 'NativeAot' or '$(DorotiCompilationMode)' == 'CoreClr'">false</UseMonoRuntime>
+    <UseMonoRuntime Condition="('$(DorotiCompilationMode)' == 'Mono' or ('$(DorotiCompilationMode)' == '' and '$(PublishAot)' != 'true')) and ($([System.String]::Copy('$(RuntimeIdentifier)').StartsWith('ios-')) or $([System.String]::Copy('$(RuntimeIdentifier)').StartsWith('iossimulator-')))">true</UseMonoRuntime>
+    <EnableDefaultMauiItems>false</EnableDefaultMauiItems>
+    <SingleProject Condition="'$(UseMaui)' == 'true'">true</SingleProject>
+    <MauiEnablePlatformUsings Condition="'$(UseMaui)' == 'true'">true</MauiEnablePlatformUsings>
+    <SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
+    <MauiVersion Condition="'$(MauiVersion)' == '' and '$(DorotiIosMauiVersion)' != ''">$(DorotiIosMauiVersion)</MauiVersion>
+    <MauiVersion Condition="'$(MauiVersion)' == ''">10.0.90</MauiVersion>
+    <DorotiWebRuntimeVersion Condition="'$(DorotiWebRuntimeVersion)' == ''">10.0.11</DorotiWebRuntimeVersion>
+  </PropertyGroup>
+</Project>

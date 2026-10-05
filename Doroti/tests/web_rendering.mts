@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { ResizeAdmissionWindow } from '../src/Doroti.Host.Web/Web/doroti.web.admission.ts';
-import { CanvasCapacityPolicy, applyCanvasCapacity, initialCanvasCapacity, selectRendererPolicy, resolveRendererPolicy } from '../src/Doroti.Host.Web/Web/doroti.web.policy.ts';
-import { developmentBridge } from '../src/Doroti.Host.Web/Web/doroti.web.hot-reload.ts';
-import { openFileOwner, retainBrowserFiles, readBrowserFile, releaseBrowserFile, closeFileOwner } from '../src/Doroti.Host.Web/Web/doroti.web.files.ts';
+import { ResizeAdmissionWindow } from '../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.admission.ts';
+import { CanvasCapacityPolicy, applyCanvasCapacity, initialCanvasCapacity, selectRendererPolicy, resolveRendererPolicy } from '../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.policy.ts';
+import { developmentBridge } from '../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.hot-reload.ts';
+import { openFileOwner, retainBrowserFiles, readBrowserFile, releaseBrowserFile, closeFileOwner } from '../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.files.ts';
 import { configureNavigation, openApplicationNavigation, reportApplicationRoute,
-  saveApplicationRestoration, closeApplicationNavigation } from '../src/Doroti.Host.Web/Web/doroti.web.navigation.ts';
-import { BrowserWebView, WebViewFailure } from '../src/Doroti.Host.Web/Web/doroti.web.webview.ts';
+  saveApplicationRestoration, closeApplicationNavigation } from '../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.navigation.ts';
+import { BrowserWebView, WebViewFailure } from '../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.webview.ts';
 
 test('WebView controller empty allowlist rejects before src or document state mutation', async () => {
   for (const allowed of [null, [], ['http://127.0.0.1:12345']]) {

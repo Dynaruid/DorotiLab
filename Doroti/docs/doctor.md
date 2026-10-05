@@ -1,60 +1,19 @@
 # Environment doctor
 
-Run from the repository root, using PowerShell 7. `doctor` performs bounded,
-read-only probes. It never builds, restores packages, installs workloads,
-downloads Gradle, deploys an app, or launches a device.
+The managed CLI resolves workspace v2 and the selected provider/profile. The PowerShell entry points build the CLI and source tooling when required. Doctor probes do not build or restore the application, install workloads, deploy an app, or launch a device.
+
+Run from the repository root with PowerShell 7:
 
 ```powershell
-pwsh -NoProfile -File Doroti/eng/doroti.ps1 doctor
-pwsh -NoProfile -File Doroti/eng/doroti.ps1 doctor -App samples/DorotiTestbedApp -Platform windows -WindowsBackend Maui -DoctorProfile build
-pwsh -NoProfile -File Doroti/eng/doroti.ps1 doctor -App samples/DorotiTestbedApp -Platform android -DoctorProfile dev -Device DEVICE_SERIAL
-pwsh -NoProfile -File Doroti/eng/doroti.ps1 native doctor -App samples/DorotiTestbedApp -Platform android
+pwsh -NoProfile -File Doroti/eng/doroti.ps1 doctor -App samples/DorotiTestbedApp -Platform windows -Scope managed
+pwsh -NoProfile -File Doroti/eng/doroti.ps1 doctor -App samples/DorotiTestbedApp -Platform web -Scope target -TimeoutSeconds 15
+pwsh -NoProfile -File Doroti/eng/doroti.ps1 doctor -App samples/DorotiTestbedApp -Platform all -Scope full
 ```
 
-Profiles are `common`, `build`, `dev`, `validation`, `release`, and
-`compiler-development`. Without a
-target the default is common; with a target it is build. Dev defaults to Debug.
-Validation honors `-ValidationSuite`. `-Platform all` reports every declared
-target independently, including unsupported build hosts and unresolved checks.
-For Windows, MAUI runner selection is shared with build/run/dev.
+`-App` and `-Platform` are explicit. Aliases come from the workspace; select a different runner through its declared alias. `-Scope` accepts `managed`, `target`, `native`, `tools`, or `full`. `-TimeoutSeconds` bounds each probe from 1 to 120 seconds, default 15. `-DotnetPath` selects the executable for SDK and runner metadata probes. Its working directory is the runner directory, so the nearest `global.json`, SDK feature band, roll-forward and prerelease policy apply.
 
-`-DotnetPath` is resolved to the same executable used by build/run/publish/native
-and development launch identity. iOS resolves `global.json` from the selected
-runner directory; other runners use the workspace directory. Reports include
-SDK policy/version/info, installation inventory, working directory, evaluated
-project properties, package versions and input hashes. An evaluation failure
-is an unresolved prerequisite; doctor does not restore it automatically.
+Provider tooling supplies required hosts, workloads, native tools and additional evaluated build properties. Missing hosts report `Skipped` without probing. Metadata that cannot be evaluated without restoration reports `Partial`; a missing required tool/workload or incompatible SDK reports `Fail`. Probe timeout reports `Partial` and independent probes continue. Output is typed diagnostics serialized at the CLI boundary. Exit codes are 0 for the selected prerequisite scope or skipped host, 1 for failed prerequisites, and 2 for partial prerequisites. `all` continues declared profiles and accumulates the diagnostic exit status.
 
-Windows App SDK checks VS MSBuild, the project's v145 toolset, pinned Windows
-SDK/C++ WinRT and restored native packages. MAUI uses its selected workload and
-runner. Web native/AOT builds require their SDK workload and MSBuild TypeScript
-compiler; Node and Rust are not generic Web build requirements. App resource
-and WGSL compiler checks come from the application graph. Android checks its
-selected JDK/SDK/Build Tools and OS-specific Gradle wrapper; only dev requires
-an authorized device and Debug metadata profile. Apple requires its supported
-host, full selected Xcode and native SDK; provisioning/signing remains a
-separate release gate. Linux checks the selected Qt modules and their CMake
-profile minimum versions, compiler, scanner and pkg-config dependencies;
-explicit prebuilt native profiles have a separate scope.
+The current built-in probes cover SDK selection, resolved TFM/RID/build metadata, declared workloads and selected basic tools. Full/native/tools scope retains a separate runtime-acceptance `Partial`. Detailed Android JDK/Gradle/device development transport, Apple signing/Xcode profiles and complete Qt module/native provenance diagnostics remain migration work; they must not be inferred from a managed scope PASS. Read the [current implementation record](migrations/design-platform/resume-2026-10-05.md) for verified coverage.
 
-`-DoctorProfile compiler-development` checks the WGSL compiler's pinned channel
-from `tools/Doroti.Wgsl/rust-toolchain.toml`, the installed rustup toolchain and
-its Rust/Cargo executables in the compiler directory. It needs no app target and
-does not install or download a missing toolchain.
-
-The latest `doroti.doctor/v4` JSON and Markdown reports are written atomically
-to `Doroti/artifacts/doctor/`. Use `-DoctorReportDirectory <path>` for a run-owned
-copy. Each check records required status, expected/actual values, executable,
-arguments, working directory, exit/reason/duration, bounded output and action.
-`-DoctorProbeTimeoutSeconds` accepts 1–30 seconds (default 15). The complete
-probe budget is 1,100 seconds within the test wrapper's 1,200-second limit.
-`-DoctorCancellationFile <path>` allows an orchestrator to request cancellation
-by creating that file; a canceled probe kills its own process tree and reports
-the cancellation. Independent checks continue and cannot produce a false PASS.
-
-Required failures yield FAIL/nonzero exit; unresolved required checks yield
-PARTIAL/nonzero; optional absences yield WARN. PASS/exit 0 covers only the named
-prerequisite scope. Runtime graphics, native smoke, physical input,
-accessibility speech, signing and clean-machine installation require separate
-evidence. Raw `artifacts` reports are disposable; preserve qualification in a
-dated [validation record](validation/2026-10-04-full-review.md).
+The former `doroti.doctor/v4` file-report workflow belongs to the [2026-10-04 validation baseline](validation/2026-10-04-full-review.md). The current provider CLI emits diagnostic JSON to stdout; callers may save it to a run-owned path. Native execution, GPU display, physical input/IME, accessibility, signing and clean-machine installation need separate evidence.

@@ -1,6 +1,6 @@
 # Doroti
 
-실행 전 `pwsh -File Doroti/eng/doroti.ps1 doctor -App samples/DorotiTestbedApp -Platform windows -DoctorProfile build`로 준비 조건을 확인합니다. [doctor profile](Doroti/docs/doctor.md)의 판정과 실제 기기·배포 수락은 구분합니다.
+실행 전 `pwsh -File Doroti/eng/doroti.ps1 doctor -App samples/DorotiTestbedApp -Platform windows -Scope target`로 준비 조건을 확인합니다. [provider doctor](Doroti/docs/doctor.md)의 판정과 실제 기기·배포 수락은 구분합니다.
 
 [English](README.md) | **한국어**
 

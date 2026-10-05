@@ -9,7 +9,7 @@ internal static class VariableBlurCaptureRegression
     // the production Adaptive mask/surface-pool pipeline.
     public static void Run()
     {
-        FrameworkShaderLoader.RegisterResourceOwner(typeof(SkiaSceneRenderer).Assembly);
+        RenderingShaderAssets.Register();
         var program = FrameworkShaderLoader.LoadEmbeddedProgram("rendering.variable-blur");
         using var effect = SKRuntimeEffect.CreateShader(program.source, out var shaderError)
             ?? throw new Exception(shaderError);

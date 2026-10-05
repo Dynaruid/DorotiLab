@@ -1,13 +1,94 @@
 {
-  "schemaVersion": "doroti.workspace/v1",
+  "schemaVersion": "doroti.workspace/v2",
   "applicationProject": "DorotiSampleApp2.csproj",
   "platforms": {
-    "android": "android/DorotiSampleApp2.Android.csproj",
-    "ios": "ios/DorotiSampleApp2.iOS.csproj",
-    "linux": "linux/DorotiSampleApp2.Linux.csproj",
-    "macos": "macos/DorotiSampleApp2.MacOS.csproj",
-    "maccatalyst": "macos/DorotiSampleApp2.MacCatalyst.csproj",
-    "web": "web/DorotiSampleApp2.Web.csproj",
-    "windows": "windowsappsdk/DorotiSampleApp2.WindowsAppSdk.csproj"
+    "android": {
+      "provider": "maui",
+      "providerManifest": "../../packages/platforms/maui/doroti-provider.json",
+      "target": "Android",
+      "targetPackage": "Doroti.Target.Android.Maui.android-arm64",
+      "runner": "android/DorotiSampleApp2.Android.csproj",
+      "backend": "Maui",
+      "profile": "default:android-arm64",
+      "targetFramework": "net10.0-android",
+      "runtimeIdentifier": "android-arm64"
+    },
+    "ios": {
+      "provider": "maui",
+      "providerManifest": "../../packages/platforms/maui/doroti-provider.json",
+      "target": "iOS",
+      "targetPackage": "Doroti.Target.iOS.Maui.iossimulator-x64",
+      "runner": "ios/DorotiSampleApp2.iOS.csproj",
+      "backend": "Maui",
+      "profile": "default:iossimulator-x64",
+      "targetFramework": "net10.0-ios",
+      "runtimeIdentifier": "iossimulator-x64"
+    },
+    "linux": {
+      "provider": "qt",
+      "providerManifest": "../../packages/platforms/qt/doroti-provider.json",
+      "target": "Linux",
+      "targetPackage": "Doroti.Target.Linux.Qt.linux-x64",
+      "runner": "linux/DorotiSampleApp2.Linux.csproj",
+      "backend": "Qt",
+      "profile": "default:linux-x64",
+      "targetFramework": "net10.0",
+      "runtimeIdentifier": "linux-x64"
+    },
+    "macos": {
+      "provider": "maui",
+      "providerManifest": "../../packages/platforms/maui/doroti-provider.json",
+      "target": "macOS",
+      "targetPackage": "Doroti.Target.MacOS.Maui.osx-arm64",
+      "runner": "macos/DorotiSampleApp2.MacOS.csproj",
+      "backend": "Maui",
+      "profile": "default:osx-arm64",
+      "targetFramework": "net10.0-macos",
+      "runtimeIdentifier": "osx-arm64"
+    },
+    "maccatalyst": {
+      "provider": "maui",
+      "providerManifest": "../../packages/platforms/maui/doroti-provider.json",
+      "target": "MacCatalyst",
+      "targetPackage": "Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64",
+      "runner": "macos/DorotiSampleApp2.MacCatalyst.csproj",
+      "backend": "Maui",
+      "profile": "default:maccatalyst-arm64",
+      "targetFramework": "net10.0-maccatalyst",
+      "runtimeIdentifier": "maccatalyst-arm64"
+    },
+    "web": {
+      "provider": "web",
+      "providerManifest": "../../packages/platforms/web/doroti-provider.json",
+      "target": "Web",
+      "targetPackage": "Doroti.Target.Web.browser-wasm",
+      "runner": "web/DorotiSampleApp2.Web.csproj",
+      "backend": "BlazorWebAssembly",
+      "profile": "default:browser-wasm",
+      "targetFramework": "net10.0",
+      "runtimeIdentifier": "browser-wasm"
+    },
+    "windows": {
+      "provider": "windowsappsdk",
+      "providerManifest": "../../packages/platforms/windowsappsdk/doroti-provider.json",
+      "target": "Windows",
+      "targetPackage": "Doroti.Target.Windows.WindowsAppSdk.win-x64",
+      "runner": "windowsappsdk/DorotiSampleApp2.WindowsAppSdk.csproj",
+      "backend": "WindowsAppSdk",
+      "profile": "default:win-x64",
+      "targetFramework": "net10.0-windows10.0.19041.0",
+      "runtimeIdentifier": "win-x64"
+    },
+    "windows-maui": {
+      "provider": "maui",
+      "providerManifest": "../../packages/platforms/maui/doroti-provider.json",
+      "target": "Windows",
+      "targetPackage": "Doroti.Target.Windows.Maui.win-x64",
+      "runner": "windows/DorotiSampleApp2.Windows.csproj",
+      "backend": "Maui",
+      "profile": "default:win-x64",
+      "targetFramework": "net10.0-windows10.0.19041.0",
+      "runtimeIdentifier": "win-x64"
+    }
   }
 }

@@ -109,7 +109,7 @@ public class ShortcutSerialization
                 | (alt ? _shortcutModifierAlt : 0L)
                 | (meta ? _shortcutModifierMeta : 0L),
         };
-        System.Diagnostics.Debug.Assert(character.Length == 1L);
+        System.Diagnostics.Debug.Assert(character is null || character.Length == 1L);
     }
 
     public static ShortcutSerialization CreateModifier(
@@ -157,8 +157,8 @@ public interface MenuSerializableShortcut
 
 public interface PlatformMenuDelegate
 {
-    public void setMenus(List<PlatformMenuItem> topLevelMenus);
-    public void clearMenus();
+    public void setMenus(BuildContext context, List<PlatformMenuItem> topLevelMenus);
+    public void clearMenus(BuildContext context);
     public bool debugLockDelegate(BuildContext context);
     public bool debugUnlockDelegate(BuildContext context);
 }
@@ -167,138 +167,104 @@ public delegate long MenuItemSerializableIdGenerator(PlatformMenuItem item);
 
 public class DefaultPlatformMenuDelegate : PlatformMenuDelegate
 {
-    internal virtual DartMap<long, PlatformMenuItem> _idMap { get; private set; } = default!;
-    internal virtual long _serial { get; set; } = 0L;
-    internal virtual BuildContext? _lockedContext { get; set; } = default;
-    public virtual MethodChannel channel { get; private set; } = default!;
-
-    public DefaultPlatformMenuDelegate(MethodChannel? channel = null)
+    private sealed class Owner(BuildContext context, Doroti.Ui.DorotiView view, long generation)
     {
-        this.channel = channel ?? SystemChannels.menu;
-        _idMap = new DartMap<long, PlatformMenuItem>();
+        internal BuildContext Context = context;
+        internal Doroti.Ui.DorotiView View = view;
+        internal long Generation = generation;
+        internal Dictionary<string, PlatformMenuItem> Items = [];
+        internal Doroti.Ui.IPlatformMenuBarRegistration? Registration;
+        internal bool Closed;
     }
-
-    public virtual void clearMenus() => setMenus(new List<PlatformMenuItem>());
-
-    public virtual void setMenus(List<PlatformMenuItem> topLevelMenus)
-    {
-        _idMap.Clear();
-        var representation = new List<DartMap<string, object?>>();
-        if (Enumerable.Any(topLevelMenus))
-        {
-            foreach (var childItem in topLevelMenus)
-            {
-                representation.AddRange(childItem.toChannelRepresentation(this, getId: _getId));
-            }
-        }
-        var windowMenu = new DartMap<string, object?> { ["0"] = representation };
-        DartRuntimePrimitives.Ignore(
-            channel
-                .invokeMethod<object?>(Platform_menu_barLibrary._kMenuSetMethod, windowMenu)
-                .then(
-                    (_) => { },
-                    onError: (error, stack) =>
-                    {
-                        FlutterError.reportError(
-                            new FlutterErrorDetails(
-                                exception: error,
-                                stack: stack,
-                                library: "widget library",
-                                context: new ErrorDescription("while setting the platform menu")
-                            )
-                        );
-                    }
-                )
-        );
-    }
-
-    internal virtual long _getId(PlatformMenuItem item)
-    {
-        _serial += 1L;
-        _idMap[_serial] = item;
-        return _serial;
-        throw new InvalidOperationException("Control flow completed without returning a value.");
-    }
-
+    private readonly Dictionary<ulong, BuildContext> _locks = [];
+    private readonly Dictionary<ulong, Owner> _owners = [];
+    private long _generation;
     public virtual bool debugLockDelegate(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() =>
-        {
-            if ((_lockedContext is not null) && (!Equals(_lockedContext, context)))
-            {
-                return false;
-            }
-            _lockedContext = context;
-            return true;
-            throw new InvalidOperationException("Callback completed without returning a value.");
-        });
-        return true;
-        throw new InvalidOperationException("Control flow completed without returning a value.");
+        var id = View.of(context).viewId;
+        if (_locks.TryGetValue(id, out var previous) && !ReferenceEquals(previous, context)) return false;
+        _locks[id] = context; return true;
     }
-
     public virtual bool debugUnlockDelegate(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() =>
-        {
-            if ((_lockedContext is not null) && (!Equals(_lockedContext, context)))
-            {
-                return false;
-            }
-            _lockedContext = null;
-            return true;
-            throw new InvalidOperationException("Callback completed without returning a value.");
-        });
-        return true;
-        throw new InvalidOperationException("Control flow completed without returning a value.");
+        var id = View.of(context).viewId;
+        if (!_locks.TryGetValue(id, out var previous) || !ReferenceEquals(previous, context)) return false;
+        _locks.Remove(id); return true;
     }
-
-    internal virtual async Future _methodCallHandler(MethodCall call)
+    private static void Observe(Task work) => DartRuntimePrimitives.Ignore(Future.fromTask(work).then((_) => { }, onError: (error, stack) =>
+        FlutterError.reportError(new FlutterErrorDetails(exception: error, stack: stack, library: "typed platform menu"))));
+    public virtual void clearMenus(BuildContext context)
     {
-        var id = call.arguments is long menuId
-            ? menuId
-            : throw new FormatException("Platform menu callbacks require an integer menu ID.");
-        DartRuntimePrimitives.Assert(
-            () => _idMap.ContainsKey(id),
-            () =>
-                (object?)
-                    $"Received a menu {call.method} for a menu item with an ID that was not recognized: {id}"
-        );
-        if (!_idMap.ContainsKey(id))
+        if (!_owners.Remove(View.of(context).viewId, out var previous)) return;
+        previous.Closed = true;
+        if (previous.Registration is { } registration) Observe(registration.DisposeAsync().AsTask());
+    }
+    public virtual void setMenus(BuildContext context, List<PlatformMenuItem> topLevelMenus)
+    {
+        ArgumentNullException.ThrowIfNull(topLevelMenus);
+        clearMenus(context);
+        if (topLevelMenus.Count == 0) return;
+        var view = View.of(context);
+        var window = WindowScope.of(context);
+        if (window.ViewId != view.viewId || window.Closed) throw new InvalidOperationException("The menu bar owner is not this live view.");
+        var capability = view.GetCapabilityOrDefault<Doroti.Ui.IPlatformMenuBarHostCapability>(Doroti.Ui.DorotiCapabilityIds.PlatformMenuBar)
+            ?? throw new NotSupportedException("This provider does not support native menu bars.");
+        var owner = new Owner(context, view, ++_generation);
+        var serial = 0;
+        IEnumerable<Doroti.Ui.PlatformMenuItem> Convert(IEnumerable<PlatformMenuItem> source)
         {
-            return;
-        }
-        PlatformMenuItem item = _idMap.GetValueOrDefault(id)!;
-        if (call.method == Platform_menu_barLibrary._kMenuSelectedCallbackMethod)
-        {
-            DartRuntimePrimitives.Assert(
-                () => (item.onSelected is null) || (item.onSelectedIntent is null),
-                () =>
-                    (object?)
-                        "Only one of PlatformMenuItem.onSelected or PlatformMenuItem.onSelectedIntent may be specified"
-            );
-            item.onSelected?.Invoke();
-            if (item.onSelectedIntent is not null)
+            foreach (var item in source)
             {
-                Actions.maybeInvoke(
-                    FocusManager.instance.primaryFocus!.context!,
-                    item.onSelectedIntent!
-                );
-            }
-        }
-        else
-        {
-            if (call.method == Platform_menu_barLibrary._kMenuItemOpenedMethod)
-            {
-                item.onOpen?.Invoke();
-            }
-            else
-            {
-                if (call.method == Platform_menu_barLibrary._kMenuItemClosedMethod)
+                if (item is PlatformMenuItemGroup group)
                 {
-                    item.onClose?.Invoke();
+                    yield return new("separator-" + ++serial, "", Separator: true);
+                    foreach (var child in Convert(group.members)) yield return child;
+                    continue;
                 }
+                var id = (++serial).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                owner.Items.Add(id, item);
+                var shortcut = item.shortcut?.serializeForMenu();
+                var modifiers = Doroti.Ui.PlatformMenuModifiers.None;
+                if (shortcut?.shift == true) modifiers |= Doroti.Ui.PlatformMenuModifiers.Shift;
+                if (shortcut?.control == true) modifiers |= Doroti.Ui.PlatformMenuModifiers.Control;
+                if (shortcut?.alt == true) modifiers |= Doroti.Ui.PlatformMenuModifiers.Alt;
+                if (shortcut?.meta == true) modifiers |= Doroti.Ui.PlatformMenuModifiers.Meta;
+                yield return new(id, item.label,
+                    Enabled: item is PlatformMenu menu ? menu.menus.Count != 0 : item.onSelected is not null || item.onSelectedIntent is not null,
+                    Children: item is PlatformMenu nested ? Convert(nested.menus).ToArray() : null,
+                    Shortcut: shortcut is null ? null : new(shortcut.character, shortcut.trigger?.keyId, modifiers),
+                    PlatformRole: item is PlatformProvidedMenuItem provided ? provided.type.ToString() : null);
             }
         }
+        var request = new Doroti.Ui.PlatformMenuBarRequest(window.Id, view.viewId, owner.Generation, Convert(topLevelMenus).ToArray());
+        capability.Evaluate(request).RequireSupported();
+        _owners.Add(view.viewId, owner);
+        async Task Install()
+        {
+            var registration = await view.InvokeCapabilityAsync<Doroti.Ui.IPlatformMenuBarHostCapability, Doroti.Ui.IPlatformMenuBarRegistration>(
+                Doroti.Ui.DorotiCapabilityIds.PlatformMenuBar, Doroti.Ui.DorotiUiInvocation.Managed("Widgets.MenuBar.set"),
+                (host, token) => host.SetAsync(request, value =>
+                {
+                    if (owner.Closed || value.Window != request.Window || value.ViewId != view.viewId || value.Generation != owner.Generation ||
+                        !_owners.TryGetValue(view.viewId, out var active) || !ReferenceEquals(active, owner)) return;
+                    view.DispatchPlatformEvent(() =>
+                    {
+                        if (owner.Closed || !owner.Context.mounted || !owner.Items.TryGetValue(value.ItemId, out var item)) return;
+                        switch (value.Kind)
+                        {
+                            case Doroti.Ui.PlatformMenuEventKind.Selected:
+                                item.onSelected?.Invoke();
+                                if (item.onSelectedIntent is { } intent) Actions.maybeInvoke(owner.Context, intent);
+                                break;
+                            case Doroti.Ui.PlatformMenuEventKind.Opened: item.onOpen?.Invoke(); break;
+                            case Doroti.Ui.PlatformMenuEventKind.Closed: item.onClose?.Invoke(); break;
+                        }
+                    });
+                }, token));
+            if (owner.Closed) await registration.DisposeAsync();
+            else owner.Registration = registration;
+        }
+        Observe(Install());
     }
 }
 
@@ -335,33 +301,35 @@ internal class _PlatformMenuBarState__platform_menu_bar : State<PlatformMenuBar>
     public override void initState()
     {
         base.initState();
+        if (!WidgetsBinding.instance.platformMenuDelegate.debugLockDelegate(context)) throw new InvalidOperationException("This view already has a native menu bar.");
         DartRuntimePrimitives.Assert(
-            () => WidgetsBinding.instance.platformMenuDelegate.debugLockDelegate(context),
+            () => true,
             () =>
                 (object?)
                     $"More than one active {typeof(PlatformMenuBar)} detected. Only one active "
                 + "platform-rendered menu bar is allowed at a time."
         );
-        WidgetsBinding.instance.platformMenuDelegate.clearMenus();
+        WidgetsBinding.instance.platformMenuDelegate.clearMenus(context);
         _updateMenu();
     }
 
     public override void dispose()
     {
+        if (!WidgetsBinding.instance.platformMenuDelegate.debugUnlockDelegate(context)) throw new InvalidOperationException("Native menu bar ownership mismatch.");
         DartRuntimePrimitives.Assert(
-            () => WidgetsBinding.instance.platformMenuDelegate.debugUnlockDelegate(context),
+            () => true,
             () =>
                 (object?)
                     $"tried to unlock the {typeof(DefaultPlatformMenuDelegate)} more than once with context {context}."
         );
-        WidgetsBinding.instance.platformMenuDelegate.clearMenus();
+        WidgetsBinding.instance.platformMenuDelegate.clearMenus(context);
         base.dispose();
     }
 
     public override void didUpdateWidget(PlatformMenuBar oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        var newDescendants = new List<PlatformMenuItem>();
+        var newDescendants = widget.menus;
         if (!CollectionsLibrary.listEquals(newDescendants, descendants))
         {
             descendants = newDescendants;
@@ -371,7 +339,7 @@ internal class _PlatformMenuBarState__platform_menu_bar : State<PlatformMenuBar>
 
     internal virtual void _updateMenu()
     {
-        WidgetsBinding.instance.platformMenuDelegate.setMenus(widget.menus);
+        WidgetsBinding.instance.platformMenuDelegate.setMenus(context, widget.menus);
     }
 
     public override Widget build(BuildContext context)

@@ -1,0 +1,1160 @@
+{
+  "schema": "doroti.design-package-verification/v1",
+  "verifiedUtc": "2026-10-05T00:52:06.918037+00:00",
+  "result": "PASS",
+  "results": [
+    {
+      "name": "evaluate-Doroti.Material-0",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "evaluate-Doroti.Runtime-1",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "evaluate-Doroti.Ui-2",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "evaluate-Doroti.Framework.Foundation-3",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "evaluate-Doroti.Framework.Scheduler-4",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "evaluate-Doroti.Framework.Services-5",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "evaluate-Doroti.Framework.Physics-6",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "evaluate-Doroti.Framework.Animation-7",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "evaluate-Doroti.Framework.Gestures-8",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "evaluate-Doroti.Framework.Painting-9",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "evaluate-Doroti.Framework.Semantics-10",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "evaluate-Doroti.Framework.Rendering-11",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "evaluate-Doroti.Framework.Widgets-12",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "evaluate-Doroti.Hosting-13",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "evaluate-Doroti.Cupertino-14",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "evaluate-Doroti.Testing-15",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "evaluate-Doroti.Skia.Rendering-16",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "evaluate-Doroti.Skia.RuntimeEffects-17",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "evaluate-Doroti.Material-18",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "evaluate-Doroti.Cupertino-19",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "build-design",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "build-testing",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-Doroti.Material",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-Doroti.Runtime",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-Doroti.Ui",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-Doroti.Framework.Foundation",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-Doroti.Framework.Scheduler",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-Doroti.Framework.Services",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-Doroti.Framework.Physics",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-Doroti.Framework.Animation",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-Doroti.Framework.Gestures",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-Doroti.Framework.Painting",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-Doroti.Framework.Semantics",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-Doroti.Framework.Rendering",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-Doroti.Framework.Widgets",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-Doroti.Hosting",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-Doroti.Cupertino",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-Doroti.Testing",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-Doroti.Skia.Rendering",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-Doroti.Skia.RuntimeEffects",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "consumer-widgets",
+      "exitCode": 0,
+      "expectedFailure": false,
+      "resolvedPackages": [
+        "Doroti.Framework.Animation",
+        "Doroti.Framework.Foundation",
+        "Doroti.Framework.Gestures",
+        "Doroti.Framework.Painting",
+        "Doroti.Framework.Physics",
+        "Doroti.Framework.Rendering",
+        "Doroti.Framework.Scheduler",
+        "Doroti.Framework.Semantics",
+        "Doroti.Framework.Services",
+        "Doroti.Framework.Widgets",
+        "Doroti.Hosting",
+        "Doroti.Runtime",
+        "Doroti.Skia.Rendering",
+        "Doroti.Skia.RuntimeEffects",
+        "Doroti.Testing",
+        "Doroti.Ui",
+        "SkiaSharp",
+        "SkiaSharp.NativeAssets.Win32",
+        "SkiaSharp.NativeAssets.macOS"
+      ]
+    },
+    {
+      "name": "consumer-cupertino",
+      "exitCode": 0,
+      "expectedFailure": false,
+      "resolvedPackages": [
+        "Doroti.Cupertino",
+        "Doroti.Framework.Animation",
+        "Doroti.Framework.Foundation",
+        "Doroti.Framework.Gestures",
+        "Doroti.Framework.Painting",
+        "Doroti.Framework.Physics",
+        "Doroti.Framework.Rendering",
+        "Doroti.Framework.Scheduler",
+        "Doroti.Framework.Semantics",
+        "Doroti.Framework.Services",
+        "Doroti.Framework.Widgets",
+        "Doroti.Hosting",
+        "Doroti.Runtime",
+        "Doroti.Skia.Rendering",
+        "Doroti.Skia.RuntimeEffects",
+        "Doroti.Testing",
+        "Doroti.Ui",
+        "SkiaSharp",
+        "SkiaSharp.NativeAssets.Win32",
+        "SkiaSharp.NativeAssets.macOS"
+      ]
+    },
+    {
+      "name": "consumer-material",
+      "exitCode": 0,
+      "expectedFailure": false,
+      "resolvedPackages": [
+        "Doroti.Cupertino",
+        "Doroti.Framework.Animation",
+        "Doroti.Framework.Foundation",
+        "Doroti.Framework.Gestures",
+        "Doroti.Framework.Painting",
+        "Doroti.Framework.Physics",
+        "Doroti.Framework.Rendering",
+        "Doroti.Framework.Scheduler",
+        "Doroti.Framework.Semantics",
+        "Doroti.Framework.Services",
+        "Doroti.Framework.Widgets",
+        "Doroti.Hosting",
+        "Doroti.Material",
+        "Doroti.Runtime",
+        "Doroti.Skia.Rendering",
+        "Doroti.Skia.RuntimeEffects",
+        "Doroti.Testing",
+        "Doroti.Ui",
+        "MaterialColorUtilities",
+        "SkiaSharp",
+        "SkiaSharp.NativeAssets.Win32",
+        "SkiaSharp.NativeAssets.macOS"
+      ]
+    },
+    {
+      "name": "consumer-both",
+      "exitCode": 0,
+      "expectedFailure": false,
+      "resolvedPackages": [
+        "Doroti.Cupertino",
+        "Doroti.Framework.Animation",
+        "Doroti.Framework.Foundation",
+        "Doroti.Framework.Gestures",
+        "Doroti.Framework.Painting",
+        "Doroti.Framework.Physics",
+        "Doroti.Framework.Rendering",
+        "Doroti.Framework.Scheduler",
+        "Doroti.Framework.Semantics",
+        "Doroti.Framework.Services",
+        "Doroti.Framework.Widgets",
+        "Doroti.Hosting",
+        "Doroti.Material",
+        "Doroti.Runtime",
+        "Doroti.Skia.Rendering",
+        "Doroti.Skia.RuntimeEffects",
+        "Doroti.Testing",
+        "Doroti.Ui",
+        "MaterialColorUtilities",
+        "SkiaSharp",
+        "SkiaSharp.NativeAssets.Win32",
+        "SkiaSharp.NativeAssets.macOS"
+      ]
+    },
+    {
+      "name": "pack-design-update-Material",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-design-update-Cupertino",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "consumer-design-update",
+      "exitCode": 0,
+      "expectedFailure": false,
+      "resolvedPackages": [
+        "Doroti.Cupertino",
+        "Doroti.Framework.Animation",
+        "Doroti.Framework.Foundation",
+        "Doroti.Framework.Gestures",
+        "Doroti.Framework.Painting",
+        "Doroti.Framework.Physics",
+        "Doroti.Framework.Rendering",
+        "Doroti.Framework.Scheduler",
+        "Doroti.Framework.Semantics",
+        "Doroti.Framework.Services",
+        "Doroti.Framework.Widgets",
+        "Doroti.Hosting",
+        "Doroti.Material",
+        "Doroti.Runtime",
+        "Doroti.Skia.Rendering",
+        "Doroti.Skia.RuntimeEffects",
+        "Doroti.Testing",
+        "Doroti.Ui",
+        "MaterialColorUtilities",
+        "SkiaSharp",
+        "SkiaSharp.NativeAssets.Win32",
+        "SkiaSharp.NativeAssets.macOS"
+      ]
+    },
+    {
+      "name": "pack-core-update-Doroti.Runtime",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-core-update-Doroti.Ui",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-core-update-Doroti.Framework.Foundation",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-core-update-Doroti.Framework.Scheduler",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-core-update-Doroti.Framework.Services",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-core-update-Doroti.Framework.Physics",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-core-update-Doroti.Framework.Animation",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-core-update-Doroti.Framework.Gestures",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-core-update-Doroti.Framework.Painting",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-core-update-Doroti.Framework.Semantics",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-core-update-Doroti.Framework.Rendering",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-core-update-Doroti.Framework.Widgets",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-core-update-Doroti.Hosting",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-core-update-Doroti.Testing",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-core-update-Doroti.Skia.Rendering",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-core-update-Doroti.Skia.RuntimeEffects",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "consumer-core-update",
+      "exitCode": 0,
+      "expectedFailure": false,
+      "resolvedPackages": [
+        "Doroti.Cupertino",
+        "Doroti.Framework.Animation",
+        "Doroti.Framework.Foundation",
+        "Doroti.Framework.Gestures",
+        "Doroti.Framework.Painting",
+        "Doroti.Framework.Physics",
+        "Doroti.Framework.Rendering",
+        "Doroti.Framework.Scheduler",
+        "Doroti.Framework.Semantics",
+        "Doroti.Framework.Services",
+        "Doroti.Framework.Widgets",
+        "Doroti.Hosting",
+        "Doroti.Material",
+        "Doroti.Runtime",
+        "Doroti.Skia.Rendering",
+        "Doroti.Skia.RuntimeEffects",
+        "Doroti.Testing",
+        "Doroti.Ui",
+        "MaterialColorUtilities",
+        "SkiaSharp",
+        "SkiaSharp.NativeAssets.Win32",
+        "SkiaSharp.NativeAssets.macOS"
+      ]
+    },
+    {
+      "name": "pack-outside-core-Doroti.Runtime",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-outside-core-Doroti.Ui",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-outside-core-Doroti.Framework.Foundation",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-outside-core-Doroti.Framework.Scheduler",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-outside-core-Doroti.Framework.Services",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-outside-core-Doroti.Framework.Physics",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-outside-core-Doroti.Framework.Animation",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-outside-core-Doroti.Framework.Gestures",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-outside-core-Doroti.Framework.Painting",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-outside-core-Doroti.Framework.Semantics",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-outside-core-Doroti.Framework.Rendering",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-outside-core-Doroti.Framework.Widgets",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "pack-outside-core-Doroti.Hosting",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "outside-range-rejected-Material",
+      "exitCode": 1,
+      "expectedFailure": true
+    },
+    {
+      "name": "outside-range-rejected-Cupertino",
+      "exitCode": 1,
+      "expectedFailure": true
+    },
+    {
+      "name": "pack-app-sdk",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "template-install",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "template-create-widgets",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "template-build-widgets",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "template-create-material",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "template-build-material",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "template-create-cupertino",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "template-build-cupertino",
+      "exitCode": 0,
+      "expectedFailure": false
+    },
+    {
+      "name": "removed-design-rejected",
+      "exitCode": 1,
+      "expectedFailure": true
+    }
+  ],
+  "packages": [
+    {
+      "id": "Doroti.App.Sdk",
+      "version": "0.4.0-alpha.1",
+      "dependencies": {}
+    },
+    {
+      "id": "Doroti.Cupertino",
+      "version": "1.0.0-alpha.1",
+      "dependencies": {
+        "Doroti.Framework.Animation": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Foundation": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Gestures": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Painting": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Physics": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Rendering": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Scheduler": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Semantics": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Services": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Widgets": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Runtime": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Ui": "[0.4.0-alpha.1, 0.5.0)"
+      }
+    },
+    {
+      "id": "Doroti.Cupertino",
+      "version": "1.0.0-alpha.2",
+      "dependencies": {
+        "Doroti.Framework.Animation": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Foundation": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Gestures": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Painting": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Physics": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Rendering": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Scheduler": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Semantics": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Services": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Widgets": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Runtime": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Ui": "[0.4.0-alpha.1, 0.5.0)"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Animation",
+      "version": "0.4.0-alpha.1",
+      "dependencies": {
+        "Doroti.Framework.Foundation": "0.4.0-alpha.1",
+        "Doroti.Framework.Physics": "0.4.0-alpha.1",
+        "Doroti.Framework.Scheduler": "0.4.0-alpha.1",
+        "Doroti.Framework.Services": "0.4.0-alpha.1",
+        "Doroti.Runtime": "0.4.0-alpha.1",
+        "Doroti.Ui": "0.4.0-alpha.1"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Animation",
+      "version": "0.4.0-alpha.2",
+      "dependencies": {
+        "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+        "Doroti.Framework.Physics": "0.4.0-alpha.2",
+        "Doroti.Framework.Scheduler": "0.4.0-alpha.2",
+        "Doroti.Framework.Services": "0.4.0-alpha.2",
+        "Doroti.Runtime": "0.4.0-alpha.2",
+        "Doroti.Ui": "0.4.0-alpha.2"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Animation",
+      "version": "0.5.0",
+      "dependencies": {
+        "Doroti.Framework.Foundation": "0.5.0",
+        "Doroti.Framework.Physics": "0.5.0",
+        "Doroti.Framework.Scheduler": "0.5.0",
+        "Doroti.Framework.Services": "0.5.0",
+        "Doroti.Runtime": "0.5.0",
+        "Doroti.Ui": "0.5.0"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Foundation",
+      "version": "0.4.0-alpha.1",
+      "dependencies": {
+        "Doroti.Runtime": "0.4.0-alpha.1",
+        "Doroti.Ui": "0.4.0-alpha.1"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Foundation",
+      "version": "0.4.0-alpha.2",
+      "dependencies": {
+        "Doroti.Runtime": "0.4.0-alpha.2",
+        "Doroti.Ui": "0.4.0-alpha.2"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Foundation",
+      "version": "0.5.0",
+      "dependencies": {
+        "Doroti.Runtime": "0.5.0",
+        "Doroti.Ui": "0.5.0"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Gestures",
+      "version": "0.4.0-alpha.1",
+      "dependencies": {
+        "Doroti.Framework.Foundation": "0.4.0-alpha.1",
+        "Doroti.Framework.Scheduler": "0.4.0-alpha.1",
+        "Doroti.Framework.Services": "0.4.0-alpha.1",
+        "Doroti.Runtime": "0.4.0-alpha.1",
+        "Doroti.Ui": "0.4.0-alpha.1"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Gestures",
+      "version": "0.4.0-alpha.2",
+      "dependencies": {
+        "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+        "Doroti.Framework.Scheduler": "0.4.0-alpha.2",
+        "Doroti.Framework.Services": "0.4.0-alpha.2",
+        "Doroti.Runtime": "0.4.0-alpha.2",
+        "Doroti.Ui": "0.4.0-alpha.2"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Gestures",
+      "version": "0.5.0",
+      "dependencies": {
+        "Doroti.Framework.Foundation": "0.5.0",
+        "Doroti.Framework.Scheduler": "0.5.0",
+        "Doroti.Framework.Services": "0.5.0",
+        "Doroti.Runtime": "0.5.0",
+        "Doroti.Ui": "0.5.0"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Painting",
+      "version": "0.4.0-alpha.1",
+      "dependencies": {
+        "Doroti.Framework.Animation": "0.4.0-alpha.1",
+        "Doroti.Framework.Foundation": "0.4.0-alpha.1",
+        "Doroti.Framework.Gestures": "0.4.0-alpha.1",
+        "Doroti.Framework.Physics": "0.4.0-alpha.1",
+        "Doroti.Framework.Scheduler": "0.4.0-alpha.1",
+        "Doroti.Framework.Services": "0.4.0-alpha.1",
+        "Doroti.Runtime": "0.4.0-alpha.1",
+        "Doroti.Ui": "0.4.0-alpha.1"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Painting",
+      "version": "0.4.0-alpha.2",
+      "dependencies": {
+        "Doroti.Framework.Animation": "0.4.0-alpha.2",
+        "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+        "Doroti.Framework.Gestures": "0.4.0-alpha.2",
+        "Doroti.Framework.Physics": "0.4.0-alpha.2",
+        "Doroti.Framework.Scheduler": "0.4.0-alpha.2",
+        "Doroti.Framework.Services": "0.4.0-alpha.2",
+        "Doroti.Runtime": "0.4.0-alpha.2",
+        "Doroti.Ui": "0.4.0-alpha.2"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Painting",
+      "version": "0.5.0",
+      "dependencies": {
+        "Doroti.Framework.Animation": "0.5.0",
+        "Doroti.Framework.Foundation": "0.5.0",
+        "Doroti.Framework.Gestures": "0.5.0",
+        "Doroti.Framework.Physics": "0.5.0",
+        "Doroti.Framework.Scheduler": "0.5.0",
+        "Doroti.Framework.Services": "0.5.0",
+        "Doroti.Runtime": "0.5.0",
+        "Doroti.Ui": "0.5.0"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Physics",
+      "version": "0.4.0-alpha.1",
+      "dependencies": {
+        "Doroti.Framework.Foundation": "0.4.0-alpha.1",
+        "Doroti.Framework.Scheduler": "0.4.0-alpha.1",
+        "Doroti.Framework.Services": "0.4.0-alpha.1",
+        "Doroti.Runtime": "0.4.0-alpha.1",
+        "Doroti.Ui": "0.4.0-alpha.1"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Physics",
+      "version": "0.4.0-alpha.2",
+      "dependencies": {
+        "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+        "Doroti.Framework.Scheduler": "0.4.0-alpha.2",
+        "Doroti.Framework.Services": "0.4.0-alpha.2",
+        "Doroti.Runtime": "0.4.0-alpha.2",
+        "Doroti.Ui": "0.4.0-alpha.2"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Physics",
+      "version": "0.5.0",
+      "dependencies": {
+        "Doroti.Framework.Foundation": "0.5.0",
+        "Doroti.Framework.Scheduler": "0.5.0",
+        "Doroti.Framework.Services": "0.5.0",
+        "Doroti.Runtime": "0.5.0",
+        "Doroti.Ui": "0.5.0"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Rendering",
+      "version": "0.4.0-alpha.1",
+      "dependencies": {
+        "Doroti.Framework.Animation": "0.4.0-alpha.1",
+        "Doroti.Framework.Foundation": "0.4.0-alpha.1",
+        "Doroti.Framework.Gestures": "0.4.0-alpha.1",
+        "Doroti.Framework.Painting": "0.4.0-alpha.1",
+        "Doroti.Framework.Physics": "0.4.0-alpha.1",
+        "Doroti.Framework.Scheduler": "0.4.0-alpha.1",
+        "Doroti.Framework.Semantics": "0.4.0-alpha.1",
+        "Doroti.Framework.Services": "0.4.0-alpha.1",
+        "Doroti.Runtime": "0.4.0-alpha.1",
+        "Doroti.Ui": "0.4.0-alpha.1"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Rendering",
+      "version": "0.4.0-alpha.2",
+      "dependencies": {
+        "Doroti.Framework.Animation": "0.4.0-alpha.2",
+        "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+        "Doroti.Framework.Gestures": "0.4.0-alpha.2",
+        "Doroti.Framework.Painting": "0.4.0-alpha.2",
+        "Doroti.Framework.Physics": "0.4.0-alpha.2",
+        "Doroti.Framework.Scheduler": "0.4.0-alpha.2",
+        "Doroti.Framework.Semantics": "0.4.0-alpha.2",
+        "Doroti.Framework.Services": "0.4.0-alpha.2",
+        "Doroti.Runtime": "0.4.0-alpha.2",
+        "Doroti.Ui": "0.4.0-alpha.2"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Rendering",
+      "version": "0.5.0",
+      "dependencies": {
+        "Doroti.Framework.Animation": "0.5.0",
+        "Doroti.Framework.Foundation": "0.5.0",
+        "Doroti.Framework.Gestures": "0.5.0",
+        "Doroti.Framework.Painting": "0.5.0",
+        "Doroti.Framework.Physics": "0.5.0",
+        "Doroti.Framework.Scheduler": "0.5.0",
+        "Doroti.Framework.Semantics": "0.5.0",
+        "Doroti.Framework.Services": "0.5.0",
+        "Doroti.Runtime": "0.5.0",
+        "Doroti.Ui": "0.5.0"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Scheduler",
+      "version": "0.4.0-alpha.1",
+      "dependencies": {
+        "Doroti.Framework.Foundation": "0.4.0-alpha.1",
+        "Doroti.Runtime": "0.4.0-alpha.1",
+        "Doroti.Ui": "0.4.0-alpha.1"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Scheduler",
+      "version": "0.4.0-alpha.2",
+      "dependencies": {
+        "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+        "Doroti.Runtime": "0.4.0-alpha.2",
+        "Doroti.Ui": "0.4.0-alpha.2"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Scheduler",
+      "version": "0.5.0",
+      "dependencies": {
+        "Doroti.Framework.Foundation": "0.5.0",
+        "Doroti.Runtime": "0.5.0",
+        "Doroti.Ui": "0.5.0"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Semantics",
+      "version": "0.4.0-alpha.1",
+      "dependencies": {
+        "Doroti.Framework.Animation": "0.4.0-alpha.1",
+        "Doroti.Framework.Foundation": "0.4.0-alpha.1",
+        "Doroti.Framework.Gestures": "0.4.0-alpha.1",
+        "Doroti.Framework.Painting": "0.4.0-alpha.1",
+        "Doroti.Framework.Physics": "0.4.0-alpha.1",
+        "Doroti.Framework.Scheduler": "0.4.0-alpha.1",
+        "Doroti.Framework.Services": "0.4.0-alpha.1",
+        "Doroti.Runtime": "0.4.0-alpha.1",
+        "Doroti.Ui": "0.4.0-alpha.1"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Semantics",
+      "version": "0.4.0-alpha.2",
+      "dependencies": {
+        "Doroti.Framework.Animation": "0.4.0-alpha.2",
+        "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+        "Doroti.Framework.Gestures": "0.4.0-alpha.2",
+        "Doroti.Framework.Painting": "0.4.0-alpha.2",
+        "Doroti.Framework.Physics": "0.4.0-alpha.2",
+        "Doroti.Framework.Scheduler": "0.4.0-alpha.2",
+        "Doroti.Framework.Services": "0.4.0-alpha.2",
+        "Doroti.Runtime": "0.4.0-alpha.2",
+        "Doroti.Ui": "0.4.0-alpha.2"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Semantics",
+      "version": "0.5.0",
+      "dependencies": {
+        "Doroti.Framework.Animation": "0.5.0",
+        "Doroti.Framework.Foundation": "0.5.0",
+        "Doroti.Framework.Gestures": "0.5.0",
+        "Doroti.Framework.Painting": "0.5.0",
+        "Doroti.Framework.Physics": "0.5.0",
+        "Doroti.Framework.Scheduler": "0.5.0",
+        "Doroti.Framework.Services": "0.5.0",
+        "Doroti.Runtime": "0.5.0",
+        "Doroti.Ui": "0.5.0"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Services",
+      "version": "0.4.0-alpha.1",
+      "dependencies": {
+        "Doroti.Framework.Foundation": "0.4.0-alpha.1",
+        "Doroti.Framework.Scheduler": "0.4.0-alpha.1",
+        "Doroti.Runtime": "0.4.0-alpha.1",
+        "Doroti.Ui": "0.4.0-alpha.1"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Services",
+      "version": "0.4.0-alpha.2",
+      "dependencies": {
+        "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+        "Doroti.Framework.Scheduler": "0.4.0-alpha.2",
+        "Doroti.Runtime": "0.4.0-alpha.2",
+        "Doroti.Ui": "0.4.0-alpha.2"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Services",
+      "version": "0.5.0",
+      "dependencies": {
+        "Doroti.Framework.Foundation": "0.5.0",
+        "Doroti.Framework.Scheduler": "0.5.0",
+        "Doroti.Runtime": "0.5.0",
+        "Doroti.Ui": "0.5.0"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Widgets",
+      "version": "0.4.0-alpha.1",
+      "dependencies": {
+        "Doroti.Framework.Animation": "0.4.0-alpha.1",
+        "Doroti.Framework.Foundation": "0.4.0-alpha.1",
+        "Doroti.Framework.Gestures": "0.4.0-alpha.1",
+        "Doroti.Framework.Painting": "0.4.0-alpha.1",
+        "Doroti.Framework.Physics": "0.4.0-alpha.1",
+        "Doroti.Framework.Rendering": "0.4.0-alpha.1",
+        "Doroti.Framework.Scheduler": "0.4.0-alpha.1",
+        "Doroti.Framework.Semantics": "0.4.0-alpha.1",
+        "Doroti.Framework.Services": "0.4.0-alpha.1",
+        "Doroti.Hosting": "0.4.0-alpha.1",
+        "Doroti.Runtime": "0.4.0-alpha.1",
+        "Doroti.Ui": "0.4.0-alpha.1"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Widgets",
+      "version": "0.4.0-alpha.2",
+      "dependencies": {
+        "Doroti.Framework.Animation": "0.4.0-alpha.2",
+        "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+        "Doroti.Framework.Gestures": "0.4.0-alpha.2",
+        "Doroti.Framework.Painting": "0.4.0-alpha.2",
+        "Doroti.Framework.Physics": "0.4.0-alpha.2",
+        "Doroti.Framework.Rendering": "0.4.0-alpha.2",
+        "Doroti.Framework.Scheduler": "0.4.0-alpha.2",
+        "Doroti.Framework.Semantics": "0.4.0-alpha.2",
+        "Doroti.Framework.Services": "0.4.0-alpha.2",
+        "Doroti.Hosting": "0.4.0-alpha.2",
+        "Doroti.Runtime": "0.4.0-alpha.2",
+        "Doroti.Ui": "0.4.0-alpha.2"
+      }
+    },
+    {
+      "id": "Doroti.Framework.Widgets",
+      "version": "0.5.0",
+      "dependencies": {
+        "Doroti.Framework.Animation": "0.5.0",
+        "Doroti.Framework.Foundation": "0.5.0",
+        "Doroti.Framework.Gestures": "0.5.0",
+        "Doroti.Framework.Painting": "0.5.0",
+        "Doroti.Framework.Physics": "0.5.0",
+        "Doroti.Framework.Rendering": "0.5.0",
+        "Doroti.Framework.Scheduler": "0.5.0",
+        "Doroti.Framework.Semantics": "0.5.0",
+        "Doroti.Framework.Services": "0.5.0",
+        "Doroti.Hosting": "0.5.0",
+        "Doroti.Runtime": "0.5.0",
+        "Doroti.Ui": "0.5.0"
+      }
+    },
+    {
+      "id": "Doroti.Hosting",
+      "version": "0.4.0-alpha.1",
+      "dependencies": {
+        "Doroti.Runtime": "0.4.0-alpha.1",
+        "Doroti.Ui": "0.4.0-alpha.1"
+      }
+    },
+    {
+      "id": "Doroti.Hosting",
+      "version": "0.4.0-alpha.2",
+      "dependencies": {
+        "Doroti.Runtime": "0.4.0-alpha.2",
+        "Doroti.Ui": "0.4.0-alpha.2"
+      }
+    },
+    {
+      "id": "Doroti.Hosting",
+      "version": "0.5.0",
+      "dependencies": {
+        "Doroti.Runtime": "0.5.0",
+        "Doroti.Ui": "0.5.0"
+      }
+    },
+    {
+      "id": "Doroti.Material",
+      "version": "1.0.0-alpha.1",
+      "dependencies": {
+        "Doroti.Framework.Animation": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Foundation": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Gestures": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Painting": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Physics": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Rendering": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Scheduler": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Semantics": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Services": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Widgets": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Runtime": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Ui": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Cupertino": "[1.0.0-alpha.1, 2.0.0)",
+        "MaterialColorUtilities": "0.3.0"
+      }
+    },
+    {
+      "id": "Doroti.Material",
+      "version": "1.0.0-alpha.2",
+      "dependencies": {
+        "Doroti.Framework.Animation": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Foundation": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Gestures": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Painting": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Physics": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Rendering": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Scheduler": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Semantics": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Services": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Framework.Widgets": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Runtime": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Ui": "[0.4.0-alpha.1, 0.5.0)",
+        "Doroti.Cupertino": "[1.0.0-alpha.1, 2.0.0)",
+        "MaterialColorUtilities": "0.3.0"
+      }
+    },
+    {
+      "id": "Doroti.Runtime",
+      "version": "0.4.0-alpha.1",
+      "dependencies": {}
+    },
+    {
+      "id": "Doroti.Runtime",
+      "version": "0.4.0-alpha.2",
+      "dependencies": {}
+    },
+    {
+      "id": "Doroti.Runtime",
+      "version": "0.5.0",
+      "dependencies": {}
+    },
+    {
+      "id": "Doroti.Skia.Rendering",
+      "version": "0.4.0-alpha.1",
+      "dependencies": {
+        "Doroti.Skia.RuntimeEffects": "0.4.0-alpha.1",
+        "Doroti.Ui": "0.4.0-alpha.1",
+        "SkiaSharp": "4.154.0-preview.1.26454.9"
+      }
+    },
+    {
+      "id": "Doroti.Skia.Rendering",
+      "version": "0.4.0-alpha.2",
+      "dependencies": {
+        "Doroti.Skia.RuntimeEffects": "0.4.0-alpha.2",
+        "Doroti.Ui": "0.4.0-alpha.2",
+        "SkiaSharp": "4.154.0-preview.1.26454.9"
+      }
+    },
+    {
+      "id": "Doroti.Skia.RuntimeEffects",
+      "version": "0.4.0-alpha.1",
+      "dependencies": {
+        "Doroti.Ui": "0.4.0-alpha.1",
+        "SkiaSharp": "4.154.0-preview.1.26454.9"
+      }
+    },
+    {
+      "id": "Doroti.Skia.RuntimeEffects",
+      "version": "0.4.0-alpha.2",
+      "dependencies": {
+        "Doroti.Ui": "0.4.0-alpha.2",
+        "SkiaSharp": "4.154.0-preview.1.26454.9"
+      }
+    },
+    {
+      "id": "Doroti.Testing",
+      "version": "0.4.0-alpha.1",
+      "dependencies": {
+        "Doroti.Framework.Widgets": "0.4.0-alpha.1",
+        "Doroti.Skia.Rendering": "0.4.0-alpha.1"
+      }
+    },
+    {
+      "id": "Doroti.Testing",
+      "version": "0.4.0-alpha.2",
+      "dependencies": {
+        "Doroti.Framework.Widgets": "0.4.0-alpha.2",
+        "Doroti.Skia.Rendering": "0.4.0-alpha.2"
+      }
+    },
+    {
+      "id": "Doroti.Ui",
+      "version": "0.4.0-alpha.1",
+      "dependencies": {
+        "Doroti.Runtime": "0.4.0-alpha.1"
+      }
+    },
+    {
+      "id": "Doroti.Ui",
+      "version": "0.4.0-alpha.2",
+      "dependencies": {
+        "Doroti.Runtime": "0.4.0-alpha.2"
+      }
+    },
+    {
+      "id": "Doroti.Ui",
+      "version": "0.5.0",
+      "dependencies": {
+        "Doroti.Runtime": "0.5.0"
+      }
+    }
+  ],
+  "runId": "22a86cb90fdb4df7830e49aea4c5f741",
+  "scope": "evaluated graph, real nupkg nuspec, isolated restore/build/CPU execution, core AssemblyRef, independent candidate versions and template app build",
+  "notVerified": [
+    "native provider startup G1",
+    "physical input/IME",
+    "GPU shader display",
+    "trim/AOT"
+  ],
+  "rawArtifacts": "removed after successful summary"
+}

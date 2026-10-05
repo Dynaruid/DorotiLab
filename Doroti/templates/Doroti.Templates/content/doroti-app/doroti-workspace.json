@@ -1,13 +1,83 @@
 {
-  "schemaVersion": "doroti.workspace/v1",
+  "schemaVersion": "doroti.workspace/v2",
   "applicationProject": "DorotiTemplateApp.csproj",
   "platforms": {
-    "android": "android/DorotiTemplateApp.Android.csproj",
-    "ios": "ios/DorotiTemplateApp.iOS.csproj",
-    "linux": "linux/DorotiTemplateApp.Linux.csproj",
-    "macos": "macos/DorotiTemplateApp.MacOS.csproj",
-    "maccatalyst": "macos/DorotiTemplateApp.MacCatalyst.csproj",
-    "web": "web/DorotiTemplateApp.Web.csproj",
-    "windows": "windows/DorotiTemplateApp.Windows.csproj"
+    "android": {
+      "provider": "maui",
+      "providerManifest": "nuget:Doroti.Tool.Maui",
+      "target": "Android",
+      "targetPackage": "Doroti.Target.Android.Maui.android-arm64",
+      "runner": "android/DorotiTemplateApp.Android.csproj",
+      "backend": "Maui",
+      "profile": "default:android-arm64",
+      "targetFramework": "net10.0-android",
+      "runtimeIdentifier": "android-arm64"
+    },
+    "ios": {
+      "provider": "maui",
+      "providerManifest": "nuget:Doroti.Tool.Maui",
+      "target": "iOS",
+      "targetPackage": "Doroti.Target.iOS.Maui.iossimulator-arm64",
+      "runner": "ios/DorotiTemplateApp.iOS.csproj",
+      "backend": "Maui",
+      "profile": "default:iossimulator-arm64",
+      "targetFramework": "net10.0-ios",
+      "runtimeIdentifier": "iossimulator-arm64"
+    },
+    "linux": {
+      "provider": "qt",
+      "providerManifest": "nuget:Doroti.Tool.Qt",
+      "target": "Linux",
+      "targetPackage": "Doroti.Target.Linux.Qt.linux-x64",
+      "runner": "linux/DorotiTemplateApp.Linux.csproj",
+      "backend": "Qt",
+      "profile": "default:linux-x64",
+      "targetFramework": "net10.0",
+      "runtimeIdentifier": "linux-x64"
+    },
+    "macos": {
+      "provider": "maui",
+      "providerManifest": "nuget:Doroti.Tool.Maui",
+      "target": "macOS",
+      "targetPackage": "Doroti.Target.MacOS.Maui.osx-arm64",
+      "runner": "macos/DorotiTemplateApp.MacOS.csproj",
+      "backend": "Maui",
+      "profile": "default:osx-arm64",
+      "targetFramework": "net10.0-macos",
+      "runtimeIdentifier": "osx-arm64"
+    },
+    "maccatalyst": {
+      "provider": "maui",
+      "providerManifest": "nuget:Doroti.Tool.Maui",
+      "target": "MacCatalyst",
+      "targetPackage": "Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64",
+      "runner": "macos/DorotiTemplateApp.MacCatalyst.csproj",
+      "backend": "Maui",
+      "profile": "default:maccatalyst-arm64",
+      "targetFramework": "net10.0-maccatalyst",
+      "runtimeIdentifier": "maccatalyst-arm64"
+    },
+    "web": {
+      "provider": "web",
+      "providerManifest": "nuget:Doroti.Tool.Web",
+      "target": "Web",
+      "targetPackage": "Doroti.Target.Web.browser-wasm",
+      "runner": "web/DorotiTemplateApp.Web.csproj",
+      "backend": "BlazorWebAssembly",
+      "profile": "default:browser-wasm",
+      "targetFramework": "net10.0",
+      "runtimeIdentifier": "browser-wasm"
+    },
+    "windows": {
+      "provider": "windowsappsdk",
+      "providerManifest": "nuget:Doroti.Tool.WindowsAppSdk",
+      "target": "Windows",
+      "targetPackage": "Doroti.Target.Windows.WindowsAppSdk.win-x64",
+      "runner": "windows/DorotiTemplateApp.Windows.csproj",
+      "backend": "WindowsAppSdk",
+      "profile": "default:win-x64",
+      "targetFramework": "net10.0-windows10.0.19041.0",
+      "runtimeIdentifier": "win-x64"
+    }
   }
 }

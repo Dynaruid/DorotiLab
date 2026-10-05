@@ -3905,6 +3905,7 @@ public abstract class ComponentElement : Element
 
     public override void performRebuild()
     {
+        using var invocationScope = View.maybeOf(this)?.EnterInvocationScope();
         Widget built = default!;
         try
         {

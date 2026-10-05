@@ -40,8 +40,8 @@ async function modules(timers: Record<string, unknown> = {}) {
     await module.link((specifier, parent) => load(new URL(specifier.replace(/\.js$/, '.ts'), parent.identifier)));
     return module;
   }
-  const main = await load(new URL('../src/Doroti.Host.Web/Web/doroti.web.textures.ts', import.meta.url));
-  const worker = await load(new URL('../src/Doroti.Host.Web/Web/doroti.web.texture-worker.ts', import.meta.url));
+  const main = await load(new URL('../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.textures.ts', import.meta.url));
+  const worker = await load(new URL('../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.texture-worker.ts', import.meta.url));
   await main.evaluate(); await worker.evaluate();
   return { main: main.namespace as any, worker: worker.namespace as any, snapshots, videoFrames };
 }

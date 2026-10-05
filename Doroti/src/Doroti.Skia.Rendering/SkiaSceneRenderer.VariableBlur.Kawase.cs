@@ -12,12 +12,12 @@ public sealed partial class SkiaSceneRenderer
         Environment.GetEnvironmentVariable("DOROTI_VARIABLE_BLUR_FULL_DETAIL") != "1";
     private static readonly Lazy<FragmentProgram> KawaseBlurProgram = new(() =>
     {
-        FrameworkShaderLoader.RegisterResourceOwner(typeof(SkiaSceneRenderer).Assembly);
+        RenderingShaderAssets.Register();
         return FrameworkShaderLoader.LoadEmbeddedProgram("rendering.kawase-blur");
     });
     private static readonly Lazy<FragmentProgram> VariableBlurStageProgram = new(() =>
     {
-        FrameworkShaderLoader.RegisterResourceOwner(typeof(SkiaSceneRenderer).Assembly);
+        RenderingShaderAssets.Register();
         return FrameworkShaderLoader.LoadEmbeddedProgram("rendering.variable-blur-stage");
     });
 

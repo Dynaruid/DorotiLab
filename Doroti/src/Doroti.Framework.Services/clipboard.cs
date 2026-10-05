@@ -21,7 +21,7 @@ public abstract class Clipboard
 
     public static async Future setData(ClipboardData data)
     {
-        await RequireHost("setData").SetClipboardTextAsync(data.text ?? string.Empty);
+        await Invoke("setData", async (host, token) => { await host.SetClipboardTextAsync(data.text ?? string.Empty, token).ConfigureAwait(false); return true; });
     }
 
     public static async Future<ClipboardData?> getData(string format)
@@ -31,36 +31,22 @@ public abstract class Clipboard
             return null;
         }
 
-        var text = await RequireHost("getData").GetClipboardTextAsync();
+        var text = await Invoke("getData", (host, token) => host.GetClipboardTextAsync(token));
         return text is null ? null : new ClipboardData(text);
     }
 
     public static async Future<bool> hasStrings()
     {
-        return await RequireHost("hasStrings").HasClipboardTextAsync();
+        return await Invoke("hasStrings", (host, token) => host.HasClipboardTextAsync(token));
     }
 
     public static async Future<ClipboardTextAvailability> queryTextAvailability() =>
-        await RequireHost("queryTextAvailability").QueryClipboardTextAsync();
+        await Invoke("queryTextAvailability", (host, token) => host.QueryClipboardTextAsync(token));
 
-    private static IPlatformServicesHostCapability RequireHost(string operation)
+    private static ValueTask<T> Invoke<T>(string operation, Func<IPlatformServicesHostCapability, CancellationToken, ValueTask<T>> call)
     {
-        var invocation = DorotiUiInvocation.Managed(
-            $"package:flutter/services.dart#Clipboard.{operation}"
-        );
-        var dispatcher = PlatformDispatcher.instance;
-        var view =
-            dispatcher.implicitView
-            ?? dispatcher.views.FirstOrDefault()
-            ?? throw new DorotiCapabilityException(
-                DorotiCapabilityIds.PlatformServices,
-                null,
-                invocation,
-                "clipboard access requires an attached DorotiView"
-            );
-        return view.RequireCapability<IPlatformServicesHostCapability>(
-            DorotiCapabilityIds.PlatformServices,
-            invocation
-        );
+        var invocation = DorotiUiInvocation.Managed($"package:flutter/services.dart#Clipboard.{operation}");
+        var view = PlatformDispatcher.instance.RequireInvocationView(invocation);
+        return view.InvokeCapabilityAsync(DorotiCapabilityIds.PlatformServices, invocation, call);
     }
 }

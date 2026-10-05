@@ -1,0 +1,34 @@
+<Project>
+  <PropertyGroup>
+    <DorotiProviderBuildDirectory Condition="'$(DorotiProviderBuildDirectory)' == '' and Exists('$(MSBuildThisFileDirectory)../provider-build/Sdk.targets')">$(MSBuildThisFileDirectory)../provider-build/</DorotiProviderBuildDirectory>
+    <DorotiProviderBuildDirectory Condition="'$(DorotiProviderBuildDirectory)' == ''">$(MSBuildThisFileDirectory)../../build/</DorotiProviderBuildDirectory>
+    <DorotiProviderSdkProps>$(DorotiProviderBuildDirectory)Sdk.props</DorotiProviderSdkProps>
+    <DorotiProviderSupportsDesktop>false</DorotiProviderSupportsDesktop>
+    <DorotiProviderExcludePublishSymbols>true</DorotiProviderExcludePublishSymbols>
+    <DorotiProviderReferenceProperties Condition="'$(DorotiIosDevelopment)' == 'true' or '$(DorotiMacDevelopment)' == 'true'">CustomAfterMicrosoftCommonTargets=$(DorotiProviderBuildDirectory)Doroti.IosDevelopmentBinding.targets</DorotiProviderReferenceProperties>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DorotiProviderId>web</DorotiProviderId>
+    <DorotiProviderVersion Condition="'$(DorotiProviderVersion)' == ''">0.4.0-alpha.1</DorotiProviderVersion>
+    <DorotiProviderCoreRange>[0.4.0-alpha.1,0.5.0)</DorotiProviderCoreRange>
+    <DorotiProviderProtocolVersion>1</DorotiProviderProtocolVersion>
+    <DorotiProviderToolPackage>Doroti.Tool.Web</DorotiProviderToolPackage>
+    <DorotiProviderProfile Condition="'$(DorotiProviderProfile)' == ''">default:$(RuntimeIdentifier)</DorotiProviderProfile>
+    <DorotiProviderSuppliesBootstrap>true</DorotiProviderSuppliesBootstrap>
+    <DorotiTypeScriptTypeRoots Condition="Exists('$(MSBuildThisFileDirectory)../Doroti.Host.Web/Web/types')">$(MSBuildThisFileDirectory)../Doroti.Host.Web/Web/types</DorotiTypeScriptTypeRoots>
+    <DorotiTypeScriptTypeRoots Condition="Exists('$(MSBuildThisFileDirectory)types')">$(MSBuildThisFileDirectory)types</DorotiTypeScriptTypeRoots>
+  </PropertyGroup>
+  <ItemGroup>
+    <DorotiProviderEntryLine Include="    [global::System.Runtime.Versioning.SupportedOSPlatform(&quot;browser&quot;)]" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
+    <DorotiProviderEntryLine Include="    public static global::System.Threading.Tasks.Task Main(string[] args) =&gt;" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
+    <DorotiProviderEntryLine Include="        global::System.Threading.Tasks.Task.CompletedTask%3B" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
+    <DorotiProviderEntryLine Include="    [global::System.Runtime.InteropServices.JavaScript.JSExport]" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
+    <DorotiProviderEntryLine Include="    public static global::System.Threading.Tasks.Task&lt;string&gt; StartWorker() =&gt;" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
+    <DorotiProviderEntryLine Include="        global::Doroti.Target.Web.DorotiWebWorkerRunner.RunAsync&lt;global::$(DorotiApplicationType)&gt;(typeof(DorotiBootstrap).Assembly, DorotiPluginRegistration.Items, nativePlugins: DorotiNativePluginRegistration.Items)%3B" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main' and '$(DorotiWebFontOptions)' == ''" />
+    <DorotiProviderEntryLine Include="        global::Doroti.Target.Web.DorotiWebWorkerRunner.RunAsync&lt;global::$(DorotiApplicationType)&gt;(typeof(DorotiBootstrap).Assembly, DorotiPluginRegistration.Items, fontFallbackOptions: $(DorotiWebFontOptions), nativePlugins: DorotiNativePluginRegistration.Items)%3B" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main' and '$(DorotiWebFontOptions)' != ''" />
+    <DorotiProviderEntryLine Include="    [global::System.Runtime.InteropServices.JavaScript.JSExport]" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
+    <DorotiProviderEntryLine Include="    public static void StopWorker() =&gt;" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
+    <DorotiProviderEntryLine Include="        global::Doroti.Target.Web.DorotiWebWorkerRunner.Dispose()%3B" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
+  </ItemGroup>
+  <Import Project="$(DorotiProviderBuildDirectory)Sdk.targets" Condition="'$(DorotiRunnerSdkActive)' == 'true'" />
+</Project>

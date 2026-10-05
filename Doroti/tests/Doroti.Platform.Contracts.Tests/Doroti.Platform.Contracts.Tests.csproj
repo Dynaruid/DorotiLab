@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><IsPackable>false</IsPackable></PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../src/Doroti.Testing/TestHost.cs" Link="TestHost.cs" />
+    <ProjectReference Include="../../src/Doroti.Testing/Doroti.Testing.csproj" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Win32" /><ProjectReference Include="../../src/Doroti.Hosting/Doroti.Hosting.csproj" /></ItemGroup>
+</Project>

@@ -7,14 +7,16 @@ internal sealed class TestHost : IViewHostCapability, IFrameHostCapability, ILat
     IInputHostCapability, IViewFocusRequestCapability, IPlatformEnvironmentHostCapability,
     IPlatformMessageHostCapability, ITextInputHostCapability, ISkiaSceneRendererHost, IPlatformServicesHostCapability
 {
-    public TestHost(Size size, double dpr, HostOperatingSystem operatingSystem = HostOperatingSystem.windows)
+    public TestHost(Size size, double dpr, HostOperatingSystem operatingSystem = HostOperatingSystem.windows, ulong viewId = 1)
     {
+        ViewId = viewId;
         Metrics = new(size * dpr, dpr,
             ViewPadding.zero, ViewPadding.zero, ViewPadding.zero, AppLifecycleState.resumed, 0, 0);
         Configuration = new([new Locale("en", "US")], Brightness.light, false, false, operatingSystem);
     }
+    public ulong ViewId { get; }
     public ViewMetrics Metrics { get; private set; }
-    public DorotiViewEpoch ViewEpoch => new(1, Metrics.generation, Metrics.generation,
+    public DorotiViewEpoch ViewEpoch => new(ViewId, Metrics.generation, Metrics.generation,
         Metrics.physicalSize.width / Metrics.devicePixelRatio, Metrics.physicalSize.height / Metrics.devicePixelRatio,
         (int)Metrics.physicalSize.width, (int)Metrics.physicalSize.height,
         Metrics.devicePixelRatio, Metrics.devicePixelRatio, 0);
@@ -61,7 +63,7 @@ internal sealed class TestHost : IViewHostCapability, IFrameHostCapability, ILat
         PointerData?.Invoke(new([data]));
     }
     public void Key(KeyData data) => KeyData?.Invoke(data);
-    public void RequestFocus(ViewFocusState state, ViewFocusDirection direction) => FocusData?.Invoke(new(1, state == ViewFocusState.focused, TimeSpan.Zero));
+    public void RequestFocus(ViewFocusState state, ViewFocusDirection direction) => FocusData?.Invoke(new(ViewId, state == ViewFocusState.focused, TimeSpan.Zero));
     public ValueTask<ReadOnlyMemory<byte>?> SendAsync(string channel, ReadOnlyMemory<byte>? data, CancellationToken cancellationToken = default)
         => ValueTask.FromResult<ReadOnlyMemory<byte>?>(null);
     public void SetMessageHandler(string channel, PlatformMessageHandler? handler) { }
@@ -75,6 +77,7 @@ internal sealed class TestHost : IViewHostCapability, IFrameHostCapability, ILat
         EditingState = state;
         EditingStateChanged?.Invoke(state);
     }
+    public Action<DorotiTextEditingState>? CaptureEditingCallback() => EditingStateChanged;
     public void TextAction(DorotiTextInputAction action) => ActionPerformed?.Invoke(action);
     public void UpdateSemantics(SemanticsUpdate update) => Semantics = update;
     public void ClearSemantics() => Semantics = null;

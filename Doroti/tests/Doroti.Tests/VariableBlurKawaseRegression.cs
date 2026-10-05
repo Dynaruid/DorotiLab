@@ -7,7 +7,7 @@ internal static class VariableBlurKawaseRegression
 {
     public static void Run()
     {
-        FrameworkShaderLoader.RegisterResourceOwner(typeof(SkiaSceneRenderer).Assembly);
+        RenderingShaderAssets.Register();
         using var kawase = Load("rendering.kawase-blur");
         using var interval = Load("rendering.variable-blur-stage");
         const int width = 2048, height = 128;

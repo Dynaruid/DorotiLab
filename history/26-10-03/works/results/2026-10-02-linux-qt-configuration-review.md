@@ -15,7 +15,7 @@
 | 문서가 정상 C에서도 매 프레임 queue drain을 요구 | producer/copy fence와 Qt consumer fence 설명으로 수정. native/resize/실패/종료 동기화 유지 |
 | Testbed WebEngine 최소 Qt 버전 설명 불일치 | WebEngine 포함 6.8+, 제외 시 Quick 6.6+. 의존성·QML·QPA 조건 정리 |
 
-관리 코드는 기존 공통 C 정책과 Qt ABI 6/208바이트를 유지한다. 설정은 [Doroti.Qt.targets](../../../../Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.Qt.targets), 옵션 표는 [Linux Qt 계약](../../../../Doroti/docs/platform-views/linux-qt.md#build-configuration)에 있다. 세 native source/resource/documentation 복사본이 동일한지 검사했다.
+관리 코드는 기존 공통 C 정책과 Qt ABI 6/208바이트를 유지한다. 설정은 [Doroti.Qt.targets](../../../../packages/platforms/build/Doroti.Qt.targets), 옵션 표는 [Linux Qt 계약](../../../../Doroti/docs/platform-views/linux-qt.md#build-configuration)에 있다. 세 native source/resource/documentation 복사본이 동일한지 검사했다.
 
 ## 실행 결과
 

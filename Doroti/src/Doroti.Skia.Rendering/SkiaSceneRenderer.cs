@@ -379,6 +379,19 @@ public sealed partial class SkiaSceneRenderer
         }
     }
 
+    private DorotiSceneOwner? _sceneOwner;
+    public void BindOwner(DorotiSceneOwner owner)
+    {
+        if (owner.ViewId != _viewId || owner.ApplicationId == Guid.Empty || owner.Generation <= 0)
+            throw new InvalidOperationException("Renderer scene owner is invalid.");
+        lock (_gate)
+        {
+            if (_sceneOwner is { } existing && existing != owner)
+                throw new InvalidOperationException("A renderer cannot be rebound to another application/view incarnation.");
+            _sceneOwner = owner;
+        }
+    }
+
     public void Submit(
         ulong viewId,
         DorotiSceneSubmission submission,
@@ -389,7 +402,9 @@ public sealed partial class SkiaSceneRenderer
         ArgumentNullException.ThrowIfNull(submission);
         var scene = submission.Scene;
         ArgumentNullException.ThrowIfNull(scene);
-        if (viewId != _viewId || scene.viewId != _viewId)
+        var owner = _sceneOwner ?? PlatformDispatcher.current?.views.SingleOrDefault(view => view.viewId == _viewId)?.SceneOwner;
+        if (viewId != _viewId || scene.ViewId != _viewId || (owner is not null && scene.Owner != owner) ||
+            (submission.BuildToken?.Owner is { } buildOwner && buildOwner != scene.Owner))
         {
             throw new DorotiCapabilityException(
                 DorotiCapabilityIds.GraphicsScene,
@@ -446,12 +461,24 @@ public sealed partial class SkiaSceneRenderer
                 );
                 throw;
             }
+            DorotiFrozenScene snapshot;
+            try
+            {
+                using var consumer = scene.RetainForConsumer(this);
+                snapshot = consumer.CaptureTextures(_textures.CaptureFrame);
+            }
+            catch
+            {
+                _terminalLedger.TryComplete(sceneSequence, DorotiFrameTerminal.failed);
+                submission.FrameTransaction?.TryComplete(DorotiFrameTerminal.failed, "frozen texture admission failed");
+                throw;
+            }
             var incoming = new SceneFrame(
                 sceneSequence,
                 inputSequence,
                 timestamp,
                 descriptor,
-                scene.Commands,
+                snapshot,
                 submission.FrameTransaction
             );
             if (_pendingFrame is { } pending)
@@ -610,6 +637,10 @@ public sealed partial class SkiaSceneRenderer
             if (requireNewShaderScene && (_pendingFrame is null
                 || !IsShaderSceneWithoutPlatformViews(_pendingFrame.Commands)))
                 return new(SkiaPaintDisposition.superseded, null, _pendingFrame?.Descriptor, DorotiFrameMatchResult.Exact);
+            // One latest pending scene plus at most two admitted consumers. A
+            // slow consumer keeps its leases; it cannot accumulate raster work.
+            if (_pendingFrame is not null && _rasterizedFrames.Count >= 2)
+                return new(SkiaPaintDisposition.superseded, null, _pendingFrame.Descriptor, DorotiFrameMatchResult.Exact);
             frame = _pendingFrame;
             isNewFrame = frame is not null;
             if (isNewFrame)
@@ -669,6 +700,12 @@ public sealed partial class SkiaSceneRenderer
             // Replay the last successful framework scene when no replacement is pending.
             // RenderView's root transform has already converted logical coordinates
             // into physical pixels. Applying host DPR here would scale twice.
+            if (SkiaGraphiteSession.CurrentRecording is { } graphite)
+            {
+                var gpuLease = frame.Scene.Retain();
+                try { graphite.RecordingFrame.RetainUntilGpuCompletion(gpuLease); }
+                catch { gpuLease.Dispose(); throw; }
+            }
             var rasterStart = DorotiFrameClock.Now;
             BeginPictureRasterFrame();
             BeginVariableBlurProfileFrame();
@@ -852,6 +889,7 @@ public sealed partial class SkiaSceneRenderer
                         return;
                     }
 
+                    _presentedFrame?.Dispose();
                     _presentedFrame = frame;
                     receipt = CreateFrameReceipt(
                         completion,
@@ -1446,6 +1484,7 @@ public sealed partial class SkiaSceneRenderer
 
                 _rasterizedFrames.Clear();
                 _pendingFrame = null;
+                _presentedFrame?.Dispose();
                 _presentedFrame = null;
                 _invalidate = null;
             }
@@ -1517,9 +1556,13 @@ public sealed partial class SkiaSceneRenderer
         long InputSequence,
         TimeSpan SubmittedAt,
         DorotiFrameDescriptor Descriptor,
-        IReadOnlyList<SceneCommand> Commands,
+        DorotiFrozenScene Scene,
         DorotiFrameTransaction? FrameTransaction
-    );
+    ) : IDisposable
+    {
+        public IReadOnlyList<SceneCommand> Commands => Scene.Commands;
+        public void Dispose() => Scene.Dispose();
+    }
 
     private static SkiaFrameReceipt CreateFrameReceipt(
         SkiaPaintCompletion completion,
@@ -1564,6 +1607,8 @@ public sealed partial class SkiaSceneRenderer
         }
 
         frame.FrameTransaction?.TryComplete(terminal, reason);
+        if (terminal is not DorotiFrameTerminal.presented and not DorotiFrameTerminal.submitted)
+            frame.Dispose();
         var phase = terminal switch
         {
             DorotiFrameTerminal.presented or DorotiFrameTerminal.submitted =>

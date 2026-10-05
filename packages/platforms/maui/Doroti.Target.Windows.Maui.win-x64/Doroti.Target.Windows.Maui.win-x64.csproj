@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <AssemblyName>Doroti.Target.Windows.Maui</AssemblyName>
+    <RootNamespace>Doroti.Target.Windows.Maui</RootNamespace>
+    <PackageId>Doroti.Target.Windows.Maui.win-x64</PackageId>
+    <Description>Doroti WinUI 3 SKSwapChainPanel MAUI composition root for win-x64.</Description>
+    <IsDorotiProduct>true</IsDorotiProduct>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <EnableDefaultMauiItems>false</EnableDefaultMauiItems>
+    <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Doroti.Host.Maui/Doroti.Host.Maui.csproj" />
+    <EmbeddedResource Include="$(IntermediateOutputPath)doroti-target-manifest.json" LogicalName="Doroti.Target.Manifest" />
+    <None Include="$(IntermediateOutputPath)doroti-target-manifest.json" Pack="true" PackagePath="doroti" />
+    <None Include="buildTransitive/Doroti.Target.Windows.Maui.win-x64.targets" Pack="true" PackagePath="buildTransitive/Doroti.Target.Windows.Maui.win-x64.targets" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(IntermediateOutputPath)Doroti.Provider.Bootstrap.targets" Pack="true" PackagePath="bootstrap/" />
+  </ItemGroup>
+  <PropertyGroup>
+    <DorotiProviderMetadataSource>$(MSBuildProjectDirectory)/doroti-target-manifest.json</DorotiProviderMetadataSource>
+    <DorotiProviderMetadataFile>doroti-target-manifest.json</DorotiProviderMetadataFile>
+  </PropertyGroup>
+  <Import Project="../../Doroti.Provider.PackageMetadata.targets" />
+  <ItemGroup>
+    <None Include="../../build/**/*" Pack="true" PackagePath="provider-build/%(RecursiveDir)%(Filename)%(Extension)" />
+    <None Include="buildTransitive/Doroti.Target.Windows.Maui.win-x64.props" Pack="true" PackagePath="buildTransitive/" />
+  </ItemGroup>
+</Project>

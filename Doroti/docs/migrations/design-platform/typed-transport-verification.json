@@ -1,0 +1,15 @@
+{
+  "schema": "doroti.typed-transport-verification/v1",
+  "verifiedUtc": "2026-10-05T00:46:37.891344+00:00",
+  "result": "PASS",
+  "scope": "real managed/headless typed service invocation, owner selection, unsupported/error, cancellation and lease-retained actual completion; codec traps remain unused",
+  "results": [
+    "PASS: direct typed feedback, codec count zero, explicit view, unsupported/error propagation, actual-completion lease and late-result rejection (headless contract)."
+  ],
+  "notVerified": [
+    "provider-native sound/haptic actuation",
+    "NativeAOT/trim",
+    "physical devices and all external ABI conversions"
+  ],
+  "runId": "29320ba93a2042f7bef8cd4d292bfa0c"
+}

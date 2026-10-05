@@ -699,6 +699,9 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
 
     internal virtual void _notify()
     {
+        // One application focus transaction notifies nodes from different View
+        // branches. Each listener must regain its own environment/IME lifetime.
+        using var owner = context?.mounted == true ? View.maybeOf(context)?.EnterInvocationScope() : null;
         if (_parent is null)
         {
             return;
@@ -1290,6 +1293,9 @@ public class FocusManager : ChangeNotifier, DiagnosticableTree
             return;
         }
         _haveScheduledUpdate = true;
+        // Focus is one application transaction; removing the view that requested
+        // it must not cancel notifications for the surviving branch.
+        using var application = WidgetsBinding.instance.platformDispatcher.EnterScope();
         DartAsyncRuntime.scheduleMicrotask(applyFocusChangesIfNeeded);
     }
 

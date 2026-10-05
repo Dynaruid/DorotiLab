@@ -253,22 +253,27 @@ public sealed class RootIsolateToken
     public static RootIsolateToken instance { get; } = Create();
 }
 
-/// <summary>Per-view channel handlers; buffering policy remains owned by generated Flutter Services.</summary>
+/// <summary>Application channel listeners with explicitly scoped outbound view ownership.</summary>
 public sealed class ChannelBuffers
 {
-    private readonly DorotiView _view;
+    private readonly Func<DorotiView> _getView;
     private readonly Dictionary<string, Func<ByteData?, Action<ByteData?>, Future>> _listeners =
         new(StringComparer.Ordinal);
 
-    public ChannelBuffers(DorotiView view) =>
-        _view = view ?? throw new ArgumentNullException(nameof(view));
+    public ChannelBuffers(DorotiView view)
+    {
+        ArgumentNullException.ThrowIfNull(view);
+        _getView = () => view;
+    }
+
+    internal ChannelBuffers(Func<DorotiView> getView) => _getView = getView;
 
     public ValueTask<ReadOnlyMemory<byte>?> push(
         string channel,
         ReadOnlyMemory<byte>? data,
         DorotiUiInvocation invocation,
         CancellationToken cancellationToken = default
-    ) => _view.SendPlatformMessageAsync(channel, data, invocation, cancellationToken);
+    ) => _getView().SendPlatformMessageAsync(channel, data, invocation, cancellationToken);
 
     public Future push(string channel, ByteData? data, Action<ByteData?> callback)
     {
@@ -279,7 +284,7 @@ public sealed class ChannelBuffers
             return Future.error(
                 new DorotiCapabilityException(
                     DorotiCapabilityIds.PlatformMessaging,
-                    _view.viewId,
+                    _getView().viewId,
                     DorotiUiInvocation.Managed($"Doroti.Ui#ChannelBuffers.push({channel})"),
                     "no framework listener is registered for the channel"
                 )
@@ -370,15 +375,7 @@ public static class DorotiUiLibrary
     {
         ArgumentNullException.ThrowIfNull(buffer);
         var dispatcher = Ui.PlatformDispatcher.instance;
-        var view =
-            dispatcher.implicitView
-            ?? dispatcher.views.FirstOrDefault()
-            ?? throw new DorotiCapabilityException(
-                DorotiCapabilityIds.GraphicsImage,
-                null,
-                DorotiUiInvocation.Managed(elementId),
-                "image decoding requires an attached DorotiView"
-            );
+        var view = dispatcher.RequireInvocationView(DorotiUiInvocation.Managed(elementId));
         var image = await view.DecodeSizedImageAsync(
             buffer.asMemory(),
             targetSize,
@@ -619,30 +616,13 @@ public static class DorotiUiLibrary
     {
         ArgumentNullException.ThrowIfNull(list);
         var dispatcher = PlatformDispatcher.instance;
-        var view =
-            dispatcher.implicitView
-            ?? dispatcher.views.FirstOrDefault()
-            ?? throw new DorotiCapabilityException(
-                DorotiCapabilityIds.GraphicsFont,
-                null,
-                DorotiUiInvocation.Managed("loadFontFromList"),
-                "font loading requires an attached view"
-            );
+        var view = dispatcher.RequireInvocationView(DorotiUiInvocation.Managed("loadFontFromList"));
         await view.RequireCapability<IFontHostCapability>(
                 DorotiCapabilityIds.GraphicsFont,
                 DorotiUiInvocation.Managed("loadFontFromList")
             )
             .RegisterFontAsync(new ByteData(list).asMemory(), fontFamily);
-        var notification = dispatcher.channelBuffers.NotifyFramework(
-            "flutter/system",
-            new ByteData(
-                new Uint8List(System.Text.Encoding.UTF8.GetBytes("{\"type\":\"fontsChange\"}"))
-            )
-        );
-        if (notification is not null)
-        {
-            await notification;
-        }
+        await dispatcher.NotifyFontsChangedAsync();
     }
 
     public static class RootIsolateToken

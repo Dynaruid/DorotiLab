@@ -9,7 +9,7 @@ from pathlib import Path
 
 root = Path(__file__).resolve().parents[2]
 source = root / "reference/flutter-master/engine/src/flutter/lib/web_ui/lib/src/engine/font_fallback_data.dart"
-target = root / "Doroti/src/Doroti.Host.Web/Fonts"
+target = root / "packages/platforms/web/Doroti.Host.Web/Fonts"
 text = source.read_text(encoding="utf-8")
 fonts = re.findall(r"NotoFont\(\s*'([^']+)',\s*'([^']+)',\s*index: (\d+)[,)]", text)
 assert fonts and all(int(index) == i for i, (_, _, index) in enumerate(fonts))

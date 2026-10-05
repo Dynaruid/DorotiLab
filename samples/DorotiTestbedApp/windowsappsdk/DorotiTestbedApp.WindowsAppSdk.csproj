@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.props" />
+  <Import Project="../../../packages/platforms/build/Sdk.props" />
+  <Import Project="../../../Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.props" />
   <PropertyGroup>
     <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
@@ -23,16 +24,13 @@
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <SelfContained>true</SelfContained>
     <PublishSingleFile>false</PublishSingleFile>
+    <DorotiProviderBootstrapTargets>$(MSBuildProjectDirectory)/../../../packages/platforms/windowsappsdk/bootstrap/Doroti.Provider.Bootstrap.targets</DorotiProviderBootstrapTargets>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.WindowsAppSDK" VersionOverride="2.4.0" />
-    <DorotiTargetDescriptor Include="Windows" HostKind="WindowsAppSdk" NativeEntryKind="Win32-WinMain"
-        RuntimeIdentifier="win-x64" TargetFramework="net10.0-windows10.0.19041.0"
-        TargetPackage="Doroti.Target.Windows.WindowsAppSdk.win-x64"
-        AdapterDefault="$(DorotiWindowsAdapterDefault)"
-        AdapterCapabilities="HwndExactCpp" />
-    <ProjectReference Include="..\..\..\Doroti\src\Doroti.Target.Windows.WindowsAppSdk.win-x64\Doroti.Target.Windows.WindowsAppSdk.win-x64.csproj" />
+    <DorotiTargetDescriptor Include="Windows" HostKind="WindowsAppSdk" NativeEntryKind="Win32-WinMain" RuntimeIdentifier="win-x64" TargetFramework="net10.0-windows10.0.19041.0" TargetPackage="Doroti.Target.Windows.WindowsAppSdk.win-x64" AdapterDefault="$(DorotiWindowsAdapterDefault)" AdapterCapabilities="HwndExactCpp" />
+    <ProjectReference Include="../../../packages/platforms/windowsappsdk/Doroti.Target.Windows.WindowsAppSdk.win-x64/Doroti.Target.Windows.WindowsAppSdk.win-x64.csproj" />
   </ItemGroup>
-  <Import Project="..\..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.targets" />
+  <Import Project="../../../Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.targets" />
   <Import Project="../../../Doroti/src/Doroti.Plugins/buildTransitive/Doroti.Plugins.targets" />
 </Project>

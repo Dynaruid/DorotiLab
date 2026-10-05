@@ -181,7 +181,10 @@ public class RenderingFlutterBinding
     public virtual long _outstandingHandles { get; set; } = 0L;
     public virtual SemanticsHandle? _semanticsHandle { get; set; } = default;
     public virtual AccessibilityFeatures _accessibilityFeatures { get; set; } = default!;
-    public virtual ImageCache _imageCache { get; set; } = default!;
+    private ViewImageCacheStore? _viewImageCaches;
+    private ViewImageCacheStore ViewImageCaches => _viewImageCaches ??= new(createImageCache);
+    public virtual ImageCache _imageCache { get => ViewImageCaches.Current; set => ViewImageCaches.Current = value; }
+    public void ReleaseViewImageCache(DorotiView view) => _viewImageCaches?.Release(view);
     public virtual _SystemFontsNotifier__binding _systemFonts { get; set; } =
         new _SystemFontsNotifier__binding();
     private bool __late__manifold_initialized;

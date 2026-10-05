@@ -45,7 +45,7 @@ Prepare the tools for the selected platform. Workload names identify .NET instal
 | Platform / RID | Build host | .NET SDK / workload | Additional tools and runtime requirements |
 | --- | --- | --- | --- |
 | Windows App SDK (default) / `win-x64` | Windows x64 | 10 / no separate MAUI workload | Visual Studio MSBuild, MSVC **v145** C++ toolset, Windows SDK **10.0.26100.0**. The default Vulkan presenter requires a Vulkan 1.2 driver, D3D12 external-memory sharing, and DXGI/DirectComposition support. Acrylic requires Windows 11 24H2 or later. |
-| Windows MAUI (optional) / `win-x64` | Windows x64 | 10 / `maui-windows` | Windows SDK and MAUI Windows build tools. Select with `-WindowsBackend Maui` in the workspace CLI. |
+| Windows MAUI (optional) / `win-x64` | Windows x64 | 10 / `maui-windows` | Windows SDK and MAUI Windows build tools. Select the declared `-Platform windows-maui` sample alias. |
 | macOS AppKit / `osx-arm64` | Apple Silicon Mac | 10 / `macos` | **macOS 14 or later**, a full Xcode installation compatible with the workload, and Metal support. Xcode also builds the app-owned Swift/Objective-C binding. |
 | Mac Catalyst / `maccatalyst-arm64` | Apple Silicon Mac | 10 / `maui-maccatalyst` | A full Xcode installation compatible with the workload, the Mac Catalyst SDK, and Metal support. This is a separate runner from AppKit. |
 | Android / `android-arm64`, `android-x64` | Windows or macOS | 10 / `maui-android` | Android SDK Platforms, Build Tools, Platform Tools (`adb`), and **OpenJDK 17–21**. Install the SDK required by the .NET workload plus **API 34** for the native bridge. Use an Android 7.0/API 24 or later device or an emulator with the matching ABI and Vulkan 1.2 support. |
@@ -63,7 +63,7 @@ Linux also accepts software Vulkan devices such as llvmpipe when they satisfy th
 # Repository root: check SDK 10
 dotnet --version
 dotnet workload list
-pwsh -File ./Doroti/eng/doroti.ps1 doctor
+pwsh -File ./Doroti/eng/doroti.ps1 doctor -App ./samples/DorotiTestbedApp -Platform windows -Scope target
 
 # macOS AppKit example: substitute the runner for the current host
 dotnet workload restore ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj
@@ -76,7 +76,7 @@ dotnet workload restore ./DorotiTestbedApp.iOS.csproj
 Pop-Location
 ```
 
-`workload restore` prepares .NET workloads for the selected SDK. It does not install external tools such as Xcode, Android SDK/JDK, MSVC, or Qt. `doctor` checks common tools by default; `-App`/`-Platform` select build prerequisites, and `-DoctorProfile dev|validation|release` checks that operation. Required FAIL/PARTIAL exits nonzero. See [doctor v4](docs/doctor.md); prerequisite PASS does not replace build/device acceptance.
+`workload restore` prepares .NET workloads for the selected SDK. External tools are installed separately. Provider doctor requires explicit `-App` and `-Platform`; `-Scope managed|target|native|tools|full` selects its prerequisite checks. FAIL/PARTIAL exits nonzero. See [provider doctor](docs/doctor.md); a prerequisite PASS does not replace build/device acceptance.
 
 See [Testbed run instructions](../samples/DorotiTestbedApp/README.md#material-sample-mode) for platform commands. The `reference/flutter-master` checkout is needed only for explicit Flutter comparisons; prepare it when needed with `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`.
 
@@ -85,50 +85,21 @@ See [Testbed run instructions](../samples/DorotiTestbedApp/README.md#material-sa
 Run the following from the **repository root, `DorotiLab`**, after preparing the tools for your platform:
 
 ```powershell
-pwsh -File ./Doroti/eng/doroti.ps1 doctor
+pwsh -File ./Doroti/eng/doroti.ps1 doctor -App ./samples/DorotiTestbedApp -Platform windows -Scope target
 
 $env:DOROTI_TESTBED_MODE = 'sample'
 pwsh -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform windows
 ```
 
-`run` builds before launching. Windows uses Windows App SDK/`HwndExactCpp` by default; add `-WindowsBackend Maui` for the independent MAUI runner. Select `android`, `ios`, `macos`, `maccatalyst`, `linux`, or `web` with `-Platform` for other targets. Their prerequisites and device options are covered in the [sample app guide](../samples/DorotiTestbedApp/README.md#run-by-platform).
+`run` builds before launching. Windows uses Windows App SDK/`HwndExactCpp` by default; select `-Platform windows-maui` for the independent MAUI runner. Select `android`, `ios`, `macos`, `maccatalyst`, `linux`, or `web` with `-Platform` for other targets. Their prerequisites and device options are covered in the [sample app guide](../samples/DorotiTestbedApp/README.md#run-by-platform).
 
-### Build once and reuse
+### CLI coverage
 
-```powershell
-pwsh -File ./Doroti/eng/doroti.ps1 build -App ./samples/DorotiTestbedApp -Platform web -Configuration Release
-pwsh -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform web -Configuration Release -LastSuccessful
-```
+`describe -App <workspace> -Platform all` reports declared provider aliases, host restrictions, supported operations and development transport. `build`, `run`, `publish` and `dev` require a declared alias and provider support; `dev` requires Debug. Configuration/device/template services are provided by extensions, and unsupported services fail explicitly. The built-in template is installed with `dotnet new` and supports `--design widgets|material|cupertino`.
 
-`-LastSuccessful` and `-NoBuild` reuse an existing successful build only when its inputs, dependencies, toolchain, and output hashes still match. A missing or stale record requires another run without these flags. `-NoRestore` skips restore while still building and checking dependencies. These flags apply to `run` only.
+The former `-WindowsBackend`, `-Rid`, `-LastSuccessful`, `-NoBuild`, `native` and fixed template command switches are not part of the managed provider CLI. Direct runner/MSBuild settings remain available for supported source builds. Built-in mobile development transport, detailed native maintenance operations and template registry services remain migration work. See the [current work2 record](docs/migrations/design-platform/resume-2026-10-05.md).
 
-<details>
-<summary>How build reuse is validated</summary>
-
-The CLI records `doroti.launch-state/v4`, including the runner, configuration, RID, compilation mode, source/resource/native inputs, inherited settings, evaluated project items, restored dependency contents, SDK/workload/tool identities, and output hashes. Static Web assets are included. iOS compilation modes use separate output and cache locations.
-
-Normal builds restore before collecting dependency identities. Changed or previously untracked dependencies and toolchains force a rebuild; older records are rejected for reuse. The compiler runs in a fresh process, and dependency changes during a build prevent recording a successful artifact. Custom native targets declare external dependencies through `DorotiLaunchDependency`.
-
-Qt retains CMake dependency checks and copies the selected native library even if size and timestamps match. Windows C++/WinRT generation checks generator, SDK/package, and header identities. These checks establish build consistency; they do not establish device deployment or runtime acceptance.
-
-</details>
-
-### Command reference
-
-| Command | Purpose |
-| --- | --- |
-| `doctor` | Report common or selected runner/SDK/profile prerequisites; JSON/Markdown v4 and nonzero FAIL/PARTIAL |
-| `build` | Build `Doroti.Product.slnx` |
-| `build/run/publish -App <path> -Platform <alias>` | Resolve and execute one runner from `doroti-workspace.json` |
-| `native doctor\|build\|open\|add -App <path> -Platform android\|ios\|macos\|maccatalyst` | Inspect, build, locate, or extend the default native bridge workspace |
-| `validate -ValidationSuite <suite>` | Run the supported aggregate validation entry point (`Developer` by default) |
-| `audit` | Check local-storage policy and source validation |
-| `release` | Run Release validation/audit and pack product artifacts |
-| `clean` | Remove Doroti build output, artifacts, and temporary local state |
-
-`build` without an app targets the product solution, which includes projects requiring different host operating systems. Use `-App` and `-Platform` for a single target. The `release` command validates and packs local artifacts; it does not publish a GitHub Release.
-
-The maintained suites, temporary evidence policy and external widget-test API are in the [testing guide](tests/README.md). Current per-host/renderer/build-mode results are centralized in [support status](docs/support-status.md).
+Repository maintenance commands are `validate -ValidationSuite <suite>`, `audit`, and `release` (the Release verification suite). Local package candidates use [release-candidate.py](docs/release-candidates.md) with independent version arguments.
 
 ## Application development
 

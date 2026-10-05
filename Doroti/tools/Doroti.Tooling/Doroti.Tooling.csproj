@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <IsPackable>false</IsPackable>
+    <IsPackable>false</IsPackable><OutputType>Exe</OutputType><JsonSerializerIsReflectionEnabledByDefault>false</JsonSerializerIsReflectionEnabledByDefault>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
-</Project>
+<ItemGroup><ProjectReference Include="../../src/Doroti.Tooling.Extension.Sdk/Doroti.Tooling.Extension.Sdk.csproj"/></ItemGroup></Project>

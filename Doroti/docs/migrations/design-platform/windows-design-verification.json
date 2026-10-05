@@ -1,0 +1,56 @@
+{
+  "schema": "doroti.native-design-verification/v1",
+  "verifiedUtc": "2026-10-05T00:42:33.274480+00:00",
+  "result": "PASS",
+  "probes": [
+    {
+      "schema": "doroti.native-design-probe/v1",
+      "result": "PASS",
+      "design": "material",
+      "nativeViews": [
+        "2",
+        "3"
+      ],
+      "ownerView": "1",
+      "capturedTheme": true,
+      "capturedLocalization": true,
+      "nativeVisibleBeforeResult": true,
+      "nativeResult": 23,
+      "overlayResult": 23,
+      "windowCloseResult": null,
+      "tooltipVisible": true,
+      "tooltipCancellation": true,
+      "tooltipEarlyCancellation": true,
+      "tooltipConcurrentDispose": true,
+      "remainingWindows": 1
+    },
+    {
+      "schema": "doroti.native-design-probe/v1",
+      "result": "PASS",
+      "design": "cupertino",
+      "nativeViews": [
+        "2",
+        "3"
+      ],
+      "ownerView": "1",
+      "capturedTheme": true,
+      "capturedLocalization": true,
+      "nativeVisibleBeforeResult": true,
+      "nativeResult": 23,
+      "overlayResult": 23,
+      "windowCloseResult": null,
+      "tooltipVisible": true,
+      "tooltipCancellation": true,
+      "tooltipEarlyCancellation": true,
+      "tooltipConcurrentDispose": true,
+      "remainingWindows": 1
+    }
+  ],
+  "artifacts": "temp\\testing\\platform-decoupling\\design-presentation\\04d94d0ca47043fd8bf309db088070db",
+  "notVerified": [
+    "physical keyboard/focus traversal",
+    "route restoration across process restart",
+    "RawTooltip hover/late widget install",
+    "Cupertino context menu"
+  ]
+}

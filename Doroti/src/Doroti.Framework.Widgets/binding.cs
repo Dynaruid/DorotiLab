@@ -59,7 +59,6 @@ public interface WidgetsBinding
     bool debugBuildingDirtyElements { get; set; }
     Element? _rootElement { get; set; }
     bool _readyToProduceFrames { get; set; }
-    WindowingOwnerIo _windowingOwner { get; set; }
 
     public static WidgetsBinding instance
     {
@@ -114,7 +113,6 @@ public interface WidgetsBinding
     public void attachToBuildOwner(RootWidget widget);
     public bool isRootWidgetAttached { get; }
     public Locale? computePlatformResolvedLocale(List<Locale> supportedLocales);
-    public WindowingOwnerIo windowingOwner { get; set; }
     PlatformDispatcher platformDispatcher { get; }
     AppLifecycleState? lifecycleState { get; }
     bool debugCheckZone(string entryPoint);
@@ -354,6 +352,7 @@ public class WidgetsFlutterBinding
     {
         if (_bindingDisposed) return;
         _bindingDisposed = true;
+        platformDispatcher.FontsChanged -= HandleFontsChanged;
         _hotReload?.Dispose();
         _hotReload = null;
         var failures = new List<Exception>();
@@ -384,8 +383,7 @@ public class WidgetsFlutterBinding
         _semanticsHandle = null;
         Cleanup(() => _buildOwner?.focusManager.dispose());
         _observers.Clear();
-        Cleanup(() => _imageCache?.clear());
-        Cleanup(() => _imageCache?.clearLiveImages());
+        Cleanup(() => _viewImageCaches?.Dispose());
         if (ReferenceEquals(WidgetsBinding._instance, this)) WidgetsBinding._instance = null;
         if (ReferenceEquals(RendererBinding._instance, this)) RendererBinding._instance = null;
         if (ReferenceEquals(PaintingBinding._instance, this)) PaintingBinding._instance = null;
@@ -395,7 +393,10 @@ public class WidgetsFlutterBinding
         if (failures.Count > 0) throw new AggregateException("Widget binding teardown failed.", failures);
     }
 
-    public virtual ImageCache _imageCache { get; set; } = default!;
+    private ViewImageCacheStore? _viewImageCaches;
+    private ViewImageCacheStore ViewImageCaches => _viewImageCaches ??= new(createImageCache);
+    public virtual ImageCache _imageCache { get => ViewImageCaches.Current; set => ViewImageCaches.Current = value; }
+    public void ReleaseViewImageCache(DorotiView view) => _viewImageCaches?.Release(view);
     public virtual _SystemFontsNotifier__binding _systemFonts { get; set; } =
         new _SystemFontsNotifier__binding();
     private bool __late__semanticsEnabled_initialized;
@@ -490,7 +491,7 @@ public class WidgetsFlutterBinding
         default;
     public virtual bool _debugExcludeRootWidgetInspector { get; set; } = false;
     public virtual BuildOwner? _buildOwner { get; set; } = default;
-    public virtual PlatformMenuDelegate platformMenuDelegate { get; set; } = default!;
+    public virtual PlatformMenuDelegate platformMenuDelegate { get; set; } = new DefaultPlatformMenuDelegate();
     public virtual List<WidgetsBindingObserver> _observers { get; set; } =
         new List<WidgetsBindingObserver>();
     public virtual List<WidgetsBindingObserver> _backGestureObservers { get; set; } =
@@ -500,7 +501,6 @@ public class WidgetsFlutterBinding
     public virtual bool debugBuildingDirtyElements { get; set; } = false;
     public virtual Element? _rootElement { get; set; } = default;
     public virtual bool _readyToProduceFrames { get; set; } = false;
-    public virtual WindowingOwnerIo _windowingOwner { get; set; } = default!;
 
     public static WidgetsBinding ensureInitialized()
     {
@@ -515,6 +515,7 @@ public class WidgetsFlutterBinding
     protected override void initInstances()
     {
         base.initInstances();
+        platformDispatcher.FontsChanged += HandleFontsChanged;
         PaintingBinding._instance = this;
         Framework.Semantics.SemanticsBinding._instance = this;
         RendererBinding._instance = this;
@@ -605,6 +606,7 @@ public class WidgetsFlutterBinding
 
     public virtual Listenable systemFonts =>
         DartRuntimePrimitives.ConvertValue<Listenable>(_systemFonts);
+    private void HandleFontsChanged() { if (!_bindingDisposed) _systemFonts.notifyListeners(); }
 
     public override async Future handleSystemMessage(object systemMessage)
     {
@@ -2207,7 +2209,7 @@ public class WidgetsFlutterBinding
     public virtual Element? rootElement => _rootElement;
     public virtual Element? renderViewElement => rootElement;
     public override bool framesEnabled =>
-        DartRuntimePrimitives.ConvertValue<bool>(base.framesEnabled && _readyToProduceFrames);
+        !_bindingDisposed && base.framesEnabled && _readyToProduceFrames;
 
     public virtual Widget wrapWithDefaultView(Widget rootWidget)
     {
@@ -2272,28 +2274,5 @@ public class WidgetsFlutterBinding
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
-    public virtual WindowingOwnerIo windowingOwner
-    {
-        get
-        {
-            if (!_featuresLibrary.isWindowingEnabled)
-            {
-                throw new NotSupportedException(
-                    "Windowing APIs are not enabled.\n\nWindowing APIs are currently experimental. Do not use windowing APIs in\nproduction applications or plugins published to pub.dev.\n\nTo try experimental windowing APIs:\n1. Switch to Flutter's main release channel.\n2. Turn on the windowing feature flag.\n\nSee: https://github.com/flutter/flutter/issues/30701.\n"
-                );
-            }
-            return _windowingOwner;
-        }
-        set
-        {
-            var owner = value;
-            if (!_featuresLibrary.isWindowingEnabled)
-            {
-                throw new NotSupportedException(
-                    "Windowing APIs are not enabled.\n\nWindowing APIs are currently experimental. Do not use windowing APIs in\nproduction applications or plugins published to pub.dev.\n\nTo try experimental windowing APIs:\n1. Switch to Flutter's main release channel.\n2. Turn on the windowing feature flag.\n\nSee: https://github.com/flutter/flutter/issues/30701.\n"
-                );
-            }
-            _windowingOwner = owner;
-        }
-    }
+
 }

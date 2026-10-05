@@ -1,0 +1,8 @@
+<Project>
+  <PropertyGroup>
+    <Version Condition="'$(DorotiCupertinoVersion)' == ''">1.0.0-alpha.1</Version>
+    <Version Condition="'$(DorotiCupertinoVersion)' != ''">$(DorotiCupertinoVersion)</Version>
+    <PackageVersion>$(Version)</PackageVersion>
+    <DorotiSupportedCoreRange>[0.4.0-alpha.1,0.5.0)</DorotiSupportedCoreRange>
+  </PropertyGroup>
+</Project>

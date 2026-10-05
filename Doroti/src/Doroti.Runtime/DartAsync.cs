@@ -336,7 +336,7 @@ public class Future<T> : Future
 
     internal override async Task<object?> asObjectTask() => await _typedTask.ConfigureAwait(false);
 
-    public new TaskAwaiter<T> GetAwaiter() => _typedTask.GetAwaiter();
+    public new FutureAwaiter<T> GetAwaiter() => new(_typedTask);
 
     public virtual Future<TResult> then<TResult>(Func<T, TResult> callback)
     {
@@ -725,7 +725,7 @@ public class Future
         return null;
     }
 
-    public TaskAwaiter GetAwaiter() => _task.GetAwaiter();
+    public FutureAwaiter GetAwaiter() => new(_task);
 
     public Future then(Action<object> onValue, Delegate? onError = null) =>
         fromTask(

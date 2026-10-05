@@ -56,10 +56,10 @@ AppKit 실제 창·VoiceOver·물리 입력·실제 표시와 clean 배포 결�
 
 ## 착수 시 확인할 코드·문서
 
-- [Doroti/src/Doroti.Host.Maui](../../../../Doroti/src/Doroti.Host.Maui)
-- [Doroti/src/Doroti.Target.MacOS.Maui.osx-arm64](../../../../Doroti/src/Doroti.Target.MacOS.Maui.osx-arm64)
+- [Doroti/src/Doroti.Host.Maui](../../../../packages/platforms/maui/Doroti.Host.Maui)
+- [Doroti/src/Doroti.Target.MacOS.Maui.osx-arm64](../../../../packages/platforms/maui/Doroti.Target.MacOS.Maui.osx-arm64)
 - [Doroti/docs/platform-views/macos.md](../../../../Doroti/docs/platform-views/macos.md)
-- [Doroti/src/Doroti.Framework.Widgets/_window_macos.cs](../../../../Doroti/src/Doroti.Framework.Widgets/_window_macos.cs)
+- [Doroti/src/Doroti.Framework.Widgets/_window_macos.cs](../../../../Doroti/src/Doroti.Framework.Widgets/windowing.cs)
 - [samples/DorotiTestbedApp/macos](../../../../samples/DorotiTestbedApp/macos)
 
 기존 문서의 과거 증거와 현재 구현을 다시 확인한다. 위 경로는 조사 시작점이며 새로운 실행 검증의 근거는 아니다.

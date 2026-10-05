@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "doroti.platform-provider/v1",
+  "id": "windowsappsdk",
+  "version": "0.4.0-alpha.1",
+  "coreRange": "[0.4.0-alpha.1,0.5.0)",
+  "protocolVersion": 1,
+  "registrationType": "Doroti.Host.WindowsAppSdk.DorotiWindowsAppSdkRunner",
+  "hostOperatingSystems": [
+    "windows"
+  ],
+  "operations": [
+    "build",
+    "run",
+    "publish",
+    "dev"
+  ],
+  "services": [
+    "configuration",
+    "diagnostics",
+    "devices",
+    "operations"
+  ],
+  "tool": {
+    "mode": "dotnetInproc",
+    "assembly": "Doroti.Tool.WindowsAppSdk.dll",
+    "entryType": "Doroti.Tool.WindowsAppSdk.Extension",
+    "executable": null,
+    "arguments": [],
+    "project": null
+  },
+  "profiles": {
+    "default:win-x64": {
+      "hostOperatingSystems": [
+        "windows"
+      ],
+      "operations": [
+        "build",
+        "run",
+        "publish",
+        "dev"
+      ],
+      "development": {
+        "transport": "file",
+        "debug": true,
+        "requiresPreparedAcknowledgment": false,
+        "usesStopSignal": false,
+        "launchBrowser": false
+      }
+    }
+  }
+}

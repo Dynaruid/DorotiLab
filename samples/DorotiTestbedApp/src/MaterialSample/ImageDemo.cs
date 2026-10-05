@@ -5,7 +5,7 @@ using Doroti.Framework.Widgets;
 using Doroti.Runtime;
 using Doroti.Ui;
 using Image = Doroti.Framework.Widgets.Image;
-using M = Doroti.Framework.Material;
+using M = Doroti.Material;
 using TextStyle = Doroti.Framework.Painting.TextStyle;
 
 namespace MaterialSample;

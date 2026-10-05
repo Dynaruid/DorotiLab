@@ -43,12 +43,14 @@ try:
             page.goto(url + '?dorotiRenderer=worker-direct-webgl&dorotiResizeDiagnostics=1')
             page.wait_for_function('["started","failed"].includes(document.documentElement.dataset.dorotiBootstrapStage)',timeout=120000)
             assert page.evaluate('document.documentElement.dataset.dorotiBootstrapStage') == 'started', messages
+            page.wait_for_selector('#doroti-surface', state='attached', timeout=120000)
             page.wait_for_function('JSON.parse(__dorotiResizeDiagnostics.presenter("doroti-surface")).frontGeneration > 0',timeout=120000)
             assert not external, external
             page.evaluate('document.getElementById("doroti-surface").focus()')
             assert page.evaluate('document.activeElement.id') == 'doroti-surface'
             page.screenshot(path=str(out / 'package.png'))
             receipt = page.evaluate('JSON.parse(__dorotiResizeDiagnostics.presenter("doroti-surface"))')
+            assert not messages, messages
             (out / 'result.json').write_text(json.dumps(dict(status='PASS',candidateVersion=record['version'],browser=browser.version,
                 firstFrame=True,focus=True,externalRequests=external,receipt=receipt,errors=messages,
                 physicalInput='notVerified',koreanPixels='notVerified',server='loopback with COOP/COEP'),indent=2),encoding='utf-8')

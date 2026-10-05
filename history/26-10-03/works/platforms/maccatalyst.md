@@ -53,8 +53,8 @@ Catalyst의 실제 adapter·scene·물리 입력·VoiceOver·표시·배포 결�
 
 ## 착수 시 확인할 코드·문서
 
-- [Doroti/src/Doroti.Host.Maui](../../../../Doroti/src/Doroti.Host.Maui)
-- [Doroti/src/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64](../../../../Doroti/src/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64)
+- [Doroti/src/Doroti.Host.Maui](../../../../packages/platforms/maui/Doroti.Host.Maui)
+- [Doroti/src/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64](../../../../packages/platforms/maui/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64)
 - [Doroti/docs/desktop-windows.md](../../../../Doroti/docs/desktop-windows.md)
 - [Doroti/docs/platform-views/support-matrix.md](../../../../Doroti/docs/platform-views/support-matrix.md)
 - [samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj](../../../../samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj)

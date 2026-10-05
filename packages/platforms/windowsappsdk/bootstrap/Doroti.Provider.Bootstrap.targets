@@ -1,0 +1,25 @@
+<Project>
+  <PropertyGroup>
+    <DorotiProviderBuildDirectory Condition="'$(DorotiProviderBuildDirectory)' == '' and Exists('$(MSBuildThisFileDirectory)../provider-build/Sdk.targets')">$(MSBuildThisFileDirectory)../provider-build/</DorotiProviderBuildDirectory>
+    <DorotiProviderBuildDirectory Condition="'$(DorotiProviderBuildDirectory)' == ''">$(MSBuildThisFileDirectory)../../build/</DorotiProviderBuildDirectory>
+    <DorotiProviderSdkProps>$(DorotiProviderBuildDirectory)Sdk.props</DorotiProviderSdkProps>
+    <DorotiProviderSupportsDesktop>true</DorotiProviderSupportsDesktop>
+    <DorotiProviderExcludePublishSymbols>true</DorotiProviderExcludePublishSymbols>
+    <DorotiProviderReferenceProperties Condition="'$(DorotiIosDevelopment)' == 'true' or '$(DorotiMacDevelopment)' == 'true'">CustomAfterMicrosoftCommonTargets=$(DorotiProviderBuildDirectory)Doroti.IosDevelopmentBinding.targets</DorotiProviderReferenceProperties>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DorotiProviderId>windowsappsdk</DorotiProviderId>
+    <DorotiProviderVersion Condition="'$(DorotiProviderVersion)' == ''">0.4.0-alpha.1</DorotiProviderVersion>
+    <DorotiProviderCoreRange>[0.4.0-alpha.1,0.5.0)</DorotiProviderCoreRange>
+    <DorotiProviderProtocolVersion>1</DorotiProviderProtocolVersion>
+    <DorotiProviderToolPackage>Doroti.Tool.WindowsAppSdk</DorotiProviderToolPackage>
+    <DorotiProviderProfile Condition="'$(DorotiProviderProfile)' == ''">default:$(RuntimeIdentifier)</DorotiProviderProfile>
+    <DorotiProviderSuppliesBootstrap>true</DorotiProviderSuppliesBootstrap>
+  </PropertyGroup>
+  <ItemGroup>
+    <DorotiProviderEntryLine Include="    [global::System.STAThread]" Condition="'$(DorotiNativeEntryKind)' == 'Win32-WinMain'" />
+    <DorotiProviderEntryLine Include="    public static int Main(string[] args) =&gt;" Condition="'$(DorotiNativeEntryKind)' == 'Win32-WinMain'" />
+    <DorotiProviderEntryLine Include="        global::Doroti.Host.WindowsAppSdk.DorotiWindowsAppSdkRunner.Run(() =&gt; Create(args))%3B" Condition="'$(DorotiNativeEntryKind)' == 'Win32-WinMain'" />
+  </ItemGroup>
+  <Import Project="$(DorotiProviderBuildDirectory)Sdk.targets" Condition="'$(DorotiRunnerSdkActive)' == 'true'" />
+</Project>

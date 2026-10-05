@@ -70,12 +70,16 @@ public sealed record DorotiViewEpoch(
         LogicalWidth > 0 && LogicalHeight > 0 && PhysicalWidth > 0 && PhysicalHeight > 0;
 }
 
+/// <summary>Application/view incarnation, distinct from viewport and GPU surface epochs.</summary>
+public readonly record struct DorotiSceneOwner(Guid ApplicationId, ulong ViewId, long Generation);
+
 /// <summary>Identity captured once at the beginning of a framework frame.</summary>
 public sealed record DorotiSceneBuildToken(
     DorotiViewEpoch ViewEpoch,
     long FrameworkFrameNumber,
     int RootPhysicalWidth,
-    int RootPhysicalHeight
+    int RootPhysicalHeight,
+    DorotiSceneOwner? Owner = null
 )
 {
     public bool HasRootPhysicalSize => RootPhysicalWidth > 0 && RootPhysicalHeight > 0;

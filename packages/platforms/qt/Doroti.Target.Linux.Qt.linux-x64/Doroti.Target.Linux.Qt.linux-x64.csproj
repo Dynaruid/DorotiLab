@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+    <AssemblyName>Doroti.Target.Linux.Qt</AssemblyName>
+    <RootNamespace>Doroti.Target.Linux.Qt</RootNamespace>
+    <PackageId>Doroti.Target.Linux.Qt.linux-x64</PackageId>
+    <Description>Doroti Qt 6 composition and deployment contract for Linux x64.</Description>
+    <IsDorotiProduct>true</IsDorotiProduct>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Doroti.Host.Qt/Doroti.Host.Qt.csproj" />
+    <EmbeddedResource Include="$(IntermediateOutputPath)doroti-target-manifest.json" LogicalName="Doroti.Target.Manifest" />
+    <None Include="$(IntermediateOutputPath)doroti-target-manifest.json" Pack="true" PackagePath="doroti" />
+    <None Include="buildTransitive/Doroti.Target.Linux.Qt.linux-x64.targets" Pack="true" PackagePath="buildTransitive/Doroti.Target.Linux.Qt.linux-x64.targets" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(IntermediateOutputPath)Doroti.Provider.Bootstrap.targets" Pack="true" PackagePath="bootstrap/" />
+  </ItemGroup>
+  <PropertyGroup>
+    <DorotiProviderMetadataSource>$(MSBuildProjectDirectory)/doroti-target-manifest.json</DorotiProviderMetadataSource>
+    <DorotiProviderMetadataFile>doroti-target-manifest.json</DorotiProviderMetadataFile>
+  </PropertyGroup>
+  <Import Project="../../Doroti.Provider.PackageMetadata.targets" />
+  <ItemGroup>
+    <None Include="../../build/**/*" Pack="true" PackagePath="provider-build/%(RecursiveDir)%(Filename)%(Extension)" />
+    <None Include="buildTransitive/Doroti.Target.Linux.Qt.linux-x64.props" Pack="true" PackagePath="buildTransitive/" />
+  </ItemGroup>
+  <PropertyGroup>
+    <DorotiQtPrebuiltDirectory Condition="'$(DorotiQtPrebuiltDirectory)' == ''">$(MSBuildProjectDirectory)/../artifacts/native/</DorotiQtPrebuiltDirectory>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="$(DorotiQtPrebuiltDirectory)/*.so" Pack="true" PackagePath="runtimes/linux-x64/native/" />
+    <None Include="../native/licenses/**/*" Pack="true" PackagePath="native/licenses/%(RecursiveDir)" />
+  </ItemGroup>
+  <Target Name="ValidateQtPrebuiltPackage" BeforeTargets="Pack" Condition="'$(DorotiRequireNativePackage)' == 'true'">
+    <Error Code="DOROTIQTPACK001" Condition="!Exists('$(DorotiQtPrebuiltDirectory)/libdoroti_qt_host.so')" Text="Qualifying a Qt provider package requires its explicit prebuilt native runtime. Run the provider native operation on Linux first." />
+  </Target>
+</Project>

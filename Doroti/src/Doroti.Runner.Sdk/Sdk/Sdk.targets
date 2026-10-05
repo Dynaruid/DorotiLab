@@ -1,217 +1,29 @@
 <Project>
-  <Target Name="DorotiWriteWebRuntimeProfile"
-          Condition="'$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true'"
-          BeforeTargets="ResolveProjectStaticWebAssets;ResolveCurrentProjectStaticWebAssetsInputs">
-    <PropertyGroup>
-      <_DorotiWebProfileRoot>$([MSBuild]::NormalizeDirectory('$(IntermediateOutputPath)', 'Doroti.RuntimeProfile'))</_DorotiWebProfileRoot>
-      <_DorotiWebThreads>false</_DorotiWebThreads>
-      <_DorotiWebThreads Condition="'$(WasmEnableThreads)' == 'true'">true</_DorotiWebThreads>
-    </PropertyGroup>
-    <WriteLinesToFile File="$(_DorotiWebProfileRoot)doroti.runtime-profile.json"
-                      Lines="{&quot;schemaVersion&quot;:1,&quot;threads&quot;:$(_DorotiWebThreads)}"
-                      Overwrite="true" WriteOnlyWhenDifferent="true" />
-    <ItemGroup>
-      <_DorotiWebProfileAsset Include="$(_DorotiWebProfileRoot)doroti.runtime-profile.json">
-        <RelativePath>doroti.runtime-profile.json</RelativePath>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </_DorotiWebProfileAsset>
-      <FileWrites Include="$(_DorotiWebProfileRoot)doroti.runtime-profile.json" />
-    </ItemGroup>
-    <DefineStaticWebAssets CandidateAssets="@(_DorotiWebProfileAsset)"
-        SourceId="$(PackageId)" SourceType="Computed" ContentRoot="$(_DorotiWebProfileRoot)" BasePath="/">
-      <Output TaskParameter="Assets" ItemName="StaticWebAsset" />
-      <Output TaskParameter="Assets" ItemName="_DorotiWebProfileStaticAsset" />
-    </DefineStaticWebAssets>
-    <DefineStaticWebAssetEndpoints CandidateAssets="@(_DorotiWebProfileStaticAsset)"
-                                  ContentTypeMappings="@(StaticWebAssetContentTypeMapping)">
-      <Output TaskParameter="Endpoints" ItemName="StaticWebAssetEndpoint" />
-    </DefineStaticWebAssetEndpoints>
-  </Target>
-  <ItemGroup Condition="'$(UseMaui)' == 'true' and $([System.String]::Copy('$(TargetFramework)').Contains('-windows'))">
-    <PublishReadyToRunExclude Include="SkiaSharp.dll" />
-  </ItemGroup>
-  <Import Project="Doroti.MacDevelopment.targets" />
-  <Import Project="Doroti.AndroidDevelopment.targets" />
+  <Import Project="$(DorotiProviderBootstrapTargets)" Condition="'$(DorotiProviderSuppliesBootstrap)' != 'true' and '$(DorotiProviderBootstrapTargets)' != '' and Exists('$(DorotiProviderBootstrapTargets)')" />
   <Import Project="Doroti.DesktopBoundary.targets" />
   <Import Project="Doroti.Plugins.targets" />
-  <Import Project="Doroti.AppIcons.targets" />
-  <Target Name="DorotiAlignIosDevelopmentCrossgen" BeforeTargets="ProcessFrameworkReferences"
-          Condition="'$(DorotiIosDevelopment)' == 'true' and '$(DorotiCompilationMode)' == 'CoreClr'">
-    <ItemGroup>
-      <FrameworkReference RuntimeFrameworkVersion="$(DorotiIosDevelopmentRuntimeVersion)"
-          Condition="'%(FrameworkReference.Identity)' == 'Microsoft.NETCore.App'" />
-      <KnownCrossgen2Pack Update="Microsoft.NETCore.App.Crossgen2" Crossgen2PackVersion="$(DorotiIosDevelopmentRuntimeVersion)"
-          Condition="'%(TargetFramework)' == 'net11.0'" />
-    </ItemGroup>
-  </Target>
-  <PropertyGroup Condition="'$(DorotiIosDevelopment)' == 'true'">
-    <_DorotiIosDebugInterpreterDefault Condition="'$(DorotiCompilationMode)' != 'CoreClr' and '$(MtouchInterpreter)' == '' and '$(UseInterpreter)' != 'false'">true</_DorotiIosDebugInterpreterDefault>
-    <RunWorkingDirectory>$(MSBuildProjectDirectory)</RunWorkingDirectory>
-  </PropertyGroup>
-  <ItemGroup Condition="'$(DorotiIosDevelopment)' == 'true' and '$(RuntimeIdentifier)' == 'ios-arm64' and '$(DorotiCompilationMode)' == 'Mono'">
-    <PartialAppManifest Include="$(MSBuildThisFileDirectory)IosDevelopmentNetwork.plist" Overwrite="false" />
-    <!-- mlaunch normally copies/rebases this hook as part of USB forwarding.
-         Bundle the selected SDK's unmodified agent for direct network launch. -->
-    <_DorotiIosHotReloadAgent Include="$(MSBuildToolsPath)/DotnetTools/dotnet-watch/*/tools/net10.0/any/hotreload/net10.0/Microsoft.Extensions.DotNetDeltaApplier.dll" />
-    <BundleResource Include="@(_DorotiIosHotReloadAgent)" LogicalName="Microsoft.Extensions.DotNetDeltaApplier.dll" />
-  </ItemGroup>
-  <Target Name="ValidateDorotiIosDevelopment" BeforeTargets="PrepareForBuild;CollectPackageReferences" Condition="'$(DorotiIosDevelopment)' == 'true'">
-    <Error Condition="'$(RuntimeIdentifier)' == 'ios-arm64' and '$(DorotiCompilationMode)' == 'Mono' and '$(DOROTI_DEV_HOTRELOAD_ENDPOINT)' == ''" Text="iOS development sessions on .NET 10 devices require the Doroti network Hot Reload launcher." />
-    <Error Condition="'$(RuntimeIdentifier)' == 'ios-arm64' and '$(DorotiCompilationMode)' == 'Mono' and '@(_DorotiIosHotReloadAgent->Count())' != '1'" Text="iOS development sessions require one .NET 10 SDK WebSocket Hot Reload agent." />
-    <Error Condition="'$(RuntimeIdentifier)' == 'ios-arm64' and '$(DorotiCompilationMode)' == 'Mono' and '$(MtouchInterpreter)' != 'all,-Doroti.Host.Maui'" Text="iOS development sessions on .NET 10 devices require MtouchInterpreter=all,-Doroti.Host.Maui. Mixed framework AOT can crash Mono when invoking updated virtual methods." />
-    <Error Condition="'$(DorotiTarget)' != 'iOS' or '$(Configuration)' != 'Debug' or '$(DorotiCompilationMode)' == 'NativeAot' or '$(PublishAot)' == 'true' or ('$(DorotiCompilationMode)' == 'Mono' and '$(UseInterpreter)' == 'false')"
-           Text="iOS development sessions require iOS Debug with Mono/interpreter or the .NET 11 device CoreCLR profile." />
-  </Target>
-  <Target Name="DorotiConfigureDeviceHotReloadNetwork" AfterTargets="ComputeMlaunchRunArguments"
-          Condition="'$(DorotiIosDevelopment)' == 'true' and '$(RuntimeIdentifier)' == 'ios-arm64' and '$(DorotiCompilationMode)' == 'Mono' and '$(DOROTI_DEV_HOTRELOAD_ENDPOINT)' != ''">
-    <!-- .NET 10's native runtime cannot service mlaunch's USB forward command.
-         Keep the SDK startup hook/key, but connect directly through the relay. -->
-    <PropertyGroup>
-      <_DorotiIosHotReloadAgentPath>@(_DorotiIosHotReloadAgent)</_DorotiIosHotReloadAgentPath>
-      <RunArguments>$([System.Text.RegularExpressions.Regex]::Replace('$(RunArguments)', '--hotreload-[^ =]+=[^ ]+', ''))</RunArguments>
-      <RunArguments>$([System.Text.RegularExpressions.Regex]::Replace('$(RunArguments)', '--setenv=DOTNET_WATCH_HOTRELOAD_WEBSOCKET_ENDPOINT=[^ ]+', '--setenv=DOTNET_WATCH_HOTRELOAD_WEBSOCKET_ENDPOINT=$(DOROTI_DEV_HOTRELOAD_ENDPOINT)'))</RunArguments>
-      <RunArguments>$(RunArguments.Replace('$(_DorotiIosHotReloadAgentPath)', 'Microsoft.Extensions.DotNetDeltaApplier'))</RunArguments>
-    </PropertyGroup>
-  </Target>
-  <Target Name="DorotiTrackIosDevelopmentAotDependencies" BeforeTargets="_GenerateAOTCompileDependencyCache"
-          Condition="'$(DorotiIosDevelopment)' == 'true' and '$(DesignTimeBuild)' != 'true'">
-    <!-- AOT modules embed dependency MVIDs. A method-only library change can
-         leave the host DLL unchanged while invalidating its native module. -->
-    <ItemGroup>
-      <_DorotiDevelopmentAotDependency Include="@(ResolvedFileToPublish)"
-          Condition="'%(Extension)' == '.dll' and Exists('%(Identity)')" />
-    </ItemGroup>
-    <GetFileHash Files="@(_DorotiDevelopmentAotDependency)">
-      <Output TaskParameter="Items" ItemName="_DorotiDevelopmentAotHash" />
-    </GetFileHash>
-    <ItemGroup>
-      <_AOTCompileCache Include="@(_DorotiDevelopmentAotHash->'%(Identity):%(FileHash)')" />
-    </ItemGroup>
-  </Target>
-  <ItemGroup Condition="'$(DorotiIosDevelopment)' == 'true'">
-    <RuntimeEnvironmentVariable Include="DOROTI_DEV_URL" Value="$(DOROTI_DEV_URL)" />
-    <RuntimeEnvironmentVariable Include="DOROTI_DEV_TOKEN" Value="$(DOROTI_DEV_TOKEN)" />
-    <RuntimeEnvironmentVariable Include="DOROTI_DEV_SESSION_ID" Value="$(DOROTI_DEV_SESSION_ID)" />
-    <RuntimeEnvironmentVariable Include="DOROTI_DEV_SESSION" Value="$(DOROTI_DEV_DEVICE_SESSION)" Condition="'$(RuntimeIdentifier)' == 'ios-arm64'" />
-    <RuntimeEnvironmentVariable Include="DOROTI_SAMPLE" Value="$(DOROTI_SAMPLE)" Condition="'$(DOROTI_SAMPLE)' != ''" />
-    <RuntimeEnvironmentVariable Include="DOROTI_RELOAD_PROBE" Value="$(DOROTI_RELOAD_PROBE)" Condition="'$(DOROTI_RELOAD_PROBE)' != ''" />
-    <RuntimeEnvironmentVariable Include="HOTRELOAD_DELTA_CLIENT_LOG_MESSAGES" Value="iOS Hot Reload:"
-        Condition="'$(DOTNET_CLI_CONTEXT_VERBOSE)' == 'true' and '$(DorotiIosTargetFramework)' != 'net11.0-ios'" />
-  </ItemGroup>
-  <!-- Set PublishAot on the executable, never as a global property on the
-       platform-neutral ProjectReference graph (NETSDK1203 for ios-arm64). -->
   <PropertyGroup>
-    <DorotiCompilationMode Condition="'$(DorotiCompilationMode)' == '' and '$(PublishAot)' == 'true'">NativeAot</DorotiCompilationMode>
-    <DorotiCompilationMode Condition="'$(DorotiCompilationMode)' == ''">Mono</DorotiCompilationMode>
-    <PublishAot Condition="'$(DorotiCompilationMode)' == 'NativeAot'">true</PublishAot>
-    <ILLinkTreatWarningsAsErrors Condition="'$(DorotiCompilationMode)' == 'NativeAot'">true</ILLinkTreatWarningsAsErrors>
-    <IlcTreatWarningsAsErrors Condition="'$(DorotiCompilationMode)' == 'NativeAot'">true</IlcTreatWarningsAsErrors>
-    <TrimmerSingleWarn Condition="'$(DorotiCompilationMode)' == 'NativeAot'">false</TrimmerSingleWarn>
-  </PropertyGroup>
-  <Target Name="ValidateDorotiCompilationMode" BeforeTargets="PrepareForBuild;CollectPackageReferences">
-    <Error Code="DOROTIAOT001" Condition="'$(DorotiCompilationMode)' != 'Mono' and '$(DorotiCompilationMode)' != 'NativeAot' and '$(DorotiCompilationMode)' != 'CoreClr'"
-           Text="DorotiCompilationMode must be Mono, NativeAot or CoreClr." />
-    <Error Code="DOROTICLR001" Condition="'$(DorotiCompilationMode)' == 'CoreClr' and ('$(DorotiIosDevelopment)' != 'true' or '$(DorotiTarget)' != 'iOS' or '$(RuntimeIdentifier)' != 'ios-arm64' or '$(TargetFramework)' != 'net11.0-ios' or '$(UseMonoRuntime)' != 'false')"
-           Text="The CoreClr profile currently requires a net11.0-ios device development session." />
-    <Error Code="DOROTIAOT002" Condition="'$(DorotiCompilationMode)' == 'NativeAot' and ('$(DorotiTarget)' != 'iOS' or '$(RuntimeIdentifier)' != 'ios-arm64')"
-           Text="The experimental NativeAot profile currently targets iOS ios-arm64 only." />
-    <Error Code="DOROTIAOT003" Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(ArtifactsPath)' == ''"
-           Text="NativeAot validation requires a separate ArtifactsPath. Use the Doroti CLI compilation mode option or pass a mode-specific ArtifactsPath." />
-    <Error Code="DOROTIAOT004" Condition="'$(DorotiCompilationMode)' == 'NativeAot' and ('$(MtouchInterpreter)' != '' or '$(UseInterpreter)' == 'true')"
-           Text="Remove Mono interpreter options from the NativeAot profile." />
-    <Error Code="DOROTIAOT005" Condition="'$(DorotiCompilationMode)' == 'Mono' and '$(PublishAot)' == 'true'"
-           Text="PublishAot=true conflicts with DorotiCompilationMode=Mono." />
-    <Error Code="DOROTIAOT006" Condition="'$(DorotiTarget)' == 'iOS' and '$(DorotiCompilationMode)' == 'Mono' and '$(UseMonoRuntime)' != 'true'"
-           Text="The iOS Mono profile requires UseMonoRuntime=true; refusing an implicit CoreCLR runtime change." />
-    <Error Code="DOROTIAOT007" Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(UseMonoRuntime)' == 'true'"
-           Text="UseMonoRuntime=true conflicts with NativeAot." />
-  </Target>
-  <!-- Official package supplies the standard libSkiaSharp.so for managed and
-       Mono AOT binding. No custom host AAR native override is permitted. -->
-  <ItemGroup Condition="'$(DorotiTarget)' == 'Android'">
-    <PackageReference Include="SkiaSharp.NativeAssets.Android" VersionOverride="4.154.0-preview.1.26454.9" Condition="'$(ManagePackageVersionsCentrally)' == 'true'" />
-    <PackageReference Include="SkiaSharp.NativeAssets.Android" Version="4.154.0-preview.1.26454.9" Condition="'$(ManagePackageVersionsCentrally)' != 'true'" />
-  </ItemGroup>
-  <!-- Append after package evaluation so the owned Dawn device-loss adapter
-       follows SkiaSharp's library_webgpu. Track its content as a link input. -->
-  <Target Name="DorotiConfigureWebNativeInterop" BeforeTargets="_BrowserWasmWriteRspForLinking"
-          Condition="'$(DorotiTarget)' == 'Web' and '$(DorotiSkiaInteropLibrary)' != ''">
-    <Error Condition="!Exists('$(DorotiSkiaInteropLibrary)')" Text="Doroti Web native interop library is missing." />
-    <PropertyGroup>
-      <EmccExtraLDFlags>$(EmccExtraLDFlags) --js-library="$(DorotiSkiaInteropLibrary)"</EmccExtraLDFlags>
     </PropertyGroup>
-  </Target>
-  <Target Name="DorotiTrackWebNativeInterop" BeforeTargets="_BrowserWasmLinkDotNet"
-          Condition="'$(DorotiTarget)' == 'Web' and '$(DorotiSkiaInteropLibrary)' != ''">
-    <ItemGroup>
-      <_WasmLinkDependencies Include="$(DorotiSkiaInteropLibrary)" />
-    </ItemGroup>
-  </Target>
   <PropertyGroup>
     <DorotiAppProject>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(DorotiAppProject)'))</DorotiAppProject>
     <DorotiApplicationProjectName>$([System.IO.Path]::GetFileNameWithoutExtension('$(DorotiAppProject)'))</DorotiApplicationProjectName>
     <DorotiApplicationType Condition="'$(DorotiApplicationType)' == ''">$(DorotiApplicationProjectName).Program</DorotiApplicationType>
-    <!-- Interpreting layout/paint on a physical iPhone misses rotation display
-         deadlines even when Metal itself is AOT-compiled. Keep app/entry code
-         editable, compile framework dependencies, and retain dynamic-code
-         interpreter support. Custom app assembly names can override this list. -->
-    <DorotiIosDebugInterpretedAssemblies Condition="'$(_DorotiIosDebugInterpreterDefault)' == 'true' and '$(DorotiIosDebugInterpretedAssemblies)' == ''">$(DorotiApplicationProjectName),$(AssemblyName)</DorotiIosDebugInterpretedAssemblies>
-    <!-- Mono 10's AOT virtual-call trampoline can assert after a real metadata
-         delta. Interpret the widget/framework callers in development sessions;
-         retain the native UIKit host's AOT lifetime behavior. -->
-    <MtouchInterpreter Condition="'$(DorotiIosDevelopment)' == 'true' and '$(_DorotiIosDebugInterpreterDefault)' == 'true' and '$(MtouchInterpreter)' == ''">all,-Doroti.Host.Maui</MtouchInterpreter>
-    <MtouchInterpreter Condition="'$(_DorotiIosDebugInterpreterDefault)' == 'true' and '$(MtouchInterpreter)' == '' and '$(RuntimeIdentifier)' == 'ios-arm64'">-all,$(DorotiIosDebugInterpretedAssemblies)</MtouchInterpreter>
-    <!-- Preserve the fast simulator build and AOT UIKit host lifetime fix. -->
-    <MtouchInterpreter Condition="'$(_DorotiIosDebugInterpreterDefault)' == 'true' and '$(MtouchInterpreter)' == ''">all,-Doroti.Host.Maui</MtouchInterpreter>
-    <!-- The translated framework uses C# dynamic dispatch for Dart dynamic
-         semantics. Keep managed assemblies AOT-compiled, but retain the Mono
-         interpreter for runtime-generated DLR methods. -->
-    <MtouchInterpreter Condition="'$(PublishAot)' != 'true' and '$(DorotiCompilationMode)' != 'NativeAot' and '$(DorotiCompilationMode)' != 'CoreClr' and '$(MtouchInterpreter)' == '' and ('$(DorotiTarget)' == 'iOS' or '$(DorotiTarget)' == 'MacCatalyst')">-all</MtouchInterpreter>
-    <!-- Keep the Android SDK's Release AOT / Debug interpreter defaults. The old x64
-         AOT opt-out made framework JIT compilation block Android input at boot.
-         The SDK's stock profiles do not cover Doroti's framework, so compile all
-         eligible methods for x64 Release. Normal Mono AOT retains JIT support
-         for dynamic/DLR code; explicit caller overrides remain supported. -->
-    <AndroidEnableProfiledAot Condition="'$(DorotiTarget)' == 'Android' and '$(RuntimeIdentifier)' == 'android-x64' and '$(Configuration)' == 'Release' and '$(AndroidEnableProfiledAot)' == ''">false</AndroidEnableProfiledAot>
-    <PublishTrimmed Condition="'$(DorotiTarget)' == 'Android' and '$(RuntimeIdentifier)' == 'android-x64' and '$(DorotiAndroidDevelopment)' != 'true'">true</PublishTrimmed>
-    <!-- .NET 10 marshal methods can fault inside Mono before managed startup on
-         Android devices. Disable that JNI startup optimization for Android;
-         Release runners still use Mono AOT and trimming. -->
-    <AndroidEnableMarshalMethods Condition="'$(DorotiTarget)' == 'Android'">false</AndroidEnableMarshalMethods>
-    <DorotiAndroidBaselineProfile Condition="'$(DorotiAndroidBaselineProfile)' == ''">$(MSBuildProjectDirectory)/profiles/baseline.prof</DorotiAndroidBaselineProfile>
-    <DorotiAndroidBaselineProfileMetadata Condition="'$(DorotiAndroidBaselineProfileMetadata)' == ''">$(MSBuildProjectDirectory)/profiles/baseline.profm</DorotiAndroidBaselineProfileMetadata>
-    <DebugSymbols Condition="'$(Configuration)' == 'Release' and '$(DorotiTarget)' == 'Windows'">false</DebugSymbols>
-    <DebugType Condition="'$(Configuration)' == 'Release' and '$(DorotiTarget)' == 'Windows'">none</DebugType>
-    <CopyOutputSymbolsToPublishDirectory Condition="'$(Configuration)' == 'Release' and ('$(DorotiTarget)' == 'Windows' or '$(DorotiTarget)' == 'Web')">false</CopyOutputSymbolsToPublishDirectory>
-    <StartupObject Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main' or '$(DorotiNativeEntryKind)' == 'UIKit-Main' or '$(DorotiNativeEntryKind)' == 'AppKit-Main' or '$(DorotiNativeEntryKind)' == 'Qt-Main' or '$(DorotiNativeEntryKind)' == 'Win32-WinMain'">Doroti.Generated.DorotiBootstrap</StartupObject>
-    <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'Android'">$(TargetFramework)</_DorotiExpectedNativeBindingTfm>
-    <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'iOS'">$(TargetFramework)</_DorotiExpectedNativeBindingTfm>
-    <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'MacCatalyst'">$(DorotiMacCatalystTargetFramework)</_DorotiExpectedNativeBindingTfm>
-    <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'macOS'">$(TargetFramework)</_DorotiExpectedNativeBindingTfm>
-    <_DorotiExpectedNativeBuildItem Condition="'$(DorotiTarget)' == 'Android'">AndroidGradleProject</_DorotiExpectedNativeBuildItem>
-    <_DorotiExpectedNativeBuildItem Condition="'$(DorotiTarget)' == 'iOS' or '$(DorotiTarget)' == 'MacCatalyst' or '$(DorotiTarget)' == 'macOS'">XcodeProject</_DorotiExpectedNativeBuildItem>
   </PropertyGroup>
-
   <PropertyGroup>
-    <!-- Evaluated after the runner's startup properties. A legacy/design-time
-         evaluation must not overwrite the source selected by a desktop build. -->
     <_DorotiBootstrapFile Condition="'$(DorotiDesktopStartupType)' != ''">$(_DorotiGeneratedDirectory)DorotiBootstrap.Desktop.$(DorotiDesktopStartupType).g.cs</_DorotiBootstrapFile>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="$(DorotiDesktopProject)" Condition="'$(DorotiDesktopProject)' != '' and ('$(DorotiTarget)' == 'Windows' or '$(DorotiTarget)' == 'macOS' or '$(DorotiTarget)' == 'MacCatalyst' or '$(DorotiTarget)' == 'Linux')"
-                      GlobalPropertiesToRemove="TargetFramework;TargetFrameworks;RuntimeIdentifier;RuntimeIdentifiers;DorotiTarget;DorotiHostKind;DorotiNativeEntryKind" />
+    <ProjectReference Include="$(DorotiDesktopProject)" Condition="'$(DorotiDesktopProject)' != ''" GlobalPropertiesToRemove="TargetFramework;TargetFrameworks;RuntimeIdentifier;RuntimeIdentifiers;DorotiTarget;DorotiHostKind;DorotiNativeEntryKind" />
     <DorotiNativeBindingProject Update="@(DorotiNativeBindingProject)">
       <DorotiFullPath>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '%(Identity)'))</DorotiFullPath>
       <DorotiAssemblyIdentity Condition="'%(AssemblyName)' == ''">%(Filename)</DorotiAssemblyIdentity>
       <DorotiAssemblyIdentity Condition="'%(AssemblyName)' != ''">%(AssemblyName)</DorotiAssemblyIdentity>
     </DorotiNativeBindingProject>
-    <ProjectReference Include="$(DorotiAppProject)" ReferenceOutputAssembly="true"
-                      GlobalPropertiesToRemove="TargetFramework;TargetFrameworks;RuntimeIdentifier;RuntimeIdentifiers;DorotiTarget;DorotiHostKind;DorotiNativeEntryKind" />
+    <ProjectReference Include="$(DorotiAppProject)" ReferenceOutputAssembly="true" GlobalPropertiesToRemove="TargetFramework;TargetFrameworks;RuntimeIdentifier;RuntimeIdentifiers;DorotiTarget;DorotiHostKind;DorotiNativeEntryKind" />
     <ProjectReference Include="@(DorotiNativeBindingProject)" ReferenceOutputAssembly="true">
       <DorotiNativeBinding>true</DorotiNativeBinding>
       <GlobalPropertiesToRemove>DorotiTarget;DorotiHostKind;DorotiNativeEntryKind</GlobalPropertiesToRemove>
-      <AdditionalProperties Condition="'$(DorotiIosDevelopment)' == 'true' or '$(DorotiMacDevelopment)' == 'true'">CustomAfterMicrosoftCommonTargets=$(MSBuildThisFileDirectory)Doroti.IosDevelopmentBinding.targets</AdditionalProperties>
+      <AdditionalProperties Condition="'$(DorotiProviderReferenceProperties)' != ''">%(ProjectReference.AdditionalProperties);$(DorotiProviderReferenceProperties)</AdditionalProperties>
     </ProjectReference>
     <Compile Include="*.cs" Exclude="$(DorotiCompileExclude)" />
     <Compile Include="src/**/*.cs" />
@@ -219,164 +31,76 @@
     <Compile Include="$(_DorotiPluginRegistrationFile)" AutoGen="true" DesignTime="true" Visible="false" />
     <Compile Include="$(_DorotiNativePluginRegistrationFile)" AutoGen="true" DesignTime="true" Visible="false" />
     <ApplicationDefinition Include="App.xaml" Generator="MSBuild:Compile" Condition="Exists('App.xaml')" />
-    <EmbeddedResource Include="application-manifest.$(RuntimeIdentifier).json" LogicalName="Doroti.Application.Manifest"
-                      Condition="Exists('application-manifest.$(RuntimeIdentifier).json')" />
-    <EmbeddedResource Include="application-manifest.json" LogicalName="Doroti.Application.Manifest"
-                      Condition="!Exists('application-manifest.$(RuntimeIdentifier).json') and Exists('application-manifest.json')" />
-    <AndroidResource Include="Resources/**/*" Exclude="Resources/AppIcon/**/*;Resources/Splash/**/*"
-                     Condition="'$(DorotiTarget)' == 'Android' and Exists('Resources')" />
-    <AndroidAsset Include="$(DorotiAndroidBaselineProfile)" Link="dexopt/baseline.prof"
-                  Condition="'$(DorotiTarget)' == 'Android' and Exists('$(DorotiAndroidBaselineProfile)') and Exists('$(DorotiAndroidBaselineProfileMetadata)')" />
-    <AndroidAsset Include="$(DorotiAndroidBaselineProfileMetadata)" Link="dexopt/baseline.profm"
-                  Condition="'$(DorotiTarget)' == 'Android' and Exists('$(DorotiAndroidBaselineProfile)') and Exists('$(DorotiAndroidBaselineProfileMetadata)')" />
-    <MauiSplashScreen Include="Resources/Splash/splash.svg" Color="#FFFBFE" BaseSize="128,128"
-                      Condition="'$(UseMaui)' == 'true' and '$(DorotiTarget)' != 'macOS' and Exists('Resources/Splash/splash.svg')" />
+    <EmbeddedResource Include="application-manifest.$(RuntimeIdentifier).json" LogicalName="Doroti.Application.Manifest" Condition="Exists('application-manifest.$(RuntimeIdentifier).json')" />
+    <EmbeddedResource Include="application-manifest.json" LogicalName="Doroti.Application.Manifest" Condition="!Exists('application-manifest.$(RuntimeIdentifier).json') and Exists('application-manifest.json')" />
   </ItemGroup>
-
-  <PropertyGroup Condition="'$(DorotiTarget)' == 'Android'">
-    <AndroidManifest>AndroidManifest.xml</AndroidManifest>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(DorotiTarget)' == 'Web'">
-    <!-- Generated StartWorker/StopWorker JS exports require unsafe stubs. -->
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <RuntimeFrameworkVersion Condition="'$(RuntimeFrameworkVersion)' == ''">$(DorotiWebRuntimeVersion)</RuntimeFrameworkVersion>
-    <PublishTrimmed>true</PublishTrimmed>
-    <DorotiWebTypeScript Condition="Exists('tsconfig.json')">true</DorotiWebTypeScript>
-    <DorotiTypeScriptConfig>$(MSBuildProjectDirectory)/tsconfig.json</DorotiTypeScriptConfig>
-    <DorotiTypeScriptSourceRoot>$(MSBuildProjectDirectory)/src</DorotiTypeScriptSourceRoot>
-    <DorotiTypeScriptOutputRoot>$(BaseIntermediateOutputPath)$(Configuration)/$(TargetFramework)/Doroti.Generated/wwwroot</DorotiTypeScriptOutputRoot>
-    <DorotiTypeScriptExpectedOutput>$(DorotiTypeScriptOutputRoot)/doroti_bootstrap.js</DorotiTypeScriptExpectedOutput>
-    <DorotiTypeScriptTypeRoots Condition="Exists('$(MSBuildThisFileDirectory)types/doroti-loader/index.d.ts')">$(MSBuildThisFileDirectory)types</DorotiTypeScriptTypeRoots>
-    <DorotiTypeScriptTypeRoots Condition="'$(DorotiTypeScriptTypeRoots)' == ''">$(MSBuildThisFileDirectory)../../Doroti.Host.Web/Web/types</DorotiTypeScriptTypeRoots>
-    <DorotiTypeScriptStaticBasePath>wwwroot</DorotiTypeScriptStaticBasePath>
-  </PropertyGroup>
-
-  <ItemGroup Condition="'$(UseMaui)' == 'true'">
-    <PackageReference Remove="Microsoft.Maui.Controls" />
-    <PackageReference Include="Microsoft.Maui.Controls" Condition="'$(ManagePackageVersionsCentrally)' == 'true'" />
-    <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" Condition="'$(ManagePackageVersionsCentrally)' != 'true'" />
-  </ItemGroup>
-
   <Target Name="ValidateDorotiRunnerProperties" BeforeTargets="Restore">
-    <Error Code="DOROTIDESKTOP002" Condition="('$(DorotiDesktopProject)' != '' or '$(DorotiDesktopStartupType)' != '') and '$(DorotiTarget)' != 'Windows' and '$(DorotiTarget)' != 'macOS' and '$(DorotiTarget)' != 'MacCatalyst' and '$(DorotiTarget)' != 'Linux'"
-           Text="Desktop companion/startup is only allowed in native desktop runners." />
-    <Error Code="DOROTIDESKTOP003" Condition="'$(DorotiDesktopProject)' != '' and ('$(DorotiDesktopStartupType)' == '' or !Exists('$(DorotiDesktopProject)'))"
-           Text="DorotiDesktopProject requires an existing companion project and DorotiDesktopStartupType." />
-    <Error Code="DOROTIDESKTOP005" Condition="'$(DorotiDesktopStartupType)' != '' and !(('$(DorotiHostKind)' == 'Maui' and ('$(DorotiTarget)' == 'Windows' or '$(DorotiTarget)' == 'macOS' or '$(DorotiTarget)' == 'MacCatalyst')) or ('$(DorotiTarget)' == 'Windows' and '$(DorotiHostKind)' == 'WindowsAppSdk') or ('$(DorotiTarget)' == 'Linux' and '$(DorotiHostKind)' == 'Qt' and '$(DorotiQtQuick)' == 'true'))"
-           Text="Desktop startup requires Windows App SDK, Windows MAUI, AppKit macOS, Mac Catalyst, or Linux Qt Quick. Other adapters are pending; refusing an ignored startup." />
-    <Error Code="DOROTIAPP201" Condition="'$(DorotiAppProject)' == '' or !Exists('$(DorotiAppProject)')"
-           Text="DorotiAppProject must resolve to an existing platform-neutral application project; found '$(DorotiAppProject)'." />
-    <Error Code="DOROTIAPP202" Condition="'$(DorotiTarget)' == '' or '$(DorotiHostKind)' == '' or '$(DorotiNativeEntryKind)' == ''"
-           Text="A Doroti runner must declare DorotiTarget, DorotiHostKind, and DorotiNativeEntryKind." />
-    <Error Code="DOROTIAPP203" Condition="'$(TargetFramework)' == '' or '$(RuntimeIdentifier)' == ''"
-           Text="A Doroti runner must declare a fixed TargetFramework and RuntimeIdentifier." />
-    <Error Code="DOROTIRUNNER301" Condition="'$(_DorotiExpectedNativeBindingTfm)' != '' and '@(DorotiNativeBindingProject->Count())' != '1'"
-           Text="The $(DorotiTarget) runner requires exactly one DorotiNativeBindingProject; found '@(DorotiNativeBindingProject->Count())'." />
-    <Error Code="DOROTIRUNNER302" Condition="'$(_DorotiExpectedNativeBindingTfm)' == '' and '@(DorotiNativeBindingProject)' != ''"
-           Text="The $(DorotiTarget) runner cannot reference a platform native binding project." />
-    <Error Code="DOROTIRUNNER303" Condition="'%(DorotiNativeBindingProject.Identity)' != '' and !Exists('%(DorotiNativeBindingProject.DorotiFullPath)')"
-           Text="Doroti native binding project does not exist: %(DorotiNativeBindingProject.Identity)." />
-    <Error Code="DOROTIRUNNER304"
-           Condition="'%(DorotiNativeBindingProject.Identity)' != '' and !$([System.String]::Copy('%(DorotiNativeBindingProject.DorotiFullPath)').StartsWith('$(_DorotiRunnerWorkspaceDirectory)', System.StringComparison.OrdinalIgnoreCase))"
-           Text="Doroti native binding project must stay inside its runner workspace '$(_DorotiRunnerWorkspaceDirectory)': %(DorotiNativeBindingProject.DorotiFullPath)." />
+    <Error Code="DOROTIDESKTOP003" Condition="'$(DorotiDesktopProject)' != '' and ('$(DorotiDesktopStartupType)' == '' or !Exists('$(DorotiDesktopProject)'))" Text="DorotiDesktopProject requires an existing companion project and DorotiDesktopStartupType." />
+    <Error Code="DOROTIAPP201" Condition="'$(DorotiAppProject)' == '' or !Exists('$(DorotiAppProject)')" Text="DorotiAppProject must resolve to an existing platform-neutral application project; found '$(DorotiAppProject)'." />
+    <Error Code="DOROTIAPP202" Condition="'$(DorotiTarget)' == '' or '$(DorotiHostKind)' == '' or '$(DorotiNativeEntryKind)' == ''" Text="A Doroti runner must declare DorotiTarget, DorotiHostKind, and DorotiNativeEntryKind." />
+    <Error Code="DOROTIAPP203" Condition="'$(TargetFramework)' == '' or '$(RuntimeIdentifier)' == ''" Text="A Doroti runner must declare a fixed TargetFramework and RuntimeIdentifier." />
+    <Error Code="DOROTIRUNNER301" Condition="'$(_DorotiExpectedNativeBindingTfm)' != '' and '@(DorotiNativeBindingProject-&gt;Count())' != '1'" Text="The $(DorotiTarget) runner requires exactly one DorotiNativeBindingProject; found '@(DorotiNativeBindingProject-&gt;Count())'." />
+    <Error Code="DOROTIRUNNER302" Condition="'$(DorotiProviderSuppliesBootstrap)' == 'true' and '$(_DorotiExpectedNativeBindingTfm)' == '' and '@(DorotiNativeBindingProject)' != ''" Text="The $(DorotiTarget) runner cannot reference a platform native binding project." />
+    <Error Code="DOROTIRUNNER303" Condition="'%(DorotiNativeBindingProject.Identity)' != '' and !Exists('%(DorotiNativeBindingProject.DorotiFullPath)')" Text="Doroti native binding project does not exist: %(DorotiNativeBindingProject.Identity)." />
+    <Error Code="DOROTIRUNNER304" Condition="'%(DorotiNativeBindingProject.Identity)' != '' and !$([System.String]::Copy('%(DorotiNativeBindingProject.DorotiFullPath)').StartsWith('$(_DorotiRunnerWorkspaceDirectory)', System.StringComparison.OrdinalIgnoreCase))" Text="Doroti native binding project must stay inside its runner workspace '$(_DorotiRunnerWorkspaceDirectory)': %(DorotiNativeBindingProject.DorotiFullPath)." />
   </Target>
-
-  <Target Name="ResolveDorotiNativeBindingContract"
-          Condition="'@(DorotiNativeBindingProject)' != ''"
-          DependsOnTargets="ValidateDorotiRunnerProperties"
-          BeforeTargets="ValidateDorotiRunner">
-    <MSBuild Projects="@(DorotiNativeBindingProject)" Targets="GetDorotiNativeBindingContract"
-             Properties="Configuration=$(Configuration);RuntimeIdentifier=$(RuntimeIdentifier)"
-             RemoveProperties="DorotiTarget;DorotiHostKind;DorotiNativeEntryKind"
-             BuildInParallel="false">
+  <Target Name="ResolveDorotiNativeBindingContract" Condition="'@(DorotiNativeBindingProject)' != ''" DependsOnTargets="ValidateDorotiRunnerProperties" BeforeTargets="ValidateDorotiRunner">
+    <MSBuild Projects="@(DorotiNativeBindingProject)" Targets="GetDorotiNativeBindingContract" Properties="Configuration=$(Configuration);RuntimeIdentifier=$(RuntimeIdentifier)" RemoveProperties="DorotiTarget;DorotiHostKind;DorotiNativeEntryKind" BuildInParallel="false">
       <Output TaskParameter="TargetOutputs" ItemName="_DorotiNativeBindingContract" />
     </MSBuild>
-    <RemoveDuplicates Inputs="@(DorotiNativeBindingProject->'%(DorotiFullPath)')">
+    <RemoveDuplicates Inputs="@(DorotiNativeBindingProject-&gt;'%(DorotiFullPath)')">
       <Output TaskParameter="Filtered" ItemName="_DorotiDistinctNativeBindingPath" />
     </RemoveDuplicates>
-    <RemoveDuplicates Inputs="@(DorotiNativeBindingProject->'%(DorotiAssemblyIdentity)')">
+    <RemoveDuplicates Inputs="@(DorotiNativeBindingProject-&gt;'%(DorotiAssemblyIdentity)')">
       <Output TaskParameter="Filtered" ItemName="_DorotiDistinctNativeBindingAssembly" />
     </RemoveDuplicates>
     <PropertyGroup>
-      <_DorotiNativeBindingCount>@(DorotiNativeBindingProject->Count())</_DorotiNativeBindingCount>
-      <_DorotiNativeBindingContractCount>@(_DorotiNativeBindingContract->Count())</_DorotiNativeBindingContractCount>
-      <_DorotiDistinctNativeBindingPathCount>@(_DorotiDistinctNativeBindingPath->Count())</_DorotiDistinctNativeBindingPathCount>
-      <_DorotiDistinctNativeBindingAssemblyCount>@(_DorotiDistinctNativeBindingAssembly->Count())</_DorotiDistinctNativeBindingAssemblyCount>
+      <_DorotiNativeBindingCount>@(DorotiNativeBindingProject-&gt;Count())</_DorotiNativeBindingCount>
+      <_DorotiNativeBindingContractCount>@(_DorotiNativeBindingContract-&gt;Count())</_DorotiNativeBindingContractCount>
+      <_DorotiDistinctNativeBindingPathCount>@(_DorotiDistinctNativeBindingPath-&gt;Count())</_DorotiDistinctNativeBindingPathCount>
+      <_DorotiDistinctNativeBindingAssemblyCount>@(_DorotiDistinctNativeBindingAssembly-&gt;Count())</_DorotiDistinctNativeBindingAssemblyCount>
     </PropertyGroup>
-    <Error Code="DOROTIRUNNER305" Condition="'$(_DorotiNativeBindingContractCount)' != '$(_DorotiNativeBindingCount)'"
-           Text="Every DorotiNativeBindingProject must expose exactly one GetDorotiNativeBindingContract result; expected '$(_DorotiNativeBindingCount)', found '$(_DorotiNativeBindingContractCount)'." />
-    <Error Code="DOROTIRUNNER306" Condition="'$(_DorotiDistinctNativeBindingPathCount)' != '$(_DorotiNativeBindingCount)'"
-           Text="DorotiNativeBindingProject contains a duplicate project path." />
-    <Error Code="DOROTIRUNNER307" Condition="'$(_DorotiDistinctNativeBindingAssemblyCount)' != '$(_DorotiNativeBindingCount)'"
-           Text="DorotiNativeBindingProject contains a duplicate assembly identity." />
-    <Error Code="DOROTIRUNNER308"
-           Condition="'%(_DorotiNativeBindingContract.NativeTarget)' != '$(DorotiTarget)' or '%(_DorotiNativeBindingContract.TargetFramework)' != '$(_DorotiExpectedNativeBindingTfm)'"
-           Text="Native binding target/TFM is incompatible with the runner. Runner='$(DorotiTarget)|$(TargetFramework)', binding='%(_DorotiNativeBindingContract.NativeTarget)|%(_DorotiNativeBindingContract.TargetFramework)' (%(_DorotiNativeBindingContract.Identity))." />
-    <Error Code="DOROTIRUNNER309"
-           Condition="'%(_DorotiNativeBindingContract.NativeBuildItem)' != '$(_DorotiExpectedNativeBuildItem)' or '%(_DorotiNativeBindingContract.NativeProject)' == '' or !Exists('%(_DorotiNativeBindingContract.NativeProject)')"
-           Text="Native binding must expose an existing $(_DorotiExpectedNativeBuildItem) project; found '%(_DorotiNativeBindingContract.NativeBuildItem)|%(_DorotiNativeBindingContract.NativeProject)'." />
+    <Error Code="DOROTIRUNNER305" Condition="'$(_DorotiNativeBindingContractCount)' != '$(_DorotiNativeBindingCount)'" Text="Every DorotiNativeBindingProject must expose exactly one GetDorotiNativeBindingContract result; expected '$(_DorotiNativeBindingCount)', found '$(_DorotiNativeBindingContractCount)'." />
+    <Error Code="DOROTIRUNNER306" Condition="'$(_DorotiDistinctNativeBindingPathCount)' != '$(_DorotiNativeBindingCount)'" Text="DorotiNativeBindingProject contains a duplicate project path." />
+    <Error Code="DOROTIRUNNER307" Condition="'$(_DorotiDistinctNativeBindingAssemblyCount)' != '$(_DorotiNativeBindingCount)'" Text="DorotiNativeBindingProject contains a duplicate assembly identity." />
+    <Error Code="DOROTIRUNNER308" Condition="'%(_DorotiNativeBindingContract.NativeTarget)' != '$(DorotiTarget)' or '%(_DorotiNativeBindingContract.TargetFramework)' != '$(_DorotiExpectedNativeBindingTfm)'" Text="Native binding target/TFM is incompatible with the runner. Runner='$(DorotiTarget)|$(TargetFramework)', binding='%(_DorotiNativeBindingContract.NativeTarget)|%(_DorotiNativeBindingContract.TargetFramework)' (%(_DorotiNativeBindingContract.Identity))." />
+    <Error Code="DOROTIRUNNER309" Condition="'%(_DorotiNativeBindingContract.NativeBuildItem)' != '$(_DorotiExpectedNativeBuildItem)' or '%(_DorotiNativeBindingContract.NativeProject)' == '' or !Exists('%(_DorotiNativeBindingContract.NativeProject)')" Text="Native binding must expose an existing $(_DorotiExpectedNativeBuildItem) project; found '%(_DorotiNativeBindingContract.NativeBuildItem)|%(_DorotiNativeBindingContract.NativeProject)'." />
   </Target>
-
   <Target Name="ResolveDorotiApplicationContract" BeforeTargets="ValidateDorotiRunner" Condition="Exists('$(DorotiAppProject)')">
-    <MSBuild Projects="$(DorotiAppProject)" Targets="GetDorotiApplicationContract"
-             Properties="Configuration=$(Configuration)"
-             RemoveProperties="TargetFramework;TargetFrameworks;RuntimeIdentifier;RuntimeIdentifiers;DorotiTarget;DorotiHostKind;DorotiNativeEntryKind"
-             BuildInParallel="false">
+    <MSBuild Projects="$(DorotiAppProject)" Targets="GetDorotiApplicationContract" Properties="Configuration=$(Configuration)" RemoveProperties="TargetFramework;TargetFrameworks;RuntimeIdentifier;RuntimeIdentifiers;DorotiTarget;DorotiHostKind;DorotiNativeEntryKind" BuildInParallel="false">
       <Output TaskParameter="TargetOutputs" ItemName="_DorotiApplicationContract" />
     </MSBuild>
   </Target>
-
   <Target Name="ValidateDorotiRunner" DependsOnTargets="ValidateDorotiRunnerProperties;ResolveDorotiApplicationContract;ResolveDorotiNativeBindingContract" BeforeTargets="PrepareForBuild">
+    <Error Code="DOROTIDESKTOP002" Condition="'$(DorotiDesktopStartupType)' != '' and '$(DorotiProviderSupportsDesktop)' != 'true'" Text="The resolved provider profile does not support a desktop companion." />
     <PropertyGroup>
-      <_DorotiTargetDescriptorCount>@(DorotiTargetDescriptor->Count())</_DorotiTargetDescriptorCount>
-      <_DorotiSelectedTarget>@(DorotiTargetDescriptor->'%(Identity)')</_DorotiSelectedTarget>
-      <_DorotiSelectedTfm>@(DorotiTargetDescriptor->'%(TargetFramework)')</_DorotiSelectedTfm>
-      <_DorotiSelectedRid>@(DorotiTargetDescriptor->'%(RuntimeIdentifier)')</_DorotiSelectedRid>
-      <_DorotiSelectedHost>@(DorotiTargetDescriptor->'%(HostKind)')</_DorotiSelectedHost>
-      <_DorotiSelectedEntry>@(DorotiTargetDescriptor->'%(NativeEntryKind)')</_DorotiSelectedEntry>
-      <_DorotiApplicationCount>@(_DorotiApplicationContract->WithMetadataValue('Kind', 'Application')->Count())</_DorotiApplicationCount>
-      <_DorotiApplicationTfm>@(_DorotiApplicationContract->WithMetadataValue('Kind', 'Application')->'%(TargetFramework)')</_DorotiApplicationTfm>
+      <_DorotiTargetDescriptorCount>@(DorotiTargetDescriptor-&gt;Count())</_DorotiTargetDescriptorCount>
+      <_DorotiSelectedTarget>@(DorotiTargetDescriptor-&gt;'%(Identity)')</_DorotiSelectedTarget>
+      <_DorotiSelectedTfm>@(DorotiTargetDescriptor-&gt;'%(TargetFramework)')</_DorotiSelectedTfm>
+      <_DorotiSelectedRid>@(DorotiTargetDescriptor-&gt;'%(RuntimeIdentifier)')</_DorotiSelectedRid>
+      <_DorotiSelectedHost>@(DorotiTargetDescriptor-&gt;'%(HostKind)')</_DorotiSelectedHost>
+      <_DorotiSelectedEntry>@(DorotiTargetDescriptor-&gt;'%(NativeEntryKind)')</_DorotiSelectedEntry>
+      <_DorotiApplicationCount>@(_DorotiApplicationContract-&gt;WithMetadataValue('Kind', 'Application')-&gt;Count())</_DorotiApplicationCount>
+      <_DorotiApplicationTfm>@(_DorotiApplicationContract-&gt;WithMetadataValue('Kind', 'Application')-&gt;'%(TargetFramework)')</_DorotiApplicationTfm>
     </PropertyGroup>
     <ItemGroup>
-      <_DorotiUnexpectedCompile Include="@(Compile)"
-          Condition="$([System.String]::Copy('%(Compile.FullPath)').StartsWith('$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)'))', System.StringComparison.OrdinalIgnoreCase)) == 'false' and
-                     '%(Compile.AutoGen)' != 'true'" />
-      <_DorotiDisallowedXaml Include="@(MauiXaml)" />
+      <_DorotiUnexpectedCompile Include="@(Compile)" Condition="$([System.String]::Copy('%(Compile.FullPath)').StartsWith('$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)'))', System.StringComparison.OrdinalIgnoreCase)) == 'false' and                      '%(Compile.AutoGen)' != 'true'" />
       <_DorotiDisallowedXaml Include="@(ApplicationDefinition)" Condition="'%(ApplicationDefinition.Filename)%(ApplicationDefinition.Extension)' != 'App.xaml'" />
       <_DorotiManifest Include="@(EmbeddedResource)" Condition="'%(EmbeddedResource.LogicalName)' == 'Doroti.Application.Manifest'" />
       <_DorotiDuplicateLogicalAsset Include="@(EmbeddedResource)" Condition="'%(EmbeddedResource.LogicalName)' != ''" />
-      <_DorotiManualNativeBindingReference Include="@(ProjectReference)"
-          Condition="'%(ProjectReference.DorotiNativeBinding)' != 'true' and
-                     @(DorotiNativeBindingProject->AnyHaveMetadataValue('DorotiFullPath', '%(ProjectReference.FullPath)'))" />
+      <_DorotiManualNativeBindingReference Include="@(ProjectReference)" Condition="'%(ProjectReference.DorotiNativeBinding)' != 'true' and                      @(DorotiNativeBindingProject-&gt;AnyHaveMetadataValue('DorotiFullPath', '%(ProjectReference.FullPath)'))" />
     </ItemGroup>
-    <Error Code="DOROTIAPP204" Condition="'$(_DorotiTargetDescriptorCount)' != '1'"
-           Text="A Doroti runner requires exactly one DorotiTargetDescriptor; found '$(_DorotiTargetDescriptorCount)'." />
-    <Error Code="DOROTIAPP205" Condition="'$(_DorotiSelectedTarget)' != '$(DorotiTarget)' or '$(_DorotiSelectedTfm)' != '$(TargetFramework)' or '$(_DorotiSelectedRid)' != '$(RuntimeIdentifier)'"
-           Text="Runner target/TFM/RID does not match its descriptor. Runner='$(DorotiTarget)|$(TargetFramework)|$(RuntimeIdentifier)', descriptor='$(_DorotiSelectedTarget)|$(_DorotiSelectedTfm)|$(_DorotiSelectedRid)'." />
-    <Error Code="DOROTIAPP206" Condition="'$(_DorotiSelectedHost)' != '$(DorotiHostKind)' or '$(_DorotiSelectedEntry)' != '$(DorotiNativeEntryKind)'"
-           Text="Runner host/entry kind does not match its descriptor. Runner='$(DorotiHostKind)|$(DorotiNativeEntryKind)', descriptor='$(_DorotiSelectedHost)|$(_DorotiSelectedEntry)'." />
-    <Error Code="DOROTIAPP207" Condition="'$(_DorotiApplicationCount)' != '1' or '$(_DorotiApplicationTfm)' != 'net10.0'"
-           Text="DorotiAppProject must expose exactly one net10.0 application contract; found count='$(_DorotiApplicationCount)', TFM='$(_DorotiApplicationTfm)'." />
-    <Error Code="DOROTIAPP208" Condition="'@(_DorotiUnexpectedCompile)' != ''"
-           Text="A runner cannot compile source outside its own platform directory: @(_DorotiUnexpectedCompile)." />
-    <Error Code="DOROTIAPP209" Condition="'@(_DorotiDisallowedXaml)' != ''"
-           Text="Only the runner-owned App.xaml ApplicationDefinition is allowed: @(_DorotiDisallowedXaml)." />
-    <Error Code="DOROTIAPP210" Condition="'@(_DorotiManifest->Count())' != '1'"
-           Text="A runner requires exactly one Doroti.Application.Manifest resource; found '@(_DorotiManifest->Count())'." />
-    <Error Code="DOROTIWEB023"
-           Condition="'$(DorotiTarget)' == 'Web' and !Exists('$(BlazorWebAssemblyJSPath)')"
-           Text="Doroti Web requires a direct Microsoft.AspNetCore.Components.WebAssembly package reference for the WebAssembly runtime build and asset pipeline." />
-    <Error Code="DOROTIWEB025"
-           Condition="'$(DorotiTarget)' == 'Web' and '$(OverrideHtmlAssetPlaceholders)' != 'true'"
-           Text="Doroti Web requires OverrideHtmlAssetPlaceholders=true so the .NET SDK can generate framework preload and fingerprint metadata." />
-    <Error Code="DOROTIRUNNER310" Condition="'@(_DorotiManualNativeBindingReference)' != ''"
-           Text="Declare a native binding only with DorotiNativeBindingProject; remove the duplicate ProjectReference: @(_DorotiManualNativeBindingReference)." />
-    <Error Code="DOROTIANDROID311"
-           Condition="'$(DorotiTarget)' == 'Android' and ((Exists('$(DorotiAndroidBaselineProfile)') and !Exists('$(DorotiAndroidBaselineProfileMetadata)')) or (!Exists('$(DorotiAndroidBaselineProfile)') and Exists('$(DorotiAndroidBaselineProfileMetadata)')))"
-           Text="Android baseline profile packaging requires both baseline.prof and baseline.profm under the runner profiles directory." />
+    <Error Code="DOROTIAPP204" Condition="'$(_DorotiTargetDescriptorCount)' != '1'" Text="A Doroti runner requires exactly one DorotiTargetDescriptor; found '$(_DorotiTargetDescriptorCount)'." />
+    <Error Code="DOROTIAPP205" Condition="'$(_DorotiSelectedTarget)' != '$(DorotiTarget)' or '$(_DorotiSelectedTfm)' != '$(TargetFramework)' or '$(_DorotiSelectedRid)' != '$(RuntimeIdentifier)'" Text="Runner target/TFM/RID does not match its descriptor. Runner='$(DorotiTarget)|$(TargetFramework)|$(RuntimeIdentifier)', descriptor='$(_DorotiSelectedTarget)|$(_DorotiSelectedTfm)|$(_DorotiSelectedRid)'." />
+    <Error Code="DOROTIAPP206" Condition="'$(_DorotiSelectedHost)' != '$(DorotiHostKind)' or '$(_DorotiSelectedEntry)' != '$(DorotiNativeEntryKind)'" Text="Runner host/entry kind does not match its descriptor. Runner='$(DorotiHostKind)|$(DorotiNativeEntryKind)', descriptor='$(_DorotiSelectedHost)|$(_DorotiSelectedEntry)'." />
+    <Error Code="DOROTIAPP207" Condition="'$(_DorotiApplicationCount)' != '1' or '$(_DorotiApplicationTfm)' != 'net10.0'" Text="DorotiAppProject must expose exactly one net10.0 application contract; found count='$(_DorotiApplicationCount)', TFM='$(_DorotiApplicationTfm)'." />
+    <Error Code="DOROTIAPP208" Condition="'@(_DorotiUnexpectedCompile)' != ''" Text="A runner cannot compile source outside its own platform directory: @(_DorotiUnexpectedCompile)." />
+    <Error Code="DOROTIAPP209" Condition="'@(_DorotiDisallowedXaml)' != ''" Text="Only the runner-owned App.xaml ApplicationDefinition is allowed: @(_DorotiDisallowedXaml)." />
+    <Error Code="DOROTIAPP210" Condition="'@(_DorotiManifest-&gt;Count())' != '1'" Text="A runner requires exactly one Doroti.Application.Manifest resource; found '@(_DorotiManifest-&gt;Count())'." />
+    <Error Code="DOROTIRUNNER310" Condition="'@(_DorotiManualNativeBindingReference)' != ''" Text="Declare a native binding only with DorotiNativeBindingProject; remove the duplicate ProjectReference: @(_DorotiManualNativeBindingReference)." />
   </Target>
-
   <Target Name="GenerateDorotiRunnerBootstrap" DependsOnTargets="ValidateDorotiRunner" BeforeTargets="PrepareForBuild;CoreCompile">
+    <Error Code="DOROTIPROVIDER001" Condition="'$(DorotiProviderSuppliesBootstrap)' != 'true'" Text="The selected provider must supply its bootstrap assets through DorotiProviderBootstrapTargets." />
     <MakeDir Directories="$(_DorotiGeneratedDirectory)" />
     <ItemGroup>
       <_DorotiPluginLines Include="// &lt;auto-generated /&gt;" />
@@ -385,7 +109,7 @@
       <_DorotiPluginLines Include="{" />
       <_DorotiPluginLines Include="    internal static readonly global::Doroti.Hosting.DorotiApplicationPluginRegistration[] Items =" />
       <_DorotiPluginLines Include="    [" />
-      <_DorotiPluginLines Include="@(DorotiJavaScriptPlugin->'        new global::Doroti.Hosting.DorotiApplicationPluginRegistration(&quot;%(Identity)&quot;, &quot;%(Channel)&quot;, &quot;doroti.browser-js-plugin/v1&quot;, &quot;%(ModuleUrl)&quot;, &quot;%(ExportName)&quot;),')" />
+      <_DorotiPluginLines Include="@(DorotiJavaScriptPlugin-&gt;'        new global::Doroti.Hosting.DorotiApplicationPluginRegistration(&quot;%(Identity)&quot;, &quot;%(Channel)&quot;, &quot;doroti.browser-js-plugin/v1&quot;, &quot;%(ModuleUrl)&quot;, &quot;%(ExportName)&quot;),')" />
       <_DorotiPluginLines Include="    ]%3B" />
       <_DorotiPluginLines Include="}" />
       <_DorotiBootstrapLines Include="// &lt;auto-generated /&gt;" />
@@ -397,29 +121,7 @@
       <_DorotiBootstrapLines Include="        global::Doroti.Hosting.DorotiApplicationFactory.Create&lt;global::$(DorotiApplicationType)&gt;(" />
       <_DorotiBootstrapLines Include="            global::Doroti.Hosting.DorotiLaunchContext.Create(&quot;$(DorotiTarget)&quot;, &quot;$(RuntimeIdentifier)&quot;, args), DorotiPluginRegistration.Items, typeof(DorotiBootstrap).Assembly, DorotiNativePluginRegistration.Items)%3B" Condition="'$(DorotiDesktopStartupType)' == ''" />
       <_DorotiBootstrapLines Include="            global::Doroti.Hosting.DorotiLaunchContext.Create(&quot;$(DorotiTarget)&quot;, &quot;$(RuntimeIdentifier)&quot;, args), DorotiPluginRegistration.Items, typeof(DorotiBootstrap).Assembly, DorotiNativePluginRegistration.Items))%3B" Condition="'$(DorotiDesktopStartupType)' != ''" />
-      <_DorotiBootstrapLines Include="    [global::System.Runtime.Versioning.SupportedOSPlatform(&quot;browser&quot;)]" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
-      <_DorotiBootstrapLines Include="    public static global::System.Threading.Tasks.Task Main(string[] args) =&gt;" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
-      <_DorotiBootstrapLines Include="        global::System.Threading.Tasks.Task.CompletedTask%3B" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
-      <_DorotiBootstrapLines Include="    [global::System.Runtime.InteropServices.JavaScript.JSExport]" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
-      <_DorotiBootstrapLines Include="    public static global::System.Threading.Tasks.Task&lt;string&gt; StartWorker() =&gt;" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
-      <_DorotiBootstrapLines Include="        global::Doroti.Target.Web.DorotiWebWorkerRunner.RunAsync&lt;global::$(DorotiApplicationType)&gt;(typeof(DorotiBootstrap).Assembly, DorotiPluginRegistration.Items, nativePlugins: DorotiNativePluginRegistration.Items)%3B" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main' and '$(DorotiWebFontOptions)' == ''" />
-      <_DorotiBootstrapLines Include="        global::Doroti.Target.Web.DorotiWebWorkerRunner.RunAsync&lt;global::$(DorotiApplicationType)&gt;(typeof(DorotiBootstrap).Assembly, DorotiPluginRegistration.Items, fontFallbackOptions: $(DorotiWebFontOptions), nativePlugins: DorotiNativePluginRegistration.Items)%3B" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main' and '$(DorotiWebFontOptions)' != ''" />
-      <_DorotiBootstrapLines Include="    [global::System.Runtime.InteropServices.JavaScript.JSExport]" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
-      <_DorotiBootstrapLines Include="    public static void StopWorker() =&gt;" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
-      <_DorotiBootstrapLines Include="        global::Doroti.Target.Web.DorotiWebWorkerRunner.Dispose()%3B" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
-      <_DorotiBootstrapLines Include="    public static void Main(string[] args) =&gt;" Condition="'$(DorotiNativeEntryKind)' == 'UIKit-Main'" />
-      <_DorotiBootstrapLines Include="        global::UIKit.UIApplication.Main(args, null, typeof(global::$(RootNamespace).AppDelegate))%3B" Condition="'$(DorotiNativeEntryKind)' == 'UIKit-Main'" />
-      <_DorotiBootstrapLines Include="    public static void Main(string[] args)" Condition="'$(DorotiNativeEntryKind)' == 'AppKit-Main'" />
-      <_DorotiBootstrapLines Include="    {" Condition="'$(DorotiNativeEntryKind)' == 'AppKit-Main'" />
-      <_DorotiBootstrapLines Include="        global::AppKit.NSApplication.Init()%3B" Condition="'$(DorotiNativeEntryKind)' == 'AppKit-Main'" />
-      <_DorotiBootstrapLines Include="        global::AppKit.NSApplication.SharedApplication.Delegate = new global::$(RootNamespace).AppKitDelegate()%3B" Condition="'$(DorotiNativeEntryKind)' == 'AppKit-Main'" />
-      <_DorotiBootstrapLines Include="        global::AppKit.NSApplication.Main(args)%3B" Condition="'$(DorotiNativeEntryKind)' == 'AppKit-Main'" />
-      <_DorotiBootstrapLines Include="    }" Condition="'$(DorotiNativeEntryKind)' == 'AppKit-Main'" />
-      <_DorotiBootstrapLines Include="    public static int Main(string[] args) =&gt;" Condition="'$(DorotiNativeEntryKind)' == 'Qt-Main'" />
-      <_DorotiBootstrapLines Include="        global::Doroti.Host.Qt.DorotiQtRunner.Run(Create(args))%3B" Condition="'$(DorotiNativeEntryKind)' == 'Qt-Main'" />
-      <_DorotiBootstrapLines Include="    [global::System.STAThread]" Condition="'$(DorotiNativeEntryKind)' == 'Win32-WinMain'" />
-      <_DorotiBootstrapLines Include="    public static int Main(string[] args) =&gt;" Condition="'$(DorotiNativeEntryKind)' == 'Win32-WinMain'" />
-      <_DorotiBootstrapLines Include="        global::Doroti.Host.WindowsAppSdk.DorotiWindowsAppSdkRunner.Run(Create(args))%3B" Condition="'$(DorotiNativeEntryKind)' == 'Win32-WinMain'" />
+      <_DorotiBootstrapLines Include="@(DorotiProviderEntryLine)" />
       <_DorotiBootstrapLines Include="}" />
       <_DorotiNativePluginLines Include="// &lt;auto-generated /&gt;" />
       <_DorotiNativePluginLines Include="namespace Doroti.Generated%3B" />
@@ -427,7 +129,7 @@
       <_DorotiNativePluginLines Include="{" />
       <_DorotiNativePluginLines Include="    internal static readonly global::Doroti.Hosting.IDorotiNativePluginHandler[] Items =" />
       <_DorotiNativePluginLines Include="    [" />
-      <_DorotiNativePluginLines Include="@(DorotiNativePlugin->'        new global::%(HandlerType)(),')" />
+      <_DorotiNativePluginLines Include="@(DorotiNativePlugin-&gt;'        new global::%(HandlerType)(),')" />
       <_DorotiNativePluginLines Include="        new global::$(RootNamespace).DorotiNativePlatformBridge()," Condition="'@(DorotiNativeBindingProject)' != ''" />
       <_DorotiNativePluginLines Include="    ]%3B" />
       <_DorotiNativePluginLines Include="}" />
@@ -439,7 +141,6 @@
       <FileWrites Include="$(_DorotiBootstrapFile);$(_DorotiPluginRegistrationFile);$(_DorotiNativePluginRegistrationFile)" />
     </ItemGroup>
   </Target>
-
   <Target Name="WriteDorotiTargetGraph" DependsOnTargets="GenerateDorotiRunnerBootstrap">
     <ItemGroup>
       <_DorotiGraphLine Include="applicationProject=$(DorotiAppProject)" />
@@ -459,152 +160,16 @@
     </ItemGroup>
     <WriteLinesToFile File="$(BaseIntermediateOutputPath)doroti-target-graph.txt" Overwrite="true" WriteOnlyWhenDifferent="true" Lines="@(_DorotiGraphLine)" />
   </Target>
-
-  <Target Name="DorotiExcludeReleasePublishSymbols"
-          AfterTargets="Publish"
-          Condition="'$(Configuration)' == 'Release' and ('$(DorotiTarget)' == 'Windows' or '$(DorotiTarget)' == 'Web')">
+  <Target Name="DorotiExcludeReleasePublishSymbols" AfterTargets="Publish" Condition="'$(Configuration)' == 'Release' and '$(DorotiProviderExcludePublishSymbols)' == 'true'">
     <ItemGroup>
       <_DorotiReleasePublishSymbol Include="$(PublishDir)**/*.pdb" />
     </ItemGroup>
     <Delete Files="@(_DorotiReleasePublishSymbol)" />
   </Target>
-
-  <Target Name="DorotiWriteWindowsNativeBuildProvenance"
-          AfterTargets="CopyFilesToOutputDirectory"
-          Condition="'$(DorotiTarget)' == 'Windows' and '$(DorotiHostKind)' == 'WindowsAppSdk' and Exists('$(TargetDir)doroti_windows_appsdk_host_v1.dll') and Exists('$(TargetDir)Microsoft.WindowsAppRuntime.Bootstrap.dll')">
-    <GetFileHash Files="$(TargetDir)doroti_windows_appsdk_host_v1.dll" Algorithm="SHA256">
-      <Output TaskParameter="Items" ItemName="_DorotiNativeHostHash" />
-    </GetFileHash>
-    <GetFileHash Files="$(TargetDir)Microsoft.WindowsAppRuntime.Bootstrap.dll" Algorithm="SHA256">
-      <Output TaskParameter="Items" ItemName="_DorotiBootstrapHash" />
-    </GetFileHash>
-    <PropertyGroup>
-      <_DorotiNativeHostHashValue>@(_DorotiNativeHostHash->'%(FileHash)')</_DorotiNativeHostHashValue>
-      <_DorotiBootstrapHashValue>@(_DorotiBootstrapHash->'%(FileHash)')</_DorotiBootstrapHashValue>
-    </PropertyGroup>
+  <Target Name="GetDorotiPlatformContract" Returns="@(_DorotiPlatformContract)">
+    <Error Code="DOROTIPROVIDER002" Condition="'@(DorotiTargetDescriptor-&gt;Count())' != '1' or '$(DorotiProviderId)' == '' or '$(DorotiProviderProtocolVersion)' != '1'" Text="Exactly one target descriptor and a provider protocol v1 contract are required." />
     <ItemGroup>
-      <_DorotiNativeProvenanceLine Include="{&quot;schemaVersion&quot;:&quot;doroti.windows.native-provenance/v2&quot;,&quot;nativeHostSha256&quot;:&quot;$(_DorotiNativeHostHashValue)&quot;,&quot;bootstrapSha256&quot;:&quot;$(_DorotiBootstrapHashValue)&quot;}" />
-    </ItemGroup>
-    <WriteLinesToFile File="$(TargetDir)doroti-native-provenance.json" Lines="@(_DorotiNativeProvenanceLine)" Overwrite="true" WriteOnlyWhenDifferent="true" />
-    <ItemGroup>
-      <FileWrites Include="$(TargetDir)doroti-native-provenance.json" />
-    </ItemGroup>
-  </Target>
-
-  <Target Name="DorotiWriteWindowsNativePublishProvenance"
-          AfterTargets="Publish"
-          Condition="'$(DorotiTarget)' == 'Windows' and '$(DorotiHostKind)' == 'WindowsAppSdk' and Exists('$(PublishDir)doroti_windows_appsdk_host_v1.dll') and Exists('$(PublishDir)Microsoft.WindowsAppRuntime.Bootstrap.dll')">
-    <GetFileHash Files="$(PublishDir)doroti_windows_appsdk_host_v1.dll" Algorithm="SHA256">
-      <Output TaskParameter="Items" ItemName="_DorotiPublishNativeHostHash" />
-    </GetFileHash>
-    <GetFileHash Files="$(PublishDir)Microsoft.WindowsAppRuntime.Bootstrap.dll" Algorithm="SHA256">
-      <Output TaskParameter="Items" ItemName="_DorotiPublishBootstrapHash" />
-    </GetFileHash>
-    <PropertyGroup>
-      <_DorotiPublishNativeHostHashValue>@(_DorotiPublishNativeHostHash->'%(FileHash)')</_DorotiPublishNativeHostHashValue>
-      <_DorotiPublishBootstrapHashValue>@(_DorotiPublishBootstrapHash->'%(FileHash)')</_DorotiPublishBootstrapHashValue>
-    </PropertyGroup>
-    <ItemGroup>
-      <_DorotiPublishNativeProvenanceLine Include="{&quot;schemaVersion&quot;:&quot;doroti.windows.native-provenance/v2&quot;,&quot;nativeHostSha256&quot;:&quot;$(_DorotiPublishNativeHostHashValue)&quot;,&quot;bootstrapSha256&quot;:&quot;$(_DorotiPublishBootstrapHashValue)&quot;}" />
-    </ItemGroup>
-    <WriteLinesToFile File="$(PublishDir)doroti-native-provenance.json" Lines="@(_DorotiPublishNativeProvenanceLine)" Overwrite="true" WriteOnlyWhenDifferent="true" />
-  </Target>
-
-  <!-- Linked web content can live anywhere in the app. Development manifests
-       must resolve its physical source, rather than look under web/wwwroot.
-       Computed assets preserve Link as the public route and Identity as source. -->
-  <Target Name="DorotiResolveLinkedWebContentRoots"
-          Condition="'$(DorotiTarget)' == 'Web'"
-          BeforeTargets="ResolveProjectStaticWebAssets;ResolveCurrentProjectStaticWebAssetsInputs">
-    <ItemGroup>
-      <Content Update="@(Content)"
-               Condition="$([System.String]::Copy('%(Content.Link)').Replace('\', '/').StartsWith('wwwroot/')) and '%(Content.ContentRoot)' == ''">
-        <ContentRoot>$([MSBuild]::NormalizeDirectory('%(Content.RootDir)%(Content.Directory)'))</ContentRoot>
-        <SourceType Condition="'%(Content.SourceType)' == ''">Computed</SourceType>
-      </Content>
-    </ItemGroup>
-  </Target>
-
-  <Target Name="DorotiRegisterRunnerWebWwwrootStaticAssets"
-          Condition="'$(DorotiTarget)' == 'Web' and Exists('$(MSBuildProjectDirectory)\wwwroot')"
-          DependsOnTargets="ResolveStaticWebAssetsConfiguration"
-          BeforeTargets="ResolveProjectStaticWebAssets;ResolveCurrentProjectStaticWebAssetsInputs">
-    <PropertyGroup>
-      <_DorotiWebWwwrootDirectory>$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)\wwwroot'))</_DorotiWebWwwrootDirectory>
-    </PropertyGroup>
-    <ItemGroup>
-      <_DorotiWebWwwroot Include="wwwroot\**\*" Exclude="$(DorotiWebWwwrootExclude)" />
-      <_DorotiWebWwwroot Update="@(_DorotiWebWwwroot)">
-        <RelativePath>%(RecursiveDir)%(Filename)%(Extension)</RelativePath>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </_DorotiWebWwwroot>
-      <Content Remove="@(_DorotiWebWwwroot)" />
-    </ItemGroup>
-    <DefineStaticWebAssets CandidateAssets="@(_DorotiWebWwwroot)" FingerprintCandidates="$(StaticWebAssetsFingerprintContent)"
-        FingerprintPatterns="@(StaticWebAssetFingerprintPattern)" SourceId="$(PackageId)" SourceType="Discovered"
-        ContentRoot="$(_DorotiWebWwwrootDirectory)" BasePath="$(StaticWebAssetBasePath)">
-      <Output TaskParameter="Assets" ItemName="StaticWebAsset" />
-      <Output TaskParameter="Assets" ItemName="_DorotiWebWwwrootStaticWebAsset" />
-    </DefineStaticWebAssets>
-    <DefineStaticWebAssetEndpoints CandidateAssets="@(_DorotiWebWwwrootStaticWebAsset)" ContentTypeMappings="@(StaticWebAssetContentTypeMapping)">
-      <Output TaskParameter="Endpoints" ItemName="StaticWebAssetEndpoint" />
-    </DefineStaticWebAssetEndpoints>
-    <ItemGroup>
-      <StaticWebAssetDiscoveryPattern Include="$(PackageId)\wwwroot">
-        <Source>$(PackageId)</Source><BasePath>$(StaticWebAssetBasePath)</BasePath>
-        <ContentRoot>$(_DorotiWebWwwrootDirectory)</ContentRoot><Pattern>**</Pattern>
-      </StaticWebAssetDiscoveryPattern>
-    </ItemGroup>
-  </Target>
-
-  <Import Project="$(MSBuildThisFileDirectory)Doroti.TypeScript.targets"
-          Condition="'$(DorotiWebTypeScript)' == 'true' and Exists('$(MSBuildThisFileDirectory)Doroti.TypeScript.targets')" />
-  <Import Project="$(MSBuildThisFileDirectory)..\..\Doroti.App.Sdk\Sdk\Doroti.TypeScript.targets"
-          Condition="'$(DorotiWebTypeScript)' == 'true' and !Exists('$(MSBuildThisFileDirectory)Doroti.TypeScript.targets')" />
-  <Import Project="$(MSBuildThisFileDirectory)Doroti.Web.targets" />
-  <Import Project="$(MSBuildThisFileDirectory)Doroti.Qt.targets" />
-  <!-- Project-reference builds do not import a dependency's NuGet buildTransitive assets. -->
-  <Import Project="$(MSBuildThisFileDirectory)..\..\Doroti.Host.Maui\buildTransitive\Doroti.Host.Maui.targets"
-          Condition="'$(DorotiTarget)' == 'iOS' and '$(DorotiMauiNativeTargetsImported)' != 'true' and Exists('$(MSBuildThisFileDirectory)..\..\Doroti.Host.Maui\buildTransitive\Doroti.Host.Maui.targets')" />
-  <!-- Carry a locally selected default through RID-less framework negotiation.
-       Do not propagate executable PublishAot to neutral libraries. -->
-  <Target Name="DorotiApplyIosCompilationProfileToRestore"
-          BeforeTargets="_FilterRestoreGraphProjectInputItems"
-          Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(DorotiTarget)' == 'iOS'">
-    <PropertyGroup>
-      <_GenerateRestoreGraphProjectEntryInputProperties>$(_GenerateRestoreGraphProjectEntryInputProperties);DorotiCompilationMode=$(DorotiCompilationMode);DorotiIosTargetFramework=$(DorotiIosTargetFramework);DorotiIosMauiVersion=$(DorotiIosMauiVersion);RuntimeIdentifier=$(RuntimeIdentifier);ArtifactsPath=$(ArtifactsPath)</_GenerateRestoreGraphProjectEntryInputProperties>
-    </PropertyGroup>
-  </Target>
-  <ItemGroup Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(DorotiTarget)' == 'iOS'">
-    <ProjectReference Update="@(ProjectReference)">
-      <AdditionalProperties>%(ProjectReference.AdditionalProperties);DorotiCompilationMode=$(DorotiCompilationMode);DorotiIosTargetFramework=$(DorotiIosTargetFramework);DorotiIosMauiVersion=$(DorotiIosMauiVersion);ArtifactsPath=$(ArtifactsPath)</AdditionalProperties>
-    </ProjectReference>
-  </ItemGroup>
-  <!-- NuGet adds transitive references during target execution, after the
-       evaluated ProjectReference items above. Carry the selected profile into
-       their RID-less framework discovery as well. -->
-  <Target Name="DorotiApplyIosCompilationProfileToTransitiveReferences"
-          AfterTargets="IncludeTransitiveProjectReferences"
-          Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(DorotiTarget)' == 'iOS'">
-    <ItemGroup>
-      <ProjectReference Update="@(_TransitiveProjectReferences)">
-        <AdditionalProperties>%(ProjectReference.AdditionalProperties);DorotiCompilationMode=$(DorotiCompilationMode);DorotiIosTargetFramework=$(DorotiIosTargetFramework);DorotiIosMauiVersion=$(DorotiIosMauiVersion);ArtifactsPath=$(ArtifactsPath)</AdditionalProperties>
-      </ProjectReference>
-    </ItemGroup>
-  </Target>
-  <Import Project="Doroti.NativeAot.Evidence.targets" Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(DorotiTarget)' == 'iOS'" />
-  <!-- NuGet also injects a direct transitive reference to Host.Maui. Keep it on
-       the same RID-specific intermediate path as the selected native target reference. -->
-  <Target Name="DorotiApplyAppleRuntimeToTransitiveReferences"
-          AfterTargets="IncludeTransitiveProjectReferences"
-          Condition="('$(DorotiTarget)' == 'iOS' and ('$(RuntimeIdentifier)' == 'ios-arm64' or '$(RuntimeIdentifier)' == 'iossimulator-arm64' or '$(RuntimeIdentifier)' == 'iossimulator-x64')) or ('$(DorotiTarget)' == 'macOS' and '$(RuntimeIdentifier)' == 'osx-arm64') or ('$(DorotiTarget)' == 'MacCatalyst' and '$(RuntimeIdentifier)' == 'maccatalyst-arm64') or ('$(DorotiTarget)' == 'Android' and ('$(RuntimeIdentifier)' == 'android-arm64' or '$(RuntimeIdentifier)' == 'android-x64'))">
-    <ItemGroup>
-      <ProjectReference Update="@(_TransitiveProjectReferences)" Condition="'%(Filename)' == 'Doroti.Host.Maui'">
-        <AdditionalProperties>%(ProjectReference.AdditionalProperties);RuntimeIdentifier=$(RuntimeIdentifier)</AdditionalProperties>
-        <SetTargetFramework>TargetFramework=$(TargetFramework)</SetTargetFramework>
-        <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-      </ProjectReference>
+      <_DorotiPlatformContract Include="$(MSBuildProjectFullPath)" Provider="$(DorotiProviderId)" ProviderVersion="$(DorotiProviderVersion)" CoreRange="$(DorotiProviderCoreRange)" ProtocolVersion="$(DorotiProviderProtocolVersion)" Profile="$(DorotiProviderProfile)" TargetId="$(DorotiTarget)" TargetPackage="@(DorotiTargetDescriptor-&gt;'%(TargetPackage)')" Backend="$(DorotiHostKind)" TargetFramework="$(TargetFramework)" RuntimeIdentifier="$(RuntimeIdentifier)" ToolPackage="$(DorotiProviderToolPackage)" BootstrapAssets="$(DorotiProviderBootstrapTargets)" />
     </ItemGroup>
   </Target>
 </Project>

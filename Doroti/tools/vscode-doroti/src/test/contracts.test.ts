@@ -7,15 +7,16 @@ test('names cannot escape output folder or name Windows devices', () => {
     for (const value of ['../app', 'x/y', 'x\\y', 'con', 'NUL.txt', 'Foo.', 'a..b', '1app', 'a;echo', 'a.1b', 'class', 'A.namespace']) assert.ok(validateName(value), value);
     for (const value of ['한글앱', 'My.App', 'Widget_2']) assert.equal(validateName(value), undefined);
 });
-test('CLI is authoritative for partial platform manifests', () => {
-    const project = { schemaVersion: 'doroti.cli-workspace/v1', root: path.resolve('.'), applicationProject: 'app.csproj', platforms: { web: 'web.csproj' }, developmentTargets: ['web'] };
-    assert.deepEqual(parseProject(JSON.stringify(project)).developmentTargets, ['web']);
-    assert.throws(() => parseProject(JSON.stringify({ ...project, developmentTargets: ['windows'] })));
-    for (const target of ['ios', 'macos', 'maccatalyst', 'linux']) {
-        assert.deepEqual(parseProject(JSON.stringify({ ...project, platforms: { [target]: target + '.csproj' }, developmentTargets: [target] })).developmentTargets, [target]);
-        assert.throws(() => parseProject(JSON.stringify({ ...project, developmentTargets: [target] })));
-    }
-    assert.deepEqual(parseProject(JSON.stringify({ ...project, platforms: { android: 'android.csproj' }, developmentTargets: ['android'] })).developmentTargets, ['android']);
+test('provider metadata is authoritative for arbitrary aliases, operations and transports', () => {
+    const alias = 'laboratory-x';
+    const runner = path.resolve('app.csproj');
+    const support = { platform: alias, runner, provider: 'external', version: '1.0.0', operations: ['build', 'dev'], development: { transport: 'file', debug: true, requiresPreparedAcknowledgment: false, usesStopSignal: false, launchBrowser: false } };
+    const project = { schemaVersion: 'doroti.cli-workspace/v2', root: path.resolve('.'), applicationProject: path.resolve('app.csproj'), platforms: { [alias]: runner }, developmentTargets: [alias], developmentSupport: [support] };
+    assert.deepEqual(parseProject(JSON.stringify(project)).developmentTargets, [alias]);
+    for (const bad of [{ schemaVersion: 'doroti.cli-workspace/v1' }, { developmentTargets: ['unknown'] }, { developmentSupport: [support, support] }, { developmentSupport: [{ ...support, operations: ['build'] }] }, { developmentSupport: [{ ...support, development: { ...support.development, transport: 'invalid' } }] }, { platforms: { '../escape': runner } }, { platforms: { [alias]: 'relative.csproj' } }])
+        assert.throws(() => parseProject(JSON.stringify({ ...project, ...bad })));
+    for (const transport of ['none', 'browser', 'device'])
+        assert.equal(parseProject(JSON.stringify({ ...project, developmentSupport: [{ ...support, development: { ...support.development, transport } }] })).developmentSupport[0].development.transport, transport);
 });
 test('watcher errors do not masquerade as applied reloads', () => {
     assert.equal(classifyOutput('error CS1002: ; expected'), 'compile-error');

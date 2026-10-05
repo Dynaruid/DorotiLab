@@ -7,7 +7,7 @@ namespace Doroti.Framework.Widgets;
 
 public delegate Widget OverlayChildLayoutBuilder(BuildContext context, OverlayChildLayoutInfo info);
 
-public class OverlayChildLayoutInfo
+public class OverlayChildLayoutInfo : IEquatable<OverlayChildLayoutInfo>
 {
     public (Size, Matrix4, Size) _info { get; }
 
@@ -28,6 +28,17 @@ public class OverlayChildLayoutInfo
     public virtual Size childSize => DartRuntimePrimitives.ConvertValue<Size>(_info.Item1);
     public virtual Matrix4 childPaintTransform => _info.Item2;
     public virtual Size overlaySize => DartRuntimePrimitives.ConvertValue<Size>(_info.Item3);
+
+    public bool Equals(OverlayChildLayoutInfo? other) => other is not null &&
+        Equals(childSize, other.childSize) && Equals(overlaySize, other.overlaySize) &&
+        childPaintTransform.storage.SequenceEqual(other.childPaintTransform.storage);
+    public override bool Equals(object? other) => other is OverlayChildLayoutInfo info && Equals(info);
+    public override int GetHashCode()
+    {
+        var hash = new HashCode(); hash.Add(childSize); hash.Add(overlaySize);
+        foreach (var value in childPaintTransform.storage) hash.Add(value);
+        return hash.ToHashCode();
+    }
 }
 
 public class OverlayEntry : Listenable

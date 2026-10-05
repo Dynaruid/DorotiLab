@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.props" />
+  <Import Project="../../../packages/platforms/build/Sdk.props" />
+  <Import Project="../../../Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.props" />
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>DorotiSampleApp2.Linux</AssemblyName>
@@ -11,12 +12,11 @@
     <SelfContained>false</SelfContained>
     <DorotiQtQuick>true</DorotiQtQuick>
     <DorotiQtWebEngine Condition="'$(DorotiQtWebEngine)' == '' and '$(DorotiQtQuick)' == 'true'">true</DorotiQtWebEngine>
+    <DorotiProviderBootstrapTargets>$(MSBuildProjectDirectory)/../../../packages/platforms/qt/bootstrap/Doroti.Provider.Bootstrap.targets</DorotiProviderBootstrapTargets>
   </PropertyGroup>
   <ItemGroup>
-    <DorotiTargetDescriptor Include="Linux" HostKind="Qt" NativeEntryKind="Qt-Main"
-        RuntimeIdentifier="linux-x64" TargetFramework="net10.0"
-        TargetPackage="Doroti.Target.Linux.Qt.linux-x64" />
-    <ProjectReference Include="..\..\..\Doroti\src\Doroti.Target.Linux.Qt.linux-x64\Doroti.Target.Linux.Qt.linux-x64.csproj" />
+    <DorotiTargetDescriptor Include="Linux" HostKind="Qt" NativeEntryKind="Qt-Main" RuntimeIdentifier="linux-x64" TargetFramework="net10.0" TargetPackage="Doroti.Target.Linux.Qt.linux-x64" />
+    <ProjectReference Include="../../../packages/platforms/qt/Doroti.Target.Linux.Qt.linux-x64/Doroti.Target.Linux.Qt.linux-x64.csproj" />
   </ItemGroup>
-  <Import Project="..\..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.targets" />
+  <Import Project="../../../Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.targets" />
 </Project>

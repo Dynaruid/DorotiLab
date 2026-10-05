@@ -1,0 +1,560 @@
+{
+  "schema": "doroti.platform-provider-verification/v1",
+  "result": "PASS",
+  "results": [
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "pack",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\src\\Doroti.Runtime\\Doroti.Runtime.csproj",
+        "-c",
+        "Debug",
+        "-o",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\feed"
+      ],
+      "result": "PASS",
+      "expectedFailure": false
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "pack",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\src\\Doroti.Ui\\Doroti.Ui.csproj",
+        "-c",
+        "Debug",
+        "-o",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\feed"
+      ],
+      "result": "PASS",
+      "expectedFailure": false
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "pack",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\src\\Doroti.Hosting\\Doroti.Hosting.csproj",
+        "-c",
+        "Debug",
+        "-o",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\feed"
+      ],
+      "result": "PASS",
+      "expectedFailure": false
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "pack",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\tests\\fixtures\\test-headless\\runtime\\TestHeadless.Runtime.csproj",
+        "-c",
+        "Debug",
+        "-o",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\feed"
+      ],
+      "result": "PASS",
+      "expectedFailure": false
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "pack",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\src\\Doroti.Tooling.Contracts\\Doroti.Tooling.Contracts.csproj",
+        "-c",
+        "Debug",
+        "-o",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\feed"
+      ],
+      "result": "PASS",
+      "expectedFailure": false
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "pack",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\src\\Doroti.Tooling.Extension.Sdk\\Doroti.Tooling.Extension.Sdk.csproj",
+        "-c",
+        "Debug",
+        "-o",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\feed"
+      ],
+      "result": "PASS",
+      "expectedFailure": false
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "pack",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\tests\\fixtures\\test-headless\\tooling\\TestHeadless.Tool.csproj",
+        "-c",
+        "Debug",
+        "-o",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\feed"
+      ],
+      "result": "PASS",
+      "expectedFailure": false
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "build",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\tools\\Doroti.Tooling\\Doroti.Tooling.csproj",
+        "-c",
+        "Debug"
+      ],
+      "result": "PASS",
+      "expectedFailure": false
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "restore",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\app\\App.csproj"
+      ],
+      "result": "PASS",
+      "expectedFailure": false
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\tools\\Doroti.Tooling\\bin\\Debug\\net10.0\\Doroti.Tooling.dll",
+        "describe",
+        "-App",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\app",
+        "-Platform",
+        "laboratory-x"
+      ],
+      "result": "PASS",
+      "expectedFailure": false
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\tools\\Doroti.Tooling\\bin\\Debug\\net10.0\\Doroti.Tooling.dll",
+        "describe",
+        "-App",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\app",
+        "-Platform",
+        "unavailable"
+      ],
+      "result": "PASS",
+      "expectedFailure": true
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\tools\\Doroti.Tooling\\bin\\Debug\\net10.0\\Doroti.Tooling.dll",
+        "doctor",
+        "-App",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\app",
+        "-Platform",
+        "laboratory-x"
+      ],
+      "result": "PASS",
+      "expectedFailure": false
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\tools\\Doroti.Tooling\\bin\\Debug\\net10.0\\Doroti.Tooling.dll",
+        "devices",
+        "-App",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\app",
+        "-Platform",
+        "laboratory-x"
+      ],
+      "result": "PASS",
+      "expectedFailure": false
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\tools\\Doroti.Tooling\\bin\\Debug\\net10.0\\Doroti.Tooling.dll",
+        "configuration",
+        "-App",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\app",
+        "-Platform",
+        "laboratory-x"
+      ],
+      "result": "PASS",
+      "expectedFailure": false
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\tools\\Doroti.Tooling\\bin\\Debug\\net10.0\\Doroti.Tooling.dll",
+        "templates",
+        "-App",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\app",
+        "-Platform",
+        "laboratory-x"
+      ],
+      "result": "PASS",
+      "expectedFailure": false
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\tools\\Doroti.Tooling\\bin\\Debug\\net10.0\\Doroti.Tooling.dll",
+        "build",
+        "-App",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\app",
+        "-Platform",
+        "laboratory-x",
+        "-Device",
+        "host-process"
+      ],
+      "result": "PASS",
+      "expectedFailure": false
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\tools\\Doroti.Tooling\\bin\\Debug\\net10.0\\Doroti.Tooling.dll",
+        "run",
+        "-App",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\app",
+        "-Platform",
+        "laboratory-x",
+        "-Device",
+        "host-process"
+      ],
+      "result": "PASS",
+      "expectedFailure": false
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\tools\\Doroti.Tooling\\bin\\Debug\\net10.0\\Doroti.Tooling.dll",
+        "generate",
+        "-App",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\app",
+        "-Platform",
+        "laboratory-x",
+        "-Output",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\app\\generated",
+        "-Template",
+        "headless-app",
+        "-Design",
+        "widgets"
+      ],
+      "result": "PASS",
+      "expectedFailure": false
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "run",
+        "--project",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\app\\generated\\Generated.csproj"
+      ],
+      "result": "PASS",
+      "expectedFailure": false
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\tools\\Doroti.Tooling\\bin\\Debug\\net10.0\\Doroti.Tooling.dll",
+        "run",
+        "-App",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\app",
+        "-Platform",
+        "laboratory-x",
+        "-Device",
+        "unavailable"
+      ],
+      "result": "PASS",
+      "expectedFailure": true
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\tools\\Doroti.Tooling\\bin\\Debug\\net10.0\\Doroti.Tooling.dll",
+        "describe",
+        "-App",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\app",
+        "-Platform",
+        "laboratory-x"
+      ],
+      "result": "PASS",
+      "expectedFailure": true
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\tools\\Doroti.Tooling\\bin\\Debug\\net10.0\\Doroti.Tooling.dll",
+        "describe",
+        "-App",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\app",
+        "-Platform",
+        "laboratory-x"
+      ],
+      "result": "PASS",
+      "expectedFailure": true
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\tools\\Doroti.Tooling\\bin\\Debug\\net10.0\\Doroti.Tooling.dll",
+        "describe",
+        "-App",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\app",
+        "-Platform",
+        "laboratory-x"
+      ],
+      "result": "PASS",
+      "expectedFailure": true
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\tools\\Doroti.Tooling\\bin\\Debug\\net10.0\\Doroti.Tooling.dll",
+        "describe",
+        "-App",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\app",
+        "-Platform",
+        "laboratory-x"
+      ],
+      "result": "PASS",
+      "expectedFailure": true
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\tools\\Doroti.Tooling\\bin\\Debug\\net10.0\\Doroti.Tooling.dll",
+        "describe",
+        "-App",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\app",
+        "-Platform",
+        "laboratory-x"
+      ],
+      "result": "PASS",
+      "expectedFailure": true
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\tools\\Doroti.Tooling\\bin\\Debug\\net10.0\\Doroti.Tooling.dll",
+        "describe",
+        "-App",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\app",
+        "-Platform",
+        "laboratory-x"
+      ],
+      "result": "PASS",
+      "expectedFailure": true
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\tools\\Doroti.Tooling\\bin\\Debug\\net10.0\\Doroti.Tooling.dll",
+        "describe",
+        "-App",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\app",
+        "-Platform",
+        "laboratory-x"
+      ],
+      "result": "PASS",
+      "expectedFailure": true
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\tools\\Doroti.Tooling\\bin\\Debug\\net10.0\\Doroti.Tooling.dll",
+        "describe",
+        "-App",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\app",
+        "-Platform",
+        "laboratory-x"
+      ],
+      "result": "PASS",
+      "expectedFailure": true
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\tools\\Doroti.Tooling\\bin\\Debug\\net10.0\\Doroti.Tooling.dll",
+        "describe",
+        "-App",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\app",
+        "-Platform",
+        "laboratory-x"
+      ],
+      "result": "PASS",
+      "expectedFailure": true
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\tools\\Doroti.Tooling\\bin\\Debug\\net10.0\\Doroti.Tooling.dll",
+        "describe",
+        "-App",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\app",
+        "-Platform",
+        "laboratory-x"
+      ],
+      "result": "PASS",
+      "expectedFailure": true
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\tools\\Doroti.Tooling\\bin\\Debug\\net10.0\\Doroti.Tooling.dll",
+        "describe",
+        "-App",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\app",
+        "-Platform",
+        "laboratory-x"
+      ],
+      "result": "PASS",
+      "expectedFailure": true
+    },
+    {
+      "command": [
+        "C:\\Users\\parti\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\eng\\run-with-timeout.py",
+        "--timeout",
+        "1200",
+        "dotnet",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\tools\\Doroti.Tooling\\bin\\Debug\\net10.0\\Doroti.Tooling.dll",
+        "describe",
+        "-App",
+        "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\platform-decoupling\\providers\\1667187133bd433aaf4ebe42b5b6e136\\app",
+        "-Platform",
+        "laboratory-x"
+      ],
+      "result": "PASS",
+      "expectedFailure": true
+    }
+  ],
+  "scope": "external NuGet-only runtime and installed tool descriptor discovery; arbitrary alias and actual CLI services/build/run; target schema/package/provider identity/profile/RID/core range/protocol and installed tool version/core-range mismatch rejection",
+  "notVerified": [
+    "native Windows G1",
+    "physical input/GPU",
+    "complete built-in provider migration"
+  ],
+  "runId": "1667187133bd433aaf4ebe42b5b6e136"
+}

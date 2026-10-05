@@ -14,8 +14,15 @@ public static partial class Image_cacheLibrary
     internal static long _kDefaultSizeBytes = 100L << (int)20L;
 }
 
-public class ImageCache
+public class ImageCache : IDisposable
 {
+    private bool _closed;
+    public void Dispose()
+    {
+        if (_closed) return;
+        _closed = true;
+        DorotiCleanup.Run(clear, clearLiveImages);
+    }
     internal virtual DartMap<object, _PendingImage__image_cache> _pendingImages
     {
         get;
@@ -257,6 +264,7 @@ public class ImageCache
         Action<object, System.Diagnostics.StackTrace?>? onError = null
     )
     {
+        ObjectDisposedException.ThrowIf(_closed, this);
         TimelineTask? debugTimelineTask = default!;
         if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
@@ -352,6 +360,12 @@ public class ImageCache
         _PendingImage__image_cache pendingImage = default!;
         void listener(ImageInfo? info, bool syncCall)
         {
+            if (_closed)
+            {
+                info?.dispose();
+                pendingImage.removeListener();
+                return;
+            }
             long? sizeBytesLocal = default!;
             if (info is not null)
             {

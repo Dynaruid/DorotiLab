@@ -1,0 +1,178 @@
+{
+  "schemaVersion": "doroti.platform-provider/v1",
+  "id": "maui",
+  "version": "0.4.0-alpha.1",
+  "coreRange": "[0.4.0-alpha.1,0.5.0)",
+  "protocolVersion": 1,
+  "registrationType": "Doroti.Host.Maui.DorotiMauiApplication",
+  "hostOperatingSystems": [
+    "windows",
+    "macos",
+    "linux"
+  ],
+  "operations": [
+    "build",
+    "run",
+    "publish",
+    "dev"
+  ],
+  "services": [
+    "configuration",
+    "diagnostics",
+    "devices",
+    "operations"
+  ],
+  "tool": {
+    "mode": "dotnetInproc",
+    "assembly": "tooling/bin/Release/net10.0/Doroti.Tool.Maui.dll",
+    "entryType": "Doroti.Tool.Maui.Extension",
+    "executable": null,
+    "arguments": [],
+    "project": "tooling/Doroti.Tool.Maui.csproj"
+  },
+  "profiles": {
+    "default:android-arm64": {
+      "hostOperatingSystems": [
+        "windows",
+        "macos",
+        "linux"
+      ],
+      "operations": [
+        "build",
+        "run",
+        "publish"
+      ],
+      "development": {
+        "transport": "file",
+        "debug": false,
+        "requiresPreparedAcknowledgment": false,
+        "usesStopSignal": false,
+        "launchBrowser": false
+      }
+    },
+    "default:android-x64": {
+      "hostOperatingSystems": [
+        "windows",
+        "macos",
+        "linux"
+      ],
+      "operations": [
+        "build",
+        "run",
+        "publish"
+      ],
+      "development": {
+        "transport": "file",
+        "debug": false,
+        "requiresPreparedAcknowledgment": false,
+        "usesStopSignal": false,
+        "launchBrowser": false
+      }
+    },
+    "default:ios-arm64": {
+      "hostOperatingSystems": [
+        "macos"
+      ],
+      "operations": [
+        "build",
+        "run",
+        "publish"
+      ],
+      "development": {
+        "transport": "file",
+        "debug": false,
+        "requiresPreparedAcknowledgment": false,
+        "usesStopSignal": false,
+        "launchBrowser": false
+      }
+    },
+    "default:iossimulator-arm64": {
+      "hostOperatingSystems": [
+        "macos"
+      ],
+      "operations": [
+        "build",
+        "run",
+        "publish"
+      ],
+      "development": {
+        "transport": "file",
+        "debug": false,
+        "requiresPreparedAcknowledgment": false,
+        "usesStopSignal": false,
+        "launchBrowser": false
+      }
+    },
+    "default:iossimulator-x64": {
+      "hostOperatingSystems": [
+        "macos"
+      ],
+      "operations": [
+        "build",
+        "run",
+        "publish"
+      ],
+      "development": {
+        "transport": "file",
+        "debug": false,
+        "requiresPreparedAcknowledgment": false,
+        "usesStopSignal": false,
+        "launchBrowser": false
+      }
+    },
+    "default:maccatalyst-arm64": {
+      "hostOperatingSystems": [
+        "macos"
+      ],
+      "operations": [
+        "build",
+        "run",
+        "publish",
+        "dev"
+      ],
+      "development": {
+        "transport": "file",
+        "debug": true,
+        "requiresPreparedAcknowledgment": false,
+        "usesStopSignal": false,
+        "launchBrowser": false
+      }
+    },
+    "default:osx-arm64": {
+      "hostOperatingSystems": [
+        "macos"
+      ],
+      "operations": [
+        "build",
+        "run",
+        "publish",
+        "dev"
+      ],
+      "development": {
+        "transport": "file",
+        "debug": true,
+        "requiresPreparedAcknowledgment": false,
+        "usesStopSignal": false,
+        "launchBrowser": false
+      }
+    },
+    "default:win-x64": {
+      "hostOperatingSystems": [
+        "windows"
+      ],
+      "operations": [
+        "build",
+        "run",
+        "publish",
+        "dev"
+      ],
+      "development": {
+        "transport": "file",
+        "debug": true,
+        "requiresPreparedAcknowledgment": false,
+        "usesStopSignal": false,
+        "launchBrowser": false
+      }
+    }
+  }
+}

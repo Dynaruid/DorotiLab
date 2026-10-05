@@ -7,7 +7,7 @@
   </PropertyGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Doroti.Validation.Fcr6Semantics" />
-    <InternalsVisibleTo Include="Doroti.Framework.Material" />
+
     <InternalsVisibleTo Include="Doroti.Validation.Fcr7MaterialWidget" />
     <InternalsVisibleTo Include="Doroti.Validation.NativeAot.Localizations" />
     <InternalsVisibleTo Include="Doroti.Validation.NativeAot.Forms" />
@@ -27,9 +27,5 @@
     <Compile Remove="_platform_selectable_region_context_menu_web.cs" />
     <Compile Remove="_web_browser_detection_web.cs" />
     <Compile Remove="_web_image_web.cs" />
-    <Compile Remove="_window_linux.cs" />
-    <Compile Remove="_window_macos.cs" />
-    <Compile Remove="_window_web.cs" />
-    <Compile Remove="_window_win32.cs" />
   </ItemGroup>
 </Project>

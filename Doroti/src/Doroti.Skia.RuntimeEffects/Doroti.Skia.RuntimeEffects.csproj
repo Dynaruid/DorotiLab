@@ -7,8 +7,6 @@
     <IsDorotiProduct>true</IsDorotiProduct>
   </PropertyGroup>
   <ItemGroup>
-    <InternalsVisibleTo Include="Doroti.Host.Maui" />
-    <InternalsVisibleTo Include="Doroti.Host.Web" />
     <InternalsVisibleTo Include="Doroti.Skia.Rendering" />
     <InternalsVisibleTo Include="Doroti.Validation.RuntimeShaderContract" />
     <InternalsVisibleTo Include="Doroti.Validation.Fcr7MaterialWidget" />

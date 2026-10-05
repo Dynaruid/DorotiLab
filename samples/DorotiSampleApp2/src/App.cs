@@ -1,5 +1,5 @@
 using Doroti.Framework;
-using Doroti.Framework.Cupertino;
+using Doroti.Cupertino;
 using Doroti.Framework.Foundation;
 using Doroti.Framework.Painting;
 using Doroti.Framework.Rendering;
@@ -7,7 +7,7 @@ using Doroti.Framework.Widgets;
 using Doroti.Hosting;
 using Doroti.Runtime;
 using Doroti.Ui;
-using RouteLibrary = Doroti.Framework.Cupertino.RouteLibrary;
+using RouteLibrary = Doroti.Cupertino.RouteLibrary;
 using TextStyle = Doroti.Framework.Painting.TextStyle;
 
 namespace DorotiSampleApp2;

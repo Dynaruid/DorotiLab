@@ -3,12 +3,15 @@
 - 작성일: 2026-10-04 KST
 - 갱신일: 2026-10-05 KST
 - 조사 위치: [Doroti/](Doroti/), [packages/](packages/), [reference/flutter-master/](reference/flutter-master/)
-- 상태: **계획 작성 / 구현·빌드·실행 검증 미수행**
+- 상태: **기존 구현·검증 기록 보존 / 전체 수락 미완료 / 잔여 작업계획은 work3로 이관**
+- 구현 기록: [소유권 ADR](Doroti/docs/migrations/design-platform/application-ownership.md), [전환 전 평가·이동표](Doroti/docs/migrations/design-platform/baseline.json), [실행·검증 상태](Doroti/docs/migrations/design-platform/execution.json). 부분 검증은 각 항목의 최종 완료 체크를 대체하지 않는다.
+- 재개 기록: [2026-10-05 현황·미흡 부분·추가 구현](Doroti/docs/migrations/design-platform/resume-2026-10-05.md). 당시 전체 구현을 재개해 이전 인계의 중단 상태를 해제했으며, 수행한 결과와 미완료 범위를 보존한다.
 - 사용자 결정: Flutter의 디자인 시스템 분리와 out-of-tree 플랫폼 확장·앱 시작 전 등록·새 Windowing 방향을 Doroti가 먼저 적용한다. 기존 구조와의 호환을 유지하지 않는 단절적 구조변경을 한다.
 - 변경 범위: 컴파일러인 `tools/Doroti.DartToCSharp/`는 이번 작업에서 제외한다. 컴파일러 코드·패키지 매핑·변환 fixture 검증은 수정하지 않으며, 플랫폼 CLI·doctor·IDE·SDK의 확장 작업은 유지한다.
 - 패키지 위치: 사용자가 만든 **저장소 루트의 [packages/](packages/)**를 사용한다. `Doroti/packages/`를 별도로 만들지 않는다.
 - 문서 관계: [work.md](work.md)는 앞선 종합 리뷰의 결과 기록이다. 이 문서의 미완료 항목을 그 결과와 합치거나, 이전 PASS를 새 구조의 검증 결과로 재사용하지 않는다.
-- 추가 조사: 플랫폼 확장 조사 2026-10-04 KST, 사용자가 갱신한 `reference/flutter-master` 재대조 2026-10-05 KST. 이미 제공하는 기능·실험 API·열린 제안을 구분하고, 플랫폼 부분은 **Doroti 자체의 공개 계약으로 설계할 선행 적용 범위**로 추가했다. 이번 요청도 조사·계획 반영이며 제품 구현 요청으로 해석하지 않는다.
+- 후속 실행 계획: [work3.md](work3.md)에 AppKit·Mac Catalyst·iOS·Android와 공통·Qt/Windows/Web·도구·릴리스의 잔여 작업을 현재 소스 기준으로 옮겨 구성했다. 이 문서는 구조 계약·완료 체크·기존 검증 이력을 유지하고, 앞으로의 실행 순서·플랫폼별 수락·원 항목 대응표는 work3를 따른다. work3 작성은 계획 정리이며 추가 구현·runtime 검증은 수행하지 않았다.
+- 추가 조사: 플랫폼 확장 조사 2026-10-04 KST, 사용자가 갱신한 `reference/flutter-master` 재대조 2026-10-05 KST. 이미 제공하는 기능·실험 API·열린 제안을 구분하고, 플랫폼 부분은 **Doroti 자체의 공개 계약으로 설계할 선행 적용 범위**로 추가했다. 이 항목은 당시 조사·계획 기록이며, 2026-10-05 전체 구현 재개의 범위는 후속 work3 계획의 기준으로 유지한다.
 - 참고 소스는 아래 파일 경로·링크로 표시한다. 기존 Doroti C# 포트와 사용자가 갱신한 Flutter 참고 소스는 구분해 조사한다.
 - 기반 설계 재검토: 패키지 분리의 기준을 실행 계약·소유권·빌드 경계로 고정한다. provider의 process 준비와 view 준비를 분리하고, 공유 framework session·창별 native context·서비스 해제·도구 프로세스의 책임을 먼저 검증한다.
 - .NET 우선 결정: 사용자의 허용에 따라 같은 managed runtime 안의 호출은 interface·typed request/result·Task/ValueTask로 연결한다. .NET 도구 확장은 직접 호출을 기본으로 하고, 별도 process·JS/worker·외부 byte protocol 경계에 필요한 직렬화만 둔다. Flutter의 메시지 구조를 내부 실행 계약으로 그대로 복제하지 않는다.
@@ -83,7 +86,7 @@ DorotiLab/
                                # provider별 descriptor, Version.props, tests, tooling/
 ```
 
-위 트리는 목표 경로다. 각 provider는 필요한 `bootstrap/`, `native/`, `eng/`, `tooling/`와 테스트를 자신의 묶음에서 관리한다. 작성 시점에는 `packages/`만 존재하며 하위 프로젝트·설정·테스트는 아직 만들지 않았다.
+위 트리는 소유권 경로다. 현재 두 디자인과 WindowsAppSdk/Web/Qt/MAUI provider 프로젝트가 이 경로로 이동했다. 실제 실행·검증 및 남은 범위는 구현 기록으로 관리한다.
 
 ```mermaid
 flowchart TB
@@ -167,17 +170,19 @@ flowchart TB
 9. 공통 Window API와 Desktop 명령 API는 같은 controller/manager·WindowId·close 완료를 사용한다. 별도의 창 registry·수명 관리자·종료 정책을 하나 더 만들지 않는다. 구 `LegacyMainWindow`/`FromLegacy` 및 비활성 `WindowingOwnerIo` 경로는 최종 제거하고 소비자를 새 계약으로 직접 수정한다.
 10. runtime provider는 앱 안에서 UI·view 서비스를 제공하고 static typed composition root로 연결한다. tool extension은 별도의 도구 계약을 구현하며 호환되는 .NET managed CLI host에는 직접 로드하고 격리가 필요하면 별도 process로 실행한다. runtime session·Widget·native handle을 도구 계약으로 전달하지 않는다.
 
-## 3. 현재 소스 조사와 실제 변경 지점
+## 3. 전환 전 소스 조사와 변경 기준
+
+아래 관찰은 계획 작성 당시의 baseline이다. 링크는 이동된 현재 대응 소스로 연결했으며, 과거 의존 상태를 현재 상태나 새 구조의 PASS로 해석하지 않는다.
 
 | 관찰 | 현재 근거 | 계획에 미치는 영향 |
 |---|---|---|
-| 디자인 프로젝트는 이미 별도 assembly와 PackageId를 가진다 | [Material 프로젝트](Doroti/src/Doroti.Framework.Material/Doroti.Framework.Material.csproj), [Cupertino 프로젝트](Doroti/src/Doroti.Framework.Cupertino/Doroti.Framework.Cupertino.csproj) | 새 프로젝트를 재구현하지 않고 기존 검토 소스를 이동·개명한다 |
-| Material → Cupertino 참조가 이미 있다 | Material의 `ProjectReference` 및 [GlobalUsings.cs](Doroti/src/Doroti.Framework.Material/GlobalUsings.cs) | 새 의존 선언으로 옮기고 한쪽 방향을 계약으로 고정한다 |
-| 공통 Raw 계층과 실제 디자인 위젯의 조합이 이미 존재한다 | [raw_menu_anchor.cs](Doroti/src/Doroti.Framework.Widgets/raw_menu_anchor.cs), [raw_radio.cs](Doroti/src/Doroti.Framework.Widgets/raw_radio.cs), [raw_tooltip.cs](Doroti/src/Doroti.Framework.Widgets/raw_tooltip.cs), [expansible.cs](Doroti/src/Doroti.Framework.Widgets/expansible.cs); Material의 [menu_anchor.cs](Doroti/src/Doroti.Framework.Material/menu_anchor.cs), [tooltip.cs](Doroti/src/Doroti.Framework.Material/tooltip.cs), [radio.cs](Doroti/src/Doroti.Framework.Material/radio.cs), [expansion_tile.cs](Doroti/src/Doroti.Framework.Material/expansion_tile.cs) | 폴더 이동을 새로운 Raw 기반 구현 완료로 보고하지 않는다. 기존 조합의 기능·수명을 확인한다 |
-| 코어 Runtime이 Material 색상 라이브러리에 의존한다 | [Runtime 프로젝트](Doroti/src/Doroti.Runtime/Doroti.Runtime.csproj), [MaterialColorSchemeRuntime.cs](Doroti/src/Doroti.Runtime/MaterialColorSchemeRuntime.cs), [MaterialImageColorRuntime.cs](Doroti/src/Doroti.Runtime/MaterialImageColorRuntime.cs), [MaterialImageQuantizerWu.cs](Doroti/src/Doroti.Runtime/MaterialImageQuantizerWu.cs) | helper·namespace·`MaterialColorUtilities` 의존을 Material로 옮긴다. 코어 소비자 복원에서도 없어야 한다 |
-| `Ui`의 닫힌 셰이더 목록이 Material 경로·어셈블리·resource name을 안다 | [FrameworkShaderAssets.cs](Doroti/src/Doroti.Ui/FrameworkShaderAssets.cs), Material의 [ink_sparkle.cs](Doroti/src/Doroti.Framework.Material/ink_sparkle.cs) | 범용 등록·검증 계약과 패키지 소유 descriptor를 분리해야 한다 |
+| 디자인 프로젝트는 이미 별도 assembly와 PackageId를 가진다 | [Material 프로젝트](packages/Doroti.Material/Doroti.Material.csproj), [Cupertino 프로젝트](packages/Doroti.Cupertino/Doroti.Cupertino.csproj) | 새 프로젝트를 재구현하지 않고 기존 검토 소스를 이동·개명한다 |
+| Material → Cupertino 참조가 이미 있다 | Material의 `ProjectReference` 및 [GlobalUsings.cs](packages/Doroti.Material/src/GlobalUsings.cs) | 새 의존 선언으로 옮기고 한쪽 방향을 계약으로 고정한다 |
+| 공통 Raw 계층과 실제 디자인 위젯의 조합이 이미 존재한다 | [raw_menu_anchor.cs](Doroti/src/Doroti.Framework.Widgets/raw_menu_anchor.cs), [raw_radio.cs](Doroti/src/Doroti.Framework.Widgets/raw_radio.cs), [raw_tooltip.cs](Doroti/src/Doroti.Framework.Widgets/raw_tooltip.cs), [expansible.cs](Doroti/src/Doroti.Framework.Widgets/expansible.cs); Material의 [menu_anchor.cs](packages/Doroti.Material/src/menu_anchor.cs), [tooltip.cs](packages/Doroti.Material/src/tooltip.cs), [radio.cs](packages/Doroti.Material/src/radio.cs), [expansion_tile.cs](packages/Doroti.Material/src/expansion_tile.cs) | 폴더 이동을 새로운 Raw 기반 구현 완료로 보고하지 않는다. 기존 조합의 기능·수명을 확인한다 |
+| 코어 Runtime이 Material 색상 라이브러리에 의존한다 | [Runtime 프로젝트](Doroti/src/Doroti.Runtime/Doroti.Runtime.csproj), [MaterialColorSchemeRuntime.cs](packages/Doroti.Material/src/MaterialColorSchemeRuntime.cs), [MaterialImageColorRuntime.cs](packages/Doroti.Material/src/MaterialImageColorRuntime.cs), [MaterialImageQuantizerWu.cs](packages/Doroti.Material/src/MaterialImageQuantizerWu.cs) | helper·namespace·`MaterialColorUtilities` 의존을 Material로 옮긴다. 코어 소비자 복원에서도 없어야 한다 |
+| `Ui`의 닫힌 셰이더 목록이 Material 경로·어셈블리·resource name을 안다 | [FrameworkShaderAssets.cs](Doroti/src/Doroti.Ui/FrameworkShaderAssets.cs), Material의 [ink_sparkle.cs](packages/Doroti.Material/src/ink_sparkle.cs) | 범용 등록·검증 계약과 패키지 소유 descriptor를 분리해야 한다 |
 | Widgets가 Material에 내부 접근을 허용한다 | [Widgets 프로젝트](Doroti/src/Doroti.Framework.Widgets/Doroti.Framework.Widgets.csproj) | 명칭만 바꾼 friend assembly를 남기지 않고 공개 확장 지점을 정한다 |
-| 디자인 localization은 이미 각 프로젝트에 있다 | [Material localization](Doroti/src/Doroti.Framework.Material/material_localizations.cs), [Cupertino localization](Doroti/src/Doroti.Framework.Cupertino/localizations.cs), [Widgets localization](Doroti/src/Doroti.Framework.Widgets/localizations.cs) | 소유권을 유지한다. 현재 `Default*Localizations` 존재를 전체 locale 지원으로 해석하지 않는다 |
+| 디자인 localization은 이미 각 프로젝트에 있다 | [Material localization](packages/Doroti.Material/src/material_localizations.cs), [Cupertino localization](packages/Doroti.Cupertino/src/localizations.cs), [Widgets localization](Doroti/src/Doroti.Framework.Widgets/localizations.cs) | 소유권을 유지한다. 현재 `Default*Localizations` 존재를 전체 locale 지원으로 해석하지 않는다 |
 | `packages/`는 `Doroti/`의 MSBuild 설정을 자동 상속하지 않는다 | [루트 props](Directory.Build.props), [Doroti props](Doroti/Directory.Build.props), [Doroti targets](Doroti/Directory.Build.targets), [중앙 NuGet 버전](Doroti/Directory.Packages.props) | 공통 제품 설정을 추출하고 패키지 루트의 명시적인 import·개별 버전 정책을 만든다 |
 | 기본 템플릿이 Material을 고정 참조한다 | [템플릿 csproj](Doroti/templates/Doroti.Templates/content/doroti-app/DorotiTemplateApp.csproj), [template.json](Doroti/templates/Doroti.Templates/content/doroti-app/.template.config/template.json) | 앱 생성부터 디자인을 선택하고 코어만 사용하는 기본 경로를 제공한다 |
 | 현재 테스트 실행 프로젝트는 Cupertino를 참조한다 | [Doroti.Tests.csproj](Doroti/tests/Doroti.Tests/Doroti.Tests.csproj), [Program.cs](Doroti/tests/Doroti.Tests/Program.cs), [Doroti.Testing.csproj](Doroti/src/Doroti.Testing/Doroti.Testing.csproj) | 기존 전체 테스트 성공만으로 코어 독립성을 증명할 수 없다. 디자인별 테스트와 코어 소비자를 분리한다 |
@@ -187,16 +192,16 @@ flowchart TB
 |---|---|---|
 | 이미 per-view capability 등록·Seal·dispose가 있다 | [Capabilities.cs](Doroti/src/Doroti.Ui/Capabilities.cs), [PlatformDispatcher.cs](Doroti/src/Doroti.Ui/PlatformDispatcher.cs) | 이 registry를 확장한다. provider를 이유로 별도 전역 서비스 locator를 만들지 않는다 |
 | 앱 factory가 startup을 먼저 생성·Configure한다 | [DorotiApplicationBootstrap.cs](Doroti/src/Doroti.Hosting/DorotiApplicationBootstrap.cs), [Runner 생성 코드](Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.targets) | provider 준비와 app Configure를 두 단계로 분리하고 생성 plugin handler의 초기화 시점도 옮긴다 |
-| OS 시작 코드는 이미 일부 Host에 위임하지만 SDK 생성 코드와 runner에도 나뉘어 있다 | [MAUI 플랫폼 시작 코드](Doroti/src/Doroti.Host.Maui/DorotiMauiPlatformApplications.cs), [Android Application](samples/DorotiSampleApp2/android/MainApplication.cs), [Activity](samples/DorotiSampleApp2/android/MainActivity.cs), [iOS AppDelegate](samples/DorotiSampleApp2/ios/AppDelegate.cs), [Windows App](samples/DorotiSampleApp2/windows/App.xaml.cs), [Web bootstrap](samples/DorotiSampleApp2/web/src/doroti_bootstrap.ts), [Runner SDK](Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.targets) | 기존 위임을 활용하면서 provider별 bootstrap 소유권을 고정한다. OS 필수 shell·앱 고유 설정과 공통 초기화 로직을 구분한다 |
-| Windows Native 프로젝트와 샘플·템플릿의 Qt native 구성이 기존 위치에 있다 | [Windows Native 프로젝트](Doroti/src/Doroti.Host.WindowsAppSdk.Native/Doroti.Host.WindowsAppSdk.Native.vcxproj), [Qt 샘플 CMake](samples/DorotiSampleApp2/linux/native/CMakeLists.txt), [Qt 템플릿 CMake](Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/CMakeLists.txt) | 플랫폼 전용 소스·빌드 구성을 provider로 모으고 샘플·템플릿은 패키지와 앱 설정을 사용한다 |
+| OS 시작 코드는 이미 일부 Host에 위임하지만 SDK 생성 코드와 runner에도 나뉘어 있다 | [MAUI 플랫폼 시작 코드](packages/platforms/maui/Doroti.Host.Maui/DorotiMauiPlatformApplications.cs), [Android Application](samples/DorotiSampleApp2/android/MainApplication.cs), [Activity](samples/DorotiSampleApp2/android/MainActivity.cs), [iOS AppDelegate](samples/DorotiSampleApp2/ios/AppDelegate.cs), [Windows App](samples/DorotiSampleApp2/windows/App.xaml.cs), [Web bootstrap](samples/DorotiSampleApp2/web/src/doroti_bootstrap.ts), [Runner SDK](Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.targets) | 기존 위임을 활용하면서 provider별 bootstrap 소유권을 고정한다. OS 필수 shell·앱 고유 설정과 공통 초기화 로직을 구분한다 |
+| Windows Native 프로젝트와 샘플·템플릿의 Qt native 구성이 기존 위치에 있다 | [Windows Native 프로젝트](packages/platforms/windowsappsdk/native/Doroti.Host.WindowsAppSdk.Native.vcxproj), [Qt 샘플 CMake](packages/platforms/qt/native/CMakeLists.txt), [Qt 템플릿 CMake](packages/platforms/qt/native/CMakeLists.txt) | 플랫폼 전용 소스·빌드 구성을 provider로 모으고 샘플·템플릿은 패키지와 앱 설정을 사용한다 |
 | HostSession은 여러 view를 관리하지만 widget entrypoint는 한 view만 허용한다 | [DorotiHostSession.cs](Doroti/src/Doroti.Hosting/DorotiHostSession.cs), [DorotiWidgetEntrypoint.cs](Doroti/src/Doroti.Framework.Widgets/DorotiWidgetEntrypoint.cs), [View 위젯](Doroti/src/Doroti.Framework.Widgets/view.cs) | 다중 view를 지원하는 논리 widget tree와 입력·frame owner 설계가 필요하다 |
-| Flutter식 기본 Window owner를 생성하지 못한다 | [_window_io.cs](Doroti/src/Doroti.Framework.Widgets/_window_io.cs), [binding.cs](Doroti/src/Doroti.Framework.Widgets/binding.cs), [_features.cs](Doroti/src/Doroti.Framework.Foundation/_features.cs) | `createDefaultOwner() => null`과 static flag를 실제 provider 서비스 조회로 교체한다 |
+| Flutter식 기본 Window owner를 생성하지 못한다 | [_window_io.cs](Doroti/src/Doroti.Framework.Widgets/windowing.cs), [binding.cs](Doroti/src/Doroti.Framework.Widgets/binding.cs), [_features.cs](Doroti/src/Doroti.Framework.Foundation/_features.cs) | `createDefaultOwner() => null`과 static flag를 실제 provider 서비스 조회로 교체한다 |
 | Desktop은 명시적인 native factory와 수명 관리를 이미 가진다 | [WindowHost.cs](Doroti/src/Doroti.Desktop/WindowHost.cs), [DorotiWindowManager.cs](Doroti/src/Doroti.Desktop/DorotiWindowManager.cs), [WindowOptions.cs](Doroti/src/Doroti.Desktop/WindowOptions.cs) | 기존 controller·명령 직렬화·cleanup을 확장한다. 현재 `OwnerWindowId != null` 거절을 owned 창 계약으로 바꾼다 |
-| 창마다 별도 framework session이라는 기존 결정이 있다 | [window context 문서](Doroti/docs/desktop-window-context.md), [Windows factory](Doroti/src/Doroti.Host.WindowsAppSdk/WindowsDesktopWindowFactory.cs), [Qt factory](Doroti/src/Doroti.Host.Qt/QtDesktopWindowFactory.cs) | 단일 논리 tree 채택은 새 결정이며 binding·async scope·native thread callback 이관을 먼저 검증한다 |
+| 창마다 별도 framework session이라는 기존 결정이 있다 | [window context 문서](Doroti/docs/desktop-window-context.md), [Windows factory](packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsDesktopWindowFactory.cs), [Qt factory](packages/platforms/qt/Doroti.Host.Qt/QtDesktopWindowFactory.cs) | 단일 논리 tree 채택은 새 결정이며 binding·async scope·native thread callback 이관을 먼저 검증한다 |
 | platform menu 위젯은 MethodChannel delegate를 사용한다 | [platform_menu_bar.cs](Doroti/src/Doroti.Framework.Widgets/platform_menu_bar.cs), [system_channels.cs](Doroti/src/Doroti.Framework.Services/system_channels.cs) | 실제 OS 메뉴 capability와 세션/창 owner callback을 연결한다. delegate 존재를 native 메뉴 지원 증거로 쓰지 않는다 |
-| target manifest의 스키마가 다르다 | [Windows manifest](Doroti/src/Doroti.Target.Windows.WindowsAppSdk.win-x64/doroti-target-manifest.json), [Web manifest](Doroti/src/Doroti.Target.Web.browser-wasm/doroti-target-manifest.json), [Windows target metadata](Doroti/src/Doroti.Target.Windows.WindowsAppSdk.win-x64/buildTransitive/Doroti.Target.Windows.WindowsAppSdk.win-x64.targets) | identity·버전·ABI·capability·bootstrap·도구 operation을 공통 schema로 정규화한다 |
+| target manifest의 스키마가 다르다 | [Windows manifest](packages/platforms/windowsappsdk/Doroti.Target.Windows.WindowsAppSdk.win-x64/doroti-target-manifest.json), [Web manifest](packages/platforms/web/Doroti.Target.Web.browser-wasm/doroti-target-manifest.json), [Windows target metadata](packages/platforms/windowsappsdk/Doroti.Target.Windows.WindowsAppSdk.win-x64/buildTransitive/Doroti.Target.Windows.WindowsAppSdk.win-x64.targets) | identity·버전·ABI·capability·bootstrap·도구 operation을 공통 schema로 정규화한다 |
 | CLI·IDE는 플랫폼·backend 목록을 고정한다 | [doroti.ps1](Doroti/eng/doroti.ps1), [VS Code contracts.ts](Doroti/tools/vscode-doroti/src/contracts.ts), [workspace](samples/DorotiSampleApp2/doroti-workspace.json), [doctor](Doroti/eng/doctor.ps1) | workspace 선언·provider metadata 기반으로 describe/build/run/dev/doctor를 확장한다 |
-| Material dialog는 현재 RawDialog/route로 연결된다 | [dialog.cs](Doroti/src/Doroti.Framework.Material/dialog.cs), [popup_menu.cs](Doroti/src/Doroti.Framework.Material/popup_menu.cs), [tooltip.cs](Doroti/src/Doroti.Framework.Material/tooltip.cs) | 네이티브 창 선택과 결과·theme·focus·접근성 전달을 실제 호출 경로에 추가한다 |
+| Material dialog는 현재 RawDialog/route로 연결된다 | [dialog.cs](packages/Doroti.Material/src/dialog.cs), [popup_menu.cs](packages/Doroti.Material/src/popup_menu.cs), [tooltip.cs](packages/Doroti.Material/src/tooltip.cs) | 네이티브 창 선택과 결과·theme·focus·접근성 전달을 실제 호출 경로에 추가한다 |
 | native 창 계약이 창별 framework root를 요구한다 | [WindowHost.cs](Doroti/src/Doroti.Desktop/WindowHost.cs)의 `InitializeAsync(..., IDorotiViewEntrypoint, ...)`·`WindowContent`, [DesktopWindowScope.cs](Doroti/src/Doroti.Desktop.Widgets/DesktopWindowScope.cs)의 `WidgetWindowContent` | 공유 tree에는 새 native/view 생성 계약이 필요하다. 창마다 entrypoint를 만드는 API를 그대로 유지할 수 없다 |
 | capability registry는 등록한 IDisposable을 직접 해제한다 | [Capabilities.cs](Doroti/src/Doroti.Ui/Capabilities.cs)의 `Dispose`, [ApplicationBoundary](Doroti/src/Doroti.Hosting/DorotiApplicationBoundary.cs)의 공유 lease | session 공유 객체를 여러 view에 직접 등록하면 중복 해제가 생길 수 있다. 등록 소유권과 종료 주체를 먼저 정한다 |
 | scene과 native texture는 실행·소비 owner에 묶인다 | [GraphicsAndSemanticsContracts.cs](Doroti/src/Doroti.Ui/GraphicsAndSemanticsContracts.cs)의 `Scene`, [NativeTextureContracts.cs](Doroti/src/Doroti.Ui/NativeTextureContracts.cs)의 `RetainForConsumer`, [DispatcherLocal.cs](Doroti/src/Doroti.Ui/DispatcherLocal.cs) | Scene을 thread 간에 전달하는 것만으로 공유 tree가 성립하지 않는다. 제출 데이터·자원 lease·scope 전달을 검증한다 |
@@ -291,29 +296,29 @@ M0/M1을 먼저 끝내는 것이 빠른 적용의 우선순위다. 일정 수치
 
 ### DS2. 소스 이동과 구 정체성 제거
 
-- [ ] **DS2-1** Material·Cupertino의 검토된 C# 소스와 자산을 새 프로젝트로 이동한다. 위 표의 PackageId·AssemblyName·namespace로 바꾸고 상대 참조·GlobalUsings·resource name을 갱신한다. 제품 Compile 범위는 `src/**/*.cs`로 명시해 하위 `tests`·임시 산출물·기계 생성 후보가 포함되지 않게 한다. 위젯 동작 변경은 이동과 분리해서 추적한다.
-- [ ] **DS2-2** [Doroti.slnx](Doroti/Doroti.slnx), [Doroti.Product.slnx](Doroti/Doroti.Product.slnx), [Doroti.Editor.slnx](Doroti/Doroti.Editor.slnx)의 포함 경로와 솔루션 폴더를 수정한다. core 전용 build와 디자인 build의 진입점을 구분한다.
-- [ ] **DS2-3** 샘플·템플릿·테스트·플랫폼 CLI/IDE의 구 ProjectReference/PackageReference/using을 새 이름으로 직접 변경한다. 같은 클래스의 구·신 타입이 살아 있는 compatibility facade를 추가하지 않는다.
-- [ ] **DS2-4** 원본 Flutter 소스 위치와 Doroti 이동 경로를 구분해 기록한다. 소스 출처 주석을 최신 upstream 이식 완료라는 표현으로 바꾸지 않는다. 최종적으로 구 두 프로젝트 디렉터리를 제거한다.
+- [x] **DS2-1** Material·Cupertino의 검토된 C# 소스와 자산을 새 프로젝트로 이동한다. 위 표의 PackageId·AssemblyName·namespace로 바꾸고 상대 참조·GlobalUsings·resource name을 갱신한다. 제품 Compile 범위는 `src/**/*.cs`로 명시해 하위 `tests`·임시 산출물·기계 생성 후보가 포함되지 않게 한다. 위젯 동작 변경은 이동과 분리해서 추적한다.
+- [x] **DS2-2** [Doroti.slnx](Doroti/Doroti.slnx), [Doroti.Product.slnx](Doroti/Doroti.Product.slnx), [Doroti.Editor.slnx](Doroti/Doroti.Editor.slnx)의 포함 경로와 솔루션 폴더를 수정한다. core 전용 build와 디자인 build의 진입점을 구분한다.
+- [x] **DS2-3** 샘플·템플릿·테스트·플랫폼 CLI/IDE의 구 ProjectReference/PackageReference/using을 새 이름으로 직접 변경한다. 같은 클래스의 구·신 타입이 살아 있는 compatibility facade를 추가하지 않는다.
+- [x] **DS2-4** 원본 Flutter 소스 위치와 Doroti 이동 경로를 구분해 기록한다. 소스 출처 주석을 최신 upstream 이식 완료라는 표현으로 바꾸지 않는다. 최종적으로 구 두 프로젝트 디렉터리를 제거한다.
 
 완료 기준: 제품 타입의 소유 어셈블리가 한 곳으로 정해지고 새 참조로 컴파일할 수 있다. 구 경로·구 namespace는 명시적인 migration 기록·과거 증거·거절 테스트 외에 활성 제품 그래프에 남지 않는다.
 
 ### DS3. Runtime의 Material 의존과 내부 접근 해소
 
-- [ ] **DS3-1** `MaterialColorSchemeRuntime`, `MaterialImageColorRuntime`, `MaterialImageQuantizerWu`를 Material 패키지로 옮긴다. 일반 Runtime 네임스페이스에서 디자인 전용 API를 제거하고 Material의 `color_scheme.cs` 및 제품 호출부를 갱신한다.
-- [ ] **DS3-2** Runtime에서 `MaterialColorUtilities` PackageReference를 제거하고 Material에 추가한다. 코어만 쓰는 앱의 assets 파일·NuGet 의존 목록·AssemblyRef에 그 라이브러리가 들어오지 않는지 검사한다. 색상 seed·ARGB·quantizer 결과 회귀는 Material 테스트가 소유한다.
-- [ ] **DS3-3** Widgets → Material의 InternalsVisibleTo를 제거한다. 실제 사용하던 내부 멤버를 Roslyn/컴파일 진단으로 식별하고 필요한 builder·controller·state access만 안정적인 public/protected 계약으로 추출한다. 별도의 public 확장 계약 없이 `_private` 접근을 우회하지 않는다.
-- [ ] **DS3-4** Runtime/Ui/Hosting/기반 Framework/Testing/WidgetPreviews/Desktop/Host/renderer 전체의 전이 의존을 검사한다. 디자인 타입을 문자열·reflection·자동 assembly 검색으로 숨겨서 참조하는 경로도 제거한다.
+- [x] **DS3-1** `MaterialColorSchemeRuntime`, `MaterialImageColorRuntime`, `MaterialImageQuantizerWu`를 Material 패키지로 옮긴다. 일반 Runtime 네임스페이스에서 디자인 전용 API를 제거하고 Material의 `color_scheme.cs` 및 제품 호출부를 갱신한다.
+- [x] **DS3-2** Runtime에서 `MaterialColorUtilities` PackageReference를 제거하고 Material에 추가한다. 코어만 쓰는 앱의 assets 파일·NuGet 의존 목록·AssemblyRef에 그 라이브러리가 들어오지 않는지 검사한다. 색상 seed·ARGB·quantizer 결과 회귀는 Material 테스트가 소유한다.
+- [x] **DS3-3** Widgets → Material의 InternalsVisibleTo를 제거한다. 실제 사용하던 내부 멤버를 Roslyn/컴파일 진단으로 식별하고 필요한 builder·controller·state access만 안정적인 public/protected 계약으로 추출한다. 별도의 public 확장 계약 없이 `_private` 접근을 우회하지 않는다.
+- [x] **DS3-4** Runtime/Ui/Hosting/기반 Framework/Testing/WidgetPreviews/Desktop/Host/renderer 전체의 전이 의존을 검사한다. 디자인 타입을 문자열·reflection·자동 assembly 검색으로 숨겨서 참조하는 경로도 제거한다.
 
 완료 기준: 코어와 공통 테스트 도구는 디자인 소스·어셈블리·Material 색상 라이브러리 없이 사용할 수 있고, 디자인 패키지는 제품 friend assembly 없이 public 계약으로 빌드된다.
 
 ### DS4. 셰이더·폰트·localization의 패키지 소유권
 
-- [ ] **DS4-1** `FrameworkShaderManifest`의 고정 목록을 범용 descriptor 등록 계약과 소유자별 목록으로 분리한다. Material의 InkSparkle descriptor는 Material이, stretch-effect는 Widgets가, 렌더러의 blur descriptor는 해당 렌더러가 제공한다.
-- [ ] **DS4-2** 각 소유자가 자신의 shader 사용 전에 명시적으로 등록하도록 연결한다. 등록은 thread-safe·중복 호출에 대해 결정적이어야 하며, 같은 ID의 다른 owner/hash/ABI는 오류로 처리한다. 코어가 디자인 패키지를 reflection으로 자동 로드하지 않는다.
-- [ ] **DS4-3** 로더의 실제 packaged byte hash·uniform/sampler ABI·owner·resource 검증을 유지한다. 미등록 shader, 잘못된 owner/hash, 충돌 ID, 삭제된 resource가 진단과 실패로 끝나야 한다. Material이 없는 앱에 InkSparkle가 등록되지 않아도 Widgets·blur 로딩은 정상이어야 한다.
-- [ ] **DS4-4** Material/Cupertino 아이콘의 font family·package key·실제 폰트 공급/등록 경로와 라이선스를 정리한다. 현재 앱이 공급하는 폰트와 일반 Web 기본/fallback 폰트 정책을 구분한다. 디자인 아이콘 자산 때문에 코어가 다른 디자인 패키지를 끌어오지 않아야 한다.
-- [ ] **DS4-5** 각 디자인의 기존 localization API·delegate·문자열을 새 패키지에 유지하고 앱의 delegate 사용을 갱신한다. Widgets의 localization 기반은 코어에 둔다. 전체 번역 신규 이식은 별도 범위이며, 현재 지원 locale와 unsupported locale의 fallback만 실제 범위대로 기록한다.
+- [x] **DS4-1** `FrameworkShaderManifest`의 고정 목록을 범용 descriptor 등록 계약과 소유자별 목록으로 분리한다. Material의 InkSparkle descriptor는 Material이, stretch-effect는 Widgets가, 렌더러의 blur descriptor는 해당 렌더러가 제공한다.
+- [x] **DS4-2** 각 소유자가 자신의 shader 사용 전에 명시적으로 등록하도록 연결한다. 등록은 thread-safe·중복 호출에 대해 결정적이어야 하며, 같은 ID의 다른 owner/hash/ABI는 오류로 처리한다. 코어가 디자인 패키지를 reflection으로 자동 로드하지 않는다.
+- [x] **DS4-3** 로더의 실제 packaged byte hash·uniform/sampler ABI·owner·resource 검증을 유지한다. 미등록 shader, 잘못된 owner/hash, 충돌 ID, 삭제된 resource가 진단과 실패로 끝나야 한다. Material이 없는 앱에 InkSparkle가 등록되지 않아도 Widgets·blur 로딩은 정상이어야 한다.
+- [x] **DS4-4** Material/Cupertino 아이콘의 font family·package key·실제 폰트 공급/등록 경로와 라이선스를 정리한다. 현재 앱이 공급하는 폰트와 일반 Web 기본/fallback 폰트 정책을 구분한다. 디자인 아이콘 자산 때문에 코어가 다른 디자인 패키지를 끌어오지 않아야 한다.
+- [x] **DS4-5** 각 디자인의 기존 localization API·delegate·문자열을 새 패키지에 유지하고 앱의 delegate 사용을 갱신한다. Widgets의 localization 기반은 코어에 둔다. 전체 번역 신규 이식은 별도 범위이며, 현재 지원 locale와 unsupported locale의 fallback만 실제 범위대로 기록한다.
 
 완료 기준: 디자인 자산의 등록 정보가 코어에 고정되지 않고, 필요한 패키지만 포함한 실제 소비자에서 셰이더·아이콘·localization이 동작한다. 자산 파일 이동만으로 GPU·표시·locale 수락을 주장하지 않는다.
 
@@ -330,25 +335,25 @@ M0/M1을 먼저 끝내는 것이 빠른 적용의 우선순위다. 일정 수치
 ### DS6. SDK·템플릿과 명시적인 디자인 선택
 
 - [ ] **DS6-1** [App SDK](Doroti/src/Doroti.App.Sdk/Sdk/Sdk.targets)와 Runner SDK가 디자인 패키지를 암묵적으로 추가하지 않도록 확인한다. 앱은 디자인 패키지를 직접 선택하고 runner는 앱·선택 provider를 연결한다. provider 생성·초기화 순서는 PW2, SDK/CLI의 확장 방식은 PW3/PW7 계약을 따른다.
-- [ ] **DS6-2** `dotnet new doroti-app --design widgets|material|cupertino`를 구현한다. 기본 `widgets`는 읽을 수 있는 textStyle을 명시한 WidgetsApp 기반 앱, 다른 선택은 각 디자인 App 기반 앱을 생성한다. 생성 프로젝트에는 선택에 맞는 새 참조·namespace·delegate·자산 선언만 있어야 한다.
-- [ ] **DS6-3** 신규 SDK에서 구 PackageId/어셈블리와 새 코어·디자인의 혼합 참조를 검사하고 명확한 빌드 진단으로 거절한다. 직접 참조와 전이 참조를 모두 검사하되 과거 릴리스 자체의 외부 빌드 동작까지 제어한다고 주장하지 않는다.
-- [ ] **DS6-4** repo ProjectReference 모드와 NuGet PackageReference 모드, 세 템플릿 선택을 각각 검증한다. SDK 버전·코어 버전·디자인 버전을 구분하고, 앱의 explicit using을 package-generated global using으로 대체하지 않는다.
+- [x] **DS6-2** `dotnet new doroti-app --design widgets|material|cupertino`를 구현한다. 기본 `widgets`는 읽을 수 있는 textStyle을 명시한 WidgetsApp 기반 앱, 다른 선택은 각 디자인 App 기반 앱을 생성한다. 생성 프로젝트에는 선택에 맞는 새 참조·namespace·delegate·자산 선언만 있어야 한다.
+- [x] **DS6-3** 신규 SDK에서 구 PackageId/어셈블리와 새 코어·디자인의 혼합 참조를 검사하고 명확한 빌드 진단으로 거절한다. 직접 참조와 전이 참조를 모두 검사하되 과거 릴리스 자체의 외부 빌드 동작까지 제어한다고 주장하지 않는다.
+- [x] **DS6-4** repo ProjectReference 모드와 NuGet PackageReference 모드, 세 템플릿 선택을 각각 검증한다. SDK 버전·코어 버전·디자인 버전을 구분하고, 앱의 explicit using을 package-generated global using으로 대체하지 않는다.
 
 완료 기준: 새 프로젝트 생성부터 디자인 선택이 명시적이며 core 전용 앱에는 디자인이 들어오지 않는다. 새 SDK가 구·신 구조 혼합을 허용하지 않는다.
 
 ### DS7. 독립 NuGet 소비자와 회귀 집계
 
-- [ ] **DS7-1** 기존 Doroti.Tests의 디자인 회귀를 패키지별 테스트 프로젝트로 옮기고 공통 테스트 helper만 공유한다. 코어 회귀 실행 프로젝트에는 디자인 참조를 남기지 않는다. `Doroti.Testing`은 디자인 중립으로 유지한다.
-- [ ] **DS7-2** `Doroti/tests/design_package_contract.py` 등 유지보수되는 진입점을 만들어 실제 MSBuild 평가 그래프·NuGet assets·nupkg nuspec·출력 AssemblyRef를 검사한다. 소스 문자열 검색은 보조 검사로만 사용한다.
-- [ ] **DS7-3** 임시 소비자가 저장소의 자동 props/targets·중앙 패키지 설정을 상속하지 않도록 격리하고, 독립 NuGet 캐시로 core-only, core+Cupertino, core+Material, 두 디자인 조합을 restore/build/run한다. 소비자는 nupkg만 사용하며 원본 제품·샘플·테스트 소스의 직접 참조를 금지한다. core-only에는 두 디자인과 MaterialColorUtilities가 없어야 하고, Cupertino-only에는 Material과 MaterialColorUtilities가 없어야 한다. Material 소비자의 Cupertino 포함은 허용된 의존이다.
+- [x] **DS7-1** 기존 Doroti.Tests의 디자인 회귀를 패키지별 테스트 프로젝트로 옮기고 공통 테스트 helper만 공유한다. 코어 회귀 실행 프로젝트에는 디자인 참조를 남기지 않는다. `Doroti.Testing`은 디자인 중립으로 유지한다.
+- [x] **DS7-2** `Doroti/tests/design_package_contract.py` 등 유지보수되는 진입점을 만들어 실제 MSBuild 평가 그래프·NuGet assets·nupkg nuspec·출력 AssemblyRef를 검사한다. 소스 문자열 검색은 보조 검사로만 사용한다.
+- [x] **DS7-3** 임시 소비자가 저장소의 자동 props/targets·중앙 패키지 설정을 상속하지 않도록 격리하고, 독립 NuGet 캐시로 core-only, core+Cupertino, core+Material, 두 디자인 조합을 restore/build/run한다. 소비자는 nupkg만 사용하며 원본 제품·샘플·테스트 소스의 직접 참조를 금지한다. core-only에는 두 디자인과 MaterialColorUtilities가 없어야 하고, Cupertino-only에는 Material과 MaterialColorUtilities가 없어야 한다. Material 소비자의 Cupertino 포함은 허용된 의존이다.
 - [ ] **DS7-4** 디자인 패키지만 버전을 올린 후보를 고정된 코어와 조합하고, 코어만 올린 후보를 고정된 디자인과 조합한다. 각 디자인별 검증 가능한 최소 지원 코어·현재 코어, 선언 범위 밖의 거절·구 namespace 미지원·혼합 참조 실패를 확인한다.
-- [ ] **DS7-5** [validate.py](Doroti/eng/validate.py)의 Build/Packages/Developer/Release 집계에 새 테스트를 등록한다. 현재 Cupertino-only package root를 세 종류의 소비자로 확장하고, 테스트 자료가 샘플이나 저장소 프로젝트를 숨겨서 참조하지 않도록 검사한다.
+- [x] **DS7-5** [validate.py](Doroti/eng/validate.py)의 Build/Packages/Developer/Release 집계에 새 테스트를 등록한다. 현재 Cupertino-only package root를 세 종류의 소비자로 확장하고, 테스트 자료가 샘플이나 저장소 프로젝트를 숨겨서 참조하지 않도록 검사한다.
 
 완료 기준: 소비자의 실제 복원·실행과 어셈블리 경계로 독립성이 확인되며, 두 디자인의 개별 버전 변경이 코어의 같은 버전으로 강제되지 않는다.
 
 ### DS8. 실제 샘플과 플랫폼별 회귀
 
-- [ ] **DS8-1** [DorotiTestbedApp](samples/DorotiTestbedApp/DorotiTestbedApp.csproj)은 새 Material을, [DorotiSampleApp2](samples/DorotiSampleApp2/DorotiSampleApp2.csproj)는 새 Cupertino를 명시 참조하도록 바꾼다. 각 앱의 자산·startup·platform runner 경로를 함께 확인한다.
+- [x] **DS8-1** [DorotiTestbedApp](samples/DorotiTestbedApp/DorotiTestbedApp.csproj)은 새 Material을, [DorotiSampleApp2](samples/DorotiSampleApp2/DorotiSampleApp2.csproj)는 새 Cupertino를 명시 참조하도록 바꾼다. 각 앱의 자산·startup·platform runner 경로를 함께 확인한다.
 - [ ] **DS8-2** WindowsAppSdk와 Windows MAUI, Web에서 가능한 build/startup/interaction/shutdown 경로를 검증한다. 새 패키지가 native host나 renderer를 자기 의존으로 포함하지 않아야 한다. 샘플 첫 화면·아이콘·대화상자·입력·메뉴·탐색을 실제 실행 경로로 확인한다.
 - [ ] **DS8-3** Android와 Linux Qt의 기존 검증 프로파일로 의존 평가·빌드·가용 장치/환경의 실행을 확인한다. Apple iOS/macOS/MacCatalyst는 해당 호스트가 있는 환경에서 수행하고, 없으면 `SKIPPED`로 남긴다. Mono Debug Hot Reload와 Release/AOT를 구분한다.
 - [ ] **DS8-4** 셰이더·아이콘·localization의 실제 등록 누락과 trim/AOT 제거를 확인한다. 프레임·render owner·GPU 자원 수명·IME·Semantics·네이티브 뷰 등 기존 구현을 회귀 범위에서 유지한다. 프로젝트 빌드 성공을 화면·GPU·물리 입력 수락으로 확대하지 않는다.
@@ -367,7 +372,7 @@ M0/M1을 먼저 끝내는 것이 빠른 적용의 우선순위다. 일정 수치
 
 ## 6. 플랫폼·Windowing 선행 적용 계획
 
-이 절은 Flutter의 미완성 제안을 Doroti가 자체 계약으로 먼저 구현할 범위다. 아래 신규 타입·schema·CLI는 **계획된 이름이며 현재 구현이 아니다**. 실제 구현 시 공개 API 문서와 기계 판독 계약을 함께 확정한다.
+이 절은 Flutter의 미완성 제안을 Doroti가 자체 계약으로 먼저 구현할 범위다. 아래는 실행 계약과 수락 기준이다. 공통 typed 계약·workspace/provider metadata·Windows 구현은 이미 존재하며, 실제 통과 범위와 미완료는 실행 기록에 분리한다.
 
 ### 6.1. 공통 계약·플랫폼 구현·앱 구성의 경계
 
@@ -619,7 +624,7 @@ native는 managed record를 그대로 메모리 복사하지 않는다. ABI 전�
 
 ## 7. 검증 운영과 증거 기준
 
-모든 아래 명령은 **구현 단계에서 사용할 예정 명령**이다. 이 계획 작성 과정에서는 실행하지 않았다. 추가 예정 테스트의 경로·CLI는 실제 구현과 함께 문서·집계에 등록한다.
+아래는 유지보수되는 검증 진입점이다. 계획 작성 당시에는 실행하지 않았으며, 후속 구현·재개 과정의 실제 결과는 날짜와 소스 범위를 붙여 별도 증거에 남긴다.
 
 ```powershell
 python Doroti/eng/run-with-timeout.py --timeout 1200 python Doroti/eng/validate.py Build
@@ -680,4 +685,4 @@ python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet build samples/Doroti
 - [ ] managed CLI의 .NET 직접 호출과 명시적 process mode, 공유 계약 assembly identity·runtime/AOT 지원 범위·종료 의미가 검증된다.
 - [ ] 직렬화는 외부 wire/ABI·파일 경계에 한정되며 source-generated JSON·native marshalling의 타입/정밀도·layout·수명 검증과 측정 범위가 남는다.
 
-현재 이 문서의 모든 실행 체크박스는 미완료다. 계획 문서와 링크·형식 확인은 제품 구조 구현이나 runtime 검증 결과가 아니다.
+각 실행 체크박스는 선언된 전체 수락 범위가 검증된 뒤에만 완료로 표시한다. 현재 M0 구현과 G0 일부의 새 실행 증거는 위 구현 기록에 남긴다. M1–M3와 최종 제품 수락은 미완료이며, 이전 리뷰 PASS를 새 구조 결과로 재사용하지 않는다.

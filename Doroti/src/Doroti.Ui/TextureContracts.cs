@@ -65,5 +65,6 @@ internal sealed record SceneTexturePayload(
     long TextureId,
     Rect Bounds,
     bool Freeze,
-    FilterQuality FilterQuality
+    FilterQuality FilterQuality,
+    IDisposable? FrozenFrame = null
 );

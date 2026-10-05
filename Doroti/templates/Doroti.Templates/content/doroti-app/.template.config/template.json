@@ -1,7 +1,14 @@
 {
   "$schema": "http://json.schemastore.org/template",
   "author": "Doroti contributors",
-  "classifications": ["Doroti", "Multi-platform", "MAUI", "Qt", "Blazor", "WebAssembly"],
+  "classifications": [
+    "Doroti",
+    "Multi-platform",
+    "MAUI",
+    "Qt",
+    "Blazor",
+    "WebAssembly"
+  ],
   "identity": "Doroti.Templates.CSharpApp",
   "name": "Doroti platform workspace C# application",
   "shortName": "doroti-app",
@@ -11,16 +18,29 @@
     {
       "source": "./",
       "target": "./",
-      "copyOnly": ["**/node_modules/**/*", "linux/native/**/*"],
+      "copyOnly": [
+        "**/node_modules/**/*",
+        "linux/native/**/*"
+      ],
       "modifiers": [
         {
           "condition": "(nativeAndroidLanguage == \"java\")",
-          "exclude": ["android/native/bridge/src/main/kotlin/**", "android/native/bridge/src/test/kotlin/**", "android/native/bridge/build.gradle.kotlin.kts"]
+          "exclude": [
+            "android/native/bridge/src/main/kotlin/**",
+            "android/native/bridge/src/test/kotlin/**",
+            "android/native/bridge/build.gradle.kotlin.kts"
+          ]
         },
         {
           "condition": "(nativeAndroidLanguage == \"kotlin\")",
-          "exclude": ["android/native/bridge/src/main/java/**", "android/native/bridge/src/test/java/**", "android/native/bridge/build.gradle.kts"],
-          "rename": { "android/native/bridge/build.gradle.kotlin.kts": "android/native/bridge/build.gradle.kts" }
+          "exclude": [
+            "android/native/bridge/src/main/java/**",
+            "android/native/bridge/src/test/java/**",
+            "android/native/bridge/build.gradle.kts"
+          ],
+          "rename": {
+            "android/native/bridge/build.gradle.kotlin.kts": "android/native/bridge/build.gradle.kts"
+          }
         }
       ]
     }
@@ -53,8 +73,14 @@
       "datatype": "choice",
       "defaultValue": "java",
       "choices": [
-        { "choice": "java", "description": "Generate the default Java native bridge." },
-        { "choice": "kotlin", "description": "Generate the Kotlin native bridge." }
+        {
+          "choice": "java",
+          "description": "Generate the default Java native bridge."
+        },
+        {
+          "choice": "kotlin",
+          "description": "Generate the Kotlin native bridge."
+        }
       ]
     },
     "nativeModule": {
@@ -63,6 +89,33 @@
       "valueTransform": "safe_name",
       "replaces": "__DOROTI_NATIVE_MODULE__",
       "fileRename": "__DOROTI_NATIVE_MODULE__"
+    },
+    "design": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "widgets",
+      "choices": [
+        {
+          "choice": "widgets",
+          "description": "Use widgets design."
+        },
+        {
+          "choice": "material",
+          "description": "Use material design."
+        },
+        {
+          "choice": "cupertino",
+          "description": "Use cupertino design."
+        }
+      ]
+    },
+    "isMaterial": {
+      "type": "computed",
+      "value": "(design == \"material\")"
+    },
+    "isCupertino": {
+      "type": "computed",
+      "value": "(design == \"cupertino\")"
     }
   }
 }

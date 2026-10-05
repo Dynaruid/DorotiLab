@@ -1,26 +1,11 @@
 <Project>
-  <Import Project="Doroti.MacCatalyst.props" Condition="'$(DorotiMacCatalystProfileImported)' != 'true'" />
-  <Import Project="Doroti.MacOS.props" Condition="'$(DorotiMacOSProfileImported)' != 'true'" />
-  <Import Project="Doroti.IosNativeAot.props" Condition="'$(DorotiIosNativeAotProfileImported)' != 'true'" />
-  <PropertyGroup Condition="'$(DorotiIosDevelopment)' == 'true' and '$(DorotiCompilationMode)' == 'CoreClr'">
-    <!-- RC1's original interpreter loses the active EnC IL version. Pin the
-         serviced runtime and matching crossgen2: dotnet/runtime#132837. -->
-    <DorotiIosDevelopmentRuntimeVersion Condition="'$(DorotiIosDevelopmentRuntimeVersion)' == ''">11.0.0-rc.2.26478.114</DorotiIosDevelopmentRuntimeVersion>
-    <RestoreAdditionalProjectSources>$(RestoreAdditionalProjectSources);https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet11/nuget/v3/index.json</RestoreAdditionalProjectSources>
-  </PropertyGroup>
   <PropertyGroup>
-    <LinkMode Condition="'$(DorotiMacDevelopment)' == 'true'">None</LinkMode>
-    <MtouchLink Condition="'$(DorotiIosDevelopment)' == 'true' or '$(DorotiMacDevelopment)' == 'true'">None</MtouchLink>
-    <StartupHookSupport Condition="'$(DorotiIosDevelopment)' == 'true' or '$(DorotiMacDevelopment)' == 'true' or '$(DorotiAndroidDevelopment)' == 'true'">true</StartupHookSupport>
+    <DorotiCommonRunnerSdkDirectory>$(MSBuildThisFileDirectory)</DorotiCommonRunnerSdkDirectory>
+    <DorotiRunnerSdkActive>true</DorotiRunnerSdkActive>
+  </PropertyGroup>
+  <Import Project="$(DorotiProviderSdkProps)" Condition="'$(DorotiProviderSdkPropsImported)' != 'true' and '$(DorotiProviderSdkProps)' != '' and Exists('$(DorotiProviderSdkProps)')" />
+  <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <!-- Decide before Microsoft.Common targets compute _DebugSymbolsProduced.
-         Changing this in SDK targets leaves a nonexistent PDB in fresh Web assets. -->
-    <DebugSymbols Condition="'$(Configuration)' == 'Release' and '$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true'">false</DebugSymbols>
-    <DebugType Condition="'$(Configuration)' == 'Release' and '$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true'">none</DebugType>
-    <!-- Apple runtime selection happens while Microsoft.NET.Sdk targets are imported. -->
-    <PublishAot Condition="'$(DorotiCompilationMode)' == 'NativeAot'">true</PublishAot>
-    <UseMonoRuntime Condition="'$(DorotiCompilationMode)' == 'NativeAot' or '$(DorotiCompilationMode)' == 'CoreClr'">false</UseMonoRuntime>
-    <UseMonoRuntime Condition="('$(DorotiCompilationMode)' == 'Mono' or ('$(DorotiCompilationMode)' == '' and '$(PublishAot)' != 'true')) and ($([System.String]::Copy('$(RuntimeIdentifier)').StartsWith('ios-')) or $([System.String]::Copy('$(RuntimeIdentifier)').StartsWith('iossimulator-')))">true</UseMonoRuntime>
     <IsPackable>false</IsPackable>
     <LangVersion>14.0</LangVersion>
     <Nullable>enable</Nullable>
@@ -31,20 +16,13 @@
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <EnableDefaultContentItems>false</EnableDefaultContentItems>
-    <EnableDefaultMauiItems>false</EnableDefaultMauiItems>
     <EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
     <EnableDefaultXamlItems>false</EnableDefaultXamlItems>
-    <SingleProject Condition="'$(UseMaui)' == 'true'">true</SingleProject>
-    <MauiEnablePlatformUsings Condition="'$(UseMaui)' == 'true'">true</MauiEnablePlatformUsings>
-    <SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
-    <MauiVersion Condition="'$(MauiVersion)' == '' and '$(DorotiIosMauiVersion)' != ''">$(DorotiIosMauiVersion)</MauiVersion>
-    <MauiVersion Condition="'$(MauiVersion)' == ''">10.0.90</MauiVersion>
-    <DorotiVersion Condition="'$(DorotiVersion)' == ''">0.3.0-beta</DorotiVersion>
+    <DorotiVersion Condition="'$(DorotiVersion)' == ''">0.4.0-alpha.1</DorotiVersion>
     <SkiaSharpVersion Condition="'$(SkiaSharpVersion)' == ''">4.154.0-preview.1.26454.9</SkiaSharpVersion>
     <DorotiMarkupVersion Condition="'$(DorotiMarkupVersion)' == ''">8.0.0</DorotiMarkupVersion>
     <DorotiTypeScriptVersion Condition="'$(DorotiTypeScriptVersion)' == ''">7.0.0</DorotiTypeScriptVersion>
-    <DorotiWebRuntimeVersion Condition="'$(DorotiWebRuntimeVersion)' == ''">10.0.11</DorotiWebRuntimeVersion>
     <_DorotiGeneratedDirectory>$(BaseIntermediateOutputPath)Doroti.Generated/</_DorotiGeneratedDirectory>
     <_DorotiBootstrapFile>$(_DorotiGeneratedDirectory)DorotiBootstrap.g.cs</_DorotiBootstrapFile>
     <_DorotiPluginRegistrationFile>$(_DorotiGeneratedDirectory)DorotiPluginRegistration.g.cs</_DorotiPluginRegistrationFile>

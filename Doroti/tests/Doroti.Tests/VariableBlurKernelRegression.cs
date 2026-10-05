@@ -9,7 +9,7 @@ internal static class VariableBlurKernelRegression
     // backend. This isolates the kernel from Adaptive masks and GPU scheduling.
     public static void Run()
     {
-        FrameworkShaderLoader.RegisterResourceOwner(typeof(SkiaSceneRenderer).Assembly);
+        RenderingShaderAssets.Register();
         var program = FrameworkShaderLoader.LoadEmbeddedProgram("rendering.variable-blur");
         using var effect =
             SKRuntimeEffect.CreateShader(program.source, out var error)

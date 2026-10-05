@@ -16,17 +16,22 @@ if len(sys.argv) > 1:
     scratch = Path(sys.argv[1]).resolve()
     root = Path(__file__).resolve().parents[2]
     assert scratch.is_relative_to(root / "temp/testing")
-    eng = scratch / "Doroti/eng"
-    eng.mkdir(parents=True)
-    for name in ("doroti.ps1", "launch-identity.ps1", "doctor.ps1", "python-tools.ps1"):
-        shutil.copyfile(root / "Doroti/eng" / name, eng / name)
-    validation = eng / "validate.ps1"
-    validation.write_text("param([string] $Suite)\nexit 7\n")
-    for verb in ("validate", "audit", "release"):
-        result = subprocess.run(["pwsh", "-NoProfile", "-File", str(eng / "doroti.ps1"), verb], capture_output=True, text=True)
-        assert result.returncode != 0 and "Release: PASS" not in result.stdout, (verb, result.stdout)
-        assert "exit code 7" in result.stderr, (verb, result.stderr)
+    eng = scratch / "Doroti/eng"; eng.mkdir(parents=True)
+    shutil.copyfile(root / "Doroti/eng/run-with-timeout.py", eng / "run-with-timeout.py")
+    validation = eng / "validate.py"
+    validation.write_text("import sys\nprint('fixture suite='+sys.argv[1],flush=True)\nraise SystemExit(7)\n")
+    project = scratch / "Doroti/tools/Fixture"; project.mkdir(parents=True)
+    source = root / "Doroti/tools/Doroti.Tooling/RepositoryCommands.cs"
+    sdk = root / "Doroti/src/Doroti.Tooling.Extension.Sdk/Doroti.Tooling.Extension.Sdk.csproj"
+    (project / 'Fixture.csproj').write_text(f'<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net10.0</TargetFramework><OutputType>Exe</OutputType><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup><ItemGroup><Compile Include="{source}" Link="RepositoryCommands.cs"/><ProjectReference Include="{sdk}"/></ItemGroup></Project>')
+    (project / 'Program.cs').write_text('return await Doroti.Tooling.RepositoryCommands.TryRunAsync(args) ?? 77;')
+    built=subprocess.run(['dotnet','build',str(project/'Fixture.csproj'),'-o',str(project/'bin')],capture_output=True,text=True,timeout=1200)
+    assert built.returncode==0,built.stdout+built.stderr
+    executable=project/'bin/Fixture.dll'
+    for verb,suite in (("validate","Developer"),("audit","Source"),("release","Release")):
+        result=subprocess.run([sys.executable,str(root/'Doroti/eng/run-with-timeout.py'),'--timeout','30','dotnet',str(executable),verb],capture_output=True,text=True,timeout=40)
+        assert result.returncode==7 and 'fixture suite='+suite in result.stdout,(verb,result.stdout,result.stderr)
     validation.unlink()
-    result = subprocess.run(["pwsh", "-NoProfile", "-File", str(eng / "doroti.ps1"), "validate"], capture_output=True, text=True)
-    assert result.returncode != 0, "Missing validation script was accepted"
-    print("Top-level validate/audit/release failure propagation and missing runner: PASS")
+    result=subprocess.run([sys.executable,str(root/'Doroti/eng/run-with-timeout.py'),'--timeout','30','dotnet',str(executable),'validate'],capture_output=True,text=True,timeout=40)
+    assert result.returncode==1 and 'missing-validation-runner' in result.stderr,(result.returncode,result.stdout,result.stderr)
+    print('Managed CLI validate/audit/release exit propagation, suite selection and missing runner: PASS')

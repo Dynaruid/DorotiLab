@@ -513,36 +513,13 @@ internal class _DefaultBinaryMessenger : BinaryMessenger
         );
     }
 
-    public virtual Future<ByteData?> send(string channel, ByteData? message)
+    public virtual async Future<ByteData?> send(string channel, ByteData? message)
     {
-        var completer = new Completer<ByteData?>();
-        DorotiUiLibrary.PlatformDispatcher.instance.sendPlatformMessage(
-            channel,
-            message,
-            (reply) =>
-            {
-                try
-                {
-                    completer.complete(reply);
-                }
-                catch (Exception exception)
-                {
-                    var stack = new System.Diagnostics.StackTrace();
-                    FlutterError.reportError(
-                        new FlutterErrorDetails(
-                            exception: exception,
-                            stack: stack,
-                            library: "services library",
-                            context: new ErrorDescription(
-                                "during a platform message response callback"
-                            )
-                        )
-                    );
-                }
-            }
-        );
-        return completer.future;
-        throw new InvalidOperationException("Control flow completed without returning a value.");
+        var view = Doroti.Ui.PlatformDispatcher.instance.RequireInvocationView(
+            DorotiUiInvocation.Managed("BinaryMessenger.send"));
+        var response = await view.SendPlatformMessageAsync(channel, message?.asMemory(),
+            DorotiUiInvocation.Managed("BinaryMessenger.send"));
+        return response is null ? null : (ByteData)response.Value;
     }
 
     public virtual void setMessageHandler(

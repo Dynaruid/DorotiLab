@@ -17,7 +17,7 @@ internal static class NavigationRegression
             navigation.Activate(new("two", "/second", ApplicationActivationSource.Protocol, false));
             Require(!navigation.Activate(new("one", "/first", ApplicationActivationSource.Protocol, false)), "Duplicate delivery accepted.");
             using var tester = new WidgetTester(navigation: navigation);
-            tester.pumpWidget(new Doroti.Framework.Cupertino.CupertinoApp(home: new SizedBox()));
+            tester.pumpWidget(new WidgetsApp(color: new Color(0xff000000), textStyle: new Doroti.Framework.Painting.TextStyle(color: new Color(0xffffffff)), pageRouteBuilder: (settings, builder) => new PageRouteBuilder<object>(settings: settings, pageBuilder: (context, _, _) => builder(context)), home: new SizedBox()));
             tester.pumpAndSettle();
             Require(navigation.Current.Location == "/", "Navigator reported RouteSettings.ToString instead of its route name.");
             var provider = new PlatformRouteInformationProvider(new(uri: DartUri.parse("/")));

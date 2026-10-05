@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { stripTypeScriptTypes } from 'node:module';
 import { test } from 'node:test';
 import vm from 'node:vm';
-import { dorotiWebGpuRendererVersion } from '../src/Doroti.Host.Web/Web/doroti.web.protocol.ts';
+import { dorotiWebGpuRendererVersion } from '../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.protocol.ts';
 
 const tick = () => new Promise(resolve => setImmediate(resolve));
 // The VM canvas is not a native transferable. Keep its identity while modeling
@@ -89,7 +89,7 @@ for (const managed of [false, true]) for (const stage of managed
       await module.link((specifier, parent) => load(new URL(specifier.replace(/\.js$/, '.ts'), parent.identifier)));
       return module;
     }
-    const worker = await load(new URL('../src/Doroti.Host.Web/Web/doroti.raster.worker.ts', import.meta.url)); await worker.evaluate();
+    const worker = await load(new URL('../../packages/platforms/web/Doroti.Host.Web/Web/doroti.raster.worker.ts', import.meta.url)); await worker.evaluate();
     let role: Promise<void> | undefined;
     if (managed) role = (worker.namespace as any).startSharedRuntimeRole('fixture');
     const send = (kind: string, extra: any = {}) => {
@@ -101,7 +101,7 @@ for (const managed of [false, true]) for (const stage of managed
       resizeEpoch: { generation: 1, logicalWidth: 4, logicalHeight: 4, physicalWidth: 4, physicalHeight: 4, devicePixelRatio: 1, timestampMicroseconds: 0 } };
     const mode = managed ? 'worker-direct-webgpu' : 'worker-direct-webgl';
     send('init', { mode, rendererContractVersion:dorotiWebGpuRendererVersion, policy: { selected: mode, memoryProfile: 'desktop' },
-      snapshot, canvas: new Canvas(), dotnetModuleUrl: new URL('../src/Doroti.Host.Web/Web/fake-dotnet.js', import.meta.url).href });
+      snapshot, canvas: new Canvas(), dotnetModuleUrl: new URL('../../packages/platforms/web/Doroti.Host.Web/Web/fake-dotnet.js', import.meta.url).href });
     await atStage;
     send('dispose'); send('dispose');
     if (role) { await role; await tick(); await tick(); }

@@ -1,0 +1,7 @@
+<Project>
+  <Import Project="../build/Doroti.Target.Web.browser-wasm.props" />
+  <PropertyGroup>
+    <DorotiProviderBuildDirectory>$(MSBuildThisFileDirectory)../provider-build/</DorotiProviderBuildDirectory>
+    <DorotiProviderSdkProps>$(DorotiProviderBuildDirectory)Sdk.props</DorotiProviderSdkProps>
+  </PropertyGroup>
+</Project>

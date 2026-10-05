@@ -1,0 +1,1452 @@
+{
+  "schema": "doroti.work2-resumption-verification/v1",
+  "verifiedUtc": "2026-10-05T01:02:12.613195+00:00",
+  "wholePlanComplete": false,
+  "suites": {
+    "Build": "PASS earlier resumption run; supplemented by Release",
+    "Developer": "PASS earlier resumption run",
+    "Release": "PASS 7777a6ce5ad744d2b720283eebb223ef; later additions independently checked",
+    "WindowsSmoke": "PASS 13f2d1ae893041de936579a352d23300"
+  },
+  "vscode": {
+    "result": "PASS",
+    "tests": 8,
+    "scope": "metadata/arbitrary alias, process argv/Stop and prepared browser bridge; editor GUI notVerified"
+  },
+  "doctor": {
+    "result": "PASS",
+    "tests": 7,
+    "scope": "selected SDK/runner global.json/feature-band/prerelease/CWD/timeout Partial=2/host Skipped; external fixture tools"
+  },
+  "android": {
+    "result": "SKIPPED runtime; PASS typed discovery and fixture contracts",
+    "connectedDevices": [],
+    "deviceDeployment": "notVerified"
+  },
+  "qt": {
+    "result": "PASS strict runtime subset",
+    "qpa": "Wayland under WSLg",
+    "softwareVulkan": true,
+    "artifacts": "temp/testing/work2-resume/qt-runtime-3",
+    "scope": "two-window lifetimes/primary-survivor/created-after-primary, native desktop close, synthetic text/input, 20 resize cycles, zero failed frame terminals and native consumer/GPU drain; application GUI owner",
+    "notVerified": [
+      "physical IME/focus",
+      "screen reader",
+      "external drag",
+      "hardware GPU/display performance",
+      "additional window kinds/native menus"
+    ],
+    "results": {
+      "multi-OnLastWindowClosed": {
+        "windows": 3,
+        "mainCloseCanceled": true,
+        "survivorResize": true,
+        "createdAfterMainClosed": true,
+        "remaining": 0,
+        "lifetime": "OnLastWindowClosed",
+        "exits": 1,
+        "captures": [
+          {
+            "capture": "/mnt/c/Users/parti/Labo/DorotiLab/temp/testing/work2-resume/qt-runtime-3/multi-OnLastWindowClosed.json.0.png",
+            "dpr": 2,
+            "height": 450,
+            "pixelsHeight": 900,
+            "pixelsWidth": 940,
+            "title": "Doroti Linux Desktop",
+            "width": 470
+          },
+          {
+            "capture": "/mnt/c/Users/parti/Labo/DorotiLab/temp/testing/work2-resume/qt-runtime-3/multi-OnLastWindowClosed.json.1.png",
+            "dpr": 2,
+            "height": 520,
+            "pixelsHeight": 1040,
+            "pixelsWidth": 1160,
+            "title": "Doroti Qt second",
+            "width": 580
+          }
+        ]
+      },
+      "multi-Explicit": {
+        "windows": 3,
+        "mainCloseCanceled": true,
+        "survivorResize": true,
+        "createdAfterMainClosed": true,
+        "remaining": 0,
+        "lifetime": "Explicit",
+        "exits": 1,
+        "captures": [
+          {
+            "capture": "/mnt/c/Users/parti/Labo/DorotiLab/temp/testing/work2-resume/qt-runtime-3/multi-Explicit.json.0.png",
+            "dpr": 2,
+            "height": 450,
+            "pixelsHeight": 900,
+            "pixelsWidth": 940,
+            "title": "Doroti Linux Desktop",
+            "width": 470
+          },
+          {
+            "capture": "/mnt/c/Users/parti/Labo/DorotiLab/temp/testing/work2-resume/qt-runtime-3/multi-Explicit.json.1.png",
+            "dpr": 2,
+            "height": 520,
+            "pixelsHeight": 1040,
+            "pixelsWidth": 1160,
+            "title": "Doroti Qt second",
+            "width": 580
+          }
+        ]
+      },
+      "desktop": {
+        "initial": {
+          "size": [
+            600,
+            500
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "Normal",
+          "Bounds": null
+        },
+        "resize": {
+          "size": [
+            520,
+            460
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "Normal",
+          "Bounds": null
+        },
+        "fixedResize": {
+          "size": [
+            540,
+            480
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "Normal",
+          "Bounds": null
+        },
+        "constraintsRestored": {
+          "size": [
+            540,
+            480
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "Normal",
+          "Bounds": null
+        },
+        "maximized": {
+          "size": [
+            1280,
+            752
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "Maximized",
+          "Bounds": null
+        },
+        "restored": {
+          "size": [
+            540,
+            480
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "Normal",
+          "Bounds": null
+        },
+        "waylandMinimizeRejected": true,
+        "fullscreen": {
+          "size": [
+            1280,
+            800
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "FullScreen",
+          "Bounds": null
+        },
+        "hidden": {
+          "size": [
+            540,
+            480
+          ],
+          "Scale": 2,
+          "Visible": false,
+          "Focused": true,
+          "presentation": "Normal",
+          "Bounds": null
+        },
+        "shown": {
+          "size": [
+            500,
+            450
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "Normal",
+          "Bounds": null
+        },
+        "rejected": [
+          "Center",
+          "Bounds",
+          "Topmost",
+          "Taskbar",
+          "Drag"
+        ],
+        "appearanceRejected": true,
+        "canCancelNativeClose": true,
+        "afterCanceledClose": {
+          "size": [
+            510,
+            460
+          ],
+          "Scale": 2,
+          "Visible": true,
+          "Focused": true,
+          "presentation": "Normal",
+          "Bounds": null
+        }
+      },
+      "input": {
+        "created": 4,
+        "editorRecreated": true,
+        "webViewRecreated": true,
+        "mixedScene": false,
+        "physicalIme": "notVerified"
+      },
+      "resize": {
+        "schemaVersion": "doroti.linux-qt-diagnostics/v1",
+        "native": {
+          "titlebar.effective": "solid-native",
+          "backdrop.requested": "system",
+          "backdrop.fallback": "solid",
+          "backdrop.effective": "solid",
+          "backdrop.provider": "none",
+          "backdrop.compositorBlur": "false",
+          "qpa": "wayland",
+          "graphics.backend": "QtQuick-Graphite-Vulkan",
+          "composition": "interleaved-gpu-images",
+          "raster.cpuReadback": "false",
+          "presentation.completion": "queue-present-accepted-not-scanout",
+          "vulkan.instance.apiVersion": "1.2",
+          "vulkan.instance.extensions": "VK_KHR_get_physical_device_properties2,VK_EXT_swapchain_colorspace,VK_KHR_surface,VK_KHR_portability_enumeration,VK_EXT_debug_utils,VK_KHR_wayland_surface",
+          "semantics.nodes": "25"
+        },
+        "metrics": {
+          "width": 1200,
+          "height": 1000,
+          "dpr": 2,
+          "generation": 157,
+          "surfaceGeneration": 1,
+          "lifecycle": "detached"
+        },
+        "frames": {
+          "rasterized": 62,
+          "presented": 42,
+          "replayed": 20,
+          "rasterizedSuperseded": 0,
+          "superseded": 36,
+          "failed": 0,
+          "rendererSubmitted": 0,
+          "rendererPending": false,
+          "mismatchCount": 2,
+          "lastMismatch": "metricsGeneration: scene=13; current=15"
+        },
+        "inputCount": 0,
+        "compositionFrames": 62,
+        "quickPeakReservedBytes": 22036480,
+        "quickReservedBytes": 0,
+        "quickTextureBudgetBytes": 0,
+        "quickPeakTextureBudgetBytes": 27590656,
+        "quickTextureBudgets": [
+          {
+            "HeapIndex": 0,
+            "Budget": {
+              "AllocatedBytes": 0,
+              "BudgetBytes": 0,
+              "PeakBudgetBytes": 27590656,
+              "LimitBytes": 12132045722,
+              "RequiredBytes": 19200000,
+              "Source": "VK_EXT_memory_budget",
+              "RejectedAllocations": 0
+            }
+          }
+        ],
+        "quickRetiringLayers": 0,
+        "quickPeakRetiringLayers": 2,
+        "quickTimings": {
+          "QueueIdle": {
+            "Samples": 0,
+            "P50Ms": null,
+            "P95Ms": null,
+            "P99Ms": null
+          },
+          "Recording": {
+            "Samples": 62,
+            "P50Ms": 0.1954,
+            "P95Ms": 1.3462,
+            "P99Ms": 52.7013
+          },
+          "CopySubmit": {
+            "Samples": 62,
+            "P50Ms": 0.0026,
+            "P95Ms": 0.0088,
+            "P99Ms": 0.1442
+          },
+          "FenceWait": {
+            "Samples": 39,
+            "P50Ms": 1.0252,
+            "P95Ms": 6.1268,
+            "P99Ms": 6.9705
+          }
+        },
+        "quickNativeCommitTimings": {
+          "Samples": 62,
+          "P50Ms": 0.047700000000000006,
+          "P95Ms": 0.1013,
+          "P99Ms": 0.5674
+        },
+        "semanticsNodes": "25",
+        "renderer": "Qt/Quick/Graphite-Vulkan",
+        "softwareFallback": false,
+        "softwareVulkan": true,
+        "fullFrameCpuCopies": 0,
+        "nativeFrameMode": "C",
+        "frameworkPreparedPulses": 63,
+        "quickMaximumPending": 1,
+        "quickConsumersSubmitted": 64,
+        "quickConsumersCompleted": 64,
+        "gpuRetirement": "producer-copy-fence-and-Qt-afterFrameEnd-consumer-fence"
+      }
+    },
+    "profiles": "PASS provider-owned SDK/template configuration, typed development plan and native copy/rejection fixtures; qt-profiles-2"
+  },
+  "notVerified": [
+    "Apple native OS and signing",
+    "Android/iOS matching device runtime",
+    "trim/NativeAOT",
+    "physical keyboard/IME/accessibility",
+    "mixed monitor DPI",
+    "scanout/FPS",
+    "clean-machine installation"
+  ],
+  "remainingImplementation": [
+    "Cupertino native context-menu preview and restoration/focus/Semantics coordinator",
+    "Extended native Tooltip hover/long-press/late installation",
+    "Qt/AppKit window kinds/native menu and complete provider staged lifecycle",
+    "Mobile development/device transport, builtin template/native maintenance services and editor GUI workflows",
+    "G1 slow-consumer/modal/close/recreation/late IME isolation and complete semantic ownership/API audit"
+  ],
+  "candidates": {
+    "windows": {
+      "schemaVersion": "doroti.release-candidate/v2",
+      "versions": {
+        "core": "0.4.0-alpha.2",
+        "material": "1.0.0-alpha.3",
+        "cupertino": "1.0.0-alpha.2",
+        "providers": {
+          "windowsappsdk": "0.4.0-alpha.4"
+        }
+      },
+      "targets": [
+        "windows"
+      ],
+      "design": "material",
+      "status": "PASS: independent local packages and isolated NuGet-only template publish; runtime qualification is recorded per alias",
+      "sourceRevision": "87af92cef0e0ec8f96934fcfc5f66eb6f4bf5ec0",
+      "sourceTreeSha256": "e9d13492d5105e0071504f429e2315e3fdb7a6c8971f8b3f0f1eb0565e247ab3",
+      "runtime": {
+        "windows": {
+          "nativeFirstFrame": true,
+          "twoWindows": true,
+          "secondResizedAndClosed": true,
+          "survivorsBeforeMainClose": 1,
+          "runId": "b260da4ad2334acfb9ba93d5d3d3aec1",
+          "version": "0.4.0-alpha.2"
+        }
+      },
+      "packages": {
+        "Doroti.App.Sdk.0.4.0-alpha.2.nupkg": "693258da867d7550192d0bc9200f2f8be1283f5a8f255423814927058e895e37",
+        "Doroti.Cupertino.1.0.0-alpha.2.nupkg": "91ecd76d87acf6bd2c302cac006771645ec9c4e144067e1b813d8b0fc6560d66",
+        "Doroti.Desktop.0.4.0-alpha.2.nupkg": "ccac16aaa76e479304c080ff2c6c1b24dc57a3b02544fb73d11d5f9393b17ecb",
+        "Doroti.Framework.Animation.0.4.0-alpha.2.nupkg": "5ab2b3b6e82bee57ef3a2bf788dfc2908fc7c6bcbf23506e6988784205c1fd19",
+        "Doroti.Framework.Foundation.0.4.0-alpha.2.nupkg": "90ead3d6fbcc1643087f9f8d3b82d3358ac57d423cde3dcc65e2a08b09a66afe",
+        "Doroti.Framework.Gestures.0.4.0-alpha.2.nupkg": "b5667fecc89f3827184f191f71977cccba0075250596df89de8dc7514a3e361b",
+        "Doroti.Framework.Painting.0.4.0-alpha.2.nupkg": "4b85eb7398831c0381cf92beb254a6bb72015e6865af027cc7e5ecb04d017a31",
+        "Doroti.Framework.Physics.0.4.0-alpha.2.nupkg": "876819c8b992fe81ca7f93db3d4b8b31a7d042e5d57074307d41c89c9a1abc29",
+        "Doroti.Framework.Rendering.0.4.0-alpha.2.nupkg": "3bf8e8f39d7a90a6da6e2bd7e679560ddd46937bc0e573074a16aa764b20a629",
+        "Doroti.Framework.Scheduler.0.4.0-alpha.2.nupkg": "ea9453c9603fc2cb1c99b5e68a9d98340dcc143fc49b7869f1e065d0cb32158b",
+        "Doroti.Framework.Semantics.0.4.0-alpha.2.nupkg": "da3a0a43c13e4b8e8b850eec98e33cd4e7b013b8880b534fa47a61eabfcf013a",
+        "Doroti.Framework.Services.0.4.0-alpha.2.nupkg": "915e54afde2bf7361cd5af3977e9344247c82df33eaab730f9fefea38778479d",
+        "Doroti.Framework.Widgets.0.4.0-alpha.2.nupkg": "b9c955a7e40c467b3578005f48293840968b2d052bd22e967533778db621a2e5",
+        "Doroti.Host.WindowsAppSdk.0.4.0-alpha.4.nupkg": "03bbc7e6dd27ce93e359f3359fc23151d876b5bf6d3894061ac91b247e719756",
+        "Doroti.Hosting.0.4.0-alpha.2.nupkg": "9a422fe3fa722532cd552e7228585edabf031b23d3dc1ebaf94ff31b57415436",
+        "Doroti.Material.1.0.0-alpha.3.nupkg": "651f9a28c004ea18948b375603f64b61e836322d60c03654cab8c312f3d005f5",
+        "Doroti.Plugins.0.4.0-alpha.2.nupkg": "6d9e463d099485e0cb259a08fab512b9407f0142457a6263e0cea1c3d57370b6",
+        "Doroti.Runner.Sdk.0.4.0-alpha.2.nupkg": "2bd141526e97e079c0d66a1c10885c6d564789dd957eb04dd7e0548de8feca2b",
+        "Doroti.Runtime.0.4.0-alpha.2.nupkg": "cbf50917eb271b0ff8a69fe272c01b4ec0c1e4de37e082349b2d64917687f32a",
+        "Doroti.Skia.Fonts.0.4.0-alpha.2.nupkg": "6d229a34933538231664c53974b5788af35397fd699a475ad8e6714ac55c4b59",
+        "Doroti.Skia.Rendering.0.4.0-alpha.2.nupkg": "c798653835bbdc59ef617be4b82c15902e3ec56ce8c99466cde74cc3ce8ec0d8",
+        "Doroti.Skia.RuntimeEffects.0.4.0-alpha.2.nupkg": "913ad446d71707c48ffbdabfb2455985fbcfe6c7f7b2786712c7099efd23cbdd",
+        "Doroti.Skia.Vulkan.0.4.0-alpha.2.nupkg": "4bb87319478d82b33ff8ad5e5ed1fd71e6787f5ba4a5fc87ab904d338abb84f8",
+        "Doroti.Target.Windows.WindowsAppSdk.win-x64.0.4.0-alpha.4.nupkg": "be941e48183a408a83fd078f06ccafbb4f1a1e82b9e28838f78aa1264210d296",
+        "Doroti.Templates.0.4.0-alpha.2.nupkg": "31815239300676672e046fde2953ae3d86a7e07a0680f09cd2e0224051359999",
+        "Doroti.Tool.WindowsAppSdk.0.4.0-alpha.4.nupkg": "a70d4109005c9e08abef186b9a65c2b8036797beb18cd544c93d61e5049b5208",
+        "Doroti.Tooling.Contracts.0.4.0-alpha.2.nupkg": "5caf79197d5bd56ff6d60e34806ef6859e25be3d6390c726140b2a8be19f3022",
+        "Doroti.Tooling.Extension.Sdk.0.4.0-alpha.2.nupkg": "b0e459c5a7533dad7988bea4189ef5976a47cb0b2eabfbb944ab6baa32233bf5",
+        "Doroti.Ui.0.4.0-alpha.2.nupkg": "0bf098952bdad38d688f054a35f0d40e370d3a94fb0ca9d06fc3f7929f559aeb"
+      },
+      "candidateReceiptSha256": "90578d4f58cdc1cfd07872124a65670cf61e6279b2181f9240d8a2338ba311d9",
+      "artifacts": "temp\\testing\\work2-resume\\candidate-windows-6",
+      "packageDetails": {
+        "Doroti.App.Sdk.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.App.Sdk",
+          "version": "0.4.0-alpha.2",
+          "sha256": "693258da867d7550192d0bc9200f2f8be1283f5a8f255423814927058e895e37",
+          "dependencies": {},
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Cupertino.1.0.0-alpha.2.nupkg": {
+          "id": "Doroti.Cupertino",
+          "version": "1.0.0-alpha.2",
+          "sha256": "91ecd76d87acf6bd2c302cac006771645ec9c4e144067e1b813d8b0fc6560d66",
+          "dependencies": {
+            "Doroti.Framework.Animation": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Foundation": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Gestures": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Painting": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Physics": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Rendering": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Scheduler": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Semantics": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Services": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Widgets": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Runtime": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Ui": "[0.4.0-alpha.1, 0.5.0)"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Desktop.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Desktop",
+          "version": "0.4.0-alpha.2",
+          "sha256": "ccac16aaa76e479304c080ff2c6c1b24dc57a3b02544fb73d11d5f9393b17ecb",
+          "dependencies": {
+            "Doroti.Hosting": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Framework.Animation.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Framework.Animation",
+          "version": "0.4.0-alpha.2",
+          "sha256": "5ab2b3b6e82bee57ef3a2bf788dfc2908fc7c6bcbf23506e6988784205c1fd19",
+          "dependencies": {
+            "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+            "Doroti.Framework.Physics": "0.4.0-alpha.2",
+            "Doroti.Framework.Scheduler": "0.4.0-alpha.2",
+            "Doroti.Framework.Services": "0.4.0-alpha.2",
+            "Doroti.Runtime": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Framework.Foundation.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Framework.Foundation",
+          "version": "0.4.0-alpha.2",
+          "sha256": "90ead3d6fbcc1643087f9f8d3b82d3358ac57d423cde3dcc65e2a08b09a66afe",
+          "dependencies": {
+            "Doroti.Runtime": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Framework.Gestures.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Framework.Gestures",
+          "version": "0.4.0-alpha.2",
+          "sha256": "b5667fecc89f3827184f191f71977cccba0075250596df89de8dc7514a3e361b",
+          "dependencies": {
+            "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+            "Doroti.Framework.Scheduler": "0.4.0-alpha.2",
+            "Doroti.Framework.Services": "0.4.0-alpha.2",
+            "Doroti.Runtime": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Framework.Painting.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Framework.Painting",
+          "version": "0.4.0-alpha.2",
+          "sha256": "4b85eb7398831c0381cf92beb254a6bb72015e6865af027cc7e5ecb04d017a31",
+          "dependencies": {
+            "Doroti.Framework.Animation": "0.4.0-alpha.2",
+            "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+            "Doroti.Framework.Gestures": "0.4.0-alpha.2",
+            "Doroti.Framework.Physics": "0.4.0-alpha.2",
+            "Doroti.Framework.Scheduler": "0.4.0-alpha.2",
+            "Doroti.Framework.Services": "0.4.0-alpha.2",
+            "Doroti.Runtime": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Framework.Physics.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Framework.Physics",
+          "version": "0.4.0-alpha.2",
+          "sha256": "876819c8b992fe81ca7f93db3d4b8b31a7d042e5d57074307d41c89c9a1abc29",
+          "dependencies": {
+            "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+            "Doroti.Framework.Scheduler": "0.4.0-alpha.2",
+            "Doroti.Framework.Services": "0.4.0-alpha.2",
+            "Doroti.Runtime": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Framework.Rendering.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Framework.Rendering",
+          "version": "0.4.0-alpha.2",
+          "sha256": "3bf8e8f39d7a90a6da6e2bd7e679560ddd46937bc0e573074a16aa764b20a629",
+          "dependencies": {
+            "Doroti.Framework.Animation": "0.4.0-alpha.2",
+            "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+            "Doroti.Framework.Gestures": "0.4.0-alpha.2",
+            "Doroti.Framework.Painting": "0.4.0-alpha.2",
+            "Doroti.Framework.Physics": "0.4.0-alpha.2",
+            "Doroti.Framework.Scheduler": "0.4.0-alpha.2",
+            "Doroti.Framework.Semantics": "0.4.0-alpha.2",
+            "Doroti.Framework.Services": "0.4.0-alpha.2",
+            "Doroti.Runtime": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Framework.Scheduler.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Framework.Scheduler",
+          "version": "0.4.0-alpha.2",
+          "sha256": "ea9453c9603fc2cb1c99b5e68a9d98340dcc143fc49b7869f1e065d0cb32158b",
+          "dependencies": {
+            "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+            "Doroti.Runtime": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Framework.Semantics.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Framework.Semantics",
+          "version": "0.4.0-alpha.2",
+          "sha256": "da3a0a43c13e4b8e8b850eec98e33cd4e7b013b8880b534fa47a61eabfcf013a",
+          "dependencies": {
+            "Doroti.Framework.Animation": "0.4.0-alpha.2",
+            "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+            "Doroti.Framework.Gestures": "0.4.0-alpha.2",
+            "Doroti.Framework.Painting": "0.4.0-alpha.2",
+            "Doroti.Framework.Physics": "0.4.0-alpha.2",
+            "Doroti.Framework.Scheduler": "0.4.0-alpha.2",
+            "Doroti.Framework.Services": "0.4.0-alpha.2",
+            "Doroti.Runtime": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Framework.Services.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Framework.Services",
+          "version": "0.4.0-alpha.2",
+          "sha256": "915e54afde2bf7361cd5af3977e9344247c82df33eaab730f9fefea38778479d",
+          "dependencies": {
+            "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+            "Doroti.Framework.Scheduler": "0.4.0-alpha.2",
+            "Doroti.Runtime": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Framework.Widgets.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Framework.Widgets",
+          "version": "0.4.0-alpha.2",
+          "sha256": "b9c955a7e40c467b3578005f48293840968b2d052bd22e967533778db621a2e5",
+          "dependencies": {
+            "Doroti.Framework.Animation": "0.4.0-alpha.2",
+            "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+            "Doroti.Framework.Gestures": "0.4.0-alpha.2",
+            "Doroti.Framework.Painting": "0.4.0-alpha.2",
+            "Doroti.Framework.Physics": "0.4.0-alpha.2",
+            "Doroti.Framework.Rendering": "0.4.0-alpha.2",
+            "Doroti.Framework.Scheduler": "0.4.0-alpha.2",
+            "Doroti.Framework.Semantics": "0.4.0-alpha.2",
+            "Doroti.Framework.Services": "0.4.0-alpha.2",
+            "Doroti.Hosting": "0.4.0-alpha.2",
+            "Doroti.Runtime": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Host.WindowsAppSdk.0.4.0-alpha.4.nupkg": {
+          "id": "Doroti.Host.WindowsAppSdk",
+          "version": "0.4.0-alpha.4",
+          "sha256": "03bbc7e6dd27ce93e359f3359fc23151d876b5bf6d3894061ac91b247e719756",
+          "dependencies": {
+            "Doroti.Desktop": "0.4.0-alpha.2",
+            "Doroti.Framework.Services": "0.4.0-alpha.2",
+            "Doroti.Hosting": "0.4.0-alpha.2",
+            "Doroti.Skia.Fonts": "0.4.0-alpha.2",
+            "Doroti.Skia.Rendering": "0.4.0-alpha.2",
+            "Doroti.Skia.Vulkan": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2",
+            "Microsoft.WindowsAppSDK": "2.4.0",
+            "Silk.NET.Vulkan": "2.23.0",
+            "Silk.NET.Vulkan.Extensions.KHR": "2.23.0",
+            "SkiaSharp": "4.154.0-preview.1.26454.9",
+            "SkiaSharp.NativeAssets.Win32": "4.154.0-preview.1.26454.9",
+            "SkiaSharp.Vulkan.Silk.NET": "4.154.0-preview.1.26454.9"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Hosting.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Hosting",
+          "version": "0.4.0-alpha.2",
+          "sha256": "9a422fe3fa722532cd552e7228585edabf031b23d3dc1ebaf94ff31b57415436",
+          "dependencies": {
+            "Doroti.Runtime": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Material.1.0.0-alpha.3.nupkg": {
+          "id": "Doroti.Material",
+          "version": "1.0.0-alpha.3",
+          "sha256": "651f9a28c004ea18948b375603f64b61e836322d60c03654cab8c312f3d005f5",
+          "dependencies": {
+            "Doroti.Framework.Animation": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Foundation": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Gestures": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Painting": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Physics": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Rendering": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Scheduler": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Semantics": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Services": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Widgets": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Runtime": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Ui": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Cupertino": "[1.0.0-alpha.1, 2.0.0)",
+            "MaterialColorUtilities": "0.3.0"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Plugins.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Plugins",
+          "version": "0.4.0-alpha.2",
+          "sha256": "6d9e463d099485e0cb259a08fab512b9407f0142457a6263e0cea1c3d57370b6",
+          "dependencies": {
+            "Doroti.Hosting": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Runner.Sdk.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Runner.Sdk",
+          "version": "0.4.0-alpha.2",
+          "sha256": "2bd141526e97e079c0d66a1c10885c6d564789dd957eb04dd7e0548de8feca2b",
+          "dependencies": {},
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Runtime.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Runtime",
+          "version": "0.4.0-alpha.2",
+          "sha256": "cbf50917eb271b0ff8a69fe272c01b4ec0c1e4de37e082349b2d64917687f32a",
+          "dependencies": {},
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Skia.Fonts.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Skia.Fonts",
+          "version": "0.4.0-alpha.2",
+          "sha256": "6d229a34933538231664c53974b5788af35397fd699a475ad8e6714ac55c4b59",
+          "dependencies": {
+            "Doroti.Skia.Rendering": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Skia.Rendering.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Skia.Rendering",
+          "version": "0.4.0-alpha.2",
+          "sha256": "c798653835bbdc59ef617be4b82c15902e3ec56ce8c99466cde74cc3ce8ec0d8",
+          "dependencies": {
+            "Doroti.Skia.RuntimeEffects": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2",
+            "SkiaSharp": "4.154.0-preview.1.26454.9"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Skia.RuntimeEffects.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Skia.RuntimeEffects",
+          "version": "0.4.0-alpha.2",
+          "sha256": "913ad446d71707c48ffbdabfb2455985fbcfe6c7f7b2786712c7099efd23cbdd",
+          "dependencies": {
+            "Doroti.Ui": "0.4.0-alpha.2",
+            "SkiaSharp": "4.154.0-preview.1.26454.9"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Skia.Vulkan.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Skia.Vulkan",
+          "version": "0.4.0-alpha.2",
+          "sha256": "4bb87319478d82b33ff8ad5e5ed1fd71e6787f5ba4a5fc87ab904d338abb84f8",
+          "dependencies": {
+            "Doroti.Skia.Rendering": "0.4.0-alpha.2",
+            "Silk.NET.Vulkan": "2.23.0",
+            "Silk.NET.Vulkan.Extensions.KHR": "2.23.0"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Target.Windows.WindowsAppSdk.win-x64.0.4.0-alpha.4.nupkg": {
+          "id": "Doroti.Target.Windows.WindowsAppSdk.win-x64",
+          "version": "0.4.0-alpha.4",
+          "sha256": "be941e48183a408a83fd078f06ccafbb4f1a1e82b9e28838f78aa1264210d296",
+          "dependencies": {
+            "Doroti.Host.WindowsAppSdk": "0.4.0-alpha.4"
+          },
+          "manifests": {
+            "doroti/doroti-target-manifest.json": {
+              "packageId": "Doroti.Target.Windows.WindowsAppSdk.win-x64",
+              "targetFramework": "net10.0-windows10.0.19041.0",
+              "rid": "win-x64",
+              "nativeViewType": "Win32.ChildHwnd",
+              "graphicsBackend": "windowsappsdk-2.4/HwndExactCpp/managed-Graphite-Vulkan-Composition-Swapchain",
+              "defaultRenderer": "Vulkan",
+              "optionalRenderers": [],
+              "defaultAdapter": "HwndExactCpp",
+              "adapterCapabilities": [
+                "HwndExactCpp"
+              ],
+              "cutoverDecision": "Graphite/Vulkan is the user-selected default; NVIDIA prepared receipt latency is accepted at 1000 ms. Broader GPU/DPI/refresh qualification remains incomplete.",
+              "nativeArtifactPolicy": "app-directory/exact-version/sha256/win-x64/no-PATH-fallback",
+              "softwareFallback": false,
+              "defaultSkiaEngine": "Graphite",
+              "nativeSkiaPackage": "SkiaSharp.NativeAssets.Win32",
+              "nativeSkiaVersion": "4.154.0-preview.1.26454.9",
+              "nativeSkiaApi": "public-Graphite",
+              "requiredVulkanVersion": "1.2",
+              "schemaVersion": "doroti.target-package/v2",
+              "provider": "windowsappsdk",
+              "providerVersion": "0.4.0-alpha.4",
+              "coreRange": "[0.4.0-alpha.1,0.5.0)",
+              "protocolVersion": 1,
+              "providerProfile": "default:win-x64",
+              "nativeAbiVersion": 4,
+              "packageVersion": "0.4.0-alpha.4"
+            }
+          },
+          "nativeAssets": {
+            "runtimes/win-x64/native/Microsoft.WindowsAppRuntime.Bootstrap.dll": "44752d799b8d7cead99d6a20cb9a46009a9a2dfaa9701176a573e50a30ab089c",
+            "runtimes/win-x64/native/doroti_windows_appsdk_host_v1.dll": "ae23b1db22843448becd95191b421e163b060da130efb5e996c607784d176d3c"
+          }
+        },
+        "Doroti.Templates.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Templates",
+          "version": "0.4.0-alpha.2",
+          "sha256": "31815239300676672e046fde2953ae3d86a7e07a0680f09cd2e0224051359999",
+          "dependencies": {},
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Tool.WindowsAppSdk.0.4.0-alpha.4.nupkg": {
+          "id": "Doroti.Tool.WindowsAppSdk",
+          "version": "0.4.0-alpha.4",
+          "sha256": "a70d4109005c9e08abef186b9a65c2b8036797beb18cd544c93d61e5049b5208",
+          "dependencies": {
+            "Doroti.Tooling.Extension.Sdk": "0.4.0-alpha.2"
+          },
+          "manifests": {
+            "lib/net10.0/doroti-provider.json": {
+              "schemaVersion": "doroti.platform-provider/v1",
+              "id": "windowsappsdk",
+              "version": "0.4.0-alpha.4",
+              "coreRange": "[0.4.0-alpha.1,0.5.0)",
+              "protocolVersion": 1,
+              "registrationType": "Doroti.Host.WindowsAppSdk.DorotiWindowsAppSdkRunner",
+              "hostOperatingSystems": [
+                "windows"
+              ],
+              "operations": [
+                "build",
+                "run",
+                "publish",
+                "dev"
+              ],
+              "services": [
+                "configuration",
+                "diagnostics",
+                "devices",
+                "operations"
+              ],
+              "tool": {
+                "mode": "dotnetInproc",
+                "assembly": "Doroti.Tool.WindowsAppSdk.dll",
+                "entryType": "Doroti.Tool.WindowsAppSdk.Extension",
+                "executable": null,
+                "arguments": [],
+                "project": null
+              },
+              "profiles": {
+                "default:win-x64": {
+                  "hostOperatingSystems": [
+                    "windows"
+                  ],
+                  "operations": [
+                    "build",
+                    "run",
+                    "publish",
+                    "dev"
+                  ],
+                  "development": {
+                    "transport": "file",
+                    "debug": true,
+                    "requiresPreparedAcknowledgment": false,
+                    "usesStopSignal": false,
+                    "launchBrowser": false
+                  }
+                }
+              }
+            }
+          },
+          "nativeAssets": {}
+        },
+        "Doroti.Tooling.Contracts.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Tooling.Contracts",
+          "version": "0.4.0-alpha.2",
+          "sha256": "5caf79197d5bd56ff6d60e34806ef6859e25be3d6390c726140b2a8be19f3022",
+          "dependencies": {},
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Tooling.Extension.Sdk.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Tooling.Extension.Sdk",
+          "version": "0.4.0-alpha.2",
+          "sha256": "b0e459c5a7533dad7988bea4189ef5976a47cb0b2eabfbb944ab6baa32233bf5",
+          "dependencies": {
+            "Doroti.Tooling.Contracts": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Ui.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Ui",
+          "version": "0.4.0-alpha.2",
+          "sha256": "0bf098952bdad38d688f054a35f0d40e370d3a94fb0ca9d06fc3f7929f559aeb",
+          "dependencies": {
+            "Doroti.Runtime": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        }
+      }
+    },
+    "web": {
+      "schemaVersion": "doroti.release-candidate/v2",
+      "versions": {
+        "core": "0.4.0-alpha.2",
+        "material": "1.0.0-alpha.1",
+        "cupertino": "1.0.0-alpha.2",
+        "providers": {
+          "web": "0.4.0-alpha.4"
+        }
+      },
+      "targets": [
+        "web"
+      ],
+      "design": "cupertino",
+      "status": "PASS: independent local packages and isolated NuGet-only template publish; runtime qualification is recorded per alias",
+      "sourceRevision": "87af92cef0e0ec8f96934fcfc5f66eb6f4bf5ec0",
+      "sourceTreeSha256": "1d16a98aba8bc5c96df55ae1a47fc2e6f10eb4f1d49698707d9f215b793c60a0",
+      "runtime": {
+        "web": "notVerified"
+      },
+      "packages": {
+        "Doroti.App.Sdk.0.4.0-alpha.2.nupkg": "e8bde931603b124a73d3eb232ba99d5b4af0ecdd81a384bbbd76b98c93f8999a",
+        "Doroti.Cupertino.1.0.0-alpha.2.nupkg": "100cdb741ae310b314670dcfa6d80e3135a35eff6429c6115ea142b7da75932a",
+        "Doroti.Framework.Animation.0.4.0-alpha.2.nupkg": "c7e2bb57ed321e2a782ed456d891f438933cd3f44f44a4226760dc29c738e9ed",
+        "Doroti.Framework.Foundation.0.4.0-alpha.2.nupkg": "11cdc27d7e27691fa18a2582e519b55e6ad8d5fe2c6d43fb597df232a023d7d9",
+        "Doroti.Framework.Gestures.0.4.0-alpha.2.nupkg": "5cdb6a14d4208d52507ef5c6d6cb04f86023bb6e1f91996e40ca4b0fee9848bb",
+        "Doroti.Framework.Painting.0.4.0-alpha.2.nupkg": "10e3c5a474f52a5cdc1a12cd92131cfa13926e105759eb81f146b45eb5589902",
+        "Doroti.Framework.Physics.0.4.0-alpha.2.nupkg": "b45c787724eac2d119bc56bf6041788dc5e9337565259124432dd673942ccebb",
+        "Doroti.Framework.Rendering.0.4.0-alpha.2.nupkg": "396be53e4cc61baa213a5c581f6a13855c37af98a78c3af5f65c74a6bf783bf0",
+        "Doroti.Framework.Scheduler.0.4.0-alpha.2.nupkg": "9396be9666d6b6e8530035f445a613da779ad61f2e96fc4cc388164bb4492cb8",
+        "Doroti.Framework.Semantics.0.4.0-alpha.2.nupkg": "79219b5c14b9e746671ca82773a94e4742e40c3e43005040d546325ed9d840d5",
+        "Doroti.Framework.Services.0.4.0-alpha.2.nupkg": "e01c99eb21e5ab1f24d49b072a1dc376a943b9c972b7cd7bfc05499db8fb5eed",
+        "Doroti.Framework.Widgets.0.4.0-alpha.2.nupkg": "d4da318829a878c6586371bf5f63367df79793dbb6611531f3876524c4877d12",
+        "Doroti.Host.Web.0.4.0-alpha.4.nupkg": "7262725d9c3ee7165bb6ff7b775811fb34699fa4658efc86887ec89c20824007",
+        "Doroti.Hosting.0.4.0-alpha.2.nupkg": "180f642c344aee60173dd7fa697520f9d895501eddbf2bc06827b55a185fbca5",
+        "Doroti.Plugins.0.4.0-alpha.2.nupkg": "73935beee71f21c617420ab38e4774ad1a9f14707222b207fd50285b176d84c5",
+        "Doroti.Runner.Sdk.0.4.0-alpha.2.nupkg": "a84882304ff0cc2626ef7201f6d8a6ef1b933b5ca1c687e0f92c39e50f320da2",
+        "Doroti.Runtime.0.4.0-alpha.2.nupkg": "61ddac5beeea4a00569cc82bc45c89ad7649384b1d33255c92ca5215474b5e53",
+        "Doroti.Skia.Rendering.0.4.0-alpha.2.nupkg": "5ee6d0e0e513efa54d26e8afb851145096e0adab0ea073ab8bd4f1a54b110da2",
+        "Doroti.Skia.RuntimeEffects.0.4.0-alpha.2.nupkg": "281eb6da0f5f20ea44f0129021df6d17c8f380b3ce6b25ee1d83125b0d53ba94",
+        "Doroti.Target.Web.browser-wasm.0.4.0-alpha.4.nupkg": "39539644d7d809d68539fe9c6e2c831f43f057de0064626132749765d670b6ab",
+        "Doroti.Templates.0.4.0-alpha.2.nupkg": "9fd7771739eb1540091e048725c76b49f56b4898eb4da176e065a0967c6fabf3",
+        "Doroti.Tool.Web.0.4.0-alpha.4.nupkg": "78de34fee19f496feb334e16673aab5c49b5876c4b24d8746b02090e120a1bbe",
+        "Doroti.Tooling.Contracts.0.4.0-alpha.2.nupkg": "6be047140c1243445f01d5fa779a17a234e7a16baf0ce28ccd8e191a8e1e717f",
+        "Doroti.Tooling.Extension.Sdk.0.4.0-alpha.2.nupkg": "0ff6a59bb592ca13867e3c32c9858abe615e9ab250c4b1200923a4a6b74f41d3",
+        "Doroti.Ui.0.4.0-alpha.2.nupkg": "8ee2f8c1494bd0669f21a422ed851d4e18ca72e9e26dce0d474972a0fb3fb92f"
+      },
+      "candidateReceiptSha256": "7c6999e303f1ee3e96e68f6d62af9eaf88f104b8fa7a34c37dedcc8d1abc75d8",
+      "artifacts": "temp\\testing\\work2-resume\\candidate-web-3",
+      "packageDetails": {
+        "Doroti.App.Sdk.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.App.Sdk",
+          "version": "0.4.0-alpha.2",
+          "sha256": "e8bde931603b124a73d3eb232ba99d5b4af0ecdd81a384bbbd76b98c93f8999a",
+          "dependencies": {},
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Cupertino.1.0.0-alpha.2.nupkg": {
+          "id": "Doroti.Cupertino",
+          "version": "1.0.0-alpha.2",
+          "sha256": "100cdb741ae310b314670dcfa6d80e3135a35eff6429c6115ea142b7da75932a",
+          "dependencies": {
+            "Doroti.Framework.Animation": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Foundation": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Gestures": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Painting": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Physics": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Rendering": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Scheduler": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Semantics": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Services": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Framework.Widgets": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Runtime": "[0.4.0-alpha.1, 0.5.0)",
+            "Doroti.Ui": "[0.4.0-alpha.1, 0.5.0)"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Framework.Animation.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Framework.Animation",
+          "version": "0.4.0-alpha.2",
+          "sha256": "c7e2bb57ed321e2a782ed456d891f438933cd3f44f44a4226760dc29c738e9ed",
+          "dependencies": {
+            "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+            "Doroti.Framework.Physics": "0.4.0-alpha.2",
+            "Doroti.Framework.Scheduler": "0.4.0-alpha.2",
+            "Doroti.Framework.Services": "0.4.0-alpha.2",
+            "Doroti.Runtime": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Framework.Foundation.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Framework.Foundation",
+          "version": "0.4.0-alpha.2",
+          "sha256": "11cdc27d7e27691fa18a2582e519b55e6ad8d5fe2c6d43fb597df232a023d7d9",
+          "dependencies": {
+            "Doroti.Runtime": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Framework.Gestures.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Framework.Gestures",
+          "version": "0.4.0-alpha.2",
+          "sha256": "5cdb6a14d4208d52507ef5c6d6cb04f86023bb6e1f91996e40ca4b0fee9848bb",
+          "dependencies": {
+            "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+            "Doroti.Framework.Scheduler": "0.4.0-alpha.2",
+            "Doroti.Framework.Services": "0.4.0-alpha.2",
+            "Doroti.Runtime": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Framework.Painting.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Framework.Painting",
+          "version": "0.4.0-alpha.2",
+          "sha256": "10e3c5a474f52a5cdc1a12cd92131cfa13926e105759eb81f146b45eb5589902",
+          "dependencies": {
+            "Doroti.Framework.Animation": "0.4.0-alpha.2",
+            "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+            "Doroti.Framework.Gestures": "0.4.0-alpha.2",
+            "Doroti.Framework.Physics": "0.4.0-alpha.2",
+            "Doroti.Framework.Scheduler": "0.4.0-alpha.2",
+            "Doroti.Framework.Services": "0.4.0-alpha.2",
+            "Doroti.Runtime": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Framework.Physics.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Framework.Physics",
+          "version": "0.4.0-alpha.2",
+          "sha256": "b45c787724eac2d119bc56bf6041788dc5e9337565259124432dd673942ccebb",
+          "dependencies": {
+            "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+            "Doroti.Framework.Scheduler": "0.4.0-alpha.2",
+            "Doroti.Framework.Services": "0.4.0-alpha.2",
+            "Doroti.Runtime": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Framework.Rendering.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Framework.Rendering",
+          "version": "0.4.0-alpha.2",
+          "sha256": "396be53e4cc61baa213a5c581f6a13855c37af98a78c3af5f65c74a6bf783bf0",
+          "dependencies": {
+            "Doroti.Framework.Animation": "0.4.0-alpha.2",
+            "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+            "Doroti.Framework.Gestures": "0.4.0-alpha.2",
+            "Doroti.Framework.Painting": "0.4.0-alpha.2",
+            "Doroti.Framework.Physics": "0.4.0-alpha.2",
+            "Doroti.Framework.Scheduler": "0.4.0-alpha.2",
+            "Doroti.Framework.Semantics": "0.4.0-alpha.2",
+            "Doroti.Framework.Services": "0.4.0-alpha.2",
+            "Doroti.Runtime": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Framework.Scheduler.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Framework.Scheduler",
+          "version": "0.4.0-alpha.2",
+          "sha256": "9396be9666d6b6e8530035f445a613da779ad61f2e96fc4cc388164bb4492cb8",
+          "dependencies": {
+            "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+            "Doroti.Runtime": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Framework.Semantics.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Framework.Semantics",
+          "version": "0.4.0-alpha.2",
+          "sha256": "79219b5c14b9e746671ca82773a94e4742e40c3e43005040d546325ed9d840d5",
+          "dependencies": {
+            "Doroti.Framework.Animation": "0.4.0-alpha.2",
+            "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+            "Doroti.Framework.Gestures": "0.4.0-alpha.2",
+            "Doroti.Framework.Painting": "0.4.0-alpha.2",
+            "Doroti.Framework.Physics": "0.4.0-alpha.2",
+            "Doroti.Framework.Scheduler": "0.4.0-alpha.2",
+            "Doroti.Framework.Services": "0.4.0-alpha.2",
+            "Doroti.Runtime": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Framework.Services.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Framework.Services",
+          "version": "0.4.0-alpha.2",
+          "sha256": "e01c99eb21e5ab1f24d49b072a1dc376a943b9c972b7cd7bfc05499db8fb5eed",
+          "dependencies": {
+            "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+            "Doroti.Framework.Scheduler": "0.4.0-alpha.2",
+            "Doroti.Runtime": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Framework.Widgets.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Framework.Widgets",
+          "version": "0.4.0-alpha.2",
+          "sha256": "d4da318829a878c6586371bf5f63367df79793dbb6611531f3876524c4877d12",
+          "dependencies": {
+            "Doroti.Framework.Animation": "0.4.0-alpha.2",
+            "Doroti.Framework.Foundation": "0.4.0-alpha.2",
+            "Doroti.Framework.Gestures": "0.4.0-alpha.2",
+            "Doroti.Framework.Painting": "0.4.0-alpha.2",
+            "Doroti.Framework.Physics": "0.4.0-alpha.2",
+            "Doroti.Framework.Rendering": "0.4.0-alpha.2",
+            "Doroti.Framework.Scheduler": "0.4.0-alpha.2",
+            "Doroti.Framework.Semantics": "0.4.0-alpha.2",
+            "Doroti.Framework.Services": "0.4.0-alpha.2",
+            "Doroti.Hosting": "0.4.0-alpha.2",
+            "Doroti.Runtime": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Host.Web.0.4.0-alpha.4.nupkg": {
+          "id": "Doroti.Host.Web",
+          "version": "0.4.0-alpha.4",
+          "sha256": "7262725d9c3ee7165bb6ff7b775811fb34699fa4658efc86887ec89c20824007",
+          "dependencies": {
+            "Doroti.Hosting": "0.4.0-alpha.2",
+            "Doroti.Skia.Rendering": "0.4.0-alpha.2",
+            "Doroti.Skia.RuntimeEffects": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2",
+            "Microsoft.AspNetCore.Components.WebAssembly": "10.0.11",
+            "SkiaSharp": "4.154.0-preview.1.26454.9",
+            "SkiaSharp.NativeAssets.WebAssembly": "4.154.0-preview.1.26454.9"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Hosting.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Hosting",
+          "version": "0.4.0-alpha.2",
+          "sha256": "180f642c344aee60173dd7fa697520f9d895501eddbf2bc06827b55a185fbca5",
+          "dependencies": {
+            "Doroti.Runtime": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Plugins.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Plugins",
+          "version": "0.4.0-alpha.2",
+          "sha256": "73935beee71f21c617420ab38e4774ad1a9f14707222b207fd50285b176d84c5",
+          "dependencies": {
+            "Doroti.Hosting": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Runner.Sdk.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Runner.Sdk",
+          "version": "0.4.0-alpha.2",
+          "sha256": "a84882304ff0cc2626ef7201f6d8a6ef1b933b5ca1c687e0f92c39e50f320da2",
+          "dependencies": {},
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Runtime.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Runtime",
+          "version": "0.4.0-alpha.2",
+          "sha256": "61ddac5beeea4a00569cc82bc45c89ad7649384b1d33255c92ca5215474b5e53",
+          "dependencies": {},
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Skia.Rendering.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Skia.Rendering",
+          "version": "0.4.0-alpha.2",
+          "sha256": "5ee6d0e0e513efa54d26e8afb851145096e0adab0ea073ab8bd4f1a54b110da2",
+          "dependencies": {
+            "Doroti.Skia.RuntimeEffects": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2",
+            "SkiaSharp": "4.154.0-preview.1.26454.9"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Skia.RuntimeEffects.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Skia.RuntimeEffects",
+          "version": "0.4.0-alpha.2",
+          "sha256": "281eb6da0f5f20ea44f0129021df6d17c8f380b3ce6b25ee1d83125b0d53ba94",
+          "dependencies": {
+            "Doroti.Ui": "0.4.0-alpha.2",
+            "SkiaSharp": "4.154.0-preview.1.26454.9"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Target.Web.browser-wasm.0.4.0-alpha.4.nupkg": {
+          "id": "Doroti.Target.Web.browser-wasm",
+          "version": "0.4.0-alpha.4",
+          "sha256": "39539644d7d809d68539fe9c6e2c831f43f057de0064626132749765d670b6ab",
+          "dependencies": {
+            "Doroti.Hosting": "0.4.0-alpha.2",
+            "Doroti.Runtime": "0.4.0-alpha.2",
+            "Doroti.Skia.Rendering": "0.4.0-alpha.2",
+            "Doroti.Ui": "0.4.0-alpha.2",
+            "Doroti.Host.Web": "0.4.0-alpha.4",
+            "Microsoft.AspNetCore.Components.WebAssembly": "10.0.11"
+          },
+          "manifests": {
+            "doroti/doroti-target-manifest.json": {
+              "schemaVersion": "doroti.target-package/v2",
+              "packageId": "Doroti.Target.Web.browser-wasm",
+              "packageVersion": "0.4.0-alpha.4",
+              "rid": "browser-wasm",
+              "host": "managed-render-worker",
+              "defaultRenderer": "worker-direct-webgl",
+              "graphicsBackend": "worker-direct-webgl2-or-worker-direct-webgpu-graphite-dawn",
+              "blazorWebAssemblyVersion": "10.0.11",
+              "skiaSharpVersion": "4.154.0-preview.1.26454.9",
+              "skiaSharpManagedPackage": "SkiaSharp",
+              "skiaSharpNativePackage": "SkiaSharp.NativeAssets.WebAssembly",
+              "bootLoader": "_framework/dotnet.js",
+              "frameworkPreloadPlaceholderId": "webassembly",
+              "hostComponents": [
+                "Doroti.Host.Web.DorotiWebWorkerSurface"
+              ],
+              "rendererModes": [
+                "worker-direct-webgl",
+                "worker-direct-webgpu"
+              ],
+              "workerRuntimeOwnership": "single-managed-runtime; bootstrap-main-or-render-worker; framework-and-skia-on-render-worker",
+              "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+              "managedCallbackAbi": "doroti.browser-managed-callbacks/v1",
+              "javaScriptPluginAbi": "doroti.browser-js-plugin/v1",
+              "resourceBasePolicy": "document-base-uri",
+              "resourceKinds": [
+                "asset",
+                "font",
+                "localization"
+              ],
+              "supportedPublishModes": [
+                "interpreter",
+                "aot-build-probe",
+                "persistent-dotnet-web-worker"
+              ],
+              "requiredCapabilities": [
+                "window.lifecycle",
+                "view.lifecycle-metrics",
+                "view.frame-dispatch",
+                "input.events",
+                "text.input",
+                "platform.services",
+                "platform.environment",
+                "platform.messaging",
+                "graphics.scene",
+                "graphics.text",
+                "graphics.image",
+                "accessibility.semantics"
+              ],
+              "unsupportedModes": [
+                "software-canvas-2d",
+                "software-webgl-renderer",
+                "native-desktop-plugin",
+                "trimmed-generated-product"
+              ],
+              "nativeSkiaPackage": "SkiaSharp.NativeAssets.WebAssembly",
+              "nativeSkiaVersion": "4.154.0-preview.1.26454.9",
+              "nativeSkiaApi": "public-Graphite",
+              "provider": "web",
+              "providerVersion": "0.4.0-alpha.4",
+              "coreRange": "[0.4.0-alpha.1,0.5.0)",
+              "protocolVersion": 1,
+              "providerProfile": "default:browser-wasm",
+              "targetFramework": "net10.0"
+            }
+          },
+          "nativeAssets": {}
+        },
+        "Doroti.Templates.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Templates",
+          "version": "0.4.0-alpha.2",
+          "sha256": "9fd7771739eb1540091e048725c76b49f56b4898eb4da176e065a0967c6fabf3",
+          "dependencies": {},
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Tool.Web.0.4.0-alpha.4.nupkg": {
+          "id": "Doroti.Tool.Web",
+          "version": "0.4.0-alpha.4",
+          "sha256": "78de34fee19f496feb334e16673aab5c49b5876c4b24d8746b02090e120a1bbe",
+          "dependencies": {
+            "Doroti.Tooling.Extension.Sdk": "0.4.0-alpha.2"
+          },
+          "manifests": {
+            "lib/net10.0/doroti-provider.json": {
+              "schemaVersion": "doroti.platform-provider/v1",
+              "id": "web",
+              "version": "0.4.0-alpha.4",
+              "coreRange": "[0.4.0-alpha.1,0.5.0)",
+              "protocolVersion": 1,
+              "registrationType": "Doroti.Host.Web.DorotiWebApplication",
+              "hostOperatingSystems": [
+                "windows",
+                "macos",
+                "linux"
+              ],
+              "operations": [
+                "build",
+                "run",
+                "publish",
+                "dev"
+              ],
+              "services": [
+                "configuration",
+                "diagnostics",
+                "devices",
+                "operations"
+              ],
+              "tool": {
+                "mode": "dotnetInproc",
+                "assembly": "Doroti.Tool.Web.dll",
+                "entryType": "Doroti.Tool.Web.Extension",
+                "executable": null,
+                "arguments": [],
+                "project": null
+              },
+              "profiles": {
+                "default:browser-wasm": {
+                  "hostOperatingSystems": [
+                    "windows",
+                    "macos",
+                    "linux"
+                  ],
+                  "operations": [
+                    "build",
+                    "run",
+                    "publish",
+                    "dev"
+                  ],
+                  "development": {
+                    "transport": "browser",
+                    "debug": true,
+                    "requiresPreparedAcknowledgment": false,
+                    "usesStopSignal": false,
+                    "launchBrowser": true
+                  }
+                }
+              }
+            }
+          },
+          "nativeAssets": {}
+        },
+        "Doroti.Tooling.Contracts.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Tooling.Contracts",
+          "version": "0.4.0-alpha.2",
+          "sha256": "6be047140c1243445f01d5fa779a17a234e7a16baf0ce28ccd8e191a8e1e717f",
+          "dependencies": {},
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Tooling.Extension.Sdk.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Tooling.Extension.Sdk",
+          "version": "0.4.0-alpha.2",
+          "sha256": "0ff6a59bb592ca13867e3c32c9858abe615e9ab250c4b1200923a4a6b74f41d3",
+          "dependencies": {
+            "Doroti.Tooling.Contracts": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        },
+        "Doroti.Ui.0.4.0-alpha.2.nupkg": {
+          "id": "Doroti.Ui",
+          "version": "0.4.0-alpha.2",
+          "sha256": "8ee2f8c1494bd0669f21a422ed851d4e18ca72e9e26dce0d474972a0fb3fb92f",
+          "dependencies": {
+            "Doroti.Runtime": "0.4.0-alpha.2"
+          },
+          "manifests": {},
+          "nativeAssets": {}
+        }
+      }
+    }
+  },
+  "webBrowser": {
+    "status": "PASS",
+    "candidateVersion": "0.4.0-alpha.2",
+    "browser": "154.0.8037.93",
+    "firstFrame": true,
+    "focus": true,
+    "externalRequests": [],
+    "receipt": {
+      "context": 0,
+      "requestedMode": "worker-direct-webgl",
+      "mode": "worker-direct-webgl",
+      "fallbackReason": null,
+      "contextGeneration": 1,
+      "currentRequestId": null,
+      "latestRequestId": null,
+      "queueDepth": 0,
+      "contextLost": false,
+      "frontGeneration": 1,
+      "frontRequestId": 3,
+      "frontFramebufferId": null,
+      "stagingFramebufferId": null,
+      "rasterCanvasAttached": false,
+      "visibleContext": "transferred-offscreen-webgl2",
+      "rasterWidth": 1000,
+      "rasterHeight": 800,
+      "displayWidth": 1500,
+      "displayHeight": 1200,
+      "bitmapCreated": 0,
+      "bitmapConsumed": 0,
+      "bitmapClosed": 0,
+      "activeBitmaps": 0,
+      "mainManagedRuntimeCount": 1,
+      "workerManagedRuntimeCount": 0,
+      "workerRestartCount": 0,
+      "runtimeSessionId": 1,
+      "unpairedRequestCount": 0
+    },
+    "errors": [],
+    "physicalInput": "notVerified",
+    "koreanPixels": "notVerified",
+    "server": "loopback with COOP/COEP"
+  },
+  "windowsMaui": {
+    "status": "PASS",
+    "backend": "Windows-MAUI",
+    "actual": {
+      "renderer": "WinUI/CompositionDrawingSurface/Graphite-Vulkan",
+      "fullWindowOwner": true,
+      "nativeWindowOutput": false,
+      "nativeChildren": 0,
+      "dpr": 2
+    },
+    "nativeButton": true,
+    "nativeEditor": true,
+    "webCommands": true,
+    "staleDocumentRejected": true,
+    "dispatcherScopeRestored": true,
+    "webViewRecreated": true,
+    "appContent": true,
+    "profiles": "Ephemeral,SharedPersistent",
+    "ownerPickerCancellation": true,
+    "filePicker": true,
+    "readGrant": true,
+    "concurrentPickerRejected": true,
+    "callerCancellation": true,
+    "physicalIme": "notVerified",
+    "physicalTab": "notVerified",
+    "displayedPixels": "notVerified",
+    "identity": {
+      "baseHead": "87af92cef0e0ec8f96934fcfc5f66eb6f4bf5ec0",
+      "workingTree": true,
+      "assemblies": {
+        "Doroti.Host.Maui.dll": "e03f9f2b415f1f5f9c9a502a287046782b0f31c28ffa708107280406450463ea",
+        "Doroti.Framework.Services.dll": "8d55c01ab0550548bc15cfaf28fd6f8698fee3aa6b4b023f00cbf287115b9f75",
+        "Doroti.Desktop.dll": "9d9ab558259586b2a336d7a6fa97f1a2a5b1f58392392a71996737775c6aba42",
+        "libSkiaSharp.dll": "07ce51fd59e099b9561b0327223c27b21aa5605b5b8f4484dd297fdb8c8725a1"
+      },
+      "mode": "graphite"
+    },
+    "cleanClose": true
+  }
+}

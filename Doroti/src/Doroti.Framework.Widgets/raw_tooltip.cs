@@ -168,8 +168,13 @@ public class RawTooltip : StatefulWidget
     public virtual Func<TooltipPositionContext, Offset>? positionDelegate { get; private set; }
     public virtual bool ignorePointer { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
-    internal static List<RawTooltipState> _openedTooltips = new List<RawTooltipState>();
+    private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<PlatformDispatcher, List<RawTooltipState>> OpenedByApplication = new();
+    internal static List<RawTooltipState> _openedTooltips =>
+        OpenedByApplication.GetValue(WidgetsBinding.instance.platformDispatcher, _ => []);
 
+    public WindowPresentation presentation { get; }
+    public Size? nativeSize { get; }
+    public bool nativeCompatible { get; }
     public RawTooltip(
         Key? key = null,
         string? semanticsTooltip = default!,
@@ -184,7 +189,10 @@ public class RawTooltip : StatefulWidget
         AnimationStyle animationStyle = default!,
         Func<TooltipPositionContext, Offset>? positionDelegate = null,
         bool ignorePointer = false,
-        Widget child = default!
+        Widget child = default!,
+        WindowPresentation presentation = WindowPresentation.Auto,
+        Size? nativeSize = null,
+        bool nativeCompatible = true
     )
         : base(key: key)
     {
@@ -192,6 +200,7 @@ public class RawTooltip : StatefulWidget
         Duration __dismissDelay = dismissDelay ?? Duration.Create(milliseconds: 100);
         AnimationStyle __animationStyle =
             animationStyle ?? Raw_tooltipLibrary._kDefaultAnimationStyle;
+        this.presentation = presentation; this.nativeSize = nativeSize; this.nativeCompatible = nativeCompatible;
         this.semanticsTooltip = semanticsTooltip;
         this.tooltipBuilder = tooltipBuilder;
         this.hoverDelay = hoverDelay;
@@ -275,6 +284,65 @@ public class RawTooltip : StatefulWidget
 
 public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin<RawTooltip>
 {
+    private NativeWindowPresentation.ContentHandle? _nativeContent;
+    private CancellationTokenSource? _nativeLifetime;
+    private long _nativeGeneration;
+    private void DismissNative()
+    {
+        ++_nativeGeneration;
+        _nativeLifetime?.Cancel(); _nativeLifetime?.Dispose(); _nativeLifetime = null;
+        if (_nativeContent is { } content) { _nativeContent = null; ObserveNative(content.DisposeAsync().AsTask()); }
+    }
+    private static void ObserveNative(Task work) => DartRuntimePrimitives.Ignore(Future.fromTask(work).then(_ => { }, onError: (error, stack) =>
+        FlutterError.reportError(new FlutterErrorDetails(error, stack: stack, library: "native tooltip"))));
+    private bool ShowNative()
+    {
+        if (widget.presentation == WindowPresentation.Overlay) return false;
+        WindowCapabilityResult result;
+        WindowRequest? request = null;
+        if (!widget.nativeCompatible || widget.nativeSize is null)
+            result = new(WindowAvailability.Unsupported, "Native tooltip requires a declared content size and a supported anchor policy.");
+        else if (View.of(context).GetCapabilityOrDefault<IWindowService>(DorotiCapabilityIds.WindowService) is null)
+            result = new(WindowAvailability.Unsupported, "This provider does not support native tooltip windows.");
+        else
+        {
+            var owner = WindowScope.of(context);
+            var box = (RenderBox)context.findRenderObject()!;
+            var target = box.localToGlobal(box.size.center(Offset.zero));
+            var inset = MediaQuery.maybeViewInsetsOf(context)?.bottom ?? 0.0;
+            var available = new Size(owner.Size.width, Math.Max(0, owner.Size.height - inset));
+            var position = widget.positionDelegate?.Invoke(new TooltipPositionContext(target, box.size,
+                widget.nativeSize, 0, overlaySize: available)) ?? GeometryLibrary.positionDependentBox(
+                    size: available, childSize: widget.nativeSize, target: target, preferBelow: true);
+            request = new(WindowKind.Tooltip, "", widget.nativeSize, owner.Id,
+                new WindowAnchor(owner.Id, Rect.fromLTWH(position.dx, position.dy, 0, 0)), Activate: false);
+            result = NativeWindowPresentation.EvaluateContent(context, request);
+        }
+        if (result.Availability == WindowAvailability.Unsupported && widget.presentation == WindowPresentation.Auto) return false;
+        result.RequireSupported();
+        DismissNative();
+        var generation = _nativeGeneration;
+        _nativeLifetime = new(); var token = _nativeLifetime.Token;
+        var ownerView = View.of(context);
+        var child = widget.tooltipBuilder(context, _overlayAnimation);
+        ObserveNative(Install());
+        return true;
+        async Task Install()
+        {
+            NativeWindowPresentation.ContentHandle? content = null;
+            try
+            {
+                content = await NativeWindowPresentation.ShowContentAsync(context, request!, child, token);
+                await ownerView.DispatchPlatformEventAsync(() =>
+                {
+                    if (mounted && generation == _nativeGeneration && !token.IsCancellationRequested)
+                    { _nativeContent = content; content = null; }
+                }, token);
+            }
+            catch (OperationCanceledException) when (token.IsCancellationRequested || ownerView.InvocationLifetime.IsCancellationRequested) { }
+            finally { if (content is not null) await content.DisposeAsync(); }
+        }
+    }
     internal virtual OverlayPortalController _overlayController { get; private set; } =
         new OverlayPortalController();
     internal virtual Timer? _timer { get; set; } = default;
@@ -333,12 +401,13 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
             case (false, true):
             {
                 RawTooltip._openedTooltips.Remove(this);
+                DismissNative();
                 _overlayController.hide();
                 break;
             }
             case (true, false):
             {
-                _overlayController.show();
+                if (!ShowNative()) _overlayController.show();
                 RawTooltip._openedTooltips.Add(this);
                 DartRuntimePrimitives.Ignore(
                     SemanticsService.tooltip(widget.semanticsTooltip ?? "")
@@ -650,6 +719,7 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
 
     public override void dispose()
     {
+        DismissNative();
         GestureBinding.instance.pointerRouter.removeGlobalRoute(_handleGlobalPointerEvent);
         RawTooltip._openedTooltips.Remove(this);
         _longPressRecognizer?.onLongPressCancel = null;

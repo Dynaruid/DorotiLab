@@ -1,5 +1,0 @@
-<Project>
-  <ItemGroup Condition="'$(DorotiTarget)' == 'MacCatalyst' and '@(DorotiTargetDescriptor)' == ''">
-    <DorotiTargetDescriptor Include="MacCatalyst" HostKind="Maui" NativeEntryKind="UIKit-Main" RuntimeIdentifier="maccatalyst-arm64" TargetFramework="$(TargetFramework)" TargetPackage="Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64" />
-  </ItemGroup>
-</Project>

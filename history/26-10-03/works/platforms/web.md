@@ -61,9 +61,9 @@ M0 → M1 최소 경로 → M2 → M4/M5 → M6(대상 플랫폼) → M7 순서�
 
 ## 착수 시 확인할 코드·문서
 
-- [Doroti/src/Doroti.Host.Web](../../../../Doroti/src/Doroti.Host.Web)
-- [Doroti/src/Doroti.Host.Web/BrowserHostContracts.cs](../../../../Doroti/src/Doroti.Host.Web/BrowserHostContracts.cs)
-- [Doroti/src/Doroti.Host.Web/Web/doroti.web.ts](../../../../Doroti/src/Doroti.Host.Web/Web/doroti.web.ts)
+- [Doroti/src/Doroti.Host.Web](../../../../packages/platforms/web/Doroti.Host.Web)
+- [Doroti/src/Doroti.Host.Web/BrowserHostContracts.cs](../../../../packages/platforms/web/Doroti.Host.Web/BrowserHostContracts.cs)
+- [Doroti/src/Doroti.Host.Web/Web/doroti.web.ts](../../../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.ts)
 - [Doroti/docs/platform-views/web-webview.md](../../../../Doroti/docs/platform-views/web-webview.md)
 - [samples/DorotiTestbedApp/web](../../../../samples/DorotiTestbedApp/web)
 

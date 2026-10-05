@@ -1,25 +1,5 @@
 <Project>
-  <PropertyGroup Condition="'$(IsDorotiProduct)' == 'true'">
-    <IsPackable>true</IsPackable>
-    <Authors>Doroti contributors</Authors>
-    <Description>Independent .NET runtime package for the Doroti UI framework.</Description>
-    <PackageTags>doroti;ui;flutter-framework</PackageTags>
-    <RepositoryUrl>https://github.com/Dynaruid/DorotiLab</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <DebugType>portable</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageReleaseNotes>Platform-neutral applications with fixed MAUI, Web, and Linux Qt runners.</PackageReleaseNotes>
-  </PropertyGroup>
-  <ItemGroup Condition="'$(IsDorotiProduct)' == 'true'">
-    <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="/" Link="README.md" />
-    <None Include="$(MSBuildThisFileDirectory)THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="licenses/" Link="THIRD-PARTY-NOTICES.md" />
-    <None Include="$(MSBuildThisFileDirectory)LICENSES/SkiaSharp*.txt" Pack="true" PackagePath="licenses/" />
-  </ItemGroup>
+  <Import Project="eng/Doroti.Common.targets" />
   <!-- Keep the embedded/packed Android target contract in sync for opt-in TFMs. -->
   <Target Name="GenerateDorotiAndroidTargetManifest" BeforeTargets="AssignTargetPaths"
           Condition="'$(TargetFramework)' == '$(DorotiAndroidTargetFramework)' and '$(TargetFramework)' != 'net10.0-android' and Exists('$(MSBuildProjectDirectory)/doroti-target-manifest.json')">
@@ -35,13 +15,5 @@
       <None Include="$(_DorotiAndroidManifestPath)" Pack="true" PackagePath="doroti/doroti-target-manifest.json" />
       <FileWrites Include="$(_DorotiAndroidManifestPath)" />
     </ItemGroup>
-  </Target>
-  <Target Name="RejectMechanicalCandidatesInProductCompile" BeforeTargets="CoreCompile" Condition="'$(IsDorotiProduct)' == 'true'">
-    <ItemGroup>
-      <_DorotiMechanicalCandidate Include="@(Compile)"
-                                  Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(Compile.Identity)', '\.g\.cs$')) and !$([System.Text.RegularExpressions.Regex]::IsMatch('%(Compile.Identity)', '(^|[\\/])obj[\\/]'))" />
-    </ItemGroup>
-    <Error Condition="'@(_DorotiMechanicalCandidate)' != ''"
-           Text="Mechanical .g.cs candidates cannot enter a Doroti product compile graph: @(_DorotiMechanicalCandidate)" />
   </Target>
 </Project>

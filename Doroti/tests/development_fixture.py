@@ -45,7 +45,7 @@ def create(destination, template_hive=None):
         ET.SubElement(group, 'DorotiUseRepositoryProjects').text = 'true'
         ET.SubElement(group, 'RestorePackagesWithLockFile').text = 'false'
         if relative.startswith('web/'):
-            project.insert(0, ET.Element('Import', Project=str(ROOT / 'Doroti/src/Doroti.Target.Web.browser-wasm/build/Doroti.Target.Web.browser-wasm.props')))
+            project.insert(0, ET.Element('Import', Project=str(ROOT / 'packages/platforms/web/Doroti.Target.Web.browser-wasm/build/Doroti.Target.Web.browser-wasm.props')))
         ET.indent(tree)
         tree.write(file, encoding='unicode')
     # Keep generated app/desktop/runner contract; replace only its demonstration page.
@@ -59,7 +59,7 @@ def create(destination, template_hive=None):
         value = re.sub(r'\$\{1(?::[^}]*)?\}', class_name, value) if name in ('StatelessWidget', 'StatefulWidget') else value
         value = re.sub(r'\$\{\d+:([^}]*)\}', lambda match: match[1], value)
         return re.sub(r'\$\d+|\$\{\d+\}', '', value)
-    examples = ['using Doroti.Framework.Widgets;', 'using Doroti.Framework.Material;', 'using Doroti.Framework.Cupertino;', 'namespace SnippetCompilation;',
+    examples = ['using Doroti.Framework.Widgets;', 'using Doroti.Material;', 'using Doroti.Cupertino;', 'namespace SnippetCompilation;',
         snippet('StatelessWidget', 'SnippetStateless'), snippet('StatefulWidget', 'SnippetStateful'),
         'public sealed class OtherState : State<SnippetStateful> {', snippet('build'), snippet('initState'), snippet('dispose'),
         'private void Change() { ' + snippet('setState') + ' }', '}','public static class Expressions {']

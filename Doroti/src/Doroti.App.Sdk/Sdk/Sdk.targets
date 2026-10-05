@@ -43,6 +43,20 @@
            Text="The single-project DorotiTarget command has been removed. Use 'Doroti/eng/doroti.ps1 build --app &lt;path&gt; --platform &lt;name&gt;' or build the platform runner project directly." />
   </Target>
 
+  <Target Name="RejectRemovedDorotiDesignPackages" BeforeTargets="Restore;PrepareForBuild">
+    <ItemGroup>
+      <_RemovedDorotiDesign Include="@(PackageReference)" Condition="'%(Identity)' == 'Doroti.Framework.Material' or '%(Identity)' == 'Doroti.Framework.Cupertino'" />
+      <_RemovedDorotiDesignProject Include="@(ProjectReference)" Condition="'%(Filename)' == 'Doroti.Framework.Material' or '%(Filename)' == 'Doroti.Framework.Cupertino'" />
+    </ItemGroup>
+    <Error Code="DOROTIDESIGN001" Condition="'@(_RemovedDorotiDesign)' != '' or '@(_RemovedDorotiDesignProject)' != ''"
+           Text="Removed design identities cannot be used by this SDK. Reference Doroti.Material or Doroti.Cupertino explicitly." />
+  </Target>
+  <Target Name="RejectTransitiveRemovedDorotiDesignAssemblies" AfterTargets="ResolveReferences" BeforeTargets="CoreCompile">
+    <ItemGroup><_RemovedDorotiDesignAssembly Include="@(ReferencePath)" Condition="'%(Filename)' == 'Doroti.Framework.Material' or '%(Filename)' == 'Doroti.Framework.Cupertino'" /></ItemGroup>
+    <Error Code="DOROTIDESIGN002" Condition="'@(_RemovedDorotiDesignAssembly)' != ''"
+           Text="A resolved transitive reference uses a removed design assembly: @(_RemovedDorotiDesignAssembly). Upgrade that dependency to the new design packages." />
+  </Target>
+
   <Target Name="GetDorotiApplicationContract" Returns="@(_DorotiApplicationContract)">
     <ItemGroup>
       <_DorotiApplicationContract Include="$(MSBuildProjectFullPath)" Kind="Application"

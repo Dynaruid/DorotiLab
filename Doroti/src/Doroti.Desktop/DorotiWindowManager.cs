@@ -1,17 +1,17 @@
-using System.Runtime.CompilerServices;
-using Doroti.Hosting;
+using Doroti.Ui;
 
 namespace Doroti.Desktop;
 
-public sealed class DorotiWindowManager(
+public sealed partial class DorotiWindowManager(
     IWindowHostFactory factory,
     WindowLifetimePolicy lifetimePolicy = WindowLifetimePolicy.OnLastWindowClosed
-)
+) : IWindowService, IWindowingHostCapability
 {
     private readonly IWindowHostFactory _factory =
         factory ?? throw new ArgumentNullException(nameof(factory));
     private readonly Dictionary<WindowId, DorotiWindowController> _windows = [];
-    private readonly ConditionalWeakTable<IDorotiViewEntrypoint, object> _usedContent = new();
+    private readonly Dictionary<WindowId, DorotiWindowController> _initializingWindows = [];
+    private readonly HashSet<Task> _initializationWork = [];
     private readonly SemaphoreSlim _creation = new(1);
     private readonly object _gate = new();
     private readonly SemaphoreSlim _exitLock = new(1);
@@ -25,6 +25,26 @@ public sealed class DorotiWindowManager(
     public event Action<DorotiWindowController>? WindowClosed;
     public event Action? ExitRequested;
     public event Action<DorotiWindowController, Exception>? InitializationFailed;
+
+    /// <summary>Joins startup hooks, including hooks whose windows have already closed.
+    /// Providers await this before releasing the application dispatcher or terminating the OS loop.</summary>
+    public async Task WaitForInitializationAsync(CancellationToken cancellationToken = default)
+    {
+        while (true)
+        {
+            Task[] work;
+            lock (_gate) work = _initializationWork.ToArray();
+            if (work.Length == 0) return;
+            await Task.WhenAll(work).WaitAsync(cancellationToken).ConfigureAwait(false);
+        }
+    }
+
+    private async Task TrackInitializationAsync(Task work)
+    {
+        try { await work.ConfigureAwait(false); }
+        catch { /* The controller reports startup failures; this tracks lifetime completion. */ }
+        finally { lock (_gate) _initializationWork.Remove(work); }
+    }
 
     public IReadOnlyList<DorotiWindowController> GetWindows()
     {
@@ -82,10 +102,10 @@ public sealed class DorotiWindowManager(
     )
     {
         ArgumentNullException.ThrowIfNull(request);
-        ArgumentNullException.ThrowIfNull(request.Content);
         request.Options.Validate();
-        if (request.OwnerWindowId is not null)
-            throw new NotSupportedException("Owned windows are not implemented in this version.");
+        request = request with { Options = request.Options with { OwnerWindowId = request.OwnerWindowId ?? request.Options.OwnerWindowId } };
+        if (request.Options.OwnerWindowId is { } owner && (!TryGetWindow(owner, out var owningWindow) || owningWindow!.State.Closed || owningWindow.IsClosing))
+            throw new InvalidOperationException("The owning window is not registered or is closed.");
         _factory.Evaluate(request).ThrowIfUnsupported();
         await _creation.WaitAsync(cancellationToken);
         DorotiWindowController? controller = null;
@@ -94,6 +114,8 @@ public sealed class DorotiWindowManager(
         {
             lock (_gate)
             {
+                if (request.Options.OwnerWindowId is { } parent && (!_windows.TryGetValue(parent, out var owning) || owning.State.Closed || owning.IsClosing))
+                    throw new InvalidOperationException("The owner closed while this window was being queued.");
                 if (_exiting) throw new InvalidOperationException("The desktop application is exiting.");
                 if (main && MainWindowId is not null)
                     throw new InvalidOperationException("Main window has already been assigned.");
@@ -105,16 +127,16 @@ public sealed class DorotiWindowManager(
                         "This host cannot create an additional native window."
                     );
             }
-            var id = WindowId.New();
+            var id = new WindowId(Guid.NewGuid());
             host = await _factory.CreateAsync(id, request, cancellationToken);
             controller = new(id, host, this, request.Options);
-            var content = request.Content.Create(new(controller, this));
-            if (_usedContent.TryGetValue(content, out _))
-                throw new InvalidOperationException(
-                    "Content factory reused an entrypoint instance."
-                );
-            _usedContent.Add(content, new());
-            await controller.InitializeAsync(request, content, cancellationToken);
+            lock (_gate)
+            {
+                _initializingWindows.Add(id, controller);
+                _initializationWork.Add(controller.InitializationWork);
+            }
+            _ = TrackInitializationAsync(controller.InitializationWork);
+            await controller.InitializeAsync(request, cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
             lock (_gate)
             {
@@ -123,6 +145,7 @@ public sealed class DorotiWindowManager(
                         nameof(DorotiWindowController),
                         "Native window closed during creation."
                     );
+                _initializingWindows.Remove(id);
                 _windows.Add(id, controller);
                 _exitCandidate = null;
                 if (main)
@@ -132,7 +155,11 @@ public sealed class DorotiWindowManager(
         catch (Exception error)
         {
             if (controller is not null)
-                await controller.AbortAsync(error);
+            {
+                lock (_gate) _initializingWindows.Remove(controller.Id);
+                try { await controller.AbortAsync(error); }
+                finally { controller.FailBeforeStartup(error); }
+            }
             else if (host is not null)
                 await host.DisposeAsync();
             throw;
@@ -143,6 +170,7 @@ public sealed class DorotiWindowManager(
             TryNotifyExit();
         }
         Notify(WindowCreated, controller);
+        PublishWindow(controller);
         controller.Start(request);
         return controller;
     }
@@ -153,10 +181,11 @@ public sealed class DorotiWindowManager(
         {
             if (!_windows.Remove(controller.Id))
                 return;
-            if (_windows.Count == 0)
+            if (!_windows.Values.Any(window => window.Kind == WindowKind.Regular))
                 _exitCandidate = controller;
         }
         Notify(WindowClosed, controller);
+        PublishWindow(controller);
         TryNotifyExit();
     }
 
@@ -165,7 +194,7 @@ public sealed class DorotiWindowManager(
         DorotiWindowController? controller;
         lock (_gate)
         {
-            if (_windows.Count != 0 || _creation.CurrentCount == 0)
+            if (_windows.Values.Any(window => window.Kind == WindowKind.Regular) || _creation.CurrentCount == 0)
                 return;
             controller = _exitCandidate;
             _exitCandidate = null;

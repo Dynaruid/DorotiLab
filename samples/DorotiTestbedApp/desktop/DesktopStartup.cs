@@ -11,7 +11,7 @@ public sealed class DesktopStartup : IDorotiDesktopApplicationStartup
     public void Configure(DesktopApplicationBuilder desktop)
     {
         var mode = Environment.GetEnvironmentVariable("DOROTI_DESKTOP_SAMPLE") ?? "legacy";
-        var legacy = desktop.LegacyMainWindow;
+        var legacy = desktop.DefaultMainWindow;
         if (Environment.GetEnvironmentVariable("DOROTI_DESKTOP_LIFETIME") == "Explicit")
             desktop.LifetimePolicy = WindowLifetimePolicy.Explicit;
         var options =
@@ -80,6 +80,18 @@ public sealed class DesktopStartup : IDorotiDesktopApplicationStartup
                     await context.Window.EnsureInitializedAsync(cancellationToken);
                     await context.Window.WaitUntilReadyToShowAsync(cancellationToken);
                     var beforeShow = context.Window.State;
+                    if (Environment.GetEnvironmentVariable("DOROTI_NATIVE_MENU_PROBE") is { Length: > 0 } menuProbe)
+                    {
+                        await context.Window.ShowAsync(cancellationToken);
+                        await NativeMenuProbe.RunAsync(context, menuProbe, cancellationToken);
+                        return;
+                    }
+                    if (Environment.GetEnvironmentVariable("DOROTI_WINDOW_KINDS_PROBE") is { Length: > 0 } kindsProbe)
+                    {
+                        await context.Window.ShowAsync(cancellationToken);
+                        await WindowKindsProbe.RunAsync(context, kindsProbe, cancellationToken);
+                        return;
+                    }
                     if (Environment.GetEnvironmentVariable("DOROTI_MULTIWINDOW_PROBE") is { Length: > 0 } multiwindowProbe)
                     {
                         await context.Window.ShowAsync(cancellationToken);

@@ -9,7 +9,7 @@ public sealed class MacCatalystDesktopStartup : IDorotiDesktopApplicationStartup
     {
         desktop.LifetimePolicy = WindowLifetimePolicy.Explicit;
         desktop.UseMainWindow(
-            desktop.LegacyMainWindow with
+            desktop.DefaultMainWindow with
             {
                 Options = new WindowOptions
                 {

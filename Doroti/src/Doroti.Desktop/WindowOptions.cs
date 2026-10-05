@@ -119,12 +119,6 @@ public enum WindowResizeEdge
     BottomLeft,
 }
 
-/// <summary>Opaque identity. It is neither a native handle nor a view id.</summary>
-public readonly record struct WindowId(Guid Value)
-{
-    internal static WindowId New() => new(Guid.NewGuid());
-}
-
 public sealed record WindowBackdropOptions
 {
     public WindowBackdropMode Mode { get; init; }
@@ -158,6 +152,11 @@ public sealed record WindowAppearanceOptions
 public sealed record WindowOptions
 {
     public string Title { get; init; } = "Doroti";
+    public WindowKind Kind { get; init; }
+    public WindowId? OwnerWindowId { get; init; }
+    public WindowAnchor? Anchor { get; init; }
+    public bool Modal { get; init; }
+    public bool Activate { get; init; } = true;
 
     /// <summary>Client area in logical units, excluding native non-client chrome.</summary>
     public Size Size { get; init; } = new(800, 600);
@@ -179,6 +178,9 @@ public sealed record WindowOptions
     public void Validate()
     {
         ArgumentNullException.ThrowIfNull(Title);
+        if (!Enum.IsDefined(Kind)) throw new ArgumentException("Unknown window kind.");
+        if (Anchor is { } anchor && (OwnerWindowId != anchor.Owner || !double.IsFinite(anchor.LogicalBounds.left) || !double.IsFinite(anchor.LogicalBounds.top) || !double.IsFinite(anchor.LogicalBounds.right) || !double.IsFinite(anchor.LogicalBounds.bottom) || anchor.LogicalBounds.width < 0 || anchor.LogicalBounds.height < 0))
+            throw new ArgumentException("Anchor geometry must be finite and belong to the explicit owner.");
         ValidateSize(Size);
         if (MinimumSize is { } min)
             ValidateSize(min);

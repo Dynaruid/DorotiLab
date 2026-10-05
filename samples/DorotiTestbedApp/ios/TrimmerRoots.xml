@@ -15,7 +15,7 @@
   <assembly fullname="Doroti.Framework.Semantics"><type fullname="*" preserve="all" required="false" /></assembly>
   <assembly fullname="Doroti.Framework.Rendering"><type fullname="*" preserve="all" required="false" /></assembly>
   <assembly fullname="Doroti.Framework.Widgets"><type fullname="*" preserve="all" required="false" /></assembly>
-  <assembly fullname="Doroti.Framework.Cupertino"><type fullname="*" preserve="all" required="false" /></assembly>
-  <assembly fullname="Doroti.Framework.Material"><type fullname="*" preserve="all" required="false" /></assembly>
+  <assembly fullname="Doroti.Cupertino"><type fullname="*" preserve="all" required="false" /></assembly>
+  <assembly fullname="Doroti.Material"><type fullname="*" preserve="all" required="false" /></assembly>
   <assembly fullname="DorotiTestbedApp"><type fullname="*" preserve="all" required="false" /></assembly>
 </linker>

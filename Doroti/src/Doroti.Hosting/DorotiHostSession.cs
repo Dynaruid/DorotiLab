@@ -30,15 +30,22 @@ public sealed class DorotiHostSession : IDisposable
     private readonly IDorotiFrameworkEntrypoint _entrypoint;
     private readonly Dictionary<ulong, DorotiView> _views = [];
     private bool _bootstrapped;
+    private bool _bootstrapAttempted;
+    private bool _dispatcherDisposed;
+    private readonly bool _coordinatorOwnsFailureCleanup;
     private bool _deferFrameworkBootstrap;
 
     public DorotiHostSession(
         IDorotiFrameworkEntrypoint entrypoint,
-        IDartPerformanceModeCapability? performanceModeCapability = null
+        IDartPerformanceModeCapability? performanceModeCapability = null,
+        bool coordinatorOwnsFailureCleanup = false,
+        IDorotiApplicationDispatcher? applicationDispatcher = null,
+        Guid? applicationId = null
     )
     {
         _entrypoint = entrypoint ?? throw new ArgumentNullException(nameof(entrypoint));
-        dispatcher = new(performanceModeCapability);
+        _coordinatorOwnsFailureCleanup = coordinatorOwnsFailureCleanup;
+        dispatcher = new(performanceModeCapability, applicationDispatcher, applicationId);
     }
 
     public PlatformDispatcher dispatcher { get; }
@@ -60,13 +67,13 @@ public sealed class DorotiHostSession : IDisposable
         try
         {
             using var scope = dispatcher.EnterScope();
+            _bootstrapAttempted = true;
             _entrypoint.Bootstrap(dispatcher);
             _bootstrapped = true;
         }
-        catch
+        catch (Exception failure)
         {
-            state = DorotiHostSessionState.shutDown;
-            dispatcher.Dispose();
+            HandleBootstrapFailure(failure);
             throw;
         }
     }
@@ -75,6 +82,8 @@ public sealed class DorotiHostSession : IDisposable
     {
         ArgumentNullException.ThrowIfNull(view);
         using var scope = dispatcher.EnterScope();
+        using var invocation = view.EnterInvocationScope();
+        using var environment = view.environmentConfiguration is not null ? view.EnterPlatformEnvironmentScope() : null;
         if (state != DorotiHostSessionState.running)
         {
             throw new InvalidOperationException(
@@ -95,13 +104,13 @@ public sealed class DorotiHostSession : IDisposable
         {
             try
             {
+                _bootstrapAttempted = true;
                 _entrypoint.Bootstrap(dispatcher);
                 _bootstrapped = true;
             }
-            catch
+            catch (Exception failure)
             {
-                state = DorotiHostSessionState.shutDown;
-                dispatcher.Dispose();
+                HandleBootstrapFailure(failure);
                 throw;
             }
         }
@@ -115,9 +124,11 @@ public sealed class DorotiHostSession : IDisposable
         {
             viewEntrypoint.AttachView(view);
         }
-        catch
+        catch (Exception failure)
         {
             _views.Remove(view.viewId);
+            try { viewEntrypoint.DetachView(view); }
+            catch (Exception cleanup) { throw new AggregateException(failure, cleanup); }
             throw;
         }
     }
@@ -125,16 +136,27 @@ public sealed class DorotiHostSession : IDisposable
     public void DetachView(DorotiView view)
     {
         ArgumentNullException.ThrowIfNull(view);
+        if (!_views.TryGetValue(view.viewId, out var attached) || !ReferenceEquals(attached, view)) return;
         using var scope = dispatcher.EnterScope();
+        using var invocation = view.EnterInvocationScope();
+        using var environment = view.environmentConfiguration is not null ? view.EnterPlatformEnvironmentScope() : null;
         if (_views.Remove(view.viewId) && _entrypoint is IDorotiViewEntrypoint viewEntrypoint)
         {
             viewEntrypoint.DetachView(view);
         }
     }
 
+    private void HandleBootstrapFailure(Exception failure)
+    {
+        state = DorotiHostSessionState.shutDown;
+        if (_coordinatorOwnsFailureCleanup) return;
+        try { Shutdown(); }
+        catch (Exception cleanup) { throw new AggregateException(failure, cleanup); }
+    }
+
     public void Shutdown()
     {
-        if (state == DorotiHostSessionState.shutDown)
+        if (_dispatcherDisposed)
         {
             return;
         }
@@ -142,13 +164,15 @@ public sealed class DorotiHostSession : IDisposable
         {
             state = DorotiHostSessionState.shutDown;
             dispatcher.Dispose();
+            _dispatcherDisposed = true;
         });
     }
 
     /// <summary>Unmount before the host retires its native/renderer capabilities; dispatcher disposal follows separately.</summary>
     public void ShutdownFramework()
     {
-        if (!_bootstrapped) return;
+        if (!_bootstrapAttempted) return;
+        _bootstrapAttempted = false;
         _bootstrapped = false;
         using var scope = dispatcher.EnterScope();
         var environmentView = _views.Values.FirstOrDefault();

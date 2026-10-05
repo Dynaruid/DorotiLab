@@ -1,0 +1,29 @@
+{
+  "packageId": "Doroti.Target.Windows.WindowsAppSdk.win-x64",
+  "targetFramework": "net10.0-windows10.0.19041.0",
+  "rid": "win-x64",
+  "nativeViewType": "Win32.ChildHwnd",
+  "graphicsBackend": "windowsappsdk-2.4/HwndExactCpp/managed-Graphite-Vulkan-Composition-Swapchain",
+  "defaultRenderer": "Vulkan",
+  "optionalRenderers": [],
+  "defaultAdapter": "HwndExactCpp",
+  "adapterCapabilities": [
+    "HwndExactCpp"
+  ],
+  "cutoverDecision": "Graphite/Vulkan is the user-selected default; NVIDIA prepared receipt latency is accepted at 1000 ms. Broader GPU/DPI/refresh qualification remains incomplete.",
+  "nativeArtifactPolicy": "app-directory/exact-version/sha256/win-x64/no-PATH-fallback",
+  "softwareFallback": false,
+  "defaultSkiaEngine": "Graphite",
+  "nativeSkiaPackage": "SkiaSharp.NativeAssets.Win32",
+  "nativeSkiaVersion": "4.154.0-preview.1.26454.9",
+  "nativeSkiaApi": "public-Graphite",
+  "requiredVulkanVersion": "1.2",
+  "schemaVersion": "doroti.target-package/v2",
+  "provider": "windowsappsdk",
+  "providerVersion": "0.4.0-alpha.1",
+  "coreRange": "[0.4.0-alpha.1,0.5.0)",
+  "protocolVersion": 1,
+  "providerProfile": "default:win-x64",
+  "nativeAbiVersion": 4,
+  "packageVersion": "0.4.0-alpha.1"
+}

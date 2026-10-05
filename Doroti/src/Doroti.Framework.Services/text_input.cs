@@ -806,6 +806,7 @@ public class TextInputStyle : Diagnosticable
 
 public class TextInputConnection
 {
+    private readonly TextInput _owner;
     internal virtual Size? _cachedSize { get; set; } = default;
     internal virtual Matrix4? _cachedTransform { get; set; } = default;
     internal virtual Rect? _cachedRect { get; set; } = default;
@@ -820,6 +821,7 @@ public class TextInputConnection
     public TextInputConnection(TextInputClient _client)
     {
         this._client = _client;
+        _owner = TextInput._instance;
         _id = _nextId++;
     }
 
@@ -832,31 +834,31 @@ public class TextInputConnection
         });
     }
 
-    public virtual bool attached => Equals(TextInput._instance._currentConnection, this);
-    public virtual bool scribbleInProgress => TextInput._instance.scribbleInProgress;
+    public virtual bool attached => Equals(_owner._currentConnection, this);
+    public virtual bool scribbleInProgress => _owner.scribbleInProgress;
 
     public virtual void show()
     {
         DartRuntimePrimitives.Assert(() => attached);
-        TextInput._instance._show();
+        _owner._show();
     }
 
     public virtual void requestAutofill()
     {
         DartRuntimePrimitives.Assert(() => attached);
-        TextInput._instance._requestAutofill();
+        _owner._requestAutofill();
     }
 
     public virtual void updateConfig(TextInputConfiguration configuration)
     {
         DartRuntimePrimitives.Assert(() => attached);
-        TextInput._instance._updateConfig(configuration);
+        _owner._updateConfig(configuration);
     }
 
     public virtual void setEditingState(TextEditingValue value)
     {
         DartRuntimePrimitives.Assert(() => attached);
-        TextInput._instance._setEditingState(value);
+        _owner._setEditingState(value);
     }
 
     public virtual void setEditableSizeAndTransform(Size editableBoxSize, Matrix4 transform)
@@ -865,7 +867,7 @@ public class TextInputConnection
         {
             _cachedSize = editableBoxSize;
             _cachedTransform = transform;
-            TextInput._instance._setEditableSizeAndTransform(editableBoxSize, transform);
+            _owner._setEditableSizeAndTransform(editableBoxSize, transform);
         }
     }
 
@@ -877,7 +879,7 @@ public class TextInputConnection
         }
         _cachedRect = rect;
         Rect validRect = rect.isFinite ? rect : (Offset.zero & new Size(-1, -1));
-        TextInput._instance._setComposingTextRect(validRect);
+        _owner._setComposingTextRect(validRect);
     }
 
     public virtual void setCaretRect(Rect rect)
@@ -888,7 +890,7 @@ public class TextInputConnection
         }
         _cachedCaretRect = rect;
         Rect validRect = rect.isFinite ? rect : (Offset.zero & new Size(-1, -1));
-        TextInput._instance._setCaretRect(validRect);
+        _owner._setCaretRect(validRect);
     }
 
     public virtual void setSelectionRects(List<SelectionRect> selectionRects)
@@ -896,7 +898,7 @@ public class TextInputConnection
         if (!CollectionsLibrary.listEquals(_cachedSelectionRects, selectionRects))
         {
             _cachedSelectionRects = selectionRects;
-            TextInput._instance._setSelectionRects(selectionRects);
+            _owner._setSelectionRects(selectionRects);
         }
     }
 
@@ -922,21 +924,21 @@ public class TextInputConnection
     public virtual void updateStyle(TextInputStyle style)
     {
         DartRuntimePrimitives.Assert(() => attached);
-        TextInput._instance._updateStyle(style);
+        _owner._updateStyle(style);
     }
 
     public virtual void close()
     {
         if (attached)
         {
-            TextInput._instance._clearClient();
+            _owner._clearClient();
         }
         DartRuntimePrimitives.Assert(() => !attached);
     }
 
     public virtual void connectionClosedReceived()
     {
-        TextInput._instance._currentConnection = null;
+        _owner._currentConnection = null;
         DartRuntimePrimitives.Assert(() => !attached);
     }
 }
@@ -1054,7 +1056,7 @@ public static partial class Text_inputLibrary
 
 public class TextInput
 {
-    private static readonly Doroti.Ui.DispatcherLocal<TextInput> _contextLocal_instance = new(() => new TextInput());
+    private static readonly Doroti.Ui.ViewLocal<TextInput> _contextLocal_instance = new(() => new TextInput());
     internal static TextInput _instance { get => _contextLocal_instance.Value; set => _contextLocal_instance.Value = value; }
 
     // Keep the singleton initialization tied to the first explicit TextInput
@@ -1105,7 +1107,7 @@ public class TextInput
     public TextInput()
     {
         _channel = SystemChannels.textInput;
-        _channel.setMethodCallHandler(_loudlyHandleTextInputInvocation);
+        _channel.setMethodCallHandler(call => _instance._loudlyHandleTextInputInvocation(call));
     }
 
     public static void setChannel(MethodChannel newChannel)
@@ -1117,7 +1119,7 @@ public class TextInput
                     () =>
                     {
                         var __cascade = newChannel;
-                        __cascade.setMethodCallHandler(_instance._loudlyHandleTextInputInvocation);
+                        __cascade.setMethodCallHandler(call => _instance._loudlyHandleTextInputInvocation(call));
                         return __cascade;
                     }
                 )
@@ -1177,6 +1179,13 @@ public class TextInput
         TextInputConfiguration configuration
     )
     {
+        var dispatcher = PlatformDispatcher.instance;
+        var view = configuration.viewId is { } id ? dispatcher.view(id)
+            : dispatcher.RequireInvocationView(DorotiUiInvocation.Managed("TextInput.attach"));
+        if (view is null) throw new DorotiCapabilityException(DorotiCapabilityIds.TextInput,
+            configuration.viewId is { } missingId ? checked((ulong)missingId) : null,
+            DorotiUiInvocation.Managed("TextInput.attach"), "the requested view is not registered");
+        using var invocationScope = view.EnterInvocationScope();
         var connection = new TextInputConnection(client);
         _instance._attach(connection, configuration);
         return connection;
@@ -1729,7 +1738,7 @@ public abstract class TextInputControl
 /// </summary>
 internal sealed class _HostTextInputControl : TextInputControl
 {
-    private static readonly Doroti.Ui.DispatcherLocal<_HostTextInputControl> _contextLocalinstance = new(() => new _HostTextInputControl());
+    private static readonly Doroti.Ui.ViewLocal<_HostTextInputControl> _contextLocalinstance = new(() => new _HostTextInputControl());
     public static _HostTextInputControl instance { get => _contextLocalinstance.Value; set => _contextLocalinstance.Value = value; }
 
     private ITextInputHostCapability? _capability;
@@ -1744,7 +1753,7 @@ internal sealed class _HostTextInputControl : TextInputControl
         var dispatcher = PlatformDispatcher.instance;
         var view = configuration.viewId is { } configuredViewId
             ? dispatcher.view(configuredViewId)
-            : dispatcher.implicitView;
+            : dispatcher.RequireInvocationView(DorotiUiInvocation.Managed("TextInput.attach"));
         if (view is null)
         {
             throw new DorotiCapabilityException(
@@ -1986,7 +1995,7 @@ internal sealed class _HostTextInputControl : TextInputControl
 
 internal class _PlatformTextInputControl : TextInputControl
 {
-    private static readonly Doroti.Ui.DispatcherLocal<_PlatformTextInputControl> _contextLocalinstance = new(() => new _PlatformTextInputControl());
+    private static readonly Doroti.Ui.ViewLocal<_PlatformTextInputControl> _contextLocalinstance = new(() => new _PlatformTextInputControl());
     public static _PlatformTextInputControl instance { get => _contextLocalinstance.Value; set => _contextLocalinstance.Value = value; }
 
     internal _PlatformTextInputControl() { }

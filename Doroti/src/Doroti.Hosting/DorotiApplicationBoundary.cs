@@ -277,7 +277,8 @@ public sealed class DorotiApplicationBoundary : IDisposable
 
     public void Configure(
         DorotiViewCapabilities capabilities,
-        IPlatformMessageHostCapability frameworkChannels
+        IPlatformMessageHostCapability frameworkChannels,
+        DorotiCapabilityOwnership resourceOwnership = DorotiCapabilityOwnership.Owned
     )
     {
         ObjectDisposedException.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
@@ -287,7 +288,7 @@ public sealed class DorotiApplicationBoundary : IDisposable
         capabilities
             .Register<IApplicationResourceHostCapability>(
                 DorotiCapabilityIds.ApplicationResources,
-                _resources
+                _resources, resourceOwnership
             )
             .Register<IPlatformMessageHostCapability>(
                 DorotiCapabilityIds.PlatformMessaging,

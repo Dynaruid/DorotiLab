@@ -1,6 +1,6 @@
 # DorotiTestbedApp
 
-`doctor -App ... -Platform ...` now checks the selected build prerequisites. Add `-DoctorProfile dev|validation|release` for operation-specific requirements and `-WindowsBackend Maui` for that runner. `-Platform all` includes foreign-host/unresolved targets and exits nonzero until the complete declared scope is ready. See [doctor v4](../../Doroti/docs/doctor.md).
+The managed workspace v2 CLI selects explicit provider aliases. Use `doctor -App ... -Platform ... -Scope managed|target|native|tools|full`; select Windows MAUI with `-Platform windows-maui`. Doctor and actual runtime acceptance are separate. See [provider doctor](../../Doroti/docs/doctor.md). Older development/native-operation examples below describe the former CLI where marked; the current capability boundary is in the [work2 record](../../Doroti/docs/migrations/design-platform/resume-2026-10-05.md).
 
 **English** | [한국어](README.ko.md)
 
@@ -319,7 +319,7 @@ Replace `-Platform` and `-Rid` in the CLI examples for your target.
 | Target | `-Platform` | `-Rid` / additional options |
 | --- | --- | --- |
 | Windows App SDK | `windows` | Use the default |
-| Windows MAUI | `windows` | `-WindowsBackend Maui` |
+| Windows MAUI | `windows-maui` | `win-x64` |
 | macOS AppKit | `macos` | `osx-arm64` |
 | Mac Catalyst | `maccatalyst` | `maccatalyst-arm64` |
 | Linux | `linux` | `linux-x64` |
@@ -337,16 +337,7 @@ select a platform runner instead. Build the target you need rather than a full s
 
 ### Native bridge
 
-Android, iOS, AppKit, and Mac Catalyst include app-owned native libraries and bindings.
-The default ABI provides `platformInfo`, `echo`, and UI-thread callbacks; it is separate from the final app runner.
-
-```powershell
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 native doctor -App ./samples/DorotiTestbedApp -Platform android
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 native build -App ./samples/DorotiTestbedApp -Platform android -Rid android-arm64
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 native open -App ./samples/DorotiTestbedApp -Platform ios
-```
-
-`native open` prints the Android Studio/Xcode project path. Add `-Launch` to open the IDE too.
+Android, iOS, AppKit and Mac Catalyst retain app native libraries/bindings in their source runners. The current managed provider CLI does not advertise native doctor/build/open/add operations. Build the selected runner directly with `dotnet build` for its declared profile. Android device discovery is typed (`devices -App ... -Platform android`) and lists authorized devices matching the workspace RID; deployment requires a matching device. Mobile development transport and Apple native/device/signing acceptance remain separate migration gates.
 
 ### Project layout and resources
 
@@ -416,9 +407,9 @@ SkiaSharp version than the current package configuration, refresh both restore c
 then repeat the sample run command.
 
 ```powershell
-dotnet restore ./Doroti/src/Doroti.Host.Maui/Doroti.Host.Maui.csproj `
+dotnet restore ./packages/platforms/maui/Doroti.Host.Maui/Doroti.Host.Maui.csproj `
   -p:RuntimeIdentifier=android-arm64 -p:TargetFramework=net10.0-android --force-evaluate -v minimal
-dotnet restore ./Doroti/src/Doroti.Host.Maui/Doroti.Host.Maui.csproj `
+dotnet restore ./packages/platforms/maui/Doroti.Host.Maui/Doroti.Host.Maui.csproj `
   -p:TargetFramework=net10.0-android -p:DorotiHostTargetFrameworks=net10.0-android --force-evaluate -v minimal
 ```
 

@@ -1,7 +1,7 @@
 using Doroti.Framework.Widgets;
 using Doroti.Plugins;
 using Doroti.Ui;
-using M = Doroti.Framework.Material;
+using M = Doroti.Material;
 
 namespace MaterialSample;
 

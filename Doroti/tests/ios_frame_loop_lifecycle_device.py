@@ -37,7 +37,7 @@ def main():
     summary = {'runtime': 'NativeAOT' if not list(args.app.rglob('*.dll')) else 'Mono',
                'payloadSha256': payload.hexdigest(), 'benchmark': False, 'defaultPath': True,
                'remoteEvidence': 'Documents/' + remote, 'environment': env, 'cycles': [],
-               'hostSourceSha256': hashlib.sha256((ROOT / 'Doroti/src/Doroti.Host.Maui/DorotiUIKitGraphiteViewHandler.cs').read_bytes()).hexdigest()}
+               'hostSourceSha256': hashlib.sha256((ROOT / 'packages/platforms/maui/Doroti.Host.Maui/DorotiUIKitGraphiteViewHandler.cs').read_bytes()).hexdigest()}
 
     def save():
         (out / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n')

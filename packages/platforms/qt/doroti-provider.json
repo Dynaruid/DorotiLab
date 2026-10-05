@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "doroti.platform-provider/v1",
+  "id": "qt",
+  "version": "0.4.0-alpha.1",
+  "coreRange": "[0.4.0-alpha.1,0.5.0)",
+  "protocolVersion": 1,
+  "registrationType": "Doroti.Host.Qt.DorotiQtRunner",
+  "hostOperatingSystems": [
+    "linux"
+  ],
+  "operations": [
+    "build",
+    "run",
+    "publish",
+    "dev"
+  ],
+  "services": [
+    "configuration",
+    "diagnostics",
+    "devices",
+    "operations"
+  ],
+  "tool": {
+    "mode": "dotnetInproc",
+    "assembly": "tooling/bin/Release/net10.0/Doroti.Tool.Qt.dll",
+    "entryType": "Doroti.Tool.Qt.Extension",
+    "executable": null,
+    "arguments": [],
+    "project": "tooling/Doroti.Tool.Qt.csproj"
+  },
+  "profiles": {
+    "default:linux-x64": {
+      "hostOperatingSystems": [
+        "linux"
+      ],
+      "operations": [
+        "build",
+        "run",
+        "publish",
+        "dev"
+      ],
+      "development": {
+        "transport": "file",
+        "debug": true,
+        "requiresPreparedAcknowledgment": false,
+        "usesStopSignal": false,
+        "launchBrowser": false
+      }
+    }
+  }
+}

@@ -241,7 +241,7 @@ RC1의 Xcode 26.6 요구 사항은 유지됩니다.
 ## Linux
 
 Linux x64에서 .NET SDK, CMake 3.24 이상, C++20 컴파일러, Qt 6.8 이상(Quick/QuickControls2/WebEngineQuick/WebChannel),
-Wayland 개발 도구와 Vulkan 1.2 지원 GPU가 필요합니다. 자세한 네이티브 의존성은 [Qt 호스트 안내](linux/native/README.md)를 참고하세요.
+Wayland 개발 도구와 Vulkan 1.2 지원 GPU가 필요합니다. 자세한 네이티브 의존성은 [Qt 호스트 안내](../../packages/platforms/qt/native/README.md)를 참고하세요.
 
 ```powershell
 dotnet run --project ./samples/DorotiSampleApp2/linux/DorotiSampleApp2.Linux.csproj -c Release
@@ -293,7 +293,7 @@ Flutter의 CanvasKit/Skwasm처럼 엔진에 폰트 파일을
 등록합니다. CSS 링크의 @font-face도 바이트로 읽어 등록하며, DOM body의 font-family는 상속하지 않습니다. 폰트가 추가되면 글자 폭과
 레이아웃도 자동 갱신됩니다. 네이티브의 기본/미해결 Cupertino 폰트는 플랫폼 UI 폰트로
 연결합니다. CDN 변경·다운로드 비활성화와 지원 범위는
-[자동 웹 폰트 안내](../../Doroti/src/Doroti.Host.Web/Fonts/README.md)에 있습니다.
+[자동 웹 폰트 안내](../../packages/platforms/web/Doroti.Host.Web/Fonts/README.md)에 있습니다.
 기본 CDN 모드는 Roboto/Noto와 Galmuri를 CDN에서 읽고, 비교용 SUITE는 로컬 CSS/WOFF2로 포함합니다. 네이티브 빌드는 Roboto를 CDN에서
 받아 DLL에 포함하므로 실행 시에는 폰트 다운로드가 필요 없습니다.
 
@@ -402,7 +402,7 @@ python Doroti/validation/run-with-timeout.py dotnet publish samples/DorotiSample
 
 `wwwroot`를 COOP/COEP 헤더가 있는 서버로 제공하세요. `/sample/` 배포에서는 HTML의
 base href도 `/sample/`로 바꿉니다. 디코더 CSP와 CSS 지원 범위는
-[폰트 사용 문서](../../Doroti/src/Doroti.Host.Web/Fonts/README.md#css-links-and-variable-fonts)를 참고하세요.
+[폰트 사용 문서](../../packages/platforms/web/Doroti.Host.Web/Fonts/README.md#css-links-and-variable-fonts)를 참고하세요.
 
 ## 공통 assets 폴더의 웹폰트
 

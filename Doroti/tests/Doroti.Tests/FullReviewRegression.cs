@@ -6,7 +6,6 @@ using Doroti.Ui;
 using Doroti.Host.Maui;
 using Doroti.Framework.Foundation;
 using Doroti.Framework.Rendering;
-using Doroti.Framework.Cupertino;
 using Doroti.Hosting;
 
 internal static class FullReviewRegression
@@ -223,14 +222,14 @@ internal static class FullReviewRegression
     static void SnapshotWidgets()
     {
         using var tester = new WidgetTester(new Size(8, 8), 2);
-        tester.pumpWidget(new CupertinoApp(home: new RepaintBoundary(child: new ColoredBox(color: new Color(0xff00ff00)))));
+        tester.pumpWidget(new Directionality(textDirection: TextDirection.ltr, child: new RepaintBoundary(child: new ColoredBox(color: new Color(0xff00ff00)))));
         var boundary = (RenderRepaintBoundary)tester.byType<RepaintBoundary>().Single(element => ((RepaintBoundary)element.widget).child is ColoredBox).findRenderObject()!;
         using var image = boundary.toImageSync(2);
         Require(image.width == 16 && image.height == 16, "RepaintBoundary DPR not rasterized.");
         var bytes = image.toByteData().asTask(); Terminal(bytes);
         Require(bytes.Result!.buffer.asUint8List().ToArray()[1] == 255, "OffsetLayer consumer produced no green pixels.");
         var controller = new SnapshotController(true);
-        tester.pumpWidget(new CupertinoApp(home: new SnapshotWidget(controller: controller, autoresize: true,
+        tester.pumpWidget(new Directionality(textDirection: TextDirection.ltr, child: new SnapshotWidget(controller: controller, autoresize: true,
             child: new ColoredBox(color: new Color(0xffff0000)))));
         Require(tester.pixel(1, 1).Red == 255, "SnapshotWidget image repaint failed.");
         tester.setViewport(new Size(10, 6), 3); controller.clear(); tester.pump();

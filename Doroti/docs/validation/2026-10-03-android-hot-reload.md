@@ -10,7 +10,7 @@
 - [개발 프로필](../../src/Doroti.Runner.Sdk/Sdk/Doroti.AndroidDevelopment.targets)은 Debug Mono, portable symbols, startup hooks, untrimmed/non-AOT APK를 사용한다. 기본 Release Mono/profiled AOT 프로필은 유지된다. SDK 10.0.400 이상과 Android workload의 `HotReloadWebSockets` capability가 필요하다.
 - SDK의 원본 delta agent와 인증된 WebSocket을 Android workload가 패키징하고 USB `adb reverse`로 연결한다. Mono의 `STARTUP_HOOKS` 설정을 runtimeconfig 생성 **이전**에 넣어 실제 agent가 시작되도록 한다.
 - `adb run-as`는 앱의 private `files/Doroti.Dev/<session>`에 있는 상태·요청 JSON만 전달한다. 요청을 임시 파일로 쓰고 atomic rename을 완료한 뒤 `prepared.json`을 발행한다. 에디터는 이 확인 전에 파일을 저장하지 않으며, [Widgets metadata handler](../../src/Doroti.Framework.Widgets/DorotiHotReload.cs)의 실제 reassembly frame 완료 뒤에만 `applied`를 표시한다. PID/runtime/session이 다른 요청과 종료된 프로세스의 오래된 상태는 인정하지 않는다.
-- [MAUI host](../../src/Doroti.Host.Maui/Doroti.Host.Maui.csproj)는 개발 세션의 공통 framework references에서 RID를 제거한다. `dotnet watch`의 path+TFM 식별에 같은 프로젝트가 중복되는 오류를 해결했다. Windows aapt2 경로 제한을 피하도록 별도 개발 캐시를 `Doroti/artifacts/ad/<project-sdk-rid-hash>`에 둔다.
+- [MAUI host](../../../packages/platforms/maui/Doroti.Host.Maui/Doroti.Host.Maui.csproj)는 개발 세션의 공통 framework references에서 RID를 제거한다. `dotnet watch`의 path+TFM 식별에 같은 프로젝트가 중복되는 오류를 해결했다. Windows aapt2 경로 제한을 피하도록 별도 개발 캐시를 `Doroti/artifacts/ad/<project-sdk-rid-hash>`에 둔다.
 - [VS Code extension](../../tools/vscode-doroti/src/extension.ts)은 Android Run/Hot Reload/Restart/Stop과 pre-save 요청 확인을 연결한다. Stop은 launcher에 `stop.json`을 보내 앱·watcher·이번 세션의 USB 포트를 정리한다. 프로젝트/리소스/네이티브 Kotlin·Java 변경과 SDK rude edit은 명시적인 Restart가 필요하다.
 - 저장소 [VS Code task](../../../.vscode/tasks.json) `Doroti: Android Hot Reload`에서 Sample2/Testbed를 선택할 수 있다. `.vscode`의 나머지 개인 설정은 계속 Git ignore 대상이다.
 

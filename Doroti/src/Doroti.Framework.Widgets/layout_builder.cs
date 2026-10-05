@@ -216,6 +216,11 @@ internal class _LayoutBuilderElement__layout_builder<LayoutInfoType> : RenderObj
                 );
                 _child = updateChild(null, built, slot);
             }
+            finally
+            {
+                _needsBuild = false;
+                _previousLayoutInfo = layoutInfoLocal;
+            }
         }
         Action? callback =
             (

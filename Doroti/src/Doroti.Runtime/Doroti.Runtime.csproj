@@ -5,7 +5,4 @@
     <IsDorotiProduct>true</IsDorotiProduct>
     <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="MaterialColorUtilities" />
-  </ItemGroup>
 </Project>

@@ -17,7 +17,10 @@ public static partial class DialogLibrary
         Func<BuildContext, Func<BuildContext, Widget>, Route<T>>? routeBuilder = null,
         bool useRootNavigator = true,
         RouteSettings? routeSettings = null,
-        bool fullscreenDialog = false
+        bool fullscreenDialog = false,
+        WindowPresentation presentation = WindowPresentation.Auto,
+        bool barrierDismissible = true,
+        Doroti.Ui.Size? nativeSize = null
     )
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasWidgetsLocalizations(context));
@@ -29,7 +32,7 @@ public static partial class DialogLibrary
                 fullscreenDialog: fullscreenDialog
             )
             : routeBuilder.Invoke(context, builder);
-        return navigator.push(route);
+        return NativeWindowPresentation.ShowDialog(context, route, presentation, barrierDismissible, useRootNavigator, nativeSize);
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -24,9 +24,11 @@ def source():
         "Doroti/docs/application-navigation.md", "Doroti/docs/desktop-window-context.md", "Doroti/docs/release-candidates.md",
         "Doroti/docs/platform-views/support-matrix.md", "Doroti/docs/validation/2026-10-04-web-structure.md",
         "samples/DorotiTestbedApp/README.md", "samples/DorotiSampleApp2/README.md",
-        "work.md", "Doroti/docs/doctor.md", "Doroti/docs/validation/2026-10-04-full-review.md",
+        "work.md", "work2.md", "Doroti/docs/doctor.md", "Doroti/docs/validation/2026-10-04-full-review.md",
         "Doroti/templates/Doroti.Templates/content/doroti-app/desktop/README.md")]
     docs += list((ROOT / "history/26-10-03/works").rglob("*.md"))
+    docs += list((ROOT / "Doroti/docs/migrations/design-platform").glob("*.md"))
+    docs += [ROOT / f"packages/Doroti.{design}/README.md" for design in ("Material", "Cupertino")]
     broken = []
     for doc in set(docs):
         for target in re.findall(r"\]\(([^)]+)\)", doc.read_text(encoding="utf-8-sig")):
@@ -67,6 +69,18 @@ def main(suite):
             command("widget-regressions", "dotnet", "run", "--project",
                     "Doroti/tests/Doroti.Tests/Doroti.Tests.csproj", "-c", "Debug",
                     "--artifacts-path", str(run / "build"))
+        if suite in ("Build", "Packages", "Targets", "Developer", "Release"):
+            for design in ("Material", "Cupertino"):
+                command(design.lower() + "-regressions", "dotnet", "run", "--project",
+                    f"packages/Doroti.{design}/tests/Doroti.{design}.Tests/Doroti.{design}.Tests.csproj", "-c", "Debug",
+                    "--artifacts-path", str(run / (design.lower() + "-build")))
+            command("platform-bootstrap-contract", sys.executable,
+                    "Doroti/tests/platform_bootstrap_contract.py")
+            command("frame-submission-contract", sys.executable,
+                    "Doroti/tests/frame_submission_contract.py")
+            command("typed-transport-contract", sys.executable, "Doroti/tests/typed_transport_contract.py")
+            command("tool-extension-contract", sys.executable,
+                    "Doroti/tests/tool_extension_contract.py")
         if suite in ("Developer", "Release"):
             command("plugin-regressions", "dotnet", "run", "--project", "Doroti/tests/Doroti.Plugin.Tests/Doroti.Plugin.Tests.csproj", "--artifacts-path", str(run / "plugin-build"))
             command("os-drop-regressions", "dotnet", "run", "--project", "Doroti/tests/Doroti.Drop.Tests/Doroti.Drop.Tests.csproj", "--artifacts-path", str(run / "drop-build"))
@@ -75,6 +89,9 @@ def main(suite):
             command("web-textures", "node", "--experimental-transform-types", "--experimental-vm-modules", "--test", "Doroti/tests/web_textures.mts")
             command("web-full-review", "node", "--experimental-transform-types", "--experimental-vm-modules", "--test", "Doroti/tests/web_full_review.mts")
             command("web-managed-connection", "node", "--experimental-transform-types", "--experimental-vm-modules", "--test", "Doroti/tests/web_managed_connection.mts")
+        if suite in ("Packages", "Developer", "Release"):
+            command("maui-tool-devices", "dotnet", "run", "--project", "packages/platforms/maui/tests/Doroti.Tool.Maui.Tests/Doroti.Tool.Maui.Tests.csproj", "--artifacts-path", str(run / "maui-tool-build"))
+            command("platform-provider-contract", sys.executable, "Doroti/tests/platform_provider_contract.py")
         if suite in ("Targets", "Release"):
             for target in ("windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj", "web/DorotiTestbedApp.Web.csproj"):
                 command(target.split('/')[0], "dotnet", "build", "samples/DorotiTestbedApp/" + target,
@@ -89,49 +106,11 @@ def main(suite):
         if suite == "MacOSSmoke":
             command("macos-appkit", sys.executable, "Doroti/tests/macos_smoke.py", "--output", str(run / "appkit"))
         if suite == "WindowsSmoke":
+            for fixture in ("windows_shared_tree", "windows_window_kinds", "windows_native_menu", "windows_design_presentation", "windows_provider_packages"):
+                command(fixture, sys.executable, "Doroti/tests/" + fixture + ".py")
             command("windows-smoke", sys.executable, "Doroti/tests/windows_smoke.py", str(run / "windows"))
-        if suite == "Packages":
-            command("package-build", "dotnet", "build", "Doroti/tests/Doroti.Tests/Doroti.Tests.csproj", "-c", "Debug", "--nologo")
-            projects = {}
-            def visit(project):
-                project = project.resolve()
-                if project in projects:
-                    return
-                projects[project] = True
-                for reference in ET.parse(project).iter("ProjectReference"):
-                    visit(project.parent / reference.attrib["Include"].replace("\\", "/"))
-            visit(ROOT / "Doroti/src/Doroti.Testing/Doroti.Testing.csproj")
-            visit(ROOT / "Doroti/src/Doroti.Framework.Cupertino/Doroti.Framework.Cupertino.csproj")
-            visit(ROOT / "Doroti/src/Doroti.Desktop/Doroti.Desktop.csproj")
-            packages = run / "packages"
-            candidate_version = '0.3.0-beta.review.' + uuid.uuid4().hex[:12]
-            for project in projects:
-                command("pack-" + project.stem, "dotnet", "pack", str(project), "-c", "Debug", "--no-build", "--output", str(packages), "--nologo", "-p:Version=" + candidate_version)
-            consumer = run / "consumer"
-            consumer.mkdir()
-            shutil.copyfile(ROOT / "Doroti/tests/Doroti.Tests/Program.cs", consumer / "Program.cs")
-            shutil.copyfile(ROOT / "Doroti/tests/Doroti.Tests/DesktopCloseRegression.cs", consumer / "DesktopCloseRegression.cs")
-            shutil.copyfile(ROOT / "Doroti/tests/Doroti.Tests/PlatformPolicyRegression.cs", consumer / "PlatformPolicyRegression.cs")
-            shutil.copyfile(ROOT / "Doroti/tests/Doroti.Tests/FullReviewRegression.cs", consumer / "FullReviewRegression.cs")
-            shutil.copyfile(ROOT / "Doroti/src/Doroti.Host.Maui/AppleSemanticsState.cs", consumer / "AppleSemanticsState.cs")
-            with (consumer / "Program.cs").open('a', encoding='utf-8') as stream: stream.write('\nFullReviewRegression.Run();\n')
-            (consumer / "Consumer.csproj").write_text('''<Project Sdk="Microsoft.NET.Sdk">
-<PropertyGroup><TargetFramework>net10.0</TargetFramework><OutputType>Exe</OutputType><ImplicitUsings>enable</ImplicitUsings>
-<EnableDefaultCompileItems>false</EnableDefaultCompileItems><Nullable>enable</Nullable></PropertyGroup>
-<ItemGroup><Compile Include="Program.cs;DesktopCloseRegression.cs;PlatformPolicyRegression.cs;FullReviewRegression.cs;AppleSemanticsState.cs" /><PackageReference Include="Doroti.Testing" Version="0.3.0-beta" />
-<PackageReference Include="Doroti.Desktop" Version="0.3.0-beta" />
-<PackageReference Include="Doroti.Framework.Cupertino" Version="0.3.0-beta" />
-<PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="4.154.0-preview.1.26454.9" /></ItemGroup></Project>'''.replace('0.3.0-beta', candidate_version))
-            # Keep the consumer's restore cache independent of installed Doroti packages.
-            cache = run / "nuget"
-            configuration = ET.Element("configuration")
-            sources = ET.SubElement(configuration, "packageSources")
-            ET.SubElement(sources, "clear")
-            ET.SubElement(sources, "add", key="local", value=str(packages))
-            ET.SubElement(sources, "add", key="nuget", value="https://api.nuget.org/v3/index.json")
-            ET.ElementTree(configuration).write(consumer / "NuGet.Config", encoding="utf-8", xml_declaration=True)
-            command("package-consumer", "dotnet", "run", "--project", str(consumer / "Consumer.csproj"),
-                    "-c", "Debug", "-p:RestorePackagesPath=" + str(cache))
+        if suite in ("Packages", "Developer", "Release"):
+            command("design-package-contract", sys.executable, "Doroti/tests/design_package_contract.py")
         success = True
         print(f"Validation {suite}: PASS; raw artifacts cleaned after summary", flush=True)
     finally:

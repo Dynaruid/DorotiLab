@@ -4,17 +4,17 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Widgets;
 
-internal interface IWidgetStateMapping<T>
+public interface IWidgetStateMapping<T>
 {
     DartMap<WidgetStatesConstraint, T> Mapping { get; }
 }
 
-internal static class WidgetStateMapping
+public static class WidgetStateMapping
 {
-    internal static Exception Unresolved(string member) =>
+    public static Exception Unresolved(string member) =>
         new FlutterError($"Resolve the WidgetStateProperty before accessing {member}.");
 
-    internal static T ResolveRequired<T>(WidgetStateMapper<T> mapper, HashSet<WidgetState> states)
+    public static T ResolveRequired<T>(WidgetStateMapper<T> mapper, HashSet<WidgetState> states)
         where T : class =>
         mapper.resolve(states)
         ?? throw new DartArgumentError(

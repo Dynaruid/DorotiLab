@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "doroti.platform-provider/v1",
+  "id": "web",
+  "version": "0.4.0-alpha.1",
+  "coreRange": "[0.4.0-alpha.1,0.5.0)",
+  "protocolVersion": 1,
+  "registrationType": "Doroti.Host.Web.DorotiWebApplication",
+  "hostOperatingSystems": [
+    "windows",
+    "macos",
+    "linux"
+  ],
+  "operations": [
+    "build",
+    "run",
+    "publish",
+    "dev"
+  ],
+  "services": [
+    "configuration",
+    "diagnostics",
+    "devices",
+    "operations"
+  ],
+  "tool": {
+    "mode": "dotnetInproc",
+    "assembly": "Doroti.Tool.Web.dll",
+    "entryType": "Doroti.Tool.Web.Extension",
+    "executable": null,
+    "arguments": [],
+    "project": null
+  },
+  "profiles": {
+    "default:browser-wasm": {
+      "hostOperatingSystems": [
+        "windows",
+        "macos",
+        "linux"
+      ],
+      "operations": [
+        "build",
+        "run",
+        "publish",
+        "dev"
+      ],
+      "development": {
+        "transport": "browser",
+        "debug": true,
+        "requiresPreparedAcknowledgment": false,
+        "usesStopSignal": false,
+        "launchBrowser": true
+      }
+    }
+  }
+}

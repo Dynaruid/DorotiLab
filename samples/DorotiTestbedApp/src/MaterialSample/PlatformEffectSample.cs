@@ -1,4 +1,4 @@
-using Doroti.Framework.Material;
+using Doroti.Material;
 using Doroti.Framework.Widgets;
 using Doroti.Ui;
 namespace MaterialSample;

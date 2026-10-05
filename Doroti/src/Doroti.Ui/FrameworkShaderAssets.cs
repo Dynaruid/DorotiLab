@@ -27,7 +27,7 @@ public sealed record FrameworkShaderAsset(
 );
 
 /// <summary>
-/// The closed framework shader manifest shared by framework ports and all GPU hosts.
+/// Explicit shader descriptor registry shared by package owners and GPU hosts.
 /// Optional source pins describe the Flutter reference; Doroti-original shaders have
 /// no Flutter reference. The adapted hash protects the packaged
 /// Doroti artifact that is actually loaded at runtime.
@@ -36,110 +36,63 @@ public static class FrameworkShaderManifest
 {
     public const string SchemaVersion = "doroti.framework-shader-manifest/v1";
 
-    private static readonly IReadOnlyList<FrameworkShaderAsset> _assets =
-    [
-        new FrameworkShaderAsset(
-            Id: "material.ink-sparkle",
-            FlutterAssetKey: "shaders/ink_sparkle.frag",
-            FlutterSourcePath: "packages/flutter/lib/src/material/shaders/ink_sparkle.frag",
-            FlutterSourceSha256: "ed126d87b7df031187485bc37345a84aac211ee5efdeeb488ba28f6b0b817592",
-            AdaptedSourcePath: "Doroti/src/Doroti.Framework.Material/Shaders/ink_sparkle.sksl",
-            AdaptedSourceSha256: "ad41bc223fe55c3d7997a11748e320e891ccbba2395ccdea40d3d09856f96615",
-            OwningAssembly: "Doroti.Framework.Material",
-            EmbeddedResourceName: "Doroti.Framework.Material.Shaders.ink_sparkle.sksl",
-            Uniforms:
-            [
-                new("u_color", "float4"),
-                new("u_composite_1", "float4"),
-                new("u_center", "float2"),
-                new("u_max_radius", "float"),
-                new("u_resolution_scale", "float2"),
-                new("u_noise_scale", "float2"),
-                new("u_noise_phase", "float"),
-                new("u_circle1", "float2"),
-                new("u_circle2", "float2"),
-                new("u_circle3", "float2"),
-                new("u_rotation1", "float2"),
-                new("u_rotation2", "float2"),
-                new("u_rotation3", "float2"),
-            ],
-            Samplers: [],
-            License: "BSD-3-Clause",
-            TargetSupport: ["android", "windows", "maccatalyst", "web"]
-        ),
-        new FrameworkShaderAsset(
-            Id: "widgets.stretch-effect",
-            FlutterAssetKey: "shaders/stretch_effect.frag",
-            FlutterSourcePath: "packages/flutter/lib/src/widgets/shaders/stretch_effect.frag",
-            FlutterSourceSha256: "704a646ce01cebbc525fc4801c7fef3d4fc5c7ed36e3270c73b44ad5d8f0b204",
-            AdaptedSourcePath: "Doroti/src/Doroti.Framework.Widgets/Shaders/stretch_effect.sksl",
-            AdaptedSourceSha256: "a479b63ed2a17bd2fa8b08cdcc12a5a71f5509c2fdf1dbcf9361456b56d7c910",
-            OwningAssembly: "Doroti.Framework.Widgets",
-            EmbeddedResourceName: "Doroti.Framework.Widgets.Shaders.stretch_effect.sksl",
-            Uniforms:
-            [
-                new("u_size", "float2"),
-                new("u_max_stretch_intensity", "float"),
-                new("u_overscroll_x", "float"),
-                new("u_overscroll_y", "float"),
-                new("u_interpolation_strength", "float"),
-            ],
-            Samplers: [new("u_texture", 0)],
-            License: "BSD-3-Clause",
-            TargetSupport: ["android", "windows", "maccatalyst", "web"]
-        ),
-        new FrameworkShaderAsset(
-            Id: "rendering.variable-blur",
-            FlutterAssetKey: null,
-            FlutterSourcePath: null,
-            FlutterSourceSha256: null,
-            AdaptedSourcePath: "Doroti/src/Doroti.Skia.Rendering/Shaders/variable_blur.sksl",
-            AdaptedSourceSha256: "c89e5f6cdf5147011faa05cdb94f9b6eb0dc04748d38c148c2ec5c0fde7fdfeb",
-            OwningAssembly: "Doroti.Skia.Rendering",
-            EmbeddedResourceName: "Doroti.Skia.Rendering.Shaders.variable_blur.sksl",
-            Uniforms:
-            [
-                new("size", "float2"),
-                new("ramp", "float3"),
-                new("sigmas", "float2"),
-                new("axis", "float2"),
-                new("samples", "float"),
-                new("fastKernel", "float"),
-            ],
-            Samplers: [new("inputImage", 0)],
-            License: "BSD-3-Clause",
-            // Implementation targets, not a claim of device validation.
-            TargetSupport: ["android", "windows", "ios", "macos", "maccatalyst", "linux", "web"]
-        ),
-        new FrameworkShaderAsset(
-            Id: "rendering.kawase-blur", FlutterAssetKey: null, FlutterSourcePath: null, FlutterSourceSha256: null,
-            AdaptedSourcePath: "Doroti/src/Doroti.Skia.Rendering/Shaders/kawase_blur.sksl",
-            AdaptedSourceSha256: "8f446677e2283572fefd7f10472fb623877f23b0eaf7386cf6c0ac71dfec58bf",
-            OwningAssembly: "Doroti.Skia.Rendering",
-            EmbeddedResourceName: "Doroti.Skia.Rendering.Shaders.kawase_blur.sksl",
-            Uniforms: [new("size", "float2"), new("ratio", "float2"), new("upsample", "float")],
-            Samplers: [new("inputImage", 0)], License: "BSD-3-Clause",
-            TargetSupport: ["android", "windows", "ios", "macos", "maccatalyst", "linux", "web"]
-        ),
-        new FrameworkShaderAsset(
-            Id: "rendering.variable-blur-stage", FlutterAssetKey: null, FlutterSourcePath: null, FlutterSourceSha256: null,
-            AdaptedSourcePath: "Doroti/src/Doroti.Skia.Rendering/Shaders/variable_blur_stage.sksl",
-            AdaptedSourceSha256: "fd526bcae79ba633faad919a85a42384b5938c898d379ec980558da2fa2578cd",
-            OwningAssembly: "Doroti.Skia.Rendering",
-            EmbeddedResourceName: "Doroti.Skia.Rendering.Shaders.variable_blur_stage.sksl",
-            Uniforms: [new("size", "float2"), new("ramp", "float3"), new("sigmas", "float2"), new("interval", "float2"), new("lowerRatio", "float2"), new("upperRatio", "float2"), new("lastInterval", "float"), new("firstInterval", "float"), new("lowerOffset", "float2")],
-            Samplers: [new("inputImage", 0), new("upperImage", 1)], License: "BSD-3-Clause",
-            TargetSupport: ["android", "windows", "ios", "macos", "maccatalyst", "linux", "web"]
-        ),
-    ];
+    private static readonly object Gate = new();
+    private static readonly Dictionary<string, FrameworkShaderAsset> Registered = new(StringComparer.Ordinal);
 
-    public static IReadOnlyList<FrameworkShaderAsset> Assets => _assets;
+    public static IReadOnlyList<FrameworkShaderAsset> Assets
+    {
+        get { lock (Gate) return Array.AsReadOnly(Registered.Values.OrderBy(asset => asset.Id, StringComparer.Ordinal).ToArray()); }
+    }
 
-    public static FrameworkShaderAsset Get(string id) =>
-        _assets.FirstOrDefault(asset => string.Equals(asset.Id, id, StringComparison.Ordinal))
-        ?? throw new KeyNotFoundException(
-            $"Framework shader '{id}' is not registered in the closed manifest."
-        );
+    /// <summary>Atomically register frozen descriptors with their actual embedded-resource assembly.</summary>
+    public static void Register(Assembly owner, IEnumerable<FrameworkShaderAsset> descriptors)
+    {
+        ArgumentNullException.ThrowIfNull(owner);
+        ArgumentNullException.ThrowIfNull(descriptors);
+        var ownerName = owner.GetName().Name;
+        var frozen = descriptors.Select(asset =>
+        {
+            ArgumentNullException.ThrowIfNull(asset);
+            ArgumentException.ThrowIfNullOrWhiteSpace(asset.Id);
+            if (!string.Equals(asset.OwningAssembly, ownerName, StringComparison.Ordinal))
+                throw new InvalidOperationException($"Shader '{asset.Id}' has a different resource owner.");
+            if (asset.AdaptedSourceSha256.Length != 64 || asset.AdaptedSourceSha256.Any(character => !char.IsAsciiHexDigit(character)))
+                throw new ArgumentException($"Shader '{asset.Id}' has an invalid SHA256.");
+            ArgumentException.ThrowIfNullOrWhiteSpace(asset.EmbeddedResourceName);
+            return asset with
+            {
+                Uniforms = Array.AsReadOnly(asset.Uniforms.ToArray()),
+                Samplers = Array.AsReadOnly(asset.Samplers.ToArray()),
+                TargetSupport = Array.AsReadOnly(asset.TargetSupport.ToArray()),
+            };
+        }).ToArray();
+        var batch = new Dictionary<string, FrameworkShaderAsset>(StringComparer.Ordinal);
+        foreach (var asset in frozen)
+        {
+            if (batch.TryGetValue(asset.Id, out var previous) && !Equivalent(previous, asset))
+                throw new InvalidOperationException($"Conflicting shader descriptor '{asset.Id}'.");
+            batch[asset.Id] = asset;
+        }
+        lock (Gate)
+        {
+            foreach (var asset in batch.Values)
+                if (Registered.TryGetValue(asset.Id, out var previous) && !Equivalent(previous, asset))
+                    throw new InvalidOperationException($"Shader '{asset.Id}' was registered with another owner, hash or ABI.");
+            FrameworkShaderLoader.RegisterResourceOwner(owner);
+            foreach (var asset in batch.Values) Registered.TryAdd(asset.Id, asset);
+        }
+    }
+
+    private static bool Equivalent(FrameworkShaderAsset left, FrameworkShaderAsset right) =>
+        left with { Uniforms = right.Uniforms, Samplers = right.Samplers, TargetSupport = right.TargetSupport } == right &&
+        left.Uniforms.SequenceEqual(right.Uniforms) && left.Samplers.SequenceEqual(right.Samplers) &&
+        left.TargetSupport.SequenceEqual(right.TargetSupport);
+
+    public static FrameworkShaderAsset Get(string id)
+    {
+        lock (Gate) return Registered.TryGetValue(id, out var asset) ? asset :
+            throw new KeyNotFoundException($"Shader '{id}' has no explicit owner registration.");
+    }
 }
 
 public sealed record FrameworkShaderDiagnostic(

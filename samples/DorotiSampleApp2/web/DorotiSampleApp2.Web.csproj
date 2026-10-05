@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
-  <Import Project="..\..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.props" />
+  <Import Project="../../../packages/platforms/build/Sdk.props" />
+  <Import Project="../../../Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.props" />
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
@@ -15,13 +16,11 @@
     <WasmEnableThreads>true</WasmEnableThreads>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>$(DefineConstants);DOROTI_BROWSER</DefineConstants>
-    <DorotiSkiaInteropLibrary>$(MSBuildThisFileDirectory)..\..\..\Doroti\src\Doroti.Target.Web.browser-wasm\build\DorotiSkiaInterop.js</DorotiSkiaInteropLibrary>
+    <DorotiSkiaInteropLibrary>$(MSBuildThisFileDirectory)..\..\..\packages\platforms\web\Doroti.Target.Web.browser-wasm\build\DorotiSkiaInterop.js</DorotiSkiaInteropLibrary>
+    <DorotiProviderBootstrapTargets>$(MSBuildProjectDirectory)/../../../packages/platforms/web/bootstrap/Doroti.Provider.Bootstrap.targets</DorotiProviderBootstrapTargets>
   </PropertyGroup>
-  <!-- Source files can live in the shared application assets directory.
-       Link defines their public web paths for both development and publish. -->
   <ItemGroup>
-    <Content Include="../assets/fonts/**/*" Link="wwwroot/fonts/%(RecursiveDir)%(Filename)%(Extension)"
-             CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="../assets/fonts/**/*" Link="wwwroot/fonts/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Content Remove="../assets/fonts/CupertinoIcons.*" />
     <Content Remove="../assets/fonts/Galmuri/**/*" Condition="'$(DorotiSampleWebFontSource)' != 'Assets'" />
   </ItemGroup>
@@ -30,9 +29,8 @@
     <EmbeddedResource Include="../../DorotiTestbedApp/assets/fonts/LICENSE.roboto.txt" LogicalName="AssetFonts.LICENSE.roboto.txt" Condition="'$(DorotiSampleWebFontSource)' == 'Assets'" />
     <EmccExportedFunction Include="_wgpuDeviceRelease;_wgpuQueueRelease;_wgpuInstanceRelease" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.11" />
-    <DorotiTargetDescriptor Include="Web" HostKind="BlazorWebAssembly" NativeEntryKind="Managed-Main"
-        RuntimeIdentifier="browser-wasm" TargetFramework="net10.0" TargetPackage="Doroti.Target.Web.browser-wasm" />
-    <ProjectReference Include="..\..\..\Doroti\src\Doroti.Target.Web.browser-wasm\Doroti.Target.Web.browser-wasm.csproj" />
+    <DorotiTargetDescriptor Include="Web" HostKind="BlazorWebAssembly" NativeEntryKind="Managed-Main" RuntimeIdentifier="browser-wasm" TargetFramework="net10.0" TargetPackage="Doroti.Target.Web.browser-wasm" />
+    <ProjectReference Include="../../../packages/platforms/web/Doroti.Target.Web.browser-wasm/Doroti.Target.Web.browser-wasm.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.11" PrivateAssets="all" />
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="7.0.0" PrivateAssets="all" />
   </ItemGroup>
@@ -64,6 +62,5 @@
     <Content Include="../../DorotiTestbedApp/assets/fonts/Roboto-regular.ttf" Link="wwwroot/font-probe/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="../../DorotiTestbedApp/assets/fonts/MaterialIcons-Regular.otf" Link="wwwroot/font-probe/icons.otf" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
-  <Import Project="..\..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.targets" />
+  <Import Project="../../../Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.targets" />
 </Project>
-

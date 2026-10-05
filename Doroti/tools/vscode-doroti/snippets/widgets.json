@@ -9,6 +9,6 @@
   "Column": { "prefix": "dcolumn", "description": "using Doroti.Framework.Widgets", "body": ["new Column(children:", "[", "    $0", "])"] },
   "Container": { "prefix": "dcontainer", "description": "using Doroti.Framework.Widgets", "body": ["new Container(child: ${0:new SizedBox()})"] },
   "Text": { "prefix": "dtext", "description": "using Doroti.Framework.Widgets", "body": ["new Text(\"${1:Hello}\")$0"] },
-  "Material app": { "prefix": "dmaterial", "description": "using Doroti.Framework.Material and Doroti.Framework.Widgets", "body": ["new MaterialApp(home: new Scaffold(body:", "    ${0:new Center(child: new Text(\"Hello\"))}", "))"] },
-  "Cupertino app": { "prefix": "dcupertino", "description": "using Doroti.Framework.Cupertino and Doroti.Framework.Widgets", "body": ["new CupertinoApp(home: new CupertinoPageScaffold(child:", "    ${0:new Center(child: new Text(\"Hello\"))}", "))"] }
+  "Material app": { "prefix": "dmaterial", "description": "using Doroti.Material and Doroti.Framework.Widgets", "body": ["new MaterialApp(home: new Scaffold(body:", "    ${0:new Center(child: new Text(\"Hello\"))}", "))"] },
+  "Cupertino app": { "prefix": "dcupertino", "description": "using Doroti.Cupertino and Doroti.Framework.Widgets", "body": ["new CupertinoApp(home: new CupertinoPageScaffold(child:", "    ${0:new Center(child: new Text(\"Hello\"))}", "))"] }
 }

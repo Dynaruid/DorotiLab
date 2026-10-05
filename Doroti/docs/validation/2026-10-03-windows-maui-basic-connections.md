@@ -60,7 +60,7 @@ python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet build samples/Doroti
 python Doroti/eng/run-with-timeout.py --timeout 1200 python Doroti/tests/windows_maui_smoke.py --output temp/testing/platform-audit/w4/new-graphite --mode graphite
 ```
 
-다른 mode는 `embedded`, `ganesh`, `webview`, `upload`다. 항상 새 output directory를 사용한다. 공통 회귀는 `dotnet run --project Doroti/tests/Doroti.Tests/Doroti.Tests.csproj -c Debug --artifacts-path temp/testing/platform-audit/w4/new-contracts/build`를 같은 1200초 wrapper로 실행한다. Pack은 `dotnet pack Doroti/src/Doroti.Host.Maui/Doroti.Host.Maui.csproj -c Debug -p:RuntimeIdentifier=win-x64 --output temp/testing/platform-audit/w4/new-packages -m:1`를 사용한다.
+다른 mode는 `embedded`, `ganesh`, `webview`, `upload`다. 항상 새 output directory를 사용한다. 공통 회귀는 `dotnet run --project Doroti/tests/Doroti.Tests/Doroti.Tests.csproj -c Debug --artifacts-path temp/testing/platform-audit/w4/new-contracts/build`를 같은 1200초 wrapper로 실행한다. Pack은 `dotnet pack packages/platforms/maui/Doroti.Host.Maui/Doroti.Host.Maui.csproj -c Debug -p:RuntimeIdentifier=win-x64 --output temp/testing/platform-audit/w4/new-packages -m:1`를 사용한다.
 
 ## 실패와 보완
 

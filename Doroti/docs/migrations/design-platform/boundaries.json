@@ -1,0 +1,57 @@
+{
+  "schema": "doroti.package-boundaries/v1",
+  "coreVersion": "0.4.0-alpha.1",
+  "designVersions": {
+    "Doroti.Material": "1.0.0-alpha.1",
+    "Doroti.Cupertino": "1.0.0-alpha.1"
+  },
+  "providerVersion": "0.4.0-alpha.1",
+  "validatedCombinations": [],
+  "forbiddenProductEdges": [
+    {
+      "fromRole": "core",
+      "toRole": "design"
+    },
+    {
+      "fromRole": "host",
+      "toRole": "design"
+    },
+    {
+      "fromRole": "renderer",
+      "toRole": "design"
+    },
+    {
+      "fromRole": "sdk",
+      "toRole": "design"
+    },
+    {
+      "fromRole": "tool",
+      "toRole": "design"
+    }
+  ],
+  "allowedDesignEdges": [
+    {
+      "from": "Doroti.Material",
+      "to": "Doroti.Cupertino"
+    }
+  ],
+  "forbiddenDesignEdges": [
+    {
+      "from": "Doroti.Cupertino",
+      "to": "Doroti.Material"
+    }
+  ],
+  "testEdges": "Excluded from the product graph; test source ownership is checked separately",
+  "legacyDesignIdentities": [
+    "Doroti.Framework.Material",
+    "Doroti.Framework.Cupertino"
+  ],
+  "sourceBaseline": "baseline.json",
+  "minimumCoreValidation": "pending",
+  "protocols": {
+    "provider": "doroti.platform-provider/v1",
+    "target": "doroti.target-package/v2",
+    "workspace": "doroti.workspace/v2",
+    "tool": "doroti.tool-extension/v1"
+  }
+}

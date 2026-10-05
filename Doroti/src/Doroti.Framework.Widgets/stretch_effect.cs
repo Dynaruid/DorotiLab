@@ -215,7 +215,7 @@ internal class _StretchEffectShader__stretch_effect
             return;
         }
         _initCalled = true;
-        FrameworkShaderLoader.RegisterResourceOwner(typeof(Widget).Assembly);
+        WidgetsShaderAssets.Register();
         FrameworkShaderLoader.BeginLoad(
             "widgets.stretch-effect",
             program =>

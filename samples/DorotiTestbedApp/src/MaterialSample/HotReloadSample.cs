@@ -1,7 +1,7 @@
 using System.Text.Json;
 using Doroti.Framework.Widgets;
 using Doroti.Ui;
-using M = Doroti.Framework.Material;
+using M = Doroti.Material;
 
 namespace MaterialSample;
 

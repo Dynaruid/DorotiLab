@@ -7,7 +7,7 @@
 ## 확인한 누락과 보강
 
 1. **Catalyst 빌드 실패:** iOS에서만 사용하는 `_pipelineDisplayLink`·`_replayRequested` 필드가 Catalyst에서도 선언되어 `TreatWarningsAsErrors`에서 CS0169 두 건이 발생했다. 선언을 `IOS && !MACCATALYST`로 제한했다. 첫 실패 로그는 `temp/testing/apple-frame-review/catalyst/build.log`에 보존했다.
-2. **Apple raster retry:** GPU 완료와 drawable 부족의 재시도가 일반 framework 준비로 실행될 수 있었다. [MauiFrameWakeQueue](../../../../Doroti/src/Doroti.Host.Maui/MauiFrameWakeQueue.cs)를 UIKit/Catalyst·AppKit에 연결했다. 재시도만 있으면 준비한 장면을 재사용하고 새 framework 요청이 함께 있으면 우선 처리한다. 새 generation·layout·활성화의 준비 요청을 보존하며 재진입 draw가 대기 요청을 소모하지 않게 했다.
+2. **Apple raster retry:** GPU 완료와 drawable 부족의 재시도가 일반 framework 준비로 실행될 수 있었다. [MauiFrameWakeQueue](../../../../packages/platforms/maui/Doroti.Host.Maui/MauiFrameWakeQueue.cs)를 UIKit/Catalyst·AppKit에 연결했다. 재시도만 있으면 준비한 장면을 재사용하고 새 framework 요청이 함께 있으면 우선 처리한다. 새 generation·layout·활성화의 준비 요청을 보존하며 재진입 draw가 대기 요청을 소모하지 않게 했다.
 3. **AppKit deferred resize:** `_drawingLayout`만 resize 사유로 사용하면 layout이 GPU full로 거절된 뒤 후속 draw에서 직렬 경계가 사라졌다. 새 surface generation의 실제 제출까지 resize gate를 유지한다. 이전 작업이 남아 있으면 새 크기의 fresh 장면도 먼저 drain한다.
 4. **공통 Apple 진단:** 세 Apple target의 snapshot에 `NativeFramePipeline`을 제공한다. C·준비·pending/최댓값·완료·거절·fallback을 기록하고 terminal completion과 drawable 표시를 구분한다. 상세 event history는 기존 profile opt-in을 유지한다.
 5. **수집 도구 정합성:** iOS collector의 기존 단위 테스트가 삭제된 A/C 인자를 계속 호출하여 TypeError가 발생했다. C 조건 교차와 중간 반복 재개로 바꿨다. 새 wake queue·Apple effect 파일을 source manifest에 추가하고, Apple 앱의 MonoBundle·dylib·확장자 없는 framework·plist/resources를 payload hash에 포함한다. Python 3.9에서도 hash 계산이 동작한다.

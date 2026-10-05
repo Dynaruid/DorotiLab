@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup><DorotiProviderBootstrapTargets>$(MSBuildThisFileDirectory)../bootstrap/Doroti.Provider.Bootstrap.targets</DorotiProviderBootstrapTargets></PropertyGroup>
+  <Import Project="$(DorotiProviderBootstrapTargets)" Condition="'$(DorotiProviderSuppliesBootstrap)' != 'true'" />
+  <ItemGroup Condition="'$(DorotiTarget)' == 'Android' and '@(DorotiTargetDescriptor)' == ''">
+    <DorotiTargetDescriptor Include="Android" HostKind="Maui" NativeEntryKind="Android-Application" RuntimeIdentifier="android-x64" TargetFramework="$(TargetFramework)" TargetPackage="Doroti.Target.Android.Maui.android-x64" />
+  </ItemGroup>
+</Project>

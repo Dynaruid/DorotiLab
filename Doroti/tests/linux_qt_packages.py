@@ -32,10 +32,10 @@ def visit(project):
     projects[project] = True
     for reference in ET.parse(project).iter('ProjectReference'):
         visit(project.parent / reference.attrib['Include'].replace('\\', '/'))
-for name in ['Doroti.Target.Linux.Qt.linux-x64', 'Doroti.Framework.Material', 'Doroti.Plugins', 'Doroti.App.Sdk', 'Doroti.Runner.Sdk']:
+for name in ['Doroti.Target.Linux.Qt.linux-x64', 'Doroti.Material', 'Doroti.Plugins', 'Doroti.App.Sdk', 'Doroti.Runner.Sdk']:
     visit(ROOT / f'Doroti/src/{name}/{name}.csproj')
 # Build roots once; packing dependencies then reuses their Release output.
-for name in ['Doroti.Target.Linux.Qt.linux-x64', 'Doroti.Framework.Material', 'Doroti.Plugins', 'Doroti.App.Sdk', 'Doroti.Runner.Sdk']:
+for name in ['Doroti.Target.Linux.Qt.linux-x64', 'Doroti.Material', 'Doroti.Plugins', 'Doroti.App.Sdk', 'Doroti.Runner.Sdk']:
     command('build-' + name, ['dotnet', 'build', str(ROOT / f'Doroti/src/{name}/{name}.csproj'), '-c', 'Release', '-p:Version=' + version, '-v:q'])
 for project in projects:
     command('pack-' + project.stem, ['dotnet', 'pack', str(project), '-c', 'Release', '--no-build', '-p:Version=' + version, '-o', str(feed), '-v:q'])

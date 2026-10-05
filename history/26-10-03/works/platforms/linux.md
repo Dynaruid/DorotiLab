@@ -81,11 +81,11 @@ Qt Quick/Widgets와 display/GPU 환경별로 실제 창·입력·Orca·합성·�
 
 ## 착수 시 확인할 코드·문서
 
-- [Doroti/src/Doroti.Host.Qt](../../../../Doroti/src/Doroti.Host.Qt)
-- [Doroti/src/Doroti.Target.Linux.Qt.linux-x64](../../../../Doroti/src/Doroti.Target.Linux.Qt.linux-x64)
+- [Doroti/src/Doroti.Host.Qt](../../../../packages/platforms/qt/Doroti.Host.Qt)
+- [Doroti/src/Doroti.Target.Linux.Qt.linux-x64](../../../../packages/platforms/qt/Doroti.Target.Linux.Qt.linux-x64)
 - [Doroti/docs/platform-views/linux-qt.md](../../../../Doroti/docs/platform-views/linux-qt.md)
 - [Doroti/docs/platform-views/linux-webview.md](../../../../Doroti/docs/platform-views/linux-webview.md)
-- [Doroti/src/Doroti.Framework.Widgets/_window_linux.cs](../../../../Doroti/src/Doroti.Framework.Widgets/_window_linux.cs)
+- [Doroti/src/Doroti.Framework.Widgets/_window_linux.cs](../../../../Doroti/src/Doroti.Framework.Widgets/windowing.cs)
 - [samples/DorotiTestbedApp/linux](../../../../samples/DorotiTestbedApp/linux)
 
 기존 문서의 과거 증거와 현재 구현을 다시 확인한다. 위 경로는 조사 시작점이며 새로운 실행 검증의 근거는 아니다.

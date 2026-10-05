@@ -1,0 +1,43 @@
+<Project>
+  <PropertyGroup><DorotiProviderBootstrapTargets>$(MSBuildThisFileDirectory)../bootstrap/Doroti.Provider.Bootstrap.targets</DorotiProviderBootstrapTargets></PropertyGroup>
+  <Import Project="$(DorotiProviderBootstrapTargets)" Condition="'$(DorotiProviderSuppliesBootstrap)' != 'true'" />
+  <ItemGroup Condition="'$(DorotiTarget)' == 'Web' and '@(DorotiTargetDescriptor)' == ''">
+    <DorotiTargetDescriptor Include="Web" HostKind="BlazorWebAssembly" NativeEntryKind="Managed-Main" RuntimeIdentifier="browser-wasm" TargetFramework="net10.0" TargetPackage="Doroti.Target.Web.browser-wasm" />
+  </ItemGroup>
+  <Target Name="DorotiValidateBrowserProductContract" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <DorotiBrowserContractTargetFramework Condition="'$(DorotiBrowserContractTargetFramework)' == ''">$(TargetFramework)</DorotiBrowserContractTargetFramework>
+      <DorotiBrowserContractRuntimeIdentifier Condition="'$(DorotiBrowserContractRuntimeIdentifier)' == ''">$(RuntimeIdentifier)</DorotiBrowserContractRuntimeIdentifier>
+    </PropertyGroup>
+    <Error Code="DOROTIWEB001" Condition="'$(DorotiBrowserContractTargetFramework)' != 'net10.0'"
+           Text="Doroti Web requires TargetFramework net10.0; found '$(DorotiBrowserContractTargetFramework)'." />
+    <Error Code="DOROTIWEB002" Condition="'$(DorotiBrowserContractRuntimeIdentifier)' != 'browser-wasm'"
+           Text="Doroti Web requires RuntimeIdentifier browser-wasm; found '$(DorotiBrowserContractRuntimeIdentifier)'." />
+    <Error Code="DOROTIWEB003" Condition="'$(UsingMicrosoftNETSdkBlazorWebAssembly)' != 'true'"
+           Text="Doroti Web host projects must use Microsoft.NET.Sdk.BlazorWebAssembly." />
+    <Error Code="DOROTIWEB005" Condition="'@(DorotiJavaScriptPlugin)' != '' and '%(DorotiJavaScriptPlugin.Channel)' == ''"
+           Text="DorotiJavaScriptPlugin '%(DorotiJavaScriptPlugin.Identity)' must declare Channel metadata." />
+    <Error Code="DOROTIWEB006" Condition="'@(DorotiJavaScriptPlugin)' != '' and '%(DorotiJavaScriptPlugin.ExportName)' == ''"
+           Text="DorotiJavaScriptPlugin '%(DorotiJavaScriptPlugin.Identity)' must declare ExportName metadata." />
+  </Target>
+
+  <Target Name="DorotiValidatePublishedBrowserProduct" AfterTargets="Publish">
+    <PropertyGroup>
+      <_DorotiPublishRoot>$([System.IO.Path]::Combine('$(PublishDir)', 'wwwroot'))</_DorotiPublishRoot>
+    </PropertyGroup>
+    <ItemGroup>
+      <_DorotiPublishedDotnetLoader Include="$(_DorotiPublishRoot)\_framework\dotnet.js;$(_DorotiPublishRoot)\_framework\dotnet.??????????.js" />
+    </ItemGroup>
+    <Error Code="DOROTIWEB008"
+           Condition="!Exists('$(_DorotiPublishRoot)\index.html') or '@(_DorotiPublishedDotnetLoader)' == ''"
+           Text="Doroti Web publish is missing the WebAssembly boot contract (index.html and fingerprinted or stable dotnet loader)." />
+    <Error Code="DOROTIWEB009" Condition="!Exists('$(_DorotiPublishRoot)\_content\Doroti.Host.Web\doroti.web.js')"
+           Text="Doroti Web publish is missing the Doroti browser capability module." />
+    <Error Code="DOROTIWEB018" Condition="!Exists('$(_DorotiPublishRoot)\_content\Doroti.Host.Web\doroti.loader.js')"
+           Text="Doroti Web publish is missing the Doroti bootstrap loader module." />
+    <Error Code="DOROTIWEB019" Condition="!Exists('$(_DorotiPublishRoot)\doroti_bootstrap.js')"
+           Text="Doroti Web publish is missing the compiled application bootstrap module." />
+    <Error Code="DOROTIWEB026" Condition="!Exists('$(_DorotiPublishRoot)\_content\Doroti.Host.Web\doroti.raster.worker.js')"
+           Text="Doroti Web publish is missing the persistent offscreen worker runtime module." />
+  </Target>
+</Project>

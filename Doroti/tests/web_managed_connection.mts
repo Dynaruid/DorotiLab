@@ -35,7 +35,7 @@ async function supervisor() {
       importModuleDynamically:async(specifier,parent)=>{const next=await load(new URL(specifier.replace(/\.js$/,'.ts'),parent.identifier));await next.evaluate();return next;}});
     cache.set(url.href,module);await module.link((specifier,parent)=>load(new URL(specifier.replace(/\.js$/,'.ts'),parent.identifier)));return module;
   }
-  const module=await load(new URL('../src/Doroti.Host.Web/Web/doroti.web.managed-worker.ts',import.meta.url));await module.evaluate();
+  const module=await load(new URL('../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.managed-worker.ts',import.meta.url));await module.evaluate();
   return { api:module.namespace as any, timers, canceled, started,
     connect(token:string,port:MessagePort) { worker!.dispatchEvent(new MessageEvent('message',{data:{protocolVersion:5,kind:'doroti-managed-port',sessionToken:token,port}})); } };
 }

@@ -1,3 +1,4 @@
+// #if (isMaterial)
 using Doroti.Framework;
 using Doroti.Framework.Foundation;
 using Doroti.Framework.Painting;
@@ -5,7 +6,7 @@ using Doroti.Framework.Widgets;
 using Doroti.Hosting;
 using Doroti.Ui;
 using Locale = Doroti.Ui.Locale;
-using Material = Doroti.Framework.Material;
+using Material = Doroti.Material;
 using Size = Doroti.Ui.Size;
 using UiColor = Doroti.Ui.Color;
 
@@ -123,3 +124,47 @@ public sealed class CounterPageState : State<CounterPage>
         );
     }
 }
+
+// #else
+using Doroti.Framework;
+using Doroti.Framework.Painting;
+using Doroti.Framework.Widgets;
+using Doroti.Hosting;
+using Doroti.Ui;
+// #if (isCupertino)
+using Doroti.Cupertino;
+// #endif
+
+namespace DorotiTemplateApp;
+public static class App
+{
+    public static Func<IDorotiViewEntrypoint> Definition => () => new DorotiWidgetEntrypoint(CreateRootWidget);
+    public static DorotiViewConfiguration ViewConfiguration { get; } = new("Doroti C# App", new Size(720, 640));
+    private static Widget CreateRootWidget() =>
+// #if (isCupertino)
+        new CupertinoApp(home: new CupertinoPageScaffold(child: new CounterPage()));
+// #else
+        new WidgetsApp(color: new Color(0xff245b78), textStyle: new Doroti.Framework.Painting.TextStyle(fontSize: 20, color: new Color(0xff182b38)),
+            builder: (_, _) => new ColoredBox(color: new Color(0xfff3f7fa), child: new CounterPage()));
+// #endif
+}
+public sealed class CounterPage : StatefulWidget
+{
+    public override IState createState() => new CounterState();
+    private sealed class CounterState : State<CounterPage>
+    {
+        private int count;
+        public override Widget build(BuildContext context) => new Center(child: new Column(
+            mainAxisAlignment: Doroti.Framework.Rendering.MainAxisAlignment.center, spacing: 20,
+            children: [new Text($"Count: {count}"),
+// #if (isCupertino)
+                new CupertinoButton(child: new Text("Increment"), onPressed: () => setState(() => count++))
+// #else
+                new Semantics(button: true, label: "Increment", child: new GestureDetector(
+                    onTap: () => setState(() => count++), child: new Padding(padding: EdgeInsets.CreateAll(20), child: new Text("Increment"))))
+// #endif
+            ]));
+    }
+}
+
+// #endif

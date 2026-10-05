@@ -8,14 +8,14 @@ names remain the entry points used by C# and the render Worker.
 
 | Responsibility | Owning module |
 | --- | --- |
-| Host snapshots, input/focus, semantics projection and Worker supervision | [doroti.web.ts](../src/Doroti.Host.Web/Web/doroti.web.ts) |
-| Main-owned .NET render thread and MessagePort connection | [doroti.web.managed-worker.ts](../src/Doroti.Host.Web/Web/doroti.web.managed-worker.ts) |
-| Correlated requests, admission, deadlines and caller cancellation | [doroti.web.requests.ts](../src/Doroti.Host.Web/Web/doroti.web.requests.ts) |
-| Per-frame raster/capture ownership before transfer | [doroti.web.platform-frames.ts](../src/Doroti.Host.Web/Web/doroti.web.platform-frames.ts) |
-| Owner-local DOM composition and iframe commands | [doroti.web.composition.ts](../src/Doroti.Host.Web/Web/doroti.web.composition.ts) |
-| Render scheduling and GPU shutdown | [doroti.raster.worker.ts](../src/Doroti.Host.Web/Web/doroti.raster.worker.ts) |
-| Source frame admission/transfer and GPU consumer lifetime | [doroti.web.textures.ts](../src/Doroti.Host.Web/Web/doroti.web.textures.ts), [doroti.web.texture-worker.ts](../src/Doroti.Host.Web/Web/doroti.web.texture-worker.ts) |
-| File grants, navigation and drop across the thread boundary | [doroti.web.services.ts](../src/Doroti.Host.Web/Web/doroti.web.services.ts) and its service modules |
+| Host snapshots, input/focus, semantics projection and Worker supervision | [doroti.web.ts](../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.ts) |
+| Main-owned .NET render thread and MessagePort connection | [doroti.web.managed-worker.ts](../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.managed-worker.ts) |
+| Correlated requests, admission, deadlines and caller cancellation | [doroti.web.requests.ts](../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.requests.ts) |
+| Per-frame raster/capture ownership before transfer | [doroti.web.platform-frames.ts](../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.platform-frames.ts) |
+| Owner-local DOM composition and iframe commands | [doroti.web.composition.ts](../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.composition.ts) |
+| Render scheduling and GPU shutdown | [doroti.raster.worker.ts](../../packages/platforms/web/Doroti.Host.Web/Web/doroti.raster.worker.ts) |
+| Source frame admission/transfer and GPU consumer lifetime | [doroti.web.textures.ts](../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.textures.ts), [doroti.web.texture-worker.ts](../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.texture-worker.ts) |
+| File grants, navigation and drop across the thread boundary | [doroti.web.services.ts](../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.services.ts) and its service modules |
 
 ## Request ownership
 

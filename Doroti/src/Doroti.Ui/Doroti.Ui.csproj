@@ -6,13 +6,10 @@
   </PropertyGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Doroti.Tests" />
+    <InternalsVisibleTo Include="Doroti.Cupertino.Tests" />
     <InternalsVisibleTo Include="Doroti.Testing" />
     <InternalsVisibleTo Include="Doroti.Framework.Widgets" />
     <InternalsVisibleTo Include="Doroti.Hosting" />
-    <InternalsVisibleTo Include="Doroti.Host.Web" />
-    <InternalsVisibleTo Include="Doroti.Host.Maui" />
-    <InternalsVisibleTo Include="Doroti.Host.WindowsAppSdk" />
-    <InternalsVisibleTo Include="Doroti.Host.Qt" />
     <InternalsVisibleTo Include="Doroti.Skia.Rendering" />
     <InternalsVisibleTo Include="Doroti.Skia.RuntimeEffects" />
     <InternalsVisibleTo Include="Doroti.Validation.RuntimeShaderContract" />

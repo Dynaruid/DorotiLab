@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk" TreatAsLocalProperty="Version;VersionPrefix;VersionSuffix;PackageVersion">
+  <Import Project="Version.props" />
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>Doroti.Material</AssemblyName>
+    <PackageId>Doroti.Material</PackageId>
+    <IsDorotiProduct>true</IsDorotiProduct>
+    <DorotiProjectRole>Design</DorotiProjectRole>
+    <IsAotCompatible>true</IsAotCompatible>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <NoWarn>$(NoWarn);CS0219;CS8524;CS8846</NoWarn>
+    <Description>Independent Material design widgets for Doroti.</Description>
+    <PackageTags>doroti;ui;material</PackageTags>
+    <DorotiPackageReadmeSource>$(MSBuildProjectDirectory)/README.md</DorotiPackageReadmeSource>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="src/**/*.cs" />
+    <ProjectReference Include="../../Doroti/src/Doroti.Runtime/Doroti.Runtime.csproj" />
+    <ProjectReference Include="../../Doroti/src/Doroti.Ui/Doroti.Ui.csproj" />
+    <ProjectReference Include="../../Doroti/src/Doroti.Framework.Foundation/Doroti.Framework.Foundation.csproj" />
+    <ProjectReference Include="../../Doroti/src/Doroti.Framework.Scheduler/Doroti.Framework.Scheduler.csproj" />
+    <ProjectReference Include="../../Doroti/src/Doroti.Framework.Services/Doroti.Framework.Services.csproj" />
+    <ProjectReference Include="../../Doroti/src/Doroti.Framework.Physics/Doroti.Framework.Physics.csproj" />
+    <ProjectReference Include="../../Doroti/src/Doroti.Framework.Animation/Doroti.Framework.Animation.csproj" />
+    <ProjectReference Include="../../Doroti/src/Doroti.Framework.Gestures/Doroti.Framework.Gestures.csproj" />
+    <ProjectReference Include="../../Doroti/src/Doroti.Framework.Painting/Doroti.Framework.Painting.csproj" />
+    <ProjectReference Include="../../Doroti/src/Doroti.Framework.Semantics/Doroti.Framework.Semantics.csproj" />
+    <ProjectReference Include="../../Doroti/src/Doroti.Framework.Rendering/Doroti.Framework.Rendering.csproj" />
+    <ProjectReference Include="../../Doroti/src/Doroti.Framework.Widgets/Doroti.Framework.Widgets.csproj" />
+    <ProjectReference Include="../Doroti.Cupertino/Doroti.Cupertino.csproj" />
+    <PackageReference Include="MaterialColorUtilities" />
+    <EmbeddedResource Include="assets/shaders/ink_sparkle.sksl" LogicalName="Doroti.Material.Shaders.ink_sparkle.sksl" />
+  </ItemGroup>
+  <Target Name="ApplyDesignDependencyRanges" AfterTargets="_GetProjectReferenceVersions">
+    <ItemGroup>
+      <_ProjectReferencesWithVersions Update="@(_ProjectReferencesWithVersions)" Condition="'%(Filename)' != 'Doroti.Cupertino'">
+        <ProjectVersion>$(DorotiSupportedCoreRange)</ProjectVersion>
+      </_ProjectReferencesWithVersions>
+      <_ProjectReferencesWithVersions Update="@(_ProjectReferencesWithVersions)" Condition="'%(Filename)' == 'Doroti.Cupertino'">
+        <ProjectVersion>[1.0.0-alpha.1,2.0.0)</ProjectVersion>
+      </_ProjectReferencesWithVersions>
+    </ItemGroup>
+  </Target>
+</Project>

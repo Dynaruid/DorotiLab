@@ -22,6 +22,7 @@ internal static class MultiWindowProbe
         await main.Window.SetTitleAsync("Doroti first window", ct);
         await main.Window.SetSizeAsync(new Size(470, 650), ct);
         await second.SetSizeAsync(new Size(580, 620), ct);
+        if (Environment.GetEnvironmentVariable("DOROTI_SAMPLE") == "shared-tree") await Task.Delay(750, ct);
         var before = new { first = new[] { main.Window.State.ClientSize.width, main.Window.State.ClientSize.height },
             second = new[] { second.State.ClientSize.width, second.State.ClientSize.height },
             firstScale = main.Window.State.Scale, secondScale = second.State.Scale };
@@ -29,6 +30,7 @@ internal static class MultiWindowProbe
         if (second.State.Closed || main.Windows.GetWindows().Count != 1) throw new Exception("Closing first window closed its survivor.");
         await second.SetTitleAsync("Doroti survivor", ct);
         await second.SetSizeAsync(new Size(600, 640), ct);
+        if (Environment.GetEnvironmentVariable("DOROTI_SAMPLE") == "shared-tree") await Task.Delay(750, ct);
         await second.CloseAsync(ct);
         if (main.Windows.GetWindows().Count != 0) throw new Exception("Window registry was not drained.");
         if (main.Windows.LifetimePolicy == WindowLifetimePolicy.Explicit && !await main.Windows.RequestExitAsync(ct))

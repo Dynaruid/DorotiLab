@@ -233,6 +233,8 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
 
     public virtual void compositeFrame()
     {
+        using var invocationScope = _view.EnterInvocationScope();
+        using var submissionScope = _view.EnterSceneSubmissionScope();
         if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
             FlutterTimeline.startSync("COMPOSITING");

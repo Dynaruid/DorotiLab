@@ -1,0 +1,4 @@
+<Project>
+  <Import Project="../Doroti/Directory.Packages.props" />
+  <ItemGroup><PackageVersion Include="MaterialColorUtilities" Version="0.3.0" /></ItemGroup>
+</Project>

@@ -1,0 +1,1718 @@
+ M Doroti/Directory.Build.props
+ M Doroti/Directory.Build.targets
+ M Doroti/Directory.Packages.props
+ M Doroti/Doroti.Editor.slnx
+ M Doroti/Doroti.Product.slnx
+ M Doroti/Doroti.slnx
+ M Doroti/docs/validation/2026-10-03-android-hot-reload.md
+ M Doroti/docs/validation/2026-10-03-apple-platform-gap-followup.json
+ M Doroti/docs/validation/2026-10-03-windows-maui-basic-connections.md
+ M Doroti/docs/validation/2026-10-04-full-review.json
+ M Doroti/docs/web-host-architecture.md
+ D Doroti/eng/build-hwnd-exact-cpp-native.ps1
+ M Doroti/eng/doroti.ps1
+ M Doroti/eng/generate-font-fallbacks.py
+ M Doroti/eng/release-candidate.py
+ M Doroti/eng/validate.py
+ M Doroti/src/Doroti.App.Sdk/Doroti.App.Sdk.csproj
+ M Doroti/src/Doroti.App.Sdk/Sdk/Sdk.targets
+ M Doroti/src/Doroti.Desktop.Widgets/DesktopWindowScope.cs
+ M Doroti/src/Doroti.Desktop/DesktopApplicationBuilder.cs
+ M Doroti/src/Doroti.Desktop/DorotiWindowController.cs
+ M Doroti/src/Doroti.Desktop/DorotiWindowManager.cs
+ M Doroti/src/Doroti.Desktop/WindowHost.cs
+ M Doroti/src/Doroti.Desktop/WindowOptions.cs
+ D Doroti/src/Doroti.Framework.Cupertino/Doroti.Framework.Cupertino.csproj
+ D Doroti/src/Doroti.Framework.Cupertino/GlobalUsings.cs
+ D Doroti/src/Doroti.Framework.Cupertino/activity_indicator.cs
+ D Doroti/src/Doroti.Framework.Cupertino/adaptive_text_selection_toolbar.cs
+ D Doroti/src/Doroti.Framework.Cupertino/app.cs
+ D Doroti/src/Doroti.Framework.Cupertino/bottom_tab_bar.cs
+ D Doroti/src/Doroti.Framework.Cupertino/button.cs
+ D Doroti/src/Doroti.Framework.Cupertino/checkbox.cs
+ D Doroti/src/Doroti.Framework.Cupertino/colors.cs
+ D Doroti/src/Doroti.Framework.Cupertino/constants.cs
+ D Doroti/src/Doroti.Framework.Cupertino/context_menu.cs
+ D Doroti/src/Doroti.Framework.Cupertino/context_menu_action.cs
+ D Doroti/src/Doroti.Framework.Cupertino/cupertino_focus_halo.cs
+ D Doroti/src/Doroti.Framework.Cupertino/date_picker.cs
+ D Doroti/src/Doroti.Framework.Cupertino/debug.cs
+ D Doroti/src/Doroti.Framework.Cupertino/desktop_text_selection.cs
+ D Doroti/src/Doroti.Framework.Cupertino/desktop_text_selection_toolbar.cs
+ D Doroti/src/Doroti.Framework.Cupertino/desktop_text_selection_toolbar_button.cs
+ D Doroti/src/Doroti.Framework.Cupertino/dialog.cs
+ D Doroti/src/Doroti.Framework.Cupertino/expansion_tile.cs
+ D Doroti/src/Doroti.Framework.Cupertino/form_row.cs
+ D Doroti/src/Doroti.Framework.Cupertino/form_section.cs
+ D Doroti/src/Doroti.Framework.Cupertino/icon_theme_data.cs
+ D Doroti/src/Doroti.Framework.Cupertino/icons.cs
+ D Doroti/src/Doroti.Framework.Cupertino/interface_level.cs
+ D Doroti/src/Doroti.Framework.Cupertino/list_section.cs
+ D Doroti/src/Doroti.Framework.Cupertino/list_tile.cs
+ D Doroti/src/Doroti.Framework.Cupertino/localizations.cs
+ D Doroti/src/Doroti.Framework.Cupertino/magnifier.cs
+ D Doroti/src/Doroti.Framework.Cupertino/menu_anchor.cs
+ D Doroti/src/Doroti.Framework.Cupertino/nav_bar.cs
+ D Doroti/src/Doroti.Framework.Cupertino/page_scaffold.cs
+ D Doroti/src/Doroti.Framework.Cupertino/picker.cs
+ D Doroti/src/Doroti.Framework.Cupertino/radio.cs
+ D Doroti/src/Doroti.Framework.Cupertino/refresh.cs
+ D Doroti/src/Doroti.Framework.Cupertino/route.cs
+ D Doroti/src/Doroti.Framework.Cupertino/scrollbar.cs
+ D Doroti/src/Doroti.Framework.Cupertino/search_field.cs
+ D Doroti/src/Doroti.Framework.Cupertino/segmented_control.cs
+ D Doroti/src/Doroti.Framework.Cupertino/sheet.cs
+ D Doroti/src/Doroti.Framework.Cupertino/slider.cs
+ D Doroti/src/Doroti.Framework.Cupertino/sliding_segmented_control.cs
+ D Doroti/src/Doroti.Framework.Cupertino/spell_check_suggestions_toolbar.cs
+ D Doroti/src/Doroti.Framework.Cupertino/switch.cs
+ D Doroti/src/Doroti.Framework.Cupertino/tab_scaffold.cs
+ D Doroti/src/Doroti.Framework.Cupertino/tab_view.cs
+ D Doroti/src/Doroti.Framework.Cupertino/text_field.cs
+ D Doroti/src/Doroti.Framework.Cupertino/text_form_field_row.cs
+ D Doroti/src/Doroti.Framework.Cupertino/text_selection.cs
+ D Doroti/src/Doroti.Framework.Cupertino/text_selection_toolbar.cs
+ D Doroti/src/Doroti.Framework.Cupertino/text_selection_toolbar_button.cs
+ D Doroti/src/Doroti.Framework.Cupertino/text_theme.cs
+ D Doroti/src/Doroti.Framework.Cupertino/theme.cs
+ D Doroti/src/Doroti.Framework.Cupertino/thumb_painter.cs
+ M Doroti/src/Doroti.Framework.Foundation/_features.cs
+ D Doroti/src/Doroti.Framework.Material/Doroti.Framework.Material.csproj
+ D Doroti/src/Doroti.Framework.Material/GlobalUsings.cs
+ D Doroti/src/Doroti.Framework.Material/ScaffoldSlotMediaQuery.cs
+ D Doroti/src/Doroti.Framework.Material/Shaders/ink_sparkle.sksl
+ D Doroti/src/Doroti.Framework.Material/about.cs
+ D Doroti/src/Doroti.Framework.Material/action_buttons.cs
+ D Doroti/src/Doroti.Framework.Material/action_chip.cs
+ D Doroti/src/Doroti.Framework.Material/action_icons_theme.cs
+ D Doroti/src/Doroti.Framework.Material/adaptive_text_selection_toolbar.cs
+ D Doroti/src/Doroti.Framework.Material/add_event.cs
+ D Doroti/src/Doroti.Framework.Material/animated_icons.cs
+ D Doroti/src/Doroti.Framework.Material/animated_icons_data.cs
+ D Doroti/src/Doroti.Framework.Material/app.cs
+ D Doroti/src/Doroti.Framework.Material/app_bar.cs
+ D Doroti/src/Doroti.Framework.Material/app_bar_theme.cs
+ D Doroti/src/Doroti.Framework.Material/arc.cs
+ D Doroti/src/Doroti.Framework.Material/arrow_menu.cs
+ D Doroti/src/Doroti.Framework.Material/autocomplete.cs
+ D Doroti/src/Doroti.Framework.Material/badge.cs
+ D Doroti/src/Doroti.Framework.Material/badge_theme.cs
+ D Doroti/src/Doroti.Framework.Material/banner.cs
+ D Doroti/src/Doroti.Framework.Material/banner_theme.cs
+ D Doroti/src/Doroti.Framework.Material/bottom_app_bar.cs
+ D Doroti/src/Doroti.Framework.Material/bottom_app_bar_theme.cs
+ D Doroti/src/Doroti.Framework.Material/bottom_navigation_bar.cs
+ D Doroti/src/Doroti.Framework.Material/bottom_navigation_bar_theme.cs
+ D Doroti/src/Doroti.Framework.Material/bottom_sheet.cs
+ D Doroti/src/Doroti.Framework.Material/bottom_sheet_theme.cs
+ D Doroti/src/Doroti.Framework.Material/button.cs
+ D Doroti/src/Doroti.Framework.Material/button_bar.cs
+ D Doroti/src/Doroti.Framework.Material/button_bar_theme.cs
+ D Doroti/src/Doroti.Framework.Material/button_style.cs
+ D Doroti/src/Doroti.Framework.Material/button_style_button.cs
+ D Doroti/src/Doroti.Framework.Material/button_theme.cs
+ D Doroti/src/Doroti.Framework.Material/calendar_date_picker.cs
+ D Doroti/src/Doroti.Framework.Material/card.cs
+ D Doroti/src/Doroti.Framework.Material/card_theme.cs
+ D Doroti/src/Doroti.Framework.Material/carousel.cs
+ D Doroti/src/Doroti.Framework.Material/carousel_theme.cs
+ D Doroti/src/Doroti.Framework.Material/checkbox.cs
+ D Doroti/src/Doroti.Framework.Material/checkbox_list_tile.cs
+ D Doroti/src/Doroti.Framework.Material/checkbox_theme.cs
+ D Doroti/src/Doroti.Framework.Material/chip.cs
+ D Doroti/src/Doroti.Framework.Material/chip_theme.cs
+ D Doroti/src/Doroti.Framework.Material/choice_chip.cs
+ D Doroti/src/Doroti.Framework.Material/circle_avatar.cs
+ D Doroti/src/Doroti.Framework.Material/close_menu.cs
+ D Doroti/src/Doroti.Framework.Material/color_scheme.cs
+ D Doroti/src/Doroti.Framework.Material/colors.cs
+ D Doroti/src/Doroti.Framework.Material/constants.cs
+ D Doroti/src/Doroti.Framework.Material/curves.cs
+ D Doroti/src/Doroti.Framework.Material/data_table.cs
+ D Doroti/src/Doroti.Framework.Material/data_table_source.cs
+ D Doroti/src/Doroti.Framework.Material/data_table_theme.cs
+ D Doroti/src/Doroti.Framework.Material/date.cs
+ D Doroti/src/Doroti.Framework.Material/date_picker.cs
+ D Doroti/src/Doroti.Framework.Material/date_picker_theme.cs
+ D Doroti/src/Doroti.Framework.Material/debug.cs
+ D Doroti/src/Doroti.Framework.Material/desktop_text_selection.cs
+ D Doroti/src/Doroti.Framework.Material/desktop_text_selection_toolbar.cs
+ D Doroti/src/Doroti.Framework.Material/desktop_text_selection_toolbar_button.cs
+ D Doroti/src/Doroti.Framework.Material/dialog.cs
+ D Doroti/src/Doroti.Framework.Material/dialog_theme.cs
+ D Doroti/src/Doroti.Framework.Material/divider.cs
+ D Doroti/src/Doroti.Framework.Material/divider_theme.cs
+ D Doroti/src/Doroti.Framework.Material/drawer.cs
+ D Doroti/src/Doroti.Framework.Material/drawer_header.cs
+ D Doroti/src/Doroti.Framework.Material/drawer_theme.cs
+ D Doroti/src/Doroti.Framework.Material/dropdown.cs
+ D Doroti/src/Doroti.Framework.Material/dropdown_menu.cs
+ D Doroti/src/Doroti.Framework.Material/dropdown_menu_form_field.cs
+ D Doroti/src/Doroti.Framework.Material/dropdown_menu_theme.cs
+ D Doroti/src/Doroti.Framework.Material/elevated_button.cs
+ D Doroti/src/Doroti.Framework.Material/elevated_button_theme.cs
+ D Doroti/src/Doroti.Framework.Material/elevation_overlay.cs
+ D Doroti/src/Doroti.Framework.Material/ellipsis_search.cs
+ D Doroti/src/Doroti.Framework.Material/event_add.cs
+ D Doroti/src/Doroti.Framework.Material/expand_icon.cs
+ D Doroti/src/Doroti.Framework.Material/expansion_panel.cs
+ D Doroti/src/Doroti.Framework.Material/expansion_tile.cs
+ D Doroti/src/Doroti.Framework.Material/expansion_tile_theme.cs
+ D Doroti/src/Doroti.Framework.Material/filled_button.cs
+ D Doroti/src/Doroti.Framework.Material/filled_button_theme.cs
+ D Doroti/src/Doroti.Framework.Material/filter_chip.cs
+ D Doroti/src/Doroti.Framework.Material/flexible_space_bar.cs
+ D Doroti/src/Doroti.Framework.Material/floating_action_button.cs
+ D Doroti/src/Doroti.Framework.Material/floating_action_button_location.cs
+ D Doroti/src/Doroti.Framework.Material/floating_action_button_theme.cs
+ D Doroti/src/Doroti.Framework.Material/grid_tile.cs
+ D Doroti/src/Doroti.Framework.Material/grid_tile_bar.cs
+ D Doroti/src/Doroti.Framework.Material/home_menu.cs
+ D Doroti/src/Doroti.Framework.Material/icon_button.cs
+ D Doroti/src/Doroti.Framework.Material/icon_button_theme.cs
+ D Doroti/src/Doroti.Framework.Material/icons.cs
+ D Doroti/src/Doroti.Framework.Material/ink_decoration.cs
+ D Doroti/src/Doroti.Framework.Material/ink_highlight.cs
+ D Doroti/src/Doroti.Framework.Material/ink_ripple.cs
+ D Doroti/src/Doroti.Framework.Material/ink_sparkle.cs
+ D Doroti/src/Doroti.Framework.Material/ink_splash.cs
+ D Doroti/src/Doroti.Framework.Material/ink_well.cs
+ D Doroti/src/Doroti.Framework.Material/input_border.cs
+ D Doroti/src/Doroti.Framework.Material/input_chip.cs
+ D Doroti/src/Doroti.Framework.Material/input_date_picker_form_field.cs
+ D Doroti/src/Doroti.Framework.Material/input_decorator.cs
+ D Doroti/src/Doroti.Framework.Material/list_tile.cs
+ D Doroti/src/Doroti.Framework.Material/list_tile_theme.cs
+ D Doroti/src/Doroti.Framework.Material/list_view.cs
+ D Doroti/src/Doroti.Framework.Material/magnifier.cs
+ D Doroti/src/Doroti.Framework.Material/material.cs
+ D Doroti/src/Doroti.Framework.Material/material_button.cs
+ D Doroti/src/Doroti.Framework.Material/material_localizations.cs
+ D Doroti/src/Doroti.Framework.Material/material_state.cs
+ D Doroti/src/Doroti.Framework.Material/material_state_mappers.cs
+ D Doroti/src/Doroti.Framework.Material/material_state_mixin.cs
+ D Doroti/src/Doroti.Framework.Material/menu_anchor.cs
+ D Doroti/src/Doroti.Framework.Material/menu_arrow.cs
+ D Doroti/src/Doroti.Framework.Material/menu_bar_theme.cs
+ D Doroti/src/Doroti.Framework.Material/menu_button_theme.cs
+ D Doroti/src/Doroti.Framework.Material/menu_close.cs
+ D Doroti/src/Doroti.Framework.Material/menu_home.cs
+ D Doroti/src/Doroti.Framework.Material/menu_style.cs
+ D Doroti/src/Doroti.Framework.Material/menu_theme.cs
+ D Doroti/src/Doroti.Framework.Material/mergeable_material.cs
+ D Doroti/src/Doroti.Framework.Material/motion.cs
+ D Doroti/src/Doroti.Framework.Material/navigation_bar.cs
+ D Doroti/src/Doroti.Framework.Material/navigation_bar_theme.cs
+ D Doroti/src/Doroti.Framework.Material/navigation_drawer.cs
+ D Doroti/src/Doroti.Framework.Material/navigation_drawer_theme.cs
+ D Doroti/src/Doroti.Framework.Material/navigation_rail.cs
+ D Doroti/src/Doroti.Framework.Material/navigation_rail_theme.cs
+ D Doroti/src/Doroti.Framework.Material/no_splash.cs
+ D Doroti/src/Doroti.Framework.Material/outlined_button.cs
+ D Doroti/src/Doroti.Framework.Material/outlined_button_theme.cs
+ D Doroti/src/Doroti.Framework.Material/page.cs
+ D Doroti/src/Doroti.Framework.Material/page_transitions_theme.cs
+ D Doroti/src/Doroti.Framework.Material/paginated_data_table.cs
+ D Doroti/src/Doroti.Framework.Material/pause_play.cs
+ D Doroti/src/Doroti.Framework.Material/play_pause.cs
+ D Doroti/src/Doroti.Framework.Material/popup_menu.cs
+ D Doroti/src/Doroti.Framework.Material/popup_menu_theme.cs
+ D Doroti/src/Doroti.Framework.Material/predictive_back_page_transitions_builder.cs
+ D Doroti/src/Doroti.Framework.Material/progress_indicator.cs
+ D Doroti/src/Doroti.Framework.Material/progress_indicator_theme.cs
+ D Doroti/src/Doroti.Framework.Material/radio.cs
+ D Doroti/src/Doroti.Framework.Material/radio_list_tile.cs
+ D Doroti/src/Doroti.Framework.Material/radio_theme.cs
+ D Doroti/src/Doroti.Framework.Material/range_slider.cs
+ D Doroti/src/Doroti.Framework.Material/range_slider_parts.cs
+ D Doroti/src/Doroti.Framework.Material/refresh_indicator.cs
+ D Doroti/src/Doroti.Framework.Material/reorderable_list.cs
+ D Doroti/src/Doroti.Framework.Material/scaffold.cs
+ D Doroti/src/Doroti.Framework.Material/scrollbar.cs
+ D Doroti/src/Doroti.Framework.Material/scrollbar_theme.cs
+ D Doroti/src/Doroti.Framework.Material/search.cs
+ D Doroti/src/Doroti.Framework.Material/search_anchor.cs
+ D Doroti/src/Doroti.Framework.Material/search_bar_theme.cs
+ D Doroti/src/Doroti.Framework.Material/search_ellipsis.cs
+ D Doroti/src/Doroti.Framework.Material/search_view_theme.cs
+ D Doroti/src/Doroti.Framework.Material/segmented_button.cs
+ D Doroti/src/Doroti.Framework.Material/segmented_button_theme.cs
+ D Doroti/src/Doroti.Framework.Material/selectable_text.cs
+ D Doroti/src/Doroti.Framework.Material/selection_area.cs
+ D Doroti/src/Doroti.Framework.Material/shadows.cs
+ D Doroti/src/Doroti.Framework.Material/slider.cs
+ D Doroti/src/Doroti.Framework.Material/slider_parts.cs
+ D Doroti/src/Doroti.Framework.Material/slider_theme.cs
+ D Doroti/src/Doroti.Framework.Material/slider_value_indicator_shape.cs
+ D Doroti/src/Doroti.Framework.Material/snack_bar.cs
+ D Doroti/src/Doroti.Framework.Material/snack_bar_theme.cs
+ D Doroti/src/Doroti.Framework.Material/spell_check_suggestions_toolbar.cs
+ D Doroti/src/Doroti.Framework.Material/spell_check_suggestions_toolbar_layout_delegate.cs
+ D Doroti/src/Doroti.Framework.Material/stepper.cs
+ D Doroti/src/Doroti.Framework.Material/switch.cs
+ D Doroti/src/Doroti.Framework.Material/switch_list_tile.cs
+ D Doroti/src/Doroti.Framework.Material/switch_theme.cs
+ D Doroti/src/Doroti.Framework.Material/tab_bar_theme.cs
+ D Doroti/src/Doroti.Framework.Material/tab_controller.cs
+ D Doroti/src/Doroti.Framework.Material/tab_indicator.cs
+ D Doroti/src/Doroti.Framework.Material/tabs.cs
+ D Doroti/src/Doroti.Framework.Material/text_button.cs
+ D Doroti/src/Doroti.Framework.Material/text_button_theme.cs
+ D Doroti/src/Doroti.Framework.Material/text_field.cs
+ D Doroti/src/Doroti.Framework.Material/text_form_field.cs
+ D Doroti/src/Doroti.Framework.Material/text_selection.cs
+ D Doroti/src/Doroti.Framework.Material/text_selection_theme.cs
+ D Doroti/src/Doroti.Framework.Material/text_selection_toolbar.cs
+ D Doroti/src/Doroti.Framework.Material/text_selection_toolbar_text_button.cs
+ D Doroti/src/Doroti.Framework.Material/text_theme.cs
+ D Doroti/src/Doroti.Framework.Material/theme.cs
+ D Doroti/src/Doroti.Framework.Material/theme_data.cs
+ D Doroti/src/Doroti.Framework.Material/time.cs
+ D Doroti/src/Doroti.Framework.Material/time_picker.cs
+ D Doroti/src/Doroti.Framework.Material/time_picker_theme.cs
+ D Doroti/src/Doroti.Framework.Material/toggle_buttons.cs
+ D Doroti/src/Doroti.Framework.Material/toggle_buttons_theme.cs
+ D Doroti/src/Doroti.Framework.Material/tooltip.cs
+ D Doroti/src/Doroti.Framework.Material/tooltip_theme.cs
+ D Doroti/src/Doroti.Framework.Material/tooltip_visibility.cs
+ D Doroti/src/Doroti.Framework.Material/typography.cs
+ D Doroti/src/Doroti.Framework.Material/user_accounts_drawer_header.cs
+ D Doroti/src/Doroti.Framework.Material/view_list.cs
+ M Doroti/src/Doroti.Framework.Painting/image_cache.cs
+ M Doroti/src/Doroti.Framework.Rendering/binding.cs
+ M Doroti/src/Doroti.Framework.Rendering/object.cs
+ M Doroti/src/Doroti.Framework.Rendering/view.cs
+ M Doroti/src/Doroti.Framework.Services/binding.cs
+ M Doroti/src/Doroti.Framework.Services/clipboard.cs
+ M Doroti/src/Doroti.Framework.Services/haptic_feedback.cs
+ M Doroti/src/Doroti.Framework.Services/system_sound.cs
+ M Doroti/src/Doroti.Framework.Services/text_input.cs
+ M Doroti/src/Doroti.Framework.Widgets/Doroti.Framework.Widgets.csproj
+ M Doroti/src/Doroti.Framework.Widgets/DorotiWidgetEntrypoint.cs
+ D Doroti/src/Doroti.Framework.Widgets/_window.cs
+ D Doroti/src/Doroti.Framework.Widgets/_window_io.cs
+ D Doroti/src/Doroti.Framework.Widgets/_window_linux.cs
+ D Doroti/src/Doroti.Framework.Widgets/_window_macos.cs
+ D Doroti/src/Doroti.Framework.Widgets/_window_web.cs
+ D Doroti/src/Doroti.Framework.Widgets/_window_win32.cs
+ M Doroti/src/Doroti.Framework.Widgets/binding.cs
+ M Doroti/src/Doroti.Framework.Widgets/dialog.cs
+ M Doroti/src/Doroti.Framework.Widgets/focus_manager.cs
+ M Doroti/src/Doroti.Framework.Widgets/framework.cs
+ M Doroti/src/Doroti.Framework.Widgets/platform_menu_bar.cs
+ M Doroti/src/Doroti.Framework.Widgets/raw_tooltip.cs
+ M Doroti/src/Doroti.Framework.Widgets/stretch_effect.cs
+ M Doroti/src/Doroti.Framework.Widgets/view.cs
+ M Doroti/src/Doroti.Framework.Widgets/widget_state_mappers.cs
+ D Doroti/src/Doroti.Host.Maui/AndroidFilePicker.cs
+ D Doroti/src/Doroti.Host.Maui/AndroidPlatformBackdropSourceView.cs
+ D Doroti/src/Doroti.Host.Maui/AndroidPlatformBackdropView.cs
+ D Doroti/src/Doroti.Host.Maui/AndroidPlatformViewHost.cs
+ D Doroti/src/Doroti.Host.Maui/AndroidPointerMapping.cs
+ D Doroti/src/Doroti.Host.Maui/AndroidPointerSubscription.cs
+ D Doroti/src/Doroti.Host.Maui/AndroidSharedRaster.cs
+ D Doroti/src/Doroti.Host.Maui/AndroidSurfaceTextureEntry.cs
+ D Doroti/src/Doroti.Host.Maui/AndroidTrackpadGesture.cs
+ D Doroti/src/Doroti.Host.Maui/AndroidWebViewSession.cs
+ D Doroti/src/Doroti.Host.Maui/AppKitDesktopWindowHost.cs
+ D Doroti/src/Doroti.Host.Maui/AppKitDesktopWindowPolicy.cs
+ D Doroti/src/Doroti.Host.Maui/AppKitFilePicker.cs
+ D Doroti/src/Doroti.Host.Maui/AppKitOsDrop.cs
+ D Doroti/src/Doroti.Host.Maui/AppKitPlatformBlurView.cs
+ D Doroti/src/Doroti.Host.Maui/AppKitPlatformRasterSurface.cs
+ D Doroti/src/Doroti.Host.Maui/AppKitPlatformViewFactory.cs
+ D Doroti/src/Doroti.Host.Maui/AppKitPlatformViewHost.cs
+ D Doroti/src/Doroti.Host.Maui/AppKitWindowBackdrop.cs
+ D Doroti/src/Doroti.Host.Maui/AppleGpuEffects.cs
+ D Doroti/src/Doroti.Host.Maui/AppleGpuTextureFrames.cs
+ D Doroti/src/Doroti.Host.Maui/AppleMetalPresentation.cs
+ D Doroti/src/Doroti.Host.Maui/AppleReadFile.cs
+ D Doroti/src/Doroti.Host.Maui/AppleSemanticsState.cs
+ D Doroti/src/Doroti.Host.Maui/AppleWebViewContent.cs
+ D Doroti/src/Doroti.Host.Maui/AppleWebViewSession.cs
+ D Doroti/src/Doroti.Host.Maui/AppleWebViewUi.cs
+ D Doroti/src/Doroti.Host.Maui/Doroti.Host.Maui.csproj
+ D Doroti/src/Doroti.Host.Maui/DorotiAndroidVulkanViewHandler.cs
+ D Doroti/src/Doroti.Host.Maui/DorotiGraphiteView.cs
+ D Doroti/src/Doroti.Host.Maui/DorotiIosMetalViewHandler.cs
+ D Doroti/src/Doroti.Host.Maui/DorotiMacCatalystSceneDelegate.cs
+ D Doroti/src/Doroti.Host.Maui/DorotiMacCatalystSkglViewHandler.cs
+ D Doroti/src/Doroti.Host.Maui/DorotiMacOSLayoutHandler.cs
+ D Doroti/src/Doroti.Host.Maui/DorotiMacOSMetalSurface.cs
+ D Doroti/src/Doroti.Host.Maui/DorotiMacOSMetalSurfaceHandler.cs
+ D Doroti/src/Doroti.Host.Maui/DorotiMacOSMetalView.cs
+ D Doroti/src/Doroti.Host.Maui/DorotiMauiApplication.cs
+ D Doroti/src/Doroti.Host.Maui/DorotiMauiPlatformApplications.cs
+ D Doroti/src/Doroti.Host.Maui/DorotiMauiSceneDelegate.cs
+ D Doroti/src/Doroti.Host.Maui/DorotiMauiSurface.cs
+ D Doroti/src/Doroti.Host.Maui/DorotiSkiaView.cs
+ D Doroti/src/Doroti.Host.Maui/DorotiUIKitGraphiteViewHandler.cs
+ D Doroti/src/Doroti.Host.Maui/DorotiUIKitTextInput.cs
+ D Doroti/src/Doroti.Host.Maui/DorotiWindowsDxgiSurface.cs
+ D Doroti/src/Doroti.Host.Maui/IosFrameLifetime.cs
+ D Doroti/src/Doroti.Host.Maui/IosFrameLoopDiagnostics.cs
+ D Doroti/src/Doroti.Host.Maui/MacCatalystDesktopWindowHost.cs
+ D Doroti/src/Doroti.Host.Maui/MacCatalystDesktopWindowPolicy.cs
+ D Doroti/src/Doroti.Host.Maui/MacOSKeyMap.cs
+ D Doroti/src/Doroti.Host.Maui/MauiAndroidSemanticsBridge.cs
+ D Doroti/src/Doroti.Host.Maui/MauiApplicationNavigation.cs
+ D Doroti/src/Doroti.Host.Maui/MauiFrameCallbackQueue.cs
+ D Doroti/src/Doroti.Host.Maui/MauiFrameWakeQueue.cs
+ D Doroti/src/Doroti.Host.Maui/MauiFrameworkHost.cs
+ D Doroti/src/Doroti.Host.Maui/MauiHapticFeedback.cs
+ D Doroti/src/Doroti.Host.Maui/MauiHostAdapter.cs
+ D Doroti/src/Doroti.Host.Maui/MauiHostContracts.cs
+ D Doroti/src/Doroti.Host.Maui/MauiKeyMap.cs
+ D Doroti/src/Doroti.Host.Maui/MauiKeyboardState.cs
+ D Doroti/src/Doroti.Host.Maui/MauiNativeInput.cs
+ D Doroti/src/Doroti.Host.Maui/MauiSemanticsBridge.cs
+ D Doroti/src/Doroti.Host.Maui/MauiSemanticsLayout.Android.cs
+ D Doroti/src/Doroti.Host.Maui/MauiSemanticsLayout.Apple.cs
+ D Doroti/src/Doroti.Host.Maui/MauiSemanticsLayout.Windows.cs
+ D Doroti/src/Doroti.Host.Maui/MauiSemanticsLayout.cs
+ D Doroti/src/Doroti.Host.Maui/MauiSettingsObserver.Android.cs
+ D Doroti/src/Doroti.Host.Maui/MauiSkiaCapabilities.cs
+ D Doroti/src/Doroti.Host.Maui/MauiSkiaSurface.cs
+ D Doroti/src/Doroti.Host.Maui/MauiSurfacePointerData.cs
+ D Doroti/src/Doroti.Host.Maui/MauiSystemSound.cs
+ D Doroti/src/Doroti.Host.Maui/MauiTextInputBridge.MacOS.cs
+ D Doroti/src/Doroti.Host.Maui/MauiTextInputBridge.Windows.cs
+ D Doroti/src/Doroti.Host.Maui/MauiTextInputBridge.cs
+ D Doroti/src/Doroti.Host.Maui/MauiTrackpadGesture.cs
+ D Doroti/src/Doroti.Host.Maui/MauiUIKitContextMenu.cs
+ D Doroti/src/Doroti.Host.Maui/MauiUIKitTextMagnifier.cs
+ D Doroti/src/Doroti.Host.Maui/MauiViewEnvironment.Android.cs
+ D Doroti/src/Doroti.Host.Maui/MauiViewEnvironment.MacOS.cs
+ D Doroti/src/Doroti.Host.Maui/MauiViewEnvironment.UIKit.cs
+ D Doroti/src/Doroti.Host.Maui/MauiViewEnvironment.Windows.cs
+ D Doroti/src/Doroti.Host.Maui/MauiViewEnvironment.cs
+ D Doroti/src/Doroti.Host.Maui/MauiWindowsFilePicker.cs
+ D Doroti/src/Doroti.Host.Maui/MauiWindowsKeyboard.cs
+ D Doroti/src/Doroti.Host.Maui/UIKitAnimatedViewport.cs
+ D Doroti/src/Doroti.Host.Maui/UIKitApplicationActivation.cs
+ D Doroti/src/Doroti.Host.Maui/UIKitBoundsAnimation.cs
+ D Doroti/src/Doroti.Host.Maui/UIKitFilePicker.cs
+ D Doroti/src/Doroti.Host.Maui/UIKitOsDrop.cs
+ D Doroti/src/Doroti.Host.Maui/UIKitPlatformBlurView.cs
+ D Doroti/src/Doroti.Host.Maui/UIKitPlatformRasterSurface.cs
+ D Doroti/src/Doroti.Host.Maui/UIKitPlatformViewFactory.cs
+ D Doroti/src/Doroti.Host.Maui/UIKitPlatformViewHost.cs
+ D Doroti/src/Doroti.Host.Maui/UIKitTrackpadInput.cs
+ D Doroti/src/Doroti.Host.Maui/WindowsCompositionSurfacePresenter.Pipeline.cs
+ D Doroti/src/Doroti.Host.Maui/WindowsCompositionSurfacePresenter.cs
+ D Doroti/src/Doroti.Host.Maui/WindowsDesktopWindowHost.cs
+ D Doroti/src/Doroti.Host.Maui/WindowsMauiPlatformViewFactory.cs
+ D Doroti/src/Doroti.Host.Maui/WindowsMauiPlatformViewHost.cs
+ D Doroti/src/Doroti.Host.Maui/WindowsNativeCaption.cs
+ D Doroti/src/Doroti.Host.Maui/WindowsNativeCompositionOutput.cs
+ D Doroti/src/Doroti.Host.Maui/WindowsPointerMapping.cs
+ D Doroti/src/Doroti.Host.Maui/WindowsResizeDispatchQueue.cs
+ D Doroti/src/Doroti.Host.Maui/WindowsResizeEtw.cs
+ D Doroti/src/Doroti.Host.Maui/WindowsResizeTimeline.cs
+ D Doroti/src/Doroti.Host.Maui/WindowsRootMouseInput.cs
+ D Doroti/src/Doroti.Host.Maui/WindowsRootRedirection.cs
+ D Doroti/src/Doroti.Host.Maui/WindowsWindowBackdrop.cs
+ D Doroti/src/Doroti.Host.Maui/buildTransitive/Doroti.Host.Maui.targets
+ D Doroti/src/Doroti.Host.Qt/Doroti.Host.Qt.csproj
+ D Doroti/src/Doroti.Host.Qt/DorotiQtRunner.cs
+ D Doroti/src/Doroti.Host.Qt/LinuxGpuTextureFrames.cs
+ D Doroti/src/Doroti.Host.Qt/QtApplicationActivation.cs
+ D Doroti/src/Doroti.Host.Qt/QtApplicationDispatcher.cs
+ D Doroti/src/Doroti.Host.Qt/QtApplicationStorage.cs
+ D Doroti/src/Doroti.Host.Qt/QtDesktopWindowFactory.cs
+ D Doroti/src/Doroti.Host.Qt/QtDesktopWindowHost.cs
+ D Doroti/src/Doroti.Host.Qt/QtDesktopWindowPolicy.cs
+ D Doroti/src/Doroti.Host.Qt/QtHostAdapter.cs
+ D Doroti/src/Doroti.Host.Qt/QtKeyMap.cs
+ D Doroti/src/Doroti.Host.Qt/QtNativeServices.cs
+ D Doroti/src/Doroti.Host.Qt/QtNativeV2.cs
+ D Doroti/src/Doroti.Host.Qt/QtPlatformMessageCapability.cs
+ D Doroti/src/Doroti.Host.Qt/QtPlatformViewHost.cs
+ D Doroti/src/Doroti.Host.Qt/QtQuickNative.cs
+ D Doroti/src/Doroti.Host.Qt/QtSkiaSurface.cs
+ D Doroti/src/Doroti.Host.Qt/QtTitlebarAppearance.cs
+ D Doroti/src/Doroti.Host.Qt/QtTitlebarPainter.cs
+ D Doroti/src/Doroti.Host.Qt/QtUrlLauncher.cs
+ D Doroti/src/Doroti.Host.Qt/QtWebViewSession.cs
+ D Doroti/src/Doroti.Host.Qt/buildTransitive/Doroti.Host.Qt.targets
+ D Doroti/src/Doroti.Host.Web/BrowserApplicationNavigation.cs
+ D Doroti/src/Doroti.Host.Web/BrowserFilePicker.cs
+ D Doroti/src/Doroti.Host.Web/BrowserFrameworkHost.cs
+ D Doroti/src/Doroti.Host.Web/BrowserHapticFeedback.cs
+ D Doroti/src/Doroti.Host.Web/BrowserHostContracts.cs
+ D Doroti/src/Doroti.Host.Web/BrowserHotReload.cs
+ D Doroti/src/Doroti.Host.Web/BrowserKeyMap.cs
+ D Doroti/src/Doroti.Host.Web/BrowserManagedRenderThread.cs
+ D Doroti/src/Doroti.Host.Web/BrowserOsDrop.cs
+ D Doroti/src/Doroti.Host.Web/BrowserOwnerSynchronizationContext.cs
+ D Doroti/src/Doroti.Host.Web/BrowserPlatformViewHost.cs
+ D Doroti/src/Doroti.Host.Web/BrowserSkiaCapabilities.cs
+ D Doroti/src/Doroti.Host.Web/BrowserTimeProvider.cs
+ D Doroti/src/Doroti.Host.Web/Doroti.Host.Web.csproj
+ D Doroti/src/Doroti.Host.Web/DorotiWebApplication.cs
+ D Doroti/src/Doroti.Host.Web/DorotiWebWorkerSurface.GpuEffects.cs
+ D Doroti/src/Doroti.Host.Web/DorotiWebWorkerSurface.Graphite.cs
+ D Doroti/src/Doroti.Host.Web/DorotiWebWorkerSurface.Textures.cs
+ D Doroti/src/Doroti.Host.Web/DorotiWebWorkerSurface.cs
+ D Doroti/src/Doroti.Host.Web/Fonts/BrowserCssFonts.cs
+ D Doroti/src/Doroti.Host.Web/Fonts/BrowserDefaultFonts.cs
+ D Doroti/src/Doroti.Host.Web/Fonts/BrowserFontAsset.cs
+ D Doroti/src/Doroti.Host.Web/Fonts/BrowserFontData.cs
+ D Doroti/src/Doroti.Host.Web/Fonts/BrowserFontFallbackLoader.cs
+ D Doroti/src/Doroti.Host.Web/Fonts/BrowserLanguageFonts.cs
+ D Doroti/src/Doroti.Host.Web/Fonts/BrowserStartupFonts.cs
+ D Doroti/src/Doroti.Host.Web/Fonts/BrowserWoff2Decoder.cs
+ D Doroti/src/Doroti.Host.Web/Fonts/FontFallbackCatalog.cs
+ D Doroti/src/Doroti.Host.Web/Fonts/LICENSE.flutter.txt
+ D Doroti/src/Doroti.Host.Web/Fonts/README.md
+ D Doroti/src/Doroti.Host.Web/Fonts/catalog-source.txt
+ D Doroti/src/Doroti.Host.Web/Fonts/fallbacks.bin
+ D Doroti/src/Doroti.Host.Web/IBrowserGraphicsCapabilities.cs
+ D Doroti/src/Doroti.Host.Web/Web/doroti.frame-cost.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.loader.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.raster.worker.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.admission.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.composition.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.css-fonts.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.diagnostics.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.dom.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.drop.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.environment.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.files.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.fonts.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.gpu-effects.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.hot-reload.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.lifetime.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.managed-worker.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.navigation.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.platform-frames.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.platform-views.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.policy.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.protocol.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.requests.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.services.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.surface.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.text-actions.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.text-focus.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.texture-budget.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.texture-worker.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.textures.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.timers.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.webview.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.web.worker-host.ts
+ D Doroti/src/Doroti.Host.Web/Web/doroti.webgpu.ts
+ D Doroti/src/Doroti.Host.Web/Web/tsconfig.json
+ D Doroti/src/Doroti.Host.Web/Web/types/doroti-loader/index.d.ts
+ D Doroti/src/Doroti.Host.Web/Web/types/doroti-textures/index.d.ts
+ D Doroti/src/Doroti.Host.Web/wwwroot/doroti.web.css
+ D Doroti/src/Doroti.Host.WindowsAppSdk.Diagnostics/Doroti.Host.WindowsAppSdk.Diagnostics.csproj
+ D Doroti/src/Doroti.Host.WindowsAppSdk.Native/Doroti.CppWinRT.targets
+ D Doroti/src/Doroti.Host.WindowsAppSdk.Native/Doroti.Host.WindowsAppSdk.Native.vcxproj
+ D Doroti/src/Doroti.Host.WindowsAppSdk.Native/Doroti.NativeVersions.props
+ D Doroti/src/Doroti.Host.WindowsAppSdk.Native/include/doroti_windows_acrylic_composition_v1.h
+ D Doroti/src/Doroti.Host.WindowsAppSdk.Native/include/doroti_windows_composition_raster_v1.h
+ D Doroti/src/Doroti.Host.WindowsAppSdk.Native/include/doroti_windows_d3d12_output_v1.h
+ D Doroti/src/Doroti.Host.WindowsAppSdk.Native/include/doroti_windows_gpu_selection_v1.h
+ D Doroti/src/Doroti.Host.WindowsAppSdk.Native/include/doroti_windows_host_v1.h
+ D Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/accessibility_bridge.cpp
+ D Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/accessibility_bridge.h
+ D Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/accessibility_text.inc
+ D Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/acrylic_composition.cpp
+ D Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/composition_raster.cpp
+ D Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/d3d12_output.cpp
+ D Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/exports.cpp
+ D Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/gpu_selection.cpp
+ D Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/platform_capture_probe.cpp
+ D Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/platform_composition.cpp
+ D Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/resize_order_trace.h
+ D Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/shared_raster.h
+ D Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/texture_input.cpp
+ D Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/winui_composition.cpp
+ D Doroti/src/Doroti.Host.WindowsAppSdk/AcrylicPresenterSnapshot.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/AssemblyInfo.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/Doroti.Host.WindowsAppSdk.csproj
+ D Doroti/src/Doroti.Host.WindowsAppSdk/DorotiWindowsAppSdkRunner.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/Properties/AssemblyInfo.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsAcrylicOptionsState.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsAppSdkDesktopWindowHost.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsAppSdkPlatformMessageCapability.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsApplicationActivation.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsDesktopWindowFactory.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsDropData.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsFilePicker.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsFrameInputState.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsGpuSelection.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsGpuTextureFrames.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsHwndPlatformViewFactory.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsKeyMap.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsKeyboardState.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedHwndPresenter.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedHwndPresenterBase.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedProductHost.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedResizeCoordinator.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.D3D12.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.DelayProbe.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.Graphite.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.Pipeline.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.Prepared.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.Validation.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsNativeV1.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsOsDropTarget.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsPlatformViewHost.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsPreparedMovingFrame.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsSharedImports.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsSharedRaster.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsUrlLauncher.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsWebViewComposition.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsWebViewPointer.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsWinUiBackdrop.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsWinUiControls.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/WindowsXamlWebViewFactory.cs
+ D Doroti/src/Doroti.Host.WindowsAppSdk/buildTransitive/Doroti.Host.WindowsAppSdk.targets
+ M Doroti/src/Doroti.Hosting/Doroti.Hosting.csproj
+ M Doroti/src/Doroti.Hosting/DorotiApplicationBootstrap.cs
+ M Doroti/src/Doroti.Hosting/DorotiApplicationBoundary.cs
+ M Doroti/src/Doroti.Hosting/DorotiHostSession.cs
+ D Doroti/src/Doroti.Hosting/WindowsKeyboardMap.cs
+ M Doroti/src/Doroti.Runner.Sdk/Doroti.Runner.Sdk.csproj
+ D Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.AndroidDevelopment.targets
+ D Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.AppIcons.targets
+ M Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.DesktopBoundary.targets
+ D Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.IosDevelopmentBinding.targets
+ D Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.IosNativeAot.props
+ D Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.MacCatalyst.props
+ D Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.MacDevelopment.Common.targets
+ D Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.MacDevelopment.Transport.targets
+ D Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.MacDevelopment.targets
+ D Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.MacOS.props
+ D Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.NativeAot.Evidence.targets
+ D Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.Qt.targets
+ D Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.Web.targets
+ D Doroti/src/Doroti.Runner.Sdk/Sdk/Icons/AppIcon.plist
+ D Doroti/src/Doroti.Runner.Sdk/Sdk/Icons/appicon.icns
+ D Doroti/src/Doroti.Runner.Sdk/Sdk/Icons/appicon.ico
+ D Doroti/src/Doroti.Runner.Sdk/Sdk/Icons/appicon.png
+ D Doroti/src/Doroti.Runner.Sdk/Sdk/Icons/appicon.svg
+ D Doroti/src/Doroti.Runner.Sdk/Sdk/Icons/appiconfg.png
+ D Doroti/src/Doroti.Runner.Sdk/Sdk/Icons/favicon.svg
+ D Doroti/src/Doroti.Runner.Sdk/Sdk/IosDevelopmentNetwork.plist
+ M Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.props
+ M Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.targets
+ M Doroti/src/Doroti.Runtime/DartAsync.cs
+ M Doroti/src/Doroti.Runtime/Doroti.Runtime.csproj
+ D Doroti/src/Doroti.Runtime/MaterialColorSchemeRuntime.cs
+ D Doroti/src/Doroti.Runtime/MaterialImageColorRuntime.cs
+ D Doroti/src/Doroti.Runtime/MaterialImageQuantizerWu.cs
+ M Doroti/src/Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj
+ M Doroti/src/Doroti.Skia.Rendering/SkiaExternalTexture.cs
+ M Doroti/src/Doroti.Skia.Rendering/SkiaNativeTextureEntry.cs
+ M Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.Textures.cs
+ M Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.VariableBlur.Adaptive.cs
+ M Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.VariableBlur.Capture.cs
+ M Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.VariableBlur.Kawase.cs
+ M Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.VariableBlur.Profile.cs
+ M Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.VariableBlur.Region.cs
+ M Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.VariableBlur.cs
+ M Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.cs
+ M Doroti/src/Doroti.Skia.RuntimeEffects/Doroti.Skia.RuntimeEffects.csproj
+ D Doroti/src/Doroti.Target.Android.Maui.android-arm64/AndroidMauiTarget.cs
+ D Doroti/src/Doroti.Target.Android.Maui.android-arm64/Doroti.Target.Android.Maui.android-arm64.csproj
+ D Doroti/src/Doroti.Target.Android.Maui.android-arm64/buildTransitive/Doroti.Target.Android.Maui.android-arm64.targets
+ D Doroti/src/Doroti.Target.Android.Maui.android-arm64/doroti-target-manifest.json
+ D Doroti/src/Doroti.Target.Android.Maui.android-x64/AndroidMauiTarget.cs
+ D Doroti/src/Doroti.Target.Android.Maui.android-x64/Doroti.Target.Android.Maui.android-x64.csproj
+ D Doroti/src/Doroti.Target.Android.Maui.android-x64/buildTransitive/Doroti.Target.Android.Maui.android-x64.targets
+ D Doroti/src/Doroti.Target.Android.Maui.android-x64/doroti-target-manifest.json
+ D Doroti/src/Doroti.Target.Linux.Qt.linux-x64/Doroti.Target.Linux.Qt.linux-x64.csproj
+ D Doroti/src/Doroti.Target.Linux.Qt.linux-x64/buildTransitive/Doroti.Target.Linux.Qt.linux-x64.targets
+ D Doroti/src/Doroti.Target.Linux.Qt.linux-x64/doroti-target-manifest.json
+ D Doroti/src/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.csproj
+ D Doroti/src/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/MacCatalystMauiTarget.cs
+ D Doroti/src/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/buildTransitive/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.targets
+ D Doroti/src/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/doroti-target-manifest.json
+ D Doroti/src/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/doroti-target-manifest.maccatalyst27.json
+ D Doroti/src/Doroti.Target.MacOS.Maui.osx-arm64/Doroti.Target.MacOS.Maui.osx-arm64.csproj
+ D Doroti/src/Doroti.Target.MacOS.Maui.osx-arm64/MacOSMauiTarget.cs
+ D Doroti/src/Doroti.Target.MacOS.Maui.osx-arm64/buildTransitive/Doroti.Target.MacOS.Maui.osx-arm64.targets
+ D Doroti/src/Doroti.Target.MacOS.Maui.osx-arm64/doroti-target-manifest.json
+ D Doroti/src/Doroti.Target.MacOS.Maui.osx-arm64/doroti-target-manifest.macos27.json
+ D Doroti/src/Doroti.Target.Web.browser-wasm/BrowserWasmTarget.cs
+ D Doroti/src/Doroti.Target.Web.browser-wasm/Doroti.Target.Web.browser-wasm.csproj
+ D Doroti/src/Doroti.Target.Web.browser-wasm/DorotiWebWorkerRunner.cs
+ D Doroti/src/Doroti.Target.Web.browser-wasm/build/Doroti.Target.Web.browser-wasm.props
+ D Doroti/src/Doroti.Target.Web.browser-wasm/build/DorotiSkiaInterop.js
+ D Doroti/src/Doroti.Target.Web.browser-wasm/buildTransitive/Doroti.Target.Web.browser-wasm.targets
+ D Doroti/src/Doroti.Target.Web.browser-wasm/doroti-target-manifest.json
+ D Doroti/src/Doroti.Target.Windows.Maui.win-x64/Doroti.Target.Windows.Maui.win-x64.csproj
+ D Doroti/src/Doroti.Target.Windows.Maui.win-x64/WindowsMauiTarget.cs
+ D Doroti/src/Doroti.Target.Windows.Maui.win-x64/buildTransitive/Doroti.Target.Windows.Maui.win-x64.targets
+ D Doroti/src/Doroti.Target.Windows.Maui.win-x64/doroti-target-manifest.json
+ D Doroti/src/Doroti.Target.Windows.WindowsAppSdk.win-x64/Doroti.Target.Windows.WindowsAppSdk.win-x64.csproj
+ D Doroti/src/Doroti.Target.Windows.WindowsAppSdk.win-x64/buildTransitive/Doroti.Target.Windows.WindowsAppSdk.win-x64.targets
+ D Doroti/src/Doroti.Target.Windows.WindowsAppSdk.win-x64/doroti-target-manifest.json
+ D Doroti/src/Doroti.Target.iOS.Maui.ios-arm64/Doroti.Target.iOS.Maui.ios-arm64.csproj
+ D Doroti/src/Doroti.Target.iOS.Maui.ios-arm64/buildTransitive/Doroti.Target.iOS.Maui.ios-arm64.targets
+ D Doroti/src/Doroti.Target.iOS.Maui.ios-arm64/doroti-target-manifest.ios27.json
+ D Doroti/src/Doroti.Target.iOS.Maui.ios-arm64/doroti-target-manifest.json
+ D Doroti/src/Doroti.Target.iOS.Maui.ios-arm64/doroti-target-manifest.net11.json
+ D Doroti/src/Doroti.Target.iOS.Maui.iossimulator-arm64/Doroti.Target.iOS.Maui.iossimulator-arm64.csproj
+ D Doroti/src/Doroti.Target.iOS.Maui.iossimulator-arm64/buildTransitive/Doroti.Target.iOS.Maui.iossimulator-arm64.targets
+ D Doroti/src/Doroti.Target.iOS.Maui.iossimulator-arm64/doroti-target-manifest.ios27.json
+ D Doroti/src/Doroti.Target.iOS.Maui.iossimulator-arm64/doroti-target-manifest.json
+ D Doroti/src/Doroti.Target.iOS.Maui.iossimulator-x64/Doroti.Target.iOS.Maui.iossimulator-x64.csproj
+ D Doroti/src/Doroti.Target.iOS.Maui.iossimulator-x64/buildTransitive/Doroti.Target.iOS.Maui.iossimulator-x64.targets
+ D Doroti/src/Doroti.Target.iOS.Maui.iossimulator-x64/doroti-target-manifest.ios27.json
+ D Doroti/src/Doroti.Target.iOS.Maui.iossimulator-x64/doroti-target-manifest.json
+ M Doroti/src/Doroti.Testing/TestHost.cs
+ M Doroti/src/Doroti.Testing/WidgetTester.cs
+ M Doroti/src/Doroti.Ui/Capabilities.cs
+ M Doroti/src/Doroti.Ui/Doroti.Ui.csproj
+ M Doroti/src/Doroti.Ui/FrameworkShaderAssets.cs
+ M Doroti/src/Doroti.Ui/GraphicsAndSemanticsContracts.cs
+ M Doroti/src/Doroti.Ui/PlatformDispatcher.cs
+ M Doroti/src/Doroti.Ui/PlatformMessaging.cs
+ M Doroti/src/Doroti.Ui/ResizeLifecycle.cs
+ M Doroti/src/Doroti.Ui/TextureContracts.cs
+ D Doroti/src/Shared/Windows/WindowsFilePickerService.cs
+ D Doroti/src/Shared/Windows/WindowsOpenFileDialog.cs
+ D Doroti/src/Shared/Windows/WindowsPlatformViewDispatcher.cs
+ D Doroti/src/Shared/Windows/WindowsReadFile.cs
+ D Doroti/src/Shared/Windows/WindowsWebViewContent.cs
+ D Doroti/src/Shared/Windows/WindowsWebViewSession.cs
+ M Doroti/templates/Doroti.Templates/content/doroti-app/.template.config/template.json
+ M Doroti/templates/Doroti.Templates/content/doroti-app/DorotiTemplateApp.csproj
+ M Doroti/templates/Doroti.Templates/content/doroti-app/android/DorotiTemplateApp.Android.csproj
+ M Doroti/templates/Doroti.Templates/content/doroti-app/android/binding/DorotiTemplateApp.Android.Native.csproj
+ M Doroti/templates/Doroti.Templates/content/doroti-app/desktop/DesktopStartup.cs
+ M Doroti/templates/Doroti.Templates/content/doroti-app/desktop/DorotiTemplateApp.Desktop.csproj
+ M Doroti/templates/Doroti.Templates/content/doroti-app/desktop/LinuxDesktopStartup.cs
+ M Doroti/templates/Doroti.Templates/content/doroti-app/desktop/MacCatalystDesktopStartup.cs
+ M Doroti/templates/Doroti.Templates/content/doroti-app/doroti-workspace.json
+ M Doroti/templates/Doroti.Templates/content/doroti-app/ios/DorotiTemplateApp.iOS.csproj
+ M Doroti/templates/Doroti.Templates/content/doroti-app/ios/binding/DorotiTemplateApp.iOS.Native.csproj
+ M Doroti/templates/Doroti.Templates/content/doroti-app/linux/DorotiTemplateApp.Linux.csproj
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/.clang-format
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/CMakeLists.txt
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/README.md
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/cmake/DorotiLicensePolicy.cmake
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/include/doroti_gstreamer_policy.h
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/include/doroti_qt_desktop.h
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/include/doroti_qt_host_v2.h
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/include/doroti_qt_platform_views.h
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/include/doroti_qt_quick.h
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/include/doroti_qt_services.h
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/include/doroti_qt_webview.h
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/licenses/GPL-3.txt
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/licenses/LGPL-2.1.txt
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/licenses/LGPL-3.txt
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/licenses/README.md
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/licenses/Wayland-background-effect-MIT.txt
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/protocols/ext-background-effect-v1.xml
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/qml/Backdrop.qml
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/qml/WebView.qml
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/shaders/README.md
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/shaders/bake.py
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/shaders/gaussian.frag
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/shaders/gaussian.frag.json
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/shaders/gaussian.frag.qsb
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/src/doroti_qt_desktop.cpp
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/src/doroti_qt_host.cpp
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/src/doroti_qt_platform_views.cpp
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/src/doroti_qt_quick.cpp
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/src/doroti_qt_services.cpp
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/src/doroti_texture_gstreamer.cpp
+ D Doroti/templates/Doroti.Templates/content/doroti-app/linux/native/src/doroti_webview_qt.cpp
+ M Doroti/templates/Doroti.Templates/content/doroti-app/macos/DorotiTemplateApp.MacCatalyst.csproj
+ M Doroti/templates/Doroti.Templates/content/doroti-app/macos/DorotiTemplateApp.MacOS.csproj
+ M Doroti/templates/Doroti.Templates/content/doroti-app/macos/binding/DorotiTemplateApp.MacCatalyst.Native.csproj
+ M Doroti/templates/Doroti.Templates/content/doroti-app/macos/binding/DorotiTemplateApp.MacOS.Native.csproj
+ M Doroti/templates/Doroti.Templates/content/doroti-app/src/App.cs
+ M Doroti/templates/Doroti.Templates/content/doroti-app/web/DorotiTemplateApp.Web.csproj
+ M Doroti/templates/Doroti.Templates/content/doroti-app/windows/DorotiTemplateApp.Windows.csproj
+ M Doroti/templates/Doroti.Templates/content/doroti-app/windows/maui/DorotiTemplateApp.Windows.Maui.csproj
+ M Doroti/tests/Doroti.Drop.Windows.Tests/Doroti.Drop.Windows.Tests.csproj
+ M Doroti/tests/Doroti.Plugin.Windows.Tests/Doroti.Plugin.Windows.Tests.csproj
+ D Doroti/tests/Doroti.Tests/CupertinoDialogRegression.cs
+ M Doroti/tests/Doroti.Tests/DesktopCloseRegression.cs
+ M Doroti/tests/Doroti.Tests/Doroti.Tests.csproj
+ M Doroti/tests/Doroti.Tests/FullReviewRegression.cs
+ M Doroti/tests/Doroti.Tests/NativeFrameGpuRegression.cs
+ M Doroti/tests/Doroti.Tests/NativeFrameMetalGpuRegression.cs
+ M Doroti/tests/Doroti.Tests/NavigationRegression.cs
+ M Doroti/tests/Doroti.Tests/Program.cs
+ D Doroti/tests/Doroti.Tests/RenderingRegressions.cs
+ M Doroti/tests/Doroti.Tests/ShaderFramePipelineRegression.cs
+ D Doroti/tests/Doroti.Tests/TextInputFocusRegression.cs
+ D Doroti/tests/Doroti.Tests/TextInputVerticalCursorRegression.cs
+ M Doroti/tests/Doroti.Tests/VariableBlurCaptureRegression.cs
+ M Doroti/tests/Doroti.Tests/VariableBlurGpuRegression.cs
+ M Doroti/tests/Doroti.Tests/VariableBlurKawaseRegression.cs
+ M Doroti/tests/Doroti.Tests/VariableBlurKernelRegression.cs
+ D Doroti/tests/Doroti.Tests/WindowContextRegression.cs
+ M Doroti/tests/android_development_bridge.py
+ M Doroti/tests/android_development_profile.py
+ M Doroti/tests/android_hot_reload_smoke.py
+ M Doroti/tests/app_icons.py
+ M Doroti/tests/apple_build_profiles.py
+ M Doroti/tests/apple_package_smoke.py
+ M Doroti/tests/apple_smoke.py
+ M Doroti/tests/cleanup_plan_all.py
+ M Doroti/tests/development_fixture.py
+ M Doroti/tests/doctor_contract.py
+ M Doroti/tests/full_review_tools.py
+ M Doroti/tests/hot_reload_smoke.py
+ M Doroti/tests/installer_contract.py
+ M Doroti/tests/ios_development_bridge.py
+ M Doroti/tests/ios_frame_loop_lifecycle_device.py
+ M Doroti/tests/ios_hot_reload_smoke.py
+ M Doroti/tests/linux_hot_reload_smoke.py
+ M Doroti/tests/linux_qt_build_profiles.py
+ M Doroti/tests/linux_qt_files.py
+ M Doroti/tests/linux_qt_packages.py
+ M Doroti/tests/linux_qt_smoke.py
+ M Doroti/tests/mac_hot_reload_smoke.py
+ M Doroti/tests/macos_package_smoke.py
+ M Doroti/tests/macos_smoke.py
+ M Doroti/tests/native_frame_android_lifecycle.py
+ M Doroti/tests/native_frame_configuration.py
+ M Doroti/tests/native_frame_pipeline_collect.py
+ M Doroti/tests/plugin_packages.py
+ M Doroti/tests/plugin_windows_packages.py
+ M Doroti/tests/protocol_install.py
+ M Doroti/tests/runner_contract.py
+ M Doroti/tests/test_variable_blur_device.py
+ M Doroti/tests/variable_blur_device.py
+ M Doroti/tests/variable_blur_metal.py
+ M Doroti/tests/web_offline_fonts.py
+ M Doroti/tests/web_package_runtime.py
+ M Doroti/tests/web_runtime_recovery.py
+ M Doroti/tests/web_services_smoke.py
+ M Doroti/tests/web_smoke.py
+ M Doroti/tests/windows_maui_smoke.py
+ M Doroti/tests/windows_native_texture_smoke.py
+ M Doroti/tools/Doroti.Tooling/Doroti.Tooling.csproj
+ M Doroti/tools/vscode-doroti/package.json
+ M Doroti/tools/vscode-doroti/snippets/widgets.json
+ M Doroti/tools/vscode-doroti/src/contracts.ts
+ M Doroti/tools/vscode-doroti/src/extension.ts
+ M Doroti/tools/vscode-doroti/src/imports.ts
+ M Doroti/tools/vscode-doroti/src/test/contracts.test.ts
+ M history/26-10-03/works/platforms/android.md
+ M history/26-10-03/works/platforms/ios.md
+ M history/26-10-03/works/platforms/linux.md
+ M history/26-10-03/works/platforms/maccatalyst.md
+ M history/26-10-03/works/platforms/macos.md
+ M history/26-10-03/works/platforms/web.md
+ M history/26-10-03/works/platforms/windows.md
+ M history/26-10-03/works/results/2026-10-03-appkit-configuration-review.md
+ M history/26-10-03/works/results/2026-10-03-apple-frame-configuration-review.md
+ M samples/DorotiSampleApp2/DorotiSampleApp2.csproj
+ M samples/DorotiSampleApp2/README.md
+ M samples/DorotiSampleApp2/android/DorotiSampleApp2.Android.csproj
+ M samples/DorotiSampleApp2/doroti-workspace.json
+ M samples/DorotiSampleApp2/ios/Directory.Build.props
+ M samples/DorotiSampleApp2/ios/DorotiSampleApp2.iOS.csproj
+ M samples/DorotiSampleApp2/linux/DorotiSampleApp2.Linux.csproj
+ D samples/DorotiSampleApp2/linux/native/.clang-format
+ D samples/DorotiSampleApp2/linux/native/CMakeLists.txt
+ D samples/DorotiSampleApp2/linux/native/README.md
+ D samples/DorotiSampleApp2/linux/native/cmake/DorotiLicensePolicy.cmake
+ D samples/DorotiSampleApp2/linux/native/include/doroti_gstreamer_policy.h
+ D samples/DorotiSampleApp2/linux/native/include/doroti_qt_desktop.h
+ D samples/DorotiSampleApp2/linux/native/include/doroti_qt_host_v2.h
+ D samples/DorotiSampleApp2/linux/native/include/doroti_qt_platform_views.h
+ D samples/DorotiSampleApp2/linux/native/include/doroti_qt_quick.h
+ D samples/DorotiSampleApp2/linux/native/include/doroti_qt_services.h
+ D samples/DorotiSampleApp2/linux/native/include/doroti_qt_webview.h
+ D samples/DorotiSampleApp2/linux/native/licenses/GPL-3.txt
+ D samples/DorotiSampleApp2/linux/native/licenses/LGPL-2.1.txt
+ D samples/DorotiSampleApp2/linux/native/licenses/LGPL-3.txt
+ D samples/DorotiSampleApp2/linux/native/licenses/README.md
+ D samples/DorotiSampleApp2/linux/native/licenses/Wayland-background-effect-MIT.txt
+ D samples/DorotiSampleApp2/linux/native/protocols/ext-background-effect-v1.xml
+ D samples/DorotiSampleApp2/linux/native/qml/Backdrop.qml
+ D samples/DorotiSampleApp2/linux/native/qml/WebView.qml
+ D samples/DorotiSampleApp2/linux/native/shaders/README.md
+ D samples/DorotiSampleApp2/linux/native/shaders/bake.py
+ D samples/DorotiSampleApp2/linux/native/shaders/gaussian.frag
+ D samples/DorotiSampleApp2/linux/native/shaders/gaussian.frag.json
+ D samples/DorotiSampleApp2/linux/native/shaders/gaussian.frag.qsb
+ D samples/DorotiSampleApp2/linux/native/src/doroti_qt_desktop.cpp
+ D samples/DorotiSampleApp2/linux/native/src/doroti_qt_host.cpp
+ D samples/DorotiSampleApp2/linux/native/src/doroti_qt_platform_views.cpp
+ D samples/DorotiSampleApp2/linux/native/src/doroti_qt_quick.cpp
+ D samples/DorotiSampleApp2/linux/native/src/doroti_qt_services.cpp
+ D samples/DorotiSampleApp2/linux/native/src/doroti_texture_gstreamer.cpp
+ D samples/DorotiSampleApp2/linux/native/src/doroti_webview_qt.cpp
+ M samples/DorotiSampleApp2/macos/DorotiSampleApp2.MacCatalyst.csproj
+ M samples/DorotiSampleApp2/macos/DorotiSampleApp2.MacOS.csproj
+ M samples/DorotiSampleApp2/src/App.cs
+ M samples/DorotiSampleApp2/src/FileUploadPage.cs
+ M samples/DorotiSampleApp2/src/FontComparisonPage.cs
+ M samples/DorotiSampleApp2/src/VariableBlurPage.cs
+ M samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj
+ M samples/DorotiSampleApp2/windows/DorotiSampleApp2.Windows.csproj
+ M samples/DorotiSampleApp2/windowsappsdk/DorotiSampleApp2.WindowsAppSdk.csproj
+ M samples/DorotiTestbedApp/DorotiTestbedApp.csproj
+ M samples/DorotiTestbedApp/README.ko.md
+ M samples/DorotiTestbedApp/README.md
+ M samples/DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj
+ M samples/DorotiTestbedApp/desktop/DesktopStartup.cs
+ M samples/DorotiTestbedApp/desktop/LinuxDesktopStartup.cs
+ M samples/DorotiTestbedApp/desktop/MacCatalystDesktopStartup.cs
+ M samples/DorotiTestbedApp/desktop/MultiWindowProbe.cs
+ M samples/DorotiTestbedApp/doroti-workspace.json
+ M samples/DorotiTestbedApp/ios/Directory.Build.props
+ M samples/DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj
+ M samples/DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj
+ D samples/DorotiTestbedApp/linux/native/.clang-format
+ D samples/DorotiTestbedApp/linux/native/CMakeLists.txt
+ D samples/DorotiTestbedApp/linux/native/README.md
+ D samples/DorotiTestbedApp/linux/native/cmake/DorotiLicensePolicy.cmake
+ D samples/DorotiTestbedApp/linux/native/include/doroti_gstreamer_policy.h
+ D samples/DorotiTestbedApp/linux/native/include/doroti_qt_desktop.h
+ D samples/DorotiTestbedApp/linux/native/include/doroti_qt_host_v2.h
+ D samples/DorotiTestbedApp/linux/native/include/doroti_qt_platform_views.h
+ D samples/DorotiTestbedApp/linux/native/include/doroti_qt_quick.h
+ D samples/DorotiTestbedApp/linux/native/include/doroti_qt_services.h
+ D samples/DorotiTestbedApp/linux/native/include/doroti_qt_webview.h
+ D samples/DorotiTestbedApp/linux/native/licenses/GPL-3.txt
+ D samples/DorotiTestbedApp/linux/native/licenses/LGPL-2.1.txt
+ D samples/DorotiTestbedApp/linux/native/licenses/LGPL-3.txt
+ D samples/DorotiTestbedApp/linux/native/licenses/README.md
+ D samples/DorotiTestbedApp/linux/native/licenses/Wayland-background-effect-MIT.txt
+ D samples/DorotiTestbedApp/linux/native/protocols/ext-background-effect-v1.xml
+ D samples/DorotiTestbedApp/linux/native/qml/Backdrop.qml
+ D samples/DorotiTestbedApp/linux/native/qml/WebView.qml
+ D samples/DorotiTestbedApp/linux/native/shaders/README.md
+ D samples/DorotiTestbedApp/linux/native/shaders/bake.py
+ D samples/DorotiTestbedApp/linux/native/shaders/gaussian.frag
+ D samples/DorotiTestbedApp/linux/native/shaders/gaussian.frag.json
+ D samples/DorotiTestbedApp/linux/native/shaders/gaussian.frag.qsb
+ D samples/DorotiTestbedApp/linux/native/src/doroti_qt_desktop.cpp
+ D samples/DorotiTestbedApp/linux/native/src/doroti_qt_host.cpp
+ D samples/DorotiTestbedApp/linux/native/src/doroti_qt_platform_views.cpp
+ D samples/DorotiTestbedApp/linux/native/src/doroti_qt_quick.cpp
+ D samples/DorotiTestbedApp/linux/native/src/doroti_qt_services.cpp
+ D samples/DorotiTestbedApp/linux/native/src/doroti_texture_gstreamer.cpp
+ D samples/DorotiTestbedApp/linux/native/src/doroti_webview_qt.cpp
+ M samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj
+ M samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj
+ M samples/DorotiTestbedApp/src/App.cs
+ M samples/DorotiTestbedApp/src/MaterialSample/Components.cs
+ M samples/DorotiTestbedApp/src/MaterialSample/Decorations.cs
+ M samples/DorotiTestbedApp/src/MaterialSample/DocumentRecoverySample.cs
+ M samples/DorotiTestbedApp/src/MaterialSample/HotReloadSample.cs
+ M samples/DorotiTestbedApp/src/MaterialSample/ImageDemo.cs
+ M samples/DorotiTestbedApp/src/MaterialSample/InputLifetimeSample.cs
+ M samples/DorotiTestbedApp/src/MaterialSample/NavigationSample.cs
+ M samples/DorotiTestbedApp/src/MaterialSample/OsDropSample.cs
+ M samples/DorotiTestbedApp/src/MaterialSample/PlatformEffectSample.cs
+ M samples/DorotiTestbedApp/src/MaterialSample/PlatformViewsPage.cs
+ M samples/DorotiTestbedApp/src/MaterialSample/PluginsSample.cs
+ M samples/DorotiTestbedApp/src/MaterialSample/SampleApp.cs
+ M samples/DorotiTestbedApp/src/MaterialSample/SchemePreview.cs
+ M samples/DorotiTestbedApp/src/MaterialSample/Screens.cs
+ M samples/DorotiTestbedApp/src/MaterialSample/Selection.cs
+ M samples/DorotiTestbedApp/src/MaterialSample/TextureSample.cs
+ M samples/DorotiTestbedApp/src/MaterialSample/WebViewSample.cs
+ M samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj
+ M samples/DorotiTestbedApp/windows/DorotiTestbedApp.Windows.csproj
+ M samples/DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj
+ M work.md
+ M work2.md
+?? Doroti/docs/migrations/design-platform/README.md
+?? Doroti/docs/migrations/design-platform/application-ownership.md
+?? Doroti/docs/migrations/design-platform/baseline.json
+?? Doroti/docs/migrations/design-platform/bootstrap-verification.json
+?? Doroti/docs/migrations/design-platform/boundaries.json
+?? Doroti/docs/migrations/design-platform/checkpoint-files.txt
+?? Doroti/docs/migrations/design-platform/design-migration.md
+?? Doroti/docs/migrations/design-platform/design-package-verification.json
+?? Doroti/docs/migrations/design-platform/execution.json
+?? Doroti/docs/migrations/design-platform/frame-gpu-verification.json
+?? Doroti/docs/migrations/design-platform/frames-verification.json
+?? Doroti/docs/migrations/design-platform/handoff-diff-stat.txt
+?? Doroti/docs/migrations/design-platform/latest-checkpoint.json
+?? Doroti/docs/migrations/design-platform/platform-provider-verification.json
+?? Doroti/docs/migrations/design-platform/provider-files.json
+?? Doroti/docs/migrations/design-platform/session-handoff-2026-10-05.md
+?? Doroti/docs/migrations/design-platform/session-handoff-state.json
+?? Doroti/docs/migrations/design-platform/typed-transport-verification.json
+?? Doroti/docs/migrations/design-platform/windows-kinds-verification.json
+?? Doroti/docs/migrations/design-platform/windows-native-menu-verification.json
+?? Doroti/docs/migrations/design-platform/windows-provider-package-verification.json
+?? Doroti/docs/migrations/design-platform/windows-shared-tree-verification.json
+?? Doroti/eng/Doroti.Common.props
+?? Doroti/eng/Doroti.Common.targets
+?? Doroti/src/Doroti.Desktop/DorotiWindowManager.Windowing.cs
+?? Doroti/src/Doroti.Framework.Painting/ViewImageCacheStore.cs
+?? Doroti/src/Doroti.Framework.Widgets/DorotiApplicationViews.cs
+?? Doroti/src/Doroti.Framework.Widgets/NativeWindowPresentation.cs
+?? Doroti/src/Doroti.Framework.Widgets/WidgetsShaderAssets.cs
+?? Doroti/src/Doroti.Framework.Widgets/native_menu.cs
+?? Doroti/src/Doroti.Framework.Widgets/windowing.cs
+?? Doroti/src/Doroti.Hosting/DorotiManagedPluginRegistry.cs
+?? Doroti/src/Doroti.Hosting/DorotiPlatformApplication.cs
+?? Doroti/src/Doroti.Hosting/DorotiSharedHostSession.cs
+?? Doroti/src/Doroti.Runtime/FutureAwaiters.cs
+?? Doroti/src/Doroti.Skia.Rendering/RenderingShaderAssets.cs
+?? Doroti/src/Doroti.Tooling.Contracts/Contracts.cs
+?? Doroti/src/Doroti.Tooling.Contracts/Doroti.Tooling.Contracts.csproj
+?? Doroti/src/Doroti.Tooling.Contracts/VersionRange.cs
+?? Doroti/src/Doroti.Tooling.Extension.Sdk/Doroti.Tooling.Extension.Sdk.csproj
+?? Doroti/src/Doroti.Tooling.Extension.Sdk/DotnetToolExtension.cs
+?? Doroti/src/Doroti.Tooling.Extension.Sdk/ExecutionSession.cs
+?? Doroti/src/Doroti.Tooling.Extension.Sdk/ProcessOutput.cs
+?? Doroti/src/Doroti.Tooling.Extension.Sdk/ProcessToolExtension.cs
+?? Doroti/src/Doroti.Tooling.Extension.Sdk/ToolExtensionLifetime.cs
+?? Doroti/src/Doroti.Tooling.Extension.Sdk/ToolWire.cs
+?? Doroti/src/Doroti.Ui/CapabilityOwnership.cs
+?? Doroti/src/Doroti.Ui/DorotiApplicationDispatcher.cs
+?? Doroti/src/Doroti.Ui/DorotiFrozenScene.cs
+?? Doroti/src/Doroti.Ui/FramePresentation.cs
+?? Doroti/src/Doroti.Ui/IDorotiApplicationDispatcher.cs
+?? Doroti/src/Doroti.Ui/ManagedPluginContracts.cs
+?? Doroti/src/Doroti.Ui/PlatformFeedback.cs
+?? Doroti/src/Doroti.Ui/ViewLocal.cs
+?? Doroti/src/Doroti.Ui/Windowing.cs
+?? Doroti/tests/Common/VulkanDeviceOwner.cs
+?? Doroti/tests/Doroti.Platform.Contracts.Tests/Doroti.Platform.Contracts.Tests.csproj
+?? Doroti/tests/Doroti.Platform.Contracts.Tests/FrameSubmissionRegression.cs
+?? Doroti/tests/Doroti.Platform.Contracts.Tests/Program.cs
+?? Doroti/tests/Doroti.Platform.Contracts.Tests/SharedTreeRegression.cs
+?? Doroti/tests/Doroti.Platform.Contracts.Tests/TypedTransportRegression.cs
+?? Doroti/tests/Doroti.Platform.Contracts.Tests/ViewFocusSelectionRegression.cs
+?? Doroti/tests/Doroti.Tooling.Contracts.Tests/Doroti.Tooling.Contracts.Tests.csproj
+?? Doroti/tests/Doroti.Tooling.Contracts.Tests/Program.cs
+?? Doroti/tests/design_package_contract.py
+?? Doroti/tests/fixtures/test-headless/provider.json
+?? Doroti/tests/fixtures/test-headless/runtime/HeadlessApplication.cs
+?? Doroti/tests/fixtures/test-headless/runtime/TestHeadless.Runtime.csproj
+?? Doroti/tests/fixtures/test-headless/runtime/buildTransitive/Doroti.TestProvider.Runtime.targets
+?? Doroti/tests/fixtures/test-headless/tooling/Program.cs
+?? Doroti/tests/fixtures/test-headless/tooling/TestHeadless.Tool.csproj
+?? Doroti/tests/frame_submission_contract.py
+?? Doroti/tests/platform_bootstrap_contract.py
+?? Doroti/tests/platform_provider_contract.py
+?? Doroti/tests/tool_extension_contract.py
+?? Doroti/tests/typed_transport_contract.py
+?? Doroti/tests/windows_design_presentation.py
+?? Doroti/tests/windows_native_menu.py
+?? Doroti/tests/windows_provider_packages.py
+?? Doroti/tests/windows_shared_tree.py
+?? Doroti/tests/windows_window_kinds.py
+?? Doroti/tools/Doroti.Tooling/PlatformMetadata.cs
+?? Doroti/tools/Doroti.Tooling/Program.cs
+?? Doroti/tools/Doroti.Tooling/ProviderCli.cs
+?? Doroti/tools/Doroti.Tooling/RepositoryCommands.cs
+?? packages/Directory.Build.props
+?? packages/Directory.Build.targets
+?? packages/Directory.Packages.props
+?? packages/Doroti.Cupertino/Doroti.Cupertino.csproj
+?? packages/Doroti.Cupertino/README.md
+?? packages/Doroti.Cupertino/Version.props
+?? packages/Doroti.Cupertino/src/GlobalUsings.cs
+?? packages/Doroti.Cupertino/src/activity_indicator.cs
+?? packages/Doroti.Cupertino/src/adaptive_text_selection_toolbar.cs
+?? packages/Doroti.Cupertino/src/app.cs
+?? packages/Doroti.Cupertino/src/bottom_tab_bar.cs
+?? packages/Doroti.Cupertino/src/button.cs
+?? packages/Doroti.Cupertino/src/checkbox.cs
+?? packages/Doroti.Cupertino/src/colors.cs
+?? packages/Doroti.Cupertino/src/constants.cs
+?? packages/Doroti.Cupertino/src/context_menu.cs
+?? packages/Doroti.Cupertino/src/context_menu_action.cs
+?? packages/Doroti.Cupertino/src/cupertino_focus_halo.cs
+?? packages/Doroti.Cupertino/src/date_picker.cs
+?? packages/Doroti.Cupertino/src/debug.cs
+?? packages/Doroti.Cupertino/src/desktop_text_selection.cs
+?? packages/Doroti.Cupertino/src/desktop_text_selection_toolbar.cs
+?? packages/Doroti.Cupertino/src/desktop_text_selection_toolbar_button.cs
+?? packages/Doroti.Cupertino/src/dialog.cs
+?? packages/Doroti.Cupertino/src/expansion_tile.cs
+?? packages/Doroti.Cupertino/src/form_row.cs
+?? packages/Doroti.Cupertino/src/form_section.cs
+?? packages/Doroti.Cupertino/src/icon_theme_data.cs
+?? packages/Doroti.Cupertino/src/icons.cs
+?? packages/Doroti.Cupertino/src/interface_level.cs
+?? packages/Doroti.Cupertino/src/list_section.cs
+?? packages/Doroti.Cupertino/src/list_tile.cs
+?? packages/Doroti.Cupertino/src/localizations.cs
+?? packages/Doroti.Cupertino/src/magnifier.cs
+?? packages/Doroti.Cupertino/src/menu_anchor.cs
+?? packages/Doroti.Cupertino/src/nav_bar.cs
+?? packages/Doroti.Cupertino/src/page_scaffold.cs
+?? packages/Doroti.Cupertino/src/picker.cs
+?? packages/Doroti.Cupertino/src/radio.cs
+?? packages/Doroti.Cupertino/src/refresh.cs
+?? packages/Doroti.Cupertino/src/route.cs
+?? packages/Doroti.Cupertino/src/scrollbar.cs
+?? packages/Doroti.Cupertino/src/search_field.cs
+?? packages/Doroti.Cupertino/src/segmented_control.cs
+?? packages/Doroti.Cupertino/src/sheet.cs
+?? packages/Doroti.Cupertino/src/slider.cs
+?? packages/Doroti.Cupertino/src/sliding_segmented_control.cs
+?? packages/Doroti.Cupertino/src/spell_check_suggestions_toolbar.cs
+?? packages/Doroti.Cupertino/src/switch.cs
+?? packages/Doroti.Cupertino/src/tab_scaffold.cs
+?? packages/Doroti.Cupertino/src/tab_view.cs
+?? packages/Doroti.Cupertino/src/text_field.cs
+?? packages/Doroti.Cupertino/src/text_form_field_row.cs
+?? packages/Doroti.Cupertino/src/text_selection.cs
+?? packages/Doroti.Cupertino/src/text_selection_toolbar.cs
+?? packages/Doroti.Cupertino/src/text_selection_toolbar_button.cs
+?? packages/Doroti.Cupertino/src/text_theme.cs
+?? packages/Doroti.Cupertino/src/theme.cs
+?? packages/Doroti.Cupertino/src/thumb_painter.cs
+?? packages/Doroti.Cupertino/tests/Doroti.Cupertino.Tests/CupertinoDialogRegression.cs
+?? packages/Doroti.Cupertino/tests/Doroti.Cupertino.Tests/Doroti.Cupertino.Tests.csproj
+?? packages/Doroti.Cupertino/tests/Doroti.Cupertino.Tests/Program.cs
+?? packages/Doroti.Cupertino/tests/Doroti.Cupertino.Tests/RenderingRegressions.cs
+?? packages/Doroti.Cupertino/tests/Doroti.Cupertino.Tests/TextInputFocusRegression.cs
+?? packages/Doroti.Cupertino/tests/Doroti.Cupertino.Tests/TextInputVerticalCursorRegression.cs
+?? packages/Doroti.Cupertino/tests/Doroti.Cupertino.Tests/WindowContextRegression.cs
+?? packages/Doroti.Material/Doroti.Material.csproj
+?? packages/Doroti.Material/README.md
+?? packages/Doroti.Material/Version.props
+?? packages/Doroti.Material/assets/shaders/ink_sparkle.sksl
+?? packages/Doroti.Material/src/GlobalUsings.cs
+?? packages/Doroti.Material/src/MaterialColorSchemeRuntime.cs
+?? packages/Doroti.Material/src/MaterialImageColorRuntime.cs
+?? packages/Doroti.Material/src/MaterialImageQuantizerWu.cs
+?? packages/Doroti.Material/src/MaterialShaderAssets.cs
+?? packages/Doroti.Material/src/ScaffoldSlotMediaQuery.cs
+?? packages/Doroti.Material/src/about.cs
+?? packages/Doroti.Material/src/action_buttons.cs
+?? packages/Doroti.Material/src/action_chip.cs
+?? packages/Doroti.Material/src/action_icons_theme.cs
+?? packages/Doroti.Material/src/adaptive_text_selection_toolbar.cs
+?? packages/Doroti.Material/src/add_event.cs
+?? packages/Doroti.Material/src/animated_icons.cs
+?? packages/Doroti.Material/src/animated_icons_data.cs
+?? packages/Doroti.Material/src/app.cs
+?? packages/Doroti.Material/src/app_bar.cs
+?? packages/Doroti.Material/src/app_bar_theme.cs
+?? packages/Doroti.Material/src/arc.cs
+?? packages/Doroti.Material/src/arrow_menu.cs
+?? packages/Doroti.Material/src/autocomplete.cs
+?? packages/Doroti.Material/src/badge.cs
+?? packages/Doroti.Material/src/badge_theme.cs
+?? packages/Doroti.Material/src/banner.cs
+?? packages/Doroti.Material/src/banner_theme.cs
+?? packages/Doroti.Material/src/bottom_app_bar.cs
+?? packages/Doroti.Material/src/bottom_app_bar_theme.cs
+?? packages/Doroti.Material/src/bottom_navigation_bar.cs
+?? packages/Doroti.Material/src/bottom_navigation_bar_theme.cs
+?? packages/Doroti.Material/src/bottom_sheet.cs
+?? packages/Doroti.Material/src/bottom_sheet_theme.cs
+?? packages/Doroti.Material/src/button.cs
+?? packages/Doroti.Material/src/button_bar.cs
+?? packages/Doroti.Material/src/button_bar_theme.cs
+?? packages/Doroti.Material/src/button_style.cs
+?? packages/Doroti.Material/src/button_style_button.cs
+?? packages/Doroti.Material/src/button_theme.cs
+?? packages/Doroti.Material/src/calendar_date_picker.cs
+?? packages/Doroti.Material/src/card.cs
+?? packages/Doroti.Material/src/card_theme.cs
+?? packages/Doroti.Material/src/carousel.cs
+?? packages/Doroti.Material/src/carousel_theme.cs
+?? packages/Doroti.Material/src/checkbox.cs
+?? packages/Doroti.Material/src/checkbox_list_tile.cs
+?? packages/Doroti.Material/src/checkbox_theme.cs
+?? packages/Doroti.Material/src/chip.cs
+?? packages/Doroti.Material/src/chip_theme.cs
+?? packages/Doroti.Material/src/choice_chip.cs
+?? packages/Doroti.Material/src/circle_avatar.cs
+?? packages/Doroti.Material/src/close_menu.cs
+?? packages/Doroti.Material/src/color_scheme.cs
+?? packages/Doroti.Material/src/colors.cs
+?? packages/Doroti.Material/src/constants.cs
+?? packages/Doroti.Material/src/curves.cs
+?? packages/Doroti.Material/src/data_table.cs
+?? packages/Doroti.Material/src/data_table_source.cs
+?? packages/Doroti.Material/src/data_table_theme.cs
+?? packages/Doroti.Material/src/date.cs
+?? packages/Doroti.Material/src/date_picker.cs
+?? packages/Doroti.Material/src/date_picker_theme.cs
+?? packages/Doroti.Material/src/debug.cs
+?? packages/Doroti.Material/src/desktop_text_selection.cs
+?? packages/Doroti.Material/src/desktop_text_selection_toolbar.cs
+?? packages/Doroti.Material/src/desktop_text_selection_toolbar_button.cs
+?? packages/Doroti.Material/src/dialog.cs
+?? packages/Doroti.Material/src/dialog_theme.cs
+?? packages/Doroti.Material/src/divider.cs
+?? packages/Doroti.Material/src/divider_theme.cs
+?? packages/Doroti.Material/src/drawer.cs
+?? packages/Doroti.Material/src/drawer_header.cs
+?? packages/Doroti.Material/src/drawer_theme.cs
+?? packages/Doroti.Material/src/dropdown.cs
+?? packages/Doroti.Material/src/dropdown_menu.cs
+?? packages/Doroti.Material/src/dropdown_menu_form_field.cs
+?? packages/Doroti.Material/src/dropdown_menu_theme.cs
+?? packages/Doroti.Material/src/elevated_button.cs
+?? packages/Doroti.Material/src/elevated_button_theme.cs
+?? packages/Doroti.Material/src/elevation_overlay.cs
+?? packages/Doroti.Material/src/ellipsis_search.cs
+?? packages/Doroti.Material/src/event_add.cs
+?? packages/Doroti.Material/src/expand_icon.cs
+?? packages/Doroti.Material/src/expansion_panel.cs
+?? packages/Doroti.Material/src/expansion_tile.cs
+?? packages/Doroti.Material/src/expansion_tile_theme.cs
+?? packages/Doroti.Material/src/filled_button.cs
+?? packages/Doroti.Material/src/filled_button_theme.cs
+?? packages/Doroti.Material/src/filter_chip.cs
+?? packages/Doroti.Material/src/flexible_space_bar.cs
+?? packages/Doroti.Material/src/floating_action_button.cs
+?? packages/Doroti.Material/src/floating_action_button_location.cs
+?? packages/Doroti.Material/src/floating_action_button_theme.cs
+?? packages/Doroti.Material/src/grid_tile.cs
+?? packages/Doroti.Material/src/grid_tile_bar.cs
+?? packages/Doroti.Material/src/home_menu.cs
+?? packages/Doroti.Material/src/icon_button.cs
+?? packages/Doroti.Material/src/icon_button_theme.cs
+?? packages/Doroti.Material/src/icons.cs
+?? packages/Doroti.Material/src/ink_decoration.cs
+?? packages/Doroti.Material/src/ink_highlight.cs
+?? packages/Doroti.Material/src/ink_ripple.cs
+?? packages/Doroti.Material/src/ink_sparkle.cs
+?? packages/Doroti.Material/src/ink_splash.cs
+?? packages/Doroti.Material/src/ink_well.cs
+?? packages/Doroti.Material/src/input_border.cs
+?? packages/Doroti.Material/src/input_chip.cs
+?? packages/Doroti.Material/src/input_date_picker_form_field.cs
+?? packages/Doroti.Material/src/input_decorator.cs
+?? packages/Doroti.Material/src/list_tile.cs
+?? packages/Doroti.Material/src/list_tile_theme.cs
+?? packages/Doroti.Material/src/list_view.cs
+?? packages/Doroti.Material/src/magnifier.cs
+?? packages/Doroti.Material/src/material.cs
+?? packages/Doroti.Material/src/material_button.cs
+?? packages/Doroti.Material/src/material_localizations.cs
+?? packages/Doroti.Material/src/material_state.cs
+?? packages/Doroti.Material/src/material_state_mappers.cs
+?? packages/Doroti.Material/src/material_state_mixin.cs
+?? packages/Doroti.Material/src/menu_anchor.cs
+?? packages/Doroti.Material/src/menu_arrow.cs
+?? packages/Doroti.Material/src/menu_bar_theme.cs
+?? packages/Doroti.Material/src/menu_button_theme.cs
+?? packages/Doroti.Material/src/menu_close.cs
+?? packages/Doroti.Material/src/menu_home.cs
+?? packages/Doroti.Material/src/menu_style.cs
+?? packages/Doroti.Material/src/menu_theme.cs
+?? packages/Doroti.Material/src/mergeable_material.cs
+?? packages/Doroti.Material/src/motion.cs
+?? packages/Doroti.Material/src/navigation_bar.cs
+?? packages/Doroti.Material/src/navigation_bar_theme.cs
+?? packages/Doroti.Material/src/navigation_drawer.cs
+?? packages/Doroti.Material/src/navigation_drawer_theme.cs
+?? packages/Doroti.Material/src/navigation_rail.cs
+?? packages/Doroti.Material/src/navigation_rail_theme.cs
+?? packages/Doroti.Material/src/no_splash.cs
+?? packages/Doroti.Material/src/outlined_button.cs
+?? packages/Doroti.Material/src/outlined_button_theme.cs
+?? packages/Doroti.Material/src/page.cs
+?? packages/Doroti.Material/src/page_transitions_theme.cs
+?? packages/Doroti.Material/src/paginated_data_table.cs
+?? packages/Doroti.Material/src/pause_play.cs
+?? packages/Doroti.Material/src/play_pause.cs
+?? packages/Doroti.Material/src/popup_menu.cs
+?? packages/Doroti.Material/src/popup_menu_theme.cs
+?? packages/Doroti.Material/src/predictive_back_page_transitions_builder.cs
+?? packages/Doroti.Material/src/progress_indicator.cs
+?? packages/Doroti.Material/src/progress_indicator_theme.cs
+?? packages/Doroti.Material/src/radio.cs
+?? packages/Doroti.Material/src/radio_list_tile.cs
+?? packages/Doroti.Material/src/radio_theme.cs
+?? packages/Doroti.Material/src/range_slider.cs
+?? packages/Doroti.Material/src/range_slider_parts.cs
+?? packages/Doroti.Material/src/refresh_indicator.cs
+?? packages/Doroti.Material/src/reorderable_list.cs
+?? packages/Doroti.Material/src/scaffold.cs
+?? packages/Doroti.Material/src/scrollbar.cs
+?? packages/Doroti.Material/src/scrollbar_theme.cs
+?? packages/Doroti.Material/src/search.cs
+?? packages/Doroti.Material/src/search_anchor.cs
+?? packages/Doroti.Material/src/search_bar_theme.cs
+?? packages/Doroti.Material/src/search_ellipsis.cs
+?? packages/Doroti.Material/src/search_view_theme.cs
+?? packages/Doroti.Material/src/segmented_button.cs
+?? packages/Doroti.Material/src/segmented_button_theme.cs
+?? packages/Doroti.Material/src/selectable_text.cs
+?? packages/Doroti.Material/src/selection_area.cs
+?? packages/Doroti.Material/src/shadows.cs
+?? packages/Doroti.Material/src/slider.cs
+?? packages/Doroti.Material/src/slider_parts.cs
+?? packages/Doroti.Material/src/slider_theme.cs
+?? packages/Doroti.Material/src/slider_value_indicator_shape.cs
+?? packages/Doroti.Material/src/snack_bar.cs
+?? packages/Doroti.Material/src/snack_bar_theme.cs
+?? packages/Doroti.Material/src/spell_check_suggestions_toolbar.cs
+?? packages/Doroti.Material/src/spell_check_suggestions_toolbar_layout_delegate.cs
+?? packages/Doroti.Material/src/stepper.cs
+?? packages/Doroti.Material/src/switch.cs
+?? packages/Doroti.Material/src/switch_list_tile.cs
+?? packages/Doroti.Material/src/switch_theme.cs
+?? packages/Doroti.Material/src/tab_bar_theme.cs
+?? packages/Doroti.Material/src/tab_controller.cs
+?? packages/Doroti.Material/src/tab_indicator.cs
+?? packages/Doroti.Material/src/tabs.cs
+?? packages/Doroti.Material/src/text_button.cs
+?? packages/Doroti.Material/src/text_button_theme.cs
+?? packages/Doroti.Material/src/text_field.cs
+?? packages/Doroti.Material/src/text_form_field.cs
+?? packages/Doroti.Material/src/text_selection.cs
+?? packages/Doroti.Material/src/text_selection_theme.cs
+?? packages/Doroti.Material/src/text_selection_toolbar.cs
+?? packages/Doroti.Material/src/text_selection_toolbar_text_button.cs
+?? packages/Doroti.Material/src/text_theme.cs
+?? packages/Doroti.Material/src/theme.cs
+?? packages/Doroti.Material/src/theme_data.cs
+?? packages/Doroti.Material/src/time.cs
+?? packages/Doroti.Material/src/time_picker.cs
+?? packages/Doroti.Material/src/time_picker_theme.cs
+?? packages/Doroti.Material/src/toggle_buttons.cs
+?? packages/Doroti.Material/src/toggle_buttons_theme.cs
+?? packages/Doroti.Material/src/tooltip.cs
+?? packages/Doroti.Material/src/tooltip_theme.cs
+?? packages/Doroti.Material/src/tooltip_visibility.cs
+?? packages/Doroti.Material/src/typography.cs
+?? packages/Doroti.Material/src/user_accounts_drawer_header.cs
+?? packages/Doroti.Material/src/view_list.cs
+?? packages/Doroti.Material/tests/Doroti.Material.Tests/Doroti.Material.Tests.csproj
+?? packages/Doroti.Material/tests/Doroti.Material.Tests/Program.cs
+?? packages/README.md
+?? packages/platforms/Doroti.Provider.PackageMetadata.targets
+?? packages/platforms/build/Doroti.AndroidDevelopment.targets
+?? packages/platforms/build/Doroti.AppIcons.targets
+?? packages/platforms/build/Doroti.IosDevelopmentBinding.targets
+?? packages/platforms/build/Doroti.IosNativeAot.props
+?? packages/platforms/build/Doroti.MacCatalyst.props
+?? packages/platforms/build/Doroti.MacDevelopment.Common.targets
+?? packages/platforms/build/Doroti.MacDevelopment.Transport.targets
+?? packages/platforms/build/Doroti.MacDevelopment.targets
+?? packages/platforms/build/Doroti.MacOS.props
+?? packages/platforms/build/Doroti.NativeAot.Evidence.targets
+?? packages/platforms/build/Doroti.Qt.targets
+?? packages/platforms/build/Doroti.Web.targets
+?? packages/platforms/build/Icons/AppIcon.plist
+?? packages/platforms/build/Icons/appicon.icns
+?? packages/platforms/build/Icons/appicon.ico
+?? packages/platforms/build/Icons/appicon.png
+?? packages/platforms/build/Icons/appicon.svg
+?? packages/platforms/build/Icons/appiconfg.png
+?? packages/platforms/build/Icons/favicon.svg
+?? packages/platforms/build/IosDevelopmentNetwork.plist
+?? packages/platforms/build/Sdk.props
+?? packages/platforms/build/Sdk.targets
+?? packages/platforms/maui/Directory.Build.props
+?? packages/platforms/maui/Doroti.Host.Maui/AndroidFilePicker.cs
+?? packages/platforms/maui/Doroti.Host.Maui/AndroidPlatformBackdropSourceView.cs
+?? packages/platforms/maui/Doroti.Host.Maui/AndroidPlatformBackdropView.cs
+?? packages/platforms/maui/Doroti.Host.Maui/AndroidPlatformViewHost.cs
+?? packages/platforms/maui/Doroti.Host.Maui/AndroidPointerMapping.cs
+?? packages/platforms/maui/Doroti.Host.Maui/AndroidPointerSubscription.cs
+?? packages/platforms/maui/Doroti.Host.Maui/AndroidSharedRaster.cs
+?? packages/platforms/maui/Doroti.Host.Maui/AndroidSurfaceTextureEntry.cs
+?? packages/platforms/maui/Doroti.Host.Maui/AndroidTrackpadGesture.cs
+?? packages/platforms/maui/Doroti.Host.Maui/AndroidWebViewSession.cs
+?? packages/platforms/maui/Doroti.Host.Maui/AppKitDesktopWindowHost.cs
+?? packages/platforms/maui/Doroti.Host.Maui/AppKitDesktopWindowPolicy.cs
+?? packages/platforms/maui/Doroti.Host.Maui/AppKitFilePicker.cs
+?? packages/platforms/maui/Doroti.Host.Maui/AppKitOsDrop.cs
+?? packages/platforms/maui/Doroti.Host.Maui/AppKitPlatformBlurView.cs
+?? packages/platforms/maui/Doroti.Host.Maui/AppKitPlatformRasterSurface.cs
+?? packages/platforms/maui/Doroti.Host.Maui/AppKitPlatformViewFactory.cs
+?? packages/platforms/maui/Doroti.Host.Maui/AppKitPlatformViewHost.cs
+?? packages/platforms/maui/Doroti.Host.Maui/AppKitWindowBackdrop.cs
+?? packages/platforms/maui/Doroti.Host.Maui/AppleGpuEffects.cs
+?? packages/platforms/maui/Doroti.Host.Maui/AppleGpuTextureFrames.cs
+?? packages/platforms/maui/Doroti.Host.Maui/AppleMetalPresentation.cs
+?? packages/platforms/maui/Doroti.Host.Maui/AppleReadFile.cs
+?? packages/platforms/maui/Doroti.Host.Maui/AppleSemanticsState.cs
+?? packages/platforms/maui/Doroti.Host.Maui/AppleWebViewContent.cs
+?? packages/platforms/maui/Doroti.Host.Maui/AppleWebViewSession.cs
+?? packages/platforms/maui/Doroti.Host.Maui/AppleWebViewUi.cs
+?? packages/platforms/maui/Doroti.Host.Maui/Doroti.Host.Maui.csproj
+?? packages/platforms/maui/Doroti.Host.Maui/DorotiAndroidVulkanViewHandler.cs
+?? packages/platforms/maui/Doroti.Host.Maui/DorotiGraphiteView.cs
+?? packages/platforms/maui/Doroti.Host.Maui/DorotiIosMetalViewHandler.cs
+?? packages/platforms/maui/Doroti.Host.Maui/DorotiMacCatalystSceneDelegate.cs
+?? packages/platforms/maui/Doroti.Host.Maui/DorotiMacCatalystSkglViewHandler.cs
+?? packages/platforms/maui/Doroti.Host.Maui/DorotiMacOSLayoutHandler.cs
+?? packages/platforms/maui/Doroti.Host.Maui/DorotiMacOSMetalSurface.cs
+?? packages/platforms/maui/Doroti.Host.Maui/DorotiMacOSMetalSurfaceHandler.cs
+?? packages/platforms/maui/Doroti.Host.Maui/DorotiMacOSMetalView.cs
+?? packages/platforms/maui/Doroti.Host.Maui/DorotiMauiApplication.cs
+?? packages/platforms/maui/Doroti.Host.Maui/DorotiMauiPlatformApplications.cs
+?? packages/platforms/maui/Doroti.Host.Maui/DorotiMauiSceneDelegate.cs
+?? packages/platforms/maui/Doroti.Host.Maui/DorotiMauiSurface.cs
+?? packages/platforms/maui/Doroti.Host.Maui/DorotiSkiaView.cs
+?? packages/platforms/maui/Doroti.Host.Maui/DorotiUIKitGraphiteViewHandler.cs
+?? packages/platforms/maui/Doroti.Host.Maui/DorotiUIKitTextInput.cs
+?? packages/platforms/maui/Doroti.Host.Maui/DorotiWindowsDxgiSurface.cs
+?? packages/platforms/maui/Doroti.Host.Maui/IosFrameLifetime.cs
+?? packages/platforms/maui/Doroti.Host.Maui/IosFrameLoopDiagnostics.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MacCatalystDesktopWindowHost.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MacCatalystDesktopWindowPolicy.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MacOSKeyMap.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiAndroidSemanticsBridge.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiApplicationNavigation.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiFeedback.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiFrameCallbackQueue.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiFrameWakeQueue.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiFrameworkHost.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiHapticFeedback.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiHostAdapter.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiHostContracts.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiKeyMap.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiKeyboardState.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiNativeInput.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiSemanticsBridge.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiSemanticsLayout.Android.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiSemanticsLayout.Apple.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiSemanticsLayout.Windows.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiSemanticsLayout.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiSettingsObserver.Android.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiSkiaCapabilities.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiSkiaSurface.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiSurfacePointerData.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiSystemSound.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.MacOS.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.Windows.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiTrackpadGesture.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiUIKitContextMenu.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiUIKitTextMagnifier.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiViewEnvironment.Android.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiViewEnvironment.MacOS.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiViewEnvironment.UIKit.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiViewEnvironment.Windows.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiViewEnvironment.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiWindowsFilePicker.cs
+?? packages/platforms/maui/Doroti.Host.Maui/MauiWindowsKeyboard.cs
+?? packages/platforms/maui/Doroti.Host.Maui/UIKitAnimatedViewport.cs
+?? packages/platforms/maui/Doroti.Host.Maui/UIKitApplicationActivation.cs
+?? packages/platforms/maui/Doroti.Host.Maui/UIKitBoundsAnimation.cs
+?? packages/platforms/maui/Doroti.Host.Maui/UIKitFilePicker.cs
+?? packages/platforms/maui/Doroti.Host.Maui/UIKitOsDrop.cs
+?? packages/platforms/maui/Doroti.Host.Maui/UIKitPlatformBlurView.cs
+?? packages/platforms/maui/Doroti.Host.Maui/UIKitPlatformRasterSurface.cs
+?? packages/platforms/maui/Doroti.Host.Maui/UIKitPlatformViewFactory.cs
+?? packages/platforms/maui/Doroti.Host.Maui/UIKitPlatformViewHost.cs
+?? packages/platforms/maui/Doroti.Host.Maui/UIKitTrackpadInput.cs
+?? packages/platforms/maui/Doroti.Host.Maui/WindowsCompositionSurfacePresenter.Pipeline.cs
+?? packages/platforms/maui/Doroti.Host.Maui/WindowsCompositionSurfacePresenter.cs
+?? packages/platforms/maui/Doroti.Host.Maui/WindowsDesktopWindowHost.cs
+?? packages/platforms/maui/Doroti.Host.Maui/WindowsMauiPlatformViewFactory.cs
+?? packages/platforms/maui/Doroti.Host.Maui/WindowsMauiPlatformViewHost.cs
+?? packages/platforms/maui/Doroti.Host.Maui/WindowsNativeCaption.cs
+?? packages/platforms/maui/Doroti.Host.Maui/WindowsNativeCompositionOutput.cs
+?? packages/platforms/maui/Doroti.Host.Maui/WindowsPointerMapping.cs
+?? packages/platforms/maui/Doroti.Host.Maui/WindowsResizeDispatchQueue.cs
+?? packages/platforms/maui/Doroti.Host.Maui/WindowsResizeEtw.cs
+?? packages/platforms/maui/Doroti.Host.Maui/WindowsResizeTimeline.cs
+?? packages/platforms/maui/Doroti.Host.Maui/WindowsRootMouseInput.cs
+?? packages/platforms/maui/Doroti.Host.Maui/WindowsRootRedirection.cs
+?? packages/platforms/maui/Doroti.Host.Maui/WindowsWindowBackdrop.cs
+?? packages/platforms/maui/Doroti.Host.Maui/buildTransitive/Doroti.Host.Maui.targets
+?? packages/platforms/maui/Doroti.Target.Android.Maui.android-arm64/AndroidMauiTarget.cs
+?? packages/platforms/maui/Doroti.Target.Android.Maui.android-arm64/Doroti.Target.Android.Maui.android-arm64.csproj
+?? packages/platforms/maui/Doroti.Target.Android.Maui.android-arm64/buildTransitive/Doroti.Target.Android.Maui.android-arm64.props
+?? packages/platforms/maui/Doroti.Target.Android.Maui.android-arm64/buildTransitive/Doroti.Target.Android.Maui.android-arm64.targets
+?? packages/platforms/maui/Doroti.Target.Android.Maui.android-arm64/doroti-target-manifest.json
+?? packages/platforms/maui/Doroti.Target.Android.Maui.android-x64/AndroidMauiTarget.cs
+?? packages/platforms/maui/Doroti.Target.Android.Maui.android-x64/Doroti.Target.Android.Maui.android-x64.csproj
+?? packages/platforms/maui/Doroti.Target.Android.Maui.android-x64/buildTransitive/Doroti.Target.Android.Maui.android-x64.props
+?? packages/platforms/maui/Doroti.Target.Android.Maui.android-x64/buildTransitive/Doroti.Target.Android.Maui.android-x64.targets
+?? packages/platforms/maui/Doroti.Target.Android.Maui.android-x64/doroti-target-manifest.json
+?? packages/platforms/maui/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.csproj
+?? packages/platforms/maui/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/MacCatalystMauiTarget.cs
+?? packages/platforms/maui/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/buildTransitive/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.props
+?? packages/platforms/maui/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/buildTransitive/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.targets
+?? packages/platforms/maui/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/doroti-target-manifest.json
+?? packages/platforms/maui/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/doroti-target-manifest.maccatalyst27.json
+?? packages/platforms/maui/Doroti.Target.MacOS.Maui.osx-arm64/Doroti.Target.MacOS.Maui.osx-arm64.csproj
+?? packages/platforms/maui/Doroti.Target.MacOS.Maui.osx-arm64/MacOSMauiTarget.cs
+?? packages/platforms/maui/Doroti.Target.MacOS.Maui.osx-arm64/buildTransitive/Doroti.Target.MacOS.Maui.osx-arm64.props
+?? packages/platforms/maui/Doroti.Target.MacOS.Maui.osx-arm64/buildTransitive/Doroti.Target.MacOS.Maui.osx-arm64.targets
+?? packages/platforms/maui/Doroti.Target.MacOS.Maui.osx-arm64/doroti-target-manifest.json
+?? packages/platforms/maui/Doroti.Target.MacOS.Maui.osx-arm64/doroti-target-manifest.macos27.json
+?? packages/platforms/maui/Doroti.Target.Windows.Maui.win-x64/Doroti.Target.Windows.Maui.win-x64.csproj
+?? packages/platforms/maui/Doroti.Target.Windows.Maui.win-x64/WindowsMauiTarget.cs
+?? packages/platforms/maui/Doroti.Target.Windows.Maui.win-x64/buildTransitive/Doroti.Target.Windows.Maui.win-x64.props
+?? packages/platforms/maui/Doroti.Target.Windows.Maui.win-x64/buildTransitive/Doroti.Target.Windows.Maui.win-x64.targets
+?? packages/platforms/maui/Doroti.Target.Windows.Maui.win-x64/doroti-target-manifest.json
+?? packages/platforms/maui/Doroti.Target.iOS.Maui.ios-arm64/Doroti.Target.iOS.Maui.ios-arm64.csproj
+?? packages/platforms/maui/Doroti.Target.iOS.Maui.ios-arm64/buildTransitive/Doroti.Target.iOS.Maui.ios-arm64.props
+?? packages/platforms/maui/Doroti.Target.iOS.Maui.ios-arm64/buildTransitive/Doroti.Target.iOS.Maui.ios-arm64.targets
+?? packages/platforms/maui/Doroti.Target.iOS.Maui.ios-arm64/doroti-target-manifest.ios27.json
+?? packages/platforms/maui/Doroti.Target.iOS.Maui.ios-arm64/doroti-target-manifest.json
+?? packages/platforms/maui/Doroti.Target.iOS.Maui.ios-arm64/doroti-target-manifest.net11.json
+?? packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-arm64/Doroti.Target.iOS.Maui.iossimulator-arm64.csproj
+?? packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-arm64/buildTransitive/Doroti.Target.iOS.Maui.iossimulator-arm64.props
+?? packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-arm64/buildTransitive/Doroti.Target.iOS.Maui.iossimulator-arm64.targets
+?? packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-arm64/doroti-target-manifest.ios27.json
+?? packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-arm64/doroti-target-manifest.json
+?? packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-x64/Doroti.Target.iOS.Maui.iossimulator-x64.csproj
+?? packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-x64/buildTransitive/Doroti.Target.iOS.Maui.iossimulator-x64.props
+?? packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-x64/buildTransitive/Doroti.Target.iOS.Maui.iossimulator-x64.targets
+?? packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-x64/doroti-target-manifest.ios27.json
+?? packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-x64/doroti-target-manifest.json
+?? packages/platforms/maui/README.md
+?? packages/platforms/maui/Version.props
+?? packages/platforms/maui/bootstrap/Doroti.Provider.Bootstrap.targets
+?? packages/platforms/maui/doroti-provider.json
+?? packages/platforms/maui/tooling/Doroti.Tool.Maui.csproj
+?? packages/platforms/maui/tooling/Extension.cs
+?? packages/platforms/maui/tooling/doroti-provider.json
+?? packages/platforms/qt/Directory.Build.props
+?? packages/platforms/qt/Doroti.Host.Qt/Doroti.Host.Qt.csproj
+?? packages/platforms/qt/Doroti.Host.Qt/DorotiQtRunner.cs
+?? packages/platforms/qt/Doroti.Host.Qt/LinuxGpuTextureFrames.cs
+?? packages/platforms/qt/Doroti.Host.Qt/QtApplicationActivation.cs
+?? packages/platforms/qt/Doroti.Host.Qt/QtApplicationDispatcher.cs
+?? packages/platforms/qt/Doroti.Host.Qt/QtApplicationStorage.cs
+?? packages/platforms/qt/Doroti.Host.Qt/QtDesktopWindowFactory.cs
+?? packages/platforms/qt/Doroti.Host.Qt/QtDesktopWindowHost.cs
+?? packages/platforms/qt/Doroti.Host.Qt/QtDesktopWindowPolicy.cs
+?? packages/platforms/qt/Doroti.Host.Qt/QtFeedback.cs
+?? packages/platforms/qt/Doroti.Host.Qt/QtHostAdapter.cs
+?? packages/platforms/qt/Doroti.Host.Qt/QtKeyMap.cs
+?? packages/platforms/qt/Doroti.Host.Qt/QtNativeServices.cs
+?? packages/platforms/qt/Doroti.Host.Qt/QtNativeV2.cs
+?? packages/platforms/qt/Doroti.Host.Qt/QtPlatformMessageCapability.cs
+?? packages/platforms/qt/Doroti.Host.Qt/QtPlatformViewHost.cs
+?? packages/platforms/qt/Doroti.Host.Qt/QtQuickNative.cs
+?? packages/platforms/qt/Doroti.Host.Qt/QtSkiaSurface.cs
+?? packages/platforms/qt/Doroti.Host.Qt/QtTitlebarAppearance.cs
+?? packages/platforms/qt/Doroti.Host.Qt/QtTitlebarPainter.cs
+?? packages/platforms/qt/Doroti.Host.Qt/QtUrlLauncher.cs
+?? packages/platforms/qt/Doroti.Host.Qt/QtWebViewSession.cs
+?? packages/platforms/qt/Doroti.Host.Qt/buildTransitive/Doroti.Host.Qt.targets
+?? packages/platforms/qt/Doroti.Target.Linux.Qt.linux-x64/Doroti.Target.Linux.Qt.linux-x64.csproj
+?? packages/platforms/qt/Doroti.Target.Linux.Qt.linux-x64/buildTransitive/Doroti.Target.Linux.Qt.linux-x64.props
+?? packages/platforms/qt/Doroti.Target.Linux.Qt.linux-x64/buildTransitive/Doroti.Target.Linux.Qt.linux-x64.targets
+?? packages/platforms/qt/Doroti.Target.Linux.Qt.linux-x64/doroti-target-manifest.json
+?? packages/platforms/qt/README.md
+?? packages/platforms/qt/Version.props
+?? packages/platforms/qt/bootstrap/Doroti.Provider.Bootstrap.targets
+?? packages/platforms/qt/doroti-provider.json
+?? packages/platforms/qt/eng/build-native.py
+?? packages/platforms/qt/native/.clang-format
+?? packages/platforms/qt/native/CMakeLists.txt
+?? packages/platforms/qt/native/README.md
+?? packages/platforms/qt/native/cmake/DorotiLicensePolicy.cmake
+?? packages/platforms/qt/native/include/doroti_gstreamer_policy.h
+?? packages/platforms/qt/native/include/doroti_qt_desktop.h
+?? packages/platforms/qt/native/include/doroti_qt_host_v2.h
+?? packages/platforms/qt/native/include/doroti_qt_platform_views.h
+?? packages/platforms/qt/native/include/doroti_qt_quick.h
+?? packages/platforms/qt/native/include/doroti_qt_services.h
+?? packages/platforms/qt/native/include/doroti_qt_webview.h
+?? packages/platforms/qt/native/licenses/GPL-3.txt
+?? packages/platforms/qt/native/licenses/LGPL-2.1.txt
+?? packages/platforms/qt/native/licenses/LGPL-3.txt
+?? packages/platforms/qt/native/licenses/README.md
+?? packages/platforms/qt/native/licenses/Wayland-background-effect-MIT.txt
+?? packages/platforms/qt/native/protocols/ext-background-effect-v1.xml
+?? packages/platforms/qt/native/qml/Backdrop.qml
+?? packages/platforms/qt/native/qml/WebView.qml
+?? packages/platforms/qt/native/shaders/README.md
+?? packages/platforms/qt/native/shaders/bake.py
+?? packages/platforms/qt/native/shaders/gaussian.frag
+?? packages/platforms/qt/native/shaders/gaussian.frag.json
+?? packages/platforms/qt/native/shaders/gaussian.frag.qsb
+?? packages/platforms/qt/native/src/doroti_qt_desktop.cpp
+?? packages/platforms/qt/native/src/doroti_qt_host.cpp
+?? packages/platforms/qt/native/src/doroti_qt_platform_views.cpp
+?? packages/platforms/qt/native/src/doroti_qt_quick.cpp
+?? packages/platforms/qt/native/src/doroti_qt_services.cpp
+?? packages/platforms/qt/native/src/doroti_texture_gstreamer.cpp
+?? packages/platforms/qt/native/src/doroti_webview_qt.cpp
+?? packages/platforms/qt/tooling/Doroti.Tool.Qt.csproj
+?? packages/platforms/qt/tooling/Extension.cs
+?? packages/platforms/qt/tooling/doroti-provider.json
+?? packages/platforms/shared/Windows/WindowsFilePickerService.cs
+?? packages/platforms/shared/Windows/WindowsKeyboardMap.cs
+?? packages/platforms/shared/Windows/WindowsOpenFileDialog.cs
+?? packages/platforms/shared/Windows/WindowsPlatformViewDispatcher.cs
+?? packages/platforms/shared/Windows/WindowsReadFile.cs
+?? packages/platforms/shared/Windows/WindowsWebViewContent.cs
+?? packages/platforms/shared/Windows/WindowsWebViewSession.cs
+?? packages/platforms/web/Directory.Build.props
+?? packages/platforms/web/Doroti.Host.Web/BrowserApplicationNavigation.cs
+?? packages/platforms/web/Doroti.Host.Web/BrowserFeedback.cs
+?? packages/platforms/web/Doroti.Host.Web/BrowserFilePicker.cs
+?? packages/platforms/web/Doroti.Host.Web/BrowserFrameworkHost.cs
+?? packages/platforms/web/Doroti.Host.Web/BrowserHapticFeedback.cs
+?? packages/platforms/web/Doroti.Host.Web/BrowserHostContracts.cs
+?? packages/platforms/web/Doroti.Host.Web/BrowserHotReload.cs
+?? packages/platforms/web/Doroti.Host.Web/BrowserKeyMap.cs
+?? packages/platforms/web/Doroti.Host.Web/BrowserManagedRenderThread.cs
+?? packages/platforms/web/Doroti.Host.Web/BrowserOsDrop.cs
+?? packages/platforms/web/Doroti.Host.Web/BrowserOwnerSynchronizationContext.cs
+?? packages/platforms/web/Doroti.Host.Web/BrowserPlatformViewHost.cs
+?? packages/platforms/web/Doroti.Host.Web/BrowserSkiaCapabilities.cs
+?? packages/platforms/web/Doroti.Host.Web/BrowserTimeProvider.cs
+?? packages/platforms/web/Doroti.Host.Web/Doroti.Host.Web.csproj
+?? packages/platforms/web/Doroti.Host.Web/DorotiWebApplication.cs
+?? packages/platforms/web/Doroti.Host.Web/DorotiWebWorkerSurface.GpuEffects.cs
+?? packages/platforms/web/Doroti.Host.Web/DorotiWebWorkerSurface.Graphite.cs
+?? packages/platforms/web/Doroti.Host.Web/DorotiWebWorkerSurface.Textures.cs
+?? packages/platforms/web/Doroti.Host.Web/DorotiWebWorkerSurface.cs
+?? packages/platforms/web/Doroti.Host.Web/Fonts/BrowserCssFonts.cs
+?? packages/platforms/web/Doroti.Host.Web/Fonts/BrowserDefaultFonts.cs
+?? packages/platforms/web/Doroti.Host.Web/Fonts/BrowserFontAsset.cs
+?? packages/platforms/web/Doroti.Host.Web/Fonts/BrowserFontData.cs
+?? packages/platforms/web/Doroti.Host.Web/Fonts/BrowserFontFallbackLoader.cs
+?? packages/platforms/web/Doroti.Host.Web/Fonts/BrowserLanguageFonts.cs
+?? packages/platforms/web/Doroti.Host.Web/Fonts/BrowserStartupFonts.cs
+?? packages/platforms/web/Doroti.Host.Web/Fonts/BrowserWoff2Decoder.cs
+?? packages/platforms/web/Doroti.Host.Web/Fonts/FontFallbackCatalog.cs
+?? packages/platforms/web/Doroti.Host.Web/Fonts/LICENSE.flutter.txt
+?? packages/platforms/web/Doroti.Host.Web/Fonts/README.md
+?? packages/platforms/web/Doroti.Host.Web/Fonts/catalog-source.txt
+?? packages/platforms/web/Doroti.Host.Web/Fonts/fallbacks.bin
+?? packages/platforms/web/Doroti.Host.Web/IBrowserGraphicsCapabilities.cs
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.frame-cost.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.loader.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.raster.worker.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.admission.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.composition.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.css-fonts.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.diagnostics.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.dom.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.drop.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.environment.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.files.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.fonts.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.gpu-effects.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.hot-reload.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.lifetime.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.managed-worker.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.navigation.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.platform-frames.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.platform-views.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.policy.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.protocol.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.requests.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.services.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.surface.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.text-actions.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.text-focus.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.texture-budget.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.texture-worker.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.textures.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.timers.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.webview.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.web.worker-host.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/doroti.webgpu.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/tsconfig.json
+?? packages/platforms/web/Doroti.Host.Web/Web/types/doroti-loader/index.d.ts
+?? packages/platforms/web/Doroti.Host.Web/Web/types/doroti-textures/index.d.ts
+?? packages/platforms/web/Doroti.Host.Web/wwwroot/doroti.web.css
+?? packages/platforms/web/Doroti.Target.Web.browser-wasm/BrowserWasmTarget.cs
+?? packages/platforms/web/Doroti.Target.Web.browser-wasm/Doroti.Target.Web.browser-wasm.csproj
+?? packages/platforms/web/Doroti.Target.Web.browser-wasm/DorotiWebWorkerRunner.cs
+?? packages/platforms/web/Doroti.Target.Web.browser-wasm/build/Doroti.Target.Web.browser-wasm.props
+?? packages/platforms/web/Doroti.Target.Web.browser-wasm/build/DorotiSkiaInterop.js
+?? packages/platforms/web/Doroti.Target.Web.browser-wasm/buildTransitive/Doroti.Target.Web.browser-wasm.props
+?? packages/platforms/web/Doroti.Target.Web.browser-wasm/buildTransitive/Doroti.Target.Web.browser-wasm.targets
+?? packages/platforms/web/Doroti.Target.Web.browser-wasm/doroti-target-manifest.json
+?? packages/platforms/web/README.md
+?? packages/platforms/web/Version.props
+?? packages/platforms/web/bootstrap/Doroti.Provider.Bootstrap.targets
+?? packages/platforms/web/doroti-provider.json
+?? packages/platforms/web/tooling/Doroti.Tool.Web.csproj
+?? packages/platforms/web/tooling/Extension.cs
+?? packages/platforms/web/tooling/doroti-provider.json
+?? packages/platforms/windowsappsdk/Directory.Build.props
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk.Diagnostics/Doroti.Host.WindowsAppSdk.Diagnostics.csproj
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/AcrylicPresenterSnapshot.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/AssemblyInfo.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/Doroti.Host.WindowsAppSdk.csproj
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/DorotiWindowsAppSdkRunner.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/Properties/AssemblyInfo.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsAcrylicOptionsState.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsAppSdkDesktopWindowHost.Menu.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsAppSdkDesktopWindowHost.MenuBar.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsAppSdkDesktopWindowHost.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsAppSdkPlatformMessageCapability.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsApplicationActivation.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsApplicationSession.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsDesktopWindowFactory.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsDropData.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsFilePicker.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsFrameInputState.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsGpuSelection.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsGpuTextureFrames.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsHwndPlatformViewFactory.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsKeyMap.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsKeyboardState.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedHwndPresenter.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedHwndPresenterBase.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedProductHost.Feedback.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedProductHost.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedResizeCoordinator.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.D3D12.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.DelayProbe.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.Graphite.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.Pipeline.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.Prepared.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.Validation.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsNativeV1.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsOsDropTarget.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsPlatformViewHost.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsPreparedMovingFrame.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsSharedImports.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsSharedRaster.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsUrlLauncher.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsWebViewComposition.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsWebViewPointer.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsWinUiBackdrop.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsWinUiControls.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsXamlWebViewFactory.cs
+?? packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/buildTransitive/Doroti.Host.WindowsAppSdk.targets
+?? packages/platforms/windowsappsdk/Doroti.Target.Windows.WindowsAppSdk.win-x64/Doroti.Target.Windows.WindowsAppSdk.win-x64.csproj
+?? packages/platforms/windowsappsdk/Doroti.Target.Windows.WindowsAppSdk.win-x64/buildTransitive/Doroti.Target.Windows.WindowsAppSdk.win-x64.props
+?? packages/platforms/windowsappsdk/Doroti.Target.Windows.WindowsAppSdk.win-x64/buildTransitive/Doroti.Target.Windows.WindowsAppSdk.win-x64.targets
+?? packages/platforms/windowsappsdk/Doroti.Target.Windows.WindowsAppSdk.win-x64/doroti-target-manifest.json
+?? packages/platforms/windowsappsdk/README.md
+?? packages/platforms/windowsappsdk/Version.props
+?? packages/platforms/windowsappsdk/bootstrap/Doroti.Provider.Bootstrap.targets
+?? packages/platforms/windowsappsdk/doroti-provider.json
+?? packages/platforms/windowsappsdk/eng/build-hwnd-exact-cpp-native.ps1
+?? packages/platforms/windowsappsdk/native/Doroti.CppWinRT.targets
+?? packages/platforms/windowsappsdk/native/Doroti.Host.WindowsAppSdk.Native.vcxproj
+?? packages/platforms/windowsappsdk/native/Doroti.NativeVersions.props
+?? packages/platforms/windowsappsdk/native/include/doroti_windows_acrylic_composition_v1.h
+?? packages/platforms/windowsappsdk/native/include/doroti_windows_composition_raster_v1.h
+?? packages/platforms/windowsappsdk/native/include/doroti_windows_d3d12_output_v1.h
+?? packages/platforms/windowsappsdk/native/include/doroti_windows_gpu_selection_v1.h
+?? packages/platforms/windowsappsdk/native/include/doroti_windows_host_v1.h
+?? packages/platforms/windowsappsdk/native/src/accessibility_bridge.cpp
+?? packages/platforms/windowsappsdk/native/src/accessibility_bridge.h
+?? packages/platforms/windowsappsdk/native/src/accessibility_text.inc
+?? packages/platforms/windowsappsdk/native/src/acrylic_composition.cpp
+?? packages/platforms/windowsappsdk/native/src/composition_raster.cpp
+?? packages/platforms/windowsappsdk/native/src/d3d12_output.cpp
+?? packages/platforms/windowsappsdk/native/src/exports.cpp
+?? packages/platforms/windowsappsdk/native/src/gpu_selection.cpp
+?? packages/platforms/windowsappsdk/native/src/platform_capture_probe.cpp
+?? packages/platforms/windowsappsdk/native/src/platform_composition.cpp
+?? packages/platforms/windowsappsdk/native/src/resize_order_trace.h
+?? packages/platforms/windowsappsdk/native/src/shared_raster.h
+?? packages/platforms/windowsappsdk/native/src/texture_input.cpp
+?? packages/platforms/windowsappsdk/native/src/winui_composition.cpp
+?? packages/platforms/windowsappsdk/tooling/Doroti.Tool.WindowsAppSdk.csproj
+?? packages/platforms/windowsappsdk/tooling/Extension.cs
+?? packages/platforms/windowsappsdk/tooling/doroti-provider.json
+?? samples/DorotiTestbedApp/desktop/NativeMenuProbe.cs
+?? samples/DorotiTestbedApp/desktop/WindowKindsProbe.cs
+?? samples/DorotiTestbedApp/src/NativeDesignPresentationProbe.cs
+?? samples/DorotiTestbedApp/src/SharedNativeTreeProbe.cs

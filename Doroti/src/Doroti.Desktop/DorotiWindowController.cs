@@ -1,4 +1,3 @@
-using Doroti.Hosting;
 using Doroti.Ui;
 
 namespace Doroti.Desktop;
@@ -15,6 +14,7 @@ public sealed class DorotiWindowController
     private readonly TaskCompletionSource _ready = new(
         TaskCreationOptions.RunContinuationsAsynchronously
     );
+    private readonly TaskCompletionSource _initializationWork = new(TaskCreationOptions.RunContinuationsAsynchronously);
     private readonly object _gate = new();
     private readonly List<
         Func<WindowClosingContext, CancellationToken, Task<WindowCloseDecision>>
@@ -27,6 +27,8 @@ public sealed class DorotiWindowController
     private long _latestReplacement;
     private int _closed;
     private bool _closingAccepted;
+    private static readonly AsyncLocal<IReadOnlySet<WindowId>?> ClosingChain = new();
+    internal bool IsClosing => _closingAccepted;
 
     internal DorotiWindowController(
         WindowId id,
@@ -50,9 +52,14 @@ public sealed class DorotiWindowController
     }
 
     public WindowId Id { get; }
+    public ulong? ViewId { get; internal set; }
+    /// <summary>Borrowed view; the application owns attachment and disposal.</summary>
+    public DorotiView? View { get; internal set; }
+    public WindowKind Kind => _options.Kind;
+    public WindowId? OwnerWindowId => _options.OwnerWindowId;
     public WindowCapabilities Capabilities => _host.Capabilities;
     public WindowState State => Volatile.Read(ref _state);
-    public Task InitializationWork { get; private set; } = Task.CompletedTask;
+    public Task InitializationWork => _initializationWork.Task;
     public Exception? InitializationError { get; private set; }
 
     public Task EnsureInitializedAsync(CancellationToken cancellationToken = default) =>
@@ -63,14 +70,12 @@ public sealed class DorotiWindowController
 
     internal async Task InitializeAsync(
         WindowCreateOptions request,
-        IDorotiViewEntrypoint content,
         CancellationToken cancellationToken
     )
     {
         await _host.InitializeAsync(
             request.Options,
             new(this, _manager),
-            content,
             cancellationToken
         );
         cancellationToken.ThrowIfCancellationRequested();
@@ -81,8 +86,16 @@ public sealed class DorotiWindowController
     internal void Start(WindowCreateOptions request)
     {
         Observe(ObserveReadinessAsync());
-        InitializationWork = RunStartupAsync(request);
         Observe(InitializationWork);
+        _ = CompleteStartupAsync(request);
+    }
+
+    internal void FailBeforeStartup(Exception error) => _initializationWork.TrySetException(error);
+
+    private async Task CompleteStartupAsync(WindowCreateOptions request)
+    {
+        try { await RunStartupAsync(request); _initializationWork.TrySetResult(); }
+        catch (Exception error) { _initializationWork.TrySetException(error); }
     }
 
     private async Task ObserveReadinessAsync()
@@ -107,14 +120,16 @@ public sealed class DorotiWindowController
     {
         // Yield so application callbacks cannot block manager creation/registry insertion.
         await Task.Yield();
+        Task hook = Task.CompletedTask;
+        Task autoShow = Task.CompletedTask;
         try
         {
-            var hook =
+            hook =
                 request.OnCreated?.Invoke(new(this, _manager), _lifetime.Token)
                 ?? Task.CompletedTask;
-            var autoShow =
-                request.Options.StartupVisibility == WindowStartupVisibility.WhenReady
-                    ? ShowAsync(_lifetime.Token)
+            autoShow =
+                request.Options.StartupVisibility == WindowStartupVisibility.WhenReady && !_lifetime.IsCancellationRequested
+                    ? AutoShowAsync()
                     : Task.CompletedTask;
             Observe(autoShow);
             Observe(hook);
@@ -132,6 +147,20 @@ public sealed class DorotiWindowController
             if (beforeReady && Volatile.Read(ref _closed) == 0 && !_closingAccepted)
                 await AbortAsync(error);
             throw;
+        }
+        finally
+        {
+            // A canceled Show may finish before OnCreated returns from closing its own
+            // window. Report failures promptly, but retain the application until both
+            // actual operations have completed, including callback cleanup after close.
+            try { await Task.WhenAll(hook, autoShow).ConfigureAwait(false); }
+            catch { /* The startup failure was already observed and reported above. */ }
+        }
+        async Task AutoShowAsync()
+        {
+            try { await ShowAsync(_lifetime.Token); }
+            catch (OperationCanceledException) when (_lifetime.IsCancellationRequested) { }
+            catch (ObjectDisposedException) when (_lifetime.IsCancellationRequested) { }
         }
     }
 
@@ -187,6 +216,7 @@ public sealed class DorotiWindowController
         if (Volatile.Read(ref _closed) != 0)
             return;
         Volatile.Write(ref _state, state);
+        _manager.PublishWindow(this);
         Action<WindowState>? callbacks;
         lock (_gate)
             callbacks = _changed;
@@ -218,6 +248,8 @@ public sealed class DorotiWindowController
     public Task<bool> CloseAsync(CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
+        if (ClosingChain.Value?.Contains(Id) == true)
+            throw new InvalidOperationException("A close callback cannot await its own window or an ancestor currently closing.");
         lock (_gate)
         {
             if (_closed != 0)
@@ -237,13 +269,24 @@ public sealed class DorotiWindowController
     private async Task<bool> CloseCoreAsync()
     {
         await Task.Yield();
+        var previousChain = ClosingChain.Value;
+        ClosingChain.Value = new HashSet<WindowId>(previousChain ?? new HashSet<WindowId>()) { Id };
+        try { return await CloseDecisionAsync().ConfigureAwait(false); }
+        finally { ClosingChain.Value = previousChain; }
+    }
+
+    private async Task<bool> CloseDecisionAsync()
+    {
         Func<WindowClosingContext, CancellationToken, Task<WindowCloseDecision>>[] callbacks;
         lock (_gate)
             callbacks = _closing.ToArray();
         foreach (var callback in callbacks)
             if (await callback(new(this), _lifetime.Token) == WindowCloseDecision.Cancel)
                 return false;
-        _closingAccepted = true;
+        _closingAccepted = true; // Reject new owned allocations before joining an in-flight creation.
+        try { if (!await _manager.CloseOwnedWindowsAsync(Id)) { _closingAccepted = false; return false; } }
+        catch { _closingAccepted = false; throw; }
+        _manager.PublishWindow(this);
         _ready.TrySetException(new ObjectDisposedException(nameof(DorotiWindowController)));
         _lifetime.Cancel(); // Interrupt deferred operations before draining their queue.
         await _commands.WaitAsync();
@@ -278,6 +321,7 @@ public sealed class DorotiWindowController
     private async Task FinishUnexpectedCloseAsync()
     {
         _closingAccepted = true;
+        _manager.PublishWindow(this);
         _ready.TrySetException(new ObjectDisposedException(nameof(DorotiWindowController)));
         try
         {
@@ -310,6 +354,7 @@ public sealed class DorotiWindowController
             _changed = null;
             _closing.Clear();
         }
+        View = null;
         _manager.Remove(this);
     }
 

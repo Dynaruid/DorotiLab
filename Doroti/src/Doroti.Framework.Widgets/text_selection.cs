@@ -3902,6 +3902,8 @@ public class ClipboardStatusNotifier : ValueNotifier<ClipboardStatus>, WidgetsBi
         {
             return;
         }
+        var ownerLifetime = PlatformDispatcher.instance.RequireInvocationView(
+            DorotiUiInvocation.Managed("ClipboardStatus.update")).InvocationLifetime;
         bool hasStringsLocal = default!;
         try
         {
@@ -3909,6 +3911,7 @@ public class ClipboardStatusNotifier : ValueNotifier<ClipboardStatus>, WidgetsBi
         }
         catch (Exception exceptionLocal)
         {
+            if (_disposed || ownerLifetime.IsCancellationRequested) return;
             var stackLocal = new System.Diagnostics.StackTrace();
             FlutterError.reportError(
                 new FlutterErrorDetails(

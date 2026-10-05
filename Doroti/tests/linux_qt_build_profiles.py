@@ -27,7 +27,7 @@ for name, value in {
     'TargetDir': str(out / 'bin') + '/', 'PublishDir': str(out / 'publish') + '/',
 }.items():
     ET.SubElement(properties, name).text = value
-ET.SubElement(project, 'Import', Project=str(sdk / 'Doroti.Qt.targets'))
+ET.SubElement(project, 'Import', Project=str(ROOT / 'packages/platforms/build/Doroti.Qt.targets'))
 ET.ElementTree(project).write(fixture, encoding='utf-8', xml_declaration=True)
 
 def run(name, project=fixture, switches=(), target=None, query=None, error=None):
@@ -71,30 +71,10 @@ for option in ['Configuration=Release', 'PublishAot=true', 'PublishTrimmed=true'
         switches=['-p:DorotiQtDevelopment=true', '-p:' + option],
         target='ValidateDorotiQtDevelopment', error='DOROTIQT007')
 
-# Capture the real CLI's command and environment without launching a watcher.
-capture = out / 'cli-capture.json'
-dotnet = out / '한글 도구/dotnet'
-dotnet.parent.mkdir()
-dotnet.write_text('#!/usr/bin/env python3\nimport json, os, sys\n'
-    + 'with open(' + repr(str(capture)) + ', "w") as output:\n'
-    + '    json.dump({"args": sys.argv[1:], "polling": os.getenv("DOTNET_USE_POLLING_FILE_WATCHER"), '
-      '"rudeRestart": os.getenv("DOTNET_WATCH_RESTART_ON_RUDE_EDIT"), "session": os.getenv("DOROTI_DEV_SESSION_ID")}, output)\n')
-dotnet.chmod(0o755)
-command = ['pwsh', '-NoProfile', '-File', str(ROOT / 'Doroti/eng/doroti.ps1'), 'dev',
-    '-App', str(ROOT / 'samples/DorotiTestbedApp'), '-Platform', 'linux', '-DotnetPath', str(dotnet),
-    '-SessionDirectory', str(out / 'cli-session'), '-SessionId', 'linux-profiles']
-env = os.environ.copy()
-env.pop('DOTNET_USE_POLLING_FILE_WATCHER', None)
-subprocess.run(command, cwd=ROOT, env=env, check=True, capture_output=True, text=True, timeout=60)
-invocation = json.loads(capture.read_text())
-assert '--property:DorotiQtDevelopment=true' in invocation['args'] and '--no-launch-profile' in invocation['args']
-assert invocation['polling'] == '1' and invocation['rudeRestart'] == 'false' and invocation['session'] == 'linux-profiles'
-subprocess.run(command, cwd=ROOT, env=env | {'DOTNET_USE_POLLING_FILE_WATCHER': 'false'}, check=True, capture_output=True, text=True, timeout=60)
-assert json.loads(capture.read_text())['polling'] == 'false', 'Explicit watcher preference was overwritten'
-capture.unlink()
-result = subprocess.run(command + ['-Configuration', 'Release'], cwd=ROOT, env=env, capture_output=True, text=True, timeout=60)
-assert result.returncode != 0 and 'dev requires Debug' in result.stderr and not capture.exists(), result.stdout + result.stderr
-print('PASS CLI Linux development arguments, polling override, custom tool path and Release rejection', flush=True)
+# Provider-owned typed operation plans; arbitrary-alias installed discovery and
+# actual CLI execution are qualified by platform_provider_contract.py.
+subprocess.run(['dotnet', 'run', '--project', str(ROOT / 'packages/platforms/qt/tests/Doroti.Tool.Qt.Tests/Doroti.Tool.Qt.Tests.csproj'),
+    '--artifacts-path', str(out / 'tool-build')], cwd=ROOT, check=True, timeout=1200)
 
 # Evaluate the actual template against the source SDK; package qualification
 # separately restores this same project against the freshly packed SDK.
@@ -103,6 +83,8 @@ tree = ET.parse(template)
 root = tree.getroot()
 root.remove(root.find('Sdk'))
 root.insert(0, ET.Element('Import', Project=str(sdk / 'Sdk.props')))
+settings = ET.SubElement(root, 'PropertyGroup')
+ET.SubElement(settings, 'DorotiProviderBootstrapTargets').text = str(ROOT / 'packages/platforms/qt/bootstrap/Doroti.Provider.Bootstrap.targets')
 root.append(ET.Element('Import', Project=str(sdk / 'Sdk.targets')))
 template_fixture = out / 'Template.csproj'
 tree.write(template_fixture, encoding='utf-8', xml_declaration=True)
@@ -146,9 +128,8 @@ for directory in [out / 'bin', out / 'publish']:
 (native / 'libdoroti_webview_qt.so').unlink()
 run('reject-missing-enabled-shim', switches=switches, target='CopyDorotiQtNative', error='MSB3030')
 
-roots = [ROOT / 'samples/DorotiSampleApp2/linux/native', ROOT / 'samples/DorotiTestbedApp/linux/native', template.parent / 'native']
-for path in roots[0].rglob('*'):
-    if path.is_file():
-        relative = path.relative_to(roots[0])
-        assert all((other / relative).read_bytes() == path.read_bytes() for other in roots[1:]), relative
-print('PASS sample/template native source parity; Qt build profiles and payload copying.', flush=True)
+provider_source = ROOT / 'packages/platforms/qt/native'
+assert (provider_source / 'CMakeLists.txt').is_file()
+for removed in [ROOT / 'samples/DorotiSampleApp2/linux/native', ROOT / 'samples/DorotiTestbedApp/linux/native', template.parent / 'native']:
+    assert not removed.exists(), 'Duplicate framework native source: ' + str(removed)
+print('PASS canonical provider native ownership; Qt build profiles, typed development plans and payload copying.', flush=True)

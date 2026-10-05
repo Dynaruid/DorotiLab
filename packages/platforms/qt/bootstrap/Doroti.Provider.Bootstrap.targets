@@ -1,0 +1,26 @@
+<Project>
+  <PropertyGroup>
+    <DorotiProviderBuildDirectory Condition="'$(DorotiProviderBuildDirectory)' == '' and Exists('$(MSBuildThisFileDirectory)../provider-build/Sdk.targets')">$(MSBuildThisFileDirectory)../provider-build/</DorotiProviderBuildDirectory>
+    <DorotiProviderBuildDirectory Condition="'$(DorotiProviderBuildDirectory)' == ''">$(MSBuildThisFileDirectory)../../build/</DorotiProviderBuildDirectory>
+    <DorotiProviderSdkProps>$(DorotiProviderBuildDirectory)Sdk.props</DorotiProviderSdkProps>
+    <DorotiProviderSupportsDesktop>true</DorotiProviderSupportsDesktop>
+    <DorotiProviderExcludePublishSymbols>false</DorotiProviderExcludePublishSymbols>
+    <DorotiProviderReferenceProperties Condition="'$(DorotiIosDevelopment)' == 'true' or '$(DorotiMacDevelopment)' == 'true'">CustomAfterMicrosoftCommonTargets=$(DorotiProviderBuildDirectory)Doroti.IosDevelopmentBinding.targets</DorotiProviderReferenceProperties>
+    <DorotiQtNativeSourceDirectory Condition="'$(DorotiQtNativeSourceDirectory)' == ''">$(MSBuildThisFileDirectory)../native/</DorotiQtNativeSourceDirectory>
+    <DorotiQtNativeBuildDirectory Condition="'$(DorotiQtNativeBuildDirectory)' == '' and Exists('$(MSBuildThisFileDirectory)../runtimes/linux-x64/native/libdoroti_qt_host.so')">$(MSBuildThisFileDirectory)../runtimes/linux-x64/native/</DorotiQtNativeBuildDirectory>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DorotiProviderId>qt</DorotiProviderId>
+    <DorotiProviderVersion Condition="'$(DorotiProviderVersion)' == ''">0.4.0-alpha.1</DorotiProviderVersion>
+    <DorotiProviderCoreRange>[0.4.0-alpha.1,0.5.0)</DorotiProviderCoreRange>
+    <DorotiProviderProtocolVersion>1</DorotiProviderProtocolVersion>
+    <DorotiProviderToolPackage>Doroti.Tool.Qt</DorotiProviderToolPackage>
+    <DorotiProviderProfile Condition="'$(DorotiProviderProfile)' == ''">default:$(RuntimeIdentifier)</DorotiProviderProfile>
+    <DorotiProviderSuppliesBootstrap>true</DorotiProviderSuppliesBootstrap>
+  </PropertyGroup>
+  <ItemGroup>
+    <DorotiProviderEntryLine Include="    public static int Main(string[] args) =&gt;" Condition="'$(DorotiNativeEntryKind)' == 'Qt-Main'" />
+    <DorotiProviderEntryLine Include="        global::Doroti.Host.Qt.DorotiQtRunner.Run(() =&gt; Create(args))%3B" Condition="'$(DorotiNativeEntryKind)' == 'Qt-Main'" />
+  </ItemGroup>
+  <Import Project="$(DorotiProviderBuildDirectory)Sdk.targets" Condition="'$(DorotiRunnerSdkActive)' == 'true'" />
+</Project>

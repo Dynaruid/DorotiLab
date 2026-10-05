@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup><DorotiProviderBootstrapTargets>$(MSBuildThisFileDirectory)../bootstrap/Doroti.Provider.Bootstrap.targets</DorotiProviderBootstrapTargets></PropertyGroup>
+  <Import Project="$(DorotiProviderBootstrapTargets)" Condition="'$(DorotiProviderSuppliesBootstrap)' != 'true'" />
+  <ItemGroup Condition="'$(DorotiTarget)' == 'Linux' and '@(DorotiTargetDescriptor)' == ''">
+    <DorotiTargetDescriptor Include="Linux" HostKind="Qt" NativeEntryKind="Qt-Main" RuntimeIdentifier="linux-x64" TargetFramework="net10.0" TargetPackage="Doroti.Target.Linux.Qt.linux-x64" />
+  </ItemGroup>
+</Project>
