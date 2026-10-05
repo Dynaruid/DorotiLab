@@ -8,7 +8,7 @@ import { promisify } from 'node:util';
 export async function run() {
     const config = vscode.workspace.getConfiguration('doroti');
     await config.update('cliPath', process.env.DOROTI_TEST_CLI, vscode.ConfigurationTarget.Global);
-    await config.update('androidDevice', process.env.DOROTI_TEST_ANDROID_DEVICE, vscode.ConfigurationTarget.Global);
+    await config.update('device', process.env.DOROTI_TEST_ANDROID_DEVICE, vscode.ConfigurationTarget.Global);
     const extension = vscode.extensions.getExtension('doroti-local.doroti');
     assert.ok(extension);
     const api = await extension.activate();
@@ -29,7 +29,9 @@ export async function run() {
     await vscode.commands.executeCommand('doroti.selectProject');
     await vscode.commands.executeCommand('doroti.selectTarget', 'android');
     const source = vscode.Uri.file(path.join(api.getState().project.root, 'src/MaterialSample/HotReloadSample.cs'));
-    const original = await fs.readFile(source.fsPath, 'utf8');
+    const originalBytes = await fs.readFile(source.fsPath);
+    const original = originalBytes.toString('utf8');
+    let result: Record<string, unknown> = {};
     try {
         await vscode.commands.executeCommand('doroti.run');
         await until(() => !!api.getState().runtime?.supported, 'Android runtime', 600000);
@@ -46,12 +48,15 @@ export async function run() {
         assert.equal(after.message, 'Android VSIX Hot Reload passed');
         for (const key of ['stateId', 'processId', 'count', 'text', 'scroll']) assert.equal(after[key], before[key], key);
         assert.equal(api.getState().runtime.runtimeId, runtime.runtimeId);
-        await fs.writeFile(path.join(evidence, 'result.json'), JSON.stringify({ before, after, runtime: api.getState().runtime }));
+        result = { before, after, runtime: api.getState().runtime, installedVsix: extension.extensionPath, physicalInput: 'notVerified' };
+        await fs.writeFile(path.join(evidence, 'result.json'), JSON.stringify(result));
         console.log('PASS installed VSIX Android Run, Hot Reload command, state preservation');
         await vscode.commands.executeCommand('doroti.restart', true);
         await until(() => !!api.getState().runtime?.supported && api.getState().runtime.runtimeId !== runtime.runtimeId, 'explicit Restart', 600000);
         await until(async () => { try { return (await read()).scroll === 160; } catch { return false; } }, 'restarted state');
         assert.notEqual((await read()).processId, before.processId);
+        result.explicitRestart = 'PASS';
+        result.restarted = await read();
         console.log('PASS installed VSIX Android Restart creates a new runtime and PID');
     } finally {
         await vscode.commands.executeCommand('doroti.stop');
@@ -59,10 +64,13 @@ export async function run() {
         const edit = new vscode.WorkspaceEdit();
         edit.replace(source, new vscode.Range(doc.positionAt(0), doc.positionAt(doc.getText().length)), original);
         await vscode.workspace.applyEdit(edit); await doc.save();
+        await fs.writeFile(source.fsPath, originalBytes);
     }
     assert.equal(api.getState().running, false);
     const stopped = await promisify(execFile)('adb', ['-s', process.env.DOROTI_TEST_ANDROID_DEVICE!,
         'shell', 'ps', '-A'], { timeout: 10000 });
     assert.ok(!stopped.stdout.includes('dev.doroti.testbed'));
+    result.stop = 'PASS';
+    await fs.writeFile(path.join(evidence, 'result.json'), JSON.stringify(result, null, 2));
     console.log('PASS installed VSIX Android Stop closes the device app');
 }

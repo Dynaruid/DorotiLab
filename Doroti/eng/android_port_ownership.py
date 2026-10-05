@@ -3,6 +3,7 @@ import ctypes
 import os
 from pathlib import Path
 import subprocess
+import sys
 
 def listener_identity(port):
     try:
@@ -24,6 +25,13 @@ def listener_identity(port):
                 if not kernel.GetProcessTimes(handle, *(ctypes.byref(time) for time in times)): return None
                 return (pid, (times[0].dwHighDateTime << 32) | times[0].dwLowDateTime)
             finally: kernel.CloseHandle(handle)
+        if sys.platform == 'darwin':
+            output = subprocess.check_output(['lsof', '-nP', '-t', '-iTCP:' + str(port), '-sTCP:LISTEN'], text=True, timeout=5)
+            pids = {int(line) for line in output.splitlines() if line.isdecimal()}
+            if len(pids) != 1: return None
+            pid = pids.pop()
+            started = subprocess.check_output(['ps', '-p', str(pid), '-o', 'lstart='], text=True, timeout=5).strip()
+            return (pid, started) if started else None
         inodes=set()
         for name in ('tcp','tcp6'):
             for line in Path('/proc/net/' + name).read_text().splitlines()[1:]:

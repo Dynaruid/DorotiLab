@@ -169,6 +169,13 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
         _owner = null;
     }
 
+    internal Task RetireAsync()
+    {
+        _live = false;
+        ReleaseSurface();
+        return _retirement ?? Task.CompletedTask;
+    }
+
     public void SurfaceCreated(ISurfaceHolder holder)
     {
         _live = true;
@@ -541,23 +548,27 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
         // UI thread. Surface recreation waits for this exact retirement to finish.
         var nativeWindow = _nativeWindow;
         Interlocked.Increment(ref _retiringGenerations);
+        var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        _retirement = completion.Task;
+        Task gpuRetirement;
         try
         {
-            _retirement = window.DisposeAfterOwnerDetachedAsync();
+            gpuRetirement = window.DisposeAfterOwnerDetachedAsync();
         }
         catch (Exception exception)
         {
-            _retirement = Task.FromException(exception);
+            gpuRetirement = Task.FromException(exception);
         }
         _window = null;
         _nativeWindow = 0;
-        _ = FinishRetirementAsync(window, nativeWindow, _retirement);
+        _ = FinishRetirementAsync(window, nativeWindow, gpuRetirement, completion);
     }
 
     private async Task FinishRetirementAsync(
         GraphiteVulkanWindow window,
         nint nativeWindow,
-        Task retirement
+        Task retirement,
+        TaskCompletionSource completion
     )
     {
         try
@@ -589,6 +600,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
                 _retirement = null;
                 _faulted = false;
                 RequestFrame();
+                completion.TrySetResult();
             });
         }
         catch (Exception exception)
@@ -604,6 +616,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
                 "DorotiGraphite",
                 "Surface retirement failed; resources retained: " + exception
             );
+            completion.TrySetException(exception);
         }
     }
 

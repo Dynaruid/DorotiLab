@@ -631,6 +631,7 @@ public sealed partial class SkiaSceneRenderer
     )
     {
         SceneFrame? frame;
+        DorotiFrozenScene? rasterLease;
         bool isNewFrame;
         lock (_gate)
         {
@@ -651,7 +652,12 @@ public sealed partial class SkiaSceneRenderer
             {
                 frame = _presentedFrame;
             }
+            // Completion runs on a different owner and can replace/dispose the
+            // replay handle after this lock is released. Raster and its GPU
+            // recording retain their own handles through actual use.
+            rasterLease = frame?.Scene.Retain();
         }
+        using var rasterScene = rasterLease;
 
         var currentEpoch = _host.ViewEpoch;
         var match = frame?.Descriptor.MatchExact(
@@ -702,7 +708,7 @@ public sealed partial class SkiaSceneRenderer
             // into physical pixels. Applying host DPR here would scale twice.
             if (SkiaGraphiteSession.CurrentRecording is { } graphite)
             {
-                var gpuLease = frame.Scene.Retain();
+                var gpuLease = rasterScene!.Retain();
                 try { graphite.RecordingFrame.RetainUntilGpuCompletion(gpuLease); }
                 catch { gpuLease.Dispose(); throw; }
             }
@@ -739,11 +745,11 @@ public sealed partial class SkiaSceneRenderer
             {
                 if (PlatformScenePainter is { } painter)
                 {
-                    painter(canvas, frame.Commands, frame.Descriptor, pixelWidth, pixelHeight);
+                    painter(canvas, rasterScene!.Commands, frame.Descriptor, pixelWidth, pixelHeight);
                 }
                 else
                 {
-                    DrawScene(canvas, frame.Commands, pixelWidth, pixelHeight);
+                    DrawScene(canvas, rasterScene!.Commands, pixelWidth, pixelHeight);
                 }
             }
             finally

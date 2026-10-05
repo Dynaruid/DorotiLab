@@ -14,6 +14,7 @@ parser.add_argument('--device', required=True)
 parser.add_argument('--output', type=Path, required=True)
 parser.add_argument('--package', default='dev.doroti.sample2')
 parser.add_argument('--activity', default='crc6467bcc435301192e0.MainActivity')
+parser.add_argument('--activity-recreate', action='store_true', help='Invoke the sample opt-in Activity.Recreate callback and verify native lifecycle events.')
 args = parser.parse_args()
 out = args.output.resolve()
 assert out.is_relative_to(ROOT/'temp/testing')
@@ -37,7 +38,10 @@ def snapshot(name, minimum=0):
             if value['frame']['presented'] > minimum:
                 (out/f'{name}.json').write_bytes(data)
                 return value
-        except (subprocess.CalledProcessError, json.JSONDecodeError): pass
+        except (subprocess.CalledProcessError, json.JSONDecodeError):
+            process = subprocess.run([args.adb, '-s', args.device, 'shell', 'pidof', args.package], capture_output=True, timeout=5)
+            if not process.stdout.strip():
+                raise RuntimeError(f'Android app exited before its frame receipt: {name}; inspect logcat, standalone APK/fast deployment and startup failures.')
         time.sleep(.25)
     raise TimeoutError(f'No progressing frame receipt: {name}')
 
@@ -66,6 +70,19 @@ try:
     assert report['rotationExtent'][0] > report['rotationExtent'][1]
     adb('shell','settings','put','system','user_rotation',rotation)
     time.sleep(2)
+    if args.activity_recreate:
+        created_before = adb('logcat', '-b', 'events', '-d', '-v', 'brief').decode(errors='replace')
+        adb('shell', 'rm', '-f', cache)
+        (out / 'activity-recreated-launch.log').write_bytes(adb('shell', 'am', 'start', '-W', '-n', f'{args.package}/{args.activity}', '--es', 'doroti_recreate_probe', '1'))
+        activity = snapshot('activity-recreated')
+        activity_pid = adb('shell', 'pidof', args.package).decode().strip()
+        assert activity_pid == first_pid, (activity_pid, first_pid)
+        created_after = adb('logcat', '-b', 'events', '-d', '-v', 'brief').decode(errors='replace')
+        events = [line for line in created_after.splitlines() if args.activity in line and 'on_create_called' in line]
+        previous_events = [line for line in created_before.splitlines() if args.activity in line and 'on_create_called' in line]
+        assert len(events) > len(previous_events), 'OS activity recreation was not observed in lifecycle events.'
+        report['activityRecreation'] = dict(samePid=True, pid=activity_pid, createdEvents=events[-2:],
+                                            surfaceGeneration=activity['surface']['surfaceGeneration'])
     adb('shell','am','force-stop',args.package)
     adb('shell','rm','-f',cache)
     (out/'recreated-launch.log').write_text(start())

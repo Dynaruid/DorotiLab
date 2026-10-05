@@ -11,6 +11,7 @@
     <DorotiHostKind>Maui</DorotiHostKind>
     <DorotiNativeEntryKind>UIKit-Main</DorotiNativeEntryKind>
     <UseMaui>true</UseMaui>
+    <DisableMauiImplicitPackageReferences>true</DisableMauiImplicitPackageReferences>
     <DefineConstants>$(DefineConstants);MACCATALYST;DOROTI_MAUI</DefineConstants>
     <SupportedOSPlatformVersion>$(DorotiMacCatalystMinimumOSVersion)</SupportedOSPlatformVersion>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>

@@ -22,7 +22,8 @@ public sealed record GeneratedFile(string RelativePath, string Content);
 public sealed record TemplateGeneration(IReadOnlyList<GeneratedFile> Files);
 public sealed record OperationRequest(ToolContext Context, string Operation, string Configuration, IReadOnlyList<OptionValue> Options);
 public sealed record EnvironmentValue(string Name, string Value);
-public sealed record ProcessStep(string Executable, IReadOnlyList<string> Arguments, string WorkingDirectory, IReadOnlyList<EnvironmentValue> Environment);
+public sealed record ProcessStopSignal(string Path, string SessionId, int TimeoutSeconds = 30);
+public sealed record ProcessStep(string Executable, IReadOnlyList<string> Arguments, string WorkingDirectory, IReadOnlyList<EnvironmentValue> Environment, ProcessStopSignal? StopSignal = null);
 public sealed record ExecutionPlan(string OperationId, IReadOnlyList<ProcessStep> Steps);
 
 /// <summary>Extensions evaluate plans and bounded probes; the CLI owns launched app/build processes.</summary>

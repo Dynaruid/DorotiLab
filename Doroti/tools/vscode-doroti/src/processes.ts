@@ -1,9 +1,10 @@
 import { spawn, ChildProcess } from 'node:child_process';
 
-export function start(file: string, args: string[], cwd: string, output: (text: string) => void): ChildProcess {
+export function start(file: string, args: string[], cwd: string, output: (text: string) => void,
+    errorOutput: (text: string) => void = output): ChildProcess {
     const child = spawn(file, args, { cwd, shell: false, windowsHide: true, detached: process.platform !== 'win32', stdio: 'pipe' });
     child.stdout?.on('data', data => output(data.toString()));
-    child.stderr?.on('data', data => output(data.toString()));
+    child.stderr?.on('data', data => errorOutput(data.toString()));
     return child;
 }
 export async function stop(child: ChildProcess): Promise<void> {

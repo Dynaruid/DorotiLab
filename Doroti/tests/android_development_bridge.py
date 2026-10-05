@@ -115,6 +115,26 @@ class BridgeTests(unittest.TestCase):
                 development.select_device('adb', 'c')
             self.assertEqual(development.select_device('adb', 'b'), 'b')
 
+    def test_stop_requires_matching_nonce_and_valid_json(self):
+        for value in ('{', '[]', '{"sessionId":"old"}'):
+            (self.directory / 'stop.json').write_text(value)
+            self.assertFalse(development.stop_requested(self.directory, 'session'))
+        development.atomic_json(self.directory / 'stop.json', dict(sessionId='session'))
+        self.assertTrue(development.stop_requested(self.directory, 'session'))
+
+    def test_startup_port_is_recorded_and_not_reassigned_to_reused_listener(self):
+        self.session.ownership = AndroidSessionOwnership(self.directory / 'leases', 'phone', self.session.package, 'session')
+        self.addCleanup(self.session.ownership.release)
+        (self.directory / 'android-hot-reload-port.txt').write_text('12345')
+        self.session.shell = Mock(return_value=subprocess.CompletedProcess([], 1, b''))
+        with patch.object(development, 'listener_identity', return_value=(1, 100)):
+            self.session.poll()
+        with patch.object(development, 'listener_identity', return_value=(1, 200)):
+            self.session.poll()
+            self.session.stop()
+        self.assertEqual(self.session.port_identity, (1, 100))
+        self.assertFalse(any(call.args[0] == 'reverse' for call in self.session.shell.call_args_list))
+
 
 if __name__ == '__main__':
     unittest.main()

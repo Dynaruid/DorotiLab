@@ -47,7 +47,8 @@ internal static class NativeRouteCoordinatorRegression
             var previous = Current;
             try { SetSynchronizationContext(this); callback(state); }
             finally { SetSynchronizationContext(previous); }
-        });
+        }).AsTask().ContinueWith(task => { _ = task.Exception; }, CancellationToken.None,
+            TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
     }
     internal static async Task Run()
     {

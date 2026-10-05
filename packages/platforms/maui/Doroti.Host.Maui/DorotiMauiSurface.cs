@@ -682,6 +682,11 @@ public sealed class DorotiMauiSurface : Grid, IDisposable, IAsyncDisposable
         await retirement.WaitAsync(TimeSpan.FromSeconds(30));
 #elif WINDOWS
         await PrepareDesktopCloseAsync();
+#elif ANDROID
+        var retirement = await new MauiApplicationDispatcher().InvokeAsync(() =>
+            _renderSurface.Element.Handler?.PlatformView is DorotiAndroidViewContainer native
+                ? native.Surface.RetireAsync() : Task.CompletedTask);
+        await retirement.WaitAsync(TimeSpan.FromSeconds(30));
 #endif
         await new MauiApplicationDispatcher().InvokeAsync(Dispose);
     }
@@ -853,18 +858,29 @@ public sealed class DorotiMauiSurface : Grid, IDisposable, IAsyncDisposable
 
     private void HandleDestroying(object? sender, EventArgs args)
     {
+#if ANDROID
+        // An OS Activity recreation does not close the logical application view.
+        // Its native handler/surface retires separately and can reconnect.
+        var activity = _window?.Handler?.PlatformView as Android.App.Activity
+            ?? Microsoft.Maui.ApplicationModel.Platform.CurrentActivity;
+        if (activity is { IsFinishing: false })
+        {
+            _host?.NotifyLifecycle(_viewId, AppLifecycleState.paused);
+            return;
+        }
+#endif
         _host?.NotifyCloseRequested(_viewId);
         _host?.NotifyLifecycle(_viewId, AppLifecycleState.detached);
 #if WINDOWS
         // Release Doroti's timers and render workers before the WinUI Closed
         // lifecycle handler ends the desktop application message loop.
         Dispose();
-#elif IOS && !MACCATALYST
+#elif (IOS && !MACCATALYST) || ANDROID
         _ = DisposeDestroyedViewAsync();
 #endif
     }
 
-#if IOS && !MACCATALYST
+#if (IOS && !MACCATALYST) || ANDROID
     private async Task DisposeDestroyedViewAsync()
     {
         try { await DisposeAsync(); }

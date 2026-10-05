@@ -112,9 +112,43 @@ static class FrameSubmissionRegression
         FrozenOwnership();
         RendererQueueAndCompletion();
         MutableCommandsAndOwner();
+        ReplayCompletionOwnership();
         TextureSnapshots();
         ViewGenerations();
         Console.WriteLine("PASS: frozen command/image storage, consumer ownership, bounded pending/raster admission, late completion, renderer close and simulated device-loss cleanup (CPU; native GPU fence acceptance remains separate).");
+    }
+
+    static void ReplayCompletionOwnership()
+    {
+        using var host = new TestHost(new Size(24, 24), 1);
+        using var renderer = new SkiaSceneRenderer(1, host, null, null, "replay-completion", "cpu", "cpu", false);
+        using var surface = SKSurface.Create(new SKImageInfo(24, 24))!;
+        var released = new int[2];
+        void Submit(int index)
+        {
+            using var image = new Image(1, 1, 1, () => released[index]++);
+            using var scene = ImageScene(1, image);
+            using var submission = new DorotiSceneSubmission(scene, new(host.ViewEpoch, index + 1, 24, 24));
+            renderer.Submit(1, submission, Invocation);
+        }
+        renderer.PlatformScenePainter = (canvas, commands, descriptor, width, height) => canvas.Clear(SKColors.Red);
+        Submit(0);
+        renderer.CompletePaint(renderer.Paint(surface, 24, 24)!.Value);
+        Submit(1);
+        var pending = renderer.Paint(surface, 24, 24)!.Value;
+        renderer.PlatformScenePainter = (canvas, commands, descriptor, width, height) =>
+        {
+            // The GPU/owner completion queue can replace the replay source while
+            // this raster owner is still using its image and command storage.
+            Task.Run(() => renderer.CompletePaint(pending)).GetAwaiter().GetResult();
+            Check.True(released[0] == 0, "A completion released resources still used by the active replay raster.");
+            canvas.Clear(SKColors.Blue);
+        };
+        var replay = renderer.Paint(surface, 24, 24)!.Value;
+        Check.True(!replay.IsNewFrame && released[0] == 1, "The replay raster did not release its old source on completion.");
+        renderer.CompletePaint(replay);
+        renderer.Dispose();
+        Check.True(released.All(count => count == 1), "Replay completion leaked or duplicated an image release.");
     }
 
     static void ViewGenerations()

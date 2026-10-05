@@ -16,7 +16,7 @@ def main():
     parser.add_argument('evidence', type=Path)
     args = parser.parse_args()
     evidence = args.evidence.resolve()
-    assert evidence.is_relative_to(ROOT / 'Doroti/artifacts')
+    assert evidence.is_relative_to(ROOT / 'Doroti/artifacts') or evidence.is_relative_to(ROOT / 'temp/testing')
     evidence.mkdir(parents=True, exist_ok=False)
     properties = ['Configuration', 'UseMonoRuntime', 'RunAOTCompilation', 'PublishTrimmed',
                   'StartupHookSupport', 'Optimize', 'AndroidLinkMode', 'AndroidEnableProfiledAot']

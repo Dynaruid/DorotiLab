@@ -9,6 +9,15 @@ else if (args.Contains("--hung-server")) await Task.Delay(Timeout.InfiniteTimeSp
 else if (args.Contains("--child"))
 {
     Console.WriteLine("child-started");
+    if (args.Contains("--graceful"))
+    {
+        var path = args[Array.IndexOf(args, "--graceful") + 1];
+        while (!File.Exists(path)) await Task.Delay(20);
+        var value = System.Text.Json.JsonDocument.Parse(await File.ReadAllTextAsync(path));
+        if (value.RootElement.GetProperty("sessionId").GetString() != "graceful-session") throw new InvalidOperationException("Wrong Stop owner.");
+        await File.WriteAllTextAsync(path + ".cleaned", "cleanup-complete");
+        return;
+    }
     if (args.Contains("--large-output")) { Console.Write(new string('x', 100000)); Console.Out.Flush(); }
     if (args.Contains("--wait")) await Task.Delay(Timeout.InfiniteTimeSpan);
 }

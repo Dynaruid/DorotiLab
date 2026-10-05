@@ -47,7 +47,7 @@
     "native-consumer"
   ],
   "scope": "isolated NuGet-only Widgets application, prebuilt native assets, two real Regular windows/one shared root/primary close/newer survivor frame and native/GPU cleanup completion",
-  "artifacts": "temp\\testing\\platform-decoupling\\windows-packages\\c32012bef0d047df875674568aebdd8d",
+  "artifacts": "temp\\testing\\platform-decoupling\\windows-packages\\f133469a2a364298b40a98e3bc029ee4",
   "notVerified": [
     "physical IME",
     "slow consumer isolation",

@@ -60,7 +60,8 @@ export function activate(context: vscode.ExtensionContext) {
         const choice = choices.length === 1 ? choices[0] : await vscode.window.showQuickPick(choices, { title: 'Select Doroti project' });
         if (!choice) return;
         let output = '';
-        operation = start(config().get('powerShellPath', 'pwsh'), ['-NoProfile', '-File', await cli(), 'describe', '-App', path.dirname(choice.uri.fsPath)], path.dirname(choice.uri.fsPath), text => { output += text; logs.append(text); });
+        operation = start(config().get('powerShellPath', 'pwsh'), ['-NoProfile', '-File', await cli(), 'describe', '-App', path.dirname(choice.uri.fsPath)], path.dirname(choice.uri.fsPath),
+            text => { output += text; logs.append(text); }, text => logs.append(text));
         try { await completion(operation); } finally { operation = undefined; }
         project = parseProject(output);
         await context.workspaceState.update('manifest', choice.uri.fsPath);

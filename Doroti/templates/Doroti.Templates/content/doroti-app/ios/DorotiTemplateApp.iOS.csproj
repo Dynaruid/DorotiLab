@@ -10,6 +10,7 @@
     <DorotiHostKind>Maui</DorotiHostKind>
     <DorotiNativeEntryKind>UIKit-Main</DorotiNativeEntryKind>
     <UseMaui>true</UseMaui>
+    <DisableMauiImplicitPackageReferences>true</DisableMauiImplicitPackageReferences>
     <DefineConstants>$(DefineConstants);IOS;DOROTI_MAUI</DefineConstants>
     <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>

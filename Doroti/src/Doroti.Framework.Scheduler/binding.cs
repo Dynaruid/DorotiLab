@@ -701,6 +701,16 @@ public abstract class SchedulerBinding : BindingBase
         _hasScheduledFrame = true;
     }
 
+    /// <summary>Reissues queued framework work when every native view that owned
+    /// its scheduled callback was removed. The pending callbacks and application
+    /// State remain intact; the replacement view supplies a fresh frame source.</summary>
+    public virtual void reschedulePendingFrame()
+    {
+        ensureFrameCallbacksRegistered();
+        platformDispatcher.scheduleFrame();
+        _hasScheduledFrame = true;
+    }
+
     public virtual void scheduleWarmUpFrame()
     {
         if (_warmUpFrame || (!Equals(schedulerPhase, SchedulerPhase.idle)))

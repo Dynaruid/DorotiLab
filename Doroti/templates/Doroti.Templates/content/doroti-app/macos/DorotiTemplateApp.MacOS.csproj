@@ -11,6 +11,7 @@
     <DorotiHostKind>Maui</DorotiHostKind>
     <DorotiNativeEntryKind>AppKit-Main</DorotiNativeEntryKind>
     <UseMaui>true</UseMaui>
+    <DisableMauiImplicitPackageReferences>true</DisableMauiImplicitPackageReferences>
     <DefineConstants>$(DefineConstants);MACOS;DOROTI_MAUI</DefineConstants>
     <SupportedOSPlatformVersion>14.0</SupportedOSPlatformVersion>
     <ApplicationManifest>Info.MacOS.plist</ApplicationManifest>

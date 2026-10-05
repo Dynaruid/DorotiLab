@@ -1,1 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net10.0</TargetFramework><IsDorotiProduct>true</IsDorotiProduct><PackageId>Doroti.Tool.Maui</PackageId><GenerateDependencyFile>true</GenerateDependencyFile><Description>Typed maui provider tooling, without runtime/native host dependencies.</Description></PropertyGroup><ItemGroup><ProjectReference Include="../../../../Doroti/src/Doroti.Tooling.Extension.Sdk/Doroti.Tooling.Extension.Sdk.csproj"/><None Include="$(IntermediateOutputPath)doroti-provider.json" Pack="true" PackagePath="lib/net10.0/"/><None Include="$(OutputPath)$(AssemblyName).deps.json" Pack="true" PackagePath="lib/net10.0/"/></ItemGroup><PropertyGroup><DorotiProviderMetadataSource>$(MSBuildProjectDirectory)/doroti-provider.json</DorotiProviderMetadataSource><DorotiProviderMetadataFile>doroti-provider.json</DorotiProviderMetadataFile></PropertyGroup><Import Project="../../Doroti.Provider.PackageMetadata.targets" /></Project>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><TargetFramework>net10.0</TargetFramework><IsDorotiProduct>true</IsDorotiProduct><PackageId>Doroti.Tool.Maui</PackageId><GenerateDependencyFile>true</GenerateDependencyFile><Description>Typed maui provider tooling, without runtime/native host dependencies.</Description></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../../Doroti/src/Doroti.Tooling.Extension.Sdk/Doroti.Tooling.Extension.Sdk.csproj" />
+    <None Include="$(IntermediateOutputPath)doroti-provider.json" Pack="true" PackagePath="lib/net10.0/" />
+    <None Include="$(OutputPath)$(AssemblyName).deps.json" Pack="true" PackagePath="lib/net10.0/" />
+    <None Include="../../../../Doroti/eng/android-development.py;../../../../Doroti/eng/android_session_ownership.py;../../../../Doroti/eng/android_port_ownership.py"
+          Link="android/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="lib/net10.0/android/" />
+  </ItemGroup>
+  <PropertyGroup><DorotiProviderMetadataSource>$(MSBuildProjectDirectory)/doroti-provider.json</DorotiProviderMetadataSource><DorotiProviderMetadataFile>doroti-provider.json</DorotiProviderMetadataFile></PropertyGroup>
+  <Import Project="../../Doroti.Provider.PackageMetadata.targets" />
+</Project>

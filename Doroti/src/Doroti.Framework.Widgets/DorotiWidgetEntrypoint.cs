@@ -52,7 +52,8 @@ public sealed class DorotiWidgetEntrypoint : IDorotiViewEntrypoint
         _applicationViews.Attach(view);
         if (_rootScheduled)
         {
-            binding.scheduleForcedFrame();
+            if (_applicationViews.Views.Count == 1) binding.reschedulePendingFrame();
+            else binding.scheduleForcedFrame();
             return;
         }
         _rootScheduled = true;

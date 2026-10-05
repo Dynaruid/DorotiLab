@@ -4,235 +4,185 @@
   "scope": "two real native Regular HWNDs, one application dispatcher/root/InheritedWidget state, per-view Graphite/Vulkan frame submissions and terminal summaries, primary close with newer survivor frame, native render join/GPU cleanup completion",
   "builds": [
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       1,
       0
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       1,
-      30
+      4
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       1,
-      31
+      5
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       1,
-      31
+      5
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       2,
-      31
+      5
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
-      2,
-      31
-    ],
-    [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       1,
-      32
+      6
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       2,
-      32
+      6
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       1,
-      33
+      7
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       2,
-      33
+      7
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       1,
-      34
+      8
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       2,
-      34
+      8
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       1,
-      35
+      9
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       2,
-      35
+      9
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       1,
-      36
+      10
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       2,
-      36
+      10
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       1,
-      37
+      11
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       2,
-      37
+      11
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       1,
-      38
+      12
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       2,
-      38
+      12
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       1,
-      39
+      13
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       2,
-      39
+      13
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       1,
-      40
+      14
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       2,
-      40
+      14
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       1,
-      41
+      15
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       2,
-      41
+      15
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
-      1,
-      42
-    ],
-    [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       2,
-      42
+      15
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
-      1,
-      43
-    ],
-    [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       2,
-      43
+      16
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
-      1,
-      44
-    ],
-    [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       2,
-      44
+      17
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
-      1,
-      45
-    ],
-    [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       2,
-      45
+      18
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       2,
-      45
+      19
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       2,
-      46
+      20
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       2,
-      47
+      21
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       2,
-      48
+      22
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       2,
-      49
+      23
     ],
     [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
+      "ca51d050-28f1-4a65-b208-5b86e63d776a",
       2,
-      50
-    ],
-    [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
-      2,
-      51
-    ],
-    [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
-      2,
-      52
-    ],
-    [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
-      2,
-      53
-    ],
-    [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
-      2,
-      54
-    ],
-    [
-      "ed08bdab-8158-42cc-998a-1e488bf0df38",
-      2,
-      55
+      24
     ]
   ],
   "summaries": [
     [
       1,
-      81,
+      64,
       47
     ],
     [
@@ -275,5 +225,5 @@
     "modal/close reentrancy",
     "separate target nupkg consumer"
   ],
-  "artifacts": "temp\\testing\\platform-decoupling\\g1\\39b28ce36a554863b6db3a01bcc39f43"
+  "artifacts": "temp\\testing\\platform-decoupling\\g1\\a1f7c228a1c74930a44b83137f07a787"
 }

@@ -21,6 +21,11 @@ namespace DorotiTestbedApp.Android;
     DataScheme = "doroti-testbed")]
 public sealed class MainActivity : Doroti.Host.Maui.DorotiMauiActivity
 {
+    protected override void OnNewIntent(global::Android.Content.Intent? intent)
+    {
+        base.OnNewIntent(intent);
+        if (intent?.GetStringExtra("doroti_recreate_probe") == "1") Recreate();
+    }
     protected override void OnCreate(global::Android.OS.Bundle? savedInstanceState)
     {
         if (Intent?.GetStringExtra("doroti_sample") is { } sample)
@@ -35,5 +40,7 @@ public sealed class MainActivity : Doroti.Host.Maui.DorotiMauiActivity
         base.OnCreate(savedInstanceState);
         if (Intent?.GetStringExtra("doroti_text_focus_probe") == "1")
             TextInputFocusProbe.Start(this);
+        if (Intent?.GetStringExtra("doroti_shutdown_probe") == "1")
+            _ = AndroidShutdownProbe.RunAsync(this);
     }
 }

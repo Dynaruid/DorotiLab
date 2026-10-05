@@ -73,7 +73,9 @@ for lifetime in (() if '--basic' in sys.argv else ('OnLastWindowClosed', 'Explic
         DOROTI_MULTIWINDOW_PROBE=str(report), DOROTI_DESKTOP_LIFETIME=lifetime,
         DOROTI_PLATFORM_VIEW_EVIDENCE=str(run / (lifetime + '-platform.json')))
     with (run / (lifetime + '.log')).open('w', encoding='utf-8') as log:
-        launch = [str(exe)] if exe.name == 'DorotiTestbedApp.Windows.exe' else ['dotnet', str(exe.with_suffix('.dll'))]
+        # The apphost supplies the unpackaged WinRT activation manifest used by
+        # native editor islands. Launch the same artifact in every smoke mode.
+        launch = [str(exe)]
         exit_code = run_application(launch, environment, log, run / (lifetime + '-maui.json'))
     output = (run / (lifetime + '.log')).read_text(encoding='utf-8', errors='replace')
     assert exit_code == 0, output[-5000:]

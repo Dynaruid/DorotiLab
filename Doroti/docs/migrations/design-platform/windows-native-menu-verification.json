@@ -5,7 +5,7 @@
   "probe": {
     "schemaVersion": "doroti.native-menu-probe/v1",
     "result": "PASS",
-    "owner": "beafb258-e75f-4d07-86ad-be1b7077e45e",
+    "owner": "534e274b-f7e1-48e8-b139-f62718aaaf9e",
     "viewId": "1",
     "actualOsMenuObserved": true,
     "canceledInvocation": true,
@@ -16,7 +16,7 @@
     "staleMenuCallbacks": 0,
     "menuBarDetached": true
   },
-  "artifacts": "temp\\testing\\platform-decoupling\\native-menu\\0e0fa14c149540929abf934c0c93f959",
+  "artifacts": "temp\\testing\\platform-decoupling\\native-menu\\5bc352a4e0494f33b291147bc1efd90a",
   "notVerified": [
     "physical keyboard/shortcut action selection",
     "material/cupertino dialog/theme/restoration integration",

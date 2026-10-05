@@ -25,6 +25,9 @@ public sealed class ExecutionSession : IAsyncDisposable
                 foreach (var step in plan.Steps)
                 {
                     lifetime.Token.ThrowIfCancellationRequested();
+                    if (step.StopSignal is { } signal && (!Path.IsPathFullyQualified(signal.Path) ||
+                        string.IsNullOrWhiteSpace(signal.SessionId) || signal.TimeoutSeconds is < 1 or > 60))
+                        throw new ToolContractException("invalid-stop-signal", "Stop requires an absolute path, session identity and a bounded timeout.");
                     var start = new ProcessStartInfo(step.Executable) { WorkingDirectory = Path.GetFullPath(step.WorkingDirectory), UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true, CreateNoWindow = true };
                     foreach (var argument in step.Arguments) start.ArgumentList.Add(argument);
                     foreach (var item in step.Environment) start.Environment[item.Name] = item.Value;
@@ -36,6 +39,21 @@ public sealed class ExecutionSession : IAsyncDisposable
                     catch (Exception error) { failure = error; throw; }
                     finally
                     {
+                        if (!process.HasExited && step.StopSignal is { } graceful)
+                        {
+                            try
+                            {
+                                // Give device/process adapters time to release their owned resources.
+                                // The signal is an external file boundary; it contains no live .NET objects.
+                                Directory.CreateDirectory(Path.GetDirectoryName(graceful.Path)!);
+                                await File.WriteAllTextAsync(graceful.Path,
+                                    "{\"sessionId\":" + System.Text.Json.JsonSerializer.Serialize(graceful.SessionId,
+                                        StopSignalJsonContext.Default.String) + "}");
+                                await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(graceful.TimeoutSeconds));
+                            }
+                            catch (Exception error) when (error is IOException or UnauthorizedAccessException or TimeoutException)
+                            { output?.Invoke("Graceful Stop did not complete: " + error.Message); }
+                        }
                         if (!process.HasExited) { process.Kill(entireProcessTree: true); await process.WaitForExitAsync(); }
                         try { await Task.WhenAll(readers); }
                         catch when (failure is not null) { /* Preserve the original cancellation/output error. */ }
@@ -61,3 +79,6 @@ public sealed class ExecutionSession : IAsyncDisposable
         await StopAsync();
     }
 }
+
+[System.Text.Json.Serialization.JsonSerializable(typeof(string))]
+internal partial class StopSignalJsonContext : System.Text.Json.Serialization.JsonSerializerContext;

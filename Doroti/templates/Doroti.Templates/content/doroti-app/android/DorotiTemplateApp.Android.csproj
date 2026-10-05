@@ -9,6 +9,8 @@
     <DorotiHostKind>Maui</DorotiHostKind>
     <DorotiNativeEntryKind>Android-Application</DorotiNativeEntryKind>
     <UseMaui>true</UseMaui>
+    <!-- Provider dependencies supersede the installed workload's implicit versions. -->
+    <DisableMauiImplicitPackageReferences>true</DisableMauiImplicitPackageReferences>
     <DefineConstants>$(DefineConstants);ANDROID;DOROTI_MAUI</DefineConstants>
     <SupportedOSPlatformVersion>24.0</SupportedOSPlatformVersion>
   </PropertyGroup>

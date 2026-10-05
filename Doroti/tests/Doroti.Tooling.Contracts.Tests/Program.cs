@@ -79,4 +79,22 @@ await using (var oversized = new ExecutionSession())
     Require(oversized.ProcessId is null, "Output reader failure retained a running child.");
     Require(await oversized.ExecuteAsync(new("reader-failure-restart", [new("dotnet", [assembly, "--child"], cwd, [])])) == 0, "Reader failure poisoned Restart.");
 }
+var gracefulDirectory = Path.Combine(Path.GetTempPath(), "doroti-stop-" + Guid.NewGuid().ToString("N"));
+Directory.CreateDirectory(gracefulDirectory);
+try
+{
+    var path = Path.Combine(gracefulDirectory, "stop.json");
+    await using var session = new ExecutionSession();
+    var started = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+    var plan = new ExecutionPlan("graceful-probe", [new("dotnet", [assembly, "--child", "--graceful", path], cwd, [], new(path, "graceful-session", 5))]);
+    var roundtrip = JsonSerializer.Deserialize(JsonSerializer.Serialize(plan, ToolWireJson.Context.ExecutionPlan), ToolWireJson.Context.ExecutionPlan)!;
+    Require(roundtrip.Steps[0].StopSignal == plan.Steps[0].StopSignal, "Wire plan lost graceful Stop.");
+    var run = session.ExecuteAsync(roundtrip, line => { if (line == "child-started") started.TrySetResult(); });
+    await started.Task.WaitAsync(TimeSpan.FromSeconds(5));
+    await session.StopAsync();
+    await Reject<OperationCanceledException>(() => run);
+    Require(File.Exists(path + ".cleaned") && session.ProcessId is null, "Stop killed the adapter before owned cleanup.");
+    await Reject<ToolContractException>(() => session.ExecuteAsync(plan with { Steps = [plan.Steps[0] with { StopSignal = new("relative.json", "session", 5) }] }));
+}
+finally { Directory.Delete(gracefulDirectory, true); }
 Console.WriteLine("PASS: typed concurrent activation/cleanup, declared ALC/shared Contracts, real process handshake/result/error/cancel/crash/hang/reconnect, framed malformed input, 64-bit IDs and separate app Stop/Restart ownership.");

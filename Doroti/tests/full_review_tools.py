@@ -13,7 +13,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'Doroti/eng'))
-from release_receipt import receipt_environment, validate_receipt
+from release_receipt import receipt_environment, validate_receipt, validate_android_receipt
 spec = importlib.util.spec_from_file_location('linux_installer', ROOT / 'Doroti/eng/install-linux-qt.py')
 installer = importlib.util.module_from_spec(spec); spec.loader.exec_module(installer)
 RUN = Path(os.environ.get('DOROTI_FULL_REVIEW_TEST_ROOT', str(ROOT / 'temp/testing/full-review/tools'))) / uuid.uuid4().hex
@@ -98,5 +98,15 @@ class ToolTests(unittest.TestCase):
         for key, wrong in [('runId', 'stale'), ('version', 'other'), ('survivorsBeforeMainClose', 2), ('nativeFirstFrame', False)]:
             path.write_text(json.dumps({**value, key: wrong}))
             with self.assertRaises(ValueError): validate_receipt(path, 'run', '1.0.0')
+
+    def test_mobile_receipt_has_its_own_native_contract_and_profile_identity(self):
+        path = RUN / 'android-native.json'
+        value = dict(schemaVersion='doroti.android-native-consumer/v1', status='PASS', runId='mobile-run', version='1.0.0',
+            rid='android-arm64', applicationId='dev.doroti.app', nativeFirstFrame=True, presented=1, extent=[1080, 2340])
+        path.write_text(json.dumps(value))
+        self.assertEqual(validate_android_receipt(path, 'mobile-run', '1.0.0', 'android-arm64', 'dev.doroti.app'), value)
+        for key, wrong in [('runId', 'stale'), ('rid', 'android-x64'), ('applicationId', 'other'), ('nativeFirstFrame', False), ('extent', [0, 1])]:
+            path.write_text(json.dumps({**value, key: wrong}))
+            with self.assertRaises(ValueError): validate_android_receipt(path, 'mobile-run', '1.0.0', 'android-arm64', 'dev.doroti.app')
 
 if __name__ == '__main__': unittest.main()

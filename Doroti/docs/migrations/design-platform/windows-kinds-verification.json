@@ -44,7 +44,7 @@
     ],
     "remaining": 1
   },
-  "artifacts": "temp\\testing\\platform-decoupling\\window-kinds\\21b37ba5eb8e4aa38005aac5926c3fce",
+  "artifacts": "temp\\testing\\platform-decoupling\\window-kinds\\4b5c706faf7f4cf3902597c645d57600",
   "notVerified": [
     "physical IME/focus restoration",
     "mixed monitor DPI",

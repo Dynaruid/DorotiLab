@@ -11,7 +11,7 @@ remain Unsupported. See [desktop window behavior](../../../Doroti/docs/desktop-w
 
 Mobile surfaces borrow one application session and retain separate view identities.
 View shutdown first unmounts and quiesces callbacks, then drains typed calls and
-UIKit GPU retirement. Explicit application shutdown uses
+UIKit/Android Vulkan GPU retirement. Explicit application shutdown uses
 `DorotiMauiApplication.StopAsync()` on the native main thread; Desktop applications
 use the window manager's exit contract. Backgrounding and temporary handler loss
 retain the application tree. This does not yet qualify every staged lifecycle race.
@@ -19,7 +19,12 @@ retain the application tree. This does not yet qualify every staged lifecycle ra
 The tooling provider discovers available iOS simulators and connected paired
 physical devices through typed device results. Run selects a device matching the
 explicit RID and supplies the SDK `_DeviceName`; ambiguous selection fails.
-Mobile typed development transport is still Unsupported. The iOS runtime profile
+Android typed planning now uses the provider-packaged ADB development adapter
+(Python 3) and declares nonce-matched graceful Stop. The adapter owns the
+device/package lease, SDK watcher and recorded USB port independently of the
+tool connection. Android Debug Mono metadata reload is qualified separately from
+Release/AOT and x64 device execution. iOS typed development remains Unsupported.
+The iOS runtime profile
 is owned only by `packages/platforms/build/Doroti.IosNativeAot.props`, including
 template consumers. Latest scope and remaining gates are in
 [work3](../../../work3.md#14-2026-10-05-실행-결과).

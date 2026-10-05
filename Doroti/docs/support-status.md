@@ -1,12 +1,25 @@
 # Current support and evidence
 
+2026-10-05: [Android/common follow-up](../../work3.md#19-2026-10-05-android와-공통-잔여-실행)
+qualifies Galaxy S25 arm64 and Pixel 5 emulator/x64 native lifecycle subsets,
+logical surface reuse after Activity replacement, joined Vulkan retirement,
+synthetic native IME focus/composition and 60-second foreground frame progress.
+The provider-packaged ADB adapter has typed planning and nonce-matched graceful
+Stop; actual CLI and installed VSIX Run/Reload/Restart/Stop pass. Three independent
+prebuilt design consumers publish and show native first frames. Sample2's Release
+trim/profiled Mono AOT lifecycle passes separately. A common replay scene resource
+race and lost frame callback after a zero-view interval are fixed; fresh common
+Build/G0 and WindowsSmoke pass. Physical IME/TalkBack, scanout, production signing,
+clean-machine distribution and the full plan remain unqualified. Exact hashes,
+profiles and remaining source/runtime gates are in the linked receipt.
+
 2026-10-05: [work3 Apple/common follow-up](../../work3.md#14-2026-10-05-실행-결과)
 adds provider-specific logical WindowRequest mapping, AppKit owned panels/sheets
 and typed NSMenu, shared mobile application sessions with per-view drain, iOS
 device discovery/selection, and provider-owned runtime profile imports. CPU
 route/context-menu and font lifetime regressions are included. Fresh Apple builds
 and native API runs are recorded separately from historical candidates. Mobile
-typed development transport and caller-backdrop sampling for native Cupertino
+typed iOS development transport and caller-backdrop sampling for native Cupertino
 previews remain Unsupported; full staged coordinator, package/profile and physical
 acceptance remain partial. See the linked receipt for exact profiles and remaining work.
 
@@ -30,8 +43,12 @@ development-signed installation and the six native/functional cases passing on
 iPhone 12. Mean viewport update gaps improved from 107.50/93.97ms to 39.96/37.89ms
 on the same Components scene; this is not scanout FPS or strict phase-budget
 qualification. The ordinary Release app is left foreground with profiling/evidence
-disabled. NativeAOT publish remains unsuccessful: net10 SDK-generated IL2037, and
-the installed net11 workload's Xcode 26.6 requirement conflicts with Xcode 27.0.
+disabled. Those early NativeAOT publish failures were superseded by the later
+[iPhone NativeAOT installation](migrations/design-platform/work3-ios-nativeaot-device-verification-2026-10-05.json):
+the original .NET 10 SDK and explicit native roots produced a signed installed app.
+One initial input run observed Metal `NotEnqueued`; three independent rechecks
+passed, with the cause unresolved. This remains a historical observation and is
+not qualified by the newer common source changes without another Apple run.
 
 2026-10-04 current-source follow-up: [full review](validation/2026-10-04-full-review.md) corrects Future/frame/semantics/startup/snapshot/tooling contracts and adds [doctor v4](doctor.md). Current automated and native API evidence is distinct from historical rows and from physical/display/deployment acceptance; the final scope is recorded in the dated validation record.
 

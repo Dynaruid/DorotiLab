@@ -140,6 +140,9 @@ public sealed class DorotiMauiApplication(DorotiApplicationDescriptor descriptor
     private readonly HashSet<DorotiMauiSurface> _surfaces = [];
     private Task? _stop;
     private bool _stopping;
+#if ANDROID
+    private DorotiMauiSurface? _androidSurface;
+#endif
     private DorotiSharedHostSession Framework => _framework ??= new(descriptor, new MauiApplicationDispatcher());
     private void AttachApplication(DorotiApplicationBoundary boundary) => _application ??= boundary.Retain();
 #if MACCATALYST
@@ -170,18 +173,36 @@ public sealed class DorotiMauiApplication(DorotiApplicationDescriptor descriptor
         }
 #endif
         var title = descriptor.ViewConfiguration.title;
-        var surface = new DorotiMauiSurface(descriptor, Framework.AllocateViewId())
+        var surface =
+#if ANDROID
+            _androidSurface ??
+#endif
+            new DorotiMauiSurface(descriptor, Framework.AllocateViewId())
         {
             SharedFramework = Framework,
             SharedApplication = _application,
             SharedApplicationFactory = () => _application,
             ApplicationAttached = AttachApplication,
             OwnsApplicationActivation = Windows.Count == 0,
-            SurfaceDisposed = value => _surfaces.Remove(value),
+            SurfaceDisposed = value =>
+            {
+                _surfaces.Remove(value);
+#if ANDROID
+                if (ReferenceEquals(_androidSurface, value)) _androidSurface = null;
+#endif
+            },
 #if WINDOWS
             OwnsWindowContent = true,
 #endif
         };
+#if ANDROID
+        _androidSurface = surface;
+        // Android can replace its Activity/Window while the logical view and
+        // widget State remain alive. Move the existing MAUI content to the new
+        // OS shell, retaining framework, IME and navigation ownership.
+        if (surface.Parent is ContentPage previous && ReferenceEquals(previous.Content, surface))
+            previous.Content = null;
+#endif
         _surfaces.Add(surface);
         var window = new Window(
             new ContentPage

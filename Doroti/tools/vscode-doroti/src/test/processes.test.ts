@@ -11,6 +11,14 @@ test('nonzero exit and missing tool propagate errors', async () => {
     await assert.rejects(completion(start(process.execPath, ['-e', 'process.exit(7)'], process.cwd(), () => {})), /7/);
     await assert.rejects(completion(start('doroti-tool-does-not-exist', [], process.cwd(), () => {})), /ENOENT/);
 });
+test('structured CLI stdout stays separate from localized build diagnostics on stderr', async () => {
+    let output = ''; let diagnostics = '';
+    const child = start(process.execPath, ['-e', 'process.stderr.write("복원할 프로젝트를 확인하는 중...\\n"); process.stdout.write(JSON.stringify({schemaVersion:"doroti.cli-workspace/v2"}));'],
+        process.cwd(), value => output += value, value => diagnostics += value);
+    await completion(child);
+    assert.equal(JSON.parse(output).schemaVersion, 'doroti.cli-workspace/v2');
+    assert.match(diagnostics, /복원할 프로젝트/);
+});
 test('Stop terminates the owned subprocess tree', async () => {
     let descendant = 0;
     const root = start(process.execPath, ['-e', `const {spawn}=require('node:child_process'); const p=spawn(process.execPath,['-e','setInterval(()=>{},1000)'],{stdio:'ignore',windowsHide:true}); console.log(p.pid); setInterval(()=>{},1000);`], process.cwd(), value => descendant = Number(value.trim()));

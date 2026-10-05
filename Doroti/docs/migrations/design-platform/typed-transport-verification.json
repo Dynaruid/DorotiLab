@@ -1,6 +1,6 @@
 {
   "schema": "doroti.typed-transport-verification/v1",
-  "verifiedUtc": "2026-10-05T00:46:37.891344+00:00",
+  "verifiedUtc": "2026-10-05T11:11:51.171022+00:00",
   "result": "PASS",
   "scope": "real managed/headless typed service invocation, owner selection, unsupported/error, cancellation and lease-retained actual completion; codec traps remain unused",
   "results": [
@@ -11,5 +11,5 @@
     "NativeAOT/trim",
     "physical devices and all external ABI conversions"
   ],
-  "runId": "29320ba93a2042f7bef8cd4d292bfa0c"
+  "runId": "1e972959abf445a6a2a025d6158f8c38"
 }

@@ -43,7 +43,7 @@ def source():
     print("Source: PASS (current documentation paths; tracked temporary-file policy)", flush=True)
 
 
-def main(suite):
+def main(suite, extra=()):
     run = RUN_ROOT / suite.lower() / uuid.uuid4().hex
     run.mkdir(parents=True)
     print(f"Test run: {run} (timeout/failure evidence retained until investigation ends)", flush=True)
@@ -101,6 +101,13 @@ def main(suite):
         if suite == "LinuxSmoke":
             command("linux-qt-profiles", sys.executable, "Doroti/tests/linux_qt_build_profiles.py", "--output", str(run / "profiles"))
             command("linux-qt", sys.executable, "Doroti/tests/linux_qt_smoke.py", "--output", str(run / "qt"))
+        if suite == "AndroidSmoke":
+            command("android", sys.executable, "Doroti/tests/android_smoke.py", "--output", str(run / "android"), *extra)
+            android_result = json.loads((run / "android/summary.json").read_text(encoding="utf-8"))
+            if android_result["status"] == "PARTIAL":
+                success = True
+                print("Validation AndroidSmoke: PARTIAL; requested device cases were SKIPPED", flush=True)
+                return 2
         if suite in ("IOSSmoke", "CatalystSmoke"):
             command("apple-profiles", sys.executable, "Doroti/tests/apple_build_profiles.py")
             command("apple-provider-contract", sys.executable, "Doroti/tests/apple_provider_contract.py", "--output", str(run / "apple-provider.json"))
@@ -114,22 +121,27 @@ def main(suite):
         if suite == "WindowsSmoke":
             for fixture in ("windows_shared_tree", "windows_window_kinds", "windows_native_menu", "windows_design_presentation", "windows_provider_packages"):
                 command(fixture, sys.executable, "Doroti/tests/" + fixture + ".py")
-            command("windows-smoke", sys.executable, "Doroti/tests/windows_smoke.py", str(run / "windows"))
+            command("windows-smoke", sys.executable, "Doroti/tests/windows_smoke.py", str(run / "windows"),
+                    "samples/DorotiTestbedApp/windowsappsdk/bin/Release/net10.0-windows10.0.19041.0/win-x64/DorotiTestbedApp.WindowsAppSdk.exe")
         if suite in ("Packages", "Developer", "Release"):
             command("design-package-contract", sys.executable, "Doroti/tests/design_package_contract.py")
         success = True
-        print(f"Validation {suite}: PASS; raw artifacts cleaned after summary", flush=True)
+        evidence = "receipt retained" if suite == "AndroidSmoke" else "raw artifacts cleaned after summary"
+        print(f"Validation {suite}: PASS; {evidence}", flush=True)
     finally:
         if success:
             resolved = run.resolve()
             if not resolved.is_relative_to(RUN_ROOT.resolve()) or run.is_symlink():
                 raise RuntimeError(f"Unsafe cleanup path: {run}")
-            shutil.rmtree(resolved)
+            if suite == "AndroidSmoke":
+                print(f"Android receipt retained: {run / 'android/summary.json'}", flush=True)
+            else:
+                shutil.rmtree(resolved)
         else:
             print(f"FAIL evidence retained for investigation: {run}", flush=True)
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2 or sys.argv[1] not in ("Source", "Build", "Targets", "WindowsSmoke", "LinuxSmoke", "MacOSSmoke", "IOSSmoke", "CatalystSmoke", "Packages", "Developer", "Release"):
-        sys.exit("Unknown suite. Use Source, Build, Targets, WindowsSmoke, LinuxSmoke, MacOSSmoke, IOSSmoke, CatalystSmoke, Packages, Developer, or Release.")
-    main(sys.argv[1])
+    if len(sys.argv) < 2 or sys.argv[1] not in ("Source", "Build", "Targets", "WindowsSmoke", "AndroidSmoke", "LinuxSmoke", "MacOSSmoke", "IOSSmoke", "CatalystSmoke", "Packages", "Developer", "Release") or len(sys.argv) > 2 and sys.argv[1] != "AndroidSmoke":
+        sys.exit("Unknown suite. Use Source, Build, Targets, WindowsSmoke, AndroidSmoke, LinuxSmoke, MacOSSmoke, IOSSmoke, CatalystSmoke, Packages, Developer, or Release.")
+    sys.exit(main(sys.argv[1], sys.argv[2:]) or 0)

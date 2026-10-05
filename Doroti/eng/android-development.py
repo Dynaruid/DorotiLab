@@ -50,6 +50,14 @@ def select_device(adb, requested):
     return ready[0]
 
 
+def stop_requested(directory, session_id):
+    try:
+        value = json.loads((directory / 'stop.json').read_text(encoding='utf-8-sig'))
+        return isinstance(value, dict) and value.get('sessionId') == session_id
+    except (OSError, ValueError):
+        return False
+
+
 class DeviceSession:
     def __init__(self, directory, session_id, adb, device, package, ownership=None):
         if not re.fullmatch(r'[A-Za-z0-9-]{1,80}', session_id):
@@ -86,6 +94,15 @@ class DeviceSession:
     def poll(self):
         if self.ownership is not None and not self.ownership.owns(): return
         try:
+            # Record the listener once, including startup before a runtime connects.
+            # A new listener reusing the same port must never become this owner's port.
+            port_file = self.directory / 'android-hot-reload-port.txt'
+            if self.ownership is not None and self.port_identity is None and port_file.is_file():
+                port = port_file.read_text(encoding='utf-8-sig').strip()
+                if port.isdecimal() and 0 < int(port) < 65536:
+                    identity = listener_identity(int(port))
+                    if identity is not None:
+                        self.port = port; self.port_identity = identity
             result = self.shell('exec-out', 'run-as', self.package, 'cat', self.device_directory + '/runtime.json')
             if result.returncode:
                 if self.runtime:
@@ -105,11 +122,6 @@ class DeviceSession:
                 return
             self.runtime = runtime
             if self.ownership is not None: self.process_start = self.process_identity(pid)
-            port_file = self.directory / 'android-hot-reload-port.txt'
-            if self.ownership is not None and port_file.is_file():
-                port = port_file.read_text(encoding='utf-8-sig').strip()
-                if port.isdecimal() and 0 < int(port) < 65536:
-                    self.port = port; self.port_identity = listener_identity(int(port))
             atomic_json(self.directory / 'runtime.json', runtime)
             try:
                 request = json.loads((self.directory / 'request.json').read_text(encoding='utf-8'))
@@ -173,6 +185,9 @@ def main():
     parser.add_argument('--session-directory', type=Path, required=True)
     parser.add_argument('--session-id', required=True)
     parser.add_argument('--dotnet', default='dotnet')
+    parser.add_argument('--adb')
+    parser.add_argument('--cache-root', type=Path)
+    parser.add_argument('--lease-directory', type=Path)
     parser.add_argument('--device')
     parser.add_argument('--rid', choices=['android-arm64', 'android-x64'])
     parser.add_argument('--inspect', action='store_true', help='Evaluate the development profile without deploying.')
@@ -189,7 +204,7 @@ def main():
     adb = device = None
     rid = args.rid
     if not args.inspect:
-        adb = find_adb()
+        adb = args.adb or find_adb()
         device = select_device(adb, args.device)
         abi = subprocess.check_output([adb, '-s', device, 'shell', 'getprop', 'ro.product.cpu.abi'], text=True, timeout=15).strip()
         device_rid = {'arm64-v8a': 'android-arm64', 'x86_64': 'android-x64'}.get(abi)
@@ -213,9 +228,16 @@ def main():
     print(json.dumps(dict(mode='metadata', device=device, profile=profile), indent=2), flush=True)
     if args.inspect:
         return 0
-    ownership = AndroidSessionOwnership(Path(__file__).resolve().parents[1] / 'artifacts/development/android-owners',
+    cache_root = (args.cache_root or Path(__file__).resolve().parents[1] / 'artifacts/ad').resolve()
+    lease_directory = args.lease_directory or Path.home() / '.doroti/android-owners'
+    ownership = AndroidSessionOwnership(lease_directory,
         device, profile['ApplicationId'], args.session_id)
     session = DeviceSession(args.session_directory, args.session_id, adb, device, profile['ApplicationId'], ownership)
+    try:
+        directory_ownership = AndroidSessionOwnership(lease_directory, 'session-directory', str(args.session_directory), args.session_id)
+    except Exception:
+        ownership.release()
+        raise
     session.close('Waiting for Android SDK build and runtime connection.', 'starting')
     stop = threading.Event()
     for sig in (signal.SIGINT, signal.SIGTERM):
@@ -224,7 +246,7 @@ def main():
     # keyed by project/toolchain/RID, separate from ordinary build/publish output.
     cache_key = hashlib.sha256((str(args.runner) + profile['NETCoreSdkVersion'] +
                                profile['RuntimeIdentifier'] + profile['TargetFramework']).encode()).hexdigest()[:12]
-    artifacts = Path(__file__).resolve().parents[1] / 'artifacts/ad' / cache_key
+    artifacts = cache_root / cache_key
     command = [args.dotnet, 'watch', '--project', str(args.runner), '--device', device,
                'run', '--configuration', 'Debug', '--no-launch-profile',
                '--property:DorotiAndroidDevelopment=true', '--property:RuntimeIdentifier=' + profile['RuntimeIdentifier'],
@@ -233,7 +255,7 @@ def main():
     try:
         child = subprocess.Popen(command, cwd=args.app_root, env=environment, start_new_session=os.name != 'nt')
         while child.poll() is None and not stop.wait(.3):
-            if (args.session_directory / 'stop.json').exists():
+            if stop_requested(args.session_directory, args.session_id):
                 break
             session.poll()
         return child.returncode if child.poll() is not None else 0
@@ -251,7 +273,8 @@ def main():
                 else:
                     os.killpg(child.pid, signal.SIGKILL)
                 child.wait()
-        session.stop()
+        try: session.stop()
+        finally: directory_ownership.release()
 
 
 if __name__ == '__main__':

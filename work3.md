@@ -1,7 +1,7 @@
 # work2 후속 작업계획 — AppKit·Mac Catalyst·iOS·Android 및 잔여 수락
 
 - 작성일: 2026-10-05 KST
-- 상태: **PARTIAL — 공통·AppKit·Mac Catalyst·iOS 구현 및 범위별 검증 진행. 전체 완료 아님.** 최신 결과와 남은 기준은 [§14](#14-2026-10-05-실행-결과)에 기록한다.
+- 상태: **PARTIAL — 공통·Apple·Android 구현과 범위별 검증 진행. 전체 완료 아님.** 최신 Android·공통·Windows 결과와 남은 기준은 [§19](#19-2026-10-05-android와-공통-잔여-실행)에 기록한다.
 - 기준: [work2.md](work2.md)의 구조·소유권·공개 계약과 현재 작업 트리. 후속 실행 항목은 이 문서에서 관리하고, 기존 설계·완료 체크·검증 이력은 work2에 유지한다.
 - 현황 근거: [최신 checkpoint](Doroti/docs/migrations/design-platform/latest-checkpoint.json), [재개 기록](Doroti/docs/migrations/design-platform/resume-2026-10-05.md), [재개 검증 receipt](Doroti/docs/migrations/design-platform/resume-verification-2026-10-05.json), [실행 상태](Doroti/docs/migrations/design-platform/execution.json).
 - 조사 방식: §1의 표와 우선 연결 문제는 실행 전 기준이다. 기존 PASS와 이번 실행의 새 PASS를 구분하며 새 실행 근거는 §14와 별도 receipt에 둔다.
@@ -189,7 +189,7 @@ Native/Auto/Overlay는 요청에 필요한 전체 기능으로 평가한다. Aut
 
 - [ ] **V1 — 공통 회귀 집계.** 기존 Build/Packages/Targets/Developer/Release에 연결된 bootstrap/frame/tool/typed/design 계약을 유지하고 변경한 G0/G1·실패 fixture를 해당 suite에 반영한다. Source 문서 검사 범위에 work3를 추가한다. 실제 평가 그래프/소비자를 검사하며 문자열 존재 검사만으로 완료하지 않는다.
 
-- [ ] **V2 — host/profile/device별 aggregate.** Apple profile 구 경로를 먼저 고친 뒤 MacOSSmoke/CatalystSmoke/IOSSmoke와 Android aggregate를 구성한다. 현재 validate.py에는 AndroidSmoke가 없고 Targets/Release의 native runner build가 WindowsAppSdk/Web 중심이므로 mobile/Apple 검사를 자동 포함한 것으로 간주하지 않는다. device/renderer·simulator/physical·host/display 누락 사유를 receipt에 남긴다.
+- [ ] **V2 — host/profile/device별 aggregate.** MacOSSmoke/CatalystSmoke/IOSSmoke에 이어 AndroidSmoke를 연결했다. Android의 profile/tool·두 샘플 build/install·lifecycle·joined Stop/GPU drain·Hot Reload를 명시 case로 선택한다. `Targets`/`Release`가 모든 mobile/Apple 장치 실행을 자동 포함한 것으로 간주하지 않는다. device/renderer·simulator/physical·host/display 누락 사유를 receipt에 남긴다. 전 host/profile의 필수 수락은 남아 있다.
 
 - [ ] **V3 — trim/AOT·물리·배포 수락.** static typed 등록·shader/icon/localization·native callback·plugin entrypoint의 trim/AOT 보존을 matching host에서 확인한다. 실제 한글 IME·키보드/터치·screen reader·mixed DPI·GPU/scanout·서명/설치/clean-machine 수락은 각각 측정·관찰 결과로 남긴다. 빌드나 synthetic 이벤트는 이 항목의 PASS를 대신하지 않는다.
 
@@ -216,7 +216,13 @@ python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/eng/validat
 python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/eng/validate.py IOSSmoke
 ```
 
-Android/iOS의 실제 장치 검사는 typed device 서비스로 선택한 ID, 정확한 app/package/entrypoint·profile·output을 명시한다. 기존 장치 스크립트의 기본 package/activity를 새 빌드의 값으로 추정하지 않는다. Android aggregate 명령은 V2에서 구현한 후 사용 문서에 추가한다.
+Android/iOS의 실제 장치 검사는 typed device 서비스로 선택한 ID, 정확한 app/package/entrypoint·profile·output을 명시한다. 기존 장치 스크립트의 기본 package/activity를 새 빌드의 값으로 추정하지 않는다. Android 집계는 다음과 같이 실행하며 설치된 APK의 launcher를 실제 조회한다.
+
+```powershell
+python Doroti/eng/run-with-timeout.py --timeout 1200 python Doroti/eng/validate.py AndroidSmoke --device <serial> --rid android-arm64
+```
+
+장치 없이 host case만 확인할 때는 `--cases profiles,tools`를 사용한다. 요청한 장치 case가 장치 미선택으로 SKIPPED이면 집계는 PARTIAL/exit 2이며 receipt를 보존한다.
 
 원시 로그는 `temp/testing/work3/<platform>/<run>/` 또는 테스트가 지정한 disposable run에 둔다. `Doroti/artifacts`도 삭제 가능하다. 보존할 요약·hash·trace·receipt는 `Doroti/docs/migrations/design-platform/`에 저장하고 원시 파일 삭제 뒤 파일이 남아 있다고 보고하지 않는다.
 
@@ -345,3 +351,26 @@ Testbed의 입력·WebView·native design probe 세 곳의 reflection JSON을 ty
 native 서비스·WKWebView/JavaScript·Semantics 기능·양방향 scene rotation·joined Stop/GPU drain·같은 PID background/foreground 3회가 통과했다. 입력 뷰 교체의 최초 검사에서는 **`Metal terminal failed: NotEnqueued` 1회**가 발생했다. 동일한 산출물을 독립 실행한 후속 **3회는 통과**했지만 원인은 확정하지 못했으며 최초 full smoke를 전체 PASS로 바꾸지 않는다. GPU 완료 판정을 완화하지 않았고 이 관찰은 미해결로 유지한다.
 
 회전 검사의 중간 raster 폭은 가로/세로 **19/20개**, 해당 1회 검사의 Metal 표시 FPS는 **47.85/49.84**였다. 이 검사는 evidence writer를 사용하므로 앞선 Mono AOT의 3회 cold 측정과 직접 비교하거나 FPS 향상률을 주장하지 않는다. 60 FPS·엄격한 phase 예산·물리 IME/VoiceOver 수락 및 전체 계획은 여전히 별도이며 `wholePlanComplete=false`를 유지한다.
+
+## 19. 2026-10-05 Android와 공통 잔여 실행
+
+Android D1~D5와 Windows에서 실행 가능한 공통·도구·패키지 잔여를 이어 작업했다. 보존 결과는 [Android 검증 receipt](Doroti/docs/migrations/design-platform/work3-android-verification-2026-10-05.json)이며 `execution`/`checkpoint`를 함께 갱신했다. **전체 PARTIAL**이다. 아래 PASS는 각각의 명시된 범위이며 기존 Apple 실행은 이번 공통 소스 변경의 새 Apple 수락이 아니다.
+
+| 항목 | 이번 구현·검증 | 남은 기준 |
+|---|---|---|
+| D1/C2/C4 | 비종료 Activity 재생성이 논리 surface·widget State·IME/navigation 소유권을 유지하도록 연결. 모든 이전 view의 callback이 취소된 경우 새 view에 대기 frame을 재요청. arm64 실기기와 x64 emulator의 같은 PID `Activity.Recreate`·새 process 시작 확인. CPU zero-view 구간에서도 공유 State와 새 scene 보존 | 모든 staged startup/부분 등록/Stop 경쟁·Back/activation/restoration 조합 |
+| D2/C4/U4 | Android DisposeAsync가 Vulkan GPU retirement와 ANativeWindow release까지 await. 완료 callback이 replay scene을 바꿔도 raster/GPU가 자체 frozen-scene lease 유지. 실제 Windows 오류와 CPU 재현 회귀를 수정 후 PASS | device-loss/slow GPU/modal/late IME의 전체 native 확대 수락, 물리 입력·접근성 |
+| D3/T2/T3 | typed provider plan이 패키지에 포함된 기존 Python ADB 어댑터를 실행. 선택 adb/device/RID·session nonce·device/package 및 session-directory lease 연결. Stop 파일의 nonce 확인·startup port identity 고정·managed graceful Stop 대기. 실제 CLI delta/컴파일 오류 복구/rude edit 유지/Stop 및 설치 VSIX Run/Reload/Restart 새 PID/Stop PASS | 실제 USB 분리·재연결·crash·동시 경쟁의 전체 확대 수락. iOS typed dev는 Unsupported |
+| D4/T1 | SDK가 실제 선택한 JDK/SDK/NDK/API/build-tools를 doctor에서 읽음. arm64/x64 개발 profile·Mono startup hook·Release/최적화/trim/AOT/CoreCLR 개발 혼합 거절. 정상 Debug APK는 standalone assembly 포함으로 장치 설치 | 전 runtime/toolchain/NDK·native 유지보수 조합 및 production 서명 |
+| D5/P1~P3 | 두 샘플의 build/install/native 실행. widgets/material/cupertino 각각 core 0.4.0-alpha.1/provider 0.4.0-alpha.2의 독립 cache·prebuilt nupkg 소비자 publish/실기기 first frame PASS. 초기 restore의 MAUI downgrade 수정. 후보 출력 격리·생성 앱 ID 보존·workspace runner 매핑·mobile 별도 receipt 연결 | 최소/범위 밖/core-design-provider 독립 갱신 전체 조합, 모든 template의 입력/재생성/개발/배포 수락 |
+| R1/V1/V2 | 최신 common Build/G0·frame/typed/tool 회귀와 전체 WindowsSmoke PASS. VS Code describe의 stderr/JSON 혼합 수정 및 9개 Node 회귀 PASS. AndroidSmoke 추가, native 누락은 PARTIAL/exit 2로 보존. Windows 집계가 검증한 Release apphost/WinRT manifest를 사용하도록 수정 | 모든 host/profile 집계·물리/mixed DPI/접근성/scanout·새 Apple/Qt/Web 실행 |
+
+실기기는 **Galaxy S25 SM-S931N / Android 16 / android-arm64**이며, emulator는 **Pixel 5 / Android 13 / android-x64**, 실행한 emulator GPU는 NVIDIA GeForce RTX 4060 Laptop GPU다. Windows .NET SDK **10.0.400**, Android workload **36.1.69**, MAUI **10.0.90**, JDK **21.0.8**, Android API/build-tools **36/36.0.0**, NDK **28.2.13676358**를 실제 SDK resolution에서 확인했다. arm64 Debug Mono와 x64의 실제 CoreCLR/trim 설정은 receipt의 평가값으로 분리한다.
+
+Galaxy S25에서 두 샘플을 빌드·설치했다. Sample2는 회전, 세 차례 background/foreground, 새 PID process 재시작과 같은 PID Activity 재생성을 확인했고, Testbed는 synthetic composing/commit/paste와 endpoint focus, 60초 foreground frame 진행, joined Stop 및 pending GPU 0을 확인했다. emulator에서도 두 샘플의 빌드·설치, Sample2 lifecycle·회전·process/Activity 재생성과 Testbed joined Stop이 통과했다. 최초 x64 복귀 시 blank 화면/0 frame이 재현됐고 논리 surface 재사용과 frame 재요청 후 새 집계 및 Activity 재생성 검사로 확인했다. 설정 변경으로 Activity 재생성이 실제 발생하지 않은 이전 실기기 시도는 PASS로 바꾸지 않았으며, 이후 명시 native `Recreate` callback과 OS event로 확인했다.
+
+Sample2 **Release trim + profiled Mono AOT**, `AndroidAotMode=Normal`, interpreter off의 signed APK도 실기기 lifecycle·회전·같은 PID Activity 재생성·새 PID 재시작이 통과했다. 이것은 Android NativeAOT 또는 모든 메서드의 full AOT 보장이 아니다. SDK 기본 개발/debug key를 사용했으며 production 서명/clean OS 설치 수락이 아니다. 세 디자인 NuGet APK는 Release이지만 별도 untrimmed/non-AOT 소비자 수락이다.
+
+미완료 기준은 계속 체크하지 않는다. 전체 semantic/public API/reflection 소유권 감사, 전 provider staged coordinator, native Tooltip의 hover/late-install·완전한 route restoration/focus/Semantics, 확장 G1, builtin template/native-maintenance 서비스, iOS typed 개발 transport, Qt 창/OS menu, 모든 Web profile, 전 버전/ABI 조합, 물리 IME/TalkBack/VoiceOver·display/scanout·production 배포가 남아 있다. §18의 iPhone NativeAOT 설치 증거로 예전 SDK publish blocker를 정리했지만 초기 **Metal NotEnqueued** 관찰은 미해결로 유지한다. 이번 Windows scene lease 수정으로 그 Apple 관찰이 해결됐다고 주장하지 않는다.
+
+원시 로그는 `temp/testing/work3/android/`, 후보와 빌드 cache는 `Doroti/artifacts/`의 삭제 가능한 산출물이다. 핵심 상태·명령 범위·source/APK/nupkg hash·미확인 경계는 위 receipt에 보존했다. 공개 배포는 수행하지 않았다.

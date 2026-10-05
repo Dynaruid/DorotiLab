@@ -12,6 +12,7 @@
     <DorotiHostKind>Maui</DorotiHostKind>
     <DorotiNativeEntryKind>WinUI-Xaml</DorotiNativeEntryKind>
     <UseMaui>true</UseMaui>
+    <DisableMauiImplicitPackageReferences>true</DisableMauiImplicitPackageReferences>
     <DefineConstants>$(DefineConstants);WINDOWS;DOROTI_MAUI</DefineConstants>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
     <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>

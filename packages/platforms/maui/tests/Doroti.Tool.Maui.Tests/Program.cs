@@ -40,6 +40,13 @@ Check(devices.Devices.Count == 1 && devices.Devices[0].Id == "phone" && devices.
 var plan = await extension.PlanAsync(new(context, "run", "Debug", options), default);
 Check(plan.Steps.Single().Arguments.Contains("-p:AdbTarget=-s phone"), "Selected serial was not sent to the SDK.");
 Check(plan.Steps.Single().Arguments.Contains("-t:Run"), "Android runner did not use SDK launch.");
+var developmentOptions = options.Concat(new OptionValue[] { new("sessionid", "fixture-session"), new("sessiondirectory", Path.GetTempPath()) }).ToArray();
+var development = await extension.PlanAsync(new(context, "dev", "Debug", developmentOptions), default);
+Check(development.Steps.Single().Arguments.Contains("--adb") && development.Steps.Single().Arguments.Contains("phone"), "Development lost the selected ADB/device.");
+Check(development.Steps.Single().StopSignal?.SessionId == "fixture-session", "Development did not declare graceful owned Stop.");
+Check(File.Exists(development.Steps.Single().Arguments[0]), "Provider adapter was not copied to the output.");
+await Reject("missing-development-session", () => extension.PlanAsync(new(context, "dev", "Debug", options), default).AsTask());
+await Reject("unsupported-development-profile", () => extension.PlanAsync(new(context, "dev", "Release", developmentOptions), default).AsTask());
 await Reject("unsupported-device", () => extension.PlanAsync(new(context with { DeviceId = "locked" }, "run", "Debug", options), default).AsTask());
 try
 {

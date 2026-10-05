@@ -32,6 +32,7 @@ sealed class OwnerDispatcher : IDorotiApplicationDispatcher, IDisposable
 {
     private readonly BlockingCollection<Action> _queue = new();
     private readonly Thread _thread;
+    private volatile bool _disposed;
     public int ThreadId => _thread.ManagedThreadId;
     public bool HasThreadAccess => Environment.CurrentManagedThreadId == ThreadId;
     public OwnerDispatcher()
@@ -45,15 +46,19 @@ sealed class OwnerDispatcher : IDorotiApplicationDispatcher, IDisposable
     public ValueTask<T> InvokeAsync<T>(Func<T> callback, CancellationToken cancellationToken = default)
     {
         var result = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
-        _queue.Add(() =>
+        if (_disposed) return ValueTask.FromException<T>(new ObjectDisposedException(nameof(OwnerDispatcher)));
+        Action work = () =>
         {
             try { cancellationToken.ThrowIfCancellationRequested(); result.SetResult(callback()); }
             catch (OperationCanceledException error) { result.TrySetCanceled(error.CancellationToken); }
             catch (Exception error) { result.SetException(error); }
-        });
+        };
+        try { _queue.Add(work); }
+        catch (InvalidOperationException) when (_disposed)
+        { result.TrySetException(new ObjectDisposedException(nameof(OwnerDispatcher))); }
         return new(result.Task);
     }
-    public void Dispose() { _queue.CompleteAdding(); Check.True(_thread.Join(5000), "Owner thread did not stop."); _queue.Dispose(); }
+    public void Dispose() { _disposed = true; _queue.CompleteAdding(); Check.True(_thread.Join(5000), "Owner thread did not stop."); _queue.Dispose(); }
 }
 
 sealed class FakeView(ulong id, List<string> trace) : IViewHostCapability, IDorotiPlatformViewLease
@@ -455,12 +460,14 @@ static class Program
         {
             if (arguments.Length == 1 && arguments[0] == "--transport") { await TypedTransportRegression.Run(); return; }
             if (arguments.Length == 1 && arguments[0] == "--frames") { FrameSubmissionRegression.Run(); return; }
+            if (arguments.Length == 1 && arguments[0] == "--reattach") { SharedTreeRegression.RunZeroViewReattach(); return; }
             throw new ArgumentException("Unknown contract fixture arguments.");
         }
         Ownership();
         SharedSessionCloseRegression.Run();
         await NativeRouteCoordinatorRegression.Run();
         SharedTreeRegression.Run();
+        SharedTreeRegression.RunZeroViewReattach();
         ViewFocusSelectionRegression.Run();
         await StagesAndSurvivor();
         await LatePreparation();

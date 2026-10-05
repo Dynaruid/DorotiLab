@@ -11,6 +11,33 @@ using SkiaSharp;
 
 static class SharedTreeRegression
 {
+    internal static void RunZeroViewReattach()
+    {
+        SharedRoot? root = null;
+        using var shared = new DorotiSharedHostSession(new DorotiWidgetEntrypoint(views => root = new SharedRoot(views)));
+        shared.Start();
+        using var scope = shared.Session.dispatcher.EnterScope();
+        using var first = new Surface(shared.Session.dispatcher, shared.AllocateViewId());
+        shared.Session.AttachView(first.View);
+        first.Frame(TimeSpan.Zero);
+        var state = root!.State!;
+        state.Increment();
+        Check.True(first.Host.PendingFrame is not null, "The outgoing view had no queued framework frame.");
+        shared.BeginViewClose(first.View);
+        first.Dispose();
+        using var replacement = new Surface(shared.Session.dispatcher, shared.AllocateViewId());
+        shared.Session.AttachView(replacement.View);
+        Check.True(replacement.Host.PendingFrame is not null, "The replacement view inherited a scheduled flag without a host callback.");
+        replacement.Frame(TimeSpan.FromMilliseconds(100));
+        Check.True(ReferenceEquals(state, root.State) && state.Count == 1 && state.Disposals == 0,
+            "A zero-view interval replaced the shared application State.");
+        Check.True(replacement.SceneFrames.Tokens.Count > 0, "The replacement view did not submit a fresh framework scene.");
+        shared.BeginViewClose(replacement.View);
+        replacement.Dispose();
+        shared.Dispose();
+        Check.True(state.Disposals == 1, "Final application shutdown did not dispose its State once.");
+        Console.WriteLine("PASS: last-view callback cancellation, zero-view interval, fresh replacement frame and shared application State preservation (CPU host).");
+    }
     sealed class InputClient : TextInputClient
     {
         public TextEditingValue? currentTextEditingValue { get; private set; } = TextEditingValue.empty;

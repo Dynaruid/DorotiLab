@@ -1,11 +1,14 @@
 {
   "schema": "doroti.bootstrap-verification/v1",
-  "verifiedUtc": "2026-10-05T00:46:10.749545+00:00",
+  "verifiedUtc": "2026-10-05T11:10:50.269852+00:00",
   "command": "python Doroti/eng/run-with-timeout.py --timeout 1200 python Doroti/tests/platform_bootstrap_contract.py",
   "result": "PASS",
   "scope": "managed/headless contracts and real shared widget tree/CPU rendering; G0 partial",
   "results": [
+    "PASS: shared native-session branch detachment revokes callbacks, preserves survivor work and rejects reentrant view/service registration during final shutdown.",
+    "PASS: native popup routes resolve captured caller navigation in the child view, return one selection and restore caller navigation; filtered previews reject Native and use Auto Overlay before allocation (CPU provider fixture).",
     "PASS: shared State/InheritedWidget, two CPU RenderViews/epochs, isolated typed IME clients, old connection/late callback, primary detach/survivor frame/input and root unmount (G0 subset; native/physical IME/focus/GPU not verified).",
+    "PASS: last-view callback cancellation, zero-view interval, fresh replacement frame and shared application State preservation (CPU host).",
     "PASS: real EditableText focus transfer, isolated selection/composing/controller state, late IME callback and survivor editing after primary unmount (synthetic host input; physical/native focus remains unverified).",
     "PASS: direct typed feedback, codec count zero, explicit view, unsupported/error propagation, actual-completion lease and late-result rejection (headless contract).",
     "PASS: ownership, typed invocation leases, staged startup, shared session, primary/survivor, cancellation, late allocation and drain retry (headless contracts; no native/physical acceptance)."
@@ -15,6 +18,6 @@
     "physical IME/native focus",
     "GPU fence and native owner/frame bridge acceptance"
   ],
-  "runId": "2243dcc99fba4493b939735a5af5046b",
+  "runId": "10722552549b47fb91feef0c12d47301",
   "rawArtifacts": "removed after successful summary"
 }

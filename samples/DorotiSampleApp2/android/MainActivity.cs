@@ -18,6 +18,11 @@ namespace DorotiSampleApp2.Android;
 )]
 public sealed class MainActivity : Doroti.Host.Maui.DorotiMauiActivity
 {
+    protected override void OnNewIntent(global::Android.Content.Intent? intent)
+    {
+        base.OnNewIntent(intent);
+        if (intent?.GetStringExtra("doroti_recreate_probe") == "1") Recreate();
+    }
     protected override void OnCreate(global::Android.OS.Bundle? savedInstanceState)
     {
         // Opt-in automation uses Android's actual launch transport, before the

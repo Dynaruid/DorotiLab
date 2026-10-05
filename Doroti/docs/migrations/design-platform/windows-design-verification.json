@@ -1,6 +1,6 @@
 {
   "schema": "doroti.native-design-verification/v1",
-  "verifiedUtc": "2026-10-05T00:42:33.274480+00:00",
+  "verifiedUtc": "2026-10-05T11:28:02.751261+00:00",
   "result": "PASS",
   "probes": [
     {
@@ -46,7 +46,7 @@
       "remainingWindows": 1
     }
   ],
-  "artifacts": "temp\\testing\\platform-decoupling\\design-presentation\\04d94d0ca47043fd8bf309db088070db",
+  "artifacts": "temp\\testing\\platform-decoupling\\design-presentation\\82adf4727c0d4e79802d90eec9a0202e",
   "notVerified": [
     "physical keyboard/focus traversal",
     "route restoration across process restart",

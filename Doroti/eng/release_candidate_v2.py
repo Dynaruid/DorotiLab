@@ -14,7 +14,7 @@ import sys
 import uuid
 import xml.etree.ElementTree as ET
 import zipfile
-from release_receipt import receipt_environment, validate_receipt
+from release_receipt import receipt_environment, validate_receipt, validate_android_receipt
 
 ROOT = Path(__file__).resolve().parents[2]
 TEMPLATE = ROOT / 'Doroti/templates/Doroti.Templates/content/doroti-app'
@@ -45,8 +45,10 @@ def main():
     parser.add_argument('--cupertino-version', default='1.0.0-alpha.1')
     parser.add_argument('--provider-version', action='append', default=[], metavar='PROVIDER=VERSION')
     parser.add_argument('--runtime-targets', nargs='*', default=[])
+    parser.add_argument('--device', help='Explicit matching Android serial for mobile runtime qualification.')
     parser.add_argument('--web-font-preset', choices=['Default', 'Offline'], default='Offline')
     parser.add_argument('--output', type=Path)
+    parser.add_argument('--build-root', type=Path, help='Optional disposable build cache; published candidate payloads remain separate and immutable.')
     args = parser.parse_args()
     overrides = {}
     for entry in args.provider_version:
@@ -67,11 +69,16 @@ def main():
     feed = output / 'packages'; feed.mkdir()
     run = ROOT / 'temp/testing/release-candidate' / uuid.uuid4().hex
     run.mkdir(parents=True)
+    # Isolate candidates from a running workspace tool and keep Android aapt2
+    # resource paths short on Windows. Each candidate owns its build outputs.
+    build_root = (args.build_root or ROOT / 'Doroti/artifacts/rc' / run.name[:8]).resolve()
+    if not build_root.is_relative_to(ROOT / 'Doroti/artifacts'):
+        parser.error('Build cache must be under Doroti/artifacts.')
     record = dict(schemaVersion='doroti.release-candidate/v2', version=args.core_version,
                   versions=dict(core=args.core_version, material=args.material_version, cupertino=args.cupertino_version, providers={}),
                   targets=args.targets, design=args.design, configuration='Release', status='running', checks=[],
                   sourceRevision=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
-                  sourceWorkspace=str(workspace_path), signing='notVerified', cleanMachineInstall='notVerified',
+                  sourceWorkspace=str(workspace_path), buildArtifacts=str(build_root), signing='notVerified', cleanMachineInstall='notVerified',
                   physicalInput='notVerified', investigationDirectory=str(run))
 
     def command(label, arguments, cwd=ROOT, env=None):
@@ -97,7 +104,7 @@ def main():
             if len(matches) != 1: raise RuntimeError('Package source root is missing or ambiguous: ' + identity)
             return matches[0]
         properties = ['-p:DorotiCoreVersion=' + args.core_version, '-p:DorotiMaterialVersion=' + args.material_version,
-                      '-p:DorotiCupertinoVersion=' + args.cupertino_version]
+                      '-p:DorotiCupertinoVersion=' + args.cupertino_version, '-p:ArtifactsPath=' + str(build_root / 'source')]
         roots = [(source_project(identity), None) for identity in ('Doroti.Framework.Widgets', 'Doroti.Plugins', 'Doroti.App.Sdk', 'Doroti.Runner.Sdk')]
         if args.design != 'widgets': roots.append((source_project('Doroti.' + args.design.title()), None))
         selected = {}; profiles = {}
@@ -184,11 +191,21 @@ def main():
             app_project = consumer / 'CandidateApp.csproj'
             app_project.write_text(app_project.read_text().replace('</Project>',
                 f'<ItemGroup><PackageReference Include="Doroti.Cupertino" Version="{args.cupertino_version}" /></ItemGroup></Project>'))
-        for name in ('Directory.Build.props', 'Directory.Build.targets', 'Directory.Packages.props'): (consumer / name).write_text('<Project />', encoding='utf-8')
+        for name in ('Directory.Build.targets', 'Directory.Packages.props'): (consumer / name).write_text('<Project />', encoding='utf-8')
+        # Preserve generated identity/version while blocking parent repository imports.
+        consumer_props = ET.parse(consumer / 'Directory.Build.props').getroot()
+        ET.SubElement(ET.SubElement(consumer_props, 'PropertyGroup'), 'ArtifactsPath').text = str(build_root / 'consumer')
+        ET.ElementTree(consumer_props).write(consumer / 'Directory.Build.props', encoding='utf-8', xml_declaration=True)
         (consumer / 'NuGet.Config').write_text(f'<configuration><packageSources><clear/><add key="candidate" value="{feed}"/><add key="nuget" value="https://api.nuget.org/v3/index.json"/></packageSources><packageSourceMapping><packageSource key="candidate"><package pattern="Doroti.*"/></packageSource><packageSource key="nuget"><package pattern="*"/></packageSource></packageSourceMapping></configuration>', encoding='utf-8')
         generated = json.loads((consumer / 'doroti-workspace.json').read_text())
-        generated['platforms'] = {alias: {**item['platform'], 'runner': item['platform']['runner'].replace('DorotiTemplateApp', 'CandidateApp'),
-            'providerManifest': 'nuget:' + item['tool'].stem} for alias, item in selected.items()}
+        generated_platforms = {}
+        for alias, item in selected.items():
+            matches = [value for value in generated['platforms'].values() if value['target'] == item['platform']['target']
+                       and value['provider'] == item['platform']['provider'] and value['backend'] == item['platform']['backend']]
+            if len(matches) != 1: raise RuntimeError('Template runner mapping is missing or ambiguous: ' + alias)
+            generated_platforms[alias] = {**item['platform'], 'runner': matches[0]['runner'],
+                                          'providerManifest': 'nuget:' + item['tool'].stem}
+        generated['platforms'] = generated_platforms
         (consumer / 'doroti-workspace.json').write_text(json.dumps(generated, indent=2) + '\n')
         for alias, item in selected.items():
             if item['platform']['target'] == 'macOS':
@@ -217,7 +234,8 @@ def main():
                 }, Options = new WindowOptions'''))
         cli_project = ROOT / 'Doroti/tools/Doroti.Tooling/Doroti.Tooling.csproj'
         command('build-cli', [args.dotnet, 'build', cli_project, '-c', 'Release', *properties])
-        cli = cli_project.parent / 'bin/Release/net10.0/Doroti.Tooling.dll'
+        cli = Path(command('evaluate-cli-path', [args.dotnet, 'msbuild', cli_project, '-nologo', '-p:Configuration=Release',
+                   '-getProperty:TargetPath', *properties]).strip())
         record['runtime'] = {}
         for alias, item in selected.items():
             runner = consumer / generated['platforms'][alias]['runner']
@@ -229,11 +247,13 @@ def main():
                 publish_properties = ['-p:PublishTrimmed=true', '-p:TrimMode=copy',
                                       '-p:LinkMode=None', '-p:MtouchLink=None', '-p:RunAOTCompilation=false']
             if item['platform']['runtimeIdentifier'] == 'browser-wasm': publish_properties.append('-p:DorotiWebFontPreset=' + args.web_font_preset)
+            publish_properties += ['-p:TargetFramework=' + item['platform']['targetFramework'],
+                                   '-p:RuntimeIdentifier=' + item['platform']['runtimeIdentifier']]
             record.setdefault('publishProperties', {})[alias] = publish_properties
             command('publish-' + alias, [args.dotnet, 'publish', runner, '-c', 'Release', '-o', output / alias, *publish_properties], cwd=consumer, env=environment)
             evaluated = json.loads(command('consumer-profile-' + alias, [args.dotnet, 'msbuild', runner, '-nologo',
                 '-p:Configuration=Release', *publish_properties,
-                '-getProperty:ProjectAssetsFile,TargetFramework,RuntimeIdentifier,TargetPlatformVersion,TargetPlatformMinVersion,UseMonoRuntime,PublishAot,TrimMode,LinkMode,MtouchLink'],
+                '-getProperty:ProjectAssetsFile,TargetFramework,RuntimeIdentifier,TargetPlatformVersion,TargetPlatformMinVersion,UseMonoRuntime,PublishAot,TrimMode,LinkMode,MtouchLink,ApplicationId,ApplicationDisplayVersion,ApplicationVersion'],
                 cwd=consumer, env=environment))['Properties']
             record.setdefault('consumerProfiles', {})[alias] = evaluated
             assets = json.loads(Path(evaluated['ProjectAssetsFile']).read_text())
@@ -243,6 +263,17 @@ def main():
             command('describe-' + alias, [args.dotnet, cli, 'describe', '-App', consumer, '-Platform', alias], cwd=consumer, env=environment)
             record['runtime'][alias] = 'notVerified'
             if alias in args.runtime_targets:
+                if item['platform']['target'] == 'Android':
+                    if not args.device: raise RuntimeError('Android runtime qualification requires --device <serial>.')
+                    record.setdefault('artifacts', {})[alias] = {path.relative_to(output / alias).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+                        for path in (output / alias).rglob('*') if path.is_file()}
+                    (output / 'candidate.json').write_text(json.dumps(record, indent=2), encoding='utf-8')
+                    native_output = output / (alias + '-native')
+                    command('runtime-' + alias, [sys.executable, ROOT / 'Doroti/tests/android_package_smoke.py',
+                        '--candidate', output, '--alias', alias, '--device', args.device, '--run-id', run.name, '--output', native_output])
+                    record['runtime'][alias] = validate_android_receipt(native_output / 'receipt.json', run.name, args.core_version,
+                        evaluated['RuntimeIdentifier'], evaluated['ApplicationId'])
+                    continue
                 receipt = output / (alias + '-native-consumer.json')
                 command('runtime-' + alias, [args.dotnet, cli, 'run', '-App', consumer, '-Platform', alias, '-Configuration', 'Release'], cwd=consumer,
                     env=receipt_environment(environment, receipt, run.name, args.core_version))
