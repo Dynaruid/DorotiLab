@@ -327,11 +327,46 @@ dotnet run --project ./samples/DorotiSampleApp2/windowsappsdk/DorotiSampleApp2.W
 
 ## Web
 
+Release 게시의 기본값은 Mono WASM AOT입니다. 게시한 앱을 제공하는 서버를 실행하고
+이 터미널을 열어 둡니다. 첫 AOT 게시에는 시간이 더 걸립니다.
+
 ```powershell
-dotnet run --project ./samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj -c Release
+python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet publish ./samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj -c Release --artifacts-path ./temp/testing/sample2-web-release
+python Doroti/eng/serve-isolated-web.py ./temp/testing/sample2-web-release/publish/DorotiSampleApp2.Web/release/wwwroot --port 5089
 ```
 
 브라우저에서 `http://127.0.0.1:5089`에 접속합니다. WebAssembly 빌드에는 `wasm-tools` 워크로드가 필요합니다.
+일반 `dotnet run -c Release`는 AOT 게시물을 사용하지 않습니다. 빠른 개발 실행은
+`dotnet run --project ./samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj -c Debug`를 사용합니다.
+
+### WASM AOT 비교 실행
+
+Mono WASM AOT는 Release `publish`의 기본값입니다. 저장소 루트에서 비교용 산출물을
+분리해 게시하고, 아래 서버를 실행한 터미널을 열어 둡니다.
+
+```powershell
+python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet publish ./samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj -c Release --artifacts-path ./temp/testing/sample2-web-aot
+python Doroti/eng/serve-isolated-web.py ./temp/testing/sample2-web-aot/publish/DorotiSampleApp2.Web/release/wwwroot --port 5218
+```
+
+[AOT WebGL2](http://127.0.0.1:5218/?dorotiRenderer=worker-direct-webgl) 또는
+[AOT WebGPU](http://127.0.0.1:5218/?dorotiRenderer=worker-direct-webgpu)를 엽니다.
+서버는 WASM threads에 필요한 COOP/COEP 헤더와 `.mjs`/`.wasm` MIME을 제공합니다.
+
+다른 터미널에서 비-AOT 비교 버전을 게시·실행할 수 있습니다.
+
+```powershell
+python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet publish ./samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj -c Release -p:RunAOTCompilation=false --artifacts-path ./temp/testing/sample2-web-baseline
+python Doroti/eng/serve-isolated-web.py ./temp/testing/sample2-web-baseline/publish/DorotiSampleApp2.Web/release/wwwroot --port 5219
+```
+
+[비-AOT WebGL2](http://127.0.0.1:5219/?dorotiRenderer=worker-direct-webgl)와 같은 화면에서 비교합니다.
+두 명령 모두 기본 CDN 폰트 모드입니다. 로컬 폰트 비교가 필요하면 두 publish 명령에 모두
+`-p:DorotiSampleWebFontSource=Assets`를 추가합니다. AOT는 배포 파일 크기를 늘립니다.
+[SampleApp2 확인 기록](../../Doroti/docs/validation/2026-10-05-sample2-web-wasm-aot.md)과
+[기본값 변경 검증](../../Doroti/docs/validation/2026-10-05-web-aot-default.md)을 참고하세요.
+
+### Web 배포와 폰트
 
 Docker 기반 익명 HTTPS 터널로 다른 기기에서 열려면 다음을 실행합니다.
 

@@ -394,3 +394,31 @@ when `--services` is added; keep that broader startup/service result separate.
 WebGL exercises the focus-restoring insertion fallback; WebGPU uses native DOM
 moves when available. This is desktop browser automation, not physical IME,
 screen-reader, mobile stability or displayed-FPS qualification.
+
+`web_wasm_aot.py` checks separately published, frozen Testbed Release payloads.
+Publish with `RunAOTCompilation=true` and `false` into separate `--artifacts-path`
+directories first; no build should mutate either payload while the browser runs.
+Use a Python environment with Playwright and installed Chrome:
+
+```powershell
+python Doroti/eng/run-with-timeout.py --timeout 1200 python Doroti/tests/web_wasm_aot.py --aot temp/testing/testbed-web-aot/publish/DorotiTestbedApp.Web/release/wwwroot --baseline temp/testing/testbed-web-baseline/publish/DorotiTestbedApp.Web/release/wwwroot --output temp/testing/web-aot/new
+```
+
+It serves the required isolation headers, checks AOT WebGL/WebGPU Material,
+scroll/resize and synthetic text input/selection, then runs at most three AB/BA/AB
+pairs of warm progress animation in WebGL. The numeric ring measures framework
+callback and managed raster/submit CPU intervals; nested spans are counted once
+in the owner union. Trials are exploratory and lack matched logical target traces.
+These timings do not measure displayed FPS, GPU completion or physical IME.
+Omit `--baseline` for smoke only; `--compare-only` skips smoke only after the same
+frozen AOT payload has passed it. This explicit probe is outside the ordinary
+Developer suite. Release publish defaults to AOT; the baseline requires the
+explicit `RunAOTCompilation=false` flag.
+
+`web_aot_profile.py` evaluates both sample runners and the provider's packaged build
+props with real MSBuild. It checks Release AOT, Debug/non-Web separation and both
+command-line and project opt-outs without building or launching a browser:
+
+```powershell
+python Doroti/eng/run-with-timeout.py --timeout 1200 python Doroti/tests/web_aot_profile.py temp/testing/web-aot-default/new-profile
+```

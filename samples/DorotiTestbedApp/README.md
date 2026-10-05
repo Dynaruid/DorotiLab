@@ -249,16 +249,42 @@ The default remains partial trimming; full trimming needs the dynamic-member pre
 
 ### Web sample
 
-Start the server and leave this terminal open:
+Release publish defaults to Mono WASM AOT. Publish the app, then start its server
+and leave this terminal open. The first AOT publish takes longer:
 
 ```powershell
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform web -Configuration Release
+python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet publish ./samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release --artifacts-path ./temp/testing/testbed-web-release
+python Doroti/eng/serve-isolated-web.py ./temp/testing/testbed-web-release/publish/DorotiTestbedApp.Web/release/wwwroot --port 5088
 ```
 
 In a browser, [open the Material sample](http://127.0.0.1:5088/).
 Web opens the Material sample directly.
 Omitting the renderer option prefers WebGPU on Android and WebGL2 elsewhere.
 Press `Ctrl+C` in the server terminal to stop it.
+Ordinary `dotnet run -c Release` and workspace CLI `run -Configuration Release` use
+build output rather than the AOT publish output. Use CLI `dev -Platform web` or
+`dotnet run -c Debug` for faster development runs.
+
+#### Publish and compare WASM AOT
+
+With the selected .NET SDK and `wasm-tools`, Release **publish** uses Mono WASM AOT
+by default. Keep comparison output separate:
+
+```powershell
+python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet publish ./samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release --artifacts-path ./temp/testing/testbed-web-aot
+python Doroti/eng/serve-isolated-web.py ./temp/testing/testbed-web-aot/publish/DorotiTestbedApp.Web/release/wwwroot --port 5208
+```
+
+Open the [AOT WebGL2 sample](http://127.0.0.1:5208/?dorotiRenderer=worker-direct-webgl) or
+[AOT WebGPU sample](http://127.0.0.1:5208/?dorotiRenderer=worker-direct-webgpu).
+This server supplies the COOP/COEP headers needed by WASM threads and `.mjs`/`.wasm` MIME types.
+
+For a baseline, change the publish flag to `RunAOTCompilation=false`, use
+`./temp/testing/testbed-web-baseline` as the artifacts path, and serve that `wwwroot` on another port.
+AOT can reduce managed CPU work at the cost of larger deployment files. This is Mono WASM AOT;
+some methods still use interpreter paths. Debug development remains non-AOT.
+See the [2026-10-05 AOT execution and timing receipt](../../Doroti/docs/validation/2026-10-05-web-wasm-aot.md).
+The [default-profile qualification](../../Doroti/docs/validation/2026-10-05-web-aot-default.md) is recorded separately.
 
 ## Screen and renderer settings
 

@@ -224,16 +224,41 @@ Intel Mac의 시뮬레이터는 `-r iossimulator-x64`를 사용합니다. 실제
 
 ### Web 샘플
 
-서버를 실행하고 이 터미널을 열어 둡니다.
+Release 게시의 기본값은 Mono WASM AOT입니다. 게시한 앱을 제공하는 서버를 실행하고
+이 터미널을 열어 둡니다. 첫 AOT 게시에는 시간이 더 걸립니다.
 
 ```powershell
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform web -Configuration Release
+python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet publish ./samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release --artifacts-path ./temp/testing/testbed-web-release
+python Doroti/eng/serve-isolated-web.py ./temp/testing/testbed-web-release/publish/DorotiTestbedApp.Web/release/wwwroot --port 5088
 ```
 
 브라우저에서 [Material 샘플 열기](http://127.0.0.1:5088/)를 누릅니다.
 Web도 Material 샘플을 바로 엽니다.
 renderer 옵션을 생략하면 Android는 WebGPU를, 나머지 플랫폼은 WebGL2를 우선합니다.
 서버는 실행한 터미널에서 `Ctrl+C`로 종료합니다.
+일반 `dotnet run -c Release`나 workspace CLI의 `run -Configuration Release`는 AOT 게시물을
+사용하지 않습니다. 빠른 개발 실행은 CLI의 `dev -Platform web` 또는 `dotnet run -c Debug`를 사용합니다.
+
+#### WASM AOT 게시·비교
+
+`wasm-tools` workload를 설치한 .NET SDK에서 Release **publish**는 기본적으로 Mono WASM AOT를
+적용합니다. 다음 명령은 비교용 산출물을 분리합니다.
+
+```powershell
+python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet publish ./samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release --artifacts-path ./temp/testing/testbed-web-aot
+python Doroti/eng/serve-isolated-web.py ./temp/testing/testbed-web-aot/publish/DorotiTestbedApp.Web/release/wwwroot --port 5208
+```
+
+[AOT WebGL2 샘플](http://127.0.0.1:5208/?dorotiRenderer=worker-direct-webgl) 또는
+[AOT WebGPU 샘플](http://127.0.0.1:5208/?dorotiRenderer=worker-direct-webgpu)을 엽니다.
+이 서버는 WASM threads에 필요한 COOP/COEP 헤더와 `.mjs`/`.wasm` MIME을 제공합니다.
+
+비교 버전은 publish 명령에서 `RunAOTCompilation=false`, 산출물 경로는
+`./temp/testing/testbed-web-baseline`으로 바꾸고 해당 `wwwroot`를 다른 포트로 실행합니다.
+AOT는 managed CPU 작업을 줄일 수 있지만 배포 파일이 커집니다. CoreCLR NativeAOT와는
+다르며 일부 메서드는 인터프리터 경로를 사용합니다. Debug 개발 프로필은 비-AOT로 유지합니다.
+[2026-10-05 AOT 실행·성능 비교 기록](../../Doroti/docs/validation/2026-10-05-web-wasm-aot.md)을 참고하세요.
+[기본값 변경 검증](../../Doroti/docs/validation/2026-10-05-web-aot-default.md)도 별도로 기록했습니다.
 
 ## 화면과 렌더러 설정
 

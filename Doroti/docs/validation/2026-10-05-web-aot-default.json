@@ -1,0 +1,288 @@
+{
+  "date": "2026-10-05",
+  "sourceHead": "1d1f398b579dd6a75c9d9ddde686c1b5c48d3c1f",
+  "buildProfileChanged": true,
+  "frameworkHostRendererChanged": false,
+  "priorDirtyChangesPreserved": true,
+  "default": {
+    "ReleasePublish": "Mono WASM AOT",
+    "Debug": "non-AOT",
+    "RunAOTCompilationAfterBuild": "not set",
+    "explicitFalsePreserved": true
+  },
+  "profile": {
+    "status": "PASS",
+    "profiles": {
+      "DorotiSampleApp2": {
+        "release": {
+          "Configuration": "Release",
+          "RunAOTCompilation": "true",
+          "RunAOTCompilationAfterBuild": "",
+          "PublishTrimmed": "true",
+          "WasmBuildNative": "true",
+          "WasmEnableThreads": "true",
+          "NETCoreSdkVersion": "10.0.400"
+        },
+        "debug": {
+          "Configuration": "Debug",
+          "RunAOTCompilation": "false",
+          "RunAOTCompilationAfterBuild": "",
+          "PublishTrimmed": "true",
+          "WasmBuildNative": "true",
+          "WasmEnableThreads": "true",
+          "NETCoreSdkVersion": "10.0.400"
+        },
+        "releaseOptOut": {
+          "Configuration": "Release",
+          "RunAOTCompilation": "false",
+          "RunAOTCompilationAfterBuild": "",
+          "PublishTrimmed": "true",
+          "WasmBuildNative": "true",
+          "WasmEnableThreads": "true",
+          "NETCoreSdkVersion": "10.0.400"
+        }
+      },
+      "DorotiTestbedApp": {
+        "release": {
+          "Configuration": "Release",
+          "RunAOTCompilation": "true",
+          "RunAOTCompilationAfterBuild": "",
+          "PublishTrimmed": "true",
+          "WasmBuildNative": "true",
+          "WasmEnableThreads": "true",
+          "NETCoreSdkVersion": "10.0.400"
+        },
+        "debug": {
+          "Configuration": "Debug",
+          "RunAOTCompilation": "false",
+          "RunAOTCompilationAfterBuild": "",
+          "PublishTrimmed": "true",
+          "WasmBuildNative": "true",
+          "WasmEnableThreads": "true",
+          "NETCoreSdkVersion": "10.0.400"
+        },
+        "releaseOptOut": {
+          "Configuration": "Release",
+          "RunAOTCompilation": "false",
+          "RunAOTCompilationAfterBuild": "",
+          "PublishTrimmed": "true",
+          "WasmBuildNative": "true",
+          "WasmEnableThreads": "true",
+          "NETCoreSdkVersion": "10.0.400"
+        }
+      },
+      "providerBuildProps": {
+        "release": {
+          "Configuration": "Release",
+          "RunAOTCompilation": "true",
+          "RunAOTCompilationAfterBuild": "",
+          "PublishTrimmed": "true",
+          "WasmBuildNative": "true",
+          "WasmEnableThreads": "true",
+          "NETCoreSdkVersion": "10.0.400"
+        },
+        "debug": {
+          "Configuration": "Debug",
+          "RunAOTCompilation": "false",
+          "RunAOTCompilationAfterBuild": "",
+          "PublishTrimmed": "true",
+          "WasmBuildNative": "true",
+          "WasmEnableThreads": "true",
+          "NETCoreSdkVersion": "10.0.400"
+        },
+        "releaseOptOut": {
+          "Configuration": "Release",
+          "RunAOTCompilation": "false",
+          "RunAOTCompilationAfterBuild": "",
+          "PublishTrimmed": "true",
+          "WasmBuildNative": "true",
+          "WasmEnableThreads": "true",
+          "NETCoreSdkVersion": "10.0.400"
+        },
+        "projectOptOut": {
+          "Configuration": "Release",
+          "RunAOTCompilation": "false",
+          "RunAOTCompilationAfterBuild": "",
+          "PublishTrimmed": "true",
+          "WasmBuildNative": "true",
+          "WasmEnableThreads": "true",
+          "NETCoreSdkVersion": "10.0.400"
+        }
+      },
+      "nonWebRelease": {
+        "Configuration": "Release",
+        "RunAOTCompilation": "",
+        "RunAOTCompilationAfterBuild": "",
+        "PublishTrimmed": "",
+        "WasmBuildNative": "",
+        "WasmEnableThreads": "",
+        "NETCoreSdkVersion": "10.0.400"
+      }
+    },
+    "scope": "MSBuild profile evaluation; actual publish/browser validation is separate"
+  },
+  "publish": {
+    "status": "PASS",
+    "exitCode": 0,
+    "command": [
+      "dotnet",
+      "publish",
+      "samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj",
+      "-c",
+      "Release",
+      "--nologo",
+      "--artifacts-path",
+      "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\web-aot-default\\2026-10-05\\sample2"
+    ],
+    "explicitAotFlag": false,
+    "compilerOverride": false,
+    "partialAot": false,
+    "logSha256": "3dbbd908196f292ddf860c9bb0494c805ffee77d0d3de1eed60d33615bd07cca",
+    "dotnetWarningMatches": 0,
+    "dotnetErrorMatches": 0
+  },
+  "payload": {
+    "aotModuleCount": 53,
+    "aotModules": [
+      "Microsoft_AspNetCore_Components",
+      "Microsoft_AspNetCore_Components_Web",
+      "Microsoft_AspNetCore_Components_WebAssembly",
+      "Microsoft_JSInterop",
+      "SkiaSharp",
+      "Doroti_Cupertino",
+      "Doroti_Framework_Animation",
+      "Doroti_Framework_Foundation",
+      "Doroti_Framework_Gestures",
+      "Doroti_Framework_Painting",
+      "Doroti_Framework_Physics",
+      "Doroti_Framework_Rendering",
+      "Doroti_Framework_Scheduler",
+      "Doroti_Framework_Semantics",
+      "Doroti_Framework_Services",
+      "Doroti_Framework_Widgets",
+      "Doroti_Host_Web",
+      "Doroti_Hosting",
+      "Doroti_Runtime",
+      "Doroti_Skia_Rendering",
+      "Doroti_Skia_RuntimeEffects",
+      "Doroti_Target_Web",
+      "Doroti_Ui",
+      "DorotiSampleApp2",
+      "DorotiSampleApp2_Web",
+      "System_Collections_Concurrent",
+      "System_Collections_NonGeneric",
+      "System_Collections",
+      "System_Console",
+      "System_Diagnostics_StackTrace",
+      "System_Diagnostics_TraceSource",
+      "System_IO_Compression",
+      "System_IO_Pipelines",
+      "System_Linq_Expressions",
+      "System_Linq",
+      "System_Memory",
+      "System_Net_Http",
+      "System_Net_Primitives",
+      "System_Numerics_Vectors",
+      "System_Private_Uri",
+      "System_Runtime_InteropServices_JavaScript",
+      "System_Runtime_InteropServices",
+      "System_Runtime",
+      "System_Security_Cryptography",
+      "System_Text_Encoding_Extensions",
+      "System_Text_Encodings_Web",
+      "System_Text_Json",
+      "System_Text_RegularExpressions",
+      "System_Threading_Channels",
+      "System_Threading_Thread",
+      "System_Threading",
+      "System_Private_CoreLib",
+      "aot_instances"
+    ],
+    "driverSha256": "48c38b7965bfa6da532224c5459a65ef392ba2fc9d4b40406eb8c5bd43542239",
+    "nativeWasm": "dotnet.native.j42s8zipxl.wasm",
+    "nativeWasmBytes": 40371481,
+    "nativeWasmSha256": "c3cd9db33bca268764d32decc73cf49bbfe50c686d26a5f09a7b199f905bebad",
+    "nativeBrotliBytes": 8468401,
+    "runtimeProfile": {
+      "schemaVersion": 1,
+      "threads": true
+    }
+  },
+  "browser": {
+    "status": "PASS",
+    "browser": "154.0.8037.93",
+    "records": [
+      {
+        "mode": "defaultAot",
+        "renderer": "webgl",
+        "status": "PASS",
+        "sharedWasmHeap": true,
+        "counter": true,
+        "syntheticTextAndDone": true,
+        "tabs": [
+          "Components",
+          "Profile",
+          "Fonts",
+          "Variable Blur",
+          "Upload",
+          "Settings"
+        ],
+        "stateRetained": true,
+        "errors": [],
+        "requestFailures": []
+      },
+      {
+        "mode": "defaultAot",
+        "renderer": "webgpu",
+        "status": "PASS",
+        "sharedWasmHeap": true,
+        "counter": true,
+        "syntheticTextAndDone": true,
+        "tabs": [
+          "Components",
+          "Profile",
+          "Fonts",
+          "Variable Blur",
+          "Upload",
+          "Settings"
+        ],
+        "stateRetained": true,
+        "errors": [],
+        "requestFailures": []
+      }
+    ],
+    "physicalIME": "notVerified",
+    "displayFPS": "notMeasured",
+    "performanceComparison": "notMeasured"
+  },
+  "sourceHashes": {
+    "packages/platforms/build/Sdk.props": "c53b3192f00e778fbcc3bf2f5d510dbaea942a8d9b9e5c29ca3fe002a82b635e",
+    "packages/platforms/web/Doroti.Target.Web.browser-wasm/build/Doroti.Target.Web.browser-wasm.props": "2e5bd0409954a997c1f6d2d33e76c6e28f4aaabe25814717bb5d7c1f9ca194ee",
+    "Doroti/tests/web_aot_profile.py": "8a46dc7a141ee4e4257352e57f1d096c2d42b51458641d0f82cae1e0188bf200"
+  },
+  "browserProbeSha256": "f49b18745929cef3f40f37ae4ed6928e611c5c32bc71e952d02f2532e93643cd",
+  "notReexecuted": [
+    "Testbed default publish/browser",
+    "Debug build/browser"
+  ],
+  "notVerified": [
+    "fresh NuGet deployment",
+    "clean-machine deployment",
+    "physical IME",
+    "screen reader",
+    "mobile",
+    "long-term memory/startup stability"
+  ],
+  "notMeasured": [
+    "new performance comparison",
+    "displayed FPS",
+    "network cold-start time",
+    "resident memory"
+  ],
+  "rawEvidenceDirectory": "temp/testing/web-aot-default/2026-10-05",
+  "rawEvidenceDisposable": true,
+  "timeoutSeconds": 1200,
+  "automaticRetries": 0,
+  "publishAttempts": 1,
+  "browserContexts": 2
+}

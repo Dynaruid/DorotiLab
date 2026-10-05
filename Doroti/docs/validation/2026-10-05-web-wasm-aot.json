@@ -1,0 +1,481 @@
+{
+  "date": "2026-10-05",
+  "sourceHead": "1d1f398b579dd6a75c9d9ddde686c1b5c48d3c1f",
+  "cleanAtPublishStart": true,
+  "productChanges": false,
+  "defaultAotChanged": false,
+  "qualification": "PASS: Release publish and desktop AOT smoke",
+  "performanceQualification": "Exploratory warm WebGL CPU improvement; default promotion deferred",
+  "environment": {
+    "sdk": "10.0.400",
+    "runtimeAndAotPack": "10.0.11",
+    "workloadManifest": "10.0.111",
+    "os": "Windows x64 10.0.26300",
+    "cpu": "AMD Ryzen 7 8845HS w/ Radeon 780M Graphics",
+    "cpuCores": 8,
+    "logicalProcessors": 16,
+    "chrome": "154.0.8037.93",
+    "playwrightPython": "temp/testing/platform-audit/all/venv/Scripts/python.exe",
+    "viewport": [
+      1000,
+      800
+    ],
+    "deviceScaleFactor": 1,
+    "headless": true
+  },
+  "publish": {
+    "project": "samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj",
+    "configuration": "Release",
+    "targetFramework": "net10.0",
+    "runtimeIdentifier": "browser-wasm",
+    "sharedFlags": {
+      "PublishTrimmed": true,
+      "WasmBuildNative": true,
+      "WasmEnableThreads": true,
+      "WasmEnableSIMD": true
+    },
+    "aotFlags": {
+      "RunAOTCompilation": true,
+      "WasmStripILAfterAOT": true,
+      "DorotiPartialAot": null,
+      "DorotiAotCompilerPath": null
+    },
+    "baselineFlags": {
+      "RunAOTCompilation": false
+    },
+    "builds": {
+      "aot": {
+        "status": "PASS",
+        "exitCode": 0,
+        "sha256": "144cb8bcf731a6daa6512ce6d9ebf0a6c2318abb4431c7424c7f27b092238153",
+        "dotnetWarningMatches": 0,
+        "dotnetErrorMatches": 0
+      },
+      "baseline": {
+        "status": "PASS",
+        "exitCode": 0,
+        "sha256": "6baabf75e57b07127f366f98bd97318eea93945786a26d03776ebf51113b7887",
+        "dotnetWarningMatches": 0,
+        "dotnetErrorMatches": 0
+      }
+    },
+    "compiler": {
+      "stock": true,
+      "modified": false,
+      "sha256": "ba5517f50ae5c7fa804c470b7c25f23afb1b4958bceb3411d1875182d8bb1fe0",
+      "stackReserveBytes": 8388608
+    },
+    "aotRegisteredModuleCount": 55
+  },
+  "payload": {
+    "baseline": {
+      "nativeWasmBytes": 9661776,
+      "nativeWasmSha256": "10c45a6dc60b7bdb7d5b91c3db899edee199f437163a4c4f801e194084fc286d",
+      "nativeBrotliBytes": 2698704,
+      "nativeGzipBytes": 3618596,
+      "payloadRawBytes": 29085140
+    },
+    "aot": {
+      "nativeWasmBytes": 48332339,
+      "nativeWasmSha256": "417063eea685c16f8fb3afcfd1671ec2243949ce99fdb2328fbfeeac89d32c00",
+      "nativeBrotliBytes": 9852654,
+      "nativeGzipBytes": 15356484,
+      "payloadRawBytes": 67770595
+    },
+    "aotModules": [
+      "MaterialColorUtilities",
+      "Microsoft_AspNetCore_Components",
+      "Microsoft_AspNetCore_Components_Web",
+      "Microsoft_AspNetCore_Components_WebAssembly",
+      "Microsoft_JSInterop",
+      "SkiaSharp",
+      "Doroti_Cupertino",
+      "Doroti_Framework_Animation",
+      "Doroti_Framework_Foundation",
+      "Doroti_Framework_Gestures",
+      "Doroti_Framework_Painting",
+      "Doroti_Framework_Physics",
+      "Doroti_Framework_Rendering",
+      "Doroti_Framework_Scheduler",
+      "Doroti_Framework_Semantics",
+      "Doroti_Framework_Services",
+      "Doroti_Framework_Widgets",
+      "Doroti_Host_Web",
+      "Doroti_Hosting",
+      "Doroti_Material",
+      "Doroti_Plugins",
+      "Doroti_Runtime",
+      "Doroti_Skia_Rendering",
+      "Doroti_Skia_RuntimeEffects",
+      "Doroti_Target_Web",
+      "Doroti_Ui",
+      "DorotiTestbedApp",
+      "DorotiTestbedApp_Web",
+      "System_Collections_Concurrent",
+      "System_Collections_NonGeneric",
+      "System_Collections",
+      "System_Console",
+      "System_Diagnostics_StackTrace",
+      "System_Diagnostics_TraceSource",
+      "System_IO_Compression",
+      "System_IO_Pipelines",
+      "System_Linq_Expressions",
+      "System_Linq",
+      "System_Memory",
+      "System_Net_Http",
+      "System_Net_Primitives",
+      "System_Numerics_Vectors",
+      "System_Private_Uri",
+      "System_Runtime_InteropServices_JavaScript",
+      "System_Runtime_InteropServices",
+      "System_Runtime",
+      "System_Security_Cryptography",
+      "System_Text_Encodings_Web",
+      "System_Text_Json",
+      "System_Text_RegularExpressions",
+      "System_Threading_Channels",
+      "System_Threading_Thread",
+      "System_Threading",
+      "System_Private_CoreLib",
+      "aot_instances"
+    ],
+    "compiledTokenCounts": {
+      "DorotiTestbedApp_dll_compiled_methods.txt": 919,
+      "DorotiTestbedApp_Web_dll_compiled_methods.txt": 56,
+      "Doroti_Cupertino_dll_compiled_methods.txt": 1366,
+      "Doroti_Framework_Animation_dll_compiled_methods.txt": 417,
+      "Doroti_Framework_Foundation_dll_compiled_methods.txt": 676,
+      "Doroti_Framework_Gestures_dll_compiled_methods.txt": 2180,
+      "Doroti_Framework_Painting_dll_compiled_methods.txt": 1465,
+      "Doroti_Framework_Physics_dll_compiled_methods.txt": 136,
+      "Doroti_Framework_Rendering_dll_compiled_methods.txt": 3692,
+      "Doroti_Framework_Scheduler_dll_compiled_methods.txt": 200,
+      "Doroti_Framework_Semantics_dll_compiled_methods.txt": 1099,
+      "Doroti_Framework_Services_dll_compiled_methods.txt": 1863,
+      "Doroti_Framework_Widgets_dll_compiled_methods.txt": 9528,
+      "Doroti_Hosting_dll_compiled_methods.txt": 944,
+      "Doroti_Host_Web_dll_compiled_methods.txt": 950,
+      "Doroti_Material_dll_compiled_methods.txt": 13557,
+      "Doroti_Plugins_dll_compiled_methods.txt": 285,
+      "Doroti_Runtime_dll_compiled_methods.txt": 418,
+      "Doroti_Skia_Rendering_dll_compiled_methods.txt": 1199,
+      "Doroti_Skia_RuntimeEffects_dll_compiled_methods.txt": 241,
+      "Doroti_Target_Web_dll_compiled_methods.txt": 90,
+      "Doroti_Ui_dll_compiled_methods.txt": 6085
+    }
+  },
+  "manifests": {
+    "aot": {
+      "fileCount": 331,
+      "manifestSha256": "3f2b9bddcd833cd67f631ada4bfc6a9d57461943de3f02c1e0c67dbfe55243f3",
+      "rawFileBytesExcludingBrGz": 67770595,
+      "runtimeProfile": {
+        "schemaVersion": 1,
+        "threads": true
+      }
+    },
+    "baseline": {
+      "fileCount": 331,
+      "manifestSha256": "417929cb68aaeffd5c08cac41d4474a77eb5105fd3f82f9a0d84208b7e602fba",
+      "rawFileBytesExcludingBrGz": 29085140,
+      "runtimeProfile": {
+        "schemaVersion": 1,
+        "threads": true
+      }
+    }
+  },
+  "sourceHashes": {
+    "samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj": "7b3716a8e30499d3a5b892bd40727ec5394f60a5aad17cae28373721a60e3faa",
+    "samples/DorotiTestbedApp/src/MaterialSample/Components.cs": "591fbd3075f6d5d90f6ea1626fdb730ecf84e241dfd8987e80634073eb66ed4b",
+    "Doroti/tests/web_wasm_aot.py": "9cd39d782bedc54bb057b5a4b4d2002541884e30692c24121fbbc2278f6b2d95",
+    "packages/platforms/web/Doroti.Host.Web/Web/doroti.raster.worker.ts": "3d2b3fc5a4a266d580546059640ee6e566b37a291a22002c4d8bd8d56e33ad70",
+    "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.ts": "7a2f160fb5a81be98c479b3d81d17fd3a27613f0a44c81ca3e13e20d32ab2e7e"
+  },
+  "smoke": {
+    "status": "PASS",
+    "browser": "154.0.8037.93",
+    "records": [
+      {
+        "kind": "smoke",
+        "mode": "aot",
+        "renderer": "webgl",
+        "material": true,
+        "scrollResize": true,
+        "syntheticTextAndSelection": true,
+        "errors": []
+      },
+      {
+        "kind": "smoke",
+        "mode": "aot",
+        "renderer": "webgpu",
+        "material": true,
+        "scrollResize": true,
+        "syntheticTextAndSelection": true,
+        "errors": []
+      }
+    ],
+    "summary": {},
+    "scope": "Desktop headless synthetic input; warm progress exploratory CPU timing, without matched logical target traces",
+    "callbackIncludesNestedWebglRaster": true,
+    "displayFPS": "notMeasured",
+    "physicalIME": "notVerified"
+  },
+  "comparison": {
+    "status": "PASS",
+    "browser": "154.0.8037.93",
+    "records": [
+      {
+        "kind": "warmProgress",
+        "mode": "baseline",
+        "pair": 1,
+        "renderer": "webgl",
+        "frameworkCallback": {
+          "count": 337,
+          "p50Ms": 16.630126953125,
+          "p95Ms": 20.099853515624996,
+          "maxMs": 35.455078125
+        },
+        "managedRasterSubmit": {
+          "count": 337,
+          "p50Ms": 8.26513671875,
+          "p95Ms": 10.278027343749997,
+          "maxMs": 16.27978515625
+        },
+        "ownerCpuUnionMs": 5746.30908203125,
+        "ownerAllocatedBytes": 136177608,
+        "wasmCapacityBytes": 208404480,
+        "errors": [],
+        "ownerCpuUnionMeanPerCallbackMs": 17.051362261220326,
+        "ownerAllocatedBytesPerCallback": 404087.85756676557
+      },
+      {
+        "kind": "warmProgress",
+        "mode": "aot",
+        "pair": 1,
+        "renderer": "webgl",
+        "frameworkCallback": {
+          "count": 675,
+          "p50Ms": 8.085205078125,
+          "p95Ms": 11.24658203125,
+          "maxMs": 24.97998046875
+        },
+        "managedRasterSubmit": {
+          "count": 675,
+          "p50Ms": 3.885009765625,
+          "p95Ms": 4.724438476562499,
+          "maxMs": 21.034912109375
+        },
+        "ownerCpuUnionMs": 5672.67529296875,
+        "ownerAllocatedBytes": 272131088,
+        "wasmCapacityBytes": 208404480,
+        "errors": [],
+        "ownerCpuUnionMeanPerCallbackMs": 8.40396339699074,
+        "ownerAllocatedBytesPerCallback": 403157.1674074074
+      },
+      {
+        "kind": "warmProgress",
+        "mode": "aot",
+        "pair": 2,
+        "renderer": "webgl",
+        "frameworkCallback": {
+          "count": 659,
+          "p50Ms": 8.25,
+          "p95Ms": 11.4516845703125,
+          "maxMs": 26.05517578125
+        },
+        "managedRasterSubmit": {
+          "count": 659,
+          "p50Ms": 3.97998046875,
+          "p95Ms": 4.957080078125,
+          "maxMs": 22.239990234375
+        },
+        "ownerCpuUnionMs": 5681.512939453125,
+        "ownerAllocatedBytes": 265566288,
+        "wasmCapacityBytes": 208404480,
+        "errors": [],
+        "ownerCpuUnionMeanPerCallbackMs": 8.621415689610204,
+        "ownerAllocatedBytesPerCallback": 402983.74506828527
+      },
+      {
+        "kind": "warmProgress",
+        "mode": "baseline",
+        "pair": 2,
+        "renderer": "webgl",
+        "frameworkCallback": {
+          "count": 333,
+          "p50Ms": 16.860107421875,
+          "p95Ms": 20.18710937499999,
+          "maxMs": 34.56494140625
+        },
+        "managedRasterSubmit": {
+          "count": 333,
+          "p50Ms": 8.320068359375,
+          "p95Ms": 10.101806640624998,
+          "maxMs": 13.260009765625
+        },
+        "ownerCpuUnionMs": 5726.713134765625,
+        "ownerAllocatedBytes": 134573864,
+        "wasmCapacityBytes": 243335168,
+        "errors": [],
+        "ownerCpuUnionMeanPerCallbackMs": 17.197336741037912,
+        "ownerAllocatedBytesPerCallback": 404125.7177177177
+      },
+      {
+        "kind": "warmProgress",
+        "mode": "baseline",
+        "pair": 3,
+        "renderer": "webgl",
+        "frameworkCallback": {
+          "count": 345,
+          "p50Ms": 16.260009765625,
+          "p95Ms": 19.310156250000002,
+          "maxMs": 31.159912109375
+        },
+        "managedRasterSubmit": {
+          "count": 345,
+          "p50Ms": 8.034912109375,
+          "p95Ms": 9.6,
+          "maxMs": 12.35498046875
+        },
+        "ownerCpuUnionMs": 5724.168701171875,
+        "ownerAllocatedBytes": 139393080,
+        "wasmCapacityBytes": 208404480,
+        "errors": [],
+        "ownerCpuUnionMeanPerCallbackMs": 16.591793336730074,
+        "ownerAllocatedBytesPerCallback": 404037.9130434783
+      },
+      {
+        "kind": "warmProgress",
+        "mode": "aot",
+        "pair": 3,
+        "renderer": "webgl",
+        "frameworkCallback": {
+          "count": 675,
+          "p50Ms": 8.114990234375,
+          "p95Ms": 11.16044921875,
+          "maxMs": 27.47998046875
+        },
+        "managedRasterSubmit": {
+          "count": 675,
+          "p50Ms": 3.905029296875,
+          "p95Ms": 4.911035156249999,
+          "maxMs": 8.1298828125
+        },
+        "ownerCpuUnionMs": 5686.00048828125,
+        "ownerAllocatedBytes": 272130544,
+        "wasmCapacityBytes": 208404480,
+        "errors": [],
+        "ownerCpuUnionMeanPerCallbackMs": 8.423704427083333,
+        "ownerAllocatedBytesPerCallback": 403156.36148148146
+      }
+    ],
+    "summary": {
+      "baseline": {
+        "medianTrialCallbackP95Ms": 20.099853515624996,
+        "medianTrialRasterP95Ms": 10.101806640624998,
+        "trials": 3
+      },
+      "aot": {
+        "medianTrialCallbackP95Ms": 11.24658203125,
+        "medianTrialRasterP95Ms": 4.911035156249999,
+        "trials": 3
+      }
+    },
+    "scope": "Desktop headless synthetic input; warm progress exploratory CPU timing, without matched logical target traces",
+    "callbackIncludesNestedWebglRaster": true,
+    "displayFPS": "notMeasured",
+    "physicalIME": "notVerified"
+  },
+  "changes": {
+    "callbackP95": {
+      "baselineMs": 20.099853515624996,
+      "aotMs": 11.24658203125,
+      "percentChange": -44.04644778875001
+    },
+    "rasterP95": {
+      "baselineMs": 10.101806640624998,
+      "aotMs": 4.911035156249999,
+      "percentChange": -51.384585639364865
+    }
+  },
+  "comparisonProtocol": {
+    "pairs": 3,
+    "order": [
+      "baseline,aot",
+      "aot,baseline",
+      "baseline,aot"
+    ],
+    "renderer": "worker-direct-webgl",
+    "workload": "Components/Communication/Progress indicators local",
+    "warmupMilliseconds": 2500,
+    "requestedCaptureMilliseconds": 6000,
+    "callbackIncludesNestedWebglRaster": true,
+    "aggregate": "median of per-trial p95",
+    "matchedLogicalTargets": false,
+    "matchedAnimationPhase": false,
+    "measurementFlag": "dorotiFrameCost=1",
+    "httpCompression": false,
+    "numericRingDropped": 0
+  },
+  "failures": [
+    {
+      "run": "smoke-r1",
+      "status": "FAIL",
+      "stage": "native text endpoint focus/input wait",
+      "completedComparisonTrials": 0
+    },
+    {
+      "run": "compare-r1",
+      "status": "FAIL",
+      "stage": "workload tooltip treated as accessible name",
+      "completedComparisonTrials": 0
+    },
+    {
+      "run": "smoke-r3",
+      "status": "FAIL",
+      "stage": "fixture assumed physical backing equals logical viewport",
+      "completedComparisonTrials": 0
+    }
+  ],
+  "priorPass": "smoke-r2",
+  "finalSmoke": "smoke-r4",
+  "finalComparison": "compare-r2",
+  "notMeasured": [
+    "displayed FPS",
+    "GPU completion",
+    "network cold-start time",
+    "process resident bytes",
+    "GPU resident bytes"
+  ],
+  "notVerified": [
+    "physical input/Korean IME",
+    "screen reader",
+    "mobile/Safari/Firefox",
+    "long-term stability",
+    "full service/plugin/texture/font corpus",
+    "clean-machine deployment",
+    "resolution of earlier Debug Mono startup failures"
+  ],
+  "rawEvidenceDirectory": "temp/testing/web-aot/2026-10-05",
+  "rawEvidenceDisposable": true,
+  "previewHeaders": {
+    "aot": {
+      "status": 200,
+      "COOP": "same-origin",
+      "COEP": "require-corp",
+      "cacheControl": "no-store"
+    },
+    "baseline": {
+      "status": 200,
+      "COOP": "same-origin",
+      "COEP": "require-corp",
+      "cacheControl": "no-store"
+    }
+  },
+  "timeoutSeconds": 1200,
+  "automaticRetries": 0,
+  "references": [
+    "https://learn.microsoft.com/en-us/aspnet/core/blazor/webassembly-build-tools-and-aot?view=aspnetcore-10.0",
+    "https://learn.microsoft.com/en-us/aspnet/core/blazor/performance/webassembly-runtime-performance?view=aspnetcore-10.0"
+  ]
+}

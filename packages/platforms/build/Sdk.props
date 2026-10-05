@@ -16,6 +16,9 @@
     <StartupHookSupport Condition="'$(DorotiIosDevelopment)' == 'true' or '$(DorotiMacDevelopment)' == 'true' or '$(DorotiAndroidDevelopment)' == 'true'">true</StartupHookSupport>
     <DebugSymbols Condition="'$(Configuration)' == 'Release' and '$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true'">false</DebugSymbols>
     <DebugType Condition="'$(Configuration)' == 'Release' and '$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true'">none</DebugType>
+    <!-- Blazor AOT runs during publish; Debug/watch keeps the editable runtime. -->
+    <RunAOTCompilation Condition="'$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true' and '$(Configuration)' == 'Release' and '$(RunAOTCompilation)' == ''">true</RunAOTCompilation>
+    <RunAOTCompilation Condition="'$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true' and '$(Configuration)' == 'Debug' and '$(RunAOTCompilation)' == ''">false</RunAOTCompilation>
     <PublishAot Condition="'$(DorotiCompilationMode)' == 'NativeAot'">true</PublishAot>
     <UseMonoRuntime Condition="'$(DorotiCompilationMode)' == 'NativeAot' or '$(DorotiCompilationMode)' == 'CoreClr'">false</UseMonoRuntime>
     <UseMonoRuntime Condition="('$(DorotiCompilationMode)' == 'Mono' or ('$(DorotiCompilationMode)' == '' and '$(PublishAot)' != 'true')) and ($([System.String]::Copy('$(RuntimeIdentifier)').StartsWith('ios-')) or $([System.String]::Copy('$(RuntimeIdentifier)').StartsWith('iossimulator-')))">true</UseMonoRuntime>

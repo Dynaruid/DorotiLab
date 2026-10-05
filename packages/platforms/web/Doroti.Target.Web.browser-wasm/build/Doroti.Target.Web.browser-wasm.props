@@ -5,6 +5,9 @@
     <RuntimeFrameworkVersion Condition="'$(RuntimeFrameworkVersion)' == ''">10.0.11</RuntimeFrameworkVersion>
     <WasmBuildNative>true</WasmBuildNative>
     <WasmEnableThreads Condition="'$(WasmEnableThreads)' == ''">true</WasmEnableThreads>
+    <!-- Also covers package consumers that do not import the runner SDK props. -->
+    <RunAOTCompilation Condition="'$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true' and '$(Configuration)' == 'Release' and '$(RunAOTCompilation)' == ''">true</RunAOTCompilation>
+    <RunAOTCompilation Condition="'$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true' and '$(Configuration)' == 'Debug' and '$(RunAOTCompilation)' == ''">false</RunAOTCompilation>
     <PublishTrimmed>true</PublishTrimmed>
     <InvariantGlobalization>false</InvariantGlobalization>
     <BlazorEnableTimeZoneSupport>true</BlazorEnableTimeZoneSupport>

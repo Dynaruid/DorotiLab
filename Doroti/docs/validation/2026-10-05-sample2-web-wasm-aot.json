@@ -1,0 +1,243 @@
+{
+  "date": "2026-10-05",
+  "sourceHead": "1d1f398b579dd6a75c9d9ddde686c1b5c48d3c1f",
+  "app": "DorotiSampleApp2",
+  "productSourceChanged": false,
+  "defaultAotChanged": false,
+  "priorTestbedDirtyChangesPreserved": true,
+  "environment": {
+    "sdk": "10.0.400",
+    "runtimeAndAotPack": "10.0.11",
+    "os": "Windows x64",
+    "chrome": "154.0.8037.93",
+    "headless": true,
+    "viewport": [
+      720,
+      840
+    ],
+    "deviceScaleFactor": 1
+  },
+  "publish": {
+    "project": "samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj",
+    "configuration": "Release",
+    "runtimeIdentifier": "browser-wasm",
+    "fontPreset": "default CDN",
+    "RunAOTCompilation": {
+      "aot": true,
+      "baseline": false
+    },
+    "compilerModified": false,
+    "builds": {
+      "aot": {
+        "status": "PASS",
+        "exitCode": 0,
+        "sha256": "93067ee6daf433d0443b0625577cfbc7dc398cccc4d6ec918a33ea73bd8771ea",
+        "dotnetWarningMatches": 0,
+        "dotnetErrorMatches": 0
+      },
+      "baseline": {
+        "status": "PASS",
+        "exitCode": 0,
+        "sha256": "f80a702d13c170695a2b14ffb8abc53558b092342dbb23540f170a3785c15927",
+        "dotnetWarningMatches": 0,
+        "dotnetErrorMatches": 0
+      }
+    }
+  },
+  "payload": {
+    "aot": {
+      "nativeWasm": "dotnet.native.bi10zn2uni.wasm",
+      "nativeWasmBytes": 40371494,
+      "nativeWasmSha256": "5d99c1bff7922355ceac9ee0d42c966b668de4e73cb6361dd6a10c5a8ee942e7",
+      "nativeBrotliBytes": 8441262,
+      "nativeGzipBytes": 12983810,
+      "rawFileBytesExcludingBrGz": 54550396,
+      "manifestSha256": "9239d54258d31261f2404b7bd4b48175875a2836b63a827bb3f04b2581176d4f",
+      "runtimeProfile": {
+        "schemaVersion": 1,
+        "threads": true
+      }
+    },
+    "baseline": {
+      "nativeWasm": "dotnet.native.b1wyt67oeb.wasm",
+      "nativeWasmBytes": 9661683,
+      "nativeWasmSha256": "af5ba99db78b05ae3a20117185a7821e2a301c98468495c2ea3b90ecba9da088",
+      "nativeBrotliBytes": 2698533,
+      "nativeGzipBytes": 3618573,
+      "rawFileBytesExcludingBrGz": 23825625,
+      "manifestSha256": "4e370353ee1a437871e0e9bf6290a5c0bc5054dff5d820912198ff0bdafab718",
+      "runtimeProfile": {
+        "schemaVersion": 1,
+        "threads": true
+      }
+    }
+  },
+  "aotModules": [
+    "Microsoft_AspNetCore_Components",
+    "Microsoft_AspNetCore_Components_Web",
+    "Microsoft_AspNetCore_Components_WebAssembly",
+    "Microsoft_JSInterop",
+    "SkiaSharp",
+    "Doroti_Cupertino",
+    "Doroti_Framework_Animation",
+    "Doroti_Framework_Foundation",
+    "Doroti_Framework_Gestures",
+    "Doroti_Framework_Painting",
+    "Doroti_Framework_Physics",
+    "Doroti_Framework_Rendering",
+    "Doroti_Framework_Scheduler",
+    "Doroti_Framework_Semantics",
+    "Doroti_Framework_Services",
+    "Doroti_Framework_Widgets",
+    "Doroti_Host_Web",
+    "Doroti_Hosting",
+    "Doroti_Runtime",
+    "Doroti_Skia_Rendering",
+    "Doroti_Skia_RuntimeEffects",
+    "Doroti_Target_Web",
+    "Doroti_Ui",
+    "DorotiSampleApp2",
+    "DorotiSampleApp2_Web",
+    "System_Collections_Concurrent",
+    "System_Collections_NonGeneric",
+    "System_Collections",
+    "System_Console",
+    "System_Diagnostics_StackTrace",
+    "System_Diagnostics_TraceSource",
+    "System_IO_Compression",
+    "System_IO_Pipelines",
+    "System_Linq_Expressions",
+    "System_Linq",
+    "System_Memory",
+    "System_Net_Http",
+    "System_Net_Primitives",
+    "System_Numerics_Vectors",
+    "System_Private_Uri",
+    "System_Runtime_InteropServices_JavaScript",
+    "System_Runtime_InteropServices",
+    "System_Runtime",
+    "System_Security_Cryptography",
+    "System_Text_Encoding_Extensions",
+    "System_Text_Encodings_Web",
+    "System_Text_Json",
+    "System_Text_RegularExpressions",
+    "System_Threading_Channels",
+    "System_Threading_Thread",
+    "System_Threading",
+    "System_Private_CoreLib",
+    "aot_instances"
+  ],
+  "aotModuleCount": 53,
+  "driverSha256": "48c38b7965bfa6da532224c5459a65ef392ba2fc9d4b40406eb8c5bd43542239",
+  "stockCompilerSha256": "ba5517f50ae5c7fa804c470b7c25f23afb1b4958bceb3411d1875182d8bb1fe0",
+  "sourceHashes": {
+    "samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj": "4309560f518a6846523c279742f12fdb66508bd33571da4e97c3729789be1509",
+    "samples/DorotiSampleApp2/web/WebFonts.cs": "4286bbd38f370c5366e6c911a74be6969a9f70acb59bf669ded4e593baebbfd4",
+    "samples/DorotiSampleApp2/src/App.cs": "3ab5c8e7f7a6d3a71e1d0d265d4ee676661ad4a943679824c7707d30a079d6c0",
+    "samples/DorotiSampleApp2/src/FontComparisonPage.cs": "f5a03970ed9a4e5daf8259a99eae57b451d0f3c7f8164920e48bc3d914aa2b9f",
+    "samples/DorotiSampleApp2/src/VariableBlurPage.cs": "f716f05be59e5ad324d7facb32bcf56101928664d223487e54d30a32c8cfce3a"
+  },
+  "smoke": {
+    "status": "PASS",
+    "browser": "154.0.8037.93",
+    "records": [
+      {
+        "mode": "baseline",
+        "renderer": "webgl",
+        "status": "PASS",
+        "sharedWasmHeap": true,
+        "counter": true,
+        "syntheticTextAndDone": true,
+        "tabs": [
+          "Components",
+          "Profile",
+          "Fonts",
+          "Variable Blur",
+          "Upload",
+          "Settings"
+        ],
+        "stateRetained": true,
+        "errors": [],
+        "requestFailures": []
+      },
+      {
+        "mode": "aot",
+        "renderer": "webgl",
+        "status": "PASS",
+        "sharedWasmHeap": true,
+        "counter": true,
+        "syntheticTextAndDone": true,
+        "tabs": [
+          "Components",
+          "Profile",
+          "Fonts",
+          "Variable Blur",
+          "Upload",
+          "Settings"
+        ],
+        "stateRetained": true,
+        "errors": [],
+        "requestFailures": []
+      },
+      {
+        "mode": "aot",
+        "renderer": "webgpu",
+        "status": "PASS",
+        "sharedWasmHeap": true,
+        "counter": true,
+        "syntheticTextAndDone": true,
+        "tabs": [
+          "Components",
+          "Profile",
+          "Fonts",
+          "Variable Blur",
+          "Upload",
+          "Settings"
+        ],
+        "stateRetained": true,
+        "errors": [],
+        "requestFailures": []
+      }
+    ],
+    "physicalIME": "notVerified",
+    "displayFPS": "notMeasured",
+    "performanceComparison": "notMeasured"
+  },
+  "probeSha256": "c84dcfc4920d41f1e6c89d22a2f8bfcd3962154629324f400c2d9af8b10f12b5",
+  "previewHeaders": {
+    "aot": {
+      "status": 200,
+      "COOP": "same-origin",
+      "COEP": "require-corp"
+    },
+    "baseline": {
+      "status": 200,
+      "COOP": "same-origin",
+      "COEP": "require-corp"
+    }
+  },
+  "performanceComparison": "notMeasured",
+  "testbedPerformanceExtrapolated": false,
+  "displayFPS": "notMeasured",
+  "notVerified": [
+    "physical Korean IME",
+    "screen reader",
+    "mobile/Safari/Firefox",
+    "long-term startup/memory stability",
+    "full file picker/drop/read and service corpus",
+    "baseline WebGPU",
+    "clean-machine deployment"
+  ],
+  "visualInspection": [
+    "aot-webgl-components.png",
+    "aot-webgl-fonts.png",
+    "aot-webgpu-blur.png"
+  ],
+  "pixelEquality": "notMeasured",
+  "rawEvidenceDirectory": "temp/testing/web-aot/2026-10-05",
+  "rawEvidenceDisposable": true,
+  "publishAttemptsPerMode": 1,
+  "browserContexts": 3,
+  "automaticRetries": 0,
+  "timeoutSeconds": 1200
+}
