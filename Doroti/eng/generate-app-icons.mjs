@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.argv[2] || 'playwright');
-const output = resolve(root, 'Doroti/src/Doroti.Runner.Sdk/Sdk/Icons');
+const output = resolve(root, 'packages/platforms/build/Icons');
 const svg = await readFile(resolve(root, 'Doroti/docs/branding/doroti-app-icon.svg'), 'utf8');
 const brandSvg = await readFile(resolve(root, 'Doroti/docs/branding/doroti-symbol-color.svg'), 'utf8');
 await mkdir(output, { recursive: true });

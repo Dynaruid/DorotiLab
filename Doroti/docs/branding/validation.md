@@ -1,10 +1,26 @@
-# 기본 앱 아이콘 검증 · 2026-09-29
+# 브랜딩 아이콘 검증
 
 플랫폼별 기본값, 변경 방법, 재생성 명령은 [아이콘 안내](README.md)에 있습니다.
 
-## 기본 앱 아이콘 교체 검증
+## 윤곽 패스 교체 · 2026-10-05
 
-현재 앱 원본은 `doroti-app-icon.svg`, SHA-256 `be0ca1713bcea2c51738d9e25609610c70ad3a68f3413dc08254639902165c41`입니다. 전달된 `doroti-symbol-white-dotnet-purple-200.svg`의 도형과 색상을 유지하며, SVG 설명 문구만 정리했습니다. 컬러·단색 브랜드 원본도 각각 전달된 filled-cutout-thin-200 SVG와 바이트 일치를 확인했습니다.
+`doroti-outline (1).svg`의 다섯 블록 패스를 기존 filled-cutout 스타일로 변환해 세 공식 SVG를 교체했습니다. 원본 패스의 비율·정점 순서·모서리 형태와 겹침 순서를 유지하고, `24 × 24` viewBox 중앙에 배치했습니다. 앱·컬러·단색 파일의 기존 색상, 투명 배경 여부와 `0.8` cutout 경계도 유지합니다.
+
+원본 윤곽 SVG의 SHA-256은 `583c8b9cde6a8a91421580c6de2079300f196c79ac82824db8e21a606774b945`, 생성한 앱 SVG는 `0958e484df1791098ef515600e82ef7b82df31ee5f0de974c44c4bd1ce99cd7d`입니다. Python 변환 도구는 `other/doroti-multi-tool`에 있습니다.
+
+| 범위 | 확인한 결과 |
+| --- | --- |
+| SVG 구조·도형 | PASS: 원본과 생성 패스의 정점 수·비율·순서 일치, 세 파일의 도형 일치, 내부 참조와 다섯 cutout mask 검사, 재생성 결과 바이트 일치 |
+| 렌더링 | PASS: Edge로 원본과 교체 전후 세 SVG를 렌더링하고 둥근 모서리·색상·투명 간격 시각 확인 |
+| 파생 자산 | PASS: `packages/platforms/build/Icons`의 PNG·ICO·ICNS·파비콘 및 모바일 배경·전경, VS Code 확장 PNG 재생성. 앱 PNG의 불투명 보라색 배경·흰색 심볼, 투명 전경과 컬러 PNG 픽셀 검사, 파비콘 원본 바이트 일치 |
+| 플랫폼 기본값 | PASS: `app_icons.py`의 플랫폼별 선택·직접 지정 우선·비활성화·PNG/ICO/ICNS 구조 검사. 생성기와 검사의 경로를 현재 `packages/platforms/build` 위치에 맞춤 |
+| 패키지·앱 실행 | notVerified: 이번 변경으로 target 패키지 빌드·설치·각 OS의 실제 아이콘 표시는 수행하지 않음 |
+
+검사는 `Doroti/eng/run-with-timeout.py --timeout 1200`으로 실행했습니다. 아래 기록은 이전 도안에 대한 검증이며, 이번 도안의 실행 검증 결과로 취급하지 않습니다.
+
+## 기본 앱 아이콘 교체 검증 · 2026-09-29
+
+당시 앱 원본은 `doroti-app-icon.svg`, SHA-256 `be0ca1713bcea2c51738d9e25609610c70ad3a68f3413dc08254639902165c41`입니다. 전달된 `doroti-symbol-white-dotnet-purple-200.svg`의 도형과 색상을 유지하며, SVG 설명 문구만 정리했습니다. 컬러·단색 브랜드 원본도 각각 전달된 filled-cutout-thin-200 SVG와 바이트 일치를 확인했습니다.
 
 | 범위 | 이번 교체에서 확인한 결과 |
 | --- | --- |

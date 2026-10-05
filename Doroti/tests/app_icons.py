@@ -9,7 +9,7 @@ import sys
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[2]
-SDK = ROOT / "Doroti/src/Doroti.Runner.Sdk/Sdk"
+PROVIDER_BUILD = ROOT / "packages/platforms/build"
 
 
 def evaluate(folder, target, properties="", items="", default=True):
@@ -19,7 +19,7 @@ def evaluate(folder, target, properties="", items="", default=True):
       <UseMaui>{str(target in ('Android', 'iOS', 'MacCatalyst')).lower()}</UseMaui>
       <DorotiUseDefaultAppIcon>{str(default).lower()}</DorotiUseDefaultAppIcon>{properties}</PropertyGroup>
       <ItemGroup>{items}</ItemGroup>
-      <Import Project="{SDK / 'Doroti.AppIcons.targets'}" />
+      <Import Project="{PROVIDER_BUILD / 'Doroti.AppIcons.targets'}" />
     </Project>''', encoding="utf-8")
     result = subprocess.run(["dotnet", "msbuild", str(project), "-nologo",
         "-getProperty:ApplicationIcon,DorotiMacOSIcon,DorotiLinuxIcon",
@@ -64,7 +64,7 @@ with tempfile.TemporaryDirectory(prefix="contract-", dir=scratch_root) as scratc
     custom = evaluate(folder, "Android")["Items"]["MauiIcon"]
     assert len(custom) == 1 and custom[0]["Identity"] == "Resources/AppIcon/appicon.svg"
 
-icons = SDK / "Icons"
+icons = PROVIDER_BUILD / "Icons"
 assert (icons / "favicon.svg").read_bytes() == (ROOT / "Doroti/docs/branding/doroti-app-icon.svg").read_bytes()
 background = ET.parse(icons / "appicon.svg").getroot().find("{http://www.w3.org/2000/svg}rect")
 assert background.attrib["fill"] == "#512BD4"
@@ -90,6 +90,7 @@ assert offset == len(icns)
 if len(sys.argv) > 1:
     with zipfile.ZipFile(sys.argv[1]) as package:
         for source in icons.iterdir():
-            assert package.read("Sdk/Icons/" + source.name) == source.read_bytes()
-        assert package.read("Sdk/Doroti.AppIcons.targets") == (SDK / "Doroti.AppIcons.targets").read_bytes()
-print("PASS: platform icon selection, overrides, opt-out, portable assets and package contents")
+            assert package.read("provider-build/Icons/" + source.name) == source.read_bytes()
+        assert package.read("provider-build/Doroti.AppIcons.targets") == (PROVIDER_BUILD / "Doroti.AppIcons.targets").read_bytes()
+    print("PASS: target package icon contents")
+print("PASS: platform icon selection, overrides, opt-out and portable assets")
