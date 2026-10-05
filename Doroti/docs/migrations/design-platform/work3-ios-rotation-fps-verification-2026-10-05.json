@@ -1,0 +1,386 @@
+{
+  "schema": "doroti.ios-rotation-fps-verification/v1",
+  "clientDate": "2026-10-05 KST",
+  "verifiedUtc": "2026-10-05T05:17:59.276238+00:00",
+  "sourceRevision": "248cc464428e151930acd2144ab8f5d84de2fd5c",
+  "sourceDirty": true,
+  "wholePlanComplete": false,
+  "result": "PASS physical-device Release Mono AOT improvement and native/synthetic scope; Debug interpreter simulator rotation threshold remains FAILED",
+  "environment": {
+    "device": "iPhone 12",
+    "ios": "26.6.1 (23G83)",
+    "dotnet": "10.0.401",
+    "xcode": "27.0 (27A266a)",
+    "host": "macOS26.6.2 / Apple M1 arm64"
+  },
+  "profile": {
+    "tfm": "net10.0-ios27.0",
+    "rid": "ios-arm64",
+    "configuration": "Release",
+    "useInterpreter": false,
+    "mtouchInterpreter": "-all",
+    "publishAot": false,
+    "optimize": true,
+    "llvm": true
+  },
+  "changes": [
+    "Fixed-generation shader rotation permits CPU preparation while an earlier GPU frame is in flight; bounded to two consumers with retained scene/GPU leases",
+    "Preserve first frame ordering and synchronized transaction presentation; drain before final exact-size resize; native insertion switches to serial exact backing",
+    "Coalesce rotation semantics when VoiceOver/Switch Control are off and flush at finish",
+    "Cache locale/font/accessibility policy until native notifications; geometry/safe areas remain updated per pulse",
+    "Probe records Metal PresentedTime and validates final framework/drawable pixels; metrics calculation excludes settled replays and duplicate timestamps"
+  ],
+  "comparisonScope": "Same Material Components screen/device; three fresh processes each; rotation observer only; no detailed profiling/evidence writer; thermal telemetry not collected",
+  "comparison": [
+    {
+      "orientation": "LandscapeLeft",
+      "beforeMeanViewportGapMs": 38.04378395067976,
+      "afterMeanViewportGapMs": 23.415446295661646,
+      "viewportGapReductionPercent": 38.45132144053388,
+      "afterMeanDisplayedFps": 42.61439274893466,
+      "afterDisplayedFpsRange": [
+        39.88053563969979,
+        45.74194534948887
+      ],
+      "beforeDisplayedFps": null,
+      "beforeDisplayedFpsStatus": "notMeasured by old per-viewport probe; callback gaps are not displayed FPS",
+      "beforeRuns": [
+        {
+          "orientation": "LandscapeLeft",
+          "distinctWidths": 10,
+          "updates": 10,
+          "meanGapMs": 35.881768517558356,
+          "maxGapMs": 54.028041689889506,
+          "meanPhaseError": 22.7703039740304,
+          "maxPhaseError": 82.40544476111734
+        },
+        {
+          "orientation": "LandscapeLeft",
+          "distinctWidths": 11,
+          "updates": 10,
+          "meanGapMs": 39.25577777812982,
+          "maxGapMs": 52.3725833336357,
+          "meanPhaseError": 21.491340999378625,
+          "maxPhaseError": 64.02034342288971
+        },
+        {
+          "orientation": "LandscapeLeft",
+          "distinctWidths": 11,
+          "updates": 10,
+          "meanGapMs": 38.99380555635111,
+          "maxGapMs": 49.92420834605582,
+          "meanPhaseError": 24.95480603463174,
+          "maxPhaseError": 72.39308710892999
+        }
+      ],
+      "afterRuns": [
+        {
+          "orientation": "LandscapeLeft",
+          "distinctWidths": 17,
+          "updates": 16,
+          "meanGapMs": 23.368758333769318,
+          "maxGapMs": 50.036000000545755,
+          "meanPhaseError": 9.829059699826754,
+          "maxPhaseError": 59.651052355766296
+        },
+        {
+          "orientation": "LandscapeLeft",
+          "distinctWidths": 17,
+          "updates": 16,
+          "meanGapMs": 23.375866664961602,
+          "maxGapMs": 51.85387498931959,
+          "meanPhaseError": 10.139731670647347,
+          "maxPhaseError": 61.65756674607593
+        },
+        {
+          "orientation": "LandscapeLeft",
+          "distinctWidths": 17,
+          "updates": 16,
+          "meanGapMs": 23.501713888254017,
+          "maxGapMs": 51.6373333230149,
+          "meanPhaseError": 9.20130916873071,
+          "maxPhaseError": 56.21501918633777
+        }
+      ],
+      "afterPresentations": [
+        {
+          "status": "measured",
+          "source": "Metal drawable PresentedTime; intermediate viewports through first final viewport",
+          "intervals": 13,
+          "spanMs": 284.2030416650232,
+          "fps": 45.74194534948887,
+          "meanGapMs": 21.861772435771016,
+          "maxGapMs": 50.15241669025272
+        },
+        {
+          "status": "measured",
+          "source": "Metal drawable PresentedTime; intermediate viewports through first final viewport",
+          "intervals": 12,
+          "spanMs": 284.2207916837651,
+          "fps": 42.22069725761533,
+          "meanGapMs": 23.685065973647095,
+          "maxGapMs": 66.87583334860392
+        },
+        {
+          "status": "measured",
+          "source": "Metal drawable PresentedTime; intermediate viewports through first final viewport",
+          "intervals": 12,
+          "spanMs": 300.89866666821763,
+          "fps": 39.88053563969979,
+          "meanGapMs": 25.074888889018137,
+          "maxGapMs": 66.86445834930055
+        }
+      ]
+    },
+    {
+      "orientation": "Portrait",
+      "beforeMeanViewportGapMs": 38.196432009963296,
+      "afterMeanViewportGapMs": 22.47810034730517,
+      "viewportGapReductionPercent": 41.15130873626652,
+      "afterMeanDisplayedFps": 44.14901602589188,
+      "afterDisplayedFpsRange": [
+        42.725157724975446,
+        44.86292134459336
+      ],
+      "beforeDisplayedFps": null,
+      "beforeDisplayedFpsStatus": "notMeasured by old per-viewport probe; callback gaps are not displayed FPS",
+      "beforeRuns": [
+        {
+          "orientation": "Portrait",
+          "distinctWidths": 8,
+          "updates": 8,
+          "meanGapMs": 42.32235714360805,
+          "maxGapMs": 66.31558333174326,
+          "meanPhaseError": 13.225439906352682,
+          "maxPhaseError": 35.15154810746509
+        },
+        {
+          "orientation": "Portrait",
+          "distinctWidths": 11,
+          "updates": 10,
+          "meanGapMs": 36.66338888837749,
+          "maxGapMs": 61.982083308976144,
+          "meanPhaseError": 19.638322130369485,
+          "maxPhaseError": 43.357259035110474
+        },
+        {
+          "orientation": "Portrait",
+          "distinctWidths": 12,
+          "updates": 11,
+          "meanGapMs": 35.60354999790434,
+          "maxGapMs": 51.0422500083223,
+          "meanPhaseError": 18.17289784990457,
+          "maxPhaseError": 52.37150601545966
+        }
+      ],
+      "afterRuns": [
+        {
+          "orientation": "Portrait",
+          "distinctWidths": 18,
+          "updates": 17,
+          "meanGapMs": 22.6494322923827,
+          "maxGapMs": 40.13891669455916,
+          "meanPhaseError": 8.077926677009135,
+          "maxPhaseError": 33.60033055146533
+        },
+        {
+          "orientation": "Portrait",
+          "distinctWidths": 18,
+          "updates": 17,
+          "meanGapMs": 22.176635417054058,
+          "maxGapMs": 41.516375000355765,
+          "meanPhaseError": 9.997086041100218,
+          "maxPhaseError": 37.89496886730194
+        },
+        {
+          "orientation": "Portrait",
+          "distinctWidths": 17,
+          "updates": 16,
+          "meanGapMs": 22.60823333247875,
+          "maxGapMs": 44.29874999914318,
+          "meanPhaseError": 11.838264380882418,
+          "maxPhaseError": 36.94110107421875
+        }
+      ],
+      "afterPresentations": [
+        {
+          "status": "measured",
+          "source": "Metal drawable PresentedTime; intermediate viewports through first final viewport",
+          "intervals": 15,
+          "spanMs": 351.0812083259225,
+          "fps": 42.725157724975446,
+          "meanGapMs": 23.405413888394833,
+          "maxGapMs": 66.87174999387935
+        },
+        {
+          "status": "measured",
+          "source": "Metal drawable PresentedTime; intermediate viewports through first final viewport",
+          "intervals": 15,
+          "spanMs": 334.3812916718889,
+          "fps": 44.85896900810685,
+          "meanGapMs": 22.29208611145926,
+          "maxGapMs": 66.87300000339746
+        },
+        {
+          "status": "measured",
+          "source": "Metal drawable PresentedTime; intermediate viewports through first final viewport",
+          "intervals": 15,
+          "spanMs": 334.3518333276734,
+          "fps": 44.86292134459336,
+          "meanGapMs": 22.290122221844893,
+          "maxGapMs": 50.15233333688229
+        }
+      ]
+    }
+  ],
+  "displayedFpsReference": "https://developer.apple.com/documentation/metal/mtldrawable/presentedtime",
+  "builds": {
+    "deviceExitCode": 0,
+    "deviceWarnings": 0,
+    "deviceErrors": 0,
+    "simulatorAotExitCode": 0,
+    "simulatorWarnings": 0,
+    "simulatorErrors": 0,
+    "catalystHostExitCode": 0,
+    "catalystWarnings": 0,
+    "catalystErrors": 0
+  },
+  "checks": {
+    "presentationMetrics": "3 unittest cases PASS",
+    "shaderLifetime": "PASS exact viewport resize across two retained consumers, third rejection, completion/replay ordering, native insertion rejection and texture budget",
+    "deviceCases": [
+      "input",
+      "features",
+      "rotation",
+      "shutdown",
+      "lifecycle"
+    ],
+    "deviceFailures": {},
+    "deviceRotationPipeline": {
+      "mode": "C",
+      "preparedPulses": 51,
+      "pendingGpuFrames": 0,
+      "maximumGpuFrames": 2,
+      "completedGpuFrames": 56,
+      "retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+      "fallback": "resize",
+      "preparedWhileGpuFull": 0,
+      "rejectedAdmissions": 0
+    },
+    "shutdownPendingGpuFrames": 0,
+    "lifecycle": {
+      "status": "PASS",
+      "cycles": [
+        {
+          "cycle": 1,
+          "samePid": true,
+          "beforeCompletedGpuFrames": 19,
+          "afterCompletedGpuFrames": 21,
+          "replayed": 3,
+          "failed": 0
+        },
+        {
+          "cycle": 2,
+          "samePid": true,
+          "beforeCompletedGpuFrames": 21,
+          "afterCompletedGpuFrames": 23,
+          "replayed": 5,
+          "failed": 0
+        },
+        {
+          "cycle": 3,
+          "samePid": true,
+          "beforeCompletedGpuFrames": 23,
+          "afterCompletedGpuFrames": 24,
+          "replayed": 6,
+          "failed": 0
+        }
+      ],
+      "pid": 8167,
+      "meaning": "same process/shared application, new frames after each foreground; static scene, no FPS claim"
+    },
+    "nativeOverlayRotation": {
+      "status": "PASS",
+      "maximumGpuFrames": 1,
+      "failedFrames": 0,
+      "distinctWidths": [
+        20,
+        17
+      ],
+      "displayedFps": "notMeasured"
+    },
+    "simulatorReleaseAot": {
+      "status": "PASS",
+      "rid": "iossimulator-arm64",
+      "llvm": false,
+      "cases": [
+        "rotation",
+        "input",
+        "features",
+        "shutdown"
+      ],
+      "distinctWidths": [
+        15,
+        15
+      ]
+    },
+    "simulatorDebugInterpreter": {
+      "status": "FAILED intermediate-width threshold on pipeline candidates",
+      "observedDistinctWidths": [
+        2,
+        3,
+        3
+      ],
+      "requiredDistinctWidths": 4,
+      "scope": "Loaded iPhone 17 simulator; preserved as an unresolved Debug interpreter result"
+    }
+  },
+  "notQualified": [
+    "Stable 60 FPS on full Material Components",
+    "Strict LandscapeLeft peak phase budget: 56.2–61.7pt exceeds 45.4pt",
+    "Debug interpreter simulator intermediate-frame acceptance",
+    "Physical VoiceOver/Switch Control performance"
+  ],
+  "finalApp": {
+    "pid": 8169,
+    "mode": "normal Material app; no probe, evidence writer or detailed frame profiling",
+    "screenCapture": "PASS",
+    "appDataReset": false,
+    "appUninstalled": false,
+    "payloadSha256": "244402bfeed3e1eb4b5904a8611d1b77d471271ca8b711935a1c3ceea68db754"
+  },
+  "baselinePayloadSha256": "d52f403a318fb8716186cdc166c77dd79886ec89bf63274df81589204e5f2770",
+  "rawEvidence": {
+    "temp/testing/ios-rotation-fps/publish-5.log": "60d375b3e83cf03fb002ce606cf95068ec58c11d5b78f558aade3a13958831af",
+    "temp/testing/ios-rotation-fps/simulator-aot-build.log": "476b121397b72f2760d3f9c30c4e6c4a05ae963d776a6a9665fb80d95dee0f57",
+    "temp/testing/ios-rotation-fps/catalyst-build.log": "7fed2f86c8d65041d851b043212d6c5c91d0de3bb00c897f590de7ed4953a993",
+    "temp/testing/ios-rotation-fps/pipeline-tests.log": "b97c051a946d88ebf881d0f72cf61cd5101fc6107478f54aba48d51f90b9854b",
+    "temp/testing/ios-rotation-fps/device-final/summary.json": "0cea9f2a9b9c86f9bcb8cce520aea0f09bf1b06f715285c2e5cebbce665d982b",
+    "temp/testing/ios-rotation-fps/simulator-aot/summary.json": "3aea28ca6b14487016b1f539caf32ed5e14ea02da3c802c588b1f74437cb935d",
+    "temp/testing/ios-rotation-fps/final-native-rotation/frame.json": "bafc0c27197d3d4408fca611680e394c17c163a03b639f0290eec1cfaadc278f",
+    "temp/testing/ios-rotation-fps/baseline-2/result.json": "1fac41dc735d72c532fe82b45dd668ccd40999f677b6bf64585cb472e5420cff",
+    "temp/testing/ios-rotation-fps/baseline-2/summary.json": "508f1fcb23c64bccc9bc786223359c31c34dfee65354ecd50bf4664a5c871756",
+    "temp/testing/ios-rotation-fps/baseline-3/result.json": "f7141176b9997c483551c2f3840631b051824671cf03aeb4113afe7f504ddf08",
+    "temp/testing/ios-rotation-fps/baseline-3/summary.json": "40cbdc1e08eccaf3e7a71aef3f469742b5e3623e9b91344cbd2728319e6c579d",
+    "temp/testing/ios-rotation-fps/baseline-4/result.json": "cb174ecce058e773e2fc3f105f8926bd88a2e1e2ee2fb8a409473ac9515fdeea",
+    "temp/testing/ios-rotation-fps/baseline-4/summary.json": "ce9df1a15298b9280a1d7bbb674d6d991479651dfe6ca41d601f75c4c2c4275c",
+    "temp/testing/ios-rotation-fps/final-1/result.json": "d514a9e06bec65bdcd54527dee34d1e66a2074b3ce49e94eb67a91c774e64bee",
+    "temp/testing/ios-rotation-fps/final-1/summary.json": "ce28bfe78d11f0459af526522dc9a8be49f08f3cdf6dbfaf41ccc7208463c07f",
+    "temp/testing/ios-rotation-fps/final-2/result.json": "e80ce36a9fd0e86226502e975155623295f5a77d4cc92a83529791e64050e79a",
+    "temp/testing/ios-rotation-fps/final-2/summary.json": "d72893cc6a82e7d2156ecdf0cb691623f2add01442ef6f1b07777b708284f833",
+    "temp/testing/ios-rotation-fps/final-3/result.json": "1b54837c42cf82612e9267870d979d692124b0cdcf15cfbb6dce22da41fb4845",
+    "temp/testing/ios-rotation-fps/final-3/summary.json": "d136f64cfcf7171a5ded80b935afa641c4b7569f0f164842164e0c38b3e14228"
+  },
+  "sourceHashes": {
+    "Doroti/tests/Doroti.Tests/ShaderFramePipelineRegression.cs": "463c86e1d85a5fd6f729f89059d19dfe9c4bd03f971c6f95f2f0ff952fee30b9",
+    "Doroti/tests/ios_device_smoke.py": "26765d7764dfd0b4ddcea27e42a93a4595b5b61329f85fb7599a58c989ba8fa1",
+    "packages/platforms/maui/Doroti.Host.Maui/DorotiUIKitGraphiteViewHandler.cs": "89b9bf2e24ac017fdbf02c80e62eca74b1ab852c694f29e92034d7520d85dca3",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiSkiaCapabilities.cs": "106108488bef307a07e840b385c2a96ed0d4441305e8e7a405de4a00a67d603f",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiViewEnvironment.UIKit.cs": "4dc211c8fc7f18b5d31504ebf2b69894f0ca19bd13bc243b9880525a552cb8be",
+    "packages/platforms/maui/Doroti.Host.Maui/UIKitAnimatedViewport.cs": "e673c0b5d9659e5acb661400990e9accb8476b0b3f9a517f990357737fe8cdc8",
+    "samples/DorotiTestbedApp/ios/UIKitRotationProbe.cs": "ec0b03938c4f8ce1ef932c615414cb6bf11a5ce8022497a3da802ab27e6bc61a",
+    "work3.md": "1cbd58aa0b7e900308ea9c63c4cbe953bd665a049b1f168ee7f0f0a505ec8945",
+    "Doroti/tests/test_uikit_rotation_metrics.py": "34a0615df56c1c5156139eb29b6d0a7e86d26918323dcc956727cfe76945a008",
+    "Doroti/tests/uikit_rotation_metrics.py": "4480ef5e72515dc3b07508a14b7af46a6da80ed895e58bef508b654fc731428e"
+  }
+}

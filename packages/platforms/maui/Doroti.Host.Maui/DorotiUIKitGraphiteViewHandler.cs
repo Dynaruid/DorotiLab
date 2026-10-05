@@ -54,6 +54,7 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
 #if IOS && !MACCATALYST
     private readonly UIKitAnimatedViewport _animatedViewport;
     private bool _renderingViewport;
+    private bool _rotationRequiresExactBacking;
     private SKSizeI _viewportPixels;
     private readonly System.Collections.Concurrent.ConcurrentQueue<(
         PendingFrame Frame,
@@ -65,6 +66,9 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
     private readonly IMTLCommandQueue _queue;
     private readonly bool _profileBlur =
         Environment.GetEnvironmentVariable("DOROTI_VARIABLE_BLUR_PROFILE") == "1";
+#if IOS && !MACCATALYST
+    internal event Action<double, MauiPaintCompletion>? ViewportPresented;
+#endif
     private IosFrameLoopDiagnostics? _frameLoop;
     private long _pulseId;
     private long _activePulse;
@@ -141,10 +145,14 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
         FramebufferOnly = false;
         AutoResizeDrawable = false;
 #if IOS && !MACCATALYST
-        _animatedViewport = new(this, RenderViewport, CanRenderViewport);
+        _animatedViewport = new(this, RenderViewport, CanRenderViewport, CanFinishViewport);
         _animatedViewport.AnimationChanged += active =>
         {
-            if (active) StopPipelineDisplayLink();
+            if (active)
+            {
+                _rotationRequiresExactBacking = false;
+                StopPipelineDisplayLink();
+            }
             EnableSetNeedsDisplay = !active;
             if (!active && _owner?.FrameworkFrameRequested?.Invoke() == true) RequestFramePulse();
         };
@@ -479,7 +487,8 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
             // an unscaled, centered viewport; UIKit clips the animated bounds.
             // Native overlay composition retains its exact-size surface contract.
             var backingSize =
-                _animatedViewport.IsAnimating && _owner?.PlatformViews?.HasComposition != true
+                _animatedViewport.IsAnimating && !_rotationRequiresExactBacking
+                    && _owner?.PlatformViews?.HasComposition != true
                     ? _animatedViewport.AnimationExtent
                     : size;
 #else
@@ -526,7 +535,34 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
     private bool CanRenderViewport()
     {
         DrainCompletedFrames();
+        return !_drawing && (_pending.Count == 0 || _faulted || _releaseRequested
+            || HasStableRotationBacking && _pending.Count < NativeFrameAdmissionPolicy.ShaderFrameLimit);
+    }
+
+    private bool CanFinishViewport()
+    {
+        DrainCompletedFrames();
         return !_drawing && (_pending.Count == 0 || _faulted || _releaseRequested);
+    }
+
+    // The drawable generation stays fixed while only the clipped shader viewport
+    // changes. Each recording retains its own scene/GPU leases, so the next CPU
+    // frame can prepare while the previous GPU frame finishes. Pool resizing,
+    // native composition and the final exact-size frame still drain completely.
+    private bool HasStableRotationBacking
+    {
+        get
+        {
+            if (!_animatedViewport.IsAnimating || _rotationRequiresExactBacking
+                || _owner?.PlatformViews?.HasComposition == true
+                || _pending.Any(p => p.Generation != _generation || p.PlatformFrame is not null))
+                return false;
+            var extent = _animatedViewport.AnimationExtent;
+            var scale = _animatedViewport.Scale;
+            return DrawableSize.Equals(new CGSize(
+                Math.Max(1, Math.Round(extent.Width * scale)),
+                Math.Max(1, Math.Round(extent.Height * scale))));
+        }
     }
 
     private void DrainCompletedFrames() => DrainCompletedFramesCore(allowDuringDraw: false);
@@ -607,6 +643,11 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
         var shaderFramePipeline = false;
         var frameworkPrepared = !prepareFramework;
         var needsTransaction = owner.PlatformViews?.IsConfigured == true;
+#if IOS && !MACCATALYST
+        // Preserve the first frame's drawable/transaction ordering. Preparing
+        // ahead is useful only when a previous shader frame is actually in flight.
+        var retainedRotationBacking = HasStableRotationBacking && _pending.Count > 0;
+#endif
         try
         {
             var admission = NativeFrameAdmissionPolicy.PrepareAndDecide(
@@ -654,15 +695,31 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
                 _pending.Any(p => p.PlatformFrame is not null),
 
 #if IOS && !MACCATALYST
-                _renderingViewport || _animatedViewport.IsAnimating,
+                (_renderingViewport || _animatedViewport.IsAnimating) && !retainedRotationBacking,
 #else
                 _preparedGeneration >= 0 && _preparedGeneration != _generation,
 #endif
                 prepareFramework);
             shaderFramePipeline = admission.FreshOnly;
             needsTransaction = admission.SynchronizePresentation;
+#if IOS && !MACCATALYST
+            // CPU/GPU overlap does not change UIKit's presentation contract:
+            // every rotation drawable is presented in the geometry transaction.
+            needsTransaction |= _renderingViewport || _animatedViewport.IsAnimating;
+#endif
             _frameFallback = admission.FreshOnly ? null : admission.Reason;
             _frameLoop?.Record("admission", pulse, _generation, _pending.Count, reason: admission.Reason);
+#if IOS && !MACCATALYST
+            if (retainedRotationBacking
+                && owner.ShaderSceneAdmission?.Invoke() == SkiaShaderSceneAdmission.nativeScene)
+            {
+                // A callback introduced native content. Drain the retained pool
+                // and retry with an exact-size drawable before composing it.
+                _rotationRequiresExactBacking = true;
+                _frameBackpressure = true;
+                return;
+            }
+#endif
             if (!admission.Admitted)
             {
                 _rejectedAdmissions++;
@@ -972,6 +1029,10 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
                     }
                     _frameLoop?.Record("displayed", pending.PulseId, pending.Generation,
                         completion: pending.Completion, presentedTime: timestamp);
+#if IOS && !MACCATALYST
+                    if (pending.Completion is { } completion)
+                        ViewportPresented?.Invoke(timestamp, completion);
+#endif
                     if (_profileBlur) lock (_presentationGate)
                     {
                         _presentedDrawables++;

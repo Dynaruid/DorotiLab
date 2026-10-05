@@ -19,7 +19,8 @@ internal interface IUIKitAnimatedViewport
 internal sealed class UIKitAnimatedViewport(
     UIView view,
     Action<CGSize> render,
-    Func<bool>? canRender = null
+    Func<bool>? canRender = null,
+    Func<bool>? canFinish = null
 ) : IDisposable
 {
     private CADisplayLink? _displayLink;
@@ -209,7 +210,7 @@ internal sealed class UIKitAnimatedViewport(
 
     private void Finish(bool force = false)
     {
-        if (!force && !_disposed && view.Window is not null && canRender?.Invoke() == false)
+        if (!force && !_disposed && view.Window is not null && (canFinish ?? canRender)?.Invoke() == false)
         {
             // Keep the display pulse alive until the last GPU lease retires.
             // Advancing geometry first would invalidate that in-flight scene.

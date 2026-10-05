@@ -13,6 +13,7 @@ internal sealed partial class MauiViewEnvironment
     private CGRect _keyboardScreenFrame;
     private UIView? _keyboardWindow;
     private CADisplayLink? _keyboardAnimation;
+    private bool _configurationDirty = true;
 
     private void StopKeyboardAnimation()
     {
@@ -70,6 +71,7 @@ internal sealed partial class MauiViewEnvironment
         {
             return;
         }
+        _configurationDirty = true;
 
 #if IOS && !MACCATALYST
         if (native is IUIKitAnimatedViewport animated)
@@ -113,6 +115,8 @@ internal sealed partial class MauiViewEnvironment
                 "UIApplicationDidBecomeActiveNotification",
                 "UIWindowDidResignKeyNotification",
                 "NSCurrentLocaleDidChangeNotification",
+                "UIApplicationSignificantTimeChangeNotification",
+                "NSSystemTimeZoneDidChangeNotification",
             }
         )
         {
@@ -120,6 +124,11 @@ internal sealed partial class MauiViewEnvironment
                 new NSString(name),
                 notification =>
                 {
+                    // Rotation pulses change geometry, not locale, font scaling
+                    // or accessibility policy. Refresh those on their native
+                    // notifications instead of querying Foundation every pulse.
+                    if (!name.Contains("Keyboard", StringComparison.Ordinal))
+                        _configurationDirty = true;
                     if (name.Contains("Keyboard", StringComparison.Ordinal))
                     {
                         // Notifications are process-wide. Only the window owning the editing view participates.
@@ -214,6 +223,8 @@ internal sealed partial class MauiViewEnvironment
                 scale
             );
         }
+        if (!_configurationDirty)
+            return;
         using var preferredBodyFont =
             UIFont.GetPreferredFontForTextStyle(UIFontTextStyle.Body)
             ?? throw new InvalidOperationException(
@@ -233,6 +244,7 @@ internal sealed partial class MauiViewEnvironment
         var pattern = NSDateFormatter.GetDateFormatFromTemplate("j", 0, NSLocale.CurrentLocale);
         Locales = NSLocale.PreferredLanguages.Select(ParseLocale).ToArray();
         Use24Hour = pattern?.Contains('a') == false;
+        _configurationDirty = false;
     }
 
     private sealed class EnvironmentView(Action changed) : UIView

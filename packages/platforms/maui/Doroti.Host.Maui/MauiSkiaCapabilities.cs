@@ -19,6 +19,16 @@ internal sealed class MauiSkiaCapabilities
 {
     private readonly MauiHostAdapter _host;
     private readonly SkiaSceneRenderer _renderer;
+#if IOS && !MACCATALYST
+    // Native semantics projection can spend an entire display interval arranging
+    // the accessibility views. Keep the latest tree during a short rotation and
+    // flush it on the final frame. Assistive technology keeps immediate updates.
+    public bool CoalesceGeometryDuringActiveMetrics =>
+        _host.Surface.Element.Handler?.PlatformView is IUIKitAnimatedViewport animated
+        && animated.AnimatedViewport.IsAnimating
+        && !UIKit.UIAccessibility.IsVoiceOverRunning
+        && !UIKit.UIAccessibility.IsSwitchControlRunning;
+#endif
     public TextureRegistry Textures => _renderer.Textures;
     GraphicsFeatureSupport ISceneHostCapability.Features => _renderer.SceneFeatures;
     SemanticsFeatureSupport ISemanticsHostCapability.Features => new(true, false,

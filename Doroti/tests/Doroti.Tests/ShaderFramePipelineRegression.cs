@@ -180,6 +180,32 @@ internal static class ShaderFramePipelineRegression
         using var bitmap = SKBitmap.FromImage(image);
         if (bitmap.GetPixel(10, 10) != SKColors.Lime || replay.Disposition != SkiaPaintDisposition.replay)
             throw new Exception("An older GPU completion replaced the newest replay source.");
+        // A retained native backing can raster a new clipped viewport while an
+        // older shader scene still owns its GPU lease. Validate exact descriptors
+        // and the two-consumer bound across that logical resize.
+        Submit([Picture(SKColors.Red, 6003)]);
+        var beforeResize = renderer.PaintNewShaderScene(surface, 80, 60, host.ResizeTarget).Completion
+            ?? throw new Exception("Pre-rotation shader frame missing.");
+        ((IViewHostCapability)host).Resize(new Size(81, 60));
+        void SubmitResized(long identity)
+        {
+            using var scene = new Scene(1, [Picture(SKColors.Lime, identity)]);
+            using var submission = new DorotiSceneSubmission(scene,
+                new(host.ViewEpoch, ++frameworkFrame, 81, 60));
+            renderer.Submit(1, submission, DorotiUiInvocation.Managed("RetainedRotationBacking"));
+        }
+        SubmitResized(6004);
+        using var resizedSurface = SKSurface.Create(new SKImageInfo(81, 60));
+        var afterResize = renderer.PaintNewShaderScene(resizedSurface, 81, 60, host.ResizeTarget).Completion
+            ?? throw new Exception("An exact rotated shader scene could not record ahead.");
+        SubmitResized(6005);
+        if (renderer.PaintNewShaderScene(resizedSurface, 81, 60, host.ResizeTarget).Completion is not null)
+            throw new Exception("Rotation admitted a third GPU consumer.");
+        renderer.CompletePaint(afterResize);
+        renderer.CompletePaint(beforeResize);
+        var lastResize = renderer.PaintNewShaderScene(resizedSurface, 81, 60, host.ResizeTarget).Completion
+            ?? throw new Exception("Rotation did not recover after GPU completion.");
+        renderer.CompletePaint(lastResize);
         Console.WriteLine("PASS: C-only configuration rejects removed selectors; bounded fresh shader admission; native/replay deferral; out-of-order completion keeps the newest scene (CPU lifecycle contract).");
     }
 }

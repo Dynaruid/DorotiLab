@@ -12,6 +12,7 @@ import plistlib
 import subprocess
 import time
 import uuid
+from uikit_rotation_metrics import summarize_rotation
 
 ROOT = Path(__file__).resolve().parents[2]
 parser = argparse.ArgumentParser(description=__doc__)
@@ -162,6 +163,8 @@ try:
                     completed = frame(evidence, case + '-frame')
                     summary.setdefault('framePipelines', {})[case] = completed['surface']['nativeFramePipeline']
                 summary['checks'][case] = value
+                if case == 'rotation':
+                    summary['rotationTiming'] = summarize_rotation(value)
             save()
             print('PASS physical iOS ' + case, flush=True)
         except Exception as error:

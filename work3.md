@@ -314,3 +314,24 @@ Settings로 background 전환한 뒤 같은 PID로 복귀하는 3회 검사에�
 Release 앱에서 native 서비스·editor/WebView·Semantics·양방향 실제 scene rotation·joined Stop/Metal drain·동일 PID background/foreground 3회 기능 검사가 통과했다. smoke에 `--sample material`과 상세 profiling opt-in을 추가했고 최종 일반 실행에는 probe/evidence/profiling 환경변수를 남기지 않는다. 현재 아이폰에는 이 일반 **Release Mono AOT** 앱을 foreground로 남겼으며 물리 체감 확인을 요청했다. NativeAOT·엄격한 회전 성능·배포/clean installation 및 전체 계획은 미완료로 유지한다.
 
 설치 후 사용자는 실제 회전이 **“약간 개선됨”**이라고 답했다. 상세 계측의 startup 이후 구간에서 callback은 평균 **14.914ms**/최대 **33.212ms**, raster는 평균 **15.313ms**/최대 **35.452ms**였고 drawable 획득 평균 **0.677ms**, GPU scheduling 대기 평균 **0.491ms**였다. 이 instrumented 구간은 정확한 회전-only/scanout 계측이 아니며 남은 렌더링·UI callback 지연을 추적하는 자료다. AOT 설치와 기능 검사 통과를 버벅임 완전 해결로 보고하지 않는다. 상세 계측 후에도 probe/evidence/profiling 없이 일반 Release 앱을 실행해 두었다.
+
+## 17. 2026-10-05 iOS 회전 FPS 개선
+
+같은 iPhone 12 / iOS 26.6.1의 실제 Material Components 화면에서 회전 병목을 추가로 확인했다. 기존 raster 계측에는 framework callback 비용이 포함되어 있으므로 두 시간을 합산하지 않았다. 주요 비용은 레이아웃, 접근성 뷰 배치, 이전 GPU 프레임 완료를 기다리며 다음 display pulse를 건너뛰는 경로였다. 세부 결과·source/bundle hash는 [회전 FPS receipt](Doroti/docs/migrations/design-platform/work3-ios-rotation-fps-verification-2026-10-05.json), 원시 자료는 `temp/testing/ios-rotation-fps/`에 둔다.
+
+회전 동안 drawable 크기·generation이 고정되고 native composition이 없을 때, 이전 GPU 프레임이 남아 있으면 다음 shader scene의 CPU 준비를 진행한다. 소비자는 최대 2개이며 scene/GPU lease를 유지한다. 첫 프레임은 기존 순서를 유지하고, native scene이 추가되면 exact backing으로 전환하기 전에 drain한다. 최종 drawable resize에도 별도 drain 조건을 사용한다. 모든 회전 프레임의 Core Animation transaction presentation과 UIKit 기본 cadence는 유지한다. VoiceOver·Switch Control이 꺼진 회전에서는 접근성 트리를 병합해 종료 프레임에서 반영하고, 폰트·언어·접근성 설정은 native 변경 알림에서 갱신한다. 크기·safe area는 매 pulse에서 계속 읽는다.
+
+비교는 전후 각각 cold process 3회, 상세 profiling·evidence writer 없음 조건이다. 아래 갱신 간격은 viewport callback 계측이며 표시 FPS와 구분한다.
+
+| 방향 | 수정 전 평균 갱신 간격 | 수정 후 평균 갱신 간격 | 간격 감소 | 수정 후 평균 표시 FPS |
+|---|---:|---:|---:|---:|
+| 가로 | 38.04ms | 23.42ms | 38.45% | 42.61 |
+| 세로 | 38.20ms | 22.48ms | 41.15% | 44.15 |
+
+표시 FPS는 opt-in rotation probe에 추가한 [Metal `PresentedTime`](https://developer.apple.com/documentation/metal/mtldrawable/presentedtime)에서 중간 viewport부터 첫 최종 viewport까지 계산한다. 정착 후 replay·두 회전 사이 대기·중복 시각은 제외한다. 세 번의 표시 FPS 범위는 가로 **39.88–45.74**, 세로 **42.73–44.86**이다. 기존 probe에는 viewport별 표시 기록이 없으므로 수정 전 표시 FPS나 표시 FPS 향상률을 만들어내지 않는다. 기기 온도·thermal state를 통제한 장기 성능 수락도 아니다.
+
+최종 실기기 Release Mono AOT/LLVM 빌드·서명 검사, native input/editor/WebView·Semantics 기능, 양방향 scene rotation, shared Stop/GPU drain, 같은 PID의 background/foreground 3회가 통과했다. shader 회전에서는 native GPU 소비자 최대 2개, 종료 후 pending 0을 확인했다. native UI가 포함된 별도 회전은 중간 크기 **20/17개**, GPU 소비자 최대 **1**, frame failure **0**으로 기존 serial 경로가 유지됐다. 최종 일반 Material Release 앱은 probe/evidence/profiling 없이 foreground에 남겼다.
+
+CPU 회귀는 서로 다른 viewport의 두 shader consumer 보존·세 번째 거절·완료 순서·native scene 거절·texture budget을 확인했고, 표시 FPS 계산기 3개 테스트가 통과했다. Mac Catalyst Host는 경고·오류 0으로 빌드됐다. 최종 Release Mono AOT 시뮬레이터(`iossimulator-arm64`, LLVM=false)는 중간 크기 **15/15개**와 회전·입력·Semantics 기능·종료가 통과했다. Debug interpreter 시뮬레이터 후보에서는 중간 크기가 **2/3/3개**로 4개 기준을 충족하지 못했고 이 실패는 미해결로 남긴다.
+
+전체 Components의 60 FPS 유지와 엄격한 peak phase 예산은 미달이다. 최종 가로 peak 오차 **56.2–61.7pt**는 기존 10% 기준 **45.4pt**를 넘는다. 물리 VoiceOver·Switch Control 성능도 별도다. 이번 결과는 실기기 Release AOT의 개선과 명시한 기능 검사 범위이며 `wholePlanComplete=false`를 유지한다.

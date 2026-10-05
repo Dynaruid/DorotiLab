@@ -1,4 +1,5 @@
 using CoreAnimation;
+using System.Collections.Concurrent;
 using Doroti.Host.Maui;
 using Foundation;
 using MetalKit;
@@ -13,9 +14,12 @@ internal sealed record UIKitViewportUpdate(double Time, double TargetTime, doubl
 internal sealed record UIKitRotationSample(double Time, double Width, double Height,
     double DrawableWidth, double DrawableHeight, double BoundsWidth, double PresentationWidth,
     double SafeTop, bool Animating, double Scale);
+internal sealed record UIKitViewportPresentation(double Time, int Width, int Height,
+    long SceneSequence);
 internal sealed record UIKitRotationResult(string Orientation, int DistinctWidths,
     double MeanPhaseError, double MaxPhaseError, List<string> Animations,
-    List<UIKitViewportUpdate> Updates, List<UIKitRotationSample> Samples);
+    List<UIKitViewportUpdate> Updates, List<UIKitRotationSample> Samples,
+    List<UIKitViewportPresentation> Presentations);
 
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
 [JsonSerializable(typeof(List<UIKitRotationResult>))]
@@ -89,6 +93,12 @@ internal static class UIKitRotationProbe
                     var phaseErrors = new List<double>();
                     var animations = new List<string>();
                     var updates = new List<UIKitViewportUpdate>();
+                    var presentations = new ConcurrentQueue<UIKitViewportPresentation>();
+                    var graphite = view as DorotiUIKitGraphiteView;
+                    void RecordPresentation(double time, MauiPaintCompletion completion) =>
+                        presentations.Enqueue(new(time, completion.Descriptor.PhysicalWidth,
+                            completion.Descriptor.PhysicalHeight, completion.SceneSequence));
+                    if (graphite is not null) graphite.ViewportPresented += RecordPresentation;
                     var collecting = true;
                     void RecordViewport() =>
                         updates.Add(
@@ -176,6 +186,7 @@ internal static class UIKitRotationProbe
                         collecting = false;
                         display.Invalidate();
                         viewport.Changed -= RecordViewport;
+                        if (graphite is not null) graphite.ViewportPresented -= RecordPresentation;
                     }
                     if (error is not null)
                         throw new InvalidOperationException(error);
@@ -187,6 +198,8 @@ internal static class UIKitRotationProbe
                     if (
                         final.Width != Math.Round(view.Bounds.Width * screenScale)
                         || final.Height != Math.Round(view.Bounds.Height * screenScale)
+                        || surface.GeometrySnapshot?.PixelWidth != final.Width
+                        || surface.GeometrySnapshot?.PixelHeight != final.Height
                     )
                         throw new InvalidOperationException(
                             "Rotation did not settle at the exact drawable size."
@@ -203,7 +216,8 @@ internal static class UIKitRotationProbe
                         phaseErrors.Count > 0 ? phaseErrors.Max() : double.PositiveInfinity;
                     results.Add(
                         new UIKitRotationResult(orientation.ToString(), widths.Count,
-                            meanPhaseError, maxPhaseError, animations, updates, samples)
+                            meanPhaseError, maxPhaseError, animations, updates, samples,
+                            presentations.OrderBy(p => p.Time).ToList())
                     );
                     if (
                         Environment.GetEnvironmentVariable("DOROTI_UIKIT_ROTATION_ASSERT_SYNC")
