@@ -371,10 +371,11 @@ python Doroti/eng/serve-isolated-web.py ./temp/testing/sample2-web-baseline/publ
 Docker 기반 익명 HTTPS 터널로 다른 기기에서 열려면 다음을 실행합니다.
 
 ```powershell
-pwsh -NoProfile -File ./tools/doroti-cloudflared/tunnel.ps1 start -App ./samples/DorotiSampleApp2
+pwsh -NoProfile -File ./scripts/start-web-release-tunnel.ps1 -App ./samples/DorotiSampleApp2 -OpenBrowser
 ```
 
-Release 게시 후 접속 주소가 출력됩니다. 종료는 `tunnel.ps1 stop`을 사용합니다.
+Release 게시 후 접속 주소가 출력되고 브라우저가 열립니다. 종료는
+`pwsh -NoProfile -File ./scripts/start-web-release-tunnel.ps1 stop`을 사용합니다.
 필수 도구와 관리 명령은 [터널 안내](../../tools/doroti-cloudflared/README.md)를 참고하세요.
 
 웹 글꼴은 `web/WebFonts.cs`의 `PreloadLanguages = ["ko", "en"]` 힌트에 따라 첫 화면 전에

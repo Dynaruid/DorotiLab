@@ -1,11 +1,13 @@
 #requires -Version 7.0
 <#
 .SYNOPSIS
-Publish DorotiTestbedApp in Release and start the existing anonymous HTTPS tunnel.
+Publish a Doroti app in Release and start the existing anonymous HTTPS tunnel.
 .EXAMPLE
 pwsh -NoProfile -File ./scripts/start-web-release-tunnel.ps1
 .EXAMPLE
 pwsh -NoProfile -File ./scripts/start-web-release-tunnel.ps1 -OpenBrowser
+.EXAMPLE
+pwsh -NoProfile -File ./scripts/start-web-release-tunnel.ps1 -App ./samples/DorotiSampleApp2 -OpenBrowser
 .EXAMPLE
 pwsh -NoProfile -File ./scripts/start-web-release-tunnel.ps1 stop
 .NOTES
@@ -19,6 +21,8 @@ param(
     [ValidateSet('start', 'stop', 'url', 'status', 'logs')]
     [string] $Command = 'start',
 
+    [string] $App = './samples/DorotiTestbedApp',
+
     [switch] $SkipPublish,
 
     [ValidateRange(15, 600)]
@@ -31,7 +35,7 @@ $ErrorActionPreference = 'Stop'
 $PSNativeCommandUseErrorActionPreference = $false
 $repositoryRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $tunnelScript = Join-Path $repositoryRoot 'tools/doroti-cloudflared/tunnel.ps1'
-$timeoutRunner = Join-Path $repositoryRoot 'Doroti/validation/run-with-timeout.py'
+$timeoutRunner = Join-Path $repositoryRoot 'Doroti/eng/run-with-timeout.py'
 $urlFile = Join-Path $repositoryRoot 'tools/doroti-cloudflared/generated-url.txt'
 
 if ($SkipPublish -and $Command -ne 'start') {
@@ -46,7 +50,7 @@ if (-not (Test-Path -LiteralPath $tunnelScript -PathType Leaf)) {
 
 $shell = (Get-Command pwsh -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source
 $tunnelArguments = @('-NoProfile', '-File', $tunnelScript, $Command,
-    '-TimeoutSeconds', [string]$TimeoutSeconds)
+    '-App', $App, '-TimeoutSeconds', [string]$TimeoutSeconds)
 if ($SkipPublish) { $tunnelArguments += '-SkipPublish' }
 
 Push-Location $repositoryRoot
@@ -69,7 +73,15 @@ try {
         if ($baseUrl -notmatch '^https://[a-z0-9-]+\.trycloudflare\.com/?$') {
             throw "The tunnel tool did not save a valid Quick Tunnel URL: $urlFile"
         }
-        $sampleUrl = $baseUrl.TrimEnd('/') + '/?dorotiTestbedMode=sample'
+        $appRoot = if ([IO.Path]::IsPathFullyQualified($App)) {
+            [IO.Path]::GetFullPath($App)
+        } else {
+            [IO.Path]::GetFullPath((Join-Path $repositoryRoot $App))
+        }
+        $sampleUrl = $baseUrl.TrimEnd('/') + '/'
+        if ((Split-Path -Leaf $appRoot.TrimEnd([IO.Path]::DirectorySeparatorChar)) -eq 'DorotiTestbedApp') {
+            $sampleUrl += '?dorotiTestbedMode=sample'
+        }
         Write-Host "`nDoroti Release sample: $sampleUrl" -ForegroundColor Green
         Write-Host 'Stop: pwsh -NoProfile -File ./scripts/start-web-release-tunnel.ps1 stop'
         if ($OpenBrowser) { Start-Process -FilePath $sampleUrl }

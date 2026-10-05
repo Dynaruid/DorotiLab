@@ -77,10 +77,12 @@ switch ($Command) {
             throw "Missing Doroti workspace: $appRoot"
         }
         $workspace = Get-Content -LiteralPath (Join-Path $appRoot 'doroti-workspace.json') -Raw | ConvertFrom-Json
-        if ([string]::IsNullOrWhiteSpace($workspace.platforms.web)) {
+        $webPlatform = $workspace.platforms.web
+        $webRunner = if ($webPlatform -is [string]) { $webPlatform } else { $webPlatform.runner }
+        if ([string]::IsNullOrWhiteSpace($webRunner)) {
             throw "Workspace has no web runner: $appRoot"
         }
-        $webProject = Join-Path $appRoot $workspace.platforms.web
+        $webProject = Join-Path $appRoot $webRunner
         if (-not (Test-Path -LiteralPath $webProject -PathType Leaf)) {
             throw "Missing web runner: $webProject"
         }
