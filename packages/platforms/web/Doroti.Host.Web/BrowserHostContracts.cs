@@ -392,6 +392,10 @@ internal static partial class BrowserInterop
     ) => BrowserHostAdapter.DispatchTextConnectionClosed(hostId, inputSequence);
 
     [JSExport]
+    internal static void DispatchSemanticsSnapshot(int hostId) =>
+        BrowserHostAdapter.DispatchSemanticsSnapshot(hostId);
+
+    [JSExport]
     internal static void DispatchSemanticsAction(
         int hostId,
         [JSMarshalAs<JSType.Number>] long nodeId,
@@ -618,6 +622,7 @@ public sealed class BrowserHostAdapter
     }
 
     internal event Action<long, long, string>? SemanticsAction;
+    internal event Action? SemanticsSnapshotRequested;
 
     internal Task<string> PerformTextActionAsync(string action, string text) =>
         BrowserInterop.PerformTextActionAsync(HostId, action, text);
@@ -1120,6 +1125,11 @@ public sealed class BrowserHostAdapter
                 down ? BrowserKeyMap.Character(key) : null
             )
         );
+    }
+
+    internal static void DispatchSemanticsSnapshot(int hostId)
+    {
+        if (TryGet(hostId, out var host)) host.SemanticsSnapshotRequested?.Invoke();
     }
 
     internal static void DispatchSemanticsAction(

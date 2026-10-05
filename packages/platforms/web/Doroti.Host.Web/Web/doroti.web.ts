@@ -1,3 +1,4 @@
+import { BrowserSemanticsState, type SemanticsNode, type SemanticsFlags, type SemanticsPacket, type SemanticsProjection } from "./doroti.web.semantics.js";
 import { collectCssFonts, type CssFontOptions } from "./doroti.web.css-fonts.js";
 import { selectRendererPolicy, resolveRendererPolicy, initialCanvasCapacity } from "./doroti.web.policy.js";
 import type { RendererPolicy } from "./doroti.web.policy.js";
@@ -41,6 +42,7 @@ interface ManagedCallbacks {
   dispatchTextEditing(hostId: number, text: string, selectionBase: number, selectionExtent: number, composingBase: number, composingExtent: number, inputSequence: number): void;
   dispatchTextAction(hostId: number, action: number, inputSequence: number): void;
   dispatchTextConnectionClosed(hostId: number, inputSequence: number): void;
+  dispatchSemanticsSnapshot(hostId: number): void;
   dispatchSemanticsAction(hostId: number, nodeId: number, action: number, inputSequence: number, argumentsJson: string): void;
 }
 
@@ -75,6 +77,7 @@ interface BrowserHost {
   semanticsElements: Map<number, HTMLElement>;
   semanticsListeners: Map<number, AbortController>;
   semanticsContentSignatures: Map<number, string>;
+  semanticsState: BrowserSemanticsState;
   semanticsActionNodes: Map<number, SemanticsNode>;
   semanticsObservedEditing: Map<number, { value: string; base: number; extent: number }>;
   semanticsProjectionDepth: number;
@@ -202,54 +205,6 @@ interface ResizeDiagnostics {
   violateWorkerProtocol(canvasId: string): boolean;
 }
 
-interface SemanticsFlags {
-  checked?: string; selected?: boolean; enabled?: boolean; toggled?: boolean;
-  expanded?: boolean; required?: boolean; focused?: boolean; button?: boolean;
-  textField?: boolean; header?: boolean; hidden?: boolean; image?: boolean;
-  liveRegion?: boolean; multiline?: boolean; readOnly?: boolean; link?: boolean; slider?: boolean;
-  focusable?: boolean; obscured?: boolean; mutuallyExclusive?: boolean; keyboardKey?: boolean;
-}
-
-interface SemanticsNode {
-  id: number | string;
-  contentUnchanged?: boolean;
-  role?: string;
-  label?: string;
-  value?: string;
-  actions?: number;
-  children?: number[];
-  flags?: SemanticsFlags;
-  textSelectionBase?: number;
-  textSelectionExtent?: number;
-  identifier?: string;
-  hint?: string;
-  tooltip?: string;
-  increasedValue?: string;
-  decreasedValue?: string;
-  headingLevel?: number;
-  linkUrl?: string;
-  validationResult?: string;
-  hitTestBehavior?: string;
-  inputType?: string;
-  minValue?: string;
-  maxValue?: string;
-  maxValueLength?: number;
-  currentValueLength?: number;
-  scrollPosition?: number;
-  scrollExtentMin?: number;
-  scrollExtentMax?: number;
-  scrollChildCount?: number;
-  scrollIndex?: number;
-  controlsNodes?: string[];
-  locale?: string;
-  rect: [number, number, number, number];
-}
-
-interface SemanticsUpdate {
-  generation: number;
-  nodes?: SemanticsNode[];
-}
-
 interface PluginRequest {
   channel: string;
   codec: string;
@@ -281,6 +236,7 @@ interface DorotiAssemblyExports {
           DispatchTextEditing: ManagedCallbacks["dispatchTextEditing"];
           DispatchTextAction: ManagedCallbacks["dispatchTextAction"];
           DispatchTextConnectionClosed: ManagedCallbacks["dispatchTextConnectionClosed"];
+          DispatchSemanticsSnapshot: ManagedCallbacks["dispatchSemanticsSnapshot"];
           DispatchSemanticsAction: ManagedCallbacks["dispatchSemanticsAction"];
         };
       };
@@ -359,6 +315,7 @@ export function dispatchWorkerInput(message: Record<string, unknown>): void {
     case "text-closed":
       callbacks.dispatchTextConnectionClosed(id, Number(message.inputSequence));
       break;
+    case "semantics-snapshot": callbacks.dispatchSemanticsSnapshot(id); break;
     case "semantics-action":
       callbacks.dispatchSemanticsAction(
         id, Number(payload.nodeId), Number(payload.action), Number(message.inputSequence),
@@ -816,7 +773,7 @@ export function configureManagedCallbacks(callbacks: ManagedCallbacks): void {
   const required: (keyof ManagedCallbacks)[] = [
     "dispatchAnimationFrame", "dispatchSnapshot", "dispatchResizeEpoch", "dispatchPointerBatch", "dispatchWheel",
     "dispatchKey", "dispatchFocus", "dispatchTextEditing", "dispatchTextAction",
-    "dispatchTextConnectionClosed", "dispatchSemanticsAction",
+    "dispatchTextConnectionClosed", "dispatchSemanticsSnapshot", "dispatchSemanticsAction",
   ];
   const missing = callbacks
     ? required.filter((name) => typeof callbacks[name] !== "function")
@@ -867,6 +824,7 @@ export async function initializeManagedCallbacks(): Promise<"ready"> {
     dispatchTextEditing: interop.DispatchTextEditing,
     dispatchTextAction: interop.DispatchTextAction,
     dispatchTextConnectionClosed: interop.DispatchTextConnectionClosed,
+    dispatchSemanticsSnapshot: interop.DispatchSemanticsSnapshot,
     dispatchSemanticsAction: interop.DispatchSemanticsAction,
   });
   return "ready";
@@ -903,7 +861,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     id: hostId, root, canvas, input, semantics,
     semanticsElements: new Map(), semanticsListeners: new Map(),
     semanticsContentSignatures: new Map(),
-    semanticsActionNodes: new Map(), semanticsObservedEditing: new Map(), semanticsProjectionDepth: 0,
+    semanticsState: new BrowserSemanticsState(), semanticsActionNodes: new Map(), semanticsObservedEditing: new Map(), semanticsProjectionDepth: 0,
     focusedTextFieldSemanticsId: null,
     logicalWidth, logicalHeight,
     generation: 1, surfaceGeneration: 0, resizeGeneration: 1,
@@ -1605,41 +1563,29 @@ export function updateSemantics(hostId: number, json: string): void {
   }
   const host = requireHost(hostId);
   const started = performance.now();
-  const update = JSON.parse(json) as SemanticsUpdate;
+  const update = JSON.parse(json) as SemanticsPacket;
+  const plan = host.semanticsState.apply(update);
+  if (plan === "resync") { requireManaged().dispatchSemanticsSnapshot(hostId); return; }
+  if (typeof plan === "string") return;
+  host.semanticsActionNodes = host.semanticsState.nodes;
   host.semanticsProjectionDepth++;
-  try { applySemanticsProjection(host, update, started); }
+  try { applySemanticsProjection(host, update, plan, started); }
   finally { host.semanticsProjectionDepth--; }
 }
 
-function applySemanticsProjection(host: BrowserHost, update: SemanticsUpdate, started: number): void {
+function applySemanticsProjection(host: BrowserHost, update: SemanticsPacket, plan: SemanticsProjection, started: number): void {
   host.semantics.dataset.generation = String(update.generation);
-  const nodes = update.nodes ?? [];
-  const nodesById = new Map(nodes.map((node) => [Number(node.id), node]));
-  const identifiersByValue = new Map(nodes
-    .map((node) => [node.identifier ?? host.semanticsElements.get(Number(node.id))
-      ?.dataset.dorotiSemanticsIdentifier, Number(node.id)] as const)
-    .filter((entry): entry is readonly [string, number] => Boolean(entry[0])));
-  const parentById = new Map<number, number>();
-  for (const node of nodes) {
-    for (const childId of node.children ?? []) {
-      if (nodesById.has(childId) && !parentById.has(childId)) parentById.set(childId, Number(node.id));
-    }
-  }
-
-  const liveIds = new Set<number>();
+  host.semantics.dataset.stream = String(update.stream);
+  host.semantics.dataset.revision = String(update.revision);
+  const state = host.semanticsState;
+  const nodes = [...plan.changed].map(id => state.nodes.get(id)).filter((node): node is SemanticsNode => node !== undefined);
   let contentUpdates = 0;
   let geometryUpdates = 0;
   for (const node of nodes) {
     const id = Number(node.id);
-    liveIds.add(id);
-    const previousActionNode = host.semanticsActionNodes.get(id);
-    host.semanticsActionNodes.set(id, node.contentUnchanged === true && previousActionNode
-      ? { ...previousActionNode, rect: node.rect, children: node.children } : node);
     let element = host.semanticsElements.get(id);
-    // A contentUnchanged node intentionally omits flags/role/actions. Preserve
-    // the existing native element kind instead of deriving a div from absent
-    // content and replacing inputs, buttons, or links during geometry updates.
-    const tag = node.contentUnchanged === true && element
+    // Geometry/children patches retain the native element and its action listeners.
+    const tag = !plan.content.has(id) && element
       ? element.tagName.toLowerCase()
       : semanticsElementTag(node);
     let replaced = false;
@@ -1648,9 +1594,13 @@ function applySemanticsProjection(host: BrowserHost, update: SemanticsUpdate, st
       if (element?.parentElement) element.replaceWith(replacement);
       element = replacement;
       host.semanticsElements.set(id, element);
+      plan.parents.add(id);
+      const parentId = state.parents.get(id);
+      if (parentId === undefined) plan.rootsChanged = true;
+      else plan.parents.add(parentId);
       replaced = true;
     }
-    const canRetainContent = node.contentUnchanged === true && !replaced &&
+    const canRetainContent = !plan.content.has(id) && !replaced &&
       host.semanticsContentSignatures.has(id);
     if (!canRetainContent && node.flags?.textField) {
       if (node.flags.focused === true) host.focusedTextFieldSemanticsId = id;
@@ -1658,14 +1608,14 @@ function applySemanticsProjection(host: BrowserHost, update: SemanticsUpdate, st
         host.focusedTextFieldSemanticsId = null;
     }
     const controlledIds = canRetainContent ? undefined : node.controlsNodes
-      ?.map((identifier) => identifiersByValue.get(identifier))
+      ?.map((identifier) => state.identifiers.get(identifier))
       .filter((controlledId): controlledId is number => controlledId !== undefined)
       .map((controlledId) => semanticsDomId(host.id, controlledId));
     // Geometry, scroll extents, and child ordering can change on every layout
     // without changing the element's ARIA contract or action closures. Keep
     // the signature limited to values actually consumed below so interactive
     // resize does not tear down every listener and attribute on every frame.
-    const contentSignature = JSON.stringify({
+    const contentSignature = canRetainContent ? "" : JSON.stringify({
       tag,
       role: node.role,
       label: node.label,
@@ -1788,7 +1738,7 @@ function applySemanticsProjection(host: BrowserHost, update: SemanticsUpdate, st
       host.semanticsContentSignatures.set(id, contentSignature);
     }
 
-    const parent = nodesById.get(parentById.get(id) ?? Number.NaN);
+    const parent = state.nodes.get(state.parents.get(id) ?? Number.NaN);
     const parentLeft = parent?.rect[0] ?? 0;
     const parentTop = parent?.rect[1] ?? 0;
     element.style.position = "absolute";
@@ -1802,43 +1752,36 @@ function applySemanticsProjection(host: BrowserHost, update: SemanticsUpdate, st
     if (element.style.height !== height) { element.style.height = height; geometryUpdates++; }
   }
 
-  for (const [id, controller] of host.semanticsListeners) {
-    if (liveIds.has(id)) continue;
-    controller.abort();
+  const desiredByParent = new Map<HTMLElement, HTMLElement[]>();
+  for (const id of plan.parents) {
+    const node = state.nodes.get(id);
+    const parent = host.semanticsElements.get(id);
+    if (!node || !parent) continue;
+    desiredByParent.set(parent, node.children.map(childId => host.semanticsElements.get(childId))
+      .filter((child): child is HTMLElement => child !== undefined));
+  }
+  if (plan.rootsChanged) desiredByParent.set(host.semantics,
+    state.roots.map(id => host.semanticsElements.get(id)).filter((element): element is HTMLElement => element !== undefined));
+  // Reparent surviving children before removing their old ancestors.
+  for (const [parent, desired] of desiredByParent) placeSemanticsChildren(parent, desired);
+  for (const [parent, desired] of desiredByParent) removeUnexpectedSemanticsChildren(parent, desired);
+  for (const id of plan.removed) {
+    host.semanticsListeners.get(id)?.abort();
     host.semanticsListeners.delete(id);
     host.semanticsContentSignatures.delete(id);
-    host.semanticsActionNodes.delete(id);
     host.semanticsObservedEditing.delete(id);
     host.semanticsElements.get(id)?.remove();
     host.semanticsElements.delete(id);
   }
-
-  const desiredByParent = new Map<HTMLElement, HTMLElement[]>();
-  for (const node of nodes) {
-    const parent = host.semanticsElements.get(Number(node.id));
-    if (!parent) continue;
-    desiredByParent.set(parent, (node.children ?? [])
-      .map((childId) => host.semanticsElements.get(childId))
-      .filter((child): child is HTMLElement => child !== undefined));
-  }
-  const roots = nodes
-    .filter((node) => !parentById.has(Number(node.id)))
-    .map((node) => host.semanticsElements.get(Number(node.id)))
-    .filter((element): element is HTMLElement => element !== undefined);
-  desiredByParent.set(host.semantics, roots);
-  for (const [parent, desired] of desiredByParent) placeSemanticsChildren(parent, desired);
-  for (const [parent, desired] of desiredByParent) removeUnexpectedSemanticsChildren(parent, desired);
-  if (host.focusedTextFieldSemanticsId !== null &&
-      !liveIds.has(host.focusedTextFieldSemanticsId)) {
+  if (host.focusedTextFieldSemanticsId !== null && !state.nodes.has(host.focusedTextFieldSemanticsId))
     host.focusedTextFieldSemanticsId = null;
-  }
   const focusedTextField = host.focusedTextFieldSemanticsId === null
     ? null
     : host.semanticsElements.get(host.focusedTextFieldSemanticsId) ?? null;
   if (!host.input.hidden && focusedTextField) placeTextInputAtSemanticsElement(host, focusedTextField);
   recordResize(host, "semantics-dom-applied", "browser-semantics", {
     durationMicroseconds: Math.round((performance.now() - started) * 1000),
-    detail: JSON.stringify({ nodes: nodes.length, contentUpdates, geometryUpdates }),
+    detail: JSON.stringify({ kind: update.kind, nodes: nodes.length, removed: plan.removed.length, contentUpdates, geometryUpdates }),
   });
 }
 
@@ -2032,6 +1975,7 @@ export async function startDorotiWorkerHost(
       postInput("text", hostId, inputSequence, { text, selectionBase, selectionExtent, composingBase, composingExtent }),
     dispatchTextAction: (hostId, action, inputSequence) => postInput("text-action", hostId, inputSequence, { action }),
     dispatchTextConnectionClosed: (hostId, inputSequence) => postInput("text-closed", hostId, inputSequence, {}),
+    dispatchSemanticsSnapshot: (hostId) => postInput("semantics-snapshot", hostId, 0, {}),
     dispatchSemanticsAction: (hostId, nodeId, action, inputSequence, argumentsJson) =>
       postInput("semantics-action", hostId, inputSequence, { nodeId, action, argumentsJson }),
   });
@@ -2781,7 +2725,23 @@ function setOptionalAttribute(element: HTMLElement, name: string, value: string 
 function placeSemanticsChildren(parent: HTMLElement, desired: HTMLElement[]): void {
   for (let index = 0; index < desired.length; index += 1) {
     const child = desired[index];
-    if (parent.children.item(index) !== child) parent.insertBefore(child, parent.children.item(index));
+    if (parent.children.item(index) !== child) {
+      const target = parent.children.item(index);
+      const movable = parent as HTMLElement & { moveBefore?: (child: Node, before: Node | null) => void };
+      if (movable.moveBefore && parent.isConnected && child.isConnected) movable.moveBefore(child, target);
+      else {
+        const active = document.activeElement;
+        const focused = active instanceof HTMLElement && child.contains(active) ? active : null;
+        const selection = focused ? textSelectionOffsets(focused) : null;
+        parent.insertBefore(child, target);
+        if (focused && document.activeElement !== focused) {
+          focused.focus({ preventScroll: true });
+          if (selection && (focused instanceof HTMLInputElement || focused instanceof HTMLTextAreaElement))
+            focused.setSelectionRange(Math.min(selection.base, selection.extent), Math.max(selection.base, selection.extent),
+              selection.base > selection.extent ? "backward" : "forward");
+        }
+      }
+    }
   }
 }
 

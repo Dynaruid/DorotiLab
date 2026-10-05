@@ -375,3 +375,22 @@ hot_reload_smoke.py accepts backend Maui and --verify-restart to check actual Ru
 All commands use the 1200-second wrapper. The default Apple smoke `features` case covers actual Apple WebView commands, accessibility hierarchy/actions/password guards, and input configuration/Return behavior. iOS/macOS testbed probe copies must match; `apple_build_profiles.py` checks this parity.
 
 `web_package_runtime.py <candidate> <fresh-output>` serves the published NuGet-only Offline Web payload with explicit COOP/COEP and JavaScript `.mjs` MIME, then checks first frame/focus and zero external requests. Runtime ownership uses the SDK-generated `doroti.runtime-profile.json`; standalone worker requires a single-thread build. `web_runtime_recovery.py --worker-only --expect-threaded-rejection` checks early rejection of the ordinary threaded profile. Changing threading profiles in a shared SDK output requires clean/rebuild or isolated artifacts; the normal Testbed profile is threaded.
+
+Web semantics snapshot/delta validation uses the actual managed encoder and DOM host:
+
+```powershell
+python Doroti/eng/run-with-timeout.py --timeout 1200 node --experimental-transform-types --test Doroti/tests/web_semantics.mts
+python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project Doroti/tests/Doroti.Tests -c Debug -- --web-semantics temp/testing/web-semantics/run/packets.json
+python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet build samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Debug
+python Doroti/eng/run-with-timeout.py --timeout 1200 python Doroti/tests/web_semantics_browser.py --packets temp/testing/web-semantics/run/packets.json --output temp/testing/web-semantics/run/browser
+```
+
+Use a Python environment with Playwright and installed Chrome, and a fresh browser
+output directory. The browser test compares managed deltas with full snapshots,
+checks native element/focus/selection retention, parent motion, order/reparent,
+deletion, relationship changes, clear and real managed snapshot recovery. It also
+can run the existing file/navigation/text/drop service regression in both renderers
+when `--services` is added; keep that broader startup/service result separate.
+WebGL exercises the focus-restoring insertion fallback; WebGPU uses native DOM
+moves when available. This is desktop browser automation, not physical IME,
+screen-reader, mobile stability or displayed-FPS qualification.

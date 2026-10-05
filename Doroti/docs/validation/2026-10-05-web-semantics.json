@@ -1,0 +1,130 @@
+{
+  "date": "2026-10-05",
+  "implementation": "PASS",
+  "semanticsContracts": "PASS",
+  "broaderBrowserStartupAndServices": "PARTIAL",
+  "environment": {
+    "sdk": "10.0.400",
+    "node": "24.15.0",
+    "chrome": "154.0.8037.93",
+    "profile": "Debug threaded/main-owned browser-wasm"
+  },
+  "checks": {
+    "webBuild": {
+      "status": "PASS",
+      "warnings": 0,
+      "errors": 0
+    },
+    "cpuSuite": "PASS",
+    "node": {
+      "passed": 49,
+      "failed": 0
+    },
+    "managedEncoder": "PASS",
+    "browserSemantics": {
+      "status": "PASS",
+      "browser": "154.0.8037.93",
+      "records": [
+        {
+          "renderer": "webgl",
+          "checks": [
+            "initial",
+            "parent-motion",
+            "editing",
+            "unchanged",
+            "reorder",
+            "reparent",
+            "identifier-removed",
+            "identifier-added",
+            "branch-removed",
+            "element-kind",
+            "clear",
+            "rebuilt"
+          ],
+          "managedResync": "PASS",
+          "errors": []
+        },
+        {
+          "renderer": "webgpu",
+          "checks": [
+            "initial",
+            "parent-motion",
+            "editing",
+            "unchanged",
+            "reorder",
+            "reparent",
+            "identifier-removed",
+            "identifier-added",
+            "branch-removed",
+            "element-kind",
+            "clear",
+            "rebuilt"
+          ],
+          "managedResync": "PASS",
+          "errors": []
+        }
+      ],
+      "baselineChars": 221184,
+      "deltaChars": 172,
+      "physicalInput": "notVerified",
+      "physicalAT": "notVerified",
+      "performanceFPS": "notMeasured"
+    },
+    "webglServices": {
+      "renderer": "webgl",
+      "browser": "154.0.8037.93",
+      "status": "PASS",
+      "physicalInput": "notVerified",
+      "errors": []
+    },
+    "webgpuServices": {
+      "status": "PARTIAL",
+      "pickerAndNavigationTextRestore": "PASS",
+      "dropPageStartup": "FAIL"
+    },
+    "sourceLinksAndDiff": "PASS"
+  },
+  "openFailures": {
+    "runtimeStartup": "Mono JSSynchronizationContext:Queue/System.Runtime load failure or unreachable during reload/navigation; cause not established",
+    "runtimeOnlyCreate": {
+      "passed": 5,
+      "failed": 0,
+      "independentReproduction": false
+    }
+  },
+  "limits": {
+    "physicalInput": "notVerified",
+    "physicalIME": "notVerified",
+    "physicalAT": "notVerified",
+    "mobileAndOtherBrowsers": "notVerified",
+    "displayFPS": "notMeasured",
+    "p95CPU": "notMeasured",
+    "standaloneWorker": "notVerified"
+  },
+  "identity": {
+    "revision": "58e55d2d44e909d11b2fada80c29588c41566f85",
+    "sources": {
+      "Doroti/docs/web-host-architecture.md": "c99ba7324880e2c32d15845fc48b7a586ee2e5572aa386f0e3fb2f8f8ce04f0e",
+      "Doroti/eng/validate.py": "1d5ab68e5a43339e6aa30539c2fb816fa0c77e6366f0fcfac056ca53048952be",
+      "Doroti/tests/Doroti.Tests/Doroti.Tests.csproj": "791a599c765ed8fb1125367789864b96e58cc44e4df65bf0a8ead266dc6bf67f",
+      "Doroti/tests/Doroti.Tests/Program.cs": "56f1dc388fa12bd67e4836143459c1cf15d85dd61b5dab5551b4145486a3f7b8",
+      "Doroti/tests/README.md": "bd82f15481e9f92c328968d6a4ed19a23e516c93917a0b68afe36b87eb40a0bc",
+      "packages/platforms/web/Doroti.Host.Web/BrowserHostContracts.cs": "f0eb28ec062305d935dc2a833d7023010d970466441a1b82e571fa24bcbfd3cb",
+      "packages/platforms/web/Doroti.Host.Web/BrowserSkiaCapabilities.cs": "966d648468042f86e6b3ea7c0f08ea44b79ec71ba3248f3ac63d8106b8c83b7a",
+      "packages/platforms/web/Doroti.Host.Web/Web/doroti.raster.worker.ts": "3d2b3fc5a4a266d580546059640ee6e566b37a291a22002c4d8bd8d56e33ad70",
+      "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.ts": "7a2f160fb5a81be98c479b3d81d17fd3a27613f0a44c81ca3e13e20d32ab2e7e",
+      "Doroti/tests/Doroti.Tests/WebSemanticsRegression.cs": "167d948c6e03c83c1c5a4daab663b88c5121786ceb76b2d2160bcdc19768fe17",
+      "Doroti/tests/web_semantics.mts": "0d60cb960981c70a81a4197623d0c1668e1a1ea54e8ba5ef778c444a6501899f",
+      "Doroti/tests/web_semantics_browser.py": "d01c686a1a929460c3427238cd60319287e75c7c8124f9eff20364434d9ee514",
+      "packages/platforms/web/Doroti.Host.Web/BrowserSemanticsTransport.cs": "55818750e1ea7a2462a03b1ef47278a0976acf21d663d54f7f1319f9143d251a",
+      "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.semantics.ts": "582ed35d683297f8f3b0a52e5d72de2a2c7993dc89b06628431ecef7eb75818f"
+    },
+    "payload": {
+      "packages\\platforms\\web\\Doroti.Host.Web\\bin\\Debug\\net10.0\\Doroti.Host.Web.dll": "e5ac9b63c922b1f3e93a02e0269839497034f97a4d533e3b065cd8dbdc27ef61",
+      "packages\\platforms\\web\\Doroti.Host.Web\\obj\\Debug\\net10.0\\Doroti.Web\\wwwroot\\doroti.web.js": "ddb22d6785eefc5d98ca331ad7fedcb0224c0795886ef1a3062ae7dcc37e0e3d",
+      "packages\\platforms\\web\\Doroti.Host.Web\\obj\\Debug\\net10.0\\Doroti.Web\\wwwroot\\doroti.web.semantics.js": "01b3021d2149cbe22df1752400c2e1a29ab5f6a77b655a1a73eea1c229cddb7e",
+      "packages\\platforms\\web\\Doroti.Host.Web\\obj\\Debug\\net10.0\\Doroti.Web\\wwwroot\\doroti.raster.worker.js": "80c4dc5605103a904f84e6e1e54ae7f4eade1fb79a77eb7a487e83d9bbdbf285"
+    }
+  },
+  "rawEvidence": "temp/testing/web-semantics/2026-10-05/ (disposable)"
+}

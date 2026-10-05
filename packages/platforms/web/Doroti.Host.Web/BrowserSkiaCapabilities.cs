@@ -1,5 +1,4 @@
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Doroti.Skia.Rendering;
 using Doroti.Skia.RuntimeEffects;
 using Doroti.Ui;
@@ -280,19 +279,14 @@ internal sealed class BrowserSkiaCapabilities : IBrowserGraphicsCapabilities
 
     private sealed class HostBridge : ISkiaSceneRendererHost, IDisposable
     {
-        private static readonly JsonSerializerOptions SemanticsJsonOptions = new()
-        {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        };
-
         private readonly BrowserHostAdapter _host;
-        private readonly Dictionary<int, SemanticsNodeUpdate> _semantics = [];
-        private readonly Dictionary<int, SemanticsNodeUpdate> _lastSentSemantics = [];
+        private readonly BrowserSemanticsTransport _semantics = new();
 
         internal HostBridge(BrowserHostAdapter host)
         {
             _host = host;
             _host.SemanticsAction += HandleSemanticsAction;
+            _host.SemanticsSnapshotRequested += SendSemanticsSnapshot;
         }
 
         internal Action? Invalidate { get; set; }
@@ -313,256 +307,25 @@ internal sealed class BrowserSkiaCapabilities : IBrowserGraphicsCapabilities
             remove => _host.ConfigurationChanged -= value;
         }
 
-        private readonly Dictionary<
-            int,
-            (SemanticsNodeUpdate Node, bool Compact, byte[] Json)
-        > _semanticsJson = [];
-        private int _semanticsJsonBytes;
-        private const int SemanticsJsonBudget = 2 * 1024 * 1024;
-
         public void UpdateSemantics(SemanticsUpdate update)
         {
-            using var totalProfile = FrameworkWorkCounters.Enabled
-                ? FrameworkWorkProfile.Begin(GetType(), 2)
-                : default;
-            foreach (var node in update.nodes)
-            {
-                _semantics[node.id] = node;
-            }
-
-            PruneUnreachable(_semantics);
-            foreach (
-                var stale in _semanticsJson.Keys.Where(id => !_semantics.ContainsKey(id)).ToArray()
-            )
-            {
-                _semanticsJsonBytes -= _semanticsJson[stale].Json.Length;
-                _semanticsJson.Remove(stale);
-            }
-            var orderedNodes = _semantics
-                .Values.OrderBy(node => node.indexInParent ?? int.MaxValue)
-                .ThenBy(node => node.id)
-                .ToArray();
-            byte[][] nodes;
-            // Reuse one writer/buffer for geometry-only nodes. Their fixed wire
-            // shape needs no anonymous DTO, rectangle array or serializer traversal.
-            var compactBuffer = new System.Buffers.ArrayBufferWriter<byte>(256);
-            using var compactWriter = new Utf8JsonWriter(compactBuffer);
-            using (
-                FrameworkWorkCounters.Enabled ? FrameworkWorkProfile.Begin(GetType(), 3) : default
-            )
-            {
-                nodes = orderedNodes
-                    .Select(node =>
-                    {
-                        // Projection creates a new record for geometry changes while
-                        // retaining the content objects of unchanged nodes. Ignore the
-                        // projected rectangle when deciding whether the DOM needs a
-                        // fresh ARIA/action payload.
-                        var contentUnchanged =
-                            _lastSentSemantics.TryGetValue(node.id, out var previous)
-                            && (previous == node || previous with { rect = node.rect } == node);
-                        if (
-                            _semanticsJson.TryGetValue(node.id, out var cached)
-                            && cached.Compact == contentUnchanged
-                            && cached.Node == node
-                        )
-                        {
-                            FrameworkWorkCounters.Add(FrameworkWork.SemanticsJsonCacheHit);
-                            return cached.Json;
-                        }
-                        byte[] bytes;
-                        if (contentUnchanged)
-                        {
-                            // The receiver already retains content for this node. Avoid
-                            // constructing and visiting the full content DTO on every
-                            // geometry update; emit exactly its non-null wire fields.
-                            using var compactProfile = FrameworkWorkCounters.Enabled
-                                ? FrameworkWorkProfile.Begin(GetType(), 4)
-                                : default;
-                            compactBuffer.Clear();
-                            compactWriter.Reset(compactBuffer);
-                            compactWriter.WriteStartObject();
-                            compactWriter.WriteNumber("id", node.id);
-                            compactWriter.WriteBoolean("contentUnchanged", true);
-                            compactWriter.WriteStartArray("children");
-                            foreach (var child in node.children)
-                            {
-                                compactWriter.WriteNumberValue(child);
-                            }
-
-                            compactWriter.WriteEndArray();
-                            compactWriter.WriteStartArray("rect");
-                            compactWriter.WriteNumberValue(node.rect.left);
-                            compactWriter.WriteNumberValue(node.rect.top);
-                            compactWriter.WriteNumberValue(node.rect.right);
-                            compactWriter.WriteNumberValue(node.rect.bottom);
-                            compactWriter.WriteEndArray();
-                            compactWriter.WriteEndObject();
-                            compactWriter.Flush();
-                            bytes = compactBuffer.WrittenSpan.ToArray();
-                        }
-                        else
-                        {
-                            var payload = new
-                            {
-                                node.id,
-                                contentUnchanged,
-                                label = contentUnchanged ? null : node.label,
-                                value = contentUnchanged ? null : node.value,
-                                role = contentUnchanged ? null : node.role.ToString(),
-                                actions = contentUnchanged ? (long?)null : (long)node.actions,
-                                children = node.children,
-                                identifier = contentUnchanged ? null : node.identifier,
-                                hint = contentUnchanged ? null : node.hint,
-                                tooltip = contentUnchanged ? null : node.tooltip,
-                                increasedValue = contentUnchanged ? null : node.increasedValue,
-                                decreasedValue = contentUnchanged ? null : node.decreasedValue,
-                                headingLevel = contentUnchanged ? null : node.headingLevel,
-                                linkUrl = contentUnchanged ? null : node.linkUrl,
-                                validationResult = contentUnchanged
-                                    ? null
-                                    : node.validationResult.ToString(),
-                                hitTestBehavior = contentUnchanged
-                                    ? null
-                                    : node.hitTestBehavior.ToString(),
-                                inputType = contentUnchanged ? null : node.inputType.ToString(),
-                                minValue = contentUnchanged ? null : node.minValue,
-                                maxValue = contentUnchanged ? null : node.maxValue,
-                                maxValueLength = contentUnchanged ? null : node.maxValueLength,
-                                currentValueLength = contentUnchanged
-                                    ? null
-                                    : node.currentValueLength,
-                                scrollPosition = contentUnchanged ? null : node.scrollPosition,
-                                scrollExtentMin = contentUnchanged ? null : node.scrollExtentMin,
-                                scrollExtentMax = contentUnchanged ? null : node.scrollExtentMax,
-                                scrollChildCount = contentUnchanged ? null : node.scrollChildCount,
-                                scrollIndex = contentUnchanged ? null : node.scrollIndex,
-                                controlsNodes = contentUnchanged ? null : node.controlsNodes,
-                                locale = contentUnchanged ? null : node.locale?.ToString(),
-                                flags = contentUnchanged || node.flags is null
-                                    ? null
-                                    : new
-                                    {
-                                        @checked = node.flags.isChecked.ToString(),
-                                        selected = node.flags.isSelected.toBoolOrNull(),
-                                        enabled = node.flags.isEnabled.toBoolOrNull(),
-                                        toggled = node.flags.isToggled.toBoolOrNull(),
-                                        expanded = node.flags.isExpanded.toBoolOrNull(),
-                                        required = node.flags.isRequired.toBoolOrNull(),
-                                        focused = node.flags.isFocused.toBoolOrNull(),
-                                        button = node.flags.isButton,
-                                        textField = node.flags.isTextField,
-                                        header = node.flags.isHeader,
-                                        hidden = node.flags.isHidden,
-                                        image = node.flags.isImage,
-                                        liveRegion = node.flags.isLiveRegion,
-                                        multiline = node.flags.isMultiline,
-                                        readOnly = node.flags.isReadOnly,
-                                        link = node.flags.isLink,
-                                        slider = node.flags.isSlider,
-                                        focusable = node.flags.isFocused != Tristate.none,
-                                        obscured = node.flags.isObscured,
-                                        mutuallyExclusive = node.flags.isInMutuallyExclusiveGroup,
-                                        keyboardKey = node.flags.isKeyboardKey,
-                                    },
-                                textSelectionBase = contentUnchanged
-                                    ? (long?)null
-                                    : node.textSelectionBase,
-                                textSelectionExtent = contentUnchanged
-                                    ? (long?)null
-                                    : node.textSelectionExtent,
-                                rect = new[]
-                                {
-                                    node.rect.left,
-                                    node.rect.top,
-                                    node.rect.right,
-                                    node.rect.bottom,
-                                },
-                            };
-                            using (
-                                FrameworkWorkCounters.Enabled
-                                    ? FrameworkWorkProfile.Begin(GetType(), 4)
-                                    : default
-                            )
-                            {
-                                bytes = JsonSerializer.SerializeToUtf8Bytes(
-                                    payload,
-                                    SemanticsJsonOptions
-                                );
-                            }
-                        }
-                        FrameworkWorkCounters.Add(FrameworkWork.SemanticsJsonSerializedNode);
-                        if (_semanticsJson.Remove(node.id, out var old))
-                        {
-                            _semanticsJsonBytes -= old.Json.Length;
-                        }
-
-                        if (
-                            _semanticsJson.Count < 2048
-                            && bytes.Length <= 16384
-                            && _semanticsJsonBytes + bytes.Length <= SemanticsJsonBudget
-                        )
-                        {
-                            _semanticsJson[node.id] = (node, contentUnchanged, bytes);
-                            _semanticsJsonBytes += bytes.Length;
-                        }
-                        return bytes;
-                    })
-                    .ToArray();
-            }
-            using var stream = new MemoryStream();
-            using (var writer = new Utf8JsonWriter(stream))
-            {
-                writer.WriteStartObject();
-                writer.WriteNumber("generation", update.generation);
-                writer.WriteStartArray("nodes");
-                foreach (var bytes in nodes)
-                {
-                    writer.WriteRawValue(bytes, skipInputValidation: true);
-                }
-
-                writer.WriteEndArray();
-                writer.WriteEndObject();
-            }
-            var json = System.Text.Encoding.UTF8.GetString(
-                stream.GetBuffer(),
-                0,
-                checked((int)stream.Length)
-            );
-            FrameworkWorkCounters.Add(FrameworkWork.SemanticsPayloadBytes, stream.Length);
-            using (
-                FrameworkWorkCounters.Enabled ? FrameworkWorkProfile.Begin(GetType(), 5) : default
-            )
-            {
-                _host.UpdateSemantics(json);
-            }
-
-            _lastSentSemantics.Clear();
-            foreach (var node in orderedNodes)
-            {
-                _lastSentSemantics[node.id] = node;
-            }
+            using var profile = FrameworkWorkCounters.Enabled
+                ? FrameworkWorkProfile.Begin(GetType(), 2) : default;
+            if (_semantics.Update(update) is { } json) _host.UpdateSemantics(json);
         }
 
-        public void ClearSemantics()
-        {
-            _semantics.Clear();
-            _lastSentSemantics.Clear();
-            _semanticsJson.Clear();
-            _semanticsJsonBytes = 0;
-            _host.UpdateSemantics("{\"generation\":0,\"nodes\":[]}");
-        }
+        private void SendSemanticsSnapshot() => _host.UpdateSemantics(_semantics.CaptureSnapshot());
+
+        public void ClearSemantics() => _host.UpdateSemantics(_semantics.Clear());
 
         public void RequestInvalidate() => Invalidate?.Invoke();
 
         public void Dispose()
         {
             _host.SemanticsAction -= HandleSemanticsAction;
+            _host.SemanticsSnapshotRequested -= SendSemanticsSnapshot;
             Invalidate = null;
-            _semantics.Clear();
-            _lastSentSemantics.Clear();
-            _semanticsJson.Clear();
-            _semanticsJsonBytes = 0;
+            _semantics.Reset();
         }
 
         private void HandleSemanticsAction(long nodeId, long action, string argumentsJson)
@@ -577,34 +340,6 @@ internal sealed class BrowserSkiaCapabilities : IBrowserGraphicsCapabilities
                 (SemanticsAction)action,
                 ParseArguments(argumentsJson)
             );
-        }
-
-        private static void PruneUnreachable(Dictionary<int, SemanticsNodeUpdate> nodes)
-        {
-            if (!nodes.ContainsKey(0))
-            {
-                return;
-            }
-
-            var reachable = new HashSet<int>();
-            var pending = new Stack<int>();
-            pending.Push(0);
-            while (pending.TryPop(out var id))
-            {
-                if (!reachable.Add(id) || !nodes.TryGetValue(id, out var node))
-                {
-                    continue;
-                }
-
-                foreach (var child in node.children)
-                {
-                    pending.Push(child);
-                }
-            }
-            foreach (var stale in nodes.Keys.Where(id => !reachable.Contains(id)).ToArray())
-            {
-                nodes.Remove(stale);
-            }
         }
 
         private static object? ParseArguments(string json)

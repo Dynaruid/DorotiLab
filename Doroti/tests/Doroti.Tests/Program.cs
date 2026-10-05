@@ -4,6 +4,12 @@ using Doroti.Ui;
 
 #if DOROTI_REPO_TESTS
 if (args.FirstOrDefault() == "--full-review-process-child") { ProcessRunnerRegression.Child(args[1]); return; }
+if (Array.IndexOf(args, "--web-semantics") is var webSemanticsIndex && webSemanticsIndex >= 0)
+{
+    WebSemanticsRegression.Run(webSemanticsIndex + 1 < args.Length ? args[webSemanticsIndex + 1] : null);
+    return;
+}
+WebSemanticsRegression.Run();
 FullReviewRegression.Run();
 ImageReadbackLifetimeRegression.Run();
 ProcessRunnerRegression.Run();

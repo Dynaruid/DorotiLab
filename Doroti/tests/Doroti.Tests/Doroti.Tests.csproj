@@ -3,6 +3,7 @@
   <ItemGroup>
     <Compile Include="../Common/VulkanDeviceOwner.cs" Link="VulkanDeviceOwner.cs" />
     <Compile Include="../../../packages/platforms/maui/Doroti.Host.Maui/AppleSemanticsState.cs" Link="AppleSemanticsState.cs" />
+    <Compile Include="../../../packages/platforms/web/Doroti.Host.Web/BrowserSemanticsTransport.cs" Link="BrowserSemanticsTransport.cs" />
     <Compile Include="../../../packages/platforms/maui/Doroti.Host.Maui/AppKitDesktopWindowPolicy.cs" Link="AppKitDesktopWindowPolicy.cs" />
     <Compile Include="../../../packages/platforms/maui/Doroti.Host.Maui/MacCatalystDesktopWindowPolicy.cs" Link="MacCatalystDesktopWindowPolicy.cs" />
     <Compile Include="../../../packages/platforms/maui/Doroti.Host.Maui/IosFrameLifetime.cs" Link="IosFrameLifetime.cs" />

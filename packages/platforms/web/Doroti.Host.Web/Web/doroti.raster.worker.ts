@@ -850,6 +850,10 @@ function handleHostMessage(event: MessageEvent): void {
         if (pendingManagedInputs.length >= 256) pendingManagedInputs.shift();
         pendingManagedInputs.push(message);
       } else {
+        if (message.inputKind === "semantics-snapshot") {
+          dispatchWorkerInput(message);
+          break;
+        }
         lastDispatchedInputSequence = Number(message.inputSequence ?? 0);
         const started = frameCost ? performance.timeOrigin + performance.now() : 0;
         dispatchWorkerInput(message);
@@ -1021,7 +1025,7 @@ async function startManagedRuntime(): Promise<void> {
       applyManagedSnapshot(pending.hostId, pending.value);
     }
     for (const input of pendingManagedInputs.splice(0)) {
-      lastDispatchedInputSequence = Number(input.inputSequence ?? 0);
+      if (input.inputKind !== "semantics-snapshot") lastDispatchedInputSequence = Number(input.inputSequence ?? 0);
       dispatchWorkerInput(input);
     }
     post("runtime-ready", { result, mainManagedRuntimeCount: managedPort ? 1 : 0,

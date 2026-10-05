@@ -87,6 +87,7 @@ def main(suite, extra=()):
             command("plugin-regressions", "dotnet", "run", "--project", "Doroti/tests/Doroti.Plugin.Tests/Doroti.Plugin.Tests.csproj", "--artifacts-path", str(run / "plugin-build"))
             command("os-drop-regressions", "dotnet", "run", "--project", "Doroti/tests/Doroti.Drop.Tests/Doroti.Drop.Tests.csproj", "--artifacts-path", str(run / "drop-build"))
             command("web-rendering", "node", "--experimental-transform-types", "--test", "Doroti/tests/web_rendering.mts")
+            command("web-semantics", "node", "--experimental-transform-types", "--test", "Doroti/tests/web_semantics.mts")
             command("web-worker-lifecycle", "node", "--experimental-transform-types", "--test", "Doroti/tests/web_worker_lifecycle.mts")
             command("web-textures", "node", "--experimental-transform-types", "--experimental-vm-modules", "--test", "Doroti/tests/web_textures.mts")
             command("web-full-review", "node", "--experimental-transform-types", "--experimental-vm-modules", "--test", "Doroti/tests/web_full_review.mts")
