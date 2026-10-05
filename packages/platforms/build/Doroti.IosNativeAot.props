@@ -1,6 +1,7 @@
 <Project>
   <PropertyGroup>
     <DorotiIosNativeAotProfileImported>true</DorotiIosNativeAotProfileImported>
+    <DorotiIosNativeAotProfilePath>$(MSBuildThisFileFullPath)</DorotiIosNativeAotProfilePath>
   </PropertyGroup>
   <!-- Xcode 27 bindings are currently provided for .NET 10. Select this
        profile explicitly; keep the existing .NET 11 NativeAOT profile separate. -->

@@ -53,6 +53,15 @@ public interface IWindowHost : IAsyncDisposable
 public interface IWindowHostFactory
 {
     WindowManagerCapabilities Capabilities { get; }
+    /// <summary>Maps logical presentation to the provider's visibility and shell policy before evaluation.</summary>
+    WindowOptions MapRequest(Doroti.Ui.WindowRequest request) => new()
+    {
+        Title = request.Title, Size = request.Size, Kind = request.Kind,
+        OwnerWindowId = request.Owner, Anchor = request.Anchor, Modal = request.Modal,
+        Activate = request.Activate, SkipTaskbar = request.Kind != Doroti.Ui.WindowKind.Regular,
+        Resizable = request.Kind is Doroti.Ui.WindowKind.Regular or Doroti.Ui.WindowKind.Satellite,
+        StartupVisibility = WindowStartupVisibility.Manual,
+    };
     WindowEvaluation Evaluate(WindowCreateOptions options);
     ValueTask<IWindowHost> CreateAsync(
         WindowId id,

@@ -140,8 +140,9 @@ public abstract class DorotiMauiUIApplicationDelegate : MauiUIApplicationDelegat
             )
         );
 #endif
+        DorotiMauiApplicationBuilderExtensions.PrepareProcess();
         ConfigurePlatform(builder);
-        return builder.UseDorotiApplication(CreateApplicationDescriptor).Build();
+        return builder.ConfigureDorotiApplication(CreateApplicationDescriptor()).Build();
     }
 
     protected abstract DorotiApplicationDescriptor CreateApplicationDescriptor();
@@ -157,8 +158,9 @@ public abstract class DorotiMauiAndroidApplication(
     protected sealed override MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
+        DorotiMauiApplicationBuilderExtensions.PrepareProcess();
         ConfigurePlatform(builder);
-        return builder.UseDorotiApplication(CreateApplicationDescriptor).Build();
+        return builder.ConfigureDorotiApplication(CreateApplicationDescriptor()).Build();
     }
 
     protected abstract DorotiApplicationDescriptor CreateApplicationDescriptor();

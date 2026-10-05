@@ -135,6 +135,13 @@ public static class DorotiMauiApplicationBuilderExtensions
 
 public sealed class DorotiMauiApplication(DorotiApplicationDescriptor descriptor) : Application
 {
+    private DorotiSharedHostSession? _framework;
+    private DorotiApplicationBoundary? _application;
+    private readonly HashSet<DorotiMauiSurface> _surfaces = [];
+    private Task? _stop;
+    private bool _stopping;
+    private DorotiSharedHostSession Framework => _framework ??= new(descriptor, new MauiApplicationDispatcher());
+    private void AttachApplication(DorotiApplicationBoundary boundary) => _application ??= boundary.Retain();
 #if MACCATALYST
     internal bool UsesDesktop =>
         Doroti.Desktop.DesktopApplication.TryGetDefinition(descriptor, out _);
@@ -142,6 +149,7 @@ public sealed class DorotiMauiApplication(DorotiApplicationDescriptor descriptor
 
     protected override Window CreateWindow(IActivationState? activationState)
     {
+        if (_stopping) throw new InvalidOperationException("The MAUI application is stopping.");
         _ = activationState;
 #if WINDOWS
         if (Doroti.Desktop.DesktopApplication.TryGetDefinition(descriptor, out var desktop))
@@ -162,6 +170,19 @@ public sealed class DorotiMauiApplication(DorotiApplicationDescriptor descriptor
         }
 #endif
         var title = descriptor.ViewConfiguration.title;
+        var surface = new DorotiMauiSurface(descriptor, Framework.AllocateViewId())
+        {
+            SharedFramework = Framework,
+            SharedApplication = _application,
+            SharedApplicationFactory = () => _application,
+            ApplicationAttached = AttachApplication,
+            OwnsApplicationActivation = Windows.Count == 0,
+            SurfaceDisposed = value => _surfaces.Remove(value),
+#if WINDOWS
+            OwnsWindowContent = true,
+#endif
+        };
+        _surfaces.Add(surface);
         var window = new Window(
             new ContentPage
             {
@@ -170,12 +191,7 @@ public sealed class DorotiMauiApplication(DorotiApplicationDescriptor descriptor
 #endif
                 SafeAreaEdges = Microsoft.Maui.SafeAreaEdges.None,
                 Title = title,
-                Content = new DorotiMauiSurface(descriptor)
-                {
-#if WINDOWS
-                    OwnsWindowContent = true,
-#endif
-                },
+                Content = surface,
             }
         )
         {
@@ -191,5 +207,35 @@ public sealed class DorotiMauiApplication(DorotiApplicationDescriptor descriptor
         MacOSWindow.SetTitleVisibility(window, MacOSTitleVisibility.Visible);
 #endif
         return window;
+    }
+
+    /// <summary>Stops scene-owned views and finally releases the shared mobile application tree.</summary>
+    public Task StopAsync()
+    {
+        if (!Microsoft.Maui.ApplicationModel.MainThread.IsMainThread)
+            throw new InvalidOperationException("Request application shutdown on the native main thread.");
+#if WINDOWS || MACOS || MACCATALYST
+        if (Doroti.Desktop.DesktopApplication.TryGetDefinition(descriptor, out _))
+            throw new NotSupportedException("Desktop shutdown uses DesktopWindowContext.Windows.RequestExitAsync.");
+#endif
+        if (_stop is not null && !_stop.IsFaulted) return _stop;
+        _stopping = true;
+        var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        _stop = completion.Task;
+        _ = CompleteStopAsync(completion);
+        return _stop;
+    }
+
+    private async Task CompleteStopAsync(TaskCompletionSource completion)
+    {
+        try { await StopCoreAsync(); completion.TrySetResult(); }
+        catch (Exception error) { completion.TrySetException(error); }
+    }
+
+    private async Task StopCoreAsync()
+    {
+        foreach (var surface in _surfaces.ToArray().Reverse()) await surface.DisposeAsync();
+        await new MauiApplicationDispatcher().InvokeAsync(() =>
+            Doroti.Runtime.DorotiCleanup.Run(() => _framework?.Dispose(), () => _application?.Dispose()));
     }
 }

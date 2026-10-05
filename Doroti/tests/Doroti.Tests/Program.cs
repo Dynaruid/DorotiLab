@@ -54,6 +54,7 @@ if (args.Contains("--variable-blur-kernel"))
 }
 #endif
 await DesktopCloseRegression.Run();
+await AppleWindowPolicyRegression.Run();
 PlatformPolicyRegression.Run();
 #if DOROTI_REPO_TESTS
 VariableBlurCaptureRegression.Run();

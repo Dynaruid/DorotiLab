@@ -1,0 +1,223 @@
+{
+  "schema": "doroti.work3-ios-release-aot-verification/v1",
+  "verifiedUtc": "2026-10-05T04:23:11.007031+00:00",
+  "wholePlanComplete": false,
+  "result": "PASS development-signed Release Mono AOT functional/native/synthetic device subset; NativeAOT blocked by toolchain",
+  "sourceRevision": "8de825e25191561a9a4137811c89b333bf797306",
+  "sourceDirty": true,
+  "environment": {
+    "device": "iPhone 12",
+    "ios": "26.6.1 (23G83)",
+    "host": "macOS26.6.2 / Apple M1 arm64",
+    "xcode": "27.0 (27A266a)",
+    "dotnet": "10.0.401"
+  },
+  "installedProfile": {
+    "TargetFramework": "net10.0-ios27.0",
+    "NETCoreSdkVersion": "10.0.401",
+    "UseMonoRuntime": "true",
+    "MtouchInterpreter": "-all",
+    "UseInterpreter": "false",
+    "PublishAot": "false",
+    "Optimize": "true",
+    "MtouchUseLlvm": "true",
+    "ArtifactsPath": "/Users/ceramic/Labo/DorotiLab/temp/testing/work3/ios-monorelease/artifacts"
+  },
+  "runtimeQualification": "Mono AOT with LLVM for application, UIKit entry and dependencies; interpreter disabled. PublishAot=false: this is not NativeAOT.",
+  "build": {
+    "exitCode": 0,
+    "warnings": 0,
+    "errors": 0,
+    "bundle": "dev.doroti.testbed",
+    "payloadSha256": "d52f403a318fb8716186cdc166c77dd79886ec89bf63274df81589204e5f2770"
+  },
+  "nativeAotAttempts": [
+    {
+      "profile": "net10.0-ios27.0 / SDK10.0.401 / Maui10.0.90",
+      "result": "FAILED",
+      "appFix": "Reflection-based feature/shutdown probe JSON replaced by typed source-generated contexts; IL2026/IL3050 compile errors resolved",
+      "remainingFailure": "SDK-generated explicit-interface DynamicDependency member signatures fail IL2037; also reproduced with PrepareAssemblies/PostProcessAssemblies=true"
+    },
+    {
+      "profile": "net11.0-ios / SDK11.0.100-rc.1.26425.128 / Maui11.0.0-rc.1.26451.6",
+      "result": "FAILED",
+      "remainingFailure": "Installed iOS workload26.5.12193-net11-rc.1 requires Xcode26.6; current Xcode27.0 rejected. Validation was not bypassed."
+    }
+  ],
+  "fixes": [
+    "Source-generated feature/shutdown probe JSON preserves existing root/nested wire casing and removes AOT/trimming compile errors",
+    "Device smoke supports full Material scene instead of only reload scene",
+    "Detailed frame profiling is opt-in; final manual launch has no probe/evidence/profiling environment"
+  ],
+  "comparison": {
+    "scene": "Actual Material Components screen; same device; fresh process; rotation observer only; no detailed native profiling or evidence writer",
+    "debugMono": [
+      {
+        "orientation": "LandscapeLeft",
+        "distinctWidths": 6,
+        "meanViewportGapMs": 107.49756250152132,
+        "maxViewportGapMs": 142.88187501369976,
+        "meanPhaseErrorPt": 90.39327201018264,
+        "maxPhaseErrorPt": 270.10792315006256,
+        "sampleCount": 24
+      },
+      {
+        "orientation": "Portrait",
+        "distinctWidths": 7,
+        "meanViewportGapMs": 93.96706666448154,
+        "maxViewportGapMs": 147.38745833165012,
+        "meanPhaseErrorPt": 66.37182219234916,
+        "maxPhaseErrorPt": 143.5733884175619,
+        "sampleCount": 25
+      }
+    ],
+    "releaseMonoAot": [
+      {
+        "orientation": "LandscapeLeft",
+        "distinctWidths": 10,
+        "meanViewportGapMs": 39.957662038634425,
+        "maxViewportGapMs": 50.5469583440572,
+        "meanPhaseErrorPt": 20.732772003638114,
+        "maxPhaseErrorPt": 68.26245663563412,
+        "sampleCount": 30
+      },
+      {
+        "orientation": "Portrait",
+        "distinctWidths": 11,
+        "meanViewportGapMs": 37.89495833269838,
+        "maxViewportGapMs": 52.717916667461395,
+        "meanPhaseErrorPt": 21.999009778358335,
+        "maxPhaseErrorPt": 51.85391139984131,
+        "sampleCount": 34
+      }
+    ],
+    "scope": "Viewport update intervals/presentation geometry; not scanout FPS. Optional 5% mean/10% peak phase qualification still not met. One cold run each, not broad performance certification."
+  },
+  "checks": {
+    "services": {
+      "fileRead128MiB": true,
+      "cancel": true,
+      "ownerDispose": true,
+      "dropCapability": true,
+      "physicalInput": "notVerified"
+    },
+    "input": {
+      "created": 4,
+      "editorRecreated": true,
+      "webViewRecreated": true,
+      "mixedScene": false,
+      "physicalIme": "notVerified"
+    },
+    "features": {
+      "status": "PASS",
+      "webView": "native factory commands/HTML/JS/app resource/message/stale generation/close",
+      "semantics": "hierarchy/order/role/native action/disabled/password/removal/owner disposal",
+      "input": "configuration-only text/selection and multiline/password endpoint transitions",
+      "physicalIme": "notVerified",
+      "voiceOver": "notVerified"
+    },
+    "lifecycle": {
+      "status": "PASS",
+      "cycles": [
+        {
+          "cycle": 1,
+          "samePid": true,
+          "beforeCompletedGpuFrames": 19,
+          "afterCompletedGpuFrames": 21,
+          "replayed": 3,
+          "failed": 0
+        },
+        {
+          "cycle": 2,
+          "samePid": true,
+          "beforeCompletedGpuFrames": 21,
+          "afterCompletedGpuFrames": 23,
+          "replayed": 5,
+          "failed": 0
+        },
+        {
+          "cycle": 3,
+          "samePid": true,
+          "beforeCompletedGpuFrames": 23,
+          "afterCompletedGpuFrames": 25,
+          "replayed": 7,
+          "failed": 0
+        }
+      ],
+      "pid": 8111,
+      "meaning": "same process/shared application, new frames after each foreground; static scene, no FPS claim"
+    }
+  },
+  "shutdown": {
+    "status": "PASS",
+    "sharedStopCompletion": true,
+    "viewDisposed": true,
+    "gpuRetiredBeforeCompletion": true,
+    "processTermination": "OS-owned; tested separately",
+    "physicalInput": "notVerified"
+  },
+  "shutdownPendingGpuFramesAfter": 0,
+  "functionalRotation": "PASS intermediate layouts, exact final pixels/safe areas, display-link shutdown and frame failure zero on full Material scene",
+  "finalApp": {
+    "pid": 8124,
+    "mode": "ordinary Release Mono AOT Material; no probes, evidence writer or detailed profiling",
+    "appUninstalled": false,
+    "appDataReset": false
+  },
+  "manualFeedback": {
+    "answer": "약간 개선됨",
+    "scope": "User physical rotation feedback after Release Mono AOT installation; residual stutter remains"
+  },
+  "notQualified": [
+    "NativeAOT",
+    "Strict rotation phase budget or screen scanout FPS",
+    "Formal physical IME/VoiceOver",
+    "Distribution signing/provisioning and clean installation",
+    "Package-only device consumer"
+  ],
+  "rawEvidence": {
+    "temp/testing/work3/ios-monorelease/publish-1/publish.log": "93b90573329698977a9ed1ac63206e95fb0023fcb483b32fa4de7a78965eeef8",
+    "temp/testing/work3/ios-monorelease/profile.json": "09b1a18967936eb1021e9764469e89da2441bb78a15d16d12e42827e1f18c2bf",
+    "temp/testing/work3/ios-monorelease/smoke-1/summary.json": "b8ef83e7449946e0e6d32a8547a3086362604c72efcc47430ec60325ac196bf6",
+    "temp/testing/work3/ios-monorelease/clean-material/result.json": "1bedfe80ac12a537cfc16af404eec2f12030cc1e1fcd5387cb397b690cd7e6d2",
+    "temp/testing/work3/ios-device/rotation-followup/debug-material/result.json": "d7908a10b002af45304203c1264e16fbfcd61b5167496d0469273d2101cfedb1",
+    "temp/testing/work3/ios-nativeaot/publish-1/publish.log": "80c06f29039224674fd8a83df8904cdb22688919aa4152e1e89be39617f58a88",
+    "temp/testing/work3/ios-nativeaot/publish-2/publish.log": "bcc99cfe674f864e5f292cab4728eb584c8dfb86296625af0e97ad5b33281358",
+    "temp/testing/work3/ios-nativeaot/publish-3/publish.log": "6d78c578123e481c0ea0682e9a3d8173595ddebc9c376b0324b6f44643202c41",
+    "temp/testing/work3/ios-nativeaot/publish-4/publish.log": "241adb08e3d4abaf0f509a57f36aff522e69c54668f476d55bd4dcb4e8ec9380"
+  },
+  "rawRetention": "Disposable temp/testing logs/build outputs; preserved measurements and hashes are in this receipt. Test app data was retained.",
+  "sourceHashes": {
+    "samples/DorotiTestbedApp/ios/AppleFeatureProbe.cs": "716898ddea49c92f596d1610cdca2be47747db4c7a62104da782a94ecaf91992",
+    "samples/DorotiTestbedApp/macos/AppleFeatureProbe.cs": "716898ddea49c92f596d1610cdca2be47747db4c7a62104da782a94ecaf91992",
+    "samples/DorotiTestbedApp/ios/UIKitShutdownProbe.cs": "1fad07bb801cce9d3edb7927f7a4d15cb0f1bdeef72ee23e1e036cc90b232a9d",
+    "Doroti/tests/ios_device_smoke.py": "ed6516d22550a3f5da41bc4654be8d3dada9d400bf0f27b87fbee80c677fd8d5"
+  },
+  "reference": "https://learn.microsoft.com/en-us/dotnet/maui/deployment/runtimes-compilation",
+  "aotObjects": {
+    "DorotiTestbedApp.dll.llvm.o": {
+      "bytes": 1799696,
+      "sha256": "9cbb710a01ab690e628e04b416deab2d4d8f1d1feabaeb944f9fc62de99c6281"
+    },
+    "DorotiTestbedApp.iOS.dll.llvm.o": {
+      "bytes": 2350600,
+      "sha256": "d28792cd09b3213386d6ef45f3b80627a5e3dd9bd17af8ac682b6b0c7e421389"
+    },
+    "Doroti.Host.Maui.dll.llvm.o": {
+      "bytes": 4047696,
+      "sha256": "44bf1b5cf76149398a916f2cd0954aa7f41aea5b6a983be13e03b89db4c727d1"
+    }
+  },
+  "followupProfile": {
+    "path": "temp/testing/work3/ios-monorelease/profile-rotation-1/summary.json",
+    "sha256": "55b8e126b30140ea2c54b2c0b062675151a3d21374b9f6f05260b2819b381930",
+    "scope": "Events after 2.5s startup cutoff from detailed instrumented Material rotation; not isolated screen FPS",
+    "callbackMeanMs": 14.914,
+    "callbackMaxMs": 33.212,
+    "rasterMeanMs": 15.313,
+    "rasterMaxMs": 35.452,
+    "drawableMeanMs": 0.677,
+    "gpuSchedulingWaitMeanMs": 0.491,
+    "conclusion": "Residual render/main-thread callback work remains; AOT installation is not complete visual stutter resolution"
+  }
+}

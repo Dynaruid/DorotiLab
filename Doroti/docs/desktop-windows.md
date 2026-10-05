@@ -199,8 +199,8 @@ retained for first show. Close drains Metal work before surface disposal and
 native close. Cmd+Q uses AppKit's deferred termination reply and the same
 controller close decision. `Explicit` leaves the app running after the last window
 closes. The manager can create further independent top-level windows. Each window
-owns its dispatcher/session, native views and Metal surface; application resources
-and plugin handlers share an application lease. Widgets unmount before capabilities
+owns its view identity, native views and Metal surface; the framework dispatcher,
+application tree, resources and plugin handlers share an application session. Widgets unmount before capabilities
 and GPU resources are retired. See the [2026-09-29 AppKit results](../../history/26-10-03/works/results/2026-09-29-macos-appkit.md).
 
 | Feature | AppKit behavior |
@@ -208,6 +208,9 @@ and GPU resources are retired. See the [2026-09-29 AppKit results](../../history
 | Size/min/max | Unobscured client area in points; native caption is excluded. Explicit sizes may exceed the screen work area. |
 | Position/outer Bounds | Position and SetBounds are rejected; State.Bounds is null until a global physical-pixel mapping is implemented. Center uses AppKit. |
 | Show/hide/focus | Manual/WhenReady preparation, native ordering and key-window request; OS focus policy still applies. |
+| Windowing kinds/owner | Regular NSWindow; owned Dialog/Satellite NSPanel; borderless Popup/Tooltip NSPanel. Modal Dialog uses an owner sheet. Tooltip requires no activation; closing an owner closes its children. |
+| Windowing anchor | Owner-content logical coordinates converted to AppKit screen points and clamped to the visible frame. Global physical Bounds remains unsupported. |
+| Typed menus | NSMenu popup and active-window menubar, enabled/checked/submenu state and character shortcuts. Actions carry WindowId/viewId/generation; stale/closed registrations are revoked. Roles and logical-key shortcuts are Unsupported. |
 | Minimize/zoom/full screen | Minimize and native full-screen transitions await delegate completion. Maximize uses AppKit zoom. |
 | Topmost/Dock | Native floating window level; no claim to cover other full-screen Spaces. SkipTaskbar=true is rejected because Dock visibility is app-wide. |
 | Native title bar | Normal with System/Solid/Backdrop; Solid has a separate opaque caption fill, native traffic lights remain. Explicit caption color requires Solid. |
@@ -215,13 +218,18 @@ and GPU resources are retired. See the [2026-09-29 AppKit results](../../history
 | Liquid Glass fallback | OS <26 uses the explicitly selected Solid/Transparent fallback. The legacy path retains its old Acrylic fallback. |
 | Tint | Acrylic tint/luminosity requests rejected. Glass accepts TintColor and optional TintOpacity; luminosity rejected. |
 | Accessibility policy | Reduce Transparency selects solid and reports SystemPolicyFallback; system/explicit appearance and effective theme are tracked. |
-| Unsupported | Hidden/custom/frameless chrome, app theme bridge, programmatic resize initiation, owned/modal/Satellite windows. |
+| Unsupported | User-selected hidden/custom/frameless chrome, app theme bridge, programmatic resize initiation, app-wide Dock hiding per window, multiple owners/docking. Modal requests require an activating owned Dialog without an anchor. |
 | Renderer base color | Changing BackgroundColor/DarkBackgroundColor at runtime returns RequiresRecreation. |
 
 Native operation tests and screenshots are listed in the
 [desktop validation record](../../history/26-09-26/desktop-window-api-summary.md). They do
 not qualify physical mixed-monitor input, VoiceOver/IME, a complete first-frame
 capture sequence, all OS accessibility settings, or notarized distribution.
+
+The [work3 follow-up](../../work3.md#14-2026-10-05-실행-결과) records current Apple
+policy, shared-session, auxiliary-window and menu checks. Native filtered Cupertino
+previews require caller-view backdrop sampling, which Windowing does not yet supply;
+Auto uses Overlay for that request and Native returns Unsupported.
 
 
 ## Mac Catalyst
@@ -230,7 +238,8 @@ Mac Catalyst is now an allowed desktop target, with a separate UIKit scene
 adapter. It requires Mac idiom (`UIDeviceFamily=6`), the scene manifest and
 registered `DorotiMacCatalystSceneDelegate`, `UIApplicationSupportsMultipleScenes=true`,
 Graphite, and Mac Catalyst 16+. UIKit requires multi-scene adoption to destroy
-even the only scene. The adapter still rejects additional native windows.
+even the only scene. Additional activating, unowned Regular scenes are supported;
+owned and auxiliary Windowing requests are rejected before native allocation.
 The Xcode 27 build profile uses `DorotiMacCatalystTargetFramework=net10.0-maccatalyst27.0`
 and the SDK-required minimum Catalyst 17. The default profile and existing
 non-desktop mobile boundaries remain intact.
@@ -268,7 +277,7 @@ SetSizeAsync after readiness when a specific post-launch size is required.
 | Appearance | Opaque System/Solid body and native System titlebar; System/Explicit theme. Base-color replacement requires recreation. |
 | API CloseAsync | Controller cancellation, GPU retirement, scene destruction, then registry removal. |
 | Native close/quit | UIKit owns these paths. `Capabilities.CanCancelNativeClose=false`; RegisterClosing does not intercept native close. Scene disconnect retires the managed host. |
-| Unsupported | Manual/WhenReady startup, hidden/custom/frameless chrome, Acrylic/LiquidGlass/transparent desktop material, MacOSBackdrop override, app theme bridge, placement/centering, hide, topmost/Dock policy, programmatic minimize/maximize/restore/full-screen/drag/resize, additional windows/owners. |
+| Unsupported | Manual/WhenReady startup, hidden/custom/frameless chrome, Acrylic/LiquidGlass/transparent desktop material, MacOSBackdrop override, app theme bridge, placement/centering, hide, topmost/Dock policy, programmatic minimize/maximize/restore/full-screen/drag/resize, auxiliary kinds/owners/modal/no-activate requests, OS menus. |
 
 Fullscreen changes made using native controls are observable; the adapter reports
 Normal/FullScreen only, so PresentationState is not a minimized/maximized detector.

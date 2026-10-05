@@ -16,6 +16,7 @@ namespace Doroti.Host.Maui;
 internal sealed class MauiHostAdapter
     : IViewHostCapability,
         IFrameHostCapability,
+        IFramePresentationHostCapability,
         ILatestMetricsFrameHostCapability,
         IPlatformEnvironmentHostCapability,
         IInputHostCapability,
@@ -65,6 +66,10 @@ internal sealed class MauiHostAdapter
     internal IMauiSkiaSurface Surface => _surface;
     private readonly MauiViewEnvironment _environment;
     private readonly object _gate = new();
+    private readonly DorotiFramePresentation _presentation = new();
+    public ValueTask WaitForPresentationAsync(long minimumFrameworkFrame, CancellationToken cancellationToken = default) =>
+        _presentation.WaitForPresentationAsync(minimumFrameworkFrame, cancellationToken);
+    internal void Presented(MauiPaintCompletion completion) => _presentation.Presented(completion.Descriptor.FrameworkFrameNumber);
     private long _frameRequestedAt;
     private readonly MauiFrameCallbackQueue _frameCallbacks = new();
     private readonly IMauiSemanticsBridge _semantics;
@@ -152,6 +157,7 @@ internal sealed class MauiHostAdapter
     }
 
     private MauiSurfaceSnapshot _snapshot = new(0, 0, 1, 1, 0, 0, "not-attached", "not-attached");
+    internal MauiSurfaceSnapshot GeometrySnapshot => _snapshot;
     internal MauiSurfaceSnapshot Snapshot =>
         _surface.CaptureSnapshot(_snapshot) with
         {
@@ -968,6 +974,7 @@ internal sealed class MauiHostAdapter
             _invalidateAfterPaint = false;
             _isPainting = false;
         }
+        _presentation.Dispose();
         Closed?.Invoke();
         GC.KeepAlive(ConfigurationChanged);
         GC.KeepAlive(KeyData);

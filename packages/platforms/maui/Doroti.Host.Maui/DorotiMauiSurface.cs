@@ -15,7 +15,7 @@ namespace Doroti.Host.Maui;
 [JsonSerializable(typeof(MauiHostDiagnostics))]
 internal sealed partial class MauiEvidenceJsonContext : JsonSerializerContext;
 
-public sealed class DorotiMauiSurface : Grid, IDisposable
+public sealed class DorotiMauiSurface : Grid, IDisposable, IAsyncDisposable
 {
 #if WINDOWS || MACOS || MACCATALYST
     internal bool DesktopManaged { get; init; }
@@ -29,21 +29,24 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
 #if MACOS
     internal DorotiMacOSMetalSurface DesktopMetalSurface => (DorotiMacOSMetalSurface)_renderSurface;
 #endif
-#if WINDOWS || MACOS || MACCATALYST
     internal void PrepareFrameworkClose()
     {
+        _closing = true;
         if (SharedFramework is null) _session?.ShutdownFramework();
-        else if (FrameworkView is { } view) _session?.DetachView(view);
+        else if (FrameworkView is { } view) SharedFramework.BeginViewClose(view);
     }
     internal DorotiSharedHostSession? SharedFramework { get; init; }
+#if WINDOWS || MACOS || MACCATALYST
     internal Doroti.Desktop.DesktopWindowContext? WindowContext { get; init; }
+#endif
     internal DorotiApplicationBoundary? SharedApplication { get; init; }
+    internal Func<DorotiApplicationBoundary?>? SharedApplicationFactory { get; init; }
     internal Action<DorotiApplicationBoundary>? ApplicationAttached { get; init; }
     internal bool OwnsApplicationActivation { get; init; } = true;
-#endif
-#if WINDOWS || MACOS || MACCATALYST
     internal DorotiView? FrameworkView { get; private set; }
-#endif
+    internal IPlatformMenuHostCapability? PlatformMenus { get; init; }
+    internal IPlatformMenuBarHostCapability? PlatformMenuBar { get; init; }
+    internal Action<DorotiMauiSurface>? SurfaceDisposed { get; init; }
 #if WINDOWS
     internal DorotiWindowsDxgiSurface WindowsSurface => (DorotiWindowsDxgiSurface)_renderSurface;
     internal Task PrepareDesktopCloseAsync() =>
@@ -71,6 +74,9 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     private readonly AbsoluteLayout _semanticsLayer;
     private bool _attached;
     private bool _disposed;
+    private Task? _disposeTask;
+    private readonly object _disposeGate = new();
+    private bool _closing;
     private long _lastEvidenceWriteTimestamp;
     private long _lastEvidenceReplayed;
     private long _evidenceWriteGeneration;
@@ -153,6 +159,9 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     }
 
 #if WINDOWS || MACCATALYST || IOS || ANDROID || MACOS
+    // Timing probes must not allocate the full frame/semantics/GPU trace on
+    // every display pulse and thereby delay the viewport they are measuring.
+    internal MauiSurfaceSnapshot? GeometrySnapshot => _host?.CaptureGeometry(_viewId);
     public MauiHostDiagnostics? Diagnostics =>
         _host?.CaptureDiagnostics(
             _viewId,
@@ -179,23 +188,21 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     {
         _ = sender;
         _ = args;
-        if (Handler is null || _attached || _disposed)
+        if (Handler is null || _attached || _disposed || _closing)
         {
             return;
         }
 
         try
         {
-#if WINDOWS || MACOS || MACCATALYST
             if (SharedFramework is { } framework)
             {
                 framework.Start();
                 _session = framework.Session;
             }
             else
-#endif
             {
-                _ownedFramework = new(_application);
+                _ownedFramework = new(_application, new MauiApplicationDispatcher());
                 _ownedFramework.Start();
                 _session = _ownedFramework.Session;
             }
@@ -221,19 +228,20 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
                 ? uiKitGraphite.PlatformViews = new UIKitPlatformViewHost(uiKitGraphite, _textInput)
                 : null;
 #endif
+            var sharedApplication = SharedApplication ?? SharedApplicationFactory?.Invoke();
             _boundary =
 #if WINDOWS
-                SharedApplication is { } shared
+                sharedApplication is { } shared
                     ? shared.CreateWindowBoundary(windowsSurface.PlatformViews.CreateFactories(() => _boundary!.ApplicationResources))
                     :
 #endif
 #if MACOS
-                SharedApplication is { } shared
+                sharedApplication is { } shared
                     ? shared.CreateWindowBoundary(appKitSurface.PlatformViews.CreateFactories(() => _boundary!.ApplicationResources))
                     :
 #endif
-#if MACCATALYST
-                SharedApplication is { } shared
+#if IOS || MACCATALYST
+                sharedApplication is { } shared
                     ? shared.CreateWindowBoundary(uiKitPlatformViews?.CreateFactories(() => _boundary!.ApplicationResources) ?? [])
                     :
 #endif
@@ -258,9 +266,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
                 uiKitPlatformViews?.CreateFactories(() => _boundary!.ApplicationResources)
 #endif
             );
-#if WINDOWS || MACOS || MACCATALYST
             ApplicationAttached?.Invoke(_boundary);
-#endif
             IMauiSemanticsBridge semantics =
 #if ANDROID
             DorotiGraphiteView.Enabled
@@ -268,9 +274,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
                 :
 #endif
                 new MauiSemanticsBridge(_semanticsLayer);
-#if WINDOWS || MACOS || MACCATALYST
             FrameworkView =
-#endif
             _host.CreateView(
                 _session,
                 _viewId,
@@ -279,11 +283,10 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
                 semantics,
                 _boundary,
                 _textInput
-#if !(WINDOWS || MACOS || MACCATALYST)
-                , sharedFramework: _ownedFramework
-#endif
+                , ownsApplicationActivation: OwnsApplicationActivation, sharedFramework: SharedFramework ?? _ownedFramework,
+                platformMenus: PlatformMenus, platformMenuBar: PlatformMenuBar
 #if WINDOWS || MACOS || MACCATALYST
-                , ownsApplicationActivation: OwnsApplicationActivation, sharedFramework: SharedFramework ?? _ownedFramework, windowContext: WindowContext
+                , windowContext: WindowContext
 #endif
             );
             using (var dispatcherScope = _session.dispatcher.EnterScope())
@@ -302,7 +305,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
 
     private void PaintGpuSurface(MauiSkiaPaintContext paint)
     {
-        if (!_attached || _host is null)
+        if (!_attached || _host is null || _closing)
         {
             return;
         }
@@ -360,7 +363,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         }
         _host.CompletePaint(_viewId, completion);
 #if WINDOWS || MACOS || MACCATALYST
-        DesktopFrameReady?.Invoke();
+        if (!_closing) DesktopFrameReady?.Invoke();
 #endif
         ScheduleEvidenceWrite();
     }
@@ -624,28 +627,63 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
 
         DetachWindow();
         // Unmount widgets before unregistering the view and retiring its capabilities.
-#if WINDOWS || MACOS || MACCATALYST
         PrepareFrameworkClose();
-#else
-        _session?.ShutdownFramework();
-#endif
         if (_host is null)
         {
             _renderSurface.Dispose();
         }
 
         _host?.Dispose();
-#if WINDOWS || MACOS || MACCATALYST
         if (SharedFramework is null) _ownedFramework?.Dispose();
-#else
-        _ownedFramework?.Dispose();
-#endif
         _boundary?.Dispose();
         _host = null;
         _session = null;
         _ownedFramework = null;
         _boundary = null;
         _textInput.Dispose();
+        SurfaceDisposed?.Invoke(this);
+    }
+
+    /// <summary>Detaches the framework branch before releasing its view services and native GPU consumers.</summary>
+    public ValueTask DisposeAsync()
+    {
+        lock (_disposeGate)
+        {
+            if (_disposeTask is not null && !_disposeTask.IsFaulted) return new(_disposeTask);
+            var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            _disposeTask = completion.Task;
+            _ = CompleteDisposeAsync(completion);
+            return new(_disposeTask);
+        }
+    }
+
+    private async Task CompleteDisposeAsync(TaskCompletionSource completion)
+    {
+        try { await DisposeCoreAsync(); completion.TrySetResult(); }
+        catch (Exception error) { completion.TrySetException(error); }
+    }
+
+    private async Task DisposeCoreAsync()
+    {
+        if (_disposed) return;
+        await new MauiApplicationDispatcher().InvokeAsync(() =>
+        {
+            _closing = true;
+            PrepareFrameworkClose();
+        });
+        if (FrameworkView is { } view) await view.DrainInvocationsAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(30));
+#if IOS || MACCATALYST
+        var retirement = await new MauiApplicationDispatcher().InvokeAsync(() =>
+            _renderSurface.Element.Handler?.PlatformView is DorotiUIKitGraphiteView native ? native.RetireAsync() : Task.CompletedTask);
+        await retirement.WaitAsync(TimeSpan.FromSeconds(30));
+#elif MACOS
+        var retirement = await new MauiApplicationDispatcher().InvokeAsync(() =>
+            DesktopMetalSurface.NativeView?.RetireAsync() ?? Task.CompletedTask);
+        await retirement.WaitAsync(TimeSpan.FromSeconds(30));
+#elif WINDOWS
+        await PrepareDesktopCloseAsync();
+#endif
+        await new MauiApplicationDispatcher().InvokeAsync(Dispose);
     }
 
     private static T CreateHiddenInput<T>()
@@ -821,8 +859,18 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         // Release Doroti's timers and render workers before the WinUI Closed
         // lifecycle handler ends the desktop application message loop.
         Dispose();
+#elif IOS && !MACCATALYST
+        _ = DisposeDestroyedViewAsync();
 #endif
     }
+
+#if IOS && !MACCATALYST
+    private async Task DisposeDestroyedViewAsync()
+    {
+        try { await DisposeAsync(); }
+        catch (Exception failure) { WriteFailure(failure); }
+    }
+#endif
 
     private void DetachWindow()
     {

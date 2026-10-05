@@ -102,8 +102,12 @@ public sealed partial class DorotiWindowManager(
     )
     {
         ArgumentNullException.ThrowIfNull(request);
-        request.Options.Validate();
+        if (request.OwnerWindowId is { } explicitOwner && request.Options.OwnerWindowId is { } optionOwner && explicitOwner != optionOwner)
+            throw new ArgumentException("Conflicting window owners.", nameof(request));
         request = request with { Options = request.Options with { OwnerWindowId = request.OwnerWindowId ?? request.Options.OwnerWindowId } };
+        request.Options.Validate();
+        if (request.Options.Kind != WindowKind.Regular && request.Options.OwnerWindowId is null)
+            throw new ArgumentException("Owned window kinds require an explicit owner.", nameof(request));
         if (request.Options.OwnerWindowId is { } owner && (!TryGetWindow(owner, out var owningWindow) || owningWindow!.State.Closed || owningWindow.IsClosing))
             throw new InvalidOperationException("The owning window is not registered or is closed.");
         _factory.Evaluate(request).ThrowIfUnsupported();

@@ -1,6 +1,7 @@
 #if MACOS || IOS || MACCATALYST
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Doroti.Host.Maui;
 using Doroti.Hosting;
 using Doroti.Ui;
@@ -16,6 +17,13 @@ using UIKit;
 using Rect = Doroti.Ui.Rect;
 
 namespace DorotiTestbedApp.Apple;
+
+internal sealed record AppleFeatureProbeResult(string Status, string WebView, string Semantics,
+    string Input, string PhysicalIme, string VoiceOver);
+
+[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
+[JsonSerializable(typeof(AppleFeatureProbeResult))]
+internal sealed partial class AppleFeatureProbeJsonContext : JsonSerializerContext;
 
 // Mirrored in ios/ and macos/ to honor the runner source boundary.
 // Testbed-only native provider checks. Physical IME and VoiceOver are separate gates.
@@ -44,15 +52,12 @@ internal static class AppleFeatureProbe
             File.WriteAllText(
                 output,
                 JsonSerializer.Serialize(
-                    new
-                    {
-                        status = "PASS",
-                        webView = "native factory commands/HTML/JS/app resource/message/stale generation/close",
-                        semantics = "hierarchy/order/role/native action/disabled/password/removal/owner disposal",
-                        input = "configuration-only text/selection and multiline/password endpoint transitions",
-                        physicalIme = "notVerified",
-                        voiceOver = "notVerified",
-                    }
+                    new AppleFeatureProbeResult("PASS",
+                        "native factory commands/HTML/JS/app resource/message/stale generation/close",
+                        "hierarchy/order/role/native action/disabled/password/removal/owner disposal",
+                        "configuration-only text/selection and multiline/password endpoint transitions",
+                        "notVerified", "notVerified"),
+                    AppleFeatureProbeJsonContext.Default.AppleFeatureProbeResult
                 )
             );
         }

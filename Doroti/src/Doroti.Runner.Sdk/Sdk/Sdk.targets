@@ -1,14 +1,12 @@
 <Project>
-  <Import Project="$(DorotiProviderBootstrapTargets)" Condition="'$(DorotiProviderSuppliesBootstrap)' != 'true' and '$(DorotiProviderBootstrapTargets)' != '' and Exists('$(DorotiProviderBootstrapTargets)')" />
-  <Import Project="Doroti.DesktopBoundary.targets" />
-  <Import Project="Doroti.Plugins.targets" />
-  <PropertyGroup>
-    </PropertyGroup>
   <PropertyGroup>
     <DorotiAppProject>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(DorotiAppProject)'))</DorotiAppProject>
     <DorotiApplicationProjectName>$([System.IO.Path]::GetFileNameWithoutExtension('$(DorotiAppProject)'))</DorotiApplicationProjectName>
     <DorotiApplicationType Condition="'$(DorotiApplicationType)' == ''">$(DorotiApplicationProjectName).Program</DorotiApplicationType>
   </PropertyGroup>
+  <Import Project="$(DorotiProviderBootstrapTargets)" Condition="'$(DorotiProviderSuppliesBootstrap)' != 'true' and '$(DorotiProviderBootstrapTargets)' != '' and Exists('$(DorotiProviderBootstrapTargets)')" />
+  <Import Project="Doroti.DesktopBoundary.targets" />
+  <Import Project="Doroti.Plugins.targets" />
   <PropertyGroup>
     <_DorotiBootstrapFile Condition="'$(DorotiDesktopStartupType)' != ''">$(_DorotiGeneratedDirectory)DorotiBootstrap.Desktop.$(DorotiDesktopStartupType).g.cs</_DorotiBootstrapFile>
   </PropertyGroup>

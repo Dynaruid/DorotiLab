@@ -1,10 +1,10 @@
 # work2 후속 작업계획 — AppKit·Mac Catalyst·iOS·Android 및 잔여 수락
 
 - 작성일: 2026-10-05 KST
-- 상태: **계획 작성 완료 / 이 문서에 따른 추가 구현·빌드·runtime 검증 미실시**
+- 상태: **PARTIAL — 공통·AppKit·Mac Catalyst·iOS 구현 및 범위별 검증 진행. 전체 완료 아님.** 최신 결과와 남은 기준은 [§14](#14-2026-10-05-실행-결과)에 기록한다.
 - 기준: [work2.md](work2.md)의 구조·소유권·공개 계약과 현재 작업 트리. 후속 실행 항목은 이 문서에서 관리하고, 기존 설계·완료 체크·검증 이력은 work2에 유지한다.
 - 현황 근거: [최신 checkpoint](Doroti/docs/migrations/design-platform/latest-checkpoint.json), [재개 기록](Doroti/docs/migrations/design-platform/resume-2026-10-05.md), [재개 검증 receipt](Doroti/docs/migrations/design-platform/resume-verification-2026-10-05.json), [실행 상태](Doroti/docs/migrations/design-platform/execution.json).
-- 조사 방식: 현재 소스·provider metadata·샘플 프로젝트·테스트 진입점을 대조했다. 아래의 기존 PASS는 저장된 실행 기록이며 이번 문서 작성 중 재실행한 결과가 아니다.
+- 조사 방식: §1의 표와 우선 연결 문제는 실행 전 기준이다. 기존 PASS와 이번 실행의 새 PASS를 구분하며 새 실행 근거는 §14와 별도 receipt에 둔다.
 - 범위: 네 플랫폼의 신규 계약 이식, 공통 디자인/Windowing 미구현, Qt·Windows·Web 잔여 수락, 도구·SDK·NuGet·문서 정리. `tools/Doroti.DartToCSharp/`는 계속 제외한다.
 
 ## 1. 현재 현황과 이어서 해결할 문제
@@ -195,7 +195,7 @@ Native/Auto/Overlay는 요청에 필요한 전체 기능으로 평가한다. Aut
 
 - [ ] **V4 — 최종 잔여 감사와 인계.** 아래 대응표와 work2 최종 체크리스트의 각 항목을 구현/자동화/runtime/physical 상태에 연결한다. 미구현과 환경 미확인을 구분하고 재개 가능한 명령·선택 profile·증거 위치·다음 blocker를 남긴다. 모든 필수 미완료가 해소되기 전에는 wholePlanComplete를 true로 변경하지 않는다.
 
-모든 테스트는 [.github/copilot-instructions.md](.github/copilot-instructions.md)에 따라 외부 1,200초 timeout을 사용한다. 반복은 보통 30회 이내로 하고 의미 있는 실패/변경 없이 전체 suite를 반복하지 않는다. 아래 명령은 **향후 실행용이며 이번 문서 작성에서 실행하지 않았다.**
+모든 테스트는 [.github/copilot-instructions.md](.github/copilot-instructions.md)에 따라 외부 1,200초 timeout을 사용한다. 반복은 보통 30회 이내로 하고 의미 있는 실패/변경 없이 전체 suite를 반복하지 않는다. 아래는 aggregate 재개 명령이다. 이번에 실제 수행한 명령·profile·결과는 §14의 receipt를 따른다.
 
 저장소 루트, 현재 작업에 맞는 Python/SDK 환경에서:
 
@@ -254,4 +254,63 @@ Android/iOS의 실제 장치 검사는 typed device 서비스로 선택한 ID, �
 | PW8-1~7 | A1~A5, K1~K4, I1~I5, D1~D5, R1~R3, T2, T4, P2~P4, V1~V4 | 전 provider 이식·집계·wire/ABI·process·AOT·지원표 |
 | work2 §8 최종 수락 체크리스트 전체 | C1~C6, U1~U4, 플랫폼별 항목, T1~T4, R1~R3, P1~P4, V1~V4 | 구조/패키지/수명/도구/runtime/physical별 증거를 항목마다 대조 |
 
-첫 실행은 C1에서 기준을 고정하고 C2/C3의 bootstrap·창 요청 연결을 해결하는 것으로 시작한다. 완료된 디자인 분리·자산 구현과 기존 통과 경로를 유지하면서 각 플랫폼의 누락만 이행한다.
+이번 실행은 C1 평가 그래프와 C2/C3/C4 bootstrap·창 요청·수명 연결에서 시작했다. 기존 완료 항목은 유지하고 아래에 실제 변경 및 미충족 수락 기준을 기록한다.
+
+## 14. 2026-10-05 실행 결과
+
+사용자가 요청한 공통·AppKit·Mac Catalyst·iOS 범위를 작업했다. **전체 PARTIAL**이며 필수 기준이 남은 체크박스는 유지한다. 기계 판독 결과는 [이번 검증 receipt](Doroti/docs/migrations/design-platform/work3-verification-2026-10-05.json), 전체 계획의 상태는 [checkpoint](Doroti/docs/migrations/design-platform/latest-checkpoint.json)와 [execution](Doroti/docs/migrations/design-platform/execution.json)을 따른다. Android·Qt·Web·Windows의 새 native 수락은 이번 실행 범위가 아니다.
+
+| 항목 | 이번 구현·확인 | 남은 필수 기준 |
+|---|---|---|
+| C1 | 실제 MSBuild로 core 6개·두 디자인·tool·Apple Host 4개 profile의 참조/Compile/resource/friend 입력을 평가. core 역참조·Cupertino→Material·중복 입력 거절 | 전체 provider closure와 Roslyn/public API·reflection 의미 감사 |
+| C2 | UIKit/Android OS startup에서 PrepareProcess를 사용자 Configure보다 먼저 실행. MAUI 명시 application dispatcher와 공유 application session 연결 | 모든 provider를 Hosting staged coordinator로 통합; OS Stop/Restart·초기화 중 종료 등의 실제 receipt |
+| C3 | factory별 WindowRequest 매핑. AppKit Manual/Dock 비설정, Catalyst PlatformDefault. owner 충돌·누락·미지원 modality/anchor/activation을 native allocation 전에 거절 | 모든 provider 및 Windows 실제 동작의 최종 수락 |
+| C4 | branch unmount와 typed callback quiesce 후 per-view invocation/GPU drain. iOS에서도 실제 retirement await. 공유 Stop/Dispose join·실패 재시도·survivor 보존. 공유 SKTypeface wrapper의 lease를 추가해 한 View 종료 후 다른 View의 한글 편집 crash 수정 | 모든 staged failure/device-loss/slow-consumer 경합의 native 확대 수락 |
+| C5 | SDK가 app project/name을 먼저 확정한 뒤 provider profile import. iOS arm64/x64 simulator·device·Debug/Release·override·잘못된 개발 혼합 평가 | .NET 11 matching toolchain build, 모든 default/RID-less/design-time/version/nuspec 조합 |
+| C6 | iOS profile을 provider 단일 소유로 전환하고 template 복사본·중복 import 제거 | MAUI sample friend 접근을 public/protected 진단·등록으로 전환; native bridge/binding 공급 책임 감사 |
+| U1 | preview/action popup route 진입점, caller theme/locale/directionality 캡처와 child Navigator 결과 연결. Cupertino long-press·Overlay 선택/닫기 구현. 공통 ModalScope의 빈 animation 구독과 0이 되던 duration 나눗셈 수정; route별 tween 격리 | native Cupertino backdrop sampling·restoration/focus/Semantics의 완전한 수락. 필터가 필요한 요청은 Native Unsupported, Auto Overlay |
+| U2/U3 | 실제 Material/Raw menu·radio·Tooltip·ExpansionTile, Cupertino context menu·dialog·selection과 G0 EditableText 회귀 통과 | native Tooltip hover/delay/late-install 확장·물리 IME/접근성 수락 |
+| U4 | CPU shared tree·view별 focus/selection/IME와 late callback·primary detach/survivor 회귀 | Windows 실제 확장 G1·slow consumer/modal/reentrant close·완전한 API 감사 |
+| A1/A2 | AppKit main-thread mutation·공유 session·per-view drain. Regular 및 owned Dialog/Popup/Tooltip/Satellite, sheet, no-activate, owner-relative anchor/visibleFrame, popup Escape/로컬 outside click, owner cascade·focus 복구 | 여러 display/scale·앱 밖 클릭·재생성/초기화 종료 경쟁·모든 좌표/focus 수락 |
+| A3 | typed NSMenu popup/menubar, enabled/checked/submenu·문자 shortcut. active WindowId/viewId/generation action, 취소/close·stale action 거절·기본 앱 메뉴 복구 | popup tracking 중 종료/shortcut·실제 디자인 menu 흐름 확대. platform role/logical-key shortcut은 Unsupported |
+| A4/A5 | Graphite/Ganesh 실제 resize·Metal retirement/reconnect/final drain, native 서비스·editor/WebView·Semantics·navigation, 두 lifetime의 survivor와 60초 실행/정상 종료. 독립 widgets NuGet 소비자의 실제 두 창·resize·close와 local extracted-app 복사/동일 후보 교체/제거·한글 데이터 보존 PASS | Material/Cupertino 및 모든 profile 독립 소비자·Run/Reload/Restart 전체, 물리 한글 IME/VoiceOver/mixed display·서명/공증/Finder/clean OS·서로 다른 후보 upgrade |
+| K1/K2 | shared session·명시 dispatcher·destroyed primary dispatcher 제거, typed/GPU drain. activating/unowned Regular 추가 scene 지원; aux/owner/modal/no-activate/hidden 준비 명시 거절 | scene 초기화 취소·재생성/복원·모든 lifecycle race |
+| K3/K4 | 실제 UIKit 서비스·synthetic 입력·editor/WebView/Semantics·navigation/restoration·두 scene/primary close/survivor 검증 | OS menu Unsupported. 물리 키보드/IME·scene action 재생성·독립 세 디자인/개발/배포 수락 |
+| I1/I4 | scene surface가 application session을 공유하고 branch/view identity를 따로 소유. background/handler 상실은 app tree 유지. Destroying에서 비동기 detach/drain. actual completion frame acknowledgment 연결. 실제 Stop join·view dispose·Metal pending 0 확인 | background/reconnect/Restart의 전체 trace·물리 터치/IME/VoiceOver |
+| I2 | provider profile 실제 import/단일 소유·프로파일 평가와 net10.0-ios27.0 simulator build | .NET 11 CoreCLR/NativeAOT matching SDK/runtime·x64 실제 build/runtime·장치 Release/AOT |
+| I3 | typed simctl/CoreDevice discovery, available iOS·connected paired physical 필터, bounded JSON/취소, RID와 명시 ID 선택 및 SDK _DeviceName 연결 | SDK agent/prepared acknowledgment·network/device 개발 transport·owned Stop/Restart. typed dev는 계속 Unsupported |
+| I5/P1~P4/V1~V4 | Apple aggregate에 profile/소유권/실제 iOS Stop 검사 연결, iOS multi-scene 미지원 manifest를 SKIPPED로 명시. 후보의 provider RID restore 분리·Apple copy-mode publish·평가된 assets 경로·AppKit desktop fixture 연결과 v2 native receipt/pkg 추출 검사 수정. 문서/지원표/receipt 갱신 | package/profile별 전체 후보·호환 범위·trim/AOT·물리/서명/설치와 원 계획의 모든 잔여 |
+
+실행 환경은 macOS **26.6.2 (25G83)** / Apple M1 arm64, .NET SDK **10.0.401**, Xcode **27.0 (27A266a)**다. native build는 AppKit `net10.0-macos27.0/osx-arm64`, Catalyst `net10.0-maccatalyst27.0/maccatalyst-arm64`, iOS `net10.0-ios27.0/iossimulator-arm64`로 구분한다. iOS simulator는 iPhone 17/iOS 27.0이며 당시 connected-state 필터가 반환한 실제 paired 장치는 0개였다. 아래 실기기 후속 검사에서 idle CoreDevice tunnel도 연결 확인 후 검색하도록 수정했다. 설치된 .NET 11 rc1 SDK는 선언된 rc2 개발 runtime의 matching build 증거로 사용하지 않는다.
+
+독립 AppKit 후보는 core `0.4.0-alpha.1` 고정, provider `0.4.0-alpha.2`, 디자인 `widgets`, `net10.0-macos/osx-arm64` 선언과 실제 SDK platform version `27.0`으로 실행했다. 26개 prebuilt nupkg와 별도 cache의 template 소비자이며 repository project 참조가 없음을 평가된 assets에서 확인했다. Apple SDK가 요구하는 trim pipeline은 `copy`/`LinkMode=None`으로 사용했다. 이것은 NativeAOT/실제 trimming 수락이 아니다. native 실행은 해시 검증된 `.pkg`를 임시 경로에 추출한 앱에서 실행했고 앱 signing의 adhoc 검증만 했다. OS Installer·공증·clean OS 수락은 아니다. local 교체는 같은 후보끼리 수행했으므로 서로 다른 버전의 upgrade로 보고하지 않는다.
+
+원시 로그·native summary는 `temp/testing/work3/`에 두고 보존할 핵심 결과·명령·hash는 별도 receipt에 남긴다. PASS는 receipt에 명시된 실행 범위만 의미한다. 기존 Windows/Qt/Web/NuGet PASS를 새 Apple 소스의 전체 수락으로 확대하지 않는다. `wholePlanComplete=false`를 유지한다.
+
+## 15. 2026-10-05 iOS 실기기 후속 검사
+
+iPhone 12 / iOS **26.6.1 (23G83)** / USB / Developer Mode에서 Testbed를 개발 서명하여 설치·실행했다. profile은 `net10.0-ios27.0` / `ios-arm64` / **Debug Mono**이며 엔진·의존성은 Mono AOT, 앱·iOS 진입 어셈블리는 interpreter인 기존 기본 설정을 사용한다. 최종 서명 빌드는 경고·오류 0이다. 기존 앱을 제거하거나 데이터를 초기화하지 않았다. 원시 결과는 `temp/testing/work3/ios-device/`에 두고 보존 요약은 [실기기 receipt](Doroti/docs/migrations/design-platform/work3-ios-device-verification-2026-10-05.json)에 남긴다.
+
+- **장치 검색 수정:** CoreDevice가 USB로 접근 가능한 paired 기기의 idle tunnel을 `disconnected`로 반환해 누락하던 문제를 수정했다. connectable 후보에 bounded `device info details` 확인을 하고, 같은 UDID의 physical/paired/connected 결과만 제공한다. unreachable·다른 UDID·malformed JSON·취소 회귀와 실제 장치 1개 검색이 통과했다.
+- **probe 경로 수정:** iOS의 모든 probe 출력 경로를 Documents로 정규화하고 부모 폴더를 생성해 실기기 container에서 결과를 회수한다. 실기기 smoke는 빈 environment 인자를 생략하고, 정적 장면의 복귀를 GPU 완료 프레임 진행으로 검사한다.
+- **회전 계측 및 정책:** 매 pulse에서 전체 GPU/Semantics trace를 복사하던 계측을 cached geometry로 바꾸고 pulse callback 뒤에 샘플링한다. 사용자의 최종 지시에 따라 강제 FPS 제한을 제거하고 UIKit 기본 cadence를 사용한다. 중간 raster 크기·최종 pixels/safe area·display link 종료·frame failure 0을 수락 기준으로 삼는다. 동기화 오차는 측정값으로 남기며 기존 평균 5%/최대 10% 엄격한 기준의 통과를 주장하지 않는다. 별도 성능 수락은 smoke의 `--assert-rotation-sync`로 재현할 수 있다.
+
+실제 UIKit 파일 128MiB offset read·취소·owner disposal/drop capability, native editor/WebView 생성·재생성 4회, WKWebView HTML/JS/앱 자산/message/stale generation/close와 Semantics native action, 양방향 scene rotation, shared Stop join·view dispose·Metal pending 0을 확인했다. 사용자는 실기기를 직접 사용했을 때 **“특별한 이상 없음”**이라고 답했다. 이 피드백은 물리 한글 IME·VoiceOver의 정식 수락을 대신하지 않는다.
+
+Settings로 background 전환한 뒤 같은 PID로 복귀하는 3회 검사에서 GPU 완료 프레임이 **4→5→6→7**, frame failure는 0이었다. 최종 일반 Material 샘플의 실제 Metal 완료 프레임과 **1170×2532** 캡처를 확인하고 앱을 foreground로 남겼다. 회전은 방향별로 서로 다른 raster 폭 11개를 확인했다. 평균/최대 동기화 오차는 가로 **23.10/48.54pt**, 세로 **26.57/60.06pt**이며 별도의 엄격한 오차 예산을 충족하지 않는다. 이번 PASS는 사용자와 정한 기능 수락 범위에 한정한다.
+
+장치 Release/NativeAOT/CoreCLR, package-only 장치 소비자, 배포 provisioning/signing·clean installation, 실제 scanout FPS 및 엄격한 회전 성능 수락은 별도다. 이 후속 결과도 전체 계획의 `wholePlanComplete=false`를 유지한다.
+
+## 16. 회전 버벅임 재현 및 Release Mono AOT 설치
+
+사용자가 실제 Components 화면에서 심한 회전 버벅임을 보고했다. 앞선 자동 rotation의 `reload` 화면은 훨씬 단순하여 실제 화면의 성능을 대신하지 못했다. 진단 writer·상세 profiling을 끈 Components 화면에서도 Debug Mono의 viewport 갱신 간격이 평균 **107.50/93.97ms**, 최대 **142.88/147.39ms**(가로/세로)였다. 앞선 기능 PASS를 이 화면의 성능 PASS로 해석하지 않는다.
+
+사용자의 AOT 설치 요청에 따라 NativeAOT를 먼저 시도했다. feature/shutdown probe의 reflection JSON을 typed source-generated context로 바꾸어 IL2026/IL3050 오류를 해결했다. iOS/macOS feature probe 복사본도 일치시켰다. .NET 10/Xcode 27 NativeAOT는 SDK가 생성한 explicit-interface 보존 정보의 IL2037 오류로 실패했고, .NET 11 NativeAOT는 설치된 workload가 Xcode 26.6을 요구해 현재 Xcode 27.0을 거절했다. SDK 검사를 우회하거나 오류를 숨기지 않았다.
+
+현재 도구 체인에서 가능한 **Release Mono AOT/LLVM**를 `net10.0-ios27.0` / `ios-arm64`, `UseInterpreter=false`, `MtouchInterpreter=-all`, `Optimize=true`로 publish했다. 경고·오류 0이며 앱·iOS 진입·Host의 `.llvm.o` 생성과 서명 검사 후 기존 앱 데이터 보존 상태로 설치했다. **NativeAOT가 아닌 Mono AOT**다. 세부 profile·hash·실패 기록은 [Release AOT receipt](Doroti/docs/migrations/design-platform/work3-ios-release-aot-verification-2026-10-05.json)를 따른다.
+
+동일한 Components 화면·기기·cold process·진단 writer 없음 조건에서 Release Mono AOT의 갱신 간격은 평균 **39.96/37.89ms**, 최대 **50.55/52.72ms**로 줄었다. 방향별 raster 폭은 **10/11개**였다. 이는 viewport callback 계측이며 scanout FPS가 아니다. 평균/최대 phase 오차는 **20.73/68.26pt**, **22.00/51.85pt**로 엄격한 동기화 오차 기준은 여전히 충족하지 않는다. 사용자가 허용한 짧은 회전의 무제한 FPS 정책을 유지한다.
+
+Release 앱에서 native 서비스·editor/WebView·Semantics·양방향 실제 scene rotation·joined Stop/Metal drain·동일 PID background/foreground 3회 기능 검사가 통과했다. smoke에 `--sample material`과 상세 profiling opt-in을 추가했고 최종 일반 실행에는 probe/evidence/profiling 환경변수를 남기지 않는다. 현재 아이폰에는 이 일반 **Release Mono AOT** 앱을 foreground로 남겼으며 물리 체감 확인을 요청했다. NativeAOT·엄격한 회전 성능·배포/clean installation 및 전체 계획은 미완료로 유지한다.
+
+설치 후 사용자는 실제 회전이 **“약간 개선됨”**이라고 답했다. 상세 계측의 startup 이후 구간에서 callback은 평균 **14.914ms**/최대 **33.212ms**, raster는 평균 **15.313ms**/최대 **35.452ms**였고 drawable 획득 평균 **0.677ms**, GPU scheduling 대기 평균 **0.491ms**였다. 이 instrumented 구간은 정확한 회전-only/scanout 계측이 아니며 남은 렌더링·UI callback 지연을 추적하는 자료다. AOT 설치와 기능 검사 통과를 버벅임 완전 해결로 보고하지 않는다. 상세 계측 후에도 probe/evidence/profiling 없이 일반 Release 앱을 실행해 두었다.

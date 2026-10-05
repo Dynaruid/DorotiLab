@@ -16,6 +16,8 @@ public sealed class AppKitDelegate : DorotiMacOSMauiApplication
     public override void DidFinishLaunching(NSNotification notification)
     {
         base.DidFinishLaunching(notification);
+        if (Environment.GetEnvironmentVariable("DOROTI_APPKIT_WINDOWING_PROBE") is { Length: > 0 } windowingOutput)
+            _ = AppKitWindowingProbe.RunAsync(windowingOutput);
         NSApplication.SharedApplication.Activate();
         if (Environment.GetEnvironmentVariable("DOROTI_APPLE_FEATURE_PROBE") is { Length: > 0 } featureOutput)
             _ = DorotiTestbedApp.Apple.AppleFeatureProbe.RunAsync(featureOutput);

@@ -458,6 +458,8 @@ static class Program
             throw new ArgumentException("Unknown contract fixture arguments.");
         }
         Ownership();
+        SharedSessionCloseRegression.Run();
+        await NativeRouteCoordinatorRegression.Run();
         SharedTreeRegression.Run();
         ViewFocusSelectionRegression.Run();
         await StagesAndSurvivor();

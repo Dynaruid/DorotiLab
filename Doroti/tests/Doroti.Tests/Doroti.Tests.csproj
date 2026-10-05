@@ -1,8 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup><OutputType>Exe</OutputType><AllowUnsafeBlocks>true</AllowUnsafeBlocks><DefineConstants>$(DefineConstants);DOROTI_REPO_TESTS</DefineConstants></PropertyGroup>
+  <PropertyGroup><OutputType>Exe</OutputType><AllowUnsafeBlocks>true</AllowUnsafeBlocks><DefineConstants>$(DefineConstants);DOROTI_REPO_TESTS;DOROTI_APPKIT_CONTRACTS</DefineConstants></PropertyGroup>
   <ItemGroup>
     <Compile Include="../Common/VulkanDeviceOwner.cs" Link="VulkanDeviceOwner.cs" />
     <Compile Include="../../../packages/platforms/maui/Doroti.Host.Maui/AppleSemanticsState.cs" Link="AppleSemanticsState.cs" />
+    <Compile Include="../../../packages/platforms/maui/Doroti.Host.Maui/AppKitDesktopWindowPolicy.cs" Link="AppKitDesktopWindowPolicy.cs" />
+    <Compile Include="../../../packages/platforms/maui/Doroti.Host.Maui/MacCatalystDesktopWindowPolicy.cs" Link="MacCatalystDesktopWindowPolicy.cs" />
     <Compile Include="../../../packages/platforms/maui/Doroti.Host.Maui/IosFrameLifetime.cs" Link="IosFrameLifetime.cs" />
     <Compile Include="../../../packages/platforms/maui/Doroti.Host.Maui/MauiFrameCallbackQueue.cs" Link="MauiFrameCallbackQueue.cs" />
     <Compile Include="../../../packages/platforms/maui/Doroti.Host.Maui/MauiFrameWakeQueue.cs" Link="MauiFrameWakeQueue.cs" />

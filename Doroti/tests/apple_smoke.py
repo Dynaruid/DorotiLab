@@ -85,8 +85,11 @@ def wait(path, process, content=None):
 
 
 for case in a.cases.split(','):
-    if ios and case == 'multi': continue
+    if ios and case == 'multi':
+        results['checks'][case] = {'status': 'SKIPPED', 'reason': 'This iPhone runner declares UIApplicationSupportsMultipleScenes=false; native desktop Windowing is not advertised.'}
+        continue
     if not ios and case == 'rotation': raise ValueError('Rotation probe requires iOS.')
+    if not ios and case == 'shutdown': raise ValueError('Application shutdown probe requires the mobile iOS profile.')
     directory = native_output / case
     directory.mkdir(exist_ok=True)
     marker = directory / 'result.json'
@@ -96,6 +99,7 @@ for case in a.cases.split(','):
     elif case == 'features': extra['DOROTI_APPLE_FEATURE_PROBE'] = str(marker)
     elif case == 'input': extra |= {'DOROTI_SAMPLE': 'input', 'DOROTI_INPUT_PROBE': str(marker)}
     elif case == 'rotation': extra['DOROTI_UIKIT_ROTATION_PROBE'] = str(marker)
+    elif case == 'shutdown': extra['DOROTI_UIKIT_SHUTDOWN_PROBE'] = str(marker)
     elif case in ('navigation', 'restoration'): extra |= {'DOROTI_SAMPLE': 'navigation', 'DOROTI_NAVIGATION_PROBE': str(marker)}
     else: raise ValueError(case)
     if case == 'navigation' and a.activation == 'native-callback':
@@ -134,7 +138,7 @@ for case in a.cases.split(','):
         # The multiwindow probe closes all windows before its result marker.
         # Its shared evidence path can contain a pre-close snapshot from another
         # view; it cannot establish live GPU progress after the views detach.
-        if a.renderer == 'graphite' and case != 'multi':
+        if a.renderer == 'graphite' and case not in ('multi', 'shutdown'):
             evidence = directory / 'evidence.json'
             wait(evidence, process)
             deadline = time.monotonic() + 30
@@ -149,6 +153,10 @@ for case in a.cases.split(','):
                     pass
                 time.sleep(.1)
             else: raise TimeoutError('Missing completed C-only Metal pipeline evidence: ' + str(evidence))
+        if case == 'shutdown':
+            result = json.loads(marker.read_text())
+            assert result['sharedStopCompletion'] and result['viewDisposed'] and result['gpuRetiredBeforeCompletion'], result
+            assert result['after']['NativeFramePipeline']['PendingGpuFrames'] == 0, result
         results['checks'][case] = marker.read_text()
         if ios:
             subprocess.run(['xcrun', 'simctl', 'io', a.simulator, 'screenshot', str(out / (case + '.png'))], check=True, timeout=20)

@@ -265,7 +265,6 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
     internal UIKitPlatformRasterSurface CreatePlatformRasterSurface() => new(Device!, _queue);
 #endif
 
-#if MACCATALYST
     private readonly TaskCompletionSource _retired = new(
         TaskCreationOptions.RunContinuationsAsynchronously
     );
@@ -275,7 +274,6 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
         Disconnect();
         return _retired.Task;
     }
-#endif
 
     internal void Disconnect()
     {
@@ -1197,9 +1195,7 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
         _queue.Dispose();
         _resourcesReleased = true;
         RetiringViews.Remove(this);
-#if MACCATALYST
         _retired.TrySetResult();
-#endif
     }
 
     private void DispatchTouches(NSSet touches, UIEvent? evt, PointerChange change)

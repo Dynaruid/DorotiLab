@@ -69,12 +69,13 @@ static class SharedTreeRegression
         public SKSurface Pixels { get; }
         public DorotiView View { get; }
         public SceneRecorder SceneFrames { get; }
-        public Surface(PlatformDispatcher dispatcher, ulong id)
+        private readonly DorotiFramePresentation _presentation = new();
+        public Surface(PlatformDispatcher dispatcher, ulong id, DorotiCapabilityLifetime? applicationLifetime = null, IWindowService? windows = null)
         {
             Host = new(new Size(48, 48), 1, viewId: id);
             Renderer = new(id, Host, new Color(0xffffffff), null, "SharedTree/CPU", "cpu", "cpu", false);
             SceneFrames = new(Renderer);
-            View = dispatcher.RegisterView(id, new DorotiViewCapabilities("SharedTree/CPU")
+            var capabilities = new DorotiViewCapabilities("SharedTree/CPU", applicationLifetime)
                 .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, Host)
                 .Register<IFrameHostCapability>(DorotiCapabilityIds.ViewFrameDispatch, Host)
                 .Register<IInputHostCapability>(DorotiCapabilityIds.InputEvents, Host)
@@ -88,13 +89,20 @@ static class SharedTreeRegression
                 .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, Renderer)
                 .Register<ISceneRasterizationHostCapability>(DorotiCapabilityIds.GraphicsSceneSnapshot, Renderer)
                 .Register<ITextureHostCapability>(DorotiCapabilityIds.GraphicsTexture, Renderer)
-                .Register<ISemanticsHostCapability>(DorotiCapabilityIds.AccessibilitySemantics, Renderer));
+                .Register<ISemanticsHostCapability>(DorotiCapabilityIds.AccessibilitySemantics, Renderer)
+                .Register<IFramePresentationHostCapability>(DorotiCapabilityIds.FramePresentation, _presentation);
+            if (windows is not null) capabilities.Register<IWindowService>(DorotiCapabilityIds.WindowService, windows, DorotiCapabilityOwnership.Borrowed);
+            View = dispatcher.RegisterView(id, capabilities);
             Pixels = SKSurface.Create(new SKImageInfo(48, 48))!;
         }
         public void Frame(TimeSpan time)
         {
             Host.Frame(time);
-            if (Renderer.Paint(Pixels, 48, 48) is { } completion) Renderer.CompletePaint(completion);
+            if (Renderer.Paint(Pixels, 48, 48) is { } completion)
+            {
+                Renderer.CompletePaint(completion);
+                _presentation.Presented(completion.Descriptor.FrameworkFrameNumber);
+            }
         }
         public SKColor Pixel()
         {

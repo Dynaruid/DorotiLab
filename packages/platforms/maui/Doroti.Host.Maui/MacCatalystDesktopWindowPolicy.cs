@@ -6,9 +6,19 @@ namespace Doroti.Host.Maui;
 /// <summary>Public UIKit scene controls only; AppKit behavior is not inferred from the OS.</summary>
 internal static class MacCatalystDesktopWindowPolicy
 {
+    internal static WindowOptions MapRequest(Doroti.Ui.WindowRequest request) => new()
+    {
+        Title = request.Title, Size = request.Size, Kind = request.Kind,
+        OwnerWindowId = request.Owner, Anchor = request.Anchor, Modal = request.Modal,
+        Activate = request.Activate,
+        Resizable = request.Kind is Doroti.Ui.WindowKind.Regular or Doroti.Ui.WindowKind.Satellite,
+        StartupVisibility = WindowStartupVisibility.PlatformDefault,
+    };
     internal static WindowEvaluation Evaluate(WindowOptions options, WindowOptions? current)
     {
         options.Validate();
+        if (options.Kind != Doroti.Ui.WindowKind.Regular || options.OwnerWindowId is not null || options.Anchor is not null || options.Modal || !options.Activate)
+            return Reject("The UIKit scene bridge supports activating, unowned Regular windows only; owned, anchored, modal and no-activate presentations require Overlay.");
         if (options.RequireNativeCloseCancellation)
             return Reject("Catalyst native scene close cannot be vetoed with the current public UIKit bridge. Use autosave/recovery or programmatic CloseAsync.");
         if (options.StartupVisibility != WindowStartupVisibility.PlatformDefault)

@@ -12,6 +12,7 @@ public sealed class DorotiSharedHostSession : IDisposable
     private long _nextView;
     private bool _started;
     private bool _disposed;
+    private bool _stopping;
     public DorotiSharedHostSession(IDorotiViewEntrypoint entrypoint, IDorotiApplicationDispatcher? applicationDispatcher = null) =>
         Session = new(entrypoint, coordinatorOwnsFailureCleanup: true, applicationDispatcher: applicationDispatcher);
     public DorotiSharedHostSession(DorotiApplicationDescriptor descriptor, IDorotiApplicationDispatcher? applicationDispatcher = null) : this(descriptor.EntrypointFactory(), applicationDispatcher)
@@ -30,25 +31,40 @@ public sealed class DorotiSharedHostSession : IDisposable
     }
     public void RegisterManagedPlugins(DorotiViewCapabilities capabilities)
     {
+        ObjectDisposedException.ThrowIf(_disposed || _stopping, this);
         if (ManagedPlugins is not null)
             capabilities.Register<IDorotiManagedPluginInvoker>(DorotiCapabilityIds.ManagedPlugins, ManagedPlugins, DorotiCapabilityOwnership.Borrowed);
     }
-    public ulong AllocateViewId() => checked((ulong)Interlocked.Increment(ref _nextView));
+    public ulong AllocateViewId()
+    {
+        ObjectDisposedException.ThrowIf(_disposed || _stopping, this);
+        return checked((ulong)Interlocked.Increment(ref _nextView));
+    }
+    /// <summary>Unmount one branch and revoke its callbacks before waiting on GPU or typed service consumers.</summary>
+    public void BeginViewClose(DorotiView view)
+    {
+        ArgumentNullException.ThrowIfNull(view);
+        if (!ReferenceEquals(view.platformDispatcher, Session.dispatcher))
+            throw new InvalidOperationException("The view belongs to another application.");
+        Session.DetachView(view);
+        view.QuiesceCallbacks();
+    }
     public void Start()
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed || _stopping, this);
         if (_started) return;
         Session.Start(deferFrameworkBootstrap: true);
         _started = true;
     }
     public void OwnService<T>(T service) where T : class
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed || _stopping, this);
         if (_services.Add(service)) Capabilities.Own(service);
     }
     public void Dispose()
     {
         if (_disposed) return;
+        _stopping = true;
         Doroti.Runtime.DorotiCleanup.Run(Session.Dispose, Capabilities.Dispose);
         _disposed = true;
         _services.Clear();

@@ -42,6 +42,11 @@ Doroti shares its widget, layout, painting, and semantics layers across platform
 
 Web auto selection prefers WebGL2 on desktop/iOS and WebGPU on Android, with initial fallback when available. Explicit `dorotiRenderer=worker-direct-webgl` or `worker-direct-webgpu` overrides auto selection. Runtime graphics loss requires a fresh endpoint; see the [Web configuration guide](Doroti/README.md#web).
 
+The [2026-10-05 Apple follow-up](work3.md#14-2026-10-05-실행-결과) records current
+AppKit auxiliary windows/NSMenu, Catalyst scene policies, shared mobile view
+lifetimes and typed iOS device selection. Build, native automation, physical input
+and distribution have separate acceptance scopes; the complete plan remains partial.
+
 ## Get started
 
 The sample application is the starting point for exploring Doroti. Prepare these dependencies on the build host:

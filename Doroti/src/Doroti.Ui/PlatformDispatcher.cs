@@ -17,6 +17,8 @@ public sealed class PlatformDispatcher : IDisposable
     private readonly HashSet<Guid> _backgroundIsolates = [];
     private ChannelBuffers? _channelBuffers;
     private readonly AsyncLocal<DorotiView?> _invocationView = new();
+    /// <summary>The explicitly scoped callback/build owner, without selecting an implicit view.</summary>
+    public DorotiView? CurrentInvocationView => _invocationView.Value;
     private AccessibilityFeatures _accessibilityFeatures = new(
         false,
         false,

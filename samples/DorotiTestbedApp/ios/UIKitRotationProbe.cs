@@ -8,7 +8,8 @@ using UIKit;
 
 namespace DorotiTestbedApp.iOS;
 
-internal sealed record UIKitViewportUpdate(double Time, double TargetTime, double Width, double Height);
+internal sealed record UIKitViewportUpdate(double Time, double TargetTime, double Width, double Height,
+    double FrameInterval, double PreferredFrameRate);
 internal sealed record UIKitRotationSample(double Time, double Width, double Height,
     double DrawableWidth, double DrawableHeight, double BoundsWidth, double PresentationWidth,
     double SafeTop, bool Animating, double Scale);
@@ -32,9 +33,9 @@ internal static class UIKitRotationProbe
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 output
             );
+        var results = new List<UIKitRotationResult>();
         try
         {
-            var results = new List<UIKitRotationResult>();
             await MainThread.InvokeOnMainThreadAsync(async () =>
             {
                 CheckNativeTiming();
@@ -88,15 +89,18 @@ internal static class UIKitRotationProbe
                     var phaseErrors = new List<double>();
                     var animations = new List<string>();
                     var updates = new List<UIKitViewportUpdate>();
+                    var collecting = true;
                     void RecordViewport() =>
                         updates.Add(
                             new UIKitViewportUpdate(CAAnimation.CurrentMediaTime(),
                                 viewport.FrameTargetTimestamp, (double)viewport.Size.Width,
-                                (double)viewport.Size.Height)
+                                (double)viewport.Size.Height, viewport.FrameInterval,
+                                viewport.PreferredFrameRate)
                         );
                     viewport.Changed += RecordViewport;
-                    using var display = CADisplayLink.Create(() =>
+                    void RecordSample()
                     {
+                        if (!collecting) return;
                         if (
                             animations.Count == 0
                             && view.Layer.AnimationKeys is { Length: > 0 } keys
@@ -116,7 +120,7 @@ internal static class UIKitRotationProbe
                                         )
                                 );
                             }
-                        var rendered = surface.Diagnostics!.Surface;
+                        var rendered = surface.GeometrySnapshot!;
                         widths.Add(rendered.PixelWidth);
                         var presentationWidth = (double)(
                             view.Layer.PresentationLayer?.Bounds.Width ?? view.Bounds.Width
@@ -135,7 +139,12 @@ internal static class UIKitRotationProbe
                                 (double)viewport.SafeAreaInsets.Top, viewport.IsAnimating,
                                 (double)view.ContentScaleFactor)
                         );
-                    });
+                    }
+                    // UIKit can invoke this observer before the renderer's
+                    // display-link callback. Sample after all pulse callbacks
+                    // so a previous raster is not compared to the new geometry.
+                    using var display = CADisplayLink.Create(() =>
+                        UIApplication.SharedApplication.BeginInvokeOnMainThread(RecordSample));
                     display.AddToRunLoop(NSRunLoop.Main, NSRunLoopMode.Common);
                     string? error = null;
                     using var preferences = new UIWindowSceneGeometryPreferencesIOS(orientation);
@@ -164,6 +173,7 @@ internal static class UIKitRotationProbe
                     }
                     finally
                     {
+                        collecting = false;
                         display.Invalidate();
                         viewport.Changed -= RecordViewport;
                     }
@@ -191,6 +201,10 @@ internal static class UIKitRotationProbe
                         phaseErrors.Count > 0 ? phaseErrors.Average() : double.PositiveInfinity;
                     var maxPhaseError =
                         phaseErrors.Count > 0 ? phaseErrors.Max() : double.PositiveInfinity;
+                    results.Add(
+                        new UIKitRotationResult(orientation.ToString(), widths.Count,
+                            meanPhaseError, maxPhaseError, animations, updates, samples)
+                    );
                     if (
                         Environment.GetEnvironmentVariable("DOROTI_UIKIT_ROTATION_ASSERT_SYNC")
                         == "1"
@@ -202,16 +216,14 @@ internal static class UIKitRotationProbe
                                 $"Rotation phase mismatch: mean={meanPhaseError:F2}pt, max={maxPhaseError:F2}pt, span={span:F2}pt."
                             );
                     }
-                    results.Add(
-                        new UIKitRotationResult(orientation.ToString(), widths.Count,
-                            meanPhaseError, maxPhaseError, animations, updates, samples)
-                    );
                 }
             });
             File.WriteAllText(output, JsonSerializer.Serialize(results, UIKitRotationJsonContext.Default.ListUIKitRotationResult));
         }
         catch (Exception error)
         {
+            if (results.Count > 0)
+                File.WriteAllText(output + ".partial.json", JsonSerializer.Serialize(results, UIKitRotationJsonContext.Default.ListUIKitRotationResult));
             File.WriteAllText(output + ".error", error.ToString());
         }
     }

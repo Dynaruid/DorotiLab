@@ -1036,6 +1036,7 @@ public class Navigator : StatefulWidget
 
     public static NavigatorState of(BuildContext context, bool rootNavigator = false)
     {
+        if (NativeWindowPresentation.NavigatorForCaller(context) is { } presented) return presented;
         NavigatorState? navigator = default!;
         if (context is StatefulElement { state: NavigatorState stateLocal } __object119923)
         {
@@ -1065,6 +1066,7 @@ public class Navigator : StatefulWidget
 
     public static NavigatorState? maybeOf(BuildContext context, bool rootNavigator = false)
     {
+        if (NativeWindowPresentation.NavigatorForCaller(context) is { } presented) return presented;
         NavigatorState? navigator = default!;
         if (context is StatefulElement { state: NavigatorState stateLocal } __object121458)
         {

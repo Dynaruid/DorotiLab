@@ -16,7 +16,7 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--output', type=Path, required=True)
 parser.add_argument('--tfm', default='net10.0-macos27.0')
 parser.add_argument('--skip-build', action='store_true')
-parser.add_argument('--cases', default='multi,desktop,services,input,features,navigation,rendering,lifecycle')
+parser.add_argument('--cases', default='multi,windowing,desktop,services,input,features,navigation,rendering,lifecycle')
 parser.add_argument('--renderer', choices=['graphite', 'ganesh'], default='graphite')
 args = parser.parse_args()
 out = args.output.resolve()
@@ -99,7 +99,16 @@ def finish(process):
 
 try:
     for case in args.cases.split(','):
-        if case == 'multi':
+        if case == 'windowing':
+            path = out / 'windowing.json'
+            process = start('windowing', {'DOROTI_APPKIT_WINDOWING_PROBE': str(path)})
+            wait_file(process, path)
+            result = json.loads(path.read_text())
+            assert set(result) == {'Dialog', 'Popup', 'Tooltip', 'Satellite', 'menu', 'ownerClose'}, result
+            assert not result['Tooltip']['canBecomeKey'] and result['menu']['selected'] == 1, result
+            finish(process)
+            results['checks']['windowing'] = result
+        elif case == 'multi':
             for lifetime in ['OnLastWindowClosed', 'Explicit']:
                 process = start('multi-' + lifetime, {'DOROTI_MULTIWINDOW_SAMPLE': '1',
                     'DOROTI_DESKTOP_LIFETIME': lifetime, 'DOROTI_SAMPLE': 'input'})
@@ -131,6 +140,25 @@ try:
                     command(process, 'exit')
                 finish(process)
                 results['checks']['multi-' + lifetime] = {'before': before, 'survivor': after, 'screenshots': captures}
+        elif case == 'stability':
+            process = start(case)
+            command(process, 'resize', width=600, height=700)
+            before = windows(process, 1)
+            started = time.monotonic()
+            while time.monotonic() - started < 60:
+                check_errors(process)
+                assert process.poll() is None, 'AppKit exited during the 60-second observation'
+                time.sleep(1)
+            command(process, 'resize', width=620, height=720)
+            deadline = time.monotonic() + 15
+            while True:
+                after = windows(process, 1)
+                if after[0]['views'][0]['CommandBuffersCompleted'] > before[0]['views'][0]['CommandBuffersCompleted']: break
+                assert time.monotonic() < deadline, 'Frames did not progress after the 60-second observation'
+                time.sleep(.1)
+            results['checks'][case] = {'seconds': time.monotonic() - started, 'before': before, 'after': after, 'normalExit': True}
+            command(process, 'exit')
+            finish(process)
         elif case == 'rendering':
             process = start(case)
             before = windows(process, 1)

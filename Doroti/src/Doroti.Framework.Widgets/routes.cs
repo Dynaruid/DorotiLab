@@ -759,8 +759,7 @@ public class _ModalScopeState__routes<T> : State<_ModalScope__routes<T>>
     public override void initState()
     {
         base.initState();
-        var animations = new List<Listenable>();
-        _listenable = Listenable.CreateMerge(animations.Cast<Listenable?>());
+        _listenable = Listenable.CreateMerge([widget.route.animation, widget.route.secondaryAnimation]);
     }
 
     public override void didUpdateWidget(_ModalScope__routes<T> oldWidget)

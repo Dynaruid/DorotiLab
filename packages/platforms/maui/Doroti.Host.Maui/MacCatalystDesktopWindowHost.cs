@@ -105,7 +105,7 @@ internal sealed class MacCatalystDesktopWindowHost : IWindowHost
         {
             try { await manager.WaitForInitializationAsync().ConfigureAwait(false); }
             catch (Exception error) { DorotiMauiSurface.WriteFailure(error); }
-            window.Dispatcher.Dispatch(factory.Dispose);
+            await new MauiApplicationDispatcher().InvokeAsync(factory.Dispose);
         }
         async Task StartAsync()
         {
@@ -124,11 +124,12 @@ internal sealed class MacCatalystDesktopWindowHost : IWindowHost
     private sealed class Factory(MacCatalystDesktopWindowHost host) : IWindowHostFactory, IDisposable
     {
         private bool _allocated;
-        internal DorotiSharedHostSession Framework { get; } = new(host._descriptor);
+        internal DorotiSharedHostSession Framework { get; } = new(host._descriptor, new MauiApplicationDispatcher());
         internal DorotiApplicationBoundary? Application { get; private set; }
         internal void Attach(DorotiApplicationBoundary boundary) => Application ??= boundary.Retain();
         public void Dispose() { Framework.Dispose(); Application?.Dispose(); Application = null; }
         public WindowManagerCapabilities Capabilities { get; } = new(true, null);
+        public WindowOptions MapRequest(Doroti.Ui.WindowRequest request) => MacCatalystDesktopWindowPolicy.MapRequest(request);
         public WindowEvaluation Evaluate(WindowCreateOptions options) =>
             MacCatalystDesktopWindowPolicy.Evaluate(options.Options, null);
         public async ValueTask<IWindowHost> CreateAsync(
@@ -568,7 +569,8 @@ internal sealed class MacCatalystDesktopWindowHost : IWindowHost
             },
             cancellationToken
         );
-        await retirement.WaitAsync(cancellationToken);
+        if (_surface?.FrameworkView is { } view) await view.DrainInvocationsAsync(cancellationToken).AsTask().WaitAsync(TimeSpan.FromSeconds(30), cancellationToken);
+        await retirement.WaitAsync(TimeSpan.FromSeconds(30), cancellationToken);
         await OnUiAsync(
             () =>
             {

@@ -15,7 +15,7 @@ using Window = Microsoft.Maui.Controls.Window;
 namespace Doroti.Host.Maui;
 
 /// <summary>Owns one native AppKit window; embedded MAUI surfaces never enter this path.</summary>
-internal sealed class AppKitDesktopWindowHost : IWindowHost
+internal sealed partial class AppKitDesktopWindowHost : IWindowHost, Doroti.Ui.IPlatformMenuHostCapability, Doroti.Ui.IPlatformMenuBarHostCapability
 {
     internal sealed class DesktopWindow : Window
     {
@@ -44,6 +44,10 @@ internal sealed class AppKitDesktopWindowHost : IWindowHost
         _active;
     private bool _nativeClosed;
     private bool _additional;
+    private NSWindow? _owner;
+    private bool _sheet;
+    private NSObject? _dismissMonitor;
+    private Doroti.Ui.WindowId _id;
     private Factory? _factory;
     private TaskCompletionSource? _presentation;
     private TaskCompletionSource? _miniaturization;
@@ -104,26 +108,37 @@ internal sealed class AppKitDesktopWindowHost : IWindowHost
     private sealed class Factory(AppKitDesktopWindowHost host) : IWindowHostFactory, IDisposable
     {
         private bool _allocated;
-        internal DorotiSharedHostSession Framework { get; } = new(host._descriptor);
+        private readonly Dictionary<Doroti.Ui.WindowId, AppKitDesktopWindowHost> _hosts = [];
+        internal NSMenu? DefaultMenu { get; set; }
+        internal NSWindow NativeOwner(Doroti.Ui.WindowId id) =>
+            _hosts.TryGetValue(id, out var owner) && !owner._disposed && owner._native is { } native
+                ? native : throw new InvalidOperationException("The AppKit owner is no longer attached.");
+        internal void Remove(Doroti.Ui.WindowId id) => _hosts.Remove(id);
+        internal DorotiSharedHostSession Framework { get; } = new(host._descriptor, new MauiApplicationDispatcher());
         internal DorotiApplicationBoundary? Application { get; private set; }
         internal void Attach(DorotiApplicationBoundary boundary) => Application ??= boundary.Retain();
         public void Dispose() { Framework.Dispose(); Application?.Dispose(); Application = null; }
         public WindowManagerCapabilities Capabilities { get; } = new(true, null);
+        public WindowOptions MapRequest(Doroti.Ui.WindowRequest request) => AppKitDesktopWindowPolicy.MapRequest(request);
 
         public WindowEvaluation Evaluate(WindowCreateOptions options) =>
             AppKitDesktopWindowPolicy.Evaluate(options.Options, null);
 
-        public ValueTask<IWindowHost> CreateAsync(
+        public async ValueTask<IWindowHost> CreateAsync(
             Doroti.Ui.WindowId id,
             WindowCreateOptions options,
             CancellationToken cancellationToken
         )
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            if (!_allocated) { _allocated = true; return ValueTask.FromResult<IWindowHost>(host); }
-            if (Application is null) throw new InvalidOperationException("Initialize the main window before creating another window.");
-            return ValueTask.FromResult<IWindowHost>(new AppKitDesktopWindowHost(host._descriptor)
-            { _additional = true, _factory = this });
+            return await OnUiAsync<IWindowHost>(() =>
+            {
+                if (!_allocated) { _allocated = true; host._id = id; _hosts.Add(id, host); return host; }
+                if (Application is null) throw new InvalidOperationException("Initialize the main window before creating another window.");
+                var additional = new AppKitDesktopWindowHost(host._descriptor)
+                { _additional = true, _factory = this, _id = id };
+                _hosts.Add(id, additional);
+                return additional;
+            }, cancellationToken);
         }
     }
 
@@ -143,6 +158,7 @@ internal sealed class AppKitDesktopWindowHost : IWindowHost
         await OnUiAsync(() =>
         {
             _options = options;
+            _owner = options.OwnerWindowId is { } owner ? _factory!.NativeOwner(owner) : null;
             if (_additional) _window = new DesktopWindow { Host = this, Title = options.Title };
             var configuration = DesktopApplication.ToViewConfiguration(options, context.Windows.LifetimePolicy);
             configuration = configuration with { Navigation = _descriptor.ViewConfiguration.Navigation };
@@ -151,6 +167,8 @@ internal sealed class AppKitDesktopWindowHost : IWindowHost
             _surface = new(_descriptor with { ViewConfiguration = configuration }, _factory!.Framework.AllocateViewId())
             {
                 DesktopManaged = true,
+                PlatformMenus = this,
+                PlatformMenuBar = this,
                 SharedFramework = _factory!.Framework, WindowContext = context,
                 SharedApplication = _additional ? _factory!.Application : null,
                 ApplicationAttached = boundary => _factory!.Attach(boundary),
@@ -180,14 +198,19 @@ internal sealed class AppKitDesktopWindowHost : IWindowHost
             | NSWindowStyle.FullSizeContentView;
         if (_options.Resizable)
             style |= NSWindowStyle.Resizable;
-        _native = new DesktopNativeWindow(
-            new CGRect(0, 0, _options.Size.width, _options.Size.height),
-            style,
-            NSBackingStore.Buffered,
-            false
-        );
+        var frame = new CGRect(0, 0, _options.Size.width, _options.Size.height);
+        if (_options.Kind is Doroti.Ui.WindowKind.Popup or Doroti.Ui.WindowKind.Tooltip)
+            style = NSWindowStyle.Borderless;
+        if (!_options.Activate && _options.Kind != Doroti.Ui.WindowKind.Regular)
+            style |= NSWindowStyle.NonactivatingPanel;
+        _native = _options.Kind == Doroti.Ui.WindowKind.Regular
+            ? new DesktopNativeWindow(frame, style, NSBackingStore.Buffered, false)
+            : new DesktopNativePanel(frame, style, _options.Activate);
         _native.Title = _options.Title;
-        _native.CollectionBehavior |= NSWindowCollectionBehavior.FullScreenPrimary;
+        if (_options.Kind == Doroti.Ui.WindowKind.Regular)
+            _native.CollectionBehavior |= NSWindowCollectionBehavior.FullScreenPrimary;
+        else
+            _native.CollectionBehavior |= NSWindowCollectionBehavior.FullScreenAuxiliary;
         _delegate = new(this);
         _native.Delegate = _delegate;
         _root = new(this) { WantsLayer = true };
@@ -196,9 +219,40 @@ internal sealed class AppKitDesktopWindowHost : IWindowHost
         _native.ContentView = _root;
         ResizeClient(_options.Size);
         SetLimits();
-        _native.Level = _options.AlwaysOnTop ? NSWindowLevel.Floating : NSWindowLevel.Normal;
-        _native.Center();
+        _native.Level = _options.AlwaysOnTop || _options.Kind != Doroti.Ui.WindowKind.Regular ? NSWindowLevel.Floating : NSWindowLevel.Normal;
+        if (!_options.Modal) _owner?.AddChildWindow(_native, NSWindowOrderingMode.Above);
+        PlaceOwnedWindow();
+        if (_options.Kind is Doroti.Ui.WindowKind.Popup or Doroti.Ui.WindowKind.Tooltip)
+            _dismissMonitor = NSEvent.AddLocalMonitorForEventsMatchingMask(
+                NSEventMask.LeftMouseDown | NSEventMask.RightMouseDown | NSEventMask.KeyDown, e =>
+                {
+                    if (!_disposed && _native.IsVisible && (e.Type == NSEventType.KeyDown && e.KeyCode == 53 ||
+                        e.Type != NSEventType.KeyDown && e.Window != _native))
+                        CloseRequested?.Invoke();
+                    return e;
+                });
         return _native;
+    }
+
+    private void PlaceOwnedWindow()
+    {
+        if (_native is null) return;
+        if (_owner is null) { _native.Center(); return; }
+        var area = (_owner.Screen ?? NSScreen.MainScreen)?.VisibleFrame ?? _owner.Frame;
+        var frame = _native.Frame;
+        double x, y;
+        if (_options.Anchor is { } anchor)
+        {
+            var content = _owner.ContentView!;
+            var rect = anchor.LogicalBounds;
+            var local = new CGRect(rect.left, content.IsFlipped ? rect.top : content.Bounds.Height - rect.bottom, rect.width, rect.height);
+            var screen = _owner.ConvertRectToScreen(content.ConvertRectToView(local, null));
+            x = screen.X; y = screen.Y - frame.Height;
+        }
+        else { x = _owner.Frame.X + (_owner.Frame.Width - frame.Width) / 2; y = _owner.Frame.Y + (_owner.Frame.Height - frame.Height) / 2; }
+        x = Math.Clamp(x, area.X, Math.Max(area.X, area.X + area.Width - frame.Width));
+        y = Math.Clamp(y, area.Y, Math.Max(area.Y, area.Y + area.Height - frame.Height));
+        _native.SetFrameOrigin(new CGPoint(x, y));
     }
 
     internal void AttachContent(IMauiContext context)
@@ -304,7 +358,11 @@ internal sealed class AppKitDesktopWindowHost : IWindowHost
                 {
                     case WindowCommandKind.Show:
                         _surface!.DesktopMetalSurface.NativeView?.PresentPreparedFrame();
-                        w.OrderFront(null);
+                        PlaceOwnedWindow();
+                        if (_options.Modal && !_sheet)
+                        { _sheet = true; _owner!.BeginSheet(w, _ => { }); ResizeClient(_options.Size); }
+                        else if (_options.Activate) w.MakeKeyAndOrderFront(null);
+                        else w.OrderFront(null);
                         ((IWindow)_window).Resumed();
                         _surface.DesktopMetalSurface.NativeView?.RequestFrame();
                         if (!_shown)
@@ -322,10 +380,12 @@ internal sealed class AppKitDesktopWindowHost : IWindowHost
                         }
                         break;
                     case WindowCommandKind.Hide:
+                        if (_sheet) { _owner!.EndSheet(w); _sheet = false; }
                         w.OrderOut(null);
                         ((IWindow)_window).Stopped();
                         break;
                     case WindowCommandKind.Focus:
+                        if (!_options.Activate) throw new NotSupportedException("This window must not activate.");
                         if (!w.IsVisible)
                             throw new InvalidOperationException(
                                 "Show the window before requesting focus."
@@ -634,18 +694,23 @@ internal sealed class AppKitDesktopWindowHost : IWindowHost
             () =>
             {
                 _surface?.PrepareFrameworkClose();
+                _trackingMenu?.CancelTracking();
                 return _surface?.DesktopMetalSurface.NativeView?.RetireAsync() ?? Task.CompletedTask;
             },
             cancellationToken
         );
-        await retirement.WaitAsync(cancellationToken);
+        if (_surface?.FrameworkView is { } view) await view.DrainInvocationsAsync(cancellationToken).AsTask().WaitAsync(TimeSpan.FromSeconds(30), cancellationToken);
+        await retirement.WaitAsync(TimeSpan.FromSeconds(30), cancellationToken);
         await OnUiAsync(
             () =>
             {
                 _destroying = true;
+                if (_sheet && _native is { } sheet) { _owner!.EndSheet(sheet); _sheet = false; }
+                if (_native is { } owned) _owner?.RemoveChildWindow(owned);
                 Cleanup();
                 if (!_nativeClosed)
                     _native?.Close();
+                if (_options.Activate && _owner is { IsVisible: true }) _owner.MakeKeyWindow();
                 return true;
             },
             cancellationToken
@@ -663,6 +728,11 @@ internal sealed class AppKitDesktopWindowHost : IWindowHost
         if (_disposed)
             return;
         _disposed = true;
+        _trackingMenu?.CancelTracking();
+        _menuBar?.DisposeOnUi();
+        _factory?.Remove(_id);
+        if (_dismissMonitor is { } monitor)
+        { NSEvent.RemoveMonitor(monitor); monitor.Dispose(); _dismissMonitor = null; }
         foreach (var (center, token) in _observers)
         {
             center.RemoveObserver(token);
@@ -738,6 +808,7 @@ internal sealed class AppKitDesktopWindowHost : IWindowHost
 
         public override void DidBecomeKey(NSNotification notification)
         {
+            host.ActivateMenuBar();
             if (!host._destroying && !host._active)
             {
                 host._active = true;
@@ -809,6 +880,14 @@ internal sealed class AppKitDesktopWindowHost : IWindowHost
     {
         // Preserve explicit client sizes larger than the work area, including at first show.
         public override CGRect ConstrainFrameRect(CGRect frameRect, NSScreen? screen) => frameRect;
+    }
+
+    private sealed class DesktopNativePanel(CGRect frame, NSWindowStyle style, bool activate)
+        : NSPanel(frame, style, NSBackingStore.Buffered, false)
+    {
+        public override bool CanBecomeKeyWindow => activate;
+        public override bool CanBecomeMainWindow => false;
+        public override bool WorksWhenModal => true;
     }
 
     private sealed class CaptionFill : NSView

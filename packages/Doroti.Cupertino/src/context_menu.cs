@@ -98,7 +98,7 @@ public class CupertinoContextMenu : StatefulWidget
     public static double kOpenBorderRadius = Context_menuLibrary._previewBorderRadiusRatio;
     public static List<BoxShadow> kEndBoxShadow = Context_menuLibrary._endBoxShadow;
     public static double animationOpensAt =
-        Context_menuLibrary._previewLongPressTimeout.inMilliseconds
+        (double)Context_menuLibrary._previewLongPressTimeout.inMilliseconds
         / Context_menuLibrary._animationDuration;
     public static Color kBackgroundColor = Context_menuLibrary._kBackgroundColor;
     public virtual Func<BuildContext, Animation<double>, Widget> builder { get; private set; } =
@@ -106,34 +106,48 @@ public class CupertinoContextMenu : StatefulWidget
     public virtual Widget? child { get; private set; }
     public virtual List<Widget> actions { get; private set; } = default!;
     public virtual bool enableHapticFeedback { get; private set; } = default!;
+    public WindowPresentation presentation { get; }
+
+    // Retain the four-argument entry points used by already compiled consumers.
+    public CupertinoContextMenu(Key? key, List<Widget> actions, Widget child, bool enableHapticFeedback)
+        : this(key, actions, child, enableHapticFeedback, WindowPresentation.Auto) { }
 
     public CupertinoContextMenu(
         Key? key = null,
         List<Widget> actions = default!,
         Widget child = default!,
-        bool enableHapticFeedback = false
+        bool enableHapticFeedback = false,
+        WindowPresentation presentation = WindowPresentation.Auto
     )
         : base(key: key)
     {
         this.actions = actions;
         this.child = child;
         this.enableHapticFeedback = enableHapticFeedback;
+        if (!Enum.IsDefined(presentation)) throw new ArgumentException("Unknown presentation policy.");
+        this.presentation = presentation;
         builder = (context, animation) => child;
         System.Diagnostics.Debug.Assert(Enumerable.Any(actions));
     }
+
+    public static CupertinoContextMenu CreateBuilder(Key? key, List<Widget> actions,
+        Func<BuildContext, Animation<double>, Widget> builder, bool enableHapticFeedback) =>
+        CreateBuilder(key, actions, builder, enableHapticFeedback, WindowPresentation.Auto);
 
     public static CupertinoContextMenu CreateBuilder(
         Key? key = null,
         List<Widget> actions = default!,
         Func<BuildContext, Animation<double>, Widget> builder = default!,
-        bool enableHapticFeedback = false
+        bool enableHapticFeedback = false,
+        WindowPresentation presentation = WindowPresentation.Auto
     )
     {
         var __instance = new CupertinoContextMenu(
             key: key,
             actions: actions,
             child: default!,
-            enableHapticFeedback: enableHapticFeedback
+            enableHapticFeedback: enableHapticFeedback,
+            presentation: presentation
         );
         __instance.actions = actions;
         __instance.builder = builder;
@@ -158,6 +172,9 @@ internal class _CupertinoContextMenuState__context_menu
     internal virtual double _scaleFactor { get; set; } = default!;
     internal virtual OverlayEntry? _lastOverlayEntry { get; set; } = default;
     internal virtual _ContextMenuRoute__context_menu<object?>? _route { get; set; } = default;
+    private CancellationTokenSource? _nativeMenuLifetime;
+    private Animation<double>? _observedMenuAnimation;
+    private long _menuGeneration;
     internal virtual double _midpoint { get; private set; } =
         CupertinoContextMenu.animationOpensAt / 2L;
     internal virtual Gestures.TapGestureRecognizer _tapGestureRecognizer { get; private set; } =
@@ -265,6 +282,11 @@ internal class _CupertinoContextMenuState__context_menu
 
     internal virtual void _openContextMenu()
     {
+        var ownerView = View.of(context);
+        var generation = ++_menuGeneration;
+        _nativeMenuLifetime?.Cancel();
+        _nativeMenuLifetime?.Dispose();
+        _nativeMenuLifetime = new();
         setState(() =>
         {
             _childHidden = true;
@@ -281,6 +303,12 @@ internal class _CupertinoContextMenuState__context_menu
             scaleFactor: _scaleFactor,
             builder: (context, animation) =>
             {
+                if (!ReferenceEquals(_observedMenuAnimation, animation))
+                {
+                    _observedMenuAnimation?.removeStatusListener(_routeAnimationStatusListener);
+                    _observedMenuAnimation = animation;
+                    animation.addStatusListener(_routeAnimationStatusListener);
+                }
                 if (widget.child is null)
                 {
                     Animation<double> localAnimation = new Tween<double>(
@@ -295,8 +323,47 @@ internal class _CupertinoContextMenuState__context_menu
                 );
             }
         );
-        DartRuntimePrimitives.Ignore(Navigator.of(context, rootNavigator: true).push(_route!));
-        _route!.animation!.addStatusListener(_routeAnimationStatusListener);
+        try
+        {
+            var result = NativeWindowPresentation.ShowPopupRoute(context, _route!, widget.presentation, _nativeMenuLifetime.Token);
+            _ = FinishMenuAsync(ownerView, result, _route!, generation, _nativeMenuLifetime.Token);
+        }
+        catch
+        {
+            _route = null;
+            _childHidden = false;
+            _closeContextMenu();
+            throw;
+        }
+    }
+
+    private async Task FinishMenuAsync(DorotiView ownerView, Future<object?> result, _ContextMenuRoute__context_menu<object?> route,
+        long generation, CancellationToken cancellationToken)
+    {
+        Exception? failure = null;
+        try
+        {
+            await result.asTask();
+            await route.completed.asTask().WaitAsync(cancellationToken);
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception error) { failure = error; }
+        try
+        {
+            await ownerView.DispatchPlatformEventAsync(() =>
+            {
+                if (!mounted || generation != _menuGeneration) return;
+                _observedMenuAnimation?.removeStatusListener(_routeAnimationStatusListener);
+                _observedMenuAnimation = null;
+                _route = null;
+                setState(() => _childHidden = false);
+                _closeContextMenu();
+                _openController.reset();
+                if (failure is not null) FlutterError.reportError(new FlutterErrorDetails(failure, library: "Cupertino context menu"));
+            });
+        }
+        catch (ObjectDisposedException) { }
+        catch (OperationCanceledException) { }
     }
 
     internal virtual void _removeContextMenuDecoy()
@@ -368,7 +435,8 @@ internal class _CupertinoContextMenuState__context_menu
                 _childHidden = false;
             });
         }
-        _route!.animation!.removeStatusListener(_routeAnimationStatusListener);
+        _observedMenuAnimation?.removeStatusListener(_routeAnimationStatusListener);
+        _observedMenuAnimation = null;
         _route = null;
     }
 
@@ -456,6 +524,12 @@ internal class _CupertinoContextMenuState__context_menu
 
     public override void dispose()
     {
+        ++_menuGeneration;
+        _nativeMenuLifetime?.Cancel();
+        _nativeMenuLifetime?.Dispose();
+        _nativeMenuLifetime = null;
+        _observedMenuAnimation?.removeStatusListener(_routeAnimationStatusListener);
+        _observedMenuAnimation = null;
         _closeContextMenu();
         _tapGestureRecognizer.dispose();
         _openController.dispose();
@@ -853,22 +927,16 @@ internal class _ContextMenuRoute__context_menu<T> : PopupRoute<T>
         GlobalKey<IState>.Create();
     internal static CurveTween _curve = new CurveTween(curve: Curves.easeOutBack);
     internal static CurveTween _curveReverse = new CurveTween(curve: Curves.easeInBack);
-    internal static RectTween _rectTween = new RectTween();
-    internal static Animatable<Rect?> _rectAnimatable = _rectTween.chain(_curve);
-    internal static RectTween _rectTweenReverse = new RectTween();
-    internal static Animatable<Rect?> _rectAnimatableReverse = _rectTweenReverse.chain(
-        _curveReverse
-    );
-    internal static RectTween _sheetRectTween = new RectTween();
-    internal virtual Animatable<Rect?> _sheetRectAnimatable { get; private set; } =
-        _sheetRectTween.chain(_curve);
-    internal virtual Animatable<Rect?> _sheetRectAnimatableReverse { get; private set; } =
-        _sheetRectTween.chain(_curveReverse);
-    internal static Tween<double> _sheetScaleTween = new Tween<double>();
-    internal static Animatable<double> _sheetScaleAnimatable = _sheetScaleTween.chain(_curve);
-    internal static Animatable<double> _sheetScaleAnimatableReverse = _sheetScaleTween.chain(
-        _curveReverse
-    );
+    internal readonly RectTween _rectTween = new();
+    internal readonly Animatable<Rect?> _rectAnimatable;
+    internal readonly RectTween _rectTweenReverse = new();
+    internal readonly Animatable<Rect?> _rectAnimatableReverse;
+    internal readonly RectTween _sheetRectTween = new();
+    internal readonly Animatable<Rect?> _sheetRectAnimatable;
+    internal readonly Animatable<Rect?> _sheetRectAnimatableReverse;
+    internal readonly Tween<double> _sheetScaleTween = new();
+    internal readonly Animatable<double> _sheetScaleAnimatable;
+    internal readonly Animatable<double> _sheetScaleAnimatableReverse;
     internal virtual Tween<double> _opacityTween { get; private set; } =
         new Tween<double>(begin: 0.0, end: 1.0);
     internal virtual Animation<double> _sheetOpacity { get; set; } = default!;
@@ -892,6 +960,12 @@ internal class _ContextMenuRoute__context_menu<T> : PopupRoute<T>
     )
         : base(filter: filter, settings: settings)
     {
+        _rectAnimatable = _rectTween.chain(_curve);
+        _rectAnimatableReverse = _rectTweenReverse.chain(_curveReverse);
+        _sheetRectAnimatable = _sheetRectTween.chain(_curve);
+        _sheetRectAnimatableReverse = _sheetRectTween.chain(_curveReverse);
+        _sheetScaleAnimatable = _sheetScaleTween.chain(_curve);
+        _sheetScaleAnimatableReverse = _sheetScaleTween.chain(_curveReverse);
         __field_barrierLabel = barrierLabel;
         _actions = actions;
         _builder = builder;

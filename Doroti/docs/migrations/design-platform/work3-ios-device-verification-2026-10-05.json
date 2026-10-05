@@ -1,0 +1,238 @@
+{
+  "schema": "doroti.work3-ios-device-verification/v1",
+  "verifiedUtc": "2026-10-05T03:45:45.741798+00:00",
+  "result": "PASS scoped physical-device functional/native/synthetic acceptance",
+  "wholePlanComplete": false,
+  "sourceRevision": "8de825e25191561a9a4137811c89b333bf797306",
+  "sourceDirty": true,
+  "environment": {
+    "host": "macOS 26.6.2 (25G83) / Apple M1 arm64",
+    "dotnetSdk": "10.0.401",
+    "xcode": "27.0 (27A266a)",
+    "device": "iPhone 12",
+    "ios": "26.6.1 (23G83)",
+    "transport": "USB",
+    "deviceUdidSha256": "a1ad3c7a54a21047ed4cf52eb15ec2afc431abd630f1d0f7fa84b4ec2168050a",
+    "developerMode": true
+  },
+  "profile": {
+    "configuration": "Debug",
+    "framework": "net10.0-ios27.0",
+    "rid": "ios-arm64",
+    "compilationMode": "Mono",
+    "interpreter": "-all,DorotiTestbedApp,DorotiTestbedApp.iOS",
+    "bundle": "dev.doroti.testbed",
+    "signing": "existing Apple Development identity and matching development provisioning; strict codesign verification and device install PASS",
+    "buildWarnings": 0,
+    "buildErrors": 0,
+    "payloadSha256": "f7c0152092e216a04078ac7538b67d76f5bbce0132b2baee0a14de430e8daac4"
+  },
+  "fixes": [
+    "Paired, wired, available CoreDevice devices with an idle disconnected tunnel are confirmed by a bounded details connection probe before discovery advertises them. Unreachable/mismatched devices are excluded; caller cancellation propagates.",
+    "All iOS probe output paths resolve beneath Documents and create their parent directories, allowing device container retrieval.",
+    "Rotation observer reads cached geometry without allocating full GPU/semantics traces each pulse, and samples after pulse callbacks rather than pairing a previous raster with newer geometry.",
+    "Latest user instruction removes the application rotation FPS cap/minimum; UIKit chooses the transition cadence. FPS and phase timing are measurements, not acceptance gates.",
+    "Device smoke omits empty environment arguments and tests GPU completion progress after foreground instead of requiring new scene recordings for a static replay. Independent cases continue after failure and return nonzero if any failed."
+  ],
+  "deviceDiscovery": {
+    "fixtures": "PASS including idle paired/reachable, unreachable, mismatched details UDID, malformed list and cancellation",
+    "livePhysicalDevices": 1,
+    "priorConnectedOnlyFilter": 0
+  },
+  "checks": {
+    "services": {
+      "fileRead128MiB": true,
+      "cancel": true,
+      "ownerDispose": true,
+      "dropCapability": true,
+      "physicalInput": "notVerified"
+    },
+    "input": {
+      "created": 4,
+      "editorRecreated": true,
+      "webViewRecreated": true,
+      "mixedScene": false,
+      "physicalIme": "notVerified"
+    },
+    "features": {
+      "status": "PASS",
+      "webView": "native factory commands/HTML/JS/app resource/message/stale generation/close",
+      "semantics": "hierarchy/order/role/native action/disabled/password/removal/owner disposal",
+      "input": "configuration-only text/selection and multiline/password endpoint transitions",
+      "physicalIme": "notVerified",
+      "voiceOver": "notVerified"
+    },
+    "lifecycle": {
+      "status": "PASS",
+      "cycles": [
+        {
+          "cycle": 1,
+          "samePid": true,
+          "beforeCompletedGpuFrames": 4,
+          "afterCompletedGpuFrames": 5,
+          "replayed": 2,
+          "failed": 0
+        },
+        {
+          "cycle": 2,
+          "samePid": true,
+          "beforeCompletedGpuFrames": 5,
+          "afterCompletedGpuFrames": 6,
+          "replayed": 3,
+          "failed": 0
+        },
+        {
+          "cycle": 3,
+          "samePid": true,
+          "beforeCompletedGpuFrames": 6,
+          "afterCompletedGpuFrames": 7,
+          "replayed": 4,
+          "failed": 0
+        }
+      ],
+      "pid": 8066,
+      "meaning": "same process/shared application, new frames after each foreground; static scene, no FPS claim"
+    },
+    "rotation": {
+      "result": "PASS functional",
+      "timing": "measuredOnly",
+      "fpsPolicy": "UIKit system cadence; no FPS acceptance threshold or application cap",
+      "functionalAssertions": [
+        "native timing/additive calculation",
+        "intermediate raster widths",
+        "exact final drawable pixels",
+        "settled safe area",
+        "display link stopped",
+        "frame failures zero"
+      ],
+      "rotations": [
+        {
+          "orientation": "LandscapeLeft",
+          "distinctRasterWidths": 11,
+          "meanPhaseErrorPt": 23.101193364321553,
+          "maxPhaseErrorPt": 48.54127182563144,
+          "requestedRates": [
+            0
+          ],
+          "displayLinkIntervalsMs": [
+            16.7183
+          ],
+          "sampleCount": 29,
+          "withinOptionalHistorical5PercentMean10PercentPeakBudget": false
+        },
+        {
+          "orientation": "Portrait",
+          "distinctRasterWidths": 11,
+          "meanPhaseErrorPt": 26.568696454288094,
+          "maxPhaseErrorPt": 60.06324104468024,
+          "requestedRates": [
+            0
+          ],
+          "displayLinkIntervalsMs": [
+            16.7181,
+            16.7182
+          ],
+          "sampleCount": 29,
+          "withinOptionalHistorical5PercentMean10PercentPeakBudget": false
+        }
+      ],
+      "optionalBudget": "5% mean/10% peak of 454pt width change is a separate performance qualification, not asserted in this run; no scanout FPS claim"
+    },
+    "shutdown": {
+      "status": "PASS",
+      "sharedStopCompletion": true,
+      "viewDisposed": true,
+      "gpuRetiredBeforeCompletion": true,
+      "processTermination": "OS-owned; tested separately",
+      "physicalInput": "notVerified",
+      "pendingGpuFramesAfter": 0
+    },
+    "metal": {
+      "services": {
+        "mode": "C",
+        "completedGpuFrames": 4,
+        "pendingGpuFrames": 0,
+        "maximumGpuFrames": 1
+      },
+      "input": {
+        "mode": "C",
+        "completedGpuFrames": 11,
+        "pendingGpuFrames": 0,
+        "maximumGpuFrames": 1
+      },
+      "features": {
+        "mode": "C",
+        "completedGpuFrames": 14,
+        "pendingGpuFrames": 0,
+        "maximumGpuFrames": 1
+      },
+      "rotation": {
+        "mode": "C",
+        "completedGpuFrames": 25,
+        "pendingGpuFrames": 1,
+        "maximumGpuFrames": 1
+      }
+    }
+  },
+  "manualFeedback": {
+    "answer": "특별한 이상 없음",
+    "scope": "User report after brief use of the physical sample; not formal physical IME/VoiceOver qualification"
+  },
+  "finalApp": {
+    "foregroundPid": 8067,
+    "frame": {
+      "presented": 15,
+      "replayed": 1,
+      "failed": 0
+    },
+    "screenCapture": "PASS",
+    "screenSize": "1170x2532",
+    "screenSha256": "802a485e848af47aa34afab9c9d384a615ce8dd0df70fea40821edaab3d03ade"
+  },
+  "priorStrictTimingFailure": {
+    "run": "temp/testing/work3/ios-device/rotation-strict-1",
+    "meanPhaseErrorPt": 30.34,
+    "maxPhaseErrorPt": 82.26,
+    "interpretation": "Optional strict timing failed during instrumented Debug Mono investigation. Current run asserts functional correctness and retains timing measurements; this is not a performance qualification."
+  },
+  "notVerified": [
+    "Device Release/NativeAOT or CoreCLR",
+    "Formal physical IME/VoiceOver acceptance",
+    "Screen scanout FPS/GPU performance budget",
+    "NuGet-only device consumers",
+    "Distribution provisioning/signing/clean installation",
+    "Mobile typed development transport"
+  ],
+  "preservation": {
+    "appUninstalled": false,
+    "appDataReset": false,
+    "probeFiles": "Retained in app Documents/device-smoke-7e78c534cf0d4e05a5bed9c3aa044e0d; no app data reset"
+  },
+  "commands": {
+    "build": "python3 Doroti/eng/run-with-timeout.py --timeout 1200 dotnet build samples/DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Debug -r ios-arm64 -p:DorotiIosTargetFramework=net10.0-ios27.0 -p:DorotiCompilationMode=Mono -p:EnableCodeSigning=true '-p:CodesignKey=Apple Development' -p:CodesignProvision=<matching-profile-UUID> -p:UseSharedCompilation=false -m:1",
+    "device": "python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/ios_device_smoke.py --device <paired-physical-UDID> --app samples/DorotiTestbedApp/ios/bin/ios-arm64/Debug/net10.0-ios27.0/ios-arm64/DorotiTestbedApp.iOS.app --output temp/testing/work3/ios-device/final-2"
+  },
+  "rawEvidence": {
+    "temp/testing/work3/ios-device/final-2/summary.json": "31e2f529e32d9b19f243cc27869ba591044d47b114974fe934c3ced97cf6a932",
+    "temp/testing/work3/ios-device/final-2/screen.png": "802a485e848af47aa34afab9c9d384a615ce8dd0df70fea40821edaab3d03ade",
+    "temp/testing/work3/ios-device/final-2-driver.log": "3f798f6d9a46c5a5b093dfe63e872c29d813010eef587264ca4c67002ff192bc",
+    "temp/testing/work3/ios-device/build-7/build.log": "a51db18b204445fbcd97dbdeeae159ca8153fa61c548aad81e7b9a5c7c5bb797",
+    "temp/testing/work3/ios-device/build-1/device-fixtures.log": "16c25c3f070ea7006dc4f080c86a049038c861e075820d60dc2a4a5378ab6aae",
+    "temp/testing/work3/ios-device/build-1/discovery-fixed.log": "005d6334495ab7772c88ee80bdb1db679ea86d9384e29e8876fb42084d72942e"
+  },
+  "rawRetention": "Disposable temp/testing paths; preserved summary/hash is in this receipt. Probe files remain on the device; no app data reset.",
+  "sourceHashes": {
+    "packages/platforms/maui/tooling/AppleDevices.cs": "c282ae6187b26a190a9db51984959595d6c9c87f1c29785c77ebf3ad3bf25c0e",
+    "packages/platforms/maui/tests/Doroti.Tool.Maui.Tests/AppleDeviceRegression.cs": "915439f17acb86936501cecf78de899f5186850c864132a2e8b9d47f243d8504",
+    "packages/platforms/maui/tests/Doroti.Tool.Maui.Tests/Program.cs": "dfaf2fa6ccbbe33e5aca4cf14b71800135589873667599268863b57aad3e7c75",
+    "packages/platforms/maui/Doroti.Host.Maui/UIKitAnimatedViewport.cs": "8df31212b7f5926562c971e2bf1806d458d9b83959b60764e3c9f7ea105dc798",
+    "packages/platforms/maui/Doroti.Host.Maui/DorotiMauiSurface.cs": "1b86115367fe502647fb538752aa7bddcd441965addf21486c2c5083ac744045",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiFrameworkHost.cs": "917a3916a3d8a672ed9b9c74aa27cec5b64517207c39f44ac8dadf2112308827",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiHostAdapter.cs": "12579b4f22b418e7380997c2313eabffcbc6dee8dc911aff3dd7af1ab030ee8f",
+    "samples/DorotiTestbedApp/ios/AppDelegate.cs": "05c9a7da39aa0ae1dbe8988459eaf9b95d19a341e90fbdb76ea22b88eaffcab7",
+    "samples/DorotiTestbedApp/ios/UIKitRotationProbe.cs": "f44075eeed34fe692f72b57db1b4008a1cd0d2ff185fc81060fee1388c59a01c",
+    "samples/DorotiTestbedApp/ios/UIKitShutdownProbe.cs": "fda3508ecbf8feb18f65f14f1d84342948d3c260fe6fbefca2aa79a86d57dce7",
+    "Doroti/tests/ios_device_smoke.py": "ce124a146597646e96aad49820abfac37e311277b3449edfa150670a1d275ba6"
+  },
+  "timingReference": "https://developer.apple.com/documentation/quartzcore/cadisplaylink"
+}

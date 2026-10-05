@@ -18,7 +18,14 @@ public sealed class DorotiWidgetEntrypoint : IDorotiViewEntrypoint
     public DorotiWidgetEntrypoint(Func<Widget> rootFactory)
     {
         ArgumentNullException.ThrowIfNull(rootFactory);
-        _rootFactory = views => new DorotiApplicationViewCollection(views, (_, _) => rootFactory());
+        _rootFactory = views => new DorotiApplicationViewCollection(views, (_, view) =>
+        {
+            var window = view.GetCapabilityOrDefault<IWindowService>(DorotiCapabilityIds.WindowService)?
+                .GetWindows().FirstOrDefault(window => window.ViewId == view.viewId);
+            // Owned presentation branches wait for their supplied content. They
+            // must not instantiate another application page at a tooltip's size.
+            return window is { Kind: not WindowKind.Regular } ? new SizedBox() : rootFactory();
+        });
     }
 
     /// <summary>Creates a shared application root. State above the collection survives primary close.</summary>

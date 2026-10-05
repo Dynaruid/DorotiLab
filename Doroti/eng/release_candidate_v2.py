@@ -132,8 +132,17 @@ def main():
             project = project.resolve()
             if project in graph: return
             profile_properties = []
+            if platform:
+                provider_root = next(item['tool'].parent.parent for item in selected.values()
+                                     if item['platform']['provider'] == platform['provider'])
+                if project.is_relative_to(provider_root):
+                    # A RID declared inside the target project is not a global
+                    # restore input. Its multi-target Host otherwise restores
+                    # every OS workload while packing a single Apple profile.
+                    profile_properties.append('-p:RuntimeIdentifier=' + platform['runtimeIdentifier'])
             if platform and list(ET.parse(project).iter('TargetFrameworks')):
-                profile_properties = ['-p:TargetFramework=' + platform['targetFramework'], '-p:RuntimeIdentifier=' + platform['runtimeIdentifier']]
+                profile_properties = ['-p:TargetFramework=' + platform['targetFramework'],
+                                      '-p:RuntimeIdentifier=' + platform['runtimeIdentifier']]
             model = json.loads(command('evaluate-' + project.stem, [args.dotnet, 'msbuild', project, '-nologo',
                 '-getProperty:PackageId,PackageVersion,Version,TargetFramework,TargetFrameworks,IsPackable', '-getItem:ProjectReference', *properties, *profile_properties]))
             graph[project] = (model, profile_properties)
@@ -181,6 +190,13 @@ def main():
         generated['platforms'] = {alias: {**item['platform'], 'runner': item['platform']['runner'].replace('DorotiTemplateApp', 'CandidateApp'),
             'providerManifest': 'nuget:' + item['tool'].stem} for alias, item in selected.items()}
         (consumer / 'doroti-workspace.json').write_text(json.dumps(generated, indent=2) + '\n')
+        for alias, item in selected.items():
+            if item['platform']['target'] == 'macOS':
+                runner = consumer / generated['platforms'][alias]['runner']
+                runner.write_text(runner.read_text().replace('</PropertyGroup>',
+                    '<DorotiDesktopProject>../desktop/CandidateApp.Desktop.csproj</DorotiDesktopProject>'
+                    '<DorotiDesktopStartupType>CandidateApp.Desktop.DesktopStartup</DorotiDesktopStartupType>'
+                    '</PropertyGroup>', 1))
         environment = os.environ | dict(NUGET_PACKAGES=str(run / 'nuget'), NUGET_HTTP_CACHE_PATH=str(run / 'http-cache'))
         startup = consumer / 'desktop/DesktopStartup.cs'
         startup.write_text(startup.read_text().replace('Options = new WindowOptions', '''OnCreated = async (context, ct) =>
@@ -206,9 +222,21 @@ def main():
         for alias, item in selected.items():
             runner = consumer / generated['platforms'][alias]['runner']
             publish_properties = ['-p:PublishTrimmed=false', '-p:RunAOTCompilation=false']
+            if any('-' + platform in item['platform']['targetFramework'] for platform in ('macos', 'maccatalyst', 'ios')):
+                # Apple SDKs require the trim pipeline even for an untrimmed
+                # JIT candidate. Copy mode retains assemblies without lying to
+                # the SDK about whether its pipeline runs.
+                publish_properties = ['-p:PublishTrimmed=true', '-p:TrimMode=copy',
+                                      '-p:LinkMode=None', '-p:MtouchLink=None', '-p:RunAOTCompilation=false']
             if item['platform']['runtimeIdentifier'] == 'browser-wasm': publish_properties.append('-p:DorotiWebFontPreset=' + args.web_font_preset)
+            record.setdefault('publishProperties', {})[alias] = publish_properties
             command('publish-' + alias, [args.dotnet, 'publish', runner, '-c', 'Release', '-o', output / alias, *publish_properties], cwd=consumer, env=environment)
-            assets = json.loads((runner.parent / 'obj/project.assets.json').read_text())
+            evaluated = json.loads(command('consumer-profile-' + alias, [args.dotnet, 'msbuild', runner, '-nologo',
+                '-p:Configuration=Release', *publish_properties,
+                '-getProperty:ProjectAssetsFile,TargetFramework,RuntimeIdentifier,TargetPlatformVersion,TargetPlatformMinVersion,UseMonoRuntime,PublishAot,TrimMode,LinkMode,MtouchLink'],
+                cwd=consumer, env=environment))['Properties']
+            record.setdefault('consumerProfiles', {})[alias] = evaluated
+            assets = json.loads(Path(evaluated['ProjectAssetsFile']).read_text())
             for value in assets['libraries'].values():
                 if value['type'] == 'project' and not (runner.parent / value['msbuildProject']).resolve().is_relative_to(consumer.resolve()):
                     raise RuntimeError('Consumer references a project outside its generated workspace')

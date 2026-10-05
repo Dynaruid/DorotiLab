@@ -65,6 +65,7 @@ using (var tester = new WidgetTester())
     controller.dispose();
 }
 Console.WriteLine("PASS: real Cupertino pointer routing; bounded settle; serial teardown/recreation.");
+CupertinoContextMenuRegression.Run();
 Console.WriteLine("PASS: pointer focus; synthetic Hangul start/update/commit/cancel/selection; IME teardown.");
 TextInputFocusRegression.Run();
 TextInputVerticalCursorRegression.Run();

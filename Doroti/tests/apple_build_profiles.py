@@ -21,6 +21,7 @@ BASE = [
 CASES = [
     ("device", "Debug", "ios-arm64", [], "-all,DorotiSampleApp2,DorotiSampleApp2.iOS"),
     ("simulator", "Debug", "iossimulator-arm64", [], "all,-Doroti.Host.Maui"),
+    ("simulator-x64", "Debug", "iossimulator-x64", [], "all,-Doroti.Host.Maui"),
     ("explicit", "Debug", "ios-arm64", ["-p:MtouchInterpreter=all"], "all"),
     ("custom-app", "Debug", "ios-arm64", ["-p:DorotiIosDebugInterpretedAssemblies=CustomApp"], "-all,CustomApp"),
     ("disabled", "Debug", "ios-arm64", ["-p:UseInterpreter=false"], "-all"),
@@ -37,10 +38,21 @@ for name, configuration, rid, overrides, expected in CASES:
     assert actual == expected, (name, actual, expected, result.stderr)
     print(f"PASS {name}: {actual!r}")
 
-profile = ROOT / "Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.IosNativeAot.props"
-template = ROOT / "Doroti/templates/Doroti.Templates/content/doroti-app/ios/Doroti.IosNativeAot.props"
-assert profile.read_text() == template.read_text(), "Template iOS profile differs from SDK profile."
-print("PASS template profile parity")
+profile = ROOT / "packages/platforms/build/Doroti.IosNativeAot.props"
+assert profile.is_file(), "Provider-owned iOS profile is missing."
+for obsolete in [ROOT / "Doroti/src/Doroti.Runner.Sdk/Sdk/Doroti.IosNativeAot.props",
+                 ROOT / "Doroti/templates/Doroti.Templates/content/doroti-app/ios/Doroti.IosNativeAot.props"]:
+    assert not obsolete.exists(), f"Duplicate profile owner: {obsolete}"
+for project in [PROJECT, ROOT / "samples/DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj"]:
+    evaluated = json.loads(subprocess.check_output([
+        'dotnet', 'msbuild', str(project), '-nologo', '-p:DorotiIosTargetFramework=net10.0-ios27.0',
+        '-p:RuntimeIdentifier=iossimulator-arm64',
+        '-getProperty:DorotiIosNativeAotProfileImported,DorotiProviderSuppliesBootstrap,DorotiProviderId,DorotiIosNativeAotProfilePath',
+    ], cwd=ROOT, text=True, timeout=60))['Properties']
+    assert evaluated['DorotiIosNativeAotProfileImported'] == 'true', evaluated
+    assert evaluated['DorotiProviderSuppliesBootstrap'] == 'true' and evaluated['DorotiProviderId'] == 'maui', evaluated
+    assert Path(evaluated['DorotiIosNativeAotProfilePath']).resolve() == profile.resolve(), evaluated
+print("PASS evaluated provider-owned iOS profile/bootstrap imports; no SDK/template copies")
 assert (ROOT / "samples/DorotiTestbedApp/ios/AppleFeatureProbe.cs").read_bytes() == (ROOT / "samples/DorotiTestbedApp/macos/AppleFeatureProbe.cs").read_bytes(), "Apple feature probes differ between runner directories."
 print("PASS Apple feature probe parity")
 

@@ -1,0 +1,940 @@
+{
+  "schema": "doroti.work3-verification/v1",
+  "verifiedUtc": "2026-10-05T03:00:13.483857+00:00",
+  "status": "PARTIAL: all final executed checks passed within their recorded scope; whole-plan requirements remain",
+  "wholePlanComplete": false,
+  "sourceRevision": "8de825e25191561a9a4137811c89b333bf797306",
+  "environment": {
+    "os": "macOS 26.6.2",
+    "osBuild": "25G83",
+    "architecture": "arm64",
+    "gpu": "Apple M1",
+    "dotnetSdk": "10.0.401",
+    "xcode": "27.0 (27A266a)",
+    "simulator": "iPhone 17 / iOS 27.0",
+    "simulatorId": "F7858412-E238-4ADD-8CB7-C6450E6D1849",
+    "connectedPairedIosDevices": 0,
+    "net11": "11.0.100-rc.1.26425.128 installed; matching declared rc2 development build not verified"
+  },
+  "checks": [
+    {
+      "name": "core",
+      "command": "python3 Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project Doroti/tests/Doroti.Tests/Doroti.Tests.csproj -c Debug -p:UseSharedCompilation=false",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "CPU widgets/window policies/frame contracts",
+      "log": "temp/testing/work3/logs/doroti-work3-core.log",
+      "logSha256": "69834cd5210ccfe5d0e5513d9282c34423b99d10ff88f17c4decc0121067c0c9",
+      "results": [
+        "PASS: full-review Future terminal/error ownership, mid-frame microtasks, CPU snapshot pixels/identity, cleanup and Apple state policy.",
+        "PASS: asynchronous image readback pins storage across original disposal and releases once after success/error.",
+        "PASS: concurrent 1 MiB stderr/stdout, nonzero exit, cancellation, timeout and owned process-tree cleanup.",
+        "PASS: concurrent close waiters join registry/lifetime completion (fake host contract).",
+        "PASS: repeated/concurrent Explicit exit requests emit one lifetime notification.",
+        "PASS: close registry/lifetime completion survives view dispatcher retirement.",
+        "PASS: reentrant self-close is rejected before deadlock and the window remains retryable.",
+        "PASS: final exit joins closed-window startup receipts without self-close deadlock.",
+        "PASS: AppKit/Catalyst logical mapping, explicit native restrictions and pre-allocation owner/capability rejection (managed policies; native behavior tested separately).",
+        "PASS: per-axis capture vs full-domain raster shader pixels (48 cases, max channel error 2/255).",
+        "PASS: production Variable Blur SkSL impulse response, DPR/working scale and sharp-end preservation (raster runtime effect; not GPU validation).",
+        "PASS: production Dual Kawase impulse calibration, energy, phase, contours, interval alpha and explicit fallbacks (raster; not GPU validation).",
+        "PASS: C-only configuration rejects removed selectors; bounded fresh shader admission; native/replay deferral; out-of-order completion keeps the newest scene (CPU lifecycle contract).",
+        "PASS: dynamic texture demand, driver pressure, retained GPU ownership, shrink/recovery and overflow bounds.",
+        "PASS: activation queue/dedup/back state; Router report; version/corruption/cold-link precedence; framework restoration round trip.",
+        "PASS: state-only foreground pictures are harmless; native-overlay drawing/blends remain rejected.",
+        "PASS: queued native-view retirement is distinguished from a live replacement and a foreign handle."
+      ]
+    },
+    {
+      "name": "contracts",
+      "command": "python3 Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project Doroti/tests/Doroti.Platform.Contracts.Tests/Doroti.Platform.Contracts.Tests.csproj -c Debug -p:UseSharedCompilation=false",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "G0 shared session, native route CPU provider, synthetic editing/IME",
+      "log": "temp/testing/work3/logs/doroti-work3-contracts.log",
+      "logSha256": "5ca2906bcb47efcca0d7e6feb9b359d8cbc52117c2ce8fb8b6bfbffa142c8829",
+      "results": [
+        "PASS: shared native-session branch detachment revokes callbacks, preserves survivor work and rejects reentrant view/service registration during final shutdown.",
+        "PASS: native popup routes resolve captured caller navigation in the child view, return one selection and restore caller navigation; filtered previews reject Native and use Auto Overlay before allocation (CPU provider fixture).",
+        "PASS: shared State/InheritedWidget, two CPU RenderViews/epochs, isolated typed IME clients, old connection/late callback, primary detach/survivor frame/input and root unmount (G0 subset; native/physical IME/focus/GPU not verified).",
+        "PASS: real EditableText focus transfer, isolated selection/composing/controller state, late IME callback and survivor editing after primary unmount (synthetic host input; physical/native focus remains unverified).",
+        "PASS: direct typed feedback, codec count zero, explicit view, unsupported/error propagation, actual-completion lease and late-result rejection (headless contract).",
+        "PASS: ownership, typed invocation leases, staged startup, shared session, primary/survivor, cancellation, late allocation and drain retry (headless contracts; no native/physical acceptance)."
+      ]
+    },
+    {
+      "name": "material",
+      "command": "python3 Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project packages/Doroti.Material/tests/Doroti.Material.Tests/Doroti.Material.Tests.csproj -c Debug -p:UseSharedCompilation=false",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "CPU/synthetic Material menu/radio/Tooltip/expansion",
+      "log": "temp/testing/work3/logs/doroti-work3-material.log",
+      "logSha256": "4eac50b67d6e88e32e7538490034b13dc3d36f79e0f75d9413b3f1c64583e7f7",
+      "results": [
+        "PASS: Material package-owned color extraction, seed roles, shader owner/hash/ABI/freeze/conflicts, typed text focus/composition/selection and teardown (CPU/synthetic).",
+        "PASS: actual Material/Raw menu action/overlay close and radio pointer selection/unmount (synthetic).",
+        "PASS: Raw tooltip Auto/Overlay dismissal and pending-show unmount; Material expansion state and external controller disposal (synthetic)."
+      ]
+    },
+    {
+      "name": "cupertino",
+      "command": "python3 Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project packages/Doroti.Cupertino/tests/Doroti.Cupertino.Tests/Doroti.Cupertino.Tests.csproj -c Debug -p:UseSharedCompilation=false",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "CPU Cupertino long-press/action/closing transitions/dialogs/selection",
+      "log": "temp/testing/work3/logs/doroti-work3-cupertino.log",
+      "logSha256": "fa1e399da927eae1a109af18d4600f506715fbc617f13e7cdeec211d0a64a4b6",
+      "results": [
+        "PASS: real Cupertino pointer routing; bounded settle; serial teardown/recreation.",
+        "PASS: pointer-opened Cupertino context menu, Auto unsupported fallback, Overlay selection/closing animation and caller restoration (CPU).",
+        "PASS: pointer focus; synthetic Hangul start/update/commit/cancel/selection; IME teardown.",
+        "PASS: background touch retains framework focus/composition and subsequent edits; field switch and explicit unfocus.",
+        "PASS: Android vertical caret keys; short-line column retention; document boundaries; soft wraps; subsequent composition.",
+        "PASS: constant-sigma backdrop and foreground fade together at five single/nested opacity samples (CPU pixels).",
+        "PASS: pointer-opened wrapped Cupertino dialogs, light/dark opening and closing frames, constant blur and teardown.",
+        "PASS: pointer-opened dialog intermediate fade frame, modal hit testing and route teardown (CPU).",
+        "PASS: capture domain/grid; viewport/DPR pixels; long-list pointer scroll; reassemble state; engine-layer lifetime.",
+        "PASS: input, semantics, reassemble and image APIs reject wrong-thread/disposed owners before work.",
+        "PASS: two concurrent dispatcher contexts preserve binding, pointer focus, Korean text, reassemble, semantics and teardown (CPU)."
+      ]
+    },
+    {
+      "name": "devices",
+      "command": "python3 Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project packages/platforms/maui/tests/Doroti.Tool.Maui.Tests/Doroti.Tool.Maui.Tests.csproj -c Debug -p:UseSharedCompilation=false",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "typed iOS/Android fixture child processes; no device deployment",
+      "log": "temp/testing/work3/logs/doroti-work3-devices.log",
+      "logSha256": "16c25c3f070ea7006dc4f080c86a049038c861e075820d60dc2a4a5378ab6aae",
+      "results": [
+        "PASS: typed iOS discovery, simulator/physical selection, unavailable/disconnected rejection, malformed inventory, cancellation and unimplemented dev rejection (fixture processes).",
+        "PASS: typed Android discovery, authorization/RID filtering, explicit SDK serial selection and ambiguous/invalid device rejection; fixture processes only."
+      ]
+    },
+    {
+      "name": "live-devices",
+      "command": "python3 Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project packages/platforms/maui/tests/Doroti.Tool.Maui.Tests/Doroti.Tool.Maui.Tests.csproj -c Debug --no-build -- --live-ios",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "actual simctl/CoreDevice discovery; 11 simulators, 0 connected paired physical devices",
+      "log": "temp/testing/work3/logs/doroti-work3-live-devices.log",
+      "logSha256": "daf8dc0314f59e151d4f8e10504fb17a635b1547aa37d50931c03e5628c09b71",
+      "results": [
+        "PASS: live typed simulator discovery: 11 available iOS devices for iossimulator-arm64.",
+        "PASS: typed Android discovery, authorization/RID filtering, explicit SDK serial selection and ambiguous/invalid device rejection; fixture processes only."
+      ]
+    },
+    {
+      "name": "profiles",
+      "command": "python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/apple_build_profiles.py",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "evaluated net10 Apple profiles, including x64 simulator; not x64 runtime or .NET11/AOT build",
+      "log": "temp/testing/work3/logs/doroti-work3-profiles.log",
+      "logSha256": "1d3f400271de8bd8c433283d5225f4f01b47f36fdf939444b5ddb50194acfe9c",
+      "results": [
+        "PASS device: '-all,DorotiSampleApp2,DorotiSampleApp2.iOS'",
+        "PASS simulator: 'all,-Doroti.Host.Maui'",
+        "PASS simulator-x64: 'all,-Doroti.Host.Maui'",
+        "PASS explicit: 'all'",
+        "PASS custom-app: '-all,CustomApp'",
+        "PASS disabled: '-all'",
+        "PASS release-mono: '-all'",
+        "PASS native-aot: ''",
+        "PASS simulator-development: 'all,-Doroti.Host.Maui'",
+        "PASS evaluated provider-owned iOS profile/bootstrap imports; no SDK/template copies",
+        "PASS Apple feature probe parity",
+        "PASS development rejects Release, interpreter opt-out, NativeAOT and unconfigured/mixed-AOT .NET 10 device sessions",
+        "PASS .NET 10 device Mono/interpreter and SDK agent network launch",
+        "PASS macos development profile, invalid modes rejected, ordinary Debug/Release unchanged",
+        "PASS maccatalyst development profile, invalid modes rejected, ordinary Debug/Release unchanged"
+      ]
+    },
+    {
+      "name": "evaluation",
+      "command": "python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/apple_provider_contract.py --output temp/testing/work3/common/evaluated-apple-provider-final.json",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "13 actual MSBuild evaluations; incomplete semantic API audit",
+      "log": "temp/testing/work3/logs/doroti-work3-evaluation.log",
+      "logSha256": "38f66eceb8c531ebd9850d75336d41fbcd2f7c6d55a623aba1eca0d2e41ccd91",
+      "results": [
+        "PASS evaluated ownership/duplicate inputs: core",
+        "PASS evaluated ownership/duplicate inputs: core",
+        "PASS evaluated ownership/duplicate inputs: core",
+        "PASS evaluated ownership/duplicate inputs: core",
+        "PASS evaluated ownership/duplicate inputs: core",
+        "PASS evaluated ownership/duplicate inputs: core",
+        "PASS evaluated ownership/duplicate inputs: Material",
+        "PASS evaluated ownership/duplicate inputs: Cupertino",
+        "PASS evaluated ownership/duplicate inputs: tool",
+        "PASS evaluated ownership/duplicate inputs: provider:osx-arm64",
+        "PASS evaluated ownership/duplicate inputs: provider:maccatalyst-arm64",
+        "PASS evaluated ownership/duplicate inputs: provider:iossimulator-arm64",
+        "PASS evaluated ownership/duplicate inputs: provider:ios-arm64"
+      ]
+    },
+    {
+      "name": "appkit-build",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "python3 Doroti/eng/run-with-timeout.py --timeout 1200 dotnet build samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Debug -r osx-arm64 -p:DorotiMacOSTargetFramework=net10.0-macos27.0 -p:UseSharedCompilation=false -m:1",
+      "warnings": 0,
+      "errors": 0,
+      "tfm": "net10.0-macos27.0",
+      "rid": "osx-arm64",
+      "log": "temp/testing/work3/logs/doroti-work3-appkit-build.log",
+      "logSha256": "493117377bd6e27a325852b18874de465d4368265b984518bcf3abbc936897bd"
+    },
+    {
+      "name": "catalyst-build",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "python3 Doroti/eng/run-with-timeout.py --timeout 1200 dotnet build samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj -c Debug -r maccatalyst-arm64 -p:DorotiMacCatalystTargetFramework=net10.0-maccatalyst27.0 -p:UseSharedCompilation=false -m:1",
+      "warnings": 0,
+      "errors": 0,
+      "tfm": "net10.0-maccatalyst27.0",
+      "rid": "maccatalyst-arm64",
+      "log": "temp/testing/work3/logs/doroti-work3-catalyst-build.log",
+      "logSha256": "d9213848ce131851ab354a72f45ef0e778adc295f4da6790e05f9061a4d2561e"
+    },
+    {
+      "name": "ios-build",
+      "result": "PASS",
+      "exitCode": 0,
+      "command": "python3 Doroti/eng/run-with-timeout.py --timeout 1200 dotnet build samples/DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Debug -r iossimulator-arm64 -p:DorotiIosTargetFramework=net10.0-ios27.0 -p:UseSharedCompilation=false -m:1",
+      "warnings": 0,
+      "errors": 0,
+      "tfm": "net10.0-ios27.0",
+      "rid": "iossimulator-arm64",
+      "log": "temp/testing/work3/logs/doroti-work3-ios-build.log",
+      "logSha256": "d8c044212ea849c8cd57fdd88caa773256c009e919367763dadef5ebadf94d99"
+    },
+    {
+      "name": "documentation-paths",
+      "command": "python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 -c \"import sys; sys.path.insert(0, 'Doroti/eng'); import validate; validate.source()\"",
+      "result": "PASS",
+      "exitCode": 0,
+      "scope": "current documentation paths and tracked temporary-file policy"
+    }
+  ],
+  "nativeChecks": [
+    {
+      "name": "appkit/smoke-4",
+      "result": "PASS within scope",
+      "exitCode": 0,
+      "command": "python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/macos_smoke.py --skip-build --cases windowing,multi,rendering,stability --output temp/testing/work3/appkit/smoke-4",
+      "summary": "temp/testing/work3/appkit/smoke-4/summary.json",
+      "summarySha256": "ca8e21c4bbbf714175de99d29a5c3a7ae4c82b1e6077773ce30537aede5e31c5",
+      "cases": {
+        "windowing": "PASS",
+        "multi-OnLastWindowClosed": "PASS",
+        "multi-Explicit": "PASS",
+        "rendering": "PASS",
+        "stability": "PASS"
+      },
+      "physicalInput": "notVerified"
+    },
+    {
+      "name": "appkit/ganesh-1",
+      "result": "PASS within scope",
+      "exitCode": 0,
+      "command": "python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/macos_smoke.py --skip-build --renderer ganesh --cases rendering,lifecycle --output temp/testing/work3/appkit/ganesh-1",
+      "summary": "temp/testing/work3/appkit/ganesh-1/summary.json",
+      "summarySha256": "09768bf3c1bad7fbab1dc7d49a1ea2e20091bedaea99bc08cf6b863dd9ccf60e",
+      "cases": {
+        "rendering": "PASS",
+        "lifecycle": "PASS"
+      },
+      "physicalInput": "notVerified"
+    },
+    {
+      "name": "appkit/services-1",
+      "result": "PASS within scope",
+      "exitCode": 0,
+      "command": "python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/macos_smoke.py --skip-build --cases desktop,services,input,features,navigation,lifecycle --output temp/testing/work3/appkit/services-1",
+      "summary": "temp/testing/work3/appkit/services-1/summary.json",
+      "summarySha256": "96767998520f87a80c30516ba99f7b08b3f22be2d9a0c58e5f72962d9400528b",
+      "cases": {
+        "desktop": "PASS",
+        "services": "PASS",
+        "input": "PASS",
+        "features": "PASS",
+        "navigation": "PASS",
+        "lifecycle": "PASS"
+      },
+      "physicalInput": "notVerified"
+    },
+    {
+      "name": "catalyst/smoke-2",
+      "result": "PASS within scope",
+      "exitCode": 0,
+      "command": "python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/apple_smoke.py --target maccatalyst --activation os --skip-build --cases services,input,features,navigation,restoration,multi --output temp/testing/work3/catalyst/smoke-2",
+      "summary": "temp/testing/work3/catalyst/smoke-2/summary.json",
+      "summarySha256": "430d8c33bc4a42a1b61ac65420fb2e5fd776d2849de5bff0b8ab5528b602511c",
+      "cases": {
+        "services": "PASS",
+        "input": "PASS",
+        "features": "PASS",
+        "navigation": "PASS",
+        "restoration": "PASS",
+        "multi": "PASS"
+      },
+      "physicalInput": "notVerified"
+    },
+    {
+      "name": "ios/smoke-2",
+      "result": "PASS within scope",
+      "exitCode": 0,
+      "command": "python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/apple_smoke.py --target ios --activation native-callback --skip-build --cases services,input,features,navigation,restoration,rotation,multi --output temp/testing/work3/ios/smoke-2",
+      "summary": "temp/testing/work3/ios/smoke-2/summary.json",
+      "summarySha256": "4554d982cc299275ec43d5a920e3c1af7da4a7765d8f61fc628dc0e56f9adc27",
+      "cases": {
+        "services": "PASS",
+        "input": "PASS",
+        "features": "PASS",
+        "navigation": "PASS",
+        "restoration": "PASS",
+        "rotation": "PASS",
+        "multi": "SKIPPED"
+      },
+      "physicalInput": "notVerified"
+    },
+    {
+      "name": "ios/shutdown-2",
+      "result": "PASS within scope",
+      "exitCode": 0,
+      "command": "python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/apple_smoke.py --target ios --activation native-callback --skip-build --cases shutdown --output temp/testing/work3/ios/shutdown-2",
+      "summary": "temp/testing/work3/ios/shutdown-2/summary.json",
+      "summarySha256": "6f7a17ad8c8884cde6726608ab2a41ece24fd99441089ca710310bf2505b42cf",
+      "cases": {
+        "shutdown": "PASS"
+      },
+      "physicalInput": "notVerified"
+    }
+  ],
+  "evaluatedOwnership": {
+    "schema": "doroti.apple-provider-evaluation/v1",
+    "verifiedUtc": "2026-10-05T02:37:02.550426+00:00",
+    "result": "PASS",
+    "results": [
+      {
+        "project": "Doroti/src/Doroti.Runtime/Doroti.Runtime.csproj",
+        "owner": "core",
+        "properties": {
+          "TargetFramework": "net10.0",
+          "TargetFrameworks": "",
+          "RuntimeIdentifier": "",
+          "UseMaui": "",
+          "Version": "0.4.0-alpha.1",
+          "PackageVersion": "0.4.0-alpha.1"
+        },
+        "compileCount": 15,
+        "resourceCount": 0,
+        "projectReferences": [],
+        "packageReferences": [],
+        "friendAssemblies": [],
+        "evaluationSha256": "55f5e4ac48b72dcaed1f892a4b238ddf38c31eec58e601790a818553dfaa0a5b"
+      },
+      {
+        "project": "Doroti/src/Doroti.Ui/Doroti.Ui.csproj",
+        "owner": "core",
+        "properties": {
+          "TargetFramework": "net10.0",
+          "TargetFrameworks": "",
+          "RuntimeIdentifier": "",
+          "UseMaui": "",
+          "Version": "0.4.0-alpha.1",
+          "PackageVersion": "0.4.0-alpha.1"
+        },
+        "compileCount": 48,
+        "resourceCount": 0,
+        "projectReferences": [
+          "Doroti/src/Doroti.Runtime/Doroti.Runtime.csproj"
+        ],
+        "packageReferences": [],
+        "friendAssemblies": [
+          "Doroti.Tests",
+          "Doroti.Cupertino.Tests",
+          "Doroti.Testing",
+          "Doroti.Framework.Widgets",
+          "Doroti.Hosting",
+          "Doroti.Skia.Rendering",
+          "Doroti.Skia.RuntimeEffects",
+          "Doroti.Validation.RuntimeShaderContract",
+          "Doroti.Validation.Fcr7MaterialWidget"
+        ],
+        "evaluationSha256": "a2067c85741984b526b2ccaf9d3ec8f721c444344f5365229128f53ba9759b27"
+      },
+      {
+        "project": "Doroti/src/Doroti.Hosting/Doroti.Hosting.csproj",
+        "owner": "core",
+        "properties": {
+          "TargetFramework": "net10.0",
+          "TargetFrameworks": "",
+          "RuntimeIdentifier": "",
+          "UseMaui": "",
+          "Version": "0.4.0-alpha.1",
+          "PackageVersion": "0.4.0-alpha.1"
+        },
+        "compileCount": 22,
+        "resourceCount": 0,
+        "projectReferences": [
+          "Doroti/src/Doroti.Runtime/Doroti.Runtime.csproj",
+          "Doroti/src/Doroti.Ui/Doroti.Ui.csproj"
+        ],
+        "packageReferences": [],
+        "friendAssemblies": [
+          "Doroti.Validation.MauiKeyboard"
+        ],
+        "evaluationSha256": "e87036f01d85a47cf0d635a62578d542901da773cc4e26c558cda22e4cb233b5"
+      },
+      {
+        "project": "Doroti/src/Doroti.Desktop/Doroti.Desktop.csproj",
+        "owner": "core",
+        "properties": {
+          "TargetFramework": "net10.0",
+          "TargetFrameworks": "",
+          "RuntimeIdentifier": "",
+          "UseMaui": "",
+          "Version": "0.4.0-alpha.1",
+          "PackageVersion": "0.4.0-alpha.1"
+        },
+        "compileCount": 6,
+        "resourceCount": 0,
+        "projectReferences": [
+          "Doroti/src/Doroti.Hosting/Doroti.Hosting.csproj"
+        ],
+        "packageReferences": [],
+        "friendAssemblies": [],
+        "evaluationSha256": "73c14d20ab41d9c8bb5b7647deca94c73387886c6f19fcc70c77d18e428723cc"
+      },
+      {
+        "project": "Doroti/src/Doroti.Tooling.Contracts/Doroti.Tooling.Contracts.csproj",
+        "owner": "core",
+        "properties": {
+          "TargetFramework": "net10.0",
+          "TargetFrameworks": "",
+          "RuntimeIdentifier": "",
+          "UseMaui": "",
+          "Version": "0.4.0-alpha.1",
+          "PackageVersion": "0.4.0-alpha.1"
+        },
+        "compileCount": 2,
+        "resourceCount": 0,
+        "projectReferences": [],
+        "packageReferences": [],
+        "friendAssemblies": [],
+        "evaluationSha256": "50d2cedf4fbbbd73f8e5c9890a3ebf73e029b9ba36599846b82b1aa00a4a4ba9"
+      },
+      {
+        "project": "Doroti/src/Doroti.Tooling.Extension.Sdk/Doroti.Tooling.Extension.Sdk.csproj",
+        "owner": "core",
+        "properties": {
+          "TargetFramework": "net10.0",
+          "TargetFrameworks": "",
+          "RuntimeIdentifier": "",
+          "UseMaui": "",
+          "Version": "0.4.0-alpha.1",
+          "PackageVersion": "0.4.0-alpha.1"
+        },
+        "compileCount": 7,
+        "resourceCount": 0,
+        "projectReferences": [
+          "Doroti/src/Doroti.Tooling.Contracts/Doroti.Tooling.Contracts.csproj"
+        ],
+        "packageReferences": [],
+        "friendAssemblies": [],
+        "evaluationSha256": "eb51eb323ec9d36d2a096164f5e0f106604b2fc5fbc187c85397a3695db42777"
+      },
+      {
+        "project": "packages/Doroti.Material/Doroti.Material.csproj",
+        "owner": "Material",
+        "properties": {
+          "TargetFramework": "net10.0",
+          "TargetFrameworks": "",
+          "RuntimeIdentifier": "",
+          "UseMaui": "",
+          "Version": "1.0.0-alpha.1",
+          "PackageVersion": "1.0.0-alpha.1"
+        },
+        "compileCount": 203,
+        "resourceCount": 1,
+        "projectReferences": [
+          "Doroti/src/Doroti.Runtime/Doroti.Runtime.csproj",
+          "Doroti/src/Doroti.Ui/Doroti.Ui.csproj",
+          "Doroti/src/Doroti.Framework.Foundation/Doroti.Framework.Foundation.csproj",
+          "Doroti/src/Doroti.Framework.Scheduler/Doroti.Framework.Scheduler.csproj",
+          "Doroti/src/Doroti.Framework.Services/Doroti.Framework.Services.csproj",
+          "Doroti/src/Doroti.Framework.Physics/Doroti.Framework.Physics.csproj",
+          "Doroti/src/Doroti.Framework.Animation/Doroti.Framework.Animation.csproj",
+          "Doroti/src/Doroti.Framework.Gestures/Doroti.Framework.Gestures.csproj",
+          "Doroti/src/Doroti.Framework.Painting/Doroti.Framework.Painting.csproj",
+          "Doroti/src/Doroti.Framework.Semantics/Doroti.Framework.Semantics.csproj",
+          "Doroti/src/Doroti.Framework.Rendering/Doroti.Framework.Rendering.csproj",
+          "Doroti/src/Doroti.Framework.Widgets/Doroti.Framework.Widgets.csproj",
+          "packages/Doroti.Cupertino/Doroti.Cupertino.csproj"
+        ],
+        "packageReferences": [
+          "MaterialColorUtilities"
+        ],
+        "friendAssemblies": [],
+        "evaluationSha256": "275af4acb584dd1c204fce9f1b9e716e5b538786edda1c5d6fef40ade0a541b4"
+      },
+      {
+        "project": "packages/Doroti.Cupertino/Doroti.Cupertino.csproj",
+        "owner": "Cupertino",
+        "properties": {
+          "TargetFramework": "net10.0",
+          "TargetFrameworks": "",
+          "RuntimeIdentifier": "",
+          "UseMaui": "",
+          "Version": "1.0.0-alpha.1",
+          "PackageVersion": "1.0.0-alpha.1"
+        },
+        "compileCount": 53,
+        "resourceCount": 0,
+        "projectReferences": [
+          "Doroti/src/Doroti.Runtime/Doroti.Runtime.csproj",
+          "Doroti/src/Doroti.Ui/Doroti.Ui.csproj",
+          "Doroti/src/Doroti.Framework.Foundation/Doroti.Framework.Foundation.csproj",
+          "Doroti/src/Doroti.Framework.Scheduler/Doroti.Framework.Scheduler.csproj",
+          "Doroti/src/Doroti.Framework.Services/Doroti.Framework.Services.csproj",
+          "Doroti/src/Doroti.Framework.Physics/Doroti.Framework.Physics.csproj",
+          "Doroti/src/Doroti.Framework.Animation/Doroti.Framework.Animation.csproj",
+          "Doroti/src/Doroti.Framework.Gestures/Doroti.Framework.Gestures.csproj",
+          "Doroti/src/Doroti.Framework.Painting/Doroti.Framework.Painting.csproj",
+          "Doroti/src/Doroti.Framework.Semantics/Doroti.Framework.Semantics.csproj",
+          "Doroti/src/Doroti.Framework.Rendering/Doroti.Framework.Rendering.csproj",
+          "Doroti/src/Doroti.Framework.Widgets/Doroti.Framework.Widgets.csproj"
+        ],
+        "packageReferences": [],
+        "friendAssemblies": [],
+        "evaluationSha256": "58df8263ddf70355c9d38505ed86a299909b46405b81250b3cd0a0c7a79cb61e"
+      },
+      {
+        "project": "packages/platforms/maui/tooling/Doroti.Tool.Maui.csproj",
+        "owner": "tool",
+        "properties": {
+          "TargetFramework": "net10.0",
+          "TargetFrameworks": "",
+          "RuntimeIdentifier": "",
+          "UseMaui": "",
+          "Version": "0.4.0-alpha.1",
+          "PackageVersion": "0.4.0-alpha.1"
+        },
+        "compileCount": 3,
+        "resourceCount": 0,
+        "projectReferences": [
+          "Doroti/src/Doroti.Tooling.Extension.Sdk/Doroti.Tooling.Extension.Sdk.csproj"
+        ],
+        "packageReferences": [],
+        "friendAssemblies": [],
+        "evaluationSha256": "66dd105f752d4d2a835db810d2c33876ec25a43a508555bacb54d87cdf44f4a0"
+      },
+      {
+        "project": "packages/platforms/maui/Doroti.Host.Maui/Doroti.Host.Maui.csproj",
+        "owner": "provider:osx-arm64",
+        "properties": {
+          "TargetFramework": "net10.0-macos27.0",
+          "TargetFrameworks": "net10.0-macos27.0",
+          "RuntimeIdentifier": "osx-arm64",
+          "UseMaui": "true",
+          "Version": "0.4.0-alpha.1",
+          "PackageVersion": "0.4.0-alpha.1"
+        },
+        "compileCount": 110,
+        "resourceCount": 0,
+        "projectReferences": [
+          "Doroti/src/Doroti.Desktop/Doroti.Desktop.csproj",
+          "Doroti/src/Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj",
+          "Doroti/src/Doroti.Skia.Fonts/Doroti.Skia.Fonts.csproj",
+          "Doroti/src/Doroti.Hosting/Doroti.Hosting.csproj",
+          "Doroti/src/Doroti.Framework.Services/Doroti.Framework.Services.csproj",
+          "Doroti/src/Doroti.Ui/Doroti.Ui.csproj",
+          "Doroti/src/Doroti.Skia.RuntimeEffects/Doroti.Skia.RuntimeEffects.csproj"
+        ],
+        "packageReferences": [
+          "Microsoft.Maui.Controls",
+          "Microsoft.Maui.Platforms.MacOS",
+          "Microsoft.Maui.Platforms.MacOS.Essentials",
+          "SkiaSharp.Views",
+          "SkiaSharp.NativeAssets.macOS"
+        ],
+        "friendAssemblies": [
+          "DorotiTestbedApp.iOS",
+          "DorotiTestbedApp.MacCatalyst",
+          "DorotiTestbedApp.MacOS",
+          "DorotiTestbedApp.Windows",
+          "DorotiTestbedApp.Android"
+        ],
+        "evaluationSha256": "5bcd0c21b7467b85b7b336b98c0f3a58c47852611f0c94dda6a74b213e3f74a0"
+      },
+      {
+        "project": "packages/platforms/maui/Doroti.Host.Maui/Doroti.Host.Maui.csproj",
+        "owner": "provider:maccatalyst-arm64",
+        "properties": {
+          "TargetFramework": "net10.0-maccatalyst27.0",
+          "TargetFrameworks": "net10.0-maccatalyst27.0",
+          "RuntimeIdentifier": "maccatalyst-arm64",
+          "UseMaui": "true",
+          "Version": "0.4.0-alpha.1",
+          "PackageVersion": "0.4.0-alpha.1"
+        },
+        "compileCount": 110,
+        "resourceCount": 0,
+        "projectReferences": [
+          "Doroti/src/Doroti.Desktop/Doroti.Desktop.csproj",
+          "Doroti/src/Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj",
+          "Doroti/src/Doroti.Skia.Fonts/Doroti.Skia.Fonts.csproj",
+          "Doroti/src/Doroti.Hosting/Doroti.Hosting.csproj",
+          "Doroti/src/Doroti.Framework.Services/Doroti.Framework.Services.csproj",
+          "Doroti/src/Doroti.Ui/Doroti.Ui.csproj",
+          "Doroti/src/Doroti.Skia.RuntimeEffects/Doroti.Skia.RuntimeEffects.csproj"
+        ],
+        "packageReferences": [
+          "Microsoft.Maui.Controls",
+          "SkiaSharp.Views.Maui.Controls",
+          "SkiaSharp.NativeAssets.MacCatalyst"
+        ],
+        "friendAssemblies": [
+          "DorotiTestbedApp.iOS",
+          "DorotiTestbedApp.MacCatalyst",
+          "DorotiTestbedApp.MacOS",
+          "DorotiTestbedApp.Windows",
+          "DorotiTestbedApp.Android"
+        ],
+        "evaluationSha256": "799e8862c4407a1dba8a8df34c0b0dfd1f6b7a09e3cb0da45c2986017eab46de"
+      },
+      {
+        "project": "packages/platforms/maui/Doroti.Host.Maui/Doroti.Host.Maui.csproj",
+        "owner": "provider:iossimulator-arm64",
+        "properties": {
+          "TargetFramework": "net10.0-ios27.0",
+          "TargetFrameworks": "net10.0-ios27.0",
+          "RuntimeIdentifier": "iossimulator-arm64",
+          "UseMaui": "true",
+          "Version": "0.4.0-alpha.1",
+          "PackageVersion": "0.4.0-alpha.1"
+        },
+        "compileCount": 110,
+        "resourceCount": 0,
+        "projectReferences": [
+          "Doroti/src/Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj",
+          "Doroti/src/Doroti.Skia.Fonts/Doroti.Skia.Fonts.csproj",
+          "Doroti/src/Doroti.Hosting/Doroti.Hosting.csproj",
+          "Doroti/src/Doroti.Framework.Services/Doroti.Framework.Services.csproj",
+          "Doroti/src/Doroti.Ui/Doroti.Ui.csproj",
+          "Doroti/src/Doroti.Skia.RuntimeEffects/Doroti.Skia.RuntimeEffects.csproj"
+        ],
+        "packageReferences": [
+          "Microsoft.Maui.Controls",
+          "SkiaSharp.Views.Maui.Controls",
+          "SkiaSharp.NativeAssets.iOS"
+        ],
+        "friendAssemblies": [
+          "DorotiTestbedApp.iOS",
+          "DorotiTestbedApp.MacCatalyst",
+          "DorotiTestbedApp.MacOS",
+          "DorotiTestbedApp.Windows",
+          "DorotiTestbedApp.Android"
+        ],
+        "evaluationSha256": "456516295048060c0fcd009eecdf6ff80b4b6d7836688d55830ae20748690647"
+      },
+      {
+        "project": "packages/platforms/maui/Doroti.Host.Maui/Doroti.Host.Maui.csproj",
+        "owner": "provider:ios-arm64",
+        "properties": {
+          "TargetFramework": "net10.0-ios27.0",
+          "TargetFrameworks": "net10.0-ios27.0",
+          "RuntimeIdentifier": "ios-arm64",
+          "UseMaui": "true",
+          "Version": "0.4.0-alpha.1",
+          "PackageVersion": "0.4.0-alpha.1"
+        },
+        "compileCount": 110,
+        "resourceCount": 0,
+        "projectReferences": [
+          "Doroti/src/Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj",
+          "Doroti/src/Doroti.Skia.Fonts/Doroti.Skia.Fonts.csproj",
+          "Doroti/src/Doroti.Hosting/Doroti.Hosting.csproj",
+          "Doroti/src/Doroti.Framework.Services/Doroti.Framework.Services.csproj",
+          "Doroti/src/Doroti.Ui/Doroti.Ui.csproj",
+          "Doroti/src/Doroti.Skia.RuntimeEffects/Doroti.Skia.RuntimeEffects.csproj"
+        ],
+        "packageReferences": [
+          "Microsoft.Maui.Controls",
+          "SkiaSharp.Views.Maui.Controls",
+          "SkiaSharp.NativeAssets.iOS"
+        ],
+        "friendAssemblies": [
+          "DorotiTestbedApp.iOS",
+          "DorotiTestbedApp.MacCatalyst",
+          "DorotiTestbedApp.MacOS",
+          "DorotiTestbedApp.Windows",
+          "DorotiTestbedApp.Android"
+        ],
+        "evaluationSha256": "a865f5600450583a4932be4005f7e8eb1245ded2017bef5f6f4e7187e7c5d80b"
+      }
+    ],
+    "notVerified": [
+      "complete Roslyn/public API compatibility audit",
+      "independent NuGet Apple consumers",
+      "trim/NativeAOT",
+      "physical input/accessibility/signing"
+    ]
+  },
+  "appkitWindowing": {
+    "Dialog": {
+      "panel": true,
+      "visible": true,
+      "sheet": true,
+      "canBecomeKey": true,
+      "width": 160,
+      "height": 100,
+      "scale": 2
+    },
+    "Popup": {
+      "panel": true,
+      "visible": true,
+      "sheet": false,
+      "canBecomeKey": true,
+      "width": 160,
+      "height": 100,
+      "scale": 2
+    },
+    "Tooltip": {
+      "panel": true,
+      "visible": true,
+      "sheet": false,
+      "canBecomeKey": false,
+      "width": 160,
+      "height": 100,
+      "scale": 2
+    },
+    "Satellite": {
+      "panel": true,
+      "visible": true,
+      "sheet": false,
+      "canBecomeKey": true,
+      "width": 160,
+      "height": 100,
+      "scale": 2
+    },
+    "menu": {
+      "selected": 1,
+      "typed": true,
+      "generation": 1
+    },
+    "ownerClose": {
+      "survivor": true,
+      "auxiliaryRemoved": true
+    }
+  },
+  "iosStop": {
+    "sharedStopCompletion": true,
+    "viewDisposed": true,
+    "gpuRetiredBeforeCompletion": true,
+    "pendingGpuFrames": 0
+  },
+  "remainingImplementation": [
+    "Full semantic ownership/public API/reflection audit across every provider closure",
+    "All builtin providers integrated with staged coordinator and actual initialization/Stop/Restart races",
+    "Native Cupertino filtered backdrop sampling and complete restoration/focus/Semantics route coordinator",
+    "Extended native Tooltip hover/delay/late-install behavior",
+    "MAUI sample friend removal/public diagnostics and provider native bridge/binding ownership audit",
+    "Typed iOS/mobile development agent/prepared transport and owned Stop/Restart; dev remains Unsupported",
+    "Extended Windows G1 slow consumer/modal/reentrant close/late IME and other providers outside this Apple runtime scope"
+  ],
+  "remainingVerification": [
+    "Matching .NET11 rc2 runtime/SDK CoreCLR/NativeAOT and x64 simulator build/runtime",
+    "Connected physical iOS device runtime/Release/AOT/signing/provisioning",
+    "Native IME/physical keyboard/touch/VoiceOver/mixed display and scanout/FPS",
+    "Three design NuGet-only consumers for every Apple profile and all compatibility/version combinations",
+    "Actual IDE Run/Reload/Restart/Stop after these changes",
+    "Notarized/signed clean-machine/Finder installation and distinct-candidate upgrade"
+  ],
+  "excluded": [
+    "tools/Doroti.DartToCSharp/",
+    "New Android/Qt/Web/Windows native acceptance"
+  ],
+  "rawArtifacts": "Disposable under temp/testing/work3; summaries and hashes retained here; not a clean-machine or whole-plan acceptance",
+  "packageChecks": {
+    "candidateCommand": "UseSharedCompilation=false MSBUILDDISABLENODEREUSE=1 python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/eng/release-candidate.py --targets macos --design widgets --provider-version maui=0.4.0-alpha.2 --output temp/testing/work3/packages/appkit-candidate-5",
+    "candidateResult": "PASS",
+    "candidateExitCode": 0,
+    "candidate": "temp/testing/work3/packages/appkit-candidate-5/candidate.json",
+    "candidateSha256": "845bd6f370849ae33af8511b22c128497c1a6ccd5fa6b3ea4a1647a472a6f16e",
+    "sourceTreeSha256": "54ce5555a88cdad7d05248145748a5026db2f9243a9038b43c3c52c7480299bc",
+    "versions": {
+      "core": "0.4.0-alpha.1",
+      "material": "1.0.0-alpha.1",
+      "cupertino": "1.0.0-alpha.1",
+      "providers": {
+        "maui": "0.4.0-alpha.2"
+      }
+    },
+    "design": "widgets",
+    "packageCount": 26,
+    "packages": {
+      "Doroti.Framework.Physics.0.4.0-alpha.1.nupkg": "3c2737cf3b167aa68583752e476dcff9ef39ef726b69022152c0bf9fe396ab5e",
+      "Doroti.Framework.Rendering.0.4.0-alpha.1.nupkg": "4d5cd1b3ca018bc52af37843ea40ca630dd30cd8def3d4983cb7566bdcfd0f09",
+      "Doroti.Runner.Sdk.0.4.0-alpha.1.nupkg": "3122ca641ec6a814bbf981f29a3375b509da44657a12043e6f4e10c4e78eaf36",
+      "Doroti.Framework.Widgets.0.4.0-alpha.1.nupkg": "5b65b903d4592f46d8dacebd36fc65b8a7d06ed253c609af29750c3ef3a0366a",
+      "Doroti.Ui.0.4.0-alpha.1.nupkg": "95255e9054c838e4bd3706dcbac66f3890d9dc0833aa6dbd86d0703fd0590771",
+      "Doroti.Framework.Services.0.4.0-alpha.1.nupkg": "e0d41bae61681a7565ce798b9e9ee2509f8c682038f28461d476758421e677b6",
+      "Doroti.Tooling.Contracts.0.4.0-alpha.1.nupkg": "85899f874e9409127dd29b42592f9d877995b545a4c9f6cc848e0f0ec3767c4b",
+      "Doroti.Target.MacOS.Maui.osx-arm64.0.4.0-alpha.2.nupkg": "ebf87eff4dff569bdb1ea4b7ee77eaeca67a15f30d9e98dbae2a6c52c52026bf",
+      "Doroti.Runtime.0.4.0-alpha.1.nupkg": "eb5ee66a6c87d968d7100ca3eeb54e3bd7f9fa53613d4a206a22d875ac12740c",
+      "Doroti.Framework.Semantics.0.4.0-alpha.1.nupkg": "ce7fc4ea619df19d19cf7910eb15f43194e8f6cfccc17f2b221f9d4f54f2ea32",
+      "Doroti.App.Sdk.0.4.0-alpha.1.nupkg": "49e915c96713d1c07b2f49a1731694456c8a21b55d8dc4aedd3ec71fab6ac6b3",
+      "Doroti.Framework.Animation.0.4.0-alpha.1.nupkg": "1432ac53e0a55de739a4f2e241d95ad93e0a242c151946a3343adbfc86a2c858",
+      "Doroti.Desktop.0.4.0-alpha.1.nupkg": "2de18e5e545cd5c817da9078c1ca348af305b86085433f9d89814aa3bad3cec4",
+      "Doroti.Tool.Maui.0.4.0-alpha.2.nupkg": "8a0ebb88c96793dd8dd63c387fe2103f534ec5c95f27058db6028b4375a6d7fc",
+      "Doroti.Skia.Rendering.0.4.0-alpha.1.nupkg": "b09f453dd2ae53aecf5495e160a341f7d0de93fc83355b391cf3e894d774850b",
+      "Doroti.Framework.Painting.0.4.0-alpha.1.nupkg": "af8c5035ec071a608d4423df1557090dc8b1909670bca22019cad6b166f96c5a",
+      "Doroti.Plugins.0.4.0-alpha.1.nupkg": "3a3fa6c46444926316f6d75a8c717bc58b698c60376d0240ed5bb37c234db7bb",
+      "Doroti.Framework.Scheduler.0.4.0-alpha.1.nupkg": "ee0f5ea017c0cbcbd981dc19ae88f5eab2a3c8de447cb9761efde3d1d3a4f8d0",
+      "Doroti.Framework.Gestures.0.4.0-alpha.1.nupkg": "efbc8860069ff18cbe998027839dc61cebb79e7ca1a6d116fecf69e3df0f11e8",
+      "Doroti.Tooling.Extension.Sdk.0.4.0-alpha.1.nupkg": "1d898d0d6fef368ec189735bd7af8e74c0b9a0d0055ec1cd071c81a2e7b17ce9",
+      "Doroti.Skia.RuntimeEffects.0.4.0-alpha.1.nupkg": "0312e82218afa788b9391297935e5fbd73854c4507f2507aea2878cd8b9e78cb",
+      "Doroti.Hosting.0.4.0-alpha.1.nupkg": "2f188ddce02a4563592fef27c16f82e060cb871a351b5104cfe2e53495318cfd",
+      "Doroti.Templates.0.4.0-alpha.1.nupkg": "65892ac04aa714569f1156a865da5474bf1325cd1f3783d2593366d2bd242b1a",
+      "Doroti.Host.Maui.0.4.0-alpha.2.nupkg": "1630f2812e6e554c12ffce06d62fce65b5cbb3f4ab9fd13ebf5092e46d04cf50",
+      "Doroti.Skia.Fonts.0.4.0-alpha.1.nupkg": "50d5d30c212048e9cda4f995930559c72d6cd2f3517080dc93b82b04ef830d5e",
+      "Doroti.Framework.Foundation.0.4.0-alpha.1.nupkg": "3dcc3b73b5130f53d5b8cb83550f45aca534fbd89b8436b426f73a60e269c3c4"
+    },
+    "consumerProfiles": {
+      "macos": {
+        "ProjectAssetsFile": "/Users/ceramic/Labo/DorotiLab/temp/testing/release-candidate/2f3be9a6437b4307937ae0cadd9c22ff/consumer/macos/obj/macos/project.assets.json",
+        "TargetFramework": "net10.0-macos",
+        "RuntimeIdentifier": "osx-arm64",
+        "TargetPlatformVersion": "27.0",
+        "TargetPlatformMinVersion": "",
+        "UseMonoRuntime": "false",
+        "PublishAot": "",
+        "TrimMode": "copy",
+        "LinkMode": "None",
+        "MtouchLink": "None"
+      }
+    },
+    "publishProperties": {
+      "macos": [
+        "-p:PublishTrimmed=true",
+        "-p:TrimMode=copy",
+        "-p:LinkMode=None",
+        "-p:MtouchLink=None",
+        "-p:RunAOTCompilation=false"
+      ]
+    },
+    "sourceProjectReferences": "none outside generated consumer workspace; checked actual ProjectAssetsFile",
+    "nativeCommand": "python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/macos_package_smoke.py --candidate temp/testing/work3/packages/appkit-candidate-5 --output temp/testing/work3/packages/appkit-local-install-3",
+    "nativeResult": "PASS",
+    "nativeExitCode": 0,
+    "localInstall": {
+      "status": "PASS",
+      "previous": "0.4.0-alpha.1",
+      "candidate": "0.4.0-alpha.1",
+      "scope": "local extracted .app install/update/remove and Unicode userdata preservation",
+      "updateMode": "same-candidate replacement",
+      "providerVersions": {
+        "maui": "0.4.0-alpha.2"
+      },
+      "osInstaller": "notVerified",
+      "cleanOs": "notVerified",
+      "notarization": "notVerified"
+    },
+    "nativeReceipts": [
+      {
+        "nativeFirstFrame": true,
+        "twoWindows": true,
+        "secondResizedAndClosed": true,
+        "survivorsBeforeMainClose": 1,
+        "runId": "54f069e41fee4e38ba83419505df77fe",
+        "version": "0.4.0-alpha.1"
+      },
+      {
+        "nativeFirstFrame": true,
+        "twoWindows": true,
+        "secondResizedAndClosed": true,
+        "survivorsBeforeMainClose": 1,
+        "runId": "09dcd401621947c4876d3e87d2d4d98b",
+        "version": "0.4.0-alpha.1"
+      }
+    ],
+    "osInstaller": "notVerified",
+    "signing": "adhoc codesign validation only; notarization/clean OS notVerified"
+  },
+  "fixedDuringValidation": [
+    "Borrowed native menu registration rejected by capability ownership; now per-view owned with drain",
+    "Sheet client height included caption; resizing after BeginSheet fixes requested 160x100 bounds",
+    "Cached SKTypeface disposed while another view used it; shared wrapper lease fixes survivor Hangul regression",
+    "ModalScope merged no route animations; subscribing fixes context-menu action scaling",
+    "Cupertino opening ratio used integer division; floating-point ratio and route-local tweens",
+    "Interpreter application name evaluated after profile import; normalize app project/name first",
+    "Apple candidate restored all MAUI platforms without global selected RID; provider restore scoped",
+    "Apple SDK requires trim pipeline and profile-specific assets paths; use copy mode and MSBuild evaluation",
+    "AppKit optional desktop companion not selected for candidate fixture; explicitly enabled",
+    "Package launch checker expected app directory/legacy console message; now extracts .pkg and validates v2 per-run receipt",
+    "Shutdown fixture ran before OS Window creation; waits for created/rendered view"
+  ],
+  "currentFailing": [],
+  "processStatus": "All recorded final checks complete; no subagents, commit, remote publication or deployment.",
+  "changedImplementationFiles": {
+    "Doroti/eng/release_candidate_v2.py": "88bc0d3e82445d5a5ec5274a7b05e7afab563452478c9d8a82faf6711ca64716",
+    "Doroti/eng/validate.py": "1520afeeef4a2664bb11691316a47612f24387604836c0d47c21ab03579c2fc1",
+    "Doroti/src/Doroti.Desktop/DorotiWindowManager.Windowing.cs": "d088dbb406a9d322799964daa6b5c06e2fa46c96d886575636697891385f7f23",
+    "Doroti/src/Doroti.Desktop/DorotiWindowManager.cs": "3d0b15815edebc0b0eec7ec1f01a100557f6079ae2f84a4827bd4c24400b743d",
+    "Doroti/src/Doroti.Desktop/WindowHost.cs": "92978ba471063cbad4fce1bdf38b37eaebde1981855e9abb69e15d9172144c13",
+    "Doroti/src/Doroti.Framework.Widgets/DorotiWidgetEntrypoint.cs": "f083c81b372521ca767ddf723ef88cc507bebcbddd1d6aa35ae0b842971be0f8",
+    "Doroti/src/Doroti.Framework.Widgets/NativeWindowPresentation.cs": "168faddfb1e115b814e1354de84a18edc661d745abd0a19684e1518fd85e5e0c",
+    "Doroti/src/Doroti.Framework.Widgets/navigator.cs": "7eb69fc57ea958fc0f775489ac48190bf5b86246629e451b548a3c0837a6b94b",
+    "Doroti/src/Doroti.Framework.Widgets/routes.cs": "005238183ff82974b06c6c550434ed57756a4ec5174d36c2554f2ee4827c34a3",
+    "Doroti/src/Doroti.Hosting/DorotiSharedHostSession.cs": "dc0dec40e2169a93cd0837c0f98c97d959871d4b1c93cda8f646bbd467aca0fe",
+    "Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.targets": "57f8c23b8699792b96ff10dc18d10e570f3727fafa4f8e76897426191fb11ca2",
+    "Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.cs": "0fdf75351db6c5bc9d26e7ee41c2c499320105e07b390c306f7f7b3480565dcf",
+    "Doroti/src/Doroti.Testing/WidgetTester.cs": "55afaf88e3433aec455c77fb90f4cacabecccf4c93be77179f54cb92ab7256ff",
+    "Doroti/src/Doroti.Ui/PlatformDispatcher.cs": "77d3fffd1d626a88adf72cb94129b35d78b12b47485268bf00bc97099c7db78a",
+    "Doroti/templates/Doroti.Templates/content/doroti-app/Directory.Build.props": "25ba2174648ed462dd9282b7b774a677e350514020efa1680d73322b7cfa0174",
+    "Doroti/tests/Doroti.Platform.Contracts.Tests/Doroti.Platform.Contracts.Tests.csproj": "f7d0a2eeb4475d7532e4d350090d344f8d6774fae29d3fbf829af5adf54b3cc6",
+    "Doroti/tests/Doroti.Platform.Contracts.Tests/NativeRouteCoordinatorRegression.cs": "00fd2d145a127f43152b73f91ccad19fe2f5666b0781996452a6cd8eff4d51dd",
+    "Doroti/tests/Doroti.Platform.Contracts.Tests/Program.cs": "8f43407223dfe14fef5f56bd84ed191569ea59e4c56f5f9593ee0eac639628e5",
+    "Doroti/tests/Doroti.Platform.Contracts.Tests/SharedSessionCloseRegression.cs": "963bd322e45441d5c1dc5d34a830231f93b5f9e927d1eef91fab3a85b5c266c2",
+    "Doroti/tests/Doroti.Platform.Contracts.Tests/SharedTreeRegression.cs": "5d5ba27851261e886db5cbc10bf4c361d1b44b69d5d40be2cd5cb7fdff5fdbc3",
+    "Doroti/tests/Doroti.Tests/AppleWindowPolicyRegression.cs": "fedf99563307de117a2a311a05a9c8acf13a7846c3e805bb3e8ec5b34e2679dc",
+    "Doroti/tests/Doroti.Tests/Doroti.Tests.csproj": "57f194725d3603b56c74e9a19eb8e66e2c3f8ca8d48098499d324119015f0853",
+    "Doroti/tests/Doroti.Tests/Program.cs": "8e4a99b48174997cc4db983f96bd888d994d08465bc9f81f6128c31b672570d2",
+    "Doroti/tests/apple_build_profiles.py": "e8aadf2acfd47be441a2cb1763b485d4307831812dcfd4fdbd51f701061ea35a",
+    "Doroti/tests/apple_provider_contract.py": "62eb0ca8fd70afea70354cca527ba5ca064a25e442031d1497803e224e647914",
+    "Doroti/tests/apple_smoke.py": "c9c0c5221ca84fbc81311d5a709bf46df42ba2123d0dca2fc973f7a4412985cd",
+    "Doroti/tests/macos_package_smoke.py": "82b3bf6f31fcc9e0c0e8c9ca1c0a48c8d91591b193715840b4a7644f17120a10",
+    "Doroti/tests/macos_smoke.py": "c6eb75d486404006ca557add89fde151370793be8f277aff54d5e57794b0b749",
+    "packages/Doroti.Cupertino/src/context_menu.cs": "b60cd00de0540145f3f5032bccc56075e72e6818dd38859addbf9db27c2bf843",
+    "packages/Doroti.Cupertino/tests/Doroti.Cupertino.Tests/CupertinoContextMenuRegression.cs": "381c974abfccd84e8e22e9758a004eae5fc04c782f7abb8e05120b9b87d3eeef",
+    "packages/Doroti.Cupertino/tests/Doroti.Cupertino.Tests/Program.cs": "1d34fbe728eb86318c430ffb072868373fcd27e5d20ff900e60a2dcb9f84747f",
+    "packages/platforms/build/Doroti.IosNativeAot.props": "a5255d29480c28bbf45ae11f8cb94ce16d2d44d2c2a4fa27fd15616dfdf2b4f3",
+    "packages/platforms/maui/Doroti.Host.Maui/AppKitDesktopWindowHost.Menu.cs": "cee0cf56cc128020a9ad32dc92025a1fd75b7a91367d27554eb909c173c9a15a",
+    "packages/platforms/maui/Doroti.Host.Maui/AppKitDesktopWindowHost.cs": "d734507c0de2cf2b60be9628d72e02acca62ad58fe502d2b5a7fce18c86b0588",
+    "packages/platforms/maui/Doroti.Host.Maui/AppKitDesktopWindowPolicy.cs": "bb9f7dcfe7cdcd003ff67fa539b79e6a7b8dcf87c9bb92bffa7e42258ad08c43",
+    "packages/platforms/maui/Doroti.Host.Maui/DorotiMauiApplication.cs": "94ec0dfbb75f0a36ebd6ed17dcb5fc13cf84be4832459cf22b522800a844b5ba",
+    "packages/platforms/maui/Doroti.Host.Maui/DorotiMauiPlatformApplications.cs": "ca6b3281073a83be98760adc79e0f51174548be9c61bf139af84a5b02dff0bea",
+    "packages/platforms/maui/Doroti.Host.Maui/DorotiMauiSurface.cs": "21220c182f7b257740bae2db078decb4593fa81b07f5c0daf3fa402c67adb0df",
+    "packages/platforms/maui/Doroti.Host.Maui/DorotiUIKitGraphiteViewHandler.cs": "e22dbd766729f033eda903d11ae9f5ece0fe0a09318bbacf46967848cfa5974b",
+    "packages/platforms/maui/Doroti.Host.Maui/MacCatalystDesktopWindowHost.cs": "78abdce8c95329e056e513f7f6dbfb279cbb2c0dc93970edf7dbf1ba7c2b8fa9",
+    "packages/platforms/maui/Doroti.Host.Maui/MacCatalystDesktopWindowPolicy.cs": "babb1b75f1149bdcdc7084d699be1ec71c4a68ba50f640d6f87504eba3996712",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiApplicationDispatcher.cs": "f31c27e4ee95c4d6a60f6c3ade3e151fe28ef2f4712d3f7b5cd9a8660bdb8178",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiFrameworkHost.cs": "bfd8d01fc56c9c61a321bdedf9fb4eda0b7cad6b22eed4955d328dac516be2af",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiHostAdapter.cs": "a34c995ac19fd0b0e7c50797a7afec7b43703e635506d52fcd2b8ecdd454498b",
+    "packages/platforms/maui/tests/Doroti.Tool.Maui.Tests/AppleDeviceRegression.cs": "424d6028eac7f8c6875a9ab5f0c303b7f96631283de8ecd1034ef3f5dd15e171",
+    "packages/platforms/maui/tests/Doroti.Tool.Maui.Tests/Program.cs": "575e93e75f9b232aef831c4e851f69a06e6c9d5a4c0873f88f914afa5f7feff0",
+    "packages/platforms/maui/tooling/AppleDevices.cs": "52e17d3939942969b69b41b5084bdb8781dc55cb6bd18e358ce504ae96c85989",
+    "packages/platforms/maui/tooling/Extension.cs": "6895539c87e5ce55feadf9a559b075dcdf6962c148a93aaac1e61d6f46ad3433",
+    "samples/DorotiTestbedApp/ios/AppDelegate.cs": "0b827cd138274741e7c4fe749e8dd7f7696d2db52e47de36c23fd33c0b4d4f72",
+    "samples/DorotiTestbedApp/ios/UIKitShutdownProbe.cs": "fda3508ecbf8feb18f65f14f1d84342948d3c260fe6fbefca2aa79a86d57dce7",
+    "samples/DorotiTestbedApp/macos/AppKitDelegate.cs": "a3b61fcb7ea336d7ee4e0982effce64bb2f99e16e01269f05c790d44ba88c79e",
+    "samples/DorotiTestbedApp/macos/AppKitWindowingProbe.cs": "3b6f2568885495cfc343ab4c12b0875918753ab5f75717d9ef5ea6baefde31aa"
+  },
+  "removedImplementationFiles": [
+    "Doroti/templates/Doroti.Templates/content/doroti-app/ios/Doroti.IosNativeAot.props"
+  ]
+}

@@ -41,6 +41,8 @@ internal sealed class UIKitAnimatedViewport(
     internal UIEdgeInsets SafeAreaInsets { get; private set; }
     internal bool IsAnimating => _displayLink is not null;
     internal double FrameTargetTimestamp { get; private set; }
+    internal double FrameInterval { get; private set; }
+    internal float PreferredFrameRate => _displayLink?.PreferredFrameRateRange.Preferred ?? 0;
     internal event Action<bool>? AnimationChanged;
     internal event Action? Changed;
 
@@ -84,13 +86,8 @@ internal sealed class UIKitAnimatedViewport(
         _deadline = CAAnimation.CurrentMediaTime() + Math.Max(1, duration + 0.5);
         var generation = ++_generation;
         _displayLink = CADisplayLink.Create(Tick);
-        var maximumRate = (float)view.Window.Screen.MaximumFramesPerSecond;
-        _displayLink.PreferredFrameRateRange = new CAFrameRateRange
-        {
-            Minimum = Math.Min(60, maximumRate),
-            Maximum = maximumRate,
-            Preferred = maximumRate,
-        };
+        // Let UIKit choose the cadence for the short rotation transition from
+        // the display and system policy, without imposing an application cap.
         _displayLink.AddToRunLoop(NSRunLoop.Main, NSRunLoopMode.Common);
         AnimationChanged?.Invoke(true);
         coordinator?.AnimateAlongsideTransition(
@@ -146,6 +143,7 @@ internal sealed class UIKitAnimatedViewport(
         // Presentation bounds include UIKit's timing curve and interruptions.
         // Never animate the view's model bounds or feed them back into MAUI layout.
         FrameTargetTimestamp = _displayLink!.TargetTimestamp;
+        FrameInterval = FrameTargetTimestamp - _displayLink.Timestamp;
         var size =
             UIKitBoundsAnimation.Sample(view.Layer, FrameTargetTimestamp)
             ?? view.Layer.PresentationLayer?.Bounds.Size

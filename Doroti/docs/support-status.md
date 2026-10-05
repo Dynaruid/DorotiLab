@@ -1,5 +1,38 @@
 # Current support and evidence
 
+2026-10-05: [work3 Apple/common follow-up](../../work3.md#14-2026-10-05-실행-결과)
+adds provider-specific logical WindowRequest mapping, AppKit owned panels/sheets
+and typed NSMenu, shared mobile application sessions with per-view drain, iOS
+device discovery/selection, and provider-owned runtime profile imports. CPU
+route/context-menu and font lifetime regressions are included. Fresh Apple builds
+and native API runs are recorded separately from historical candidates. Mobile
+typed development transport and caller-backdrop sampling for native Cupertino
+previews remain Unsupported; full staged coordinator, package/profile and physical
+acceptance remain partial. See the linked receipt for exact profiles and remaining work.
+
+The [2026-10-05 physical iOS follow-up](migrations/design-platform/work3-ios-device-verification-2026-10-05.json)
+passes development-signed Debug Mono `net10.0-ios27.0/ios-arm64` on iPhone 12 /
+iOS 26.6.1: native services, synthetic editor/WebView recreation,
+WKWebView/Semantics, rotation functional correctness, joined Stop/Metal retirement
+and three same-PID background/foreground cycles with progressing GPU completions.
+Reachable paired phones with idle CoreDevice tunnels are now discovered after a
+bounded connection check. The user reported no observed issue in brief manual use.
+Rotation uses UIKit's system cadence without an application FPS cap; timing is
+recorded, and the optional strict phase budget is not qualified. Device
+Release/NativeAOT, formal physical IME/VoiceOver, scanout FPS and clean distribution
+remain separate. App data was preserved and the normal sample was left foreground.
+
+Later on the same day, the user reported severe rotation stutter on the actual
+Components screen. The simpler reload-scene functional PASS did not qualify that
+screen's performance. The [Release Mono AOT comparison](migrations/design-platform/work3-ios-release-aot-verification-2026-10-05.json)
+records full application/entry/dependency LLVM AOT with interpreter disabled,
+development-signed installation and the six native/functional cases passing on
+iPhone 12. Mean viewport update gaps improved from 107.50/93.97ms to 39.96/37.89ms
+on the same Components scene; this is not scanout FPS or strict phase-budget
+qualification. The ordinary Release app is left foreground with profiling/evidence
+disabled. NativeAOT publish remains unsuccessful: net10 SDK-generated IL2037, and
+the installed net11 workload's Xcode 26.6 requirement conflicts with Xcode 27.0.
+
 2026-10-04 current-source follow-up: [full review](validation/2026-10-04-full-review.md) corrects Future/frame/semantics/startup/snapshot/tooling contracts and adds [doctor v4](doctor.md). Current automated and native API evidence is distinct from historical rows and from physical/display/deployment acceptance; the final scope is recorded in the dated validation record.
 
 2026-10-03 W0–W11: [current implementation, automated results and candidate identities](validation/2026-10-03-platform-gap-implementation.md). Windows MAUI adds native picker/overlays/WebView, actual GPU import and additional windows; App SDK has opt-in WinUI editor+WebView mixed composition. Windows UIA/Qt now consume actual layout text geometry. Web has explicit loss/restart, offline fonts and permission-free clipboard availability. MAUI Debug Run/Reload/Restart/Stop passes. The initial Android restart-mode candidate is superseded by the [Android metadata Hot Reload follow-up](validation/2026-10-03-android-hot-reload.md), with real Galaxy S25 state-preserving deltas and compile recovery. Apple validation of the new shared WebKit/semantics/pen code was **SKIPPED by user request** in the initial candidate. The subsequent [Apple follow-up](validation/2026-10-03-apple-platform-gap-followup.md) fixes native accessibility/input gaps and records new AppKit/Catalyst/iOS builds and native API checks. Historical rows retain their original candidate scope; product acceptance remains PARTIAL.

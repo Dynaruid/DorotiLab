@@ -7,9 +7,28 @@ namespace Doroti.Host.Maui;
 
 internal static class AppKitDesktopWindowPolicy
 {
+    internal static WindowOptions MapRequest(Doroti.Ui.WindowRequest request) => new()
+    {
+        Title = request.Title, Size = request.Size, Kind = request.Kind,
+        OwnerWindowId = request.Owner, Anchor = request.Anchor, Modal = request.Modal,
+        Activate = request.Activate,
+        Resizable = request.Kind is Doroti.Ui.WindowKind.Regular or Doroti.Ui.WindowKind.Satellite,
+        StartupVisibility = WindowStartupVisibility.Manual,
+        Appearance = request.Kind is Doroti.Ui.WindowKind.Popup or Doroti.Ui.WindowKind.Tooltip
+            ? new() { BackgroundColor = new Doroti.Ui.Color(0), DarkBackgroundColor = new Doroti.Ui.Color(0), Backdrop = new() { Mode = BackdropMode.Transparent } }
+            : new(),
+    };
     internal static WindowEvaluation Evaluate(WindowOptions options, WindowOptions? current)
     {
         options.Validate();
+        if (options.Modal && (options.Kind != Doroti.Ui.WindowKind.Dialog || options.OwnerWindowId is null || !options.Activate || options.Anchor is not null))
+            return new(WindowSupport.Unsupported, "AppKit modal presentation requires an activating, unanchored owned Dialog sheet.");
+        if (options.Kind == Doroti.Ui.WindowKind.Tooltip && options.Activate)
+            return new(WindowSupport.Unsupported, "Tooltip panels must not activate.");
+        if (options.Kind != Doroti.Ui.WindowKind.Regular && options.OwnerWindowId is null)
+            return new(WindowSupport.Unsupported, "AppKit auxiliary windows require an owner.");
+        if (options.Kind != Doroti.Ui.WindowKind.Regular && options.PresentationState != WindowPresentationState.Normal)
+            return new(WindowSupport.Unsupported, "Auxiliary panels cannot start minimized, maximized or full-screen.");
         if (options.StartupVisibility == WindowStartupVisibility.PlatformDefault)
             return new(WindowSupport.Unsupported, "This adapter owns first visibility; use Manual or WhenReady.");
         var a = options.Appearance;

@@ -11,18 +11,21 @@ public sealed class AppDelegate : DorotiMauiUIApplicationDelegate
 
     public override bool FinishedLaunching(UIKit.UIApplication application, NSDictionary? options)
     {
-        if (
-            Environment.GetEnvironmentVariable("DOROTI_INPUT_PROBE") is { Length: > 0 } inputOutput
-            && !System.IO.Path.IsPathRooted(inputOutput)
-        )
-            Environment.SetEnvironmentVariable(
-                "DOROTI_INPUT_PROBE",
-                System.IO.Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                    inputOutput
-                )
-            );
+        foreach (var name in new[]
+        {
+            "DOROTI_INPUT_PROBE", "DOROTI_UIKIT_SERVICES_PROBE", "DOROTI_APPLE_FEATURE_PROBE",
+            "DOROTI_UIKIT_ROTATION_PROBE", "DOROTI_UIKIT_SHUTDOWN_PROBE", "DOROTI_NAVIGATION_PROBE",
+        })
+        {
+            if (Environment.GetEnvironmentVariable(name) is not { Length: > 0 } outputPath) continue;
+            if (!Path.IsPathRooted(outputPath))
+                outputPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), outputPath);
+            Directory.CreateDirectory(Path.GetDirectoryName(outputPath)!);
+            Environment.SetEnvironmentVariable(name, outputPath);
+        }
         var result = base.FinishedLaunching(application, options);
+        if (Environment.GetEnvironmentVariable("DOROTI_UIKIT_SHUTDOWN_PROBE") is { Length: > 0 } shutdownOutput)
+            _ = UIKitShutdownProbe.RunAsync(shutdownOutput);
         if (Environment.GetEnvironmentVariable("DOROTI_APPLE_FEATURE_PROBE") is { Length: > 0 } featureOutput)
             _ = DorotiTestbedApp.Apple.AppleFeatureProbe.RunAsync(featureOutput);
         if (

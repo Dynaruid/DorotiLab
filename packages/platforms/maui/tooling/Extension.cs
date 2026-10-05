@@ -16,9 +16,12 @@ public sealed class Extension() : DotnetToolExtension("maui", ["windows", "macos
     public override async ValueTask<ToolConfiguration> GetConfigurationAsync(ToolContext context, CancellationToken token)
     {
         var configuration = await base.GetConfigurationAsync(context, token);
-        return context.TargetId == "Android"
-            ? new([..configuration.Options, new("adbpath", OptionKind.Text, AndroidDevices.DefaultExecutable(), false, [])])
-            : configuration;
+        return context.TargetId switch
+        {
+            "Android" => new([..configuration.Options, new("adbpath", OptionKind.Text, AndroidDevices.DefaultExecutable(), false, [])]),
+            "iOS" => new([..configuration.Options, new("xcrunpath", OptionKind.Text, "xcrun", false, [])]),
+            _ => configuration,
+        };
     }
     public override async ValueTask<DeviceResult> GetDevicesAsync(ToolContext context, CancellationToken token)
     {
@@ -31,12 +34,34 @@ public sealed class Extension() : DotnetToolExtension("maui", ["windows", "macos
                 ?? AndroidDevices.DefaultExecutable();
             return await AndroidDevices.DiscoverAsync(context, adb, ProbeAsync, token);
         }
+        if (context.TargetId == "iOS")
+        {
+            ToolContract.ValidateConfiguration(await GetConfigurationAsync(context, token), context.Options ?? []);
+            var xcrun = context.Options?.SingleOrDefault(value => value.Name == "xcrunpath")?.Value ?? "xcrun";
+            return await AppleDevices.DiscoverAsync(context, xcrun, ProbeAsync, token);
+        }
         if (context.TargetId is not ("Windows" or "macOS" or "MacCatalyst"))
             throw new ToolContractException("unsupported-service", "This profile requires its authorized device discovery extension.");
         return await base.GetDevicesAsync(context, token);
     }
     public override async ValueTask<ExecutionPlan> PlanAsync(OperationRequest request, CancellationToken token)
     {
+        if (request.Context.TargetId == "iOS")
+        {
+            var iosPlan = await base.PlanAsync(request with { Context = request.Context with { DeviceId = null } }, token);
+            if (request.Operation != "run") return iosPlan;
+            var iosDevices = (await GetDevicesAsync(request.Context with { Options = request.Options }, token)).Devices;
+            var iosSelected = request.Context.DeviceId;
+            if (iosSelected is null)
+            {
+                if (iosDevices.Count != 1) throw new ToolContractException("device-selection-required", "Select one connected iOS device or available simulator matching the runner RID with -Device <UDID>.");
+                iosSelected = iosDevices[0].Id;
+            }
+            if (!iosDevices.Any(device => device.Id == iosSelected)) throw new ToolContractException("unsupported-device", iosSelected);
+            if (request.Context.RuntimeIdentifier is null) throw new ToolContractException("runtime-selection-required", "iOS launch requires an explicit device/simulator RID.");
+            return iosPlan with { Steps = iosPlan.Steps.Select(step => step with { Arguments = [..step.Arguments,
+                "-p:_DeviceName=" + (request.Context.RuntimeIdentifier.StartsWith("iossimulator-", StringComparison.Ordinal) ? ":v2:udid=" : "") + iosSelected] }).ToArray() };
+        }
         if (request.Context.TargetId != "Android") return await base.PlanAsync(request, token);
         var plan = await base.PlanAsync(request with { Context = request.Context with { DeviceId = null } }, token);
         if (request.Operation != "run" && request.Context.DeviceId is null) return plan;

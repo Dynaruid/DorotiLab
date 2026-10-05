@@ -24,7 +24,8 @@ def source():
         "Doroti/docs/application-navigation.md", "Doroti/docs/desktop-window-context.md", "Doroti/docs/release-candidates.md",
         "Doroti/docs/platform-views/support-matrix.md", "Doroti/docs/validation/2026-10-04-web-structure.md",
         "samples/DorotiTestbedApp/README.md", "samples/DorotiSampleApp2/README.md",
-        "work.md", "work2.md", "Doroti/docs/doctor.md", "Doroti/docs/validation/2026-10-04-full-review.md",
+        "work.md", "work2.md", "work3.md", "Doroti/docs/doctor.md", "Doroti/docs/validation/2026-10-04-full-review.md",
+        "packages/platforms/maui/README.md",
         "Doroti/templates/Doroti.Templates/content/doroti-app/desktop/README.md")]
     docs += list((ROOT / "history/26-10-03/works").rglob("*.md"))
     docs += list((ROOT / "Doroti/docs/migrations/design-platform").glob("*.md"))
@@ -101,9 +102,14 @@ def main(suite):
             command("linux-qt-profiles", sys.executable, "Doroti/tests/linux_qt_build_profiles.py", "--output", str(run / "profiles"))
             command("linux-qt", sys.executable, "Doroti/tests/linux_qt_smoke.py", "--output", str(run / "qt"))
         if suite in ("IOSSmoke", "CatalystSmoke"):
+            command("apple-profiles", sys.executable, "Doroti/tests/apple_build_profiles.py")
+            command("apple-provider-contract", sys.executable, "Doroti/tests/apple_provider_contract.py", "--output", str(run / "apple-provider.json"))
             target = "ios" if suite == "IOSSmoke" else "maccatalyst"
-            command("apple-" + target, sys.executable, "Doroti/tests/apple_smoke.py", "--target", target, "--activation", "native-callback" if target == "ios" else "os", "--output", str(run / target))
+            extra_cases = ["--cases", "services,input,features,navigation,restoration,multi,shutdown"] if target == "ios" else []
+            command("apple-" + target, sys.executable, "Doroti/tests/apple_smoke.py", "--target", target, "--activation", "native-callback" if target == "ios" else "os", "--output", str(run / target), *extra_cases)
         if suite == "MacOSSmoke":
+            command("apple-profiles", sys.executable, "Doroti/tests/apple_build_profiles.py")
+            command("apple-provider-contract", sys.executable, "Doroti/tests/apple_provider_contract.py", "--output", str(run / "apple-provider.json"))
             command("macos-appkit", sys.executable, "Doroti/tests/macos_smoke.py", "--output", str(run / "appkit"))
         if suite == "WindowsSmoke":
             for fixture in ("windows_shared_tree", "windows_window_kinds", "windows_native_menu", "windows_design_presentation", "windows_provider_packages"):

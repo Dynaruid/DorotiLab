@@ -2906,7 +2906,8 @@ public sealed partial class SkiaSceneRenderer
                 (_registeredFallbacks?.Variations(typeface) ?? []).Concat(_variations ?? []).ToArray(), out var variableWeight);
             if (clone is not null)
             {
-                if (ownsTypeface) typeface.Dispose();
+                if (ownsTypeface && !ReferenceEquals(typeface, clone))
+                    TypefaceLease.Acquire(typeface, true).Dispose();
                 typeface = clone;
                 ownsTypeface = true;
             }
@@ -3088,7 +3089,7 @@ public sealed partial class SkiaSceneRenderer
                     preferred = CreateFont(face, _primary.Font.Size, ownsFace);
                     _fallbackByFamily.Add(faceKey, preferred);
                 }
-                else if (ownsFace) face.Dispose();
+                else if (ownsFace) TypefaceLease.Acquire(face, true).Dispose();
                 if (preferred.Font.ContainsGlyph(codePoint))
                 {
                     _fallbackByCodePoint.Add(codePoint, preferred);
@@ -3136,7 +3137,7 @@ public sealed partial class SkiaSceneRenderer
             }
             else
             {
-                matchedTypeface.Dispose();
+                TypefaceLease.Acquire(matchedTypeface, true).Dispose();
             }
             _fallbackByCodePoint.Add(codePoint, fallback);
             return fallback;
@@ -3160,16 +3161,56 @@ public sealed partial class SkiaSceneRenderer
             bool ownsTypeface = true
         ) : IDisposable
         {
+            private readonly TypefaceLease _typefaceLease = TypefaceLease.Acquire(typeface, ownsTypeface);
             internal SKTypeface Typeface { get; } = typeface;
             internal SKFont Font { get; } = new(typeface, fontSize);
-            internal string FamilyName => Typeface.FamilyName;
+            internal string FamilyName
+            {
+                get
+                {
+                    ObjectDisposedException.ThrowIf(Typeface.Handle == IntPtr.Zero, Typeface);
+                    return Typeface.FamilyName;
+                }
+            }
 
             public void Dispose()
             {
                 Font.Dispose();
-                if (ownsTypeface)
+                _typefaceLease.Dispose();
+            }
+        }
+
+        // Skia may return the same managed wrapper for a cached native typeface.
+        // Its lifetime therefore spans every text resource and rendering view.
+        private sealed class TypefaceLease : IDisposable
+        {
+            private sealed class Owners { internal int Count; internal bool Owned; }
+            private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<SKTypeface, Owners> OwnersByFace = new();
+            private static readonly object Gate = new();
+            private readonly SKTypeface _face;
+            private readonly Owners _owners;
+            private bool _disposed;
+            private TypefaceLease(SKTypeface face, Owners owners) { _face = face; _owners = owners; }
+            internal static TypefaceLease Acquire(SKTypeface face, bool owned)
+            {
+                lock (Gate)
                 {
-                    Typeface.Dispose();
+                    ObjectDisposedException.ThrowIf(face.Handle == IntPtr.Zero, face);
+                    var owners = OwnersByFace.GetValue(face, _ => new());
+                    owners.Count++;
+                    owners.Owned |= owned;
+                    return new(face, owners);
+                }
+            }
+            public void Dispose()
+            {
+                lock (Gate)
+                {
+                    if (_disposed) return;
+                    _disposed = true;
+                    if (--_owners.Count != 0) return;
+                    OwnersByFace.Remove(_face);
+                    if (_owners.Owned) _face.Dispose();
                 }
             }
         }

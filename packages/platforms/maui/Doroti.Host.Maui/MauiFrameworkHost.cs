@@ -129,7 +129,9 @@ public sealed class MauiFrameworkHost : IDisposable
         DorotiApplicationBoundary? application = null,
         MauiTextInputBridge? textInput = null,
         bool ownsApplicationActivation = true,
-        DorotiSharedHostSession? sharedFramework = null
+        DorotiSharedHostSession? sharedFramework = null,
+        IPlatformMenuHostCapability? platformMenus = null,
+        IPlatformMenuBarHostCapability? platformMenuBar = null
 #if WINDOWS || MACOS || MACCATALYST
         , Doroti.Desktop.DesktopWindowContext? windowContext = null
 #endif
@@ -184,10 +186,14 @@ public sealed class MauiFrameworkHost : IDisposable
         var contextMenus = new MauiUIKitContextMenuChannel(messages, textInput);
         messages = contextMenus;
 #endif
-        var capabilities = new DorotiViewCapabilities(_targetIdentity, sharedFramework?.Capabilities)
-            .Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)
+        var capabilities = new DorotiViewCapabilities(_targetIdentity, sharedFramework?.Capabilities);
+        DorotiView? view = null;
+        try
+        {
+        capabilities.Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)
             .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, host)
             .Register<IFrameHostCapability>(DorotiCapabilityIds.ViewFrameDispatch, host)
+            .Register<IFramePresentationHostCapability>(DorotiCapabilityIds.FramePresentation, host)
             .Register<IInputHostCapability>(DorotiCapabilityIds.InputEvents, host)
             .Register<ITextInputHostCapability>(DorotiCapabilityIds.TextInput, host)
             .Register<IPlatformServicesHostCapability>(DorotiCapabilityIds.PlatformServices, host)
@@ -292,6 +298,10 @@ public sealed class MauiFrameworkHost : IDisposable
         }
 #endif
         sharedFramework?.RegisterManagedPlugins(capabilities);
+        // These services belong to this native view. The manager retains the
+        // asynchronous native lease until capability calls and GPU work drain.
+        if (platformMenus is not null) capabilities.Register<IPlatformMenuHostCapability>(DorotiCapabilityIds.PlatformMenu, platformMenus);
+        if (platformMenuBar is not null) capabilities.Register<IPlatformMenuBarHostCapability>(DorotiCapabilityIds.PlatformMenuBar, platformMenuBar);
         if (application is null)
         {
             capabilities.Register(DorotiCapabilityIds.PlatformMessaging, messages);
@@ -314,9 +324,6 @@ public sealed class MauiFrameworkHost : IDisposable
         }
 
 #endif
-        DorotiView? view = null;
-        try
-        {
 #if IOS || MACCATALYST
             {
                 var dropClosed = false;
@@ -389,17 +396,19 @@ public sealed class MauiFrameworkHost : IDisposable
             host.Show();
             return view;
         }
-        catch
+        catch (Exception failure)
         {
-            if (view is null)
+            try
             {
-                capabilities.Dispose();
+                if (view is null) capabilities.Dispose();
+                else
+                {
+                    session.DetachView(view);
+                    view.Dispose();
+                }
+                Doroti.Runtime.DorotiCleanup.Run(host.Dispose, graphics.Dispose);
             }
-            else
-            {
-                view.Dispose();
-            }
-
+            catch (Exception cleanup) { throw new AggregateException(failure, cleanup); }
             throw;
         }
     }
@@ -451,6 +460,7 @@ public sealed class MauiFrameworkHost : IDisposable
         if (_views.TryGetValue(viewId, out var value))
         {
             value.Graphics.CompletePaint(completion);
+            value.Host.Presented(completion);
         }
     }
 
@@ -490,6 +500,9 @@ public sealed class MauiFrameworkHost : IDisposable
         _views.TryGetValue(viewId, out var value)
             ? value.Graphics.Diagnostics
             : throw new KeyNotFoundException($"MAUI Doroti view {viewId} is not registered.");
+
+    internal MauiSurfaceSnapshot? CaptureGeometry(ulong viewId) =>
+        _views.TryGetValue(viewId, out var value) ? value.Host.GeometrySnapshot : null;
 
     public MauiHostDiagnostics CaptureDiagnostics(
         ulong viewId,

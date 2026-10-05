@@ -11,6 +11,9 @@ public static class NativeWindowPresentation
         internal Widget Child = child;
         internal TaskCompletionSource<(DorotiView View, long Frame)> Mounted = new(TaskCreationOptions.RunContinuationsAsynchronously);
         internal TaskCompletionSource Closed = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        internal GlobalKey<NavigatorState>? NavigatorKey;
+        internal ulong CallerViewId;
+        internal DorotiSceneOwner? NativeOwner;
     }
     internal sealed class Registry : ChangeNotifier
     {
@@ -19,7 +22,9 @@ public static class NativeWindowPresentation
         {
             var windows = view.GetCapabilityOrDefault<IWindowService>(DorotiCapabilityIds.WindowService);
             var window = windows?.GetWindows().SingleOrDefault(value => value.ViewId == view.viewId && !value.Closed);
-            return window is not null && Entries.TryGetValue(window.Id, out var entry) ? new PresentedChild(entry, view) : null;
+            if (window is null || !Entries.TryGetValue(window.Id, out var entry)) return null;
+            entry.NativeOwner = view.SceneOwner;
+            return new PresentedChild(entry, view);
         }
         public override void dispose()
         {
@@ -29,6 +34,17 @@ public static class NativeWindowPresentation
     }
     private static readonly ConditionalWeakTable<PlatformDispatcher, Registry> Registries = new();
     internal static Registry For(PlatformDispatcher dispatcher) => Registries.GetValue(dispatcher, _ => new());
+    internal static NavigatorState? NavigatorForCaller(BuildContext context)
+    {
+        var dispatcher = WidgetsBinding.instance.platformDispatcher;
+        if (dispatcher.CurrentInvocationView is not { } current || current.InvocationLifetime.IsCancellationRequested ||
+            !Registries.TryGetValue(dispatcher, out var registry)) return null;
+        var entry = registry.Entries.Values.FirstOrDefault(entry => entry.NativeOwner == current.SceneOwner && !entry.Closed.Task.IsCompleted);
+        if (entry is null) return null;
+        var caller = View.maybeOf(context);
+        if (caller is null || caller.viewId == current.viewId) return null;
+        return entry.CallerViewId == caller.viewId ? entry.NavigatorKey?.currentState : null;
+    }
     internal static void Shutdown(PlatformDispatcher dispatcher)
     { if (Registries.TryGetValue(dispatcher, out var registry)) { Registries.Remove(dispatcher); registry.dispose(); } }
     private sealed class PresentedChild(Entry entry, DorotiView view) : StatelessWidget
@@ -186,16 +202,58 @@ public static class NativeWindowPresentation
             return Navigator.of(context, rootNavigator: useRootNavigator).push(route);
         evaluation.RequireSupported();
         var themes = InheritedTheme.capture(context, null);
-        Widget child = new Navigator(onGenerateInitialRoutes: (_, _) => [
+        var navigatorKey = GlobalKey<NavigatorState>.Create();
+        Widget child = new Navigator(key: navigatorKey, onGenerateInitialRoutes: (_, _) => [
             new RawDialogRoute<object>(pageBuilder: (_, _, _) => SizedBox.CreateExpand(), barrierDismissible: false), route]);
         child = themes.wrap(Localizations.CreateOverride(context: context,
             child: new Directionality(textDirection: Directionality.of(context), child: child)));
-        return Future<T?>.fromTask(RunAsync(view, windows!, request!, child, route));
+        return Future<T?>.fromTask(RunAsync(view, windows!, request!, child, route, navigatorKey: navigatorKey));
     }
-    private static async Task<T?> RunAsync<T>(DorotiView owner, IWindowService windows, WindowRequest request, Widget child, Route<T> route)
+    /// <summary>Presents a preview/action route in an owned popup using the caller view's logical viewport.</summary>
+    public static Future<T?> ShowPopupRoute<T>(BuildContext context, Route<T> route, WindowPresentation presentation,
+        CancellationToken cancellationToken = default)
     {
-        using var lifetime = CancellationTokenSource.CreateLinkedTokenSource(owner.InvocationLifetime);
-        var entry = new Entry(child); var registry = For(owner.platformDispatcher);
+        if (!Enum.IsDefined(presentation)) throw new ArgumentException("Unknown presentation policy.");
+        if (presentation == WindowPresentation.Overlay) return Navigator.of(context, rootNavigator: true).push(route);
+        var view = View.of(context);
+        var owner = WindowScope.maybeOf(context);
+        var windows = view.GetCapabilityOrDefault<IWindowService>(DorotiCapabilityIds.WindowService);
+        WindowCapabilityResult evaluation;
+        WindowRequest? request = null;
+        if (windows is null) evaluation = new(WindowAvailability.Unsupported, "This view has no native window service.");
+        else
+        {
+            if (owner is null || owner.Closed || owner.Closing || owner.ViewId != view.viewId)
+                throw new InvalidOperationException("Native popup requires this context's live window owner.");
+            // Evaluate ownership before an optional-feature rejection can select Overlay.
+            var size = owner.Size;
+            request = new(WindowKind.Popup, "", size, owner.Id,
+                new(owner.Id, new Rect(0, -size.height, size.width, 0)));
+            evaluation = windows.Evaluate(request);
+            if (evaluation.Availability == WindowAvailability.Supported)
+            {
+                if (route is ModalRoute<T> { filter: not null })
+                    evaluation = new(WindowAvailability.Unsupported, "Native popup Windowing does not sample the caller view's backdrop; filtered previews require Overlay.");
+                else if (view.GetCapabilityOrDefault<IFramePresentationHostCapability>(DorotiCapabilityIds.FramePresentation) is null)
+                    evaluation = new(WindowAvailability.Unsupported, "This provider does not acknowledge view presentation terminals.");
+            }
+        }
+        if (evaluation.Availability == WindowAvailability.Unsupported && presentation == WindowPresentation.Auto)
+            return Navigator.of(context, rootNavigator: true).push(route);
+        evaluation.RequireSupported();
+        var navigatorKey = GlobalKey<NavigatorState>.Create();
+        Widget child = new Navigator(key: navigatorKey, onGenerateInitialRoutes: (_, _) => [
+            new RawDialogRoute<object>(pageBuilder: (_, _, _) => SizedBox.CreateExpand(), barrierDismissible: false), route]);
+        child = InheritedTheme.capture(context, null).wrap(Localizations.CreateOverride(context: context,
+            child: new Directionality(textDirection: Directionality.of(context), child: child)));
+        return Future<T?>.fromTask(RunAsync(view, windows!, request!, child, route, cancellationToken, navigatorKey));
+    }
+
+    private static async Task<T?> RunAsync<T>(DorotiView owner, IWindowService windows, WindowRequest request, Widget child, Route<T> route,
+        CancellationToken cancellationToken = default, GlobalKey<NavigatorState>? navigatorKey = null)
+    {
+        using var lifetime = CancellationTokenSource.CreateLinkedTokenSource(owner.InvocationLifetime, cancellationToken);
+        var entry = new Entry(child) { NavigatorKey = navigatorKey, CallerViewId = owner.viewId }; var registry = For(owner.platformDispatcher);
         WindowSnapshot? created = null;
         void Changed(WindowEvent value)
         { if (created is not null && value.Window.Id == created.Id && (value.Window.Closed || value.Window.Closing)) { entry.Closed.TrySetResult(); try { lifetime.Cancel(); } catch (ObjectDisposedException) { } } }

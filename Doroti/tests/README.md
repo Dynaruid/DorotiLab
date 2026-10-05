@@ -1,5 +1,18 @@
 # Maintained regression tests
 
+The [work3 Apple follow-up](../../work3.md#14-2026-10-05-실행-결과) adds evaluated
+Apple/provider ownership closures, provider-owned iOS profile imports, typed iOS
+device discovery fixtures, shared-view shutdown and captured-caller native-route
+tests, and pointer-driven Cupertino context-menu selection. `macos_smoke.py`
+includes `windowing` and optionally `stability` (60 seconds); Graphite and Ganesh
+are separate runs. Apple aggregates evaluate profiles and ownership before native
+smoke. iOS multi-scene reports SKIPPED when the manifest disables it. Native smoke
+does not establish physical IME, accessibility or signed distribution.
+The iOS `shutdown` case verifies joined application Stop and actual GPU drain.
+`macos_package_smoke.py` accepts v2 native receipts and SDK `.pkg` payloads;
+independent widgets AppKit consumption is qualified separately from source smoke.
+All direct test entries use the 1,200-second wrapper.
+
 The [2026-10-04 full-review follow-up](../docs/validation/2026-10-04-full-review.md) adds Future terminal/error owner context, mid-frame microtasks, CPU scene snapshot/PNG/repaint/DPR/lifetime and concurrent process-pipe regressions to Build/Developer. Source/Developer runs actual doctor CLI fake-tool fixtures, MSBuild Build/Clean sentinels, Android lease/Stop identity and release receipt checks. Linux installer failure injection requires a Linux filesystem and reports SKIPPED elsewhere. Node executes production raster startup barriers and managed accept/reject/timeout protocol; these doubles do not establish .NET Worker boot. Windows MAUI smoke includes the actual A-B-A bridge/action-generation regression. Use the 1200-second wrapper for direct entries.
 
 Android metadata Hot Reload uses `android_development_bridge.py` for session/request
@@ -113,6 +126,37 @@ pwsh -NoProfile -File Doroti/eng/doroti.ps1 validate -ValidationSuite Packages
 Each aggregate invocation has a 1,200-second limit via `eng/run-with-timeout.py`. Timeout kills the child process tree and returns 124. Raw logs, ad-hoc consumers and their builds live in `temp/testing/<suite>/<run>/`. Success prints its summary then deletes the owned run. Failure preserves the printed directory for investigation; delete it after recording the result, checking the resolved path stays under `temp/testing/`. Product runner build outputs retain their normal `bin/obj` policy. Tests are not in the default product solution. `Doroti.Testing` is a product package; the regression executable is not.
 
 On the Apple toolchain, `python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/apple_build_profiles.py` checks real MSBuild evaluation of iOS device/simulator Debug profiles, caller overrides, custom app assemblies, Release Mono, NativeAOT, and template parity. The optional Apple smoke `rotation` case checks native timing, intermediate raster sizes, final pixels/safe areas and display-link shutdown. For device performance qualification, set `DOROTI_UIKIT_ROTATION_ASSERT_SYNC=1` when launching the Testbed rotation probe; it bounds mean/peak viewport phase error relative to the rotation's size change. Simulator interpreter runs do not claim the same performance budget.
+
+Physical iOS smoke uses an already built, development-signed Testbed `.app` and
+an explicit paired device UDID. It installs over the existing app without
+uninstalling or resetting data:
+
+```sh
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/ios_device_smoke.py \
+  --device <physical-UDID> \
+  --app samples/DorotiTestbedApp/ios/bin/ios-arm64/Debug/net10.0-ios27.0/ios-arm64/DorotiTestbedApp.iOS.app \
+  --output temp/testing/ios-device/<fresh-run>
+```
+
+The cases cover UIKit services, synthetic editor recreation, WKWebView/Semantics,
+real scene rotation, joined application Stop/Metal retirement and three Settings
+background/foreground cycles with the same PID and progressing GPU completions.
+Rotation checks intermediate layouts, final pixels/safe areas, display-link
+shutdown and frame errors. The short transition uses UIKit's system cadence
+without an application FPS cap or FPS acceptance threshold. Viewport phase error,
+requested cadence and native display-link intervals are recorded; these do not
+measure screen scanout FPS. Optional `--assert-rotation-sync` enables the existing
+mean 5%/peak 10% phase bounds for a separate performance qualification run.
+Use `--sample material --cases rotation,lifecycle` to exercise the full Components
+screen when investigating interactive stutter; the default reload scene is much
+simpler. Detailed native CPU/GPU trace is opt-in with `--profile-frames`. The final
+manual-use launch clears probe/evidence/profiling environment variables so it
+represents ordinary app use.
+Independent cases continue after a probe failure, and any failure returns a
+nonzero exit code. A normal sample remains foreground for manual checking.
+Native/synthetic results do not establish physical IME or VoiceOver acceptance,
+device Release/NativeAOT, or distribution signing. Raw JSON, command logs and the
+screen capture stay in the output directory; probe files remain in app Documents.
 
 App icon defaults, custom overrides, opt-out and portable asset formats use `python Doroti/eng/run-with-timeout.py python Doroti/tests/app_icons.py`. An optional path to a built `Doroti.Runner.Sdk` nupkg also verifies its icon payload. See [app icon configuration](../docs/branding/README.md) for defaults and overrides.
 

@@ -211,6 +211,23 @@ public sealed class WidgetTester : IDisposable
         Send(PointerChange.up, start + delta, id);
         Send(PointerChange.remove, start + delta, id);
     }
+    public void longPress(Element element, TimeSpan? duration = null)
+    {
+        CheckAlive();
+        var hold = duration ?? TimeSpan.FromMilliseconds(1200);
+        if (hold <= TimeSpan.Zero || hold > TimeSpan.FromSeconds(5)) throw new ArgumentOutOfRangeException(nameof(duration));
+        var position = center(element);
+        var id = ++_pointer;
+        Send(PointerChange.add, position, id);
+        Send(PointerChange.down, position, id);
+        pump();
+        var deadline = hold < TimeSpan.FromMilliseconds(100) ? hold : TimeSpan.FromMilliseconds(100);
+        pump(deadline);
+        pump(hold - deadline);
+        Send(PointerChange.up, position, id);
+        Send(PointerChange.remove, position, id);
+        pump();
+    }
     private void Send(PointerChange change, Offset point, ulong id) => _host.Pointer(new(
         1, Clock.Elapsed, change, PointerDeviceKind.touch, id, point.dx * View.devicePixelRatio,
         point.dy * View.devicePixelRatio, 0, 0, change is PointerChange.down or PointerChange.move ? 1 : 0,

@@ -2,7 +2,7 @@
   "pausedForHandoff": false,
   "handoff": "session-handoff-2026-10-05.md",
   "wholePlanComplete": false,
-  "updatedUtc": "2026-10-05T01:02:53.379143+00:00",
+  "updatedUtc": "2026-10-05T04:23:11.007031+00:00",
   "latestPassed": {
     "Release": "7777a6ce5ad744d2b720283eebb223ef; full maintained superset of Build/Packages/Targets/Developer; later additions independently checked",
     "WindowsSmoke": "13f2d1ae893041de936579a352d23300; shared tree, kinds, menu, both native designs, prebuilt consumer and smoke",
@@ -12,41 +12,53 @@
     "WindowsNuget": "candidate-windows-6; independent core/design/provider versions and isolated native two-window template consumer",
     "installed-provider": "1667187133bd433aaf4ebe42b5b6e136; installed descriptor discovery and 10 restored metadata/range mismatch rejections",
     "doctor": "7 tests; bounded probes/SDK policy/Partial=2/host Skip",
-    "vscode": "8 tests; metadata/argv/owned Stop/prepared browser bridge"
+    "vscode": "8 tests; metadata/argv/owned Stop/prepared browser bridge",
+    "AppKit": "work3: current Debug osx-arm64 AppKit window kinds/sheet/typed menu, two lifetimes/survivor, Graphite/Ganesh resize and retirement, 60-second observation and normal exit",
+    "MacCatalyst": "work3: Debug maccatalyst-arm64 UIKit native services/input/features/navigation/restoration/two scenes/primary survivor",
+    "IOS": "work3: Debug iossimulator-arm64 iPhone17/iOS27 native services/input/features/navigation/restoration/rotation and application Stop/GPU drain; multi-scene SKIPPED",
+    "AppleProfiles": "work3: net10 profile evaluations including x64 simulator; actual provider single import and 13 ownership closures",
+    "Common": "work3: core/Material/Cupertino CPU, G0 shared close/native route/synthetic editing and typed device fixture regressions",
+    "AppKitNuget": "work3: fixed core 0.4.0-alpha.1/provider 0.4.0-alpha.2, widgets, 26 prebuilt packages, isolated template publish, actual two windows/resize/close and same-candidate extracted-app copy/remove/userdata fixture",
+    "IOSDevice": "iPhone 12/iOS26.6.1; development-signed Debug Mono ios-arm64: services/input/features/rotation functional/Stop Metal drain/three same-PID background resumes; FPS/phase timing measured without acceptance gate",
+    "IOSDeviceReleaseMonoAot": "iPhone12/iOS26.6.1; Release Mono/LLVM AOT, app+entry+dependencies, interpreter off; full Material rotation/native services/input/features/Stop drain/background3 cycles PASS; viewport mean gaps107.5/93.97 ->39.96/37.89ms"
   },
-  "currentFailing": [],
-  "unverifiedLatestImplementation": [
-    "Cupertino native context-menu preview and restoration/focus/Semantics coordinator",
-    "Extended native Tooltip hover/long-press/late installation",
-    "Qt/AppKit window kinds/native menu and complete provider staged lifecycle",
-    "Mobile development/device transport, builtin template/native maintenance services and editor GUI workflows",
-    "G1 slow-consumer/modal/close/recreation/late IME isolation and complete semantic ownership/API audit",
-    "Apple native OS and signing",
-    "Android/iOS matching device runtime",
-    "trim/NativeAOT",
-    "physical keyboard/IME/accessibility",
-    "mixed monitor DPI",
-    "scanout/FPS",
-    "clean-machine installation"
+  "currentFailing": [
+    "NativeAOT publish: net10 SDK-generated IL2037; net11 workload requires Xcode26.6, host has27.0"
   ],
-  "processStatus": "All executed checks finished; idle SDK build servers are not counted as active checks. No subagents, commits, publication or deployment.",
+  "unverifiedLatestImplementation": [
+    "Full semantic ownership/public API/reflection audit across every provider closure",
+    "All builtin providers integrated with staged coordinator and actual initialization/Stop/Restart races",
+    "Native Cupertino filtered backdrop sampling and complete restoration/focus/Semantics route coordinator",
+    "Extended native Tooltip hover/delay/late-install behavior",
+    "MAUI sample friend removal/public diagnostics and provider native bridge/binding ownership audit",
+    "Typed iOS/mobile development agent/prepared transport and owned Stop/Restart; dev remains Unsupported",
+    "Extended Windows G1 slow consumer/modal/reentrant close/late IME and other providers outside this Apple runtime scope",
+    "Matching .NET11 rc2 runtime/SDK CoreCLR/NativeAOT and x64 simulator build/runtime",
+    "iOS NativeAOT matching toolchain/publish/runtime and distribution provisioning/signing/clean installation; development-signed Debug Mono and Release Mono AOT iPhone12 functional subsets passed",
+    "Native IME/physical keyboard/touch/VoiceOver/mixed display and scanout/FPS",
+    "Three design NuGet-only consumers for every Apple profile and all compatibility/version combinations",
+    "Actual IDE Run/Reload/Restart/Stop after these changes",
+    "Notarized/signed clean-machine/Finder installation and distinct-candidate upgrade",
+    "Physical rotation smoothness on actual Components scene; Release Mono AOT user reports only slight improvement, render/UI callback latency remains"
+  ],
+  "processStatus": "Release Mono AOT installed with app data preserved; normal app foreground. NativeAOT attempts failed as recorded; no publication.",
   "remainingImplementation": [
-    "Cupertino native context-menu preview and restoration/focus/Semantics coordinator",
-    "Extended native Tooltip hover/long-press/late installation",
-    "Qt/AppKit window kinds/native menu and complete provider staged lifecycle",
-    "Mobile development/device transport, builtin template/native maintenance services and editor GUI workflows",
-    "G1 slow-consumer/modal/close/recreation/late IME isolation and complete semantic ownership/API audit"
+    "Full semantic ownership/public API/reflection audit across every provider closure",
+    "All builtin providers integrated with staged coordinator and actual initialization/Stop/Restart races",
+    "Native Cupertino filtered backdrop sampling and complete restoration/focus/Semantics route coordinator",
+    "Extended native Tooltip hover/delay/late-install behavior",
+    "MAUI sample friend removal/public diagnostics and provider native bridge/binding ownership audit",
+    "Typed iOS/mobile development agent/prepared transport and owned Stop/Restart; dev remains Unsupported",
+    "Extended Windows G1 slow consumer/modal/reentrant close/late IME and other providers outside this Apple runtime scope"
   ],
   "remainingVerification": [
-    "Apple native OS and signing",
-    "Android/iOS matching device runtime",
-    "trim/NativeAOT",
-    "physical keyboard/IME/accessibility",
-    "mixed monitor DPI",
-    "scanout/FPS",
-    "clean-machine installation",
-    "IDE actual editor Run/Reload/Restart/Stop",
-    "extended G1 and complete ownership/public API semantic audit"
+    "Matching .NET11 rc2 runtime/SDK CoreCLR/NativeAOT and x64 simulator build/runtime",
+    "iOS NativeAOT matching toolchain/publish/runtime and distribution provisioning/signing/clean installation; development-signed Debug Mono and Release Mono AOT iPhone12 functional subsets passed",
+    "Native IME/physical keyboard/touch/VoiceOver/mixed display and scanout/FPS",
+    "Three design NuGet-only consumers for every Apple profile and all compatibility/version combinations",
+    "Actual IDE Run/Reload/Restart/Stop after these changes",
+    "Notarized/signed clean-machine/Finder installation and distinct-candidate upgrade",
+    "Physical rotation smoothness on actual Components scene; Release Mono AOT user reports only slight improvement, render/UI callback latency remains"
   ],
   "resumedDateKst": "2026-10-05",
   "newFixes": [
@@ -68,7 +80,26 @@
     "Application-owned RawTooltip list and scoped ExpansionTile controller",
     "Typed Android authorized/ABI device discovery and SDK serial selection",
     "Partial doctor nonzero aggregation and Qt development plan",
-    "Installed tool/target metadata discovery and mismatch fixtures"
+    "Installed tool/target metadata discovery and mismatch fixtures",
+    "Apple factory-specific logical WindowRequest mapping and invalid owner refusal before allocation",
+    "AppKit owned panels/sheets/anchor/no-activate and typed active-owner NSMenu",
+    "Explicit MAUI native application dispatcher and shared mobile session/per-view quiesce/drain",
+    "Shared SKTypeface wrapper leases prevent surviving-view font use after disposal",
+    "Native popup captured-caller navigation, Cupertino long-press route animations and route-local tweens",
+    "Provider-only iOS profile imports and typed simctl/CoreDevice RID-matched run selection",
+    "Apple release candidate RID isolation, copy-mode publish, evaluated assets path and AppKit desktop consumer selection",
+    "Reachable paired idle-tunnel iOS device discovery",
+    "Device probe Documents output normalization",
+    "Lightweight post-pulse rotation geometry sampling and UIKit-owned cadence",
+    "Source-generated feature/shutdown probe JSON preserves existing root/nested wire casing and removes AOT/trimming compile errors",
+    "Device smoke supports full Material scene instead of only reload scene",
+    "Detailed frame profiling is opt-in; final manual launch has no probe/evidence/profiling environment"
   ],
-  "evidence": "resume-verification-2026-10-05.json"
+  "evidence": "work3-verification-2026-10-05.json",
+  "historicalEvidenceScope": "Earlier Windows/Qt/Web/release PASS entries retain their original source/profile scope; they are not a new run of the shared code changed in work3.",
+  "additionalEvidence": [
+    "work3-ios-device-verification-2026-10-05.json",
+    "work3-ios-release-aot-verification-2026-10-05.json"
+  ],
+  "rotationTimingQualification": "Actual Components stutter reproduced; Release Mono AOT improves measured viewport gaps; user reports only slight improvement. Residual render/UI callback latency and optional strict phase budget remain."
 }

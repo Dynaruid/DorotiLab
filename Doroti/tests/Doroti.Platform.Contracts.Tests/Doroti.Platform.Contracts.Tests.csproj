@@ -3,5 +3,8 @@
   <ItemGroup>
     <Compile Include="../../src/Doroti.Testing/TestHost.cs" Link="TestHost.cs" />
     <ProjectReference Include="../../src/Doroti.Testing/Doroti.Testing.csproj" />
-    <PackageReference Include="SkiaSharp.NativeAssets.Win32" /><ProjectReference Include="../../src/Doroti.Hosting/Doroti.Hosting.csproj" /></ItemGroup>
+    <PackageReference Include="SkiaSharp.NativeAssets.Win32" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
+    <PackageReference Include="SkiaSharp.NativeAssets.macOS" Condition="$([MSBuild]::IsOSPlatform('OSX'))" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
+    <ProjectReference Include="../../src/Doroti.Hosting/Doroti.Hosting.csproj" /></ItemGroup>
 </Project>

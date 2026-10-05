@@ -14,14 +14,21 @@ public sealed partial class DorotiWindowManager
             throw new InvalidOperationException("The owner is not a live window in this application.");
         if (request.Anchor is { } anchor && anchor.Owner != request.Owner)
             throw new ArgumentException("The anchor must belong to the requested owner.");
-        var result = _factory.Evaluate(new WindowCreateOptions { Options = ToOptions(request) });
+        var options = _factory.MapRequest(request);
+        options.Validate();
+        var result = _factory.Evaluate(new WindowCreateOptions { Options = options });
         return result.Support == WindowSupport.Supported ? WindowCapabilityResult.Supported : new(WindowAvailability.Unsupported, result.Reason);
     }
-    IReadOnlyList<WindowSnapshot> IWindowService.GetWindows() => GetWindows().Select(Snapshot).ToArray();
+    IReadOnlyList<WindowSnapshot> IWindowService.GetWindows()
+    {
+        lock (_gate)
+            return _windows.Values.Concat(_initializingWindows.Values.Where(window => window.View is not null && !window.State.Closed))
+                .Select(Snapshot).ToArray();
+    }
     public async ValueTask<WindowSnapshot> CreateAsync(WindowRequest request, CancellationToken cancellationToken = default)
     {
         Evaluate(request).RequireSupported();
-        var window = await CreateWindowAsync(new() {  Options = ToOptions(request) }, cancellationToken);
+        var window = await CreateWindowAsync(new() { Options = _factory.MapRequest(request) }, cancellationToken);
         return Snapshot(window);
     }
     public async ValueTask<WindowSnapshot> ExecuteAsync(WindowActionRequest request, CancellationToken cancellationToken = default)
@@ -44,7 +51,6 @@ public sealed partial class DorotiWindowManager
     {
         lock (_gate) { if (!_windows.TryGetValue(window, out var controller) && !_initializingWindows.TryGetValue(window, out controller)) throw new InvalidOperationException("Window is not registered."); controller.View = view; controller.ViewId = view.viewId; }
     }
-    private static WindowOptions ToOptions(WindowRequest request) => new() { Title = request.Title, Size = request.Size, Kind = request.Kind, OwnerWindowId = request.Owner, Anchor = request.Anchor, Modal = request.Modal, Activate = request.Activate, SkipTaskbar = request.Kind != WindowKind.Regular, Resizable = request.Kind is WindowKind.Regular or WindowKind.Satellite, StartupVisibility = WindowStartupVisibility.Manual };
     internal async Task<bool> CloseOwnedWindowsAsync(WindowId owner)
     {
         await _creation.WaitAsync();
