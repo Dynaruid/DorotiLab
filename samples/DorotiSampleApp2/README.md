@@ -98,76 +98,52 @@ dotnet build ./samples/DorotiSampleApp2/android/DorotiSampleApp2.Android.csproj 
 
 x64 에뮬레이터에서는 `-p:RuntimeIdentifier=android-x64`를 사용합니다. RID별 빌드 산출물은 분리됩니다.
 
-### Android 기기에 Release 설치
+### Android 기기·에뮬레이터에 설치
 
-[android/deploy-android.ps1](android/deploy-android.ps1)이 구성 선택부터 빌드, APK 업데이트 설치,
-앱 실행과 프로세스 확인까지 처리합니다. 특정 제조사에 한정되지 않으며 **ARM64 Android 기기**를 대상으로 합니다.
-위의 Android 도구 외에 PowerShell 7과 Python이 필요하며, `dotnet`, `python`, `adb`가 PATH에 있어야 합니다.
+[공용 Android 배포 도구](../../helpers/deploy-helper/deploy-android.ps1)가 앱과 기기를 선택하고
+빌드·APK 업데이트 설치·실행을 처리합니다. .NET 10 CLI와 PowerShell 7이 필요하며 Python은 필요하지 않습니다.
+실기기에서 USB 디버깅과 컴퓨터의 연결을 허용하거나 에뮬레이터를 먼저 시작하세요.
+`adb`는 PATH·Android SDK 설치 폴더에서 찾으며 `-AdbPath`로 지정할 수도 있습니다.
 
-기기에서 **USB 디버깅**을 켜고 연결한 뒤 디버깅 허용 창을 승인합니다.
-`adb devices -l`에서 `device` 상태인지 확인하세요. `unauthorized`이면 기기에서 연결을 허용해야 합니다.
-
-아래 예시는 **저장소 루트 `DorotiLab`**에서 실행합니다. 스크립트 자체는 호출한 작업 폴더에 관계없이
-저장소와 프로젝트 경로를 찾습니다. 연결된 기기가 하나면 시리얼을 자동 선택합니다.
+아래 명령은 **저장소 루트 `DorotiLab`**에서 실행합니다. 선택지가 여러 개면 번호로 선택하고,
+`-Device` 또는 호환 옵션 `-Serial`로 `adb devices -l`의 정확한 시리얼을 지정할 수 있습니다.
 
 ```powershell
-# 기본 Release: Mono Profiled AOT + 필요한 코드의 JIT
-pwsh -NoProfile -File ./samples/DorotiSampleApp2/android/deploy-android.ps1 -Mode MonoAot
+# .NET 10 / Release / Mono Profiled AOT
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Sample2
 
-# CoreCLR JIT: 앱의 ReadyToRun 사전 컴파일 비활성화
-pwsh -NoProfile -File ./samples/DorotiSampleApp2/android/deploy-android.ps1 -Mode CoreClrJit
+# .NET 10 CoreCLR JIT / ReadyToRun
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Sample2 -Mode CoreClrJit
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Sample2 -Mode CoreClrR2R
 
-# CoreCLR ReadyToRun: R2R 사전 컴파일 코드 + JIT
-pwsh -NoProfile -File ./samples/DorotiSampleApp2/android/deploy-android.ps1 -Mode CoreClrR2R
+# .NET 11 CoreCLR ReadyToRun (기본) / JIT
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Sample2 -DotnetVersion 11
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Sample2 -DotnetVersion 11 -Mode CoreClrJit
+
+# 실행 중인 에뮬레이터의 ABI를 확인해 ARM64 또는 x64 빌드
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Sample2 -Target emulator -Device emulator-5554 -Configuration Debug
+
+# 목록 / 선택과 빌드 명령 확인
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -List
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Sample2 -DryRun
 ```
 
-세 명령 중 원하는 구성 하나를 실행합니다. `-DotnetVersion`을 생략하면 .NET 10이며,
-.NET 10에서 `-Mode`를 생략하면 `MonoAot`입니다.
-.NET 10의 Android CoreCLR은 실험적 기능이며, ReadyToRun은 JIT를 유지하는 방식으로 NativeAOT와 다릅니다.
+.NET 10 Release의 기본 모드는 `MonoAot`, Debug는 `Mono`이며 .NET 11은 `CoreClrR2R`입니다.
+.NET 10 Android CoreCLR은 실험적 기능입니다. .NET 11은
+[전용 global.json](android/sdk/net11/global.json)의 SDK `11.0.100-rc.1.26425.128`과
+MAUI `11.0.0-rc.1.26451.6`을 사용합니다. 선택한 SDK의 Android/MAUI workload를 미리 설치하세요.
+이 .NET 11 프로필은 `CoreClrJit`·`CoreClrR2R`을 지원합니다.
 
-**.NET 11**은 `-DotnetVersion 11`로 선택합니다. `-Mode`를 생략하면 `CoreClrR2R`이며,
-`MonoAot` 조합은 지원하지 않아 빌드 전에 중단합니다.
-
-```powershell
-# .NET 11 CoreCLR JIT
-pwsh -NoProfile -File ./samples/DorotiSampleApp2/android/deploy-android.ps1 -DotnetVersion 11 -Mode CoreClrJit
-
-# .NET 11 CoreCLR ReadyToRun (11의 기본 모드)
-pwsh -NoProfile -File ./samples/DorotiSampleApp2/android/deploy-android.ps1 -DotnetVersion 11
-```
-
-.NET 11 프로필은 [전용 global.json](android/sdk/net11/global.json)의
-SDK `11.0.100-rc.1.26425.128`과 MAUI `11.0.0-rc.1.26451.6`을 사용합니다.
-해당 SDK 및 호환되는 Android/MAUI 워크로드를 미리 설치해야 합니다. 이 프로필은 RC 버전입니다.
-저장소 루트의 `global.json`은 바꾸지 않고, 11을 선택한 호출에서만 전용 SDK를 사용합니다.
-
-기기가 여러 대이면 `-Serial`로 선택합니다. **`R3CY30KZA4B`는 예시**이며,
-제조사와 관계없이 `adb devices -l`에 표시된 실제 대상 시리얼로 바꿉니다.
-
-```powershell
-adb devices -l
-pwsh -NoProfile -File ./samples/DorotiSampleApp2/android/deploy-android.ps1 -Mode CoreClrR2R -Serial R3CY30KZA4B
-```
-
-| `-Mode` | 런타임 / 사전 컴파일 설정 | .NET 10 산출물 폴더 |
-| --- | --- | --- |
-| `MonoAot` | Mono, `RunAOTCompilation=true`, `AndroidEnableProfiledAot=true` | `Doroti/artifacts/sample2-mono-aot` |
-| `CoreClrJit` | CoreCLR, `PublishReadyToRun=false`, Mono AOT 비활성화 | `Doroti/artifacts/sample2-coreclr-jit` |
-| `CoreClrR2R` | CoreCLR, `PublishReadyToRun=true`, Mono AOT 비활성화 | `Doroti/artifacts/sample2-coreclr-r2r` |
-
-.NET 11의 산출물 폴더에는 `-net11`이 붙습니다. 예: `Doroti/artifacts/sample2-coreclr-r2r-net11`.
-10은 `net10.0-android`, 11은 `net11.0-android` 앱·Android 호스트·바인딩을 빌드합니다.
-공통 UI 및 플랫폼 독립 라이브러리는 호환되는 `net10.0`을 유지합니다.
-모두 `Release`, `android-arm64`를 사용하며 프로젝트 기본 설정은 변경하지 않습니다.
-빌드 중간 파일과 APK는 SDK 버전 및 구성별로 분리합니다. 빌드는 20분 제한으로 실행하고,
-빌드 또는 설치가 실패하면 다음 단계로 진행하지 않습니다. ARM64가 아닌 기기는 빌드 전에 거부합니다.
-x64 에뮬레이터는 이 스크립트 대신 위의 직접 빌드 명령을 사용합니다.
-
-앱 ID는 모두 `dev.doroti.sample2`이므로 선택한 구성이 기존 설치를 업데이트합니다.
-`install -r`은 앱 데이터를 유지하지만 재실행하면 메모리에만 있는 화면 상태와 입력값은 초기화됩니다.
-APK는 로컬 기기 테스트용이며 스토어 배포용 서명 설정은 별도입니다.
-성공하면 APK 경로, 실행 중인 PID와 해당 프로세스의 `adb logcat` 명령을 출력합니다.
+지원 ABI는 `arm64-v8a`·`x86_64`이며 빌드는 20분 제한으로 실행합니다.
+산출물은 앱·플랫폼·모드·SDK·구성·RID별로 분리합니다.
+예: `Doroti/artifacts/sample2-android-jit-net11-release-arm64`.
+앱 ID `dev.doroti.sample2`의 기존 설치를 `install -r`로 업데이트해 앱 데이터를 유지합니다.
+기본 실행은 기존 프로세스를 종료하고 다시 시작합니다. `-NoLaunch`는 설치만 합니다.
+빌드 또는 설치가 실패하면 다음 단계로 진행하지 않고, 성공 시 APK·PID·logcat 명령을 출력합니다.
 프로세스 실행 확인과 별도로 화면 표시·터치 동작은 기기에서 확인하세요.
+
+기존 [android/deploy-android.ps1](android/deploy-android.ps1)은 공용 도구로 전달하는 호환 진입점입니다.
+전체 옵션·런타임 설정·직접 .NET 실행은 [deploy-helper 사용법](../../helpers/deploy-helper/README.md)을 참고하세요.
 
 ## iOS
 
@@ -189,7 +165,7 @@ CLI의 iOS Release 기본값은 실험적인 NativeAot이므로, 위 명령처�
 
 ### 기기·인증서 선택 후 빌드·설치·실행
 
-[공용 iOS 설치 스크립트](../../helpers/deploy-ios.ps1)가 iPhone/iPad 또는 사용 가능한 iOS 시뮬레이터를
+[공용 iOS 설치 스크립트](../../helpers/deploy-helper/deploy-ios.ps1)가 iPhone/iPad 또는 사용 가능한 iOS 시뮬레이터를
 번호로 선택하고 빌드·설치·실행합니다. 실기기는 Keychain의 유효한 개발 인증서와
 앱 ID `dev.doroti.sample2`·기기 UDID·인증서에 맞는 만료되지 않은 개발 프로필을 선택합니다.
 선택지가 하나면 해당 항목을 사용합니다. CLI는 .NET 10으로 실행하며 PowerShell 진입점은 PowerShell 7이 필요합니다.
@@ -199,17 +175,17 @@ CLI의 iOS Release 기본값은 실험적인 NativeAot이므로, 위 명령처�
 
 ```powershell
 # 실기기: 기본 .NET 10 / Release / NativeAot, 인증서·프로필 선택
-pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -App Sample2 -Target device
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Sample2 -Target device
 
 # 시뮬레이터: 기본 .NET 10 / Debug / Mono, 자동 부팅·설치·실행
-pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -App Sample2 -Target simulator
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Sample2 -Target simulator
 
 # .NET 11 RC1 / Xcode 27: SDK 선택 위치와 버전 검사 우회를 이번 호출에 적용
-pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -App Sample2 -Target device -DotnetVersion 11 -Mode NativeAot -SkipXcodeValidation
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Sample2 -Target device -DotnetVersion 11 -Mode NativeAot -SkipXcodeValidation
 
 # 목록만 출력 / 선택과 빌드 명령만 확인
-pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -List
-pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -App Sample2 -DryRun
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -List
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Sample2 -DryRun
 ```
 
 `-Target`을 생략하면 실기기와 시뮬레이터를 함께 표시합니다. `-Device <UDID>`,
@@ -218,7 +194,7 @@ Mono 실기기 Debug는 `-Mode Mono -Configuration Debug`를 사용합니다.
 앱 실행 환경변수는 `-Environment 'DOROTI_IOS_GRAPHITE=1'`로 전달합니다.
 빌드 실패 시 설치를 중단하며 기본 실행은 기존 앱 프로세스를 종료하고 다시 시작합니다.
 .NET 10은 아래 검증된 Xcode 27 NativeAOT 설정, .NET 11은 Testbed iOS의 `global.json`을 사용합니다.
-산출물 분리 경로와 전체 옵션, `dotnet run` 직접 실행 방법은 [helpers 사용법](../../helpers/README.md)을 참고하세요.
+산출물 분리 경로와 전체 옵션, `dotnet run` 직접 실행 방법은 [helpers 사용법](../../helpers/deploy-helper/README.md)을 참고하세요.
 
 ### iOS Hot Reload
 

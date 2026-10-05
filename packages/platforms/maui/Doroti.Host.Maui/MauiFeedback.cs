@@ -13,7 +13,7 @@ internal sealed class MauiFeedback(IMauiSkiaSurface surface) : IPlatformFeedback
         if (sound == PlatformSystemSound.Click)
             return await MainThread.InvokeOnMainThreadAsync(() => {
                 cancellationToken.ThrowIfCancellationRequested();
-                var view = Platform.CurrentActivity?.Window?.DecorView;
+                var view = Microsoft.Maui.ApplicationModel.Platform.CurrentActivity?.Window?.DecorView;
                 if (view is null) return Unsupported("The originating Android activity is unavailable.");
                 view.PlaySoundEffect(Android.Views.SoundEffects.Click);
                 return new PlatformFeedbackResult(PlatformFeedbackStatus.Scheduled);
@@ -24,12 +24,13 @@ internal sealed class MauiFeedback(IMauiSkiaSurface surface) : IPlatformFeedback
     }
     public async ValueTask<PlatformFeedbackResult> HapticAsync(PlatformHaptic haptic, CancellationToken cancellationToken = default)
     {
+        _ = surface;
         cancellationToken.ThrowIfCancellationRequested();
         if (!Enum.IsDefined(haptic)) throw new ArgumentOutOfRangeException(nameof(haptic));
 #if ANDROID
         return await MainThread.InvokeOnMainThreadAsync(() => {
             cancellationToken.ThrowIfCancellationRequested();
-            var view = Platform.CurrentActivity?.Window?.DecorView;
+            var view = Microsoft.Maui.ApplicationModel.Platform.CurrentActivity?.Window?.DecorView;
             if (view is null) return Unsupported("The originating Android activity is unavailable.");
             Android.Views.FeedbackConstants? feedback = haptic switch {
                 PlatformHaptic.Vibrate => Android.Views.FeedbackConstants.LongPress,
@@ -56,7 +57,6 @@ internal sealed class MauiFeedback(IMauiSkiaSurface surface) : IPlatformFeedback
             return new PlatformFeedbackResult(PlatformFeedbackStatus.Scheduled);
         });
 #else
-        _ = surface;
         await Task.CompletedTask;
         return Unsupported("This desktop platform has no device haptic feedback.");
 #endif

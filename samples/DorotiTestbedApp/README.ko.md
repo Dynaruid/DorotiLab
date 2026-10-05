@@ -124,11 +124,44 @@ dotnet run --project ./samples/DorotiTestbedApp/android/DorotiTestbedApp.Android
 설치 후 앱 목록의 **Doroti Material Testbed**로 다시 열 수 있습니다.
 자동 배포가 실패하면 [Android 빌드·배포 오류](#android-빌드배포-오류)를 참고하세요.
 
+#### 공용 Android 배포 도구
+
+[Android 배포 도구](../../helpers/deploy-helper/deploy-android.ps1)가 실기기 또는 실행 중인 에뮬레이터를 선택하고,
+디버깅 권한·부팅 완료·ABI를 확인해 `android-arm64` 또는 `android-x64`로 빌드·설치·실행합니다.
+Windows·macOS·Linux에서 .NET SDK, Android/MAUI workload, Android SDK와 JDK를 준비하세요.
+PowerShell 진입점에는 PowerShell 7이 필요하고 도구 자체에는 Python이 필요하지 않습니다.
+다음 명령은 저장소 루트에서 실행합니다.
+
+```powershell
+# .NET 10 / Release / Mono Profiled AOT
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Testbed
+
+# .NET 11 / Release / CoreCLR ReadyToRun; JIT는 -Mode CoreClrJit
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Testbed -DotnetVersion 11
+
+# 이미 실행 중인 에뮬레이터; 실제 adb 시리얼 지정
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Testbed -Target emulator -Device emulator-5554 -Configuration Debug
+
+# 앱이 처리하는 문자열 Intent extra로 input 샘플 선택
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Testbed -Extra 'doroti_sample=input'
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -List
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Testbed -DryRun
+```
+
+.NET 10의 기본 모드는 Release에서 `MonoAot`, Debug에서 `Mono`입니다. .NET 11은 `CoreClrR2R`이며,
+SampleApp2에 고정한 SDK `11.0.100-rc.1.26425.128`과 MAUI `11.0.0-rc.1.26451.6` 프로필을 사용합니다.
+해당 SDK의 Android/MAUI workload를 미리 설치하세요. .NET 10 Android CoreCLR은 실험적 기능입니다.
+`-Device` 또는 `-Serial`로 정확한 adb 시리얼을 지정하고 `-NoLaunch`로 설치만 할 수 있습니다.
+빌드는 20분 제한이며 빌드·설치 실패 시 배포를 중단합니다. APK는 앱·모드·SDK·구성·RID별로 분리합니다.
+예: `Doroti/artifacts/testbed-android-jit-net11-release-arm64`.
+업데이트는 앱 데이터를 유지하며 기본 실행은 프로세스를 재시작합니다. PID 확인과 화면·입력·접근성 검증은 별도입니다.
+전체 옵션과 직접 .NET 실행은 [deploy-helper 사용법](../../helpers/deploy-helper/README.md)을 참고하세요.
+
 ### iOS 샘플
 
 #### 기기·인증서 선택 후 빌드·설치·실행
 
-[공용 iOS 설치 스크립트](../../helpers/deploy-ios.ps1)가 iPhone/iPad와 사용 가능한 iOS 시뮬레이터를
+[공용 iOS 설치 스크립트](../../helpers/deploy-helper/deploy-ios.ps1)가 iPhone/iPad와 사용 가능한 iOS 시뮬레이터를
 번호로 선택하고 빌드·설치·실행합니다. CLI는 .NET 10으로 실행하며 macOS,
 Xcode와 선택한 .NET SDK의 iOS/MAUI workload가 필요합니다. PowerShell 진입점은 PowerShell 7도 필요하며
 `dotnet run`으로 직접 실행할 수 있습니다. 실기기는 Mac 신뢰와 개발자 모드를
@@ -138,16 +171,16 @@ Xcode와 선택한 .NET SDK의 iOS/MAUI workload가 필요합니다. PowerShell 
 
 ```powershell
 # 실기기: 기본 .NET 10 / Release / NativeAot, 인증서·프로필 선택
-pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -App Testbed -Target device
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Target device
 
 # 시뮬레이터: 기본 .NET 10 / Debug / Mono, 자동 부팅·설치·실행
-pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -App Testbed -Target simulator
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Target simulator
 
 # .NET 11 RC1 / Xcode 27: SDK 선택과 버전 검사 우회는 이번 호출에만 적용
-pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -App Testbed -Target device -DotnetVersion 11 -Mode NativeAot -SkipXcodeValidation
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Target device -DotnetVersion 11 -Mode NativeAot -SkipXcodeValidation
 
-pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -List
-pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -App Testbed -DryRun
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -List
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -DryRun
 ```
 
 `-Target`을 생략하면 실기기와 시뮬레이터를 함께 표시합니다. 실기기는 개인 키를 가진 유효한 개발 인증서와
@@ -161,7 +194,7 @@ Mono 실기기 Debug는 `-Mode Mono -Configuration Debug`, 앱 실행 환경변�
 산출물은 앱·SDK·모드·구성·RID별로 분리하고 빌드 실패 시 설치를 중단합니다.
 기본 실행은 기존 앱 프로세스를 종료하고 다시 시작합니다. `-SkipXcodeValidation`은 버전 검사만 우회하며
 .NET 11 RC1 / Xcode 27을 공식 지원 조합으로 바꾸지는 않습니다.
-전체 옵션과 `dotnet run` 직접 실행은 [helpers 사용법](../../helpers/README.md)을 참고하세요.
+전체 옵션과 `dotnet run` 직접 실행은 [helpers 사용법](../../helpers/deploy-helper/README.md)을 참고하세요.
 Hot Reload는 개발 CLI를 사용합니다.
 
 #### .NET 11 직접 실행

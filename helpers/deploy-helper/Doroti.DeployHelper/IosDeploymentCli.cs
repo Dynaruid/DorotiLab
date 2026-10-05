@@ -4,11 +4,9 @@ using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using System.Xml;
 
-namespace Doroti.IosDeploy;
+namespace Doroti.DeployHelper;
 
-public record BuildPlan(Command Command, string Artifacts, string Sdk, string Mode, string Configuration, string Rid);
-
-public sealed class DeploymentCli(string repositoryRoot, ICommandRunner runner, IUserInterface ui)
+public sealed class IosDeploymentCli(string repositoryRoot, ICommandRunner runner, IUserInterface ui)
 {
     public string RepositoryRoot { get; } = Path.GetFullPath(repositoryRoot);
 
@@ -35,9 +33,9 @@ public sealed class DeploymentCli(string repositoryRoot, ICommandRunner runner, 
         node["properties"]?["connection"] ?? node["connectionProperties"],
         node["properties"]?["software"] ?? node["deviceProperties"]);
 
-    public static List<Target> PhysicalTargets(JsonNode devices)
+    public static List<IosTarget> PhysicalTargets(JsonNode devices)
     {
-        var targets = new List<Target>();
+        var targets = new List<IosTarget>();
         foreach (var device in devices.AsArray().OfType<JsonObject>())
         {
             var (hardware, state, connection, software) = Fields(device);
@@ -52,9 +50,9 @@ public sealed class DeploymentCli(string repositoryRoot, ICommandRunner runner, 
         return targets;
     }
 
-    public static List<Target> SimulatorTargets(JsonNode data)
+    public static List<IosTarget> SimulatorTargets(JsonNode data)
     {
-        var targets = new List<Target>();
+        var targets = new List<IosTarget>();
         if (data["devices"] is not JsonObject runtimes) return targets;
         foreach (var (runtime, devices) in runtimes)
         {
@@ -69,9 +67,9 @@ public sealed class DeploymentCli(string repositoryRoot, ICommandRunner runner, 
         return targets;
     }
 
-    public async Task<List<Target>> DiscoverTargetsAsync(string kind, CancellationToken ct)
+    public async Task<List<IosTarget>> DiscoverTargetsAsync(string kind, CancellationToken ct)
     {
-        var targets = new List<Target>();
+        var targets = new List<IosTarget>();
         if (kind is "auto" or "device")
         {
             try
@@ -123,33 +121,11 @@ public sealed class DeploymentCli(string repositoryRoot, ICommandRunner runner, 
         return profiles.Values.OrderBy(profile => profile.Name, StringComparer.Ordinal).ThenBy(profile => profile.Uuid).ToList();
     }
 
-    public async Task<T> SelectAsync<T>(string title, IReadOnlyList<T> items, Func<T, string> label, string option,
+    public Task<T> SelectAsync<T>(string title, IReadOnlyList<T> items, Func<T, string> label, string option,
         CancellationToken ct, string? requested = null, Func<T, string, bool>? matches = null)
-    {
-        if (requested is not null)
-        {
-            var selected = items.Where(item => matches!(item, requested)).ToArray();
-            if (selected.Length != 1)
-                throw new DeployException($"{title}: '{requested}' matched {selected.Length} entries. Use {option} with an exact ID.");
-            ui.WriteLine($"{title}: {label(selected[0])}");
-            return selected[0];
-        }
-        if (items.Count == 0) throw new DeployException($"No entries for {title}.");
-        ui.WriteLine("\n" + title);
-        for (var index = 0; index < items.Count; index++) ui.WriteLine($"  {index + 1}. {label(items[index])}");
-        if (items.Count == 1) { ui.WriteLine("Using the only entry."); return items[0]; }
-        if (!ui.IsInteractive) throw new DeployException($"Selection needs an interactive terminal. Specify {option}.");
-        while (true)
-        {
-            ui.WriteLine($"Select 1-{items.Count} (q to cancel):");
-            var value = (await ui.ReadLineAsync(ct))?.Trim();
-            if (value is null || value.Equals("q", StringComparison.OrdinalIgnoreCase)) throw new OperationCanceledException();
-            if (int.TryParse(value, out var number) && number >= 1 && number <= items.Count) return items[number - 1];
-            ui.WriteLine("Enter a number from the list.");
-        }
-    }
+        => new Selector(ui).SelectAsync(title, items, label, option, ct, requested, matches);
 
-    public async Task EnsureDeviceReadyAsync(Target target, CancellationToken ct)
+    public async Task EnsureDeviceReadyAsync(IosTarget target, CancellationToken ct)
     {
         var details = await CoreDeviceAsync(["device", "info", "details", "--device", target.Identifier], ct);
         var (_, state, connection, _) = Fields(details);
@@ -160,8 +136,9 @@ public sealed class DeploymentCli(string repositoryRoot, ICommandRunner runner, 
             throw new DeployException("Enable Settings > Privacy & Security > Developer Mode on the device, then restart it.");
     }
 
-    public static void ValidateBuildOptions(Options options, Target target)
+    public static void ValidateBuildOptions(Options options, IosTarget target)
     {
+        options.ValidateForPlatform("ios");
         var mode = options.Mode ?? (target.Kind == "device" ? "NativeAot" : "Mono");
         var configuration = options.Configuration ?? (target.Kind == "device" ? "Release" : "Debug");
         if (mode == "NativeAot" && (target.Kind != "device" || configuration != "Release"))
@@ -170,7 +147,7 @@ public sealed class DeploymentCli(string repositoryRoot, ICommandRunner runner, 
             throw new DeployException("Signing options require -Target device; Simulator does not need a development certificate.");
     }
 
-    public async Task<BuildPlan> BuildPlanAsync(Options options, SampleApp app, Target target, Identity? identity,
+    public async Task<BuildPlan> BuildPlanAsync(Options options, SampleApp app, IosTarget target, Identity? identity,
         ProvisionProfile? profile, string dotnet, CancellationToken ct)
     {
         ValidateBuildOptions(options, target);
@@ -235,7 +212,7 @@ public sealed class DeploymentCli(string repositoryRoot, ICommandRunner runner, 
         return candidates[0];
     }
 
-    public async Task DeployAsync(Target target, string bundle, SampleApp app, IReadOnlyDictionary<string, string> environment, bool noLaunch, CancellationToken ct)
+    public async Task DeployAsync(IosTarget target, string bundle, SampleApp app, IReadOnlyDictionary<string, string> environment, bool noLaunch, CancellationToken ct)
     {
         if (target.Kind == "device")
         {
@@ -267,6 +244,7 @@ public sealed class DeploymentCli(string repositoryRoot, ICommandRunner runner, 
 
     public async Task RunAsync(Options options, CancellationToken ct)
     {
+        options.ValidateForPlatform("ios");
         var targets = await DiscoverTargetsAsync(options.Target, ct);
         if (options.List)
         {

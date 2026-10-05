@@ -93,6 +93,7 @@ Dart-to-C# 컴파일러는 필요한 소스를 가져오거나 동작을 비교�
 | [프레임워크 가이드](Doroti/README.ko.md) | SDK, 워크로드, 빌드 명령, 패키징, 호스트 설정 |
 | [샘플 앱 가이드](samples/DorotiTestbedApp/README.ko.md) | 플랫폼별 실행, 샘플 화면, 렌더러 옵션, 문제 해결 |
 | [Cupertino 샘플](samples/DorotiSampleApp2/README.md) | Windows / Web의 Cupertino 위젯, 프로필 입력, 테마 설정 |
+| [iOS / Android 배포 도구](helpers/deploy-helper/README.md) | 샘플·기기 선택, 빌드·설치·실행 |
 | [Dart-to-C# 컴파일러](tools/Doroti.DartToCSharp/README.ko.md) | 선택적 소스 가져오기 및 마이그레이션 도구 |
 | [WGSL 컴파일러](tools/Doroti.Wgsl/README.md) | 셰이더 컴파일, 백엔드 프로필, 앱 연동 |
 

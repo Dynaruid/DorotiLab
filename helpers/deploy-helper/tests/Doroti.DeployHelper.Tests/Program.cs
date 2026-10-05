@@ -2,13 +2,13 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Xml.Linq;
-using Doroti.IosDeploy;
+using Doroti.DeployHelper;
 
-internal static class Program
+internal static partial class Program
 {
     private static readonly SampleApp App = SampleApp.All[0];
-    private static readonly Target Device = new("device", "Test iPhone", "DEVICE-UDID", "COREDEVICE-ID", "connected", "27.0");
-    private static readonly Target Simulator = new("simulator", "iPhone", "SIM-UDID", "SIM-UDID", "Shutdown", "27.0");
+    private static readonly IosTarget Device = new("device", "Test iPhone", "DEVICE-UDID", "COREDEVICE-ID", "connected", "27.0");
+    private static readonly IosTarget Simulator = new("simulator", "iPhone", "SIM-UDID", "SIM-UDID", "Shutdown", "27.0");
     private static readonly byte[] Certificate = [1, 2, 3, 4];
     private static readonly Identity Identity = new(Convert.ToHexString(SHA1.HashData(Certificate)), "Apple Development: Test Person (CERTTEAM)");
 
@@ -42,6 +42,17 @@ internal static class Program
             ("Selected simulator boot, install and environment", SimulatorDeployment),
             ("Reject wrong or ambiguous app bundles", BundleValidation),
             ("Process arguments, environment, exit, timeout and cancellation", ProcessExecution),
+            ("Android adb inventory and TCP emulator discovery", AndroidDiscovery),
+            ("Android runtime, SDK, ABI and sample build plans", AndroidPlans),
+            ("Reject incompatible platform options before commands", AndroidInvalidOptions),
+            ("Android authorization, boot and ABI admission", AndroidReadiness),
+            ("Android List and DryRun do not build or deploy", AndroidReadOnly),
+            ("Android failed builds and missing output never install", AndroidFailedBuild),
+            ("Android signed APK selection rejects ambiguity", AndroidApks),
+            ("Android launcher component parsing and failed resolution", AndroidLauncherResolution),
+            ("Android install, launch extras, PID and NoLaunch", AndroidDeployment),
+            ("Android install and launch failures stop deployment", AndroidDeployFailures),
+            ("Android PID wait supports cancellation", AndroidPidCancellation),
         ];
         var failures = 0;
         foreach (var (name, test) in tests)
@@ -93,15 +104,15 @@ internal static class Program
     private static Task DeviceDiscovery()
     {
         foreach (var node in new[] { OldDevice(), NewDevice() })
-            Equal(Device, DeploymentCli.PhysicalTargets(new JsonArray(node)).Single());
+            Equal(Device, IosDeploymentCli.PhysicalTargets(new JsonArray(node)).Single());
         var simulated = NewDevice(); simulated["properties"]!["hardware"]!["reality"] = "simulated";
         var tv = NewDevice(); tv["properties"]!["hardware"]!["platform"] = "tvOS";
-        Equal(0, DeploymentCli.PhysicalTargets(new JsonArray(simulated, tv)).Count);
+        Equal(0, IosDeploymentCli.PhysicalTargets(new JsonArray(simulated, tv)).Count);
         return Task.CompletedTask;
     }
 
     private static Task SimulatorDiscovery()
-    { Equal(Simulator, DeploymentCli.SimulatorTargets(Simulators()).Single()); return Task.CompletedTask; }
+    { Equal(Simulator, IosDeploymentCli.SimulatorTargets(Simulators()).Single()); return Task.CompletedTask; }
 
     private static Task PlistParsing()
     {
@@ -143,7 +154,7 @@ internal static class Program
         var output = $"  1) {Identity.Sha1} \"{Identity.Name}\"\n" +
                      $"  2) {new string('A', 40)} \"Apple Distribution: Test (TEAM)\"\n" +
                      $"  3) {new string('B', 40)} \"Apple Development: Expired (TEAM)\" (CSSMERR_TP_CERT_EXPIRED)\n";
-        Equal(Identity, DeploymentCli.ParseIdentities(output).Single());
+        Equal(Identity, IosDeploymentCli.ParseIdentities(output).Single());
         return Task.CompletedTask;
     }
 
@@ -327,7 +338,7 @@ internal static class Program
         await Throws<OperationCanceledException>(() => runner.RunAsync(new(host, [assembly, "--sleep-probe"]), cancellation.Token));
     }
 
-    private static DeploymentCli Cli(FakeRunner runner, FakeUi? ui = null) => new(Path.GetTempPath(), runner, ui ?? new FakeUi());
+    private static IosDeploymentCli Cli(FakeRunner runner, FakeUi? ui = null) => new(Path.GetTempPath(), runner, ui ?? new FakeUi());
 
     private static string CoreResult(Command command, JsonNode result)
     {

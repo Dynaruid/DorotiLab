@@ -2,7 +2,7 @@ using System.ComponentModel;
 using System.Text.Json;
 using System.Xml;
 
-namespace Doroti.IosDeploy;
+namespace Doroti.DeployHelper;
 
 internal static class Program
 {
@@ -18,13 +18,20 @@ internal static class Program
                 Console.WriteLine(Options.HelpText);
                 return 0;
             }
-            if (!OperatingSystem.IsMacOS())
-                throw new DeployException("This helper requires macOS and Xcode.");
-            foreach (var tool in new[] { "xcrun", "security", "plutil" })
-                _ = Executables.Resolve(tool);
             var ui = new ConsoleUi();
-            var cli = new DeploymentCli(FindRepository(), new ProcessRunner(ui), ui);
-            await cli.RunAsync(options, cancellation.Token);
+            var platform = await new Selector(ui).SelectAsync("Platform", new[] { "ios", "android" },
+                item => item, "--platform / -Platform", cancellation.Token, options.Platform, (item, value) => item == value);
+            options.ValidateForPlatform(platform);
+            var runner = new ProcessRunner(ui);
+            var repository = FindRepository();
+            if (platform == "ios")
+            {
+                if (!OperatingSystem.IsMacOS()) throw new DeployException("iOS deployment requires macOS and Xcode. Use --platform android on Windows/Linux.");
+                foreach (var tool in new[] { "xcrun", "security", "plutil" }) _ = Executables.Resolve(tool);
+                await new IosDeploymentCli(repository, runner, ui).RunAsync(options, cancellation.Token);
+            }
+            else
+                await new AndroidDeploymentCli(repository, runner, ui).RunAsync(options, cancellation.Token);
             return 0;
         }
         catch (OperationCanceledException)

@@ -8,6 +8,6 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../../Doroti.IosDeploy/Doroti.IosDeploy.csproj" />
+    <ProjectReference Include="../../Doroti.DeployHelper/Doroti.DeployHelper.csproj" />
   </ItemGroup>
 </Project>

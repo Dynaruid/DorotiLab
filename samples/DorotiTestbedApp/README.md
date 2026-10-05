@@ -150,11 +150,44 @@ Android Graphite exposes accessibility through virtual nodes on the render view,
 avoiding hidden MAUI controls per semantic node. Use `DOROTI_INPUT_TIMING` for
 optional touch-timing diagnostics.
 
+#### Shared Android deployment helper
+
+The [Android deployment helper](../../helpers/deploy-helper/deploy-android.ps1) selects a device or running emulator,
+checks authorization and boot completion, and chooses `android-arm64` or `android-x64` from its ABI.
+It works on Windows, macOS and Linux with the .NET SDK, Android/MAUI workloads, Android SDK and JDK.
+The PowerShell entry point requires PowerShell 7; the helper itself does not require Python.
+Run these commands from the repository root:
+
+```powershell
+# .NET 10 / Release / Mono Profiled AOT
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Testbed
+
+# .NET 11 / Release / CoreCLR ReadyToRun; use -Mode CoreClrJit for JIT
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Testbed -DotnetVersion 11
+
+# An already running emulator; use the actual adb serial
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Testbed -Target emulator -Device emulator-5554 -Configuration Debug
+
+# Choose the input sample through the app's string Intent extra
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Testbed -Extra 'doroti_sample=input'
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -List
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Testbed -DryRun
+```
+
+`.NET 10` defaults to `MonoAot` for Release and `Mono` for Debug. `.NET 11` defaults to `CoreClrR2R`
+and uses SampleApp2's pinned SDK `11.0.100-rc.1.26425.128` and MAUI `11.0.0-rc.1.26451.6` profile.
+Install its Android/MAUI workloads first. `.NET 10` Android CoreCLR is experimental.
+Use `-Device` or `-Serial` for an exact adb serial and `-NoLaunch` to install only.
+Builds have a 20-minute limit; build/install failures stop deployment. APKs are separated by app, mode, SDK, configuration and RID,
+for example `Doroti/artifacts/testbed-android-jit-net11-release-arm64`.
+Updates preserve app data and normally restart the process. PID confirmation is separate from visual, input and accessibility checks.
+See [all options and direct .NET commands](../../helpers/deploy-helper/README.md).
+
 ### iOS sample
 
 #### Select a device and signing certificate, then build and deploy
 
-The shared [iOS deployment helper](../../helpers/deploy-ios.ps1) lists known iPhones/iPads and available
+The shared [iOS deployment helper](../../helpers/deploy-helper/deploy-ios.ps1) lists known iPhones/iPads and available
 iOS simulators, then builds, installs and launches the selected app. The CLI runs on .NET 10 and requires macOS,
 Xcode and the selected .NET SDK's iOS/MAUI workloads. The PowerShell entry point also requires PowerShell 7; direct `dotnet run` is available. For a physical device,
 trust the Mac, enable Developer Mode, and prepare a development certificate and provisioning profile in Xcode.
@@ -163,17 +196,17 @@ Run from the repository root `DorotiLab`:
 
 ```powershell
 # Physical device: .NET 10 / Release / NativeAot by default
-pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -App Testbed -Target device
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Target device
 
 # Simulator: .NET 10 / Debug / Mono; boots the selected simulator before installation
-pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -App Testbed -Target simulator
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Target simulator
 
 # .NET 11 RC1 with Xcode 27: select the SDK and skip version validation for this invocation
-pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -App Testbed -Target device -DotnetVersion 11 -Mode NativeAot -SkipXcodeValidation
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Target device -DotnetVersion 11 -Mode NativeAot -SkipXcodeValidation
 
 # Inventory only / select and inspect the build command without deploying
-pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -List
-pwsh -NoProfile -File ./helpers/deploy-ios.ps1 -App Testbed -DryRun
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -List
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -DryRun
 ```
 
 Omit `-Target` to select from a combined device/simulator list. Physical-device signing lists valid development
@@ -187,7 +220,7 @@ The helper selects .NET 10 from the root `global.json` and .NET 11 from `ios/glo
 Artifacts are separated by app, SDK, mode, configuration and RID. Failed builds stop deployment;
 the default launch restarts the existing app process. `-SkipXcodeValidation` bypasses a version check
 for this invocation and does not make .NET 11 RC1 / Xcode 27 an officially supported combination.
-See [all options and direct .NET commands](../../helpers/README.md). Use the development CLI for Hot Reload.
+See [all options and direct .NET commands](../../helpers/deploy-helper/README.md). Use the development CLI for Hot Reload.
 
 #### Direct .NET 11 commands
 

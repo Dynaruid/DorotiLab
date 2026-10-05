@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
-namespace Doroti.IosDeploy;
+namespace Doroti.DeployHelper;
 
 public sealed class DeployException(string message) : Exception(message);
 
@@ -76,16 +76,37 @@ public static class Executables
 {
     public static string Resolve(string name)
     {
-        if (name.Contains(Path.DirectorySeparatorChar))
+        if (Path.IsPathRooted(name) || name.Contains(Path.DirectorySeparatorChar) || name.Contains(Path.AltDirectorySeparatorChar))
         {
             var path = Path.GetFullPath(name);
             return File.Exists(path) ? path : throw new DeployException($"Executable not found: {path}");
         }
-        foreach (var directory in (Environment.GetEnvironmentVariable("PATH") ?? "").Split(Path.PathSeparator))
+        var extensions = OperatingSystem.IsWindows() && Path.GetExtension(name).Length == 0
+            ? new[] { "", ".exe", ".com" } : new[] { "" };
+        foreach (var directory in (Environment.GetEnvironmentVariable("PATH") ?? "").Split(Path.PathSeparator).Where(value => value.Length > 0))
         {
-            var path = Path.GetFullPath(Path.Combine(directory, name));
-            if (File.Exists(path)) return path;
+            foreach (var extension in extensions)
+            {
+                var path = Path.GetFullPath(Path.Combine(directory.Trim('"'), name + extension));
+                if (File.Exists(path)) return path;
+            }
         }
         throw new DeployException($"Required executable not found: {name}");
+    }
+
+    public static string ResolveAdb(string name)
+    {
+        try { return Resolve(name); }
+        catch (DeployException) when (name == "adb") { }
+        var home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        string?[] roots = [Environment.GetEnvironmentVariable("ANDROID_SDK_ROOT"), Environment.GetEnvironmentVariable("ANDROID_HOME"),
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Android", "Sdk"),
+            Path.Combine(home, "Library", "Android", "sdk"), Path.Combine(home, "Android", "Sdk")];
+        foreach (var root in roots.Where(root => !string.IsNullOrEmpty(root)))
+        {
+            var path = Path.Combine(root!, "platform-tools", OperatingSystem.IsWindows() ? "adb.exe" : "adb");
+            if (File.Exists(path)) return Path.GetFullPath(path);
+        }
+        throw new DeployException("adb not found. Install Android SDK platform-tools, set ANDROID_HOME/ANDROID_SDK_ROOT, or use --adb-path.");
     }
 }

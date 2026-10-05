@@ -3,19 +3,9 @@ using System.Security.Cryptography;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace Doroti.IosDeploy;
+namespace Doroti.DeployHelper;
 
-public sealed record SampleApp(string Key, string Folder, string BundleId, string ArtifactSlug)
-{
-    public string Project(string root) => Path.Combine(root, "samples", Folder, "ios", Folder + ".iOS.csproj");
-    public static readonly SampleApp[] All =
-    [
-        new("Sample2", "DorotiSampleApp2", "dev.doroti.sample2", "sample2"),
-        new("Testbed", "DorotiTestbedApp", "dev.doroti.testbed", "testbed"),
-    ];
-}
-
-public sealed record Target(string Kind, string Name, string Udid, string Identifier, string State, string OsVersion)
+public sealed record IosTarget(string Kind, string Name, string Udid, string Identifier, string State, string OsVersion)
 {
     public string Label => $"[{Kind}] {Name} / iOS {OsVersion} / {State} / {Udid}";
 }
@@ -33,7 +23,7 @@ public sealed record ProvisionProfile(string Path, Dictionary<string, object?> D
         (Data.GetValueOrDefault("ExpirationDate") is DateTimeOffset expiry
             ? expiry.UtcDateTime.ToString("yyyy-MM-dd HH:mm 'UTC'", CultureInfo.InvariantCulture) : "unknown");
 
-    public bool Matches(SampleApp app, Target target, Identity identity, DateTimeOffset? now = null)
+    public bool Matches(SampleApp app, IosTarget target, Identity identity, DateTimeOffset? now = null)
     {
         var entitlements = Plist.Dictionary(Data, "Entitlements");
         if (Data.GetValueOrDefault("ExpirationDate") is not DateTimeOffset expiry || expiry <= (now ?? DateTimeOffset.UtcNow)) return false;
