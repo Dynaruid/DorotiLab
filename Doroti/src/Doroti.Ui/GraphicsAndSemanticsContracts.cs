@@ -2006,20 +2006,26 @@ public sealed class Paragraph : IDisposable
             var paragraphLine = _lines[line];
             var boxStart = Math.Max(clampedStart, paragraphLine.Start);
             var boxEnd = Math.Min(clampedEnd, paragraphLine.End);
-            if (boxStart >= boxEnd)
+            if (boxStart < boxEnd)
             {
-                continue;
+                boxes.Add(
+                    new TextBox(
+                        paragraphLine.Left + AdvanceBetween(paragraphLine.Start, boxStart),
+                        paragraphLine.Top,
+                        paragraphLine.Left + AdvanceBetween(paragraphLine.Start, boxEnd),
+                        paragraphLine.Top + paragraphLine.Height,
+                        LayoutTextDirection
+                    )
+                );
             }
-
-            boxes.Add(
-                new TextBox(
-                    paragraphLine.Left + AdvanceBetween(paragraphLine.Start, boxStart),
-                    paragraphLine.Top,
-                    paragraphLine.Left + AdvanceBetween(paragraphLine.Start, boxEnd),
-                    paragraphLine.Top + paragraphLine.Height,
-                    LayoutTextDirection
-                )
-            );
+            // A hard break occupies a zero-width box on the line it terminates,
+            // including an empty line. TextPainter uses this box for its caret.
+            if (paragraphLine.HardBreak && clampedStart <= paragraphLine.End && clampedEnd > paragraphLine.End)
+            {
+                var lineEndX = paragraphLine.Left + paragraphLine.Width;
+                boxes.Add(new TextBox(lineEndX, paragraphLine.Top, lineEndX,
+                    paragraphLine.Top + paragraphLine.Height, LayoutTextDirection));
+            }
         }
 
         return boxes;
@@ -2063,7 +2069,11 @@ public sealed class Paragraph : IDisposable
 
             currentX += advance;
         }
-        return new TextPosition(line.End);
+        // At a soft wrap the same UTF-16 offset also starts the next line.
+        // A hit on this line's trailing side must keep the caret on this line.
+        return new TextPosition(line.End, !line.HardBreak && line.End < text.Length
+            ? TextAffinity.upstream
+            : TextAffinity.downstream);
     }
 
     public TextRange getWordBoundary(TextPosition position)
@@ -2169,8 +2179,11 @@ public sealed class Paragraph : IDisposable
 
         var line = _lines[lineIndex];
         var left = line.Left + AdvanceBetween(line.Start, clusterStart);
+        var advance = line.HardBreak && clusterStart == line.End
+            ? 0
+            : AdvanceBetween(clusterStart, clusterEnd);
         return new GlyphInfo(
-            Rect.fromLTWH(left, line.Top, AdvanceBetween(clusterStart, clusterEnd), line.Height),
+            Rect.fromLTWH(left, line.Top, advance, line.Height),
             new TextRange(clusterStart, clusterEnd),
             LayoutTextDirection
         );
@@ -2520,7 +2533,7 @@ public sealed class Paragraph : IDisposable
         for (var index = 0; index < _lines.Count; index++)
         {
             var line = _lines[index];
-            if (offset >= line.Start && offset < line.End)
+            if (offset >= line.Start && (offset < line.End || (line.HardBreak && offset == line.End)))
             {
                 return index;
             }

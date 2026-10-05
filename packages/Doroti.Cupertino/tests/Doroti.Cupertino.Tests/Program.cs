@@ -6,6 +6,7 @@ static void Require(bool value, string message) { if (!value) throw new Exceptio
 Require(DefaultCupertinoLocalizations.@delegate.isSupported(new Locale("en")) && !DefaultCupertinoLocalizations.@delegate.isSupported(new Locale("ko")), "Default Cupertino locale support changed.");
 Require(CupertinoIcons.add.fontFamily == "CupertinoIcons" && CupertinoIcons.add.fontPackage == "cupertino_icons", "Cupertino icon package identity changed.");
 if (args.Contains("--cupertino-dialog-gpu")) { CupertinoDialogRegression.RunGpu(); return; }
+if (args.Contains("--text-input-tap-cursor")) { TextInputTapCursorRegression.Run(); return; }
 using (var tester = new WidgetTester())
 {
     string? locale = null;
@@ -69,6 +70,7 @@ CupertinoContextMenuRegression.Run();
 Console.WriteLine("PASS: pointer focus; synthetic Hangul start/update/commit/cancel/selection; IME teardown.");
 TextInputFocusRegression.Run();
 TextInputVerticalCursorRegression.Run();
+TextInputTapCursorRegression.Run();
 
 CupertinoDialogRegression.Run();
 RenderingRegressions.Run();

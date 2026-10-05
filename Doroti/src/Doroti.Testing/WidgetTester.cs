@@ -29,6 +29,7 @@ public sealed class WidgetTester : IDisposable
     public int Frames { get; private set; }
     public SemanticsUpdate? Semantics => _host.Semantics;
     public bool HasTextClient => _host.HasTextClient;
+    public DorotiTextEditingState? EditingState => _host.EditingState;
     public SkiaFrameDiagnostics RendererDiagnostics => _renderer.Diagnostics;
     public SkiaCacheMemoryDiagnostics CacheMemory => _renderer.CaptureCacheMemory();
     public IReadOnlyList<DorotiFrameTraceEntry> FrameTrace => _dispatcher.frameTrace.Snapshot();

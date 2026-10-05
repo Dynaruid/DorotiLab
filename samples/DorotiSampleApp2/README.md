@@ -435,6 +435,14 @@ Galmuri는 일반 HTML CSS 링크, SUITE는 원본 로컬 CSS/WOFF2 등록 예�
 일반 모드의 디코더만 로컬로 묶으려면 `-p:DorotiBundleWoff2Decoder=true`를 사용합니다.
 `Assets` 모드는 기본 폰트뿐 아니라 CSS와 디코더도 외부 요청 없이 제공합니다.
 
+여러 줄 입력창은 첫 포커스와 재포커스 시 실제 입력 위치와 표시 커서를 일치시킵니다.
+Flutter와 같이 iOS 터치는 단어 경계, Android·데스크톱은 누른 글자 위치를 선택합니다.
+개행·빈 줄·자동 줄바꿈의 커서 좌표, 후속 IME 입력과 플랫폼별 선택 정책은 다음 CPU 회귀 검증으로 확인합니다.
+
+```sh
+dotnet run --project packages/Doroti.Cupertino/tests/Doroti.Cupertino.Tests -c Release -- --text-input-tap-cursor
+```
+
 ```powershell
 python Doroti/validation/run-with-timeout.py dotnet publish samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj -c Release -p:DorotiSampleWebFontSource=Assets -o Doroti/artifacts/sample2-fonts
 ```
