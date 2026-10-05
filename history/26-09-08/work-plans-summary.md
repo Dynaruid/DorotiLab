@@ -138,7 +138,7 @@ raster/queue 비용을 분리하고, 샘플의 넓은 상태 갱신과 공용 fr
 구분하며, 기능 PASS로 성능 FAIL이나 `notVerified`를 덮어쓰지 않는다.
 테스트는 명령당 20분 timeout, 실행·retry·warm-up을 포함하는 명시적 예산을 따른다.
 
-후속 [work3.md](../../work3.md)는 부모/형제 의존성이 풀린 순수 계산부터 실행하는
+후속 [당시 work3.md](work3.original.md)는 부모/형제 의존성이 풀린 순수 계산부터 실행하는
 작업 그래프와 2개 계산 스레드, UI owner의 검증·반영을 계획한다. 이 문서들의
 과거 “Worker 미채택”은 당시 판단으로 보존하며 새로운 사용자 요청과 구분한다.
 현재 thread 활성화 기록은 [bootstrap 보고](wasm-threads-bootstrap.md)를 따른다.

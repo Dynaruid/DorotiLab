@@ -1,6 +1,6 @@
 # Current support and evidence
 
-2026-10-05: [Android/common follow-up](../../work3.md#19-2026-10-05-android와-공통-잔여-실행)
+2026-10-05: [Android/common follow-up](../../history/26-10-05/work3-summary.md#19-2026-10-05-android와-공통-잔여-실행)
 qualifies Galaxy S25 arm64 and Pixel 5 emulator/x64 native lifecycle subsets,
 logical surface reuse after Activity replacement, joined Vulkan retirement,
 synthetic native IME focus/composition and 60-second foreground frame progress.
@@ -13,7 +13,7 @@ Build/G0 and WindowsSmoke pass. Physical IME/TalkBack, scanout, production signi
 clean-machine distribution and the full plan remain unqualified. Exact hashes,
 profiles and remaining source/runtime gates are in the linked receipt.
 
-2026-10-05: [work3 Apple/common follow-up](../../work3.md#14-2026-10-05-실행-결과)
+2026-10-05: [work3 Apple/common follow-up](../../history/26-10-05/work3-summary.md#14-2026-10-05-실행-결과)
 adds provider-specific logical WindowRequest mapping, AppKit owned panels/sheets
 and typed NSMenu, shared mobile application sessions with per-view drain, iOS
 device discovery/selection, and provider-owned runtime profile imports. CPU

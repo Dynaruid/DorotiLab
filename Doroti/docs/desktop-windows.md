@@ -226,7 +226,7 @@ Native operation tests and screenshots are listed in the
 not qualify physical mixed-monitor input, VoiceOver/IME, a complete first-frame
 capture sequence, all OS accessibility settings, or notarized distribution.
 
-The [work3 follow-up](../../work3.md#14-2026-10-05-실행-결과) records current Apple
+The [work3 follow-up](../../history/26-10-05/work3-summary.md#14-2026-10-05-실행-결과) records current Apple
 policy, shared-session, auxiliary-window and menu checks. Native filtered Cupertino
 previews require caller-view backdrop sampling, which Windowing does not yet supply;
 Auto uses Overlay for that request and Native returns Unsupported.

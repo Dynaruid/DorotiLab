@@ -1,10 +1,10 @@
 # work2 구현 세션 인계 — 2026-10-05
 
-전체 작업은 **미완료**다. 사용자의 세션 중단·인계 요청에 따라 새 구현과 추가 검증을 중단했다. 다음 세션은 현재 소스/diff와 `work2.md` 전체를 독립적으로 검토해야 한다. 이 문서는 이전 PASS를 최신 전체 수락으로 확대하지 않는다.
+전체 작업은 **미완료**다. 사용자의 세션 중단·인계 요청에 따라 새 구현과 추가 검증을 중단했다. 다음 세션은 현재 소스/diff와 당시 work2의 전체 기준([보관 요약](../../../../history/26-10-05/work2-summary.md))을 독립적으로 검토해야 한다. 이 문서는 이전 PASS를 최신 전체 수락으로 확대하지 않는다.
 
 ## 재개 기준과 작업 트리
 
-- 저장소: `C:\Users\parti\Labo\DorotiLab`. 기준 문서: 루트 `work2.md`; 지침: `.github/copilot-instructions.md`. 문서의 과거 조사 전용 설명보다 사용자의 후속 전체 구현 지시가 우선한다.
+- 저장소: `C:\Users\parti\Labo\DorotiLab`. 당시 기준 문서: 루트 `work2.md`(현재 `history/26-10-05/work2-summary.md`에 요약 보관); 지침: `.github/copilot-instructions.md`. 문서의 과거 조사 전용 설명보다 사용자의 후속 전체 구현 지시가 우선한다.
 - M0/M1/M2 진행 중, M3 미완료. `execution.json`의 `complete=false`를 유지한다. G0/G1 아래의 PASS는 명시된 부분 검증이다.
 - 기존 사용자 수정과 이전 세션의 수정이 섞인 큰 미커밋 diff를 그대로 보존했다. reset/restore/clean/stage/commit/push/PR/배포를 수행하지 않았다. 이 문서에서 세션별 변경 소유권을 추정하지 않는다.
 - 전체 실제 변경 경로는 `checkpoint-files.txt`, HEAD·상태별 개수는 `session-handoff-state.json`, tracked diff 요약은 `handoff-diff-stat.txt`에 있다. rename은 Git 상태에서 삭제/신규로 나타날 수 있다.

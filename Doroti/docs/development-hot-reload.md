@@ -18,7 +18,7 @@ pwsh -NoProfile -File Doroti/eng/doroti.ps1 dev -App samples/DorotiSampleApp2 -P
 
 Android development requires Python 3, Android platform-tools, .NET SDK 10.0.400+ and an Android workload exposing `HotReloadWebSockets`. Connect one authorized USB device/emulator, or use `-Device <serial>` (VS Code `doroti.device`) when several are attached. The workspace's `android-arm64` or `android-x64` RID must match the device ABI; mismatches fail before deployment. `DorotiAndroidDevelopment=true` enables unoptimized, untrimmed Debug Mono assemblies, portable symbols, startup hooks and a standalone APK without AOT. Regular Debug/Release builds retain their existing profiles. CoreCLR, Release and AOT are outside this development contract.
 
-The [2026-10-05 provider follow-up](../../work3.md#19-2026-10-05-android와-공통-잔여-실행)
+The [2026-10-05 provider follow-up](../../history/26-10-05/work3-summary.md#19-2026-10-05-android와-공통-잔여-실행)
 passes actual Galaxy S25 metadata updates, compiler recovery, state preservation,
 owned Stop and installed VSIX Run/Hot Reload/Restart/Stop with the current typed
 provider. Project discovery collects CLI stdout separately from localized build

@@ -65,7 +65,7 @@ public sealed class DorotiAndroidViewContainer : Android.Widget.FrameLayout
     internal void DrawFromVsync() => Surface.DrawFromVsync();
 }
 
-public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallback
+public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallback2
 {
     private long _preparedFrameworkPulses;
     private long _preparedWhileGpuFull;
@@ -87,6 +87,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
         _live;
     private Task? _retirement;
     private bool _faulted;
+    private readonly List<Java.Lang.IRunnable> _surfaceRedrawCompletions = [];
     private static int _retiringGenerations;
 
     // Failed native cleanup must survive collection of a disconnected Java view.
@@ -200,6 +201,30 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
         CancelTrackpads();
         _live = false;
         ReleaseSurface();
+    }
+
+    public void SurfaceRedrawNeeded(ISurfaceHolder holder) => DrawFrame();
+
+    public void SurfaceRedrawNeededAsync(ISurfaceHolder holder, Java.Lang.IRunnable drawingFinished)
+    {
+        // Android keeps the task snapshot over the window until this callback
+        // completes. A recreated SurfaceView is not ready just because MAUI's
+        // overlay drew: wait for Vulkan to submit its first replacement frame.
+        if (!_live || _faulted || _retirement?.IsFaulted == true || _owner is null)
+        {
+            drawingFinished.Run();
+            return;
+        }
+        _surfaceRedrawCompletions.Add(drawingFinished);
+        RequestFrame();
+    }
+
+    private void CompleteSurfaceRedraws()
+    {
+        if (_surfaceRedrawCompletions.Count == 0) return;
+        var completions = _surfaceRedrawCompletions.ToArray();
+        _surfaceRedrawCompletions.Clear();
+        foreach (var completion in completions) completion.Run();
     }
 
     protected override void OnConfigurationChanged(Android.Content.Res.Configuration? newConfig)
@@ -360,6 +385,8 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
                 presented = platformViews.Finish(presented);
             }
 
+            if (presented) CompleteSurfaceRedraws();
+
             if (paint?.Completion is { } completion)
             {
                 _owner.CompleteGraphite(completion, !presented);
@@ -397,15 +424,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
             _owner?.FailGraphite(paint?.Completion, exception);
             Android.Util.Log.Error("DorotiGraphite", exception.ToString());
             _faulted = true;
-            if (_window is not null)
-            {
-                ReleaseSurface();
-            }
-            else if (_window is null && _nativeWindow != 0)
-            {
-                ANativeWindowRelease(_nativeWindow);
-                _nativeWindow = 0;
-            }
+            ReleaseSurface();
         }
     }
 
@@ -524,6 +543,9 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
 
     private void ReleaseSurface()
     {
+        // A destroyed or failed surface cannot produce the requested redraw.
+        // Release Android's draw wait as well as the native GPU ownership.
+        CompleteSurfaceRedraws();
         RemoveCallbacks(_drawCallback);
         RemoveCallbacks(_gpuCompletionCallback);
         _gpuCompletionPending = false;
@@ -617,6 +639,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
                 "Surface retirement failed; resources retained: " + exception
             );
             completion.TrySetException(exception);
+            Microsoft.Maui.ApplicationModel.MainThread.BeginInvokeOnMainThread(CompleteSurfaceRedraws);
         }
     }
 

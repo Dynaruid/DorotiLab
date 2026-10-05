@@ -1,7 +1,7 @@
 # ADR: application root, view ownership and staged platform preparation
 
 Status: accepted implementation direction; M0 implementation in progress. M1–M3 are pending.
-Authority: repository-root `work2.md`, implementation request on 2026-10-05.
+Authority: the former repository-root `work2.md` ([archived structure and task summary](../../../../history/26-10-05/work2-summary.md)), implementation request on 2026-10-05.
 Baseline: [baseline.json](baseline.json), [provider-files.json](provider-files.json), [boundaries.json](boundaries.json).
 
 ## Implemented common boundaries

@@ -1,6 +1,6 @@
 # Maintained regression tests
 
-The [work3 Android follow-up](../../work3.md#19-2026-10-05-android와-공통-잔여-실행)
+The [work3 Android follow-up](../../history/26-10-05/work3-summary.md#19-2026-10-05-android와-공통-잔여-실행)
 adds `AndroidSmoke` with explicit RID/device selection, installed-launcher discovery,
 standalone APKs, two sample lifecycle probes, joined Vulkan retirement, native
 synthetic IME and metadata reload. Activity recreation uses the samples' opt-in
@@ -15,7 +15,7 @@ mobile first-frame receipts; it does not require desktop two-window behavior.
 python Doroti/eng/run-with-timeout.py --timeout 1200 python Doroti/eng/validate.py AndroidSmoke --device <serial> --rid android-arm64
 ```
 
-The [work3 Apple follow-up](../../work3.md#14-2026-10-05-실행-결과) adds evaluated
+The [work3 Apple follow-up](../../history/26-10-05/work3-summary.md#14-2026-10-05-실행-결과) adds evaluated
 Apple/provider ownership closures, provider-owned iOS profile imports, typed iOS
 device discovery fixtures, shared-view shutdown and captured-caller native-route
 tests, and pointer-driven Cupertino context-menu selection. `macos_smoke.py`

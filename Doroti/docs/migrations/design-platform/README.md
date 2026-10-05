@@ -1,6 +1,6 @@
 # Implementation checkpoint
 
-The authoritative task status is [execution.json](execution.json), compared with the complete [work2 plan](../../../../work2.md). This is an in-progress implementation, not a declaration that all milestones passed.
+The authoritative task status is [execution.json](execution.json), compared with the archived [work2 structure and task summary](../../../../history/26-10-05/work2-summary.md) and [work3 follow-up](../../../../history/26-10-05/work3-summary.md). This is an in-progress implementation, not a declaration that all milestones passed.
 
 Current resumption: [implementation and coverage](resume-2026-10-05.md). Current file/namespace/declaration mapping: [ownership inventory](current-ownership-2026-10-05.json), a textual audit that does not replace evaluated graph/API validation.
 

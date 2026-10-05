@@ -24,7 +24,8 @@ def source():
         "Doroti/docs/application-navigation.md", "Doroti/docs/desktop-window-context.md", "Doroti/docs/release-candidates.md",
         "Doroti/docs/platform-views/support-matrix.md", "Doroti/docs/validation/2026-10-04-web-structure.md",
         "samples/DorotiTestbedApp/README.md", "samples/DorotiSampleApp2/README.md",
-        "work.md", "work2.md", "work3.md", "Doroti/docs/doctor.md", "Doroti/docs/validation/2026-10-04-full-review.md",
+        "history/26-10-05/README.md", "history/26-10-05/work-summary.md", "history/26-10-05/work2-summary.md", "history/26-10-05/work3-summary.md",
+        "Doroti/docs/doctor.md", "Doroti/docs/validation/2026-10-04-full-review.md",
         "packages/platforms/maui/README.md",
         "Doroti/templates/Doroti.Templates/content/doroti-app/desktop/README.md")]
     docs += list((ROOT / "history/26-10-03/works").rglob("*.md"))

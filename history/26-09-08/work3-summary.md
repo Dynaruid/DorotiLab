@@ -55,6 +55,6 @@ screen reader, 다른 브라우저·OS/GPU·실기기, 실제 scan-out/FPS의
 `notVerified`를 문서 보관만으로 해소하지 않는다. Worker owner 및
 `closed` → `disposed` 계약, 기능·정량 성능·사용자 체감·물리 수용의 구분을 유지한다.
 
-네이티브 Graphite 전환의 별도 진행은 [현재 work.md](../../work.md)와
+네이티브 Graphite 전환의 별도 진행은 [당시 work.md](work.original.md)와
 [Linux 후속 보고서](../../Doroti/docs/validation/native-graphite-linux-2026-09-09.md)를
 따른다. 이 보관 작업은 해당 구현 범위를 실행하거나 변경하지 않는다.
