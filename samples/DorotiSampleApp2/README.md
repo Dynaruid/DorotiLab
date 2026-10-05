@@ -201,6 +201,45 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 dev -App ./samples/DorotiSampleApp
 
 .NET 11의 USB 전용 경로는 `-Rid ios-arm64 -Device <UDID> -IosTargetFramework net11.0-ios -IosSdkVersion 11.0.100-rc.1.26425.128`을 지정합니다. 프로젝트의 `global.json`은 바꾸지 않습니다. 현재 RC1 SDK에는 수정된 runtime/crossgen2 `11.0.0-rc.2.26478.114`를 개발 모드에서만 사용합니다. 개발 서명, Xcode 27 사용 시 `ValidateXcodeVersion=false`, 바인딩 도구용 런타임과 `-DotnetPath` 준비는 [실기기 개발 명령](../../Doroti/docs/development-hot-reload.md)을 따릅니다. 이 프로필은 Debug 핫리로드 검증용이며 아래 Native AOT 게시 프로필과 구분합니다.
 
+### .NET 10 + Xcode 27 NativeAOT 실기기 설치
+
+2026-10-05에 iPhone 12 / iOS 26.6.1에서 Release NativeAOT 설치·정상 Cupertino 화면·
+같은 프로세스의 앱 복귀 3회·Variable Blur의 Metal shader 렌더링을 확인했습니다.
+.NET SDK 10.0.401, iOS SDK 27.0.10722, MAUI 10.0.110을 사용했으며
+SDK 버전 검사와 AOT 분석 경고 검사는 유지했습니다.
+[검증 기록](../../Doroti/docs/migrations/design-platform/sample2-ios-nativeaot-device-verification-2026-10-05.json)에
+산출물 hash와 검증 범위를 기록합니다. 파일 선택·물리 IME·회전 FPS의 수락을 대신하지 않습니다.
+
+아래는 저장소 루트의 PowerShell 예제입니다. 서명 값은 해당 기기를 포함한 개발 프로필로 바꿉니다.
+
+```powershell
+$sample2AotArtifacts = Join-Path (Get-Location).Path 'Doroti/artifacts/sample2-ios-nativeaot-net10'
+dotnet publish ./samples/DorotiSampleApp2/ios/DorotiSampleApp2.iOS.csproj `
+    --disable-build-servers -nr:false -c Release -r ios-arm64 `
+    -p:DorotiCompilationMode=NativeAot `
+    -p:DorotiIosTargetFramework=net10.0-ios27.0 `
+    -p:DorotiIosMauiVersion=10.0.110 `
+    -p:Registrar=managed-static `
+    -p:_UseDynamicDependenciesForMarkNSObjects=false `
+    '-p:MtouchExtraArgs=--skip-marking-nsobjects-in-user-assemblies=true' `
+    -p:Optimize=true `
+    "-p:ArtifactsPath=$sample2AotArtifacts" `
+    '-p:CodesignKey=YOUR_DEVELOPMENT_CERTIFICATE' `
+    '-p:CodesignProvision=YOUR_PROVISIONING_PROFILE_UUID'
+
+$sample2AotApp = Join-Path $sample2AotArtifacts 'bin/DorotiSampleApp2.iOS/release_ios-arm64/DorotiSampleApp2.iOS.app'
+codesign --verify --deep --strict $sample2AotApp
+xcrun devicectl device install app --device YOUR_DEVICE_UDID $sample2AotApp
+xcrun devicectl device process launch --device YOUR_DEVICE_UDID --terminate-existing `
+    --environment-variables '{"DOROTI_IOS_GRAPHITE":"1"}' dev.doroti.sample2
+```
+
+`_UseDynamicDependenciesForMarkNSObjects=false`와 `--skip-marking-nsobjects-in-user-assemblies=true`는
+iOS SDK 27.0.10722의 NSObject 보존 경로에 대한 호환 설정입니다.
+대신 [ios/NativeAotRoots.xml](ios/NativeAotRoots.xml)이 앱 진입과 Doroti native 뷰·델리게이트를
+명시적으로 보존합니다. SDK를 업데이트하면 이 옵션과 보존 목록을 함께 재검증해야 합니다.
+설치는 기존 앱 데이터를 유지하며, 개발 서명 프로필의 만료 시점은 로컬 프로필에 따릅니다.
+
 ### .NET 11 RC1 + Xcode 27 Native AOT
 
 [.NET 11 RC1 iOS 워크로드](https://github.com/dotnet/macios/releases/tag/dotnet-11.0.1xx-rc1-12193)는

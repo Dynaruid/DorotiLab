@@ -19,6 +19,9 @@
   <ItemGroup Condition="'$(PublishAot)' != 'true' and '$(DorotiCompilationMode)' != 'NativeAot' and '$(TrimMode)' == 'full' and '$(DorotiTrimPreserveDynamicMembers)' != 'false'">
     <TrimmerRootDescriptor Include="TrimmerRoots.xml" />
   </ItemGroup>
+  <ItemGroup Condition="'$(PublishAot)' == 'true' or '$(DorotiCompilationMode)' == 'NativeAot'">
+    <TrimmerRootDescriptor Include="NativeAotRoots.xml" />
+  </ItemGroup>
   <ItemGroup>
     <DorotiNativeBindingProject Include="binding\DorotiTestbedApp.iOS.Native.csproj" />
     <DorotiTargetDescriptor Include="iOS" HostKind="Maui" NativeEntryKind="UIKit-Main" RuntimeIdentifier="iossimulator-x64" TargetFramework="$(TargetFramework)" TargetPackage="Doroti.Target.iOS.Maui.iossimulator-x64" Condition="'$(RuntimeIdentifier)' == 'iossimulator-x64'" />

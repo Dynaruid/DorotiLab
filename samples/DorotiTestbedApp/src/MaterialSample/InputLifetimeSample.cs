@@ -102,8 +102,9 @@ internal sealed class InputLifetimeState : State<InputLifetimeSample>
             await VerifyMixedWeb();
             owner.DispatchPlatformEvent(() => setState(() => _visible = false));
             await Task.Delay(250);
-            File.WriteAllText(path, System.Text.Json.JsonSerializer.Serialize(new { created = perScene * 4,
-                editorRecreated = true, webViewRecreated = true, mixedScene = _mixed, physicalIme = "notVerified" }));
+            File.WriteAllText(path, System.Text.Json.JsonSerializer.Serialize(
+                new InputLifetimeProbeResult(perScene * 4, true, true, _mixed, "notVerified"),
+                TestbedProbeJsonContext.Default.InputLifetimeProbeResult));
         }
         catch (Exception error) { File.WriteAllText(path + ".error", error.ToString()); }
     }

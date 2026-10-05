@@ -94,14 +94,12 @@ internal sealed class FileUploadPageState : State<FileUploadPage>
                 foreach (var file in result.Files) file.Dispose();
             if (mounted) setState(() => _busy = false);
             if (Environment.GetEnvironmentVariable("DOROTI_UPLOAD_PROBE") is { Length: > 0 } path)
-                File.WriteAllText(path, System.Text.Json.JsonSerializer.Serialize(new
-                {
-                    status = result?.Status == FilePickStatus.selected && _files.Count > 0 ? "PASS" : "FAIL",
-                    pickerStatus = result?.Status.ToString(),
-                    previews = _files.Select(file => new { file.Name, file.Length, file.Text }).ToArray(),
-                    readGrantsDisposed = result is not null,
-                    message = _status,
-                }));
+                File.WriteAllText(path, System.Text.Json.JsonSerializer.Serialize(
+                    new UploadProbeResult(
+                        result?.Status == FilePickStatus.selected && _files.Count > 0 ? "PASS" : "FAIL",
+                        result?.Status.ToString(),
+                        _files.Select(file => new UploadPreviewProbe(file.Name, file.Length, file.Text)).ToArray(),
+                        result is not null, _status), UploadProbeJsonContext.Default.UploadProbeResult));
         }
     }
 

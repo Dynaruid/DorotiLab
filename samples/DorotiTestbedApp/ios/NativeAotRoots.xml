@@ -1,0 +1,36 @@
+<linker>
+  <!-- UIKit creates these objects and invokes their lifecycle selectors outside
+       managed call analysis. Keep this entry path when trimming unused NSObjects. -->
+  <assembly fullname="DorotiTestbedApp.iOS">
+    <type fullname="DorotiTestbedApp.iOS.AppDelegate" preserve="all" />
+  </assembly>
+  <assembly fullname="Doroti.Host.Maui">
+    <!-- These native views and delegates receive Objective-C protocol callbacks.
+         Limit preservation to the host's own native objects, including Metal,
+         input, accessibility-adjacent environment views and WebView callbacks. -->
+    <type fullname="Doroti.Host.Maui.AppleWebViewContent" preserve="all" />
+    <type fullname="Doroti.Host.Maui.AppleWebViewSession/MessageHandler" preserve="all" />
+    <type fullname="Doroti.Host.Maui.DorotiIosMetalViewHandler/DorotiIosMetalView" preserve="all" />
+    <type fullname="Doroti.Host.Maui.DorotiIosMetalViewHandler/DorotiIosTouchRecognizer" preserve="all" />
+    <type fullname="Doroti.Host.Maui.DorotiMauiUIApplicationDelegate" preserve="all" />
+    <type fullname="Doroti.Host.Maui.DorotiMauiSceneDelegate" preserve="all" />
+    <type fullname="Doroti.Host.Maui.DorotiUIKitGraphiteView" preserve="all" />
+    <type fullname="Doroti.Host.Maui.MauiNativeInput/DorotiKeyboardView" preserve="all" />
+    <type fullname="Doroti.Host.Maui.MauiNativeInput/NativeCursor/CursorState" preserve="all" />
+    <type fullname="Doroti.Host.Maui.MauiTextInputBridge/UIKitEditMenuDelegate" preserve="all" />
+    <type fullname="Doroti.Host.Maui.MauiTextInputBridge/UIKitEditMenuView" preserve="all" />
+    <type fullname="Doroti.Host.Maui.MauiViewEnvironment/EnvironmentView" preserve="all" />
+    <type fullname="Doroti.Host.Maui.UIKitFilePicker/PickerDelegate" preserve="all" />
+    <type fullname="Doroti.Host.Maui.UIKitOsDrop" preserve="all" />
+    <type fullname="Doroti.Host.Maui.UIKitPlatformBlurView" preserve="all" />
+    <type fullname="Doroti.Host.Maui.UIKitPlatformRasterSurface" preserve="all" />
+    <type fullname="Doroti.Host.Maui.UIKitPlatformViewFactory/NativeEditor" preserve="all" />
+    <type fullname="Doroti.Host.Maui.UIKitPlatformViewHost/OverlayView" preserve="all" />
+    <type fullname="Doroti.Host.Maui.UIKitPlatformViewHost/ShieldView" preserve="all" />
+    <type fullname="Doroti.Host.Maui.UIKitTrackpadInput/GestureDelegate" preserve="all" />
+  </assembly>
+  <assembly fullname="Microsoft.Maui">
+    <type fullname="Microsoft.Maui.MauiUIApplicationDelegate" preserve="all" />
+    <type fullname="Microsoft.Maui.MauiUISceneDelegate" preserve="all" />
+  </assembly>
+</linker>

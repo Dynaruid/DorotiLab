@@ -335,3 +335,13 @@ Release 앱에서 native 서비스·editor/WebView·Semantics·양방향 실제 
 CPU 회귀는 서로 다른 viewport의 두 shader consumer 보존·세 번째 거절·완료 순서·native scene 거절·texture budget을 확인했고, 표시 FPS 계산기 3개 테스트가 통과했다. Mac Catalyst Host는 경고·오류 0으로 빌드됐다. 최종 Release Mono AOT 시뮬레이터(`iossimulator-arm64`, LLVM=false)는 중간 크기 **15/15개**와 회전·입력·Semantics 기능·종료가 통과했다. Debug interpreter 시뮬레이터 후보에서는 중간 크기가 **2/3/3개**로 4개 기준을 충족하지 못했고 이 실패는 미해결로 남긴다.
 
 전체 Components의 60 FPS 유지와 엄격한 peak phase 예산은 미달이다. 최종 가로 peak 오차 **56.2–61.7pt**는 기존 10% 기준 **45.4pt**를 넘는다. 물리 VoiceOver·Switch Control 성능도 별도다. 이번 결과는 실기기 Release AOT의 개선과 명시한 기능 검사 범위이며 `wholePlanComplete=false`를 유지한다.
+
+## 18. 2026-10-05 iPhone NativeAOT 설치
+
+사용자가 선택한 **DorotiTestbedApp**을 iPhone 12 / iOS 26.6.1에 **Release NativeAOT**로 설치했다. .NET SDK 10.0.401, iOS SDK 27.0.10722, MAUI 10.0.110, ILCompiler 10.0.12, Xcode 27.0을 사용했다. 최종 publish는 경고·오류 0이며 서명 검사가 통과했다. `UseNativeAot=true`, `UseMonoRuntime=false`, NativeAOT object와 `libxamarin-dotnet-nativeaot.a`·`libRuntime.WorkstationGC.a`, 링크 맵의 `_RhpNewFast`를 확인했다. 기존 앱 데이터를 유지했고 최종 일반 Material 화면은 probe/evidence/profiling 없이 foreground에 남겼다. 명령·source/payload hash·검증 결과는 [NativeAOT 실기기 receipt](Doroti/docs/migrations/design-platform/work3-ios-nativeaot-device-verification-2026-10-05.json)에 기록했다.
+
+Testbed의 입력·WebView·native design probe 세 곳의 reflection JSON을 typed source-generated context로 변경했다. SDK의 [explicit-interface 멤버 이름 생성 오류](https://github.com/dotnet/macios/pull/26529)와 비활성 HybridWebView의 강제 보존을 피하기 위해 `--skip-marking-nsobjects-in-user-assemblies=true`와 `_UseDynamicDependenciesForMarkNSObjects=false`를 사용했다. 대신 `NativeAotRoots.xml`에서 실제 native 진입 경로와 Doroti의 네이티브 뷰·델리게이트 23개 타입을 보존한다. 이 보존 목록 없이 실제 실행 시 AppDelegate 생성자, MAUI 서비스 초기화, Metal protocol selector가 순서대로 누락됐다. 최종 빌드에는 원본 SDK를 사용했으며 SDK 검사를 우회하거나 IL2037/IL2026/IL3050을 숨기지 않았다. SDK 사본에 공식 수정 사항을 적용한 중간 실험은 최종 산출물에 사용하지 않는다.
+
+native 서비스·WKWebView/JavaScript·Semantics 기능·양방향 scene rotation·joined Stop/GPU drain·같은 PID background/foreground 3회가 통과했다. 입력 뷰 교체의 최초 검사에서는 **`Metal terminal failed: NotEnqueued` 1회**가 발생했다. 동일한 산출물을 독립 실행한 후속 **3회는 통과**했지만 원인은 확정하지 못했으며 최초 full smoke를 전체 PASS로 바꾸지 않는다. GPU 완료 판정을 완화하지 않았고 이 관찰은 미해결로 유지한다.
+
+회전 검사의 중간 raster 폭은 가로/세로 **19/20개**, 해당 1회 검사의 Metal 표시 FPS는 **47.85/49.84**였다. 이 검사는 evidence writer를 사용하므로 앞선 Mono AOT의 3회 cold 측정과 직접 비교하거나 FPS 향상률을 주장하지 않는다. 60 FPS·엄격한 phase 예산·물리 IME/VoiceOver 수락 및 전체 계획은 여전히 별도이며 `wholePlanComplete=false`를 유지한다.

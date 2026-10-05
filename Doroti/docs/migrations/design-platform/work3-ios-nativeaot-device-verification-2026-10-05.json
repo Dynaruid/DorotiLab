@@ -1,0 +1,256 @@
+{
+  "schema": "doroti.ios-nativeaot-device-verification/v1",
+  "date": "2026-10-05",
+  "result": "NativeAOT installed and normal Material foreground verified; initial input smoke failure retained",
+  "wholePlanComplete": false,
+  "app": "DorotiTestbedApp",
+  "bundleId": "dev.doroti.testbed",
+  "device": {
+    "model": "iPhone 12",
+    "os": "26.6.1",
+    "appDataReset": false
+  },
+  "build": {
+    "configuration": "Release",
+    "targetFramework": "net10.0-ios27.0",
+    "runtimeIdentifier": "ios-arm64",
+    "sdk": "10.0.401",
+    "iosSdk": "27.0.10722",
+    "maui": "10.0.110",
+    "ilcompiler": "10.0.12",
+    "xcode": "27.0 (27A266a)",
+    "exitCode": 0,
+    "warnings": 0,
+    "errors": 0,
+    "command": [
+      "dotnet",
+      "publish",
+      "samples/DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj",
+      "--disable-build-servers",
+      "-nr:false",
+      "-c",
+      "Release",
+      "-r",
+      "ios-arm64",
+      "-p:DorotiCompilationMode=NativeAot",
+      "-p:DorotiIosTargetFramework=net10.0-ios27.0",
+      "-p:DorotiIosMauiVersion=10.0.110",
+      "-p:Registrar=managed-static",
+      "-p:_UseDynamicDependenciesForMarkNSObjects=false",
+      "-p:MtouchExtraArgs=--skip-marking-nsobjects-in-user-assemblies=true",
+      "-p:Optimize=true",
+      "-p:CodesignProvision=f68c898a-241e-4101-9807-f0bf050f9571",
+      "-p:CodesignKey=9DA893EB6FE6D4289D947DFF73134856F3799C46",
+      "-p:ArtifactsPath=/Users/ceramic/Labo/DorotiLab/temp/testing/ios-nativeaot-install/net10-maui110/artifacts"
+    ],
+    "log": "temp/testing/ios-nativeaot-install/net10-maui110/publish-native-host-roots.log"
+  },
+  "nativeAotEvidence": {
+    "publishAot": true,
+    "useNativeAot": true,
+    "useMonoRuntime": false,
+    "interpreter": "",
+    "nativeObject": "temp/testing/ios-nativeaot-install/net10-maui110/artifacts/obj/DorotiTestbedApp.iOS/release_ios-arm64/native/DorotiTestbedApp.iOS.o",
+    "nativeObjectSha256": "596e6eb3ddc88208b88430c739692bf646b863ba247d7d811079f8b67005c9e6",
+    "linkInputs": "temp/testing/ios-nativeaot-install/net10-maui110/artifacts/obj/DorotiTestbedApp.iOS/release_ios-arm64/native-link-inputs.txt",
+    "linkMap": "temp/testing/ios-nativeaot-install/net10-maui110/artifacts/obj/DorotiTestbedApp.iOS/release_ios-arm64/native-link.map",
+    "linkMapSha256": "2cffbdd183385b70d5c9deb59bbdbf466d1db2d812adb914ed22578aabd77d51",
+    "runtimeLibraries": [
+      "libxamarin-dotnet-nativeaot.a",
+      "libRuntime.WorkstationGC.a"
+    ],
+    "nativeRuntimeSymbol": "_RhpNewFast",
+    "monoRuntimeInLinkMap": false,
+    "stockSdkUnmodified": true,
+    "analysisWarningsRemainErrors": true,
+    "analysisSuppressionAdded": false
+  },
+  "compatibility": {
+    "skipMarkingNSObjectsInUserAssemblies": true,
+    "useDynamicDependenciesForMarkNSObjects": false,
+    "description": "Use the existing direct marking path and preserve 23 native entry/view/delegate types explicitly. Avoid SDK-generated unescaped explicit-interface dependencies and forced retention of the disabled MAUI HybridWebView feature.",
+    "rootDescriptor": "samples/DorotiTestbedApp/ios/NativeAotRoots.xml",
+    "rootTypes": [
+      {
+        "assembly": "DorotiTestbedApp.iOS",
+        "type": "DorotiTestbedApp.iOS.AppDelegate"
+      },
+      {
+        "assembly": "Doroti.Host.Maui",
+        "type": "Doroti.Host.Maui.AppleWebViewContent"
+      },
+      {
+        "assembly": "Doroti.Host.Maui",
+        "type": "Doroti.Host.Maui.AppleWebViewSession/MessageHandler"
+      },
+      {
+        "assembly": "Doroti.Host.Maui",
+        "type": "Doroti.Host.Maui.DorotiIosMetalViewHandler/DorotiIosMetalView"
+      },
+      {
+        "assembly": "Doroti.Host.Maui",
+        "type": "Doroti.Host.Maui.DorotiIosMetalViewHandler/DorotiIosTouchRecognizer"
+      },
+      {
+        "assembly": "Doroti.Host.Maui",
+        "type": "Doroti.Host.Maui.DorotiMauiUIApplicationDelegate"
+      },
+      {
+        "assembly": "Doroti.Host.Maui",
+        "type": "Doroti.Host.Maui.DorotiMauiSceneDelegate"
+      },
+      {
+        "assembly": "Doroti.Host.Maui",
+        "type": "Doroti.Host.Maui.DorotiUIKitGraphiteView"
+      },
+      {
+        "assembly": "Doroti.Host.Maui",
+        "type": "Doroti.Host.Maui.MauiNativeInput/DorotiKeyboardView"
+      },
+      {
+        "assembly": "Doroti.Host.Maui",
+        "type": "Doroti.Host.Maui.MauiNativeInput/NativeCursor/CursorState"
+      },
+      {
+        "assembly": "Doroti.Host.Maui",
+        "type": "Doroti.Host.Maui.MauiTextInputBridge/UIKitEditMenuDelegate"
+      },
+      {
+        "assembly": "Doroti.Host.Maui",
+        "type": "Doroti.Host.Maui.MauiTextInputBridge/UIKitEditMenuView"
+      },
+      {
+        "assembly": "Doroti.Host.Maui",
+        "type": "Doroti.Host.Maui.MauiViewEnvironment/EnvironmentView"
+      },
+      {
+        "assembly": "Doroti.Host.Maui",
+        "type": "Doroti.Host.Maui.UIKitFilePicker/PickerDelegate"
+      },
+      {
+        "assembly": "Doroti.Host.Maui",
+        "type": "Doroti.Host.Maui.UIKitOsDrop"
+      },
+      {
+        "assembly": "Doroti.Host.Maui",
+        "type": "Doroti.Host.Maui.UIKitPlatformBlurView"
+      },
+      {
+        "assembly": "Doroti.Host.Maui",
+        "type": "Doroti.Host.Maui.UIKitPlatformRasterSurface"
+      },
+      {
+        "assembly": "Doroti.Host.Maui",
+        "type": "Doroti.Host.Maui.UIKitPlatformViewFactory/NativeEditor"
+      },
+      {
+        "assembly": "Doroti.Host.Maui",
+        "type": "Doroti.Host.Maui.UIKitPlatformViewHost/OverlayView"
+      },
+      {
+        "assembly": "Doroti.Host.Maui",
+        "type": "Doroti.Host.Maui.UIKitPlatformViewHost/ShieldView"
+      },
+      {
+        "assembly": "Doroti.Host.Maui",
+        "type": "Doroti.Host.Maui.UIKitTrackpadInput/GestureDelegate"
+      },
+      {
+        "assembly": "Microsoft.Maui",
+        "type": "Microsoft.Maui.MauiUIApplicationDelegate"
+      },
+      {
+        "assembly": "Microsoft.Maui",
+        "type": "Microsoft.Maui.MauiUISceneDelegate"
+      }
+    ],
+    "sdkReferences": [
+      "https://github.com/dotnet/macios/pull/26529",
+      "https://github.com/dotnet/macios/pull/17949",
+      "https://github.com/dotnet/macios/issues/25285"
+    ],
+    "sdkPatchExperimentUsedInFinalBuild": false
+  },
+  "payload": {
+    "bundleSha256": "f52f1606bd316b104f80770a861d004dfee84352351d4c45c191b206d91dd136",
+    "executableSha256": "11f7fee3d5c67630fd941a090f4ea701ab970ac1df46ddc700ed9d6d8d0fe342",
+    "bundleBytes": 43695922,
+    "app": "temp/testing/ios-nativeaot-install/net10-maui110/artifacts/bin/DorotiTestbedApp.iOS/release_ios-arm64/DorotiTestbedApp.iOS.app",
+    "ipa": "temp/testing/ios-nativeaot-install/net10-maui110/artifacts/publish/DorotiTestbedApp.iOS/release_ios-arm64/DorotiTestbedApp.iOS.ipa",
+    "codesignVerify": "PASS"
+  },
+  "verification": {
+    "initialSmokeSummary": "temp/testing/ios-nativeaot-install/device-smoke-final/summary.json",
+    "passedCases": [
+      "services",
+      "features",
+      "rotation",
+      "shutdown",
+      "lifecycle"
+    ],
+    "initialFailures": {
+      "input": "System.InvalidOperationException: Metal terminal failed; retaining GPU resources: NotEnqueued: \n   at Doroti.Host.Maui.DorotiUIKitGraphiteView.Retire(DorotiUIKitGraphiteView.PendingFrame pending, MTLCommandBufferStatus status, String error) + 0x358"
+    },
+    "inputIndependentRechecks": {
+      "passedRuns": 3,
+      "sourceLogs": [
+        "temp/testing/ios-nativeaot-install/device-input-recheck.log",
+        "temp/testing/ios-nativeaot-install/device-input-recheck-2.log"
+      ],
+      "samePayload": true,
+      "causeOfInitialFailure": "notEstablished; no GPU completion status relaxation applied"
+    },
+    "rotationTiming": [
+      {
+        "orientation": "LandscapeLeft",
+        "distinctWidths": 19,
+        "meanViewportGapMs": 18.467313724720633,
+        "maxViewportGapMs": 35.268166655441746,
+        "presentation": {
+          "status": "measured",
+          "source": "Metal drawable PresentedTime; intermediate viewports through first final viewport",
+          "intervals": 12,
+          "spanMs": 250.78616666723974,
+          "fps": 47.84952918046083,
+          "meanGapMs": 20.89884722226998,
+          "maxGapMs": 50.15591665869579
+        }
+      },
+      {
+        "orientation": "Portrait",
+        "distinctWidths": 20,
+        "meanViewportGapMs": 17.26227777706097,
+        "maxViewportGapMs": 35.68687499500811,
+        "presentation": {
+          "status": "measured",
+          "source": "Metal drawable PresentedTime; intermediate viewports through first final viewport",
+          "intervals": 15,
+          "spanMs": 300.9404583426658,
+          "fps": 49.84374677505227,
+          "meanGapMs": 20.06269722284439,
+          "maxGapMs": 50.15562500921078
+        }
+      }
+    ],
+    "fpsQualification": "One smoke run with evidence writer enabled, not a controlled comparison with prior Mono AOT three cold runs. No FPS improvement claim.",
+    "physicalIme": "notVerified",
+    "voiceOver": "notVerified"
+  },
+  "final": {
+    "foregroundPid": 8244,
+    "launch": "normal Material app; DOROTI_IOS_GRAPHITE=1 only",
+    "screenshot": "temp/testing/ios-nativeaot-install/device-input-recheck-2/screen.png",
+    "screenshotSha256": "30aa7d756935e000b31650844750418f3c71669b395256ae51e7f2f7a6bfe8fe",
+    "dimensions": "1170x2532"
+  },
+  "sourceSha256": {
+    "samples/DorotiTestbedApp/ios/AppDelegate.cs": "b3b2e88fb1655f7d869cbc6b4833016d8385c6edc4453b78f39ac79cff98225a",
+    "samples/DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj": "a3bdca9e020425da8a5527fa9c9f7eec16997d6b35fa6cdd2ed5f168c61836b1",
+    "samples/DorotiTestbedApp/ios/NativeAotRoots.xml": "d49cbb634edddcb6c0d390edfe3c790f6c236eda70757750a4832cc6a1d9f105",
+    "samples/DorotiTestbedApp/src/ProbeJsonContext.cs": "a150e86defb3f48d6ea278cf45275c59ed85201b3630c05c0ba1a4db9fb6495f",
+    "samples/DorotiTestbedApp/src/MaterialSample/InputLifetimeSample.cs": "7680fe6c58eaecc55ab3e2a16579423a11f3f46a397b4ef6d22e2fac6fb5c354",
+    "samples/DorotiTestbedApp/src/MaterialSample/WebViewSample.cs": "bd26c90608b2f491c81c343a6aaa5300b1d8ea85ecec662e9603019903e543af",
+    "samples/DorotiTestbedApp/src/NativeDesignPresentationProbe.cs": "e69dfed0d0cc4a2f8c685fd8252b4c09c5ab5318cdd602a2a6a5ffdf4c09eb40",
+    "packages/platforms/maui/Doroti.Host.Maui/DorotiMauiSceneDelegate.cs": "80ce16904c67c66d34bf4268cf71aff63efdeac3c4d14fe8ee21fc733033998e"
+  }
+}

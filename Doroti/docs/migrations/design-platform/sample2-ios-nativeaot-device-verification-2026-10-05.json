@@ -1,0 +1,162 @@
+{
+  "schema": "doroti.sample2-ios-nativeaot-device-verification/v1",
+  "date": "2026-10-05",
+  "result": "PASS within normal rendering, lifecycle and Variable Blur shader scope",
+  "app": "DorotiSampleApp2",
+  "bundleId": "dev.doroti.sample2",
+  "device": {
+    "model": "iPhone 12",
+    "os": "26.6.1",
+    "appDataReset": false
+  },
+  "build": {
+    "configuration": "Release",
+    "targetFramework": "net10.0-ios27.0",
+    "runtimeIdentifier": "ios-arm64",
+    "sdk": "10.0.401",
+    "iosSdk": "27.0.10722",
+    "maui": "10.0.110",
+    "ilcompiler": "10.0.12",
+    "xcode": "27.0 (27A266a)",
+    "exitCode": 0,
+    "warnings": 0,
+    "errors": 0,
+    "command": [
+      "dotnet",
+      "publish",
+      "samples/DorotiSampleApp2/ios/DorotiSampleApp2.iOS.csproj",
+      "--disable-build-servers",
+      "-nr:false",
+      "-c",
+      "Release",
+      "-r",
+      "ios-arm64",
+      "-p:DorotiCompilationMode=NativeAot",
+      "-p:DorotiIosTargetFramework=net10.0-ios27.0",
+      "-p:DorotiIosMauiVersion=10.0.110",
+      "-p:Registrar=managed-static",
+      "-p:_UseDynamicDependenciesForMarkNSObjects=false",
+      "-p:MtouchExtraArgs=--skip-marking-nsobjects-in-user-assemblies=true",
+      "-p:Optimize=true",
+      "-p:CodesignProvision=ecde6fbc-22e8-4096-98d0-aee6e261ec16",
+      "-p:CodesignKey=9DA893EB6FE6D4289D947DFF73134856F3799C46",
+      "-p:ArtifactsPath=/Users/ceramic/Labo/DorotiLab/temp/testing/sample2-ios-nativeaot/artifacts"
+    ],
+    "log": "temp/testing/sample2-ios-nativeaot/publish.log"
+  },
+  "nativeAotEvidence": {
+    "publishAot": true,
+    "useNativeAot": true,
+    "useMonoRuntime": false,
+    "interpreter": "",
+    "nativeObjectSha256": "6b32824d90aef7aa8c3237860fe377843f4eeb75ead8993a390c3e6ec73fb322",
+    "linkInputs": "temp/testing/sample2-ios-nativeaot/artifacts/obj/DorotiSampleApp2.iOS/release_ios-arm64/native-link-inputs.txt",
+    "linkMapSha256": "1e07f0580cd0892bbd2482070a0b4cb3a3eacef5b1bbcd8151b7a60bae2abd0a",
+    "runtimeLibraries": [
+      "libxamarin-dotnet-nativeaot.a",
+      "libRuntime.WorkstationGC.a"
+    ],
+    "nativeRuntimeSymbol": "_RhpNewFast",
+    "monoRuntimeInLinkMap": false,
+    "sdkPatchUsed": false,
+    "validateXcodeVersionDisabled": false,
+    "analysisWarningsRemainErrors": true,
+    "analysisSuppressionAdded": false
+  },
+  "compatibility": {
+    "skipMarkingNSObjectsInUserAssemblies": true,
+    "useDynamicDependenciesForMarkNSObjects": false,
+    "nativeRootTypes": 23,
+    "rootDescriptor": "samples/DorotiSampleApp2/ios/NativeAotRoots.xml"
+  },
+  "signing": {
+    "codesignVerify": "PASS",
+    "profileUuid": "ecde6fbc-22e8-4096-98d0-aee6e261ec16",
+    "profileExpiresKst": "2026-10-06T18:36:55+09:00"
+  },
+  "payload": {
+    "bundleSha256": "46e94ea204ef0283bb639b30fb718f5b7d8d59ce103c4568a092d0a0332595eb",
+    "executableSha256": "75abb41b007e71b12f199a0319e6b0b2700ae9b44c55d557c9dd62466aa3c2f7",
+    "bundleBytes": 34622359,
+    "app": "temp/testing/sample2-ios-nativeaot/artifacts/bin/DorotiSampleApp2.iOS/release_ios-arm64/DorotiSampleApp2.iOS.app",
+    "ipa": "temp/testing/sample2-ios-nativeaot/artifacts/publish/DorotiSampleApp2.iOS/release_ios-arm64/DorotiSampleApp2.iOS.ipa"
+  },
+  "verification": {
+    "summary": "temp/testing/sample2-ios-nativeaot/device/summary.json",
+    "checks": {
+      "normal": {
+        "presented": 56,
+        "failed": 0,
+        "backend": "UIKit/MTKView/Graphite-Metal",
+        "shaderImageFiltersRendered": 0,
+        "pipeline": {
+          "mode": "C",
+          "preparedPulses": 57,
+          "pendingGpuFrames": 0,
+          "maximumGpuFrames": 1,
+          "completedGpuFrames": 57,
+          "retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+          "fallback": null,
+          "preparedWhileGpuFull": 0,
+          "rejectedAdmissions": 0
+        }
+      },
+      "lifecycle": [
+        {
+          "samePid": true,
+          "before": 57,
+          "after": 115
+        },
+        {
+          "samePid": true,
+          "before": 115,
+          "after": 152
+        },
+        {
+          "samePid": true,
+          "before": 152,
+          "after": 191
+        }
+      ],
+      "blur": {
+        "presented": 52,
+        "failed": 0,
+        "backend": "UIKit/MTKView/Graphite-Metal",
+        "shaderImageFiltersRendered": 318,
+        "pipeline": {
+          "mode": "C",
+          "preparedPulses": 55,
+          "pendingGpuFrames": 1,
+          "maximumGpuFrames": 2,
+          "completedGpuFrames": 53,
+          "retirement": "Metal same-queue terminal completion; drawable presentation is a separate receipt",
+          "fallback": null,
+          "preparedWhileGpuFull": 0,
+          "rejectedAdmissions": 0
+        }
+      }
+    },
+    "frameFailureCount": 0,
+    "softwareFallbackFrames": 0,
+    "fpsAcceptance": "notMeasured",
+    "filePicker": "notVerified",
+    "physicalIme": "notVerified",
+    "voiceOver": "notVerified"
+  },
+  "final": {
+    "foregroundPid": 8360,
+    "launch": "normal Cupertino Components; no probe, evidence writer or detailed profiling",
+    "screenshot": "temp/testing/sample2-ios-nativeaot/device/screen.png",
+    "screenshotSha256": "1a1891f67c40843b0ebce38f234d735a5393511c1ee28185e057a675d2c45b0d",
+    "blurScreenshotSha256": "75bb6f8dcec606d503499f00733e642d15b1ad0a3e5feca6c78ca1e9eb3a89ed",
+    "dimensions": "1170x2532"
+  },
+  "sourceSha256": {
+    "samples/DorotiSampleApp2/ios/AppDelegate.cs": "3473b6ce3a74edd0f924e669b823932ed831f7e9930cfa12093ab0cd3544961c",
+    "samples/DorotiSampleApp2/ios/DorotiSampleApp2.iOS.csproj": "5a1bb1be4d693376414c8b761b41ed1253f8892131153dbabb90281544ff7df2",
+    "samples/DorotiSampleApp2/ios/NativeAotRoots.xml": "f04958fd5719752322fc241fa6de280d188e54b6a44d39d52ca34f8f7c9e6b98",
+    "samples/DorotiSampleApp2/src/FileUploadPage.cs": "10a9b499bddb45200d94e1ecfca96663752e5e37b306f359496b5d58d3e3d56d",
+    "samples/DorotiSampleApp2/src/UploadProbeJsonContext.cs": "3a16f7d535b0b740ab2d31015ac708410ec4aea1880004f305c440026c4b10b6",
+    "samples/DorotiSampleApp2/README.md": "dc23971bb0cc578f5b09a612096220c75c7a3b584a30cf8cd1f14fe347fe5e92"
+  }
+}

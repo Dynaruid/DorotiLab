@@ -86,7 +86,13 @@ internal sealed class NativeDesignPresentationProbe : StatefulWidget
                 finally { windows.Changed -= CloseDuringCreate; }
                 if (windows.GetWindows().Count != 1) throw new InvalidOperationException("Tooltip content leaked an auxiliary window.");
                 var output = Environment.GetEnvironmentVariable("DOROTI_DESIGN_PROBE_OUTPUT")!;
-                File.WriteAllText(output, JsonSerializer.Serialize(new { schema="doroti.native-design-probe/v1", result="PASS", design=cupertino?"cupertino":"material", nativeViews=nativeViews.Select(value=>value.ToString()).ToArray(), ownerView=owner.viewId.ToString(), capturedTheme=true, capturedLocalization=true, nativeVisibleBeforeResult=true, nativeResult=23, overlayResult=23, windowCloseResult=(int?)null, tooltipVisible=true, tooltipCancellation=true, tooltipEarlyCancellation=true, tooltipConcurrentDispose=true, remainingWindows=windows.GetWindows().Count }));
+                File.WriteAllText(output, JsonSerializer.Serialize(new NativeDesignProbeResult(
+                    Schema: "doroti.native-design-probe/v1", Result: "PASS", Design: cupertino ? "cupertino" : "material",
+                    NativeViews: nativeViews.Select(value => value.ToString()).ToArray(), OwnerView: owner.viewId.ToString(),
+                    CapturedTheme: true, CapturedLocalization: true, NativeVisibleBeforeResult: true,
+                    NativeResult: 23, OverlayResult: 23, WindowCloseResult: null, TooltipVisible: true,
+                    TooltipCancellation: true, TooltipEarlyCancellation: true, TooltipConcurrentDispose: true,
+                    RemainingWindows: windows.GetWindows().Count), TestbedProbeJsonContext.Default.NativeDesignProbeResult));
                 await windows.CloseAsync(WindowScope.of(context).Id);
             }
             catch (Exception error) { Console.Error.WriteLine("doroti.design.probe FAIL " + error); }

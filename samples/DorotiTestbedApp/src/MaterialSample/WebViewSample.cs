@@ -220,11 +220,11 @@ internal sealed class WebViewSampleState : State<WebViewSample>
                         await Task.Delay(50).ConfigureAwait(false);
                     }
                     var live = await controller.ExecuteAsync(new(WebViewOperation.EvaluateJavaScript, "document.title")).ConfigureAwait(false);
-                    File.WriteAllText(probe, System.Text.Json.JsonSerializer.Serialize(new
-                    {
-                        status = live.Json == "\"Doroti WebView sample\"" ? "PASS" : "FAIL",
-                        widgetScene = true, live.Json, live.DocumentGeneration,
-                    }));
+                    File.WriteAllText(probe, System.Text.Json.JsonSerializer.Serialize(
+                        new WebViewSceneProbeResult(
+                            live.Json == "\"Doroti WebView sample\"" ? "PASS" : "FAIL",
+                            true, live.Json, live.DocumentGeneration),
+                        TestbedProbeJsonContext.Default.WebViewSceneProbeResult));
                 }
                 catch (Exception error) { File.WriteAllText(probe + ".error", error.ToString()); throw; }
             }

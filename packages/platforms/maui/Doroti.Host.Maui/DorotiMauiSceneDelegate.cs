@@ -8,6 +8,10 @@ namespace Doroti.Host.Maui;
 [Register("DorotiMauiSceneDelegate")]
 public sealed class DorotiMauiSceneDelegate : Microsoft.Maui.MauiUISceneDelegate
 {
+    // UIKit creates scene delegates from the native scene configuration.
+    [Preserve]
+    public DorotiMauiSceneDelegate() { }
+
     public override void WillConnect(UIScene scene, UISceneSession session, UISceneConnectionOptions options)
     {
         UIKitApplicationActivation.Connect(options);
