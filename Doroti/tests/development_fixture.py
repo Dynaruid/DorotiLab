@@ -53,7 +53,7 @@ def create(destination, template_hive=None):
     text = app.read_text(encoding='utf-8-sig').replace('home: new CounterPage()', 'home: new MaterialSample.HotReloadSample()')
     app.write_text(text, encoding='utf-8')
     (destination / 'src/HotReloadSample.cs').write_text((ROOT / 'samples/DorotiTestbedApp/src/MaterialSample/HotReloadSample.cs').read_text(), encoding='utf-8')
-    snippets = json.loads((ROOT / 'Doroti/tools/vscode-doroti/snippets/widgets.json').read_text())
+    snippets = json.loads((ROOT / 'tools/vscode-doroti/snippets/widgets.json').read_text())
     def snippet(name, class_name='SnippetWidget'):
         value = '\n'.join(snippets[name]['body'])
         value = re.sub(r'\$\{1(?::[^}]*)?\}', class_name, value) if name in ('StatelessWidget', 'StatefulWidget') else value

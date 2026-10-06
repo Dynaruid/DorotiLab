@@ -311,8 +311,8 @@ user sample sources untouched:
 
 ```sh
 python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/linux_hot_reload_smoke.py --qpa wayland --output temp/testing/linux-hot-reload/manual
-# After npm test / npm run package in Doroti/tools/vscode-doroti, use the generated fixture:
-python3 Doroti/eng/run-with-timeout.py node Doroti/tools/vscode-doroti/dist/test/runHost.js 'temp/testing/linux-hot-reload/manual/한글 경로/ReloadApp' temp/testing/linux-hot-reload/manual-vsix --linux
+# After npm test / npm run package in tools/vscode-doroti, use the generated fixture:
+python3 Doroti/eng/run-with-timeout.py node tools/vscode-doroti/dist/test/runHost.js 'temp/testing/linux-hot-reload/manual/한글 경로/ReloadApp' temp/testing/linux-hot-reload/manual-vsix --linux
 ```
 
 The CLI test verifies real metadata updates, same PID/State/count/Hangul text/
@@ -420,7 +420,7 @@ iOS development validation (macOS, booted simulator, matching iOS workload):
 python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/ios_development_bridge.py
 python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/apple_build_profiles.py
 python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/ios_hot_reload_smoke.py temp/testing/ios-reload-run --device <simulator-UDID>
-python3 Doroti/eng/run-with-timeout.py node Doroti/tools/vscode-doroti/dist/test/runHost.js samples/DorotiTestbedApp temp/testing/ios-editor-run --ios
+python3 Doroti/eng/run-with-timeout.py node tools/vscode-doroti/dist/test/runHost.js samples/DorotiTestbedApp temp/testing/ios-editor-run --ios
 ```
 
 The smoke test temporarily edits the Testbed reload scene and restores it in `finally`; use a fresh evidence directory and do not edit that scene concurrently. It verifies actual deltas, PID/State/count/text/scroll preservation, compiler-error recovery, rude edits and Stop. State is seeded automatically. The editor test uses a separately installed VSIX/profile; run `npm run package` in the extension folder first. See [development sessions](../docs/development-hot-reload.md).
@@ -434,8 +434,8 @@ AppKit and Mac Catalyst development validation (macOS, matching Apple workloads)
 ```sh
 python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/mac_hot_reload_smoke.py temp/testing/appkit-reload-run --platform macos --framework net10.0-macos27.0
 python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/mac_hot_reload_smoke.py temp/testing/catalyst-reload-run --platform maccatalyst --framework net10.0-maccatalyst27.0
-python3 Doroti/eng/run-with-timeout.py node Doroti/tools/vscode-doroti/dist/test/runHost.js samples/DorotiTestbedApp temp/testing/appkit-editor-run --mac
-DOROTI_TEST_MAC_TARGET=maccatalyst python3 Doroti/eng/run-with-timeout.py node Doroti/tools/vscode-doroti/dist/test/runHost.js samples/DorotiTestbedApp temp/testing/catalyst-editor-run --mac
+python3 Doroti/eng/run-with-timeout.py node tools/vscode-doroti/dist/test/runHost.js samples/DorotiTestbedApp temp/testing/appkit-editor-run --mac
+DOROTI_TEST_MAC_TARGET=maccatalyst python3 Doroti/eng/run-with-timeout.py node tools/vscode-doroti/dist/test/runHost.js samples/DorotiTestbedApp temp/testing/catalyst-editor-run --mac
 ```
 
 Run these sequentially: they temporarily edit the same Testbed scene, restoring it on exit. The CLI smoke checks real metadata updates, seeded state preservation, compile recovery, rude edits and Stop/PID exit. The editor smoke installs the packaged VSIX in an isolated profile and invokes its Run/Hot Reload/Stop commands. `DOROTI_TEST_MAC_TFM` overrides the editor test's Xcode 27 TFM. `apple_build_profiles.py` also checks both Mac development profiles, rejects incompatible settings and verifies ordinary Debug/Release interpreter defaults remain unchanged.

@@ -6,7 +6,7 @@ import { randomUUID } from 'node:crypto';
 
 async function main() {
     const extension = path.resolve(__dirname, '../..');
-    const repo = path.resolve(extension, '../../..');
+    const repo = path.resolve(extension, '../..');
     const app = path.resolve(process.argv[2]);
     const evidence = path.resolve(process.argv[3]);
     const profile = path.join(evidence, 'profile'); const extensions = path.join(evidence, 'extensions');

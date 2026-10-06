@@ -89,7 +89,7 @@ An editor writes `request.json` with the current session/runtime IDs and a uniqu
 
 For unsupported edits, the piped watcher waits at its restart prompt. It does not consume redirected stdin for console keys ([SDK console implementation](https://github.com/dotnet/sdk/blob/main/src/Dotnet.Watch/Watch/UI/PhysicalConsole.cs)). The extension therefore displays Restart required and leaves the old process/state alive until the user chooses **Restart (resets state)**, which replaces the owned process tree. It does not use `--non-interactive`, which would automatically restart and discard state. After a rude edit, use Restart even if subsequently reverting it; compilation errors alone can be corrected and retried without restarting.
 
-The [VS Code extension](../tools/vscode-doroti/README.md) supplies the commands and status. `doroti.selectTarget` optionally accepts a declared alias; `doroti.hotReload` accepts `true` to explicitly save pending app C# documents for command automation. Interactive commands display the target picker and save/cancel picker. Restart warns that widget/input/scroll state resets. Public remote/debug/preview protocols are outside this contract.
+The [VS Code extension](../../tools/vscode-doroti/README.md) supplies the commands and status. `doroti.selectTarget` optionally accepts a declared alias; `doroti.hotReload` accepts `true` to explicitly save pending app C# documents for command automation. Interactive commands display the target picker and save/cancel picker. Restart warns that widget/input/scroll state resets. Public remote/debug/preview protocols are outside this contract.
 
 Web uses the main-owned threaded .NET runtime and its existing render worker. .NET SDK 10.0.400's injected browser agent supplies the metadata deltas; no assembly swap, page refresh or fake reassemble substitutes for a delta. The SDK agent uses synchronous JS exports, so development startup selects the .NET 10 runtime's `ThrowWhenBlockingWait` policy only when the SDK browser-refresh script is present. Blocking waits still throw. Normal published startup retains its default policy. This integration is qualified against the repository's pinned SDK/runtime; the runtime option is version-specific.
 
@@ -105,11 +105,11 @@ Validation commands (each uses a 20-minute cap):
 dotnet new install Doroti/templates/Doroti.Templates/content/doroti-app
 python Doroti/eng/run-with-timeout.py python Doroti/tests/development_fixture.py "temp/testing/dev-session/한글 경로/ReloadApp"
 python Doroti/eng/run-with-timeout.py python Doroti/tests/hot_reload_smoke.py temp/testing/dev-session/native "temp/testing/dev-session/한글 경로/ReloadApp"
-python Doroti/eng/run-with-timeout.py npm.cmd ci --ignore-scripts --prefix Doroti/tools/vscode-doroti
-python Doroti/eng/run-with-timeout.py npm.cmd test --prefix Doroti/tools/vscode-doroti
-python Doroti/eng/run-with-timeout.py npm.cmd run package --prefix Doroti/tools/vscode-doroti
-python Doroti/eng/run-with-timeout.py node Doroti/tools/vscode-doroti/dist/test/runHost.js "temp/testing/dev-session/한글 경로/ReloadApp" temp/testing/dev-session/editor
-python Doroti/eng/run-with-timeout.py node Doroti/tools/vscode-doroti/dist/test/runHost.js "temp/testing/dev-session/한글 경로/ReloadApp" temp/testing/dev-session/web-editor --web
+python Doroti/eng/run-with-timeout.py npm.cmd ci --ignore-scripts --prefix tools/vscode-doroti
+python Doroti/eng/run-with-timeout.py npm.cmd test --prefix tools/vscode-doroti
+python Doroti/eng/run-with-timeout.py npm.cmd run package --prefix tools/vscode-doroti
+python Doroti/eng/run-with-timeout.py node tools/vscode-doroti/dist/test/runHost.js "temp/testing/dev-session/한글 경로/ReloadApp" temp/testing/dev-session/editor
+python Doroti/eng/run-with-timeout.py node tools/vscode-doroti/dist/test/runHost.js "temp/testing/dev-session/한글 경로/ReloadApp" temp/testing/dev-session/web-editor --web
 ```
 
 The fixture invokes the installed template, then explicitly replaces Doroti package references with repository projects and corresponding SDK/build imports. This validates current source without claiming package-only distribution qualification. Editor tests install the VSIX in a separate profile and invoke real VS Code editor/command APIs. Native state is seeded automatically; this is not physical IME or mouse evidence. Close test hosts before removing evidence. Raw files belong under `temp/testing` (Android fixtures use `Doroti/artifacts/android-hot-reload`); preserve conclusions in the work documents.

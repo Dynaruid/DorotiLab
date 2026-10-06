@@ -41,7 +41,7 @@ try {
   await writeFile(resolve(output, 'appicon.svg'), `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024"><rect width="1024" height="1024" fill="${background}"/></svg>\n`);
   await writeFile(resolve(output, 'appicon.png'), images.get(512));
   await writeFile(resolve(output, 'favicon.svg'), svg);
-  await writeFile(resolve(root, 'Doroti/tools/vscode-doroti/images/icon.png'), await render(brandSvg, 256));
+  await writeFile(resolve(root, 'tools/vscode-doroti/images/icon.png'), await render(brandSvg, 256));
   // ICO directory entries point at individual PNG frames; Windows selects the
   // frame appropriate for Explorer, the taskbar and the window's current DPI.
   const sizes = [16, 24, 32, 48, 64, 128, 256];

@@ -118,7 +118,7 @@ Doroti/tools/vscode-doroti/
 
 revision: `a93c047fe2e93d93cff3e0a6bf3c2789862fea81` + working tree. Windows 10.0.26200, .NET 10.0.400 Debug, VS Code 1.139.1, Node 24.15.0, npm 11.17.0. npm lockfile/VSIX 빌드를 고정했고 archive 코드는 복사하지 않았다. 확장 license는 저장소 BSD-3-Clause다.
 
-- [로컬 확장](../../../../Doroti/tools/vscode-doroti/README.md)에 생성·앱/target 선택·Run·Hot Reload·Restart·Stop·Logs, 상태/전용 버튼, trust gate, 단일 세션, argv 배열·프로세스 트리 정리, 이름/폴더 충돌/취소/오류 안내를 구현했다. C# snippet 12개와 curated import 완성/Quick Fix를 제공한다. 별도 LSP/preview 서버는 없다.
+- [로컬 확장](../../../../tools/vscode-doroti/README.md)에 생성·앱/target 선택·Run·Hot Reload·Restart·Stop·Logs, 상태/전용 버튼, trust gate, 단일 세션, argv 배열·프로세스 트리 정리, 이름/폴더 충돌/취소/오류 안내를 구현했다. C# snippet 12개와 curated import 완성/Quick Fix를 제공한다. 별도 LSP/preview 서버는 없다.
 - [개발 세션 계약](../../../../Doroti/docs/development-hot-reload.md): `describe`는 CLI가 해석한 manifest JSON, `dev`는 명시적 Debug Windows/Web 실행이다. 일부 alias만 선언한 manifest를 허용한다. Windows `dotnet watch`의 실제 metadata callback → 소유 UI queue → 직렬 reassemble → frame 완료 후 revision/요청 ID ack로 연결했다. save/no-op만으로 성공 처리하지 않는다. Web Hot Reload도 후속 구현·검증을 통과했다(아래 기록).
 - 기존 reassemble의 무조건 예외와 빠진 element-tree reassemble을 수정했다. 종료 중 새 등록이 생기지 않도록 막고 pending registration을 취소한다. watcher가 export한 MSBuild 경로 때문에 C++ toolset을 못 찾던 문제도 native build 진입점에서 수정했다.
 - 설치한 `dotnet new doroti-app`을 **한글·공백 경로**에 생성했다. 검증 fixture는 명시적으로 현재 저장소 프로젝트/SDK와 target build props에 연결했다. 원본 package-only 배포의 재검증은 M7이며 이 결과로 대체하지 않는다.

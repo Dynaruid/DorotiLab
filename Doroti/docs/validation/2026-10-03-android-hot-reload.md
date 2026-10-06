@@ -7,11 +7,11 @@
 ## 구현
 
 - [Android launcher](../../eng/android-development.py)는 소스 저장 때 재설치하던 루프를 SDK `dotnet watch`의 메타데이터 업데이트로 교체했다. 하나의 승인된 ADB 기기를 자동 선택하며 복수 기기는 `-Device`로 지정한다. arm64/x64 ABI를 확인하고 잘못된 RID를 배포 전에 거절한다.
-- [개발 프로필](../../src/Doroti.Runner.Sdk/Sdk/Doroti.AndroidDevelopment.targets)은 Debug Mono, portable symbols, startup hooks, untrimmed/non-AOT APK를 사용한다. 기본 Release Mono/profiled AOT 프로필은 유지된다. SDK 10.0.400 이상과 Android workload의 `HotReloadWebSockets` capability가 필요하다.
+- [개발 프로필](../../../packages/platforms/build/Doroti.AndroidDevelopment.targets)은 Debug Mono, portable symbols, startup hooks, untrimmed/non-AOT APK를 사용한다. 기본 Release Mono/profiled AOT 프로필은 유지된다. SDK 10.0.400 이상과 Android workload의 `HotReloadWebSockets` capability가 필요하다.
 - SDK의 원본 delta agent와 인증된 WebSocket을 Android workload가 패키징하고 USB `adb reverse`로 연결한다. Mono의 `STARTUP_HOOKS` 설정을 runtimeconfig 생성 **이전**에 넣어 실제 agent가 시작되도록 한다.
 - `adb run-as`는 앱의 private `files/Doroti.Dev/<session>`에 있는 상태·요청 JSON만 전달한다. 요청을 임시 파일로 쓰고 atomic rename을 완료한 뒤 `prepared.json`을 발행한다. 에디터는 이 확인 전에 파일을 저장하지 않으며, [Widgets metadata handler](../../src/Doroti.Framework.Widgets/DorotiHotReload.cs)의 실제 reassembly frame 완료 뒤에만 `applied`를 표시한다. PID/runtime/session이 다른 요청과 종료된 프로세스의 오래된 상태는 인정하지 않는다.
 - [MAUI host](../../../packages/platforms/maui/Doroti.Host.Maui/Doroti.Host.Maui.csproj)는 개발 세션의 공통 framework references에서 RID를 제거한다. `dotnet watch`의 path+TFM 식별에 같은 프로젝트가 중복되는 오류를 해결했다. Windows aapt2 경로 제한을 피하도록 별도 개발 캐시를 `Doroti/artifacts/ad/<project-sdk-rid-hash>`에 둔다.
-- [VS Code extension](../../tools/vscode-doroti/src/extension.ts)은 Android Run/Hot Reload/Restart/Stop과 pre-save 요청 확인을 연결한다. Stop은 launcher에 `stop.json`을 보내 앱·watcher·이번 세션의 USB 포트를 정리한다. 프로젝트/리소스/네이티브 Kotlin·Java 변경과 SDK rude edit은 명시적인 Restart가 필요하다.
+- [VS Code extension](../../../tools/vscode-doroti/src/extension.ts)은 Android Run/Hot Reload/Restart/Stop과 pre-save 요청 확인을 연결한다. Stop은 launcher에 `stop.json`을 보내 앱·watcher·이번 세션의 USB 포트를 정리한다. 프로젝트/리소스/네이티브 Kotlin·Java 변경과 SDK rude edit은 명시적인 Restart가 필요하다.
 - 저장소 [VS Code task](../../../.vscode/tasks.json) `Doroti: Android Hot Reload`에서 Sample2/Testbed를 선택할 수 있다. `.vscode`의 나머지 개인 설정은 계속 Git ignore 대상이다.
 
 ## 검증
@@ -39,11 +39,11 @@
 ```powershell
 python Doroti/eng/run-with-timeout.py python Doroti/tests/android_development_bridge.py
 python Doroti/eng/run-with-timeout.py python Doroti/tests/android_development_profile.py Doroti/artifacts/android-hot-reload/<fresh-profile-run>
-python Doroti/eng/run-with-timeout.py npm.cmd test --prefix Doroti/tools/vscode-doroti
+python Doroti/eng/run-with-timeout.py npm.cmd test --prefix tools/vscode-doroti
 python Doroti/eng/run-with-timeout.py python Doroti/tests/android_hot_reload_smoke.py Doroti/artifacts/android-hot-reload/<fresh-run> --device R3CY30KZA4B
-python Doroti/eng/run-with-timeout.py npm.cmd run package --prefix Doroti/tools/vscode-doroti
+python Doroti/eng/run-with-timeout.py npm.cmd run package --prefix tools/vscode-doroti
 $env:DOROTI_TEST_ANDROID_DEVICE = 'R3CY30KZA4B'
-python Doroti/eng/run-with-timeout.py node Doroti/tools/vscode-doroti/dist/test/runHost.js samples/DorotiTestbedApp Doroti/artifacts/android-hot-reload/<fresh-vsix-run> --android
+python Doroti/eng/run-with-timeout.py node tools/vscode-doroti/dist/test/runHost.js samples/DorotiTestbedApp Doroti/artifacts/android-hot-reload/<fresh-vsix-run> --android
 ```
 
 최초 후보에서 긴 Windows 경로의 aapt2 실패와 framework 중복 평가를 발견했다. 다음 후보는 앱·상태 relay까지 실행됐지만 Mono startup config에 agent가 빠져 delta가 전달되지 않아 성공으로 인정하지 않았다. 중간 후보 두 개는 runtimeconfig 생성 내용을 확인한 뒤 설치 완료 전에 종료하고, hook을 입력 캐시 생성 전에 명시하는 방식으로 수정했다. 최종 `s25-05`와 `vsix-01`만 실기기 핫리로드 PASS로 인정한다. 원시 산출물은 삭제 가능한 `Doroti/artifacts` 아래에 있으며 지속 보존되는 결론은 이 문서를 따른다.

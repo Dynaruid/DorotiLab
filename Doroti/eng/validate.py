@@ -20,7 +20,7 @@ def source():
     # Current entry points and referenced planning archives, not deleted probe reports.
     docs = [ROOT / p for p in ("history/26-10-03/platform-gap-summary.md", "history/26-09-28/plan-summary.md", "README.md", "README.ko.md", "Doroti/README.md", "history/26-10-03/works/README.md",
         "Doroti/tests/README.md", "Doroti/docs/support-status.md", "Doroti/docs/desktop-windows.md",
-        "Doroti/docs/rendering-baselines.md", "Doroti/docs/web-host-architecture.md", "Doroti/docs/development-hot-reload.md", "Doroti/tools/vscode-doroti/README.md",
+        "Doroti/docs/rendering-baselines.md", "Doroti/docs/web-host-architecture.md", "Doroti/docs/development-hot-reload.md", "tools/vscode-doroti/README.md",
         "Doroti/docs/application-navigation.md", "Doroti/docs/desktop-window-context.md", "Doroti/docs/release-candidates.md",
         "Doroti/docs/platform-views/support-matrix.md", "Doroti/docs/validation/2026-10-04-web-structure.md",
         "samples/DorotiTestbedApp/README.md", "samples/DorotiSampleApp2/README.md",
