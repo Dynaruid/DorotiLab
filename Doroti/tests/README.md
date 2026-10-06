@@ -1,5 +1,14 @@
 # Maintained regression tests
 
+`webcil_cache.py` invokes the production MSBuild target against package, project
+and runner assemblies. It checks AOT/interpreter mode changes, initial cache
+invalidation, unchanged-cache reuse and changed content with old timestamps.
+It also checks the tree interpretation opt-in affects only the two framework
+assemblies and leaves Skia AOT compiled, including opt-out/non-Web boundaries.
+`web_splash.mts` checks a terminal Worker failure between runtime readiness and
+the first frame exposes retry instead of leaving the loading screen pending.
+Both are included in Developer/Release, together with `web_gl_frames.mts`.
+
 The [work3 Android follow-up](../../history/26-10-05/work3-summary.md#19-2026-10-05-android와-공통-잔여-실행)
 adds `AndroidSmoke` with explicit RID/device selection, installed-launcher discovery,
 standalone APKs, two sample lifecycle probes, joined Vulkan retirement, native
@@ -222,12 +231,29 @@ changes, simultaneous snapshot contents, bounded pool eviction and context-owner
 release. Mobile capture alignment is compared at both Full and Fixed resolutions in the
 72 fractional ROI conditions above, plus 60 adaptive/Kawase conditions.
 
-WebGL queue admission, slow completion, shutdown, context loss and fence
-failure/timeout are covered separately:
+WebGL queue admission, slow completion, shutdown, context loss, stale fence
+recovery, idle/background resume, and completion failure are covered separately:
 
 ```sh
 node --experimental-transform-types --test Doroti/tests/web_gl_frames.mts
 ```
+
+For sustained Sample2 browser responsiveness, serve a frozen publish with the
+test probe injected:
+
+```sh
+python3 Doroti/tests/web_blur_liveness.py --root <published-wwwroot> --out temp/testing/web-blur/new --port 8765
+```
+
+Open the printed URL (or the same path through an HTTPS tunnel on a physical
+iPhone). Keep the page in the foreground. The probe keeps sigma between 26 and
+32, alternates slider drags and list scrolls, checks that submitted frames keep
+advancing, and verifies an unrelated application tab after every mode. It logs
+main-page heartbeat, visibility, and worker diagnostics to `liveness.jsonl`.
+Add `--force-fence-timeout` for a controlled stale-status test: only the served
+queue's fence query is changed, and `gl.finish()` still completes real GPU work.
+This injection exercises the recovery path; it does not reproduce a WebKit
+driver defect or establish the cause of a reported freeze.
 
 For separate Full/Fixed still-image quality review, run from the repository root:
 

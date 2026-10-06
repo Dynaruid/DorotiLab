@@ -14,6 +14,8 @@ class Gpu {
   fences: WebGLSync[] = [];
   deleted: WebGLSync[] = [];
   flushed = 0;
+  finishes = 0;
+  onFinish = () => {};
   isContextLost() { return this.lost; }
   fenceSync() {
     if (!this.allocate) return null;
@@ -27,6 +29,7 @@ class Gpu {
   }
   deleteSync(fence: WebGLSync) { this.deleted.push(fence); }
   flush() { this.flushed++; }
+  finish() { this.finishes++; this.onFinish(); }
   get gl() { return this as unknown as WebGL2RenderingContext; }
 }
 const tick = () => new Promise(resolve => setTimeout(resolve, 8));
@@ -99,15 +102,73 @@ test('fence allocation failure is fatal instead of silently admitting unbounded 
   assert.equal(frames.diagnostics().inFlight, 0);
 });
 
-test('a completion timeout retains GPU ownership and does not reopen admission', async context => {
+test('stale Safari fence status synchronizes actual GPU work and keeps rendering alive', async context => {
   let now = 0;
   context.mock.method(performance, 'now', () => now);
   const gpu = new Gpu(), frames = new WebGlFrameQueue(gpu.gl);
-  frames.submitted(); now = 30001;
-  await assert.rejects(frames.waitForCapacity(), /timed out/);
-  await assert.rejects(frames.drainForShutdown(), /timed out/);
+  frames.submitted(); frames.submitted(); now = 1000;
+  const waiting = frames.waitForCapacity();
+  await tick();
+  assert.equal(gpu.deleted.length, 0);
+  assert.equal(gpu.finishes, 0, 'An old fence alone must not force synchronous completion');
+  now = 1251;
+  gpu.onFinish = () => assert.equal(gpu.deleted.length, 0, 'Textures must stay owned until GPU completion');
+  await waiting;
+  assert.equal(gpu.finishes, 1);
+  assert.equal(frames.diagnostics().completedSubmissions, 2);
+  assert.equal(frames.diagnostics().failure, null);
+  // Even a cache that remains TIMEOUT_EXPIRED after finish cannot pin slots.
+  assert.equal(gpu.status, gpu.TIMEOUT_EXPIRED);
+  assert.deepEqual(gpu.deleted, gpu.fences);
+  gpu.onFinish = () => {};
+  frames.submitted(); frames.submitted();
+  const next = frames.waitForCapacity(); now = 1502;
+  await next;
+  assert.equal(gpu.finishes, 2);
+  assert.equal(frames.diagnostics().peakInFlight, 2);
+  await frames.drainForShutdown();
+});
+
+test('failed completion synchronization retains ownership instead of admitting more GPU work', async context => {
+  let now = 0;
+  context.mock.method(performance, 'now', () => now);
+  const gpu = new Gpu(), frames = new WebGlFrameQueue(gpu.gl);
+  frames.submitted(); frames.submitted();
+  gpu.onFinish = () => { throw new Error('driver failure'); };
+  const waiting = frames.waitForCapacity(); now = 251;
+  await assert.rejects(waiting, /synchronization failed/);
+  await assert.rejects(frames.drainForShutdown(), /synchronization failed/);
   assert.equal(gpu.deleted.length, 0);
   gpu.lost = true;
   await frames.drainForShutdown();
+  assert.deepEqual(gpu.deleted, gpu.fences);
+});
+
+test('context loss during synchronization cancels admission without claiming completion', async context => {
+  let now = 0;
+  context.mock.method(performance, 'now', () => now);
+  const gpu = new Gpu(), frames = new WebGlFrameQueue(gpu.gl);
+  frames.submitted(); frames.submitted();
+  gpu.onFinish = () => { gpu.lost = true; };
+  const waiting = frames.waitForCapacity(); now = 251;
+  await waiting;
+  frames.submitted(); await frames.drainForShutdown();
+  assert.equal(frames.diagnostics().completedSubmissions, 0);
+  assert.equal(gpu.fences.length, 2);
+  assert.deepEqual(gpu.deleted, gpu.fences);
+});
+
+test('an idle fence with spare capacity resumes asynchronously and shutdown recovers stale status', async context => {
+  let now = 0;
+  context.mock.method(performance, 'now', () => now);
+  const gpu = new Gpu(), frames = new WebGlFrameQueue(gpu.gl);
+  frames.submitted(); now = 60000;
+  await frames.waitForCapacity();
+  assert.equal(gpu.finishes, 0);
+  const drain = frames.drainForShutdown();
+  now = 60251;
+  await drain;
+  assert.equal(gpu.finishes, 1);
+  assert.equal(frames.diagnostics().completedSubmissions, 1);
   assert.deepEqual(gpu.deleted, gpu.fences);
 });

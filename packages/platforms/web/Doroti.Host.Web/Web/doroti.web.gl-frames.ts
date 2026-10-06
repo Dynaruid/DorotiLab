@@ -8,18 +8,30 @@ export class WebGlFrameQueue {
   private submittedFrames = 0;
   private completedSubmissions = 0;
   private peakInFlight = 0;
+  private polls = 0;
+  private timeouts = 0;
+  private waitingSince: number | null = null;
+  private synchronizations = 0;
+  private maxCapacityWaitMs = 0;
+  private static readonly maxFenceWaitMs = 250;
 
   constructor(private readonly gl: WebGL2RenderingContext, readonly limit = 2) {
     if (!Number.isSafeInteger(limit) || limit < 1) throw new RangeError("Invalid WebGL frame limit.");
   }
 
   async waitForCapacity(): Promise<void> {
-    while (!this.closed) {
-      this.reap();
-      if (this.pending.length < this.limit) return;
-      // Yield the worker so input can replace an obsolete pending frame.
-      // A zero-timeout fence query never blocks the CPU on GPU completion.
-      await new Promise<void>(resolve => setTimeout(resolve, 4));
+    const started = this.waitingSince = performance.now();
+    try {
+      while (!this.closed) {
+        this.reap(performance.now() - started >= WebGlFrameQueue.maxFenceWaitMs);
+        if (this.pending.length < this.limit) return;
+        // Yield the worker so input can replace an obsolete pending frame.
+        // A zero-timeout fence query never blocks the CPU on GPU completion.
+        await new Promise<void>(resolve => setTimeout(resolve, 4));
+      }
+    } finally {
+      this.maxCapacityWaitMs = Math.max(this.maxCapacityWaitMs, performance.now() - started);
+      this.waitingSince = null;
     }
   }
 
@@ -43,9 +55,10 @@ export class WebGlFrameQueue {
 
   async drainForShutdown(): Promise<void> {
     this.closed = true;
-    this.reap();
+    const started = performance.now();
+    this.reap(false);
     while (this.pending.length) {
-      this.reap();
+      this.reap(performance.now() - started >= WebGlFrameQueue.maxFenceWaitMs);
       if (this.pending.length) await new Promise<void>(resolve => setTimeout(resolve, 4));
     }
   }
@@ -53,18 +66,25 @@ export class WebGlFrameQueue {
   diagnostics() {
     return { inFlight: this.pending.length, limit: this.limit, peakInFlight: this.peakInFlight,
       submittedFrames: this.submittedFrames, completedSubmissions: this.completedSubmissions,
-      failure: this.failure?.message ?? null };
+      failure: this.failure?.message ?? null, polls: this.polls, timeouts: this.timeouts,
+      synchronizations: this.synchronizations, maxCapacityWaitMs: this.maxCapacityWaitMs,
+      oldestSubmissionAgeMs: this.pending.length ? performance.now() - this.pending[0].started : 0,
+      capacityWaitMs: this.waitingSince === null ? 0 : performance.now() - this.waitingSince };
   }
 
-  private reap(): void {
+  private reap(synchronize: boolean): void {
     if (this.gl.isContextLost()) { this.contextLost(); return; }
     if (this.failure) throw this.failure;
     while (this.pending.length) {
       const submission = this.pending[0];
+      this.polls++;
       const status = this.gl.clientWaitSync(submission.fence, 0, 0);
       if (status === this.gl.TIMEOUT_EXPIRED) {
-        if (performance.now() - submission.started >= 30000)
-          throw this.fail("WebGL frame completion timed out; GPU resources remain owned.");
+        this.timeouts++;
+        // Measure an actual blocked admission, not the age of a fence left
+        // behind by an idle/background page. Its cached status may just need
+        // another WebGL task before the next asynchronous query can see it.
+        if (synchronize) this.completeSynchronously();
         return;
       }
       if (status !== this.gl.ALREADY_SIGNALED && status !== this.gl.CONDITION_SATISFIED)
@@ -73,6 +93,20 @@ export class WebGlFrameQueue {
       this.pending.shift();
       this.completedSubmissions++;
     }
+  }
+
+  private completeSynchronously(): void {
+    // WebKit refreshes a sync object's cached status in a separate WebGL task.
+    // If that cache stops advancing, waiting on it must not disable the app.
+    // finish() proves actual completion before freeing either slot; merely
+    // deleting a timed-out fence would let GPU work and memory grow unbounded.
+    try { this.gl.finish(); }
+    catch { throw this.fail("WebGL completion synchronization failed; GPU resources remain owned."); }
+    if (this.gl.isContextLost()) { this.contextLost(); return; }
+    this.synchronizations++;
+    for (const submission of this.pending) this.gl.deleteSync(submission.fence);
+    this.completedSubmissions += this.pending.length;
+    this.pending.length = 0;
   }
 
   private fail(message: string): Error { return this.failure ??= new Error(message); }

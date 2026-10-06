@@ -1,0 +1,236 @@
+{
+  "date": "2026-10-06",
+  "status": "GPU recovery qualified; sustained physical Safari qualification incomplete",
+  "sourceBase": "7b0ea116",
+  "device": {
+    "model": "iPhone 12",
+    "iOS": "26.6.1",
+    "browser": "Mobile Safari",
+    "devicePixelRatio": 3
+  },
+  "changes": {
+    "gpuInFlightLimit": 2,
+    "blockedAdmissionRecoveryMs": 250,
+    "recovery": "gl.finish() confirms GPU completion before releasing slots; failed completion retains ownership",
+    "sample2WasmMaximumBytes": 536870912,
+    "diagnostics": [
+      "webgl.capacityWaitMs",
+      "webgl.synchronizations",
+      "raster.phase",
+      "raster.phaseAgeMs"
+    ]
+  },
+  "method": "Synthetic touch slider movements at sigma 26–32; synthetic mouse control taps; optional alternating list strokes. Submitted frame progress and a Components/Variable Blur tab round trip are checked after every mode. Physical finger input and display presentation are not measured.",
+  "physicalSafari": {
+    "safari-heap512-renewed": {
+      "status": "PASS",
+      "secondsRequested": 100,
+      "inputMoves": 5990,
+      "scrollMoves": 0,
+      "bootCount": 1,
+      "error": null,
+      "lastSubmittedFrames": 6288,
+      "lastFailedFrames": 0,
+      "lastWebGl": {
+        "inFlight": 2,
+        "limit": 2,
+        "peakInFlight": 2,
+        "submittedFrames": 6289,
+        "completedSubmissions": 6287,
+        "failure": null,
+        "polls": 6507,
+        "timeouts": 220,
+        "synchronizations": 0,
+        "maxCapacityWaitMs": 1.519999999999527,
+        "oldestSubmissionAgeMs": 794.9199999999983,
+        "capacityWaitMs": 0
+      },
+      "lastRetainedFilterBytes": 32544656,
+      "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.1 Mobile/15E148 Safari/604.1",
+      "completedModes": [
+        "Fast adaptive",
+        "Full quality",
+        "Adaptive",
+        "Fixed 1/4",
+        "Dual Kawase"
+      ]
+    },
+    "safari-heap512-repeat-scroll": {
+      "status": "FAIL",
+      "secondsRequested": 180,
+      "inputMoves": 2126,
+      "scrollMoves": 1048,
+      "bootCount": 2,
+      "error": "Error: Unexpected page reload",
+      "lastSubmittedFrames": 2638,
+      "lastFailedFrames": 0,
+      "lastWebGl": {
+        "inFlight": 1,
+        "limit": 2,
+        "peakInFlight": 2,
+        "submittedFrames": 2639,
+        "completedSubmissions": 2638,
+        "failure": null,
+        "polls": 2676,
+        "timeouts": 38,
+        "synchronizations": 0,
+        "maxCapacityWaitMs": 1.1800000000012005,
+        "oldestSubmissionAgeMs": 7.19999999999709,
+        "capacityWaitMs": 0
+      },
+      "lastRetainedFilterBytes": 5991944,
+      "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.1 Mobile/15E148 Safari/604.1",
+      "completedModes": [],
+      "failures": [
+        {
+          "error": "Error: Application control did not settle within 5s: Volume:",
+          "progress": 2126
+        },
+        {
+          "error": "Error: Unexpected page reload",
+          "progress": 0
+        }
+      ]
+    }
+  },
+  "forcedStaleFence": {
+    "webkit-recovery-mouse-controls": {
+      "status": "PASS",
+      "secondsRequested": 20,
+      "inputMoves": 1056,
+      "scrollMoves": 456,
+      "bootCount": 1,
+      "error": null,
+      "lastSubmittedFrames": 191,
+      "lastFailedFrames": 0,
+      "lastWebGl": {
+        "inFlight": 2,
+        "limit": 2,
+        "peakInFlight": 2,
+        "submittedFrames": 192,
+        "completedSubmissions": 190,
+        "failure": null,
+        "polls": 4348,
+        "timeouts": 4348,
+        "synchronizations": 95,
+        "maxCapacityWaitMs": 298.8199999999997,
+        "oldestSubmissionAgeMs": 673.6599999999962,
+        "capacityWaitMs": 0
+      },
+      "lastRetainedFilterBytes": 28418428,
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.4 Safari/605.1.15",
+      "completedModes": [
+        "Fast adaptive",
+        "Full quality",
+        "Adaptive",
+        "Fixed 1/4",
+        "Dual Kawase"
+      ]
+    },
+    "chromium-recovery-final": {
+      "status": "PASS",
+      "secondsRequested": 20,
+      "inputMoves": 1054,
+      "scrollMoves": 455,
+      "bootCount": 1,
+      "error": null,
+      "lastSubmittedFrames": 146,
+      "lastFailedFrames": 0,
+      "lastWebGl": {
+        "inFlight": 1,
+        "limit": 2,
+        "peakInFlight": 2,
+        "submittedFrames": 147,
+        "completedSubmissions": 146,
+        "failure": null,
+        "polls": 3081,
+        "timeouts": 3081,
+        "synchronizations": 73,
+        "maxCapacityWaitMs": 548.5450000017881,
+        "oldestSubmissionAgeMs": 431.32500000298023,
+        "capacityWaitMs": 0
+      },
+      "lastRetainedFilterBytes": 27832072,
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.7778.96 Safari/537.36",
+      "completedModes": [
+        "Fast adaptive",
+        "Full quality",
+        "Adaptive",
+        "Fixed 1/4",
+        "Dual Kawase"
+      ]
+    }
+  },
+  "checks": {
+    "webRegressionTests": {
+      "passed": 53,
+      "failed": 0
+    },
+    "releaseAotPublish": "PASS; no command-line EmccMaximumHeapSize override",
+    "typescript": "PASS",
+    "finalReleaseAotChromium": {
+      "status": "PASS",
+      "seconds": 20,
+      "inputMoves": 1201,
+      "completedModes": [
+        "Fast adaptive",
+        "Full quality",
+        "Adaptive",
+        "Fixed 1/4",
+        "Dual Kawase"
+      ],
+      "submittedFrames": 373,
+      "failedFrames": 0,
+      "webgl": {
+        "inFlight": 2,
+        "limit": 2,
+        "peakInFlight": 2,
+        "submittedFrames": 374,
+        "completedSubmissions": 372,
+        "failure": null,
+        "polls": 449,
+        "timeouts": 77,
+        "synchronizations": 0,
+        "maxCapacityWaitMs": 0.32999999821186066,
+        "oldestSubmissionAgeMs": 709.7199999988079,
+        "capacityWaitMs": 0
+      },
+      "note": "Desktop headless Chromium with synthetic input; not physical Safari qualification."
+    }
+  },
+  "memoryEvidence": {
+    "report": "JetsamEvent-2026-10-06-122241.ips",
+    "reason": "highwater",
+    "process": "frontmost Safari WebContent",
+    "residentPages": 98427,
+    "pageBytes": 16384,
+    "residentBytes": 1612627968,
+    "scope": "Earlier AOT Safari stress run with 2 GiB maximum. Confirms a memory-limit termination in that run; does not establish the cause of every reported freeze."
+  },
+  "limitations": [
+    "The natural physical Safari PASS did not invoke recovery (synchronizations=0). Forced stale status tests verify the fallback without proving a WebKit fence defect caused the user report.",
+    "The physical scroll run failed a 5-second Components control check while native frames were still advancing; it later reloaded. It is not a successful sustained qualification.",
+    "512 MiB limits WASM linear memory only. It does not bound WebKit compiler, JavaScript, GPU or total process memory; it did not prevent the scroll-run reload.",
+    "Multiple earlier test pages remained in browser history/tabs and can contribute to device memory pressure. Final resident-memory reduction has not been measured.",
+    "Diagnostic WASM padding, JITerpreter disabling and pthread pool experiments did not establish a reliable fix and are absent from product source.",
+    "Playwright WebKit 26.4 AOT startup fails in the baseline as well; forced recovery browser checks use Non-AOT.",
+    "Previous qualification recorded iOS Chrome under a Safari label; that historical record has been corrected."
+  ],
+  "primarySources": [
+    "https://raw.githubusercontent.com/WebKit/WebKit/main/Source/WebCore/html/canvas/WebGLSync.cpp",
+    "https://github.com/dotnet/runtime/blob/main/src/mono/wasm/features.md",
+    "https://bugs.webkit.org/show_bug.cgi?id=304810"
+  ],
+  "sourceTestLogs": [
+    "temp/testing/ios-blur/final-tests.log",
+    "temp/testing/ios-blur/final-publish.log",
+    "temp/testing/ios-blur/device-probe.jsonl",
+    "temp/testing/ios-blur/final-aot-browser/liveness.jsonl"
+  ],
+  "releaseNativeWasm": {
+    "name": "dotnet.native.ezctw26bcq.wasm",
+    "bytes": 40482651,
+    "sha256": "fa6e490d9318973e03b02cf1b31d063bde825089bd98a8d5a4588112bcda5bb0"
+  },
+  "followUp": "2026-10-06-web-ios27-simulator.json: mixed AOT startup fix and 180-second simulator slider PASS; combined scroll/input qualification remains incomplete; physical retest could not launch while locked"
+}

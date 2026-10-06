@@ -10,7 +10,8 @@ from xml.sax.saxutils import escape
 
 ROOT = Path(__file__).resolve().parents[2]
 PROPERTIES = ['Configuration', 'RunAOTCompilation', 'RunAOTCompilationAfterBuild',
-              'PublishTrimmed', 'WasmBuildNative', 'WasmEnableThreads', 'NETCoreSdkVersion']
+              'PublishTrimmed', 'WasmBuildNative', 'WasmEnableThreads', 'NETCoreSdkVersion',
+              'DorotiWebInterpretWidgetTree']
 
 
 def main():
@@ -41,6 +42,11 @@ def main():
         # Ordinary Build/Run remains separate from the SDK publish AOT pipeline.
         assert all(p['RunAOTCompilationAfterBuild'] != 'true' for p in profiles.values()), profiles
         assert all(p['WasmEnableThreads'] == 'true' for p in profiles.values()), profiles
+        if app == 'DorotiSampleApp2':
+            assert profiles['release']['DorotiWebInterpretWidgetTree'] == 'true', profiles
+            opt_out = evaluate(project, 'Release', '-p:DorotiWebInterpretWidgetTree=false')
+            assert opt_out['DorotiWebInterpretWidgetTree'] == 'false', opt_out
+            profiles['widgetTreeOptOut'] = opt_out
         records[app] = profiles
 
     # Exercise the provider's packaged build props without the source runner imports.

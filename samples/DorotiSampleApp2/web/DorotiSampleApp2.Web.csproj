@@ -14,6 +14,12 @@
     <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
     <WasmBuildNative>true</WasmBuildNative>
     <WasmEnableThreads>true</WasmEnableThreads>
+    <!-- Recursive Cupertino mounting exceeds Safari's Worker stack under full
+         AOT. Retain AOT for Skia/interop while interpreting widget/layout code. -->
+    <DorotiWebInterpretWidgetTree Condition="'$(DorotiWebInterpretWidgetTree)' == ''">true</DorotiWebInterpretWidgetTree>
+    <!-- Keep the sample's shared WASM memory within the mobile-browser budget.
+         This is linear memory only; GPU and browser allocations are separate. -->
+    <EmccMaximumHeapSize Condition="'$(EmccMaximumHeapSize)' == ''">536870912</EmccMaximumHeapSize>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>$(DefineConstants);DOROTI_BROWSER</DefineConstants>
     <DorotiSkiaInteropLibrary>$(MSBuildThisFileDirectory)..\..\..\packages\platforms\web\Doroti.Target.Web.browser-wasm\build\DorotiSkiaInterop.js</DorotiSkiaInteropLibrary>

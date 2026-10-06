@@ -3264,7 +3264,10 @@ public sealed partial class SkiaSceneRenderer
         };
         if (value.Shader is not null)
         {
-            paint.Shader = ToShader(value.Shader);
+            // SKPaint retains its native shader reference. Release the temporary
+            // wrapper on the render owner instead of leaving it to finalization.
+            using var shader = ToShader(value.Shader);
+            paint.Shader = shader;
         }
 
         if (value.ColorFilter is not null)

@@ -1,0 +1,531 @@
+{
+  "date": "2026-10-06",
+  "status": "PARTIAL: startup overflow fixed; final sustained simulator qualification still fails or stalls",
+  "environment": {
+    "model": "iPhone 17 simulator",
+    "modelIdentifier": "iPhone18,3",
+    "iOS": "27.0",
+    "runtimeBuild": "24A434",
+    "browser": "Mobile Safari",
+    "safariVersion": "27.0",
+    "safariBuild": "8625.1.29.10.29"
+  },
+  "method": "Launch Safari with a frozen Sample2 publish and the sustained blur probe. Record bootstrap stages, errors and submitted frames. Localhost HTTP uses COOP/COEP; HTTPS comparison uses a temporary tunnel to the same frozen assets. No forced fence status was applied.",
+  "runs": [
+    {
+      "run": "simulator27-slider",
+      "status": "STARTUP_FAILED",
+      "build": "Release AOT",
+      "originScheme": "http",
+      "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.0 Mobile/15E148 Safari/604.1",
+      "devicePixelRatio": 3,
+      "viewport": {
+        "width": 402,
+        "height": 714
+      },
+      "errors": [
+        {
+          "error": "[object ErrorEvent]",
+          "source": null,
+          "stack": null
+        },
+        {
+          "error": "RangeError: Maximum call stack size exceeded.",
+          "source": null,
+          "stack": null
+        }
+      ],
+      "failure": "Error: Renderer did not start: {\"dorotiBootstrapStage\":\"started\",\"dorotiBootstrapStages\":\"before-start,starting,started\",\"dorotiRenderer\":\"worker-direct-webgl\",\"dorotiRendererRequested\":\"auto\",\"dorotiRendererReason\":\"ios-webkit-stability\",\"dorotiMemoryProfile\":\"mobile\",\"dorotiRuntimeLocation\":\"main\",\"dorotiRendererError\":\"Doroti worker runtime failed: RangeError: Maximum call stack size exceeded.\"}",
+      "lastDataset": {
+        "dorotiBootstrapStage": "started",
+        "dorotiBootstrapStages": "before-start,starting,started",
+        "dorotiRenderer": "worker-direct-webgl",
+        "dorotiRendererRequested": "auto",
+        "dorotiRendererReason": "ios-webkit-stability",
+        "dorotiMemoryProfile": "mobile",
+        "dorotiRuntimeLocation": "main",
+        "dorotiRendererError": "Doroti worker runtime failed: RangeError: Maximum call stack size exceeded."
+      },
+      "inputMoves": 0,
+      "completedModes": [],
+      "nativeWasm": {
+        "name": "dotnet.native.ezctw26bcq.wasm",
+        "bytes": 40482651,
+        "sha256": "fa6e490d9318973e03b02cf1b31d063bde825089bd98a8d5a4588112bcda5bb0"
+      },
+      "log": "temp/testing/ios-blur/simulator27/liveness.jsonl"
+    },
+    {
+      "run": "simulator27-baseline-aot2",
+      "status": "STARTUP_FAILED",
+      "build": "Release AOT",
+      "originScheme": "http",
+      "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.0 Mobile/15E148 Safari/604.1",
+      "devicePixelRatio": 3,
+      "viewport": {
+        "width": 402,
+        "height": 714
+      },
+      "errors": [
+        {
+          "error": "[object ErrorEvent]",
+          "source": "http://localhost:8774/_framework/dotnet.native.9lvclqoo4e.js",
+          "stack": null
+        },
+        {
+          "error": "RangeError: Maximum call stack size exceeded.",
+          "source": "wasm-function[108158]",
+          "stack": null
+        }
+      ],
+      "failure": "Error: Renderer did not start: {\"dorotiBootstrapStage\":\"started\",\"dorotiBootstrapStages\":\"before-start,starting,started\",\"dorotiRenderer\":\"worker-direct-webgl\",\"dorotiRendererRequested\":\"auto\",\"dorotiRendererReason\":\"ios-webkit-stability\",\"dorotiMemoryProfile\":\"mobile\",\"dorotiRuntimeLocation\":\"main\",\"dorotiRendererError\":\"Doroti worker runtime failed: RangeError: Maximum call stack size exceeded.\"}",
+      "lastDataset": {
+        "dorotiBootstrapStage": "started",
+        "dorotiBootstrapStages": "before-start,starting,started",
+        "dorotiRenderer": "worker-direct-webgl",
+        "dorotiRendererRequested": "auto",
+        "dorotiRendererReason": "ios-webkit-stability",
+        "dorotiMemoryProfile": "mobile",
+        "dorotiRuntimeLocation": "main",
+        "dorotiRendererError": "Doroti worker runtime failed: RangeError: Maximum call stack size exceeded."
+      },
+      "inputMoves": 0,
+      "completedModes": [],
+      "nativeWasm": {
+        "name": "dotnet.native.hbhp2rs2jk.wasm",
+        "bytes": 40468551,
+        "sha256": "130e3606632605d8eeec3fc83c40e91ef96a39296da971a13457700f0f92ad73"
+      },
+      "log": "temp/testing/ios-blur/simulator27-baseline/liveness.jsonl"
+    },
+    {
+      "run": "simulator27-aot-https",
+      "status": "STARTUP_FAILED",
+      "build": "Release AOT",
+      "originScheme": "https",
+      "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.0 Mobile/15E148 Safari/604.1",
+      "devicePixelRatio": 3,
+      "viewport": {
+        "width": 402,
+        "height": 714
+      },
+      "errors": [
+        {
+          "error": "[object ErrorEvent]",
+          "source": null,
+          "stack": null
+        },
+        {
+          "error": "RangeError: Maximum call stack size exceeded.",
+          "source": null,
+          "stack": null
+        }
+      ],
+      "failure": "Error: Renderer did not start: {\"dorotiBootstrapStage\":\"started\",\"dorotiBootstrapStages\":\"before-start,starting,started\",\"dorotiRenderer\":\"worker-direct-webgl\",\"dorotiRendererRequested\":\"auto\",\"dorotiRendererReason\":\"ios-webkit-stability\",\"dorotiMemoryProfile\":\"mobile\",\"dorotiRuntimeLocation\":\"main\",\"dorotiRendererError\":\"Doroti worker runtime failed: RangeError: Maximum call stack size exceeded.\"}",
+      "lastDataset": {
+        "dorotiBootstrapStage": "started",
+        "dorotiBootstrapStages": "before-start,starting,started",
+        "dorotiRenderer": "worker-direct-webgl",
+        "dorotiRendererRequested": "auto",
+        "dorotiRendererReason": "ios-webkit-stability",
+        "dorotiMemoryProfile": "mobile",
+        "dorotiRuntimeLocation": "main",
+        "dorotiRendererError": "Doroti worker runtime failed: RangeError: Maximum call stack size exceeded."
+      },
+      "inputMoves": 0,
+      "completedModes": [],
+      "nativeWasm": {
+        "name": "dotnet.native.ezctw26bcq.wasm",
+        "bytes": 40482651,
+        "sha256": "fa6e490d9318973e03b02cf1b31d063bde825089bd98a8d5a4588112bcda5bb0"
+      },
+      "log": "temp/testing/ios-blur/simulator27/liveness.jsonl"
+    },
+    {
+      "run": "simulator27-non-aot-slider",
+      "status": "STARTUP_NOT_COMPLETED_DURING_OBSERVATION",
+      "build": "Release Non-AOT",
+      "originScheme": "http",
+      "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.0 Mobile/15E148 Safari/604.1",
+      "devicePixelRatio": 3,
+      "viewport": {
+        "width": 402,
+        "height": 714
+      },
+      "errors": [],
+      "failure": null,
+      "lastDataset": {
+        "dorotiBootstrapStage": "starting",
+        "dorotiBootstrapStages": "before-start,starting",
+        "dorotiRenderer": "worker-direct-webgl",
+        "dorotiRendererRequested": "auto",
+        "dorotiRendererReason": "ios-webkit-stability",
+        "dorotiMemoryProfile": "mobile",
+        "dorotiRuntimeLocation": "main"
+      },
+      "inputMoves": 0,
+      "completedModes": [],
+      "nativeWasm": {
+        "name": "dotnet.native.5d5zbrqfnt.wasm",
+        "bytes": 9661682,
+        "sha256": "1763550477d8e64adcb6991885f8600427d367f48819cd890f2da228edf31221"
+      },
+      "log": "temp/testing/ios-blur/simulator27-non-aot/liveness.jsonl"
+    },
+    {
+      "run": "simulator27-non-aot-https-slider",
+      "status": "STARTUP_NOT_COMPLETED_DURING_OBSERVATION",
+      "build": "Release Non-AOT",
+      "originScheme": "https",
+      "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.0 Mobile/15E148 Safari/604.1",
+      "devicePixelRatio": 3,
+      "viewport": {
+        "width": 402,
+        "height": 714
+      },
+      "errors": [],
+      "failure": null,
+      "lastDataset": {
+        "dorotiBootstrapStage": "starting",
+        "dorotiBootstrapStages": "before-start,starting",
+        "dorotiRenderer": "worker-direct-webgl",
+        "dorotiRendererRequested": "auto",
+        "dorotiRendererReason": "ios-webkit-stability",
+        "dorotiMemoryProfile": "mobile",
+        "dorotiRuntimeLocation": "main"
+      },
+      "inputMoves": 0,
+      "completedModes": [],
+      "nativeWasm": {
+        "name": "dotnet.native.5d5zbrqfnt.wasm",
+        "bytes": 9661682,
+        "sha256": "1763550477d8e64adcb6991885f8600427d367f48819cd890f2da228edf31221"
+      },
+      "log": "temp/testing/ios-blur/simulator27-non-aot/liveness.jsonl"
+    }
+  ],
+  "observations": [
+    "Changed AOT and pre-fix AOT both fail before slider input with RangeError: Maximum call stack size exceeded.",
+    "Changed AOT fails over HTTPS as well as localhost HTTP. This comparison does not isolate the underlying engine/runtime cause.",
+    "Changed Non-AOT reached main-runtime creation, then stopped emitting startup heartbeat. It did not reach the blur page during approximately 72 seconds of foreground HTTP observation or approximately 67 seconds of foreground HTTPS observation. The pages were then navigated away from; an indefinitely stalled startup has not been proven.",
+    "The bootstrap dataset can say started while dorotiRendererError records a failed raster runtime and the root is absent. Started alone does not qualify a working renderer."
+  ],
+  "limitations": [
+    "No mode completed, so this is a startup result, not a PASS or FAIL of sustained blur rendering.",
+    "This is not evidence that the startup failure has the same cause as the physical iOS 26.6.1 slider/input freeze or WebContent highwater termination.",
+    "Non-AOT is a Release build with RunAOTCompilation=false; an SDK hot-reload Debug session was not tested.",
+    "Simulator results do not qualify physical iOS 27 memory or GPU behavior."
+  ],
+  "buildChecks": {
+    "releaseNonAotPublish": "PASS",
+    "command": "dotnet publish samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj -c Release --no-restore -p:RunAOTCompilation=false -p:DorotiSampleWebFontSource=Assets -o temp/testing/ios-blur/simulator27-non-aot-publish",
+    "log": "temp/testing/ios-blur/simulator27-non-aot-publish.log"
+  },
+  "relatedPrimarySource": "https://bugs.webkit.org/show_bug.cgi?id=324968",
+  "changes": {
+    "DorotiWebInterpretWidgetTree": true,
+    "interpretedAssemblies": [
+      "Doroti.Framework.Widgets",
+      "Doroti.Framework.Rendering"
+    ],
+    "otherAssemblies": "AOT remains enabled, including Doroti.Skia.Rendering and web interop",
+    "webcilCache": "Invalidate on execution mode, tree interpretation, runtime/package content and project/runner content changes",
+    "splash": "Terminal runtime failure before the first frame exposes retry",
+    "shaderLifetime": "ToPaint releases temporary native shader wrapper immediately after SKPaint retains its reference"
+  },
+  "diagnosis": {
+    "startupFailure": "Captured Worker error stack shows recursive Element.inflateWidget/updateChild, ComponentElement.mount/performRebuild and StatefulElement._firstBuild exhausting the Safari Worker stack before blur starts",
+    "stackLog": "temp/testing/ios-blur/startup-debug/corrected-aot-check/liveness.jsonl",
+    "exactSymbolMap": "temp/testing/ios-blur/startup-debug/corrected-aot/dotnet.native.js.symbols",
+    "cacheFailure": "An interpreted publish reused the stripped Sample2 WebCIL from AOT; the single-worker comparison asserted NIY in the empty Program constructor. Regeneration restores its full constructor IL. Cache regeneration alone does not avoid full-AOT recursive mount overflow."
+  },
+  "afterFix": [
+    {
+      "run": "mixed-aot-sim27",
+      "status": "FAIL",
+      "build": "Release mixed AOT, threaded main runtime",
+      "browser": "iOS 27.0 simulator Safari",
+      "secondsRequested": 30,
+      "scroll": true,
+      "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.0 Mobile/15E148 Safari/604.1",
+      "inputMoves": 322,
+      "scrollMoves": 151,
+      "completedModes": [],
+      "reloads": 0,
+      "errors": [],
+      "failure": "Error: Application control did not settle within 5s: Volume:",
+      "lastSubmittedFrames": 729,
+      "lastFailedFrames": 0,
+      "peakWebGlInFlight": 2,
+      "maxRetainedFilterBytes": 6242580,
+      "maxWasmBytes": 208404480,
+      "log": "temp/testing/ios-blur/startup-debug/mixed-check/liveness.jsonl"
+    },
+    {
+      "run": "mixed-aot-sim27-slider",
+      "status": "PASS",
+      "build": "Release mixed AOT, threaded main runtime",
+      "browser": "iOS 27.0 simulator Safari",
+      "secondsRequested": 180,
+      "scroll": false,
+      "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.0 Mobile/15E148 Safari/604.1",
+      "inputMoves": 10572,
+      "scrollMoves": 0,
+      "completedModes": [
+        "Fast adaptive",
+        "Full quality",
+        "Adaptive",
+        "Fixed 1/4",
+        "Dual Kawase"
+      ],
+      "reloads": 0,
+      "errors": [],
+      "failure": null,
+      "lastSubmittedFrames": 8234,
+      "lastFailedFrames": 0,
+      "peakWebGlInFlight": 2,
+      "maxRetainedFilterBytes": 33311252,
+      "maxWasmBytes": 250085376,
+      "log": "temp/testing/ios-blur/startup-debug/mixed-check/liveness.jsonl"
+    },
+    {
+      "run": "mixed-aot-playwright",
+      "status": "FAIL",
+      "build": "Release mixed AOT, threaded main runtime",
+      "browser": "Playwright WebKit 26.4",
+      "secondsRequested": 20,
+      "scroll": true,
+      "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.4 Mobile/15E148 Safari/604.1",
+      "inputMoves": 1037,
+      "scrollMoves": 441,
+      "completedModes": [
+        "Fast adaptive",
+        "Full quality",
+        "Adaptive",
+        "Fixed 1/4"
+      ],
+      "reloads": 0,
+      "errors": [],
+      "failure": "Error: Application control did not settle within 5s: Volume:",
+      "lastSubmittedFrames": 1313,
+      "lastFailedFrames": 0,
+      "peakWebGlInFlight": 2,
+      "maxRetainedFilterBytes": 32123352,
+      "maxWasmBytes": 208404480,
+      "log": "temp/testing/ios-blur/startup-debug/mixed-check/liveness.jsonl"
+    },
+    {
+      "run": "mixed-aot-chromium",
+      "status": "FAIL",
+      "build": "Release mixed AOT, threaded main runtime",
+      "browser": "Chromium",
+      "secondsRequested": 20,
+      "scroll": true,
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.7778.96 Safari/537.36",
+      "inputMoves": 634,
+      "scrollMoves": 274,
+      "completedModes": [
+        "Fast adaptive",
+        "Full quality"
+      ],
+      "reloads": 0,
+      "errors": [],
+      "failure": "Error: Application control did not settle within 5s: Volume:",
+      "lastSubmittedFrames": 117,
+      "lastFailedFrames": 0,
+      "peakWebGlInFlight": 2,
+      "maxRetainedFilterBytes": 36973260,
+      "maxWasmBytes": 208404480,
+      "log": "temp/testing/ios-blur/startup-debug/mixed-check/liveness.jsonl"
+    },
+    {
+      "run": "mixed-webkit-scroll-check",
+      "status": "PASS",
+      "build": "Release mixed AOT, threaded main runtime",
+      "browser": "Playwright WebKit 26.4",
+      "secondsRequested": 20,
+      "scroll": true,
+      "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.4 Mobile/15E148 Safari/604.1",
+      "inputMoves": 1059,
+      "scrollMoves": 461,
+      "completedModes": [
+        "Fast adaptive",
+        "Full quality",
+        "Adaptive",
+        "Fixed 1/4",
+        "Dual Kawase"
+      ],
+      "reloads": 0,
+      "errors": [],
+      "failure": null,
+      "lastSubmittedFrames": 1324,
+      "lastFailedFrames": 0,
+      "peakWebGlInFlight": 2,
+      "maxRetainedFilterBytes": 33508632,
+      "maxWasmBytes": 208404480,
+      "log": "temp/testing/ios-blur/startup-debug/mixed-check/liveness.jsonl"
+    },
+    {
+      "run": "final-sim27-scroll-detail",
+      "status": "FAIL",
+      "build": "Final Release mixed AOT source publish",
+      "browser": "iOS 27.0 simulator Safari",
+      "secondsRequested": 30,
+      "scroll": true,
+      "inputMoves": 332,
+      "completedModes": [],
+      "failure": "Error: Application control did not settle within 5s: Volume:",
+      "lastSubmittedFrames": 842,
+      "lastFailedFrames": 0,
+      "lastRasterPhase": "idle",
+      "selectedTabAtFailure": "Variable Blur",
+      "log": "temp/testing/ios-blur/startup-debug/final-check/liveness.jsonl"
+    },
+    {
+      "run": "final-resource-sim-scroll",
+      "status": "FAIL",
+      "build": "final source publish",
+      "secondsRequested": 30,
+      "scroll": true,
+      "inputMoves": 641,
+      "completedModes": [
+        "Fast adaptive"
+      ],
+      "failure": "Error: Application control did not settle within 5s: Volume:",
+      "lastSubmittedFrames": 1107,
+      "lastFailedFrames": 0,
+      "lastRasterPhase": "idle",
+      "log": "temp/testing/ios-blur/startup-debug/final-resources-check/liveness.jsonl"
+    },
+    {
+      "run": "final-resource-sim-slider",
+      "status": "FAIL",
+      "build": "final source publish",
+      "secondsRequested": 180,
+      "scroll": false,
+      "inputMoves": 0,
+      "completedModes": [
+        "Fast adaptive"
+      ],
+      "failure": "Error: Unexpected page reload",
+      "lastSubmittedFrames": 2431,
+      "lastFailedFrames": 0,
+      "lastRasterPhase": "idle",
+      "log": "temp/testing/ios-blur/startup-debug/final-resources-check/liveness.jsonl"
+    },
+    {
+      "run": "final-resource-webkit",
+      "status": "FAIL",
+      "build": "final source publish",
+      "secondsRequested": 20,
+      "scroll": true,
+      "inputMoves": 421,
+      "completedModes": [
+        "Fast adaptive"
+      ],
+      "failure": "Error: Application control did not settle within 5s: Volume:",
+      "lastSubmittedFrames": 900,
+      "lastFailedFrames": 0,
+      "lastRasterPhase": "idle",
+      "log": "temp/testing/ios-blur/startup-debug/final-resources-check/liveness.jsonl"
+    },
+    {
+      "run": "final-resource-chromium",
+      "status": "PASS",
+      "build": "final source publish",
+      "secondsRequested": 20,
+      "scroll": true,
+      "inputMoves": 1059,
+      "completedModes": [
+        "Fast adaptive",
+        "Full quality",
+        "Adaptive",
+        "Fixed 1/4",
+        "Dual Kawase"
+      ],
+      "failure": null,
+      "lastSubmittedFrames": 225,
+      "lastFailedFrames": 0,
+      "lastRasterPhase": "idle",
+      "log": "temp/testing/ios-blur/startup-debug/final-resources-check/liveness.jsonl"
+    },
+    {
+      "run": "runtime12-sim-scroll",
+      "status": "FAIL",
+      "build": "diagnostic runtime 10.0.12; version not changed in source",
+      "secondsRequested": 30,
+      "scroll": true,
+      "inputMoves": 324,
+      "completedModes": [],
+      "failure": "Error: Application control did not settle within 5s: Volume:",
+      "lastSubmittedFrames": 761,
+      "lastFailedFrames": 0,
+      "lastRasterPhase": "idle",
+      "log": "temp/testing/ios-blur/startup-debug/runtime12-check/liveness.jsonl"
+    },
+    {
+      "run": "runtime12-webkit",
+      "status": "PASS",
+      "build": "diagnostic runtime 10.0.12; version not changed in source",
+      "secondsRequested": 20,
+      "scroll": true,
+      "inputMoves": 1060,
+      "completedModes": [
+        "Fast adaptive",
+        "Full quality",
+        "Adaptive",
+        "Fixed 1/4",
+        "Dual Kawase"
+      ],
+      "failure": null,
+      "lastSubmittedFrames": 1429,
+      "lastFailedFrames": 0,
+      "lastRasterPhase": "idle",
+      "log": "temp/testing/ios-blur/startup-debug/runtime12-check/liveness.jsonl"
+    }
+  ],
+  "finalPublish": {
+    "path": "temp/testing/ios-blur/startup-debug/final-resources/wwwroot",
+    "status": "BUILD PASS; sustained simulator NOT QUALIFIED",
+    "nativeWasm": {
+      "name": "dotnet.native.agee69nc8u.wasm",
+      "bytes": 35439899,
+      "sha256": "56c5e6bd87426bd6f9e1238e70c43286077a0f3e31cfa19ab4211e41dfa7f247"
+    },
+    "runtime": "10.0.11",
+    "scope": "Actual source publish; no JavaScript/WASM diagnostic modifications"
+  },
+  "checks": {
+    "webRegressions": "54 PASS",
+    "msbuildRegressionCases": "2 PASS: cache identity and opt-in tree AOT boundaries",
+    "aotProfile": "PASS both sample defaults, opt-outs and provider props",
+    "typescript": "PASS",
+    "releasePublish": "PASS",
+    "cpuShaderLifetime": "PASS: gradient snapshot pixels after temporary shader release, frame ownership, texture budgets and image readback",
+    "metalGpu": "31 blur conditions PASS: pixels, two retained frames, reverse retirement and drain"
+  },
+  "physicalRetest": {
+    "status": "NOT RUN",
+    "model": "iPhone 12",
+    "iOS": "26.6.1",
+    "reason": "devicectl rejected Safari launch because the device was locked; prior physical results are preserved in the blur-liveness record"
+  },
+  "remainingIssue": "Final resource-lifetime build ignored a tab tap after scroll and stopped emitting main-page heartbeat during the second mode of a separate 180-second slider run. Previous mixed-AOT 180-second PASS is retained as a single successful observation, not consistent stability.",
+  "beforeShaderLifetimeFixPublish": {
+    "path": "temp/testing/ios-blur/startup-debug/final-mixed/wwwroot",
+    "status": "PASS",
+    "nativeWasm": {
+      "name": "dotnet.native.l5hyx9bckq.wasm",
+      "bytes": 35439758,
+      "sha256": "59c02284a58d7237057aa5f8211ae77119b8fd2f54d6bbf017efef47056715f9"
+    },
+    "testedFixtureComparison": "All 118 uncompressed wwwroot assets are byte-identical to the mixed-aot fixture used for the runs above; no runtime JavaScript or WASM patches are present"
+  },
+  "runtimeVersionComparison": "10.0.12 also failed the simulator scroll/tab control check, so changing the pinned runtime version is not established as a fix and was not applied.",
+  "freezeSample": {
+    "physicalFootprintMiB": 415.5,
+    "peakPhysicalFootprintMiB": 657.0,
+    "observed": "Simulator WebContent main thread uses a full CPU core and repeatedly calls performance clock; GPU wait was not blocked in the last diagnostic. The exact native wait/GC cause is not established.",
+    "log": "temp/testing/ios-blur/startup-debug/final-slider-freeze.sample.txt"
+  }
+}

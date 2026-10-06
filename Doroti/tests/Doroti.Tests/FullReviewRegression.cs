@@ -180,6 +180,19 @@ internal static class FullReviewRegression
         using var repaintScene = repaintBuilder.build(); using var repainted = repaintScene.toImageSync(4, 4);
         var repaintBytes = repainted.toByteData().asTask(); Terminal(repaintBytes);
         Require(repaintBytes.Result!.buffer.asUint8List().ToArray().SequenceEqual(data), "PNG decode/image repaint differs from snapshot pixels.");
+        var gradientRecorder = new PictureRecorder(); var gradientCanvas = new Canvas(gradientRecorder);
+        gradientCanvas.drawRect(Rect.fromLTWH(0, 0, 4, 4), new Paint {
+            shader = Gradient.linear(Offset.zero, new Offset(4, 0),
+                [new Color(0xffff0000), new Color(0xff0000ff)]),
+        });
+        using var gradientPicture = gradientRecorder.endRecording();
+        var gradientBuilder = new SceneBuilder(tester.View.viewId); gradientBuilder.addPicture(Offset.zero, gradientPicture);
+        using var gradientScene = gradientBuilder.build(); using var gradientImage = gradientScene.toImageSync(4, 4);
+        var gradientBytes = gradientImage.toByteData().asTask(); Terminal(gradientBytes);
+        var gradientPixels = gradientBytes.Result!.buffer.asUint8List().ToArray();
+        Require(gradientPixels[0] > gradientPixels[2] && gradientPixels[12] < gradientPixels[14]
+            && gradientPixels[3] == 255 && gradientPixels[15] == 255,
+            "Paint lost its native shader reference after the temporary wrapper was released.");
         var asyncImage = scene.toImage(4,4).asTask(); Terminal(asyncImage); asyncImage.Result.Dispose();
         image.Dispose();
         Terminal(chained.toByteData().asTask());

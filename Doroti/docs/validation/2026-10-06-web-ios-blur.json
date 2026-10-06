@@ -2,9 +2,12 @@
   "device": {
     "model": "iPhone 12",
     "iOS": "26.6.1",
-    "devicePixelRatio": 3
+    "devicePixelRatio": 3,
+    "browser": "iOS Chrome 154.0.8037.55 (WebKit)",
+    "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 26_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/154.0.8037.55 Mobile/15E148 Safari/604.1"
   },
-  "method": "Synthetic touch pointer drags in actual Mobile Safari: 6 rounds x 128 move samples per blur mode, five modes. Physical finger input and display FPS were not measured.",
+  "browserCorrection": "The original record mislabeled these physical runs as Safari. devicectl openURL uses the default browser; recorded UA contains CriOS. Metrics are retained as iOS Chrome evidence, not Safari qualification.",
+  "method": "Synthetic touch pointer drags in actual iOS Chrome: 6 rounds x 128 move samples per blur mode, five modes. Physical finger input and display FPS were not measured.",
   "runs": {
     "iphone12-baseline2": {
       "status": "PASS",
@@ -158,13 +161,14 @@
     "metalPixelComparisons": "PASS; includes 72 fixed/full alignment conditions and 60 adaptive/Kawase alignment conditions; maximum allowed channel error 3/255",
     "coreRegressions": "PASS",
     "releaseAotBuild": "PASS",
-    "physicalSafariAot": "PASS: 30 rounds, five modes, zero frame failures or page reloads",
+    "physicalIosChromeAot": "PASS: 30 rounds, five modes, zero frame failures or page reloads",
     "metalAlignmentMaximumChannelError": 1
   },
   "limitations": [
-    "Original AOT Safari page reload reproduced during the second Fast adaptive drag. OOM is inferred rather than confirmed by resident-memory evidence.",
+    "Original AOT iOS Chrome page reload reproduced during the second Fast adaptive drag. OOM is inferred rather than confirmed by resident-memory evidence.",
     "Pool and WASM byte accounting are not GPU/process resident memory. Instruments Activity Monitor could not export a valid trace.",
-    "Playwright WebKit 26.4 AOT startup fails with Maximum call stack size exceeded in both baseline and changed builds; physical Safari 26.6.1 AOT passed.",
+    "Playwright WebKit 26.4 AOT startup fails with Maximum call stack size exceeded in both baseline and changed builds; physical iOS Chrome 26.6.1 AOT passed.",
+    "These zero-ending slider sweeps do not establish sustained rendering or application input responsiveness.",
     "The related WebKit report concerns WebGPU resolution transitions, while the tested iOS default is WebGL2."
   ],
   "relatedPrimarySource": "https://bugs.webkit.org/show_bug.cgi?id=312563",

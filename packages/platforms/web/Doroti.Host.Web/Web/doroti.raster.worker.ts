@@ -130,6 +130,15 @@ interface WorkerPresenter {
 type WorkerMode = "worker-direct-webgl" | "worker-direct-webgpu";
 let webgpu: typeof import("./doroti.webgpu.js") | undefined;
 let webglFrames: WebGlFrameQueue | undefined;
+let rasterPhase = "idle";
+let rasterPhaseStarted = 0;
+function setRasterPhase(phase: string): void { rasterPhase = phase; rasterPhaseStarted = performance.now(); }
+function captureRasterProgress() {
+  return { phase: rasterPhase, phaseAgeMs: performance.now() - rasterPhaseStarted,
+    currentRequest: presenter?.current?.requestId ?? 0, latestRequest: presenter?.latest?.requestId ?? 0,
+    draining: presenter?.draining ?? false, contextLost: presenter?.contextLost ?? false,
+    lastDispatchedInputSequence, runtimeState: runtimeState.state };
+}
 let webgpuIdentity: HostSnapshot["gpu"] | undefined;
 
 interface EmscriptenGlRuntime {
@@ -588,6 +597,7 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
   let webglWorkStarted = false;
   try {
     discardPlatformFrame();
+    setRasterPhase("gpu-capacity");
     if (webgpu) await webgpu.waitForCapacity();
     else await webglFrames!.waitForCapacity();
     if (request.terminal || value.contextLost || runtimeState.state === "disposing"
@@ -623,6 +633,7 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
     }
     if (webgpu) {
       const started = performance.now();
+      setRasterPhase("graphite-paint");
       const result = surface!.RenderGraphiteFrame(request.requestId, request.generation,
         request.logicalWidth, request.logicalHeight, request.physicalWidth, request.physicalHeight,
         request.devicePixelRatio, request.timestampMicroseconds);
@@ -635,6 +646,7 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
       webgpu.submitted();
       frameCost?.record(3, request.requestId, request.inputSequence, performance.timeOrigin + started,
         performance.timeOrigin + completed, result === "exact-rendered" ? 1 : 0);
+      setRasterPhase("dom-commit");
       if (!await commitPlatformFrame()) {
         surface!.CompleteFrame(request.requestId, request.generation, "superseded", "DOM placement superseded before ACK");
         terminal(request, "superseded", "DOM placement superseded before ACK");
@@ -668,6 +680,7 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
     gl.viewport(0, 0, value.canvas.width, value.canvas.height);
     const managedSurfaceStarted = performance.now();
     webglWorkStarted = true;
+    setRasterPhase("webgl-paint");
     const result = String(surface!.RenderFrame(
       request.requestId, request.generation, request.logicalWidth, request.logicalHeight,
       request.physicalWidth, request.physicalHeight,
@@ -694,6 +707,7 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
       return;
     }
     const directFinalizeStarted = performance.now();
+    setRasterPhase("webgl-submit");
     clearDirectVisibleBands(
       value, request.physicalWidth, request.physicalHeight);
     webglFrames!.submitted();
@@ -704,6 +718,7 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
       snapshot = { ...snapshot, surfaceGeneration: snapshot.surfaceGeneration + 1 };
       dispatchWorkerSnapshot(hostId, JSON.stringify(snapshot));
     }
+    setRasterPhase("dom-commit");
     if (!await commitPlatformFrame()) {
         surface!.CompleteFrame(request.requestId, request.generation, "superseded", "DOM placement superseded before ACK");
         terminal(request, "superseded", "DOM placement superseded before ACK");
@@ -747,6 +762,7 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
       catch (error) { post("fatal", { error: String(error) }); }
     }
     void textures.flushRetired().catch(error => post("fatal", { error: String(error) }));
+    setRasterPhase("idle");
   }
 }
 
@@ -1014,7 +1030,8 @@ async function startManagedRuntime(): Promise<void> {
         const managed = JSON.parse(surface!.CaptureDiagnostics());
         return { epochMilliseconds, completedEpochMilliseconds: performance.timeOrigin + performance.now(), managed,
           timers: { ...JSON.parse(captureManagedTimers!()), ...captureBrowserTimers() },
-          webgpu: webgpu?.diagnostics() ?? null, webgl: webglFrames?.diagnostics() ?? null };
+          webgpu: webgpu?.diagnostics() ?? null, webgl: webglFrames?.diagnostics() ?? null,
+          raster: captureRasterProgress() };
       },
     });
     if (frameCost) Object.assign(globalThis, {
@@ -1026,6 +1043,7 @@ async function startManagedRuntime(): Promise<void> {
           const managed = JSON.parse(surface!.CaptureCostDiagnostics());
           return { started, ended: performance.timeOrigin + performance.now(), managed,
             policy: rendererPolicy, webgpu: webgpu?.diagnostics() ?? null, webgl: webglFrames?.diagnostics() ?? null, textures: textures.diagnostics(),
+            raster: captureRasterProgress(),
             backing: { width: transferredCanvas?.width, height: transferredCanvas?.height,
               requiredWidth: snapshot?.resizeEpoch.physicalWidth, requiredHeight: snapshot?.resizeEpoch.physicalHeight,
               colorBytesEstimate: (transferredCanvas?.width ?? 0) * (transferredCanvas?.height ?? 0) * 4,
