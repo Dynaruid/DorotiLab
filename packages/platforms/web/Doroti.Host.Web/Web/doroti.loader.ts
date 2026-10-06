@@ -1,5 +1,6 @@
 import { selectRendererPolicy, resolveRendererPolicy } from "./doroti.web.policy.js";
 import type { RendererPolicy } from "./doroti.web.policy.js";
+import { attachDorotiSplash } from "./doroti.web.splash.js";
 export type DorotiBootstrapStage = "before-start" | "starting" | "started" | "failed";
 
 export interface DorotiBootstrapContext {
@@ -24,6 +25,7 @@ export function startDoroti(options: DorotiBootstrapOptions = {}): Promise<Dorot
 }
 
 async function runStart(options: DorotiBootstrapOptions): Promise<DorotiBootstrapContext> {
+  const splash = attachDorotiSplash();
   const context: DorotiBootstrapContext = {
     stage: "before-start",
   };
@@ -40,8 +42,10 @@ async function runStart(options: DorotiBootstrapOptions): Promise<DorotiBootstra
     const module = await import("./doroti.web.js");
     await module.startDorotiWorkerHost(context.rendererMode, context.runtimeLocation, context.rendererPolicy);
     notifyStage("started", context, options);
+    splash.complete();
     return context;
   } catch (error: unknown) {
+    splash.fail();
     context.stage = "failed";
     try {
       options.onStage?.("failed", context);

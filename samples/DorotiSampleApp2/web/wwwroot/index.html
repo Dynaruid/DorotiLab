@@ -13,7 +13,14 @@
   <script type="importmap"></script>
 </head>
 <body>
-  <div id="app">Loading Doroti…</div>
+  <div id="app" aria-busy="true"></div>
+  <div id="doroti-splash" class="doroti-splash" data-doroti-splash-state="loading">
+    <img class="doroti-splash__icon" src="_content/Doroti.Host.Web/doroti-app-icon.svg" width="112" height="112" alt="" draggable="false" />
+    <p class="doroti-splash__name">Doroti</p>
+    <div class="doroti-splash__progress" aria-hidden="true"></div>
+    <p class="doroti-splash__status" data-doroti-splash-status role="status" aria-atomic="true">Loading…</p>
+    <button class="doroti-splash__retry" data-doroti-splash-retry type="button" hidden>Try again</button>
+  </div>
   <script type="module" src="doroti_bootstrap.js"></script>
 </body>
 </html>

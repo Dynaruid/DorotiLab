@@ -26,6 +26,100 @@ body,
   background: var(--doroti-surface-background);
 }
 
+.doroti-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: max(24px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right))
+    max(24px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+  background: #512bd4;
+  color: #fff;
+  font: 14px/1.5 system-ui, sans-serif;
+  text-align: center;
+  transition: opacity 180ms ease-out;
+}
+
+.doroti-splash__icon {
+  display: block;
+  width: 112px;
+  height: 112px;
+}
+
+.doroti-splash__name {
+  margin: 16px 0 28px;
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+.doroti-splash__progress {
+  width: 112px;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: rgb(255 255 255 / 20%);
+}
+
+.doroti-splash__progress::after {
+  content: "";
+  display: block;
+  width: 45%;
+  height: 100%;
+  border-radius: inherit;
+  background: #fff;
+  animation: doroti-splash-progress 1.2s ease-in-out infinite;
+}
+
+.doroti-splash__status {
+  max-width: 24rem;
+  margin: 16px 0 0;
+  color: rgb(255 255 255 / 80%);
+}
+
+.doroti-splash__retry {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: 1px solid rgb(255 255 255 / 60%);
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.doroti-splash__retry:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+}
+
+.doroti-splash[data-doroti-splash-state="ready"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.doroti-splash[data-doroti-splash-state="failed"] .doroti-splash__progress {
+  display: none;
+}
+
+@keyframes doroti-splash-progress {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(325%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .doroti-splash { transition: none; }
+  .doroti-splash__progress::after {
+    animation: none;
+    width: 100%;
+    opacity: 0.6;
+  }
+}
+
 .doroti-root > canvas {
   position: absolute;
   inset: 0 auto auto 0;

@@ -38,4 +38,28 @@
     <None Include="Web/types/doroti-textures/index.d.ts" Pack="true" PackagePath="types/doroti-textures/index.d.ts" />
   </ItemGroup>
   <Import Project="../../../../Doroti/src/Doroti.App.Sdk/Sdk/Doroti.TypeScript.targets" />
+  <Target Name="DorotiRegisterWebSplashIcon"
+          DependsOnTargets="ResolveStaticWebAssetsConfiguration"
+          BeforeTargets="ResolveProjectStaticWebAssets;ResolveCurrentProjectStaticWebAssetsInputs">
+    <PropertyGroup>
+      <_DorotiWebBrandingRoot>$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)', '../../../../Doroti/docs/branding'))</_DorotiWebBrandingRoot>
+    </PropertyGroup>
+    <ItemGroup>
+      <_DorotiWebSplashIcon Include="$(_DorotiWebBrandingRoot)doroti-app-icon.svg">
+        <RelativePath>doroti-app-icon.svg</RelativePath>
+        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </_DorotiWebSplashIcon>
+    </ItemGroup>
+    <!-- An external branding file needs its own content root for the dev server. -->
+    <DefineStaticWebAssets CandidateAssets="@(_DorotiWebSplashIcon)"
+        FingerprintCandidates="$(StaticWebAssetsFingerprintContent)" FingerprintPatterns="@(StaticWebAssetFingerprintPattern)"
+        SourceId="$(PackageId)" SourceType="Discovered" ContentRoot="$(_DorotiWebBrandingRoot)" BasePath="$(StaticWebAssetBasePath)">
+      <Output TaskParameter="Assets" ItemName="StaticWebAsset" />
+      <Output TaskParameter="Assets" ItemName="_DorotiWebSplashStaticAsset" />
+    </DefineStaticWebAssets>
+    <DefineStaticWebAssetEndpoints CandidateAssets="@(_DorotiWebSplashStaticAsset)" ContentTypeMappings="@(StaticWebAssetContentTypeMapping)">
+      <Output TaskParameter="Endpoints" ItemName="StaticWebAssetEndpoint" />
+    </DefineStaticWebAssetEndpoints>
+  </Target>
 </Project>

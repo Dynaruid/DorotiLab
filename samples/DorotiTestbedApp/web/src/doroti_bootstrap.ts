@@ -25,7 +25,5 @@ await startDoroti({
   },
   onError(error) {
     document.documentElement.dataset.dorotiBootstrapError = String(error);
-    const app = document.getElementById("app");
-    if (app) app.textContent = `Doroti failed to start: ${String(error)}`;
   },
 });

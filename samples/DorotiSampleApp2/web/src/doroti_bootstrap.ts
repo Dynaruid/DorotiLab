@@ -15,7 +15,6 @@ await startDoroti({
     document.documentElement.dataset.dorotiBootstrapStages = history ? `${history},${stage}` : stage;
   },
   onError(error) {
-    const app = document.getElementById("app");
-    if (app) app.textContent = `Doroti failed to start: ${String(error)}`;
+    document.documentElement.dataset.dorotiBootstrapError = String(error);
   },
 });

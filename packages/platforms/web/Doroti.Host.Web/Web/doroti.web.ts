@@ -2199,6 +2199,7 @@ export async function startDorotiWorkerHost(
             frameGeneration >= display.frontGeneration &&
             frameGeneration <= host.resizeEpoch.generation;
           if (admitted) {
+            const firstFrame = display.frontGeneration === 0;
             display.frontGeneration = frameGeneration;
             display.frontRequestId = requestId;
             configureDirectCanvasCapacity(
@@ -2206,6 +2207,7 @@ export async function startDorotiWorkerHost(
               capacityWidth, capacityHeight);
             canvas.dataset.dorotiFrontLogicalWidth = String(frameLogicalWidth);
             canvas.dataset.dorotiFrontLogicalHeight = String(frameLogicalHeight);
+            if (firstFrame) globalThis.dispatchEvent(new CustomEvent("doroti-first-frame", { detail: { canvasId: canvas.id } }));
           }
           recordResize(host, admitted ? "front-commit" : "ack", "worker-direct-surface", {
             timestampMicroseconds: Number.isFinite(Number(message.commitEpochMilliseconds))

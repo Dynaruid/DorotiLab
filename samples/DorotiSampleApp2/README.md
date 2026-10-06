@@ -327,6 +327,10 @@ dotnet run --project ./samples/DorotiSampleApp2/windowsappsdk/DorotiSampleApp2.W
 
 ## Web
 
+시작 시 공식 Doroti 앱 아이콘을 사용하는 HTML 스플래시를 표시합니다. 공용 TypeScript
+로더가 엔진 준비 완료(`started`)와 첫 프레임 표시 후 스플래시를 페이드아웃하고 제거합니다. 로딩 실패 시
+오류 안내와 다시 시도 버튼을 표시하며, 동작 줄이기 설정에서는 애니메이션을 생략합니다.
+
 Volume과 블러 강도 변경은 `ValueListenableBuilder`로 해당 컨트롤과 필터만 갱신합니다.
 Variable Blur의 리스트는 재사용하고 `RepaintBoundary`로 별도 페인트하므로 드래그마다
 앱·라디오 버튼·리스트 전체를 다시 빌드하지 않습니다.
