@@ -5,7 +5,7 @@
       <Output TaskParameter="Lines" ItemName="_DorotiProviderSourceLines" />
     </ReadLinesFromFile>
     <ItemGroup>
-      <_DorotiProviderOutputLine Include="@(_DorotiProviderSourceLines-&gt;Replace('&quot;version&quot;: &quot;0.4.0-alpha.1&quot;', '&quot;version&quot;: &quot;$(Version)&quot;')-&gt;Replace('&quot;providerVersion&quot;: &quot;0.4.0-alpha.1&quot;', '&quot;providerVersion&quot;: &quot;$(Version)&quot;')-&gt;Replace('&quot;packageVersion&quot;: &quot;0.4.0-alpha.1&quot;', '&quot;packageVersion&quot;: &quot;$(Version)&quot;'))" />
+      <_DorotiProviderOutputLine Include="@(_DorotiProviderSourceLines-&gt;Replace('&quot;version&quot;: &quot;0.4.0-beta&quot;', '&quot;version&quot;: &quot;$(Version)&quot;')-&gt;Replace('&quot;providerVersion&quot;: &quot;0.4.0-beta&quot;', '&quot;providerVersion&quot;: &quot;$(Version)&quot;')-&gt;Replace('&quot;packageVersion&quot;: &quot;0.4.0-beta&quot;', '&quot;packageVersion&quot;: &quot;$(Version)&quot;'))" />
     </ItemGroup>
     <WriteLinesToFile File="$(IntermediateOutputPath)$(DorotiProviderMetadataFile)" Lines="@(_DorotiProviderOutputLine)" Overwrite="true" WriteOnlyWhenDifferent="true" />
     <ItemGroup>
@@ -15,7 +15,7 @@
       <Output TaskParameter="Lines" ItemName="_DorotiProviderBootstrapSource" />
     </ReadLinesFromFile>
     <ItemGroup>
-      <_DorotiProviderBootstrapOutput Include="@(_DorotiProviderBootstrapSource-&gt;Replace('&gt;0.4.0-alpha.1&lt;/DorotiProviderVersion&gt;', '&gt;$(Version)&lt;/DorotiProviderVersion&gt;'))" />
+      <_DorotiProviderBootstrapOutput Include="@(_DorotiProviderBootstrapSource-&gt;Replace('&gt;0.4.0-beta&lt;/DorotiProviderVersion&gt;', '&gt;$(Version)&lt;/DorotiProviderVersion&gt;'))" />
     </ItemGroup>
     <WriteLinesToFile File="$(IntermediateOutputPath)Doroti.Provider.Bootstrap.targets" Lines="@(_DorotiProviderBootstrapOutput)" Overwrite="true" WriteOnlyWhenDifferent="true" Condition="'@(_DorotiProviderBootstrapSource)' != ''" />
   </Target>

@@ -1,7 +1,7 @@
 {
   "schemaVersion": "doroti.platform-provider/v1",
   "id": "qt",
-  "version": "0.4.0-alpha.1",
+  "version": "0.4.0-beta",
   "coreRange": "[0.4.0-alpha.1,0.5.0)",
   "protocolVersion": 1,
   "registrationType": "Doroti.Host.Qt.DorotiQtRunner",

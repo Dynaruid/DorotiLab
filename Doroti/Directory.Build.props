@@ -4,8 +4,8 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <VersionPrefix>0.4.0</VersionPrefix>
-    <VersionSuffix>alpha.1</VersionSuffix>
-    <DorotiCoreVersion Condition="'$(DorotiCoreVersion)' == ''">0.4.0-alpha.1</DorotiCoreVersion>
+    <VersionSuffix>beta</VersionSuffix>
+    <DorotiCoreVersion Condition="'$(DorotiCoreVersion)' == ''">0.4.0-beta</DorotiCoreVersion>
     <Version Condition="'$(Version)' == ''">$(DorotiCoreVersion)</Version>
     <IsPackable>false</IsPackable>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(MSBuildThisFileDirectory)artifacts\**</DefaultItemExcludes>

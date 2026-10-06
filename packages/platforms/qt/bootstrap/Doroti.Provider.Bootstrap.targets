@@ -11,7 +11,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <DorotiProviderId>qt</DorotiProviderId>
-    <DorotiProviderVersion Condition="'$(DorotiProviderVersion)' == ''">0.4.0-alpha.1</DorotiProviderVersion>
+    <DorotiProviderVersion Condition="'$(DorotiProviderVersion)' == ''">0.4.0-beta</DorotiProviderVersion>
     <DorotiProviderCoreRange>[0.4.0-alpha.1,0.5.0)</DorotiProviderCoreRange>
     <DorotiProviderProtocolVersion>1</DorotiProviderProtocolVersion>
     <DorotiProviderToolPackage>Doroti.Tool.Qt</DorotiProviderToolPackage>

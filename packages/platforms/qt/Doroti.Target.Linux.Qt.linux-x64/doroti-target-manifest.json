@@ -1,7 +1,7 @@
 {
   "schemaVersion": "doroti.target-package/v2",
   "packageId": "Doroti.Target.Linux.Qt.linux-x64",
-  "packageVersion": "0.4.0-alpha.1",
+  "packageVersion": "0.4.0-beta",
   "rid": "linux-x64",
   "host": "qt6-c-abi",
   "graphicsBackend": "qt6/QWindow/Graphite-Vulkan",
@@ -25,7 +25,7 @@
   "nativeSkiaVersion": "4.154.0-preview.1.26454.9",
   "nativeSkiaApi": "public-Graphite",
   "provider": "qt",
-  "providerVersion": "0.4.0-alpha.1",
+  "providerVersion": "0.4.0-beta",
   "coreRange": "[0.4.0-alpha.1,0.5.0)",
   "protocolVersion": 1,
   "providerProfile": "default:linux-x64",

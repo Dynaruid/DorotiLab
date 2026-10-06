@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Sdk Name="Doroti.Runner.Sdk" Version="0.4.0-alpha.1" />
+  <Sdk Name="Doroti.Runner.Sdk" Version="0.4.0-beta" />
   <PropertyGroup>
     <DorotiMacOSTargetFramework Condition="'$(DorotiMacOSTargetFramework)' == ''">net10.0-macos</DorotiMacOSTargetFramework>
     <TargetFramework>$(DorotiMacOSTargetFramework)</TargetFramework>
@@ -25,7 +25,7 @@
   <ItemGroup>
     <DorotiNativeBindingProject Include="binding\DorotiTemplateApp.MacOS.Native.csproj" />
     <DorotiTargetDescriptor Include="macOS" HostKind="Maui" NativeEntryKind="AppKit-Main" RuntimeIdentifier="osx-arm64" TargetFramework="$(DorotiMacOSTargetFramework)" TargetPackage="Doroti.Target.MacOS.Maui.osx-arm64" />
-    <PackageReference Include="Doroti.Target.MacOS.Maui.osx-arm64" Version="0.4.0-alpha.1" />
+    <PackageReference Include="Doroti.Target.MacOS.Maui.osx-arm64" Version="0.4.0-beta" />
   </ItemGroup>
-  <ItemGroup><PackageReference Include="Doroti.Tool.Maui" Version="0.4.0-alpha.1" /></ItemGroup>
+  <ItemGroup><PackageReference Include="Doroti.Tool.Maui" Version="0.4.0-beta" /></ItemGroup>
 </Project>

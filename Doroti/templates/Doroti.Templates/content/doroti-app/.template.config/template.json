@@ -59,13 +59,13 @@
     "displayVersion": {
       "type": "parameter",
       "datatype": "text",
-      "defaultValue": "0.3.0",
+      "defaultValue": "0.4.0",
       "replaces": "__DOROTI_DISPLAY_VERSION__"
     },
     "applicationVersion": {
       "type": "parameter",
       "datatype": "integer",
-      "defaultValue": "2",
+      "defaultValue": "4",
       "replaces": "__DOROTI_APPLICATION_VERSION__"
     },
     "nativeAndroidLanguage": {

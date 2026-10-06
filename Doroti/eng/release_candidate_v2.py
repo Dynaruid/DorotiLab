@@ -40,7 +40,7 @@ def main():
     parser.add_argument('--workspace', type=Path, default=TEMPLATE / 'doroti-workspace.json')
     parser.add_argument('--targets', nargs='+', default=['windows', 'web'])
     parser.add_argument('--design', choices=['widgets', 'material', 'cupertino'], default='widgets')
-    parser.add_argument('--core-version', default='0.4.0-alpha.1')
+    parser.add_argument('--core-version', default='0.4.0-beta')
     parser.add_argument('--material-version', default='1.0.0-alpha.1')
     parser.add_argument('--cupertino-version', default='1.0.0-alpha.1')
     parser.add_argument('--provider-version', action='append', default=[], metavar='PROVIDER=VERSION')

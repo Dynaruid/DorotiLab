@@ -101,7 +101,7 @@ while (pending.TryDequeue(out var assembly))
 '''
 
 
-def consumer(label, design, core="0.4.0-alpha.1", material="1.0.0-alpha.1", cupertino="1.0.0-alpha.1"):
+def consumer(label, design, core="0.4.0-beta", material="1.0.0-alpha.1", cupertino="1.0.0-alpha.1"):
     folder = run / label
     nuget_config(folder)
     references = f'<PackageReference Include="Doroti.Testing" Version="{core}" />'
@@ -154,8 +154,8 @@ try:
     consumer("consumer-design-update", "both", material="1.0.0-alpha.2", cupertino="1.0.0-alpha.2")
     core_projects = [project for project in graph if project not in (material_project, cupertino_project)]
     for project in core_projects:
-        command("pack-core-update-" + project.stem, "dotnet", "pack", project, "-c", "Debug", "--no-build", "-o", feed, "-p:Version=0.4.0-alpha.2")
-    consumer("consumer-core-update", "both", core="0.4.0-alpha.2")
+        command("pack-core-update-" + project.stem, "dotnet", "pack", project, "-c", "Debug", "--no-build", "-o", feed, "-p:Version=0.4.0-beta.1")
+    consumer("consumer-core-update", "both", core="0.4.0-beta.1")
     # Range rejection needs only the design framework closure, not preview Skia renderer packages.
     for project in core_projects:
         if project.stem.startswith("Doroti.Skia") or project.stem == "Doroti.Testing":
@@ -185,7 +185,7 @@ try:
             assert not names & {"Doroti.Material", "MaterialColorUtilities"}
     negative = run / "removed-identity"
     nuget_config(negative)
-    (negative / "Removed.csproj").write_text('<Project Sdk="Doroti.App.Sdk/0.4.0-alpha.1"><ItemGroup><PackageReference Include="Doroti.Framework.Material" Version="0.3.0-beta"/></ItemGroup></Project>', encoding="utf-8")
+    (negative / "Removed.csproj").write_text('<Project Sdk="Doroti.App.Sdk/0.4.0-beta"><ItemGroup><PackageReference Include="Doroti.Framework.Material" Version="0.3.0-beta"/></ItemGroup></Project>', encoding="utf-8")
     output = command("removed-design-rejected", "dotnet", "build", negative / "Removed.csproj", "-p:RestorePackagesPath=" + str(run / "nuget"), expected=1)
     assert "DOROTIDESIGN001" in output, output
     report = {"schema": "doroti.design-package-verification/v1", "verifiedUtc": datetime.now(timezone.utc).isoformat(),

@@ -1,12 +1,12 @@
-<Project Sdk="Doroti.App.Sdk/0.4.0-alpha.1">
+<Project Sdk="Doroti.App.Sdk/0.4.0-beta">
   <PropertyGroup>
     <AssemblyName>DorotiTemplateApp</AssemblyName>
     <RootNamespace>DorotiTemplateApp</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Doroti.Hosting" Version="0.4.0-alpha.1" />
-    <PackageReference Include="Doroti.Ui" Version="0.4.0-alpha.1" />
-    <PackageReference Include="Doroti.Framework.Widgets" Version="0.4.0-alpha.1" />
+    <PackageReference Include="Doroti.Hosting" Version="0.4.0-beta" />
+    <PackageReference Include="Doroti.Ui" Version="0.4.0-beta" />
+    <PackageReference Include="Doroti.Framework.Widgets" Version="0.4.0-beta" />
     <!--#if (isMaterial)-->
     <PackageReference Include="Doroti.Material" Version="1.0.0-alpha.1" />
     <!--#elseif (isCupertino)-->

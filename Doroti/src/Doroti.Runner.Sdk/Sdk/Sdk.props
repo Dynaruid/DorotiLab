@@ -19,7 +19,7 @@
     <EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
     <EnableDefaultXamlItems>false</EnableDefaultXamlItems>
-    <DorotiVersion Condition="'$(DorotiVersion)' == ''">0.4.0-alpha.1</DorotiVersion>
+    <DorotiVersion Condition="'$(DorotiVersion)' == ''">0.4.0-beta</DorotiVersion>
     <SkiaSharpVersion Condition="'$(SkiaSharpVersion)' == ''">4.154.0-preview.1.26454.9</SkiaSharpVersion>
     <DorotiMarkupVersion Condition="'$(DorotiMarkupVersion)' == ''">8.0.0</DorotiMarkupVersion>
     <DorotiTypeScriptVersion Condition="'$(DorotiTypeScriptVersion)' == ''">7.0.0</DorotiTypeScriptVersion>

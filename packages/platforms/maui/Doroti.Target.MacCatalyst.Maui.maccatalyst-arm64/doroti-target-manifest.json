@@ -11,9 +11,9 @@
   "nativeSkiaApi": "public-Graphite",
   "schemaVersion": "doroti.target-package/v2",
   "provider": "maui",
-  "providerVersion": "0.4.0-alpha.1",
+  "providerVersion": "0.4.0-beta",
   "coreRange": "[0.4.0-alpha.1,0.5.0)",
   "protocolVersion": 1,
   "providerProfile": "default:maccatalyst-arm64",
-  "packageVersion": "0.4.0-alpha.1"
+  "packageVersion": "0.4.0-beta"
 }

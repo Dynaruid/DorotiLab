@@ -1,6 +1,6 @@
 # Web provider
 
-Host and Target sources are owned by this independently versioned provider. Package identities are unchanged. Version: 0.4.0-alpha.1; supported core: [0.4.0-alpha.1, 0.5.0). Native/bootstrap adoption and physical platform acceptance are tracked separately in the design-platform execution record.
+Host and Target sources are owned by this independently versioned provider. Package identities are unchanged. Version: 0.4.0-beta; supported core: [0.4.0-alpha.1, 0.5.0). Native/bootstrap adoption and physical platform acceptance are tracked separately in the design-platform execution record.
 
 The samples and app template show an HTML splash using the official
 `Doroti/docs/branding/doroti-app-icon.svg`, served by the host as

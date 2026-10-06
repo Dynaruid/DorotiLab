@@ -1,7 +1,7 @@
 {
   "schemaVersion": "doroti.target-package/v2",
   "packageId": "Doroti.Target.Web.browser-wasm",
-  "packageVersion": "0.4.0-alpha.1",
+  "packageVersion": "0.4.0-beta",
   "rid": "browser-wasm",
   "host": "managed-render-worker",
   "defaultRenderer": "worker-direct-webgl",
@@ -58,7 +58,7 @@
   "nativeSkiaVersion": "4.154.0-preview.1.26454.9",
   "nativeSkiaApi": "public-Graphite",
   "provider": "web",
-  "providerVersion": "0.4.0-alpha.1",
+  "providerVersion": "0.4.0-beta",
   "coreRange": "[0.4.0-alpha.1,0.5.0)",
   "protocolVersion": 1,
   "providerProfile": "default:browser-wasm",

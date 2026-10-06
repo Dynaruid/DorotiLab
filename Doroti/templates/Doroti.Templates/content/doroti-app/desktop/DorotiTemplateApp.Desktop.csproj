@@ -4,5 +4,5 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-  <ItemGroup><PackageReference Include="Doroti.Desktop" Version="0.4.0-alpha.1" /></ItemGroup>
+  <ItemGroup><PackageReference Include="Doroti.Desktop" Version="0.4.0-beta" /></ItemGroup>
 </Project>
