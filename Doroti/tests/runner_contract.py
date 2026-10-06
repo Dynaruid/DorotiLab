@@ -20,8 +20,8 @@ if len(sys.argv) > 1:
     shutil.copyfile(root / "Doroti/eng/run-with-timeout.py", eng / "run-with-timeout.py")
     validation = eng / "validate.py"
     validation.write_text("import sys\nprint('fixture suite='+sys.argv[1],flush=True)\nraise SystemExit(7)\n")
-    project = scratch / "Doroti/tools/Fixture"; project.mkdir(parents=True)
-    source = root / "Doroti/tools/Doroti.Tooling/RepositoryCommands.cs"
+    project = scratch / "Doroti/src/Fixture"; project.mkdir(parents=True)
+    source = root / "Doroti/src/Doroti.Tooling/RepositoryCommands.cs"
     sdk = root / "Doroti/src/Doroti.Tooling.Extension.Sdk/Doroti.Tooling.Extension.Sdk.csproj"
     (project / 'Fixture.csproj').write_text(f'<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net10.0</TargetFramework><OutputType>Exe</OutputType><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup><ItemGroup><Compile Include="{source}" Link="RepositoryCommands.cs"/><ProjectReference Include="{sdk}"/></ItemGroup></Project>')
     (project / 'Program.cs').write_text('return await Doroti.Tooling.RepositoryCommands.TryRunAsync(args) ?? 77;')

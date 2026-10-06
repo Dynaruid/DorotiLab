@@ -37,7 +37,7 @@
     <Project Path="templates/Doroti.Templates/Doroti.Templates.csproj" />
   </Folder>
   <Project Path="../tools/Doroti.DartToCSharp/Doroti.DartToCSharp.csproj" />
-  <Project Path="tools/Doroti.Tooling/Doroti.Tooling.csproj" />
+  <Project Path="src/Doroti.Tooling/Doroti.Tooling.csproj" />
   <Folder Name="/packages/">
     <Project Path="../packages/Doroti.Cupertino/Doroti.Cupertino.csproj" />
     <Project Path="../packages/Doroti.Material/Doroti.Material.csproj" />

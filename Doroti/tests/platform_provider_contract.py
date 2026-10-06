@@ -29,8 +29,8 @@ def closure(project):
 try:
     closure(ROOT/'Doroti/tests/fixtures/test-headless/runtime/TestHeadless.Runtime.csproj')
     closure(ROOT/'Doroti/tests/fixtures/test-headless/tooling/TestHeadless.Tool.csproj')
-    call("build-cli",["dotnet","build",ROOT/'Doroti/tools/Doroti.Tooling/Doroti.Tooling.csproj',"-c","Debug"])
-    cli=ROOT/'Doroti/tools/Doroti.Tooling/bin/Debug/net10.0/Doroti.Tooling.dll'
+    call("build-cli",["dotnet","build",ROOT/'Doroti/src/Doroti.Tooling/Doroti.Tooling.csproj',"-c","Debug"])
+    cli=ROOT/'Doroti/src/Doroti.Tooling/bin/Debug/net10.0/Doroti.Tooling.dll'
     app=run/'app'; app.mkdir()
     for name in ('Directory.Build.props','Directory.Build.targets','Directory.Packages.props'):(app/name).write_text('<Project/>',encoding='utf-8')
     (app/'NuGet.Config').write_text(f'<configuration><packageSources><clear/><add key="local" value="{feed}"/><add key="nuget" value="https://api.nuget.org/v3/index.json"/></packageSources><config><add key="globalPackagesFolder" value="{run / "nuget"}"/></config><packageSourceMapping><packageSource key="local"><package pattern="Doroti.*"/></packageSource><packageSource key="nuget"><package pattern="*"/></packageSource></packageSourceMapping></configuration>',encoding='utf-8')

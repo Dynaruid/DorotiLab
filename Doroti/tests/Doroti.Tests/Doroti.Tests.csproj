@@ -11,7 +11,7 @@
     <Compile Include="../../../packages/platforms/maui/Doroti.Host.Maui/MauiFrameCallbackQueue.cs" Link="MauiFrameCallbackQueue.cs" />
     <Compile Include="../../../packages/platforms/maui/Doroti.Host.Maui/MauiFrameWakeQueue.cs" Link="MauiFrameWakeQueue.cs" />
     <ProjectReference Include="../../src/Doroti.Testing/Doroti.Testing.csproj" />
-    <ProjectReference Include="../../tools/Doroti.Tooling/Doroti.Tooling.csproj" />
+    <ProjectReference Include="../../src/Doroti.Tooling/Doroti.Tooling.csproj" />
     <ProjectReference Include="../../src/Doroti.Skia.Vulkan/Doroti.Skia.Vulkan.csproj" />
     <ProjectReference Include="../../src/Doroti.Desktop/Doroti.Desktop.csproj" />
     <PackageReference Include="SkiaSharp.NativeAssets.Win32" />

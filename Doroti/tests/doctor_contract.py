@@ -46,7 +46,7 @@ Console.WriteLine("fake tool");''', encoding='utf-8')
         result = subprocess.run(['dotnet', 'build', str(cls.tool / 'Fake.csproj'), '-nologo', '-o', str(cls.tool / 'bin')], cwd=ROOT, capture_output=True, timeout=120)
         if result.returncode: raise RuntimeError(result.stdout.decode(errors='replace'))
         cls.executable = cls.tool / ('bin/Fake.exe' if os.name == 'nt' else 'bin/Fake')
-        result=subprocess.run(['dotnet','build',str(ROOT/'Doroti/tools/Doroti.Tooling/Doroti.Tooling.csproj'),'-c','Debug','-v','quiet'],cwd=ROOT,capture_output=True,timeout=1200)
+        result=subprocess.run(['dotnet','build',str(ROOT/'Doroti/src/Doroti.Tooling/Doroti.Tooling.csproj'),'-c','Debug','-v','quiet'],cwd=ROOT,capture_output=True,timeout=1200)
         if result.returncode:raise RuntimeError(result.stdout.decode(errors='replace'))
         cls.compiler = cls.tool / 'compiler'; cls.compiler.write_text('local compiler fixture')
 
@@ -68,7 +68,7 @@ Console.WriteLine("fake tool");''', encoding='utf-8')
         specification=directory/'fake.json'; specification.write_text(json.dumps({'compiler':str(self.compiler),**(spec or {})}))
         log=directory/'calls.jsonl'
         environment=os.environ|{'DOROTI_FAKE_SPEC':str(specification),'DOROTI_FAKE_LOG':str(log)}
-        command=['dotnet',str(ROOT/'Doroti/tools/Doroti.Tooling/bin/Debug/net10.0/Doroti.Tooling.dll'),'doctor',
+        command=['dotnet',str(ROOT/'Doroti/src/Doroti.Tooling/bin/Debug/net10.0/Doroti.Tooling.dll'),'doctor',
             '-App',str(workspace),'-Platform','laboratory-web','-DotnetPath',str(self.executable),'-TimeoutSeconds','1','-Scope',scope,*extra]
         result=subprocess.run(command,cwd=ROOT,env=environment,capture_output=True,text=True,timeout=45)
         (directory/'console.log').write_text(result.stdout+result.stderr,encoding='utf-8')

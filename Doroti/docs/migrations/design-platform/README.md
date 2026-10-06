@@ -11,7 +11,7 @@ Verified artifacts (each receipt defines its own time and scope):
 - [External provider](platform-provider-verification.json): independent runtime/tool NuGet packages and actual managed CLI describe/SDK doctor/config/device/template/build/run.
 - [Native Windows shared tree](windows-shared-tree-verification.json): actual Regular HWND pair, shared application owner/tree, accepted and presented frames, primary detach/survivor and native/GPU cleanup completion.
 
-Tooling projects are `Doroti/src/Doroti.Tooling.Contracts`, `Doroti/src/Doroti.Tooling.Extension.Sdk` and the managed CLI in `Doroti/tools/Doroti.Tooling`. The CLI never loads a runtime Host. Its process executor owns app/build processes independently of tool connections.
+Tooling projects are `Doroti/src/Doroti.Tooling.Contracts`, `Doroti/src/Doroti.Tooling.Extension.Sdk` and the managed CLI in `Doroti/src/Doroti.Tooling`. The CLI never loads a runtime Host. Its process executor owns app/build processes independently of tool connections.
 
 Builtin provider sources are in `packages/platforms/windowsappsdk`, `web`, `qt` and `maui`; old paths in historical validation prose describe the former source baseline. Core Windowing interfaces are in `Doroti.Ui/Windowing.cs`, the shared registry is the existing Desktop manager, and Widgets window branches attach explicit views under a shared tree.
 

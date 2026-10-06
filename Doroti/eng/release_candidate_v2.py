@@ -232,7 +232,7 @@ def main():
                             version = Environment.GetEnvironmentVariable("DOROTI_RELEASE_VERSION") }));
                     await context.Window.CloseAsync(CancellationToken.None);
                 }, Options = new WindowOptions'''))
-        cli_project = ROOT / 'Doroti/tools/Doroti.Tooling/Doroti.Tooling.csproj'
+        cli_project = ROOT / 'Doroti/src/Doroti.Tooling/Doroti.Tooling.csproj'
         command('build-cli', [args.dotnet, 'build', cli_project, '-c', 'Release', *properties])
         cli = Path(command('evaluate-cli-path', [args.dotnet, 'msbuild', cli_project, '-nologo', '-p:Configuration=Release',
                    '-getProperty:TargetPath', *properties]).strip())
