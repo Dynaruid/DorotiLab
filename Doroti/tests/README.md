@@ -395,6 +395,19 @@ WebGL exercises the focus-restoring insertion fallback; WebGPU uses native DOM
 moves when available. This is desktop browser automation, not physical IME,
 screen-reader, mobile stability or displayed-FPS qualification.
 
+Native text context-menu routing uses Playwright WebKit and installed Chrome
+against the compiled Web host assets:
+
+```sh
+python Doroti/eng/run-with-timeout.py python Doroti/tests/web_context_menu_browser.py --js-root packages/platforms/web/Doroti.Host.Web/obj/Debug/net10.0/Doroti.Web/wwwroot --output temp/testing/web-context-menu/new
+```
+
+Install the Playwright WebKit browser first (`python -m playwright install webkit`).
+The test checks real right-click/Control-click targets, browser-menu disable/enable,
+and primary drag forwarding. Mobile menu policy uses injected platform information.
+The render Worker is stubbed; this does not verify native menu presentation or
+physical mobile input.
+
 `web_wasm_aot.py` checks separately published, frozen Testbed Release payloads.
 Publish with `RunAOTCompilation=true` and `false` into separate `--artifacts-path`
 directories first; no build should mutate either payload while the browser runs.

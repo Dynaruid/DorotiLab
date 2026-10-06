@@ -946,9 +946,17 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     return samples;
   };
   const pointer = (phase: number) => (event: PointerEvent): void => {
+    const nativeTextInput = event.target === input ||
+      ((event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) &&
+        semantics.contains(event.target));
+    const nativeContextMenuGesture = host.contextMenuEnabled && !frameworkTextSelection && nativeTextInput &&
+      event.pointerType === "mouse" && (event.button === 2 ||
+        (operatingSystem === "macOS" && event.button === 0 && event.ctrlKey));
     // Cursor placement and handle dragging must use the same geometry as the
     // canvas text, including when the transparent IME is the DOM hit target.
-    event.preventDefault();
+    // Native desktop context menus need the editable as their event target.
+    // WebKit retargets contextmenu to the capture owner even before pointerup.
+    if (!nativeContextMenuGesture) event.preventDefault();
     if (phase === 1) {
       const control = semanticsControlAtPoint(host, event.clientX, event.clientY);
       searchTapTarget = event.isTrusted && isWebSearchControl(control)
@@ -972,7 +980,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
         ? targetCursor
         : host.frameworkCursor;
       root.style.cursor = host.pointerCaptureCursor;
-      root.setPointerCapture(event.pointerId);
+      if (!nativeContextMenuGesture) root.setPointerCapture(event.pointerId);
       // A quick window activation or hidden-tab return retains Flutter's text
       // connection, so do not steal DOM focus from its native endpoint. A
       // longer external-window blur closes the connection after the grace
