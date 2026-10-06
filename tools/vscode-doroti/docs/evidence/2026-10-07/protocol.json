@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "checks": [
+    "handshake",
+    "Unicode/hash URI and semantic Widget identity",
+    "unsaved cross-document type catalog",
+    "discarded snapshot restored from disk",
+    "20 requests keep one helper/project load",
+    "bounded snapshots",
+    "cancel never applies edits",
+    "failed evaluation gives safe syntax fallback"
+  ],
+  "stats": {
+    "projectLoads": 1,
+    "cachedProjects": 1
+  }
+}

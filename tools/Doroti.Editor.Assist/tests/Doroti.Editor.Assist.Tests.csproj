@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><LangVersion>14.0</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Doroti.Editor.Assist.csproj" />
+    <ProjectReference Include="../../../Doroti/src/Doroti.Framework.Widgets/Doroti.Framework.Widgets.csproj" />
+    <ProjectReference Include="../../../packages/Doroti.CustomCarousel/Doroti.CustomCarousel.csproj" />
+    <ProjectReference Include="../../../packages/Doroti.Material/Doroti.Material.csproj" />
+    <ProjectReference Include="../../../packages/Doroti.Cupertino/Doroti.Cupertino.csproj" />
+  </ItemGroup>
+</Project>

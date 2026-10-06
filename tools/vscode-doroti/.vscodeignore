@@ -6,3 +6,7 @@ tsconfig.json
 package-lock.json
 *.vsix
 temp/**
+scripts/**
+.gitignore
+helper/**/*.pdb
+docs/evidence/**

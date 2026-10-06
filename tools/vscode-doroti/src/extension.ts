@@ -5,7 +5,7 @@ import { randomUUID } from 'node:crypto';
 import { ChildProcess } from 'node:child_process';
 import { start, stop, completion } from './processes';
 import { Project, Runtime, parseProject, validateName, classifyOutput } from './contracts';
-import { namespaces, importPlan } from './imports';
+import { registerEditing } from './editing';
 import { WebBridge } from './webBridge';
 
 const exclude = '**/{bin,obj,temp,node_modules,reference,.doroti,.git}/**';
@@ -220,54 +220,10 @@ export function activate(context: vscode.ExtensionContext) {
         try { return await action(arg); } catch (error) { showError(error); }
         finally { if (name !== 'stop' && name !== 'showLogs') busy = false; display(); }
     }));
-    async function globals(doc: vscode.TextDocument): Promise<string[]> {
-        const root = project?.root ?? vscode.workspace.getWorkspaceFolder(doc.uri)?.uri.fsPath;
-        if (!root) return [];
-        const result: string[] = [];
-        for (const uri of await vscode.workspace.findFiles(new vscode.RelativePattern(root, '{Program.cs,src/**/*.cs}'), exclude, 200)) {
-            const text = await fs.readFile(uri.fsPath, 'utf8');
-            for (const match of text.replace(/\/\*[\s\S]*?\*\/|\/\/[^\r\n]*/g, '').matchAll(/^\s*global\s+using\s+(?:global::)?([\w.]+(?:\s*=\s*(?:global::)?[\w.]+)?)\s*;/gm)) result.push(match[1].replace(/\s/g, ''));
-        }
-        return result;
-    }
-    const eligible = async (doc: vscode.TextDocument) => doc.uri.scheme === 'file' && (project ? within(project.root, doc.uri.fsPath) : (await vscode.workspace.findFiles('**/doroti-workspace.json', exclude, 1)).length > 0);
-    context.subscriptions.push(vscode.languages.registerCompletionItemProvider('csharp', {
-        async provideCompletionItems(doc, position) {
-            if (!await eligible(doc)) return [];
-            const globalImports = await globals(doc);
-            return Object.entries(namespaces).flatMap(([name, spaces]) => spaces.map(ns => {
-                const item = new vscode.CompletionItem({ label: name, description: ns }, vscode.CompletionItemKind.Class);
-                const plan = importPlan(doc.getText(), name, ns, globalImports);
-                item.detail = `Doroti import: ${ns}`; item.insertText = plan.qualified ? `global::${ns}.${name}` : name;
-                item.range = doc.getWordRangeAtPosition(position);
-                if (plan.text) item.additionalTextEdits = [vscode.TextEdit.insert(doc.positionAt(plan.offset), plan.text)];
-                return item;
-            }));
-        },
-    }), vscode.languages.registerCodeActionsProvider('csharp', {
-        async provideCodeActions(doc, range, actionContext) {
-            if (!await eligible(doc)) return [];
-            const fixes: vscode.CodeAction[] = []; const globalImports = await globals(doc);
-            for (const diagnostic of actionContext.diagnostics) {
-                const code = typeof diagnostic.code === 'object' ? diagnostic.code.value : diagnostic.code;
-                if (String(code) !== 'CS0246' && String(code) !== 'CS0103') continue;
-                const name = doc.getText(diagnostic.range);
-                for (const ns of namespaces[name] ?? []) {
-                    const plan = importPlan(doc.getText(), name, ns, globalImports);
-                    if (!plan.text && !plan.qualified) continue;
-                    const fix = new vscode.CodeAction(`Import ${ns}.${name}`, vscode.CodeActionKind.QuickFix);
-                    fix.diagnostics = [diagnostic]; fix.edit = new vscode.WorkspaceEdit();
-                    if (plan.qualified) fix.edit.replace(doc.uri, diagnostic.range, `global::${ns}.${name}`);
-                    else fix.edit.insert(doc.uri, doc.positionAt(plan.offset), plan.text!);
-                    fixes.push(fix);
-                }
-            }
-            return fixes;
-        },
-    }, { providedCodeActionKinds: [vscode.CodeActionKind.QuickFix] }));
+    const editing = registerEditing(context, logs);
     context.subscriptions.push(logs, status, reload, vscode.workspace.onDidGrantWorkspaceTrust(() => display()));
-    shutdown = endSession; display();
-    return { getState: () => ({ project, target, running: !!session, runtime: session?.runtime, pending: session?.pending, problem: session?.problem }) };
+    shutdown = async () => { try { await editing.assist.shutdown(); } finally { await endSession(); } }; display();
+    return { editing, getState: () => ({ project, target, running: !!session, runtime: session?.runtime, pending: session?.pending, problem: session?.problem }) };
 }
 function within(root: string, file: string) { const relative = path.relative(root, file); return relative !== '..' && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative); }
 export async function deactivate() { await shutdown?.(); shutdown = undefined; }

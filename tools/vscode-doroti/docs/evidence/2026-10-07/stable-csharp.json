@@ -1,0 +1,32 @@
+{
+  "installedVsix": "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\vscode-editing\\2026-10-07\\session-installed-2\\extensions\\doroti-local.doroti-0.2.0",
+  "vscode": "1.140.0",
+  "sdk": "10.0.400",
+  "roslyn": "5.9.0",
+  "csharp": "2.160.4",
+  "prefixSelectionTabLinkedNamesImports": "PASS",
+  "editingDuringFixtureRunAndReloadStop": "PASS",
+  "nativeProductRunReload": "notVerified",
+  "explicitSnippetAndQuickFix": "PASS",
+  "wrapperUndoRedo": "PASS",
+  "listTrivia": "PASS",
+  "staleReject": "PASS",
+  "extractPreviewCancelApplyUndo": "PASS",
+  "statefulPreviewApplyUndo": "PASS",
+  "newUnicodeWidgetCollisionCancel": "PASS",
+  "argumentsLifecycleNoDuplicates": "PASS",
+  "projectSelectionNotRequired": "PASS",
+  "unrelatedProject": "PASS",
+  "rawStringAndComment": "PASS",
+  "carouselCatalog": "PASS",
+  "cancellation": "PASS",
+  "completionP95Ms": 8.984000000000378,
+  "actionsP95Ms": 9.555700000000797,
+  "repetitions": 20,
+  "stats": {
+    "projectLoads": 5,
+    "cachedProjects": 1
+  },
+  "physicalEditorInput": "notVerified",
+  "macOSLinux": "notVerified"
+}

@@ -23,7 +23,7 @@ export async function run(): Promise<void> {
     const doc = await vscode.workspace.openTextDocument(probe);
     const editor = await vscode.window.showTextDocument(doc);
     editor.selection = new vscode.Selection(doc.positionAt(doc.getText().length), doc.positionAt(doc.getText().length));
-    await vscode.commands.executeCommand('editor.action.insertSnippet', { langId: 'csharp', name: 'StatefulWidget' });
+    await vscode.commands.executeCommand('doroti.insertWidgetSnippet', 'StatefulWidget');
     await vscode.commands.executeCommand('type', { text: 'EditorCounter' });
     assert.ok(doc.getText().includes('State<EditorCounter>') && doc.getText().includes('new EditorCounterState()'), 'linked snippet names');
     await vscode.commands.executeCommand('jumpToNextSnippetPlaceholder');
@@ -49,8 +49,8 @@ export async function run(): Promise<void> {
     const diagnostic = new vscode.Diagnostic(range, 'Missing type'); diagnostic.code = 'CS0246'; collection.set(doc.uri, [diagnostic]);
     const fixes = await vscode.commands.executeCommand<vscode.CodeAction[]>('vscode.executeCodeActionProvider', doc.uri, range, vscode.CodeActionKind.QuickFix.value);
     const fix = fixes.find(item => item.title === 'Import Doroti.Framework.Widgets.StatefulWidget');
-    assert.ok(fix?.edit, 'Doroti compiler Quick Fix');
-    await vscode.workspace.applyEdit(fix.edit); collection.dispose(); await doc.save();
+    assert.ok(fix?.command, 'Doroti compiler Quick Fix');
+    await vscode.commands.executeCommand(fix.command.command, ...fix.command.arguments!); collection.dispose(); await doc.save();
     console.log('PASS: installed VSIX snippet linked names/Tab; completion import; Quick Fix; Undo.');
 
     await vscode.commands.executeCommand('doroti.selectTarget', 'windows');

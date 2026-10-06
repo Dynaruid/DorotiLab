@@ -3,7 +3,7 @@
   "displayName": "Doroti",
   "icon": "images/icon.png",
   "description": "Create, edit and run Doroti applications with metadata Hot Reload.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "publisher": "doroti-local",
   "repository": {
     "type": "git",
@@ -26,7 +26,7 @@
   "capabilities": {
     "untrustedWorkspaces": {
       "supported": "limited",
-      "description": "Project creation, CLI execution and Hot Reload require workspace trust."
+      "description": "Templates and file editing work in Restricted Mode. Project analysis, helper/CLI execution and Hot Reload require trust."
     },
     "virtualWorkspaces": false
   },
@@ -73,6 +73,26 @@
       {
         "command": "doroti.showLogs",
         "title": "Doroti: Show Logs"
+      },
+      {
+        "command": "doroti.newStatelessWidget",
+        "title": "Doroti: New Stateless Widget",
+        "enablement": "doroti.isWidgetDocument"
+      },
+      {
+        "command": "doroti.newStatefulWidget",
+        "title": "Doroti: New Stateful Widget",
+        "enablement": "doroti.isWidgetDocument"
+      },
+      {
+        "command": "doroti.insertWidgetSnippet",
+        "title": "Doroti: Insert Widget Snippet",
+        "enablement": "doroti.isWidgetDocument"
+      },
+      {
+        "command": "doroti.wrapWidget",
+        "title": "Doroti: Wrap with Widget…",
+        "enablement": "doroti.isWidgetDocument && isWorkspaceTrusted"
       }
     ],
     "menus": {
@@ -91,6 +111,18 @@
           "command": "doroti.stop",
           "when": "doroti.running",
           "group": "navigation@12"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "doroti.wrapWidget",
+          "when": "resourceLangId == csharp && doroti.isWidgetDocument && isWorkspaceTrusted",
+          "group": "1_modification@10"
+        },
+        {
+          "command": "doroti.insertWidgetSnippet",
+          "when": "resourceLangId == csharp && doroti.isWidgetDocument",
+          "group": "1_modification@11"
         }
       ]
     },
@@ -120,20 +152,46 @@
           "default": "",
           "description": "Device ID declared by the selected provider.",
           "scope": "machine-overridable"
+        },
+        "doroti.editing.completions": {
+          "type": "boolean",
+          "default": true,
+          "description": "Doroti completion providers.",
+          "scope": "resource"
+        },
+        "doroti.editing.snippets": {
+          "type": "boolean",
+          "default": true,
+          "description": "Import-aware widget templates and prefix suggestions.",
+          "scope": "resource"
+        },
+        "doroti.editing.codeActions": {
+          "type": "boolean",
+          "default": true,
+          "description": "Semantic widget refactorings and import fixes.",
+          "scope": "resource"
+        },
+        "doroti.editing.types": {
+          "type": "boolean",
+          "default": true,
+          "description": "Fallback type suggestions when Microsoft C# is inactive.",
+          "scope": "resource"
+        },
+        "doroti.editing.hints": {
+          "type": "boolean",
+          "default": true,
+          "description": "Doroti composition hints in hover.",
+          "scope": "resource"
         }
       }
-    },
-    "snippets": [
-      {
-        "language": "csharp",
-        "path": "./snippets/widgets.json"
-      }
-    ]
+    }
   },
   "scripts": {
     "compile": "tsc -p .",
     "test": "npm run compile && node --test dist/test/*.test.js",
-    "package": "npm run compile && vsce package --no-dependencies"
+    "package": "npm run compile && npm run build-helper && vsce package --no-dependencies",
+    "build-helper": "node scripts/build-helper.cjs",
+    "test:editing": "npm run compile && node dist/test/runHost.js"
   },
   "devDependencies": {
     "@types/node": "24.0.0",

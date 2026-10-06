@@ -1,10 +1,10 @@
 # Doroti VS Code 코드 작성 지원 확장 작업계획
 
-작성일: 2026-10-06. 대상: `tools/vscode-doroti`.
+작성일: 2026-10-06. 구현·검증: 2026-10-07. 대상: `tools/vscode-doroti`.
 
-상태: **검토·계획 작성 완료 / 기능 구현 미착수**. `wholePlanComplete=false`.
+상태: **E0–E6 구현 및 Windows 편집 검증 완료**. `wholePlanComplete=true` (이 문서의 편집 지원 범위).
 
-이번 요청은 현재 소스와 Flutter/VS Code 공식 문서를 검토하여 작업계획을 작성하는 범위다. 아래 체크박스는 향후 구현 작업이며, 이번 검토에서 확장 빌드·테스트·VSIX 설치·앱 실행을 수행한 것으로 해석하지 않는다.
+2026-10-06에는 소스·공식 문서 검토로 계획을 작성했고, 2026-10-07의 전체 작업 요청에 따라 구현과 설치형 편집 검증을 수행했다. 아래 원래 조사 내용은 구현 전 상태의 근거다. 현재 결과·지원 제한·명령·hash는 [편집 검증 기록](tools/vscode-doroti/docs/editing-verification-2026-10-07.md)과 [README](tools/vscode-doroti/README.md)를 따른다. Windows 편집 PASS를 기기·물리 입력·IME·접근성·scanout·배포 전체 PASS로 확대하지 않는다.
 
 ## 1. 목표와 범위
 
@@ -98,44 +98,44 @@ VS Code의 `CompletionItemProvider`, `SnippetString`, `CodeActionProvider`, `Wor
 
 ### E0 — 편집 기능 분리와 프로젝트 판별 (P0)
 
-- [ ] `extension.ts`에서 편집 provider를 `src/editing/`으로 분리한다. 실행 session의 busy 상태와 편집 요청 lifecycle을 분리하여 앱 실행 중에도 작성 지원이 동작하도록 한다.
-- [ ] `projectContext.ts`를 추가해 문서 소유 앱/참조 package를 판별한다. 프로젝트 선택 전에도 manifest와 문서 위치를 기준으로 관련 범위를 찾고, 파일 또는 연결 프로젝트를 확인한다.
-- [ ] `doroti.isWidgetDocument` 등 편집 context key와 completion/codeActions/snippets 설정을 추가한다. 메뉴 노출과 provider 내부 검증을 함께 적용한다.
-- [ ] 기존 global using 탐색을 캐시하고 문서 change/close, manifest·csproj·props/targets·참조 변경으로 무효화한다. 미저장 버퍼를 디스크보다 우선한다.
+- [x] `extension.ts`에서 편집 provider를 `src/editing/`으로 분리한다. 실행 session의 busy 상태와 편집 요청 lifecycle을 분리하여 앱 실행 중에도 작성 지원이 동작하도록 한다.
+- [x] `projectContext.ts`를 추가해 문서 소유 앱/참조 package를 판별한다. 프로젝트 선택 전에도 manifest와 문서 위치를 기준으로 관련 범위를 찾고, 파일 또는 연결 프로젝트를 확인한다.
+- [x] `doroti.isWidgetDocument` 등 편집 context key와 completion/codeActions/snippets 설정을 추가한다. 메뉴 노출과 provider 내부 검증을 함께 적용한다.
+- [x] 기존 global using 탐색을 캐시하고 문서 change/close, manifest·csproj·props/targets·참조 변경으로 무효화한다. 미저장 버퍼를 디스크보다 우선한다.
 
 완료 기준: 관련 없는 C# 파일에는 Doroti 전용 제안이 없고, 프로젝트 선택·Run 없이 앱 소스에서 편집 지원을 사용할 수 있다. 실행/중지/Hot Reload의 기존 계약은 유지된다.
 
 ### E1 — `stl`/`stf`, 위젯 생성과 기본 snippet 확장 (P0)
 
-- [ ] Stateless alias `stl`/`stless`/`dstateless`, Stateful alias `stf`/`stful`/`dstateful`을 추가한다. 동일 prefix 항목이 제안 목록에 중복되지 않도록 등록 방식을 정리한다.
-- [ ] 파일명에서 유효한 기본 클래스명을 제안하고 위젯 클래스/State/createState 이름을 연결한다. C# 식별자·예약어·한글 이름을 검증한다.
-- [ ] 최소 템플릿과 key constructor 포함 템플릿을 제공한다. Stateful은 실제 `IState`/`State<T>` API를 사용하고 기본 build 본문으로 편집 가능한 Widget 식을 넣는다.
-- [ ] 생성에 필요한 using을 completion 편집과 함께 추가한다. 동명 타입/alias/참조 미확정 시 정확한 타입명으로 한정하고 using을 중복 추가하지 않는다.
-- [ ] **Doroti: New Stateless Widget**, **New Stateful Widget**, **Insert Widget Snippet**을 추가한다. 파일 생성 명령은 namespace·위치·파일 충돌·취소를 처리하고 생성 파일을 연다.
-- [ ] Padding/Center/SizedBox/Expanded/Flexible/Stack/Align/scroll/ListView/Builder/LayoutBuilder/ClipRRect/TextStyle/decoration 및 Material/Cupertino 기본 화면·입력·버튼 템플릿을 추가한다. 사용하지 않는 package 템플릿은 문맥 제안에서 제외한다.
-- [ ] State override/컨트롤러 init·dispose 패턴을 추가한다. 소문자 메서드, 실제 `Dispose`/`dispose` 차이, base 호출 순서와 자원 소유를 해당 API 기준으로 확인한다.
+- [x] Stateless alias `stl`/`stless`/`dstateless`, Stateful alias `stf`/`stful`/`dstateful`을 추가한다. 동일 prefix 항목이 제안 목록에 중복되지 않도록 등록 방식을 정리한다.
+- [x] 파일명에서 유효한 기본 클래스명을 제안하고 위젯 클래스/State/createState 이름을 연결한다. C# 식별자·예약어·한글 이름을 검증한다.
+- [x] 최소 템플릿과 key constructor 포함 템플릿을 제공한다. Stateful은 실제 `IState`/`State<T>` API를 사용하고 기본 build 본문으로 편집 가능한 Widget 식을 넣는다.
+- [x] 생성에 필요한 using을 completion 편집과 함께 추가한다. 동명 타입/alias/참조 미확정 시 정확한 타입명으로 한정하고 using을 중복 추가하지 않는다.
+- [x] **Doroti: New Stateless Widget**, **New Stateful Widget**, **Insert Widget Snippet**을 추가한다. 파일 생성 명령은 namespace·위치·파일 충돌·취소를 처리하고 생성 파일을 연다.
+- [x] Padding/Center/SizedBox/Expanded/Flexible/Stack/Align/scroll/ListView/Builder/LayoutBuilder/ClipRRect/TextStyle/decoration 및 Material/Cupertino 기본 화면·입력·버튼 템플릿을 추가한다. 사용하지 않는 package 템플릿은 문맥 제안에서 제외한다.
+- [x] State override/컨트롤러 init·dispose 패턴을 추가한다. 소문자 메서드, 실제 `Dispose`/`dispose` 차이, base 호출 순서와 자원 소유를 해당 API 기준으로 확인한다.
 
 완료 기준: 빈 앱 소스에서 `stl`/`stf` 입력 → 제안 선택 → 클래스명 편집 → Tab → build 본문 작성이 연결되고 필요한 타입이 해석된다. 기존 `d*` 사용 흐름과 Insert Widget Snippet 명령도 검증한다.
 
 ### E2 — 분석 helper와 공통 catalog 기반 (P0/P1)
 
-- [ ] `tools/Doroti.Editor.Assist/`에 snapshot 분석 helper와 typed 계약을 추가한다. 프로젝트/패키지 평가, source snapshot, type identity, constructor/delegate 정보를 분리한다.
-- [ ] C# 구문 버전, SDK 선택, restore 전/후 동작, 파일/프로젝트 연결, 미저장 파일 추가를 검증하고 지원 범위를 명시한다.
-- [ ] process ownership, handshake/schema version, cancellation, 최대 메시지/캐시 크기, 재시작·dispose를 구현한다. helper의 stderr는 로그로 보내고 stdout protocol과 섞지 않는다.
-- [ ] Core widget API와 참조된 Material/Cupertino/사용자 위젯·추가 package의 catalog를 구성한다. type/namespace, 인자 이름·타입·기본값, child 형태, builder signature, 문서, 구조 제약을 공유한다.
-- [ ] app 프로젝트 기준 semantic model에 미저장 snapshot을 반영한다. 참조 해석이 안 되는 환경에서는 구문 분석과 안전한 템플릿만 제공하고 semantic 액션을 성공으로 표시하지 않는다.
+- [x] `tools/Doroti.Editor.Assist/`에 snapshot 분석 helper와 typed 계약을 추가한다. 프로젝트/패키지 평가, source snapshot, type identity, constructor/delegate 정보를 분리한다.
+- [x] C# 구문 버전, SDK 선택, restore 전/후 동작, 파일/프로젝트 연결, 미저장 파일 추가를 검증하고 지원 범위를 명시한다.
+- [x] process ownership, handshake/schema version, cancellation, 최대 메시지/캐시 크기, 재시작·dispose를 구현한다. helper의 stderr는 로그로 보내고 stdout protocol과 섞지 않는다.
+- [x] Core widget API와 참조된 Material/Cupertino/사용자 위젯·추가 package의 catalog를 구성한다. type/namespace, 인자 이름·타입·기본값, child 형태, builder signature, 문서, 구조 제약을 공유한다.
+- [x] app 프로젝트 기준 semantic model에 미저장 snapshot을 반영한다. 참조 해석이 안 되는 환경에서는 구문 분석과 안전한 템플릿만 제공하고 semantic 액션을 성공으로 표시하지 않는다.
 
 완료 기준: 샘플의 raw string/collection/primary constructor와 사용자 Widget 타입을 정확히 분석한다. 동일 문서에 대한 연속 요청에서 helper·프로젝트가 매번 다시 실행/로드되지 않는다.
 
 ### E3 — 위젯 감싸기와 감싸기 제거 (P0/P1)
 
-- [ ] `CodeActionKind.RefactorRewrite`로 단일 위젯 감싸기를 등록한다. 위젯 이름/식 위 커서와 전체 선택 모두 지원한다.
-- [ ] Center/Container/SizedBox/Align/SingleChildScrollView는 `child:`, Padding은 `padding: EdgeInsets.CreateAll(...)`과 `child:`를 생성한다. Row/Column/Stack은 `children: [원본식]`을 생성한다.
-- [ ] Builder/LayoutBuilder 감싸기는 올바른 callback 반환식을 생성하고 주변 `context`/lambda 이름 충돌을 피한다. **Wrap with Widget…** Quick Pick은 현재 사용 가능한 wrapper만 제시한다.
-- [ ] 동일 children collection의 연속된 여러 위젯을 감싼다. 앞뒤 항목, comma와 trivia, spread를 보존하고 의미를 확인할 수 없는 선택을 거부한다.
-- [ ] Expanded/Flexible/Positioned 등 parent data 의존 wrapper는 적합한 부모 구조를 확인할 때만 제안한다. 컴파일만 되지만 잘못된 배치가 되는 항목을 일반 wrapper 목록에 넣지 않는다.
-- [ ] 지원 wrapper 제거를 제공한다. 의미를 가진 key·padding·callback 등 제거 영향을 preview에 보여주고, 자식이 여러 개거나 타입/의미를 보존할 수 없는 경우 제한한다.
-- [ ] import·replacement·formatting·Undo를 공통 편집 경로로 처리한다. 선택 후 문서가 바뀐 경우 이전 범위에 적용하지 않는다.
+- [x] `CodeActionKind.RefactorRewrite`로 단일 위젯 감싸기를 등록한다. 위젯 이름/식 위 커서와 전체 선택 모두 지원한다.
+- [x] Center/Container/SizedBox/Align/SingleChildScrollView는 `child:`, Padding은 `padding: EdgeInsets.CreateAll(...)`과 `child:`를 생성한다. Row/Column/Stack은 `children: [원본식]`을 생성한다.
+- [x] Builder/LayoutBuilder 감싸기는 올바른 callback 반환식을 생성하고 주변 `context`/lambda 이름 충돌을 피한다. **Wrap with Widget…** Quick Pick은 현재 사용 가능한 wrapper만 제시한다.
+- [x] 동일 children collection의 연속된 여러 위젯을 감싼다. 앞뒤 항목, comma와 trivia, spread를 보존하고 의미를 확인할 수 없는 선택을 거부한다.
+- [x] Expanded/Flexible/Positioned 등 parent data 의존 wrapper는 적합한 부모 구조를 확인할 때만 제안한다. 컴파일만 되지만 잘못된 배치가 되는 항목을 일반 wrapper 목록에 넣지 않는다.
+- [x] 지원 wrapper 제거를 제공한다. 의미를 가진 key·padding·callback 등 제거 영향을 preview에 보여주고, 자식이 여러 개거나 타입/의미를 보존할 수 없는 경우 제한한다.
+- [x] import·replacement·formatting·Undo를 공통 편집 경로로 처리한다. 선택 후 문서가 바뀐 경우 이전 범위에 적용하지 않는다.
 
 완료 예시:
 
@@ -160,43 +160,43 @@ new Column(children:
 
 ### E4 — 문맥 제안과 import·도움말 확대 (P1)
 
-- [ ] 일반 타입 이름, 클래스 생성, Widget 식, constructor 인자, builder 본문, State 멤버를 구분한다. 주석·문자열·비활성 전처리 영역에서는 구조 snippet을 제안하지 않는다.
-- [ ] `new Padding(`, `new Column(` 등에서 미입력 인자 묶음과 child/children/builder 패턴을 제안한다. 이미 있는 named argument, 다른 overload, 잘못된 delegate 본문을 삽입하지 않는다.
-- [ ] enum/factory와 builder 작성 지원을 실제 catalog에서 생성한다. 예: `MainAxisAlignment`, `CrossAxisAlignment`, `EdgeInsets.Create*`, `BorderRadius.Create*`, `(context, constraints) => ...`.
-- [ ] State 타입에서만 생명주기 override·setState 패턴을 제안하고 이미 구현한 멤버는 제외한다. Controller 패턴은 생성과 해제 위치를 함께 안내한다.
-- [ ] 고정 import 목록을 catalog 기반으로 확장하고 alias, local/project 타입, global using, csproj Using, implicit/generated using과 namespace 범위를 반영한다. `TextStyle`처럼 후보가 여러 개면 namespace를 명확히 표시한다.
-- [ ] Microsoft C# 확장 공존 상태에서 중복 completion/hover/signature를 확인한다. 기본 언어 정보는 C# 확장에 맡기고 Doroti 구성 예시·구조 제약·문서 링크만 필요한 위치에 추가한다.
-- [ ] restore 실패/미참조 package/C# 확장 비활성 등의 상태를 구분해 짧은 안내와 사용할 수 있는 fallback을 제공한다. 앱/파일을 제안 때문에 자동 수정하거나 dependency를 자동 설치하지 않는다.
-- [ ] 응답 시간을 측정한다. 초기 목표는 준비된 프로젝트에서 completion p95 ≤ 100ms, 캐시된 일반 코드 액션 제안 p95 ≤ 200ms다. 프로젝트 초기 로드와 큰 추출 실행 시간은 별도로 기록한다. 취소된 요청·빠른 연속 입력에서 오래된 결과를 표시하지 않는다.
+- [x] 일반 타입 이름, 클래스 생성, Widget 식, constructor 인자, builder 본문, State 멤버를 구분한다. 주석·문자열·비활성 전처리 영역에서는 구조 snippet을 제안하지 않는다.
+- [x] `new Padding(`, `new Column(` 등에서 미입력 인자 묶음과 child/children/builder 패턴을 제안한다. 이미 있는 named argument, 다른 overload, 잘못된 delegate 본문을 삽입하지 않는다.
+- [x] enum/factory와 builder 작성 지원을 실제 catalog에서 생성한다. 예: `MainAxisAlignment`, `CrossAxisAlignment`, `EdgeInsets.Create*`, `BorderRadius.Create*`, `(context, constraints) => ...`.
+- [x] State 타입에서만 생명주기 override·setState 패턴을 제안하고 이미 구현한 멤버는 제외한다. Controller 패턴은 생성과 해제 위치를 함께 안내한다.
+- [x] 고정 import 목록을 catalog 기반으로 확장하고 alias, local/project 타입, global using, csproj Using, implicit/generated using과 namespace 범위를 반영한다. `TextStyle`처럼 후보가 여러 개면 namespace를 명확히 표시한다.
+- [x] Microsoft C# 확장 공존 상태에서 중복 completion/hover/signature를 확인한다. 기본 언어 정보는 C# 확장에 맡기고 Doroti 구성 예시·구조 제약·문서 링크만 필요한 위치에 추가한다.
+- [x] restore 실패/미참조 package/C# 확장 비활성 등의 상태를 구분해 짧은 안내와 사용할 수 있는 fallback을 제공한다. 앱/파일을 제안 때문에 자동 수정하거나 dependency를 자동 설치하지 않는다.
+- [x] 응답 시간을 측정한다. 초기 목표는 준비된 프로젝트에서 completion p95 ≤ 100ms, 캐시된 일반 코드 액션 제안 p95 ≤ 200ms다. 프로젝트 초기 로드와 큰 추출 실행 시간은 별도로 기록한다. 취소된 요청·빠른 연속 입력에서 오래된 결과를 표시하지 않는다.
 
 완료 기준: 실제 인자/생명주기 문맥별 제안과 없는 import가 해결되고, `CustomCarousel`은 참조 앱에서만 실제 필수 인자·builder signature로 제안된다. 위 성능 수치는 목표이며 측정 전 PASS라고 기록하지 않는다.
 
 ### E5 — Widget 추출·Stateful 변환·안전한 구조 변환 (P1/P2)
 
-- [ ] `RefactorExtract`로 Widget 식을 새 StatelessWidget에 추출한다. 초기 지원은 같은 파일의 새 클래스이며 namespace·접근성·이름 충돌·key constructor를 처리한다.
-- [ ] 자유 변수, instance member, generic 타입, context, callback과 nullable 타입을 분석해 필요한 constructor 인자를 만든다. 원래 식의 평가 횟수/순서·변수 capture·접근성이 달라지는 경우 제한 이유를 표시한다.
-- [ ] Stateless → Stateful 변환을 구현한다. primary/일반 constructor, 필드·프로퍼티·base key·attributes와 build 참조를 보존하고 State에 옮길 코드와 Widget에 남길 계약을 구분한다. 안전하지 않은 partial/inheritance 사례는 변환하지 않는다.
-- [ ] 실제 생성자 계약이 허용하는 child/children 변환과 단순 wrapper 교체를 추가한다. 다른 타입으로 바꿔야 하는 경우 인자 의미까지 확인한다. Stateful → Stateless 역변환과 Swap with Parent는 별도 후속으로 둔다.
-- [ ] 구조 변경을 diff preview로 검토 가능하게 하고 적용/취소/Undo를 검증한다. 클래스 추가·타입 변경은 기존 Hot Reload 제한에 따라 Restart가 필요할 수 있음을 안내한다.
+- [x] `RefactorExtract`로 Widget 식을 새 StatelessWidget에 추출한다. 초기 지원은 같은 파일의 새 클래스이며 namespace·접근성·이름 충돌·key constructor를 처리한다.
+- [x] 자유 변수, instance member, generic 타입, context, callback과 nullable 타입을 분석해 필요한 constructor 인자를 만든다. 원래 식의 평가 횟수/순서·변수 capture·접근성이 달라지는 경우 제한 이유를 표시한다.
+- [x] Stateless → Stateful 변환을 구현한다. primary/일반 constructor, 필드·프로퍼티·base key·attributes와 build 참조를 보존하고 State에 옮길 코드와 Widget에 남길 계약을 구분한다. 안전하지 않은 partial/inheritance 사례는 변환하지 않는다.
+- [x] 실제 생성자 계약이 허용하는 child/children 변환과 단순 wrapper 교체를 추가한다. 다른 타입으로 바꿔야 하는 경우 인자 의미까지 확인한다. Stateful → Stateless 역변환과 Swap with Parent는 별도 후속으로 둔다.
+- [x] 구조 변경을 diff preview로 검토 가능하게 하고 적용/취소/Undo를 검증한다. 클래스 추가·타입 변경은 기존 Hot Reload 제한에 따라 Restart가 필요할 수 있음을 안내한다.
 
 완료 기준: 추출·변환한 fixture가 컴파일되고 필요한 입력/callback/접근성이 유지된다. mounted State의 위치·타입이 달라지는 리팩터링을 상태 보존 Hot Reload가 보장하는 것으로 표시하지 않는다.
 
 ### E6 — 편집 전용 VSIX 검증·패키징·사용 안내 (필수)
 
-- [ ] 기존 `contracts.test.ts`의 import 회귀를 유지하고 새 snapshot/catalog/변환 경계 검사를 추가한다. 텍스트 기대값만 맞추지 말고 생성·변환 코드의 구문/컴파일·타입·trivia 보존도 확인한다.
-- [ ] `src/test/editingHost.ts`와 `runHost.ts --editing` 진입점을 추가한다. 설치한 VSIX에서 편집 기능만 검증하고 Windows Run/Hot Reload 요구와 분리한다. 이 파일/옵션은 현재 존재하지 않는 예정 항목이다.
-- [ ] 실제 prefix 입력 후 completion 선택·Tab·이름 연동·import·Undo, 커서/선택 wrapping·목록 wrapping, Extract Widget·Stateful 변환을 VS Code host에서 검사한다. provider 반환값만 검사한 결과와 사용자 제안 선택 경로를 구분한다.
-- [ ] Microsoft C# 확장 공존/부재, Restricted Mode, 관련 없는 C# 프로젝트, 프로젝트 선택 전, 앱 실행 중, 미저장 파일, alias/global using, CRLF/한글/raw string·collection, restore 실패를 포함한다.
-- [ ] VS Code 최소 지원 버전 1.100과 현재 안정 버전에서 필요한 API/편집 동작을 확인한다. 구현 당시 버전·SDK·Roslyn·Node/npm을 결과에 고정한다. 미실행 OS/버전은 `notVerified`로 남긴다.
-- [ ] `.vscodeignore`와 package 스크립트를 갱신하고 catalog/helper DLL·런타임 의존성 포함을 검사한다. repository 밖 생성 앱에서도 source 경로에 기대지 않고 동작하는지 확인한다.
-- [ ] 대표 wrapper/추출 결과를 실제 Widget 트리로 조립해 parent data와 필수 인자를 검사한다. 기존 Run/Stop/Hot Reload는 변경 영향이 있는 경로만 회귀한다.
-- [ ] README에 prefix 목록, `Ctrl+.`/우클릭/명령 사용법, C# 확장 역할, 설정, 분석 실패 시 동작, Restart 필요 사례를 정리한다. 증거는 revision·환경·명령·예상/실제·잔여 제한과 함께 남긴다.
+- [x] 기존 `contracts.test.ts`의 import 회귀를 유지하고 새 snapshot/catalog/변환 경계 검사를 추가한다. 텍스트 기대값만 맞추지 말고 생성·변환 코드의 구문/컴파일·타입·trivia 보존도 확인한다.
+- [x] `src/test/editingHost.ts`와 `runHost.ts --editing` 진입점을 추가한다. 설치한 VSIX에서 편집 기능만 검증하고 Windows Run/Hot Reload 요구와 분리한다. `editingHost.ts`와 `--editing`은 구현되어 설치형 검증에서 실행했다.
+- [x] 실제 prefix 입력 후 completion 선택·Tab·이름 연동·import·Undo, 커서/선택 wrapping·목록 wrapping, Extract Widget·Stateful 변환을 VS Code host에서 검사한다. provider 반환값만 검사한 결과와 사용자 제안 선택 경로를 구분한다.
+- [x] Microsoft C# 확장 공존/부재, Restricted Mode, 관련 없는 C# 프로젝트, 프로젝트 선택 전, 앱 실행 중, 미저장 파일, alias/global using, CRLF/한글/raw string·collection, restore 실패를 포함한다.
+- [x] VS Code 최소 지원 버전 1.100과 현재 안정 버전에서 필요한 API/편집 동작을 확인한다. 구현 당시 버전·SDK·Roslyn·Node/npm을 결과에 고정한다. 미실행 OS/버전은 `notVerified`로 남긴다.
+- [x] `.vscodeignore`와 package 스크립트를 갱신하고 catalog/helper DLL·런타임 의존성 포함을 검사한다. repository 밖 생성 앱에서도 source 경로에 기대지 않고 동작하는지 확인한다.
+- [x] 대표 wrapper/추출 결과를 실제 Widget 트리로 조립해 parent data와 필수 인자를 검사한다. 기존 Run/Stop/Hot Reload는 변경 영향이 있는 경로만 회귀한다.
+- [x] README에 prefix 목록, `Ctrl+.`/우클릭/명령 사용법, C# 확장 역할, 설정, 분석 실패 시 동작, Restart 필요 사례를 정리한다. 증거는 revision·환경·명령·예상/실제·잔여 제한과 함께 남긴다.
 
 완료 기준: 설치한 VSIX에서 핵심 편집 흐름을 재현하고 생성 코드 검증·구조 검증·패키징 검사를 통과한다. Windows 편집 PASS를 macOS/Linux·기기·물리 입력·IME·접근성·scanout·배포 전체 PASS로 확대하지 않는다.
 
-## 6. 예정 파일 구성
+## 6. 구현 파일 구성
 
-아래 새 경로는 설계안이며 아직 존재하는 구현으로 취급하지 않는다. 파일 수는 실제 책임에 맞게 합칠 수 있다.
+TypeScript 편집 provider는 `src/editing/`으로 분리했다. .NET helper의 계약/분석/변환은 `Contracts.cs`, `Engine.cs`, `Refactorings.cs`로 구성했고 `Program.cs`가 process protocol을 소유한다. 아래 설계상의 폴더 책임을 이 파일들로 합쳤다. `src/imports.ts`는 기존 호출을 위한 compatibility export다.
 
 ```text
 tools/vscode-doroti/
@@ -232,7 +232,7 @@ tools/Doroti.Editor.Assist/
 
 검증은 [저장소 지침](.github/copilot-instructions.md)에 따라 각 실행에 **20분 timeout**을 적용한다. 임시 앱·설치 profile·결과는 `temp/testing/vscode-editing/<run>/`에 둔다. 수백 회 반복 대신 대표 정상/실패/경계 사례와 회귀를 구성하며 대부분의 반복 측정은 30회 이내로 제한한다. 보존할 최소 결과·환경·hash는 추적 문서에 요약한다.
 
-현재 존재하는 확장 검증·패키징 명령은 다음과 같다. **이번 계획 작성에서는 실행하지 않았다.** helper 검증과 `--editing` 명령은 E2/E6에서 실제 진입점을 만든 후 README에 확정한다.
+확장 검증·패키징, helper emit/Element/protocol 및 설치형 `--editing` 명령을 실행했다. 확정된 명령과 profile/환경은 README와 검증 기록에 있다.
 
 ```powershell
 # Windows repository root에서 실행
@@ -242,11 +242,15 @@ python Doroti/eng/run-with-timeout.py --timeout 1200 npm.cmd --prefix tools/vsco
 
 ## 8. 최종 완료 조건과 현재 결과
 
-- [ ] `stl`/`stf`와 기존 alias로 생성 → 이름/Tab → 필요한 using → 생성 코드 컴파일이 통과한다.
-- [ ] 위젯 커서/선택에서 감싸기 메뉴가 보이고 단일/여러 자식·부모 제약·제거·Undo가 검증된다.
-- [ ] 생성자/child/children/builder/State 문맥에서 정확한 제안이 나타나며 C# 확장 공존·추가 package·제안 응답 기준을 통과한다.
-- [ ] Widget 추출과 Stateless → Stateful 변환이 입력/callback/namespace/접근성/생성자 계약을 보존한다.
-- [ ] 설치한 VSIX의 편집 전용 검증, catalog/helper 패키징, repository 밖 생성 앱, 기존 실행 기능 회귀와 README 갱신이 끝난다.
-- [ ] 실행한 검사의 PASS/PARTIAL/SKIPPED와 미확인 범위를 구분하고 E0–E6 잔여 항목이 없을 때만 `wholePlanComplete=true`로 바꾼다.
+- [x] `stl`/`stf`와 기존 alias로 생성 → 이름/Tab → 필요한 using → 생성 코드 컴파일이 통과한다.
+- [x] 위젯 커서/선택에서 감싸기 메뉴가 보이고 단일/여러 자식·부모 제약·제거·Undo가 검증된다.
+- [x] 생성자/child/children/builder/State 문맥에서 정확한 제안이 나타나며 C# 확장 공존·추가 package·제안 응답 기준을 통과한다.
+- [x] Widget 추출과 Stateless → Stateful 변환이 입력/callback/namespace/접근성/생성자 계약을 보존한다.
+- [x] 설치한 VSIX의 편집 전용 검증, catalog/helper 패키징, repository 밖 생성 앱, 기존 실행 기능 회귀와 README 갱신이 끝난다.
+- [x] 실행한 검사의 PASS/PARTIAL/SKIPPED와 미확인 범위를 구분하고 E0–E6 잔여 항목이 없을 때만 `wholePlanComplete=true`로 바꾼다.
 
-현재 결과: 코드·manifest·기존 검증 진입점·실제 Widget API·공식 문서를 정적으로 검토하여 계획을 작성했다. 문서의 로컬 링크·코드 펜스·단계/상태 표기·공백 정합성과 `git diff --check`는 **PASS**다. 기능 구현·확장 빌드·단위/통합 테스트·설치형 편집·앱 실행은 **notVerified**다. 기존 Carousel 소스와 `.vscode` 변경은 이번 작업 범위에 포함하지 않는다.
+현재 결과: **C1–C5 / E0–E6 PASS**. 확장 0.2.0, Node 계약 12개, Roslyn/API/Element 검사 84개, 템플릿 38개 컴파일, helper snapshot/protocol 8개 검사, 설치한 VSIX의 VS Code 1.100.0/1.140.0·C# 2.160.4 공존·Restricted Mode·repository 밖 생성 앱 검증을 수행했다. 준비된 C# 공존 환경의 20회 측정에서 completion p95 8.98ms, 코드 액션 p95 9.56ms로 목표를 통과했다.
+
+추출은 동일 파일의 순수 생성식과 명시적 값/callback 입력을 지원한다. Stateful 변환은 nested State로 private 접근·constructor/key/프로퍼티·primary 값과 build 시점 callback capture를 보존한다. partial/inheritance/base dispatch/mutable capture·해석되지 않는 참조 등은 제한 이유를 제공한다. 전체 C# 변환이나 모든 Widget 패턴 지원을 완료 의미에 포함하지 않는다.
+
+기존 실행 session 기능은 유지하고 영향 있는 계약 회귀를 통과했다. 설치형 development 계약 fixture의 Run 중 편집 및 Hot Reload ack/Stop도 확인했다. 이번에 새로 네이티브 Run/Hot Reload, macOS/Linux, 물리 입력/IME/접근성/scanout/GPU/FPS, signing/clean-machine, NuGet-only/Marketplace 배포를 검증한 것은 아니다. 명령 자동화와 CPU Widget 조립의 범위를 넘는 항목은 **notVerified/범위 제외**다. 기존 Carousel·`.vscode` 소스는 수정하지 않았다.
