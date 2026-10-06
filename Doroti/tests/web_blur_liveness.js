@@ -78,12 +78,18 @@
     capture = root.setPointerCapture;
     root.setPointerCapture = id => { if (id < 99) capture.call(root, id); };
     let pointerId = 99;
+    let timestampFaults = 0;
     const pointer = (type, x, y, pointerType = "touch") => {
       if (type === "pointerdown") pointerId++;
-      return root.dispatchEvent(new PointerEvent(type, {
+      const event = new PointerEvent(type, {
         pointerId, pointerType, isPrimary: true, clientX: x, clientY: y,
         button: 0, buttons: type === "pointerup" ? 0 : 1, bubbles: true,
-      }));
+      });
+      if (query.has("badtime")) {
+        const values = [Number.MAX_VALUE, Infinity, NaN, -1];
+        Object.defineProperty(event, "timeStamp", { value: values[timestampFaults++ % values.length] });
+      }
+      return root.dispatchEvent(event);
     };
     const tap = async (prefix, bottom = false) => {
       const element = [...document.querySelectorAll("#doroti-semantics [aria-label]")]
@@ -195,7 +201,7 @@
       await waitLabel("Blur strength:");
       await report("mode-complete", { mode, progress, diagnostics: await diagnostics() });
     }
-    await report("PASS", { progress, scrollEvents, seconds, wideSweep, reloads, diagnostics: await diagnostics() });
+    await report("PASS", { progress, scrollEvents, seconds, wideSweep, timestampFaults, reloads, diagnostics: await diagnostics() });
     document.documentElement.dataset.blurLiveness = "PASS";
   } catch (failure) {
     await report("FAIL", { mode, progress, error: String(failure), lastDiagnostic,

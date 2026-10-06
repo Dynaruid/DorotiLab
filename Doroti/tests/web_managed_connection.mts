@@ -10,6 +10,7 @@ const tick = () => new Promise(resolve => setImmediate(resolve));
 async function supervisor() {
   const timers = new Map<number, () => void>(); let nextTimer = 0;
   const canceled: string[] = [], started: string[] = [];
+  const loggedErrors: string[] = [];
   let worker: EventTarget | undefined;
   class NativeWorker extends EventTarget {
     constructor(..._: unknown[]) { super(); worker = this; }
@@ -21,6 +22,7 @@ async function supervisor() {
       CancelAsync: async (token: string) => { canceled.push(token); },
     } } } } }) };
   const context = vm.createContext({ URL, EventTarget, MessageEvent, MessageChannel, MessagePort, SharedArrayBuffer, Uint8Array,
+    console: { error: (error: string) => loggedErrors.push(error) },
     crossOriginIsolated: true, Worker: NativeWorker, location: new URL('http://127.0.0.1/'), crypto: { randomUUID }, fixture: { runtime },
     document: { baseURI: 'http://127.0.0.1/', documentElement: { dataset: {} }, querySelector: () => null },
     addEventListener() {}, removeEventListener() {}, setTimeout(callback: () => void) { const id=++nextTimer; timers.set(id,callback); return id; },
@@ -36,11 +38,12 @@ async function supervisor() {
     cache.set(url.href,module);await module.link((specifier,parent)=>load(new URL(specifier.replace(/\.js$/,'.ts'),parent.identifier)));return module;
   }
   const module=await load(new URL('../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.managed-worker.ts',import.meta.url));await module.evaluate();
-  return { api:module.namespace as any, timers, canceled, started,
+  return { api:module.namespace as any, timers, canceled, started, loggedErrors,
     connect(token:string,port:MessagePort) { worker!.dispatchEvent(new MessageEvent('message',{data:{protocolVersion:5,kind:'doroti-managed-port',sessionToken:token,port}})); },
-    crashOtherRuntimeWorker() {
+    crashOtherRuntimeWorker(cause?: Error) {
       const finalizer = new (context.Worker as any)('http://127.0.0.1/_framework/dotnet.native.worker.finalizer.mjs');
-      const error = new Event('error'); Object.defineProperty(error,'message',{value:'finalizer crashed'});
+      const error = new Event('error'); Object.defineProperty(error,'message',{value:cause?.message ?? 'finalizer crashed'});
+      if (cause) Object.defineProperty(error,'error',{value:cause});
       finalizer.dispatchEvent(error);
     },
   };
@@ -59,6 +62,17 @@ test('managed connection timeout cancels its managed token and rejects/ACKs a la
   host.connect(host.started[0],channel.port2); await tick(); await tick();
   assert.equal(messages[0].kind,'managed-rejected');
   channel.port1.close(); channel.port2.close();
+});
+
+test('runtime worker diagnostics retain the original exception stack', async () => {
+  const host=await supervisor();
+  const pending=host.api.createManagedDorotiWorker('http://127.0.0.1/_framework/fake-dotnet.js',new URL('http://127.0.0.1/role.js'));
+  const rejected=assert.rejects(pending,/Overflow_TimeSpanTooLong/);
+  await tick(); await tick();
+  const cause=new Error('Overflow_TimeSpanTooLong');
+  cause.stack='Overflow_TimeSpanTooLong\n at OriginalTimeConversion (worker.js:42:5)';
+  host.crashOtherRuntimeWorker(cause); await rejected;
+  assert.match(host.loggedErrors[0],/OriginalTimeConversion \(worker.js:42:5\)/);
 });
 
 test('a different runtime pthread failure rejects a pending managed connection immediately', async () => {

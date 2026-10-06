@@ -97,6 +97,12 @@ async function initializeMainRuntime(dotnetUrl: string): Promise<MainRuntime> {
           !resolved.pathname.endsWith(".mjs")) return;
       this.addEventListener("error", event => {
         const error = new Error(`Doroti .NET runtime worker failed: ${event.message || String(event.error)}`);
+        const originalStack = event.error?.stack;
+        if (typeof originalStack === "string") error.stack += `\nCaused by: ${originalStack}`;
+        else if (event.filename) error.stack += `\nWorker source: ${event.filename}:${event.lineno}:${event.colno}`;
+        // Keep the worker's original stack in Inspector; the fatal UI message
+        // intentionally only contains the short error description.
+        console.error(error.stack ?? error.message);
         rejectStartup(error);
         failRuntime(error);
       });

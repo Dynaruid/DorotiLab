@@ -19,6 +19,7 @@ import { TextInputTapFocus } from "./doroti.web.text-focus.js";
 import { BrowserTextActions } from "./doroti.web.text-actions.js";
 import { ResizeAdmissionWindow } from "./doroti.web.admission.js";
 import { PointerMoveAdmission } from "./doroti.web.pointer-admission.js";
+import { normalizeBrowserTimestamp } from "./doroti.web.timestamps.js";
 import { configureNavigation } from "./doroti.web.navigation.js";
 import { configureDrop } from "./doroti.web.drop.js";
 import { configureServiceBridge, configurePersistenceFailure, handleService, closeFileOwner, closeApplicationNavigation, closeBrowserDrop } from "./doroti.web.services.js";
@@ -275,7 +276,7 @@ export function dispatchWorkerResizeEpoch(
 
 export function dispatchWorkerAnimationFrame(
   hostId: number, callbackId: number, timestamp: number): void {
-  requireManaged().dispatchAnimationFrame(hostId, callbackId, timestamp);
+  requireManaged().dispatchAnimationFrame(hostId, callbackId, normalizeBrowserTimestamp(timestamp));
 }
 
 export function dispatchWorkerInput(message: Record<string, unknown>): void {
@@ -941,7 +942,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     for (const point of source.length ? source : [event]) {
       samples.push(point.clientX - rect.left, point.clientY - rect.top,
         point.pressure || (point.buttons ? 0.5 : 0),
-        point.tiltX || 0, point.tiltY || 0, point.twist || 0, point.timeStamp);
+        point.tiltX || 0, point.tiltY || 0, point.twist || 0, normalizeBrowserTimestamp(point.timeStamp));
     }
     return samples;
   };
@@ -1076,7 +1077,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     requireManaged().dispatchWheel(
       host.id, wheel.clientX - rect.left, wheel.clientY - rect.top,
       wheel.deltaX * deltaScale, wheel.deltaY * deltaScale,
-      wheel.timeStamp, kind, inputSequence, signalKind, gestureScale);
+      normalizeBrowserTimestamp(wheel.timeStamp), kind, inputSequence, signalKind, gestureScale);
     recordResize(host, "wheel-framework-dispatch", "managed-callback", { inputSequence, detail });
     wheel.preventDefault();
   });
@@ -1097,7 +1098,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
         (!nativeTextEditing && ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(key.key)))
       key.preventDefault();
     host.pressedKeys.set(key.code, key.key);
-    requireManaged().dispatchKey(host.id, true, key.repeat, false, key.code, key.key, key.timeStamp,
+    requireManaged().dispatchKey(host.id, true, key.repeat, false, key.code, key.key, normalizeBrowserTimestamp(key.timeStamp),
       ++host.inputSequence);
   });
   observe(document, "keyup", (event) => {
@@ -1105,7 +1106,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     if (!host.pressedKeys.has(key.code)) return;
     const pressedKey = host.pressedKeys.get(key.code)!;
     host.pressedKeys.delete(key.code);
-    requireManaged().dispatchKey(host.id, false, false, false, key.code, pressedKey, key.timeStamp,
+    requireManaged().dispatchKey(host.id, false, false, false, key.code, pressedKey, normalizeBrowserTimestamp(key.timeStamp),
       ++host.inputSequence);
   });
   observe(canvas, "focus", (event) => setViewFocus(host, true, event.timeStamp));
@@ -1221,7 +1222,7 @@ function scheduleHostFrame(host: BrowserHost): void {
           rafId: latest,
           detail: JSON.stringify({ callbackId: latest, timestampMilliseconds: timestamp }),
         });
-        managed?.dispatchAnimationFrame(host.id, latest, timestamp);
+        managed?.dispatchAnimationFrame(host.id, latest, normalizeBrowserTimestamp(timestamp));
       }
     } finally {
       host.frameRaf = 0;
@@ -2645,7 +2646,7 @@ function rememberTextState(
 function setViewFocus(host: BrowserHost, focused: boolean, timestamp: number): void {
   if (host.viewFocused === focused) return;
   host.viewFocused = focused;
-  requireManaged().dispatchFocus(host.id, focused, timestamp, ++host.inputSequence);
+  requireManaged().dispatchFocus(host.id, focused, normalizeBrowserTimestamp(timestamp), ++host.inputSequence);
   emit(host);
 }
 

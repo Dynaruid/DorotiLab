@@ -278,6 +278,16 @@ advancing, and verifies an unrelated application tab after every mode. It logs
 main-page heartbeat, visibility, worker diagnostics, and fatal runtime console
 errors to `liveness.jsonl`. Add `&sweep=wide` for rapid low-to-high slider sweeps
 that exercise changing capture sizes and cache eviction.
+Add `&badtime=1` to inject unrepresentable/nonfinite/negative pointer timestamps.
+The renderer must remain responsive and complete ordinary tab round trips. This
+checks the input boundary; it does not establish why a device supplied a bad clock.
+Timestamp preservation/fallback and original Worker exception stacks are checked by:
+
+```sh
+node --experimental-transform-types --test Doroti/tests/web_timestamps.mts
+node --experimental-transform-types --experimental-vm-modules --test Doroti/tests/web_managed_connection.mts
+```
+
 Use `--capture-native-output` for Mono stdout/stderr that bypasses the window's
 console. This diagnostic option wraps the served native JavaScript output functions
 and updates the served import-map integrity hashes.
