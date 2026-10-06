@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "doroti.application-capabilities/v1",
+  "applicationId": "dev.doroti.carousel",
+  "targetRid": "win-x64",
+  "platformViews": [],
+  "resources": [],
+  "plugins": []
+}

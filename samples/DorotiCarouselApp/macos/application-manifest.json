@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "doroti.application-capabilities/v1",
+  "applicationId": "dev.doroti.carousel",
+  "targetRid": "maccatalyst-arm64",
+  "resources": [],
+  "plugins": [
+    {
+      "id": "doroti.native.platform",
+      "channel": "doroti/native-platform",
+      "codec": "json",
+      "capabilityId": "platform-messaging",
+      "nativePackage": {
+        "rid": "maccatalyst-arm64",
+        "packageId": "DorotiCarouselApp.MacCatalyst.Native",
+        "version": "1.0.0",
+        "abiVersion": "doroti.native-platform-bridge/v1",
+        "handlerType": "DorotiCarouselApp.MacCatalyst.DorotiNativePlatformBridge"
+      }
+    }
+  ],
+  "platformViews": []
+}

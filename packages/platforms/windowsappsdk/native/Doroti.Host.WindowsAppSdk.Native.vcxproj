@@ -55,6 +55,8 @@
     <ClInclude Include="src/accessibility_bridge.h" />
     <ClInclude Include="src/accessibility_text.inc" />
     <ClInclude Include="src/resize_order_trace.h" />
+    <ClInclude Include="src/pointer_device_kind.h" />
+    <ClCompile Include="tests/pointer_device_kind_test.cpp" />
     <ClCompile Include="src/exports.cpp" />
     <ClCompile Include="src/gpu_selection.cpp" />
     <ClCompile Include="src/acrylic_composition.cpp" />

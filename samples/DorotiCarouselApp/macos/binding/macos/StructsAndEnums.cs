@@ -1,0 +1,1 @@
+namespace DorotiCarouselApp.MacOS.Native;

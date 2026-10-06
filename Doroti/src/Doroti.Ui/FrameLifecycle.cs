@@ -97,7 +97,10 @@ public sealed class DorotiFrameTrace
     // scroll because each frame contributes several framework/host phases. It
     // routinely evicted the input and scroll-start entries before the terminal
     // present could be inspected. Keep enough metadata for a complete gesture.
-    private const int Capacity = 8192;
+    private static readonly int Capacity =
+        int.TryParse(Environment.GetEnvironmentVariable("DOROTI_FRAME_TRACE_CAPACITY"), out var requestedCapacity)
+            ? Math.Clamp(requestedCapacity, 8192, 65536)
+            : 8192;
     private readonly object _gate = new();
 
     // Recording is a hot path (several entries per frame). Keep values in one

@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../../packages/platforms/build/Sdk.props" />
+  <Import Project="../../../Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.props" />
+  <PropertyGroup>
+    <TargetFramework>$(DorotiAndroidTargetFramework)</TargetFramework>
+    <AssemblyName>DorotiCarouselApp.Android</AssemblyName>
+    <RootNamespace>DorotiCarouselApp.Android</RootNamespace>
+    <DorotiAppProject>..\DorotiCarouselApp.csproj</DorotiAppProject>
+    <DorotiTarget>Android</DorotiTarget>
+    <DorotiHostKind>Maui</DorotiHostKind>
+    <DorotiNativeEntryKind>Android-Application</DorotiNativeEntryKind>
+    <UseMaui>true</UseMaui>
+    <DefineConstants>$(DefineConstants);ANDROID;DOROTI_MAUI</DefineConstants>
+    <SupportedOSPlatformVersion>24.0</SupportedOSPlatformVersion>
+    <DorotiProviderBootstrapTargets>$(MSBuildProjectDirectory)/../../../packages/platforms/maui/bootstrap/Doroti.Provider.Bootstrap.targets</DorotiProviderBootstrapTargets>
+  </PropertyGroup>
+  <ItemGroup>
+    <DorotiNativeBindingProject Include="binding\DorotiCarouselApp.Android.Native.csproj" />
+    <DorotiTargetDescriptor Include="Android" HostKind="Maui" NativeEntryKind="Android-Application" RuntimeIdentifier="android-arm64" TargetFramework="$(DorotiAndroidTargetFramework)" TargetPackage="Doroti.Target.Android.Maui.android-arm64" Condition="'$(RuntimeIdentifier)' == 'android-arm64'" />
+    <DorotiTargetDescriptor Include="Android" HostKind="Maui" NativeEntryKind="Android-Application" RuntimeIdentifier="android-x64" TargetFramework="$(DorotiAndroidTargetFramework)" TargetPackage="Doroti.Target.Android.Maui.android-x64" Condition="'$(RuntimeIdentifier)' == 'android-x64'" />
+    <ProjectReference Include="../../../packages/platforms/maui/Doroti.Target.Android.Maui.android-arm64/Doroti.Target.Android.Maui.android-arm64.csproj" AdditionalProperties="RuntimeIdentifier=android-arm64" Condition="'$(RuntimeIdentifier)' == 'android-arm64'" />
+    <ProjectReference Include="../../../packages/platforms/maui/Doroti.Target.Android.Maui.android-x64/Doroti.Target.Android.Maui.android-x64.csproj" AdditionalProperties="RuntimeIdentifier=android-x64" Condition="'$(RuntimeIdentifier)' == 'android-x64'" />
+  </ItemGroup>
+  <Import Project="../../../Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.targets" />
+</Project>

@@ -1,0 +1,9 @@
+<Project>
+  <Import Project="../../Directory.Build.props" />
+  <PropertyGroup>
+    <ApplicationTitle>Doroti Custom Carousel</ApplicationTitle>
+    <ApplicationId>dev.doroti.carousel</ApplicationId>
+    <ApplicationDisplayVersion>0.1.0</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+  </PropertyGroup>
+</Project>

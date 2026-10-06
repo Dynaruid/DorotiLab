@@ -94,6 +94,7 @@ The Dart-to-C# compiler is an optional source import and behavior-comparison too
 | [Framework guide](Doroti/README.md) | SDKs, workloads, build commands, packaging, and host configuration |
 | [Sample app guide](samples/DorotiTestbedApp/README.md) | Platform launch commands, sample screens, renderer options, and troubleshooting |
 | [Cupertino sample](samples/DorotiSampleApp2/README.md) | Cupertino components, profile input, and appearance settings on Windows / Web |
+| [Custom carousel sample](samples/DorotiCarouselApp/README.md) | Five customizable carousel demos with snapping, looping, transforms, and controllers |
 | [iOS / Android deployment helper](helpers/deploy-helper/README.md) | Select a sample and device, build, install, and launch |
 | [Dart-to-C# compiler](tools/Doroti.DartToCSharp/README.md) | Optional source import and migration tooling |
 | [WGSL compiler](tools/Doroti.Wgsl/README.md) | Shader compilation, backend profiles, and application integration |

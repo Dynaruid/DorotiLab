@@ -1,0 +1,18 @@
+<Project>
+  <Import Project="../../Doroti/src/Doroti.App.Sdk/Sdk/Sdk.props" />
+  <PropertyGroup>
+    <AssemblyName>DorotiCarouselApp</AssemblyName>
+    <RootNamespace>DorotiCarouselApp</RootNamespace>
+    <DorotiUseRepositoryProjects>true</DorotiUseRepositoryProjects>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../Doroti/src/Doroti.Hosting/Doroti.Hosting.csproj" />
+    <ProjectReference Include="../../packages/Doroti.Material/Doroti.Material.csproj" />
+    <ProjectReference Include="../../packages/Doroti.CustomCarousel/Doroti.CustomCarousel.csproj" />
+    <EmbeddedResource Include="assets/images/**/*.jpg;assets/images/**/*.png"
+                      LogicalName="CarouselAssets.%(RecursiveDir)%(Filename)%(Extension)" />
+    <None Include="assets/LICENSE.flutter_custom_carousel" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <Import Project="../../Doroti/src/Doroti.App.Sdk/Sdk/Sdk.targets" />
+</Project>

@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsAotCompatible>true</IsAotCompatible>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <Description>Customizable, snapping and looping carousels for Doroti widgets.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="src/**/*.cs" />
+    <ProjectReference Include="../../Doroti/src/Doroti.Framework.Widgets/Doroti.Framework.Widgets.csproj" />
+    <None Include="LICENSE" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

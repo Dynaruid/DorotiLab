@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <DorotiMacCatalystTargetFramework Condition="'$(DorotiMacCatalystTargetFramework)' == ''">net10.0-maccatalyst</DorotiMacCatalystTargetFramework>
+    <TargetFramework>$(DorotiMacCatalystTargetFramework)</TargetFramework>
+    <AssemblyName>DorotiCarouselApp.MacCatalyst.Native</AssemblyName>
+    <RootNamespace>DorotiCarouselApp.MacCatalyst.Native</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <NoWarn Condition="'$(DorotiMacCatalystTargetFramework)' == 'net10.0-maccatalyst27.0'">$(NoWarn);XCODE_27_0_PREVIEW</NoWarn>
+    <IsBindingProject>true</IsBindingProject>
+    <IsPackable>false</IsPackable>
+    <IsTrimmable>true</IsTrimmable>
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+    <DorotiNativeBindingTarget>MacCatalyst</DorotiNativeBindingTarget>
+    <DorotiNativeToolchainVersion>xcode-16;swift-5;maccatalyst-15</DorotiNativeToolchainVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="macos\**\*.cs" />
+    <ObjcBindingApiDefinition Include="ApiDefinition.cs" />
+    <ObjcBindingCoreSource Include="StructsAndEnums.cs" />
+    <XcodeProject Include="..\native\DorotiCarouselAppNative.xcodeproj"
+                  SchemeName="DorotiCarouselAppNative"
+                  Configuration="$(Configuration)"
+                  Kind="Framework"
+                  SmartLink="true"
+                  OutputPath="$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)', '$(BaseIntermediateOutputPath)', 'native', 'xcode', '$(Configuration)'))" />
+    <None Include="abi-contract.json" />
+  </ItemGroup>
+  <Target Name="GetDorotiNativeBindingContract" Returns="@(_DorotiNativeBindingContract)">
+    <ItemGroup>
+      <_DorotiNativeBindingContract Include="$(MSBuildProjectFullPath)">
+        <NativeTarget>$(DorotiNativeBindingTarget)</NativeTarget>
+        <TargetFramework>$(TargetFramework)</TargetFramework>
+        <AssemblyName>$(AssemblyName)</AssemblyName>
+        <NativeBuildItem>XcodeProject</NativeBuildItem>
+        <NativeProject>%(XcodeProject.FullPath)</NativeProject>
+        <Configuration>%(XcodeProject.Configuration)</Configuration>
+        <SchemeName>%(XcodeProject.SchemeName)</SchemeName>
+        <ToolchainVersion>$(DorotiNativeToolchainVersion)</ToolchainVersion>
+      </_DorotiNativeBindingContract>
+    </ItemGroup>
+  </Target>
+</Project>

@@ -21,6 +21,7 @@
     <Project Path="src/Doroti.Framework.Widgets/Doroti.Framework.Widgets.csproj" />
     <Project Path="../packages/Doroti.Cupertino/Doroti.Cupertino.csproj" />
     <Project Path="../packages/Doroti.Material/Doroti.Material.csproj" />
+    <Project Path="../packages/Doroti.CustomCarousel/Doroti.CustomCarousel.csproj" />
     <Project Path="../packages/platforms/web/Doroti.Host.Web/Doroti.Host.Web.csproj" />
     <Project Path="../packages/platforms/maui/Doroti.Host.Maui/Doroti.Host.Maui.csproj" />
     <Project Path="../packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/Doroti.Host.WindowsAppSdk.csproj" />
@@ -46,6 +47,14 @@
   <Project Path="src/Doroti.App.Sdk/Doroti.App.Sdk.csproj" />
   <Folder Name="/samples/">
     <Project Path="../samples/DorotiTestbedApp/DorotiTestbedApp.csproj" />
+    <Project Path="../samples/DorotiCarouselApp/DorotiCarouselApp.csproj" />
+    <Project Path="../samples/DorotiCarouselApp/windowsappsdk/DorotiCarouselApp.WindowsAppSdk.csproj" />
+    <Project Path="../samples/DorotiCarouselApp/web/DorotiCarouselApp.Web.csproj" />
+    <Project Path="../samples/DorotiCarouselApp/android/DorotiCarouselApp.Android.csproj" />
+    <Project Path="../samples/DorotiCarouselApp/ios/DorotiCarouselApp.iOS.csproj" />
+    <Project Path="../samples/DorotiCarouselApp/macos/DorotiCarouselApp.MacOS.csproj" />
+    <Project Path="../samples/DorotiCarouselApp/macos/DorotiCarouselApp.MacCatalyst.csproj" />
+    <Project Path="../samples/DorotiCarouselApp/linux/DorotiCarouselApp.Linux.csproj" />
     <Project Path="../samples/DorotiTestbedApp/windows/DorotiTestbedApp.Windows.csproj" />
     <Project Path="../samples/DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj" />
     <Project Path="../samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj" />

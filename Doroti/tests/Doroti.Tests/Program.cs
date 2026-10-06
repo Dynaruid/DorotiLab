@@ -3,6 +3,11 @@ using Doroti.Testing;
 using Doroti.Ui;
 
 #if DOROTI_REPO_TESTS
+if (args.Contains("--application-dispatcher"))
+{
+    ApplicationDispatcherRegression.Run();
+    return;
+}
 if (args.Contains("--browser-skia-handles"))
 {
     BrowserSkiaHandleLockRegression.Run();

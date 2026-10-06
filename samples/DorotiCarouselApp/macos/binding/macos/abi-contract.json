@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "doroti.native-binding-abi/v1",
+  "platform": "macOS",
+  "module": "DorotiCarouselAppNativeMacOS",
+  "scheme": "DorotiCarouselAppNative-macOS",
+  "bridgeVersion": "1.0.0",
+  "exports": ["platformInfo", "echo:", "echoOnMainThreadWithValue:completion:"]
+}

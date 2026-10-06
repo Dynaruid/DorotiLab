@@ -1,6 +1,7 @@
 #include "doroti_windows_host_v1.h"
 #include "accessibility_bridge.h"
 #include "resize_order_trace.h"
+#include "pointer_device_kind.h"
 
 #include <windows.h>
 #include <windowsx.h>
@@ -61,6 +62,7 @@ constexpr UINT kEnvironmentChanged = WM_APP + 0x40C;
 constexpr UINT_PTR kSmokeTimer = 1;
 constexpr UINT_PTR kLifecycleTimer = 2;
 constexpr UINT_PTR kInteractiveMoveTimer = 3;
+constexpr UINT_PTR kScrollSmokeTimer = 4;
 constexpr UINT kInteractiveMoveIntervalMs = 8;
 constexpr auto kExactResizeWait = std::chrono::milliseconds(100);
 constexpr uint32_t kFramePrepared = 4;
@@ -291,9 +293,28 @@ class ProductHost final {
     QueueRender();
 
     MSG message{};
+    uint32_t preferred_input_count = 0;
     using PreTranslate = BOOL(WINAPI*)(const MSG*);
     PreTranslate content_pre_translate = nullptr;
-    while (GetMessageW(&message, nullptr, 0, 0) > 0) {
+    while (true) {
+      // Hardware input normally follows posted frame/terminal messages. Give
+      // input a bounded turn so a busy renderer cannot delay contact updates;
+      // return to the ordinary queue after eight messages for lifecycle fairness.
+      const auto input_first = preferred_input_count < 8 &&
+          PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE | PM_QS_INPUT);
+      if (input_first) ++preferred_input_count;
+      else {
+        preferred_input_count = 0;
+        if (GetMessageW(&message, nullptr, 0, 0) <= 0) break;
+      }
+      if (message.message == WM_QUIT) break;
+      if (frame_timing_enabled_ &&
+          ((message.message >= WM_MOUSEFIRST && message.message <= WM_MOUSELAST) ||
+           (message.message >= WM_KEYFIRST && message.message <= WM_KEYLAST))) {
+        ++timed_input_messages_;
+        const auto delay = static_cast<DWORD>(GetTickCount() - message.time);
+        maximum_input_queue_ms_ = std::max(maximum_input_queue_ms_, delay);
+      }
       // XAML Islands can be created lazily after entering the host message loop.
       // Let the Windows App SDK process island keyboard/focus messages first.
       if (content_pre_translate == nullptr) {
@@ -307,6 +328,22 @@ class ProductHost final {
       DispatchMessageW(&message);
     }
     StopRenderWorker();
+    if (frame_timing_enabled_) {
+      std::fprintf(stderr,
+          "doroti.windows.message-pump={\"inputMessages\":%llu,\"maximumInputQueueMs\":%lu,"
+          "\"frameRequests\":%llu,\"coalescedFrameRequests\":%llu}\n",
+          static_cast<unsigned long long>(timed_input_messages_),
+          static_cast<unsigned long>(maximum_input_queue_ms_),
+          static_cast<unsigned long long>(frame_requests_.load()),
+          static_cast<unsigned long long>(coalesced_frame_requests_.load()));
+      std::fprintf(stderr,
+          "doroti.windows.pointer-source={\"wheelTouchpadSource\":%llu,\"wheelMouseSource\":%llu,"
+          "\"wheelUnavailableSource\":%llu,\"wheelOtherSource\":%llu}\n",
+          static_cast<unsigned long long>(wheel_touchpad_source_),
+          static_cast<unsigned long long>(wheel_mouse_source_),
+          static_cast<unsigned long long>(wheel_unavailable_source_),
+          static_cast<unsigned long long>(wheel_other_source_));
+    }
     doroti::resize_trace::Flush();
     ReleasePlatformResources();
     return fatal_ ? DOROTI_WINDOWS_STATUS_NATIVE_FAILURE_V1
@@ -593,6 +630,10 @@ class ProductHost final {
         PostQuitMessage(fatal_ ? 4 : 0);
         return 0;
       case WM_TIMER:
+        if (wparam == kScrollSmokeTimer) {
+          RunScrollSmokePacket();
+          return 0;
+        }
         if (wparam == kInteractiveMoveTimer) {
           if (interactive_move_ && interactive_move_dirty_) {
             if (!WindowStraddlesMonitors()) {
@@ -648,6 +689,7 @@ class ProductHost final {
   LRESULT HandleTask(HWND window, UINT message, WPARAM wparam, LPARAM lparam) {
     switch (message) {
       case kRequestFrame:
+        frame_request_posted_.store(false);
         QueueRender();
         return 0;
       case kRenderCompleted:
@@ -870,8 +912,14 @@ class ProductHost final {
   static uint32_t DOROTI_WINDOWS_CALL RequestFrame(void* context) {
     auto* host = static_cast<ProductHost*>(context);
     if (host == nullptr) return 4u;
+    ++host->frame_requests_;
+    if (host->frame_request_posted_.exchange(true)) {
+      ++host->coalesced_frame_requests_;
+      return 0u;
+    }
     SetLastError(ERROR_SUCCESS);
     if (PostMessageW(host->task_, kRequestFrame, 0, 0)) return 0u;
+    host->frame_request_posted_.store(false);
     const auto error = GetLastError();
     std::fprintf(stderr,
                  "doroti.windows.request_frame_failure error=%lu task=%p top=%p\n",
@@ -2357,6 +2405,10 @@ class ProductHost final {
   }
 
   void RunInputSmoke() {
+    // Separate opt-in scroll probe: two bursts separated by an idle interval,
+    // through the real native wheel ingress (24 packets total).
+    if (EnvironmentOne(L"DOROTI_WINDOWS_APPSDK_SCROLL_SMOKE"))
+      SetTimer(top_, kScrollSmokeTimer, 600, nullptr);
     wchar_t value[8]{};
     if (GetEnvironmentVariableW(L"DOROTI_WINDOWS_APPSDK_INPUT_SMOKE", value,
                                 static_cast<DWORD>(std::size(value))) == 0 ||
@@ -2396,6 +2448,26 @@ class ProductHost final {
       SendMessageW(target, WM_KILLFOCUS, 0, 0);
   }
 
+  void RunScrollSmokePacket() {
+    KillTimer(top_, kScrollSmokeTimer);
+    const auto target = InputWindow();
+    RECT client{};
+    if (GetClientRect(target, &client)) {
+      POINT point{(client.right - client.left) / 2,
+                  (client.bottom - client.top) / 2};
+      if (ClientToScreen(target, &point)) {
+        const auto delta = scroll_smoke_packets_ < 12 ? -WHEEL_DELTA : -8;
+        SendMessageW(target, WM_MOUSEWHEEL,
+                     MAKEWPARAM(0, static_cast<WORD>(delta)),
+                     MAKELPARAM(point.x, point.y));
+      }
+    }
+    ++scroll_smoke_packets_;
+    if (scroll_smoke_packets_ < 24)
+      SetTimer(top_, kScrollSmokeTimer,
+               scroll_smoke_packets_ == 12 ? 800 : 16, nullptr);
+  }
+
   void EmitFocus(bool focused) {
     if (callbacks_.focus != nullptr)
       callbacks_.focus(callbacks_.callback_context, 1, focused ? 1u : 0u,
@@ -2413,20 +2485,33 @@ class ProductHost final {
     if ((wparam & MK_LBUTTON) != 0) buttons |= 1;
     if ((wparam & MK_RBUTTON) != 0) buttons |= 2;
     if ((wparam & MK_MBUTTON) != 0) buttons |= 4;
-    // Match Flutter's GetFlutterPointerDeviceKind for promoted WM_MOUSE input.
-    // Leave/capture cancellation has no origin signature; retain that session's kind.
-    if (change != 0 && change != 2) {
-      const auto info = static_cast<uint32_t>(GetMessageExtraInfo());
-      pointer_kind_ = (info & 0xffffff00u) == 0xff515700u
-                          ? ((info & 0x80u) != 0 ? 0u : 2u) : 1u;
+    const auto is_scroll = scroll_x != 0 || scroll_y != 0;
+    const auto info = static_cast<uint32_t>(GetMessageExtraInfo());
+    uint32_t kind;
+    if (is_scroll) {
+      INPUT_MESSAGE_SOURCE source{};
+      if (!GetCurrentInputMessageSource(&source)) source.deviceType = IMDT_UNAVAILABLE;
+      kind = pointer_kinds_.Scroll(source.deviceType, info);
+      if (frame_timing_enabled_) {
+        switch (source.deviceType) {
+          case IMDT_TOUCHPAD: ++wheel_touchpad_source_; break;
+          case IMDT_MOUSE: ++wheel_mouse_source_; break;
+          case IMDT_UNAVAILABLE: ++wheel_unavailable_source_; break;
+          default: ++wheel_other_source_; break;
+        }
+      }
+    } else {
+      // A trackpad's cursor movement/clicks remain mouse input. Scroll must not
+      // overwrite the cursor kind used by subsequent leave/capture messages.
+      kind = pointer_kinds_.Cursor(change, info);
     }
     doroti_windows_pointer_v1 pointer{
         DOROTI_WINDOWS_ABI_VERSION_V1, sizeof(doroti_windows_pointer_v1),
-        1, QpcNow(), change, pointer_kind_, 1, x, y,
+        1, QpcNow(), change, kind, 1, x, y,
         pointer_sequence_ == 0 ? 0.0 : x - previous_x,
         pointer_sequence_ == 0 ? 0.0 : y - previous_y,
         buttons, scroll_x, scroll_y,
-        (scroll_x != 0 || scroll_y != 0) ? 1u : 0u,
+        is_scroll ? 1u : 0u,
         1, 1.0, 0.0, 0};
     last_pointer_lparam_ = lparam;
     ++pointer_sequence_;
@@ -2578,7 +2663,7 @@ class ProductHost final {
   bool pointer_down_{};
   LPARAM last_pointer_lparam_{};
   uint64_t pointer_sequence_{};
-  uint32_t pointer_kind_{1};
+  doroti::windows::PointerMessageKinds pointer_kinds_;
   std::atomic<uint32_t> cursor_kind_{};
   doroti_windows_text_configuration_v1 text_configuration_{};
   std::wstring text_;
@@ -2612,6 +2697,7 @@ class ProductHost final {
   bool platform_resources_released_{};
   uint32_t lifecycle_state_{std::numeric_limits<uint32_t>::max()};
   uint32_t lifecycle_smoke_phase_{};
+  uint32_t scroll_smoke_packets_{};
   uint32_t lifecycle_smoke_cycles_{1};
   uint32_t platform_brightness_{};
   doroti::windows::AccessibilityBridge accessibility_;
@@ -2622,6 +2708,13 @@ class ProductHost final {
   std::deque<doroti_windows_frame_terminal_v1> render_completions_;
   std::unordered_set<uint64_t> resize_wait_timeouts_;
   std::thread render_thread_;
+  std::atomic_bool frame_request_posted_{};
+  std::atomic<uint64_t> frame_requests_{}, coalesced_frame_requests_{};
+  bool frame_timing_enabled_{EnvironmentOne(L"DOROTI_WINDOWS_FRAME_TIMING")};
+  uint64_t timed_input_messages_{};
+  uint64_t wheel_touchpad_source_{}, wheel_mouse_source_{},
+      wheel_unavailable_source_{}, wheel_other_source_{};
+  DWORD maximum_input_queue_ms_{};
   uint64_t last_render_terminal_generation_{};
   uint64_t last_render_terminal_causal_frame_id_{};
   uint32_t last_render_terminal_kind_{};

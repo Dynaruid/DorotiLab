@@ -24,6 +24,10 @@ internal sealed unsafe partial class WindowsManagedProductHost
     private readonly object _gate = new();
     private readonly object _nativeGate = new();
     private readonly WindowsNativeV1.Host _native;
+    private readonly IDorotiApplicationDispatcher _applicationDispatcher;
+    private readonly WindowsFrameworkFrameTiming _frameTiming = new();
+    private long _wheelPackets, _panZoomPackets, _movePackets;
+    private long _trackpadWheelPackets, _mouseWheelPackets, _otherWheelPackets;
     private readonly WindowsManagedResizeCoordinator _coordinator = new(
         TimeSpan.FromMilliseconds(100)
     );
@@ -40,11 +44,14 @@ internal sealed unsafe partial class WindowsManagedProductHost
     private TimeSpan _dorotiClockOrigin;
     private readonly Hosting.WindowsPrecisionTrackpad _trackpad;
     private readonly Hosting.WindowsNativePointerInput _nativePointers;
+    private readonly nint _inputHwnd;
 
     internal WindowsManagedProductHost(
         in WindowsNativeV1.Host native,
         int logicalWidth,
         int logicalHeight,
+        IDorotiApplicationDispatcher applicationDispatcher,
+        nint inputHwnd,
         ulong viewId = 1
     )
     {
@@ -56,6 +63,7 @@ internal sealed unsafe partial class WindowsManagedProductHost
             || native.ChildHwnd == 0
             || native.OpaqueChildHwnd == 0
             || native.TaskHwnd == 0
+            || inputHwnd == 0
             || native.RequestFrame == 0
             || native.RequestResize == 0
             || native.RequestClose == 0
@@ -78,6 +86,8 @@ internal sealed unsafe partial class WindowsManagedProductHost
         }
 
         _native = native;
+        _inputHwnd = inputHwnd;
+        _applicationDispatcher = applicationDispatcher ?? throw new ArgumentNullException(nameof(applicationDispatcher));
         _viewId = viewId;
         Metrics = new(
             new Size(logicalWidth, logicalHeight),
@@ -98,6 +108,7 @@ internal sealed unsafe partial class WindowsManagedProductHost
         );
         void DispatchNativePacket(PointerDataPacket packet)
         {
+            RecordPointerIngress(packet);
             var sequence = _inputState.Receive();
             EnqueueInput(() =>
             {
@@ -106,14 +117,46 @@ internal sealed unsafe partial class WindowsManagedProductHost
                 InputReceived?.Invoke(sequence, packet.data[^1].timeStamp);
             });
         }
-        _trackpad = new(native.ChildHwnd, _viewId, DispatchNativePacket);
-        _nativePointers = new(native.ChildHwnd, _viewId, DispatchNativePacket);
+        _trackpad = new(_inputHwnd, _viewId, DispatchNativePacket);
+        _nativePointers = new(_inputHwnd, _viewId, DispatchNativePacket);
     }
 
     internal nint ChildHwnd => _native.ChildHwnd;
     internal nint TopLevelHwnd => _native.TopLevelHwnd;
     internal IReadOnlyList<nint> DropWindows => [_native.TopLevelHwnd, _native.ChildHwnd, _native.OpaqueChildHwnd];
     internal WindowsResizeCoordinatorSnapshot ResizeSnapshot => _coordinator.Snapshot();
+    internal object FrameSchedulingTiming => _frameTiming.Snapshot();
+    internal object InputIngressTiming => new
+    {
+        enabled = _frameTiming.Enabled,
+        inputWindow = _inputHwnd.ToInt64(),
+        rasterWindow = _native.ChildHwnd.ToInt64(),
+        wheelPackets = Interlocked.Read(ref _wheelPackets),
+        trackpadWheelPackets = Interlocked.Read(ref _trackpadWheelPackets),
+        mouseWheelPackets = Interlocked.Read(ref _mouseWheelPackets),
+        otherWheelPackets = Interlocked.Read(ref _otherWheelPackets),
+        panZoomPackets = Interlocked.Read(ref _panZoomPackets),
+        movePackets = Interlocked.Read(ref _movePackets),
+    };
+    private void RecordPointerIngress(PointerDataPacket packet)
+    {
+        if (!_frameTiming.Enabled) return;
+        foreach (var datum in packet.data)
+        {
+            if (datum.signalKind == PointerSignalKind.scroll)
+            {
+                Interlocked.Increment(ref _wheelPackets);
+                switch (datum.kind)
+                {
+                    case PointerDeviceKind.trackpad: Interlocked.Increment(ref _trackpadWheelPackets); break;
+                    case PointerDeviceKind.mouse: Interlocked.Increment(ref _mouseWheelPackets); break;
+                    default: Interlocked.Increment(ref _otherWheelPackets); break;
+                }
+            }
+            if (datum.change == PointerChange.panZoomUpdate) Interlocked.Increment(ref _panZoomPackets);
+            if (datum.change == PointerChange.move) Interlocked.Increment(ref _movePackets);
+        }
+    }
 
     internal bool IsLatestResizeGeneration(ulong generation) =>
         generation <= long.MaxValue && _coordinator.IsLatest((long)generation);
@@ -287,33 +330,40 @@ internal sealed unsafe partial class WindowsManagedProductHost
             throw new InvalidDataException("Native frame request failed exact admission.");
         }
 
-        Action<TimeSpan, DorotiViewEpoch>? callback;
-        while (true)
+        Action[] input;
+        lock (_gate)
         {
-            Action[] input;
-            lock (_gate)
+            // Freeze one finite batch. Packets arriving during this frame
+            // belong to the next request, even during a continuous gesture.
+            input = [.. _pendingInput];
+            _pendingInput.Clear();
+        }
+        // Raster admission waits for the immutable scene produced on the UI
+        // owner. Asynchronous posting would draw and reject a retained scene
+        // before the queued input could build its replacement.
+        var timing = _frameTiming.Enabled
+            ? new WindowsFrameworkFrameTiming.Measurement(checked((long)request.CausalFrameId), input.Length) : null;
+        var operation = _applicationDispatcher.InvokeAsync(() =>
+        {
+            timing?.EnterUi();
+            try
             {
-                input = [.. _pendingInput];
-                _pendingInput.Clear();
-                if (input.Length == 0)
+                foreach (var dispatch in input) dispatch();
+                Action<TimeSpan, DorotiViewEpoch>? callback;
+                lock (_gate)
                 {
-                    // Input dispatch can schedule the scene needed by this
-                    // native render request. Take the callback only after all
-                    // input already queued ahead of it has been applied; taking
-                    // it before dispatch would present the retained pre-input
-                    // scene once, which is visible as a wheel-scroll flash.
+                    // Input can schedule this frame. Take its callback after the
+                    // input was applied, preserving the pre-input flash fix.
                     callback = _pendingFrame;
                     _pendingFrame = null;
-                    break;
                 }
+                callback?.Invoke(DorotiFrameClock.Now, ViewEpoch);
+                return callback is not null;
             }
-            foreach (var dispatch in input)
-            {
-                dispatch();
-            }
-        }
-        callback?.Invoke(DorotiFrameClock.Now, ViewEpoch);
-        return callback is not null;
+            finally { timing?.ExitUi(); }
+        });
+        try { return operation.AsTask().GetAwaiter().GetResult(); }
+        finally { if (timing is not null) _frameTiming.Record(timing); }
     }
 
     internal void CompleteTerminal(in WindowsNativeV1.FrameTerminal terminal)
@@ -405,6 +455,7 @@ internal sealed unsafe partial class WindowsManagedProductHost
                     ),
                 ]
         );
+        RecordPointerIngress(packet);
         EnqueueInput(() =>
         {
             _inputState.Dispatch(sequence);
@@ -1103,7 +1154,10 @@ internal sealed unsafe partial class WindowsManagedProductHost
     {
         lock (_gate)
         {
-            if (_nativeClockOrigin < 0 || qpc == 0)
+            // Host-generated focus changes have no native timestamp. Do not
+            // make zero the QPC origin for the next hardware pointer packet.
+            if (qpc == 0) return DorotiFrameClock.Now;
+            if (_nativeClockOrigin < 0)
             {
                 _nativeClockOrigin = qpc;
                 _dorotiClockOrigin = DorotiFrameClock.Now;

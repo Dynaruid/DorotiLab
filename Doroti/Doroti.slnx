@@ -31,6 +31,7 @@
   <Project Path="src/Doroti.App.Sdk/Doroti.App.Sdk.csproj" />
   <Folder Name="/samples/">
     <Project Path="../samples/DorotiTestbedApp/DorotiTestbedApp.csproj" />
+    <Project Path="../samples/DorotiCarouselApp/DorotiCarouselApp.csproj" />
   </Folder>
   <Folder Name="/templates/">
     <Project Path="templates/Doroti.Templates/Doroti.Templates.csproj" />
@@ -40,6 +41,8 @@
   <Folder Name="/packages/">
     <Project Path="../packages/Doroti.Cupertino/Doroti.Cupertino.csproj" />
     <Project Path="../packages/Doroti.Material/Doroti.Material.csproj" />
+    <Project Path="../packages/Doroti.CustomCarousel/Doroti.CustomCarousel.csproj" />
+    <Project Path="../packages/Doroti.CustomCarousel/tests/Doroti.CustomCarousel.Tests/Doroti.CustomCarousel.Tests.csproj" />
   </Folder>
   <Folder Name="/Tool contracts/"><Project Path="src/Doroti.Tooling.Contracts/Doroti.Tooling.Contracts.csproj"/><Project Path="src/Doroti.Tooling.Extension.Sdk/Doroti.Tooling.Extension.Sdk.csproj"/></Folder>
   <Folder Name="/Platform Tooling/">

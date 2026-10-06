@@ -522,6 +522,10 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 in effectiveNative,
                 checked((int)_configuration.logicalSize.width),
                 checked((int)_configuration.logicalSize.height),
+                _sharedFramework.Owner,
+                // The original native child is the input authority (the top HWND
+                // in Composition mode). effectiveNative selects the raster HWND.
+                native.ChildHwnd,
                 _viewId
             );
             if (
@@ -687,6 +691,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                             )
                         );
                 }
+                _session.dispatcher.frameTrace.MeasureRecordingTime = ShouldWriteDiagnostics();
                 renderer.AttachFrameworkTrace(_session.dispatcher.frameTrace);
                 Host = host;
                 Renderer = renderer;
@@ -1496,6 +1501,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                         {
                             WriteIndented = true,
                             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                            NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowNamedFloatingPointLiterals,
                         }
                     )
                 );
@@ -1647,6 +1653,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 vulkan = diagnostics.Vulkan,
                 frames = diagnostics,
                 resize = Host?.ResizeSnapshot,
+                frameScheduling = Host?.FrameSchedulingTiming,
+                inputIngress = Host?.InputIngressTiming,
                 renderer = Renderer?.Diagnostics,
                 variableBlurProfile = Renderer?.VariableBlurProfile,
                 nativeFramePipeline = new

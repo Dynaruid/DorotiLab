@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "doroti.application-capabilities/v1",
+  "applicationId": "dev.doroti.carousel",
+  "targetRid": "iossimulator-x64",
+  "platformViews": [],
+  "resources": [],
+  "plugins": [
+    {
+      "id": "doroti.native.platform",
+      "channel": "doroti/native-platform",
+      "codec": "json",
+      "capabilityId": "platform-messaging",
+      "nativePackage": {
+        "rid": "iossimulator-x64",
+        "packageId": "DorotiCarouselApp.iOS.Native",
+        "version": "1.0.0",
+        "abiVersion": "doroti.native-platform-bridge/v1",
+        "handlerType": "DorotiCarouselApp.iOS.DorotiNativePlatformBridge"
+      }
+    }
+  ]
+}
