@@ -13,16 +13,18 @@
     </PropertyGroup>
   </Target>
 
-  <!-- Opt-in for deep widget trees on Safari's limited Worker stack. Keep the
-       renderer/interop and other assemblies AOT compiled; the interpreter stores
-       recursive widget mount and layout frames in its managed execution stack.
+  <!-- Opt-in for deep widget trees on Safari's limited Worker stack. Interpret
+       the Dart async layer too: sustained Safari runs stop responding with a
+       ThreadPool continuation stuck inside AOT ObserveTaskAsync. Keep Skia
+       renderer/interop AOT compiled. Recursive mount/layout and async frames use
+       the interpreter's managed execution stack and suspension checkpoints.
        This metadata is the .NET 10 WASM SDK's assembly interpretation contract. -->
   <Target Name="DorotiConfigureWebWidgetTreeAot"
           BeforeTargets="_WasmAotCompileApp"
           Condition="'$(DorotiTarget)' == 'Web' and '$(RunAOTCompilation)' == 'true' and '$(DorotiWebInterpretWidgetTree)' == 'true'">
     <ItemGroup>
       <_WasmAssembliesInternal AOT_InternalForceToInterpret="true"
-          Condition="'%(_WasmAssembliesInternal.Filename)' == 'Doroti.Framework.Widgets' or '%(_WasmAssembliesInternal.Filename)' == 'Doroti.Framework.Rendering'" />
+          Condition="'%(_WasmAssembliesInternal.Filename)' == 'Doroti.Framework.Widgets' or '%(_WasmAssembliesInternal.Filename)' == 'Doroti.Framework.Rendering' or '%(_WasmAssembliesInternal.Filename)' == 'Doroti.Runtime'" />
     </ItemGroup>
   </Target>
 
@@ -47,6 +49,10 @@
     </PropertyGroup>
     <ItemGroup>
       <_DorotiWebDependencyIdentity Include="mode|$(Configuration)|$(RunAOTCompilation)|$(WasmStripILAfterAOT)|$(WasmEnableThreads)|$(DorotiWebInterpretWidgetTree)" />
+      <!-- A policy change also needs unstripped IL, even if assembly bytes and
+           the public opt-in flag are identical to an earlier AOT publish. -->
+      <_DorotiWebDependencyIdentity Include="widget-tree-policy|Widgets,Rendering,Runtime"
+          Condition="'$(DorotiWebInterpretWidgetTree)' == 'true'" />
       <_DorotiWebDependencyIdentity Include="@(_DorotiWebDependencyHashedAssembly->'%(FullPath)|%(FileHash)')" />
     </ItemGroup>
     <ReadLinesFromFile File="$(_DorotiWebDependencyIdentityFile)" Condition="Exists('$(_DorotiWebDependencyIdentityFile)')">

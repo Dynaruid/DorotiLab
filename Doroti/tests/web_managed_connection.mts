@@ -37,7 +37,13 @@ async function supervisor() {
   }
   const module=await load(new URL('../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.managed-worker.ts',import.meta.url));await module.evaluate();
   return { api:module.namespace as any, timers, canceled, started,
-    connect(token:string,port:MessagePort) { worker!.dispatchEvent(new MessageEvent('message',{data:{protocolVersion:5,kind:'doroti-managed-port',sessionToken:token,port}})); } };
+    connect(token:string,port:MessagePort) { worker!.dispatchEvent(new MessageEvent('message',{data:{protocolVersion:5,kind:'doroti-managed-port',sessionToken:token,port}})); },
+    crashOtherRuntimeWorker() {
+      const finalizer = new (context.Worker as any)('http://127.0.0.1/_framework/dotnet.native.worker.finalizer.mjs');
+      const error = new Event('error'); Object.defineProperty(error,'message',{value:'finalizer crashed'});
+      finalizer.dispatchEvent(error);
+    },
+  };
 }
 
 test('managed connection timeout cancels its managed token and rejects/ACKs a late port', async () => {
@@ -53,6 +59,31 @@ test('managed connection timeout cancels its managed token and rejects/ACKs a la
   host.connect(host.started[0],channel.port2); await tick(); await tick();
   assert.equal(messages[0].kind,'managed-rejected');
   channel.port1.close(); channel.port2.close();
+});
+
+test('a different runtime pthread failure rejects a pending managed connection immediately', async () => {
+  const host=await supervisor();
+  const pending=host.api.createManagedDorotiWorker('http://127.0.0.1/_framework/fake-dotnet.js',new URL('http://127.0.0.1/role.js'));
+  const rejected=assert.rejects(pending,/finalizer crashed/);
+  await tick(); await tick();
+  host.crashOtherRuntimeWorker(); await rejected;
+  assert.equal(host.timers.size,0);
+});
+
+test('a finalizer pthread failure notifies an active renderer once and rejects reuse of the aborted runtime', async () => {
+  const host=await supervisor();
+  const pending=host.api.createManagedDorotiWorker('http://127.0.0.1/_framework/fake-dotnet.js',new URL('http://127.0.0.1/role.js'));
+  await tick(); await tick();
+  const channel=new MessageChannel();
+  host.connect(host.started[0],channel.port2);
+  const endpoint=await pending;
+  const failures:any[]=[];endpoint.addEventListener('message',(event:any)=>failures.push(event.data));
+  host.crashOtherRuntimeWorker();host.crashOtherRuntimeWorker();
+  assert.equal(failures.length,1);assert.equal(failures[0].kind,'fatal');
+  assert.match(failures[0].error,/finalizer crashed/);
+  await assert.rejects(host.api.createManagedDorotiWorker('http://127.0.0.1/_framework/fake-dotnet.js',new URL('http://127.0.0.1/role.js')),/finalizer crashed/);
+  assert.equal(host.started.length,1);
+  channel.port1.close();channel.port2.close();
 });
 
 test('managed accept ACK, duplicate/foreign rejection and disposal retain pthread ownership', async () => {

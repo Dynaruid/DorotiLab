@@ -1318,6 +1318,14 @@ public class PipelineOwner : DiagnosticableTreeMixin
             || _children.Any(child => child.hasPendingSemanticsUpdate)
         );
 
+    /// <summary>Content/topology changes must not wait for scroll or resize geometry to settle.</summary>
+    public bool hasPendingSemanticsContentUpdate =>
+        _semanticsOwner is not null
+        && (
+            _nodesNeedingSemanticsUpdate.Count != 0
+            || _children.Any(child => child.hasPendingSemanticsContentUpdate)
+        );
+
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
         return new List<DiagnosticsNode>();

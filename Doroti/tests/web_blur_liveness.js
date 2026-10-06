@@ -33,11 +33,34 @@
   addEventListener("pagehide", page); addEventListener("pageshow", page);
   const reloads = +(sessionStorage.getItem(run) || 0);
   sessionStorage.setItem(run, String(reloads + 1));
-  await report("boot", { reloads, ua: navigator.userAgent, dpr: devicePixelRatio,
-    width: innerWidth, height: innerHeight });
   let root, capture, heartbeat, mode = "startup", progress = 0, scrollEvents = 0;
   let lastDiagnostic, diagnosticPending = false, stalled = false;
+  let nativeFailure;
+  let consoleErrors = 0;
+  const consoleOriginals = new Map();
+  const consoleCaptures = new Map();
+  for (const level of ["error", "warn", "log", "info", "debug"]) {
+    const original = console[level];
+    const capture = (...args) => {
+      original.apply(console, args);
+      if (args[0] === "BLUR_LIVENESS") return;
+      const message = args.map(String).join(" ");
+      // Mono's fatal finalizer exception can abort a different pthread without
+      // raising an ErrorEvent in this window or incrementing Failed frames.
+      if (/FATAL UNHANDLED EXCEPTION|SynchronizationLockException|Assertion.*failed|Aborted\(/i.test(message))
+        nativeFailure = message;
+      if (++consoleErrors <= 128) void report("runtime-console-error", { level, message: message.slice(0,4000) });
+    };
+    consoleOriginals.set(level, original);
+    consoleCaptures.set(level, capture);
+    console[level] = capture;
+  }
+  // Install before the first await: Emscripten binds its output functions while
+  // loading and would otherwise retain the original console methods.
+  await report("boot", { reloads, ua: navigator.userAgent, dpr: devicePixelRatio,
+    width: innerWidth, height: innerHeight });
   const seconds = +(query.get("seconds") || 180);
+  const wideSweep = query.get("sweep") === "wide";
   const startupHeartbeat = setInterval(() => void report("startup-heartbeat", {
     state: document.visibilityState, dataset: { ...document.documentElement.dataset },
   }), 2000);
@@ -68,8 +91,10 @@
           && (!bottom || e.getBoundingClientRect().y > innerHeight - 100));
       if (!element) throw new Error("Missing control " + prefix);
       const rect = element.getBoundingClientRect(), x = rect.x + rect.width / 2, y = rect.y + rect.height / 2;
-      pointer("pointerdown", x, y, "mouse"); await delay(70);
-      pointer("pointerup", x, y, "mouse"); await delay(750);
+      const pointerType = query.get("tap") || "mouse";
+      await report("tap", { prefix, pointerType, x, y, width: innerWidth, height: innerHeight });
+      pointer("pointerdown", x, y, pointerType); await delay(70);
+      pointer("pointerup", x, y, pointerType); await delay(750);
     };
     const diagnostics = async () => {
       const pending = window.__dorotiFrameCost("diagnostics");
@@ -84,6 +109,7 @@
       if (diagnosticPending) return;
       diagnosticPending = true;
       try {
+        if (nativeFailure) throw new Error(nativeFailure);
         const value = await diagnostics();
         const frame = value.managed.frame;
         // Active movement must advance submitted frames, not just DOM labels
@@ -118,12 +144,17 @@
       let sliderX = left + width * initial;
       pointer("pointerdown", left + width * initial, y); await delay(60);
       const start = performance.now();
-      while (performance.now() - start < seconds * 1000 / modes.length && !stalled) {
+      while (performance.now() - start < seconds * 1000 / modes.length && !stalled && !nativeFailure) {
         await new Promise(requestAnimationFrame);
         // Keep the filter enabled throughout. The previous zero-ending sweeps
         // gave every round an unfiltered frame and missed sustained overload.
-        const phase = (performance.now() - start) / 700;
-        const fraction = .82 + .17 * (.5 + .5 * Math.sin(phase));
+        const phase = (performance.now() - start) / (wideSweep ? 120 : 700);
+        // The wide sweep stresses capture-size changes and cache eviction as
+        // well as GPU work. Keep the default sweep near maximum for sustained
+        // filter load; a low-sigma frame can otherwise mask that overload.
+        const fraction = wideSweep
+          ? .02 + .97 * (.5 + .5 * Math.sin(phase))
+          : .82 + .17 * (.5 + .5 * Math.sin(phase));
         const scrolling = query.has("scroll") && listBottom > listTop + 30
           && performance.now() - start > seconds * 500 / modes.length;
         if (!scrolling) {
@@ -152,10 +183,11 @@
       if (sliderDown) pointer("pointerup", sliderX, y);
       await delay(750);
       await sample();
+      if (nativeFailure) throw new Error(nativeFailure);
       if (stalled) throw new Error("Rendering stopped during sustained blur");
       // Prove the last stroke settled and ordinary application input remains
       // functional after the GPU load, including an unrelated tab round trip.
-      if (+(label("Blur strength:").match(/[\d.]+/)[0]) < 24)
+      if (!wideSweep && +(label("Blur strength:").match(/[\d.]+/)[0]) < 24)
         throw new Error("The sustained test did not keep the blur active");
       await tap("Components", true);
       await waitLabel("Volume:");
@@ -163,19 +195,22 @@
       await waitLabel("Blur strength:");
       await report("mode-complete", { mode, progress, diagnostics: await diagnostics() });
     }
-    await report("PASS", { progress, scrollEvents, seconds, reloads, diagnostics: await diagnostics() });
+    await report("PASS", { progress, scrollEvents, seconds, wideSweep, reloads, diagnostics: await diagnostics() });
     document.documentElement.dataset.blurLiveness = "PASS";
   } catch (failure) {
     await report("FAIL", { mode, progress, error: String(failure), lastDiagnostic,
       controls: [...document.querySelectorAll("#doroti-semantics [aria-label]")].map(element => ({
         label: element.getAttribute("aria-label"), role: element.getAttribute("role"),
         selected: element.getAttribute("aria-selected"),
+        bounds: element.getBoundingClientRect().toJSON(),
       })),
     });
     document.documentElement.dataset.blurLiveness = "FAIL";
   } finally {
     clearInterval(startupHeartbeat);
     clearInterval(heartbeat);
+    for (const [level, capture] of consoleCaptures)
+      if (console[level] === capture) console[level] = consoleOriginals.get(level);
     if (root && capture) root.setPointerCapture = capture;
     removeEventListener("error", error); removeEventListener("unhandledrejection", error);
     document.removeEventListener("visibilitychange", visibility);

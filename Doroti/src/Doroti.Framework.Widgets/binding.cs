@@ -1348,7 +1348,10 @@ public class WidgetsFlutterBinding
                 platformDispatcher.implicitView?.coalesceSemanticsGeometryDuringActiveMetrics
                     == true
                 && platformDispatcher.frameTrace.HasActiveMetricsActivity;
-            if (!activeScroll && !activeMetrics)
+            // A tab switch, label/value update, or changed semantics subtree
+            // must reach the browser even while an offstage list is ballistic.
+            // Only geometry churn is eligible for scroll/resize coalescing.
+            if (rootPipelineOwner.hasPendingSemanticsContentUpdate || (!activeScroll && !activeMetrics))
             {
                 _deferredSemanticsFlush?.cancel();
                 _deferredSemanticsFlush = null;

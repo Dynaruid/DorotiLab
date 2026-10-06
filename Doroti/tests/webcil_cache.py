@@ -15,7 +15,7 @@ class WebcilCacheTests(unittest.TestCase):
             project = Path(directory) / "tree.proj"
             project.write_text(f'''<Project>
               <ItemGroup>
-                <_WasmAssembliesInternal Include="Doroti.Framework.Widgets.dll;Doroti.Framework.Rendering.dll;Doroti.Skia.Rendering.dll" />
+                <_WasmAssembliesInternal Include="Doroti.Framework.Widgets.dll;Doroti.Framework.Rendering.dll;Doroti.Runtime.dll;Doroti.Skia.Rendering.dll" />
               </ItemGroup>
               <Import Project="{escape(str(target))}" />
               <Target Name="_WasmAotCompileApp" />
@@ -33,7 +33,7 @@ class WebcilCacheTests(unittest.TestCase):
                 items = json.loads(result.stdout)["Items"]["_WasmAssembliesInternal"]
                 interpreted = {item["Filename"] for item in items
                                if item.get("AOT_InternalForceToInterpret") == "true"}
-                expected = {"Doroti.Framework.Widgets", "Doroti.Framework.Rendering"} if platform == "Web" and aot and tree else set()
+                expected = {"Doroti.Framework.Widgets", "Doroti.Framework.Rendering", "Doroti.Runtime"} if platform == "Web" and aot and tree else set()
                 self.assertEqual(interpreted, expected)
 
     def test_execution_mode_and_assembly_content(self):
@@ -83,6 +83,14 @@ class WebcilCacheTests(unittest.TestCase):
             self.assertTrue(all(cache.exists() for cache in caches), "Unchanged inputs should reuse caches")
             run(True, tree=True)
             self.assertFalse(any(cache.exists() for cache in caches), "Interpreted tree needs unstripped IL")
+            seed()
+            run(True, tree=True)
+            self.assertTrue(all(cache.exists() for cache in caches), "Unchanged interpretation policy should reuse caches")
+            identity = root / "obj/doroti-webcil-dependencies.identity"
+            identity.write_text("\n".join(line for line in identity.read_text().splitlines()
+                                          if not line.startswith("widget-tree-policy|")) + "\n")
+            run(True, tree=True)
+            self.assertFalse(any(cache.exists() for cache in caches), "An older tree policy must not reuse stripped Runtime IL")
             seed()
             run(False)
             self.assertFalse(any(cache.exists() for cache in caches), "Interpreted publishing needs full IL")

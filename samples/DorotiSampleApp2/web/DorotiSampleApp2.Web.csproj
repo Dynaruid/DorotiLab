@@ -15,7 +15,7 @@
     <WasmBuildNative>true</WasmBuildNative>
     <WasmEnableThreads>true</WasmEnableThreads>
     <!-- Recursive Cupertino mounting exceeds Safari's Worker stack under full
-         AOT. Retain AOT for Skia/interop while interpreting widget/layout code. -->
+         AOT. Interpret widget/layout and Dart async code; retain Skia/interop AOT. -->
     <DorotiWebInterpretWidgetTree Condition="'$(DorotiWebInterpretWidgetTree)' == ''">true</DorotiWebInterpretWidgetTree>
     <!-- Keep the sample's shared WASM memory within the mobile-browser budget.
          This is linear memory only; GPU and browser allocations are separate. -->

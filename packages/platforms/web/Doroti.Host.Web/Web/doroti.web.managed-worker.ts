@@ -16,18 +16,36 @@ interface MainRuntime {
 }
 
 let runtimePromise: Promise<MainRuntime> | undefined;
-const connections = new Map<string, (port: MessagePort, worker: Worker) => void>();
+let runtimeFailure: Error | undefined;
+const connections = new Map<string, {
+  accept(port: MessagePort, worker: Worker): void;
+  fail(error: Error): void;
+}>();
+const activeEndpoints = new Set<ManagedEndpoint>();
+
+function failRuntime(error: Error): void {
+  runtimeFailure ??= error;
+  for (const connection of connections.values()) connection.fail(runtimeFailure);
+  connections.clear();
+  // A finalizer/deputy pthread failure invalidates the same shared runtime as a
+  // render-thread failure. Startup's rejected Promise cannot notify an already
+  // connected renderer; explicitly deliver its fatal event so Retry is shown.
+  for (const endpoint of activeEndpoints) endpoint.fail(runtimeFailure);
+}
 
 class ManagedEndpoint extends EventTarget implements DorotiWorkerEndpoint {
   #disposing = false;
+  #failed = false;
   readonly #onError = (event: ErrorEvent): void => this.fail(event.error ?? event.message);
   constructor(readonly port: MessagePort, readonly nativeWorker: Worker) {
     super();
+    activeEndpoints.add(this);
     port.addEventListener("message", event => {
       const terminal = event.data?.kind === "disposed" || (event.data?.kind === "fatal" && typeof event.data.cleanupComplete === "boolean");
       if (terminal) this.#disposing = true;
       this.dispatchEvent(new MessageEvent("message", { data: event.data }));
       if (terminal) {
+        activeEndpoints.delete(this);
         port.close();
         nativeWorker.removeEventListener("error", this.#onError);
       }
@@ -45,6 +63,9 @@ class ManagedEndpoint extends EventTarget implements DorotiWorkerEndpoint {
     this.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "dispose" });
   }
   fail(error: unknown): void {
+    if (this.#failed) return;
+    this.#failed = true;
+    activeEndpoints.delete(this);
     this.dispatchEvent(new MessageEvent("message", { data: {
       protocolVersion: dorotiProtocolVersion, kind: "fatal", error: String(error),
     } }));
@@ -74,13 +95,17 @@ async function initializeMainRuntime(dotnetUrl: string): Promise<MainRuntime> {
       if (resolved.origin !== runtimeBase.origin ||
           !resolved.pathname.startsWith(`${runtimeBase.pathname}dotnet.native.worker`) ||
           !resolved.pathname.endsWith(".mjs")) return;
-      this.addEventListener("error", event => rejectStartup(new Error(`Doroti .NET runtime worker failed during startup: ${event.message || String(event.error)}`)));
+      this.addEventListener("error", event => {
+        const error = new Error(`Doroti .NET runtime worker failed: ${event.message || String(event.error)}`);
+        rejectStartup(error);
+        failRuntime(error);
+      });
       this.addEventListener("message", event => {
         const data = event.data;
         if (data?.kind !== "doroti-managed-port") return;
         event.stopImmediatePropagation();
-        const accept = connections.get(data.sessionToken);
-        if (data.protocolVersion !== dorotiProtocolVersion || !accept || !(data.port instanceof MessagePort)) {
+        const connection = connections.get(data.sessionToken);
+        if (data.protocolVersion !== dorotiProtocolVersion || !connection || !(data.port instanceof MessagePort)) {
           if (data.port instanceof MessagePort) {
             data.port.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "managed-rejected", sessionToken: data.sessionToken });
             data.port.close();
@@ -88,7 +113,7 @@ async function initializeMainRuntime(dotnetUrl: string): Promise<MainRuntime> {
           return;
         }
         connections.delete(data.sessionToken);
-        accept(data.port, this);
+        connection.accept(data.port, this);
       });
     }
   };
@@ -129,17 +154,19 @@ async function initializeMainRuntime(dotnetUrl: string): Promise<MainRuntime> {
 
 export async function createManagedDorotiWorker(dotnetUrl: string, roleUrl: URL, signal?: AbortSignal): Promise<DorotiWorkerEndpoint> {
   const runtime = await (runtimePromise ??= initializeMainRuntime(dotnetUrl));
+  if (runtimeFailure) throw runtimeFailure;
   const exports = await runtime.getAssemblyExports("Doroti.Host.Web.dll");
+  if (runtimeFailure) throw runtimeFailure;
   const token = crypto.randomUUID();
   let endpoint: ManagedEndpoint | undefined;
   let rejectConnection!: (error: unknown) => void;
   const connected = new Promise<DorotiWorkerEndpoint>((resolve, reject) => {
     rejectConnection = reject;
-    connections.set(token, (port, worker) => {
+    connections.set(token, { fail: reject, accept: (port, worker) => {
       endpoint = new ManagedEndpoint(port, worker);
       port.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "managed-accepted", sessionToken: token });
       resolve(endpoint);
-    });
+    } });
   });
   const cancel = (): void => {
     connections.delete(token);

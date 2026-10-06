@@ -5,6 +5,8 @@ are modified. --force-fence-timeout replaces only the frame queue's fence query
 in the served JavaScript to exercise recovery with real GPU work still running.
 """
 import argparse
+import base64
+import hashlib
 import json
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -17,6 +19,8 @@ def main():
     parser.add_argument("--out", required=True, type=Path, help="Evidence directory")
     parser.add_argument("--port", type=int, default=8765)
     parser.add_argument("--force-fence-timeout", action="store_true")
+    parser.add_argument("--capture-native-output", action="store_true",
+                        help="Capture Mono stdout/stderr before console binding in a diagnostic run")
     args = parser.parse_args()
     root = args.root.resolve(strict=True)
     args.out.mkdir(parents=True, exist_ok=True)
@@ -35,6 +39,43 @@ def main():
             parser.error("Published frame queue query did not match; refusing unrelated injection")
         queue = queue.replace(query, "this.gl.TIMEOUT_EXPIRED")
     queue = queue.encode() if queue else None
+    native_path, native_data = None, None
+    if args.capture_native_output:
+        native_files = [file for file in root.glob("_framework/dotnet.native.*.js")
+                        if file.name in index.decode()]
+        if len(native_files) != 1:
+            parser.error("Expected one native module referenced by the published index")
+        native_file = native_files[0]
+        native = native_file.read_text()
+        marker = 'var err = Module["printErr"] || defaultPrintErr;'
+        if native.count(marker) != 1:
+            parser.error("Native output binding did not match; refusing unrelated injection")
+        native = native.replace(marker, marker + """
+var nativeProbeCount = 0;
+function nativeProbe(stream, original) {
+ return (...args) => {
+  if (++nativeProbeCount <= 256) {
+   try {
+    fetch(new URL('/probe-log', import.meta.url), {method:'POST',
+     headers:{'Content-Type':'application/json'}, body:JSON.stringify({
+      run:new URL(globalThis.location.href).searchParams.get('run') || 'native-pthread',
+      event:'native-' + stream, time:Date.now(), message:args.map(String).join(' ').slice(0,8000)
+     })}).catch(() => {});
+   } catch {}
+  }
+  original(...args);
+ };
+}
+out = nativeProbe('stdout', out);
+err = nativeProbe('stderr', err);
+""")
+        native_path = "/" + native_file.relative_to(root).as_posix()
+        native_data = native.encode()
+        original_hash = "sha256-" + base64.b64encode(hashlib.sha256(native_file.read_bytes()).digest()).decode()
+        diagnostic_hash = "sha256-" + base64.b64encode(hashlib.sha256(native_data).digest()).decode()
+        if original_hash not in index.decode():
+            parser.error("Native module import-map integrity was not found")
+        index = index.decode().replace(original_hash, diagnostic_hash).encode()
 
     class Handler(SimpleHTTPRequestHandler):
         extensions_map = SimpleHTTPRequestHandler.extensions_map | {
@@ -58,7 +99,8 @@ def main():
             path = urlsplit(self.path).path
             data, mime = (index, "text/html") if path in ("/", "/index.html") else (
                 (probe, "text/javascript") if path == "/__blur_liveness.js" else (
-                    (queue, "text/javascript") if path == queue_path else (None, None)))
+                    (queue, "text/javascript") if path == queue_path else (
+                        (native_data, "text/javascript") if path == native_path else (None, None))))
             if data is None:
                 return super().do_GET()
             self.send_response(200)

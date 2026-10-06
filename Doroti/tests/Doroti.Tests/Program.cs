@@ -3,6 +3,16 @@ using Doroti.Testing;
 using Doroti.Ui;
 
 #if DOROTI_REPO_TESTS
+if (args.Contains("--browser-skia-handles"))
+{
+    BrowserSkiaHandleLockRegression.Run();
+    return;
+}
+if (args.Contains("--active-scroll-semantics"))
+{
+    ActiveScrollSemanticsRegression.Run();
+    return;
+}
 if (args.FirstOrDefault() == "--full-review-process-child") { ProcessRunnerRegression.Child(args[1]); return; }
 if (Array.IndexOf(args, "--web-semantics") is var webSemanticsIndex && webSemanticsIndex >= 0)
 {
@@ -11,6 +21,7 @@ if (Array.IndexOf(args, "--web-semantics") is var webSemanticsIndex && webSemant
 }
 WebSemanticsRegression.Run();
 FullReviewRegression.Run();
+ActiveScrollSemanticsRegression.Run();
 ImageReadbackLifetimeRegression.Run();
 ProcessRunnerRegression.Run();
 if (Array.IndexOf(args, "--native-frame-metal-gpu") is var metalGpuIndex && metalGpuIndex >= 0)

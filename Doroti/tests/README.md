@@ -238,6 +238,31 @@ recovery, idle/background resume, and completion failure are covered separately:
 node --experimental-transform-types --test Doroti/tests/web_gl_frames.mts
 ```
 
+The browser Skia handle lock also has an isolated native regression for nested
+handle lookup/registration and concurrent image/shader disposal with finalizers:
+
+```sh
+dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --browser-skia-handles
+node --experimental-transform-types --experimental-vm-modules --test Doroti/tests/web_managed_connection.mts
+```
+
+The managed-connection checks include failure of a finalizer/deputy pthread
+after renderer startup and reject further connections to that aborted runtime.
+Sample2's `DorotiWebInterpretWidgetTree` option includes Widgets, Rendering, and
+Dart async continuations in `Doroti.Runtime`, retaining Skia/interop AOT. The
+WebCIL checks cover opting out and invalidating an earlier interpretation policy:
+
+```sh
+python3 Doroti/tests/webcil_cache.py
+```
+
+Content and page-selection semantics must update during active scrolling;
+only geometry updates may wait for scrolling or resizing to settle:
+
+```sh
+dotnet run --project Doroti/tests/Doroti.Tests -c Debug -- --active-scroll-semantics
+```
+
 For sustained Sample2 browser responsiveness, serve a frozen publish with the
 test probe injected:
 
@@ -246,10 +271,16 @@ python3 Doroti/tests/web_blur_liveness.py --root <published-wwwroot> --out temp/
 ```
 
 Open the printed URL (or the same path through an HTTPS tunnel on a physical
-iPhone). Keep the page in the foreground. The probe keeps sigma between 26 and
+iPhone). Close previous test tabs before each run and keep the page in the foreground.
+Use `&tap=touch` for touch control activation on iOS. The probe keeps sigma between 26 and
 32, alternates slider drags and list scrolls, checks that submitted frames keep
 advancing, and verifies an unrelated application tab after every mode. It logs
-main-page heartbeat, visibility, and worker diagnostics to `liveness.jsonl`.
+main-page heartbeat, visibility, worker diagnostics, and fatal runtime console
+errors to `liveness.jsonl`. Add `&sweep=wide` for rapid low-to-high slider sweeps
+that exercise changing capture sizes and cache eviction.
+Use `--capture-native-output` for Mono stdout/stderr that bypasses the window's
+console. This diagnostic option wraps the served native JavaScript output functions
+and updates the served import-map integrity hashes.
 Add `--force-fence-timeout` for a controlled stale-status test: only the served
 queue's fence query is changed, and `gl.finish()` still completes real GPU work.
 This injection exercises the recovery path; it does not reproduce a WebKit
