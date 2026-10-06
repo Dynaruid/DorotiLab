@@ -15,6 +15,8 @@ public static partial class DorotiWebWorkerSurface
 {
     private static int ResourceCacheBytes = 256 * 1024 * 1024;
     internal static long PictureRasterCachePixels { get; private set; } = 16L * 1024 * 1024;
+    internal static long FilterSurfaceCachePixels { get; private set; } = 32L * 1024 * 1024;
+    internal static int FilterCaptureAlignment { get; private set; } = 1;
     private static bool _mobileMemoryProfile;
 
     [JSExport]
@@ -31,6 +33,8 @@ public static partial class DorotiWebWorkerSurface
         var compact = mobile && !webgpu;
         ResourceCacheBytes = (compact ? 64 : 256) * 1024 * 1024;
         PictureRasterCachePixels = (compact ? 4L : 16L) * 1024 * 1024;
+        FilterSurfaceCachePixels = (compact ? 8L : 32L) * 1024 * 1024;
+        FilterCaptureAlignment = compact ? 32 : 1;
     }
 
     private static IDorotiBrowserTarget? _target;
@@ -128,6 +132,7 @@ public static partial class DorotiWebWorkerSurface
                 managedHeapBytes = GC.GetTotalMemory(false),
                 memoryProfile = _mobileMemoryProfile ? "mobile" : "desktop",
                 nativeCacheBudgetBytes = ResourceCacheBytes,
+                filterCaptureAlignment = FilterCaptureAlignment,
                 graphiteContextBudgetedBytes = _graphiteContext?.CurrentBudgetedBytes,
                 graphiteContextLimitBytes = _graphiteContext?.MaxBudgetedBytes,
                 graphiteRecorderBudgetedBytes = "notMeasured: installed API does not expose recorder usage",

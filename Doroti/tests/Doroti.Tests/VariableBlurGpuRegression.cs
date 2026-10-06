@@ -43,6 +43,81 @@ internal static class VariableBlurGpuRegression
             SkiaGpuSurfaces.CompleteRecording(recorder!,false);
             return pixels ?? throw new Exception("Readback failed");
         }
+        // Exercise the production capture pool on a GPU: adaptive stage order
+        // changes, simultaneous snapshots, budget eviction and owner isolation.
+        var poolOwner = new object();
+        const string poolBackend = "filter-pool-regression";
+        var rent = pool.GetMethod("RentSceneSurface", BindingFlags.Static | BindingFlags.NonPublic)!;
+        var configure = pool.GetMethod("ConfigureSurfaceBudget", BindingFlags.Static | BindingFlags.NonPublic)!;
+        var memory = pool.GetMethod("CaptureSurfaceMemory", BindingFlags.Static | BindingFlags.NonPublic)!;
+        var release = pool.GetMethod("ReleaseContext", BindingFlags.Static | BindingFlags.NonPublic)!;
+        using (var poolTarget = Surface(64, 64))
+        {
+            configure.Invoke(null, [poolBackend, 0L, poolOwner, 16384L]);
+            void BeginPoolFrame() => begin.Invoke(null, [poolBackend, 0L, poolOwner]);
+            (IDisposable Lease, SKCanvas Canvas, bool Temporary) Rent(int w, int h, object? otherOwner = null)
+            {
+                var lease = rent.Invoke(null, [poolTarget.Canvas, poolBackend, 0L, w, h,
+                    otherOwner ?? poolOwner, null])!;
+                var type = lease.GetType();
+                return ((IDisposable)lease,
+                    (SKCanvas)type.GetProperty("Canvas", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(lease)!,
+                    (bool)type.GetProperty("IsTemporary", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(lease)!);
+            }
+            (int Entries, long Pixels, long Limit) Memory() =>
+                ((int, long, long))memory.Invoke(null, [poolBackend, 0L, poolOwner])!;
+            try
+            {
+                BeginPoolFrame();
+                var first = Rent(48, 48);
+                var smallHandle = first.Canvas.Surface!.Handle;
+                first.Canvas.Clear(SKColors.Red);
+                using var red = first.Canvas.Surface.Snapshot();
+                first.Lease.Dispose();
+                var second = Rent(64, 64);
+                var largeHandle = second.Canvas.Surface!.Handle;
+                second.Lease.Dispose();
+                var third = Rent(48, 48);
+                if (third.Canvas.Surface!.Handle == smallHandle)
+                    throw new Exception("A filter pool surface was reused twice in one frame.");
+                third.Canvas.Clear(SKColors.Blue);
+                using var blue = third.Canvas.Surface.Snapshot();
+                third.Lease.Dispose();
+                poolTarget.Canvas.Clear(SKColors.Transparent);
+                poolTarget.Canvas.DrawImage(red, new SKRect(0, 0, 32, 64), SKSamplingOptions.Default);
+                poolTarget.Canvas.DrawImage(blue, new SKRect(32, 0, 64, 64), SKSamplingOptions.Default);
+                var pixels = Read(poolTarget, 64, 64);
+                var redChannel = SKImageInfo.PlatformColorType == SKColorType.Rgba8888 ? 0 : 2;
+                var blueChannel = 2 - redChannel;
+                if (pixels[redChannel] != 255 || pixels[blueChannel] != 0
+                    || pixels[32 * 4 + redChannel] != 0 || pixels[32 * 4 + blueChannel] != 255)
+                    throw new Exception("A later filter capture overwrote an earlier snapshot.");
+                BeginPoolFrame();
+                var swappedLarge = Rent(64, 64);
+                var swappedSmall = Rent(48, 48);
+                if (swappedLarge.Canvas.Surface!.Handle != largeHandle || swappedSmall.Canvas.Surface!.Handle != smallHandle)
+                    throw new Exception("Changing adaptive pass order failed to reuse exact-sized captures.");
+                swappedSmall.Lease.Dispose(); swappedLarge.Lease.Dispose();
+                BeginPoolFrame();
+                var big = Rent(100, 100);
+                var temporary = Rent(100, 100);
+                if (big.Temporary || !temporary.Temporary || Memory().Pixels > Memory().Limit)
+                    throw new Exception("Filter pool budget eviction or live-frame preservation failed.");
+                temporary.Lease.Dispose(); big.Lease.Dispose();
+                var independentOwner = new object();
+                var independent = Rent(100, 100, independentOwner);
+                if (independent.Canvas.Surface!.Handle == big.Canvas.Surface!.Handle)
+                    throw new Exception("Filter captures escaped their context owner.");
+                independent.Lease.Dispose();
+                release.Invoke(null, [poolBackend, 0L, independentOwner]);
+                recorder!.Snap()?.Dispose();
+                SkiaGpuSurfaces.CompleteRecording(recorder, discarded: true);
+            }
+            finally { release.Invoke(null, [poolBackend, 0L, poolOwner]); }
+            if (Memory().Entries != 0 || Memory().Pixels != 0)
+                throw new Exception("Filter pool retained resources after context release.");
+        }
+        Console.WriteLine("PASS: GPU filter surface reuse, snapshot lifetime, mobile budget and owner release.");
         // Separate, opt-in still-image review. Never enable readbacks while
         // collecting device presentation performance. These are not pixel-
         // equivalence assertions between Full Gaussian and Fixed.
@@ -151,10 +226,16 @@ internal static class VariableBlurGpuRegression
                     .Invoke(null, new object[] { visible, settings, tile, globalMatrix, w, h })!;
                 if ((w % 4 == 0 || h % 4 == 0) && capture == new SKRectI(0, 0, w, h))
                     throw new Exception("Fixed GPU comparison did not exercise partial capture.");
-                byte[] RenderFixed(bool crop, bool direct)
+                byte[] RenderFixed(bool crop, bool direct, int alignment = 1, bool fullResolution = false)
                 {
+                    var renderSettings = (VariableBlurSettings)settings with
+                    { ResolutionScale = fullResolution ? 1 : .25 };
                     begin.Invoke(null, new[] { runtimeBackend, 0L, owner });
-                    var rect = crop ? capture : new SKRectI(0, 0, w, h);
+                    var alignedCapture = (SKRectI)typeof(SkiaSceneRenderer)
+                        .GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
+                        .Single(m => m.Name == "VariableBlurCaptureBounds" && m.GetParameters().Length == 8)
+                        .Invoke(null, [visible, renderSettings, tile, globalMatrix, w, h, null, alignment])!;
+                    var rect = crop ? alignedCapture : new SKRectI(0, 0, w, h);
                     using var input = fixedSource.Snapshot(rect);
                     var localVisible = visible;
                     localVisible.Offset(-rect.Left, -rect.Top);
@@ -162,9 +243,9 @@ internal static class VariableBlurGpuRegression
                     using var result = Surface(w, h);
                     result.Canvas.Clear(SKColors.Transparent);
                     using var filtered = (SKImage)Call("ApplyVariableBlur", result.Canvas,
-                        input, settings, tile, rect.Width, rect.Height, matrix, localVisible, direct);
-                    var expectedWidth = direct ? (int)Math.Ceiling(rect.Width * .25) : rect.Width;
-                    var expectedHeight = direct ? (int)Math.Ceiling(rect.Height * .25) : rect.Height;
+                        input, renderSettings, tile, rect.Width, rect.Height, matrix, localVisible, direct);
+                    var expectedWidth = direct ? (int)Math.Ceiling(rect.Width * renderSettings.ResolutionScale) : rect.Width;
+                    var expectedHeight = direct ? (int)Math.Ceiling(rect.Height * renderSettings.ResolutionScale) : rect.Height;
                     if (filtered.Width != expectedWidth || filtered.Height != expectedHeight)
                         throw new Exception("Fixed did not return the requested working/restored resolution.");
                     // Apply the fractional ROI clip once, at composition, and
@@ -190,10 +271,15 @@ internal static class VariableBlurGpuRegression
                 var restoredDomain = Difference(fullRestored, cropRestored);
                 var fullComposition = Difference(fullDirect, fullRestored);
                 var cropComposition = Difference(cropDirect, cropRestored);
-                var maximum = new[] { directDomain, restoredDomain, fullComposition, cropComposition }.Max();
+                var alignedFixed = Difference(cropDirect, RenderFixed(true, true, alignment: 32));
+                var alignedFull = Difference(RenderFixed(true, true, fullResolution: true),
+                    RenderFixed(true, true, alignment: 32, fullResolution: true));
+                var maximum = new[] { directDomain, restoredDomain, fullComposition, cropComposition,
+                    alignedFixed, alignedFull }.Max();
                 Console.WriteLine($"Fixed Gaussian {w}x{h} reverse={reverse} DPR={dpr} tile={tile} edge={edge} " +
                     $"capture={capture} direct crop/full={directDomain}/255 restored crop/full={restoredDomain}/255 " +
-                    $"direct/restored full={fullComposition}/255 crop={cropComposition}/255");
+                    $"direct/restored full={fullComposition}/255 crop={cropComposition}/255 " +
+                    $"aligned fixed/full={alignedFixed}/{alignedFull}/255");
                 if (maximum > 3)
                     throw new Exception("Fixed GPU capture/composition mismatch (limit 3/255).");
                 fixedMax = Math.Max(fixedMax, maximum);
@@ -226,7 +312,7 @@ internal static class VariableBlurGpuRegression
             var capture=(SKRectI)typeof(SkiaSceneRenderer).GetMethods(BindingFlags.Static|BindingFlags.NonPublic)
                 .Single(m=>m.Name=="VariableBlurCaptureBounds"&&m.GetParameters().Length==6)
                 .Invoke(null,new object[]{visible,settings,tile,globalMatrix,width,height})!;
-            byte[] Render(bool crop,bool direct, bool fullStages = false, bool fullStorage = false)
+            byte[] Render(bool crop,bool direct, bool fullStages = false, bool fullStorage = false, int alignment = 1)
             {
                 typeof(SkiaSceneRenderer).GetField("_boundedKawaseStages", BindingFlags.NonPublic|BindingFlags.Instance)!
                     .SetValue(renderer, !fullStages);
@@ -234,8 +320,13 @@ internal static class VariableBlurGpuRegression
                     .SetValue(renderer, !fullStorage);
                 typeof(SkiaSceneRenderer).GetField("_croppedAdaptiveBands", BindingFlags.NonPublic|BindingFlags.Instance)!
                     .SetValue(renderer, !fullStorage);
+                typeof(SkiaSceneRenderer).GetField("_filterCaptureAlignment", BindingFlags.NonPublic|BindingFlags.Instance)!
+                    .SetValue(renderer, alignment);
                 begin.Invoke(null,new[]{runtimeBackend,0L,owner});
-                var rect=crop?capture:new SKRectI(0,0,width,height);
+                var alignedCapture = (SKRectI)typeof(SkiaSceneRenderer).GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
+                    .Single(m => m.Name == "VariableBlurCaptureBounds" && m.GetParameters().Length == 8)
+                    .Invoke(null, [visible, settings, tile, globalMatrix, width, height, null, alignment])!;
+                var rect=crop?alignedCapture:new SKRectI(0,0,width,height);
                 using var input=source.Snapshot(rect);
                 var localVisible=visible;
                 localVisible.Offset(-rect.Left,-rect.Top);
@@ -286,6 +377,15 @@ internal static class VariableBlurGpuRegression
                 for(var c=0;c<4;c++) maxError=Math.Max(maxError,Math.Abs(direct[(y*width+x)*4+c]-cropped[(y*width+x)*4+c]));
                 Console.WriteLine($"{kernel} direct/intermediate maxError={maxError}/255");
                 if(maxError>3) throw new Exception("GPU direct composition mismatch");
+                var aligned = Render(true, true, alignment: 32);
+                var alignmentMax = 0;
+                for(var y=(int)Math.Ceiling(visible.Top);y<Math.Floor(visible.Bottom);y++)
+                for(var x=(int)Math.Ceiling(visible.Left);x<Math.Floor(visible.Right);x++)
+                for(var c=0;c<4;c++) alignmentMax=Math.Max(alignmentMax,Math.Abs(aligned[(y*width+x)*4+c]-direct[(y*width+x)*4+c]));
+                Console.WriteLine($"{kernel} mobile aligned capture maxError={alignmentMax}/255");
+                if(alignmentMax>3) throw new Exception("Mobile allocation alignment changed blur pixels");
+                typeof(SkiaSceneRenderer).GetField("_filterCaptureAlignment", BindingFlags.NonPublic | BindingFlags.Instance)!
+                    .SetValue(renderer, 1);
             }
             if(kernel==VariableBlurKernel.dualKawase)
             {

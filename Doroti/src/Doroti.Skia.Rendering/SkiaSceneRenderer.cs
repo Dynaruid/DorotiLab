@@ -24,6 +24,8 @@ public sealed partial class SkiaSceneRenderer
     private const int MaxImageFilterResources = 64;
     private const int MaxPictureRasterCacheEntries = 24;
     private readonly long _maxPictureRasterPixels;
+    private readonly long _maxFilterSurfacePixels;
+    private readonly int _filterCaptureAlignment;
     private const int MaxTextRenderEntries = 256;
     private const long MaxCacheablePicturePixels = 4L * 1024 * 1024;
     private const int MaxPictureRasterWarmups = 128;
@@ -102,11 +104,19 @@ public sealed partial class SkiaSceneRenderer
         string diagnosticsBackend,
         bool enablePictureRasterCache = true,
         SkiaFallbackFontCollection? fallbackFonts = null,
-        long pictureRasterCachePixels = 16L * 1024 * 1024
+        long pictureRasterCachePixels = 16L * 1024 * 1024,
+        long filterSurfaceCachePixels = 32L * 1024 * 1024,
+        int filterCaptureAlignment = 1
     )
     {
         ArgumentOutOfRangeException.ThrowIfNegative(pictureRasterCachePixels);
         _maxPictureRasterPixels = pictureRasterCachePixels;
+        ArgumentOutOfRangeException.ThrowIfNegative(filterSurfaceCachePixels);
+        _maxFilterSurfacePixels = filterSurfaceCachePixels;
+        if (filterCaptureAlignment < 1 || filterCaptureAlignment > 64
+            || (filterCaptureAlignment & (filterCaptureAlignment - 1)) != 0)
+            throw new ArgumentOutOfRangeException(nameof(filterCaptureAlignment));
+        _filterCaptureAlignment = filterCaptureAlignment;
         _viewId = viewId;
         _host = host;
         _textureOwnerContext = SynchronizationContext.Current;
@@ -215,6 +225,8 @@ public sealed partial class SkiaSceneRenderer
     {
         lock (_paintGate)
         {
+            var filters = DorotiSkiaImageFilterRenderer.CaptureSurfaceMemory(
+                RuntimeEffectBackend, _contextGeneration, _runtimeEffectContextOwner);
             return new(
                 _textRenderResources.Count,
                 MaxTextRenderEntries,
@@ -226,7 +238,10 @@ public sealed partial class SkiaSceneRenderer
                 _fontGeneration,
                 _pictureRasterCache.Count,
                 _pictureRasterPixels * 4,
-                _maxPictureRasterPixels * 4
+                _maxPictureRasterPixels * 4,
+                filters.Entries,
+                filters.Pixels * 4,
+                _maxFilterSurfacePixels * 4
             );
         }
     }
@@ -711,6 +726,9 @@ public sealed partial class SkiaSceneRenderer
             var rasterStart = DorotiFrameClock.Now;
             BeginPictureRasterFrame();
             BeginVariableBlurProfileFrame();
+            DorotiSkiaImageFilterRenderer.ConfigureSurfaceBudget(
+                RuntimeEffectBackend, _contextGeneration, _runtimeEffectContextOwner,
+                _maxFilterSurfacePixels);
             DorotiSkiaImageFilterRenderer.BeginFrame(
                 RuntimeEffectBackend,
                 _contextGeneration,

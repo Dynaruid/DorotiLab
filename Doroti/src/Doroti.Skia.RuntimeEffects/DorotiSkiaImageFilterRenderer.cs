@@ -58,6 +58,23 @@ internal static class DorotiSkiaImageFilterRenderer
         }
     }
 
+    internal static void ConfigureSurfaceBudget(string backend, long contextGeneration,
+        object contextOwner, long pixels)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(pixels);
+        lock (PoolGate)
+            GetOrCreatePool(backend, contextGeneration, contextOwner).MaxSurfacePixels = pixels;
+    }
+
+    internal static (int Entries, long Pixels, long Limit) CaptureSurfaceMemory(
+        string backend, long contextGeneration, object contextOwner)
+    {
+        lock (PoolGate)
+            return SurfacePools.TryGetValue((backend, contextGeneration, contextOwner), out var pool)
+                ? (pool.ActiveCount, pool.SurfacePixels, pool.MaxSurfacePixels)
+                : (0, 0, 0);
+    }
+
     internal static void InvalidateContext(
         string backend,
         long currentContextGeneration,
@@ -621,56 +638,46 @@ internal static class DorotiSkiaImageFilterRenderer
         lock (PoolGate)
         {
             var pool = GetOrCreatePool(backend, contextGeneration, contextOwner);
-            var slot = pool.NextSlot++;
-            if (slot >= MaxPooledSurfacesPerFrame)
+            if (pool.NextSlot++ >= MaxPooledSurfacesPerFrame)
             {
                 return new(CreateSurface(context, width, height, properties), true);
             }
-
-            while (pool.Surfaces.Count <= slot)
+            // Adaptive blur changes pass count and sizes as sigma changes. Match
+            // unused exact-sized surfaces anywhere in the pool rather than
+            // replacing the surface at a frame-relative ordinal on every drag.
+            foreach (var cached in pool.Surfaces)
             {
-                pool.Surfaces.Add(null);
+                if (cached.LastFrame == pool.FrameNumber || cached.Width != width
+                    || cached.Height != height || !SameSurfacePolicy(cached.Surface, properties))
+                    continue;
+                cached.LastFrame = pool.FrameNumber;
+                Interlocked.Increment(ref _surfaceReuses);
+                return new(cached.Surface, false, true);
             }
-
-            var surface = pool.Surfaces[slot];
-            var oldPixels = surface is null
-                ? 0L
-                : (long)surface.Canvas.DeviceClipBounds.Width
-                    * surface.Canvas.DeviceClipBounds.Height;
             var requiredPixels = (long)width * height;
-            if (pool.SurfacePixels - oldPixels + requiredPixels > MaxPooledSurfacePixels)
-            {
-                surface?.Dispose();
-                pool.Surfaces[slot] = null;
-                pool.SurfacePixels -= oldPixels;
+            if (requiredPixels > pool.MaxSurfacePixels)
                 return new(CreateSurface(context, width, height, properties), true);
+            while (pool.SurfacePixels + requiredPixels > pool.MaxSurfacePixels
+                || pool.Surfaces.Count >= MaxPooledSurfacesPerFrame)
+            {
+                var oldest = pool.Surfaces.Where(s => s.LastFrame != pool.FrameNumber)
+                    .MinBy(s => s.LastFrame);
+                // Never overwrite a texture already sampled in this frame.
+                if (oldest is null)
+                    return new(CreateSurface(context, width, height, properties), true);
+                pool.Surfaces.Remove(oldest);
+                pool.SurfacePixels -= (long)oldest.Width * oldest.Height;
+                oldest.Surface.Dispose();
             }
             // GPU snapshots are the implicit texture passed to the runtime
             // effect. Keep that texture exact-sized: reusing a larger pooled
             // surface after a shrink asks the backend for a subset snapshot,
             // which is not reliable for the D3D12 render target path and can
             // return null during rapid small-window layout changes.
-            var reused = false;
-            if (
-                surface is null
-                || !SameSurfacePolicy(surface, properties)
-                || surface.Canvas.DeviceClipBounds.Width != width
-                || surface.Canvas.DeviceClipBounds.Height != height
-            )
-            {
-                surface?.Dispose();
-                pool.Surfaces[slot] = null;
-                pool.SurfacePixels -= oldPixels;
-                surface = CreateSurface(context, width, height, properties);
-                pool.Surfaces[slot] = surface;
-                pool.SurfacePixels += requiredPixels;
-            }
-            else
-            {
-                Interlocked.Increment(ref _surfaceReuses);
-                reused = true;
-            }
-            return new(surface, false, reused);
+            var surface = CreateSurface(context, width, height, properties);
+            pool.Surfaces.Add(new(surface, width, height, pool.FrameNumber));
+            pool.SurfacePixels += requiredPixels;
+            return new(surface, false);
         }
     }
 
@@ -777,17 +784,18 @@ internal static class DorotiSkiaImageFilterRenderer
 
     private sealed class SurfacePool : IDisposable
     {
-        internal List<SKSurface?> Surfaces { get; } = [];
+        internal List<PooledSurface> Surfaces { get; } = [];
         internal Dictionary<object, CachedImage> Images { get; } =
             new(ReferenceEqualityComparer.Instance);
         internal Dictionary<object, CacheWarmup> Warmups { get; } =
             new(ReferenceEqualityComparer.Instance);
         internal int NextSlot { get; set; }
         internal long SurfacePixels { get; set; }
+        internal long MaxSurfacePixels { get; set; } = MaxPooledSurfacePixels;
         internal long FrameNumber { get; private set; }
         internal long UseSequence { get; set; }
         internal long CachedPixels { get; set; }
-        internal int ActiveCount => Surfaces.Count(surface => surface is not null);
+        internal int ActiveCount => Surfaces.Count;
 
         internal void BeginFrame()
         {
@@ -850,7 +858,7 @@ internal static class DorotiSkiaImageFilterRenderer
         {
             foreach (var surface in Surfaces)
             {
-                surface?.Dispose();
+                surface.Surface.Dispose();
             }
 
             Surfaces.Clear();
@@ -863,6 +871,14 @@ internal static class DorotiSkiaImageFilterRenderer
             Warmups.Clear();
             CachedPixels = 0;
         }
+    }
+
+    private sealed class PooledSurface(SKSurface surface, int width, int height, long frame)
+    {
+        internal SKSurface Surface { get; } = surface;
+        internal int Width { get; } = width;
+        internal int Height { get; } = height;
+        internal long LastFrame { get; set; } = frame;
     }
 
     private sealed class CacheWarmup

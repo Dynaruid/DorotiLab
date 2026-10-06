@@ -1,0 +1,188 @@
+{
+  "device": {
+    "model": "iPhone 12",
+    "iOS": "26.6.1",
+    "devicePixelRatio": 3
+  },
+  "method": "Synthetic touch pointer drags in actual Mobile Safari: 6 rounds x 128 move samples per blur mode, five modes. Physical finger input and display FPS were not measured.",
+  "runs": {
+    "iphone12-baseline2": {
+      "status": "PASS",
+      "rounds": 30,
+      "pointerMoveSamples": 3840,
+      "reloads": 0,
+      "durationSeconds": 87.083,
+      "errors": [],
+      "submitted": 3862,
+      "failed": 0,
+      "filterSurfacesCreated": 8918,
+      "filterSurfaceReuses": 19727,
+      "maxWasmHeapBytes": 250085376,
+      "memoryProfile": "mobile",
+      "renderer": "worker-direct-webgl",
+      "filterCaptureAlignment": null,
+      "queue": null,
+      "maxPooledFilterRgba8Bytes": 0,
+      "poolLimitBytes": null
+    },
+    "iphone12-aligned": {
+      "status": "PASS",
+      "rounds": 30,
+      "pointerMoveSamples": 3840,
+      "reloads": 0,
+      "durationSeconds": 86.634,
+      "errors": [],
+      "submitted": 3964,
+      "failed": 0,
+      "filterSurfacesCreated": 1488,
+      "filterSurfaceReuses": 28590,
+      "maxWasmHeapBytes": 250085376,
+      "memoryProfile": "mobile",
+      "renderer": "worker-direct-webgl",
+      "filterCaptureAlignment": 32,
+      "queue": {
+        "inFlight": 1,
+        "limit": 2,
+        "peakInFlight": 2,
+        "submittedFrames": 3965,
+        "completedSubmissions": 3964,
+        "failure": null
+      },
+      "maxPooledFilterRgba8Bytes": 33470608,
+      "poolLimitBytes": 33554432,
+      "minimumPeakSliderValue": 31.0
+    },
+    "webkit-aligned": {
+      "status": "PASS",
+      "rounds": 15,
+      "pointerMoveSamples": 1920,
+      "reloads": 0,
+      "durationSeconds": 48.47,
+      "errors": [],
+      "submitted": 1407,
+      "failed": 0,
+      "filterSurfacesCreated": 937,
+      "filterSurfaceReuses": 9556,
+      "maxWasmHeapBytes": 300154880,
+      "memoryProfile": "mobile",
+      "renderer": "worker-direct-webgl",
+      "filterCaptureAlignment": 32,
+      "queue": {
+        "inFlight": 1,
+        "limit": 2,
+        "peakInFlight": 2,
+        "submittedFrames": 1408,
+        "completedSubmissions": 1407,
+        "failure": null
+      },
+      "maxPooledFilterRgba8Bytes": 33465856,
+      "poolLimitBytes": 33554432,
+      "minimumPeakSliderValue": 29.0
+    },
+    "iphone12-baseline-aot": {
+      "status": "FAIL",
+      "rounds": 1,
+      "pointerMoveSamples": 128,
+      "reloads": 1,
+      "durationSeconds": 19.992,
+      "errors": [
+        "Unexpected page reload"
+      ],
+      "submitted": 285,
+      "failed": 0,
+      "filterSurfacesCreated": 322,
+      "filterSurfaceReuses": 725,
+      "maxWasmHeapBytes": 250085376,
+      "memoryProfile": "mobile",
+      "renderer": "worker-direct-webgl",
+      "filterCaptureAlignment": null,
+      "queue": null,
+      "maxPooledFilterRgba8Bytes": 0,
+      "poolLimitBytes": null,
+      "minimumPeakSliderValue": 32.0
+    },
+    "iphone12-aligned-aot": {
+      "status": "PASS",
+      "rounds": 30,
+      "pointerMoveSamples": 3840,
+      "reloads": 0,
+      "durationSeconds": 91.298,
+      "errors": [],
+      "submitted": 3914,
+      "failed": 0,
+      "filterSurfacesCreated": 1493,
+      "filterSurfaceReuses": 28334,
+      "maxWasmHeapBytes": 250085376,
+      "memoryProfile": "mobile",
+      "renderer": "worker-direct-webgl",
+      "filterCaptureAlignment": 32,
+      "queue": {
+        "inFlight": 1,
+        "limit": 2,
+        "peakInFlight": 2,
+        "submittedFrames": 3915,
+        "completedSubmissions": 3914,
+        "failure": null
+      },
+      "maxPooledFilterRgba8Bytes": 33512128,
+      "poolLimitBytes": 33554432,
+      "minimumPeakSliderValue": 30.0
+    }
+  },
+  "payloads": {
+    "baseline": {
+      "nativeWasm": "dotnet.native.7mt3x7hpdf.wasm",
+      "bytes": 9661683,
+      "sha256": "af452823c6b8fd89383cad62a509e4a0c5cc5957cae6774cb272dda870860795"
+    },
+    "aligned": {
+      "nativeWasm": "dotnet.native.7mt3x7hpdf.wasm",
+      "bytes": 9661683,
+      "sha256": "af452823c6b8fd89383cad62a509e4a0c5cc5957cae6774cb272dda870860795"
+    },
+    "baseline-aot": {
+      "nativeWasm": "dotnet.native.hbhp2rs2jk.wasm",
+      "bytes": 40468551,
+      "sha256": "130e3606632605d8eeec3fc83c40e91ef96a39296da971a13457700f0f92ad73"
+    },
+    "aligned-aot": {
+      "nativeWasm": "dotnet.native.lb64lflkas.wasm",
+      "bytes": 40482614,
+      "sha256": "ffe53f3f6a4c090ad857a8845a091be02d92506c6242376849181c1d920af6ef"
+    }
+  },
+  "checks": {
+    "webTests": 50,
+    "webTestsPassed": 50,
+    "metalGpuFilterLifetime": "PASS",
+    "metalPixelComparisons": "PASS; includes 72 fixed/full alignment conditions and 60 adaptive/Kawase alignment conditions; maximum allowed channel error 3/255",
+    "coreRegressions": "PASS",
+    "releaseAotBuild": "PASS",
+    "physicalSafariAot": "PASS: 30 rounds, five modes, zero frame failures or page reloads",
+    "metalAlignmentMaximumChannelError": 1
+  },
+  "limitations": [
+    "Original AOT Safari page reload reproduced during the second Fast adaptive drag. OOM is inferred rather than confirmed by resident-memory evidence.",
+    "Pool and WASM byte accounting are not GPU/process resident memory. Instruments Activity Monitor could not export a valid trace.",
+    "Playwright WebKit 26.4 AOT startup fails with Maximum call stack size exceeded in both baseline and changed builds; physical Safari 26.6.1 AOT passed.",
+    "The related WebKit report concerns WebGPU resolution transitions, while the tested iOS default is WebGL2."
+  ],
+  "relatedPrimarySource": "https://bugs.webkit.org/show_bug.cgi?id=312563",
+  "date": "2026-10-06",
+  "timezone": "Asia/Seoul",
+  "baselineCommit": "80d6245b16060d142c47b80a12cf896648676e63",
+  "sourceFiles": {
+    "Doroti/src/Doroti.Skia.Rendering/SkiaRendererContracts.cs": "c96b5cb58b31c9b60d9b7c70500ff4603f4a7a7652743806fac7aca0bd738102",
+    "Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.Filters.cs": "52e06e27a2d8a6c5767b3e9b62576cbeb6b55cac6ed820e4064c241115a92fa9",
+    "Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.VariableBlur.Capture.cs": "771df7155830eb9a629e1047df69c5285fe087870d644b737756f80d9654b632",
+    "Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.VariableBlur.Region.cs": "7f82cf000da49340b6fdcee0779086018fa072c0553456baa10ee79abf757b1c",
+    "Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.cs": "c2f53bec799f5bc0d105159d38b3d11b61f9f317e72e4d675f12c5b6d1cfaafa",
+    "Doroti/src/Doroti.Skia.RuntimeEffects/DorotiSkiaImageFilterRenderer.cs": "7081e83d0a5647d800c75223597413d5d42bcce1868a0a01d560e1df9541ec73",
+    "Doroti/tests/Doroti.Tests/VariableBlurGpuRegression.cs": "ce67b37ef98246e4a4530f7ab6edc08ca3180d5f0440224bdcee7bfb1823f0f2",
+    "packages/platforms/web/Doroti.Host.Web/BrowserSkiaCapabilities.cs": "61aaac382e318c3696f39f450881fff6c8a26da880407cf3559a940d694b712c",
+    "packages/platforms/web/Doroti.Host.Web/DorotiWebWorkerSurface.cs": "462ef33815cfe6e530c372c39c12312d0554d985c00ec7bc26cefc0db697d017",
+    "packages/platforms/web/Doroti.Host.Web/Web/doroti.raster.worker.ts": "b5f41029c7dd74ce02ee66936806b37a5ef236b1e6219a7207c9e906edcf7446",
+    "Doroti/tests/web_gl_frames.mts": "de05d4e08fbc86d2ce6a8d82e4e298c6842e111e8790ae3b19359d5618f2770c",
+    "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.gl-frames.ts": "0a83913b5e54fb49bc5b0998ccd16ee0aa2827a3f9384929926b05f639b048a0"
+  }
+}

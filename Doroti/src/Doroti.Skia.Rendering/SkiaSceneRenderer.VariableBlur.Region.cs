@@ -23,10 +23,12 @@ public sealed partial class SkiaSceneRenderer
         var rampY = (ux * inverse.SkewX + uy * inverse.ScaleY) / length;
         var rampZ = (ux * (inverse.TransX - (float)settings.Start.dx)
             + uy * (inverse.TransY - (float)settings.Start.dy)) / length;
+        var alignment = _filterCaptureAlignment;
         SKRectI Round(SKRect rect) => new(
-            (int)Math.Max(0, Math.Floor(rect.Left)), (int)Math.Max(0, Math.Floor(rect.Top)),
-            (int)Math.Min(input.Width, Math.Ceiling(rect.Right)),
-            (int)Math.Min(input.Height, Math.Ceiling(rect.Bottom)));
+            (int)Math.Max(0, Math.Floor(rect.Left / alignment) * alignment),
+            (int)Math.Max(0, Math.Floor(rect.Top / alignment) * alignment),
+            (int)Math.Min(input.Width, Math.Ceiling(rect.Right / alignment) * alignment),
+            (int)Math.Min(input.Height, Math.Ceiling(rect.Bottom / alignment) * alignment));
         var outputRect = Round(bounds);
         var radius = 3 * Math.Max(settings.StartSigma, settings.EndSigma);
         var haloX = radius * Math.Abs(-matrix.ScaleX * uy + matrix.SkewX * ux) + 1;

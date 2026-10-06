@@ -25,6 +25,7 @@ import {
 import { captureBrowserTimers } from "./doroti.web.timers.js";
 import * as textures from "./doroti.web.texture-worker.js";
 import { WorkerRequestMailbox } from "./doroti.web.requests.js";
+import { WebGlFrameQueue } from "./doroti.web.gl-frames.js";
 
 const protocolVersion = dorotiProtocolVersion;
 const inboundKinds = new Set([
@@ -128,6 +129,7 @@ interface WorkerPresenter {
 
 type WorkerMode = "worker-direct-webgl" | "worker-direct-webgpu";
 let webgpu: typeof import("./doroti.webgpu.js") | undefined;
+let webglFrames: WebGlFrameQueue | undefined;
 let webgpuIdentity: HostSnapshot["gpu"] | undefined;
 
 interface EmscriptenGlRuntime {
@@ -479,12 +481,14 @@ function ensurePresenter(): WorkerPresenter {
     frontGeneration: 0, frontPhysicalWidth: 0, frontPhysicalHeight: 0,
   };
   const gl = currentGl(presenter);
+  webglFrames = new WebGlFrameQueue(gl);
   initializePresenterCapacity(presenter, Math.min(gl.getParameter(gl.MAX_TEXTURE_SIZE), gl.getParameter(gl.MAX_RENDERBUFFER_SIZE)));
   presenter.extension = gl.getExtension("WEBGL_lose_context");
   canvas.addEventListener("webglcontextlost", (event) => {
     event.preventDefault();
     if (!presenter) return;
     presenter.contextLost = true;
+    webglFrames?.contextLost();
     presenter.frontGeneration = 0;
     presenter.frontPhysicalWidth = 0;
     presenter.frontPhysicalHeight = 0;
@@ -581,10 +585,13 @@ function scheduleGpuCleanup(): void {
 }
 
 async function render(value: WorkerPresenter, request: PresentRequest): Promise<void> {
+  let webglWorkStarted = false;
   try {
     discardPlatformFrame();
     if (webgpu) await webgpu.waitForCapacity();
-    if (request.terminal || runtimeState.state === "disposing" || runtimeState.state === "disposed") return;
+    else await webglFrames!.waitForCapacity();
+    if (request.terminal || value.contextLost || runtimeState.state === "disposing"
+        || runtimeState.state === "disposed" || runtimeState.state === "fatal") return;
     // Input/animation may replace the request while GPU capacity is awaited.
     // Raster only the latest queued frame instead of spending the freed slot
     // on obsolete work and adding another frame of input latency.
@@ -660,6 +667,7 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
     gl.drawBuffers([gl.BACK]);
     gl.viewport(0, 0, value.canvas.width, value.canvas.height);
     const managedSurfaceStarted = performance.now();
+    webglWorkStarted = true;
     const result = String(surface!.RenderFrame(
       request.requestId, request.generation, request.logicalWidth, request.logicalHeight,
       request.physicalWidth, request.physicalHeight,
@@ -688,6 +696,8 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
     const directFinalizeStarted = performance.now();
     clearDirectVisibleBands(
       value, request.physicalWidth, request.physicalHeight);
+    webglFrames!.submitted();
+    webglWorkStarted = false;
     const directFinalizeCompleted = performance.now();
     value.frontGeneration = request.generation;
     if (capacityChanged) {
@@ -728,8 +738,14 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
     discardPlatformFrame();
     try { surface?.CompleteFrame(request.requestId, request.generation, "failed", String(error)); } catch { }
     terminal(request, "failed", String(error));
-    if (webgpu) post("fatal", { error: String(error) });
+    if (webgpu || webglFrames?.diagnostics().failure) post("fatal", { error: String(error) });
   } finally {
+    // Failed or superseded paints can have issued GPU draws too. Fence them
+    // before another paint can reuse capture surfaces or submit more work.
+    if (webglWorkStarted) {
+      try { webglFrames!.submitted(); }
+      catch (error) { post("fatal", { error: String(error) }); }
+    }
     void textures.flushRetired().catch(error => post("fatal", { error: String(error) }));
   }
 }
@@ -921,6 +937,7 @@ function handleHostMessage(event: MessageEvent): void {
           drainPlatformCaptures,
           async () => { try { await textures.disposeTextures(); } catch (error) { consumerCompleted = false; throw error; } },
           async () => { if (webgpu) try { await webgpu.drainForShutdown(); } catch (error) { consumerCompleted = false; throw error; } },
+          async () => { if (webglFrames) try { await webglFrames.drainForShutdown(); } catch (error) { consumerCompleted = false; throw error; } },
           () => { const stop = stopManagedRuntime; stopManagedRuntime = null; stop?.(); },
           drainPlatformViews,
           async () => { controls.close(); await controls.drain(); },
@@ -997,7 +1014,7 @@ async function startManagedRuntime(): Promise<void> {
         const managed = JSON.parse(surface!.CaptureDiagnostics());
         return { epochMilliseconds, completedEpochMilliseconds: performance.timeOrigin + performance.now(), managed,
           timers: { ...JSON.parse(captureManagedTimers!()), ...captureBrowserTimers() },
-          webgpu: webgpu?.diagnostics() ?? null };
+          webgpu: webgpu?.diagnostics() ?? null, webgl: webglFrames?.diagnostics() ?? null };
       },
     });
     if (frameCost) Object.assign(globalThis, {
@@ -1008,7 +1025,7 @@ async function startManagedRuntime(): Promise<void> {
           const started = performance.timeOrigin + performance.now();
           const managed = JSON.parse(surface!.CaptureCostDiagnostics());
           return { started, ended: performance.timeOrigin + performance.now(), managed,
-            policy: rendererPolicy, webgpu: webgpu?.diagnostics() ?? null, textures: textures.diagnostics(),
+            policy: rendererPolicy, webgpu: webgpu?.diagnostics() ?? null, webgl: webglFrames?.diagnostics() ?? null, textures: textures.diagnostics(),
             backing: { width: transferredCanvas?.width, height: transferredCanvas?.height,
               requiredWidth: snapshot?.resizeEpoch.physicalWidth, requiredHeight: snapshot?.resizeEpoch.physicalHeight,
               colorBytesEstimate: (transferredCanvas?.width ?? 0) * (transferredCanvas?.height ?? 0) * 4,

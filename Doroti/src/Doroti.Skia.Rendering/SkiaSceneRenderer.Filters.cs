@@ -371,7 +371,8 @@ public sealed partial class SkiaSceneRenderer
                 target.TotalMatrix,
                 width,
                 height,
-                out var captureReason
+                out var captureReason,
+                _filterCaptureAlignment
             );
             RecordVariableBlurWork(
                 "backdrop-capture",

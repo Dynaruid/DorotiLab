@@ -131,5 +131,8 @@ public sealed record SkiaCacheMemoryDiagnostics(
     long FontGeneration,
     int RasterEntries,
     long RasterRgba8Bytes,
-    long RasterRgba8Limit
+    long RasterRgba8Limit,
+    int FilterSurfaceEntries = 0,
+    long FilterSurfaceRgba8Bytes = 0,
+    long FilterSurfaceRgba8Limit = 0
 );

@@ -217,6 +217,18 @@ dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-gpu
 
 This command compares crop/full and direct/intermediate composition at DPR 1/2/3, Gaussian detail at the clear edge, bounded/full Kawase reconstruction, and native/owned sibling scopes with a VariableBlur inside opacity. Fixed Gaussian also exercises the actual `ApplyVariableBlur` reduced output and final linear sampling: 72 conditions cover both gradient directions, fractional interior/edge ROIs, translucent input, Clamp/Decal, and nondivisible sizes including full-domain fallback. Each equivalent comparison has a maximum channel-error limit of 3/255. It uses synchronous readback only in validation and does not measure FPS or qualify iPhone, other GPU backends, or the full transform/tile/child matrix. The default suite stays on raster surfaces; `--variable-blur-kernel`, `--variable-blur-capture`, and `--variable-blur-kawase` isolate the embedded production SkSL and its manifest/ABI.
 
+The GPU command also checks exact-sized filter surface reuse when pass order
+changes, simultaneous snapshot contents, bounded pool eviction and context-owner
+release. Mobile capture alignment is compared at both Full and Fixed resolutions in the
+72 fractional ROI conditions above, plus 60 adaptive/Kawase conditions.
+
+WebGL queue admission, slow completion, shutdown, context loss and fence
+failure/timeout are covered separately:
+
+```sh
+node --experimental-transform-types --test Doroti/tests/web_gl_frames.mts
+```
+
 For separate Full/Fixed still-image quality review, run from the repository root:
 
 ```sh

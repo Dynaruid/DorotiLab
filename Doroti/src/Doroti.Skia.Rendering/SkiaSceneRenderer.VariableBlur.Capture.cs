@@ -25,7 +25,8 @@ public sealed partial class SkiaSceneRenderer
         SKMatrix matrix,
         int width,
         int height,
-        out string reason
+        out string reason,
+        int allocationAlignment = 1
     )
     {
         var full = new SKRectI(0, 0, width, height);
@@ -41,11 +42,12 @@ public sealed partial class SkiaSceneRenderer
             // Padding in the filter retains exact dyadic ratios at domain edges.
             var kawaseGrid = 1 << depth;
             var halo = 5 * kawaseGrid + 2;
+            var allocationGrid = Math.Max(kawaseGrid, allocationAlignment);
             var cropped = new SKRectI(
-                (int)Math.Max(0, Math.Floor((visible.Left - halo) / kawaseGrid) * kawaseGrid),
-                (int)Math.Max(0, Math.Floor((visible.Top - halo) / kawaseGrid) * kawaseGrid),
-                (int)Math.Min(width, Math.Ceiling((visible.Right + halo) / kawaseGrid) * kawaseGrid),
-                (int)Math.Min(height, Math.Ceiling((visible.Bottom + halo) / kawaseGrid) * kawaseGrid));
+                (int)Math.Max(0, Math.Floor((visible.Left - halo) / allocationGrid) * allocationGrid),
+                (int)Math.Max(0, Math.Floor((visible.Top - halo) / allocationGrid) * allocationGrid),
+                (int)Math.Min(width, Math.Ceiling((visible.Right + halo) / allocationGrid) * allocationGrid),
+                (int)Math.Min(height, Math.Ceiling((visible.Bottom + halo) / allocationGrid) * allocationGrid));
             reason = cropped == full ? "kawase-halo-covers-domain" : "kawase-cropped";
             return cropped;
         }
@@ -86,11 +88,15 @@ public sealed partial class SkiaSceneRenderer
             reason = "nonfinite-halo";
             return full;
         }
+        // Enlarge storage on a coarser dyadic grid without changing sigma,
+        // sample phase or the required halo. Mobile slider drags then reuse
+        // a few capture sizes instead of allocating at every pixel change.
+        var storageGrid = Math.Max(grid, allocationAlignment);
         var result = new SKRectI(
-            cropX ? (int)Math.Max(0, Math.Floor((visible.Left - haloX) / grid) * grid) : 0,
-            cropY ? (int)Math.Max(0, Math.Floor((visible.Top - haloY) / grid) * grid) : 0,
-            cropX ? (int)Math.Min(width, Math.Ceiling((visible.Right + haloX) / grid) * grid) : width,
-            cropY ? (int)Math.Min(height, Math.Ceiling((visible.Bottom + haloY) / grid) * grid) : height
+            cropX ? (int)Math.Max(0, Math.Floor((visible.Left - haloX) / storageGrid) * storageGrid) : 0,
+            cropY ? (int)Math.Max(0, Math.Floor((visible.Top - haloY) / storageGrid) * storageGrid) : 0,
+            cropX ? (int)Math.Min(width, Math.Ceiling((visible.Right + haloX) / storageGrid) * storageGrid) : width,
+            cropY ? (int)Math.Min(height, Math.Ceiling((visible.Bottom + haloY) / storageGrid) * storageGrid) : height
         );
         if (result == full)
             reason = "halo-covers-domain";
