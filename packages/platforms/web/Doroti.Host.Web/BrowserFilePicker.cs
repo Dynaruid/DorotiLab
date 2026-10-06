@@ -9,6 +9,8 @@ namespace Doroti.Host.Web;
 internal static partial class BrowserInterop
 {
     [JSImport("openFileOwner", Module)] internal static partial bool OpenFileOwner(int id);
+    [JSImport("registerFileActivation", Module)] internal static partial void RegisterFileActivation(int id, string identifier, bool multiple, string accept);
+    [JSImport("unregisterFileActivation", Module)] internal static partial void UnregisterFileActivation(int id, string identifier);
     [JSImport("pickBrowserFiles", Module)]
     [return: JSMarshalAs<JSType.Promise<JSType.String>>]
     internal static partial Task<string> PickBrowserFiles(int id, bool multiple, string accept);
@@ -25,6 +27,24 @@ internal sealed class BrowserFilePicker(int hostId) : IFilePickerHostCapability,
 {
     public bool Available { get; } = BrowserInterop.OpenFileOwner(hostId);
     private bool _disposed;
+    public IDisposable RegisterActivation(string semanticsIdentifier, FilePickOptions options)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        ArgumentException.ThrowIfNullOrEmpty(semanticsIdentifier);
+        BrowserInterop.RegisterFileActivation(hostId, semanticsIdentifier, options.AllowMultiple,
+            string.Join(",", FilePickFilters.Normalize(options.Extensions)));
+        return new ActivationRegistration(hostId, semanticsIdentifier);
+    }
+    private sealed class ActivationRegistration(int id, string identifier) : IDisposable
+    {
+        private bool _disposed;
+        public void Dispose()
+        {
+            if (_disposed) return;
+            _disposed = true;
+            BrowserInterop.UnregisterFileActivation(id, identifier);
+        }
+    }
     public async ValueTask<FilePickResult> PickFilesAsync(FilePickOptions options, CancellationToken cancellationToken = default)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);

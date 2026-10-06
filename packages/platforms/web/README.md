@@ -19,6 +19,30 @@ output rather than the AOT publish output. Serve the published `wwwroot` with th
 required COOP/COEP headers; the sample READMEs give commands. This profile increases
 publish time and native WASM size. See the [default-profile qualification](../../../Doroti/docs/validation/2026-10-05-web-aot-default.md).
 
+Wrap file-selection buttons in `Doroti.Framework.Widgets.FilePickerActivation`
+and pass the same `FilePickOptions` to the wrapper and `PickFilesAsync` callback.
+The browser associates its semantics identifier with those options and opens the
+file input synchronously during the trusted tap or keyboard/accessibility activation.
+This preserves WebKit's user gesture across the managed Worker round trip; only
+the selection metadata and bounded reads reach managed code. Disabled controls,
+scroll/drag gestures and synthetic DOM events do not pre-open a picker. Other
+platforms keep their native picker behavior through the capability's default binding.
+
+```csharp
+var options = new FilePickOptions(AllowMultiple: true, Extensions: [".txt"]);
+new FilePickerActivation(options: options,
+    child: CupertinoButton.CreateFilled(child: new Text("Choose files"),
+        onPressed: () => PickFiles(options)));
+```
+
+`Doroti/tests/web_files.mts` covers delayed Worker admission, cancellation,
+owner disposal and file-grant revocation. `Doroti/tests/web_file_picker_smoke.py`
+checks Sample2's actual canvas input, native picker, managed preview and retry
+in a browser served from an isolated build; browser automation is separate from
+physical iPhone input qualification.
+The [2026-10-06 picker verification](../../../Doroti/docs/validation/2026-10-06-web-file-picker.md)
+records the browser and device checks and their limits.
+
 Sample2 additionally defaults `DorotiWebInterpretWidgetTree=true`. Safari's Worker
 stack overflows during its deep recursive Cupertino widget mount under full AOT.
 This opt-in interprets `Doroti.Framework.Widgets` and `Doroti.Framework.Rendering`

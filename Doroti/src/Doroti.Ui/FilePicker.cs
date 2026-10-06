@@ -54,5 +54,13 @@ public sealed record FilePickResult(FilePickStatus Status, IReadOnlyList<IPicked
 
 public interface IFilePickerHostCapability
 {
+    /// <summary>
+    /// Associates a button's Semantics identifier with its picker options so a browser
+    /// can open the native picker during the trusted tap, before a Worker round trip.
+    /// Call PickFilesAsync with the same options from the button callback. Dispose
+    /// the registration when the control leaves the view. Native hosts need no binding.
+    /// </summary>
+    IDisposable? RegisterActivation(string semanticsIdentifier, FilePickOptions options) => null;
+
     ValueTask<FilePickResult> PickFilesAsync(FilePickOptions options, CancellationToken cancellationToken = default);
 }

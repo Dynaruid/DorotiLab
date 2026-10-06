@@ -17,6 +17,7 @@ import { closeExternalLeases, createDorotiWorker } from "./doroti.web.worker-hos
 import { createManagedDorotiWorker, type DorotiWorkerEndpoint } from "./doroti.web.managed-worker.js";
 import { TextInputTapFocus } from "./doroti.web.text-focus.js";
 import { BrowserTextActions } from "./doroti.web.text-actions.js";
+import { reserveBrowserPicker } from "./doroti.web.files.js";
 import { ResizeAdmissionWindow } from "./doroti.web.admission.js";
 import { PointerMoveAdmission } from "./doroti.web.pointer-admission.js";
 import { normalizeBrowserTimestamp } from "./doroti.web.timestamps.js";
@@ -24,7 +25,7 @@ import { configureNavigation } from "./doroti.web.navigation.js";
 import { configureDrop } from "./doroti.web.drop.js";
 import { configureServiceBridge, configurePersistenceFailure, handleService, closeFileOwner, closeApplicationNavigation, closeBrowserDrop } from "./doroti.web.services.js";
 export { openBrowserDrop, closeBrowserDrop, prepareApplicationNavigation } from "./doroti.web.services.js";
-export { openFileOwner, pickBrowserFiles, cancelBrowserPicker, readBrowserFileBase64, releaseBrowserFile, closeFileOwner } from "./doroti.web.services.js";
+export { openFileOwner, registerFileActivation, unregisterFileActivation, pickBrowserFiles, cancelBrowserPicker, readBrowserFileBase64, releaseBrowserFile, closeFileOwner } from "./doroti.web.services.js";
 export { openApplicationNavigation, reportApplicationRoute, saveApplicationRestoration, closeApplicationNavigation } from "./doroti.web.services.js";
 
 interface ManagedCallbacks {
@@ -887,6 +888,8 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   hosts.set(hostId, host);
   const operatingSystem = browserOperatingSystem();
   let searchTapTarget: HTMLElement | null = null;
+  let fileTapTarget: HTMLElement | null = null;
+  const fileTap = new TextInputTapFocus<HTMLElement>((element) => reserveBrowserPicker(host.id, element));
   const searchTap = new TextInputTapFocus<HTMLElement>((element) => {
     if (element.isConnected && element.getAttribute("aria-disabled") !== "true")
       host.textActions.reserveSearchWindow();
@@ -963,6 +966,8 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
       searchTapTarget = event.isTrusted && isWebSearchControl(control)
         ? control : null;
       searchTap.start(event, searchTapTarget);
+      fileTapTarget = event.isTrusted ? control : null;
+      fileTap.start(event, fileTapTarget);
       const semanticTextField = control?.getAttribute("role") === "textbox" &&
         (control instanceof HTMLInputElement || control instanceof HTMLTextAreaElement) ? control : null;
       if (operatingSystem === "iOS") tapFocus.start(event,
@@ -989,15 +994,19 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
       if (operatingSystem !== "iOS") focusActiveEndpoint(host);
       else if (input.hidden) canvas.focus({ preventScroll: true });
     }
-    if (phase === 0 || phase === 4) { tapFocus.move(event); searchTap.move(event); }
+    if (phase === 0 || phase === 4) { tapFocus.move(event); searchTap.move(event); fileTap.move(event); }
     if (phase === 2) {
       if (searchTapTarget && (!event.isTrusted || semanticsControlAtPoint(host, event.clientX, event.clientY) !== searchTapTarget))
         searchTap.cancel();
       searchTap.end(event);
       searchTapTarget = null;
+      if (fileTapTarget && (!event.isTrusted || semanticsControlAtPoint(host, event.clientX, event.clientY) !== fileTapTarget))
+        fileTap.cancel();
+      fileTap.end(event);
+      fileTapTarget = null;
       tapFocus.end(event);
     }
-    if (phase === 3) { tapFocus.cancel(); searchTap.cancel(); }
+    if (phase === 3) { tapFocus.cancel(); searchTap.cancel(); fileTap.cancel(); }
     const inputSequence = ++host.inputSequence;
     requireManaged().dispatchPointerBatch(host.id, phase, pointerKind(event.pointerType), event.pointerId,
       event.buttons, modifierMask(event), inputSequence, pointerSamples(event));
@@ -1018,6 +1027,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   observe(root, "lostpointercapture", () => {
     tapFocus.cancel();
     searchTap.cancel();
+    fileTap.cancel();
     host.pointerCaptureCursor = null;
     root.style.cursor = host.frameworkCursor;
   });
@@ -1689,6 +1699,7 @@ function applySemanticsProjection(host: BrowserHost, update: SemanticsPacket, pl
         element.addEventListener("click", (event) => {
           event.stopPropagation();
           if (event.isTrusted && isWebSearchControl(element)) host.textActions.reserveSearchWindow();
+          if (event.isTrusted) reserveBrowserPicker(host.id, element);
           dispatchSemantics(host, node.id, 1);
         }, { signal: listeners.signal });
       }
@@ -1707,6 +1718,7 @@ function applySemanticsProjection(host: BrowserHost, update: SemanticsPacket, pl
         key.preventDefault();
         key.stopPropagation();
         if (action === 1 && key.isTrusted && isWebSearchControl(element)) host.textActions.reserveSearchWindow();
+        if (action === 1 && key.isTrusted) reserveBrowserPicker(host.id, element);
         dispatchSemantics(host, node.id, action);
       }, { signal: listeners.signal });
       element.addEventListener("focus", () => {

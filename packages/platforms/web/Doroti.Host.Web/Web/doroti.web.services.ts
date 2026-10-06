@@ -38,6 +38,14 @@ export function openFileOwner(hostId: number): boolean {
   if (bridge) { bridge.postControl("service-file-open", { hostId }); return true; }
   return files.openFileOwner(hostId);
 }
+export function registerFileActivation(hostId: number, identifier: string, multiple: boolean, accept: string): void {
+  if (bridge) bridge.postControl("service-file-activation-register", { hostId, identifier, multiple, accept });
+  else files.registerFileActivation(hostId, identifier, multiple, accept);
+}
+export function unregisterFileActivation(hostId: number, identifier: string): void {
+  if (bridge) bridge.postControl("service-file-activation-unregister", { hostId, identifier });
+  else files.unregisterFileActivation(hostId, identifier);
+}
 export function pickBrowserFiles(hostId: number, multiple: boolean, accept: string): Promise<string> {
   return bridge ? bridge.requestControl("service-file-pick", { hostId, multiple, accept }) : files.pickBrowserFiles(hostId, multiple, accept);
 }
@@ -68,6 +76,8 @@ export async function handleService(kind: string, p: Payload): Promise<string> {
     case "service-navigation-save": { const error = navigation.saveApplicationRestoration(id, String(p.checkpoint)); if (error) throw new Error(error); break; }
     case "service-navigation-close": navigation.closeApplicationNavigation(id); break;
     case "service-file-open": files.openFileOwner(id); break;
+    case "service-file-activation-register": files.registerFileActivation(id, String(p.identifier), Boolean(p.multiple), String(p.accept)); break;
+    case "service-file-activation-unregister": files.unregisterFileActivation(id, String(p.identifier)); break;
     case "service-file-pick": return files.pickBrowserFiles(id, Boolean(p.multiple), String(p.accept));
     case "service-file-cancel": files.cancelBrowserPicker(id); break;
     case "service-file-read": return files.readBrowserFileBase64(id, String(p.token), Number(p.offset), Number(p.count));

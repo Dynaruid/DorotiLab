@@ -18,6 +18,7 @@ internal sealed class FileUploadPage : StatefulWidget
 
 internal sealed class FileUploadPageState : State<FileUploadPage>
 {
+    private static readonly FilePickOptions PickerOptions = new(AllowMultiple: true, Extensions: UploadPreviewReader.Extensions);
     private readonly CancellationTokenSource _lifetime = new();
     private readonly List<UploadPreview> _files = [];
     private DorotiView? _view;
@@ -72,8 +73,7 @@ internal sealed class FileUploadPageState : State<FileUploadPage>
         FilePickResult? result = null;
         try
         {
-            result = await _picker.PickFilesAsync(new(AllowMultiple: true,
-                Extensions: UploadPreviewReader.Extensions), _lifetime.Token);
+            result = await _picker.PickFilesAsync(PickerOptions, _lifetime.Token);
             if (!mounted) return;
             if (result.Status == FilePickStatus.selected)
                 await ImportFiles(result.Files, _lifetime.Token);
@@ -190,8 +190,9 @@ internal sealed class FileUploadPageState : State<FileUploadPage>
                                         : "이 환경에서는 파일 드롭을 지원하지 않습니다. 아래 버튼으로 파일을 선택하세요.",
                                         textAlign: TextAlign.center, style: new TextStyle(color: secondary)),
                                     new SizedBox(height: 16),
-                                    CupertinoButton.CreateFilled(child: new Text("파일 선택"),
-                                        onPressed: _busy || _picker is null ? null : PickFiles),
+                                    new FilePickerActivation(options: PickerOptions,
+                                        child: CupertinoButton.CreateFilled(child: new Text("파일 선택"),
+                                            onPressed: _busy || _picker is null ? null : PickFiles)),
                                     .. (_picker is null ? new Widget[] { new Text("이 환경에서는 파일 선택을 지원하지 않습니다.") } : []),
                                     .. (_busy ? new Widget[] { new Padding(padding: EdgeInsets.CreateOnly(top: 12), child: new CupertinoActivityIndicator()) } : []),
                                 ])),

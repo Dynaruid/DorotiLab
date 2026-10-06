@@ -55,7 +55,8 @@ internal sealed class PluginsState : State<PluginsSample>
     public override Widget build(BuildContext context) => new M.Scaffold(body: new SafeArea(child: new SingleChildScrollView(child: new Column(children:
     [
         new Text("Native plugins: FilePicker / URL launcher"),
-        new M.TextButton(onPressed: _busy ? null : () => Run(true), child: new Text("Choose files")),
+        new FilePickerActivation(options: new(AllowMultiple: true),
+            child: new M.TextButton(onPressed: _busy ? null : () => Run(true), child: new Text("Choose files"))),
         new M.TextButton(onPressed: _busy ? null : () => Run(false), child: new Text("Open example.com")),
         new Text(_status),
     ]))));
