@@ -1,0 +1,369 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-06",
+  "status": "PASS",
+  "head": "9cfe295581ecd3a24ca179f72fb73899682ad04f",
+  "sourceHashes": {
+    "samples/DorotiSampleApp2/src/App.cs": "41820f6c44566503db418b2db8c4122c6e881f116a74b2bd95653bfd0cd37f92",
+    "samples/DorotiSampleApp2/src/VariableBlurPage.cs": "b6688c4aec78de176d0cec43275aec56a0c5c27157371e9de2239e54c2b0e74a",
+    "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.ts": "50a94d4993d7d3c03cd2117e92c30b72f26ec4a2bd1a7bc04ac08fcd6ca2fd6b",
+    "packages/platforms/web/Doroti.Host.Web/Web/doroti.raster.worker.ts": "d4e9c93e047f98b87ec2012bbb33b93b7eaeecbf6be4400bf31badf3a4eb1091",
+    "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.pointer-admission.ts": "a79f5cde7e9fdce8a136885d437b137c66a488b7fecfbcbda9e255be6a25aef4"
+  },
+  "releaseAotPublish": "PASS",
+  "nativeAotRegistration": true,
+  "typescriptCompileAndPublishedAssetMatch": "PASS",
+  "contractTests": {
+    "passed": 41,
+    "failed": 0
+  },
+  "records": [
+    {
+      "run": "final-firefox",
+      "status": "PASS",
+      "browser": "155.0",
+      "gpu": {
+        "api": "webgl2",
+        "vendor": "Google Inc. (AMD)",
+        "renderer": "ANGLE (AMD, Radeon R9 200 Series Direct3D11 vs_5_0 ps_5_0), or similar",
+        "hardware": true,
+        "softwareFallbackUsed": false
+      },
+      "renderer": "worker-direct-webgl",
+      "valuesRetainedAcrossTabs": true,
+      "retainedListThemeUpdate": true,
+      "resize": true,
+      "errors": [],
+      "motionSamplesPerDrag": 144,
+      "drags": 4
+    },
+    {
+      "run": "final-chrome-webgl",
+      "status": "PASS",
+      "browser": "154.0.8037.93",
+      "gpu": {
+        "api": "webgl2",
+        "vendor": "Google Inc. (AMD)",
+        "renderer": "ANGLE (AMD, AMD Radeon 780M Graphics (0x00001900) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "hardware": true,
+        "softwareFallbackUsed": false
+      },
+      "renderer": "worker-direct-webgl",
+      "valuesRetainedAcrossTabs": true,
+      "retainedListThemeUpdate": true,
+      "resize": true,
+      "errors": [],
+      "motionSamplesPerDrag": 144,
+      "drags": 2
+    },
+    {
+      "run": "final-chrome-webgpu",
+      "status": "PASS",
+      "browser": "154.0.8037.93",
+      "gpu": {
+        "api": "webgpu",
+        "vendor": "amd",
+        "renderer": "rdna-3",
+        "hardware": true,
+        "softwareFallbackUsed": false
+      },
+      "renderer": "worker-direct-webgpu",
+      "valuesRetainedAcrossTabs": true,
+      "retainedListThemeUpdate": true,
+      "resize": true,
+      "errors": [],
+      "motionSamplesPerDrag": 144,
+      "drags": 2
+    }
+  ],
+  "firefoxComparison": {
+    "beforeBrowser": "155.0",
+    "afterBrowser": "155.0",
+    "tabs": {
+      "Components": {
+        "before": [
+          {
+            "frameworkP95Ms": 25.840087890625,
+            "rasterP95Ms": 5.739990234375,
+            "allocatedBytes": 213534264,
+            "frameworkFrames": 282,
+            "inputCount": 144,
+            "inputQueueP95Ms": 3930.840087890625,
+            "inputDurationMs": 863.0400390625,
+            "droppedRows": 0
+          },
+          {
+            "frameworkP95Ms": 26.219970703125,
+            "rasterP95Ms": 7.159912109375,
+            "allocatedBytes": 217654960,
+            "frameworkFrames": 283,
+            "inputCount": 144,
+            "inputQueueP95Ms": 3957.820068359375,
+            "inputDurationMs": 862.06005859375,
+            "droppedRows": 0
+          }
+        ],
+        "after": [
+          {
+            "frameworkP95Ms": 12.260009765625,
+            "rasterP95Ms": 5.47998046875,
+            "allocatedBytes": 33013528,
+            "frameworkFrames": 81,
+            "inputCount": 144,
+            "inputQueueP95Ms": 43.9599609375,
+            "inputDurationMs": 861.800048828125,
+            "droppedRows": 0
+          },
+          {
+            "frameworkP95Ms": 11.419921875,
+            "rasterP95Ms": 5.919921875,
+            "allocatedBytes": 32989744,
+            "frameworkFrames": 81,
+            "inputCount": 144,
+            "inputQueueP95Ms": 41.880126953125,
+            "inputDurationMs": 861.43994140625,
+            "droppedRows": 0
+          }
+        ],
+        "medianBefore": {
+          "frameworkP95Ms": 26.030029296875,
+          "rasterP95Ms": 6.449951171875,
+          "allocatedBytes": 215594612.0,
+          "frameworkFrames": 282.5,
+          "inputCount": 144.0,
+          "inputQueueP95Ms": 3944.330078125,
+          "inputDurationMs": 862.550048828125,
+          "droppedRows": 0.0
+        },
+        "medianAfter": {
+          "frameworkP95Ms": 11.8399658203125,
+          "rasterP95Ms": 5.699951171875,
+          "allocatedBytes": 33001636.0,
+          "frameworkFrames": 81.0,
+          "inputCount": 144.0,
+          "inputQueueP95Ms": 42.9200439453125,
+          "inputDurationMs": 861.6199951171875,
+          "droppedRows": 0.0
+        }
+      },
+      "Variable Blur": {
+        "before": [
+          {
+            "frameworkP95Ms": 34.0,
+            "rasterP95Ms": 9.5,
+            "allocatedBytes": 135868232,
+            "frameworkFrames": 102,
+            "inputCount": 144,
+            "inputQueueP95Ms": 2111.739990234375,
+            "inputDurationMs": 857.93994140625,
+            "droppedRows": 0
+          },
+          {
+            "frameworkP95Ms": 32.820068359375,
+            "rasterP95Ms": 7.619873046875,
+            "allocatedBytes": 177045920,
+            "frameworkFrames": 128,
+            "inputCount": 144,
+            "inputQueueP95Ms": 2881.0400390625,
+            "inputDurationMs": 861.14013671875,
+            "droppedRows": 0
+          }
+        ],
+        "after": [
+          {
+            "frameworkP95Ms": 15.18017578125,
+            "rasterP95Ms": 9.10009765625,
+            "allocatedBytes": 37002568,
+            "frameworkFrames": 50,
+            "inputCount": 144,
+            "inputQueueP95Ms": 23.079833984375,
+            "inputDurationMs": 856.280029296875,
+            "droppedRows": 0
+          },
+          {
+            "frameworkP95Ms": 16.219970703125,
+            "rasterP95Ms": 9.019775390625,
+            "allocatedBytes": 36943416,
+            "frameworkFrames": 49,
+            "inputCount": 144,
+            "inputQueueP95Ms": 15.5400390625,
+            "inputDurationMs": 860.43994140625,
+            "droppedRows": 0
+          }
+        ],
+        "medianBefore": {
+          "frameworkP95Ms": 33.4100341796875,
+          "rasterP95Ms": 8.5599365234375,
+          "allocatedBytes": 156457076.0,
+          "frameworkFrames": 115.0,
+          "inputCount": 144.0,
+          "inputQueueP95Ms": 2496.3900146484375,
+          "inputDurationMs": 859.5400390625,
+          "droppedRows": 0.0
+        },
+        "medianAfter": {
+          "frameworkP95Ms": 15.7000732421875,
+          "rasterP95Ms": 9.0599365234375,
+          "allocatedBytes": 36972992.0,
+          "frameworkFrames": 49.5,
+          "inputCount": 144.0,
+          "inputQueueP95Ms": 19.3099365234375,
+          "inputDurationMs": 858.3599853515625,
+          "droppedRows": 0.0
+        }
+      }
+    }
+  },
+  "firefoxMemory": [
+    {
+      "tab": "Components",
+      "run": 0,
+      "allocatedBytes": 33013528,
+      "managedHeapBytes": 32444088,
+      "wasmCapacityBytes": 300154880,
+      "ganeshAfter": {
+        "resourceCount": 27,
+        "budgetedBytes": 14011812
+      },
+      "ganeshIdle": null,
+      "cache": {
+        "TextEntries": 12,
+        "TextEntryLimit": 256,
+        "TextFontResources": 12,
+        "TextBytesEstimate": 6144,
+        "TextHits": 8130,
+        "TextMisses": 12,
+        "TextEvictions": 0,
+        "FontGeneration": 1,
+        "RasterEntries": 0,
+        "RasterRgba8Bytes": 0,
+        "RasterRgba8Limit": 67108864
+      }
+    },
+    {
+      "tab": "Components",
+      "run": 1,
+      "allocatedBytes": 32989744,
+      "managedHeapBytes": 26361768,
+      "wasmCapacityBytes": 300154880,
+      "ganeshAfter": {
+        "resourceCount": 30,
+        "budgetedBytes": 14024100
+      },
+      "ganeshIdle": {
+        "resourceCount": 30,
+        "budgetedBytes": 14024100
+      },
+      "cache": {
+        "TextEntries": 12,
+        "TextEntryLimit": 256,
+        "TextFontResources": 12,
+        "TextBytesEstimate": 6144,
+        "TextHits": 12192,
+        "TextMisses": 12,
+        "TextEvictions": 0,
+        "FontGeneration": 1,
+        "RasterEntries": 0,
+        "RasterRgba8Bytes": 0,
+        "RasterRgba8Limit": 67108864
+      }
+    },
+    {
+      "tab": "Variable Blur",
+      "run": 0,
+      "allocatedBytes": 37002568,
+      "managedHeapBytes": 38805040,
+      "wasmCapacityBytes": 300154880,
+      "ganeshAfter": {
+        "resourceCount": 217,
+        "budgetedBytes": 54105668
+      },
+      "ganeshIdle": null,
+      "cache": {
+        "TextEntries": 17,
+        "TextEntryLimit": 256,
+        "TextFontResources": 17,
+        "TextBytesEstimate": 8704,
+        "TextHits": 31765,
+        "TextMisses": 17,
+        "TextEvictions": 0,
+        "FontGeneration": 1,
+        "RasterEntries": 0,
+        "RasterRgba8Bytes": 0,
+        "RasterRgba8Limit": 67108864
+      }
+    },
+    {
+      "tab": "Variable Blur",
+      "run": 1,
+      "allocatedBytes": 36943416,
+      "managedHeapBytes": 25233160,
+      "wasmCapacityBytes": 300154880,
+      "ganeshAfter": {
+        "resourceCount": 304,
+        "budgetedBytes": 72873956
+      },
+      "ganeshIdle": {
+        "resourceCount": 36,
+        "budgetedBytes": 12801840
+      },
+      "cache": {
+        "TextEntries": 17,
+        "TextEntryLimit": 256,
+        "TextFontResources": 17,
+        "TextBytesEstimate": 8704,
+        "TextHits": 33799,
+        "TextMisses": 17,
+        "TextEvictions": 0,
+        "FontGeneration": 1,
+        "RasterEntries": 0,
+        "RasterRgba8Bytes": 0,
+        "RasterRgba8Limit": 67108864
+      }
+    }
+  ],
+  "artifacts": [
+    {
+      "mode": "baseline",
+      "asset": "temp/testing/web-aot/2026-10-05/sample2-aot/publish/DorotiSampleApp2.Web/release/wwwroot/_framework/dotnet.native.bi10zn2uni.wasm",
+      "bytes": 40371494,
+      "sha256": "5d99c1bff7922355ceac9ee0d42c966b668de4e73cb6361dd6a10c5a8ee942e7"
+    },
+    {
+      "mode": "final",
+      "asset": "temp/testing/firefox-sliders/fixed-aot/publish/DorotiSampleApp2.Web/release/wwwroot/_framework/dotnet.native.3htkcg8u7r.wasm",
+      "bytes": 40376210,
+      "sha256": "379ed30449a1a1a26817226752e35d0379d5ba59de213a28e9050a165a656937"
+    },
+    {
+      "mode": "final",
+      "asset": "temp/testing/firefox-sliders/fixed-aot/publish/DorotiSampleApp2.Web/release/wwwroot/_framework/dotnet.native.eh5yicfosb.wasm",
+      "bytes": 40376210,
+      "sha256": "bebd9ac9ea559698c662ad5adcf99ac1cb5c81b45496ffc35b28af669f7be93e"
+    },
+    {
+      "mode": "final",
+      "asset": "temp/testing/firefox-sliders/fixed-aot/publish/DorotiSampleApp2.Web/release/wwwroot/_content/Doroti.Host.Web/doroti.web.js",
+      "sha256": "303d883eebdfedba7d50b9787dc30314287b4d119ac214378b3007fa8c0ac05f"
+    },
+    {
+      "mode": "final",
+      "asset": "temp/testing/firefox-sliders/fixed-aot/publish/DorotiSampleApp2.Web/release/wwwroot/_content/Doroti.Host.Web/doroti.raster.worker.js",
+      "sha256": "feb145f76ece4163e4a09fd9d8b677f63faeb26b8fdc18162d48e28074b7263c"
+    },
+    {
+      "mode": "final",
+      "asset": "temp/testing/firefox-sliders/fixed-aot/publish/DorotiSampleApp2.Web/release/wwwroot/_content/Doroti.Host.Web/doroti.web.pointer-admission.js",
+      "sha256": "db143852f4399109d7969f0e2a7a3732679431b4426acede46c8de9727a13e16"
+    }
+  ],
+  "scope": {
+    "physicalInput": "notVerified",
+    "displayFPS": "notMeasured",
+    "gpuProcessMemory": "notMeasured",
+    "installedFirefox157UserProfile": "notVerified",
+    "longDurationLeakAbsence": "notVerified",
+    "chromeWebGpuPerformanceAcceptance": "notQualified"
+  },
+  "rawEvidence": "temp/testing/firefox-sliders/"
+}

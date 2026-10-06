@@ -11,10 +11,8 @@ public sealed partial class SkiaSceneRenderer
     private const int MaxPictureCommandEntries = 128;
     private const int MaxRetainedPictureCommands = 32768;
     private const long MaxPictureCommandBytes = 4 * 1024 * 1024;
-    private readonly Dictionary<object, PictureCommandEntry> _pictureCommandCache = new(
-        ReferenceEqualityComparer.Instance
-    );
-    private readonly LinkedList<object> _pictureCommandOrder = new();
+    private readonly Dictionary<long, PictureCommandEntry> _pictureCommandCache = new();
+    private readonly LinkedList<long> _pictureCommandOrder = new();
     private int _pictureCommandCount;
     private long _pictureCommandBytes;
     private long _pictureCommandHits,
@@ -23,6 +21,9 @@ public sealed partial class SkiaSceneRenderer
     private void DrawRetainedPicture(SKCanvas canvas, ScenePicturePayload payload)
     {
         var commands = payload.Commands;
+        // Freeze copies the command storage for every submission. The picture's
+        // immutable recording identity survives that copy and owns cache reuse.
+        var cacheKey = payload.SnapshotIdentity;
         if (
             payload.WillChangeHint
             || commands.Count == 0
@@ -43,9 +44,9 @@ public sealed partial class SkiaSceneRenderer
             DrawPicture(canvas, commands);
             return;
         }
-        if (_pictureCommandCache.TryGetValue(commands, out var entry) && entry.Bounds != cullRect)
+        if (_pictureCommandCache.TryGetValue(cacheKey, out var entry) && entry.Bounds != cullRect)
         {
-            RemovePictureCommands(commands);
+            RemovePictureCommands(cacheKey);
             entry = null;
         }
         if (entry is null)
@@ -70,8 +71,8 @@ public sealed partial class SkiaSceneRenderer
                 RemovePictureCommands(_pictureCommandOrder.First!.Value);
             }
 
-            entry = new(_pictureCommandOrder.AddLast(commands), commands.Count, cullRect);
-            _pictureCommandCache.Add(commands, entry);
+            entry = new(_pictureCommandOrder.AddLast(cacheKey), commands.Count, cullRect);
+            _pictureCommandCache.Add(cacheKey, entry);
             _pictureCommandCount += commands.Count;
             DrawPicture(canvas, commands);
             return;
@@ -103,7 +104,7 @@ public sealed partial class SkiaSceneRenderer
         }
     }
 
-    private void RemovePictureCommands(object key)
+    private void RemovePictureCommands(long key)
     {
         var entry = _pictureCommandCache[key];
         _pictureCommandCache.Remove(key);
@@ -127,12 +128,12 @@ public sealed partial class SkiaSceneRenderer
     }
 
     private sealed class PictureCommandEntry(
-        LinkedListNode<object> node,
+        LinkedListNode<long> node,
         int commandCount,
         SKRect bounds
     )
     {
-        internal readonly LinkedListNode<object> Node = node;
+        internal readonly LinkedListNode<long> Node = node;
         internal readonly int CommandCount = commandCount;
         internal readonly SKRect Bounds = bounds;
         internal SKPicture? Picture;

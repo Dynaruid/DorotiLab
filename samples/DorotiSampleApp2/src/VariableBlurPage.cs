@@ -1,4 +1,5 @@
 using Doroti.Cupertino;
+using Doroti.Framework.Foundation;
 using Doroti.Framework.Painting;
 using Doroti.Framework.Rendering;
 using Doroti.Framework.Widgets;
@@ -17,8 +18,9 @@ internal sealed class VariableBlurPageState : State<VariableBlurPage>
     private const double OverlayHeight = 180;
     private bool _enabled = true;
     private string _mode = "fast";
-    private double _sigma = 20;
+    private readonly ValueNotifier<double> _sigma = new(20);
     private readonly ScrollController _scrollController = new();
+    private Widget _list = null!;
 
     // Opt-in synthetic scroll for repeated device profiling; normal UI defaults stay unchanged.
     internal static string? BenchmarkMode =>
@@ -30,6 +32,14 @@ internal sealed class VariableBlurPageState : State<VariableBlurPage>
     public override void initState()
     {
         base.initState();
+        // Strength changes rebuild only the controls and filter. Keep the list
+        // delegate and its recorded content alive while the slider is dragged.
+        _list = new RepaintBoundary(child: ListView.CreateBuilder(
+            controller: _scrollController,
+            padding: EdgeInsets.CreateOnly(left: 16, right: 16, bottom: 24),
+            itemCount: 60,
+            itemBuilder: BuildRow
+        ));
         if (BenchmarkMode is not { } mode)
             return;
         if (mode is not ("off" or "full" or "adaptive" or "fast" or "fixed" or "kawase"))
@@ -45,12 +55,13 @@ internal sealed class VariableBlurPageState : State<VariableBlurPage>
                     sigma,
                     System.Globalization.NumberStyles.Float,
                     System.Globalization.CultureInfo.InvariantCulture,
-                    out _sigma
+                    out var parsedSigma
                 )
-                || !double.IsFinite(_sigma)
-                || _sigma is < 0 or > 32
+                || !double.IsFinite(parsedSigma)
+                || parsedSigma is < 0 or > 32
             )
                 throw new ArgumentException("Benchmark sigma must be between 0 and 32.");
+            _sigma.value = parsedSigma;
         }
         if (Environment.GetEnvironmentVariable("DOROTI_VARIABLE_BLUR_BENCHMARK_STATIC") == "1")
             return;
@@ -89,6 +100,7 @@ internal sealed class VariableBlurPageState : State<VariableBlurPage>
     public override void dispose()
     {
         _benchmarkTicker?.dispose();
+        _sigma.dispose();
         _scrollController.dispose();
         base.dispose();
     }
@@ -108,28 +120,37 @@ internal sealed class VariableBlurPageState : State<VariableBlurPage>
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: new List<Widget>
                                 {
-                                    new Row(
-                                        children: new List<Widget>
-                                        {
-                                            new Expanded(
-                                                child: new Text(
-                                                    $"Blur strength: {_sigma:F0}",
-                                                    style: new TextStyle(
-                                                        fontWeight: FontWeight.w600
-                                                    )
-                                                )
-                                            ),
-                                            new CupertinoSwitch(
-                                                value: _enabled,
-                                                onChanged: value => setState(() => _enabled = value)
-                                            ),
-                                        }
-                                    ),
-                                    new CupertinoSlider(
-                                        value: _sigma,
-                                        min: 0,
-                                        max: 32,
-                                        onChanged: value => setState(() => _sigma = value)
+                                    new ValueListenableBuilder<double>(
+                                        valueListenable: _sigma,
+                                        builder: (_, sigma, _) => new RepaintBoundary(child: new Column(
+                                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                                            children: new List<Widget>
+                                            {
+                                                new Row(
+                                                    children: new List<Widget>
+                                                    {
+                                                        new Expanded(
+                                                            child: new Text(
+                                                                $"Blur strength: {sigma:F0}",
+                                                                style: new TextStyle(
+                                                                    fontWeight: FontWeight.w600
+                                                                )
+                                                            )
+                                                        ),
+                                                        new CupertinoSwitch(
+                                                            value: _enabled,
+                                                            onChanged: value => setState(() => _enabled = value)
+                                                        ),
+                                                    }
+                                                ),
+                                                new CupertinoSlider(
+                                                    value: sigma,
+                                                    min: 0,
+                                                    max: 32,
+                                                    onChanged: value => _sigma.value = value
+                                                ),
+                                            }
+                                        ))
                                     ),
                                     new RadioGroup<string>(
                                         groupValue: _mode,
@@ -194,17 +215,7 @@ internal sealed class VariableBlurPageState : State<VariableBlurPage>
                                     fit: StackFit.expand,
                                     children: new List<Widget>
                                     {
-                                        ListView.CreateBuilder(
-                                            controller: _scrollController,
-                                            padding: EdgeInsets.CreateOnly(
-                                                left: 16,
-                                                right: 16,
-                                                bottom: 24
-                                            ),
-                                            itemCount: 60,
-                                            itemBuilder: (rowContext, index) =>
-                                                BuildRow(rowContext, index)
-                                        ),
+                                        _list,
                                         // Paint after the list so the filter samples the scrolling content.
                                         // Clip only the overlay; let pointer events reach the list beneath it.
                                         new Positioned(
@@ -214,23 +225,26 @@ internal sealed class VariableBlurPageState : State<VariableBlurPage>
                                             height: OverlayHeight,
                                             child: new IgnorePointer(
                                                 child: new ClipRect(
-                                                    child: new BackdropFilter(
-                                                        enabled: _enabled && _sigma > 0,
-                                                        filterConfig: ImageFilterConfig.CreateVariableBlur(
-                                                            startSigma: _sigma,
-                                                            endSigma: 0,
-                                                            resolutionScale: _mode == "full"
-                                                                ? 1
-                                                                : 0.25,
-                                                            adaptiveResolution: _mode != "fixed",
-                                                            kernel: _mode switch
-                                                            {
-                                                                "fast" => VariableBlurKernel.fastGaussian,
-                                                                "kawase" => VariableBlurKernel.dualKawase,
-                                                                _ => VariableBlurKernel.gaussian,
-                                                            }
-                                                        ),
-                                                        child: SizedBox.CreateExpand()
+                                                    child: new ValueListenableBuilder<double>(
+                                                        valueListenable: _sigma,
+                                                        builder: (_, sigma, _) => new BackdropFilter(
+                                                            enabled: _enabled && sigma > 0,
+                                                            filterConfig: ImageFilterConfig.CreateVariableBlur(
+                                                                startSigma: sigma,
+                                                                endSigma: 0,
+                                                                resolutionScale: _mode == "full"
+                                                                    ? 1
+                                                                    : 0.25,
+                                                                adaptiveResolution: _mode != "fixed",
+                                                                kernel: _mode switch
+                                                                {
+                                                                    "fast" => VariableBlurKernel.fastGaussian,
+                                                                    "kawase" => VariableBlurKernel.dualKawase,
+                                                                    _ => VariableBlurKernel.gaussian,
+                                                                }
+                                                            ),
+                                                            child: SizedBox.CreateExpand()
+                                                        )
                                                     )
                                                 )
                                             )

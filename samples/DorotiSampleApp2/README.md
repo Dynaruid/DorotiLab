@@ -327,6 +327,15 @@ dotnet run --project ./samples/DorotiSampleApp2/windowsappsdk/DorotiSampleApp2.W
 
 ## Web
 
+Volume과 블러 강도 변경은 `ValueListenableBuilder`로 해당 컨트롤과 필터만 갱신합니다.
+Variable Blur의 리스트는 재사용하고 `RepaintBoundary`로 별도 페인트하므로 드래그마다
+앱·라디오 버튼·리스트 전체를 다시 빌드하지 않습니다.
+[Firefox 슬라이더 조사와 검증 기록](../../Doroti/docs/validation/2026-10-06-firefox-sliders.md)을 참고하세요.
+후속 조사에서는 설치된 Firefox의 DPR 2 환경에서 연속 스크롤과 두 GPU 렌더러를 검증합니다.
+공용 그림 캐시는 프레임 복사 뒤에도 그림 ID로 재사용하며, Firefox 캔버스는 실제 표시 크기로
+할당합니다. 연속 wheel 입력도 원래 델타와 순서를 보존한 채 묶어 전달합니다.
+[Firefox 렌더링 후속 기록](../../Doroti/docs/validation/2026-10-06-firefox-rendering.md)을 참고하세요.
+
 Release 게시의 기본값은 Mono WASM AOT입니다. 게시한 앱을 제공하는 서버를 실행하고
 이 터미널을 열어 둡니다. 첫 AOT 게시에는 시간이 더 걸립니다.
 

@@ -55,7 +55,7 @@ internal sealed class CupertinoSampleState : State<CupertinoSample>
         : VariableBlurPageState.BenchmarkMode is null ? 0 : 3);
     private Brightness? _brightness;
     private bool _notifications = true;
-    private double _volume = 0.5;
+    private readonly ValueNotifier<double> _volume = new(0.5);
     private int _count;
     private string _name = "";
     private readonly TextEditingController _nameController = new();
@@ -64,6 +64,7 @@ internal sealed class CupertinoSampleState : State<CupertinoSample>
     public override void dispose()
     {
         _tabs.dispose();
+        _volume.dispose();
         _nameFocusNode.dispose();
         _nameController.dispose();
         base.dispose();
@@ -112,8 +113,8 @@ internal sealed class CupertinoSampleState : State<CupertinoSample>
         );
 
     private static Widget Section(string title, params Widget[] children) =>
-        CupertinoListSection.CreateInsetGrouped(
-            header: new Text(title), hasLeading: false, children: new List<Widget>(children));
+        new RepaintBoundary(child: CupertinoListSection.CreateInsetGrouped(
+            header: new Text(title), hasLeading: false, children: new List<Widget>(children)));
 
     private static Widget Inset(Widget child) =>
         new Padding(padding: EdgeInsets.CreateAll(16), child: child);
@@ -130,16 +131,22 @@ internal sealed class CupertinoSampleState : State<CupertinoSample>
             }))
         ),
         Section("CONTROLS",
-            new CupertinoListTile(title: new Text("Notifications"), trailing: new CupertinoSwitch(
-                value: _notifications, onChanged: value => setState(() => _notifications = value))),
-            Inset(new Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: new List<Widget>
-            {
-                new Text($"Volume: {_volume:P0}"),
-                new CupertinoSlider(value: _volume, onChanged: value => setState(() => _volume = value)),
-            }))
+            new CupertinoListTile(title: new Text("Notifications"), trailing: new RepaintBoundary(child: new CupertinoSwitch(
+                value: _notifications, onChanged: value => setState(() => _notifications = value)))),
+            Inset(new RepaintBoundary(child: new ValueListenableBuilder<double>(
+                valueListenable: _volume,
+                builder: (_, volume, _) => new Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: new List<Widget>
+                    {
+                        new Text($"Volume: {volume:P0}"),
+                        new CupertinoSlider(value: volume, onChanged: value => _volume.value = value),
+                    }
+                )
+            )))
         ),
         Section("FEEDBACK",
-            new CupertinoListTile(title: new Text("Activity indicator"), trailing: new CupertinoActivityIndicator()),
+            new CupertinoListTile(title: new Text("Activity indicator"), trailing: new RepaintBoundary(child: new CupertinoActivityIndicator())),
             Inset(CupertinoButton.CreateTinted(child: new Text("Show dialog"), onPressed: () => ShowDialog(context)))
         ),
         new SizedBox(height: 24)

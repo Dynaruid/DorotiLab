@@ -422,3 +422,20 @@ command-line and project opt-outs without building or launching a browser:
 ```powershell
 python Doroti/eng/run-with-timeout.py --timeout 1200 python Doroti/tests/web_aot_profile.py temp/testing/web-aot-default/new-profile
 ```
+
+`web_firefox_rendering.py` uses the installed Windows Firefox in a fresh Selenium
+profile, preserving the OS DPR. It checks both GPU renderers, retained picture
+cache reuse, 180 continuous wheel deltas and their final scroll position, the final
+input's raster submission, and eight window resizes. Install Selenium in the test
+Python environment; Selenium Manager resolves geckodriver. Use `--headed` for the
+desktop-window run and a frozen Sample2 Release publish:
+
+```powershell
+python Doroti/eng/run-with-timeout.py --timeout 1200 python Doroti/tests/web_firefox_rendering.py --root temp/testing/sample2-web-release/publish/DorotiSampleApp2.Web/release/wwwroot --out temp/testing/firefox-rendering/new-webgl --renderer webgl --headed
+python Doroti/eng/run-with-timeout.py --timeout 1200 python Doroti/tests/web_firefox_rendering.py --root temp/testing/sample2-web-release/publish/DorotiSampleApp2.Web/release/wwwroot --out temp/testing/firefox-rendering/new-webgpu --renderer webgpu --headed
+```
+
+`web_sample2_sliders.py --dpr 2 --runs 1` complements this with Playwright slider
+value/state, retained-list theme and resize checks in Firefox and Chrome. Numeric
+callback and submit intervals do not establish displayed FPS or physical trackpad
+acceptance. These explicit probes are outside the ordinary Developer suite.

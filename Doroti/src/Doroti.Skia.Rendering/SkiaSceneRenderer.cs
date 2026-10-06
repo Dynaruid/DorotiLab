@@ -50,13 +50,9 @@ public sealed partial class SkiaSceneRenderer
         _textCacheEvictions;
     private long _fontGeneration;
     private readonly Dictionary<int, SemanticsNodeUpdate> _semantics = [];
-    private readonly Dictionary<object, PictureRasterCacheEntry> _pictureRasterCache = new(
-        ReferenceEqualityComparer.Instance
-    );
-    private readonly Dictionary<object, PictureRasterWarmup> _pictureRasterWarmups = new(
-        ReferenceEqualityComparer.Instance
-    );
-    private readonly LinkedList<object> _pictureRasterWarmupOrder = new();
+    private readonly Dictionary<long, PictureRasterCacheEntry> _pictureRasterCache = new();
+    private readonly Dictionary<long, PictureRasterWarmup> _pictureRasterWarmups = new();
+    private readonly LinkedList<long> _pictureRasterWarmupOrder = new();
     private readonly Dictionary<ImageFilterSnapshot, SKImageFilter> _imageFilterResources = [];
     private readonly DorotiFrameTerminalLedger _terminalLedger = new();
     private readonly Dictionary<long, SceneFrame> _rasterizedFrames = [];
@@ -2227,7 +2223,8 @@ public sealed partial class SkiaSceneRenderer
             return;
         }
 
-        var cacheKey = (object)commands;
+        // Frozen submissions copy command arrays, but retain recording identity.
+        var cacheKey = payload.SnapshotIdentity;
         if (
             payload.WillChangeHint
             || payload.CanvasBounds is not { } canvasBounds
@@ -2435,7 +2432,7 @@ public sealed partial class SkiaSceneRenderer
         }
     }
 
-    private void RemovePictureWarmup(object key)
+    private void RemovePictureWarmup(long key)
     {
         if (_pictureRasterWarmups.Remove(key, out var warmup))
         {
@@ -2443,9 +2440,9 @@ public sealed partial class SkiaSceneRenderer
         }
     }
 
-    private sealed class PictureRasterWarmup(LinkedListNode<object> node)
+    private sealed class PictureRasterWarmup(LinkedListNode<long> node)
     {
-        internal LinkedListNode<object> Node { get; } = node;
+        internal LinkedListNode<long> Node { get; } = node;
         internal int Uses;
         internal PictureRasterTransform? Transform;
         internal long LastFrame;
@@ -2536,11 +2533,11 @@ public sealed partial class SkiaSceneRenderer
             // tie in that case, and Dictionary reuses removed slots: MinBy could
             // select the newly inserted image and dispose it before its draw.
             // Order every access, including accesses within the same frame.
-            var oldest = _pictureRasterCache.MinBy(pair => pair.Value.LastUsedSequence);
-            if (oldest.Key is null)
+            if (_pictureRasterCache.Count == 0)
             {
                 break;
             }
+            var oldest = _pictureRasterCache.MinBy(pair => pair.Value.LastUsedSequence);
 
             // Preserve the current frame's working set. If it fills the budget,
             // render a miss normally instead of churning images within a frame.
@@ -2551,7 +2548,7 @@ public sealed partial class SkiaSceneRenderer
         return true;
     }
 
-    private void RemovePictureRaster(object cacheKey, PictureRasterCacheEntry cached)
+    private void RemovePictureRaster(long cacheKey, PictureRasterCacheEntry cached)
     {
         _pictureRasterCache.Remove(cacheKey);
         Interlocked.Decrement(ref _pictureRasterCacheEntries);

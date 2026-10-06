@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { ResizeAdmissionWindow } from '../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.admission.ts';
-import { CanvasCapacityPolicy, applyCanvasCapacity, initialCanvasCapacity, selectRendererPolicy, resolveRendererPolicy } from '../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.policy.ts';
+import { CanvasCapacityPolicy, applyCanvasCapacity, initialCanvasCapacity, selectRendererPolicy, resolveRendererPolicy, useCompactCanvas } from '../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.policy.ts';
 import { developmentBridge } from '../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.hot-reload.ts';
 import { openFileOwner, retainBrowserFiles, readBrowserFile, releaseBrowserFile, closeFileOwner } from '../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.files.ts';
 import { configureNavigation, openApplicationNavigation, reportApplicationRoute,
@@ -153,6 +153,18 @@ test('mobile backing does not add desktop headroom and shrinks after hysteresis'
   let width = 2400, height = 1080, peak = width * height;
   const canvas = { get width() { return width; }, set width(v: number) { width = v; peak = Math.max(peak, width * height); }, get height() { return height; }, set height(v: number) { height = v; peak = Math.max(peak, width * height); } };
   applyCanvasCapacity(canvas, 1080, 2400); assert.equal(peak, 2592000);
+});
+
+test('Firefox DPR2 backing is the viewport while desktop Skia budgets/renderer choice remain separate', () => {
+  for(const renderer of ['worker-direct-webgl','worker-direct-webgpu']) {
+    const ff=selectRendererPolicy(`?dorotiRenderer=${renderer}`,{userAgent:'Firefox/157.0',platform:'Win32',maxTouchPoints:0});
+    assert.equal(ff.memoryProfile,'desktop');assert.equal(ff.selected,renderer);
+    assert.deepEqual(initialCanvasCapacity(1280,900,2,useCompactCanvas(ff,'Firefox/157.0'),1920,1080),{width:2560,height:1800});
+    const chrome=selectRendererPolicy(`?dorotiRenderer=${renderer}`,{userAgent:'Chrome/154',platform:'Win32',maxTouchPoints:0});
+    assert.deepEqual(initialCanvasCapacity(1280,900,2,useCompactCanvas(chrome,'Chrome/154'),1920,1080),{width:3840,height:2700});
+    const growth=new CanvasCapacityPolicy(useCompactCanvas(ff,'Firefox/157.0'));
+    assert.deepEqual(growth.next(2562,1800,2560,1800,0),{width:2562,height:1800,wakeAfter:0});
+  }
 });
 test('auto fallback preserves explicit renderer choices', async () => {
   const platform = { userAgent: 'Android', platform: 'Linux', maxTouchPoints: 5 };

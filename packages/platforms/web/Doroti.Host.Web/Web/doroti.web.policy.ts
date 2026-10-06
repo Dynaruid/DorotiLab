@@ -46,6 +46,12 @@ export async function resolveRendererPolicy(policy: RendererPolicy, runtimeLocat
 }
 
 export interface CanvasLimits { dimension: number; bytes: number; }
+// Avoid oversized Firefox OffscreenCanvas allocations at high DPR. Headroom
+// on both axes increases a 4.6MP viewport to a 10.4MP GPU surface at DPR 2.
+// Use exact growth and bounded delayed shrink; retain desktop Skia budgets.
+export function useCompactCanvas(policy: RendererPolicy, userAgent: string): boolean {
+  return policy.memoryProfile === "mobile" || /Firefox\//.test(userAgent);
+}
 export const defaultCanvasLimits: CanvasLimits = { dimension: 8192, bytes: 256 * 1024 * 1024 };
 export function boundCanvasCapacity(width: number, height: number, desiredWidth: number, desiredHeight: number,
   limits: CanvasLimits = defaultCanvasLimits) {

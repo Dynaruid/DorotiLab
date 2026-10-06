@@ -1,5 +1,5 @@
 import { WorkerStartupLifetime, cleanupAll } from "./doroti.web.lifetime.js";
-import { CanvasCapacityPolicy, applyCanvasCapacity, boundCanvasCapacity } from "./doroti.web.policy.js";
+import { CanvasCapacityPolicy, applyCanvasCapacity, boundCanvasCapacity, useCompactCanvas } from "./doroti.web.policy.js";
 import type { RendererPolicy } from "./doroti.web.policy.js";
 import { FrameCostBuffer } from "./doroti.frame-cost.js";
 import { validateViewEnvironment } from "./doroti.web.protocol.js";
@@ -110,6 +110,7 @@ interface WorkerPresenter {
   canvas: OffscreenCanvas;
   context: number;
   contextGeneration: number;
+  maxRenderDimension: number;
   extension: WEBGL_lose_context | null;
   current: PresentRequest | null;
   latest: PresentRequest | null;
@@ -453,7 +454,7 @@ function ensurePresenter(): WorkerPresenter {
   if (workerMode === "worker-direct-webgpu") {
     if (!webgpu || !webgpuIdentity) throw new Error("Doroti WebGPU initialization has not completed.");
     presenter = {
-      canvas, context: 0, contextGeneration: 1, extension: null,
+      canvas, context: 0, contextGeneration: 1, maxRenderDimension: 0, extension: null,
       current: null, latest: null, draining: false, nextRequestId: 0, contextLost: false,
       bitmapCreated: 0, bitmapConsumed: 0, bitmapClosed: 0, activeBitmaps: 0,
       frontGeneration: 0, frontPhysicalWidth: 0, frontPhysicalHeight: 0,
@@ -472,7 +473,7 @@ function ensurePresenter(): WorkerPresenter {
   });
   if (!context) throw new Error("Doroti worker requires an OffscreenCanvas WebGL2 context.");
   presenter = {
-    canvas, context, contextGeneration: 1, extension: null,
+    canvas, context, contextGeneration: 1, maxRenderDimension: 0, extension: null,
     current: null, latest: null, draining: false, nextRequestId: 0, contextLost: false,
     bitmapCreated: 0, bitmapConsumed: 0, bitmapClosed: 0, activeBitmaps: 0,
     frontGeneration: 0, frontPhysicalWidth: 0, frontPhysicalHeight: 0,
@@ -507,6 +508,9 @@ function ensurePresenter(): WorkerPresenter {
 }
 
 function initializePresenterCapacity(value: WorkerPresenter, dimension: number): void {
+  // Device limits are constant for this context generation. Querying WebGL
+  // on every paint can force a synchronous GPU-process round trip in Firefox.
+  value.maxRenderDimension = dimension;
   if (!snapshot) throw new Error("Canvas admission requires its owner snapshot.");
   const required = snapshot.resizeEpoch;
   const desired = requestedInitialCapacity ?? { width: required.physicalWidth, height: required.physicalHeight };
@@ -596,10 +600,7 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
     if (capacityWake !== undefined) { clearTimeout(capacityWake); capacityWake = undefined; }
     const capacity = capacityPolicy.next(request.physicalWidth, request.physicalHeight,
       value.canvas.width, value.canvas.height, performance.now(), {
-        dimension: webgpu ? webgpu.textureDimensionLimit() : (() => {
-          const gl = currentGl(value);
-          return Math.min(gl.getParameter(gl.MAX_TEXTURE_SIZE), gl.getParameter(gl.MAX_RENDERBUFFER_SIZE));
-        })(), bytes: 256 * 1024 * 1024,
+        dimension: value.maxRenderDimension, bytes: 256 * 1024 * 1024,
       });
     const capacityChanged = capacity.width !== value.canvas.width || capacity.height !== value.canvas.height;
     if (capacity.wakeAfter > 0) capacityWake = setTimeout(() => {
@@ -657,8 +658,7 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
     const gl = currentGl(value);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.drawBuffers([gl.BACK]);
-    gl.viewport(0, 0, value.canvas.width,
-      value.canvas.height);
+    gl.viewport(0, 0, value.canvas.width, value.canvas.height);
     const managedSurfaceStarted = performance.now();
     const result = String(surface!.RenderFrame(
       request.requestId, request.generation, request.logicalWidth, request.logicalHeight,
@@ -778,6 +778,30 @@ configureWorkerBridge({
   },
 });
 
+function dispatchOwnerInput(message: Record<string, unknown>): void {
+  const inputs = (message.inputBatch ?? message.pointerBatch ?? [message]) as Record<string, unknown>[];
+  for (const input of inputs) {
+    if (input.inputKind === "semantics-snapshot") { dispatchWorkerInput(input); continue; }
+    lastDispatchedInputSequence = Number(input.inputSequence ?? 0);
+    const started = frameCost ? performance.timeOrigin + performance.now() : 0;
+    dispatchWorkerInput(input);
+    const completed = frameCost ? performance.timeOrigin + performance.now() : 0;
+    frameCost?.record(2, lastDispatchedInputSequence, lastDispatchedInputSequence, started,
+      completed, Number(input.ingressEpochMilliseconds ?? 0));
+    const payload = input.payload as Record<string, unknown> | undefined;
+    if (input.inputKind === "pointer" && (payload?.phase === 0 || payload?.phase === 4))
+      frameCost?.record(4, (payload.samples as number[]).length / 7, lastDispatchedInputSequence,
+        started, completed, Number(input.ingressEpochMilliseconds ?? 0));
+    if (input.inputKind === "wheel") frameCost?.record(5, 1, lastDispatchedInputSequence,
+      started, completed, Number(input.ingressEpochMilliseconds ?? 0));
+  }
+  const payload = message.payload as Record<string, unknown> | undefined;
+  if ((message.pointerAdmission === true && message.inputKind === "pointer" && (payload?.phase === 0 || payload?.phase === 4)) ||
+      (message.wheelAdmission === true && message.inputKind === "wheel")) {
+    post("input-ack", { inputSequence: lastDispatchedInputSequence });
+  }
+}
+
 function handleHostMessage(event: MessageEvent): void {
   let message: Record<string, unknown>;
   try {
@@ -815,7 +839,7 @@ function handleHostMessage(event: MessageEvent): void {
       rendererPolicy = message.policy as RendererPolicy;
       if (!rendererPolicy || rendererPolicy.selected !== message.mode)
         throw new Error("Doroti renderer policy must match the selected Worker backend.");
-      capacityPolicy = new CanvasCapacityPolicy(rendererPolicy.memoryProfile === "mobile");
+      capacityPolicy = new CanvasCapacityPolicy(useCompactCanvas(rendererPolicy, globalThis.navigator?.userAgent ?? ""));
       snapshot = message.snapshot as HostSnapshot;
       latestAdmissionGeneration = snapshot.resizeEpoch.generation;
       latestMailboxGeneration = snapshot.resizeEpoch.generation;
@@ -850,15 +874,7 @@ function handleHostMessage(event: MessageEvent): void {
         if (pendingManagedInputs.length >= 256) pendingManagedInputs.shift();
         pendingManagedInputs.push(message);
       } else {
-        if (message.inputKind === "semantics-snapshot") {
-          dispatchWorkerInput(message);
-          break;
-        }
-        lastDispatchedInputSequence = Number(message.inputSequence ?? 0);
-        const started = frameCost ? performance.timeOrigin + performance.now() : 0;
-        dispatchWorkerInput(message);
-        frameCost?.record(2, lastDispatchedInputSequence, lastDispatchedInputSequence, started,
-          performance.timeOrigin + performance.now(), Number(message.ingressEpochMilliseconds ?? 0));
+        dispatchOwnerInput(message);
       }
       break;
     case "control-response": {
@@ -1025,10 +1041,9 @@ async function startManagedRuntime(): Promise<void> {
       applyManagedSnapshot(pending.hostId, pending.value);
     }
     for (const input of pendingManagedInputs.splice(0)) {
-      if (input.inputKind !== "semantics-snapshot") lastDispatchedInputSequence = Number(input.inputSequence ?? 0);
-      dispatchWorkerInput(input);
+      dispatchOwnerInput(input);
     }
-    post("runtime-ready", { result, mainManagedRuntimeCount: managedPort ? 1 : 0,
+    post("runtime-ready", { result, pointerAdmission: true, wheelAdmission: true, mainManagedRuntimeCount: managedPort ? 1 : 0,
       workerManagedRuntimeCount: managedPort ? 0 : 1, sharedRuntimeRenderThread: !!managedPort,
       renderThreadId: hostExports.Doroti.Host.Web.BrowserManagedRenderThread.CaptureThreadId(),
       workerIsolated: crossOriginIsolated });

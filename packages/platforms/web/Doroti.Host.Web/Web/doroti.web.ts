@@ -1,6 +1,6 @@
 import { BrowserSemanticsState, type SemanticsNode, type SemanticsFlags, type SemanticsPacket, type SemanticsProjection } from "./doroti.web.semantics.js";
 import { collectCssFonts, type CssFontOptions } from "./doroti.web.css-fonts.js";
-import { selectRendererPolicy, resolveRendererPolicy, initialCanvasCapacity } from "./doroti.web.policy.js";
+import { selectRendererPolicy, resolveRendererPolicy, initialCanvasCapacity, useCompactCanvas } from "./doroti.web.policy.js";
 import type { RendererPolicy } from "./doroti.web.policy.js";
 import type { BrowserPlatformComposition, CompositionPacket } from "./doroti.web.composition.js";
 import { PlatformFrameStager } from "./doroti.web.platform-frames.js";
@@ -18,6 +18,7 @@ import { createManagedDorotiWorker, type DorotiWorkerEndpoint } from "./doroti.w
 import { TextInputTapFocus } from "./doroti.web.text-focus.js";
 import { BrowserTextActions } from "./doroti.web.text-actions.js";
 import { ResizeAdmissionWindow } from "./doroti.web.admission.js";
+import { PointerMoveAdmission } from "./doroti.web.pointer-admission.js";
 import { configureNavigation } from "./doroti.web.navigation.js";
 import { configureDrop } from "./doroti.web.drop.js";
 import { configureServiceBridge, configurePersistenceFailure, handleService, closeFileOwner, closeApplicationNavigation, closeBrowserDrop } from "./doroti.web.services.js";
@@ -577,7 +578,7 @@ function configureDirectCanvasCapacity(
   const screenWidth = Number(globalThis.screen?.availWidth ?? globalThis.screen?.width ?? 0);
   const screenHeight = Number(globalThis.screen?.availHeight ?? globalThis.screen?.height ?? 0);
   const initial = initialCanvasCapacity(logicalWidth, logicalHeight, ratio,
-    presenterPolicy().memoryProfile === "mobile", screenWidth, screenHeight,
+    useCompactCanvas(presenterPolicy(), navigator.userAgent), screenWidth, screenHeight,
     { dimension: 2147483647, bytes: 256 * 1024 * 1024 });
   const capacityWidth = physicalWidth ?? initial.width;
   const capacityHeight = physicalHeight ?? initial.height;
@@ -1894,14 +1895,18 @@ export async function startDorotiWorkerHost(
   let snapshotInFlight = false;
   let snapshotInFlightGeneration = 0;
   let latestWorkerSnapshot: { hostId: number; value: Record<string, unknown> } | null = null;
+  const pointerInputs = new PointerMoveAdmission(input => activeWorker.postMessage(input), 128, false);
   const directAdmission = new ResizeAdmissionWindow<{
     hostId: number;
     hostGeneration: number;
     epoch: ResizeEpoch;
-  }>(next => activeWorker.postMessage({
-    protocolVersion: dorotiProtocolVersion, kind: "admission-target",
-    generation: next.epoch.generation, resizeEpoch: next.epoch, hostGeneration: next.hostGeneration,
-  }));
+  }>(next => {
+    pointerInputs.flush();
+    activeWorker.postMessage({
+      protocolVersion: dorotiProtocolVersion, kind: "admission-target",
+      generation: next.epoch.generation, resizeEpoch: next.epoch, hostGeneration: next.hostGeneration,
+    });
+  });
   const sendLatestWorkerSnapshot = (): void => {
     if (snapshotInFlight || !latestWorkerSnapshot) return;
     const next = latestWorkerSnapshot;
@@ -1913,6 +1918,7 @@ export async function startDorotiWorkerHost(
     if (targetHost) recordResize(targetHost, "worker-snapshot-sent", "worker-mailbox", {
       detail: JSON.stringify({ generation: (next.value.resizeEpoch as Record<string, unknown>)?.generation }),
     });
+    pointerInputs.flush();
     activeWorker.postMessage({
       protocolVersion: dorotiProtocolVersion, kind: "snapshot", hostId: next.hostId, snapshot: next.value,
     });
@@ -1946,13 +1952,20 @@ export async function startDorotiWorkerHost(
     timeout: () => new Error("Frame cost capture timed out."),
   });
   const frameCostEnabled = new URL(location.href).searchParams.get("dorotiFrameCost") === "1";
-  if (frameCostEnabled) Object.assign(globalThis, { __dorotiFrameCost: (action: string) =>
-    frameCostRequests.request(request => activeWorker.postMessage({
+  if (frameCostEnabled) Object.assign(globalThis, { __dorotiFrameCost: (action: string) => {
+    pointerInputs.flush();
+    return frameCostRequests.request(request => activeWorker.postMessage({
       protocolVersion: dorotiProtocolVersion, kind: "frame-cost", request, action,
-    })) });
+    })).then(value => action === "diagnostics" ? {
+      ...(value as Record<string, unknown>),
+      mainScroll: [...host.semanticsState.nodes.values()]
+        .filter(node => node.scrollPosition !== undefined)
+        .map(node => ({ id: node.id, position: node.scrollPosition, min: node.scrollExtentMin, max: node.scrollExtentMax })),
+    } : value);
+  } });
   const postInput = (
     inputKind: string, hostId: number, inputSequence: number, payload: Record<string, unknown>): void =>
-    activeWorker.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "input", inputKind, hostId, inputSequence, payload,
+    pointerInputs.push({ protocolVersion: dorotiProtocolVersion, kind: "input", inputKind, hostId, inputSequence, payload,
       ingressEpochMilliseconds: frameCostEnabled ? performance.timeOrigin + performance.now() : 0 });
   configureNavigation((id, json) => postInput("navigation", id, 0, { json }));
   configureDrop((id, json) => postInput("drop", id, 0, { json }));
@@ -2078,7 +2091,7 @@ export async function startDorotiWorkerHost(
       let message: Record<string, unknown>;
       try {
         message = decodeDorotiMessage((event as MessageEvent).data, new Set([
-          "frame-cost", "runtime-stage", "runtime-ready", "gpu-ready", "snapshot-applied", "admission-applied", "managed-raster",
+          "input-ack", "frame-cost", "runtime-stage", "runtime-ready", "gpu-ready", "snapshot-applied", "admission-applied", "managed-raster",
           "present-requested", "direct-commit", "terminal", "resource", "context-lost", "gpu-disposed", "texture-response", "texture-error",
         "context-restored", "control", "control-request", "closed", "disposed", "fatal",
         ]));
@@ -2086,6 +2099,7 @@ export async function startDorotiWorkerHost(
         message = { kind: "fatal", error: `protocol violation: ${String(error)}` };
       }
       switch (message.kind) {
+        case "input-ack": pointerInputs.acknowledge(Number(message.inputSequence)); break;
         case "runtime-stage": root.dataset.dorotiWorkerStage = String(message.stage); break;
         case "frame-cost": {
           const request = Number(message.request);
@@ -2094,6 +2108,8 @@ export async function startDorotiWorkerHost(
           break;
         }
         case "runtime-ready":
+          if (message.pointerAdmission === true) pointerInputs.enable();
+          if (message.wheelAdmission === true) pointerInputs.enableWheel();
           attachTextureRegistry(canvas.id, worker);
           ready = true;
           root.dataset.dorotiWorkerRuntime = "ready";
@@ -2232,6 +2248,7 @@ export async function startDorotiWorkerHost(
           // Only "disposed" ends the renderer role and retires DOM endpoints.
           break;
         case "disposed":
+          pointerInputs.reset();
           frameCostRequests.close();
           closeComposition();
           root.dataset.dorotiWorkerRuntime = "disposed";
@@ -2299,6 +2316,7 @@ export async function startDorotiWorkerHost(
           break;
         }
         case "fatal": {
+          pointerInputs.reset();
           const error = new Error(`Doroti worker runtime failed: ${String(message.error)}`);
           frameCostRequests.rejectAll(error);
           publishRuntimeState("lost", error.message);
@@ -2397,6 +2415,7 @@ export async function startDorotiWorkerHost(
     try { texturesForCanvas(canvas.id).disconnect(); } catch { /* endpoint already closed */ }
     closeExternalLeases(display.pendingLeases, () => {});
     frameCostRequests.close(new Error("Runtime restarted."));
+    pointerInputs.reset();
     closeComposition();
     activeWorker.terminate();
     // A threaded managed main runtime cannot be instantiated twice in the same
@@ -2421,6 +2440,7 @@ export async function startDorotiWorkerHost(
   globalThis.addEventListener("pagehide", () => {
     restartWebRuntime = undefined;
     frameCostRequests.close();
+    pointerInputs.reset();
     try { texturesForCanvas(canvas.id).disconnect(); } catch { /* Already closed. */ }
     closeComposition();
     if (runtimeLocation === "main") {

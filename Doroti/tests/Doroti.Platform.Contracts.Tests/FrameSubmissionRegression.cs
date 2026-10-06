@@ -112,10 +112,54 @@ static class FrameSubmissionRegression
         FrozenOwnership();
         RendererQueueAndCompletion();
         MutableCommandsAndOwner();
+        FrozenPictureCache();
         ReplayCompletionOwnership();
         TextureSnapshots();
         ViewGenerations();
         Console.WriteLine("PASS: frozen command/image storage, consumer ownership, bounded pending/raster admission, late completion, renderer close and simulated device-loss cleanup (CPU; native GPU fence acceptance remains separate).");
+    }
+
+    static void FrozenPictureCache()
+    {
+        using var host = new TestHost(new Size(24, 24), 1);
+        using var renderer = new SkiaSceneRenderer(1, host, null, null, "frozen-picture-cache", "cpu", "cpu", false);
+        using var surface = SKSurface.Create(new SKImageInfo(24, 24))!;
+        Picture Record(Color color)
+        {
+            var recorder = new PictureRecorder();
+            var canvas = new Canvas(recorder);
+            canvas.drawRect(Rect.fromLTWH(0, 0, 12, 12), new Paint { color = color });
+            return recorder.endRecording();
+        }
+        long frame = 0;
+        void Draw(Picture picture, double x = 0)
+        {
+            var builder = new SceneBuilder(1);
+            builder.addPicture(new Offset(x, 0), picture, Rect.fromLTWH(0, 0, 12, 12));
+            using var scene = builder.build();
+            using var submission = new DorotiSceneSubmission(scene, new(host.ViewEpoch, ++frame, 24, 24));
+            scene.Dispose();
+            renderer.Submit(1, submission, Invocation);
+            renderer.CompletePaint(renderer.Paint(surface, 24, 24)!.Value);
+        }
+        using var red = Record(new Color(0xffff0000));
+        Draw(red); Draw(red); Draw(red, .5);
+        var work = renderer.Diagnostics.Work!;
+        Check.True(work.CommandRecordings == 1 && work.CommandCacheHits == 1 && work.CommandEntries == 1,
+            "Distinct frozen submissions of one recording never reused its native commands.");
+        Draw(red, 14);
+        using (var moved = surface.Snapshot())
+        using (var movedPixels = SKBitmap.FromImage(moved))
+            Check.True(movedPixels.GetPixel(20, 6) == SKColors.Red && movedPixels.GetPixel(6, 6) != SKColors.Red,
+                "Cached recording playback ignored the current picture offset.");
+        using var blue = Record(new Color(0xff0000ff));
+        Draw(blue);
+        using var pixels = surface.Snapshot();
+        using var bitmap = SKBitmap.FromImage(pixels);
+        Check.True(bitmap.GetPixel(6, 6).Blue == 255 && bitmap.GetPixel(6, 6).Red == 0,
+            "A replacement recording reused stale native commands.");
+        Check.True(renderer.Diagnostics.Work!.CommandEntries == 2,
+            "Different recordings aliased the same command cache key.");
     }
 
     static void ReplayCompletionOwnership()
