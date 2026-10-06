@@ -38,7 +38,7 @@
       <use href="#doroti-block-4" fill="none" stroke="black" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" />
     </mask>
   </defs>
-  <rect x="0" y="0" width="24" height="24" fill="#512BD4" />
+  <rect x="0" y="0" width="24" height="24" fill="#2b42d4" />
   <use href="#doroti-block-0" fill="currentColor" mask="url(#doroti-visible-0-cutout)" />
   <use href="#doroti-block-1" fill="currentColor" mask="url(#doroti-visible-1-cutout)" />
   <use href="#doroti-block-2" fill="currentColor" mask="url(#doroti-visible-2-cutout)" />

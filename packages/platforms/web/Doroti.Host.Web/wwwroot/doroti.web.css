@@ -37,7 +37,7 @@ body,
   box-sizing: border-box;
   padding: max(24px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right))
     max(24px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
-  background: #512bd4;
+  background: #2b42d4;
   color: #fff;
   font: 14px/1.5 system-ui, sans-serif;
   text-align: center;

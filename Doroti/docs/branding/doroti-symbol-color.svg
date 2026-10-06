@@ -38,9 +38,9 @@
       <use href="#doroti-color-block-4" fill="none" stroke="black" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" />
     </mask>
   </defs>
-  <use href="#doroti-color-block-0" fill="#7843bb" mask="url(#doroti-color-visible-0-cutout)" />
-  <use href="#doroti-color-block-1" fill="#7843bb" mask="url(#doroti-color-visible-1-cutout)" />
+  <use href="#doroti-color-block-0" fill="#F6F5F5" mask="url(#doroti-color-visible-0-cutout)" />
+  <use href="#doroti-color-block-1" fill="#F6F5F5" mask="url(#doroti-color-visible-1-cutout)" />
   <use href="#doroti-color-block-2" fill="#ffc107" mask="url(#doroti-color-visible-2-cutout)" />
-  <use href="#doroti-color-block-3" fill="#7843bb" mask="url(#doroti-color-visible-3-cutout)" />
-  <use href="#doroti-color-block-4" fill="#7843bb" mask="url(#doroti-color-visible-4-cutout)" />
+  <use href="#doroti-color-block-3" fill="#F6F5F5" mask="url(#doroti-color-visible-3-cutout)" />
+  <use href="#doroti-color-block-4" fill="#F6F5F5" mask="url(#doroti-color-visible-4-cutout)" />
 </svg>

@@ -19,8 +19,8 @@ try {
   const { foreground, background } = await page.evaluate(() => {
     const source = document.querySelector('svg');
     const backdrop = source.querySelector(':scope > rect');
-    if (!backdrop || backdrop.getAttribute('fill') !== '#512BD4') {
-      throw new Error('The app icon must have a background rectangle filled with #512BD4.');
+    if (!backdrop || backdrop.getAttribute('fill') !== '#2b42d4') {
+      throw new Error('The app icon must have a background rectangle filled with #2b42d4.');
     }
     const background = backdrop.getAttribute('fill');
     backdrop.remove();
@@ -36,7 +36,7 @@ try {
     images.set(size, await render(svg, size));
   }
   // Keep the adaptive foreground transparent so platform scaling does not shrink
-  // the purple background into a second square inside the launcher mask.
+  // the blue background into a second square inside the launcher mask.
   await writeFile(resolve(output, 'appiconfg.png'), await render(foreground, 1024));
   await writeFile(resolve(output, 'appicon.svg'), `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024"><rect width="1024" height="1024" fill="${background}"/></svg>\n`);
   await writeFile(resolve(output, 'appicon.png'), images.get(512));
