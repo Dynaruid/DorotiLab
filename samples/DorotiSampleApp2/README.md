@@ -327,8 +327,10 @@ dotnet run --project ./samples/DorotiSampleApp2/windowsappsdk/DorotiSampleApp2.W
 
 ## Web
 
-시작 시 공식 Doroti 앱 아이콘을 사용하는 HTML 스플래시를 표시합니다. 공용 TypeScript
-로더가 엔진 준비 완료(`started`)와 첫 프레임 표시 후 스플래시를 페이드아웃하고 제거합니다. 로딩 실패 시
+`web/src/doroti_bootstrap.ts`의 `startDoroti({ splash: true, ... })`에서 스플래시 사용 여부를 설정합니다.
+`false`이면 표시하지 않으며 생략 시 기본값은 `true`입니다. 공용 TypeScript 로더가 공식 Doroti
+앱 아이콘을 사용하는 스플래시 DOM을 생성하므로 HTML에는 로딩 화면 마크업이 필요하지 않습니다.
+엔진 준비 완료(`started`)와 첫 프레임 표시 후 스플래시를 페이드아웃하고 제거합니다. 로딩 실패 시
 오류 안내와 다시 시도 버튼을 표시하며, 동작 줄이기 설정에서는 애니메이션을 생략합니다.
 
 Volume과 블러 강도 변경은 `ValueListenableBuilder`로 해당 컨트롤과 필터만 갱신합니다.

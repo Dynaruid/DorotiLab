@@ -12,6 +12,8 @@ export interface DorotiBootstrapContext {
 }
 
 export interface DorotiBootstrapOptions {
+  /** Show the built-in splash until the first frame. Defaults to true. */
+  splash?: boolean;
   configure?: (context: DorotiBootstrapContext) => void;
   onStage?: (stage: DorotiBootstrapStage, context: DorotiBootstrapContext) => void;
   onError?: (error: unknown, context: DorotiBootstrapContext) => void;
@@ -25,7 +27,7 @@ export function startDoroti(options: DorotiBootstrapOptions = {}): Promise<Dorot
 }
 
 async function runStart(options: DorotiBootstrapOptions): Promise<DorotiBootstrapContext> {
-  const splash = attachDorotiSplash();
+  const splash = attachDorotiSplash(options.splash);
   const context: DorotiBootstrapContext = {
     stage: "before-start",
   };

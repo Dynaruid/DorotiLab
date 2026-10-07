@@ -5,8 +5,8 @@ and runner assemblies. It checks AOT/interpreter mode changes, initial cache
 invalidation, unchanged-cache reuse and changed content with old timestamps.
 It also checks the tree interpretation opt-in affects only the two framework
 assemblies and leaves Skia AOT compiled, including opt-out/non-Web boundaries.
-`web_splash.mts` checks a terminal Worker failure between runtime readiness and
-the first frame exposes retry instead of leaving the loading screen pending.
+`web_splash.mts` checks optional splash DOM creation, first-frame dismissal,
+reduced motion, fade cleanup and retry when a Worker fails after runtime readiness.
 Both are included in Developer/Release, together with `web_gl_frames.mts`.
 
 The [work3 Android follow-up](../../history/26-10-05/work3-summary.md#19-2026-10-05-android와-공통-잔여-실행)

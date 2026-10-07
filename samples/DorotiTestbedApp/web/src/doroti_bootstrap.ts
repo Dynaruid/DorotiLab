@@ -10,6 +10,7 @@ import {
 const runtimeLocation = new URL(location.href).searchParams.get("dorotiRuntimeLocation") === "worker" ? "worker" : "main";
 
 await startDoroti({
+  splash: true, // Set to false to disable the built-in loading screen.
   configure(context: DorotiBootstrapContext) {
     context.runtimeLocation = runtimeLocation;
     document.documentElement.dataset.dorotiBootstrapConfigured = "true";

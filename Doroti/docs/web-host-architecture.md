@@ -18,6 +18,27 @@ names remain the entry points used by C# and the render Worker.
 | Source frame admission/transfer and GPU consumer lifetime | [doroti.web.textures.ts](../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.textures.ts), [doroti.web.texture-worker.ts](../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.texture-worker.ts) |
 | File grants, navigation and drop across the thread boundary | [doroti.web.services.ts](../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.services.ts) and its service modules |
 
+## Bootstrap splash
+
+Configure the built-in loading screen in the app's `web/src/doroti_bootstrap.ts`:
+
+```ts
+await startDoroti({
+  splash: true, // false disables the loading screen; omitted defaults to true.
+  configure(context) { context.runtimeLocation = "main"; },
+});
+```
+
+The [loader](../../packages/platforms/web/Doroti.Host.Web/Web/doroti.loader.ts)
+creates the [splash DOM](../../packages/platforms/web/Doroti.Host.Web/Web/doroti.web.splash.ts)
+synchronously before renderer/runtime initialization. HTML only needs the `#app`
+container, shared stylesheet and bootstrap module. The overlay is a sibling of
+`#app`, so replacing the engine's DOM does not remove it. It waits for runtime
+readiness and the first accepted frame before dismissal, and offers reload on
+startup failure, including a Worker failure while waiting for that frame.
+Reduced motion skips the fade. `splash: false` creates no overlay or splash event
+listeners. Display begins when the bootstrap module executes.
+
 ## Request ownership
 
 `WorkerRequestMailbox<T>` installs the request before sending it, so both a

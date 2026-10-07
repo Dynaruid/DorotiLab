@@ -16,6 +16,8 @@ declare module "*_content/Doroti.Host.Web/doroti.loader.js" {
   }
 
   export interface DorotiBootstrapOptions {
+    /** Show the built-in splash until the first frame. Defaults to true. */
+    splash?: boolean;
     configure?: (context: DorotiBootstrapContext) => void;
     onStage?: (stage: DorotiBootstrapStage, context: DorotiBootstrapContext) => void;
     onError?: (error: unknown, context: DorotiBootstrapContext) => void;

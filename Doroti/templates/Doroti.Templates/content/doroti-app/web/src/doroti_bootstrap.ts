@@ -6,6 +6,7 @@ import {
 } from "./_content/Doroti.Host.Web/doroti.loader.js";
 
 await startDoroti({
+  splash: true, // Set to false to disable the built-in loading screen.
   configure(context: DorotiBootstrapContext) {
     context.runtimeLocation = "main";
   },
