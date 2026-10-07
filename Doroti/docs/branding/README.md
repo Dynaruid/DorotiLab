@@ -50,4 +50,4 @@ node Doroti/eng/generate-app-icons.mjs <Playwright 패키지의 절대 경로> m
 python Doroti/eng/run-with-timeout.py python Doroti/tests/app_icons.py
 ```
 
-세 번째 인자를 생략하면 Playwright의 Chromium을 사용합니다. SVG 원본을 변경한 경우 파생 자산을 다시 생성하고 사용하는 플랫폼 target 패키지를 다시 빌드합니다. 이 명령은 앱용 PNG·ICO·ICNS·파비콘과 모바일 배경·전경, 컬러 브랜드 심벌을 사용하는 VS Code 확장의 투명 256×256 `images/icon.png`를 함께 갱신합니다.
+세 번째 인자를 생략하면 Playwright의 Chromium을 사용합니다. SVG 원본을 변경한 경우 파생 자산을 다시 생성하고 사용하는 플랫폼 target 패키지를 다시 빌드합니다. 이 명령은 앱용 PNG·ICO·ICNS·파비콘과 모바일 배경·전경, 컬러 브랜드 심벌을 사용하는 VS Code 확장의 투명 256×256 `images/icon.png`, 단색 심벌을 사용하는 활동 표시줄용 `images/sidebar.svg`를 함께 갱신합니다. 활동 표시줄 SVG는 24×24 캔버스에서 `viewBox="2 2 20 20"`을 사용해 원본의 바깥 여백을 줄이고 심벌을 20% 크게 표시합니다.

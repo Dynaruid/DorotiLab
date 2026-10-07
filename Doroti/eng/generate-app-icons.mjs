@@ -11,6 +11,7 @@ const { chromium } = require(process.argv[2] || 'playwright');
 const output = resolve(root, 'packages/platforms/build/Icons');
 const svg = await readFile(resolve(root, 'Doroti/docs/branding/doroti-app-icon.svg'), 'utf8');
 const brandSvg = await readFile(resolve(root, 'Doroti/docs/branding/doroti-symbol-color.svg'), 'utf8');
+const symbolSvg = await readFile(resolve(root, 'Doroti/docs/branding/doroti-symbol.svg'), 'utf8');
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch(process.argv[3] ? { channel: process.argv[3] } : {});
 try {
@@ -42,6 +43,18 @@ try {
   await writeFile(resolve(output, 'appicon.png'), images.get(512));
   await writeFile(resolve(output, 'favicon.svg'), svg);
   await writeFile(resolve(root, 'tools/vscode-doroti/images/icon.png'), await render(brandSvg, 256));
+  // The Activity Bar uses a 24px canvas. Crop the symbol's 2-unit outer margin
+  // to enlarge it by 20% while preserving the paths and transparent cutouts.
+  await page.setContent(symbolSvg);
+  const sidebarSvg = await page.evaluate(() => {
+    const source = document.querySelector('svg');
+    source.setAttribute('width', '24');
+    source.setAttribute('height', '24');
+    source.setAttribute('viewBox', '2 2 20 20');
+    source.setAttribute('color', '#ffffff');
+    return new XMLSerializer().serializeToString(source);
+  });
+  await writeFile(resolve(root, 'tools/vscode-doroti/images/sidebar.svg'), `${sidebarSvg}\n`);
   // ICO directory entries point at individual PNG frames; Windows selects the
   // frame appropriate for Explorer, the taskbar and the window's current DPI.
   const sizes = [16, 24, 32, 48, 64, 128, 256];
