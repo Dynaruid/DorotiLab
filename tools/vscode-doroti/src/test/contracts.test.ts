@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import * as assert from 'node:assert/strict';
 import * as path from 'node:path';
-import { validateName, parseProject, classifyOutput } from '../contracts';
+import { validateName, parseProject, classifyOutput, watcherExited } from '../contracts';
 import { importPlan } from '../imports';
 test('names cannot escape output folder or name Windows devices', () => {
     for (const value of ['../app', 'x/y', 'x\\y', 'con', 'NUL.txt', 'Foo.', 'a..b', '1app', 'a;echo', 'a.1b', 'class', 'A.namespace']) assert.ok(validateName(value), value);
@@ -23,6 +23,29 @@ test('watcher errors do not masquerade as applied reloads', () => {
     assert.equal(classifyOutput('Do you want to restart your app?'), 'restart-required');
     assert.equal(classifyOutput("Further changes won't be applied to this process."), 'restart-required');
     assert.equal(classifyOutput('Hot reload succeeded'), undefined);
+});
+test('app exit followed by idle watcher ends the session with project labels, ANSI or no emojis', () => {
+    for (const exited of ['dotnet watch ⌚ Exited', 'dotnet watch ⌚ [DorotiCarouselApp.WindowsAppSdk (net10.0-windows10.0.19041.0)] Exited', 'dotnet watch Exited', 'dotnet watch ❌ [app (net10.0)] Exited with error code 134']) {
+        const output = `${exited}\r\ndotnet watch ⏳ Waiting for a file to change before restarting ...\r\n`;
+        assert.equal(watcherExited(output), true, exited);
+        assert.equal(watcherExited(`\x1b[32m${output}\x1b[0m`), true, 'Color escape sequences');
+        // The extension retains output across arbitrarily split stdout/stderr chunks.
+        for (let split = 1; split < output.length; split += Math.ceil(output.length / 10)) {
+            const tail = output.slice(0, split);
+            assert.equal(watcherExited(tail), false, 'Incomplete idle line');
+            assert.equal(watcherExited(tail + output.slice(split)), true, 'Reassembled output');
+        }
+    }
+});
+test('build failures and automatic restarts do not end the development session', () => {
+    const waiting = 'dotnet watch ⏳ Waiting for a file to change before restarting ...\n';
+    assert.equal(watcherExited(waiting), false);
+    assert.equal(watcherExited(`dotnet watch ❌ Build failed\n${waiting}`), false);
+    assert.equal(watcherExited('Application says Exited\n' + waiting), false);
+    assert.equal(watcherExited('dotnet watch ⌚ Exited\n'), false);
+    for (const transition of ['Building...', 'Build failed', "Failed to build project 'app.csproj'.", 'Restarting...', 'Started', "[app (net10.0)] Launched 'dotnet'", 'File changed: App.cs', 'File change detected'])
+        assert.equal(watcherExited(`dotnet watch ⌚ Exited\ndotnet watch 🚀 ${transition}\n${waiting}`), false, transition);
+    assert.equal(watcherExited(`dotnet watch ⌚ Exited\ndotnet watch 🚀 Started\ndotnet watch ⌚ Exited\n${waiting}`), true, 'A later app exit can end the session');
 });
 test('imports avoid duplicates, aliases and local type conflicts', () => {
     const ns = 'Doroti.Framework.Widgets';

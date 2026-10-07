@@ -4,7 +4,7 @@ import * as fs from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
 import { ChildProcess } from 'node:child_process';
 import { start, stop, completion } from './processes';
-import { Project, Runtime, parseProject, validateName, classifyOutput } from './contracts';
+import { Project, Runtime, parseProject, validateName, classifyOutput, watcherExited } from './contracts';
 import { registerEditing } from './editing';
 import { WebBridge } from './webBridge';
 import { DorotiSidebar, SidebarState } from './sidebar';
@@ -33,7 +33,7 @@ export function activate(context: vscode.ExtensionContext) {
     function display(message?: string) {
         status.text = `Doroti: ${project ? path.basename(project.root) : 'Select project'}${target ? ` / ${target}` : ''}${message ? ` · ${message}` : ''}`;
         status.command = 'doroti.selectProject'; status.show();
-        const supported = !!session?.runtime?.supported && !session.restartRequired;
+        const supported = !!session?.runtime?.supported && !session.restartRequired && !session.stopping;
         reload.text = session?.pending ? '$(sync~spin) Reloading' : '$(debug-restart) Hot Reload';
         reload.tooltip = supported ? 'Save pending C# edits and apply metadata updates' : 'Run a connected provider Debug session.';
         reload.command = supported && !session?.pending ? 'doroti.hotReload' : 'doroti.showLogs';
@@ -123,7 +123,7 @@ export function activate(context: vscode.ExtensionContext) {
         display('Stopped');
     }
     async function poll(current: Session) {
-        if (session !== current) return;
+        if (session !== current || current.stopping) return;
         try {
             const runtime = current.bridge ? current.bridge.runtime : JSON.parse(await fs.readFile(path.join(current.directory, 'runtime.json'), 'utf8')) as Runtime;
             if (!runtime) {
@@ -131,7 +131,7 @@ export function activate(context: vscode.ExtensionContext) {
                 if (current.pending) { current.pending = undefined; logs.appendLine('Hot Reload acknowledgment lost: browser disconnected.'); }
                 display('Waiting for browser'); return;
             }
-            if (session !== current || runtime.schemaVersion !== 'doroti.dev/v1' || runtime.sessionId !== current.id) return;
+            if (session !== current || current.stopping || runtime.schemaVersion !== 'doroti.dev/v1' || runtime.sessionId !== current.id) return;
             if (current.runtime && current.runtime.runtimeId !== runtime.runtimeId) {
                 current.pending = undefined; current.restartRequired = false; current.problem = undefined;
                 logs.appendLine('Runtime restarted; widget state was reset.');
@@ -164,6 +164,11 @@ export function activate(context: vscode.ExtensionContext) {
         if (device) args.push('-Device', device);
         const child = start(config().get('powerShellPath', 'pwsh'), args, project.root, text => {
             logs.append(text); tail = (tail + text).slice(-8192);
+            if (session?.id === id && !session.stopping && development()?.transport === 'file' && watcherExited(tail)) {
+                logs.appendLine('Application exited; stopping the development watcher. Use Run to launch again.');
+                void endSession().catch(showError);
+                return;
+            }
             if (development()?.launchBrowser && !opened) {
                 const url = /Now listening on:\s*(https?:\/\/[^\s]+)[\r\n]/.exec(tail)?.[1];
                 if (url) { opened = true; void vscode.env.openExternal(vscode.Uri.parse(bridge ? bridge.browserUrl(url) : url)); }
@@ -187,7 +192,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
     async function hotReload(save?: unknown) {
         trusted(); const current = session;
-        if (!current?.runtime?.supported || current.restartRequired) throw new Error('Hot Reload unavailable. Run a provider Debug session with a connected runtime, or use Restart (resets state).');
+        if (!current?.runtime?.supported || current.restartRequired || current.stopping) throw new Error('Hot Reload unavailable. Run a provider Debug session with a connected runtime, or use Restart (resets state).');
         if (current.pending) return;
         const dirty = vscode.workspace.textDocuments.filter(doc => doc.isDirty && doc.languageId === 'csharp' && project && within(project.root, doc.uri.fsPath));
         if (!dirty.length) { void vscode.window.showInformationMessage('No unsaved C# edits. Saved changes are applied by dotnet watch automatically.'); return; }

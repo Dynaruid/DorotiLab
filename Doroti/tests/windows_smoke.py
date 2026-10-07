@@ -46,7 +46,7 @@ for mode in modes:
     if result.returncode:
         raise RuntimeError(f"{mode}: application exit {result.returncode}; see {run}")
     log_text = (run / f"{mode}.log").read_text(encoding="utf-8", errors="replace")
-    if any(marker in log_text for marker in ("AssertionError", "FlutterError", "Unhandled exception")):
+    if any(marker in log_text for marker in ("AssertionError", "FlutterError", "DorotiError", "Unhandled exception")):
         raise RuntimeError(f"{mode}: framework error in {run / (mode + '.log')}")
     states = json.loads(report.read_text())
     closed = json.loads(Path(str(report) + ".closed").read_text())
@@ -79,7 +79,7 @@ for lifetime in (() if '--basic' in sys.argv else ('OnLastWindowClosed', 'Explic
         exit_code = run_application(launch, environment, log, run / (lifetime + '-maui.json'))
     output = (run / (lifetime + '.log')).read_text(encoding='utf-8', errors='replace')
     assert exit_code == 0, output[-5000:]
-    assert not any(marker in output for marker in ('AssertionError', 'FlutterError', 'Unhandled exception')), output[-5000:]
+    assert not any(marker in output for marker in ('AssertionError', 'FlutterError', 'DorotiError', 'Unhandled exception')), output[-5000:]
     states = json.loads(report.read_text())
     assert states['before']['first'] == [470, 650] and states['before']['second'] == [580, 620], states
     assert states['remaining'] == 0 and states['survivor'] and states['lifetime'] == lifetime, states

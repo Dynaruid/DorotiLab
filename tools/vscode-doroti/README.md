@@ -12,7 +12,7 @@ cd <repository>/tools/vscode-doroti
 npm ci
 npm test
 npm run package
-code --install-extension doroti-0.2.1.vsix
+code --install-extension doroti-0.2.2.vsix
 ```
 
 Set `doroti.cliPath` to the absolute repository `Doroti/eng/doroti.ps1` path for development commands. Editing uses the bundled .NET 10/Roslyn 5.9 helper and does not require a repository checkout, CLI path, project selection or an app session. Install the Microsoft C# extension (`ms-dotnettools.csharp`) for normal IntelliSense, signature help, diagnostics, navigation and general C# refactoring. Doroti supplies widget construction templates and structural assists alongside it; fallback type suggestions are suppressed while C# is active. Restore the application's declared dependencies before semantic editing. Suggestions never restore, build, install dependencies or save source files.
@@ -65,6 +65,8 @@ python Doroti/eng/run-with-timeout.py --timeout 1200 node tools/vscode-doroti/di
 ```
 
 The fixture preparation script uses the product libraries built by the helper tests. Add `--csharp`, `--restricted` or `--version=1.100.0` to use separate profiles for that matrix. Use a fresh fixture directory for each run. `tests/protocol.py <evidence-directory>` checks persistent helper messages, snapshots, cancellation and failed evaluation. Packaging includes helper DLLs and both MSBuild build hosts; runtime operation never searches repository source for the helper.
+
+Closing a desktop app ends its development session when `dotnet watch` reports that the app exited and it is waiting for another file change. The extension stops the remaining watcher and enables **Run** again. Build failures and SDK-driven rebuild/restart sequences keep the session active. Web browser disconnects continue to wait for reconnection. See [the window-close regression](docs/session-exit-verification-2026-10-07.md).
 
 Stop and extension deactivation terminate the owned process tree. Session files under the app's `.doroti/dev/<session>` contain capability/revision/request IDs and diagnostics, never executable instructions. These files may be removed after stopping the session.
 

@@ -270,3 +270,42 @@ gskinner 원본의 `Border(top: BorderSide(color: Colors.white38, width: 2))`를
 
 검사는 1200초 timeout wrapper로 실행했습니다. 캡처는 삭제 가능한 `temp/testing/record-box-depth/`에 생성했습니다.
 이 단계에서 native 휠 smoke와 물리 입력·scanout/FPS 판정을 갱신하지 않았습니다.
+
+## 스크롤 포인터 assertion과 오류 출력 수정 — 2026-10-07
+
+Circular Menu의 크기 변환을 마우스 포인터로 검사할 때
+`HitTestResult.pushTransform` assertion이 실패하는 문제를 Debug에서 재현했습니다.
+`Matrix4.tryInvert`가 double 저장값을 float `System.Numerics.Matrix4x4`로 변환하면서
+2D 역행렬의 z축 단위 값까지 달라진 것이 원인입니다.
+역산을 double 정밀도의 부분 피벗 Gauss-Jordan 계산으로 바꿨으며,
+3D 변환을 잘못 전달할 때의 hit-test assertion은 유지합니다.
+
+추가로 Windows Debug 시작 시 첫 프레임의 정리 전에 포커스 알림이 처리되면
+비활성 Focus 위젯에서 `View.maybeOf`를 호출해 종료되는 경로도 재현했습니다.
+FocusAttachment의 reparent 시점에 소속 View를 기억하고 detach 시 해제하여,
+지연된 알림에서도 소속 View의 실행 환경을 유지하면서 조상 조회를 피합니다.
+
+오류 진단 출력은 `DorotiErrorDetails`, `DorotiError`, `Doroti framework`로 표시합니다.
+기존 `FlutterError`/`FlutterErrorDetails` C# API 이름은 호환성을 위해 유지합니다.
+포인터 처리의 catch 경로는 원래 예외의 스택을 출력하고,
+stack을 생략한 오류 상세에도 예외의 원래 스택을 사용합니다.
+Windows/Linux smoke의 오류 탐지 문자열에도 새 출력 이름을 추가했습니다.
+
+- PASS: 다섯 데모에서 mouse/trackpad 휠 패킷과 애니메이션 중 mouse hover를 함께 전달하는 Debug 회귀. 수정 전 Circular Menu에서 실패한 경로를 포함합니다.
+- PASS: 기존 전체 캐러셀 Debug 회귀와 560×850 / 390×740 CPU 캡처.
+- PASS: `Doroti.Tests` 전체 Debug 회귀. 역행렬의 양쪽 곱, 부분 피벗, 원근, 작은 double 값, z축 유지, 특이/비유한 행렬, 오류 출력/스택, 비활성화와 프레임 정리 사이의 포커스 알림을 포함합니다.
+- PASS: `Doroti.Platform.Contracts.Tests` Debug 회귀. 여러 View의 포커스 전환, IME 클라이언트 분리, 주 View 제거 후 생존 View 입력을 합성 호스트로 확인했습니다.
+- PASS: 기본 출력 경로의 Windows App SDK Debug 빌드, 경고 0 / 오류 0.
+- PASS: Windows Debug 네이티브 시작·합성 휠·종료. 실제 scroll movement update 199회, presented terminal 230회, failed terminal 0, 프레임워크 오류 0, exit 0.
+- PASS: 변경한 Python smoke 스크립트 7개의 구문 검사. 각 플랫폼의 해당 smoke 전체를 다시 실행한 결과는 아닙니다.
+
+```powershell
+python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project Doroti/tests/Doroti.Tests -c Debug -- --gesture-diagnostics
+python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project packages/Doroti.CustomCarousel/tests/Doroti.CustomCarousel.Tests -c Debug -- --pointer-packets
+python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project Doroti/tests/Doroti.Platform.Contracts.Tests -c Debug
+```
+
+원시 기록과 캡처는 `temp/testing/gesture-*.log`, `temp/testing/carousel-pointer-*`의
+삭제 가능한 로컬 산출물입니다. 이번 네이티브 실행은 assertion·입력 도달·정상 종료 검사이며,
+이전의 두 wheel burst 타이밍 smoke 판정을 갱신하지 않습니다.
+실제 마우스/트랙패드 입력, 다른 플랫폼 실행, scanout/FPS의 신규 수락 결과는 없습니다.

@@ -12,7 +12,7 @@ with (run/'application.log').open('w',encoding='utf-8') as log:
     finally:
         if p.poll() is None:p.kill();p.wait(timeout=10)
 text=(run/'application.log').read_text(encoding='utf-8',errors='replace')
-assert code==0 and not any(x in text for x in ('Unhandled exception','System.InvalidOperationException','System.ArgumentException','FlutterError')),text[-10000:]
+assert code==0 and not any(x in text for x in ('Unhandled exception','System.InvalidOperationException','System.ArgumentException','FlutterError','DorotiError')),text[-10000:]
 probe=json.loads((run/'kinds.json').read_text());assert probe['result']=='PASS' and probe['remaining']==1
 assert {x['kind'] for x in probe['windows']}=={'Regular','Dialog','Popup','Tooltip','Satellite'}
 assert len({x['viewId'] for x in probe['windows']})==5 and text.count('complete=true pending=0')==6

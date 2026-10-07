@@ -3,6 +3,11 @@ using Doroti.Testing;
 using Doroti.Ui;
 
 #if DOROTI_REPO_TESTS
+if (args.Contains("--gesture-diagnostics"))
+{
+    GestureDiagnosticsRegression.Run();
+    return;
+}
 if (args.Contains("--application-dispatcher"))
 {
     ApplicationDispatcherRegression.Run();
@@ -25,6 +30,7 @@ if (Array.IndexOf(args, "--web-semantics") is var webSemanticsIndex && webSemant
     return;
 }
 WebSemanticsRegression.Run();
+GestureDiagnosticsRegression.Run();
 FullReviewRegression.Run();
 ActiveScrollSemanticsRegression.Run();
 ImageReadbackLifetimeRegression.Run();

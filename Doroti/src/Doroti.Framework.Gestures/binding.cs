@@ -248,7 +248,7 @@ public abstract class GestureBinding
         }
         catch (Exception error)
         {
-            var stackLocal = new StackTrace();
+            var stackLocal = new StackTrace(error, true);
             FlutterError.reportError(
                 new FlutterErrorDetails(
                     exception: error,
@@ -395,7 +395,7 @@ public abstract class GestureBinding
             }
             catch (Exception exceptionLocal)
             {
-                var stackLocal = new StackTrace();
+                var stackLocal = new StackTrace(exceptionLocal, true);
                 FlutterError.reportError(
                     new FlutterErrorDetailsForPointerEventDispatcher(
                         exception: exceptionLocal,
@@ -427,7 +427,7 @@ public abstract class GestureBinding
             }
             catch (Exception exceptionAlternate)
             {
-                var stackAlternate = new StackTrace();
+                var stackAlternate = new StackTrace(exceptionAlternate, true);
                 FlutterError.reportError(
                     new FlutterErrorDetailsForPointerEventDispatcher(
                         exception: exceptionAlternate,
@@ -528,7 +528,7 @@ public class FlutterErrorDetailsForPointerEventDispatcher : FlutterErrorDetails
     public FlutterErrorDetailsForPointerEventDispatcher(
         object exception,
         StackTrace? stack = null,
-        string? library = "Flutter framework",
+        string? library = "Doroti framework",
         DiagnosticsNode? context = null,
         PointerEvent? @event = null,
         HitTestEntry<HitTestTarget>? hitTestEntry = null,

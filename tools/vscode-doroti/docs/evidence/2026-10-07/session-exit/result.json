@@ -1,0 +1,58 @@
+{
+  "version": "0.2.2",
+  "vscode": "1.140.0",
+  "installedVsix": "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\vscode-session-exit-2026-10-07\\native-ready-installed\\extensions\\doroti-local.doroti-0.2.2",
+  "project": "c:\\Users\\parti\\Labo\\DorotiLab\\samples\\DorotiCarouselApp",
+  "target": "windows",
+  "nativeWindowClose": "PASS",
+  "watcherTreeCleanup": "PASS",
+  "sidebarButtonsRestored": "PASS",
+  "runAgain": "PASS",
+  "explicitStop": "PASS",
+  "closeMilliseconds": 3659,
+  "ownedPids": [
+    1464,
+    35436,
+    25320,
+    9840,
+    41948,
+    31864
+  ],
+  "initial": {
+    "schemaVersion": "doroti.dev/v1",
+    "sessionId": "54da8758-590c-4f26-bbd4-2fec6583eee6",
+    "runtimeId": "693fd2a9-ba25-4674-bed9-12075e503285",
+    "processId": 31864,
+    "supported": true,
+    "host": "win-x64/windowsappsdk-2.4/top-level-dcomp-vulkan-presentation-synchronous/managed-graphite-vulkan-d3d12-dxgi-skia",
+    "revision": 0,
+    "status": "ready",
+    "requestId": null,
+    "error": null
+  },
+  "closed": {
+    "schemaVersion": "doroti.dev/v1",
+    "sessionId": "54da8758-590c-4f26-bbd4-2fec6583eee6",
+    "runtimeId": "693fd2a9-ba25-4674-bed9-12075e503285",
+    "processId": 31864,
+    "supported": false,
+    "host": "win-x64/windowsappsdk-2.4/top-level-dcomp-vulkan-presentation-synchronous/managed-graphite-vulkan-d3d12-dxgi-skia",
+    "revision": 0,
+    "status": "closed",
+    "requestId": null,
+    "error": null
+  },
+  "relaunched": {
+    "schemaVersion": "doroti.dev/v1",
+    "sessionId": "9f98bab2-2561-4c9b-8918-8189382ed1ab",
+    "runtimeId": "fd3924f3-3839-4721-892a-a0c6e6e94d73",
+    "processId": 20936,
+    "supported": true,
+    "host": "win-x64/windowsappsdk-2.4/top-level-dcomp-vulkan-presentation-synchronous/managed-graphite-vulkan-d3d12-dxgi-skia",
+    "revision": 0,
+    "status": "ready",
+    "requestId": null,
+    "error": null
+  },
+  "physicalCloseButton": "notVerified"
+}

@@ -78,7 +78,7 @@ with zipfile.ZipFile(next(feed.glob('Doroti.Target.Windows.WindowsAppSdk.win-x64
     assert any(x.endswith('doroti_windows_appsdk_host_v1.dll') for x in z.namelist())
     targets=z.read('buildTransitive/Doroti.Target.Windows.WindowsAppSdk.win-x64.targets').decode();assert '<Exec' not in targets and 'BuildDorotiWindowsAppSdkNative' not in targets
 output=call('native-consumer',['dotnet',run/'publish/Consumer.dll'],os.environ|{'DOROTI_WINDOWS_APPSDK_DIAGNOSTICS':'1'})
-assert 'consumer.complete' in output and not any(x in output for x in ('Unhandled exception','System.InvalidOperationException','FlutterError')),output[-10000:]
+assert 'consumer.complete' in output and not any(x in output for x in ('Unhandled exception','System.InvalidOperationException','FlutterError','DorotiError')),output[-10000:]
 builds=[(a,int(v),int(n)) for a,v,n in re.findall(r'consumer.build app=([0-9a-f-]+) view=(\d+) revision=(\d+)',output)]
 assert len({a for a,_,_ in builds})==1 and {v for _,v,_ in builds}=={1,2},builds
 assert max(n for _,v,n in builds if v==2)>max(n for _,v,n in builds if v==1),builds

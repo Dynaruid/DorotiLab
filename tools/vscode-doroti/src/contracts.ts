@@ -35,3 +35,16 @@ export function classifyOutput(text: string): 'compile-error' | 'restart-require
     if (/error CS\d+|Build failed|Failed to build project|Unable to apply hot reload due to compilation/i.test(text)) return 'compile-error';
     return undefined;
 }
+/** The watcher stays alive after its app exits. Only its idle-after-exit sequence ends an IDE session. */
+export function watcherExited(text: string): boolean {
+    const plain = text.replace(/\x1b\[[0-?]*[ -/]*[@-~]/g, '');
+    const prefix = '^\\s*dotnet watch\\s+(?:[^\\w\\[\\r\\n]+\\s*)?(?:\\[[^\\r\\n]+\\]\\s*)?';
+    const exits = [...plain.matchAll(new RegExp(prefix + 'Exited(?: with error code -?\\d+)?\\s*$', 'gm'))];
+    const last = exits.at(-1);
+    if (!last) return false;
+    const afterExit = plain.slice(last.index! + last[0].length);
+    // Rebuild/relaunch output invalidates an earlier exit. Compilation failures
+    // and SDK-driven restarts must keep the watcher available for the next edit.
+    if (new RegExp(prefix + '(?:Building|Build failed|Failed to build project|Restarting|Started|Launched|File changed|File change detected)\\b', 'mi').test(afterExit)) return false;
+    return new RegExp(prefix + 'Waiting for a file to change before restarting[^\\r\\n]*[\\r\\n]', 'm').test(afterExit);
+}

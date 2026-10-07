@@ -12,7 +12,7 @@ with (run/'application.log').open('w',encoding='utf-8') as log:
     finally:
         if child.poll() is None:child.kill();child.wait(timeout=10)
 text=(run/'application.log').read_text(encoding='utf-8',errors='replace')
-assert code==0 and not any(x in text for x in ('Unhandled exception','System.InvalidOperationException','System.ArgumentException','FlutterError')),text[-12000:]
+assert code==0 and not any(x in text for x in ('Unhandled exception','System.InvalidOperationException','System.ArgumentException','FlutterError','DorotiError')),text[-12000:]
 probe=json.loads((run/'menu.json').read_text());assert probe['result']=='PASS' and probe['actualOsMenuObserved'] and probe['canceledInvocation'] and probe['dismissedResult']=='Canceled' and probe['actualMenuBarObserved'] and probe['menuBarDetached'] and probe['nativeCommandGeneration']==2 and probe['staleMenuCallbacks']==0
 assert text.count('complete=true pending=0')==1,text[-10000:]
 report=dict(schema='doroti.native-menu-verification/v1',result='PASS',scope='actual Windows OS popup menu observed in the owned process; typed owner rejection, cancellation/error propagation, dismissal result, actual HWND menu bar and native command generation/retirement, invocation/native cleanup',probe=probe,artifacts=str(run.relative_to(ROOT)),notVerified=['physical keyboard/shortcut action selection','material/cupertino dialog/theme/restoration integration','AppKit/Qt menus'])

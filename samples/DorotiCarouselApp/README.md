@@ -47,8 +47,8 @@ python Doroti/eng/serve-isolated-web.py temp/testing/carousel-web/wwwroot --port
 예: `pwsh -File Doroti/eng/doroti.ps1 run --app samples/DorotiCarouselApp --platform android`.
 
 ```powershell
-# 위젯·포인터 회귀 및 560×850 / 390×740 화면 캡처
-python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project packages/Doroti.CustomCarousel/tests/Doroti.CustomCarousel.Tests -c Release -- temp/testing/carousel
+# Debug assertion을 포함한 위젯·포인터 회귀 및 560×850 / 390×740 화면 캡처
+python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project packages/Doroti.CustomCarousel/tests/Doroti.CustomCarousel.Tests -c Debug -- temp/testing/carousel
 ```
 
 Windows Release 빌드·GPU 첫 화면 표시/정상 종료, Web Debug 빌드·Chrome 첫 화면/데모 진입,

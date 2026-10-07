@@ -14,7 +14,7 @@ with (run/'application.log').open('w',encoding='utf-8') as log:
         if process.poll() is None:process.kill();process.wait(timeout=10)
 output=(run/'application.log').read_text(encoding='utf-8',errors='replace')
 assert exitcode==0,output[-10000:]
-assert not any(marker in output for marker in ('Unhandled exception','AssertionError','FlutterError','System.InvalidOperationException','System.ArgumentException')),output[-10000:]
+assert not any(marker in output for marker in ('Unhandled exception','AssertionError','FlutterError','DorotiError','System.InvalidOperationException','System.ArgumentException')),output[-10000:]
 builds=[(app,int(view),int(revision)) for app,view,revision in re.findall(r'doroti.g1.build app=([0-9a-f-]+) view=(\d+) revision=(\d+)',output)]
 assert len({app for app,_,_ in builds})==1,builds
 assert {view for _,view,_ in builds}=={1,2},builds

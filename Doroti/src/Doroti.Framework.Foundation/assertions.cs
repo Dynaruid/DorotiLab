@@ -186,8 +186,8 @@ public class FlutterErrorDetails
     )
     {
         exceptionThrown = exception as Exception ?? new Exception(exception?.ToString() ?? "null");
-        this.stack = stack;
-        this.library = library ?? "Flutter framework";
+        this.stack = stack ?? (exceptionThrown.StackTrace is null ? null : new StackTrace(exceptionThrown, true));
+        this.library = library ?? "Doroti framework";
         this.context = context;
         this.informationCollector = informationCollector;
         this.silent = silent;
@@ -260,7 +260,7 @@ public class FlutterErrorDetails
             );
         }
         return new DiagnosticsBlock(
-            "FlutterErrorDetails",
+            "DorotiErrorDetails",
             library,
             children,
             DiagnosticsTreeStyle.error
@@ -281,7 +281,7 @@ public class FlutterError : Exception
         : base(diagnostics.toDescription()) => this.diagnostics = diagnostics;
 
     public FlutterError(IEnumerable<DiagnosticsNode> diagnostics)
-        : this(new DiagnosticsBlock("FlutterError", "", diagnostics, DiagnosticsTreeStyle.error))
+        : this(new DiagnosticsBlock("DorotiError", "", diagnostics, DiagnosticsTreeStyle.error))
     { }
 
     public static FlutterError Create(string message) => new(message);
@@ -333,7 +333,7 @@ public class FlutterError : Exception
 internal sealed class _ErrorDiagnostic(string message) : ErrorDescription(message);
 
 internal sealed class _FlutterErrorDetailsNode(FlutterErrorDetails details)
-    : DiagnosticsNode("FlutterErrorDetails", details, DiagnosticsTreeStyle.error);
+    : DiagnosticsNode("DorotiErrorDetails", details, DiagnosticsTreeStyle.error);
 
 public static class AssertionsLibrary
 {

@@ -51,7 +51,7 @@ def finish(process, name):
         if process.poll() is None: process.kill(); process.wait()
         process._doroti_log.close()
     text = (out / (name + '.log')).read_text()
-    for error in ['PlatformView creation failed.', 'doroti.qt.desktop.failure=', 'Unhandled exception.', 'doroti.qt.fatal=', 'managed.fatal=', 'System.InvalidOperationException:', 'System.ObjectDisposedException:', 'FlutterErrorDetails:']:
+    for error in ['PlatformView creation failed.', 'doroti.qt.desktop.failure=', 'Unhandled exception.', 'doroti.qt.fatal=', 'managed.fatal=', 'System.InvalidOperationException:', 'System.ObjectDisposedException:', 'FlutterErrorDetails:', 'DorotiErrorDetails:']:
         assert error not in text, (name, error)
     summaries = [json.loads(line.split('=', 1)[1]) for line in text.splitlines() if line.startswith('doroti.qt.summary=')]
     assert summaries and all(item['frames']['failed'] == 0 for item in summaries), name

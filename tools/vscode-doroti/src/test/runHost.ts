@@ -39,6 +39,7 @@ async function main() {
     const editing = process.argv.includes('--editing');
     const sidebar = process.argv.includes('--sidebar');
     const carousel = process.argv.includes('--carousel');
+    const sessionExit = process.argv.includes('--session-exit');
     const restricted = process.argv.includes('--restricted');
     if (restricted) {
         await fs.mkdir(path.join(profile, 'User'), { recursive: true });
@@ -48,9 +49,9 @@ async function main() {
         const csharp = spawnSync(code, [cli, '--user-data-dir', profile, '--extensions-dir', extensions, '--install-extension', 'ms-dotnettools.csharp', '--force'], { env: environment, encoding: 'utf8', windowsHide: true });
         console.log(csharp.stdout, csharp.stderr); if (csharp.status !== 0) throw new Error('C# extension install failed');
     }
-    const options = { vscodeExecutablePath: code, extensionDevelopmentPath: harness, extensionTestsPath: path.join(__dirname, carousel ? 'carouselHost.js' : sidebar ? 'sidebarHost.js' : editing ? 'editingHost.js' : android ? 'androidHost.js' : linux ? 'linuxHost.js' : mac ? 'macHost.js' : ios ? 'iosHost.js' : web ? 'webHost.js' : 'host.js'),
+    const options = { vscodeExecutablePath: code, extensionDevelopmentPath: harness, extensionTestsPath: path.join(__dirname, sessionExit ? 'sessionExitHost.js' : carousel ? 'carouselHost.js' : sidebar ? 'sidebarHost.js' : editing ? 'editingHost.js' : android ? 'androidHost.js' : linux ? 'linuxHost.js' : mac ? 'macHost.js' : ios ? 'iosHost.js' : web ? 'webHost.js' : 'host.js'),
         launchArgs: [app, '--user-data-dir', profile, '--extensions-dir', extensions, ...(restricted ? [] : ['--disable-workspace-trust']), '--skip-welcome', '--skip-release-notes', '--disable-updates'],
-        extensionTestsEnv: { DOROTI_TEST_RESTRICTED: restricted ? '1' : '', DOROTI_TEST_CSHARP: process.argv.includes('--csharp') ? '1' : '', DOROTI_TEST_CLI: path.join(repo, 'Doroti/eng/doroti.ps1'), DOROTI_RELOAD_PROBE: android || ios && process.env.DOROTI_TEST_IOS_RID === 'ios-arm64' ? `reload-vsix-${randomUUID()}.json` : path.join(evidence, 'state.json'), DOROTI_TEST_RESULT: path.join(evidence, 'result.json'), DOROTI_TEST_EVIDENCE: evidence, ...(android || ios || mac ? { DOROTI_SAMPLE: 'reload' } : {}) } };
+        extensionTestsEnv: { DOROTI_TEST_RESTRICTED: restricted ? '1' : '', DOROTI_TEST_CSHARP: process.argv.includes('--csharp') ? '1' : '', DOROTI_TEST_CLI: process.env.DOROTI_TEST_CLI ?? path.join(repo, 'Doroti/eng/doroti.ps1'), DOROTI_RELOAD_PROBE: android || ios && process.env.DOROTI_TEST_IOS_RID === 'ios-arm64' ? `reload-vsix-${randomUUID()}.json` : path.join(evidence, 'state.json'), DOROTI_TEST_RESULT: path.join(evidence, 'result.json'), DOROTI_TEST_EVIDENCE: evidence, ...(android || ios || mac ? { DOROTI_SAMPLE: 'reload' } : {}) } };
     if (restricted) {
         // test-electron unconditionally adds --disable-workspace-trust. Launch its public test entrypoints directly for this case.
         await new Promise<void>((resolve, reject) => {

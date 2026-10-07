@@ -3,7 +3,7 @@
   "displayName": "Doroti",
   "icon": "images/icon.png",
   "description": "Create, edit and run Doroti applications with metadata Hot Reload.",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "publisher": "doroti-local",
   "repository": {
     "type": "git",

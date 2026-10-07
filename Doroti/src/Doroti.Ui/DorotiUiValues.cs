@@ -741,47 +741,61 @@ public sealed class Matrix4
 
     public static Matrix4? tryInvert(Matrix4 value)
     {
-        var matrix = new System.Numerics.Matrix4x4(
-            (float)value._storage[0],
-            (float)value._storage[1],
-            (float)value._storage[2],
-            (float)value._storage[3],
-            (float)value._storage[4],
-            (float)value._storage[5],
-            (float)value._storage[6],
-            (float)value._storage[7],
-            (float)value._storage[8],
-            (float)value._storage[9],
-            (float)value._storage[10],
-            (float)value._storage[11],
-            (float)value._storage[12],
-            (float)value._storage[13],
-            (float)value._storage[14],
-            (float)value._storage[15]
-        );
-        if (!System.Numerics.Matrix4x4.Invert(matrix, out var inverse))
+        ArgumentNullException.ThrowIfNull(value);
+        // Keep the double precision of storage. Float inversion can turn the
+        // untouched z axis of a 2D transform into 0.99999994, which violates
+        // HitTestResult's transform invariant during animated scaling.
+        Span<double> augmented = stackalloc double[32];
+        augmented.Clear();
+        for (var row = 0; row < 4; row++)
         {
-            return null;
+            for (var column = 0; column < 4; column++)
+            {
+                var entry = value._storage[column * 4 + row];
+                if (!double.IsFinite(entry)) return null;
+                augmented[row * 8 + column] = entry;
+            }
+            augmented[row * 8 + 4 + row] = 1;
         }
 
-        return new Matrix4([
-            inverse.M11,
-            inverse.M12,
-            inverse.M13,
-            inverse.M14,
-            inverse.M21,
-            inverse.M22,
-            inverse.M23,
-            inverse.M24,
-            inverse.M31,
-            inverse.M32,
-            inverse.M33,
-            inverse.M34,
-            inverse.M41,
-            inverse.M42,
-            inverse.M43,
-            inverse.M44,
-        ]);
+        // Gauss-Jordan elimination with partial pivoting, in row-major order.
+        for (var column = 0; column < 4; column++)
+        {
+            var pivotRow = column;
+            for (var row = column + 1; row < 4; row++)
+                if (Math.Abs(augmented[row * 8 + column]) > Math.Abs(augmented[pivotRow * 8 + column]))
+                    pivotRow = row;
+            var pivot = augmented[pivotRow * 8 + column];
+            if (pivot == 0 || !double.IsFinite(pivot)) return null;
+            if (pivotRow != column)
+                for (var entry = 0; entry < 8; entry++)
+                {
+                    var saved = augmented[column * 8 + entry];
+                    augmented[column * 8 + entry] = augmented[pivotRow * 8 + entry];
+                    augmented[pivotRow * 8 + entry] = saved;
+                }
+            for (var entry = 0; entry < 8; entry++)
+                augmented[column * 8 + entry] /= pivot;
+            augmented[column * 8 + column] = 1;
+            for (var row = 0; row < 4; row++)
+            {
+                if (row == column) continue;
+                var factor = augmented[row * 8 + column];
+                if (factor == 0) continue;
+                for (var entry = 0; entry < 8; entry++)
+                    augmented[row * 8 + entry] -= factor * augmented[column * 8 + entry];
+                augmented[row * 8 + column] = 0;
+            }
+        }
+        var inverse = new double[16];
+        for (var row = 0; row < 4; row++)
+            for (var column = 0; column < 4; column++)
+            {
+                var entry = augmented[row * 8 + 4 + column];
+                if (!double.IsFinite(entry)) return null;
+                inverse[column * 4 + row] = entry;
+            }
+        return new Matrix4(inverse);
     }
 
     private static void CopyStorage(double[] source, double[] destination)

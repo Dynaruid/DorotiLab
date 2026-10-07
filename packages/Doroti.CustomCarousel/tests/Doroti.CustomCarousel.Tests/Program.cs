@@ -9,6 +9,12 @@ using Doroti.Ui;
 using Carousel = Doroti.CustomCarousel.CustomCarousel;
 using Path = System.IO.Path;
 
+if (args.Contains("--pointer-packets"))
+{
+    PointerPacketRegression.Run();
+    return;
+}
+
 if (args.Contains("--presentation-input"))
 {
     PresentationInputRegression.Run(args.LastOrDefault(a => !a.StartsWith("--")) ?? "temp/testing/carousel-presentation");
@@ -28,6 +34,7 @@ static void Require(bool value, string message)
 
 var output = Path.GetFullPath(args.FirstOrDefault() ?? "temp/testing/carousel");
 Directory.CreateDirectory(output);
+PointerPacketRegression.Run();
 ContinuousInputRegression.Run(Path.Combine(output, "input"));
 PresentationInputRegression.Run(Path.Combine(output, "presentation"));
 var changes = new List<int>();

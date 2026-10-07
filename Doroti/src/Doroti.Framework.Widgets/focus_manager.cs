@@ -160,6 +160,7 @@ public class FocusAttachment
             _node._manager?._markDetached(_node);
             _node._parent?._removeChild(_node);
             _node._attachment = null;
+            _node._ownerView = null;
             DartRuntimePrimitives.Assert(
                 () => !_node.hasPrimaryFocus,
                 () =>
@@ -184,6 +185,9 @@ public class FocusAttachment
             parent ??= Focus.maybeOf(_node.context!, scopeOk: true);
             parent ??= _node.context!.owner!.focusManager.rootScope;
             parent._reparent(_node);
+            // Capture the view while ancestor lookup is legal. Queued focus
+            // notifications can run after this element becomes inactive.
+            _node._ownerView = View.maybeOf(_node.context!);
         }
     }
 }
@@ -201,6 +205,7 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
     internal virtual bool _descendantsAreFocusable { get; set; } = default!;
     internal virtual bool _descendantsAreTraversable { get; set; } = default!;
     internal virtual BuildContext? _context { get; set; } = default;
+    internal DorotiView? _ownerView { get; set; }
     public virtual Func<FocusNode, RawKeyEvent, KeyEventResult>? onKey { get; set; } = default;
     public virtual Func<FocusNode, KeyEvent, KeyEventResult>? onKeyEvent { get; set; } = default;
     internal virtual FocusManager? _manager { get; set; } = default;
@@ -684,6 +689,7 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
     )
     {
         _context = context;
+        _ownerView = null;
         this.onKey = onKey ?? this.onKey;
         this.onKeyEvent = onKeyEvent ?? this.onKeyEvent;
         _attachment = new FocusAttachment(this);
@@ -699,13 +705,13 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
 
     internal virtual void _notify()
     {
-        // One application focus transaction notifies nodes from different View
-        // branches. Each listener must regain its own environment/IME lifetime.
-        using var owner = context?.mounted == true ? View.maybeOf(context)?.EnterInvocationScope() : null;
         if (_parent is null)
         {
             return;
         }
+        // One application focus transaction notifies nodes from different View
+        // branches. Each listener must regain its own environment/IME lifetime.
+        using var owner = _ownerView?.EnterInvocationScope();
         if (hasPrimaryFocus)
         {
             _setAsFocusedChildForScope();

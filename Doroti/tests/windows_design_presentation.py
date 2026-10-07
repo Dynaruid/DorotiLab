@@ -16,7 +16,7 @@ for design in ('material','cupertino'):
         finally:
             if child.poll() is None:child.kill();child.wait(timeout=10)
     text=(run/(design+'.log')).read_text(encoding='utf-8',errors='replace')
-    assert code==0 and not any(x in text for x in ('Unhandled exception','doroti.design.probe FAIL','FlutterError','doroti.native.fatal')),text[-12000:]
+    assert code==0 and not any(x in text for x in ('Unhandled exception','doroti.design.probe FAIL','FlutterError','DorotiError','doroti.native.fatal')),text[-12000:]
     probe=json.loads(output.read_text());assert probe['result']=='PASS' and probe['capturedTheme'] and probe['capturedLocalization'] and probe['nativeResult']==23 and probe['overlayResult']==23 and probe['remainingWindows']==1
     assert probe['nativeVisibleBeforeResult'] and probe['tooltipVisible'] and probe['tooltipCancellation'] and probe['tooltipEarlyCancellation'] and probe['tooltipConcurrentDispose'],probe
     assert text.count('complete=true pending=0')==6,text[-10000:]
