@@ -6,6 +6,22 @@ static void Require(bool value, string message) { if (!value) throw new InvalidO
 static async Task Reject<T>(Func<Task> action) where T : Exception { try { await action(); } catch (T) { return; } throw new InvalidOperationException($"Expected {typeof(T).Name}."); }
 var descriptor = new ProviderDescriptor("doroti.platform-provider/v1", "test-headless", "0.4.0-alpha.1", "[0.4.0-alpha.1,0.5.0)", 1, "headless", ["windows", "linux", "macos"], ["build", "run"], Enum.GetValues<ToolService>(), new(ToolMode.DotnetInproc, "", "TestHeadless.Extension", null, []));
 var context = new ToolContext(Environment.CurrentDirectory, "fixture.csproj", "test-headless", "test-headless", "default", "host-process", 9007199254740993L);
+await using (var dotnet = new PlanProbeExtension())
+{
+    var runner = context with { Project = Path.Combine(Environment.CurrentDirectory, "runner.csproj"), DeviceId = "host", TargetFramework = "net10.0-windows10.0.19041.0", RuntimeIdentifier = "win-x64" };
+    foreach (var operation in new[] { "dev", "build", "run", "publish" })
+    {
+        var plan = await dotnet.PlanAsync(new(runner, operation, "Debug", [new("dotnetpath", "selected-dotnet"), new("sessionid", "watch-probe"), new("sessiondirectory", Path.GetTempPath())]), default);
+        var step = plan.Steps.Single();
+        var arguments = step.Arguments.ToList();
+        Require(step.Executable == "selected-dotnet" && arguments[arguments.IndexOf("-f") + 1] == runner.TargetFramework, "Plan lost selected SDK or TFM.");
+        if (operation == "dev")
+            Require(arguments[0] == "watch" && !arguments.Contains("-r") && !arguments.Contains(runner.RuntimeIdentifier), "Watch must use the validated runner RID without propagating a global RID into shared projects.");
+        else
+            Require(arguments[arguments.IndexOf("-r") + 1] == runner.RuntimeIdentifier, "Build/run/publish lost the explicit RID.");
+        Require(step.Environment.Single(value => value.Name == "DOROTI_DEV_SESSION_ID").Value == "watch-probe", "Plan lost session identity.");
+    }
+}
 Require(ToolVersionRange.Contains("[0.4.0-alpha.1,0.5.0)", "0.4.0-alpha.10"), "Numeric prerelease ordering diverged.");
 Require(!ToolVersionRange.Contains("[0.4.0-alpha.1,0.5.0)", "0.5.0"), "Upper range was accepted.");
 Require(!ToolVersionRange.Contains("[0.4.0-alpha.2,0.5.0)", "0.4.0-alpha.1"), "Lower range was accepted.");
@@ -98,3 +114,5 @@ try
 }
 finally { Directory.Delete(gracefulDirectory, true); }
 Console.WriteLine("PASS: typed concurrent activation/cleanup, declared ALC/shared Contracts, real process handshake/result/error/cancel/crash/hang/reconnect, framed malformed input, 64-bit IDs and separate app Stop/Restart ownership.");
+
+sealed class PlanProbeExtension() : DotnetToolExtension("plan-probe", ["windows", "linux", "macos"]);

@@ -1,0 +1,51 @@
+{
+  "version": "0.2.1",
+  "vscode": "1.140.0",
+  "installedVsix": "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\watch-duplicate-2026-10-07\\fixed-installed\\extensions\\doroti-local.doroti-0.2.1",
+  "project": "c:\\Users\\parti\\Labo\\DorotiLab\\samples\\DorotiCarouselApp",
+  "target": "windows",
+  "provider": "windowsappsdk",
+  "watchStartup": "PASS",
+  "metadataReload": "PASS",
+  "sameRuntimeAndProcess": "PASS",
+  "sourceRestored": "PASS",
+  "stop": "PASS",
+  "initial": {
+    "schemaVersion": "doroti.dev/v1",
+    "sessionId": "1986edaf-8a63-49f7-8948-82de648594a2",
+    "runtimeId": "da6cf5c3-d266-4cf1-bd0f-3aca393653e7",
+    "processId": 41776,
+    "supported": true,
+    "host": "win-x64/windowsappsdk-2.4/top-level-dcomp-vulkan-presentation-synchronous/managed-graphite-vulkan-d3d12-dxgi-skia",
+    "revision": 0,
+    "status": "ready",
+    "requestId": null,
+    "error": null
+  },
+  "applied": {
+    "schemaVersion": "doroti.dev/v1",
+    "sessionId": "1986edaf-8a63-49f7-8948-82de648594a2",
+    "runtimeId": "da6cf5c3-d266-4cf1-bd0f-3aca393653e7",
+    "processId": 41776,
+    "supported": true,
+    "host": "win-x64/windowsappsdk-2.4/top-level-dcomp-vulkan-presentation-synchronous/managed-graphite-vulkan-d3d12-dxgi-skia",
+    "revision": 1,
+    "status": "applied",
+    "requestId": "47203669-ced2-4713-bad2-c99522aad0f2",
+    "error": null
+  },
+  "physicalInput": "notVerified",
+  "restored": {
+    "schemaVersion": "doroti.dev/v1",
+    "sessionId": "1986edaf-8a63-49f7-8948-82de648594a2",
+    "runtimeId": "da6cf5c3-d266-4cf1-bd0f-3aca393653e7",
+    "processId": 41776,
+    "supported": true,
+    "host": "win-x64/windowsappsdk-2.4/top-level-dcomp-vulkan-presentation-synchronous/managed-graphite-vulkan-d3d12-dxgi-skia",
+    "revision": 2,
+    "status": "applied",
+    "requestId": "d381896a-4f5f-44d1-8b5b-a63fb326ed35",
+    "error": null
+  },
+  "processTerminated": true
+}

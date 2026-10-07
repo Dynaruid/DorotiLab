@@ -143,7 +143,7 @@ internal static class Ui
             child: Photo(path, width, height, radius, child));
     public static Widget RecordSleeve(int index, double size) => Photo($"record_box/album-{index}.jpg", size, size, 12,
         child: new ClipRRect(borderRadius: BorderRadius.CreateCircular(12), child: new Container(
-            decoration: new BoxDecoration(borderRadius: BorderRadius.CreateCircular(12),
+            decoration: new BoxDecoration(
                 border: new Border(top: new BorderSide(color: new Color(0x62ffffff), width: 2))))));
     public static Widget RecordLayer(Widget child, double ratio, double size, double height)
     {

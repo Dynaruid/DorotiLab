@@ -157,7 +157,10 @@ public abstract class DotnetToolExtension(string provider, IReadOnlyList<string>
         environment.Add(new("DOTNET_WATCH_RESTART_ON_RUDE_EDIT", "false"));
         var arguments = Arguments(request).ToList();
         if (request.Context.TargetFramework is { Length: > 0 } framework) arguments.AddRange(["-f", framework]);
-        if (request.Context.RuntimeIdentifier is { Length: > 0 } rid) arguments.AddRange(["-r", rid]);
+        // dev uses the runner's fixed RID, checked by PlatformMetadata before planning.
+        // A command-line RID becomes a global graph property in dotnet watch. The
+        // RID-free app reference then duplicates shared projects by path + TFM.
+        if (request.Operation != "dev" && request.Context.RuntimeIdentifier is { Length: > 0 } rid) arguments.AddRange(["-r", rid]);
         return new(Guid.NewGuid().ToString("N"), [new(values["dotnetpath"], arguments, Path.GetDirectoryName(request.Context.Project)!, environment)]);
     }
     public ValueTask DisposeAsync() { _disposed = true; return ValueTask.CompletedTask; }
