@@ -29,6 +29,13 @@ Doroti is independently implemented. Reference checkouts are not runtime depende
 - `PaletteRandom` adapts seeded Dart VM Random from `sdk/lib/_internal/vm/lib/math_patch.dart`; Copyright 2012, the Dart project authors, BSD-3-Clause, reproduced in [LICENSES/dart-BSD-3-Clause.txt](LICENSES/dart-BSD-3-Clause.txt).
 - Selected sources, hashes, and dependency closure: [image-pipeline/source-provenance.json](validation/image-pipeline/source-provenance.json). Existing NuGet `MaterialColorUtilities 0.3.0` supplies Lab/HCT color math.
 
+## Web development server dependencies
+
+- `Yarp.ReverseProxy 2.3.0` (Microsoft, MIT) forwards HTTP and WebSocket requests.
+- `Microsoft.AspNetCore.Components.WebAssembly.Server 10.0.11` (Microsoft, MIT) supplies development debugging support and its debug-proxy dependencies.
+- The development server uses ordinary NuGet `PackageReference` entries and is built locally in the application's development cache. `Doroti.Tool.Web` distributes the server project and C# sources; it does not repackage these external binaries. NuGet retains the upstream package license metadata and notices. These dependencies are not browser runtime assets.
+- Upstream licenses: [YARP](https://github.com/dotnet/yarp/blob/v2.3.0/LICENSE.txt), [ASP.NET Core](https://github.com/dotnet/aspnetcore/blob/v10.0.11/LICENSE.txt).
+
 ## SkiaSharp
 
 - Upstream: https://github.com/mono/SkiaSharp

@@ -1,0 +1,17 @@
+{
+  // Development only. Restart the web server after changing this file.
+  "server": {
+    "proxy": [
+      // {
+      //   "target": "http://localhost:5000/",
+      //   "prefix": "/api/",
+      //   "replace": "/"
+      // },
+      // {
+      //   "target": "http://localhost:5000/",
+      //   "regex": "^/versioned/(v\\d+)/(.*)",
+      //   "replace": "/$2?apiVersion=$1"
+      // }
+    ],
+  },
+}

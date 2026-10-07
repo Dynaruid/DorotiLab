@@ -1,1 +1,21 @@
-<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net10.0</TargetFramework><IsDorotiProduct>true</IsDorotiProduct><PackageId>Doroti.Tool.Web</PackageId><GenerateDependencyFile>true</GenerateDependencyFile><Description>Typed web provider tooling, without runtime/native host dependencies.</Description></PropertyGroup><ItemGroup><ProjectReference Include="../../../../Doroti/src/Doroti.Tooling.Extension.Sdk/Doroti.Tooling.Extension.Sdk.csproj"/><None Include="$(IntermediateOutputPath)doroti-provider.json" Pack="true" PackagePath="lib/net10.0/"/><None Include="$(OutputPath)$(AssemblyName).deps.json" Pack="true" PackagePath="lib/net10.0/"/></ItemGroup><PropertyGroup><DorotiProviderMetadataSource>$(MSBuildProjectDirectory)/doroti-provider.json</DorotiProviderMetadataSource><DorotiProviderMetadataFile>doroti-provider.json</DorotiProviderMetadataFile></PropertyGroup><Import Project="../../Doroti.Provider.PackageMetadata.targets" /></Project>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsDorotiProduct>true</IsDorotiProduct>
+    <PackageId>Doroti.Tool.Web</PackageId>
+    <GenerateDependencyFile>true</GenerateDependencyFile>
+    <Description>Typed web provider tooling and configurable development proxy, without runtime/native host dependencies.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../../Doroti/src/Doroti.Tooling.Extension.Sdk/Doroti.Tooling.Extension.Sdk.csproj" />
+    <None Include="$(IntermediateOutputPath)doroti-provider.json" Pack="true" PackagePath="lib/net10.0/" />
+    <None Include="$(OutputPath)$(AssemblyName).deps.json" Pack="true" PackagePath="lib/net10.0/" />
+    <None Include="buildTransitive/Doroti.Tool.Web.targets" Pack="true" PackagePath="buildTransitive/" />
+    <None Include="../devserver/Doroti.Web.DevServer.csproj;../devserver/Program.cs;../devserver/WebDevConfig.cs;../devserver/DevelopmentProxy.cs" Pack="true" PackagePath="devserver/" />
+  </ItemGroup>
+  <PropertyGroup>
+    <DorotiProviderMetadataSource>$(MSBuildProjectDirectory)/doroti-provider.json</DorotiProviderMetadataSource>
+    <DorotiProviderMetadataFile>doroti-provider.json</DorotiProviderMetadataFile>
+  </PropertyGroup>
+  <Import Project="../../Doroti.Provider.PackageMetadata.targets" />
+</Project>

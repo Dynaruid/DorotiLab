@@ -1,5 +1,15 @@
 # Maintained regression tests
 
+`web_dev_proxy.py` verifies the Web tool package includes only the development
+server sources/project, without repackaged external DLLs. It checks local server
+builds in the app cache, an unchanged NuGet source directory, source and isolated NuGet
+consumer startup, Blazor manifests/SPA fallback, isolation/custom headers, a real
+backend proxy, JSONC/CLI URL precedence, PEM HTTPS, SDK watch injection and missing-config/opt-out behavior.
+`packages/platforms/web/tests/Doroti.Web.DevServer.Tests` exercises ordered
+prefix/regex rewrites, config rejection, real HTTP bodies/headers/cookies/status
+and WebSocket forwarding. Both are in Developer/Release and use the 1200-second
+wrapper. See [Web development configuration](../docs/web-development-config.md).
+
 `webcil_cache.py` invokes the production MSBuild target against package, project
 and runner assemblies. It checks AOT/interpreter mode changes, initial cache
 invalidation, unchanged-cache reuse and changed content with old timestamps.

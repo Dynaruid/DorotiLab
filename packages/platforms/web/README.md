@@ -2,6 +2,15 @@
 
 Host and Target sources are owned by this independently versioned provider. Package identities are unchanged. Version: 0.4.0-beta; supported core: [0.4.0-alpha.1, 0.5.0). Native/bootstrap adoption and physical platform acceptance are tracked separately in the design-platform execution record.
 
+Web development supports an app-root `web_dev_config.jsonc` with ordered
+`server.proxy` prefix/regex rules and path replacement, host/port, PEM HTTPS and
+custom response headers. The same configuration is used by `dotnet run`, watch,
+the workspace CLI and VS Code. See [Web development configuration](../../../Doroti/docs/web-development-config.md)
+for examples, precedence and restart behavior. `Doroti.Tool.Web` carries only
+the development server project and C# sources. Runner startup restores normal
+NuGet dependencies and builds the server into the app's `.doroti/cache`; external
+DLLs are not bundled into the tool package or browser publish assets.
+
 The samples and app template show an HTML splash using the official
 `Doroti/docs/branding/doroti-app-icon.svg`, served by the host as
 `_content/Doroti.Host.Web/doroti-app-icon.svg`. Keep `#doroti-splash` outside

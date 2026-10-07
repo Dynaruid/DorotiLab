@@ -1,5 +1,10 @@
 # Development sessions and metadata Hot Reload
 
+Web runner sessions also read the app-root `web_dev_config.jsonc` when present.
+Its server-side API proxy uses the same runner path for `run`, `dev` and VS Code;
+runtime, debugger and browser-refresh routes remain local. Restart the server
+after changing configuration. See [Web development configuration](web-development-config.md).
+
 Android Stop now requires the session's kernel-held device/application lease, current runtime/session ID, PID and process-start identity. Duplicate device/package sessions are rejected before deployment. A crash releases the kernel lock; old session tokens cannot stop a new owner. Reused host listener identities suppress old ADB reverse removal. Host-only [regressions](../tests/android_development_bridge.py) and [doctor dev prerequisites](doctor.md) complement actual metadata/Restart/Stop device validation; this checkout's dated status is in the [full-review record](validation/2026-10-04-full-review.md).
 
 `doroti.ps1 describe -App <folder>` returns `doroti.cli-workspace/v2` JSON. Workspace v2 declares provider, target package, runner, TFM, RID and profile for each alias. `developmentTargets` comes from the resolved provider profile and current host; consumers must not invent missing or unsupported runners. iOS typed `dev` is currently Unsupported even though the standalone development helper has historical device evidence.

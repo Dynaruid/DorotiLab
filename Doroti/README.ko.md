@@ -220,7 +220,7 @@ Windows 11 24H2 이상에서는 실험 플래그 없이 `new WindowBackdropOptio
 | [`src/`](src/) | 프레임워크, 런타임, 렌더링, 호스트, 타깃, SDK |
 | [`templates/`](templates/) | `doroti-app` 앱 작업 공간 템플릿 |
 | [`eng/`](eng/) | 빌드, 실행, 검증, 패키징, 진단 스크립트 |
-| [`tools/`](tools/) | 프레임워크 도구 |
+| [`../tools/`](../tools/) | 저장소 개발 도구 |
 | [`tests/`](tests/) | 유지보수하는 회귀 테스트 소스 |
 | [`docs/`](docs/) | API 문서와 범위를 명시한 검증 보고서 |
 | [`../tools/Doroti.DartToCSharp/`](../tools/Doroti.DartToCSharp/) | 선택적 Dart·Flutter 소스 변환 컴파일러 |

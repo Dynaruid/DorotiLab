@@ -354,6 +354,11 @@ python Doroti/eng/serve-isolated-web.py ./temp/testing/sample2-web-release/publi
 일반 `dotnet run -c Release`는 AOT 게시물을 사용하지 않습니다. 빠른 개발 실행은
 `dotnet run --project ./samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj -c Debug`를 사용합니다.
 
+개발 중 API 프록시는 앱 루트의 [web_dev_config.jsonc](web_dev_config.jsonc)에
+`server.proxy` 규칙을 설정합니다. prefix/정규식 매칭과 경로 치환을 지원하며,
+설정을 바꾼 뒤에는 개발 서버를 재시작합니다.
+[Web 개발 서버 설정](../../Doroti/docs/web-development-config.md)에 사용 예제가 있습니다.
+
 ### WASM AOT 비교 실행
 
 Mono WASM AOT는 Release `publish`의 기본값입니다. 저장소 루트에서 비교용 산출물을

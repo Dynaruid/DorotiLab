@@ -75,6 +75,8 @@
   <Folder Name="/Platform Tooling/">
     <Project Path="../packages/platforms/windowsappsdk/tooling/Doroti.Tool.WindowsAppSdk.csproj" />
     <Project Path="../packages/platforms/web/tooling/Doroti.Tool.Web.csproj" />
+    <Project Path="../packages/platforms/web/devserver/Doroti.Web.DevServer.csproj" />
+    <Project Path="../packages/platforms/web/tests/Doroti.Web.DevServer.Tests/Doroti.Web.DevServer.Tests.csproj" />
     <Project Path="../packages/platforms/qt/tooling/Doroti.Tool.Qt.csproj" />
     <Project Path="../packages/platforms/maui/tooling/Doroti.Tool.Maui.csproj" />
   </Folder>

@@ -20,7 +20,7 @@ def source():
     # Current entry points and referenced planning archives, not deleted probe reports.
     docs = [ROOT / p for p in ("history/26-10-03/platform-gap-summary.md", "history/26-09-28/plan-summary.md", "README.md", "README.ko.md", "Doroti/README.md", "history/26-10-03/works/README.md",
         "Doroti/tests/README.md", "Doroti/docs/support-status.md", "Doroti/docs/desktop-windows.md",
-        "Doroti/docs/rendering-baselines.md", "Doroti/docs/web-host-architecture.md", "Doroti/docs/development-hot-reload.md", "tools/vscode-doroti/README.md",
+        "Doroti/docs/rendering-baselines.md", "Doroti/docs/web-host-architecture.md", "Doroti/docs/development-hot-reload.md", "Doroti/docs/web-development-config.md", "tools/vscode-doroti/README.md",
         "Doroti/docs/application-navigation.md", "Doroti/docs/desktop-window-context.md", "Doroti/docs/release-candidates.md",
         "Doroti/docs/platform-views/support-matrix.md", "Doroti/docs/validation/2026-10-04-web-structure.md",
         "samples/DorotiTestbedApp/README.md", "samples/DorotiSampleApp2/README.md",
@@ -92,6 +92,8 @@ def main(suite, extra=()):
             command("web-worker-lifecycle", "node", "--experimental-transform-types", "--test", "Doroti/tests/web_worker_lifecycle.mts")
             command("web-gl-frames", "node", "--experimental-transform-types", "--test", "Doroti/tests/web_gl_frames.mts")
             command("web-splash", "node", "--experimental-transform-types", "--test", "Doroti/tests/web_splash.mts")
+            command("web-dev-proxy-contract", "dotnet", "run", "--project", "packages/platforms/web/tests/Doroti.Web.DevServer.Tests/Doroti.Web.DevServer.Tests.csproj", "-c", "Release")
+            command("web-dev-proxy", sys.executable, "Doroti/tests/web_dev_proxy.py")
             command("webcil-cache", sys.executable, "Doroti/tests/webcil_cache.py")
             command("web-textures", "node", "--experimental-transform-types", "--experimental-vm-modules", "--test", "Doroti/tests/web_textures.mts")
             command("web-full-review", "node", "--experimental-transform-types", "--experimental-vm-modules", "--test", "Doroti/tests/web_full_review.mts")

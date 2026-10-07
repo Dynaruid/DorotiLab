@@ -193,7 +193,7 @@ Native controls and WebView have host-specific composition constraints; see the 
 | [`src/`](src/) | Framework, runtime, rendering, hosts, targets, and SDK |
 | [`templates/`](templates/) | `doroti-app` application workspace template |
 | [`eng/`](eng/) | Build, run, validation, packaging, and diagnostic scripts |
-| [`tools/`](tools/) | Framework tooling |
+| [`../tools/`](../tools/) | Repository developer tools |
 | [`tests/`](tests/) | Selected permanent regression sources |
 | [`docs/`](docs/) | API documentation and scoped validation reports |
 | [`../tools/Doroti.DartToCSharp/`](../tools/Doroti.DartToCSharp/) | Optional Dart/Flutter import compiler |

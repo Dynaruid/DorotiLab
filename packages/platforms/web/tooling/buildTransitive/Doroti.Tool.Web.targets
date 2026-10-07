@@ -1,0 +1,28 @@
+<Project>
+  <PropertyGroup>
+    <DorotiWebDevServerTargetsImported>true</DorotiWebDevServerTargetsImported>
+    <_DorotiWebDevServerProject Condition="Exists('$(MSBuildThisFileDirectory)../../devserver/Doroti.Web.DevServer.csproj')">$(MSBuildThisFileDirectory)../../devserver/Doroti.Web.DevServer.csproj</_DorotiWebDevServerProject>
+    <_DorotiWebDevServerProject Condition="'$(_DorotiWebDevServerProject)' == '' and Exists('$(MSBuildThisFileDirectory)../devserver/Doroti.Web.DevServer.csproj')">$(MSBuildThisFileDirectory)../devserver/Doroti.Web.DevServer.csproj</_DorotiWebDevServerProject>
+  </PropertyGroup>
+  <Target Name="DorotiConfigureWebDevelopmentServer" BeforeTargets="ComputeRunArguments" Condition="'$(DorotiTarget)' == 'Web' and '$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true' and '$(DorotiWebDevServer)' != 'false'">
+    <PropertyGroup>
+      <_DorotiWebDevConfigExplicit Condition="'$(DorotiWebDevConfig)' != ''">true</_DorotiWebDevConfigExplicit>
+      <DorotiWebDevConfig Condition="'$(DorotiWebDevConfig)' == ''">$([System.IO.Path]::Combine($([System.IO.Path]::GetDirectoryName('$(DorotiAppProject)')), 'web_dev_config.jsonc'))</DorotiWebDevConfig>
+      <DorotiWebDevConfig>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(DorotiWebDevConfig)'))</DorotiWebDevConfig>
+      <_DorotiWebAppRoot>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', $([System.IO.Path]::GetDirectoryName('$(DorotiAppProject)'))))</_DorotiWebAppRoot>
+      <DorotiWebDevServerCache Condition="'$(DorotiWebDevServerCache)' == ''">$(_DorotiWebAppRoot)/.doroti/cache/web-devserver/$(NETCoreSdkVersion)</DorotiWebDevServerCache>
+      <DorotiWebDevServerCache>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(DorotiWebDevServerCache)'))</DorotiWebDevServerCache>
+      <DorotiWebDevServerDll Condition="'$(DorotiWebDevServerDll)' == ''">$(DorotiWebDevServerCache)/bin/Doroti.Web.DevServer.dll</DorotiWebDevServerDll>
+      <_DorotiWebDotnet Condition="'$(DotNetHostPath)' != ''">$(DotNetHostPath)</_DorotiWebDotnet>
+      <_DorotiWebDotnet Condition="'$(_DorotiWebDotnet)' == ''">dotnet</_DorotiWebDotnet>
+    </PropertyGroup>
+    <Error Condition="'$(_DorotiWebDevConfigExplicit)' == 'true' and !Exists('$(DorotiWebDevConfig)')" Text="DorotiWebDevConfig does not exist: $(DorotiWebDevConfig)" />
+    <Error Condition="Exists('$(DorotiWebDevConfig)') and '$(_DorotiWebDevServerProject)' == ''" Text="Doroti Web development server sources are missing. Restore Doroti.Tool.Web." />
+    <Exec Condition="Exists('$(DorotiWebDevConfig)')" Command="&quot;$(_DorotiWebDotnet)&quot; build &quot;$(_DorotiWebDevServerProject)&quot; -c Release --artifacts-path &quot;$(DorotiWebDevServerCache)&quot; --output &quot;$(DorotiWebDevServerCache)/bin&quot; --nologo" />
+    <Error Condition="Exists('$(DorotiWebDevConfig)') and !Exists('$(DorotiWebDevServerDll)')" Text="Doroti Web development server build did not produce: $(DorotiWebDevServerDll)." />
+    <PropertyGroup Condition="Exists('$(DorotiWebDevConfig)')">
+      <RunCommand>$(_DorotiWebDotnet)</RunCommand>
+      <RunArguments>&quot;$(DorotiWebDevServerDll)&quot; --applicationpath &quot;$(TargetPath)&quot; --web-dev-config &quot;$(DorotiWebDevConfig)&quot; $(_RunExtraArguments)</RunArguments>
+    </PropertyGroup>
+  </Target>
+</Project>

@@ -1,4 +1,5 @@
 <Project>
+  <Import Project="../tooling/buildTransitive/Doroti.Tool.Web.targets" Condition="'$(DorotiWebDevServerTargetsImported)' != 'true' and Exists('$(MSBuildThisFileDirectory)../tooling/buildTransitive/Doroti.Tool.Web.targets')" />
   <PropertyGroup>
     <DorotiProviderBuildDirectory Condition="'$(DorotiProviderBuildDirectory)' == '' and Exists('$(MSBuildThisFileDirectory)../provider-build/Sdk.targets')">$(MSBuildThisFileDirectory)../provider-build/</DorotiProviderBuildDirectory>
     <DorotiProviderBuildDirectory Condition="'$(DorotiProviderBuildDirectory)' == ''">$(MSBuildThisFileDirectory)../../build/</DorotiProviderBuildDirectory>
