@@ -3,7 +3,7 @@
   "displayName": "Doroti",
   "icon": "images/icon.png",
   "description": "Create, edit and run Doroti applications with metadata Hot Reload.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publisher": "doroti-local",
   "repository": {
     "type": "git",
@@ -31,7 +31,20 @@
     "virtualWorkspaces": false
   },
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        { "id": "doroti", "title": "Doroti", "icon": "images/sidebar.svg" }
+      ]
+    },
+    "views": {
+      "doroti": [
+        { "id": "doroti.workspace", "name": "Workspace", "contextualTitle": "Doroti", "visibility": "visible" }
+      ]
+    },
     "commands": [
+      { "command": "doroti.showSidebar", "title": "Doroti: Show Sidebar" },
+      { "command": "doroti.refreshSidebar", "title": "Doroti: Refresh Sidebar", "icon": "$(refresh)" },
+      { "command": "doroti.openSettings", "title": "Doroti: Open Settings", "icon": "$(gear)" },
       {
         "command": "doroti.createProject",
         "title": "Doroti: Create Project",
@@ -96,6 +109,15 @@
       }
     ],
     "menus": {
+      "view/title": [
+        { "command": "doroti.run", "when": "view == doroti.workspace && !doroti.running && isWorkspaceTrusted", "group": "navigation@1" },
+        { "command": "doroti.hotReload", "when": "view == doroti.workspace && doroti.running && isWorkspaceTrusted", "group": "navigation@2" },
+        { "command": "doroti.stop", "when": "view == doroti.workspace && doroti.running", "group": "navigation@3" },
+        { "command": "doroti.refreshSidebar", "when": "view == doroti.workspace", "group": "navigation@4" },
+        { "command": "doroti.createProject", "when": "view == doroti.workspace", "group": "doroti@1" },
+        { "command": "doroti.showLogs", "when": "view == doroti.workspace", "group": "doroti@2" },
+        { "command": "doroti.openSettings", "when": "view == doroti.workspace", "group": "doroti@3" }
+      ],
       "editor/title": [
         {
           "command": "doroti.run",

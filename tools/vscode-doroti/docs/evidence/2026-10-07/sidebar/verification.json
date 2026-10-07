@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-07",
+  "version": "0.2.1",
+  "baseRevision": "1a4687486b78b3389d482972049958b57940ebbd",
+  "nodeTests": {
+    "passed": 12,
+    "failed": 0
+  },
+  "package": {
+    "path": "tools/vscode-doroti/doroti-0.2.1.vsix",
+    "sha256": "118dfb2c5358ef05979cd3f58fe8b46fd80738acd5e0d4de776d20c073ea9c16",
+    "size": 9642459,
+    "testedCodeAndIconMatch": true
+  },
+  "installedTests": {
+    "stable": {
+      "version": "0.2.1",
+      "vscodeVersion": "1.140.0",
+      "installedVsix": "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\vscode-sidebar\\2026-10-07\\installed\\extensions\\doroti-local.doroti-0.2.1",
+      "nativeView": "PASS",
+      "stateGuards": "PASS",
+      "providerTargets": "PASS",
+      "runReloadRestartStopFixture": "PASS",
+      "refreshDeduplication": "PASS",
+      "editorContext": "PASS",
+      "nativeAppReload": "notVerified"
+    },
+    "minimum": {
+      "version": "0.2.1",
+      "vscodeVersion": "1.100.0",
+      "installedVsix": "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\vscode-sidebar\\2026-10-07\\minimum-installed\\extensions\\doroti-local.doroti-0.2.1",
+      "nativeView": "PASS",
+      "stateGuards": "PASS",
+      "providerTargets": "PASS",
+      "runReloadRestartStopFixture": "PASS",
+      "refreshDeduplication": "PASS",
+      "editorContext": "PASS",
+      "nativeAppReload": "notVerified"
+    },
+    "restricted": {
+      "version": "0.2.1",
+      "installedVsix": "C:\\Users\\parti\\Labo\\DorotiLab\\temp\\testing\\vscode-sidebar\\2026-10-07\\restricted-installed\\extensions\\doroti-local.doroti-0.2.1",
+      "nativeView": "PASS",
+      "restrictedExecution": "PASS",
+      "restrictedSnippet": "PASS"
+    }
+  },
+  "sourceSha256": {
+    "package.json": "1b8383d4b2ba71168f0495c07d2cd385edf6be778da3c7cdb3fc9a3fc7eb21fc",
+    "package-lock.json": "d3e31de0844ceeb61295a618c9bc7b9eb0abc96778a074809949a0dec651ac4f",
+    "src/extension.ts": "e46c7ec59115d6a1628977ca575a56d70087e2f82dec6ed2c8597f646aa4bbcf",
+    "src/sidebar.ts": "3313d951180060078aea29c48e0a57eab41b2d4618da4d8496051ac893eacd3b",
+    "src/test/sidebarHost.ts": "b9c1a7e9c5c5f8bd3aecd6559b963c0d0ae49831f667b86b2cfcd2e31b82cf16",
+    "src/test/runHost.ts": "2efa799bc79e9083f18a68fccec82137ebab7665b3ffb117609935a7e5f89e44",
+    "images/sidebar.svg": "82ce5d1a871e1427ccb9afdad16a27dd71d3037d100fd70b6f766dacee48ad11"
+  },
+  "notVerified": [
+    "physical mouse/keyboard",
+    "IME",
+    "accessibility",
+    "native application metadata reload",
+    "macOS/Linux",
+    "Marketplace publication"
+  ]
+}

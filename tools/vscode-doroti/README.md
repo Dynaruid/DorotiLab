@@ -12,12 +12,14 @@ cd <repository>/tools/vscode-doroti
 npm ci
 npm test
 npm run package
-code --install-extension doroti-0.2.0.vsix
+code --install-extension doroti-0.2.1.vsix
 ```
 
 Set `doroti.cliPath` to the absolute repository `Doroti/eng/doroti.ps1` path for development commands. Editing uses the bundled .NET 10/Roslyn 5.9 helper and does not require a repository checkout, CLI path, project selection or an app session. Install the Microsoft C# extension (`ms-dotnettools.csharp`) for normal IntelliSense, signature help, diagnostics, navigation and general C# refactoring. Doroti supplies widget construction templates and structural assists alongside it; fallback type suggestions are suppressed while C# is active. Restore the application's declared dependencies before semantic editing. Suggestions never restore, build, install dependencies or save source files.
 
 Use **Doroti: Create Project**, choose a name and parent folder, then **Select Project**, **Select Target**, **Run**. Existing folders are never overwritten. A canceled/failed creation may leave partial files at the logged destination. The manifest and repository CLI determine available runners. One local workspace folder and one running session are supported. Restricted Mode allows snippets/editing, but cannot execute creation, CLI or reload commands. No launch/tasks settings are overwritten.
+
+Click the **Doroti** symbol in the left Activity Bar, or run **Doroti: Show Sidebar**, to open the native **Workspace** view. **Project** selects the application and provider development target, opens its manifest and creates projects. Expand **Select Target** to choose a declared target directly. **Development** shows connection/reload status and runtime revision, with Run, Hot Reload, Restart, Stop and Show Logs. **Widgets** contains the existing new-widget, snippet and wrap commands for the active Doroti application C# editor. Unavailable actions show their reason and have no click command. The view title has session controls, Refresh Sidebar and an overflow menu with Doroti settings. Opening or refreshing the sidebar reads local context without invoking the CLI or building the app. You can move the view to the secondary sidebar or panel using VS Code's view menus. The monochrome Activity Bar asset (`images/sidebar.svg`) is derived from the [official symbol](../../Doroti/docs/branding/doroti-symbol.svg).
 
 The editor title and status bar contain **Hot Reload**. For a provider-advertised Debug target, edit a C# method body, click Hot Reload, and choose Save and Hot Reload. `dotnet watch` applies the actual metadata delta; a runtime acknowledgment follows widget/render reassembly on the owning UI queue. Saving files normally uses the same watcher. A no-op save does not claim a reload. Compilation errors appear in **Show Logs**; fix the code and retry. Unsupported edits require **Restart (resets state)**. The runtime ID and revision distinguish restarts from state-preserving reloads.
 

@@ -7,6 +7,7 @@ import { start, stop, completion } from './processes';
 import { Project, Runtime, parseProject, validateName, classifyOutput } from './contracts';
 import { registerEditing } from './editing';
 import { WebBridge } from './webBridge';
+import { DorotiSidebar, SidebarState } from './sidebar';
 
 const exclude = '**/{bin,obj,temp,node_modules,reference,.doroti,.git}/**';
 interface Session { id: string; directory: string; child: ChildProcess; runtime?: Runtime; pending?: string; timer?: NodeJS.Timeout; deadline?: number; restartRequired?: boolean; stopping?: boolean; problem?: string; bridge?: WebBridge; }
@@ -22,6 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
     let busy = false;
     let operation: ChildProcess | undefined;
     let lifetime = 0;
+    let sidebar: DorotiSidebar | undefined;
     const config = () => vscode.workspace.getConfiguration('doroti');
     const development = () => project?.developmentSupport.find(value => value.platform === target)?.development;
 
@@ -39,6 +41,11 @@ export function activate(context: vscode.ExtensionContext) {
         void vscode.commands.executeCommand('setContext', 'doroti.running', !!session || busy);
         void vscode.commands.executeCommand('setContext', 'doroti.reloadSupported', supported);
         void vscode.commands.executeCommand('setContext', 'doroti.reloading', !!session?.pending);
+        sidebar?.update(sidebarState(message));
+    }
+    function sidebarState(message?: string): SidebarState {
+        return { project, target, running: !!session, busy, stopping: !!session?.stopping, runtime: session?.runtime,
+            pending: session?.pending, restartRequired: !!session?.restartRequired, problem: session?.problem, message };
     }
     async function cli(): Promise<string> {
         const configured = config().get<string>('cliPath');
@@ -103,7 +110,7 @@ export function activate(context: vscode.ExtensionContext) {
         lifetime++;
         const current = session;
         if (current) {
-            current.stopping = true; clearInterval(current.timer); await current.bridge?.close();
+            current.stopping = true; display('Stopping'); clearInterval(current.timer); await current.bridge?.close();
             if (development()?.usesStopSignal && current.child.exitCode === null && current.child.signalCode === null) {
                 await fs.writeFile(path.join(current.directory, 'stop.json'), JSON.stringify({ sessionId: current.id }));
                 const deadline = Date.now() + 30000;
@@ -221,9 +228,14 @@ export function activate(context: vscode.ExtensionContext) {
         finally { if (name !== 'stop' && name !== 'showLogs') busy = false; display(); }
     }));
     const editing = registerEditing(context, logs);
+    sidebar = new DorotiSidebar(sidebarState(), async doc => !!await editing.contexts.get(doc));
+    context.subscriptions.push(sidebar,
+        vscode.commands.registerCommand('doroti.showSidebar', () => vscode.commands.executeCommand('workbench.view.extension.doroti')),
+        vscode.commands.registerCommand('doroti.refreshSidebar', () => sidebar?.refresh()),
+        vscode.commands.registerCommand('doroti.openSettings', () => vscode.commands.executeCommand('workbench.action.openSettings', '@ext:doroti-local.doroti')));
     context.subscriptions.push(logs, status, reload, vscode.workspace.onDidGrantWorkspaceTrust(() => display()));
     shutdown = async () => { try { await editing.assist.shutdown(); } finally { await endSession(); } }; display();
-    return { editing, getState: () => ({ project, target, running: !!session, runtime: session?.runtime, pending: session?.pending, problem: session?.problem }) };
+    return { editing, sidebar, getState: () => ({ project, target, running: !!session, runtime: session?.runtime, pending: session?.pending, problem: session?.problem }) };
 }
 function within(root: string, file: string) { const relative = path.relative(root, file); return relative !== '..' && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative); }
 export async function deactivate() { await shutdown?.(); shutdown = undefined; }
