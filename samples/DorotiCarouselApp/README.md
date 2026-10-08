@@ -4,6 +4,8 @@
 재사용 캐러셀은 [packages/Doroti.CustomCarousel](../../packages/Doroti.CustomCarousel/README.md),
 화면 코드는 [src/App.cs](src/App.cs)에 있습니다.
 
+## 사용법
+
 홈의 미리보기를 세로로 드래그하거나 ↑/↓ 또는 하단 선택 표시로 선택한 뒤 **Open**을 누릅니다.
 밝은 오프화이트 배경과 큰 실제 이미지 미리보기, 간결한 타이포그래피로 구성하며 작은 화면에서는 제목과 조작부를 조정합니다.
 각 데모에서 터치·마우스 드래그와 해당 축의 스크롤 입력을 사용합니다.
@@ -17,13 +19,11 @@
 | Digital Wallet | 역방향 가로 입력과 카드 겹침·fade/blur, 선택 계좌 잔액 표시 |
 | Record Box | 세로 루프, 깊이 방향으로 이어지는 9장 앨범과 원근 기울기. 드러난 앨범 가장자리를 눌러 선택 |
 
-원본 사진과 카드 이미지는 `assets/images/`에 복사하여 공통 앱 DLL에 내장했습니다.
-원본 BSD 3-Clause 라이선스는
-[assets/LICENSE.flutter_custom_carousel](assets/LICENSE.flutter_custom_carousel)에 포함했습니다.
-`flutter_animate` 효과는 Doroti의 Transform/Opacity/ImageFiltered 조합으로 재작성했습니다.
-원본 shimmer/tint, Hero 전환과 지갑 거래 목록은 이 예제에 포함하지 않습니다.
+## 실행
 
-저장소 루트에서 실행합니다.
+저장소 루트 `DorotiLab`에서 실행합니다.
+[global.json](../../global.json)에 지정된 .NET SDK와 대상 플랫폼의 빌드 도구가 필요합니다.
+WebAssembly 빌드에는 `wasm-tools` 워크로드가 필요합니다.
 
 ```powershell
 # Windows App SDK
@@ -32,6 +32,8 @@ pwsh -File Doroti/eng/doroti.ps1 run --app samples/DorotiCarouselApp --platform 
 # Web 개발 서버
 dotnet run --project samples/DorotiCarouselApp/web/DorotiCarouselApp.Web.csproj -c Debug
 ```
+
+### Web Release 게시
 
 Web Release publish는 저장소 기본 WASM AOT 설정을 사용합니다.
 
@@ -46,12 +48,12 @@ python Doroti/eng/serve-isolated-web.py temp/testing/carousel-web/wwwroot --port
 다른 플랫폼은 해당 호스트와 SDK에서 같은 CLI의 `--platform` 값을 바꿔 실행합니다.
 예: `pwsh -File Doroti/eng/doroti.ps1 run --app samples/DorotiCarouselApp --platform android`.
 
-```powershell
-# Debug assertion을 포함한 위젯·포인터 회귀 및 560×850 / 390×740 화면 캡처
-python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project packages/Doroti.CustomCarousel/tests/Doroti.CustomCarousel.Tests -c Debug -- temp/testing/carousel
-```
+## 소스와 라이선스
 
-Windows Release 빌드·GPU 첫 화면 표시/정상 종료, Web Debug 빌드·Chrome 첫 화면/데모 진입,
-CPU 위젯/합성 포인터 검사를 확인했습니다. 자세한 범위는 [검증 기록](docs/validation.md)에 있습니다.
-Windows에서 트랙패드/휠을 멈췄다가 시작할 때의 지연은 수정 후 사용자가 해결을 확인했습니다.
-Android/iOS/macOS/Linux의 실제 실행, Web Release AOT publish, 전체 물리 입력 수락·scanout은 별도 검증 대상입니다.
+원본 사진과 카드 이미지는 `assets/images/`에 있으며 공통 앱 DLL에 내장됩니다.
+원본 BSD 3-Clause 라이선스는
+[assets/LICENSE.flutter_custom_carousel](assets/LICENSE.flutter_custom_carousel)에 있습니다.
+애니메이션 효과는 Doroti의 Transform/Opacity/ImageFiltered 조합을 사용합니다.
+원본 shimmer/tint, Hero 전환과 지갑 거래 목록은 이 예제에 포함하지 않습니다.
+
+회귀 검사 명령은 [검사 안내](docs/validation.md)에 있습니다.

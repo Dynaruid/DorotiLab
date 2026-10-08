@@ -11,16 +11,13 @@
   <Project Path="src/Doroti.Framework.Scheduler/Doroti.Framework.Scheduler.csproj" />
   <Project Path="src/Doroti.Framework.Semantics/Doroti.Framework.Semantics.csproj" />
   <Project Path="src/Doroti.Framework.Services/Doroti.Framework.Services.csproj" />
-  <Project Path="src/Doroti.Framework.WidgetPreviews/Doroti.Framework.WidgetPreviews.csproj" />
   <Project Path="src/Doroti.Framework.Widgets/Doroti.Framework.Widgets.csproj" />
   <Project Path="src/Doroti.Graphics.DirectX/Doroti.Graphics.DirectX.csproj" />
-  <Project Path="src/Doroti.Graphics.DisplayList/Doroti.Graphics.DisplayList.csproj" />
   <Project Path="../packages/platforms/qt/Doroti.Host.Qt/Doroti.Host.Qt.csproj" />
   <Project Path="../packages/platforms/web/Doroti.Host.Web/Doroti.Host.Web.csproj" />
   <Project Path="../packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/Doroti.Host.WindowsAppSdk.csproj" />
   <Project Path="src/Doroti.Hosting/Doroti.Hosting.csproj" />
   <Project Path="src/Doroti.Desktop/Doroti.Desktop.csproj" />
-  <Project Path="src/Doroti.Desktop.Widgets/Doroti.Desktop.Widgets.csproj" />
   <Project Path="src/Doroti.Runtime/Doroti.Runtime.csproj" />
   <Project Path="src/Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj" />
   <Project Path="src/Doroti.Skia.Fonts/Doroti.Skia.Fonts.csproj" />

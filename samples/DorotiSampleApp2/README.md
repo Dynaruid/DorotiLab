@@ -1,6 +1,23 @@
 # DorotiSampleApp2
 
-Cupertino 스타일의 독립 Doroti 샘플 앱입니다. 공통 C# UI와 Android, iOS, Linux, macOS, Mac Catalyst, Windows, Web 실행 프로젝트로 구성됩니다.
+Cupertino 스타일의 독립 Doroti 샘플 앱입니다. 공통 C# UI를 Android, iOS, Linux, macOS, Mac Catalyst, Windows, Web 실행 프로젝트에서 사용합니다.
+
+## 빠른 시작
+
+모든 명령은 저장소 루트 `DorotiLab`에서 실행합니다.
+[global.json](../../global.json)에 지정된 .NET SDK와 대상 플랫폼의 빌드 도구가 필요합니다.
+
+```powershell
+# Windows App SDK
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiSampleApp2 -Platform windows
+
+# Web 개발 서버
+dotnet run --project ./samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj -c Debug
+```
+
+Web 개발 서버가 출력하는 주소를 브라우저에서 엽니다. WebAssembly 빌드에는 `wasm-tools` 워크로드가 필요합니다.
+
+## 살펴볼 기능
 
 - **Components**: 카운터 버튼, 스위치, 슬라이더, 활동 표시기, 다이얼로그
 - **Profile**: 이름 입력과 인사말, 탭 전환 시 입력 상태 유지
@@ -9,57 +26,16 @@ Cupertino 스타일의 독립 Doroti 샘플 앱입니다. 공통 C# UI와 Androi
 - **Fonts**: 글꼴·굵기 비교와 여러 줄 입력, 자동 줄바꿈 및 키보드 커서 이동
 - **Upload**: 이미지·텍스트 파일 다중 선택과 OS 드래그 앤 드롭, 이미지 미리보기·텍스트 내용·파일 이름/크기 표시, 개별 삭제·전체 지우기
 
-## 파일 업로드 예제
-
-**Upload** 탭에서 **파일 선택**을 누르거나 페이지 안에 파일을 드래그해서 놓습니다.
-PNG/JPG/JPEG/GIF/WEBP/BMP 이미지는 최대 10 MiB, TXT/MD/CSV/JSON/LOG 텍스트는
-최대 1 MiB이며 목록은 8개까지 유지합니다. UTF-8 또는 BOM이 있는 UTF-16 텍스트를
-읽고, 긴 내용은 처음 4,000자까지만 표시합니다. 이미지 디코딩에 실패하면 해당 카드에 오류를 표시합니다.
-
-이 예제는 파일을 앱 메모리로 읽어 미리 보는 동작이며 서버 업로드나 디스크 저장은 포함하지 않습니다.
-파일 선택·드롭의 지원 여부는 실행 호스트에서 확인하며, 파일 드롭이 없는 환경에서는 선택 버튼을 사용합니다.
-드롭은 Upload 탭이 보일 때만 Copy로 수신합니다. 파일 읽기 권한은 읽기 완료/취소 후 해제하고,
-목록은 탭을 전환해도 유지되며 앱을 닫으면 초기화됩니다.
-구현은 [src/FileUploadPage.cs](src/FileUploadPage.cs)에 있습니다.
-
-## Variable Blur 예제
-
-Variable Blur 페이지는 리스트 상단 180 논리 단위에 `BackdropFilter`와
-`ImageFilterConfig.CreateVariableBlur(startSigma: 강도, endSigma: 0, resolutionScale: 0.25,
-adaptiveResolution: true, kernel: VariableBlurKernel.fastGaussian)`를 기본으로 적용합니다.
-라디오 버튼으로 다음 다섯 가지 모드를 비교할 수 있습니다.
-
-- **Full quality**: 전체 구간을 원본 해상도로 처리합니다.
-- **Adaptive**: 약한 블러와 선명한 끝부분의 세부를 보존할 때 선택합니다. 약한 블러는 원본 해상도, 강한 블러는 1/2·1/4 해상도로 처리하고 경계를 혼합합니다.
-- **Fast adaptive** (기본): 강도에 맞춰 Gaussian 가중치를 계산하고 인접 샘플 쌍을 bilinear 샘플링으로 묶습니다. 강한 구간에서도 윤곽이 여러 장 겹치지 않도록 샘플 수를 늘립니다. 작업 해상도 sigma 2~3에서는 Gaussian 커널과 혼합합니다. 강도가 높아지면 처리 비용도 증가할 수 있습니다.
-- **Fixed 1/4**: 부드러운 스크롤을 우선하는 선택입니다. 전체 구간을 가로·세로 각각 약 1/4 해상도의 Gaussian으로 처리합니다. 약한 구간과 선명한 끝부분도 축소 입력을 사용해 작은 글자·가는 선·사진 세부가 부드러워질 수 있습니다.
-- **Dual Kawase**: 강도별 결과를 공유 피라미드에서 생성하고 분산을 보간합니다. 선명한 끝부분에는 Gaussian을 사용합니다. 정확한 Gaussian과는 다른 근사 모드입니다.
-
-별도의 스위치로 블러 전체를 켜고 끕니다.
-위쪽은 흐리고 아래쪽은 선명하며, 블러 영역에서도 리스트를 스크롤할 수 있습니다.
-구현은 [src/VariableBlurPage.cs](src/VariableBlurPage.cs)에 있습니다.
-VariableBlur에는 GPU 렌더러가 필요하며, 기본 CPU 래스터 검증에는 이 탭의 블러 렌더링이 포함되지 않습니다.
-
-설정과 입력값은 앱 실행 중에만 유지됩니다. Cupertino Icons 1.0.9 폰트와 해당 라이선스는 `assets/fonts`에 포함되어 있습니다.
-
-저장소 루트 `DorotiLab`에서 실행합니다. 루트 `global.json`에 지정된 .NET SDK와 플랫폼별 빌드 도구가 필요합니다.
+설정과 입력값은 앱 실행 중에만 유지됩니다.
 
 ## 플랫폼 선택
 
-Android 개발 중 C# 변경을 적용하려면 USB 기기 또는 emulator 하나를 연결하고 다음 명령을 실행합니다. Debug Mono 메타데이터 핫리로드 세션을 시작하며, 지원되는 메서드 본문 변경은 저장하면 앱 상태를 유지하면서 적용됩니다.
-
-```powershell
-pwsh -NoProfile -File Doroti/eng/doroti.ps1 dev -App samples/DorotiSampleApp2 -Platform android
-```
-
-여러 기기가 연결되어 있으면 `-Device <ADB serial>`을 추가합니다. VS Code의 **Terminal → Run Task → Doroti: Android Hot Reload**에서 `DorotiSampleApp2`를 선택하거나, Doroti 확장 기능의 **Select Project → Select Target → android → Run**을 사용합니다. 확장 기능의 **Hot Reload** 버튼은 기기에서 변경된 화면 프레임이 완료된 뒤 성공을 표시합니다. .NET SDK 10.0.400+, Android workload/platform-tools와 Python 3이 필요합니다. Kotlin/Java·Android 리소스·프로젝트 변경과 미지원 C# 변경은 Restart가 필요하고, 종료는 확장 기능의 Stop 또는 CLI Ctrl+C를 사용합니다. [개발 계약과 검증 범위](../../Doroti/docs/development-hot-reload.md)를 참고하세요.
-
-`doroti-workspace.json`에 모든 플랫폼 실행 프로젝트가 등록되어 있습니다.
+[doroti-workspace.json](doroti-workspace.json)에 플랫폼 실행 프로젝트가 등록되어 있습니다.
 
 | CLI 플랫폼 | 실행 프로젝트 | 지원 RID / 호스트 |
 | --- | --- | --- |
-| `android` | `android/DorotiSampleApp2.Android.csproj` | `android-arm64` (기본), `android-x64` / MAUI |
-| `ios` | `ios/DorotiSampleApp2.iOS.csproj` | `iossimulator-arm64` (기본), `iossimulator-x64`, `ios-arm64` / UIKit |
+| `android` | `android/DorotiSampleApp2.Android.csproj` | `android-arm64`, `android-x64` / MAUI |
+| `ios` | `ios/DorotiSampleApp2.iOS.csproj` | `iossimulator-arm64`, `iossimulator-x64`, `ios-arm64` / UIKit |
 | `linux` | `linux/DorotiSampleApp2.Linux.csproj` | `linux-x64` / Qt Quick |
 | `macos` | `macos/DorotiSampleApp2.MacOS.csproj` | `osx-arm64` / AppKit |
 | `maccatalyst` | `macos/DorotiSampleApp2.MacCatalyst.csproj` | `maccatalyst-arm64` / MAUI |
@@ -71,87 +47,63 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 describe -App ./samples/DorotiSamp
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build -App ./samples/DorotiSampleApp2 -Platform android -Configuration Debug
 ```
 
-`-Platform`으로 위 표의 대상을 선택합니다. `build`는 빌드, `publish`는 배포 산출물 생성에 사용합니다.
-공통 UI, Cupertino 아이콘과 앱 ID(`dev.doroti.sample2`)를 공유하며 AppKit 앱 ID는 `dev.doroti.sample2.macos`입니다.
-
-Windows MAUI 비교용 프로젝트는 `windows/DorotiSampleApp2.Windows.csproj`입니다.
-Windows MAUI의 Upload 탭도 HWND 파일 선택·읽기·미리보기를 제공합니다.
-workspace CLI의 Windows 기본 대상은 위 표의 Windows App SDK를 유지합니다.
-네이티브 호스트는 공통 C 정책만 사용합니다. 프레임 설정 없이 실행하거나
-`DOROTI_NATIVE_FRAME_MODE=C`를 지정합니다. A/B와 legacy 프레임 설정은 시작 시 거절합니다.
-[설정·API 변경 안내](../../Doroti/docs/migrations/native-frame-c-only.md)를 참고하세요.
-GPU consumer 수명과 직렬 fallback은 [공통 프레임 문서](../../Doroti/docs/native-frame-pipeline.md)를 참고하세요.
-Android는 같은 이름의 `--es` Intent 인자를 사용합니다. Sample2의
-`DOROTI_VARIABLE_BLUR_BENCHMARK`, `DOROTI_VARIABLE_BLUR_BENCHMARK_SIGMA`,
-`DOROTI_VARIABLE_BLUR_BENCHMARK_STATIC`도 cold launch의 `--es`로 전달할 수 있습니다.
-이 인자 없이 실행하면 일반 Cupertino 페이지와 Fast adaptive 기본값을 사용합니다.
+`-Platform`으로 위 표의 대상을 선택합니다. `build`는 빌드, `run`은 실행, `publish`는 배포 산출물 생성에 사용합니다.
+공통 UI와 앱 ID `dev.doroti.sample2`를 공유하며 AppKit 앱 ID는 `dev.doroti.sample2.macos`입니다.
+Windows MAUI 비교용 프로젝트는 `windows/DorotiSampleApp2.Windows.csproj`이며 CLI 별칭은 `windows-maui`입니다.
 
 ## Android
 
-Android 워크로드, Android SDK와 JDK 17이 필요합니다. 네이티브 바인딩은 포함된 Gradle wrapper로 빌드합니다.
-Vulkan 1.2를 지원하는 기기 또는 에뮬레이터가 필요합니다.
+Android 워크로드, Android SDK, JDK 17과 Vulkan 1.2를 지원하는 기기 또는 에뮬레이터가 필요합니다.
+네이티브 바인딩은 포함된 Gradle wrapper로 빌드합니다.
 
 ```powershell
 dotnet build ./samples/DorotiSampleApp2/android/DorotiSampleApp2.Android.csproj -c Debug
 dotnet build ./samples/DorotiSampleApp2/android/DorotiSampleApp2.Android.csproj -c Debug -t:Run -p:RuntimeIdentifier=android-arm64
 ```
 
-x64 에뮬레이터에서는 `-p:RuntimeIdentifier=android-x64`를 사용합니다. RID별 빌드 산출물은 분리됩니다.
+x64 에뮬레이터에서는 `-p:RuntimeIdentifier=android-x64`를 사용합니다.
 
-### Android 기기·에뮬레이터에 설치
+### 기기·에뮬레이터에 설치
 
-[공용 Android 배포 도구](../../helpers/deploy-helper/deploy-android.ps1)가 앱과 기기를 선택하고
-빌드·APK 업데이트 설치·실행을 처리합니다. .NET 10 CLI와 PowerShell 7이 필요하며 Python은 필요하지 않습니다.
-실기기에서 USB 디버깅과 컴퓨터의 연결을 허용하거나 에뮬레이터를 먼저 시작하세요.
-`adb`는 PATH·Android SDK 설치 폴더에서 찾으며 `-AdbPath`로 지정할 수도 있습니다.
-
-아래 명령은 **저장소 루트 `DorotiLab`**에서 실행합니다. 선택지가 여러 개면 번호로 선택하고,
-`-Device` 또는 호환 옵션 `-Serial`로 `adb devices -l`의 정확한 시리얼을 지정할 수 있습니다.
+[공용 Android 배포 도구](../../helpers/deploy-helper/deploy-android.ps1)가 기기를 선택하고 빌드·업데이트 설치·실행을 처리합니다.
+.NET 10 CLI와 PowerShell 7이 필요합니다. 실기기는 USB 디버깅과 컴퓨터의 연결을 허용하고, 에뮬레이터는 먼저 시작하세요.
 
 ```powershell
 # .NET 10 / Release / Mono Profiled AOT
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Sample2
 
-# .NET 10 CoreCLR JIT / ReadyToRun
-pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Sample2 -Mode CoreClrJit
-pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Sample2 -Mode CoreClrR2R
-
-# .NET 11 CoreCLR ReadyToRun (기본) / JIT
-pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Sample2 -DotnetVersion 11
-pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Sample2 -DotnetVersion 11 -Mode CoreClrJit
-
-# 실행 중인 에뮬레이터의 ABI를 확인해 ARM64 또는 x64 빌드
+# x64 또는 ARM64 에뮬레이터
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Sample2 -Target emulator -Device emulator-5554 -Configuration Debug
 
-# 목록 / 선택과 빌드 명령 확인
+# 기기 목록 / 빌드 명령 확인
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -List
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Sample2 -DryRun
 ```
 
-.NET 10 Release의 기본 모드는 `MonoAot`, Debug는 `Mono`이며 .NET 11은 `CoreClrR2R`입니다.
-.NET 10 Android CoreCLR은 실험적 기능입니다. .NET 11은
-[전용 global.json](android/sdk/net11/global.json)의 SDK `11.0.100-rc.1.26425.128`과
-MAUI `11.0.0-rc.1.26451.6`을 사용합니다. 선택한 SDK의 Android/MAUI workload를 미리 설치하세요.
-이 .NET 11 프로필은 `CoreClrJit`·`CoreClrR2R`을 지원합니다.
-
-지원 ABI는 `arm64-v8a`·`x86_64`이며 빌드는 20분 제한으로 실행합니다.
-산출물은 앱·플랫폼·모드·SDK·구성·RID별로 분리합니다.
-예: `Doroti/artifacts/sample2-android-jit-net11-release-arm64`.
-앱 ID `dev.doroti.sample2`의 기존 설치를 `install -r`로 업데이트해 앱 데이터를 유지합니다.
-기본 실행은 기존 프로세스를 종료하고 다시 시작합니다. `-NoLaunch`는 설치만 합니다.
-빌드 또는 설치가 실패하면 다음 단계로 진행하지 않고, 성공 시 APK·PID·logcat 명령을 출력합니다.
-프로세스 실행 확인과 별도로 화면 표시·터치 동작은 기기에서 확인하세요.
-
+여러 기기가 연결되어 있으면 `-Device <ADB serial>`을 지정합니다. 기존 앱 데이터는 유지하며 `-NoLaunch`는 설치만 합니다.
+.NET 10의 기본 모드는 Release에서 `MonoAot`, Debug에서 `Mono`입니다.
+.NET 10 CoreCLR은 실험적 기능이며 .NET 11 프로필은 `CoreClrJit`·`CoreClrR2R`을 지원합니다.
+런타임·SDK 선택과 전체 옵션은 [배포 도구 사용법](../../helpers/deploy-helper/README.md)을 참고하세요.
 기존 [android/deploy-android.ps1](android/deploy-android.ps1)은 공용 도구로 전달하는 호환 진입점입니다.
-전체 옵션·런타임 설정·직접 .NET 실행은 [deploy-helper 사용법](../../helpers/deploy-helper/README.md)을 참고하세요.
+
+### Android Hot Reload
+
+USB 기기 또는 에뮬레이터를 연결하고 Debug 개발 세션을 시작합니다.
+
+```powershell
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 dev -App ./samples/DorotiSampleApp2 -Platform android
+```
+
+.NET SDK 10.0.400 이상, Android workload/platform-tools와 Python 3이 필요합니다.
+지원되는 C# 메서드 본문 변경은 저장하면 앱 상태를 유지하면서 적용됩니다.
+Kotlin/Java·Android 리소스·프로젝트 변경과 미지원 C# 변경은 Restart가 필요합니다.
+VS Code Doroti 확장에서도 프로젝트와 `android`를 선택한 뒤 Run을 사용할 수 있습니다. 종료는 Stop 또는 CLI Ctrl+C입니다.
+자세한 설정은 [Hot Reload 사용법](../../Doroti/docs/development-hot-reload.md)을 참고하세요.
 
 ## iOS
 
-Mac, 선택한 .NET iOS 워크로드와 호환되는 Xcode가 필요합니다. 실제 기기는 서명 설정도 필요합니다.
-직접 프로젝트를 빌드할 때는 .NET 10 Mono와 ARM64 시뮬레이터가 기본입니다.
-
-텍스트 선택 magnifier는 iOS 17 이상 네이티브 앱에서 시스템 loupe를 사용합니다.
-iOS 15~16과 iOS 웹에서는 Doroti magnifier를 사용합니다.
+Mac, 대상 .NET iOS 워크로드와 호환되는 Xcode가 필요합니다. 실기기는 개발 서명 설정도 필요합니다.
+아래 예제는 .NET 10 Mono와 ARM64 시뮬레이터를 사용합니다.
 
 ```powershell
 dotnet build ./samples/DorotiSampleApp2/ios/DorotiSampleApp2.iOS.csproj -c Debug -t:Run -p:RuntimeIdentifier=iossimulator-arm64
@@ -159,142 +111,45 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build -App ./samples/DorotiSampleA
 ```
 
 Intel Mac 시뮬레이터는 `iossimulator-x64`를 선택합니다.
-CLI의 iOS Release 기본값은 실험적인 NativeAot이므로, 위 명령처럼 `-CompilationMode Mono`를 명시합니다.
+CLI의 iOS Release 기본값은 실험적인 NativeAot이므로 Mono 빌드에는 위 명령처럼 `-CompilationMode Mono`를 명시합니다.
 
-`net10.0-ios27.0`의 실기기(`ios-arm64`) Debug/Mono 프로필은 레이아웃·렌더링 엔진을 Mono AOT로 컴파일하고 앱과 iOS 진입 어셈블리만 해석합니다. 회전 중 매 프레임 실행되는 엔진까지 해석해서 표시 시점을 놓치는 것을 방지합니다. 시뮬레이터는 기존 빠른 빌드 프로필을 유지합니다. 앱 어셈블리 이름을 별도로 지정했거나 추가 개발 어셈블리의 해석이 필요하면 `DorotiIosDebugInterpretedAssemblies`에 쉼표로 구분한 이름을 지정할 수 있습니다. 명시적인 `MtouchInterpreter` 설정은 기본값보다 우선하며 NativeAOT 프로필은 별개입니다.
+### 기기·인증서 선택 후 설치
 
-### 기기·인증서 선택 후 빌드·설치·실행
-
-[공용 iOS 설치 스크립트](../../helpers/deploy-helper/deploy-ios.ps1)가 iPhone/iPad 또는 사용 가능한 iOS 시뮬레이터를
-번호로 선택하고 빌드·설치·실행합니다. 실기기는 Keychain의 유효한 개발 인증서와
-앱 ID `dev.doroti.sample2`·기기 UDID·인증서에 맞는 만료되지 않은 개발 프로필을 선택합니다.
-선택지가 하나면 해당 항목을 사용합니다. CLI는 .NET 10으로 실행하며 PowerShell 진입점은 PowerShell 7이 필요합니다.
-실기기는 Mac 신뢰와 개발자 모드를 허용하고, Xcode에서 인증서와 프로필을 미리 준비하세요.
-
-저장소 루트 `DorotiLab`에서 실행합니다.
+[공용 iOS 배포 도구](../../helpers/deploy-helper/deploy-ios.ps1)가 기기·인증서·프로필을 선택하고 빌드·설치·실행합니다.
+PowerShell 7과 .NET 10 CLI가 필요합니다. 실기기는 Mac 신뢰와 개발자 모드를 허용하고, Xcode에서 개발 인증서와 프로필을 준비하세요.
 
 ```powershell
-# 실기기: 기본 .NET 10 / Release / NativeAot, 인증서·프로필 선택
+# 실기기: .NET 10 / Release / NativeAot
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Sample2 -Target device
 
-# 시뮬레이터: 기본 .NET 10 / Debug / Mono, 자동 부팅·설치·실행
+# 시뮬레이터: .NET 10 / Debug / Mono
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Sample2 -Target simulator
-
-# .NET 11 RC1 / Xcode 27: SDK 선택 위치와 버전 검사 우회를 이번 호출에 적용
-pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Sample2 -Target device -DotnetVersion 11 -Mode NativeAot -SkipXcodeValidation
-
-# 목록만 출력 / 선택과 빌드 명령만 확인
-pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -List
-pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Sample2 -DryRun
 ```
 
-`-Target`을 생략하면 실기기와 시뮬레이터를 함께 표시합니다. `-Device <UDID>`,
-`-CodesignKey '<인증서 이름 또는 SHA-1>'`, `-CodesignProvision <UUID>`로 선택을 고정할 수 있습니다.
+`-Device <UDID>`, `-CodesignKey '<인증서 이름 또는 SHA-1>'`, `-CodesignProvision <UUID>`로 선택을 고정할 수 있습니다.
 Mono 실기기 Debug는 `-Mode Mono -Configuration Debug`를 사용합니다.
-앱 실행 환경변수는 `-Environment 'DOROTI_IOS_GRAPHITE=1'`로 전달합니다.
-빌드 실패 시 설치를 중단하며 기본 실행은 기존 앱 프로세스를 종료하고 다시 시작합니다.
-.NET 10은 아래 검증된 Xcode 27 NativeAOT 설정, .NET 11은 Testbed iOS의 `global.json`을 사용합니다.
-산출물 분리 경로와 전체 옵션, `dotnet run` 직접 실행 방법은 [helpers 사용법](../../helpers/deploy-helper/README.md)을 참고하세요.
+SDK·런타임 선택과 전체 옵션은 [배포 도구 사용법](../../helpers/deploy-helper/README.md)을 참고하세요.
 
 ### iOS Hot Reload
 
-기본 .NET 10 개발 경로는 iOS 시뮬레이터를 사용합니다. 실기기 USB는 .NET 11 CoreCLR 개발 프로필로 연결합니다. 시뮬레이터를 하나 부팅한 뒤 Debug 개발 세션을 시작합니다. 여러 시뮬레이터가 켜져 있으면 `-Device <UDID>`를 지정합니다.
+.NET 10 시뮬레이터를 부팅한 뒤 Debug 개발 세션을 시작합니다.
+여러 시뮬레이터가 켜져 있으면 `-Device <UDID>`를 지정합니다.
 
 ```powershell
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 dev -App ./samples/DorotiSampleApp2 -Platform ios -IosTargetFramework net10.0-ios27.0
 ```
 
-앱 C# 메서드를 수정하고 저장하면 SDK가 metadata delta를 적용합니다. VS Code 확장에서도 `ios` 선택 → Run → Hot Reload를 사용할 수 있습니다. `doroti.iosTargetFramework`는 위 명령과 같은 값으로 설정합니다. 지원하지 않는 편집은 명시적 Restart가 필요하며 상태가 초기화됩니다. 네이티브 Swift/바인딩 변경, Release/NativeAOT는 이 핫리로드 경로의 대상이 아닙니다. 준비 조건과 검증 범위는 [개발 세션 계약](../../Doroti/docs/development-hot-reload.md)을 참고하세요.
-
-.NET 10 실기기는 `-Rid ios-arm64 -Device <UDID> -IosTargetFramework net10.0-ios27.0`을 지정하고 Mac과 iPhone을 같은 네트워크에 연결합니다. 개발 서명 프로필이 필요하며, iPhone의 로컬 네트워크 접근을 허용해야 합니다. 기본 네트워크 주소가 맞지 않으면 `-IosHotReloadHost <Mac의 LAN IPv4>` 또는 VS Code의 `doroti.iosHotReloadHost`를 지정합니다. 앱 설치·상태 확인은 기존 기기 연결을 사용하며 코드 변경은 네트워크로 전송합니다. 이 개발 모드에서는 Mono의 AOT/metadata update 충돌을 피하려고 UIKit 호스트 외의 프레임워크도 해석하므로 일반 실행보다 느릴 수 있습니다. 성능 측정은 일반 빌드로 진행하세요.
-
-.NET 11의 USB 전용 경로는 `-Rid ios-arm64 -Device <UDID> -IosTargetFramework net11.0-ios -IosSdkVersion 11.0.100-rc.1.26425.128`을 지정합니다. 프로젝트의 `global.json`은 바꾸지 않습니다. 현재 RC1 SDK에는 수정된 runtime/crossgen2 `11.0.0-rc.2.26478.114`를 개발 모드에서만 사용합니다. 개발 서명, Xcode 27 사용 시 `ValidateXcodeVersion=false`, 바인딩 도구용 런타임과 `-DotnetPath` 준비는 [실기기 개발 명령](../../Doroti/docs/development-hot-reload.md)을 따릅니다. 이 프로필은 Debug 핫리로드 검증용이며 아래 Native AOT 게시 프로필과 구분합니다.
+지원되는 C# 변경은 저장하면 적용됩니다. VS Code 확장에서도 `ios`를 선택한 뒤 Run과 Hot Reload를 사용할 수 있습니다.
+지원하지 않는 편집은 Restart가 필요하며 상태가 초기화됩니다. Release/NativeAOT에는 이 핫리로드 경로를 사용하지 않습니다.
+.NET 10 실기기의 네트워크 연결과 .NET 11 CoreCLR의 USB 개발 설정은 [iOS Hot Reload 사용법](../../Doroti/docs/development-hot-reload.md)을 참고하세요.
 
 ### .NET 10 + Xcode 27 NativeAOT 실기기 설치
 
-2026-10-05에 iPhone 12 / iOS 26.6.1에서 Release NativeAOT 설치·정상 Cupertino 화면·
-같은 프로세스의 앱 복귀 3회·Variable Blur의 Metal shader 렌더링을 확인했습니다.
-.NET SDK 10.0.401, iOS SDK 27.0.10722, MAUI 10.0.110을 사용했으며
-SDK 버전 검사와 AOT 분석 경고 검사는 유지했습니다.
-[검증 기록](../../Doroti/docs/migrations/design-platform/sample2-ios-nativeaot-device-verification-2026-10-05.json)에
-산출물 hash와 검증 범위를 기록합니다. 파일 선택·물리 IME·회전 FPS의 수락을 대신하지 않습니다.
-
-아래는 저장소 루트의 PowerShell 예제입니다. 서명 값은 해당 기기를 포함한 개발 프로필로 바꿉니다.
-
-```powershell
-$sample2AotArtifacts = Join-Path (Get-Location).Path 'Doroti/artifacts/sample2-ios-nativeaot-net10'
-dotnet publish ./samples/DorotiSampleApp2/ios/DorotiSampleApp2.iOS.csproj `
-    --disable-build-servers -nr:false -c Release -r ios-arm64 `
-    -p:DorotiCompilationMode=NativeAot `
-    -p:DorotiIosTargetFramework=net10.0-ios27.0 `
-    -p:DorotiIosMauiVersion=10.0.110 `
-    -p:Registrar=managed-static `
-    -p:_UseDynamicDependenciesForMarkNSObjects=false `
-    '-p:MtouchExtraArgs=--skip-marking-nsobjects-in-user-assemblies=true' `
-    -p:Optimize=true `
-    "-p:ArtifactsPath=$sample2AotArtifacts" `
-    '-p:CodesignKey=YOUR_DEVELOPMENT_CERTIFICATE' `
-    '-p:CodesignProvision=YOUR_PROVISIONING_PROFILE_UUID'
-
-$sample2AotApp = Join-Path $sample2AotArtifacts 'bin/DorotiSampleApp2.iOS/release_ios-arm64/DorotiSampleApp2.iOS.app'
-codesign --verify --deep --strict $sample2AotApp
-xcrun devicectl device install app --device YOUR_DEVICE_UDID $sample2AotApp
-xcrun devicectl device process launch --device YOUR_DEVICE_UDID --terminate-existing `
-    --environment-variables '{"DOROTI_IOS_GRAPHITE":"1"}' dev.doroti.sample2
-```
-
-`_UseDynamicDependenciesForMarkNSObjects=false`와 `--skip-marking-nsobjects-in-user-assemblies=true`는
-iOS SDK 27.0.10722의 NSObject 보존 경로에 대한 호환 설정입니다.
-대신 [ios/NativeAotRoots.xml](ios/NativeAotRoots.xml)이 앱 진입과 Doroti native 뷰·델리게이트를
-명시적으로 보존합니다. SDK를 업데이트하면 이 옵션과 보존 목록을 함께 재검증해야 합니다.
-설치는 기존 앱 데이터를 유지하며, 개발 서명 프로필의 만료 시점은 로컬 프로필에 따릅니다.
+직접 게시·서명·설치할 때 필요한 옵션은 [NativeAOT 빌드 안내](docs/ios-nativeaot.md#net-10--xcode-27)에 있습니다.
 
 ### .NET 11 RC1 + Xcode 27 Native AOT
 
-[.NET 11 RC1 iOS 워크로드](https://github.com/dotnet/macios/releases/tag/dotnet-11.0.1xx-rc1-12193)는
-**Xcode 26.6**을 요구합니다. Xcode 27에서 이 프로필을 빌드·게시하려면 직접
-`dotnet build` / `dotnet publish` 명령에 **`-p:ValidateXcodeVersion=false`**를 추가해야 합니다.
-Native AOT 앱 생성에는 `dotnet publish`를 사용합니다. 이 옵션은 버전 검사만 건너뛰며,
-[Microsoft가 지원하는 Xcode 조합](https://learn.microsoft.com/en-us/dotnet/ios/troubleshooting/xcode-requirement)으로 바꾸지는 않습니다.
-서명·네이티브 링크·설치·실행 오류는 별도로 확인해야 합니다.
-
-다음은 **저장소 루트 `DorotiLab`의 PowerShell**에서 실행하는 예제입니다.
-SampleApp2에는 .NET 11 선택용 `global.json`이 없으므로, 기존 Testbed iOS 폴더의
-`global.json`으로 SDK를 선택한 뒤 SampleApp2 프로젝트를 지정합니다.
-인증서 이름과 provisioning profile UUID는 로컬 개발 서명 값으로 바꾸세요.
-
-```powershell
-$aotArtifacts = Join-Path (Get-Location).Path 'Doroti/artifacts/sample2-ios-nativeaot'
-Push-Location ./samples/DorotiTestbedApp/ios
-try {
-    dotnet --version # 11.0.100-rc.1.26425.128 또는 해당 global.json이 허용하는 패치
-    dotnet publish ../../DorotiSampleApp2/ios/DorotiSampleApp2.iOS.csproj `
-        -c Release -r ios-arm64 `
-        -p:DorotiCompilationMode=NativeAot `
-        -p:ValidateXcodeVersion=false `
-        -p:Registrar=managed-static `
-        -p:_UseDynamicDependenciesForMarkNSObjects=false `
-        '-p:MtouchExtraArgs=--skip-marking-nsobjects-in-user-assemblies=true' `
-        -p:PrepareAssemblies=false `
-        -p:PostProcessAssemblies=false `
-        "-p:ArtifactsPath=$aotArtifacts" `
-        '-p:CodesignKey=YOUR_DEVELOPMENT_CERTIFICATE' `
-        '-p:CodesignProvision=YOUR_PROVISIONING_PROFILE_UUID'
-    if ($LASTEXITCODE -ne 0) { throw 'Native AOT publish failed.' }
-} finally {
-    Pop-Location
-}
-```
-
-위의 registrar·NSObject 보존 옵션은 .NET 11 RC1 NativeAOT에서 잘못 생성된 인터페이스 멤버 참조로
-발생하는 `IL2037`을 피합니다. [ios/NativeAotRoots.xml](ios/NativeAotRoots.xml)이 UIKit 진입점과 native 뷰·델리게이트를
-명시적으로 보존하며, 공용 설치 CLI도 같은 옵션을 적용합니다.
-.NET 11 RC1의 assembly-preparer에서는 같은 설정으로 `MarkNSObjects` 오류(`MT2080`)가 발생하므로
-`PrepareAssemblies=false`, `PostProcessAssemblies=false`로 ILLink의 managed registrar 경로를 사용합니다.
-버전 검사 우회는 해당 명령에만 적용합니다. 공통 프로젝트 설정에서 검사를 끄지 않습니다.
-Xcode 26.6을 선택한 .NET 11 빌드나 Xcode 27을 지원하는 .NET 10 워크로드에는 이 옵션이 필요 없습니다.
-[도구 업데이트 스크립트](../../scripts/update-dotnet-macos.py)로 .NET 11 워크로드를 RC1으로 업데이트해도
-RC1의 Xcode 26.6 요구 사항은 유지됩니다.
+SDK 선택과 Xcode 버전 검사 우회, registrar 설정은 [NativeAOT 빌드 안내](docs/ios-nativeaot.md#net-11-rc1--xcode-27)를 참고하세요.
 
 ## Linux
 
@@ -323,253 +178,88 @@ dotnet build ./samples/DorotiSampleApp2/macos/DorotiSampleApp2.MacCatalyst.cspro
 dotnet run --project ./samples/DorotiSampleApp2/windowsappsdk/DorotiSampleApp2.WindowsAppSdk.csproj -c Release
 ```
 
-기존 Material 샘플과 같은 Windows App SDK / Vulkan 호스트를 사용합니다.
+Windows App SDK / Vulkan 호스트를 사용합니다.
 
 ## Web
 
-`web/src/doroti_bootstrap.ts`의 `startDoroti({ splash: true, ... })`에서 스플래시 사용 여부를 설정합니다.
-`false`이면 표시하지 않으며 생략 시 기본값은 `true`입니다. 공용 TypeScript 로더가 공식 Doroti
-앱 아이콘을 사용하는 스플래시 DOM을 생성하므로 HTML에는 로딩 화면 마크업이 필요하지 않습니다.
-엔진 준비 완료(`started`)와 첫 프레임 표시 후 스플래시를 페이드아웃하고 제거합니다. 로딩 실패 시
-오류 안내와 다시 시도 버튼을 표시하며, 동작 줄이기 설정에서는 애니메이션을 생략합니다.
-
-Volume과 블러 강도 변경은 `ValueListenableBuilder`로 해당 컨트롤과 필터만 갱신합니다.
-Variable Blur의 리스트는 재사용하고 `RepaintBoundary`로 별도 페인트하므로 드래그마다
-앱·라디오 버튼·리스트 전체를 다시 빌드하지 않습니다.
-[Firefox 슬라이더 조사와 검증 기록](../../Doroti/docs/validation/2026-10-06-firefox-sliders.md)을 참고하세요.
-후속 조사에서는 설치된 Firefox의 DPR 2 환경에서 연속 스크롤과 두 GPU 렌더러를 검증합니다.
-공용 그림 캐시는 프레임 복사 뒤에도 그림 ID로 재사용하며, Firefox 캔버스는 실제 표시 크기로
-할당합니다. 연속 wheel 입력도 원래 델타와 순서를 보존한 채 묶어 전달합니다.
-[Firefox 렌더링 후속 기록](../../Doroti/docs/validation/2026-10-06-firefox-rendering.md)을 참고하세요.
-
-Release 게시의 기본값은 Mono WASM AOT입니다. 게시한 앱을 제공하는 서버를 실행하고
-이 터미널을 열어 둡니다. 첫 AOT 게시에는 시간이 더 걸립니다.
+빠른 개발 실행은 [빠른 시작](#빠른-시작)의 Debug 명령을 사용합니다.
+Release 게시의 기본값은 Mono WASM AOT이며, 게시물을 제공하는 서버를 실행한 터미널을 열어 둡니다.
+첫 AOT 게시에는 시간이 더 걸립니다.
 
 ```powershell
 python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet publish ./samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj -c Release --artifacts-path ./temp/testing/sample2-web-release
 python Doroti/eng/serve-isolated-web.py ./temp/testing/sample2-web-release/publish/DorotiSampleApp2.Web/release/wwwroot --port 5089
 ```
 
-브라우저에서 `http://127.0.0.1:5089`에 접속합니다. WebAssembly 빌드에는 `wasm-tools` 워크로드가 필요합니다.
-일반 `dotnet run -c Release`는 AOT 게시물을 사용하지 않습니다. 빠른 개발 실행은
-`dotnet run --project ./samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj -c Debug`를 사용합니다.
+브라우저에서 `http://127.0.0.1:5089`에 접속합니다. 서버는 WASM threads에 필요한 COOP/COEP 헤더를 제공합니다.
+일반 `dotnet run -c Release`는 AOT 게시물을 사용하지 않습니다.
 
-개발 중 API 프록시는 앱 루트의 [web_dev_config.jsonc](web_dev_config.jsonc)에
-`server.proxy` 규칙을 설정합니다. prefix/정규식 매칭과 경로 치환을 지원하며,
-설정을 바꾼 뒤에는 개발 서버를 재시작합니다.
-[Web 개발 서버 설정](../../Doroti/docs/web-development-config.md)에 사용 예제가 있습니다.
+스플래시는 [web/src/doroti_bootstrap.ts](web/src/doroti_bootstrap.ts)의 `startDoroti({ splash: true, ... })`에서 설정합니다.
+개발 중 API 프록시는 [web_dev_config.jsonc](web_dev_config.jsonc)의 `server.proxy`에 설정하고 개발 서버를 재시작합니다.
+설정 예제는 [Web 개발 서버 안내](../../Doroti/docs/web-development-config.md)에 있습니다.
 
 ### WASM AOT 비교 실행
 
-Mono WASM AOT는 Release `publish`의 기본값입니다. 저장소 루트에서 비교용 산출물을
-분리해 게시하고, 아래 서버를 실행한 터미널을 열어 둡니다.
-
-```powershell
-python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet publish ./samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj -c Release --artifacts-path ./temp/testing/sample2-web-aot
-python Doroti/eng/serve-isolated-web.py ./temp/testing/sample2-web-aot/publish/DorotiSampleApp2.Web/release/wwwroot --port 5218
-```
-
-[AOT WebGL2](http://127.0.0.1:5218/?dorotiRenderer=worker-direct-webgl) 또는
-[AOT WebGPU](http://127.0.0.1:5218/?dorotiRenderer=worker-direct-webgpu)를 엽니다.
-서버는 WASM threads에 필요한 COOP/COEP 헤더와 `.mjs`/`.wasm` MIME을 제공합니다.
-
-다른 터미널에서 비-AOT 비교 버전을 게시·실행할 수 있습니다.
-
-```powershell
-python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet publish ./samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj -c Release -p:RunAOTCompilation=false --artifacts-path ./temp/testing/sample2-web-baseline
-python Doroti/eng/serve-isolated-web.py ./temp/testing/sample2-web-baseline/publish/DorotiSampleApp2.Web/release/wwwroot --port 5219
-```
-
-[비-AOT WebGL2](http://127.0.0.1:5219/?dorotiRenderer=worker-direct-webgl)와 같은 화면에서 비교합니다.
-두 명령 모두 기본 CDN 폰트 모드입니다. 로컬 폰트 비교가 필요하면 두 publish 명령에 모두
-`-p:DorotiSampleWebFontSource=Assets`를 추가합니다. AOT는 배포 파일 크기를 늘립니다.
-[SampleApp2 확인 기록](../../Doroti/docs/validation/2026-10-05-sample2-web-wasm-aot.md)과
-[기본값 변경 검증](../../Doroti/docs/validation/2026-10-05-web-aot-default.md)을 참고하세요.
+AOT·비-AOT 게시물과 WebGL2·WebGPU 렌더러를 비교하는 명령은 [Web 게시 안내](docs/web.md#wasm-aot-비교-실행)에 있습니다.
 
 ### Web 배포와 폰트
 
-Docker 기반 익명 HTTPS 터널로 다른 기기에서 열려면 다음을 실행합니다.
+다른 기기에서 열 수 있는 HTTPS 터널은 다음 명령으로 시작합니다.
 
 ```powershell
 pwsh -NoProfile -File ./scripts/start-web-release-tunnel.ps1 -App ./samples/DorotiSampleApp2 -OpenBrowser
 ```
 
-Release 게시 후 접속 주소가 출력되고 브라우저가 열립니다. 종료는
-`pwsh -NoProfile -File ./scripts/start-web-release-tunnel.ps1 stop`을 사용합니다.
+종료는 `pwsh -NoProfile -File ./scripts/start-web-release-tunnel.ps1 stop`을 사용합니다.
 필수 도구와 관리 명령은 [터널 안내](../../tools/doroti-cloudflared/README.md)를 참고하세요.
 
-웹 글꼴은 `web/WebFonts.cs`의 `PreloadLanguages = ["ko", "en"]` 힌트에 따라 첫 화면 전에
-CDN에서 Roboto와 전체 Noto Sans KR을 로드합니다. 한글 자모와 11,172개 음절을 입력 전에
-준비하므로 새로운 조합마다 폰트를 받느라 잠깐 사각형으로 표시되는 현상을 방지합니다.
-그 외 문자권과 컬러 이모지는 필요한 Noto 폰트 조각을 자동 다운로드합니다.
-힌트를 비우면 Roboto만 미리 로드하는 기본 동작으로 돌아갑니다.
-Flutter의 CanvasKit/Skwasm처럼 엔진에 폰트 파일을
-등록합니다. CSS 링크의 @font-face도 바이트로 읽어 등록하며, DOM body의 font-family는 상속하지 않습니다. 폰트가 추가되면 글자 폭과
-레이아웃도 자동 갱신됩니다. 네이티브의 기본/미해결 Cupertino 폰트는 플랫폼 UI 폰트로
-연결합니다. CDN 변경·다운로드 비활성화와 지원 범위는
-[자동 웹 폰트 안내](../../packages/platforms/web/Doroti.Host.Web/Fonts/README.md)에 있습니다.
-기본 CDN 모드는 Roboto/Noto와 Galmuri를 CDN에서 읽고, 비교용 SUITE는 로컬 CSS/WOFF2로 포함합니다. 네이티브 빌드는 Roboto를 CDN에서
-받아 DLL에 포함하므로 실행 시에는 폰트 다운로드가 필요 없습니다.
-
-웹에서도 선택적으로 기본 폰트를 앱 에셋에 포함할 수 있습니다:
+기본 웹 폰트는 CDN에서 로드합니다. 외부 폰트 요청 없이 Fonts 탭을 실행하려면 `Assets` 모드를 사용합니다.
 
 ```powershell
-dotnet run --project ./samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj -c Release -p:DorotiSampleWebFontSource=Assets
+dotnet run --project ./samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj -c Debug -p:DorotiSampleWebFontSource=Assets
 ```
 
-이 모드는 기존 샘플의 Roboto 3종과 라이선스를 웹 DLL에 포함하고, 기본 폰트 CDN 및
-언어·이모지 자동 다운로드를 끕니다. 설정은 [web/WebFonts.cs](web/WebFonts.cs)에 있습니다.
-Fonts 탭의 Galmuri/SUITE와 디코더도 로컬로 포함하므로 이 화면은 외부 폰트 요청 없이 동작합니다. SUITE에 없는 한글은 Galmuri로 폴백합니다. 다른 문자/이모지가 필요하면 그 폰트도 직접 포함하세요.
-옵션을 생략하면 기존 CDN 모드로 실행됩니다. 모드를 바꿀 때는 개발 서버를 재시작합니다.
+로컬 폰트 구성과 지원 범위는 [Web 폰트 설정](docs/web.md#web-배포와-폰트)을 참고하세요.
 
-워크스페이스 CLI에서도 위 플랫폼 표의 별칭으로 선택할 수 있습니다.
+## 파일 업로드 예제
 
-화면 구현은 [src/App.cs](src/App.cs), 공통 진입점은 [Program.cs](Program.cs)에 있습니다.
+**Upload** 탭에서 **파일 선택**을 누르거나 페이지 안에 파일을 드래그해서 놓습니다.
+PNG/JPG/JPEG/GIF/WEBP/BMP 이미지는 최대 10 MiB, TXT/MD/CSV/JSON/LOG 텍스트는
+최대 1 MiB이며 목록은 8개까지 유지합니다. UTF-8 또는 BOM이 있는 UTF-16 텍스트를
+읽고, 긴 내용은 처음 4,000자까지만 표시합니다. 이미지 디코딩에 실패하면 해당 카드에 오류를 표시합니다.
 
-## 검증
+이 예제는 파일을 앱 메모리로 읽어 미리 보는 동작이며 서버 업로드나 디스크 저장은 포함하지 않습니다.
+파일 선택·드롭의 지원 여부는 실행 호스트에서 확인하며, 파일 드롭이 없는 환경에서는 선택 버튼을 사용합니다.
+목록은 탭을 전환해도 유지되며 앱을 닫으면 초기화됩니다.
+구현은 [src/FileUploadPage.cs](src/FileUploadPage.cs)에 있습니다.
 
-현재 CPU 회귀 진입점은 다음과 같습니다. 포인터 탭·입력·다이얼로그·viewport/DPR·리스트 수명과
-캡처 정책을 확인하며, GPU Variable Blur 픽셀 비교는 포함하지 않습니다.
+## Variable Blur 예제
 
-```sh
-python3 Doroti/eng/run-with-timeout.py dotnet run --project Doroti/tests/Doroti.Tests -c Release
-dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-kernel
-dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-capture
-dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-kawase
-dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-gpu # macOS Metal only
-dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-quality temp/testing/variable-blur/quality-review # separate still-image review
-python3 -m unittest discover -s Doroti/tests -p test_variable_blur_device.py
-```
+**Variable Blur** 탭은 60개 항목의 리스트 위에 상단 180 논리 단위의 블러를 적용합니다.
+강도 슬라이더와 켜기/끄기 스위치, 다음 다섯 가지 모드를 비교할 수 있습니다.
+블러는 위쪽에서 강하고 아래쪽에서 선명해지며, 블러 영역에서도 리스트를 스크롤할 수 있습니다.
 
-Variable Blur의 iPhone 반복 스크롤 측정은 서명된 **Release/Mono** 앱을 먼저 빌드한 뒤 실행합니다.
-`--app`은 빌드 산출물 경로, `--device`는 연결된 실기기 식별자입니다.
+| 모드 | 특징 |
+| --- | --- |
+| Full quality | 원본 해상도 Gaussian |
+| Adaptive | 강도에 따라 원본·1/2·1/4 해상도를 혼합 |
+| Fast adaptive (기본) | 적응형 해상도와 빠른 Gaussian 커널 |
+| Fixed 1/4 | 전체 구간을 1/4 해상도로 처리하며 작은 글자와 가는 선이 부드러워질 수 있음 |
+| Dual Kawase | 해상도 피라미드를 사용하는 블러 근사 |
 
-```sh
-dotnet build samples/DorotiSampleApp2/ios/DorotiSampleApp2.iOS.csproj -c Release -r ios-arm64 -p:DorotiIosTargetFramework=net10.0-ios27.0 -p:DorotiCompilationMode=Mono -p:EnableCodeSigning=true '-p:CodesignKey=Apple Development' -p:CodesignProvision=<PROFILE_UUID>
-python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/variable_blur_device.py --device <DEVICE_UDID> --app samples/DorotiSampleApp2/ios/bin/ios-arm64/Release/net10.0-ios27.0/ios-arm64/DorotiSampleApp2.iOS.app --output temp/testing/variable-blur/new-run-sigma20 --hz 60 --repeats 3 --modes off fixed adaptive --sigma 20 --conditions '전원·밝기·온도 조건 기록'
-python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/variable_blur_device.py --device <DEVICE_UDID> --app samples/DorotiSampleApp2/ios/bin/ios-arm64/Release/net10.0-ios27.0/ios-arm64/DorotiSampleApp2.iOS.app --output temp/testing/variable-blur/new-run-sigma32 --hz 60 --repeats 3 --modes off fixed adaptive --sigma 32 --conditions '동일 전원·밝기·온도 조건 기록'
-```
-
-위 명령은 같은 바이너리에서 Off/Fixed/Adaptive, sigma 20/32를 각각 3회씩 총 18회 비교하고
-두 번째 반복은 역순으로 진행합니다. 수집기에서 `--modes`를 생략하면 기존 6개 모드(Off/Full/Adaptive/Fast/Fixed/Kawase)를 각각 3회 실행합니다.
-`--hz`에는 실제 설정된 표시 주사율을 입력합니다. 각 실행은 40초이며 최초 표시 이후
-5~35초 구간의 실제 drawable 표시 간격을 집계합니다. 합성 스크롤이므로 물리 입력 검증은 아닙니다.
-완료 표식·30초 표시 이력·렌더러 오류 여부를 검사하며 불완전한 실행을 PASS로 집계하지 않습니다.
-앱 설치는 기존 `dev.doroti.sample2`를 업데이트하며 실행마다 해당 앱을 재시작합니다.
-
-수동 프로파일링에서는 `DOROTI_VARIABLE_BLUR_BENCHMARK=off|full|adaptive|fast|fixed|kawase`로
-탭·모드·반복 경로를 선택합니다. 미설정 시 일반 UI/Fast adaptive 기본값을 사용합니다.
-Off로 benchmark를 시작한 뒤 블러를 다시 켜도 초기 선택은 Fast adaptive입니다.
-정지 화면 비교에는 `DOROTI_VARIABLE_BLUR_BENCHMARK_STATIC=1`을 함께 지정하고,
-강도는 `DOROTI_VARIABLE_BLUR_BENCHMARK_SIGMA=0..32`로 지정할 수 있습니다.
-정지 모드는 자동 스크롤 수집기와 함께 사용하지 않습니다.
-`--variable-blur-quality`는 macOS Metal에서 DPR 3, sigma 0/1/2/4/8/20/32의 Full/Fixed PNG 14장을
-별도 저장합니다. 작은 글자·1px 선·고주파 무늬·참조 사진의 축소 손실을 검토하는 장면이며,
-Full과 Fixed의 픽셀 동등성이나 iPhone의 움직임 화질 검증을 뜻하지 않습니다.
-`DOROTI_VARIABLE_BLUR_PROFILE=1`과 `DOROTI_MAUI_EVIDENCE=blur.json`을 함께 설정하면
-iOS 앱의 Documents에 진단 JSON을 기록합니다.
-
-Dual Kawase는 공유 down 체인에서 강도별 결과를 up 재구성하고, device sigma에 맞춰 분산을 보간하는
-명시적 근사 모드입니다. 두 device pixel 이하에서는 Gaussian을 사용해 선명한 끝부분을 유지합니다.
-Clamp·회전/반사/균일 scale·최대 약 124 device sigma를 지원하며 다른 설정은 Gaussian으로 대체합니다.
-`VariableBlurKernel.dualKawase`는 자체 해상도 피라미드를 사용하므로 `resolutionScale`과 독립적입니다.
-공개 `ImageFilter.variableBlur`와 `ImageFilterConfig.CreateVariableBlur` 및 샘플의 초기 선택은
-**Fast adaptive**입니다. 기본 조합은 `resolutionScale: 0.25`, `adaptiveResolution: true`,
-`kernel: VariableBlurKernel.fastGaussian`입니다. 약한 구간의 원본 해상도와 선명한 끝부분을 보존합니다.
-원본 해상도 Gaussian은 `resolutionScale: 1, kernel: VariableBlurKernel.gaussian`으로 명시할 수 있습니다.
-Fixed와 Dual Kawase도 개별 옵션으로 선택할 수 있습니다.
-
-`--intermediate`는 Adaptive의 중간 출력 합성을, `--full-capture`는 전체 캡처를 강제하는 같은 바이너리 A/B 옵션입니다.
-`--owned-subtrees`는 셰이더 없는 형제 scope도 별도 Surface로 처리하며,
-`--full-stages`는 Kawase 강도 결과를 전체 캡처에 재구성합니다. 기본 실행은 native 형제 scope와 필요한 띠만 사용합니다.
-`--full-bands` / `--full-detail`은 Gaussian 띠·선명한 구간의 기존 전체 크기 backing을 유지하는 A/B 옵션입니다.
-iOS는 새 shader-only 장면에 최대 2개 GPU frame과 비동기 표시를 사용하는 C 경로가 기본입니다.
-native·회전·replay는 직렬 admission과 필요한 transaction 표시를 유지합니다.
-iOS 수집기는 프레임 정책 선택 옵션 없이 C를 측정합니다.
-`--sigma 32`로 최대 강도를 측정할 수 있습니다.
-수집기의 평균 FPS는 warm 구간의 실제 표시 간격으로 계산하며 CPU stage나 GPU 실행 시간에서 추정하지 않습니다.
-
-진단에는 캡처 fallback 사유, 작업 해상도·draw bounds, Surface pool hit/miss/temporary,
-CPU stage p50/p95/p99, 실제 표시 간격과 Metal 할당량을 포함합니다.
-CPU stage는 최대 최근 4,096회 호출이며 초기 준비를 포함하고, `filter-total`은 내부 stage와 중첩됩니다.
-Surface 정보는 마지막 프레임의 scene filter 전체를 포함합니다. RGBA 추정 바이트를 합산해 live/peak VRAM으로
-해석하지 않습니다. UIKit command buffer 카운터는 terminal marker만 세며 Skia 내부 제출 횟수는 아닙니다.
-GPU 구간 시간과 peak 메모리는 별도 Metal System Trace가 필요합니다.
-
-부분 캡처는 축소 격자가 정렬 가능한 축에만 적용합니다.
-`--variable-blur-capture`는 실제 embedded SkSL의 1·1/2·1/4 레벨을 래스터에서 실행하여
-전체 도메인과 부분 캡처의 픽셀을 비교합니다. Graphite GPU 픽셀 비교나 Adaptive 마스크 검증을 대신하지 않습니다.
-실기기 측정 스크립트의 `--full-capture` 옵션은 `DOROTI_VARIABLE_BLUR_DISABLE_CROP=1`로
-같은 바이너리의 전체 도메인 기준을 실행합니다. 기본 실행과 각각 새 출력 폴더로 비교하세요.
+Variable Blur에는 GPU 렌더러가 필요합니다.
+구현은 [src/VariableBlurPage.cs](src/VariableBlurPage.cs)에 있습니다.
 
 ## 웹폰트 비교
 
-**Fonts** 탭에서 Roboto/Galmuri11/SUITE Variable을 전환합니다. 300/400/500/700/900
-행과 연속 wght 슬라이더, 한글·영문·숫자, 편집 가능한 여러 줄 입력을 제공합니다.
-Galmuri는 일반 HTML CSS 링크, SUITE는 원본 로컬 CSS/WOFF2 등록 예제입니다.
-일반 모드의 디코더만 로컬로 묶으려면 `-p:DorotiBundleWoff2Decoder=true`를 사용합니다.
-`Assets` 모드는 기본 폰트뿐 아니라 CSS와 디코더도 외부 요청 없이 제공합니다.
+**Fonts** 탭에서 Roboto/Galmuri11/SUITE Variable, 300/400/500/700/900 굵기와 연속 `wght` 슬라이더를 비교합니다.
+한글·영문·숫자와 편집 가능한 여러 줄 입력을 제공합니다.
 
-여러 줄 입력창은 첫 포커스와 재포커스 시 실제 입력 위치와 표시 커서를 일치시킵니다.
-Flutter와 같이 iOS 터치는 단어 경계, Android·데스크톱은 누른 글자 위치를 선택합니다.
-개행·빈 줄·자동 줄바꿈의 커서 좌표, 후속 IME 입력과 플랫폼별 선택 정책은 다음 CPU 회귀 검증으로 확인합니다.
+폰트 원본은 `assets/fonts/`에 둡니다. 웹 프로젝트의 `Content` + `Link` 매핑이 같은 웹 경로로 게시합니다.
+폰트 추가와 CSS·WOFF2 등록 예제는 [공통 assets 폴더의 웹폰트](docs/web.md#공통-assets-폴더의-웹폰트)를 참고하세요.
 
-```sh
-dotnet run --project packages/Doroti.Cupertino/tests/Doroti.Cupertino.Tests -c Release -- --text-input-tap-cursor
-```
+## 소스와 라이선스
 
-```powershell
-python Doroti/validation/run-with-timeout.py dotnet publish samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj -c Release -p:DorotiSampleWebFontSource=Assets -o Doroti/artifacts/sample2-fonts
-```
-
-`wwwroot`를 COOP/COEP 헤더가 있는 서버로 제공하세요. `/sample/` 배포에서는 HTML의
-base href도 `/sample/`로 바꿉니다. 디코더 CSP와 CSS 지원 범위는
-[폰트 사용 문서](../../packages/platforms/web/Doroti.Host.Web/Fonts/README.md#css-links-and-variable-fonts)를 참고하세요.
-
-## 공통 assets 폴더의 웹폰트
-
-폰트 원본은 `web/wwwroot`가 아니라 **`assets/fonts/`**에 둡니다.
-웹 프로젝트의 `Content` + `Link` 매핑이 개발 서버와 publish에 같은 웹 경로를 만듭니다.
-Doroti 웹 SDK가 링크된 파일의 실제 원본 폴더를 개발용 정적 에셋 manifest에 기록합니다.
-예를 들어 아래 파일은 웹에서 `fonts/SUITE/SUITE-Variable.css`로 접근합니다.
-
-```text
-DorotiSampleApp2/
-  assets/fonts/SUITE/
-    SUITE-Variable.css
-    SUITE-Variable.woff2
-    LICENSE
-  assets/fonts/Galmuri/
-    galmuri-local.css
-    Galmuri11.woff2
-    Galmuri11-Bold.woff2
-    Galmuri11-Condensed.woff2
-    LICENSE.Galmuri
-```
-
-```xml
-<!-- web/DorotiSampleApp2.Web.csproj; Include는 프로젝트 파일 기준 상대 경로 -->
-<Content Include="../assets/fonts/**/*"
-         Link="wwwroot/fonts/%(RecursiveDir)%(Filename)%(Extension)"
-         CopyToOutputDirectory="PreserveNewest"
-         CopyToPublishDirectory="PreserveNewest" />
-```
-
-새 WOFF/WOFF2와 CSS도 `assets/fonts/원하는폴더/`에 함께 넣으면 같은 규칙으로 포함됩니다.
-CSS 안의 `url('./MyFont.woff2')`는 배포 후에도 같은 폴더를 가리킵니다.
-다른 원본 디렉터리를 쓰려면 `Include`만 해당 경로로 바꾸면 됩니다.
-
-```html
-<link rel="stylesheet" href="fonts/SUITE/SUITE-Variable.css">
-```
-
-CSS 없이 등록할 때도 실제 파일 시스템 경로가 아니라 웹 URL을 사용합니다.
-
-```csharp
-new BrowserFontAsset("SUITE Variable", "fonts/SUITE/SUITE-Variable.woff2")
-```
-
-샘플의 Galmuri는 `DorotiSampleWebFontSource=Assets`일 때만 로컬 파일을 포함합니다.
-기본 모드는 기존 CSS CDN 링크를 사용합니다. CupertinoIcons는 공통 앱 DLL의 내장
-리소스로 이미 등록하므로 웹 정적 파일 목록에서 제외합니다. `bin`/`obj` 안의 파일은
-빌드 산출물이므로 직접 수정하지 않습니다.
+화면 구성은 [src/App.cs](src/App.cs), 공통 진입점은 [Program.cs](Program.cs)에 있습니다.
+Cupertino Icons 1.0.9 폰트와 해당 라이선스는 `assets/fonts`에 포함되어 있습니다.
+회귀 검사 명령과 블러 성능 측정 옵션은 [검사·프로파일링 안내](docs/validation.md)에 있습니다.

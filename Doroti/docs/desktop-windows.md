@@ -7,8 +7,7 @@ admission and separately tracks Vulkan producer and D3D12 consumer completion in
 both Windows hosts. Embedded MAUI composition and Ganesh retain serial fallback.
 That 2026-10-02 frame change did not add MAUI Editor/WebView adapters. The later 2026-10-03 W4/W8 implementation and checks are recorded separately.
 
-The first implementation provides `Doroti.Desktop` and optional
-`Doroti.Desktop.Widgets`. **The complete W0–W5 plan is PARTIAL.** Windows MAUI
+The implementation provides `Doroti.Desktop`. **The complete W0–W5 plan is PARTIAL.** Windows MAUI
 and AppKit macOS have native main-window adapters. Mac Catalyst has a restricted UIKit scene adapter, and Linux Qt Quick has main/additional-window adapters. Windows App SDK now has a main-window adapter (2026-09-28); custom
 title-bar widgets remain unimplemented. The 2026-09-29 Windows App SDK increment
 adds native multi-window execution and Explicit lifetime; see the
@@ -21,7 +20,7 @@ adds native multi-window execution and Explicit lifetime; see the
 | Application startup | `Hosting/DorotiApplicationBootstrap.cs`, SDK generated descriptor | Common app stays target-neutral |
 | Desktop declaration | `DesktopApplication.Configure<TStartup>`, separate companion project | Implemented; descriptor-scoped registration |
 | Window identity/lifetime | `DorotiWindowManager`, `DorotiWindowController` | Implemented; fake two-window contracts |
-| Content | `WindowContent.FromEntrypoint`, `WidgetWindowContent.Create`, `DesktopWindowScope.Of` | Fresh factory and explicit window context; no current-window singleton |
+| Content | `WindowContent.FromEntrypoint` | Fresh factory and explicit window context; no current-window singleton |
 | Windows MAUI creation | `DorotiMauiApplication.CreateWindow`, `WindowsDesktopWindowHost` | Main and actual additional MAUI windows use the manager, independent view resources and a shared application lease |
 | First display | `DorotiMauiPlatformApplications` before native activation; `DorotiMauiSurface.CompleteNativePaint` | DWM cloak until first non-stale present; no readiness timer |
 | Close | AppWindow Closing → controller decision → render drain → detach/dispose → native close → registry removal | Native/API close share one cancellable decision |
@@ -106,9 +105,7 @@ public sealed class DesktopStartup : IDorotiDesktopApplicationStartup
 }
 ```
 
-Omit OnCreated and keep the default WhenReady for automatic display. For a new
-widget root use `WidgetWindowContent.Create(() => new MyApp())` from the optional
-widget package; the factory injects DesktopWindowScope. Embedded MAUI surfaces
+Omit OnCreated and keep the default WhenReady for automatic display. Embedded MAUI surfaces
 never receive implicit window control.
 
 Native Acrylic appearance (transparent framework content is also necessary):
