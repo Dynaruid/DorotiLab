@@ -3,6 +3,13 @@ using Doroti.Framework.Widgets;
 using Doroti.Testing;
 using Doroti.Ui;
 static void Require(bool value, string message) { if (!value) throw new Exception(message); }
+if (args.Contains("--editable-context-menu"))
+{
+    EditableContextMenuRegression.Run((controller, focus, readOnly, obscure) =>
+        new CupertinoApp(home: new CupertinoPageScaffold(child: new CupertinoTextField(
+            controller: controller, focusNode: focus, readOnly: readOnly, obscureText: obscure))));
+    return;
+}
 Require(DefaultCupertinoLocalizations.@delegate.isSupported(new Locale("en")) && !DefaultCupertinoLocalizations.@delegate.isSupported(new Locale("ko")), "Default Cupertino locale support changed.");
 Require(CupertinoIcons.add.fontFamily == "CupertinoIcons" && CupertinoIcons.add.fontPackage == "cupertino_icons", "Cupertino icon package identity changed.");
 if (args.Contains("--cupertino-dialog-gpu")) { CupertinoDialogRegression.RunGpu(); return; }

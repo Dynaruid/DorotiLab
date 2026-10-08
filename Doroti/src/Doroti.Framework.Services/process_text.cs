@@ -43,15 +43,11 @@ public class DefaultProcessTextService : ProcessTextService
 {
     internal virtual MethodChannel _processTextChannel { get; set; } = default!;
 
-    public DefaultProcessTextService() { }
+    public DefaultProcessTextService() { _processTextChannel = SystemChannels.processText; }
 
     public virtual void setChannel(MethodChannel newChannel)
     {
-        DartRuntimePrimitives.Assert(() =>
-        {
-            _processTextChannel = newChannel;
-            return true;
-        });
+        _processTextChannel = newChannel ?? throw new ArgumentNullException(nameof(newChannel));
     }
 
     public virtual async Future<List<ProcessTextAction>> queryTextActions()

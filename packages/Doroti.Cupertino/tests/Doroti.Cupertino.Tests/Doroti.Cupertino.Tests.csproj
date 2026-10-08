@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><TargetFramework>net10.0</TargetFramework><OutputType>Exe</OutputType><IsPackable>false</IsPackable><AllowUnsafeBlocks>true</AllowUnsafeBlocks></PropertyGroup>
   <ItemGroup>
+    <Compile Include="../../../../Doroti/tests/Common/EditableContextMenuRegression.cs" Link="EditableContextMenuRegression.cs" />
     <Compile Include="../../../../Doroti/tests/Common/VulkanDeviceOwner.cs" Link="VulkanDeviceOwner.cs" />
     <ProjectReference Include="../../Doroti.Cupertino.csproj" />
     <ProjectReference Include="../../../../Doroti/src/Doroti.Testing/Doroti.Testing.csproj" />

@@ -182,6 +182,12 @@ public sealed class MauiFrameworkHost : IDisposable
         }
 #endif
         IPlatformMessageHostCapability messages = new MauiPlatformMessageCapability();
+#if ANDROID || IOS || MACCATALYST
+        messages = new TextActionPlatformMessageCapability(messages, textInput.PerformTextActionAsync);
+#endif
+#if ANDROID
+        messages = new AndroidProcessTextChannel(messages);
+#endif
 #if IOS || MACCATALYST
         var contextMenus = new MauiUIKitContextMenuChannel(messages, textInput);
         messages = contextMenus;

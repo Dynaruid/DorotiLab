@@ -2,4 +2,7 @@
   <PropertyGroup>
     <DorotiMauiNativeTargetsImported>true</DorotiMauiNativeTargetsImported>
   </PropertyGroup>
+  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' and '$(OutputType)' == 'Exe'">
+    <AndroidManifestOverlay Include="$(MSBuildThisFileDirectory)Doroti.ProcessText.AndroidManifest.xml" />
+  </ItemGroup>
 </Project>

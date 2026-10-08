@@ -458,12 +458,14 @@ static class Program
     {
         if (arguments.Length != 0)
         {
+            if (arguments.Length == 1 && arguments[0] == "--text-actions") { await TextActionRegression.Run(); return; }
             if (arguments.Length == 1 && arguments[0] == "--transport") { await TypedTransportRegression.Run(); return; }
             if (arguments.Length == 1 && arguments[0] == "--frames") { FrameSubmissionRegression.Run(); return; }
             if (arguments.Length == 1 && arguments[0] == "--reattach") { SharedTreeRegression.RunZeroViewReattach(); return; }
             throw new ArgumentException("Unknown contract fixture arguments.");
         }
         Ownership();
+        await TextActionRegression.Run();
         SharedSessionCloseRegression.Run();
         await NativeRouteCoordinatorRegression.Run();
         SharedTreeRegression.Run();

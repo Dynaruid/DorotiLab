@@ -1918,7 +1918,7 @@ public class EditableTextState
             return;
         }
         ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
-        if (data is null)
+        if (data is null || !mounted)
         {
             return;
         }
@@ -2380,7 +2380,8 @@ public class EditableTextState
                                     ? (
                                         () =>
                                         {
-                                            _ = lookUpSelection(SelectionChangedCause.toolbar);
+                                            _ = lookUpSelection(SelectionChangedCause.toolbar)
+                                                .catchError(_reportClipboardError("while looking up selected text"));
                                         }
                                     )
                                     : null,
@@ -2390,7 +2391,7 @@ public class EditableTextState
                                         {
                                             _ = searchWebForSelection(
                                                 SelectionChangedCause.toolbar
-                                            );
+                                            ).catchError(_reportClipboardError("while searching for selected text"));
                                         }
                                     )
                                     : null,
@@ -2398,7 +2399,8 @@ public class EditableTextState
                                     ? (
                                         () =>
                                         {
-                                            _ = shareSelection(SelectionChangedCause.toolbar);
+                                            _ = shareSelection(SelectionChangedCause.toolbar)
+                                                .catchError(_reportClipboardError("while sharing selected text"));
                                         }
                                     )
                                     : null,
@@ -2459,14 +2461,27 @@ public class EditableTextState
                         label: action.label,
                         onPressed: async () =>
                         {
-                            string selectedText = selectionLocal.textInside(textEditingValue.text);
+                            if (!mounted || !Equals(selectionLocal, textEditingValue.selection)) return;
+                            var originalValue = textEditingValue;
+                            string selectedText = selectionLocal.textInside(originalValue.text);
                             if (selectedText.Length != 0)
                             {
-                                string? processedText = await _processTextService.processTextAction(
-                                    action.id,
-                                    selectedText,
-                                    widget.readOnly
-                                );
+                                string? processedText;
+                                try
+                                {
+                                    processedText = await _processTextService.processTextAction(
+                                        action.id,
+                                        selectedText,
+                                        widget.readOnly
+                                    );
+                                }
+                                catch (Exception error)
+                                {
+                                    _reportClipboardError("while processing selected text")(
+                                        error, new System.Diagnostics.StackTrace(error, true));
+                                    return;
+                                }
+                                if (!mounted || !Equals(originalValue, textEditingValue)) return;
                                 if ((processedText is not null) && _allowPaste)
                                 {
                                     _pasteText(SelectionChangedCause.toolbar, processedText);
@@ -2521,10 +2536,13 @@ public class EditableTextState
 
     internal virtual async Future _initProcessTextActions()
     {
-        _processTextActions.Clear();
-        _processTextActions.AddRange(
-            (await _processTextService.queryTextActions()).Cast<ProcessTextAction>()
-        );
+        var actions = await _processTextService.queryTextActions();
+        if (!mounted) return;
+        setState(() =>
+        {
+            _processTextActions.Clear();
+            _processTextActions.AddRange(actions);
+        });
     }
 
     public override void didChangeDependencies()

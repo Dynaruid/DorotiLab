@@ -32,6 +32,7 @@
   <ItemGroup>
     <ProjectReference Include="../../../../Doroti/src/Doroti.Desktop/Doroti.Desktop.csproj" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos' or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'" />
     <None Include="buildTransitive/Doroti.Host.Maui.targets" Pack="true" PackagePath="buildTransitive" />
+    <None Include="buildTransitive/Doroti.ProcessText.AndroidManifest.xml" Pack="true" PackagePath="buildTransitive" />
     <InternalsVisibleTo Include="DorotiTestbedApp.iOS" />
     <InternalsVisibleTo Include="DorotiTestbedApp.MacCatalyst" />
     <InternalsVisibleTo Include="DorotiTestbedApp.MacOS" />

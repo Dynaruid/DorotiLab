@@ -4,6 +4,13 @@ using Doroti.Testing;
 using Doroti.Ui;
 
 static void Require(bool value, string message) { if (!value) throw new InvalidOperationException(message); }
+if (args.Contains("--editable-context-menu"))
+{
+    EditableContextMenuRegression.Run((controller, focus, readOnly, obscure) =>
+        new MaterialApp(home: new Scaffold(body: new TextField(
+            controller: controller, focusNode: focus, readOnly: readOnly, obscureText: obscure))));
+    return;
+}
 static void Reject<T>(Action action) where T : Exception
 {
     try { action(); } catch (T) { return; }

@@ -27,4 +27,7 @@
     <DorotiProviderEntryLine Include="    }" Condition="'$(DorotiNativeEntryKind)' == 'AppKit-Main'" />
   </ItemGroup>
   <Import Project="$(DorotiProviderBuildDirectory)Sdk.targets" Condition="'$(DorotiRunnerSdkActive)' == 'true'" />
+  <ItemGroup Condition="'$(DorotiTarget)' == 'Android' and Exists('$(MSBuildThisFileDirectory)../Doroti.Host.Maui/buildTransitive/Doroti.ProcessText.AndroidManifest.xml')">
+    <AndroidManifestOverlay Include="$(MSBuildThisFileDirectory)../Doroti.Host.Maui/buildTransitive/Doroti.ProcessText.AndroidManifest.xml" />
+  </ItemGroup>
 </Project>
