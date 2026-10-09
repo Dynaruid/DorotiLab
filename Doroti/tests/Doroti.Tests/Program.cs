@@ -3,6 +3,11 @@ using Doroti.Testing;
 using Doroti.Ui;
 
 #if DOROTI_REPO_TESTS
+if (args.Contains("--android-overscroll"))
+{
+    AndroidOverscrollRegression.Run();
+    return;
+}
 if (args.Contains("--gesture-diagnostics"))
 {
     GestureDiagnosticsRegression.Run();
@@ -33,6 +38,7 @@ WebSemanticsRegression.Run();
 GestureDiagnosticsRegression.Run();
 FullReviewRegression.Run();
 ActiveScrollSemanticsRegression.Run();
+AndroidOverscrollRegression.Run();
 ImageReadbackLifetimeRegression.Run();
 ProcessRunnerRegression.Run();
 if (Array.IndexOf(args, "--native-frame-metal-gpu") is var metalGpuIndex && metalGpuIndex >= 0)

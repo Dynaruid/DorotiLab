@@ -437,6 +437,13 @@ public class _GlowController__overscroll_indicator : ChangeNotifier
     {
         _color = color;
         _axis = axis;
+        _glowController = new AnimationController(vsync: vsync);
+        _glowController.addStatusListener(_changePhase);
+        _decelerator = new CurvedAnimation(parent: _glowController, curve: Curves.decelerate);
+        _decelerator.addListener(notifyListeners);
+        _glowOpacity = _decelerator.drive(_glowOpacityTween);
+        _glowSize = _decelerator.drive(_glowSizeTween);
+        _displacementTicker = vsync.createTicker(_tickDisplacement);
     }
 
     public virtual Color color

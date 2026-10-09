@@ -309,3 +309,31 @@ python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project Doroti
 삭제 가능한 로컬 산출물입니다. 이번 네이티브 실행은 assertion·입력 도달·정상 종료 검사이며,
 이전의 두 wheel burst 타이밍 smoke 판정을 갱신하지 않습니다.
 실제 마우스/트랙패드 입력, 다른 플랫폼 실행, scanout/FPS의 신규 수락 결과는 없습니다.
+
+## Android CoreCLR JIT Release — 2026-10-09
+
+Galaxy S25 `SM-S931N` / Android 16 / `arm64-v8a`에서 .NET SDK `10.0.400`으로
+`net10.0-android` Release APK를 빌드하고 `dev.doroti.carousel`을 설치·실행했습니다.
+`UseMonoRuntime=false`, `PublishReadyToRun=false`, `PublishAot=false`,
+`RunAOTCompilation=false`, `AndroidEnableProfiledAot=false`를 명시했습니다.
+Release 기본 트리밍은 `PublishTrimmed=true` / `TrimMode=partial` / `AndroidLinkMode=SdkOnly`입니다.
+
+- PASS: 수정 후 빌드 오류 0개. 경고 1개는 .NET 10 Android CoreCLR의 실험적 기능 경고 `XA1040`입니다.
+- PASS: signed APK에 `libcoreclr.so`, `libclrjit.so` 포함, Mono 런타임과 `libaot-*` 미포함.
+- PASS: 업데이트 설치, launcher 시작, resumed activity와 Graphite/Vulkan 첫 프레임.
+- PASS: ADB 합성 입력으로 Cover Slider 진입·가로 스와이프·Gallery 복귀,
+  홈 데모 선택, Record Box 진입·세로 스와이프·Next 버튼. 수정 후 프로세스 로그에 프레임워크 오류와 fatal exception 0개.
+- PASS: Android 환경의 CPU 회귀에서 가로·세로 glow의 idle paint, pull/recede,
+  애니메이션 도중 unmount와 timer/ticker 정리.
+
+첫 설치에서는 overscroll glow의 애니메이션 초기화 누락으로 paint·dispose가 실패하고
+스와이프 뒤 화면이 비었습니다. [동일 Flutter 리비전의 생성자](https://github.com/flutter/flutter/blob/56b8e1a8/packages/flutter/lib/src/widgets/overscroll_indicator.dart#L308)를
+기준으로 초기화를 복구한 APK를 재설치하고 위 동작을 다시 확인했습니다.
+
+```powershell
+python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --android-overscroll
+```
+
+로그·APK 검사·화면 캡처는 `Doroti/artifacts/carousel-android-jit-net10-release-arm64/`의
+삭제 가능한 로컬 산출물입니다. 실기기 자동 입력 결과이며 물리 손가락 입력, TalkBack,
+scanout/FPS, 다른 세 데모 전체 동작과 스토어 서명 수락은 `notVerified`입니다.
