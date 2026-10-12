@@ -9,6 +9,12 @@ using Doroti.Ui;
 using Carousel = Doroti.CustomCarousel.CustomCarousel;
 using Path = System.IO.Path;
 
+if (args.Contains("--image-sizing"))
+{
+    CarouselImageRegression.Run(args.LastOrDefault(a => !a.StartsWith("--")) ?? "temp/testing/carousel-images");
+    return;
+}
+
 if (args.Contains("--pointer-packets"))
 {
     PointerPacketRegression.Run();
@@ -34,6 +40,7 @@ static void Require(bool value, string message)
 
 var output = Path.GetFullPath(args.FirstOrDefault() ?? "temp/testing/carousel");
 Directory.CreateDirectory(output);
+CarouselImageRegression.Run(Path.Combine(output, "images"));
 PointerPacketRegression.Run();
 ContinuousInputRegression.Run(Path.Combine(output, "input"));
 PresentationInputRegression.Run(Path.Combine(output, "presentation"));

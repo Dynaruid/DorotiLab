@@ -7,6 +7,7 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <InternalsVisibleTo Include="Doroti.CustomCarousel.Tests" />
     <ProjectReference Include="../../Doroti/src/Doroti.Hosting/Doroti.Hosting.csproj" />
     <ProjectReference Include="../../packages/Doroti.Material/Doroti.Material.csproj" />
     <ProjectReference Include="../../packages/Doroti.CustomCarousel/Doroti.CustomCarousel.csproj" />

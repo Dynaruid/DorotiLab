@@ -1,4 +1,40 @@
-# 검증 기록 — 2026-10-06
+# 검증 기록
+
+## 2026-10-12 — 이미지 디코딩과 선행 로딩
+
+이미지는 표시 크기 × DPI × 미리보기 배율에 20% 해상도 여유를 적용하고 64px 단위로
+캐시합니다. `BoxFit.cover`의 잘리는 픽셀과 원근 변환의 최대 확대 범위를 포함하며,
+작은 원본은 확대 디코딩하지 않습니다. 홈의 `FittedBox` 배율, 데모 카드와 상세 보기에도
+같은 정책을 적용합니다. Record Box 선행 로딩은 표시용과 같은 캐시 키로 한 장씩 진행하고
+프레임 사이에 양보하며, 화면 해제나 크기/DPI 변경 시 대기를 취소합니다.
+
+WASM JPEG 디코딩은 코덱이 지원하는 n/8 축소 단계 중 목표 크기 이상인 단계를 선택합니다.
+임의 크기를 요청했다가 원본 전체 디코딩으로 되돌아가던 비용을 줄이며,
+PNG는 원본 디코딩 후 최종 이미지를 축소합니다. 기존 WASM float P/Invoke 우회는 유지합니다.
+
+| 검사 | 결과 | 범위 |
+| --- | --- | --- |
+| 이미지 정책·홈 DPR 1/2 | PASS | cover/contain 비율, 원본 크기 제한, 캐시 키 재사용과 DPI 변경, 홈 26장 디코딩 |
+| JPEG 축소 단계 | PASS | 800×800, 801×800, 901×1350의 9개 목표 크기를 네이티브 코덱으로 직접 디코딩하고 픽셀 확인 |
+| 기존 캐러셀·샘플 회귀 | PASS | 포인터·연속 입력·위젯 수명, 다섯 데모·상세 보기·셔플·두 화면 크기 |
+| Web Release AOT 게시·HTTPS 터널 | PASS | 최신 소스 게시, 공개 응답의 COOP/COEP와 WASM/워커 MIME 검사 |
+| Chrome Web 화면 | PASS | 홈·Circular Menu·Record Box, 앨범 01→02 전환, 확인 구간의 콘솔 경고/오류 0 |
+
+홈 원본 26장의 RGBA 픽셀 합계는 93.95MiB입니다. 560×850 논리 크기의 CPU 테스트에서
+실제 디코딩 이미지 캐시는 DPR 1에서 9,381,632 bytes (8.95MiB), DPR 2에서
+35,628,544 bytes (33.98MiB)였습니다. 이는 디코딩 이미지 캐시만의 수치이며,
+브라우저/GPU 전체 메모리나 프레임 시간·물리 입력·FPS 개선을 증명하지 않습니다.
+원근 변환 중 그림 래스터 캐시의 재사용 정책은 이번 변경에 포함하지 않습니다.
+
+```powershell
+python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project packages/Doroti.CustomCarousel/tests/Doroti.CustomCarousel.Tests -c Release -- --image-sizing temp/testing/carousel-image-optimization
+python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --scaled-image-decode
+```
+
+디코딩 캐시 수치와 DPR별 PNG는 실행 당시 `temp/testing/carousel-image-optimization/`에
+기록했습니다. 해당 경로는 삭제 가능한 로컬 산출물입니다.
+
+## 2026-10-06
 
 | 범위 | 결과 | 확인 내용 |
 | --- | --- | --- |

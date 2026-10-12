@@ -105,7 +105,7 @@ switch ($Command) {
             finally { Pop-Location }
         }
 
-        foreach ($asset in @('index.html', 'doroti_bootstrap.js', 'doroti-app-manifest.json')) {
+        foreach ($asset in @('index.html', 'doroti_bootstrap.js', 'doroti.runtime-profile.json')) {
             if (-not (Test-Path -LiteralPath (Join-Path $webRoot $asset) -PathType Leaf)) {
                 throw "Missing published asset: $asset. Run start without -SkipPublish."
             }

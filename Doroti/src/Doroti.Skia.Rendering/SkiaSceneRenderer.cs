@@ -1179,13 +1179,11 @@ public sealed partial class SkiaSceneRenderer
                         )
                     );
                     // GetScaledDimensions' float P/Invoke aborts the trimmed .NET 10
-                    // WASM runtime. Ask GetPixels to validate the requested scale there;
-                    // unsupported codec scales use intrinsic pixels and then resample.
+                    // WASM runtime. Select JPEG's supported integer eighths without that
+                    // call; other unsupported codec scales still fall back to intrinsic pixels.
                     var scaled = OperatingSystem.IsBrowser()
-                        ? new SKSizeI(
-                            Math.Max(1, (int)Math.Round(original.Width * scale)),
-                            Math.Max(1, (int)Math.Round(original.Height * scale))
-                        )
+                        ? BrowserDecodeDimensions(codec.EncodedFormat, original.Width, original.Height,
+                            target.Width, target.Height)
                         : codec.GetScaledDimensions((float)scale);
                     var info = new SKImageInfo(
                         scaled.Width,
@@ -1227,6 +1225,29 @@ public sealed partial class SkiaSceneRenderer
                 cancellationToken
             )
             .ConfigureAwait(false);
+    }
+
+    internal static SKSizeI BrowserDecodeDimensions(SKEncodedImageFormat format,
+        int width, int height, int targetWidth, int targetHeight)
+    {
+        if (width <= 0 || height <= 0 || targetWidth <= 0 || targetHeight <= 0)
+            throw new ArgumentOutOfRangeException(nameof(targetWidth));
+        if (format == SKEncodedImageFormat.Jpeg)
+        {
+            // SkJpegCodec/libjpeg-turbo supports n/8, n=1..8. Round UP so
+            // the final resize never has to enlarge an undersized decode.
+            var numerator = Math.Clamp(Math.Max(
+                ((long)targetWidth * 8 + width - 1) / width,
+                ((long)targetHeight * 8 + height - 1) / height), 1, 8);
+            return new SKSizeI(checked((int)(((long)width * numerator + 7) / 8)),
+                checked((int)(((long)height * numerator + 7) / 8)));
+        }
+        // PNG has no native scaled decode; avoid allocating a target bitmap
+        // only to discard it after kInvalidScale. Its final image is still resized.
+        if (format == SKEncodedImageFormat.Png) return new SKSizeI(width, height);
+        var scale = Math.Min(1, Math.Max((double)targetWidth / width, (double)targetHeight / height));
+        return new SKSizeI(Math.Max(1, (int)Math.Ceiling(width * scale)),
+            Math.Max(1, (int)Math.Ceiling(height * scale)));
     }
 
     private static SKBitmap DecodePixels(SKCodec codec, SKImageInfo requested, SKImageInfo original)

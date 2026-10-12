@@ -108,11 +108,18 @@ internal static class Ui
         new Container(width: double.PositiveInfinity, padding: EdgeInsets.CreateSymmetric(horizontal: 28, vertical: 24), child: new Column(
             crossAxisAlignment: CrossAxisAlignment.start, children:
             [Label(title, size, FontWeight.w500, spacing: -1), new SizedBox(height: 8), Label(description, 13, color: Muted)]));
-    public static Widget Photo(string path, double width, double height, double radius = 16, Widget? child = null, Color? background = null) =>
-        new Container(key: new ValueKey<string>("photo:" + path), width: width, height: height,
-            decoration: new BoxDecoration(color: background, image: new DecorationImage(image: Image(path), fit: BoxFit.cover),
-                borderRadius: BorderRadius.CreateCircular(radius)), child: child);
-    public static Widget Preview(int demo) => new Container(color: ArtworkColors[demo], child: new Center(
+    public static Widget Photo(string path, double width, double height, double radius = 16, Widget? child = null, Color? background = null,
+        double imageScale = 1) =>
+        new Builder(builder: context => new Container(key: new ValueKey<string>("photo:" + path), width: width, height: height,
+            decoration: new BoxDecoration(color: background, image: new DecorationImage(
+                image: CarouselImageProvider.For(context, path, width * imageScale, height * imageScale), fit: BoxFit.cover),
+                borderRadius: BorderRadius.CreateCircular(radius)), child: child));
+    public static Widget Picture(string path, double? width = null, double? height = null, BoxFit fit = BoxFit.contain) =>
+        new LayoutBuilder(builder: (context, box) => new Image(
+            image: CarouselImageProvider.For(context, path, width ?? box.maxWidth, height ?? box.maxHeight, fit),
+            width: width, height: height, fit: fit));
+    public static Widget Preview(int demo) => new LayoutBuilder(builder: (context, box) => new CarouselImageScale(
+        Math.Min(box.maxWidth / 420, box.maxHeight / 320), child: new Container(color: ArtworkColors[demo], child: new Center(
         child: new FittedBox(fit: BoxFit.contain, child: new SizedBox(width: 420, height: 320, child: new Stack(
             alignment: Alignment.center, children: demo switch
             {
@@ -121,9 +128,9 @@ internal static class Ui
                     Move(PreviewTile("cover_slider/food-b-2.jpg", 164, 224), 0, -8)],
                 1 => [new SizedBox(width: 240, height: 240, child: new Stack(fit: StackFit.expand, children:
                         new[] { "bun", "lettuce", "burger", "cheese", "sauce", "ketchup" }.Select(id =>
-                            (Widget)new Image(image: Image($"circular_menu/{id}.png"), fit: BoxFit.contain)).ToList())),
-                    Move(new Image(image: Image("circular_menu/icon-lettuce.png"), width: 64, height: 64), -130, 65),
-                    Move(new Image(image: Image("circular_menu/icon-cheese.png"), width: 56, height: 56), 130, -45)],
+                            Picture($"circular_menu/{id}.png")).ToList())),
+                    Move(Picture("circular_menu/icon-lettuce.png", width: 64, height: 64), -130, 65),
+                    Move(Picture("circular_menu/icon-cheese.png", width: 56, height: 56), 130, -45)],
                 2 => [Move(PreviewTile("card_deck/card-4.jpg", 152, 228, 12), -48, 12, rotate: -0.2),
                     Move(PreviewTile("card_deck/card-8.jpg", 152, 228, 12), 48, 12, rotate: 0.2),
                     PreviewTile("card_deck/card-13.jpg", 160, 240, 12)],
@@ -136,15 +143,18 @@ internal static class Ui
                                 Label("••••  2345", 11, color: new Color(0xccffffff), spacing: 2)]))), 0, 30)],
                 _ => Enumerable.Range(-4, 9).Select(distance => RecordLayer(
                     RecordSleeve((distance + 16) % 15, 196), distance / 4.5, 196, 320)).ToList(),
-            })))));
+            })))))));
     private static Widget PreviewTile(string path, double width, double height, double radius = 18, Widget? child = null) =>
         new Container(decoration: new BoxDecoration(borderRadius: BorderRadius.CreateCircular(radius),
             boxShadow: [new BoxShadow(color: new Color(0x20000000), offset: new Offset(0, 12), blurRadius: 22)]),
             child: Photo(path, width, height, radius, child));
+    // Bound the nearest edge's projective magnification, even on tall/wide viewports.
+    public static double PerspectiveImageScale(double extent) => 1 / Math.Max(0.25, 1 - extent * 0.0015 / 2);
     public static Widget RecordSleeve(int index, double size) => Photo($"record_box/album-{index}.jpg", size, size, 12,
         child: new ClipRRect(borderRadius: BorderRadius.CreateCircular(12), child: new Container(
             decoration: new BoxDecoration(
-                border: new Border(top: new BorderSide(color: new Color(0x62ffffff), width: 2))))));
+                border: new Border(top: new BorderSide(color: new Color(0x62ffffff), width: 2))))),
+        imageScale: PerspectiveImageScale(size));
     public static Widget RecordLayer(Widget child, double ratio, double size, double height)
     {
         var progress = Math.Clamp((ratio + 1) / 2, 0, 1);
@@ -249,7 +259,6 @@ internal sealed class CarouselDemoState : State<CarouselDemo>
     private CustomCarouselScrollController _controller = null!;
     private int _selected;
     private int[] _deck = Enumerable.Range(0, 14).ToArray();
-    private bool _recordImagesPrimed;
     private string? _food;
     private readonly HashSet<string> _added = ["lettuce", "cheese", "sauce", "ketchup"];
     private static readonly string[] Toppings = ["lettuce", "cheese", "bacon", "tomatoes", "onions", "pickles", "egg", "sauce", "ketchup", "mustard"];
@@ -261,17 +270,6 @@ internal sealed class CarouselDemoState : State<CarouselDemo>
         base.initState();
         _selected = widget.Demo == 2 ? 13 : 0;
         _controller = new CustomCarouselScrollController(initialItem: _selected);
-    }
-
-    public override void didChangeDependencies()
-    {
-        base.didChangeDependencies();
-        if (widget.Demo != 4 || _recordImagesPrimed) return;
-        _recordImagesPrimed = true;
-        // Warm this fixed collection when the view opens so new stack entries
-        // can reuse decoded covers during fast scrolling.
-        for (var index = 0; index < 15; index++)
-            _ = ImageLibrary.precacheImage(Ui.Image($"record_box/album-{index}.jpg"), context);
     }
 
     public override void dispose() { _controller.dispose(); base.dispose(); }
@@ -337,7 +335,7 @@ internal sealed class CarouselDemoState : State<CarouselDemo>
         [Ui.Heading("A closer look.", "Something worth savoring."),
             new Expanded(child: new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 24), child: new Center(child: new AspectRatio(aspectRatio: 1,
                 child: new ClipRRect(borderRadius: BorderRadius.CreateCircular(24), child:
-                    new Image(image: Ui.Image(_food), fit: BoxFit.cover)))))),
+                    Ui.Picture(_food, fit: BoxFit.cover)))))),
             new Padding(padding: EdgeInsets.CreateAll(24), child: Ui.Button("Back to menu", () => setState(() => _food = null),
                 "close-detail", primary: true, icon: "←"))]);
         Widget Row(string category, int count, double height) => new SizedBox(height: height,
@@ -370,7 +368,7 @@ internal sealed class CarouselDemoState : State<CarouselDemo>
         var iconSize = Math.Min(width * 0.45, height * 0.26);
         var items = Toppings.Select(id => (Widget)new GestureDetector(key: new ValueKey<string>($"topping-{id}"), onTap: () => setState(() =>
         { if (!_added.Add(id)) _added.Remove(id); }), child: new SizedBox(width: iconSize, height: iconSize,
-            child: new Image(image: Ui.Image($"circular_menu/icon-{id}.png"), fit: BoxFit.contain)))).ToArray();
+            child: Ui.Picture($"circular_menu/icon-{id}.png")))).ToArray();
         var carousel = Make(items, (_, ratio, child) =>
         {
             var angle = (-ratio + 0.5) * Math.PI;
@@ -384,7 +382,7 @@ internal sealed class CarouselDemoState : State<CarouselDemo>
             child: new Stack(fit: StackFit.expand, children:
                 new[] { "bun", "lettuce", "burger", "cheese", "bacon", "tomatoes", "onions", "pickles", "egg", "sauce", "ketchup", "mustard" }
                     .Where(id => id is "bun" or "burger" || _added.Contains(id))
-                    .Select(id => (Widget)new Image(image: Ui.Image($"circular_menu/{id}.png"), fit: BoxFit.contain)).ToList()))))]);
+                    .Select(id => Ui.Picture($"circular_menu/{id}.png")).ToList()))))]);
     }
 
     private Widget CardDeck(double width, double height)
@@ -392,9 +390,10 @@ internal sealed class CarouselDemoState : State<CarouselDemo>
         var cardHeight = Math.Min(height * 0.8, width * 1.5);
         var cardWidth = cardHeight * 2 / 3;
         return new Stack(fit: StackFit.expand, children:
-        [new Container(decoration: new BoxDecoration(image: new DecorationImage(image: Ui.Image("card_deck/background.jpg"), fit: BoxFit.cover))),
+        [Ui.Picture("card_deck/background.jpg", fit: BoxFit.cover),
          new ColoredBox(color: new Color(0xbbeae7ed)),
-         Make(_deck.Select(i => Ui.Photo($"card_deck/card-{i}.jpg", cardWidth, cardHeight, 24)).ToArray(),
+         Make(_deck.Select(i => Ui.Photo($"card_deck/card-{i}.jpg", cardWidth, cardHeight, 24,
+                imageScale: Ui.PerspectiveImageScale(cardWidth))).ToArray(),
             (_, ratio, child) => Ui.Move(
                 Ui.Flip(new Opacity(opacity: Math.Clamp(1 - Math.Max(0, ratio), 0, 1), child: child),
                     -Math.Max(0, ratio) * 0.3 * Math.PI),
@@ -431,8 +430,10 @@ internal sealed class CarouselDemoState : State<CarouselDemo>
     private Widget RecordBox(double width, double height)
     {
         var size = Math.Min(width * 0.70, height * 0.70);
-        return Make(Enumerable.Range(0, 15).Select(i => Ui.RecordSleeve(i, size)).ToArray(),
+        return new CarouselImageWarmup(Enumerable.Range(0, 15).Select(i => $"record_box/album-{i}.jpg").ToArray(),
+            size * Ui.PerspectiveImageScale(size),
+            child: Make(Enumerable.Range(0, 15).Select(i => Ui.RecordSleeve(i, size)).ToArray(),
             (_, ratio, child) => Ui.RecordLayer(child, ratio, size, height),
-            axis: Axis.vertical, before: 4, after: 4, speed: 5, depth: DepthOrder.forward, tap: true);
+            axis: Axis.vertical, before: 4, after: 4, speed: 5, depth: DepthOrder.forward, tap: true));
     }
 }

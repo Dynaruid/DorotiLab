@@ -3,6 +3,11 @@ using Doroti.Testing;
 using Doroti.Ui;
 
 #if DOROTI_REPO_TESTS
+if (args.Contains("--scaled-image-decode"))
+{
+    ScaledImageDecodeRegression.Run();
+    return;
+}
 if (args.Contains("--android-overscroll"))
 {
     AndroidOverscrollRegression.Run();
@@ -40,6 +45,7 @@ FullReviewRegression.Run();
 ActiveScrollSemanticsRegression.Run();
 AndroidOverscrollRegression.Run();
 ImageReadbackLifetimeRegression.Run();
+ScaledImageDecodeRegression.Run();
 ProcessRunnerRegression.Run();
 if (Array.IndexOf(args, "--native-frame-metal-gpu") is var metalGpuIndex && metalGpuIndex >= 0)
 {
