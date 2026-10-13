@@ -57,10 +57,22 @@ DLL redirection과 Doroti의 원본 SkiaSharp 관리/네이티브 파일 해시 
 `%TEMP%/.net`, Linux의 `$HOME/.net` 아래입니다. 앱이 사용자 데이터를 영구 저장할
 위치로 이 추출 폴더를 사용하지 마세요.
 
-Qt의 선택된 네이티브 shim, WebEngine manifest 및 `licenses/doroti-linux/` 고지 파일은
-번들 입력으로 등록합니다. Windows App SDK의 `doroti-native-provenance.json`도 번들
+Qt의 선택된 네이티브 shim과 WebEngine manifest는 번들 입력으로 등록합니다.
+Windows App SDK의 `doroti-native-provenance.json`도 번들
 생성 전에 실제 게시 대상 DLL의 해시로 생성합니다. `--no-build` 게시에서도 필요한
 네이티브 파일이 빠지면 실패합니다.
+
+`LICENSE`와 의존성 고지 파일은 빌드·게시·번들에 자동으로 포함하지 않습니다.
+개발자가 배포할 파일을 러너 프로젝트에 직접 지정합니다. 예를 들어 러너 폴더의
+`LICENSE`를 복사하고 단일 파일에도 포함하려면 다음 항목을 추가합니다.
+
+```xml
+<ItemGroup>
+  <None Update="LICENSE"
+        CopyToOutputDirectory="PreserveNewest"
+        CopyToPublishDirectory="PreserveNewest" />
+</ItemGroup>
+```
 
 ReadyToRun과 [Obfuscar](obfuscation.md)를 함께 사용할 수 있습니다. 공용 앱 IL 난독화,
 ReadyToRun, 번들 생성 순서로 처리합니다. 원본 파일 해시를 검사하는 `SkiaSharp.dll`은
@@ -79,7 +91,8 @@ python Doroti/eng/run-with-timeout.py --timeout 1200 python Doroti/tests/desktop
 ```
 
 새 출력 폴더를 지정합니다. 이 검사는 실제 단일 파일을 게시한 뒤 실행 파일만 별도
-폴더로 복사하여 추출된 관리 DLL/네이티브 shim/라이선스, no-build 게시의 변경된
+폴더로 복사하여 추출된 관리 DLL/네이티브 shim, 고지 파일 자동 포함의 부재와
+개발자가 지정한 라이선스 파일의 포함, no-build 게시의 변경된
 네이티브 입력, 잘못된 옵션 거부를 확인합니다. Qt shim은 콘텐츠 검사용 fixture이므로
 이 검사만으로 Qt GUI나 GPU 동작을 증명하지 않습니다.
 

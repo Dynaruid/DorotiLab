@@ -130,5 +130,3 @@ doroti_check_qt_license_policy(doroti_qt_host)
 if(TARGET doroti_webview_qt)
   doroti_check_qt_license_policy(doroti_webview_qt)
 endif()
-
-install(DIRECTORY licenses/ DESTINATION licenses/doroti-linux)

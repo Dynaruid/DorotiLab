@@ -18,6 +18,10 @@ out.mkdir(parents=True, exist_ok=False)
 build = ROOT / "packages/platforms/build"
 native = out / "native"
 native.mkdir()
+notices = native / "licenses"
+notices.mkdir()
+(notices / "NOTICE.txt").write_text("provider notice", encoding="utf-8")
+(out / "APP-LICENSE.txt").write_text("developer-selected license", encoding="utf-8")
 payload = ["libdoroti_qt_host.so", "libdoroti_texture_gstreamer.so",
            "libdoroti_webview_qt.so", "doroti-webview-runtime.json"]
 for name in payload:
@@ -48,9 +52,12 @@ project.write_text(f'''<Project Sdk="Microsoft.NET.Sdk">
     <DorotiHostKind>Qt</DorotiHostKind><DorotiQtWebEngine>true</DorotiQtWebEngine>
     <DorotiGStreamerTextures>true</DorotiGStreamerTextures>
     <DorotiQtNativeBuildDirectory>{native.as_posix()}</DorotiQtNativeBuildDirectory>
-    <DorotiQtNativeSourceDirectory>{(ROOT / 'packages/platforms/qt/native').as_posix()}</DorotiQtNativeSourceDirectory>
+    <DorotiQtNativeSourceDirectory>{native.as_posix()}</DorotiQtNativeSourceDirectory>
   </PropertyGroup>
-  <ItemGroup><Compile Include="Program.cs" /><ProjectReference Include="library/PhysicalLibrary.csproj" /></ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" /><ProjectReference Include="library/PhysicalLibrary.csproj" />
+    <None Update="APP-LICENSE.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
   <Import Project="{build.as_posix()}/Doroti.SingleFile.targets" />
   <Import Project="{build.as_posix()}/Doroti.Qt.targets" />
 </Project>''', encoding="utf-8")
@@ -62,10 +69,10 @@ foreach (var name in new[] { "libdoroti_qt_host.so", "libdoroti_texture_gstreame
     "libdoroti_webview_qt.so", "doroti-webview-runtime.json" })
     if (File.ReadAllText(Path.Combine(AppContext.BaseDirectory, name)) != expected)
         throw new Exception("Missing or stale bundle asset: " + name);
-foreach (var name in new[] { "README.md", "LGPL-3.txt", "GPL-3.txt", "LGPL-2.1.txt",
-    "Wayland-background-effect-MIT.txt" })
-    if (!File.Exists(Path.Combine(AppContext.BaseDirectory, "licenses/doroti-linux", name)))
-        throw new Exception("Missing license: " + name);
+if (Directory.Exists(Path.Combine(AppContext.BaseDirectory, "licenses/doroti-linux")))
+    throw new Exception("Provider notices were automatically bundled.");
+if (File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "APP-LICENSE.txt")) != "developer-selected license")
+    throw new Exception("The developer-selected license was not bundled.");
 #pragma warning disable IL3000 // The tested profile extracts every managed assembly.
 var location = Assembly.GetExecutingAssembly().Location;
 #pragma warning restore IL3000
@@ -143,4 +150,4 @@ if platform.system() == "Windows":
         "-p:PublishSingleFile=true", "-p:Configuration=Release", "-t:ValidateDorotiSingleFile",
         "-getProperty:EnableMsixTooling,IncludeAllContentForSelfExtract,IncludeNativeLibrariesForSelfExtract,SelfContained"))
     assert all(value == "true" for value in state["Properties"].values()), state
-print("PASS isolated desktop single-file publish, extraction, no-build payload and configuration guards.", flush=True)
+print("PASS isolated desktop single-file publish, extraction, developer-managed licenses, no-build payload and configuration guards.", flush=True)

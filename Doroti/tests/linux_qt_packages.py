@@ -61,8 +61,9 @@ command('restore', ['dotnet', 'restore', str(project), *props], env, consumer)
 command('publish', ['dotnet', 'publish', str(project), '-c', 'Release', *props, '-o', str(out / 'publish'), '-v:q'], env, consumer)
 assets = json.loads((consumer / 'linux/obj/linux-x64/project.assets.json').read_text())
 assert not any(item.get('type') == 'project' and name.startswith('Doroti.') for name, item in assets['libraries'].items())
-for name in ['libdoroti_qt_host.so', 'libSkiaSharp.so', 'Doroti.Host.Qt.dll', 'licenses/doroti-linux/LGPL-3.txt']:
+for name in ['libdoroti_qt_host.so', 'libSkiaSharp.so', 'Doroti.Host.Qt.dll']:
     assert (out / 'publish' / name).is_file(), name
+assert not (out / 'publish/licenses/doroti-linux').exists()
 command('published-run', [str(out / 'publish/DorotiTemplateApp.Linux')], env | {'QT_QPA_PLATFORM': 'wayland',
     'DOROTI_QT_VALIDATION_RESIZE_CYCLES': '20', 'DOROTI_QT_DIAGNOSTICS': '1'}, out / 'publish')
 log = (out / 'published-run.log').read_text()

@@ -23,8 +23,9 @@ not by itself avoid GPL obligations.
   dedicated plugin directory before discovery, limits plugin names/search paths,
   and rejects unexpected plugin names or licenses before accepting a pipeline.
   The list intentionally excludes automatic playback and libav/x264/x265.
-- The runner copies Linux notices/license texts to build and publish output;
-  CMake installation includes them too. App and template must remain identical.
+- Application developers select and include distribution notices/license texts
+  themselves. Build, publish, single-file bundling and native CMake installation
+  do not copy these files automatically.
 - CI exercises the Qt allowlist's rejection paths and checks native/template
   parity. These checks are regression guards, not a complete license scanner.
 
@@ -52,5 +53,5 @@ Development tools and their output must be assessed separately from runtime
 libraries. A GPL tool does not automatically license its output under GPL, but
 copied/generated implementation code and tool exceptions must be checked.
 
-See the app/template's `linux/native/licenses/README.md` and
+See the provider's [native dependency notices](../../packages/platforms/qt/native/licenses/README.md) and
 [third-party notices](../THIRD-PARTY-NOTICES.md) for distribution details.

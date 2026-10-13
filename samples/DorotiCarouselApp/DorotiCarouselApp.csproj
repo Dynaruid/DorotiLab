@@ -13,7 +13,6 @@
     <ProjectReference Include="../../packages/Doroti.CustomCarousel/Doroti.CustomCarousel.csproj" />
     <EmbeddedResource Include="assets/images/**/*.jpg;assets/images/**/*.png"
                       LogicalName="CarouselAssets.%(RecursiveDir)%(Filename)%(Extension)" />
-    <None Include="assets/LICENSE.flutter_custom_carousel" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <Import Project="../../Doroti/src/Doroti.App.Sdk/Sdk/Sdk.targets" />
 </Project>

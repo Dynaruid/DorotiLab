@@ -69,7 +69,7 @@ Doroti is independently implemented. Reference checkouts are not runtime depende
 - Use: dynamically linked system Qt 6 runtime modules for Linux windows, Quick controls and optional WebEngine/WebChannel.
 - Selected license: LGPL-3.0 for the LGPL-capable Qt modules; GPL-only runtime modules and static Qt linkage are rejected by the native CMake policy.
 - Qt WebEngine also includes Chromium and third-party code under their respective licenses: https://doc.qt.io/qt-6/qtwebengine-licensing.html
-- Notices and license texts for app distribution: `linux/native/licenses/` in the app and template. The runner copies these into build/publish output. Qt/GStreamer binaries and vendor-specific third-party notices must be handled separately if bundled.
+- Reference notices and license texts: [`packages/platforms/qt/native/licenses/`](../packages/platforms/qt/native/licenses/). Application developers select and include distribution notices themselves; build, publish and bundling do not copy them automatically. Qt/GStreamer binaries and vendor-specific third-party notices must be handled separately if bundled.
 
 ## Optional Linux GStreamer adapter
 
