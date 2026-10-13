@@ -63,7 +63,12 @@ assets = json.loads((consumer / 'linux/obj/linux-x64/project.assets.json').read_
 assert not any(item.get('type') == 'project' and name.startswith('Doroti.') for name, item in assets['libraries'].items())
 for name in ['libdoroti_qt_host.so', 'libSkiaSharp.so', 'Doroti.Host.Qt.dll']:
     assert (out / 'publish' / name).is_file(), name
-assert not (out / 'publish/licenses/doroti-linux').exists()
+for name in ['licenses/doroti-linux/LGPL-3.txt', 'licenses/doroti-linux/GPL-3.txt',
+             'licenses/Doroti.Runtime/LICENSE', 'licenses/Doroti.Skia.Rendering/Flutter-LICENSE.md']:
+    assert (out / 'publish' / name).is_file(), name
+assert not (out / 'publish/licenses/nuget').exists()
+assert not list((out / 'publish/licenses').rglob('SkiaSharp*.txt'))
+assert not list((out / 'publish/licenses').rglob('Silk.NET-LICENSE.md'))
 command('published-run', [str(out / 'publish/DorotiTemplateApp.Linux')], env | {'QT_QPA_PLATFORM': 'wayland',
     'DOROTI_QT_VALIDATION_RESIZE_CYCLES': '20', 'DOROTI_QT_DIAGNOSTICS': '1'}, out / 'publish')
 log = (out / 'published-run.log').read_text()

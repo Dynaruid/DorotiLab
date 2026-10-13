@@ -8,6 +8,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <DorotiLicense Include="../../LICENSES/Flutter-LICENSE.md" />
     <InternalsVisibleTo Include="Doroti.Tests" />
     <InternalsVisibleTo Include="Doroti.Cupertino.Tests" />
     <EmbeddedResource Include="Shaders\variable_blur.sksl" LogicalName="Doroti.Skia.Rendering.Shaders.variable_blur.sksl" />

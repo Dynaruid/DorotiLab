@@ -1,4 +1,4 @@
-"""Publish and run isolated bundles; verify extraction, Qt payload and no-build updates."""
+"""Publish isolated bundles with adjacent licenses; verify extraction and no-build updates."""
 from pathlib import Path
 import argparse
 import hashlib
@@ -19,8 +19,8 @@ build = ROOT / "packages/platforms/build"
 native = out / "native"
 native.mkdir()
 notices = native / "licenses"
-notices.mkdir()
-(notices / "NOTICE.txt").write_text("provider notice", encoding="utf-8")
+shutil.copytree(ROOT / "packages/platforms/qt/native/licenses", notices)
+(notices / "NOTICE.txt").write_text("payload-v1", encoding="utf-8")
 (out / "APP-LICENSE.txt").write_text("developer-selected license", encoding="utf-8")
 payload = ["libdoroti_qt_host.so", "libdoroti_texture_gstreamer.so",
            "libdoroti_webview_qt.so", "doroti-webview-runtime.json"]
@@ -30,8 +30,11 @@ for name in ("Directory.Build.props", "Directory.Build.targets"):
     (out / name).write_text("<Project />", encoding="utf-8")
 library = out / "library"
 library.mkdir()
-(library / "PhysicalLibrary.csproj").write_text('''<Project Sdk="Microsoft.NET.Sdk">
+(library / "PhysicalLibrary.csproj").write_text(f'''<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><TargetFramework>net10.0</TargetFramework><AssemblyName>SkiaSharp</AssemblyName><TreatWarningsAsErrors>true</TreatWarningsAsErrors></PropertyGroup>
+  <ItemGroup><DorotiLicense Include="{(ROOT / 'Doroti/LICENSE').as_posix()}" TargetPath="licenses/PhysicalLibrary/LICENSE" /></ItemGroup>
+  <ItemGroup><DorotiLicense Include="{notices.as_posix()}/**/*" Exclude="{notices.as_posix()}/LGPL-2.1.txt" TargetPath="licenses/doroti-linux/%(RecursiveDir)%(Filename)%(Extension)" /></ItemGroup>
+  <Import Project="{(ROOT / 'Doroti/eng/Doroti.LicenseRegistration.targets').as_posix()}" />
   <Target Name="RejectLibrarySingleFile" BeforeTargets="PrepareForBuild" Condition="'$(PublishSingleFile)' == 'true'">
     <Error Text="The executable's PublishSingleFile leaked into a referenced library." />
   </Target>
@@ -56,10 +59,11 @@ project.write_text(f'''<Project Sdk="Microsoft.NET.Sdk">
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Program.cs" /><ProjectReference Include="library/PhysicalLibrary.csproj" />
-    <None Update="APP-LICENSE.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <None Update="APP-LICENSE.txt" Link="licenses/app/LICENSE" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
   </ItemGroup>
   <Import Project="{build.as_posix()}/Doroti.SingleFile.targets" />
   <Import Project="{build.as_posix()}/Doroti.Qt.targets" />
+  <Import Project="{(ROOT / 'Doroti/src/Doroti.App.Sdk/Sdk/Doroti.Licenses.targets').as_posix()}" />
 </Project>''', encoding="utf-8")
 (out / "Program.cs").write_text('''using System.Reflection;
 using System.Text.Json;
@@ -69,10 +73,20 @@ foreach (var name in new[] { "libdoroti_qt_host.so", "libdoroti_texture_gstreame
     "libdoroti_webview_qt.so", "doroti-webview-runtime.json" })
     if (File.ReadAllText(Path.Combine(AppContext.BaseDirectory, name)) != expected)
         throw new Exception("Missing or stale bundle asset: " + name);
-if (Directory.Exists(Path.Combine(AppContext.BaseDirectory, "licenses/doroti-linux")))
-    throw new Exception("Provider notices were automatically bundled.");
-if (File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "APP-LICENSE.txt")) != "developer-selected license")
-    throw new Exception("The developer-selected license was not bundled.");
+var licenses = Path.Combine(Path.GetDirectoryName(Environment.ProcessPath!)!, "licenses");
+foreach (var name in new[] { "README.md", "LGPL-3.txt", "GPL-3.txt", "LGPL-2.1.txt", "Wayland-background-effect-MIT.txt" })
+    if (!File.Exists(Path.Combine(licenses, "doroti-linux", name)))
+        throw new Exception("Missing Qt notice: " + name);
+if (!File.Exists(Path.Combine(licenses, "PhysicalLibrary/LICENSE")))
+    throw new Exception("Missing referenced library's registered license.");
+if (Directory.Exists(Path.Combine(licenses, "Doroti.Runtime")) || Directory.Exists(Path.Combine(licenses, "Doroti.Skia.Fonts")))
+    throw new Exception("Unused framework libraries added licenses.");
+if (File.ReadAllText(Path.Combine(licenses, "doroti-linux/NOTICE.txt")) != expected)
+    throw new Exception("Stale Qt notice in no-build publish.");
+if (File.ReadAllText(Path.Combine(licenses, "app/LICENSE")) != "developer-selected license")
+    throw new Exception("The developer-selected license was not published.");
+if (Directory.Exists(Path.Combine(AppContext.BaseDirectory, "licenses")))
+    throw new Exception("Licenses should be readable beside the executable without bundle extraction.");
 #pragma warning disable IL3000 // The tested profile extracts every managed assembly.
 var location = Assembly.GetExecutingAssembly().Location;
 #pragma warning restore IL3000
@@ -99,11 +113,13 @@ def run(name, *command, error=None, env=None):
 
 
 def verify(name, publish, expected, ready_to_run=False):
-    assert sorted(p.name for p in publish.iterdir()) == [exe_name], list(publish.iterdir())
+    assert sorted(p.name for p in publish.iterdir()) == [exe_name, "licenses"], list(publish.iterdir())
+    assert not (publish / 'licenses/nuget').exists()
     isolated = out / (name + "-isolated")
     isolated.mkdir()
     executable = isolated / exe_name
     shutil.copy2(publish / exe_name, executable)
+    shutil.copytree(publish / "licenses", isolated / "licenses")
     runtime = run(name, str(executable), expected, env=os.environ | {
         "DOTNET_BUNDLE_EXTRACT_BASE_DIR": str(out / "extracted")})
     state = json.loads(runtime)
@@ -116,18 +132,24 @@ def verify(name, publish, expected, ready_to_run=False):
 
 publish = out / "publish"
 run("publish", "dotnet", "publish", str(project), "-c", "Release", "-p:PublishSingleFile=true", "-o", str(publish), "-v:q")
-verify("run-exe-only", publish, "payload-v1")
+verify("run-with-licenses", publish, "payload-v1")
 for name in payload:
     (native / name).write_text("payload-v2", encoding="utf-8")
+(notices / "NOTICE.txt").write_text("payload-v2", encoding="utf-8")
 second = out / "publish-no-build"
 run("publish-no-build", "dotnet", "publish", str(project), "-c", "Release", "--no-build", "-p:PublishSingleFile=true",
     "-o", str(second), "-v:q")
-verify("run-no-build-exe-only", second, "payload-v2")
+verify("run-no-build-with-licenses", second, "payload-v2")
 ready_to_run = out / "publish-r2r"
 run("publish-r2r", "dotnet", "publish", str(project), "-c", "Release", "-p:PublishSingleFile=true",
     "--self-contained", "true", "-p:PublishReadyToRun=true",
     "-o", str(ready_to_run), "-v:q")
-verify("run-r2r-exe-only", ready_to_run, "payload-v2", ready_to_run=True)
+verify("run-r2r-with-licenses", ready_to_run, "payload-v2", ready_to_run=True)
+without_gstreamer = out / "publish-without-gstreamer"
+run("publish-without-gstreamer", "dotnet", "publish", str(project), "-c", "Release", "--no-build",
+    "-p:DorotiGStreamerTextures=false", "-o", str(without_gstreamer), "-v:q")
+assert not (without_gstreamer / "licenses/doroti-linux/LGPL-2.1.txt").exists()
+assert (without_gstreamer / "licenses/doroti-linux/LGPL-3.txt").is_file()
 (native / "libdoroti_webview_qt.so").unlink()
 run("reject-missing-no-build-asset", "dotnet", "publish", str(project), "-c", "Release",
     "--no-build", "-o", str(out / "missing"), "-v:q", error="DOROTIQT006")
@@ -150,4 +172,4 @@ if platform.system() == "Windows":
         "-p:PublishSingleFile=true", "-p:Configuration=Release", "-t:ValidateDorotiSingleFile",
         "-getProperty:EnableMsixTooling,IncludeAllContentForSelfExtract,IncludeNativeLibrariesForSelfExtract,SelfContained"))
     assert all(value == "true" for value in state["Properties"].values()), state
-print("PASS isolated desktop single-file publish, extraction, developer-managed licenses, no-build payload and configuration guards.", flush=True)
+print("PASS isolated desktop single-file publish, adjacent licenses, extraction, no-build notices/payload and configuration guards.", flush=True)

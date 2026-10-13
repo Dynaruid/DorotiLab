@@ -1,0 +1,17 @@
+Material image color source adaptations
+Copyright 2021 Google LLC
+Copyright 2021-2022 project contributors
+
+License: Apache-2.0; see material-color-utilities-Apache-2.0.txt.
+Adapted files: packages/Doroti.Material/src/MaterialImageQuantizerWu.cs and
+packages/Doroti.Material/src/MaterialImageColorRuntime.cs.
+Upstream C# Wu source: https://github.com/albi005/MaterialColorUtilities/blob/v0.3.0/MaterialColorUtilities/Quantize/QuantizerWu.cs
+Upstream Dart behavior: https://github.com/material-foundation/material-color-utilities
+Package baseline: material_color_utilities 0.13.0.
+Local changes: 64-bit histogram moments, floating-point squared sums, Dart
+centroid rounding, five-iteration Wsmeans initialization, score filtering and
+hue separation, and explicit RGBA-to-ARGB conversion.
+
+PaletteRandom adapts Dart VM Random (sdk/lib/_internal/vm/lib/math_patch.dart).
+Copyright 2012, the Dart project authors.
+License: BSD-3-Clause; see dart-BSD-3-Clause.txt.

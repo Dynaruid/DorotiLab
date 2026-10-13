@@ -8,5 +8,6 @@
   <ItemGroup>
     <Compile Include="src/**/*.cs" />
     <ProjectReference Include="../../Doroti/src/Doroti.Framework.Widgets/Doroti.Framework.Widgets.csproj" />
+    <DorotiLicense Include="LICENSE" />
   </ItemGroup>
 </Project>

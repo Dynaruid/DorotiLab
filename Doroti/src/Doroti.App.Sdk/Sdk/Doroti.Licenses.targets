@@ -1,0 +1,4 @@
+<Project>
+  <Import Project="Doroti.LicenseRegistration.targets" Condition="Exists('$(MSBuildThisFileDirectory)Doroti.LicenseRegistration.targets')" />
+  <Import Project="../../../eng/Doroti.LicenseRegistration.targets" Condition="!Exists('$(MSBuildThisFileDirectory)Doroti.LicenseRegistration.targets')" />
+</Project>

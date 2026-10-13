@@ -9,7 +9,7 @@
     <DorotiNativeFontAsset Include=".doroti/fonts/Roboto-bold.ttf" ZipEntry="Roboto-Bold.ttf" Sha256="7D0B991EE3E0BE7AF01AD7EA8CD2BEEA6C00A25E679A0226B6737F079AAFFF86" />
     <DorotiNativeFontAsset Include=".doroti/fonts/LICENSE.roboto.txt" ZipEntry="Roboto_LICENSE.txt" Sha256="CFC7749B96F63BD31C3C42B5C471BF756814053E847C10F3EB003417BC523D30" />
     <EmbeddedResource Include="@(DorotiNativeFontAsset)" LogicalName="Doroti.Skia.Fonts.%(Filename)%(Extension)" />
-    <None Include=".doroti/fonts/LICENSE.roboto.txt" Pack="true" PackagePath="licenses/Roboto.txt" />
+    <DorotiLicense Include=".doroti/fonts/LICENSE.roboto.txt" TargetPath="licenses/Doroti.Skia.Fonts/Roboto-LICENSE.txt" />
   </ItemGroup>
   <UsingTask TaskName="RestoreDorotiNativeFonts" TaskFactory="RoslynCodeTaskFactory"
              AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">

@@ -1,0 +1,37 @@
+<Project>
+  <Target Name="DorotiRegisterLicenseFiles" BeforeTargets="AssignTargetPaths">
+    <PropertyGroup>
+      <_DorotiLicenseOwner>$(PackageId)</_DorotiLicenseOwner>
+      <_DorotiLicenseOwner Condition="'$(_DorotiLicenseOwner)' == ''">$(MSBuildProjectName)</_DorotiLicenseOwner>
+    </PropertyGroup>
+    <ItemGroup>
+      <_DorotiRegisteredLicense Include="@(DorotiLicense)">
+        <TargetPath Condition="'%(DorotiLicense.TargetPath)' == ''">licenses/$(_DorotiLicenseOwner)/%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
+      </_DorotiRegisteredLicense>
+      <None Include="@(_DorotiRegisteredLicense)" Link="%(_DorotiRegisteredLicense.TargetPath)"
+            CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true"
+            Pack="false" />
+    </ItemGroup>
+  </Target>
+  <UsingTask TaskName="WriteDorotiLicensePackageTargets" TaskFactory="RoslynCodeTaskFactory"
+             AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+    <Task><Code Type="Class" Language="cs" Source="$(MSBuildThisFileDirectory)WriteLicensePackageTargets.cs" /></Task>
+  </UsingTask>
+  <Target Name="DorotiPrepareLicensePackage" BeforeTargets="_GetPackageFiles" DependsOnTargets="DorotiRegisterLicenseFiles"
+          Condition="'@(DorotiLicense)' != ''">
+    <PropertyGroup>
+      <_DorotiExistingPackageTargets>$(MSBuildProjectDirectory)/buildTransitive/$(PackageId).targets</_DorotiExistingPackageTargets>
+      <_DorotiLicensePackageTargets>$(IntermediateOutputPath)license-package/$(PackageId).targets</_DorotiLicensePackageTargets>
+    </PropertyGroup>
+    <WriteDorotiLicensePackageTargets Licenses="@(_DorotiRegisteredLicense)"
+        ExistingTargets="$(_DorotiExistingPackageTargets)" OutputFile="$(_DorotiLicensePackageTargets)">
+      <Output TaskParameter="PackageFiles" ItemName="_DorotiStagedLicense" />
+    </WriteDorotiLicensePackageTargets>
+    <ItemGroup>
+      <None Remove="$(_DorotiExistingPackageTargets);buildTransitive/$(PackageId).targets" />
+      <None Include="$(_DorotiLicensePackageTargets)" Pack="true" PackagePath="buildTransitive/$(PackageId).targets" />
+      <None Include="@(_DorotiStagedLicense)" Pack="true" PackagePath="%(_DorotiStagedLicense.PackagePath)" />
+      <FileWrites Include="$(_DorotiLicensePackageTargets);@(_DorotiStagedLicense)" />
+    </ItemGroup>
+  </Target>
+</Project>

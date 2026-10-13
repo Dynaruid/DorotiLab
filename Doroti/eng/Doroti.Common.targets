@@ -21,9 +21,9 @@
   </PropertyGroup>
   <ItemGroup Condition="'$(IsDorotiProduct)' == 'true'">
     <None Include="$(DorotiPackageReadmeSource)" Pack="true" PackagePath="/" Link="README.md" />
-    <None Include="$(DorotiProductRoot)THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="licenses/" Link="THIRD-PARTY-NOTICES.md" />
-    <None Include="$(DorotiProductRoot)LICENSES/SkiaSharp*.txt" Pack="true" PackagePath="licenses/" />
+    <DorotiLicense Include="$(DorotiProductRoot)LICENSE" />
   </ItemGroup>
+  <Import Project="Doroti.LicenseRegistration.targets" />
   <Target Name="RejectMechanicalCandidatesInProductCompile" BeforeTargets="CoreCompile" Condition="'$(IsDorotiProduct)' == 'true'">
     <ItemGroup>
       <_DorotiMechanicalCandidate Include="@(Compile)"

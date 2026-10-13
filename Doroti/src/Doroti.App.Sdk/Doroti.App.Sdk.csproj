@@ -11,6 +11,8 @@
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="Sdk/Doroti.Licenses.targets" Pack="true" PackagePath="Sdk/" />
+    <None Include="../../eng/Doroti.LicenseRegistration.targets;../../eng/WriteLicensePackageTargets.cs" Pack="true" PackagePath="Sdk/" />
     <None Include="Sdk\Sdk.props" Pack="true" PackagePath="Sdk\Sdk.props" />
     <None Include="Sdk\Sdk.targets" Pack="true" PackagePath="Sdk\Sdk.targets" />
     <None Include="Sdk\Doroti.Obfuscation.props" Pack="true" PackagePath="Sdk\Doroti.Obfuscation.props" />

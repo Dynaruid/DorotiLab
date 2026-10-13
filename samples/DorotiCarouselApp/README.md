@@ -261,8 +261,9 @@ pwsh -NoProfile -File ./tools/doroti-cloudflared/tunnel.ps1 start -App ./samples
 원본 사진과 카드 이미지는 `assets/images/`에 있으며 공통 앱 DLL에 내장됩니다.
 원본 BSD 3-Clause 라이선스는
 [assets/LICENSE.flutter_custom_carousel](assets/LICENSE.flutter_custom_carousel)에 있습니다.
-라이선스 파일은 빌드·게시·번들에 자동으로 포함하지 않습니다. 배포 시 필요한 파일은
-개발자가 직접 지정합니다. [파일 포함 예시](../../Doroti/docs/desktop-publishing.md#추출과-파일-검증)를 참고하세요.
+앱과 각 참조 라이브러리가 등록한 고지는 빌드·게시 출력의 `licenses/`에 포함됩니다.
+Qt 고지는 Linux Qt 러너에서만 추가합니다. 단일 파일 게시도 실행 파일과 `licenses/`를
+함께 배포합니다. [라이선스 등록 방법](../../Doroti/docs/license-distribution.md)을 참고하세요.
 애니메이션 효과는 Doroti의 Transform/Opacity/ImageFiltered 조합을 사용합니다.
 원본 shimmer/tint, Hero 전환과 지갑 거래 목록은 이 예제에 포함하지 않습니다.
 

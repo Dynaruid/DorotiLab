@@ -23,9 +23,11 @@ not by itself avoid GPL obligations.
   dedicated plugin directory before discovery, limits plugin names/search paths,
   and rejects unexpected plugin names or licenses before accepting a pipeline.
   The list intentionally excludes automatic playback and libav/x264/x265.
-- Application developers select and include distribution notices/license texts
-  themselves. Build, publish, single-file bundling and native CMake installation
-  do not copy these files automatically.
+- Each library registers its own notices with `DorotiLicense`. Referenced
+  libraries propagate these files into `licenses/` in build/publish output and
+  through NuGet buildTransitive assets. Single-file releases ship that readable
+  folder beside the executable. Qt notices belong to the Qt host; the optional
+  GStreamer license is added only when that adapter is enabled.
 - CI exercises the Qt allowlist's rejection paths and checks native/template
   parity. These checks are regression guards, not a complete license scanner.
 

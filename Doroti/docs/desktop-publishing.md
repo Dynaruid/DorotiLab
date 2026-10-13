@@ -47,7 +47,8 @@ SDK는 지원 러너의 단일 파일 게시에서 다음 기본값을 적용합
 - Windows의 `SelfContained=true`, `WindowsAppSDKSelfContained=true` (값을 지정하지 않은 경우)
 - Release의 `CopyOutputSymbolsToPublishDirectory=false`
 
-배포 파일은 하나지만 실행 시 DLL과 콘텐츠를 추출합니다. 이는 Windows App SDK의
+실행 파일은 하나이며, 라이선스는 옆의 `licenses/` 폴더로 함께 배포합니다.
+실행 시 DLL과 콘텐츠를 추출합니다. 이는 Windows App SDK의
 DLL redirection과 Doroti의 원본 SkiaSharp 관리/네이티브 파일 해시 검증에 필요합니다.
 관리 DLL의 `Assembly.Location`과 `AppContext.BaseDirectory`는 추출된 파일을 가리킵니다.
 부분 추출, 트리밍, NativeAOT 조합은 명시적으로 거부합니다. Debug Hot Reload는
@@ -62,17 +63,19 @@ Windows App SDK의 `doroti-native-provenance.json`도 번들
 생성 전에 실제 게시 대상 DLL의 해시로 생성합니다. `--no-build` 게시에서도 필요한
 네이티브 파일이 빠지면 실패합니다.
 
-`LICENSE`와 의존성 고지 파일은 빌드·게시·번들에 자동으로 포함하지 않습니다.
-개발자가 배포할 파일을 러너 프로젝트에 직접 지정합니다. 예를 들어 러너 폴더의
-`LICENSE`를 복사하고 단일 파일에도 포함하려면 다음 항목을 추가합니다.
+각 라이브러리가 명시적으로 등록한 라이선스는 빌드·게시의 `licenses/` 아래로 전달합니다.
+NuGet 캐시에서 외부 패키지의 라이선스를 자동 수집하지 않습니다.
+단일 파일 게시에서는 `ExcludeFromSingleFile=true`로
+유지하여 실행 파일을 열거나 실행하지 않아도 읽을 수 있습니다. 배포할 때 실행 파일과
+`licenses/`를 함께 전달합니다. 앱이나 라이브러리가 추가할 고지는 직접 등록합니다.
 
 ```xml
 <ItemGroup>
-  <None Update="LICENSE"
-        CopyToOutputDirectory="PreserveNewest"
-        CopyToPublishDirectory="PreserveNewest" />
+  <DorotiLicense Include="LICENSE" />
 </ItemGroup>
 ```
+
+등록·NuGet 전이 참조·플랫폼별 포함 범위는 [라이선스 배포](license-distribution.md)를 참고하세요.
 
 ReadyToRun과 [Obfuscar](obfuscation.md)를 함께 사용할 수 있습니다. 공용 앱 IL 난독화,
 ReadyToRun, 번들 생성 순서로 처리합니다. 원본 파일 해시를 검사하는 `SkiaSharp.dll`은
@@ -88,15 +91,20 @@ Windows의 요구 조건은 [Windows App SDK 단일 EXE 문서](https://learn.mi
 
 ```powershell
 python Doroti/eng/run-with-timeout.py --timeout 1200 python Doroti/tests/desktop_single_file.py --output temp/testing/desktop-single-file-contract
+python Doroti/eng/run-with-timeout.py --timeout 1200 python Doroti/tests/license_distribution.py --output temp/testing/license-distribution-contract
 ```
 
-새 출력 폴더를 지정합니다. 이 검사는 실제 단일 파일을 게시한 뒤 실행 파일만 별도
-폴더로 복사하여 추출된 관리 DLL/네이티브 shim, 고지 파일 자동 포함의 부재와
-개발자가 지정한 라이선스 파일의 포함, no-build 게시의 변경된
+새 출력 폴더를 지정합니다. 첫 검사는 실제 단일 파일을 게시한 뒤 실행 파일과
+`licenses/`를 별도 폴더로 복사하여 추출된 관리 DLL/네이티브 shim,
+참조한 라이브러리의 고지와 앱의 추가 고지, no-build 게시의 변경된 고지와
 네이티브 입력, 잘못된 옵션 거부를 확인합니다. Qt shim은 콘텐츠 검사용 fixture이므로
-이 검사만으로 Qt GUI나 GPU 동작을 증명하지 않습니다.
+이 검사만으로 Qt GUI나 GPU 동작을 증명하지 않습니다. 두 번째 검사는 소스 참조와
+NuGet 전이 참조에서 사용한 라이브러리만 고지를 전달하는지 확인합니다.
 
 ## 2026-10-13 검증
+
+아래 표는 라이선스를 실행 파일 안에 넣던 이전 게시 형식의 검증 기록입니다.
+현재 배포 형식은 실행 파일과 `licenses/` 폴더입니다.
 
 | 검사 | 결과 | 확인 범위 |
 | --- | --- | --- |

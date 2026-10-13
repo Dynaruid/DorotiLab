@@ -22,7 +22,7 @@ Doroti is independently implemented. Reference checkouts are not runtime depende
 
 - Upstream behavior: https://github.com/material-foundation/material-color-utilities, Dart package `material_color_utilities 0.13.0`
 - C# Wu source: https://github.com/albi005/MaterialColorUtilities/blob/v0.3.0/MaterialColorUtilities/Quantize/QuantizerWu.cs
-- Adapted files: `src/Doroti.Runtime/MaterialImageQuantizerWu.cs`, `src/Doroti.Runtime/MaterialImageColorRuntime.cs`
+- Adapted files: `../packages/Doroti.Material/src/MaterialImageQuantizerWu.cs`, `../packages/Doroti.Material/src/MaterialImageColorRuntime.cs`
 - Copyright 2021 Google LLC; Copyright 2021-2022 project contributors
 - License: Apache-2.0, reproduced in [LICENSES/material-color-utilities-Apache-2.0.txt](LICENSES/material-color-utilities-Apache-2.0.txt)
 - Changes: 64-bit histogram moments, floating-point squared sums, Dart centroid rounding, pinned five-iteration Wsmeans initialization and score filtering/hue separation, explicit RGBA-to-ARGB conversion.
@@ -41,14 +41,14 @@ Doroti is independently implemented. Reference checkouts are not runtime depende
 - Upstream: https://github.com/mono/SkiaSharp
 - Packages: `SkiaSharp` and platform native assets `4.154.0-preview.1.26454.9`; public Graphite Vulkan, Metal and Dawn APIs are used. Silk.NET supplies standard Vulkan dispatch; no custom Skia binary is redistributed
 - Use: GPU surface implementation behind the Windows App SDK, MAUI, AppKit, Web, and Linux/Qt hosts
-- License: MIT; [license text](LICENSES/SkiaSharp-LICENSE.txt) and [native third-party notices](LICENSES/SkiaSharp-Native-THIRD-PARTY-NOTICES.txt) are copied verbatim from the pinned official Win32 NuGet archive and included in Doroti packages
+- License: MIT; reference [license text](LICENSES/SkiaSharp-LICENSE.txt) and [native third-party notices](LICENSES/SkiaSharp-Native-THIRD-PARTY-NOTICES.txt) are retained verbatim from the pinned official Win32 NuGet archive. External NuGet package licenses are not automatically collected into Doroti build/publish output or repackaged by the common library rules.
 
 ## Silk.NET
 
 - Upstream: https://github.com/dotnet/Silk.NET
 - Packages: `Silk.NET.Direct3D11`, `Silk.NET.Direct3D12`, `Silk.NET.DXGI`, `Silk.NET.Direct3D11.Extensions.D3D11On12`, and the existing Vulkan packages, version 2.23.0
 - Use: generated native graphics bindings; `Doroti.Graphics.DirectX` owns Windows COM references and uses the binding-independent SkiaSharp Direct3D API
-- License: MIT; package license metadata is preserved by NuGet restore and distribution packaging
+- License: MIT; package license metadata is preserved by NuGet restore. Doroti does not collect a separate copy from the package cache.
 
 ## Microsoft Windows App SDK
 
@@ -69,7 +69,7 @@ Doroti is independently implemented. Reference checkouts are not runtime depende
 - Use: dynamically linked system Qt 6 runtime modules for Linux windows, Quick controls and optional WebEngine/WebChannel.
 - Selected license: LGPL-3.0 for the LGPL-capable Qt modules; GPL-only runtime modules and static Qt linkage are rejected by the native CMake policy.
 - Qt WebEngine also includes Chromium and third-party code under their respective licenses: https://doc.qt.io/qt-6/qtwebengine-licensing.html
-- Reference notices and license texts: [`packages/platforms/qt/native/licenses/`](../packages/platforms/qt/native/licenses/). Application developers select and include distribution notices themselves; build, publish and bundling do not copy them automatically. Qt/GStreamer binaries and vendor-specific third-party notices must be handled separately if bundled.
+- Reference notices and license texts: [`packages/platforms/qt/native/licenses/`](../packages/platforms/qt/native/licenses/). The Qt host registers its notices for `licenses/doroti-linux/`; the optional GStreamer adapter adds LGPL-2.1 only when enabled. Single-file releases keep the license folder beside the executable. Qt/GStreamer binaries and vendor-specific third-party notices must be handled separately if bundled.
 
 ## Optional Linux GStreamer adapter
 

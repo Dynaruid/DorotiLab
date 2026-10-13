@@ -130,3 +130,8 @@ doroti_check_qt_license_policy(doroti_qt_host)
 if(TARGET doroti_webview_qt)
   doroti_check_qt_license_policy(doroti_webview_qt)
 endif()
+
+install(DIRECTORY licenses/ DESTINATION licenses/doroti-linux PATTERN "LGPL-2.1.txt" EXCLUDE)
+if(DOROTI_GSTREAMER_TEXTURES)
+  install(FILES licenses/LGPL-2.1.txt DESTINATION licenses/doroti-linux)
+endif()

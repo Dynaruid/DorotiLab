@@ -17,6 +17,17 @@
          default. Explicit prebuilt directories are still supported. -->
     <DorotiQtNativeBuildDirectory Condition="'$(DorotiQtNativeBuildDirectory)' == ''">$(BaseIntermediateOutputPath)$(Configuration)/qt-native/quick-$(_DorotiQtQuickFlag)-graphite-$(_DorotiQtGraphiteFlag)-webengine-$(_DorotiQtWebEngineFlag)-gstreamer-$(_DorotiGStreamerTexturesFlag)</DorotiQtNativeBuildDirectory>
   </PropertyGroup>
+  <ItemGroup Condition="'$(DorotiHostKind)' == 'Qt'">
+    <_DorotiQtRequiredLicense Include="README.md;LGPL-3.txt;GPL-3.txt;Wayland-background-effect-MIT.txt" />
+    <_DorotiQtRequiredLicense Include="LGPL-2.1.txt" Condition="'$(DorotiGStreamerTextures)' == 'true'" />
+    <DorotiLicense Include="$(DorotiQtNativeSourceDirectory)/licenses/LGPL-2.1.txt"
+                   TargetPath="licenses/doroti-linux/LGPL-2.1.txt" Condition="'$(DorotiGStreamerTextures)' == 'true'" />
+  </ItemGroup>
+  <Target Name="ValidateDorotiQtLicenseNotices" BeforeTargets="PrepareForBuild;ComputeFilesToPublish"
+          Condition="'$(DorotiHostKind)' == 'Qt'">
+    <Error Code="DOROTIQTLICENSE001" Condition="!Exists('$(DorotiQtNativeSourceDirectory)/licenses/%(_DorotiQtRequiredLicense.Identity)')"
+           Text="Qt distribution notice is missing: $(DorotiQtNativeSourceDirectory)/licenses/%(_DorotiQtRequiredLicense.Identity)." />
+  </Target>
   <PropertyGroup Condition="'$(DorotiQtDevelopment)' == 'true' and '$(DorotiHostKind)' == 'Qt'">
     <Optimize>false</Optimize>
     <DebugSymbols>true</DebugSymbols>

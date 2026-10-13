@@ -9,6 +9,8 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <DorotiLicense Include="../native/licenses/**/*" Exclude="../native/licenses/LGPL-2.1.txt"
+                   TargetPath="licenses/doroti-linux/%(RecursiveDir)%(Filename)%(Extension)" />
     <ProjectReference Include="../../../../Doroti/src/Doroti.Desktop/Doroti.Desktop.csproj" />
     <ProjectReference Include="../../../../Doroti/src/Doroti.Skia.Vulkan/Doroti.Skia.Vulkan.csproj" />
     <InternalsVisibleTo Include="Doroti.Validation.LinuxQtContract" />

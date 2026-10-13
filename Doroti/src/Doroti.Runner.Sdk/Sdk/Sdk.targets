@@ -1,4 +1,6 @@
 <Project>
+  <Import Project="Doroti.Licenses.targets" Condition="Exists('$(MSBuildThisFileDirectory)Doroti.Licenses.targets')" />
+  <Import Project="../../Doroti.App.Sdk/Sdk/Doroti.Licenses.targets" Condition="!Exists('$(MSBuildThisFileDirectory)Doroti.Licenses.targets')" />
   <PropertyGroup>
     <DorotiAppProject>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(DorotiAppProject)'))</DorotiAppProject>
     <DorotiApplicationProjectName>$([System.IO.Path]::GetFileNameWithoutExtension('$(DorotiAppProject)'))</DorotiApplicationProjectName>
