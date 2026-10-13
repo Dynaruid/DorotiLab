@@ -25,6 +25,8 @@ Doroti는 데스크톱·모바일·웹에서 공유하는 위젯, 레이아웃, 
 
 ## 요구 사항
 
+ReadyToRun 게시를 포함한 선택적 Release 앱 DLL 난독화는 [Obfuscar 구성](docs/obfuscation.md)을 참고하세요. NativeAOT·Mono/WASM AOT 경로는 제외합니다.
+
 ### 공통 도구와 SDK 선택
 
 - Windows·macOS·Linux에서 [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6)을 설치해 `eng/doroti.ps1` 등 저장소 스크립트 실행에 사용합니다. 아래 명령은 **저장소 루트 `DorotiLab`**에서 PowerShell로 시작합니다.

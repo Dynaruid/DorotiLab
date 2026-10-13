@@ -1,0 +1,14 @@
+<Project>
+  <!-- Separate compiler and runtime outputs from ordinary/AOT builds. Restore
+       assets stay shared: obfuscation does not change the dependency graph. -->
+  <PropertyGroup Condition="'$(DorotiObfuscate)' == 'true' and '$(Configuration)' == 'Release' and '$(PublishAot)' != 'true' and '$(RunAOTCompilation)' != 'true' and '$(AotAssemblies)' != 'true' and '$(AndroidEnableProfiledAot)' != 'true' and '$(DorotiCompilationMode)' != 'NativeAot'">
+    <_DorotiObfuscationEnabled>true</_DorotiObfuscationEnabled>
+    <OutputPath Condition="'$(UseArtifactsOutput)' != 'true' and '$(OutputPath)' == '' and '$(BaseOutputPath)' != ''">$(BaseOutputPath)$(Configuration)/</OutputPath>
+    <OutputPath Condition="'$(UseArtifactsOutput)' != 'true' and '$(OutputPath)' == ''">bin/$(Configuration)/</OutputPath>
+    <IntermediateOutputPath Condition="'$(UseArtifactsOutput)' != 'true' and '$(IntermediateOutputPath)' == ''">$(BaseIntermediateOutputPath)$(Configuration)/</IntermediateOutputPath>
+    <OutputPath Condition="'$(OutputPath)' != ''">$(OutputPath)obfuscated/</OutputPath>
+    <IntermediateOutputPath Condition="'$(IntermediateOutputPath)' != ''">$(IntermediateOutputPath)obfuscated/</IntermediateOutputPath>
+    <ArtifactsPivots Condition="'$(UseArtifactsOutput)' == 'true' and '$(ArtifactsPivots)' == ''">$(Configuration.ToLowerInvariant())</ArtifactsPivots>
+    <ArtifactsPivots Condition="'$(UseArtifactsOutput)' == 'true'">$(ArtifactsPivots)_obfuscated</ArtifactsPivots>
+  </PropertyGroup>
+</Project>

@@ -1,5 +1,6 @@
 <Project>
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+  <Import Project="Doroti.Obfuscation.props" />
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>

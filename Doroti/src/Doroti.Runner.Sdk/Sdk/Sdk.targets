@@ -7,6 +7,7 @@
   <Import Project="$(DorotiProviderBootstrapTargets)" Condition="'$(DorotiProviderSuppliesBootstrap)' != 'true' and '$(DorotiProviderBootstrapTargets)' != '' and Exists('$(DorotiProviderBootstrapTargets)')" />
   <Import Project="Doroti.DesktopBoundary.targets" />
   <Import Project="Doroti.Plugins.targets" />
+  <Import Project="Doroti.Obfuscation.targets" />
   <PropertyGroup>
     <_DorotiBootstrapFile Condition="'$(DorotiDesktopStartupType)' != ''">$(_DorotiGeneratedDirectory)DorotiBootstrap.Desktop.$(DorotiDesktopStartupType).g.cs</_DorotiBootstrapFile>
   </PropertyGroup>

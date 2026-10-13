@@ -1,0 +1,90 @@
+<Project>
+  <PropertyGroup>
+    <DorotiObfuscarHideStrings Condition="'$(DorotiObfuscarHideStrings)' == ''">false</DorotiObfuscarHideStrings>
+    <_DorotiObfuscarToolDirectory>$(MSBuildThisFileDirectory)</_DorotiObfuscarToolDirectory>
+  </PropertyGroup>
+  <UsingTask TaskName="DorotiWriteObfuscarConfiguration" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <AssemblyPath ParameterType="System.String" Required="true" />
+      <OutputDirectory ParameterType="System.String" Required="true" />
+      <References ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <RulesFile ParameterType="System.String" />
+      <HideStrings ParameterType="System.Boolean" />
+      <ConfigPath ParameterType="System.String" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Linq" />
+      <Using Namespace="System.Xml.Linq" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+        try {
+          var input = Path.GetFullPath(AssemblyPath);
+          var output = Path.GetFullPath(OutputDirectory);
+          var identity = System.Reflection.AssemblyName.GetAssemblyName(input);
+          if (identity.GetPublicKeyToken()?.Length > 0)
+            throw new InvalidOperationException("Strong-named app assemblies require an explicit re-signing integration.");
+          Directory.CreateDirectory(output);
+          var config = new XElement("Obfuscator",
+            new XElement("Var", new XAttribute("name", "InPath"), new XAttribute("value", Path.GetDirectoryName(input))),
+            new XElement("Var", new XAttribute("name", "OutPath"), new XAttribute("value", output)),
+            new XElement("Var", new XAttribute("name", "LogFile"), new XAttribute("value", Path.Combine(output, "mapping.xml"))),
+            new XElement("Var", new XAttribute("name", "XmlMapping"), new XAttribute("value", "true")),
+            new XElement("Var", new XAttribute("name", "KeepPublicApi"), new XAttribute("value", "true")),
+            new XElement("Var", new XAttribute("name", "HidePrivateApi"), new XAttribute("value", "true")),
+            new XElement("Var", new XAttribute("name", "RenameProperties"), new XAttribute("value", "false")),
+            new XElement("Var", new XAttribute("name", "RenameEvents"), new XAttribute("value", "false")),
+            new XElement("Var", new XAttribute("name", "SkipGenerated"), new XAttribute("value", "true")),
+            new XElement("Var", new XAttribute("name", "HideStrings"), new XAttribute("value", HideStrings ? "true" : "false")));
+          foreach (var directory in References.Select(r => Path.GetDirectoryName(Path.GetFullPath(r.ItemSpec))).Distinct())
+            config.Add(new XElement("AssemblySearchPath", new XAttribute("path", directory)));
+          var module = new XElement("Module", new XAttribute("file", input));
+          module.Add(new XElement("SkipType", new XAttribute("name", "*"), new XAttribute("decorator", "System.Text.Json.Serialization.JsonSerializableAttribute"),
+            new XAttribute("skipMethods", "true"), new XAttribute("skipFields", "true"), new XAttribute("skipProperties", "true"), new XAttribute("skipEvents", "true")));
+          if (!string.IsNullOrEmpty(RulesFile)) {
+            var rules = XDocument.Load(Path.GetFullPath(RulesFile));
+            var allowedRules = new [] { "SkipType", "SkipMethod", "SkipField", "SkipProperty", "SkipEvent", "SkipStringHiding", "SkipNamespace", "SkipEnums" };
+            if (rules.Root?.Name != "ObfuscarRules" || rules.Root.Elements().Any(e => e.Name.NamespaceName.Length != 0 || !allowedRules.Contains(e.Name.LocalName)))
+              throw new InvalidOperationException("DorotiObfuscarRules must contain an ObfuscarRules root with Skip* elements only.");
+            module.Add(rules.Root.Elements());
+          }
+          config.Add(module);
+          ConfigPath = Path.Combine(output, "obfuscar.xml");
+          new XDocument(config).Save(ConfigPath);
+        } catch (Exception error) {
+          Log.LogError("DOROTIOBF001: " + error.Message);
+          return false;
+        }
+      ]]></Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="DorotiObfuscateApplication" BeforeTargets="CopyFilesToOutputDirectory"
+          Condition="'$(_DorotiObfuscationEnabled)' == 'true' and '$(DesignTimeBuild)' != 'true'">
+    <PropertyGroup>
+      <_DorotiObfuscarOutput>$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)', '$(IntermediateOutputPath)', 'Doroti.Obfuscar'))</_DorotiObfuscarOutput>
+      <_DorotiObfuscarAssembly>$(_DorotiObfuscarOutput)$(TargetFileName)</_DorotiObfuscarAssembly>
+      <_DorotiObfuscarRules Condition="'$(DorotiObfuscarRules)' != ''">$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(DorotiObfuscarRules)'))</_DorotiObfuscarRules>
+      <_DorotiDotnetHost Condition="'$(DotNetHostPath)' != ''">$(DotNetHostPath)</_DorotiDotnetHost>
+      <_DorotiDotnetHost Condition="'$(_DorotiDotnetHost)' == ''">dotnet</_DorotiDotnetHost>
+    </PropertyGroup>
+    <DorotiWriteObfuscarConfiguration AssemblyPath="@(IntermediateAssembly->'%(FullPath)')" OutputDirectory="$(_DorotiObfuscarOutput)"
+        References="@(ReferencePath)" RulesFile="$(_DorotiObfuscarRules)" HideStrings="$(DorotiObfuscarHideStrings)">
+      <Output TaskParameter="ConfigPath" PropertyName="_DorotiObfuscarConfiguration" />
+    </DorotiWriteObfuscarConfiguration>
+    <Exec Command="&quot;$(_DorotiDotnetHost)&quot; tool restore --tool-manifest &quot;$(_DorotiObfuscarToolDirectory).config/dotnet-tools.json&quot;" WorkingDirectory="$(_DorotiObfuscarToolDirectory)" Timeout="1200000" />
+    <!-- Remove the exact previous result so failure cannot reuse stale output. -->
+    <Delete Files="$(_DorotiObfuscarAssembly);$(_DorotiObfuscarOutput)mapping.xml" />
+    <Exec Command="&quot;$(_DorotiDotnetHost)&quot; tool run obfuscar.console -- &quot;$(_DorotiObfuscarConfiguration)&quot;" WorkingDirectory="$(_DorotiObfuscarToolDirectory)" Timeout="1200000" />
+    <Error Code="DOROTIOBF002" Condition="!Exists('$(_DorotiObfuscarAssembly)') or !Exists('$(_DorotiObfuscarOutput)mapping.xml')" Text="Obfuscar did not produce the application assembly and mapping." />
+    <ItemGroup>
+      <IntermediateAssembly Remove="@(IntermediateAssembly)" />
+      <IntermediateAssembly Include="$(_DorotiObfuscarAssembly)" />
+      <FileWrites Include="$(_DorotiObfuscarOutput)**/*" />
+    </ItemGroup>
+    <!-- The original portable PDB no longer describes this assembly. -->
+    <PropertyGroup><CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory></PropertyGroup>
+    <Delete Files="$(TargetDir)$(TargetName).pdb" />
+    <Message Importance="High" Text="Doroti Obfuscar: $(TargetFileName); mapping: $(_DorotiObfuscarOutput)mapping.xml" />
+  </Target>
+</Project>

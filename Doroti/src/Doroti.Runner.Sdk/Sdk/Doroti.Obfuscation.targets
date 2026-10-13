@@ -1,0 +1,68 @@
+<Project>
+  <!-- Evaluate after the platform SDK has supplied its actual AOT defaults,
+       before MSBuild clones ProjectReference into its resolved item lists. -->
+  <Target Name="DorotiConfigureApplicationObfuscation" BeforeTargets="AssignProjectConfiguration;_GetProjectReferenceTargetFrameworkProperties;ResolveProjectReferences">
+    <PropertyGroup>
+      <_DorotiObfuscationAppProject>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(DorotiAppProject)'))</_DorotiObfuscationAppProject>
+      <DorotiObfuscationSkipReason></DorotiObfuscationSkipReason>
+      <DorotiObfuscationSkipReason Condition="'$(Configuration)' != 'Release'">Debug/development</DorotiObfuscationSkipReason>
+      <!-- ReadyToRun is allowed: the app SDK rewrites IL during Build, before
+           the runner's publish pipeline passes that DLL to crossgen2. -->
+      <DorotiObfuscationSkipReason Condition="'$(PublishAot)' == 'true' or '$(DorotiCompilationMode)' == 'NativeAot' or '$(RunAOTCompilation)' == 'true' or '$(AndroidEnableProfiledAot)' == 'true' or '$(AotAssemblies)' == 'true' or '$(_RunAotCompiler)' == 'true'">AOT</DorotiObfuscationSkipReason>
+      <!-- Mono Apple profiles can select AOT inside later native build targets.
+           Exclude these conservatively, including mixed interpreter/AOT. -->
+      <DorotiObfuscationSkipReason Condition="'$(UseMonoRuntime)' != 'false' and ('$(DorotiTarget)' == 'iOS' or '$(DorotiTarget)' == 'MacCatalyst')">Apple Mono AOT</DorotiObfuscationSkipReason>
+      <DorotiApplicationObfuscationEnabled>false</DorotiApplicationObfuscationEnabled>
+      <DorotiApplicationObfuscationEnabled Condition="'$(DorotiObfuscate)' == 'true' and '$(DorotiObfuscationSkipReason)' == ''">true</DorotiApplicationObfuscationEnabled>
+    </PropertyGroup>
+    <ItemGroup>
+      <ProjectReference Condition="'%(ProjectReference.FullPath)' == '$(_DorotiObfuscationAppProject)'">
+        <AdditionalProperties>%(ProjectReference.AdditionalProperties);DorotiObfuscate=$(DorotiApplicationObfuscationEnabled)</AdditionalProperties>
+      </ProjectReference>
+    </ItemGroup>
+    <Message Importance="High" Condition="'$(DorotiObfuscate)' == 'true' and '$(DorotiApplicationObfuscationEnabled)' != 'true'" Text="Doroti Obfuscar skipped: $(DorotiObfuscationSkipReason)." />
+  </Target>
+  <Target Name="DorotiValidateObfuscatedPublish" BeforeTargets="PrepareForPublish" DependsOnTargets="DorotiConfigureApplicationObfuscation"
+          Condition="'$(DorotiObfuscate)' == 'true' and '$(NoBuild)' == 'true'">
+    <Error Code="DOROTIOBF003" Condition="'$(DorotiApplicationObfuscationEnabled)' == 'true'" Text="Obfuscated publish requires a build. Remove --no-build so the protected application DLL is selected and verified." />
+  </Target>
+
+  <!-- The SDK reuses R2R output by timestamp. Switching back to an older plain
+       DLL can otherwise reuse native code generated from the protected DLL.
+       Track content, including composite inputs, even when protection is off. -->
+  <Target Name="DorotiInvalidateObfuscationReadyToRun" AfterTargets="_PrepareForReadyToRunCompilation" BeforeTargets="_CreateR2RImages"
+          DependsOnTargets="DorotiConfigureApplicationObfuscation"
+          Condition="'$(PublishReadyToRun)' == 'true' and '$(DesignTimeBuild)' != 'true'">
+    <GetFileHash Files="@(_ReadyToRunCompileList);@(_ReadyToRunCompositeBuildInput)" Algorithm="SHA256">
+      <Output TaskParameter="Items" ItemName="_DorotiReadyToRunInputHash" />
+    </GetFileHash>
+    <PropertyGroup>
+      <_DorotiReadyToRunIdentityFile>$(IntermediateOutputPath)doroti-obfuscar-r2r.identity</_DorotiReadyToRunIdentityFile>
+    </PropertyGroup>
+    <ItemGroup>
+      <_DorotiReadyToRunIdentity Include="obfuscation|$(DorotiApplicationObfuscationEnabled)|composite|$(PublishReadyToRunComposite)" />
+      <_DorotiReadyToRunIdentity Include="@(_DorotiReadyToRunInputHash->'%(FullPath)|%(FileHash)')" />
+    </ItemGroup>
+    <ReadLinesFromFile File="$(_DorotiReadyToRunIdentityFile)" Condition="Exists('$(_DorotiReadyToRunIdentityFile)')">
+      <Output TaskParameter="Lines" ItemName="_DorotiPreviousReadyToRunIdentity" />
+    </ReadLinesFromFile>
+    <ItemGroup Condition="'@(_DorotiReadyToRunIdentity)' != '@(_DorotiPreviousReadyToRunIdentity)'">
+      <_DorotiStaleReadyToRunOutput Include="@(_ReadyToRunCompileList->'%(OutputR2RImage)');@(_ReadyToRunCompileList->'%(OutputPDBImage)');@(_ReadyToRunSymbolsCompileList->'%(OutputPDBImage)')" />
+    </ItemGroup>
+    <Delete Files="@(_DorotiStaleReadyToRunOutput)" />
+    <WriteLinesToFile File="$(_DorotiReadyToRunIdentityFile)" Lines="@(_DorotiReadyToRunIdentity)" Overwrite="true" WriteOnlyWhenDifferent="true" />
+    <ItemGroup><FileWrites Include="$(_DorotiReadyToRunIdentityFile)" /></ItemGroup>
+    <Message Importance="High" Condition="'@(_DorotiStaleReadyToRunOutput)' != ''" Text="Doroti ReadyToRun: application input or obfuscation mode changed; regenerating native images." />
+  </Target>
+
+  <!-- A publish folder may still contain an original PDB from an earlier
+       opt-out publish. Remove only this app's stale symbol file. -->
+  <Target Name="DorotiExcludeObfuscatedApplicationPublishSymbols" AfterTargets="Publish"
+          Condition="'$(DorotiApplicationObfuscationEnabled)' == 'true'">
+    <ItemGroup>
+      <_DorotiObfuscatedAppPublishReference Include="@(ReferenceCopyLocalPaths)"
+          Condition="'%(ReferenceCopyLocalPaths.MSBuildSourceProjectFile)' == '$(_DorotiObfuscationAppProject)' and '%(ReferenceCopyLocalPaths.Extension)' == '.dll'" />
+    </ItemGroup>
+    <Delete Files="@(_DorotiObfuscatedAppPublishReference->'$(PublishDir)%(Filename).pdb')" />
+  </Target>
+</Project>

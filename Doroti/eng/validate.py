@@ -84,6 +84,7 @@ def main(suite, extra=()):
             command("tool-extension-contract", sys.executable,
                     "Doroti/tests/tool_extension_contract.py")
         if suite in ("Developer", "Release"):
+            command("obfuscar-contract", sys.executable, "Doroti/tests/obfuscar_contract.py")
             command("plugin-regressions", "dotnet", "run", "--project", "Doroti/tests/Doroti.Plugin.Tests/Doroti.Plugin.Tests.csproj", "--artifacts-path", str(run / "plugin-build"))
             command("os-drop-regressions", "dotnet", "run", "--project", "Doroti/tests/Doroti.Drop.Tests/Doroti.Drop.Tests.csproj", "--artifacts-path", str(run / "drop-build"))
             command("web-rendering", "node", "--experimental-transform-types", "--test", "Doroti/tests/web_rendering.mts")

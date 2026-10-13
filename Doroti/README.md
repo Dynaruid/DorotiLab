@@ -25,6 +25,8 @@ See the [platform implementation table](../README.md#platforms) for the host and
 
 ## Requirements
 
+Optional Release app DLL obfuscation, including ReadyToRun publishing, is described in [Obfuscar configuration](docs/obfuscation.md). NativeAOT and Mono/WebAssembly AOT paths are excluded.
+
 ### Shared tools and SDK selection
 
 - Install [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6) on Windows, macOS, or Linux to run repository scripts such as `eng/doroti.ps1`. Start the commands below in PowerShell at the **repository root, `DorotiLab`**.

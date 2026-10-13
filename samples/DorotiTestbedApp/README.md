@@ -41,6 +41,7 @@ recreation. See the [PlatformView support matrix](../../Doroti/docs/platform-vie
 for host-specific constraints.
 
 - [Prerequisites](#prerequisites)
+- [Platform builds and option cases](#platform-builds-and-option-cases)
 - [Platform sample commands](#material-sample-mode)
 - [Screen and renderer settings](#screen-and-renderer-settings)
 - [Build and development](#build-and-development)
@@ -54,8 +55,211 @@ Use the **.NET SDK 10.0.400 feature band** selected by the repository root [glob
 For the direct iOS commands below or the helper's `-DotnetVersion 11`, also install **.NET SDK 11.0.100-rc.1.26425.128** from [ios/global.json](ios/global.json) alongside .NET 10.
 Platform-specific workloads and tools are listed with each command below.
 
-The first run restores packages, builds, and deploys to a device where needed. All examples use Release.
+The first run restores packages, builds, and deploys to a device where needed. Sample run examples use Release; the build cases below explicitly select Debug or Release.
 For Debug, use `-c Debug` with `dotnet run` or `-Configuration Debug` with the workspace CLI.
+
+## Platform builds and option cases
+
+These direct .NET commands run in **PowerShell from the repository root**. Select the command for your platform and build case on the appropriate host OS. `build` compiles; `publish` produces deployment output. Device installation and launch are separate. Select a platform runner rather than the shared app `.csproj`.
+
+See [platform prerequisites](../../Doroti/README.md). The root `global.json` selects .NET 10. The .NET 11 cases select their SDK from the directories shown below; a project path alone does not select an SDK. Pass runtime and obfuscation MSBuild properties to the direct `dotnet` commands below.
+
+### Basic builds and Release defaults
+
+| Platform | Build host / RID | Debug build | Direct-build Release default |
+| --- | --- | --- | --- |
+| Windows App SDK | Windows / `win-x64` | `dotnet build ./samples/DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Debug` | CoreCLR JIT |
+| Windows MAUI | Windows / `win-x64` | `dotnet build ./samples/DorotiTestbedApp/windows/DorotiTestbedApp.Windows.csproj -c Debug` | CoreCLR ReadyToRun |
+| Android | Windows, macOS / `android-arm64`, `android-x64` | `dotnet build ./samples/DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj -c Debug -r android-arm64` | Mono profiled AOT (ARM64) |
+| iOS | macOS + Xcode / `ios-arm64`, `iossimulator-arm64`, `iossimulator-x64` | `dotnet build ./samples/DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Debug -r iossimulator-arm64 -p:DorotiCompilationMode=Mono -p:PublishAot=false` | NativeAOT / .NET 11 / `ios-arm64` |
+| Linux Qt | Linux x64 + Qt / `linux-x64` | `dotnet build ./samples/DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Debug -r linux-x64` | CoreCLR JIT |
+| macOS AppKit | Apple Silicon Mac + Xcode / `osx-arm64` | `dotnet build ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Debug -r osx-arm64` | CoreCLR JIT |
+| Mac Catalyst | Apple Silicon Mac + Xcode / `maccatalyst-arm64` | `dotnet build ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj -c Debug -r maccatalyst-arm64` | Mono AOT |
+| Web | Windows, macOS, Linux + `wasm-tools` / `browser-wasm` | `dotnet build ./samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Debug` | Mono WASM AOT (`publish`) |
+
+Use `-r android-x64` for an x64 Android emulator and `-r iossimulator-x64` for an Intel Mac iOS simulator. For iOS Release NativeAOT, use the separate .NET 11 **publish** procedure below.
+
+### Desktop JIT, ReadyToRun and obfuscation
+
+Select one publish case for your platform. Each runner supplies its declared RID.
+
+#### Windows App SDK
+
+```powershell
+# Release JIT
+dotnet publish ./samples/DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Release -p:PublishReadyToRun=false -p:DorotiObfuscate=false
+# Release JIT + Obfuscar
+dotnet publish ./samples/DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Release -p:PublishReadyToRun=false -p:DorotiObfuscate=true
+# Release ReadyToRun
+dotnet publish ./samples/DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Release -p:PublishReadyToRun=true -p:DorotiObfuscate=false
+# Release ReadyToRun + Obfuscar
+dotnet publish ./samples/DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Release -p:PublishReadyToRun=true -p:DorotiObfuscate=true
+```
+
+#### Windows MAUI
+
+```powershell
+# Release JIT
+dotnet publish ./samples/DorotiTestbedApp/windows/DorotiTestbedApp.Windows.csproj -c Release -p:PublishReadyToRun=false -p:DorotiObfuscate=false
+# Release JIT + Obfuscar
+dotnet publish ./samples/DorotiTestbedApp/windows/DorotiTestbedApp.Windows.csproj -c Release -p:PublishReadyToRun=false -p:DorotiObfuscate=true
+# Release ReadyToRun
+dotnet publish ./samples/DorotiTestbedApp/windows/DorotiTestbedApp.Windows.csproj -c Release -p:PublishReadyToRun=true -p:DorotiObfuscate=false
+# Release ReadyToRun + Obfuscar
+dotnet publish ./samples/DorotiTestbedApp/windows/DorotiTestbedApp.Windows.csproj -c Release -p:PublishReadyToRun=true -p:DorotiObfuscate=true
+```
+
+#### Linux Qt
+
+```powershell
+# Release JIT
+dotnet publish ./samples/DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Release -p:PublishReadyToRun=false -p:DorotiObfuscate=false
+# Release JIT + Obfuscar
+dotnet publish ./samples/DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Release -p:PublishReadyToRun=false -p:DorotiObfuscate=true
+# Release ReadyToRun
+dotnet publish ./samples/DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Release -p:PublishReadyToRun=true -p:DorotiObfuscate=false
+# Release ReadyToRun + Obfuscar
+dotnet publish ./samples/DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Release -p:PublishReadyToRun=true -p:DorotiObfuscate=true
+```
+
+#### macOS AppKit
+
+```powershell
+# Release JIT
+dotnet publish ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -p:PublishReadyToRun=false -p:DorotiObfuscate=false
+# Release JIT + Obfuscar
+dotnet publish ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -p:PublishReadyToRun=false -p:DorotiObfuscate=true
+# Release ReadyToRun
+dotnet publish ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -p:PublishReadyToRun=true -p:DorotiObfuscate=false
+# Release ReadyToRun + Obfuscar
+dotnet publish ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -p:PublishReadyToRun=true -p:DorotiObfuscate=true
+```
+
+Build Mac Catalyst Release Mono AOT with `dotnet build ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj -c Release -r maccatalyst-arm64`. This Mono profile is excluded from Obfuscar. The repository's NativeAOT profile targets physical iOS devices; do not add `PublishAot=true` to the desktop runners above.
+
+### Android Mono, JIT, AOT and CoreCLR
+
+The .NET 10 ARM64 Release default is Mono profiled AOT. The JIT/R2R cases below disable **both** Mono AOT and profiled AOT. `DorotiCompilationMode=Mono` names the shared Android profile; `UseMonoRuntime` selects the actual runtime.
+
+```powershell
+# .NET 10 / Mono profiled AOT: Obfuscar is skipped
+dotnet build ./samples/DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj -c Release -r android-arm64 `
+    -p:UseMonoRuntime=true -p:RunAOTCompilation=true `
+    -p:AndroidEnableProfiledAot=true -p:PublishReadyToRun=false `
+    -p:AndroidPackageFormats=apk
+
+# .NET 10 / Mono JIT + Obfuscar
+dotnet build ./samples/DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj -c Release -r android-arm64 `
+    -p:DorotiCompilationMode=Mono -p:PublishAot=false `
+    -p:RunAOTCompilation=false -p:AndroidEnableProfiledAot=false `
+    -p:AndroidPackageFormats=apk -p:UseMonoRuntime=true `
+    -p:PublishReadyToRun=false -p:DorotiObfuscate=true
+# .NET 10 / experimental CoreCLR JIT + Obfuscar
+dotnet build ./samples/DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj -c Release -r android-arm64 `
+    -p:DorotiCompilationMode=Mono -p:PublishAot=false `
+    -p:RunAOTCompilation=false -p:AndroidEnableProfiledAot=false `
+    -p:AndroidPackageFormats=apk -p:UseMonoRuntime=false `
+    -p:PublishReadyToRun=false -p:DorotiObfuscate=true
+```
+
+Install the .NET 11 Android/MAUI workloads for CoreCLR JIT/R2R. All samples use the repository's shared SDK selection directory; the project paths below are relative to that directory. Copy the entire `Push-Location`/`try`/`finally` block to select the SDK and restore the original directory. Choose the build case you need, and use `DorotiObfuscate=false` to disable protection.
+
+```powershell
+Push-Location ./samples/DorotiSampleApp2/android/sdk/net11
+try {
+    dotnet --version
+    # .NET 11 / CoreCLR JIT + Obfuscar
+    dotnet build ../../../../DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj -c Release -r android-arm64 `
+        -p:DorotiCompilationMode=Mono -p:PublishAot=false `
+        -p:RunAOTCompilation=false -p:AndroidEnableProfiledAot=false `
+        -p:AndroidPackageFormats=apk -p:DorotiAndroidTargetFramework=net11.0-android `
+        -p:DorotiAndroidMauiVersion=11.0.0-rc.1.26451.6 -p:MauiVersion=11.0.0-rc.1.26451.6 `
+        -p:UseMonoRuntime=false -p:PublishReadyToRun=false `
+        -p:DorotiObfuscate=true
+    # .NET 11 / CoreCLR ReadyToRun + Obfuscar
+    dotnet build ../../../../DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj -c Release -r android-arm64 `
+        -p:DorotiCompilationMode=Mono -p:PublishAot=false `
+        -p:RunAOTCompilation=false -p:AndroidEnableProfiledAot=false `
+        -p:AndroidPackageFormats=apk -p:DorotiAndroidTargetFramework=net11.0-android `
+        -p:DorotiAndroidMauiVersion=11.0.0-rc.1.26451.6 -p:MauiVersion=11.0.0-rc.1.26451.6 `
+        -p:UseMonoRuntime=false -p:PublishReadyToRun=true `
+        -p:DorotiObfuscate=true
+} finally { Pop-Location }
+```
+
+See [deployment tools](../../helpers/deploy-helper/README.md) for device selection and installation. Their `-App` supports `Testbed` and `Sample2`; build and install Carousel directly.
+
+### iOS simulator, Mono device and NativeAOT
+
+Run the Mono cases with the root .NET 10 SDK. Simulator Debug/Release and Mono device Release are excluded from obfuscation. Replace the signing placeholders with a local development certificate and provisioning profile.
+
+```powershell
+# .NET 10 / Mono simulator Debug
+dotnet build ./samples/DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Debug -r iossimulator-arm64 -p:DorotiCompilationMode=Mono -p:PublishAot=false -p:DorotiIosTargetFramework=net10.0-ios
+# .NET 10 / Mono simulator Release
+dotnet build ./samples/DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Release -r iossimulator-arm64 -p:DorotiCompilationMode=Mono -p:PublishAot=false -p:DorotiIosTargetFramework=net10.0-ios
+# .NET 10 / Mono physical device Release
+dotnet build ./samples/DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Release -r ios-arm64 -p:DorotiCompilationMode=Mono -p:PublishAot=false -p:DorotiIosTargetFramework=net10.0-ios '-p:CodesignKey=YOUR_CERTIFICATE_SHA1' '-p:CodesignProvision=YOUR_PROFILE_UUID'
+```
+
+For .NET 11 NativeAOT, select the SDK directory below and **publish**. Do not substitute `build` or `run`. Obfuscar is skipped for NativeAOT. Select a compatible Xcode; see [SDK-specific settings](../DorotiSampleApp2/docs/ios-nativeaot.md) for an Xcode validation override or the .NET 10 NativeAOT profile.
+
+```powershell
+Push-Location ./samples/DorotiTestbedApp/ios
+try {
+    dotnet --version
+    dotnet publish DorotiTestbedApp.iOS.csproj -c Release -r ios-arm64 `
+        -p:DorotiCompilationMode=NativeAot -p:DorotiIosTargetFramework=net11.0-ios `
+        -p:DorotiIosMauiVersion=11.0.0-rc.1.26451.6 -p:Registrar=managed-static `
+        -p:_UseDynamicDependenciesForMarkNSObjects=false `
+        '-p:MtouchExtraArgs=--skip-marking-nsobjects-in-user-assemblies=true' `
+        -p:PrepareAssemblies=false -p:PostProcessAssemblies=false `
+        --artifacts-path ../.doroti/publish/ios-nativeaot-net11 `
+        '-p:CodesignKey=YOUR_CERTIFICATE_SHA1' '-p:CodesignProvision=YOUR_PROFILE_UUID'
+} finally { Pop-Location }
+```
+
+Direct iOS Release defaults to NativeAOT for Testbed, and Mono for SampleApp2/Carousel. The examples explicitly select mode and TFM to avoid depending on that difference. The current iOS CoreCLR profile is for development sessions, not a general Release JIT/R2R publish case.
+
+### Web AOT, non-AOT, obfuscation and HTTPS sharing
+
+Select one publish case. `dotnet run -c Release` does not replace WASM AOT publishing. Serve the output with the COOP/COEP headers required for WASM threads.
+
+```powershell
+# Release WASM AOT: Obfuscar is skipped
+dotnet publish ./samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release -p:RunAOTCompilation=true -o ./samples/DorotiTestbedApp/.doroti/publish/web
+# Release without WASM AOT or obfuscation
+dotnet publish ./samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release -p:RunAOTCompilation=false -p:DorotiObfuscate=false -o ./samples/DorotiTestbedApp/.doroti/publish/web
+# Release without WASM AOT + Obfuscar
+dotnet publish ./samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release -p:RunAOTCompilation=false -p:DorotiObfuscate=true -o ./samples/DorotiTestbedApp/.doroti/publish/web
+python Doroti/eng/serve-isolated-web.py ./samples/DorotiTestbedApp/.doroti/publish/web/wwwroot --port 5226
+```
+
+Open `http://127.0.0.1:5226`. With Docker Desktop ready, use [Quick Tunnel](../../tools/doroti-cloudflared/README.md) for HTTPS sharing.
+
+```powershell
+# Default Release WASM AOT
+pwsh -NoProfile -File ./tools/doroti-cloudflared/tunnel.ps1 start -App ./samples/DorotiTestbedApp
+# Non-AOT Release
+pwsh -NoProfile -File ./tools/doroti-cloudflared/tunnel.ps1 start -App ./samples/DorotiTestbedApp -DisableAot
+# Non-AOT Release + Obfuscar
+pwsh -NoProfile -File ./tools/doroti-cloudflared/tunnel.ps1 start -App ./samples/DorotiTestbedApp -DisableAot -Obfuscate
+```
+
+`-DisableAot` and `-Obfuscate` cannot be combined with `-SkipPublish`.
+
+### Option combinations and obfuscation scope
+
+| Case | Obfuscar |
+| --- | --- |
+| Debug / Hot Reload | Always skipped |
+| Release JIT / non-AOT Web | Enabled with `DorotiObfuscate=true` |
+| Release ReadyToRun | Obfuscate IL before R2R compilation |
+| Mono AOT / profiled AOT / WASM AOT / iOS NativeAOT / Mac Catalyst Mono | Skipped |
+
+Obfuscation is off by default. It renames internal names in the shared app DLL while preserving the public API. See [Obfuscar configuration](../../Doroti/docs/obfuscation.md) for reflection/serialization exclusions. Add `-p:DorotiObfuscarHideStrings=true` for string hiding, or `-p:DorotiObfuscarRules=obfuscar-rules.xml` for an exclusion file relative to the shared app directory. Obfuscated publishing does not support `--no-build`.
+
+To keep outputs from different SDK/RID/runtime variants separate, add `--artifacts-path ./Doroti/artifacts/<unique-case-name>`. Keep `mapping.xml` and original PDB files as internal diagnostics; do not distribute them.
 
 ## Material sample mode
 

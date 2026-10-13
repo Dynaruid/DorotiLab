@@ -6,6 +6,10 @@ param(
 
     [switch] $SkipPublish,
 
+    [switch] $Obfuscate,
+
+    [switch] $DisableAot,
+
     [string] $App = './samples/DorotiTestbedApp',
 
     [ValidateRange(15, 600)]
@@ -55,6 +59,9 @@ function Save-TunnelUrl([string] $Url) {
 if ($SkipPublish -and $Command -ne 'start') {
     throw '-SkipPublish is supported only by start.'
 }
+if (($Obfuscate -or $DisableAot) -and ($Command -ne 'start' -or $SkipPublish)) {
+    throw '-Obfuscate and -DisableAot require start without -SkipPublish so the selected build settings are applied.'
+}
 
 switch ($Command) {
     'stop' {
@@ -99,7 +106,10 @@ switch ($Command) {
             try {
                 # Publish the declared web runner even for samples that only
                 # provide a subset of the workspace CLI's platform aliases.
-                & dotnet publish $webProject -c Release --nologo -p:UseSharedCompilation=false
+                $publishArguments = @('publish', $webProject, '-c', 'Release', '--nologo', '-p:UseSharedCompilation=false')
+                if ($Obfuscate) { $publishArguments += '-p:DorotiObfuscate=true' }
+                if ($DisableAot) { $publishArguments += '-p:RunAOTCompilation=false' }
+                & dotnet @publishArguments
                 if ($LASTEXITCODE -ne 0) { throw 'Doroti web Release publish failed.' }
             }
             finally { Pop-Location }

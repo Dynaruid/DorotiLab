@@ -1,5 +1,11 @@
 # Maintained regression tests
 
+`obfuscar_contract.py` runs the pinned Obfuscar tool against a real app/consumer
+fixture and verifies metadata renaming, runtime/public API/reflection behavior,
+incremental opt-in/out, actual ReadyToRun publish/header/runtime behavior, AOT
+exclusion and invalid-rule failure. Run it through the
+1200-second wrapper. See [Obfuscar configuration](../docs/obfuscation.md).
+
 `web_dev_proxy.py` verifies the Web tool package includes only the development
 server sources/project, without repackaged external DLLs. It checks local server
 builds in the app cache, an unchanged NuGet source directory, source and isolated NuGet

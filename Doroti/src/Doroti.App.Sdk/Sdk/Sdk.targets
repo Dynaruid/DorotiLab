@@ -69,4 +69,5 @@
   </Target>
 
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+  <Import Project="Doroti.Obfuscation.targets" />
 </Project>

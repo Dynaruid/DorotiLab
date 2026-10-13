@@ -19,6 +19,7 @@ WebView 명령 adapter를 제공하는 호스트에서는 URL 이동, 뒤로·�
 JavaScript 실행 컨트롤도 표시합니다. attachment만 제공하는 호스트에서는 로컬 페이지와 초기화 기능을 제공합니다.
 
 - [실행 준비](#실행-준비)
+- [플랫폼별 빌드와 옵션](#플랫폼별-빌드와-옵션)
 - [플랫폼별 샘플 실행](#material-샘플-모드)
 - [화면과 렌더러 설정](#화면과-렌더러-설정)
 - [빌드와 개발](#빌드와-개발)
@@ -32,8 +33,211 @@ iOS 외 대상은 저장소 루트 [global.json](../../global.json)이 선택하
 아래 iOS 직접 실행 명령이나 공용 설치 스크립트의 `-DotnetVersion 11`을 사용하려면 .NET 10과 함께 [ios/global.json](ios/global.json)이 선택하는 **.NET SDK 11.0.100-rc.1.26425.128**을 설치합니다.
 각 플랫폼에 필요한 workload와 도구는 아래 실행 항목에서 확인하세요.
 
-첫 실행은 패키지 복원과 빌드, 필요한 경우 기기 설치를 포함합니다. 예제는 모두 Release 구성입니다.
+첫 실행은 패키지 복원과 빌드, 필요한 경우 기기 설치를 포함합니다. 샘플 실행 예제는 Release이며 빌드 옵션 절에서는 Debug/Release를 명시합니다.
 Debug가 필요하면 `dotnet run`은 `-c Debug`, workspace CLI는 `-Configuration Debug`를 지정합니다.
+
+## 플랫폼별 빌드와 옵션
+
+아래는 **저장소 루트의 PowerShell**에서 실행하는 직접 .NET 명령입니다. 대상 OS와 빌드 케이스에 맞는 명령을 선택하세요. `build`는 컴파일, `publish`는 배포 산출물 생성입니다. 기기 설치·실행은 별도이며 공용 앱 `.csproj` 대신 플랫폼 러너를 지정합니다.
+
+[플랫폼 도구 준비](../../Doroti/README.ko.md)를 먼저 확인하세요. 루트 `global.json`은 .NET 10을 선택합니다. .NET 11 예제는 아래 지정 폴더에서 SDK를 선택합니다. 프로젝트 경로만 바꿔도 SDK가 바뀌지는 않습니다. 런타임·난독화 같은 MSBuild 옵션은 아래 `dotnet` 명령에 전달합니다.
+
+### 기본 빌드와 Release 기본값
+
+| 플랫폼 | 빌드 호스트 / RID | Debug 빌드 | 직접 빌드의 Release 기본값 |
+| --- | --- | --- | --- |
+| Windows App SDK | Windows / `win-x64` | `dotnet build ./samples/DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Debug` | CoreCLR JIT |
+| Windows MAUI | Windows / `win-x64` | `dotnet build ./samples/DorotiTestbedApp/windows/DorotiTestbedApp.Windows.csproj -c Debug` | CoreCLR ReadyToRun |
+| Android | Windows, macOS / `android-arm64`, `android-x64` | `dotnet build ./samples/DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj -c Debug -r android-arm64` | Mono profiled AOT (ARM64) |
+| iOS | macOS + Xcode / `ios-arm64`, `iossimulator-arm64`, `iossimulator-x64` | `dotnet build ./samples/DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Debug -r iossimulator-arm64 -p:DorotiCompilationMode=Mono -p:PublishAot=false` | NativeAOT / .NET 11 / `ios-arm64` |
+| Linux Qt | Linux x64 + Qt / `linux-x64` | `dotnet build ./samples/DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Debug -r linux-x64` | CoreCLR JIT |
+| macOS AppKit | Apple Silicon Mac + Xcode / `osx-arm64` | `dotnet build ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Debug -r osx-arm64` | CoreCLR JIT |
+| Mac Catalyst | Apple Silicon Mac + Xcode / `maccatalyst-arm64` | `dotnet build ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj -c Debug -r maccatalyst-arm64` | Mono AOT |
+| Web | Windows, macOS, Linux + `wasm-tools` / `browser-wasm` | `dotnet build ./samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Debug` | Mono WASM AOT (`publish`) |
+
+Android x64 에뮬레이터는 `-r android-x64`, Intel Mac의 iOS 시뮬레이터는 `-r iossimulator-x64`로 바꿉니다. iOS Release NativeAOT에는 아래 별도의 .NET 11 **publish** 절차를 사용하세요.
+
+### 데스크톱 JIT, ReadyToRun, 난독화
+
+대상 플랫폼에서 원하는 게시 케이스 하나를 실행합니다. 각 러너에 선언된 RID를 사용합니다.
+
+#### Windows App SDK
+
+```powershell
+# Release JIT
+dotnet publish ./samples/DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Release -p:PublishReadyToRun=false -p:DorotiObfuscate=false
+# Release JIT + Obfuscar
+dotnet publish ./samples/DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Release -p:PublishReadyToRun=false -p:DorotiObfuscate=true
+# Release ReadyToRun
+dotnet publish ./samples/DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Release -p:PublishReadyToRun=true -p:DorotiObfuscate=false
+# Release ReadyToRun + Obfuscar
+dotnet publish ./samples/DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Release -p:PublishReadyToRun=true -p:DorotiObfuscate=true
+```
+
+#### Windows MAUI
+
+```powershell
+# Release JIT
+dotnet publish ./samples/DorotiTestbedApp/windows/DorotiTestbedApp.Windows.csproj -c Release -p:PublishReadyToRun=false -p:DorotiObfuscate=false
+# Release JIT + Obfuscar
+dotnet publish ./samples/DorotiTestbedApp/windows/DorotiTestbedApp.Windows.csproj -c Release -p:PublishReadyToRun=false -p:DorotiObfuscate=true
+# Release ReadyToRun
+dotnet publish ./samples/DorotiTestbedApp/windows/DorotiTestbedApp.Windows.csproj -c Release -p:PublishReadyToRun=true -p:DorotiObfuscate=false
+# Release ReadyToRun + Obfuscar
+dotnet publish ./samples/DorotiTestbedApp/windows/DorotiTestbedApp.Windows.csproj -c Release -p:PublishReadyToRun=true -p:DorotiObfuscate=true
+```
+
+#### Linux Qt
+
+```powershell
+# Release JIT
+dotnet publish ./samples/DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Release -p:PublishReadyToRun=false -p:DorotiObfuscate=false
+# Release JIT + Obfuscar
+dotnet publish ./samples/DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Release -p:PublishReadyToRun=false -p:DorotiObfuscate=true
+# Release ReadyToRun
+dotnet publish ./samples/DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Release -p:PublishReadyToRun=true -p:DorotiObfuscate=false
+# Release ReadyToRun + Obfuscar
+dotnet publish ./samples/DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Release -p:PublishReadyToRun=true -p:DorotiObfuscate=true
+```
+
+#### macOS AppKit
+
+```powershell
+# Release JIT
+dotnet publish ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -p:PublishReadyToRun=false -p:DorotiObfuscate=false
+# Release JIT + Obfuscar
+dotnet publish ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -p:PublishReadyToRun=false -p:DorotiObfuscate=true
+# Release ReadyToRun
+dotnet publish ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -p:PublishReadyToRun=true -p:DorotiObfuscate=false
+# Release ReadyToRun + Obfuscar
+dotnet publish ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -p:PublishReadyToRun=true -p:DorotiObfuscate=true
+```
+
+Mac Catalyst의 Release Mono AOT는 `dotnet build ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj -c Release -r maccatalyst-arm64`로 빌드합니다. 이 Mono 경로는 Obfuscar 적용 대상에서 제외합니다. 이 저장소의 NativeAOT 프로필은 iOS 실기기용이므로 위 데스크톱 러너에 `PublishAot=true`를 추가하지 않습니다.
+
+### Android Mono, JIT, AOT, CoreCLR
+
+.NET 10 기본 ARM64 Release는 Mono profiled AOT입니다. 아래 JIT/R2R 케이스는 Mono AOT와 profiled AOT를 **모두** 끕니다. `DorotiCompilationMode=Mono`는 Android의 공용 프로필 이름이며, 실제 런타임은 `UseMonoRuntime`으로 선택합니다.
+
+```powershell
+# .NET 10 / Mono profiled AOT: Obfuscar is skipped
+dotnet build ./samples/DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj -c Release -r android-arm64 `
+    -p:UseMonoRuntime=true -p:RunAOTCompilation=true `
+    -p:AndroidEnableProfiledAot=true -p:PublishReadyToRun=false `
+    -p:AndroidPackageFormats=apk
+
+# .NET 10 / Mono JIT + Obfuscar
+dotnet build ./samples/DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj -c Release -r android-arm64 `
+    -p:DorotiCompilationMode=Mono -p:PublishAot=false `
+    -p:RunAOTCompilation=false -p:AndroidEnableProfiledAot=false `
+    -p:AndroidPackageFormats=apk -p:UseMonoRuntime=true `
+    -p:PublishReadyToRun=false -p:DorotiObfuscate=true
+# .NET 10 / experimental CoreCLR JIT + Obfuscar
+dotnet build ./samples/DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj -c Release -r android-arm64 `
+    -p:DorotiCompilationMode=Mono -p:PublishAot=false `
+    -p:RunAOTCompilation=false -p:AndroidEnableProfiledAot=false `
+    -p:AndroidPackageFormats=apk -p:UseMonoRuntime=false `
+    -p:PublishReadyToRun=false -p:DorotiObfuscate=true
+```
+
+.NET 11 CoreCLR JIT/R2R는 해당 SDK의 Android/MAUI 워크로드를 설치한 뒤 사용합니다. 모든 샘플에서 저장소의 공용 SDK 선택 폴더를 사용하며, 아래 프로젝트 경로는 이동한 폴더 기준입니다. SDK 선택과 원래 폴더 복귀를 위해 `Push-Location`/`try`/`finally` 블록 전체를 복사합니다. 아래 두 빌드 중 필요한 케이스를 선택하고, 난독화를 끄려면 `DorotiObfuscate=false`로 바꿉니다.
+
+```powershell
+Push-Location ./samples/DorotiSampleApp2/android/sdk/net11
+try {
+    dotnet --version
+    # .NET 11 / CoreCLR JIT + Obfuscar
+    dotnet build ../../../../DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj -c Release -r android-arm64 `
+        -p:DorotiCompilationMode=Mono -p:PublishAot=false `
+        -p:RunAOTCompilation=false -p:AndroidEnableProfiledAot=false `
+        -p:AndroidPackageFormats=apk -p:DorotiAndroidTargetFramework=net11.0-android `
+        -p:DorotiAndroidMauiVersion=11.0.0-rc.1.26451.6 -p:MauiVersion=11.0.0-rc.1.26451.6 `
+        -p:UseMonoRuntime=false -p:PublishReadyToRun=false `
+        -p:DorotiObfuscate=true
+    # .NET 11 / CoreCLR ReadyToRun + Obfuscar
+    dotnet build ../../../../DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj -c Release -r android-arm64 `
+        -p:DorotiCompilationMode=Mono -p:PublishAot=false `
+        -p:RunAOTCompilation=false -p:AndroidEnableProfiledAot=false `
+        -p:AndroidPackageFormats=apk -p:DorotiAndroidTargetFramework=net11.0-android `
+        -p:DorotiAndroidMauiVersion=11.0.0-rc.1.26451.6 -p:MauiVersion=11.0.0-rc.1.26451.6 `
+        -p:UseMonoRuntime=false -p:PublishReadyToRun=true `
+        -p:DorotiObfuscate=true
+} finally { Pop-Location }
+```
+
+기기 선택·설치는 [공용 배포 도구](../../helpers/deploy-helper/README.md)를 참고하세요. 이 도구의 `-App`은 `Testbed`와 `Sample2`만 지원하므로 Carousel은 직접 .NET 빌드와 기기 설치를 사용합니다.
+
+### iOS 시뮬레이터, Mono 실기기, NativeAOT
+
+Mono 예제는 루트의 .NET 10 SDK에서 실행합니다. 시뮬레이터 Debug/Release와 실기기 Mono Release는 난독화에서 제외합니다. 실기기는 로컬 개발 인증서·프로비저닝 프로필 값으로 placeholder를 바꿉니다.
+
+```powershell
+# .NET 10 / Mono simulator Debug
+dotnet build ./samples/DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Debug -r iossimulator-arm64 -p:DorotiCompilationMode=Mono -p:PublishAot=false -p:DorotiIosTargetFramework=net10.0-ios
+# .NET 10 / Mono simulator Release
+dotnet build ./samples/DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Release -r iossimulator-arm64 -p:DorotiCompilationMode=Mono -p:PublishAot=false -p:DorotiIosTargetFramework=net10.0-ios
+# .NET 10 / Mono physical device Release
+dotnet build ./samples/DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Release -r ios-arm64 -p:DorotiCompilationMode=Mono -p:PublishAot=false -p:DorotiIosTargetFramework=net10.0-ios '-p:CodesignKey=YOUR_CERTIFICATE_SHA1' '-p:CodesignProvision=YOUR_PROFILE_UUID'
+```
+
+.NET 11 NativeAOT는 아래처럼 SDK 선택 폴더로 이동하여 **publish**합니다. `build`나 `run`으로 대체하지 않습니다. NativeAOT에는 Obfuscar를 적용하지 않습니다. 호환되는 Xcode를 선택하고, Xcode 버전 검사 우회나 .NET 10 NativeAOT가 필요한 경우 [SDK별 상세 설정](../DorotiSampleApp2/docs/ios-nativeaot.md)을 참고하세요.
+
+```powershell
+Push-Location ./samples/DorotiTestbedApp/ios
+try {
+    dotnet --version
+    dotnet publish DorotiTestbedApp.iOS.csproj -c Release -r ios-arm64 `
+        -p:DorotiCompilationMode=NativeAot -p:DorotiIosTargetFramework=net11.0-ios `
+        -p:DorotiIosMauiVersion=11.0.0-rc.1.26451.6 -p:Registrar=managed-static `
+        -p:_UseDynamicDependenciesForMarkNSObjects=false `
+        '-p:MtouchExtraArgs=--skip-marking-nsobjects-in-user-assemblies=true' `
+        -p:PrepareAssemblies=false -p:PostProcessAssemblies=false `
+        --artifacts-path ../.doroti/publish/ios-nativeaot-net11 `
+        '-p:CodesignKey=YOUR_CERTIFICATE_SHA1' '-p:CodesignProvision=YOUR_PROFILE_UUID'
+} finally { Pop-Location }
+```
+
+Testbed의 직접 iOS Release 기본값은 NativeAOT이지만, SampleApp2와 Carousel은 Mono가 기본입니다. 위 예제는 이 차이에 의존하지 않도록 모드·TFM을 명시합니다. 현재 iOS CoreCLR은 개발 세션용이며 일반 Release JIT/R2R 게시 케이스로 안내하지 않습니다.
+
+### Web AOT, 비 AOT, 난독화, HTTPS 공유
+
+아래 게시 명령 중 하나를 선택합니다. `dotnet run -c Release`는 WASM AOT 게시를 대신하지 않습니다. 게시물을 제공할 때는 WASM threads에 필요한 COOP/COEP 헤더를 설정하는 서버를 사용합니다.
+
+```powershell
+# Release WASM AOT: Obfuscar is skipped
+dotnet publish ./samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release -p:RunAOTCompilation=true -o ./samples/DorotiTestbedApp/.doroti/publish/web
+# Release without WASM AOT or obfuscation
+dotnet publish ./samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release -p:RunAOTCompilation=false -p:DorotiObfuscate=false -o ./samples/DorotiTestbedApp/.doroti/publish/web
+# Release without WASM AOT + Obfuscar
+dotnet publish ./samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release -p:RunAOTCompilation=false -p:DorotiObfuscate=true -o ./samples/DorotiTestbedApp/.doroti/publish/web
+python Doroti/eng/serve-isolated-web.py ./samples/DorotiTestbedApp/.doroti/publish/web/wwwroot --port 5226
+```
+
+브라우저에서 `http://127.0.0.1:5226`을 엽니다. Docker Desktop이 준비되어 있으면 [Quick Tunnel](../../tools/doroti-cloudflared/README.md)로 HTTPS 공유도 가능합니다.
+
+```powershell
+# Default Release WASM AOT
+pwsh -NoProfile -File ./tools/doroti-cloudflared/tunnel.ps1 start -App ./samples/DorotiTestbedApp
+# Non-AOT Release
+pwsh -NoProfile -File ./tools/doroti-cloudflared/tunnel.ps1 start -App ./samples/DorotiTestbedApp -DisableAot
+# Non-AOT Release + Obfuscar
+pwsh -NoProfile -File ./tools/doroti-cloudflared/tunnel.ps1 start -App ./samples/DorotiTestbedApp -DisableAot -Obfuscate
+```
+
+`-DisableAot`·`-Obfuscate`는 `-SkipPublish`와 함께 사용할 수 없습니다.
+
+### 옵션 조합과 난독화 범위
+
+| 케이스 | Obfuscar |
+| --- | --- |
+| Debug / Hot Reload | 항상 제외 |
+| Release JIT / 비 AOT Web | `DorotiObfuscate=true`일 때 적용 |
+| Release ReadyToRun | IL 난독화 후 R2R 컴파일 |
+| Mono AOT / profiled AOT / WASM AOT / iOS NativeAOT / Mac Catalyst Mono | 제외 |
+
+난독화의 기본값은 꺼짐이며, 공용 앱 DLL의 내부 이름만 변경하고 공개 API는 유지합니다. 리플렉션·직렬화 예외는 [Obfuscar 설정](../../Doroti/docs/obfuscation.md)을 따릅니다. `-p:DorotiObfuscarHideStrings=true`로 문자열 숨김을 추가하고 `-p:DorotiObfuscarRules=obfuscar-rules.xml`로 공용 앱 폴더 기준 예외 파일을 선택할 수 있습니다. 난독화 게시에 `--no-build`는 사용할 수 없습니다.
+
+서로 다른 SDK·RID·런타임의 산출물을 따로 보관하려면 명령에 `--artifacts-path ./Doroti/artifacts/<고유-케이스-이름>`을 추가합니다. `mapping.xml`과 원본 PDB는 내부 분석 자료로 보관하고 배포하지 않습니다.
 
 ## Material 샘플 모드
 
@@ -388,7 +592,7 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 publish -App ./samples/DorotiTestb
 | 대상 | `-Platform` | `-Rid` / 추가 옵션 |
 | --- | --- | --- |
 | Windows App SDK | `windows` | 기본값 사용 |
-| Windows MAUI | `windows` | `-WindowsBackend Maui` |
+| Windows MAUI | `windows-maui` | `win-x64` |
 | macOS AppKit | `macos` | `osx-arm64` |
 | Mac Catalyst | `maccatalyst` | `maccatalyst-arm64` |
 | Linux | `linux` | `linux-x64` |
@@ -406,16 +610,10 @@ Web의 `ASPNETCORE_ENVIRONMENT=Development`는 빌드 구성과 별개입니다.
 
 ### Native bridge
 
-Android, iOS, AppKit, Mac Catalyst는 앱 소유 native library와 binding을 포함합니다.
-기본 ABI는 `platformInfo`, `echo`, UI-thread callback을 제공하며 최종 앱 runner와 별개입니다.
-
-```powershell
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 native doctor -App ./samples/DorotiTestbedApp -Platform android
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 native build -App ./samples/DorotiTestbedApp -Platform android -Rid android-arm64
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 native open -App ./samples/DorotiTestbedApp -Platform ios
-```
-
-`native open`은 Android Studio/Xcode 프로젝트 경로를 출력합니다. IDE도 열려면 `-Launch`를 추가합니다.
+Android, iOS, AppKit, Mac Catalyst 러너는 앱 소유 native library와 binding을 포함합니다.
+선택한 러너를 직접 `dotnet build`하면 해당 프로필의 네이티브 빌드도 연결됩니다.
+현재 provider CLI의 native 도구 진단과 실제 기기·서명·실행 검증은
+[doctor 안내](../../Doroti/docs/doctor.md)의 지원 범위를 따릅니다.
 
 ### 프로젝트 구조와 리소스
 

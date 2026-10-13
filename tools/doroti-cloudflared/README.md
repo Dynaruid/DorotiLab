@@ -28,6 +28,19 @@ pwsh -NoProfile -File ./tools/doroti-cloudflared/tunnel.ps1 start -App ./samples
 기본 앱은 `DorotiTestbedApp`입니다. `-SkipPublish`로 재실행할 때도 같은 `-App`을
 지정하세요. 이 도구는 한 번에 하나의 앱을 공유하며, 앱을 바꾸면 기존 공유를 대체합니다.
 
+앱 DLL 난독화를 사용하려면 WASM AOT를 끄고 게시합니다.
+
+```powershell
+pwsh -NoProfile -File ./tools/doroti-cloudflared/tunnel.ps1 start -Obfuscate -DisableAot
+```
+
+`-Obfuscate`는 Obfuscar 2.2.50으로 공용 앱 DLL의 내부 이름을 변경합니다.
+`-DisableAot`는 이 게시 명령에만 `RunAOTCompilation=false`를 전달합니다.
+기본 Release AOT 설정은 유지하며, AOT 경로에서는 난독화를 건너뜁니다.
+두 옵션은 `-SkipPublish`와 함께 사용할 수 없습니다. 매핑 파일과 원본 DLL은
+공개 `wwwroot`에 복사하지 않습니다. 플랫폼별 사용법과 예외 규칙은
+[Obfuscar 구성](../../Doroti/docs/obfuscation.md)을 참고하세요.
+
 스크립트는 게시 → Nginx 상태 확인 → 익명 터널 연결 → 공개 HTTPS 페이지와
 COOP/COEP 헤더 및 워커/WASM MIME 확인 후 주소를 출력합니다. 주소는 이 폴더의
 `generated-url.txt`에도 저장됩니다. 컨테이너는 명령이 끝나도 실행됩니다.
