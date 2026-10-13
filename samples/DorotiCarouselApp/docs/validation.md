@@ -1,5 +1,19 @@
 # 검증 기록
 
+## 2026-10-13 — 데스크톱 단일 파일 게시
+
+Windows App SDK JIT와 ReadyToRun + Obfuscar 게시에서 EXE 하나만 별도 폴더로 복사한
+실행, 네이티브 해시 검증, GPU 첫 프레임 표시와 정상 종료를 확인했습니다.
+Linux Qt JIT도 self-contained ELF 하나로 게시하고 WSLg Wayland / software Vulkan에서
+20회 크기 변경, presented 40 / failed 0, 자원 해제와 정상 종료를 확인했습니다.
+일반 폴더 빌드에서도 재현되던 Qt 종료 시 뷰 중복 해제 순서를 함께 수정했습니다.
+
+Windows/Linux 게시 회귀, no-build 콘텐츠, R2R의 관리 DLL 원본 보존과 지원하지 않는
+옵션 거부가 통과했습니다. macOS/Mac Catalyst는 현재 .NET Apple SDK의 단일 파일
+미지원으로 `.app` 게시를 사용합니다. 자세한 명령과 범위는
+[데스크톱 게시 안내](../../../Doroti/docs/desktop-publishing.md)에 있습니다.
+Linux 실기기 GPU, FPS/scanout와 전체 물리 입력 수락은 `notVerified`입니다.
+
 ## 2026-10-12 — 이미지 디코딩과 선행 로딩
 
 이미지는 표시 크기 × DPI × 미리보기 배율에 20% 해상도 여유를 적용하고 64px 단위로

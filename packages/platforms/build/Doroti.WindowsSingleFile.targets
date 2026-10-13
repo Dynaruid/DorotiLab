@@ -1,0 +1,27 @@
+<Project>
+  <Target Name="DorotiIncludeWindowsSingleFileProvenance" BeforeTargets="_ComputeFilesToBundle"
+          Condition="'$(DorotiTarget)' == 'Windows' and '$(PublishSingleFile)' == 'true'">
+    <ItemGroup>
+      <_DorotiBundleNativeHost Include="@(ResolvedFileToPublish)" Condition="'%(ResolvedFileToPublish.RelativePath)' == 'doroti_windows_appsdk_host_v1.dll'" />
+      <_DorotiBundleBootstrap Include="@(ResolvedFileToPublish)" Condition="'%(ResolvedFileToPublish.RelativePath)' == 'Microsoft.WindowsAppRuntime.Bootstrap.dll'" />
+    </ItemGroup>
+    <Error Condition="'@(_DorotiBundleNativeHost->Count())' != '1' or '@(_DorotiBundleBootstrap->Count())' != '1'"
+           Text="Windows single-file provenance requires exactly one native host and Windows App Runtime bootstrap in the publish payload." />
+    <GetFileHash Files="@(_DorotiBundleNativeHost)" Algorithm="SHA256">
+      <Output TaskParameter="Items" ItemName="_DorotiBundleNativeHostHash" />
+    </GetFileHash>
+    <GetFileHash Files="@(_DorotiBundleBootstrap)" Algorithm="SHA256">
+      <Output TaskParameter="Items" ItemName="_DorotiBundleBootstrapHash" />
+    </GetFileHash>
+    <PropertyGroup>
+      <_DorotiBundleProvenanceFile>$(IntermediateOutputPath)doroti-native-provenance.publish.json</_DorotiBundleProvenanceFile>
+      <_DorotiBundleProvenanceText>{&quot;schemaVersion&quot;:&quot;doroti.windows.native-provenance/v2&quot;,&quot;nativeHostSha256&quot;:&quot;@(_DorotiBundleNativeHostHash->'%(FileHash)')&quot;,&quot;bootstrapSha256&quot;:&quot;@(_DorotiBundleBootstrapHash->'%(FileHash)')&quot;}</_DorotiBundleProvenanceText>
+    </PropertyGroup>
+    <WriteLinesToFile File="$(_DorotiBundleProvenanceFile)" Lines="$(_DorotiBundleProvenanceText)" Overwrite="true" WriteOnlyWhenDifferent="true" />
+    <ItemGroup>
+      <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(ResolvedFileToPublish.RelativePath)' == 'doroti-native-provenance.json'" />
+      <ResolvedFileToPublish Include="$(_DorotiBundleProvenanceFile)" RelativePath="doroti-native-provenance.json" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="false" />
+      <FileWrites Include="$(_DorotiBundleProvenanceFile)" />
+    </ItemGroup>
+  </Target>
+</Project>

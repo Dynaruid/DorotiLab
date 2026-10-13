@@ -43,8 +43,8 @@
   </Target>
   <Target Name="ValidateDorotiQtPublishMode" BeforeTargets="PrepareForBuild;PrepareForPublish"
           Condition="'$(DorotiHostKind)' == 'Qt'">
-    <Error Code="DOROTIQT001" Condition="'$(PublishTrimmed)' == 'true' or '$(PublishSingleFile)' == 'true'"
-           Text="Qt official Graphite requires the original SkiaSharp managed assembly and a separate native library for package provenance. PublishTrimmed and PublishSingleFile are not supported; use an untrimmed framework-dependent or self-contained publish." />
+    <Error Code="DOROTIQT001" Condition="'$(PublishTrimmed)' == 'true'"
+           Text="Qt official Graphite requires the original SkiaSharp managed assembly for package provenance. PublishTrimmed is not supported; use an untrimmed publish." />
   </Target>
   <!-- CMake owns dependency/toolchain discovery and its incremental native graph.
        Keep configuration outputs separate and do not replace it with an mtime stamp. -->
@@ -67,16 +67,16 @@
          can preserve both). Always copy the library selected by this build. -->
     <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_qt_host.so" DestinationFolder="$(TargetDir)" />
     <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_texture_gstreamer.so" DestinationFolder="$(TargetDir)" Condition="'$(DorotiGStreamerTextures)' == 'true'" />
-    <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_texture_gstreamer.so" DestinationFolder="$(PublishDir)" Condition="'$(DorotiGStreamerTextures)' == 'true' and '$(PublishDir)' != ''" />
+    <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_texture_gstreamer.so" DestinationFolder="$(PublishDir)" Condition="'$(DorotiGStreamerTextures)' == 'true' and '$(PublishDir)' != '' and '$(PublishSingleFile)' != 'true'" />
     <Delete Files="$(TargetDir)libdoroti_texture_gstreamer.so" Condition="'$(DorotiGStreamerTextures)' != 'true'" />
-    <Delete Files="$(PublishDir)libdoroti_texture_gstreamer.so" Condition="'$(DorotiGStreamerTextures)' != 'true' and '$(PublishDir)' != ''" />
+    <Delete Files="$(PublishDir)libdoroti_texture_gstreamer.so" Condition="'$(DorotiGStreamerTextures)' != 'true' and '$(PublishDir)' != '' and '$(PublishSingleFile)' != 'true'" />
     <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_webview_qt.so" DestinationFolder="$(TargetDir)" Condition="'$(DorotiQtWebEngine)' == 'true'" />
-    <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_webview_qt.so" DestinationFolder="$(PublishDir)" Condition="'$(DorotiQtWebEngine)' == 'true' and '$(PublishDir)' != ''" />
+    <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_webview_qt.so" DestinationFolder="$(PublishDir)" Condition="'$(DorotiQtWebEngine)' == 'true' and '$(PublishDir)' != '' and '$(PublishSingleFile)' != 'true'" />
     <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/doroti-webview-runtime.json" DestinationFolder="$(TargetDir)" Condition="'$(DorotiQtWebEngine)' == 'true'" />
-    <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/doroti-webview-runtime.json" DestinationFolder="$(PublishDir)" Condition="'$(DorotiQtWebEngine)' == 'true' and '$(PublishDir)' != ''" />
+    <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/doroti-webview-runtime.json" DestinationFolder="$(PublishDir)" Condition="'$(DorotiQtWebEngine)' == 'true' and '$(PublishDir)' != '' and '$(PublishSingleFile)' != 'true'" />
     <Delete Files="$(TargetDir)libdoroti_webview_qt.so;$(TargetDir)doroti-webview-runtime.json" Condition="'$(DorotiQtWebEngine)' != 'true'" />
-    <Delete Files="$(PublishDir)libdoroti_webview_qt.so;$(PublishDir)doroti-webview-runtime.json" Condition="'$(DorotiQtWebEngine)' != 'true' and '$(PublishDir)' != ''" />
-    <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_qt_host.so" DestinationFolder="$(PublishDir)" Condition="'$(PublishDir)' != ''" />
+    <Delete Files="$(PublishDir)libdoroti_webview_qt.so;$(PublishDir)doroti-webview-runtime.json" Condition="'$(DorotiQtWebEngine)' != 'true' and '$(PublishDir)' != '' and '$(PublishSingleFile)' != 'true'" />
+    <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_qt_host.so" DestinationFolder="$(PublishDir)" Condition="'$(PublishDir)' != '' and '$(PublishSingleFile)' != 'true'" />
   </Target>
   <Target Name="CopyDorotiQtLicenseNotices" AfterTargets="Build;Publish"
           Condition="'$(DorotiHostKind)' == 'Qt'">
@@ -90,6 +90,32 @@
           DestinationFiles="@(_DorotiQtLicenseNotice->'$(TargetDir)licenses/doroti-linux/%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="@(_DorotiQtLicenseNotice)"
           DestinationFiles="@(_DorotiQtLicenseNotice->'$(PublishDir)licenses/doroti-linux/%(RecursiveDir)%(Filename)%(Extension)')"
-          Condition="'$(PublishDir)' != ''" />
+          Condition="'$(PublishDir)' != '' and '$(PublishSingleFile)' != 'true'" />
+  </Target>
+  <!-- After-publish copying cannot put assets into an already generated bundle.
+       Register the selected shims and notices before the SDK collects its inputs,
+       including no-build publishes using an explicit prebuilt directory. -->
+  <Target Name="IncludeDorotiQtSingleFileAssets" BeforeTargets="_ComputeFilesToBundle"
+          DependsOnTargets="ValidateDorotiQtConfiguration"
+          Condition="'$(DorotiHostKind)' == 'Qt' and '$(PublishSingleFile)' == 'true'">
+    <ItemGroup>
+      <_DorotiQtBundleNative Include="$(DorotiQtNativeBuildDirectory)/libdoroti_qt_host.so" />
+      <_DorotiQtBundleNative Include="$(DorotiQtNativeBuildDirectory)/libdoroti_texture_gstreamer.so" Condition="'$(DorotiGStreamerTextures)' == 'true'" />
+      <_DorotiQtBundleNative Include="$(DorotiQtNativeBuildDirectory)/libdoroti_webview_qt.so;$(DorotiQtNativeBuildDirectory)/doroti-webview-runtime.json" Condition="'$(DorotiQtWebEngine)' == 'true'" />
+      <_DorotiQtBundleLicense Include="$(DorotiQtNativeSourceDirectory)/licenses/**/*" />
+      <_DorotiQtBundleRequiredLicense Include="README.md;LGPL-3.txt;GPL-3.txt;LGPL-2.1.txt;Wayland-background-effect-MIT.txt" />
+    </ItemGroup>
+    <Error Code="DOROTIQT006" Condition="!Exists('%(_DorotiQtBundleNative.Identity)')"
+           Text="The selected Qt bundle asset is missing: %(_DorotiQtBundleNative.Identity). Build the matching native profile or set DorotiQtNativeBuildDirectory to a complete prebuilt directory." />
+    <Error Condition="!Exists('$(DorotiQtNativeSourceDirectory)/licenses/%(_DorotiQtBundleRequiredLicense.Identity)')"
+           Text="Doroti Qt license notice %(_DorotiQtBundleRequiredLicense.Identity) is missing." />
+    <ItemGroup>
+      <!-- Package runtime assets can already supply these names. Prefer the
+           same selected native profile used by the normal build/copy targets. -->
+      <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)"
+          Condition="'%(ResolvedFileToPublish.RelativePath)' == 'libdoroti_qt_host.so' or '%(ResolvedFileToPublish.RelativePath)' == 'libdoroti_texture_gstreamer.so' or '%(ResolvedFileToPublish.RelativePath)' == 'libdoroti_webview_qt.so' or '%(ResolvedFileToPublish.RelativePath)' == 'doroti-webview-runtime.json'" />
+      <ResolvedFileToPublish Include="@(_DorotiQtBundleNative)" RelativePath="%(Filename)%(Extension)" CopyToPublishDirectory="Always" ExcludeFromSingleFile="false" />
+      <ResolvedFileToPublish Include="@(_DorotiQtBundleLicense)" RelativePath="licenses/doroti-linux/%(RecursiveDir)%(Filename)%(Extension)" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="false" />
+    </ItemGroup>
   </Target>
 </Project>

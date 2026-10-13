@@ -1,0 +1,67 @@
+<Project>
+  <!-- These hosts validate and load physical native/managed package files.
+       Extract the complete bundle so Assembly.Location and BaseDirectory keep
+       identifying the same verified payload as directory deployment. -->
+  <PropertyGroup Condition="'$(PublishSingleFile)' == 'true' and ('$(DorotiTarget)' == 'Windows' or ('$(DorotiTarget)' == 'Linux' and '$(DorotiHostKind)' == 'Qt'))">
+    <IncludeAllContentForSelfExtract Condition="'$(IncludeAllContentForSelfExtract)' == ''">true</IncludeAllContentForSelfExtract>
+    <IncludeNativeLibrariesForSelfExtract Condition="'$(IncludeNativeLibrariesForSelfExtract)' == ''">true</IncludeNativeLibrariesForSelfExtract>
+    <CopyOutputSymbolsToPublishDirectory Condition="'$(CopyOutputSymbolsToPublishDirectory)' == '' and '$(Configuration)' == 'Release'">false</CopyOutputSymbolsToPublishDirectory>
+    <!-- Composite R2R emits component stubs even for excluded package files.
+         Use individual R2R images to retain Skia's original signed assembly. -->
+    <PublishReadyToRunComposite Condition="'$(PublishReadyToRunComposite)' == ''">false</PublishReadyToRunComposite>
+    <!-- PublishSingleFile describes the executable, not its referenced DLLs.
+         In source builds WinUI would otherwise validate library projects as
+         single-file apps and the analyzer would reject their file provenance. -->
+    <_GlobalPropertiesToRemoveFromProjectReferences>$(_GlobalPropertiesToRemoveFromProjectReferences);PublishSingleFile</_GlobalPropertiesToRemoveFromProjectReferences>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(PublishSingleFile)' == 'true' and '$(DorotiTarget)' == 'Windows'">
+    <EnableMsixTooling Condition="'$(EnableMsixTooling)' == ''">true</EnableMsixTooling>
+    <SelfContained Condition="'$(SelfContained)' == ''">true</SelfContained>
+    <WindowsAppSDKSelfContained Condition="'$(WindowsAppSDKSelfContained)' == ''">true</WindowsAppSDKSelfContained>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(PublishSingleFile)' == 'true' and ('$(DorotiTarget)' == 'Windows' or '$(DorotiTarget)' == 'Linux')">
+    <!-- Keep the pinned upstream managed file intact for the runtime hash check;
+         other assemblies can still use ReadyToRun before bundling. -->
+    <PublishReadyToRunExclude Include="SkiaSharp.dll" />
+  </ItemGroup>
+  <!-- Windows PRI packaging also invokes referenced projects through MSBuild
+       calls which do not honor GlobalPropertiesToRemove. An explicit per-item
+       override keeps those library evaluations in directory mode as well. -->
+  <Target Name="DorotiConfigureSingleFileReferences" BeforeTargets="AssignProjectConfiguration;_GetProjectReferenceTargetFrameworkProperties;ResolveProjectReferences"
+          Condition="'$(PublishSingleFile)' == 'true'">
+    <ItemGroup>
+      <ProjectReference Update="@(ProjectReference)">
+        <AdditionalProperties>%(ProjectReference.AdditionalProperties);PublishSingleFile=false</AdditionalProperties>
+      </ProjectReference>
+    </ItemGroup>
+  </Target>
+  <Target Name="DorotiConfigureSingleFileTransitiveReferences" AfterTargets="IncludeTransitiveProjectReferences"
+          Condition="'$(PublishSingleFile)' == 'true'">
+    <ItemGroup>
+      <ProjectReference Update="@(_TransitiveProjectReferences)">
+        <AdditionalProperties>%(ProjectReference.AdditionalProperties);PublishSingleFile=false</AdditionalProperties>
+      </ProjectReference>
+    </ItemGroup>
+  </Target>
+  <!-- The .NET symbol-copy property excludes the executable's PDB, but project
+       references can still contribute their own loose PDB publish items. -->
+  <Target Name="DorotiExcludeSingleFilePublishSymbols" BeforeTargets="_ComputeFilesToBundle"
+          Condition="'$(PublishSingleFile)' == 'true' and '$(Configuration)' == 'Release' and '$(CopyOutputSymbolsToPublishDirectory)' == 'false' and '$(IncludeSymbolsInSingleFile)' != 'true'">
+    <ItemGroup>
+      <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(ResolvedFileToPublish.Extension)' == '.pdb'" />
+    </ItemGroup>
+  </Target>
+  <Target Name="ValidateDorotiSingleFile" BeforeTargets="Restore;PrepareForBuild;PrepareForPublish"
+          Condition="'$(PublishSingleFile)' == 'true'">
+    <Error Code="DOROTISINGLE001" Condition="'$(DorotiTarget)' != 'Windows' and ('$(DorotiTarget)' != 'Linux' or '$(DorotiHostKind)' != 'Qt')"
+           Text="Doroti single-file publishing supports Windows and Linux Qt runners. The current .NET Apple SDK requires app-bundle publishing for macOS and Mac Catalyst; publish those runners without PublishSingleFile." />
+    <Error Code="DOROTISINGLE002" Condition="'$(IncludeAllContentForSelfExtract)' != 'true' or '$(IncludeNativeLibrariesForSelfExtract)' != 'true'"
+           Text="Doroti single-file publishing requires IncludeAllContentForSelfExtract=true and IncludeNativeLibrariesForSelfExtract=true to verify and load the extracted package files." />
+    <Error Code="DOROTISINGLE003" Condition="'$(PublishTrimmed)' == 'true' or '$(PublishAot)' == 'true'"
+           Text="Doroti desktop single-file publishing requires untrimmed CoreCLR JIT or ReadyToRun output. Remove PublishTrimmed and PublishAot." />
+    <Error Code="DOROTISINGLE004" Condition="'$(DorotiTarget)' == 'Windows' and ('$(EnableMsixTooling)' != 'true' or '$(WindowsPackageType)' != 'None' or '$(WindowsAppSDKSelfContained)' != 'true' or '$(SelfContained)' != 'true')"
+           Text="Windows single-file publishing requires EnableMsixTooling=true, WindowsPackageType=None, WindowsAppSDKSelfContained=true and SelfContained=true." />
+    <Error Code="DOROTISINGLE005" Condition="'$(PublishReadyToRun)' == 'true' and '$(PublishReadyToRunComposite)' == 'true'"
+           Text="Doroti single-file ReadyToRun requires PublishReadyToRunComposite=false to preserve the original SkiaSharp managed package file." />
+  </Target>
+</Project>

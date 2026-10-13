@@ -191,6 +191,12 @@ host and every enabled optional shim/manifest. Rebuild older app-owned native
 sources together with managed ABI 6; an existing directory name is not proof
 of ABI or backend compatibility.
 
+Untrimmed JIT/ReadyToRun runners support `PublishSingleFile=true` with full
+content extraction. The selected native shims, WebEngine manifest and license
+notices enter the bundle before generation, including no-build publishes.
+System Qt/QML/WebEngine and Vulkan dependencies are still required. See
+[desktop publishing](../desktop-publishing.md) for commands and extraction details.
+
 
 ## 2026-09-29 host integration
 

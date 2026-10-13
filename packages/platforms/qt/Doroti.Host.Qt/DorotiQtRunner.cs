@@ -1064,6 +1064,11 @@ public static unsafe partial class DorotiQtRunner
             state =>
             {
                 _ = viewHandle;
+                // The generic Closed handler disposes DorotiView immediately.
+                // Unmount the framework branch while its invocation scope and
+                // capabilities are still alive, before forwarding that event.
+                if (state.Desktop is null && state.View is { } view)
+                    state.Session.DetachView(view);
                 state.NativeClosed();
                 if (state.Desktop is not null)
                 {

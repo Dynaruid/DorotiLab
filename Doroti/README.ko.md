@@ -26,6 +26,7 @@ Doroti는 데스크톱·모바일·웹에서 공유하는 위젯, 레이아웃, 
 ## 요구 사항
 
 ReadyToRun 게시를 포함한 선택적 Release 앱 DLL 난독화는 [Obfuscar 구성](docs/obfuscation.md)을 참고하세요. NativeAOT·Mono/WASM AOT 경로는 제외합니다.
+Windows와 Linux Qt의 `PublishSingleFile=true` 사용법은 [데스크톱 단일 파일 게시](docs/desktop-publishing.md)에 있습니다.
 
 ### 공통 도구와 SDK 선택
 

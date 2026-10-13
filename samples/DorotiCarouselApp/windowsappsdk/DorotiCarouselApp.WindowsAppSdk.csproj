@@ -21,7 +21,6 @@
     <WindowsPackageType>None</WindowsPackageType>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <SelfContained>true</SelfContained>
-    <PublishSingleFile>false</PublishSingleFile>
     <DorotiProviderBootstrapTargets>$(MSBuildProjectDirectory)/../../../packages/platforms/windowsappsdk/bootstrap/Doroti.Provider.Bootstrap.targets</DorotiProviderBootstrapTargets>
   </PropertyGroup>
   <ItemGroup>

@@ -1,4 +1,6 @@
 <Project>
+  <Import Project="Doroti.SingleFile.targets" />
+  <Import Project="Doroti.WindowsSingleFile.targets" Condition="'$(DorotiHostKind)' == 'WindowsAppSdk'" />
   <PropertyGroup>
     <DorotiCompilationMode Condition="'$(DorotiCompilationMode)' == ''">Mono</DorotiCompilationMode>
   </PropertyGroup>

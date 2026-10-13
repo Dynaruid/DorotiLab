@@ -70,6 +70,23 @@ python Doroti/eng/serve-isolated-web.py temp/testing/carousel-web/wwwroot --port
 
 Android x64 에뮬레이터는 `-r android-x64`, Intel Mac의 iOS 시뮬레이터는 `-r iossimulator-x64`로 바꿉니다. iOS Release NativeAOT에는 아래 별도의 .NET 11 **publish** 절차를 사용하세요.
 
+### 데스크톱 단일 실행 파일 게시
+
+Windows App SDK와 Linux Qt 러너는 `PublishSingleFile=true`를 지원합니다. 다음은 저장소
+루트에서 실행하며, Linux 명령은 Linux 또는 WSL에서 사용합니다.
+
+```powershell
+# Windows: single EXE, .NET/Windows App SDK self-contained
+dotnet publish ./samples/DorotiCarouselApp/windowsappsdk/DorotiCarouselApp.WindowsAppSdk.csproj -c Release -p:PublishSingleFile=true -o ./temp/publish/carousel-windows
+# Linux: single executable, .NET self-contained, system Qt dependencies required
+dotnet publish ./samples/DorotiCarouselApp/linux/DorotiCarouselApp.Linux.csproj -c Release -p:PublishSingleFile=true --self-contained true -p:DorotiBuildQtNative=true -o ./temp/publish/carousel-linux
+```
+
+단일 실행 파일은 실행 시 DLL과 콘텐츠를 추출합니다. ReadyToRun/난독화 옵션도 함께
+사용할 수 있으며, 트리밍·NativeAOT는 지원하지 않습니다. macOS AppKit·Mac Catalyst는
+현재 .NET Apple SDK의 제한으로 `.app` 게시를 사용합니다.
+추출 위치, Linux 의존성, 옵션과 검증 범위는 [데스크톱 게시 안내](../../Doroti/docs/desktop-publishing.md)를 참고하세요.
+
 ### 데스크톱 JIT, ReadyToRun, 난독화
 
 대상 플랫폼에서 원하는 게시 케이스 하나를 실행합니다. 각 러너에 선언된 RID를 사용합니다.
