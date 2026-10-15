@@ -50,6 +50,11 @@
         <CopyToOutputDirectory>Never</CopyToOutputDirectory>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </_DorotiWebSplashIcon>
+      <_DorotiWebSplashIcon Include="$(_DorotiWebBrandingRoot)doroti-symbol-color.svg">
+        <RelativePath>doroti-symbol-color.svg</RelativePath>
+        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </_DorotiWebSplashIcon>
     </ItemGroup>
     <!-- An external branding file needs its own content root for the dev server. -->
     <DefineStaticWebAssets CandidateAssets="@(_DorotiWebSplashIcon)"

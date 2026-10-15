@@ -9,7 +9,7 @@ export function attachDorotiSplash(enabled = true): { complete(): void; fail(): 
 
   const icon = document.createElement("img");
   icon.className = "doroti-splash__icon";
-  icon.src = new URL("./doroti-app-icon.svg", import.meta.url).href;
+  icon.src = new URL("./doroti-symbol-color.svg", import.meta.url).href;
   icon.width = icon.height = 112;
   icon.alt = "";
   icon.draggable = false;

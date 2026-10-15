@@ -11,15 +11,16 @@ the development server project and C# sources. Runner startup restores normal
 NuGet dependencies and builds the server into the app's `.doroti/cache`; external
 DLLs are not bundled into the tool package or browser publish assets.
 
-The samples and app template show an HTML splash using the official
-`Doroti/docs/branding/doroti-app-icon.svg`, served by the host as
-`_content/Doroti.Host.Web/doroti-app-icon.svg`. Keep `#doroti-splash` outside
-`#app` so canvas creation does not remove it. The shared TypeScript loader fades
+The shared TypeScript bootstrap creates a splash using the official transparent
+`Doroti/docs/branding/doroti-symbol-color.svg`, served by the host as
+`_content/Doroti.Host.Web/doroti-symbol-color.svg`. The SVG logo is displayed at
+112 × 112 CSS pixels on the blue splash background. The bootstrap keeps
+`#doroti-splash` outside `#app` so canvas creation does not remove it. The loader fades
 it out only after the engine reports runtime readiness (`started`) and commits
 its first canvas frame; startup
 failure keeps the splash visible with a retry button. Reduced motion disables
-the loading animation and fade. Custom HTML without `#doroti-splash` continues
-to use the same loader.
+the loading animation and fade. Pass `splash: false` to `startDoroti` to disable
+the splash; it is enabled by default.
 
 Web Release publish defaults to Mono WASM AOT. Debug/watch remains non-AOT;
 explicit `-p:RunAOTCompilation=false` opts out for a Release comparison. AOT is

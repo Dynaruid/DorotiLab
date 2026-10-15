@@ -5,7 +5,7 @@ Doroti의 공식 아이콘 원본입니다. `doroti-outline (1).svg`의 다섯 �
 | 아이콘 | 용도 |
 | --- | --- |
 | ![앱 아이콘](doroti-app-icon.svg) [doroti-app-icon.svg](doroti-app-icon.svg) | 앱 기본 아이콘, 앱 파비콘 |
-| ![컬러 아이콘](doroti-symbol-color.svg) [doroti-symbol-color.svg](doroti-symbol-color.svg) | 브랜드 아이콘, 소개 페이지 로고·파비콘, VS Code 확장 |
+| ![컬러 아이콘](doroti-symbol-color.svg) [doroti-symbol-color.svg](doroti-symbol-color.svg) | 브랜드 아이콘, 웹 스플래시, 소개 페이지 로고·파비콘, VS Code 확장 |
 | ![단색 아이콘](doroti-symbol.svg) [doroti-symbol.svg](doroti-symbol.svg) | 단색 툴바, 문서, 단색 인쇄 |
 
 세 파일은 `200 × 200`, `viewBox="0 0 24 24"` SVG이며, 채워진 다섯 블록 사이에 `0.8` 단위의 cutout 간격을 유지합니다. 컬러·단색 심벌은 투명 배경이고, 컬러는 밝은 회색 `#F6F5F5`와 금색 `#ffc107`, 단색 기본값은 회색 `#808080`입니다. 앱 아이콘의 전경은 `#FFFFFF`, 불투명 배경은 `#2b42d4`입니다.
