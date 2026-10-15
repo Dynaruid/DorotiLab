@@ -30,7 +30,7 @@ JavaScript 실행 컨트롤도 표시합니다. attachment만 제공하는 호�
 Windows·macOS·Linux에서 [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6)을 설치하세요. 모든 명령은 **저장소 루트 `DorotiLab`**에서 PowerShell로 실행합니다.
 macOS/Linux의 기본 셸이 zsh/bash라면 먼저 `pwsh -NoProfile`을 실행하세요.
 iOS 외 대상은 저장소 루트 [global.json](../../global.json)이 선택하는 **.NET SDK 10.0.400 계열**을 사용합니다.
-아래 iOS 직접 실행 명령이나 공용 설치 스크립트의 `-DotnetVersion 11`을 사용하려면 .NET 10과 함께 [ios/global.json](ios/global.json)이 선택하는 **.NET SDK 11.0.100-rc.1.26425.128**을 설치합니다.
+아래 iOS 직접 실행 명령이나 공용 설치 스크립트의 `-DotnetVersion 11`을 사용하려면 .NET 10과 함께 [ios/global.json](ios/global.json)이 선택하는 **.NET SDK 11.0.100-rc.2.26504.105**를 설치합니다.
 각 플랫폼에 필요한 workload와 도구는 아래 실행 항목에서 확인하세요.
 
 첫 실행은 패키지 복원과 빌드, 필요한 경우 기기 설치를 포함합니다. 샘플 실행 예제는 Release이며 빌드 옵션 절에서는 Debug/Release를 명시합니다.
@@ -151,7 +151,7 @@ try {
         -p:DorotiCompilationMode=Mono -p:PublishAot=false `
         -p:RunAOTCompilation=false -p:AndroidEnableProfiledAot=false `
         -p:AndroidPackageFormats=apk -p:DorotiAndroidTargetFramework=net11.0-android `
-        -p:DorotiAndroidMauiVersion=11.0.0-rc.1.26451.6 -p:MauiVersion=11.0.0-rc.1.26451.6 `
+        -p:DorotiAndroidMauiVersion=11.0.0-rc.2.26505.5 -p:MauiVersion=11.0.0-rc.2.26505.5 `
         -p:UseMonoRuntime=false -p:PublishReadyToRun=false `
         -p:DorotiObfuscate=true
     # .NET 11 / CoreCLR ReadyToRun + Obfuscar
@@ -159,7 +159,7 @@ try {
         -p:DorotiCompilationMode=Mono -p:PublishAot=false `
         -p:RunAOTCompilation=false -p:AndroidEnableProfiledAot=false `
         -p:AndroidPackageFormats=apk -p:DorotiAndroidTargetFramework=net11.0-android `
-        -p:DorotiAndroidMauiVersion=11.0.0-rc.1.26451.6 -p:MauiVersion=11.0.0-rc.1.26451.6 `
+        -p:DorotiAndroidMauiVersion=11.0.0-rc.2.26505.5 -p:MauiVersion=11.0.0-rc.2.26505.5 `
         -p:UseMonoRuntime=false -p:PublishReadyToRun=true `
         -p:DorotiObfuscate=true
 } finally { Pop-Location }
@@ -188,7 +188,7 @@ try {
     dotnet --version
     dotnet publish DorotiTestbedApp.iOS.csproj -c Release -r ios-arm64 `
         -p:DorotiCompilationMode=NativeAot -p:DorotiIosTargetFramework=net11.0-ios `
-        -p:DorotiIosMauiVersion=11.0.0-rc.1.26451.6 -p:Registrar=managed-static `
+        -p:DorotiIosMauiVersion=11.0.0-rc.2.26505.5 -p:Registrar=managed-static `
         -p:_UseDynamicDependenciesForMarkNSObjects=false `
         '-p:MtouchExtraArgs=--skip-marking-nsobjects-in-user-assemblies=true' `
         -p:PrepareAssemblies=false -p:PostProcessAssemblies=false `
@@ -353,7 +353,7 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Testbed -D
 ```
 
 .NET 10의 기본 모드는 Release에서 `MonoAot`, Debug에서 `Mono`입니다. .NET 11은 `CoreClrR2R`이며,
-SampleApp2에 고정한 SDK `11.0.100-rc.1.26425.128`과 MAUI `11.0.0-rc.1.26451.6` 프로필을 사용합니다.
+SampleApp2에 고정한 SDK `11.0.100-rc.2.26504.105`와 MAUI `11.0.0-rc.2.26505.5` 프로필을 사용합니다.
 해당 SDK의 Android/MAUI workload를 미리 설치하세요. .NET 10 Android CoreCLR은 실험적 기능입니다.
 `-Device` 또는 `-Serial`로 정확한 adb 시리얼을 지정하고 `-NoLaunch`로 설치만 할 수 있습니다.
 빌드는 20분 제한이며 빌드·설치 실패 시 배포를 중단합니다. APK는 앱·모드·SDK·구성·RID별로 분리합니다.
@@ -380,8 +380,8 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Targe
 # 시뮬레이터: 기본 .NET 10 / Debug / Mono, 자동 부팅·설치·실행
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Target simulator
 
-# .NET 11 RC1 / Xcode 27: SDK 선택과 버전 검사 우회는 이번 호출에만 적용
-pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Target device -DotnetVersion 11 -Mode NativeAot -SkipXcodeValidation
+# .NET 11 RC2 / Xcode 27
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Target device -DotnetVersion 11 -Mode NativeAot
 
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -List
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -DryRun
@@ -396,8 +396,8 @@ Mono 실기기 Debug는 `-Mode Mono -Configuration Debug`, 앱 실행 환경변�
 
 .NET 10은 루트 `global.json`, .NET 11은 `ios/global.json`으로 SDK를 선택하며 파일을 수정하지 않습니다.
 산출물은 앱·SDK·모드·구성·RID별로 분리하고 빌드 실패 시 설치를 중단합니다.
-기본 실행은 기존 앱 프로세스를 종료하고 다시 시작합니다. `-SkipXcodeValidation`은 버전 검사만 우회하며
-.NET 11 RC1 / Xcode 27을 공식 지원 조합으로 바꾸지는 않습니다.
+기본 실행은 기존 앱 프로세스를 종료하고 다시 시작합니다. .NET 11 RC2는 Xcode 27.0을 요구하며,
+워크로드 집합 `11.0.100-rc.2.26509.2`와 Xcode 버전 검사를 사용합니다.
 전체 옵션과 `dotnet run` 직접 실행은 [helpers 사용법](../../helpers/deploy-helper/README.md)을 참고하세요.
 Hot Reload는 개발 CLI를 사용합니다.
 

@@ -166,7 +166,7 @@ try {
         -p:DorotiCompilationMode=Mono -p:PublishAot=false `
         -p:RunAOTCompilation=false -p:AndroidEnableProfiledAot=false `
         -p:AndroidPackageFormats=apk -p:DorotiAndroidTargetFramework=net11.0-android `
-        -p:DorotiAndroidMauiVersion=11.0.0-rc.1.26451.6 -p:MauiVersion=11.0.0-rc.1.26451.6 `
+        -p:DorotiAndroidMauiVersion=11.0.0-rc.2.26505.5 -p:MauiVersion=11.0.0-rc.2.26505.5 `
         -p:UseMonoRuntime=false -p:PublishReadyToRun=false `
         -p:DorotiObfuscate=true
     # .NET 11 / CoreCLR ReadyToRun + Obfuscar
@@ -174,7 +174,7 @@ try {
         -p:DorotiCompilationMode=Mono -p:PublishAot=false `
         -p:RunAOTCompilation=false -p:AndroidEnableProfiledAot=false `
         -p:AndroidPackageFormats=apk -p:DorotiAndroidTargetFramework=net11.0-android `
-        -p:DorotiAndroidMauiVersion=11.0.0-rc.1.26451.6 -p:MauiVersion=11.0.0-rc.1.26451.6 `
+        -p:DorotiAndroidMauiVersion=11.0.0-rc.2.26505.5 -p:MauiVersion=11.0.0-rc.2.26505.5 `
         -p:UseMonoRuntime=false -p:PublishReadyToRun=true `
         -p:DorotiObfuscate=true
 } finally { Pop-Location }
@@ -203,7 +203,7 @@ try {
     dotnet --version
     dotnet publish ../../DorotiSampleApp2/ios/DorotiSampleApp2.iOS.csproj -c Release -r ios-arm64 `
         -p:DorotiCompilationMode=NativeAot -p:DorotiIosTargetFramework=net11.0-ios `
-        -p:DorotiIosMauiVersion=11.0.0-rc.1.26451.6 -p:Registrar=managed-static `
+        -p:DorotiIosMauiVersion=11.0.0-rc.2.26505.5 -p:Registrar=managed-static `
         -p:_UseDynamicDependenciesForMarkNSObjects=false `
         '-p:MtouchExtraArgs=--skip-marking-nsobjects-in-user-assemblies=true' `
         -p:PrepareAssemblies=false -p:PostProcessAssemblies=false `
@@ -350,9 +350,9 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 dev -App ./samples/DorotiSampleApp
 
 직접 게시·서명·설치할 때 필요한 옵션은 [NativeAOT 빌드 안내](docs/ios-nativeaot.md#net-10--xcode-27)에 있습니다.
 
-### .NET 11 RC1 + Xcode 27 Native AOT
+### .NET 11 RC2 + Xcode 27 Native AOT
 
-SDK 선택과 Xcode 버전 검사 우회, registrar 설정은 [NativeAOT 빌드 안내](docs/ios-nativeaot.md#net-11-rc1--xcode-27)를 참고하세요.
+SDK·워크로드 선택과 registrar 설정은 [NativeAOT 빌드 안내](docs/ios-nativeaot.md#net-11-rc2--xcode-27)를 참고하세요.
 
 ## Linux
 

@@ -50,6 +50,8 @@ internal static partial class Program
                     True(plan.Command.Arguments.Contains($"-p:AndroidEnableProfiledAot={(mode == "MonoAot" ? "true" : "false")}"));
                     True(plan.Command.Arguments.Contains("-p:EmbedAssembliesIntoApk=true"));
                     True(plan.Command.Arguments.Contains("-p:PublishAot=false"));
+                    True(plan.Command.Arguments.Contains("-p:DorotiAndroidMauiVersion=11.0.0-rc.2.26505.5") == (version == 11));
+                    True(plan.Command.Arguments.Contains("-p:MauiVersion=11.0.0-rc.2.26505.5") == (version == 11));
                     var slug = mode switch { "MonoAot" => "aot", "CoreClrJit" => "jit", "CoreClrR2R" => "r2r", _ => "mono" };
                     Equal($"{app.ArtifactSlug}-android-{slug}-net{version}-release-{rid["android-".Length..]}", Path.GetFileName(plan.Artifacts));
                     Equal("/custom/dotnet", plan.Command.Environment!["DOTNET_HOST_PATH"]); Equal(1200, plan.Command.TimeoutSeconds);

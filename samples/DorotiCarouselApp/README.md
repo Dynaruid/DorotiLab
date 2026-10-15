@@ -168,7 +168,7 @@ try {
         -p:DorotiCompilationMode=Mono -p:PublishAot=false `
         -p:RunAOTCompilation=false -p:AndroidEnableProfiledAot=false `
         -p:AndroidPackageFormats=apk -p:DorotiAndroidTargetFramework=net11.0-android `
-        -p:DorotiAndroidMauiVersion=11.0.0-rc.1.26451.6 -p:MauiVersion=11.0.0-rc.1.26451.6 `
+        -p:DorotiAndroidMauiVersion=11.0.0-rc.2.26505.5 -p:MauiVersion=11.0.0-rc.2.26505.5 `
         -p:UseMonoRuntime=false -p:PublishReadyToRun=false `
         -p:DorotiObfuscate=true
     # .NET 11 / CoreCLR ReadyToRun + Obfuscar
@@ -176,7 +176,7 @@ try {
         -p:DorotiCompilationMode=Mono -p:PublishAot=false `
         -p:RunAOTCompilation=false -p:AndroidEnableProfiledAot=false `
         -p:AndroidPackageFormats=apk -p:DorotiAndroidTargetFramework=net11.0-android `
-        -p:DorotiAndroidMauiVersion=11.0.0-rc.1.26451.6 -p:MauiVersion=11.0.0-rc.1.26451.6 `
+        -p:DorotiAndroidMauiVersion=11.0.0-rc.2.26505.5 -p:MauiVersion=11.0.0-rc.2.26505.5 `
         -p:UseMonoRuntime=false -p:PublishReadyToRun=true `
         -p:DorotiObfuscate=true
 } finally { Pop-Location }
@@ -205,7 +205,7 @@ try {
     dotnet --version
     dotnet publish ../../DorotiCarouselApp/ios/DorotiCarouselApp.iOS.csproj -c Release -r ios-arm64 `
         -p:DorotiCompilationMode=NativeAot -p:DorotiIosTargetFramework=net11.0-ios `
-        -p:DorotiIosMauiVersion=11.0.0-rc.1.26451.6 -p:Registrar=managed-static `
+        -p:DorotiIosMauiVersion=11.0.0-rc.2.26505.5 -p:Registrar=managed-static `
         -p:_UseDynamicDependenciesForMarkNSObjects=false `
         '-p:MtouchExtraArgs=--skip-marking-nsobjects-in-user-assemblies=true' `
         -p:PrepareAssemblies=false -p:PostProcessAssemblies=false `

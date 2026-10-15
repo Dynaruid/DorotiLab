@@ -32,14 +32,14 @@ Windows와 Linux Qt의 `PublishSingleFile=true` 사용법은 [데스크톱 단�
 
 - Windows·macOS·Linux에서 [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6)을 설치해 `eng/doroti.ps1` 등 저장소 스크립트 실행에 사용합니다. 아래 명령은 **저장소 루트 `DorotiLab`**에서 PowerShell로 시작합니다.
 - **iOS 외 플랫폼: .NET SDK 10.0.400** 또는 같은 기능 밴드의 호환 패치 버전. [루트 global.json](../global.json)과 [Doroti/global.json](global.json)이 선택합니다.
-- **iOS Testbed: .NET SDK 11.0.100-rc.1.26425.128** 또는 호환 패치 버전. [iOS global.json](../samples/DorotiTestbedApp/ios/global.json)이 선택합니다. .NET 10과 함께 설치합니다.
+- **iOS Testbed: .NET SDK 11.0.100-rc.2.26504.105** 또는 호환 패치 버전. [iOS global.json](../samples/DorotiTestbedApp/ios/global.json)이 선택합니다. .NET 10과 함께 설치합니다.
 - 선택한 SDK에 맞는 플랫폼 워크로드와 NuGet 패키지 복원이 필요합니다. .NET 10 경로는 프로젝트가 지정한 10.0.11 런타임 팩을 사용하며, 필요한 팩은 대상별로 복원합니다.
 
 `dotnet`은 **현재 작업 폴더**에서 상위로 `global.json`을 찾습니다. `--project` 경로만 iOS로 지정해도 SDK가 바뀌지는 않습니다. iOS 직접 실행은 `samples/DorotiTestbedApp/ios`에서 하고, 다른 플랫폼은 저장소 루트에서 실행합니다. workspace CLI의 `build/run/publish -App ./samples/DorotiTestbedApp -Platform ios`는 iOS 폴더를 자동으로 사용합니다.
 
-SDK 선택과 대상 프레임워크는 별개입니다. iOS 실기기 Release는 NativeAOT가 기본이며, `-CompilationMode Mono`로 복구 프로필을 선택합니다. NativeAOT는 `net11.0-ios`와 MAUI `11.0.0-rc.1.26451.6`을 사용합니다. 현재 Debug·시뮬레이터·명시적 Mono 프로필은 `net10.0-ios`를 유지합니다. 서명된 실기기 앱은 `publish`로 생성하며, 자세한 절차는 [iOS 샘플 안내](../samples/DorotiTestbedApp/README.ko.md#ios-샘플)를 참고하세요.
+SDK 선택과 대상 프레임워크는 별개입니다. iOS 실기기 Release는 NativeAOT가 기본이며, `-CompilationMode Mono`로 복구 프로필을 선택합니다. NativeAOT는 `net11.0-ios`와 MAUI `11.0.0-rc.2.26505.5`를 사용합니다. 현재 Debug·시뮬레이터·명시적 Mono 프로필은 `net10.0-ios`를 유지합니다. 서명된 실기기 앱은 `publish`로 생성하며, 자세한 절차는 [iOS 샘플 안내](../samples/DorotiTestbedApp/README.ko.md#ios-샘플)를 참고하세요.
 
-**.NET 11 RC1 + Xcode 27:** RC1 iOS 워크로드는 Xcode 26.6을 요구하므로, Xcode 27에서 빌드·게시를 시도할 때는 직접 `dotnet build` / `dotnet publish` 명령에 `-p:ValidateXcodeVersion=false`를 추가해야 합니다. 이는 버전 검사만 건너뛰는 임시 우회이며 공식 호환성 보장은 아닙니다. Xcode 26.6을 사용하는 지원 조합 또는 .NET 10의 Xcode 27 지원 워크로드에서는 이 우회를 적용하지 않습니다. [SampleApp2 빌드 예제](../samples/DorotiSampleApp2/README.md#net-11-rc1--xcode-27-native-aot), [RC1 공식 요구 사항](https://github.com/dotnet/macios/releases/tag/dotnet-11.0.1xx-rc1-12193)을 참고하세요.
+**.NET 11 RC2 + Xcode 27:** RC2는 Xcode 27.0과 워크로드 집합 `11.0.100-rc.2.26509.2`(iOS `27.0.12212-net11-rc.2`)를 사용합니다. Xcode 버전 검사는 활성화한 상태로 빌드합니다. [SampleApp2 빌드 예제](../samples/DorotiSampleApp2/README.md#net-11-rc2--xcode-27-native-aot), [RC2 공식 요구 사항](https://github.com/dotnet/macios/releases/tag/dotnet-11.0.1xx-rc2-12212)을 참고하세요.
 
 ### 플랫폼별 구성
 

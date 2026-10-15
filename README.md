@@ -52,7 +52,7 @@ and distribution have separate acceptance scopes; the complete plan remains part
 The sample application is the starting point for exploring Doroti. Prepare these dependencies on the build host:
 
 - **Windows, macOS, and Linux:** Install [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6) to run the repository scripts.
-- **.NET SDK:** Install the 10.0.400 feature band for targets other than iOS. For the iOS Testbed, also install 11.0.100-rc.1.26425.128 alongside .NET 10.
+- **.NET SDK:** Install the 10.0.400 feature band for targets other than iOS. For the iOS Testbed, also install 11.0.100-rc.2.26504.105 alongside .NET 10.
 - **Platform tools:** The default Windows runner needs the Windows C++ build tools in the [platform prerequisites](Doroti/README.md#platform-prerequisites). See that guide for workloads and native tools for other targets.
 - **WGSL sample build:** The source-tree Testbed currently needs the [WGSL compiler](tools/Doroti.Wgsl/README.md). Install the Rust 1.95.0 toolchain and build it once as shown below.
 

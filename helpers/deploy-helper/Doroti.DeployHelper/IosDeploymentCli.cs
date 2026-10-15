@@ -168,7 +168,7 @@ public sealed class IosDeploymentCli(string repositoryRoot, ICommandRunner runne
         var artifacts = Path.Combine(RepositoryRoot, "Doroti/artifacts",
             $"{app.ArtifactSlug}-ios-{mode.ToLowerInvariant()}-net{options.DotnetVersion}-{configuration.ToLowerInvariant()}-{rid}");
         var framework = options.DotnetVersion == 10 ? "net10.0-ios27.0" : "net11.0-ios";
-        var maui = options.DotnetVersion == 10 ? "10.0.110" : "11.0.0-rc.1.26451.6";
+        var maui = options.DotnetVersion == 10 ? "10.0.110" : "11.0.0-rc.2.26505.5";
         var args = new List<string>
         {
             mode == "NativeAot" ? "publish" : "build", app.Project(RepositoryRoot), "--disable-build-servers", "-nr:false",
@@ -177,14 +177,13 @@ public sealed class IosDeploymentCli(string repositoryRoot, ICommandRunner runne
         };
         if (mode == "Mono") args.Add("-p:PublishAot=false");
         if (mode == "NativeAot")
-            // Both pinned SDKs generate invalid NSObject DynamicDependency entries
-            // for inherited interface members (IL2037). Use the managed registrar
-            // and each sample's NativeAotRoots.xml to preserve UIKit entry points.
+            // Retain the managed registrar and NativeAotRoots.xml compatibility
+            // profile used for invalid NSObject DynamicDependency entries (IL2037).
             args.AddRange(["-p:Registrar=managed-static", "-p:_UseDynamicDependenciesForMarkNSObjects=false",
                 "-p:MtouchExtraArgs=--skip-marking-nsobjects-in-user-assemblies=true", "-p:Optimize=true"]);
         if (mode == "NativeAot" && options.DotnetVersion == 11)
-            // The RC1 assembly-preparer cannot run MarkNSObjects without dynamic
-            // dependencies (MT2080). Use the supported ILLink registrar path.
+            // Retain the ILLink registrar path used for RC1's MarkNSObjects
+            // failure (MT2080) until RC2 device publishing is requalified.
             args.AddRange(["-p:PrepareAssemblies=false", "-p:PostProcessAssemblies=false"]);
         if (options.SkipXcodeValidation) args.Add("-p:ValidateXcodeVersion=false");
         if (target.Kind == "device")

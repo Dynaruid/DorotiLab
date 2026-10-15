@@ -78,7 +78,7 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Testbed -D
 모드 생략 시 .NET 10 Release는 `MonoAot`, .NET 10 Debug는 `Mono`, .NET 11은 `CoreClrR2R`입니다.
 .NET 10 Android CoreCLR은 실험적 기능입니다. .NET 11은
 [SampleApp2의 SDK 선택 파일](../../samples/DorotiSampleApp2/android/sdk/net11/global.json)의
-`11.0.100-rc.1.26425.128` SDK와 MAUI `11.0.0-rc.1.26451.6`을 두 앱에 공통으로 사용합니다.
+`11.0.100-rc.2.26504.105` SDK와 MAUI `11.0.0-rc.2.26505.5`를 두 앱에 공통으로 사용합니다.
 해당 SDK의 Android/MAUI workload를 미리 설치하세요. Android NativeAOT는 이 도구에서 제공하지 않습니다.
 
 연결·디버깅 권한·부팅 완료를 확인하고 `arm64-v8a`는 `android-arm64`, `x86_64`는 `android-x64`로 빌드합니다.
@@ -142,8 +142,8 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Targe
 # 시뮬레이터: 기본 .NET 10 / Debug / Mono, 인증서 선택 생략
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Sample2 -Target simulator
 
-# 현재 선택된 Xcode가 27인 .NET 11 RC1 NativeAOT 예제
-pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Sample2 -Target device -DotnetVersion 11 -Mode NativeAot -SkipXcodeValidation
+# .NET 11 RC2 / Xcode 27 NativeAOT 예제
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Sample2 -Target device -DotnetVersion 11 -Mode NativeAot
 
 # 목록만 출력 / 선택과 빌드 명령만 확인
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -List
@@ -222,17 +222,17 @@ CLI 자체는 루트 .NET 10 SDK를 사용하고, 선택한 iOS 앱의 SDK는 �
 
 .NET 10은 루트 `global.json`에서 SDK를 선택하고 `net10.0-ios27.0` / MAUI `10.0.110`을 사용합니다.
 .NET 11은 `samples/DorotiTestbedApp/ios/global.json`에서 SDK를 선택하고
-`net11.0-ios` / MAUI `11.0.0-rc.1.26451.6`을 사용합니다. 저장소의 `global.json`은 수정하지 않습니다.
-.NET 11 RC1 / Xcode 27 조합은 `-SkipXcodeValidation`을 명시해야 하며,
-버전 검사 우회가 공식 지원 조합으로 바꾸지는 않습니다.
+`net11.0-ios` / MAUI `11.0.0-rc.2.26505.5`를 사용합니다. 저장소의 `global.json`은 수정하지 않습니다.
+.NET 11 RC2는 Xcode 27.0과 워크로드 집합 `11.0.100-rc.2.26509.2`를 사용합니다.
+기본 예제는 Xcode 버전 검사를 활성화한 상태로 실행합니다.
 
 두 SDK의 NativeAOT 빌드 모두 `Registrar=managed-static`, `_UseDynamicDependenciesForMarkNSObjects=false`,
 `MtouchExtraArgs=--skip-marking-nsobjects-in-user-assemblies=true`를 사용합니다.
-.NET 11 RC1에서도 SDK가 생성한 NSObject 보존 정보의 인터페이스 멤버 참조로 `IL2037`이 재현되어
-.NET 10의 호환 설정을 함께 적용합니다. 두 샘플의 `ios/NativeAotRoots.xml`은 UIKit 진입점·뷰·델리게이트를
-명시적으로 보존합니다. SDK 업데이트 시 이 옵션과 보존 목록을 함께 재검증해야 합니다.
-.NET 11 RC1은 추가로 `PrepareAssemblies=false`, `PostProcessAssemblies=false`를 지정해
-assembly-preparer의 `MarkNSObjects` 오류(`MT2080`)를 피하고 ILLink의 managed registrar 경로를 사용합니다.
+두 샘플의 `ios/NativeAotRoots.xml`은 UIKit 진입점·뷰·델리게이트를 명시적으로 보존합니다.
+.NET 11 프로필은 RC1에서 관찰한 `IL2037`과 assembly-preparer의 `MarkNSObjects` 오류(`MT2080`)에
+사용했던 호환 설정을 유지하며, `PrepareAssemblies=false`, `PostProcessAssemblies=false`로
+ILLink의 managed registrar 경로를 사용합니다. RC2 실기기 게시·실행에서 이 옵션과 보존 목록을
+다시 검증해야 합니다. 버전 갱신만으로 기존 실기기 검증 결과가 RC2에 적용되지는 않습니다.
 
 NativeAOT는 실기기 Release만 지원하며 `dotnet publish`로 생성합니다.
 Mono는 `dotnet build`를 사용하고 `PublishAot=false`를 명시합니다.

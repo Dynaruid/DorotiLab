@@ -10,10 +10,11 @@ internal static class TextActionRegression
     {
         var fallback = new Fallback();
         var calls = new List<(PlatformTextAction Action, string Text)>();
+        const string failureMessage = "Native presentation failed: \"선택 😀\"\\\n";
         var capability = new TextActionPlatformMessageCapability(fallback, (action, text, _) =>
         {
             calls.Add((action, text));
-            if (text == "fail") throw new InvalidOperationException("Native presentation failed.");
+            if (text == "fail") throw new InvalidOperationException(failureMessage);
             return ValueTask.CompletedTask;
         });
         var codec = new JSONMethodCodec();
@@ -34,6 +35,13 @@ internal static class TextActionRegression
             Check.Throws<PlatformException>(() => codec.decodeEnvelope((ByteData)reply!.Value));
         }
         var failure = await capability.SendAsync("flutter/platform", Message("Share.invoke", "fail"));
+        using (var document = JsonDocument.Parse(failure!.Value))
+        {
+            var envelope = document.RootElement;
+            Check.True(envelope.GetArrayLength() == 3 && envelope[0].GetString() == "text-action-failed"
+                && envelope[1].GetString() == failureMessage && envelope[2].ValueKind == JsonValueKind.Null,
+                "Text action error envelope lost its code, escaped message or null details.");
+        }
         Check.Throws<PlatformException>(() => codec.decodeEnvelope((ByteData)failure!.Value));
         await capability.SendAsync("flutter/platform", Message("Clipboard.getData", "text/plain"));
         await capability.SendAsync("another-channel", Message("Share.invoke", "keep"));

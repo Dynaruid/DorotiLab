@@ -46,8 +46,19 @@ public sealed class TextActionPlatformMessageCapability(
         return await fallback.SendAsync(channel, data, cancellationToken);
     }
 
-    private static ReadOnlyMemory<byte> Error(string code, string message) =>
-        JsonSerializer.SerializeToUtf8Bytes(new object?[] { code, message, null });
+    private static ReadOnlyMemory<byte> Error(string code, string message)
+    {
+        using var buffer = new MemoryStream();
+        using (var writer = new Utf8JsonWriter(buffer))
+        {
+            writer.WriteStartArray();
+            writer.WriteStringValue(code);
+            writer.WriteStringValue(message);
+            writer.WriteNullValue();
+            writer.WriteEndArray();
+        }
+        return buffer.ToArray();
+    }
 
     public void SetMessageHandler(string channel, PlatformMessageHandler? handler) =>
         fallback.SetMessageHandler(channel, handler);

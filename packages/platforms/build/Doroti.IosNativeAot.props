@@ -3,8 +3,8 @@
     <DorotiIosNativeAotProfileImported>true</DorotiIosNativeAotProfileImported>
     <DorotiIosNativeAotProfilePath>$(MSBuildThisFileFullPath)</DorotiIosNativeAotProfilePath>
   </PropertyGroup>
-  <!-- Xcode 27 bindings are currently provided for .NET 10. Select this
-       profile explicitly; keep the existing .NET 11 NativeAOT profile separate. -->
+  <!-- Select the .NET 10/Xcode 27 profile explicitly; keep the
+       .NET 11 RC2 NativeAOT profile separate. -->
   <PropertyGroup Condition="'$(DorotiIosTargetFramework)' == 'net10.0-ios27.0'">
     <DorotiCompilationMode Condition="'$(DorotiCompilationMode)' == ''">Mono</DorotiCompilationMode>
     <DorotiHostTargetFrameworks Condition="'$(DorotiHostTargetFrameworks)' == ''">$(DorotiIosTargetFramework)</DorotiHostTargetFrameworks>
@@ -18,7 +18,7 @@
     <DorotiCompilationMode>NativeAot</DorotiCompilationMode>
   </PropertyGroup>
   <PropertyGroup Condition="'$(DorotiIosDevelopment)' == 'true' and '$(DorotiIosTargetFramework)' == 'net11.0-ios'">
-    <DorotiIosMauiVersion Condition="'$(DorotiIosMauiVersion)' == ''">11.0.0-rc.1.26451.6</DorotiIosMauiVersion>
+    <DorotiIosMauiVersion Condition="'$(DorotiIosMauiVersion)' == ''">11.0.0-rc.2.26505.5</DorotiIosMauiVersion>
     <DorotiHostTargetFrameworks>$(DorotiIosTargetFramework)</DorotiHostTargetFrameworks>
     <Registrar>partial-static</Registrar>
   </PropertyGroup>
@@ -27,6 +27,6 @@
   <PropertyGroup Condition="'$(DorotiCompilationMode)' == 'NativeAot'">
     <ArtifactsPath Condition="'$(ArtifactsPath)' == ''">$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '.doroti', 'compilation', 'NativeAot', '$(RuntimeIdentifier)'))</ArtifactsPath>
     <DorotiIosTargetFramework Condition="'$(DorotiIosTargetFramework)' == ''">net11.0-ios</DorotiIosTargetFramework>
-    <DorotiIosMauiVersion Condition="'$(DorotiIosMauiVersion)' == ''">11.0.0-rc.1.26451.6</DorotiIosMauiVersion>
+    <DorotiIosMauiVersion Condition="'$(DorotiIosMauiVersion)' == ''">11.0.0-rc.2.26505.5</DorotiIosMauiVersion>
   </PropertyGroup>
 </Project>

@@ -208,18 +208,21 @@ internal static partial class Program
     {
         foreach (var app in SampleApp.All)
         {
-            var cli = Cli(new FakeRunner(_ => "11.0.100-rc.1.26425.128"));
-            var plan = await cli.BuildPlanAsync(new() { DotnetVersion = 11, SkipXcodeValidation = true }, app, Device, Identity, Profile(), "dotnet", default);
+            var cli = Cli(new FakeRunner(_ => "11.0.100-rc.2.26504.105"));
+            var plan = await cli.BuildPlanAsync(new() { DotnetVersion = 11 }, app, Device, Identity, Profile(), "dotnet", default);
             Equal(Path.Combine(cli.RepositoryRoot, "samples/DorotiTestbedApp/ios"), plan.Command.WorkingDirectory);
             True(plan.Command.Arguments.Contains(app.Project(cli.RepositoryRoot)));
             True(plan.Command.Arguments.Contains("-p:DorotiIosTargetFramework=net11.0-ios"));
-            True(plan.Command.Arguments.Contains("-p:ValidateXcodeVersion=false"));
+            True(plan.Command.Arguments.Contains("-p:DorotiIosMauiVersion=11.0.0-rc.2.26505.5"));
+            True(!plan.Command.Arguments.Contains("-p:ValidateXcodeVersion=false"));
             True(plan.Command.Arguments.Contains("-p:Registrar=managed-static"));
             True(plan.Command.Arguments.Contains("-p:_UseDynamicDependenciesForMarkNSObjects=false"));
             True(plan.Command.Arguments.Contains("-p:MtouchExtraArgs=--skip-marking-nsobjects-in-user-assemblies=true"));
             True(plan.Command.Arguments.Contains("-p:PrepareAssemblies=false"));
             True(plan.Command.Arguments.Contains("-p:PostProcessAssemblies=false"));
             True(plan.Artifacts.Contains("net11", StringComparison.Ordinal));
+            var overridePlan = await cli.BuildPlanAsync(new() { DotnetVersion = 11, SkipXcodeValidation = true }, app, Device, Identity, Profile(), "dotnet", default);
+            True(overridePlan.Command.Arguments.Contains("-p:ValidateXcodeVersion=false"));
         }
     }
 

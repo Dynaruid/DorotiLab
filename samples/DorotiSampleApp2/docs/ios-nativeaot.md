@@ -39,14 +39,13 @@ iOS SDK 27.0.10722의 NSObject 보존 경로에 대한 호환 설정입니다.
 명시적으로 보존합니다. SDK를 업데이트하면 이 옵션과 보존 목록을 함께 재검증해야 합니다.
 설치는 기존 앱 데이터를 유지하며, 개발 서명 프로필의 만료 시점은 로컬 프로필에 따릅니다.
 
-## .NET 11 RC1 + Xcode 27
+## .NET 11 RC2 + Xcode 27
 
-[.NET 11 RC1 iOS 워크로드](https://github.com/dotnet/macios/releases/tag/dotnet-11.0.1xx-rc1-12193)는
-**Xcode 26.6**을 요구합니다. Xcode 27에서 이 프로필을 빌드·게시하려면 직접
-`dotnet build` / `dotnet publish` 명령에 **`-p:ValidateXcodeVersion=false`**를 추가해야 합니다.
-Native AOT 앱 생성에는 `dotnet publish`를 사용합니다. 이 옵션은 버전 검사만 건너뛰며,
-[Microsoft가 지원하는 Xcode 조합](https://learn.microsoft.com/en-us/dotnet/ios/troubleshooting/xcode-requirement)으로 바꾸지는 않습니다.
-서명·네이티브 링크·설치·실행 오류는 별도로 확인해야 합니다.
+[.NET 11 RC2 iOS 워크로드](https://github.com/dotnet/macios/releases/tag/dotnet-11.0.1xx-rc2-12212)는
+**Xcode 27.0**을 요구합니다. SDK `11.0.100-rc.2.26504.105`, 워크로드 집합
+`11.0.100-rc.2.26509.2`(iOS `27.0.12212-net11-rc.2`), MAUI `11.0.0-rc.2.26505.5`를 사용합니다.
+Native AOT 앱 생성에는 Xcode 버전 검사를 활성화한 상태로 `dotnet publish`를 사용합니다.
+서명·네이티브 링크·설치·실행은 RC2 실기기 환경에서 별도로 검증해야 합니다.
 
 다음은 **저장소 루트 `DorotiLab`의 PowerShell**에서 실행하는 예제입니다.
 SampleApp2에는 .NET 11 선택용 `global.json`이 없으므로, 기존 Testbed iOS 폴더의
@@ -57,11 +56,10 @@ SampleApp2에는 .NET 11 선택용 `global.json`이 없으므로, 기존 Testbed
 $aotArtifacts = Join-Path (Get-Location).Path 'Doroti/artifacts/sample2-ios-nativeaot'
 Push-Location ./samples/DorotiTestbedApp/ios
 try {
-    dotnet --version # 11.0.100-rc.1.26425.128 또는 해당 global.json이 허용하는 패치
+    dotnet --version # 11.0.100-rc.2.26504.105 또는 해당 global.json이 허용하는 패치
     dotnet publish ../../DorotiSampleApp2/ios/DorotiSampleApp2.iOS.csproj `
         -c Release -r ios-arm64 `
         -p:DorotiCompilationMode=NativeAot `
-        -p:ValidateXcodeVersion=false `
         -p:Registrar=managed-static `
         -p:_UseDynamicDependenciesForMarkNSObjects=false `
         '-p:MtouchExtraArgs=--skip-marking-nsobjects-in-user-assemblies=true' `
@@ -76,12 +74,11 @@ try {
 }
 ```
 
-위의 registrar·NSObject 보존 옵션은 .NET 11 RC1 NativeAOT에서 잘못 생성된 인터페이스 멤버 참조로
-발생하는 `IL2037`을 피합니다. [ios/NativeAotRoots.xml](../ios/NativeAotRoots.xml)이 UIKit 진입점과 native 뷰·델리게이트를
-명시적으로 보존하며, 공용 설치 CLI도 같은 옵션을 적용합니다.
-.NET 11 RC1의 assembly-preparer에서는 같은 설정으로 `MarkNSObjects` 오류(`MT2080`)가 발생하므로
-`PrepareAssemblies=false`, `PostProcessAssemblies=false`로 ILLink의 managed registrar 경로를 사용합니다.
-버전 검사 우회는 해당 명령에만 적용합니다. 공통 프로젝트 설정에서 검사를 끄지 않습니다.
-Xcode 26.6을 선택한 .NET 11 빌드나 Xcode 27을 지원하는 .NET 10 워크로드에는 이 옵션이 필요 없습니다.
-[도구 업데이트 스크립트](../../../scripts/update-dotnet-macos.py)로 .NET 11 워크로드를 RC1으로 업데이트해도
-RC1의 Xcode 26.6 요구 사항은 유지됩니다.
+위의 registrar·NSObject 보존 옵션은 RC1 NativeAOT의 `IL2037`에 사용했던 호환 설정입니다.
+[ios/NativeAotRoots.xml](../ios/NativeAotRoots.xml)이 UIKit 진입점과 native 뷰·델리게이트를
+명시적으로 보존하며, 공용 설치 CLI도 같은 옵션을 유지합니다.
+`PrepareAssemblies=false`, `PostProcessAssemblies=false`는 RC1 assembly-preparer의
+`MarkNSObjects` 오류(`MT2080`)에 사용했던 ILLink registrar 경로입니다.
+RC2 실기기 게시·실행에서 이 설정의 필요성을 다시 검증해야 합니다.
+[도구 업데이트 스크립트](../../../scripts/update-dotnet-macos.py)의 `--dotnet-version 11`은
+위 RC2 SDK·워크로드 조합을 설치합니다.

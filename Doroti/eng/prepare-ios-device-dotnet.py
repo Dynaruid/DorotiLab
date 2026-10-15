@@ -1,4 +1,4 @@
-"""Prepare a user-owned dotnet host for the qualified iOS RC1 build tools.
+"""Prepare a user-owned dotnet host for the iOS RC2 build tools.
 
 Reuses installed SDKs/workloads and adds the desktop runtime required by bgen.
 Does not modify the system installation. Not a workload installer.
@@ -15,7 +15,7 @@ import urllib.request
 import xml.etree.ElementTree as ET
 import zipfile
 
-VERSION = '11.0.0-rc.1.26426.105'
+VERSION = '11.0.0-rc.2.26504.105'
 
 
 def main():
@@ -36,7 +36,7 @@ def main():
     if destination == base or destination in base.parents or base in destination.parents:
         parser.error('Use a destination separate from the base installation')
     package_id = 'microsoft.netcore.app.runtime.' + rid
-    url = f'https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet11/nuget/v3/flat2/{package_id}/{VERSION}/{package_id}.{VERSION}.nupkg'
+    url = f'https://api.nuget.org/v3-flatcontainer/{package_id}/{VERSION}/{package_id}.{VERSION}.nupkg'
     with tempfile.TemporaryDirectory(prefix='doroti-ios-runtime-') as temporary:
         package = args.runtime_package or Path(temporary) / 'runtime.nupkg'
         if not args.runtime_package:

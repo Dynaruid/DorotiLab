@@ -6,7 +6,7 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Sample2
 .EXAMPLE
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Target simulator
 .EXAMPLE
-pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Sample2 -DotnetVersion 11 -SkipXcodeValidation
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Sample2 -DotnetVersion 11
 #>
 [CmdletBinding()]
 param(

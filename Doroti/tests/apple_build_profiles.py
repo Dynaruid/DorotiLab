@@ -109,7 +109,7 @@ if args.device_sdk:
         assert profile['PublishAot'] != 'true', profile
         assert profile['Registrar'] == 'partial-static', profile
         assert profile['DorotiIosMauiVersion'].startswith('11.'), profile
-        assert profile['DorotiIosDevelopmentRuntimeVersion'] == '11.0.0-rc.2.26478.114', profile
+        assert profile['DorotiIosDevelopmentRuntimeVersion'] == '11.0.0-rc.2.26504.105', profile
         for reference in result_json['Items']['FrameworkReference']:
             if reference['Identity'] == 'Microsoft.NETCore.App':
                 assert reference['RuntimeFrameworkVersion'] == profile['DorotiIosDevelopmentRuntimeVersion']

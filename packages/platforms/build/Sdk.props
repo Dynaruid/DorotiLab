@@ -7,7 +7,7 @@
   <Import Project="Doroti.MacOS.props" Condition="'$(DorotiMacOSProfileImported)' != 'true'" />
   <Import Project="Doroti.IosNativeAot.props" Condition="'$(DorotiIosNativeAotProfileImported)' != 'true'" />
   <PropertyGroup Condition="'$(DorotiIosDevelopment)' == 'true' and '$(DorotiCompilationMode)' == 'CoreClr'">
-    <DorotiIosDevelopmentRuntimeVersion Condition="'$(DorotiIosDevelopmentRuntimeVersion)' == ''">11.0.0-rc.2.26478.114</DorotiIosDevelopmentRuntimeVersion>
+    <DorotiIosDevelopmentRuntimeVersion Condition="'$(DorotiIosDevelopmentRuntimeVersion)' == ''">11.0.0-rc.2.26504.105</DorotiIosDevelopmentRuntimeVersion>
     <RestoreAdditionalProjectSources>$(RestoreAdditionalProjectSources);https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet11/nuget/v3/index.json</RestoreAdditionalProjectSources>
   </PropertyGroup>
   <PropertyGroup>

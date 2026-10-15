@@ -52,7 +52,7 @@ for host-specific constraints.
 Install [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6) on Windows, macOS, or Linux, then run all commands in PowerShell from the **repository root, `DorotiLab`**.
 If your macOS/Linux shell is zsh/bash, enter `pwsh -NoProfile` first.
 Use the **.NET SDK 10.0.400 feature band** selected by the repository root [global.json](../../global.json) for targets other than iOS.
-For the direct iOS commands below or the helper's `-DotnetVersion 11`, also install **.NET SDK 11.0.100-rc.1.26425.128** from [ios/global.json](ios/global.json) alongside .NET 10.
+For the direct iOS commands below or the helper's `-DotnetVersion 11`, also install **.NET SDK 11.0.100-rc.2.26504.105** from [ios/global.json](ios/global.json) alongside .NET 10.
 Platform-specific workloads and tools are listed with each command below.
 
 The first run restores packages, builds, and deploys to a device where needed. Sample run examples use Release; the build cases below explicitly select Debug or Release.
@@ -173,7 +173,7 @@ try {
         -p:DorotiCompilationMode=Mono -p:PublishAot=false `
         -p:RunAOTCompilation=false -p:AndroidEnableProfiledAot=false `
         -p:AndroidPackageFormats=apk -p:DorotiAndroidTargetFramework=net11.0-android `
-        -p:DorotiAndroidMauiVersion=11.0.0-rc.1.26451.6 -p:MauiVersion=11.0.0-rc.1.26451.6 `
+        -p:DorotiAndroidMauiVersion=11.0.0-rc.2.26505.5 -p:MauiVersion=11.0.0-rc.2.26505.5 `
         -p:UseMonoRuntime=false -p:PublishReadyToRun=false `
         -p:DorotiObfuscate=true
     # .NET 11 / CoreCLR ReadyToRun + Obfuscar
@@ -181,7 +181,7 @@ try {
         -p:DorotiCompilationMode=Mono -p:PublishAot=false `
         -p:RunAOTCompilation=false -p:AndroidEnableProfiledAot=false `
         -p:AndroidPackageFormats=apk -p:DorotiAndroidTargetFramework=net11.0-android `
-        -p:DorotiAndroidMauiVersion=11.0.0-rc.1.26451.6 -p:MauiVersion=11.0.0-rc.1.26451.6 `
+        -p:DorotiAndroidMauiVersion=11.0.0-rc.2.26505.5 -p:MauiVersion=11.0.0-rc.2.26505.5 `
         -p:UseMonoRuntime=false -p:PublishReadyToRun=true `
         -p:DorotiObfuscate=true
 } finally { Pop-Location }
@@ -210,7 +210,7 @@ try {
     dotnet --version
     dotnet publish DorotiTestbedApp.iOS.csproj -c Release -r ios-arm64 `
         -p:DorotiCompilationMode=NativeAot -p:DorotiIosTargetFramework=net11.0-ios `
-        -p:DorotiIosMauiVersion=11.0.0-rc.1.26451.6 -p:Registrar=managed-static `
+        -p:DorotiIosMauiVersion=11.0.0-rc.2.26505.5 -p:Registrar=managed-static `
         -p:_UseDynamicDependenciesForMarkNSObjects=false `
         '-p:MtouchExtraArgs=--skip-marking-nsobjects-in-user-assemblies=true' `
         -p:PrepareAssemblies=false -p:PostProcessAssemblies=false `
@@ -379,7 +379,7 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Testbed -D
 ```
 
 `.NET 10` defaults to `MonoAot` for Release and `Mono` for Debug. `.NET 11` defaults to `CoreClrR2R`
-and uses SampleApp2's pinned SDK `11.0.100-rc.1.26425.128` and MAUI `11.0.0-rc.1.26451.6` profile.
+and uses SampleApp2's pinned SDK `11.0.100-rc.2.26504.105` and MAUI `11.0.0-rc.2.26505.5` profile.
 Install its Android/MAUI workloads first. `.NET 10` Android CoreCLR is experimental.
 Use `-Device` or `-Serial` for an exact adb serial and `-NoLaunch` to install only.
 Builds have a 20-minute limit; build/install failures stop deployment. APKs are separated by app, mode, SDK, configuration and RID,
@@ -405,8 +405,8 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Targe
 # Simulator: .NET 10 / Debug / Mono; boots the selected simulator before installation
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Target simulator
 
-# .NET 11 RC1 with Xcode 27: select the SDK and skip version validation for this invocation
-pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Target device -DotnetVersion 11 -Mode NativeAot -SkipXcodeValidation
+# .NET 11 RC2 with Xcode 27
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Target device -DotnetVersion 11 -Mode NativeAot
 
 # Inventory only / select and inspect the build command without deploying
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -List
@@ -422,8 +422,8 @@ Launch variables use `-Environment 'DOROTI_SAMPLE=input'`; the helper documentat
 
 The helper selects .NET 10 from the root `global.json` and .NET 11 from `ios/global.json` without editing either file.
 Artifacts are separated by app, SDK, mode, configuration and RID. Failed builds stop deployment;
-the default launch restarts the existing app process. `-SkipXcodeValidation` bypasses a version check
-for this invocation and does not make .NET 11 RC1 / Xcode 27 an officially supported combination.
+the default launch restarts the existing app process. .NET 11 RC2 requires Xcode 27.0;
+use workload set `11.0.100-rc.2.26509.2` with Xcode version validation enabled.
 See [all options and direct .NET commands](../../helpers/deploy-helper/README.md). Use the development CLI for Hot Reload.
 
 #### Direct .NET 11 commands

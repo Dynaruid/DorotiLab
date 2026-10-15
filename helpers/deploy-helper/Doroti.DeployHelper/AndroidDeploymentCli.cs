@@ -83,7 +83,7 @@ public sealed class AndroidDeploymentCli(string repositoryRoot, ICommandRunner r
             "-p:AndroidPackageFormats=apk", "-p:EmbedAssembliesIntoApk=true", $"-p:ArtifactsPath={artifacts}",
         };
         if (options.DotnetVersion == 11)
-            args.AddRange(["-p:DorotiAndroidMauiVersion=11.0.0-rc.1.26451.6", "-p:MauiVersion=11.0.0-rc.1.26451.6"]);
+            args.AddRange(["-p:DorotiAndroidMauiVersion=11.0.0-rc.2.26505.5", "-p:MauiVersion=11.0.0-rc.2.26505.5"]);
         ui.WriteLine($"\nSDK {sdk} / {mode} / {configuration} / {rid}\nSDK working directory: {cwd}\nArtifacts: {artifacts}");
         return new(new(dotnet, args, cwd, Capture: false, TimeoutSeconds: 1200,
             Environment: new Dictionary<string, string> { ["DOTNET_HOST_PATH"] = dotnet }), artifacts, sdk, mode, configuration, rid);
