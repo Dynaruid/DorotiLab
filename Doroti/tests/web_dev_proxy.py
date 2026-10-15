@@ -82,7 +82,7 @@ def fixture(mode, feed):
     (web / 'wwwroot/index.html').write_text('<!doctype html><html><body>proxy fixture</body></html>', encoding='utf-8')
     (web / 'wwwroot/fixture.js').write_text('console.log("asset fixture");', encoding='utf-8')
     extra = (f'<Import Project="{ROOT / "packages/platforms/web/tooling/buildTransitive/Doroti.Tool.Web.targets"}" />'
-             if mode == 'source' else '<ItemGroup><PackageReference Include="Doroti.Tool.Web" Version="0.4.0-beta" /></ItemGroup>')
+             if mode == 'source' else '<ItemGroup><PackageReference Include="Doroti.Tool.Web" Version="0.4.1-beta" /></ItemGroup>')
     project = web / 'Fixture.csproj'
     project.write_text(f'''<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
       <PropertyGroup><TargetFramework>net10.0</TargetFramework><DorotiTarget>Web</DorotiTarget>
@@ -106,7 +106,7 @@ for name, project in [
     ('web-tool', 'packages/platforms/web/tooling/Doroti.Tool.Web.csproj'),
 ]:
     command(name + '-pack', ['dotnet', 'pack', project, '-c', 'Release', '--output', feed, '--artifacts-path', RUN / 'pack-build', '--nologo'])
-with zipfile.ZipFile(feed / 'Doroti.Tool.Web.0.4.0-beta.nupkg') as package:
+with zipfile.ZipFile(feed / 'Doroti.Tool.Web.0.4.1-beta.nupkg') as package:
     for file in ['Doroti.Web.DevServer.csproj', 'Program.cs', 'WebDevConfig.cs', 'DevelopmentProxy.cs']:
         assert 'devserver/' + file in package.namelist(), file
     assert 'buildTransitive/Doroti.Tool.Web.targets' in package.namelist()
@@ -140,7 +140,7 @@ with http.server.ThreadingHTTPServer(('127.0.0.1', 0), Backend) as backend:
                     assert len(cached_servers) == 1, cached_servers
                     assert (cached_servers[0].parent / 'Yarp.ReverseProxy.dll').is_file()
                     if mode == 'package':
-                        package_sources = Path(env['NUGET_PACKAGES']) / 'doroti.tool.web/0.4.0-beta/devserver'
+                        package_sources = Path(env['NUGET_PACKAGES']) / 'doroti.tool.web/0.4.1-beta/devserver'
                         assert not (package_sources / 'obj').exists() and not (package_sources / 'bin').exists()
                     for path in ['/', '/client/route', '/fixture.js', '/_framework/blazor.webassembly.js']:
                         with urllib.request.urlopen(url + path, timeout=10) as response:

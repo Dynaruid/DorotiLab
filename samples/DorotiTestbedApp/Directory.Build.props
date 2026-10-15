@@ -3,7 +3,7 @@
   <PropertyGroup>
     <ApplicationTitle>Doroti Material Testbed</ApplicationTitle>
     <ApplicationId>dev.doroti.testbed</ApplicationId>
-    <ApplicationDisplayVersion>0.4.0</ApplicationDisplayVersion>
-    <ApplicationVersion>4</ApplicationVersion>
+    <ApplicationDisplayVersion>0.4.1</ApplicationDisplayVersion>
+    <ApplicationVersion>5</ApplicationVersion>
   </PropertyGroup>
 </Project>
