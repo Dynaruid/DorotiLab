@@ -1,6 +1,6 @@
 # Doroti
 
-실행 전 `pwsh -File Doroti/eng/doroti.ps1 doctor -App samples/DorotiTestbedApp -Platform windows -Scope target`로 준비 조건을 확인합니다. [provider doctor](Doroti/docs/doctor.md)의 판정과 실제 기기·배포 수락은 구분합니다.
+실행 전 `pwsh -File Doroti/eng/doroti.ps1 doctor -App samples/DorotiTestbedApp -Platform windows -Scope target`로 준비 조건을 확인합니다. provider doctor의 판정과 실제 기기·배포 수락은 구분합니다.
 
 [English](README.md) | **한국어**
 
@@ -99,8 +99,6 @@ Dart-to-C# 컴파일러는 필요한 소스를 가져오거나 동작을 비교�
 | [WGSL 컴파일러](tools/Doroti.Wgsl/README.md) | 셰이더 컴파일, 백엔드 프로필, 앱 연동 |
 
 ## 프로젝트 상태
-
-현재 호스트·renderer·build mode별 구현과 검증 범위는 [지원표](Doroti/docs/support-status.md)를 참고하세요.
 
 Doroti는 개인이 개발하는 실험적 프로젝트입니다. 플랫폼 표는 구현된 호스트와 기본 렌더링 구성을 나타내며, 모든 플랫폼이 동일한 수준으로 제품 사용을 준비했다는 의미는 아닙니다.
 

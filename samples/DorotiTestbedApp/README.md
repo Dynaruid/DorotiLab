@@ -1,6 +1,6 @@
 # DorotiTestbedApp
 
-The managed workspace v2 CLI selects explicit provider aliases. Use `doctor -App ... -Platform ... -Scope managed|target|native|tools|full`; select Windows MAUI with `-Platform windows-maui`. Doctor and actual runtime acceptance are separate. See [provider doctor](../../Doroti/docs/doctor.md). Older development/native-operation examples below describe the former CLI where marked; the current capability boundary is in the [work2 record](../../Doroti/docs/migrations/design-platform/resume-2026-10-05.md).
+The managed workspace v2 CLI selects explicit provider aliases. Use `doctor -App ... -Platform ... -Scope managed|target|native|tools|full`; select Windows MAUI with `-Platform windows-maui`. Doctor and actual runtime acceptance are separate. Older development/native-operation examples below describe the former CLI where marked.
 
 **English** | [한국어](README.ko.md)
 
@@ -8,15 +8,13 @@ A sample app for Doroti's Material widgets and platform hosts.
 
 Set `DOROTI_SAMPLE=drop` for the Windows OS drop scene. It accepts files, text and URIs
 as Copy, displays event/action/client coordinates and previews file bytes without
-executing content. Unsupported hosts display their capability boundary. See
-[OS Drag & Drop](../../Doroti/docs/os-drag-drop.md) for data ownership and test coverage.
+executing content. Unsupported hosts display their capability boundary.
 
 Set `DOROTI_SAMPLE=plugins` for the Windows/Android FilePicker/URL launcher scene (Web: `?dorotiSample=plugins`). Choose one or
 more files to display their names, sizes and first 16 bytes; handles are released after
-reading. The URL button opens example.com. [Plugin contract and package tests](../../Doroti/docs/plugins.md)
-describe cancellation, ownership and unsupported hosts.
+reading. The URL button opens example.com.
 
-For the development reload scene, set `DOROTI_SAMPLE=reload` and run `Doroti/eng/doroti.ps1 dev -App samples/DorotiTestbedApp -Platform windows`. Increment the counter, enter text and scroll, then edit `HotReloadSample.Message()` and save. Supported metadata updates preserve those values. See [development sessions](../../Doroti/docs/development-hot-reload.md) for CLI/VS Code commands and current limitations.
+For the development reload scene, set `DOROTI_SAMPLE=reload` and run `Doroti/eng/doroti.ps1 dev -App samples/DorotiTestbedApp -Platform windows`. Increment the counter, enter text and scroll, then edit `HotReloadSample.Message()` and save. Supported metadata updates preserve those values.
 One shared C# application runs through Windows, macOS AppKit, Mac Catalyst, Linux, Android, iOS, and Web runners.
 
 The Material sample includes Components, Color, Typography, Elevation, Platform views, WebView, nine seed colors,
@@ -37,8 +35,7 @@ The optional Windows MAUI runner connects button/editor/WebView2 through disjoin
 WinUI native overlays and exposes WebView commands and the HWND file picker. It does
 not provide interleaving/native backdrop or multiple-window support. The `DOROTI_SAMPLE=webview`
 route opens the basic WebView scene directly; `input` exercises separate editor/WebView
-recreation. See the [PlatformView support matrix](../../Doroti/docs/platform-views/support-matrix.md)
-for host-specific constraints.
+recreation.
 
 - [Prerequisites](#prerequisites)
 - [Platform builds and option cases](#platform-builds-and-option-cases)
@@ -257,7 +254,7 @@ pwsh -NoProfile -File ./tools/doroti-cloudflared/tunnel.ps1 start -App ./samples
 | Release ReadyToRun | Obfuscate IL before R2R compilation |
 | Mono AOT / profiled AOT / WASM AOT / iOS NativeAOT / Mac Catalyst Mono | Skipped |
 
-Obfuscation is off by default. It renames internal names in the shared app DLL while preserving the public API. See [Obfuscar configuration](../../Doroti/docs/obfuscation.md) for reflection/serialization exclusions. Add `-p:DorotiObfuscarHideStrings=true` for string hiding, or `-p:DorotiObfuscarRules=obfuscar-rules.xml` for an exclusion file relative to the shared app directory. Obfuscated publishing does not support `--no-build`.
+Obfuscation is off by default. It renames internal names in the shared app DLL while preserving the public API. Add `-p:DorotiObfuscarHideStrings=true` for string hiding, or `-p:DorotiObfuscarRules=obfuscar-rules.xml` for an exclusion file relative to the shared app directory. Obfuscated publishing does not support `--no-build`.
 
 To keep outputs from different SDK/RID/runtime variants separate, add `--artifacts-path ./Doroti/artifacts/<unique-case-name>`. Keep `mapping.xml` and original PDB files as internal diagnostics; do not distribute them.
 
@@ -320,7 +317,7 @@ The **Platform views** tab demonstrates native buttons/editors and Doroti layers
 Its page lives in [src/MaterialSample/PlatformViewsPage.cs](src/MaterialSample/PlatformViewsPage.cs).
 The independent **WebView** tab demonstrates browser content. Disable the optional
 WebEngine dependency with `-p:DorotiQtWebEngine=false`.
-Without WebEngine, Qt 6.6+ is sufficient. Quick/Graphite Vulkan and frame mode C are also the SDK/template defaults. Select the legacy Widgets overlay backend with `-p:DorotiQtQuick=false -p:DorotiQtWebEngine=false`. Native Wayland is the preferred QPA on Wayland sessions; xcb/XWayland has a Qt Vulkan resize race. See the [Linux Qt build profiles](../../Doroti/docs/platform-views/linux-qt.md#build-configuration).
+Without WebEngine, Qt 6.6+ is sufficient. Quick/Graphite Vulkan and frame mode C are also the SDK/template defaults. Select the legacy Widgets overlay backend with `-p:DorotiQtQuick=false -p:DorotiQtWebEngine=false`. Native Wayland is the preferred QPA on Wayland sessions; xcb/XWayland has a Qt Vulkan resize race.
 
 ### Android sample
 
@@ -487,8 +484,6 @@ For a baseline, change the publish flag to `RunAOTCompilation=false`, use
 `./temp/testing/testbed-web-baseline` as the artifacts path, and serve that `wwwroot` on another port.
 AOT can reduce managed CPU work at the cost of larger deployment files. This is Mono WASM AOT;
 some methods still use interpreter paths. Debug development remains non-AOT.
-See the [2026-10-05 AOT execution and timing receipt](../../Doroti/docs/validation/2026-10-05-web-wasm-aot.md).
-The [default-profile qualification](../../Doroti/docs/validation/2026-10-05-web-aot-default.md) is recorded separately.
 
 ## Screen and renderer settings
 
@@ -576,7 +571,7 @@ DOROTI_MACOS_BACKDROP=acrylic DOROTI_TITLEBAR=solid \
 Windows App SDK uses a DWM Acrylic caption or a separate solid caption. Qt/Linux draws
 unified caption controls into the same GPU surface and compositor blur region as the body;
 solid mode retains the desktop's native decorations. Qt blur still requires compositor support.
-The caption area is reported as a safe area. See the [shared window appearance API](../../Doroti/docs/window-appearance.md).
+The caption area is reported as a safe area.
 
 Set both renderer background colors to transparent and give the widgets that should
 reveal the effect transparent or translucent backgrounds. An opaque Scaffold covers
@@ -585,7 +580,7 @@ and platform-view overlays, and follows its size and window appearance. This is 
 background, not automatic Liquid Glass styling of individual canvas widgets.
 Native AppKit owns accessibility adaptations and material appearance; Windows-specific
 luminosity settings do not map to AppKit. `tintColor`/`tintOpacity` tint Liquid Glass;
-`acrylicKind` selects the blur material. See the [window appearance API](../../Doroti/docs/window-appearance.md).
+`acrylicKind` selects the blur material.
 
 ### System dark mode and color palettes
 
@@ -739,4 +734,3 @@ exercise Qt services; the drop page also has a native text/link drag source.
 `DOROTI_SAMPLE=qt-widgets` is a separate disjoint native-editor fixture for a
 Widgets/OpenGL shim (`DOROTI_LINUX_GRAPHITE=0`), without the Desktop companion.
 Quick composition is required for the full mixed input/WebView scene.
-See the [Linux Qt guide](../../Doroti/docs/platform-views/linux-qt.md).

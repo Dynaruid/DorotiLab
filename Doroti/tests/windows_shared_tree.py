@@ -27,5 +27,6 @@ drains=[(int(view),int(pending)) for view,pending in re.findall(r'doroti.g1.drai
 assert {view for view,_ in drains}=={1,2} and all(pending==0 for _,pending in drains),drains
 window=json.loads((run/'windows.json').read_text());assert window['remaining']==0 and window['survivor'],window
 evidence=dict(schema='doroti.windows-shared-tree-verification/v1',result='PASS',scope='two real native Regular HWNDs, one application dispatcher/root/InheritedWidget state, per-view Graphite/Vulkan frame submissions and terminal summaries, primary close with newer survivor frame, native render join/GPU cleanup completion',builds=builds,summaries=summaries,drains=drains,windows=window,notVerified=['physical keyboard/IME','mixed-monitor DPI','slow GPU consumer isolation','modal/close reentrancy','separate target nupkg consumer'],artifacts=str(run.relative_to(ROOT)))
-(ROOT/'Doroti/docs/migrations/design-platform/windows-shared-tree-verification.json').write_text(json.dumps(evidence,indent=2)+'\n',encoding='utf-8')
+(ROOT / "Doroti/artifacts/verification/design-platform").mkdir(parents=True, exist_ok=True)
+(ROOT/'Doroti/artifacts/verification/design-platform/windows-shared-tree-verification.json').write_text(json.dumps(evidence,indent=2)+'\n',encoding='utf-8')
 print('PASS: real Windows shared tree and primary-survivor frame/drain subset; '+str(run),flush=True)

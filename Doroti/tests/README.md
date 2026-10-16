@@ -4,7 +4,7 @@
 fixture and verifies metadata renaming, runtime/public API/reflection behavior,
 incremental opt-in/out, actual ReadyToRun publish/header/runtime behavior, AOT
 exclusion and invalid-rule failure. Run it through the
-1200-second wrapper. See [Obfuscar configuration](../docs/obfuscation.md).
+1200-second wrapper.
 
 `web_dev_proxy.py` verifies the Web tool package includes only the development
 server sources/project, without repackaged external DLLs. It checks local server
@@ -14,7 +14,7 @@ backend proxy, JSONC/CLI URL precedence, PEM HTTPS, SDK watch injection and miss
 `packages/platforms/web/tests/Doroti.Web.DevServer.Tests` exercises ordered
 prefix/regex rewrites, config rejection, real HTTP bodies/headers/cookies/status
 and WebSocket forwarding. Both are in Developer/Release and use the 1200-second
-wrapper. See [Web development configuration](../docs/web-development-config.md).
+wrapper.
 
 `webcil_cache.py` invokes the production MSBuild target against package, project
 and runner assemblies. It checks AOT/interpreter mode changes, initial cache
@@ -53,7 +53,7 @@ The iOS `shutdown` case verifies joined application Stop and actual GPU drain.
 independent widgets AppKit consumption is qualified separately from source smoke.
 All direct test entries use the 1,200-second wrapper.
 
-The [2026-10-04 full-review follow-up](../docs/validation/2026-10-04-full-review.md) adds Future terminal/error owner context, mid-frame microtasks, CPU scene snapshot/PNG/repaint/DPR/lifetime and concurrent process-pipe regressions to Build/Developer. Source/Developer runs actual doctor CLI fake-tool fixtures, MSBuild Build/Clean sentinels, Android lease/Stop identity and release receipt checks. Linux installer failure injection requires a Linux filesystem and reports SKIPPED elsewhere. Node executes production raster startup barriers and managed accept/reject/timeout protocol; these doubles do not establish .NET Worker boot. Windows MAUI smoke includes the actual A-B-A bridge/action-generation regression. Use the 1200-second wrapper for direct entries.
+The 2026-10-04 full-review follow-up adds Future terminal/error owner context, mid-frame microtasks, CPU scene snapshot/PNG/repaint/DPR/lifetime and concurrent process-pipe regressions to Build/Developer. Source/Developer runs actual doctor CLI fake-tool fixtures, MSBuild Build/Clean sentinels, Android lease/Stop identity and release receipt checks. Linux installer failure injection requires a Linux filesystem and reports SKIPPED elsewhere. Node executes production raster startup barriers and managed accept/reject/timeout protocol; these doubles do not establish .NET Worker boot. Windows MAUI smoke includes the actual A-B-A bridge/action-generation regression. Use the 1200-second wrapper for direct entries.
 
 Android metadata Hot Reload uses `android_development_bridge.py` for session/request
 isolation and port cleanup, `android_development_profile.py` for the actual SDK
@@ -63,16 +63,13 @@ with the 1,200-second wrapper. The device test temporarily edits the Testbed rel
 scene and restores it in `finally`; its state is automatically seeded, so it does
 not establish physical touch/IME evidence. The installed VSIX regression uses
 `dist/test/runHost.js ... --android` with `DOROTI_TEST_ANDROID_DEVICE=<serial>`.
-Use fresh output folders under `Doroti/artifacts/android-hot-reload`. See
-[development sessions](../docs/development-hot-reload.md) for prerequisites and commands.
+Use fresh output folders under `Doroti/artifacts/android-hot-reload`.
 
 Windows MAUI basic services and native views use `windows_maui_smoke.py`, which
 selects the MAUI executable explicitly. Modes `graphite`, `embedded`, `ganesh`,
 `webview`, and `upload` check separate native owner/widget/upload paths. Build the
 Testbed `windows` runner first; `upload` also needs Sample2 `windows`. Run with
-the 1200-second wrapper and a fresh `temp/testing/` output directory. See the
-[PlatformView support matrix](../docs/platform-views/support-matrix.md)
-for supported overlay topology and host constraints.
+the 1200-second wrapper and a fresh `temp/testing/` output directory.
 
 Native C-only configuration and policy, GPU-full preparation, coalescing, native insertion,
 generation changes and out-of-order retirement are part of the CPU `Build` suite.
@@ -198,7 +195,7 @@ Native/synthetic results do not establish physical IME or VoiceOver acceptance,
 device Release/NativeAOT, or distribution signing. Raw JSON, command logs and the
 screen capture stay in the output directory; probe files remain in app Documents.
 
-App icon defaults, custom overrides, opt-out and portable asset formats use `python Doroti/eng/run-with-timeout.py python Doroti/tests/app_icons.py`. An optional path to a built `Doroti.Runner.Sdk` nupkg also verifies its icon payload. See [app icon configuration](../docs/branding/README.md) for defaults and overrides.
+App icon defaults, custom overrides, opt-out and portable asset formats use `python Doroti/eng/run-with-timeout.py python Doroti/tests/app_icons.py`. An optional path to a built `Doroti.Runner.Sdk` nupkg also verifies its icon payload. See [app icon configuration](../branding/README.md) for defaults and overrides.
 
 Plugin package qualification uses `python Doroti/eng/run-with-timeout.py python Doroti/tests/plugin_packages.py`
 for the NuGet-only common/trimmed consumer and SDK diagnostics. The interactive Windows suite is
@@ -206,13 +203,12 @@ for the NuGet-only common/trimmed consumer and SDK diagnostics. The interactive 
 it publishes a NuGet-only host/plugin consumer, selects its own temporary file through real
 OS dialog commands, verifies caller/owner cancellation and opens a loopback URL in the default
 browser. It removes successful raw runs. This is synthetic UI automation, not physical input.
-See [plugin contract and boundaries](../docs/plugins.md).
 
 OS drop package qualification uses `python Doroti/eng/run-with-timeout.py python Doroti/tests/plugin_windows_packages.py --drop`
 for the NuGet-only Windows receiver, real read handles/5GB sparse file, Unicode/URI,
 revoke/cleanup and 96/192 DPI contexts. It exercises native callbacks with standard
 Windows IDataObject, not Explorer gestures. `Doroti.Drop.Windows.Tests` additionally
-has an opt-in `--interactive` OLE source/target fixture. See [OS drop contract](../docs/os-drag-drop.md).
+has an opt-in `--interactive` OLE source/target fixture.
 
 Minimal external API example (also add the Skia native asset package for the test OS):
 
@@ -232,7 +228,7 @@ The permanent fixtures protect regressions in pointer tab routing, bounded settl
 python Doroti/eng/run-with-timeout.py dotnet run --project Doroti/tests/Doroti.Tests -c Debug -- --break-tab
 ```
 
-That command must fail; without `--break-tab`, it must pass. Rendering fixtures cover fixed DPR pixels, VariableBlur raster kernels/capture coordinates, a 1,000-row list, reassemble offset preservation and zero engine-layer delta after disposal. Physical IME/accessibility and other GPU/platform combinations need separate checks; consult [support status](../docs/support-status.md).
+That command must fail; without `--break-tab`, it must pass. Rendering fixtures cover fixed DPR pixels, VariableBlur raster kernels/capture coordinates, a 1,000-row list, reassemble offset preservation and zero engine-layer delta after disposal. Physical IME/accessibility and other GPU/platform combinations need separate checks.
 
 On macOS with a Metal GPU, run the production renderer pixel checks explicitly:
 
@@ -320,7 +316,7 @@ dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-qua
 
 This macOS Metal command saves 14 PNGs at DPR 3 with sigma 0/1/2/4/8/20/32, small text, 1px lines, a high-frequency pattern, and the repository's reference photograph. Sigma zero bypasses the filter as in SampleApp2. These captures document downsampling softness and the clear-edge/disabled-filter transition; Full and Fixed are not required to be pixel-equivalent. Still-image review does not establish motion quality, physical input behavior, or performance. Keep captures separate from device presentation measurements.
 
-For the installed VSIX and native metadata-update tests, use the commands in [development sessions](../docs/development-hot-reload.md). [Rendering baselines](../docs/rendering-baselines.md) specifies measurement boundaries and prospective budgets. Testbed `DOROTI_SAMPLE=reload` provides a counter, input and long list for manual reload testing.
+Testbed `DOROTI_SAMPLE=reload` provides a counter, input and long list for manual reload testing.
 
 Linux Qt metadata Hot Reload uses an isolated source-template fixture and keeps
 user sample sources untouched:
@@ -339,11 +335,11 @@ profiles check the Debug guard, polling default/override and custom .NET path.
 The source-template test uses repository ProjectReferences; it does not claim
 NuGet-only development or Hot Reload of native C++/QML/assets.
 
-Web Hot Reload qualification uses `runHost.js ... --web`: a clean-profile installed VSIX, actual SDK metadata updates, request/frame acknowledgments, compile-error correction and duplicate-request serialization. Browser file gates allow real counter/input/scroll and pixel inspection. The standalone `web_rendering.mts` tests also cover the browser bridge endpoint parser; extension unit tests cover origin/session checks and prepare acknowledgment. WebGL/WebGPU evidence and unsupported combinations are tracked in the development contract.
+Web Hot Reload qualification uses `runHost.js ... --web`: a clean-profile installed VSIX, actual SDK metadata updates, request/frame acknowledgments, compile-error correction and duplicate-request serialization. Browser file gates allow real counter/input/scroll and pixel inspection. The standalone `web_rendering.mts` tests also cover the browser bridge endpoint parser; extension unit tests cover origin/session checks and prepare acknowledgment. WebGL/WebGPU and unsupported combinations require separate qualification.
 
 For manual Windows Korean IME/focus checks, set `$env:DOROTI_SAMPLE='input'` and launch the default Testbed windows alias. Compose and cancel Korean text in the first multiline field, move through the native editor or WebView with Tab/Shift+Tab, select/copy/paste, recreate the native view, and confirm the final framework field receives focus. The scene shows selection/composing ranges. Choose the native editor or WebView using the switch button: mixing both composition topologies in one frame remains unsupported.
 
-Navigation/restore, concurrent window contexts and the CPU Dialog intermediate frame are in Developer. Selected Release candidates and portable installation are documented in [release candidates](../docs/release-candidates.md).
+Navigation/restore, concurrent window contexts and the CPU Dialog intermediate frame are in Developer.
 
 Browser services (picker/managed grants, Copy drop, real history and text restoration)
 are exercised through the threaded runtime with installed Chrome and Python Playwright:
@@ -384,8 +380,7 @@ compiled only for the test and injected with LD_PRELOAD, never shipped in the
 host/template. Dialog selection and QDropEvent input are synthetic native tests,
 not physical IME/Orca or external file-manager drags. An optional
 `DOROTI_QT_URL_PROBE=http://127.0.0.1:PORT/` also opens the real default browser.
-Widgets OpenGL uses the separate ClipRect-only `qt-widgets` sample; see the
-[Linux Qt guide](../docs/platform-views/linux-qt.md).
+Widgets OpenGL uses the separate ClipRect-only `qt-widgets` sample.
 
 macOS AppKit uses the installed Xcode 27/.NET 10 macOS27 profile:
 
@@ -439,9 +434,9 @@ python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/ios_hot_reload_smoke
 python3 Doroti/eng/run-with-timeout.py node tools/vscode-doroti/dist/test/runHost.js samples/DorotiTestbedApp temp/testing/ios-editor-run --ios
 ```
 
-The smoke test temporarily edits the Testbed reload scene and restores it in `finally`; use a fresh evidence directory and do not edit that scene concurrently. It verifies actual deltas, PID/State/count/text/scroll preservation, compiler-error recovery, rude edits and Stop. State is seeded automatically. The editor test uses a separately installed VSIX/profile; run `npm run package` in the extension folder first. See [development sessions](../docs/development-hot-reload.md).
+The smoke test temporarily edits the Testbed reload scene and restores it in `finally`; use a fresh evidence directory and do not edit that scene concurrently. It verifies actual deltas, PID/State/count/text/scroll preservation, compiler-error recovery, rude edits and Stop. State is seeded automatically. The editor test uses a separately installed VSIX/profile; run `npm run package` in the extension folder first.
 
-Physical-device Hot Reload uses the same smoke test with `--rid ios-arm64 --framework net11.0-ios --sdk-version 11.0.100-rc.2.26504.105 --dotnet <prepared-dotnet-host>`. It copies the automatically seeded state probe out of Documents and requires matching completed-frame responses for real SDK deltas. Pair the device, enable Developer Mode, and supply signing/toolchain environment variables described in the [development contract](../docs/development-hot-reload.md).
+Physical-device Hot Reload uses the same smoke test with `--rid ios-arm64 --framework net11.0-ios --sdk-version 11.0.100-rc.2.26504.105 --dotnet <prepared-dotnet-host>`. It copies the automatically seeded state probe out of Documents and requires matching completed-frame responses for real SDK deltas. Pair the device, enable Developer Mode, and supply the required signing/toolchain environment variables.
 
 For installed-VSIX device validation, set `DOROTI_TEST_IOS_RID=ios-arm64`, `DOROTI_TEST_IOS_DEVICE=<UDID>`, `DOROTI_TEST_IOS_TFM=net11.0-ios`, `DOROTI_TEST_IOS_SDK=11.0.100-rc.2.26504.105`, and `DOROTI_TEST_DOTNET=<prepared-dotnet-host>`, then run `runHost.js <Testbed> <fresh-evidence> --ios` through the timeout wrapper. Do not run the CLI and editor smoke simultaneously: both temporarily edit the same scene. `apple_build_profiles.py --device-sdk <installed-version>` also checks CoreCLR, registrar, runtime/crossgen2 alignment and unchanged Apple runtime pack selection.
 

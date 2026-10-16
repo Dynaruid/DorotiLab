@@ -25,7 +25,7 @@ See the [platform implementation table](../README.md#platforms) for the host and
 
 ## Requirements
 
-Optional Release app DLL obfuscation, including ReadyToRun publishing, is described in [Obfuscar configuration](docs/obfuscation.md). NativeAOT and Mono/WebAssembly AOT paths are excluded.
+Release app DLL obfuscation with Obfuscar is optional and supports ReadyToRun publishing. NativeAOT and Mono/WebAssembly AOT paths are excluded.
 
 ### Shared tools and SDK selection
 
@@ -78,7 +78,7 @@ dotnet workload restore ./DorotiTestbedApp.iOS.csproj
 Pop-Location
 ```
 
-`workload restore` prepares .NET workloads for the selected SDK. External tools are installed separately. Provider doctor requires explicit `-App` and `-Platform`; `-Scope managed|target|native|tools|full` selects its prerequisite checks. FAIL/PARTIAL exits nonzero. See [provider doctor](docs/doctor.md); a prerequisite PASS does not replace build/device acceptance.
+`workload restore` prepares .NET workloads for the selected SDK. External tools are installed separately. Provider doctor requires explicit `-App` and `-Platform`; `-Scope managed|target|native|tools|full` selects its prerequisite checks. FAIL/PARTIAL exits nonzero. A prerequisite PASS does not replace build/device acceptance.
 
 See [Testbed run instructions](../samples/DorotiTestbedApp/README.md#material-sample-mode) for platform commands. The `reference/flutter-master` checkout is needed only for explicit Flutter comparisons; prepare it when needed with `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`.
 
@@ -99,9 +99,9 @@ pwsh -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform
 
 `describe -App <workspace> -Platform all` reports declared provider aliases, host restrictions, supported operations and development transport. `build`, `run`, `publish` and `dev` require a declared alias and provider support; `dev` requires Debug. Configuration/device/template services are provided by extensions, and unsupported services fail explicitly. The built-in template is installed with `dotnet new` and supports `--design widgets|material|cupertino`.
 
-The former `-WindowsBackend`, `-Rid`, `-LastSuccessful`, `-NoBuild`, `native` and fixed template command switches are not part of the managed provider CLI. Direct runner/MSBuild settings remain available for supported source builds. Built-in mobile development transport, detailed native maintenance operations and template registry services remain migration work. See the [current work2 record](docs/migrations/design-platform/resume-2026-10-05.md).
+The former `-WindowsBackend`, `-Rid`, `-LastSuccessful`, `-NoBuild`, `native` and fixed template command switches are not part of the managed provider CLI. Direct runner/MSBuild settings remain available for supported source builds. Built-in mobile development transport, detailed native maintenance operations and template registry services remain migration work.
 
-Repository maintenance commands are `validate -ValidationSuite <suite>`, `audit`, and `release` (the Release verification suite). Local package candidates use [release-candidate.py](docs/release-candidates.md) with independent version arguments.
+Repository maintenance commands are `validate -ValidationSuite <suite>`, `audit`, and `release` (the Release verification suite). Local package candidates use [release-candidate.py](eng/release-candidate.py) with independent version arguments.
 
 ## Application development
 
@@ -123,7 +123,7 @@ To follow system dark mode, provide `theme` and `darkTheme` to `MaterialApp` wit
 
 ### App icons
 
-Samples and new templates use the Doroti app icon by default. See [app icon defaults and overrides](docs/branding/README.md#앱의-기본-아이콘) to replace or disable it for an application.
+Samples and new templates use the Doroti app icon by default. See [app icon defaults and overrides](branding/README.md#앱의-기본-아이콘) to replace or disable it for an application.
 
 ### Native bindings
 
@@ -139,7 +139,7 @@ Android, iOS, AppKit macOS, and Mac Catalyst runners each reference an app-owned
 | `DOROTI_WINDOWS_GPU_PREFERENCE` | `NoPreference` by default; `LowPowerPreference` or `HighPerformancePreference` applies to Vulkan |
 | `DOROTI_WINDOWS_VULKAN_DEVICE` | Select a Vulkan device by its exact name or a unique name fragment |
 
-The default path renders through Graphite/Vulkan and presents through D3D12/DXGI DirectComposition on the same adapter. There is no automatic presenter fallback. Native PlatformView raster slices retain their D3D11 drawing API. See the [native frame pipeline](docs/native-frame-pipeline.md) for synchronization and frame lifetime.
+The default path renders through Graphite/Vulkan and presents through D3D12/DXGI DirectComposition on the same adapter. There is no automatic presenter fallback. Native PlatformView raster slices retain their D3D11 drawing API.
 
 ### Web
 
@@ -154,7 +154,7 @@ Application bootstrap code lives in `web/src/**/*.ts`; framework Web code lives 
 
 ### Window appearance
 
-`DorotiViewConfiguration.appearance` controls the backdrop and titlebar independently. `unified` is the default titlebar style; `solid` selects a separate titlebar. Use Acrylic on Windows App SDK and Qt, with an optional macOS override for Acrylic or Liquid Glass. See the [window appearance API](docs/window-appearance.md).
+`DorotiViewConfiguration.appearance` controls the backdrop and titlebar independently. `unified` is the default titlebar style; `solid` selects a separate titlebar. Use Acrylic on Windows App SDK and Qt, with an optional macOS override for Acrylic or Liquid Glass.
 
 On Windows 11 24H2 or later, request `new WindowBackdropOptions(WindowBackdropMode.acrylic)` without an experimental flag. The Material sample already requests Acrylic. App content must be transparent or translucent for the effect to be visible; omitted backdrop options and `system` remain opaque.
 
@@ -176,7 +176,7 @@ On Windows 11 24H2 or later, request `new WindowBackdropOptions(WindowBackdropMo
 | `Doroti.Skia.Rendering`, `Doroti.Skia.RuntimeEffects` | Shared GPU rendering, scenes, text, images, effects, and SkSL compilation |
 | `Doroti.Host.WindowsAppSdk` + `.Native` | Managed framework integration and native C++ window/input handling |
 | `Doroti.Host.Maui` | Android, UIKit, AppKit, Mac Catalyst, and optional Windows MAUI adapters |
-| `Doroti.Host.Web` | Worker/canvas startup, input, accessibility, and resources; [ownership/module boundaries](docs/web-host-architecture.md) |
+| `Doroti.Host.Web` | Worker/canvas startup, input, accessibility, and resources |
 | `Doroti.Host.Qt` | Qt 6 `QWindow`, C ABI bridge, input, IME, desktop services, and accessibility |
 | `Doroti.Target.*` | Platform-specific package composition and deployment |
 
@@ -184,9 +184,9 @@ Features and fixes belong directly in the owning framework, runtime, renderer, o
 
 ## Platform support
 
-Host, renderer, and build-mode support varies by target. Consult [support status](docs/support-status.md) for the available configurations and limitations. Signing, store distribution, input methods, accessibility, and performance require checks on the intended device and configuration.
+Host, renderer, and build-mode support varies by target. Signing, store distribution, input methods, accessibility, and performance require checks on the intended device and configuration.
 
-Native controls and WebView have host-specific composition constraints; see the [PlatformView support matrix](docs/platform-views/support-matrix.md). [Frame textures](docs/textures.md) support CPU RGBA, Android Surface/AHB, and Windows D3D11 inputs. [Web textures](docs/web-textures.md) accept Canvas/video/frame GPU input on WebGPU or explicit WebGL. iOS/macOS Metal and Linux DMA-BUF camera adapters require runtime verification before use.
+Native controls and WebView have host-specific composition constraints. Frame textures support CPU RGBA, Android Surface/AHB, and Windows D3D11 inputs. Web textures accept Canvas/video/frame GPU input on WebGPU or explicit WebGL. iOS/macOS Metal and Linux DMA-BUF camera adapters require runtime verification before use.
 
 ## Development and repository layout
 
@@ -197,7 +197,6 @@ Native controls and WebView have host-specific composition constraints; see the 
 | [`eng/`](eng/) | Build, run, validation, packaging, and diagnostic scripts |
 | [`../tools/`](../tools/) | Repository developer tools |
 | [`tests/`](tests/) | Selected permanent regression sources |
-| [`docs/`](docs/) | API documentation and scoped validation reports |
 | [`../tools/Doroti.DartToCSharp/`](../tools/Doroti.DartToCSharp/) | Optional Dart/Flutter import compiler |
 
 Keep generated tool output under `.doroti/` or `artifacts/`. Test sources and raw evidence for one-off runs belong under `../temp/testing/<task>/<run>/`; summarize results and delete that run directory. Maintained suites use `eng/validate.ps1` with a 20-minute timeout. Retained milestone records belong in `../history/`. Compiler-owned `.g.cs` files are not compiled into `src/Doroti.Framework.*`. Repository JSON uses `System.Text.Json`.

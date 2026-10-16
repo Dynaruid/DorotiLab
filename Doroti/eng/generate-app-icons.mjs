@@ -1,5 +1,5 @@
 // Run with a path to an installed Playwright package; no browser dependency is
-// needed when building applications. See docs/branding/README.md.
+// needed when building applications. See branding/README.md.
 import { createRequire } from 'node:module';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
@@ -9,9 +9,9 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.argv[2] || 'playwright');
 const output = resolve(root, 'packages/platforms/build/Icons');
-const svg = await readFile(resolve(root, 'Doroti/docs/branding/doroti-app-icon.svg'), 'utf8');
-const brandSvg = await readFile(resolve(root, 'Doroti/docs/branding/doroti-symbol-color.svg'), 'utf8');
-const symbolSvg = await readFile(resolve(root, 'Doroti/docs/branding/doroti-symbol.svg'), 'utf8');
+const svg = await readFile(resolve(root, 'Doroti/branding/doroti-app-icon.svg'), 'utf8');
+const brandSvg = await readFile(resolve(root, 'Doroti/branding/doroti-symbol-color.svg'), 'utf8');
+const symbolSvg = await readFile(resolve(root, 'Doroti/branding/doroti-symbol.svg'), 'utf8');
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch(process.argv[3] ? { channel: process.argv[3] } : {});
 try {

@@ -22,5 +22,6 @@ for design in ('material','cupertino'):
     assert text.count('complete=true pending=0')==6,text[-10000:]
     probes.append(probe)
 report=dict(schema='doroti.native-design-verification/v1',verifiedUtc=datetime.now(timezone.utc).isoformat(),result='PASS',probes=probes,artifacts=str(run.relative_to(ROOT)),notVerified=['physical keyboard/focus traversal','route restoration across process restart','RawTooltip hover/late widget install','Cupertino context menu'])
-(ROOT/'Doroti/docs/migrations/design-platform/windows-design-verification.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
+(ROOT / "Doroti/artifacts/verification/design-platform").mkdir(parents=True, exist_ok=True)
+(ROOT/'Doroti/artifacts/verification/design-platform/windows-design-verification.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
 print('PASS: Windows Material/Cupertino native and Overlay route results, captured themes/localization, branch and GPU cleanup; '+str(run),flush=True)

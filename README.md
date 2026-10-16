@@ -1,6 +1,6 @@
 # Doroti
 
-Before launching a target, run `pwsh -File Doroti/eng/doroti.ps1 doctor -App samples/DorotiTestbedApp -Platform windows -Scope target`. [Provider doctor](Doroti/docs/doctor.md) report prerequisites; device and deployment acceptance are separate.
+Before launching a target, run `pwsh -File Doroti/eng/doroti.ps1 doctor -App samples/DorotiTestbedApp -Platform windows -Scope target`. Provider doctor reports prerequisites; device and deployment acceptance are separate.
 
 **English** | [한국어](README.ko.md)
 
@@ -100,8 +100,6 @@ The Dart-to-C# compiler is an optional source import and behavior-comparison too
 | [WGSL compiler](tools/Doroti.Wgsl/README.md) | Shader compilation, backend profiles, and application integration |
 
 ## Project status
-
-Current host, renderer, build-mode and execution boundaries: [support status](Doroti/docs/support-status.md).
 
 Doroti is a personal, experimental project. The platform table describes implemented hosts and rendering defaults, not uniform production readiness.
 

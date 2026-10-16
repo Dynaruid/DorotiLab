@@ -17,5 +17,6 @@ probe=json.loads((run/'kinds.json').read_text());assert probe['result']=='PASS' 
 assert {x['kind'] for x in probe['windows']}=={'Regular','Dialog','Popup','Tooltip','Satellite'}
 assert len({x['viewId'] for x in probe['windows']})==5 and text.count('complete=true pending=0')==6
 report=dict(schema='doroti.windows-kinds-verification/v1',result='PASS',scope='actual HWND per kind, native owner, modal owner input disable/restore, popup native style, tooltip no-activate, unique view mappings and per-window cleanup completion',probe=probe,artifacts=str(run.relative_to(ROOT)),notVerified=['physical IME/focus restoration','mixed monitor DPI','nested modal reentrancy','design dialog/menu result bridge','OS menu interaction'])
-(ROOT/'Doroti/docs/migrations/design-platform/windows-kinds-verification.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
+(ROOT / "Doroti/artifacts/verification/design-platform").mkdir(parents=True, exist_ok=True)
+(ROOT/'Doroti/artifacts/verification/design-platform/windows-kinds-verification.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
 print('PASS: actual Windows five kinds contract subset; '+str(run),flush=True)

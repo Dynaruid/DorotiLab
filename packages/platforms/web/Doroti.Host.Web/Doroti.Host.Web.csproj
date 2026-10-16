@@ -42,7 +42,7 @@
           DependsOnTargets="ResolveStaticWebAssetsConfiguration"
           BeforeTargets="ResolveProjectStaticWebAssets;ResolveCurrentProjectStaticWebAssetsInputs">
     <PropertyGroup>
-      <_DorotiWebBrandingRoot>$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)', '../../../../Doroti/docs/branding'))</_DorotiWebBrandingRoot>
+      <_DorotiWebBrandingRoot>$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)', '../../../../Doroti/branding'))</_DorotiWebBrandingRoot>
     </PropertyGroup>
     <ItemGroup>
       <_DorotiWebSplashIcon Include="$(_DorotiWebBrandingRoot)doroti-app-icon.svg">

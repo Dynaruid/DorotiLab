@@ -156,8 +156,6 @@ dart test
 Pop-Location
 ```
 
-상세 설계는 [typed framework compilation](../../Doroti/docs/architecture/f0-typed-framework-compiler.md), [multi-library compilation](../../Doroti/docs/architecture/g3-1-multi-library-framework-compiler.md), [port ownership](../../Doroti/docs/architecture/p0-port-ownership.md), [adoption/rebase state](../../Doroti/docs/architecture/p2-port-state-adoption-rebase.md)를 참고하세요.
-
 Doroti는 repository의 [BSD 3-Clause license](../../LICENSE)로 배포됩니다. Upstream 고지는 [Doroti third-party notices](../../Doroti/THIRD-PARTY-NOTICES.md)에 기록되어 있습니다.
 
 ## 가상 메서드 재정의 검증

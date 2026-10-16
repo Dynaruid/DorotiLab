@@ -10,8 +10,7 @@ Linux Qt JIT도 self-contained ELF 하나로 게시하고 WSLg Wayland / softwar
 
 Windows/Linux 게시 회귀, no-build 콘텐츠, R2R의 관리 DLL 원본 보존과 지원하지 않는
 옵션 거부가 통과했습니다. macOS/Mac Catalyst는 현재 .NET Apple SDK의 단일 파일
-미지원으로 `.app` 게시를 사용합니다. 자세한 명령과 범위는
-[데스크톱 게시 안내](../../../Doroti/docs/desktop-publishing.md)에 있습니다.
+미지원으로 `.app` 게시를 사용합니다.
 Linux 실기기 GPU, FPS/scanout와 전체 물리 입력 수락은 `notVerified`입니다.
 
 ## 2026-10-12 — 이미지 디코딩과 선행 로딩

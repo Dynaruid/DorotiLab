@@ -26,7 +26,8 @@ with (run / "bootstrap.log").open("w", encoding="utf-8") as log:
 output = (run / "bootstrap.log").read_text(encoding="utf-8", errors="replace")
 print(output, flush=True)
 if result.returncode == 0:
-    evidence = ROOT / "Doroti/docs/migrations/design-platform" / f"{label}-verification.json"
+    (ROOT / "Doroti/artifacts/verification/design-platform").mkdir(parents=True, exist_ok=True)
+    evidence = ROOT / "Doroti/artifacts/verification/design-platform" / f"{label}-verification.json"
     evidence.write_text(json.dumps({
         "schema": f"doroti.{label}-verification/v1",
         "verifiedUtc": datetime.now(timezone.utc).isoformat(),

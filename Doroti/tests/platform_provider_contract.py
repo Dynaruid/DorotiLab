@@ -77,7 +77,8 @@ try:
     workspace['schemaVersion']='doroti.workspace/v2';workspace['platforms']={'../escape':platform};manifest.write_text(json.dumps(workspace),encoding='utf-8')
     assert 'invalid-alias' in command('describe-negative-alias',expected=1)
     report=dict(schema='doroti.platform-provider-verification/v1',result='PASS',results=results,scope='external NuGet-only headless runtime and installed managed tool descriptor discovery; arbitrary alias; describe/real SDK probe/config/device/templates/generated build/run; startup trace/primary-survivor/Stop; target schema/package/provider identity/profile/RID/core-range/protocol and installed tool version/core-range mismatch rejection',notVerified=['native Windows G1','physical input/GPU','complete built-in provider migration'],runId=run.name)
-    evidence=ROOT/'Doroti/docs/migrations/design-platform/platform-provider-verification.json';evidence.write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
+    (ROOT / "Doroti/artifacts/verification/design-platform").mkdir(parents=True, exist_ok=True)
+    evidence=ROOT/'Doroti/artifacts/verification/design-platform/platform-provider-verification.json';evidence.write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
     assert run.resolve().parent==RUN_ROOT.resolve();shutil.rmtree(run)
     print('PASS: external provider NuGet and CLI contracts; '+str(evidence),flush=True)
 except BaseException:

@@ -192,7 +192,8 @@ try:
         "result": "PASS", "results": results, "packages": verify_feed(), "runId": run.name,
         "scope": "evaluated graph, real nupkg nuspec, isolated restore/build/CPU execution, core AssemblyRef, independent candidate versions and template app build",
         "notVerified": ["native provider startup G1", "physical input/IME", "GPU shader display", "trim/AOT"], "rawArtifacts": "removed after successful summary"}
-    target = ROOT / "Doroti/docs/migrations/design-platform/design-package-verification.json"
+    (ROOT / "Doroti/artifacts/verification/design-platform").mkdir(parents=True, exist_ok=True)
+    target = ROOT / "Doroti/artifacts/verification/design-platform/design-package-verification.json"
     target.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     assert run.resolve().parent == RUN_ROOT.resolve()
     shutil.rmtree(run)

@@ -153,7 +153,6 @@ Run the generated-code virtual dispatch regression suite (20-minute timeout, out
 
 It compiles generated C#, verifies base/interface calls and deterministic output, and checks that unresolved annotated override contracts produce `DOTCONV902`. Add `-Upstream` for focused checks against pinned Flutter source. This does not regenerate or adopt product source. See [validation details](validation/virtual-dispatch/README.md).
 
-
 Validate the Dart frontend and the .NET compiler boundary:
 
 ```powershell
@@ -164,7 +163,5 @@ dart analyze
 dart test
 Pop-Location
 ```
-
-For design details, see [typed framework compilation](../../Doroti/docs/architecture/f0-typed-framework-compiler.md), [multi-library compilation](../../Doroti/docs/architecture/g3-1-multi-library-framework-compiler.md), [port ownership](../../Doroti/docs/architecture/p0-port-ownership.md), and [adoption/rebase state](../../Doroti/docs/architecture/p2-port-state-adoption-rebase.md).
 
 Doroti is distributed under the repository's [BSD 3-Clause license](../../LICENSE). Upstream notices are recorded in [Doroti's third-party notices](../../Doroti/THIRD-PARTY-NOTICES.md).

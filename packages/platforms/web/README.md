@@ -5,14 +5,13 @@ Host and Target sources are owned by this independently versioned provider. Pack
 Web development supports an app-root `web_dev_config.jsonc` with ordered
 `server.proxy` prefix/regex rules and path replacement, host/port, PEM HTTPS and
 custom response headers. The same configuration is used by `dotnet run`, watch,
-the workspace CLI and VS Code. See [Web development configuration](../../../Doroti/docs/web-development-config.md)
-for examples, precedence and restart behavior. `Doroti.Tool.Web` carries only
+the workspace CLI and VS Code. `Doroti.Tool.Web` carries only
 the development server project and C# sources. Runner startup restores normal
 NuGet dependencies and builds the server into the app's `.doroti/cache`; external
 DLLs are not bundled into the tool package or browser publish assets.
 
 The shared TypeScript bootstrap creates a splash using the official transparent
-`Doroti/docs/branding/doroti-symbol-color.svg`, served by the host as
+`Doroti/branding/doroti-symbol-color.svg`, served by the host as
 `_content/Doroti.Host.Web/doroti-symbol-color.svg`. The SVG logo is displayed at
 112 × 112 CSS pixels on the blue splash background. The bootstrap keeps
 `#doroti-splash` outside `#app` so canvas creation does not remove it. The loader fades
@@ -27,7 +26,7 @@ explicit `-p:RunAOTCompilation=false` opts out for a Release comparison. AOT is
 applied during `dotnet publish`, so ordinary `dotnet run -c Release` uses the build
 output rather than the AOT publish output. Serve the published `wwwroot` with the
 required COOP/COEP headers; the sample READMEs give commands. This profile increases
-publish time and native WASM size. See the [default-profile qualification](../../../Doroti/docs/validation/2026-10-05-web-aot-default.md).
+publish time and native WASM size.
 
 Wrap file-selection buttons in `Doroti.Framework.Widgets.FilePickerActivation`
 and pass the same `FilePickOptions` to the wrapper and `PickFilesAsync` callback.
@@ -50,8 +49,6 @@ owner disposal and file-grant revocation. `Doroti/tests/web_file_picker_smoke.py
 checks Sample2's actual canvas input, native picker, managed preview and retry
 in a browser served from an isolated build; browser automation is separate from
 physical iPhone input qualification.
-The [2026-10-06 picker verification](../../../Doroti/docs/validation/2026-10-06-web-file-picker.md)
-records the browser and device checks and their limits.
 
 Sample2 additionally defaults `DorotiWebInterpretWidgetTree=true`. Safari's Worker
 stack overflows during its deep recursive Cupertino widget mount under full AOT.
@@ -94,16 +91,14 @@ Sample2 defaults `EmccMaximumHeapSize` to 512 MiB, following the
 [.NET guidance for mobile Safari](https://github.com/dotnet/runtime/blob/main/src/mono/wasm/features.md#maximum-memory-size).
 Override the property when a different workload needs a larger shared heap.
 This bounds WASM linear memory, not browser or GPU resident memory.
-The [sustained Safari check](../../../Doroti/docs/validation/2026-10-06-web-ios-blur-liveness.json)
-records a 100-second, five-mode slider PASS and verified stale-fence recovery
+Historical Safari checks recorded a 100-second, five-mode slider PASS and verified stale-fence recovery
 in WebKit and Chromium. A physical slider/list-scroll repeat still failed its
 application control check and later reloaded, so sustained physical Safari
 responsiveness is not fully qualified. Its last samples showed continuing
 native frames, rather than a blocked GPU queue. An earlier Safari stress run
 has a WebContent `highwater` jetsam report at approximately 1.50 GiB.
 
-The [iOS 27 simulator check](../../../Doroti/docs/validation/2026-10-06-web-ios27-simulator.json)
-records the original full-AOT startup stack overflow and the mixed-AOT fix.
+Historical iOS 27 simulator checks recorded the original full-AOT startup stack overflow and the mixed-AOT fix.
 Safari 27.0 on the iPhone 17 simulator completed 180 seconds across all five blur
 modes, 10,572 continuous slider moves and a tab round trip after each mode:
 8,234 submitted frames, zero failed frames, GPU peak two, and retained filter
@@ -117,8 +112,7 @@ was retained. The final physical Safari
 retest could not launch because the iPhone was locked; earlier iOS 26.6.1
 observations remain separate evidence.
 
-The [2026-10-06 iOS blur qualification](../../../Doroti/docs/validation/2026-10-06-web-ios-blur.json)
-records iOS Chrome (WebKit) on an iPhone 12 with iOS 26.6.1: the original AOT build reloaded during its
+Historical checks on 2026-10-06 covered iOS Chrome (WebKit) on an iPhone 12 with iOS 26.6.1: the original AOT build reloaded during its
 second Fast adaptive drag; the changed AOT build completed 30 synthetic drags
 across all five modes with no reload or failed frame. Non-AOT comparison runs
 reduced filter surface creation from 8,918 to 1,488. Resident GPU/process memory

@@ -80,7 +80,7 @@ both blur passes. Tint remains independent foreground raster. Native/raster pixe
 calibration is covered; full cross-platform color-space matching is not claimed.
 The same native item supports public controller/navigation/JSON JS/profile and
 bounded manifest app content. Full profile deletion and arbitrary remote messages
-are unsupported; see `Doroti/docs/platform-views/linux-webview.md`.
+are unsupported.
 
 Quick retains separate published/staging P banks and uses the actual frameSwapped
 terminal for common session completion. A superseded render-only pass is closed
@@ -125,6 +125,6 @@ Native frame pipeline: host ABI 6 appends the afterFrameEnd consumer callback at
 
 Host ABI 6 additionally appends prepare_frame at offset 200, feature bit 22. beforeFrameBegin freezes the current token and prepares the framework before QRhi::beginFrame; beforeSynchronizing records that prepared scene. Callback re-requests keep their next-pulse token. afterFrameEnd handles producer/Qt consumer retirement independently of frameSwapped.
 
-Native build caches are separated by configuration and Quick/Graphite/WebEngine/GStreamer options. Invalid switches and backend combinations fail before compilation. A missing host shim fails with `DOROTIQT006`, including `publish --no-build` for an unbuilt profile. For a prebuilt native host set `DorotiBuildQtNative=false` and `DorotiQtNativeBuildDirectory` to its matching directory; enabled WebEngine needs both its sibling library and runtime manifest. See `Doroti/docs/platform-views/linux-qt.md` for the complete profile table.
+Native build caches are separated by configuration and Quick/Graphite/WebEngine/GStreamer options. Invalid switches and backend combinations fail before compilation. A missing host shim fails with `DOROTIQT006`, including `publish --no-build` for an unbuilt profile. For a prebuilt native host set `DorotiBuildQtNative=false` and `DorotiQtNativeBuildDirectory` to its matching directory; enabled WebEngine needs both its sibling library and runtime manifest.
 
 Host ABI 7 supports configuration-only updates (feature 23, 136-byte host API), layout text geometry (feature 24) and pen availability/orientation (184-byte pointer payload). Optional Desktop ABI 2 uses State72/Command56/API48 bytes; placement requires pure X11 xcb/DPR1 (Wayland/XWayland sessions are rejected) and uses outer-frame physical geometry. Rebuild managed host, template and sample shims together.

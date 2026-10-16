@@ -16,5 +16,6 @@ assert code==0 and not any(x in text for x in ('Unhandled exception','System.Inv
 probe=json.loads((run/'menu.json').read_text());assert probe['result']=='PASS' and probe['actualOsMenuObserved'] and probe['canceledInvocation'] and probe['dismissedResult']=='Canceled' and probe['actualMenuBarObserved'] and probe['menuBarDetached'] and probe['nativeCommandGeneration']==2 and probe['staleMenuCallbacks']==0
 assert text.count('complete=true pending=0')==1,text[-10000:]
 report=dict(schema='doroti.native-menu-verification/v1',result='PASS',scope='actual Windows OS popup menu observed in the owned process; typed owner rejection, cancellation/error propagation, dismissal result, actual HWND menu bar and native command generation/retirement, invocation/native cleanup',probe=probe,artifacts=str(run.relative_to(ROOT)),notVerified=['physical keyboard/shortcut action selection','material/cupertino dialog/theme/restoration integration','AppKit/Qt menus'])
-(ROOT/'Doroti/docs/migrations/design-platform/windows-native-menu-verification.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
+(ROOT / "Doroti/artifacts/verification/design-platform").mkdir(parents=True, exist_ok=True)
+(ROOT/'Doroti/artifacts/verification/design-platform/windows-native-menu-verification.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
 print('PASS: actual Windows OS menu, typed cancellation/dismissal and drain; '+str(run),flush=True)

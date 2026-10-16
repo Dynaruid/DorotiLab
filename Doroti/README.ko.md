@@ -25,8 +25,8 @@ Doroti는 데스크톱·모바일·웹에서 공유하는 위젯, 레이아웃, 
 
 ## 요구 사항
 
-ReadyToRun 게시를 포함한 선택적 Release 앱 DLL 난독화는 [Obfuscar 구성](docs/obfuscation.md)을 참고하세요. NativeAOT·Mono/WASM AOT 경로는 제외합니다.
-Windows와 Linux Qt의 `PublishSingleFile=true` 사용법은 [데스크톱 단일 파일 게시](docs/desktop-publishing.md)에 있습니다.
+Release 앱 DLL에는 ReadyToRun 게시를 포함해 Obfuscar 난독화를 선택적으로 적용할 수 있습니다. NativeAOT·Mono/WASM AOT 경로는 제외합니다.
+Windows와 Linux Qt에서는 `PublishSingleFile=true`로 단일 파일을 게시할 수 있습니다.
 
 ### 공통 도구와 SDK 선택
 
@@ -79,7 +79,7 @@ dotnet workload restore ./DorotiTestbedApp.iOS.csproj
 Pop-Location
 ```
 
-`workload restore`는 해당 SDK의 .NET workload를 준비합니다. 표에 있는 Xcode, Android SDK/JDK, MSVC, Qt 같은 외부 도구 설치까지 수행하지는 않습니다. `doctor` 기본은 공통 도구 확인이며 `-App`/`-Platform` 지정 시 빌드 준비 조건, `-DoctorProfile dev|validation|release` 지정 시 해당 작업의 조건을 검사합니다. 필수 FAIL/PARTIAL은 nonzero exit입니다. [doctor v4](docs/doctor.md)의 PASS는 빌드·기기 수락을 대신하지 않습니다.
+`workload restore`는 해당 SDK의 .NET workload를 준비합니다. 표에 있는 Xcode, Android SDK/JDK, MSVC, Qt 같은 외부 도구 설치까지 수행하지는 않습니다. `doctor` 기본은 공통 도구 확인이며 `-App`/`-Platform` 지정 시 빌드 준비 조건, `-DoctorProfile dev|validation|release` 지정 시 해당 작업의 조건을 검사합니다. 필수 FAIL/PARTIAL은 nonzero exit입니다. doctor v4의 PASS는 빌드·기기 수락을 대신하지 않습니다.
 
 플랫폼별 실행 명령은 [Testbed 실행 안내](../samples/DorotiTestbedApp/README.ko.md#material-샘플-모드)에 있습니다. `reference/flutter-master` checkout은 명시적인 Flutter 비교에만 필요하며, 필요할 때 `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`로 준비합니다.
 
@@ -151,7 +151,7 @@ Material은 Material 3를 사용합니다. `ThemeData` 생성자, 팩터리, `co
 
 ### 앱 아이콘
 
-샘플과 새 템플릿은 Doroti 앱 아이콘을 기본으로 사용합니다. 앱별 교체 방법과 기본값 비활성화는 [앱 아이콘 안내](docs/branding/README.md#앱의-기본-아이콘)를 참고하세요.
+샘플과 새 템플릿은 Doroti 앱 아이콘을 기본으로 사용합니다. 앱별 교체 방법과 기본값 비활성화는 [앱 아이콘 안내](branding/README.md#앱의-기본-아이콘)를 참고하세요.
 
 ### 네이티브 바인딩
 
@@ -167,7 +167,7 @@ Android, iOS, AppKit macOS, Mac Catalyst 실행 프로젝트는 각각 앱 소�
 | `DOROTI_WINDOWS_GPU_PREFERENCE` | 기본값은 `NoPreference`, `LowPowerPreference`·`HighPerformancePreference`는 Vulkan에 적용 |
 | `DOROTI_WINDOWS_VULKAN_DEVICE` | 정확한 장치 이름 또는 유일한 이름 일부로 Vulkan 장치 선택 |
 
-기본 경로는 Graphite/Vulkan으로 렌더링하고 같은 GPU의 D3D12/DXGI DirectComposition으로 화면에 표시합니다. 자동 출력 경로 전환은 없습니다. 네이티브 PlatformView의 래스터 조각은 D3D11 그리기 API를 유지합니다. 동기화와 프레임 수명은 [네이티브 프레임 파이프라인](docs/native-frame-pipeline.md)을 참고하세요.
+기본 경로는 Graphite/Vulkan으로 렌더링하고 같은 GPU의 D3D12/DXGI DirectComposition으로 화면에 표시합니다. 자동 출력 경로 전환은 없습니다. 네이티브 PlatformView의 래스터 조각은 D3D11 그리기 API를 유지합니다.
 
 ### Web
 
@@ -182,7 +182,7 @@ Android, iOS, AppKit macOS, Mac Catalyst 실행 프로젝트는 각각 앱 소�
 
 ### 창 외형
 
-`DorotiViewConfiguration.appearance`에서 배경 효과와 상단바를 독립적으로 선택합니다. 상단바 기본값은 `unified`이며, `solid`는 분리형 상단바입니다. Windows App SDK·Qt에는 Acrylic을, macOS에는 별도 설정으로 Acrylic이나 Liquid Glass를 지정할 수 있습니다. [창 외형 API](docs/window-appearance.md)를 참고하세요.
+`DorotiViewConfiguration.appearance`에서 배경 효과와 상단바를 독립적으로 선택합니다. 상단바 기본값은 `unified`이며, `solid`는 분리형 상단바입니다. Windows App SDK·Qt에는 Acrylic을, macOS에는 별도 설정으로 Acrylic이나 Liquid Glass를 지정할 수 있습니다.
 
 Windows 11 24H2 이상에서는 실험 플래그 없이 `new WindowBackdropOptions(WindowBackdropMode.acrylic)`으로 Acrylic을 요청합니다. Material 샘플은 이미 이 설정을 사용합니다. 효과가 보이려면 앱 콘텐츠도 투명하거나 반투명해야 하며, 배경 옵션 미지정과 `system`은 불투명 창을 유지합니다.
 
@@ -212,9 +212,9 @@ Windows 11 24H2 이상에서는 실험 플래그 없이 `new WindowBackdropOptio
 
 ## 플랫폼 지원 범위
 
-호스트, 렌더러와 빌드 모드의 지원 범위는 플랫폼마다 다릅니다. 사용 가능한 구성과 제약은 [지원표](docs/support-status.md)를 참고하세요. 서명, 스토어 배포, 입력기, 접근성과 성능은 사용할 기기와 구성에서 확인해야 합니다.
+호스트, 렌더러와 빌드 모드의 지원 범위는 플랫폼마다 다릅니다. 서명, 스토어 배포, 입력기, 접근성과 성능은 사용할 기기와 구성에서 확인해야 합니다.
 
-네이티브 컨트롤과 WebView에는 호스트별 합성 제약이 있으며, [PlatformView 지원표](docs/platform-views/support-matrix.md)에 정리되어 있습니다. [프레임 텍스처](docs/textures.md)는 CPU RGBA, Android Surface/AHB, Windows D3D11 입력을 지원합니다. [웹 텍스처](docs/web-textures.md)는 WebGPU 또는 명시적인 WebGL에서 Canvas·비디오·프레임 GPU 입력을 받습니다. iOS/macOS Metal·Linux DMA-BUF 카메라 어댑터는 사용 전에 실행 검증이 필요합니다.
+네이티브 컨트롤과 WebView에는 호스트별 합성 제약이 있습니다. 프레임 텍스처는 CPU RGBA, Android Surface/AHB, Windows D3D11 입력을 지원합니다. 웹 텍스처는 WebGPU 또는 명시적인 WebGL에서 Canvas·비디오·프레임 GPU 입력을 받습니다. iOS/macOS Metal·Linux DMA-BUF 카메라 어댑터는 사용 전에 실행 검증이 필요합니다.
 
 ## 개발과 디렉터리 구성
 
@@ -225,7 +225,6 @@ Windows 11 24H2 이상에서는 실험 플래그 없이 `new WindowBackdropOptio
 | [`eng/`](eng/) | 빌드, 실행, 검증, 패키징, 진단 스크립트 |
 | [`../tools/`](../tools/) | 저장소 개발 도구 |
 | [`tests/`](tests/) | 유지보수하는 회귀 테스트 소스 |
-| [`docs/`](docs/) | API 문서와 범위를 명시한 검증 보고서 |
 | [`../tools/Doroti.DartToCSharp/`](../tools/Doroti.DartToCSharp/) | 선택적 Dart·Flutter 소스 변환 컴파일러 |
 
 도구와 검증이 생성한 결과는 `.doroti/`나 `artifacts/`에 두고, 검증 산출물은 `artifacts/validation/`을 사용합니다. 보존할 단계별 기록은 `../history/`에 둡니다. 컴파일러 소유 `.g.cs` 파일은 `src/Doroti.Framework.*`에 포함하여 컴파일하지 않습니다. 저장소 JSON 처리는 `System.Text.Json`을 사용합니다.

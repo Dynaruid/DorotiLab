@@ -250,7 +250,7 @@ pwsh -NoProfile -File ./tools/doroti-cloudflared/tunnel.ps1 start -App ./samples
 | Release ReadyToRun | IL 난독화 후 R2R 컴파일 |
 | Mono AOT / profiled AOT / WASM AOT / iOS NativeAOT / Mac Catalyst Mono | 제외 |
 
-난독화의 기본값은 꺼짐이며, 공용 앱 DLL의 내부 이름만 변경하고 공개 API는 유지합니다. 리플렉션·직렬화 예외는 [Obfuscar 설정](../../Doroti/docs/obfuscation.md)을 따릅니다. `-p:DorotiObfuscarHideStrings=true`로 문자열 숨김을 추가하고 `-p:DorotiObfuscarRules=obfuscar-rules.xml`로 공용 앱 폴더 기준 예외 파일을 선택할 수 있습니다. 난독화 게시에 `--no-build`는 사용할 수 없습니다.
+난독화의 기본값은 꺼짐이며, 공용 앱 DLL의 내부 이름만 변경하고 공개 API는 유지합니다. `-p:DorotiObfuscarHideStrings=true`로 문자열 숨김을 추가하고 `-p:DorotiObfuscarRules=obfuscar-rules.xml`로 공용 앱 폴더 기준 예외 파일을 선택할 수 있습니다. 난독화 게시에 `--no-build`는 사용할 수 없습니다.
 
 서로 다른 SDK·RID·런타임의 산출물을 따로 보관하려면 명령에 `--artifacts-path ./Doroti/artifacts/<고유-케이스-이름>`을 추가합니다. `mapping.xml`과 원본 PDB는 내부 분석 자료로 보관하고 배포하지 않습니다.
 
@@ -301,7 +301,6 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 dev -App ./samples/DorotiSampleApp
 지원되는 C# 메서드 본문 변경은 저장하면 앱 상태를 유지하면서 적용됩니다.
 Kotlin/Java·Android 리소스·프로젝트 변경과 미지원 C# 변경은 Restart가 필요합니다.
 VS Code Doroti 확장에서도 프로젝트와 `android`를 선택한 뒤 Run을 사용할 수 있습니다. 종료는 Stop 또는 CLI Ctrl+C입니다.
-자세한 설정은 [Hot Reload 사용법](../../Doroti/docs/development-hot-reload.md)을 참고하세요.
 
 ## iOS
 
@@ -344,7 +343,6 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 dev -App ./samples/DorotiSampleApp
 
 지원되는 C# 변경은 저장하면 적용됩니다. VS Code 확장에서도 `ios`를 선택한 뒤 Run과 Hot Reload를 사용할 수 있습니다.
 지원하지 않는 편집은 Restart가 필요하며 상태가 초기화됩니다. Release/NativeAOT에는 이 핫리로드 경로를 사용하지 않습니다.
-.NET 10 실기기의 네트워크 연결과 .NET 11 CoreCLR의 USB 개발 설정은 [iOS Hot Reload 사용법](../../Doroti/docs/development-hot-reload.md)을 참고하세요.
 
 ### .NET 10 + Xcode 27 NativeAOT 실기기 설치
 
@@ -399,7 +397,6 @@ python Doroti/eng/serve-isolated-web.py ./temp/testing/sample2-web-release/publi
 
 스플래시는 [web/src/doroti_bootstrap.ts](web/src/doroti_bootstrap.ts)의 `startDoroti({ splash: true, ... })`에서 설정합니다.
 개발 중 API 프록시는 [web_dev_config.jsonc](web_dev_config.jsonc)의 `server.proxy`에 설정하고 개발 서버를 재시작합니다.
-설정 예제는 [Web 개발 서버 안내](../../Doroti/docs/web-development-config.md)에 있습니다.
 
 ### WASM AOT 비교 실행
 

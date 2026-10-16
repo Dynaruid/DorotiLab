@@ -7,7 +7,7 @@ owned Dialog/Popup/Tooltip/Satellite windows and typed NSMenu/menubar registrati
 Catalyst supports activating, unowned Regular scenes with UIKit first visibility.
 Unsupported owner, modality, placement and visibility requests fail before allocation.
 AppKit character shortcuts are supported; platform roles and logical-key shortcuts
-remain Unsupported. See [desktop window behavior](../../../Doroti/docs/desktop-windows.md).
+remain Unsupported.
 
 Mobile surfaces borrow one application session and retain separate view identities.
 View shutdown first unmounts and quiesces callbacks, then drains typed calls and

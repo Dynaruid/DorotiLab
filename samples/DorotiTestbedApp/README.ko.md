@@ -235,7 +235,7 @@ pwsh -NoProfile -File ./tools/doroti-cloudflared/tunnel.ps1 start -App ./samples
 | Release ReadyToRun | IL 난독화 후 R2R 컴파일 |
 | Mono AOT / profiled AOT / WASM AOT / iOS NativeAOT / Mac Catalyst Mono | 제외 |
 
-난독화의 기본값은 꺼짐이며, 공용 앱 DLL의 내부 이름만 변경하고 공개 API는 유지합니다. 리플렉션·직렬화 예외는 [Obfuscar 설정](../../Doroti/docs/obfuscation.md)을 따릅니다. `-p:DorotiObfuscarHideStrings=true`로 문자열 숨김을 추가하고 `-p:DorotiObfuscarRules=obfuscar-rules.xml`로 공용 앱 폴더 기준 예외 파일을 선택할 수 있습니다. 난독화 게시에 `--no-build`는 사용할 수 없습니다.
+난독화의 기본값은 꺼짐이며, 공용 앱 DLL의 내부 이름만 변경하고 공개 API는 유지합니다. `-p:DorotiObfuscarHideStrings=true`로 문자열 숨김을 추가하고 `-p:DorotiObfuscarRules=obfuscar-rules.xml`로 공용 앱 폴더 기준 예외 파일을 선택할 수 있습니다. 난독화 게시에 `--no-build`는 사용할 수 없습니다.
 
 서로 다른 SDK·RID·런타임의 산출물을 따로 보관하려면 명령에 `--artifacts-path ./Doroti/artifacts/<고유-케이스-이름>`을 추가합니다. `mapping.xml`과 원본 PDB는 내부 분석 자료로 보관하고 배포하지 않습니다.
 
@@ -298,7 +298,7 @@ dotnet run --project ./samples/DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csp
 페이지 코드는 [src/MaterialSample/PlatformViewsPage.cs](src/MaterialSample/PlatformViewsPage.cs)에 있습니다.
 독립적인 **WebView** 탭에서는 브라우저 콘텐츠를 확인할 수 있습니다.
 WebEngine 의존성은 `-p:DorotiQtWebEngine=false`로 제외합니다.
-WebEngine을 제외하면 Qt 6.6 이상으로 빌드할 수 있습니다. SDK와 새 템플릿도 Quick/Graphite Vulkan 및 프레임 C를 기본으로 사용합니다. 기존 QWidget 배치는 `-p:DorotiQtQuick=false -p:DorotiQtWebEngine=false`로 선택합니다. Wayland 세션에서는 native Wayland QPA를 우선 사용합니다. xcb/XWayland에는 Qt Vulkan resize 경쟁 조건이 남아 있습니다. [Linux Qt 빌드 구성](../../Doroti/docs/platform-views/linux-qt.md#build-configuration)에 옵션별 조건을 정리했습니다.
+WebEngine을 제외하면 Qt 6.6 이상으로 빌드할 수 있습니다. SDK와 새 템플릿도 Quick/Graphite Vulkan 및 프레임 C를 기본으로 사용합니다. 기존 QWidget 배치는 `-p:DorotiQtQuick=false -p:DorotiQtWebEngine=false`로 선택합니다. Wayland 세션에서는 native Wayland QPA를 우선 사용합니다. xcb/XWayland에는 Qt Vulkan resize 경쟁 조건이 남아 있습니다.
 
 ### Android 샘플
 
@@ -461,8 +461,6 @@ python Doroti/eng/serve-isolated-web.py ./temp/testing/testbed-web-aot/publish/D
 `./temp/testing/testbed-web-baseline`으로 바꾸고 해당 `wwwroot`를 다른 포트로 실행합니다.
 AOT는 managed CPU 작업을 줄일 수 있지만 배포 파일이 커집니다. CoreCLR NativeAOT와는
 다르며 일부 메서드는 인터프리터 경로를 사용합니다. Debug 개발 프로필은 비-AOT로 유지합니다.
-[2026-10-05 AOT 실행·성능 비교 기록](../../Doroti/docs/validation/2026-10-05-web-wasm-aot.md)을 참고하세요.
-[기본값 변경 검증](../../Doroti/docs/validation/2026-10-05-web-aot-default.md)도 별도로 기록했습니다.
 
 ## 화면과 렌더러 설정
 
@@ -549,7 +547,7 @@ DOROTI_MACOS_BACKDROP=acrylic DOROTI_TITLEBAR=solid \
 Windows App SDK는 DWM의 아크릴 상단바 또는 별도 단색 상단바를 사용합니다.
 Qt/Linux 통합형은 창 버튼을 같은 GPU 표면에 그려 본문과 같은 compositor 블러 영역을 공유하며,
 분리형은 데스크톱 환경의 네이티브 창 장식을 사용합니다. Qt 블러 자체는 compositor 지원이 필요합니다.
-창 버튼 영역은 safe-area로 전달됩니다. [공통 창 외형 API](../../Doroti/docs/window-appearance.md)를 참고하세요.
+창 버튼 영역은 safe-area로 전달됩니다.
 
 렌더러의 밝은/어두운 배경색은 모두 투명으로, 효과를 보여 줄 위젯 배경은 투명 또는 반투명으로
 설정해야 합니다. 불투명 Scaffold는 네이티브 효과를 가립니다. 호스트가 Metal 표면과 네이티브
@@ -557,7 +555,7 @@ Qt/Linux 통합형은 창 버튼을 같은 GPU 표면에 그려 본문과 같은
 이는 창 배경 효과이며 캔버스의 개별 위젯을 자동으로 Liquid Glass로 바꾸지는 않습니다.
 접근성 설정에 따른 조정은 AppKit이 담당합니다. Windows 전용 luminosity 설정은 AppKit에
 대응하지 않습니다. `tintColor`/`tintOpacity`는 Liquid Glass 색조, `acrylicKind`는 블러 재질을
-선택합니다. [창 외형 API](../../Doroti/docs/window-appearance.md)를 참고하세요.
+선택합니다.
 
 ### 시스템 다크 모드와 색 팔레트
 
@@ -613,7 +611,6 @@ Web의 `ASPNETCORE_ENVIRONMENT=Development`는 빌드 구성과 별개입니다.
 Android, iOS, AppKit, Mac Catalyst 러너는 앱 소유 native library와 binding을 포함합니다.
 선택한 러너를 직접 `dotnet build`하면 해당 프로필의 네이티브 빌드도 연결됩니다.
 현재 provider CLI의 native 도구 진단과 실제 기기·서명·실행 검증은
-[doctor 안내](../../Doroti/docs/doctor.md)의 지원 범위를 따릅니다.
 
 ### 프로젝트 구조와 리소스
 

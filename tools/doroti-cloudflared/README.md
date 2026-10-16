@@ -39,7 +39,6 @@ pwsh -NoProfile -File ./tools/doroti-cloudflared/tunnel.ps1 start -Obfuscate -Di
 기본 Release AOT 설정은 유지하며, AOT 경로에서는 난독화를 건너뜁니다.
 두 옵션은 `-SkipPublish`와 함께 사용할 수 없습니다. 매핑 파일과 원본 DLL은
 공개 `wwwroot`에 복사하지 않습니다. 플랫폼별 사용법과 예외 규칙은
-[Obfuscar 구성](../../Doroti/docs/obfuscation.md)을 참고하세요.
 
 스크립트는 게시 → Nginx 상태 확인 → 익명 터널 연결 → 공개 HTTPS 페이지와
 COOP/COEP 헤더 및 워커/WASM MIME 확인 후 주소를 출력합니다. 주소는 이 폴더의

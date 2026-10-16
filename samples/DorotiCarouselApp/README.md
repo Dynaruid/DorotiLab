@@ -85,7 +85,6 @@ dotnet publish ./samples/DorotiCarouselApp/linux/DorotiCarouselApp.Linux.csproj 
 단일 실행 파일은 실행 시 DLL과 콘텐츠를 추출합니다. ReadyToRun/난독화 옵션도 함께
 사용할 수 있으며, 트리밍·NativeAOT는 지원하지 않습니다. macOS AppKit·Mac Catalyst는
 현재 .NET Apple SDK의 제한으로 `.app` 게시를 사용합니다.
-추출 위치, Linux 의존성, 옵션과 검증 범위는 [데스크톱 게시 안내](../../Doroti/docs/desktop-publishing.md)를 참고하세요.
 
 ### 데스크톱 JIT, ReadyToRun, 난독화
 
@@ -252,7 +251,7 @@ pwsh -NoProfile -File ./tools/doroti-cloudflared/tunnel.ps1 start -App ./samples
 | Release ReadyToRun | IL 난독화 후 R2R 컴파일 |
 | Mono AOT / profiled AOT / WASM AOT / iOS NativeAOT / Mac Catalyst Mono | 제외 |
 
-난독화의 기본값은 꺼짐이며, 공용 앱 DLL의 내부 이름만 변경하고 공개 API는 유지합니다. 리플렉션·직렬화 예외는 [Obfuscar 설정](../../Doroti/docs/obfuscation.md)을 따릅니다. `-p:DorotiObfuscarHideStrings=true`로 문자열 숨김을 추가하고 `-p:DorotiObfuscarRules=obfuscar-rules.xml`로 공용 앱 폴더 기준 예외 파일을 선택할 수 있습니다. 난독화 게시에 `--no-build`는 사용할 수 없습니다.
+난독화의 기본값은 꺼짐이며, 공용 앱 DLL의 내부 이름만 변경하고 공개 API는 유지합니다. `-p:DorotiObfuscarHideStrings=true`로 문자열 숨김을 추가하고 `-p:DorotiObfuscarRules=obfuscar-rules.xml`로 공용 앱 폴더 기준 예외 파일을 선택할 수 있습니다. 난독화 게시에 `--no-build`는 사용할 수 없습니다.
 
 서로 다른 SDK·RID·런타임의 산출물을 따로 보관하려면 명령에 `--artifacts-path ./Doroti/artifacts/<고유-케이스-이름>`을 추가합니다. `mapping.xml`과 원본 PDB는 내부 분석 자료로 보관하고 배포하지 않습니다.
 
@@ -263,7 +262,7 @@ pwsh -NoProfile -File ./tools/doroti-cloudflared/tunnel.ps1 start -App ./samples
 [assets/LICENSE.flutter_custom_carousel](assets/LICENSE.flutter_custom_carousel)에 있습니다.
 앱과 각 참조 라이브러리가 등록한 고지는 빌드·게시 출력의 `licenses/`에 포함됩니다.
 Qt 고지는 Linux Qt 러너에서만 추가합니다. 단일 파일 게시도 실행 파일과 `licenses/`를
-함께 배포합니다. [라이선스 등록 방법](../../Doroti/docs/license-distribution.md)을 참고하세요.
+함께 배포합니다.
 애니메이션 효과는 Doroti의 Transform/Opacity/ImageFiltered 조합을 사용합니다.
 원본 shimmer/tint, Hero 전환과 지갑 거래 목록은 이 예제에 포함하지 않습니다.
 

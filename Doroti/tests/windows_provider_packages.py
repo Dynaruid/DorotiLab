@@ -84,5 +84,6 @@ assert len({a for a,_,_ in builds})==1 and {v for _,v,_ in builds}=={1,2},builds
 assert max(n for _,v,n in builds if v==2)>max(n for _,v,n in builds if v==1),builds
 assert output.count('complete=true pending=0')==2,output[-5000:]
 report=dict(schema='doroti.windows-provider-packages/v1',result='PASS',checks=results,scope='isolated NuGet-only Widgets application, prebuilt native assets, two real Regular windows/one shared root/primary close/newer survivor frame and native/GPU cleanup completion',artifacts=str(run.relative_to(ROOT)),notVerified=['physical IME','slow consumer isolation','modal/native menu','clean machine installation'])
-(ROOT/'Doroti/docs/migrations/design-platform/windows-provider-package-verification.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
+(ROOT / "Doroti/artifacts/verification/design-platform").mkdir(parents=True, exist_ok=True)
+(ROOT/'Doroti/artifacts/verification/design-platform/windows-provider-package-verification.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
 print('PASS: Windows provider isolated prebuilt packages; '+str(run),flush=True)

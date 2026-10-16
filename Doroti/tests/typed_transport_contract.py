@@ -8,5 +8,6 @@ with (run/'typed.log').open('w',encoding='utf-8') as log: result=subprocess.run(
 output=(run/'typed.log').read_text(encoding='utf-8',errors='replace');print(output,flush=True)
 if result.returncode==0:
  evidence={'schema':'doroti.typed-transport-verification/v1','verifiedUtc':datetime.now(timezone.utc).isoformat(),'result':'PASS','scope':'real managed/headless typed service invocation, owner selection, unsupported/error, cancellation and lease-retained actual completion; codec traps remain unused','results':[line for line in output.splitlines() if line.startswith('PASS:')],'notVerified':['provider-native sound/haptic actuation','NativeAOT/trim','physical devices and all external ABI conversions'],'runId':run.name}
- (root/'Doroti/docs/migrations/design-platform/typed-transport-verification.json').write_text(json.dumps(evidence,indent=2)+'\n',encoding='utf-8');assert run.resolve().parent==runs.resolve();shutil.rmtree(run)
+ (root / "Doroti/artifacts/verification/design-platform").mkdir(parents=True, exist_ok=True)
+ (root/'Doroti/artifacts/verification/design-platform/typed-transport-verification.json').write_text(json.dumps(evidence,indent=2)+'\n',encoding='utf-8');assert run.resolve().parent==runs.resolve();shutil.rmtree(run)
 sys.exit(result.returncode)

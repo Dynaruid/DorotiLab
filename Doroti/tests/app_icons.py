@@ -65,7 +65,7 @@ with tempfile.TemporaryDirectory(prefix="contract-", dir=scratch_root) as scratc
     assert len(custom) == 1 and custom[0]["Identity"] == "Resources/AppIcon/appicon.svg"
 
 icons = PROVIDER_BUILD / "Icons"
-assert (icons / "favicon.svg").read_bytes() == (ROOT / "Doroti/docs/branding/doroti-app-icon.svg").read_bytes()
+assert (icons / "favicon.svg").read_bytes() == (ROOT / "Doroti/branding/doroti-app-icon.svg").read_bytes()
 background = ET.parse(icons / "appicon.svg").getroot().find("{http://www.w3.org/2000/svg}rect")
 assert background.attrib["fill"] == "#2b42d4"
 for name, size in [("appicon.png", 512), ("appiconfg.png", 1024)]:

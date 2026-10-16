@@ -17,19 +17,13 @@ def source():
     forbidden = [p for p in tracked if p.startswith("temp/")]
     if forbidden:
         raise RuntimeError(f"Temporary files are tracked: {forbidden}")
-    # Current entry points and referenced planning archives, not deleted probe reports.
-    docs = [ROOT / p for p in ("history/26-10-03/platform-gap-summary.md", "history/26-09-28/plan-summary.md", "README.md", "README.ko.md", "Doroti/README.md", "history/26-10-03/works/README.md",
-        "Doroti/tests/README.md", "Doroti/docs/support-status.md", "Doroti/docs/desktop-windows.md",
-        "Doroti/docs/rendering-baselines.md", "Doroti/docs/web-host-architecture.md", "Doroti/docs/development-hot-reload.md", "Doroti/docs/web-development-config.md", "tools/vscode-doroti/README.md",
-        "Doroti/docs/application-navigation.md", "Doroti/docs/desktop-window-context.md", "Doroti/docs/release-candidates.md",
-        "Doroti/docs/platform-views/support-matrix.md", "Doroti/docs/validation/2026-10-04-web-structure.md",
+    # Validate maintained entry points; archived records may refer to retired documents.
+    docs = [ROOT / p for p in (
+        "README.md", "README.ko.md", "Doroti/README.md", "Doroti/README.ko.md",
+        "Doroti/branding/README.md", "Doroti/tests/README.md", "tools/vscode-doroti/README.md",
         "samples/DorotiTestbedApp/README.md", "samples/DorotiSampleApp2/README.md",
-        "history/26-10-05/README.md", "history/26-10-05/work-summary.md", "history/26-10-05/work2-summary.md", "history/26-10-05/work3-summary.md",
-        "Doroti/docs/doctor.md", "Doroti/docs/validation/2026-10-04-full-review.md",
         "packages/platforms/maui/README.md",
         "Doroti/templates/Doroti.Templates/content/doroti-app/desktop/README.md")]
-    docs += list((ROOT / "history/26-10-03/works").rglob("*.md"))
-    docs += list((ROOT / "Doroti/docs/migrations/design-platform").glob("*.md"))
     docs += [ROOT / f"packages/Doroti.{design}/README.md" for design in ("Material", "Cupertino")]
     broken = []
     for doc in set(docs):
