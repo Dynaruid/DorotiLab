@@ -7,6 +7,7 @@ import shutil
 import signal
 import subprocess
 import threading
+from apple_development_session import AppleDevelopmentSession, stop_requested
 
 
 def main():
@@ -19,7 +20,14 @@ def main():
     parser.add_argument('--framework')
     parser.add_argument('--rid')
     parser.add_argument('--dotnet', default='dotnet')
+    parser.add_argument('--working-directory', type=Path)
     args = parser.parse_args()
+    with AppleDevelopmentSession(args.session_directory, args.session_id) as ownership:
+        ownership.claim('runner\0' + str(Path(args.runner).resolve()))
+        return run(args)
+
+
+def run(args):
     dotnet = shutil.which(args.dotnet)
     if not dotnet:
         raise ValueError('The configured .NET executable was not found: ' + args.dotnet)
@@ -28,7 +36,8 @@ def main():
         DOROTI_DEV_SESSION=str(args.session_directory), DOROTI_DEV_SESSION_ID=args.session_id,
         DOTNET_CLI_USE_MSBUILD_SERVER='0', MSBUILDDISABLENODEREUSE='1')
     query_environment = dict(environment, DOTNET_CLI_CONTEXT_VERBOSE='false')
-    sdk = subprocess.check_output([dotnet, '--version'], cwd=args.app_root, env=query_environment,
+    working_directory = args.working_directory or Path(args.runner).resolve().parent
+    sdk = subprocess.check_output([dotnet, '--version'], cwd=working_directory, env=query_environment,
                                   text=True, timeout=30).strip()
     if tuple(map(int, sdk.split('-')[0].split('.'))) < (10, 0, 400):
         raise ValueError('Mac Hot Reload requires .NET SDK 10.0.400 or newer.')
@@ -41,13 +50,12 @@ def main():
         prefix = 'osx-' if args.platform == 'macos' else 'maccatalyst-'
         if args.rid not in (prefix + 'arm64', prefix + 'x64'):
             raise ValueError('Runtime identifier does not match the selected Mac target.')
-        properties.append('--property:RuntimeIdentifier=' + args.rid)
     # Ask the runner for its fixed RID rather than silently changing its descriptor.
     rid = subprocess.check_output([dotnet, 'msbuild', args.runner, '-nologo',
-        '-getProperty:RuntimeIdentifier', *properties], cwd=args.app_root, env=query_environment,
+        '-getProperty:RuntimeIdentifier', *properties], cwd=working_directory, env=query_environment,
         text=True, timeout=30).strip()
-    if not args.rid:
-        properties.append('--property:RuntimeIdentifier=' + rid)
+    if args.rid and args.rid != rid:
+        raise ValueError('The runner RID differs from the workspace; update the manifest and runner together.')
     artifacts = Path(args.app_root) / '.doroti/cache/development' / sdk / rid / 'mac'
     properties.append('--property:ArtifactsPath=' + str(artifacts))
     command = [dotnet, 'watch', '--project', args.runner, '--configuration', 'Debug',
@@ -59,9 +67,9 @@ def main():
         signal.signal(sig, lambda *_: stop.set())
     child = None
     try:
-        child = subprocess.Popen(command, cwd=args.app_root, env=environment, start_new_session=True)
+        child = subprocess.Popen(command, cwd=working_directory, env=environment, start_new_session=True)
         parent = os.getppid()
-        while child.poll() is None and not stop.wait(.25) and os.getppid() == parent:
+        while child.poll() is None and not stop.wait(.25) and os.getppid() == parent and not stop_requested(args.session_directory, args.session_id):
             pass
         return child.returncode if child.poll() is not None else 0
     finally:

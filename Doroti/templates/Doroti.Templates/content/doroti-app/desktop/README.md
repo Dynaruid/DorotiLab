@@ -1,12 +1,12 @@
 # Optional desktop companion
 
-Before building a generated app, run `doroti doctor -App <app-directory>
--Platform <platform> -DoctorProfile build` (select `-WindowsBackend Maui` for
-that runner). Doctor reports the selected runner/SDK prerequisites and writes
-JSON and Markdown evidence; required unknowns return PARTIAL/nonzero. A PASS
-does not qualify native runtime, physical input, signing or deployment. Use
-`-DoctorProfile dev` or `release` for those tool prerequisites, then run the
-corresponding build and acceptance checks separately.
+Before building a generated app, run the repository CLI with explicit workspace
+and provider alias: `pwsh -File <repository>/Doroti/eng/doroti.ps1 doctor
+-App <app-directory> -Platform <alias> -Scope target`. Select the declared
+`windows-maui` alias for that runner. `-Scope managed|target|native|tools|full`
+chooses prerequisite checks; FAIL/PARTIAL exits nonzero. A prerequisite PASS
+does not qualify native runtime, physical input, signing or deployment.
+Use `describe -App <app-directory> -Platform all` to inspect available profiles.
 
 This assembly is intentionally separate from the common app. It is currently
 available to **Windows App SDK**, **Windows MAUI**, **AppKit macOS**, **Mac Catalyst**, and **Linux Qt Quick** runners. The template's default Windows App SDK
@@ -21,9 +21,11 @@ In a Windows App SDK, Windows MAUI or AppKit macOS runner, set:
 
 The SDK registers the companion startup and references its assembly. Never add
 this project to the common app, Web, Android or iOS runner. These
-references fail with a `DOROTIDESKTOP` diagnostic. Custom/hidden title bars remain pending.
-The Windows App SDK adapter currently supports one window and `OnLastWindowClosed` lifetime;
-changing its backdrop or renderer background requires recreation.
+references fail with a `DOROTIDESKTOP` diagnostic. Window options are evaluated
+by each host before allocation; custom/hidden chrome is not uniformly supported.
+Windows App SDK supports additional native windows sharing one framework session,
+owned auxiliary windows and `OnLastWindowClosed` / `Explicit` manager lifetimes.
+Changing backdrop or renderer background requires recreation.
 
 AppKit sizes are the unobscured client area in points. Per-window Dock hiding,
 global physical-pixel Position/SetBounds and programmatic resize initiation
@@ -56,9 +58,9 @@ When enabling the Catalyst desktop companion on the default TFM, set
 `SupportedOSPlatformVersion` to at least `16.0`; the Xcode 27 profile requires
 `17.0`. The non-desktop template retains its older minimum.
 
-Catalyst scene close requires `UIApplicationSupportsMultipleScenes=true` (already
-set in the template plist). The Desktop adapter still rejects additional native
-windows. UIKit can restore the previous initial size; use SetSizeAsync after
+Catalyst scene close and additional unowned Regular scenes require
+`UIApplicationSupportsMultipleScenes=true` (already set in the template plist).
+UIKit can restore the previous initial size; use SetSizeAsync after
 readiness when an exact post-launch size is required.
 
 For Linux Qt, use the separate startup with the default Quick backend:
@@ -69,20 +71,22 @@ For Linux Qt, use the separate startup with the default Quick backend:
 <DorotiDesktopStartupType>DorotiTemplateApp.Desktop.LinuxDesktopStartup</DorotiDesktopStartupType>
 ```
 
-Qt supports one Graphite/Vulkan Quick window with PlatformDefault startup,
+Qt supports multiple Graphite/Vulkan Quick windows sharing one framework session, with PlatformDefault startup,
 opaque System/Solid background and Normal/System native decorations. Title,
 integral logical client size/min/max/resizability, show/hide/focus requests,
 maximize/restore/full-screen and cancellable native/API close are available.
 Programmatic minimize is restricted to xcb; native Wayland rejects it because
 the protocol does not expose an acknowledged minimized state. Hidden startup,
-global physical placement/centering, topmost/taskbar policy, deferred drag/resize,
-custom chrome and runtime appearance changes are rejected. Legacy Wayland blur
+topmost/taskbar policy, deferred drag/resize,
+custom chrome and runtime appearance changes are rejected. Global physical
+placement/centering requires pure X11 xcb at DPR 1; Wayland/XWayland is unsupported.
+Legacy Wayland blur
 is retained for apps without a Desktop companion.
 
 OnLastWindowClosed ends the Qt loop after window teardown and registry removal.
-Explicit keeps the process alive; additional windows/reopen are unsupported.
-Use the companion only when that lifetime fits the application. Rebuild the
-app-owned native shim: Desktop ABI 1 is separate from host ABI 6.
+Explicit keeps the process alive until application exit is requested. Additional
+Regular windows use the same Qt GUI loop with separate view/native resources.
+Rebuild the app-owned native shim: Desktop ABI 2 is separate from host ABI 7.
 Native hosts use frame policy C only: preparation before normal GPU admission,
 up to two fresh shader frames where supported, and serial native/replay/resize
 transitions. Launch without frame settings, or set `DOROTI_NATIVE_FRAME_MODE=C`.

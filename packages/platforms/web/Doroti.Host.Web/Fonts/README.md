@@ -169,7 +169,7 @@ indices and complete Unicode range coverage. Builds use the generated resource
 and never read the reference checkout or query Google Fonts CSS. Source hash and
 counts are recorded in `catalog-source.txt`; Flutter's license is included.
 
-Validation and browser evidence: `Doroti/validation/font-downloads/README.md`.
+The former font-download validation document was retired. See the [retained font summary](../../../../../history/26-09-28/web-fonts-summary.md) for historical scope and the [maintained testing guide](../../../../../Doroti/tests/README.md) for current browser/offline-font checks. Historical results do not qualify the current build.
 
 ## CSS links and variable fonts
 
@@ -276,5 +276,4 @@ memory. Browser CSS loading uses `style-src`/`font-src`; Doroti's byte loading
 also uses `connect-src`. Native WOFF2 decoding requires no JS decoder policy or decoder request. If the
 compatibility module is needed, it uses `script-src` and, for this pinned decoder,
 `unsafe-eval`. Offline font requests are independent of app
-installation/service-worker caching. See `Doroti/validation/css-fonts/README.md`
-for runnable tests, browser evidence and the physical IME boundary.
+installation/service-worker caching. See [SampleApp2 Web fonts](../../../../../samples/DorotiSampleApp2/docs/web.md) and the [testing guide](../../../../../Doroti/tests/README.md) for offline-font setup and `web_offline_fonts.py`; physical IME remains a separate check. The former CSS-font validation document is retired.

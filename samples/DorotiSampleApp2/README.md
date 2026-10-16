@@ -334,15 +334,23 @@ SDK·런타임 선택과 전체 옵션은 [배포 도구 사용법](../../helper
 
 ### iOS Hot Reload
 
-.NET 10 시뮬레이터를 부팅한 뒤 Debug 개발 세션을 시작합니다.
-여러 시뮬레이터가 켜져 있으면 `-Device <UDID>`를 지정합니다.
+macOS에서 Python 3·Xcode·선택한 SDK의 iOS workload를 준비하고, workspace의 iOS RID와
+일치하는 시뮬레이터 또는 paired iPhone을 선택합니다. Debug 전용입니다.
 
 ```powershell
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 dev -App ./samples/DorotiSampleApp2 -Platform ios -IosTargetFramework net10.0-ios27.0
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 describe -App ./samples/DorotiSampleApp2 -Platform ios
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 dev -App ./samples/DorotiSampleApp2 -Platform ios
 ```
 
-지원되는 C# 변경은 저장하면 적용됩니다. VS Code 확장에서도 `ios`를 선택한 뒤 Run과 Hot Reload를 사용할 수 있습니다.
-지원하지 않는 편집은 Restart가 필요하며 상태가 초기화됩니다. Release/NativeAOT에는 이 핫리로드 경로를 사용하지 않습니다.
+일치하는 기기가 여럿이면 `-Device <UDID>`를 지정합니다. VS Code는 `ios` target과
+`doroti.device`를 사용합니다. 다른 TFM/RID는 manifest와 runner를 함께 변경하며 SDK는 runner의
+`global.json` 선택을 따릅니다. .NET 10 iPhone은 Mac과 같은 LAN 및 로컬 네트워크 권한이 필요하고,
+.NET 11 CoreCLR 실기기는 SDK USB 경로를 사용합니다. 지원되는 코드 변경은 요청 전달·완료 frame을
+확인하며, Stop은 해당 세션의 watcher·앱을 정리합니다.
+
+이전 CLI·설치 VSIX의 [실행 기록](../../history/26-10-03/works/platforms/ios.md#2026-09-30-ios-metadata-hot-reload)은
+보존합니다. 이번 provider 재연결은 자동 계약 검사 범위이며 현재 Mac·실기기 실행 수락은 `notVerified`입니다.
+Release/NativeAOT는 metadata Hot Reload 대상이 아닙니다.
 
 ### .NET 10 + Xcode 27 NativeAOT 실기기 설치
 

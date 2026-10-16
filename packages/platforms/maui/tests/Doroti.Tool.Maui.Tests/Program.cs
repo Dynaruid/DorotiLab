@@ -34,6 +34,7 @@ var options = new OptionValue[] { new("adbpath", fixture) };
 var context = new ToolContext(Environment.CurrentDirectory, Path.Combine(Environment.CurrentDirectory, "fixture.csproj"), "maui", "Android",
     "default:android-arm64", null, 1, "net10.0-android", "android-arm64", Options: options);
 await using var extension = new Extension();
+await AppleDevelopmentRegression.RunAsync(extension);
 await AppleDeviceRegression.RunAsync(extension, fixture, args.Contains("--live-ios"));
 var devices = await extension.GetDevicesAsync(context, default);
 Check(devices.Devices.Count == 1 && devices.Devices[0].Id == "phone" && devices.Devices[0].Name == "Test Phone", "Authorization or ABI filter failed.");

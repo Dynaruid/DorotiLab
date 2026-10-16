@@ -52,8 +52,9 @@ physical iPhone input qualification.
 
 Sample2 additionally defaults `DorotiWebInterpretWidgetTree=true`. Safari's Worker
 stack overflows during its deep recursive Cupertino widget mount under full AOT.
-This opt-in interprets `Doroti.Framework.Widgets` and `Doroti.Framework.Rendering`
-while keeping AOT for Skia, web interop and the remaining assemblies. It trades
+This opt-in interprets `Doroti.Framework.Widgets`, `Doroti.Framework.Rendering`
+and `Doroti.Runtime` (including Dart async continuations), while keeping AOT for
+Skia, web interop and the remaining assemblies. It trades
 some widget/layout execution speed for a smaller native call stack; it does not
 change widget lifecycle or render quality. Other applications can opt in to the
 same property; `-p:DorotiWebInterpretWidgetTree=false` restores full AOT.

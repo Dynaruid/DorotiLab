@@ -6,10 +6,23 @@ the application does not load Rust or create a second wgpu device.
 From the repository root:
 
 ```powershell
-python Doroti/validation/run-with-timeout.py cargo build --locked --manifest-path tools/Doroti.Wgsl/Cargo.toml
-python Doroti/validation/run-with-timeout.py cargo test --locked --manifest-path tools/Doroti.Wgsl/Cargo.toml
-tools/Doroti.Wgsl/target/debug/doroti-wgsl.exe compile Doroti/validation/gpu-effects/assets/swap.wgsl Doroti/validation/gpu-effects/assets/swap.effect.json Doroti/artifacts/gpu-effects/swap
+python Doroti/eng/run-with-timeout.py --timeout 1200 cargo build --locked --manifest-path tools/Doroti.Wgsl/Cargo.toml
+python Doroti/eng/run-with-timeout.py --timeout 1200 cargo test --locked --manifest-path tools/Doroti.Wgsl/Cargo.toml
 ```
+
+The former `Doroti/validation/gpu-effects` assets are retired. Create a minimal
+example under a disposable run directory instead:
+
+```powershell
+New-Item -ItemType Directory -Force temp/testing/wgsl-example | Out-Null
+'@fragment fn fs_main(@location(0) uv: vec2<f32>) -> @location(0) vec4<f32> { return vec4<f32>(uv, 0., 1.); }' | Set-Content -Encoding utf8 temp/testing/wgsl-example/example.wgsl
+'{"schema":1,"assetId":"Example","entryPoint":"fs_main","requiredBackends":["vulkan-fragment","webgpu-fragment","webgl2-fragment","metal-fragment"]}' | Set-Content -Encoding utf8 temp/testing/wgsl-example/example.effect.json
+python Doroti/eng/run-with-timeout.py --timeout 1200 cargo run --locked --manifest-path tools/Doroti.Wgsl/Cargo.toml -- compile temp/testing/wgsl-example/example.wgsl temp/testing/wgsl-example/example.effect.json temp/testing/wgsl-example/output
+```
+
+Inspect the generated manifest, variants and serializers, then remove your run
+directory after recording the result. Rust is required for this compiler build;
+ordinary apps without `DorotiGpuEffect` inputs do not require it.
 
 CLI: `validate|reflect|compile|generate source.wgsl definition.effect.json output-directory`.
 `validate` checks WGSL, entry point and ABI. The other commands emit reflection

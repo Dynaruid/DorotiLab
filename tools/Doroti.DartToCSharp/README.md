@@ -31,7 +31,7 @@ Each logical input is analyzed once. Per-library analysis, lowering, and emissio
 - The repository's pinned `reference/flutter-master` checkout for Flutter selections
 - A complete DorotiLab checkout; the tool references shared runtime and tooling projects
 
-Run commands from the repository root so selection and source paths resolve consistently.
+Run commands from the repository root so selection and source paths resolve consistently. Prepare the optional Flutter checkout with `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1` before using the maintained fixtures; even their graph-only tolerance input requires it. The old `Doroti/migration` tree is retired, so supply an existing `--manifest` explicitly.
 
 ## Build and run
 
@@ -45,7 +45,7 @@ Compile a selection to an explicit output directory:
 
 ```powershell
 dotnet run --project ./tools/Doroti.DartToCSharp -- `
-  --manifest ./Doroti/migration/selections/r1.json `
+  --manifest ./tools/Doroti.DartToCSharp/validation/null-semantics/fixtures/selection.json `
   --output ./Doroti/artifacts/converter
 ```
 
@@ -57,7 +57,7 @@ Useful options include:
 
 | Option | Purpose |
 | --- | --- |
-| `--manifest <file>` | Selection manifest; defaults to `migration/selections/r1.json` |
+| `--manifest <file>` | Explicit selection manifest; the historical default `migration/selections/r1.json` is no longer shipped |
 | `--output <directory>` | Publish directly to a compiler-owned output directory |
 | `--workspace-root <directory>` | Publish to a content-addressed workspace instead of `--output` |
 | `--cache-dir <directory>` | Reuse analyzer results from an explicit cache |
@@ -72,7 +72,7 @@ Example with parallel compilation and selected IR dumps:
 
 ```powershell
 dotnet run --project ./tools/Doroti.DartToCSharp -- `
-  --manifest ./Doroti/migration/selections/g4-4-physics-animation-gestures.json `
+  --manifest ./tools/Doroti.DartToCSharp/validation/virtual-dispatch/fixtures/selection.json `
   --output ./Doroti/artifacts/converter-g4-4 `
   --parallelism 8 `
   --dump-ir ./Doroti/artifacts/compiler-ir `
@@ -87,7 +87,7 @@ A `doroti-port.json` manifest composes an immutable generated base with explicit
 
 ```powershell
 dotnet run --project ./tools/Doroti.DartToCSharp -- `
-  compile --port ./Doroti/migration/ports/c0/doroti-port.json
+  compile --port ./path/to/doroti-port.json
 ```
 
 The workspace contains:
@@ -97,13 +97,13 @@ The workspace contains:
 - `effective/`: composed project that must build before publication
 - `port-state.json`, `provenance.json`, and `source-map.json`: ownership and traceability records
 
-Edit customization inputs under `Doroti/migration/ports/`. Never edit those compiler-owned workspace trees directly.
+Port examples use `./path/to/doroti-port.json`, `CounterModel` and `YOUR_SOURCE_REVISION` as placeholders for your own reviewed port manifest, symbol and source revision. Historical `Doroti/migration/ports` fixtures are no longer shipped. Edit the customization inputs declared by your manifest; never edit compiler-owned workspace trees directly.
 
 Create a review-only adoption bundle without modifying product source:
 
 ```powershell
 dotnet run --project ./tools/Doroti.DartToCSharp -- `
-  adopt --port ./Doroti/migration/ports/c0-adoption/doroti-port.json `
+  adopt --port ./path/to/doroti-port.json `
   --symbol CounterModel `
   --output ./Doroti/artifacts/adoption-counter
 ```
@@ -112,8 +112,8 @@ Review an upstream revision change against a previous workspace:
 
 ```powershell
 dotnet run --project ./tools/Doroti.DartToCSharp -- `
-  rebase --port ./Doroti/migration/ports/c0/doroti-port.json `
-  --source-revision c0-language-fixture/v2 `
+  rebase --port ./path/to/doroti-port.json `
+  --source-revision YOUR_SOURCE_REVISION `
   --output ./Doroti/artifacts/rebase-c0
 ```
 
@@ -160,7 +160,7 @@ Push-Location ./tools/Doroti.DartToCSharp/analyzer
 dart pub get --enforce-lockfile
 dart format --output=none --set-exit-if-changed .
 dart analyze
-dart test
+python ../../../Doroti/eng/run-with-timeout.py --timeout 1200 dart test
 Pop-Location
 ```
 

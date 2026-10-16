@@ -14,7 +14,7 @@ Qt is a system dependency for this target. The default Quick build requires Qt 6
 
 The Quick build does not request the Qt OpenGL or OpenGLWidgets CMake components directly; `QOpenGLWindow` and its Qt OpenGL include/link are confined to the Widgets comparison build. Quick still needs Widgets for `QApplication`. Both QPA targets build the Wayland backdrop protocol code, so an xcb-only dependency profile is unavailable. Running with `QT_QPA_PLATFORM=xcb` still requires the published shim's Wayland client runtime dependency.
 
-Official deployment uses the pinned `SkiaSharp.NativeAssets.Linux` package and checks both original managed and native hashes, plus the loaded native module path. The Linux asset needs glibc, libstdc++, fontconfig and their runtime dependencies. Framework-dependent and self-contained directory publishing are supported. Trimming, single-file and NativeAOT publishing are unsupported for this target; the runner rejects them before producing an unusable package. Hardware rendering, permanent GPU stalls and physical input require separate validation.
+Official deployment uses the pinned `SkiaSharp.NativeAssets.Linux` package and checks both original managed and native hashes, plus the loaded native module path. The Linux asset needs glibc, libstdc++, fontconfig and their runtime dependencies. Framework-dependent and self-contained directory publishing are supported. `PublishSingleFile=true` supports untrimmed JIT or individual ReadyToRun output and extracts the complete payload before loading verified native files; notice folders remain beside the executable. Trimming, NativeAOT and composite single-file ReadyToRun are rejected. See the [publish examples](../../../../samples/DorotiCarouselApp/README.md#데스크톱-단일-실행-파일-게시) and `Doroti/tests/desktop_single_file.py`. Hardware rendering, permanent GPU stalls and physical input require separate validation.
 
 Hardware and software renderers are accepted by default; llvmpipe needs no environment override. The Graphite Vulkan backend requires Vulkan 1.2; the selected device type is logged. Software rendering does not establish hardware performance. Material scenes can report an upstream depth-attachment synchronization issue under Vulkan validation.
 
@@ -42,7 +42,7 @@ The Qt GUI queue uses owner generations and exactly-once accepted task completio
 Owner close cancels queued work and deletes Widgets before the managed closed callback.
 Qt-driven native window recreation rebinds each clip container to the same owner.
 Callers must keep adopted-widget and callback modules loaded until owner teardown ends.
-See `Doroti/validation/linux-qt-contract/README.md` for current contract checks.
+See the [maintained testing guide](../../../../Doroti/tests/README.md) for `linux_qt_build_profiles.py`, `linux_qt_smoke.py` and `linux_qt_packages.py`. The former `Doroti/validation` tree is retired.
 
 ## Default Qt Quick GPU composition
 

@@ -261,7 +261,7 @@ dotnet run --project ./samples/DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.W
 Apple Silicon, macOS 14 이상과 호환되는 Xcode/macOS workload가 필요합니다.
 `macos`는 native AppKit runner입니다.
 
-Graphite/Metal 실험 후보는 아래 `dotnet run` 명령에 `-e DOROTI_MACOS_GRAPHITE=1`을 추가해 선택합니다. 기본값은 Ganesh/Metal이며, 해당 옵션을 빼면 기본 렌더러를 사용합니다.
+Graphite/Metal이 기본값입니다. Ganesh/Metal 비교 경로는 아래 `dotnet run` 명령에 `-e DOROTI_MACOS_GRAPHITE=0`을 추가해 선택합니다.
 
 ```powershell
 dotnet run --project ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -r osx-arm64
@@ -276,8 +276,9 @@ Mac UI idiom을 사용해 iPad 호환 모드의 77% 축소 없이 표시합니�
 두 Mac runner 모두 텍스트 필드에서 우클릭 또는 Control+클릭으로 편집 메뉴를 엽니다.
 메뉴는 Flutter Cupertino 기준의 연속 곡선 모서리와 흐린 그림자를 사용하며,
 항목에 마우스를 올리면 테마 강조색과 대비되는 글자색을 표시합니다.
-`dotnet run --project ./Doroti/validation/fcr7-material-widget -- --mac-text-menu`로
-밝은/어두운 테마의 강조·눌림 상태, 그림자와 편집 동작을 검증할 수 있습니다.
+이전 `--mac-text-menu` 검증 프로젝트는 폐기되었습니다. 유지보수 중인 CPU 편집 동작 회귀는
+`python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project packages/Doroti.Cupertino/tests/Doroti.Cupertino.Tests -c Release -- --editable-context-menu`로 실행합니다.
+Mac 네이티브 메뉴 외형·강조·눌림 상태와 물리 입력은 별도로 확인합니다.
 
 ```powershell
 dotnet run --project ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj -c Release -r maccatalyst-arm64
@@ -564,7 +565,7 @@ Qt/Linux 통합형은 창 버튼을 같은 GPU 표면에 그려 본문과 같은
 창의 `backgroundColor`와 `darkBackgroundColor`도 같은 전환을 따릅니다.
 
 Linux의 샘플 창은 Acrylic과 transparent fallback을 요청합니다. Wayland compositor가
-`ext-background-effect-v1` 또는 구형 KDE blur protocol을 제공하면 native blur를 요청하고,
+`ext-background-effect-v1`을 제공하면 native blur를 요청하고,
 없으면 transparent fallback을 사용합니다.
 Qt의 unified 상단바는 `MaterialApp`의 `scaffoldBackgroundColor`와 밝기를 따라 틴트와 글자색을
 갱신합니다. 샘플의 팔레트·다크 모드·Acrylic 전환과 테마 애니메이션도 함께 반영합니다.
@@ -578,29 +579,30 @@ CLI의 `build`, `run`, `publish`는 기본 Release 구성입니다.
 
 ```powershell
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 doctor -App ./samples/DorotiTestbedApp -Platform all
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build -App ./samples/DorotiTestbedApp -Platform macos -Rid osx-arm64
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform macos -Rid osx-arm64
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build -App ./samples/DorotiTestbedApp -Platform macos
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform macos
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 publish -App ./samples/DorotiTestbedApp -Platform web
 ```
 
 ### 플랫폼별 실행
 
-위 CLI 예제의 `-Platform`과 `-Rid`를 대상에 맞게 바꿉니다.
+선언된 `-Platform` 별칭을 선택합니다. 표는 현재 manifest의 RID이며 CLI의 `-Rid`로
+덮어쓰지 않습니다. 다른 기기·ABI·profile은 위의 직접 .NET 명령이나 배포 도구를 사용합니다.
 
-| 대상 | `-Platform` | `-Rid` / 추가 옵션 |
+| 대상 | `-Platform` | manifest RID / 추가 옵션 |
 | --- | --- | --- |
-| Windows App SDK | `windows` | 기본값 사용 |
+| Windows App SDK | `windows` | `win-x64` |
 | Windows MAUI | `windows-maui` | `win-x64` |
 | macOS AppKit | `macos` | `osx-arm64` |
 | Mac Catalyst | `maccatalyst` | `maccatalyst-arm64` |
 | Linux | `linux` | `linux-x64` |
-| Android | `android` | `android-x64` 또는 `android-arm64`; 기기는 `-Device`로 선택 |
-| iOS | `ios` | `iossimulator-arm64`, `iossimulator-x64` 또는 `ios-arm64` |
-| Web | `web` | 생략 |
+| Android | `android` | `android-arm64`; 일치하는 기기는 `-Device`로 선택 |
+| iOS | `ios` | `iossimulator-x64`; 일치하는 시뮬레이터는 `-Device`로 선택 |
+| Web | `web` | `browser-wasm` |
 
 Web의 `ASPNETCORE_ENVIRONMENT=Development`는 빌드 구성과 별개입니다.
-기본 실행은 **Release 빌드 + Development 호스팅 환경**이며 CLI 출력의
-`Doroti artifact: configuration=...`에서 빌드 구성을 확인할 수 있습니다.
+기본 실행은 **Release 빌드 + Development 호스팅 환경**입니다.
+Debug 빌드는 `-Configuration Debug`를 명시하며 `dev`는 Debug 전용입니다.
 
 루트 `DorotiTestbedApp.csproj`는 공용 앱 라이브러리입니다.
 `dotnet run --project DorotiTestbedApp.csproj -p:DorotiTarget=...`는 `DOROTIAPP100`으로 실패하므로
@@ -610,7 +612,9 @@ Web의 `ASPNETCORE_ENVIRONMENT=Development`는 빌드 구성과 별개입니다.
 
 Android, iOS, AppKit, Mac Catalyst 러너는 앱 소유 native library와 binding을 포함합니다.
 선택한 러너를 직접 `dotnet build`하면 해당 프로필의 네이티브 빌드도 연결됩니다.
-현재 provider CLI의 native 도구 진단과 실제 기기·서명·실행 검증은
+provider CLI에는 `native doctor/build/open/add` 명령이 없습니다. `devices -App ... -Platform android`는
+workspace RID와 일치하는 승인된 기기를 나열합니다. Android Debug Mono `dev`는 Python/ADB adapter를
+사용하고, Apple Debug `dev`는 provider 패키지의 Mac/iOS adapter와 세션 ID가 일치하는 Stop을 사용합니다. 현재 Apple 실행 수락은 미검증입니다. Apple 기기·서명·실행 수락은 provider 계획과 별도입니다.
 
 ### 프로젝트 구조와 리소스
 

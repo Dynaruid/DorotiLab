@@ -94,7 +94,7 @@ WebGL2를 사용합니다. Android에서 WebGPU API·어댑터를 사용할 수 
   5088 포트 및 `launchSettings.json`과 독립적입니다.
 - 호스트 포트 충돌 시 `$env:DOROTI_PREVIEW_PORT = '5090'`을 설정하고 실행합니다.
   같은 환경에서 후속 관리 명령을 실행하세요.
-- 이미지: `nginx:1.29-alpine`, `cloudflare/cloudflared:2026.8.2`.
+- 이미지: `nginx:1.29-alpine`, `cloudflare/cloudflared`(태그 미지정).
   cloudflared는 UDP 통신 환경에 영향을 덜 받도록 HTTP/2를 사용합니다.
 - 시작 시 공개 HTTP 응답만 자동 확인합니다. 실제 기기의 렌더링·터치·브라우저
   WebGPU 지원 여부는 그 기기에서 별도로 확인해야 합니다.

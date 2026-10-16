@@ -28,6 +28,11 @@ internal static class AppleDeviceRegression
         Require(physicalDevices.Devices.Count == 1, "Connected paired physical iOS device was lost.");
         var physicalPlan = await extension.PlanAsync(new(physicalContext, "run", "Debug", options), default);
         Require(physicalPlan.Steps.Single().Arguments.Contains("-p:_DeviceName=00008101-001144CA3642001E"), "Physical device selection was lost.");
+        var simulatorDevelopment = await extension.PlanAsync(new(context, "dev", "Debug", options), default);
+        Require(simulatorDevelopment.Steps.Single().Arguments.Contains("AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA")
+            && simulatorDevelopment.Steps.Single().StopSignal is not null, "Simulator development bypassed typed device selection or owned Stop.");
+        var physicalDevelopment = await extension.PlanAsync(new(physicalContext, "dev", "Debug", options), default);
+        Require(physicalDevelopment.Steps.Single().Arguments.Contains("00008101-001144CA3642001E"), "iPhone development bypassed typed device selection.");
         try
         {
             Environment.SetEnvironmentVariable("DOROTI_SIMCTL_FIXTURE", "{\"devices\":{}}");
@@ -52,7 +57,7 @@ internal static class AppleDeviceRegression
             cancellation.Cancel();
             try { await extension.GetDevicesAsync(context, cancellation.Token); throw new Exception("Canceled discovery ran."); }
             catch (OperationCanceledException) { }
-            await Reject("unsupported-operation", () => extension.PlanAsync(new(physicalContext, "dev", "Debug", options), default).AsTask());
+            await Reject("unsupported-development-profile", () => extension.PlanAsync(new(physicalContext, "dev", "Release", options), default).AsTask());
         }
         finally
         {
@@ -61,7 +66,7 @@ internal static class AppleDeviceRegression
             Environment.SetEnvironmentVariable("DOROTI_COREDEVICE_DETAILS_FAIL", null);
             Environment.SetEnvironmentVariable("DOROTI_COREDEVICE_DETAILS_FIXTURE", null);
         }
-        Console.WriteLine("PASS: typed iOS discovery, simulator/physical selection, unavailable/disconnected rejection, malformed inventory, cancellation and unimplemented dev rejection (fixture processes).");
+        Console.WriteLine("PASS: typed iOS discovery, simulator/physical selection, unavailable/disconnected rejection, malformed inventory, cancellation and Release dev rejection (fixture processes).");
     }
     private static void Require(bool value, string message) { if (!value) throw new Exception(message); }
     private static async Task Reject(string code, Func<Task> action)

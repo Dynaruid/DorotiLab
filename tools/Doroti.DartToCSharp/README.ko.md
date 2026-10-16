@@ -31,7 +31,7 @@ typed Dart IR ──► Core IR ──► structured C# IR
 - Flutter selection을 위한 repository의 pinned `reference/flutter-master` checkout
 - Shared runtime과 tooling project를 포함한 전체 DorotiLab checkout
 
-Selection과 source path가 일관되게 해석되도록 repository root에서 명령을 실행합니다.
+Selection과 source path가 일관되게 해석되도록 repository root에서 명령을 실행합니다. 선택 fixture 사용 전 `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`로 선택적 Flutter checkout을 준비합니다. graph-only tolerance 입력도 이 checkout이 필요합니다. 이전 `Doroti/migration` 트리는 폐기되었으므로 존재하는 `--manifest`를 명시하세요.
 
 ## Build와 실행
 
@@ -45,7 +45,7 @@ Selection을 명시적인 output directory에 compile합니다.
 
 ```powershell
 dotnet run --project ./tools/Doroti.DartToCSharp -- `
-  --manifest ./Doroti/migration/selections/r1.json `
+  --manifest ./tools/Doroti.DartToCSharp/validation/null-semantics/fixtures/selection.json `
   --output ./Doroti/artifacts/converter
 ```
 
@@ -57,7 +57,7 @@ dotnet run --project ./tools/Doroti.DartToCSharp -- `
 
 | Option | 역할 |
 | --- | --- |
-| `--manifest <file>` | Selection manifest. 기본값은 `migration/selections/r1.json` |
+| `--manifest <file>` | 명시적인 selection manifest. 이전 기본값 `migration/selections/r1.json`은 현재 제공하지 않음 |
 | `--output <directory>` | Compiler-owned output directory에 직접 publish |
 | `--workspace-root <directory>` | `--output` 대신 content-addressed workspace에 publish |
 | `--cache-dir <directory>` | 명시적인 cache의 analyzer result 재사용 |
@@ -72,7 +72,7 @@ dotnet run --project ./tools/Doroti.DartToCSharp -- `
 
 ```powershell
 dotnet run --project ./tools/Doroti.DartToCSharp -- `
-  --manifest ./Doroti/migration/selections/g4-4-physics-animation-gestures.json `
+  --manifest ./tools/Doroti.DartToCSharp/validation/virtual-dispatch/fixtures/selection.json `
   --output ./Doroti/artifacts/converter-g4-4 `
   --parallelism 8 `
   --dump-ir ./Doroti/artifacts/compiler-ir `
@@ -87,7 +87,7 @@ IR dump와 telemetry는 compiler-owned generated workspace 밖에 두어야 합�
 
 ```powershell
 dotnet run --project ./tools/Doroti.DartToCSharp -- `
-  compile --port ./Doroti/migration/ports/c0/doroti-port.json
+  compile --port ./path/to/doroti-port.json
 ```
 
 Workspace에는 다음 항목이 들어 있습니다.
@@ -97,13 +97,13 @@ Workspace에는 다음 항목이 들어 있습니다.
 - `effective/`: publication 전에 반드시 build되어야 하는 합성 project
 - `port-state.json`, `provenance.json`, `source-map.json`: ownership과 추적 정보
 
-Customization input은 `Doroti/migration/ports/`에서 수정합니다. Compiler-owned workspace tree를 직접 수정하지 마세요.
+Port 예제의 `./path/to/doroti-port.json`, `CounterModel`, `YOUR_SOURCE_REVISION`은 직접 준비한 port manifest·symbol·source revision으로 바꾸는 자리표시자입니다. 이전 `Doroti/migration/ports` fixture는 현재 제공하지 않습니다. manifest가 선언한 customization input을 수정하고 compiler-owned workspace tree는 직접 수정하지 마세요.
 
 제품 source를 수정하지 않고 review-only adoption bundle을 만듭니다.
 
 ```powershell
 dotnet run --project ./tools/Doroti.DartToCSharp -- `
-  adopt --port ./Doroti/migration/ports/c0-adoption/doroti-port.json `
+  adopt --port ./path/to/doroti-port.json `
   --symbol CounterModel `
   --output ./Doroti/artifacts/adoption-counter
 ```
@@ -112,8 +112,8 @@ dotnet run --project ./tools/Doroti.DartToCSharp -- `
 
 ```powershell
 dotnet run --project ./tools/Doroti.DartToCSharp -- `
-  rebase --port ./Doroti/migration/ports/c0/doroti-port.json `
-  --source-revision c0-language-fixture/v2 `
+  rebase --port ./path/to/doroti-port.json `
+  --source-revision YOUR_SOURCE_REVISION `
   --output ./Doroti/artifacts/rebase-c0
 ```
 
@@ -152,7 +152,7 @@ Push-Location ./tools/Doroti.DartToCSharp/analyzer
 dart pub get --enforce-lockfile
 dart format --output=none --set-exit-if-changed .
 dart analyze
-dart test
+python ../../../Doroti/eng/run-with-timeout.py --timeout 1200 dart test
 Pop-Location
 ```
 

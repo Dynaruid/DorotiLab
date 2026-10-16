@@ -78,13 +78,14 @@
       "operations": [
         "build",
         "run",
-        "publish"
+        "publish",
+        "dev"
       ],
       "development": {
-        "transport": "file",
-        "debug": false,
-        "requiresPreparedAcknowledgment": false,
-        "usesStopSignal": false,
+        "transport": "device",
+        "debug": true,
+        "requiresPreparedAcknowledgment": true,
+        "usesStopSignal": true,
         "launchBrowser": false
       }
     },
@@ -95,13 +96,14 @@
       "operations": [
         "build",
         "run",
-        "publish"
+        "publish",
+        "dev"
       ],
       "development": {
         "transport": "file",
-        "debug": false,
-        "requiresPreparedAcknowledgment": false,
-        "usesStopSignal": false,
+        "debug": true,
+        "requiresPreparedAcknowledgment": true,
+        "usesStopSignal": true,
         "launchBrowser": false
       }
     },
@@ -112,13 +114,14 @@
       "operations": [
         "build",
         "run",
-        "publish"
+        "publish",
+        "dev"
       ],
       "development": {
         "transport": "file",
-        "debug": false,
-        "requiresPreparedAcknowledgment": false,
-        "usesStopSignal": false,
+        "debug": true,
+        "requiresPreparedAcknowledgment": true,
+        "usesStopSignal": true,
         "launchBrowser": false
       }
     },
@@ -136,7 +139,7 @@
         "transport": "file",
         "debug": true,
         "requiresPreparedAcknowledgment": false,
-        "usesStopSignal": false,
+        "usesStopSignal": true,
         "launchBrowser": false
       }
     },
@@ -154,7 +157,7 @@
         "transport": "file",
         "debug": true,
         "requiresPreparedAcknowledgment": false,
-        "usesStopSignal": false,
+        "usesStopSignal": true,
         "launchBrowser": false
       }
     },

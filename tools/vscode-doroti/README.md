@@ -1,6 +1,6 @@
 # Doroti for VS Code
 
-Local extension for VS Code 1.100+ desktop, PowerShell 7 and the repository's .NET 10 SDK. Build tools use Node 24 and npm with the checked-in lockfile. Available Debug development targets come from workspace v2 and the resolved provider profile on the current host. iOS typed development is currently Unsupported; historical standalone Apple helper results do not enable an IDE target.
+Local extension for VS Code 1.100+ desktop, PowerShell 7 and the repository's .NET 10 SDK. Build tools use Node 24 and npm with the checked-in lockfile. Available Debug development targets come from workspace v2 and the resolved provider profile on the current host. Apple platforms have historical CLI and installed-VSIX Hot Reload results; current provider integration must be assessed separately, as detailed below.
 
 For Android, select `android`, connect one authorized USB device/emulator and use **Run**. Python 3, Android platform-tools, .NET SDK 10.0.400+ and the matching Android workload are required. `doroti.device` selects a serial when several devices are attached. The workspace RID selects arm64/x64 and must match the device ABI and enables the SDK's startup hook in Debug Mono. Save or **Hot Reload** applies supported C# edits over USB while preserving widget state, text and scroll. The button waits for device request delivery before saving and for a completed reassembly frame before reporting success. **Stop** closes the owned app, watcher and USB reverse port. Native Kotlin/Java, resources, project changes and unsupported C# edits require **Restart (resets state)**. Release/AOT and CoreCLR are outside this development profile.
 
@@ -12,7 +12,7 @@ cd <repository>/tools/vscode-doroti
 npm ci
 npm test
 npm run package
-code --install-extension doroti-0.2.2.vsix
+code --install-extension doroti-0.2.3.vsix
 ```
 
 Set `doroti.cliPath` to the absolute repository `Doroti/eng/doroti.ps1` path for development commands. Editing uses the bundled .NET 10/Roslyn 5.9 helper and does not require a repository checkout, CLI path, project selection or an app session. Install the Microsoft C# extension (`ms-dotnettools.csharp`) for normal IntelliSense, signature help, diagnostics, navigation and general C# refactoring. Doroti supplies widget construction templates and structural assists alongside it; fallback type suggestions are suppressed while C# is active. Restore the application's declared dependencies before semantic editing. Suggestions never restore, build, install dependencies or save source files.
@@ -27,7 +27,19 @@ The repository CLI uses the runner's validated RID for development sessions with
 
 Web opens an external browser connected to a local session bridge. Wait for its runtime to become ready before using Hot Reload; the button is disabled when no browser is connected. State, text and scroll survive supported edits without refreshing the page. Use one page per session. The main-owned threaded runtime is supported; Release/AOT and the explicit worker-owned runtime are not qualified. The bridge carries request/result IDs only; the .NET SDK applies code. Stop also closes the bridge.
 
-The workspace declares the iOS TFM/RID and the tooling provider discovers matching simulators/devices with `doroti.device`. Typed iOS `dev` remains Unsupported, so the IDE does not offer that development target.
+The workspace declares the Apple TFM/RID/profile, and `doroti.device` selects a matching device where discovery is supported. Earlier platform-specific settings such as `doroti.iosDevice`, `doroti.iosTargetFramework`, `doroti.iosSdkVersion`, `doroti.macosTargetFramework` and `doroti.macCatalystTargetFramework` are no longer extension settings.
+
+| Apple target | Retained execution record | Current provider boundary |
+| --- | --- | --- |
+| AppKit macOS | [2026-10-01](../../history/26-10-03/works/platforms/macos.md): real CLI metadata updates, retained state, compile recovery/Stop and installed VSIX PASS | `macos` Debug `dev` uses the provider-packaged Mac adapter with `DorotiMacDevelopment=true`, startup hooks, direct bundle execution and isolated build caches. The restored provider path has not been rerun on macOS. |
+| Mac Catalyst | [2026-10-01](../../history/26-10-03/works/platforms/maccatalyst.md#2026-10-01-mac-catalyst-metadata-hot-reload): CLI and installed-VSIX metadata/state/Stop PASS | `maccatalyst` Debug `dev` uses the same packaged adapter and enables the editable `all,-Doroti.Host.Maui` interpreter profile and SDK named-pipe transport. Current native execution remains unverified. |
+| iOS simulator / iPhone | [2026-09-30 and 10-01](../../history/26-10-03/works/platforms/ios.md#2026-09-30-ios-metadata-hot-reload): simulator, iPhone 12 .NET 11 CoreCLR USB, and .NET 10 Mono LAN Hot Reload; CLI and installed-VSIX PASS | iOS profiles now advertise Debug `dev` and use the packaged iOS adapter. Select a matching `doroti.device`; .NET 10 simulators use a local acknowledgment relay, .NET 10 iPhones use a LAN SDK relay, and .NET 11 CoreCLR devices use SDK USB deltas plus CoreDevice acknowledgments. Current simulator/device execution remains unverified. |
+
+These records include actual installed-extension execution, not only standalone helper checks. They describe the earlier launch/profile implementation; the .NET 11 USB record used RC1 plus a specific runtime override and does not qualify the current RC2 toolchain. Raw `temp/testing` evidence is disposable. The restored implementation has portable provider-plan, adapter/session, relay and package checks; Apple runtime and installed-VSIX acceptance must be rerun on the intended host. Physical input, other devices, Release and NativeAOT are outside these Hot Reload results.
+
+Apple development requires Python 3, Xcode and the matching .NET SDK/workloads. The manifest and runner must agree on TFM/RID; the provider uses the runner directory for SDK selection and does not pass a global RID to `dotnet watch`. On .NET 10 iPhones, keep the Mac and phone on the same LAN and allow local network access. The CLI's optional `-HotReloadHost <Mac-LAN-IPv4>` chooses that relay address; it is not an iOS TFM/SDK override. The selected SDK remains responsible for metadata deltas. Reload waits for request delivery and a completed frame acknowledgment. Stop uses a session-matched file signal, waits up to 60 seconds for adapter cleanup, and releases process-held session/device leases.
+
+`runHost.js ... --ios` and `--mac` prepare isolated source fixtures under their evidence directory. Test TFM/RID/SDK environment variables configure those fixtures, rather than removed VS Code settings; `DOROTI_TEST_IOS_DEVICE` maps to `doroti.device`. These tests no longer edit the user's Testbed source.
 
 Type `stl`, `stless` or `dstateless` for a StatelessWidget, and `stf`, `stful` or `dstateful` for a StatefulWidget. Choose the suggestion, edit the selected class name, then press Tab to reach build. Stateful widget, State and createState names stay linked. `dstlkey`/`dstfkey` include a key constructor. Imports are inserted with the snippet; aliases and same-name types use qualified references. File names supply valid default names, including Korean identifiers.
 
@@ -74,6 +86,6 @@ The implementation was written independently after static review of `reference/A
 
 References: [dotnet watch](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-watch), [metadata update handlers](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.metadata.metadataupdatehandlerattribute?view=net-10.0), [Workspace Trust](https://code.visualstudio.com/api/extension-guides/workspace-trust), [extension tests](https://code.visualstudio.com/api/working-with-extensions/testing-extension).
 
-On macOS, select the AppKit or Mac Catalyst alias advertised by `describe`. TFM/RID/profile selection belongs to `doroti-workspace.json`; the extension does not expose separate platform TFM settings. Current Apple GUI acceptance after the provider migration remains separate from earlier standalone helper evidence.
+On macOS, AppKit and Mac Catalyst aliases come from `describe`; TFM/RID/profile selection belongs to `doroti-workspace.json`. See the Apple table above for restored development profiles and the current native-validation boundary.
 
 On Linux, select `linux` and use **Run**, then save C# method-body edits or click **Hot Reload**. PowerShell 7, .NET 10 and the system Qt development/QML dependencies are required. The CLI defaults to polling file changes to handle low inotify limits and mounted source folders; it preserves an explicit watcher environment setting. Supported changes retain PID, State, text and scroll. Native C++/QML/shader assets and unsupported metadata edits need **Restart (resets state)**. The default Qt Quick Debug path has real CLI and installed-extension regression fixtures.

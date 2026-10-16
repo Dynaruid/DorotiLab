@@ -38,7 +38,7 @@ Flutter에서 익숙한 Material·Cupertino API에 SkiaSharp 기반의 공통 �
 | macOS | 네이티브 AppKit / MetalKit (`MTKView`) | `Doroti.Host.Maui`의 AppKit 어댑터 | Skia Graphite / Metal |
 | Mac Catalyst | .NET MAUI / UIKit (Mac Catalyst) | `Doroti.Host.Maui` | Skia Graphite / Metal |
 | Web | .NET WebAssembly, 렌더링 Worker / canvas | `Doroti.Host.Web` | desktop/iOS: Ganesh/WebGL2, Android: Graphite/Dawn/WebGPU 우선 |
-| Linux | Qt 6 `QWindow`, 네이티브 C ABI 브리지 | `Doroti.Host.Qt` | Skia Graphite / Vulkan |
+| Linux | Qt 6 `QQuickWindow`, 네이티브 C ABI 브리지 | `Doroti.Host.Qt` | Skia Graphite / Vulkan, Qt가 장치·표시 소유 |
 
 Web 자동 선택은 desktop/iOS에서 WebGL2, Android에서 WebGPU를 우선하며 초기 fallback 조건을 평가합니다. `dorotiRenderer=worker-direct-webgl` 또는 `worker-direct-webgpu`로 명시 선택할 수 있습니다. 실행 중 graphics loss는 새 endpoint가 필요합니다. [Web 설정 가이드](Doroti/README.ko.md#web)를 참고하세요.
 
@@ -53,7 +53,7 @@ Catalyst scene 정책, 모바일 공유 View 수명과 typed iOS 장치 선택�
 - **Windows·macOS·Linux 공통:** 저장소 스크립트 실행용 [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6)을 설치합니다.
 - **.NET SDK:** iOS 외 대상에는 10.0.400 계열을 설치합니다. iOS Testbed에는 .NET 10과 함께 11.0.100-rc.2.26504.105도 설치합니다.
 - **플랫폼별 도구:** 기본 Windows runner에는 [플랫폼별 준비 사항](Doroti/README.ko.md)의 Windows C++ 빌드 도구가 필요합니다. 다른 대상의 workload와 네이티브 도구도 해당 안내를 참고하세요.
-- **WGSL 샘플 빌드:** 현재 소스 트리 Testbed는 [WGSL 컴파일러](tools/Doroti.Wgsl/README.md)가 필요합니다. Rust 1.95.0 도구 체인을 준비하고 아래 명령으로 한 번 빌드합니다.
+- **사용자 정의 WGSL 효과:** `DorotiGpuEffect` 입력을 선언한 앱에는 선택적 [WGSL 컴파일러](tools/Doroti.Wgsl/README.md)가 필요합니다. 현재 Testbed는 이 입력을 선언하지 않습니다.
 
 저장소를 복제한 뒤 루트 디렉터리에서 샘플을 실행합니다.
 
@@ -61,7 +61,6 @@ Catalyst scene 정책, 모바일 공유 View 수명과 typed iOS 장치 선택�
 git clone https://github.com/Dynaruid/DorotiLab.git
 cd DorotiLab
 
-python Doroti/eng/run-with-timeout.py cargo build --locked --manifest-path tools/Doroti.Wgsl/Cargo.toml
 $env:DOROTI_TESTBED_MODE = 'sample'
 pwsh -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform windows
 ```
@@ -108,7 +107,8 @@ GPU 호환성, 입력기, 접근성, 성능, 서명과 스토어 배포는 플�
 
 | 경로 | 내용 |
 | --- | --- |
-| [`Doroti/src/`](Doroti/src/) | 프레임워크, 런타임, 렌더링, 호스트, SDK |
+| [`Doroti/src/`](Doroti/src/) | 공통 프레임워크, 런타임, 렌더링, 도구, SDK |
+| [`packages/`](packages/README.md) | 독립 Material·Cupertino 패키지와 플랫폼 provider |
 | [`samples/DorotiTestbedApp/`](samples/DorotiTestbedApp/) | 공통 샘플 앱과 플랫폼별 실행 프로젝트 |
 | [`Doroti/templates/`](Doroti/templates/) | `dotnet new doroti-app` 템플릿 |
 | [`Doroti/eng/`](Doroti/eng/) | 빌드, 실행, 패키징, 진단 도구 |

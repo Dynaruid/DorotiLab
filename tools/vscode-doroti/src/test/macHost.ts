@@ -9,8 +9,6 @@ export async function run() {
     await config.update('dotnetPath', process.env.DOROTI_TEST_DOTNET ?? 'dotnet', vscode.ConfigurationTarget.Global);
     const target = process.env.DOROTI_TEST_MAC_TARGET ?? 'macos';
     assert.ok(['macos', 'maccatalyst'].includes(target));
-    await config.update(target === 'macos' ? 'macosTargetFramework' : 'macCatalystTargetFramework',
-        process.env.DOROTI_TEST_MAC_TFM ?? (target === 'macos' ? 'net10.0-macos27.0' : 'net10.0-maccatalyst27.0'), vscode.ConfigurationTarget.Global);
     const extension = vscode.extensions.getExtension('doroti-local.doroti');
     assert.ok(extension);
     const api = await extension.activate();

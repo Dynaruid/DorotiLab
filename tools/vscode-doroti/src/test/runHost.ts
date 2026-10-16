@@ -7,10 +7,24 @@ import { randomUUID } from 'node:crypto';
 async function main() {
     const extension = path.resolve(__dirname, '../..');
     const repo = path.resolve(extension, '../..');
-    const app = path.resolve(process.argv[2]);
+    let app = path.resolve(process.argv[2]);
     const evidence = path.resolve(process.argv[3]);
     const profile = path.join(evidence, 'profile'); const extensions = path.join(evidence, 'extensions');
     const harness = path.join(evidence, 'harness');
+    if (process.argv.includes('--ios') || process.argv.includes('--mac')) {
+        const ios = process.argv.includes('--ios');
+        const target = ios ? 'ios' : process.env.DOROTI_TEST_MAC_TARGET ?? 'macos';
+        const fixture = path.join(evidence, 'app');
+        const args = [path.join(repo, 'Doroti/tests/apple_development_fixture.py'), '--source', app, '--output', fixture, '--platform', target];
+        const framework = ios ? process.env.DOROTI_TEST_IOS_TFM ?? 'net10.0-ios27.0' : process.env.DOROTI_TEST_MAC_TFM;
+        const rid = ios ? process.env.DOROTI_TEST_IOS_RID ?? (process.arch === 'arm64' ? 'iossimulator-arm64' : 'iossimulator-x64') : undefined;
+        if (framework) args.push('--framework', framework);
+        if (rid) args.push('--rid', rid);
+        if (ios && process.env.DOROTI_TEST_IOS_SDK) args.push('--sdk-version', process.env.DOROTI_TEST_IOS_SDK);
+        const prepared = spawnSync(process.platform === 'win32' ? 'python' : 'python3', args, { encoding: 'utf8', timeout: 60000, windowsHide: true });
+        if (prepared.status !== 0) throw new Error(`Apple fixture preparation failed: ${prepared.stderr || prepared.error}`);
+        app = fixture;
+    }
     await fs.mkdir(harness, { recursive: true });
     await fs.writeFile(path.join(harness, 'package.json'), JSON.stringify({ name: 'doroti-test-harness', publisher: 'local', version: '0.0.0', engines: { vscode: '^1.100.0' } }));
     const requestedVersion = process.argv.find(a => a.startsWith('--version='))?.slice('--version='.length);

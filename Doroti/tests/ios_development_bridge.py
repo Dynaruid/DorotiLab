@@ -9,6 +9,9 @@ import unittest
 from unittest.mock import patch
 import urllib.error
 import urllib.request
+import sys
+
+sys.path.insert(0, str(Path(__file__).parents[1] / 'eng'))
 
 spec = importlib.util.spec_from_file_location('ios_development', Path(__file__).parents[1] / 'eng/ios-development.py')
 bridge = importlib.util.module_from_spec(spec)

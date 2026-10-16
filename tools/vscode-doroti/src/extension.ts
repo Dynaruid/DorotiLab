@@ -113,7 +113,9 @@ export function activate(context: vscode.ExtensionContext) {
             current.stopping = true; display('Stopping'); clearInterval(current.timer); await current.bridge?.close();
             if (development()?.usesStopSignal && current.child.exitCode === null && current.child.signalCode === null) {
                 await fs.writeFile(path.join(current.directory, 'stop.json'), JSON.stringify({ sessionId: current.id }));
-                const deadline = Date.now() + 30000;
+                // Apple adapters may need the provider's full 60-second budget
+                // to stop the SDK watcher and its externally launched device app.
+                const deadline = Date.now() + 60000;
                 while (current.child.exitCode === null && current.child.signalCode === null && Date.now() < deadline)
                     await new Promise(resolve => setTimeout(resolve, 100));
             }

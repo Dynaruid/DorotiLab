@@ -63,7 +63,7 @@ with the 1,200-second wrapper. The device test temporarily edits the Testbed rel
 scene and restores it in `finally`; its state is automatically seeded, so it does
 not establish physical touch/IME evidence. The installed VSIX regression uses
 `dist/test/runHost.js ... --android` with `DOROTI_TEST_ANDROID_DEVICE=<serial>`.
-Use fresh output folders under `Doroti/artifacts/android-hot-reload`.
+Use fresh output folders under `temp/testing/android-hot-reload/<run>/`.
 
 Windows MAUI basic services and native views use `windows_maui_smoke.py`, which
 selects the MAUI executable explicitly. Modes `graphite`, `embedded`, `ganesh`,
@@ -152,13 +152,15 @@ pwsh -NoProfile -File Doroti/eng/doroti.ps1 validate -ValidationSuite Packages
 | Suite | Scope |
 | --- | --- |
 | Source / audit | Current documentation and plan links, tracked temp policy, timeout/exit tests, top-level failure propagation, portable install rollback/retry and integrity/userdata contracts |
-| Build | CPU widget regressions only; not the multi-platform product solution |
+| Build | Core and Material/Cupertino CPU regressions, bootstrap/frame-submission/typed-transport/tool-extension contracts; not the multi-platform product solution |
 | Developer | Source + Build + plugin lifetime/protocol and OS drop routing/lifetime regressions + Web resize/admission/mobile backing, Worker request/capture lifecycle and high-resolution texture ownership tests |
-| Targets | Windows App SDK and Web Debug builds, Web HTTP startup/bootstrap asset smoke |
+| Targets | Design regressions and shared contracts, Windows App SDK and Web Debug builds, Web HTTP startup/bootstrap asset smoke; requires a Windows build host |
 | LinuxSmoke | Build and execute Qt Quick on the available Wayland/xcb session: Desktop/two-window lifetimes, picker/drop/source cancellation, navigation/restore, editor/WebView recreation and 20 resize cycles; VM/software GPU results are explicit |
-| WindowsSmoke | Already-built default Debug Windows runner; native state/close cancellation, editor/WebView recreation; two HWNDs and native editor islands, survivor resize and both lifetime policies. Requires an interactive GPU Windows agent |
-| Packages | Package Testing/Cupertino/Desktop dependency graph; run a separate PackageReference-only widget consumer with its own restore cache |
-| Release | Developer + target builds/startup. `doroti release` then audits and packs the product solution; all required platform toolchains are still necessary. No retired Fcr suite aliases silently pass |
+| WindowsSmoke | Windows shared-tree, window-kind, native-menu, design-presentation and provider-package fixtures, followed by native smoke against the already-built Release App SDK runner. Requires an interactive GPU Windows host |
+| Packages | Design regressions and shared contracts, MAUI tooling/device contracts, provider packages and independent design/template NuGet-only consumers |
+| Release | Developer + target builds/startup. `doroti release` runs this verification suite; local packing uses `eng/release-candidate.py` separately. No GitHub/NuGet publication or implicit device qualification |
+| AndroidSmoke | Explicit device/RID Android lifecycle, services and development cases; host-only and skipped-device scopes remain distinct |
+| MacOSSmoke / IOSSmoke / CatalystSmoke | Apple profile/ownership checks followed by the selected native smoke; requires the corresponding Apple host/workloads |
 
 Each aggregate invocation has a 1,200-second limit via `eng/run-with-timeout.py`. Timeout kills the child process tree and returns 124. Raw logs, ad-hoc consumers and their builds live in `temp/testing/<suite>/<run>/`. Success prints its summary then deletes the owned run. Failure preserves the printed directory for investigation; delete it after recording the result, checking the resolved path stays under `temp/testing/`. Product runner build outputs retain their normal `bin/obj` policy. Tests are not in the default product solution. `Doroti.Testing` is a product package; the regression executable is not.
 
@@ -233,7 +235,7 @@ That command must fail; without `--break-tab`, it must pass. Rendering fixtures 
 On macOS with a Metal GPU, run the production renderer pixel checks explicitly:
 
 ```sh
-dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-gpu
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-gpu
 ```
 
 This command compares crop/full and direct/intermediate composition at DPR 1/2/3, Gaussian detail at the clear edge, bounded/full Kawase reconstruction, and native/owned sibling scopes with a VariableBlur inside opacity. Fixed Gaussian also exercises the actual `ApplyVariableBlur` reduced output and final linear sampling: 72 conditions cover both gradient directions, fractional interior/edge ROIs, translucent input, Clamp/Decal, and nondivisible sizes including full-domain fallback. Each equivalent comparison has a maximum channel-error limit of 3/255. It uses synchronous readback only in validation and does not measure FPS or qualify iPhone, other GPU backends, or the full transform/tile/child matrix. The default suite stays on raster surfaces; `--variable-blur-kernel`, `--variable-blur-capture`, and `--variable-blur-kawase` isolate the embedded production SkSL and its manifest/ABI.
@@ -247,15 +249,15 @@ WebGL queue admission, slow completion, shutdown, context loss, stale fence
 recovery, idle/background resume, and completion failure are covered separately:
 
 ```sh
-node --experimental-transform-types --test Doroti/tests/web_gl_frames.mts
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 node --experimental-transform-types --test Doroti/tests/web_gl_frames.mts
 ```
 
 The browser Skia handle lock also has an isolated native regression for nested
 handle lookup/registration and concurrent image/shader disposal with finalizers:
 
 ```sh
-dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --browser-skia-handles
-node --experimental-transform-types --experimental-vm-modules --test Doroti/tests/web_managed_connection.mts
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --browser-skia-handles
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 node --experimental-transform-types --experimental-vm-modules --test Doroti/tests/web_managed_connection.mts
 ```
 
 The managed-connection checks include failure of a finalizer/deputy pthread
@@ -265,21 +267,21 @@ Dart async continuations in `Doroti.Runtime`, retaining Skia/interop AOT. The
 WebCIL checks cover opting out and invalidating an earlier interpretation policy:
 
 ```sh
-python3 Doroti/tests/webcil_cache.py
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/webcil_cache.py
 ```
 
 Content and page-selection semantics must update during active scrolling;
 only geometry updates may wait for scrolling or resizing to settle:
 
 ```sh
-dotnet run --project Doroti/tests/Doroti.Tests -c Debug -- --active-scroll-semantics
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project Doroti/tests/Doroti.Tests -c Debug -- --active-scroll-semantics
 ```
 
 For sustained Sample2 browser responsiveness, serve a frozen publish with the
 test probe injected:
 
 ```sh
-python3 Doroti/tests/web_blur_liveness.py --root <published-wwwroot> --out temp/testing/web-blur/new --port 8765
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/web_blur_liveness.py --root <published-wwwroot> --out temp/testing/web-blur/new --port 8765
 ```
 
 Open the printed URL (or the same path through an HTTPS tunnel on a physical
@@ -296,8 +298,8 @@ checks the input boundary; it does not establish why a device supplied a bad clo
 Timestamp preservation/fallback and original Worker exception stacks are checked by:
 
 ```sh
-node --experimental-transform-types --test Doroti/tests/web_timestamps.mts
-node --experimental-transform-types --experimental-vm-modules --test Doroti/tests/web_managed_connection.mts
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 node --experimental-transform-types --test Doroti/tests/web_timestamps.mts
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 node --experimental-transform-types --experimental-vm-modules --test Doroti/tests/web_managed_connection.mts
 ```
 
 Use `--capture-native-output` for Mono stdout/stderr that bypasses the window's
@@ -311,7 +313,7 @@ driver defect or establish the cause of a reported freeze.
 For separate Full/Fixed still-image quality review, run from the repository root:
 
 ```sh
-dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-quality temp/testing/variable-blur/quality-review
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --variable-blur-quality temp/testing/variable-blur/quality-review
 ```
 
 This macOS Metal command saves 14 PNGs at DPR 3 with sigma 0/1/2/4/8/20/32, small text, 1px lines, a high-frequency pattern, and the repository's reference photograph. Sigma zero bypasses the filter as in SampleApp2. These captures document downsampling softness and the clear-edge/disabled-filter transition; Full and Fixed are not required to be pixel-equivalent. Still-image review does not establish motion quality, physical input behavior, or performance. Keep captures separate from device presentation measurements.
@@ -425,20 +427,44 @@ pwsh -NoProfile -File Doroti/eng/doroti.ps1 validate -ValidationSuite IOSSmoke
 pwsh -NoProfile -File Doroti/eng/doroti.ps1 validate -ValidationSuite CatalystSmoke
 ```
 
-iOS development validation (macOS, booted simulator, matching iOS workload):
+Apple development has portable implementation checks that require no Mac/device:
 
 ```sh
-python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/ios_development_bridge.py
-python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/apple_build_profiles.py
-python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/ios_hot_reload_smoke.py temp/testing/ios-reload-run --device <simulator-UDID>
-python3 Doroti/eng/run-with-timeout.py node tools/vscode-doroti/dist/test/runHost.js samples/DorotiTestbedApp temp/testing/ios-editor-run --ios
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/apple_development_contract.py
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/ios_development_bridge.py
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project packages/platforms/maui/tests/Doroti.Tool.Maui.Tests -c Debug
 ```
 
-The smoke test temporarily edits the Testbed reload scene and restores it in `finally`; use a fresh evidence directory and do not edit that scene concurrently. It verifies actual deltas, PID/State/count/text/scroll preservation, compiler-error recovery, rude edits and Stop. State is seeded automatically. The editor test uses a separately installed VSIX/profile; run `npm run package` in the extension folder first.
+The Python checks cover real session/device locks, nonce-matched Stop, preserved
+adapter startup/cleanup arguments, RID mismatch rejection, relay delivery and
+isolated source fixtures. Typed tests inspect the packaged adapter paths and
+explicit TFM/RID/SDK host plans; live Apple discovery is SKIPPED elsewhere.
+The Source suite includes the two Python checks. Real tool-package inspection
+also verifies the three Apple adapter/helper files and advertised capabilities.
+These checks do not qualify an Apple runtime or installed VSIX execution.
 
-Physical-device Hot Reload uses the same smoke test with `--rid ios-arm64 --framework net11.0-ios --sdk-version 11.0.100-rc.2.26504.105 --dotnet <prepared-dotnet-host>`. It copies the automatically seeded state probe out of Documents and requires matching completed-frame responses for real SDK deltas. Pair the device, enable Developer Mode, and supply the required signing/toolchain environment variables.
+On macOS, iOS CLI and installed-VSIX smoke use an isolated Testbed copy and
+fixture-owned workspace/runner TFM/RID/SDK settings:
 
-For installed-VSIX device validation, set `DOROTI_TEST_IOS_RID=ios-arm64`, `DOROTI_TEST_IOS_DEVICE=<UDID>`, `DOROTI_TEST_IOS_TFM=net11.0-ios`, `DOROTI_TEST_IOS_SDK=11.0.100-rc.2.26504.105`, and `DOROTI_TEST_DOTNET=<prepared-dotnet-host>`, then run `runHost.js <Testbed> <fresh-evidence> --ios` through the timeout wrapper. Do not run the CLI and editor smoke simultaneously: both temporarily edit the same scene. `apple_build_profiles.py --device-sdk <installed-version>` also checks CoreCLR, registrar, runtime/crossgen2 alignment and unchanged Apple runtime pack selection.
+```sh
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/ios_hot_reload_smoke.py temp/testing/ios-reload/new --device <simulator-UDID>
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 node tools/vscode-doroti/dist/test/runHost.js samples/DorotiTestbedApp temp/testing/ios-vsix/new --ios
+```
+
+For a physical device use `--rid ios-arm64` and an explicit matching `--framework`
+(`net10.0-ios27.0` for Mono LAN or `net11.0-ios` for CoreCLR USB); `--sdk-version`
+sets only the isolated fixture's `global.json`. The VSIX harness reads
+`DOROTI_TEST_IOS_DEVICE`, `DOROTI_TEST_IOS_RID`, `DOROTI_TEST_IOS_TFM`,
+`DOROTI_TEST_IOS_SDK` and `DOROTI_TEST_DOTNET`; it configures `doroti.device`
+and fixture files, without restoring removed platform-specific extension settings.
+Run `npm run package` in the extension first. Fresh output directories are required.
+Signing, device pairing and the .NET 10 iPhone LAN permission remain prerequisites.
+
+Historical [CLI and installed-VSIX PASS records](../../history/26-10-03/works/platforms/ios.md#2026-09-30-ios-metadata-hot-reload)
+remain separate from current runtime acceptance. The restored provider path has
+not been rerun on an Apple host. `eng/prepare-ios-device-dotnet.py` prepares a
+separate user-owned macOS dotnet host when RC2 build tools need the matching
+desktop runtime; it does not install workloads or prove device Hot Reload.
 
 AppKit and Mac Catalyst development validation (macOS, matching Apple workloads):
 
@@ -449,7 +475,7 @@ python3 Doroti/eng/run-with-timeout.py node tools/vscode-doroti/dist/test/runHos
 DOROTI_TEST_MAC_TARGET=maccatalyst python3 Doroti/eng/run-with-timeout.py node tools/vscode-doroti/dist/test/runHost.js samples/DorotiTestbedApp temp/testing/catalyst-editor-run --mac
 ```
 
-Run these sequentially: they temporarily edit the same Testbed scene, restoring it on exit. The CLI smoke checks real metadata updates, seeded state preservation, compile recovery, rude edits and Stop/PID exit. The editor smoke installs the packaged VSIX in an isolated profile and invokes its Run/Hot Reload/Stop commands. `DOROTI_TEST_MAC_TFM` overrides the editor test's Xcode 27 TFM. `apple_build_profiles.py` also checks both Mac development profiles, rejects incompatible settings and verifies ordinary Debug/Release interpreter defaults remain unchanged.
+These tests create independent Testbed source copies under their evidence directory; they do not edit the user's sample. The CLI smoke checks real metadata updates, seeded state preservation, compile recovery, rude edits and Stop/PID exit. The editor smoke installs the packaged VSIX in an isolated profile and invokes its Run/Hot Reload/Stop commands. `DOROTI_TEST_MAC_TFM` selects the isolated editor fixture's TFM; the extension reads that workspace declaration. `apple_build_profiles.py` also checks both Mac development profiles, rejects incompatible settings and verifies ordinary Debug/Release interpreter defaults remain unchanged.
 
 Use windows_maui_smoke.py for MAUI owner/services, windows_native_texture_smoke.py for actual MAUI GPU import,
 windows_smoke.py for explicit App SDK/MAUI multiwindow and the opt-in mixed scene.

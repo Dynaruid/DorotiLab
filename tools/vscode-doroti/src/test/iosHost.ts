@@ -9,11 +9,8 @@ export async function run() {
     const config = vscode.workspace.getConfiguration('doroti');
     await config.update('cliPath', process.env.DOROTI_TEST_CLI, vscode.ConfigurationTarget.Global);
     await config.update('dotnetPath', process.env.DOROTI_TEST_DOTNET ?? 'dotnet', vscode.ConfigurationTarget.Global);
-    await config.update('iosTargetFramework', process.env.DOROTI_TEST_IOS_TFM ?? 'net10.0-ios27.0', vscode.ConfigurationTarget.Global);
-    await config.update('iosSdkVersion', process.env.DOROTI_TEST_IOS_SDK ?? '', vscode.ConfigurationTarget.Global);
-    await config.update('iosRuntimeIdentifier', process.env.DOROTI_TEST_IOS_RID ?? '', vscode.ConfigurationTarget.Global);
     if (process.env.DOROTI_TEST_IOS_DEVICE)
-        await config.update('iosDevice', process.env.DOROTI_TEST_IOS_DEVICE, vscode.ConfigurationTarget.Global);
+        await config.update('device', process.env.DOROTI_TEST_IOS_DEVICE, vscode.ConfigurationTarget.Global);
     const extension = vscode.extensions.getExtension('doroti-local.doroti');
     assert.ok(extension);
     const api = await extension.activate();

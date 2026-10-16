@@ -1,6 +1,6 @@
 # DorotiTestbedApp
 
-The managed workspace v2 CLI selects explicit provider aliases. Use `doctor -App ... -Platform ... -Scope managed|target|native|tools|full`; select Windows MAUI with `-Platform windows-maui`. Doctor and actual runtime acceptance are separate. Older development/native-operation examples below describe the former CLI where marked.
+The managed workspace v2 CLI selects explicit provider aliases. Use `doctor -App ... -Platform ... -Scope managed|target|native|tools|full`; select Windows MAUI with `-Platform windows-maui`. TFM/RID come from the workspace manifest. Doctor and actual runtime acceptance are separate.
 
 **English** | [한국어](README.ko.md)
 
@@ -280,7 +280,7 @@ For the independent MAUI backend, replace the project in this command with
 Requires Apple Silicon, macOS 14 or later, and compatible Xcode/macOS workloads.
 The `macos` runner uses native AppKit.
 
-Add `-e DOROTI_MACOS_GRAPHITE=1` to the `dotnet run` command below to select the experimental Graphite/Metal candidate. Ganesh/Metal remains the default. Omit the option to use the default renderer.
+Graphite/Metal is the default. Add `-e DOROTI_MACOS_GRAPHITE=0` to the `dotnet run` command below for the explicit Ganesh/Metal comparison.
 
 ```powershell
 dotnet run --project ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -r osx-arm64
@@ -295,8 +295,9 @@ Trackpad scrolling decelerates after release; discrete mouse-wheel input receive
 Both Mac runners open the text field editing menu with a secondary click or Control-click.
 The menu follows Flutter Cupertino's continuous corners and blurred shadow;
 hovered items use the theme accent and contrasting text color.
-Run `dotnet run --project ./Doroti/validation/fcr7-material-widget -- --mac-text-menu`
-to check light/dark hover and pressed states, shadows, and editing actions.
+The former `--mac-text-menu` validation project is retired. Run the maintained
+CPU editing-action regression with `python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project packages/Doroti.Cupertino/tests/Doroti.Cupertino.Tests -c Release -- --editable-context-menu`.
+Native Mac menu appearance, hover/pressed states and physical input need separate checks.
 
 ```powershell
 dotnet run --project ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj -c Release -r maccatalyst-arm64
@@ -592,7 +593,7 @@ Qt unified captions follow the `MaterialApp` scaffold background color and brigh
 theme animations and sample palette, dark-mode and Acrylic changes.
 
 Linux sample windows request Acrylic with a transparent fallback. A Wayland compositor
-supporting `ext-background-effect-v1` or the legacy KDE blur protocol receives a native blur request;
+supporting `ext-background-effect-v1` receives a native blur request;
 otherwise, the transparent fallback applies.
 
 ## Build and development
@@ -604,29 +605,31 @@ The CLI's `build`, `run`, and `publish` default to Release.
 
 ```powershell
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 doctor -App ./samples/DorotiTestbedApp -Platform all
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build -App ./samples/DorotiTestbedApp -Platform macos -Rid osx-arm64
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform macos -Rid osx-arm64
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build -App ./samples/DorotiTestbedApp -Platform macos
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform macos
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 publish -App ./samples/DorotiTestbedApp -Platform web
 ```
 
 ### Run by platform
 
-Replace `-Platform` and `-Rid` in the CLI examples for your target.
+Select a declared `-Platform` alias. The table shows the current manifest RID;
+`-Rid` is not a CLI override. Use the direct .NET examples above or the deployment
+helper for another device/ABI/profile.
 
-| Target | `-Platform` | `-Rid` / additional options |
+| Target | `-Platform` | Manifest RID / additional options |
 | --- | --- | --- |
-| Windows App SDK | `windows` | Use the default |
+| Windows App SDK | `windows` | `win-x64` |
 | Windows MAUI | `windows-maui` | `win-x64` |
 | macOS AppKit | `macos` | `osx-arm64` |
 | Mac Catalyst | `maccatalyst` | `maccatalyst-arm64` |
 | Linux | `linux` | `linux-x64` |
-| Android | `android` | `android-x64` or `android-arm64`; select a device with `-Device` |
-| iOS | `ios` | `iossimulator-arm64`, `iossimulator-x64`, or `ios-arm64` |
-| Web | `web` | Omit |
+| Android | `android` | `android-arm64`; select a matching device with `-Device` |
+| iOS | `ios` | `iossimulator-x64`; select a matching simulator with `-Device` |
+| Web | `web` | `browser-wasm` |
 
 Web's `ASPNETCORE_ENVIRONMENT=Development` is independent of the build configuration.
-The default is a **Release build in the Development hosting environment**. Check
-`Doroti artifact: configuration=...` in CLI output to confirm the build configuration.
+The default is a **Release build in the Development hosting environment**.
+Pass `-Configuration Debug` explicitly for a Debug build; `dev` requires Debug.
 
 The root `DorotiTestbedApp.csproj` is the shared app library.
 `dotnet run --project DorotiTestbedApp.csproj -p:DorotiTarget=...` fails with `DOROTIAPP100`;
@@ -634,7 +637,7 @@ select a platform runner instead. Build the target you need rather than a full s
 
 ### Native bridge
 
-Android, iOS, AppKit and Mac Catalyst retain app native libraries/bindings in their source runners. The current managed provider CLI does not advertise native doctor/build/open/add operations. Build the selected runner directly with `dotnet build` for its declared profile. Android device discovery is typed (`devices -App ... -Platform android`) and lists authorized devices matching the workspace RID; deployment requires a matching device. Mobile development transport and Apple native/device/signing acceptance remain separate migration gates.
+Android, iOS, AppKit and Mac Catalyst retain app native libraries/bindings in their source runners. The current managed provider CLI does not advertise native doctor/build/open/add operations. Build the selected runner directly with `dotnet build` for its declared profile. Android device discovery is typed (`devices -App ... -Platform android`) and lists authorized devices matching the workspace RID; deployment requires a matching device. Android Debug Mono `dev` uses the Python/ADB adapter; Apple Debug `dev` uses provider-packaged Mac/iOS adapters with session-matched Stop. Current Apple runtime acceptance remains unverified. Apple native/device/signing acceptance remains separate from provider planning.
 
 ### Project layout and resources
 

@@ -38,7 +38,7 @@ Doroti shares its widget, layout, painting, and semantics layers across platform
 | macOS | Native AppKit / MetalKit (`MTKView`) | AppKit adapter in `Doroti.Host.Maui` | Skia Graphite / Metal |
 | Mac Catalyst | .NET MAUI / UIKit (Mac Catalyst) | `Doroti.Host.Maui` | Skia Graphite / Metal |
 | Web | .NET WebAssembly, render Worker / canvas | `Doroti.Host.Web` | Desktop/iOS: Ganesh/WebGL2; Android: Graphite/Dawn/WebGPU preferred |
-| Linux | Qt 6 `QWindow`, native C ABI bridge | `Doroti.Host.Qt` | Skia Graphite / Vulkan |
+| Linux | Qt 6 `QQuickWindow`, native C ABI bridge | `Doroti.Host.Qt` | Skia Graphite / Vulkan; Qt owns device/presentation |
 
 Web auto selection prefers WebGL2 on desktop/iOS and WebGPU on Android, with initial fallback when available. Explicit `dorotiRenderer=worker-direct-webgl` or `worker-direct-webgpu` overrides auto selection. Runtime graphics loss requires a fresh endpoint; see the [Web configuration guide](Doroti/README.md#web).
 
@@ -54,7 +54,7 @@ The sample application is the starting point for exploring Doroti. Prepare these
 - **Windows, macOS, and Linux:** Install [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6) to run the repository scripts.
 - **.NET SDK:** Install the 10.0.400 feature band for targets other than iOS. For the iOS Testbed, also install 11.0.100-rc.2.26504.105 alongside .NET 10.
 - **Platform tools:** The default Windows runner needs the Windows C++ build tools in the [platform prerequisites](Doroti/README.md#platform-prerequisites). See that guide for workloads and native tools for other targets.
-- **WGSL sample build:** The source-tree Testbed currently needs the [WGSL compiler](tools/Doroti.Wgsl/README.md). Install the Rust 1.95.0 toolchain and build it once as shown below.
+- **Custom WGSL effects:** Apps declaring `DorotiGpuEffect` inputs need the optional [WGSL compiler](tools/Doroti.Wgsl/README.md). The current Testbed does not declare these inputs.
 
 Clone the repository and run the sample from its root:
 
@@ -62,7 +62,6 @@ Clone the repository and run the sample from its root:
 git clone https://github.com/Dynaruid/DorotiLab.git
 cd DorotiLab
 
-python Doroti/eng/run-with-timeout.py cargo build --locked --manifest-path tools/Doroti.Wgsl/Cargo.toml
 $env:DOROTI_TESTBED_MODE = 'sample'
 pwsh -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform windows
 ```
@@ -109,7 +108,8 @@ GPU compatibility, input methods, accessibility, performance, signing, and store
 
 | Path | Contents |
 | --- | --- |
-| [`Doroti/src/`](Doroti/src/) | Framework, runtime, rendering, hosts, and SDK |
+| [`Doroti/src/`](Doroti/src/) | Shared framework, runtime, rendering, tooling, and SDK |
+| [`packages/`](packages/README.md) | Independent Material/Cupertino packages and platform providers |
 | [`samples/DorotiTestbedApp/`](samples/DorotiTestbedApp/) | Shared sample application and platform runners |
 | [`Doroti/templates/`](Doroti/templates/) | `dotnet new doroti-app` template |
 | [`Doroti/eng/`](Doroti/eng/) | Build, run, packaging, and diagnostic tools |

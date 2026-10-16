@@ -61,6 +61,8 @@ def main(suite, extra=()):
             command("doctor-contract", sys.executable, "Doroti/tests/doctor_contract.py")
             command("full-review-tools", sys.executable, "Doroti/tests/full_review_tools.py")
             command("android-development-bridge", sys.executable, "Doroti/tests/android_development_bridge.py")
+            command("apple-development-contract", sys.executable, "Doroti/tests/apple_development_contract.py")
+            command("ios-development-bridge", sys.executable, "Doroti/tests/ios_development_bridge.py")
         if suite in ("Build", "Developer", "Release"):
             command("widget-regressions", "dotnet", "run", "--project",
                     "Doroti/tests/Doroti.Tests/Doroti.Tests.csproj", "-c", "Debug",

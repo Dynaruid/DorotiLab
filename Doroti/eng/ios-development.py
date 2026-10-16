@@ -21,6 +21,7 @@ import threading
 import time
 from urllib.parse import unquote
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from apple_development_session import AppleDevelopmentSession, stop_requested
 
 
 def network_relay(host, port):
@@ -138,9 +139,9 @@ def make_server(session):
     return ThreadingHTTPServer(('127.0.0.1', 0), Handler)
 
 
-def stop_device_app(device, bundle_id):
+def stop_device_app(device, bundle_id, xcrun='xcrun', expected_pid=None):
     def info(kind, search):
-        raw = subprocess.check_output(['xcrun', 'devicectl', 'device', 'info', kind,
+        raw = subprocess.check_output([xcrun, 'devicectl', 'device', 'info', kind,
             '--device', device, '--search', search, '--json-output', '-'],
             stderr=subprocess.DEVNULL, text=True, timeout=15)
         return json.loads(raw)['result']
@@ -149,23 +150,24 @@ def stop_device_app(device, bundle_id):
             continue
         url = app['url'].rstrip('/') + '/'
         for process in info('processes', unquote(url.rstrip('/').rsplit('/', 1)[-1]))['runningProcesses']:
-            if process.get('executable', '').startswith(url):
-                subprocess.run(['xcrun', 'devicectl', 'device', 'process', 'signal',
+            if process.get('executable', '').startswith(url) and (expected_pid is None or process.get('processIdentifier') == expected_pid):
+                subprocess.run([xcrun, 'devicectl', 'device', 'process', 'signal',
                     '--device', device, '--pid', str(process['processIdentifier']), '--signal', 'SIGTERM'],
                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=15)
 
 
 class DeviceSession(Session):
     """Relay status through CoreDevice; SDK deltas use a separate connection."""
-    def __init__(self, directory, session_id, device):
+    def __init__(self, directory, session_id, device, xcrun='xcrun'):
         super().__init__(directory, session_id)
         self.device = device
+        self.xcrun = xcrun
         self.bundle_id = None
         self.device_directory = 'Documents/Doroti.Dev/' + session_id
         self.delivered = None
 
     def copy(self, direction, source, destination):
-        result = subprocess.run(['xcrun', 'devicectl', 'device', 'copy', direction,
+        result = subprocess.run([self.xcrun, 'devicectl', 'device', 'copy', direction,
             '--device', self.device, '--domain-type', 'appDataContainer', '--domain-identifier', self.bundle_id,
             '--source', str(source), '--destination', str(destination)],
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=5)
@@ -181,7 +183,7 @@ class DeviceSession(Session):
             pid = runtime.get('processId')
             if not isinstance(pid, int) or pid <= 0:
                 raise ValueError('Invalid device PID')
-            raw = subprocess.check_output(['xcrun', 'devicectl', 'device', 'info', 'processes',
+            raw = subprocess.check_output([self.xcrun, 'devicectl', 'device', 'info', 'processes',
                 '--device', self.device, '--filter', 'processIdentifier = ' + str(pid), '--json-output', '-'],
                 stderr=subprocess.DEVNULL, text=True, timeout=5)
             if not json.loads(raw)['result']['runningProcesses']:
@@ -211,19 +213,29 @@ def main():
     parser.add_argument('--framework')
     parser.add_argument('--sdk-version')
     parser.add_argument('--dotnet', default='dotnet')
+    parser.add_argument('--xcrun', default='xcrun')
+    parser.add_argument('--working-directory', type=Path)
     parser.add_argument('--host', help='Mac LAN IPv4 address reachable from a .NET 10 device')
     args = parser.parse_args()
+    with AppleDevelopmentSession(args.session_directory, args.session_id) as ownership:
+        ownership.claim('runner\0' + str(Path(args.runner).resolve()))
+        return run(args, ownership)
+
+
+def run(args, ownership):
     dotnet = shutil.which(args.dotnet)
     if not dotnet:
         raise ValueError('The configured .NET executable was not found: ' + args.dotnet)
     args.dotnet = str(Path(dotnet).resolve())
+    if args.sdk_version and not re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.-]+)?', args.sdk_version):
+        raise ValueError('Invalid SDK version')
     physical = args.rid == 'ios-arm64'
     if physical and not args.framework and (args.sdk_version or '').startswith('11.'):
         args.framework = 'net11.0-ios'
     coreclr = physical and (args.framework or '').startswith('net11.')
     network_device = physical and not coreclr
     relay = None
-    session = DeviceSession(args.session_directory, args.session_id, args.device) if physical else Session(args.session_directory, args.session_id)
+    session = DeviceSession(args.session_directory, args.session_id, args.device, args.xcrun) if physical else Session(args.session_directory, args.session_id)
     server = None if physical else make_server(session)
     if server:
         threading.Thread(target=server.serve_forever, daemon=True).start()
@@ -236,17 +248,15 @@ def main():
     # Do not give the sandbox a path on the Mac. The runtime publishes remotely.
     environment.pop('DOROTI_DEV_SESSION', None)
     command = [args.dotnet, 'watch', '--project', args.runner, '--configuration', 'Debug',
-        '--runtime', args.rid, '--device', args.device, '--no-launch-profile',
+        '--device', args.device, '--no-launch-profile',
         '--property:DorotiIosDevelopment=true', '--property:DorotiCompilationMode=' + ('CoreClr' if coreclr else 'Mono'),
         '--property:BuildInParallel=false', '--property:RestoreDisableParallel=true']
     if environment.get('DOTNET_CLI_CONTEXT_VERBOSE', '').lower() in ('true', '1', 'trace'):
         command.append('--verbose')
     if args.framework:
         command.append('--property:DorotiIosTargetFramework=' + args.framework)
-    working_directory = args.app_root
+    working_directory = args.working_directory or Path(args.runner).resolve().parent
     if args.sdk_version:
-        if not re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.-]+)?', args.sdk_version):
-            raise ValueError('Invalid SDK version')
         working_directory = session.directory / 'toolchain'
         working_directory.mkdir(exist_ok=True)
         atomic_json(working_directory / 'global.json', {'sdk': {
@@ -281,17 +291,20 @@ def main():
         artifacts = Path(args.app_root) / '.doroti/cache/development' / sdk / args.rid
         if network_device:
             artifacts /= 'mono-interpreter'
-        query = [args.dotnet, 'msbuild', args.runner, '-nologo', '-getProperty:ApplicationId,DorotiIosDevelopmentRuntimeVersion',
-                 '-p:Configuration=Debug', '-p:RuntimeIdentifier=' + args.rid,
+        query = [args.dotnet, 'msbuild', args.runner, '-nologo', '-getProperty:ApplicationId,DorotiIosDevelopmentRuntimeVersion,RuntimeIdentifier',
+                 '-p:Configuration=Debug',
                  '-p:DorotiIosDevelopment=true', '-p:DorotiCompilationMode=' + ('CoreClr' if coreclr else 'Mono'), '-p:ArtifactsPath=' + str(artifacts)]
         if args.framework:
             query.append('-p:DorotiIosTargetFramework=' + args.framework)
         query_environment = dict(environment, DOTNET_CLI_CONTEXT_VERBOSE='false')
         properties = json.loads(subprocess.check_output(query, cwd=working_directory, env=query_environment,
                                                        text=True, timeout=30))['Properties']
+        if properties['RuntimeIdentifier'] != args.rid:
+            raise ValueError('The runner RID differs from the workspace; update the manifest and runner together.')
         bundle_id = properties['ApplicationId']
         if not bundle_id or any(c.isspace() for c in bundle_id):
             raise ValueError('The iOS runner must declare ApplicationId for session cleanup.')
+        ownership.claim_device(args.device, bundle_id)
         if coreclr:
             runtime_version = properties['DorotiIosDevelopmentRuntimeVersion']
             if not re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.-]+)?', runtime_version):
@@ -305,7 +318,7 @@ def main():
         child = subprocess.Popen(command, cwd=working_directory, env=environment,
                                  start_new_session=True)
         parent = os.getppid()
-        while child.poll() is None and not stop.wait(.25) and os.getppid() == parent:
+        while child.poll() is None and not stop.wait(.25) and os.getppid() == parent and not stop_requested(args.session_directory, args.session_id):
             if physical:
                 session.poll()
             else:
@@ -326,9 +339,10 @@ def main():
             if child and bundle_id:
                 # Simulator apps are launched by launchd, outside the watch process tree.
                 if physical:
-                    stop_device_app(args.device, bundle_id)
+                    stop_device_app(args.device, bundle_id, args.xcrun,
+                                    expected_pid=session.runtime.get('processId') if session.runtime else None)
                 else:
-                    subprocess.run(['xcrun', 'simctl', 'terminate', args.device, bundle_id],
+                    subprocess.run([args.xcrun, 'simctl', 'terminate', args.device, bundle_id],
                                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=15)
         finally:
             if server:

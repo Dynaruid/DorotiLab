@@ -7,7 +7,7 @@ Doroti is independently implemented. Reference checkouts are not runtime depende
 - Upstream: https://github.com/flutter/flutter
 - Pinned R3 API baseline: `56b8e1a851a594b1a154f8ea93270807dab22b9a`
 - Use: read-only API and behavior reference
-- License: BSD 3-Clause; see `../reference/flutter-master/LICENSE`
+- License: BSD 3-Clause; see [the retained license](LICENSES/Flutter-LICENSE.md). The optional reference checkout is prepared separately.
 - Copyright: Copyright 2014 The Flutter Authors
 
 ## Flutter rounded superellipse paths
@@ -16,7 +16,7 @@ Doroti is independently implemented. Reference checkouts are not runtime depende
 - Adapted file: `src/Doroti.Skia.Rendering/SkiaRSuperellipsePath.cs`
 - Copyright 2013 The Flutter Authors; BSD 3-Clause, reproduced in [LICENSES/Flutter-LICENSE.md](LICENSES/Flutter-LICENSE.md).
 - Changes: C# Skia path construction, radius normalization, roundoff guard and a shared contour for painting and clipping.
-- Selected source, hashes and dependency closure: [mac-menu-source-provenance.json](validation/fcr7-material-widget/mac-menu-source-provenance.json).
+- The former `validation/fcr7-material-widget/mac-menu-source-provenance.json` was retired with the validation tree. The adapted source header and retained license remain in the current checkout; the historical provenance manifest is not an available current receipt.
 
 ## Material color image extraction
 
@@ -27,7 +27,7 @@ Doroti is independently implemented. Reference checkouts are not runtime depende
 - License: Apache-2.0, reproduced in [LICENSES/material-color-utilities-Apache-2.0.txt](LICENSES/material-color-utilities-Apache-2.0.txt)
 - Changes: 64-bit histogram moments, floating-point squared sums, Dart centroid rounding, pinned five-iteration Wsmeans initialization and score filtering/hue separation, explicit RGBA-to-ARGB conversion.
 - `PaletteRandom` adapts seeded Dart VM Random from `sdk/lib/_internal/vm/lib/math_patch.dart`; Copyright 2012, the Dart project authors, BSD-3-Clause, reproduced in [LICENSES/dart-BSD-3-Clause.txt](LICENSES/dart-BSD-3-Clause.txt).
-- Selected sources, hashes, and dependency closure: [image-pipeline/source-provenance.json](validation/image-pipeline/source-provenance.json). Existing NuGet `MaterialColorUtilities 0.3.0` supplies Lab/HCT color math.
+- The former `validation/image-pipeline/source-provenance.json` was retired with the validation tree. Current adapted source headers and retained licenses identify attribution; the historical hash manifest is no longer available in the active tree. NuGet `MaterialColorUtilities 0.3.0` supplies Lab/HCT color math.
 
 ## Web development server dependencies
 

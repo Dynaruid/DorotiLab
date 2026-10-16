@@ -10,7 +10,10 @@ public sealed class Extension() : DotnetToolExtension("maui", ["windows", "macos
     protected override IReadOnlyList<(string Id, string Executable, IReadOnlyList<string> Arguments)> RequiredTools(ToolContext context) =>
         context.TargetId == "Android" ? [
             ("adb", context.Options?.SingleOrDefault(value => value.Name == "adbpath")?.Value ?? AndroidDevices.DefaultExecutable(), ["version"]),
-            ("python", context.Options?.SingleOrDefault(value => value.Name == "pythonpath")?.Value ?? (OperatingSystem.IsWindows() ? "python" : "python3"), ["--version"])] : [];
+            ("python", context.Options?.SingleOrDefault(value => value.Name == "pythonpath")?.Value ?? (OperatingSystem.IsWindows() ? "python" : "python3"), ["--version"])]
+        : context.TargetId is "iOS" or "macOS" or "MacCatalyst" ? [
+            ("xcrun", context.Options?.SingleOrDefault(value => value.Name == "xcrunpath")?.Value ?? "xcrun", ["--version"]),
+            ("python", context.Options?.SingleOrDefault(value => value.Name == "pythonpath")?.Value ?? "python3", ["--version"])] : [];
 
     public override async ValueTask<DiagnosticResult> DiagnoseAsync(ToolContext context, CancellationToken token)
     {
@@ -54,7 +57,10 @@ public sealed class Extension() : DotnetToolExtension("maui", ["windows", "macos
         {
             "Android" => new([..configuration.Options, new("adbpath", OptionKind.Text, AndroidDevices.DefaultExecutable(), false, []),
                 new("pythonpath", OptionKind.Text, OperatingSystem.IsWindows() ? "python" : "python3", false, [])]),
-            "iOS" => new([..configuration.Options, new("xcrunpath", OptionKind.Text, "xcrun", false, [])]),
+            "iOS" => new([..configuration.Options, new("xcrunpath", OptionKind.Text, "xcrun", false, []),
+                new("pythonpath", OptionKind.Text, "python3", false, []), new("hotreloadhost", OptionKind.Text, "", false, [])]),
+            "macOS" or "MacCatalyst" => new([..configuration.Options, new("xcrunpath", OptionKind.Text, "xcrun", false, []),
+                new("pythonpath", OptionKind.Text, "python3", false, [])]),
             _ => configuration,
         };
     }
@@ -81,10 +87,16 @@ public sealed class Extension() : DotnetToolExtension("maui", ["windows", "macos
     }
     public override async ValueTask<ExecutionPlan> PlanAsync(OperationRequest request, CancellationToken token)
     {
+        Check(token); ValidateHost(request.Context);
+        ToolContract.ValidateConfiguration(await GetConfigurationAsync(request.Context, token), request.Options);
+        if (request.Operation == "dev" && request.Context.TargetId is "macOS" or "MacCatalyst")
+            return AppleDevelopment.Plan(request);
         if (request.Context.TargetId == "iOS")
         {
-            var iosPlan = await base.PlanAsync(request with { Context = request.Context with { DeviceId = null } }, token);
-            if (request.Operation != "run") return iosPlan;
+            if (request.Operation is not ("run" or "dev"))
+                return await base.PlanAsync(request with { Context = request.Context with { DeviceId = null } }, token);
+            if (request.Operation == "dev" && request.Configuration != "Debug")
+                throw new ToolContractException("unsupported-development-profile", "iOS metadata development requires Debug.");
             var iosDevices = (await GetDevicesAsync(request.Context with { Options = request.Options }, token)).Devices;
             var iosSelected = request.Context.DeviceId;
             if (iosSelected is null)
@@ -94,6 +106,8 @@ public sealed class Extension() : DotnetToolExtension("maui", ["windows", "macos
             }
             if (!iosDevices.Any(device => device.Id == iosSelected)) throw new ToolContractException("unsupported-device", iosSelected);
             if (request.Context.RuntimeIdentifier is null) throw new ToolContractException("runtime-selection-required", "iOS launch requires an explicit device/simulator RID.");
+            if (request.Operation == "dev") return AppleDevelopment.Plan(request, iosSelected);
+            var iosPlan = await base.PlanAsync(request with { Context = request.Context with { DeviceId = null } }, token);
             return iosPlan with { Steps = iosPlan.Steps.Select(step => step with { Arguments = [..step.Arguments,
                 "-p:_DeviceName=" + (request.Context.RuntimeIdentifier.StartsWith("iossimulator-", StringComparison.Ordinal) ? ":v2:udid=" : "") + iosSelected] }).ToArray() };
         }
@@ -119,7 +133,6 @@ public sealed class Extension() : DotnetToolExtension("maui", ["windows", "macos
     }
     protected override IReadOnlyList<string> Arguments(OperationRequest request)
     {
-        if (request.Operation == "dev" && request.Context.TargetId == "iOS") throw new ToolContractException("unsupported-operation", "iOS development requires its device transport profile; generic dotnet watch is not advertised.");
         if (request.Operation == "run" && request.Context.TargetId is "Android" or "iOS") return ["build", request.Context.Project, "-t:Run", "-c", request.Configuration];
         return base.Arguments(request);
     }

@@ -23,7 +23,14 @@ Android typed planning now uses the provider-packaged ADB development adapter
 (Python 3) and declares nonce-matched graceful Stop. The adapter owns the
 device/package lease, SDK watcher and recorded USB port independently of the
 tool connection. Android Debug Mono metadata reload is qualified separately from
-Release/AOT and x64 device execution. iOS typed development remains Unsupported.
+Release/AOT and x64 device execution. Apple Debug development now plans the packaged
+Mac/iOS Python adapters using the declared TFM/RID and runner SDK directory.
+AppKit/Catalyst enable their development startup/transport policy; iOS simulators
+use local request/frame acknowledgments, .NET 10 iPhones use the SDK LAN relay,
+and .NET 11 CoreCLR devices use SDK USB deltas plus CoreDevice acknowledgment files.
+The adapters retain process-held session/device leases and nonce-matched graceful
+Stop. Portable plan/adapter/relay and real tool-package checks are separate from
+current Apple runtime/installed-VSIX acceptance, which remains notVerified.
 The iOS runtime profile
 is owned only by `packages/platforms/build/Doroti.IosNativeAot.props`, including
 template consumers. Latest scope and remaining gates are in

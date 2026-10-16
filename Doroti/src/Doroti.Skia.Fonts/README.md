@@ -28,5 +28,6 @@ The native font cache must already be populated and valid. A missing/corrupt fil
 fails with `DOROTIFONT001`; it does not silently produce an application without
 its default fonts. These settings govern font restoration, not NuGet restore.
 
-Web does not reference this package. Its defaults and missing-glyph fonts load
-from CDN at runtime; see `../Doroti.Host.Web/Fonts/README.md`.
+Web does not reference this package. It supports runtime CDN defaults/fallback
+and explicit app-owned offline fonts; see the
+[Web font guide](../../../packages/platforms/web/Doroti.Host.Web/Fonts/README.md).

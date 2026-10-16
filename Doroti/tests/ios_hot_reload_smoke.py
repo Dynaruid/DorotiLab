@@ -11,6 +11,7 @@ import signal
 import subprocess
 import time
 import uuid
+from apple_development_fixture import create
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -27,7 +28,8 @@ def main():
     evidence = args.evidence.resolve()
     assert evidence.is_relative_to(ROOT / 'temp/testing')
     evidence.mkdir(parents=True, exist_ok=False)
-    source = ROOT / 'samples/DorotiTestbedApp/src/MaterialSample/HotReloadSample.cs'
+    workspace = create(evidence / 'app', 'ios', args.framework, args.rid, args.sdk_version)
+    source = workspace / 'src/MaterialSample/HotReloadSample.cs'
     original = source.read_bytes()
     text = original.decode('utf-8-sig')
     session_id = uuid.uuid4().hex
@@ -37,8 +39,8 @@ def main():
         DOROTI_RELOAD_PROBE=device_probe if physical else str(evidence / 'state.json'))
     log = (evidence / 'watch.log').open('w')
     process = subprocess.Popen(['pwsh', '-NoProfile', '-File', str(ROOT / 'Doroti/eng/doroti.ps1'),
-        'dev', '-App', str(ROOT / 'samples/DorotiTestbedApp'), '-Platform', 'ios', '-Device', args.device,
-        '-IosTargetFramework', args.framework, '-Rid', args.rid, '-SessionId', session_id, '-SessionDirectory', str(evidence), '-DotnetPath', args.dotnet] + (['-IosSdkVersion', args.sdk_version] if args.sdk_version else []),
+        'dev', '-App', str(workspace), '-Platform', 'ios', '-Device', args.device,
+        '-SessionId', session_id, '-SessionDirectory', str(evidence), '-DotnetPath', args.dotnet],
         cwd=ROOT, env=environment, stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
 
     def read(name):

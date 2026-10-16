@@ -17,7 +17,7 @@ This guide covers the framework, development environment, application startup, a
 
 - Material and Cupertino widgets, layout, state, painting, and semantics in C#.
 - A platform-neutral application library with separate native and Web runners.
-- Skia Graphite rendering: Vulkan on Windows, Android, and Linux; Metal on Apple platforms; Dawn/WebGPU on Web.
+- Skia Graphite rendering: Vulkan on Windows, Android, and Linux; Metal on Apple platforms. Web defaults to Ganesh/WebGL2 outside Android and prefers Graphite/Dawn/WebGPU on Android.
 - Native hosts for Windows App SDK, optional Windows MAUI, Android, UIKit, AppKit, Mac Catalyst, WebAssembly, and Qt.
 - Shared startup, assets, native bindings, templates, and build tooling.
 
@@ -26,6 +26,7 @@ See the [platform implementation table](../README.md#platforms) for the host and
 ## Requirements
 
 Release app DLL obfuscation with Obfuscar is optional and supports ReadyToRun publishing. NativeAOT and Mono/WebAssembly AOT paths are excluded.
+Windows and Linux Qt runners support `PublishSingleFile=true` with untrimmed JIT or individual ReadyToRun output. See the [carousel publish examples](../samples/DorotiCarouselApp/README.md#데스크톱-단일-실행-파일-게시).
 
 ### Shared tools and SDK selection
 
@@ -36,7 +37,7 @@ Release app DLL obfuscation with Obfuscar is optional and supports ReadyToRun pu
 
 `dotnet` searches upward from the **current working directory** for `global.json`. Pointing `--project` at an iOS project does not change SDK selection. Run direct iOS commands from `samples/DorotiTestbedApp/ios`, and other platform commands from the repository root. The workspace CLI's `build/run/publish -App ./samples/DorotiTestbedApp -Platform ios` uses the iOS directory automatically.
 
-SDK selection is separate from the target framework. iOS device Release defaults to NativeAOT; use `-CompilationMode Mono` for the explicit recovery profile. NativeAOT uses `net11.0-ios` and MAUI `11.0.0-rc.2.26505.5`. Debug, simulators, and the explicit Mono profile currently retain `net10.0-ios`. Use `publish` to produce the signed device app; see [iOS sample instructions](../samples/DorotiTestbedApp/README.md#ios-sample).
+SDK selection is separate from the target framework. Direct Testbed iOS device Release defaults to NativeAOT; pass `-p:DorotiCompilationMode=Mono -p:PublishAot=false` to `dotnet build/publish` for the explicit Mono profile. NativeAOT defaults to `net11.0-ios` and MAUI `11.0.0-rc.2.26505.5`; Debug and simulators retain `net10.0-ios`. The workspace CLI uses the TFM/RID declared in its manifest; the current Testbed `ios` alias selects `net10.0-ios` / `iossimulator-x64`. Use the [iOS sample instructions](../samples/DorotiTestbedApp/README.md#ios-sample) for other simulators, signed devices, and SDK selection.
 
 **.NET 11 RC2 + Xcode 27:** RC2 requires Xcode 27.0 and workload set `11.0.100-rc.2.26509.2` (iOS `27.0.12212-net11-rc.2`). Xcode version validation stays enabled. See the [SampleApp2 build example](../samples/DorotiSampleApp2/README.md#net-11-rc2--xcode-27-native-aot) and [official RC2 requirements](https://github.com/dotnet/macios/releases/tag/dotnet-11.0.1xx-rc2-12212).
 
@@ -52,7 +53,7 @@ Prepare the tools for the selected platform. Workload names identify .NET instal
 | Mac Catalyst / `maccatalyst-arm64` | Apple Silicon Mac | 10 / `maui-maccatalyst` | A full Xcode installation compatible with the workload, the Mac Catalyst SDK, and Metal support. This is a separate runner from AppKit. |
 | Android / `android-arm64`, `android-x64` | Windows or macOS | 10 / `maui-android` | Android SDK Platforms, Build Tools, Platform Tools (`adb`), and **OpenJDK 17–21**. Install the SDK required by the .NET workload plus **API 34** for the native bridge. Use an Android 7.0/API 24 or later device or an emulator with the matching ABI and Vulkan 1.2 support. |
 | iOS / `ios-arm64`, `iossimulator-arm64`, `iossimulator-x64` | macOS + Xcode | 11 / `maui-ios` | A full Xcode installation compatible with the workload and the iOS SDK. Simulators need the matching Simulator runtime; devices need **iOS 15 or later**, a signing certificate, and a provisioning profile. Release NativeAOT targets `ios-arm64`. |
-| Linux Qt / `linux-x64` | Linux x64 | 10 / no separate MAUI workload | **Qt 6.5 or later** Core/Gui/Widgets/OpenGL/OpenGLWidgets development files, **CMake 3.24 or later**, a C/C++20 compiler, `pkg-config`, Wayland client development files, `wayland-scanner`, Vulkan development headers, and fontconfig. Runtime requires the `wayland` or `xcb` QPA plugin and a Vulkan 1.2 driver. |
+| Linux Qt / `linux-x64` | Linux x64 | 10 / no separate MAUI workload | Default Quick: **Qt 6.6 or later** Core/Gui/Widgets/Quick/Qml/QuickControls2 and runtime QML modules. Testbed WebView additionally requires **Qt 6.8 or later** WebEngineQuick/WebChannel. Also **CMake 3.24 or later**, a C/C++20 compiler, `pkg-config`, Wayland client development files, `wayland-scanner`, Vulkan headers, and fontconfig. Runtime requires `wayland` or `xcb` QPA and Vulkan 1.2. See the [native host guide](../packages/platforms/qt/native/README.md) for comparison backends. |
 | Web / `browser-wasm` | Windows, macOS, or Linux | 10 / `wasm-tools` | Android prefers WebGPU when available; other platforms use WebGL2. The Testbed's main-owned runtime also requires WASM threads and COOP/COEP isolation. Explicit `worker-direct-webgpu` requires a hardware WebGPU adapter. |
 
 Windows App SDK 2.4 is restored through NuGet and deployed with the target; a separate machine-wide Windows App Runtime installation is not required. The Android native bridge uses the repository's Gradle 8.10.2 wrapper and AGP 8.6.1. Set `JAVA_HOME` to a supported JDK and add `adb` to `PATH`. On Apple hosts, check the selected Xcode with `xcode-select -p` and `xcodebuild -version`.
@@ -99,9 +100,23 @@ pwsh -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform
 
 `describe -App <workspace> -Platform all` reports declared provider aliases, host restrictions, supported operations and development transport. `build`, `run`, `publish` and `dev` require a declared alias and provider support; `dev` requires Debug. Configuration/device/template services are provided by extensions, and unsupported services fail explicitly. The built-in template is installed with `dotnet new` and supports `--design widgets|material|cupertino`.
 
-The former `-WindowsBackend`, `-Rid`, `-LastSuccessful`, `-NoBuild`, `native` and fixed template command switches are not part of the managed provider CLI. Direct runner/MSBuild settings remain available for supported source builds. Built-in mobile development transport, detailed native maintenance operations and template registry services remain migration work.
+The former `-WindowsBackend`, `-Rid`, `-LastSuccessful`, `-NoBuild`, `-NoRestore`, `native` and fixed template command switches are not part of the managed provider CLI. TFM/RID/backend/profile selection belongs to `doroti-workspace.json`; use direct runner/MSBuild commands for other supported build profiles. Android Debug Mono development uses the provider's Python/ADB adapter. Apple Debug development uses packaged Python adapters for AppKit, Catalyst, iOS simulators and the declared iPhone Mono LAN/CoreCLR USB profiles; current Apple runtime acceptance remains unverified. See the [VS Code guide](../tools/vscode-doroti/README.md) for available development targets.
 
 Repository maintenance commands are `validate -ValidationSuite <suite>`, `audit`, and `release` (the Release verification suite). Local package candidates use [release-candidate.py](eng/release-candidate.py) with independent version arguments.
+
+### Local release candidates
+
+From a Windows build host, create independent core/provider packages and an isolated NuGet-only template consumer:
+
+```powershell
+python Doroti/eng/run-with-timeout.py --timeout 1200 python Doroti/eng/release-candidate.py --targets windows web --design widgets
+```
+
+The defaults are core `0.4.1-beta`, Material/Cupertino `1.0.0-alpha.1`, and each selected provider's manifest version. Override them with `--core-version`, `--material-version`, `--cupertino-version`, and repeated `--provider-version PROVIDER=VERSION`. `--workspace` selects a workspace v2 manifest; targets must be declared aliases available on the build host, with one profile per provider per run.
+
+Candidates go to a fresh `Doroti/artifacts/release/<version>-<id>/` directory unless `--output` is supplied. `candidate.json` records evaluated versions, package/payload hashes, publish profiles and runtime results. `--build-root` must stay under `Doroti/artifacts`; investigation logs/consumers live under `temp/testing/release-candidate/`. Existing nonempty candidate directories are rejected. These local outputs are disposable under the [storage policy](eng/LOCAL_STORAGE.md).
+
+Runtime checks are opt-in with `--runtime-targets`; Android additionally requires `--device <serial>`. Without them, runtime remains `notVerified`. Signing, clean-machine installation and physical input remain separate gates. The script does not publish to NuGet or GitHub, and `doroti release` runs verification without creating these candidates.
 
 ## Application development
 
@@ -127,7 +142,7 @@ Samples and new templates use the Doroti app icon by default. See [app icon defa
 
 ### Native bindings
 
-Android, iOS, AppKit macOS, and Mac Catalyst runners each reference an app-owned native binding. Android uses `AndroidGradleProject`; Apple uses `XcodeProject`. The .NET runner owns the final application. The `native` commands inspect, build, locate, or extend these workspaces.
+Android, iOS, AppKit macOS, and Mac Catalyst runners each reference an app-owned native binding. Android uses `AndroidGradleProject`; Apple uses `XcodeProject`. The .NET runner owns the final application and builds the binding with its selected profile. Open Android native workspaces in Android Studio and Apple workspaces in Xcode; the provider CLI does not expose `native doctor/build/open/add` commands.
 
 ## Platform configuration
 
@@ -150,7 +165,7 @@ The default path renders through Graphite/Vulkan and presents through D3D12/DXGI
 
 Omitted, `auto`, and unknown renderer values prefer WebGPU on Android and WebGL2 on Windows, iOS/iPadOS, macOS, and other platforms. Before startup, Android auto selects WebGL2 if the runtime/origin is unsuitable or the WebGPU API/adapter is unavailable. Explicit renderer overrides are preserved. Device/context initialization failures after this preflight do not trigger a backend retry. Both paths transfer the visible canvas once. Loader `started` signals runtime/GPU readiness, not the first visible content.
 
-Application bootstrap code lives in `web/src/**/*.ts`; framework Web code lives in `src/Doroti.Host.Web/Web/*.ts`. `Microsoft.TypeScript.MSBuild` compiles both into runner-local `obj` directories, and publishing includes the resulting JavaScript. Node, npm, Bun, and a bundler are not required. Testbed and templates preload the same-origin fallback font and use the import-mapped `dotnet.js`. See [Web renderer options](../samples/DorotiTestbedApp/README.md#web-renderers-and-measurement-options).
+Application bootstrap code lives in `web/src/**/*.ts`; framework Web code lives in `../packages/platforms/web/Doroti.Host.Web/Web/*.ts`. `Microsoft.TypeScript.MSBuild` compiles both into runner-local `obj` directories, and publishing includes the resulting JavaScript. Node, npm, Bun, and a bundler are not required. Testbed and templates preload the same-origin fallback font and use the import-mapped `dotnet.js`. See [Web renderer options](../samples/DorotiTestbedApp/README.md#web-renderers-and-measurement-options).
 
 ### Window appearance
 
@@ -177,7 +192,7 @@ On Windows 11 24H2 or later, request `new WindowBackdropOptions(WindowBackdropMo
 | `Doroti.Host.WindowsAppSdk` + `.Native` | Managed framework integration and native C++ window/input handling |
 | `Doroti.Host.Maui` | Android, UIKit, AppKit, Mac Catalyst, and optional Windows MAUI adapters |
 | `Doroti.Host.Web` | Worker/canvas startup, input, accessibility, and resources |
-| `Doroti.Host.Qt` | Qt 6 `QWindow`, C ABI bridge, input, IME, desktop services, and accessibility |
+| `Doroti.Host.Qt` | Qt 6 `QQuickWindow` (default), C ABI bridge, input, IME, desktop services, and accessibility |
 | `Doroti.Target.*` | Platform-specific package composition and deployment |
 
 Features and fixes belong directly in the owning framework, runtime, renderer, or host project. Update consumers when shared contracts change. The Dart-to-C# compiler and pinned Flutter checkout remain optional import and behavior-comparison tools; they do not overwrite maintained framework source and are not required for ordinary builds.
@@ -192,14 +207,15 @@ Native controls and WebView have host-specific composition constraints. Frame te
 
 | Path | Contents |
 | --- | --- |
-| [`src/`](src/) | Framework, runtime, rendering, hosts, targets, and SDK |
+| [`src/`](src/) | Shared framework, runtime, rendering, tooling, and SDK |
+| [`../packages/`](../packages/README.md) | Material/Cupertino implementations and platform host/target providers |
 | [`templates/`](templates/) | `doroti-app` application workspace template |
 | [`eng/`](eng/) | Build, run, validation, packaging, and diagnostic scripts |
 | [`../tools/`](../tools/) | Repository developer tools |
 | [`tests/`](tests/) | Selected permanent regression sources |
 | [`../tools/Doroti.DartToCSharp/`](../tools/Doroti.DartToCSharp/) | Optional Dart/Flutter import compiler |
 
-Keep generated tool output under `.doroti/` or `artifacts/`. Test sources and raw evidence for one-off runs belong under `../temp/testing/<task>/<run>/`; summarize results and delete that run directory. Maintained suites use `eng/validate.ps1` with a 20-minute timeout. Retained milestone records belong in `../history/`. Compiler-owned `.g.cs` files are not compiled into `src/Doroti.Framework.*`. Repository JSON uses `System.Text.Json`.
+Keep generated tool output under `.doroti/` or `artifacts/`. New test sources, consumers and raw evidence belong under repository-root `temp/testing/<task>/<run>/`; summarize results and delete the owned run directory. See the [testing guide](tests/README.md) for retained-failure and direct-script policies. Maintained suites use `eng/validate.ps1` with a 20-minute timeout. Retained milestone records belong in `../history/`. Compiler-owned `.g.cs` files are not compiled into `src/Doroti.Framework.*`. Repository JSON uses `System.Text.Json`.
 
 ## License
 
