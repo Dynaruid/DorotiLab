@@ -80,5 +80,3 @@ try {
 `PrepareAssemblies=false`, `PostProcessAssemblies=false`는 RC1 assembly-preparer의
 `MarkNSObjects` 오류(`MT2080`)에 사용했던 ILLink registrar 경로입니다.
 RC2 실기기 게시·실행에서 이 설정의 필요성을 다시 검증해야 합니다.
-[도구 업데이트 스크립트](../../../scripts/update-dotnet-macos.py)의 `--dotnet-version 11`은
-위 RC2 SDK·워크로드 조합을 설치합니다.
