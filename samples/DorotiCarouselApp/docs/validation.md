@@ -1,5 +1,27 @@
 # 검증 기록
 
+## 2026-10-17 — Material 아이콘·패키지 분리·트리 셰이킹
+
+홈 탐색, 갤러리 복귀, Open, 데모 Previous/Next와 Shuffle의 문자 기호를 Material 아이콘으로
+교체했습니다. 아이콘 정의·폰트·라이선스는 `Doroti.Icons.Material` / `Doroti.Icons.Cupertino`에 있으며,
+디자인 패키지가 각 아이콘 패키지를 참조합니다. 폰트는 `Icon`이 각 View에서 처음 사용될 때 자동 등록합니다.
+홈의 아이콘 전용 버튼은 툴팁과 최소 44×44 버튼 영역을 갖습니다.
+
+- PASS: 기존 캐러셀 회귀 검사 전체, 다섯 데모의 탐색·상세 보기·셔플과 두 화면 크기.
+- PASS: 별도 폰트 초기화 없이 560×850 / 390×740 CPU 캡처에서 탐색·셔플 아이콘 표시 확인.
+- PASS: Windows App SDK Release 빌드, 경고 0개 / 오류 0개, 아이콘 라이선스의 빌드 출력 복사 확인.
+- PASS: Carousel Web Debug 및 SampleApp2·Testbed 공통 앱 Release 빌드, 각각 경고 0개 / 오류 0개.
+- PASS: Windows Release 폰트 서브셋은 Material 30 codepoint / 3,748 bytes (원본 1,645,184), Cupertino 7 codepoint / 1,860 bytes (원본 257,628).
+- PASS: 아이콘 전용 CPU 앱의 두 View에서 자동 등록, 원본/서브셋 픽셀 일치와 non-BMP 및 미사용 글리프 제거.
+- PASS: 독립 NuGet 직접·전이 참조, 증분 아이콘 변경, 동적·리플렉션 전체 폰트 보존, 옵트아웃, .NET 트리밍과 ReadyToRun 게시·실행.
+- PASS: 트리밍 소비자는 Material getter 하나만 유지하며 미사용 Cupertino DLL을 제거. .NET 코드 트리밍과 폰트 서브셋은 별도 기능입니다.
+- PASS: 별도 `--artifacts-path` 빌드·CPU 실행·아이콘 패키징, WebCIL 정책·도구 해시 변경 시 캐시 갱신 회귀 3개.
+
+검사는 1200초 timeout wrapper로 실행했습니다. CPU 캡처는 삭제 가능한
+`temp/testing/carousel-icon-packages/`, `temp/testing/icon-packages/`에 생성했습니다.
+구성과 재실행 명령은 [아이콘 패키지 문서](../../../packages/icons/README.md)에 있습니다.
+이번 확인에 네이티브 화면, 모바일·Apple 실행이나 scanout/FPS는 포함하지 않았습니다.
+
 ## 2026-10-13 — 데스크톱 단일 파일 게시
 
 Windows App SDK JIT와 ReadyToRun + Obfuscar 게시에서 EXE 하나만 별도 폴더로 복사한

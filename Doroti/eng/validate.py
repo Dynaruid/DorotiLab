@@ -25,6 +25,7 @@ def source():
         "packages/platforms/maui/README.md",
         "Doroti/templates/Doroti.Templates/content/doroti-app/desktop/README.md")]
     docs += [ROOT / f"packages/Doroti.{design}/README.md" for design in ("Material", "Cupertino")]
+    docs += [ROOT / f"packages/Doroti.Icons.{design}/README.md" for design in ("Material", "Cupertino")]
     broken = []
     for doc in set(docs):
         for target in re.findall(r"\]\(([^)]+)\)", doc.read_text(encoding="utf-8-sig")):
@@ -130,6 +131,8 @@ def main(suite, extra=()):
                     "samples/DorotiTestbedApp/windowsappsdk/bin/Release/net10.0-windows10.0.19041.0/win-x64/DorotiTestbedApp.WindowsAppSdk.exe")
         if suite in ("Packages", "Developer", "Release"):
             command("design-package-contract", sys.executable, "Doroti/tests/design_package_contract.py")
+            command("icon-package-contract", sys.executable, "Doroti/tests/icon_packages.py")
+            command("icon-rendering-contract", "dotnet", "run", "--project", "packages/icons/tests/Doroti.Icons.Tests", "-c", "Release", "--", str(run / "icon-rendering"))
         success = True
         evidence = "receipt retained" if suite == "AndroidSmoke" else "raw artifacts cleaned after summary"
         print(f"Validation {suite}: PASS; {evidence}", flush=True)

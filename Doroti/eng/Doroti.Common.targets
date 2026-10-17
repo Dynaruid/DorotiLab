@@ -24,6 +24,7 @@
     <DorotiLicense Include="$(DorotiProductRoot)LICENSE" />
   </ItemGroup>
   <Import Project="Doroti.LicenseRegistration.targets" />
+  <Import Project="../../packages/icons/build/Doroti.Icons.targets" Condition="'$(_DorotiIconTargetsImported)' != 'true' and Exists('$(MSBuildThisFileDirectory)../../packages/icons/build/Doroti.Icons.targets')" />
   <Target Name="RejectMechanicalCandidatesInProductCompile" BeforeTargets="CoreCompile" Condition="'$(IsDorotiProduct)' == 'true'">
     <ItemGroup>
       <_DorotiMechanicalCandidate Include="@(Compile)"

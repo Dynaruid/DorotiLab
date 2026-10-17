@@ -1,5 +1,11 @@
 # Maintained regression tests
 
+`icon_packages.py` packs independent icon packages and uses isolated NuGet consumers to verify font
+subsets, incremental icon changes, unsafe dynamic-use fallback, opt-out, actual .NET trimming and
+ReadyToRun publish/runtime behavior. `packages/icons/tests/Doroti.Icons.Tests` verifies automatic
+registration in two successive Views and compares original/subset glyph pixels, including non-BMP.
+Run both with `python Doroti/eng/run-with-timeout.py --timeout 1200`.
+
 `obfuscar_contract.py` runs the pinned Obfuscar tool against a real app/consumer
 fixture and verifies metadata renaming, runtime/public API/reflection behavior,
 incremental opt-in/out, actual ReadyToRun publish/header/runtime behavior, AOT

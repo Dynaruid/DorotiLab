@@ -10,7 +10,6 @@
     <DefineConstants>$(DefineConstants);DOROTI_FONT_PROBE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <EmbeddedResource Include="assets/fonts/CupertinoIcons.ttf" LogicalName="CupertinoSample.icons.ttf" />
     <ProjectReference Include="..\..\Doroti\src\Doroti.Hosting\Doroti.Hosting.csproj" />
     <ProjectReference Include="../../packages/Doroti.Cupertino/Doroti.Cupertino.csproj" />
   </ItemGroup>

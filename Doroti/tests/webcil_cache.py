@@ -9,6 +9,45 @@ from xml.sax.saxutils import escape
 
 
 class WebcilCacheTests(unittest.TestCase):
+    def test_icon_subset_policy_and_tool_content(self):
+        target = Path(__file__).resolve().parents[2] / "packages/icons/build/Doroti.Icons.targets"
+        with tempfile.TemporaryDirectory(prefix="doroti-icon-webcil-") as directory:
+            root = Path(directory)
+            tool = root / "Tool.dll"
+            tool.write_bytes(b"original tool")
+            project = root / "icons.proj"
+            project.write_text(f'''<Project>
+              <PropertyGroup><RuntimeIdentifier>browser-wasm</RuntimeIdentifier><Configuration>Release</Configuration>
+                <IntermediateOutputPath>{escape(str(root / 'obj'))}/</IntermediateOutputPath></PropertyGroup>
+              <Target Name="ResolveReferences" />
+              <Import Project="{escape(str(target))}" />
+              <PropertyGroup><_DorotiIconToolProject></_DorotiIconToolProject><_DorotiIconTools>{escape(str(tool))}</_DorotiIconTools></PropertyGroup>
+            </Project>''')
+            caches = [root / 'obj/webcil' / sub / (name + '.wasm') for sub in ('', 'publish')
+                      for name in ('Doroti.Icons.Material', 'Doroti.Icons.Cupertino')]
+            def seed():
+                for cache in caches:
+                    cache.parent.mkdir(parents=True, exist_ok=True)
+                    cache.write_bytes(b"cached subset")
+            def run(enabled):
+                result = subprocess.run(['dotnet', 'msbuild', str(project), '-nologo', '-verbosity:quiet',
+                                         '-target:InvalidateDorotiIconWebCil', '-property:DorotiIconTreeShaking=' + str(enabled).lower()],
+                                        capture_output=True, text=True)
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            seed(); run(True)
+            self.assertFalse(any(cache.exists() for cache in caches))
+            seed(); run(True)
+            self.assertTrue(all(cache.exists() for cache in caches))
+            run(False)
+            self.assertFalse(any(cache.exists() for cache in caches), 'Opt-out must not reuse a smaller font')
+            seed(); run(False)
+            self.assertTrue(all(cache.exists() for cache in caches))
+            stamp = tool.stat()
+            tool.write_bytes(b"modified tool")
+            os.utime(tool, ns=(stamp.st_atime_ns, stamp.st_mtime_ns))
+            run(False)
+            self.assertFalse(any(cache.exists() for cache in caches), 'Tool content changes must invalidate cached icon assemblies')
+
     def test_widget_tree_interpretation_keeps_skia_aot_and_honors_opt_out(self):
         target = Path(__file__).resolve().parents[2] / "packages/platforms/build/Doroti.Web.targets"
         with tempfile.TemporaryDirectory(prefix="doroti-aot-tree-") as directory:

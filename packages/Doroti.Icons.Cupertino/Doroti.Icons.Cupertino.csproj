@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk" TreatAsLocalProperty="Version;PackageVersion">
+  <Import Project="Version.props" />
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsDorotiProduct>true</IsDorotiProduct>
+    <IsAotCompatible>true</IsAotCompatible>
+    <Description>Cupertino icon definitions and bundled font for Doroti.</Description>
+    <Authors>Doroti contributors</Authors>
+    <PackageTags>doroti;ui;icons;cupertino</PackageTags>
+    <DorotiPackageReadmeSource>$(MSBuildProjectDirectory)/README.md</DorotiPackageReadmeSource>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../Doroti/src/Doroti.Framework.Widgets/Doroti.Framework.Widgets.csproj" />
+    <ProjectReference Include="../../tools/Doroti.IconTools/Doroti.IconTools.csproj" ReferenceOutputAssembly="false" PrivateAssets="all"
+                      GlobalPropertiesToRemove="TargetFramework;TargetFrameworks;RuntimeIdentifier;RuntimeIdentifiers;PublishAot;PublishTrimmed;PublishReadyToRun;PublishSingleFile;SelfContained" />
+    <EmbeddedResource Include="assets/CupertinoIcons.ttf" LogicalName="Doroti.Icons.Cupertino.font" />
+    <DorotiLicense Include="assets/CupertinoIcons.LICENSE" />
+    <DorotiLicense Include="../../Doroti/LICENSES/Flutter-LICENSE.md" />
+    <DorotiLicense Include="../../tools/Doroti.IconTools/LICENSE.Mono.Cecil.txt" />
+  </ItemGroup>
+  <Import Project="../icons/build/Package.targets" />
+</Project>

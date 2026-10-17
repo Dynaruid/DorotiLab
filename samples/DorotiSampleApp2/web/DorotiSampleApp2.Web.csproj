@@ -27,7 +27,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="../assets/fonts/**/*" Link="wwwroot/fonts/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
-    <Content Remove="../assets/fonts/CupertinoIcons.*" />
     <Content Remove="../assets/fonts/Galmuri/**/*" Condition="'$(DorotiSampleWebFontSource)' != 'Assets'" />
   </ItemGroup>
   <ItemGroup>
@@ -66,7 +65,7 @@
   <ItemGroup Condition="'$(DorotiWebFontValidation)' == 'true'">
     <Compile Include="Validation/WebFontProbe.cs" />
     <Content Include="../../DorotiTestbedApp/assets/fonts/Roboto-regular.ttf" Link="wwwroot/font-probe/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
-    <Content Include="../../DorotiTestbedApp/assets/fonts/MaterialIcons-Regular.otf" Link="wwwroot/font-probe/icons.otf" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="../../../packages/Doroti.Icons.Material/assets/MaterialIcons.otf" Link="wwwroot/font-probe/icons.otf" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
   <Import Project="../../../Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.targets" />
 </Project>

@@ -194,6 +194,20 @@ public class Icon : StatelessWidget
                 }
             }
         }
+        if (iconLocal.font is { } font)
+        {
+            var loading = font.EnsureLoaded(View.of(context));
+            if (!loading.asTask().IsCompletedSuccessfully)
+            {
+                var loadedIcon = iconWidget;
+                iconWidget = new FutureBuilder<bool>(future: loading, builder: (_, snapshot) =>
+                {
+                    if (snapshot.hasError)
+                        throw new InvalidOperationException("Could not load the icon font.", snapshot.error as Exception);
+                    return snapshot.connectionState == ConnectionState.done && snapshot.data == true ? loadedIcon : new SizedBox();
+                });
+            }
+        }
         return new Semantics(
             label: semanticLabel,
             child: new ExcludeSemantics(

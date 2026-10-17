@@ -14,6 +14,7 @@
     <DorotiPackageReadmeSource>$(MSBuildProjectDirectory)/README.md</DorotiPackageReadmeSource>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../Doroti.Icons.Cupertino/Doroti.Icons.Cupertino.csproj" />
     <Compile Include="src/**/*.cs" />
     <ProjectReference Include="../../Doroti/src/Doroti.Runtime/Doroti.Runtime.csproj" />
     <ProjectReference Include="../../Doroti/src/Doroti.Ui/Doroti.Ui.csproj" />
@@ -30,10 +31,10 @@
   </ItemGroup>
   <Target Name="ApplyDesignDependencyRanges" AfterTargets="_GetProjectReferenceVersions">
     <ItemGroup>
-      <_ProjectReferencesWithVersions Update="@(_ProjectReferencesWithVersions)" Condition="'%(Filename)' != 'Doroti.Cupertino'">
+      <_ProjectReferencesWithVersions Update="@(_ProjectReferencesWithVersions)" Condition="'%(Filename)' != 'Doroti.Icons.Cupertino'">
         <ProjectVersion>$(DorotiSupportedCoreRange)</ProjectVersion>
       </_ProjectReferencesWithVersions>
-      <_ProjectReferencesWithVersions Update="@(_ProjectReferencesWithVersions)" Condition="'%(Filename)' == 'Doroti.Cupertino'">
+      <_ProjectReferencesWithVersions Update="@(_ProjectReferencesWithVersions)" Condition="'%(Filename)' == 'Doroti.Icons.Cupertino'">
         <ProjectVersion>[1.0.0-alpha.1,2.0.0)</ProjectVersion>
       </_ProjectReferencesWithVersions>
     </ItemGroup>

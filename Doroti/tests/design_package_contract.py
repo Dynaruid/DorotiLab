@@ -31,7 +31,7 @@ def command(label, *args, cwd=ROOT, expected=0):
 
 def evaluate(project, properties=()):
     return json.loads(command("evaluate-" + project.stem + "-" + str(len(results)), "dotnet", "msbuild", project,
-        "-nologo", "-getProperty:TargetFramework,Version,PackageVersion,PackageId", "-getItem:ProjectReference,PackageReference,InternalsVisibleTo", *properties))
+        "-nologo", "-getProperty:TargetFramework,Version,PackageVersion,PackageId,IsPackable", "-getItem:ProjectReference,PackageReference,InternalsVisibleTo", *properties))
 
 
 def closure(roots):
@@ -63,7 +63,9 @@ def verify_feed():
         if identity == "Doroti.Cupertino":
             assert not set(dependencies) & {"Doroti.Material", "MaterialColorUtilities"}
         if identity in ("Doroti.Material", "Doroti.Cupertino"):
-            assert all(value == "[0.4.0-alpha.1, 0.5.0)" for key, value in dependencies.items() if key.startswith("Doroti.") and key != "Doroti.Cupertino"), dependencies
+            assert all(value == "[0.4.0-alpha.1, 0.5.0)" for key, value in dependencies.items()
+                       if key.startswith("Doroti.") and key != "Doroti.Cupertino" and not key.startswith("Doroti.Icons.")), dependencies
+            assert all(value == "[1.0.0-alpha.1, 2.0.0)" for key, value in dependencies.items() if key.startswith("Doroti.Icons.")), dependencies
         details.append({"id": identity, "version": version, "dependencies": dependencies})
     return details
 
@@ -132,6 +134,7 @@ try:
     cupertino_project = ROOT / "packages/Doroti.Cupertino/Doroti.Cupertino.csproj"
     testing_project = ROOT / "Doroti/src/Doroti.Testing/Doroti.Testing.csproj"
     graph = closure([material_project, testing_project])
+    graph = {project: model for project, model in graph.items() if model["Properties"]["IsPackable"] == "true"}
     for project, model in graph.items():
         package = model["Properties"]["PackageId"]
         names = {Path(reference["FullPath"]).stem for reference in model["Items"]["ProjectReference"]}
@@ -152,7 +155,8 @@ try:
     for design, project in (("Material", material_project), ("Cupertino", cupertino_project)):
         command("pack-design-update-" + design, "dotnet", "pack", project, "-c", "Debug", "--no-build", "-o", feed, "-p:Doroti" + design + "Version=1.0.0-alpha.2")
     consumer("consumer-design-update", "both", material="1.0.0-alpha.2", cupertino="1.0.0-alpha.2")
-    core_projects = [project for project in graph if project not in (material_project, cupertino_project)]
+    core_projects = [project for project in graph if project not in (material_project, cupertino_project)
+                     and not project.stem.startswith("Doroti.Icons.")]
     for project in core_projects:
         command("pack-core-update-" + project.stem, "dotnet", "pack", project, "-c", "Debug", "--no-build", "-o", feed, "-p:Version=0.4.1-beta.1")
     consumer("consumer-core-update", "both", core="0.4.1-beta.1")

@@ -45,16 +45,6 @@ internal sealed class MaterialDemoEntrypoint : IDorotiViewEntrypoint
 
     private static async Task PrepareSampleResourcesAsync()
     {
-        using var stream =
-            typeof(MaterialDemoEntrypoint).Assembly.GetManifestResourceStream(
-                "MaterialSample.icons.otf"
-            ) ?? throw new InvalidOperationException("MaterialIcons resource is missing.");
-        using var bytes = new MemoryStream();
-        stream.CopyTo(bytes);
-        await DorotiUiLibrary.loadFontFromList(
-            new Uint8List(bytes.ToArray()),
-            fontFamily: "MaterialIcons"
-        );
         // Flutter Web registers its regular Roboto fallback; native hosts also use weight faces.
         foreach (
             var weight in Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb

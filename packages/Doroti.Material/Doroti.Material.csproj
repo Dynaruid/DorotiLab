@@ -29,15 +29,16 @@
     <ProjectReference Include="../../Doroti/src/Doroti.Framework.Rendering/Doroti.Framework.Rendering.csproj" />
     <ProjectReference Include="../../Doroti/src/Doroti.Framework.Widgets/Doroti.Framework.Widgets.csproj" />
     <ProjectReference Include="../Doroti.Cupertino/Doroti.Cupertino.csproj" />
+    <ProjectReference Include="../Doroti.Icons.Material/Doroti.Icons.Material.csproj" />
     <PackageReference Include="MaterialColorUtilities" />
     <EmbeddedResource Include="assets/shaders/ink_sparkle.sksl" LogicalName="Doroti.Material.Shaders.ink_sparkle.sksl" />
   </ItemGroup>
   <Target Name="ApplyDesignDependencyRanges" AfterTargets="_GetProjectReferenceVersions">
     <ItemGroup>
-      <_ProjectReferencesWithVersions Update="@(_ProjectReferencesWithVersions)" Condition="'%(Filename)' != 'Doroti.Cupertino'">
+      <_ProjectReferencesWithVersions Update="@(_ProjectReferencesWithVersions)" Condition="'%(Filename)' != 'Doroti.Cupertino' and '%(Filename)' != 'Doroti.Icons.Material'">
         <ProjectVersion>$(DorotiSupportedCoreRange)</ProjectVersion>
       </_ProjectReferencesWithVersions>
-      <_ProjectReferencesWithVersions Update="@(_ProjectReferencesWithVersions)" Condition="'%(Filename)' == 'Doroti.Cupertino'">
+      <_ProjectReferencesWithVersions Update="@(_ProjectReferencesWithVersions)" Condition="'%(Filename)' == 'Doroti.Cupertino' or '%(Filename)' == 'Doroti.Icons.Material'">
         <ProjectVersion>[1.0.0-alpha.1,2.0.0)</ProjectVersion>
       </_ProjectReferencesWithVersions>
     </ItemGroup>

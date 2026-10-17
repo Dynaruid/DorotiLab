@@ -15,7 +15,7 @@ namespace DorotiSampleApp2;
 public static class App
 {
     public static Func<IDorotiViewEntrypoint> Definition =>
-        () => new DorotiWidgetEntrypoint(() => new CupertinoSample(), LoadIconsAsync);
+        () => new DorotiWidgetEntrypoint(() => new CupertinoSample(), PrepareResourcesAsync);
 
     public static DorotiViewConfiguration ViewConfiguration { get; } = new(
         "Doroti Cupertino Sample",
@@ -29,17 +29,13 @@ public static class App
     public static Func<Task>? ValidateFontsAsync { get; set; }
 #endif
 
-    private static async Task LoadIconsAsync()
+    private static Task PrepareResourcesAsync()
     {
 #if DOROTI_FONT_PROBE
-        if (ValidateFontsAsync is not null) await ValidateFontsAsync();
+        return ValidateFontsAsync?.Invoke() ?? Task.CompletedTask;
+#else
+        return Task.CompletedTask;
 #endif
-        using var stream = typeof(App).Assembly.GetManifestResourceStream("CupertinoSample.icons.ttf")
-            ?? throw new InvalidOperationException("Cupertino icon font is missing.");
-        using var buffer = new MemoryStream();
-        await stream.CopyToAsync(buffer);
-        await DorotiUiLibrary.loadFontFromList(
-            new Uint8List(buffer.ToArray()), fontFamily: "packages/cupertino_icons/CupertinoIcons");
     }
 }
 

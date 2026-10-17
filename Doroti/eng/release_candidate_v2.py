@@ -158,7 +158,7 @@ def main():
         digest = hashlib.sha256()
         for name in sorted(set(subprocess.check_output(['git', 'ls-files', '-co', '--exclude-standard', '-z'], cwd=ROOT).decode().split('\0'))):
             path = ROOT / name
-            if name.startswith(('Doroti/src/', 'packages/', 'Doroti/eng/', 'Doroti/templates/')) and path.is_file():
+            if name.startswith(('Doroti/src/', 'packages/', 'Doroti/eng/', 'Doroti/templates/', 'tools/Doroti.IconTools/')) and path.is_file():
                 digest.update(name.encode()); digest.update(path.read_bytes())
         record['sourceTreeSha256'] = digest.hexdigest()
         record['evaluatedProjects'] = {str(path.relative_to(ROOT)): model['Properties'] for path, (model, _) in graph.items()}

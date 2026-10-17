@@ -11,6 +11,7 @@ public class IconData
     public virtual string? fontPackage { get; private set; }
     public virtual bool matchTextDirection { get; private set; } = default!;
     public virtual List<string>? fontFamilyFallback { get; private set; }
+    public IconFont? font { get; }
 
     public IconData(
         long codePoint,
@@ -18,6 +19,15 @@ public class IconData
         string? fontPackage = null,
         bool matchTextDirection = false,
         List<string>? fontFamilyFallback = null
+    ) : this(codePoint, fontFamily, fontPackage, matchTextDirection, fontFamilyFallback, null) { }
+
+    public IconData(
+        long codePoint,
+        string? fontFamily,
+        string? fontPackage,
+        bool matchTextDirection,
+        List<string>? fontFamilyFallback,
+        IconFont? font
     )
     {
         this.codePoint = codePoint;
@@ -25,6 +35,7 @@ public class IconData
         this.fontPackage = fontPackage;
         this.matchTextDirection = matchTextDirection;
         this.fontFamilyFallback = fontFamilyFallback;
+        this.font = font;
     }
 
     public override bool Equals(object? other)

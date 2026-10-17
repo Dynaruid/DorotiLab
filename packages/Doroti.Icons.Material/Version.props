@@ -1,0 +1,5 @@
+<Project><PropertyGroup>
+  <Version Condition="'$(DorotiMaterialIconsVersion)' == ''">1.0.0-alpha.1</Version>
+  <Version Condition="'$(DorotiMaterialIconsVersion)' != ''">$(DorotiMaterialIconsVersion)</Version>
+  <PackageVersion>$(Version)</PackageVersion>
+</PropertyGroup></Project>

@@ -258,6 +258,9 @@ pwsh -NoProfile -File ./tools/doroti-cloudflared/tunnel.ps1 start -App ./samples
 ## 소스와 라이선스
 
 원본 사진과 카드 이미지는 `assets/images/`에 있으며 공통 앱 DLL에 내장됩니다.
+탐색·셔플 버튼은 [Doroti.Icons.Material](../../packages/Doroti.Icons.Material/README.md)의 아이콘을 사용합니다.
+`Doroti.Material`이 아이콘 패키지를 참조하며, 폰트는 각 View에서 처음 사용할 때 자동 등록됩니다.
+Release 빌드·게시에서는 사용한 글리프만 남기고, 아이콘 패키지의 라이선스도 출력에 포함합니다.
 원본 BSD 3-Clause 라이선스는
 [assets/LICENSE.flutter_custom_carousel](assets/LICENSE.flutter_custom_carousel)에 있습니다.
 앱과 각 참조 라이브러리가 등록한 고지는 빌드·게시 출력의 `licenses/`에 포함됩니다.

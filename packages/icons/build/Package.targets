@@ -1,0 +1,23 @@
+<Project>
+  <Target Name="CollectDorotiIconBuildTools" BeforeTargets="_GetPackageFiles">
+    <MSBuild Projects="$(MSBuildThisFileDirectory)../../../tools/Doroti.IconTools/Doroti.IconTools.csproj"
+             Targets="GetTargetPath" Properties="Configuration=$(Configuration)" BuildInParallel="false"
+             RemoveProperties="TargetFramework;TargetFrameworks;RuntimeIdentifier;RuntimeIdentifiers;PublishAot;PublishTrimmed;PublishReadyToRun;PublishSingleFile;SelfContained">
+      <Output TaskParameter="TargetOutputs" ItemName="_DorotiIconToolOutput" />
+    </MSBuild>
+    <PropertyGroup><_DorotiIconToolPackageRoot>@(_DorotiIconToolOutput->'%(RootDir)%(Directory)')</_DorotiIconToolPackageRoot></PropertyGroup>
+    <Error Condition="!Exists('$(_DorotiIconToolPackageRoot)Doroti.IconTools.dll')" Text="Build the icon tools before packing: $(_DorotiIconToolPackageRoot)Doroti.IconTools.dll" />
+    <ItemGroup>
+      <None Include="$(MSBuildThisFileDirectory)Doroti.Icons.targets" Pack="true" PackagePath="buildTransitive/Doroti.Icons.Build.targets" />
+      <None Include="$(_DorotiIconToolPackageRoot)*.dll;$(_DorotiIconToolPackageRoot)*.json"
+            Pack="true" PackagePath="buildTransitive/tools/" />
+    </ItemGroup>
+  </Target>
+  <Target Name="ApplyIconDependencyRanges" AfterTargets="_GetProjectReferenceVersions">
+    <ItemGroup>
+      <_ProjectReferencesWithVersions Update="@(_ProjectReferencesWithVersions)" Condition="'%(Filename)' == 'Doroti.Framework.Widgets'">
+        <ProjectVersion>[0.4.1-beta,0.5.0)</ProjectVersion>
+      </_ProjectReferencesWithVersions>
+    </ItemGroup>
+  </Target>
+</Project>

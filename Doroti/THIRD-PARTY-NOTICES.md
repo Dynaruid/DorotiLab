@@ -88,8 +88,14 @@ in `reference/flutter_sample_app` (Flutter team, BSD-3-Clause). The original
 copyright headers and license are retained in `LICENSE.flutter` in that directory.
 The local Image demo and its WebP resource are the already retained reference extension.
 
-`samples/DorotiTestbedApp/assets/fonts/MaterialIcons-Regular.otf` is copied from the pinned
+`packages/Doroti.Icons.Material/assets/MaterialIcons.otf` is copied from the pinned
 local Flutter SDK `bin/cache/artifacts/material_fonts/materialicons-regular.otf`.
 Its pinned SDK license (CC BY 4.0) is retained alongside it as `LICENSE.materialicons.txt`.
 The Roboto regular/medium/bold fonts come from the same SDK directory; their
 Apache-2.0 license is retained as `LICENSE.roboto.txt`.
+
+`packages/Doroti.Icons.Cupertino/assets/CupertinoIcons.ttf` and its adjacent
+`CupertinoIcons.LICENSE` retain the Cupertino icon assets previously bundled by DorotiSampleApp2 (MIT).
+Both icon packages retain the source fonts; build-time subsets are derived outputs.
+Their bundled build tools use Mono.Cecil 0.11.6 (MIT); its notice is retained in
+`tools/Doroti.IconTools/LICENSE.Mono.Cecil.txt` and included in both icon packages.

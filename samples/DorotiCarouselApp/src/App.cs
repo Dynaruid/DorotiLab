@@ -44,7 +44,7 @@ internal sealed class CarouselGalleryState : State<CarouselGallery>
                 new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 28, vertical: 14), child: new Row(children:
                 [
                     _demo >= 0
-                        ? Ui.Button("Gallery", () => setState(() => _demo = -1), "back", icon: "←")
+                        ? Ui.Button("Gallery", () => setState(() => _demo = -1), "back", icon: Icons.arrow_back)
                         : Ui.Label("doroti", 22, FontWeight.w600, spacing: -0.8),
                     new SizedBox(width: 20),
                     new Expanded(child: _demo < 0 ? new Align(alignment: Alignment.centerRight,
@@ -87,14 +87,14 @@ internal static class Ui
             style: new TextStyle(fontSize: size, height: 1.2, letterSpacing: spacing, fontWeight: weight, color: color ?? Ink));
     public static Widget Eyebrow(string text, Color? color = null) => Label(text, 10, FontWeight.w600, color ?? Muted, 1.8);
     public static Widget Button(string text, Action onTap, string? key = null, bool primary = false,
-        string? icon = null) => new TextButton(
+        IconData? icon = null) => new TextButton(
         key: key is null ? null : new ValueKey<string>(key), onPressed: onTap,
         style: TextButton.styleFrom(foregroundColor: primary ? Surface : Ink,
             backgroundColor: primary ? Accent : new Color(0x00000000), minimumSize: new Size(44, 44),
             padding: EdgeInsets.CreateSymmetric(horizontal: 14, vertical: 12),
             shape: new RoundedRectangleBorder(borderRadius: BorderRadius.CreateCircular(24))),
         child: new Row(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, children:
-        [.. (icon is null ? Array.Empty<Widget>() : new Widget[] { Label(icon, 18, color: primary ? Surface : Ink), new SizedBox(width: 7) }),
+        [.. (icon is null ? Array.Empty<Widget>() : new Widget[] { new Icon(icon, size: 18, color: primary ? Surface : Ink), new SizedBox(width: 7) }),
             Label(text, 13, FontWeight.w500, primary ? Surface : Ink)]));
     public static Widget Dots(int selected, Action<int> select) =>
         new Row(mainAxisAlignment: MainAxisAlignment.center, children: Enumerable.Range(0, Titles.Length).Select(i =>
@@ -236,13 +236,15 @@ internal sealed class HomeCarouselState : State<HomeCarousel>
                 children: [Ui.Label(Ui.Titles[_selected], viewport.maxWidth < 360 ? 21 : 25, FontWeight.w500, spacing: -0.6),
                     new SizedBox(height: 6), Ui.Label(Ui.Descriptions[_selected], 12, color: Ui.Muted, maxLines: 1)])),
                 new SizedBox(width: 12),
-                Ui.Button("Open", () => { if (_active is { } index) widget.Open(index); }, "open-demo", primary: true, icon: "→")
+                Ui.Button("Open", () => { if (_active is { } index) widget.Open(index); }, "open-demo", primary: true, icon: Icons.arrow_forward)
             ])),
             new Container(height: 1, margin: EdgeInsets.CreateSymmetric(horizontal: 28), color: Ui.Line),
             new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 14, vertical: 12), child: new Row(children:
-            [new Tooltip(message: "Previous demo", child: Ui.Button("↑", () => { _ = _controller.previousItem(); })),
+            [new IconButton(tooltip: "Previous demo", onPressed: () => { _ = _controller.previousItem(); },
+                    color: Ui.Ink, constraints: new BoxConstraints(minWidth: 44, minHeight: 44), icon: new Icon(Icons.arrow_upward, size: 20)),
                 new Expanded(child: Ui.Dots(_selected, i => { _ = _controller.animateToItem(i); })),
-                new Tooltip(message: "Next demo", child: Ui.Button("↓", () => { _ = _controller.nextItem(); }, "home-next"))]))
+                new IconButton(key: new ValueKey<string>("home-next"), tooltip: "Next demo", onPressed: () => { _ = _controller.nextItem(); },
+                    color: Ui.Ink, constraints: new BoxConstraints(minWidth: 44, minHeight: 44), icon: new Icon(Icons.arrow_downward, size: 20))]))
         ]));
 }
 
@@ -309,11 +311,11 @@ internal sealed class CarouselDemoState : State<CarouselDemo>
                     new Row(mainAxisAlignment: MainAxisAlignment.center, children:
                     [
                         new Expanded(child: Ui.Button(box.maxWidth < 360 ? "Prev" : "Previous", () => { _ = _controller.previousItem(); }, "previous",
-                            icon: widget.Demo == 4 ? "↑" : "←")),
+                            icon: widget.Demo == 4 ? Icons.arrow_upward : Icons.arrow_back)),
                         new SizedBox(width: 8),
-                        .. (widget.Demo == 2 ? new Widget[] { Ui.Button("Shuffle", Shuffle, "shuffle", icon: box.maxWidth < 360 ? null : "↻"), new SizedBox(width: 8) } : []),
+                        .. (widget.Demo == 2 ? new Widget[] { Ui.Button("Shuffle", Shuffle, "shuffle", icon: box.maxWidth < 360 ? null : Icons.shuffle), new SizedBox(width: 8) } : []),
                         new Expanded(child: Ui.Button("Next", () => { _ = _controller.nextItem(); }, "next",
-                            icon: widget.Demo == 4 ? "↓" : "→")),
+                            icon: widget.Demo == 4 ? Icons.arrow_downward : Icons.arrow_forward)),
                     ]),
                 ])),
             ]);
@@ -337,7 +339,7 @@ internal sealed class CarouselDemoState : State<CarouselDemo>
                 child: new ClipRRect(borderRadius: BorderRadius.CreateCircular(24), child:
                     Ui.Picture(_food, fit: BoxFit.cover)))))),
             new Padding(padding: EdgeInsets.CreateAll(24), child: Ui.Button("Back to menu", () => setState(() => _food = null),
-                "close-detail", primary: true, icon: "←"))]);
+                "close-detail", primary: true, icon: Icons.arrow_back))]);
         Widget Row(string category, int count, double height) => new SizedBox(height: height,
             child: new ClipRect(child: new Carousel(scrollDirection: Axis.horizontal, loop: true,
                 itemCountBefore: 2, itemCountAfter: 2, alignment: Alignment.centerLeft, tapToSelect: false,

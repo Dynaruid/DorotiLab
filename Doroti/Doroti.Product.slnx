@@ -19,6 +19,8 @@
     <Project Path="src/Doroti.Framework.Widgets/Doroti.Framework.Widgets.csproj" />
     <Project Path="../packages/Doroti.Cupertino/Doroti.Cupertino.csproj" />
     <Project Path="../packages/Doroti.Material/Doroti.Material.csproj" />
+    <Project Path="../packages/Doroti.Icons.Material/Doroti.Icons.Material.csproj" />
+    <Project Path="../packages/Doroti.Icons.Cupertino/Doroti.Icons.Cupertino.csproj" />
     <Project Path="../packages/Doroti.CustomCarousel/Doroti.CustomCarousel.csproj" />
     <Project Path="../packages/platforms/web/Doroti.Host.Web/Doroti.Host.Web.csproj" />
     <Project Path="../packages/platforms/maui/Doroti.Host.Maui/Doroti.Host.Maui.csproj" />

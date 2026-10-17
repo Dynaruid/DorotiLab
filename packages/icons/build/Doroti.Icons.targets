@@ -1,0 +1,66 @@
+<Project>
+  <PropertyGroup>
+    <_DorotiIconTargetsImported>true</_DorotiIconTargetsImported>
+    <DorotiIconTreeShaking Condition="'$(DorotiIconTreeShaking)' == '' and '$(Configuration)' == 'Release'">true</DorotiIconTreeShaking>
+    <DorotiIconTreeShaking Condition="'$(DorotiIconTreeShaking)' == ''">false</DorotiIconTreeShaking>
+    <_DorotiIconTools Condition="Exists('$(MSBuildThisFileDirectory)tools/Doroti.IconTools.dll')">$(MSBuildThisFileDirectory)tools/Doroti.IconTools.dll</_DorotiIconTools>
+    <_DorotiIconTools Condition="'$(_DorotiIconTools)' == ''">$(MSBuildThisFileDirectory)../../../tools/Doroti.IconTools/bin/$(Configuration)/net10.0/Doroti.IconTools.dll</_DorotiIconTools>
+    <_DorotiIconToolProject Condition="Exists('$(MSBuildThisFileDirectory)../../../tools/Doroti.IconTools/Doroti.IconTools.csproj')">$(MSBuildThisFileDirectory)../../../tools/Doroti.IconTools/Doroti.IconTools.csproj</_DorotiIconToolProject>
+    <_DorotiIconDotnet Condition="'$(DotNetHostPath)' != ''">$(DotNetHostPath)</_DorotiIconDotnet>
+    <_DorotiIconDotnet Condition="'$(_DorotiIconDotnet)' == ''">dotnet</_DorotiIconDotnet>
+  </PropertyGroup>
+  <Target Name="ResolveDorotiIconTool" Condition="'$(_DorotiIconToolProject)' != ''">
+    <MSBuild Projects="$(_DorotiIconToolProject)" Targets="GetTargetPath" Properties="Configuration=$(Configuration)" BuildInParallel="false"
+             RemoveProperties="TargetFramework;TargetFrameworks;RuntimeIdentifier;RuntimeIdentifiers;PublishAot;PublishTrimmed;PublishReadyToRun;PublishSingleFile;SelfContained">
+      <Output TaskParameter="TargetOutputs" PropertyName="_DorotiIconTools" />
+    </MSBuild>
+  </Target>
+  <Target Name="InvalidateDorotiIconWebCil" BeforeTargets="_ResolveWasmOutputs;ProcessPublishFilesForWasm"
+          DependsOnTargets="ResolveReferences;ResolveDorotiIconTool"
+          Condition="'$(RuntimeIdentifier)' == 'browser-wasm' and '$(WasmEnableWebcil)' != 'false'">
+    <ItemGroup>
+      <_DorotiIconWebInput Include="@(ReferenceCopyLocalPaths)" Condition="'%(Extension)' == '.dll' and Exists('%(FullPath)')" />
+      <_DorotiIconWebInput Include="$(TargetPath)" Condition="Exists('$(TargetPath)')" />
+      <_DorotiIconWebInput Include="$(_DorotiIconTools)" Condition="Exists('$(_DorotiIconTools)')" />
+    </ItemGroup>
+    <GetFileHash Files="@(_DorotiIconWebInput)" Algorithm="SHA256"><Output TaskParameter="Items" ItemName="_DorotiIconWebHashed" /></GetFileHash>
+    <ItemGroup>
+      <_DorotiIconWebIdentity Include="mode|$(DorotiIconTreeShaking)|$(RunAOTCompilation)|$(WasmStripILAfterAOT)" />
+      <_DorotiIconWebIdentity Include="@(_DorotiIconWebHashed->'%(FullPath)|%(FileHash)')" />
+    </ItemGroup>
+    <ReadLinesFromFile File="$(IntermediateOutputPath)doroti-icon-webcil.identity" Condition="Exists('$(IntermediateOutputPath)doroti-icon-webcil.identity')">
+      <Output TaskParameter="Lines" ItemName="_DorotiIconWebPrevious" />
+    </ReadLinesFromFile>
+    <ItemGroup Condition="'@(_DorotiIconWebIdentity)' != '@(_DorotiIconWebPrevious)'">
+      <_DorotiIconWebStale Include="$(IntermediateOutputPath)webcil/Doroti.Icons.Material.wasm;$(IntermediateOutputPath)webcil/Doroti.Icons.Cupertino.wasm;$(IntermediateOutputPath)webcil/publish/Doroti.Icons.Material.wasm;$(IntermediateOutputPath)webcil/publish/Doroti.Icons.Cupertino.wasm" />
+    </ItemGroup>
+    <Delete Files="@(_DorotiIconWebStale)" />
+    <WriteLinesToFile File="$(IntermediateOutputPath)doroti-icon-webcil.identity" Lines="@(_DorotiIconWebIdentity)" Overwrite="true" WriteOnlyWhenDifferent="true" />
+    <ItemGroup><FileWrites Include="$(IntermediateOutputPath)doroti-icon-webcil.identity" /></ItemGroup>
+  </Target>
+  <Target Name="SubsetDorotiBuildIcons" AfterTargets="CopyFilesToOutputDirectory" DependsOnTargets="ResolveDorotiIconTool"
+          Condition="'$(DorotiIconTreeShaking)' == 'true' and '$(DesignTimeBuild)' != 'true' and ('$(OutputType)' == 'Exe' or '$(OutputType)' == 'WinExe') and (Exists('$(TargetDir)Doroti.Icons.Material.dll') or Exists('$(TargetDir)Doroti.Icons.Cupertino.dll'))">
+    <Error Condition="!Exists('$(_DorotiIconTools)')" Text="Doroti icon build tools are missing: $(_DorotiIconTools)" />
+    <ItemGroup><_DorotiIconBuildInput Include="$(TargetDir)*.dll" /></ItemGroup>
+    <WriteLinesToFile File="$(IntermediateOutputPath)doroti-icon-build-inputs.txt" Lines="@(_DorotiIconBuildInput->'%(FullPath)')" Overwrite="true" WriteOnlyWhenDifferent="true" />
+    <Exec Command="&quot;$(_DorotiIconDotnet)&quot; &quot;$(_DorotiIconTools)&quot; --input-list &quot;$(IntermediateOutputPath)doroti-icon-build-inputs.txt&quot; --output-dir &quot;$(TargetDir).&quot; --receipt &quot;$(TargetDir)doroti-icon-tree-shaking.json&quot;" />
+    <ItemGroup><FileWrites Include="$(IntermediateOutputPath)doroti-icon-build-inputs.txt;$(TargetDir)doroti-icon-tree-shaking.json" /></ItemGroup>
+  </Target>
+  <!-- ILLink has finished, but ReadyToRun, WASM/Mono AOT and single-file bundling have not started. -->
+  <Target Name="SubsetDorotiPublishIcons" AfterTargets="ILLink" DependsOnTargets="ResolveDorotiIconTool"
+          Condition="'$(DorotiIconTreeShaking)' == 'true' and '$(DesignTimeBuild)' != 'true'">
+    <ItemGroup>
+      <_DorotiIconPublishPack Include="@(ResolvedFileToPublish)" Condition="'%(Filename)' == 'Doroti.Icons.Material' or '%(Filename)' == 'Doroti.Icons.Cupertino'" />
+    </ItemGroup>
+    <PropertyGroup><_DorotiIconPublishStage>$(IntermediateOutputPath)doroti-icons/publish/</_DorotiIconPublishStage></PropertyGroup>
+    <MakeDir Directories="$(_DorotiIconPublishStage)" Condition="'@(_DorotiIconPublishPack)' != ''" />
+    <WriteLinesToFile File="$(_DorotiIconPublishStage)inputs.txt" Lines="@(ResolvedFileToPublish->'%(FullPath)')" Overwrite="true" WriteOnlyWhenDifferent="true" Condition="'@(_DorotiIconPublishPack)' != ''" />
+    <Exec Command="&quot;$(_DorotiIconDotnet)&quot; &quot;$(_DorotiIconTools)&quot; --input-list &quot;$(_DorotiIconPublishStage)inputs.txt&quot; --output-dir &quot;$(_DorotiIconPublishStage).&quot; --receipt &quot;$(_DorotiIconPublishStage)doroti-icon-tree-shaking.json&quot;" Condition="'@(_DorotiIconPublishPack)' != ''" />
+    <ItemGroup Condition="'@(_DorotiIconPublishPack)' != ''">
+      <ResolvedFileToPublish Remove="@(_DorotiIconPublishPack)" />
+      <ResolvedFileToPublish Include="@(_DorotiIconPublishPack->'$(_DorotiIconPublishStage)%(Filename)%(Extension)')" RelativePath="%(_DorotiIconPublishPack.RelativePath)" CopyToPublishDirectory="PreserveNewest" PostprocessAssembly="true" />
+      <ResolvedFileToPublish Include="$(_DorotiIconPublishStage)doroti-icon-tree-shaking.json" RelativePath="doroti-icon-tree-shaking.json" CopyToPublishDirectory="PreserveNewest" />
+      <FileWrites Include="$(_DorotiIconPublishStage)*" />
+    </ItemGroup>
+  </Target>
+</Project>

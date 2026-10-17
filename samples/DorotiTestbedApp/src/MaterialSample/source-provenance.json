@@ -6,7 +6,7 @@
   "reference": "local reference/flutter_sample_app",
   "licenses": {
     "flutterSamples": "BSD-3-Clause; LICENSE.flutter",
-    "materialIcons": "CC-BY-4.0; pinned SDK assets/fonts/LICENSE.materialicons.txt",
+    "materialIcons": "CC-BY-4.0; packages/Doroti.Icons.Material/assets/LICENSE.materialicons.txt",
     "localImage": "Unsplash; see reference image provenance and THIRD-PARTY-NOTICES.md",
     "roboto": "Apache-2.0; assets/fonts/LICENSE.roboto.txt"
   },
@@ -22,7 +22,8 @@
       "sha256": "92ebbdd8680449a00b40c09be06217bf405dfe148a5edc32869b73ee1378d3d1"
     },
     {
-      "path": "samples/DorotiTestbedApp/assets/fonts/MaterialIcons-Regular.otf",
+      "path": "packages/Doroti.Icons.Material/assets/MaterialIcons.otf",
+      "relocatedFrom": "samples/DorotiTestbedApp/assets/fonts/MaterialIcons-Regular.otf",
       "bytes": 1645184,
       "sha256": "d9865b671a09d683d13a863089d8825e0f61a37696ce5d7d448bc8023aa62453"
     },

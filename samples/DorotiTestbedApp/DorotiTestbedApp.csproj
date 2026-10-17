@@ -8,7 +8,6 @@
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="assets/webview/*" LogicalName="Doroti.WebView.%(Filename)%(Extension)" />
-    <EmbeddedResource Include="assets/fonts/MaterialIcons-Regular.otf" LogicalName="MaterialSample.icons.otf" />
     <EmbeddedResource Include="assets/fonts/Roboto-*.ttf" LogicalName="MaterialSample.%(Filename)%(Extension)" />
     <EmbeddedResource Include="../../reference/flutter_sample_app/assets/images/mae-mu-9002s2VnOAY-unsplash.webp" LogicalName="MaterialSample.image.webp" />
     <ProjectReference Include="..\..\Doroti\src\Doroti.Hosting\Doroti.Hosting.csproj" />
