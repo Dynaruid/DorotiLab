@@ -1,6 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework></TargetFramework>
+    <!-- NuGet also evaluates this host without ProjectReference RID metadata.
+         Both restore evaluations must retain the selected development assets. -->
+    <RuntimeIdentifiers Condition="('$(DorotiIosDevelopment)' == 'true' or '$(DorotiMacDevelopment)' == 'true') and '$(DorotiHostRuntimeIdentifier)' != ''">$(DorotiHostRuntimeIdentifier)</RuntimeIdentifiers>
     <DorotiIosTargetFramework Condition="'$(DorotiIosTargetFramework)' == ''">net10.0-ios</DorotiIosTargetFramework>
     <TargetFrameworks Condition="'$(RuntimeIdentifier)' == '' and '$(DorotiHostMacOnly)' == 'true'">$(DorotiMacCatalystTargetFramework);$(DorotiMacOSTargetFramework)</TargetFrameworks>
     <TargetFrameworks Condition="'$(RuntimeIdentifier)' == '' and '$(DorotiHostMacOnly)' != 'true' and '$(DorotiHostTargetFrameworks)' == ''">net10.0-windows10.0.19041.0;$(DorotiMacCatalystTargetFramework);$(DorotiMacOSTargetFramework);$(DorotiIosTargetFramework);$(DorotiAndroidTargetFramework)</TargetFrameworks>

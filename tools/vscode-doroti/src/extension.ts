@@ -7,6 +7,7 @@ import { start, stop, completion } from './processes';
 import { Project, Runtime, parseProject, validateName, classifyOutput, watcherExited } from './contracts';
 import { registerEditing } from './editing';
 import { WebBridge } from './webBridge';
+import { prepareFileReload } from './fileReload';
 import { DorotiSidebar, SidebarState } from './sidebar';
 
 const exclude = '**/{bin,obj,temp,node_modules,reference,.doroti,.git}/**';
@@ -138,8 +139,15 @@ export function activate(context: vscode.ExtensionContext) {
                 current.pending = undefined; current.restartRequired = false; current.problem = undefined;
                 logs.appendLine('Runtime restarted; widget state was reset.');
             }
+            if (current.problem === 'compile-error' && runtime.status === 'applied' &&
+                current.runtime?.runtimeId === runtime.runtimeId && runtime.revision > current.runtime.revision)
+                current.problem = undefined;
             current.runtime = runtime;
-            if (current.pending && runtime.requestId === current.pending && ['applied', 'failed'].includes(runtime.status)) {
+            if (current.pending && !runtime.supported) {
+                current.pending = undefined;
+                logs.appendLine('Hot Reload canceled: runtime disconnected or closed.');
+                display('Runtime disconnected');
+            } else if (current.pending && runtime.requestId === current.pending && ['applied', 'failed'].includes(runtime.status)) {
                 current.pending = undefined;
                 logs.appendLine(`Hot Reload ${runtime.status}: revision ${runtime.revision}${runtime.error ? `\n${runtime.error}` : ''}`);
                 display(runtime.status === 'applied' ? `Reload ${runtime.revision}` : 'Reload failed');
@@ -196,31 +204,30 @@ export function activate(context: vscode.ExtensionContext) {
         trusted(); const current = session;
         if (!current?.runtime?.supported || current.restartRequired || current.stopping) throw new Error('Hot Reload unavailable. Run a provider Debug session with a connected runtime, or use Restart (resets state).');
         if (current.pending) return;
+        const runtimeId = current.runtime.runtimeId;
         const dirty = vscode.workspace.textDocuments.filter(doc => doc.isDirty && doc.languageId === 'csharp' && project && within(project.root, doc.uri.fsPath));
         if (!dirty.length) { void vscode.window.showInformationMessage('No unsaved C# edits. Saved changes are applied by dotnet watch automatically.'); return; }
         if (save !== true && await vscode.window.showQuickPick(['Save and Hot Reload', 'Cancel'], { title: `Save ${dirty.length} modified C# file(s)?` }) !== 'Save and Hot Reload') return;
-        if (session !== current || current.pending) return;
-        current.pending = randomUUID(); current.deadline = Date.now() + 45000; display();
+        if (session !== current || current.pending || current.stopping || current.restartRequired ||
+            !current.runtime?.supported || current.runtime.runtimeId !== runtimeId) return;
+        const requestId = randomUUID();
+        const connected = () => session === current && !current.stopping && !!current.runtime?.supported && current.runtime.runtimeId === runtimeId;
+        const active = () => connected() && current.pending === requestId && !current.restartRequired;
+        current.pending = requestId; current.deadline = Date.now() + 60000; display();
         current.problem = undefined;
         try {
-            if (current.bridge) await current.bridge.prepare(current.runtime.runtimeId, current.pending);
+            if (current.bridge) await current.bridge.prepare(runtimeId, requestId);
             else {
-                await fs.writeFile(path.join(current.directory, 'request.json'), JSON.stringify({ schemaVersion: 'doroti.dev/v1', sessionId: current.id, runtimeId: current.runtime.runtimeId, requestId: current.pending }));
-                if (development()?.requiresPreparedAcknowledgment) {
-                    const deadline = Date.now() + 15000;
-                    while (true) {
-                        if (session !== current || current.stopping) return;
-                        let prepared: Runtime | undefined;
-                        try { prepared = JSON.parse(await fs.readFile(path.join(current.directory, 'prepared.json'), 'utf8')); }
-                        catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT' && !(error instanceof SyntaxError)) throw error; }
-                        if (prepared?.sessionId === current.id && prepared.runtimeId === current.runtime.runtimeId && prepared.requestId === current.pending) break;
-                        if (Date.now() > deadline) throw new Error(`${target} runtime did not accept the reload request. Edits have not been saved.`);
-                        await new Promise(resolve => setTimeout(resolve, 50));
-                    }
-                }
+                if (!await prepareFileReload(current.directory,
+                    { schemaVersion: 'doroti.dev/v1', sessionId: current.id, runtimeId, requestId },
+                    !!development()?.requiresPreparedAcknowledgment, active)) return;
             }
-            if (session !== current || current.stopping) return;
-            for (const doc of dirty) if (!await doc.save()) throw new Error(`Could not save ${doc.fileName}`);
+            if (!active()) return;
+            current.deadline = Date.now() + 45000;
+            for (const doc of dirty) {
+                if (!connected()) return;
+                if (!await doc.save()) throw new Error(`Could not save ${doc.fileName}`);
+            }
         } catch (error) { current.pending = undefined; display('Reload failed'); throw error; }
     }
     const commands: Record<string, (arg?: unknown) => unknown> = {

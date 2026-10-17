@@ -467,8 +467,9 @@ Run `npm run package` in the extension first. Fresh output directories are requi
 Signing, device pairing and the .NET 10 iPhone LAN permission remain prerequisites.
 
 Historical [CLI and installed-VSIX PASS records](../../history/26-10-03/works/platforms/ios.md#2026-09-30-ios-metadata-hot-reload)
-remain separate from current runtime acceptance. The restored provider path has
-not been rerun on an Apple host. `eng/prepare-ios-device-dotnet.py` prepares a
+remain separate from current runtime acceptance. The provider-backed path was rerun on 2026-10-17 for AppKit, Catalyst and the
+arm64 iOS simulator (CLI and installed VSIX), plus iPhone 12 .NET 11 RC2 USB
+(CLI and installed VSIX). See tools/vscode-doroti/README.md for current acceptance boundaries. `eng/prepare-ios-device-dotnet.py` prepares a
 separate user-owned macOS dotnet host when RC2 build tools need the matching
 desktop runtime; it does not install workloads or prove device Hot Reload.
 

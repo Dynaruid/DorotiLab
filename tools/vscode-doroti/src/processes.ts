@@ -20,17 +20,24 @@ export async function stop(child: ChildProcess): Promise<void> {
             });
         });
     } else {
-        await new Promise<void>((resolve, reject) => {
-            // iOS also owns a simulator app outside the process group. Let its
-            // launcher finish cleanup before a Restart launches the same bundle.
-            const timer = setTimeout(() => reject(new Error('Doroti did not finish stopping. Check the session logs.')), 30000);
-            child.once('close', () => { clearTimeout(timer); resolve(); });
-            try { process.kill(-child.pid!, 'SIGTERM'); }
+        const group = -child.pid;
+        try { process.kill(group, 'SIGTERM'); }
+        catch (error) { if ((error as NodeJS.ErrnoException).code === 'ESRCH') return; throw error; }
+        // The launcher can close before its watcher/app finishes handling
+        // SIGTERM. Wait for the whole owned group before allowing Restart.
+        const deadline = Date.now() + 30000;
+        while (Date.now() < deadline) {
+            try { process.kill(group, 0); }
             catch (error) {
-                clearTimeout(timer);
-                if ((error as NodeJS.ErrnoException).code === 'ESRCH') resolve(); else reject(error);
+                const code = (error as NodeJS.ErrnoException).code;
+                if (code === 'ESRCH') return;
+                // A probe can report EPERM during group teardown; only ESRCH
+                // confirms that no owned descendants remain.
+                if (code !== 'EPERM') throw error;
             }
-        });
+            await new Promise(resolve => setTimeout(resolve, 50));
+        }
+        throw new Error('Doroti did not finish stopping. Check the session logs.');
     }
 }
 export function completion(child: ChildProcess): Promise<void> {

@@ -250,11 +250,14 @@ def run(args, ownership):
     command = [args.dotnet, 'watch', '--project', args.runner, '--configuration', 'Debug',
         '--device', args.device, '--no-launch-profile',
         '--property:DorotiIosDevelopment=true', '--property:DorotiCompilationMode=' + ('CoreClr' if coreclr else 'Mono'),
+        '--property:DorotiHostRuntimeIdentifier=' + args.rid,
+        '--property:EnableAotAnalyzer=false', '--property:EnableTrimAnalyzer=false',
         '--property:BuildInParallel=false', '--property:RestoreDisableParallel=true']
     if environment.get('DOTNET_CLI_CONTEXT_VERBOSE', '').lower() in ('true', '1', 'trace'):
         command.append('--verbose')
     if args.framework:
         command.append('--property:DorotiIosTargetFramework=' + args.framework)
+        command.append('--property:DorotiHostTargetFrameworks=' + args.framework)
     working_directory = args.working_directory or Path(args.runner).resolve().parent
     if args.sdk_version:
         working_directory = session.directory / 'toolchain'
@@ -293,9 +296,11 @@ def run(args, ownership):
             artifacts /= 'mono-interpreter'
         query = [args.dotnet, 'msbuild', args.runner, '-nologo', '-getProperty:ApplicationId,DorotiIosDevelopmentRuntimeVersion,RuntimeIdentifier',
                  '-p:Configuration=Debug',
+                 '-p:DorotiHostRuntimeIdentifier=' + args.rid,
                  '-p:DorotiIosDevelopment=true', '-p:DorotiCompilationMode=' + ('CoreClr' if coreclr else 'Mono'), '-p:ArtifactsPath=' + str(artifacts)]
         if args.framework:
             query.append('-p:DorotiIosTargetFramework=' + args.framework)
+            query.append('-p:DorotiHostTargetFrameworks=' + args.framework)
         query_environment = dict(environment, DOTNET_CLI_CONTEXT_VERBOSE='false')
         properties = json.loads(subprocess.check_output(query, cwd=working_directory, env=query_environment,
                                                        text=True, timeout=30))['Properties']

@@ -13,6 +13,19 @@ parser.add_argument('--device-sdk', help='Installed .NET 11 SDK to evaluate the 
 args = parser.parse_args()
 
 ROOT = Path(__file__).resolve().parents[2]
+host = ROOT / 'packages/platforms/maui/Doroti.Host.Maui/Doroti.Host.Maui.csproj'
+for platform, rid in [('macos', 'osx-arm64'), ('maccatalyst', 'maccatalyst-arm64'), ('ios', 'iossimulator-arm64')]:
+    framework = 'net10.0-' + platform + '27.0'
+    framework_property = {'macos': 'DorotiMacOSTargetFramework', 'maccatalyst': 'DorotiMacCatalystTargetFramework', 'ios': 'DorotiIosTargetFramework'}[platform]
+    base = ['dotnet', 'msbuild', str(host), '-nologo',
+        '-p:' + ('DorotiIosDevelopment' if platform == 'ios' else 'DorotiMacDevelopment') + '=true',
+        '-p:' + framework_property + '=' + framework, '-p:DorotiHostTargetFrameworks=' + framework,
+        '-p:DorotiHostRuntimeIdentifier=' + rid, '-getProperty:TargetFrameworks,RuntimeIdentifiers']
+    for overrides in [[], ['-p:RuntimeIdentifier=' + rid]]:
+        properties = json.loads(subprocess.check_output(base + overrides, cwd=ROOT, text=True, timeout=60))['Properties']
+        assert properties['TargetFrameworks'] == framework, properties
+        assert properties['RuntimeIdentifiers'] == rid, properties
+    print('PASS ' + platform + ' development host restore keeps only selected framework and native RID assets')
 PROJECT = ROOT / "samples/DorotiSampleApp2/ios/DorotiSampleApp2.iOS.csproj"
 BASE = [
     "dotnet", "msbuild", str(PROJECT), "-nologo", "-getProperty:MtouchInterpreter",

@@ -11,7 +11,15 @@ async function main() {
     const evidence = path.resolve(process.argv[3]);
     const profile = path.join(evidence, 'profile'); const extensions = path.join(evidence, 'extensions');
     const harness = path.join(evidence, 'harness');
-    if (process.argv.includes('--ios') || process.argv.includes('--mac')) {
+    const apple = process.argv.includes('--ios') || process.argv.includes('--mac');
+    if (process.argv.includes('--reuse-fixture')) {
+        const fixture = await fs.realpath(app);
+        const relative = path.relative(path.join(repo, 'temp/testing'), fixture);
+        if (!apple || relative === '..' || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative))
+            throw new Error('--reuse-fixture requires an isolated Apple app under temp/testing.');
+        await fs.access(path.join(fixture, 'doroti-workspace.json'));
+        app = fixture;
+    } else if (apple) {
         const ios = process.argv.includes('--ios');
         const target = ios ? 'ios' : process.env.DOROTI_TEST_MAC_TARGET ?? 'macos';
         const fixture = path.join(evidence, 'app');

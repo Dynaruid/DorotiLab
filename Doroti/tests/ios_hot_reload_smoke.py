@@ -110,8 +110,13 @@ def main():
     finally:
         try:
             if process.poll() is None:
-                os.killpg(process.pid, signal.SIGTERM)
-                process.wait(timeout=30)
+                (evidence / 'stop.json').write_text(json.dumps({'sessionId': session_id}))
+                try:
+                    process.wait(timeout=65)
+                except subprocess.TimeoutExpired:
+                    os.killpg(process.pid, signal.SIGTERM)
+                    process.wait(timeout=30)
+                    raise
             deadline = time.monotonic() + 30
             while read('runtime.json') and read('runtime.json').get('status') != 'closed' and time.monotonic() < deadline:
                 time.sleep(.1)

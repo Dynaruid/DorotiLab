@@ -20,6 +20,8 @@ test('provider metadata is authoritative for arbitrary aliases, operations and t
 });
 test('watcher errors do not masquerade as applied reloads', () => {
     assert.equal(classifyOutput('error CS1002: ; expected'), 'compile-error');
+    assert.equal(classifyOutput('error NETSDK1100: Windows targeting is unavailable'), 'compile-error');
+    assert.equal(classifyOutput('error MSB4181: MSBuild task returned false'), 'compile-error');
     assert.equal(classifyOutput('Do you want to restart your app?'), 'restart-required');
     assert.equal(classifyOutput("Further changes won't be applied to this process."), 'restart-required');
     assert.equal(classifyOutput('Hot reload succeeded'), undefined);

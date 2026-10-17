@@ -32,7 +32,7 @@ export function validateName(name: string): string | undefined {
 }
 export function classifyOutput(text: string): 'compile-error' | 'restart-required' | undefined {
     if (/rude edit|error ENC\d+|restart.*(?:required|needed)|Do you want to restart|Further changes won.t be applied/i.test(text)) return 'restart-required';
-    if (/error CS\d+|Build failed|Failed to build project|Unable to apply hot reload due to compilation/i.test(text)) return 'compile-error';
+    if (/error (?:CS|NETSDK|MSB)\d+|Build failed|Failed to build project|Unable to apply hot reload due to compilation/i.test(text)) return 'compile-error';
     return undefined;
 }
 /** The watcher stays alive after its app exits. Only its idle-after-exit sequence ends an IDE session. */

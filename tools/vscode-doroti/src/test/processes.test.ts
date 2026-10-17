@@ -28,3 +28,16 @@ test('Stop terminates the owned subprocess tree', async () => {
     assert.ok(descendant); await stop(root); await ended;
     assert.throws(() => process.kill(descendant, 0), /ESRCH/);
 });
+test('Unix Stop waits for descendants that outlive the launcher', { skip: process.platform === 'win32' }, async () => {
+    let descendant = 0;
+    const script = `process.on('SIGTERM', () => setTimeout(() => process.exit(0), 250)); console.log(process.pid); setInterval(() => {}, 1000);`;
+    const root = start(process.execPath, ['-e', `const {spawn}=require('node:child_process'); const p=spawn(process.execPath,['-e',${JSON.stringify(script)}],{stdio:['ignore','pipe','ignore']}); p.stdout.pipe(process.stdout); setInterval(()=>{},1000);`], process.cwd(), value => descendant = Number(value.trim()));
+    const ended = completion(root).catch(() => {});
+    try {
+        const deadline = Date.now() + 10000;
+        while (!descendant && Date.now() < deadline) await new Promise(resolve => setTimeout(resolve, 25));
+        assert.ok(descendant);
+        await stop(root); await ended;
+        assert.throws(() => process.kill(descendant, 0), /ESRCH/);
+    } finally { if (root.pid) { try { process.kill(-root.pid, 'SIGKILL'); } catch { /* already stopped */ } } }
+});

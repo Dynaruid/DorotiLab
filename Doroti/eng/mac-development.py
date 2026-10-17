@@ -42,14 +42,20 @@ def run(args):
     if tuple(map(int, sdk.split('-')[0].split('.'))) < (10, 0, 400):
         raise ValueError('Mac Hot Reload requires .NET SDK 10.0.400 or newer.')
     properties = ['--property:DorotiMacDevelopment=true', '--property:BuildInParallel=false',
-                  '--property:RestoreDisableParallel=true']
+                  '--property:RestoreDisableParallel=true', '--property:EnableAotAnalyzer=false',
+                  '--property:EnableTrimAnalyzer=false']
     if args.framework:
         name = 'DorotiMacOSTargetFramework' if args.platform == 'macos' else 'DorotiMacCatalystTargetFramework'
         properties.append('--property:' + name + '=' + args.framework)
+        # Restore evaluates the multi-target host without the runner's RID.
+        # Keep it on this Apple profile without assigning a global RID/TFM to
+        # shared net10.0 projects in dotnet watch's graph.
+        properties.append('--property:DorotiHostTargetFrameworks=' + args.framework)
     if args.rid:
         prefix = 'osx-' if args.platform == 'macos' else 'maccatalyst-'
         if args.rid not in (prefix + 'arm64', prefix + 'x64'):
             raise ValueError('Runtime identifier does not match the selected Mac target.')
+        properties.append('--property:DorotiHostRuntimeIdentifier=' + args.rid)
     # Ask the runner for its fixed RID rather than silently changing its descriptor.
     rid = subprocess.check_output([dotnet, 'msbuild', args.runner, '-nologo',
         '-getProperty:RuntimeIdentifier', *properties], cwd=working_directory, env=query_environment,

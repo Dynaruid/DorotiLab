@@ -44,8 +44,25 @@ export async function run() {
         assert.equal(after.message, 'Mac VSIX Hot Reload passed');
         for (const key of ['stateId', 'processId', 'count', 'text', 'scroll']) assert.equal(after[key], before[key], key);
         assert.equal(api.getState().runtime.runtimeId, runtime.runtimeId);
-        await fs.writeFile(path.join(evidence, 'result.json'), JSON.stringify({ before, after, runtime: api.getState().runtime }));
+        const revision = api.getState().runtime.revision;
+        const replace = async (text: string) => {
+            const change = new vscode.WorkspaceEdit();
+            change.replace(source, new vscode.Range(doc.positionAt(0), doc.positionAt(doc.getText().length)), text);
+            assert.ok(await vscode.workspace.applyEdit(change));
+            assert.ok(await doc.save());
+        };
+        await replace(original.replace('"Before reload"', 'MISSING_RELOAD_SYMBOL'));
+        await until(() => api.getState().problem === 'compile-error', 'compile error surfaced');
+        assert.equal(api.getState().runtime.revision, revision);
+        await replace(original.replace('"Before reload"', '"Mac VSIX compile recovery passed"'));
+        await until(() => api.getState().runtime?.revision > revision && !api.getState().problem, 'normal save clears recovered compile error');
+        const recovered = await read();
+        assert.equal(recovered.message, 'Mac VSIX compile recovery passed');
+        for (const key of ['stateId', 'processId', 'count', 'text', 'scroll']) assert.equal(recovered[key], before[key], key);
+        assert.equal(api.getState().runtime.runtimeId, runtime.runtimeId);
+        await fs.writeFile(path.join(evidence, 'result.json'), JSON.stringify({ before, after, recovered, runtime: api.getState().runtime }));
         console.log('PASS installed VSIX Mac Run, Hot Reload command, state preservation');
+        console.log('PASS installed VSIX Mac compile error and normal-save recovery clear the error without resetting state');
     } finally {
         await vscode.commands.executeCommand('doroti.stop');
         const doc = await vscode.workspace.openTextDocument(source);
