@@ -370,15 +370,20 @@ python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/linux_qt_build_profi
 pwsh -NoProfile -File Doroti/eng/doroti.ps1 validate -ValidationSuite LinuxSmoke
 python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/linux_qt_smoke.py --qpa xcb --output temp/testing/linux-qt/manual-xcb
 python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/linux_qt_packages.py temp/testing/linux-qt/manual-packages
+python3 Doroti/tests/linux_qt_input.py --library /path/to/libdoroti_qt_host.so --output temp/testing/linux-qt/manual-input --qpa xcb
 ```
 
 The profile fixture evaluates SDK/sample/template defaults and invalid option
 combinations, separates native caches, rejects missing and unbuilt-profile
 output, replaces equal-size/equal-mtime libraries and removes disabled optional
-outputs. `LinuxSmoke` includes it and checks the two-frame bound and complete Qt
-consumer retirement at shutdown. Package qualification uses the template's
-default Quick/C configuration without overrides and exercises matching and
-wrong-profile `publish --no-build` with an isolated NuGet cache. These checks
+outputs. It also checks malformed activation input, queue overflow recovery and
+managed ABI layout. `LinuxSmoke` checks native IME selection/commit/composition,
+key repeat, natural scroll direction and desktop identity through the real shim,
+then checks the two-frame bound and complete Qt consumer retirement at shutdown.
+Package qualification builds the current provider's prebuilt native payload,
+evaluates the package graph and versions, generates the template's default widgets
+and Quick/C configuration, and exercises normal, no-build and missing-native
+publishing with an isolated NuGet cache and package source mapping. These checks
 do not qualify physical display timing, GPU execution overlap or physical IME.
 
 Choose a fresh `--output` path. Direct scripts retain raw evidence for review;

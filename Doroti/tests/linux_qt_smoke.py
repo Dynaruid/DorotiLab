@@ -27,8 +27,10 @@ exe = args.exe.resolve() if args.exe else ROOT / 'samples/DorotiTestbedApp/linux
 if not args.skip_build:
     with (out / 'build.log').open('w') as log:
         subprocess.run(['dotnet', 'build', str(ROOT / 'samples/DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj'),
-            '-c', 'Debug', '-p:DorotiLinuxDesktop=true', '-v:minimal'], stdout=log, stderr=subprocess.STDOUT, check=True, timeout=1200)
+            '-c', 'Debug', '-p:DorotiLinuxDesktop=true', '-p:DorotiBuildQtNative=true', '-v:minimal'], stdout=log, stderr=subprocess.STDOUT, check=True, timeout=1200)
 subprocess.run([sys.executable, str(ROOT / 'Doroti/tests/linux_qt_files.py'), str(exe.parent / 'libdoroti_qt_host.so'), str(out / 'file-grants')], check=True, timeout=1200)
+subprocess.run([sys.executable, str(ROOT / 'Doroti/tests/linux_qt_input.py'), '--library', str(exe.parent / 'libdoroti_qt_host.so'),
+    '--output', str(out / 'input-contract'), '--qpa', args.qpa], check=True, timeout=1200)
 flags = shlex.split(subprocess.check_output(['pkg-config', '--cflags', '--libs', 'Qt6Quick', 'Qt6Widgets'], text=True))
 driver = out / 'libevidence.so'
 subprocess.run(['c++', '-shared', '-fPIC', str(ROOT / 'Doroti/tests/native/qt_evidence.cpp'), '-o', str(driver), *flags], check=True, timeout=1200)

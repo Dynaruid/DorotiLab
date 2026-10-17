@@ -75,6 +75,8 @@ for option in ['Configuration=Release', 'PublishAot=true', 'PublishTrimmed=true'
 # actual CLI execution are qualified by platform_provider_contract.py.
 subprocess.run(['dotnet', 'run', '--project', str(ROOT / 'packages/platforms/qt/tests/Doroti.Tool.Qt.Tests/Doroti.Tool.Qt.Tests.csproj'),
     '--artifacts-path', str(out / 'tool-build')], cwd=ROOT, check=True, timeout=1200)
+subprocess.run(['dotnet', 'run', '--project', str(ROOT / 'packages/platforms/qt/tests/Doroti.Host.Qt.Tests/Doroti.Host.Qt.Tests.csproj'),
+    '--artifacts-path', str(out / 'host-build')], cwd=ROOT, check=True, timeout=1200)
 
 # Evaluate the actual template against the source SDK; package qualification
 # separately restores this same project against the freshly packed SDK.

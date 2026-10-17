@@ -178,6 +178,9 @@ internal sealed unsafe class QtHostAdapter
     public void RequestFocus(ViewFocusState state, ViewFocusDirection direction)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
+        // Framework focus listeners can run while a closed branch is unmounted.
+        // Qt has already removed that native window before publishing detached.
+        if (Metrics.lifecycleState == AppLifecycleState.detached) return;
         _ = direction;
         if (state == ViewFocusState.focused && (_hostApi.FeatureBits & (1UL << 19)) != 0)
         {

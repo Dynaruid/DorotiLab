@@ -21,6 +21,7 @@
 #include <QQmlEngine>
 #include <QQuickItem>
 #include <QPointer>
+#include <QStandardPaths>
 #include <QTimer>
 #include <QWebChannel>
 #include <map>
@@ -113,7 +114,13 @@ if(location.origin==='doroti-app://content')new QWebChannel(qt.webChannelTranspo
     if(shared) {
       if(!sharedProfile) {
         const auto scope=QCryptographicHash::hash(options["NativeApplicationId"].toString("doroti").toUtf8(),QCryptographicHash::Sha256).toHex();
-        sharedProfile=new QQuickWebEngineProfile("DorotiShared-"+QString::fromLatin1(scope),qApp);
+        const auto name="DorotiShared-"+QString::fromLatin1(scope);
+        sharedProfile=new QQuickWebEngineProfile(name,qApp);
+        // Keep the existing ID-scoped data/cache locations when Qt's application
+        // name changes from "doroti" to the desktop identity (host feature 25).
+        const auto relative="doroti/QtWebEngine/"+name;
+        sharedProfile->setPersistentStoragePath(QDir(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)).filePath(relative));
+        sharedProfile->setCachePath(QDir(QStandardPaths::writableLocation(QStandardPaths::GenericCacheLocation)).filePath(relative));
       }
       store=sharedProfile;
     } else store=new QQuickWebEngineProfile(this);

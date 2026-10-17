@@ -49,6 +49,7 @@ enum doroti_qt_feature_v2 : std::uint64_t {
   DOROTI_QT_FEATURE_FRAME_PREPARATION = 1ull << 22,
   DOROTI_QT_FEATURE_TEXT_CONFIGURATION_UPDATE = 1ull << 23,
   DOROTI_QT_FEATURE_TEXT_GEOMETRY = 1ull << 24,
+  DOROTI_QT_FEATURE_APPLICATION_ID = 1ull << 25,
 };
 
 enum doroti_qt_terminal_state_v2 : std::uint32_t {
@@ -90,6 +91,8 @@ struct doroti_qt_configuration_v2 {
   std::uint32_t backdrop_mode;
   std::uint32_t backdrop_fallback;
   std::uint32_t titlebar_style;
+  // Feature bit 25: matches the desktop entry basename, without ".desktop".
+  doroti_qt_utf8_v2 application_id;
 };
 
 struct doroti_qt_surface_v2 {
@@ -302,7 +305,8 @@ DOROTI_QT_EXPORT std::int32_t doroti_qt_run_v2(
 }  // extern "C"
 
 static_assert(sizeof(doroti_qt_utf8_v2) == 16);
-static_assert(sizeof(doroti_qt_configuration_v2) == 56);
+static_assert(offsetof(doroti_qt_configuration_v2, application_id) == 56);
+static_assert(sizeof(doroti_qt_configuration_v2) == 72);
 static_assert(offsetof(doroti_qt_surface_v2, surface_generation) == 8);
 static_assert(offsetof(doroti_qt_surface_v2, framebuffer_object) == 24);
 static_assert(offsetof(doroti_qt_surface_v2, device_pixel_ratio) == 40);

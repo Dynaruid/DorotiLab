@@ -22,7 +22,7 @@ internal static unsafe class QtNativeV2
         | (1UL << 9)
         | (1UL << 14)
         | (1UL << 15)
-        | (1UL << 16) | (1UL << 23) | (1UL << 24);
+        | (1UL << 16) | (1UL << 23) | (1UL << 24) | (1UL << 25);
 
     internal enum Result : int
     {
@@ -48,6 +48,7 @@ internal static unsafe class QtNativeV2
     [StructLayout(LayoutKind.Sequential)]
     internal readonly struct Configuration(
         Utf8 title,
+        Utf8 applicationId,
         int logicalWidth,
         int logicalHeight,
         uint backdropMode,
@@ -64,6 +65,7 @@ internal static unsafe class QtNativeV2
         internal readonly uint BackdropMode = backdropMode;
         internal readonly uint BackdropFallback = backdropFallback;
         internal readonly uint TitlebarStyle = titlebarStyle;
+        internal readonly Utf8 ApplicationId = applicationId;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -337,7 +339,7 @@ internal static unsafe class QtNativeV2
     internal static void ValidateLayout()
     {
         RequireSize<Utf8>(16);
-        RequireSize<Configuration>(56);
+        RequireSize<Configuration>(72);
         RequireSize<Surface>(144);
         RequireSize<Metrics>(160);
         RequireOffset<Metrics>(nameof(Metrics.ViewInsets), 88);
@@ -357,6 +359,7 @@ internal static unsafe class QtNativeV2
         RequireOffset<Surface>(nameof(Surface.VulkanInstanceApiVersion), 120);
         RequireOffset<Surface>(nameof(Surface.TitlebarHeight), 128);
         RequireOffset<Configuration>(nameof(Configuration.TitlebarStyle), 48);
+        RequireOffset<Configuration>(nameof(Configuration.ApplicationId), 56);
         RequireOffset<Callbacks>(nameof(Callbacks.PollGpuWork), 176);
         RequireOffset<Callbacks>(nameof(Callbacks.PrepareApplication), 184);
         RequireOffset<Callbacks>(nameof(Callbacks.QtConsumerSubmitted), 192);

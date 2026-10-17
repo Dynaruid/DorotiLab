@@ -110,7 +110,9 @@ public static unsafe partial class DorotiQtRunner
         {
             sharedFramework.Start();
             var titleBytes = Encoding.UTF8.GetBytes(descriptor.ViewConfiguration.title);
+            var applicationIdBytes = Encoding.UTF8.GetBytes(application.Manifest.ApplicationId);
             fixed (byte* title = titleBytes)
+            fixed (byte* applicationId = applicationIdBytes)
             {
                 var appearance = descriptor.ViewConfiguration.ResolveAppearance();
                 var backdrop = appearance.ResolveBackdrop(isMacOS: false);
@@ -125,6 +127,7 @@ public static unsafe partial class DorotiQtRunner
                 };
                 var configuration = new QtNativeV2.Configuration(
                     new QtNativeV2.Utf8(title, checked((ulong)titleBytes.Length)),
+                    new QtNativeV2.Utf8(applicationId, checked((ulong)applicationIdBytes.Length)),
                     checked((int)descriptor.ViewConfiguration.logicalSize.width),
                     checked((int)descriptor.ViewConfiguration.logicalSize.height),
                     (uint)backdropMode,

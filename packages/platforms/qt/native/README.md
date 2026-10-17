@@ -18,7 +18,7 @@ Official deployment uses the pinned `SkiaSharp.NativeAssets.Linux` package and c
 
 Hardware and software renderers are accepted by default; llvmpipe needs no environment override. The Graphite Vulkan backend requires Vulkan 1.2; the selected device type is logged. Software rendering does not establish hardware performance. Material scenes can report an upstream depth-attachment synchronization issue under Vulkan validation.
 
-Feature bit 14 negotiates window titlebars: the configuration is 56 bytes and the
+Feature bit 14 negotiates window titlebars in the 56-byte configuration prefix; the
 surface descriptor is 144 bytes. Unified Acrylic uses client caption controls in the
 same GPU/blur surface, with native move/resize and accessible min/max/close actions.
 Solid uses native decorations. Rebuild the shim with the managed host and template.
@@ -128,3 +128,11 @@ Host ABI 6 additionally appends prepare_frame at offset 200, feature bit 22. bef
 Native build caches are separated by configuration and Quick/Graphite/WebEngine/GStreamer options. Invalid switches and backend combinations fail before compilation. A missing host shim fails with `DOROTIQT006`, including `publish --no-build` for an unbuilt profile. For a prebuilt native host set `DorotiBuildQtNative=false` and `DorotiQtNativeBuildDirectory` to its matching directory; enabled WebEngine needs both its sibling library and runtime manifest.
 
 Host ABI 7 supports configuration-only updates (feature 23, 136-byte host API), layout text geometry (feature 24) and pen availability/orientation (184-byte pointer payload). Optional Desktop ABI 2 uses State72/Command56/API48 bytes; placement requires pure X11 xcb/DPR1 (Wayland/XWayland sessions are rejected) and uses outer-frame physical geometry. Rebuild managed host, template and sample shims together.
+
+Feature bit 25 appends the application ID to the configuration (72 bytes). The managed
+runner requires it and sets Qt's application name and desktop file name before creating
+windows, so install the desktop entry as `<application-id>.desktop`. The native shim
+still accepts the legacy 56-byte prefix when bit 25 is absent. Rebuild prebuilt shims
+with the managed host; an older shim rejects the required identity feature.
+ID-scoped shared WebEngine profiles retain their previous XDG data/cache paths
+under `doroti/QtWebEngine/DorotiShared-<application-id-hash>`.

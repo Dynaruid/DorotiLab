@@ -58,12 +58,14 @@ internal sealed class QtApplicationActivation : IDisposable
 
     private async Task Listen(string scheme)
     {
+        // Keep the Unix listening endpoint alive between requests. Recreating it
+        // can let the next client connect to an endpoint being disposed.
+        using var server = new NamedPipeServerStream(_pipe, PipeDirection.InOut, 1,
+            PipeTransmissionMode.Byte, PipeOptions.Asynchronous | PipeOptions.CurrentUserOnly);
         while (!_lifetime.IsCancellationRequested)
         {
             try
             {
-                using var server = new NamedPipeServerStream(_pipe, PipeDirection.InOut, 1,
-                    PipeTransmissionMode.Byte, PipeOptions.Asynchronous | PipeOptions.CurrentUserOnly);
                 await server.WaitForConnectionAsync(_lifetime.Token).ConfigureAwait(false);
                 using var timeout = CancellationTokenSource.CreateLinkedTokenSource(_lifetime.Token);
                 timeout.CancelAfter(TimeSpan.FromSeconds(5));
@@ -86,8 +88,9 @@ internal sealed class QtApplicationActivation : IDisposable
                 }
                 await server.WriteAsync(new byte[] { 1 }, timeout.Token).ConfigureAwait(false);
             }
-            catch (Exception error) when (error is IOException or OperationCanceledException or ArgumentException)
+            catch (Exception error) when (error is IOException or InvalidDataException or OperationCanceledException or ArgumentException)
             { if (!_lifetime.IsCancellationRequested) Console.Error.WriteLine("Activation: " + error.Message); }
+            finally { if (server.IsConnected) server.Disconnect(); }
         }
     }
 
@@ -104,9 +107,12 @@ internal sealed class QtApplicationActivation : IDisposable
     {
         _lifetime.Cancel();
         lock (_gate) { _deliver = null; _pending.Clear(); }
-        _listener?.GetAwaiter().GetResult();
-        _lifetime.Dispose();
-        if (_ownsMutex) _mutex.ReleaseMutex();
-        _mutex.Dispose();
+        try { _listener?.GetAwaiter().GetResult(); }
+        finally
+        {
+            _lifetime.Dispose();
+            try { if (_ownsMutex) _mutex.ReleaseMutex(); }
+            finally { _mutex.Dispose(); }
+        }
     }
 }

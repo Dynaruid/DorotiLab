@@ -99,6 +99,7 @@ constexpr int kFullSurfaceBackdropExtent = 1 << 20;
 constexpr std::uint64_t kSupportedFeatures =
     DOROTI_QT_FEATURE_TEXT_CONFIGURATION_UPDATE |
     DOROTI_QT_FEATURE_TEXT_GEOMETRY |
+    DOROTI_QT_FEATURE_APPLICATION_ID |
 #ifdef DOROTI_QT_QUICK
     DOROTI_QT_FEATURE_QUICK_COMPOSITION | DOROTI_QT_FEATURE_NATIVE_TEXTURE_EXTENSIONS | DOROTI_QT_FEATURE_CONSUMER_COMPLETION | DOROTI_QT_FEATURE_FRAME_PREPARATION |
 #endif
@@ -1007,7 +1008,9 @@ class DorotiSurface final : public DorotiWindowBase {
           event->accept();
           return true;
         }
-        const auto factor = wheel->inverted() ? 1.0 : -1.0;
+        // Qt has already applied the user's natural-scrolling preference.
+        // Convert screen movement to framework scroll offset without undoing it.
+        const auto factor = -1.0;
         SendPointer(wheel->position(), QPointF{}, 3, 1,
                     static_cast<std::int64_t>(wheel->buttons()), 1, 0, 1,
                     static_cast<std::uint32_t>(wheel->modifiers()),
@@ -1073,6 +1076,12 @@ class DorotiSurface final : public DorotiWindowBase {
       case QEvent::KeyPress:
       case QEvent::KeyRelease: {
         auto* key = static_cast<QKeyEvent*>(event);
+        // Qt sends a release/press pair for each auto-repeat pulse. Only the
+        // final physical release ends the framework's pressed-key lifetime.
+        if (event->type() == QEvent::KeyRelease && key->isAutoRepeat()) {
+          event->accept();
+          return true;
+        }
         if (unified_titlebar_ && event->type() == QEvent::KeyPress &&
             key->key() == Qt::Key_F4 && key->modifiers().testFlag(Qt::AltModifier)) {
           close();
@@ -1418,15 +1427,28 @@ class DorotiSurface final : public DorotiWindowBase {
       selection_base_ = selection_extent_ = composing_base_;
     }
     composing_base_ = composing_extent_ = -1;
-    auto start = std::min(selection_base_, selection_extent_);
-    auto length = std::abs(selection_extent_ - selection_base_);
-    if (event->replacementLength() != 0) {
+    const bool input = !event->commitString().isEmpty() || !event->preeditString().isEmpty() ||
+                       event->replacementLength() != 0;
+    if (input) {
+      // A selection-only IME event must not delete the existing selection.
+      const auto start = std::min(selection_base_, selection_extent_);
+      text_.remove(start, std::abs(selection_extent_ - selection_base_));
+      selection_base_ = selection_extent_ = start;
       const auto text_size = static_cast<int>(text_.size());
-      start = std::clamp(selection_extent_ + event->replacementStart(), 0, text_size);
-      length = std::clamp(event->replacementLength(), 0, text_size - start);
+      const auto replacement = std::clamp(selection_extent_ + event->replacementStart(), 0, text_size);
+      const auto length = std::clamp(event->replacementLength(), 0, text_size - replacement);
+      // replacementStart also specifies the insertion position when length is zero.
+      text_.replace(replacement, length, event->commitString());
+      selection_base_ = selection_extent_ = replacement + event->commitString().size();
     }
-    text_.replace(start, length, event->commitString());
-    auto cursor = start + event->commitString().size();
+    // Selection addresses surrounding text after commit, before the new preedit.
+    for (const auto& attribute : event->attributes()) {
+      if (attribute.type != QInputMethodEvent::Selection) continue;
+      const auto text_size = static_cast<int>(text_.size());
+      selection_base_ = std::clamp(attribute.start, 0, text_size);
+      selection_extent_ = std::clamp(attribute.start + attribute.length, 0, text_size);
+    }
+    const auto cursor = selection_extent_;
     if (!event->preeditString().isEmpty()) {
       text_.insert(cursor, event->preeditString());
       composing_base_ = cursor;
@@ -1436,14 +1458,8 @@ class DorotiSurface final : public DorotiWindowBase {
         if (attribute.type == QInputMethodEvent::Cursor) {
           selection_base_ = selection_extent_ =
               std::clamp(composing_base_ + attribute.start, composing_base_, composing_extent_);
-        } else if (attribute.type == QInputMethodEvent::Selection) {
-          const auto text_size = static_cast<int>(text_.size());
-          selection_base_ = std::clamp(attribute.start, 0, text_size);
-          selection_extent_ = std::clamp(attribute.start + attribute.length, 0, text_size);
         }
       }
-    } else {
-      selection_base_ = selection_extent_ = cursor;
     }
     const auto utf8 = text_.toUtf8();
     const doroti_qt_text_state_v2 state{
@@ -2164,11 +2180,23 @@ std::int32_t Validate(const doroti_qt_configuration_v2* configuration,
   if (configuration == nullptr || callbacks == nullptr) return DOROTI_QT_ERROR_INVALID_ARGUMENT;
   if (configuration->abi_version != kAbiVersion || callbacks->abi_version != kAbiVersion)
     return DOROTI_QT_ERROR_ABI_VERSION;
-  if (configuration->struct_size < sizeof(doroti_qt_configuration_v2) ||
+  // Preserve the legacy 56-byte prefix; application identity is negotiated.
+  if (configuration->struct_size < offsetof(doroti_qt_configuration_v2, application_id) ||
       callbacks->struct_size < sizeof(doroti_qt_callbacks_v2))
     return DOROTI_QT_ERROR_ABI_SIZE;
   const auto required = configuration->required_features | callbacks->required_features;
   if ((required & ~kSupportedFeatures) != 0) return DOROTI_QT_ERROR_UNSUPPORTED_FEATURE;
+  if ((required & DOROTI_QT_FEATURE_APPLICATION_ID) != 0) {
+    if (configuration->struct_size < sizeof(doroti_qt_configuration_v2)) return DOROTI_QT_ERROR_ABI_SIZE;
+    const auto id = configuration->application_id;
+    if (!id.data || id.length == 0 || id.length > 255) return DOROTI_QT_ERROR_INVALID_ARGUMENT;
+    for (std::uint64_t i = 0; i < id.length; ++i) {
+      const auto c = id.data[i];
+      if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+            (c >= '0' && c <= '9') || c == '.' || c == '_' || c == '-'))
+        return DOROTI_QT_ERROR_INVALID_ARGUMENT;
+    }
+  }
 #ifdef DOROTI_QT_QUICK
   if ((callbacks->feature_bits & DOROTI_QT_FEATURE_QUICK_COMPOSITION) == 0)
     return DOROTI_QT_ERROR_UNSUPPORTED_FEATURE;
@@ -2280,8 +2308,14 @@ extern "C" DOROTI_QT_EXPORT std::int32_t doroti_qt_run_v2(
       if (prepared != DOROTI_QT_OK) return prepared;
     }
     int argc = 1;
-    char app_name[] = "doroti";
-    char* argv[] = {app_name, nullptr};
+    const bool has_application_id = ((configuration->required_features | callbacks->required_features) &
+                                     DOROTI_QT_FEATURE_APPLICATION_ID) != 0;
+    const auto application_name = has_application_id
+        ? QString::fromUtf8(reinterpret_cast<const char*>(configuration->application_id.data),
+                            qsizetype(configuration->application_id.length))
+        : QStringLiteral("doroti");
+    auto app_name = application_name.toUtf8();
+    char* argv[] = {app_name.data(), nullptr};
 #ifdef DOROTI_QT_QUICK
     // The managed owner/coordinator and Qt native controls currently share the
     // basic GUI/render loop. Reject a conflicting loop instead of racing them.
@@ -2294,6 +2328,10 @@ extern "C" DOROTI_QT_EXPORT std::int32_t doroti_qt_run_v2(
 #endif
 #endif
     QApplication app(argc, argv);
+    if (has_application_id) {
+      QCoreApplication::setApplicationName(application_name);
+      QGuiApplication::setDesktopFileName(application_name);
+    }
     DorotiQtStartApplicationDispatch();
     struct DispatchLifetime { ~DispatchLifetime() { DorotiQtStopApplicationDispatch(); } } dispatch_lifetime;
     const QIcon app_icon(QStringLiteral(":/doroti/appicon.png"));

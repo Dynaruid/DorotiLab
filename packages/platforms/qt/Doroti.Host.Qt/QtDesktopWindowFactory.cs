@@ -40,18 +40,21 @@ internal sealed class QtDesktopWindowFactory(DorotiApplicationDescriptor descrip
             _resources.Add(resources);
             try
             {
-                Create(configuration, resources.Context);
+                Create(configuration, application.Manifest.ApplicationId, resources.Context);
                 state.ThrowIfFatal();
             }
             catch (Exception error) { host.Fail(error); throw; }
         }, token);
 
-    private static unsafe void Create(Doroti.Ui.DorotiViewConfiguration configuration, nint context)
+    private static unsafe void Create(Doroti.Ui.DorotiViewConfiguration configuration, string applicationId, nint context)
     {
         var bytes = Encoding.UTF8.GetBytes(configuration.title);
+        var identity = Encoding.UTF8.GetBytes(applicationId);
         fixed (byte* title = bytes)
+        fixed (byte* id = identity)
         {
             var native = new QtNativeV2.Configuration(new(title, (ulong)bytes.Length),
+                new(id, (ulong)identity.Length),
                 (int)configuration.logicalSize.width, (int)configuration.logicalSize.height, 1, 0, 0);
             var callbacks = new QtNativeV2.Callbacks(context);
             var status = CreateNative(in native, in callbacks);
