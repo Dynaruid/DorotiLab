@@ -5,7 +5,8 @@ licenses. These notices do not relicense those dependencies as BSD.
 
 ## Qt
 
-The Linux host dynamically links system Qt 6. Qt Core, Gui, Widgets, OpenGL,
+Development builds dynamically link distribution Qt 6. Publication uses a reviewed
+application-private Qt 6.12 shared-library bundle; see ../../qt-runtime.md. Qt Core, Gui, Widgets, OpenGL,
 Network, DBus, Qml, Quick, QuickControls2 and their supporting modules are used
 under LGPL-3.0 where present. Optional WebEngine, WebChannel and their supporting
 modules also use the LGPL option. Copyright belongs to The Qt Company Ltd. and
@@ -15,15 +16,17 @@ the full copyright notices. LGPL-3.0 and the incorporated GPL-3.0 text are inclu
 Debian 13's Qt 6.8.2 also links the shared QmlMeta support module. Its
 qtdeclarative source is covered by the LGPL-3 option in the distribution's
 `/usr/share/doc/libqt6qml6/copyright`; it is included in the reviewed shared-module
-allowlist. No Qt binary is copied into the application package.
+allowlist. That old system profile is historical; the Qt 6.12 collector supplies its own exact binary/source/notice inventory.
 
 - Licensing: https://doc.qt.io/qt-6/licensing.html
 - Source releases: https://download.qt.io/official_releases/qt/
 - Source repositories: https://code.qt.io/
 - Chromium/third-party notices: https://doc.qt.io/qt-6/qtwebengine-licensing.html
 
-This build uses system libraries and does not redistribute Qt/Chromium. Users
-can replace them with ABI-compatible modified shared libraries. Do not prevent
+Published bundles redistribute reviewed Qt/Chromium runtimes with exact corresponding
+source, build information and third-party notices supplied by the SDK inventory.
+Users can select ABI-compatible modified shared libraries with
+DOROTI_QT_FRAMEWORK_PATH and DOROTI_QT_WEBENGINE_PATH. Do not prevent
 that replacement, or reverse engineering for debugging modifications to the
 LGPL components, through application terms or technical restrictions.
 

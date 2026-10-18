@@ -108,6 +108,7 @@ def main(suite, extra=()):
             command("linux-qt-profiles", sys.executable, "Doroti/tests/linux_qt_build_profiles.py", "--output", str(run / "profiles"))
             command("linux-qt", sys.executable, "Doroti/tests/linux_qt_smoke.py", "--output", str(run / "qt"))
         if suite == "LinuxDeb":
+            command("linux-qt-runtime", sys.executable, "Doroti/tests/linux_qt_runtime.py", "--output", str(run / "qt-runtime"))
             command("linux-deb-provider", "dotnet", "run", "--project", "packages/platforms/qt/tests/Doroti.Tool.Qt.Tests", "-c", "Release")
             command("linux-deb-package", sys.executable, "Doroti/tests/linux_deb_package.py", "--output", str(run / "package"), *extra)
         if suite == "LinuxDebInstall":

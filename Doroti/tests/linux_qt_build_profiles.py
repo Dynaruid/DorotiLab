@@ -47,6 +47,21 @@ query = 'DorotiQtQuick,DorotiQtGraphite,DorotiQtWebEngine,DorotiQtNativeBuildDir
 defaults = run('sdk-defaults', query=query)
 assert defaults['DorotiQtQuick'] == defaults['DorotiQtGraphite'] == 'true'
 assert defaults['DorotiQtWebEngine'] == 'false'
+runtime_defaults = run('runtime-versions', query='DorotiQtVersion,DorotiQtWebEngineVersion,DorotiQtWebEngineDeployment')
+assert runtime_defaults == dict(DorotiQtVersion='6.12.0', DorotiQtWebEngineVersion='6.140.0', DorotiQtWebEngineDeployment='bundled')
+for name, switches, error in [
+    ('runtime-missing-sdk', [], 'DOROTIQT010'),
+    ('runtime-unsupported-qt', ['-p:DorotiQtVersion=6.8.2'], 'DOROTIQT012'),
+    ('runtime-download-directory', ['-p:DorotiQtWebEngine=true', '-p:DorotiQtWebEngineDeployment=download'], 'DOROTIQT009'),
+    ('runtime-download-disabled', ['-p:DorotiPackageFormat=deb', '-p:DorotiQtWebEngineDeployment=download'], 'DOROTIQT009'),
+    ('runtime-singlefile', ['-p:DorotiQtSdkDirectory=/explicit/sdk', '-p:PublishSingleFile=true'], 'DOROTIQT011'),
+    ('runtime-direct-deb', ['-p:DorotiQtSdkDirectory=/explicit/sdk', '-p:DorotiPackageFormat=deb'], 'DOROTIQT013'),
+]:
+    run(name, switches=switches, target='ValidateDorotiQtRuntimePublish', error=error)
+provider_version = run('independent-provider-version', ROOT / 'packages/platforms/qt/Doroti.Host.Qt/Doroti.Host.Qt.csproj',
+    switches=['-p:DorotiQtVersion=6.12.0'], query='PackageVersion,DorotiQtVersion,DorotiQtProviderVersion')
+assert provider_version['PackageVersion'] == provider_version['DorotiQtProviderVersion'] == '0.4.1-beta'
+assert provider_version['DorotiQtVersion'] == '6.12.0'
 profiles = [defaults]
 for name, switches in [
     ('webengine', ['-p:DorotiQtWebEngine=true']),

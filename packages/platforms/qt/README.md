@@ -19,7 +19,7 @@ self-contained, untrimmed JIT directory. The provider explicitly selects
 `SelfContained=true`, `UseAppHost=true` and disables trimming/single-file/AOT/R2R
 for this profile. An already enabled trimming/single-file/AOT/R2R option is rejected
 before these properties are applied. GStreamer and the QWindow comparison backend
-are outside this profile. WebView is optional and requires system Qt WebEngine 6.8+.
+are outside this profile. WebView is optional. Publication bundles Qt 6.12.0 and independent WebEngine 6.140.0 when enabled; see the [runtime SDK and redistribution guide](qt-runtime.md).
 
 Add metadata to the Linux runner project; values are evaluated by MSBuild, including
 imports and conditions. `ApplicationId` must match its selected application manifest.
@@ -67,9 +67,7 @@ setting an unresolved dependency fails packaging. See the
 [upstream ABI issue](https://github.com/dotnet/runtime/issues/57784).
 
 The build environment needs Python 3.11+, `dpkg-dev`, `binutils`,
-`desktop-file-utils`, `lintian`, `pkg-config`, .NET SDK and the native Qt development
-dependencies in the [host guide](native/README.md). Install all enabled runtime QML
-modules and platform plugins in that environment as well. Packaging tools are checked
+`desktop-file-utils`, `lintian`, `patchelf`, .NET SDK and the selected Qt SDK/native build dependencies in the [host guide](native/README.md). Supply the reviewed SDK runtime inventory, QML/plugins and exact corresponding source/notice materials described in the runtime guide. Packaging tools are checked
 only for `deb`; ordinary Linux build/run/dev/directory publish requires no dpkg tools.
 
 ```powershell
@@ -82,28 +80,22 @@ validates its file set/ELF64 architecture/runtime mode/native feature closure, c
 to staging, and never modifies a caller's existing publish. The payload goes under
 `/opt/<package-id>`, with an argument-preserving launcher under `/usr/bin`, desktop
 entry, hicolor icon and `/usr/share/doc/<package-id>` copyright/runtime notices.
-Symlinks/special files and bundled Qt binaries are rejected. Owners are recorded as
+Symlinks/special files are rejected; reviewed Qt runtime files are collected under the private qt/ prefix. Owners are recorded as
 root without requiring root to build. No maintainer scripts or portable installer
 calls are included; standard desktop/icon/MIME package triggers handle caches.
 
-The initial package launcher defaults to `QT_QPA_PLATFORM=xcb` and the runtime
-Vulkan SONAME `libvulkan.so.1`, preserving explicit user environment overrides.
-xcb/Xvfb execution, native WebView composition and install/upgrade/remove/purge
-passed in a clean Debian 13 runtime with software Vulkan. With Qt 6.8.2/Mesa 25.0.7,
-Wayland shutdown failed in both a nested Weston test and the host compositor;
-Wayland qualification remains blocked. On a Wayland desktop the default xcb path
-requires an available XWayland display. Physical GPU/menu activation is a separate,
-unverified gate; this is not a declaration that the full initial support checklist
-has passed.
+The launcher and managed loader select native Wayland in a Wayland session and
+xcb in an X11 session, preserving explicit `QT_QPA_PLATFORM`. Vulkan uses
+`libvulkan.so.1`. The previous system-Qt 6.8.2 xcb receipts do not qualify the
+new Qt 6.12 distribution. Both backends, repeated shutdown and physical
+GPU/menu activation require separate evidence.
 
-`dpkg-shlibdeps` analyzes every published ELF, resolves private payload libraries
-within the package and rejects unresolved external libraries. The provider adds
-explicit Quick QML, xcb/Wayland, .NET dynamic system library, font and Vulkan runtime
-dependencies. WebView adds WebEngine/WebChannel QML/helper/data packages and checks
-the native runtime manifest against installed system files. Dynamic dependencies
-use the build environment's installed package versions as conservative minima.
+`dpkg-shlibdeps` analyzes published ELF files using the private Qt/ICU closure.
+Only actual external OS runtime dependencies are declared; distribution Qt/QML
+packages are rejected. .NET dynamic system libraries, font and Vulkan requirements
+remain explicit. A separate WebEngine package has an exact versioned app dependency.
 Runtime Depends never includes compilers, CMake, `*-dev` or .NET SDK. GPU drivers,
-Vulkan 1.2 and an actual working display remain separate runtime requirements.
+Vulkan 1.2 and an actual working display remain separate requirements.
 
 Successful artifacts appear together in
 `<Output>/<package-id>_<debian-version>_amd64/`: the `.deb` of the same basename,
@@ -133,7 +125,7 @@ sudo apt purge com-example-myapp
 Upgrade/remove/purge leave application-ID-scoped XDG user data intact. The launcher
 does not set `XDG_DATA_HOME` to an installation path. Portable data migration is
 not implemented. A `.deb` file does not configure an APT repository or automatic
-updates. Ubuntu 24.04's default Qt does not meet the Quick host requirement.
+updates. With separate WebEngine deployment, supply both local .deb files to APT; no engine repository is needed. The [runtime guide](qt-runtime.md) explains both workflows. Ubuntu/other distribution support still requires separate qualification.
 
 Acceptance and remaining environment-specific gates are recorded in the
 [work checklist](../../../work.md) and [test guide](../../../Doroti/tests/README.md).

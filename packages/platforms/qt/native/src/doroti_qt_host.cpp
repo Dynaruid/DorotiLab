@@ -652,6 +652,7 @@ class DorotiSurface final : public DorotiWindowBase {
       ++surface_generation_;
       surface_released_ = false;
       Diagnostic("qpa", QGuiApplication::platformName().toUtf8().constData());
+      Diagnostic("qt", qVersion());
 #ifdef DOROTI_QT_QUICK
       Diagnostic("graphics.backend", "QtQuick-Graphite-Vulkan");
       Diagnostic("composition", "interleaved-gpu-images");
@@ -766,6 +767,7 @@ class DorotiSurface final : public DorotiWindowBase {
     }
     const auto qpa = QGuiApplication::platformName().toUtf8();
     Diagnostic("qpa", qpa.constData());
+    Diagnostic("qt", qVersion());
     const auto generation = QByteArray::number(surface_generation_);
     Diagnostic("surface.generation", generation.constData());
     if (current != nullptr) {

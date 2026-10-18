@@ -1,5 +1,10 @@
 <Project>
   <PropertyGroup Condition="'$(DorotiHostKind)' == 'Qt'">
+    <DorotiQtVersion Condition="'$(DorotiQtVersion)' == ''">6.12.0</DorotiQtVersion>
+    <DorotiQtWebEngineVersion Condition="'$(DorotiQtWebEngineVersion)' == ''">6.140.0</DorotiQtWebEngineVersion>
+    <DorotiQtWebEngineDeployment Condition="'$(DorotiQtWebEngineDeployment)' == ''">bundled</DorotiQtWebEngineDeployment>
+    <DorotiPackageFormat Condition="'$(DorotiPackageFormat)' == ''">directory</DorotiPackageFormat>
+    <DorotiQtRuntimeTool>$(MSBuildThisFileDirectory)qt_runtime.py</DorotiQtRuntimeTool>
     <DorotiBuildQtNative Condition="'$(DorotiBuildQtNative)' == ''">false</DorotiBuildQtNative>
     <DorotiGStreamerTextures Condition="'$(DorotiGStreamerTextures)' == ''">false</DorotiGStreamerTextures>
     <_DorotiGStreamerTexturesFlag Condition="'$(DorotiGStreamerTextures)' == 'true'">ON</_DorotiGStreamerTexturesFlag>
@@ -15,7 +20,7 @@
     <_DorotiQtGraphiteFlag Condition="'$(DorotiQtGraphite)' != 'true'">OFF</_DorotiQtGraphiteFlag>
     <!-- A prebuilt shim from another backend must never become this profile's
          default. Explicit prebuilt directories are still supported. -->
-    <DorotiQtNativeBuildDirectory Condition="'$(DorotiQtNativeBuildDirectory)' == ''">$(BaseIntermediateOutputPath)$(Configuration)/qt-native/quick-$(_DorotiQtQuickFlag)-graphite-$(_DorotiQtGraphiteFlag)-webengine-$(_DorotiQtWebEngineFlag)-gstreamer-$(_DorotiGStreamerTexturesFlag)</DorotiQtNativeBuildDirectory>
+    <DorotiQtNativeBuildDirectory Condition="'$(DorotiQtNativeBuildDirectory)' == ''">$(BaseIntermediateOutputPath)$(Configuration)/qt-native/qt-$(DorotiQtVersion)-web-$(DorotiQtWebEngineVersion)-quick-$(_DorotiQtQuickFlag)-graphite-$(_DorotiQtGraphiteFlag)-webengine-$(_DorotiQtWebEngineFlag)-gstreamer-$(_DorotiGStreamerTexturesFlag)</DorotiQtNativeBuildDirectory>
   </PropertyGroup>
   <ItemGroup Condition="'$(DorotiHostKind)' == 'Qt'">
     <_DorotiQtRequiredLicense Include="README.md;LGPL-3.txt;GPL-3.txt;Wayland-background-effect-MIT.txt" />
@@ -42,6 +47,10 @@
   </Target>
   <Target Name="ValidateDorotiQtConfiguration" BeforeTargets="PrepareForBuild;PrepareForPublish"
           Condition="'$(DorotiHostKind)' == 'Qt'">
+    <Error Code="DOROTIQT008" Condition="'$(DorotiQtWebEngineDeployment)' != 'bundled' and '$(DorotiQtWebEngineDeployment)' != 'download'"
+           Text="DorotiQtWebEngineDeployment requires bundled or download." />
+    <Error Code="DOROTIQT009" Condition="'$(DorotiQtWebEngineDeployment)' == 'download' and ('$(DorotiQtWebEngine)' != 'true' or '$(DorotiPackageFormat)' != 'deb')"
+           Text="WebEngine download requires DorotiQtWebEngine=true and packageformat=deb. Use bundled for directory/portable deployment." />
     <Error Code="DOROTIQT002"
            Condition="('$(DorotiQtQuick)' != 'true' and '$(DorotiQtQuick)' != 'false') or ('$(DorotiQtGraphite)' != 'true' and '$(DorotiQtGraphite)' != 'false') or ('$(DorotiQtWebEngine)' != 'true' and '$(DorotiQtWebEngine)' != 'false') or ('$(DorotiGStreamerTextures)' != 'true' and '$(DorotiGStreamerTextures)' != 'false') or ('$(DorotiBuildQtNative)' != '' and '$(DorotiBuildQtNative)' != 'true' and '$(DorotiBuildQtNative)' != 'false')"
            Text="Doroti Qt switches require true or false: DorotiQtQuick, DorotiQtGraphite, DorotiQtWebEngine, DorotiGStreamerTextures and DorotiBuildQtNative." />
@@ -63,7 +72,7 @@
           DependsOnTargets="ValidateDorotiQtConfiguration"
           Condition="'$(DorotiHostKind)' == 'Qt' and '$(DorotiBuildQtNative)' == 'true'">
     <MakeDir Directories="$(DorotiQtNativeBuildDirectory)" />
-    <Exec Command="cmake -S &quot;$(DorotiQtNativeSourceDirectory)&quot; -B &quot;$(DorotiQtNativeBuildDirectory)&quot; -DCMAKE_BUILD_TYPE=$(Configuration) -DDOROTI_QT_GRAPHITE=$(_DorotiQtGraphiteFlag) -DDOROTI_QT_QUICK=$(_DorotiQtQuickFlag) -DDOROTI_QT_WEBENGINE=$(_DorotiQtWebEngineFlag) -DDOROTI_GSTREAMER_TEXTURES=$(_DorotiGStreamerTexturesFlag) -DDOROTI_APP_ICON=&quot;$(DorotiLinuxIcon)&quot;" Timeout="1200000" />
+    <Exec Command="cmake -S &quot;$(DorotiQtNativeSourceDirectory)&quot; -B &quot;$(DorotiQtNativeBuildDirectory)&quot; -DCMAKE_BUILD_TYPE=$(Configuration) -DDOROTI_QT_GRAPHITE=$(_DorotiQtGraphiteFlag) -DDOROTI_QT_QUICK=$(_DorotiQtQuickFlag) -DDOROTI_QT_WEBENGINE=$(_DorotiQtWebEngineFlag) -DDOROTI_GSTREAMER_TEXTURES=$(_DorotiGStreamerTexturesFlag) -DDOROTI_QT_VERSION=&quot;$(DorotiQtVersion)&quot; -DDOROTI_QT_SDK=&quot;$(DorotiQtSdkDirectory)&quot; -DDOROTI_QT_WEBENGINE_SDK=&quot;$(DorotiQtWebEngineSdkDirectory)&quot; -DDOROTI_QT_WEBENGINE_VERSION=&quot;$(DorotiQtWebEngineVersion)&quot; -DDOROTI_APP_ICON=&quot;$(DorotiLinuxIcon)&quot;" Timeout="1200000" />
     <PropertyGroup>
       <_DorotiQtCleanFirst Condition="'$(DorotiRebuildDependencies)' == 'true'">--clean-first</_DorotiQtCleanFirst>
     </PropertyGroup>
@@ -77,6 +86,8 @@
     <!-- Equal length/mtime does not imply equal native code (restored artifacts
          can preserve both). Always copy the library selected by this build. -->
     <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_qt_host.so" DestinationFolder="$(TargetDir)" />
+    <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/doroti-qt-build.json" DestinationFolder="$(TargetDir)" Condition="Exists('$(DorotiQtNativeBuildDirectory)/doroti-qt-build.json')" />
+    <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/doroti-qt-build.json" DestinationFolder="$(PublishDir)" Condition="'$(PublishDir)' != '' and Exists('$(DorotiQtNativeBuildDirectory)/doroti-qt-build.json')" />
     <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_texture_gstreamer.so" DestinationFolder="$(TargetDir)" Condition="'$(DorotiGStreamerTextures)' == 'true'" />
     <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_texture_gstreamer.so" DestinationFolder="$(PublishDir)" Condition="'$(DorotiGStreamerTextures)' == 'true' and '$(PublishDir)' != '' and '$(PublishSingleFile)' != 'true'" />
     <Delete Files="$(TargetDir)libdoroti_texture_gstreamer.so" Condition="'$(DorotiGStreamerTextures)' != 'true'" />
@@ -109,5 +120,20 @@
           Condition="'%(ResolvedFileToPublish.RelativePath)' == 'libdoroti_qt_host.so' or '%(ResolvedFileToPublish.RelativePath)' == 'libdoroti_texture_gstreamer.so' or '%(ResolvedFileToPublish.RelativePath)' == 'libdoroti_webview_qt.so' or '%(ResolvedFileToPublish.RelativePath)' == 'doroti-webview-runtime.json'" />
       <ResolvedFileToPublish Include="@(_DorotiQtBundleNative)" RelativePath="%(Filename)%(Extension)" CopyToPublishDirectory="Always" ExcludeFromSingleFile="false" />
     </ItemGroup>
+  </Target>
+  <Target Name="ValidateDorotiQtRuntimePublish" BeforeTargets="PrepareForPublish"
+          DependsOnTargets="ValidateDorotiQtConfiguration" Condition="'$(DorotiHostKind)' == 'Qt'">
+    <Error Code="DOROTIQT012" Condition="'$(DorotiQtVersion)' != '6.12.0'"
+           Text="Qt runtime bundling currently accepts Qt 6.12.0. DorotiQtVersion selects the Framework; DorotiQtProviderVersion selects the provider NuGet package version." />
+    <Error Code="DOROTIQT010" Condition="'$(DorotiQtSdkDirectory)' == '' or ('$(DorotiQtWebEngine)' == 'true' and '$(DorotiQtWebEngineSdkDirectory)' == '')"
+           Text="Qt publish requires an explicit Qt 6.12 SDK and an independent WebEngine SDK when enabled. Set DorotiQtSdkDirectory and DorotiQtWebEngineSdkDirectory. SDK installation is an explicit step." />
+    <Error Code="DOROTIQT011" Condition="'$(PublishSingleFile)' == 'true' or '$(DorotiGStreamerTextures)' == 'true' or '$(DorotiQtQuick)' != 'true' or '$(DorotiQtGraphite)' != 'true'"
+           Text="Qt runtime bundling currently requires Quick/Graphite directory output without GStreamer. Keep Qt shared libraries replaceable outside a single-file bundle." />
+    <Error Code="DOROTIQT013" Condition="'$(DorotiPackageFormat)' == 'deb' and '$(_DorotiQtDebPackaging)' != 'true'"
+           Text="Use the Qt provider publish -PackageFormat deb operation to collect and package the runtime. Direct dotnet publish with DorotiPackageFormat=deb is not a complete package operation." />
+  </Target>
+  <Target Name="BundleDorotiQtRuntime" AfterTargets="Publish" DependsOnTargets="CopyDorotiQtNative;ValidateDorotiQtRuntimePublish"
+          Condition="'$(DorotiHostKind)' == 'Qt' and '$(DorotiPackageFormat)' != 'deb'">
+    <Exec Command="python3 &quot;$(DorotiQtRuntimeTool)&quot; bundle --native &quot;$(DorotiQtNativeBuildDirectory)&quot; --publish &quot;$(PublishDir)&quot; --qt &quot;$(DorotiQtVersion)&quot; --sdk &quot;$(DorotiQtSdkDirectory)&quot; --web-view &quot;$(DorotiQtWebEngine)&quot; --webengine &quot;$(DorotiQtWebEngineVersion)&quot; --engine-sdk &quot;$(DorotiQtWebEngineSdkDirectory)&quot; --deployment &quot;$(DorotiQtWebEngineDeployment)&quot;" Timeout="1200000" />
   </Target>
 </Project>

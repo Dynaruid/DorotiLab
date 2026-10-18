@@ -23,17 +23,22 @@
   </PropertyGroup>
   <Import Project="../../Doroti.Provider.PackageMetadata.targets" />
   <ItemGroup>
-    <None Include="../../build/**/*" Pack="true" PackagePath="provider-build/%(RecursiveDir)%(Filename)%(Extension)" />
+    <None Include="../../build/**/*" Exclude="../../build/**/__pycache__/**;../../build/**/*.pyc" Pack="true" PackagePath="provider-build/%(RecursiveDir)%(Filename)%(Extension)" />
     <None Include="buildTransitive/Doroti.Target.Linux.Qt.linux-x64.props" Pack="true" PackagePath="buildTransitive/" />
   </ItemGroup>
   <PropertyGroup>
     <DorotiQtPrebuiltDirectory Condition="'$(DorotiQtPrebuiltDirectory)' == ''">$(MSBuildProjectDirectory)/../artifacts/native/</DorotiQtPrebuiltDirectory>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="$(DorotiQtPrebuiltDirectory)/doroti-qt-build.json" Condition="Exists('$(DorotiQtPrebuiltDirectory)/doroti-qt-build.json')" Pack="true" PackagePath="runtimes/linux-x64/native/" />
+    <None Include="$(DorotiQtPrebuiltDirectory)/doroti-webview-runtime.json" Condition="Exists('$(DorotiQtPrebuiltDirectory)/doroti-webview-runtime.json')" Pack="true" PackagePath="runtimes/linux-x64/native/" />
     <None Include="$(DorotiQtPrebuiltDirectory)/*.so" Pack="true" PackagePath="runtimes/linux-x64/native/" />
     <None Include="../native/licenses/**/*" Pack="true" PackagePath="native/licenses/%(RecursiveDir)" />
+    <None Include="../sdk/*.lock.json" Pack="true" PackagePath="sdk/" />
+    <None Include="../qt-runtime.md" Pack="true" PackagePath="docs/" />
   </ItemGroup>
   <Target Name="ValidateQtPrebuiltPackage" BeforeTargets="Pack" Condition="'$(DorotiRequireNativePackage)' == 'true'">
     <Error Code="DOROTIQTPACK001" Condition="!Exists('$(DorotiQtPrebuiltDirectory)/libdoroti_qt_host.so')" Text="Qualifying a Qt provider package requires its explicit prebuilt native runtime. Run the provider native operation on Linux first." />
+    <Error Code="DOROTIQTPACK002" Condition="!Exists('$(DorotiQtPrebuiltDirectory)/doroti-qt-build.json')" Text="Qualifying a Qt provider package requires the matching version/feature/hash manifest beside the prebuilt shims." />
   </Target>
 </Project>

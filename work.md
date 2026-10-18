@@ -2,7 +2,7 @@
 
 작성일: 2026-10-18
 
-상태: `.deb` 포장과 Debian 13/Qt 6.8.2의 xcb 검증 완료. 2026-10-19에 `.deb` 배포 목표를 Qt 6.12 LTS, Wayland 필수로 변경했다. Qt Framework와 WebEngine은 기본적으로 앱에 동봉하고, 빌드 옵션으로 `.deb` 설치 시에만 WebEngine을 별도 다운로드·설치하도록 구조를 변경한다. 이 구조는 구현·검증 전이며, 8절은 기존 결과, 9절은 변경된 구현 계약이다.
+상태: 2026-10-19 Qt 6.12 번들 수집·SDK lock 설치·native manifest·로더·별도 엔진 `.deb` 생성과 계약 테스트를 구현했다. Debian 13에서 Qt 6.12.0 + WebEngine 6.140.0 후보 native 빌드와 ELF/로더/엔진 패키지 테스트가 통과했다. 실제 공급 메타데이터는 WebEngine `6.140.0-rc`로 확인됐으며 정식 릴리스 승인과 실제 앱의 깨끗한 OS/Wayland/xcb 검증은 미완료다. 자체 APT 저장소 운영 없이 기본 동봉 또는 엔진·앱 `.deb` 동시 설치를 지원한다. 상세 증거와 미완료 조건은 10절에 기록한다.
 
 ## 1. 목표와 기대 효과
 
@@ -148,6 +148,8 @@ Ubuntu 24.04 기본 Qt Quick은 6.4.2이므로 현재 기본 호스트의 Qt 6.6
 
 ## 6. 문서와 완료 기준
 
+기존 체크 항목의 설치/실행 증거는 8절의 시스템 Qt 조합에 한정한다. 새 Qt 6.12 번들의 전체 승인은 9·10절의 미완료 조건을 따른다.
+
 - [x] `Doroti/README.md`, `Doroti/README.ko.md`, `packages/platforms/qt/README.md`에 생성·설치·업데이트·제거 방법을 추가한다.
 - [x] 템플릿 Linux 안내와 대표 샘플에 package ID/maintainer/version/icon 설정 예시를 제공한다.
 - [x] `Doroti/tests/README.md`에 검증 명령, 필요한 환경, 증거 범위를 기록한다.
@@ -249,11 +251,11 @@ lintian은 패키지 오류를 검사한다. 계획한 third-party `/opt` 배치
 
 Qt 6.12.0은 2026-09-30에 정식 출시됐다. Qt 6.12부터 WebEngine/Pdf는 별도 제품·버전으로 배포되며, 첫 별도 WebEngine 릴리스는 6.140.0이다. 따라서 `Qt == WebEngine` 버전 일치 검사를 사용하지 않는다.
 
-초기 검증 후보는 Framework 6.12.0 + WebEngine 6.140.0이다. 실제 바이너리의 빌드 대상 Qt 버전·플랫폼·아키텍처·필요 라이브러리·helper/QML/resources/locales를 확인한 뒤 호환 조합으로 승인한다. WebEngine과 Chromium의 보안 업데이트는 Framework LTS와 별도로 추적한다. LTS의 장기 상용 지원과 공개 패치 공급 정책도 구분한다.
+초기 검증 후보는 Framework 6.12.0 + WebEngine 6.140.0이다. 2026-10-19 실제 공급 메타데이터는 `6.140.0-rc`로 확인됐으므로 정식 릴리스 확보·승인으로 취급하지 않는다. 실제 바이너리의 빌드 대상 Qt 버전·플랫폼·아키텍처·필요 라이브러리·helper/QML/resources/locales를 확인한 뒤 호환 조합으로 승인한다. WebEngine과 Chromium의 보안 업데이트는 Framework LTS와 별도로 추적한다. LTS의 장기 상용 지원과 공개 패치 공급 정책도 구분한다.
 
 ### 빌드 옵션과 입력
 
-다음 속성 이름과 경로는 구현 계약안이며, 현재 provider가 이미 지원하는 옵션으로 표시하지 않는다. 기존 `DorotiQtWebEngine` 기능 스위치는 유지한다.
+다음 속성은 MSBuild/번들 수집기에 구현했다. 실제 배포 승인은 대응 소스·고지 inventory 및 GUI 검증과 별개다. 기존 `DorotiQtWebEngine` 기능 스위치를 유지한다. 공급자 NuGet 버전은 `DorotiQtProviderVersion`으로 분리했다.
 
 | 속성 | 기본/의미 |
 | --- | --- |
@@ -318,7 +320,7 @@ artifacts/
 | `.deb` | Qt Framework와 활성 WebEngine을 앱 패키지에 동봉 | Framework는 동봉하고 WebEngine runtime package를 APT 의존성으로 설치 |
 
 - 설치 시점은 `apt install ./<app>.deb`다. 앱 실행 시 다운로드·사용자별 엔진 캐시·최초 실행 설치 UI를 두지 않는다. 설치를 마치면 일반 사용자로 네트워크 없이 실행할 수 있어야 한다.
-- `download`용 WebEngine runtime package를 실제 HTTPS APT 저장소에 게시한다. 설치 전에 별도 등록 절차로 keyring과 `Signed-By`가 있는 source를 준비한다. `Depends`에는 패키지 ID와 승인 버전을 선언하며 임의의 다운로드 URL을 쓰지 않는다.
+- `download`용 WebEngine runtime package는 엔진·앱 `.deb`를 함께 제공해 로컬 APT 설치할 수 있다. 원격 다운로드를 원할 때만 기존 HTTPS APT 저장소에 게시하고 설치 전에 keyring과 `Signed-By` source를 등록한다. 자체 저장소 운영은 사용자의 2026-10-19 요청으로 필수가 아니다. `Depends`에는 패키지 ID와 승인 버전을 선언하며 임의의 다운로드 URL을 쓰지 않는다.
 - APT는 저장소 릴리스 서명과 인덱스에 기록된 패키지 해시를 확인하고 의존성을 설치한다. 이미 호환 패키지가 설치되어 있으면 재사용한다. `dpkg -i`만으로는 원격 의존성 다운로드가 제공되지 않으므로 기본 설치 안내는 APT를 사용한다.
 - WebEngine runtime package는 공유 라이브러리·QML·helper·resources·locales·라이선스·대응 소스 안내를 제공하고, 설치 파일은 dpkg가 소유한다. 앱에 동봉한 Framework와 함께 실행하는 전용 버전 경로를 사용하며 Debian 기본 Qt를 교체하거나 시스템 Qt 6.8에 연결하지 않는다.
 - Framework가 앱에 동봉되어 있으므로 엔진 패키지의 Qt 의존성을 배포판 `libqt6*`로 잘못 생성하지 않는다. 소비 앱이 제공하는 Framework 버전·ABI와 엔진의 요구사항을 빌드 manifest·패키지 계약·로더에서 대조하고, 엔진의 실제 외부 OS 의존성은 패키지에 선언한다.
@@ -344,11 +346,11 @@ artifacts/
 ### 실제 코드 변경 지점과 완료 조건
 
 - [ ] SDK 설치 작업: Framework 6.12.0과 별도 WebEngine의 고정 버전·출처·해시·모듈을 설치하고 재사용한다. SDK 수집과 사용자용 런타임 수집을 분리한다.
-- [ ] `packages/platforms/build/Doroti.Qt.targets`: 옵션 기본값·검증·SDK prefix 전달·native 출력 구분·게시 번들 수집 연결을 구현한다. WebEngine 미사용 앱에는 엔진 SDK를 요구하지 않는다.
-- [ ] `packages/platforms/qt/native/CMakeLists.txt`: 선택된 Qt 6.12 및 별도 WebEngine으로 링크하고 Framework/WebEngine 버전·ABI·배포 모드를 manifest에 기록한다. Qt 번들 상대 로딩 경로와 prebuilt 일치를 확인한다.
+- [x] `packages/platforms/build/Doroti.Qt.targets`: 옵션 기본값·검증·SDK prefix 전달·native 출력 구분·게시 번들 수집 연결을 구현한다. WebEngine 미사용 앱에는 엔진 SDK를 요구하지 않는다.
+- [x] `packages/platforms/qt/native/CMakeLists.txt`: 선택된 Qt 6.12 및 별도 WebEngine으로 링크하고 Framework/WebEngine 버전·ABI·배포 모드를 manifest에 기록한다. Qt 번들 상대 로딩 경로와 prebuilt 일치를 확인한다.
 - [ ] `native/cmake/DorotiLicensePolicy.cmake`와 번들 수집기: 6.12/호환 WebEngine의 LGPL 가능한 모듈, QML/플러그인과 최종 ELF 의존성·notice·대응 소스를 검사한다. 기존 타깃 allowlist만으로 배포 승인을 내리지 않는다.
-- [ ] `packages/platforms/qt/tooling/linux_deb.py`: Qt 동봉 금지·system-distribution 고정·Qt/QML APT 의존성을 제거하고, 번들 manifest·배포 방식·외부 OS 의존성과 새 launcher를 검증한다.
-- [ ] WebEngine runtime `.deb`와 서명 APT 저장소를 준비한다. 실제 공급 URL·키·패키지 소유권·버전 계약을 확정하고 앱 설치 전에 등록할 절차를 제공한다.
+- [x] `packages/platforms/qt/tooling/linux_deb.py`: Qt 동봉 금지·system-distribution 고정·Qt/QML APT 의존성을 제거하고, 번들 manifest·배포 방식·외부 OS 의존성과 새 launcher를 검증한다.
+- [x] WebEngine runtime `.deb` 생성·소유권·정확한 패키지/Framework 버전 계약과 로컬 엔진·앱 동시 설치 절차를 구현한다. 사용자 요청에 따라 자체 APT 저장소 운영은 필수 범위에서 제외한다. 선택적 기존 저장소 등록 설명은 제공하되 실제 원격 서명 저장소 검증을 수행했다고 표시하지 않는다.
 - [ ] runtime 경로/로더: Qt/native shim을 로드하기 전에 동봉 또는 APT로 설치된 WebEngine 경로를 선택한다. 앱 실행 중 다운로드 코드를 추가하지 않으며, 패키지 누락/ABI 오류·sandbox 동작·사용자 지정 수정 런타임 경로를 검증한다.
 - [ ] NuGet 패키지에 번들 도구·runtime manifest·엔진 `.deb` 생성/의존성 처리에 필요한 파일을 포함하고 저장소 소스 없는 소비자도 게시할 수 있게 한다.
 - [ ] Qt/SDK 없는 깨끗한 Debian 13에서 Quick, WebView bundled, WebView download 각각의 설치·Wayland/xcb 반복 실행·정상 종료·업데이트/remove/purge·데이터 보존을 검증한다.
@@ -373,3 +375,91 @@ KDE neon은 Ubuntu 기반이며 Savoury Qt 6.2 PPA는 이번 버전에 맞지 �
 
 - [Debian 패키지 의존성 선언](https://www.debian.org/doc/debian-policy/ch-relationships.html)
 - [APT 로컬 패키지 설치와 의존성 해결](https://www.debian.org/doc/manuals/debian-reference/ch02.en.html)
+
+
+## 10. Qt 6.12 구현 및 검증 결과 — 2026-10-19
+
+### 배포 방식 변경
+
+사용자는 자체 APT 저장소 운영을 원하지 않는다고 명확히 했다. 기본 `bundled`는
+앱 `.deb` 하나로 제공한다. 분리 `download`는 정확한 엔진 패키지 의존성을 유지하되
+`apt install ./engine.deb ./app.deb`로 두 파일을 함께 설치할 수 있다. 앱 `.deb`만으로
+원격 엔진을 내려받는 것은 기존 공급 저장소가 있을 때만 가능하다. 실행 시 다운로드,
+중첩 APT/다운로더, 시스템 Qt fallback 또는 sandbox 해제는 추가하지 않았다.
+
+### 구현한 코드
+
+- `packages/platforms/build/qt_runtime.py`: Framework/WebEngine 독립 버전, 명시적 SDK,
+  prebuilt의 버전/ABI/기능/원본 shim 해시, reviewed inventory, 대응 소스·패치·빌드 정보·
+  라이선스·SBOM 문서, 허용 모듈과 Qt ELF/QML 의존성을 검사한다. 선택 파일만 수집하고
+  ELF 상대 RPATH, SONAME 파일, `qt.conf`, 개별 런타임 provenance/manifest를 생성한다.
+  일반 폴더와 `.deb`가 같은 수집기를 사용한다. 시스템 Qt 6.8/6.10은 게시 번들로 거부한다.
+- `install-qt-sdk.py`, `review-qt-runtime.py`, `qt/sdk/*.lock.json`: 실제 공식 바이너리
+  URL·SHA-256을 고정한 Framework 6.12.0/ICU 73 및 독립 WebEngine SDK 설치기와
+  명시적 재배포 recipe를 정확한 파일 inventory로 만드는 도구를 추가했다. 프로젝트 평가에
+  다운로드를 연결하지 않았다. SDK lock 설치 성공은 재배포 자료 검토 완료를 뜻하지 않는다.
+- `Doroti.Qt.targets`: 기본 버전·배포 조합 검증, 선택 SDK CMake 인수, 버전별 출력,
+  publish 수집을 연결했다. 엔진 비활성 앱에는 엔진 SDK를 요구하지 않는다. 새 Qt 번들
+  게시는 single-file/GStreamer/non-Quick를 명시적으로 거부한다. 개발 빌드는 기존 시스템
+  Qt 경로를 유지한다. 공급자 패키지 버전 속성은 `DorotiQtProviderVersion`으로 분리했다.
+- `CMakeLists.txt`, `DorotiLicensePolicy.cmake`, `eng/build-native.py`: 선택 SDK의 정확한
+  Qt/WebEngine 링크, 모든 imported Qt target의 prefix, 공유 링크 정책을 검사한다.
+  `doroti-qt-build.json`에 Qt/엔진 독립 버전, host/WebView ABI, 기능과 실제 shim 해시를
+  기록한다. WebEngine 버전이 Framework와 같아야 한다는 검사는 사용하지 않는다.
+- `QtRuntime.cs`, `DorotiQtRunner.cs`: 앱 구성/Qt shim 로드 전에 private 라이브러리를
+  의존성 순서대로 절대 경로에서 로드한다. Qt/QML/plugin/helper/resources/locales 경로를
+  맞추고, 분리 엔진의 `engine.json`과 패키지/Framework 버전을 검사한다. 네이티브
+  Wayland/xcb를 세션에 따라 선택하며 명시적 사용자 QPA를 보존한다. 런타임 원본 해시는
+  실행 조건으로 강제하지 않으며 `DOROTI_QT_FRAMEWORK_PATH`/`DOROTI_QT_WEBENGINE_PATH`를
+  통해 호환 수정 런타임을 선택할 수 있다.
+- `linux_deb.py`: Qt/QML 시스템 APT 의존성과 Qt 동봉 금지를 제거했다. private SONAME은
+  명시적 local shlibs map으로 처리하며 미해결 외부 의존성 오류를 유지한다. 엔진 `.deb`의
+  외부 OS 의존성·소유권·고지·changelog·Lintian 검사와 앱의 정확한 엔진 버전 의존성을
+  생성한다. 완성된 앱/엔진/receipt만 함께 반영하고 XDG 데이터 계약을 보존한다.
+- NuGet target/tool 패키지에 수집·SDK 설치·recipe 도구와 native build/WebView manifest를
+  포함했다. `linux_qt_packages.py`에 명시적 `--qt-sdk`를 연결했다. 기존 패키지에 도구와
+  manifest가 실제 포함되는 것은 확인했으며 완전한 새 소비자의 실제 게시/GUI는 별도다.
+- `linux_deb_install.py`는 엔진·앱 파일을 함께 APT에 전달하고 backend/Qt 버전 및 기본
+  3회 반복 실행을 검사한다. `validate.py LinuxDeb`에 새로운 ELF/로더 계약 테스트를 연결했다.
+  사용자 안내는 `packages/platforms/qt/qt-runtime.md`, 양쪽 README와 템플릿/샘플에 갱신했다.
+
+### 확인한 증거
+
+- 공식 Framework 6.12.0 SDK와 별도 WebEngine 6.140.0 후보를 설치해 Ubuntu 호스트에서
+  Quick 및 WebView native shim을 빌드했다. Debian 13 격리 빌더에서도 같은 고정 SDK로
+  Quick 및 WebView shim 빌드가 모두 통과했다. Qt/WebEngine 버전은 각각 6.12.0/6.140.0으로 기록됐다.
+- Debian 13.7 amd64 빌더: .NET SDK 10.0.400, glibc `2.41-12+deb13u4`, GCC/libstdc++
+  `14.2.0-19`, CMake `3.31.6-2`, patchelf `0.18.0-1.4`, Wayland client 1.23.1,
+  Vulkan headers 1.4.309. 현재 개발 호스트의 설치 패키지는 변경하지 않았다.
+- `linux_qt_runtime.py --package-tests`: **19개 테스트 통과**. 실제 ELF fixture의 이동,
+  독립 엔진 버전/분리 파일, SDK 재사용·변조 거부, 누락/변경된 런타임, 의존성 경로,
+  재배포 자료 부족과 미검토/GPL 전용 모듈 거부, 원본 prebuilt 검사를 확인했다.
+  Debian 13에서 fixture 엔진 `.deb` 생성, Lintian 오류 없음, OS 의존성만 선언,
+  root 소유권과 Framework 계약 control 필드를 확인했다. 이는 실제 Qt/Chromium GUI
+  또는 재배포 승인 증거가 아니다.
+- C# loader를 별도 프로세스에서 실행해 private 라이브러리 선택과 수정한 호환 라이브러리의
+  실제 실행을 확인했다. 첫 라이브러리의 반환값 42가 명시한 수정 라이브러리에서는 73으로
+  바뀌었다. 원본 해시를 실행 제한으로 사용하지 않았다. 실제 Qt 수정판 검증은 별도다.
+- 기존 `linux_deb_package.py` 9개 및 Qt provider/host 계약, 빌드 프로필·잘못된 옵션·
+  경로/복사 검증이 통과했다. target/tool NuGet pack과 포함 파일 검사를 통과했다.
+- 실제 SDK에서 Qt 6.12 Wayland QPA는 `libqwayland.so`이며 Qt Core가 ICU 73 SONAME을
+  요구하는 것을 확인해 수집 계약에 반영했다. Debian 시스템 ICU 76으로 대체하지 않는다.
+
+### 아직 완료되지 않은 릴리스 조건
+
+- 확보한 WebEngine 공급 메타데이터의 이름은 **`Qt WebEngine 6.140.0-rc`**다.
+  `sdk/webengine-6.140.0-qt6.12-linux-x64.lock.json`에 RC 상태와 metadata URL을 기록했다.
+  숫자 CMake 버전 6.140.0만 보고 정식 릴리스 또는 배포 승인으로 표시하지 않는다.
+- 실제 배포 바이너리별 정확한 대응 소스·패치/빌드·third-party 자료를 갖춘 reviewed
+  `doroti-sdk.json`이 아직 준비되지 않았다. 이를 빠뜨린 게시가 성공하도록 우회하지 않았다.
+- Qt/SDK 없는 깨끗한 Debian 13에서 실제 Quick, WebView bundled, WebView 분리 각각의
+  앱 `.deb` 게시/설치와 네이티브 Wayland/xcb 반복 실행·정상 종료, 업데이트/remove/purge,
+  데이터 보존, 오프라인 실행, 공유 엔진·동시 업데이트·설치 실패/복구는 미검증이다.
+- 새 NuGet-only 소비자의 실제 게시/GUI, 실제 수정 Qt 라이브러리 실행, 물리 GPU/메뉴
+  검증도 미완료다. 서명 원격 저장소 검증은 사용자 요청으로 선택적 후속 범위다.
+
+따라서 **코드/계약 구현 및 fixture 검증과 Qt 6.12 전체 배포 승인은 분리**하며, 실제
+미완료 항목은 체크하지 않는다. 이전 Qt 6.8.2/xcb 또는 Qt 6.10.2/Wayland 결과로 대체하지 않는다.
+
+검증 로그/구현 receipt: `temp/testing/linux-deb/qt612-2026-10-19/`.
+`contracts/contracts.json`은 테스트 범위를 fixture로 명시하며, 실제 앱 릴리스 승인을 뜻하지 않는다.

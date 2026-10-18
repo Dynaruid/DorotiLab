@@ -173,14 +173,28 @@ def inspect_artifact(receipt_path, output):
         assert {str(path.relative_to(payload)): deb.sha256(path) for path in payload.rglob("*") if path.is_file()} == receipt["payload"]
         launcher = (stage / "usr/bin" / metadata["packageId"]).read_text()
         assert '"$@"' in launcher and "XDG_DATA_HOME=" not in launcher
-        assert not any(stage.rglob("libQt6*"))
+        if "qtRuntime" in receipt:
+            deb.qt_runtime.verify(payload, metadata["qt"], metadata["webView"])
+            assert (payload / "qt/framework/6.12.0/lib/libQt6Core.so.6").is_file()
+            assert "WAYLAND_DISPLAY" in launcher and "QT_QPA_PLATFORM=wayland" in launcher
+        else:
+            assert not any(stage.rglob("libQt6*"))
         entry = stage / "usr/share/applications" / (metadata["applicationId"] + ".desktop")
         subprocess.run(["desktop-file-validate", str(entry)], check=True)
     subprocess.run(["dpkg", "--validate-version", metadata["debianVersion"]], check=True)
     assert receipt["verification"]["gui"] == "not-run"
     assert set(receipt["publishPayload"]) - set(receipt["payload"]) == set(receipt["excludedRuntimeFiles"]) & set(receipt["publishPayload"])
     assert all(receipt["publishPayload"][name] == digest for name, digest in receipt["payload"].items())
-    assert ("qml6-module-qtwebengine" in receipt["depends"]) == metadata["webView"]
+    if "qtRuntime" in receipt:
+        assert not any(name in receipt["depends"] for name in ("libqt6", "qml6-", "qt6-wayland"))
+        engine = receipt.get("webEnginePackage")
+        if engine:
+            engine_file = receipt_path.parent / engine["package"]
+            assert deb.sha256(engine_file) == engine["sha256"]
+            runtime = receipt["qtRuntime"]["webEngine"]
+            assert runtime["packageId"] + " (= " + runtime["packageVersion"] + ")" in receipt["depends"]
+    else:
+        assert ("qml6-module-qtwebengine" in receipt["depends"]) == metadata["webView"]
     (output / "artifact-inspection.json").write_text(json.dumps(dict(status="passed", package=str(package), install="not-run", gui="not-run"), indent=2))
 
 

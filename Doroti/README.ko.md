@@ -225,8 +225,11 @@ Doroti는 [BSD 3-Clause 라이선스](../LICENSE)를 따릅니다. 외부 소스
 ### Linux Debian 패키지
 
 Debian 13 amd64의 Linux Qt 게시에서 `-PackageFormat deb -Output <디렉터리>`를
-사용할 수 있습니다. Release의 self-contained, untrimmed JIT 게시 결과에 시스템
-Qt/QML 의존성, launcher, 데스크톱 메뉴, 아이콘, 라이선스 문서를 포함합니다.
+사용할 수 있습니다. Release의 self-contained, untrimmed JIT 게시 결과에
+Qt 6.12 런타임을 앱 전용 경로에 동봉하고 launcher, 메뉴, 아이콘, 라이선스 문서를 포함합니다.
+WebEngine 6.140도 기본 동봉하며, 분리할 때는 엔진·앱 `.deb` 두 개를 APT로 함께 설치할 수 있습니다.
+자체 저장소는 필수가 아닙니다. 명시적 SDK 경로와 검토된 대응 소스·고지 inventory가 필요합니다.
+[런타임 안내](../packages/platforms/qt/qt-runtime.md)를 참고하세요.
 Linux runner에 고유한 `DorotiDebPackageId`, maintainer, description, copyright 파일을
 설정합니다. [Qt 패키징 안내](../packages/platforms/qt/README.md#debian-packages)에
 설정·버전 규칙·환경 요구사항이 있습니다. 옵션을 생략하면 기존 폴더 게시를 유지합니다.
@@ -234,5 +237,5 @@ Linux runner에 고유한 `DorotiDebPackageId`, maintainer, description, copyrig
 `sudo apt purge <package-id>`로 제거합니다. 사용자 XDG 데이터는 보존합니다.
 로컬 `.deb` 배포만으로 자동 업데이트를 제공하지 않습니다. 설치와 GUI 실행 검증은
 [테스트 안내](tests/README.md)에서 별도로 기록합니다.
-현재 launcher 기본값은 xcb입니다. Debian 13의 Wayland 종료 실패가 남아 있어
-전체 초기 지원 완료는 보류합니다.
+launcher는 세션에 따라 네이티브 Wayland/xcb를 선택하며 명시한 설정을 보존합니다.
+Qt 6.12/Debian 13의 실제 Wayland·xcb 검증은 릴리스 완료 조건으로 남아 있습니다.

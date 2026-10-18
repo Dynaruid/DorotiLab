@@ -31,6 +31,7 @@ public static unsafe partial class DorotiQtRunner
     private static void PrepareProcess()
     {
         if (!OperatingSystem.IsLinux()) throw new PlatformNotSupportedException("Qt requires Linux.");
+        QtRuntime.Configure();
         NativeFrameConfiguration.ValidateEnvironment();
         QtNativeV2.ValidateLayout();
         // Resolve the provider ABI now, before any application startup code.
@@ -57,6 +58,7 @@ public static unsafe partial class DorotiQtRunner
             );
         }
 
+        QtRuntime.Configure();
         NativeFrameConfiguration.ValidateEnvironment();
         QtNativeV2.ValidateLayout();
         if (QtSkiaSurface.GraphiteEnabled)

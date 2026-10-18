@@ -72,14 +72,15 @@ Android x64 에뮬레이터는 `-r android-x64`, Intel Mac의 iOS 시뮬레이�
 
 ### 데스크톱 단일 실행 파일 게시
 
-Windows App SDK와 Linux Qt 러너는 `PublishSingleFile=true`를 지원합니다. 다음은 저장소
-루트에서 실행하며, Linux 명령은 Linux 또는 WSL에서 사용합니다.
+Windows App SDK는 `PublishSingleFile=true`를 지원합니다. Linux Qt 6.12 번들은
+교체 가능한 공유 라이브러리를 포함하는 폴더 게시를 사용합니다. 다음 명령 전에
+Qt SDK와 재배포 inventory를 구성하세요.
 
 ```powershell
 # Windows: single EXE, .NET/Windows App SDK self-contained
 dotnet publish ./samples/DorotiCarouselApp/windowsappsdk/DorotiCarouselApp.WindowsAppSdk.csproj -c Release -p:PublishSingleFile=true -o ./temp/publish/carousel-windows
-# Linux: single executable, .NET self-contained, system Qt dependencies required
-dotnet publish ./samples/DorotiCarouselApp/linux/DorotiCarouselApp.Linux.csproj -c Release -p:PublishSingleFile=true --self-contained true -p:DorotiBuildQtNative=true -o ./temp/publish/carousel-linux
+# Linux: Qt publication requires a reviewed Qt 6.12 SDK runtime; use directory output
+dotnet publish ./samples/DorotiCarouselApp/linux/DorotiCarouselApp.Linux.csproj -c Release --self-contained true -p:DorotiBuildQtNative=true -o ./temp/publish/carousel-linux
 ```
 
 단일 실행 파일은 실행 시 DLL과 콘텐츠를 추출합니다. ReadyToRun/난독화 옵션도 함께
@@ -270,3 +271,11 @@ Qt 고지는 Linux Qt 러너에서만 추가합니다. 단일 파일 게시도 �
 원본 shimmer/tint, Hero 전환과 지갑 거래 목록은 이 예제에 포함하지 않습니다.
 
 회귀 검사 명령은 [검사 안내](docs/validation.md)에 있습니다.
+
+Linux runtime publication uses an explicit Qt 6.12.0 Framework SDK and independent
+WebEngine 6.140.0 SDK for this WebView-enabled sample. Set the SDK prefixes and
+provide reviewed source/notice inventories as described in the
+[Qt runtime guide](../../packages/platforms/qt/qt-runtime.md). WebEngine is bundled
+by default. A separate engine/app `.deb` pair can be installed together with APT
+without operating an engine repository. Single-file Qt publication is explicitly
+unsupported by this bundle profile.

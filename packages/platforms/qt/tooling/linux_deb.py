@@ -21,6 +21,15 @@ import sys
 import tempfile
 from urllib.parse import urlsplit
 
+# The same collector ships beside this tool and in provider-build for MSBuild.
+import importlib.util
+_runtime_path = Path(__file__).with_name("qt_runtime.py")
+if not _runtime_path.is_file():
+    _runtime_path = Path(__file__).resolve().parents[2] / "build/qt_runtime.py"
+_runtime_spec = importlib.util.spec_from_file_location("doroti_qt_runtime", _runtime_path)
+qt_runtime = importlib.util.module_from_spec(_runtime_spec)
+_runtime_spec.loader.exec_module(qt_runtime)
+
 PROPERTIES = (
     "ApplicationId", "ApplicationTitle", "AssemblyName", "Version", "DorotiLinuxIcon",
     "TargetFramework", "RuntimeIdentifier", "DorotiTarget", "DorotiHostKind", "NETCoreSdkVersion", "ProjectAssetsFile",
@@ -28,24 +37,17 @@ PROPERTIES = (
     "UseAppHost", "DorotiQtQuick", "DorotiQtGraphite", "DorotiQtWebEngine", "DorotiGStreamerTextures",
     "DorotiDebPackageId", "DorotiDebMaintainer", "DorotiDebDescription", "DorotiDebHomepage",
     "DorotiDebCategories", "DorotiDebMimeTypes", "DorotiDebUriSchemes", "DorotiDebVersion",
-    "DorotiDebRevision", "DorotiDebCopyright", "DorotiDebExcludeLttngProvider",
+    "DorotiDebRevision", "DorotiDebCopyright", "DorotiDebExcludeLttngProvider", "DorotiQtNativeBuildDirectory",
+    *qt_runtime.PROPERTIES,
 )
 # Profile properties are opt-in for deb only. NativeAOT/trimming/single-file/R2R
 # are checked BEFORE these properties are applied, never silently downgraded.
 PUBLISH_PROPERTIES = ["-p:SelfContained=true", "-p:PublishTrimmed=false", "-p:PublishSingleFile=false",
                       "-p:PublishAot=false", "-p:PublishReadyToRun=false", "-p:UseAppHost=true"]
-QUICK_PACKAGES = (
-    "libqt6core6t64", "libqt6gui6", "libqt6widgets6", "libqt6quick6", "libqt6qml6",
-    "libqt6quickcontrols2-6", "qt6-wayland", "qml6-module-qtquick", "qml6-module-qtquick-controls",
-    "qml6-module-qtquick-window", "qml6-module-qtquick-templates", "qml6-module-qtqml",
-    "qml6-module-qtqml-models", "qml6-module-qtqml-workerscript",
-)
 SYSTEM_PACKAGES = ("libicu76", "libssl3t64", "libgssapi-krb5-2", "zlib1g", "libvulkan1",
                    "libfontconfig1", "fonts-dejavu-core")
-WEB_PACKAGES = ("libqt6webenginequick6", "libqt6webchannel6", "qml6-module-qtwebengine",
-                "qml6-module-qtwebchannel", "libqt6webenginecore6-bin", "libqt6webengine6-data")
 TOOLS = ("dpkg-deb", "dpkg-shlibdeps", "dpkg-query", "dpkg", "readelf", "objdump",
-         "desktop-file-validate", "lintian", "pkg-config")
+         "desktop-file-validate", "lintian", "patchelf")
 STOP_PATH = None
 SESSION_ID = None
 
@@ -209,28 +211,12 @@ def environment():
 
 def runtime_dependencies(metadata):
     result = {}
-    packages = SYSTEM_PACKAGES + QUICK_PACKAGES + (WEB_PACKAGES if metadata["webView"] else ())
-    for package in packages:
+    for package in SYSTEM_PACKAGES:
         output = command(["dpkg-query", "-W", "-f=${db:Status-Status}\t${Version}", package])[0]
         status, version = output.split("\t")
         if status != "installed":
             raise ValueError(f"Required runtime package is not installed: {package}")
-        # Dynamic modules lack symbol-level discovery. Conservatively use the
-        # exact build-environment release as a minimum, recorded in the receipt.
         result[package] = version
-    core = command(["pkg-config", "--modversion", "Qt6Core"])[0].strip()
-    minimum = "6.8.0" if metadata["webView"] else "6.6.0"
-    try:
-        command(["dpkg", "--compare-versions", core, "ge", minimum])
-    except ValueError as error:
-        raise ValueError(f"deb requires Qt >= {minimum}; found {core}") from error
-    metadata["qt"] = core
-    if metadata["webView"]:
-        metadata["webEngine"] = command(["pkg-config", "--modversion", "Qt6WebEngineQuick"])[0].strip()
-    for module, filename in (("libqt6gui6", "libqxcb.so"), ("qt6-wayland", "libqwayland-egl.so")):
-        files = command(["dpkg-query", "-L", module])[0].splitlines()
-        if not any(path.endswith("/platforms/" + filename) and Path(path).is_file() for path in files):
-            raise ValueError("QPA platform plugin is missing: " + filename)
     return result
 
 
@@ -241,8 +227,22 @@ def inspect(dotnet, project, framework, rid, configuration):
     project = Path(project).resolve()
     output = command([dotnet, "msbuild", project, "-nologo", "-getProperty:" + ",".join(PROPERTIES),
                       "-getItem:EmbeddedResource", "-p:Configuration=" + configuration,
-                      "-p:TargetFramework=" + framework, "-p:RuntimeIdentifier=" + rid])[0]
-    metadata = metadata_from_model(json.loads(output), project)
+                      "-p:TargetFramework=" + framework, "-p:RuntimeIdentifier=" + rid, "-p:DorotiPackageFormat=deb"])[0]
+    model = json.loads(output)
+    metadata = metadata_from_model(model, project)
+    config = qt_runtime.settings(model["Properties"], "deb")
+    for key in ("sdk", "engineSdk"):
+        if config[key] and not Path(config[key]).is_absolute():
+            config[key] = str((project.parent / config[key]).resolve())
+    qt_runtime.sdk_inventory(config["sdk"], config["qt"], config["qt"], "framework")
+    if config["webView"]:
+        qt_runtime.sdk_inventory(config["engineSdk"], config["webEngine"], config["qt"], "webengine")
+    metadata["qtRuntime"] = config
+    metadata["qt"] = config["qt"]
+    if config["webView"]:
+        metadata["webEngine"] = config["webEngine"]
+    native = Path(model["Properties"]["DorotiQtNativeBuildDirectory"])
+    metadata["nativeDirectory"] = str(native if native.is_absolute() else (project.parent / native).resolve())
     assets_path = Path(metadata["projectAssetsFile"])
     if not assets_path.is_absolute():
         assets_path = project.parent / assets_path
@@ -306,34 +306,27 @@ def verify_payload(source, metadata):
         raise ValueError("GStreamer is outside the initial deb profile")
     if not metadata["webView"] and any((source / name).exists() for name in ("libdoroti_webview_qt.so", "doroti-webview-runtime.json")):
         raise ValueError("WebView payload disagrees with evaluated features")
+    runtime = qt_runtime.verify(source, metadata["qt"], metadata["webView"])
+    if runtime["deployment"] != metadata["qtRuntime"]["deployment"]:
+        raise ValueError("Qt bundle deployment differs from evaluated settings")
     if metadata["webView"]:
         manifest = json.loads((source / "doroti-webview-runtime.json").read_text())
-        if (manifest.get("schemaVersion") != 1 or manifest.get("engineSource") != "system-distribution"
-                or set(manifest.get("shims", [])) != {"libdoroti_qt_host.so", "libdoroti_webview_qt.so"}
-                or set(manifest.get("qmlModules", [])) != {"QtQuick", "QtQuick.Controls", "QtWebEngine", "QtWebChannel"}
-                or manifest.get("abiVersion") != 1 or manifest.get("abiBytes") != 32
-                or manifest.get("minimumQtApi") != "6.8.0" or manifest.get("sandbox") != "default-required"
-                or manifest.get("builtQt") != metadata["qt"] or manifest.get("builtWebEngine") != metadata["webEngine"]):
-            raise ValueError("WebView runtime manifest disagrees with the packaging profile/environment")
-        files = "\n".join(command(["dpkg-query", "-L", package])[0] for package in WEB_PACKAGES)
-        for name in manifest.get("runtimeFiles", []):
-            if not any(path.endswith("/" + name) and Path(path).is_file() for path in files.splitlines()):
-                raise ValueError("System WebView runtime file is missing: " + name)
-        if not manifest.get("runtimeFiles"):
-            raise ValueError("WebView runtime manifest has no runtime closure")
+        if (manifest.get("builtQt") != metadata["qt"] or manifest.get("builtWebEngine") != metadata["webEngine"]
+                or manifest.get("abiVersion") != 1 or manifest.get("sandbox") != "default-required"):
+            raise ValueError("WebView native ABI/version disagrees with selected SDK")
     paths = sorted(source.rglob("*"))
     for path in paths:
         check_stop()
         if path.is_symlink() or not (path.is_file() or path.is_dir()):
             raise ValueError(f"Unsupported symlink or special file in publish payload: {path}")
         line(str(path.relative_to(source)), "payload path")
-        if re.match(r"(?:libQt6|QtWebEngineProcess)", path.name):
-            raise ValueError("Qt binaries must remain system dependencies: " + str(path))
+        if path.name.startswith("libQt6") and not path.is_relative_to(source / "qt"):
+            raise ValueError("Qt libraries must live under the private runtime prefix: " + str(path))
         if path.is_file():
             elf(path)
 
 
-def dependencies(stage, payload, metadata, work):
+def dependencies(stage, payload, metadata, work, private=()):
     files = [path for path in sorted(payload.rglob("*")) if path.is_file() and elf(path)]
     needed = set()
     for path in files:
@@ -342,10 +335,11 @@ def dependencies(stage, payload, metadata, work):
         for search_path in re.findall(r"\((?:RPATH|RUNPATH)\).*\[([^\]]+)\]", dynamic):
             if any(not re.fullmatch(r"\$(?:ORIGIN|\{ORIGIN\})(?:/[A-Za-z0-9_.+-]+)*", value) for value in search_path.split(":")):
                 raise ValueError("Nonportable native library search path in " + str(path))
+    private_files = [path for root, directory in private for path in directory.rglob("*") if path.is_file() and elf(path)]
     # dpkg-shlibdeps warns (rather than failing) for some unversioned missing
     # SONAMEs. Explicitly resolve every NEEDED first, without executing ldd.
-    internal = {path.name for path in files}
-    for path in files:
+    internal = {path.name for path in files + private_files}
+    for path in files + private_files:
         internal.update(re.findall(r"\(SONAME\).*\[([^\]]+)\]", command(["readelf", "-d", path])[0]))
     search = [Path("/lib/x86_64-linux-gnu"), Path("/usr/lib/x86_64-linux-gnu"), Path("/lib64")]
     for name in needed - internal:
@@ -358,7 +352,19 @@ def dependencies(stage, payload, metadata, work):
     # The DEBIAN directory marks the package root, allowing dpkg-shlibdeps to
     # recognize private libraries as belonging to the same binary package.
     arguments = ["dpkg-shlibdeps", "-O", "-S" + str(stage)]
-    arguments += ["-l" + str(directory) for directory in sorted({path.parent for path in files})]
+    # Private versioned SONAMEs are not Debian Qt packages. Supply an explicit
+    # local shlibs map and exclude that synthetic identity, rather than using
+    # --ignore-missing-info (which could hide a real external dependency).
+    private_shlibs = []
+    for name in sorted(internal):
+        soname = re.fullmatch(r"(.+)\.so\.(.+)", name)
+        if soname:
+            private_shlibs.append(soname[1] + " " + soname[2] + " doroti-private-runtime")
+    local_shlibs = work / "private.shlibs"
+    local_shlibs.write_text("\n".join(private_shlibs) + "\n")
+    arguments += ["-L" + str(local_shlibs), "-xdoroti-private-runtime"]
+    arguments += ["-S" + str(root) for root, directory in private]
+    arguments += ["-l" + str(directory) for directory in sorted({path.parent for path in files + private_files})]
     arguments += ["-e" + str(path) for path in files]
     output, warnings = command(arguments, cwd=work)
     (work / "shlibdeps.log").write_text(output + warnings)
@@ -369,6 +375,8 @@ def dependencies(stage, payload, metadata, work):
         raise ValueError("dpkg-shlibdeps produced no runtime dependencies")
     dynamic = [package + " (>= " + version + ")" for package, version in sorted(metadata["dynamicDependencies"].items())]
     values = sorted(set(generated.split(", ") + dynamic))
+    if any(re.match(r"(?:libqt6|qt6-|qml6-)", value) for value in values):
+        raise ValueError("System Qt dependency leaked into a private bundle: " + str(values))
     if any(re.search(r"(?:-dev|-dbg|dotnet-sdk|build-essential|cmake)(?:\s|$)", value) for value in values):
         raise ValueError("Build-only dependency leaked into Depends")
     return ", ".join(values), [str(path.relative_to(payload)) for path in files]
@@ -387,6 +395,7 @@ def write(path, content, mode=0o644):
 
 def package(source, output, metadata, work):
     verify_payload(source, metadata)
+    runtime = qt_runtime.verify(source, metadata["qt"], metadata["webView"])
     stage = work / "stage"
     package_id = metadata["packageId"]
     payload = stage / "opt" / package_id
@@ -406,10 +415,11 @@ def package(source, output, metadata, work):
     # No XDG overrides: Qt keeps user data under the application ID, owned by
     # the user. No script ever removes those paths, including on purge.
     write(stage / "usr/bin" / package_id, "#!/bin/sh\n"
-          "# Qt Wayland must load the runtime SONAME, not the development symlink.\n"
           "export QT_VULKAN_LIB=\"${QT_VULKAN_LIB:-libvulkan.so.1}\"\n"
-          "# Debian 13 acceptance currently covers xcb; retain explicit user choices.\n"
-          "export QT_QPA_PLATFORM=\"${QT_QPA_PLATFORM:-xcb}\"\n"
+          "if [ -z \"${QT_QPA_PLATFORM:-}\" ]; then\n"
+          "  if [ -n \"${WAYLAND_DISPLAY:-}\" ] || [ \"${XDG_SESSION_TYPE:-}\" = wayland ]; then\n"
+          "    QT_QPA_PLATFORM=wayland\n  else\n    QT_QPA_PLATFORM=xcb\n  fi\n"
+          "  export QT_QPA_PLATFORM\nfi\n"
           "exec '/opt/" + package_id + "/" + metadata["executable"] + "' \"$@\"\n", 0o755)
     entry = stage / "usr/share/applications" / (metadata["applicationId"] + ".desktop")
     write(entry, desktop(metadata))
@@ -433,7 +443,7 @@ def package(source, output, metadata, work):
                 raise ValueError("Missing self-contained .NET runtime notice: " + filename)
             write(doc / "dotnet" / filename, license_file.read_text(encoding="utf-8-sig"))
     write(doc / "README.Debian", "Doroti Qt application; self-contained untrimmed .NET JIT.\n"
-          "Qt is supplied by the system. Vulkan 1.2 and a working GPU driver/display are required.\n"
+          "Qt 6.12 is supplied under the application-private qt/ prefix. Vulkan 1.2 and a working GPU driver/display are required.\n"
           "User XDG data is retained on upgrade, remove and purge.\n"
           "A local .deb does not configure an APT repository or automatic updates.\n"
           "Additional application and third-party licenses are under /opt/" + package_id + "/licenses/.\n")
@@ -457,12 +467,25 @@ def package(source, output, metadata, work):
                  "# Preserve native provenance/hash identity and diagnostic symbols."]
     overrides += [package_id + ": unstripped-binary-or-object [opt/" + package_id + "/" + name + "]" for name in
                   ("libSkiaSharp.so", "libdoroti_qt_host.so", "libdoroti_webview_qt.so") if (payload / name).is_file()]
+    overrides += [package_id + ": unstripped-binary-or-object [opt/" + package_id + "/" + str(path.relative_to(payload)) + "]"
+                  for path in sorted((payload / "qt").rglob("*")) if path.is_file() and elf(path)]
     write(stage / "usr/share/lintian/overrides" / package_id, "\n".join(overrides) + "\n")
     control = stage / "DEBIAN/control"
-    write(control, "Package: " + package_id + "\nVersion: " + metadata["debianVersion"] + "\nArchitecture: amd64\nMaintainer: " + metadata["maintainer"] + "\nDescription: " + metadata["description"] + "\n Self-contained Doroti Qt desktop application using system Qt runtimes.\n")
-    depends, elf_files = dependencies(stage, payload, metadata, work)
+    write(control, "Package: " + package_id + "\nVersion: " + metadata["debianVersion"] + "\nArchitecture: amd64\nMaintainer: " + metadata["maintainer"] + "\nDescription: " + metadata["description"] + "\n Self-contained Doroti Qt desktop application using a private Qt runtime bundle.\n")
+    private = []
+    engine_stage = work / "engine-stage"
+    if runtime["deployment"] == "download":
+        engine_prefix = engine_stage / runtime["webEngine"]["path"].lstrip("/")
+        shutil.copytree(work / "engine-payload", engine_prefix)
+        write(engine_stage / "DEBIAN/control", "Package: " + runtime["webEngine"]["packageId"] + "\n")
+        private = [(engine_stage, engine_prefix)]
+    depends, elf_files = dependencies(stage, payload, metadata, work, private)
+    if private:
+        depends += ", " + runtime["webEngine"]["packageId"] + " (= " + runtime["webEngine"]["packageVersion"] + ")"
     installed_size = (sum(path.stat().st_size for path in stage.rglob("*") if path.is_file() and "DEBIAN" not in path.parts) + 1023) // 1024
     control_text = control.read_text() + "Section: utils\nPriority: optional\nInstalled-Size: " + str(installed_size) + "\nDepends: " + depends + "\n"
+    if private:
+        control_text += "Provides: doroti-qt-framework-abi-6.12 (= " + runtime["framework"]["version"] + ")\n"
     if metadata["homepage"]:
         control_text += "Homepage: " + metadata["homepage"] + "\n"
     write(control, control_text)
@@ -473,6 +496,10 @@ def package(source, output, metadata, work):
     basename = package_id + "_" + metadata["debianVersion"] + "_amd64"
     artifacts = work / "artifacts"
     artifacts.mkdir()
+    engine_artifact = None
+    if private:
+        engine_artifact = engine_package(engine_stage, engine_prefix, runtime["webEngine"], metadata,
+                                         stage, payload, work, artifacts)
     deb = artifacts / (basename + ".deb")
     command(["dpkg-deb", "--root-owner-group", "-Zxz", "-z1", "--build", stage, deb])
     command(["dpkg-deb", "--info", deb])
@@ -488,7 +515,7 @@ def package(source, output, metadata, work):
     shutil.copyfile(work / "shlibdeps.log", artifacts / "shlibdeps.log")
     receipt = dict(schemaVersion="doroti.linux-deb/v1", package=deb.name, sha256=digest,
                    metadata=metadata, depends=depends, elfFiles=elf_files,
-                   defaultQpa="xcb",
+                   defaultQpa="session", qtRuntime=runtime, webEnginePackage=engine_artifact,
                    lintianOverrides=overrides,
                    excludedRuntimeFiles=excluded,
                    publishPayload={str(path.relative_to(source)): sha256(path) for path in sorted(source.rglob("*")) if path.is_file()},
@@ -504,6 +531,57 @@ def package(source, output, metadata, work):
     # The package, hash, receipt and reports become visible together.
     artifacts.rename(destination)
     return destination / deb.name
+
+
+def engine_package(stage, payload, engine, metadata, app_stage, app_payload, work, artifacts):
+    package_id, version = engine["packageId"], engine["packageVersion"]
+    qt_runtime.verify_part(payload, engine)
+    dependency_work = work / "engine-dependencies"
+    dependency_work.mkdir()
+    depends, files = dependencies(stage, payload, metadata | {"packageId": package_id, "dynamicDependencies": {}},
+                                 dependency_work, [(app_stage, app_payload)])
+    doc = stage / "usr/share/doc" / package_id
+    copyright_text = "\n".join((payload / item["path"]).read_text(encoding="utf-8")
+                               for item in engine["documents"] if item.get("role") == "copyright")
+    write(doc / "copyright", "Copyright: authors and notices recorded below and in the runtime inventory.\n"
+          "License: LGPL-3 and applicable third-party terms.\n"
+          "On Debian systems, the complete license texts can be found in\n"
+          "/usr/share/common-licenses/LGPL-3 and /usr/share/common-licenses/GPL-3.\n"
+          "Exact source, notices and build instructions: " + engine["path"] + "/provenance.json\n\n" + copyright_text + "\n")
+    write(doc / "README.Debian", "Requires the consuming application's private Qt " + engine["frameworkVersion"] + " runtime.\n"
+          "Install with apt install ./engine.deb ./app.deb. No system Qt is replaced.\n"
+          "Set DOROTI_QT_WEBENGINE_PATH to a compatible modified runtime prefix for replacement.\n")
+    binary_overrides = "\n".join(package_id + ": unstripped-binary-or-object [" + str(path.relative_to(stage)) + "]"
+                                for path in sorted(payload.rglob("*")) if path.is_file() and elf(path))
+    write(stage / "usr/share/lintian/overrides" / package_id,
+          "# Application-private runtime; every installed file is owned by dpkg.\n" +
+          package_id + ": dir-or-file-in-opt [opt/doroti/]\n" +
+          package_id + ": dir-or-file-in-opt [opt/doroti/*]\n"
+          "# Retain upstream runtime symbols and record rebased hashes for diagnostics.\n" + binary_overrides + "\n")
+    timestamp = datetime.fromtimestamp(int(os.environ["SOURCE_DATE_EPOCH"]), timezone.utc) if "SOURCE_DATE_EPOCH" in os.environ else datetime.now(timezone.utc)
+    changelog = (package_id + " (" + version + ") unstable; urgency=medium\n\n"
+                 "  * Package the reviewed private WebEngine runtime.\n\n"
+                 " -- " + metadata["maintainer"] + "  " + format_datetime(timestamp) + "\n")
+    (doc / "changelog.Debian.gz").write_bytes(gzip.compress(changelog.encode(), mtime=0))
+    size = (sum(path.stat().st_size for path in stage.rglob("*") if path.is_file()) + 1023) // 1024
+    write(stage / "DEBIAN/control", "Package: " + package_id + "\nVersion: " + version + "\nArchitecture: amd64\n"
+          "Maintainer: " + metadata["maintainer"] + "\nSection: libs\nPriority: optional\n"
+          "Description: Doroti private Qt WebEngine runtime\n"
+          " Built for application-private Qt " + engine["frameworkVersion"] + ".\n Includes notices and source information.\n"
+          "Installed-Size: " + str(size) + "\nDepends: " + depends + "\n"
+          "X-Doroti-Qt-Framework-Version: " + engine["frameworkVersion"] + "\n")
+    for path in stage.rglob("*"):
+        path.chmod(0o755 if path.is_dir() or path.name == "QtWebEngineProcess" else 0o644)
+    artifact = artifacts / (package_id + "_" + version + "_amd64.deb")
+    command(["dpkg-deb", "--root-owner-group", "-Zxz", "-z1", "--build", stage, artifact])
+    command(["dpkg-deb", "--info", artifact])
+    lint, errors = command(["lintian", "--allow-root", "--tag-display-limit", "0", artifact], allowed=(0, 1))
+    write(artifacts / "engine-lintian.txt", lint + errors)
+    if any(line.startswith("E:") for line in lint.splitlines()):
+        raise ValueError("lintian rejected the engine package:\n" + lint + errors)
+    write(artifacts / (artifact.name + ".sha256"), sha256(artifact) + "  " + artifact.name + "\n")
+    return dict(package=artifact.name, sha256=sha256(artifact), depends=depends, elfFiles=files,
+                frameworkVersion=engine["frameworkVersion"], version=engine["version"])
 
 
 def build(arguments):
@@ -523,7 +601,7 @@ def build(arguments):
         if not publish or publish[0] != "publish":
             raise ValueError("Expected provider dotnet publish arguments")
         print("deb: publishing self-contained directory", flush=True)
-        command([arguments.dotnet, *publish, *PUBLISH_PROPERTIES, "--output", source], echo=True)
+        command([arguments.dotnet, *publish, *PUBLISH_PROPERTIES, "-p:DorotiPackageFormat=deb", "-p:_DorotiQtDebPackaging=true", "--output", source], echo=True)
         # Restore can replace stale package-folder paths from another machine
         # or container. Read the actual resolved runtime notice locations while
         # still rejecting changes to application/profile/environment inputs.
@@ -531,6 +609,9 @@ def build(arguments):
         if {key: value for key, value in resolved.items() if key != "nugetRoots"} != {key: value for key, value in metadata.items() if key != "nugetRoots"}:
             raise ValueError("Packaging inputs changed during publish; retry publish")
         metadata = resolved
+        if "qtRuntime" in metadata:
+            qt_runtime.bundle(source, metadata["nativeDirectory"], metadata["qtRuntime"],
+                              work / "engine-payload" if metadata["qtRuntime"]["deployment"] == "download" else None)
         result = package(source, output, metadata, work)
         print("deb: " + str(result), flush=True)
 

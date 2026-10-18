@@ -624,3 +624,30 @@ failed with Qt 6.8.2/Mesa 25.0.7; these receipts remain FAIL and full initial su
 is not declared complete. The launcher defaults to the tested xcb path and honors
 explicit QPA overrides. The current provider/CLI fixes also cover evaluated RID-specific
 `ProjectAssetsFile` paths and inheritance of template/sample application metadata.
+
+Qt 6.12 bundle contracts run as part of `validate.py LinuxDeb`:
+
+```sh
+python3 Doroti/tests/linux_qt_runtime.py --output temp/testing/qt-runtime-contracts
+# In the disposable Debian packaging environment, also generate/inspect a real fixture engine .deb:
+python3 Doroti/tests/linux_qt_runtime.py --output temp/testing/qt-runtime-debian --package-tests
+python3 Doroti/tests/linux_qt_packages.py temp/testing/qt-packages --qt-sdk /build/qt/framework --deb
+```
+
+The bundle tests compile real ELF fixtures and execute the managed loader in
+separate processes. They cover relocation, independent engine versioning,
+missing/changed libraries, unsafe paths, source/notice gates, prebuilt identity,
+locked SDK reuse, private-library dependency calculation, root-owned engine
+packaging and loading a modified compatible library without hash enforcement.
+Fixtures do not qualify real Qt/Chromium redistribution or GUI behavior.
+`--package-tests` requires dpkg-dev, lintian, patchelf and a C compiler; the default
+contracts require dotnet, a C compiler, binutils and patchelf.
+
+Real publication now needs explicit Qt 6.12 SDK prefixes and reviewed redistribution
+inventories from the [runtime guide](../../packages/platforms/qt/qt-runtime.md).
+The earlier Qt 6.8.2 results above are historical. The launcher now selects native
+Wayland/xcb by session. `linux_deb_install.py --gui --wayland --repetitions 3`
+checks actual backend/Qt version and repeated normal shutdown. Separate engine
+artifacts referenced by the app receipts are mounted and installed with each app
+version, so a repository is unnecessary. App-only installation without a supplied
+engine or configured repository must fail APT dependency resolution.

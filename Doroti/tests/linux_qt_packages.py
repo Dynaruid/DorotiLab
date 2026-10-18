@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[2]
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('output', type=Path)
 parser.add_argument('--qpa', choices=['wayland', 'xcb'], default='wayland' if os.environ.get('WAYLAND_DISPLAY') else 'xcb')
+parser.add_argument('--qt-sdk', type=Path, required=True, help='Reviewed Qt 6.12.0 SDK prefix for native build and publication')
 parser.add_argument('--deb', action='store_true', help='Also exercise provider deb publish from the isolated NuGet consumer (Debian 13 only)')
 args = parser.parse_args()
 out = args.output.resolve()
@@ -23,12 +24,12 @@ assert out.is_relative_to(ROOT / 'temp/testing') and not out.exists()
 out.mkdir(parents=True)
 suffix = '.qt.' + uuid.uuid4().hex[:12]
 version = next(ET.parse(ROOT / 'Doroti/Directory.Build.props').iter('DorotiCoreVersion')).text + suffix
-provider_version = next(ET.parse(ROOT / 'packages/platforms/qt/Version.props').iter('DorotiQtVersion')).text + suffix
+provider_version = next(ET.parse(ROOT / 'packages/platforms/qt/Version.props').iter('DorotiQtProviderVersion')).text + suffix
 application_id = 'org.doroti.qt.packageprobe'
 feed = out / 'feed'
 native = out / 'native'
 properties = ['-p:Version=' + version, '-p:DorotiCoreVersion=' + version,
-    '-p:DorotiQtVersion=' + provider_version, '-p:ArtifactsPath=' + str(out / 'source-build'),
+    '-p:DorotiQtProviderVersion=' + provider_version, '-p:ArtifactsPath=' + str(out / 'source-build'),
     '-p:DorotiQtPrebuiltDirectory=' + str(native), '-p:DorotiRequireNativePackage=true']
 
 def command(name, args, env=None, cwd=ROOT, success=True):
@@ -60,7 +61,7 @@ roots = [ROOT / path for path in [
 ]]
 for project in roots: visit(project)
 command('native-build', [sys.executable, ROOT / 'packages/platforms/qt/eng/build-native.py',
-    '--output', native, '--icon', ROOT / 'packages/platforms/build/Icons/appicon.png'])
+    '--output', native, '--qt-sdk', args.qt_sdk.resolve(), '--icon', ROOT / 'packages/platforms/build/Icons/appicon.png'])
 # Build roots once; packing dependencies then reuses their Release output.
 for project in roots:
     command('build-' + project.stem, ['dotnet', 'build', project, '-c', 'Release', *properties, '-v:q'])
@@ -93,6 +94,12 @@ for path in consumer.rglob('*.csproj'):
     for node in root.iter('PackageReference'):
         if node.get('Include') in versions: node.set('Version', versions[node.get('Include')])
     tree.write(path, encoding='utf-8', xml_declaration=True)
+linux_project = consumer / 'linux/DorotiTemplateApp.Linux.csproj'
+tree = ET.parse(linux_project)
+group = ET.SubElement(tree.getroot(), 'PropertyGroup')
+ET.SubElement(group, 'DorotiQtSdkDirectory').text = str(args.qt_sdk.resolve())
+ET.SubElement(group, 'DorotiQtVersion').text = '6.12.0'
+tree.write(linux_project, encoding='utf-8', xml_declaration=True)
 # Block ambient repository props/targets and central package versions.
 for name in ['Directory.Build.targets', 'Directory.Packages.props']:
     (consumer / name).write_text('<Project />')
@@ -188,6 +195,7 @@ if args.deb:
     tool_package = feed / ('Doroti.Tool.Qt.' + versions['Doroti.Tool.Qt'] + '.nupkg')
     with zipfile.ZipFile(tool_package) as archive:
         assert 'lib/net10.0/linux_deb.py' in archive.namelist()
+        assert 'lib/net10.0/qt_runtime.py' in archive.namelist()
     cli = ROOT / 'Doroti/src/Doroti.Tooling/bin/Release/net10.0/Doroti.Tooling.dll'
     command('deb-publish', ['dotnet', cli, 'publish', '-App', consumer, '-Platform', 'linux',
                            '-PackageFormat', 'deb', '-Output', out / 'deb'], env, consumer)

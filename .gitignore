@@ -39,6 +39,8 @@
 
 # NuGet package lock files are generated per restore target and build mode.
 *.lock.json
+# Reviewed Qt SDK archive locks are source inputs, not generated NuGet locks.
+!packages/platforms/qt/sdk/*.lock.json
 
 # Coverage and test-run output
 **/[Cc]overage/

@@ -26,6 +26,7 @@ def main():
     parser.add_argument("--image", default="debian:trixie-slim", help="Pin by digest for repeatable acceptance")
     parser.add_argument("--rootfs", type=Path, help="bwrap only: a disposable Debian 13 filesystem")
     parser.add_argument("--gui", action="store_true", help="xcb/Xvfb first-frame smoke; Wayland remains separate")
+    parser.add_argument("--repetitions", type=int, default=3, help="GUI runs per backend and version")
     parser.add_argument("--wayland", action="store_true", help="Also test an isolated Debian Weston headless compositor")
     args = parser.parse_args()
     output = args.output.resolve()
@@ -42,6 +43,8 @@ def main():
             return 2
         if args.wayland and not args.gui:
             parser.error("--wayland requires --gui")
+        if args.repetitions < 2:
+            parser.error("Use at least two repetitions for shutdown qualification")
         receipts = [json.loads(path.read_text()) for path in (args.v1, args.v2)]
         first, second = [receipt["metadata"] for receipt in receipts]
         assert first["packageId"] == second["packageId"] and first["applicationId"] == second["applicationId"]
@@ -50,6 +53,16 @@ def main():
         for path, receipt in zip(files, receipts):
             with path.open("rb") as stream:
                 assert hashlib.file_digest(stream, "sha256").hexdigest() == receipt["sha256"]
+        engine_mounts = []
+        for index, (receipt, receipt_path) in enumerate(zip(receipts, (args.v1, args.v2))):
+            artifact = receipt.get("webEnginePackage")
+            if artifact:
+                file = receipt_path.resolve().parent / artifact["package"]
+                with file.open("rb") as stream:
+                    assert hashlib.file_digest(stream, "sha256").hexdigest() == artifact["sha256"]
+                engine_mounts.append((file, f"/engine-v{index + 1}.deb"))
+        def install_files(index):
+            return [target for file, target in engine_mounts if target == f"/engine-v{index}.deb"] + [f"/v{index}.deb"]
         if engine == "bwrap":
             if not args.rootfs:
                 parser.error("bwrap requires --rootfs")
@@ -71,6 +84,8 @@ def main():
                       "-v", str(output) + ":/evidence"]
             for index, path in enumerate(files):
                 create += ["-v", str(path) + f":/v{index + 1}.deb:ro"]
+            for file, target in engine_mounts:
+                create += ["-v", str(file) + ":" + target + ":ro"]
             subprocess.run([*create, args.image, "sleep", "infinity"], check=True, stdout=subprocess.DEVNULL)
 
         def run(name, arguments, uid=0, environment=None, success=True):
@@ -83,6 +98,8 @@ def main():
                          "--bind", str(output), "/evidence", "--chdir", "/tmp"]
                 for index, path in enumerate(files):
                     entry += ["--ro-bind", str(path), f"/v{index + 1}.deb"]
+                for file, target in engine_mounts:
+                    entry += ["--ro-bind", str(file), target]
                 if uid:
                     entry += ["--bind", str(rootfs / "home/doroti"), "/home/doroti", "--tmpfs", "/tmp"]
                 for key in ("DOTNET_ROOT", "DOTNET_ROOT_X64", "LD_LIBRARY_PATH", "QT_PLUGIN_PATH", "QML2_IMPORT_PATH", "XDG_DATA_HOME", "XDG_CACHE_HOME", "XDG_RUNTIME_DIR", "WAYLAND_DISPLAY", "DISPLAY", "QTWEBENGINE_DISABLE_SANDBOX"):
@@ -107,7 +124,7 @@ def main():
             return completed.stdout
 
         run("apt-update", ["apt-get", "update"])
-        run("install-v1", ["apt-get", "install", "-y", "--no-install-recommends", "/v1.deb"])
+        run("install-v1", ["apt-get", "install", "-y", "--no-install-recommends", *install_files(1)])
         binary = "/opt/" + first["packageId"] + "/" + first["executable"] + ".dll"
         if run("v1-binary", ["sha256sum", binary]).split()[0] != receipts[0]["payload"][first["executable"] + ".dll"]:
             raise RuntimeError("Installed v1 payload hash mismatch")
@@ -145,6 +162,11 @@ done
                 arguments = ["xvfb-run", "-a", "/usr/bin/" + first["packageId"]] if qpa == "xcb" else ["sh", "-c", wayland_script, "sh", "/usr/bin/" + first["packageId"]]
                 log = run(name, arguments, uid=1000, environment=environment)
                 summary = json.loads(next(value.split("=", 1)[1] for value in log.splitlines() if value.startswith("doroti.qt.summary=")))
+                if summary.get("native", {}).get("qpa") != qpa:
+                    raise RuntimeError("Actual Qt backend disagrees with forced backend: " + str(summary.get("native", {}).get("qpa")))
+                expected_qt = first.get("qt") if "qtRuntime" in receipts[0] else None
+                if expected_qt and summary.get("native", {}).get("qt") != expected_qt:
+                    raise RuntimeError("Runtime Qt version differs from the packaged Framework")
                 if summary["frames"]["presented"] <= 0 or summary["frames"]["failed"] != 0:
                     raise RuntimeError("Installed app did not present a valid first frame")
                 if first["webView"] and summary.get("compositionFrames", 0) <= 0:
@@ -154,12 +176,16 @@ done
                 report.setdefault("guiFailures", []).append(str(error))
                 return None
 
+        def repeated_gui(name, qpa="xcb"):
+            summaries = [gui(name + "-" + str(index + 1), qpa) for index in range(args.repetitions)]
+            return summaries if all(summaries) else None
+
         if args.gui:
             run("gui-runtime", ["apt-get", "install", "-y", "--no-install-recommends", "xvfb", "xauth", "mesa-vulkan-drivers", *(["weston"] if args.wayland else [])])
-            report["guiV1"] = gui("gui-v1")
+            report["guiV1"] = repeated_gui("gui-v1")
             if args.wayland:
-                report["waylandV1"] = gui("wayland-v1", "wayland")
-        run("upgrade-v2", ["apt-get", "install", "-y", "--no-install-recommends", "/v2.deb"])
+                report["waylandV1"] = repeated_gui("wayland-v1", "wayland")
+        run("upgrade-v2", ["apt-get", "install", "-y", "--no-install-recommends", *install_files(2)])
         version = run("installed-version", ["dpkg-query", "-W", "-f=${Version}", first["packageId"]]).strip()
         if version != second["debianVersion"]:
             raise RuntimeError("Upgrade did not replace the package version")
@@ -168,18 +194,22 @@ done
         run("upgrade-data", ["sh", "-c", 'test "$(cat "$1")" = retained', "sh", marker], uid=1000)
         report["upgrade"] = "passed"
         if args.gui:
-            report["guiV2"] = gui("gui-v2")
+            report["guiV2"] = repeated_gui("gui-v2")
             report["gui"] = "passed-xcb-xvfb" if report["guiV1"] and report["guiV2"] else "failed"
             if args.wayland:
-                report["waylandV2"] = gui("wayland-v2", "wayland")
+                report["waylandV2"] = repeated_gui("wayland-v2", "wayland")
                 report["wayland"] = "passed" if report["waylandV1"] and report["waylandV2"] else "failed"
         owned_files = run("owned-files", ["dpkg-query", "-L", first["packageId"]]).splitlines()
         run("remove", ["apt-get", "remove", "-y", first["packageId"]])
         run("remove-data", ["sh", "-c", 'test "$(cat "$1")" = retained', "sh", marker], uid=1000)
         report["remove"] = "passed"
+        if engine_mounts:
+            shared = receipts[1]["qtRuntime"]["webEngine"]
+            run("engine-retained", ["dpkg-query", "-W", "-f=${Version}", shared["packageId"]])
+            report["sharedEngineAfterAppRemoval"] = "retained; APT autoremove owns lifecycle"
         # A package without conffiles disappears from dpkg's status database
         # after remove; reinstall to test a real purge of an installed package.
-        run("reinstall-for-purge", ["apt-get", "install", "-y", "--no-install-recommends", "/v2.deb"])
+        run("reinstall-for-purge", ["apt-get", "install", "-y", "--no-install-recommends", *install_files(2)])
         run("purge", ["apt-get", "purge", "-y", first["packageId"]])
         run("purge-data", ["sh", "-c", 'test "$(cat "$1")" = retained', "sh", marker], uid=1000)
         removed_paths = ["/opt/" + first["packageId"], "/usr/bin/" + first["packageId"], "/usr/share/applications/" + first["applicationId"] + ".desktop", "/usr/share/doc/" + first["packageId"]]

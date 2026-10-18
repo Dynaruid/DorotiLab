@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "doroti.qt-sdk-lock/v1",
+  "architecture": "linux-x64",
+  "kind": "webengine",
+  "version": "6.140.0",
+  "frameworkVersion": "6.12.0",
+  "payloadPrefix": ".",
+  "archives": [
+    {
+      "url": "https://download.qt.io/online/qtsdkrepository/linux_x64/extensions/qtwebengine/6120/61400/x86_64/extensions.qtwebengine.6120.61400.linux_gcc_64/6.12.0-0-202609281005qtwebengine-Linux-RHEL_9_6-GCC-Linux-RHEL_9_6-X86_64.7z",
+      "sha256": "dd7a7a1062152038bf37a3ab995d765b313112efca561c9041a6fe9c1951cb0d",
+      "format": "7z"
+    }
+  ],
+  "releaseName": "6.140.0-rc",
+  "releaseChannel": "release-candidate",
+  "metadataUrl": "https://download.qt.io/online/qtsdkrepository/linux_x64/extensions/qtwebengine/6120/61400/main/Updates.xml"
+}
