@@ -10,6 +10,7 @@
     <Compile Include="../../../packages/platforms/maui/Doroti.Host.Maui/IosFrameLifetime.cs" Link="IosFrameLifetime.cs" />
     <Compile Include="../../../packages/platforms/maui/Doroti.Host.Maui/MauiFrameCallbackQueue.cs" Link="MauiFrameCallbackQueue.cs" />
     <Compile Include="../../../packages/platforms/maui/Doroti.Host.Maui/MauiFrameWakeQueue.cs" Link="MauiFrameWakeQueue.cs" />
+    <Compile Include="../../../packages/platforms/maui/Doroti.Host.Maui/UIKitAnimationTiming.cs" Link="UIKitAnimationTiming.cs" />
     <ProjectReference Include="../../src/Doroti.Testing/Doroti.Testing.csproj" />
     <ProjectReference Include="../../src/Doroti.Tooling/Doroti.Tooling.csproj" />
     <ProjectReference Include="../../src/Doroti.Skia.Vulkan/Doroti.Skia.Vulkan.csproj" />

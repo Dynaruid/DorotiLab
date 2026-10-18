@@ -1,5 +1,4 @@
 #if IOS || MACCATALYST
-using CoreAnimation;
 using CoreGraphics;
 using Doroti.Ui;
 using Foundation;
@@ -12,57 +11,21 @@ internal sealed partial class MauiViewEnvironment
 {
     private CGRect _keyboardScreenFrame;
     private UIView? _keyboardWindow;
-    private CADisplayLink? _keyboardAnimation;
+    private UIKitKeyboardAnimation? _keyboardAnimation;
     private bool _configurationDirty = true;
 
     private void StopKeyboardAnimation()
     {
-        _keyboardAnimation?.Invalidate();
-        _keyboardAnimation?.Dispose();
-        _keyboardAnimation = null;
+        _keyboardAnimation?.Stop();
     }
 
     private void ChangeKeyboardFrame(CGRect target, double duration, int curve)
     {
-        StopKeyboardAnimation();
-        if (duration <= 0 || target.IsEmpty)
-        {
-            _keyboardScreenFrame = target;
-            Refresh();
-            return;
-        }
         var initial =
             _keyboardScreenFrame.IsEmpty && _keyboardWindow is UIWindow window
                 ? new CGRect(target.X, window.Screen.Bounds.Bottom, target.Width, target.Height)
                 : _keyboardScreenFrame;
-        var start = System.Diagnostics.Stopwatch.GetTimestamp();
-        _keyboardAnimation = CADisplayLink.Create(() =>
-        {
-            var t = Math.Clamp(
-                System.Diagnostics.Stopwatch.GetElapsedTime(start).TotalSeconds / duration,
-                0,
-                1
-            );
-            var progress = curve switch
-            {
-                1 => t * t,
-                2 => 1 - ((1 - t) * (1 - t)),
-                3 => t,
-                _ => t * t * (3 - (2 * t)),
-            };
-            _keyboardScreenFrame = new CGRect(
-                initial.X + ((target.X - initial.X) * progress),
-                initial.Y + ((target.Y - initial.Y) * progress),
-                initial.Width + ((target.Width - initial.Width) * progress),
-                initial.Height + ((target.Height - initial.Height) * progress)
-            );
-            Refresh();
-            if (t >= 1)
-            {
-                StopKeyboardAnimation();
-            }
-        });
-        _keyboardAnimation.AddToRunLoop(NSRunLoop.Main, NSRunLoopMode.Common);
+        _keyboardAnimation?.ChangeFrame(initial, target, duration, curve);
     }
 
     partial void AttachNative()
@@ -72,6 +35,11 @@ internal sealed partial class MauiViewEnvironment
             return;
         }
         _configurationDirty = true;
+        _keyboardAnimation = new UIKitKeyboardAnimation(native, frame =>
+        {
+            _keyboardScreenFrame = frame;
+            Refresh();
+        });
 
 #if IOS && !MACCATALYST
         if (native is IUIKitAnimatedViewport animated)
@@ -92,10 +60,12 @@ internal sealed partial class MauiViewEnvironment
         native.AddSubview(sentinel);
         _detach.Add(() =>
         {
-            StopKeyboardAnimation();
+            _keyboardAnimation?.Dispose();
+            _keyboardAnimation = null;
             sentinel.RemoveFromSuperview();
             sentinel.Dispose();
             _keyboardScreenFrame = CGRect.Empty;
+            _keyboardWindow = null;
         });
         foreach (
             var name in new[]

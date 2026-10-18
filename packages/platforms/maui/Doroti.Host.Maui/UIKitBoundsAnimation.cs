@@ -98,26 +98,6 @@ internal static class UIKitBoundsAnimation
     }
 
     internal static double EvaluateTiming(double time, double x1, double y1, double x2, double y2)
-    {
-        if (time <= 0)
-            return 0;
-        if (time >= 1)
-            return 1;
-        // The timing function is y(x), not y(t). Solve x(t) before sampling y.
-        var low = 0.0;
-        var high = 1.0;
-        for (var i = 0; i < 24; i++)
-        {
-            var middle = (low + high) / 2;
-            if (Bezier(middle, x1, x2) < time)
-                low = middle;
-            else
-                high = middle;
-        }
-        return Bezier((low + high) / 2, y1, y2);
-    }
-
-    private static double Bezier(double t, double first, double second) =>
-        3 * (1 - t) * (1 - t) * t * first + 3 * (1 - t) * t * t * second + t * t * t;
+        => UIKitAnimationTiming.Cubic(time, x1, y1, x2, y2);
 }
 #endif

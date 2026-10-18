@@ -3,6 +3,11 @@ using Doroti.Testing;
 using Doroti.Ui;
 
 #if DOROTI_REPO_TESTS
+if (args.Contains("--uikit-animation-timing"))
+{
+    UIKitAnimationTimingRegression.Run();
+    return;
+}
 if (args.Contains("--scaled-image-decode"))
 {
     ScaledImageDecodeRegression.Run();
@@ -40,6 +45,7 @@ if (Array.IndexOf(args, "--web-semantics") is var webSemanticsIndex && webSemant
     return;
 }
 WebSemanticsRegression.Run();
+UIKitAnimationTimingRegression.Run();
 GestureDiagnosticsRegression.Run();
 FullReviewRegression.Run();
 ActiveScrollSemanticsRegression.Run();

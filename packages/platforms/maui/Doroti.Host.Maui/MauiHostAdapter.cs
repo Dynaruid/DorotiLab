@@ -558,7 +558,14 @@ internal sealed class MauiHostAdapter
             }
             _invalidatePending = true;
         }
+#if IOS || MACCATALYST
+        // Keyboard metrics already arrive on the main display pulse. Queueing
+        // another dispatcher turn can miss the renderer's next native frame.
+        if (!_surface.Dispatcher.IsDispatchRequired) _surface.InvalidateSurface();
+        else _surface.Dispatcher.Dispatch(_surface.InvalidateSurface);
+#else
         _surface.Dispatcher.Dispatch(_surface.InvalidateSurface);
+#endif
 #endif
     }
 
