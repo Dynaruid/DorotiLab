@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[2]
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('output', type=Path)
 parser.add_argument('--qpa', choices=['wayland', 'xcb'], default='wayland' if os.environ.get('WAYLAND_DISPLAY') else 'xcb')
+parser.add_argument('--deb', action='store_true', help='Also exercise provider deb publish from the isolated NuGet consumer (Debian 13 only)')
 args = parser.parse_args()
 out = args.output.resolve()
 assert out.is_relative_to(ROOT / 'temp/testing') and not out.exists()
@@ -95,6 +96,17 @@ for path in consumer.rglob('*.csproj'):
 # Block ambient repository props/targets and central package versions.
 for name in ['Directory.Build.targets', 'Directory.Packages.props']:
     (consumer / name).write_text('<Project />')
+if args.deb:
+    (consumer / 'COPYRIGHT').write_text((ROOT / 'LICENSE').read_text())
+    project = consumer / 'linux/DorotiTemplateApp.Linux.csproj'
+    tree = ET.parse(project)
+    group = ET.SubElement(tree.getroot(), 'PropertyGroup')
+    for key, value in dict(DorotiDebPackageId='doroti-nuget-probe', DorotiDebMaintainer='Doroti test <test@example.org>',
+                           DorotiDebDescription='Isolated Doroti NuGet consumer', DorotiDebVersion='1.0.0',
+                           DorotiDebExcludeLttngProvider='true',
+                           DorotiDebCopyright='../COPYRIGHT').items():
+        ET.SubElement(group, key).text = value
+    tree.write(project, encoding='utf-8', xml_declaration=True)
 app = consumer / 'DorotiTemplateApp.csproj'
 app.write_text(app.read_text().replace('</Project>', f'<ItemGroup><PackageReference Include="Doroti.Plugins" Version="{version}" /></ItemGroup></Project>'))
 config = ET.Element('configuration')
@@ -172,4 +184,18 @@ assert (install_root / 'userdata/keep.txt').read_text() == '업데이트 보존'
 report['version'] = version
 report['portableInstall'] = dict(launch=True, update=True, unlistedFileRejected=True, uninstallPreservesData=True, globalProtocolRegistration='notVerified')
 (out / 'candidate.json').write_text(json.dumps(report, indent=2))
+if args.deb:
+    tool_package = feed / ('Doroti.Tool.Qt.' + versions['Doroti.Tool.Qt'] + '.nupkg')
+    with zipfile.ZipFile(tool_package) as archive:
+        assert 'lib/net10.0/linux_deb.py' in archive.namelist()
+    cli = ROOT / 'Doroti/src/Doroti.Tooling/bin/Release/net10.0/Doroti.Tooling.dll'
+    command('deb-publish', ['dotnet', cli, 'publish', '-App', consumer, '-Platform', 'linux',
+                           '-PackageFormat', 'deb', '-Output', out / 'deb'], env, consumer)
+    receipt_path = next((out / 'deb').glob('*/receipt.json'))
+    receipt = json.loads(receipt_path.read_text())
+    assert receipt['metadata']['selfContained'] and not receipt['metadata']['webView']
+    command('deb-inspection', [sys.executable, ROOT / 'Doroti/tests/linux_deb_package.py',
+                              '--receipt', receipt_path, '--output', out / 'deb-inspection'], env, consumer)
+    report['deb'] = dict(packageOnly=True, receipt=str(receipt_path), install='not-run', gui='not-run')
+    (out / 'candidate.json').write_text(json.dumps(report, indent=2))
 print('PASS Linux Qt package-only Release candidate and portable install; unsigned and local OS only.', flush=True)

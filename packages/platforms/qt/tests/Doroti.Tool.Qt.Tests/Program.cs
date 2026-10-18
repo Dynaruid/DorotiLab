@@ -22,4 +22,26 @@ try
     catch (ToolContractException error) when (error.Code == "unsupported-development-profile") { }
 }
 finally { Environment.SetEnvironmentVariable("DOTNET_USE_POLLING_FILE_WATCHER", original); }
+var schema = await extension.GetConfigurationAsync(context, default);
+Check(schema.Options.Single(value => value.Name == "packageformat").Choices.SequenceEqual(["directory", "deb"]), "Package format schema changed.");
+var directory = await extension.PlanAsync(new(context, "publish", "Release", options), default);
+Check(directory.Steps.Single().Executable == options[0].Value && directory.Steps.Single().Arguments.SequenceEqual(new[] { "publish", context.Project, "-c", "Release", "-f", "net10.0", "-r", "linux-x64" }), "Default directory publish changed.");
+var destination = Path.Combine(Path.GetTempPath(), "한글 패키지 출력");
+var custom = await extension.PlanAsync(new(context, "publish", "Release", [..options, new("output", destination)]), default);
+Check(custom.Steps.Single().Arguments.TakeLast(2).SequenceEqual(["--output", destination]), "Directory output path lost argument boundaries.");
+async Task Reject(OperationRequest request, string code)
+{
+    try { await extension.PlanAsync(request, default); throw new InvalidOperationException("Invalid packaging request was admitted: " + code); }
+    catch (ToolContractException error) when (error.Code == code) { }
+}
+await Reject(new(context, "build", "Release", [new("packageformat", "deb")]), "publish-option-only");
+await Reject(new(context, "run", "Release", [new("output", destination)]), "publish-option-only");
+await Reject(new(context, "publish", "Debug", [new("packageformat", "deb")]), "unsupported-deb-profile");
+await Reject(new(context with { RuntimeIdentifier = "linux-arm64" }, "publish", "Release", [new("packageformat", "deb")]), "unsupported-deb-profile");
+await Reject(new(context with { TargetFramework = "net11.0" }, "publish", "Release", [new("packageformat", "deb")]), "unsupported-deb-profile");
+await Reject(new(context, "publish", "Release", [new("packageformat", "rpm")]), "invalid-option");
+using var canceled = new CancellationTokenSource(); canceled.Cancel();
+try { await extension.PlanAsync(new(context, "publish", "Release", [new("packageformat", "deb")]), canceled.Token); throw new InvalidOperationException("Canceled plan was admitted."); }
+catch (OperationCanceledException) { }
 Console.WriteLine("PASS: typed Qt development plan, executable/session identity, polling override, no rude-edit restart and Release rejection.");
+Console.WriteLine("PASS: default/custom directory publish, packaging schema, publish-only options, RID/TFM/Release rejection and cancellation.");

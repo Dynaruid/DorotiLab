@@ -9,6 +9,17 @@
     <DorotiHostKind>Qt</DorotiHostKind>
     <DorotiNativeEntryKind>Qt-Main</DorotiNativeEntryKind>
     <SelfContained>false</SelfContained>
+    <!-- Debian packaging is opt-in. Set a unique stable package ID, real
+         maintainer and your application's copyright/license file first.
+    <DorotiDebPackageId>com-example-myapp</DorotiDebPackageId>
+    <DorotiDebMaintainer>Your name &lt;you@example.com&gt;</DorotiDebMaintainer>
+    <DorotiDebDescription>My desktop application</DorotiDebDescription>
+    <DorotiDebVersion>$(ApplicationDisplayVersion)</DorotiDebVersion>
+    <DorotiDebRevision>1</DorotiDebRevision>
+    <DorotiDebExcludeLttngProvider>true</DorotiDebExcludeLttngProvider>
+    <DorotiDebCopyright>../LICENSE</DorotiDebCopyright>
+    <DorotiDebCategories>Utility</DorotiDebCategories>
+    -->
     <DorotiQtQuick Condition="'$(DorotiQtQuick)' == ''">true</DorotiQtQuick>
   </PropertyGroup>
   <ItemGroup>

@@ -220,3 +220,18 @@ Keep generated tool output under `.doroti/` or `artifacts/`. New test sources, c
 ## License
 
 Doroti uses the [BSD 3-Clause License](../LICENSE). See [third-party notices](THIRD-PARTY-NOTICES.md) for source and package attribution.
+
+### Linux Debian packages
+
+On Debian 13 amd64, Linux Qt publish supports `-PackageFormat deb -Output <directory>`.
+The profile publishes a self-contained, untrimmed Release JIT application and packages
+system Qt/QML dependencies, launcher, desktop entry, icon and license notices. Configure
+an explicit `DorotiDebPackageId`, maintainer, description and copyright file in the Linux
+runner; see the [Qt packaging guide](../packages/platforms/qt/README.md#debian-packages)
+for metadata, version rules and requirements. Omit `-PackageFormat` for existing directory
+publish. Install/update with `sudo apt install ./<app>.deb`; remove with `sudo apt remove
+<package-id>` or `sudo apt purge <package-id>`. User XDG data is retained. Local `.deb`
+distribution does not enable automatic updates. Installation and GUI acceptance are
+tracked separately in the [maintained tests](tests/README.md).
+The initial launcher defaults to xcb. Debian 13 Wayland shutdown remains unqualified;
+the full initial support checklist is still open.

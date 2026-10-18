@@ -63,14 +63,20 @@ public static class ProviderCli
                 if (string.IsNullOrWhiteSpace(platform.ProviderManifest) || string.IsNullOrWhiteSpace(platform.TargetPackage) || string.IsNullOrWhiteSpace(platform.TargetFramework) || string.IsNullOrWhiteSpace(platform.Backend) || string.IsNullOrWhiteSpace(platform.Profile)) throw new ToolContractException("incomplete-platform", alias);
                 if (selected != "all" && selected != alias) continue;
                 string providerManifest;
-                try { providerManifest = PlatformMetadata.ProviderManifest(runners[alias], platform.ProviderManifest, root); }
+                string? assetsFile = null;
+                try
+                {
+                    if (platform.ProviderManifest.StartsWith("nuget:", StringComparison.Ordinal))
+                        assetsFile = await PlatformMetadata.ResolveAssetsFileAsync(Option("dotnetpath", "dotnet"), runners[alias], platform.TargetFramework, platform.RuntimeIdentifier, Option("configuration", command == "dev" ? "Debug" : "Release"), CancellationToken.None);
+                    providerManifest = PlatformMetadata.ProviderManifest(runners[alias], platform.ProviderManifest, root, assetsFile);
+                }
                 catch (ToolContractException error) when (command == "describe" && error.Code is "restore-required" or "unresolved-provider-package")
                 { unresolved.Add(alias); continue; }
                 var provider = Read(providerManifest, ToolWireJson.Context.ProviderDescriptor);
                 if (provider.SchemaVersion != "doroti.platform-provider/v1" || provider.Id != platform.Provider || provider.ProtocolVersion != ToolContract.ProtocolVersion || provider.Services is null || provider.Operations is null || provider.Tool is null || provider.Services.Any(x => !Enum.IsDefined(x)) || provider.Services.Distinct().Count() != provider.Services.Count || !Enum.IsDefined(provider.Tool.Mode)) throw new ToolContractException("invalid-provider", alias);
                 if (!ToolVersionRange.Contains(provider.CoreRange, ToolContract.HostCoreVersion)) throw new ToolContractException("unsupported-core", alias);
                 if (provider.Profiles is { Count: > 0 } && !provider.Profiles.ContainsKey(platform.Profile)) throw new ToolContractException("undeclared-profile", platform.Profile);
-                PlatformMetadata.ValidateResolvedTarget(runners[alias], platform, provider);
+                PlatformMetadata.ValidateResolvedTarget(runners[alias], platform, provider, assetsFile);
                 providers.Add(alias, (provider, Path.GetDirectoryName(providerManifest)!));
             }
             if (selected != "all" && !workspace.Platforms.ContainsKey(selected)) throw new ToolContractException("undeclared-platform", selected);

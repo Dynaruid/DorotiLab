@@ -50,7 +50,7 @@
   <Target Name="SubsetDorotiPublishIcons" AfterTargets="ILLink" DependsOnTargets="ResolveDorotiIconTool"
           Condition="'$(DorotiIconTreeShaking)' == 'true' and '$(DesignTimeBuild)' != 'true'">
     <ItemGroup>
-      <_DorotiIconPublishPack Include="@(ResolvedFileToPublish)" Condition="'%(Filename)' == 'Doroti.Icons.Material' or '%(Filename)' == 'Doroti.Icons.Cupertino'" />
+      <_DorotiIconPublishPack Include="@(ResolvedFileToPublish)" Condition="'%(Extension)' == '.dll' and ('%(Filename)' == 'Doroti.Icons.Material' or '%(Filename)' == 'Doroti.Icons.Cupertino')" />
     </ItemGroup>
     <PropertyGroup><_DorotiIconPublishStage>$(IntermediateOutputPath)doroti-icons/publish/</_DorotiIconPublishStage></PropertyGroup>
     <MakeDir Directories="$(_DorotiIconPublishStage)" Condition="'@(_DorotiIconPublishPack)' != ''" />

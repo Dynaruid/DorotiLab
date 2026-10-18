@@ -92,3 +92,22 @@ up to two fresh shader frames where supported, and serial native/replay/resize
 transitions. Launch without frame settings, or set `DOROTI_NATIVE_FRAME_MODE=C`.
 A/B and legacy frame/presentation selectors are rejected during initialization.
 Backend capability and final consumer lifetime determine admission and retirement.
+
+### Linux system packages
+
+The Linux runner includes a commented Debian metadata example. Before using
+`publish -Platform linux -PackageFormat deb -Output <directory>` on Debian 13 amd64,
+set a unique `DorotiDebPackageId`, a real `DorotiDebMaintainer`, description,
+`DorotiDebVersion`/revision, and `DorotiDebCopyright` pointing to your license file.
+`ApplicationId` must agree with `linux/application-manifest.json`; keep it stable
+across upgrades. `DorotiLinuxIcon` selects a square PNG (the provider's default icon
+is available). The initial package profile is Release, self-contained untrimmed JIT,
+Quick/Graphite, optionally system WebEngine. GStreamer/AOT/trimming/single-file/R2R
+are rejected. Packaging needs Python, dpkg-dev, binutils, desktop-file-utils and lintian
+in the build environment; installed users need runtime dependencies, a Vulkan 1.2
+GPU/driver and a working display. Use `sudo apt install ./<app>.deb` for installation
+and updates, and `sudo apt remove <package-id>` or `sudo apt purge <package-id>` for
+removal. User XDG state is preserved. A local package does not enable automatic updates.
+The Debian example explicitly opts into `DorotiDebExcludeLttngProvider=true` to
+exclude .NET's optional legacy LTTng adapter; Debian 13 has no matching `.so.0` ABI.
+The original publish is preserved and the exclusion is recorded in the package receipt.

@@ -40,7 +40,7 @@ def source():
 
 
 def main(suite, extra=()):
-    run = RUN_ROOT / suite.lower() / uuid.uuid4().hex
+    run = RUN_ROOT / ("linux-deb" if suite.startswith("LinuxDeb") else suite.lower()) / uuid.uuid4().hex
     run.mkdir(parents=True)
     print(f"Test run: {run} (timeout/failure evidence retained until investigation ends)", flush=True)
     success = False
@@ -107,6 +107,18 @@ def main(suite, extra=()):
         if suite == "LinuxSmoke":
             command("linux-qt-profiles", sys.executable, "Doroti/tests/linux_qt_build_profiles.py", "--output", str(run / "profiles"))
             command("linux-qt", sys.executable, "Doroti/tests/linux_qt_smoke.py", "--output", str(run / "qt"))
+        if suite == "LinuxDeb":
+            command("linux-deb-provider", "dotnet", "run", "--project", "packages/platforms/qt/tests/Doroti.Tool.Qt.Tests", "-c", "Release")
+            command("linux-deb-package", sys.executable, "Doroti/tests/linux_deb_package.py", "--output", str(run / "package"), *extra)
+        if suite == "LinuxDebInstall":
+            with (run / "lifecycle.log").open("w", encoding="utf-8") as log:
+                result = subprocess.run([sys.executable, "Doroti/tests/linux_deb_install.py", "--output", str(run / "lifecycle"), *extra], cwd=ROOT, stdout=log, stderr=subprocess.STDOUT)
+            if result.returncode not in (0, 2):
+                raise RuntimeError("LinuxDebInstall failed; see " + str(run / "lifecycle.log"))
+            if result.returncode == 2:
+                success = True
+                print("Validation LinuxDebInstall: PARTIAL; installation and GUI evidence are separate", flush=True)
+                return 2
         if suite == "AndroidSmoke":
             command("android", sys.executable, "Doroti/tests/android_smoke.py", "--output", str(run / "android"), *extra)
             android_result = json.loads((run / "android/summary.json").read_text(encoding="utf-8"))
@@ -134,15 +146,15 @@ def main(suite, extra=()):
             command("icon-package-contract", sys.executable, "Doroti/tests/icon_packages.py")
             command("icon-rendering-contract", "dotnet", "run", "--project", "packages/icons/tests/Doroti.Icons.Tests", "-c", "Release", "--", str(run / "icon-rendering"))
         success = True
-        evidence = "receipt retained" if suite == "AndroidSmoke" else "raw artifacts cleaned after summary"
+        evidence = "receipt retained" if suite == "AndroidSmoke" or suite.startswith("LinuxDeb") else "raw artifacts cleaned after summary"
         print(f"Validation {suite}: PASS; {evidence}", flush=True)
     finally:
         if success:
             resolved = run.resolve()
             if not resolved.is_relative_to(RUN_ROOT.resolve()) or run.is_symlink():
                 raise RuntimeError(f"Unsafe cleanup path: {run}")
-            if suite == "AndroidSmoke":
-                print(f"Android receipt retained: {run / 'android/summary.json'}", flush=True)
+            if suite == "AndroidSmoke" or suite.startswith("LinuxDeb"):
+                print(f"Validation evidence retained: {run}", flush=True)
             else:
                 shutil.rmtree(resolved)
         else:
@@ -150,6 +162,6 @@ def main(suite, extra=()):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2 or sys.argv[1] not in ("Source", "Build", "Targets", "WindowsSmoke", "AndroidSmoke", "LinuxSmoke", "MacOSSmoke", "IOSSmoke", "CatalystSmoke", "Packages", "Developer", "Release") or len(sys.argv) > 2 and sys.argv[1] != "AndroidSmoke":
-        sys.exit("Unknown suite. Use Source, Build, Targets, WindowsSmoke, AndroidSmoke, LinuxSmoke, MacOSSmoke, IOSSmoke, CatalystSmoke, Packages, Developer, or Release.")
+    if len(sys.argv) < 2 or sys.argv[1] not in ("Source", "Build", "Targets", "WindowsSmoke", "AndroidSmoke", "LinuxSmoke", "LinuxDeb", "LinuxDebInstall", "MacOSSmoke", "IOSSmoke", "CatalystSmoke", "Packages", "Developer", "Release") or len(sys.argv) > 2 and sys.argv[1] not in ("AndroidSmoke", "LinuxDeb", "LinuxDebInstall"):
+        sys.exit("Unknown suite. Use Source, Build, Targets, WindowsSmoke, AndroidSmoke, LinuxSmoke, LinuxDeb, LinuxDebInstall, MacOSSmoke, IOSSmoke, CatalystSmoke, Packages, Developer, or Release.")
     sys.exit(main(sys.argv[1], sys.argv[2:]) or 0)

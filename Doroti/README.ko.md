@@ -221,3 +221,18 @@ Windows 11 24H2 이상에서는 실험 플래그 없이 `new WindowBackdropOptio
 ## 라이선스
 
 Doroti는 [BSD 3-Clause 라이선스](../LICENSE)를 따릅니다. 외부 소스와 패키지의 저작권 표기는 [서드파티 고지](THIRD-PARTY-NOTICES.md)를 참고하세요.
+
+### Linux Debian 패키지
+
+Debian 13 amd64의 Linux Qt 게시에서 `-PackageFormat deb -Output <디렉터리>`를
+사용할 수 있습니다. Release의 self-contained, untrimmed JIT 게시 결과에 시스템
+Qt/QML 의존성, launcher, 데스크톱 메뉴, 아이콘, 라이선스 문서를 포함합니다.
+Linux runner에 고유한 `DorotiDebPackageId`, maintainer, description, copyright 파일을
+설정합니다. [Qt 패키징 안내](../packages/platforms/qt/README.md#debian-packages)에
+설정·버전 규칙·환경 요구사항이 있습니다. 옵션을 생략하면 기존 폴더 게시를 유지합니다.
+`sudo apt install ./<app>.deb`로 설치·업데이트하고, `sudo apt remove <package-id>` 또는
+`sudo apt purge <package-id>`로 제거합니다. 사용자 XDG 데이터는 보존합니다.
+로컬 `.deb` 배포만으로 자동 업데이트를 제공하지 않습니다. 설치와 GUI 실행 검증은
+[테스트 안내](tests/README.md)에서 별도로 기록합니다.
+현재 launcher 기본값은 xcb입니다. Debian 13의 Wayland 종료 실패가 남아 있어
+전체 초기 지원 완료는 보류합니다.

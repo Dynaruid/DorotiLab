@@ -580,3 +580,47 @@ python Doroti/eng/run-with-timeout.py --timeout 1200 python Doroti/tests/web_fir
 value/state, retained-list theme and resize checks in Firefox and Chrome. Numeric
 callback and submit intervals do not establish displayed FPS or physical trackpad
 acceptance. These explicit probes are outside the ordinary Developer suite.
+
+### Linux Debian packaging and lifecycle
+
+`linux_deb_package.py` checks metadata evaluation boundaries, explicit identities,
+Debian version ordering, unsupported profiles, injection/argument handling, ELF
+architecture and session cancellation identity. With `--receipt <receipt.json>`, it
+also inspects a real `.deb`: root ownership/permissions, launcher/desktop/icon,
+complete payload hashes, licenses, dependencies and separate installation/GUI status.
+`Doroti.Tool.Qt.Tests` covers default directory publish, output argument boundaries,
+publish-only schema, unsupported RID/TFM/configuration and cancellation.
+
+```sh
+python Doroti/eng/validate.py LinuxDeb
+python Doroti/eng/validate.py LinuxDeb --receipt <artifact-directory>/receipt.json
+python Doroti/eng/validate.py LinuxDebInstall --v1 <v1>/receipt.json --v2 <v2>/receipt.json --engine docker --image debian:trixie-slim --gui
+```
+
+Pin the image by digest for repeated acceptance. The initial build environment is
+Debian 13 amd64, .NET SDK 10.0.400, Qt 6.8.2 and glibc 2.41; exact system package
+versions are recorded in each artifact receipt. Build native shims in that same
+environment. `linux_qt_packages.py <new-output> --deb` builds a fresh NuGet feed/cache,
+restores a generated template, verifies package-only folder publish/portable install,
+and runs the packaged provider's `.deb` pipeline. It needs the native build/QML tools
+and an accessible Linux GUI, and does not by itself establish clean-OS acceptance.
+
+`linux_deb_install.py` always uses a disposable docker/podman container or explicit
+`--engine bwrap --rootfs <disposable-debian-rootfs>` under `temp/testing/linux-deb/`.
+It installs with APT, rejects runtime developer packages, launches as UID 1000 with
+`--gui`, upgrades to a newer version, then removes/purges while checking user data.
+The bwrap runtime never mounts the SDK or repository. `--wayland` adds a disposable
+Weston headless compositor from Debian. xcb/Xvfb smoke is distinct from
+Wayland, physical menu activation, input and GPU/display acceptance. Missing engines
+or omitted GUI checks return PARTIAL (exit 2); GUI failures remain failures.
+Build/package receipts never turn installation or GUI fields into PASS implicitly.
+`validate.py` retains Debian logs/receipts under `temp/testing/linux-deb/<run>/`.
+The actual acceptance results and outstanding gates are in [work.md](../../work.md).
+
+Debian 13 Quick and WebView passed clean installation, xcb/Xvfb execution, upgrades,
+remove/purge and user-data retention. A separate NuGet consumer also passed after
+publishing with the Doroti repository excluded from its namespace. Wayland teardown
+failed with Qt 6.8.2/Mesa 25.0.7; these receipts remain FAIL and full initial support
+is not declared complete. The launcher defaults to the tested xcb path and honors
+explicit QPA overrides. The current provider/CLI fixes also cover evaluated RID-specific
+`ProjectAssetsFile` paths and inheritance of template/sample application metadata.

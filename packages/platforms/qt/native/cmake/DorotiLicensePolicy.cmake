@@ -2,7 +2,7 @@
 # the selected Qt version and its third-party dependencies, not just this list.
 function(doroti_check_qt_license_policy root_target)
   set(allowed_modules Core Gui Widgets OpenGL OpenGLWidgets Network DBus
-    Quick Qml QmlModels QmlWorkerScript QuickControls2 QuickTemplates2
+    Quick Qml QmlMeta QmlModels QmlWorkerScript QuickControls2 QuickTemplates2
     WebEngineQuick WebEngineCore WebChannel WebChannelQuick Positioning)
   set(allowed_interfaces QmlIntegration Platform)
   set(pending "${root_target}")

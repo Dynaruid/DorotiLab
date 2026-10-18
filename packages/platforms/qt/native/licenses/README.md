@@ -12,6 +12,11 @@ modules also use the LGPL option. Copyright belongs to The Qt Company Ltd. and
 the respective Qt contributors; consult the source of the installed version for
 the full copyright notices. LGPL-3.0 and the incorporated GPL-3.0 text are included.
 
+Debian 13's Qt 6.8.2 also links the shared QmlMeta support module. Its
+qtdeclarative source is covered by the LGPL-3 option in the distribution's
+`/usr/share/doc/libqt6qml6/copyright`; it is included in the reviewed shared-module
+allowlist. No Qt binary is copied into the application package.
+
 - Licensing: https://doc.qt.io/qt-6/licensing.html
 - Source releases: https://download.qt.io/official_releases/qt/
 - Source repositories: https://code.qt.io/

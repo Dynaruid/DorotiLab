@@ -10,6 +10,14 @@
     <DorotiHostKind>Qt</DorotiHostKind>
     <DorotiNativeEntryKind>Qt-Main</DorotiNativeEntryKind>
     <SelfContained>false</SelfContained>
+    <DorotiDebPackageId>doroti-carousel</DorotiDebPackageId>
+    <DorotiDebMaintainer>Doroti contributors &lt;maintainers@doroti.dev&gt;</DorotiDebMaintainer>
+    <DorotiDebDescription>Doroti custom carousel sample</DorotiDebDescription>
+    <DorotiDebVersion>$(ApplicationDisplayVersion)</DorotiDebVersion>
+    <DorotiDebRevision>1</DorotiDebRevision>
+    <DorotiDebExcludeLttngProvider>true</DorotiDebExcludeLttngProvider>
+    <DorotiDebCategories>Graphics</DorotiDebCategories>
+    <DorotiDebCopyright>../../../LICENSE</DorotiDebCopyright>
     <DorotiQtQuick>true</DorotiQtQuick>
     <DorotiQtWebEngine Condition="'$(DorotiQtWebEngine)' == '' and '$(DorotiQtQuick)' == 'true'">true</DorotiQtWebEngine>
     <DorotiProviderBootstrapTargets>$(MSBuildProjectDirectory)/../../../packages/platforms/qt/bootstrap/Doroti.Provider.Bootstrap.targets</DorotiProviderBootstrapTargets>

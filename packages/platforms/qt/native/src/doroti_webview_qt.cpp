@@ -115,7 +115,15 @@ if(location.origin==='doroti-app://content')new QWebChannel(qt.webChannelTranspo
       if(!sharedProfile) {
         const auto scope=QCryptographicHash::hash(options["NativeApplicationId"].toString("doroti").toUtf8(),QCryptographicHash::Sha256).toHex();
         const auto name="DorotiShared-"+QString::fromLatin1(scope);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
         sharedProfile=new QQuickWebEngineProfile(name,qApp);
+#else
+        // The named constructor was introduced in Qt 6.9. Keep the supported
+        // Debian 13 / Qt 6.8 profile persistent before creating any pages.
+        sharedProfile=new QQuickWebEngineProfile(qApp);
+        sharedProfile->setStorageName(name);
+        sharedProfile->setOffTheRecord(false);
+#endif
         // Keep the existing ID-scoped data/cache locations when Qt's application
         // name changes from "doroti" to the desktop identity (host feature 25).
         const auto relative="doroti/QtWebEngine/"+name;

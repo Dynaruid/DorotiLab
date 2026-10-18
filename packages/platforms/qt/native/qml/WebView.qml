@@ -15,13 +15,6 @@ WebEngineView {
     settings.focusOnNavigationEnabled: false
     webChannelWorld: WebEngineScript.ApplicationWorld
     webChannel: WebChannel { id: channel }
-    userScripts.collection: [{
-        name: "doroti-trusted-app-transport",
-        injectionPoint: WebEngineScript.DocumentReady,
-        worldId: WebEngineScript.ApplicationWorld,
-        runsOnSubFrames: false,
-        sourceCode: view.bridge.transportScript
-    }]
     onNavigationRequested: function(request) {
         if (!bridge.allows(request.url.toString())) request.reject()
     }
@@ -50,5 +43,18 @@ WebEngineView {
     function installFacade(generation) {
         runJavaScript("(()=>{if(location.origin!=='doroti-app://content')return;let id=0;window.doroti={postMessage:(name,payload)=>window.dispatchEvent(new CustomEvent('doroti-message',{detail:JSON.stringify({generation:" + generation + ",requestId:++id,name,payload})}))};})()")
     }
-    Component.onCompleted: { channel.registerObject("doroti", bridge.transport); loadHtml(bridge.initialHtml) }
+    Component.onCompleted: {
+        channel.registerObject("doroti", bridge.transport)
+        // Qt 6.8 constructs its adapter in componentComplete. Accessing the
+        // userScripts grouped property during initial binding dereferences an
+        // uninitialized adapter. Install before the first load, after completion.
+        userScripts.collection = [{
+            name: "doroti-trusted-app-transport",
+            injectionPoint: WebEngineScript.DocumentReady,
+            worldId: WebEngineScript.ApplicationWorld,
+            runsOnSubFrames: false,
+            sourceCode: view.bridge.transportScript
+        }]
+        loadHtml(bridge.initialHtml)
+    }
 }
