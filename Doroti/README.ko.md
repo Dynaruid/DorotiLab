@@ -228,7 +228,8 @@ Debian 13 amd64의 Linux Qt 게시에서 `-PackageFormat deb -Output <디렉터�
 사용할 수 있습니다. Release의 self-contained, untrimmed JIT 게시 결과에
 Qt 6.12 런타임을 앱 전용 경로에 동봉하고 launcher, 메뉴, 아이콘, 라이선스 문서를 포함합니다.
 WebEngine 6.140도 기본 동봉하며, 분리할 때는 엔진·앱 `.deb` 두 개를 APT로 함께 설치할 수 있습니다.
-자체 저장소는 필수가 아닙니다. 명시적 SDK 경로와 검토된 대응 소스·고지 inventory가 필요합니다.
+자체 저장소는 필수가 아닙니다. SDK 경로를 명시하면 런타임 파일을 자동 수집합니다.
+`doroti-sdk.json`은 선택 사항이며, 있으면 지정한 배포 목록과 소스·고지 자료를 검증합니다.
 [런타임 안내](../packages/platforms/qt/qt-runtime.md)를 참고하세요.
 Linux runner에 고유한 `DorotiDebPackageId`, maintainer, description, copyright 파일을
 설정합니다. [Qt 패키징 안내](../packages/platforms/qt/README.md#debian-packages)에

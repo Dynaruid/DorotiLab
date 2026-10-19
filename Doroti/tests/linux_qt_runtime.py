@@ -122,6 +122,74 @@ class RuntimeContracts(unittest.TestCase):
         self.publish.rename(moved)
         qt.verify(moved)
 
+    def test_bundle_without_sdk_manifest_discovers_runtime_and_excludes_build_assets(self):
+        (self.sdk / "doroti-sdk.json").unlink()
+        shutil.rmtree(self.sdk / "notices")
+        self.library(self.sdk / "lib/libQt6Graphs.so.6.12.0", "libQt6Graphs.so.6")
+        (self.sdk / "lib/libQt6Core.so.6").symlink_to("libQt6Core.so.6.12.0")
+        (self.sdk / "lib/development.a").write_bytes(b"SDK build asset")
+        (self.sdk / "qml/QtQuick/development.o").write_bytes(b"QML build asset")
+        (self.sdk / "qml/QtQuick/Window.qml").write_text("import QtQuick\nItem {}\n")
+        # SDK parent directory names must not be interpreted as QML modules.
+        relocated = self.root / "tooling/sdk"
+        relocated.parent.mkdir()
+        self.sdk.rename(relocated)
+        self.sdk = relocated
+        self.config["sdk"] = str(self.sdk)
+        data = qt.bundle(self.publish, self.native, self.config)
+        part = data["framework"]
+        self.assertEqual(part["inventory"], "discovered")
+        self.assertIsNone(part["review"])
+        self.assertEqual(part["sources"], [])
+        names = {entry["path"] for entry in part["files"]}
+        self.assertIn("lib/libQt6Core.so.6", names)
+        self.assertIn("qml/QtQuick/Window.qml", names)
+        self.assertFalse(any("Graphs" in name or name.endswith((".a", ".o")) for name in names))
+        self.assertFalse((self.sdk / "doroti-sdk.json").exists())
+        qt.verify(self.publish)
+
+    def test_manifestless_bundled_engine_preserves_candidate_label(self):
+        engine = self.engine("bundled")
+        for prefix in (self.sdk, engine):
+            (prefix / "doroti-sdk.json").unlink()
+        files = {path.relative_to(engine).as_posix(): qt.digest(path) for path in engine.rglob("*") if path.is_file()}
+        qt.write_json(engine / "doroti-sdk-install.json", dict(files=files, lock=dict(
+            kind="webengine", version="6.140.0", frameworkVersion="6.12.0", architecture="linux-x64",
+            releaseName="6.140.0-rc", archives=[])))
+        data = qt.bundle(self.publish, self.native, self.config)
+        self.assertEqual(data["webEngine"]["releaseName"], "6.140.0-rc")
+        self.assertIsNone(data["webEngine"]["review"])
+        qt.verify(self.publish)
+
+    def test_manifestless_separate_engine_is_verified(self):
+        engine = self.engine("download")
+        for prefix in (self.sdk, engine):
+            (prefix / "doroti-sdk.json").unlink()
+        output = self.root / "engine-output"
+        data = qt.bundle(self.publish, self.native, self.config, output)
+        qt.verify_part(output, data["webEngine"])
+        self.assertEqual(data["webEngine"]["packageVersion"], "6.140.0-1")
+        qt.verify(self.publish)
+
+    def test_manifestless_sdk_still_checks_installed_hashes_and_version(self):
+        (self.sdk / "doroti-sdk.json").unlink()
+        lock = dict(kind="framework", version="6.12.0", frameworkVersion="6.12.0", architecture="linux-x64")
+        files = {path.relative_to(self.sdk).as_posix(): qt.digest(path) for path in self.sdk.rglob("*") if path.is_file()}
+        qt.write_json(self.sdk / "doroti-sdk-install.json", dict(lock=lock, files=files))
+        qt.sdk_inventory(self.sdk, "6.12.0", "6.12.0", "framework")
+        with self.assertRaisesRegex(ValueError, "install lock"):
+            qt.sdk_inventory(self.sdk, "6.12.0", "6.11.0", "framework")
+        (self.sdk / "qml/QtQuick/qmldir").write_text("changed")
+        with self.assertRaisesRegex(ValueError, "changed installed"):
+            qt.sdk_inventory(self.sdk, "6.12.0", "6.12.0", "framework")
+
+    def test_manifestless_sdk_rejects_escaping_file_links(self):
+        (self.sdk / "doroti-sdk.json").unlink()
+        (self.root / "outside.qml").write_text("Item {}")
+        (self.sdk / "qml/QtQuick/outside.qml").symlink_to(self.root / "outside.qml")
+        with self.assertRaisesRegex(ValueError, "leaves its prefix"):
+            qt.sdk_inventory(self.sdk, "6.12.0", "6.12.0", "framework")
+
     def test_republish_replaces_previous_owned_runtime(self):
         qt.bundle(self.publish, self.native, self.config)
         shutil.copyfile(self.native / "libdoroti_qt_host.so", self.publish / "libdoroti_qt_host.so")

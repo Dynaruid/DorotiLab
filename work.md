@@ -2,7 +2,7 @@
 
 작성일: 2026-10-18
 
-상태: 2026-10-19 Qt 6.12 번들 수집·SDK lock 설치·native manifest·로더·별도 엔진 `.deb` 생성과 계약 테스트를 구현했다. Debian 13에서 Qt 6.12.0 + WebEngine 6.140.0 후보 native 빌드와 ELF/로더/엔진 패키지 테스트가 통과했다. 실제 공급 메타데이터는 WebEngine `6.140.0-rc`로 확인됐으며 정식 릴리스 승인과 실제 앱의 깨끗한 OS/Wayland/xcb 검증은 미완료다. 자체 APT 저장소 운영 없이 기본 동봉 또는 엔진·앱 `.deb` 동시 설치를 지원한다. 상세 증거와 미완료 조건은 10절에 기록한다.
+상태: 2026-10-19 Qt 6.12 번들 수집·SDK lock 설치·native manifest·로더·별도 엔진 `.deb` 생성과 계약 테스트를 구현했다. Debian 13에서 Qt 6.12.0 + WebEngine 6.140.0 후보 native 빌드와 ELF/로더/엔진 패키지 테스트가 통과했다. 실제 공급 메타데이터는 WebEngine `6.140.0-rc`로 확인됐으며 정식 릴리스 승인과 실제 앱의 깨끗한 OS/Wayland/xcb 검증은 미완료다. 자체 APT 저장소 운영 없이 기본 동봉 또는 엔진·앱 `.deb` 동시 설치를 지원한다. 상세 증거와 미완료 조건은 10절에 기록한다. 사용자 요청으로 `doroti-sdk.json`을 선택 사항으로 바꾸고 SDK 자동 수집 경로를 추가했다(11절).
 
 ## 1. 목표와 기대 효과
 
@@ -451,7 +451,8 @@ KDE neon은 Ubuntu 기반이며 Savoury Qt 6.2 PPA는 이번 버전에 맞지 �
   `sdk/webengine-6.140.0-qt6.12-linux-x64.lock.json`에 RC 상태와 metadata URL을 기록했다.
   숫자 CMake 버전 6.140.0만 보고 정식 릴리스 또는 배포 승인으로 표시하지 않는다.
 - 실제 배포 바이너리별 정확한 대응 소스·패치/빌드·third-party 자료를 갖춘 reviewed
-  `doroti-sdk.json`이 아직 준비되지 않았다. 이를 빠뜨린 게시가 성공하도록 우회하지 않았다.
+  `doroti-sdk.json`이 아직 준비되지 않았다. 이 시점에는 게시 필수 조건이었으나,
+  이후 사용자 요청으로 빌드 조건에서 제외했다(11절). 실제 재배포 자료 검토는 별도다.
 - Qt/SDK 없는 깨끗한 Debian 13에서 실제 Quick, WebView bundled, WebView 분리 각각의
   앱 `.deb` 게시/설치와 네이티브 Wayland/xcb 반복 실행·정상 종료, 업데이트/remove/purge,
   데이터 보존, 오프라인 실행, 공유 엔진·동시 업데이트·설치 실패/복구는 미검증이다.
@@ -463,3 +464,32 @@ KDE neon은 Ubuntu 기반이며 Savoury Qt 6.2 PPA는 이번 버전에 맞지 �
 
 검증 로그/구현 receipt: `temp/testing/linux-deb/qt612-2026-10-19/`.
 `contracts/contracts.json`은 테스트 범위를 fixture로 명시하며, 실제 앱 릴리스 승인을 뜻하지 않는다.
+
+## 11. SDK inventory 선택 사항 전환 — 2026-10-19
+
+- 사용자 요청에 따라 폴더 게시와 `.deb` 빌드에서 `doroti-sdk.json`을 필수로 요구하지 않는다.
+  파일이 없으면 선택 SDK의 지원 Qt/ICU 라이브러리, Quick/QML, xcb/Wayland 플러그인,
+  WebEngine helper/resources/locales를 자동 수집한다. SDK를 수정하거나 다운로드하지 않는다.
+- 파일이 있으면 기존 명시적 목록과 소스·고지·해시 검증을 적용하며, 잘못된 파일을
+  자동 수집으로 대체하지 않는다. SDK 설치 receipt가 있으면 선택 파일 해시·버전을 검사한다.
+- 자동 수집 결과는 `inventory: discovered`, `review: null`로 기록한다. 공급자의 RC 이름과
+  원본 archive 정보를 보존하고, SDK에 있는 SBOM·설정·라이선스·고지·소스를 복사한다.
+  자동 수집 성공을 배포 자료 검토나 정식 릴리스 승인으로 표시하지 않는다.
+- Debian 13에서 ELF/로더/실제 fixture 엔진 `.deb` 계약 테스트 **24개 통과**.
+  manifest 없는 동봉·분리 배포, SDK 변조·버전 오류·경로 이탈 거부와 개발 파일 제외를 검증했다.
+  실제 SDK의 Framework 1,571개/엔진 83개 런타임 파일 간 Qt ELF 의존성 검사도 통과했다.
+- 증거: `temp/testing/linux-deb/optional-sdk-manifest/`,
+  `temp/testing/linux-deb/bundle-build-20261019/optional-manifest-debian-tests.log`.
+- 실제 Testbed Release/self-contained/Qt·WebEngine 동봉 `.deb` 생성에 성공했다.
+  Debian 격리 빌더에 GTK theme plugin의 OS 의존성 `libgtk-3-0t64`를 준비했다.
+  Qt JPEG plugin과 WebEngine에 내장된 알려진 codec/Chromium 구성 요소는 기존
+  Skia/.NET 정책과 같이 정확한 파일 경로에 한정한 Lintian 예외를 기록한다.
+  의존성·아키텍처 오류 검사는 유지한다. 관련 패키징 계약 테스트 **10개 통과**와
+  분리 fixture 엔진 `.deb` 회귀 테스트도 통과했다.
+- 산출물: `Doroti/artifacts/linux-deb/doroti-testbed_0.4.1-1_amd64/doroti-testbed_0.4.1-1_amd64.deb`
+  (270.3 MiB). Qt 6.12.0/엔진 `6.140.0-rc`, 양쪽 `inventory: discovered`, `review: null`을
+  확인했다. SDK에 `doroti-sdk.json`을 생성하지 않았다. 패키지·desktop 검사와 Lintian
+  오류 없음, SHA-256 sidecar 검증을 통과했다. 시스템 Qt 패키지 의존성은 없다.
+  설치·GUI·업데이트·제거 검증은 수행하지 않았다.
+- 최종 빌드 로그/결과: `temp/testing/linux-deb/bundle-build-20261019/debian-optional-manifest-build.log`,
+  같은 디렉터리의 `result.json`. 산출물 디렉터리에 receipt/contents/shlibdeps/Lintian 기록을 보존한다.

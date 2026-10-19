@@ -393,6 +393,23 @@ def write(path, content, mode=0o644):
     path.chmod(mode)
 
 
+def qt_embedded_overrides(package_id, stage, prefix, part):
+    # These upstream Qt binaries deliberately embed their codecs/Chromium
+    # dependencies. They are private application payloads, not Debian archive
+    # libraries. Keep exceptions tied to known components and exact file paths.
+    values = []
+    for entry in part["files"]:
+        name = entry["path"]
+        components = ()
+        if name == "plugins/imageformats/libqjpeg.so":
+            components = ("libjpeg",)
+        elif re.fullmatch(r"lib/libQt6WebEngineCore\.so\.6(?:\.[0-9]+)*", name):
+            components = ("lcms2", "libjpeg", "libjsoncpp", "openjpeg", "srtp", "tiff")
+        path = str((prefix / name).relative_to(stage))
+        values += [package_id + ": embedded-library " + component + " [" + path + "]" for component in components]
+    return values
+
+
 def package(source, output, metadata, work):
     verify_payload(source, metadata)
     runtime = qt_runtime.verify(source, metadata["qt"], metadata["webView"])
@@ -469,6 +486,10 @@ def package(source, output, metadata, work):
                   ("libSkiaSharp.so", "libdoroti_qt_host.so", "libdoroti_webview_qt.so") if (payload / name).is_file()]
     overrides += [package_id + ": unstripped-binary-or-object [opt/" + package_id + "/" + str(path.relative_to(payload)) + "]"
                   for path in sorted((payload / "qt").rglob("*")) if path.is_file() and elf(path)]
+    overrides += ["# Preserve upstream Qt JPEG/Chromium embedded libraries in the private runtime."]
+    overrides += qt_embedded_overrides(package_id, stage, payload / runtime["framework"]["path"], runtime["framework"])
+    if runtime["webView"] and runtime["deployment"] == "bundled":
+        overrides += qt_embedded_overrides(package_id, stage, payload / runtime["webEngine"]["path"], runtime["webEngine"])
     write(stage / "usr/share/lintian/overrides" / package_id, "\n".join(overrides) + "\n")
     control = stage / "DEBIAN/control"
     write(control, "Package: " + package_id + "\nVersion: " + metadata["debianVersion"] + "\nArchitecture: amd64\nMaintainer: " + metadata["maintainer"] + "\nDescription: " + metadata["description"] + "\n Self-contained Doroti Qt desktop application using a private Qt runtime bundle.\n")
@@ -547,7 +568,7 @@ def engine_package(stage, payload, engine, metadata, app_stage, app_payload, wor
           "License: LGPL-3 and applicable third-party terms.\n"
           "On Debian systems, the complete license texts can be found in\n"
           "/usr/share/common-licenses/LGPL-3 and /usr/share/common-licenses/GPL-3.\n"
-          "Exact source, notices and build instructions: " + engine["path"] + "/provenance.json\n\n" + copyright_text + "\n")
+          "Runtime inventory and available source/notices/build information: " + engine["path"] + "/provenance.json\n\n" + copyright_text + "\n")
     write(doc / "README.Debian", "Requires the consuming application's private Qt " + engine["frameworkVersion"] + " runtime.\n"
           "Install with apt install ./engine.deb ./app.deb. No system Qt is replaced.\n"
           "Set DOROTI_QT_WEBENGINE_PATH to a compatible modified runtime prefix for replacement.\n")
@@ -557,10 +578,12 @@ def engine_package(stage, payload, engine, metadata, app_stage, app_payload, wor
           "# Application-private runtime; every installed file is owned by dpkg.\n" +
           package_id + ": dir-or-file-in-opt [opt/doroti/]\n" +
           package_id + ": dir-or-file-in-opt [opt/doroti/*]\n"
-          "# Retain upstream runtime symbols and record rebased hashes for diagnostics.\n" + binary_overrides + "\n")
+          "# Retain upstream runtime symbols and record rebased hashes for diagnostics.\n" + binary_overrides + "\n" +
+          "# Preserve upstream Chromium embedded libraries in this private engine.\n" +
+          "\n".join(qt_embedded_overrides(package_id, stage, payload, engine)) + "\n")
     timestamp = datetime.fromtimestamp(int(os.environ["SOURCE_DATE_EPOCH"]), timezone.utc) if "SOURCE_DATE_EPOCH" in os.environ else datetime.now(timezone.utc)
     changelog = (package_id + " (" + version + ") unstable; urgency=medium\n\n"
-                 "  * Package the reviewed private WebEngine runtime.\n\n"
+                 "  * Package the private WebEngine runtime.\n\n"
                  " -- " + metadata["maintainer"] + "  " + format_datetime(timestamp) + "\n")
     (doc / "changelog.Debian.gz").write_bytes(gzip.compress(changelog.encode(), mtime=0))
     size = (sum(path.stat().st_size for path in stage.rglob("*") if path.is_file()) + 1023) // 1024

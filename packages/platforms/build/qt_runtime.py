@@ -1,8 +1,8 @@
-"""Collect a reviewed, replaceable Qt runtime; never install SDKs during evaluation.
+"""Collect a replaceable Qt runtime; never install SDKs during evaluation.
 
-SDKs carry doroti-sdk.json (see qt-runtime.md). Its inventory is an explicit
-redistribution review of exact binaries, sources, notices and build settings.
-Unknown files/modules are rejected rather than copying an entire SDK.
+Discover runtime files from a normal SDK, or use an optional doroti-sdk.json
+for an explicit redistribution inventory. Unknown modules and SDK build tools
+are excluded from discovery. Record automatic discovery separately from review.
 """
 import argparse
 import hashlib
@@ -18,6 +18,7 @@ SCHEMA = "doroti.qt-runtime/v1"
 MODULES = set("Core Gui Widgets OpenGL OpenGLWidgets Network DBus Qml QmlMeta QmlModels QmlWorkerScript QmlIntegration Quick QuickControls2 QuickTemplates2 QuickControls2Impl QuickControls2Basic QuickControls2BasicStyleImpl QuickControls2Fusion QuickControls2FusionStyleImpl QuickControls2Imagine QuickControls2ImagineStyleImpl QuickControls2Material QuickControls2MaterialStyleImpl QuickControls2Universal QuickControls2UniversalStyleImpl QuickControls2FluentWinUI3 QuickControls2FluentWinUI3StyleImpl QuickControls2IOS QuickControls2IOSStyleImpl QuickLayouts QuickShapes QuickShapesDesignHelpers QuickParticles QuickDialogs2 QuickDialogs2QuickImpl QuickDialogs2Utils Svg SvgWidgets XcbQpa WaylandClient WebChannel WebChannelQuick Positioning WebEngineCore WebEngineQuick".split())
 MODULES.add("WebEngineQuickDelegatesQml")
 MODULES.add("ICU")
+MODULES.update("QmlCore QmlNetwork QmlXmlListModel QuickEffects QuickControls2Native QuickVectorImage QuickVectorImageHelpers QuickVectorImageGenerator PositioningQuick LabsFolderListModel WlShellIntegration".split())
 ENGINE_MODULES = {"WebEngineCore", "WebEngineQuick", "WebEngineQuickDelegatesQml"}
 FORBIDDEN = re.compile(r"Quick3D|QuickTimeline|VirtualKeyboard|WaylandCompositor|CanvasPainter|Graphs|Charts|avcodec.*gpl", re.I)
 PROPERTIES = ("DorotiQtVersion", "DorotiQtSdkDirectory", "DorotiQtWebEngine",
@@ -85,9 +86,85 @@ def dynamic(path):
                 soname=next(iter(re.findall(r"\(SONAME\).*\[([^\]]+)\]", text)), path.name))
 
 
+def discover_sdk(prefix, version, qt, kind):
+    """Build an in-memory inventory without writing to the SDK or claiming review."""
+    core = "WebEngineCore" if kind == "webengine" else "Core"
+    if not (prefix / ("lib/libQt6" + core + ".so." + version)).is_file():
+        raise ValueError("SDK lacks the selected Qt version: " + str(prefix) + " / " + version)
+    receipt = prefix / "doroti-sdk-install.json"
+    installed = json.loads(receipt.read_text()) if receipt.is_file() else None
+    lock = installed["lock"] if installed else {}
+    if lock and any(lock.get(key) != value for key, value in
+                    (("version", version), ("frameworkVersion", qt), ("kind", kind), ("architecture", "linux-x64"))):
+        raise ValueError("SDK install lock does not match the selected runtime: " + str(receipt))
+    data = dict(schemaVersion="doroti.qt-sdk/v1", version=version, frameworkVersion=qt,
+                architecture="linux-x64", kind=kind, inventory="discovered", review=None,
+                releaseName=lock.get("releaseName", version), archives=lock.get("archives", []),
+                files=[], documents=[], sources=[])
+
+    def add(path, section, module=None, role=None):
+        name = relative(path.relative_to(prefix).as_posix())
+        if not path.resolve().is_relative_to(prefix) or not path.is_file():
+            raise ValueError("SDK file leaves its prefix or is missing: " + str(path))
+        checksum = digest(path)
+        if installed and installed["files"].get(name) != checksum:
+            raise ValueError("Missing or changed installed SDK file: " + str(path))
+        entry = dict(path=name, sha256=checksum)
+        if module:
+            entry.update(module=module, license="Unicode-DFS-2016" if module == "ICU" else "LGPL-3.0-only")
+        if role:
+            entry["role"] = role
+        data[section].append(entry)
+
+    for path in sorted((prefix / "lib").glob("*.so.*")):
+        if path.is_symlink():
+            continue  # collect() creates SONAME aliases after rebasing.
+        match = re.fullmatch(r"libQt6([A-Za-z0-9]+)\.so\." + re.escape(version), path.name)
+        if match and match[1] in MODULES and ((match[1] in ENGINE_MODULES) == (kind == "webengine")):
+            add(path, "files", match[1])
+        elif kind == "framework" and re.fullmatch(r"libicu(?:uc|i18n|data)\.so\.73(?:\.[0-9]+)*", path.name):
+            add(path, "files", "ICU")
+    qml_roots = {"QtWebEngine": "WebEngineQuick"} if kind == "webengine" else {
+        "QML": "Qml", "QtQml": "Qml", "QtQuick": "Quick", "QtCore": "QmlCore",
+        "QtNetwork": "QmlNetwork", "QtWebChannel": "WebChannelQuick",
+        "QtPositioning": "PositioningQuick", "Qt/labs/folderlistmodel": "LabsFolderListModel"}
+    for directory, module in qml_roots.items():
+        for path in sorted((prefix / "qml" / directory).rglob("*")):
+            name = path.relative_to(prefix).as_posix()
+            if path.is_file() and (path.suffix in (".so", ".qml", ".js", ".mjs", ".qmltypes", ".png", ".svg", ".jpg") or path.name == "qmldir"):
+                if not FORBIDDEN.search(name) and not any(part in ("tooling", "DesignSupport", "LocalStorage") for part in PurePosixPath(name).parts):
+                    add(path, "files", module)
+    if kind == "framework":
+        plugins = ("platforms", "xcbglintegrations", "wayland-graphics-integration-client",
+                   "wayland-shell-integration", "wayland-decoration-client", "imageformats",
+                   "iconengines", "tls", "platforminputcontexts", "platformthemes", "networkinformation")
+        for directory in plugins:
+            for path in sorted((prefix / "plugins" / directory).glob("*.so")):
+                if directory != "platforms" or path.name in ("libqxcb.so", "libqwayland.so", "libqwayland-egl.so"):
+                    add(path, "files", "Gui")
+    else:
+        add(prefix / "libexec/QtWebEngineProcess", "files", "WebEngineCore")
+        for directory in ("resources", "translations/qtwebengine_locales"):
+            for path in sorted((prefix / directory).rglob("*")):
+                if path.is_file() and path.suffix in (".pak", ".dat", ".bin"):
+                    add(path, "files", "WebEngineCore")
+    # Preserve supplied documentation without requiring publishers to assemble it
+    # before an ordinary build. No automatic inventory asserts release approval.
+    for directory, role in (("sbom", "sbom"), ("licenses", "license"), ("notices", "notice"), ("sources", "source")):
+        for path in sorted((prefix / directory).rglob("*")):
+            if path.is_file():
+                add(path, "sources" if directory == "sources" else "documents", role=role)
+    for path in sorted(prefix.glob("config_*.summary")) + sorted(prefix.glob("config_*.opt")):
+        add(path, "documents", role="build-configuration")
+    return data
+
+
 def sdk_inventory(prefix, version, qt, kind):
     prefix = Path(prefix).resolve()
     manifest = prefix / "doroti-sdk.json"
+    if not manifest.exists():
+        data = discover_sdk(prefix, version, qt, kind)
+        return validate_inventory(prefix, data, kind)
     data = json.loads(manifest.read_text())
     if (data.get("schemaVersion") != "doroti.qt-sdk/v1" or data.get("version") != version
             or data.get("frameworkVersion") != qt or data.get("architecture") != "linux-x64"
@@ -121,6 +198,10 @@ def sdk_inventory(prefix, version, qt, kind):
     covered = {archive for entry in data["sources"] for archive in entry["binaryArchives"]}
     if covered != {item["sha256"] for item in data["archives"]}:
         raise ValueError("Every binary archive needs corresponding source")
+    return validate_inventory(prefix, data, kind)
+
+
+def validate_inventory(prefix, data, kind):
     entries = data["files"] + data["documents"] + data["sources"]
     seen = set()
     for entry in entries:
@@ -130,7 +211,7 @@ def sdk_inventory(prefix, version, qt, kind):
         seen.add(name)
         path = prefix / name
         if not path.resolve().is_relative_to(prefix) or not path.is_file() or digest(path) != entry["sha256"]:
-            raise ValueError("Missing or changed reviewed SDK file: " + str(path))
+            raise ValueError("Missing or changed SDK inventory file: " + str(path))
     for entry in data["files"]:
         module = entry.get("module")
         license_id = "Unicode-DFS-2016" if module == "ICU" else "LGPL-3.0-only"
@@ -220,7 +301,7 @@ def collect(prefix, data, destination):
     write_json(destination / "provenance.json", data)
     return dict(version=data["version"], releaseName=data.get("releaseName", data["version"]), frameworkVersion=data["frameworkVersion"],
                 files=files, documents=data["documents"], sources=data["sources"],
-                archives=data["archives"], review=data["review"])
+                archives=data["archives"], review=data["review"], inventory=data.get("inventory", "reviewed"))
 
 
 def validate_closure(parts, shims):
@@ -236,7 +317,7 @@ def validate_closure(parts, shims):
     for file in records + shims:
         for needed in file["needed"]:
             if needed.startswith("libQt6") and needed not in names:
-                raise ValueError("Missing/unreviewed transitive Qt dependency: " + needed)
+                raise ValueError("Missing bundled transitive Qt dependency: " + needed)
     for part in parts:
         paths = {file["path"] for file in part["files"]}
         if part is parts[0]:
@@ -345,7 +426,7 @@ def verify_part(root, part):
         expected.add("engine.json")
     actual = {str(path.relative_to(root)) for path in root.rglob("*") if path.is_file()}
     if actual != expected or any(path.is_symlink() for path in root.rglob("*")):
-        raise ValueError("Qt runtime contains files outside its reviewed inventory")
+        raise ValueError("Qt runtime contains files outside its recorded inventory")
 
 
 def main():

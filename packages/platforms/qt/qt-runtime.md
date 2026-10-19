@@ -123,14 +123,33 @@ runtime distribution policy. Separate WebEngine archives use their own source
 and release metadata and can have `payloadPrefix: "."`. The installer validates
 member paths, extracted links and SHA-256, stages privately, then commits the SDK
 and an install receipt. Identical locked content is reusable; changed content at
-the same output is rejected. An existing separately installed SDK is also usable
-after the redistribution review below.
+the same output is rejected. An existing separately installed SDK is also usable.
 
-## Exact redistribution inventory
+## Automatic runtime inventory
 
-Each SDK prefix must contain `doroti-sdk.json` before publication. Build this from
-a reviewed recipe with `provider-build/review-qt-runtime.py --sdk <prefix> --recipe
-<recipe.json>`. The recipe contains:
+`doroti-sdk.json` is optional for both directory and `.deb` builds. Without it,
+the publisher discovers supported versioned Qt libraries, ICU 73, Quick/QML
+imports, xcb/Wayland plugins and enabled WebEngine resources from the selected
+SDKs. SDK build tools, headers, static libraries and unsupported modules are
+excluded. Discovery does not modify the SDK or make network requests.
+
+The generated runtime manifest and `provenance.json` record selected files and
+hashes with `inventory: "discovered"` and `review: null`. If the SDK has an
+installation receipt, its identity and selected file hashes are checked, and
+the original release name (including RC labels) and archive provenance are kept.
+Available SBOMs, build configurations, notices, licenses and sources are copied.
+Missing redistribution documents do not block an ordinary build. Automatic
+discovery does not claim that redistribution materials have been reviewed.
+Native ABI/version checks, ELF/QML dependency checks, and generated bundle hash
+verification still apply.
+
+## Optional explicit redistribution inventory
+
+To use a curated file list and validate complete redistribution materials,
+provide `doroti-sdk.json` in each SDK prefix. An existing manifest is validated;
+an invalid manifest fails instead of falling back to discovery. Build it from
+a reviewed recipe with `provider-build/review-qt-runtime.py --sdk <prefix>
+--recipe <recipe.json>`. The recipe contains:
 
 | Field | Required content |
 | --- | --- |
@@ -148,8 +167,8 @@ shipped beside the runtime. Every binary archive needs corresponding source;
 a generic Qt download page is insufficient. Preserve exact patches, required
 third-party source, build/install information and original notices. Qt's published
 SPDX SBOMs help locate the exact source commits and licenses; they do not replace
-source and notice obligations. This explicit review is required for publisher
-supplied binaries too. Missing materials fail publication.
+source and notice obligations. With an explicit inventory, missing or changed
+materials fail publication.
 
 Select real versioned shared objects once, for example
 `{ "pattern": "lib/libQt6Core.so.6.12.0", "module": "Core" }`.

@@ -3,7 +3,8 @@
 Build/run/dev can use distribution Qt. Publication uses a private Qt 6.12.0 SDK
 runtime and optional independently versioned WebEngine 6.140.0. Set
 `DorotiQtSdkDirectory` and, for WebView, `DorotiQtWebEngineSdkDirectory` to explicitly
-installed SDK prefixes with reviewed `doroti-sdk.json` inventories. SDK installation
+installed SDK prefixes. Runtime files are discovered automatically;
+`doroti-sdk.json` is optional for an explicit reviewed inventory. SDK installation
 never happens during project evaluation.
 
 The default `DorotiQtWebEngineDeployment=bundled` produces a directory or one app

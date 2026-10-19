@@ -643,8 +643,11 @@ Fixtures do not qualify real Qt/Chromium redistribution or GUI behavior.
 `--package-tests` requires dpkg-dev, lintian, patchelf and a C compiler; the default
 contracts require dotnet, a C compiler, binutils and patchelf.
 
-Real publication now needs explicit Qt 6.12 SDK prefixes and reviewed redistribution
-inventories from the [runtime guide](../../packages/platforms/qt/qt-runtime.md).
+Real publication needs explicit Qt 6.12 SDK prefixes. Runtime files are discovered
+automatically when the optional `doroti-sdk.json` inventory is absent; see the
+[runtime guide](../../packages/platforms/qt/qt-runtime.md). Contracts also cover
+manifestless directory/bundled/separate-engine output, installed SDK hashes,
+candidate release labels, excluded build assets and escaping symlinks.
 The earlier Qt 6.8.2 results above are historical. The launcher now selects native
 Wayland/xcb by session. `linux_deb_install.py --gui --wayland --repetitions 3`
 checks actual backend/Qt version and repeated normal shutdown. Separate engine

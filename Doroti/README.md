@@ -227,8 +227,9 @@ On Debian 13 amd64, Linux Qt publish supports `-PackageFormat deb -Output <direc
 The profile publishes a self-contained, untrimmed Release JIT application and packages
 an application-private Qt 6.12 runtime, launcher, desktop entry, icon and license notices.
 WebEngine 6.140 is bundled by default; a separate local engine `.deb` can be installed
-alongside the app without operating an APT repository. Explicit SDK prefixes and
-reviewed source/notice inventories are required; see the [runtime guide](../packages/platforms/qt/qt-runtime.md). Configure
+alongside the app without operating an APT repository. Explicit SDK prefixes are
+required; runtime files are discovered automatically unless an optional reviewed
+`doroti-sdk.json` inventory is supplied. See the [runtime guide](../packages/platforms/qt/qt-runtime.md). Configure
 an explicit `DorotiDebPackageId`, maintainer, description and copyright file in the Linux
 runner; see the [Qt packaging guide](../packages/platforms/qt/README.md#debian-packages)
 for metadata, version rules and requirements. Omit `-PackageFormat` for existing directory

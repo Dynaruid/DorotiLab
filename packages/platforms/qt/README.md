@@ -67,8 +67,11 @@ setting an unresolved dependency fails packaging. See the
 [upstream ABI issue](https://github.com/dotnet/runtime/issues/57784).
 
 The build environment needs Python 3.11+, `dpkg-dev`, `binutils`,
-`desktop-file-utils`, `lintian`, `patchelf`, .NET SDK and the selected Qt SDK/native build dependencies in the [host guide](native/README.md). Supply the reviewed SDK runtime inventory, QML/plugins and exact corresponding source/notice materials described in the runtime guide. Packaging tools are checked
+`desktop-file-utils`, `lintian`, `patchelf`, .NET SDK and the selected Qt SDK/native build dependencies in the [host guide](native/README.md). Runtime files are discovered from the SDK; `doroti-sdk.json` is optional for an explicit reviewed inventory (see the runtime guide). Packaging tools are checked
 only for `deb`; ordinary Linux build/run/dev/directory publish requires no dpkg tools.
+When the SDK contains the GTK platform theme plugin, automatic discovery includes
+it. Install its OS libraries in the Debian builder (`libgtk-3-0t64`); ELF analysis
+adds those runtime dependencies to the generated package.
 
 ```powershell
 ./Doroti/eng/doroti.ps1 publish -App ./samples/DorotiCarouselApp -Platform linux -Configuration Release -PackageFormat deb -Output ./Doroti/artifacts/linux-deb
@@ -107,7 +110,8 @@ Package generation, installation and GUI acceptance have separate receipt fields
 
 Lintian rejects unrecognized errors. Narrow, commented package overrides cover
 the planned third-party `/opt/<package-id>` layout, Skia/.NET's upstream embedded
-codec/compression libraries, and unstripped original native binaries whose bytes
+codec/compression libraries, Qt's JPEG plugin and WebEngine's embedded Chromium
+libraries (restricted to known components and exact paths), and unstripped original native binaries whose bytes
 are retained for provenance and diagnostics. They do not suppress dependency or
 architecture errors. Generated changelog/no-Debian-bug and GUI launcher/no-manpage
 warnings are retained in `lintian.txt` for review.

@@ -42,6 +42,17 @@ class PackagingContracts(unittest.TestCase):
     def metadata(self):
         return deb.metadata_from_model(self.model, self.root / "fixture.csproj")
 
+    def test_embedded_qt_exceptions_are_limited_to_known_private_binaries(self):
+        stage = self.root / "stage"
+        prefix = stage / "opt/fixture/qt/framework/6.12.0"
+        files = [dict(path=name) for name in ("plugins/imageformats/libqjpeg.so", "lib/libQt6Core.so.6",
+                 "lib/libQt6WebEngineCore.so.6.140.0", "lib/libQt6WebEngineCore.so.6",
+                 "qml/libQt6WebEngineCore.so.6", "lib/libUnrelated.so.6")]
+        overrides = deb.qt_embedded_overrides("fixture", stage, prefix, dict(files=files))
+        self.assertEqual(len(overrides), 13)
+        self.assertTrue(all("embedded-library" in value and "[opt/fixture/qt/" in value for value in overrides))
+        self.assertFalse(any("Qt6Core.so" in value or "/qml/" in value or "Unrelated" in value or "*" in value for value in overrides))
+
     def test_versions(self):
         self.assertEqual(deb.debian_version("1.2.0-beta.1"), "1.2.0~beta.1-1")
         self.assertEqual(deb.debian_version("1.2.0", "2"), "1.2.0-2")
