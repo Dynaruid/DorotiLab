@@ -3,6 +3,7 @@ using Doroti.Cupertino;
 using Doroti.Framework.Foundation;
 using Doroti.Framework.Painting;
 using Doroti.Framework.Rendering;
+using Doroti.Framework.Services;
 using Doroti.Framework.Widgets;
 using Doroti.Hosting;
 using Doroti.Runtime;
@@ -70,6 +71,22 @@ internal sealed class CupertinoSampleState : State<CupertinoSample>
         title: "Doroti Cupertino Sample",
         debugShowCheckedModeBanner: false,
         theme: new CupertinoThemeData(brightness: _brightness, primaryColor: CupertinoColors.systemBlue),
+        builder: (themeContext, child) =>
+        {
+            var brightness = CupertinoTheme.brightnessOf(themeContext);
+            var barColor = CupertinoDynamicColor.resolve(CupertinoTheme.of(themeContext).barBackgroundColor, themeContext);
+            // Navigation bars own their status bar region; this also styles Android's bottom bar.
+            return new AnnotatedRegion<SystemUiOverlayStyle>(
+                value: new SystemUiOverlayStyle(
+                    statusBarColor: barColor,
+                    statusBarBrightness: brightness,
+                    statusBarIconBrightness: brightness == Brightness.dark ? Brightness.light : Brightness.dark,
+                    systemNavigationBarColor: barColor,
+                    systemNavigationBarIconBrightness: brightness == Brightness.dark ? Brightness.light : Brightness.dark,
+                    systemStatusBarContrastEnforced: false,
+                    systemNavigationBarContrastEnforced: false),
+                child: child ?? SizedBox.CreateShrink());
+        },
         home: new CupertinoTabScaffold(
             controller: _tabs,
             tabBar: new CupertinoTabBar(items: new List<BottomNavigationBarItem>

@@ -1,5 +1,19 @@
 # Maintained regression tests
 
+`Doroti.Tests --system-ui-overlay` verifies the production overlay channel,
+invalid arguments/cancellation/fallback routing, null preservation, top/bottom
+region selection at DPR 2, annotation changes/removal, page push/pop restoration,
+microtask coalescing, lifecycle invalidation and independent multi-view caches.
+`Doroti.Material.Tests --system-ui-overlay` verifies explicit AppBar style, theme
+fallback, background brightness inference and the surrounding navigation region.
+Both are CPU/synthetic checks; native Android/iOS display and Activity/window
+replacement require separate device execution.
+
+```powershell
+python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --system-ui-overlay
+python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project packages/Doroti.Material/tests/Doroti.Material.Tests -c Release -- --system-ui-overlay
+```
+
 `Doroti.Tests --modal-navigation` runs the Android Back regression below plus
 Windows/Linux/macOS/iOS keyboard dismissal through actual framework key packets:
 stacked modals, `barrierDismissible=false`, `PopScope`, root preservation and

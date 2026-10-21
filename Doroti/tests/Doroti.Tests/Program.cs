@@ -3,6 +3,11 @@ using Doroti.Testing;
 using Doroti.Ui;
 
 #if DOROTI_REPO_TESTS
+if (args.Contains("--system-ui-overlay"))
+{
+    SystemUiOverlayRegression.Run();
+    return;
+}
 if (args.Contains("--modal-navigation"))
 {
     ModalDismissalRegression.Run();
@@ -58,6 +63,7 @@ if (Array.IndexOf(args, "--web-semantics") is var webSemanticsIndex && webSemant
     return;
 }
 WebSemanticsRegression.Run();
+SystemUiOverlayRegression.Run();
 UIKitAnimationTimingRegression.Run();
 GestureDiagnosticsRegression.Run();
 FullReviewRegression.Run();

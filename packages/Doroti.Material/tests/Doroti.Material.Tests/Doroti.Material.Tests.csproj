@@ -3,6 +3,7 @@
   <ItemGroup>
     <Compile Include="../../../../Doroti/tests/Common/EditableContextMenuRegression.cs" Link="EditableContextMenuRegression.cs" />
     <ProjectReference Include="../../Doroti.Material.csproj" />
+    <ProjectReference Include="../../../../Doroti/src/Doroti.Hosting/Doroti.Hosting.csproj" />
     <ProjectReference Include="../../../../Doroti/src/Doroti.Testing/Doroti.Testing.csproj" />
     <PackageReference Include="SkiaSharp.NativeAssets.Win32" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
     <PackageReference Include="SkiaSharp.NativeAssets.Linux" Condition="$([MSBuild]::IsOSPlatform('Linux'))" />

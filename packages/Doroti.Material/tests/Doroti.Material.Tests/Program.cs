@@ -4,6 +4,11 @@ using Doroti.Testing;
 using Doroti.Ui;
 
 static void Require(bool value, string message) { if (!value) throw new InvalidOperationException(message); }
+if (args.Contains("--system-ui-overlay"))
+{
+    SystemUiOverlayRegression.Run();
+    return;
+}
 if (args.Contains("--editable-context-menu"))
 {
     EditableContextMenuRegression.Run((controller, focus, readOnly, obscure) =>
@@ -34,6 +39,7 @@ Reject<ArgumentOutOfRangeException>(() => MaterialImageColorRuntime.Quantize([0x
 Reject<ArgumentOutOfRangeException>(() => MaterialColorSchemeRuntime.GetArgb(0xff6750a4, false, "tonalSpot", double.NaN, "primary"));
 var scheme = ColorScheme.CreateFromSeed(new Color(0xff6750a4));
 Require(scheme.primary.value == unchecked((uint)MaterialColorSchemeRuntime.GetArgb(0xff6750a4, false, "tonalSpot", 0, "primary")), "Seed role bridge changed.");
+SystemUiOverlayRegression.Run();
 using var tester = new WidgetTester();
 using var controller = new TextEditingController();
 tester.pumpWidget(new MaterialApp(home: new Scaffold(body: new TextField(controller: controller))));

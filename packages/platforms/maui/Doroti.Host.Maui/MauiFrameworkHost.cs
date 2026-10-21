@@ -182,6 +182,11 @@ public sealed class MauiFrameworkHost : IDisposable
         }
 #endif
         IPlatformMessageHostCapability messages = new MauiPlatformMessageCapability();
+#if ANDROID || IOS
+        var systemUiOverlay = new MauiSystemUiOverlay(surface.Element);
+        messages = new SystemUiOverlayPlatformMessageCapability(messages, systemUiOverlay.ApplyAsync);
+        host.Closed += systemUiOverlay.Dispose;
+#endif
 #if ANDROID || IOS || MACCATALYST
         messages = new TextActionPlatformMessageCapability(messages, textInput.PerformTextActionAsync);
 #endif

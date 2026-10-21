@@ -210,8 +210,12 @@ public static partial class System_chromeLibrary
 
 public abstract class SystemChrome
 {
-    internal static SystemUiOverlayStyle? _pendingStyle = default;
-    internal static SystemUiOverlayStyle? _latestStyle = default;
+    private sealed class OverlayState
+    {
+        internal SystemUiOverlayStyle? Pending;
+        internal SystemUiOverlayStyle? Latest;
+    }
+    private static readonly ViewLocal<OverlayState> _overlayStates = new(() => new());
 
     public static async Future setPreferredOrientations(List<DeviceOrientation> orientations)
     {
@@ -277,25 +281,30 @@ public abstract class SystemChrome
 
     public static void setSystemUIOverlayStyle(SystemUiOverlayStyle style)
     {
-        if (_pendingStyle is not null)
+        ArgumentNullException.ThrowIfNull(style);
+        var state = _overlayStates.Value;
+        var view = PlatformDispatcher.instance.RequireInvocationView(
+            DorotiUiInvocation.Managed("SystemChrome.setSystemUIOverlayStyle"));
+        if (state.Pending is not null)
         {
-            _pendingStyle = style;
+            state.Pending = style;
             return;
         }
-        if (Equals(style, _latestStyle))
+        if (Equals(style, state.Latest))
         {
             return;
         }
-        _pendingStyle = style;
+        state.Pending = style;
         DartAsyncRuntime.scheduleMicrotask(() =>
         {
-            DartRuntimePrimitives.Assert(() => _pendingStyle is not null);
-            if (!Equals(_pendingStyle, _latestStyle))
+            using var scope = view.EnterInvocationScope();
+            DartRuntimePrimitives.Assert(() => state.Pending is not null);
+            if (!Equals(state.Pending, state.Latest))
             {
                 _ = SystemChannels
                     .platform.invokeMethod<object?>(
                         "SystemChrome.setSystemUIOverlayStyle",
-                        _pendingStyle!._toMap()
+                        state.Pending!._toMap()
                     )
                     .then(
                         (_) => { },
@@ -313,9 +322,9 @@ public abstract class SystemChrome
                             );
                         }
                     );
-                _latestStyle = _pendingStyle;
+                state.Latest = state.Pending;
             }
-            _pendingStyle = null;
+            state.Pending = null;
         });
     }
 
@@ -323,12 +332,13 @@ public abstract class SystemChrome
     {
         if (Equals(state, AppLifecycleState.detached))
         {
+            var overlayState = _overlayStates.Value;
             DartAsyncRuntime.scheduleMicrotask(() =>
             {
-                _latestStyle = null;
+                overlayState.Latest = null;
             });
         }
     }
 
-    public static SystemUiOverlayStyle? latestStyle => _latestStyle;
+    public static SystemUiOverlayStyle? latestStyle => _overlayStates.Value.Latest;
 }

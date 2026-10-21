@@ -4,6 +4,7 @@ using Doroti.Framework.Animation;
 using Doroti.Framework.Foundation;
 using Doroti.Framework.Painting;
 using Doroti.Framework.Rendering;
+using Doroti.Framework.Services;
 using Doroti.Framework.Widgets;
 using Doroti.Runtime;
 using Doroti.Ui;
@@ -14,6 +15,15 @@ namespace MaterialSample;
 
 internal static class SampleConstants
 {
+    internal static SystemUiOverlayStyle SystemOverlayStyle(M.ThemeData theme) => new(
+        statusBarColor: theme.appBarTheme.backgroundColor ?? theme.colorScheme.surface,
+        statusBarBrightness: theme.brightness,
+        statusBarIconBrightness: theme.brightness == Brightness.dark ? Brightness.light : Brightness.dark,
+        systemNavigationBarColor: theme.navigationBarTheme.backgroundColor ?? theme.colorScheme.surfaceContainer,
+        systemNavigationBarIconBrightness: theme.brightness == Brightness.dark ? Brightness.light : Brightness.dark,
+        systemStatusBarContrastEnforced: false,
+        systemNavigationBarContrastEnforced: false);
+
     internal const double NavigationBarDestinationWidth = 96;
     internal static readonly string[] Destinations =
     [
@@ -224,6 +234,10 @@ internal sealed class SampleAppState : State<SampleApp>
             themeFactory: LightTheme,
             darkThemeFactory: DarkTheme,
             themeMode: _mode,
+            // The AppBar supplies the upper annotation; this keeps the lower bar in sync with the theme.
+            builder: (themeContext, child) => new AnnotatedRegion<SystemUiOverlayStyle>(
+                value: SampleConstants.SystemOverlayStyle(M.Theme.of(themeContext)),
+                child: child ?? SizedBox.CreateShrink()),
             home: new SampleHome(
                 _seed,
                 _image,
@@ -766,6 +780,7 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
         };
         var appBar = new M.AppBar(
             title: new Text("Doroti Material 3"),
+            systemOverlayStyle: SampleConstants.SystemOverlayStyle(M.Theme.of(context)),
             notificationPredicate: AcceptAppBarScroll,
             backgroundColor: widget.Acrylic ? M.Colors.transparent : null,
             surfaceTintColor: widget.Acrylic ? M.Colors.transparent : null,

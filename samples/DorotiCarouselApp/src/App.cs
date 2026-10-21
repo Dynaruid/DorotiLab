@@ -5,6 +5,7 @@ using Doroti.Framework.Animation;
 using Doroti.Framework.Foundation;
 using Doroti.Framework.Painting;
 using Doroti.Framework.Rendering;
+using Doroti.Framework.Services;
 using Doroti.Framework.Widgets;
 using Doroti.Hosting;
 using Doroti.Material;
@@ -38,7 +39,15 @@ internal sealed class CarouselGalleryState : State<CarouselGallery>
         scrollBehavior: new ScrollBehavior().copyWith(scrollbars: false,
             dragDevices: [PointerDeviceKind.touch, PointerDeviceKind.mouse, PointerDeviceKind.stylus, PointerDeviceKind.trackpad]),
         theme: ThemeData.CreateLight().copyWith(scaffoldBackgroundColor: Ui.Background),
-        home: new Scaffold(body: new SafeArea(child: new Center(child: new ConstrainedBox(
+        // Cover the system bar areas as well as the custom header inside SafeArea.
+        home: new AnnotatedRegion<SystemUiOverlayStyle>(
+            value: SystemUiOverlayStyle.dark.copyWith(
+                statusBarColor: Ui.Background,
+                systemNavigationBarColor: Ui.Background,
+                systemNavigationBarIconBrightness: Brightness.dark,
+                systemStatusBarContrastEnforced: false,
+                systemNavigationBarContrastEnforced: false),
+            child: new Scaffold(body: new SafeArea(child: new Center(child: new ConstrainedBox(
             constraints: new BoxConstraints(maxWidth: 780), child: new Column(children:
             [
                 new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 28, vertical: 14), child: new Row(children:
@@ -53,7 +62,7 @@ internal sealed class CarouselGalleryState : State<CarouselGallery>
                 new Container(height: 1, color: Ui.Line),
                 new Expanded(child: new KeyedSubtree(key: new ValueKey<int>(_demo), child:
                     _demo < 0 ? new HomeCarousel(_homeIndex, index => setState(() => { _homeIndex = index; _demo = index; })) : new CarouselDemo(_demo))),
-            ]))))));
+            ])))))));
 }
 
 internal static class Ui

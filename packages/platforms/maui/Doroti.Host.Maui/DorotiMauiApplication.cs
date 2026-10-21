@@ -114,6 +114,7 @@ public static class DorotiMauiApplicationBuilderExtensions
 #elif IOS
             .ConfigureMauiHandlers(handlers =>
                 handlers
+                    .AddHandler<DorotiSystemUiPage, DorotiSystemUiPageHandler>()
                     .AddHandler<DorotiUIKitEntry, DorotiUIKitEntryHandler>()
                     .AddHandler<DorotiUIKitEditor, DorotiUIKitEditorHandler>()
                     .AddHandler<MauiSemanticsLayout, MauiSemanticsLayoutHandler>()
@@ -205,7 +206,11 @@ public sealed class DorotiMauiApplication(DorotiApplicationDescriptor descriptor
 #endif
         _surfaces.Add(surface);
         var window = new Window(
+#if IOS
+            new DorotiSystemUiPage
+#else
             new ContentPage
+#endif
             {
 #if MACOS || WINDOWS
                 BackgroundColor = Microsoft.Maui.Graphics.Colors.Transparent,
