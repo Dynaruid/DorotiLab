@@ -115,6 +115,7 @@ static class FrameSubmissionRegression
         FrozenPictureCache();
         ReplayCompletionOwnership();
         TextureSnapshots();
+        TextureFrameRegression.Run();
         ViewGenerations();
         Console.WriteLine("PASS: frozen command/image storage, consumer ownership, bounded pending/raster admission, late completion, renderer close and simulated device-loss cleanup (CPU; native GPU fence acceptance remains separate).");
     }

@@ -1,5 +1,20 @@
 # Maintained regression tests
 
+`Doroti.Platform.Contracts.Tests --frames` includes producer-only texture updates:
+a single submitted scene displays subsequent CPU/external producer frames without
+another scene submission, including initially empty textures, latest-frame
+coalescing, retained layers/image filters, freeze/resume, mixed frozen/live
+instances and unregister. It also preserves queued submission snapshots and
+checks per-raster external frame disposal. The production Windows input gate is
+checked with input that does not replace the scene: texture replay remains
+admitted, stale new scenes remain rejected, and queued input does not starve
+presentation. These are CPU checks; native GPU
+completion and physical presentation require separate execution.
+
+```powershell
+python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project Doroti/tests/Doroti.Platform.Contracts.Tests -c Debug -- --frames
+```
+
 `Doroti.Tests --system-ui-overlay` verifies the production overlay channel,
 invalid arguments/cancellation/fallback routing, null preservation, top/bottom
 region selection at DPR 2, annotation changes/removal, page push/pop restoration,

@@ -1,3 +1,5 @@
+using Doroti.Skia.Rendering;
+
 namespace Doroti.Host.WindowsAppSdk;
 
 // Native input arrives on the platform thread while the render worker owns
@@ -17,6 +19,12 @@ internal sealed class WindowsFrameInputState
     internal void Dispatch(long sequence) => Volatile.Write(ref _dispatched, sequence);
 
     internal bool CanPresent(long sequence) => sequence >= Dispatched;
+
+    // BeginFrame applies owner input before choosing a scene. If that input
+    // produced no replacement, the retained scene is still the visible widget
+    // tree. Its original build stamp must not block producer-only texture frames.
+    internal bool CanPresent(SkiaPaintCompletion completion) =>
+        !completion.IsNewFrame || CanPresent(completion.InputSequence);
 
     // Prepared resize buffers can outlive a frame and still need the stricter
     // check when the platform thread commits a previously prepared buffer.

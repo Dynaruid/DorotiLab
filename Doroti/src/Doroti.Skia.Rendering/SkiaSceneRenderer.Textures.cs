@@ -47,15 +47,17 @@ public sealed partial class SkiaSceneRenderer
         _host.RequestInvalidate();
     }
 
-    private static bool ContainsTexture(IReadOnlyList<SceneCommand> commands, int start, int end)
+    private static bool ContainsTexture(
+        IReadOnlyList<SceneCommand> commands, int start, int end, bool includeFrozen = true)
     {
         for (var i = start; i < end; i++)
         {
             if (
-                commands[i].Operation == "texture"
+                (commands[i].Operation == "texture"
+                    && (includeFrozen || commands[i].HostPayload is SceneTexturePayload { Freeze: false }))
                 || (
                     commands[i].HostPayload is SceneRetainedPayload retained
-                    && ContainsTexture(retained.Commands, 0, retained.Commands.Count)
+                    && ContainsTexture(retained.Commands, 0, retained.Commands.Count, includeFrozen)
                 )
             )
                 return true;
@@ -143,13 +145,19 @@ public sealed partial class SkiaSceneRenderer
             }
         }
 
-        internal IDisposable CaptureFrame(long id, bool freeze)
+        internal IDisposable CaptureFrame(long id, bool freeze) => CaptureFrame(id, freeze, false);
+
+        // Unregister clears live textures on the next replay. Already queued
+        // submissions and GPU recordings retain their original frame leases.
+        internal IDisposable CaptureReplayFrame(long id, bool freeze) => CaptureFrame(id, freeze, true);
+
+        private IDisposable CaptureFrame(long id, bool freeze, bool allowUnregistered)
         {
             lock (_gate)
             {
                 ObjectDisposedException.ThrowIf(_disposed, this);
                 if (_external.TryGetValue(id, out var external)) return external.CaptureFrame(freeze);
-                if (!_entries.ContainsKey(id))
+                if (!_entries.ContainsKey(id) && !allowUnregistered)
                     throw new InvalidOperationException("Texture submission belongs to a retired or different view registry.");
                 return new PixelFrame(Acquire(id, freeze));
             }

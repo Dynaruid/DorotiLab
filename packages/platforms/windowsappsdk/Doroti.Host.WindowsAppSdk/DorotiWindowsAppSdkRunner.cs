@@ -1120,9 +1120,10 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 }
 
                 // Input queued while rasterizing is for the next framework
-                // frame. Reject only scenes older than dispatched input;
-                // comparing with native ingress starves continuous gestures.
-                if (!host.IsInputSequenceCurrent(candidate.InputSequence))
+                // frame. Reject new scenes older than dispatched input. A
+                // replay keeps its original build stamp even after nonvisual
+                // input; it must still present newer producer texture frames.
+                if (!host.CanPresent(candidate))
                 {
                     staleInputPrevented = true;
                     return presented = false;

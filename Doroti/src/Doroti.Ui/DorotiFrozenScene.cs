@@ -46,14 +46,18 @@ public sealed class DorotiFrozenScene : IDisposable
         }
     }
 
-    internal DorotiFrozenScene CaptureTextures(Func<long, bool, IDisposable> capture)
+    internal DorotiFrozenScene CaptureTextures(
+        Func<long, bool, IDisposable> capture,
+        bool refreshLiveTextures = false)
     {
         var resources = new List<IDisposable> { Retain() };
         var textures = new Dictionary<(long Id, bool Freeze), IDisposable>();
         IReadOnlyList<SceneCommand> Visit(IReadOnlyList<SceneCommand> commands) => Array.AsReadOnly(commands.Select(command =>
         {
             object? payload = command.HostPayload;
-            if (payload is SceneTexturePayload texture)
+            // A replay gets its own immutable producer-frame leases. Explicitly
+            // frozen textures keep the frame owned by the submitted scene.
+            if (payload is SceneTexturePayload texture && (!refreshLiveTextures || !texture.Freeze))
             {
                 var key = (texture.TextureId, texture.Freeze);
                 if (!textures.TryGetValue(key, out var frame))

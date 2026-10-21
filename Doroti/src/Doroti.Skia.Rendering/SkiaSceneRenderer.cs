@@ -713,13 +713,20 @@ public sealed partial class SkiaSceneRenderer
         }
         try
         {
+            // Submission snapshots must remain immutable until their consumers
+            // retire. A retained scene replay independently latches live texture
+            // frames so producer updates do not depend on a widget rebuild.
+            using var refreshedTextures = !isNewFrame && frame.HasLiveTextures
+                ? rasterScene!.CaptureTextures(_textures.CaptureReplayFrame, refreshLiveTextures: true)
+                : null;
+            var drawingScene = refreshedTextures ?? rasterScene!;
             // SKSwapChainPanel and TextureView can rotate to a fresh back buffer.
             // Replay the last successful framework scene when no replacement is pending.
             // RenderView's root transform has already converted logical coordinates
             // into physical pixels. Applying host DPR here would scale twice.
             if (SkiaGraphiteSession.CurrentRecording is { } graphite)
             {
-                var gpuLease = rasterScene!.Retain();
+                var gpuLease = drawingScene.Retain();
                 try { graphite.RecordingFrame.RetainUntilGpuCompletion(gpuLease); }
                 catch { gpuLease.Dispose(); throw; }
             }
@@ -759,11 +766,11 @@ public sealed partial class SkiaSceneRenderer
             {
                 if (PlatformScenePainter is { } painter)
                 {
-                    painter(canvas, rasterScene!.Commands, frame.Descriptor, pixelWidth, pixelHeight);
+                    painter(canvas, drawingScene.Commands, frame.Descriptor, pixelWidth, pixelHeight);
                 }
                 else
                 {
-                    DrawScene(canvas, rasterScene!.Commands, pixelWidth, pixelHeight);
+                    DrawScene(canvas, drawingScene.Commands, pixelWidth, pixelHeight);
                 }
             }
             finally
@@ -1602,6 +1609,8 @@ public sealed partial class SkiaSceneRenderer
     ) : IDisposable
     {
         public IReadOnlyList<SceneCommand> Commands => Scene.Commands;
+        public bool HasLiveTextures { get; } = ContainsTexture(
+            Scene.Commands, 0, Scene.CommandCount, includeFrozen: false);
         public void Dispose() => Scene.Dispose();
     }
 

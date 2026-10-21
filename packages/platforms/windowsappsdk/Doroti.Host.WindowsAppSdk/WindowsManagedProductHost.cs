@@ -162,6 +162,7 @@ internal sealed unsafe partial class WindowsManagedProductHost
         generation <= long.MaxValue && _coordinator.IsLatest((long)generation);
 
     internal bool IsInputSequenceCurrent(long inputSequence) => _inputState.CanPresent(inputSequence);
+    internal bool CanPresent(SkiaPaintCompletion completion) => _inputState.CanPresent(completion);
     internal long ReceivedInputSequence => _inputState.Received;
     internal bool IsReceivedInputSequenceCurrent(long inputSequence) =>
         _inputState.IsLatestReceived(inputSequence);
