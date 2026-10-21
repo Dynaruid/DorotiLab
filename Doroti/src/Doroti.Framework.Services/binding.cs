@@ -34,6 +34,8 @@ public abstract class ServicesBinding : SchedulerBinding
             (message) => _handleAccessibilityMessage(message!)
         );
         SystemChannels.lifecycle.setMessageHandler(_handleLifecycleMessage);
+        platformDispatcher.onAppLifecycleStateChanged = (_, state) =>
+            DartRuntimePrimitives.Ignore(_handleLifecycleMessage($"AppLifecycleState.{state}"));
         SystemChannels.platform.setMethodCallHandler(_handlePlatformMessage);
         platformDispatcher.onViewFocusChange = handleViewFocusChanged;
         TextInput.ensureInitialized();
@@ -49,6 +51,7 @@ public abstract class ServicesBinding : SchedulerBinding
         _restorationManager.dispose();
         platformDispatcher.onKeyData = null;
         platformDispatcher.onViewFocusChange = null;
+        platformDispatcher.onAppLifecycleStateChanged = null;
         if (ReferenceEquals(_instance, this)) _instance = null;
         base.Dispose();
     }

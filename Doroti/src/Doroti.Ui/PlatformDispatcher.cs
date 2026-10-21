@@ -382,10 +382,11 @@ public sealed class PlatformDispatcher : IDisposable
         {
             lock (_gate)
             {
-                return _views
+                var state = _views
                     .Values.OrderBy(view => view.viewId)
                     .FirstOrDefault()
-                    ?.metrics.lifecycleState.ToString();
+                    ?.metrics.lifecycleState;
+                return state is { } initial ? $"AppLifecycleState.{initial}" : null;
             }
         }
     }

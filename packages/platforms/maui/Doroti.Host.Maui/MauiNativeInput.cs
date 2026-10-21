@@ -111,6 +111,13 @@ internal static class MauiNativeInput
                 return false;
             }
 
+            // The IME owns Escape while composing; otherwise it dismisses the
+            // focused framework modal even when an Entry/Editor has native focus.
+            if (args.Key == Windows.System.VirtualKey.Escape && !_textInput.WindowsCompositionActive)
+            {
+                return false;
+            }
+
             args.Handled = false;
             return true;
         }
@@ -519,6 +526,13 @@ internal static class MauiNativeInput
             {
                 return;
             }
+            // System Back belongs to Android's dispatcher (including IME
+            // dismissal), rather than the framework's hardware Escape key.
+            if (args.KeyCode == Android.Views.Keycode.Back)
+            {
+                args.Handled = false;
+                return;
+            }
             // The hidden EditText is the Android InputConnection endpoint for
             // an active framework text client. Let it apply IME and hardware
             // edits so TextChanged can publish the resulting text, selection,
@@ -563,7 +577,7 @@ internal static class MauiNativeInput
             key switch
             {
                 Android.Views.Keycode.Enter => "Enter",
-                Android.Views.Keycode.Escape or Android.Views.Keycode.Back => "Escape",
+                Android.Views.Keycode.Escape => "Escape",
                 Android.Views.Keycode.Del => "Backspace",
                 Android.Views.Keycode.Tab => "Tab",
                 Android.Views.Keycode.Space => " ",

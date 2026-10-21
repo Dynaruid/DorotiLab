@@ -3,6 +3,19 @@ using Doroti.Testing;
 using Doroti.Ui;
 
 #if DOROTI_REPO_TESTS
+if (args.Contains("--modal-navigation"))
+{
+    ModalDismissalRegression.Run();
+    AndroidBackNavigationRegression.Run();
+    NavigationRegression.Run();
+    return;
+}
+if (args.Contains("--android-back"))
+{
+    AndroidBackNavigationRegression.Run();
+    NavigationRegression.Run();
+    return;
+}
 if (args.Contains("--uikit-animation-timing"))
 {
     UIKitAnimationTimingRegression.Run();
@@ -109,5 +122,7 @@ VariableBlurKawaseRegression.Run();
 ShaderFramePipelineRegression.Run();
 TextureBudgetRegression.Run();
 NavigationRegression.Run();
+AndroidBackNavigationRegression.Run();
+ModalDismissalRegression.Run();
 await PlatformRetirementRegression.Run();
 #endif

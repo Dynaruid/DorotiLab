@@ -40,7 +40,7 @@ public abstract class SystemNavigator
 
     public static Future selectSingleEntryHistory()
     {
-        if (ServicesBinding.instance.platformDispatcher.implicitView?.applicationNavigation is not null)
+        if (!ConstantsLibrary.kIsWeb && ServicesBinding.instance.platformDispatcher.implicitView?.applicationNavigation is not null)
             return Future.value();
         return SystemChannels.navigation.invokeMethod<object?>("selectSingleEntryHistory");
         throw new InvalidOperationException("Control flow completed without returning a value.");
@@ -48,7 +48,7 @@ public abstract class SystemNavigator
 
     public static Future selectMultiEntryHistory()
     {
-        if (ServicesBinding.instance.platformDispatcher.implicitView?.applicationNavigation is not null)
+        if (!ConstantsLibrary.kIsWeb && ServicesBinding.instance.platformDispatcher.implicitView?.applicationNavigation is not null)
             return Future.value();
         return SystemChannels.navigation.invokeMethod<object?>("selectMultiEntryHistory");
         throw new InvalidOperationException("Control flow completed without returning a value.");

@@ -4201,12 +4201,27 @@ public class NavigatorState
     {
         DartRuntimePrimitives.Assert(() => !_debugLocked);
         DartRuntimePrimitives.Assert(() => Enumerable.Any(_history));
-        return new Overlay(
-            key: _overlayKey,
-            clipBehavior: widget.clipBehavior,
-            initialEntries: overlay is null
-                ? _allRouteOverlayEntries.ToList()
-                : new List<OverlayEntry>()
+        // Routes use this attached node's enclosing scope to transfer focus to
+        // the current modal. Without the wrapper, keyboard actions keep looking
+        // in the page behind the dialog (or the application's root scope).
+        return new FocusTraversalGroup(
+            policy: FocusTraversalGroup.maybeOf(context),
+            child: new Focus(
+                focusNode: focusNode,
+                autofocus: true,
+                skipTraversal: true,
+                includeSemantics: false,
+                child: new UnmanagedRestorationScope(
+                    bucket: bucket,
+                    child: new Overlay(
+                        key: _overlayKey,
+                        clipBehavior: widget.clipBehavior,
+                        initialEntries: overlay is null
+                            ? _allRouteOverlayEntries.ToList()
+                            : new List<OverlayEntry>()
+                    )
+                )
+            )
         );
         throw new InvalidOperationException("Control flow completed without returning a value.");
     }

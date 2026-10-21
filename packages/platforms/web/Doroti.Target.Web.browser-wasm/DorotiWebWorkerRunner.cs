@@ -64,8 +64,7 @@ public static class DorotiWebWorkerRunner
             throw;
         }
 
-        if (descriptor.ViewConfiguration.Navigation is { } navigation)
-            await BrowserFrameworkHost.PrepareNavigationAsync(navigation.RestorationId);
+        await BrowserFrameworkHost.PrepareNavigationAsync(descriptor.ViewConfiguration.Navigation?.RestorationId);
         _framework = new DorotiSharedHostSession(descriptor);
         _session = _framework.Session;
         using var dispatcherScope = _session.dispatcher.EnterScope();

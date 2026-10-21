@@ -15,6 +15,10 @@ internal static partial class BrowserInterop
     internal static partial string? OpenApplicationNavigation(int hostId, string? restorationId);
     [JSImport("reportApplicationRoute", Module)]
     internal static partial void ReportApplicationRoute(int hostId, string route, string? state, bool replace);
+    [JSImport("selectApplicationHistory", Module)]
+    internal static partial void SelectApplicationHistory(int hostId, bool singleEntry);
+    [JSImport("exitApplicationNavigation", Module)]
+    internal static partial void ExitApplicationNavigation(int hostId);
     [JSImport("saveApplicationRestoration", Module)]
     internal static partial string? SaveApplicationRestoration(int hostId, string checkpoint);
     [JSImport("closeApplicationNavigation", Module)]
@@ -29,6 +33,7 @@ internal static partial class BrowserInterop
 internal sealed class BrowserApplicationNavigation : IDisposable
 {
     private static readonly Dictionary<int, BrowserApplicationNavigation> Owners = [];
+    internal static bool HasOwner => Owners.Count != 0;
     private readonly int _hostId;
     private DorotiView? _view;
     public ApplicationNavigationHost Navigation { get; }
@@ -66,6 +71,21 @@ internal sealed class BrowserApplicationNavigation : IDisposable
         if (!Owners.TryGetValue(hostId, out var owner)) return;
         using var document = JsonDocument.Parse(json);
         var root = document.RootElement;
+        if (root.TryGetProperty("kind", out var kind) && kind.GetString() is "pop" or "push")
+        {
+            if (owner._view is { } navigationView)
+            {
+                var method = kind.GetString() == "pop" ? "popRoute" : "pushRoute";
+                Doroti.Runtime.ByteData data = (ReadOnlyMemory<byte>)JsonSerializer.SerializeToUtf8Bytes(new
+                {
+                    method, args = method == "pushRoute" ? root.GetProperty("location").GetString() : null,
+                });
+                navigationView.DispatchPlatformEvent(() => Doroti.Runtime.DartRuntimePrimitives.ObserveTask(
+                    navigationView.platformDispatcher.channelBuffers.push("flutter/navigation", data, _ => { }).asTask(),
+                    "Browser navigation"));
+            }
+            return;
+        }
         var activation = new ApplicationActivation(root.GetProperty("id").GetString()!,
             root.GetProperty("location").GetString()!, ApplicationActivationSource.BrowserHistory, false,
             root.GetProperty("state").GetString());

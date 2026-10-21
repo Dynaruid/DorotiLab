@@ -183,6 +183,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
         }
 #if WINDOWS
         _windowsComposing = null;
+        _windowsCompositionActive = false;
 #endif
 #if MACOS
         _macOSNativeFocus = false;
@@ -235,6 +236,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
                 _active = next;
 #if WINDOWS
                 _windowsComposing = null;
+                _windowsCompositionActive = false;
 #endif
             }
             Configure(next, configuration);
@@ -438,6 +440,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
         _hasClient = false;
 #if WINDOWS
         _windowsComposing = null;
+        _windowsCompositionActive = false;
 #endif
 #if IOS || MACCATALYST
         ResetUIKitInput();
@@ -464,6 +467,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
         }
 #if WINDOWS
         _windowsComposing = null;
+        _windowsCompositionActive = false;
 #endif
 #if IOS || MACCATALYST
         ResetUIKitInput();
@@ -1126,6 +1130,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
         {
 #if WINDOWS
             _windowsComposing = null;
+            _windowsCompositionActive = false;
 #endif
             FocusChanged?.Invoke(false);
         }

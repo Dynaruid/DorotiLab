@@ -186,6 +186,10 @@ public sealed class MauiFrameworkHost : IDisposable
         messages = new TextActionPlatformMessageCapability(messages, textInput.PerformTextActionAsync);
 #endif
 #if ANDROID
+        var backNavigation = new AndroidBackNavigation(messages);
+        messages = backNavigation;
+        var backDispatcher = new MauiAndroidBackDispatcher(surface.Element, backNavigation);
+        host.Closed += () => { backDispatcher.Dispose(); backNavigation.Dispose(); };
         messages = new AndroidProcessTextChannel(messages);
 #endif
 #if IOS || MACCATALYST
@@ -371,6 +375,9 @@ public sealed class MauiFrameworkHost : IDisposable
             }
             using var dispatcherScope = session.dispatcher.EnterScope();
             view = session.dispatcher.RegisterView(viewId, capabilities);
+#if ANDROID
+            backNavigation.Attach(view);
+#endif
             if (navigation is not null && ownsApplicationActivation)
             {
                 var owner = view;

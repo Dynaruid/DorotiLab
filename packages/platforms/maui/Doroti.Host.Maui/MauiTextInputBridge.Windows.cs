@@ -9,6 +9,8 @@ namespace Doroti.Host.Maui;
 public sealed partial class MauiTextInputBridge
 {
     private DorotiTextSelection? _windowsComposing;
+    private bool _windowsCompositionActive;
+    internal bool WindowsCompositionActive => _windowsCompositionActive;
     private readonly Dictionary<InputView, WindowsCompositionSubscription> _windowsInputs = [];
 
     private void HandleWindowsInputHandlerChanged(object? sender, EventArgs args)
@@ -26,7 +28,7 @@ public sealed partial class MauiTextInputBridge
     private void DetachWindowsInput(InputView input)
     {
         if (_windowsInputs.Remove(input, out var subscription)) subscription.Dispose();
-        if (ReferenceEquals(input, _active)) _windowsComposing = null;
+        if (ReferenceEquals(input, _active)) { _windowsComposing = null; _windowsCompositionActive = false; }
     }
 
     private sealed class WindowsCompositionSubscription : IDisposable
@@ -43,13 +45,14 @@ public sealed partial class MauiTextInputBridge
             text.TextCompositionChanged += Changed;
             text.TextCompositionEnded += Ended;
         }
-        private void Started(TextBox sender, TextCompositionStartedEventArgs args) => Update(args.StartIndex, args.Length);
-        private void Changed(TextBox sender, TextCompositionChangedEventArgs args) => Update(args.StartIndex, args.Length);
-        private void Ended(TextBox sender, TextCompositionEndedEventArgs args) => Update(-1, 0);
-        private void Update(int start, int length)
+        private void Started(TextBox sender, TextCompositionStartedEventArgs args) => Update(args.StartIndex, args.Length, true);
+        private void Changed(TextBox sender, TextCompositionChangedEventArgs args) => Update(args.StartIndex, args.Length, true);
+        private void Ended(TextBox sender, TextCompositionEndedEventArgs args) => Update(-1, 0, false);
+        private void Update(int start, int length, bool active)
         {
             if (_disposed || _owner._disposed || !_owner._hasClient || _owner._updating
                 || !ReferenceEquals(_owner._active, _input) || !ReferenceEquals(_input.Handler?.PlatformView, _text)) return;
+            _owner._windowsCompositionActive = active;
             _owner._windowsComposing = start >= 0 && length > 0 ? new(start, checked(start + length)) : null;
             _owner.QueueNativeEditingState(_input, _text.Text ?? "");
         }

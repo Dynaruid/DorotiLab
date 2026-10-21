@@ -90,8 +90,8 @@ public sealed class BrowserFrameworkHost : IDisposable
         BrowserApplicationNavigation? navigation;
         try
         {
-            navigation = configuration.Navigation is { } navigationOptions
-                ? BrowserApplicationNavigation.Create(host.HostId, navigationOptions) : null;
+            navigation = configuration.Navigation is not null || !BrowserApplicationNavigation.HasOwner
+                ? BrowserApplicationNavigation.Create(host.HostId, configuration.Navigation ?? new()) : null;
         }
         catch { host.Dispose(); throw; }
         if (navigation is not null) host.Closed += navigation.Dispose;
@@ -323,6 +323,21 @@ public sealed class BrowserFrameworkHost : IDisposable
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(channel);
             cancellationToken.ThrowIfCancellationRequested();
+            if (channel is "flutter/navigation" or "flutter/platform" && data is not null)
+            {
+                using var navigationMessage = JsonDocument.Parse(data.Value);
+                var method = navigationMessage.RootElement.GetProperty("method").GetString();
+                if (channel == "flutter/navigation" && method is "selectSingleEntryHistory" or "selectMultiEntryHistory")
+                {
+                    BrowserInterop.SelectApplicationHistory(_host.HostId, method == "selectSingleEntryHistory");
+                    return ValueTask.FromResult<ReadOnlyMemory<byte>?>(JsonSerializer.SerializeToUtf8Bytes(new object?[] { null }));
+                }
+                if (channel == "flutter/platform" && method == "SystemNavigator.pop")
+                {
+                    BrowserInterop.ExitApplicationNavigation(_host.HostId);
+                    return ValueTask.FromResult<ReadOnlyMemory<byte>?>(JsonSerializer.SerializeToUtf8Bytes(new object?[] { null }));
+                }
+            }
             if (string.Equals(channel, ContextMenuChannel, StringComparison.Ordinal))
             {
                 return HandleContextMenuMessage(data);

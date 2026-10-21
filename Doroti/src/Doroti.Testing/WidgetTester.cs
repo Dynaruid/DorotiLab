@@ -35,7 +35,8 @@ public sealed class WidgetTester : IDisposable
     public IReadOnlyList<DorotiFrameTraceEntry> FrameTrace => _dispatcher.frameTrace.Snapshot();
 
     public WidgetTester(Size? size = null, double devicePixelRatio = 1,
-        IApplicationNavigationHostCapability? navigation = null, HostOperatingSystem operatingSystem = HostOperatingSystem.windows)
+        IApplicationNavigationHostCapability? navigation = null, HostOperatingSystem operatingSystem = HostOperatingSystem.windows,
+        IPlatformMessageHostCapability? platformMessages = null)
     {
         if (!double.IsFinite(devicePixelRatio) || devicePixelRatio <= 0 ||
             size is { IsFinite: false } || size is { IsEmpty: true })
@@ -57,7 +58,7 @@ public sealed class WidgetTester : IDisposable
             .Register<ITextInputHostCapability>(DorotiCapabilityIds.TextInput, _host)
             .Register<IPlatformServicesHostCapability>(DorotiCapabilityIds.PlatformServices, _host)
             .Register<IPlatformEnvironmentHostCapability>(DorotiCapabilityIds.PlatformEnvironment, _host)
-            .Register<IPlatformMessageHostCapability>(DorotiCapabilityIds.PlatformMessaging, _host)
+            .Register<IPlatformMessageHostCapability>(DorotiCapabilityIds.PlatformMessaging, platformMessages ?? _host)
             .Register<ISceneHostCapability>(DorotiCapabilityIds.GraphicsScene, _renderer)
             .Register<IParagraphHostCapability>(DorotiCapabilityIds.GraphicsText, _renderer)
             .Register<IFontHostCapability>(DorotiCapabilityIds.GraphicsFont, _renderer)

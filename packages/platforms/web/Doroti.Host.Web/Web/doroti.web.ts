@@ -27,6 +27,7 @@ import { configureServiceBridge, configurePersistenceFailure, handleService, clo
 export { openBrowserDrop, closeBrowserDrop, prepareApplicationNavigation } from "./doroti.web.services.js";
 export { openFileOwner, registerFileActivation, unregisterFileActivation, pickBrowserFiles, cancelBrowserPicker, readBrowserFileBase64, releaseBrowserFile, closeFileOwner } from "./doroti.web.services.js";
 export { openApplicationNavigation, reportApplicationRoute, saveApplicationRestoration, closeApplicationNavigation } from "./doroti.web.services.js";
+export { selectApplicationHistory, exitApplicationNavigation } from "./doroti.web.services.js";
 
 interface ManagedCallbacks {
   dispatchNavigation(hostId: number, json: string): void;
@@ -1099,11 +1100,12 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     // cannot decide whether this DOM event should be prevented as Flutter's
     // web engine does. While the native input is active, let it own text,
     // selection, clipboard, and IME keys and report the result through input
-    // events. Tab remains a framework focus-traversal key.
+    // events. Tab and non-composing Escape remain framework navigation keys.
     // Keep modifier state current for framework-owned Tab/Shift+Tab even
     // while the DOM input owns editing and clipboard commands.
     const modifierKey = ["Shift", "Control", "Alt", "Meta"].includes(key.key);
-    if (nativeTextEditing && key.key !== "Tab" && !modifierKey) return;
+    const dismissKey = key.key === "Escape" && !key.isComposing && !host.composing;
+    if (nativeTextEditing && key.key !== "Tab" && !dismissKey && !modifierKey) return;
     if (key.key === "Tab" ||
         (!nativeTextEditing && ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(key.key)))
       key.preventDefault();

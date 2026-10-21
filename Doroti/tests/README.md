@@ -1,5 +1,43 @@
 # Maintained regression tests
 
+`Doroti.Tests --modal-navigation` runs the Android Back regression below plus
+Windows/Linux/macOS/iOS keyboard dismissal through actual framework key packets:
+stacked modals, `barrierDismissible=false`, `PopScope`, root preservation and
+returning focus to the underlying page. This is CPU/synthetic platform coverage.
+
+`web_navigation.mts` checks the browser history owner, Navigator single-entry
+guard, Router mode transitions and Back/Forward state, manual hash changes,
+root exit, reload/bfcache return and disposal. `web_modal_navigation.py` starts a
+built Debug Web Testbed and checks real Chrome/managed Worker modal Back, Escape
+from the DOM text endpoint, root exit and Router Back/Forward. It requires Python
+Playwright and installed Chrome. Routes open through production DOM semantics
+actions; this does not qualify pointer geometry. Composition events are simulated.
+
+`windows_modal_navigation.ps1` requires an interactive Windows session and a built
+Debug Testbed. It opens the owned process's bottom sheet/dialog/full-screen dialog
+through UIA, posts Escape to its HWND and verifies dismissal with the same live,
+responding process. It does not verify physical input or native IME composition.
+Use `-Executable` to select another WindowsAppSDK build. The MAUI Windows host
+does not currently expose the modal UIA tree required by this smoke.
+
+```powershell
+python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --modal-navigation
+python Doroti/eng/run-with-timeout.py --timeout 1200 node --experimental-transform-types --test Doroti/tests/web_navigation.mts Doroti/tests/web_rendering.mts Doroti/tests/web_worker_lifecycle.mts
+python Doroti/eng/run-with-timeout.py --timeout 1200 python Doroti/tests/web_modal_navigation.py --output temp/testing/modal-navigation/chrome --renderer webgl
+python Doroti/eng/run-with-timeout.py --timeout 1200 powershell.exe -NoProfile -File Doroti/tests/windows_modal_navigation.ps1 -Output temp/testing/modal-navigation/windows
+```
+
+`Doroti.Tests --android-back` exercises the production Android Back channel adapter
+against the widget framework: stacked dialogs (including a non-dismissible barrier),
+page/local history, `PopScope` veto, root native fallback, Router callbacks, async
+decision coalescing, disposal and initial/typed host lifecycle delivery. It also
+runs the navigation/restoration regression.
+This is CPU/synthetic coverage; Android Activity/IME/gesture behavior requires a native run.
+
+```powershell
+python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project Doroti/tests/Doroti.Tests -c Release -- --android-back
+```
+
 `icon_packages.py` packs independent icon packages and uses isolated NuGet consumers to verify font
 subsets, incremental icon changes, unsafe dynamic-use fallback, opt-out, actual .NET trimming and
 ReadyToRun publish/runtime behavior. `packages/icons/tests/Doroti.Icons.Tests` verifies automatic

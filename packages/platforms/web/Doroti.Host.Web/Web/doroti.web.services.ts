@@ -22,6 +22,14 @@ export function reportApplicationRoute(hostId: number, route: string, state: str
   if (bridge) { bridge.postControl("service-navigation-report", { hostId, route, state, replace }); return; }
   navigation.reportApplicationRoute(hostId, route, state, replace);
 }
+export function selectApplicationHistory(hostId: number, singleEntry: boolean): void {
+  if (bridge) bridge.postControl("service-navigation-mode", { hostId, singleEntry });
+  else navigation.selectApplicationHistory(hostId, singleEntry);
+}
+export function exitApplicationNavigation(hostId: number): void {
+  if (bridge) bridge.postControl("service-navigation-exit", { hostId });
+  else navigation.exitApplicationNavigation(hostId);
+}
 export function saveApplicationRestoration(hostId: number, checkpoint: string): string | null {
   if (bridge) {
     void bridge.requestControl("service-navigation-save", { hostId, checkpoint })
@@ -73,6 +81,8 @@ export async function handleService(kind: string, p: Payload): Promise<string> {
     case "service-navigation-capture": return navigation.captureApplicationNavigation(p.restorationId as string | null);
     case "service-navigation-open": navigation.openApplicationNavigation(id, p.restorationId as string | null); break;
     case "service-navigation-report": navigation.reportApplicationRoute(id, String(p.route), p.state as string | null, Boolean(p.replace)); break;
+    case "service-navigation-mode": navigation.selectApplicationHistory(id, Boolean(p.singleEntry)); break;
+    case "service-navigation-exit": navigation.exitApplicationNavigation(id); break;
     case "service-navigation-save": { const error = navigation.saveApplicationRestoration(id, String(p.checkpoint)); if (error) throw new Error(error); break; }
     case "service-navigation-close": navigation.closeApplicationNavigation(id); break;
     case "service-file-open": files.openFileOwner(id); break;

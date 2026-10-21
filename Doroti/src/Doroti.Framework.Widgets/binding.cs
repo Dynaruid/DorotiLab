@@ -383,6 +383,8 @@ public class WidgetsFlutterBinding
         _semanticsHandle = null;
         Cleanup(() => _buildOwner?.focusManager.dispose());
         _observers.Clear();
+        platformDispatcher.channelBuffers.clearListener("flutter/navigation");
+        platformDispatcher.channelBuffers.clearListener("flutter/backgesture");
         Cleanup(() => _viewImageCaches?.Dispose());
         if (ReferenceEquals(WidgetsBinding._instance, this)) WidgetsBinding._instance = null;
         if (ReferenceEquals(RendererBinding._instance, this)) RendererBinding._instance = null;
@@ -520,6 +522,8 @@ public class WidgetsFlutterBinding
         Framework.Semantics.SemanticsBinding._instance = this;
         RendererBinding._instance = this;
         WidgetsBinding._instance = this;
+        SystemChannels.navigation.setMethodCallHandler(call => _handleNavigationInvocation(call));
+        SystemChannels.backGesture.setMethodCallHandler(call => _handleBackGestureInvocation(call));
         _accessibilityFeatures = platformDispatcher.accessibilityFeatures;
         platformDispatcher.onSemanticsEnabledChanged = _handleSemanticsEnabledChanged;
         platformDispatcher.onSemanticsActionEvent = _handleSemanticsActionEvent;
