@@ -911,18 +911,16 @@ public sealed partial class MauiTextInputBridge : IDisposable
         }
 
         var text = args.NewTextValue ?? string.Empty;
-        var selection = ResolveSelectionAfterTextChange(args.OldTextValue ?? string.Empty, text);
+        var selection = ReadSelectionAfterTextChange(_active, args.OldTextValue ?? string.Empty, text);
         _publishingNativeTextChange = true;
         try
         {
             // Native key-repeat can keep the platform input callback busy long
             // enough to starve every queued UI callback (Android Gboard does
-            // this for a long-pressed Backspace). Text edits collapse selection
-            // at the end of their changed range, which can be derived before
-            // MAUI publishes its later CursorPosition notification. Publish the
-            // complete state from this callback so every repeated edit reaches
-            // the framework without waiting for another UI turn.
-            PublishNativeEditingState(_active, text, selection, selection);
+            // this for a long-pressed Backspace). Publish the current native
+            // selection before MAUI's later CursorPosition notification, so
+            // every repeated edit reaches the framework in the same UI turn.
+            PublishNativeEditingState(_active, text, selection.baseOffset, selection.extentOffset);
         }
         finally
         {
@@ -1022,6 +1020,32 @@ public sealed partial class MauiTextInputBridge : IDisposable
                 ReadNativeComposingRange(input, text.Length)
             )
         );
+    }
+
+    private static DorotiTextSelection ReadSelectionAfterTextChange(InputView input, string oldText, string newText)
+    {
+#if ANDROID
+        // MAUI raises TextChanged from Android's text callback, before its
+        // CursorPosition/SelectionLength properties necessarily catch up.
+        // A string diff is ambiguous when identical characters surround a
+        // middle edit ("aaaa" -> "aaaaa"), and ignores the IME's cursor policy.
+        if (input.Handler?.PlatformView is Android.Widget.EditText native)
+        {
+            var start = native.SelectionStart;
+            var end = native.SelectionEnd;
+            if (start >= 0 && end >= 0 && start <= newText.Length && end <= newText.Length
+                // MAUI already materialized this callback's text. Validate it
+                // against the native buffer length without copying the whole
+                // Java string back into managed memory on every keystroke.
+                && string.Equals(input.Text, newText, StringComparison.Ordinal)
+                && native.EditableText?.Length() == newText.Length)
+            {
+                return new(Math.Min(start, end), Math.Max(start, end));
+            }
+        }
+#endif
+        var offset = ResolveSelectionAfterTextChange(oldText, newText);
+        return new(offset, offset);
     }
 
     internal static int ResolveSelectionAfterTextChange(string oldText, string newText)

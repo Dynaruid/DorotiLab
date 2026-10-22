@@ -120,17 +120,20 @@ def main():
                     '--output', out / 'lifecycle'])
             testbed = payloads['DorotiTestbedApp']
             package = testbed['profile']['ApplicationId']
-            for case in ('shutdown', 'input'):
+            for case, name, extra in (
+                ('shutdown', 'shutdown-probe.json', 'doroti_shutdown_probe'),
+                ('input', 'text-focus-probe.json', 'doroti_text_focus_probe'),
+                ('input', 'text-editing-probe.json', 'doroti_text_editing_probe'),
+            ):
                 if case not in cases: continue
-                name = 'shutdown-probe.json' if case == 'shutdown' else 'text-focus-probe.json'
                 remote = '/sdcard/Android/data/' + package + '/cache/' + name
                 adb('shell', 'am', 'force-stop', package)
                 adb('shell', 'rm', '-f', remote, remote + '.error')
-                adb('shell', 'am', 'start', '-W', '-n', testbed['component'], '--es',
-                    'doroti_shutdown_probe' if case == 'shutdown' else 'doroti_text_focus_probe', '1')
+                adb('shell', 'am', 'start', '-W', '-n', testbed['component'], '--es', extra, '1')
                 result = wait_json(remote, out / name)
                 if result.get('status') != 'PASS': raise RuntimeError(str(result))
-                report['checks'].append(dict(name=case, status='PASS', scope='native automated probe; physical input notVerified'))
+                report['checks'].append(dict(name='input-editing' if extra == 'doroti_text_editing_probe' else case,
+                                             status='PASS', scope='native automated probe; physical input notVerified'))
             if 'stability' in cases:
                 remote = '/sdcard/Android/data/' + package + '/cache/doroti-maui-evidence.json'
                 adb('shell', 'am', 'force-stop', package)

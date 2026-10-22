@@ -40,6 +40,8 @@ public sealed class MainActivity : Doroti.Host.Maui.DorotiMauiActivity
         base.OnCreate(savedInstanceState);
         if (Intent?.GetStringExtra("doroti_text_focus_probe") == "1")
             TextInputFocusProbe.Start(this);
+        if (Intent?.GetStringExtra("doroti_text_editing_probe") == "1")
+            TextInputEditingProbe.Start(this);
         if (Intent?.GetStringExtra("doroti_shutdown_probe") == "1")
             _ = AndroidShutdownProbe.RunAsync(this);
     }

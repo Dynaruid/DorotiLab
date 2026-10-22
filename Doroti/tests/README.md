@@ -414,6 +414,24 @@ Web Hot Reload qualification uses `runHost.js ... --web`: a clean-profile instal
 
 For manual Windows Korean IME/focus checks, set `$env:DOROTI_SAMPLE='input'` and launch the default Testbed windows alias. Compose and cancel Korean text in the first multiline field, move through the native editor or WebView with Tab/Shift+Tab, select/copy/paste, recreate the native view, and confirm the final framework field receives focus. The scene shows selection/composing ranges. Choose the native editor or WebView using the switch button: mixing both composition topologies in one frame remains unsupported.
 
+Android native focus and mid-text editing probes run on an explicitly selected device:
+
+```sh
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/android_smoke.py --output temp/testing/android-input/new --device <adb-serial> --rid android-arm64 --cases input
+```
+
+This builds and installs the sample APKs while retaining app data. The Testbed editing
+probe compares every published text/selection with the live Android EditText state,
+including intermediate callbacks during repeated-character insertion/deletion, rapid
+middle edits, Korean composition/commit, selected-range replacement and UTF-16 emoji
+insertion in both Entry and Editor. Text publication must remain synchronous and
+framework acceptance must preserve composing spans. Direct InputConnection commands
+on a device do not qualify human typing or a specific keyboard application's behavior.
+The optional probe also reports `selectionReadCosts`: two warmups and twelve reads
+per path for 32/8192 UTF-16 units, comparing native full-string retrieval with the
+managed text/native buffer-length check. These timings and thread allocation counts
+cover that lookup only; they do not measure typing-to-display latency or FPS.
+
 Navigation/restore, concurrent window contexts and the CPU Dialog intermediate frame are in Developer.
 
 Browser services (picker/managed grants, Copy drop, real history and text restoration)
