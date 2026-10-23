@@ -2,6 +2,7 @@
 #include "accessibility_bridge.h"
 #include "resize_order_trace.h"
 #include "pointer_device_kind.h"
+#include "ime_editing_state.h"
 
 #include <windows.h>
 #include <windowsx.h>
@@ -808,11 +809,7 @@ class ProductHost final {
         break;
       case WM_IME_STARTCOMPOSITION:
         if (text_client_active_) {
-          ime_composing_ = true;
-          if (text_composing_base_ < 0) {
-            text_composing_base_ = std::min(text_selection_base_, text_selection_extent_);
-            text_composing_extent_ = std::max(text_selection_base_, text_selection_extent_);
-          }
+          text_input_.Start();
           ApplyImeWindowPosition();
           return 0;
         }
@@ -821,12 +818,14 @@ class ProductHost final {
         if (text_client_active_ && HandleImeComposition(lparam)) return 0;
         break;
       case WM_IME_ENDCOMPOSITION:
-        ime_composing_ = false;
-        text_composing_base_ = text_composing_extent_ = -1;
-        EmitTextEditing();
-        return 0;
+        if (text_client_active_) {
+          text_input_.End();
+          EmitTextEditing();
+          return 0;
+        }
+        break;
       case WM_CHAR:
-        if (text_client_active_ && !ime_composing_) {
+        if (text_client_active_ && !text_input_.active) {
           HandleCharacter(static_cast<wchar_t>(wparam));
           return 0;
         }
@@ -1655,24 +1654,26 @@ class ProductHost final {
     } else if (!text_client_active_) {
       return;
     }
-    text_ = command.text;
-    text_selection_base_ = command.selection_base;
-    text_selection_extent_ = command.selection_extent;
-    text_composing_base_ = command.composing_base;
-    text_composing_extent_ = command.composing_extent;
-    ime_composing_ = text_composing_base_ >= 0;
+    text_input_.text = command.text;
+    text_input_.selection_base = command.selection_base;
+    text_input_.selection_extent = command.selection_extent;
+    text_input_.composing_base = command.composing_base;
+    text_input_.composing_extent = command.composing_extent;
+    text_input_.active = text_input_.composing_base >= 0;
+    text_input_.owns_preedit = text_input_.composing_base >= 0 &&
+        text_input_.composing_extent != text_input_.composing_base;
     ApplyImeWindowPosition();
     if (set_client && !text_smoke_emitted_ &&
         EnvironmentOne(L"DOROTI_WINDOWS_APPSDK_C7_SMOKE")) {
       text_smoke_emitted_ = true;
-      text_ = L"한";
-      text_selection_base_ = text_selection_extent_ = 1;
-      text_composing_base_ = 0;
-      text_composing_extent_ = 1;
+      text_input_.text = L"한";
+      text_input_.selection_base = text_input_.selection_extent = 1;
+      text_input_.composing_base = 0;
+      text_input_.composing_extent = 1;
       EmitTextEditing();
-      text_ = L"한글";
-      text_selection_base_ = text_selection_extent_ = 2;
-      text_composing_base_ = text_composing_extent_ = -1;
+      text_input_.text = L"한글";
+      text_input_.selection_base = text_input_.selection_extent = 2;
+      text_input_.composing_base = text_input_.composing_extent = -1;
       EmitTextEditing();
       if (callbacks_.text_action != nullptr)
         callbacks_.text_action(callbacks_.callback_context,
@@ -1687,10 +1688,11 @@ class ProductHost final {
 
   void ClearTextClientOnPlatform() {
     text_client_active_ = false;
-    ime_composing_ = false;
-    text_.clear();
-    text_selection_base_ = text_selection_extent_ = 0;
-    text_composing_base_ = text_composing_extent_ = -1;
+    text_input_.active = false;
+    text_input_.owns_preedit = false;
+    text_input_.text.clear();
+    text_input_.selection_base = text_input_.selection_extent = 0;
+    text_input_.composing_base = text_input_.composing_extent = -1;
     if (InputWindow() != nullptr) ImmAssociateContextEx(InputWindow(), nullptr, 0);
   }
 
@@ -1714,59 +1716,52 @@ class ProductHost final {
     ImmReleaseContext(target, context);
   }
 
-  static std::wstring ReadCompositionString(HIMC context, DWORD index) {
+  static std::optional<std::wstring> ReadCompositionString(HIMC context, DWORD index) {
     const auto byte_count = ImmGetCompositionStringW(context, index, nullptr, 0);
-    if (byte_count <= 0) return {};
+    if (byte_count < 0 || byte_count % sizeof(wchar_t) != 0) return std::nullopt;
+    if (byte_count == 0) return std::wstring{};
     std::wstring value(static_cast<size_t>(byte_count) / sizeof(wchar_t), L'\0');
     if (ImmGetCompositionStringW(context, index, value.data(),
                                  static_cast<DWORD>(byte_count)) != byte_count)
-      return {};
+      return std::nullopt;
     return value;
   }
 
   bool HandleImeComposition(LPARAM flags) {
+    constexpr LPARAM composition_flags = GCS_COMPREADSTR | GCS_COMPREADATTR |
+        GCS_COMPREADCLAUSE | GCS_COMPSTR | GCS_COMPATTR | GCS_COMPCLAUSE |
+        GCS_CURSORPOS | GCS_DELTASTART | GCS_RESULTREADSTR |
+        GCS_RESULTREADCLAUSE | GCS_RESULTSTR | GCS_RESULTCLAUSE;
+    // Cancellation has no IMM string to query and must work even if the
+    // context has already been released. Never delete the START selection.
+    if ((flags & composition_flags) == 0) {
+      text_input_.End();
+      EmitTextEditing();
+      ApplyImeWindowPosition();
+      return true;
+    }
     const auto target = InputWindow();
     const auto context = ImmGetContext(target);
     if (context == nullptr) return false;
-    const auto release = [target, context] { ImmReleaseContext(target, context); };
-    bool handled = false;
-    if ((flags & GCS_RESULTSTR) != 0) {
-      const auto result = ReadCompositionString(context, GCS_RESULTSTR);
-      ReplaceActiveRange(result, false);
-      ime_composing_ = false;
-      handled = true;
+    const auto result = (flags & GCS_RESULTSTR) != 0
+        ? ReadCompositionString(context, GCS_RESULTSTR) : std::nullopt;
+    const auto composition = (flags & GCS_COMPSTR) != 0
+        ? ReadCompositionString(context, GCS_COMPSTR) : std::nullopt;
+    std::optional<int32_t> cursor;
+    if ((flags & GCS_CURSORPOS) != 0) {
+      const auto position = ImmGetCompositionStringW(context, GCS_CURSORPOS, nullptr, 0);
+      if (position >= 0) cursor = position;
     }
-    if ((flags & GCS_COMPSTR) != 0) {
-      const auto composition = ReadCompositionString(context, GCS_COMPSTR);
-      ReplaceActiveRange(composition, true);
-      ime_composing_ = true;
-      handled = true;
-    }
-    release();
+    ImmReleaseContext(target, context);
+    const bool handled = result.has_value() || composition.has_value() || cursor.has_value();
+    text_input_.Apply(result, composition, cursor);
     if (handled) EmitTextEditing();
     ApplyImeWindowPosition();
     return handled;
   }
 
   void ReplaceActiveRange(const std::wstring& replacement, bool composing) {
-    auto start = text_composing_base_ >= 0
-                     ? std::min(text_composing_base_, text_composing_extent_)
-                     : std::min(text_selection_base_, text_selection_extent_);
-    auto end = text_composing_base_ >= 0
-                   ? std::max(text_composing_base_, text_composing_extent_)
-                   : std::max(text_selection_base_, text_selection_extent_);
-    const auto length = static_cast<int32_t>(text_.size());
-    start = std::clamp(start, 0, length);
-    end = std::clamp(end, start, length);
-    text_.replace(static_cast<size_t>(start), static_cast<size_t>(end - start), replacement);
-    const auto next = start + static_cast<int32_t>(replacement.size());
-    text_selection_base_ = text_selection_extent_ = next;
-    if (composing) {
-      text_composing_base_ = start;
-      text_composing_extent_ = next;
-    } else {
-      text_composing_base_ = text_composing_extent_ = -1;
-    }
+    text_input_.Replace(replacement, composing);
   }
 
   void HandleCharacter(wchar_t character) {
@@ -1789,14 +1784,14 @@ class ProductHost final {
 
   void EmitTextEditing() {
     if (callbacks_.text_editing == nullptr) return;
-    const auto utf8 = Encode(text_);
+    const auto utf8 = Encode(text_input_.text);
     doroti_windows_text_state_v1 state{
         DOROTI_WINDOWS_ABI_VERSION_V1,
         sizeof(doroti_windows_text_state_v1),
         {DOROTI_WINDOWS_ABI_VERSION_V1, sizeof(doroti_windows_utf8_v1),
          reinterpret_cast<const uint8_t*>(utf8.data()), utf8.size()},
-        text_selection_base_, text_selection_extent_, text_composing_base_,
-        text_composing_extent_};
+        text_input_.selection_base, text_input_.selection_extent, text_input_.composing_base,
+        text_input_.composing_extent};
     callbacks_.text_editing(callbacks_.callback_context, &state);
   }
 
@@ -2666,14 +2661,9 @@ class ProductHost final {
   doroti::windows::PointerMessageKinds pointer_kinds_;
   std::atomic<uint32_t> cursor_kind_{};
   doroti_windows_text_configuration_v1 text_configuration_{};
-  std::wstring text_;
-  int32_t text_selection_base_{};
-  int32_t text_selection_extent_{};
-  int32_t text_composing_base_{-1};
-  int32_t text_composing_extent_{-1};
   CaretCommand caret_{};
   bool text_client_active_{};
-  bool ime_composing_{};
+  doroti::text_input::ImeEditingState text_input_;
   bool text_smoke_emitted_{};
   bool semantics_smoke_emitted_{};
   bool _text_geometry_smoke_emitted_{};

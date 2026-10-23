@@ -2,25 +2,27 @@
 
 작성일: 2026-10-22
 
-상태: **검토 완료 / 아래 미해결 항목은 수정·네이티브 재검증 필요**
+Windows·Web 수정일: 2026-10-23
+
+상태: **Windows R1 일반 입력·R2/R3·Web R5 수정 및 자동 검증 완료 / 물리 IME·Safari·성능 검증은 미완료. Apple R1·Qt R4는 미수정.**
 
 검토 대상은 기존 텍스트 중간에서 빠르게 입력할 때의 커서 튐, IME 조합·취소·선택 동기화와 입력 지연이다. iOS, Mac Catalyst, macOS AppKit, Android, Windows MAUI, Windows App SDK, Linux Qt, Web을 확인했다. Material/Cupertino는 위젯 계층이며 플랫폼 입력 호스트와 구분한다.
 
-기준 checkout은 `07ba3f31928f7d0f7f131097e094098f721ec1f0`이며, 앞선 Android 커서·성능 수정의 미커밋 변경을 포함한다. 이번 요청에서는 검토와 문서 작성만 수행했다. 제품 코드 수정, 추가 기기 설치와 `work.md` 변경은 하지 않았다.
+10월 22일 검토 기준은 `07ba3f31928f7d0f7f131097e094098f721ec1f0`과 당시 Android 수정이었다. 10월 23일 Windows·Web 후속 작업은 깨끗한 `04ad305c92bc5cc354c8f1d86cf84d910006dff3`에서 시작해 제품 코드·회귀 검사를 수정했다. 결과와 재실행 명령은 [Windows·Web 수정 기록](history/26-10-23/windows-web-text-input.md)에 보존한다. `work.md`는 변경하지 않았다.
 
 ## 1. 우선 확인할 사항
 
-**Apple만의 문제가 아니다. 같은 문자열 기반 커서 추정이 Apple MAUI와 Windows MAUI에 남아 있다.** Windows App SDK에는 별도의 IMM 조합 처리 누락이 있고, Qt와 Web에서도 조합 중 커서와 조합 범위를 구분하지 못하는 지점이 있다.
+**10월 22일에는 Apple MAUI와 Windows MAUI에 같은 문자열 기반 커서 추정이 남아 있었다.** 10월 23일 Windows 일반 TextBox 경로는 네이티브 선택 조회로 교체했고, Windows App SDK의 IMM 취소·내부 커서와 Web 조합 범위도 수정했다. Apple·Qt의 기존 지적과 플랫폼별 실제 IME 검증은 남아 있다.
 
 여기서 `소스 확인`은 현재 구현과 API 계약의 비교, `함수 반례`는 실제 소스에서 추출한 함수 실행을 뜻한다. 두 결과 모두 특정 OS·IME에서 사람이 타이핑해 증상을 확인한 `실기기 재현`과 다르다. P1은 입력 정확성과 관련해 먼저 조치할 항목, P2는 다음으로 확인·보완할 항목이다.
 
 | ID | 우선순위 | 대상 | 확인한 내용 | 증거 수준 |
 | --- | --- | --- | --- | --- |
-| R1 | P1 | iOS / Mac Catalyst / macOS AppKit / Windows MAUI | 반복 문자 중간 편집에서 문자열 비교가 실제 삽입 위치와 다른 커서를 계산한다. | 공통 함수 반례 3개, 플랫폼 callback 실기기 재현은 미실행 |
-| R2 | P1 | Windows App SDK | 조합 취소 시 미확정 문자열을 제거하지 않고 조합 범위만 지우는 경로가 있다. | 소스 + Microsoft 메시지 계약 |
-| R3 | P1 | Windows App SDK | 조합 중 커서 위치 `GCS_CURSORPOS`를 처리하지 않고 커서를 조합 문자열 끝으로 둔다. | 소스 + Microsoft IME 계약 |
+| R1 | P1 | iOS / Mac Catalyst / macOS AppKit / Windows MAUI | Windows 일반 Entry/Editor는 실제 선택 조회로 수정. Apple·선택 API 없는 보안 입력 fallback은 남음. | Windows Release native callback 검사, Apple native 미실행 |
+| R2 | P1 | Windows App SDK | 소유한 preedit만 취소 시 제거하고 확정 결과는 보존하도록 수정. | production C++ 상태 검사 + native Release 빌드, 실제 Windows IME 미실행 |
+| R3 | P1 | Windows App SDK | `GCS_CURSORPOS`와 cursor-only 메시지를 처리하도록 수정. | R2와 합쳐 C++ 상태 검사 16개 PASS, 실제 Windows IME 미실행 |
 | R4 | P2 | Linux Qt | IME query에 preedit 내부 커서 offset이 포함된 위치를 돌려준다. | 소스 + Qt 6.12 계약 |
-| R5 | P2 | Web, Apple 기기의 Safari 포함 | 조합 전체 범위의 끝을 현재 선택 끝으로 계산한다. 조합 내부 커서 이동 시 범위가 짧아질 수 있다. | 컴파일한 production 함수의 합성 입력 반례 |
+| R5 | P2 | Web, Apple 기기의 Safari 포함 | 전체 조합 범위를 선택과 분리하고 DOM 반영 전 조합 데이터 발행을 방지하도록 수정. | WebKit 21개·Chrome 22개 PASS. Chrome 브라우저 조합 명령 포함. Apple Safari·물리 IME 미실행 |
 
 ## 2. 플랫폼별 판단
 
@@ -30,24 +32,26 @@
 | iOS MAUI | 공통 문자열 비교 fallback을 사용한다. | R1과 UIKit 비동기 상태 적용의 추가 확인 필요. |
 | Mac Catalyst MAUI | iOS와 같은 UIKit 및 공통 fallback 경로다. | iOS와 함께 확인해야 한다. |
 | macOS AppKit MAUI | 공통 fallback을 사용한다. AppKit 보조 코드는 focus/Return 처리를 보완한다. | focus 보완이 텍스트 변경 순간의 커서 추정을 교체하지는 않는다. R1 대상이다. |
-| Windows MAUI | 공통 fallback을 사용한다. 별도 WinUI 구독은 조합 범위를 전달한다. | 조합 범위 구독이 즉시 발행되는 잘못된 커서 추정을 막지 않는다. R1 대상이다. |
-| Windows App SDK | C++ 모델이 실제 교체 범위로 텍스트·커서를 계산한다. | 반복 문자열 diff 문제와는 다른 구현. R2/R3 및 비동기 상태 왕복 확인 필요. |
+| Windows MAUI | 일반 TextBox의 실제 선택을 읽고 MAUI가 반영한 문자열과 같은 native TextChanged에서 발행한다. TextChanging 이후 오래된 선택 snapshot을 막는다. | R1 일반 Entry/Editor 자동 검증 완료. 보안 입력 fallback·물리 IME·성능은 별도. |
+| Windows App SDK | C++ 모델이 실제 교체 범위와 preedit 소유 상태·IMM 내부 커서를 처리한다. | R2/R3 수정·상태 검사 완료. 실제 IMM 메시지 순서와 비동기 상태 왕복은 추가 확인 필요. |
 | Linux Qt | `QInputMethodEvent`의 commit/preedit/selection/cursor 정보를 처리한다. | 문자열 diff 문제는 사용하지 않는다. R4와 실제 ibus/fcitx 입력 확인 필요. |
-| Web | DOM `selectionStart/End/Direction`을 읽고 오래된 응답을 input sequence로 거절한다. | 일반 커서·stale 응답 보호는 존재한다. R5 및 실제 브라우저별 조합 이벤트 확인 필요. |
+| Web | DOM 선택과 독립된 전체 조합 범위를 추적하고 오래된 응답을 input sequence로 거절한다. | R5 수정·실제 Chrome/WebKit DOM 검사 완료. Apple Safari·OS IME·실제 managed worker 왕복은 별도. |
 
 `CupertinoTextField`는 내부에서 공통 `EditableText`를 생성하므로 별도 안전 판정을 내릴 수 없다. Android Cupertino에는 Android 호스트 수정이 적용되고, iOS의 Material/Cupertino에는 같은 UIKit 호스트의 위험이 적용된다. iPhone의 **Web 앱**은 UIKit MAUI 대신 Web 경로로 검토해야 한다.
 
 근거: [CupertinoTextField](packages/Doroti.Cupertino/src/text_field.cs#L1552), [공통 MAUI 입력 브리지](packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.cs#L899), [AppKit 보조 처리](packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.MacOS.cs), [WinUI 조합 구독](packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.Windows.cs#L35).
 
-## 3. 미해결 항목 상세
+## 3. 검토 당시 결함과 수정 상태
 
-### R1. Apple·Windows MAUI에 남은 문자열 기반 커서 추정
+### R1. Apple MAUI의 잔여 문제와 Windows MAUI 수정
 
-[ReadSelectionAfterTextChange](packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.cs#L1025)는 `#if ANDROID`에서만 네이티브 선택을 읽는다. 다른 MAUI 대상은 `ResolveSelectionAfterTextChange`로 내려가 공통 접두·접미를 비교한다. 같은 글자가 이어지면 문자열만으로 편집 위치를 확정할 수 없다.
+검토 당시 [ReadSelectionAfterTextChange](packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.cs)는 Android에서만 네이티브 선택을 읽고 다른 MAUI 대상은 공통 접두·접미를 비교했다. 같은 글자가 이어지면 문자열만으로 편집 위치를 확정할 수 없다. 아래 표는 **수정 전 공통 fallback**의 반례다.
 
-현재 C# 메서드 본문을 그대로 추출하고 Android 분기를 제외해 실행했다. 아래 기대 위치는 문장 가운데의 지정된 위치에서 삽입·삭제한 경우의 UTF-16 offset이다.
+Windows 일반 TextBox는 [Windows 입력 구독](packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.Windows.cs)에서 실제 `SelectionStart/SelectionLength`를 사용한다. WinUI의 native TextChanging 이후 MAUI의 문자열이 아직 이전 값인 구간에는 선택 알림을 발행하지 않고, MAUI 매퍼 다음 native TextChanged 구독에서 문자열·선택을 함께 발행한다. 텍스트 전달은 해당 native callback 안에서 수행하며 native 전체 문자열을 추가로 읽지 않는다. PasswordBox·보안 모드·handler 부재·유효하지 않은 선택은 fallback으로 남긴다.
 
-| 편집 | 이전 → 이후 | 실제 편집에 따른 기대 커서 | 현재 계산 |
+10월 22일 C# 메서드 본문을 추출하고 Android 분기를 제외해 실행했다. 아래 기대 위치는 문장 가운데의 지정된 위치에서 삽입·삭제한 경우의 UTF-16 offset이다.
+
+| 편집 | 이전 → 이후 | 실제 편집에 따른 기대 커서 | 수정 전 계산 |
 | --- | --- | --- | --- |
 | 반복 문자 중간 삽입 | `aaaa` → `aaaaa` | 3 | 5 |
 | 반복 문자 중간 Backspace | `aaaaa` → `aaaa` | 2 | 4 |
@@ -64,7 +68,9 @@
 
 근거: [WM_IME_COMPOSITION / END 처리](packages/platforms/windowsappsdk/native/src/exports.cpp#L809), [HandleImeComposition](packages/platforms/windowsappsdk/native/src/exports.cpp#L1727), [ReplaceActiveRange](packages/platforms/windowsappsdk/native/src/exports.cpp#L1751).
 
-현재 구현은 조합 문자열을 `text_`에 직접 넣는다. `HandleImeComposition`은 `GCS_RESULTSTR`와 `GCS_COMPSTR`만 처리하고, `WM_IME_ENDCOMPOSITION`에서는 조합 범위를 `-1`로 지운 뒤 그대로 발행한다. 조합 취소를 뜻하는 GCS 값 없는 메시지에서 기존 preedit를 제거하는 처리가 없다. Microsoft는 이 메시지에서 화면에 표시하던 조합 문자열을 지우도록 명시한다. [WM_IME_COMPOSITION 공식 계약](https://learn.microsoft.com/en-us/windows/win32/intl/wm-ime-composition).
+수정 전 구현은 조합 문자열을 문서에 직접 넣지만 `WM_IME_ENDCOMPOSITION`에서 조합 범위만 지웠고, GCS 값 없는 취소 메시지에서도 preedit를 제거하지 않았다. Microsoft는 이 메시지에서 표시하던 조합 문자열을 지우도록 명시한다. [WM_IME_COMPOSITION 공식 계약](https://learn.microsoft.com/en-us/windows/win32/intl/wm-ime-composition).
+
+수정 후 [production IMM 상태 모델](packages/platforms/windowsappsdk/native/src/ime_editing_state.h)은 실제 preedit를 삽입했는지 따로 추적한다. GCS 없는 취소와 END에서는 소유한 preedit만 제거한다. START 직후 원래 선택 영역과 RESULTSTR로 확정한 텍스트는 지우지 않는다. 빈 문자열과 IMM 조회 실패도 구분한다. 아래 순서는 수정 전 반례이며 상태 회귀 검사에서 기대 결과를 확인했다.
 
 코드상 반례 순서는 다음과 같다.
 
@@ -72,13 +78,13 @@
 2. 빈 `GCS_COMPSTR`나 결과 문자열을 별도로 주지 않고 취소 메시지가 온다.
 3. END 처리에서 범위만 지우면 `aXYb`가 남아 미확정 `XY`가 일반 텍스트처럼 전달될 수 있다. 기대 결과는 `ab`다.
 
-빈 `GCS_COMPSTR`로 preedit 제거를 먼저 통지하는 IME에서는 다른 결과가 나올 수 있다. **실제 IME별 메시지 순서는 미검증**이다. commit 이후 이미 확정된 문자열을 END에서 다시 지우지 않도록, commit/cancel과 현재 preedit 소유 상태를 구분해 보완해야 한다.
+빈 `GCS_COMPSTR` 제거·GCS 없는 취소·END·result 이후 END는 수정 모델에서 검사했다. **실제 Windows IME별 메시지 순서는 미검증**이다. 확정 결과와 preedit 소유 상태 구분은 구현했지만 OS IME의 동작까지 통과한 것으로 표시하지 않는다.
 
 ### R3. Windows App SDK의 조합 내부 커서 위치 누락
 
-같은 `HandleImeComposition`에서 `GCS_CURSORPOS`를 읽지 않는다. `ReplaceActiveRange`는 선택을 항상 `start + replacement.size()`로 둔다. 문자열은 그대로인 채 IME 커서만 이동하는 메시지도 프레임워크에 갱신되지 않는다. `GCS_CURSORPOS`는 조합 문자열 내부 커서 위치를 전달하는 별도 값이다. [Microsoft IME 값 정의](https://learn.microsoft.com/en-us/windows/win32/intl/ime-composition-string-values).
+수정 전 `HandleImeComposition`은 `GCS_CURSORPOS`를 읽지 않고 선택을 항상 조합 끝으로 두었다. 수정 후에는 composition string 갱신 뒤 내부 커서를 적용하며 문자열 없는 cursor-only 메시지도 발행한다. 음수 조회 결과는 무시하고 UTF-16 조합 범위 안으로 제한한다. `GCS_CURSORPOS`는 조합 문자열 내부 커서 위치를 전달하는 별도 값이다. [Microsoft IME 값 정의](https://learn.microsoft.com/en-us/windows/win32/intl/ime-composition-string-values).
 
-일본어·중국어 등의 여러 글자 조합 도중 커서를 안쪽으로 옮기면, native IME의 위치와 Doroti 커서가 달라질 수 있다. `GCS_COMPSTR`가 없는 cursor-only 변경도 처리하고, 조합 시작 offset과 내부 위치를 합산·검증한 상태를 발행하는 검사가 필요하다. 이 항목은 소스에서 누락을 확인했으며 실제 Windows IME를 구동해 재현하지는 않았다.
+일본어·중국어 등 실제 Windows IME에서 문자열 변경 없는 내부 커서 이동을 확인해야 한다. cursor-only·범위 경계·emoji·result와 다음 preedit가 한 메시지에 있는 경우는 production 상태 모델에서 통과했지만, Windows IMM 메시지를 실제 IME로 구동한 검사는 남아 있다.
 
 ### R4. Qt의 preedit 표시 위치와 IME query 위치가 섞임
 
@@ -94,13 +100,13 @@
 
 근거: [composition 이벤트 구독](packages/platforms/web/Doroti.Host.Web/Web/doroti.web.ts#L1134), [emitText](packages/platforms/web/Doroti.Host.Web/Web/doroti.web.ts#L2610).
 
-`compositionStart`는 시작 위치를 저장하지만 `composingExtent`는 현재 DOM `selectionEnd`다. `compositionupdate`의 데이터는 사용하지 않는다. 조합 문자열 전체와 그 안의 커서는 서로 다른 상태이므로, 커서가 조합 중간에 있으면 전체 조합 범위가 잘릴 수 있다.
+수정 전에는 시작 위치만 저장하고 `composingExtent`를 DOM `selectionEnd`로 계산했다. 수정 후 [BrowserTextComposition](packages/platforms/web/Doroti.Host.Web/Web/doroti.web.text-composition.ts)은 조합 시작 시 교체 영역 양쪽 문서를 저장해 전체 범위를 구하고, 선택은 DOM에서 별도로 읽는다. 조합 데이터는 input 또는 DOM 반영 후 microtask에서 일치 여부를 확인해 적용한다. 부분 확정·선택 교체·emoji·조합 데이터 없는 경우와 clear/reattach의 오래된 callback도 검사했다. 문서 양쪽이 일치하지 않으면 임의의 범위를 발행하지 않는다.
 
-실제 TypeScript를 컴파일한 뒤 production `emitText`를 Node VM에서 실행했다. 합성 입력 `ab你好cd`, preedit `你好`, 조합 시작 2, 커서 3을 주면 기대 조합 범위는 `[2,4)`지만 현재 함수는 `[2,3)`을 발행한다. 이는 **함수 반례**이며, 실제 Safari/Chrome에서 그 상태를 만드는 이벤트 순서와 사용자 증상은 검증하지 않았다.
+10월 22일 TypeScript를 컴파일한 production `emitText`의 Node VM 검사에서 `ab你好cd`, 조합 시작 2, 커서 3의 기대 범위 `[2,4)` 대신 `[2,3)`을 확인했다. 10월 23일에는 수정 후 실제 Chrome의 브라우저 조합 명령에서도 커서 3과 조합 범위 `[2,4)`를 함께 확인했다. WebKit은 실제 DOM에 합성 composition/input 이벤트를 보내 검사했으며 Apple Safari나 OS IME를 실행한 증거는 아니다.
 
-조합 문자열 범위와 선택 범위를 따로 추적하고, `compositionupdate.data`, `beforeinput` 등 브라우저가 제공하는 정보를 검토해야 한다. 다만 IME가 DOM에 모든 조합 정보를 노출하지 않을 수 있어 `data.length`만으로 항상 해결된다고 단정하면 안 된다. [W3C UI Events의 composition 계약](https://www.w3.org/TR/uievents/#events-compositionevents).
+조합 이벤트가 DOM 갱신 전에 올 수 있고 일부 IME는 조합 데이터를 노출하지 않으므로 `data.length`만으로 범위를 확정하지 않는다. DOM 양쪽 문서 검증과 이벤트 데이터 확인을 함께 사용한다. [W3C UI Events의 composition 계약](https://www.w3.org/TR/uievents/#events-compositionevents).
 
-Web에는 이미 native 커서 직접 조회, 동일 상태 발행 억제, 오래된 worker 응답 거절, 조합 중 value/selection 재기록 방지가 있다. 이번 함수 검사에서 이 네 보호 동작은 유지됨을 확인했다. R5를 Web의 모든 입력 처리가 잘못됐다는 뜻으로 해석하지 않는다.
+기존 native 커서 조회·동일 발행 억제·오래된 worker 응답 거절·조합 중 value/selection 쓰기 방지는 수정 후 Chrome/WebKit DOM 검사에서도 유지됐다. 이 검사는 worker를 대체했으므로 실제 managed worker 전체 왕복의 통과 증거로 사용하지 않는다.
 
 ## 4. 별도로 검증해야 할 상태 왕복·성능 위험
 
@@ -120,24 +126,29 @@ Web에는 이미 native 커서 직접 조회, 동일 상태 발행 억제, 오�
 
 | 검사 | 결과 | 의미 / 제외 범위 |
 | --- | --- | --- |
-| 이번 검토: non-Android C# 메서드 본문 추출 실행 | 반복 삽입·삭제·emoji 3개 오차 반례, 고유 문자 대조군 정상 | 실제 공통 계산 실행. MAUI/Apple/WinUI runtime은 로드하지 않음. 실행 종료 코드 0은 반례 확인 완료를 뜻하며 제품 검증 PASS가 아님. |
-| 이번 검토: 전체 Web host TypeScript strict 컴파일 | PASS | 현재 소스의 컴파일 검사. 브라우저 실행 증거 아님. |
-| 이번 검토: 컴파일한 Web 함수 + 합성 DOM 형태의 입력 | 커서·동일 발행 억제·오래된 응답·조합 중 쓰기 방지 4개 확인, 조합 범위 반례 1개 | Node VM 함수 검사. 실제 DOM 이벤트·WebKit·Safari·Chrome IME 검사 아님. |
+| 10/23 Windows MAUI Release 실제 WinUI callback | Entry/Editor 16개 시나리오·60회 편집·68개 callback, 불일치 0 | 실제 native TextBox의 문자열·선택과 매 callback 비교. 반복 문자·공백·emoji·선택 교체 및 12회 연속 삽입/삭제. 합성 native 편집이며 물리 키보드·IME·화면 지연 검사가 아님. |
+| 10/23 Windows App SDK native Release + production C++ 상태 | 빌드 PASS, 상태 검사 16개 PASS | cancel/END/commit/cursor-only/빈 preedit/UTF-16/조회 실패. 실제 IMM context·IME 메시지 구동은 제외. |
+| 10/23 Web host Release + strict TypeScript | 경고·오류 0, PASS | Release 생성 JS와 새 조합 모듈을 아래 브라우저 검사에서 실제 로드. |
+| 10/23 실제 WebKit 27.2 / Chrome 155.0.8059.86 DOM | 각각 21개 / 22개 PASS | DOM 합성 이벤트·선택·stale/formatter 보호·clear/reattach·12회 입력/삭제. Chrome은 CDP 브라우저 조합 명령의 중간 커서·확정/취소 2개 흐름 포함. worker/렌더러 대체, Apple Safari·OS IME·화면 성능 제외. |
+| 10/22 검토: non-Android C# 메서드 본문 추출 실행 | 반복 삽입·삭제·emoji 3개 오차 반례, 고유 문자 대조군 정상 | 당시 공통 계산 실행. native runtime 미로드. 제품 검증 PASS가 아님. |
+| 10/22 검토: 전체 Web host TypeScript strict 컴파일 | PASS | 당시 소스의 컴파일 검사. |
+| 10/22 검토: 컴파일한 Web 함수 + 합성 DOM 형태의 입력 | 기존 보호 4개 확인, 수정 전 조합 범위 반례 1개 | 당시 Node VM 함수 검사. |
 | 앞선 동일 checkout: Cupertino 커서 회귀 | PASS | iOS/Android/Windows/macOS/Linux 환경 설정의 CPU 위젯·커서 그림·후속 합성 IME 삽입 검사. 실제 native 입력 경로 아님. |
 | 앞선 동일 checkout: Galaxy S25 / Android 17 / Release | 편집 18개 PASS, 커서 불일치 0, 포커스·paste 2개 PASS | 실제 Android host에서 InputConnection 자동 명령 실행. 사람의 Samsung 키보드 타이핑·입력부터 화면 표시까지의 지연·FPS는 별도. |
 | Apple 실제 입력 | 미실행 | iPhone/iPad, Catalyst, AppKit의 callback 순서·marked text·실제 키보드·성능 미검증. |
-| Windows 실제 IME / Qt 실제 IME / 실제 브라우저 IME | 미실행 | R2~R5의 OS·IME별 사용자 증상과 이벤트 순서를 검증하지 않음. |
+| Windows OS IME / Qt 실제 IME / 브라우저 OS IME·Apple Safari | 미실행 | 브라우저 명령·합성 이벤트는 OS 키보드의 사용자 입력과 다름. |
+| Windows MAUI 프로세스 정상 종료 | notVerified | 검사 후 window.Close를 호출해도 5초 내 프로세스가 종료되지 않아 runner가 자신이 띄운 프로세스를 정리했다. 입력 검사 PASS와 정상 종료를 구분한다. |
 
-이번 실행 명령의 테스트·컴파일에는 모두 `Doroti/eng/run-with-timeout.py --timeout 1200`을 사용했다. 산출물은 삭제 가능한 `temp/testing/text-input-platform-review/`이며 C# 추출 메서드·원본 해시·반례, 컴파일한 Web JS·함수 반례를 담는다. Web 컴파일 로그는 `temp/testing/text-editing/platform-review-web-build.log`다. 원시 산출물이 없어져도 위 표의 핵심 결과는 이 문서에 남는다.
+테스트·컴파일에는 모두 `Doroti/eng/run-with-timeout.py --timeout 1200`을 사용했다. 10/23 원시 산출물은 삭제 가능한 `temp/testing/windows-web-text-input/`와 `temp/testing/text-input-*-build*.log`다. 10/22 검토 산출물은 `temp/testing/text-input-platform-review/`, Web 컴파일 로그는 `temp/testing/text-editing/platform-review-web-build.log`다. 핵심 결과·해시·명령은 이 문서와 [수정 기록](history/26-10-23/windows-web-text-input.md)에 남긴다.
 
 앞선 Android 빌드 설정, APK 해시와 세부 검사는 [커서 수정·성능 기록](history/26-10-22/android-text-input-caret.md)을 참고한다.
 
 ## 6. 후속 작업 순서와 통과 조건
 
-1. **R1: Apple와 Windows MAUI의 실제 선택 조회.** Entry/Editor 각각 반복 문자·공백·emoji 중간 삽입/삭제를 검사한다. 최종 위치만 보지 않고 전달되는 모든 callback의 텍스트·선택·조합을 native 상태와 비교한다. UIKit/AppKit에서 같은 UI turn과 지연 echo 양쪽을 확인한다.
-2. **R2/R3: Windows App SDK IMM 취소·커서.** preedit 내부 이동, 문자열 변경 없는 cursor-only 메시지, commit, Escape 취소, GCS 값 없는 취소, 결과 문자열 직후 END를 각각 확인한다. 취소한 preedit가 확정 텍스트로 남지 않아야 한다.
+1. **R1: Apple 실제 선택 조회와 Windows 잔여 검증.** Apple은 미수정이다. UIKit/AppKit의 native 선택·같은 UI turn·지연 echo를 확인한다. Windows 일반 Entry/Editor 자동 callback 비교는 완료했으며 보안 입력 fallback·실제 IME와 프로세스 정상 종료는 추가 확인한다.
+2. **R2/R3: Windows 실제 IMM 취소·커서.** 구현·상태 검사는 완료했다. 실제 한국어·일본어·중국어 IME에서 preedit 내부 이동, cursor-only, commit, Escape, GCS 없는 취소, result 직후 END와 지연 managed 응답을 확인한다.
 3. **R4: Qt query 좌표.** 조합 문자열이 없는 논리 문서 좌표와 표시 문서 좌표를 분리한다. preedit 내부 위치 0/중간/끝, 취소·선택·replacement를 Qt 기본 입력창과 비교하고 ibus/fcitx에서도 확인한다.
-4. **R5: Web 조합 범위.** 커서가 조합 중간에 있어도 전체 조합 범위가 유지되어야 한다. 실제 Chromium·WebKit 및 Apple 기기 Safari에서 이벤트 순서와 stale 응답 보호를 함께 확인한다.
-5. **공통 정확성·성능 회귀.** 빠른 연속 입력/Backspace는 우선 12회 정도의 짧은 검사로 시작한다. 조합 중 범위 선택·붙여넣기·formatter·field 전환·clear/reattach를 추가하고, 수정 플랫폼의 Release에서 입력 callback 시간과 화면 반영 시점을 따로 측정한다. 소스 검사·CPU 검사·자동 IME 명령을 물리 입력·프레임 페이싱 증거로 대체하지 않는다.
+4. **R5: OS IME와 Apple Safari.** Chrome 브라우저 조합 명령·WebKit DOM 검사는 완료했다. OS IME 및 Apple 기기의 Safari에서 이벤트 순서·전체 조합 범위·stale 응답 보호를 확인하고 실제 managed worker와 연결해 재검증한다.
+5. **공통 정확성·성능 회귀.** Windows/Web의 12회 연속 합성 입력·삭제는 완료했다. 실제 조합 중 붙여넣기·formatter·field 전환과 Release 화면 반영을 확인한다. Windows 합성 편집→callback 시간은 기록했지만 물리 입력 지연·FPS·프레임 페이싱은 측정하지 않았다.
 
 플랫폼별 native 재현과 수정 후 검증 전에는 Apple 또는 전체 플랫폼의 입력 문제가 해결됐다고 표시하지 않는다.

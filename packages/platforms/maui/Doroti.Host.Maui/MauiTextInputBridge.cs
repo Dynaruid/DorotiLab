@@ -911,6 +911,17 @@ public sealed partial class MauiTextInputBridge : IDisposable
         }
 
         var text = args.NewTextValue ?? string.Empty;
+#if WINDOWS
+        // WinUI may defer TextChanged after TextChanging has already changed
+        // its buffer. The native subscription publishes after MAUI's mapper
+        // in that same TextChanged callback, with the matching selection.
+        if (UsesWindowsNativeTextNotifications(_active)) return;
+        if (!string.Equals(_active.Text, text, StringComparison.Ordinal))
+        {
+            QueueNativeEditingState(_active, _active.Text ?? string.Empty);
+            return;
+        }
+#endif
         var selection = ReadSelectionAfterTextChange(_active, args.OldTextValue ?? string.Empty, text);
         _publishingNativeTextChange = true;
         try
@@ -993,6 +1004,18 @@ public sealed partial class MauiTextInputBridge : IDisposable
             return;
         }
 
+#if WINDOWS
+        if (WindowsNativeTextChangePending(input)) return;
+        // A queued selection notification may outlive its text snapshot. Read
+        // the current managed revision and WinUI selection together; an older
+        // queued value must never be paired with a newer native caret.
+        text = input.Text ?? string.Empty;
+        if (TryReadWindowsSelection(input, text, out var selection))
+        {
+            PublishNativeEditingState(input, text, selection.baseOffset, selection.extentOffset);
+            return;
+        }
+#endif
         // UIKit and Android can both normalize selection after their text
         // callback. Clamp the finalized native selection to the exact value
         // being sent so the framework never observes mismatched revisions.
@@ -1043,6 +1066,10 @@ public sealed partial class MauiTextInputBridge : IDisposable
                 return new(Math.Min(start, end), Math.Max(start, end));
             }
         }
+#elif WINDOWS
+        // WinUI's selection belongs to this synchronous native text callback;
+        // the MAUI CursorPosition mapper may still describe the previous edit.
+        if (TryReadWindowsSelection(input, newText, out var selection)) return selection;
 #endif
         var offset = ResolveSelectionAfterTextChange(oldText, newText);
         return new(offset, offset);

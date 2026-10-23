@@ -17,6 +17,7 @@ import { closeExternalLeases, createDorotiWorker } from "./doroti.web.worker-hos
 import { createManagedDorotiWorker, type DorotiWorkerEndpoint } from "./doroti.web.managed-worker.js";
 import { TextInputTapFocus } from "./doroti.web.text-focus.js";
 import { BrowserTextActions } from "./doroti.web.text-actions.js";
+import { BrowserTextComposition } from "./doroti.web.text-composition.js";
 import { reserveBrowserPicker } from "./doroti.web.files.js";
 import { ResizeAdmissionWindow } from "./doroti.web.admission.js";
 import { PointerMoveAdmission } from "./doroti.web.pointer-admission.js";
@@ -109,7 +110,7 @@ interface BrowserHost {
   observers: ResizeObserver[];
   listeners: ListenerRegistration[];
   composing: boolean;
-  compositionStart: number;
+  composition: BrowserTextComposition | null;
   lastTextValue: string;
   lastSelectionBase: number;
   lastSelectionExtent: number;
@@ -876,7 +877,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     lastWheelDeltaX: 0, lastWheelDeltaY: 0, lastWheelTimestamp: 0,
     lastWheelWasTrackpad: false,
     gpu: gpuIdentity(canvas), observers: [], listeners: [],
-    composing: false, compositionStart: -1,
+    composing: false, composition: null,
     lastTextValue: "", lastSelectionBase: 0, lastSelectionExtent: 0,
     lastComposingBase: -1, lastComposingExtent: -1,
     viewFocused: false, pressedKeys: new Map(),
@@ -1131,10 +1132,28 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
       setViewFocus(host, false, event.timeStamp);
     }
   }));
-  observe(input, "compositionstart", () => { host.composing = true; host.compositionStart = input.selectionStart; host.pendingNativeEdit ||= host.pendingTextInput; emitText(host); });
-  observe(input, "compositionupdate", () => emitText(host));
-  observe(input, "compositionend", () => { host.composing = false; host.compositionStart = -1; emitText(host); });
-  observe(input, "input", () => { host.pendingNativeEdit ||= host.pendingTextInput; emitText(host); });
+  observe(input, "compositionstart", () => {
+    host.composing = true;
+    host.composition = new BrowserTextComposition(input.value, input.selectionStart, input.selectionEnd);
+    host.pendingNativeEdit ||= host.pendingTextInput;
+    emitText(host);
+  });
+  observe(input, "compositionupdate", (event) => {
+    const composition = host.composition;
+    composition?.update((event as CompositionEvent).data);
+    // Do not pair the next preedit range with the previous DOM text. The
+    // identity check also retires callbacks from a cleared/replaced client.
+    queueMicrotask(() => {
+      if (host.composing && host.composition === composition) emitText(host, true);
+    });
+  });
+  observe(input, "compositionend", () => { host.composing = false; host.composition = null; emitText(host); });
+  observe(input, "input", (event) => {
+    const edit = event as InputEvent;
+    if (edit.inputType === "insertCompositionText" && edit.data !== null) host.composition?.update(edit.data);
+    host.pendingNativeEdit ||= host.pendingTextInput;
+    emitText(host, true);
+  });
   for (const clipboardEvent of ["copy", "cut", "paste"]) {
     observe(input, clipboardEvent, (event) => {
       if (!host.interactiveSelectionEnabled) event.preventDefault();
@@ -1512,7 +1531,7 @@ export function clearTextInput(hostId: number): void {
     host.pendingBlurConnectionCloseTimer = 0;
   }
   host.composing = false;
-  host.compositionStart = -1;
+  host.composition = null;
   host.input.value = "";
   host.input.hidden = true;
   rememberTextState(host, "", 0, 0, -1, -1);
@@ -2569,7 +2588,7 @@ function closeTextConnectionAfterBlur(host: BrowserHost): void {
   host.textInputAttached = false;
   host.lastNativeTextInputSequence = 0;
   host.editableGeometrySource = "none";
-  host.compositionStart = -1;
+  host.composition = null;
   host.input.value = "";
   host.input.hidden = true;
   rememberTextState(host, "", 0, 0, -1, -1);
@@ -2607,7 +2626,7 @@ function handleTextInputBlur(
   }
 }
 
-function emitText(host: BrowserHost): void {
+function emitText(host: BrowserHost, synchronizeCompositionData = false): void {
   if (host.pendingTextInput) return;
   let start = host.input.selectionStart ?? 0;
   let end = host.input.selectionEnd ?? start;
@@ -2620,8 +2639,9 @@ function emitText(host: BrowserHost): void {
     end = selectionExtent;
     selectionBase = selectionExtent;
   }
-  const composingBase = host.composing ? Math.max(0, host.compositionStart) : -1;
-  const composingExtent = host.composing ? end : -1;
+  const composing = host.composing ? host.composition?.range(host.input.value, synchronizeCompositionData) : null;
+  const composingBase = composing?.[0] ?? -1;
+  const composingExtent = composing?.[1] ?? -1;
   if (host.lastTextValue === host.input.value &&
       host.lastSelectionBase === selectionBase &&
       host.lastSelectionExtent === selectionExtent &&
