@@ -12,7 +12,14 @@ public sealed class AppDelegate : DorotiMauiUIApplicationDelegate
 
     public override bool FinishedLaunching(UIKit.UIApplication application, NSDictionary? options)
     {
+        var textOutput = Environment.GetEnvironmentVariable("DOROTI_APPLE_TEXT_EDITING_PROBE");
+        if (!string.IsNullOrEmpty(textOutput)) File.AppendAllText(textOutput + ".launch", "before Maui launch\n");
         var result = base.FinishedLaunching(application, options);
+        if (!string.IsNullOrEmpty(textOutput))
+        {
+            File.AppendAllText(textOutput + ".launch", "after Maui launch\n");
+            _ = DorotiTestbedApp.Apple.AppleFeatureProbe.RunTextEditingAsync(textOutput);
+        }
         if (Environment.GetEnvironmentVariable("DOROTI_APPLE_FEATURE_PROBE") is { Length: > 0 } featureOutput)
             _ = DorotiTestbedApp.Apple.AppleFeatureProbe.RunAsync(featureOutput);
         if (Environment.GetEnvironmentVariable("DOROTI_UIKIT_SERVICES_PROBE") is { Length: > 0 } output)

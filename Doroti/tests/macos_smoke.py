@@ -16,7 +16,8 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--output', type=Path, required=True)
 parser.add_argument('--tfm', default='net10.0-macos27.0')
 parser.add_argument('--skip-build', action='store_true')
-parser.add_argument('--cases', default='multi,windowing,desktop,services,input,features,navigation,rendering,lifecycle')
+parser.add_argument('--configuration', choices=['Debug', 'Release'], default='Debug')
+parser.add_argument('--cases', default='multi,windowing,desktop,services,input,text-editing,features,navigation,rendering,lifecycle')
 parser.add_argument('--renderer', choices=['graphite', 'ganesh'], default='graphite')
 args = parser.parse_args()
 out = args.output.resolve()
@@ -25,14 +26,14 @@ out.mkdir(parents=True, exist_ok=True)
 project = ROOT / 'samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj'
 if not args.skip_build:
     with (out / 'build.log').open('w') as log:
-        subprocess.run(['dotnet', 'build', str(project), '-c', 'Debug', '-r', 'osx-arm64',
+        subprocess.run(['dotnet', 'build', str(project), '-c', args.configuration, '-r', 'osx-arm64',
             '-p:DorotiMacOSTargetFramework=' + args.tfm], stdout=log, stderr=subprocess.STDOUT, check=True, timeout=1200)
-app = project.parent / 'bin/Debug' / args.tfm / 'osx-arm64/Doroti Testbed (AppKit).app'
+app = project.parent / 'bin' / args.configuration / args.tfm / 'osx-arm64/Doroti Testbed (AppKit).app'
 exe = app / 'Contents/MacOS/DorotiTestbedApp.MacOS'
 restoration_id = 'macos-smoke-' + uuid.uuid4().hex
 base_env = os.environ | {'DOROTI_MACOS_GRAPHITE': '1' if args.renderer == 'graphite' else '0',
     'DOROTI_SAMPLE': 'reload', 'DOROTI_DESKTOP_SAMPLE': 'solid', 'DOROTI_RESTORATION_ID': restoration_id}
-results = {'renderer': args.renderer, 'physicalInput': 'notVerified', 'restorationId': restoration_id, 'checks': {}}
+results = {'configuration': args.configuration, 'tfm': args.tfm, 'renderer': args.renderer, 'physicalInput': 'notVerified', 'restorationId': restoration_id, 'checks': {}}
 active = []
 
 
@@ -201,12 +202,14 @@ try:
             finish(process)
             assert not Path(str(path) + '.error').exists(), Path(str(path) + '.error').read_text() if Path(str(path) + '.error').exists() else ''
             results['checks'][case] = json.loads(path.read_text())
-        elif case == 'features':
-            path = out / 'features.json'
-            process = start(case, {'DOROTI_APPLE_FEATURE_PROBE': str(path)})
+        elif case in ('features', 'text-editing'):
+            path = out / (case + '.json')
+            variable = 'DOROTI_APPLE_FEATURE_PROBE' if case == 'features' else 'DOROTI_APPLE_TEXT_EDITING_PROBE'
+            process = start(case, {variable: str(path)})
             wait_file(process, path)
             report = json.loads(path.read_text())
             assert report['status'] == 'PASS', report
+            if case == 'text-editing': assert report['callbacks'] > 0, report
             results['checks'][case] = report
             command(process, 'exit')
             finish(process)

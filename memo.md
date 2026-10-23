@@ -4,21 +4,25 @@
 
 Windows·Web 수정일: 2026-10-23
 
-상태: **Windows R1 일반 입력·R2/R3·Web R5 수정 및 자동 검증 완료 / 물리 IME·Safari·성능 검증은 미완료. Apple R1·Qt R4는 미수정.**
+Apple 수정일: 2026-10-23
+
+상태: **Apple R1 구현·AppKit/Catalyst/iOS Simulator Release native 자동 검증 완료(iOS LLVM=false). Windows R1 일반 입력·R2/R3·Web R5 자동 검증 완료 / 물리 IME·Safari·화면 성능은 미완료. Qt R4는 미수정.**
 
 검토 대상은 기존 텍스트 중간에서 빠르게 입력할 때의 커서 튐, IME 조합·취소·선택 동기화와 입력 지연이다. iOS, Mac Catalyst, macOS AppKit, Android, Windows MAUI, Windows App SDK, Linux Qt, Web을 확인했다. Material/Cupertino는 위젯 계층이며 플랫폼 입력 호스트와 구분한다.
 
 10월 22일 검토 기준은 `07ba3f31928f7d0f7f131097e094098f721ec1f0`과 당시 Android 수정이었다. 10월 23일 Windows·Web 후속 작업은 깨끗한 `04ad305c92bc5cc354c8f1d86cf84d910006dff3`에서 시작해 제품 코드·회귀 검사를 수정했다. 결과와 재실행 명령은 [Windows·Web 수정 기록](history/26-10-23/windows-web-text-input.md)에 보존한다. `work.md`는 변경하지 않았다.
 
+Apple 후속 작업은 깨끗한 `44f2994cccb4ae5b6f13a10e2d190e6a8d32dff6`에서 시작했다. native 선택·marked text·echo/formatter·client 전환 처리와 실제 native 입력창 검사를 추가했다. 세부 범위·빌드 프로필·재실행 명령은 [Apple 수정 기록](history/26-10-23/apple-text-input.md)에 보존한다.
+
 ## 1. 우선 확인할 사항
 
-**10월 22일에는 Apple MAUI와 Windows MAUI에 같은 문자열 기반 커서 추정이 남아 있었다.** 10월 23일 Windows 일반 TextBox 경로는 네이티브 선택 조회로 교체했고, Windows App SDK의 IMM 취소·내부 커서와 Web 조합 범위도 수정했다. Apple·Qt의 기존 지적과 플랫폼별 실제 IME 검증은 남아 있다.
+**10월 22일에는 Apple MAUI와 Windows MAUI에 같은 문자열 기반 커서 추정이 남아 있었다.** 10월 23일 Windows 일반 TextBox와 Apple의 지원되는 입력창은 native 선택 조회로 교체했다. AppKit의 누락된 preedit 알림, UIKit의 동일 문자열 unmark, Apple의 지연된 echo/formatter도 보완했다. Windows App SDK의 IMM 취소·내부 커서와 Web 조합 범위도 수정했다. Qt R4와 플랫폼별 실제 IME·전체 framework 왕복·화면 성능 검증은 남아 있다.
 
 여기서 `소스 확인`은 현재 구현과 API 계약의 비교, `함수 반례`는 실제 소스에서 추출한 함수 실행을 뜻한다. 두 결과 모두 특정 OS·IME에서 사람이 타이핑해 증상을 확인한 `실기기 재현`과 다르다. P1은 입력 정확성과 관련해 먼저 조치할 항목, P2는 다음으로 확인·보완할 항목이다.
 
 | ID | 우선순위 | 대상 | 확인한 내용 | 증거 수준 |
 | --- | --- | --- | --- | --- |
-| R1 | P1 | iOS / Mac Catalyst / macOS AppKit / Windows MAUI | Windows 일반 Entry/Editor는 실제 선택 조회로 수정. Apple·선택 API 없는 보안 입력 fallback은 남음. | Windows Release native callback 검사, Apple native 미실행 |
+| R1 | P1 | iOS / Mac Catalyst / macOS AppKit / Windows MAUI | Apple과 Windows 일반 Entry/Editor를 실제 선택 조회로 수정. API·handler·field editor가 없는 경우와 Windows 보안 입력 fallback은 남음. | AppKit/Catalyst/iOS Simulator Release native 40개씩 PASS(iOS LLVM=false). Windows Release native callback 검사 완료 |
 | R2 | P1 | Windows App SDK | 소유한 preedit만 취소 시 제거하고 확정 결과는 보존하도록 수정. | production C++ 상태 검사 + native Release 빌드, 실제 Windows IME 미실행 |
 | R3 | P1 | Windows App SDK | `GCS_CURSORPOS`와 cursor-only 메시지를 처리하도록 수정. | R2와 합쳐 C++ 상태 검사 16개 PASS, 실제 Windows IME 미실행 |
 | R4 | P2 | Linux Qt | IME query에 preedit 내부 커서 offset이 포함된 위치를 돌려준다. | 소스 + Qt 6.12 계약 |
@@ -29,9 +33,9 @@ Windows·Web 수정일: 2026-10-23
 | 플랫폼 / 호스트 | 중간 입력 커서 처리 | 현재 판단 |
 | --- | --- | --- |
 | Android MAUI | `EditText.SelectionStart/SelectionEnd`를 읽는다. 텍스트 전체 재복사 대신 managed 값과 native buffer 길이를 확인한다. | 앞선 Galaxy Release 자동 검사에서 수정된 경로 확인. 모든 Android IME나 체감 지연까지 통과한 것은 아니다. |
-| iOS MAUI | 공통 문자열 비교 fallback을 사용한다. | R1과 UIKit 비동기 상태 적용의 추가 확인 필요. |
-| Mac Catalyst MAUI | iOS와 같은 UIKit 및 공통 fallback 경로다. | iOS와 함께 확인해야 한다. |
-| macOS AppKit MAUI | 공통 fallback을 사용한다. AppKit 보조 코드는 focus/Return 처리를 보완한다. | focus 보완이 텍스트 변경 순간의 커서 추정을 교체하지는 않는다. R1 대상이다. |
+| iOS MAUI | UIKit `SelectedTextRange`를 UTF-16 offset으로 읽고 조합 메서드 종료 뒤의 상태도 발행한다. | iPhone 17 / iOS 27.0 Simulator의 Debug·Release native 각 40개 시나리오 PASS. Release는 Mono AOT·LLVM=false이며 실기기는 별도. |
+| Mac Catalyst MAUI | iOS와 같은 UIKit 선택·조합·지연 응답 보호를 사용한다. | Release native 40개 시나리오 PASS. OS IME·화면 성능은 별도. |
+| macOS AppKit MAUI | 현재 field editor/`NSTextView.SelectedRange`를 읽는다. MAUI에 없는 preedit는 storage 변경 알림과 캐시로 전달한다. | Release native 40개 시나리오 PASS. 일반 편집 90회에서 추가 전체 문자열 읽기 0회. OS IME·화면 성능은 별도. |
 | Windows MAUI | 일반 TextBox의 실제 선택을 읽고 MAUI가 반영한 문자열과 같은 native TextChanged에서 발행한다. TextChanging 이후 오래된 선택 snapshot을 막는다. | R1 일반 Entry/Editor 자동 검증 완료. 보안 입력 fallback·물리 IME·성능은 별도. |
 | Windows App SDK | C++ 모델이 실제 교체 범위와 preedit 소유 상태·IMM 내부 커서를 처리한다. | R2/R3 수정·상태 검사 완료. 실제 IMM 메시지 순서와 비동기 상태 왕복은 추가 확인 필요. |
 | Linux Qt | `QInputMethodEvent`의 commit/preedit/selection/cursor 정보를 처리한다. | 문자열 diff 문제는 사용하지 않는다. R4와 실제 ibus/fcitx 입력 확인 필요. |
@@ -39,11 +43,11 @@ Windows·Web 수정일: 2026-10-23
 
 `CupertinoTextField`는 내부에서 공통 `EditableText`를 생성하므로 별도 안전 판정을 내릴 수 없다. Android Cupertino에는 Android 호스트 수정이 적용되고, iOS의 Material/Cupertino에는 같은 UIKit 호스트의 위험이 적용된다. iPhone의 **Web 앱**은 UIKit MAUI 대신 Web 경로로 검토해야 한다.
 
-근거: [CupertinoTextField](packages/Doroti.Cupertino/src/text_field.cs#L1552), [공통 MAUI 입력 브리지](packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.cs#L899), [AppKit 보조 처리](packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.MacOS.cs), [WinUI 조합 구독](packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.Windows.cs#L35).
+근거: [CupertinoTextField](packages/Doroti.Cupertino/src/text_field.cs#L1552), [공통 MAUI 입력 브리지](packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.cs), [Apple 선택·응답 처리](packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.Apple.cs), [AppKit native 구독](packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.MacOS.cs), [WinUI 조합 구독](packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.Windows.cs#L35).
 
 ## 3. 검토 당시 결함과 수정 상태
 
-### R1. Apple MAUI의 잔여 문제와 Windows MAUI 수정
+### R1. Apple·Windows MAUI의 실제 선택 조회
 
 검토 당시 [ReadSelectionAfterTextChange](packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.cs)는 Android에서만 네이티브 선택을 읽고 다른 MAUI 대상은 공통 접두·접미를 비교했다. 같은 글자가 이어지면 문자열만으로 편집 위치를 확정할 수 없다. 아래 표는 **수정 전 공통 fallback**의 반례다.
 
@@ -60,9 +64,11 @@ Windows 일반 TextBox는 [Windows 입력 구독](packages/platforms/maui/Doroti
 
 이는 **공통 계산의 오류 반례**다. 각 플랫폼의 MAUI/native callback 순서와 실제 화면의 튐 지속 시간까지 재현한 결과는 아니다. iOS/Windows 등에서 뒤이은 선택 알림이 정상 위치를 전달하더라도, 잘못된 중간 상태가 이미 프레임워크로 전달될 수 있다는 점이 문제다.
 
-보완 방향은 플랫폼이 가진 실제 선택을 우선 사용하는 것이다. UIKit은 `SelectedTextRange`와 문서 시작점 기준 offset, AppKit은 현재 field editor/`NSTextView`의 선택 범위, WinUI는 지원되는 native 입력창의 selection을 확인한다. handler 부재·선택 없음·보안 입력창 등 fallback 조건은 구분해야 한다. [UIKit selectedTextRange](https://developer.apple.com/documentation/uikit/uitextinput/selectedtextrange), [AppKit selectedRange](https://developer.apple.com/documentation/appkit/nstextinputclient/selectedrange%28%29).
+수정 후 UIKit은 `SelectedTextRange`와 문서 시작점 기준 UTF-16 offset, AppKit은 현재 field editor/`NSTextView`의 선택 범위를 사용한다. 문서 길이·범위 유효성을 검사하며 handler 부재·선택 없음·API 없는 입력창의 fallback을 구분한다. [UIKit selectedTextRange](https://developer.apple.com/documentation/uikit/uitextinput/selectedtextrange), [AppKit selectedRange](https://developer.apple.com/documentation/appkit/nstextinputclient/selectedrange%28%29).
 
-전체 native 문자열을 매번 다시 읽는 방식을 그대로 확대하지 않는다. 동일 텍스트 revision을 확인하는 데 필요한 최소 조회로 구성하고, 조합 범위와 텍스트·선택의 일관성을 함께 검사해야 한다.
+일반 입력은 MAUI가 이미 만든 문자열과 native 길이·선택을 사용하며 전체 native 문자열을 추가로 읽지 않는다. AppKit은 `SetMarkedText`가 MAUI `TextChanged` 없이 field editor만 바꾸는 경우를 확인해 storage·선택 알림을 추가했다. MAUI에 반영되지 않은 native 문자 변경은 dirty 상태일 때 한 번 읽고 캐시하며, 선택·marked 속성만 바뀌면 재복사하지 않는다. UIKit은 문자열이 그대로인 `UnmarkText` 등도 native 메서드가 끝난 뒤 발행한다.
+
+같은 native 상태의 echo는 다시 쓰지 않는다. formatter는 입력 처리 뒤 적용하며 입력 revision·client generation·최신 요청·미발행 선택/조합 변화를 확인한다. 후속 입력이나 새 client 뒤에 큐의 이전 응답을 적용하지 않는다. AppKit의 명시적 상태 변경은 활성 field editor에도 반영한다. 입력창 재표시는 현재 native 선택·조합을 유지하고, endpoint 전환은 표시 중인 문자열과 선택을 보존한다. 이 검사는 native bridge에 검사 client를 연결한 결과이며 실제 `EditableText`의 전체 왕복이나 OS IME 통과를 뜻하지 않는다.
 
 ### R2. Windows App SDK의 조합 취소 처리
 
@@ -114,7 +120,7 @@ Windows 일반 TextBox는 [Windows 입력 구독](packages/platforms/maui/Doroti
 
 | 항목 | 근거 및 확인할 상황 |
 | --- | --- |
-| UIKit의 지연된 echo | [DispatchInputMutation](packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.cs#L552)은 iOS/Catalyst에서 항상 UI dispatcher로 보낸다. `_publishingNativeTextChange`는 동기 callback 동안만 true이므로, 지연 실행 시 [UpdateStateCore](packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.cs#L262)의 동일 입력 보호가 다른 조건으로 평가된다. 즉시 echo, formatter가 바꾼 상태, 다음 입력 후 도착한 상태를 구분해 검사해야 한다. |
+| Apple의 지연된 echo·응답 | [UpdateAppleState](packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.Apple.cs)는 같은 echo를 다시 쓰지 않고 큐 대기 중 입력/client가 바뀐 응답을 거절한다. 세 Apple host에서 echo·formatter·복수 요청·후속 입력·새 client 검사를 통과했다. 응답 자체가 외부에서 지연되어 다음 입력 뒤 처음 `UpdateState`를 호출하는 경우에는 원래 입력 번호가 API에 없으므로 모든 비동기 transport의 오래된 응답을 식별한다고 일반화할 수 없다. 실제 framework 전체 왕복도 별도 검증 대상이다. |
 | 비동기 native 상태 적용 | Windows App SDK는 native 텍스트를 managed 입력 큐로 보낸 뒤 상태 갱신을 Win32 메시지로 되돌린다. Qt도 `UpdateTextState`를 queued connection으로 적용한다. 해당 text-state 구조체에는 Web과 같은 acknowledged input sequence가 없다. 이것만으로 순서 오류가 발생한다고 확정할 수는 없지만, 지연된 응답이 최신 입력이나 새 client를 덮지 않는지 확인해야 한다. |
 | 선택만 바뀐 알림 | MAUI 선택 알림은 UI turn 단위로 합친다. 텍스트 변경의 즉시 발행을 전부 지연 방식으로 돌리면 공통 브리지 주석에 기록된 연속 Backspace의 갱신 정체가 재발할 수 있다. 최신 텍스트·선택·조합을 함께 발행하면서 텍스트 전달은 굶지 않아야 한다. |
 | 동일 알림의 비용 | 공통 `EditableText.updateEditingValue`는 같은 값이면 일찍 반환한다. 따라서 동일 알림이 곧바로 중복 layout/paint를 뜻하지 않는다. callback·문자열 변환·microtask·프레임 대기 비용은 실제 측정으로 구분해야 한다. |
@@ -126,6 +132,9 @@ Windows 일반 TextBox는 [Windows 입력 구독](packages/platforms/maui/Doroti
 
 | 검사 | 결과 | 의미 / 제외 범위 |
 | --- | --- | --- |
+| 10/23 AppKit Release native bridge | 40개 시나리오·124개 편집/상태 단계·145개 callback, 불일치 0 | Entry/Editor/secure Entry의 실제 native API와 비교. 일반 편집의 추가 전체 문자열 읽기 0회. 물리 IME·전체 위젯 왕복·화면 지연 제외. |
+| 10/23 Catalyst Release native bridge | 40개 시나리오·124개 편집/상태 단계·132개 callback, 불일치 0 | UIKit 조합 내부 커서·동일 문자열 unmark·취소·echo/formatter·새 client·조합 중 재표시/endpoint 전환 포함. 물리 IME·전체 위젯 왕복·화면 지연 제외. |
+| 10/23 iOS Simulator Release native bridge | 40개 시나리오·124개 편집/상태 단계·132개 callback, 불일치 0 | iPhone 17 / iOS 27.0, Mono AOT·Optimize=true·MtouchInterpreter=-all·LLVM=false. Debug도 40개·130 callback PASS. 이전 기동 timeout과 구분하며 실기기·물리 IME·전체 위젯 왕복·화면 지연은 제외. |
 | 10/23 Windows MAUI Release 실제 WinUI callback | Entry/Editor 16개 시나리오·60회 편집·68개 callback, 불일치 0 | 실제 native TextBox의 문자열·선택과 매 callback 비교. 반복 문자·공백·emoji·선택 교체 및 12회 연속 삽입/삭제. 합성 native 편집이며 물리 키보드·IME·화면 지연 검사가 아님. |
 | 10/23 Windows App SDK native Release + production C++ 상태 | 빌드 PASS, 상태 검사 16개 PASS | cancel/END/commit/cursor-only/빈 preedit/UTF-16/조회 실패. 실제 IMM context·IME 메시지 구동은 제외. |
 | 10/23 Web host Release + strict TypeScript | 경고·오류 0, PASS | Release 생성 JS와 새 조합 모듈을 아래 브라우저 검사에서 실제 로드. |
@@ -135,20 +144,22 @@ Windows 일반 TextBox는 [Windows 입력 구독](packages/platforms/maui/Doroti
 | 10/22 검토: 컴파일한 Web 함수 + 합성 DOM 형태의 입력 | 기존 보호 4개 확인, 수정 전 조합 범위 반례 1개 | 당시 Node VM 함수 검사. |
 | 앞선 동일 checkout: Cupertino 커서 회귀 | PASS | iOS/Android/Windows/macOS/Linux 환경 설정의 CPU 위젯·커서 그림·후속 합성 IME 삽입 검사. 실제 native 입력 경로 아님. |
 | 앞선 동일 checkout: Galaxy S25 / Android 17 / Release | 편집 18개 PASS, 커서 불일치 0, 포커스·paste 2개 PASS | 실제 Android host에서 InputConnection 자동 명령 실행. 사람의 Samsung 키보드 타이핑·입력부터 화면 표시까지의 지연·FPS는 별도. |
-| Apple 실제 입력 | 미실행 | iPhone/iPad, Catalyst, AppKit의 callback 순서·marked text·실제 키보드·성능 미검증. |
+| Apple 물리 키보드·OS IME·실기기 | 미실행 | 위 native API 자동화와 별도로 iPhone/iPad·Catalyst·AppKit의 실제 키보드/IME와 화면 성능을 확인해야 한다. |
 | Windows OS IME / Qt 실제 IME / 브라우저 OS IME·Apple Safari | 미실행 | 브라우저 명령·합성 이벤트는 OS 키보드의 사용자 입력과 다름. |
 | Windows MAUI 프로세스 정상 종료 | notVerified | 검사 후 window.Close를 호출해도 5초 내 프로세스가 종료되지 않아 runner가 자신이 띄운 프로세스를 정리했다. 입력 검사 PASS와 정상 종료를 구분한다. |
 
 테스트·컴파일에는 모두 `Doroti/eng/run-with-timeout.py --timeout 1200`을 사용했다. 10/23 원시 산출물은 삭제 가능한 `temp/testing/windows-web-text-input/`와 `temp/testing/text-input-*-build*.log`다. 10/22 검토 산출물은 `temp/testing/text-input-platform-review/`, Web 컴파일 로그는 `temp/testing/text-editing/platform-review-web-build.log`다. 핵심 결과·해시·명령은 이 문서와 [수정 기록](history/26-10-23/windows-web-text-input.md)에 남긴다.
 
+Apple 원시 결과는 `temp/testing/apple-text-input/`에 있고, 재실행 명령·환경·범위는 [Apple 수정 기록](history/26-10-23/apple-text-input.md)에 남긴다. 모든 preliminary 실패/기동 timeout을 최종 입력 PASS와 구분한다.
+
 앞선 Android 빌드 설정, APK 해시와 세부 검사는 [커서 수정·성능 기록](history/26-10-22/android-text-input-caret.md)을 참고한다.
 
 ## 6. 후속 작업 순서와 통과 조건
 
-1. **R1: Apple 실제 선택 조회와 Windows 잔여 검증.** Apple은 미수정이다. UIKit/AppKit의 native 선택·같은 UI turn·지연 echo를 확인한다. Windows 일반 Entry/Editor 자동 callback 비교는 완료했으며 보안 입력 fallback·실제 IME와 프로세스 정상 종료는 추가 확인한다.
+1. **R1: 실제 입력과 전체 상태 왕복 검증.** Apple native 선택 조회는 구현했고 세 host의 Release native 검사를 통과했다(iOS LLVM=false). 실제 한/일/중 IME와 전체 framework 왕복은 남아 있다. Windows 일반 Entry/Editor 자동 callback 비교는 완료했으며 보안 입력 fallback·실제 IME와 프로세스 정상 종료는 추가 확인한다.
 2. **R2/R3: Windows 실제 IMM 취소·커서.** 구현·상태 검사는 완료했다. 실제 한국어·일본어·중국어 IME에서 preedit 내부 이동, cursor-only, commit, Escape, GCS 없는 취소, result 직후 END와 지연 managed 응답을 확인한다.
 3. **R4: Qt query 좌표.** 조합 문자열이 없는 논리 문서 좌표와 표시 문서 좌표를 분리한다. preedit 내부 위치 0/중간/끝, 취소·선택·replacement를 Qt 기본 입력창과 비교하고 ibus/fcitx에서도 확인한다.
 4. **R5: OS IME와 Apple Safari.** Chrome 브라우저 조합 명령·WebKit DOM 검사는 완료했다. OS IME 및 Apple 기기의 Safari에서 이벤트 순서·전체 조합 범위·stale 응답 보호를 확인하고 실제 managed worker와 연결해 재검증한다.
-5. **공통 정확성·성능 회귀.** Windows/Web의 12회 연속 합성 입력·삭제는 완료했다. 실제 조합 중 붙여넣기·formatter·field 전환과 Release 화면 반영을 확인한다. Windows 합성 편집→callback 시간은 기록했지만 물리 입력 지연·FPS·프레임 페이싱은 측정하지 않았다.
+5. **공통 정확성·성능 회귀.** Windows/Web과 세 Apple native bridge의 12회 연속 합성 입력·삭제는 완료했다. Apple의 합성 조합·formatter·field 전환도 위 범위에서 검사했다. 실제 IME 조합 중 붙여넣기·formatter·field 전환과 전체 framework/Release 화면 반영을 확인한다. 물리 입력 지연·FPS·프레임 페이싱은 측정하지 않았다.
 
-플랫폼별 native 재현과 수정 후 검증 전에는 Apple 또는 전체 플랫폼의 입력 문제가 해결됐다고 표시하지 않는다.
+Apple 결과는 위 구성의 native bridge 자동화 통과로 한정한다. iOS 실기기·다른 빌드 프로필과 플랫폼별 실제 IME·전체 framework/화면 검증 전에는 Apple 또는 전체 플랫폼의 입력 문제가 모두 해결됐다고 표시하지 않는다.

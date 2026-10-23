@@ -134,6 +134,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
             ? (_editor is null ? Array.Empty<InputView>() : new InputView[] { _editor })
             : (_editor is null ? new InputView[] { _entry } : new InputView[] { _entry, _editor });
     internal bool HasClient => _hasClient;
+    internal bool InputMutationPending => _updating || _drainingInputMutations || HasPendingInputMutation;
 #if ANDROID
     internal event Action<InputView>? InputCreated;
     internal bool HasMultilineClient => _hasClient && _active is Editor;
@@ -224,6 +225,11 @@ public sealed partial class MauiTextInputBridge : IDisposable
         var start = Math.Clamp(old.CursorPosition, 0, text.Length);
         var end = Math.Clamp(start + Math.Max(0, old.SelectionLength), start, text.Length);
         var focus = old.IsFocused;
+        var state = new DorotiTextEditingState(text, new(start, end), null);
+#if IOS || MACCATALYST || MACOS
+        state = ReadAppleState(old);
+        focus |= OwnsNativeFocus;
+#endif
         var next = configuration.inputType == DorotiTextInputType.multiline && !configuration.obscureText
             ? (InputView)(_editor ??= Subscribe(_editorFactory())) : (_entry ??= Subscribe(_entryFactory()));
         _updating = true;
@@ -245,7 +251,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
         // Trait changes (including secure entry) can normalize native selection
         // even when MAUI retains the same InputView. Only write changed state so
         // an unaffected native composing range is left intact.
-        UpdateStateCore(new(text, new(start, end), null));
+        UpdateStateCore(state with { composingRange = ReferenceEquals(old, next) ? state.composingRange : null });
         if (!ReferenceEquals(old, next))
         {
             AttachActiveInput(requestFocus: focus && !_suspended);
@@ -256,7 +262,11 @@ public sealed partial class MauiTextInputBridge : IDisposable
     internal void UpdateState(DorotiTextEditingState state)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
+#if IOS || MACCATALYST || MACOS
+        UpdateAppleState(state);
+#else
         DispatchInputMutation(() => UpdateStateCore(state));
+#endif
     }
 
     private void UpdateStateCore(DorotiTextEditingState state)
@@ -282,15 +292,31 @@ public sealed partial class MauiTextInputBridge : IDisposable
             start,
             length
         );
+#if MACOS
+        var nativeTextChanged = !string.Equals(ReadMacOSText(_active), state.text, StringComparison.Ordinal);
+#elif IOS || MACCATALYST
+        var nativeTextChanged = !string.Equals(_active.Text ?? string.Empty, state.text, StringComparison.Ordinal);
+#endif
 
         // Do not echo a native edit back into the same control. Reassigning an
         // accepted text/selection can replace or end the platform IME's active
         // composing/marked range (for example Gboard's Editable span).
         if (
+#if MACOS
+            string.Equals(ReadMacOSText(_active), state.text, StringComparison.Ordinal)
+#else
             string.Equals(_active.Text ?? string.Empty, state.text, StringComparison.Ordinal)
+#endif
             && (
+#if IOS || MACCATALYST || MACOS
+                TryReadAppleSelection(_active, state.text, out var nativeSelection)
+                    ? nativeSelection == new DorotiTextSelection(start, end)
+                        && ReadNativeComposingRange(_active, state.text.Length) == state.composingRange
+                    : _active.CursorPosition == start && _active.SelectionLength == end - start
+#else
                 _publishingNativeTextChange
                 || (_active.CursorPosition == start && _active.SelectionLength == end - start)
+#endif
             )
         )
         {
@@ -304,10 +330,20 @@ public sealed partial class MauiTextInputBridge : IDisposable
         _updating = true;
         try
         {
+#if MACOS
+            if (nativeTextChanged)
+            {
+                if (!string.Equals(_active.Text ?? string.Empty, state.text, StringComparison.Ordinal))
+                    _active.Text = state.text;
+                else
+                    _active.Handler?.UpdateValue(nameof(InputView.Text));
+            }
+#else
             if (!string.Equals(_active.Text ?? string.Empty, state.text, StringComparison.Ordinal))
             {
                 _active.Text = state.text;
             }
+#endif
 
             if (_active.CursorPosition != start)
             {
@@ -318,6 +354,9 @@ public sealed partial class MauiTextInputBridge : IDisposable
             {
                 _active.SelectionLength = end - start;
             }
+#if IOS || MACCATALYST || MACOS
+            ApplyAppleNativeState(_active, state, start, end, nativeTextChanged);
+#endif
         }
         finally
         {
@@ -549,7 +588,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
     // that thread waiting for the UI thread, which may be entering the isolate.
     // Drain older queued commands before a new UI-thread command so a delayed
     // clear cannot erase a newly attached client's text.
-    private void DispatchInputMutation(Action mutation, bool changesClient = false)
+    private void DispatchInputMutation(Action mutation, bool changesClient = false, bool defer = false)
     {
         lock (_inputMutationGate)
         {
@@ -557,6 +596,9 @@ public sealed partial class MauiTextInputBridge : IDisposable
             if (changesClient)
             {
                 _pendingClientChanges++;
+#if IOS || MACCATALYST || MACOS
+                _appleClientRevision++;
+#endif
             }
         }
 #if IOS || MACCATALYST
@@ -569,7 +611,10 @@ public sealed partial class MauiTextInputBridge : IDisposable
         // UIKit mutation, even when it already originates on the UI thread.
         _inputDispatcher.Dispatch(DrainInputMutations);
 #else
-        if (_inputDispatcher.IsDispatchRequired)
+#if MACOS
+        defer |= _publishingNativeTextChange;
+#endif
+        if (defer || _inputDispatcher.IsDispatchRequired)
         {
             _inputDispatcher.Dispatch(DrainInputMutations);
         }
@@ -658,6 +703,9 @@ public sealed partial class MauiTextInputBridge : IDisposable
         var start = Math.Clamp(expected.CursorPosition, 0, text.Length);
         var end = Math.Clamp(start + Math.Max(0, expected.SelectionLength), start, text.Length);
         var state = new DorotiTextEditingState(text, new(start, end), null);
+#if IOS || MACCATALYST || MACOS
+        state = ReadAppleState(expected);
+#endif
         if (!_attachOnDemand)
         {
             if (requestFocus)
@@ -674,8 +722,12 @@ public sealed partial class MauiTextInputBridge : IDisposable
                         var currentText = expected.Text ?? string.Empty;
                         var currentStart = Math.Clamp(expected.CursorPosition, 0, currentText.Length);
                         var currentEnd = Math.Clamp(currentStart + Math.Max(0, expected.SelectionLength), currentStart, currentText.Length);
+                        var currentState = new DorotiTextEditingState(currentText, new(currentStart, currentEnd), null);
+#if IOS || MACCATALYST || MACOS
+                        currentState = ReadAppleState(expected);
+#endif
                         FocusInput(expected);
-                        UpdateStateCore(new(currentText, new(currentStart, currentEnd), null));
+                        UpdateStateCore(currentState);
                     }
                 });
             }
@@ -825,6 +877,10 @@ public sealed partial class MauiTextInputBridge : IDisposable
 #if MACOS
         ScheduleMacOSFocus(input);
         return true;
+#elif IOS || MACCATALYST
+        // Re-focusing an active UITextView can normalize its selection/marked
+        // range. Showing an already-owned keyboard needs no responder change.
+        return input.Handler?.PlatformView is UIView { IsFirstResponder: true } || input.Focus();
 #else
         return input.Focus();
 #endif
@@ -911,6 +967,9 @@ public sealed partial class MauiTextInputBridge : IDisposable
         }
 
         var text = args.NewTextValue ?? string.Empty;
+#if MACOS
+        RecordMacOSText(_active, text);
+#endif
 #if WINDOWS
         // WinUI may defer TextChanged after TextChanging has already changed
         // its buffer. The native subscription publishes after MAUI's mapper
@@ -923,6 +982,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
         }
 #endif
         var selection = ReadSelectionAfterTextChange(_active, args.OldTextValue ?? string.Empty, text);
+        var wasPublishing = _publishingNativeTextChange;
         _publishingNativeTextChange = true;
         try
         {
@@ -935,7 +995,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
         }
         finally
         {
-            _publishingNativeTextChange = false;
+            _publishingNativeTextChange = wasPublishing;
         }
     }
 
@@ -1015,6 +1075,23 @@ public sealed partial class MauiTextInputBridge : IDisposable
             PublishNativeEditingState(input, text, selection.baseOffset, selection.extentOffset);
             return;
         }
+#elif IOS || MACCATALYST || MACOS
+        // A queued selection notification must use the current managed text
+        // and native range, rather than an earlier text snapshot/MAUI caret.
+#if MACOS
+        // During an Entry/Editor transition the field editor may not yet be
+        // installed. No native selection exists to publish in this interval;
+        // its begin/selection notifications will supply the attached state.
+        if (input.Handler?.PlatformView is NSTextField field && field.CurrentEditor is not NSTextView) return;
+        text = ReadMacOSText(input);
+#else
+        text = input.Text ?? string.Empty;
+#endif
+        if (TryReadAppleSelection(input, text, out var selection))
+        {
+            PublishNativeEditingState(input, text, selection.baseOffset, selection.extentOffset);
+            return;
+        }
 #endif
         // UIKit and Android can both normalize selection after their text
         // callback. Clamp the finalized native selection to the exact value
@@ -1036,16 +1113,24 @@ public sealed partial class MauiTextInputBridge : IDisposable
             return;
         }
 
-        EditingStateChanged?.Invoke(
-            new DorotiTextEditingState(
-                text,
-                new(start, end),
-                ReadNativeComposingRange(input, text.Length)
-            )
-        );
+        var state = new DorotiTextEditingState(text, new(start, end), ReadNativeComposingRange(input, text.Length));
+#if IOS || MACCATALYST || MACOS
+        lock (_inputMutationGate)
+        {
+            if (_applePublishedState != state) _appleNativeRevision++;
+            _applePublishedState = state;
+            _applePublishedClientRevision = _appleClientRevision;
+        }
+        var wasPublishing = _publishingNativeTextChange;
+        _publishingNativeTextChange = true;
+        try { EditingStateChanged?.Invoke(state); }
+        finally { _publishingNativeTextChange = wasPublishing; }
+#else
+        EditingStateChanged?.Invoke(state);
+#endif
     }
 
-    private static DorotiTextSelection ReadSelectionAfterTextChange(InputView input, string oldText, string newText)
+    private DorotiTextSelection ReadSelectionAfterTextChange(InputView input, string oldText, string newText)
     {
 #if ANDROID
         // MAUI raises TextChanged from Android's text callback, before its
@@ -1070,6 +1155,8 @@ public sealed partial class MauiTextInputBridge : IDisposable
         // WinUI's selection belongs to this synchronous native text callback;
         // the MAUI CursorPosition mapper may still describe the previous edit.
         if (TryReadWindowsSelection(input, newText, out var selection)) return selection;
+#elif IOS || MACCATALYST || MACOS
+        if (TryReadAppleSelection(input, newText, out var selection)) return selection;
 #endif
         var offset = ResolveSelectionAfterTextChange(oldText, newText);
         return new(offset, offset);
@@ -1216,6 +1303,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
             if (input.Handler?.PlatformView is IDorotiUIKitTextInput native)
             {
                 native.FloatingCursorChanged = null;
+                native.NativeEditingStateChanged = null;
             }
             if (input.Handler?.PlatformView is DorotiUIKitTextView nativeEditor)
             {

@@ -1,5 +1,6 @@
 #if IOS || MACCATALYST
 using CoreGraphics;
+using Foundation;
 using Doroti.Ui;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Handlers;
@@ -25,6 +26,7 @@ internal sealed class DorotiUIKitEditorHandler : EditorHandler
 internal interface IDorotiUIKitTextInput
 {
     CGRect CaretRect { get; set; }
+    Action? NativeEditingStateChanged { get; set; }
     Action<DorotiFloatingCursorEvent>? FloatingCursorChanged { get; set; }
     void ResetFloatingCursor();
 }
@@ -74,6 +76,19 @@ internal sealed class DorotiUIKitTextField : MauiTextField, IDorotiUIKitTextInpu
     public DorotiUIKitTextField() => SmartInsertDeleteType = UITextSmartInsertDeleteType.No;
 
     private readonly UIKitFloatingCursor _cursor = new();
+    public Action? NativeEditingStateChanged { get; set; }
+
+    public override void SetMarkedText(string markedText, NSRange selectedRange)
+    {
+        base.SetMarkedText(markedText, selectedRange);
+        NativeEditingStateChanged?.Invoke();
+    }
+
+    public override void UnmarkText()
+    {
+        base.UnmarkText();
+        NativeEditingStateChanged?.Invoke();
+    }
     public CGRect CaretRect { get; set; }
     public Action<DorotiFloatingCursorEvent>? FloatingCursorChanged
     {
@@ -112,6 +127,19 @@ internal sealed class DorotiUIKitTextView : MauiTextView, IDorotiUIKitTextInput
     }
 
     private readonly UIKitFloatingCursor _cursor = new();
+    public Action? NativeEditingStateChanged { get; set; }
+
+    public override void SetMarkedText(string markedText, NSRange selectedRange)
+    {
+        base.SetMarkedText(markedText, selectedRange);
+        NativeEditingStateChanged?.Invoke();
+    }
+
+    public override void UnmarkText()
+    {
+        base.UnmarkText();
+        NativeEditingStateChanged?.Invoke();
+    }
     public CGRect CaretRect { get; set; }
     public Action<DorotiFloatingCursorEvent>? FloatingCursorChanged
     {
@@ -169,6 +197,18 @@ public sealed partial class MauiTextInputBridge
         {
             return;
         }
+
+        // UIKit can clear/replace marked text without a text or selection
+        // change notification. Publish after the native method has normalized
+        // all endpoints, including same-text unmark and cursor-only preedit.
+        native.NativeEditingStateChanged = () =>
+        {
+            if (_disposed || !_hasClient || _updating || _drainingInputMutations || HasPendingClientChange
+                || !ReferenceEquals(input, _active) || !ReferenceEquals(input.Handler?.PlatformView, native)) return;
+            var text = input.Text ?? string.Empty;
+            if (TryReadAppleSelection(input, text, out var selection))
+                PublishNativeEditingState(input, text, selection.baseOffset, selection.extentOffset);
+        };
 
         native.FloatingCursorChanged = point =>
         {

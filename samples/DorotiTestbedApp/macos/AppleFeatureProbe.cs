@@ -23,11 +23,12 @@ internal sealed record AppleFeatureProbeResult(string Status, string WebView, st
 
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
 [JsonSerializable(typeof(AppleFeatureProbeResult))]
+[JsonSerializable(typeof(AppleTextEditingResult))]
 internal sealed partial class AppleFeatureProbeJsonContext : JsonSerializerContext;
 
 // Mirrored in ios/ and macos/ to honor the runner source boundary.
 // Testbed-only native provider checks. Physical IME and VoiceOver are separate gates.
-internal static class AppleFeatureProbe
+internal static partial class AppleFeatureProbe
 {
     private static async Task OnUi(Action action) =>
         await AppleWebViewUi.Dispatcher.InvokeAsync(() =>

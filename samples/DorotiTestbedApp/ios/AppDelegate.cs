@@ -28,7 +28,7 @@ public sealed class AppDelegate : DorotiMauiUIApplicationDelegate
     {
         foreach (var name in new[]
         {
-            "DOROTI_INPUT_PROBE", "DOROTI_UIKIT_SERVICES_PROBE", "DOROTI_APPLE_FEATURE_PROBE",
+            "DOROTI_INPUT_PROBE", "DOROTI_UIKIT_SERVICES_PROBE", "DOROTI_APPLE_FEATURE_PROBE", "DOROTI_APPLE_TEXT_EDITING_PROBE",
             "DOROTI_UIKIT_ROTATION_PROBE", "DOROTI_UIKIT_SHUTDOWN_PROBE", "DOROTI_NAVIGATION_PROBE",
         })
         {
@@ -38,7 +38,14 @@ public sealed class AppDelegate : DorotiMauiUIApplicationDelegate
             Directory.CreateDirectory(Path.GetDirectoryName(outputPath)!);
             Environment.SetEnvironmentVariable(name, outputPath);
         }
+        var textOutput = Environment.GetEnvironmentVariable("DOROTI_APPLE_TEXT_EDITING_PROBE");
+        if (!string.IsNullOrEmpty(textOutput)) File.AppendAllText(textOutput + ".launch", "before Maui launch\n");
         var result = base.FinishedLaunching(application, options);
+        if (!string.IsNullOrEmpty(textOutput))
+        {
+            File.AppendAllText(textOutput + ".launch", "after Maui launch\n");
+            _ = DorotiTestbedApp.Apple.AppleFeatureProbe.RunTextEditingAsync(textOutput);
+        }
         if (Environment.GetEnvironmentVariable("DOROTI_UIKIT_SHUTDOWN_PROBE") is { Length: > 0 } shutdownOutput)
             _ = UIKitShutdownProbe.RunAsync(shutdownOutput);
         if (Environment.GetEnvironmentVariable("DOROTI_APPLE_FEATURE_PROBE") is { Length: > 0 } featureOutput)

@@ -18,10 +18,11 @@ p = argparse.ArgumentParser(description=__doc__)
 p.add_argument('--target', choices=['ios', 'maccatalyst'], required=True)
 p.add_argument('--output', type=Path, required=True)
 p.add_argument('--simulator', help='Simulator UUID; defaults to a booted or latest available iPhone.')
-p.add_argument('--cases', default='services,input,features,navigation,restoration,multi')
+p.add_argument('--cases', default='services,input,text-editing,features,navigation,restoration,multi')
 p.add_argument('--activation', choices=['os', 'native-callback'], default='os')
 p.add_argument('--renderer', choices=['graphite', 'ganesh'], default='graphite')
 p.add_argument('--skip-build', action='store_true')
+p.add_argument('--configuration', choices=['Debug', 'Release'], default='Debug')
 p.add_argument('--app', type=Path, help='Already-built app bundle, including an isolated ArtifactsPath build.')
 a = p.parse_args()
 out = a.output.resolve()
@@ -42,15 +43,15 @@ tfm = 'net10.0-ios27.0' if ios else 'net10.0-maccatalyst27.0'
 project = ROOT / f'samples/DorotiTestbedApp/{platform}/DorotiTestbedApp.{name}.csproj'
 if not a.skip_build and a.app is None:
     with (out / 'build.log').open('w') as log:
-        subprocess.run(['dotnet', 'build', str(project), '-c', 'Debug', '-r', rid,
+        subprocess.run(['dotnet', 'build', str(project), '-c', a.configuration, '-r', rid,
             '-p:' + ('DorotiIosTargetFramework' if ios else 'DorotiMacCatalystTargetFramework') + '=' + tfm],
             cwd=ROOT, stdout=log, stderr=subprocess.STDOUT, check=True, timeout=1200)
-apps = [a.app.resolve()] if a.app else list((project.parent / ('bin/' + rid if ios else 'bin') / 'Debug' / tfm / rid).glob('*.app'))
+apps = [a.app.resolve()] if a.app else list((project.parent / ('bin/' + rid if ios else 'bin') / a.configuration / tfm / rid).glob('*.app'))
 if len(apps) != 1: raise RuntimeError(f'Expected one app: {apps}')
 app = apps[0]
 if not app.is_dir() or app.suffix != '.app': p.error('Supply an existing .app bundle.')
 runid = 'apple-smoke-' + uuid.uuid4().hex
-results = {'restorationId': runid, 'target': a.target, 'tfm': tfm, 'rid': rid, 'renderer': a.renderer, 'activation': a.activation, 'physicalInput': 'notVerified', 'checks': {}}
+results = {'restorationId': runid, 'target': a.target, 'tfm': tfm, 'rid': rid, 'configuration': a.configuration, 'renderer': a.renderer, 'activation': a.activation, 'physicalInput': 'notVerified', 'checks': {}}
 (out / 'run.json').write_text(json.dumps(results, indent=2))
 base = os.environ | {'DOROTI_IOS_GRAPHITE': '1' if a.renderer == 'graphite' else '0', 'DOROTI_SAMPLE': 'reload', 'DOROTI_RESTORATION_ID': runid}
 bundle = 'dev.doroti.testbed'
@@ -97,6 +98,7 @@ for case in a.cases.split(','):
     if case == 'multi': extra |= {'DOROTI_MULTIWINDOW_PROBE': str(marker), 'DOROTI_SAMPLE': 'input'}
     elif case == 'services': extra['DOROTI_UIKIT_SERVICES_PROBE'] = str(marker)
     elif case == 'features': extra['DOROTI_APPLE_FEATURE_PROBE'] = str(marker)
+    elif case == 'text-editing': extra['DOROTI_APPLE_TEXT_EDITING_PROBE'] = str(marker)
     elif case == 'input': extra |= {'DOROTI_SAMPLE': 'input', 'DOROTI_INPUT_PROBE': str(marker)}
     elif case == 'rotation': extra['DOROTI_UIKIT_ROTATION_PROBE'] = str(marker)
     elif case == 'shutdown': extra['DOROTI_UIKIT_SHUTDOWN_PROBE'] = str(marker)
@@ -116,6 +118,9 @@ for case in a.cases.split(','):
             process = subprocess.Popen([str(app / 'Contents/MacOS' / ('DorotiTestbedApp.' + name))],
                 env=base | extra, stdout=log, stderr=subprocess.STDOUT)
         wait(marker, process)
+        if case == 'text-editing':
+            report = json.loads(marker.read_text())
+            assert report['status'] == 'PASS' and report['callbacks'] > 0, report
         if case == 'navigation':
             link = 'doroti-testbed://app/details/apple-smoke'
             if a.activation == 'os':

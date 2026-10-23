@@ -67,6 +67,7 @@ for project in [PROJECT, ROOT / "samples/DorotiTestbedApp/ios/DorotiTestbedApp.i
     assert Path(evaluated['DorotiIosNativeAotProfilePath']).resolve() == profile.resolve(), evaluated
 print("PASS evaluated provider-owned iOS profile/bootstrap imports; no SDK/template copies")
 assert (ROOT / "samples/DorotiTestbedApp/ios/AppleFeatureProbe.cs").read_bytes() == (ROOT / "samples/DorotiTestbedApp/macos/AppleFeatureProbe.cs").read_bytes(), "Apple feature probes differ between runner directories."
+assert (ROOT / "samples/DorotiTestbedApp/ios/AppleTextEditingProbe.cs").read_bytes() == (ROOT / "samples/DorotiTestbedApp/macos/AppleTextEditingProbe.cs").read_bytes(), "Apple text editing probes differ between runner directories."
 print("PASS Apple feature probe parity")
 
 for overrides in [["-p:Configuration=Release"], ["-p:UseInterpreter=false"], ["-p:DorotiCompilationMode=NativeAot"], ["-p:RuntimeIdentifier=ios-arm64"], ["-p:RuntimeIdentifier=ios-arm64", "-p:MtouchInterpreter=-all", "-p:DOROTI_DEV_HOTRELOAD_ENDPOINT=ws://192.168.1.2:5678"]]:

@@ -587,6 +587,17 @@ zero external requests and decoder-denial diagnostics. Do not build shared TS as
 hot_reload_smoke.py accepts backend Maui and --verify-restart to check actual Run/Reload/Stop/Run/Stop.
 All commands use the 1200-second wrapper. The default Apple smoke `features` case covers actual Apple WebView commands, accessibility hierarchy/actions/password guards, and input configuration/Return behavior. iOS/macOS testbed probe copies must match; `apple_build_profiles.py` checks this parity.
 
+The `text-editing` case, included in both runners' default suites, compares every text bridge callback with native text, UTF-16 selection and marked ranges for Entry/Editor/secure Entry, including repeated characters/emoji, twelve consecutive insertions/deletions, marked-text echo and formatter replies. Both Apple runners accept `--configuration Release` to exercise the optimized app profile:
+
+```sh
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/macos_smoke.py --configuration Release --cases text-editing --output temp/testing/apple-text-input/appkit-new
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/apple_smoke.py --target maccatalyst --configuration Release --cases text-editing --output temp/testing/apple-text-input/catalyst-new
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 dotnet build samples/DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Release -r iossimulator-arm64 -p:DorotiIosTargetFramework=net10.0-ios27.0 -p:MtouchUseLlvm=false
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/apple_smoke.py --target ios --configuration Release --skip-build --cases text-editing --output temp/testing/apple-text-input/ios-new
+```
+
+The iOS simulator command explicitly disables LLVM and retains Release optimization. These are real native controls with synthetic editing/marked-text commands; physical IME, device input and input-to-display latency remain separate checks.
+
 `web_package_runtime.py <candidate> <fresh-output>` serves the published NuGet-only Offline Web payload with explicit COOP/COEP and JavaScript `.mjs` MIME, then checks first frame/focus and zero external requests. Runtime ownership uses the SDK-generated `doroti.runtime-profile.json`; standalone worker requires a single-thread build. `web_runtime_recovery.py --worker-only --expect-threaded-rejection` checks early rejection of the ordinary threaded profile. Changing threading profiles in a shared SDK output requires clean/rebuild or isolated artifacts; the normal Testbed profile is threaded.
 
 Web semantics snapshot/delta validation uses the actual managed encoder and DOM host:
