@@ -1,1 +1,1 @@
-return await Doroti.Tooling.RepositoryCommands.TryRunAsync(args) ?? await Doroti.Tooling.ProviderCli.RunAsync(args);
+return await Doroti.Tooling.ProviderCli.RunAsync(args);

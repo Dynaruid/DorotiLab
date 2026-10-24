@@ -103,7 +103,7 @@ pwsh -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform
 
 이전 `-WindowsBackend`, `-Rid`, `-LastSuccessful`, `-NoBuild`, `-NoRestore`, `native`와 고정 템플릿 명령 스위치는 현재 managed provider CLI에 없습니다. TFM/RID/backend/profile은 `doroti-workspace.json`에서 선택하며 다른 지원 빌드 프로필은 직접 runner/MSBuild 명령으로 사용합니다. Android Debug Mono 개발은 provider의 Python/ADB adapter를 사용합니다. Apple Debug 개발은 패키지에 포함된 Python adapter로 AppKit·Catalyst·iOS 시뮬레이터와 선언된 iPhone Mono LAN/CoreCLR USB profile을 연결합니다. 현재 Apple 실행 수락은 미검증입니다. 개발 대상은 [VS Code 안내](../tools/vscode-doroti/README.md)를 참고하세요.
 
-저장소 유지보수 명령은 `validate -ValidationSuite <suite>`, `audit`, `release`입니다. `release`는 Release 검증 suite를 실행하며 패키지나 GitHub Release를 생성하지 않습니다. 로컬 패키지 후보는 [release-candidate.py](eng/release-candidate.py)로 따로 생성합니다.
+로컬 패키지 후보는 [release-candidate.py](eng/release-candidate.py)로 생성합니다.
 
 ### 로컬 릴리스 후보
 
@@ -115,9 +115,9 @@ python Doroti/eng/run-with-timeout.py --timeout 1200 python Doroti/eng/release-c
 
 기본 버전은 core `0.4.1-beta`, Material·Cupertino `1.0.0-alpha.1`, 선택한 provider manifest의 버전입니다. `--core-version`, `--material-version`, `--cupertino-version`, 반복 가능한 `--provider-version PROVIDER=VERSION`으로 지정합니다. `--workspace`는 workspace v2 manifest를 선택하며, 대상은 현재 호스트에서 게시 가능한 선언된 별칭이어야 합니다. provider마다 한 실행에 한 profile만 선택할 수 있습니다.
 
-기본 출력은 새 `Doroti/artifacts/release/<version>-<id>/`이며 `--output`으로 변경할 수 있습니다. `candidate.json`에 평가된 버전, 패키지·게시 파일 해시, 게시 profile과 runtime 결과를 기록합니다. `--build-root`는 `Doroti/artifacts` 아래여야 하고, 조사 로그·consumer는 `temp/testing/release-candidate/`에 생성합니다. 비어 있지 않은 후보 폴더는 덮어쓰지 않습니다. 로컬 출력은 [저장 공간 정책](eng/LOCAL_STORAGE.md)에 따른 삭제 가능 산출물입니다.
+기본 출력은 새 `Doroti/artifacts/release/<version>-<id>/`이며 `--output`으로 변경할 수 있습니다. `candidate.json`에 평가된 버전, 패키지·게시 파일 해시, 게시 profile과 runtime 결과를 기록합니다. `--build-root`는 `Doroti/artifacts` 아래여야 하고, 조사 로그·consumer는 `Doroti/artifacts/release-candidate/`에 생성합니다. 비어 있지 않은 후보 폴더는 덮어쓰지 않습니다. 로컬 출력은 [저장 공간 정책](eng/LOCAL_STORAGE.md)에 따른 삭제 가능 산출물입니다.
 
-runtime 검사는 `--runtime-targets`로 명시하며 Android에는 `--device <serial>`도 필요합니다. 생략하면 runtime은 `notVerified`입니다. 서명·깨끗한 컴퓨터 설치·물리 입력은 별도 수락 범위입니다. 스크립트는 NuGet이나 GitHub에 게시하지 않고, `doroti release`도 이 후보를 생성하지 않습니다.
+후보의 runtime 상태는 `notVerified`로 기록합니다. 게시한 앱의 실행은 대상 호스트에서 직접 확인합니다.
 
 ## 앱 개발
 
@@ -211,12 +211,11 @@ Windows 11 24H2 이상에서는 실험 플래그 없이 `new WindowBackdropOptio
 | [`src/`](src/) | 공통 프레임워크, 런타임, 렌더링, 도구, SDK |
 | [`../packages/`](../packages/README.md) | Material·Cupertino 구현과 플랫폼 host/target provider |
 | [`templates/`](templates/) | `doroti-app` 앱 작업 공간 템플릿 |
-| [`eng/`](eng/) | 빌드, 실행, 검증, 패키징, 진단 스크립트 |
+| [`eng/`](eng/) | 빌드, 실행, 패키징, 진단 스크립트 |
 | [`../tools/`](../tools/) | 저장소 개발 도구 |
-| [`tests/`](tests/) | 유지보수하는 회귀 테스트 소스 |
 | [`../tools/Doroti.DartToCSharp/`](../tools/Doroti.DartToCSharp/) | 선택적 Dart·Flutter 소스 변환 컴파일러 |
 
-도구 캐시는 `.doroti/`, 삭제 가능한 빌드·게시 결과는 `Doroti/artifacts/`에 둡니다. 새 검증 소스·임시 프로젝트·로그·캡처는 저장소 루트의 `temp/testing/<task>/<run>/`을 사용합니다. 유지보수 suite는 `eng/validate.ps1`의 20분 제한으로 실행하며 성공 시 요약 후 해당 run을 정리합니다. 직접 실행한 검사는 [검증 안내](tests/README.md)에 따라 결과를 기록하고 정리합니다. 보존할 단계별 기록은 `../history/`에 둡니다. 컴파일러 소유 `.g.cs` 파일은 `src/Doroti.Framework.*`에 포함하여 컴파일하지 않습니다. 저장소 JSON 처리는 `System.Text.Json`을 사용합니다.
+도구 캐시는 `.doroti/`, 삭제 가능한 빌드·게시 결과는 `Doroti/artifacts/`에 둡니다. 보존할 단계별 기록은 `../history/`에 둡니다. 컴파일러 소유 `.g.cs` 파일은 `src/Doroti.Framework.*`에 포함하여 컴파일하지 않습니다. 저장소 JSON 처리는 `System.Text.Json`을 사용합니다.
 
 ## 라이선스
 
@@ -236,7 +235,6 @@ Linux runner에 고유한 `DorotiDebPackageId`, maintainer, description, copyrig
 설정·버전 규칙·환경 요구사항이 있습니다. 옵션을 생략하면 기존 폴더 게시를 유지합니다.
 `sudo apt install ./<app>.deb`로 설치·업데이트하고, `sudo apt remove <package-id>` 또는
 `sudo apt purge <package-id>`로 제거합니다. 사용자 XDG 데이터는 보존합니다.
-로컬 `.deb` 배포만으로 자동 업데이트를 제공하지 않습니다. 설치와 GUI 실행 검증은
-[테스트 안내](tests/README.md)에서 별도로 기록합니다.
+로컬 `.deb` 배포만으로 자동 업데이트를 제공하지 않습니다. 설치와 GUI 실행은 대상 호스트에서 직접 확인합니다.
 launcher는 세션에 따라 네이티브 Wayland/xcb를 선택하며 명시한 설정을 보존합니다.
 Qt 6.12/Debian 13의 실제 Wayland·xcb 검증은 릴리스 완료 조건으로 남아 있습니다.

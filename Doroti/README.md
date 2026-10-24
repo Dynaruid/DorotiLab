@@ -102,7 +102,7 @@ pwsh -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform
 
 The former `-WindowsBackend`, `-Rid`, `-LastSuccessful`, `-NoBuild`, `-NoRestore`, `native` and fixed template command switches are not part of the managed provider CLI. TFM/RID/backend/profile selection belongs to `doroti-workspace.json`; use direct runner/MSBuild commands for other supported build profiles. Android Debug Mono development uses the provider's Python/ADB adapter. Apple Debug development uses packaged Python adapters for AppKit, Catalyst, iOS simulators and the declared iPhone Mono LAN/CoreCLR USB profiles; current Apple runtime acceptance remains unverified. See the [VS Code guide](../tools/vscode-doroti/README.md) for available development targets.
 
-Repository maintenance commands are `validate -ValidationSuite <suite>`, `audit`, and `release` (the Release verification suite). Local package candidates use [release-candidate.py](eng/release-candidate.py) with independent version arguments.
+Local package candidates use [release-candidate.py](eng/release-candidate.py) with independent version arguments.
 
 ### Local release candidates
 
@@ -114,9 +114,9 @@ python Doroti/eng/run-with-timeout.py --timeout 1200 python Doroti/eng/release-c
 
 The defaults are core `0.4.1-beta`, Material/Cupertino `1.0.0-alpha.1`, and each selected provider's manifest version. Override them with `--core-version`, `--material-version`, `--cupertino-version`, and repeated `--provider-version PROVIDER=VERSION`. `--workspace` selects a workspace v2 manifest; targets must be declared aliases available on the build host, with one profile per provider per run.
 
-Candidates go to a fresh `Doroti/artifacts/release/<version>-<id>/` directory unless `--output` is supplied. `candidate.json` records evaluated versions, package/payload hashes, publish profiles and runtime results. `--build-root` must stay under `Doroti/artifacts`; investigation logs/consumers live under `temp/testing/release-candidate/`. Existing nonempty candidate directories are rejected. These local outputs are disposable under the [storage policy](eng/LOCAL_STORAGE.md).
+Candidates go to a fresh `Doroti/artifacts/release/<version>-<id>/` directory unless `--output` is supplied. `candidate.json` records evaluated versions, package/payload hashes, publish profiles and runtime results. `--build-root` must stay under `Doroti/artifacts`; investigation logs/consumers live under `Doroti/artifacts/release-candidate/`. Existing nonempty candidate directories are rejected. These local outputs are disposable under the [storage policy](eng/LOCAL_STORAGE.md).
 
-Runtime checks are opt-in with `--runtime-targets`; Android additionally requires `--device <serial>`. Without them, runtime remains `notVerified`. Signing, clean-machine installation and physical input remain separate gates. The script does not publish to NuGet or GitHub, and `doroti release` runs verification without creating these candidates.
+Candidates record runtime as `notVerified`. Run the published application on its intended host to check runtime behavior.
 
 ## Application development
 
@@ -210,12 +210,11 @@ Native controls and WebView have host-specific composition constraints. Frame te
 | [`src/`](src/) | Shared framework, runtime, rendering, tooling, and SDK |
 | [`../packages/`](../packages/README.md) | Material/Cupertino implementations and platform host/target providers |
 | [`templates/`](templates/) | `doroti-app` application workspace template |
-| [`eng/`](eng/) | Build, run, validation, packaging, and diagnostic scripts |
+| [`eng/`](eng/) | Build, run, packaging, and diagnostic scripts |
 | [`../tools/`](../tools/) | Repository developer tools |
-| [`tests/`](tests/) | Selected permanent regression sources |
 | [`../tools/Doroti.DartToCSharp/`](../tools/Doroti.DartToCSharp/) | Optional Dart/Flutter import compiler |
 
-Keep generated tool output under `.doroti/` or `artifacts/`. New test sources, consumers and raw evidence belong under repository-root `temp/testing/<task>/<run>/`; summarize results and delete the owned run directory. See the [testing guide](tests/README.md) for retained-failure and direct-script policies. Maintained suites use `eng/validate.ps1` with a 20-minute timeout. Retained milestone records belong in `../history/`. Compiler-owned `.g.cs` files are not compiled into `src/Doroti.Framework.*`. Repository JSON uses `System.Text.Json`.
+Keep generated tool output under `.doroti/` or `artifacts/`. Retained milestone records belong in `../history/`. Compiler-owned `.g.cs` files are not compiled into `src/Doroti.Framework.*`. Repository JSON uses `System.Text.Json`.
 
 ## License
 
@@ -235,7 +234,6 @@ runner; see the [Qt packaging guide](../packages/platforms/qt/README.md#debian-p
 for metadata, version rules and requirements. Omit `-PackageFormat` for existing directory
 publish. Install/update with `sudo apt install ./<app>.deb`; remove with `sudo apt remove
 <package-id>` or `sudo apt purge <package-id>`. User XDG data is retained. Local `.deb`
-distribution does not enable automatic updates. Installation and GUI acceptance are
-tracked separately in the [maintained tests](tests/README.md).
+distribution does not enable automatic updates. Check installation and GUI behavior on the intended target host.
 The launcher chooses native Wayland or xcb from the session and preserves explicit
 settings. Real Qt 6.12 Debian 13 Wayland/xcb acceptance remains an open release gate.

@@ -36,11 +36,6 @@
     <ProjectReference Include="../../../../Doroti/src/Doroti.Desktop/Doroti.Desktop.csproj" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos' or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'" />
     <None Include="buildTransitive/Doroti.Host.Maui.targets" Pack="true" PackagePath="buildTransitive" />
     <None Include="buildTransitive/Doroti.ProcessText.AndroidManifest.xml" Pack="true" PackagePath="buildTransitive" />
-    <InternalsVisibleTo Include="DorotiTestbedApp.iOS" />
-    <InternalsVisibleTo Include="DorotiTestbedApp.MacCatalyst" />
-    <InternalsVisibleTo Include="DorotiTestbedApp.MacOS" />
-    <InternalsVisibleTo Include="DorotiTestbedApp.Windows" />
-    <InternalsVisibleTo Include="DorotiTestbedApp.Android" />
     <ProjectReference Include="../../../../Doroti/src/Doroti.Skia.Vulkan/Doroti.Skia.Vulkan.csproj" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'" />
     <ProjectReference Include="../../../../Doroti/src/Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj" />
     <ProjectReference Include="../../../../Doroti/src/Doroti.Skia.Fonts/Doroti.Skia.Fonts.csproj" />

@@ -276,8 +276,6 @@ Mac UI idiom을 사용해 iPad 호환 모드의 77% 축소 없이 표시합니�
 두 Mac runner 모두 텍스트 필드에서 우클릭 또는 Control+클릭으로 편집 메뉴를 엽니다.
 메뉴는 Flutter Cupertino 기준의 연속 곡선 모서리와 흐린 그림자를 사용하며,
 항목에 마우스를 올리면 테마 강조색과 대비되는 글자색을 표시합니다.
-이전 `--mac-text-menu` 검증 프로젝트는 폐기되었습니다. 유지보수 중인 CPU 편집 동작 회귀는
-`python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project packages/Doroti.Cupertino/tests/Doroti.Cupertino.Tests -c Release -- --editable-context-menu`로 실행합니다.
 Mac 네이티브 메뉴 외형·강조·눌림 상태와 물리 입력은 별도로 확인합니다.
 
 ```powershell

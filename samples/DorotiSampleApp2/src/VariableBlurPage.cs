@@ -22,13 +22,6 @@ internal sealed class VariableBlurPageState : State<VariableBlurPage>
     private readonly ScrollController _scrollController = new();
     private Widget _list = null!;
 
-    // Opt-in synthetic scroll for repeated device profiling; normal UI defaults stay unchanged.
-    internal static string? BenchmarkMode =>
-        OperatingSystem.IsBrowser()
-            ? null
-            : Environment.GetEnvironmentVariable("DOROTI_VARIABLE_BLUR_BENCHMARK");
-    private Doroti.Framework.Scheduler.Ticker? _benchmarkTicker;
-
     public override void initState()
     {
         base.initState();
@@ -40,51 +33,6 @@ internal sealed class VariableBlurPageState : State<VariableBlurPage>
             itemCount: 60,
             itemBuilder: BuildRow
         ));
-        if (BenchmarkMode is not { } mode)
-            return;
-        if (mode is not ("off" or "full" or "adaptive" or "fast" or "fixed" or "kawase"))
-            throw new ArgumentException(
-                "DOROTI_VARIABLE_BLUR_BENCHMARK must be off/full/adaptive/fast/fixed/kawase."
-            );
-        _mode = mode == "off" ? "fast" : mode;
-        _enabled = mode != "off";
-        if (Environment.GetEnvironmentVariable("DOROTI_VARIABLE_BLUR_BENCHMARK_SIGMA") is { } sigma)
-        {
-            if (
-                !double.TryParse(
-                    sigma,
-                    System.Globalization.NumberStyles.Float,
-                    System.Globalization.CultureInfo.InvariantCulture,
-                    out var parsedSigma
-                )
-                || !double.IsFinite(parsedSigma)
-                || parsedSigma is < 0 or > 32
-            )
-                throw new ArgumentException("Benchmark sigma must be between 0 and 32.");
-            _sigma.value = parsedSigma;
-        }
-        if (Environment.GetEnvironmentVariable("DOROTI_VARIABLE_BLUR_BENCHMARK_STATIC") == "1")
-            return;
-        _benchmarkTicker = new Doroti.Framework.Scheduler.Ticker(elapsed =>
-        {
-            if (!_scrollController.hasClients || !_scrollController.position.hasContentDimensions)
-                return;
-            // Five seconds warmup, a 30-second window, then five seconds for the
-            // asynchronous evidence writer. The route repeats every ten seconds.
-            var seconds = elapsed.inMicroseconds / 1_000_000d;
-            if (seconds >= 40)
-            {
-                _benchmarkTicker!.stop();
-                Console.WriteLine(
-                    $"VARIABLE_BLUR_BENCHMARK_COMPLETE mode={mode} warmup=5 measurement=30"
-                );
-                return;
-            }
-            var phase = seconds % 10 / 10;
-            var extent = Math.Min(1800, _scrollController.position.maxScrollExtent);
-            _scrollController.jumpTo(extent * (1 - Math.Abs(2 * phase - 1)));
-        });
-        _benchmarkTicker.start();
     }
 
     private static readonly Color[] RowColors =
@@ -99,7 +47,6 @@ internal sealed class VariableBlurPageState : State<VariableBlurPage>
 
     public override void dispose()
     {
-        _benchmarkTicker?.dispose();
         _sigma.dispose();
         _scrollController.dispose();
         base.dispose();

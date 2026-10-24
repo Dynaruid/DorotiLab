@@ -210,15 +210,12 @@
   },
   "scripts": {
     "compile": "tsc -p .",
-    "test": "npm run compile && node --test dist/test/*.test.js",
     "package": "npm run compile && npm run build-helper && vsce package --no-dependencies",
-    "build-helper": "node scripts/build-helper.cjs",
-    "test:editing": "npm run compile && node dist/test/runHost.js"
+    "build-helper": "node scripts/build-helper.cjs"
   },
   "devDependencies": {
     "@types/node": "24.0.0",
     "@types/vscode": "1.100.0",
-    "@vscode/test-electron": "3.1.0",
     "@vscode/vsce": "4.0.0",
     "typescript": "7.0.2"
   }

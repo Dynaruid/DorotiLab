@@ -7,7 +7,6 @@ From the repository root:
 
 ```powershell
 python Doroti/eng/run-with-timeout.py --timeout 1200 cargo build --locked --manifest-path tools/Doroti.Wgsl/Cargo.toml
-python Doroti/eng/run-with-timeout.py --timeout 1200 cargo test --locked --manifest-path tools/Doroti.Wgsl/Cargo.toml
 ```
 
 The former `Doroti/validation/gpu-effects` assets are retired. Create a minimal

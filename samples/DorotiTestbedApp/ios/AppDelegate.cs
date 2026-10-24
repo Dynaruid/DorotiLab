@@ -15,57 +15,13 @@ public sealed class AppDelegate : DorotiMauiUIApplicationDelegate
 
     public override bool FinishedLaunching(UIKit.UIApplication application, NSDictionary? options)
     {
-        try { return FinishLaunching(application, options); }
+        try { return base.FinishedLaunching(application, options); }
         catch (Exception error)
         {
             // Log before the exception crosses Objective-C and loses its managed stack.
             Console.Error.WriteLine(error);
             throw;
         }
-    }
-
-    private bool FinishLaunching(UIKit.UIApplication application, NSDictionary? options)
-    {
-        foreach (var name in new[]
-        {
-            "DOROTI_INPUT_PROBE", "DOROTI_UIKIT_SERVICES_PROBE", "DOROTI_APPLE_FEATURE_PROBE", "DOROTI_APPLE_TEXT_EDITING_PROBE",
-            "DOROTI_UIKIT_ROTATION_PROBE", "DOROTI_UIKIT_SHUTDOWN_PROBE", "DOROTI_NAVIGATION_PROBE",
-        })
-        {
-            if (Environment.GetEnvironmentVariable(name) is not { Length: > 0 } outputPath) continue;
-            if (!Path.IsPathRooted(outputPath))
-                outputPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), outputPath);
-            Directory.CreateDirectory(Path.GetDirectoryName(outputPath)!);
-            Environment.SetEnvironmentVariable(name, outputPath);
-        }
-        var textOutput = Environment.GetEnvironmentVariable("DOROTI_APPLE_TEXT_EDITING_PROBE");
-        if (!string.IsNullOrEmpty(textOutput)) File.AppendAllText(textOutput + ".launch", "before Maui launch\n");
-        var result = base.FinishedLaunching(application, options);
-        if (!string.IsNullOrEmpty(textOutput))
-        {
-            File.AppendAllText(textOutput + ".launch", "after Maui launch\n");
-            _ = DorotiTestbedApp.Apple.AppleFeatureProbe.RunTextEditingAsync(textOutput);
-        }
-        if (Environment.GetEnvironmentVariable("DOROTI_UIKIT_SHUTDOWN_PROBE") is { Length: > 0 } shutdownOutput)
-            _ = UIKitShutdownProbe.RunAsync(shutdownOutput);
-        if (Environment.GetEnvironmentVariable("DOROTI_APPLE_FEATURE_PROBE") is { Length: > 0 } featureOutput)
-            _ = DorotiTestbedApp.Apple.AppleFeatureProbe.RunAsync(featureOutput);
-        if (
-            Environment.GetEnvironmentVariable("DOROTI_UIKIT_SERVICES_PROBE") is
-            { Length: > 0 } output
-        )
-            _ = DorotiTestbedApp.Apple.UIKitServicesProbe.RunAsync(output);
-        if (
-            Environment.GetEnvironmentVariable("DOROTI_UIKIT_ACTIVATION_PROBE") is
-            { Length: > 0 } link
-        )
-            _ = DorotiTestbedApp.Apple.UIKitServicesProbe.DeliverLinkAsync(link);
-        if (
-            Environment.GetEnvironmentVariable("DOROTI_UIKIT_ROTATION_PROBE") is
-            { Length: > 0 } rotationOutput
-        )
-            _ = UIKitRotationProbe.RunAsync(rotationOutput);
-        return result;
     }
 
     protected override void ConfigurePlatform(MauiAppBuilder builder) => _ = builder;

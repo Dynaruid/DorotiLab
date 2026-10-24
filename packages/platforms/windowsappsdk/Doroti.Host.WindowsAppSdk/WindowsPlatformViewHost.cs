@@ -1563,8 +1563,6 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                 slice.AtlasY,
             }),
             compositionOutputCount = _sceneOutput is null || frame.Rasters.Length == 0 ? 0 : 1,
-            probe = Environment.GetEnvironmentVariable("DOROTI_PLATFORM_VIEW_PROBE_STATE"),
-            effectProbe = Environment.GetEnvironmentVariable("DOROTI_PLATFORM_EFFECT_PROBE_STATE"),
             webView = _webViews?.Evidence,
             timings = new
             {

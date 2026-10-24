@@ -467,7 +467,3 @@ Variable Blur에는 GPU 렌더러가 필요합니다.
 폰트 추가와 CSS·WOFF2 등록 예제는 [공통 assets 폴더의 웹폰트](docs/web.md#공통-assets-폴더의-웹폰트)를 참고하세요.
 
 ## 소스와 라이선스
-
-화면 구성은 [src/App.cs](src/App.cs), 공통 진입점은 [Program.cs](Program.cs)에 있습니다.
-Cupertino Icons 1.0.9 폰트와 해당 라이선스는 `assets/fonts`에 포함되어 있습니다.
-회귀 검사 명령과 블러 성능 측정 옵션은 [검사·프로파일링 안내](docs/validation.md)에 있습니다.

@@ -22,9 +22,7 @@ internal sealed class MaterialDemoEntrypoint : IDorotiViewEntrypoint
         {
             Console.Error.WriteLine(details.exceptionThrown);
         };
-        _widgetEntrypoint = Environment.GetEnvironmentVariable("DOROTI_SAMPLE") == "shared-tree"
-            ? new Doroti.Framework.DorotiWidgetEntrypoint(views => new SharedNativeTreeProbe(views))
-            : new Doroti.Framework.DorotiWidgetEntrypoint(() => CreateRootApp(), PrepareSampleResourcesAsync);
+        _widgetEntrypoint = new Doroti.Framework.DorotiWidgetEntrypoint(() => CreateRootApp(), PrepareSampleResourcesAsync);
         _widgetEntrypoint.Bootstrap(dispatcher);
         _binding = (WidgetsFlutterBinding)WidgetsFlutterBinding.ensureInitialized();
     }
@@ -91,16 +89,6 @@ internal sealed class MaterialDemoEntrypoint : IDorotiViewEntrypoint
         if (sample != "navigation") WidgetsBinding.instance.platformDispatcher.defaultRouteName = "/";
         return sample switch
         {
-            "native-design" => Environment.GetEnvironmentVariable("DOROTI_DESIGN_PROBE") == "cupertino"
-                ? new Doroti.Cupertino.CupertinoApp(home: new Doroti.Cupertino.CupertinoTheme(data: new Doroti.Cupertino.CupertinoThemeData(primaryColor: new UiColor(0xffee7722)), child: new NativeDesignPresentationProbe()))
-                : new Doroti.Material.MaterialApp(home: new Doroti.Material.Theme(data: Doroti.Material.ThemeData.Create(primaryColor: new UiColor(0xffee7722)), child: new NativeDesignPresentationProbe())),
-            "platform-effect" => new MaterialSample.PlatformEffectSample(),
-            "document-recovery" when !OperatingSystem.IsBrowser() => new MaterialSample.DocumentRecoverySample(),
-            "native-texture-probe" => new Doroti.Material.MaterialApp(debugShowCheckedModeBanner: false,
-                initialRoute: "/", home: new MaterialSample.TextureSample()),
-            "qt-widgets" => new Directionality(textDirection: TextDirection.ltr,
-                child: new ClipRect(child: new PlatformView(PlatformDispatcher.instance.implicitView!,
-                    new PlatformViewDescriptor("doroti/native-editor", System.Text.Encoding.UTF8.GetBytes("{\"text\":\"Qt Widgets editor\"}"))))),
             "input" => new Doroti.Material.MaterialApp(debugShowCheckedModeBanner: false, initialRoute: "/", home: new MaterialSample.InputLifetimeSample()),
             "webview" => new Doroti.Material.MaterialApp(debugShowCheckedModeBanner: false, initialRoute: "/", home:
                 new Doroti.Material.Scaffold(

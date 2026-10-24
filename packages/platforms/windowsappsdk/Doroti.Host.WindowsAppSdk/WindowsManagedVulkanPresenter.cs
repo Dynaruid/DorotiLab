@@ -897,7 +897,6 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
                 // replace pixels that belong to the last displayed geometry.
                 if (_graphiteFrame is not null)
                 {
-                    DelayGraphiteProducerForQualification();
                     _graphiteSubmissionAttempted = true;
                     try
                     {
@@ -3795,7 +3794,6 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
         _externalMemoryApi = null;
         _swapchainApi?.Dispose();
         _swapchainApi = null;
-        ReleaseDiagnosticProducer();
         if (_device.Handle != 0)
         {
             _vk.DestroyDevice(_device, null);

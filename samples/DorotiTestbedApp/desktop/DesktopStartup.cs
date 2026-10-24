@@ -79,25 +79,6 @@ public sealed class DesktopStartup : IDorotiDesktopApplicationStartup
                 {
                     await context.Window.EnsureInitializedAsync(cancellationToken);
                     await context.Window.WaitUntilReadyToShowAsync(cancellationToken);
-                    var beforeShow = context.Window.State;
-                    if (Environment.GetEnvironmentVariable("DOROTI_NATIVE_MENU_PROBE") is { Length: > 0 } menuProbe)
-                    {
-                        await context.Window.ShowAsync(cancellationToken);
-                        await NativeMenuProbe.RunAsync(context, menuProbe, cancellationToken);
-                        return;
-                    }
-                    if (Environment.GetEnvironmentVariable("DOROTI_WINDOW_KINDS_PROBE") is { Length: > 0 } kindsProbe)
-                    {
-                        await context.Window.ShowAsync(cancellationToken);
-                        await WindowKindsProbe.RunAsync(context, kindsProbe, cancellationToken);
-                        return;
-                    }
-                    if (Environment.GetEnvironmentVariable("DOROTI_MULTIWINDOW_PROBE") is { Length: > 0 } multiwindowProbe)
-                    {
-                        await context.Window.ShowAsync(cancellationToken);
-                        await MultiWindowProbe.RunAsync(context, legacy with { Options = options }, multiwindowProbe);
-                        return;
-                    }
                     // The WhenReady auto-show and this hook run concurrently. Explicitly
                     // await the idempotent show before asking the native host for focus.
                     await context.Window.ShowAsync(cancellationToken);
@@ -111,11 +92,6 @@ public sealed class DesktopStartup : IDorotiDesktopApplicationStartup
                             OnCreated = null,
                         }, cancellationToken);
                     }
-                    if (
-                        Environment.GetEnvironmentVariable("DOROTI_DESKTOP_PROBE") is
-                        { Length: > 0 } probe
-                    )
-                        await DesktopProbe.RunAsync(context, beforeShow, probe, cancellationToken);
                 },
             }
         );

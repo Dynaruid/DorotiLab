@@ -70,8 +70,6 @@ internal sealed class SampleRouter : RouterDelegate<SampleRoute>, IDisposable
     public override Future<bool> popRoute() { Go("home"); return Future<bool>.value(true); }
     public override Widget build(BuildContext context)
     {
-        if (!OperatingSystem.IsBrowser() && Environment.GetEnvironmentVariable("DOROTI_NAVIGATION_PROBE") is { Length: > 0 } file)
-            File.WriteAllText(file, _location + "\n" + _text.text);
         var content = new M.Scaffold(body: new SafeArea(child: new Padding(padding: EdgeInsets.CreateAll(16), child: new Column(children:
         [
             new Text("Navigation and restoration"),

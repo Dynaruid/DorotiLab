@@ -270,8 +270,6 @@ Qt 고지는 Linux Qt 러너에서만 추가합니다. 단일 파일 게시도 �
 애니메이션 효과는 Doroti의 Transform/Opacity/ImageFiltered 조합을 사용합니다.
 원본 shimmer/tint, Hero 전환과 지갑 거래 목록은 이 예제에 포함하지 않습니다.
 
-회귀 검사 명령은 [검사 안내](docs/validation.md)에 있습니다.
-
 Linux runtime publication uses an explicit Qt 6.12.0 Framework SDK and independent
 WebEngine 6.140.0 SDK for this WebView-enabled sample. Set the SDK prefixes and
 provide reviewed source/notice inventories as described in the

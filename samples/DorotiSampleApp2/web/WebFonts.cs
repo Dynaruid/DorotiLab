@@ -5,9 +5,6 @@ namespace DorotiSampleApp2.Web;
 // Selected by -p:DorotiSampleWebFontSource=Assets. The normal sample uses CDN fonts.
 public static class WebFonts
 {
-#if DOROTI_FONT_PROBE
-    static WebFonts() { if (OperatingSystem.IsBrowser()) App.ValidateFontsAsync = WebFontProbe.RunAsync; }
-#endif
     public static BrowserFontFallbackOptions CdnOptions => new()
     {
         PreloadLanguages = ["ko", "en"],

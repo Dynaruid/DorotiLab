@@ -44,12 +44,6 @@ new FilePickerActivation(options: options,
         onPressed: () => PickFiles(options)));
 ```
 
-`Doroti/tests/web_files.mts` covers delayed Worker admission, cancellation,
-owner disposal and file-grant revocation. `Doroti/tests/web_file_picker_smoke.py`
-checks Sample2's actual canvas input, native picker, managed preview and retry
-in a browser served from an isolated build; browser automation is separate from
-physical iPhone input qualification.
-
 Sample2 additionally defaults `DorotiWebInterpretWidgetTree=true`. Safari's Worker
 stack overflows during its deep recursive Cupertino widget mount under full AOT.
 This opt-in interprets `Doroti.Framework.Widgets`, `Doroti.Framework.Rendering`

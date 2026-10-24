@@ -209,25 +209,6 @@ internal sealed class WebViewSampleState : State<WebViewSample>
             var state = await controller
                 .ExecuteAsync(new(WebViewOperation.State))
                 .ConfigureAwait(false);
-            if (Environment.GetEnvironmentVariable("DOROTI_WEBVIEW_SCENE_PROBE") is { Length: > 0 } probe)
-            {
-                try
-                {
-                    var deadline = DateTime.UtcNow.AddSeconds(30);
-                    while ((await controller.ExecuteAsync(new(WebViewOperation.State)).ConfigureAwait(false)).IsLoading)
-                    {
-                        if (DateTime.UtcNow > deadline) throw new TimeoutException("The widget WebView was not placed/loaded.");
-                        await Task.Delay(50).ConfigureAwait(false);
-                    }
-                    var live = await controller.ExecuteAsync(new(WebViewOperation.EvaluateJavaScript, "document.title")).ConfigureAwait(false);
-                    File.WriteAllText(probe, System.Text.Json.JsonSerializer.Serialize(
-                        new WebViewSceneProbeResult(
-                            live.Json == "\"Doroti WebView sample\"" ? "PASS" : "FAIL",
-                            true, live.Json, live.DocumentGeneration),
-                        TestbedProbeJsonContext.Default.WebViewSceneProbeResult));
-                }
-                catch (Exception error) { File.WriteAllText(probe + ".error", error.ToString()); throw; }
-            }
             Update(() =>
             {
                 _features = features.Features;

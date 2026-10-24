@@ -53,30 +53,3 @@ Doroti의 friction simulation에 무한 시간을 전달하면 NaN이 생길 수
 스냅 목적지는 유한 시간에서 최대 30회 평가하여 계산합니다.
 
 실행 앱은 [DorotiCarouselApp](../../samples/DorotiCarouselApp/README.md)입니다.
-
-```powershell
-python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project packages/Doroti.CustomCarousel/tests/Doroti.CustomCarousel.Tests -c Release -- temp/testing/carousel
-```
-
-회귀 검사는 루프 경계·음수 인덱스·최단 경로, 탭 hit testing, 합성 포인터 drag/fling,
-wheel 스냅·역방향 입력, 크기 변경, 항목 수 변경, 컨트롤러 교체/해제를 확인합니다.
-연속 휠의 되감김·이동량 손실, 마우스/트랙패드의 루프 경계 delta, 큰 휠 입력 보간,
-버튼·트랙패드 입력의 타이머 취소, trackpad/mouse 휠 packet 종류 보존과 unmount 회귀 10개도 기본 검사에 포함됩니다.
-이 입력 검사만 실행하려면 `-- --continuous-input temp/testing/carousel-input`을 전달합니다.
-첫 입력 프레임 진행·연속 보간의 지연 상한, 선택 전환 중 이미지 픽셀/위젯 수명,
-홈 블러·덱 뒤집기의 이미지 경계 유지 검사 4개도 기본 검사에 포함됩니다.
-이 검사만 실행하려면 `-- --presentation-input temp/testing/carousel-presentation`을 전달합니다.
-다섯 데모의 실제 위젯 경로를 통해 화면 이동·이미지 상세·토핑 선택·셔플을 검사하고 PNG를 저장합니다.
-이 검사는 CPU 렌더링/합성 입력이며 물리 입력이나 디스플레이 scanout 검증은 아닙니다.
-
-Windows 호스트의 입력/프레임 순서 회귀도 별도로 실행할 수 있습니다. Windows Release 샘플 빌드 후 실행하며,
-큰/작은 native 휠 burst 사이의 재개 응답과 완료 프레임의 입력 취소를 검사합니다.
-
-```powershell
-python Doroti/eng/run-with-timeout.py --timeout 1200 python packages/Doroti.CustomCarousel/tests/windows-scroll-smoke.py
-```
-
-시작 지연의 실제 사용자 확인과 자동 검사 범위는 [검증 기록](../../samples/DorotiCarouselApp/docs/validation.md)에 있습니다.
-
-원본 프로젝트: [gskinnerTeam/flutter_custom_carousel](https://github.com/gskinnerTeam/flutter_custom_carousel).
-Copyright (c) 2024, gskinner.com, inc. BSD 3-Clause 조건은 [LICENSE](LICENSE)에 보존했습니다.

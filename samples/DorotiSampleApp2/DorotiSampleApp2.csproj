@@ -6,9 +6,6 @@
     <DorotiUseRepositoryProjects>true</DorotiUseRepositoryProjects>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(DorotiWebFontValidation)' == 'true'">
-    <DefineConstants>$(DefineConstants);DOROTI_FONT_PROBE</DefineConstants>
-  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Doroti\src\Doroti.Hosting\Doroti.Hosting.csproj" />
     <ProjectReference Include="../../packages/Doroti.Cupertino/Doroti.Cupertino.csproj" />

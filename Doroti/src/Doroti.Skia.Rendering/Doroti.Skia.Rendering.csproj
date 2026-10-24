@@ -9,8 +9,6 @@
   </PropertyGroup>
   <ItemGroup>
     <DorotiLicense Include="../../LICENSES/Flutter-LICENSE.md" />
-    <InternalsVisibleTo Include="Doroti.Tests" />
-    <InternalsVisibleTo Include="Doroti.Cupertino.Tests" />
     <EmbeddedResource Include="Shaders\variable_blur.sksl" LogicalName="Doroti.Skia.Rendering.Shaders.variable_blur.sksl" />
     <EmbeddedResource Include="Shaders\kawase_blur.sksl" LogicalName="Doroti.Skia.Rendering.Shaders.kawase_blur.sksl" />
     <EmbeddedResource Include="Shaders\variable_blur_stage.sksl" LogicalName="Doroti.Skia.Rendering.Shaders.variable_blur_stage.sksl" />

@@ -10,7 +10,6 @@ The extension icon (`images/icon.png`) is a transparent 256×256 PNG rendered fr
 dotnet new install <repository>/Doroti/templates/Doroti.Templates/content/doroti-app
 cd <repository>/tools/vscode-doroti
 npm ci
-npm test
 npm run package
 code --install-extension doroti-0.2.3.vsix
 ```
@@ -39,13 +38,9 @@ The workspace declares the Apple TFM/RID/profile, and `doroti.device` selects a 
 | Mac Catalyst | [2026-10-01](../../history/26-10-03/works/platforms/maccatalyst.md#2026-10-01-mac-catalyst-metadata-hot-reload): CLI and installed-VSIX metadata/state/Stop PASS | `maccatalyst` Debug `dev` uses the same packaged adapter and enables the editable `all,-Doroti.Host.Maui` interpreter profile and SDK named-pipe transport. On 2026-10-17, .NET SDK 10.0.401 Catalyst CLI metadata/state preservation, compile recovery, unsupported edits and session-matched Stop passed; installed VSIX Run/Hot Reload/Stop also passed. |
 | iOS simulator / iPhone | [2026-09-30 and 10-01](../../history/26-10-03/works/platforms/ios.md#2026-09-30-ios-metadata-hot-reload): simulator, iPhone 12 .NET 11 CoreCLR USB, and .NET 10 Mono LAN Hot Reload; CLI and installed-VSIX PASS | iOS profiles now advertise Debug `dev` and use the packaged iOS adapter. Select a matching `doroti.device`; .NET 10 simulators use a local acknowledgment relay, .NET 10 iPhones use a LAN SDK relay, and .NET 11 CoreCLR devices use SDK USB deltas plus CoreDevice acknowledgments. On 2026-10-17, .NET SDK 10.0.401 arm64 simulator CLI metadata/state preservation, compile recovery, unsupported edits and session-matched Stop passed; installed VSIX Run/Hot Reload/Stop also passed. On 2026-10-17, iPhone 12 .NET 11 RC2 CoreCLR USB CLI metadata/state preservation, compile recovery, unsupported edits and session-matched Stop passed; installed VSIX Run/Hot Reload/Stop also passed. The .NET 10 iPhone LAN path has not been rerun. |
 
-The retained September/October records include installed-extension execution and describe the earlier launch/profile implementation; their .NET 11 USB run used RC1 plus a specific runtime override. Current 2026-10-17 validation is listed separately in the table above. Raw `temp/testing` evidence is disposable. Portable checks cover provider plans, adapters/sessions, relays and package closure. Repeat native acceptance on other host/toolchain profiles. Physical input, other devices, Release and NativeAOT are outside these Hot Reload results.
+The retained September/October records include installed-extension execution and describe the earlier launch/profile implementation; their .NET 11 USB run used RC1 plus a specific runtime override. Current 2026-10-17 validation is listed separately in the table above. Repeat native acceptance on other host/toolchain profiles. Physical input, other devices, Release and NativeAOT are outside these Hot Reload results.
 
 Apple development requires Python 3, Xcode and the matching .NET SDK/workloads. The manifest and runner must agree on TFM/RID; the provider uses the runner directory for SDK selection and does not pass a global RID to `dotnet watch`. On .NET 10 iPhones, keep the Mac and phone on the same LAN and allow local network access. The CLI's optional `-HotReloadHost <Mac-LAN-IPv4>` chooses that relay address; it is not an iOS TFM/SDK override. The selected SDK remains responsible for metadata deltas. Reload waits for request delivery and a completed frame acknowledgment. Stop uses a session-matched file signal, waits up to 60 seconds for adapter cleanup, and releases process-held session/device leases.
-
-`runHost.js ... --ios` and `--mac` prepare isolated source fixtures under their evidence directory. Test TFM/RID/SDK environment variables configure those fixtures, rather than removed VS Code settings; `DOROTI_TEST_IOS_DEVICE` maps to `doroti.device`. These tests no longer edit the user's Testbed source.
-
-For a repeat installed-VSIX run, pass a previously prepared app under `temp/testing` as the app argument with `--reuse-fixture` to retain its compilation cache. Use a fresh evidence directory; its VS Code profile path must stay short enough for Unix sockets. Run Apple build tests sequentially on hosts with limited RAM.
 
 Type `stl`, `stless` or `dstateless` for a StatelessWidget, and `stf`, `stful` or `dstateful` for a StatefulWidget. Choose the suggestion, edit the selected class name, then press Tab to reach build. Stateful widget, State and createState names stay linked. `dstlkey`/`dstfkey` include a key constructor. Imports are inserted with the snippet; aliases and same-name types use qualified references. File names supply valid default names, including Korean identifiers.
 
@@ -71,27 +66,14 @@ Settings `doroti.editing.completions`, `.snippets`, `.codeActions`, `.types` and
 
 Restricted Mode permits pure templates and widget-file creation with fully qualified types, without starting the helper or evaluating projects. When the SDK or references are unavailable, the same template fallback remains; semantic refactorings are unavailable and **Wrap with Widget…** explains the limitation. Check **Doroti: Show Logs**, restore references or install the configured .NET 10 SDK, then retry. Analysis is bounded to four evaluated project roots, 64 pending requests/cache entries, 32 simultaneous snapshots (4 MiB characters), and 8 MiB protocol frames. Stale/canceled results are never applied. Unsaved untitled documents and unresolved dynamic selections are outside semantic editing.
 
-Editing validation is separate from Run/Hot Reload. The [2026-10-07 work summary](../../history/26-10-07/vscode-editing-summary.md) retains the reported Windows editing results and their scope. The detailed verification documents and evidence JSON were removed on 2026-10-16; the summary is historical, not a current verification receipt. Run the checks with a 20-minute cap per command:
-
-```powershell
-python Doroti/eng/run-with-timeout.py --timeout 1200 npm.cmd --prefix tools/vscode-doroti test
-python Doroti/eng/run-with-timeout.py --timeout 1200 npm.cmd --prefix tools/vscode-doroti run package
-node tools/vscode-doroti/scripts/template-fixtures.cjs temp/testing/vscode-editing/current/templates.cs
-python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project tools/Doroti.Editor.Assist/tests/Doroti.Editor.Assist.Tests.csproj -c Release -- temp/testing/vscode-editing/current/templates.cs
-node tools/vscode-doroti/scripts/prepare-editing.cjs temp/testing/vscode-editing/current/app
-python Doroti/eng/run-with-timeout.py --timeout 1200 node tools/vscode-doroti/dist/test/runHost.js temp/testing/vscode-editing/current/app temp/testing/vscode-editing/current/installed --editing
-```
-
-The fixture preparation script uses the product libraries built by the helper tests. Add `--csharp`, `--restricted` or `--version=1.100.0` to use separate profiles for that matrix. Use a fresh fixture directory for each run. `tests/protocol.py <evidence-directory>` checks persistent helper messages, snapshots, cancellation and failed evaluation. Packaging includes helper DLLs and both MSBuild build hosts; runtime operation never searches repository source for the helper.
-
 Closing a desktop app ends its development session when `dotnet watch` reports that the app exited and it is waiting for another file change. The extension stops the remaining watcher and enables **Run** again. Build failures and SDK-driven rebuild/restart sequences keep the session active. Web browser disconnects continue to wait for reconnection.
 
 Stop and extension deactivation terminate the owned process tree. Session files under the app's `.doroti/dev/<session>` contain capability/revision/request IDs and diagnostics, never executable instructions. These files may be removed after stopping the session.
 
 The implementation was written independently after static review of `reference/AvaloniaVSCode-ARCHIVE`; no archive source or dependencies were copied. No preview server, LSP, debug adapter, Marketplace publication, multi-root, remote/device discovery or browser-only editor support is included.
 
-References: [dotnet watch](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-watch), [metadata update handlers](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.metadata.metadataupdatehandlerattribute?view=net-10.0), [Workspace Trust](https://code.visualstudio.com/api/extension-guides/workspace-trust), [extension tests](https://code.visualstudio.com/api/working-with-extensions/testing-extension).
+References: [dotnet watch](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-watch), [metadata update handlers](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.metadata.metadataupdatehandlerattribute?view=net-10.0), [Workspace Trust](https://code.visualstudio.com/api/extension-guides/workspace-trust).
 
 On macOS, AppKit and Mac Catalyst aliases come from `describe`; TFM/RID/profile selection belongs to `doroti-workspace.json`. See the Apple table above for restored development profiles and the current native-validation boundary.
 
-On Linux, select `linux` and use **Run**, then save C# method-body edits or click **Hot Reload**. PowerShell 7, .NET 10 and the system Qt development/QML dependencies are required. The CLI defaults to polling file changes to handle low inotify limits and mounted source folders; it preserves an explicit watcher environment setting. Supported changes retain PID, State, text and scroll. Native C++/QML/shader assets and unsupported metadata edits need **Restart (resets state)**. The default Qt Quick Debug path has real CLI and installed-extension regression fixtures.
+On Linux, select `linux` and use **Run**, then save C# method-body edits or click **Hot Reload**. PowerShell 7, .NET 10 and the system Qt development/QML dependencies are required. The CLI defaults to polling file changes to handle low inotify limits and mounted source folders; it preserves an explicit watcher environment setting. Supported changes retain PID, State, text and scroll. Native C++/QML/shader assets and unsupported metadata edits need **Restart (resets state)**.

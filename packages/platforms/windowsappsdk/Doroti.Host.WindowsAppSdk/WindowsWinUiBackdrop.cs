@@ -33,11 +33,6 @@ internal sealed class WindowsWinUiBackdrop : IDisposable
     private long _reuses;
     private long _commits;
 
-    // Negative control for the opt-in pixel test; never enabled in ordinary runs.
-    private readonly bool _omitNativeProbe =
-        Environment.GetEnvironmentVariable("DOROTI_WINDOWS_PLATFORM_CAPTURE") == "1"
-        && Environment.GetEnvironmentVariable("DOROTI_WINUI_BACKDROP_OMIT_NATIVE_PROBE") == "1";
-
     internal WindowsWinUiBackdrop(
         WindowsWinUiControls controls,
         nint parent,
@@ -61,7 +56,6 @@ internal sealed class WindowsWinUiBackdrop : IDisposable
             rasterUploads = 0,
             rasterGpuCopies = _gpuCopies,
             rasterReuses = _reuses,
-            omittedNativeProbe = _omitNativeProbe,
             commits = _commits,
             input = "direct native HWND; effect bridges input-transparent",
             bounds = _effects
@@ -248,7 +242,6 @@ internal sealed class WindowsWinUiBackdrop : IDisposable
                 else if (
                     part is PlatformNativeSegment native
                     && native.Placement.Visible
-                    && !_omitNativeProbe
                 )
                 {
                     var placement = native.Placement;

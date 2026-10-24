@@ -16,19 +16,7 @@ public sealed class AppKitDelegate : DorotiMacOSMauiApplication
     public override void DidFinishLaunching(NSNotification notification)
     {
         base.DidFinishLaunching(notification);
-        if (Environment.GetEnvironmentVariable("DOROTI_APPKIT_WINDOWING_PROBE") is { Length: > 0 } windowingOutput)
-            _ = AppKitWindowingProbe.RunAsync(windowingOutput);
         NSApplication.SharedApplication.Activate();
-        if (Environment.GetEnvironmentVariable("DOROTI_APPLE_TEXT_EDITING_PROBE") is { Length: > 0 } textOutput)
-            _ = DorotiTestbedApp.Apple.AppleFeatureProbe.RunTextEditingAsync(textOutput);
-        if (Environment.GetEnvironmentVariable("DOROTI_APPLE_FEATURE_PROBE") is { Length: > 0 } featureOutput)
-            _ = DorotiTestbedApp.Apple.AppleFeatureProbe.RunAsync(featureOutput);
-        if (Environment.GetEnvironmentVariable("DOROTI_MACOS_FRAME_PROBE") is { Length: > 0 } frameOutput)
-            _ = AppKitFrameLifecycleProbe.RunAsync(frameOutput);
-        if (Environment.GetEnvironmentVariable("DOROTI_MACOS_SERVICES_PROBE") is { Length: > 0 } output)
-            _ = AppKitServicesProbe.RunAsync(output);
-        if (Environment.GetEnvironmentVariable("DOROTI_MACOS_AUTOMATION") is { Length: > 0 } directory)
-            _ = AppKitAutomation.RunAsync(directory);
     }
 }
 #endif

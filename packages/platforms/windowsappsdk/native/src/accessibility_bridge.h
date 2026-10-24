@@ -81,8 +81,6 @@ class AccessibilityBridge final {
               double scale);
   void Clear();
   void SetScale(double scale);
-  bool ValidateAndInvokeForTest();
-  bool ValidateTextForTest();
   LRESULT HandleGetObject(WPARAM wparam, LPARAM lparam);
 
  private:

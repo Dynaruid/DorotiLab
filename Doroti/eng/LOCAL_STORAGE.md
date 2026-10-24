@@ -1,9 +1,8 @@
 # Doroti local storage
 
-Doroti-owned tool caches stay under `.doroti`. New test workspaces and evidence use the repository-root `temp/testing/<task>/<run>/` policy in [the testing guide](../tests/README.md).
+Doroti-owned tool caches stay under `.doroti`; disposable build and publish outputs use `Doroti/artifacts`.
 
-- `temp/testing`: invocation-owned test scripts/projects, package consumers, logs, captures and builds. Successful suites summarize then remove their run; failed runs remain only for investigation. This path is not relocated by `DOROTI_LOCAL_ROOT` and the legacy cleaner does not delete it.
-- `.doroti/tmp`: legacy tool/build workspaces. New test runners use `temp/testing`.
+- `.doroti/tmp`: legacy tool/build workspaces.
 - `.doroti/cache`: reusable analyzer, package-config, and Flutter SDK compatibility data. Cache entries are deterministic and shared instead of copied once per process.
 - `Doroti/artifacts`: disposable local build and validation output, including logs, traces, and screenshots. The local-state cleaner removes it with `-Action artifacts` or `-Action all`. Copy any evidence that must be retained elsewhere before cleaning.
 
@@ -68,10 +67,3 @@ before `-Execute`.
 Dependencies and caches may need to be downloaded or regenerated afterward.
 Installed SDKs, simulator runtimes/data, Docker data and browser profiles are
 outside these scopes.
-
-Cleanup regression tests use isolated temporary repositories, including actual
-deletion and symlink escape checks:
-
-```sh
-python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/cleanup_plan_all.py
-```

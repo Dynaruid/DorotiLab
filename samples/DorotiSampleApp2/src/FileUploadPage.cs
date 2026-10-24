@@ -28,7 +28,6 @@ internal sealed class FileUploadPageState : State<FileUploadPage>
     private bool _active;
     private bool _hovering;
     private bool _busy;
-    private bool _probeStarted;
     private string _status = "이미지와 텍스트 파일을 선택해 보세요.";
 
     public override void didChangeDependencies()
@@ -59,11 +58,6 @@ internal sealed class FileUploadPageState : State<FileUploadPage>
             _registration = null;
             _hovering = false;
         }
-        if (_active && !_probeStarted && Environment.GetEnvironmentVariable("DOROTI_UPLOAD_PROBE") is { Length: > 0 })
-        {
-            _probeStarted = true;
-            WidgetsBinding.instance.addPostFrameCallback(_ => PickFiles());
-        }
     }
 
     private async void PickFiles()
@@ -93,13 +87,6 @@ internal sealed class FileUploadPageState : State<FileUploadPage>
             if (result is not null)
                 foreach (var file in result.Files) file.Dispose();
             if (mounted) setState(() => _busy = false);
-            if (Environment.GetEnvironmentVariable("DOROTI_UPLOAD_PROBE") is { Length: > 0 } path)
-                File.WriteAllText(path, System.Text.Json.JsonSerializer.Serialize(
-                    new UploadProbeResult(
-                        result?.Status == FilePickStatus.selected && _files.Count > 0 ? "PASS" : "FAIL",
-                        result?.Status.ToString(),
-                        _files.Select(file => new UploadPreviewProbe(file.Name, file.Length, file.Text)).ToArray(),
-                        result is not null, _status), UploadProbeJsonContext.Default.UploadProbeResult));
         }
     }
 

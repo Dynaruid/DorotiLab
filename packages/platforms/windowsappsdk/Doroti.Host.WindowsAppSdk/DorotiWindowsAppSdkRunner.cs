@@ -394,7 +394,6 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         private bool _disposed;
         private AcrylicPresenterSnapshot? _releasedAcrylicSnapshot;
         private string? _releasedAdapterDescription;
-        private Task? _optionSmoke;
         internal readonly WindowsPlatformViewHost? _platformViews;
 
         internal WindowsManagedState(
@@ -494,22 +493,6 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 }
 
                 effectiveNative.ChildHwnd = native.OpaqueChildHwnd;
-                if (
-                    acrylic is { AcrylicEnabled: true }
-                    && string.Equals(
-                        Environment.GetEnvironmentVariable(
-                            "DOROTI_WINDOWS_EXPERIMENTAL_ACRYLIC_OPTION_SMOKE"
-                        ),
-                        "1",
-                        StringComparison.Ordinal
-                    )
-                )
-                {
-                    _optionSmoke = Task.Run(() =>
-                        RunAcrylicOptionSmoke(acrylic, systemMaterialOnly: false)
-                    );
-                }
-
                 if (acrylic is { AcrylicEnabled: true } && ShouldWriteDiagnostics())
                 {
                     Console.Error.WriteLine(
@@ -731,7 +714,6 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             ).ApplyMetrics(in metrics);
 
         private MovingFrameKey? _movingFrame;
-        private bool _preparedMismatchInjected;
 
         internal int MovingFrame(uint action, in WindowsNativeV1.MovingFrame nativeKey)
         {
@@ -771,18 +753,6 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     _movingFrame = null;
                 }
 
-                if (
-                    !_preparedMismatchInjected
-                    && Environment.GetEnvironmentVariable(
-                        "DOROTI_WINDOWS_PREPARED_FRAME_TEST_MISMATCH"
-                    ) == "1"
-                )
-                {
-                    _preparedMismatchInjected = true;
-                    vulkan.RecordPreparedMismatch();
-                    vulkan.CancelPreparedMovingFrame();
-                    return 1;
-                }
                 if (
                     key != nativeKey.ToKey(key.InputSequence)
                     || !host.IsReceivedInputSequenceCurrent(key.InputSequence)
@@ -832,97 +802,6 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             );
         }
 
-        private static void RunAcrylicOptionSmoke(
-            IWindowsAcrylicPresenter acrylic,
-            bool systemMaterialOnly
-        )
-        {
-            const int requestCount = 500;
-            var requests = new Task<ReadOnlyMemory<byte>?>[requestCount];
-            for (var index = 0; index < requestCount; index++)
-            {
-                var kind = systemMaterialOnly
-                    ? "default"
-                    : (index % 3) switch
-                    {
-                        0 => "default",
-                        1 => "base",
-                        _ => "thin",
-                    };
-                var theme = index % 2 == 0 ? "light" : "dark";
-                var payload = Encoding.UTF8.GetBytes(
-                    systemMaterialOnly
-                        ? JsonSerializer.Serialize(new { kind, theme })
-                        : JsonSerializer.Serialize(
-                            new
-                            {
-                                kind,
-                                theme,
-                                tintColor = 0xff204060u + (uint)(index & 0x1f),
-                                tintOpacity = index % 11 / 10d,
-                                luminosityOpacity = index % 6 / 5d,
-                            }
-                        )
-                );
-                requests[index] = acrylic
-                    .HandleRuntimeMessageAsync(payload, CancellationToken.None)
-                    .AsTask();
-            }
-            Task.WaitAll(requests);
-            var terminals = requests
-                .Select(task => task.Result)
-                .Select(result =>
-                    result is { } value
-                        ? JsonDocument.Parse(value)
-                        : throw new InvalidDataException(
-                            "Acrylic option smoke returned no terminal."
-                        )
-                )
-                .ToArray();
-            try
-            {
-                if (
-                    terminals.Any(terminal =>
-                        !terminal.RootElement.TryGetProperty("status", out var status)
-                        || status.GetString() is not ("applied" or "superseded")
-                    )
-                )
-                {
-                    throw new InvalidDataException(
-                        "Acrylic option smoke returned a failed or malformed terminal."
-                    );
-                }
-
-                if (terminals[^1].RootElement.GetProperty("status").GetString() != "applied")
-                {
-                    throw new InvalidDataException(
-                        "Acrylic option smoke did not apply the last request."
-                    );
-                }
-
-                var snapshot = acrylic.Snapshot();
-                if (
-                    snapshot.AcceptedOptionRevisions != requestCount
-                    || snapshot.FailedOptionRevisions != 0
-                    || snapshot.AppliedOptionRevisions + snapshot.SupersededOptionRevisions
-                        != requestCount
-                    || snapshot.AcrylicKind != (systemMaterialOnly ? "default" : "base")
-                    || snapshot.Theme != "Dark"
-                )
-                {
-                    throw new InvalidDataException(
-                        $"Acrylic option smoke counters or last-request-wins state differ: {snapshot}."
-                    );
-                }
-            }
-            finally
-            {
-                foreach (var terminal in terminals)
-                {
-                    terminal.Dispose();
-                }
-            }
-        }
 
         private bool _nativeRenderWorkerJoined;
 
@@ -949,13 +828,6 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             {
                 if (Presenter is IWindowsAcrylicPresenter { AcrylicEnabled: true } acrylic)
                 {
-                    if (_optionSmoke is { } smoke && !smoke.Wait(TimeSpan.FromSeconds(5)))
-                    {
-                        throw new TimeoutException(
-                            "Acrylic option smoke did not drain before platform shutdown."
-                        );
-                    }
-
                     _releasedAcrylicSnapshot = acrylic.Snapshot();
                     _releasedAdapterDescription = Presenter.AdapterDescription;
                 }
@@ -2262,9 +2134,6 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             Environment.GetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_DIAGNOSTICS"),
             "1",
             StringComparison.Ordinal
-        )
-        || !string.IsNullOrWhiteSpace(
-            Environment.GetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_SMOKE_MS")
         );
 
     [LibraryImport("combase.dll")]

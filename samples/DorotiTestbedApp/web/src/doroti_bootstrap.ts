@@ -17,8 +17,8 @@ await startDoroti({
   },
   onStage(stage) {
     if (stage === "started" && runtimeLocation === "main") {
-      const runtime = (globalThis as unknown as { getDotnetRuntime(id: number): { getAssemblyExports(name: string): Promise<{ DorotiTestbedApp: { Web: { Validation: { WebTextureExport: { Initialize(): void } } } } }> } }).getDotnetRuntime(0);
-      void runtime.getAssemblyExports("DorotiTestbedApp.Web.dll").then(exports => exports.DorotiTestbedApp.Web.Validation.WebTextureExport.Initialize());
+      const runtime = (globalThis as unknown as { getDotnetRuntime(id: number): { getAssemblyExports(name: string): Promise<{ DorotiTestbedApp: { Web: { WebTextureSources: { Initialize(): void } } } }> } }).getDotnetRuntime(0);
+      void runtime.getAssemblyExports("DorotiTestbedApp.Web.dll").then(exports => exports.DorotiTestbedApp.Web.WebTextureSources.Initialize());
     }
     document.documentElement.dataset.dorotiBootstrapStage = stage;
     const history = document.documentElement.dataset.dorotiBootstrapStages;

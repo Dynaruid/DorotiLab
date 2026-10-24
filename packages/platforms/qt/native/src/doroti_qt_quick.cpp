@@ -413,6 +413,5 @@ void DorotiQtRecordPlatformOwner(QWindow* window,const char* path) {
     {"windowDpr",o->window->devicePixelRatio()},{"windowVisible",o->window->isVisible()},
     {"windowState",int(o->window->windowState())},
     {"validationCaptureReadback",saved},{"rasterItems",int(o->rasters.size())},{"effectItems",o->effect?1:0},
-    {"frameworkEffectState",QString::fromUtf8(qgetenv("DOROTI_PLATFORM_EFFECT_PROBE_STATE"))},
     {"effectSourceGroup",o->sourceGroup!=nullptr},{"controls",controls},{"windowCapture",saved}}).toJson());
 }

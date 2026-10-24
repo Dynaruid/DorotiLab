@@ -5,15 +5,10 @@
     <IsDorotiProduct>true</IsDorotiProduct>
   </PropertyGroup>
   <ItemGroup>
-    <InternalsVisibleTo Include="Doroti.Tests" />
-    <InternalsVisibleTo Include="Doroti.Cupertino.Tests" />
-    <InternalsVisibleTo Include="Doroti.Testing" />
     <InternalsVisibleTo Include="Doroti.Framework.Widgets" />
     <InternalsVisibleTo Include="Doroti.Hosting" />
     <InternalsVisibleTo Include="Doroti.Skia.Rendering" />
     <InternalsVisibleTo Include="Doroti.Skia.RuntimeEffects" />
-    <InternalsVisibleTo Include="Doroti.Validation.RuntimeShaderContract" />
-    <InternalsVisibleTo Include="Doroti.Validation.Fcr7MaterialWidget" />
     <ProjectReference Include="..\Doroti.Runtime\Doroti.Runtime.csproj" />
   </ItemGroup>
 </Project>

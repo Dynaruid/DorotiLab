@@ -10,7 +10,6 @@ helpers/deploy-helper/
   deploy-ios.ps1                     iOS 진입점
   deploy-android.ps1                 Android 진입점
   Doroti.DeployHelper/               공통 CLI와 플랫폼별 구현
-  tests/Doroti.DeployHelper.Tests/   콘솔 회귀 테스트
 ```
 
 아래 명령은 저장소 루트 `DorotiLab` 기준입니다. PowerShell 스크립트는 파일 위치로 저장소를 찾으므로
@@ -248,19 +247,3 @@ Apple Silicon에서는 Rosetta로 호출해도 ARM64를 선택합니다.
 설치는 기존 bundle ID의 앱을 업데이트합니다. 기본 실행은 기존 앱 프로세스를 종료하고
 다시 시작하므로 메모리상의 화면 상태는 초기화됩니다. 앱 삭제나 시뮬레이터 초기화는 수행하지 않습니다.
 이 CLI는 일반 빌드·설치용이며 Hot Reload는 각 샘플 README의 개발 명령을 사용합니다.
-
-## 검증
-
-저장소의 콘솔 검증 방식에 맞춘 .NET 테스트 프로젝트를 사용합니다. 외부 테스트 패키지도 필요하지 않습니다.
-기기 JSON 형식, plist·프로필 호환성, SDK 선택, Android 런타임·ABI·APK·Intent 인자,
-실패 시 배포 중단, 실제 .NET 프로세스의 인자 전달·취소·시간 제한을 검사합니다.
-기기 도구는 테스트 대역을 사용하므로 macOS나 연결된 Android 기기 없이 실행할 수 있습니다.
-실기기 설치·화면·입력 검증은 별도입니다.
-
-```sh
-dotnet build ./helpers/deploy-helper/Doroti.DeployHelper -c Release
-python ./Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project ./helpers/deploy-helper/tests/Doroti.DeployHelper.Tests -c Release
-```
-
-서명 항목의 의미는 [Microsoft iOS 게시 문서](https://learn.microsoft.com/en-us/dotnet/maui/ios/deployment/publish-cli?view=net-maui-10.0),
-프로필 구조는 [Apple TN3125](https://developer.apple.com/documentation/technotes/tn3125-inside-code-signing-provisioning-profiles)를 참고하세요.

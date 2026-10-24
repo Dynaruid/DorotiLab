@@ -60,10 +60,7 @@ constexpr UINT kClearTextClient = WM_APP + 0x409;
 constexpr UINT kUpdateSemantics = WM_APP + 0x40A;
 constexpr UINT kClearSemantics = WM_APP + 0x40B;
 constexpr UINT kEnvironmentChanged = WM_APP + 0x40C;
-constexpr UINT_PTR kSmokeTimer = 1;
-constexpr UINT_PTR kLifecycleTimer = 2;
 constexpr UINT_PTR kInteractiveMoveTimer = 3;
-constexpr UINT_PTR kScrollSmokeTimer = 4;
 constexpr UINT kInteractiveMoveIntervalMs = 8;
 constexpr auto kExactResizeWait = std::chrono::milliseconds(100);
 constexpr uint32_t kFramePrepared = 4;
@@ -290,7 +287,6 @@ class ProductHost final {
     if (PublishMetrics() && composition_active_)
       composition_flush_generation_.store(current_generation_,
                                             std::memory_order_release);
-    ConfigureSmokeTimer();
     QueueRender();
 
     MSG message{};
@@ -631,10 +627,6 @@ class ProductHost final {
         PostQuitMessage(fatal_ ? 4 : 0);
         return 0;
       case WM_TIMER:
-        if (wparam == kScrollSmokeTimer) {
-          RunScrollSmokePacket();
-          return 0;
-        }
         if (wparam == kInteractiveMoveTimer) {
           if (interactive_move_ && interactive_move_dirty_) {
             if (!WindowStraddlesMonitors()) {
@@ -644,40 +636,6 @@ class ProductHost final {
               if (RepublishCurrentMetrics()) QueueRender();
             }
           }
-          return 0;
-        }
-        if (wparam == kLifecycleTimer) {
-          KillTimer(top_, kLifecycleTimer);
-          if ((lifecycle_smoke_phase_ % 2u) == 0u &&
-              lifecycle_smoke_phase_ / 2u < lifecycle_smoke_cycles_) {
-            ShowWindow(top_, SW_MINIMIZE);
-            if (!IsIconic(top_) || !minimized_) {
-              // The first smoke transition can race the initial ShowWindow
-              // and a managed device-reset request. Advance only after USER32
-              // has actually delivered SIZE_MINIMIZED; otherwise the next
-              // timer would issue restore for a transition that never began.
-              SetTimer(top_, kLifecycleTimer, 120, nullptr);
-              return 0;
-            }
-            ++lifecycle_smoke_phase_;
-            SetTimer(top_, kLifecycleTimer, 120, nullptr);
-          } else if ((lifecycle_smoke_phase_ % 2u) == 1u) {
-            ShowWindow(top_, SW_RESTORE);
-            if (IsIconic(top_) || minimized_) {
-              SetTimer(top_, kLifecycleTimer, 120, nullptr);
-              return 0;
-            }
-            ++lifecycle_smoke_phase_;
-            if (lifecycle_smoke_phase_ / 2u < lifecycle_smoke_cycles_)
-              SetTimer(top_, kLifecycleTimer, 120, nullptr);
-            else
-              SendMessageW(top_, WM_DISPLAYCHANGE, 32, MAKELPARAM(1920, 1080));
-          }
-          return 0;
-        }
-        if (wparam == kSmokeTimer) {
-          KillTimer(top_, kSmokeTimer);
-          PostMessageW(top_, WM_CLOSE, 0, 0);
           return 0;
         }
         break;
@@ -1663,22 +1621,6 @@ class ProductHost final {
     text_input_.owns_preedit = text_input_.composing_base >= 0 &&
         text_input_.composing_extent != text_input_.composing_base;
     ApplyImeWindowPosition();
-    if (set_client && !text_smoke_emitted_ &&
-        EnvironmentOne(L"DOROTI_WINDOWS_APPSDK_C7_SMOKE")) {
-      text_smoke_emitted_ = true;
-      text_input_.text = L"한";
-      text_input_.selection_base = text_input_.selection_extent = 1;
-      text_input_.composing_base = 0;
-      text_input_.composing_extent = 1;
-      EmitTextEditing();
-      text_input_.text = L"한글";
-      text_input_.selection_base = text_input_.selection_extent = 2;
-      text_input_.composing_base = text_input_.composing_extent = -1;
-      EmitTextEditing();
-      if (callbacks_.text_action != nullptr)
-        callbacks_.text_action(callbacks_.callback_context,
-                               text_configuration_.input_action);
-    }
   }
 
   void ApplyCaretRect(const CaretCommand& command) {
@@ -1925,21 +1867,7 @@ class ProductHost final {
         }
         nodes.push_back(std::move(node));
       }
-      const bool text_geometry_ready = std::any_of(nodes.begin(), nodes.end(), [](const auto& node) {
-        return node.text_geometry && !node.layout_text.empty() && !node.text_runs.empty();
-      });
       accessibility_.Update(generation, std::move(nodes), current_scale_);
-      if (!_text_geometry_smoke_emitted_ && text_geometry_ready && EnvironmentOne(L"DOROTI_WINDOWS_APPSDK_TEXT_SMOKE")) {
-        _text_geometry_smoke_emitted_ = true;
-        if (!accessibility_.ValidateTextForTest()) throw std::runtime_error("UIA text range regression failed");
-        fprintf(stderr, "UIA layout text range: PASS (geometry/UTF-16/revision/owner/password)\n"); fflush(stderr);
-      }
-      if (!semantics_smoke_emitted_ &&
-          EnvironmentOne(L"DOROTI_WINDOWS_APPSDK_C7_SMOKE")) {
-        semantics_smoke_emitted_ = true;
-        if (!accessibility_.ValidateAndInvokeForTest())
-          throw std::runtime_error("UIA provider smoke failed");
-      }
     } catch (...) {
       fatal_ = true;
       PostMessageW(top_, WM_CLOSE, 0, 0);
@@ -2285,20 +2213,12 @@ class ProductHost final {
       completions.swap(render_completions_);
     }
     for (const auto& receipt : completions) {
-      auto run_input_smoke = false;
       if (receipt.terminal_kind == DOROTI_WINDOWS_FRAME_PRESENTED_V1 &&
           !first_exact_present_) {
         first_exact_present_ = true;
-        run_input_smoke = true;
         if (show_requested_) ShowWindow(top_, ResolveShowCommand());
-        if (EnvironmentOne(L"DOROTI_WINDOWS_APPSDK_C8_SMOKE"))
-          SetTimer(top_, kLifecycleTimer, 120, nullptr);
       }
       callbacks_.frame_terminal(callbacks_.callback_context, &receipt);
-      // The input smoke must run after the first framework frame has attached
-      // its input listeners. Running it during native bootstrap races a slower
-      // presenter initialization and can drop the synthetic focus-gained edge.
-      if (run_input_smoke) RunInputSmoke();
     }
   }
 
@@ -2374,94 +2294,8 @@ class ProductHost final {
     DwmSetWindowAttribute(top_, DWMWA_CAPTION_COLOR, &caption, sizeof(caption));
   }
 
-  void ConfigureSmokeTimer() {
-    wchar_t value[32]{};
-    const auto length = GetEnvironmentVariableW(
-        L"DOROTI_WINDOWS_APPSDK_SMOKE_MS", value,
-        static_cast<DWORD>(std::size(value)));
-    if (length == 0 || length >= std::size(value)) return;
-    wchar_t* end{};
-    const auto milliseconds = wcstoul(value, &end, 10);
-    if (end == value || *end != L'\0' || milliseconds < 250 ||
-        milliseconds > 60000)
-      return;
-    SetTimer(top_, kSmokeTimer, static_cast<UINT>(milliseconds), nullptr);
-    wchar_t cycles_value[16]{};
-    const auto cycles_length = GetEnvironmentVariableW(
-        L"DOROTI_WINDOWS_APPSDK_LIFECYCLE_CYCLES", cycles_value,
-        static_cast<DWORD>(std::size(cycles_value)));
-    if (cycles_length != 0 && cycles_length < std::size(cycles_value)) {
-      wchar_t* cycles_end{};
-      const auto cycles = wcstoul(cycles_value, &cycles_end, 10);
-      if (cycles_end != cycles_value && *cycles_end == L'\0' &&
-          cycles >= 1 && cycles <= 100)
-        lifecycle_smoke_cycles_ = static_cast<uint32_t>(cycles);
-    }
-  }
 
-  void RunInputSmoke() {
-    // Separate opt-in scroll probe: two bursts separated by an idle interval,
-    // through the real native wheel ingress (24 packets total).
-    if (EnvironmentOne(L"DOROTI_WINDOWS_APPSDK_SCROLL_SMOKE"))
-      SetTimer(top_, kScrollSmokeTimer, 600, nullptr);
-    wchar_t value[8]{};
-    if (GetEnvironmentVariableW(L"DOROTI_WINDOWS_APPSDK_INPUT_SMOKE", value,
-                                static_cast<DWORD>(std::size(value))) == 0 ||
-        value[0] != L'1')
-      return;
-    const auto target = InputWindow();
-    if (composition_active_)
-      SendMessageW(target, WM_ACTIVATE, WA_ACTIVE, 0);
-    else
-      SendMessageW(target, WM_SETFOCUS, 0, 0);
-    SendMessageW(target, WM_MOUSEMOVE, 0, MAKELPARAM(10, 20));
-    SendMessageW(target, WM_LBUTTONDOWN, MK_LBUTTON, MAKELPARAM(10, 20));
-    SendMessageW(target, WM_MOUSEMOVE, MK_LBUTTON, MAKELPARAM(18, 25));
-    SendMessageW(target, WM_LBUTTONUP, 0, MAKELPARAM(18, 25));
-    RECT client{};
-    if (GetClientRect(target, &client)) {
-      POINT wheel_point{(client.right - client.left) / 2,
-                        (client.bottom - client.top) / 2};
-      if (ClientToScreen(target, &wheel_point)) {
-        SendMessageW(target, WM_MOUSEWHEEL,
-                     MAKEWPARAM(0, static_cast<WORD>(-WHEEL_DELTA)),
-                     MAKELPARAM(wheel_point.x, wheel_point.y));
-      }
-    }
-    SendMessageW(target, WM_KEYDOWN, 'A', 1 | (0x1Eu << 16));
-    SendMessageW(target, WM_KEYUP, 'A', 1 | (0x1Eu << 16) | (1u << 30) | (1u << 31));
-    // Editing keys must cross the native callback even with an active client.
-    for (const auto editing_key : {VK_BACK, VK_DELETE, VK_LEFT, VK_RIGHT, VK_HOME, VK_END}) {
-      const auto scan = MapVirtualKeyW(editing_key, MAPVK_VK_TO_VSC);
-      const auto flags = 1 | (static_cast<LPARAM>(scan) << 16);
-      SendMessageW(target, WM_KEYDOWN, editing_key, flags);
-      SendMessageW(target, WM_KEYUP, editing_key, flags | (1LL << 30) | (1LL << 31));
-    }
-    if (composition_active_)
-      SendMessageW(target, WM_ACTIVATE, WA_INACTIVE, 0);
-    else
-      SendMessageW(target, WM_KILLFOCUS, 0, 0);
-  }
 
-  void RunScrollSmokePacket() {
-    KillTimer(top_, kScrollSmokeTimer);
-    const auto target = InputWindow();
-    RECT client{};
-    if (GetClientRect(target, &client)) {
-      POINT point{(client.right - client.left) / 2,
-                  (client.bottom - client.top) / 2};
-      if (ClientToScreen(target, &point)) {
-        const auto delta = scroll_smoke_packets_ < 12 ? -WHEEL_DELTA : -8;
-        SendMessageW(target, WM_MOUSEWHEEL,
-                     MAKEWPARAM(0, static_cast<WORD>(delta)),
-                     MAKELPARAM(point.x, point.y));
-      }
-    }
-    ++scroll_smoke_packets_;
-    if (scroll_smoke_packets_ < 24)
-      SetTimer(top_, kScrollSmokeTimer,
-               scroll_smoke_packets_ == 12 ? 800 : 16, nullptr);
-  }
 
   void EmitFocus(bool focused) {
     if (callbacks_.focus != nullptr)
@@ -2664,9 +2498,6 @@ class ProductHost final {
   CaretCommand caret_{};
   bool text_client_active_{};
   doroti::text_input::ImeEditingState text_input_;
-  bool text_smoke_emitted_{};
-  bool semantics_smoke_emitted_{};
-  bool _text_geometry_smoke_emitted_{};
   bool minimized_{};
   bool interactive_move_{};
   bool post_present_dwm_flush_{};
@@ -2686,9 +2517,6 @@ class ProductHost final {
   bool composition_active_{};
   bool platform_resources_released_{};
   uint32_t lifecycle_state_{std::numeric_limits<uint32_t>::max()};
-  uint32_t lifecycle_smoke_phase_{};
-  uint32_t scroll_smoke_packets_{};
-  uint32_t lifecycle_smoke_cycles_{1};
   uint32_t platform_brightness_{};
   doroti::windows::AccessibilityBridge accessibility_;
   std::mutex render_mutex_;

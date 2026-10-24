@@ -4,6 +4,6 @@ Host/Target identities remain unchanged. This provider owns the HwndExactCpp nat
 
 Version: 0.4.1-beta. Core: [0.4.0-alpha.1, 0.5.0). The exported host entrypoint/header retain their `v1` names; the negotiated managed/native ABI version is **4**. Managed application/view identities do not change the native-local view identifier.
 
-Repository builds explicitly consume the native source operation. Packed consumers use prebuilt RID assets and never execute this source target. See the [maintained Windows tests](../../../Doroti/tests/README.md) for shared-tree, multiwindow, menu, package and native smoke scopes.
+Repository builds explicitly consume the native source operation. Packed consumers use prebuilt RID assets and never execute this source target.
 
 Managed/native ABI is 4. Process preparation is reference counted across all native windows; generated startup runs Configure after the preparation lease is acquired. Packaged DLL consumers use the native module directory to identify self-contained Windows App Runtime assets.

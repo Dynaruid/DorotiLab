@@ -2133,45 +2133,6 @@ void DorotiSurface::ApplySemantics(const QByteArray& json) {
       QAccessible::updateAccessibility(&changed);
     }
   }
-  if (qEnvironmentVariableIsSet("DOROTI_QT_VALIDATION_ACCESSIBILITY_DUMP")) {
-    auto* root = Accessible(0);
-    const auto children = QByteArray::number(root == nullptr ? 0 : root->childCount());
-    Diagnostic("accessibility.rootChildren", children.constData());
-    int text_interfaces = 0, editable_interfaces = 0, selected_nodes = 0;
-    for (auto it = semantics_.cbegin(); it != semantics_.cend(); ++it) {
-      auto* iface = Accessible(it.key());
-      if (iface == nullptr) continue;
-      if (iface->interface_cast(QAccessible::TextInterface)) ++text_interfaces;
-      if (iface->interface_cast(QAccessible::EditableTextInterface)) ++editable_interfaces;
-      if (iface->state().selected) ++selected_nodes;
-    }
-    const auto detail = QJsonDocument(QJsonObject{
-        {"textInterfaces", text_interfaces}, {"editableTextInterfaces", editable_interfaces},
-        {"selectedNodes", selected_nodes}
-    }).toJson(QJsonDocument::Compact);
-    Diagnostic("accessibility.interfaces", detail.constData());
-  }
-  if (qEnvironmentVariableIsSet("DOROTI_QT_TEXT_GEOMETRY_SMOKE")) {
-    static bool verified = false;
-    if (!verified) for (auto it = semantics_.cbegin(); it != semantics_.cend(); ++it) {
-      if (it->obscured || !it->text_geometry || it->text_runs.empty()) continue;
-      auto* iface = Accessible(it.key());
-      auto* text = iface ? iface->textInterface() : nullptr;
-      if (!text || text->characterCount() != it->layout_text.size() || text->text(0, text->characterCount()) != it->layout_text)
-        throw std::runtime_error("QAccessible layout text mismatch");
-      for (const auto& run : it->text_runs) {
-        if (run.bounds.isEmpty()) continue;
-        const auto rect = text->characterRect(run.start);
-        const int offset = text->offsetAtPoint(rect.center());
-        if (rect.isEmpty() || (offset != run.start && offset != run.end))
-          throw std::runtime_error("QAccessible glyph geometry/hit-test mismatch");
-        Diagnostic("accessibility.layoutText", "PASS glyph rect/UTF-16 point/text from current layout");
-        verified = true;
-        break;
-      }
-      if (verified) break;
-    }
-  }
 }
 
 QAccessibleInterface* AccessibleFactory(const QString&, QObject* object) {

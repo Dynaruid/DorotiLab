@@ -56,16 +56,5 @@
     <Content Remove="wwwroot/index.html" />
     <Content Include="Assets.index.html" Link="wwwroot/index.html" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
-  <ItemGroup Condition="'$(DorotiWebFontValidation)' != 'true'">
-    <Compile Remove="Validation/**/*.cs" />
-  </ItemGroup>
-  <PropertyGroup Condition="'$(DorotiWebFontValidation)' == 'true'">
-    <DefineConstants>$(DefineConstants);DOROTI_FONT_PROBE</DefineConstants>
-  </PropertyGroup>
-  <ItemGroup Condition="'$(DorotiWebFontValidation)' == 'true'">
-    <Compile Include="Validation/WebFontProbe.cs" />
-    <Content Include="../../DorotiTestbedApp/assets/fonts/Roboto-regular.ttf" Link="wwwroot/font-probe/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
-    <Content Include="../../../packages/Doroti.Icons.Material/assets/MaterialIcons.otf" Link="wwwroot/font-probe/icons.otf" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
-  </ItemGroup>
   <Import Project="../../../Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.targets" />
 </Project>

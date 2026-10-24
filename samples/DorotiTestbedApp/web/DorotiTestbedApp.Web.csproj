@@ -20,9 +20,6 @@
   </PropertyGroup>
   <ItemGroup>
     <EmccExportedFunction Include="_wgpuDeviceRelease;_wgpuQueueRelease;_wgpuInstanceRelease" />
-    <Compile Remove="Validation\TimerValidationExport.cs" />
-    <Compile Include="Validation\TimerValidationExport.cs" Condition="'$(DorotiTimerValidation)' == 'true'" />
-    <Compile Include="Validation\WebTextureExport.cs" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.11" />
     <DorotiTargetDescriptor Include="Web" HostKind="BlazorWebAssembly" NativeEntryKind="Managed-Main" RuntimeIdentifier="browser-wasm" TargetFramework="net10.0" TargetPackage="Doroti.Target.Web.browser-wasm" />
     <ProjectReference Include="../../../packages/platforms/web/Doroti.Target.Web.browser-wasm/Doroti.Target.Web.browser-wasm.csproj" />

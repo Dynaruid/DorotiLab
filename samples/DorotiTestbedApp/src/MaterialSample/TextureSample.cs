@@ -13,12 +13,8 @@ internal sealed class TextureSample : StatefulWidget
     public override IState createState() => new TextureSampleState();
 }
 
-public static class TextureSampleProbe
+public static class TextureSampleSources
 {
-    public static SynchronizationContext? OwnerContext { get; internal set; }
-    public static DorotiView? Owner { get; internal set; }
-    public static System.Action<long, bool, int>? SetTexture { get; internal set; }
-    public static int Builds { get; internal set; }
     public static Func<string, Task<string>>? SelectSource { get; set; }
 }
 
@@ -33,9 +29,7 @@ internal sealed partial class TextureSampleState : State<TextureSample>
     private long? _externalId;
     private string? _error;
     private string _source = "canvas";
-    private int _effect;
     private bool _busy;
-    private WebViewController? _web;
 
     public override void didChangeDependencies()
     {
@@ -47,31 +41,6 @@ internal sealed partial class TextureSampleState : State<TextureSample>
         _entry?.Dispose();
         _entry = null;
         _owner = owner;
-        TextureSampleProbe.Owner = owner;
-        TextureSampleProbe.OwnerContext = SynchronizationContext.Current;
-        TextureSampleProbe.SetTexture = (id, freeze, effect) =>
-            setState(() =>
-            {
-                _timer?.cancel();
-                _entry?.Dispose();
-                _entry = null;
-                _externalId = id > 0 ? id : null;
-                _freeze = freeze;
-                _effect = effect;
-                if (effect == 3 && _web is null)
-                    _web = new WebViewController(
-                        owner,
-                        new WebViewOptions(
-                            Html: "<body style='margin:0;background:#123456'><input value='live iframe' style='width:90px'>",
-                            Profile: WebViewProfile.BrowserDefault
-                        )
-                    );
-                if (effect != 3 && _web is { } web)
-                {
-                    _web = null;
-                    _ = web.DisposeAsync();
-                }
-            });
         if (!owner.registeredCapabilityIds.Contains(DorotiCapabilityIds.GraphicsTexture))
             return;
         _entry = TextureRegistry.ForView(owner).CreateTexture();
@@ -99,43 +68,15 @@ internal sealed partial class TextureSampleState : State<TextureSample>
 
     public override Widget build(BuildContext context)
     {
-        TextureSampleProbe.Builds++;
         var id = _externalId ?? _entry?.Id;
         Widget preview = id is { } textureId
             ? new ClipRRect(
                 borderRadius: BorderRadius.CreateCircular(24),
-                child: new Opacity(
-                    opacity: _effect == 1 ? 0.5 : 1,
-                    child: Transform.CreateRotate(
-                        angle: _effect == 2 ? 0.15 : 0,
-                        child: new RepaintBoundary(
-                            child: new Texture(textureId: textureId, freeze: _freeze)
-                        )
-                    )
+                child: new RepaintBoundary(
+                    child: new Texture(textureId: textureId, freeze: _freeze)
                 )
             )
             : new Text("Textures are unavailable on this host.");
-        if (_web is { } webView && id is { } overlayId)
-            preview = new Stack(
-                children:
-                [
-                    preview,
-                    new Positioned(
-                        left: 90,
-                        top: 30,
-                        width: 140,
-                        height: 110,
-                        child: new WebViewWidget(webView)
-                    ),
-                    new Positioned(
-                        left: 160,
-                        top: 80,
-                        width: 80,
-                        height: 45,
-                        child: new Texture(textureId: overlayId, freeze: _freeze)
-                    ),
-                ]
-            );
         return new SingleChildScrollView(
             child: new Padding(
                 padding: EdgeInsets.CreateAll(24),
@@ -209,7 +150,7 @@ internal sealed partial class TextureSampleState : State<TextureSample>
             if (operation is "canvas" or "video" or "camera" or "bitmap" or "frame" or "codec")
                 _source = operation;
             var id = await (
-                TextureSampleProbe.SelectSource
+                TextureSampleSources.SelectSource
                 ?? throw new InvalidOperationException("Browser texture sources are not ready.")
             )(operation == "recreate" ? _source : operation);
             if (mounted)
@@ -235,13 +176,8 @@ internal sealed partial class TextureSampleState : State<TextureSample>
     {
         _timer?.cancel();
         _entry?.Dispose();
-        if (_web is { } web)
-            _ = web.DisposeAsync();
-        if (TextureSampleProbe.SelectSource is { } stop)
+        if (TextureSampleSources.SelectSource is { } stop)
             _ = stop("stop");
-        TextureSampleProbe.SetTexture = null;
-        TextureSampleProbe.Owner = null;
-        TextureSampleProbe.OwnerContext = null;
         base.dispose();
     }
 }

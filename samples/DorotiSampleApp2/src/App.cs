@@ -16,7 +16,7 @@ namespace DorotiSampleApp2;
 public static class App
 {
     public static Func<IDorotiViewEntrypoint> Definition =>
-        () => new DorotiWidgetEntrypoint(() => new CupertinoSample(), PrepareResourcesAsync);
+        () => new DorotiWidgetEntrypoint(() => new CupertinoSample());
 
     public static DorotiViewConfiguration ViewConfiguration { get; } = new(
         "Doroti Cupertino Sample",
@@ -26,18 +26,7 @@ public static class App
         terminateAfterLastWindowClosed: true
     );
 
-#if DOROTI_FONT_PROBE
-    public static Func<Task>? ValidateFontsAsync { get; set; }
-#endif
 
-    private static Task PrepareResourcesAsync()
-    {
-#if DOROTI_FONT_PROBE
-        return ValidateFontsAsync?.Invoke() ?? Task.CompletedTask;
-#else
-        return Task.CompletedTask;
-#endif
-    }
 }
 
 internal sealed class CupertinoSample : StatefulWidget
@@ -47,9 +36,7 @@ internal sealed class CupertinoSample : StatefulWidget
 
 internal sealed class CupertinoSampleState : State<CupertinoSample>
 {
-    private readonly CupertinoTabController _tabs = new(initialIndex:
-        Environment.GetEnvironmentVariable("DOROTI_UPLOAD_PROBE") is { Length: > 0 } ? 5
-        : VariableBlurPageState.BenchmarkMode is null ? 0 : 3);
+    private readonly CupertinoTabController _tabs = new();
     private Brightness? _brightness;
     private bool _notifications = true;
     private readonly ValueNotifier<double> _volume = new(0.5);

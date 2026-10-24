@@ -45,7 +45,7 @@ Compile a selection to an explicit output directory:
 
 ```powershell
 dotnet run --project ./tools/Doroti.DartToCSharp -- `
-  --manifest ./tools/Doroti.DartToCSharp/validation/null-semantics/fixtures/selection.json `
+  --manifest ./selection.json `
   --output ./Doroti/artifacts/converter
 ```
 
@@ -72,7 +72,7 @@ Example with parallel compilation and selected IR dumps:
 
 ```powershell
 dotnet run --project ./tools/Doroti.DartToCSharp -- `
-  --manifest ./tools/Doroti.DartToCSharp/validation/virtual-dispatch/fixtures/selection.json `
+  --manifest ./selection.json `
   --output ./Doroti/artifacts/converter-g4-4 `
   --parallelism 8 `
   --dump-ir ./Doroti/artifacts/compiler-ir `
@@ -132,7 +132,7 @@ dotnet run --project ./tools/Doroti.DartToCSharp -- cache-prune --cache-dir ./.d
 
 | Path | Responsibility |
 | --- | --- |
-| [`analyzer/`](analyzer/) | Pinned Dart frontend, protocol extraction, stubs, and Dart tests |
+| [`analyzer/`](analyzer/) | Pinned Dart frontend, protocol extraction, stubs |
 | [`src/Application/`](src/Application/) | Compilation plans, orchestration, port composition, adoption, and rebase |
 | [`src/Frontend/Dart/`](src/Frontend/Dart/) | Analyzer process/cache client and protocol decoding |
 | [`src/Dart/`](src/Dart/) | Typed Dart symbols, types, declarations, expressions, and statements |
@@ -142,26 +142,3 @@ dotnet run --project ./tools/Doroti.DartToCSharp -- cache-prune --cache-dir ./.d
 | [`src/Configuration/`](src/Configuration/) | Versioned selections, profiles, port manifests, and policies |
 | [`src/Diagnostics/`](src/Diagnostics/) | Stable `DOTCONV` diagnostic and telemetry contracts |
 | [`src/Identity/`](src/Identity/) | Compiler identity and content-addressed fingerprints |
-
-## Validation
-
-Run the generated-code virtual dispatch regression suite (20-minute timeout, output only under `.doroti`):
-
-```powershell
-./tools/Doroti.DartToCSharp/validation/virtual-dispatch/validate.ps1
-```
-
-It compiles generated C#, verifies base/interface calls and deterministic output, and checks that unresolved annotated override contracts produce `DOTCONV902`. Add `-Upstream` for focused checks against pinned Flutter source. This does not regenerate or adopt product source. See [validation details](validation/virtual-dispatch/README.md).
-
-Validate the Dart frontend and the .NET compiler boundary:
-
-```powershell
-Push-Location ./tools/Doroti.DartToCSharp/analyzer
-dart pub get --enforce-lockfile
-dart format --output=none --set-exit-if-changed .
-dart analyze
-python ../../../Doroti/eng/run-with-timeout.py --timeout 1200 dart test
-Pop-Location
-```
-
-Doroti is distributed under the repository's [BSD 3-Clause license](../../LICENSE). Upstream notices are recorded in [Doroti's third-party notices](../../Doroti/THIRD-PARTY-NOTICES.md).

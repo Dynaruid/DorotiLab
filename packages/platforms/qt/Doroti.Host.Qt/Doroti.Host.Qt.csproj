@@ -13,7 +13,6 @@
                    TargetPath="licenses/doroti-linux/%(RecursiveDir)%(Filename)%(Extension)" />
     <ProjectReference Include="../../../../Doroti/src/Doroti.Desktop/Doroti.Desktop.csproj" />
     <ProjectReference Include="../../../../Doroti/src/Doroti.Skia.Vulkan/Doroti.Skia.Vulkan.csproj" />
-    <InternalsVisibleTo Include="Doroti.Validation.LinuxQtContract" />
     <PackageReference Include="SkiaSharp" />
     <PackageReference Include="SkiaSharp.NativeAssets.Linux" />
     <ProjectReference Include="../../../../Doroti/src/Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj" />

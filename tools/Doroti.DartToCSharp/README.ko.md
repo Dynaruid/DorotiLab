@@ -45,7 +45,7 @@ Selection을 명시적인 output directory에 compile합니다.
 
 ```powershell
 dotnet run --project ./tools/Doroti.DartToCSharp -- `
-  --manifest ./tools/Doroti.DartToCSharp/validation/null-semantics/fixtures/selection.json `
+  --manifest ./selection.json `
   --output ./Doroti/artifacts/converter
 ```
 
@@ -72,7 +72,7 @@ dotnet run --project ./tools/Doroti.DartToCSharp -- `
 
 ```powershell
 dotnet run --project ./tools/Doroti.DartToCSharp -- `
-  --manifest ./tools/Doroti.DartToCSharp/validation/virtual-dispatch/fixtures/selection.json `
+  --manifest ./selection.json `
   --output ./Doroti/artifacts/converter-g4-4 `
   --parallelism 8 `
   --dump-ir ./Doroti/artifacts/compiler-ir `
@@ -132,7 +132,7 @@ dotnet run --project ./tools/Doroti.DartToCSharp -- cache-prune --cache-dir ./.d
 
 | 경로 | 역할 |
 | --- | --- |
-| [`analyzer/`](analyzer/) | Pinned Dart frontend, protocol extraction, stub과 Dart test |
+| [`analyzer/`](analyzer/) | Pinned Dart frontend, protocol extraction, stub |
 | [`src/Application/`](src/Application/) | Compilation plan, orchestration, port composition, adoption과 rebase |
 | [`src/Frontend/Dart/`](src/Frontend/Dart/) | Analyzer process/cache client와 protocol decoding |
 | [`src/Dart/`](src/Dart/) | Typed Dart symbol, type, declaration, expression과 statement |
@@ -142,28 +142,3 @@ dotnet run --project ./tools/Doroti.DartToCSharp -- cache-prune --cache-dir ./.d
 | [`src/Configuration/`](src/Configuration/) | Versioned selection, profile, port manifest와 policy |
 | [`src/Diagnostics/`](src/Diagnostics/) | 안정적인 `DOTCONV` diagnostic과 telemetry contract |
 | [`src/Identity/`](src/Identity/) | Compiler identity와 content-addressed fingerprint |
-
-## 검증
-
-Dart frontend와 .NET compiler boundary를 검증합니다.
-
-```powershell
-Push-Location ./tools/Doroti.DartToCSharp/analyzer
-dart pub get --enforce-lockfile
-dart format --output=none --set-exit-if-changed .
-dart analyze
-python ../../../Doroti/eng/run-with-timeout.py --timeout 1200 dart test
-Pop-Location
-```
-
-Doroti는 repository의 [BSD 3-Clause license](../../LICENSE)로 배포됩니다. Upstream 고지는 [Doroti third-party notices](../../Doroti/THIRD-PARTY-NOTICES.md)에 기록되어 있습니다.
-
-## 가상 메서드 재정의 검증
-
-```powershell
-./tools/Doroti.DartToCSharp/validation/virtual-dispatch/validate.ps1
-```
-
-20분 timeout으로 실제 Dart 분석·C# 생성·컴파일 및 기반/인터페이스 호출을 검사합니다. 생성 결과와 소스맵의 병렬/단일 실행 결정성도 확인합니다. 상속 계약이 없는 명시적 `@override`는 `DOTCONV902` 오류로 보고합니다. `-Upstream`을 추가하면 pinned Flutter의 대표 메서드 8곳도 검사합니다.
-
-출력은 `.doroti/compiler-dispatch-*`에만 생성하며 제품 `Doroti/src`와 TestbedApp에는 반영하지 않습니다. 전체 Flutter import 빌드 통과를 의미하지 않습니다. [검증 범위](validation/virtual-dispatch/README.md)를 참고하세요.

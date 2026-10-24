@@ -77,7 +77,6 @@
     <RuntimeEnvironmentVariable Include="DOROTI_DEV_SESSION_ID" Value="$(DOROTI_DEV_SESSION_ID)" />
     <RuntimeEnvironmentVariable Include="DOROTI_DEV_SESSION" Value="$(DOROTI_DEV_DEVICE_SESSION)" Condition="'$(RuntimeIdentifier)' == 'ios-arm64'" />
     <RuntimeEnvironmentVariable Include="DOROTI_SAMPLE" Value="$(DOROTI_SAMPLE)" Condition="'$(DOROTI_SAMPLE)' != ''" />
-    <RuntimeEnvironmentVariable Include="DOROTI_RELOAD_PROBE" Value="$(DOROTI_RELOAD_PROBE)" Condition="'$(DOROTI_RELOAD_PROBE)' != ''" />
     <RuntimeEnvironmentVariable Include="HOTRELOAD_DELTA_CLIENT_LOG_MESSAGES" Value="iOS Hot Reload:" Condition="'$(DOTNET_CLI_CONTEXT_VERBOSE)' == 'true' and '$(DorotiIosTargetFramework)' != 'net11.0-ios'" />
   </ItemGroup>
   <PropertyGroup>

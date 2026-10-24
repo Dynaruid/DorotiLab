@@ -1,6 +1,4 @@
 using Doroti.Host.Maui;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Maui.LifecycleEvents;
 
 namespace DorotiTestbedApp.WinUI;
 
@@ -11,12 +9,5 @@ public sealed partial class App : DorotiMauiWinUIApplication
     protected override Doroti.Hosting.DorotiApplicationDescriptor CreateApplicationDescriptor() =>
         Doroti.Generated.DorotiBootstrap.Create(Environment.GetCommandLineArgs().Skip(1).ToArray());
 
-    protected override void ConfigurePlatform(MauiAppBuilder builder)
-    {
-        builder.Services.AddSingleton<WindowsPlatformHook>();
-        builder.ConfigureLifecycleEvents(events => events.AddWindows(windows =>
-            windows.OnWindowCreated(window => { WindowsConnectionProbe.Start(window); WindowsNativeTextureProbe.Start(window); TextInputFocusProbe.Start(window); TextInputEditingProbe.Start(window); })));
-    }
+    protected override void ConfigurePlatform(MauiAppBuilder builder) => _ = builder;
 }
-
-internal sealed class WindowsPlatformHook;

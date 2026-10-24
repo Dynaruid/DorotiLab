@@ -295,8 +295,6 @@ Trackpad scrolling decelerates after release; discrete mouse-wheel input receive
 Both Mac runners open the text field editing menu with a secondary click or Control-click.
 The menu follows Flutter Cupertino's continuous corners and blurred shadow;
 hovered items use the theme accent and contrasting text color.
-The former `--mac-text-menu` validation project is retired. Run the maintained
-CPU editing-action regression with `python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project packages/Doroti.Cupertino/tests/Doroti.Cupertino.Tests -c Release -- --editable-context-menu`.
 Native Mac menu appearance, hover/pressed states and physical input need separate checks.
 
 ```powershell

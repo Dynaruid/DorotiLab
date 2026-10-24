@@ -358,11 +358,6 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
     public override void initState()
     {
         base.initState();
-        if (Environment.GetEnvironmentVariable("DOROTI_TESTBED_WEBVIEW_PAGE_PROBE") == "1")
-        {
-            _destination = 5;
-        }
-
         _controller = new AnimationController(duration: new Duration(1_000_000L), vsync: this);
         _rail = new CurvedAnimation(parent: _controller, curve: new Interval(0.5, 1));
         _barCurve = new CurvedAnimation(parent: _controller, curve: new Interval(0, 0.5));

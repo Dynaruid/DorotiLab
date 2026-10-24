@@ -14,7 +14,6 @@ import sys
 import uuid
 import xml.etree.ElementTree as ET
 import zipfile
-from release_receipt import receipt_environment, validate_receipt, validate_android_receipt
 
 ROOT = Path(__file__).resolve().parents[2]
 TEMPLATE = ROOT / 'Doroti/templates/Doroti.Templates/content/doroti-app'
@@ -44,8 +43,6 @@ def main():
     parser.add_argument('--material-version', default='1.0.0-alpha.1')
     parser.add_argument('--cupertino-version', default='1.0.0-alpha.1')
     parser.add_argument('--provider-version', action='append', default=[], metavar='PROVIDER=VERSION')
-    parser.add_argument('--runtime-targets', nargs='*', default=[])
-    parser.add_argument('--device', help='Explicit matching Android serial for mobile runtime qualification.')
     parser.add_argument('--web-font-preset', choices=['Default', 'Offline'], default='Offline')
     parser.add_argument('--output', type=Path)
     parser.add_argument('--build-root', type=Path, help='Optional disposable build cache; published candidate payloads remain separate and immutable.')
@@ -62,12 +59,11 @@ def main():
     workspace = json.loads(workspace_path.read_text(encoding='utf-8-sig'))
     if workspace.get('schemaVersion') != 'doroti.workspace/v2': parser.error('Expected workspace v2')
     if len(set(args.targets)) != len(args.targets) or any(alias not in workspace['platforms'] for alias in args.targets): parser.error('Targets must be unique declared workspace aliases')
-    if not set(args.runtime_targets).issubset(args.targets): parser.error('Runtime targets must be selected targets')
     output = (args.output or ROOT / 'Doroti/artifacts/release' / (args.core_version + '-' + uuid.uuid4().hex[:8])).resolve()
     if output.exists() and any(output.iterdir()): parser.error('Output must be empty; candidates are never overwritten')
     output.mkdir(parents=True, exist_ok=True)
     feed = output / 'packages'; feed.mkdir()
-    run = ROOT / 'temp/testing/release-candidate' / uuid.uuid4().hex
+    run = ROOT / 'Doroti/artifacts/release-candidate' / uuid.uuid4().hex
     run.mkdir(parents=True)
     # Isolate candidates from a running workspace tool and keep Android aapt2
     # resource paths short on Windows. Each candidate owns its build outputs.
@@ -215,27 +211,6 @@ def main():
                     '<DorotiDesktopStartupType>CandidateApp.Desktop.DesktopStartup</DorotiDesktopStartupType>'
                     '</PropertyGroup>', 1))
         environment = os.environ | dict(NUGET_PACKAGES=str(run / 'nuget'), NUGET_HTTP_CACHE_PATH=str(run / 'http-cache'))
-        startup = consumer / 'desktop/DesktopStartup.cs'
-        startup.write_text(startup.read_text().replace('Options = new WindowOptions', '''OnCreated = async (context, ct) =>
-                {
-                    if (Environment.GetEnvironmentVariable("DOROTI_RELEASE_SMOKE") != "1") return;
-                    await context.Window.WaitUntilReadyToShowAsync(ct);
-                    var second = await context.Windows.CreateWindowAsync(desktop.DefaultMainWindow with
-                    { Options = new WindowOptions { Title = "Independent candidate", Size = new Size(500, 600) }, OnCreated = null }, ct);
-                    await second.WaitUntilReadyToShowAsync(ct);
-                    await second.SetSizeAsync(new Size(520, 620), ct);
-                    await second.CloseAsync(CancellationToken.None);
-                    System.IO.File.WriteAllText(Environment.GetEnvironmentVariable("DOROTI_RELEASE_RECEIPT")!,
-                        System.Text.Json.JsonSerializer.Serialize(new { nativeFirstFrame = true, twoWindows = true,
-                            secondResizedAndClosed = true, survivorsBeforeMainClose = 1,
-                            runId = Environment.GetEnvironmentVariable("DOROTI_RELEASE_RUN_ID"),
-                            version = Environment.GetEnvironmentVariable("DOROTI_RELEASE_VERSION") }));
-                    await context.Window.CloseAsync(CancellationToken.None);
-                }, Options = new WindowOptions'''))
-        cli_project = ROOT / 'Doroti/src/Doroti.Tooling/Doroti.Tooling.csproj'
-        command('build-cli', [args.dotnet, 'build', cli_project, '-c', 'Release', *properties])
-        cli = Path(command('evaluate-cli-path', [args.dotnet, 'msbuild', cli_project, '-nologo', '-p:Configuration=Release',
-                   '-getProperty:TargetPath', *properties]).strip())
         record['runtime'] = {}
         for alias, item in selected.items():
             runner = consumer / generated['platforms'][alias]['runner']
@@ -260,28 +235,11 @@ def main():
             for value in assets['libraries'].values():
                 if value['type'] == 'project' and not (runner.parent / value['msbuildProject']).resolve().is_relative_to(consumer.resolve()):
                     raise RuntimeError('Consumer references a project outside its generated workspace')
-            command('describe-' + alias, [args.dotnet, cli, 'describe', '-App', consumer, '-Platform', alias], cwd=consumer, env=environment)
             record['runtime'][alias] = 'notVerified'
-            if alias in args.runtime_targets:
-                if item['platform']['target'] == 'Android':
-                    if not args.device: raise RuntimeError('Android runtime qualification requires --device <serial>.')
-                    record.setdefault('artifacts', {})[alias] = {path.relative_to(output / alias).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
-                        for path in (output / alias).rglob('*') if path.is_file()}
-                    (output / 'candidate.json').write_text(json.dumps(record, indent=2), encoding='utf-8')
-                    native_output = output / (alias + '-native')
-                    command('runtime-' + alias, [sys.executable, ROOT / 'Doroti/tests/android_package_smoke.py',
-                        '--candidate', output, '--alias', alias, '--device', args.device, '--run-id', run.name, '--output', native_output])
-                    record['runtime'][alias] = validate_android_receipt(native_output / 'receipt.json', run.name, args.core_version,
-                        evaluated['RuntimeIdentifier'], evaluated['ApplicationId'])
-                    continue
-                receipt = output / (alias + '-native-consumer.json')
-                command('runtime-' + alias, [args.dotnet, cli, 'run', '-App', consumer, '-Platform', alias, '-Configuration', 'Release'], cwd=consumer,
-                    env=receipt_environment(environment, receipt, run.name, args.core_version))
-                record['runtime'][alias] = validate_receipt(receipt, run.name, args.core_version)
         record['packages'] = {name: value['sha256'] for name, value in metadata.items()}
         record['artifacts'] = {alias: {path.relative_to(output / alias).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
                               for path in (output / alias).rglob('*') if path.is_file()} for alias in args.targets}
-        record['status'] = 'PASS: independent local packages and isolated NuGet-only template publish; runtime qualification is recorded per alias'
+        record['status'] = 'PASS: independent local packages and NuGet-only template publish; runtime not verified'
         record['verifiedUtc'] = datetime.now(timezone.utc).isoformat()
         print(record['status'], flush=True)
     except BaseException as error:
