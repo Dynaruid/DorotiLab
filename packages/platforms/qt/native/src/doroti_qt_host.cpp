@@ -29,6 +29,7 @@
 #include <QtGui/qguiapplication_platform.h>
 #include <QInputMethod>
 #include <QInputMethodEvent>
+#include <QPointer>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -1159,12 +1160,14 @@ class DorotiSurface final : public DorotiWindowBase {
     switch (query) {
       case Qt::ImEnabled: return text_client_active_ && !text_configuration_.read_only;
       case Qt::ImCursorRectangle: return caret_rect_;
-      case Qt::ImCursorPosition: return selection_extent_;
-      case Qt::ImAnchorPosition: return selection_base_;
-      case Qt::ImSurroundingText: return text_;
+      case Qt::ImCursorPosition: return InputMethodPosition(selection_extent_);
+      case Qt::ImAnchorPosition: return InputMethodPosition(selection_base_);
+      case Qt::ImSurroundingText: return InputMethodText();
       case Qt::ImCurrentSelection: {
-        const auto start = std::min(selection_base_, selection_extent_);
-        return text_.mid(start, std::abs(selection_extent_ - selection_base_));
+        const auto base = InputMethodPosition(selection_base_);
+        const auto extent = InputMethodPosition(selection_extent_);
+        if (base == extent) return QString();
+        return InputMethodText().mid(std::min(base, extent), std::abs(extent - base));
       }
       case Qt::ImHints: return static_cast<int>(InputMethodHints());
       default: return {};
@@ -1172,6 +1175,27 @@ class DorotiSurface final : public DorotiWindowBase {
   }
 
  private:
+  // Framework editing state includes preedit for layout and its visual cursor.
+  // Qt IME queries address the committed document: positions inside preedit
+  // collapse to its insertion point, and later positions skip its UTF-16 length.
+  int InputMethodPreeditLength() const {
+    return composing_base_ >= 0 && composing_extent_ > composing_base_
+        ? composing_extent_ - composing_base_ : 0;
+  }
+
+  int InputMethodPosition(int position) const {
+    const auto length = InputMethodPreeditLength();
+    if (length == 0) return position;
+    return position - std::clamp(position - composing_base_, 0, length);
+  }
+
+  QString InputMethodText() const {
+    auto surrounding = text_;
+    const auto length = InputMethodPreeditLength();
+    if (length > 0) surrounding.remove(composing_base_, length);
+    return surrounding;
+  }
+
   std::uint32_t CaptionHeight() const {
     return unified_titlebar_ && windowState() != Qt::WindowFullScreen ? 32u : 0u;
   }

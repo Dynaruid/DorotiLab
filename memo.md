@@ -6,7 +6,9 @@ Windows·Web 수정일: 2026-10-23
 
 Apple 수정일: 2026-10-23
 
-상태: **Apple R1 구현·AppKit/Catalyst/iOS Simulator Release native 자동 검증 완료(iOS LLVM=false). Windows R1 일반 입력·R2/R3·Web R5 자동 검증 완료 / 물리 IME·Safari·화면 성능은 미완료. Qt R4는 미수정.**
+Linux Qt 수정일: 2026-10-24
+
+상태: **Apple R1 구현·AppKit/Catalyst/iOS Simulator Release native 자동 검증 완료(iOS LLVM=false). Windows R1 일반 입력·R2/R3·Web R5·Qt R4 자동 검증 완료 / 물리 IME·Safari·화면 성능은 미완료.**
 
 검토 대상은 기존 텍스트 중간에서 빠르게 입력할 때의 커서 튐, IME 조합·취소·선택 동기화와 입력 지연이다. iOS, Mac Catalyst, macOS AppKit, Android, Windows MAUI, Windows App SDK, Linux Qt, Web을 확인했다. Material/Cupertino는 위젯 계층이며 플랫폼 입력 호스트와 구분한다.
 
@@ -14,9 +16,11 @@ Apple 수정일: 2026-10-23
 
 Apple 후속 작업은 깨끗한 `44f2994cccb4ae5b6f13a10e2d190e6a8d32dff6`에서 시작했다. native 선택·marked text·echo/formatter·client 전환 처리와 실제 native 입력창 검사를 추가했다. 세부 범위·빌드 프로필·재실행 명령은 [Apple 수정 기록](history/26-10-23/apple-text-input.md)에 보존한다.
 
+Linux Qt 후속 작업은 깨끗한 `74bdd0f1b439d27e88b5df6a572c387fe40be7ec`에서 시작했다. R4의 IME query를 committed 문서 좌표로 수정하고 Qt 6.12 Release의 Quick·QWindow 백엔드에서 xcb·Wayland 및 current·legacy 설정별로 QLineEdit/QTextEdit과 58개 상태를 비교했다. 세부 결과·재실행 명령은 [Qt 수정 기록](history/26-10-24/linux-qt-text-input.md)에 보존한다.
+
 ## 1. 우선 확인할 사항
 
-**10월 22일에는 Apple MAUI와 Windows MAUI에 같은 문자열 기반 커서 추정이 남아 있었다.** 10월 23일 Windows 일반 TextBox와 Apple의 지원되는 입력창은 native 선택 조회로 교체했다. AppKit의 누락된 preedit 알림, UIKit의 동일 문자열 unmark, Apple의 지연된 echo/formatter도 보완했다. Windows App SDK의 IMM 취소·내부 커서와 Web 조합 범위도 수정했다. Qt R4와 플랫폼별 실제 IME·전체 framework 왕복·화면 성능 검증은 남아 있다.
+**10월 22일에는 Apple MAUI와 Windows MAUI에 같은 문자열 기반 커서 추정이 남아 있었다.** 10월 23일 Windows 일반 TextBox와 Apple의 지원되는 입력창은 native 선택 조회로 교체했다. AppKit의 누락된 preedit 알림, UIKit의 동일 문자열 unmark, Apple의 지연된 echo/formatter도 보완했다. Windows App SDK의 IMM 취소·내부 커서와 Web 조합 범위도 수정했다. 10월 24일 Qt R4의 query 좌표도 수정했다. 플랫폼별 실제 IME·전체 framework 왕복·화면 성능 검증은 남아 있다.
 
 여기서 `소스 확인`은 현재 구현과 API 계약의 비교, `함수 반례`는 실제 소스에서 추출한 함수 실행을 뜻한다. 두 결과 모두 특정 OS·IME에서 사람이 타이핑해 증상을 확인한 `실기기 재현`과 다르다. P1은 입력 정확성과 관련해 먼저 조치할 항목, P2는 다음으로 확인·보완할 항목이다.
 
@@ -25,7 +29,7 @@ Apple 후속 작업은 깨끗한 `44f2994cccb4ae5b6f13a10e2d190e6a8d32dff6`에�
 | R1 | P1 | iOS / Mac Catalyst / macOS AppKit / Windows MAUI | Apple과 Windows 일반 Entry/Editor를 실제 선택 조회로 수정. API·handler·field editor가 없는 경우와 Windows 보안 입력 fallback은 남음. | AppKit/Catalyst/iOS Simulator Release native 40개씩 PASS(iOS LLVM=false). Windows Release native callback 검사 완료 |
 | R2 | P1 | Windows App SDK | 소유한 preedit만 취소 시 제거하고 확정 결과는 보존하도록 수정. | production C++ 상태 검사 + native Release 빌드, 실제 Windows IME 미실행 |
 | R3 | P1 | Windows App SDK | `GCS_CURSORPOS`와 cursor-only 메시지를 처리하도록 수정. | R2와 합쳐 C++ 상태 검사 16개 PASS, 실제 Windows IME 미실행 |
-| R4 | P2 | Linux Qt | IME query에 preedit 내부 커서 offset이 포함된 위치를 돌려준다. | 소스 + Qt 6.12 계약 |
+| R4 | P2 | Linux Qt | IME query의 문자열·커서·anchor·선택을 preedit가 없는 committed 문서 좌표로 수정. | Qt 6.12 Release Quick/QWindow × xcb/Wayland × current/legacy, 각 58개 QLineEdit/QTextEdit 비교 PASS. 실제 ibus/fcitx 미실행 |
 | R5 | P2 | Web, Apple 기기의 Safari 포함 | 전체 조합 범위를 선택과 분리하고 DOM 반영 전 조합 데이터 발행을 방지하도록 수정. | WebKit 21개·Chrome 22개 PASS. Chrome 브라우저 조합 명령 포함. Apple Safari·물리 IME 미실행 |
 
 ## 2. 플랫폼별 판단
@@ -38,7 +42,7 @@ Apple 후속 작업은 깨끗한 `44f2994cccb4ae5b6f13a10e2d190e6a8d32dff6`에�
 | macOS AppKit MAUI | 현재 field editor/`NSTextView.SelectedRange`를 읽는다. MAUI에 없는 preedit는 storage 변경 알림과 캐시로 전달한다. | Release native 40개 시나리오 PASS. 일반 편집 90회에서 추가 전체 문자열 읽기 0회. OS IME·화면 성능은 별도. |
 | Windows MAUI | 일반 TextBox의 실제 선택을 읽고 MAUI가 반영한 문자열과 같은 native TextChanged에서 발행한다. TextChanging 이후 오래된 선택 snapshot을 막는다. | R1 일반 Entry/Editor 자동 검증 완료. 보안 입력 fallback·물리 IME·성능은 별도. |
 | Windows App SDK | C++ 모델이 실제 교체 범위와 preedit 소유 상태·IMM 내부 커서를 처리한다. | R2/R3 수정·상태 검사 완료. 실제 IMM 메시지 순서와 비동기 상태 왕복은 추가 확인 필요. |
-| Linux Qt | `QInputMethodEvent`의 commit/preedit/selection/cursor 정보를 처리한다. | 문자열 diff 문제는 사용하지 않는다. R4와 실제 ibus/fcitx 입력 확인 필요. |
+| Linux Qt | `QInputMethodEvent`의 commit/preedit/selection/cursor 정보를 처리하며 query는 preedit를 제외한 좌표를 반환한다. | R4 수정·Qt 기본 입력창과의 native query 비교 완료. 실제 ibus/fcitx·전체 managed 왕복은 별도. |
 | Web | DOM 선택과 독립된 전체 조합 범위를 추적하고 오래된 응답을 input sequence로 거절한다. | R5 수정·실제 Chrome/WebKit DOM 검사 완료. Apple Safari·OS IME·실제 managed worker 왕복은 별도. |
 
 `CupertinoTextField`는 내부에서 공통 `EditableText`를 생성하므로 별도 안전 판정을 내릴 수 없다. Android Cupertino에는 Android 호스트 수정이 적용되고, iOS의 Material/Cupertino에는 같은 UIKit 호스트의 위험이 적용된다. iPhone의 **Web 앱**은 UIKit MAUI 대신 Web 경로로 검토해야 한다.
@@ -94,13 +98,13 @@ Windows 일반 TextBox는 [Windows 입력 구독](packages/platforms/maui/Doroti
 
 ### R4. Qt의 preedit 표시 위치와 IME query 위치가 섞임
 
-근거: [inputMethodQuery](packages/platforms/qt/native/src/doroti_qt_host.cpp#L1158), [HandleInputMethod](packages/platforms/qt/native/src/doroti_qt_host.cpp#L1422).
+근거: [inputMethodQuery / HandleInputMethod](packages/platforms/qt/native/src/doroti_qt_host.cpp).
 
-`HandleInputMethod`는 preedit를 `text_`에 넣고 조합 내부 커서를 `selection_extent_`로 저장한다. query는 그 값을 `Qt::ImCursorPosition`으로 그대로 반환한다. 그러나 Qt 6.12는 이 query의 논리 위치에 preedit 내부 커서 offset을 포함하지 않도록 정의한다. [Qt 6.12 InputMethodQuery](https://doc.qt.io/qt-6/qt.html#InputMethodQuery-enum).
+수정 전 `HandleInputMethod`는 preedit를 `text_`에 넣고 조합 내부 커서를 `selection_extent_`로 저장했으며 query는 그 값을 `Qt::ImCursorPosition`으로 그대로 반환했다. Qt 6.12는 이 query의 논리 위치에 preedit 내부 커서 offset을 포함하지 않도록 정의한다. [Qt 6.12 InputMethodQuery](https://doc.qt.io/qt-6/qt.html#InputMethodQuery-enum).
 
-예를 들어 committed text `ab`의 offset 1에 `한`을 조합하고 조합 내부 위치가 1이면, 표시용 텍스트는 `a한b`와 커서 2가 된다. 현재 query는 2를 반환하지만 IME용 논리 삽입 위치는 1이어야 한다. `ImSurroundingText`, anchor/current-selection과의 좌표 일관성도 함께 비교해야 한다.
+예를 들어 committed text `ab`의 offset 1에 `한`을 조합하고 조합 내부 위치가 1이면, 표시용 텍스트는 `a한b`와 커서 2다. 수정 후 framework에는 이 표시 상태를 계속 보내지만 IME에는 surrounding text `ab`, cursor/anchor 1, 빈 선택을 반환한다. 조합 내부의 위치는 시작점으로 모으고 조합 뒤 위치는 preedit의 UTF-16 길이만큼 뺀다. `ImCurrentSelection`도 같은 문서와 변환된 양 끝점으로 계산한다.
 
-기존 [Qt native 입력 계약 검사](Doroti/tests/native/qt_input_contract.cpp)는 commit/selection/replacement/preedit/cancel 등을 다루지만, 해당 query의 preedit 좌표 변환을 검사하지 않는다. `QLineEdit`/`QTextEdit`의 같은 입력 및 query 결과를 대조하는 검사를 추가할 필요가 있다. 이번 검토에서는 Qt GUI/ibus/fcitx를 실행하지 않았다.
+[Qt native 입력 계약 검사](Doroti/tests/native/qt_input_contract.cpp)에 실제 `QInputMethodQueryEvent`를 추가했다. 수정 전에는 Qt 기본 입력창과 22개 상태에서 불일치했다. 수정 후 QLineEdit/QTextEdit 각각 29개 상태, 합계 58개 query 비교가 Quick/QWindow·xcb/Wayland·current/legacy의 8개 실행에서 모두 통과했다. 조합 내부 위치 0/중간/끝, 취소·확정, 양방향 선택 교체, 기존 조합을 가로지르는 replacement, emoji 및 조합 안/밖/가로지르는 managed 선택을 검사했다. 이 검사는 Qt GUI에 합성 native 이벤트를 보내며 실제 ibus/fcitx, managed framework 전체 왕복이나 화면 성능을 검증한 것은 아니다.
 
 ### R5. Web 조합 범위 끝을 현재 커서로 계산
 
@@ -132,6 +136,7 @@ Windows 일반 TextBox는 [Windows 입력 구독](packages/platforms/maui/Doroti
 
 | 검사 | 결과 | 의미 / 제외 범위 |
 | --- | --- | --- |
+| 10/24 Qt 6.12 Release Quick / QWindow native | xcb/Wayland × current/legacy, 8개 실행에서 각 58개 query 비교 PASS | QLineEdit/QTextEdit과 committed 좌표·문자열·선택 비교, framework 표시 상태 및 기존 commit/replacement/cancel·key repeat·scroll·identity 회귀 확인. 실제 ibus/fcitx·managed 전체 왕복·GPU/화면 성능 제외. |
 | 10/23 AppKit Release native bridge | 40개 시나리오·124개 편집/상태 단계·145개 callback, 불일치 0 | Entry/Editor/secure Entry의 실제 native API와 비교. 일반 편집의 추가 전체 문자열 읽기 0회. 물리 IME·전체 위젯 왕복·화면 지연 제외. |
 | 10/23 Catalyst Release native bridge | 40개 시나리오·124개 편집/상태 단계·132개 callback, 불일치 0 | UIKit 조합 내부 커서·동일 문자열 unmark·취소·echo/formatter·새 client·조합 중 재표시/endpoint 전환 포함. 물리 IME·전체 위젯 왕복·화면 지연 제외. |
 | 10/23 iOS Simulator Release native bridge | 40개 시나리오·124개 편집/상태 단계·132개 callback, 불일치 0 | iPhone 17 / iOS 27.0, Mono AOT·Optimize=true·MtouchInterpreter=-all·LLVM=false. Debug도 40개·130 callback PASS. 이전 기동 timeout과 구분하며 실기기·물리 IME·전체 위젯 왕복·화면 지연은 제외. |
@@ -152,13 +157,15 @@ Windows 일반 TextBox는 [Windows 입력 구독](packages/platforms/maui/Doroti
 
 Apple 원시 결과는 `temp/testing/apple-text-input/`에 있고, 재실행 명령·환경·범위는 [Apple 수정 기록](history/26-10-23/apple-text-input.md)에 남긴다. 모든 preliminary 실패/기동 timeout을 최종 입력 PASS와 구분한다.
 
+Qt 원시 결과는 `temp/testing/linux-qt-text-input/`에 있고, 환경·해시·재실행 명령은 [Qt 수정 기록](history/26-10-24/linux-qt-text-input.md)에 남긴다. 초기 검사 실행기의 Qt global copy relocation 충돌과 QWindow의 누락된 QPointer include를 보완한 뒤 최종 소스로 다시 빌드·검사했다.
+
 앞선 Android 빌드 설정, APK 해시와 세부 검사는 [커서 수정·성능 기록](history/26-10-22/android-text-input-caret.md)을 참고한다.
 
 ## 6. 후속 작업 순서와 통과 조건
 
 1. **R1: 실제 입력과 전체 상태 왕복 검증.** Apple native 선택 조회는 구현했고 세 host의 Release native 검사를 통과했다(iOS LLVM=false). 실제 한/일/중 IME와 전체 framework 왕복은 남아 있다. Windows 일반 Entry/Editor 자동 callback 비교는 완료했으며 보안 입력 fallback·실제 IME와 프로세스 정상 종료는 추가 확인한다.
 2. **R2/R3: Windows 실제 IMM 취소·커서.** 구현·상태 검사는 완료했다. 실제 한국어·일본어·중국어 IME에서 preedit 내부 이동, cursor-only, commit, Escape, GCS 없는 취소, result 직후 END와 지연 managed 응답을 확인한다.
-3. **R4: Qt query 좌표.** 조합 문자열이 없는 논리 문서 좌표와 표시 문서 좌표를 분리한다. preedit 내부 위치 0/중간/끝, 취소·선택·replacement를 Qt 기본 입력창과 비교하고 ibus/fcitx에서도 확인한다.
+3. **R4: Qt 실제 IME와 상태 왕복.** query와 표시 좌표 분리 및 Qt 6.12 기본 입력창 비교는 완료했다. 실제 ibus/fcitx의 한/일/중 입력과 취소·내부 커서, 지연 managed 응답·formatter·client 전환·화면 반영은 추가 확인한다.
 4. **R5: OS IME와 Apple Safari.** Chrome 브라우저 조합 명령·WebKit DOM 검사는 완료했다. OS IME 및 Apple 기기의 Safari에서 이벤트 순서·전체 조합 범위·stale 응답 보호를 확인하고 실제 managed worker와 연결해 재검증한다.
 5. **공통 정확성·성능 회귀.** Windows/Web과 세 Apple native bridge의 12회 연속 합성 입력·삭제는 완료했다. Apple의 합성 조합·formatter·field 전환도 위 범위에서 검사했다. 실제 IME 조합 중 붙여넣기·formatter·field 전환과 전체 framework/Release 화면 반영을 확인한다. 물리 입력 지연·FPS·프레임 페이싱은 측정하지 않았다.
 

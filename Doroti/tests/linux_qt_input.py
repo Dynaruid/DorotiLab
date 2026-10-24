@@ -18,7 +18,9 @@ flags = shlex.split(subprocess.check_output(['pkg-config', '--cflags', '--libs',
 executable = out / 'qt-input-contract'
 library = args.library.resolve(strict=True)
 with (out / 'build.log').open('w') as log:
-    subprocess.run(['c++', '-std=c++20', str(ROOT / 'Doroti/tests/native/qt_input_contract.cpp'),
+    # Avoid executable copy relocations for Qt globals (including the application
+    # instance); the selected Qt 6.12 SDK requires position-independent access.
+    subprocess.run(['c++', '-std=c++20', '-fPIC', str(ROOT / 'Doroti/tests/native/qt_input_contract.cpp'),
         '-I' + str(ROOT / 'packages/platforms/qt/native/include'), str(library),
         '-Wl,-rpath,' + str(library.parent), '-o', str(executable), *flags],
         stdout=log, stderr=subprocess.STDOUT, check=True, timeout=1200)

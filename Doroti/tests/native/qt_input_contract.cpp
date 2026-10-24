@@ -5,12 +5,17 @@
 #include <QCryptographicHash>
 #include <QDir>
 #include <QInputMethodEvent>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QKeyEvent>
 #include <QLineEdit>
 #include <QPointingDevice>
 #include <QStandardPaths>
+#include <QTextCursor>
+#include <QTextEdit>
 #include <QWheelEvent>
 #include <QWindow>
+#include <array>
 #include <cstdio>
 #include <string>
 #include <vector>
@@ -22,6 +27,7 @@ const doroti_qt_host_api_v2* api;
 QWindow* window;
 QString text;
 int selection_base, selection_extent, composing_base, composing_extent;
+int query_checks = 0;
 std::vector<std::uint32_t> keys;
 std::vector<double> scroll;
 void Check(bool value, const char* message) {
@@ -37,11 +43,131 @@ void State(const char* value, int base, int extent, int comp_base = -1, int comp
   QCoreApplication::processEvents();
 }
 void Send(QInputMethodEvent& event) { QCoreApplication::sendEvent(window, &event); }
+
+QJsonObject Queries(QObject* target) {
+  QInputMethodQueryEvent query(Qt::ImCursorPosition | Qt::ImAnchorPosition |
+                               Qt::ImSurroundingText | Qt::ImCurrentSelection);
+  QCoreApplication::sendEvent(target, &query);
+  Check(query.value(Qt::ImCursorPosition).isValid() &&
+        query.value(Qt::ImAnchorPosition).isValid() &&
+        query.value(Qt::ImSurroundingText).isValid() &&
+        query.value(Qt::ImCurrentSelection).isValid(), "IME queries are implemented");
+  return {{"cursor", query.value(Qt::ImCursorPosition).toInt()},
+          {"anchor", query.value(Qt::ImAnchorPosition).toInt()},
+          {"surrounding", query.value(Qt::ImSurroundingText).toString()},
+          {"selection", query.value(Qt::ImCurrentSelection).toString()}};
+}
+
+void CompareQueries(QObject* reference, const char* stage) {
+  const auto expected = Queries(reference);
+  const auto actual = Queries(window);
+  ++query_checks;
+  if (expected != actual) {
+    std::fprintf(stderr, "FAIL: %s / %s: expected %s, actual %s\n",
+        reference->metaObject()->className(), stage,
+        QJsonDocument(expected).toJson(QJsonDocument::Compact).constData(),
+        QJsonDocument(actual).toJson(QJsonDocument::Compact).constData());
+    ++failures;
+  }
+}
+
+void ReferenceState(QLineEdit& reference, const char* value, int base, int extent) {
+  reference.setText(QString::fromUtf8(value));
+  reference.setSelection(base, extent - base);
+}
+
+void ReferenceState(QTextEdit& reference, const char* value, int base, int extent) {
+  reference.setPlainText(QString::fromUtf8(value));
+  auto cursor = reference.textCursor();
+  cursor.setPosition(base);
+  cursor.setPosition(extent, QTextCursor::KeepAnchor);
+  reference.setTextCursor(cursor);
+}
+
+template<typename Editor> void QueryContract() {
+  Editor reference;
+  auto state = [&](const char* value, int base, int extent) {
+    ReferenceState(reference, value, base, extent);
+    State(value, base, extent);
+    CompareQueries(&reference, "initial state");
+  };
+  auto send = [&](QInputMethodEvent& event, const char* stage) {
+    QCoreApplication::sendEvent(&reference, &event);
+    Send(event);
+    CompareQueries(&reference, stage);
+  };
+  // Both Qt editors keep preedit out of surrounding text and logical selection.
+  // Cursor-only preedit updates must still reach the framework in display offsets.
+  state("ab", 1, 1);
+  for (int cursor : {0, 1, 2}) {
+    QInputMethodEvent event(QString::fromUtf8("你好"),
+        {{QInputMethodEvent::Cursor, cursor, 1, QVariant()}});
+    send(event, "preedit cursor start/middle/end");
+    Check(text == QString::fromUtf8("a你好b") && selection_base == 1 + cursor &&
+          selection_extent == 1 + cursor && composing_base == 1 && composing_extent == 3,
+          "framework retains display text, cursor and complete composition");
+  }
+  QInputMethodEvent cancel;
+  send(cancel, "cancel");
+  Check(text == "ab" && selection_extent == 1 && composing_base == -1,
+        "query cancellation restores committed state");
+  QInputMethodEvent preedit(QString::fromUtf8("한"),
+      {{QInputMethodEvent::Cursor, 1, 1, QVariant()}});
+  send(preedit, "restart preedit");
+  QInputMethodEvent commit;
+  commit.setCommitString(QString::fromUtf8("한"));
+  send(commit, "commit");
+
+  for (auto endpoints : {std::pair{1, 3}, std::pair{3, 1}}) {
+    state("abcd", endpoints.first, endpoints.second);
+    send(preedit, "preedit replaces forward/backward selection");
+    send(cancel, "cancel after selection replacement");
+    Check(text == "ad", "cancel does not restore replaced selection");
+  }
+  state("abcd", 2, 2);
+  send(preedit, "preedit before replacement");
+  QInputMethodEvent replacement(QString::fromUtf8("次"),
+      {{QInputMethodEvent::Cursor, 0, 1, QVariant()}});
+  replacement.setCommitString("X", -1, 2);
+  send(replacement, "replacement spans old preedit, followed by new preedit");
+  Check(text == QString::fromUtf8("aX次d") && selection_extent == 2 &&
+        composing_base == 2 && composing_extent == 3, "replacement display state");
+  send(commit, "commit after replacement");
+
+  state("😀ab😀", 3, 3);
+  for (int cursor : {0, 2, 3}) {
+    QInputMethodEvent event(QString::fromUtf8("😀한"),
+        {{QInputMethodEvent::Cursor, cursor, 1, QVariant()}});
+    send(event, "UTF-16 preedit and surrounding text");
+    Check(selection_extent == 3 + cursor && composing_base == 3 && composing_extent == 6,
+          "framework uses UTF-16 display offsets");
+  }
+  send(cancel, "UTF-16 cancel");
+
+  state("abcd", 4, 4);
+  QInputMethodEvent selection("", {{QInputMethodEvent::Selection, 3, -2, QVariant()}});
+  send(selection, "backward IME selection");
+  QInputMethodEvent selection_after_commit("", {{QInputMethodEvent::Selection, 0, 2, QVariant()}});
+  selection_after_commit.setCommitString("X");
+  send(selection_after_commit, "selection after commit");
+
+  // Managed state can contain a selection outside or across preedit. All query
+  // endpoints and the selected substring must use the same committed document.
+  for (auto endpoints : {std::array{4, 6, 2, 4}, std::array{5, 0, 3, 0},
+                         std::array{1, 2, 1, 1}, std::array{0, 5, 0, 3}}) {
+    ReferenceState(reference, "abcd", endpoints[2], endpoints[3]);
+    State("a你好bcd", endpoints[0], endpoints[1], 1, 3);
+    CompareQueries(&reference, "managed selection around/across/inside preedit");
+  }
+}
+
 std::int32_t Created(void*, void* handle, const doroti_qt_host_api_v2* host) {
   api = host; window = static_cast<QWindow*>(handle);
   Check(QCoreApplication::applicationName() == (legacy ? "doroti" : "org.doroti.input-contract"), "application name");
   Check(QGuiApplication::desktopFileName() == (legacy ? "" : "org.doroti.input-contract"), "desktop identity");
   Check((host->feature_bits & DOROTI_QT_FEATURE_APPLICATION_ID) != 0, "identity feature");
+  QueryContract<QLineEdit>();
+  QueryContract<QTextEdit>();
   // Compare public IME behavior with Qt's own editable for both selection directions.
   for (auto endpoints : {std::pair{1, 3}, std::pair{3, 1}, std::pair{4, 4}}) {
     QLineEdit reference("abcd");
@@ -168,5 +294,7 @@ int main(int argc, char** argv) {
   if (legacy) { config.struct_size = 56; config.required_features = 0; }
   Check(doroti_qt_run_v2(&config, &cb) == DOROTI_QT_ERROR_MANAGED_FATAL, "native event driver completed");
   if (failures) return 1;
-  std::puts("PASS: Qt native IME selection/offset/composition, key repeat, scroll direction and application identity.");
+  std::printf("PASS: Qt %s native IME (%d QLineEdit/QTextEdit query comparisons), "
+      "selection/offset/composition, key repeat, scroll direction and application identity (%s).\n",
+      qVersion(), query_checks, legacy ? "legacy" : "current");
 }

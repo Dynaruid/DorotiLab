@@ -455,7 +455,7 @@ python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/linux_qt_build_profi
 pwsh -NoProfile -File Doroti/eng/doroti.ps1 validate -ValidationSuite LinuxSmoke
 python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/linux_qt_smoke.py --qpa xcb --output temp/testing/linux-qt/manual-xcb
 python3 Doroti/eng/run-with-timeout.py python3 Doroti/tests/linux_qt_packages.py temp/testing/linux-qt/manual-packages
-python3 Doroti/tests/linux_qt_input.py --library /path/to/libdoroti_qt_host.so --output temp/testing/linux-qt/manual-input --qpa xcb
+python3 Doroti/eng/run-with-timeout.py --timeout 1200 python3 Doroti/tests/linux_qt_input.py --library /path/to/libdoroti_qt_host.so --output temp/testing/linux-qt/manual-input --qpa xcb
 ```
 
 The profile fixture evaluates SDK/sample/template defaults and invalid option
@@ -470,6 +470,16 @@ evaluates the package graph and versions, generates the template's default widge
 and Quick/C configuration, and exercises normal, no-build and missing-native
 publishing with an isolated NuGet cache and package source mapping. These checks
 do not qualify physical display timing, GPU execution overlap or physical IME.
+
+The input driver compares 58 native query snapshots against QLineEdit/QTextEdit
+per run, including preedit cursor movement, selection, replacement, cancel/commit,
+UTF-16 and managed selections across preedit. IME surrounding text and selection
+exclude preedit, while framework callbacks retain display text and cursor offsets.
+It exercises both current and legacy configuration prefixes. Use matching Qt SDK
+headers/libraries via `PKG_CONFIG_PATH` and `LD_LIBRARY_PATH` when the shim uses a
+selected SDK. The [Qt text-input record](../../history/26-10-24/linux-qt-text-input.md)
+contains Release Quick/QWindow and xcb/Wayland reproduction commands; synthetic
+native events do not qualify an actual ibus/fcitx engine or managed round trips.
 
 Choose a fresh `--output` path. Direct scripts retain raw evidence for review;
 the aggregate LinuxSmoke removes successful runs. `--cases` selects
