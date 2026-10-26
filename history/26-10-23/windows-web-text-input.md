@@ -8,7 +8,7 @@
 
 - 시작 HEAD: `04ad305c92bc5cc354c8f1d86cf84d910006dff3`, 시작 작업 트리 깨끗함.
 - 시작 `memo.md` SHA-256: `12f8e4cc5161b1f3bd938b0963017da75fabc80db76abcd6e420ff0bb7ce3e72`.
-- [memo.md](../../memo.md)의 Windows MAUI R1, Windows App SDK R2/R3, Web R5와 관련 회귀 검사만 변경했다. Apple R1·Qt R4·Android 구현·`work.md`는 변경하지 않았다.
+- 당시 `memo.md`의 Windows MAUI R1, Windows App SDK R2/R3, Web R5와 관련 회귀 검사만 변경했다. 검토 내용은 [플랫폼별 입력 검토 요약](../26-10-22/text-input-platform-review-summary.md)에 보존했다. Apple R1·Qt R4·Android 구현·`work.md`는 변경하지 않았다.
 - 저장소 지침에 따라 모든 빌드·테스트 명령을 `Doroti/eng/run-with-timeout.py --timeout 1200`으로 제한했다. 반복 입력·삭제는 각 12회로 검사했다.
 
 ## 수정 내용

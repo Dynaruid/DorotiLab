@@ -8,7 +8,7 @@
 
 - 시작 HEAD: `44f2994cccb4ae5b6f13a10e2d190e6a8d32dff6`, 시작 작업 트리 깨끗함.
 - 시작 `memo.md` SHA-256: `040ea4d28f23bb6e5ac33e0b67739d8222e662faa1fdc36d4258accb5cb3253d`.
-- [memo.md](../../memo.md)의 R1 중 AppKit·Mac Catalyst·iOS와 Apple 상태 응답의 회귀 검사를 다룬다. Windows·Android·Qt·Web 제품 구현과 `work.md`는 변경하지 않는다.
+- 당시 `memo.md`의 R1 중 AppKit·Mac Catalyst·iOS와 Apple 상태 응답의 회귀 검사를 다룬다. 검토 내용은 [플랫폼별 입력 검토 요약](../26-10-22/text-input-platform-review-summary.md)에 보존했다. Windows·Android·Qt·Web 제품 구현과 `work.md`는 당시 변경 범위에서 제외했다.
 - 빌드·검사는 `Doroti/eng/run-with-timeout.py --timeout 1200`으로 실행한다.
 
 ## 구현

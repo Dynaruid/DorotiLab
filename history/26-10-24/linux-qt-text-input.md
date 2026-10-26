@@ -8,7 +8,7 @@
 
 - 시작 HEAD: `74bdd0f1b439d27e88b5df6a572c387fe40be7ec`, 시작 작업 트리 깨끗함.
 - 시작 `memo.md` SHA-256: `c3df1c2b6fbd8d8916206f25f21bf35a26e09c272715cd38ffd74e2f99812093`.
-- [memo.md](../../memo.md)의 Linux Qt R4, 관련 native 검사와 검증 문서를 변경했다. `work.md`는 변경하지 않았다.
+- 당시 `memo.md`의 Linux Qt R4, 관련 native 검사와 검증 문서를 변경했다. 검토 내용은 [플랫폼별 입력 검토 요약](../26-10-22/text-input-platform-review-summary.md)에 보존했다. `work.md`는 변경하지 않았다.
 - 빌드·테스트는 `Doroti/eng/run-with-timeout.py --timeout 1200`으로 제한했다. 동일 입력의 수백 회 반복은 수행하지 않았다.
 
 [Qt host](../../packages/platforms/qt/native/src/doroti_qt_host.cpp)의 framework 편집 상태는 preedit가 포함된 표시 문서다. 수정 전 IME query도 이 문자열과 표시 커서를 반환했다. 수정 후 `ImSurroundingText`는 preedit를 제외하고 `ImCursorPosition`·`ImAnchorPosition`은 같은 committed 문서의 UTF-16 offset을 반환한다. 조합 안의 위치는 삽입점으로 모으고 뒤쪽 위치는 조합 길이만큼 뺀다. `ImCurrentSelection`도 변환된 양 끝점과 committed 문자열로 계산한다. 선택이 조합 안에서만 움직이면 IME 선택은 빈 문자열이다.
