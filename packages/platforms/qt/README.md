@@ -1,20 +1,20 @@
 # Qt provider
 
-Host and Target sources are owned by this independently versioned provider. Package identities are unchanged. Version: 0.4.1-beta; supported core: [0.4.0-alpha.1, 0.5.0). Native/bootstrap adoption and physical platform acceptance are tracked separately in the design-platform execution record.
+Linux desktop host and packaging tools for Doroti applications using Qt. Version: `0.4.1-beta`; supported core: `[0.4.0-alpha.1, 0.5.0)`.
 
 The default host uses Qt Quick / `QQuickWindow` with Qt-owned Vulkan device and presentation. See the [native host guide](native/README.md) for Qt dependencies, ABI versions, optional WebEngine/GStreamer and the QWindow comparison backend.
 
 ## Debian packages
 
-Linux `publish` accepts `-PackageFormat directory|deb`. Omission keeps the existing
+Linux `publish` accepts `-PackageFormat directory|deb`. Omission selects
 directory publish. `-Output` is a publish-only destination, relative to the CLI's
-working directory. No new execution platform is introduced.
+working directory.
 Without `-Output`, directory publish uses the SDK's existing output; deb uses
 `<application-workspace>/artifacts/linux-deb` as the artifact bundle root.
 
 Build `.deb` in Debian 13 **amd64**, using the same environment for native Qt
 compilation and packaging. Other distributions/RIDs are rejected before publish.
-The initial profile requires Release/net10.0/linux-x64, Quick/Graphite, and a
+The Debian profile requires Release/net10.0/linux-x64, Quick/Graphite, and a
 self-contained, untrimmed JIT directory. The provider explicitly selects
 `SelfContained=true`, `UseAppHost=true` and disables trimming/single-file/AOT/R2R
 for this profile. An already enabled trimming/single-file/AOT/R2R option is rejected
@@ -89,9 +89,8 @@ calls are included; standard desktop/icon/MIME package triggers handle caches.
 
 The launcher and managed loader select native Wayland in a Wayland session and
 xcb in an X11 session, preserving explicit `QT_QPA_PLATFORM`. Vulkan uses
-`libvulkan.so.1`. The previous system-Qt 6.8.2 xcb receipts do not qualify the
-new Qt 6.12 distribution. Both backends, repeated shutdown and physical
-GPU/menu activation require separate evidence.
+`libvulkan.so.1`. Qt 6.12 runtime behavior on Debian 13 Wayland/xcb remains
+unverified on target hardware, including repeated shutdown and GPU/menu interaction.
 
 `dpkg-shlibdeps` analyzes published ELF files using the private Qt/ICU closure.
 Only actual external OS runtime dependencies are declared; distribution Qt/QML
@@ -131,7 +130,5 @@ does not set `XDG_DATA_HOME` to an installation path. Portable data migration is
 not implemented. A `.deb` file does not configure an APT repository or automatic
 updates. With separate WebEngine deployment, supply both local .deb files to APT; no engine repository is needed. The [runtime guide](qt-runtime.md) explains both workflows. Ubuntu/other distribution support still requires separate qualification.
 
-Acceptance and remaining environment-specific gates are recorded in the
-[Qt runtime distribution history](../../../history/26/10/19/qt-runtime-bundle-summary.md).
-Only combinations with actual install/runtime evidence should be described as
-qualified; package creation or container installation alone is insufficient.
+This packaging profile targets Debian 13 amd64. Check installation, launch and
+GUI behavior on the intended host; other distributions are not qualified.

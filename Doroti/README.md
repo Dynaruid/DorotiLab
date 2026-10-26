@@ -25,9 +25,6 @@ See the [platform implementation table](../README.md#platforms) for the host and
 
 ## Requirements
 
-Release app DLL obfuscation with Obfuscar is optional and supports ReadyToRun publishing. NativeAOT and Mono/WebAssembly AOT paths are excluded.
-Windows and Linux Qt runners support `PublishSingleFile=true` with untrimmed JIT or individual ReadyToRun output. See the [carousel publish examples](../samples/DorotiCarouselApp/README.md#데스크톱-단일-실행-파일-게시).
-
 ### Shared tools and SDK selection
 
 - Install [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6) on Windows, macOS, or Linux to run repository scripts such as `eng/doroti.ps1`. Start the commands below in PowerShell at the **repository root, `DorotiLab`**.
@@ -79,7 +76,7 @@ dotnet workload restore ./DorotiTestbedApp.iOS.csproj
 Pop-Location
 ```
 
-`workload restore` prepares .NET workloads for the selected SDK. External tools are installed separately. Provider doctor requires explicit `-App` and `-Platform`; `-Scope managed|target|native|tools|full` selects its prerequisite checks. FAIL/PARTIAL exits nonzero. A prerequisite PASS does not replace build/device acceptance.
+`workload restore` prepares .NET workloads for the selected SDK. Install external tools separately. Use `doctor` with `-App` and `-Platform` to check prerequisites; `-Scope managed|target|native|tools|full` selects the checks. Missing or incomplete prerequisites produce a nonzero exit code.
 
 See [Testbed run instructions](../samples/DorotiTestbedApp/README.md#material-sample-mode) for platform commands. The `reference/flutter-master` checkout is needed only for explicit Flutter comparisons; prepare it when needed with `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`.
 
@@ -96,11 +93,14 @@ pwsh -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform
 
 `run` builds before launching. Windows uses Windows App SDK/`HwndExactCpp` by default; select `-Platform windows-maui` for the independent MAUI runner. Select `android`, `ios`, `macos`, `maccatalyst`, `linux`, or `web` with `-Platform` for other targets. Their prerequisites and device options are covered in the [sample app guide](../samples/DorotiTestbedApp/README.md#run-by-platform).
 
+Release app DLL obfuscation with Obfuscar is optional and supports ReadyToRun publishing. NativeAOT and Mono/WebAssembly AOT paths are excluded.
+Windows and Linux Qt runners support `PublishSingleFile=true` with untrimmed JIT or individual ReadyToRun output. See the [carousel publish examples](../samples/DorotiCarouselApp/README.md#데스크톱-단일-실행-파일-게시).
+
 ### CLI coverage
 
 `describe -App <workspace> -Platform all` reports declared provider aliases, host restrictions, supported operations and development transport. `build`, `run`, `publish` and `dev` require a declared alias and provider support; `dev` requires Debug. Configuration/device/template services are provided by extensions, and unsupported services fail explicitly. The built-in template is installed with `dotnet new` and supports `--design widgets|material|cupertino`.
 
-The former `-WindowsBackend`, `-Rid`, `-LastSuccessful`, `-NoBuild`, `-NoRestore`, `native` and fixed template command switches are not part of the managed provider CLI. TFM/RID/backend/profile selection belongs to `doroti-workspace.json`; use direct runner/MSBuild commands for other supported build profiles. Android Debug Mono development uses the provider's Python/ADB adapter. Apple Debug development uses packaged Python adapters for AppKit, Catalyst, iOS simulators and the declared iPhone Mono LAN/CoreCLR USB profiles; current Apple runtime acceptance remains unverified. See the [VS Code guide](../tools/vscode-doroti/README.md) for available development targets.
+Select the TFM, RID, backend and profile in `doroti-workspace.json`; use direct runner/MSBuild commands for other supported build profiles. Android Debug Mono development uses the provider's Python/ADB adapter. Apple Debug development uses packaged Python adapters for AppKit, Catalyst, iOS simulators and the declared iPhone Mono LAN/CoreCLR USB profiles. Apple development support is experimental and needs verification with the selected SDK and device. See the [VS Code guide](../tools/vscode-doroti/README.md#hot-reload) for development targets and connection requirements.
 
 Local package candidates use [release-candidate.py](eng/release-candidate.py) with independent version arguments.
 
@@ -132,7 +132,7 @@ new Doroti.Framework.DorotiWidgetEntrypoint(() => new MyApp())
 
 ### Themes
 
-Material uses Material 3. Omit the removed `useMaterial3` argument from `ThemeData` constructors, factories, and `copyWith`. Use `Typography.Create` or `CreateMaterial2021` for typography.
+Material uses Material 3. Use `ThemeData` to configure the theme and `Typography.Create` or `CreateMaterial2021` for typography.
 
 To follow system dark mode, provide `theme` and `darkTheme` to `MaterialApp` with `themeMode: ThemeMode.system`. Build palettes with `ColorScheme.CreateFromSeed` and `Brightness.light`/`Brightness.dark`; widgets read them through `Theme.of(context).colorScheme`. See the [complete theme example](../samples/DorotiTestbedApp/README.md#system-dark-mode-and-color-palettes).
 
@@ -166,6 +166,24 @@ The default path renders through Graphite/Vulkan and presents through D3D12/DXGI
 Omitted, `auto`, and unknown renderer values prefer WebGPU on Android and WebGL2 on Windows, iOS/iPadOS, macOS, and other platforms. Before startup, Android auto selects WebGL2 if the runtime/origin is unsuitable or the WebGPU API/adapter is unavailable. Explicit renderer overrides are preserved. Device/context initialization failures after this preflight do not trigger a backend retry. Both paths transfer the visible canvas once. Loader `started` signals runtime/GPU readiness, not the first visible content.
 
 Application bootstrap code lives in `web/src/**/*.ts`; framework Web code lives in `../packages/platforms/web/Doroti.Host.Web/Web/*.ts`. `Microsoft.TypeScript.MSBuild` compiles both into runner-local `obj` directories, and publishing includes the resulting JavaScript. Node, npm, Bun, and a bundler are not required. Testbed and templates preload the same-origin fallback font and use the import-mapped `dotnet.js`. See [Web renderer options](../samples/DorotiTestbedApp/README.md#web-renderers-and-measurement-options).
+
+### Linux Debian packages
+
+On Debian 13 amd64, Linux Qt publish supports `-PackageFormat deb -Output <directory>`.
+The profile publishes a self-contained, untrimmed Release JIT application and packages
+an application-private Qt 6.12 runtime, launcher, desktop entry, icon and license notices.
+WebEngine 6.140 is bundled by default; a separate local engine `.deb` can be installed
+alongside the app without operating an APT repository. Explicit SDK prefixes are
+required; runtime files are discovered automatically unless an optional reviewed
+`doroti-sdk.json` inventory is supplied. See the [runtime guide](../packages/platforms/qt/qt-runtime.md). Configure
+an explicit `DorotiDebPackageId`, maintainer, description and copyright file in the Linux
+runner; see the [Qt packaging guide](../packages/platforms/qt/README.md#debian-packages)
+for metadata, version rules and requirements. Omit `-PackageFormat` for existing directory
+publish. Install/update with `sudo apt install ./<app>.deb`; remove with `sudo apt remove
+<package-id>` or `sudo apt purge <package-id>`. User XDG data is retained. Local `.deb`
+distribution does not enable automatic updates. Check installation and GUI behavior on the intended target host.
+The launcher chooses native Wayland or xcb from the session and preserves explicit
+settings. Qt 6.12 runtime behavior on Debian 13 Wayland/xcb remains unverified on target hardware.
 
 ### Window appearance
 
@@ -219,21 +237,3 @@ Keep generated tool output under `.doroti/` or `artifacts/`. Retained milestone 
 ## License
 
 Doroti uses the [BSD 3-Clause License](../LICENSE). See [third-party notices](THIRD-PARTY-NOTICES.md) for source and package attribution.
-
-### Linux Debian packages
-
-On Debian 13 amd64, Linux Qt publish supports `-PackageFormat deb -Output <directory>`.
-The profile publishes a self-contained, untrimmed Release JIT application and packages
-an application-private Qt 6.12 runtime, launcher, desktop entry, icon and license notices.
-WebEngine 6.140 is bundled by default; a separate local engine `.deb` can be installed
-alongside the app without operating an APT repository. Explicit SDK prefixes are
-required; runtime files are discovered automatically unless an optional reviewed
-`doroti-sdk.json` inventory is supplied. See the [runtime guide](../packages/platforms/qt/qt-runtime.md). Configure
-an explicit `DorotiDebPackageId`, maintainer, description and copyright file in the Linux
-runner; see the [Qt packaging guide](../packages/platforms/qt/README.md#debian-packages)
-for metadata, version rules and requirements. Omit `-PackageFormat` for existing directory
-publish. Install/update with `sudo apt install ./<app>.deb`; remove with `sudo apt remove
-<package-id>` or `sudo apt purge <package-id>`. User XDG data is retained. Local `.deb`
-distribution does not enable automatic updates. Check installation and GUI behavior on the intended target host.
-The launcher chooses native Wayland or xcb from the session and preserves explicit
-settings. Real Qt 6.12 Debian 13 Wayland/xcb acceptance remains an open release gate.

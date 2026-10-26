@@ -1,16 +1,15 @@
 # Optional desktop companion
 
-Before building a generated app, run the repository CLI with explicit workspace
-and provider alias: `pwsh -File <repository>/Doroti/eng/doroti.ps1 doctor
--App <app-directory> -Platform <alias> -Scope target`. Select the declared
-`windows-maui` alias for that runner. `-Scope managed|target|native|tools|full`
-chooses prerequisite checks; FAIL/PARTIAL exits nonzero. A prerequisite PASS
-does not qualify native runtime, physical input, signing or deployment.
-Use `describe -App <app-directory> -Platform all` to inspect available profiles.
-
 This assembly is intentionally separate from the common app. It is currently
 available to **Windows App SDK**, **Windows MAUI**, **AppKit macOS**, **Mac Catalyst**, and **Linux Qt Quick** runners. The template's default Windows App SDK
 runner connects this companion and uses the main-window controller.
+
+## Setup
+
+Use `describe -App <app-directory> -Platform all` with the repository CLI to
+inspect available profiles. Before building, check prerequisites with
+`pwsh -File <repository>/Doroti/eng/doroti.ps1 doctor -App <app-directory>
+-Platform <alias> -Scope target`. Select `windows-maui` for the MAUI Windows runner.
 
 In a Windows App SDK, Windows MAUI or AppKit macOS runner, set:
 

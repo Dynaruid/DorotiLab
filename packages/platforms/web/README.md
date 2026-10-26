@@ -1,6 +1,10 @@
 # Web provider
 
-Host and Target sources are owned by this independently versioned provider. Package identities are unchanged. Version: 0.4.1-beta; supported core: [0.4.0-alpha.1, 0.5.0). Native/bootstrap adoption and physical platform acceptance are tracked separately in the design-platform execution record.
+WebAssembly host, browser bootstrap and development server for Doroti applications. Version: `0.4.1-beta`; supported core: `[0.4.0-alpha.1, 0.5.0)`.
+
+See the [Web configuration guide](../../../Doroti/README.md#web) for renderer requirements and the [sample app guide](../../../samples/DorotiTestbedApp/README.md#web-sample) for run and publish commands.
+
+## Development server
 
 Web development supports an app-root `web_dev_config.jsonc` with ordered
 `server.proxy` prefix/regex rules and path replacement, host/port, PEM HTTPS and
@@ -9,6 +13,8 @@ the workspace CLI and VS Code. `Doroti.Tool.Web` carries only
 the development server project and C# sources. Runner startup restores normal
 NuGet dependencies and builds the server into the app's `.doroti/cache`; external
 DLLs are not bundled into the tool package or browser publish assets.
+
+## Startup splash
 
 The shared TypeScript bootstrap creates a splash using the official transparent
 `Doroti/branding/doroti-symbol-color.svg`, served by the host as
@@ -21,12 +27,16 @@ failure keeps the splash visible with a retry button. Reduced motion disables
 the loading animation and fade. Pass `splash: false` to `startDoroti` to disable
 the splash; it is enabled by default.
 
+## Publishing and AOT
+
 Web Release publish defaults to Mono WASM AOT. Debug/watch remains non-AOT;
 explicit `-p:RunAOTCompilation=false` opts out for a Release comparison. AOT is
 applied during `dotnet publish`, so ordinary `dotnet run -c Release` uses the build
 output rather than the AOT publish output. Serve the published `wwwroot` with the
 required COOP/COEP headers; the sample READMEs give commands. This profile increases
 publish time and native WASM size.
+
+## File selection
 
 Wrap file-selection buttons in `Doroti.Framework.Widgets.FilePickerActivation`
 and pass the same `FilePickOptions` to the wrapper and `PickFilesAsync` callback.
@@ -44,7 +54,9 @@ new FilePickerActivation(options: options,
         onPressed: () => PickFiles(options)));
 ```
 
-Sample2 additionally defaults `DorotiWebInterpretWidgetTree=true`. Safari's Worker
+## Safari and memory configuration
+
+Sample2 defaults `DorotiWebInterpretWidgetTree=true`. Safari's Worker
 stack overflows during its deep recursive Cupertino widget mount under full AOT.
 This opt-in interprets `Doroti.Framework.Widgets`, `Doroti.Framework.Rendering`
 and `Doroti.Runtime` (including Dart async continuations), while keeping AOT for
@@ -54,6 +66,19 @@ change widget lifecycle or render quality. Other applications can opt in to the
 same property; `-p:DorotiWebInterpretWidgetTree=false` restores full AOT.
 The WebCIL cache tracks this setting, AOT/interpreter mode and assembly content
 so a later interpreted publish does not reuse stripped method bodies.
+
+Sample2 defaults `EmccMaximumHeapSize` to 512 MiB, following the
+[.NET guidance for mobile Safari](https://github.com/dotnet/runtime/blob/main/src/mono/wasm/features.md#maximum-memory-size).
+Override the property when a different workload needs a larger shared heap.
+This bounds WASM linear memory, not browser or GPU resident memory.
+
+Sustained Safari/WebKit responsiveness remains unqualified, including with mixed
+AOT. Long-running blur and scroll interactions can reload the page or stop
+responding. Check these interactions on the intended device before deployment.
+Playwright WebKit 26.4 is unsuitable for AOT startup testing because of a stack
+overflow.
+
+## Rendering and diagnostics
 
 WebGL bounds outstanding GPU work to two frames using asynchronous completion
 fences, including failed or superseded paints. New input can replace a queued
@@ -66,8 +91,7 @@ renderer; context loss cancels the wait.
 
 Paint releases temporary native shader wrappers on the render owner immediately
 after `SKPaint` retains its own reference. This avoids retaining those wrappers
-until GC/finalization during repeated paints. CPU snapshot regression tests
-verify gradient pixels still render correctly after the wrapper is released.
+until GC/finalization during repeated paints.
 
 Filter captures reuse exact-sized surfaces across changes in adaptive blur pass
 order. Mobile WebGL captures expand to a 32-pixel storage grid so small sigma
@@ -81,38 +105,3 @@ and `managed.cache.FilterSurfaceRgba8Bytes`/`FilterSurfaceRgba8Limit`.
 They also expose `webgl.capacityWaitMs`, `webgl.maxCapacityWaitMs`,
 `webgl.synchronizations`, and `raster.phase`/`raster.phaseAgeMs` to distinguish
 GPU admission, native paint, and DOM commit waits.
-
-Sample2 defaults `EmccMaximumHeapSize` to 512 MiB, following the
-[.NET guidance for mobile Safari](https://github.com/dotnet/runtime/blob/main/src/mono/wasm/features.md#maximum-memory-size).
-Override the property when a different workload needs a larger shared heap.
-This bounds WASM linear memory, not browser or GPU resident memory.
-Historical Safari checks recorded a 100-second, five-mode slider PASS and verified stale-fence recovery
-in WebKit and Chromium. A physical slider/list-scroll repeat still failed its
-application control check and later reloaded, so sustained physical Safari
-responsiveness is not fully qualified. Its last samples showed continuing
-native frames, rather than a blocked GPU queue. An earlier Safari stress run
-has a WebContent `highwater` jetsam report at approximately 1.50 GiB.
-
-Historical iOS 27 simulator checks recorded the original full-AOT startup stack overflow and the mixed-AOT fix.
-Safari 27.0 on the iPhone 17 simulator completed 180 seconds across all five blur
-modes, 10,572 continuous slider moves and a tab round trip after each mode:
-8,234 submitted frames, zero failed frames, GPU peak two, and retained filter
-storage below 32 MiB in one mixed-AOT run. Submitted frames do not measure displayed FPS.
-The final source publish, including immediate shader-wrapper release, still
-failed a slider/list-scroll control check and stopped emitting main-page heartbeat
-during a separate slider-only run's second mode. The startup overflow is fixed;
-sustained simulator stability remains unqualified. A diagnostic runtime 10.0.12
-comparison also failed the simulator control check, so the pinned 10.0.11 version
-was retained. The final physical Safari
-retest could not launch because the iPhone was locked; earlier iOS 26.6.1
-observations remain separate evidence.
-
-Historical checks on 2026-10-06 covered iOS Chrome (WebKit) on an iPhone 12 with iOS 26.6.1: the original AOT build reloaded during its
-second Fast adaptive drag; the changed AOT build completed 30 synthetic drags
-across all five modes with no reload or failed frame. Non-AOT comparison runs
-reduced filter surface creation from 8,918 to 1,488. Resident GPU/process memory
-was not measured. Playwright WebKit 26.4 still fails AOT startup with a stack
-overflow in both builds; that browser/runtime combination is not qualified.
-The initial record labeled physical runs as Safari; the recorded `CriOS` UA
-corrects that attribution. These zero-ending sweeps also do not qualify
-sustained rendering or application input responsiveness.

@@ -1,6 +1,6 @@
 # Windows App SDK provider
 
-Host/Target identities remain unchanged. This provider owns the HwndExactCpp native implementation, ABI headers and native build tool. The application framework session and owner outlive the primary native loop.
+Windows desktop host using Windows App SDK and the HwndExactCpp native window implementation. The provider includes ABI headers and a native build tool. The application framework session and owner outlive the primary native loop.
 
 Version: 0.4.1-beta. Core: [0.4.0-alpha.1, 0.5.0). The exported host entrypoint/header retain their `v1` names; the negotiated managed/native ABI version is **4**. Managed application/view identities do not change the native-local view identifier.
 

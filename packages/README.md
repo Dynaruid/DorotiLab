@@ -2,7 +2,7 @@
 
 `Doroti.Material/` and `Doroti.Cupertino/` exclusively own the design implementations. Core packages remain in `../Doroti/src/`. Material depends on Cupertino; Cupertino and core do not depend on Material.
 
-Design versions live in each package's `Version.props` and are independent of the core version. Explicit `DorotiMaterialVersion` / `DorotiCupertinoVersion` properties select local release candidates; a global `Version` does not overwrite design identity. Supported dependency ranges are emitted into nuspec and verified by real NuGet-only consumers.
+Design versions live in each package's `Version.props` and are independent of the core version. Explicit `DorotiMaterialVersion` / `DorotiCupertinoVersion` properties select local package versions; a global `Version` does not overwrite design identity. Supported dependency ranges are declared in each package's NuGet metadata.
 
 Platform providers own their host, target, bootstrap, native and tooling sources under [`platforms/`](platforms/). Their versions are independent of core and the design packages. Shared provider build policies live in `platforms/build/`; application manifests declare provider/profile/TFM/RID explicitly.
 

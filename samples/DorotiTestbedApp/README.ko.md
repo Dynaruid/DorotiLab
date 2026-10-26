@@ -465,6 +465,16 @@ AOT는 managed CPU 작업을 줄일 수 있지만 배포 파일이 커집니다.
 
 Native와 Web 모두 Material 샘플을 바로 엽니다.
 
+### 다른 샘플 화면
+
+- `DOROTI_SAMPLE=drop`: Windows OS 드롭 예제입니다. 파일·텍스트·URI를 Copy로 받아 이벤트·좌표와 파일 바이트 미리보기를 표시합니다. 지원하지 않는 호스트에서는 지원 안내를 표시합니다.
+- `DOROTI_SAMPLE=plugins`: Windows·Android의 파일 선택과 URL 실행 예제입니다. Web은 `?dorotiSample=plugins`를 사용합니다. 파일 이름·크기·처음 16바이트를 표시하고 읽은 핸들은 해제합니다. URL 버튼은 example.com을 엽니다.
+- `DOROTI_SAMPLE=reload`: Hot Reload 예제입니다. `Doroti/eng/doroti.ps1 dev -App samples/DorotiTestbedApp -Platform windows`로 시작하고 카운터·입력·스크롤을 조작한 뒤 `HotReloadSample.Message()`를 수정하고 저장합니다. 지원하는 코드 변경은 상태를 유지합니다.
+- `DOROTI_SAMPLE=webview`: 기본 WebView 예제로 바로 이동합니다. `input`은 입력창과 WebView를 각각 다시 만드는 동작을 보여줍니다.
+
+선택적 Windows MAUI runner는 버튼·입력창·WebView2를 서로 겹치지 않는 WinUI 네이티브 오버레이로
+연결하고 WebView 명령과 HWND 파일 선택기를 제공합니다. 교차 합성·네이티브 배경 효과·다중 창은 지원하지 않습니다.
+
 ### Web 렌더러와 측정 옵션
 
 | 화면 / 렌더러 | 열기 |
@@ -612,7 +622,8 @@ Android, iOS, AppKit, Mac Catalyst 러너는 앱 소유 native library와 bindin
 선택한 러너를 직접 `dotnet build`하면 해당 프로필의 네이티브 빌드도 연결됩니다.
 provider CLI에는 `native doctor/build/open/add` 명령이 없습니다. `devices -App ... -Platform android`는
 workspace RID와 일치하는 승인된 기기를 나열합니다. Android Debug Mono `dev`는 Python/ADB adapter를
-사용하고, Apple Debug `dev`는 provider 패키지의 Mac/iOS adapter와 세션 ID가 일치하는 Stop을 사용합니다. 현재 Apple 실행 수락은 미검증입니다. Apple 기기·서명·실행 수락은 provider 계획과 별도입니다.
+사용하고, Apple Debug `dev`는 provider 패키지의 Mac/iOS adapter를 사용합니다. Apple 개발 지원은 실험적이며
+선택한 호스트와 기기에서 확인이 필요합니다. 연결 조건은 [Hot Reload 안내](../../tools/vscode-doroti/README.md#hot-reload)를 참고하세요.
 
 ### 프로젝트 구조와 리소스
 

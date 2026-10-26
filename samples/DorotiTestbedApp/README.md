@@ -1,20 +1,9 @@
 # DorotiTestbedApp
 
-The managed workspace v2 CLI selects explicit provider aliases. Use `doctor -App ... -Platform ... -Scope managed|target|native|tools|full`; select Windows MAUI with `-Platform windows-maui`. TFM/RID come from the workspace manifest. Doctor and actual runtime acceptance are separate.
-
 **English** | [한국어](README.ko.md)
 
 A sample app for Doroti's Material widgets and platform hosts.
 
-Set `DOROTI_SAMPLE=drop` for the Windows OS drop scene. It accepts files, text and URIs
-as Copy, displays event/action/client coordinates and previews file bytes without
-executing content. Unsupported hosts display their capability boundary.
-
-Set `DOROTI_SAMPLE=plugins` for the Windows/Android FilePicker/URL launcher scene (Web: `?dorotiSample=plugins`). Choose one or
-more files to display their names, sizes and first 16 bytes; handles are released after
-reading. The URL button opens example.com.
-
-For the development reload scene, set `DOROTI_SAMPLE=reload` and run `Doroti/eng/doroti.ps1 dev -App samples/DorotiTestbedApp -Platform windows`. Increment the counter, enter text and scroll, then edit `HotReloadSample.Message()` and save. Supported metadata updates preserve those values.
 One shared C# application runs through Windows, macOS AppKit, Mac Catalyst, Linux, Android, iOS, and Web runners.
 
 The Material sample includes Components, Color, Typography, Elevation, Platform views, WebView, nine seed colors,
@@ -30,12 +19,6 @@ Select **WebView** for a dedicated live HTML sample with native text input, Java
 and a counter. Hosts exposing the WebView command adapter also show URL navigation, history,
 reload, local-content reset, and JavaScript evaluation controls; attachment-only hosts keep the
 interactive local page and a reset action.
-
-The optional Windows MAUI runner connects button/editor/WebView2 through disjoint
-WinUI native overlays and exposes WebView commands and the HWND file picker. It does
-not provide interleaving/native backdrop or multiple-window support. The `DOROTI_SAMPLE=webview`
-route opens the basic WebView scene directly; `input` exercises separate editor/WebView
-recreation.
 
 - [Prerequisites](#prerequisites)
 - [Platform builds and option cases](#platform-builds-and-option-cases)
@@ -488,6 +471,24 @@ some methods still use interpreter paths. Debug development remains non-AOT.
 
 Native and Web launches open the Material sample directly.
 
+### Additional sample scenes
+
+Set `DOROTI_SAMPLE=drop` for the Windows OS drop scene. It accepts files, text and URIs
+as Copy, displays event/action/client coordinates and previews file bytes without
+executing content. Unsupported hosts display their capability boundary.
+
+Set `DOROTI_SAMPLE=plugins` for the Windows/Android FilePicker/URL launcher scene (Web: `?dorotiSample=plugins`). Choose one or
+more files to display their names, sizes and first 16 bytes; handles are released after
+reading. The URL button opens example.com.
+
+For the development reload scene, set `DOROTI_SAMPLE=reload` and run `Doroti/eng/doroti.ps1 dev -App samples/DorotiTestbedApp -Platform windows`. Increment the counter, enter text and scroll, then edit `HotReloadSample.Message()` and save. Supported metadata updates preserve those values.
+
+The optional Windows MAUI runner connects button/editor/WebView2 through disjoint
+WinUI native overlays and exposes WebView commands and the HWND file picker. It does
+not provide interleaving/native backdrop or multiple-window support. The `DOROTI_SAMPLE=webview`
+route opens the basic WebView scene directly; `input` exercises separate editor/WebView
+recreation.
+
 ### Web renderers and measurement options
 
 | Screen / renderer | Open |
@@ -635,7 +636,7 @@ select a platform runner instead. Build the target you need rather than a full s
 
 ### Native bridge
 
-Android, iOS, AppKit and Mac Catalyst retain app native libraries/bindings in their source runners. The current managed provider CLI does not advertise native doctor/build/open/add operations. Build the selected runner directly with `dotnet build` for its declared profile. Android device discovery is typed (`devices -App ... -Platform android`) and lists authorized devices matching the workspace RID; deployment requires a matching device. Android Debug Mono `dev` uses the Python/ADB adapter; Apple Debug `dev` uses provider-packaged Mac/iOS adapters with session-matched Stop. Current Apple runtime acceptance remains unverified. Apple native/device/signing acceptance remains separate from provider planning.
+Android, iOS, AppKit and Mac Catalyst runners include app-owned native libraries and bindings. Build the selected runner with `dotnet build` for its declared profile; the provider CLI does not expose `native doctor/build/open/add` commands. `devices -App ... -Platform android` lists authorized devices matching the workspace RID. Android Debug Mono `dev` uses the Python/ADB adapter, and Apple Debug `dev` uses packaged Mac/iOS adapters. Apple development support is experimental and needs verification on the selected host and device. See [Hot Reload setup](../../tools/vscode-doroti/README.md#hot-reload) for connection requirements.
 
 ### Project layout and resources
 

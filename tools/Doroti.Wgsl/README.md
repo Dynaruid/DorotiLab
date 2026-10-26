@@ -1,7 +1,10 @@
 # Doroti WGSL compiler
 
-Rust 1.95.0, Naga 30.0.1 and Cargo.lock are pinned. This is a build-time tool;
-the application does not load Rust or create a second wgpu device.
+Build-time compiler for Doroti GPU effects. It translates WGSL fragment shaders
+into backend-specific variants and generates C# parameter serializers.
+
+The tool pins Rust 1.95.0, Naga 30.0.1 and Cargo.lock. Applications use the
+generated assets without loading Rust or creating a second wgpu device.
 
 From the repository root:
 
@@ -9,8 +12,7 @@ From the repository root:
 python Doroti/eng/run-with-timeout.py --timeout 1200 cargo build --locked --manifest-path tools/Doroti.Wgsl/Cargo.toml
 ```
 
-The former `Doroti/validation/gpu-effects` assets are retired. Create a minimal
-example under a disposable run directory instead:
+Create a minimal example under a disposable directory:
 
 ```powershell
 New-Item -ItemType Directory -Force temp/testing/wgsl-example | Out-Null
@@ -19,8 +21,7 @@ New-Item -ItemType Directory -Force temp/testing/wgsl-example | Out-Null
 python Doroti/eng/run-with-timeout.py --timeout 1200 cargo run --locked --manifest-path tools/Doroti.Wgsl/Cargo.toml -- compile temp/testing/wgsl-example/example.wgsl temp/testing/wgsl-example/example.effect.json temp/testing/wgsl-example/output
 ```
 
-Inspect the generated manifest, variants and serializers, then remove your run
-directory after recording the result. Rust is required for this compiler build;
+Inspect the generated manifest, variants and serializers. Rust is required for this compiler build;
 ordinary apps without `DorotiGpuEffect` inputs do not require it.
 
 CLI: `validate|reflect|compile|generate source.wgsl definition.effect.json output-directory`.
@@ -46,8 +47,7 @@ for their existing renderer; translation success is not device execution proof.
 Reflection contains source/definition/variant hashes, bindings and scalar field
 offsets. Generated `Doroti.Generated.<AssetId>Parameters` properties flatten
 vectors/matrices/arrays by index; `Snapshot()` writes each scalar at its Naga
-offset with explicit little-endian writes. Padding remains zero. A vec3/mat3x3/
-array/i32 golden checks offsets through byte 112 in a 128-byte block.
+offset with explicit little-endian writes. Padding remains zero.
 
 Generated `Doroti.Generated.Effects.<AssetId>` embeds every declared variant in
 the application assembly. Integration uses a source-tree compiler; compiler RID

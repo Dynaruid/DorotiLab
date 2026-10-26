@@ -1,7 +1,5 @@
 # Doroti
 
-실행 전 `pwsh -File Doroti/eng/doroti.ps1 doctor -App samples/DorotiTestbedApp -Platform windows -Scope target`로 준비 조건을 확인합니다. provider doctor의 판정과 실제 기기·배포 수락은 구분합니다.
-
 [English](README.md) | **한국어**
 
 ### XAML 없이 C#으로 만드는 크로스 플랫폼 UI
@@ -42,10 +40,6 @@ Flutter에서 익숙한 Material·Cupertino API에 SkiaSharp 기반의 공통 �
 
 Web 자동 선택은 desktop/iOS에서 WebGL2, Android에서 WebGPU를 우선하며 초기 fallback 조건을 평가합니다. `dorotiRenderer=worker-direct-webgl` 또는 `worker-direct-webgpu`로 명시 선택할 수 있습니다. 실행 중 graphics loss는 새 endpoint가 필요합니다. [Web 설정 가이드](Doroti/README.ko.md#web)를 참고하세요.
 
-[2026-10-05 Apple 후속 결과](history/26/10/05/work3-summary.md#14-2026-10-05-실행-결과)에 AppKit 보조 창·NSMenu,
-Catalyst scene 정책, 모바일 공유 View 수명과 typed iOS 장치 선택을 기록했습니다.
-빌드·native 자동화·물리 입력·배포 수락은 각각 구분하며 전체 계획은 PARTIAL입니다.
-
 ## 시작하기
 
 샘플 앱으로 Doroti를 살펴볼 수 있습니다. 빌드 호스트에 다음 의존성을 준비하세요:
@@ -60,6 +54,8 @@ Catalyst scene 정책, 모바일 공유 View 수명과 typed iOS 장치 선택�
 ```powershell
 git clone https://github.com/Dynaruid/DorotiLab.git
 cd DorotiLab
+
+pwsh -File ./Doroti/eng/doroti.ps1 doctor -App ./samples/DorotiTestbedApp -Platform windows -Scope target
 
 $env:DOROTI_TESTBED_MODE = 'sample'
 pwsh -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform windows

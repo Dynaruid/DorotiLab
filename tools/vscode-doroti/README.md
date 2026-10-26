@@ -1,10 +1,10 @@
 # Doroti for VS Code
 
-Local extension for VS Code 1.100+ desktop, PowerShell 7 and the repository's .NET 10 SDK. Build tools use Node 24 and npm with the checked-in lockfile. Available Debug development targets come from workspace v2 and the resolved provider profile on the current host. Apple platforms have historical CLI and installed-VSIX Hot Reload results; current provider integration must be assessed separately, as detailed below.
+Doroti project creation, platform launch commands, Hot Reload and C# widget editing in VS Code.
 
-For Android, select `android`, connect one authorized USB device/emulator and use **Run**. Python 3, Android platform-tools, .NET SDK 10.0.400+ and the matching Android workload are required. `doroti.device` selects a serial when several devices are attached. The workspace RID selects arm64/x64 and must match the device ABI and enables the SDK's startup hook in Debug Mono. Save or **Hot Reload** applies supported C# edits over USB while preserving widget state, text and scroll. The button waits for device request delivery before saving and for a completed reassembly frame before reporting success. **Stop** closes the owned app, watcher and USB reverse port. Native Kotlin/Java, resources, project changes and unsupported C# edits require **Restart (resets state)**. Release/AOT and CoreCLR are outside this development profile.
+Requires VS Code 1.100+ desktop, PowerShell 7 and the repository's .NET 10 SDK. Available Debug development targets come from `doroti-workspace.json` and the provider profile for the current host. Building the extension requires Node 24 and npm with the checked-in lockfile.
 
-The extension icon (`images/icon.png`) is a transparent 256×256 PNG rendered from the [official Doroti color symbol](../../Doroti/branding/doroti-symbol-color.svg), preserving its filled blocks and thin transparent cutout spacing. VS Code extension packages require a raster icon; the SVG remains the source of truth. Regenerate it together with the app icons using [the branding instructions](../../Doroti/branding/README.md#파생-자산-재생성).
+## Install
 
 ```powershell
 dotnet new install <repository>/Doroti/templates/Doroti.Templates/content/doroti-app
@@ -16,35 +16,49 @@ code --install-extension doroti-0.2.3.vsix
 
 Set `doroti.cliPath` to the absolute repository `Doroti/eng/doroti.ps1` path for development commands. Editing uses the bundled .NET 10/Roslyn 5.9 helper and does not require a repository checkout, CLI path, project selection or an app session. Install the Microsoft C# extension (`ms-dotnettools.csharp`) for normal IntelliSense, signature help, diagnostics, navigation and general C# refactoring. Doroti supplies widget construction templates and structural assists alongside it; fallback type suggestions are suppressed while C# is active. Restore the application's declared dependencies before semantic editing. Suggestions never restore, build, install dependencies or save source files.
 
+## Create and run a project
+
 Use **Doroti: Create Project**, choose a name and parent folder, then **Select Project**, **Select Target**, **Run**. Existing folders are never overwritten. A canceled/failed creation may leave partial files at the logged destination. The manifest and repository CLI determine available runners. One local workspace folder and one running session are supported. Restricted Mode allows snippets/editing, but cannot execute creation, CLI or reload commands. No launch/tasks settings are overwritten.
 
-Click the **Doroti** symbol in the left Activity Bar, or run **Doroti: Show Sidebar**, to open the native **Workspace** view. **Project** selects the application and provider development target, opens its manifest and creates projects. Expand **Select Target** to choose a declared target directly. **Development** shows connection/reload status and runtime revision, with Run, Hot Reload, Restart, Stop and Show Logs. **Widgets** contains the existing new-widget, snippet and wrap commands for the active Doroti application C# editor. Unavailable actions show their reason and have no click command. The view title has session controls, Refresh Sidebar and an overflow menu with Doroti settings. Opening or refreshing the sidebar reads local context without invoking the CLI or building the app. You can move the view to the secondary sidebar or panel using VS Code's view menus. The monochrome Activity Bar asset (`images/sidebar.svg`) is derived from the [official symbol](../../Doroti/branding/doroti-symbol.svg). Its 24×24 canvas uses `viewBox="2 2 20 20"` to remove the source's outer margin and display the symbol 20% larger. The [app icon generator](../../Doroti/eng/generate-app-icons.mjs) regenerates this asset together with the extension's PNG icon.
+Click the **Doroti** symbol in the left Activity Bar, or run **Doroti: Show Sidebar**, to open the **Workspace** view. **Project** selects the application and target, opens its manifest and creates projects. Expand **Select Target** to choose a declared target directly. **Development** shows connection/reload status and runtime revision, with Run, Hot Reload, Restart, Stop and Show Logs. **Widgets** contains the new-widget, snippet and wrap commands for the active Doroti application C# editor. Unavailable actions show their reason. The view title has session controls, Refresh Sidebar and an overflow menu with Doroti settings. Opening or refreshing the sidebar reads local context without building the app. You can move the view to the secondary sidebar or panel using VS Code's view menus.
+
+## Hot Reload
 
 The editor title and status bar contain **Hot Reload**. For a provider-advertised Debug target, edit a C# method body, click Hot Reload, and choose Save and Hot Reload. `dotnet watch` applies the actual metadata delta; a runtime acknowledgment follows widget/render reassembly on the owning UI queue. Saving files normally uses the same watcher. A no-op save does not claim a reload. Compilation errors appear in **Show Logs**; fix the code and retry. Unsupported edits require **Restart (resets state)**. The runtime ID and revision distinguish restarts from state-preserving reloads.
 
-The repository CLI uses the runner's validated RID for development sessions without passing `-r` to `dotnet watch`, avoiding duplicate project keys at `Loading projects`. Existing installed extensions pick up this CLI behavior on their next Run.
+### Android
 
-Apple development limits the source MAUI host's restore to the selected TFM and retains its RID assets during RID-less reference evaluation. This prevents Windows-target restore errors and missing native runtime assets on a Mac. Device reload requests are published atomically; saving waits for a matching schema/session/runtime/request acknowledgment and is canceled if that runtime disconnects, stops or is replaced. On Unix, Stop waits for the owned process group to finish before allowing Restart.
+Select `android`, connect an authorized USB device/emulator and use **Run**. Python 3, Android platform-tools, .NET SDK 10.0.400+ and the matching Android workload are required. `doroti.device` selects a serial when several devices are attached. The workspace RID must match the device ABI. Save or **Hot Reload** applies supported C# edits over USB while preserving widget state, text and scroll. **Stop** closes the owned app, watcher and USB reverse port. Native Kotlin/Java, resources, project changes and unsupported C# edits require **Restart (resets state)**. Release/AOT and CoreCLR are outside this Debug Mono development profile; Android x64 device Hot Reload remains unverified.
 
-The Apple development adapters disable AOT and trimming analyzers for their untrimmed metadata sessions to bound startup compilation work. These switches belong to `dev`; ordinary build/publish analysis follows the project settings.
+### Web
 
 Web opens an external browser connected to a local session bridge. Wait for its runtime to become ready before using Hot Reload; the button is disabled when no browser is connected. State, text and scroll survive supported edits without refreshing the page. Use one page per session. The main-owned threaded runtime is supported; Release/AOT and the explicit worker-owned runtime are not qualified. The bridge carries request/result IDs only; the .NET SDK applies code. Stop also closes the bridge.
 
-The workspace declares the Apple TFM/RID/profile, and `doroti.device` selects a matching device where discovery is supported. Earlier platform-specific settings such as `doroti.iosDevice`, `doroti.iosTargetFramework`, `doroti.iosSdkVersion`, `doroti.macosTargetFramework` and `doroti.macCatalystTargetFramework` are no longer extension settings.
+### Apple platforms
 
-| Apple target | Retained execution record | Current provider boundary |
-| --- | --- | --- |
-| AppKit macOS | [2026-10-01](../../history/26/10/03/works/platforms/macos.md): real CLI metadata updates, retained state, compile recovery/Stop and installed VSIX PASS | `macos` Debug `dev` uses the provider-packaged Mac adapter with `DorotiMacDevelopment=true`, startup hooks, direct bundle execution and isolated build caches. On 2026-10-17, .NET SDK 10.0.401 AppKit CLI metadata/state preservation, compile recovery, unsupported edits and Stop passed; installed VSIX Run/Hot Reload/Stop also passed. |
-| Mac Catalyst | [2026-10-01](../../history/26/10/03/works/platforms/maccatalyst.md#2026-10-01-mac-catalyst-metadata-hot-reload): CLI and installed-VSIX metadata/state/Stop PASS | `maccatalyst` Debug `dev` uses the same packaged adapter and enables the editable `all,-Doroti.Host.Maui` interpreter profile and SDK named-pipe transport. On 2026-10-17, .NET SDK 10.0.401 Catalyst CLI metadata/state preservation, compile recovery, unsupported edits and session-matched Stop passed; installed VSIX Run/Hot Reload/Stop also passed. |
-| iOS simulator / iPhone | [2026-09-30 and 10-01](../../history/26/10/03/works/platforms/ios.md#2026-09-30-ios-metadata-hot-reload): simulator, iPhone 12 .NET 11 CoreCLR USB, and .NET 10 Mono LAN Hot Reload; CLI and installed-VSIX PASS | iOS profiles now advertise Debug `dev` and use the packaged iOS adapter. Select a matching `doroti.device`; .NET 10 simulators use a local acknowledgment relay, .NET 10 iPhones use a LAN SDK relay, and .NET 11 CoreCLR devices use SDK USB deltas plus CoreDevice acknowledgments. On 2026-10-17, .NET SDK 10.0.401 arm64 simulator CLI metadata/state preservation, compile recovery, unsupported edits and session-matched Stop passed; installed VSIX Run/Hot Reload/Stop also passed. On 2026-10-17, iPhone 12 .NET 11 RC2 CoreCLR USB CLI metadata/state preservation, compile recovery, unsupported edits and session-matched Stop passed; installed VSIX Run/Hot Reload/Stop also passed. The .NET 10 iPhone LAN path has not been rerun. |
+The workspace declares the TFM, RID and profile; `doroti.device` selects a matching device where discovery is supported. Use **Select Target** to choose an alias advertised by the provider on the current host.
 
-The retained September/October records include installed-extension execution and describe the earlier launch/profile implementation; their .NET 11 USB run used RC1 plus a specific runtime override. Current 2026-10-17 validation is listed separately in the table above. Repeat native acceptance on other host/toolchain profiles. Physical input, other devices, Release and NativeAOT are outside these Hot Reload results.
+| Target | Development connection |
+| --- | --- |
+| AppKit macOS (`macos`) | Local Debug session through the packaged Mac adapter |
+| Mac Catalyst (`maccatalyst`) | Local Debug session with the editable interpreter profile |
+| iOS simulator (`ios`) | Matching simulator RID and local reload acknowledgments |
+| iPhone / .NET 10 Mono | SDK LAN relay; Mac and iPhone must share a LAN |
+| iPhone / .NET 11 CoreCLR | SDK USB transport with CoreDevice acknowledgments |
+
+Apple development support is experimental. Runtime and installed-extension behavior need verification with the selected host, SDK and device; the .NET 10 iPhone LAN path remains unverified with the current provider. Release and NativeAOT do not support this Hot Reload workflow.
 
 Apple development requires Python 3, Xcode and the matching .NET SDK/workloads. The manifest and runner must agree on TFM/RID; the provider uses the runner directory for SDK selection and does not pass a global RID to `dotnet watch`. On .NET 10 iPhones, keep the Mac and phone on the same LAN and allow local network access. The CLI's optional `-HotReloadHost <Mac-LAN-IPv4>` chooses that relay address; it is not an iOS TFM/SDK override. The selected SDK remains responsible for metadata deltas. Reload waits for request delivery and a completed frame acknowledgment. Stop uses a session-matched file signal, waits up to 60 seconds for adapter cleanup, and releases process-held session/device leases.
 
+### Linux
+
+Select `linux` and use **Run**, then save C# method-body edits or click **Hot Reload**. PowerShell 7, .NET 10 and the system Qt development/QML dependencies are required. The CLI defaults to polling file changes to handle low inotify limits and mounted source folders; it preserves an explicit watcher environment setting. Supported changes retain PID, State, text and scroll. Native C++/QML/shader assets and unsupported metadata edits need **Restart (resets state)**.
+
+## Widget editing
+
 Type `stl`, `stless` or `dstateless` for a StatelessWidget, and `stf`, `stful` or `dstateful` for a StatefulWidget. Choose the suggestion, edit the selected class name, then press Tab to reach build. Stateful widget, State and createState names stay linked. `dstlkey`/`dstfkey` include a key constructor. Imports are inserted with the snippet; aliases and same-name types use qualified references. File names supply valid default names, including Korean identifiers.
 
-**Doroti: New Stateless Widget** and **New Stateful Widget** ask for the class, namespace, file and constructor style. Existing files are never overwritten; cancellation creates no file. **Doroti: Insert Widget Snippet** lists the applicable templates and keeps the existing `d*` entrypoints. Templates now come from one import-aware provider rather than VS Code's static **Insert Snippet** list. User `editor.snippetSuggestions` and `tabCompletion` settings are respected.
+**Doroti: New Stateless Widget** and **New Stateful Widget** ask for the class, namespace, file and constructor style. Existing files are never overwritten; cancellation creates no file. **Doroti: Insert Widget Snippet** lists the applicable templates, including the `d*` prefixes below. Templates add the required imports and respect user `editor.snippetSuggestions` and `tabCompletion` settings.
 
 | Templates | Prefixes |
 | --- | --- |
@@ -62,6 +76,8 @@ Place the cursor on a resolved Widget expression, or select complete expressions
 
 **Extract Doroti Widget…** creates a same-file StatelessWidget and passes local/parameter/read-only member values, nullable callbacks and generic constraints through its constructor. Inline closures, side-effecting method calls, mutations, inaccessible types and preprocessor/nested-class boundaries show a restriction instead of a speculative rewrite. **Convert to StatefulWidget** preserves constructors, key, attributes, fields and properties, using a nested State for private access. Each build captures its Widget instance so callbacks retain that instance. Primary constructor values are supported unless their capture is mutable. Partial/inheritance/base-dispatch/recursive-build cases remain restricted. Both changes have Apply/Cancel previews and may require **Restart (resets state)**; they do not promise mounted-state preservation through Hot Reload.
 
+## Settings and session management
+
 Settings `doroti.editing.completions`, `.snippets`, `.codeActions`, `.types` and `.hints` independently control these features. Editing remains available while an app runs. Documents are resolved against manifest application/Compile/reference items, not the selected runner; unrelated C# projects receive no Doroti suggestions. Unsaved source/global usings, project aliases, linked files and source/project/reference changes invalidate the appropriate caches.
 
 Restricted Mode permits pure templates and widget-file creation with fully qualified types, without starting the helper or evaluating projects. When the SDK or references are unavailable, the same template fallback remains; semantic refactorings are unavailable and **Wrap with Widget…** explains the limitation. Check **Doroti: Show Logs**, restore references or install the configured .NET 10 SDK, then retry. Analysis is bounded to four evaluated project roots, 64 pending requests/cache entries, 32 simultaneous snapshots (4 MiB characters), and 8 MiB protocol frames. Stale/canceled results are never applied. Unsaved untitled documents and unresolved dynamic selections are outside semantic editing.
@@ -70,10 +86,10 @@ Closing a desktop app ends its development session when `dotnet watch` reports t
 
 Stop and extension deactivation terminate the owned process tree. Session files under the app's `.doroti/dev/<session>` contain capability/revision/request IDs and diagnostics, never executable instructions. These files may be removed after stopping the session.
 
-The implementation was written independently after static review of `reference/AvaloniaVSCode-ARCHIVE`; no archive source or dependencies were copied. No preview server, LSP, debug adapter, Marketplace publication, multi-root, remote/device discovery or browser-only editor support is included.
+The extension supports local desktop workspaces. A preview server, LSP, debug adapter, Marketplace distribution, multi-root workspaces, remote hosts and browser-only editors are outside its scope. Connected Android/iOS device selection is provided through the repository CLI.
+
+## Extension assets
+
+The extension icon (`images/icon.png`) and Activity Bar icon (`images/sidebar.svg`) use the [official Doroti symbol](../../Doroti/branding/doroti-symbol-color.svg). Regenerate them with the app icons using [the branding instructions](../../Doroti/branding/README.md#파생-자산-재생성).
 
 References: [dotnet watch](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-watch), [metadata update handlers](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.metadata.metadataupdatehandlerattribute?view=net-10.0), [Workspace Trust](https://code.visualstudio.com/api/extension-guides/workspace-trust).
-
-On macOS, AppKit and Mac Catalyst aliases come from `describe`; TFM/RID/profile selection belongs to `doroti-workspace.json`. See the Apple table above for restored development profiles and the current native-validation boundary.
-
-On Linux, select `linux` and use **Run**, then save C# method-body edits or click **Hot Reload**. PowerShell 7, .NET 10 and the system Qt development/QML dependencies are required. The CLI defaults to polling file changes to handle low inotify limits and mounted source folders; it preserves an explicit watcher environment setting. Supported changes retain PID, State, text and scroll. Native C++/QML/shader assets and unsupported metadata edits need **Restart (resets state)**.

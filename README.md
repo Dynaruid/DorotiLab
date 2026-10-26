@@ -1,7 +1,5 @@
 # Doroti
 
-Before launching a target, run `pwsh -File Doroti/eng/doroti.ps1 doctor -App samples/DorotiTestbedApp -Platform windows -Scope target`. Provider doctor reports prerequisites; device and deployment acceptance are separate.
-
 **English** | [한국어](README.ko.md)
 
 ### Cross-platform UIs in C#, without XAML
@@ -42,11 +40,6 @@ Doroti shares its widget, layout, painting, and semantics layers across platform
 
 Web auto selection prefers WebGL2 on desktop/iOS and WebGPU on Android, with initial fallback when available. Explicit `dorotiRenderer=worker-direct-webgl` or `worker-direct-webgpu` overrides auto selection. Runtime graphics loss requires a fresh endpoint; see the [Web configuration guide](Doroti/README.md#web).
 
-The [2026-10-05 Apple follow-up](history/26/10/05/work3-summary.md#14-2026-10-05-실행-결과) records current
-AppKit auxiliary windows/NSMenu, Catalyst scene policies, shared mobile view
-lifetimes and typed iOS device selection. Build, native automation, physical input
-and distribution have separate acceptance scopes; the complete plan remains partial.
-
 ## Get started
 
 The sample application is the starting point for exploring Doroti. Prepare these dependencies on the build host:
@@ -61,6 +54,8 @@ Clone the repository and run the sample from its root:
 ```powershell
 git clone https://github.com/Dynaruid/DorotiLab.git
 cd DorotiLab
+
+pwsh -File ./Doroti/eng/doroti.ps1 doctor -App ./samples/DorotiTestbedApp -Platform windows -Scope target
 
 $env:DOROTI_TESTBED_MODE = 'sample'
 pwsh -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform windows

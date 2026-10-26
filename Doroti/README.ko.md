@@ -25,10 +25,6 @@ Doroti는 데스크톱·모바일·웹에서 공유하는 위젯, 레이아웃, 
 
 ## 요구 사항
 
-Release 앱 DLL에는 ReadyToRun 게시를 포함해 Obfuscar 난독화를 선택적으로 적용할 수 있습니다. NativeAOT·Mono/WASM AOT 경로는 제외합니다.
-Windows와 Linux Qt에서는 `PublishSingleFile=true`로 단일 파일을 게시할 수 있습니다.
-트리밍하지 않은 JIT 또는 개별 ReadyToRun 게시를 지원합니다. [캐러셀 게시 예제](../samples/DorotiCarouselApp/README.md#데스크톱-단일-실행-파일-게시)를 참고하세요.
-
 ### 공통 도구와 SDK 선택
 
 - Windows·macOS·Linux에서 [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6)을 설치해 `eng/doroti.ps1` 등 저장소 스크립트 실행에 사용합니다. 아래 명령은 **저장소 루트 `DorotiLab`**에서 PowerShell로 시작합니다.
@@ -80,7 +76,7 @@ dotnet workload restore ./DorotiTestbedApp.iOS.csproj
 Pop-Location
 ```
 
-`workload restore`는 선택한 SDK의 .NET workload를 준비하며 외부 도구는 별도로 설치합니다. provider doctor에는 `-App`과 `-Platform`이 필요하고, `-Scope managed|target|native|tools|full`로 준비 조건의 검사 범위를 선택합니다. FAIL/PARTIAL은 nonzero exit입니다. 준비 조건 PASS는 빌드·기기 수락을 대신하지 않습니다.
+`workload restore`는 선택한 SDK의 .NET workload를 준비하며 외부 도구는 별도로 설치합니다. `doctor`에 `-App`과 `-Platform`을 지정하면 준비 조건을 확인할 수 있습니다. `-Scope managed|target|native|tools|full`로 검사 범위를 선택하며, 준비 조건이 누락되거나 불완전하면 0이 아닌 종료 코드를 반환합니다.
 
 플랫폼별 실행 명령은 [Testbed 실행 안내](../samples/DorotiTestbedApp/README.ko.md#material-샘플-모드)에 있습니다. `reference/flutter-master` checkout은 명시적인 Flutter 비교에만 필요하며, 필요할 때 `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`로 준비합니다.
 
@@ -97,11 +93,15 @@ pwsh -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform
 
 `run`은 빌드한 뒤 앱을 실행합니다. Windows는 Windows App SDK/`HwndExactCpp`가 기본이며, 독립 MAUI 실행 프로젝트는 `-Platform windows-maui`로 선택합니다. 다른 대상은 `-Platform`에 `android`, `ios`, `macos`, `maccatalyst`, `linux`, `web`을 지정합니다. 준비 사항과 기기 옵션은 [샘플 앱 가이드](../samples/DorotiTestbedApp/README.ko.md#플랫폼별-실행)를 참고하세요.
 
+Release 앱 DLL에는 ReadyToRun 게시를 포함해 Obfuscar 난독화를 선택적으로 적용할 수 있습니다. NativeAOT·Mono/WASM AOT 경로는 제외합니다.
+Windows와 Linux Qt에서는 `PublishSingleFile=true`로 단일 파일을 게시할 수 있습니다.
+트리밍하지 않은 JIT 또는 개별 ReadyToRun 게시를 지원합니다. [캐러셀 게시 예제](../samples/DorotiCarouselApp/README.md#데스크톱-단일-실행-파일-게시)를 참고하세요.
+
 ### 명령 안내
 
 `describe -App <workspace> -Platform all`은 선언된 provider 별칭, 현재 호스트에서 가능한 작업과 개발 전송 방식을 보여줍니다. `build`, `run`, `publish`, `dev`에는 선언된 별칭과 provider 지원이 필요하며 `dev`는 Debug 전용입니다. 설정·기기·템플릿 서비스는 확장이 제공하고 미지원 서비스는 명시적으로 실패합니다. 기본 템플릿은 `dotnet new`로 설치하며 `--design widgets|material|cupertino`를 지원합니다.
 
-이전 `-WindowsBackend`, `-Rid`, `-LastSuccessful`, `-NoBuild`, `-NoRestore`, `native`와 고정 템플릿 명령 스위치는 현재 managed provider CLI에 없습니다. TFM/RID/backend/profile은 `doroti-workspace.json`에서 선택하며 다른 지원 빌드 프로필은 직접 runner/MSBuild 명령으로 사용합니다. Android Debug Mono 개발은 provider의 Python/ADB adapter를 사용합니다. Apple Debug 개발은 패키지에 포함된 Python adapter로 AppKit·Catalyst·iOS 시뮬레이터와 선언된 iPhone Mono LAN/CoreCLR USB profile을 연결합니다. 현재 Apple 실행 수락은 미검증입니다. 개발 대상은 [VS Code 안내](../tools/vscode-doroti/README.md)를 참고하세요.
+TFM·RID·backend·profile은 `doroti-workspace.json`에서 선택하며 다른 지원 빌드 프로필은 직접 runner/MSBuild 명령으로 사용합니다. Android Debug Mono 개발은 provider의 Python/ADB adapter를 사용합니다. Apple Debug 개발은 패키지에 포함된 Python adapter로 AppKit·Catalyst·iOS 시뮬레이터와 선언된 iPhone Mono LAN/CoreCLR USB profile을 연결합니다. Apple 개발 지원은 실험적이며 선택한 SDK와 기기에서 확인이 필요합니다. 개발 대상과 연결 조건은 [VS Code 안내](../tools/vscode-doroti/README.md#hot-reload)를 참고하세요.
 
 로컬 패키지 후보는 [release-candidate.py](eng/release-candidate.py)로 생성합니다.
 
@@ -133,7 +133,7 @@ new Doroti.Framework.DorotiWidgetEntrypoint(() => new MyApp())
 
 ### 테마
 
-Material은 Material 3를 사용합니다. `ThemeData` 생성자, 팩터리, `copyWith`에서 제거된 `useMaterial3` 인자를 생략하세요. 타이포그래피는 `Typography.Create` 또는 `CreateMaterial2021`을 사용합니다.
+Material은 Material 3를 사용합니다. `ThemeData`로 테마를 설정하고, 타이포그래피는 `Typography.Create` 또는 `CreateMaterial2021`을 사용합니다.
 
 시스템 다크 모드를 따르려면 `MaterialApp`에 `theme`, `darkTheme`, `themeMode: ThemeMode.system`을 지정합니다. `ColorScheme.CreateFromSeed`와 `Brightness.light`/`Brightness.dark`로 팔레트를 만들고, 위젯에서는 `Theme.of(context).colorScheme`으로 읽습니다. [전체 테마 예제](../samples/DorotiTestbedApp/README.ko.md#시스템-다크-모드와-색-팔레트)를 참고하세요.
 
@@ -167,6 +167,24 @@ Android, iOS, AppKit macOS, Mac Catalyst 실행 프로젝트는 각각 앱 소�
 옵션 생략, `auto`, 알 수 없는 렌더러 값은 Android에서 WebGPU를, Windows·iOS/iPadOS·macOS 등에서는 WebGL2를 우선합니다. Android 자동 선택은 시작 전에 런타임·출처 조건과 WebGPU API·어댑터를 확인하고 사용할 수 없으면 WebGL2를 선택합니다. 명시적인 렌더러 지정은 유지하며, 사전 확인 이후 장치·context 초기화 실패 시에는 다른 백엔드로 재시도하지 않습니다. 두 경로 모두 표시할 canvas를 한 번 이전합니다. 로더의 `started`는 런타임·GPU 준비 완료를 뜻하며, 첫 콘텐츠가 표시되었다는 의미는 아닙니다.
 
 앱의 부팅 코드는 `web/src/**/*.ts`, 프레임워크 웹 코드는 `../packages/platforms/web/Doroti.Host.Web/Web/*.ts`에 있습니다. `Microsoft.TypeScript.MSBuild`가 실행 프로젝트의 `obj`에 JavaScript를 만들고, 배포에는 결과 파일을 포함합니다. Node, npm, Bun, 번들러는 필요하지 않습니다. Testbed와 템플릿은 같은 출처의 대체 폰트를 미리 읽고 import map의 `dotnet.js`를 사용합니다. [웹 렌더러 옵션](../samples/DorotiTestbedApp/README.ko.md#web-렌더러와-측정-옵션)을 참고하세요.
+
+### Linux Debian 패키지
+
+Debian 13 amd64의 Linux Qt 게시에서 `-PackageFormat deb -Output <디렉터리>`를
+사용할 수 있습니다. Release의 self-contained, untrimmed JIT 게시 결과에
+Qt 6.12 런타임을 앱 전용 경로에 동봉하고 launcher, 메뉴, 아이콘, 라이선스 문서를 포함합니다.
+WebEngine 6.140도 기본 동봉하며, 분리할 때는 엔진·앱 `.deb` 두 개를 APT로 함께 설치할 수 있습니다.
+자체 저장소는 필수가 아닙니다. SDK 경로를 명시하면 런타임 파일을 자동 수집합니다.
+`doroti-sdk.json`은 선택 사항이며, 있으면 지정한 배포 목록과 소스·고지 자료를 검증합니다.
+[런타임 안내](../packages/platforms/qt/qt-runtime.md)를 참고하세요.
+Linux runner에 고유한 `DorotiDebPackageId`, maintainer, description, copyright 파일을
+설정합니다. [Qt 패키징 안내](../packages/platforms/qt/README.md#debian-packages)에
+설정·버전 규칙·환경 요구사항이 있습니다. 옵션을 생략하면 기존 폴더 게시를 유지합니다.
+`sudo apt install ./<app>.deb`로 설치·업데이트하고, `sudo apt remove <package-id>` 또는
+`sudo apt purge <package-id>`로 제거합니다. 사용자 XDG 데이터는 보존합니다.
+로컬 `.deb` 배포만으로 자동 업데이트를 제공하지 않습니다. 설치와 GUI 실행은 대상 호스트에서 직접 확인합니다.
+launcher는 세션에 따라 네이티브 Wayland/xcb를 선택하며 명시한 설정을 보존합니다.
+Qt 6.12/Debian 13의 Wayland·xcb 동작은 대상 하드웨어에서 아직 검증되지 않았습니다.
 
 ### 창 외형
 
@@ -220,21 +238,3 @@ Windows 11 24H2 이상에서는 실험 플래그 없이 `new WindowBackdropOptio
 ## 라이선스
 
 Doroti는 [BSD 3-Clause 라이선스](../LICENSE)를 따릅니다. 외부 소스와 패키지의 저작권 표기는 [서드파티 고지](THIRD-PARTY-NOTICES.md)를 참고하세요.
-
-### Linux Debian 패키지
-
-Debian 13 amd64의 Linux Qt 게시에서 `-PackageFormat deb -Output <디렉터리>`를
-사용할 수 있습니다. Release의 self-contained, untrimmed JIT 게시 결과에
-Qt 6.12 런타임을 앱 전용 경로에 동봉하고 launcher, 메뉴, 아이콘, 라이선스 문서를 포함합니다.
-WebEngine 6.140도 기본 동봉하며, 분리할 때는 엔진·앱 `.deb` 두 개를 APT로 함께 설치할 수 있습니다.
-자체 저장소는 필수가 아닙니다. SDK 경로를 명시하면 런타임 파일을 자동 수집합니다.
-`doroti-sdk.json`은 선택 사항이며, 있으면 지정한 배포 목록과 소스·고지 자료를 검증합니다.
-[런타임 안내](../packages/platforms/qt/qt-runtime.md)를 참고하세요.
-Linux runner에 고유한 `DorotiDebPackageId`, maintainer, description, copyright 파일을
-설정합니다. [Qt 패키징 안내](../packages/platforms/qt/README.md#debian-packages)에
-설정·버전 규칙·환경 요구사항이 있습니다. 옵션을 생략하면 기존 폴더 게시를 유지합니다.
-`sudo apt install ./<app>.deb`로 설치·업데이트하고, `sudo apt remove <package-id>` 또는
-`sudo apt purge <package-id>`로 제거합니다. 사용자 XDG 데이터는 보존합니다.
-로컬 `.deb` 배포만으로 자동 업데이트를 제공하지 않습니다. 설치와 GUI 실행은 대상 호스트에서 직접 확인합니다.
-launcher는 세션에 따라 네이티브 Wayland/xcb를 선택하며 명시한 설정을 보존합니다.
-Qt 6.12/Debian 13의 실제 Wayland·xcb 검증은 릴리스 완료 조건으로 남아 있습니다.

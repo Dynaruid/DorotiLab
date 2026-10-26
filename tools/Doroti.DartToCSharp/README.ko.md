@@ -31,7 +31,7 @@ typed Dart IR ──► Core IR ──► structured C# IR
 - Flutter selection을 위한 repository의 pinned `reference/flutter-master` checkout
 - Shared runtime과 tooling project를 포함한 전체 DorotiLab checkout
 
-Selection과 source path가 일관되게 해석되도록 repository root에서 명령을 실행합니다. 선택 fixture 사용 전 `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`로 선택적 Flutter checkout을 준비합니다. graph-only tolerance 입력도 이 checkout이 필요합니다. 이전 `Doroti/migration` 트리는 폐기되었으므로 존재하는 `--manifest`를 명시하세요.
+Selection과 source path가 일관되게 해석되도록 repository root에서 명령을 실행합니다. 선택 fixture 사용 전 `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`로 선택적 Flutter checkout을 준비합니다. graph-only tolerance 입력도 이 checkout이 필요합니다. `--manifest`에는 직접 준비한 selection 파일을 지정하세요.
 
 ## Build와 실행
 
@@ -57,7 +57,7 @@ dotnet run --project ./tools/Doroti.DartToCSharp -- `
 
 | Option | 역할 |
 | --- | --- |
-| `--manifest <file>` | 명시적인 selection manifest. 이전 기본값 `migration/selections/r1.json`은 현재 제공하지 않음 |
+| `--manifest <file>` | 직접 준비한 selection manifest 경로 |
 | `--output <directory>` | Compiler-owned output directory에 직접 publish |
 | `--workspace-root <directory>` | `--output` 대신 content-addressed workspace에 publish |
 | `--cache-dir <directory>` | 명시적인 cache의 analyzer result 재사용 |
@@ -97,7 +97,7 @@ Workspace에는 다음 항목이 들어 있습니다.
 - `effective/`: publication 전에 반드시 build되어야 하는 합성 project
 - `port-state.json`, `provenance.json`, `source-map.json`: ownership과 추적 정보
 
-Port 예제의 `./path/to/doroti-port.json`, `CounterModel`, `YOUR_SOURCE_REVISION`은 직접 준비한 port manifest·symbol·source revision으로 바꾸는 자리표시자입니다. 이전 `Doroti/migration/ports` fixture는 현재 제공하지 않습니다. manifest가 선언한 customization input을 수정하고 compiler-owned workspace tree는 직접 수정하지 마세요.
+Port 예제의 `./path/to/doroti-port.json`, `CounterModel`, `YOUR_SOURCE_REVISION`은 직접 준비한 port manifest·symbol·source revision으로 바꾸는 자리표시자입니다. manifest가 선언한 customization input을 수정하고 compiler-owned workspace tree는 직접 수정하지 마세요.
 
 제품 source를 수정하지 않고 review-only adoption bundle을 만듭니다.
 
