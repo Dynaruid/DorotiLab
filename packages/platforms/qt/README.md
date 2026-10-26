@@ -132,6 +132,6 @@ not implemented. A `.deb` file does not configure an APT repository or automatic
 updates. With separate WebEngine deployment, supply both local .deb files to APT; no engine repository is needed. The [runtime guide](qt-runtime.md) explains both workflows. Ubuntu/other distribution support still requires separate qualification.
 
 Acceptance and remaining environment-specific gates are recorded in the
-[Qt runtime distribution history](../../../history/26-10-19/qt-runtime-bundle-summary.md).
+[Qt runtime distribution history](../../../history/26/10/19/qt-runtime-bundle-summary.md).
 Only combinations with actual install/runtime evidence should be described as
 qualified; package creation or container installation alone is insufficient.

@@ -348,7 +348,7 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 dev -App ./samples/DorotiSampleApp
 .NET 11 CoreCLR 실기기는 SDK USB 경로를 사용합니다. 지원되는 코드 변경은 요청 전달·완료 frame을
 확인하며, Stop은 해당 세션의 watcher·앱을 정리합니다.
 
-이전 CLI·설치 VSIX의 [실행 기록](../../history/26-10-03/works/platforms/ios.md#2026-09-30-ios-metadata-hot-reload)은
+이전 CLI·설치 VSIX의 [실행 기록](../../history/26/10/03/works/platforms/ios.md#2026-09-30-ios-metadata-hot-reload)은
 보존합니다. 이번 provider 재연결은 자동 계약 검사 범위이며 현재 Mac·실기기 실행 수락은 `notVerified`입니다.
 Release/NativeAOT는 metadata Hot Reload 대상이 아닙니다.
 

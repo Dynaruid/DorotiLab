@@ -85,4 +85,4 @@ current Apple runtime/installed-VSIX acceptance, which remains notVerified.
 The iOS runtime profile
 is owned only by `packages/platforms/build/Doroti.IosNativeAot.props`, including
 template consumers. Latest scope and remaining gates are in
-[work3](../../../history/26-10-05/work3-summary.md#14-2026-10-05-실행-결과).
+[work3](../../../history/26/10/05/work3-summary.md#14-2026-10-05-실행-결과).

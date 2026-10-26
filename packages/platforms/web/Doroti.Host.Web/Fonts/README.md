@@ -169,7 +169,7 @@ indices and complete Unicode range coverage. Builds use the generated resource
 and never read the reference checkout or query Google Fonts CSS. Source hash and
 counts are recorded in `catalog-source.txt`; Flutter's license is included.
 
-The former font-download validation document was retired. See the [retained font summary](../../../../../history/26-09-28/web-fonts-summary.md) for historical scope. Historical results do not qualify the current build.
+The former font-download validation document was retired. See the [retained font summary](../../../../../history/26/09/28/web-fonts-summary.md) for historical scope. Historical results do not qualify the current build.
 
 ## CSS links and variable fonts
 
