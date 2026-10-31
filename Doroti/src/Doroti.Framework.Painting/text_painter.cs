@@ -568,6 +568,9 @@ public class TextPainter
 {
     internal virtual bool _debugNeedsRelayout { get; set; } = true;
     public bool hasLayoutGeometry => _layoutCache is not null;
+    // Changes only when laid-out glyph positions can change. Selection-only
+    // rebuilds and repeated layout calls with the same constraints retain it.
+    public long layoutGeometryRevision { get; private set; }
     internal virtual _TextPainterLayoutCacheWithOffset__text_painter? _layoutCache { get; set; } =
         default;
     internal virtual bool _rebuildParagraphForPaint { get; set; } = true;
@@ -1152,11 +1155,13 @@ public class TextPainter
             return true;
         });
         _TextPainterLayoutCacheWithOffset__text_painter? cachedLayout = _layoutCache;
+        var previousContentWidth = cachedLayout?.contentWidth;
         if (
             (cachedLayout is not null)
             && cachedLayout._resizeToFit(minWidth, maxWidth, textWidthBasis)
         )
         {
+            if (cachedLayout.contentWidth != previousContentWidth) layoutGeometryRevision++;
             return;
         }
         InlineSpan? textLocal = text;
@@ -1229,6 +1234,7 @@ public class TextPainter
             );
         }
         _layoutCache = newLayoutCache;
+        layoutGeometryRevision++;
     }
 
     public virtual void paint(Canvas canvas, Offset offset)

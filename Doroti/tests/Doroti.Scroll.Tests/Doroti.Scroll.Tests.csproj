@@ -6,6 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../../../packages/platforms/maui/Doroti.Host.Maui/AndroidPointerMapping.cs" Link="AndroidPointerMapping.cs" />
+    <Compile Include="../../../packages/platforms/maui/Doroti.Host.Maui/AndroidFrameTiming.cs" Link="AndroidFrameTiming.cs" />
     <ProjectReference Include="../../src/Doroti.Framework.Widgets/Doroti.Framework.Widgets.csproj" />
     <ProjectReference Include="../../src/Doroti.Hosting/Doroti.Hosting.csproj" />
   </ItemGroup>

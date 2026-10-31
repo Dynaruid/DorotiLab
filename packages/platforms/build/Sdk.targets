@@ -97,8 +97,8 @@
     <Error Code="DOROTIAOT007" Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(UseMonoRuntime)' == 'true'" Text="UseMonoRuntime=true conflicts with NativeAot." />
   </Target>
   <ItemGroup Condition="'$(DorotiTarget)' == 'Android'">
-    <PackageReference Include="SkiaSharp.NativeAssets.Android" VersionOverride="4.154.0-preview.1.26454.9" Condition="'$(ManagePackageVersionsCentrally)' == 'true'" />
-    <PackageReference Include="SkiaSharp.NativeAssets.Android" Version="4.154.0-preview.1.26454.9" Condition="'$(ManagePackageVersionsCentrally)' != 'true'" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Android" VersionOverride="4.154.0" Condition="'$(ManagePackageVersionsCentrally)' == 'true'" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Android" Version="4.154.0" Condition="'$(ManagePackageVersionsCentrally)' != 'true'" />
   </ItemGroup>
   <Target Name="DorotiConfigureWebNativeInterop" BeforeTargets="_BrowserWasmWriteRspForLinking" Condition="'$(DorotiTarget)' == 'Web' and '$(DorotiSkiaInteropLibrary)' != ''">
     <Error Condition="!Exists('$(DorotiSkiaInteropLibrary)')" Text="Doroti Web native interop library is missing." />

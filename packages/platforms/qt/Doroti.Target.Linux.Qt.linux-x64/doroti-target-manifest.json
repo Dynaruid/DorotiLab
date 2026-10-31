@@ -22,7 +22,7 @@
   "requiredVulkanVersion": "1.2",
   "defaultSkiaEngine": "Graphite",
   "nativeSkiaPackage": "SkiaSharp.NativeAssets.Linux",
-  "nativeSkiaVersion": "4.154.0-preview.1.26454.9",
+  "nativeSkiaVersion": "4.154.0",
   "nativeSkiaApi": "public-Graphite",
   "provider": "qt",
   "providerVersion": "0.4.1-beta",

@@ -60,10 +60,10 @@ public static unsafe class GraphiteNativeLibrary
         using var managed = File.OpenRead(managedPath);
         var managedHash = Convert.ToHexString(SHA256.HashData(managed)).ToLowerInvariant();
         if (
-            managedHash != "7c8cdb451146fcb12899899286e279e6aa615a5fc9b610f01137a741819f210f"
+            managedHash != "71274ef112eefdf5ca8a1517086787bc786c7103c30115abbb9dc424a09db43e"
             && (
                 !windows
-                || managedHash != "702657b10552a9aa75dd65ca63fac752e0bb795a9cab3fb169ff52cb2ecee7b9"
+                || managedHash != "c3719ba116d106b97d65665cc83cf9cfa1cbb8e58fbda0580d26a69340c8a82e"
             )
         )
         {
@@ -78,11 +78,11 @@ public static unsafe class GraphiteNativeLibrary
                 windows ? "libSkiaSharp.dll" : "libSkiaSharp.so"
             ),
             windows ? "SkiaSharp.NativeAssets.Win32" : "SkiaSharp.NativeAssets.Linux",
-            "4.154.0-preview.1.26454.9",
+            "4.154.0",
             windows ? "win-x64" : "linux-x64",
             windows
-                ? "07ce51fd59e099b9561b0327223c27b21aa5605b5b8f4484dd297fdb8c8725a1"
-                : "3a7778cce23720da6503e0ca845b423ad366cfe7e6a6b9ad6eea052fc0c91e92",
+                ? "82f9b2ee2b2dc91f738ae4baa54cd21fdd1181883c0fa207ab7066c708f07108"
+                : "a96876fc38d29ad5364ceee6f1ad57d87d94844a6cd38306a36f3f91edf9beab",
             managedHash
         );
     }
@@ -118,17 +118,17 @@ public static unsafe class GraphiteNativeLibrary
             {
                 Architecture.Arm64 => (
                     "arm64-v8a",
-                    "63af1ec283b86965542bca1400ae446e6a179a7be5b6187e69aa5fa0bd49e180"
+                    "02c4cf50f41d50750d4e83f3e52c6e80dc7ac2ae43f50fefa381b45e18b81e9b"
                 ),
                 Architecture.X64 => (
                     "x86_64",
-                    "9bb141c1ee6b40781044a4e13779c6f19a0b45554dc6030b5f1cf49b24f7e7b8"
+                    "4083085434e7e8822496d2f4d0e087baee495f333d0c591696ee3ffc680d799d"
                 ),
                 _ => throw new PlatformNotSupportedException(
                     "Official Graphite supports Android arm64/x64."
                 ),
             };
-            // Pins belong to SkiaSharp.NativeAssets.Android 4.154.0-preview.1.26454.9.
+            // Pins belong to SkiaSharp.NativeAssets.Android 4.154.0.
             // ABI splits may own the native entry instead of base.apk. Check the
             // complete installed set, retaining duplicate and package-hash guards.
             var containingApk = AndroidGraphiteApkAsset.Verify(apkPath, splitApkPaths, abi, hash);
@@ -198,7 +198,7 @@ public static unsafe class GraphiteNativeLibrary
             _module = module;
             _androidAssetSelected = true;
             Console.WriteLine(
-                $"DorotiGraphite official package=SkiaSharp.NativeAssets.Android version=4.154.0-preview.1.26454.9 abi={abi} sha256={hash} apk={containingApk} loaded={loadedPath}"
+                $"DorotiGraphite official package=SkiaSharp.NativeAssets.Android version=4.154.0 abi={abi} sha256={hash} apk={containingApk} loaded={loadedPath}"
             );
         }
     }

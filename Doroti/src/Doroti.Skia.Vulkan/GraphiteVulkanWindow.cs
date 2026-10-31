@@ -612,6 +612,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
                 return false;
             }
             submitted = true;
+            _session!.CpuStageMeasured = CpuStageMeasured;
             frame.Submit();
             var submittedTime = FrameTimestamp();
             var state = slot.Target!.GetState();

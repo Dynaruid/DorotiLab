@@ -483,7 +483,23 @@ public sealed class Matrix4
 
     public static Matrix4 operator *(Matrix4 left, Matrix4 right) => left.multiplied(right);
 
-    public void multiply(Matrix4 rhs) => CopyStorage(multiplied(rhs)._storage, _storage);
+    public void multiply(Matrix4 rhs)
+    {
+        ArgumentNullException.ThrowIfNull(rhs);
+        // Preserve both operands until every result is computed (rhs may be
+        // this). Matrix composition is used for every projected semantics node
+        // and must not allocate temporary matrices and backing arrays.
+        Span<double> result = stackalloc double[16];
+        for (var row = 0; row < 4; row++)
+        for (var column = 0; column < 4; column++)
+        {
+            double value = 0;
+            for (var index = 0; index < 4; index++)
+                value += _storage[index * 4 + row] * rhs._storage[column * 4 + index];
+            result[column * 4 + row] = value;
+        }
+        result.CopyTo(_storage);
+    }
 
     public double invert()
     {

@@ -77,6 +77,9 @@ if (OperatingSystem.IsWindows())
     NativeInertiaRegression.Run();
     NativeInputSurfaceRegression.Run();
 }
+ScrollContinuityRegression.Run();
+ProjectionRegression.Run();
+CaretGeometryRegression.Run();
 Console.WriteLine("PASS: release velocity, ballistic continuation, semantic changes, native inertia lifecycle");
 
 static void Check(bool condition, string message)

@@ -100,8 +100,6 @@ internal sealed class MauiHostAdapter
     private readonly HashSet<ulong> _androidActiveTouchPointers = [];
     private bool _androidFrameCallbackPosted;
     private TimeSpan? _androidVsyncTimestamp;
-    private long _androidFrameTimeOriginNanos;
-    private TimeSpan _androidFrameTimeOrigin;
 #endif
     private bool _disposed;
 
@@ -515,8 +513,13 @@ internal sealed class MauiHostAdapter
 
     internal event Action<int, SemanticsAction, object?>? SemanticsAction;
 
-    internal void AttachFrameworkTrace(DorotiFrameTrace trace) =>
+    internal void AttachFrameworkTrace(DorotiFrameTrace trace)
+    {
         _semantics.AttachFrameTrace(trace, _viewId);
+#if ANDROID
+        AndroidScrollProfile.Attach(trace);
+#endif
+    }
 
     internal void UpdateSemantics(SemanticsUpdate update) =>
         _semantics.Update(
@@ -624,6 +627,8 @@ internal sealed class MauiHostAdapter
             }
 
             var touchActive = _androidActiveTouchPointers.Count > 0;
+            AndroidScrollProfile.RecordPulse(frameTimeNanos, _frameCallbacks.HasPending,
+                _isPainting, _invalidatePending, touchActive);
             if (!_frameCallbacks.HasPending)
             {
                 // Keep the display waiter armed while a finger is down. Input
@@ -668,15 +673,7 @@ internal sealed class MauiHostAdapter
     }
 
     private TimeSpan MapAndroidFrameTimestamp(long frameTimeNanos)
-    {
-        if (_androidFrameTimeOriginNanos == 0)
-        {
-            _androidFrameTimeOriginNanos = frameTimeNanos;
-            _androidFrameTimeOrigin = DorotiFrameClock.Now;
-        }
-        var elapsedNanos = Math.Max(0, frameTimeNanos - _androidFrameTimeOriginNanos);
-        return _androidFrameTimeOrigin + TimeSpan.FromTicks(elapsedNanos / 100);
-    }
+        => AndroidFrameTiming.Timestamp(DorotiFrameClock.Now, Java.Lang.JavaSystem.NanoTime(), frameTimeNanos);
 
     private void CancelAndroidVsync()
     {
@@ -911,7 +908,7 @@ internal sealed class MauiHostAdapter
 
     public void SetCaretRect(Rect logicalRect) => _textInput.SetCaretRect(logicalRect);
 
-#if IOS
+#if IOS || ANDROID
     public ITextMagnifierSession? CreateMagnifierSession() => _textInput.CreateMagnifierSession();
 #endif
 

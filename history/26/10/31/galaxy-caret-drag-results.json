@@ -1,0 +1,1614 @@
+{
+  "date": "2026-10-31",
+  "timezone": "Asia/Seoul",
+  "baseCommit": "bc48640906abc7dfef95d7bddd79728ea475ad39",
+  "status": "PARTIAL",
+  "automatedMagnifierRenderingFix": true,
+  "firstDragStallReduced": true,
+  "sustainedPlainFieldP95Improved": false,
+  "physicalTouchAccepted": false,
+  "displayDeadlineQualified": false,
+  "device": {
+    "serial": "R3CY30KZA4B",
+    "model": "SM-S931N",
+    "api": 37,
+    "density": 480,
+    "pixels": [
+      1080,
+      2340
+    ],
+    "reportedRefreshHz": 120,
+    "gpu": "Adreno (TM) 830"
+  },
+  "build": {
+    "configuration": "Release",
+    "rid": "android-arm64",
+    "UseMonoRuntime": true,
+    "RunAOTCompilation": true,
+    "AndroidEnableProfiledAot": true,
+    "AndroidUseInterpreter": false,
+    "Optimize": true,
+    "skiaSharpVersion": "4.154.0"
+  },
+  "baselineApkSha256": "f689faaa38253b44c60aedbf336198c974abe3a90b209d61386b8115e39a0fd1",
+  "candidateApkSha256": "2217482289ffdff307d2a5722be015fb7c7d1f7e0656f6b2e1a5b9ba5f8c192c",
+  "sourceBaselineRecord": {
+    "path": "galaxy-scroll-results.json",
+    "sha256": "8f6747cf30e21c14a08aa08fd9ae0e6d19c07cf4d85a91109665772636a4b697"
+  },
+  "protocol": {
+    "sample": "input",
+    "initialText": "The_quick_brown_fox_jumps_over_the_lazy_dog._Cursor_movement_should_stay_smooth.",
+    "touch": "one DOWN, 120 Hz timed MOVEs, one UP",
+    "waypoints": [
+      [
+        348,
+        625,
+        0
+      ],
+      [
+        950,
+        625,
+        800
+      ],
+      [
+        150,
+        695,
+        1600
+      ],
+      [
+        850,
+        625,
+        2400
+      ]
+    ],
+    "mainProfile": "DOROTI_SCROLL_PROFILE=1 only",
+    "window": "frames/inputs in last (drag) gesture through explicit export, after setup and before hierarchy queries",
+    "percentile": "sorted index floor((count-1)*q)",
+    "trialsPerVariant": 3,
+    "baselinePerTrialThermalState": "notRecorded",
+    "finalSelection": "31:31",
+    "baselineAndCandidateDrawMixIdentical": false
+  },
+  "trials": {
+    "baseline": [
+      {
+        "trial": 1,
+        "gesture": 3,
+        "draws": 30,
+        "submitted": 6,
+        "ownerOver50ms": 25,
+        "ownerMs": {
+          "count": 30,
+          "p50": 70.075,
+          "p95": 118.061,
+          "p99": 126.32,
+          "max": 136.551
+        },
+        "callbackMs": {
+          "count": 30,
+          "p50": 6.324,
+          "p95": 13.434,
+          "p99": 19.515,
+          "max": 34.361
+        },
+        "callbackTotalMs": 241.548,
+        "snapMs": {
+          "count": 30,
+          "p50": 0,
+          "p95": 0.129,
+          "p99": 0.153,
+          "max": 40.309
+        },
+        "allocatedBytesPerDraw": {
+          "count": 30,
+          "p50": 11224696,
+          "p95": 11292064,
+          "p99": 11292064,
+          "max": 11374624
+        },
+        "drawObservedAllocatedBytes": 270910032,
+        "inputCount": 92,
+        "inputAgeMs": {
+          "count": 92,
+          "p50": 6,
+          "p95": 14,
+          "p99": 44,
+          "max": 49
+        },
+        "inputDispatchMs": {
+          "count": 92,
+          "p50": 0.384,
+          "p95": 3.546,
+          "p99": 14.244,
+          "max": 14.802
+        },
+        "nativeMagnifier": null,
+        "rendererErrorLogLines": 1104,
+        "fatalException": false,
+        "presentObservedByRing": false,
+        "slowestFrame": {
+          "atUs": 17587200,
+          "gesture": 3,
+          "vsyncNanos": 343640141317666,
+          "submitted": false,
+          "reason": "not-rendered",
+          "frameworkFrame": 0,
+          "scene": 0,
+          "submission": 0,
+          "inFlight": 0,
+          "busy": 0,
+          "unavailable": 0,
+          "ownerMs": 136.5506,
+          "callbackWaitMs": 160.6434,
+          "callbackMs": 8.065,
+          "snapMs": 0,
+          "insertMs": 0,
+          "submitMs": 0,
+          "vulkan": {
+            "acquireMs": 0,
+            "paintMs": 0,
+            "submitMs": 0,
+            "copyMs": 0,
+            "fenceMs": 0,
+            "presentMs": 0,
+            "totalMs": 0
+          },
+          "allocated": 11150648,
+          "gen0": 47,
+          "gen1": 2,
+          "gen2": 2
+        }
+      },
+      {
+        "trial": 2,
+        "gesture": 3,
+        "draws": 31,
+        "submitted": 6,
+        "ownerOver50ms": 25,
+        "ownerMs": {
+          "count": 31,
+          "p50": 69.632,
+          "p95": 90.475,
+          "p99": 101.507,
+          "max": 127.069
+        },
+        "callbackMs": {
+          "count": 31,
+          "p50": 6.455,
+          "p95": 12.812,
+          "p99": 13.508,
+          "max": 33.093
+        },
+        "callbackTotalMs": 236.507,
+        "snapMs": {
+          "count": 31,
+          "p50": 0,
+          "p95": 0.108,
+          "p99": 0.122,
+          "max": 39.276
+        },
+        "allocatedBytesPerDraw": {
+          "count": 31,
+          "p50": 11230176,
+          "p95": 11299176,
+          "p99": 11302080,
+          "max": 11384816
+        },
+        "drawObservedAllocatedBytes": 282306928,
+        "inputCount": 98,
+        "inputAgeMs": {
+          "count": 98,
+          "p50": 6,
+          "p95": 13,
+          "p99": 37,
+          "max": 41
+        },
+        "inputDispatchMs": {
+          "count": 98,
+          "p50": 0.398,
+          "p95": 3.695,
+          "p99": 9.067,
+          "max": 17.308
+        },
+        "nativeMagnifier": null,
+        "rendererErrorLogLines": 1150,
+        "fatalException": false,
+        "presentObservedByRing": false,
+        "slowestFrame": {
+          "atUs": 20145599,
+          "gesture": 3,
+          "vsyncNanos": 343667005244099,
+          "submitted": true,
+          "reason": "native-active",
+          "frameworkFrame": 164,
+          "scene": 163,
+          "submission": 1,
+          "inFlight": 0,
+          "busy": 0,
+          "unavailable": 0,
+          "ownerMs": 127.0687,
+          "callbackWaitMs": 84.1707,
+          "callbackMs": 8.3488,
+          "snapMs": 39.2759,
+          "insertMs": 1.3335,
+          "submitMs": 9.6767,
+          "vulkan": {
+            "acquireMs": 0.0153,
+            "paintMs": 2.1634,
+            "submitMs": 50.3024,
+            "copyMs": 0.1647,
+            "fenceMs": 2.1715,
+            "presentMs": 0.1508,
+            "totalMs": 54.9682
+          },
+          "allocated": 11384816,
+          "gen0": 115,
+          "gen1": 7,
+          "gen2": 7
+        }
+      },
+      {
+        "trial": 3,
+        "gesture": 3,
+        "draws": 30,
+        "submitted": 6,
+        "ownerOver50ms": 24,
+        "ownerMs": {
+          "count": 30,
+          "p50": 69.876,
+          "p95": 104.837,
+          "p99": 123.116,
+          "max": 124.086
+        },
+        "callbackMs": {
+          "count": 30,
+          "p50": 5.657,
+          "p95": 12.34,
+          "p99": 13.712,
+          "max": 30.55
+        },
+        "callbackTotalMs": 226.416,
+        "snapMs": {
+          "count": 30,
+          "p50": 0,
+          "p95": 0.113,
+          "p99": 0.118,
+          "max": 39.489
+        },
+        "allocatedBytesPerDraw": {
+          "count": 30,
+          "p50": 11220432,
+          "p95": 11284280,
+          "p99": 11286176,
+          "max": 11368128
+        },
+        "drawObservedAllocatedBytes": 270765520,
+        "inputCount": 87,
+        "inputAgeMs": {
+          "count": 87,
+          "p50": 6,
+          "p95": 13,
+          "p99": 14,
+          "max": 20
+        },
+        "inputDispatchMs": {
+          "count": 87,
+          "p50": 0.396,
+          "p95": 2.365,
+          "p99": 7.842,
+          "max": 14.885
+        },
+        "nativeMagnifier": null,
+        "rendererErrorLogLines": 1104,
+        "fatalException": false,
+        "presentObservedByRing": false,
+        "slowestFrame": {
+          "atUs": 17809474,
+          "gesture": 3,
+          "vsyncNanos": 343689261081736,
+          "submitted": false,
+          "reason": "not-rendered",
+          "frameworkFrame": 0,
+          "scene": 0,
+          "submission": 0,
+          "inFlight": 0,
+          "busy": 0,
+          "unavailable": 0,
+          "ownerMs": 124.0858,
+          "callbackWaitMs": 152.6194,
+          "callbackMs": 13.712,
+          "snapMs": 0,
+          "insertMs": 0,
+          "submitMs": 0,
+          "vulkan": {
+            "acquireMs": 0,
+            "paintMs": 0,
+            "submitMs": 0,
+            "copyMs": 0,
+            "fenceMs": 0,
+            "presentMs": 0,
+            "totalMs": 0
+          },
+          "allocated": 11129792,
+          "gen0": 47,
+          "gen1": 2,
+          "gen2": 2
+        }
+      }
+    ],
+    "candidate": [
+      {
+        "trial": 1,
+        "gesture": 3,
+        "draws": 73,
+        "submitted": 73,
+        "ownerOver50ms": 0,
+        "ownerMs": {
+          "count": 73,
+          "p50": 22.386,
+          "p95": 41.985,
+          "p99": 45.874,
+          "max": 46.114
+        },
+        "callbackMs": {
+          "count": 73,
+          "p50": 11.032,
+          "p95": 33.054,
+          "p99": 35.252,
+          "max": 35.321
+        },
+        "callbackTotalMs": 1250.223,
+        "snapMs": {
+          "count": 73,
+          "p50": 0.158,
+          "p95": 0.337,
+          "p99": 0.404,
+          "max": 2.406
+        },
+        "allocatedBytesPerDraw": {
+          "count": 73,
+          "p50": 1751552,
+          "p95": 1751992,
+          "p99": 1753520,
+          "max": 1772152
+        },
+        "drawObservedAllocatedBytes": 116695648,
+        "inputCount": 76,
+        "inputAgeMs": {
+          "count": 76,
+          "p50": 11,
+          "p95": 16,
+          "p99": 31,
+          "max": 34
+        },
+        "inputDispatchMs": {
+          "count": 76,
+          "p50": 1.35,
+          "p95": 4.947,
+          "p99": 15.718,
+          "max": 18.1
+        },
+        "nativeMagnifier": {
+          "created": 1,
+          "updates": 72,
+          "dismissed": 1
+        },
+        "rendererErrorLogLines": 0,
+        "fatalException": false,
+        "presentObservedByRing": false,
+        "slowestFrame": {
+          "atUs": 20137348,
+          "gesture": 3,
+          "vsyncNanos": 344336704796860,
+          "submitted": true,
+          "reason": "native-active",
+          "frameworkFrame": 195,
+          "scene": 194,
+          "submission": 230,
+          "inFlight": 0,
+          "busy": 0,
+          "unavailable": 1,
+          "ownerMs": 46.1142,
+          "callbackWaitMs": 1.0055,
+          "callbackMs": 33.0543,
+          "snapMs": 0.1198,
+          "insertMs": 0.3351,
+          "submitMs": 0.198,
+          "vulkan": {
+            "acquireMs": 0.0298,
+            "paintMs": 8.551,
+            "submitMs": 0.658,
+            "copyMs": 0.0788,
+            "fenceMs": 2.4072,
+            "presentMs": 0.169,
+            "totalMs": 11.8941
+          },
+          "allocated": 1751552,
+          "gen0": 71,
+          "gen1": 2,
+          "gen2": 2
+        },
+        "deviceState": {
+          "accessibility": "null",
+          "lowPower": "0",
+          "battery": {
+            "level": "87",
+            "temperature": "302",
+            "USB powered": "false",
+            "AC powered": "true"
+          }
+        }
+      },
+      {
+        "trial": 2,
+        "gesture": 3,
+        "draws": 86,
+        "submitted": 86,
+        "ownerOver50ms": 0,
+        "ownerMs": {
+          "count": 86,
+          "p50": 18.486,
+          "p95": 36.94,
+          "p99": 40.213,
+          "max": 41.257
+        },
+        "callbackMs": {
+          "count": 86,
+          "p50": 10.386,
+          "p95": 29.091,
+          "p99": 31.506,
+          "max": 33.915
+        },
+        "callbackTotalMs": 1159.453,
+        "snapMs": {
+          "count": 86,
+          "p50": 0.092,
+          "p95": 0.255,
+          "p99": 0.321,
+          "max": 0.505
+        },
+        "allocatedBytesPerDraw": {
+          "count": 86,
+          "p50": 1751552,
+          "p95": 1752432,
+          "p99": 1773032,
+          "max": 1791936
+        },
+        "drawObservedAllocatedBytes": 140981448,
+        "inputCount": 120,
+        "inputAgeMs": {
+          "count": 120,
+          "p50": 9,
+          "p95": 14,
+          "p99": 18,
+          "max": 20
+        },
+        "inputDispatchMs": {
+          "count": 120,
+          "p50": 0.753,
+          "p95": 3.105,
+          "p99": 9.137,
+          "max": 14.254
+        },
+        "nativeMagnifier": {
+          "created": 1,
+          "updates": 116,
+          "dismissed": 1
+        },
+        "rendererErrorLogLines": 0,
+        "fatalException": false,
+        "presentObservedByRing": false,
+        "slowestFrame": {
+          "atUs": 17916904,
+          "gesture": 3,
+          "vsyncNanos": 344359342175466,
+          "submitted": true,
+          "reason": "native-active",
+          "frameworkFrame": 137,
+          "scene": 136,
+          "submission": 173,
+          "inFlight": 0,
+          "busy": 0,
+          "unavailable": 0,
+          "ownerMs": 41.257,
+          "callbackWaitMs": 1.0847,
+          "callbackMs": 33.9147,
+          "snapMs": 0.1496,
+          "insertMs": 0.3185,
+          "submitMs": 0.1413,
+          "vulkan": {
+            "acquireMs": 0.0359,
+            "paintMs": 4.0274,
+            "submitMs": 0.6139,
+            "copyMs": 0.2311,
+            "fenceMs": 1.6468,
+            "presentMs": 0.128,
+            "totalMs": 6.6834
+          },
+          "allocated": 1751552,
+          "gen0": 45,
+          "gen1": 1,
+          "gen2": 1
+        },
+        "deviceState": {
+          "accessibility": "null",
+          "lowPower": "0",
+          "battery": {
+            "level": "87",
+            "temperature": "307",
+            "USB powered": "false",
+            "AC powered": "true"
+          }
+        }
+      },
+      {
+        "trial": 3,
+        "gesture": 3,
+        "draws": 75,
+        "submitted": 75,
+        "ownerOver50ms": 0,
+        "ownerMs": {
+          "count": 75,
+          "p50": 21.986,
+          "p95": 40.289,
+          "p99": 42.166,
+          "max": 43.257
+        },
+        "callbackMs": {
+          "count": 75,
+          "p50": 10.673,
+          "p95": 31.041,
+          "p99": 32.167,
+          "max": 34.49
+        },
+        "callbackTotalMs": 1159.135,
+        "snapMs": {
+          "count": 75,
+          "p50": 0.151,
+          "p95": 0.298,
+          "p99": 0.342,
+          "max": 0.681
+        },
+        "allocatedBytesPerDraw": {
+          "count": 75,
+          "p50": 1751552,
+          "p95": 1752088,
+          "p99": 1772152,
+          "max": 1791936
+        },
+        "drawObservedAllocatedBytes": 121715672,
+        "inputCount": 99,
+        "inputAgeMs": {
+          "count": 99,
+          "p50": 9,
+          "p95": 14,
+          "p99": 19,
+          "max": 19
+        },
+        "inputDispatchMs": {
+          "count": 99,
+          "p50": 1.031,
+          "p95": 3.055,
+          "p99": 10.233,
+          "max": 13.555
+        },
+        "nativeMagnifier": {
+          "created": 1,
+          "updates": 94,
+          "dismissed": 1
+        },
+        "rendererErrorLogLines": 0,
+        "fatalException": false,
+        "presentObservedByRing": false,
+        "slowestFrame": {
+          "atUs": 19688771,
+          "gesture": 3,
+          "vsyncNanos": 344385905390553,
+          "submitted": true,
+          "reason": "native-active",
+          "frameworkFrame": 191,
+          "scene": 190,
+          "submission": 225,
+          "inFlight": 0,
+          "busy": 0,
+          "unavailable": 5,
+          "ownerMs": 43.2566,
+          "callbackWaitMs": 1.7109,
+          "callbackMs": 34.4903,
+          "snapMs": 0.1696,
+          "insertMs": 0.2988,
+          "submitMs": 0.1523,
+          "vulkan": {
+            "acquireMs": 0.0389,
+            "paintMs": 4.9675,
+            "submitMs": 0.6253,
+            "copyMs": 0.0764,
+            "fenceMs": 2.1529,
+            "presentMs": 0.1462,
+            "totalMs": 8.0072
+          },
+          "allocated": 1751552,
+          "gen0": 67,
+          "gen1": 2,
+          "gen2": 2
+        },
+        "deviceState": {
+          "accessibility": "null",
+          "lowPower": "0",
+          "battery": {
+            "level": "87",
+            "temperature": "311",
+            "USB powered": "false",
+            "AC powered": "true"
+          }
+        }
+      }
+    ],
+    "baseline-plain-ring": [
+      {
+        "trial": 1,
+        "gesture": 4,
+        "draws": 223,
+        "submitted": 221,
+        "ownerOver50ms": 1,
+        "ownerMs": {
+          "count": 223,
+          "p50": 3.978,
+          "p95": 16.408,
+          "p99": 27.069,
+          "max": 143.156
+        },
+        "callbackMs": {
+          "count": 223,
+          "p50": 0.488,
+          "p95": 14.549,
+          "p99": 20.194,
+          "max": 31.474
+        },
+        "callbackTotalMs": 901.628,
+        "snapMs": {
+          "count": 223,
+          "p50": 0.017,
+          "p95": 0.041,
+          "p99": 0.149,
+          "max": 112.272
+        },
+        "allocatedBytesPerDraw": {
+          "count": 223,
+          "p50": 294640,
+          "p95": 1859640,
+          "p99": 1863904,
+          "max": 1880240
+        },
+        "drawObservedAllocatedBytes": 180097872,
+        "inputCount": 220,
+        "inputAgeMs": {
+          "count": 220,
+          "p50": 6,
+          "p95": 13,
+          "p99": 16,
+          "max": 17
+        },
+        "inputDispatchMs": {
+          "count": 220,
+          "p50": 0.193,
+          "p95": 1.688,
+          "p99": 8.696,
+          "max": 10.565
+        },
+        "nativeMagnifier": null,
+        "rendererErrorLogLines": 0,
+        "fatalException": false,
+        "presentObservedByRing": false,
+        "slowestFrame": {
+          "atUs": 18619313,
+          "gesture": 4,
+          "vsyncNanos": 343812681713226,
+          "submitted": true,
+          "reason": "eligible",
+          "frameworkFrame": 202,
+          "scene": 201,
+          "submission": 242,
+          "inFlight": 1,
+          "busy": 0,
+          "unavailable": 0,
+          "ownerMs": 143.1562,
+          "callbackWaitMs": 0.2209,
+          "callbackMs": 19.4809,
+          "snapMs": 112.2725,
+          "insertMs": 2.5885,
+          "submitMs": 0.2678,
+          "vulkan": {
+            "acquireMs": 0.0636,
+            "paintMs": 8.1043,
+            "submitMs": 115.1339,
+            "copyMs": 0.0594,
+            "fenceMs": 0.0008,
+            "presentMs": 0.203,
+            "totalMs": 123.5653
+          },
+          "allocated": 408296,
+          "gen0": 47,
+          "gen1": 1,
+          "gen2": 1
+        }
+      },
+      {
+        "trial": 2,
+        "gesture": 4,
+        "draws": 233,
+        "submitted": 231,
+        "ownerOver50ms": 1,
+        "ownerMs": {
+          "count": 233,
+          "p50": 3.809,
+          "p95": 16.039,
+          "p99": 18.537,
+          "max": 166.99
+        },
+        "callbackMs": {
+          "count": 233,
+          "p50": 0.495,
+          "p95": 14.22,
+          "p99": 15.514,
+          "max": 37.067
+        },
+        "callbackTotalMs": 854.714,
+        "snapMs": {
+          "count": 233,
+          "p50": 0.016,
+          "p95": 0.041,
+          "p99": 0.094,
+          "max": 118.709
+        },
+        "allocatedBytesPerDraw": {
+          "count": 233,
+          "p50": 294640,
+          "p95": 1859640,
+          "p99": 1877184,
+          "max": 1880240
+        },
+        "drawObservedAllocatedBytes": 180822080,
+        "inputCount": 230,
+        "inputAgeMs": {
+          "count": 230,
+          "p50": 6,
+          "p95": 13,
+          "p99": 14,
+          "max": 21
+        },
+        "inputDispatchMs": {
+          "count": 230,
+          "p50": 0.203,
+          "p95": 1.442,
+          "p99": 7.878,
+          "max": 14.766
+        },
+        "nativeMagnifier": null,
+        "rendererErrorLogLines": 0,
+        "fatalException": false,
+        "presentObservedByRing": false,
+        "slowestFrame": {
+          "atUs": 18814102,
+          "gesture": 4,
+          "vsyncNanos": 343838303767999,
+          "submitted": true,
+          "reason": "eligible",
+          "frameworkFrame": 205,
+          "scene": 204,
+          "submission": 247,
+          "inFlight": 1,
+          "busy": 0,
+          "unavailable": 0,
+          "ownerMs": 166.9901,
+          "callbackWaitMs": 0.3205,
+          "callbackMs": 25.2467,
+          "snapMs": 118.7087,
+          "insertMs": 2.72,
+          "submitMs": 0.2615,
+          "vulkan": {
+            "acquireMs": 0.0435,
+            "paintMs": 19.6323,
+            "submitMs": 121.6988,
+            "copyMs": 0.04,
+            "fenceMs": 0.0014,
+            "presentMs": 0.1729,
+            "totalMs": 141.5892
+          },
+          "allocated": 408392,
+          "gen0": 48,
+          "gen1": 1,
+          "gen2": 1
+        }
+      },
+      {
+        "trial": 3,
+        "gesture": 4,
+        "draws": 207,
+        "submitted": 206,
+        "ownerOver50ms": 1,
+        "ownerMs": {
+          "count": 207,
+          "p50": 4.09,
+          "p95": 18.133,
+          "p99": 33.421,
+          "max": 133.852
+        },
+        "callbackMs": {
+          "count": 207,
+          "p50": 0.73,
+          "p95": 15.951,
+          "p99": 26.238,
+          "max": 33.171
+        },
+        "callbackTotalMs": 983.478,
+        "snapMs": {
+          "count": 207,
+          "p50": 0.017,
+          "p95": 0.047,
+          "p99": 0.261,
+          "max": 102.716
+        },
+        "allocatedBytesPerDraw": {
+          "count": 207,
+          "p50": 295272,
+          "p95": 1859640,
+          "p99": 1863904,
+          "max": 1880240
+        },
+        "drawObservedAllocatedBytes": 176596224,
+        "inputCount": 205,
+        "inputAgeMs": {
+          "count": 205,
+          "p50": 6,
+          "p95": 13,
+          "p99": 15,
+          "max": 40
+        },
+        "inputDispatchMs": {
+          "count": 205,
+          "p50": 0.311,
+          "p95": 1.21,
+          "p99": 5.844,
+          "max": 16.355
+        },
+        "nativeMagnifier": null,
+        "rendererErrorLogLines": 0,
+        "fatalException": false,
+        "presentObservedByRing": false,
+        "slowestFrame": {
+          "atUs": 18683894,
+          "gesture": 4,
+          "vsyncNanos": 343863799893938,
+          "submitted": true,
+          "reason": "eligible",
+          "frameworkFrame": 210,
+          "scene": 209,
+          "submission": 252,
+          "inFlight": 1,
+          "busy": 0,
+          "unavailable": 6,
+          "ownerMs": 133.8521,
+          "callbackWaitMs": 0.3546,
+          "callbackMs": 20.4981,
+          "snapMs": 102.716,
+          "insertMs": 2.3659,
+          "submitMs": 0.2453,
+          "vulkan": {
+            "acquireMs": 0.0606,
+            "paintMs": 7.6451,
+            "submitMs": 105.3339,
+            "copyMs": 0.0362,
+            "fenceMs": 0.001,
+            "presentMs": 0.1563,
+            "totalMs": 113.2332
+          },
+          "allocated": 408392,
+          "gen0": 48,
+          "gen1": 1,
+          "gen2": 1
+        }
+      }
+    ],
+    "candidate-plain-ring": [
+      {
+        "trial": 1,
+        "gesture": 4,
+        "draws": 90,
+        "submitted": 88,
+        "ownerOver50ms": 0,
+        "ownerMs": {
+          "count": 90,
+          "p50": 14.417,
+          "p95": 35.474,
+          "p99": 38.78,
+          "max": 38.903
+        },
+        "callbackMs": {
+          "count": 90,
+          "p50": 10.659,
+          "p95": 31.544,
+          "p99": 33.658,
+          "max": 34.336
+        },
+        "callbackTotalMs": 1219.709,
+        "snapMs": {
+          "count": 90,
+          "p50": 0.095,
+          "p95": 0.249,
+          "p99": 0.465,
+          "max": 1.664
+        },
+        "allocatedBytesPerDraw": {
+          "count": 90,
+          "p50": 1671456,
+          "p95": 1672696,
+          "p99": 1679680,
+          "max": 1692496
+        },
+        "drawObservedAllocatedBytes": 136296752,
+        "inputCount": 158,
+        "inputAgeMs": {
+          "count": 158,
+          "p50": 8,
+          "p95": 14,
+          "p99": 22,
+          "max": 24
+        },
+        "inputDispatchMs": {
+          "count": 158,
+          "p50": 0.611,
+          "p95": 3.394,
+          "p99": 15.35,
+          "max": 16.235
+        },
+        "nativeMagnifier": {
+          "created": 1,
+          "updates": 154,
+          "dismissed": 1
+        },
+        "rendererErrorLogLines": 0,
+        "fatalException": false,
+        "presentObservedByRing": false,
+        "slowestFrame": {
+          "atUs": 19177204,
+          "gesture": 4,
+          "vsyncNanos": 344452361447582,
+          "submitted": true,
+          "reason": "eligible",
+          "frameworkFrame": 219,
+          "scene": 218,
+          "submission": 250,
+          "inFlight": 1,
+          "busy": 0,
+          "unavailable": 6,
+          "ownerMs": 38.903,
+          "callbackWaitMs": 0.6446,
+          "callbackMs": 31.402,
+          "snapMs": 0.2721,
+          "insertMs": 0.4396,
+          "submitMs": 0.3137,
+          "vulkan": {
+            "acquireMs": 0.0471,
+            "paintMs": 5.7387,
+            "submitMs": 1.0355,
+            "copyMs": 0.0979,
+            "fenceMs": 0.001,
+            "presentMs": 0.3432,
+            "totalMs": 7.2637
+          },
+          "allocated": 1672256,
+          "gen0": 51,
+          "gen1": 2,
+          "gen2": 2
+        },
+        "deviceState": {
+          "accessibility": "null",
+          "lowPower": "0",
+          "battery": {
+            "level": "87",
+            "temperature": "309",
+            "USB powered": "false",
+            "AC powered": "true"
+          }
+        }
+      },
+      {
+        "trial": 2,
+        "gesture": 4,
+        "draws": 91,
+        "submitted": 88,
+        "ownerOver50ms": 0,
+        "ownerMs": {
+          "count": 91,
+          "p50": 13.633,
+          "p95": 33.816,
+          "p99": 37.974,
+          "max": 38.655
+        },
+        "callbackMs": {
+          "count": 91,
+          "p50": 10.595,
+          "p95": 30.12,
+          "p99": 34.618,
+          "max": 35.016
+        },
+        "callbackTotalMs": 1202.817,
+        "snapMs": {
+          "count": 91,
+          "p50": 0.099,
+          "p95": 0.178,
+          "p99": 0.38,
+          "max": 1.745
+        },
+        "allocatedBytesPerDraw": {
+          "count": 91,
+          "p50": 1671456,
+          "p95": 1672696,
+          "p99": 1679680,
+          "max": 1692056
+        },
+        "drawObservedAllocatedBytes": 136296648,
+        "inputCount": 159,
+        "inputAgeMs": {
+          "count": 159,
+          "p50": 8,
+          "p95": 14,
+          "p99": 20,
+          "max": 28
+        },
+        "inputDispatchMs": {
+          "count": 159,
+          "p50": 0.654,
+          "p95": 4.435,
+          "p99": 12.812,
+          "max": 19.606
+        },
+        "nativeMagnifier": {
+          "created": 1,
+          "updates": 155,
+          "dismissed": 1
+        },
+        "rendererErrorLogLines": 0,
+        "fatalException": false,
+        "presentObservedByRing": false,
+        "slowestFrame": {
+          "atUs": 21305310,
+          "gesture": 4,
+          "vsyncNanos": 344480366812602,
+          "submitted": true,
+          "reason": "eligible",
+          "frameworkFrame": 295,
+          "scene": 294,
+          "submission": 319,
+          "inFlight": 1,
+          "busy": 0,
+          "unavailable": 17,
+          "ownerMs": 38.6552,
+          "callbackWaitMs": 1.937,
+          "callbackMs": 35.0156,
+          "snapMs": 0.1354,
+          "insertMs": 0.2758,
+          "submitMs": 0.2343,
+          "vulkan": {
+            "acquireMs": 0.0547,
+            "paintMs": 2.0303,
+            "submitMs": 0.6489,
+            "copyMs": 0.5064,
+            "fenceMs": 0.0031,
+            "presentMs": 0.1815,
+            "totalMs": 3.4252
+          },
+          "allocated": 1671456,
+          "gen0": 80,
+          "gen1": 2,
+          "gen2": 2
+        },
+        "deviceState": {
+          "accessibility": "null",
+          "lowPower": "0",
+          "battery": {
+            "level": "88",
+            "temperature": "313",
+            "USB powered": "false",
+            "AC powered": "true"
+          }
+        }
+      },
+      {
+        "trial": 3,
+        "gesture": 4,
+        "draws": 87,
+        "submitted": 85,
+        "ownerOver50ms": 0,
+        "ownerMs": {
+          "count": 87,
+          "p50": 13.527,
+          "p95": 38.183,
+          "p99": 39.595,
+          "max": 40.051
+        },
+        "callbackMs": {
+          "count": 87,
+          "p50": 10.427,
+          "p95": 33.956,
+          "p99": 35.664,
+          "max": 36.496
+        },
+        "callbackTotalMs": 1224.836,
+        "snapMs": {
+          "count": 87,
+          "p50": 0.11,
+          "p95": 0.176,
+          "p99": 1.695,
+          "max": 2.251
+        },
+        "allocatedBytesPerDraw": {
+          "count": 87,
+          "p50": 1671896,
+          "p95": 1672696,
+          "p99": 1677424,
+          "max": 1692496
+        },
+        "drawObservedAllocatedBytes": 131291048,
+        "inputCount": 148,
+        "inputAgeMs": {
+          "count": 148,
+          "p50": 8,
+          "p95": 14,
+          "p99": 23,
+          "max": 25
+        },
+        "inputDispatchMs": {
+          "count": 148,
+          "p50": 0.667,
+          "p95": 3.694,
+          "p99": 16.663,
+          "max": 20.177
+        },
+        "nativeMagnifier": {
+          "created": 1,
+          "updates": 143,
+          "dismissed": 1
+        },
+        "rendererErrorLogLines": 0,
+        "fatalException": false,
+        "presentObservedByRing": false,
+        "slowestFrame": {
+          "atUs": 20357806,
+          "gesture": 4,
+          "vsyncNanos": 344505644552029,
+          "submitted": true,
+          "reason": "eligible",
+          "frameworkFrame": 260,
+          "scene": 259,
+          "submission": 296,
+          "inFlight": 1,
+          "busy": 0,
+          "unavailable": 0,
+          "ownerMs": 40.0506,
+          "callbackWaitMs": 2.7166,
+          "callbackMs": 36.4964,
+          "snapMs": 0.1226,
+          "insertMs": 0.216,
+          "submitMs": 0.183,
+          "vulkan": {
+            "acquireMs": 0.045,
+            "paintMs": 2.3007,
+            "submitMs": 0.5257,
+            "copyMs": 0.3639,
+            "fenceMs": 0.0026,
+            "presentMs": 0.1533,
+            "totalMs": 3.3916
+          },
+          "allocated": 1668400,
+          "gen0": 70,
+          "gen1": 2,
+          "gen2": 2
+        },
+        "deviceState": {
+          "accessibility": "null",
+          "lowPower": "0",
+          "battery": {
+            "level": "88",
+            "temperature": "317",
+            "USB powered": "false",
+            "AC powered": "true"
+          }
+        }
+      }
+    ]
+  },
+  "manifests": {
+    "baseline": {
+      "apkSha256": "f689faaa38253b44c60aedbf336198c974abe3a90b209d61386b8115e39a0fd1",
+      "serial": "R3CY30KZA4B",
+      "sample": "input",
+      "allocationProfile": false,
+      "text": "The_quick_brown_fox_jumps_over_the_lazy_dog._Cursor_movement_should_stay_smooth.",
+      "physicalTouchAccepted": false,
+      "trials": [
+        {
+          "trial": 1,
+          "injection": "continuous-down-ms=343639997 moves=287 duration-ms=2400",
+          "selection": [
+            "Selection 31:31 · composing -1:-1"
+          ],
+          "textUnchanged": true,
+          "fatalException": false
+        },
+        {
+          "trial": 2,
+          "injection": "continuous-down-ms=343664568 moves=287 duration-ms=2401",
+          "selection": [
+            "Selection 31:31 · composing -1:-1"
+          ],
+          "textUnchanged": true,
+          "fatalException": false
+        },
+        {
+          "trial": 3,
+          "injection": "continuous-down-ms=343689123 moves=287 duration-ms=2401",
+          "selection": [
+            "Selection 31:31 · composing -1:-1"
+          ],
+          "textUnchanged": true,
+          "fatalException": false
+        }
+      ]
+    },
+    "candidate": {
+      "apkSha256": "2217482289ffdff307d2a5722be015fb7c7d1f7e0656f6b2e1a5b9ba5f8c192c",
+      "serial": "R3CY30KZA4B",
+      "sample": "input",
+      "allocationProfile": false,
+      "text": "The_quick_brown_fox_jumps_over_the_lazy_dog._Cursor_movement_should_stay_smooth.",
+      "nativeViews": true,
+      "physicalTouchAccepted": false,
+      "trials": [
+        {
+          "trial": 1,
+          "injection": "continuous-down-ms=344334424 moves=287 duration-ms=2400",
+          "selection": [
+            "Selection 31:31 · composing -1:-1"
+          ],
+          "textUnchanged": true,
+          "fatalException": false,
+          "renderErrorLines": 0,
+          "nativeMagnifier": {
+            "created": 1,
+            "updates": 72,
+            "dismissed": 1
+          }
+        },
+        {
+          "trial": 2,
+          "injection": "continuous-down-ms=344359199 moves=287 duration-ms=2401",
+          "selection": [
+            "Selection 31:31 · composing -1:-1"
+          ],
+          "textUnchanged": true,
+          "fatalException": false,
+          "renderErrorLines": 0,
+          "nativeMagnifier": {
+            "created": 1,
+            "updates": 116,
+            "dismissed": 1
+          }
+        },
+        {
+          "trial": 3,
+          "injection": "continuous-down-ms=344384107 moves=287 duration-ms=2400",
+          "selection": [
+            "Selection 31:31 · composing -1:-1"
+          ],
+          "textUnchanged": true,
+          "fatalException": false,
+          "renderErrorLines": 0,
+          "nativeMagnifier": {
+            "created": 1,
+            "updates": 94,
+            "dismissed": 1
+          }
+        }
+      ]
+    },
+    "baseline-plain-ring": {
+      "apkSha256": "f689faaa38253b44c60aedbf336198c974abe3a90b209d61386b8115e39a0fd1",
+      "serial": "R3CY30KZA4B",
+      "sample": "input",
+      "allocationProfile": false,
+      "text": "The_quick_brown_fox_jumps_over_the_lazy_dog._Cursor_movement_should_stay_smooth.",
+      "nativeViews": false,
+      "physicalTouchAccepted": false,
+      "trials": [
+        {
+          "trial": 1,
+          "injection": "continuous-down-ms=343812643 moves=287 duration-ms=2400",
+          "selection": [
+            "Selection 31:31 · composing -1:-1"
+          ],
+          "textUnchanged": true,
+          "fatalException": false
+        },
+        {
+          "trial": 2,
+          "injection": "continuous-down-ms=343838260 moves=287 duration-ms=2401",
+          "selection": [
+            "Selection 31:31 · composing -1:-1"
+          ],
+          "textUnchanged": true,
+          "fatalException": false
+        },
+        {
+          "trial": 3,
+          "injection": "continuous-down-ms=343863759 moves=287 duration-ms=2401",
+          "selection": [
+            "Selection 31:31 · composing -1:-1"
+          ],
+          "textUnchanged": true,
+          "fatalException": false
+        }
+      ]
+    },
+    "candidate-plain-ring": {
+      "apkSha256": "2217482289ffdff307d2a5722be015fb7c7d1f7e0656f6b2e1a5b9ba5f8c192c",
+      "serial": "R3CY30KZA4B",
+      "sample": "input",
+      "allocationProfile": false,
+      "text": "The_quick_brown_fox_jumps_over_the_lazy_dog._Cursor_movement_should_stay_smooth.",
+      "nativeViews": false,
+      "physicalTouchAccepted": false,
+      "trials": [
+        {
+          "trial": 1,
+          "injection": "continuous-down-ms=344452034 moves=287 duration-ms=2401",
+          "selection": [
+            "Selection 31:31 · composing -1:-1"
+          ],
+          "textUnchanged": true,
+          "fatalException": false,
+          "renderErrorLines": 0,
+          "nativeMagnifier": {
+            "created": 1,
+            "updates": 154,
+            "dismissed": 1
+          }
+        },
+        {
+          "trial": 2,
+          "injection": "continuous-down-ms=344478178 moves=287 duration-ms=2400",
+          "selection": [
+            "Selection 31:31 · composing -1:-1"
+          ],
+          "textUnchanged": true,
+          "fatalException": false,
+          "renderErrorLines": 0,
+          "nativeMagnifier": {
+            "created": 1,
+            "updates": 155,
+            "dismissed": 1
+          }
+        },
+        {
+          "trial": 3,
+          "injection": "continuous-down-ms=344504011 moves=287 duration-ms=2400",
+          "selection": [
+            "Selection 31:31 · composing -1:-1"
+          ],
+          "textUnchanged": true,
+          "fatalException": false,
+          "renderErrorLines": 0,
+          "nativeMagnifier": {
+            "created": 1,
+            "updates": 143,
+            "dismissed": 1
+          }
+        }
+      ]
+    }
+  },
+  "visualAndLifecycle": {
+    "beforeLayers": [],
+    "duringLayers": [
+      "RequestedLayerState{magnifier surface#89582 parentId=89571 z=5}",
+      "RequestedLayerState{magnifier surface bbq wrapper#89583 parentId=89582}"
+    ],
+    "afterUpLayers": [],
+    "backgroundLayers": [],
+    "resumeLayers": [],
+    "magnifier": {
+      "created": 2,
+      "updates": 84,
+      "dismissed": 2
+    },
+    "renderErrorLines": 0
+  },
+  "nativeImeAndFinalInstallation": {
+    "koreanImeText": "The_quick_br사own_fox_jumps_over_the_lazy_dog._Cursor_movement_should_stay_smooth.",
+    "koreanImeSelection": [
+      "Selection 13:13 · composing 12:13"
+    ],
+    "containsComposedHangul": true,
+    "textRetainedAfterDrag": true,
+    "selectionAfterDrag": [
+      "Selection 21:21 · composing -1:-1"
+    ],
+    "normalComponentsNodes": 46,
+    "installedApkSha256": "2217482289ffdff307d2a5722be015fb7c7d1f7e0656f6b2e1a5b9ba5f8c192c",
+    "accessibilityServices": "null",
+    "lowPower": "0",
+    "nativeVersionConfirmed": true,
+    "fatalException": false,
+    "normalLaunchWithoutDiagnosticExtras": true
+  },
+  "validation": {
+    "timeoutSeconds": 1200,
+    "androidReleaseBuild": {
+      "exitCode": 0,
+      "warnings": 0,
+      "errors": 0,
+      "elapsed": "00:02:16.28"
+    },
+    "windowsDebugBuild": {
+      "exitCode": 0,
+      "warnings": 0,
+      "errors": 0,
+      "elapsed": "00:01:02.97",
+      "runtimeAccepted": false
+    },
+    "regressionOutput": [
+      "PASS: production ticker at 60/120 Hz, missed pulses, fractional offsets, semantic boundaries",
+      "PASS: Android vsync clock, matrix ownership/allocation, perspective and legacy semantics projection",
+      "PASS: caret semantics cache, graphemes, edit/wrap/scale/offset/obscure/dispose invalidation",
+      "PASS: release velocity, ballistic continuation, semantic changes, native inertia lifecycle"
+    ],
+    "physicalKoreanTypingAcceptance": false,
+    "nativeImeAutomationSequence": "two Samsung keyboard taps compose one syllable; a subsequent handle drag retains text and clears composition"
+  },
+  "rawEvidenceSha256": {
+    "baseline-1.after.xml": "2c2147a9d6cf67ec74d2a3f09e211b1cb0025a2a41c7f52ee2367bf9ca5854fa",
+    "baseline-1.before.xml": "b6383a21b96b1f486384aa1d35a627d61ff2264515cb85e292861a1211c87631",
+    "baseline-1.json": "966c4bb0adcf304883c732f76f7c208e330c84bb2714af4101c9ecab6bbd570e",
+    "baseline-1.log": "73590ba3acf5dd566d2f713f9eb3d86ded227fcd14474a88c6a1f7d8f1f015d2",
+    "baseline-1.png": "384ffe825d13ccbb95ac517d2a8b3b4a91d20072bcf83a45414ee33e04767ad3",
+    "baseline-2.after.xml": "2c2147a9d6cf67ec74d2a3f09e211b1cb0025a2a41c7f52ee2367bf9ca5854fa",
+    "baseline-2.before.xml": "b6383a21b96b1f486384aa1d35a627d61ff2264515cb85e292861a1211c87631",
+    "baseline-2.json": "1f07bf1fa912749d8c50bd29b42833e1a168c00ec7148dad75f3df3e2c009aed",
+    "baseline-2.log": "a109c40048898c8f061a1cfbb7420f85b82f9d98bed44bc711d21454a52692d6",
+    "baseline-2.png": "384ffe825d13ccbb95ac517d2a8b3b4a91d20072bcf83a45414ee33e04767ad3",
+    "baseline-3.after.xml": "2c2147a9d6cf67ec74d2a3f09e211b1cb0025a2a41c7f52ee2367bf9ca5854fa",
+    "baseline-3.before.xml": "b6383a21b96b1f486384aa1d35a627d61ff2264515cb85e292861a1211c87631",
+    "baseline-3.json": "b0054fc985e018dd6e9a344fa8904642d7732ed402525ccb81b95aeb42fa4223",
+    "baseline-3.log": "5dc0f3d4953fe747a3b105d27794c6c2756bcf236dded5e74a9925adaee45648",
+    "baseline-3.png": "eaded328daaf769614921281b4ba980a1a478c9d3bf91a1d0ef7443df250ba19",
+    "baseline-manifest.json": "db4eb8b3d88b4946ac319f7882b154f4d8d6e43bab208b762bdbba341b67d914",
+    "baseline-plain-1.after.xml": "fd7be9d6073f4c94ed48e88dec75b58e07a034f2c031ed5dd52e168575454369",
+    "baseline-plain-1.before.xml": "7019eea6491abb4851bd2e162ad4e936bfd0650e0a0dd53ecfab1331d16b78fb",
+    "baseline-plain-1.json": "ee764fe8fd976a2e0cf946441208da83a2e4d8bfec05d3f0f90f34c123b1e60d",
+    "baseline-plain-1.log": "e1c69693ebea4e5cb19d9a7fc151b2683e420ca94b97f6fd49b739c11698d6e1",
+    "baseline-plain-1.png": "ccfaea1d21b3ec28acaa08c2d8c5d11940de587d6c0607710ddfcbc62f91d6b5",
+    "baseline-plain-manifest.json": "5f77937e5954b02c221a1c055bd425ba5208cfd72adcd5e1dbbaae35d4d25806",
+    "baseline-plain-ring-1.after.xml": "fd7be9d6073f4c94ed48e88dec75b58e07a034f2c031ed5dd52e168575454369",
+    "baseline-plain-ring-1.before.xml": "7019eea6491abb4851bd2e162ad4e936bfd0650e0a0dd53ecfab1331d16b78fb",
+    "baseline-plain-ring-1.json": "294ddfc933306d5e19b901850e592dcc847a3b11056a70dc3a6169c285671030",
+    "baseline-plain-ring-1.log": "855dd7cc587015538282756c76ce60627197557262f1db7cce55a2b3eb952a2b",
+    "baseline-plain-ring-1.png": "b21e3e46513e81d1d949da43cb34009241caf6e966793dee75935010194955e6",
+    "baseline-plain-ring-2.after.xml": "fd7be9d6073f4c94ed48e88dec75b58e07a034f2c031ed5dd52e168575454369",
+    "baseline-plain-ring-2.before.xml": "7019eea6491abb4851bd2e162ad4e936bfd0650e0a0dd53ecfab1331d16b78fb",
+    "baseline-plain-ring-2.json": "c4c3e966bd726a331a9eb6dff9b1494bace6ffb6a53d49bbb85d6a607c5f568e",
+    "baseline-plain-ring-2.log": "d82ad2d4931e3e205a3af3278a80e8b15584799208563f4b684cdbded45e2fb7",
+    "baseline-plain-ring-2.png": "c047ca340d87519cebdfbf53031c8744336a76ca4a5a9215c145f369214eb51e",
+    "baseline-plain-ring-3.after.xml": "fd7be9d6073f4c94ed48e88dec75b58e07a034f2c031ed5dd52e168575454369",
+    "baseline-plain-ring-3.before.xml": "7019eea6491abb4851bd2e162ad4e936bfd0650e0a0dd53ecfab1331d16b78fb",
+    "baseline-plain-ring-3.json": "f15660b186d0e2e47441b808360e9dd45b177e767ea6829d105175357bcbae35",
+    "baseline-plain-ring-3.log": "6afb89265a61fc2c2cc89a695a1738aeadbf2f3bdf0d2683cf9962b08deb97cb",
+    "baseline-plain-ring-3.png": "c047ca340d87519cebdfbf53031c8744336a76ca4a5a9215c145f369214eb51e",
+    "baseline-plain-ring-manifest.json": "6e84369d6befddd249b6590fc1db80e8e3b27b1822b117369b2a0e59d802f1b8",
+    "candidate-1.after.xml": "2c2147a9d6cf67ec74d2a3f09e211b1cb0025a2a41c7f52ee2367bf9ca5854fa",
+    "candidate-1.before.xml": "b6383a21b96b1f486384aa1d35a627d61ff2264515cb85e292861a1211c87631",
+    "candidate-1.json": "330357496b7b1d426280b66ed49d18acfa855ccba9721a8d44d343cb21e45a90",
+    "candidate-1.log": "591eac97c3b4a00562c403fff527104bb291a8422a0e71931933710aeb5cda95",
+    "candidate-1.png": "354b27df1515904a59c00da479470182ea538205c8b8bfb23eac11a8558e0303",
+    "candidate-1.state.json": "f213d2f449b94c87a9e65b243e699f8c3d0d5a3cf412f4ea279a4eb5038ed4ea",
+    "candidate-2.after.xml": "2c2147a9d6cf67ec74d2a3f09e211b1cb0025a2a41c7f52ee2367bf9ca5854fa",
+    "candidate-2.before.xml": "b6383a21b96b1f486384aa1d35a627d61ff2264515cb85e292861a1211c87631",
+    "candidate-2.json": "060d7f91710145193c4ee3d1c5f74bf775f0cb4b12299105eb89467e9206a3a8",
+    "candidate-2.log": "4f4f643856d123b81717dd87e763a33616409cc019bea12807cc462555991c15",
+    "candidate-2.png": "7f04285623f879a8f232e19e54af6f5237220af6dbea6898b40697ae5b65f102",
+    "candidate-2.state.json": "25b1600aab820b8f023c865d08fa784e004093db9b0da36a243711348a7f723a",
+    "candidate-3.after.xml": "2c2147a9d6cf67ec74d2a3f09e211b1cb0025a2a41c7f52ee2367bf9ca5854fa",
+    "candidate-3.before.xml": "b6383a21b96b1f486384aa1d35a627d61ff2264515cb85e292861a1211c87631",
+    "candidate-3.json": "a2451864abfe1abdece76b11c7ac1aeca15d2cb5bede152fab25b4c21c19ad81",
+    "candidate-3.log": "84e2cca25b667b67ae5955b3395ab83ff60bc00027ed3e6b60459a4a71a26091",
+    "candidate-3.png": "7f04285623f879a8f232e19e54af6f5237220af6dbea6898b40697ae5b65f102",
+    "candidate-3.state.json": "5a1015dd8f596c7bb88a64635ca7c4e1742cd62706f69fecb30b54789e6a6e56",
+    "candidate-build.log": "b041a9f80e9ab3a97caedbe23dd2ca3a6f82c5a04e0636cff9dc09a1965fcef8",
+    "candidate-manifest.json": "96b2a0fd73ac0529408a031fea887e575a4e43433664944991543d6b6d88f026",
+    "candidate-plain-ring-1.after.xml": "fd7be9d6073f4c94ed48e88dec75b58e07a034f2c031ed5dd52e168575454369",
+    "candidate-plain-ring-1.before.xml": "7019eea6491abb4851bd2e162ad4e936bfd0650e0a0dd53ecfab1331d16b78fb",
+    "candidate-plain-ring-1.json": "a33a28e61b187f32e8050d7b52607c90432c55154d5e98ac9641a4df756e161b",
+    "candidate-plain-ring-1.log": "93a16b65e5241faca27c1a26a8aa9644d0a08411246cd6ddaaa91dea5432a7a8",
+    "candidate-plain-ring-1.png": "45a624c8d3ff5d8cb6a562ea0f8c3cef9ef3e5da91a99a7bc87ac6301b3dbb81",
+    "candidate-plain-ring-1.state.json": "2b05bbfaedc44f729bd388f82bd0793ce1ff7e94538940e89e3016a57796b426",
+    "candidate-plain-ring-2.after.xml": "fd7be9d6073f4c94ed48e88dec75b58e07a034f2c031ed5dd52e168575454369",
+    "candidate-plain-ring-2.before.xml": "7019eea6491abb4851bd2e162ad4e936bfd0650e0a0dd53ecfab1331d16b78fb",
+    "candidate-plain-ring-2.json": "5b10cbd6d5eb355f5de23d31d78851f8173e6951086f8f99f320d063c8a0fa7d",
+    "candidate-plain-ring-2.log": "bb029856b2b0e3807381ac55a3b7b9d3e0c89d70171cdb085a3d1f325604edcd",
+    "candidate-plain-ring-2.png": "842be72b9434ca7523d1f4fa875761419b4b799c0e89808e58afbc15d241c8b8",
+    "candidate-plain-ring-2.state.json": "3d530f59bcb47595f3d48ae5f209b56f61d64719bb2c305d5185af410a0dfbdd",
+    "candidate-plain-ring-3.after.xml": "fd7be9d6073f4c94ed48e88dec75b58e07a034f2c031ed5dd52e168575454369",
+    "candidate-plain-ring-3.before.xml": "7019eea6491abb4851bd2e162ad4e936bfd0650e0a0dd53ecfab1331d16b78fb",
+    "candidate-plain-ring-3.json": "d9422af202cdce27312c62e64908f44e0da1293b2e52fe888d72d3efe0ccdaad",
+    "candidate-plain-ring-3.log": "a7e30047712fd048bec7c4ff6466e87ab698b73cea566c7665616cf3d5c963ab",
+    "candidate-plain-ring-3.png": "efb6a75b4c7e220d99b1271225651057ed4319d7b589480d4d7788bdd2ca42aa",
+    "candidate-plain-ring-3.state.json": "a89f329d161b30678d83a9260a195e6c4c3e14c86700704b1c3988e7eb3ab2d2",
+    "candidate-plain-ring-manifest.json": "0da58cda5c391cb90bf59893add99426dd3b31fb22bb9e8d97b3f17f7e2cf91f",
+    "final-normal-components.png": "0b3ca8725b6527290526e3f8a64ceeb26e84cec98b2d82e40d3d242148e254c7",
+    "native-candidate-build.log": "6a20e1169e6e6b86e370d5e27f819ab8988fb3e898bf70aacd8be543d256900a",
+    "native-korean-after-drag.xml": "ef4c1417db336a2dbe30cb5c91c58e398168abf41a3966c844ebbd051f7d4286",
+    "native-korean-ime.xml": "182234bb984e8ac64583156d383fe9856171d59b476bdb084207f4255b115cf6",
+    "native-magnifier-after.png": "df9a63325dfb8f7da1ecd19fd83ceab903daf8253ac09bf7b7ef8aa5c11901e4",
+    "native-magnifier-during.png": "39fdb631ec4f67dfd0f8e5e3f7963ab7bebc669d0a49b991054054f1845d0b5e",
+    "regression.log": "a85cb09659c0aa2d09107ead9cb2d08b65818df40c19e3fdc22890818235763c",
+    "visual-lifecycle-result.json": "2aaf8464d3686d15686855228349224b841f74a8d35ff236fc177f7fce5763c9",
+    "windows-build.log": "ad1c4decb1a75dafa50bfdd5637eca2c491d630f074498babce32feab31e82a4"
+  },
+  "sourceSha256": {
+    "Doroti/Directory.Packages.props": "cf6b706248d572f29fb20e4d07ad7e6b7edfcd000bb174c243d28dce4c7a0e84",
+    "Doroti/THIRD-PARTY-NOTICES.md": "ff8644e4e87801816f85a3a9fe90f567c87636295d149e1c99f368d375fb6ccc",
+    "Doroti/eng/android/ScrollGesture.java": "806fddab50e539d610a9fd815ef6518a8f423c698e8baea69d0a210267ac4446",
+    "Doroti/eng/android/scroll.perfetto.pbtxt": "3b3984cdb60b091430a88068fb09f94ba3c78993cc7ba68c26498b2fae4d9401",
+    "Doroti/eng/measure-android-caret.py": "674989e4a2aa5449cb69c5a10744b8b53c000797f30a27fa9f080e435dca4f65",
+    "Doroti/eng/measure-android-scroll.py": "e801d2eacbf1e738397c76e9d2cf48f67add94c12f4937c3f96430b80de15ab2",
+    "Doroti/eng/summarize-android-scroll.py": "facd361bad4e7ed251877eed78dcd5b36f0d706b3843ab1ee9278ab6949e91c5",
+    "Doroti/src/Doroti.Framework.Painting/text_painter.cs": "f6a4ef131bd7c214a77d4d3514c69947183d096f77ddd442ec544a3ccf3b0892",
+    "Doroti/src/Doroti.Framework.Rendering/RenderSemanticsTextGeometry.cs": "d80e26e3de69bc589f60b29642c48d5d06bf6fedbec9989ec8a552d64735935a",
+    "Doroti/src/Doroti.Framework.Widgets/scroll_position.cs": "70244663baefc0b221830dc587301165c5f19083735d8b0ec1de5b62c0edec35",
+    "Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.props": "e095fbcd99c9a346b3879032ab38a94304a91571b3091b0ef7af9d525ff14fcc",
+    "Doroti/src/Doroti.Skia.RuntimeEffects/Doroti.Skia.RuntimeEffects.csproj": "338280b87febc55db88f442cd4ad76e7794052e834c4d35d5e15487cd44809aa",
+    "Doroti/src/Doroti.Skia.Vulkan/GraphiteNativeLibrary.cs": "7e8ec2abadf4c18ebe471a60d00473f784740a13b597b80a86953f231e88c9c3",
+    "Doroti/src/Doroti.Skia.Vulkan/GraphiteVulkanWindow.Timing.cs": "a7cde735fae5df87912451c6718f8940048044eb4c8f79026f5914eb689eeda2",
+    "Doroti/src/Doroti.Skia.Vulkan/GraphiteVulkanWindow.cs": "5fe9921dfcc53ceb0693c5a4764861e6eca5f774ffe1ef5b1881d1d5f3b23131",
+    "Doroti/src/Doroti.Ui/DorotiUiValues.cs": "855336aefdf8e591c5330c1e44b500f3192948a8a1a826117ce5b3cc3738eeed",
+    "Doroti/src/Doroti.Ui/GraphicsAndSemanticsContracts.cs": "07551deee02e541d01251f9b353ce565ad5d3a7bdf0f5aaf0c73b21d5fae70e3",
+    "Doroti/tests/Doroti.Scroll.Tests/CaretGeometryRegression.cs": "1df62e7c8b8925445a617d6e267a69accd6b93d3972a0082ae15d97819690106",
+    "Doroti/tests/Doroti.Scroll.Tests/Doroti.Scroll.Tests.csproj": "41dc70a29c241bf0951b083c4fc659028c4a5adb3cb831f6c47471bceb63893d",
+    "Doroti/tests/Doroti.Scroll.Tests/Program.cs": "70546e6a571886df5e39980c28abc2437ab1553b69c125be2b512ecf24c23109",
+    "Doroti/tests/Doroti.Scroll.Tests/ProjectionRegression.cs": "f203013cfedadd77f82ca69f7b96299d44255f7d98927334d5728454cc22d0d2",
+    "Doroti/tests/Doroti.Scroll.Tests/README.md": "fdbd7a6b54579eb1aab6c2ea563e9b31416cd1b91dd7fc677e07cc81500e05ea",
+    "Doroti/tests/Doroti.Scroll.Tests/ScrollContinuityRegression.cs": "6770c45b2b451fb5725a0db238d156d96890fd95b1938c8e887132b2be1c2a83",
+    "history/26/10/31/galaxy-caret-drag.md": "5cf41ddfa0e7f21d968016c4e14900157f6a7a6f44ce733bc4246f1ab3a48885",
+    "history/26/10/31/galaxy-scroll-implementation.md": "7b789c2100038bf8d9b2ba293a0ea960ce275c5ff6f0e808fffa082cfc37acaa",
+    "history/26/10/31/galaxy-scroll-results.json": "8f6747cf30e21c14a08aa08fd9ae0e6d19c07cf4d85a91109665772636a4b697",
+    "packages/Doroti.Material/src/magnifier.cs": "a562da2f13464c2acc9143d0b03e140ddfd04d38744acacbf8bad455e98278df",
+    "packages/platforms/build/Sdk.targets": "8c8f640cf7ef460bd49cffafc0c98c09ab063bd43a66f3352addd67588250073",
+    "packages/platforms/maui/Doroti.Host.Maui/AndroidFrameTiming.cs": "0dea3060e61b97da88bb432ba0a2c1355e2b78ed9c287f79a87c5ff3cd2320d6",
+    "packages/platforms/maui/Doroti.Host.Maui/AndroidScrollProfile.cs": "900a5b2d69e42c839c3a6995ddd7935798d835eb06965f303543e868a6837423",
+    "packages/platforms/maui/Doroti.Host.Maui/DorotiAndroidVulkanViewHandler.cs": "c959fef366646496baa715bf3e18b477f94d648962a1aa8495f935cb47ba5dc5",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiAndroidTextMagnifier.cs": "b5394893beaaaacd90e0e427620463607dd8f50dd539bf948a5777db8167b3c9",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiApplicationNavigation.cs": "0c1c8f08ed52d60ec03a844c4da2c54ece4b0b9e25cafa39202b10fc8421679e",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiHostAdapter.cs": "2a13cb6ab8f76eefb70b517bc7107a70c082d846fa783e4500c95705b162c4f2",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.cs": "68945fc6d1a4a39284abaa8d4103deeb10caf0970bfb785cd4c4a8b464f5cc7e",
+    "packages/platforms/maui/Doroti.Target.Android.Maui.android-arm64/doroti-target-manifest.json": "cdf5c3ce901fa48259f436d0d1df0b213d3b33b698377adcbfc2382b0409d9d6",
+    "packages/platforms/maui/Doroti.Target.Android.Maui.android-x64/doroti-target-manifest.json": "5e06c37624713af71a7eaf3b6c26c389e54dfa5846fa649f6c466e22be8af00e",
+    "packages/platforms/maui/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/doroti-target-manifest.json": "2c38078cbe5deed6599a8c9d4eaf4c7db7b496aa6a7c2f899f88f2227e9043d0",
+    "packages/platforms/maui/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/doroti-target-manifest.maccatalyst27.json": "6860dbee0e068a2c036ce194e27cc21d2758b1b38bd4a4deb1cc366ec6283c9a",
+    "packages/platforms/maui/Doroti.Target.MacOS.Maui.osx-arm64/doroti-target-manifest.json": "29b75fda3efb16515e3b5eb49125dad9b545a67b6bc3eb490cf36864c12b0c7a",
+    "packages/platforms/maui/Doroti.Target.MacOS.Maui.osx-arm64/doroti-target-manifest.macos27.json": "0a7f1f01d9e68848133e230e007d25955afe334d967b28adc5d4cb60c2462874",
+    "packages/platforms/maui/Doroti.Target.Windows.Maui.win-x64/doroti-target-manifest.json": "83243c1ce2868e96a4e5ec4e442de21d03e30724063fe1e4c6569be13d2f45e3",
+    "packages/platforms/maui/Doroti.Target.iOS.Maui.ios-arm64/doroti-target-manifest.ios27.json": "6965126db07dbbabae0abd79e4baff63b39dbf5c5d8da0deb8f177f86e0ea572",
+    "packages/platforms/maui/Doroti.Target.iOS.Maui.ios-arm64/doroti-target-manifest.json": "929f2116d26959b08c8eed3d83791c51363684a40cba8314a37d3d19b1bab165",
+    "packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-arm64/doroti-target-manifest.ios27.json": "11aebba78321b5e79d1a2bd8d21920a935b3a7b683624bc29ceecaf1dc2aaefa",
+    "packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-arm64/doroti-target-manifest.json": "69122b0e8164aa1027010cd8f16cd707e2f6ec54c9871eb66e860ee331926f08",
+    "packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-x64/doroti-target-manifest.ios27.json": "4f290c30e14a04cc12d4ba99ee6c5041309fedb4f3d335bf92d1c2611162930f",
+    "packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-x64/doroti-target-manifest.json": "88b43bf18ae9bb6f14692910d72d8d4c0ed5318f15448a4659ba8a454e933378",
+    "packages/platforms/qt/Doroti.Target.Linux.Qt.linux-x64/doroti-target-manifest.json": "cba7ff2c1060e67377655d2dc7719e19b5ac5b3923af0a31c20ed4745463879e",
+    "packages/platforms/web/Doroti.Target.Web.browser-wasm/doroti-target-manifest.json": "91e563cdb3a3a9c62959effda7da56c5907446916d6d612e277cdece63e21cf8",
+    "packages/platforms/windowsappsdk/Doroti.Target.Windows.WindowsAppSdk.win-x64/doroti-target-manifest.json": "b1089a5ad358662ebf3acff2f3ab0a0cbf1021a4e0cf2b48a21bc7cfd3d8b01c",
+    "work.md": "99ef09cba06c71997962925268c551a4f8f894e8198b643a6c377c2db14b8b3c"
+  },
+  "sourceSnapshotScope": "Final uncommitted working tree; earlier scroll/Skia changes retained. This JSON is excluded from its own hash.",
+  "rawEvidencePolicy": "temp/galaxy-caret files are disposable. Hashes preserve identity, not a guarantee raw files remain after cleanup. Preliminary baseline-plain allocation flag run is excluded from main comparison."
+}

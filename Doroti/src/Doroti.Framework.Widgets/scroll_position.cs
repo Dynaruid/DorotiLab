@@ -399,6 +399,7 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
 
     internal virtual void _updateSemanticActions()
     {
+        if (!hasPixels || !hasContentDimensions) return;
         var (forward, backward) = axisDirection switch
         {
             AxisDirection.up => (SemanticsAction.scrollDown, SemanticsAction.scrollUp),
@@ -409,11 +410,20 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
                 "Switch expression did not handle the supplied value."
             ),
         };
-        var actions = new HashSet<SemanticsAction>();
-        if (CollectionsLibrary.setEquals(actions, _semanticActions))
+        var canForward = pixels < maxScrollExtent;
+        var canBackward = pixels > minScrollExtent;
+        // Most scroll ticks stay between the same boundaries. Keep the last
+        // published set intact and allocate only when available actions change.
+        if (_semanticActions is { } previous
+            && previous.Count == (canForward ? 1 : 0) + (canBackward ? 1 : 0)
+            && (!canForward || previous.Contains(forward))
+            && (!canBackward || previous.Contains(backward)))
         {
             return;
         }
+        var actions = new HashSet<SemanticsAction>();
+        if (canForward) actions.Add(forward);
+        if (canBackward) actions.Add(backward);
         _semanticActions = actions;
         context.setSemanticsActions(_semanticActions!);
     }

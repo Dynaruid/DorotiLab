@@ -841,6 +841,9 @@ public sealed partial class MauiTextInputBridge : IDisposable
 
     private void DeactivateActiveInput(bool clearFocus)
     {
+#if ANDROID
+        ResetAndroidMagnifier();
+#endif
         DispatchActiveInputMutation(input =>
         {
             HideNativeTextInput(input);
@@ -1287,6 +1290,9 @@ public sealed partial class MauiTextInputBridge : IDisposable
 
     private void DisposeCore()
     {
+#if ANDROID
+        ResetAndroidMagnifier();
+#endif
 #if IOS || MACCATALYST
         FloatingCursorChanged = null;
         ResetUIKitInput();

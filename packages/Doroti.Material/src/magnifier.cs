@@ -66,6 +66,8 @@ internal class _TextMagnifierState__magnifier : State<TextMagnifier>
     internal virtual Offset? _magnifierPosition { get; set; } = default;
     internal virtual Timer? _positionShouldBeAnimatedTimer { get; set; } = default;
     internal virtual Offset _extraFocalPointOffset { get; set; } = Offset.zero;
+    private ITextMagnifierSession? _nativeMagnifier;
+    private DorotiView? _magnifierView;
 
     internal virtual bool _positionShouldBeAnimated =>
         DartRuntimePrimitives.ConvertValue<bool>(_positionShouldBeAnimatedTimer is not null);
@@ -79,6 +81,8 @@ internal class _TextMagnifierState__magnifier : State<TextMagnifier>
 
     public override void dispose()
     {
+        _nativeMagnifier?.Dispose();
+        _nativeMagnifier = null;
         widget.magnifierInfo.removeListener(_magnifierInfoListener);
         _positionShouldBeAnimatedTimer?.cancel();
         base.dispose();
@@ -86,6 +90,17 @@ internal class _TextMagnifierState__magnifier : State<TextMagnifier>
 
     public override void didChangeDependencies()
     {
+        var view = View.of(context);
+        if (!ReferenceEquals(view, _magnifierView))
+        {
+            _nativeMagnifier?.Dispose();
+            _magnifierView = view;
+            _nativeMagnifier = !Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb
+                && view.registeredCapabilityIds.Contains(DorotiCapabilityIds.TextInput)
+                ? view.RequireCapability<ITextInputHostCapability>(DorotiCapabilityIds.TextInput,
+                    DorotiUiInvocation.Managed("TextMagnifier")).CreateMagnifierSession()
+                : null;
+        }
         _determineMagnifierPositionAndFocalPoint();
         base.didChangeDependencies();
     }
@@ -113,6 +128,11 @@ internal class _TextMagnifierState__magnifier : State<TextMagnifier>
             selectionInfo.currentLineBoundaries.left,
             selectionInfo.currentLineBoundaries.right
         );
+        if (_nativeMagnifier is not null)
+        {
+            _nativeMagnifier.Update(new Offset(magnifierX, selectionInfo.caretRect.center.dy), selectionInfo.caretRect);
+            return;
+        }
         Rect unadjustedMagnifierRect =
             (new Offset(magnifierX, selectionInfo.caretRect.center.dy) - basicMagnifierOffset)
             & Magnifier.kDefaultMagnifierSize;
@@ -182,6 +202,7 @@ internal class _TextMagnifierState__magnifier : State<TextMagnifier>
 
     public override Widget build(BuildContext context)
     {
+        if (_nativeMagnifier is not null) return SizedBox.CreateShrink();
         DartRuntimePrimitives.Assert(
             () => _magnifierPosition is not null,
             () => (object?)"Magnifier position should only be null before the first build."

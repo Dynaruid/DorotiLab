@@ -17,6 +17,8 @@ public sealed unsafe partial class GraphiteVulkanWindow
     /// <summary>Opt-in CPU phase timing; none of these values is a scan-out receipt.</summary>
     public bool EnableFrameTiming { get; set; }
     public VulkanWindowFrameTiming LastFrameTiming { get; private set; }
+    /// <summary>Optional Graphite CPU stage observer; never a display receipt.</summary>
+    public Action<string, double>? CpuStageMeasured { get; set; }
 
     private long FrameTimestamp() => EnableFrameTiming ? Stopwatch.GetTimestamp() : 0;
 

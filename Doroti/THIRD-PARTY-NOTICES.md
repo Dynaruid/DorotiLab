@@ -39,7 +39,7 @@ Doroti is independently implemented. Reference checkouts are not runtime depende
 ## SkiaSharp
 
 - Upstream: https://github.com/mono/SkiaSharp
-- Packages: `SkiaSharp` and platform native assets `4.154.0-preview.1.26454.9`; public Graphite Vulkan, Metal and Dawn APIs are used. Silk.NET supplies standard Vulkan dispatch; no custom Skia binary is redistributed
+- Packages: `SkiaSharp` and platform native assets `4.154.0`; public Graphite Vulkan, Metal and Dawn APIs are used. Silk.NET supplies standard Vulkan dispatch; no custom Skia binary is redistributed
 - Use: GPU surface implementation behind the Windows App SDK, MAUI, AppKit, Web, and Linux/Qt hosts
 - License: MIT; reference [license text](LICENSES/SkiaSharp-LICENSE.txt) and [native third-party notices](LICENSES/SkiaSharp-Native-THIRD-PARTY-NOTICES.txt) are retained verbatim from the pinned official Win32 NuGet archive. External NuGet package licenses are not automatically collected into Doroti build/publish output or repackaged by the common library rules.
 

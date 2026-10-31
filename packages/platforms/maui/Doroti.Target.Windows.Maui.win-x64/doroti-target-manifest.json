@@ -7,7 +7,7 @@
   "softwareFallback": false,
   "defaultSkiaEngine": "Graphite",
   "nativeSkiaPackage": "SkiaSharp.NativeAssets.Win32",
-  "nativeSkiaVersion": "4.154.0-preview.1.26454.9",
+  "nativeSkiaVersion": "4.154.0",
   "nativeSkiaApi": "public-Graphite",
   "requiredVulkanVersion": "1.2",
   "schemaVersion": "doroti.target-package/v2",

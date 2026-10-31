@@ -7,7 +7,7 @@
   "defaultRenderer": "worker-direct-webgl",
   "graphicsBackend": "worker-direct-webgl2-or-worker-direct-webgpu-graphite-dawn",
   "blazorWebAssemblyVersion": "10.0.11",
-  "skiaSharpVersion": "4.154.0-preview.1.26454.9",
+  "skiaSharpVersion": "4.154.0",
   "skiaSharpManagedPackage": "SkiaSharp",
   "skiaSharpNativePackage": "SkiaSharp.NativeAssets.WebAssembly",
   "bootLoader": "_framework/dotnet.js",
@@ -55,7 +55,7 @@
     "trimmed-generated-product"
   ],
   "nativeSkiaPackage": "SkiaSharp.NativeAssets.WebAssembly",
-  "nativeSkiaVersion": "4.154.0-preview.1.26454.9",
+  "nativeSkiaVersion": "4.154.0",
   "nativeSkiaApi": "public-Graphite",
   "provider": "web",
   "providerVersion": "0.4.1-beta",

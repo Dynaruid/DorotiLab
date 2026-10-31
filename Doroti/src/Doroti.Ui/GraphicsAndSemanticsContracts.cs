@@ -3357,11 +3357,11 @@ public static class SemanticsGeometryProjection
             return;
         }
 
-        var transform = new Matrix4(parentTransform.storage.ToArray());
+        var transform = new Matrix4(parentTransform.storage);
         var explicitTransform = node.coordinateTransform is { Count: 16 };
         if (explicitTransform)
         {
-            transform.multiply(new Matrix4(node.coordinateTransform!.ToArray()));
+            transform.multiply(new Matrix4(node.coordinateTransform!));
         }
 
         var rect = TransformRect(node.rect, transform);
@@ -3384,18 +3384,25 @@ public static class SemanticsGeometryProjection
 
     private static Rect TransformRect(Rect rect, Matrix4 matrix)
     {
-        var corners = new[]
+        // Same homogeneous projection as Matrix4.perspectiveTransform, without
+        // allocating four vectors and an array for each node/text rectangle.
+        var m = matrix.storage;
+        (double X, double Y) Point(double x, double y)
         {
-            matrix.perspectiveTransform(new Vector3(rect.left, rect.top, 0)),
-            matrix.perspectiveTransform(new Vector3(rect.right, rect.top, 0)),
-            matrix.perspectiveTransform(new Vector3(rect.left, rect.bottom, 0)),
-            matrix.perspectiveTransform(new Vector3(rect.right, rect.bottom, 0)),
-        };
+            var tx = m[0] * x + m[4] * y + m[12];
+            var ty = m[1] * x + m[5] * y + m[13];
+            var w = m[3] * x + m[7] * y + m[15];
+            return w == 0 || w == 1 ? (tx, ty) : (tx / w, ty / w);
+        }
+        var a = Point(rect.left, rect.top);
+        var b = Point(rect.right, rect.top);
+        var c = Point(rect.left, rect.bottom);
+        var d = Point(rect.right, rect.bottom);
         return new Rect(
-            corners.Min(p => p.x),
-            corners.Min(p => p.y),
-            corners.Max(p => p.x),
-            corners.Max(p => p.y)
+            Math.Min(Math.Min(a.X, b.X), Math.Min(c.X, d.X)),
+            Math.Min(Math.Min(a.Y, b.Y), Math.Min(c.Y, d.Y)),
+            Math.Max(Math.Max(a.X, b.X), Math.Max(c.X, d.X)),
+            Math.Max(Math.Max(a.Y, b.Y), Math.Max(c.Y, d.Y))
         );
     }
 }
@@ -3745,6 +3752,8 @@ public sealed class SemanticsUpdateBuilder
         if (_nodes.TryGetValue(id, out var node))
         {
             var safe = node.flags?.isObscured == true ? null : geometry;
+            if (ReferenceEquals(node.textGeometry, safe)
+                && (safe is null || (node.actions & SemanticsAction.scrollToTextRange) != 0)) return;
             _nodes[id] = node with { textGeometry = safe,
                 actions = safe is null ? node.actions : node.actions | SemanticsAction.scrollToTextRange };
         }

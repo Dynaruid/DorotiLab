@@ -2,7 +2,22 @@
 
 작성일: 2026-10-31 (Asia/Seoul)  
 검토 기준: `de6664ed913e733673b1adef9c9771c4be210d75`  
-상태: **계획 작성 완료 / 구현 미착수 / 갤럭시 성능 합격 미확인**
+상태: **공통·Android 수정 및 SkiaSharp 4.154.0 정식 전환 검증 / 성능 PARTIAL**
+
+실행 기록: [공통 엔진·Android 구현과 갤럭시 검증](history/26/10/31/galaxy-scroll-implementation.md).
+기준/첫 후보 3회 비교와 연속 단일 접촉 드래그를 실행했다. 공통 경로의 할당을 줄였지만,
+Perfetto에서 UI 스레드의 Vulkan graphics pipeline 생성 지연이 확인되어 성능 합격은 아직 아니다.
+이후 사용자의 최신 SkiaSharp 도입 요청에 따라 공식 최신 안정판 `4.154.0`으로 전환했다.
+Release arm64 빌드·Scroll 회귀·Windows 실행을 통과하고 갤럭시 3회 비교를 수행했다.
+정식판에서도 주 비교 owner 최대 56.8ms, 별도 연속 드래그 최대 65.1ms가 남아
+스크롤 성능 합격 조건은 미충족이다.
+실제 손가락 체감·전체 layer deadline·활성 TalkBack action은 `notVerified`로 유지한다.
+
+추가 요청인 [텍스트 커서 핸들 드래그](history/26/10/31/galaxy-caret-drag.md)도 구현·검증했다.
+Android OS 확대경으로 반복 렌더링 예외와 첫 드래그의 큰 지연을 줄이고,
+변하지 않은 글자 위치 정보의 반복 생성을 제거했다. 수정 APK를 갤럭시에 설치했다.
+일반 필드 최대 owner는 133.9–167.0ms에서 38.7–40.1ms로 줄었지만 p95는 증가하여,
+지속 드래그 성능은 여전히 `PARTIAL`이다. 원시 제출 지표를 표시 FPS로 간주하지 않는다.
 
 ## 1. 목표와 범위
 
@@ -14,8 +29,8 @@
 입력·Choreographer·Graphite/Vulkan·SurfaceView 표시 경로를 **양쪽 모두 필수 검토·수정 범위**로 둔다.
 각 영역의 개선 대상과 수정안을 도출하고, 확인된 문제는 해당 영역에서 수정·검증한다.
 공통 엔진·Android 플랫폼·두 영역의 연결 경계마다 검토 결과와 변경 효과를 남긴다.
-이번 요청에서는 소스 검토와 이 계획 작성만 수행한다. 앱 교체, 설정 변경,
-성능 측정용 스크롤 및 구현은 아직 수행하지 않았다.
+이 계획 작성 당시에는 소스 검토만 수행했다. 후속 전체 작업 요청으로 구현·APK 교체·
+실기기 측정을 진행하고 있으며, 결과와 미충족 조건은 실행 기록에서 구분한다.
 
 ### 1.1 영역별 책임과 구현 원칙
 
@@ -153,11 +168,23 @@ layer timing 또는 지원되는 Vulkan display timing 경로를 조사한다. �
 
 ## 5. 작업 순서와 완료 조건
 
+2026-10-31 실행 상태는 다음과 같다. 아래 체크는 개별 작업의 수행 여부이며,
+전체 성능 합격을 뜻하지 않는다. 복합 조건에서 미검증 부분이 남으면 체크하지 않았다.
+
+| 단계 | 수행한 작업 | 남은 조건 |
+| --- | --- | --- |
+| P0 | 원본 APK 백업·hash, 재현 화면 직접 확인, 소스 기준 Release 및 최종 APK 고정 | 원본 설치 APK의 정확한 source revision 복구 불가 |
+| P1 | input/pulse/frame/scene/submit ring, 기준 3회·GC/할당 집계, Perfetto 병목 분해 | 전체 표시 deadline 연결, logger 오버헤드 단독 분리 |
+| P2 | callback/queue 검토, 최초 지연 callback의 clock 매핑 수정, 최신 SkiaSharp 검증 | UI 스레드 layout·pipeline 생성의 긴 점유 해소 |
+| P3 | 실제 scheduler/scroll 회귀, semantics·행렬 할당 축소, provider 조회 | 활성 TalkBack action/focus 실기기 검증 |
+| P4 | 60/120Hz·누락 pulse 재생, scene 순서 집계, 연속 단일 접촉 드래그 | 표시와 offset의 전 구간 연결 및 체감 합격 |
+| P5 | 기준/첫 후보/정식판 각 3회, Windows 휠·native view·IME, Android 전환·IME·resume | 50ms/CPU 예산, 실제 손가락·트랙패드 확인 |
+
 ### P0. 실기기 기준 고정
 
 - [x] USB 갤럭시 연결, 모델·OS·주사율 정책·설치 APK 식별값을 읽기 전용으로 확인.
 - [ ] 설치 APK 런타임/빌드 설정·source 일치 및 사용자의 실제 재현 화면 확인.
-- [ ] 현재 APK를 기준으로 재현하고 Release 비교 기준을 확보.
+- [x] 현재 APK를 기준으로 재현하고 Release 비교 기준을 확보.
 - 산출물: device/build manifest, APK hash, 재현 시나리오와 프로파일별 상태.
 
 ### P1. 공통 엔진과 플랫폼을 연결하는 계측과 기준 기록
@@ -189,7 +216,7 @@ layer timing 또는 지원되는 Vulkan display timing 경로를 조사한다. �
 - [ ] scheduler/ticker와 drag→ballistic→idle의 시각·요청·상태 전이를 재생 검증하고,
   pulse 누락 뒤의 위치 점프, 불필요한 activity 재시작·frame 요청 문제를 공통 경로에서 수정.
 - [ ] 스크롤 프레임의 build/layout/paint/semantics dirty 전파와 할당 상위 항목 확인.
-- [ ] 실제로 변하지 않은 작업, tree 복사·열거·hash, 단명 객체를 비용 근거에 따라 축소.
+- [x] 실제로 변하지 않은 작업, tree 복사·열거·hash, 단명 객체를 비용 근거에 따라 축소.
   최신 semantics snapshot과 실제 접근성 action dispatch의 분리는 유지.
 - [ ] 접근성 비활성/조회/활성 서비스를 별도 확인. 활성 서비스나 focus가 있는 경우의
   최신 위치·스크롤 action·노드 제거·포커스 갱신을 지연하거나 접근성을 일괄 끄지 않음.
@@ -201,7 +228,7 @@ layer timing 또는 지원되는 Vulkan display timing 경로를 조사한다. �
 - [ ] 엔진에서 계산한 offset/scene과 Android가 raster/submit한 scene을 같은 ID로 대조.
   엔진 진행이 정상이어도 플랫폼이 이전 scene을 반복하는 경우와, 엔진 값 자체가
   불연속인 경우를 구분하여 해당 구현과 연결 계약을 수정.
-- [ ] 동일 시뮬레이션을 60/120Hz 및 실제 누락 pulse 시각으로 재생하여 offset/velocity 비교.
+- [x] 동일 시뮬레이션을 60/120Hz 및 누락 pulse(50ms) 시각으로 재생하여 offset/velocity 비교.
 - [ ] 불필요한 `applyNewDimensions`/activity 교체, timestep 점프, 중복·누락 scene을 조사.
 - [ ] fractional offset 보존과 최종 raster 변환을 확인. 조기 반올림이 확인될 때 해당 경계만 수정.
   자연스러운 subpixel 정지와 긴 정지 뒤의 위치 점프를 별도로 판정.
@@ -215,9 +242,9 @@ layer timing 또는 지원되는 Vulkan display timing 경로를 조사한다. �
 - [ ] 공통 엔진과 Android 플랫폼의 검토·수정 결과를 각각 정리하고 두 영역을 함께 적용한
   최종 후보를 검증. 변경 효과는 가능한 한 개별 후보의 짧은 진단·동일 입력 재생으로 확인하고,
   4.2의 추가 동작 예산 안에서 수행. 주 비교 18동작의 후보는 두 영역을 통합한 최종 APK로 고정.
-- [ ] 기준과 같은 갤럭시·빌드 프로파일·화면·동작으로 후보 3회 비교.
+- [x] 기준과 같은 갤럭시·빌드 프로파일·화면·동작으로 후보 3회 비교.
 - [ ] 기본 가변 주사율을 먼저 검증하고 필요 시 60Hz, 접근성 활성, 화면 전환·resume를 보조 확인.
-- [ ] 입력 시각/관성 연속성 및 실제로 수정한 queue·수명 경계에 의미 있는 회귀 테스트 추가.
+- [x] 입력 시각/관성 연속성 및 실제 수정 경계에 의미 있는 회귀 테스트 추가.
   기존 [Scroll 회귀 테스트](Doroti/tests/Doroti.Scroll.Tests/README.md)도 실행.
 - [ ] 공통 엔진 수정 시 Windows 트랙패드와 일반 휠, Android native editor/IME·접근성
   action에 필요한 범위의 smoke 확인. 변경과 무관한 전 플랫폼 재검증은 확대하지 않음.
@@ -251,7 +278,7 @@ P1 이후 P2와 P3는 양쪽 모두 수행하고, P4에서 연결 경계를 확�
 
 ## 7. 실행 명령과 결과 보존
 
-저장소 루트 PowerShell 기준. 아래는 구현 단계에서 사용할 명령이며 이번에는 실행하지 않았다.
+저장소 루트 PowerShell 기준. 아래 명령을 실제 실행했으며 빌드/회귀/실기기 결과는 실행 기록에 보존한다.
 Android 테스트·빌드에는 저장소 지침의 20분 timeout을 적용한다.
 
 ```powershell

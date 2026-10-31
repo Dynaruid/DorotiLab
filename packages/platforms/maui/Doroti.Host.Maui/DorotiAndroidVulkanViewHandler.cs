@@ -292,6 +292,9 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
         }
 
         MauiSkiaPaintContext? paint = null;
+        AndroidScrollProfile.BeginDraw();
+        var profileSubmitted = false;
+        var profileReason = "not-rendered";
         var frameStarted = _platformFrameTiming ? Stopwatch.GetTimestamp() : 0;
         try
         {
@@ -318,12 +321,13 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
                 }
 
                 _window = GraphiteVulkanWindow.CreateAndroid(_nativeWindow);
+                _window.CpuStageMeasured = AndroidScrollProfile.Enabled ? AndroidScrollProfile.Measure : null;
                 _window.EnableFrameTiming =
                     Microsoft.Maui.ApplicationModel.Platform.CurrentActivity?.Intent?.GetStringExtra(
                         "DOROTI_MAUI_EVIDENCE"
                     ) == "1"
                     || _inputTiming
-                    || _platformFrameTiming;
+                    || _platformFrameTiming || AndroidScrollProfile.Enabled;
                 _window.ResourcesReleasing += ReleaseRendererResources;
                 _generation++;
                 Android.Util.Log.Info(
@@ -340,7 +344,8 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
                     _owner.PrepareFrameworkFrame?.Invoke(new(_window.ContextIdentity,
                         _window.Width, _window.Height, _density,
                         (_generation << 32) | _window.Generation, GetType().FullName!,
-                        "Android/SurfaceView/Graphite-Vulkan", DorotiFrameClock.Now));
+                        "Android/SurfaceView/Graphite-Vulkan", DorotiFrameClock.Now,
+                        AndroidScrollProfile.Enabled ? AndroidScrollProfile.Measure : null));
                     prepared = true;
                 },
                 () => _owner.ShaderSceneAdmission?.Invoke() ?? SkiaShaderSceneAdmission.noNewScene,
@@ -349,6 +354,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
                 _owner.PlatformViews?.HasPendingComposition == true, false);
             if (!admission.Admitted)
             {
+                profileReason = admission.Reason;
                 _rejectedAdmissions++;
                 if (prepared && admission.GpuLimit == 2) _preparedWhileGpuFull++;
                 ScheduleGpuCompletion();
@@ -384,6 +390,9 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
             {
                 presented = platformViews.Finish(presented);
             }
+
+            profileSubmitted = presented;
+            profileReason = presented ? admission.Reason : "render-unavailable";
 
             if (presented) CompleteSurfaceRedraws();
 
@@ -425,6 +434,10 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
             Android.Util.Log.Error("DorotiGraphite", exception.ToString());
             _faulted = true;
             ReleaseSurface();
+        }
+        finally
+        {
+            AndroidScrollProfile.EndDraw(_window, paint, profileSubmitted, profileReason);
         }
     }
 
@@ -653,7 +666,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
             return false;
         }
 
-        var started = _inputTiming ? Stopwatch.GetTimestamp() : 0;
+        var started = _inputTiming || AndroidScrollProfile.Enabled ? Stopwatch.GetTimestamp() : 0;
         var queuedMs = _inputTiming
             ? Math.Max(0, Android.OS.SystemClock.UptimeMillis() - e.EventTime)
             : 0;
@@ -687,6 +700,8 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
 
             DispatchPointer(e, i, change.Value);
         }
+        if (AndroidScrollProfile.Enabled)
+            AndroidScrollProfile.RecordInput(e, Stopwatch.GetElapsedTime(started).TotalMilliseconds);
         if (_inputTiming)
         {
             Android.Util.Log.Info(

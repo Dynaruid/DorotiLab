@@ -1,0 +1,2599 @@
+{
+  "date": "2026-10-31",
+  "timezone": "Asia/Seoul",
+  "baselineCommit": "bc48640906abc7dfef95d7bddd79728ea475ad39",
+  "status": "PARTIAL",
+  "presentObservedByRing": false,
+  "layerLatencyObserved": true,
+  "deadlineQualified": false,
+  "physicalTouchAccepted": false,
+  "device": {
+    "model": "SM-S931N",
+    "serial": "R3CY30KZA4B",
+    "api": 37,
+    "os": "Android 17",
+    "gpu": "Adreno (TM) 830",
+    "pixels": [
+      1080,
+      2340
+    ],
+    "density": 480,
+    "reportedRefreshHz": 120,
+    "lowPower": 0,
+    "accessibilityServices": null
+  },
+  "build": {
+    "configuration": "Release",
+    "rid": "android-arm64",
+    "UseMonoRuntime": true,
+    "RunAOTCompilation": true,
+    "AndroidEnableProfiledAot": true,
+    "AndroidUseInterpreter": false,
+    "Optimize": true
+  },
+  "apkSha256": {
+    "installed-original": "3342af069f581e1b8dcdeb91640c2caac831627426b462a988f368c06d27a20d",
+    "source-baseline": "383a83bde2f8b25a05437efe7414314817af6add7ef56fbbd278ed03433448f1",
+    "instrumented-baseline": "cd2a0871f45c8d99eba88f992ea1e3e4dd42c15526b2783d2309514b0925a0b9",
+    "candidate": "2c1d76330a70114b155eb0dfe3c23fd4376c2ee54f4fcfa4b4bcc65c36df6193",
+    "skia-stable": "f689faaa38253b44c60aedbf336198c974abe3a90b209d61386b8115e39a0fd1"
+  },
+  "main": {
+    "baseline": [
+      {
+        "file": "baseline-1.json",
+        "presentObservedByRing": false,
+        "frames": 291,
+        "submitted": 290,
+        "ownerMs": {
+          "count": 291,
+          "p50": 5.544,
+          "p95": 10.999,
+          "p99": 19.483,
+          "max": 42.566
+        },
+        "callbackMs": {
+          "count": 291,
+          "p50": 1.601,
+          "p95": 4.236,
+          "p99": 9.45,
+          "max": 34.667
+        },
+        "callbackWaitMs": {
+          "count": 291,
+          "p50": 8.1,
+          "p95": 8.707,
+          "p99": 18.036,
+          "max": 41.416
+        },
+        "allocatedBytesPerDraw": {
+          "count": 291,
+          "p50": 591424,
+          "p95": 774360,
+          "p99": 1400624,
+          "max": 2076040
+        },
+        "ownerOver50ms": 0,
+        "inputAgeMs": {
+          "count": 119,
+          "p50": 6,
+          "p95": 12,
+          "p99": 20,
+          "max": 39
+        },
+        "dispatchMs": {
+          "count": 119,
+          "p50": 0.248,
+          "p95": 0.968,
+          "p99": 1.767,
+          "max": 2.116
+        },
+        "nativeHistorySamples": 110,
+        "actions": {
+          "0": 3,
+          "2": 113,
+          "1": 3
+        },
+        "reasons": {
+          "eligible": 287,
+          "noNewScene": 3,
+          "slots-full/noNewScene": 1
+        },
+        "coldOwnerMaxMs": 646.1107,
+        "setupFirstContactMaxMs": 61.4398,
+        "gcCollections": {
+          "gen0": 44,
+          "gen1": 1,
+          "gen2": 1
+        },
+        "vulkanMs": {
+          "acquireMs": {
+            "count": 290,
+            "p50": 0.02,
+            "p95": 0.038,
+            "p99": 0.067,
+            "max": 0.086
+          },
+          "paintMs": {
+            "count": 290,
+            "p50": 2.397,
+            "p95": 3.41,
+            "p99": 5.83,
+            "max": 16.28
+          },
+          "submitMs": {
+            "count": 290,
+            "p50": 0.969,
+            "p95": 1.772,
+            "p99": 8.693,
+            "max": 38.226
+          },
+          "copyMs": {
+            "count": 290,
+            "p50": 0.055,
+            "p95": 0.111,
+            "p99": 0.194,
+            "max": 0.249
+          },
+          "fenceMs": {
+            "count": 290,
+            "p50": 0.0,
+            "p95": 0.001,
+            "p99": 0.003,
+            "max": 7.693
+          },
+          "presentMs": {
+            "count": 290,
+            "p50": 0.126,
+            "p95": 1.23,
+            "p99": 2.605,
+            "max": 3.615
+          },
+          "totalMs": {
+            "count": 290,
+            "p50": 3.781,
+            "p95": 6.568,
+            "p99": 17.232,
+            "max": 40.842
+          }
+        },
+        "layoutMs": {
+          "count": 287,
+          "p50": 0.082,
+          "p95": 0.241,
+          "p99": 1.744,
+          "max": 21.912
+        },
+        "semanticsMs": {
+          "count": 263,
+          "p50": 0.902,
+          "p95": 2.974,
+          "p99": 5.723,
+          "max": 9.037
+        },
+        "repeatedSubmittedScenes": 3,
+        "backwardSubmittedScenes": 0,
+        "submitGapsWithinGestureMs": {
+          "count": 287,
+          "p50": 8.297,
+          "p95": 12.742,
+          "p99": 25.459,
+          "max": 46.817
+        }
+      },
+      {
+        "file": "baseline-2.json",
+        "presentObservedByRing": false,
+        "frames": 282,
+        "submitted": 280,
+        "ownerMs": {
+          "count": 282,
+          "p50": 5.442,
+          "p95": 10.515,
+          "p99": 29.503,
+          "max": 50.967
+        },
+        "callbackMs": {
+          "count": 282,
+          "p50": 1.599,
+          "p95": 4.571,
+          "p99": 10.565,
+          "max": 32.006
+        },
+        "callbackWaitMs": {
+          "count": 282,
+          "p50": 8.102,
+          "p95": 9.027,
+          "p99": 20.699,
+          "max": 50.568
+        },
+        "allocatedBytesPerDraw": {
+          "count": 282,
+          "p50": 602688,
+          "p95": 774008,
+          "p99": 1488192,
+          "max": 2076040
+        },
+        "ownerOver50ms": 1,
+        "inputAgeMs": {
+          "count": 118,
+          "p50": 6,
+          "p95": 14,
+          "p99": 21,
+          "max": 47
+        },
+        "dispatchMs": {
+          "count": 118,
+          "p50": 0.259,
+          "p95": 1.018,
+          "p99": 2.051,
+          "max": 2.635
+        },
+        "nativeHistorySamples": 107,
+        "actions": {
+          "0": 3,
+          "2": 112,
+          "1": 3
+        },
+        "reasons": {
+          "eligible": 277,
+          "noNewScene": 3,
+          "slots-full/noNewScene": 2
+        },
+        "coldOwnerMaxMs": 660.9115,
+        "setupFirstContactMaxMs": 62.1058,
+        "gcCollections": {
+          "gen0": 44,
+          "gen1": 1,
+          "gen2": 1
+        },
+        "vulkanMs": {
+          "acquireMs": {
+            "count": 280,
+            "p50": 0.02,
+            "p95": 0.038,
+            "p99": 0.075,
+            "max": 0.107
+          },
+          "paintMs": {
+            "count": 280,
+            "p50": 2.447,
+            "p95": 3.654,
+            "p99": 5.2,
+            "max": 16.933
+          },
+          "submitMs": {
+            "count": 280,
+            "p50": 1.006,
+            "p95": 1.802,
+            "p99": 15.158,
+            "max": 47.349
+          },
+          "copyMs": {
+            "count": 280,
+            "p50": 0.055,
+            "p95": 0.098,
+            "p99": 0.201,
+            "max": 0.544
+          },
+          "fenceMs": {
+            "count": 280,
+            "p50": 0.0,
+            "p95": 0.001,
+            "p99": 0.004,
+            "max": 6.363
+          },
+          "presentMs": {
+            "count": 280,
+            "p50": 0.125,
+            "p95": 0.748,
+            "p99": 2.164,
+            "max": 2.319
+          },
+          "totalMs": {
+            "count": 280,
+            "p50": 3.736,
+            "p95": 6.597,
+            "p99": 18.299,
+            "max": 49.385
+          }
+        },
+        "layoutMs": {
+          "count": 277,
+          "p50": 0.082,
+          "p95": 0.228,
+          "p99": 3.336,
+          "max": 25.111
+        },
+        "semanticsMs": {
+          "count": 253,
+          "p50": 0.941,
+          "p95": 2.893,
+          "p99": 4.924,
+          "max": 8.505
+        },
+        "repeatedSubmittedScenes": 3,
+        "backwardSubmittedScenes": 0,
+        "submitGapsWithinGestureMs": {
+          "count": 277,
+          "p50": 8.304,
+          "p95": 14.333,
+          "p99": 32.92,
+          "max": 51.687
+        }
+      },
+      {
+        "file": "baseline-3.json",
+        "presentObservedByRing": false,
+        "frames": 287,
+        "submitted": 285,
+        "ownerMs": {
+          "count": 287,
+          "p50": 5.513,
+          "p95": 11.819,
+          "p99": 21.691,
+          "max": 71.715
+        },
+        "callbackMs": {
+          "count": 287,
+          "p50": 1.604,
+          "p95": 5.024,
+          "p99": 13.543,
+          "max": 30.213
+        },
+        "callbackWaitMs": {
+          "count": 287,
+          "p50": 8.095,
+          "p95": 9.445,
+          "p99": 19.825,
+          "max": 67.443
+        },
+        "allocatedBytesPerDraw": {
+          "count": 287,
+          "p50": 596840,
+          "p95": 774008,
+          "p99": 1488192,
+          "max": 2076040
+        },
+        "ownerOver50ms": 1,
+        "inputAgeMs": {
+          "count": 113,
+          "p50": 6,
+          "p95": 12,
+          "p99": 18,
+          "max": 69
+        },
+        "dispatchMs": {
+          "count": 113,
+          "p50": 0.258,
+          "p95": 0.904,
+          "p99": 1.966,
+          "max": 2.229
+        },
+        "nativeHistorySamples": 104,
+        "actions": {
+          "0": 3,
+          "2": 107,
+          "1": 3
+        },
+        "reasons": {
+          "eligible": 282,
+          "noNewScene": 3,
+          "slots-full/noNewScene": 2
+        },
+        "coldOwnerMaxMs": 648.2431,
+        "setupFirstContactMaxMs": 58.6079,
+        "gcCollections": {
+          "gen0": 43,
+          "gen1": 1,
+          "gen2": 1
+        },
+        "vulkanMs": {
+          "acquireMs": {
+            "count": 285,
+            "p50": 0.019,
+            "p95": 0.038,
+            "p99": 0.076,
+            "max": 0.101
+          },
+          "paintMs": {
+            "count": 285,
+            "p50": 2.411,
+            "p95": 3.826,
+            "p99": 5.465,
+            "max": 15.549
+          },
+          "submitMs": {
+            "count": 285,
+            "p50": 0.997,
+            "p95": 1.804,
+            "p99": 3.756,
+            "max": 61.417
+          },
+          "copyMs": {
+            "count": 285,
+            "p50": 0.056,
+            "p95": 0.087,
+            "p99": 0.18,
+            "max": 0.352
+          },
+          "fenceMs": {
+            "count": 285,
+            "p50": 0.0,
+            "p95": 0.001,
+            "p99": 0.011,
+            "max": 7.529
+          },
+          "presentMs": {
+            "count": 285,
+            "p50": 0.125,
+            "p95": 1.331,
+            "p99": 2.304,
+            "max": 2.594
+          },
+          "totalMs": {
+            "count": 285,
+            "p50": 3.749,
+            "p95": 6.586,
+            "p99": 15.659,
+            "max": 66.146
+          }
+        },
+        "layoutMs": {
+          "count": 282,
+          "p50": 0.085,
+          "p95": 0.271,
+          "p99": 3.427,
+          "max": 26.079
+        },
+        "semanticsMs": {
+          "count": 258,
+          "p50": 0.908,
+          "p95": 3.604,
+          "p99": 7.684,
+          "max": 12.199
+        },
+        "repeatedSubmittedScenes": 3,
+        "backwardSubmittedScenes": 0,
+        "submitGapsWithinGestureMs": {
+          "count": 282,
+          "p50": 8.218,
+          "p95": 15.518,
+          "p99": 26.677,
+          "max": 77.573
+        }
+      }
+    ],
+    "candidate": [
+      {
+        "file": "candidate-1.json",
+        "presentObservedByRing": false,
+        "frames": 289,
+        "submitted": 287,
+        "ownerMs": {
+          "count": 289,
+          "p50": 5.191,
+          "p95": 9.264,
+          "p99": 20.703,
+          "max": 40.961
+        },
+        "callbackMs": {
+          "count": 289,
+          "p50": 1.452,
+          "p95": 4.334,
+          "p99": 16.316,
+          "max": 27.781
+        },
+        "callbackWaitMs": {
+          "count": 289,
+          "p50": 8.118,
+          "p95": 8.524,
+          "p99": 16.069,
+          "max": 39.977
+        },
+        "allocatedBytesPerDraw": {
+          "count": 289,
+          "p50": 539104,
+          "p95": 695912,
+          "p99": 1431688,
+          "max": 1989688
+        },
+        "ownerOver50ms": 0,
+        "inputAgeMs": {
+          "count": 127,
+          "p50": 6,
+          "p95": 9,
+          "p99": 20,
+          "max": 37
+        },
+        "dispatchMs": {
+          "count": 127,
+          "p50": 0.262,
+          "p95": 0.643,
+          "p99": 0.885,
+          "max": 2.249
+        },
+        "nativeHistorySamples": 119,
+        "actions": {
+          "0": 3,
+          "2": 121,
+          "1": 3
+        },
+        "reasons": {
+          "eligible": 284,
+          "noNewScene": 3,
+          "slots-full/noNewScene": 2
+        },
+        "coldOwnerMaxMs": 650.5069,
+        "setupFirstContactMaxMs": 59.5576,
+        "gcCollections": {
+          "gen0": 40,
+          "gen1": 1,
+          "gen2": 1
+        },
+        "vulkanMs": {
+          "acquireMs": {
+            "count": 287,
+            "p50": 0.019,
+            "p95": 0.038,
+            "p99": 0.059,
+            "max": 0.083
+          },
+          "paintMs": {
+            "count": 287,
+            "p50": 2.248,
+            "p95": 2.989,
+            "p99": 4.498,
+            "max": 5.595
+          },
+          "submitMs": {
+            "count": 287,
+            "p50": 0.974,
+            "p95": 1.515,
+            "p99": 4.484,
+            "max": 37.232
+          },
+          "copyMs": {
+            "count": 287,
+            "p50": 0.052,
+            "p95": 0.086,
+            "p99": 0.145,
+            "max": 0.42
+          },
+          "fenceMs": {
+            "count": 287,
+            "p50": 0.0,
+            "p95": 0.001,
+            "p99": 0.003,
+            "max": 6.527
+          },
+          "presentMs": {
+            "count": 287,
+            "p50": 0.122,
+            "p95": 0.388,
+            "p99": 2.736,
+            "max": 2.867
+          },
+          "totalMs": {
+            "count": 287,
+            "p50": 3.478,
+            "p95": 5.882,
+            "p99": 10.461,
+            "max": 39.462
+          }
+        },
+        "layoutMs": {
+          "count": 284,
+          "p50": 0.086,
+          "p95": 0.291,
+          "p99": 2.237,
+          "max": 24.028
+        },
+        "semanticsMs": {
+          "count": 260,
+          "p50": 0.799,
+          "p95": 2.269,
+          "p99": 5.042,
+          "max": 15.403
+        },
+        "snapMs": {
+          "count": 287,
+          "p50": 0.108,
+          "p95": 0.207,
+          "p99": 1.791,
+          "max": 36.97
+        },
+        "insertMs": {
+          "count": 287,
+          "p50": 0.598,
+          "p95": 0.906,
+          "p99": 2.566,
+          "max": 3.879
+        },
+        "submitMs": {
+          "count": 287,
+          "p50": 0.243,
+          "p95": 0.392,
+          "p99": 0.44,
+          "max": 0.509
+        },
+        "repeatedSubmittedScenes": 3,
+        "backwardSubmittedScenes": 0,
+        "submitGapsWithinGestureMs": {
+          "count": 284,
+          "p50": 8.313,
+          "p95": 12.679,
+          "p99": 25.307,
+          "max": 45.603
+        }
+      },
+      {
+        "file": "candidate-2.json",
+        "presentObservedByRing": false,
+        "frames": 278,
+        "submitted": 275,
+        "ownerMs": {
+          "count": 278,
+          "p50": 5.548,
+          "p95": 10.551,
+          "p99": 22.769,
+          "max": 57.405
+        },
+        "callbackMs": {
+          "count": 278,
+          "p50": 1.625,
+          "p95": 4.416,
+          "p99": 11.62,
+          "max": 39.906
+        },
+        "callbackWaitMs": {
+          "count": 278,
+          "p50": 8.144,
+          "p95": 8.815,
+          "p99": 17.885,
+          "max": 56.912
+        },
+        "allocatedBytesPerDraw": {
+          "count": 278,
+          "p50": 535600,
+          "p95": 719848,
+          "p99": 1337048,
+          "max": 3117912
+        },
+        "ownerOver50ms": 1,
+        "inputAgeMs": {
+          "count": 113,
+          "p50": 6,
+          "p95": 12,
+          "p99": 35,
+          "max": 53
+        },
+        "dispatchMs": {
+          "count": 113,
+          "p50": 0.268,
+          "p95": 0.774,
+          "p99": 1.408,
+          "max": 2.118
+        },
+        "nativeHistorySamples": 104,
+        "actions": {
+          "0": 3,
+          "2": 107,
+          "1": 3
+        },
+        "reasons": {
+          "eligible": 272,
+          "slots-full/noNewScene": 3,
+          "noNewScene": 3
+        },
+        "coldOwnerMaxMs": 648.8479,
+        "setupFirstContactMaxMs": 53.3799,
+        "gcCollections": {
+          "gen0": 39,
+          "gen1": 1,
+          "gen2": 1
+        },
+        "vulkanMs": {
+          "acquireMs": {
+            "count": 275,
+            "p50": 0.02,
+            "p95": 0.043,
+            "p99": 0.066,
+            "max": 0.124
+          },
+          "paintMs": {
+            "count": 275,
+            "p50": 2.465,
+            "p95": 4.063,
+            "p99": 5.943,
+            "max": 8.248
+          },
+          "submitMs": {
+            "count": 275,
+            "p50": 1.036,
+            "p95": 1.675,
+            "p99": 3.256,
+            "max": 53.523
+          },
+          "copyMs": {
+            "count": 275,
+            "p50": 0.058,
+            "p95": 0.101,
+            "p99": 0.183,
+            "max": 0.449
+          },
+          "fenceMs": {
+            "count": 275,
+            "p50": 0.0,
+            "p95": 0.001,
+            "p99": 0.028,
+            "max": 7.432
+          },
+          "presentMs": {
+            "count": 275,
+            "p50": 0.129,
+            "p95": 1.077,
+            "p99": 2.736,
+            "max": 3.4
+          },
+          "totalMs": {
+            "count": 275,
+            "p50": 3.855,
+            "p95": 6.596,
+            "p99": 10.592,
+            "max": 55.871
+          }
+        },
+        "layoutMs": {
+          "count": 272,
+          "p50": 0.088,
+          "p95": 0.263,
+          "p99": 3.606,
+          "max": 37.799
+        },
+        "semanticsMs": {
+          "count": 248,
+          "p50": 0.913,
+          "p95": 2.7,
+          "p99": 4.251,
+          "max": 8.655
+        },
+        "snapMs": {
+          "count": 275,
+          "p50": 0.119,
+          "p95": 0.211,
+          "p99": 1.05,
+          "max": 53.029
+        },
+        "insertMs": {
+          "count": 275,
+          "p50": 0.62,
+          "p95": 0.986,
+          "p99": 1.554,
+          "max": 2.774
+        },
+        "submitMs": {
+          "count": 275,
+          "p50": 0.273,
+          "p95": 0.456,
+          "p99": 0.521,
+          "max": 0.685
+        },
+        "repeatedSubmittedScenes": 3,
+        "backwardSubmittedScenes": 0,
+        "submitGapsWithinGestureMs": {
+          "count": 272,
+          "p50": 8.274,
+          "p95": 14.609,
+          "p99": 29.87,
+          "max": 57.979
+        }
+      },
+      {
+        "file": "candidate-3.json",
+        "presentObservedByRing": false,
+        "frames": 287,
+        "submitted": 286,
+        "ownerMs": {
+          "count": 287,
+          "p50": 5.391,
+          "p95": 9.659,
+          "p99": 19.475,
+          "max": 55.298
+        },
+        "callbackMs": {
+          "count": 287,
+          "p50": 1.522,
+          "p95": 4.267,
+          "p99": 10.209,
+          "max": 31.141
+        },
+        "callbackWaitMs": {
+          "count": 287,
+          "p50": 8.117,
+          "p95": 8.597,
+          "p99": 17.179,
+          "max": 54.879
+        },
+        "allocatedBytesPerDraw": {
+          "count": 287,
+          "p50": 537336,
+          "p95": 697648,
+          "p99": 1337048,
+          "max": 1989688
+        },
+        "ownerOver50ms": 1,
+        "inputAgeMs": {
+          "count": 119,
+          "p50": 6,
+          "p95": 13,
+          "p99": 16,
+          "max": 52
+        },
+        "dispatchMs": {
+          "count": 119,
+          "p50": 0.245,
+          "p95": 0.898,
+          "p99": 1.849,
+          "max": 1.954
+        },
+        "nativeHistorySamples": 111,
+        "actions": {
+          "0": 3,
+          "2": 113,
+          "1": 3
+        },
+        "reasons": {
+          "eligible": 283,
+          "noNewScene": 3,
+          "slots-full/noNewScene": 1
+        },
+        "coldOwnerMaxMs": 632.99,
+        "setupFirstContactMaxMs": 58.1509,
+        "gcCollections": {
+          "gen0": 39,
+          "gen1": 1,
+          "gen2": 1
+        },
+        "vulkanMs": {
+          "acquireMs": {
+            "count": 286,
+            "p50": 0.019,
+            "p95": 0.038,
+            "p99": 0.071,
+            "max": 0.092
+          },
+          "paintMs": {
+            "count": 286,
+            "p50": 2.435,
+            "p95": 3.342,
+            "p99": 4.685,
+            "max": 12.765
+          },
+          "submitMs": {
+            "count": 286,
+            "p50": 0.999,
+            "p95": 1.627,
+            "p99": 3.66,
+            "max": 51.367
+          },
+          "copyMs": {
+            "count": 286,
+            "p50": 0.055,
+            "p95": 0.089,
+            "p99": 0.26,
+            "max": 0.357
+          },
+          "fenceMs": {
+            "count": 286,
+            "p50": 0.0,
+            "p95": 0.001,
+            "p99": 0.004,
+            "max": 7.269
+          },
+          "presentMs": {
+            "count": 286,
+            "p50": 0.121,
+            "p95": 1.337,
+            "p99": 2.437,
+            "max": 2.87
+          },
+          "totalMs": {
+            "count": 286,
+            "p50": 3.757,
+            "p95": 5.879,
+            "p99": 16.371,
+            "max": 53.709
+          }
+        },
+        "layoutMs": {
+          "count": 283,
+          "p50": 0.082,
+          "p95": 0.159,
+          "p99": 1.733,
+          "max": 26.196
+        },
+        "semanticsMs": {
+          "count": 259,
+          "p50": 0.867,
+          "p95": 1.653,
+          "p99": 5.675,
+          "max": 10.296
+        },
+        "snapMs": {
+          "count": 286,
+          "p50": 0.114,
+          "p95": 0.205,
+          "p99": 1.084,
+          "max": 50.96
+        },
+        "insertMs": {
+          "count": 286,
+          "p50": 0.625,
+          "p95": 0.997,
+          "p99": 2.394,
+          "max": 3.058
+        },
+        "submitMs": {
+          "count": 286,
+          "p50": 0.244,
+          "p95": 0.409,
+          "p99": 0.481,
+          "max": 0.704
+        },
+        "repeatedSubmittedScenes": 3,
+        "backwardSubmittedScenes": 0,
+        "submitGapsWithinGestureMs": {
+          "count": 283,
+          "p50": 8.285,
+          "p95": 11.897,
+          "p99": 28.772,
+          "max": 60.199
+        }
+      }
+    ],
+    "skia-stable": [
+      {
+        "file": "skia-stable-1.json",
+        "presentObservedByRing": false,
+        "frames": 282,
+        "submitted": 282,
+        "ownerMs": {
+          "count": 282,
+          "p50": 5.555,
+          "p95": 10.715,
+          "p99": 20.942,
+          "max": 40.716
+        },
+        "callbackMs": {
+          "count": 282,
+          "p50": 1.623,
+          "p95": 4.141,
+          "p99": 10.751,
+          "max": 31.932
+        },
+        "callbackWaitMs": {
+          "count": 282,
+          "p50": 8.101,
+          "p95": 9.021,
+          "p99": 18.395,
+          "max": 40.365
+        },
+        "allocatedBytesPerDraw": {
+          "count": 282,
+          "p50": 536288,
+          "p95": 695912,
+          "p99": 1431688,
+          "max": 1989688
+        },
+        "ownerOver50ms": 0,
+        "inputAgeMs": {
+          "count": 116,
+          "p50": 6,
+          "p95": 13,
+          "p99": 16,
+          "max": 37
+        },
+        "dispatchMs": {
+          "count": 116,
+          "p50": 0.262,
+          "p95": 0.945,
+          "p99": 1.523,
+          "max": 3.188
+        },
+        "nativeHistorySamples": 108,
+        "actions": {
+          "0": 3,
+          "2": 110,
+          "1": 3
+        },
+        "reasons": {
+          "eligible": 279,
+          "noNewScene": 3
+        },
+        "coldOwnerMaxMs": 651.5647,
+        "setupFirstContactMaxMs": 60.3259,
+        "gcCollections": {
+          "gen0": 40,
+          "gen1": 1,
+          "gen2": 1
+        },
+        "vulkanMs": {
+          "acquireMs": {
+            "count": 282,
+            "p50": 0.021,
+            "p95": 0.036,
+            "p99": 0.072,
+            "max": 0.097
+          },
+          "paintMs": {
+            "count": 282,
+            "p50": 2.462,
+            "p95": 3.901,
+            "p99": 6.139,
+            "max": 15.4
+          },
+          "submitMs": {
+            "count": 282,
+            "p50": 1.051,
+            "p95": 2.181,
+            "p99": 8.448,
+            "max": 38.614
+          },
+          "copyMs": {
+            "count": 282,
+            "p50": 0.057,
+            "p95": 0.102,
+            "p99": 0.349,
+            "max": 0.4
+          },
+          "fenceMs": {
+            "count": 282,
+            "p50": 0.001,
+            "p95": 0.001,
+            "p99": 0.003,
+            "max": 7.527
+          },
+          "presentMs": {
+            "count": 282,
+            "p50": 0.128,
+            "p95": 0.585,
+            "p99": 1.579,
+            "max": 2.526
+          },
+          "totalMs": {
+            "count": 282,
+            "p50": 3.855,
+            "p95": 6.99,
+            "p99": 15.641,
+            "max": 39.865
+          }
+        },
+        "layoutMs": {
+          "count": 279,
+          "p50": 0.088,
+          "p95": 0.269,
+          "p99": 4.677,
+          "max": 22.664
+        },
+        "semanticsMs": {
+          "count": 255,
+          "p50": 0.884,
+          "p95": 2.482,
+          "p99": 6.503,
+          "max": 9.317
+        },
+        "snapMs": {
+          "count": 282,
+          "p50": 0.117,
+          "p95": 0.217,
+          "p99": 6.028,
+          "max": 38.342
+        },
+        "insertMs": {
+          "count": 282,
+          "p50": 0.641,
+          "p95": 1.109,
+          "p99": 2.216,
+          "max": 3.364
+        },
+        "submitMs": {
+          "count": 282,
+          "p50": 0.266,
+          "p95": 0.495,
+          "p99": 0.731,
+          "max": 2.47
+        },
+        "repeatedSubmittedScenes": 3,
+        "backwardSubmittedScenes": 0,
+        "submitGapsWithinGestureMs": {
+          "count": 279,
+          "p50": 8.289,
+          "p95": 13.463,
+          "p99": 25.385,
+          "max": 45.866
+        }
+      },
+      {
+        "file": "skia-stable-2.json",
+        "presentObservedByRing": false,
+        "frames": 287,
+        "submitted": 279,
+        "ownerMs": {
+          "count": 287,
+          "p50": 5.433,
+          "p95": 9.264,
+          "p99": 25.595,
+          "max": 55.539
+        },
+        "callbackMs": {
+          "count": 287,
+          "p50": 1.582,
+          "p95": 4.239,
+          "p99": 15.641,
+          "max": 36.542
+        },
+        "callbackWaitMs": {
+          "count": 287,
+          "p50": 8.04,
+          "p95": 8.473,
+          "p99": 22.557,
+          "max": 55.01
+        },
+        "allocatedBytesPerDraw": {
+          "count": 287,
+          "p50": 536856,
+          "p95": 695912,
+          "p99": 1431688,
+          "max": 1989688
+        },
+        "ownerOver50ms": 1,
+        "inputAgeMs": {
+          "count": 120,
+          "p50": 6,
+          "p95": 12,
+          "p99": 20,
+          "max": 52
+        },
+        "dispatchMs": {
+          "count": 120,
+          "p50": 0.261,
+          "p95": 0.599,
+          "p99": 1.042,
+          "max": 1.296
+        },
+        "nativeHistorySamples": 110,
+        "actions": {
+          "0": 3,
+          "2": 114,
+          "1": 3
+        },
+        "reasons": {
+          "eligible": 276,
+          "noNewScene": 3,
+          "render-unavailable": 6,
+          "slots-full/noNewScene": 2
+        },
+        "coldOwnerMaxMs": 652.4804,
+        "setupFirstContactMaxMs": 62.9194,
+        "gcCollections": {
+          "gen0": 39,
+          "gen1": 1,
+          "gen2": 1
+        },
+        "vulkanMs": {
+          "acquireMs": {
+            "count": 279,
+            "p50": 0.02,
+            "p95": 0.041,
+            "p99": 0.06,
+            "max": 0.093
+          },
+          "paintMs": {
+            "count": 279,
+            "p50": 2.428,
+            "p95": 3.75,
+            "p99": 5.043,
+            "max": 5.196
+          },
+          "submitMs": {
+            "count": 279,
+            "p50": 0.999,
+            "p95": 1.735,
+            "p99": 3.768,
+            "max": 51.294
+          },
+          "copyMs": {
+            "count": 279,
+            "p50": 0.053,
+            "p95": 0.091,
+            "p99": 0.33,
+            "max": 0.414
+          },
+          "fenceMs": {
+            "count": 279,
+            "p50": 0.0,
+            "p95": 0.001,
+            "p99": 0.002,
+            "max": 6.416
+          },
+          "presentMs": {
+            "count": 279,
+            "p50": 0.126,
+            "p95": 1.471,
+            "p99": 2.388,
+            "max": 3.948
+          },
+          "totalMs": {
+            "count": 279,
+            "p50": 3.722,
+            "p95": 6.394,
+            "p99": 12.601,
+            "max": 53.927
+          }
+        },
+        "layoutMs": {
+          "count": 282,
+          "p50": 0.086,
+          "p95": 0.239,
+          "p99": 3.716,
+          "max": 27.901
+        },
+        "semanticsMs": {
+          "count": 253,
+          "p50": 0.883,
+          "p95": 2.293,
+          "p99": 7.468,
+          "max": 14.404
+        },
+        "snapMs": {
+          "count": 279,
+          "p50": 0.114,
+          "p95": 0.224,
+          "p99": 1.983,
+          "max": 50.823
+        },
+        "insertMs": {
+          "count": 279,
+          "p50": 0.606,
+          "p95": 1.05,
+          "p99": 2.402,
+          "max": 3.09
+        },
+        "submitMs": {
+          "count": 279,
+          "p50": 0.256,
+          "p95": 0.418,
+          "p99": 0.479,
+          "max": 0.518
+        },
+        "repeatedSubmittedScenes": 3,
+        "backwardSubmittedScenes": 0,
+        "submitGapsWithinGestureMs": {
+          "count": 276,
+          "p50": 8.263,
+          "p95": 12.117,
+          "p99": 29.097,
+          "max": 57.732
+        }
+      },
+      {
+        "file": "skia-stable-3.json",
+        "presentObservedByRing": false,
+        "frames": 277,
+        "submitted": 276,
+        "ownerMs": {
+          "count": 277,
+          "p50": 5.372,
+          "p95": 11.307,
+          "p99": 23.797,
+          "max": 56.821
+        },
+        "callbackMs": {
+          "count": 277,
+          "p50": 1.53,
+          "p95": 4.392,
+          "p99": 12.632,
+          "max": 51.856
+        },
+        "callbackWaitMs": {
+          "count": 277,
+          "p50": 8.094,
+          "p95": 8.474,
+          "p99": 12.704,
+          "max": 56.418
+        },
+        "allocatedBytesPerDraw": {
+          "count": 277,
+          "p50": 547376,
+          "p95": 699888,
+          "p99": 1337048,
+          "max": 3082368
+        },
+        "ownerOver50ms": 2,
+        "inputAgeMs": {
+          "count": 114,
+          "p50": 6,
+          "p95": 11,
+          "p99": 31,
+          "max": 53
+        },
+        "dispatchMs": {
+          "count": 114,
+          "p50": 0.239,
+          "p95": 1.061,
+          "p99": 1.859,
+          "max": 2.179
+        },
+        "nativeHistorySamples": 105,
+        "actions": {
+          "0": 3,
+          "2": 108,
+          "1": 3
+        },
+        "reasons": {
+          "eligible": 273,
+          "noNewScene": 3,
+          "slots-full/noNewScene": 1
+        },
+        "coldOwnerMaxMs": 631.1259,
+        "setupFirstContactMaxMs": 47.9884,
+        "gcCollections": {
+          "gen0": 39,
+          "gen1": 1,
+          "gen2": 1
+        },
+        "vulkanMs": {
+          "acquireMs": {
+            "count": 276,
+            "p50": 0.02,
+            "p95": 0.042,
+            "p99": 0.072,
+            "max": 0.146
+          },
+          "paintMs": {
+            "count": 276,
+            "p50": 2.424,
+            "p95": 3.259,
+            "p99": 4.901,
+            "max": 6.144
+          },
+          "submitMs": {
+            "count": 276,
+            "p50": 0.984,
+            "p95": 1.567,
+            "p99": 3.814,
+            "max": 49.93
+          },
+          "copyMs": {
+            "count": 276,
+            "p50": 0.055,
+            "p95": 0.087,
+            "p99": 0.168,
+            "max": 0.343
+          },
+          "fenceMs": {
+            "count": 276,
+            "p50": 0.0,
+            "p95": 0.001,
+            "p99": 0.003,
+            "max": 6.382
+          },
+          "presentMs": {
+            "count": 276,
+            "p50": 0.119,
+            "p95": 0.653,
+            "p99": 2.513,
+            "max": 3.966
+          },
+          "totalMs": {
+            "count": 276,
+            "p50": 3.713,
+            "p95": 6.049,
+            "p99": 12.019,
+            "max": 55.404
+          }
+        },
+        "layoutMs": {
+          "count": 273,
+          "p50": 0.081,
+          "p95": 0.255,
+          "p99": 3.118,
+          "max": 46.071
+        },
+        "semanticsMs": {
+          "count": 249,
+          "p50": 0.861,
+          "p95": 2.725,
+          "p99": 5.91,
+          "max": 9.621
+        },
+        "snapMs": {
+          "count": 276,
+          "p50": 0.112,
+          "p95": 0.196,
+          "p99": 1.177,
+          "max": 49.508
+        },
+        "insertMs": {
+          "count": 276,
+          "p50": 0.601,
+          "p95": 0.96,
+          "p99": 2.523,
+          "max": 3.426
+        },
+        "submitMs": {
+          "count": 276,
+          "p50": 0.255,
+          "p95": 0.406,
+          "p99": 0.506,
+          "max": 0.558
+        },
+        "repeatedSubmittedScenes": 3,
+        "backwardSubmittedScenes": 0,
+        "submitGapsWithinGestureMs": {
+          "count": 273,
+          "p50": 8.299,
+          "p95": 11.951,
+          "p99": 27.58,
+          "max": 61.115
+        }
+      }
+    ]
+  },
+  "continuous": {
+    "baseline": {
+      "draws": 347,
+      "meanAllocatedBytes": 543176.0691642652,
+      "ownerMaxMs": 42.5507,
+      "down": 1,
+      "moves": 305,
+      "up": 1,
+      "nativeHistorySamples": 317,
+      "pipelineOwner": {
+        "id": 307,
+        "type": "Doroti.Framework.Rendering.PipelineOwner",
+        "kind": 15,
+        "calls": 450,
+        "inclusiveMicroseconds": 516138,
+        "selfMicroseconds": 516138,
+        "allocatedBytes": 122815576,
+        "selfAllocatedBytes": 122815576
+      }
+    },
+    "candidate": {
+      "draws": 346,
+      "meanAllocatedBytes": 487260.78612716764,
+      "ownerMaxMs": 58.0701,
+      "down": 1,
+      "moves": 303,
+      "up": 1,
+      "nativeHistorySamples": 317,
+      "pipelineOwner": {
+        "id": 307,
+        "type": "Doroti.Framework.Rendering.PipelineOwner",
+        "kind": 15,
+        "calls": 445,
+        "inclusiveMicroseconds": 464147,
+        "selfMicroseconds": 464147,
+        "allocatedBytes": 95007040,
+        "selfAllocatedBytes": 95007040
+      }
+    },
+    "skia-stable-perfetto": {
+      "file": "skia-stable-continuous-1.json",
+      "presentObservedByRing": false,
+      "frames": 342,
+      "submitted": 342,
+      "ownerMs": {
+        "count": 342,
+        "p50": 4.571,
+        "p95": 7.426,
+        "p99": 18.391,
+        "max": 65.115
+      },
+      "callbackMs": {
+        "count": 342,
+        "p50": 1.393,
+        "p95": 3.706,
+        "p99": 5.491,
+        "max": 60.584
+      },
+      "callbackWaitMs": {
+        "count": 342,
+        "p50": 6.986,
+        "p95": 8.339,
+        "p99": 10.078,
+        "max": 44.79
+      },
+      "allocatedBytesPerDraw": {
+        "count": 342,
+        "p50": 469320,
+        "p95": 547016,
+        "p99": 1115696,
+        "max": 3076832
+      },
+      "ownerOver50ms": 1,
+      "inputAgeMs": {
+        "count": 303,
+        "p50": 6,
+        "p95": 8,
+        "p99": 10,
+        "max": 17
+      },
+      "dispatchMs": {
+        "count": 303,
+        "p50": 0.263,
+        "p95": 0.426,
+        "p99": 1.914,
+        "max": 11.389
+      },
+      "nativeHistorySamples": 317,
+      "actions": {
+        "0": 1,
+        "2": 301,
+        "1": 1
+      },
+      "reasons": {
+        "eligible": 341,
+        "noNewScene": 1
+      },
+      "coldOwnerMaxMs": 641.8504,
+      "setupFirstContactMaxMs": 48.4925,
+      "gcCollections": {
+        "gen0": 44,
+        "gen1": 1,
+        "gen2": 1
+      },
+      "vulkanMs": {
+        "acquireMs": {
+          "count": 342,
+          "p50": 0.061,
+          "p95": 0.09,
+          "p99": 0.111,
+          "max": 0.574
+        },
+        "paintMs": {
+          "count": 342,
+          "p50": 1.926,
+          "p95": 2.506,
+          "p99": 4.266,
+          "max": 5.798
+        },
+        "submitMs": {
+          "count": 342,
+          "p50": 0.491,
+          "p95": 1.217,
+          "p99": 2.163,
+          "max": 41.048
+        },
+        "copyMs": {
+          "count": 342,
+          "p50": 0.063,
+          "p95": 0.091,
+          "p99": 0.15,
+          "max": 0.328
+        },
+        "fenceMs": {
+          "count": 342,
+          "p50": 0.0,
+          "p95": 0.001,
+          "p99": 0.001,
+          "max": 3.77
+        },
+        "presentMs": {
+          "count": 342,
+          "p50": 0.231,
+          "p95": 0.366,
+          "p99": 0.759,
+          "max": 2.17
+        },
+        "totalMs": {
+          "count": 342,
+          "p50": 2.861,
+          "p95": 4.009,
+          "p99": 7.405,
+          "max": 43.708
+        }
+      },
+      "layoutMs": {
+        "count": 341,
+        "p50": 0.088,
+        "p95": 0.143,
+        "p99": 2.55,
+        "max": 56.437
+      },
+      "semanticsMs": {
+        "count": 341,
+        "p50": 0.737,
+        "p95": 2.278,
+        "p99": 3.47,
+        "max": 6.377
+      },
+      "snapMs": {
+        "count": 342,
+        "p50": 0.099,
+        "p95": 0.168,
+        "p99": 0.297,
+        "max": 40.626
+      },
+      "insertMs": {
+        "count": 342,
+        "p50": 0.217,
+        "p95": 0.713,
+        "p99": 1.191,
+        "max": 2.298
+      },
+      "submitMs": {
+        "count": 342,
+        "p50": 0.151,
+        "p95": 0.326,
+        "p99": 0.543,
+        "max": 0.626
+      },
+      "repeatedSubmittedScenes": 1,
+      "backwardSubmittedScenes": 0,
+      "submitGapsWithinGestureMs": {
+        "count": 341,
+        "p50": 8.385,
+        "p95": 11.27,
+        "p99": 21.656,
+        "max": 66.121
+      }
+    },
+    "skia-stable-inputManifest": {
+      "serial": "R3CY30KZA4B",
+      "apkSha256": "f689faaa38253b44c60aedbf336198c974abe3a90b209d61386b8115e39a0fd1",
+      "profile": "ring",
+      "input": "adb-shell-continuous-touch",
+      "presentObserved": false,
+      "trials": [
+        {
+          "trial": 1,
+          "gestures": [
+            {
+              "startBootTimeSeconds": "675888.72",
+              "x": 950,
+              "fromY": 1800,
+              "toY": 700,
+              "durationMs": 2650,
+              "continuous": true,
+              "injection": "continuous-down-ms=343081457 moves=317 duration-ms=2651"
+            }
+          ],
+          "fatal": false
+        }
+      ]
+    }
+  },
+  "perfetto": [
+    {
+      "frame": {
+        "atUs": 16657889,
+        "gesture": 2,
+        "vsyncNanos": 342173861316313,
+        "submitted": true,
+        "reason": "eligible",
+        "frameworkFrame": 214,
+        "scene": 213,
+        "submission": 175,
+        "inFlight": 1,
+        "busy": 0,
+        "unavailable": 42,
+        "ownerMs": 50.9216,
+        "callbackWaitMs": 6.9711,
+        "callbackMs": 1.4091,
+        "snapMs": 46.2813,
+        "insertMs": 0.2355,
+        "submitMs": 0.1445,
+        "vulkan": {
+          "acquireMs": 0.0614,
+          "paintMs": 2.314,
+          "submitMs": 46.669,
+          "copyMs": 0.0425,
+          "fenceMs": 0.0012,
+          "presentMs": 0.2259,
+          "totalMs": 49.3141
+        },
+        "allocated": 508048,
+        "gen0": 33,
+        "gen1": 2,
+        "gen2": 2
+      },
+      "states": [
+        {
+          "state": "R",
+          "blocked_function": null,
+          "ms": 0.275
+        },
+        {
+          "state": "Running",
+          "blocked_function": null,
+          "ms": 50.646
+        }
+      ],
+      "slices": [
+        {
+          "name": "Choreographer#doFrame 157152075",
+          "ms": 51.579,
+          "ts": 674981327784223
+        },
+        {
+          "name": "animation",
+          "ms": 50.977,
+          "ts": 674981328377192
+        },
+        {
+          "name": "vkCreateGraphicsPipelines(3180012176, -5476376630723114848, 1, (VkGraphicsPipelineCreateInfo*) 0x7fe0a2b780, (VkAllocationCallbacks*) 0x0, (VkPipeline*) 0x7fe0a2b6b8);",
+          "ms": 44.414,
+          "ts": 674981334086098
+        },
+        {
+          "name": "QueuePresentKHR",
+          "ms": 0.223,
+          "ts": 674981378982348
+        },
+        {
+          "name": "queueBuffer",
+          "ms": 0.203,
+          "ts": 674981378997192
+        },
+        {
+          "name": "queueBuffer",
+          "ms": 0.161,
+          "ts": 674981379021411
+        },
+        {
+          "name": "onFrameAvailable - e855a2d SurfaceView[dev.doroti.testbed/crc64c80c495bd333b69c.MainActivity]@0#1(f:0,a:1,s:0)",
+          "ms": 0.132,
+          "ts": 674981379042401
+        },
+        {
+          "name": "ctl_done_irq",
+          "ms": 0.108,
+          "ts": 674981341870578
+        }
+      ],
+      "traceStart": 674981328397673,
+      "traceEnd": 674981379319273
+    },
+    {
+      "frame": {
+        "atUs": 16879549,
+        "gesture": 2,
+        "vsyncNanos": 342174102908980,
+        "submitted": true,
+        "reason": "eligible",
+        "frameworkFrame": 238,
+        "scene": 237,
+        "submission": 199,
+        "inFlight": 1,
+        "busy": 0,
+        "unavailable": 42,
+        "ownerMs": 30.7603,
+        "callbackWaitMs": 7.385,
+        "callbackMs": 26.6402,
+        "snapMs": 0.1217,
+        "insertMs": 0.2345,
+        "submitMs": 0.3077,
+        "vulkan": {
+          "acquireMs": 0.0599,
+          "paintMs": 2.4867,
+          "submitMs": 0.6706,
+          "copyMs": 0.466,
+          "fenceMs": 0.0005,
+          "presentMs": 0.2895,
+          "totalMs": 3.9734
+        },
+        "allocated": 1337048,
+        "gen0": 36,
+        "gen1": 2,
+        "gen2": 2
+      },
+      "states": [
+        {
+          "state": "D",
+          "blocked_function": null,
+          "ms": 0.338
+        },
+        {
+          "state": "R",
+          "blocked_function": null,
+          "ms": 0.163
+        },
+        {
+          "state": "Running",
+          "blocked_function": null,
+          "ms": 30.258
+        }
+      ],
+      "slices": [
+        {
+          "name": "Choreographer#doFrame 157152477",
+          "ms": 31.556,
+          "ts": 674981569480942
+        },
+        {
+          "name": "animation",
+          "ms": 30.88,
+          "ts": 674981570144484
+        },
+        {
+          "name": "QueueSubmit",
+          "ms": 0.436,
+          "ts": 674981600189380
+        },
+        {
+          "name": "QueuePresentKHR",
+          "ms": 0.284,
+          "ts": 674981600633130
+        },
+        {
+          "name": "queueBuffer",
+          "ms": 0.259,
+          "ts": 674981600652192
+        },
+        {
+          "name": "queueBuffer",
+          "ms": 0.203,
+          "ts": 674981600686567
+        },
+        {
+          "name": "onFrameAvailable - e855a2d SurfaceView[dev.doroti.testbed/crc64c80c495bd333b69c.MainActivity]@0#1(f:0,a:1,s:0)",
+          "ms": 0.165,
+          "ts": 674981600714692
+        },
+        {
+          "name": "QueueSubmit",
+          "ms": 0.151,
+          "ts": 674981599989692
+        }
+      ],
+      "traceStart": 674981570218973,
+      "traceEnd": 674981600979273
+    },
+    {
+      "frame": {
+        "atUs": 16465642,
+        "gesture": 2,
+        "vsyncNanos": 342173694740881,
+        "submitted": true,
+        "reason": "eligible",
+        "frameworkFrame": 198,
+        "scene": 197,
+        "submission": 159,
+        "inFlight": 2,
+        "busy": 0,
+        "unavailable": 42,
+        "ownerMs": 25.1501,
+        "callbackWaitMs": 4.0221,
+        "callbackMs": 1.5234,
+        "snapMs": 18.5685,
+        "insertMs": 1.0217,
+        "submitMs": 0.5515,
+        "vulkan": {
+          "acquireMs": 0.0576,
+          "paintMs": 2.5303,
+          "submitMs": 20.155,
+          "copyMs": 0.4651,
+          "fenceMs": 0.002,
+          "presentMs": 0.294,
+          "totalMs": 23.5042
+        },
+        "allocated": 536024,
+        "gen0": 32,
+        "gen1": 2,
+        "gen2": 2
+      },
+      "states": [
+        {
+          "state": "D",
+          "blocked_function": null,
+          "ms": 0.168
+        },
+        {
+          "state": "R",
+          "blocked_function": null,
+          "ms": 0.118
+        },
+        {
+          "state": "R+",
+          "blocked_function": null,
+          "ms": 2.003
+        },
+        {
+          "state": "Running",
+          "blocked_function": null,
+          "ms": 22.861
+        }
+      ],
+      "slices": [
+        {
+          "name": "Choreographer#doFrame 157151807",
+          "ms": 26.07,
+          "ts": 674981161224849
+        },
+        {
+          "name": "animation",
+          "ms": 25.387,
+          "ts": 674981161898234
+        },
+        {
+          "name": "vkCreateGraphicsPipelines(3180012176, -5476376630723114848, 1, (VkGraphicsPipelineCreateInfo*) 0x7fe0a2b780, (VkAllocationCallbacks*) 0x0, (VkPipeline*) 0x7fe0a2b6b8);",
+          "ms": 17.732,
+          "ts": 674981166785317
+        },
+        {
+          "name": "QueueSubmit",
+          "ms": 0.402,
+          "ts": 674981186252088
+        },
+        {
+          "name": "QueuePresentKHR",
+          "ms": 0.285,
+          "ts": 674981186688755
+        },
+        {
+          "name": "queueBuffer",
+          "ms": 0.254,
+          "ts": 674981186707817
+        },
+        {
+          "name": "queueBuffer",
+          "ms": 0.197,
+          "ts": 674981186738286
+        },
+        {
+          "name": "onFrameAvailable - e855a2d SurfaceView[dev.doroti.testbed/crc64c80c495bd333b69c.MainActivity]@0#1(f:0,a:1,s:0)",
+          "ms": 0.145,
+          "ts": 674981186778546
+        }
+      ],
+      "traceStart": 674981161922173,
+      "traceEnd": 674981187072273
+    },
+    {
+      "frame": {
+        "atUs": 16504289,
+        "gesture": 2,
+        "vsyncNanos": 342173736386145,
+        "submitted": true,
+        "reason": "eligible",
+        "frameworkFrame": 201,
+        "scene": 200,
+        "submission": 162,
+        "inFlight": 2,
+        "busy": 0,
+        "unavailable": 42,
+        "ownerMs": 22.2367,
+        "callbackWaitMs": 5.7756,
+        "callbackMs": 1.3881,
+        "snapMs": 0.1748,
+        "insertMs": 0.7354,
+        "submitMs": 0.5146,
+        "vulkan": {
+          "acquireMs": 0.0437,
+          "paintMs": 18.9935,
+          "submitMs": 1.43,
+          "copyMs": 0.067,
+          "fenceMs": 0.0007,
+          "presentMs": 0.2403,
+          "totalMs": 20.7754
+        },
+        "allocated": 534680,
+        "gen0": 32,
+        "gen1": 2,
+        "gen2": 2
+      },
+      "states": [
+        {
+          "state": "Running",
+          "blocked_function": null,
+          "ms": 20.149
+        },
+        {
+          "state": "S",
+          "blocked_function": null,
+          "ms": 2.088
+        }
+      ],
+      "slices": [
+        {
+          "name": "Choreographer#doFrame 157151866",
+          "ms": 22.999,
+          "ts": 674981202843234
+        },
+        {
+          "name": "animation",
+          "ms": 22.372,
+          "ts": 674981203462817
+        },
+        {
+          "name": "Explicit concurrent mark compact GC",
+          "ms": 7.935,
+          "ts": 674981213236828
+        },
+        {
+          "name": "MarkingPhase",
+          "ms": 5.183,
+          "ts": 674981213312192
+        },
+        {
+          "name": "MarkRoots",
+          "ms": 1.9,
+          "ts": 674981213393286
+        },
+        {
+          "name": "CompactionPhase",
+          "ms": 1.213,
+          "ts": 674981219884796
+        },
+        {
+          "name": "MarkConcurrentRoots",
+          "ms": 1.035,
+          "ts": 674981214256567
+        },
+        {
+          "name": "PreCleanCards",
+          "ms": 1.025,
+          "ts": 674981217446411
+        }
+      ],
+      "traceStart": 674981203482573,
+      "traceEnd": 674981225719273
+    }
+  ],
+  "perfettoAppFrameTimelineRows": 0,
+  "preUpgradeSourceSha256": {
+    "Doroti/src/Doroti.Framework.Widgets/scroll_position.cs": "70244663baefc0b221830dc587301165c5f19083735d8b0ec1de5b62c0edec35",
+    "Doroti/src/Doroti.Skia.Vulkan/GraphiteVulkanWindow.Timing.cs": "a7cde735fae5df87912451c6718f8940048044eb4c8f79026f5914eb689eeda2",
+    "Doroti/src/Doroti.Skia.Vulkan/GraphiteVulkanWindow.cs": "5fe9921dfcc53ceb0693c5a4764861e6eca5f774ffe1ef5b1881d1d5f3b23131",
+    "Doroti/src/Doroti.Ui/DorotiUiValues.cs": "855336aefdf8e591c5330c1e44b500f3192948a8a1a826117ce5b3cc3738eeed",
+    "Doroti/src/Doroti.Ui/GraphicsAndSemanticsContracts.cs": "07551deee02e541d01251f9b353ce565ad5d3a7bdf0f5aaf0c73b21d5fae70e3",
+    "Doroti/tests/Doroti.Scroll.Tests/Doroti.Scroll.Tests.csproj": "41dc70a29c241bf0951b083c4fc659028c4a5adb3cb831f6c47471bceb63893d",
+    "Doroti/tests/Doroti.Scroll.Tests/Program.cs": "f6ff4d7af0a65a384c6c4741d669b4dbe8af9155529226796961877277a924d3",
+    "packages/platforms/maui/Doroti.Host.Maui/DorotiAndroidVulkanViewHandler.cs": "c959fef366646496baa715bf3e18b477f94d648962a1aa8495f935cb47ba5dc5",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiApplicationNavigation.cs": "0c1c8f08ed52d60ec03a844c4da2c54ece4b0b9e25cafa39202b10fc8421679e",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiHostAdapter.cs": "1eac89a0dd100e2d5a45683b7387a4462b3fd2b95212aa47e7b26882fe4862d4",
+    "Doroti/eng/android/ScrollGesture.java": "806fddab50e539d610a9fd815ef6518a8f423c698e8baea69d0a210267ac4446",
+    "Doroti/eng/android/scroll.perfetto.pbtxt": "3b3984cdb60b091430a88068fb09f94ba3c78993cc7ba68c26498b2fae4d9401",
+    "Doroti/eng/measure-android-scroll.py": "bf683ca8ca105d4807c68e433afc59f2308a735fc8de4ffdb0f3e05db27d0bcf",
+    "Doroti/eng/summarize-android-scroll.py": "facd361bad4e7ed251877eed78dcd5b36f0d706b3843ab1ee9278ab6949e91c5",
+    "Doroti/tests/Doroti.Scroll.Tests/ProjectionRegression.cs": "9728aa352c58dcc55f389fd2528bd3e7d446cf8fba1a8565e2b6a0d96e8b0186",
+    "Doroti/tests/Doroti.Scroll.Tests/ScrollContinuityRegression.cs": "6770c45b2b451fb5725a0db238d156d96890fd95b1938c8e887132b2be1c2a83",
+    "packages/platforms/maui/Doroti.Host.Maui/AndroidFrameTiming.cs": "0dea3060e61b97da88bb432ba0a2c1355e2b78ed9c287f79a87c5ff3cd2320d6",
+    "packages/platforms/maui/Doroti.Host.Maui/AndroidScrollProfile.cs": "4e440347d3f9a97fbb1ed3383f9ce5025d4e0a75a5a6a1deeb617284383e17d5"
+  },
+  "skiaSharp": {
+    "version": "4.154.0",
+    "channel": "stable",
+    "latestCheckedOn": "2026-10-31",
+    "releaseUrl": "https://github.com/mono/SkiaSharp/releases/tag/v4.154.0",
+    "runtimeVerified": [
+      "win-x64",
+      "android-arm64"
+    ],
+    "otherRuntimeAcceptance": "notVerified",
+    "assets": {
+      "version": "4.154.0",
+      "packages": {
+        "skiasharp": {
+          "archiveSha256": "5a577c94beca77175c479503afe7bc8d8b4b9e7814768b7d733ee6a8c696ab3a",
+          "entries": {
+            "lib/net10.0/SkiaSharp.dll": "71274ef112eefdf5ca8a1517086787bc786c7103c30115abbb9dc424a09db43e",
+            "lib/net10.0-windows10.0.19041/SkiaSharp.dll": "c3719ba116d106b97d65665cc83cf9cfa1cbb8e58fbda0580d26a69340c8a82e",
+            "lib/net10.0-android36.0/SkiaSharp.dll": "86b853715b1c57c2a5eef645320c62609ffcf61476deb0fffb1c7310b8eb2812"
+          }
+        },
+        "skiasharp.nativeassets.android": {
+          "archiveSha256": "8bf0e7c0793a96a1f18b596da3d2557aecd5df341e69b4c50a2b26a9d5041ddc",
+          "entries": {
+            "runtimes/android-arm64/native/libSkiaSharp.so": "02c4cf50f41d50750d4e83f3e52c6e80dc7ac2ae43f50fefa381b45e18b81e9b",
+            "runtimes/android-x64/native/libSkiaSharp.so": "4083085434e7e8822496d2f4d0e087baee495f333d0c591696ee3ffc680d799d"
+          }
+        },
+        "skiasharp.nativeassets.win32": {
+          "archiveSha256": "ec71522d763713f93f7fe7dba90137c2e433f8af71650bcf265b93bc0a7e1e97",
+          "entries": {
+            "runtimes/win-x64/native/libSkiaSharp.dll": "82f9b2ee2b2dc91f738ae4baa54cd21fdd1181883c0fa207ab7066c708f07108",
+            "LICENSE.txt": "89101e35a8c66fd4d6dffc1763259161d35cb564c169714ec227a768c89f2938",
+            "THIRD-PARTY-NOTICES.txt": "21504c46c4c58aa64c1055bd2dcbc5f9a136b4b8c412ed3cc6740e22c5b127f5"
+          }
+        },
+        "skiasharp.nativeassets.linux": {
+          "archiveSha256": "5b7b75d7bfa90b70db4ee84303084f9c681561e6d70c44658dcc1be26b90f888",
+          "entries": {
+            "runtimes/linux-x64/native/libSkiaSharp.so": "a96876fc38d29ad5364ceee6f1ad57d87d94844a6cd38306a36f3f91edf9beab"
+          }
+        }
+      }
+    }
+  },
+  "skiaStablePerfetto": {
+    "frames": [
+      {
+        "frame": {
+          "atUs": 16413614,
+          "gesture": 2,
+          "vsyncNanos": 343081505882332,
+          "submitted": true,
+          "reason": "eligible",
+          "frameworkFrame": 156,
+          "scene": 155,
+          "submission": 146,
+          "inFlight": 1,
+          "busy": 0,
+          "unavailable": 12,
+          "ownerMs": 65.115,
+          "callbackWaitMs": 0.4216,
+          "callbackMs": 60.5836,
+          "snapMs": 0.0934,
+          "insertMs": 0.6398,
+          "submitMs": 0.3128,
+          "vulkan": {
+            "acquireMs": 0.1767,
+            "paintMs": 2.2054,
+            "submitMs": 1.0495,
+            "copyMs": 0.3275,
+            "fenceMs": 0.0023,
+            "presentMs": 0.2745,
+            "totalMs": 4.0361
+          },
+          "allocated": 3076832,
+          "gen0": 28,
+          "gen1": 1,
+          "gen2": 1
+        },
+        "states": [
+          {
+            "state": "D",
+            "ms": 0.078
+          },
+          {
+            "state": "R",
+            "ms": 4.476
+          },
+          {
+            "state": "Running",
+            "ms": 60.409
+          },
+          {
+            "state": "S",
+            "ms": 0.152
+          }
+        ],
+        "slices": [
+          {
+            "name": "Choreographer#doFrame 157241133",
+            "ms": 66.045
+          },
+          {
+            "name": "Choreographer#doFrame - resynced to 157241135 in 13.6ms",
+            "ms": 65.981
+          },
+          {
+            "name": "animation",
+            "ms": 65.18
+          },
+          {
+            "name": "QueueSubmit",
+            "ms": 0.281
+          },
+          {
+            "name": "QueuePresentKHR",
+            "ms": 0.269
+          },
+          {
+            "name": "queueBuffer",
+            "ms": 0.238
+          },
+          {
+            "name": "queueBuffer",
+            "ms": 0.181
+          }
+        ],
+        "traceStart": 675888975816608,
+        "traceEnd": 675889040931608,
+        "collectionDeltas": {
+          "gen0": 1,
+          "gen1": 0,
+          "gen2": 0
+        },
+        "frameworkWorkWithinOwner": {
+          "layoutMs": 56.437,
+          "semanticsMs": 2.299
+        }
+      },
+      {
+        "frame": {
+          "atUs": 16707526,
+          "gesture": 2,
+          "vsyncNanos": 343081822378743,
+          "submitted": true,
+          "reason": "eligible",
+          "frameworkFrame": 187,
+          "scene": 186,
+          "submission": 177,
+          "inFlight": 2,
+          "busy": 0,
+          "unavailable": 12,
+          "ownerMs": 45.3066,
+          "callbackWaitMs": 6.7682,
+          "callbackMs": 1.4772,
+          "snapMs": 40.6258,
+          "insertMs": 0.2635,
+          "submitMs": 0.1513,
+          "vulkan": {
+            "acquireMs": 0.0742,
+            "paintMs": 2.1596,
+            "submitMs": 41.0482,
+            "copyMs": 0.2084,
+            "fenceMs": 0.0013,
+            "presentMs": 0.2156,
+            "totalMs": 43.7076
+          },
+          "allocated": 507568,
+          "gen0": 33,
+          "gen1": 2,
+          "gen2": 2
+        },
+        "states": [
+          {
+            "state": "D",
+            "ms": 0.083
+          },
+          {
+            "state": "R",
+            "ms": 0.301
+          },
+          {
+            "state": "Running",
+            "ms": 44.923
+          }
+        ],
+        "slices": [
+          {
+            "name": "Choreographer#doFrame 157241662",
+            "ms": 46.028
+          },
+          {
+            "name": "animation",
+            "ms": 45.412
+          },
+          {
+            "name": "vkCreateGraphicsPipelines(3180011568, -5476376630723114848, 1, (VkGraphicsPipelineCreateInfo*) 0x7fe0a2b780, (VkAllocationCallbacks*) 0x0, (VkPipeline*) 0x7fe0a2b6b8);",
+            "ms": 38.91
+          },
+          {
+            "name": "QueuePresentKHR",
+            "ms": 0.212
+          },
+          {
+            "name": "queueBuffer",
+            "ms": 0.192
+          },
+          {
+            "name": "QueueSubmit",
+            "ms": 0.182
+          },
+          {
+            "name": "queueBuffer",
+            "ms": 0.147
+          }
+        ],
+        "traceStart": 675889289537008,
+        "traceEnd": 675889334843608,
+        "collectionDeltas": {
+          "gen0": 0,
+          "gen1": 0,
+          "gen2": 0
+        },
+        "frameworkWorkWithinOwner": {
+          "layoutMs": 0.09,
+          "semanticsMs": 0.798
+        }
+      },
+      {
+        "frame": {
+          "atUs": 16933730,
+          "gesture": 2,
+          "vsyncNanos": 343082064012009,
+          "submitted": true,
+          "reason": "eligible",
+          "frameworkFrame": 211,
+          "scene": 210,
+          "submission": 201,
+          "inFlight": 1,
+          "busy": 0,
+          "unavailable": 12,
+          "ownerMs": 29.7317,
+          "callbackWaitMs": 6.7684,
+          "callbackMs": 25.9742,
+          "snapMs": 0.1083,
+          "insertMs": 0.2446,
+          "submitMs": 0.2684,
+          "vulkan": {
+            "acquireMs": 0.0654,
+            "paintMs": 2.5557,
+            "submitMs": 0.6267,
+            "copyMs": 0.0606,
+            "fenceMs": 0.0004,
+            "presentMs": 0.3024,
+            "totalMs": 3.6115
+          },
+          "allocated": 1337048,
+          "gen0": 35,
+          "gen1": 2,
+          "gen2": 2
+        },
+        "states": [
+          {
+            "state": "R",
+            "ms": 0.109
+          },
+          {
+            "state": "Running",
+            "ms": 29.591
+          },
+          {
+            "state": "S",
+            "ms": 0.032
+          }
+        ],
+        "slices": [
+          {
+            "name": "Choreographer#doFrame 157242058",
+            "ms": 30.588
+          },
+          {
+            "name": "animation",
+            "ms": 29.819
+          },
+          {
+            "name": "QueuePresentKHR",
+            "ms": 0.299
+          },
+          {
+            "name": "queueBuffer",
+            "ms": 0.273
+          },
+          {
+            "name": "queueBuffer",
+            "ms": 0.204
+          },
+          {
+            "name": "onFrameAvailable - e855a2d SurfaceView[dev.doroti.testbed/crc64c80c495bd333b69c.MainActivity]@0#1(f:0,a:1,s:0)",
+            "ms": 0.167
+          },
+          {
+            "name": "acquireNextBufferLocked - e855a2d SurfaceView[dev.doroti.testbed/crc64c80c495bd333b69c.MainActivity]@0#1(f:0,a:1,s:0)frame=201",
+            "ms": 0.126
+          }
+        ],
+        "traceStart": 675889531315908,
+        "traceEnd": 675889561047608,
+        "collectionDeltas": {
+          "gen0": 1,
+          "gen1": 0,
+          "gen2": 0
+        },
+        "frameworkWorkWithinOwner": {
+          "layoutMs": 22.29,
+          "semanticsMs": 1.219
+        }
+      },
+      {
+        "frame": {
+          "atUs": 17081337,
+          "gesture": 2,
+          "vsyncNanos": 343082222246696,
+          "submitted": true,
+          "reason": "eligible",
+          "frameworkFrame": 228,
+          "scene": 227,
+          "submission": 218,
+          "inFlight": 1,
+          "busy": 0,
+          "unavailable": 12,
+          "ownerMs": 19.1155,
+          "callbackWaitMs": 6.6402,
+          "callbackMs": 1.363,
+          "snapMs": 15.1331,
+          "insertMs": 0.225,
+          "submitMs": 0.1449,
+          "vulkan": {
+            "acquireMs": 0.0492,
+            "paintMs": 1.7389,
+            "submitMs": 15.508,
+            "copyMs": 0.0656,
+            "fenceMs": 0.0009,
+            "presentMs": 0.236,
+            "totalMs": 17.5987
+          },
+          "allocated": 467688,
+          "gen0": 37,
+          "gen1": 2,
+          "gen2": 2
+        },
+        "states": [
+          {
+            "state": "Running",
+            "ms": 19.116
+          }
+        ],
+        "slices": [
+          {
+            "name": "Choreographer#doFrame 157242326",
+            "ms": 19.725
+          },
+          {
+            "name": "animation",
+            "ms": 19.166
+          },
+          {
+            "name": "vkCreateGraphicsPipelines(3180011568, -5476376630723114848, 1, (VkGraphicsPipelineCreateInfo*) 0x7fe0a2b780, (VkAllocationCallbacks*) 0x0, (VkPipeline*) 0x7fe0a2b6b8);",
+            "ms": 14.27
+          },
+          {
+            "name": "QueuePresentKHR",
+            "ms": 0.231
+          },
+          {
+            "name": "queueBuffer",
+            "ms": 0.21
+          },
+          {
+            "name": "queueBuffer",
+            "ms": 0.162
+          },
+          {
+            "name": "onFrameAvailable - e855a2d SurfaceView[dev.doroti.testbed/crc64c80c495bd333b69c.MainActivity]@0#1(f:0,a:1,s:0)",
+            "ms": 0.128
+          }
+        ],
+        "traceStart": 675889689539108,
+        "traceEnd": 675889708654608,
+        "collectionDeltas": {
+          "gen0": 0,
+          "gen1": 0,
+          "gen2": 0
+        },
+        "frameworkWorkWithinOwner": {
+          "layoutMs": 0.081,
+          "semanticsMs": 0.743
+        }
+      }
+    ],
+    "appFrameTimelineRows": 2,
+    "frameTimelineLayers": [
+      {
+        "layer": "TX - Bounds for - dev.doroti.testbed/crc64c80c495bd333b69c.MainActivity@0#88959",
+        "rows": 1,
+        "jankType": "None",
+        "presentType": "On-time Present"
+      },
+      {
+        "layer": "TX - VRI-dev.doroti.testbed/crc64c80c495bd333b69c.MainActivity$_31709#88956",
+        "rows": 1,
+        "jankType": "None",
+        "presentType": "On-time Present"
+      }
+    ],
+    "surfaceViewFrameTimelineRows": 0,
+    "fullDisplayQualification": false
+  },
+  "androidStableSmoke": {
+    "componentsNodes": 46,
+    "normalLaunchWithoutDiagnosticExtras": true,
+    "colorNodes": 32,
+    "colorHasPrimary": true,
+    "colorHasStaleElevated": false,
+    "nativeEditors": [
+      "",
+      "Native editor"
+    ],
+    "frameworkTextInput": true,
+    "resumeSamePid": true,
+    "resumeNodes": 43,
+    "installedApkSha256": "f689faaa38253b44c60aedbf336198c974abe3a90b209d61386b8115e39a0fd1",
+    "enabledAccessibilityServices": "null",
+    "lowPower": "0",
+    "fatalException": false,
+    "nativeVersionLines": [
+      "I/DOTNET  (32432): DorotiGraphite official package=SkiaSharp.NativeAssets.Android version=4.154.0 abi=arm64-v8a sha256=02c4cf50f41d50750d4e83f3e52c6e80dc7ac2ae43f50fefa381b45e18b81e9b apk=/data/app/~~2whUnV6LdZwgqHtPUzKi-Q==/dev.doroti.testbed-tiW282YiXUIwYF9dkIiLiw==/base.apk loaded=/data/app/~~2wh",
+      "I/DOTNET  (  546): DorotiGraphite official package=SkiaSharp.NativeAssets.Android version=4.154.0 abi=arm64-v8a sha256=02c4cf50f41d50750d4e83f3e52c6e80dc7ac2ae43f50fefa381b45e18b81e9b apk=/data/app/~~2whUnV6LdZwgqHtPUzKi-Q==/dev.doroti.testbed-tiW282YiXUIwYF9dkIiLiw==/base.apk loaded=/data/app/~~2wh"
+    ],
+    "scrollProfileLogLines": []
+  },
+  "windowsStableSmoke": {
+    "command": "dotnet run --project ./samples/DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj",
+    "configuration": "Debug",
+    "exitCode": 0,
+    "renderCallbacks": 828,
+    "presentedTerminals": 826,
+    "failedTerminals": 0,
+    "mouseWheelPackets": 1,
+    "panZoomPackets": 0,
+    "pendingAfterDrain": 0,
+    "nativeViewsObserved": true,
+    "textBridgeValue": "stable-skia",
+    "physicalTrackpadAccepted": false,
+    "displayPerformanceAccepted": false
+  },
+  "stableBuild": {
+    "configuration": "Release",
+    "rid": "android-arm64",
+    "exitCode": 0,
+    "warnings": 0,
+    "errors": 0,
+    "elapsed": "00:04:08.85",
+    "timeoutSeconds": 1200
+  },
+  "stableRegression": {
+    "command": "dotnet run --project Doroti/tests/Doroti.Scroll.Tests/Doroti.Scroll.Tests.csproj -c Release -m:1 -nr:false",
+    "exitCode": 0,
+    "timeoutSeconds": 1200,
+    "output": [
+      "PASS: production ticker at 60/120 Hz, missed pulses, fractional offsets, semantic boundaries",
+      "PASS: Android vsync clock, matrix ownership/allocation, perspective and legacy semantics projection",
+      "PASS: release velocity, ballistic continuation, semantic changes, native inertia lifecycle"
+    ]
+  },
+  "sourceSha256": {
+    "Doroti/Directory.Packages.props": "cf6b706248d572f29fb20e4d07ad7e6b7edfcd000bb174c243d28dce4c7a0e84",
+    "Doroti/THIRD-PARTY-NOTICES.md": "ff8644e4e87801816f85a3a9fe90f567c87636295d149e1c99f368d375fb6ccc",
+    "Doroti/eng/android/ScrollGesture.java": "806fddab50e539d610a9fd815ef6518a8f423c698e8baea69d0a210267ac4446",
+    "Doroti/eng/android/scroll.perfetto.pbtxt": "3b3984cdb60b091430a88068fb09f94ba3c78993cc7ba68c26498b2fae4d9401",
+    "Doroti/eng/measure-android-scroll.py": "e801d2eacbf1e738397c76e9d2cf48f67add94c12f4937c3f96430b80de15ab2",
+    "Doroti/eng/summarize-android-scroll.py": "facd361bad4e7ed251877eed78dcd5b36f0d706b3843ab1ee9278ab6949e91c5",
+    "Doroti/src/Doroti.Framework.Widgets/scroll_position.cs": "70244663baefc0b221830dc587301165c5f19083735d8b0ec1de5b62c0edec35",
+    "Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.props": "e095fbcd99c9a346b3879032ab38a94304a91571b3091b0ef7af9d525ff14fcc",
+    "Doroti/src/Doroti.Skia.RuntimeEffects/Doroti.Skia.RuntimeEffects.csproj": "338280b87febc55db88f442cd4ad76e7794052e834c4d35d5e15487cd44809aa",
+    "Doroti/src/Doroti.Skia.Vulkan/GraphiteNativeLibrary.cs": "7e8ec2abadf4c18ebe471a60d00473f784740a13b597b80a86953f231e88c9c3",
+    "Doroti/src/Doroti.Skia.Vulkan/GraphiteVulkanWindow.Timing.cs": "a7cde735fae5df87912451c6718f8940048044eb4c8f79026f5914eb689eeda2",
+    "Doroti/src/Doroti.Skia.Vulkan/GraphiteVulkanWindow.cs": "5fe9921dfcc53ceb0693c5a4764861e6eca5f774ffe1ef5b1881d1d5f3b23131",
+    "Doroti/src/Doroti.Ui/DorotiUiValues.cs": "855336aefdf8e591c5330c1e44b500f3192948a8a1a826117ce5b3cc3738eeed",
+    "Doroti/src/Doroti.Ui/GraphicsAndSemanticsContracts.cs": "07551deee02e541d01251f9b353ce565ad5d3a7bdf0f5aaf0c73b21d5fae70e3",
+    "Doroti/tests/Doroti.Scroll.Tests/Doroti.Scroll.Tests.csproj": "41dc70a29c241bf0951b083c4fc659028c4a5adb3cb831f6c47471bceb63893d",
+    "Doroti/tests/Doroti.Scroll.Tests/Program.cs": "f6ff4d7af0a65a384c6c4741d669b4dbe8af9155529226796961877277a924d3",
+    "Doroti/tests/Doroti.Scroll.Tests/ProjectionRegression.cs": "f203013cfedadd77f82ca69f7b96299d44255f7d98927334d5728454cc22d0d2",
+    "Doroti/tests/Doroti.Scroll.Tests/README.md": "b01eda6ba84de7e5c8e9dd8409934030c73482ef5449b1b81168dc4ea88669c4",
+    "Doroti/tests/Doroti.Scroll.Tests/ScrollContinuityRegression.cs": "6770c45b2b451fb5725a0db238d156d96890fd95b1938c8e887132b2be1c2a83",
+    "history/26/10/31/galaxy-scroll-implementation.md": "7b789c2100038bf8d9b2ba293a0ea960ce275c5ff6f0e808fffa082cfc37acaa",
+    "packages/platforms/build/Sdk.targets": "8c8f640cf7ef460bd49cffafc0c98c09ab063bd43a66f3352addd67588250073",
+    "packages/platforms/maui/Doroti.Host.Maui/AndroidFrameTiming.cs": "0dea3060e61b97da88bb432ba0a2c1355e2b78ed9c287f79a87c5ff3cd2320d6",
+    "packages/platforms/maui/Doroti.Host.Maui/AndroidScrollProfile.cs": "4e440347d3f9a97fbb1ed3383f9ce5025d4e0a75a5a6a1deeb617284383e17d5",
+    "packages/platforms/maui/Doroti.Host.Maui/DorotiAndroidVulkanViewHandler.cs": "c959fef366646496baa715bf3e18b477f94d648962a1aa8495f935cb47ba5dc5",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiApplicationNavigation.cs": "0c1c8f08ed52d60ec03a844c4da2c54ece4b0b9e25cafa39202b10fc8421679e",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiHostAdapter.cs": "1eac89a0dd100e2d5a45683b7387a4462b3fd2b95212aa47e7b26882fe4862d4",
+    "packages/platforms/maui/Doroti.Target.Android.Maui.android-arm64/doroti-target-manifest.json": "cdf5c3ce901fa48259f436d0d1df0b213d3b33b698377adcbfc2382b0409d9d6",
+    "packages/platforms/maui/Doroti.Target.Android.Maui.android-x64/doroti-target-manifest.json": "5e06c37624713af71a7eaf3b6c26c389e54dfa5846fa649f6c466e22be8af00e",
+    "packages/platforms/maui/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/doroti-target-manifest.json": "2c38078cbe5deed6599a8c9d4eaf4c7db7b496aa6a7c2f899f88f2227e9043d0",
+    "packages/platforms/maui/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/doroti-target-manifest.maccatalyst27.json": "6860dbee0e068a2c036ce194e27cc21d2758b1b38bd4a4deb1cc366ec6283c9a",
+    "packages/platforms/maui/Doroti.Target.MacOS.Maui.osx-arm64/doroti-target-manifest.json": "29b75fda3efb16515e3b5eb49125dad9b545a67b6bc3eb490cf36864c12b0c7a",
+    "packages/platforms/maui/Doroti.Target.MacOS.Maui.osx-arm64/doroti-target-manifest.macos27.json": "0a7f1f01d9e68848133e230e007d25955afe334d967b28adc5d4cb60c2462874",
+    "packages/platforms/maui/Doroti.Target.Windows.Maui.win-x64/doroti-target-manifest.json": "83243c1ce2868e96a4e5ec4e442de21d03e30724063fe1e4c6569be13d2f45e3",
+    "packages/platforms/maui/Doroti.Target.iOS.Maui.ios-arm64/doroti-target-manifest.ios27.json": "6965126db07dbbabae0abd79e4baff63b39dbf5c5d8da0deb8f177f86e0ea572",
+    "packages/platforms/maui/Doroti.Target.iOS.Maui.ios-arm64/doroti-target-manifest.json": "929f2116d26959b08c8eed3d83791c51363684a40cba8314a37d3d19b1bab165",
+    "packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-arm64/doroti-target-manifest.ios27.json": "11aebba78321b5e79d1a2bd8d21920a935b3a7b683624bc29ceecaf1dc2aaefa",
+    "packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-arm64/doroti-target-manifest.json": "69122b0e8164aa1027010cd8f16cd707e2f6ec54c9871eb66e860ee331926f08",
+    "packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-x64/doroti-target-manifest.ios27.json": "4f290c30e14a04cc12d4ba99ee6c5041309fedb4f3d335bf92d1c2611162930f",
+    "packages/platforms/maui/Doroti.Target.iOS.Maui.iossimulator-x64/doroti-target-manifest.json": "88b43bf18ae9bb6f14692910d72d8d4c0ed5318f15448a4659ba8a454e933378",
+    "packages/platforms/qt/Doroti.Target.Linux.Qt.linux-x64/doroti-target-manifest.json": "cba7ff2c1060e67377655d2dc7719e19b5ac5b3923af0a31c20ed4745463879e",
+    "packages/platforms/web/Doroti.Target.Web.browser-wasm/doroti-target-manifest.json": "91e563cdb3a3a9c62959effda7da56c5907446916d6d612e277cdece63e21cf8",
+    "packages/platforms/windowsappsdk/Doroti.Target.Windows.WindowsAppSdk.win-x64/doroti-target-manifest.json": "b1089a5ad358662ebf3acff2f3ab0a0cbf1021a4e0cf2b48a21bc7cfd3d8b01c",
+    "work.md": "2141870b7b92d150cdc8f2e72d5154ab1e95c1d0fad1d5ee5634f145b54649c8"
+  },
+  "rawEvidenceSha256": {
+    "skia-stable-1.json": "c01da272ce7990d12779f875133c80f9ee5e19126126235d7c9cbbc55d06da43",
+    "skia-stable-2.json": "e1183a7eed4010020ed02d3fc55fa9139a1c9e7a6ee673ca056816281930dcd5",
+    "skia-stable-3.json": "c76699f9d205b52040bb3efedf3163ae93ddd82965211d981be9f11a5fe3fe51",
+    "skia-stable-continuous-1.json": "1d5357d61397ae0e5b013909bdf78cd03afce21c6a19c3aaaff9056342e5b54c",
+    "skia-stable-continuous-1.perfetto-trace": "e699b68ac7fe0487bbc366aa5a5445497e994ab42c5d9651edb00bd4b577d7e5",
+    "windows-skia-stable.json": "8ec2c79ee24cb53857bdea02e08d60df3f3a647a1bb6e799dbb623197d916110",
+    "skia-stable-final-normal.png": "8dcb00a631b66b77a77c5ee283c67230395beab942146b0902ff60169695a83d",
+    "skia-stable-final-normal.log": "3bbdc668f13f18727f9a807281f3e54813125e4b05c5ade1f114f9ff0a18a5aa"
+  },
+  "rawEvidencePolicy": "Ignored temp/galaxy-scroll raw files are disposable; hashes retain identity, not a guarantee the raw files remain after cleanup.",
+  "sourceSnapshotScope": "Final uncommitted working tree, excluding this JSON to avoid a self hash. RuntimeEffects PackageReleaseNotes wording was refreshed after the final binary build; this last edit changes package metadata only."
+}

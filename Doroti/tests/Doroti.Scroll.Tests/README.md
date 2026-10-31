@@ -15,6 +15,24 @@ manager, and verifies both subclasses retire on disposal. It injects no physical
 input and does not show a window.
 These checks do not establish physical trackpad behavior or display frame pacing.
 
+It also drives the production scheduler/ticker/animation controller at 60/120 Hz
+and with missed pulses, checks fractional offsets and final ticker retirement,
+unchanged dimensions and recontact, and tests all four semantic scroll boundaries.
+Projection checks cover alias-safe allocation-free matrix composition, perspective
+and legacy origins, DPR, layout text geometry and obscured text. Android vsync
+conversion retains callback age instead of shifting time by the first delayed pulse.
+
+Caret-drag checks reuse immutable semantics text geometry while glyph layout is
+unchanged. They verify grapheme ranges and cache invalidation after text edits,
+wrapping, text scaling, scroll offsets, RTL/center alignment, obscuring and disposal.
+These CPU checks do not qualify physical finger-to-display latency.
+[Galaxy cursor-handle drag evidence](../../../history/26/10/31/galaxy-caret-drag.md)
+separates the first-drag fix, native magnifier lifetime/IME checks and remaining
+sustained-drag performance limits.
+
+Galaxy ADB and continuous single-contact profiling commands and evidence limits:
+[2026-10-31 implementation record](../../../history/26/10/31/galaxy-scroll-implementation.md).
+
 For a Windows physical-input investigation, launch with
 `DOROTI_WINDOWS_FRAME_TIMING=1`, `DOROTI_WINDOWS_APPSDK_DIAGNOSTICS=1` and
 `DOROTI_WINDOWS_APPSDK_REPORT` pointing to a local JSON file. Closing the app writes

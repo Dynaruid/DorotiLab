@@ -43,6 +43,11 @@ public abstract class DorotiMauiActivity : Microsoft.Maui.MauiAppCompatActivity
 {
     protected override void OnCreate(Android.OS.Bundle? savedInstanceState)
     {
+        // Only diagnostic flags are forwarded; initialize before framework static
+        // profile switches are read. Normal launches retain their existing flags.
+        foreach (var flag in new[] { "DOROTI_SCROLL_PROFILE", "DOROTI_STAGE_TRACE", "DOROTI_LAYOUT_PROFILE", "DOROTI_ALLOCATION_PROFILE" })
+            if (Intent?.GetStringExtra(flag) is { } enabled)
+                Environment.SetEnvironmentVariable(flag, enabled);
         if (savedInstanceState is null && Intent?.Action == Android.Content.Intent.ActionView && Intent.DataString is { } location)
             TryDeliver(location, true);
         base.OnCreate(savedInstanceState);
@@ -50,6 +55,8 @@ public abstract class DorotiMauiActivity : Microsoft.Maui.MauiAppCompatActivity
     protected override void OnNewIntent(Android.Content.Intent? intent)
     {
         base.OnNewIntent(intent);
+        if (intent?.GetStringExtra("DOROTI_SCROLL_EXPORT") == "1")
+            AndroidScrollProfile.Export(this);
         if (intent?.Action == Android.Content.Intent.ActionView && intent.DataString is { } location)
             TryDeliver(location, false);
     }

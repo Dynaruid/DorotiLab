@@ -4,23 +4,23 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
-    <PackageVersion Include="SkiaSharp" Version="4.154.0-preview.1.26454.9" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.Win32" Version="4.154.0-preview.1.26454.9" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.Android" Version="4.154.0-preview.1.26454.9" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.iOS" Version="4.154.0-preview.1.26454.9" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.MacCatalyst" Version="4.154.0-preview.1.26454.9" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.macOS" Version="4.154.0-preview.1.26454.9" />
+    <PackageVersion Include="SkiaSharp" Version="4.154.0" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.Win32" Version="4.154.0" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.Android" Version="4.154.0" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.iOS" Version="4.154.0" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.MacCatalyst" Version="4.154.0" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.macOS" Version="4.154.0" />
     <PackageVersion Include="Silk.NET.Direct3D11" Version="2.23.0" />
     <PackageVersion Include="Silk.NET.Direct3D12" Version="2.23.0" />
     <PackageVersion Include="Silk.NET.DXGI" Version="2.23.0" />
     <PackageVersion Include="Silk.NET.Direct3D11.Extensions.D3D11On12" Version="2.23.0" />
     <PackageVersion Include="Silk.NET.Vulkan" Version="2.23.0" />
     <PackageVersion Include="Silk.NET.Vulkan.Extensions.KHR" Version="2.23.0" />
-    <PackageVersion Include="SkiaSharp.HarfBuzz" Version="4.154.0-preview.1.26454.9" />
-    <PackageVersion Include="SkiaSharp.Views.Blazor" Version="4.154.0-preview.1.26454.9" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.WebAssembly" Version="4.154.0-preview.1.26454.9" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.Linux" Version="4.154.0-preview.1.26454.9" />
-    <PackageVersion Include="SkiaSharp.Vulkan.Silk.NET" Version="4.154.0-preview.1.26454.9" />
+    <PackageVersion Include="SkiaSharp.HarfBuzz" Version="4.154.0" />
+    <PackageVersion Include="SkiaSharp.Views.Blazor" Version="4.154.0" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.WebAssembly" Version="4.154.0" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.Linux" Version="4.154.0" />
+    <PackageVersion Include="SkiaSharp.Vulkan.Silk.NET" Version="4.154.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.11" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.11" />
     <PackageVersion Include="Microsoft.TypeScript.MSBuild" Version="7.0.0" />
@@ -34,8 +34,8 @@
     <PackageVersion Include="Microsoft.Maui.Platforms.MacOS" Version="[0.1.0-preview.12.26368.2]" />
     <PackageVersion Include="Microsoft.Maui.Platforms.MacOS.Essentials" Version="[0.1.0-preview.12.26368.2]" />
     <PackageVersion Include="CommunityToolkit.Maui.Markup" Version="8.0.0" />
-    <PackageVersion Include="SkiaSharp.Views" Version="4.154.0-preview.1.26454.9" />
-    <PackageVersion Include="SkiaSharp.Views.Maui.Controls" Version="4.154.0-preview.1.26454.9" />
+    <PackageVersion Include="SkiaSharp.Views" Version="4.154.0" />
+    <PackageVersion Include="SkiaSharp.Views.Maui.Controls" Version="4.154.0" />
     <PackageVersion Include="Microsoft.WindowsAppSDK" Version="1.8.260508005" />
     <PackageVersion Include="Microsoft.Web.WebView2" Version="1.0.3179.45" />
   </ItemGroup>
