@@ -26,15 +26,21 @@ public sealed unsafe class WindowsPrecisionTrackpad : IDisposable
     private readonly ulong _viewId;
     private readonly Action<PointerDataPacket> _dispatch;
     private readonly SubclassProc _subclass;
+    private readonly nint[] _additionalInputWindows;
+    private readonly List<nint> _attachedWindows = [];
+    private readonly List<nint> _activeWindows = [];
+    private readonly Queue<PointerData>? _recentInput =
+        Environment.GetEnvironmentVariable("DOROTI_WINDOWS_FRAME_TIMING") == "1" ? new() : null;
+    private long _updatesCalled, _hitTests, _contacts;
+    private nint _contactWindow;
+    private uint _status;
     private nint _manager,
         _updates,
         _viewport;
     private Callback* _callback;
     private uint _cookie;
     private nuint _subclassId;
-    private bool _attached,
-        _rootAttached,
-        _disposed,
+    private bool _disposed,
         _running,
         _inertia,
         _resetting,
@@ -49,12 +55,18 @@ public sealed unsafe class WindowsPrecisionTrackpad : IDisposable
     private PointerData _last;
 
     public WindowsPrecisionTrackpad(nint window, ulong viewId, Action<PointerDataPacket> dispatch)
+        : this(window, viewId, dispatch, []) { }
+
+    public WindowsPrecisionTrackpad(nint window, ulong viewId, Action<PointerDataPacket> dispatch,
+        params nint[] additionalInputWindows)
     {
         _window = window;
         _root = GetAncestor(window, 2);
         _viewId = viewId;
         _dispatch = dispatch;
         _subclass = HandleMessage;
+        _additionalInputWindows = additionalInputWindows.Where(value => value != 0 && value != window)
+            .Distinct().ToArray();
         try
         {
             Initialize();
@@ -111,19 +123,26 @@ public sealed unsafe class WindowsPrecisionTrackpad : IDisposable
         _cookie = cookie;
         Resize();
         Check(((delegate* unmanaged[Stdcall]<nint, nint, int>)V(_manager, 3))(_manager, _window));
+        _activeWindows.Add(_window);
+        // A composition host can show a raster child over its logical input
+        // HWND. Activate the same manager for those input surfaces as well:
+        // mouse hit-test transparency alone does not register a DM target.
+        foreach (var window in _additionalInputWindows)
+        {
+            Check(((delegate* unmanaged[Stdcall]<nint, nint, int>)V(_manager, 3))(_manager, window));
+            _activeWindows.Add(window);
+        }
         Check(Call(_viewport, 3));
         _subclassId = (nuint)_callback;
-        _attached = SetWindowSubclass(_window, _subclass, _subclassId, 0);
-        if (!_attached)
+        foreach (var window in _activeWindows.Append(_root).Where(value => value != 0).Distinct())
         {
-            throw new InvalidOperationException(
-                "Cannot attach precision trackpad input to the window thread."
-            );
-        }
-
-        if (_root != 0 && _root != _window)
-        {
-            _rootAttached = SetWindowSubclass(_root, _subclass, _subclassId, 0);
+            if (!SetWindowSubclass(window, _subclass, _subclassId, 0))
+            {
+                throw new InvalidOperationException(
+                    "Cannot attach precision trackpad input to the window thread."
+                );
+            }
+            _attachedWindows.Add(window);
         }
 
         Update();
@@ -139,8 +158,11 @@ public sealed unsafe class WindowsPrecisionTrackpad : IDisposable
     private static int U32(nint value, int slot, uint argument) =>
         ((delegate* unmanaged[Stdcall]<nint, uint, int>)V(value, slot))(value, argument);
 
-    private void Update() =>
+    private void Update()
+    {
+        _updatesCalled++;
         Check(((delegate* unmanaged[Stdcall]<nint, nint, int>)V(_updates, 5))(_updates, 0));
+    }
 
     private void Resize()
     {
@@ -167,6 +189,7 @@ public sealed unsafe class WindowsPrecisionTrackpad : IDisposable
         {
             if (!_disposed)
             {
+                if (message == 0x0250) _hitTests++;
                 if (
                     message == 0x0250
                     && GetPointerType((uint)(wparam & 0xffff), out var type)
@@ -174,6 +197,8 @@ public sealed unsafe class WindowsPrecisionTrackpad : IDisposable
                 )
                 {
                     Check(U32(_viewport, 5, (uint)(wparam & 0xffff)));
+                    _contacts++;
+                    _contactWindow = hwnd;
                     SetTimer(_window, _subclassId, 8, 0);
                     Update();
                     return 0;
@@ -210,8 +235,31 @@ public sealed unsafe class WindowsPrecisionTrackpad : IDisposable
     private void Emit(PointerData data)
     {
         _last = data;
+        if (_recentInput is { } recent)
+        {
+            lock (recent)
+            {
+                if (recent.Count == 256) recent.Dequeue();
+                recent.Enqueue(data);
+            }
+        }
         _dispatch(new([data]));
     }
+
+    /// <summary>Bounded native input for opt-in Windows frame-timing reports.</summary>
+    public PointerData[] CaptureRecentInput()
+    {
+        if (_recentInput is not { } recent) return [];
+        lock (recent) return recent.ToArray();
+    }
+
+    public object CaptureDiagnostics() => new
+    {
+        updateCalls = _updatesCalled, hitTests = _hitTests, contacts = _contacts,
+        status = _status, window = _window.ToInt64(), root = _root.ToInt64(),
+        activeWindows = _activeWindows.Select(window => window.ToInt64()).ToArray(),
+        contactWindow = _contactWindow.ToInt64(),
+    };
 
     private void Start(nint viewport)
     {
@@ -279,6 +327,7 @@ public sealed unsafe class WindowsPrecisionTrackpad : IDisposable
 
     private void Status(nint viewport, uint current, uint previous)
     {
+        _status = current;
         if (_disposed)
         {
             return;
@@ -290,19 +339,20 @@ public sealed unsafe class WindowsPrecisionTrackpad : IDisposable
             return;
         }
         _inertia = current == 4;
-        if (previous == 4 && current != 4)
+        // READY is the native simulation reaching rest, not a user request to
+        // stop the framework's independently calculated ballistic activity.
+        // The last native delta depends on the update cadence and cannot
+        // reliably distinguish that natural completion from an interruption.
+        if (previous == 4 && current != 4 && current != 5)
         {
-            if (Math.Max(Math.Abs(_lastDeltaX), Math.Abs(_lastDeltaY)) > .01)
-            {
-                Emit(
-                    _last with
-                    {
-                        timeStamp = DorotiFrameClock.Now,
-                        change = PointerChange.hover,
-                        signalKind = PointerSignalKind.scrollInertiaCancel,
-                    }
-                );
-            }
+            Emit(
+                _last with
+                {
+                    timeStamp = DorotiFrameClock.Now,
+                    change = PointerChange.hover,
+                    signalKind = PointerSignalKind.scrollInertiaCancel,
+                }
+            );
         }
         if (current == 3)
         {
@@ -417,15 +467,11 @@ public sealed unsafe class WindowsPrecisionTrackpad : IDisposable
 
         _disposed = true;
         Cancel();
-        if (_attached)
+        foreach (var window in _attachedWindows)
         {
-            RemoveWindowSubclass(_window, _subclass, _subclassId);
+            RemoveWindowSubclass(window, _subclass, _subclassId);
         }
-
-        if (_rootAttached)
-        {
-            RemoveWindowSubclass(_root, _subclass, _subclassId);
-        }
+        _attachedWindows.Clear();
 
         if (_viewport != 0)
         {
@@ -441,8 +487,12 @@ public sealed unsafe class WindowsPrecisionTrackpad : IDisposable
         }
         if (_manager != 0)
         {
-            ((delegate* unmanaged[Stdcall]<nint, nint, int>)V(_manager, 4))(_manager, _window);
+            foreach (var window in _activeWindows)
+            {
+                ((delegate* unmanaged[Stdcall]<nint, nint, int>)V(_manager, 4))(_manager, window);
+            }
         }
+        _activeWindows.Clear();
 
         Release(_updates);
         Release(_manager);

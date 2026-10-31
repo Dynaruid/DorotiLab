@@ -117,7 +117,7 @@ internal sealed unsafe partial class WindowsManagedProductHost
                 InputReceived?.Invoke(sequence, packet.data[^1].timeStamp);
             });
         }
-        _trackpad = new(_inputHwnd, _viewId, DispatchNativePacket);
+        _trackpad = new(_inputHwnd, _viewId, DispatchNativePacket, _native.ChildHwnd);
         _nativePointers = new(_inputHwnd, _viewId, DispatchNativePacket);
     }
 
@@ -137,6 +137,9 @@ internal sealed unsafe partial class WindowsManagedProductHost
         otherWheelPackets = Interlocked.Read(ref _otherWheelPackets),
         panZoomPackets = Interlocked.Read(ref _panZoomPackets),
         movePackets = Interlocked.Read(ref _movePackets),
+        devicePixelRatio = Metrics.devicePixelRatio,
+        trackpadPackets = _trackpad.CaptureRecentInput(),
+        precisionTrackpad = _trackpad.CaptureDiagnostics(),
     };
     private void RecordPointerIngress(PointerDataPacket packet)
     {

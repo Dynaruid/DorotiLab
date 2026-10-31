@@ -65,6 +65,9 @@ internal sealed class AndroidPointerSubscription : IDisposable
             return;
         }
 
+        var timestamp = AndroidPointerMapping.Timestamp(
+            DorotiFrameClock.Now, Android.OS.SystemClock.UptimeMillis(), e.EventTime
+        );
         for (var i = 0; i < e.PointerCount; i++)
         {
             if (change is not PointerChange.move and not PointerChange.cancel && i != e.ActionIndex)
@@ -83,7 +86,7 @@ internal sealed class AndroidPointerSubscription : IDisposable
                     (int)e.ButtonState,
                     e.GetX(i),
                     e.GetY(i),
-                    DorotiFrameClock.Now
+                    timestamp
                 )
             )
             {
@@ -92,7 +95,7 @@ internal sealed class AndroidPointerSubscription : IDisposable
 
             _dispatch(
                 new(
-                    DorotiFrameClock.Now,
+                    timestamp,
                     change.Value,
                     kind,
                     device,
@@ -143,7 +146,9 @@ internal sealed class AndroidPointerSubscription : IDisposable
         var device = AndroidPointerMapping.DeviceIdentifier(e.DeviceId, e.GetPointerId(0));
         _dispatch(
             new(
-                DorotiFrameClock.Now,
+                AndroidPointerMapping.Timestamp(
+                    DorotiFrameClock.Now, Android.OS.SystemClock.UptimeMillis(), e.EventTime
+                ),
                 change.Value,
                 kind,
                 device,

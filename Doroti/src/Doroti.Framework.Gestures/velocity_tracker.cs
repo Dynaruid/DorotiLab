@@ -116,6 +116,8 @@ public class VelocityTracker
     internal const long _minSampleSize = 3L;
     public virtual PointerDeviceKind kind { get; private set; } = default!;
     internal virtual Stopwatch? _stopwatch { get; set; } = default;
+    private Duration? _lastSampleTime;
+    private Duration? _estimateTime;
     internal virtual List<_PointAtTime__velocity_tracker?> _samples { get; private set; } =
         new List<_PointAtTime__velocity_tracker?>(
             Enumerable.Repeat<_PointAtTime__velocity_tracker?>(null, checked((int)_historySize))
@@ -138,8 +140,7 @@ public class VelocityTracker
 
     public virtual void addPosition(Duration time, Offset position)
     {
-        // Dart reset() preserves the running state; Stopwatch.Reset() stops it.
-        _sinceLastSample.Restart();
+        recordSampleTime(time);
         _index += 1L;
         if (_index == _historySize)
         {
@@ -148,9 +149,36 @@ public class VelocityTracker
         _samples[(int)_index] = new _PointAtTime__velocity_tracker(position, time);
     }
 
+    protected void recordSampleTime(Duration time)
+    {
+        // Dart reset() preserves the running state; Stopwatch.Reset() stops it.
+        _sinceLastSample.Restart();
+        _lastSampleTime = time;
+    }
+
+    protected bool hasStopped =>
+        _estimateTime is { } eventTime && _lastSampleTime is { } sampleTime
+            ? (eventTime - sampleTime).inMilliseconds > _assumePointerMoveStoppedMilliseconds
+            : _sinceLastSample.ElapsedMilliseconds > _assumePointerMoveStoppedMilliseconds;
+
+    /// <summary>Estimates release velocity using input time, excluding dispatch/render delays.</summary>
+    public VelocityEstimate? getVelocityEstimateAt(Duration eventTime)
+    {
+        var previous = _estimateTime;
+        _estimateTime = eventTime;
+        try
+        {
+            return getVelocityEstimate();
+        }
+        finally
+        {
+            _estimateTime = previous;
+        }
+    }
+
     public virtual VelocityEstimate? getVelocityEstimate()
     {
-        if (_sinceLastSample.ElapsedMilliseconds > _assumePointerMoveStoppedMilliseconds)
+        if (hasStopped)
         {
             return new VelocityEstimate(
                 pixelsPerSecond: Offset.zero,
@@ -247,7 +275,7 @@ public class IOSScrollViewFlingVelocityTracker : VelocityTracker
 
     public override void addPosition(Duration time, Offset position)
     {
-        _sinceLastSample.Restart();
+        recordSampleTime(time);
         DartRuntimePrimitives.Assert(() =>
         {
             _PointAtTime__velocity_tracker? previousPoint = _touchSamples[(int)_index];
@@ -288,7 +316,7 @@ public class IOSScrollViewFlingVelocityTracker : VelocityTracker
 
     public override VelocityEstimate? getVelocityEstimate()
     {
-        if (_sinceLastSample.ElapsedMilliseconds > _assumePointerMoveStoppedMilliseconds)
+        if (hasStopped)
         {
             return new VelocityEstimate(
                 pixelsPerSecond: Offset.zero,
@@ -343,7 +371,7 @@ public class MacOSScrollViewFlingVelocityTracker : IOSScrollViewFlingVelocityTra
 
     public override VelocityEstimate getVelocityEstimate()
     {
-        if (_sinceLastSample.ElapsedMilliseconds > _assumePointerMoveStoppedMilliseconds)
+        if (hasStopped)
         {
             return new VelocityEstimate(
                 pixelsPerSecond: Offset.zero,

@@ -20,6 +20,7 @@ public delegate VelocityTracker GestureVelocityTrackerBuilder(PointerEvent @even
 
 public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
 {
+    private Duration? _pointerEndTime;
     public virtual DragStartBehavior dragStartBehavior { get; set; } = default!;
     public virtual MultitouchDragStrategy multitouchDragStrategy { get; set; } = default!;
     public virtual Action<DragDownDetails>? onDown { get; set; } = default;
@@ -614,7 +615,15 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
         }
         if (@event is PointerUpEvent or PointerCancelEvent or PointerPanZoomEndEvent)
         {
-            _giveUpPointer(@event.pointer);
+            _pointerEndTime = @event is PointerCancelEvent ? null : @event.timeStamp;
+            try
+            {
+                _giveUpPointer(@event.pointer);
+            }
+            finally
+            {
+                _pointerEndTime = null;
+            }
         }
     }
 
@@ -808,7 +817,9 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
             return;
         }
         VelocityTracker tracker = _velocityTrackers.GetValueOrDefault(pointer)!;
-        VelocityEstimate? estimate = tracker.getVelocityEstimate();
+        VelocityEstimate? estimate = _pointerEndTime is { } eventTime
+            ? tracker.getVelocityEstimateAt(eventTime)
+            : tracker.getVelocityEstimate();
         DragEndDetails? details = default!;
         Func<string> debugReport = default!;
         if (estimate is null)

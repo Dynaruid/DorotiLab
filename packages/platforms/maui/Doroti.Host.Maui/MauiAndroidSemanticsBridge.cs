@@ -18,12 +18,15 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
     private readonly View _element;
     private DorotiAndroidVulkanView? _native;
     private VirtualNodes? _helper;
+    private Android.Views.Accessibility.AccessibilityManager? _accessibilityManager;
+    private SemanticsUpdate? _pendingUpdate;
     private Dictionary<int, SemanticsNodeUpdate> _nodes = [];
     private int[] _order = [];
     private Action<int, SemanticsAction, object?>? _performAction;
     private long _generation = -1,
         _received,
         _applied,
+        _coalesced,
         _suppressed,
         _applyMicros,
         _maxApplyMicros;
@@ -40,10 +43,10 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
         new(
             _received,
             _applied,
+            _coalesced,
             0,
             0,
-            0,
-            _nodes.Count,
+            _pendingUpdate?.nodes.Count ?? _nodes.Count,
             UpdatesSuppressed: _suppressed,
             ApplyWorkMicroseconds: _applyMicros,
             MaxApplyWorkMicroseconds: _maxApplyMicros
@@ -66,6 +69,31 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
         _received++;
         _generation = update.generation;
         _performAction = performAction;
+        if (_pendingUpdate is not null)
+        {
+            _coalesced++;
+        }
+        _pendingUpdate = update;
+        // Keep the latest full snapshot, but do not rebuild/hash the virtual
+        // tree on every visual frame when there is no accessibility consumer.
+        // Provider queries always materialize it before reading or acting.
+        if (_accessibilityManager?.IsEnabled == true
+            || (_helper is { } helper
+                && (helper.KeyboardFocusedVirtualViewId != ExploreByTouchHelper.InvalidId
+                    || helper.AccessibilityFocusedVirtualViewId != ExploreByTouchHelper.InvalidId)))
+        {
+            EnsureLatestNodes(notify: true);
+        }
+    }
+
+    private void EnsureLatestNodes(bool notify = false)
+    {
+        if (_pendingUpdate is not { } update || _disposed)
+        {
+            return;
+        }
+        // Focus removal can synchronously query the provider again.
+        _pendingUpdate = null;
         var started = Stopwatch.GetTimestamp();
         var nodes = update.nodes.ToDictionary(node => node.id);
         var hidden = new HashSet<int>();
@@ -93,7 +121,7 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
         }
 
         var visible = update.nodes.Where(node => nodes.ContainsKey(node.id)).ToArray();
-        if (!SemanticsUpdateDiffer.Diff(_nodes, visible).HasChanges)
+        if (!SemanticsUpdateDiffer.HasChanges(_nodes, visible))
         {
             _suppressed++;
             return;
@@ -104,7 +132,10 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
         _applied++;
         // Android's helper owns accessibility/keyboard focus and emits one tree
         // change. NodeInfo objects are created only when a service queries them.
-        _helper?.InvalidateRoot();
+        if (notify)
+        {
+            _helper?.InvalidateRoot();
+        }
         var micros = Stopwatch.GetElapsedTime(started).Ticks / 10;
         _applyMicros += micros;
         _maxApplyMicros = Math.Max(_maxApplyMicros, micros);
@@ -112,6 +143,7 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
 
     public void Clear()
     {
+        _pendingUpdate = null;
         ClearRemovedFocus(new Dictionary<int, SemanticsNodeUpdate>());
         _nodes.Clear();
         _order = [];
@@ -163,6 +195,9 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
 
         var native = container.Surface;
         _native = native;
+        _accessibilityManager = native.Context?.GetSystemService(
+            Android.Content.Context.AccessibilityService
+        ) as Android.Views.Accessibility.AccessibilityManager;
         _helper = new VirtualNodes(native, this);
         native.SemanticsHelper = _helper;
         ViewCompat.SetAccessibilityDelegate(native, _helper);
@@ -178,6 +213,7 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
         _helper?.Dispose();
         _helper = null;
         _native = null;
+        _accessibilityManager = null;
     }
 
     public void Dispose()
@@ -214,6 +250,7 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
 
         protected override int GetVirtualViewAt(float x, float y)
         {
+            _owner?.EnsureLatestNodes();
             if (_owner is null || _host is null)
             {
                 return InvalidId;
@@ -244,6 +281,7 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
 
         protected override void GetVisibleVirtualViews(IList<Java.Lang.Integer>? virtualViewIds)
         {
+            _owner?.EnsureLatestNodes();
             if (_owner is null || virtualViewIds is null)
             {
                 return;
@@ -272,6 +310,7 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
             AccessibilityNodeInfoCompat? info
         )
         {
+            _owner?.EnsureLatestNodes();
             if (info is null)
             {
                 return;
@@ -431,6 +470,7 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
             Bundle? arguments
         )
         {
+            _owner?.EnsureLatestNodes();
             if (
                 _owner is null
                 || !_owner._nodes.TryGetValue(virtualViewId, out var node)
@@ -511,6 +551,7 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
             Android.Views.Accessibility.AccessibilityEvent? e
         )
         {
+            _owner?.EnsureLatestNodes();
             base.OnPopulateEventForVirtualView(virtualViewId, e);
             var action = e?.EventType switch
             {
@@ -532,6 +573,7 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
 
         protected override void OnVirtualViewKeyboardFocusChanged(int virtualViewId, bool hasFocus)
         {
+            _owner?.EnsureLatestNodes();
             base.OnVirtualViewKeyboardFocusChanged(virtualViewId, hasFocus);
             if (
                 hasFocus

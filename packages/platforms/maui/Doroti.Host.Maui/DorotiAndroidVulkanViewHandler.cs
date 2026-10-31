@@ -728,6 +728,9 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
 
     private void DispatchPointer(MotionEvent e, int index, PointerChange change)
     {
+        var timestamp = AndroidPointerMapping.Timestamp(
+            DorotiFrameClock.Now, Android.OS.SystemClock.UptimeMillis(), e.EventTime
+        );
         var kind = AndroidPointerMapping.Kind((int)e.GetToolType(index));
         var device = AndroidPointerMapping.DeviceIdentifier(e.DeviceId, e.GetPointerId(index));
         if (
@@ -739,7 +742,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
                 (int)e.ButtonState,
                 e.GetX(index),
                 e.GetY(index),
-                DorotiFrameClock.Now
+                timestamp
             )
         )
         {
@@ -758,7 +761,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
                 : 48;
         _owner?.DispatchNativePointer(
             new(
-                DorotiFrameClock.Now,
+                timestamp,
                 change,
                 kind,
                 device,

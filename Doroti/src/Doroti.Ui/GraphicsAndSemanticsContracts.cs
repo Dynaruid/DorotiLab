@@ -3486,6 +3486,29 @@ public sealed record SemanticsUpdateDelta(
 /// </summary>
 public static class SemanticsUpdateDiffer
 {
+    /// <summary>Checks a snapshot without allocating deltas or hashing unchanged content.</summary>
+    public static bool HasChanges(
+        IReadOnlyDictionary<int, SemanticsNodeUpdate> previous,
+        IReadOnlyList<SemanticsNodeUpdate> current
+    )
+    {
+        ArgumentNullException.ThrowIfNull(previous);
+        ArgumentNullException.ThrowIfNull(current);
+        if (previous.Count != current.Count)
+        {
+            return true;
+        }
+        foreach (var node in current)
+        {
+            if (!previous.TryGetValue(node.id, out var oldNode)
+                || ChangedProperties(oldNode, node) != SemanticsNodeProperty.none)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static SemanticsUpdateDelta Diff(
         IReadOnlyDictionary<int, SemanticsNodeUpdate> previous,
         IReadOnlyList<SemanticsNodeUpdate> current
