@@ -3938,7 +3938,7 @@ public abstract class CupertinoIcons
         fontFamily: iconFont,
         fontPackage: iconFontPackage
     );
-    public static IconData @lock = CupertinoIconFont.Create(
+    public static IconData @lock => CupertinoIconFont.Create(
         62664L,
         fontFamily: iconFont,
         fontPackage: iconFontPackage

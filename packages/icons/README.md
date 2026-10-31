@@ -17,8 +17,10 @@ Publishing subsets after ILLink and before ReadyToRun/AOT/bundling, retaining SD
 WebCIL caches are invalidated when the policy, managed inputs or build tool changes, including changes with old timestamps.
 
 Font subsetting and .NET managed-code trimming are independent. The latter requires the application's supported `PublishTrimmed` configuration; this feature does not enable trimming globally on hosts that disallow it.
-Known dynamic `IconData` construction, icon type reflection and preservation attributes retain the complete font with `DOROTIICON001`.
+Known dynamic `IconData` construction, icon type reflection, preservation attributes and icon field access retain the complete font with `DOROTIICON001`.
 Use `-p:DorotiIconTreeShaking=false` for reflection selected through external configuration, dynamically loaded code, or direct text shaping with the icon face.
 Debug defaults to complete fonts for development/Hot Reload.
 
 The output's `doroti-icon-tree-shaking.json` records retained codepoints and font sizes.
+
+Run `dotnet run --project tools/Doroti.IconTools.Tests -c Release` from the repository root to verify reserved-name icons survive subsetting and legacy field references preserve the full font. The regression runner has a 20-minute timeout.

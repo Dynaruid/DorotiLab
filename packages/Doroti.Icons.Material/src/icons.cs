@@ -5808,7 +5808,7 @@ public abstract class Icons
     public static IconData ev_station_sharp => MaterialIconFont.Create(59705L, fontFamily: "MaterialIcons");
     public static IconData ev_station_rounded => MaterialIconFont.Create(63256L, fontFamily: "MaterialIcons");
     public static IconData ev_station_outlined => MaterialIconFont.Create(61483L, fontFamily: "MaterialIcons");
-    public static IconData @event = MaterialIconFont.Create(57918L, fontFamily: "MaterialIcons");
+    public static IconData @event => MaterialIconFont.Create(57918L, fontFamily: "MaterialIcons");
     public static IconData event_sharp => MaterialIconFont.Create(59710L, fontFamily: "MaterialIcons");
     public static IconData event_rounded => MaterialIconFont.Create(63260L, fontFamily: "MaterialIcons");
     public static IconData event_outlined => MaterialIconFont.Create(61487L, fontFamily: "MaterialIcons");
@@ -5892,7 +5892,7 @@ public abstract class Icons
     public static IconData expand_more_sharp => MaterialIconFont.Create(59713L, fontFamily: "MaterialIcons");
     public static IconData expand_more_rounded => MaterialIconFont.Create(63264L, fontFamily: "MaterialIcons");
     public static IconData expand_more_outlined => MaterialIconFont.Create(61491L, fontFamily: "MaterialIcons");
-    public static IconData @explicit = MaterialIconFont.Create(57927L, fontFamily: "MaterialIcons");
+    public static IconData @explicit => MaterialIconFont.Create(57927L, fontFamily: "MaterialIcons");
     public static IconData explicit_sharp => MaterialIconFont.Create(59715L, fontFamily: "MaterialIcons");
     public static IconData explicit_rounded => MaterialIconFont.Create(63266L, fontFamily: "MaterialIcons");
     public static IconData explicit_outlined => MaterialIconFont.Create(61493L, fontFamily: "MaterialIcons");
@@ -9471,7 +9471,7 @@ public abstract class Icons
         61844L,
         fontFamily: "MaterialIcons"
     );
-    public static IconData @lock = MaterialIconFont.Create(58286L, fontFamily: "MaterialIcons");
+    public static IconData @lock => MaterialIconFont.Create(58286L, fontFamily: "MaterialIcons");
     public static IconData lock_sharp => MaterialIconFont.Create(60074L, fontFamily: "MaterialIcons");
     public static IconData lock_rounded => MaterialIconFont.Create(63625L, fontFamily: "MaterialIcons");
     public static IconData lock_outlined => MaterialIconFont.Create(61847L, fontFamily: "MaterialIcons");
@@ -12668,7 +12668,7 @@ public abstract class Icons
         985265L,
         fontFamily: "MaterialIcons"
     );
-    public static IconData @public = MaterialIconFont.Create(58608L, fontFamily: "MaterialIcons");
+    public static IconData @public => MaterialIconFont.Create(58608L, fontFamily: "MaterialIcons");
     public static IconData public_sharp => MaterialIconFont.Create(60391L, fontFamily: "MaterialIcons");
     public static IconData public_rounded => MaterialIconFont.Create(983238L, fontFamily: "MaterialIcons");
     public static IconData public_outlined => MaterialIconFont.Create(62164L, fontFamily: "MaterialIcons");

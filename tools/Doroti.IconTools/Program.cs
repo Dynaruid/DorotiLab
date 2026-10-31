@@ -79,6 +79,8 @@ try
                     var instruction = il[i];
                     if (instruction.Operand is MethodReference called && BelongsToPack(called.DeclaringType))
                         roots.Add(called.FullName);
+                    if (instruction.Operand is FieldReference field && BelongsToPack(field.DeclaringType))
+                        fallback.Add("icon field access in " + method.FullName);
                     if (instruction.Operand is TypeReference token && BelongsToPack(token))
                         fallback.Add("icon type metadata/reflection in " + method.FullName);
                     if (instruction.OpCode == OpCodes.Ldstr && instruction.Operand is string text && NamesPack(text))
@@ -113,6 +115,8 @@ try
             {
                 if (!visited.Add(name) || !methods.TryGetValue(name, out var method) || !method.HasBody) return;
                 var il = method.Body.Instructions;
+                if (il.Any(i => i.Operand is FieldReference field && BelongsToPack(field.DeclaringType)))
+                    fallback.Add("icon field access in " + method.FullName);
                 if (method.Name.StartsWith("get_") && method.ReturnType.FullName == "Doroti.Framework.Widgets.IconData")
                 {
                     var literal = il.Select(Integer).FirstOrDefault(v => v is not null);
