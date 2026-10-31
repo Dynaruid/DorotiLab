@@ -94,6 +94,8 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
         }
         // Focus removal can synchronously query the provider again.
         _pendingUpdate = null;
+        using var allocationProfile = FrameworkWorkProfile.AllocationEnabled
+            ? FrameworkWorkProfile.Begin(GetType(), 16) : default;
         var started = Stopwatch.GetTimestamp();
         var nodes = update.nodes.ToDictionary(node => node.id);
         var hidden = new HashSet<int>();

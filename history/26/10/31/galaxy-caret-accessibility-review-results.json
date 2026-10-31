@@ -1,0 +1,3549 @@
+{
+  "date": "2026-10-31",
+  "timezone": "Asia/Seoul",
+  "baseCommit": "d608a30076c07e3396d76226f219d7bdcda27ae2",
+  "baselineWorkingTreeClean": true,
+  "status": "PARTIAL",
+  "physicalTouchAccepted": false,
+  "displayDeadlineQualified": false,
+  "talkBackActionsQualified": false,
+  "roundedMagnifierVisuallyVerified": true,
+  "currentSelectionPreserved": true,
+  "device": {
+    "serial": "R3CY30KZA4B",
+    "model": "SM-S931N",
+    "api": 37,
+    "pixels": [
+      1080,
+      2340
+    ],
+    "density": 480,
+    "gpu": "Adreno (TM) 830",
+    "reportedVariableRefreshHz": [
+      10,
+      120
+    ]
+  },
+  "build": {
+    "configuration": "Release",
+    "rid": "android-arm64",
+    "UseMonoRuntime": true,
+    "RunAOTCompilation": true,
+    "AndroidEnableProfiledAot": true,
+    "AndroidUseInterpreter": false,
+    "Optimize": true,
+    "skiaSharpVersion": "4.154.0"
+  },
+  "baselineApkSha256": "6397ef12cd1eaed2a619f3a3c5f99d3926ec689147dbb233ad967b1f13b4fc19",
+  "candidateApkSha256": "2d20c94ab6cd9300c9f6d809d19a55ce3fbf3b5c020d20a0bc3723b14fbe8cc1",
+  "rejectedCandidateApkSha256": "97a5863ca29e3df427cd5e50ce5d49a41bb71edca7d10ba131b516a0a0aa21ce",
+  "rejectedCandidateReason": "Java Runnable explicitly disposed before a late Choreographer callback; real drag crashed; corrected candidate removes queued work and lets JNI GC retire the peer after guarded callbacks",
+  "statistics": {
+    "window": "last gesture, recorded DOWN-to-UP interval; idle tail excluded equally in both builds",
+    "percentiles": "floor((n-1)*q/100)",
+    "physicalDisplayReceipt": false,
+    "profileComparisonsSeparate": true,
+    "outliersExcluded": false,
+    "interpretation": "First-field improvement includes sample-wide rebuild fix. Second-field group isolates common-path changes from that listener, but does not separate each common change. Lower CPU p95 does not qualify full input-to-new-scene/display response; second-field candidate has worse maxima."
+  },
+  "comparisons": {
+    "firstFieldRing": {
+      "baseline": {
+        "manifest": {
+          "apkSha256": "6397ef12cd1eaed2a619f3a3c5f99d3926ec689147dbb233ad967b1f13b4fc19",
+          "serial": "R3CY30KZA4B",
+          "sample": "input",
+          "allocationProfile": false,
+          "text": "The_quick_brown_fox_jumps_over_the_lazy_dog._Cursor_movement_should_stay_smooth.",
+          "nativeViews": false,
+          "physicalTouchAccepted": false,
+          "trials": [
+            {
+              "trial": 1,
+              "injection": "continuous-down-ms=346126491 moves=287 duration-ms=2400",
+              "selection": [
+                "Selection 31:31 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 131,
+                "dismissed": 1
+              }
+            },
+            {
+              "trial": 2,
+              "injection": "continuous-down-ms=346152331 moves=287 duration-ms=2401",
+              "selection": [
+                "Selection 31:31 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 134,
+                "dismissed": 1
+              }
+            },
+            {
+              "trial": 3,
+              "injection": "continuous-down-ms=346178353 moves=287 duration-ms=2400",
+              "selection": [
+                "Selection 31:31 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 137,
+                "dismissed": 1
+              }
+            }
+          ]
+        },
+        "trials": [
+          {
+            "file": "review-baseline-1.json",
+            "gesture": 4,
+            "drawsIncludingTail": 83,
+            "drawsDuringInput": 75,
+            "ownerMs": {
+              "count": 75,
+              "p50": 14.358,
+              "p95": 37.588,
+              "p99": 38.61,
+              "max": 39.843
+            },
+            "callbackMs": {
+              "count": 75,
+              "p50": 10.559,
+              "p95": 33.766,
+              "p99": 34.645,
+              "max": 36.227
+            },
+            "inputAgeMs": {
+              "count": 135,
+              "p50": 8,
+              "p95": 14,
+              "p99": 19,
+              "max": 29
+            },
+            "dispatchMs": {
+              "count": 135,
+              "p50": 0.924,
+              "p95": 3.549,
+              "p99": 12.822,
+              "max": 22.645
+            },
+            "submitGapsDuringInputMs": {
+              "count": 74,
+              "p50": 23.679,
+              "p95": 65.694,
+              "p99": 71.21,
+              "max": 76.166
+            },
+            "allocatedPerDraw": {
+              "count": 75,
+              "p50": 1672256,
+              "p95": 1672696,
+              "p99": 1677424,
+              "max": 1692856
+            },
+            "ownerOver50ms": 0,
+            "nativeHistorySamples": 287,
+            "inputEvents": 135,
+            "phasesDuringInput": {
+              "build": {
+                "totalMs": 888.785,
+                "count": 75,
+                "p50": 7.906,
+                "p95": 29.707,
+                "p99": 31.4,
+                "max": 32.98
+              },
+              "layout": {
+                "totalMs": 49.91,
+                "count": 75,
+                "p50": 0.523,
+                "p95": 0.779,
+                "p99": 1.2,
+                "max": 12.623
+              },
+              "paint": {
+                "totalMs": 33.379,
+                "count": 75,
+                "p50": 0.269,
+                "p95": 0.376,
+                "p99": 2.82,
+                "max": 12.024
+              },
+              "semantics": {
+                "totalMs": 163.699,
+                "count": 75,
+                "p50": 1.075,
+                "p95": 16.256,
+                "p99": 19.488,
+                "max": 19.658
+              }
+            },
+            "magnifier": {
+              "created": 1,
+              "updates": 131,
+              "dismissed": 1
+            },
+            "semantics": null,
+            "editing": null,
+            "presentObserved": false,
+            "workWholeSessionTopSelfMs": [],
+            "validation": {
+              "trial": 1,
+              "injection": "continuous-down-ms=346126491 moves=287 duration-ms=2400",
+              "selection": [
+                "Selection 31:31 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 131,
+                "dismissed": 1
+              }
+            },
+            "state": {
+              "accessibilityServices": "null",
+              "lowPower": "0",
+              "batteryTemperatureTenthsC": 278
+            }
+          },
+          {
+            "file": "review-baseline-2.json",
+            "gesture": 4,
+            "drawsIncludingTail": 86,
+            "drawsDuringInput": 78,
+            "ownerMs": {
+              "count": 78,
+              "p50": 15.167,
+              "p95": 36.415,
+              "p99": 37.836,
+              "max": 41.155
+            },
+            "callbackMs": {
+              "count": 78,
+              "p50": 10.628,
+              "p95": 33.088,
+              "p99": 34.029,
+              "max": 34.227
+            },
+            "inputAgeMs": {
+              "count": 138,
+              "p50": 8,
+              "p95": 14,
+              "p99": 18,
+              "max": 20
+            },
+            "dispatchMs": {
+              "count": 138,
+              "p50": 0.894,
+              "p95": 2.573,
+              "p99": 9.529,
+              "max": 14.767
+            },
+            "submitGapsDuringInputMs": {
+              "count": 77,
+              "p50": 24.725,
+              "p95": 59.205,
+              "p99": 66.217,
+              "max": 66.457
+            },
+            "allocatedPerDraw": {
+              "count": 78,
+              "p50": 1672256,
+              "p95": 1672696,
+              "p99": 1677424,
+              "max": 1692056
+            },
+            "ownerOver50ms": 0,
+            "nativeHistorySamples": 286,
+            "inputEvents": 138,
+            "phasesDuringInput": {
+              "build": {
+                "totalMs": 900.863,
+                "count": 78,
+                "p50": 7.838,
+                "p95": 28.031,
+                "p99": 30.524,
+                "max": 30.867
+              },
+              "layout": {
+                "totalMs": 92.55,
+                "count": 78,
+                "p50": 0.527,
+                "p95": 2.922,
+                "p99": 18.574,
+                "max": 20.233
+              },
+              "paint": {
+                "totalMs": 35.518,
+                "count": 78,
+                "p50": 0.271,
+                "p95": 0.492,
+                "p99": 2.832,
+                "max": 12.864
+              },
+              "semantics": {
+                "totalMs": 183.973,
+                "count": 78,
+                "p50": 1.084,
+                "p95": 18.844,
+                "p99": 19.532,
+                "max": 20.084
+              }
+            },
+            "magnifier": {
+              "created": 1,
+              "updates": 134,
+              "dismissed": 1
+            },
+            "semantics": null,
+            "editing": null,
+            "presentObserved": false,
+            "workWholeSessionTopSelfMs": [],
+            "validation": {
+              "trial": 2,
+              "injection": "continuous-down-ms=346152331 moves=287 duration-ms=2401",
+              "selection": [
+                "Selection 31:31 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 134,
+                "dismissed": 1
+              }
+            },
+            "state": {
+              "accessibilityServices": "null",
+              "lowPower": "0",
+              "batteryTemperatureTenthsC": 281
+            }
+          },
+          {
+            "file": "review-baseline-3.json",
+            "gesture": 4,
+            "drawsIncludingTail": 88,
+            "drawsDuringInput": 80,
+            "ownerMs": {
+              "count": 80,
+              "p50": 14.263,
+              "p95": 36.676,
+              "p99": 38.705,
+              "max": 39.296
+            },
+            "callbackMs": {
+              "count": 80,
+              "p50": 10.634,
+              "p95": 33.286,
+              "p99": 34.285,
+              "max": 35.483
+            },
+            "inputAgeMs": {
+              "count": 141,
+              "p50": 8,
+              "p95": 15,
+              "p99": 24,
+              "max": 33
+            },
+            "dispatchMs": {
+              "count": 141,
+              "p50": 0.789,
+              "p95": 3.256,
+              "p99": 12.633,
+              "max": 17.167
+            },
+            "submitGapsDuringInputMs": {
+              "count": 79,
+              "p50": 24.586,
+              "p95": 54.62,
+              "p99": 67.363,
+              "max": 81.298
+            },
+            "allocatedPerDraw": {
+              "count": 80,
+              "p50": 1671896,
+              "p95": 1672696,
+              "p99": 1676624,
+              "max": 1692056
+            },
+            "ownerOver50ms": 0,
+            "nativeHistorySamples": 286,
+            "inputEvents": 141,
+            "phasesDuringInput": {
+              "build": {
+                "totalMs": 895.377,
+                "count": 80,
+                "p50": 7.919,
+                "p95": 28.224,
+                "p99": 30.633,
+                "max": 31.062
+              },
+              "layout": {
+                "totalMs": 91.305,
+                "count": 80,
+                "p50": 0.526,
+                "p95": 1.074,
+                "p99": 16.039,
+                "max": 20.818
+              },
+              "paint": {
+                "totalMs": 23.525,
+                "count": 80,
+                "p50": 0.265,
+                "p95": 0.511,
+                "p99": 0.641,
+                "max": 2.733
+              },
+              "semantics": {
+                "totalMs": 196.459,
+                "count": 80,
+                "p50": 1.096,
+                "p95": 14.86,
+                "p99": 19.626,
+                "max": 19.736
+              }
+            },
+            "magnifier": {
+              "created": 1,
+              "updates": 137,
+              "dismissed": 1
+            },
+            "semantics": null,
+            "editing": null,
+            "presentObserved": false,
+            "workWholeSessionTopSelfMs": [],
+            "validation": {
+              "trial": 3,
+              "injection": "continuous-down-ms=346178353 moves=287 duration-ms=2400",
+              "selection": [
+                "Selection 31:31 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 137,
+                "dismissed": 1
+              }
+            },
+            "state": {
+              "accessibilityServices": "null",
+              "lowPower": "0",
+              "batteryTemperatureTenthsC": 283
+            }
+          }
+        ]
+      },
+      "candidate": {
+        "manifest": {
+          "apkSha256": "2d20c94ab6cd9300c9f6d809d19a55ce3fbf3b5c020d20a0bc3723b14fbe8cc1",
+          "serial": "R3CY30KZA4B",
+          "sample": "input",
+          "allocationProfile": false,
+          "text": "The_quick_brown_fox_jumps_over_the_lazy_dog._Cursor_movement_should_stay_smooth.",
+          "field": "first",
+          "observeAccessibility": false,
+          "nativeViews": false,
+          "physicalTouchAccepted": false,
+          "trials": [
+            {
+              "trial": 1,
+              "injection": "continuous-down-ms=347145605 moves=287 duration-ms=2401",
+              "path": "348,625,0 950,625,800 150,695,1600 850,625,2400",
+              "selection": [
+                "Selection 31:31 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 222,
+                "dismissed": 1,
+                "requests": 224,
+                "coalesced": 1,
+                "cancelled": 1
+              },
+              "editing": {
+                "atUs": 20406921,
+                "length": 80,
+                "base": 31,
+                "extent": 31,
+                "fromNative": false,
+                "sequence": 331
+              }
+            },
+            {
+              "trial": 2,
+              "injection": "continuous-down-ms=347170558 moves=287 duration-ms=2400",
+              "path": "348,625,0 950,625,800 150,695,1600 850,625,2400",
+              "selection": [
+                "Selection 31:31 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 228,
+                "dismissed": 1,
+                "requests": 229,
+                "coalesced": 1,
+                "cancelled": 0
+              },
+              "editing": {
+                "atUs": 20252053,
+                "length": 80,
+                "base": 31,
+                "extent": 31,
+                "fromNative": false,
+                "sequence": 332
+              }
+            },
+            {
+              "trial": 3,
+              "injection": "continuous-down-ms=347195485 moves=287 duration-ms=2400",
+              "path": "348,625,0 950,625,800 150,695,1600 850,625,2400",
+              "selection": [
+                "Selection 31:31 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 222,
+                "dismissed": 1,
+                "requests": 224,
+                "coalesced": 1,
+                "cancelled": 1
+              },
+              "editing": {
+                "atUs": 20233633,
+                "length": 80,
+                "base": 31,
+                "extent": 31,
+                "fromNative": false,
+                "sequence": 331
+              }
+            }
+          ]
+        },
+        "trials": [
+          {
+            "file": "review-fixed-1.json",
+            "gesture": 4,
+            "drawsIncludingTail": 90,
+            "drawsDuringInput": 83,
+            "ownerMs": {
+              "count": 83,
+              "p50": 7.549,
+              "p95": 26.131,
+              "p99": 27.666,
+              "max": 28.582
+            },
+            "callbackMs": {
+              "count": 83,
+              "p50": 3.917,
+              "p95": 18.981,
+              "p99": 24.562,
+              "max": 25.4
+            },
+            "inputAgeMs": {
+              "count": 228,
+              "p50": 7,
+              "p95": 13,
+              "p99": 21,
+              "max": 26
+            },
+            "dispatchMs": {
+              "count": 228,
+              "p50": 0.514,
+              "p95": 3.069,
+              "p99": 15.372,
+              "max": 18.528
+            },
+            "submitGapsDuringInputMs": {
+              "count": 82,
+              "p50": 26.274,
+              "p95": 53.903,
+              "p99": 56.214,
+              "max": 56.38
+            },
+            "allocatedPerDraw": {
+              "count": 83,
+              "p50": 708616,
+              "p95": 710016,
+              "p99": 729216,
+              "max": 729656
+            },
+            "ownerOver50ms": 0,
+            "nativeHistorySamples": 286,
+            "inputEvents": 228,
+            "phasesDuringInput": {
+              "build": {
+                "totalMs": 196.839,
+                "count": 83,
+                "p50": 1.378,
+                "p95": 3.869,
+                "p99": 22.001,
+                "max": 22.829
+              },
+              "layout": {
+                "totalMs": 68.378,
+                "count": 83,
+                "p50": 0.539,
+                "p95": 1.259,
+                "p99": 1.331,
+                "max": 15.586
+              },
+              "paint": {
+                "totalMs": 30.632,
+                "count": 83,
+                "p50": 0.306,
+                "p95": 0.649,
+                "p99": 0.83,
+                "max": 0.886
+              },
+              "semantics": {
+                "totalMs": 131.553,
+                "count": 83,
+                "p50": 0.9,
+                "p95": 2.773,
+                "p99": 16.167,
+                "max": 17.282
+              }
+            },
+            "magnifier": {
+              "created": 1,
+              "updates": 222,
+              "dismissed": 1,
+              "requests": 224,
+              "coalesced": 1,
+              "cancelled": 1
+            },
+            "semantics": {
+              "updatesReceived": 167,
+              "updatesApplied": 1,
+              "updatesCoalesced": 165,
+              "elementsCreated": 0,
+              "activeElements": 0,
+              "retainedNodes": 14,
+              "nativePropertyWrites": 0,
+              "immediateFlushes": 0,
+              "staleCallbacksSuppressed": 0,
+              "updatesSuppressed": 0,
+              "elementsReused": 0,
+              "topologyUpdatesApplied": 0,
+              "applyWorkMicroseconds": 2218,
+              "maxApplyWorkMicroseconds": 2218
+            },
+            "editing": {
+              "atUs": 20406921,
+              "length": 80,
+              "base": 31,
+              "extent": 31,
+              "fromNative": false,
+              "sequence": 331
+            },
+            "presentObserved": false,
+            "workWholeSessionTopSelfMs": [],
+            "validation": {
+              "trial": 1,
+              "injection": "continuous-down-ms=347145605 moves=287 duration-ms=2401",
+              "path": "348,625,0 950,625,800 150,695,1600 850,625,2400",
+              "selection": [
+                "Selection 31:31 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 222,
+                "dismissed": 1,
+                "requests": 224,
+                "coalesced": 1,
+                "cancelled": 1
+              },
+              "editing": {
+                "atUs": 20406921,
+                "length": 80,
+                "base": 31,
+                "extent": 31,
+                "fromNative": false,
+                "sequence": 331
+              }
+            },
+            "state": {
+              "accessibilityServices": "null",
+              "lowPower": "0",
+              "batteryTemperatureTenthsC": 277
+            }
+          },
+          {
+            "file": "review-fixed-2.json",
+            "gesture": 4,
+            "drawsIncludingTail": 91,
+            "drawsDuringInput": 83,
+            "ownerMs": {
+              "count": 83,
+              "p50": 8.051,
+              "p95": 21.209,
+              "p99": 24.525,
+              "max": 24.772
+            },
+            "callbackMs": {
+              "count": 83,
+              "p50": 4.187,
+              "p95": 17.581,
+              "p99": 20.628,
+              "max": 21.693
+            },
+            "inputAgeMs": {
+              "count": 233,
+              "p50": 7,
+              "p95": 13,
+              "p99": 19,
+              "max": 22
+            },
+            "dispatchMs": {
+              "count": 233,
+              "p50": 0.49,
+              "p95": 2.875,
+              "p99": 13.978,
+              "max": 20.388
+            },
+            "submitGapsDuringInputMs": {
+              "count": 82,
+              "p50": 26.771,
+              "p95": 45.759,
+              "p99": 60.893,
+              "max": 62.971
+            },
+            "allocatedPerDraw": {
+              "count": 83,
+              "p50": 708616,
+              "p95": 710456,
+              "p99": 729656,
+              "max": 729656
+            },
+            "ownerOver50ms": 0,
+            "nativeHistorySamples": 287,
+            "inputEvents": 233,
+            "phasesDuringInput": {
+              "build": {
+                "totalMs": 178.544,
+                "count": 83,
+                "p50": 1.481,
+                "p95": 3.821,
+                "p99": 14.002,
+                "max": 19.499
+              },
+              "layout": {
+                "totalMs": 66.332,
+                "count": 83,
+                "p50": 0.539,
+                "p95": 1.14,
+                "p99": 1.295,
+                "max": 15.053
+              },
+              "paint": {
+                "totalMs": 59.549,
+                "count": 83,
+                "p50": 0.326,
+                "p95": 0.754,
+                "p99": 13.705,
+                "max": 16.186
+              },
+              "semantics": {
+                "totalMs": 111.959,
+                "count": 83,
+                "p50": 0.948,
+                "p95": 1.741,
+                "p99": 14.474,
+                "max": 14.71
+              }
+            },
+            "magnifier": {
+              "created": 1,
+              "updates": 228,
+              "dismissed": 1,
+              "requests": 229,
+              "coalesced": 1,
+              "cancelled": 0
+            },
+            "semantics": {
+              "updatesReceived": 167,
+              "updatesApplied": 1,
+              "updatesCoalesced": 165,
+              "elementsCreated": 0,
+              "activeElements": 0,
+              "retainedNodes": 14,
+              "nativePropertyWrites": 0,
+              "immediateFlushes": 0,
+              "staleCallbacksSuppressed": 0,
+              "updatesSuppressed": 0,
+              "elementsReused": 0,
+              "topologyUpdatesApplied": 0,
+              "applyWorkMicroseconds": 2094,
+              "maxApplyWorkMicroseconds": 2094
+            },
+            "editing": {
+              "atUs": 20252053,
+              "length": 80,
+              "base": 31,
+              "extent": 31,
+              "fromNative": false,
+              "sequence": 332
+            },
+            "presentObserved": false,
+            "workWholeSessionTopSelfMs": [],
+            "validation": {
+              "trial": 2,
+              "injection": "continuous-down-ms=347170558 moves=287 duration-ms=2400",
+              "path": "348,625,0 950,625,800 150,695,1600 850,625,2400",
+              "selection": [
+                "Selection 31:31 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 228,
+                "dismissed": 1,
+                "requests": 229,
+                "coalesced": 1,
+                "cancelled": 0
+              },
+              "editing": {
+                "atUs": 20252053,
+                "length": 80,
+                "base": 31,
+                "extent": 31,
+                "fromNative": false,
+                "sequence": 332
+              }
+            },
+            "state": {
+              "accessibilityServices": "null",
+              "lowPower": "0",
+              "batteryTemperatureTenthsC": 280
+            }
+          },
+          {
+            "file": "review-fixed-3.json",
+            "gesture": 4,
+            "drawsIncludingTail": 91,
+            "drawsDuringInput": 83,
+            "ownerMs": {
+              "count": 83,
+              "p50": 7.468,
+              "p95": 26.485,
+              "p99": 28.435,
+              "max": 31.539
+            },
+            "callbackMs": {
+              "count": 83,
+              "p50": 3.933,
+              "p95": 22.819,
+              "p99": 25.342,
+              "max": 27.93
+            },
+            "inputAgeMs": {
+              "count": 228,
+              "p50": 7,
+              "p95": 13,
+              "p99": 17,
+              "max": 27
+            },
+            "dispatchMs": {
+              "count": 228,
+              "p50": 0.482,
+              "p95": 2.734,
+              "p99": 11.476,
+              "max": 21.943
+            },
+            "submitGapsDuringInputMs": {
+              "count": 82,
+              "p50": 26.946,
+              "p95": 55.054,
+              "p99": 62.214,
+              "max": 66.792
+            },
+            "allocatedPerDraw": {
+              "count": 83,
+              "p50": 708616,
+              "p95": 710016,
+              "p99": 729216,
+              "max": 730456
+            },
+            "ownerOver50ms": 0,
+            "nativeHistorySamples": 286,
+            "inputEvents": 228,
+            "phasesDuringInput": {
+              "build": {
+                "totalMs": 179.284,
+                "count": 83,
+                "p50": 1.386,
+                "p95": 3.805,
+                "p99": 15.062,
+                "max": 21.446
+              },
+              "layout": {
+                "totalMs": 111.762,
+                "count": 83,
+                "p50": 0.551,
+                "p95": 1.565,
+                "p99": 16.814,
+                "max": 18.482
+              },
+              "paint": {
+                "totalMs": 49.587,
+                "count": 83,
+                "p50": 0.312,
+                "p95": 0.766,
+                "p99": 0.956,
+                "max": 19.549
+              },
+              "semantics": {
+                "totalMs": 96.96,
+                "count": 83,
+                "p50": 0.83,
+                "p95": 1.589,
+                "p99": 2.335,
+                "max": 18.49
+              }
+            },
+            "magnifier": {
+              "created": 1,
+              "updates": 222,
+              "dismissed": 1,
+              "requests": 224,
+              "coalesced": 1,
+              "cancelled": 1
+            },
+            "semantics": {
+              "updatesReceived": 167,
+              "updatesApplied": 1,
+              "updatesCoalesced": 165,
+              "elementsCreated": 0,
+              "activeElements": 0,
+              "retainedNodes": 14,
+              "nativePropertyWrites": 0,
+              "immediateFlushes": 0,
+              "staleCallbacksSuppressed": 0,
+              "updatesSuppressed": 0,
+              "elementsReused": 0,
+              "topologyUpdatesApplied": 0,
+              "applyWorkMicroseconds": 3072,
+              "maxApplyWorkMicroseconds": 3072
+            },
+            "editing": {
+              "atUs": 20233633,
+              "length": 80,
+              "base": 31,
+              "extent": 31,
+              "fromNative": false,
+              "sequence": 331
+            },
+            "presentObserved": false,
+            "workWholeSessionTopSelfMs": [],
+            "validation": {
+              "trial": 3,
+              "injection": "continuous-down-ms=347195485 moves=287 duration-ms=2400",
+              "path": "348,625,0 950,625,800 150,695,1600 850,625,2400",
+              "selection": [
+                "Selection 31:31 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 222,
+                "dismissed": 1,
+                "requests": 224,
+                "coalesced": 1,
+                "cancelled": 1
+              },
+              "editing": {
+                "atUs": 20233633,
+                "length": 80,
+                "base": 31,
+                "extent": 31,
+                "fromNative": false,
+                "sequence": 331
+              }
+            },
+            "state": {
+              "accessibilityServices": "null",
+              "lowPower": "0",
+              "batteryTemperatureTenthsC": 282
+            }
+          }
+        ]
+      }
+    },
+    "secondFieldRing": {
+      "baseline": {
+        "manifest": {
+          "apkSha256": "6397ef12cd1eaed2a619f3a3c5f99d3926ec689147dbb233ad967b1f13b4fc19",
+          "serial": "R3CY30KZA4B",
+          "sample": "input",
+          "allocationProfile": false,
+          "text": "The_quick_brown_fox_jumps_over_the_lazy_dog._Cursor_movement_should_stay_smooth.",
+          "field": "last",
+          "nativeViews": false,
+          "physicalTouchAccepted": false,
+          "trials": [
+            {
+              "trial": 1,
+              "injection": "continuous-down-ms=346660057 moves=287 duration-ms=2400",
+              "path": "348,1314,0 950,1314,800 150,1314,1600 850,1314,2400",
+              "selection": [
+                "Selection -1:-1 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 208,
+                "dismissed": 1
+              }
+            },
+            {
+              "trial": 2,
+              "injection": "continuous-down-ms=346687261 moves=287 duration-ms=2400",
+              "path": "348,1314,0 950,1314,800 150,1314,1600 850,1314,2400",
+              "selection": [
+                "Selection -1:-1 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 218,
+                "dismissed": 1
+              }
+            },
+            {
+              "trial": 3,
+              "injection": "continuous-down-ms=346714312 moves=287 duration-ms=2400",
+              "path": "348,1314,0 950,1314,800 150,1314,1600 850,1314,2400",
+              "selection": [
+                "Selection -1:-1 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 219,
+                "dismissed": 1
+              }
+            }
+          ]
+        },
+        "trials": [
+          {
+            "file": "review-isolated-baseline-main-1.json",
+            "gesture": 4,
+            "drawsIncludingTail": 96,
+            "drawsDuringInput": 88,
+            "ownerMs": {
+              "count": 88,
+              "p50": 7.505,
+              "p95": 27.082,
+              "p99": 29.175,
+              "max": 31.13
+            },
+            "callbackMs": {
+              "count": 88,
+              "p50": 4.24,
+              "p95": 23.26,
+              "p99": 25.66,
+              "max": 26.591
+            },
+            "inputAgeMs": {
+              "count": 216,
+              "p50": 7,
+              "p95": 13,
+              "p99": 24,
+              "max": 30
+            },
+            "dispatchMs": {
+              "count": 216,
+              "p50": 0.644,
+              "p95": 3.312,
+              "p99": 13.035,
+              "max": 23.763
+            },
+            "submitGapsDuringInputMs": {
+              "count": 87,
+              "p50": 23.045,
+              "p95": 53.007,
+              "p99": 70.011,
+              "max": 72.141
+            },
+            "allocatedPerDraw": {
+              "count": 88,
+              "p50": 740536,
+              "p95": 753168,
+              "p99": 761136,
+              "max": 783704
+            },
+            "ownerOver50ms": 0,
+            "nativeHistorySamples": 286,
+            "inputEvents": 216,
+            "phasesDuringInput": {
+              "build": {
+                "totalMs": 298.346,
+                "count": 88,
+                "p50": 1.95,
+                "p95": 15.076,
+                "p99": 23.214,
+                "max": 24.643
+              },
+              "layout": {
+                "totalMs": 22.35,
+                "count": 88,
+                "p50": 0.226,
+                "p95": 0.481,
+                "p99": 0.596,
+                "max": 0.652
+              },
+              "paint": {
+                "totalMs": 46.336,
+                "count": 88,
+                "p50": 0.284,
+                "p95": 0.618,
+                "p99": 0.884,
+                "max": 19.337
+              },
+              "semantics": {
+                "totalMs": 194.71,
+                "count": 79,
+                "p50": 0.925,
+                "p95": 16.13,
+                "p99": 19.46,
+                "max": 19.503
+              }
+            },
+            "magnifier": {
+              "created": 1,
+              "updates": 208,
+              "dismissed": 1
+            },
+            "semantics": null,
+            "editing": null,
+            "presentObserved": false,
+            "workWholeSessionTopSelfMs": [],
+            "validation": {
+              "trial": 1,
+              "injection": "continuous-down-ms=346660057 moves=287 duration-ms=2400",
+              "path": "348,1314,0 950,1314,800 150,1314,1600 850,1314,2400",
+              "selection": [
+                "Selection -1:-1 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 208,
+                "dismissed": 1
+              }
+            },
+            "state": {
+              "accessibilityServices": "null",
+              "lowPower": "0",
+              "batteryTemperatureTenthsC": 278
+            }
+          },
+          {
+            "file": "review-isolated-baseline-main-2.json",
+            "gesture": 4,
+            "drawsIncludingTail": 95,
+            "drawsDuringInput": 87,
+            "ownerMs": {
+              "count": 87,
+              "p50": 8.476,
+              "p95": 25.709,
+              "p99": 27.377,
+              "max": 27.707
+            },
+            "callbackMs": {
+              "count": 87,
+              "p50": 4.666,
+              "p95": 21.771,
+              "p99": 24.452,
+              "max": 24.615
+            },
+            "inputAgeMs": {
+              "count": 226,
+              "p50": 7,
+              "p95": 14,
+              "p99": 25,
+              "max": 32
+            },
+            "dispatchMs": {
+              "count": 226,
+              "p50": 0.609,
+              "p95": 2.856,
+              "p99": 18.364,
+              "max": 21.088
+            },
+            "submitGapsDuringInputMs": {
+              "count": 86,
+              "p50": 25.437,
+              "p95": 50.948,
+              "p99": 62.137,
+              "max": 63.631
+            },
+            "allocatedPerDraw": {
+              "count": 87,
+              "p50": 740536,
+              "p95": 753168,
+              "p99": 761136,
+              "max": 783704
+            },
+            "ownerOver50ms": 0,
+            "nativeHistorySamples": 286,
+            "inputEvents": 226,
+            "phasesDuringInput": {
+              "build": {
+                "totalMs": 335.621,
+                "count": 87,
+                "p50": 2.176,
+                "p95": 15.895,
+                "p99": 21.342,
+                "max": 22.454
+              },
+              "layout": {
+                "totalMs": 23.169,
+                "count": 87,
+                "p50": 0.234,
+                "p95": 0.48,
+                "p99": 0.616,
+                "max": 0.717
+              },
+              "paint": {
+                "totalMs": 42.015,
+                "count": 87,
+                "p50": 0.313,
+                "p95": 0.584,
+                "p99": 0.75,
+                "max": 14.657
+              },
+              "semantics": {
+                "totalMs": 168.454,
+                "count": 79,
+                "p50": 1.05,
+                "p95": 14.582,
+                "p99": 18.53,
+                "max": 18.638
+              }
+            },
+            "magnifier": {
+              "created": 1,
+              "updates": 218,
+              "dismissed": 1
+            },
+            "semantics": null,
+            "editing": null,
+            "presentObserved": false,
+            "workWholeSessionTopSelfMs": [],
+            "validation": {
+              "trial": 2,
+              "injection": "continuous-down-ms=346687261 moves=287 duration-ms=2400",
+              "path": "348,1314,0 950,1314,800 150,1314,1600 850,1314,2400",
+              "selection": [
+                "Selection -1:-1 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 218,
+                "dismissed": 1
+              }
+            },
+            "state": {
+              "accessibilityServices": "null",
+              "lowPower": "0",
+              "batteryTemperatureTenthsC": 280
+            }
+          },
+          {
+            "file": "review-isolated-baseline-main-3.json",
+            "gesture": 4,
+            "drawsIncludingTail": 97,
+            "drawsDuringInput": 89,
+            "ownerMs": {
+              "count": 89,
+              "p50": 8.168,
+              "p95": 27.063,
+              "p99": 29.077,
+              "max": 30.517
+            },
+            "callbackMs": {
+              "count": 89,
+              "p50": 4.505,
+              "p95": 21.421,
+              "p99": 23.859,
+              "max": 25.669
+            },
+            "inputAgeMs": {
+              "count": 228,
+              "p50": 7,
+              "p95": 13,
+              "p99": 16,
+              "max": 26
+            },
+            "dispatchMs": {
+              "count": 228,
+              "p50": 0.623,
+              "p95": 2.477,
+              "p99": 4.148,
+              "max": 19.941
+            },
+            "submitGapsDuringInputMs": {
+              "count": 88,
+              "p50": 24.009,
+              "p95": 53.44,
+              "p99": 58.838,
+              "max": 63.603
+            },
+            "allocatedPerDraw": {
+              "count": 89,
+              "p50": 740536,
+              "p95": 753168,
+              "p99": 773768,
+              "max": 783704
+            },
+            "ownerOver50ms": 0,
+            "nativeHistorySamples": 286,
+            "inputEvents": 228,
+            "phasesDuringInput": {
+              "build": {
+                "totalMs": 328.444,
+                "count": 89,
+                "p50": 2.134,
+                "p95": 19.324,
+                "p99": 21.964,
+                "max": 23.792
+              },
+              "layout": {
+                "totalMs": 22.943,
+                "count": 89,
+                "p50": 0.237,
+                "p95": 0.446,
+                "p99": 0.647,
+                "max": 0.843
+              },
+              "paint": {
+                "totalMs": 27.928,
+                "count": 89,
+                "p50": 0.303,
+                "p95": 0.589,
+                "p99": 0.676,
+                "max": 0.7
+              },
+              "semantics": {
+                "totalMs": 143.966,
+                "count": 79,
+                "p50": 1.022,
+                "p95": 3.578,
+                "p99": 15.436,
+                "max": 17.822
+              }
+            },
+            "magnifier": {
+              "created": 1,
+              "updates": 219,
+              "dismissed": 1
+            },
+            "semantics": null,
+            "editing": null,
+            "presentObserved": false,
+            "workWholeSessionTopSelfMs": [],
+            "validation": {
+              "trial": 3,
+              "injection": "continuous-down-ms=346714312 moves=287 duration-ms=2400",
+              "path": "348,1314,0 950,1314,800 150,1314,1600 850,1314,2400",
+              "selection": [
+                "Selection -1:-1 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 219,
+                "dismissed": 1
+              }
+            },
+            "state": {
+              "accessibilityServices": "null",
+              "lowPower": "0",
+              "batteryTemperatureTenthsC": 281
+            }
+          }
+        ]
+      },
+      "candidate": {
+        "manifest": {
+          "apkSha256": "2d20c94ab6cd9300c9f6d809d19a55ce3fbf3b5c020d20a0bc3723b14fbe8cc1",
+          "serial": "R3CY30KZA4B",
+          "sample": "input",
+          "allocationProfile": false,
+          "text": "The_quick_brown_fox_jumps_over_the_lazy_dog._Cursor_movement_should_stay_smooth.",
+          "field": "last",
+          "observeAccessibility": false,
+          "nativeViews": false,
+          "physicalTouchAccepted": false,
+          "trials": [
+            {
+              "trial": 1,
+              "injection": "continuous-down-ms=347223523 moves=287 duration-ms=2401",
+              "path": "348,1314,0 950,1314,800 150,1314,1600 850,1314,2400",
+              "selection": [
+                "Selection -1:-1 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 225,
+                "dismissed": 1,
+                "requests": 227,
+                "coalesced": 1,
+                "cancelled": 1
+              },
+              "editing": {
+                "atUs": 22370583,
+                "length": 80,
+                "base": 73,
+                "extent": 73,
+                "fromNative": false,
+                "sequence": 321
+              }
+            },
+            {
+              "trial": 2,
+              "injection": "continuous-down-ms=347250588 moves=287 duration-ms=2401",
+              "path": "348,1314,0 950,1314,800 150,1314,1600 850,1314,2400",
+              "selection": [
+                "Selection -1:-1 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 224,
+                "dismissed": 1,
+                "requests": 226,
+                "coalesced": 1,
+                "cancelled": 1
+              },
+              "editing": {
+                "atUs": 22387225,
+                "length": 80,
+                "base": 73,
+                "extent": 73,
+                "fromNative": false,
+                "sequence": 323
+              }
+            },
+            {
+              "trial": 3,
+              "injection": "continuous-down-ms=347277623 moves=287 duration-ms=2401",
+              "path": "348,1314,0 950,1314,800 150,1314,1600 850,1314,2400",
+              "selection": [
+                "Selection -1:-1 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 220,
+                "dismissed": 1,
+                "requests": 222,
+                "coalesced": 1,
+                "cancelled": 1
+              },
+              "editing": {
+                "atUs": 22336231,
+                "length": 80,
+                "base": 73,
+                "extent": 73,
+                "fromNative": false,
+                "sequence": 323
+              }
+            }
+          ]
+        },
+        "trials": [
+          {
+            "file": "review-isolated-fixed-1.json",
+            "gesture": 4,
+            "drawsIncludingTail": 98,
+            "drawsDuringInput": 90,
+            "ownerMs": {
+              "count": 90,
+              "p50": 7.108,
+              "p95": 24.135,
+              "p99": 29.801,
+              "max": 35.183
+            },
+            "callbackMs": {
+              "count": 90,
+              "p50": 3.487,
+              "p95": 20.91,
+              "p99": 26.34,
+              "max": 32.085
+            },
+            "inputAgeMs": {
+              "count": 235,
+              "p50": 7,
+              "p95": 13,
+              "p99": 16,
+              "max": 47
+            },
+            "dispatchMs": {
+              "count": 235,
+              "p50": 0.435,
+              "p95": 2.413,
+              "p99": 10.205,
+              "max": 41.16
+            },
+            "submitGapsDuringInputMs": {
+              "count": 89,
+              "p50": 23.513,
+              "p95": 49.849,
+              "p99": 58.213,
+              "max": 82.731
+            },
+            "allocatedPerDraw": {
+              "count": 90,
+              "p50": 646448,
+              "p95": 659080,
+              "p99": 679680,
+              "max": 764720
+            },
+            "ownerOver50ms": 0,
+            "nativeHistorySamples": 286,
+            "inputEvents": 235,
+            "phasesDuringInput": {
+              "build": {
+                "totalMs": 213.456,
+                "count": 90,
+                "p50": 1.403,
+                "p95": 4.75,
+                "p99": 19.093,
+                "max": 21.797
+              },
+              "layout": {
+                "totalMs": 41.914,
+                "count": 90,
+                "p50": 0.236,
+                "p95": 0.658,
+                "p99": 0.868,
+                "max": 17.434
+              },
+              "paint": {
+                "totalMs": 45.283,
+                "count": 90,
+                "p50": 0.282,
+                "p95": 0.731,
+                "p99": 0.975,
+                "max": 16.71
+              },
+              "semantics": {
+                "totalMs": 159.141,
+                "count": 79,
+                "p50": 0.825,
+                "p95": 13.604,
+                "p99": 19.995,
+                "max": 24.129
+              }
+            },
+            "magnifier": {
+              "created": 1,
+              "updates": 225,
+              "dismissed": 1,
+              "requests": 227,
+              "coalesced": 1,
+              "cancelled": 1
+            },
+            "semantics": {
+              "updatesReceived": 164,
+              "updatesApplied": 2,
+              "updatesCoalesced": 161,
+              "elementsCreated": 0,
+              "activeElements": 0,
+              "retainedNodes": 14,
+              "nativePropertyWrites": 0,
+              "immediateFlushes": 0,
+              "staleCallbacksSuppressed": 0,
+              "updatesSuppressed": 0,
+              "elementsReused": 0,
+              "topologyUpdatesApplied": 0,
+              "applyWorkMicroseconds": 10998,
+              "maxApplyWorkMicroseconds": 8894
+            },
+            "editing": {
+              "atUs": 22370583,
+              "length": 80,
+              "base": 73,
+              "extent": 73,
+              "fromNative": false,
+              "sequence": 321
+            },
+            "presentObserved": false,
+            "workWholeSessionTopSelfMs": [],
+            "validation": {
+              "trial": 1,
+              "injection": "continuous-down-ms=347223523 moves=287 duration-ms=2401",
+              "path": "348,1314,0 950,1314,800 150,1314,1600 850,1314,2400",
+              "selection": [
+                "Selection -1:-1 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 225,
+                "dismissed": 1,
+                "requests": 227,
+                "coalesced": 1,
+                "cancelled": 1
+              },
+              "editing": {
+                "atUs": 22370583,
+                "length": 80,
+                "base": 73,
+                "extent": 73,
+                "fromNative": false,
+                "sequence": 321
+              }
+            },
+            "state": {
+              "accessibilityServices": "null",
+              "lowPower": "0",
+              "batteryTemperatureTenthsC": 284
+            }
+          },
+          {
+            "file": "review-isolated-fixed-2.json",
+            "gesture": 4,
+            "drawsIncludingTail": 96,
+            "drawsDuringInput": 88,
+            "ownerMs": {
+              "count": 88,
+              "p50": 7.679,
+              "p95": 22.386,
+              "p99": 29.542,
+              "max": 29.898
+            },
+            "callbackMs": {
+              "count": 88,
+              "p50": 3.762,
+              "p95": 18.53,
+              "p99": 26.477,
+              "max": 26.492
+            },
+            "inputAgeMs": {
+              "count": 234,
+              "p50": 7,
+              "p95": 13,
+              "p99": 17,
+              "max": 33
+            },
+            "dispatchMs": {
+              "count": 234,
+              "p50": 0.475,
+              "p95": 2.359,
+              "p99": 11.671,
+              "max": 27.683
+            },
+            "submitGapsDuringInputMs": {
+              "count": 87,
+              "p50": 25.113,
+              "p95": 52.052,
+              "p99": 63.792,
+              "max": 64.309
+            },
+            "allocatedPerDraw": {
+              "count": 88,
+              "p50": 646448,
+              "p95": 659080,
+              "p99": 667048,
+              "max": 764720
+            },
+            "ownerOver50ms": 0,
+            "nativeHistorySamples": 286,
+            "inputEvents": 234,
+            "phasesDuringInput": {
+              "build": {
+                "totalMs": 192.685,
+                "count": 88,
+                "p50": 1.555,
+                "p95": 3.868,
+                "p99": 16.051,
+                "max": 16.692
+              },
+              "layout": {
+                "totalMs": 75.379,
+                "count": 88,
+                "p50": 0.255,
+                "p95": 0.699,
+                "p99": 17.527,
+                "max": 18.359
+              },
+              "paint": {
+                "totalMs": 48.048,
+                "count": 88,
+                "p50": 0.299,
+                "p95": 0.614,
+                "p99": 0.755,
+                "max": 20.131
+              },
+              "semantics": {
+                "totalMs": 110.267,
+                "count": 79,
+                "p50": 0.852,
+                "p95": 1.787,
+                "p99": 13.792,
+                "max": 21.376
+              }
+            },
+            "magnifier": {
+              "created": 1,
+              "updates": 224,
+              "dismissed": 1,
+              "requests": 226,
+              "coalesced": 1,
+              "cancelled": 1
+            },
+            "semantics": {
+              "updatesReceived": 165,
+              "updatesApplied": 2,
+              "updatesCoalesced": 162,
+              "elementsCreated": 0,
+              "activeElements": 0,
+              "retainedNodes": 14,
+              "nativePropertyWrites": 0,
+              "immediateFlushes": 0,
+              "staleCallbacksSuppressed": 0,
+              "updatesSuppressed": 0,
+              "elementsReused": 0,
+              "topologyUpdatesApplied": 0,
+              "applyWorkMicroseconds": 9485,
+              "maxApplyWorkMicroseconds": 6644
+            },
+            "editing": {
+              "atUs": 22387225,
+              "length": 80,
+              "base": 73,
+              "extent": 73,
+              "fromNative": false,
+              "sequence": 323
+            },
+            "presentObserved": false,
+            "workWholeSessionTopSelfMs": [],
+            "validation": {
+              "trial": 2,
+              "injection": "continuous-down-ms=347250588 moves=287 duration-ms=2401",
+              "path": "348,1314,0 950,1314,800 150,1314,1600 850,1314,2400",
+              "selection": [
+                "Selection -1:-1 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 224,
+                "dismissed": 1,
+                "requests": 226,
+                "coalesced": 1,
+                "cancelled": 1
+              },
+              "editing": {
+                "atUs": 22387225,
+                "length": 80,
+                "base": 73,
+                "extent": 73,
+                "fromNative": false,
+                "sequence": 323
+              }
+            },
+            "state": {
+              "accessibilityServices": "null",
+              "lowPower": "0",
+              "batteryTemperatureTenthsC": 284
+            }
+          },
+          {
+            "file": "review-isolated-fixed-3.json",
+            "gesture": 4,
+            "drawsIncludingTail": 95,
+            "drawsDuringInput": 87,
+            "ownerMs": {
+              "count": 87,
+              "p50": 7.338,
+              "p95": 24.989,
+              "p99": 29.394,
+              "max": 29.812
+            },
+            "callbackMs": {
+              "count": 87,
+              "p50": 3.657,
+              "p95": 19.116,
+              "p99": 26.074,
+              "max": 26.654
+            },
+            "inputAgeMs": {
+              "count": 231,
+              "p50": 7,
+              "p95": 13,
+              "p99": 17,
+              "max": 35
+            },
+            "dispatchMs": {
+              "count": 231,
+              "p50": 0.45,
+              "p95": 2.783,
+              "p99": 11.27,
+              "max": 29.403
+            },
+            "submitGapsDuringInputMs": {
+              "count": 86,
+              "p50": 23.965,
+              "p95": 52.85,
+              "p99": 61.006,
+              "max": 61.193
+            },
+            "allocatedPerDraw": {
+              "count": 87,
+              "p50": 646448,
+              "p95": 659080,
+              "p99": 667048,
+              "max": 763552
+            },
+            "ownerOver50ms": 0,
+            "nativeHistorySamples": 286,
+            "inputEvents": 231,
+            "phasesDuringInput": {
+              "build": {
+                "totalMs": 202.226,
+                "count": 87,
+                "p50": 1.453,
+                "p95": 4.818,
+                "p99": 17.86,
+                "max": 20.062
+              },
+              "layout": {
+                "totalMs": 57.258,
+                "count": 87,
+                "p50": 0.243,
+                "p95": 0.631,
+                "p99": 14.1,
+                "max": 18.114
+              },
+              "paint": {
+                "totalMs": 50.03,
+                "count": 87,
+                "p50": 0.298,
+                "p95": 0.734,
+                "p99": 1.014,
+                "max": 20.829
+              },
+              "semantics": {
+                "totalMs": 111.029,
+                "count": 80,
+                "p50": 0.84,
+                "p95": 2.091,
+                "p99": 15.799,
+                "max": 21.389
+              }
+            },
+            "magnifier": {
+              "created": 1,
+              "updates": 220,
+              "dismissed": 1,
+              "requests": 222,
+              "coalesced": 1,
+              "cancelled": 1
+            },
+            "semantics": {
+              "updatesReceived": 165,
+              "updatesApplied": 2,
+              "updatesCoalesced": 162,
+              "elementsCreated": 0,
+              "activeElements": 0,
+              "retainedNodes": 14,
+              "nativePropertyWrites": 0,
+              "immediateFlushes": 0,
+              "staleCallbacksSuppressed": 0,
+              "updatesSuppressed": 0,
+              "elementsReused": 0,
+              "topologyUpdatesApplied": 0,
+              "applyWorkMicroseconds": 8266,
+              "maxApplyWorkMicroseconds": 4205
+            },
+            "editing": {
+              "atUs": 22336231,
+              "length": 80,
+              "base": 73,
+              "extent": 73,
+              "fromNative": false,
+              "sequence": 323
+            },
+            "presentObserved": false,
+            "workWholeSessionTopSelfMs": [],
+            "validation": {
+              "trial": 3,
+              "injection": "continuous-down-ms=347277623 moves=287 duration-ms=2401",
+              "path": "348,1314,0 950,1314,800 150,1314,1600 850,1314,2400",
+              "selection": [
+                "Selection -1:-1 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 220,
+                "dismissed": 1,
+                "requests": 222,
+                "coalesced": 1,
+                "cancelled": 1
+              },
+              "editing": {
+                "atUs": 22336231,
+                "length": 80,
+                "base": 73,
+                "extent": 73,
+                "fromNative": false,
+                "sequence": 323
+              }
+            },
+            "state": {
+              "accessibilityServices": "null",
+              "lowPower": "0",
+              "batteryTemperatureTenthsC": 285
+            }
+          }
+        ]
+      }
+    },
+    "nativeEditorRing": {
+      "baseline": {
+        "manifest": {
+          "apkSha256": "6397ef12cd1eaed2a619f3a3c5f99d3926ec689147dbb233ad967b1f13b4fc19",
+          "serial": "R3CY30KZA4B",
+          "sample": "input",
+          "allocationProfile": false,
+          "text": "The_quick_brown_fox_jumps_over_the_lazy_dog._Cursor_movement_should_stay_smooth.",
+          "nativeViews": true,
+          "physicalTouchAccepted": false,
+          "trials": [
+            {
+              "trial": 1,
+              "injection": "continuous-down-ms=346331591 moves=287 duration-ms=2400",
+              "selection": [
+                "Selection 31:31 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 84,
+                "dismissed": 1
+              }
+            }
+          ]
+        },
+        "trials": [
+          {
+            "file": "review-baseline-native-1.json",
+            "gesture": 3,
+            "drawsIncludingTail": 73,
+            "drawsDuringInput": 67,
+            "ownerMs": {
+              "count": 67,
+              "p50": 23.236,
+              "p95": 40.199,
+              "p99": 43.784,
+              "max": 44.241
+            },
+            "callbackMs": {
+              "count": 67,
+              "p50": 11.975,
+              "p95": 31.535,
+              "p99": 32.288,
+              "max": 35.101
+            },
+            "inputAgeMs": {
+              "count": 88,
+              "p50": 10,
+              "p95": 16,
+              "p99": 31,
+              "max": 36
+            },
+            "dispatchMs": {
+              "count": 88,
+              "p50": 1.164,
+              "p95": 3.789,
+              "p99": 16.77,
+              "max": 19.188
+            },
+            "submitGapsDuringInputMs": {
+              "count": 66,
+              "p50": 29.857,
+              "p95": 52.257,
+              "p99": 58.588,
+              "max": 78.881
+            },
+            "allocatedPerDraw": {
+              "count": 67,
+              "p50": 1751552,
+              "p95": 1751992,
+              "p99": 1753520,
+              "max": 1772152
+            },
+            "ownerOver50ms": 0,
+            "nativeHistorySamples": 286,
+            "inputEvents": 88,
+            "phasesDuringInput": {
+              "build": {
+                "totalMs": 831.514,
+                "count": 67,
+                "p50": 8.544,
+                "p95": 28.397,
+                "p99": 29.714,
+                "max": 29.837
+              },
+              "layout": {
+                "totalMs": 71.536,
+                "count": 67,
+                "p50": 0.555,
+                "p95": 0.813,
+                "p99": 16.138,
+                "max": 18.014
+              },
+              "paint": {
+                "totalMs": 38.322,
+                "count": 67,
+                "p50": 0.289,
+                "p95": 0.397,
+                "p99": 0.671,
+                "max": 18.761
+              },
+              "semantics": {
+                "totalMs": 185.42,
+                "count": 67,
+                "p50": 1.163,
+                "p95": 18.197,
+                "p99": 20.613,
+                "max": 21.31
+              }
+            },
+            "magnifier": {
+              "created": 1,
+              "updates": 84,
+              "dismissed": 1
+            },
+            "semantics": null,
+            "editing": null,
+            "presentObserved": false,
+            "workWholeSessionTopSelfMs": [],
+            "validation": {
+              "trial": 1,
+              "injection": "continuous-down-ms=346331591 moves=287 duration-ms=2400",
+              "selection": [
+                "Selection 31:31 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 84,
+                "dismissed": 1
+              }
+            },
+            "state": {
+              "accessibilityServices": "null",
+              "lowPower": "0",
+              "batteryTemperatureTenthsC": 277
+            }
+          }
+        ]
+      },
+      "candidate": {
+        "manifest": {
+          "apkSha256": "2d20c94ab6cd9300c9f6d809d19a55ce3fbf3b5c020d20a0bc3723b14fbe8cc1",
+          "serial": "R3CY30KZA4B",
+          "sample": "input",
+          "allocationProfile": false,
+          "text": "The_quick_brown_fox_jumps_over_the_lazy_dog._Cursor_movement_should_stay_smooth.",
+          "field": "first",
+          "observeAccessibility": false,
+          "nativeViews": true,
+          "physicalTouchAccepted": false,
+          "trials": [
+            {
+              "trial": 1,
+              "injection": "continuous-down-ms=347302502 moves=287 duration-ms=2401",
+              "path": "348,625,0 950,625,800 150,695,1600 850,625,2400",
+              "selection": [
+                "Selection 31:31 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 181,
+                "dismissed": 1,
+                "requests": 183,
+                "coalesced": 1,
+                "cancelled": 1
+              },
+              "editing": {
+                "atUs": 19174430,
+                "length": 80,
+                "base": 31,
+                "extent": 31,
+                "fromNative": false,
+                "sequence": 329
+              }
+            }
+          ]
+        },
+        "trials": [
+          {
+            "file": "review-fixed-native-1.json",
+            "gesture": 3,
+            "drawsIncludingTail": 88,
+            "drawsDuringInput": 82,
+            "ownerMs": {
+              "count": 82,
+              "p50": 12.254,
+              "p95": 29.176,
+              "p99": 34.027,
+              "max": 38.115
+            },
+            "callbackMs": {
+              "count": 82,
+              "p50": 3.779,
+              "p95": 17.533,
+              "p99": 21.608,
+              "max": 26.675
+            },
+            "inputAgeMs": {
+              "count": 187,
+              "p50": 8,
+              "p95": 14,
+              "p99": 20,
+              "max": 23
+            },
+            "dispatchMs": {
+              "count": 187,
+              "p50": 0.552,
+              "p95": 2.512,
+              "p99": 14.473,
+              "max": 15.262
+            },
+            "submitGapsDuringInputMs": {
+              "count": 81,
+              "p50": 25.792,
+              "p95": 47.804,
+              "p99": 58.483,
+              "max": 61.432
+            },
+            "allocatedPerDraw": {
+              "count": 82,
+              "p50": 773712,
+              "p95": 775112,
+              "p99": 794312,
+              "max": 795168
+            },
+            "ownerOver50ms": 0,
+            "nativeHistorySamples": 286,
+            "inputEvents": 187,
+            "phasesDuringInput": {
+              "build": {
+                "totalMs": 137.533,
+                "count": 82,
+                "p50": 1.395,
+                "p95": 3.024,
+                "p99": 3.908,
+                "max": 5.268
+              },
+              "layout": {
+                "totalMs": 130.727,
+                "count": 82,
+                "p50": 0.516,
+                "p95": 1.472,
+                "p99": 18.803,
+                "max": 20.905
+              },
+              "paint": {
+                "totalMs": 28.053,
+                "count": 82,
+                "p50": 0.296,
+                "p95": 0.623,
+                "p99": 0.644,
+                "max": 0.668
+              },
+              "semantics": {
+                "totalMs": 122.291,
+                "count": 82,
+                "p50": 0.871,
+                "p95": 1.906,
+                "p99": 14.846,
+                "max": 17.436
+              }
+            },
+            "magnifier": {
+              "created": 1,
+              "updates": 181,
+              "dismissed": 1,
+              "requests": 183,
+              "coalesced": 1,
+              "cancelled": 1
+            },
+            "semantics": {
+              "updatesReceived": 165,
+              "updatesApplied": 1,
+              "updatesCoalesced": 163,
+              "elementsCreated": 0,
+              "activeElements": 0,
+              "retainedNodes": 15,
+              "nativePropertyWrites": 0,
+              "immediateFlushes": 0,
+              "staleCallbacksSuppressed": 0,
+              "updatesSuppressed": 0,
+              "elementsReused": 0,
+              "topologyUpdatesApplied": 0,
+              "applyWorkMicroseconds": 2726,
+              "maxApplyWorkMicroseconds": 2726
+            },
+            "editing": {
+              "atUs": 19174430,
+              "length": 80,
+              "base": 31,
+              "extent": 31,
+              "fromNative": false,
+              "sequence": 329
+            },
+            "presentObserved": false,
+            "workWholeSessionTopSelfMs": [],
+            "validation": {
+              "trial": 1,
+              "injection": "continuous-down-ms=347302502 moves=287 duration-ms=2401",
+              "path": "348,625,0 950,625,800 150,695,1600 850,625,2400",
+              "selection": [
+                "Selection 31:31 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 181,
+                "dismissed": 1,
+                "requests": 183,
+                "coalesced": 1,
+                "cancelled": 1
+              },
+              "editing": {
+                "atUs": 19174430,
+                "length": 80,
+                "base": 31,
+                "extent": 31,
+                "fromNative": false,
+                "sequence": 329
+              }
+            },
+            "state": {
+              "accessibilityServices": "null",
+              "lowPower": "0",
+              "batteryTemperatureTenthsC": 287
+            }
+          }
+        ]
+      }
+    },
+    "allocationProfile": {
+      "baseline": {
+        "manifest": {
+          "apkSha256": "6397ef12cd1eaed2a619f3a3c5f99d3926ec689147dbb233ad967b1f13b4fc19",
+          "serial": "R3CY30KZA4B",
+          "sample": "input",
+          "allocationProfile": true,
+          "text": "The_quick_brown_fox_jumps_over_the_lazy_dog._Cursor_movement_should_stay_smooth.",
+          "field": "first",
+          "nativeViews": false,
+          "physicalTouchAccepted": false,
+          "trials": [
+            {
+              "trial": 1,
+              "injection": "continuous-down-ms=346632019 moves=287 duration-ms=2400",
+              "path": "348,625,0 950,625,800 150,695,1600 850,625,2400",
+              "selection": [
+                "Selection 31:31 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 139,
+                "dismissed": 1
+              }
+            }
+          ]
+        },
+        "trials": [
+          {
+            "file": "review-source-baseline-profile-1.json",
+            "gesture": 4,
+            "drawsIncludingTail": 87,
+            "drawsDuringInput": 79,
+            "ownerMs": {
+              "count": 79,
+              "p50": 13.98,
+              "p95": 34.392,
+              "p99": 34.985,
+              "max": 36.955
+            },
+            "callbackMs": {
+              "count": 79,
+              "p50": 11.092,
+              "p95": 30.674,
+              "p99": 31.365,
+              "max": 31.435
+            },
+            "inputAgeMs": {
+              "count": 143,
+              "p50": 9,
+              "p95": 14,
+              "p99": 21,
+              "max": 26
+            },
+            "dispatchMs": {
+              "count": 143,
+              "p50": 0.696,
+              "p95": 3.523,
+              "p99": 14.84,
+              "max": 20.644
+            },
+            "submitGapsDuringInputMs": {
+              "count": 78,
+              "p50": 23.835,
+              "p95": 51.792,
+              "p99": 66.659,
+              "max": 77.475
+            },
+            "allocatedPerDraw": {
+              "count": 79,
+              "p50": 1672256,
+              "p95": 1672696,
+              "p99": 1676624,
+              "max": 1693296
+            },
+            "ownerOver50ms": 0,
+            "nativeHistorySamples": 286,
+            "inputEvents": 143,
+            "phasesDuringInput": {
+              "build": {
+                "totalMs": 851.004,
+                "count": 79,
+                "p50": 8.177,
+                "p95": 26.812,
+                "p99": 27.9,
+                "max": 28.559
+              },
+              "layout": {
+                "totalMs": 88.29,
+                "count": 79,
+                "p50": 0.579,
+                "p95": 0.874,
+                "p99": 18.421,
+                "max": 20.1
+              },
+              "paint": {
+                "totalMs": 23.1,
+                "count": 79,
+                "p50": 0.308,
+                "p95": 0.436,
+                "p99": 0.545,
+                "max": 0.647
+              },
+              "semantics": {
+                "totalMs": 187.032,
+                "count": 79,
+                "p50": 1.072,
+                "p95": 13.138,
+                "p99": 18.337,
+                "max": 19.609
+              }
+            },
+            "magnifier": {
+              "created": 1,
+              "updates": 139,
+              "dismissed": 1
+            },
+            "semantics": null,
+            "editing": null,
+            "presentObserved": false,
+            "workWholeSessionTopSelfMs": [
+              {
+                "type": "Doroti.Host.Maui.DorotiAndroidVulkanView",
+                "kind": 10,
+                "calls": 328,
+                "selfMs": 1675.719,
+                "selfBytes": 50505728
+              },
+              {
+                "type": "Doroti.Skia.Rendering.SkiaSceneRenderer",
+                "kind": 24,
+                "calls": 2263,
+                "selfMs": 426.655,
+                "selfBytes": 22084624
+              },
+              {
+                "type": "Doroti.Framework.Rendering.PipelineOwner",
+                "kind": 15,
+                "calls": 179,
+                "selfMs": 395.583,
+                "selfBytes": 54011816
+              },
+              {
+                "type": "Doroti.Host.Maui.DorotiAndroidVulkanView",
+                "kind": 9,
+                "calls": 149,
+                "selfMs": 295.473,
+                "selfBytes": 10360160
+              },
+              {
+                "type": "Doroti.Framework.Widgets.UnmanagedRestorationScope",
+                "kind": 0,
+                "calls": 330,
+                "selfMs": 223.162,
+                "selfBytes": 1989904
+              },
+              {
+                "type": "Doroti.Framework.Widgets.Text",
+                "kind": 0,
+                "calls": 1478,
+                "selfMs": 136.745,
+                "selfBytes": 10876400
+              },
+              {
+                "type": "Doroti.Material.TextButton",
+                "kind": 0,
+                "calls": 489,
+                "selfMs": 97.125,
+                "selfBytes": 9810640
+              },
+              {
+                "type": "Doroti.Framework.Widgets.RawGestureDetector",
+                "kind": 0,
+                "calls": 1634,
+                "selfMs": 90.833,
+                "selfBytes": 6917824
+              },
+              {
+                "type": "Doroti.Framework.Widgets.Builder",
+                "kind": 0,
+                "calls": 1642,
+                "selfMs": 86.56,
+                "selfBytes": 5290512
+              },
+              {
+                "type": "Doroti.Framework.Widgets.DefaultTextStyle",
+                "kind": 0,
+                "calls": 1806,
+                "selfMs": 70.191,
+                "selfBytes": 4129600
+              },
+              {
+                "type": "Doroti.Framework.Widgets.AnimatedBuilder",
+                "kind": 0,
+                "calls": 816,
+                "selfMs": 67.854,
+                "selfBytes": 4215328
+              },
+              {
+                "type": "Doroti.Material.InputDecorator",
+                "kind": 0,
+                "calls": 337,
+                "selfMs": 66.297,
+                "selfBytes": 8071288
+              }
+            ],
+            "validation": {
+              "trial": 1,
+              "injection": "continuous-down-ms=346632019 moves=287 duration-ms=2400",
+              "path": "348,625,0 950,625,800 150,695,1600 850,625,2400",
+              "selection": [
+                "Selection 31:31 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 139,
+                "dismissed": 1
+              }
+            },
+            "state": {
+              "accessibilityServices": "null",
+              "lowPower": "0",
+              "batteryTemperatureTenthsC": 274
+            }
+          }
+        ]
+      },
+      "candidate": {
+        "manifest": {
+          "apkSha256": "2d20c94ab6cd9300c9f6d809d19a55ce3fbf3b5c020d20a0bc3723b14fbe8cc1",
+          "serial": "R3CY30KZA4B",
+          "sample": "input",
+          "allocationProfile": true,
+          "text": "The_quick_brown_fox_jumps_over_the_lazy_dog._Cursor_movement_should_stay_smooth.",
+          "field": "first",
+          "observeAccessibility": false,
+          "nativeViews": false,
+          "physicalTouchAccepted": false,
+          "trials": [
+            {
+              "trial": 1,
+              "injection": "continuous-down-ms=347328583 moves=287 duration-ms=2400",
+              "path": "348,625,0 950,625,800 150,695,1600 850,625,2400",
+              "selection": [
+                "Selection 31:31 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 218,
+                "dismissed": 1,
+                "requests": 219,
+                "coalesced": 1,
+                "cancelled": 0
+              },
+              "editing": {
+                "atUs": 20396448,
+                "length": 80,
+                "base": 31,
+                "extent": 31,
+                "fromNative": false,
+                "sequence": 332
+              }
+            }
+          ]
+        },
+        "trials": [
+          {
+            "file": "review-fixed-profile-1.json",
+            "gesture": 4,
+            "drawsIncludingTail": 91,
+            "drawsDuringInput": 83,
+            "ownerMs": {
+              "count": 83,
+              "p50": 7.936,
+              "p95": 27.353,
+              "p99": 29.358,
+              "max": 30.78
+            },
+            "callbackMs": {
+              "count": 83,
+              "p50": 4.231,
+              "p95": 23.428,
+              "p99": 25.747,
+              "max": 26.31
+            },
+            "inputAgeMs": {
+              "count": 223,
+              "p50": 8,
+              "p95": 13,
+              "p99": 18,
+              "max": 21
+            },
+            "dispatchMs": {
+              "count": 223,
+              "p50": 0.481,
+              "p95": 2.658,
+              "p99": 10.147,
+              "max": 16.439
+            },
+            "submitGapsDuringInputMs": {
+              "count": 82,
+              "p50": 26.203,
+              "p95": 55.854,
+              "p99": 62.472,
+              "max": 62.754
+            },
+            "allocatedPerDraw": {
+              "count": 83,
+              "p50": 708616,
+              "p95": 710016,
+              "p99": 730016,
+              "max": 730016
+            },
+            "ownerOver50ms": 0,
+            "nativeHistorySamples": 287,
+            "inputEvents": 223,
+            "phasesDuringInput": {
+              "build": {
+                "totalMs": 202.85,
+                "count": 83,
+                "p50": 1.494,
+                "p95": 4.147,
+                "p99": 16.193,
+                "max": 23.116
+              },
+              "layout": {
+                "totalMs": 111.424,
+                "count": 83,
+                "p50": 0.619,
+                "p95": 1.501,
+                "p99": 17.176,
+                "max": 19.813
+              },
+              "paint": {
+                "totalMs": 66.288,
+                "count": 83,
+                "p50": 0.389,
+                "p95": 0.918,
+                "p99": 14.265,
+                "max": 15.965
+              },
+              "semantics": {
+                "totalMs": 135.799,
+                "count": 83,
+                "p50": 0.875,
+                "p95": 1.745,
+                "p99": 19.296,
+                "max": 20.698
+              }
+            },
+            "magnifier": {
+              "created": 1,
+              "updates": 218,
+              "dismissed": 1,
+              "requests": 219,
+              "coalesced": 1,
+              "cancelled": 0
+            },
+            "semantics": {
+              "updatesReceived": 168,
+              "updatesApplied": 1,
+              "updatesCoalesced": 166,
+              "elementsCreated": 0,
+              "activeElements": 0,
+              "retainedNodes": 14,
+              "nativePropertyWrites": 0,
+              "immediateFlushes": 0,
+              "staleCallbacksSuppressed": 0,
+              "updatesSuppressed": 0,
+              "elementsReused": 0,
+              "topologyUpdatesApplied": 0,
+              "applyWorkMicroseconds": 3520,
+              "maxApplyWorkMicroseconds": 3520
+            },
+            "editing": {
+              "atUs": 20396448,
+              "length": 80,
+              "base": 31,
+              "extent": 31,
+              "fromNative": false,
+              "sequence": 332
+            },
+            "presentObserved": false,
+            "workWholeSessionTopSelfMs": [
+              {
+                "type": "Doroti.Host.Maui.DorotiAndroidVulkanView",
+                "kind": 10,
+                "calls": 348,
+                "selfMs": 1595.946,
+                "selfBytes": 51753384
+              },
+              {
+                "type": "Doroti.Skia.Rendering.SkiaSceneRenderer",
+                "kind": 24,
+                "calls": 2112,
+                "selfMs": 492.66,
+                "selfBytes": 22951848
+              },
+              {
+                "type": "Doroti.Host.Maui.DorotiAndroidVulkanView",
+                "kind": 9,
+                "calls": 229,
+                "selfMs": 364.596,
+                "selfBytes": 15223848
+              },
+              {
+                "type": "Doroti.Framework.Rendering.PipelineOwner",
+                "kind": 15,
+                "calls": 187,
+                "selfMs": 306.435,
+                "selfBytes": 29797912
+              },
+              {
+                "type": "Doroti.Framework.Rendering.RenderParagraph",
+                "kind": 7,
+                "calls": 572,
+                "selfMs": 64.826,
+                "selfBytes": 2947224
+              },
+              {
+                "type": "Doroti.Framework.Widgets.Builder",
+                "kind": 0,
+                "calls": 536,
+                "selfMs": 60.798,
+                "selfBytes": 1938200
+              },
+              {
+                "type": "Doroti.Skia.Rendering.SkiaSceneRenderer",
+                "kind": 22,
+                "calls": 2250,
+                "selfMs": 53.268,
+                "selfBytes": 696080
+              },
+              {
+                "type": "Doroti.Framework.Widgets.EditableText",
+                "kind": 0,
+                "calls": 170,
+                "selfMs": 47.237,
+                "selfBytes": 2337064
+              },
+              {
+                "type": "Doroti.Framework.Widgets.RawGestureDetector",
+                "kind": 0,
+                "calls": 528,
+                "selfMs": 45.794,
+                "selfBytes": 2392720
+              },
+              {
+                "type": "Doroti.Material._RenderDecoration__input_decorator",
+                "kind": 7,
+                "calls": 185,
+                "selfMs": 38.288,
+                "selfBytes": 2767912
+              },
+              {
+                "type": "Doroti.Framework.Widgets.NotificationListener`1[[Doroti.Framework.Widgets.ScrollNotification, Doroti.Framework.Widgets, Version=0.4.1.0, Culture=neutral, PublicKeyToken=null]]",
+                "kind": 0,
+                "calls": 177,
+                "selfMs": 27.292,
+                "selfBytes": 783528
+              },
+              {
+                "type": "Doroti.Framework.Widgets._FocusInheritedScope__focus_scope",
+                "kind": 0,
+                "calls": 195,
+                "selfMs": 26.56,
+                "selfBytes": 498544
+              }
+            ],
+            "validation": {
+              "trial": 1,
+              "injection": "continuous-down-ms=347328583 moves=287 duration-ms=2400",
+              "path": "348,625,0 950,625,800 150,695,1600 850,625,2400",
+              "selection": [
+                "Selection 31:31 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 218,
+                "dismissed": 1,
+                "requests": 219,
+                "coalesced": 1,
+                "cancelled": 0
+              },
+              "editing": {
+                "atUs": 20396448,
+                "length": 80,
+                "base": 31,
+                "extent": 31,
+                "fromNative": false,
+                "sequence": 332
+              }
+            },
+            "state": {
+              "accessibilityServices": "null",
+              "lowPower": "0",
+              "batteryTemperatureTenthsC": 288
+            }
+          }
+        ]
+      }
+    },
+    "accessibilityConsumerProfile": {
+      "baseline": {
+        "manifest": {
+          "apkSha256": "6397ef12cd1eaed2a619f3a3c5f99d3926ec689147dbb233ad967b1f13b4fc19",
+          "serial": "R3CY30KZA4B",
+          "sample": "input",
+          "allocationProfile": true,
+          "text": "The_quick_brown_fox_jumps_over_the_lazy_dog._Cursor_movement_should_stay_smooth.",
+          "field": "first",
+          "observeAccessibility": true,
+          "nativeViews": false,
+          "physicalTouchAccepted": false,
+          "trials": [
+            {
+              "trial": 1,
+              "injection": "continuous-down-ms=346776189 moves=287 duration-ms=2401",
+              "path": "348,625,0 950,625,800 150,695,1600 850,625,2400",
+              "selection": [
+                "Selection 31:31 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 134,
+                "dismissed": 1
+              }
+            }
+          ]
+        },
+        "trials": [
+          {
+            "file": "review-active-baseline-1.json",
+            "gesture": 4,
+            "drawsIncludingTail": 87,
+            "drawsDuringInput": 78,
+            "ownerMs": {
+              "count": 78,
+              "p50": 14.64,
+              "p95": 36.987,
+              "p99": 39.701,
+              "max": 40.624
+            },
+            "callbackMs": {
+              "count": 78,
+              "p50": 12.35,
+              "p95": 33.078,
+              "p99": 36.483,
+              "max": 36.658
+            },
+            "inputAgeMs": {
+              "count": 138,
+              "p50": 8,
+              "p95": 14,
+              "p99": 16,
+              "max": 30
+            },
+            "dispatchMs": {
+              "count": 138,
+              "p50": 0.689,
+              "p95": 3.193,
+              "p99": 10.115,
+              "max": 18.954
+            },
+            "submitGapsDuringInputMs": {
+              "count": 77,
+              "p50": 24.979,
+              "p95": 55.286,
+              "p99": 68.849,
+              "max": 74.523
+            },
+            "allocatedPerDraw": {
+              "count": 78,
+              "p50": 1673528,
+              "p95": 1674328,
+              "p99": 1679056,
+              "max": 1694488
+            },
+            "ownerOver50ms": 0,
+            "nativeHistorySamples": 286,
+            "inputEvents": 138,
+            "phasesDuringInput": {
+              "build": {
+                "totalMs": 912.288,
+                "count": 78,
+                "p50": 7.965,
+                "p95": 28.963,
+                "p99": 31.036,
+                "max": 32.919
+              },
+              "layout": {
+                "totalMs": 79.726,
+                "count": 78,
+                "p50": 0.587,
+                "p95": 0.829,
+                "p99": 13.359,
+                "max": 17.871
+              },
+              "paint": {
+                "totalMs": 22.796,
+                "count": 78,
+                "p50": 0.311,
+                "p95": 0.43,
+                "p99": 0.501,
+                "max": 0.617
+              },
+              "semantics": {
+                "totalMs": 222.594,
+                "count": 78,
+                "p50": 1.231,
+                "p95": 19.33,
+                "p99": 20.069,
+                "max": 20.741
+              }
+            },
+            "magnifier": {
+              "created": 1,
+              "updates": 134,
+              "dismissed": 1
+            },
+            "semantics": null,
+            "editing": null,
+            "presentObserved": false,
+            "workWholeSessionTopSelfMs": [
+              {
+                "type": "Doroti.Host.Maui.DorotiAndroidVulkanView",
+                "kind": 10,
+                "calls": 350,
+                "selfMs": 1653.978,
+                "selfBytes": 51589320
+              },
+              {
+                "type": "Doroti.Skia.Rendering.SkiaSceneRenderer",
+                "kind": 24,
+                "calls": 2329,
+                "selfMs": 418.681,
+                "selfBytes": 22699256
+              },
+              {
+                "type": "Doroti.Framework.Rendering.PipelineOwner",
+                "kind": 15,
+                "calls": 178,
+                "selfMs": 399.961,
+                "selfBytes": 53836168
+              },
+              {
+                "type": "Doroti.Host.Maui.DorotiAndroidVulkanView",
+                "kind": 9,
+                "calls": 144,
+                "selfMs": 276.256,
+                "selfBytes": 10060064
+              },
+              {
+                "type": "Doroti.Framework.Widgets.UnmanagedRestorationScope",
+                "kind": 0,
+                "calls": 328,
+                "selfMs": 241.033,
+                "selfBytes": 1978784
+              },
+              {
+                "type": "Doroti.Material.InputDecorator",
+                "kind": 0,
+                "calls": 335,
+                "selfMs": 103.631,
+                "selfBytes": 8023616
+              },
+              {
+                "type": "Doroti.Framework.Widgets.Text",
+                "kind": 0,
+                "calls": 1469,
+                "selfMs": 101.403,
+                "selfBytes": 10809776
+              },
+              {
+                "type": "Doroti.Framework.Widgets.RawGestureDetector",
+                "kind": 0,
+                "calls": 1624,
+                "selfMs": 88.01,
+                "selfBytes": 6876728
+              },
+              {
+                "type": "Doroti.Framework.Rendering.RenderParagraph",
+                "kind": 7,
+                "calls": 541,
+                "selfMs": 77.628,
+                "selfBytes": 2862664
+              },
+              {
+                "type": "Doroti.Framework.Widgets.Builder",
+                "kind": 0,
+                "calls": 1632,
+                "selfMs": 73.11,
+                "selfBytes": 5259272
+              },
+              {
+                "type": "Doroti.Framework.Rendering.RenderEditable",
+                "kind": 13,
+                "calls": 888,
+                "selfMs": 69.749,
+                "selfBytes": 5379624
+              },
+              {
+                "type": "Doroti.Framework.Rendering.RenderSemanticsAnnotations",
+                "kind": 13,
+                "calls": 4946,
+                "selfMs": 68.318,
+                "selfBytes": 8076744
+              }
+            ],
+            "validation": {
+              "trial": 1,
+              "injection": "continuous-down-ms=346776189 moves=287 duration-ms=2401",
+              "path": "348,625,0 950,625,800 150,695,1600 850,625,2400",
+              "selection": [
+                "Selection 31:31 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 134,
+                "dismissed": 1
+              }
+            },
+            "state": {
+              "accessibilityServices": "null",
+              "lowPower": "0",
+              "batteryTemperatureTenthsC": 281
+            }
+          }
+        ]
+      },
+      "candidate": {
+        "manifest": {
+          "apkSha256": "2d20c94ab6cd9300c9f6d809d19a55ce3fbf3b5c020d20a0bc3723b14fbe8cc1",
+          "serial": "R3CY30KZA4B",
+          "sample": "input",
+          "allocationProfile": true,
+          "text": "The_quick_brown_fox_jumps_over_the_lazy_dog._Cursor_movement_should_stay_smooth.",
+          "field": "first",
+          "observeAccessibility": true,
+          "nativeViews": false,
+          "physicalTouchAccepted": false,
+          "trials": [
+            {
+              "trial": 1,
+              "injection": "continuous-down-ms=347355069 moves=287 duration-ms=2401",
+              "path": "348,625,0 950,625,800 150,695,1600 850,625,2400",
+              "selection": [
+                "Selection 31:31 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 226,
+                "dismissed": 1,
+                "requests": 228,
+                "coalesced": 1,
+                "cancelled": 1
+              },
+              "editing": {
+                "atUs": 20807589,
+                "length": 80,
+                "base": 31,
+                "extent": 31,
+                "fromNative": false,
+                "sequence": 331
+              }
+            }
+          ]
+        },
+        "trials": [
+          {
+            "file": "review-active-fixed-1.json",
+            "gesture": 4,
+            "drawsIncludingTail": 91,
+            "drawsDuringInput": 83,
+            "ownerMs": {
+              "count": 83,
+              "p50": 7.9,
+              "p95": 23.913,
+              "p99": 26.097,
+              "max": 27.301
+            },
+            "callbackMs": {
+              "count": 83,
+              "p50": 3.822,
+              "p95": 19.851,
+              "p99": 22.749,
+              "max": 24.024
+            },
+            "inputAgeMs": {
+              "count": 232,
+              "p50": 7,
+              "p95": 13,
+              "p99": 21,
+              "max": 26
+            },
+            "dispatchMs": {
+              "count": 232,
+              "p50": 0.498,
+              "p95": 2.879,
+              "p99": 13.335,
+              "max": 14.843
+            },
+            "submitGapsDuringInputMs": {
+              "count": 82,
+              "p50": 25.88,
+              "p95": 50.023,
+              "p99": 55.288,
+              "max": 57.377
+            },
+            "allocatedPerDraw": {
+              "count": 83,
+              "p50": 710248,
+              "p95": 711648,
+              "p99": 730848,
+              "max": 730848
+            },
+            "ownerOver50ms": 0,
+            "nativeHistorySamples": 286,
+            "inputEvents": 232,
+            "phasesDuringInput": {
+              "build": {
+                "totalMs": 185.536,
+                "count": 83,
+                "p50": 1.3,
+                "p95": 4.346,
+                "p99": 16.324,
+                "max": 21.532
+              },
+              "layout": {
+                "totalMs": 110.648,
+                "count": 83,
+                "p50": 0.543,
+                "p95": 1.476,
+                "p99": 16.156,
+                "max": 17.092
+              },
+              "paint": {
+                "totalMs": 32.761,
+                "count": 83,
+                "p50": 0.352,
+                "p95": 0.554,
+                "p99": 1.002,
+                "max": 1.162
+              },
+              "semantics": {
+                "totalMs": 170.074,
+                "count": 83,
+                "p50": 0.946,
+                "p95": 3.951,
+                "p99": 17.506,
+                "max": 19.105
+              }
+            },
+            "magnifier": {
+              "created": 1,
+              "updates": 226,
+              "dismissed": 1,
+              "requests": 228,
+              "coalesced": 1,
+              "cancelled": 1
+            },
+            "semantics": {
+              "updatesReceived": 167,
+              "updatesApplied": 83,
+              "updatesCoalesced": 84,
+              "elementsCreated": 0,
+              "activeElements": 0,
+              "retainedNodes": 14,
+              "nativePropertyWrites": 0,
+              "immediateFlushes": 0,
+              "staleCallbacksSuppressed": 0,
+              "updatesSuppressed": 0,
+              "elementsReused": 0,
+              "topologyUpdatesApplied": 0,
+              "applyWorkMicroseconds": 29915,
+              "maxApplyWorkMicroseconds": 14851
+            },
+            "editing": {
+              "atUs": 20807589,
+              "length": 80,
+              "base": 31,
+              "extent": 31,
+              "fromNative": false,
+              "sequence": 331
+            },
+            "presentObserved": false,
+            "workWholeSessionTopSelfMs": [
+              {
+                "type": "Doroti.Host.Maui.DorotiAndroidVulkanView",
+                "kind": 10,
+                "calls": 347,
+                "selfMs": 1604.47,
+                "selfBytes": 51394904
+              },
+              {
+                "type": "Doroti.Skia.Rendering.SkiaSceneRenderer",
+                "kind": 24,
+                "calls": 2096,
+                "selfMs": 481.638,
+                "selfBytes": 22852000
+              },
+              {
+                "type": "Doroti.Host.Maui.DorotiAndroidVulkanView",
+                "kind": 9,
+                "calls": 238,
+                "selfMs": 370.822,
+                "selfBytes": 15503528
+              },
+              {
+                "type": "Doroti.Framework.Rendering.PipelineOwner",
+                "kind": 15,
+                "calls": 183,
+                "selfMs": 246.116,
+                "selfBytes": 29238832
+              },
+              {
+                "type": "Doroti.Framework.Widgets.RawGestureDetector",
+                "kind": 0,
+                "calls": 528,
+                "selfMs": 63.385,
+                "selfBytes": 2392720
+              },
+              {
+                "type": "Doroti.Framework.Widgets.Builder",
+                "kind": 0,
+                "calls": 536,
+                "selfMs": 47.049,
+                "selfBytes": 1938200
+              },
+              {
+                "type": "Doroti.Framework.Rendering.RenderParagraph",
+                "kind": 7,
+                "calls": 558,
+                "selfMs": 45.604,
+                "selfBytes": 2946328
+              },
+              {
+                "type": "Doroti.Framework.Rendering.RenderParagraph",
+                "kind": 13,
+                "calls": 398,
+                "selfMs": 42.987,
+                "selfBytes": 4065168
+              },
+              {
+                "type": "Doroti.Framework.Rendering.RenderSemanticsAnnotations",
+                "kind": 13,
+                "calls": 1488,
+                "selfMs": 37.687,
+                "selfBytes": 2465496
+              },
+              {
+                "type": "Doroti.Skia.Rendering.SkiaSceneRenderer",
+                "kind": 22,
+                "calls": 2232,
+                "selfMs": 34.184,
+                "selfBytes": 700744
+              },
+              {
+                "type": "Doroti.Framework.Widgets._SelectionHandleOverlay__text_selection",
+                "kind": 0,
+                "calls": 167,
+                "selfMs": 32.598,
+                "selfBytes": 1456008
+              },
+              {
+                "type": "Doroti.Skia.Rendering.SkiaSceneRenderer",
+                "kind": 26,
+                "calls": 167,
+                "selfMs": 30.902,
+                "selfBytes": 4100240
+              }
+            ],
+            "validation": {
+              "trial": 1,
+              "injection": "continuous-down-ms=347355069 moves=287 duration-ms=2401",
+              "path": "348,625,0 950,625,800 150,695,1600 850,625,2400",
+              "selection": [
+                "Selection 31:31 · composing -1:-1"
+              ],
+              "textUnchanged": true,
+              "fatalException": false,
+              "renderErrorLines": 0,
+              "nativeMagnifier": {
+                "created": 1,
+                "updates": 226,
+                "dismissed": 1,
+                "requests": 228,
+                "coalesced": 1,
+                "cancelled": 1
+              },
+              "editing": {
+                "atUs": 20807589,
+                "length": 80,
+                "base": 31,
+                "extent": 31,
+                "fromNative": false,
+                "sequence": 331
+              }
+            },
+            "state": {
+              "accessibilityServices": "null",
+              "lowPower": "0",
+              "batteryTemperatureTenthsC": 289
+            }
+          }
+        ]
+      }
+    }
+  },
+  "rawEvidenceSha256": {
+    "temp/galaxy-caret/review-baseline-1.json": "fc910b3de8d2cbbc785a6d201c3384aa8bf929328db6208ed7fe393144d26116",
+    "temp/galaxy-caret/review-baseline-1.state.json": "d17c86ddb72f9d411a6e286bedcbdf341a82d4f1a5fe1d6d990b46777a9b0e36",
+    "temp/galaxy-caret/review-baseline-1.log": "1e29514444a50ab45a1baf89627afc00ec1069848f414a7d1dd2cf79c6f5663f",
+    "temp/galaxy-caret/review-baseline-1.before.xml": "7019eea6491abb4851bd2e162ad4e936bfd0650e0a0dd53ecfab1331d16b78fb",
+    "temp/galaxy-caret/review-baseline-1.after.xml": "fd7be9d6073f4c94ed48e88dec75b58e07a034f2c031ed5dd52e168575454369",
+    "temp/galaxy-caret/review-baseline-1.png": "3eaa3f8555f42c17bc21e01afbc2c1117e886dddc981665b404969e3acd3cc2f",
+    "temp/galaxy-caret/review-baseline-2.json": "a67d20f6ab2c32fed2eec007a7c611f658318fefec34a44d9800dfd99c4e82c6",
+    "temp/galaxy-caret/review-baseline-2.state.json": "d76c91b35631e948332eb74bc1a78b91866904239e6fa3d9ea6d0116f85bb09e",
+    "temp/galaxy-caret/review-baseline-2.log": "c78f3a0500cfa402572000fc3defd1b527e083394cab64f27358de925d18d432",
+    "temp/galaxy-caret/review-baseline-2.before.xml": "7019eea6491abb4851bd2e162ad4e936bfd0650e0a0dd53ecfab1331d16b78fb",
+    "temp/galaxy-caret/review-baseline-2.after.xml": "fd7be9d6073f4c94ed48e88dec75b58e07a034f2c031ed5dd52e168575454369",
+    "temp/galaxy-caret/review-baseline-2.png": "ad84e4a9bea6f5850d2d143c0a6beb02507dd6804b637e44125915876a01ac42",
+    "temp/galaxy-caret/review-baseline-3.json": "48eba65118e1a25daba79a58edb801c5154a7ae3156002b1826742f8e767f2e1",
+    "temp/galaxy-caret/review-baseline-3.state.json": "918673ee65ec259ed694f6cf5bbe9150c657527d7e8a82a7ae2c91548c08ca3d",
+    "temp/galaxy-caret/review-baseline-3.log": "6132b79e0f3689b4d9752c20946ca2f9fb66a8584713ede5b6ac91e0f6ddf6c5",
+    "temp/galaxy-caret/review-baseline-3.before.xml": "7019eea6491abb4851bd2e162ad4e936bfd0650e0a0dd53ecfab1331d16b78fb",
+    "temp/galaxy-caret/review-baseline-3.after.xml": "fd7be9d6073f4c94ed48e88dec75b58e07a034f2c031ed5dd52e168575454369",
+    "temp/galaxy-caret/review-baseline-3.png": "63831da16c4947cd55c01b8cdb3f18620c7b916a4df2b5d80ef5ddbfd3d3022d",
+    "temp/galaxy-caret/review-baseline-manifest.json": "42749fa700fcbaad1f209f01db130eac42834961bac43ffe5e33101601362b50",
+    "temp/galaxy-caret/review-fixed-1.json": "9bbfb1a6468c241697c5b9960c695ed9d5c3afe75fa291bd874a3b4a7a82909d",
+    "temp/galaxy-caret/review-fixed-1.state.json": "5bda79620577d92e605c99a3d6dc8c9b3673a60739fdd521291ca9f92eadd5b9",
+    "temp/galaxy-caret/review-fixed-1.log": "efe73663646cee3b3d54dee18a4bdc688f9abe1cf89c2098ecdc9ee4cf1cec96",
+    "temp/galaxy-caret/review-fixed-1.before.xml": "7019eea6491abb4851bd2e162ad4e936bfd0650e0a0dd53ecfab1331d16b78fb",
+    "temp/galaxy-caret/review-fixed-1.after.xml": "fd7be9d6073f4c94ed48e88dec75b58e07a034f2c031ed5dd52e168575454369",
+    "temp/galaxy-caret/review-fixed-1.png": "94de22df0b044b627055d611a65f636cbe988fb874b559b0b6c7729ad14039f4",
+    "temp/galaxy-caret/review-fixed-2.json": "1e02b78b27299e6cc08ea243474090c348b70b50990f383cb81dcf1653060757",
+    "temp/galaxy-caret/review-fixed-2.state.json": "17772fca7a04bf9c1d6abf0231421c8aa2355fe7e34290e74529644c5af317b0",
+    "temp/galaxy-caret/review-fixed-2.log": "6ab38a1a45525de44e9df59485956a9e0486ac44ef48e7caea93551b3599701c",
+    "temp/galaxy-caret/review-fixed-2.before.xml": "7019eea6491abb4851bd2e162ad4e936bfd0650e0a0dd53ecfab1331d16b78fb",
+    "temp/galaxy-caret/review-fixed-2.after.xml": "fd7be9d6073f4c94ed48e88dec75b58e07a034f2c031ed5dd52e168575454369",
+    "temp/galaxy-caret/review-fixed-2.png": "68a0a6a81d6d7d95ba08028d61b9118c0fa61faadbf638166b4cecea265a3936",
+    "temp/galaxy-caret/review-fixed-3.json": "66bc1aef63f104758ee20c883f5ed125087b06ec06e5fad12b20b871f117892c",
+    "temp/galaxy-caret/review-fixed-3.state.json": "eec7dcbfeee57cd08a24a8f58e66d55b3df47c768d69280d5985da96ad466ddf",
+    "temp/galaxy-caret/review-fixed-3.log": "8c4d5f6eccaa2a129f14cb35e2fdea6cb2a7f8cfb249df2bdfd20507a52f5e3e",
+    "temp/galaxy-caret/review-fixed-3.before.xml": "7019eea6491abb4851bd2e162ad4e936bfd0650e0a0dd53ecfab1331d16b78fb",
+    "temp/galaxy-caret/review-fixed-3.after.xml": "fd7be9d6073f4c94ed48e88dec75b58e07a034f2c031ed5dd52e168575454369",
+    "temp/galaxy-caret/review-fixed-3.png": "50ac5cba26c9caedde039b4a10bdd19328787201b5869c035ff165dcf2cdaf04",
+    "temp/galaxy-caret/review-fixed-manifest.json": "56bf06349e9c9134acd283d4a93ebd2281b3cca5b321e53b8f8879b5c7a52dcd",
+    "temp/galaxy-caret/review-isolated-baseline-main-1.json": "360172e00fc8776e5587b290ca30804ca4383ad311b75cdd53a9df00dfe53566",
+    "temp/galaxy-caret/review-isolated-baseline-main-1.state.json": "5b6428ee69204d23fccb16b526c0a78bfee2b530f85109e8c5f0a3ed7ee0129b",
+    "temp/galaxy-caret/review-isolated-baseline-main-1.log": "1132433b843eb290e1998995f2a345adf622bd99d619105117044c6c28ffe83c",
+    "temp/galaxy-caret/review-isolated-baseline-main-1.before.xml": "10d013e5da9ea6b5edf8f9b032d1a37c9d2662733f7681d9be344f1d70b55d3e",
+    "temp/galaxy-caret/review-isolated-baseline-main-1.after.xml": "10d013e5da9ea6b5edf8f9b032d1a37c9d2662733f7681d9be344f1d70b55d3e",
+    "temp/galaxy-caret/review-isolated-baseline-main-1.png": "443c287d3aad1743ccbffd2bbc907fc58d09871d2834d8386af33eab80b613ea",
+    "temp/galaxy-caret/review-isolated-baseline-main-2.json": "48bd2955b5e703b905518932384b6ede0e2b7b4875fae54cee970642e4529d00",
+    "temp/galaxy-caret/review-isolated-baseline-main-2.state.json": "54d3be7378c1d8e5ef756890c5a835a5bb039562f919c8581ca609b353924d40",
+    "temp/galaxy-caret/review-isolated-baseline-main-2.log": "5e9d1cbd076e9bf2abba00eff11b8842d621977828779f8d00c1c8c5ec0c06de",
+    "temp/galaxy-caret/review-isolated-baseline-main-2.before.xml": "10d013e5da9ea6b5edf8f9b032d1a37c9d2662733f7681d9be344f1d70b55d3e",
+    "temp/galaxy-caret/review-isolated-baseline-main-2.after.xml": "10d013e5da9ea6b5edf8f9b032d1a37c9d2662733f7681d9be344f1d70b55d3e",
+    "temp/galaxy-caret/review-isolated-baseline-main-2.png": "404145843d2f7bf15377d19b3868e52ed324705d9f6590e458380ba9a2fae71d",
+    "temp/galaxy-caret/review-isolated-baseline-main-3.json": "358826ceea7b4688d53a6a766e343a9ed5cf24d5689a5fac74ce6f79c3e6ef94",
+    "temp/galaxy-caret/review-isolated-baseline-main-3.state.json": "fabe63478e0919464540dab80aae210922897f6aedb9bdc1bd1d45f30cd5484f",
+    "temp/galaxy-caret/review-isolated-baseline-main-3.log": "805640b5f295608050281328d2225ac19f75d3d0a63a09308cac70d1060cfb5d",
+    "temp/galaxy-caret/review-isolated-baseline-main-3.before.xml": "10d013e5da9ea6b5edf8f9b032d1a37c9d2662733f7681d9be344f1d70b55d3e",
+    "temp/galaxy-caret/review-isolated-baseline-main-3.after.xml": "10d013e5da9ea6b5edf8f9b032d1a37c9d2662733f7681d9be344f1d70b55d3e",
+    "temp/galaxy-caret/review-isolated-baseline-main-3.png": "88b2d2e5607c419eac14bebfc0b94a43d218ae0e660a251d7da5472c5d7f758f",
+    "temp/galaxy-caret/review-isolated-baseline-main-manifest.json": "6b9ef7632aca16006b921cceee2f5146eefa8c7e6658b9c92896d347b32a675f",
+    "temp/galaxy-caret/review-isolated-fixed-1.json": "a0c3fe70e938e28d5baea7196702a9ce59cdc31d6eaf4a42e4314be0c9a6ebc3",
+    "temp/galaxy-caret/review-isolated-fixed-1.state.json": "5679a050aea7054055a9074bf6699c37979726f9d380fa431b94d19cad16c4e5",
+    "temp/galaxy-caret/review-isolated-fixed-1.log": "21386d6b556e72cc6939c3c442f07003a2289ba6cdf250208905249f7c0851aa",
+    "temp/galaxy-caret/review-isolated-fixed-1.before.xml": "10d013e5da9ea6b5edf8f9b032d1a37c9d2662733f7681d9be344f1d70b55d3e",
+    "temp/galaxy-caret/review-isolated-fixed-1.after.xml": "10d013e5da9ea6b5edf8f9b032d1a37c9d2662733f7681d9be344f1d70b55d3e",
+    "temp/galaxy-caret/review-isolated-fixed-1.png": "1dece369a1e0fce6da7504c18488a552d4ea4dc9f15e8385d3ed4660deb86935",
+    "temp/galaxy-caret/review-isolated-fixed-2.json": "3d2538d362e6a8d4c237e485cb02443f14ed888d371b836fba33381a717d1d25",
+    "temp/galaxy-caret/review-isolated-fixed-2.state.json": "25df97b2df398d76d4437af154982ec0d8cd308b625173efc6434cc93f049feb",
+    "temp/galaxy-caret/review-isolated-fixed-2.log": "72e19f29e6d7261d8c04d7047c41f6f8408d60366107ab6865b9f9d6748268c6",
+    "temp/galaxy-caret/review-isolated-fixed-2.before.xml": "10d013e5da9ea6b5edf8f9b032d1a37c9d2662733f7681d9be344f1d70b55d3e",
+    "temp/galaxy-caret/review-isolated-fixed-2.after.xml": "10d013e5da9ea6b5edf8f9b032d1a37c9d2662733f7681d9be344f1d70b55d3e",
+    "temp/galaxy-caret/review-isolated-fixed-2.png": "5fa42d5019052e72e43d03f16c25090eb440186c3f4fb4e4bc231b6e8f14942b",
+    "temp/galaxy-caret/review-isolated-fixed-3.json": "8f4e1908026b1730b0f12690b1b5f1541e42fa5ac7286270f71c09bfd22e995c",
+    "temp/galaxy-caret/review-isolated-fixed-3.state.json": "99301142d9179928ef63e40611df7473dc23d6a86ca81a29032b2a9c3dcbcbff",
+    "temp/galaxy-caret/review-isolated-fixed-3.log": "9a64ab43b81aa0d338251ea8c0b2beb4c65c13799837facc0154e1546e961807",
+    "temp/galaxy-caret/review-isolated-fixed-3.before.xml": "10d013e5da9ea6b5edf8f9b032d1a37c9d2662733f7681d9be344f1d70b55d3e",
+    "temp/galaxy-caret/review-isolated-fixed-3.after.xml": "10d013e5da9ea6b5edf8f9b032d1a37c9d2662733f7681d9be344f1d70b55d3e",
+    "temp/galaxy-caret/review-isolated-fixed-3.png": "315e068b9ddd4fef343f753f112cbd78c87bf52f7bd6eb8427488408264d8782",
+    "temp/galaxy-caret/review-isolated-fixed-manifest.json": "bbb4605800f0491483f4425d0367d42ab121a306a80d337d7ea7adcf869ca438",
+    "temp/galaxy-caret/review-baseline-native-1.json": "6b067a7694a9507cfab3d43eecd748f0e17f1eea588f535338cc70910d0ce57a",
+    "temp/galaxy-caret/review-baseline-native-1.state.json": "9966c7df9fed67028d60c014c2798726ff6f945f1b8d40b5f9ff7a0faf892b5a",
+    "temp/galaxy-caret/review-baseline-native-1.log": "1701c963ac239984e854330f20572f8d2a22196fe52b2e37ee5b9ada70333d56",
+    "temp/galaxy-caret/review-baseline-native-1.before.xml": "b6383a21b96b1f486384aa1d35a627d61ff2264515cb85e292861a1211c87631",
+    "temp/galaxy-caret/review-baseline-native-1.after.xml": "2c2147a9d6cf67ec74d2a3f09e211b1cb0025a2a41c7f52ee2367bf9ca5854fa",
+    "temp/galaxy-caret/review-baseline-native-1.png": "c4c39110ff4d29813d7fae7d38c7007ab4c5d5c420b6b32a518e3713e190f83b",
+    "temp/galaxy-caret/review-baseline-native-manifest.json": "02e9b43fec9a3b7ecd06b10642c2576d06cfc2c09b2c3f1e77aa916a321f974c",
+    "temp/galaxy-caret/review-fixed-native-1.json": "0bebae1a113255b9906104c9b26ab68596b73f1c641fac27a50b49ee921ce753",
+    "temp/galaxy-caret/review-fixed-native-1.state.json": "eb59623033ec554bb6ff483eaa6572b4bb20acb2ef33d85e82013d856d1ec548",
+    "temp/galaxy-caret/review-fixed-native-1.log": "0c3144d261a9c4e75296f9c178ae1243d1a5e3f8f5d80c696e5d8d55e7a4a11c",
+    "temp/galaxy-caret/review-fixed-native-1.before.xml": "b6383a21b96b1f486384aa1d35a627d61ff2264515cb85e292861a1211c87631",
+    "temp/galaxy-caret/review-fixed-native-1.after.xml": "2c2147a9d6cf67ec74d2a3f09e211b1cb0025a2a41c7f52ee2367bf9ca5854fa",
+    "temp/galaxy-caret/review-fixed-native-1.png": "1f2834a04e9656353a31524a4b4235a2190b8d6651cb688843faf9a8e6c55f3e",
+    "temp/galaxy-caret/review-fixed-native-manifest.json": "1c84a80e346eaa16333a2222c46fae21116486d3bb4fd1ba86fff9ff1bd44c40",
+    "temp/galaxy-caret/review-source-baseline-profile-1.json": "5efc3a085835f9f949bf58a9004d9bafe7a1c5e5cd60b6e009ecf43ea3609173",
+    "temp/galaxy-caret/review-source-baseline-profile-1.state.json": "ba3d9a7a280d08563e931b6a95d69db7fe9be8da2692153b80d5b9f9ad6a2e61",
+    "temp/galaxy-caret/review-source-baseline-profile-1.log": "c590404e449aecead9ed499bbce50229d229f994584669f4f519934088d199ae",
+    "temp/galaxy-caret/review-source-baseline-profile-1.before.xml": "7019eea6491abb4851bd2e162ad4e936bfd0650e0a0dd53ecfab1331d16b78fb",
+    "temp/galaxy-caret/review-source-baseline-profile-1.after.xml": "fd7be9d6073f4c94ed48e88dec75b58e07a034f2c031ed5dd52e168575454369",
+    "temp/galaxy-caret/review-source-baseline-profile-1.png": "e8045e9a28522a8727841db79c007579deefd94d16ce9a78aa9c3c964a85c4c1",
+    "temp/galaxy-caret/review-source-baseline-profile-manifest.json": "ee73235e252df454c0d934f25286fe23261a3f7c346b1b0721f46e62edee9a38",
+    "temp/galaxy-caret/review-fixed-profile-1.json": "ec4144a28c45bc506767c0e59f775110939aac49582a8a4a1f0bb2964d4b8275",
+    "temp/galaxy-caret/review-fixed-profile-1.state.json": "efb3dce8ac41df4273037c7af14cc656397f29779a2f77e284e37a2c2f9092a3",
+    "temp/galaxy-caret/review-fixed-profile-1.log": "a2b65ed3bca610fc62ff7f6b6ae1b4f4c75dd7128695a8ba4e5ccade6f371427",
+    "temp/galaxy-caret/review-fixed-profile-1.before.xml": "7019eea6491abb4851bd2e162ad4e936bfd0650e0a0dd53ecfab1331d16b78fb",
+    "temp/galaxy-caret/review-fixed-profile-1.after.xml": "fd7be9d6073f4c94ed48e88dec75b58e07a034f2c031ed5dd52e168575454369",
+    "temp/galaxy-caret/review-fixed-profile-1.png": "cd4a2c25e5546c74106430e45e0d7710ff8c54005e7e55d8dd874e69623b6629",
+    "temp/galaxy-caret/review-fixed-profile-manifest.json": "b093198682e761a4d32aed8f9f475b41e1eca49adcfc7e791fe06ea118986c7b",
+    "temp/galaxy-caret/review-active-baseline-1.json": "1f2f7dafc20e18663cca7f4d49b598157faf4a0b588992060efede2473b81d19",
+    "temp/galaxy-caret/review-active-baseline-1.state.json": "6108e361f227dfee459c352c53f9f0eeecd3f3400c61f22dd437019a16f89b46",
+    "temp/galaxy-caret/review-active-baseline-1.log": "1920484b902116fbf2fe29630ef5c61f32dae32befc630db701d2b6861e2250a",
+    "temp/galaxy-caret/review-active-baseline-1.before.xml": "7019eea6491abb4851bd2e162ad4e936bfd0650e0a0dd53ecfab1331d16b78fb",
+    "temp/galaxy-caret/review-active-baseline-1.after.xml": "fd7be9d6073f4c94ed48e88dec75b58e07a034f2c031ed5dd52e168575454369",
+    "temp/galaxy-caret/review-active-baseline-1.png": "b8f6dfcfb0aba6d7ffba9319b9221c01f25c416d45602553fb57b0023c7be3ea",
+    "temp/galaxy-caret/review-active-baseline-manifest.json": "d8ed443dd5797b9efc43f2ede6c714c741a920aae5a5a10c3cc218ed724bdcfe",
+    "temp/galaxy-caret/review-active-fixed-1.json": "c5c56f0d9d4c1f9dfa6f1df549a558ce6a239f458a933434a8271874c7808518",
+    "temp/galaxy-caret/review-active-fixed-1.state.json": "af07fd706a66f61b78c0b4ae7f771d7e1ae905c0a6be25f52c8d021eb33baea3",
+    "temp/galaxy-caret/review-active-fixed-1.log": "b1d8e8afa41e1e3810ea10b49c6f11ea79ccb5dfb9a8e463d60669d799200f96",
+    "temp/galaxy-caret/review-active-fixed-1.before.xml": "7019eea6491abb4851bd2e162ad4e936bfd0650e0a0dd53ecfab1331d16b78fb",
+    "temp/galaxy-caret/review-active-fixed-1.after.xml": "fd7be9d6073f4c94ed48e88dec75b58e07a034f2c031ed5dd52e168575454369",
+    "temp/galaxy-caret/review-active-fixed-1.png": "449a3905a8b41001083ef11f37010414c294de64a09d42495b625e978a3ef66f",
+    "temp/galaxy-caret/review-active-fixed-manifest.json": "70f0f388ef5e42665e7c1ed22735526bb7fa7ff67cb9097fdf38fa4e42774035",
+    "temp/galaxy-caret-review/final-regression.log": "8d587272ed8fe918fe8f2641d3cdd0f6fd8119b53fbbdf645da537bc0a7af966",
+    "temp/galaxy-caret-review/windows-build.log": "b3bf1f6c1ce1f85726e2ae8c7b6a310d0f9e6fc18d05fee9af34c221290c0c09",
+    "temp/galaxy-caret/review-final-build.log": "883aa28cf0fe5df7f5c1c61dc31d03f223f9f26250c49f0f41ee7425fd9d7452",
+    "temp/galaxy-caret/review-baseline-build.log": "20b6ef65bfdf3090e5502abe8aa2be3ebf17d1e57948ead3d2f1d66f5b6c452f",
+    "temp/galaxy-caret-review/failed-candidate.log": "0af19f721f96eccb427d32745e14f45d19889de21239cd92d1391ff275016da5",
+    "temp/galaxy-caret-review/visual-lifecycle-result.json": "624499a027cfdebb9b957c74e841fc7b20b0b83a93b7f41921ec31aaa1372688",
+    "temp/galaxy-caret-review/visual-lifecycle.log": "11339af7b2eaca84327cca7df06f00242e1acdc4e2db85c0c3316e2eb6861659",
+    "temp/galaxy-caret-review/visual-lifecycle.json": "be22eae1f0534c6f7de1ce22d2a562cc7e78c29e17f4bff2fc985640ac0da2f7",
+    "temp/galaxy-caret-review/native-magnifier-during.png": "fb9671d22b678e141422136c3236000d96e78fa9efafaa57fb6c60c359173e30",
+    "temp/galaxy-caret-review/native-magnifier-after.png": "4f4b5ebd896df9edba91bcecbcbb0211410d5b980aec3077ad02eea02824be91",
+    "temp/galaxy-caret-review/native-korean-ime.xml": "182234bb984e8ac64583156d383fe9856171d59b476bdb084207f4255b115cf6",
+    "temp/galaxy-caret-review/native-korean-after-drag.xml": "ef4c1417db336a2dbe30cb5c91c58e398168abf41a3966c844ebbd051f7d4286",
+    "temp/galaxy-caret-review/final-smoke.json": "b6a97c6da4138a8c215d436cba5dbcb6573bbd5da43977b31e89b6a986d06b90",
+    "temp/galaxy-caret-review/final-normal.log": "1a80080c0db1601cb5471add08ea1101d5a988ea91c183e1a584eb3e14c18fe1",
+    "temp/galaxy-caret-review/final-normal-components.png": "8c7a7779b67a6d224901467bafc070b071136681d993d8b343564003931b3dee",
+    "temp/galaxy-caret-review/final-normal-components.xml": "b27444ebaf7f3171cd66480a28f85bfe5033c138178a5b5b881c17dce13c8c8c"
+  },
+  "installedNativeSkiaSha256": "02c4cf50f41d50750d4e83f3e52c6e80dc7ac2ae43f50fefa381b45e18b81e9b",
+  "validation": {
+    "scrollAndCaretRegression": "PASS",
+    "androidReleaseBuild": {
+      "status": "PASS",
+      "warnings": 0,
+      "errors": 0
+    },
+    "windowsDebugBuild": {
+      "status": "PASS",
+      "project": "samples/DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj",
+      "warnings": 0,
+      "errors": 0,
+      "newPhysicalInputAcceptance": false
+    },
+    "visualLifecycle": {
+      "beforeLayers": [],
+      "duringLayers": [
+        "RequestedLayerState{magnifier surface#90606 parentId=90595 z=5}",
+        "RequestedLayerState{magnifier surface bbq wrapper#90607 parentId=90606}"
+      ],
+      "afterUpLayers": [],
+      "backgroundLayers": [],
+      "resumeLayers": [],
+      "shortDrags": [
+        "continuous-down-ms=347406019 moves=2 duration-ms=26",
+        "continuous-down-ms=347407631 moves=7 duration-ms=67",
+        "continuous-down-ms=347409233 moves=14 duration-ms=125"
+      ],
+      "magnifier": {
+        "created": 4,
+        "updates": 134,
+        "dismissed": 4,
+        "requests": 142,
+        "coalesced": 5,
+        "cancelled": 3
+      },
+      "renderErrorLines": 0
+    },
+    "nativeImeAndFinalSmoke": {
+      "koreanImeText": "The_quick_br사own_fox_jumps_over_the_lazy_dog._Cursor_movement_should_stay_smooth.",
+      "koreanImeSelection": [
+        "Selection 13:13 · composing 12:13"
+      ],
+      "containsComposedHangul": true,
+      "textRetainedAfterDrag": true,
+      "selectionAfterDrag": [
+        "Selection 21:21 · composing -1:-1"
+      ],
+      "normalComponentsNodes": 46,
+      "installedApkSha256": "2d20c94ab6cd9300c9f6d809d19a55ce3fbf3b5c020d20a0bc3723b14fbe8cc1",
+      "accessibilityServices": "null",
+      "lowPower": "0",
+      "nativeVersionConfirmed": true,
+      "fatalException": false,
+      "normalLaunchWithoutDiagnosticExtras": true
+    }
+  },
+  "modifiedSourceSha256": {
+    "Doroti/eng/measure-android-caret.py": "c9401cda79795b73212be5d4c823e9c07100ad87e01f8a0c3396b02a1e7f484c",
+    "Doroti/src/Doroti.Framework.Widgets/editable_text.cs": "aa2db11a00c4b33843257078d4513f5c8e977d20f497a9b2ee20c5bc9780e32a",
+    "Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.cs": "e8bb26a3afc2430214732274647e5bc65e4b2b9a2fd93b642298a3dd207ecc16",
+    "Doroti/src/Doroti.Ui/GraphicsAndSemanticsContracts.cs": "0f36e0213be9efcb4f9fa09ce0bf6fe88cce0031a0e79ce9c6b28c135a3d8849",
+    "Doroti/src/Doroti.Ui/SemanticsTextGeometry.cs": "10102531105081773b9f5614508ee83728b309b9a9eda52e4fa8434e0e015733",
+    "Doroti/tests/Doroti.Scroll.Tests/Program.cs": "1453db817a25860d5aff5bf54f1355565dc100635f876264b14315efa4f89a06",
+    "packages/Doroti.Material/src/text_field.cs": "b0dee8029caff32cb3390e281404b062f5247a74f52685ee0168a4544b7350a2",
+    "packages/platforms/maui/Doroti.Host.Maui/AndroidScrollProfile.cs": "dae6ca1da2107ffb7bc779542a4c5eff70ff7f796a21418e41c03b7fdf1d7d76",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiAndroidSemanticsBridge.cs": "bb930253246368a4f610103969b1a1e0a9bc3a1378c32fcc7361c46fe3ed0f2b",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiAndroidTextMagnifier.cs": "393e1e1d590879d91be1826e64dc368092002ff5dee426d4e574cc60ce9e6d17",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiHostAdapter.cs": "a6eff9b7e5e1f0e047d6ed41bb48846e683416060e4c7721487fb487ce337dfa",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.cs": "34bb31824e654a501386305a646773a81c410826f57094fdb2fa265ab275b620",
+    "samples/DorotiTestbedApp/src/MaterialSample/InputLifetimeSample.cs": "a61a1c73381f2acf9f7aec2d8b7f49d63a9919a4d3dae983ab8be2ffad1c189c",
+    "Doroti/eng/summarize-android-caret.py": "cf74c730be71142866d9783ffed890fcf23ba78a9c658e36886b44e024f1ade4",
+    "Doroti/tests/Doroti.Scroll.Tests/TextSelectionWorkRegression.cs": "7552263928d200614618721869cb7f09000b7b910409368f28a6e81255b198d7"
+  }
+}

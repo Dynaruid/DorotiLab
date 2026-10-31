@@ -30,6 +30,24 @@ These CPU checks do not qualify physical finger-to-display latency.
 separates the first-drag fix, native magnifier lifetime/IME checks and remaining
 sustained-drag performance limits.
 
+Selection-work regressions check that decoration/counter listeners only receive
+text changes while the full controller immediately publishes selection/composition,
+including reentrant reads and disposal. Projected glyphs are reused without
+retaining stale semantic selections; transform, clip, DPR, obscuring and concurrent
+projection cases verify invalidation. The
+[magnifier/accessibility follow-up](../../../history/26/10/31/galaxy-caret-accessibility-review.md)
+separates sample-wide rebuild savings from the independent second-field comparison,
+bounded accessibility-consumer diagnostics and remaining motion/display limits.
+
+Collapsed-caret regressions exercise three real RenderEditable peers, unchanged
+Material decoration slots, fallback edits/composition/ranges/focus/custom controllers,
+and retained leaf freshness. A queued weak notification must keep delivering to a
+live owner while allowing an abandoned owner to be collected before the native
+callback retires. The [All Components follow-up](../../../history/26/11/01/galaxy-components-caret-fix.md)
+records the actual normal-page reproduction, native selection/GC-bridge fix,
+delivered APK comparison and IME/lifecycle checks. These remain CPU/injected-touch
+evidence rather than physical finger/display acceptance.
+
 Galaxy ADB and continuous single-contact profiling commands and evidence limits:
 [2026-10-31 implementation record](../../../history/26/10/31/galaxy-scroll-implementation.md).
 

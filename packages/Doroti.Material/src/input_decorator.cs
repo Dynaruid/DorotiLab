@@ -2493,6 +2493,9 @@ public class _RenderDecoration__input_decorator
     public virtual void _setChild(RenderBox? child, _DecorationSlot__input_decorator slot)
     {
         RenderBox? oldChild = _slotToChild.GetValueOrDefault(slot);
+        // Updating a retained slot must not detach/adopt its unchanged child.
+        // That invalidates the decoration and every size-dependent ancestor.
+        if (ReferenceEquals(oldChild, child)) return;
         if (oldChild is not null)
         {
             dropChild(oldChild);

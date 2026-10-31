@@ -1459,7 +1459,7 @@ internal class _TextFieldState__text_field
             childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
                 new AnimatedBuilder(
                     animation: Listenable.CreateMerge(
-                        new List<Listenable> { focusNodeLocal, controllerLocal }.Cast<Listenable?>()
+                        new List<Listenable> { focusNodeLocal, controllerLocal.textListenable }.Cast<Listenable?>()
                     ),
                     builder: (context, child) =>
                     {
@@ -1518,7 +1518,7 @@ internal class _TextFieldState__text_field
                 child: new IgnorePointer(
                     ignoring: widget.ignorePointers ?? !_isEnabled,
                     child: new AnimatedBuilder(
-                        animation: controllerLocal,
+                        animation: controllerLocal.textListenable,
                         builder: (context, child) =>
                         {
                             return new Widgets.Semantics(

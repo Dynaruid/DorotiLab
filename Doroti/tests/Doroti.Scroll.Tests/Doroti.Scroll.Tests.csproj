@@ -7,7 +7,9 @@
   <ItemGroup>
     <Compile Include="../../../packages/platforms/maui/Doroti.Host.Maui/AndroidPointerMapping.cs" Link="AndroidPointerMapping.cs" />
     <Compile Include="../../../packages/platforms/maui/Doroti.Host.Maui/AndroidFrameTiming.cs" Link="AndroidFrameTiming.cs" />
+    <Compile Include="../../../packages/platforms/maui/Doroti.Host.Maui/MauiWeakCallback.cs" Link="MauiWeakCallback.cs" />
     <ProjectReference Include="../../src/Doroti.Framework.Widgets/Doroti.Framework.Widgets.csproj" />
     <ProjectReference Include="../../src/Doroti.Hosting/Doroti.Hosting.csproj" />
+    <ProjectReference Include="../../../packages/Doroti.Material/Doroti.Material.csproj" />
   </ItemGroup>
 </Project>

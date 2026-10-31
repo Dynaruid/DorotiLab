@@ -3298,6 +3298,34 @@ public sealed record SemanticsUpdate(
 /// </summary>
 public static class SemanticsGeometryProjection
 {
+    // Selection changes retain glyph geometry. Keep only the latest projection
+    // for an immutable source snapshot, without retaining that source's lifetime.
+    private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<SemanticsTextGeometry, TextProjection> TextProjections = new();
+    private sealed class TextProjection
+    {
+        internal readonly double[] Matrix = new double[16];
+        internal Rect Clip = Rect.zero;
+        internal SemanticsTextGeometry? Geometry;
+    }
+
+    private static SemanticsTextGeometry ProjectText(SemanticsTextGeometry source, Matrix4 transform, Rect clip)
+    {
+        var cache = TextProjections.GetValue(source, static _ => new TextProjection());
+        lock (cache)
+        {
+            var same = cache.Geometry is not null && cache.Clip == clip;
+            for (var i = 0; same && i < 16; i++) same = cache.Matrix[i] == transform.storage[i];
+            if (same) return cache.Geometry!;
+            var geometry = TransformText(source, transform, clip);
+            for (var i = 0; i < 16; i++) cache.Matrix[i] = transform.storage[i];
+            cache.Clip = clip;
+            return cache.Geometry = geometry;
+        }
+    }
+
+    // Keep the capturing delegate off the cache-hit path.
+    private static SemanticsTextGeometry TransformText(SemanticsTextGeometry source, Matrix4 transform, Rect clip) =>
+        source.Transform(rect => TransformRect(rect, transform), clip);
     public static IReadOnlyList<SemanticsNodeUpdate> ToViewCoordinates(
         IEnumerable<SemanticsNodeUpdate> source,
         double viewDevicePixelRatio = 1
@@ -3366,7 +3394,8 @@ public static class SemanticsGeometryProjection
 
         var rect = TransformRect(node.rect, transform);
         projected[id] = node with { rect = rect, coordinateTransform = null,
-            textGeometry = node.flags?.isObscured == true ? null : node.textGeometry?.Transform(r => TransformRect(r, transform), rect) };
+            textGeometry = node.flags?.isObscured == true || node.textGeometry is null
+                ? null : ProjectText(node.textGeometry, transform, rect) };
         // Legacy manually supplied nodes use a rect-relative child origin. Framework
         // nodes carry a coordinate transform: a clipped rect must never move that origin.
         if (!explicitTransform)

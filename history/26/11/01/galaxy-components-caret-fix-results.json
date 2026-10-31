@@ -1,0 +1,2033 @@
+{
+  "date": "2026-11-01",
+  "head": "d608a30076c07e3396d76226f219d7bdcda27ae2",
+  "dirty": true,
+  "device": {
+    "serial": "R3CY30KZA4B",
+    "model": "SM-S931N",
+    "androidApi": 37,
+    "size": "1080x2340"
+  },
+  "baselineManifest": {
+    "apkSha256": "3e3ea543be09910881f4b4934159b5c6bc3cbbba87df1dc0a8dc12b7d6ecf08b",
+    "serial": "R3CY30KZA4B",
+    "sample": "components",
+    "allocationProfile": false,
+    "text": "The_quick_brown_fox_jumps_over_the_lazy_dog._Cursor_movement_should_stay_smooth.",
+    "field": "first",
+    "observeAccessibility": false,
+    "nativeViews": false,
+    "perfetto": false,
+    "physicalTouchAccepted": false,
+    "trials": [
+      {
+        "trial": 1,
+        "injection": "continuous-down-ms=349230695 moves=287 duration-ms=2402",
+        "path": "348,614,0 800,614,800 240,614,1600 750,614,2400",
+        "selection": [],
+        "textUnchanged": true,
+        "fatalException": false,
+        "renderErrorLines": 0,
+        "nativeMagnifier": {
+          "created": 1,
+          "updates": 112,
+          "dismissed": 1,
+          "requests": 113,
+          "coalesced": 1,
+          "cancelled": 0
+        },
+        "editing": {
+          "atUs": 47222894,
+          "length": 80,
+          "base": 75,
+          "extent": 75,
+          "fromNative": false,
+          "sequence": 276
+        }
+      },
+      {
+        "trial": 2,
+        "injection": "continuous-down-ms=349276470 moves=287 duration-ms=2400",
+        "path": "348,924,0 800,924,800 240,924,1600 750,924,2400",
+        "selection": [],
+        "textUnchanged": true,
+        "fatalException": false,
+        "renderErrorLines": 0,
+        "nativeMagnifier": {
+          "created": 1,
+          "updates": 132,
+          "dismissed": 1,
+          "requests": 134,
+          "coalesced": 1,
+          "cancelled": 1
+        },
+        "editing": {
+          "atUs": 40801524,
+          "length": 80,
+          "base": 75,
+          "extent": 75,
+          "fromNative": false,
+          "sequence": 278
+        }
+      },
+      {
+        "trial": 3,
+        "injection": "continuous-down-ms=349334292 moves=287 duration-ms=2401",
+        "path": "348,630,0 800,630,800 240,630,1600 750,630,2400",
+        "selection": [],
+        "textUnchanged": true,
+        "fatalException": false,
+        "renderErrorLines": 0,
+        "nativeMagnifier": {
+          "created": 1,
+          "updates": 109,
+          "dismissed": 1,
+          "requests": 111,
+          "coalesced": 1,
+          "cancelled": 1
+        },
+        "editing": {
+          "atUs": 53033750,
+          "length": 80,
+          "base": 75,
+          "extent": 75,
+          "fromNative": false,
+          "sequence": 275
+        }
+      }
+    ]
+  },
+  "deliveredManifest": {
+    "apkSha256": "a0199bec52419e0dce81eae73a184c9d687285ed2df443a37539cdcf19175dbe",
+    "serial": "R3CY30KZA4B",
+    "sample": "components",
+    "allocationProfile": false,
+    "text": "The_quick_brown_fox_jumps_over_the_lazy_dog._Cursor_movement_should_stay_smooth.",
+    "field": "first",
+    "observeAccessibility": false,
+    "nativeViews": false,
+    "perfetto": false,
+    "workTrace": false,
+    "physicalTouchAccepted": false,
+    "trials": [
+      {
+        "trial": 1,
+        "injection": "continuous-down-ms=351797455 moves=287 duration-ms=2401",
+        "path": "348,915,0 800,915,800 240,915,1600 750,915,2400",
+        "selection": [],
+        "textUnchanged": true,
+        "fatalException": false,
+        "renderErrorLines": 0,
+        "nativeMagnifier": {
+          "created": 1,
+          "updates": 167,
+          "dismissed": 1,
+          "requests": 170,
+          "coalesced": 2,
+          "cancelled": 1
+        },
+        "sharedFilledValues": 3,
+        "imeShowCallsInLog": 0,
+        "editing": {
+          "atUs": 43265594,
+          "length": 80,
+          "base": 75,
+          "extent": 75,
+          "fromNative": false,
+          "sequence": 279
+        }
+      },
+      {
+        "trial": 2,
+        "injection": "continuous-down-ms=351842035 moves=287 duration-ms=2400",
+        "path": "348,742,0 800,742,800 240,742,1600 750,742,2400",
+        "selection": [],
+        "textUnchanged": true,
+        "fatalException": false,
+        "renderErrorLines": 0,
+        "nativeMagnifier": {
+          "created": 1,
+          "updates": 177,
+          "dismissed": 1,
+          "requests": 178,
+          "coalesced": 1,
+          "cancelled": 0
+        },
+        "sharedFilledValues": 3,
+        "imeShowCallsInLog": 0,
+        "editing": {
+          "atUs": 39526086,
+          "length": 80,
+          "base": 75,
+          "extent": 75,
+          "fromNative": false,
+          "sequence": 281
+        }
+      },
+      {
+        "trial": 3,
+        "injection": "continuous-down-ms=351886074 moves=287 duration-ms=2400",
+        "path": "348,728,0 800,728,800 240,728,1600 750,728,2400",
+        "selection": [],
+        "textUnchanged": true,
+        "fatalException": false,
+        "renderErrorLines": 0,
+        "nativeMagnifier": {
+          "created": 1,
+          "updates": 173,
+          "dismissed": 1,
+          "requests": 175,
+          "coalesced": 1,
+          "cancelled": 1
+        },
+        "sharedFilledValues": 3,
+        "imeShowCallsInLog": 0,
+        "editing": {
+          "atUs": 39517382,
+          "length": 80,
+          "base": 75,
+          "extent": 75,
+          "fromNative": false,
+          "sequence": 281
+        }
+      }
+    ]
+  },
+  "baseline": [
+    {
+      "file": "components-matched-baseline-1.json",
+      "gesture": 10,
+      "drawsIncludingTail": 63,
+      "drawsDuringInput": 55,
+      "ownerMs": {
+        "count": 55,
+        "p50": 13.603,
+        "p95": 51.749,
+        "p99": 52.964,
+        "max": 61.949
+      },
+      "callbackMs": {
+        "count": 55,
+        "p50": 11.603,
+        "p95": 49.761,
+        "p99": 50.903,
+        "max": 59.429
+      },
+      "inputAgeMs": {
+        "count": 119,
+        "p50": 7,
+        "p95": 14,
+        "p99": 42,
+        "max": 44
+      },
+      "dispatchMs": {
+        "count": 119,
+        "p50": 0.792,
+        "p95": 3.393,
+        "p99": 36.151,
+        "max": 36.555
+      },
+      "submitGapsDuringInputMs": {
+        "count": 54,
+        "p50": 24.12,
+        "p95": 78.722,
+        "p99": 81.788,
+        "max": 113.267
+      },
+      "allocatedPerDraw": {
+        "count": 55,
+        "p50": 1535504,
+        "p95": 1535504,
+        "p99": 1617544,
+        "max": 1617544
+      },
+      "ownerOver50ms": 9,
+      "nativeHistorySamples": 287,
+      "inputEvents": 119,
+      "phasesDuringInput": {
+        "build": {
+          "totalMs": 210.386,
+          "count": 55,
+          "p50": 2.683,
+          "p95": 4.187,
+          "p99": 12.251,
+          "max": 41.773
+        },
+        "layout": {
+          "totalMs": 618.934,
+          "count": 55,
+          "p50": 7.277,
+          "p95": 43.774,
+          "p99": 44.479,
+          "max": 44.609
+        },
+        "paint": {
+          "totalMs": 95.086,
+          "count": 55,
+          "p50": 0.425,
+          "p95": 0.595,
+          "p99": 35.962,
+          "max": 35.982
+        },
+        "semantics": {
+          "totalMs": 183.652,
+          "count": 55,
+          "p50": 0.75,
+          "p95": 35.311,
+          "p99": 35.974,
+          "max": 36.255
+        }
+      },
+      "magnifier": {
+        "created": 1,
+        "updates": 112,
+        "dismissed": 1,
+        "requests": 113,
+        "coalesced": 1,
+        "cancelled": 0
+      },
+      "semantics": {
+        "updatesReceived": 680,
+        "updatesApplied": 88,
+        "updatesCoalesced": 591,
+        "elementsCreated": 0,
+        "activeElements": 0,
+        "retainedNodes": 40,
+        "nativePropertyWrites": 0,
+        "immediateFlushes": 0,
+        "staleCallbacksSuppressed": 0,
+        "updatesSuppressed": 0,
+        "elementsReused": 0,
+        "topologyUpdatesApplied": 0,
+        "applyWorkMicroseconds": 19008,
+        "maxApplyWorkMicroseconds": 4886
+      },
+      "editing": {
+        "atUs": 47222894,
+        "length": 80,
+        "base": 75,
+        "extent": 75,
+        "fromNative": false,
+        "sequence": 276
+      },
+      "presentObserved": false,
+      "workWholeSessionTopSelfMs": []
+    },
+    {
+      "file": "components-matched-baseline-2.json",
+      "gesture": 8,
+      "drawsIncludingTail": 65,
+      "drawsDuringInput": 56,
+      "ownerMs": {
+        "count": 56,
+        "p50": 13.567,
+        "p95": 53.072,
+        "p99": 54.495,
+        "max": 55.049
+      },
+      "callbackMs": {
+        "count": 56,
+        "p50": 11.64,
+        "p95": 51.19,
+        "p99": 52.496,
+        "max": 52.985
+      },
+      "inputAgeMs": {
+        "count": 140,
+        "p50": 7,
+        "p95": 14,
+        "p99": 45,
+        "max": 47
+      },
+      "dispatchMs": {
+        "count": 140,
+        "p50": 0.423,
+        "p95": 6.694,
+        "p99": 36.912,
+        "max": 40.713
+      },
+      "submitGapsDuringInputMs": {
+        "count": 55,
+        "p50": 41.12,
+        "p95": 75.89,
+        "p99": 81.086,
+        "max": 116.994
+      },
+      "allocatedPerDraw": {
+        "count": 56,
+        "p50": 1548744,
+        "p95": 1549544,
+        "p99": 1630784,
+        "max": 1630784
+      },
+      "ownerOver50ms": 9,
+      "nativeHistorySamples": 286,
+      "inputEvents": 140,
+      "phasesDuringInput": {
+        "build": {
+          "totalMs": 250.447,
+          "count": 56,
+          "p50": 2.697,
+          "p95": 3.691,
+          "p99": 43.038,
+          "max": 43.306
+        },
+        "layout": {
+          "totalMs": 484.733,
+          "count": 56,
+          "p50": 7.299,
+          "p95": 8.739,
+          "p99": 44.43,
+          "max": 45.794
+        },
+        "paint": {
+          "totalMs": 131.424,
+          "count": 56,
+          "p50": 0.414,
+          "p95": 0.535,
+          "p99": 36.34,
+          "max": 36.383
+        },
+        "semantics": {
+          "totalMs": 187.053,
+          "count": 56,
+          "p50": 0.714,
+          "p95": 36.529,
+          "p99": 37.095,
+          "max": 38.728
+        }
+      },
+      "magnifier": {
+        "created": 1,
+        "updates": 132,
+        "dismissed": 1,
+        "requests": 134,
+        "coalesced": 1,
+        "cancelled": 1
+      },
+      "semantics": {
+        "updatesReceived": 573,
+        "updatesApplied": 91,
+        "updatesCoalesced": 481,
+        "elementsCreated": 0,
+        "activeElements": 0,
+        "retainedNodes": 37,
+        "nativePropertyWrites": 0,
+        "immediateFlushes": 0,
+        "staleCallbacksSuppressed": 0,
+        "updatesSuppressed": 0,
+        "elementsReused": 0,
+        "topologyUpdatesApplied": 0,
+        "applyWorkMicroseconds": 24723,
+        "maxApplyWorkMicroseconds": 10778
+      },
+      "editing": {
+        "atUs": 40801524,
+        "length": 80,
+        "base": 75,
+        "extent": 75,
+        "fromNative": false,
+        "sequence": 278
+      },
+      "presentObserved": false,
+      "workWholeSessionTopSelfMs": []
+    },
+    {
+      "file": "components-matched-baseline-3.json",
+      "gesture": 12,
+      "drawsIncludingTail": 62,
+      "drawsDuringInput": 55,
+      "ownerMs": {
+        "count": 55,
+        "p50": 13.725,
+        "p95": 51.542,
+        "p99": 55.255,
+        "max": 91.126
+      },
+      "callbackMs": {
+        "count": 55,
+        "p50": 11.701,
+        "p95": 49.631,
+        "p99": 52.985,
+        "max": 88.461
+      },
+      "inputAgeMs": {
+        "count": 118,
+        "p50": 8,
+        "p95": 14,
+        "p99": 33,
+        "max": 49
+      },
+      "dispatchMs": {
+        "count": 118,
+        "p50": 0.795,
+        "p95": 6.6,
+        "p99": 27.596,
+        "max": 38.788
+      },
+      "submitGapsDuringInputMs": {
+        "count": 54,
+        "p50": 39.167,
+        "p95": 80.233,
+        "p99": 103.087,
+        "max": 119.47
+      },
+      "allocatedPerDraw": {
+        "count": 55,
+        "p50": 1535504,
+        "p95": 1535504,
+        "p99": 1537464,
+        "max": 1616744
+      },
+      "ownerOver50ms": 7,
+      "nativeHistorySamples": 286,
+      "inputEvents": 118,
+      "phasesDuringInput": {
+        "build": {
+          "totalMs": 214.674,
+          "count": 55,
+          "p50": 2.699,
+          "p95": 5.387,
+          "p99": 10.615,
+          "max": 39.946
+        },
+        "layout": {
+          "totalMs": 638.315,
+          "count": 55,
+          "p50": 7.263,
+          "p95": 42.783,
+          "p99": 46.008,
+          "max": 81.433
+        },
+        "paint": {
+          "totalMs": 61.074,
+          "count": 55,
+          "p50": 0.428,
+          "p95": 0.588,
+          "p99": 0.897,
+          "max": 37.116
+        },
+        "semantics": {
+          "totalMs": 116.02,
+          "count": 55,
+          "p50": 0.714,
+          "p95": 1.022,
+          "p99": 36.073,
+          "max": 39.93
+        }
+      },
+      "magnifier": {
+        "created": 1,
+        "updates": 109,
+        "dismissed": 1,
+        "requests": 111,
+        "coalesced": 1,
+        "cancelled": 1
+      },
+      "semantics": {
+        "updatesReceived": 544,
+        "updatesApplied": 65,
+        "updatesCoalesced": 478,
+        "elementsCreated": 0,
+        "activeElements": 0,
+        "retainedNodes": 40,
+        "nativePropertyWrites": 0,
+        "immediateFlushes": 0,
+        "staleCallbacksSuppressed": 0,
+        "updatesSuppressed": 0,
+        "elementsReused": 0,
+        "topologyUpdatesApplied": 0,
+        "applyWorkMicroseconds": 17431,
+        "maxApplyWorkMicroseconds": 4731
+      },
+      "editing": {
+        "atUs": 53033750,
+        "length": 80,
+        "base": 75,
+        "extent": 75,
+        "fromNative": false,
+        "sequence": 275
+      },
+      "presentObserved": false,
+      "workWholeSessionTopSelfMs": []
+    }
+  ],
+  "delivered": [
+    {
+      "file": "components-delivered-1.json",
+      "gesture": 9,
+      "drawsIncludingTail": 65,
+      "drawsDuringInput": 57,
+      "ownerMs": {
+        "count": 57,
+        "p50": 14.774,
+        "p95": 25.836,
+        "p99": 27.605,
+        "max": 28.524
+      },
+      "callbackMs": {
+        "count": 57,
+        "p50": 11.005,
+        "p95": 22.327,
+        "p99": 24.264,
+        "max": 24.909
+      },
+      "inputAgeMs": {
+        "count": 176,
+        "p50": 8,
+        "p95": 14,
+        "p99": 18,
+        "max": 20
+      },
+      "dispatchMs": {
+        "count": 176,
+        "p50": 1.115,
+        "p95": 5.191,
+        "p99": 11.507,
+        "max": 14.343
+      },
+      "submitGapsDuringInputMs": {
+        "count": 56,
+        "p50": 41.406,
+        "p95": 66.173,
+        "p99": 74.289,
+        "max": 84.28
+      },
+      "allocatedPerDraw": {
+        "count": 57,
+        "p50": 737112,
+        "p95": 737912,
+        "p99": 739072,
+        "max": 819152
+      },
+      "ownerOver50ms": 0,
+      "nativeHistorySamples": 286,
+      "inputEvents": 176,
+      "phasesDuringInput": {
+        "build": {
+          "totalMs": 467.719,
+          "count": 57,
+          "p50": 8.114,
+          "p95": 11.488,
+          "p99": 16.18,
+          "max": 22.121
+        },
+        "layout": {
+          "totalMs": 1.536,
+          "count": 57,
+          "p50": 0.02,
+          "p95": 0.034,
+          "p99": 0.09,
+          "max": 0.21
+        },
+        "paint": {
+          "totalMs": 31.883,
+          "count": 57,
+          "p50": 0.294,
+          "p95": 0.651,
+          "p99": 2.754,
+          "max": 11.118
+        },
+        "semantics": {
+          "totalMs": 61.278,
+          "count": 57,
+          "p50": 0.817,
+          "p95": 1.326,
+          "p99": 1.816,
+          "max": 11.526
+        }
+      },
+      "magnifier": {
+        "created": 1,
+        "updates": 167,
+        "dismissed": 1,
+        "requests": 170,
+        "coalesced": 2,
+        "cancelled": 1
+      },
+      "semantics": {
+        "updatesReceived": 585,
+        "updatesApplied": 98,
+        "updatesCoalesced": 486,
+        "elementsCreated": 0,
+        "activeElements": 0,
+        "retainedNodes": 37,
+        "nativePropertyWrites": 0,
+        "immediateFlushes": 0,
+        "staleCallbacksSuppressed": 0,
+        "updatesSuppressed": 0,
+        "elementsReused": 0,
+        "topologyUpdatesApplied": 0,
+        "applyWorkMicroseconds": 21039,
+        "maxApplyWorkMicroseconds": 4063
+      },
+      "editing": {
+        "atUs": 43265594,
+        "length": 80,
+        "base": 75,
+        "extent": 75,
+        "fromNative": false,
+        "sequence": 279
+      },
+      "presentObserved": false,
+      "workWholeSessionTopSelfMs": []
+    },
+    {
+      "file": "components-delivered-2.json",
+      "gesture": 8,
+      "drawsIncludingTail": 65,
+      "drawsDuringInput": 58,
+      "ownerMs": {
+        "count": 58,
+        "p50": 14.889,
+        "p95": 27.432,
+        "p99": 31.522,
+        "max": 31.688
+      },
+      "callbackMs": {
+        "count": 58,
+        "p50": 10.982,
+        "p95": 23.874,
+        "p99": 27.125,
+        "max": 27.556
+      },
+      "inputAgeMs": {
+        "count": 184,
+        "p50": 8,
+        "p95": 13,
+        "p99": 21,
+        "max": 28
+      },
+      "dispatchMs": {
+        "count": 184,
+        "p50": 0.871,
+        "p95": 4.974,
+        "p99": 13.191,
+        "max": 22.166
+      },
+      "submitGapsDuringInputMs": {
+        "count": 57,
+        "p50": 40.459,
+        "p95": 64.807,
+        "p99": 68.479,
+        "max": 68.568
+      },
+      "allocatedPerDraw": {
+        "count": 58,
+        "p50": 727328,
+        "p95": 728128,
+        "p99": 729304,
+        "max": 809368
+      },
+      "ownerOver50ms": 0,
+      "nativeHistorySamples": 287,
+      "inputEvents": 184,
+      "phasesDuringInput": {
+        "build": {
+          "totalMs": 474.303,
+          "count": 58,
+          "p50": 8.326,
+          "p95": 12.15,
+          "p99": 13.371,
+          "max": 20.714
+        },
+        "layout": {
+          "totalMs": 1.418,
+          "count": 58,
+          "p50": 0.022,
+          "p95": 0.035,
+          "p99": 0.035,
+          "max": 0.076
+        },
+        "paint": {
+          "totalMs": 21.993,
+          "count": 58,
+          "p50": 0.309,
+          "p95": 0.482,
+          "p99": 0.528,
+          "max": 2.88
+        },
+        "semantics": {
+          "totalMs": 86.926,
+          "count": 58,
+          "p50": 0.927,
+          "p95": 1.676,
+          "p99": 11.679,
+          "max": 12.054
+        }
+      },
+      "magnifier": {
+        "created": 1,
+        "updates": 177,
+        "dismissed": 1,
+        "requests": 178,
+        "coalesced": 1,
+        "cancelled": 0
+      },
+      "semantics": {
+        "updatesReceived": 583,
+        "updatesApplied": 97,
+        "updatesCoalesced": 485,
+        "elementsCreated": 0,
+        "activeElements": 0,
+        "retainedNodes": 40,
+        "nativePropertyWrites": 0,
+        "immediateFlushes": 0,
+        "staleCallbacksSuppressed": 0,
+        "updatesSuppressed": 0,
+        "elementsReused": 0,
+        "topologyUpdatesApplied": 0,
+        "applyWorkMicroseconds": 17124,
+        "maxApplyWorkMicroseconds": 2683
+      },
+      "editing": {
+        "atUs": 39526086,
+        "length": 80,
+        "base": 75,
+        "extent": 75,
+        "fromNative": false,
+        "sequence": 281
+      },
+      "presentObserved": false,
+      "workWholeSessionTopSelfMs": []
+    },
+    {
+      "file": "components-delivered-3.json",
+      "gesture": 8,
+      "drawsIncludingTail": 67,
+      "drawsDuringInput": 58,
+      "ownerMs": {
+        "count": 58,
+        "p50": 14.838,
+        "p95": 28.488,
+        "p99": 31.212,
+        "max": 34.043
+      },
+      "callbackMs": {
+        "count": 58,
+        "p50": 10.905,
+        "p95": 22.77,
+        "p99": 27.487,
+        "max": 27.863
+      },
+      "inputAgeMs": {
+        "count": 181,
+        "p50": 8,
+        "p95": 14,
+        "p99": 24,
+        "max": 30
+      },
+      "dispatchMs": {
+        "count": 181,
+        "p50": 1.026,
+        "p95": 5.141,
+        "p99": 16.26,
+        "max": 23.843
+      },
+      "submitGapsDuringInputMs": {
+        "count": 57,
+        "p50": 38.614,
+        "p95": 64.499,
+        "p99": 72.677,
+        "max": 81.72
+      },
+      "allocatedPerDraw": {
+        "count": 58,
+        "p50": 727328,
+        "p95": 728128,
+        "p99": 729304,
+        "max": 809368
+      },
+      "ownerOver50ms": 0,
+      "nativeHistorySamples": 287,
+      "inputEvents": 181,
+      "phasesDuringInput": {
+        "build": {
+          "totalMs": 454.631,
+          "count": 58,
+          "p50": 7.303,
+          "p95": 11.709,
+          "p99": 12.951,
+          "max": 13.046
+        },
+        "layout": {
+          "totalMs": 1.445,
+          "count": 58,
+          "p50": 0.023,
+          "p95": 0.034,
+          "p99": 0.035,
+          "max": 0.079
+        },
+        "paint": {
+          "totalMs": 41.203,
+          "count": 58,
+          "p50": 0.351,
+          "p95": 0.502,
+          "p99": 10.469,
+          "max": 11.825
+        },
+        "semantics": {
+          "totalMs": 90.82,
+          "count": 58,
+          "p50": 0.902,
+          "p95": 1.357,
+          "p99": 13.277,
+          "max": 14.039
+        }
+      },
+      "magnifier": {
+        "created": 1,
+        "updates": 173,
+        "dismissed": 1,
+        "requests": 175,
+        "coalesced": 1,
+        "cancelled": 1
+      },
+      "semantics": {
+        "updatesReceived": 597,
+        "updatesApplied": 106,
+        "updatesCoalesced": 490,
+        "elementsCreated": 0,
+        "activeElements": 0,
+        "retainedNodes": 40,
+        "nativePropertyWrites": 0,
+        "immediateFlushes": 0,
+        "staleCallbacksSuppressed": 0,
+        "updatesSuppressed": 0,
+        "elementsReused": 0,
+        "topologyUpdatesApplied": 0,
+        "applyWorkMicroseconds": 21201,
+        "maxApplyWorkMicroseconds": 4241
+      },
+      "editing": {
+        "atUs": 39517382,
+        "length": 80,
+        "base": 75,
+        "extent": 75,
+        "fromNative": false,
+        "sequence": 281
+      },
+      "presentObserved": false,
+      "workWholeSessionTopSelfMs": []
+    }
+  ],
+  "gcBefore": {
+    "label": "components-gc-diagnostic",
+    "summary": {
+      "file": "components-gc-diagnostic-1.json",
+      "gesture": 8,
+      "drawsIncludingTail": 61,
+      "drawsDuringInput": 53,
+      "ownerMs": {
+        "count": 53,
+        "p50": 11.844,
+        "p95": 68.325,
+        "p99": 72.755,
+        "max": 76.371
+      },
+      "callbackMs": {
+        "count": 53,
+        "p50": 8.11,
+        "p95": 65.216,
+        "p99": 67.512,
+        "max": 70.548
+      },
+      "inputAgeMs": {
+        "count": 143,
+        "p50": 8,
+        "p95": 15,
+        "p99": 24,
+        "max": 80
+      },
+      "dispatchMs": {
+        "count": 143,
+        "p50": 1.035,
+        "p95": 3.477,
+        "p99": 16.865,
+        "max": 74.184
+      },
+      "submitGapsDuringInputMs": {
+        "count": 52,
+        "p50": 29.791,
+        "p95": 100.165,
+        "p99": 109.66,
+        "max": 130.255
+      },
+      "allocatedPerDraw": {
+        "count": 53,
+        "p50": 727328,
+        "p95": 728128,
+        "p99": 730064,
+        "max": 809368
+      },
+      "ownerOver50ms": 9,
+      "nativeHistorySamples": 287,
+      "inputEvents": 143,
+      "phasesDuringInput": {
+        "build": {
+          "totalMs": 355.577,
+          "count": 53,
+          "p50": 4.956,
+          "p95": 9.697,
+          "p99": 16.317,
+          "max": 58.938
+        },
+        "layout": {
+          "totalMs": 0.994,
+          "count": 53,
+          "p50": 0.018,
+          "p95": 0.029,
+          "p99": 0.035,
+          "max": 0.085
+        },
+        "paint": {
+          "totalMs": 75.555,
+          "count": 53,
+          "p50": 0.255,
+          "p95": 0.414,
+          "p99": 0.709,
+          "max": 62.196
+        },
+        "semantics": {
+          "totalMs": 258.136,
+          "count": 53,
+          "p50": 0.758,
+          "p95": 48.953,
+          "p99": 57.915,
+          "max": 58.862
+        }
+      },
+      "magnifier": {
+        "created": 1,
+        "updates": 136,
+        "dismissed": 1,
+        "requests": 137,
+        "coalesced": 1,
+        "cancelled": 0
+      },
+      "semantics": {
+        "updatesReceived": 563,
+        "updatesApplied": 90,
+        "updatesCoalesced": 472,
+        "elementsCreated": 0,
+        "activeElements": 0,
+        "retainedNodes": 40,
+        "nativePropertyWrites": 0,
+        "immediateFlushes": 0,
+        "staleCallbacksSuppressed": 0,
+        "updatesSuppressed": 0,
+        "elementsReused": 0,
+        "topologyUpdatesApplied": 0,
+        "applyWorkMicroseconds": 20258,
+        "maxApplyWorkMicroseconds": 4092
+      },
+      "editing": {
+        "atUs": 41858117,
+        "length": 80,
+        "base": 75,
+        "extent": 75,
+        "fromNative": false,
+        "sequence": 272
+      },
+      "presentObserved": false,
+      "workWholeSessionTopSelfMs": []
+    },
+    "scans": [
+      {
+        "bridges": 1.0,
+        "objects": 305800.0,
+        "tarjanMs": 46.2,
+        "cleanupMs": 5.26
+      },
+      {
+        "bridges": 139.0,
+        "objects": 307796.0,
+        "tarjanMs": 42.37,
+        "cleanupMs": 6.22
+      },
+      {
+        "bridges": 162.0,
+        "objects": 305878.0,
+        "tarjanMs": 45.79,
+        "cleanupMs": 6.56
+      },
+      {
+        "bridges": 138.0,
+        "objects": 138.0,
+        "tarjanMs": 0.02,
+        "cleanupMs": 0.02
+      },
+      {
+        "bridges": 116.0,
+        "objects": 307726.0,
+        "tarjanMs": 33.03,
+        "cleanupMs": 6.01
+      },
+      {
+        "bridges": 162.0,
+        "objects": 307647.0,
+        "tarjanMs": 40.68,
+        "cleanupMs": 6.24
+      },
+      {
+        "bridges": 162.0,
+        "objects": 307774.0,
+        "tarjanMs": 41.24,
+        "cleanupMs": 6.12
+      },
+      {
+        "bridges": 162.0,
+        "objects": 307777.0,
+        "tarjanMs": 43.73,
+        "cleanupMs": 6.44
+      },
+      {
+        "bridges": 141.0,
+        "objects": 141.0,
+        "tarjanMs": 0.01,
+        "cleanupMs": 0.02
+      },
+      {
+        "bridges": 182.0,
+        "objects": 305869.0,
+        "tarjanMs": 36.5,
+        "cleanupMs": 8.05
+      },
+      {
+        "bridges": 139.0,
+        "objects": 305828.0,
+        "tarjanMs": 44.75,
+        "cleanupMs": 6.66
+      },
+      {
+        "bridges": 139.0,
+        "objects": 305828.0,
+        "tarjanMs": 54.06,
+        "cleanupMs": 6.41
+      },
+      {
+        "bridges": 139.0,
+        "objects": 305831.0,
+        "tarjanMs": 53.6,
+        "cleanupMs": 7.01
+      },
+      {
+        "bridges": 161.0,
+        "objects": 161.0,
+        "tarjanMs": 0.02,
+        "cleanupMs": 0.02
+      }
+    ],
+    "minorStwMs": {
+      "count": 14,
+      "p50": 46.4,
+      "p95": 59.33,
+      "p99": 59.33,
+      "max": 60.42
+    }
+  },
+  "gcAfter": {
+    "label": "components-native-selection-gc",
+    "summary": {
+      "file": "components-native-selection-gc-1.json",
+      "gesture": 10,
+      "drawsIncludingTail": 66,
+      "drawsDuringInput": 58,
+      "ownerMs": {
+        "count": 58,
+        "p50": 13.162,
+        "p95": 27.135,
+        "p99": 28.611,
+        "max": 29.311
+      },
+      "callbackMs": {
+        "count": 58,
+        "p50": 9.239,
+        "p95": 20.521,
+        "p99": 21.428,
+        "max": 25.087
+      },
+      "inputAgeMs": {
+        "count": 196,
+        "p50": 8,
+        "p95": 14,
+        "p99": 22,
+        "max": 26
+      },
+      "dispatchMs": {
+        "count": 196,
+        "p50": 0.886,
+        "p95": 3.896,
+        "p99": 15.641,
+        "max": 18.855
+      },
+      "submitGapsDuringInputMs": {
+        "count": 57,
+        "p50": 36.554,
+        "p95": 60.008,
+        "p99": 82.168,
+        "max": 87.955
+      },
+      "allocatedPerDraw": {
+        "count": 58,
+        "p50": 727328,
+        "p95": 728128,
+        "p99": 729304,
+        "max": 809368
+      },
+      "ownerOver50ms": 0,
+      "nativeHistorySamples": 287,
+      "inputEvents": 196,
+      "phasesDuringInput": {
+        "build": {
+          "totalMs": 397.202,
+          "count": 58,
+          "p50": 6.883,
+          "p95": 9.479,
+          "p99": 10.192,
+          "max": 12.94
+        },
+        "layout": {
+          "totalMs": 1.275,
+          "count": 58,
+          "p50": 0.021,
+          "p95": 0.027,
+          "p99": 0.032,
+          "max": 0.074
+        },
+        "paint": {
+          "totalMs": 34.301,
+          "count": 58,
+          "p50": 0.31,
+          "p95": 0.435,
+          "p99": 6.101,
+          "max": 11.177
+        },
+        "semantics": {
+          "totalMs": 60.701,
+          "count": 58,
+          "p50": 0.854,
+          "p95": 1.121,
+          "p99": 1.162,
+          "max": 11.314
+        }
+      },
+      "magnifier": {
+        "created": 1,
+        "updates": 188,
+        "dismissed": 1,
+        "requests": 190,
+        "coalesced": 1,
+        "cancelled": 1
+      },
+      "semantics": {
+        "updatesReceived": 542,
+        "updatesApplied": 67,
+        "updatesCoalesced": 474,
+        "elementsCreated": 0,
+        "activeElements": 0,
+        "retainedNodes": 40,
+        "nativePropertyWrites": 0,
+        "immediateFlushes": 0,
+        "staleCallbacksSuppressed": 0,
+        "updatesSuppressed": 0,
+        "elementsReused": 0,
+        "topologyUpdatesApplied": 0,
+        "applyWorkMicroseconds": 15808,
+        "maxApplyWorkMicroseconds": 4800
+      },
+      "editing": {
+        "atUs": 46602319,
+        "length": 80,
+        "base": 75,
+        "extent": 75,
+        "fromNative": false,
+        "sequence": 281
+      },
+      "presentObserved": false,
+      "workWholeSessionTopSelfMs": []
+    },
+    "scans": [
+      {
+        "bridges": 0.0,
+        "objects": 0.0,
+        "tarjanMs": 0.03,
+        "cleanupMs": 0.0
+      },
+      {
+        "bridges": 115.0,
+        "objects": 115.0,
+        "tarjanMs": 0.01,
+        "cleanupMs": 0.01
+      },
+      {
+        "bridges": 184.0,
+        "objects": 184.0,
+        "tarjanMs": 0.02,
+        "cleanupMs": 0.01
+      },
+      {
+        "bridges": 161.0,
+        "objects": 161.0,
+        "tarjanMs": 0.01,
+        "cleanupMs": 0.01
+      },
+      {
+        "bridges": 161.0,
+        "objects": 161.0,
+        "tarjanMs": 0.04,
+        "cleanupMs": 0.01
+      },
+      {
+        "bridges": 138.0,
+        "objects": 138.0,
+        "tarjanMs": 0.02,
+        "cleanupMs": 0.01
+      },
+      {
+        "bridges": 166.0,
+        "objects": 166.0,
+        "tarjanMs": 0.01,
+        "cleanupMs": 0.01
+      },
+      {
+        "bridges": 155.0,
+        "objects": 155.0,
+        "tarjanMs": 0.01,
+        "cleanupMs": 0.01
+      },
+      {
+        "bridges": 161.0,
+        "objects": 161.0,
+        "tarjanMs": 0.01,
+        "cleanupMs": 0.0
+      },
+      {
+        "bridges": 184.0,
+        "objects": 184.0,
+        "tarjanMs": 0.01,
+        "cleanupMs": 0.02
+      },
+      {
+        "bridges": 184.0,
+        "objects": 184.0,
+        "tarjanMs": 0.02,
+        "cleanupMs": 0.01
+      },
+      {
+        "bridges": 138.0,
+        "objects": 138.0,
+        "tarjanMs": 0.02,
+        "cleanupMs": 0.01
+      },
+      {
+        "bridges": 161.0,
+        "objects": 161.0,
+        "tarjanMs": 0.01,
+        "cleanupMs": 0.01
+      },
+      {
+        "bridges": 161.0,
+        "objects": 161.0,
+        "tarjanMs": 0.01,
+        "cleanupMs": 0.01
+      },
+      {
+        "bridges": 161.0,
+        "objects": 161.0,
+        "tarjanMs": 0.01,
+        "cleanupMs": 0.01
+      },
+      {
+        "bridges": 161.0,
+        "objects": 161.0,
+        "tarjanMs": 0.02,
+        "cleanupMs": 0.01
+      }
+    ],
+    "minorStwMs": {
+      "count": 16,
+      "p50": 2.96,
+      "p95": 5.39,
+      "p99": 5.39,
+      "max": 5.58
+    }
+  },
+  "gcAfterApkSha256": "9ec532df71a8a82925aecbe80a91387eadc74ea73e5ee6e3fbd84032507a5ae7",
+  "identity": {
+    "installedApkSha256": "a0199bec52419e0dce81eae73a184c9d687285ed2df443a37539cdcf19175dbe",
+    "builtApkSha256": "a0199bec52419e0dce81eae73a184c9d687285ed2df443a37539cdcf19175dbe",
+    "nativeSkiaSha256": "02c4cf50f41d50750d4e83f3e52c6e80dc7ac2ae43f50fefa381b45e18b81e9b",
+    "nativeVersionConfirmed": true,
+    "normalLaunchWithoutDiagnosticExtras": true,
+    "normalComponentsTextFieldsVisible": true,
+    "accessibilityServices": "null",
+    "lowPower": "0",
+    "monoLogProperty": "",
+    "fatalException": false,
+    "renderErrors": 0
+  },
+  "functional": {
+    "keyboardDismissed": true,
+    "keyboardReopened": true,
+    "koreanComposed": true,
+    "filledPeersAfterKorean": 3,
+    "koreanRetainedAfterDrag": true,
+    "focusSwitchImeVisible": true,
+    "outlinedPeers": 3,
+    "filledRetainedAfterFocusSwitch": true,
+    "expandedSelection": {
+      "atUs": 76036780,
+      "length": 14,
+      "base": 0,
+      "extent": 14,
+      "fromNative": false,
+      "sequence": 354
+    },
+    "filledRetainedAfterResume": true,
+    "outlinedRetainedAfterResume": true,
+    "fatalException": false,
+    "renderErrors": 0
+  },
+  "sourceSha256": {
+    "Doroti/eng/android/caret.perfetto.pbtxt": "e71b1a84080a1766a7d39d27c4e2907d1ee37e4f80256c21048b936d1822708d",
+    "Doroti/eng/measure-android-caret.py": "6eec0649ee6d18a851b1768418e55b737386d824d879e314a84a1aef8ae1416b",
+    "Doroti/eng/summarize-android-caret.py": "cf74c730be71142866d9783ffed890fcf23ba78a9c658e36886b44e024f1ade4",
+    "Doroti/src/Doroti.Framework.Widgets/editable_text.cs": "1fa07b3eecad8e712ea005811fc712758791b0b4bdb2a4c28a3081aa43ea4eac",
+    "Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.cs": "e8bb26a3afc2430214732274647e5bc65e4b2b9a2fd93b642298a3dd207ecc16",
+    "Doroti/src/Doroti.Ui/GraphicsAndSemanticsContracts.cs": "0f36e0213be9efcb4f9fa09ce0bf6fe88cce0031a0e79ce9c6b28c135a3d8849",
+    "Doroti/src/Doroti.Ui/SemanticsTextGeometry.cs": "10102531105081773b9f5614508ee83728b309b9a9eda52e4fa8434e0e015733",
+    "Doroti/tests/Doroti.Scroll.Tests/CollapsedCaretRegression.cs": "f4daddac61c9baa1cdc551d3af1e5af9de817f6c8d6e491fd3fd9888af58b517",
+    "Doroti/tests/Doroti.Scroll.Tests/Doroti.Scroll.Tests.csproj": "39eca96117ca606babe66a2799992265f9296105df4c133fd1a65ba992df3a96",
+    "Doroti/tests/Doroti.Scroll.Tests/Program.cs": "aae4c2b4a0103734e63ccd470b313ac64791b032c0e80a69f3a44ac0dac5b3f6",
+    "Doroti/tests/Doroti.Scroll.Tests/TextSelectionWorkRegression.cs": "7552263928d200614618721869cb7f09000b7b910409368f28a6e81255b198d7",
+    "Doroti/tests/Doroti.Scroll.Tests/WeakNotificationRegression.cs": "63dc3b7526d34849c31ac455fe1ad4507410ef85c5f13e48e38d03370d3b269f",
+    "packages/Doroti.Material/src/input_decorator.cs": "22235a48f7fc46e00a85d35ec2487df7253f2171ef9ab08d081c03e567457f87",
+    "packages/Doroti.Material/src/text_field.cs": "b0dee8029caff32cb3390e281404b062f5247a74f52685ee0168a4544b7350a2",
+    "packages/platforms/maui/Doroti.Host.Maui/AndroidScrollProfile.cs": "08819ffb7f547f9cee79e3eb42a064ef797037358d22027eedc5f795d7d6f0b1",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiAndroidSemanticsBridge.cs": "bb930253246368a4f610103969b1a1e0a9bc3a1378c32fcc7361c46fe3ed0f2b",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiAndroidTextMagnifier.cs": "393e1e1d590879d91be1826e64dc368092002ff5dee426d4e574cc60ce9e6d17",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiApplicationNavigation.cs": "50c7a2cd686e57c61ff06ed77d971c08142240ab5d461811e913105487870cf6",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiHostAdapter.cs": "a6eff9b7e5e1f0e047d6ed41bb48846e683416060e4c7721487fb487ce337dfa",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiTextInputBridge.cs": "be08af964b67d5e2e4bba1be68eae4ca0eace00d88ee8808fdbe38a24cadc85a",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiWeakCallback.cs": "1693be4cf6174c9193df337317a11acafda986a6dcd30857ad370ce6318a1549",
+    "samples/DorotiTestbedApp/src/MaterialSample/InputLifetimeSample.cs": "a61a1c73381f2acf9f7aec2d8b7f49d63a9919a4d3dae983ab8be2ffad1c189c"
+  },
+  "rawArtifacts": {
+    "temp/galaxy-caret/components-matched-baseline-1.after.xml": {
+      "sha256": "ad0095406464fec592ec79141ac300116172b76a5cd46198a74b1e4fb244b3dd",
+      "bytes": 14973
+    },
+    "temp/galaxy-caret/components-matched-baseline-1.before.xml": {
+      "sha256": "ad0095406464fec592ec79141ac300116172b76a5cd46198a74b1e4fb244b3dd",
+      "bytes": 14973
+    },
+    "temp/galaxy-caret/components-matched-baseline-1.json": {
+      "sha256": "4d15fe605ace5cb41ef810d2a5ce56100eae030989677dcd7747dd1a266462cb",
+      "bytes": 4642489
+    },
+    "temp/galaxy-caret/components-matched-baseline-1.log": {
+      "sha256": "97a7b1bea207a9b768f86efe95179c471e23c9a9d93f5d0042d493573c9a23a3",
+      "bytes": 240135
+    },
+    "temp/galaxy-caret/components-matched-baseline-1.png": {
+      "sha256": "6efaeeab66c48deaff99481aee503a25f3b752ebd69f75ae59ebe986daf888c3",
+      "bytes": 179837
+    },
+    "temp/galaxy-caret/components-matched-baseline-1.setup-0.xml": {
+      "sha256": "b27444ebaf7f3171cd66480a28f85bfe5033c138178a5b5b881c17dce13c8c8c",
+      "bytes": 16821
+    },
+    "temp/galaxy-caret/components-matched-baseline-1.setup-1.xml": {
+      "sha256": "2bacbafc42446b100b7e2776a3848372925e9a1eb02865735d9aedf13a184eb5",
+      "bytes": 16842
+    },
+    "temp/galaxy-caret/components-matched-baseline-1.setup-2.xml": {
+      "sha256": "377153abf9cff9e545e0d60334aa9345330d2ce2f6d9ec052bb8abce62ff4aaa",
+      "bytes": 13346
+    },
+    "temp/galaxy-caret/components-matched-baseline-1.setup-3.xml": {
+      "sha256": "44a0d7e201762fe7c932178b9ebe5289370b688cb86282f4ee55b78883eee415",
+      "bytes": 13561
+    },
+    "temp/galaxy-caret/components-matched-baseline-1.setup-4.xml": {
+      "sha256": "49415bebee4ca2f54868b5853eee0006018fc220f273b2d832fc5e746c4e93b6",
+      "bytes": 13725
+    },
+    "temp/galaxy-caret/components-matched-baseline-1.setup-5.xml": {
+      "sha256": "8d2545455cc89bd30656a3c479f627f661633a94b876ef06792760ba0fe9c543",
+      "bytes": 15849
+    },
+    "temp/galaxy-caret/components-matched-baseline-1.setup-6.xml": {
+      "sha256": "63bfc27753392a8434e44b5c6cc9f410fa5f177d244a736b7fb68026aa839e63",
+      "bytes": 11908
+    },
+    "temp/galaxy-caret/components-matched-baseline-1.setup-7.xml": {
+      "sha256": "a66145a81f4791cffb1ad225cb0c2fb95f6788c4a7a9ead9b643d910cb81a6a7",
+      "bytes": 16626
+    },
+    "temp/galaxy-caret/components-matched-baseline-1.state.json": {
+      "sha256": "618d11345c9c6c46ebd3a3c07b5000c300a4aa9dd9ed088c867a0ff930d50583",
+      "bytes": 340325
+    },
+    "temp/galaxy-caret/components-matched-baseline-2.after.xml": {
+      "sha256": "a475300d489b993e538c993848b1fc6fe41df1902fae613eceb9760124af0c2f",
+      "bytes": 13884
+    },
+    "temp/galaxy-caret/components-matched-baseline-2.before.xml": {
+      "sha256": "a475300d489b993e538c993848b1fc6fe41df1902fae613eceb9760124af0c2f",
+      "bytes": 13884
+    },
+    "temp/galaxy-caret/components-matched-baseline-2.json": {
+      "sha256": "520534cd427ec77eea262e5924a772bb417f2d3764101e2873ba41576b9e68f1",
+      "bytes": 4561666
+    },
+    "temp/galaxy-caret/components-matched-baseline-2.log": {
+      "sha256": "32fd2b5d28737597758140b2db1819630689217e55f81e02b98a4a561ad97235",
+      "bytes": 249055
+    },
+    "temp/galaxy-caret/components-matched-baseline-2.png": {
+      "sha256": "fdadad870095bd7316804bbd6936b17215690bba0c49546e1c4ae63ba3c0bb2c",
+      "bytes": 168198
+    },
+    "temp/galaxy-caret/components-matched-baseline-2.setup-0.xml": {
+      "sha256": "b27444ebaf7f3171cd66480a28f85bfe5033c138178a5b5b881c17dce13c8c8c",
+      "bytes": 16821
+    },
+    "temp/galaxy-caret/components-matched-baseline-2.setup-1.xml": {
+      "sha256": "5cef6857e178ffd28e66a0c9702b1a253ba79e1d956a53ff745d273e775b716a",
+      "bytes": 17193
+    },
+    "temp/galaxy-caret/components-matched-baseline-2.setup-2.xml": {
+      "sha256": "d4aca5081ce83a24fd7a6c93166b3184c52be1e4cfcad3fb87a23da690f811a1",
+      "bytes": 14106
+    },
+    "temp/galaxy-caret/components-matched-baseline-2.setup-3.xml": {
+      "sha256": "fc6b5ab40ff3a22efa9f18189390feeebdc88251835cb5ca16af39d42024f052",
+      "bytes": 13561
+    },
+    "temp/galaxy-caret/components-matched-baseline-2.setup-4.xml": {
+      "sha256": "e5e73696cbf6530d1f616c5c35da8f0245a73e2090aad3d40cacafaeaf0fa60d",
+      "bytes": 14084
+    },
+    "temp/galaxy-caret/components-matched-baseline-2.setup-5.xml": {
+      "sha256": "74bb91e6a6e9909212627f96a5973eeca644f220e9aa2db139f1ef102395cf0c",
+      "bytes": 15845
+    },
+    "temp/galaxy-caret/components-matched-baseline-2.state.json": {
+      "sha256": "00fc0b1ebd6b4ea8bae519ff891d72efc3495ca935f99111e168cb70f6016ec2",
+      "bytes": 340370
+    },
+    "temp/galaxy-caret/components-matched-baseline-3.after.xml": {
+      "sha256": "1fb9aa30a6a0e415714c2d569fb1899922bed27b1870e69e700c2883f94ac406",
+      "bytes": 14973
+    },
+    "temp/galaxy-caret/components-matched-baseline-3.before.xml": {
+      "sha256": "1fb9aa30a6a0e415714c2d569fb1899922bed27b1870e69e700c2883f94ac406",
+      "bytes": 14973
+    },
+    "temp/galaxy-caret/components-matched-baseline-3.json": {
+      "sha256": "8714bae88333e75aee759f3c65699bdf0eac84f44611579202a177c3cbb1e393",
+      "bytes": 4546415
+    },
+    "temp/galaxy-caret/components-matched-baseline-3.log": {
+      "sha256": "780b5ec177b75000ec796e0cc6fa655c0b1f69d7ca32bef984248addfb4ed90b",
+      "bytes": 305378
+    },
+    "temp/galaxy-caret/components-matched-baseline-3.png": {
+      "sha256": "0c5e3ecb8554bc8fa6ead764e50413cc89d1144636190f68856064263b4f5fc1",
+      "bytes": 180278
+    },
+    "temp/galaxy-caret/components-matched-baseline-3.setup-0.xml": {
+      "sha256": "b27444ebaf7f3171cd66480a28f85bfe5033c138178a5b5b881c17dce13c8c8c",
+      "bytes": 16821
+    },
+    "temp/galaxy-caret/components-matched-baseline-3.setup-1.xml": {
+      "sha256": "4747f7890a931577d1900e8235c9a7b37f5974362cb58662b158d7af0a5226dc",
+      "bytes": 17193
+    },
+    "temp/galaxy-caret/components-matched-baseline-3.setup-2.xml": {
+      "sha256": "12e6663ab3597a102ce13cf245056535c5340fdc0ec337733af8db00c5c0d8fa",
+      "bytes": 15253
+    },
+    "temp/galaxy-caret/components-matched-baseline-3.setup-3.xml": {
+      "sha256": "f1ed28ff01d90639afaa8e2671babe28faceddc53e594806d1553e489cb66632",
+      "bytes": 13471
+    },
+    "temp/galaxy-caret/components-matched-baseline-3.setup-4.xml": {
+      "sha256": "ec10a12de8c4ef3f8547c44eccdcff17e7cf7e3e205da907c84df7302bedf989",
+      "bytes": 14663
+    },
+    "temp/galaxy-caret/components-matched-baseline-3.setup-5.xml": {
+      "sha256": "6fa1dffa1c30caf5b278a498f342159f2f97f94ba3a8fe9007494d4ad56f480d",
+      "bytes": 13926
+    },
+    "temp/galaxy-caret/components-matched-baseline-3.setup-6.xml": {
+      "sha256": "68a2473c2f95dd2d7071a37173616a0329aad74c6ce4d7a105d650bccfb3c37d",
+      "bytes": 13525
+    },
+    "temp/galaxy-caret/components-matched-baseline-3.setup-7.xml": {
+      "sha256": "1da0bc80c7c1eea28bf59c29291cb44aace4bbd463a9fb2f340a68e4c08321ec",
+      "bytes": 12515
+    },
+    "temp/galaxy-caret/components-matched-baseline-3.setup-8.xml": {
+      "sha256": "63bfc27753392a8434e44b5c6cc9f410fa5f177d244a736b7fb68026aa839e63",
+      "bytes": 11908
+    },
+    "temp/galaxy-caret/components-matched-baseline-3.setup-9.xml": {
+      "sha256": "da1838fa9d2fef21020f27dfe9b20fd4de60f8db5b39f866279dfc59bae2395f",
+      "bytes": 16626
+    },
+    "temp/galaxy-caret/components-matched-baseline-3.state.json": {
+      "sha256": "30cc79eddd2bf34302a881d8e3f648ad6679180f01935b7bda9ec2b1a80ea4cb",
+      "bytes": 340297
+    },
+    "temp/galaxy-caret/components-matched-baseline-manifest.json": {
+      "sha256": "4721ff911f66d9ac66e039032e31be4f8741167343f8c152a7a291259d8d43a2",
+      "bytes": 2402
+    },
+    "temp/galaxy-caret/components-matched-baseline.apk": {
+      "sha256": "3e3ea543be09910881f4b4934159b5c6bc3cbbba87df1dc0a8dc12b7d6ecf08b",
+      "bytes": 29371476
+    },
+    "temp/galaxy-caret/components-delivered-1.after.xml": {
+      "sha256": "b10ba86e639f28491e31eaf35356c86b85d843c3ab2ff673f6bd47e4bfa7df32",
+      "bytes": 13884
+    },
+    "temp/galaxy-caret/components-delivered-1.before.xml": {
+      "sha256": "b10ba86e639f28491e31eaf35356c86b85d843c3ab2ff673f6bd47e4bfa7df32",
+      "bytes": 13884
+    },
+    "temp/galaxy-caret/components-delivered-1.json": {
+      "sha256": "9e9ff97e480e8d924f69a23634d32c97d9a6efad06e05b3ac859232fbaf7d47b",
+      "bytes": 4580985
+    },
+    "temp/galaxy-caret/components-delivered-1.log": {
+      "sha256": "8c2a83b7c621c7e61b7d1d0d1b63f3ea69e743158073f13f52421e6233b29fbe",
+      "bytes": 221254
+    },
+    "temp/galaxy-caret/components-delivered-1.png": {
+      "sha256": "17a50908d9816dba82ab6128244ff787d5cfd3c18202f65d20d0cf237a59b54f",
+      "bytes": 168698
+    },
+    "temp/galaxy-caret/components-delivered-1.setup-0.xml": {
+      "sha256": "b27444ebaf7f3171cd66480a28f85bfe5033c138178a5b5b881c17dce13c8c8c",
+      "bytes": 16821
+    },
+    "temp/galaxy-caret/components-delivered-1.setup-1.xml": {
+      "sha256": "2bfc121cb6e99496503ddece75abd96b5c527f2df4ae617f99598da6435eca94",
+      "bytes": 13305
+    },
+    "temp/galaxy-caret/components-delivered-1.setup-2.xml": {
+      "sha256": "c9f19c083575c2dd85325ab11456826cfaf6f22c7cfdb3583a23f2ab77fadb3a",
+      "bytes": 13727
+    },
+    "temp/galaxy-caret/components-delivered-1.setup-3.xml": {
+      "sha256": "fff34f74fa4cd32644a02e6e751bfaa753c9ea3e8b1014020b8fbcb3fd7252c5",
+      "bytes": 14094
+    },
+    "temp/galaxy-caret/components-delivered-1.setup-4.xml": {
+      "sha256": "6bb52cb43823c0e92ac50b14f81404d9e245f05278e36c667436075227773ed5",
+      "bytes": 13580
+    },
+    "temp/galaxy-caret/components-delivered-1.setup-5.xml": {
+      "sha256": "c58aa20a315c3bae23f50d296efbd35270c65d19da63521b11a64b0c9094f672",
+      "bytes": 14082
+    },
+    "temp/galaxy-caret/components-delivered-1.setup-6.xml": {
+      "sha256": "66d23dcad162da5ad91fdc978698cefb7d9a1fb8abda653c729345d0004628b6",
+      "bytes": 15845
+    },
+    "temp/galaxy-caret/components-delivered-1.state.json": {
+      "sha256": "840e105599271daad0e6ad8deddef28e02f0980f690cb971ab98c7b6030efb13",
+      "bytes": 340172
+    },
+    "temp/galaxy-caret/components-delivered-2.after.xml": {
+      "sha256": "7245a2405de305b566205f579e16c3ed7c509f2845cb4e827132aa6cd77fd48b",
+      "bytes": 14982
+    },
+    "temp/galaxy-caret/components-delivered-2.before.xml": {
+      "sha256": "7245a2405de305b566205f579e16c3ed7c509f2845cb4e827132aa6cd77fd48b",
+      "bytes": 14982
+    },
+    "temp/galaxy-caret/components-delivered-2.json": {
+      "sha256": "21ab94bd1aee788d10439d1f79390e4116e4b278ae41e4bcb54f7968d2df8091",
+      "bytes": 4595962
+    },
+    "temp/galaxy-caret/components-delivered-2.log": {
+      "sha256": "48d6e425e0b12c5725acf423c077455c4b839c9886a865288e8adddf3f066e27",
+      "bytes": 207791
+    },
+    "temp/galaxy-caret/components-delivered-2.png": {
+      "sha256": "d00a0638086be9d9c63096758a8808b30a1c1a8a85b7c4d7b6a318a6fb5695f6",
+      "bytes": 173544
+    },
+    "temp/galaxy-caret/components-delivered-2.setup-0.xml": {
+      "sha256": "b27444ebaf7f3171cd66480a28f85bfe5033c138178a5b5b881c17dce13c8c8c",
+      "bytes": 16821
+    },
+    "temp/galaxy-caret/components-delivered-2.setup-1.xml": {
+      "sha256": "82163ff2749068535d6c2acdcedc77c9c86b702c51b037f2e515f88ba08c2f26",
+      "bytes": 16842
+    },
+    "temp/galaxy-caret/components-delivered-2.setup-2.xml": {
+      "sha256": "e0f6f51298772a798ccf5f9a75417eb09dffd952217760f7047510e7e2370789",
+      "bytes": 13715
+    },
+    "temp/galaxy-caret/components-delivered-2.setup-3.xml": {
+      "sha256": "c272237cb95a643c39a48b1b2453ad52f127095a5fd04607e7a6e7b5438a35e5",
+      "bytes": 13212
+    },
+    "temp/galaxy-caret/components-delivered-2.setup-4.xml": {
+      "sha256": "6ab3ea81da9558a7a786a5f28b8b2cf185e52532d9a4b8e4b23c4df89f282d78",
+      "bytes": 13726
+    },
+    "temp/galaxy-caret/components-delivered-2.setup-5.xml": {
+      "sha256": "d1f3318f70ae91be3885a97213b5c3d9eb8cdbed222c8efb9f11b78338def128",
+      "bytes": 15891
+    },
+    "temp/galaxy-caret/components-delivered-2.state.json": {
+      "sha256": "e911bb9f65997065fe628d448a2ad1f2a48b52ec789c3ac45b8c557bb86ae41c",
+      "bytes": 340169
+    },
+    "temp/galaxy-caret/components-delivered-3.after.xml": {
+      "sha256": "3619082491b8a7d007c1c9c48f2011c75b2c9b13239878c089de53c6f6b55ba1",
+      "bytes": 14982
+    },
+    "temp/galaxy-caret/components-delivered-3.before.xml": {
+      "sha256": "3619082491b8a7d007c1c9c48f2011c75b2c9b13239878c089de53c6f6b55ba1",
+      "bytes": 14982
+    },
+    "temp/galaxy-caret/components-delivered-3.json": {
+      "sha256": "21387242b91e2a5050fe55c18003eb9aa3d3cbafca18d153ffd15c46a206cfd6",
+      "bytes": 4601883
+    },
+    "temp/galaxy-caret/components-delivered-3.log": {
+      "sha256": "9533f8ece923c7f14d5687f49d509b64dec227f705b2026bd9e5b958162fd866",
+      "bytes": 259069
+    },
+    "temp/galaxy-caret/components-delivered-3.png": {
+      "sha256": "3e7c4331446ae8b156fa1cf91d3b862b728b229fa9c6a6f1558b52d7d231847c",
+      "bytes": 173355
+    },
+    "temp/galaxy-caret/components-delivered-3.setup-0.xml": {
+      "sha256": "b27444ebaf7f3171cd66480a28f85bfe5033c138178a5b5b881c17dce13c8c8c",
+      "bytes": 16821
+    },
+    "temp/galaxy-caret/components-delivered-3.setup-1.xml": {
+      "sha256": "82163ff2749068535d6c2acdcedc77c9c86b702c51b037f2e515f88ba08c2f26",
+      "bytes": 16842
+    },
+    "temp/galaxy-caret/components-delivered-3.setup-2.xml": {
+      "sha256": "b9eb36ccfa7de95b1f1ee667b073dd638b89e7ab1627d80b4808a8ebb189896f",
+      "bytes": 14098
+    },
+    "temp/galaxy-caret/components-delivered-3.setup-3.xml": {
+      "sha256": "31da1390eeedda35744eab2e66428f87bc6c7aaa6128549e32a8dcbc2cc939ad",
+      "bytes": 13580
+    },
+    "temp/galaxy-caret/components-delivered-3.setup-4.xml": {
+      "sha256": "f3c6fad026330663bdb27499520e9e45faa1e36e05afc57141160de268bfd080",
+      "bytes": 13726
+    },
+    "temp/galaxy-caret/components-delivered-3.setup-5.xml": {
+      "sha256": "1bc59a4204c4c17be27afe45f17a37493e94e6f8efbcef601281d03030255234",
+      "bytes": 16635
+    },
+    "temp/galaxy-caret/components-delivered-3.state.json": {
+      "sha256": "a9bab425a76520f13cd839962d681e284c89b789da6de1819e8d6fa19789157a",
+      "bytes": 340349
+    },
+    "temp/galaxy-caret/components-delivered-manifest.json": {
+      "sha256": "519c8f06f3d63bb5251663c9c330d46de2616d6c71cf909696be427cccb48dcb",
+      "bytes": 2614
+    },
+    "temp/galaxy-caret/components-delivered.apk": {
+      "sha256": "a0199bec52419e0dce81eae73a184c9d687285ed2df443a37539cdcf19175dbe",
+      "bytes": 29371476
+    },
+    "temp/galaxy-caret/components-native-selection-gc-1.after.xml": {
+      "sha256": "9f4950c72ee86b53db08502d660a8076afafe043c109282c413509a165fe9cf9",
+      "bytes": 14973
+    },
+    "temp/galaxy-caret/components-native-selection-gc-1.before.xml": {
+      "sha256": "9f4950c72ee86b53db08502d660a8076afafe043c109282c413509a165fe9cf9",
+      "bytes": 14973
+    },
+    "temp/galaxy-caret/components-native-selection-gc-1.json": {
+      "sha256": "1636e4716dd0cfe83bcff90753892f8dcd317bcaaa112ed169abf1f4d43be2d4",
+      "bytes": 4586040
+    },
+    "temp/galaxy-caret/components-native-selection-gc-1.log": {
+      "sha256": "983feec5254096e56c6ff756ce0cb4f81c6ea1ebdbed902afd171771bb593e3c",
+      "bytes": 194926
+    },
+    "temp/galaxy-caret/components-native-selection-gc-1.perfetto-trace": {
+      "sha256": "4ef18ee4df61ddd5c18c50f6874d7f83d6fbc8e4e88fbceb9627f80a818c8e94",
+      "bytes": 15578211
+    },
+    "temp/galaxy-caret/components-native-selection-gc-1.png": {
+      "sha256": "637b26623beea68fd74911d5f2b1166e695034ee78331325a8012eeabdd88df4",
+      "bytes": 180674
+    },
+    "temp/galaxy-caret/components-native-selection-gc-1.setup-0.xml": {
+      "sha256": "b27444ebaf7f3171cd66480a28f85bfe5033c138178a5b5b881c17dce13c8c8c",
+      "bytes": 16821
+    },
+    "temp/galaxy-caret/components-native-selection-gc-1.setup-1.xml": {
+      "sha256": "5b86b795c460df889f69549dc19026638b85a5160e995fd7d7ed057d13f08bb5",
+      "bytes": 17193
+    },
+    "temp/galaxy-caret/components-native-selection-gc-1.setup-2.xml": {
+      "sha256": "656f1dfb7c031352c164c14eefe2cb7425614916e70bcf7350da0a2d1d46680a",
+      "bytes": 15163
+    },
+    "temp/galaxy-caret/components-native-selection-gc-1.setup-3.xml": {
+      "sha256": "91c9d2e6bc7696c4c205e502a0bb4d9bbcd62a089e210cf591511652b0d33246",
+      "bytes": 14582
+    },
+    "temp/galaxy-caret/components-native-selection-gc-1.setup-4.xml": {
+      "sha256": "a44990513f8d98f02d84993deeeb787ca161a78bec3addea42bd6bf9f2b43899",
+      "bytes": 13469
+    },
+    "temp/galaxy-caret/components-native-selection-gc-1.setup-5.xml": {
+      "sha256": "63023689b26528ac455eaaf7720d238fe49aa198da2276c96ebb0af86edb5a09",
+      "bytes": 13936
+    },
+    "temp/galaxy-caret/components-native-selection-gc-1.setup-6.xml": {
+      "sha256": "63bfc27753392a8434e44b5c6cc9f410fa5f177d244a736b7fb68026aa839e63",
+      "bytes": 11908
+    },
+    "temp/galaxy-caret/components-native-selection-gc-1.setup-7.xml": {
+      "sha256": "d8b8c3043d35cc52dd4b2d7f0e3ddc3c977d9e6e45e01d2b1654b432f9517030",
+      "bytes": 16626
+    },
+    "temp/galaxy-caret/components-native-selection-gc-1.state.json": {
+      "sha256": "3fa7df47e853221c0b6d750e8ebaa820972c483bddd7ffc5a6b32bcaa63a8488",
+      "bytes": 340272
+    },
+    "temp/galaxy-caret/components-native-selection-gc-manifest.json": {
+      "sha256": "39dda101a9807341b09866f7c8e9e1ce26be0d0002280f7729dd6a188e6cbcf5",
+      "bytes": 1169
+    },
+    "temp/galaxy-caret/components-native-selection-gc.apk": {
+      "sha256": "9ec532df71a8a82925aecbe80a91387eadc74ea73e5ee6e3fbd84032507a5ae7",
+      "bytes": 29065227
+    },
+    "temp/galaxy-caret/components-gc-diagnostic-1.after.xml": {
+      "sha256": "49eee6c780623ac8b5858e6a79716ffbfd71ce19f8c02d66c85af732cf0f9a5d",
+      "bytes": 14973
+    },
+    "temp/galaxy-caret/components-gc-diagnostic-1.before.xml": {
+      "sha256": "49eee6c780623ac8b5858e6a79716ffbfd71ce19f8c02d66c85af732cf0f9a5d",
+      "bytes": 14973
+    },
+    "temp/galaxy-caret/components-gc-diagnostic-1.json": {
+      "sha256": "0a479943051f442a5a6805aa2f8018597fee8d8d334d01a0a42031e43c992b3f",
+      "bytes": 4567102
+    },
+    "temp/galaxy-caret/components-gc-diagnostic-1.log": {
+      "sha256": "eb7d88dd19a107d5ab8017e1700ae7de392cd8a98e01cef64034e5886c0042fe",
+      "bytes": 349229
+    },
+    "temp/galaxy-caret/components-gc-diagnostic-1.perfetto-trace": {
+      "sha256": "66d9861d9972089595d4a08c5ab45378db452827f57cb2bd477a2ef9da443079",
+      "bytes": 14283629
+    },
+    "temp/galaxy-caret/components-gc-diagnostic-1.png": {
+      "sha256": "0f59a273650268f221946087e225fa77ee87cbdcfdbb8ae9becb594078b39680",
+      "bytes": 180243
+    },
+    "temp/galaxy-caret/components-gc-diagnostic-1.setup-0.xml": {
+      "sha256": "b27444ebaf7f3171cd66480a28f85bfe5033c138178a5b5b881c17dce13c8c8c",
+      "bytes": 16821
+    },
+    "temp/galaxy-caret/components-gc-diagnostic-1.setup-1.xml": {
+      "sha256": "dd02be41185f30c235c3088ba5c9a2ec34695dceb2fd0ba554a355b2f34178c4",
+      "bytes": 17193
+    },
+    "temp/galaxy-caret/components-gc-diagnostic-1.setup-2.xml": {
+      "sha256": "aa20682a694144d68f528e1e075f8580e57fff0af175f78e9a043147fbc94960",
+      "bytes": 14484
+    },
+    "temp/galaxy-caret/components-gc-diagnostic-1.setup-3.xml": {
+      "sha256": "178f7b14c72da03b09699637d63a744a7d24a15403d5c25806f1e075f6708ef1",
+      "bytes": 13955
+    },
+    "temp/galaxy-caret/components-gc-diagnostic-1.setup-4.xml": {
+      "sha256": "63bfc27753392a8434e44b5c6cc9f410fa5f177d244a736b7fb68026aa839e63",
+      "bytes": 11908
+    },
+    "temp/galaxy-caret/components-gc-diagnostic-1.setup-5.xml": {
+      "sha256": "6622fc4761b635f0bc53506ac80f7e19707f0c8fa7729e9448c00b21191b2933",
+      "bytes": 16626
+    },
+    "temp/galaxy-caret/components-gc-diagnostic-1.state.json": {
+      "sha256": "7291c64ddc62aa97c7b4828c9576471eee653e932c3d04be988f11e9a7ab84dc",
+      "bytes": 340342
+    },
+    "temp/galaxy-caret/components-gc-diagnostic-manifest.json": {
+      "sha256": "8454b2cb4d50708cf9e797fe436a7411c64e5cb84c0a2a3b93a085e10f99f917",
+      "bytes": 1169
+    },
+    "temp/galaxy-caret/components-gc-diagnostic.apk": {
+      "sha256": "a002a447cbd5a89b5de4db1a912fc561d73765aa211785daed3fafd37ab46650",
+      "bytes": 29371476
+    },
+    "temp/galaxy-caret/components-dispatch-probe-1.log": {
+      "sha256": "1ff46f305c765e7880f5e39c84cd25fc47c426b52183f062d252a57413b92be0",
+      "bytes": 227038
+    },
+    "temp/galaxy-caret-residual/functional/dismissed-ime.txt": {
+      "sha256": "8d2b9699998fdc70b516f4943bdb250b0ed06f6cd343b4832dbe4ad18fa69c40",
+      "bytes": 675071
+    },
+    "temp/galaxy-caret-residual/functional/dismissed.xml": {
+      "sha256": "6e080b9c4cdc08aec009d169c94add44a5f5f622298d4733a137e91f6903f213",
+      "bytes": 16876
+    },
+    "temp/galaxy-caret-residual/functional/functional.log": {
+      "sha256": "154dfe7083d72319881e07ff4097a0e2b780debc47e12e6b99559e95371648da",
+      "bytes": 1919311
+    },
+    "temp/galaxy-caret-residual/functional/initial-ime.txt": {
+      "sha256": "0571e80999a0d54d83c3dc79f9b2c763457f92b0dbc07efa4f48770c9058f434",
+      "bytes": 675174
+    },
+    "temp/galaxy-caret-residual/functional/initial.xml": {
+      "sha256": "3619082491b8a7d007c1c9c48f2011c75b2c9b13239878c089de53c6f6b55ba1",
+      "bytes": 14982
+    },
+    "temp/galaxy-caret-residual/functional/korean-after-drag.xml": {
+      "sha256": "3fe2ccecb724e090d5d0f4002f28f06e6a57bd20d5e3613bac6167c23e1088a2",
+      "bytes": 14991
+    },
+    "temp/galaxy-caret-residual/functional/korean-caret.xml": {
+      "sha256": "fd6c76c3c27790189dde21085216f6d8bb28ecd57b3762bcb1a3bd5e26b2583e",
+      "bytes": 14991
+    },
+    "temp/galaxy-caret-residual/functional/korean.xml": {
+      "sha256": "fd6c76c3c27790189dde21085216f6d8bb28ecd57b3762bcb1a3bd5e26b2583e",
+      "bytes": 14991
+    },
+    "temp/galaxy-caret-residual/functional/outlined-ime.txt": {
+      "sha256": "3c43d1e6535b2d53f7d411251d3710c3a4a49a48b13e683ac632ed5aef40e3bb",
+      "bytes": 675499
+    },
+    "temp/galaxy-caret-residual/functional/outlined.xml": {
+      "sha256": "21f2633103014abfb6a0aa69bd51f63ca6dc13ad1547c2acae0b122e62b4fd13",
+      "bytes": 15033
+    },
+    "temp/galaxy-caret-residual/functional/range-selection.json": {
+      "sha256": "6218b1457b94eb8561f8e5ba7a3b85ad69f4aa666b3d8761755b4d3a48071c30",
+      "bytes": 4808864
+    },
+    "temp/galaxy-caret-residual/functional/range-selection.xml": {
+      "sha256": "847e365fe8f38bd27a98799118736b680f9bc075633f2064baa96bc84449f864",
+      "bytes": 16817
+    },
+    "temp/galaxy-caret-residual/functional/reopened-ime.txt": {
+      "sha256": "25a27874643cf32c5e04aec3726577b6f27b2f0798bc08bee9666f73dc9a2664",
+      "bytes": 675399
+    },
+    "temp/galaxy-caret-residual/functional/results.json": {
+      "sha256": "3c17f367eb3d1e340991cbeb55ea89dbf1f7f74975269c29957918139fc3ce64",
+      "bytes": 541
+    },
+    "temp/galaxy-caret-residual/functional/resumed.xml": {
+      "sha256": "21f2633103014abfb6a0aa69bd51f63ca6dc13ad1547c2acae0b122e62b4fd13",
+      "bytes": 15033
+    },
+    "temp/galaxy-caret-residual/normal/final-text-fields.png": {
+      "sha256": "d364ed99d8c74d07c225446bc5183831e5f8bbeae0fb5ec1d1f09f5b0ebb97b0",
+      "bytes": 178861
+    },
+    "temp/galaxy-caret-residual/normal/final.log": {
+      "sha256": "6ca1937276a47fd966fe878ccbbdbdc1127c87f5ae483f3cd98729c3bb642ea7",
+      "bytes": 74681
+    },
+    "temp/galaxy-caret-residual/normal/setup-0.xml": {
+      "sha256": "b27444ebaf7f3171cd66480a28f85bfe5033c138178a5b5b881c17dce13c8c8c",
+      "bytes": 16821
+    },
+    "temp/galaxy-caret-residual/normal/setup-1.xml": {
+      "sha256": "8373b5034818969ddcb2786939a0b01f1bcc0aadcee3743c79fd0b1a86bbdd10",
+      "bytes": 14080
+    },
+    "temp/galaxy-caret-residual/normal/setup-10.xml": {
+      "sha256": "9f03bec697a3d412d8d7be91392e7710f3a64749f8890129637cd5db4119bf96",
+      "bytes": 16626
+    },
+    "temp/galaxy-caret-residual/normal/setup-2.xml": {
+      "sha256": "29103a7d8e31984e04855694433196f94bbe9f76a265d0d6f7274aff7e0cc8c3",
+      "bytes": 13711
+    },
+    "temp/galaxy-caret-residual/normal/setup-3.xml": {
+      "sha256": "e6c98d88942e7203dd4d5f4609d1463c4818cc68b204ea37e1fcc71b37147ce6",
+      "bytes": 13955
+    },
+    "temp/galaxy-caret-residual/normal/setup-4.xml": {
+      "sha256": "583add9006390871896371df4eb5fcf387353e807c3ec6ef583261822fdf6604",
+      "bytes": 14345
+    },
+    "temp/galaxy-caret-residual/normal/setup-5.xml": {
+      "sha256": "2cc2117fc2c0131236f9af1b539749a0a9be1cba697876d2ce284286e7502f3e",
+      "bytes": 14663
+    },
+    "temp/galaxy-caret-residual/normal/setup-6.xml": {
+      "sha256": "1e1e34f8ee4210631b486641c33517d779526ca6f44d4a4dfaecd46aa4ab7344",
+      "bytes": 14633
+    },
+    "temp/galaxy-caret-residual/normal/setup-7.xml": {
+      "sha256": "5cab95f49dc4eee25b0616c8e509a51225b249c9df619d0fa4a9a0b17e7008ca",
+      "bytes": 12840
+    },
+    "temp/galaxy-caret-residual/normal/setup-8.xml": {
+      "sha256": "2a023bb44327cdb3db92520052e19d4e804a53ec8a508ebc5bad01a1f269faad",
+      "bytes": 12515
+    },
+    "temp/galaxy-caret-residual/normal/setup-9.xml": {
+      "sha256": "63bfc27753392a8434e44b5c6cc9f410fa5f177d244a736b7fb68026aa839e63",
+      "bytes": 11908
+    },
+    "temp/galaxy-caret-residual/normal/startup.log": {
+      "sha256": "44ff1dc3ed9126bcdddeaa40185c6141a5679149e28e9b3f2f3ad99705d0d345",
+      "bytes": 27951
+    },
+    "temp/galaxy-caret-residual/normal/text-fields.xml": {
+      "sha256": "49fba03ef14ad1610ba5610cb6f9db5ff573458de2076f2fffc6b4c26ec41d3d",
+      "bytes": 14973
+    },
+    "temp/galaxy-caret-residual/delivered-build.log": {
+      "sha256": "4b1505ce13d9acaaa04515a5c1ad55f1d8b63af7d9a46f33b0c14ecd143598b3",
+      "bytes": 27155
+    },
+    "temp/galaxy-caret-residual/delivered-regression.log": {
+      "sha256": "9124149cfda9b36bc6a9fa39547b2f6bda973a159898fab5cb8ea524c7b71e99",
+      "bytes": 751
+    },
+    "temp/galaxy-caret-residual/windows-debug-build.log": {
+      "sha256": "74f8c9b565056b65cb4b2733bc2ae7e8089e33ffc6c0b67022d6d04b421ba8b1",
+      "bytes": 11050
+    },
+    "temp/galaxy-caret-residual/delivered-built.apk": {
+      "sha256": "a0199bec52419e0dce81eae73a184c9d687285ed2df443a37539cdcf19175dbe",
+      "bytes": 29371476
+    },
+    "temp/galaxy-caret-residual/delivered-installed.apk": {
+      "sha256": "a0199bec52419e0dce81eae73a184c9d687285ed2df443a37539cdcf19175dbe",
+      "bytes": 29371476
+    },
+    "temp/galaxy-caret-residual/delivered-identity.json": {
+      "sha256": "612309fb7fea4901b174c3d7c7b3a50856b2a1d831e6c0db54c840337f511a69",
+      "bytes": 537
+    }
+  },
+  "acceptance": {
+    "repeatedLargeBridgeTraversalRemoved": true,
+    "ownerOver50msDuringThreeDeliveredGestures": 0,
+    "physicalTouchAccepted": false,
+    "physicalDisplayAccepted": false,
+    "allScrollPerformanceGatesAccepted": false
+  }
+}

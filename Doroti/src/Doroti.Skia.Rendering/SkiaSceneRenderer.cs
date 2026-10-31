@@ -1408,6 +1408,8 @@ public sealed partial class SkiaSceneRenderer
 
     public void Update(SemanticsUpdate update, DorotiUiInvocation invocation)
     {
+        using var allocationProfile = FrameworkWorkProfile.AllocationEnabled
+            ? FrameworkWorkProfile.Begin(GetType(), 26) : default;
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (!_semanticsEnabled)
         {

@@ -20,7 +20,20 @@ internal static class AndroidScrollProfile
     private static long _started, _allocated;
     private static double _callbackWait, _callback, _snap, _insert, _submit;
     private static WeakReference<DorotiFrameTrace>? _trace;
-    private static long _magnifiersCreated, _magnifierUpdates, _magnifiersDismissed;
+    private static WeakReference<IMauiSemanticsBridge>? _semantics;
+    private static EditingState _editing;
+    internal static void RecordEditingState(DorotiTextEditingState state, bool fromNative)
+    {
+        if (Enabled) _editing = new(Now, state.text.Length, state.selection.baseOffset,
+            state.selection.extentOffset, fromNative, _editing.Sequence + 1);
+    }
+    internal static void AttachSemantics(IMauiSemanticsBridge bridge)
+    {
+        if (Enabled) _semantics = new(bridge);
+    }
+    private static long _magnifiersCreated, _magnifierUpdates, _magnifiersDismissed, _magnifierRequests, _magnifierCoalesced, _magnifierCancelled;
+    internal static void RecordMagnifierRequest(bool coalesced) { if (Enabled) { _magnifierRequests++; if (coalesced) _magnifierCoalesced++; } }
+    internal static void RecordMagnifierCancelled() { if (Enabled) _magnifierCancelled++; }
     internal static void RecordMagnifierCreated() { if (Enabled) _magnifiersCreated++; }
     internal static void RecordMagnifierUpdate() { if (Enabled) _magnifierUpdates++; }
     internal static void RecordMagnifierDismissed() { if (Enabled) _magnifiersDismissed++; }
@@ -86,9 +99,15 @@ internal static class AndroidScrollProfile
         var report = new Report(false, _frameCount, _inputCount, _pulseCount,
             Copy(Frames, _frameCount), Copy(Inputs, _inputCount), Copy(Pulses, _pulseCount),
             trace, FrameworkWorkProfile.CaptureEntries(), GC.GetTotalAllocatedBytes(), GC.GetTotalMemory(false),
-            new(_magnifiersCreated, _magnifierUpdates, _magnifiersDismissed));
+            new(_magnifiersCreated, _magnifierUpdates, _magnifiersDismissed, _magnifierRequests, _magnifierCoalesced, _magnifierCancelled),
+            _semantics is not null && _semantics.TryGetTarget(out var semantics) ? semantics.Diagnostics : null, _editing,
+            FrameworkWorkTrace.Enabled ? FrameworkWorkTrace.Stop() : null);
         var path = System.IO.Path.Combine(context.GetExternalFilesDir(null)!.AbsolutePath, "doroti-scroll-profile.json");
-        File.WriteAllText(path, JsonSerializer.Serialize(report, AndroidScrollJsonContext.Default.Report));
+        // ADB may pull immediately after the export intent returns. Publish a
+        // complete snapshot atomically, never a partially written JSON file.
+        var temporary = path + ".tmp";
+        File.WriteAllText(temporary, JsonSerializer.Serialize(report, AndroidScrollJsonContext.Default.Report));
+        File.Move(temporary, path, overwrite: true);
         Android.Util.Log.Info("DorotiScrollProfile", $"export={path} frames={_frameCount} inputs={_inputCount} pulses={_pulseCount}");
     }
 
@@ -110,11 +129,16 @@ internal static class AndroidScrollProfile
         bool Pending, bool Painting, bool Invalidated, bool Touch);
     internal sealed record Report(bool PresentObserved, long FrameCount, long InputCount, long PulseCount,
         Frame[] Frames, Input[] Inputs, Pulse[] Pulses, DorotiFrameTraceEntry[] Trace,
-        FrameworkWorkProfile.Entry[] Work, long TotalAllocated, long ManagedHeap, MagnifierEvents Magnifier);
-    internal readonly record struct MagnifierEvents(long Created, long Updates, long Dismissed);
+        FrameworkWorkProfile.Entry[] Work, long TotalAllocated, long ManagedHeap, MagnifierEvents Magnifier, MauiSemanticsDiagnostics? Semantics, EditingState Editing,
+        FrameworkWorkTrace.Capture? WorkTrace);
+    internal readonly record struct MagnifierEvents(long Created, long Updates, long Dismissed, long Requests, long Coalesced, long Cancelled);
+    internal readonly record struct EditingState(long AtUs, int Length, int Base, int Extent, bool FromNative, long Sequence);
 }
 
-[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
+[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals)]
 [JsonSerializable(typeof(AndroidScrollProfile.Report))]
+[JsonSerializable(typeof(FrameworkWorkTrace.Entry), TypeInfoPropertyName = "WorkTraceEntry")]
+[JsonSerializable(typeof(FrameworkWorkTrace.Entry[]), TypeInfoPropertyName = "WorkTraceEntryArray")]
 internal sealed partial class AndroidScrollJsonContext : JsonSerializerContext;
 #endif

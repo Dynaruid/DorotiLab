@@ -1,6 +1,7 @@
 using System.Text;
 using Doroti.Framework.Foundation;
 using Doroti.Framework.Rendering;
+using Doroti.Framework.Services;
 using Doroti.Framework.Widgets;
 using Doroti.Ui;
 using M = Doroti.Material;
@@ -24,12 +25,6 @@ internal sealed class InputLifetimeState : State<InputLifetimeSample>
     private readonly PlatformViewDescriptor _editor = new("doroti/native-editor", Encoding.UTF8.GetBytes("{\"text\":\"Native editor\"}"));
     private readonly PlatformViewDescriptor _web = new("doroti/webview", Encoding.UTF8.GetBytes("{\"html\":\"<meta charset='utf-8'><label>Web input <input aria-label='Web input'></label>\"}"));
 
-    public override void initState()
-    {
-        base.initState();
-        _first.addListener(Changed);
-    }
-    private void Changed() { if (mounted) setState(() => { }); }
     private void Report(string message)
     {
         if (mounted) setState(() => _status = message);
@@ -41,7 +36,6 @@ internal sealed class InputLifetimeState : State<InputLifetimeSample>
     public override Widget build(BuildContext context)
     {
         var owner = View.of(context);
-        var value = _first.value;
         return new M.Scaffold(
             appBar: new PreferredSize(preferredSize: Size.fromHeight(56),
                 child: new ClipRect(child: new M.AppBar(title: new Text("Input and native view lifetime")))),
@@ -51,7 +45,8 @@ internal sealed class InputLifetimeState : State<InputLifetimeSample>
                     new Text("Compose Korean, move with Tab / Shift+Tab, then recreate native views."),
                     new M.TextField(controller: _first, maxLines: 3,
                         decoration: new M.InputDecoration(labelText: "Framework input before native views")),
-                    new Text($"Selection {value.selection.start}:{value.selection.end} · composing {value.composing.start}:{value.composing.end}"),
+                    new ValueListenableBuilder<TextEditingValue>(valueListenable: _first,
+                        builder: (_, value, _) => new Text($"Selection {value.selection.start}:{value.selection.end} · composing {value.composing.start}:{value.composing.end}")),
                     new Wrap(children:
                     [
                         new M.TextButton(onPressed: () => setState(() => _visible = !_visible), child: new Text(_visible ? "Remove native views" : "Create native views")),
@@ -70,7 +65,6 @@ internal sealed class InputLifetimeState : State<InputLifetimeSample>
     }
     public override void dispose()
     {
-        _first.removeListener(Changed);
         _first.dispose(); _last.dispose();
         base.dispose();
     }

@@ -20,6 +20,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
     private readonly Layout? _visualHost;
     private readonly bool _attachOnDemand;
     private readonly IDispatcher _inputDispatcher;
+    private readonly Action _publishPendingEditingState;
     private readonly object _inputMutationGate = new();
     private readonly Queue<(Action Apply, bool ChangesClient)> _inputMutations = new();
     private int _pendingClientChanges;
@@ -62,6 +63,14 @@ public sealed partial class MauiTextInputBridge : IDisposable
     )
     {
         _entryFactory = entryFactory ?? throw new ArgumentNullException(nameof(entryFactory));
+#if ANDROID
+        // This zero-delay notification is borrowed work, not ownership. A
+        // Java Runnable pointing at this bridge makes SGen traverse the entire
+        // managed gallery while the native selection notification is queued.
+        _publishPendingEditingState = MauiWeakCallback.Create(this, static owner => owner.PublishPendingEditingState());
+#else
+        _publishPendingEditingState = PublishPendingEditingState;
+#endif
         _editorFactory = editorFactory ?? throw new ArgumentNullException(nameof(editorFactory));
         _visualHost = visualHost;
         _attachOnDemand = attachOnDemand;
@@ -282,6 +291,9 @@ public sealed partial class MauiTextInputBridge : IDisposable
         }
 
         var length = state.text.Length;
+#if ANDROID
+        AndroidScrollProfile.RecordEditingState(state, false);
+#endif
         var start = Math.Clamp(
             Math.Min(state.selection.baseOffset, state.selection.extentOffset),
             0,
@@ -313,6 +325,11 @@ public sealed partial class MauiTextInputBridge : IDisposable
                     ? nativeSelection == new DorotiTextSelection(start, end)
                         && ReadNativeComposingRange(_active, state.text.Length) == state.composingRange
                     : _active.CursorPosition == start && _active.SelectionLength == end - start
+#elif ANDROID
+                _publishingNativeTextChange
+                || (_active.Handler?.PlatformView is Android.Widget.EditText nativeSelection
+                    ? nativeSelection.SelectionStart == start && nativeSelection.SelectionEnd == end
+                    : _active.CursorPosition == start && _active.SelectionLength == end - start)
 #else
                 _publishingNativeTextChange
                 || (_active.CursorPosition == start && _active.SelectionLength == end - start)
@@ -345,6 +362,16 @@ public sealed partial class MauiTextInputBridge : IDisposable
             }
 #endif
 
+#if ANDROID
+            // MAUI posts UpdateCursorSelection for a focused EditText. Apply
+            // the native range first, so its property mappers see the accepted
+            // selection and do not enqueue an older cursor for the next turn.
+            // SetSelection keeps the Editable/composing spans intact.
+            if (_active.Handler?.PlatformView is Android.Widget.EditText native
+                && end <= native.Length()
+                && (native.SelectionStart != start || native.SelectionEnd != end))
+                native.SetSelection(start, end);
+#endif
             if (_active.CursorPosition != start)
             {
                 _active.CursorPosition = start;
@@ -856,6 +883,17 @@ public sealed partial class MauiTextInputBridge : IDisposable
 
     private void ActivateNativeTextInput(InputView input)
     {
+#if ANDROID
+        // Drag selection repeatedly asks to show an already served keyboard.
+        // Avoid focus, JNI Runnable and IMM work only while this exact endpoint
+        // owns focus and the OS reports a visible IME; a dismissed keyboard or
+        // focus/lifecycle change still follows the normal activation path.
+        if (input.Handler?.PlatformView is Android.Views.View { HasFocus: true } served)
+        {
+            using var insets = AndroidX.Core.View.ViewCompat.GetRootWindowInsets(served);
+            if (insets?.IsVisible(AndroidX.Core.View.WindowInsetsCompat.Type.Ime()) == true) return;
+        }
+#endif
         FocusInput(input);
 #if ANDROID
         if (input.Handler?.PlatformView is Android.Views.View nativeView)
@@ -1039,7 +1077,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
         // finished normalizing both ends. Coalesce those notifications by one
         // UI turn; text mutations take the synchronous path above and cannot be
         // starved by continuous native key repeat.
-        if (!input.Dispatcher.DispatchDelayed(TimeSpan.Zero, PublishPendingEditingState))
+        if (!input.Dispatcher.DispatchDelayed(TimeSpan.Zero, _publishPendingEditingState))
         {
             _editingStateDispatchPending = false;
             PublishPendingEditingState();
@@ -1076,6 +1114,16 @@ public sealed partial class MauiTextInputBridge : IDisposable
         if (TryReadWindowsSelection(input, text, out var selection))
         {
             PublishNativeEditingState(input, text, selection.baseOffset, selection.extentOffset);
+            return;
+        }
+#elif ANDROID
+        text = input.Text ?? string.Empty;
+        if (input.Handler?.PlatformView is Android.Widget.EditText native
+            && native.SelectionStart >= 0 && native.SelectionEnd >= 0
+            && native.SelectionStart <= text.Length && native.SelectionEnd <= text.Length)
+        {
+            PublishNativeEditingState(input, text, Math.Min(native.SelectionStart, native.SelectionEnd),
+                Math.Max(native.SelectionStart, native.SelectionEnd));
             return;
         }
 #elif IOS || MACCATALYST || MACOS
@@ -1117,6 +1165,9 @@ public sealed partial class MauiTextInputBridge : IDisposable
         }
 
         var state = new DorotiTextEditingState(text, new(start, end), ReadNativeComposingRange(input, text.Length));
+#if ANDROID
+        AndroidScrollProfile.RecordEditingState(state, true);
+#endif
 #if IOS || MACCATALYST || MACOS
         lock (_inputMutationGate)
         {

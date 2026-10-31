@@ -139,6 +139,44 @@ public class _RenderCompositionCallback__editable_text : RenderProxyBox
 
 public class TextEditingController : ValueNotifier<TextEditingValue>
 {
+    private TextOnlyListenable? _textListenable;
+
+    /// <summary>Text changes for decoration/counters; selection and composition still notify this controller.</summary>
+    public ValueListenable<string> textListenable => _textListenable ??= new(this);
+
+    private sealed class TextOnlyListenable : ChangeNotifier, ValueListenable<string>
+    {
+        private TextEditingController? _owner;
+        private string _lastText;
+        internal TextOnlyListenable(TextEditingController owner)
+        {
+            _owner = owner;
+            _lastText = owner.text;
+            owner.addListener(Changed);
+        }
+        // Read the current revision even from an earlier controller listener.
+        public string value => _owner?.text ?? _lastText;
+        private void Changed()
+        {
+            var next = value;
+            if (string.Equals(next, _lastText, StringComparison.Ordinal)) return;
+            _lastText = next;
+            notifyListeners();
+        }
+        public override void dispose()
+        {
+            _owner?.removeListener(Changed);
+            _owner = null;
+            base.dispose();
+        }
+    }
+
+    public override void dispose()
+    {
+        _textListenable?.dispose();
+        base.dispose();
+    }
+
     public TextEditingController(string? text = null)
         : base((text is null) ? TextEditingValue.empty : new TextEditingValue(text: text)) { }
 
@@ -2648,6 +2686,7 @@ public class EditableTextState
         {
             oldWidget.controller.removeListener(_didChangeTextEditingValue);
             widget.controller.addListener(_didChangeTextEditingValue);
+            _lastEditingNotification = null;
             _updateRemoteEditingValueIfNeeded();
         }
         TextSelectionOverlay? selectionOverlay = _selectionOverlay;
@@ -4420,8 +4459,30 @@ public class EditableTextState
         }
     }
 
+    private TextEditingValue? _lastEditingNotification;
+
+    // A plain collapsed caret move changes paint and semantic selection, not
+    // text layout, composition decoration or copy/cut availability. Keep custom
+    // controller spans and every transition needing those builds on the normal
+    // path. In particular, never reuse text while a text/focus build is pending.
+    internal static bool TryApplyCollapsedSelection(TextEditingController controller,
+        TextEditingValue? previous, TextEditingValue next, RenderEditable editable,
+        bool hasFocus, bool obscureText)
+    {
+        if (controller.GetType() != typeof(TextEditingController) || obscureText || previous is null
+            || previous.text != next.text || !Equals(previous.composing, next.composing)
+            || !previous.selection.isValid || !previous.selection.isCollapsed
+            || !next.selection.isValid || !next.selection.isCollapsed
+            || previous.selection.end > previous.text.Length || next.selection.end > next.text.Length
+            || !editable.attached || editable.hasFocus != hasFocus || editable.plainText != next.text)
+            return false;
+        editable.selection = next.selection;
+        return true;
+    }
+
     internal virtual void _didChangeTextEditingValue()
     {
+        var previous = _lastEditingNotification;
         if (_hasFocus && !_value.selection.isValid)
         {
             widget.controller.removeListener(_didChangeTextEditingValue);
@@ -4431,7 +4492,12 @@ public class EditableTextState
         _updateRemoteEditingValueIfNeeded();
         _startOrStopCursorTimerIfNeeded();
         _updateOrDisposeSelectionOverlayIfNeeded();
-        setState(() => { });
+        var next = _value;
+        _lastEditingNotification = next;
+        if ((widget.selectionControls is not null && widget.selectionControls is not TextSelectionHandleControls)
+            || _editableKey.currentContext?.findRenderObject() is not RenderEditable editable
+            || !TryApplyCollapsedSelection(widget.controller, previous, next, editable, _hasFocus, widget.obscureText))
+            setState(() => { });
         _verticalSelectionUpdateAction.stopCurrentVerticalRunIfSelectionChanges();
     }
 
@@ -5446,7 +5512,7 @@ public class EditableTextState
                                                                             wordSpacing: wordSpacingLocal,
                                                                             textSpan: buildTextSpan()
                                                                         ),
-                                                                        value: _value,
+                                                                        controller: widget.controller,
                                                                         cursorColor: _cursorColor,
                                                                         backgroundCursorColor: widget.backgroundCursorColor,
                                                                         showCursor: _cursorVisibilityNotifier,
@@ -5761,7 +5827,10 @@ public class EditableTextState
 internal class _Editable__editable_text : MultiChildRenderObjectWidget
 {
     public virtual InlineSpan inlineSpan { get; private set; } = default!;
-    public virtual TextEditingValue value { get; private set; } = default!;
+    // Retained leaves may be revisited by inherited-property changes without an
+    // EditableText rebuild. Always use the latest selection in that case too.
+    public virtual TextEditingController controller { get; private set; } = default!;
+    public virtual TextEditingValue value => controller.value;
     public virtual Color? cursorColor { get; private set; }
     public virtual LayerLink startHandleLayerLink { get; private set; } = default!;
     public virtual LayerLink endHandleLayerLink { get; private set; } = default!;
@@ -5802,7 +5871,7 @@ internal class _Editable__editable_text : MultiChildRenderObjectWidget
     internal _Editable__editable_text(
         Key? key = null,
         InlineSpan inlineSpan = default!,
-        TextEditingValue value = default!,
+        TextEditingController controller = default!,
         LayerLink startHandleLayerLink = default!,
         LayerLink endHandleLayerLink = default!,
         Color? cursorColor = null,
@@ -5843,7 +5912,7 @@ internal class _Editable__editable_text : MultiChildRenderObjectWidget
         : base(key: key, children: WidgetSpan.extractFromInlineSpan(inlineSpan, textScaler))
     {
         this.inlineSpan = inlineSpan;
-        this.value = value;
+        this.controller = controller;
         this.startHandleLayerLink = startHandleLayerLink;
         this.endHandleLayerLink = endHandleLayerLink;
         this.cursorColor = cursorColor;

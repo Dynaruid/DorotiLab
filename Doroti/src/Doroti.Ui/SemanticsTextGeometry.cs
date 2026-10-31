@@ -50,8 +50,8 @@ public sealed class SemanticsTextGeometry
     public SemanticsTextGeometry Transform(Func<Rect, Rect> transform, Rect? clip = null) => new(Text, Revision,
         Runs.Select(run => run with { Bounds = clip is { } value ? transform(run.Bounds).intersect(value) : transform(run.Bounds) }));
 
-    public bool ContentEquals(SemanticsTextGeometry? other) => other is not null && Text == other.Text
-        && Revision == other.Revision && Runs.SequenceEqual(other.Runs);
+    public bool ContentEquals(SemanticsTextGeometry? other) => ReferenceEquals(this, other)
+        || other is not null && Text == other.Text && Revision == other.Revision && Runs.SequenceEqual(other.Runs);
 
     public SemanticsTextGeometryWire ToWire() => new(Text, Revision, CharacterBoundaries.ToArray(),
         Runs.Select(r => new SemanticsTextRunWire(r.Start, r.End, r.Bounds.left, r.Bounds.top, r.Bounds.right, r.Bounds.bottom,

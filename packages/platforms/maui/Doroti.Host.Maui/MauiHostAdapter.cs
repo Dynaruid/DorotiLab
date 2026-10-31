@@ -518,6 +518,7 @@ internal sealed class MauiHostAdapter
         _semantics.AttachFrameTrace(trace, _viewId);
 #if ANDROID
         AndroidScrollProfile.Attach(trace);
+        AndroidScrollProfile.AttachSemantics(_semantics);
 #endif
     }
 

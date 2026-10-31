@@ -55,6 +55,8 @@ public abstract class DorotiMauiActivity : Microsoft.Maui.MauiAppCompatActivity
     protected override void OnNewIntent(Android.Content.Intent? intent)
     {
         base.OnNewIntent(intent);
+        if (intent?.GetStringExtra("DOROTI_WORK_TRACE_START") == "1" && AndroidScrollProfile.Enabled && !FrameworkWorkTrace.Enabled)
+            FrameworkWorkTrace.Start();
         if (intent?.GetStringExtra("DOROTI_SCROLL_EXPORT") == "1")
             AndroidScrollProfile.Export(this);
         if (intent?.Action == Android.Content.Intent.ActionView && intent.DataString is { } location)

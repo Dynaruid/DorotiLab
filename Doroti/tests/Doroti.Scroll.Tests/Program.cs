@@ -80,6 +80,9 @@ if (OperatingSystem.IsWindows())
 ScrollContinuityRegression.Run();
 ProjectionRegression.Run();
 CaretGeometryRegression.Run();
+TextSelectionWorkRegression.Run();
+CollapsedCaretRegression.Run();
+WeakNotificationRegression.Run();
 Console.WriteLine("PASS: release velocity, ballistic continuation, semantic changes, native inertia lifecycle");
 
 static void Check(bool condition, string message)
