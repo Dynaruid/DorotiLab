@@ -533,7 +533,11 @@ public sealed record PathCommand(string Operation, IReadOnlyList<double> Argumen
     internal object? HostPayload { get; init; }
     // Only the recorder may certify that the numeric storage is closed. Public
     // Picture/PathCommand inputs still get a defensive copy at scene freeze.
-    internal bool HasClosedArguments { get; init; }
+    // A public record with-expression can replace Arguments. Bind the
+    // certification to its exact storage rather than copying a boolean flag.
+    internal IReadOnlyList<double>? ClosedArgumentStorage { get; init; }
+    internal bool HasClosedArguments => ClosedArgumentStorage is not null
+        && ReferenceEquals(Arguments, ClosedArgumentStorage);
 }
 
 public interface ISceneHostCapability

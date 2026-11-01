@@ -5,9 +5,13 @@
     <NoWarn>$(NoWarn);CA1416</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../../../packages/platforms/shared/Windows/WindowsPlatformSceneInspection.cs" Link="WindowsPlatformSceneInspection.cs" />
+    <Compile Include="../../../packages/platforms/shared/Windows/WindowsPeerChildrenCache.cs" Link="WindowsPeerChildrenCache.cs" />
+    <Compile Include="../../src/Doroti.Skia.Rendering/NativeFrameSceneInspection.cs" Link="NativeFrameSceneInspection.cs" />
     <Compile Include="../../../packages/platforms/maui/Doroti.Host.Maui/AndroidPointerMapping.cs" Link="AndroidPointerMapping.cs" />
     <Compile Include="../../../packages/platforms/maui/Doroti.Host.Maui/AndroidFrameTiming.cs" Link="AndroidFrameTiming.cs" />
     <Compile Include="../../../packages/platforms/maui/Doroti.Host.Maui/MauiWeakCallback.cs" Link="MauiWeakCallback.cs" />
+    <Compile Include="../../../packages/platforms/maui/Doroti.Host.Maui/MauiManagedCallbackQueue.cs" Link="MauiManagedCallbackQueue.cs" />
     <ProjectReference Include="../../src/Doroti.Framework.Widgets/Doroti.Framework.Widgets.csproj" />
     <ProjectReference Include="../../src/Doroti.Hosting/Doroti.Hosting.csproj" />
     <ProjectReference Include="../../../packages/Doroti.Material/Doroti.Material.csproj" />

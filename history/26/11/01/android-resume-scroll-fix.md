@@ -5,7 +5,7 @@
 상태: **수정·에뮬레이터 생명주기 검증 PASS / 실기기 체감·전체 성능 notVerified**
 
 집계·소스/설치 APK hash: [검증 결과 JSON](android-resume-scroll-results.json).
-기존 [갤럭시 스크롤 작업](../../../../work.md)의 전체 성능 `PARTIAL` 판정은 유지한다.
+기존 [갤럭시 스크롤 작업 요약](scroll-caret-resume-summary.md)의 전체 성능 `PARTIAL` 판정은 유지한다.
 
 ## 확인한 문제
 

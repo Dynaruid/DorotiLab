@@ -28,6 +28,10 @@ public static class DorotiExecutionContext
     {
         ArgumentNullException.ThrowIfNull(tryPost);
         var previous = ActiveDispatcher.Value;
+        // Widget builds nest inside the same view callback. Replacing an
+        // equivalent dispatcher rewrites ExecutionContext's AsyncLocal map for
+        // every element, even though scheduling and cancellation did not change.
+        if (previous?.Matches(tryPost, lifetime) == true) return EmptyScope.Instance;
         ActiveDispatcher.Value = new DorotiCallbackDispatcher(tryPost, lifetime);
         return new DispatcherScope(previous);
     }
@@ -36,8 +40,15 @@ public static class DorotiExecutionContext
     {
         ArgumentNullException.ThrowIfNull(provider);
         var previous = ActiveTimeProvider.Value;
+        if (ReferenceEquals(previous, provider)) return EmptyScope.Instance;
         ActiveTimeProvider.Value = provider;
         return new TimeProviderScope(previous);
+    }
+
+    private sealed class EmptyScope : IDisposable
+    {
+        internal static readonly EmptyScope Instance = new();
+        public void Dispose() { }
     }
 
     private sealed class DispatcherScope(DorotiCallbackDispatcher? previous) : IDisposable
@@ -84,6 +95,9 @@ public sealed class DorotiCallbackDispatcher
     }
 
     internal DorotiCallbackDispatcher Capture() => new(_tryPost, _lifetime, ExecutionContext.Capture());
+
+    internal bool Matches(Func<Action, bool> tryPost, CancellationToken lifetime) =>
+        _context is null && _tryPost == tryPost && _lifetime == lifetime;
 
     public bool TryPost(Action callback)
     {

@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "doroti.work-archive/v1",
+  "archiveDate": "2026-11-01",
+  "timezone": "Asia/Seoul",
+  "reason": "User requested a summary under history/26/11/01 and deletion of root work.md.",
+  "headAtArchive": "a3ce8df0f6afcb2f5ebbbcb9515e68dca757e71d",
+  "originalLinksBase": "repository root",
+  "source": {
+    "path": "work.md",
+    "authoredDate": "2026-10-31",
+    "lastFollowupDate": "2026-11-01",
+    "bytes": 32011,
+    "sha256": "ab930c5e9cfe472a7e89ca459e79a44e992f685993f0cc2c716e56538595d2b7"
+  },
+  "archive": {
+    "path": "history/26/11/01/work.original.md",
+    "bytes": 32011,
+    "sha256": "ab930c5e9cfe472a7e89ca459e79a44e992f685993f0cc2c716e56538595d2b7",
+    "byteIdentical": true,
+    "note": "Unmodified original snapshot; internal relative links keep their original repository-root base."
+  },
+  "summary": {
+    "path": "history/26/11/01/scroll-caret-resume-summary.md",
+    "bytes": 9298,
+    "sha256": "d6a9387c21ef890b24e4d228b3dd442772d4fa390718d10c0a488afc876233a8"
+  },
+  "updatedInboundLinks": [
+    {
+      "document": "history/26/10/31/galaxy-scroll-implementation.md",
+      "target": "history/26/11/01/scroll-caret-resume-summary.md"
+    },
+    {
+      "document": "history/26/10/31/galaxy-caret-accessibility-review.md",
+      "target": "history/26/11/01/scroll-caret-resume-summary.md"
+    },
+    {
+      "document": "history/26/11/01/android-resume-scroll-fix.md",
+      "target": "history/26/11/01/scroll-caret-resume-summary.md"
+    }
+  ],
+  "sourceRemoved": true,
+  "documentOnly": true,
+  "productRevalidated": false,
+  "preservedAcceptance": {
+    "androidResumeUserExperience": "userConfirmedSmooth",
+    "defaultWindowsResumeUserExperience": "userConfirmedSmooth",
+    "overallFramePacing": "PARTIAL",
+    "displayDeadline": "notVerified",
+    "activeTalkBack": "notVerified",
+    "separatePhysicalWindowsTrackpad": "notVerified"
+  },
+  "validation": {
+    "originalHashVerified": true,
+    "maintainedLocalLinksChecked": 23,
+    "maintainedBrokenLinks": [],
+    "originalLocalLinksCheckedWithOriginalBase": 26,
+    "originalMissingTargets": [],
+    "staleRootWorkMarkdownLinks": [],
+    "historicalOriginalSnapshotsRewritten": false,
+    "testsBuildsDevicesRerun": false
+  }
+}

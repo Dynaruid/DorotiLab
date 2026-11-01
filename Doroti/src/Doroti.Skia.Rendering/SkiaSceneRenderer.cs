@@ -595,13 +595,8 @@ public sealed partial class SkiaSceneRenderer
         }
     }
 
-    private static bool IsShaderSceneWithoutPlatformViews(IReadOnlyList<SceneCommand> commands)
-    {
-        static bool HasNative(IReadOnlyList<SceneCommand> items, int depth = 0) => depth > 256
-            || items.Any(c => c.Operation is "platformView" or "inputShield"
-                || c.HostPayload is SceneRetainedPayload retained && HasNative(retained.Commands, depth + 1));
-        return !HasNative(commands);
-    }
+    private static bool IsShaderSceneWithoutPlatformViews(IReadOnlyList<SceneCommand> commands) =>
+        NativeFrameSceneInspection.IsShaderOnly(commands);
 
     private SkiaPaintResult Paint(
         SKSurface surface, int pixelWidth, int pixelHeight, DorotiResizeEpoch desiredTarget,

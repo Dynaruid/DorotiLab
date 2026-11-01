@@ -45,7 +45,7 @@ public abstract class DorotiMauiActivity : Microsoft.Maui.MauiAppCompatActivity
     {
         // Only diagnostic flags are forwarded; initialize before framework static
         // profile switches are read. Normal launches retain their existing flags.
-        foreach (var flag in new[] { "DOROTI_SCROLL_PROFILE", "DOROTI_STAGE_TRACE", "DOROTI_LAYOUT_PROFILE", "DOROTI_ALLOCATION_PROFILE" })
+        foreach (var flag in new[] { "DOROTI_SCROLL_PROFILE", "DOROTI_STAGE_TRACE", "DOROTI_LAYOUT_PROFILE", "DOROTI_ALLOCATION_PROFILE", "DOROTI_FRAME_TRACE_CAPACITY" })
             if (Intent?.GetStringExtra(flag) is { } enabled)
                 Environment.SetEnvironmentVariable(flag, enabled);
         if (savedInstanceState is null && Intent?.Action == Android.Content.Intent.ActionView && Intent.DataString is { } location)

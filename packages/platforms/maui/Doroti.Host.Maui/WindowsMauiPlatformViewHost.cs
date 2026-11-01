@@ -130,7 +130,7 @@ internal sealed class WindowsMauiPlatformViewHost : IDisposable
         DorotiFrameDescriptor descriptor, int width, int height)
     {
         var frame = Interlocked.Increment(ref _frame);
-        if (Volatile.Read(ref _visible).Length == 0 && !HasPlatformCommands(commands))
+        if (Volatile.Read(ref _visible).Length == 0 && !WindowsPlatformSceneInspection.HasPlatformCommands(commands))
         {
             renderer.DrawPlatformRasterSegment(canvas, commands, width, height);
             return;
@@ -177,10 +177,6 @@ internal sealed class WindowsMauiPlatformViewHost : IDisposable
         }
         catch { plan.Dispose(); throw; }
     }
-
-    private static bool HasPlatformCommands(IReadOnlyList<SceneCommand> commands) => commands.Any(command =>
-        command.Operation is "platformView" or "inputShield"
-        || command.RetainedCommands is { } retainedCommands && HasPlatformCommands(retainedCommands));
 
     private static async Task Observe(ValueTask work)
     {

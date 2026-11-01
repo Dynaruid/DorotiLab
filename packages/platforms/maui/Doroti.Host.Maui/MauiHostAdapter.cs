@@ -130,7 +130,8 @@ internal sealed class MauiHostAdapter
         _viewEpoch = ToViewEpoch(initialTarget, _metricsGeneration);
         _semantics = semantics ?? new NullMauiSemanticsBridge();
 #if ANDROID
-        _androidFrameCallback = new AndroidFrameCallback(HandleAndroidFrame);
+        _androidFrameCallback = new AndroidFrameCallback(
+            MauiWeakCallback.Create<MauiHostAdapter, long>(this, static (owner, timestamp) => owner.HandleAndroidFrame(timestamp)));
 #endif
         _surface.Pointer += HandlePointer;
         _surface.Key += HandleKey;

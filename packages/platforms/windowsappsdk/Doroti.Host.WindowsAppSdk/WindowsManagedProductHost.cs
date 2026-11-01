@@ -126,6 +126,12 @@ internal sealed unsafe partial class WindowsManagedProductHost
     internal IReadOnlyList<nint> DropWindows => [_native.TopLevelHwnd, _native.ChildHwnd, _native.OpaqueChildHwnd];
     internal WindowsResizeCoordinatorSnapshot ResizeSnapshot => _coordinator.Snapshot();
     internal object FrameSchedulingTiming => _frameTiming.Snapshot();
+    internal object? FrameworkWorkTiming => !FrameworkWorkCounters.Enabled ? null
+        : _applicationDispatcher.InvokeAsync<object>(() => new
+        {
+            work = FrameworkWorkCounters.Snapshot(),
+            profile = FrameworkWorkProfile.Snapshot(),
+        }).AsTask().GetAwaiter().GetResult();
     internal object InputIngressTiming => new
     {
         enabled = _frameTiming.Enabled,

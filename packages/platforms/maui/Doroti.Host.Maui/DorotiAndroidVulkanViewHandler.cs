@@ -124,8 +124,11 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
         NativeFrameConfiguration.ValidateSettings(name =>
             Microsoft.Maui.ApplicationModel.Platform.CurrentActivity?.Intent?.GetStringExtra(name));
         _trackpadInput = new(data => _owner?.DispatchNativePointer(data));
-        _drawCallback = new(DrawFrame);
-        _gpuCompletionCallback = new(PollGpuCompletion);
+        // Native animation notifications borrow this view's managed lifetime.
+        // A Java Runnable must not root the entire retained application in the
+        // Mono/ART bridge while waiting for the next display pulse.
+        _drawCallback = new(MauiWeakCallback.Create(this, static owner => owner.DrawFrame()));
+        _gpuCompletionCallback = new(MauiWeakCallback.Create(this, static owner => owner.PollGpuCompletion()));
         _allocationProfileCallback = new(() =>
         {
             foreach (var entry in FrameworkWorkProfile.CaptureEntries())
@@ -351,21 +354,26 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
             PurgeUnusedGpuResources();
             _window.PrepareViewport(_width, _height);
             var prepared = false;
-            var admission = NativeFrameAdmissionPolicy.PrepareAndDecide(
-                () =>
-                {
-                    _preparedFrameworkPulses++;
-                    _owner.PrepareFrameworkFrame?.Invoke(new(_window.ContextIdentity,
-                        _window.Width, _window.Height, _density,
-                        (_generation << 32) | _window.Generation, GetType().FullName!,
-                        "Android/SurfaceView/Graphite-Vulkan", DorotiFrameClock.Now,
-                        AndroidScrollProfile.Enabled ? AndroidScrollProfile.Measure : null));
-                    prepared = true;
-                },
-                () => _owner.ShaderSceneAdmission?.Invoke() ?? SkiaShaderSceneAdmission.noNewScene,
-                () => { _window.PollGpuWork(); return _window.WindowFramesInFlight; },
-                _owner.PlatformViews?.HasComposition == true,
-                _owner.PlatformViews?.HasPendingComposition == true, false);
+            NativeFrameAdmission admission;
+            using (FrameworkWorkProfile.AllocationEnabled
+                ? FrameworkWorkProfile.Begin(GetType(), 29) : default)
+            {
+                admission = NativeFrameAdmissionPolicy.PrepareAndDecide(
+                    () =>
+                    {
+                        _preparedFrameworkPulses++;
+                        _owner.PrepareFrameworkFrame?.Invoke(new(_window.ContextIdentity,
+                            _window.Width, _window.Height, _density,
+                            (_generation << 32) | _window.Generation, GetType().FullName!,
+                            "Android/SurfaceView/Graphite-Vulkan", DorotiFrameClock.Now,
+                            AndroidScrollProfile.Enabled ? AndroidScrollProfile.Measure : null));
+                        prepared = true;
+                    },
+                    () => _owner.ShaderSceneAdmission?.Invoke() ?? SkiaShaderSceneAdmission.noNewScene,
+                    () => { _window.PollGpuWork(); return _window.WindowFramesInFlight; },
+                    _owner.PlatformViews?.HasComposition == true,
+                    _owner.PlatformViews?.HasPendingComposition == true, false);
+            }
             if (!admission.Admitted)
             {
                 profileReason = admission.Reason;
@@ -375,31 +383,36 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
                 RequestFrame();
                 return;
             }
-            var presented = _window.Render(
-                _width,
-                _height,
-                (surface, width, height) =>
-                {
-                    paint = new(
-                        surface,
-                        _window.ContextIdentity,
-                        width,
-                        height,
-                        _density,
-                        (_generation << 32) | _window.Generation,
-                        GetType().FullName!,
-                        "Android/SurfaceView/Graphite-Vulkan"
-                    );
-                    paint.FrameworkPrepared = prepared;
-                    paint.RequireNewShaderScene = admission.FreshOnly;
-                    _owner.PaintGraphite(paint);
-                },
-                () =>
-                    paint is { SkipPresent: false, SkipRaster: false }
-                    && _owner.PlatformViews?.RejectFrame != true,
-                maximumFramesInFlight: admission.GpuLimit,
-                asynchronous: !admission.SynchronizePresentation
-            );
+            bool presented;
+            using (FrameworkWorkProfile.AllocationEnabled
+                ? FrameworkWorkProfile.Begin(GetType(), 30) : default)
+            {
+                presented = _window.Render(
+                    _width,
+                    _height,
+                    (surface, width, height) =>
+                    {
+                        paint = new(
+                            surface,
+                            _window.ContextIdentity,
+                            width,
+                            height,
+                            _density,
+                            (_generation << 32) | _window.Generation,
+                            GetType().FullName!,
+                            "Android/SurfaceView/Graphite-Vulkan"
+                        );
+                        paint.FrameworkPrepared = prepared;
+                        paint.RequireNewShaderScene = admission.FreshOnly;
+                        _owner.PaintGraphite(paint);
+                    },
+                    () =>
+                        paint is { SkipPresent: false, SkipRaster: false }
+                        && _owner.PlatformViews?.RejectFrame != true,
+                    maximumFramesInFlight: admission.GpuLimit,
+                    asynchronous: !admission.SynchronizePresentation
+                );
+            }
             if (_owner.PlatformViews is { } platformViews)
             {
                 presented = platformViews.Finish(presented);

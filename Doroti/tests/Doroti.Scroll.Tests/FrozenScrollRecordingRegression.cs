@@ -68,8 +68,13 @@ internal static class FrozenScrollRecordingRegression
         }
         using (var one = freeze(sourceScene))
         using (var two = freeze(sourceScene))
+        {
             Check(ReferenceEquals(DrawingCommands(one)[0], DrawingCommands(two)[0]),
                 "repeated frames reuse closed drawings without changing their command data");
+            Check(ReferenceEquals(DrawingCommands(one), picture.Commands)
+                && ReferenceEquals(DrawingCommands(one), DrawingCommands(two)),
+                "closed picture command storage is reused across frames without retaining a scene");
+        }
         double[] mutableArguments = [3.5, 7.25];
         using (var publicPicture = new Picture([new PathCommand("translate", mutableArguments)]))
         {
@@ -80,6 +85,21 @@ internal static class FrozenScrollRecordingRegression
             mutableArguments[0] = 999;
             Check(DrawingCommands(closed)[0].Arguments[0] == 3.5,
                 "externally supplied mutable arguments never alias the frozen frame");
+        }
+        var translateRecorder = new PictureRecorder();
+        new Canvas(translateRecorder).translate(3.5, 7.25);
+        using (var recordedTranslate = translateRecorder.endRecording())
+        {
+            double[] replacement = [5.5, 9.25];
+            var modified = recordedTranslate.Commands[0] with { Arguments = replacement };
+            using var publicPicture = new Picture([modified]);
+            var publicBuilder = new SceneBuilder();
+            publicBuilder.addPicture(Offset.zero, publicPicture);
+            using var publicScene = publicBuilder.build();
+            using var closed = freeze(publicScene);
+            replacement[0] = 999;
+            Check(DrawingCommands(closed)[0].Arguments[0] == 5.5,
+                "a public record with-expression cannot certify replacement mutable arguments as closed");
         }
         var frozen = freeze(sourceScene);
         var pure = Capture(frozen, (_, _) => throw new InvalidOperationException("No texture exists in this scene"));

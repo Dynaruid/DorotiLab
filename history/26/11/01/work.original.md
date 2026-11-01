@@ -51,6 +51,26 @@ context를 유지하고 Surface·swapchain만 안전하게 교체하며 메모�
 완료하고 두 번째 OS trim 명령 exit 255로 중단되어 최종 recreate/finish는 미검증이다.
 사용자의 퇴근 요청으로 여기서 종료하고 결과·hash·다음 시작점을 기록했다.
 
+같은 날짜 재개에서는 새로 포착한 90ms대 지연과 Mono bridge의 약 30만 객체 탐색을 연결하고,
+native 프레임 알림과 필수 비동기 작업의 참조 수명을 고쳤다. 닫힌 picture 명령 목록의 반복
+복사와 retained scene 검사 할당도 줄였다. 최종 두 프로세스의 복귀 4회에서 관성 최대 owner는
+27.779ms, 50ms 이상 작업은 0회였다. 회귀 12항목·Release arm64 빌드·강제 GC/trim 40→60·
+Activity 재생성·최종 GPU 종료를 통과했다. 최종 APK `933c2166…`를 일반 실행으로 전달한 뒤
+사용자가 **“복귀 뒤에도 부드러워졌어”**라고 확인했다. [재개 기록](history/26/11/01/android-resume-inertia-followup.md)과
+[결과 JSON](history/26/11/01/android-resume-bridge-results.json)에 보존했다. 별도 진단의 정지 후
+73.623ms GC 지연은 남아 전체 frame pacing은 `PARTIAL`이며, 표시·활성 TalkBack 합격과는 구분한다.
+
+후속 [Windows 복귀·스크롤 검토](history/26/11/01/windows-resume-scroll-review.md)에서 기본
+Windows App SDK와 MAUI 호스트의 retained 장면 검사에 남은 반복 할당을 제거했다.
+24단 장면 20회 검사 할당은 44,640 → 0 bytes였다. MAUI UIA 자식 목록도 구조가 같으면
+재사용하여 반복 WinRT wrapper 생성을 줄였다. 최종 회귀 13개와 두 Release 빌드를 통과하고,
+기본 Windows 창의 강제 GC/복귀 3회·native editor·목록 복귀·정상 종료를 확인했다.
+관리 힙은 19.08 → 19.20 → 19.22MB였다.
+MAUI도 GC/복귀·접근성 트리 교체·정상 종료를 통과했고, 수정 후 관리 힙 수집은
+54.75 → 39.45 → 38.64MB였다. 기본 Windows 일반 실행을 전달한 뒤 사용자가
+**“복귀 뒤에도 부드러워”**라고 확인했다. 해당 복귀 스크롤의 사용자 체감 확인은 통과이며,
+입력 기기가 특정되지 않은 별도 트랙패드 검증과 표시 frame pacing은 `notVerified`/`PARTIAL`로 남긴다.
+
 ## 1. 목표와 범위
 
 사용자의 갤럭시에서 스크롤 중 간헐적으로 멈칫하는 지연을 제거하고,

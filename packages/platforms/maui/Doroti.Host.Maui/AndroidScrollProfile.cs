@@ -101,7 +101,7 @@ internal static class AndroidScrollProfile
             trace, FrameworkWorkProfile.CaptureEntries(), GC.GetTotalAllocatedBytes(), GC.GetTotalMemory(false),
             new(_magnifiersCreated, _magnifierUpdates, _magnifiersDismissed, _magnifierRequests, _magnifierCoalesced, _magnifierCancelled),
             _semantics is not null && _semantics.TryGetTarget(out var semantics) ? semantics.Diagnostics : null, _editing,
-            FrameworkWorkTrace.Enabled ? FrameworkWorkTrace.Stop() : null);
+            FrameworkWorkTrace.Enabled ? FrameworkWorkTrace.Stop() : null, MauiManagedCallbackQueue.PendingCount);
         var path = System.IO.Path.Combine(context.GetExternalFilesDir(null)!.AbsolutePath, "doroti-scroll-profile.json");
         // ADB may pull immediately after the export intent returns. Publish a
         // complete snapshot atomically, never a partially written JSON file.
@@ -146,7 +146,7 @@ internal static class AndroidScrollProfile
     internal sealed record Report(bool PresentObserved, long FrameCount, long InputCount, long PulseCount,
         Frame[] Frames, Input[] Inputs, Pulse[] Pulses, DorotiFrameTraceEntry[] Trace,
         FrameworkWorkProfile.Entry[] Work, long TotalAllocated, long ManagedHeap, MagnifierEvents Magnifier, MauiSemanticsDiagnostics? Semantics, EditingState Editing,
-        FrameworkWorkTrace.Capture? WorkTrace);
+        FrameworkWorkTrace.Capture? WorkTrace, int ManagedDispatchPending);
     internal readonly record struct MagnifierEvents(long Created, long Updates, long Dismissed, long Requests, long Coalesced, long Cancelled);
     internal readonly record struct EditingState(long AtUs, int Length, int Base, int Extent, bool FromNative, long Sequence);
 }

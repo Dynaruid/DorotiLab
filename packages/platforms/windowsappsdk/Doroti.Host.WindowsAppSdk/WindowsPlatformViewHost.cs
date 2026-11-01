@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using Doroti.Host.SharedWindows;
 using Doroti.Hosting;
 using Doroti.Skia.Rendering;
 using Doroti.Skia.RuntimeEffects;
@@ -256,22 +257,6 @@ internal sealed class WindowsPlatformViewHost : IDisposable
 
     internal void Configure(PlatformViewCoordinator coordinator) => _coordinator = coordinator;
 
-    private static bool HasPlatformCommands(IReadOnlyList<SceneCommand> commands, int depth = 0)
-    {
-        if (depth > 256)
-        {
-            throw new InvalidDataException("PlatformView retained depth limit exceeded.");
-        }
-
-        return commands.Any(c =>
-            c.Operation is "platformView" or "inputShield"
-            || (
-                c.RetainedCommands is { } retainedCommands
-                && HasPlatformCommands(retainedCommands, depth + 1)
-            )
-        );
-    }
-
     internal void Draw(
         SkiaSceneRenderer renderer,
         SKCanvas canvas,
@@ -288,7 +273,7 @@ internal sealed class WindowsPlatformViewHost : IDisposable
 
         var started = System.Diagnostics.Stopwatch.GetTimestamp();
         var nativeRevision = Interlocked.Read(ref _nativeRevision);
-        if (!HasPlatformCommands(commands) && !Volatile.Read(ref _hasVisibleParts))
+        if (!WindowsPlatformSceneInspection.HasPlatformCommands(commands) && !Volatile.Read(ref _hasVisibleParts))
         {
             renderer.DrawPlatformRasterSegment(canvas, commands, width, height);
             return;

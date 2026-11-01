@@ -7,6 +7,7 @@
 
 사용자의 퇴근 요청에 따라 추가 실험을 종료했다. 최종 APK는 갤럭시에 설치되어 있으며,
 해제 전 진단 intent 없이 일반 실행으로 복구했다. 커밋은 만들지 않았다.
+이는 첫 중간 종료 시점의 상태다. 같은 날짜의 재개 결과는 문서 마지막에 별도로 기록한다.
 
 ## 재현 범위 수정
 
@@ -161,3 +162,105 @@ python Doroti/eng/run-with-timeout.py --timeout 1200 python Doroti/eng/summarize
 `loaded-delivered-*`, `snapshot-only.apk`, `position-only.apk`, `geometry-only.apk`는 중간
 후보 증거다. 계측 overhead가 있는 `work-*`도 주 비교에 섞지 않는다. 원시 파일은 향후
 정리될 수 있으므로 장기 보존 결과·source/APK hash·잔여 조건은 연결된 JSON에 별도로 담았다.
+
+## 같은 날짜 재개 — 복귀 후 관성 개선 사용자 확인
+
+재개 HEAD는 `a3ce8df0f6afcb2f5ebbbcb9515e68dca757e71d`이며 시작 시 작업 트리는 깨끗했다.
+위 중간 종료 때의 수정은 이 커밋에 포함되어 있었다. 갤럭시의 설치 APK도 앞선 최종본
+`27679b3f…`과 일치했다. 이번 변경은 아직 커밋하지 않았다.
+
+**최종 APK에서 사용자가 “복귀 뒤에도 부드러워졌어”라고 확인했다.** 확인 범위는 이미
+로딩한 All Components의 긴 관성 스크롤과 Home/복귀 후 체감이다. 전체 120Hz 표시·활성
+TalkBack 합격으로 확대하지 않는다. 이번 결과와 원시 증거 hash는
+[재개 결과 JSON](android-resume-bridge-results.json)에 보존한다.
+
+### 새로 포착한 지연과 변경
+
+기존 ring buffer가 초기 구간을 잃었으므로, 구간별 export와 명시적 65536-entry 진단 ring을
+추가했다. 최종 비교는 중간 export의 할당이 다음 플링을 방해하지 않도록 마지막에만 export했다.
+초기 x=950 대조는 내부 스크롤 영역으로 들어갔고 마지막 구간에 별도 터치도 섞여 제외했다.
+사용자가 기기를 비워 준 뒤 x=35의 바깥 목록에서 다시 측정했다. 실제 ballistic update와
+외부 DOWN 유무를 기록한다. 경계에서 관성이 생기지 않은 초기 up은 이동 비교에 넣지 않는다.
+
+같은 조건의 새 기준에서 복귀 후 owner 90.779ms 지연을 포착했다. 별도 GC 진단에서는
+owner 93.549ms와 함께 `GC_TAR_BRIDGE objects=300262`, Tarjan 63.56ms,
+minor GC STW 74.23ms가 겹쳤다. 단순히 캐시 누수로 확정하지 않고, Java에 게시된 콜백이
+관리 객체 트리와 실행 문맥을 붙잡는 경계를 수정했다. 앞선 92.492ms 원본의 상세 trace는
+여전히 없으므로 그 프레임의 정확한 원인을 소급 확정하지 않는다.
+
+- Choreographer와 SurfaceView draw/GPU completion 알림은 관리 소유자를 약하게 참조한다.
+  명시적 GPU retirement와 자원 소유권은 유지한다.
+- 완료가 필요한 application dispatcher 작업은 관리 큐가 강하게 소유하고 Java 알림은 숫자
+  token만 전달한다. 실행 전에 등록을 제거하며 게시 실패·중복/늦은 알림·재진입에서도 한 번만
+  처리한다. 기존 pending 상한과 취소·예외 완료 경로를 유지한다. 필수 작업을 약화시키지 않는다.
+- 닫힌 picture의 명령 목록 전체도 공유한다. image/filter 자원 capture가 필요한 명령은 계속
+  복사하고 lease를 유지한다. 공개 record의 `with { Arguments = ... }`가 기존의 닫힘 표시를
+  물려받지 않도록 숫자 저장소의 정확한 identity에 인증을 연결했다.
+- native view/input shield 판정에서 retained layer마다 만들던 closure/enumerator를 제거했다.
+  과도한 깊이와 native composition의 보수적 admission 조건은 유지한다.
+
+이 수정군은 정상 실행에 강제 GC를 넣거나 OS 주사율·GC 런타임 설정을 바꾸지 않는다.
+콜백 수명 변경을 묶어 비교했으며 어느 Java peer 하나가 유일한 원인인지까지 분리하지 않았다.
+
+### 동일 설정의 일반 비교
+
+기준은 진단 flag 전달·scope만 추가한 `diagnostic-base.apk`이고, 최종 후보와 같은
+Release arm64/Mono/profiled AOT/interpreter off/SkiaSharp 4.154.0이다.
+기준 1프로세스와 최종 2프로세스 모두 setup 12회와 실제 범위의 사전 플링을 수행하고,
+자연 Home/복귀 2회를 비교했다. 상세 work/GC 로그는 끈 조건이다. 입력은 1300px/90ms,
+tail은 3초이며 아래 표는 UP→scrollEnd 완료의 실제 이동 구간이다.
+
+| 구간 | 기준 p95 / max(ms) | 최종 1회 p95 / max(ms) | 최종 2회 p95 / max(ms) |
+| --- | ---: | ---: | ---: |
+| 첫 복귀 down | 6.411 / 90.779 | 6.031 / 19.532 | 6.114 / 27.779 |
+| 두 번째 복귀 down | 7.565 / 15.152 | 6.078 / 11.679 | 6.064 / 8.906 |
+
+복귀한 up/down 전체의 유효 이동 구간은 기준 4개/691프레임, 최종 8개/1386프레임이다.
+최종 이동 구간 최대 owner는 27.779ms이며 50ms 이상은 0회였다. 3초 tail에서도 최종 복귀
+8구간의 50ms 이상은 0회였다. 첫 복귀 down의 할당 중앙값은 146232 → 118256/120344 bytes,
+Gen0 GC는 6 → 5/4회였다. 두 번째 down도 147512 → 118200/120640 bytes로 줄었다.
+각 최종 프로세스에서 context 생성 1회, detach/reattach 각 2회, purge 0회이며 종료 시 관리
+dispatcher pending은 0이었다. fatal/render/retirement 오류는 없었다.
+
+별도 상세 진단의 최종 복귀 4구간에서 bridge 탐색 객체 최대는 10개였고 opaque는 0이었다.
+시작·warmup·정지 후를 포함한 전체 세션에서 모든 큰 탐색이 사라졌다는 뜻은 아니다.
+가변 주사율·열·OS 스케줄링을 고정한 실험도 아니며 제출 간격을 표시 FPS로 바꾸지 않는다.
+
+### 강제 정리·수명·회귀와 전달
+
+최종 회귀 12항목과 Release arm64 빌드(경고 0, 오류 0, 1분 8.57초)가 통과했다.
+새 회귀는 닫힌 picture 저장소 재사용·공개 record 변경의 방어 복사, retained native/shield
+판정과 깊이 제한, 정확한 native timestamp와 늦은 콜백, 관리 작업의 수명·게시 실패·중복·
+동시 생산·재진입을 포함한다. 명령 저장소 재사용 검사는 수정 전 실패 후 수정 후 통과했다.
+
+기다리는 대신 foreground full GC, Home 후 trim 40과 60을 유도했다. 각 복귀 후 실제 관성
+스크롤을 수행했고 같은 프로세스에서 context 1개를 유지하며 detach/reattach 각 2회와
+GPU purge 2회를 확인했다. Activity 재생성 후 semantics 37개와 geometry가 유지됐고,
+최종 Activity 종료의 GPU drain도 통과했다. 관리 dispatcher pending은 0이었다.
+
+처음 반복 BACKGROUND(40) 요청은 OS가 이미 기억한 trim 수준 때문에 거절했다.
+오류 출력을 보존해 하네스 문제를 확인했고 실제 정리 수준을 40→60으로 높인 재실행은
+완료했다. 이 제한은 [AOSP ActivityManagerService](https://android.googlesource.com/platform/frameworks/base/+/refs/heads/android16-release/services/core/java/com/android/server/am/ActivityManagerService.java)의
+동일 수준 재요청 거절 검사와 일치한다. 실패한 첫 시도와 복구한 부분 trace도 결과에 남겼다.
+
+- 최종 설치 APK: `temp/galaxy-resume-investigation/doroti-testbed-galaxy-resume-final.apk`.
+  SHA-256: `933c21665bf0ff7d312709f6070c90e148890456759eba22e0f30f43d7f448db`.
+- 비교 기준 SHA-256: `1ed4dcfc6b5d4bc40c49acce87e23657b693928994bdae9bcdd51c4ad8d49494`.
+- 수명 수정 전 할당 최적화 후보 SHA-256:
+  `2d7a29f41adaaa71d8bdb45ece7192c165d3649d05c6ca32c72ec7b301fc2e4a`.
+- 전달 직전 설치 APK를 다시 pull하여 최종 hash를 확인했다. `debug.mono.log`를 복원하고
+  진단 intent 없는 새 프로세스(PID 3784)에서 목록을 끝까지 방문한 뒤 상단으로 돌렸다.
+  앱이 MainActivity로 표시되고 fatal/render 오류가 없음을 확인했다. 기기 쪽 진단 JSON·
+  screenshot·XML·gesture jar만 제거했다. 이후 사용자의 위 체감 확인을 받았다.
+
+### 남겨 둔 범위
+
+사용자가 보고한 **복귀 후 관성의 체감 개선은 확인됨**으로 기록한다. 전체 frame pacing은
+계속 `PARTIAL`, 실제 표시 기록은 `presentObserved=false`, 활성 TalkBack은 `notVerified`다.
+별도 강제 정리 진단의 첫 initial-up에서 scrollEnd 뒤 3초 tail에 owner 73.623ms,
+bridge 탐색 299974개/Tarjan 53.11ms/STW 58.50ms가 한 번 남았다. 복귀 후 관성의 일반
+비교에서 재현되지는 않았지만 누락하거나 lazy load로 임의 분류하지 않았다. 이 native peer의
+정확한 정체와 일반 GC에 의한 잔여 frame miss는 후속 최적화 항목이다.
+
+원시 증거는 `temp/galaxy-resume-investigation/`에 있으며 장기 보존 결과와 hash는 위 JSON에
+있다. 현재 수정본에 대해 추가 기기 자동화는 종료하고 일반 실행 상태로 전달했다.

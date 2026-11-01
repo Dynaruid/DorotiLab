@@ -853,10 +853,10 @@ public sealed class Picture : IDisposable
 
     internal static Picture FromOwnedCommands(PathCommand[] ownedCommands) =>
         new((ownedCommands ?? throw new ArgumentNullException(nameof(ownedCommands)))
-            .Select(command => command with
+            .Select(command =>
             {
-                Arguments = Array.AsReadOnly(command.Arguments.ToArray()),
-                HasClosedArguments = true,
+                var arguments = Array.AsReadOnly(command.Arguments.ToArray());
+                return command with { Arguments = arguments, ClosedArgumentStorage = arguments };
             }).ToArray());
 
     public IReadOnlyList<PathCommand> Commands { get; }

@@ -1527,6 +1527,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 frames = diagnostics,
                 resize = Host?.ResizeSnapshot,
                 frameScheduling = Host?.FrameSchedulingTiming,
+                frameworkWork = Host?.FrameworkWorkTiming,
                 inputIngress = Host?.InputIngressTiming,
                 renderer = Renderer?.Diagnostics,
                 variableBlurProfile = Renderer?.VariableBlurProfile,

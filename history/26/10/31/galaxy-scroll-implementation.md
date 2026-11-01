@@ -3,7 +3,7 @@
 2026-10-31 (Asia/Seoul). Source baseline: `bc486409`.
 Status: **SkiaSharp 4.154.0 stable adopted; scroll performance remains PARTIAL**.
 
-The [work plan](../../../../work.md) remains the acceptance contract.
+The [archived work summary](../../11/01/scroll-caret-resume-summary.md) preserves the acceptance criteria and links the original plan.
 The [retained measurements](galaxy-scroll-results.json) include source hashes,
 APK hashes, trial aggregates and the Perfetto attribution below. Raw APKs,
 traces, rings and screenshots are disposable local files in `temp/galaxy-scroll`.

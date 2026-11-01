@@ -144,13 +144,14 @@ internal sealed class AndroidPlatformViewHost(
             throw new InvalidDataException("Retained platform scene depth exceeded.");
         }
 
-        return commands.Any(c =>
-            c.Operation is "platformView" or "inputShield"
-            || (
-                c.RetainedCommands is { } retainedCommands
-                && HasCommands(retainedCommands, depth + 1)
-            )
-        );
+        for (var i = 0; i < commands.Count; i++)
+        {
+            var command = commands[i];
+            if (command.Operation is "platformView" or "inputShield"
+                || command.RetainedCommands is { } retained && HasCommands(retained, depth + 1))
+                return true;
+        }
+        return false;
     }
 
     internal void Draw(

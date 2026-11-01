@@ -504,8 +504,15 @@ public static class PlatformEnvironmentContext
     {
         ArgumentNullException.ThrowIfNull(configuration);
         var previous = CurrentValue.Value;
+        if (ReferenceEquals(previous, configuration)) return EmptyScope.Instance;
         CurrentValue.Value = configuration;
         return new Scope(previous);
+    }
+
+    private sealed class EmptyScope : IDisposable
+    {
+        internal static readonly EmptyScope Instance = new();
+        public void Dispose() { }
     }
 
     private sealed class Scope(PlatformConfiguration? previous) : IDisposable

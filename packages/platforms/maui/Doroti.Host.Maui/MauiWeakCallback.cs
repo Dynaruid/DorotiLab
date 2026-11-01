@@ -10,4 +10,12 @@ internal static class MauiWeakCallback
         var weak = new WeakReference<T>(owner);
         return () => { if (weak.TryGetTarget(out var current)) invoke(current); };
     }
+
+    internal static Action<TArgument> Create<T, TArgument>(T owner, Action<T, TArgument> invoke) where T : class
+    {
+        ArgumentNullException.ThrowIfNull(owner);
+        ArgumentNullException.ThrowIfNull(invoke);
+        var weak = new WeakReference<T>(owner);
+        return argument => { if (weak.TryGetTarget(out var current)) invoke(current, argument); };
+    }
 }

@@ -1,0 +1,1614 @@
+{
+  "schemaVersion": "doroti.windows.resume-scroll-review/v1",
+  "recordedUtc": "2026-11-01T13:44:39.346385+00:00",
+  "head": "a3ce8df0f6afcb2f5ebbbcb9515e68dca757e71d",
+  "workingTreeScope": "Existing Android/common uncommitted changes retained; Windows-specific edits listed in the companion record",
+  "status": {
+    "windowsSceneInspectionAllocationFix": "verified",
+    "defaultWindowsInjectedScrollAndGcResume": "pass: three cycles, native editor and shader return",
+    "windowsResumeScrollUserExperience": "userConfirmedSmoothAfterResume",
+    "windowsPhysicalTrackpad": "notVerified",
+    "displayFramePacing": "notVerified",
+    "overallPerformanceAcceptance": "PARTIAL",
+    "mauiRuntime": "pass: final UIA topology/values, injected wheel, GC/resume, normal exit 0",
+    "windowsUiaChildListFix": "verified: stable native identities reuse their read-only child list; order/removal/reconnect/unready-peer retry covered"
+  },
+  "allocationProbe": {
+    "retainedLayers": 24,
+    "inspections": 20,
+    "baselineBytes": 44640,
+    "candidateBytes": 0,
+    "baselineAssembly": "C:\\Users\\parti\\Labo\\DorotiLab\\samples\\DorotiTestbedApp\\windowsappsdk\\bin\\Release\\net10.0-windows10.0.19041.0\\win-x64\\Doroti.Host.WindowsAppSdk.dll",
+    "baselineMethod": "Boolean HasPlatformCommands(System.Collections.Generic.IReadOnlyList`1[Doroti.Ui.SceneCommand], Int32)",
+    "scope": "retained scene inspection only; not a frame pacing measurement"
+  },
+  "allocationProbeMethod": "Direct delegate to pre-change compiled private WindowsPlatformViewHost.HasPlatformCommands, compared with linked production shared helper; five warmups then twenty inspections each",
+  "allocationBaselineAssemblyHash": "not captured before rebuild; path now contains the candidate binary",
+  "gcTool": {
+    "name": "dotnet-gcdump",
+    "version": "10.0.750501",
+    "scope": "GC induced in the minimized target process; no fixed background waiting interval",
+    "limitation": "Runtime .NET 10 uses lossy EventPipe buffering; tool warns that non-lossy Block mode requires .NET 11+. These snapshots are not an exhaustive memory leak audit."
+  },
+  "heaps": [
+    {
+      "stage": "baseline-background",
+      "managedHeapBytes": 23829057,
+      "managedHeapObjects": 277952,
+      "collectionLogTail": [
+        "Writing gcdump to 'C:\\Users\\parti\\Labo\\DorotiLab\\temp\\windows-resume-review\\baseline-background.gcdump'...",
+        "Warning: the target runtime does not support non-lossy (Block) buffering, which requires .NET 11+. Falling back to the default lossy buffering; the gcdump may be incomplete on large heaps.",
+        "\tFinished writing 6734753 bytes."
+      ],
+      "heapReportHeader": [
+        "     23,829,057  GC Heap bytes",
+        "        277,952  GC Heap objects",
+        "",
+        "   Object Bytes     Count  Type",
+        "      1,769,496         1  TraceSlot[] (Bytes > 1M)  [Doroti.Ui.dll]",
+        "        131,096         5  System.Byte[] (Bytes > 100K)  [System.Private.CoreLib.dll]",
+        "        131,096         1  Sample[] (Bytes > 100K)  [Doroti.Host.WindowsAppSdk.dll]",
+        "        131,096         1  System.Collections.Generic.KeyValuePair<Doroti.Framework.Widgets.Element,System.Object>[] (Bytes > 100K)  [System.Private.CoreLib.dll]",
+        "         98,376         1  Entry<System.Runtime.CompilerServices.VirtualDispatchHelpers+VirtualResolutionData,System.IntPtr>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         72,836         1  System.String (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         64,808         1  Entry<Doroti.Framework.Rendering.RenderObject>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         22,088         1  Entry<System.Int32,System.Diagnostics.Tracing.EventSource+EventMetadata>[] (Bytes > 10K)  [System.Private.CoreLib.dll]"
+      ]
+    },
+    {
+      "stage": "candidate-background-1",
+      "managedHeapBytes": 19079725,
+      "managedHeapObjects": 214173,
+      "collectionLogTail": [
+        "  0.5s: EventPipe Listener dying",
+        "  0.5s: gcdump EventPipe Session closed",
+        "Processing Heap Data, BulkTypeEventCount:165  BulkNodeEventCount:106  BulkEdgeEventCount:92",
+        "[  0.7s: Done Dumping .NET heap success=True]",
+        "\tFinished writing 5440358 bytes."
+      ],
+      "heapReportHeader": [
+        "     19,079,725  GC Heap bytes",
+        "        214,173  GC Heap objects",
+        "",
+        "   Object Bytes     Count  Type",
+        "      1,769,496         1  TraceSlot[] (Bytes > 1M)  [Doroti.Ui.dll]",
+        "        131,096         5  System.Byte[] (Bytes > 100K)  [System.Private.CoreLib.dll]",
+        "        131,096         1  Sample[] (Bytes > 100K)  [Doroti.Host.WindowsAppSdk.dll]",
+        "         72,836         1  System.String (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         65,560         3  System.Collections.Generic.KeyValuePair<Doroti.Framework.Widgets.Element,System.Object>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         64,808         1  Entry<Doroti.Framework.Rendering.RenderObject>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         49,224         1  Entry<System.Runtime.CompilerServices.VirtualDispatchHelpers+VirtualResolutionData,System.IntPtr>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         22,088         1  Entry<System.Int32,System.Diagnostics.Tracing.EventSource+EventMetadata>[] (Bytes > 10K)  [System.Private.CoreLib.dll]"
+      ]
+    },
+    {
+      "stage": "candidate-background-2",
+      "managedHeapBytes": 19197295,
+      "managedHeapObjects": 214434,
+      "collectionLogTail": [
+        "  0.6s: EventPipe Listener dying",
+        "  0.6s: gcdump EventPipe Session closed",
+        "Processing Heap Data, BulkTypeEventCount:189  BulkNodeEventCount:106  BulkEdgeEventCount:92",
+        "[  0.7s: Done Dumping .NET heap success=True]",
+        "\tFinished writing 5445458 bytes."
+      ],
+      "heapReportHeader": [
+        "     19,197,295  GC Heap bytes",
+        "        214,434  GC Heap objects",
+        "",
+        "   Object Bytes     Count  Type",
+        "      1,769,496         1  TraceSlot[] (Bytes > 1M)  [Doroti.Ui.dll]",
+        "        131,096         5  System.Byte[] (Bytes > 100K)  [System.Private.CoreLib.dll]",
+        "        131,096         1  Sample[] (Bytes > 100K)  [Doroti.Host.WindowsAppSdk.dll]",
+        "         72,836         1  System.String (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         65,560         3  System.Collections.Generic.KeyValuePair<Doroti.Framework.Widgets.Element,System.Object>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         64,808         1  Entry<Doroti.Framework.Rendering.RenderObject>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         49,224         1  Entry<System.Runtime.CompilerServices.VirtualDispatchHelpers+VirtualResolutionData,System.IntPtr>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         22,088         1  Entry<System.Int32,System.Diagnostics.Tracing.EventSource+EventMetadata>[] (Bytes > 10K)  [System.Private.CoreLib.dll]"
+      ]
+    },
+    {
+      "stage": "candidate-background-3",
+      "managedHeapBytes": 19220245,
+      "managedHeapObjects": 214495,
+      "collectionLogTail": [
+        "  0.6s: gcdump EventPipe session shut down",
+        "  0.6s: gcdump EventPipe Session closed",
+        "Processing Heap Data, BulkTypeEventCount:210  BulkNodeEventCount:106  BulkEdgeEventCount:92",
+        "[  0.8s: Done Dumping .NET heap success=True]",
+        "\tFinished writing 5446280 bytes."
+      ],
+      "heapReportHeader": [
+        "     19,220,245  GC Heap bytes",
+        "        214,495  GC Heap objects",
+        "",
+        "   Object Bytes     Count  Type",
+        "      1,769,496         1  TraceSlot[] (Bytes > 1M)  [Doroti.Ui.dll]",
+        "        131,096         5  System.Byte[] (Bytes > 100K)  [System.Private.CoreLib.dll]",
+        "        131,096         1  Sample[] (Bytes > 100K)  [Doroti.Host.WindowsAppSdk.dll]",
+        "         72,836         1  System.String (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         65,560         3  System.Collections.Generic.KeyValuePair<Doroti.Framework.Widgets.Element,System.Object>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         64,808         1  Entry<Doroti.Framework.Rendering.RenderObject>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         49,224         1  Entry<System.Runtime.CompilerServices.VirtualDispatchHelpers+VirtualResolutionData,System.IntPtr>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         22,088         1  Entry<System.Int32,System.Diagnostics.Tracing.EventSource+EventMetadata>[] (Bytes > 10K)  [System.Private.CoreLib.dll]"
+      ]
+    },
+    {
+      "stage": "maui-before-uia-cache-background",
+      "managedHeapBytes": 311116916,
+      "managedHeapObjects": 260130,
+      "collectionLogTail": [
+        "  1.4s: gcdump EventPipe session shut down",
+        "  1.4s: gcdump EventPipe Session closed",
+        "Processing Heap Data, BulkTypeEventCount:8098  BulkNodeEventCount:128  BulkEdgeEventCount:2405",
+        "[  1.9s: Done Dumping .NET heap success=True]",
+        "\tFinished writing 43401146 bytes."
+      ],
+      "heapReportHeader": [
+        "    311,116,916  GC Heap bytes",
+        "        260,130  GC Heap objects",
+        "",
+        "   Object Bytes     Count  Type",
+        "      1,769,496         1  TraceSlot[] (Bytes > 1M)  [Doroti.Ui.dll]",
+        "      1,048,600        97  ManagedObjectWrapperHolder[] (Bytes > 1M)  [System.Private.CoreLib.dll]",
+        "        262,168       153  Entry<System.Object,System.Runtime.InteropServices.ComWrappers+ManagedObjectWrapperHolder>[] (Bytes > 100K)  [System.Private.CoreLib.dll]",
+        "        262,168       152  Entry<System.Object,System.Collections.Generic.List<System.Runtime.InteropServices.ComWrappers+ManagedObjectWrapperHolder>>[] (Bytes > 100K)  [System.Private.CoreLib.dll]",
+        "        262,168       150  Entry<System.Collections.Generic.IList<Microsoft.UI.Xaml.Automation.Peers.AutomationPeer>,ABI.System.Collections.Generic.IList+ToAbiHelper<Microsoft.UI.Xaml.Automation.Peers.AutomationPeer>>[] (Bytes > 100K)  [System.Private.CoreLib.dll]",
+        "        171,700         3  System.Byte[] (Bytes > 100K)  [System.Private.CoreLib.dll]",
+        "        131,096        90  ManagedObjectWrapperHolder[] (Bytes > 100K)  [System.Private.CoreLib.dll]",
+        "         65,560         2  System.Collections.Generic.KeyValuePair<Doroti.Framework.Widgets.Element,System.Object>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         64,808         1  Entry<Doroti.Framework.Rendering.RenderObject>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         60,192         1  System.String (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         49,224         1  Entry<System.Runtime.CompilerServices.VirtualDispatchHelpers+VirtualResolutionData,System.IntPtr>[] (Bytes > 10K)  [System.Private.CoreLib.dll]"
+      ]
+    },
+    {
+      "stage": "maui-before-uia-cache-foreground-2",
+      "managedHeapBytes": 225015036,
+      "managedHeapObjects": 256851,
+      "collectionLogTail": [
+        "  1.3s: EventPipe Listener dying",
+        "  1.3s: gcdump EventPipe Session closed",
+        "Processing Heap Data, BulkTypeEventCount:4407  BulkNodeEventCount:127  BulkEdgeEventCount:1910",
+        "[  1.7s: Done Dumping .NET heap success=True]",
+        "\tFinished writing 35389596 bytes."
+      ],
+      "heapReportHeader": [
+        "    225,015,036  GC Heap bytes",
+        "        256,851  GC Heap objects",
+        "",
+        "   Object Bytes     Count  Type",
+        "      1,769,496         1  TraceSlot[] (Bytes > 1M)  [Doroti.Ui.dll]",
+        "      1,048,600        60  ManagedObjectWrapperHolder[] (Bytes > 1M)  [System.Private.CoreLib.dll]",
+        "        262,168       107  Entry<System.Object,System.Runtime.InteropServices.ComWrappers+ManagedObjectWrapperHolder>[] (Bytes > 100K)  [System.Private.CoreLib.dll]",
+        "        262,168       106  Entry<System.Object,System.Collections.Generic.List<System.Runtime.InteropServices.ComWrappers+ManagedObjectWrapperHolder>>[] (Bytes > 100K)  [System.Private.CoreLib.dll]",
+        "        262,168        98  Entry<System.Collections.Generic.IList<Microsoft.UI.Xaml.Automation.Peers.AutomationPeer>,ABI.System.Collections.Generic.IList+ToAbiHelper<Microsoft.UI.Xaml.Automation.Peers.AutomationPeer>>[] (Bytes > 100K)  [System.Private.CoreLib.dll]",
+        "        171,700         3  System.Byte[] (Bytes > 100K)  [System.Private.CoreLib.dll]",
+        "        131,096       113  ManagedObjectWrapperHolder[] (Bytes > 100K)  [System.Private.CoreLib.dll]",
+        "         65,560         2  System.Collections.Generic.KeyValuePair<Doroti.Framework.Widgets.Element,System.Object>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         64,808         1  Entry<Doroti.Framework.Rendering.RenderObject>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         60,192         1  System.String (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         49,224         1  Entry<System.Runtime.CompilerServices.VirtualDispatchHelpers+VirtualResolutionData,System.IntPtr>[] (Bytes > 10K)  [System.Private.CoreLib.dll]"
+      ]
+    },
+    {
+      "stage": "maui-before-uia-cache-foreground-3",
+      "managedHeapBytes": 290809300,
+      "managedHeapObjects": 249920,
+      "collectionLogTail": [
+        "  1.1s: EventPipe Listener dying",
+        "  1.1s: gcdump EventPipe Session closed",
+        "Processing Heap Data, BulkTypeEventCount:5027  BulkNodeEventCount:123  BulkEdgeEventCount:2725",
+        "[  1.6s: Done Dumping .NET heap success=True]",
+        "\tFinished writing 48387482 bytes."
+      ],
+      "heapReportHeader": [
+        "    290,809,300  GC Heap bytes",
+        "        249,920  GC Heap objects",
+        "",
+        "   Object Bytes     Count  Type",
+        "      2,097,176        98  ManagedObjectWrapperHolder[] (Bytes > 1M)  [System.Private.CoreLib.dll]",
+        "      1,769,496         1  TraceSlot[] (Bytes > 1M)  [Doroti.Ui.dll]",
+        "        524,312        71  ManagedObjectWrapperHolder[] (Bytes > 100K)  [System.Private.CoreLib.dll]",
+        "        262,168       109  Entry<System.Object,System.Runtime.InteropServices.ComWrappers+ManagedObjectWrapperHolder>[] (Bytes > 100K)  [System.Private.CoreLib.dll]",
+        "        262,168       109  Entry<System.Object,System.Collections.Generic.List<System.Runtime.InteropServices.ComWrappers+ManagedObjectWrapperHolder>>[] (Bytes > 100K)  [System.Private.CoreLib.dll]",
+        "        262,168        70  Entry<System.Collections.Generic.IList<Microsoft.UI.Xaml.Automation.Peers.AutomationPeer>,ABI.System.Collections.Generic.IList+ToAbiHelper<Microsoft.UI.Xaml.Automation.Peers.AutomationPeer>>[] (Bytes > 100K)  [System.Private.CoreLib.dll]",
+        "        171,700         3  System.Byte[] (Bytes > 100K)  [System.Private.CoreLib.dll]",
+        "         65,560         6  ManagedObjectWrapperHolder[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         65,560         2  System.Collections.Generic.KeyValuePair<Doroti.Framework.Widgets.Element,System.Object>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         64,808         1  Entry<Doroti.Framework.Rendering.RenderObject>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         60,192         1  System.String (Bytes > 10K)  [System.Private.CoreLib.dll]"
+      ]
+    },
+    {
+      "stage": "maui-final-background-1",
+      "managedHeapBytes": 54745612,
+      "managedHeapObjects": 231729,
+      "collectionLogTail": [
+        "  0.9s: EventPipe Listener dying",
+        "  0.9s: gcdump EventPipe Session closed",
+        "Processing Heap Data, BulkTypeEventCount:3414  BulkNodeEventCount:114  BulkEdgeEventCount:620",
+        "[  1.2s: Done Dumping .NET heap success=True]",
+        "\tFinished writing 14345593 bytes."
+      ],
+      "heapReportHeader": [
+        "     54,745,612  GC Heap bytes",
+        "        231,729  GC Heap objects",
+        "",
+        "   Object Bytes     Count  Type",
+        "      2,097,176         1  ManagedObjectWrapperHolder[] (Bytes > 1M)  [System.Private.CoreLib.dll]",
+        "      1,769,496         1  TraceSlot[] (Bytes > 1M)  [Doroti.Ui.dll]",
+        "        131,096       106  ManagedObjectWrapperHolder[] (Bytes > 100K)  [System.Private.CoreLib.dll]",
+        "        131,096         4  System.Byte[] (Bytes > 100K)  [System.Private.CoreLib.dll]",
+        "         65,560         2  System.Collections.Generic.KeyValuePair<Doroti.Framework.Widgets.Element,System.Object>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         64,808         1  Entry<Doroti.Framework.Rendering.RenderObject>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         60,192         1  System.String (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         49,224         1  Entry<System.Runtime.CompilerServices.VirtualDispatchHelpers+VirtualResolutionData,System.IntPtr>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         46,368         1  Entry<System.IntPtr,System.Runtime.InteropServices.GCHandle>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         32,792        59  ManagedObjectWrapperHolder[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         32,792         6  Entry<System.Object,System.Runtime.InteropServices.ComWrappers+NativeObjectWrapper>[] (Bytes > 10K)  [System.Private.CoreLib.dll]"
+      ]
+    },
+    {
+      "stage": "maui-final-background-2",
+      "managedHeapBytes": 39448220,
+      "managedHeapObjects": 266465,
+      "collectionLogTail": [
+        "  0.8s: gcdump EventPipe session shut down",
+        "  0.8s: gcdump EventPipe Session closed",
+        "Processing Heap Data, BulkTypeEventCount:2141  BulkNodeEventCount:132  BulkEdgeEventCount:382",
+        "[  1.1s: Done Dumping .NET heap success=True]",
+        "\tFinished writing 10978319 bytes."
+      ],
+      "heapReportHeader": [
+        "     39,448,220  GC Heap bytes",
+        "        266,465  GC Heap objects",
+        "",
+        "   Object Bytes     Count  Type",
+        "      2,097,176         1  ManagedObjectWrapperHolder[] (Bytes > 1M)  [System.Private.CoreLib.dll]",
+        "      1,769,496         1  TraceSlot[] (Bytes > 1M)  [Doroti.Ui.dll]",
+        "        171,700         3  System.Byte[] (Bytes > 100K)  [System.Private.CoreLib.dll]",
+        "        131,096        38  ManagedObjectWrapperHolder[] (Bytes > 100K)  [System.Private.CoreLib.dll]",
+        "         97,200         1  Entry<System.IntPtr,System.Runtime.InteropServices.GCHandle>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         65,560        76  ManagedObjectWrapperHolder[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         65,560         2  System.Collections.Generic.KeyValuePair<Doroti.Framework.Widgets.Element,System.Object>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         64,808         1  Entry<Doroti.Framework.Rendering.RenderObject>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         60,192         1  System.String (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         49,224         1  Entry<System.Runtime.CompilerServices.VirtualDispatchHelpers+VirtualResolutionData,System.IntPtr>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         32,792        10  Entry<System.Object,System.Runtime.InteropServices.ComWrappers+NativeObjectWrapper>[] (Bytes > 10K)  [System.Private.CoreLib.dll]"
+      ]
+    },
+    {
+      "stage": "maui-final-background-3",
+      "managedHeapBytes": 38635436,
+      "managedHeapObjects": 264084,
+      "collectionLogTail": [
+        "  0.7s: EventPipe Listener dying",
+        "  0.7s: gcdump EventPipe Session closed",
+        "Processing Heap Data, BulkTypeEventCount:602  BulkNodeEventCount:130  BulkEdgeEventCount:382",
+        "[  1.0s: Done Dumping .NET heap success=True]",
+        "\tFinished writing 10933171 bytes."
+      ],
+      "heapReportHeader": [
+        "     38,635,436  GC Heap bytes",
+        "        264,084  GC Heap objects",
+        "",
+        "   Object Bytes     Count  Type",
+        "      2,097,176         1  ManagedObjectWrapperHolder[] (Bytes > 1M)  [System.Private.CoreLib.dll]",
+        "      1,769,496         1  TraceSlot[] (Bytes > 1M)  [Doroti.Ui.dll]",
+        "        171,700         3  System.Byte[] (Bytes > 100K)  [System.Private.CoreLib.dll]",
+        "        131,096        38  ManagedObjectWrapperHolder[] (Bytes > 100K)  [System.Private.CoreLib.dll]",
+        "         97,200         1  Entry<System.IntPtr,System.Runtime.InteropServices.GCHandle>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         65,560        76  ManagedObjectWrapperHolder[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         65,560         2  System.Collections.Generic.KeyValuePair<Doroti.Framework.Widgets.Element,System.Object>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         65,560         1  Entry<System.Object,System.Runtime.InteropServices.ComWrappers+ManagedObjectWrapperHolder>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         65,560         1  Entry<System.Object,System.Collections.Generic.List<System.Runtime.InteropServices.ComWrappers+ManagedObjectWrapperHolder>>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         64,808         1  Entry<Doroti.Framework.Rendering.RenderObject>[] (Bytes > 10K)  [System.Private.CoreLib.dll]",
+        "         60,192         1  System.String (Bytes > 10K)  [System.Private.CoreLib.dll]"
+      ]
+    }
+  ],
+  "processObservations": [
+    {
+      "stage": "after-candidate-gc-1-and-resume",
+      "utc": "2026-11-01T13:29:21.9854179Z",
+      "processId": 34492,
+      "workingSetBytes": 784338944,
+      "privateBytes": 655351808
+    },
+    {
+      "stage": "after-candidate-gc-2",
+      "utc": "2026-11-01T13:29:34.6822211Z",
+      "processId": 34492,
+      "workingSetBytes": 783314944,
+      "privateBytes": 654606336
+    },
+    {
+      "stage": "after-candidate-gc-3",
+      "utc": "2026-11-01T13:30:22.5189901Z",
+      "processId": 34492,
+      "workingSetBytes": 792576000,
+      "privateBytes": 662888448
+    }
+  ],
+  "regressionOutput": [
+    "PASS: production ticker at 60/120 Hz, missed pulses, fractional offsets, semantic boundaries",
+    "PASS: Android vsync clock, matrix ownership/allocation, perspective and legacy semantics projection",
+    "PASS: caret semantics cache, graphemes, edit/wrap/scale/offset/obscure/dispose invalidation",
+    "PASS: text-only decoration notifications, latest semantic selection, projection/DPR/clip/obscure/thread invalidation",
+    "PASS: shared-controller collapsed caret paint without layout; text/composition/range/focus/custom fallbacks; retained leaf freshness",
+    "PASS: queued weak notifications preserve live delivery and release abandoned owners before native callback retirement",
+    "PASS: managed callback ownership, late/duplicate delivery, failure cleanup and concurrent/reentrant dispatch",
+    "PASS: immutable scroll recordings, producer mutation/disposal, texture copy-on-write and lease retirement",
+    "PASS: renderer/Windows retained native/shield inspection, depth guards and allocation-free repeated inspection",
+    "PASS: stable Windows UIA child lists, live values, order/removal/handler refresh and unready-peer retry",
+    "PASS: scroll-only semantics coalescing, content/action priority, exact final offset/extents, conservative hosts and disposed listener release",
+    "PASS: cached section owner/parent-data/sibling preservation, no repeated attach or recreation, exact eviction teardown",
+    "PASS: release velocity, ballistic continuation, semantic changes, native inertia lifecycle"
+  ],
+  "buildLogTails": {
+    "baseline": [
+      "  Doroti icons: CupertinoIcons, 7 codepoints, 257,628 -> 1,860 bytes.",
+      "  Doroti icons: MaterialIcons, 105 codepoints, 1,645,184 -> 14,564 bytes.",
+      "",
+      "빌드했습니다.",
+      "    경고 0개",
+      "    오류 0개",
+      "",
+      "경과 시간: 00:00:33.26"
+    ],
+    "candidate": [
+      "  Doroti icons: CupertinoIcons, 7 codepoints, 257,628 -> 1,860 bytes.",
+      "  Doroti icons: MaterialIcons, 105 codepoints, 1,645,184 -> 14,564 bytes.",
+      "",
+      "빌드했습니다.",
+      "    경고 0개",
+      "    오류 0개",
+      "",
+      "경과 시간: 00:00:22.50"
+    ],
+    "maui": [
+      "  Doroti icons: CupertinoIcons, 7 codepoints, 257,628 -> 1,860 bytes.",
+      "  Doroti icons: MaterialIcons, 105 codepoints, 1,645,184 -> 14,564 bytes.",
+      "",
+      "빌드했습니다.",
+      "    경고 0개",
+      "    오류 0개",
+      "",
+      "경과 시간: 00:00:50.60"
+    ],
+    "maui-final": [
+      "  Doroti icons: CupertinoIcons, 7 codepoints, 257,628 -> 1,860 bytes.",
+      "  Doroti icons: MaterialIcons, 105 codepoints, 1,645,184 -> 14,564 bytes.",
+      "",
+      "빌드했습니다.",
+      "    경고 0개",
+      "    오류 0개",
+      "",
+      "경과 시간: 00:00:34.91"
+    ],
+    "windows-final": [
+      "  Doroti icons: CupertinoIcons, 7 codepoints, 257,628 -> 1,860 bytes.",
+      "  Doroti icons: MaterialIcons, 105 codepoints, 1,645,184 -> 14,564 bytes.",
+      "",
+      "빌드했습니다.",
+      "    경고 0개",
+      "    오류 0개",
+      "",
+      "경과 시간: 00:00:27.55"
+    ]
+  },
+  "defaultWindowsBaseline": {
+    "ready": {
+      "schemaVersion": "doroti.windows.experimental-acrylic-ready/v1",
+      "hwnd": 198834,
+      "processId": 1880,
+      "title": "Doroti Material Testbed",
+      "requestedMode": "acrylic",
+      "effectiveMode": "acrylic"
+    },
+    "mode": {
+      "requested": "acrylic",
+      "effective": "acrylic",
+      "fallbackReason": null
+    },
+    "presenter": {
+      "requested": "Vulkan",
+      "effective": "Graphite/Vulkan/D3D12/DXGI"
+    },
+    "frames": {
+      "presenterBackend": "Graphite/Vulkan/D3D12/DXGI",
+      "presenterDiagnosticCoverage": "Graphite/Vulkan shared-recorder raster atlas, immutable same-adapter GPU shared textures after producer completion, bounded premultiplied DirectComposition HWND slices and live native HWNDs; reserved placement operations, batched sibling order/geometry, rectangular alpha regions, and explicit shield input; physical display atomicity and performance acceptance are not qualified",
+      "adapterDescription": "AMD Radeon 780M Graphics; vendor=0x1002; device=0x1900; api=1.3.302",
+      "requestedPresenter": "Vulkan",
+      "effectivePresenter": "Graphite/Vulkan/D3D12/DXGI",
+      "requestedMode": "acrylic",
+      "effectiveMode": "acrylic",
+      "fallbackReason": null,
+      "platformThreadId": 22384,
+      "rasterThreadId": 26016,
+      "inputThreadId": 22384,
+      "renderCallbacks": 714,
+      "presentedTerminals": 713,
+      "supersededTerminals": 3605,
+      "failedTerminals": 0,
+      "visibleAfterExactPresent": true,
+      "acceptedResizeGenerations": 1,
+      "presentedResizeGenerations": 0,
+      "supersededResizeGenerations": 1,
+      "failedResizeGenerations": 0,
+      "unterminatedResizeGenerations": 0,
+      "duplicateResizeTerminals": 0,
+      "deviceGenerations": 1,
+      "resizeBuffers": 0,
+      "presents": 664,
+      "gpuSubmits": 1994,
+      "gpuCopies": 1328,
+      "initializationDebugErrors": 0,
+      "operationalDebugErrors": 0,
+      "rendererSubmitted": 0,
+      "rendererPresented": 663,
+      "rendererReplayed": 1,
+      "staleInputPresentsPrevented": 0,
+      "vulkanDeviceLossRecoveries": 0,
+      "vulkanSurfaceLossRecoveries": 0,
+      "requestedDeviceResets": 0,
+      "completedDeviceResets": 0
+    },
+    "renderer": {
+      "submitted": 0,
+      "presented": 663,
+      "replayed": 1,
+      "failed": 0,
+      "contextGeneration": 1,
+      "surfaceGeneration": 1,
+      "pendingScene": false,
+      "shaderImageFiltersRendered": 0,
+      "backend": "windowsappsdk-2.4-hwnd-graphite-vulkan-d3d12-dxgi-skia-managed",
+      "superseded": 3591,
+      "dropped": 0,
+      "lastInputSequence": 48,
+      "lastSubmittedInputSequence": 0,
+      "lastPresentedInputSequence": 48,
+      "imageFilterSurfacesCreated": 0,
+      "imageFilterSurfaceReuses": 0,
+      "activeImageFilterSurfaces": 0,
+      "shaderImageFilterCacheHits": 0,
+      "shaderImageFilterCacheMisses": 0,
+      "pictureRasterCacheHits": 0,
+      "pictureRasterCacheMisses": 0,
+      "pictureRasterCacheEntries": 0,
+      "sceneAccepted": 4254,
+      "causalPaintAttempts": 664,
+      "terminalLedger": {
+        "registered": 4254,
+        "completed": 4254,
+        "active": 0,
+        "presented": 663,
+        "submitted": 0,
+        "superseded": 3591,
+        "dropped": 0,
+        "failed": 0,
+        "duplicateTerminalAttempts": 0,
+        "recentCount": 256,
+        "recentCapacity": 256,
+        "recentHighWater": 256
+      },
+      "work": {
+        "promotionCount": 0,
+        "promotionMicroseconds": 0,
+        "promotionMaximumMicroseconds": 0,
+        "paragraphCount": 320,
+        "paragraphMicroseconds": 67443,
+        "warmupEntries": 0,
+        "rasterPixels": 0,
+        "textEntries": 54,
+        "commandCacheHits": 42496,
+        "commandRecordings": 257,
+        "commandEntries": 128,
+        "retainedCommands": 697,
+        "commandBytes": 66384,
+        "textCacheHits": 17325,
+        "textCacheMisses": 54,
+        "textCacheEvictions": 0,
+        "fontGeneration": 7,
+        "textEntryLimit": 256,
+        "rasterPixelLimit": 16777216
+      }
+    },
+    "vulkan": {
+      "loaderPath": "C:\\WINDOWS\\system32\\vulkan-1.dll",
+      "loaderSha256": "0419974f00e82a3d619077ba414da265a774f8db9d45ad93bc1843f44b2c2c1f",
+      "loaderApiVersion": "1.4.350",
+      "silkNetVersion": "2.23.0.0",
+      "device": "AMD Radeon 780M Graphics; vendor=0x1002; device=0x1900; api=1.3.302",
+      "deviceType": "IntegratedGpu",
+      "vendorId": 4098,
+      "deviceId": 6400,
+      "driverVersion": 8388939,
+      "deviceApiVersion": "1.3.302",
+      "deviceLuid": "7E23010000000000",
+      "queueFamily": 0,
+      "surfaceFormat": "B8G8R8A8Unorm",
+      "colorSpace": "RGB_FULL_G22_NONE_P709",
+      "compositeAlpha": "Premultiplied",
+      "presentMode": "D3D12-DXGI-FlipSequential",
+      "imageCount": 3,
+      "surfaceWidth": 2560,
+      "surfaceHeight": 1792,
+      "retainedSurfaceReuses": 663,
+      "surfaceRecreates": 0,
+      "backingCapacityWidth": 2560,
+      "backingCapacityHeight": 1792,
+      "backingAllocationBytes": 18432368,
+      "retainedFrameAllocationBytes": 18350080,
+      "retainedFrameInitialized": true,
+      "backingAllocations": 2,
+      "backingReuses": 663,
+      "deferredCopySubmissions": 663,
+      "copyFenceWaits": 1,
+      "lastCopyFenceWaitMicroseconds": 4157,
+      "maximumCopyFenceWaitMicroseconds": 4157,
+      "width": 2560,
+      "height": 1559,
+      "swapchainGeneration": 2,
+      "acquired": 664,
+      "presented": 664,
+      "successfulPresents": 664,
+      "outstandingAcquired": 0,
+      "outstandingImageIndex": -1,
+      "outstandingCopySubmission": 0,
+      "maximumOutstandingAcquired": 1,
+      "deviceLostResults": 0,
+      "surfaceLostResults": 0,
+      "outOfDateResults": 0,
+      "suboptimalResults": 0,
+      "lastAcquireResult": "Success",
+      "lastSubmitResult": "Success",
+      "lastPresentResult": "Success",
+      "activeSwapchains": 0,
+      "retiredSwapchains": 0,
+      "validationEnabled": false,
+      "maximumRetiredSwapchains": 0,
+      "lastRecreateReason": "composition-capacity-grow",
+      "lastRetirementLatencyMicroseconds": 0,
+      "lastRecreateLatencyMicroseconds": 0,
+      "maximumRecreateLatencyMicroseconds": 0,
+      "lastSwapchainCreateLatencyMicroseconds": 0,
+      "maximumSwapchainCreateLatencyMicroseconds": 0,
+      "lastBackingWrapLatencyMicroseconds": 9165,
+      "maximumBackingWrapLatencyMicroseconds": 13893,
+      "firstPresentQpc": 479326514208,
+      "lastTargetQpc": 481156878968,
+      "lastPresentQpc": 481156951330,
+      "retirementMode": "d3d12-copy-fence-source-reuse-dxgi-owned-display-buffers",
+      "queueIdleRetirementWaits": 0,
+      "compositionFrameWaits": 1,
+      "compositionFrameObserved": 1,
+      "compositionFrameWaitTimeouts": 0,
+      "fixedOriginPreGeometryAdmissions": 0,
+      "movingOriginPreGeometryAdmissions": 0,
+      "movingOriginPreGeometryDisplayWaits": 0,
+      "movingOriginPrepared": 0,
+      "movingOriginWindowPosCommitAttempt": 0,
+      "movingOriginWindowPosCommitted": 0,
+      "movingOriginWindowPosMismatch": 0,
+      "movingOriginWindowPosCancelled": 0,
+      "movingOriginWindowPosFailed": 0,
+      "movingOriginReserved": 0,
+      "clockWait": 0,
+      "clockWaitObserved": 0,
+      "clockWaitTimeout": 0,
+      "postGeometryFallback": 0,
+      "candidatePolicy": "moving-origin-clock-geometry-prepared-commit-receipt",
+      "lastCompositionFrameWaitMicroseconds": 32239,
+      "maximumCompositionFrameWaitMicroseconds": 32239,
+      "resizeClockWaits": 0,
+      "resizeClockSignals": 0,
+      "resizeClockFailures": 0,
+      "lastResizeClockStatus": 0,
+      "maximumResizeClockWaitMicroseconds": 0,
+      "preparedReceiptTimeoutMilliseconds": 50,
+      "preparedReceiptsOver50Milliseconds": 0,
+      "validationErrors": 0,
+      "validationWarnings": 0,
+      "validationCallbackFault": false,
+      "validationMessages": [],
+      "usesPackagedGraphiteAsset": true,
+      "graphiteNativePath": "C:\\Users\\parti\\Labo\\DorotiLab\\samples\\DorotiTestbedApp\\windowsappsdk\\bin\\Release\\net10.0-windows10.0.19041.0\\win-x64\\libSkiaSharp.dll",
+      "graphiteNativeSha256": "82f9b2ee2b2dc91f738ae4baa54cd21fdd1181883c0fa207ab7066c708f07108",
+      "d3D12Output": {
+        "submittedCopies": 664,
+        "completedCopies": 664,
+        "resourceAllocations": 3,
+        "swapchainResizes": 0,
+        "debugEnabled": false,
+        "debugErrors": 0,
+        "debugWarnings": 0,
+        "activeSwapchains": 1,
+        "retirement": "D3D12 copy fence for shared-source reuse; DXGI owns back-buffer display retirement",
+        "displayWait": "DXGI present-count statistics for prepared resize; DwmFlush boundary for ordinary admission"
+      },
+      "depthStencilBarrierStageCorrections": 14951
+    },
+    "frameScheduling": {
+      "enabled": true,
+      "frames": 4318,
+      "slowFrames": 14,
+      "ownerPriority": "Normal",
+      "maximumUiQueueMicroseconds": 85945,
+      "maximumUiWorkMicroseconds": 1829210,
+      "maximumCompletionResumeMicroseconds": 914,
+      "slow": [
+        {
+          "frameId": 1,
+          "timestampMicroseconds": 132474,
+          "inputCount": 0,
+          "uiQueueMicroseconds": 275,
+          "uiWorkMicroseconds": 21175,
+          "uiCpuMicroseconds": 15625,
+          "completionResumeMicroseconds": 676,
+          "gcPauseMicroseconds": 2279
+        },
+        {
+          "frameId": 4,
+          "timestampMicroseconds": 2802390,
+          "inputCount": 0,
+          "uiQueueMicroseconds": 41,
+          "uiWorkMicroseconds": 1829210,
+          "uiCpuMicroseconds": 1359375,
+          "completionResumeMicroseconds": 23,
+          "gcPauseMicroseconds": 60002
+        },
+        {
+          "frameId": 7,
+          "timestampMicroseconds": 4784178,
+          "inputCount": 1,
+          "uiQueueMicroseconds": 52,
+          "uiWorkMicroseconds": 19313,
+          "uiCpuMicroseconds": 31250,
+          "completionResumeMicroseconds": 29,
+          "gcPauseMicroseconds": 0
+        },
+        {
+          "frameId": 10,
+          "timestampMicroseconds": 4817750,
+          "inputCount": 5,
+          "uiQueueMicroseconds": 58,
+          "uiWorkMicroseconds": 71110,
+          "uiCpuMicroseconds": 62500,
+          "completionResumeMicroseconds": 26,
+          "gcPauseMicroseconds": 0
+        },
+        {
+          "frameId": 79,
+          "timestampMicroseconds": 46688220,
+          "inputCount": 2,
+          "uiQueueMicroseconds": 42,
+          "uiWorkMicroseconds": 81918,
+          "uiCpuMicroseconds": 93750,
+          "completionResumeMicroseconds": 42,
+          "gcPauseMicroseconds": 3849
+        },
+        {
+          "frameId": 281,
+          "timestampMicroseconds": 47331066,
+          "inputCount": 0,
+          "uiQueueMicroseconds": 30,
+          "uiWorkMicroseconds": 17737,
+          "uiCpuMicroseconds": 31250,
+          "completionResumeMicroseconds": 18,
+          "gcPauseMicroseconds": 16864
+        },
+        {
+          "frameId": 429,
+          "timestampMicroseconds": 59344804,
+          "inputCount": 1,
+          "uiQueueMicroseconds": 30,
+          "uiWorkMicroseconds": 68745,
+          "uiCpuMicroseconds": 78125,
+          "completionResumeMicroseconds": 16,
+          "gcPauseMicroseconds": 0
+        },
+        {
+          "frameId": 471,
+          "timestampMicroseconds": 59666584,
+          "inputCount": 0,
+          "uiQueueMicroseconds": 32,
+          "uiWorkMicroseconds": 17996,
+          "uiCpuMicroseconds": 15625,
+          "completionResumeMicroseconds": 19,
+          "gcPauseMicroseconds": 0
+        },
+        {
+          "frameId": 1120,
+          "timestampMicroseconds": 64300402,
+          "inputCount": 2,
+          "uiQueueMicroseconds": 29,
+          "uiWorkMicroseconds": 348773,
+          "uiCpuMicroseconds": 343750,
+          "completionResumeMicroseconds": 21,
+          "gcPauseMicroseconds": 11570
+        },
+        {
+          "frameId": 1124,
+          "timestampMicroseconds": 64671670,
+          "inputCount": 1,
+          "uiQueueMicroseconds": 26,
+          "uiWorkMicroseconds": 48534,
+          "uiCpuMicroseconds": 46875,
+          "completionResumeMicroseconds": 16,
+          "gcPauseMicroseconds": 0
+        },
+        {
+          "frameId": 1548,
+          "timestampMicroseconds": 87877805,
+          "inputCount": 1,
+          "uiQueueMicroseconds": 23,
+          "uiWorkMicroseconds": 168399,
+          "uiCpuMicroseconds": 171875,
+          "completionResumeMicroseconds": 28,
+          "gcPauseMicroseconds": 1832
+        },
+        {
+          "frameId": 1738,
+          "timestampMicroseconds": 88145725,
+          "inputCount": 0,
+          "uiQueueMicroseconds": 6305,
+          "uiWorkMicroseconds": 10492,
+          "uiCpuMicroseconds": 15625,
+          "completionResumeMicroseconds": 24,
+          "gcPauseMicroseconds": 0
+        },
+        {
+          "frameId": 3706,
+          "timestampMicroseconds": 159338906,
+          "inputCount": 2,
+          "uiQueueMicroseconds": 21,
+          "uiWorkMicroseconds": 17649,
+          "uiCpuMicroseconds": 15625,
+          "completionResumeMicroseconds": 22,
+          "gcPauseMicroseconds": 0
+        },
+        {
+          "frameId": 4722,
+          "timestampMicroseconds": 187723106,
+          "inputCount": 0,
+          "uiQueueMicroseconds": 85945,
+          "uiWorkMicroseconds": 6653,
+          "uiCpuMicroseconds": 0,
+          "completionResumeMicroseconds": 29,
+          "gcPauseMicroseconds": 0
+        }
+      ]
+    },
+    "inputIngress": {
+      "enabled": true,
+      "inputWindow": 198834,
+      "rasterWindow": 394704,
+      "wheelPackets": 7,
+      "trackpadWheelPackets": 0,
+      "mouseWheelPackets": 7,
+      "otherWheelPackets": 0,
+      "panZoomPackets": 0,
+      "movePackets": 0,
+      "devicePixelRatio": 2,
+      "trackpadPackets": [],
+      "precisionTrackpad": {
+        "updateCalls": 1,
+        "hitTests": 0,
+        "contacts": 0,
+        "status": 5,
+        "window": 198834,
+        "root": 198834,
+        "activeWindows": [
+          198834,
+          394704
+        ],
+        "contactWindow": 0
+      }
+    },
+    "nativeFramePipeline": {
+      "mode": "C",
+      "maximumPending": 2,
+      "pending": 1,
+      "supportsTwoFrames": true,
+      "preparedWhileGpuFull": 3597,
+      "rejectedAdmissions": 3604,
+      "normalCopyRetirement": "nonblocking Vulkan fence poll; D3D12 slot consumer fence",
+      "displayFps": null,
+      "hardwareOverlap": "notMeasured"
+    },
+    "finalDrain": [
+      "doroti.g1.drain app=597e8f5d-bbf7-428f-acdc-d1196ba7f6f8 view=1 complete=true pending=0"
+    ],
+    "nativeInputSummary": [
+      "doroti.windows.message-pump={\"inputMessages\":44,\"maximumInputQueueMs\":16,\"frameRequests\":8878,\"coalescedFrameRequests\":4156}",
+      "doroti.windows.pointer-source={\"wheelTouchpadSource\":0,\"wheelMouseSource\":7,\"wheelUnavailableSource\":0,\"wheelOtherSource\":0}"
+    ],
+    "frameTimingScope": "Whole run, including startup, lazy loads, explicit GC and page transitions; not a controlled scroll comparison or display receipt",
+    "pipelinePendingScope": "NativeFramePipeline is captured before final managed Dispose; finalDrain is the later cleanup receipt"
+  },
+  "defaultWindowsCandidate": {
+    "ready": {
+      "schemaVersion": "doroti.windows.experimental-acrylic-ready/v1",
+      "hwnd": 2951452,
+      "processId": 34492,
+      "title": "Doroti Material Testbed",
+      "requestedMode": "acrylic",
+      "effectiveMode": "acrylic"
+    },
+    "mode": {
+      "requested": "acrylic",
+      "effective": "acrylic",
+      "fallbackReason": null
+    },
+    "presenter": {
+      "requested": "Vulkan",
+      "effective": "Graphite/Vulkan/D3D12/DXGI"
+    },
+    "frames": {
+      "presenterBackend": "Graphite/Vulkan/D3D12/DXGI",
+      "presenterDiagnosticCoverage": "Graphite/Vulkan shared-recorder raster atlas, immutable same-adapter GPU shared textures after producer completion, bounded premultiplied DirectComposition HWND slices and live native HWNDs; reserved placement operations, batched sibling order/geometry, rectangular alpha regions, and explicit shield input; physical display atomicity and performance acceptance are not qualified",
+      "adapterDescription": "AMD Radeon 780M Graphics; vendor=0x1002; device=0x1900; api=1.3.302",
+      "requestedPresenter": "Vulkan",
+      "effectivePresenter": "Graphite/Vulkan/D3D12/DXGI",
+      "requestedMode": "acrylic",
+      "effectiveMode": "acrylic",
+      "fallbackReason": null,
+      "platformThreadId": 25128,
+      "rasterThreadId": 13468,
+      "inputThreadId": 25128,
+      "renderCallbacks": 1389,
+      "presentedTerminals": 1388,
+      "supersededTerminals": 4511,
+      "failedTerminals": 0,
+      "visibleAfterExactPresent": true,
+      "acceptedResizeGenerations": 1,
+      "presentedResizeGenerations": 0,
+      "supersededResizeGenerations": 1,
+      "failedResizeGenerations": 0,
+      "unterminatedResizeGenerations": 0,
+      "duplicateResizeTerminals": 0,
+      "deviceGenerations": 1,
+      "resizeBuffers": 0,
+      "presents": 1327,
+      "gpuSubmits": 3983,
+      "gpuCopies": 2654,
+      "initializationDebugErrors": 0,
+      "operationalDebugErrors": 0,
+      "rendererSubmitted": 0,
+      "rendererPresented": 1073,
+      "rendererReplayed": 1,
+      "staleInputPresentsPrevented": 0,
+      "vulkanDeviceLossRecoveries": 0,
+      "vulkanSurfaceLossRecoveries": 0,
+      "requestedDeviceResets": 0,
+      "completedDeviceResets": 0
+    },
+    "renderer": {
+      "submitted": 0,
+      "presented": 1073,
+      "replayed": 1,
+      "failed": 0,
+      "contextGeneration": 1,
+      "surfaceGeneration": 1,
+      "pendingScene": false,
+      "shaderImageFiltersRendered": 0,
+      "backend": "windowsappsdk-2.4-hwnd-graphite-vulkan-d3d12-dxgi-skia-managed",
+      "superseded": 4748,
+      "dropped": 0,
+      "lastInputSequence": 96,
+      "lastSubmittedInputSequence": 0,
+      "lastPresentedInputSequence": 96,
+      "imageFilterSurfacesCreated": 0,
+      "imageFilterSurfaceReuses": 0,
+      "activeImageFilterSurfaces": 0,
+      "shaderImageFilterCacheHits": 0,
+      "shaderImageFilterCacheMisses": 0,
+      "pictureRasterCacheHits": 0,
+      "pictureRasterCacheMisses": 0,
+      "pictureRasterCacheEntries": 0,
+      "sceneAccepted": 5821,
+      "causalPaintAttempts": 1327,
+      "terminalLedger": {
+        "registered": 5821,
+        "completed": 5821,
+        "active": 0,
+        "presented": 1073,
+        "submitted": 0,
+        "superseded": 4748,
+        "dropped": 0,
+        "failed": 0,
+        "duplicateTerminalAttempts": 0,
+        "recentCount": 256,
+        "recentCapacity": 256,
+        "recentHighWater": 256
+      },
+      "work": {
+        "promotionCount": 0,
+        "promotionMicroseconds": 0,
+        "promotionMaximumMicroseconds": 0,
+        "paragraphCount": 370,
+        "paragraphMicroseconds": 202083,
+        "warmupEntries": 0,
+        "rasterPixels": 0,
+        "textEntries": 49,
+        "commandCacheHits": 60008,
+        "commandRecordings": 329,
+        "commandEntries": 128,
+        "retainedCommands": 1171,
+        "commandBytes": 47040,
+        "textCacheHits": 21519,
+        "textCacheMisses": 49,
+        "textCacheEvictions": 0,
+        "fontGeneration": 7,
+        "textEntryLimit": 256,
+        "rasterPixelLimit": 16777216
+      }
+    },
+    "vulkan": {
+      "loaderPath": "C:\\WINDOWS\\system32\\vulkan-1.dll",
+      "loaderSha256": "0419974f00e82a3d619077ba414da265a774f8db9d45ad93bc1843f44b2c2c1f",
+      "loaderApiVersion": "1.4.350",
+      "silkNetVersion": "2.23.0.0",
+      "device": "AMD Radeon 780M Graphics; vendor=0x1002; device=0x1900; api=1.3.302",
+      "deviceType": "IntegratedGpu",
+      "vendorId": 4098,
+      "deviceId": 6400,
+      "driverVersion": 8388939,
+      "deviceApiVersion": "1.3.302",
+      "deviceLuid": "7E23010000000000",
+      "queueFamily": 0,
+      "surfaceFormat": "B8G8R8A8Unorm",
+      "colorSpace": "RGB_FULL_G22_NONE_P709",
+      "compositeAlpha": "Premultiplied",
+      "presentMode": "D3D12-DXGI-FlipSequential",
+      "imageCount": 3,
+      "surfaceWidth": 2560,
+      "surfaceHeight": 1792,
+      "retainedSurfaceReuses": 1326,
+      "surfaceRecreates": 0,
+      "backingCapacityWidth": 2560,
+      "backingCapacityHeight": 1792,
+      "backingAllocationBytes": 18432368,
+      "retainedFrameAllocationBytes": 18350080,
+      "retainedFrameInitialized": true,
+      "backingAllocations": 2,
+      "backingReuses": 1326,
+      "deferredCopySubmissions": 654,
+      "copyFenceWaits": 673,
+      "lastCopyFenceWaitMicroseconds": 4352,
+      "maximumCopyFenceWaitMicroseconds": 12380,
+      "width": 2560,
+      "height": 1559,
+      "swapchainGeneration": 2,
+      "acquired": 1327,
+      "presented": 1327,
+      "successfulPresents": 1327,
+      "outstandingAcquired": 0,
+      "outstandingImageIndex": -1,
+      "outstandingCopySubmission": 0,
+      "maximumOutstandingAcquired": 1,
+      "deviceLostResults": 0,
+      "surfaceLostResults": 0,
+      "outOfDateResults": 0,
+      "suboptimalResults": 0,
+      "lastAcquireResult": "Success",
+      "lastSubmitResult": "Success",
+      "lastPresentResult": "Success",
+      "activeSwapchains": 0,
+      "retiredSwapchains": 0,
+      "validationEnabled": false,
+      "maximumRetiredSwapchains": 0,
+      "lastRecreateReason": "composition-capacity-grow",
+      "lastRetirementLatencyMicroseconds": 0,
+      "lastRecreateLatencyMicroseconds": 0,
+      "maximumRecreateLatencyMicroseconds": 0,
+      "lastSwapchainCreateLatencyMicroseconds": 0,
+      "maximumSwapchainCreateLatencyMicroseconds": 0,
+      "lastBackingWrapLatencyMicroseconds": 12476,
+      "maximumBackingWrapLatencyMicroseconds": 18305,
+      "firstPresentQpc": 482222903147,
+      "lastTargetQpc": 484311991186,
+      "lastPresentQpc": 484312072369,
+      "retirementMode": "d3d12-copy-fence-source-reuse-dxgi-owned-display-buffers",
+      "queueIdleRetirementWaits": 0,
+      "compositionFrameWaits": 1,
+      "compositionFrameObserved": 1,
+      "compositionFrameWaitTimeouts": 0,
+      "fixedOriginPreGeometryAdmissions": 0,
+      "movingOriginPreGeometryAdmissions": 0,
+      "movingOriginPreGeometryDisplayWaits": 0,
+      "movingOriginPrepared": 0,
+      "movingOriginWindowPosCommitAttempt": 0,
+      "movingOriginWindowPosCommitted": 0,
+      "movingOriginWindowPosMismatch": 0,
+      "movingOriginWindowPosCancelled": 0,
+      "movingOriginWindowPosFailed": 0,
+      "movingOriginReserved": 0,
+      "clockWait": 0,
+      "clockWaitObserved": 0,
+      "clockWaitTimeout": 0,
+      "postGeometryFallback": 0,
+      "candidatePolicy": "moving-origin-clock-geometry-prepared-commit-receipt",
+      "lastCompositionFrameWaitMicroseconds": 38141,
+      "maximumCompositionFrameWaitMicroseconds": 38141,
+      "resizeClockWaits": 0,
+      "resizeClockSignals": 0,
+      "resizeClockFailures": 0,
+      "lastResizeClockStatus": 0,
+      "maximumResizeClockWaitMicroseconds": 0,
+      "preparedReceiptTimeoutMilliseconds": 50,
+      "preparedReceiptsOver50Milliseconds": 0,
+      "validationErrors": 0,
+      "validationWarnings": 0,
+      "validationCallbackFault": false,
+      "validationMessages": [],
+      "usesPackagedGraphiteAsset": true,
+      "graphiteNativePath": "C:\\Users\\parti\\Labo\\DorotiLab\\samples\\DorotiTestbedApp\\windowsappsdk\\bin\\Release\\net10.0-windows10.0.19041.0\\win-x64\\libSkiaSharp.dll",
+      "graphiteNativeSha256": "82f9b2ee2b2dc91f738ae4baa54cd21fdd1181883c0fa207ab7066c708f07108",
+      "d3D12Output": {
+        "submittedCopies": 1327,
+        "completedCopies": 1327,
+        "resourceAllocations": 3,
+        "swapchainResizes": 0,
+        "debugEnabled": false,
+        "debugErrors": 0,
+        "debugWarnings": 0,
+        "activeSwapchains": 1,
+        "retirement": "D3D12 copy fence for shared-source reuse; DXGI owns back-buffer display retirement",
+        "displayWait": "DXGI present-count statistics for prepared resize; DwmFlush boundary for ordinary admission"
+      },
+      "depthStencilBarrierStageCorrections": 18121
+    },
+    "frameScheduling": {
+      "enabled": true,
+      "frames": 5899,
+      "slowFrames": 13,
+      "ownerPriority": "Normal",
+      "maximumUiQueueMicroseconds": 27777,
+      "maximumUiWorkMicroseconds": 1287756,
+      "maximumCompletionResumeMicroseconds": 396,
+      "slow": [
+        {
+          "frameId": 1,
+          "timestampMicroseconds": 40294,
+          "inputCount": 0,
+          "uiQueueMicroseconds": 524,
+          "uiWorkMicroseconds": 21930,
+          "uiCpuMicroseconds": 31250,
+          "completionResumeMicroseconds": 396,
+          "gcPauseMicroseconds": 2707
+        },
+        {
+          "frameId": 4,
+          "timestampMicroseconds": 2263435,
+          "inputCount": 0,
+          "uiQueueMicroseconds": 44,
+          "uiWorkMicroseconds": 1287756,
+          "uiCpuMicroseconds": 1203125,
+          "completionResumeMicroseconds": 28,
+          "gcPauseMicroseconds": 44080
+        },
+        {
+          "frameId": 7,
+          "timestampMicroseconds": 3705144,
+          "inputCount": 1,
+          "uiQueueMicroseconds": 66,
+          "uiWorkMicroseconds": 20890,
+          "uiCpuMicroseconds": 15625,
+          "completionResumeMicroseconds": 31,
+          "gcPauseMicroseconds": 0
+        },
+        {
+          "frameId": 17,
+          "timestampMicroseconds": 33675744,
+          "inputCount": 3,
+          "uiQueueMicroseconds": 38,
+          "uiWorkMicroseconds": 172651,
+          "uiCpuMicroseconds": 171875,
+          "completionResumeMicroseconds": 41,
+          "gcPauseMicroseconds": 0
+        },
+        {
+          "frameId": 46,
+          "timestampMicroseconds": 34040705,
+          "inputCount": 0,
+          "uiQueueMicroseconds": 77,
+          "uiWorkMicroseconds": 47041,
+          "uiCpuMicroseconds": 46875,
+          "completionResumeMicroseconds": 35,
+          "gcPauseMicroseconds": 3627
+        },
+        {
+          "frameId": 81,
+          "timestampMicroseconds": 34316850,
+          "inputCount": 0,
+          "uiQueueMicroseconds": 39,
+          "uiWorkMicroseconds": 19246,
+          "uiCpuMicroseconds": 15625,
+          "completionResumeMicroseconds": 22,
+          "gcPauseMicroseconds": 0
+        },
+        {
+          "frameId": 101,
+          "timestampMicroseconds": 34465710,
+          "inputCount": 0,
+          "uiQueueMicroseconds": 72,
+          "uiWorkMicroseconds": 21710,
+          "uiCpuMicroseconds": 31250,
+          "completionResumeMicroseconds": 29,
+          "gcPauseMicroseconds": 17918
+        },
+        {
+          "frameId": 438,
+          "timestampMicroseconds": 44911531,
+          "inputCount": 2,
+          "uiQueueMicroseconds": 46,
+          "uiWorkMicroseconds": 296184,
+          "uiCpuMicroseconds": 296875,
+          "completionResumeMicroseconds": 25,
+          "gcPauseMicroseconds": 7480
+        },
+        {
+          "frameId": 5004,
+          "timestampMicroseconds": 174474966,
+          "inputCount": 2,
+          "uiQueueMicroseconds": 38,
+          "uiWorkMicroseconds": 278363,
+          "uiCpuMicroseconds": 187500,
+          "completionResumeMicroseconds": 25,
+          "gcPauseMicroseconds": 0
+        },
+        {
+          "frameId": 5012,
+          "timestampMicroseconds": 175010631,
+          "inputCount": 4,
+          "uiQueueMicroseconds": 26,
+          "uiWorkMicroseconds": 20322,
+          "uiCpuMicroseconds": 15625,
+          "completionResumeMicroseconds": 18,
+          "gcPauseMicroseconds": 7233
+        },
+        {
+          "frameId": 7886,
+          "timestampMicroseconds": 198531249,
+          "inputCount": 14,
+          "uiQueueMicroseconds": 24,
+          "uiWorkMicroseconds": 110106,
+          "uiCpuMicroseconds": 93750,
+          "completionResumeMicroseconds": 18,
+          "gcPauseMicroseconds": 29632
+        },
+        {
+          "frameId": 7902,
+          "timestampMicroseconds": 198729973,
+          "inputCount": 0,
+          "uiQueueMicroseconds": 38,
+          "uiWorkMicroseconds": 21646,
+          "uiCpuMicroseconds": 31250,
+          "completionResumeMicroseconds": 19,
+          "gcPauseMicroseconds": 17515
+        },
+        {
+          "frameId": 8227,
+          "timestampMicroseconds": 212570296,
+          "inputCount": 0,
+          "uiQueueMicroseconds": 27777,
+          "uiWorkMicroseconds": 6662,
+          "uiCpuMicroseconds": 0,
+          "completionResumeMicroseconds": 26,
+          "gcPauseMicroseconds": 0
+        }
+      ]
+    },
+    "inputIngress": {
+      "enabled": true,
+      "inputWindow": 2951452,
+      "rasterWindow": 1311524,
+      "wheelPackets": 7,
+      "trackpadWheelPackets": 0,
+      "mouseWheelPackets": 7,
+      "otherWheelPackets": 0,
+      "panZoomPackets": 0,
+      "movePackets": 2,
+      "devicePixelRatio": 2,
+      "trackpadPackets": [],
+      "precisionTrackpad": {
+        "updateCalls": 1,
+        "hitTests": 0,
+        "contacts": 0,
+        "status": 5,
+        "window": 2951452,
+        "root": 2951452,
+        "activeWindows": [
+          2951452,
+          1311524
+        ],
+        "contactWindow": 0
+      }
+    },
+    "nativeFramePipeline": {
+      "mode": "C",
+      "maximumPending": 2,
+      "pending": 1,
+      "supportsTwoFrames": true,
+      "preparedWhileGpuFull": 3976,
+      "rejectedAdmissions": 4510,
+      "normalCopyRetirement": "nonblocking Vulkan fence poll; D3D12 slot consumer fence",
+      "displayFps": null,
+      "hardwareOverlap": "notMeasured"
+    },
+    "finalDrain": [
+      "doroti.g1.drain app=055a7d5e-9136-4115-99f6-e3b2aa874bfc view=1 complete=true pending=0"
+    ],
+    "nativeInputSummary": [
+      "doroti.windows.message-pump={\"inputMessages\":64,\"maximumInputQueueMs\":125,\"frameRequests\":13528,\"coalescedFrameRequests\":5301}",
+      "doroti.windows.pointer-source={\"wheelTouchpadSource\":0,\"wheelMouseSource\":7,\"wheelUnavailableSource\":0,\"wheelOtherSource\":0}"
+    ],
+    "frameTimingScope": "Whole run, including startup, lazy loads, explicit GC and page transitions; not a controlled scroll comparison or display receipt",
+    "pipelinePendingScope": "NativeFramePipeline is captured before final managed Dispose; finalDrain is the later cleanup receipt"
+  },
+  "profiledDefaultHostSha256": "fe3fdcf69924d5a3fa0fe3fe411925741cb640e525b87bc25bdd370842978426",
+  "finalDefaultBinaryScope": "Final App SDK rebuild also compiles the unused shared UIA cache class. The profiled App SDK process used the preceding binary with identical live WindowsPlatformViewHost code. Final binary is separately opened normally for handoff.",
+  "mauiRuntime": {
+    "beforeUiaCacheProcessId": 20332,
+    "finalProcessId": 9812,
+    "finalHwnd": 26345676,
+    "normalCloseExitCode": 0,
+    "checks": [
+      "injected long wheel before/after GC resume",
+      "two minimize/restore episodes, three forced GC collections",
+      "UIA Typography child list and labels replace Components",
+      "Components return has Actions and no stale Display Large peer",
+      "final resumed long wheel and normal close"
+    ],
+    "collectionComparisonScope": "Separate runs with different durations and UIA query histories; observed heap change is diagnostic evidence, not a controlled frame-pacing comparison or an exhaustive COM leak audit",
+    "finalLog": [
+      "doroti.texture.importer platform=Windows imported=0 retired=0 live=0"
+    ]
+  },
+  "normalHandoff": {
+    "host": "Windows App SDK",
+    "processId": 5824,
+    "hwnd": 655390,
+    "mode": "direct final executable, no profiling/report environment flags",
+    "screen": "Components",
+    "physicalFeedback": "userConfirmedSmoothAfterResume",
+    "userFeedback": {
+      "clientDate": "2026-11-01",
+      "timezone": "Asia/Seoul",
+      "quote": "복귀 뒤에도 부드러워",
+      "scope": "Default Windows App SDK normal execution; user confirmed smooth long scrolling after minimizing and returning",
+      "inputDevice": "unspecified",
+      "displayFrameTiming": "notMeasured"
+    },
+    "mauiDiagnosticProcessesRemaining": 0
+  },
+  "sourceHashes": {
+    "packages/platforms/shared/Windows/WindowsPlatformSceneInspection.cs": "71c5f74dd7a8751865cfe087d344d1e8ecaa7a0b52ed493606672e18fc1c422a",
+    "packages/platforms/shared/Windows/WindowsPeerChildrenCache.cs": "de1caa62c7044068b1ce7e8370620c0c81a3285be2fb0f50575e08c579718b62",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiSemanticsLayout.Windows.cs": "30ebe8c441f743242c24a0093fcbdd8ca5e09e8eda7c399b3aaa98e7e176f1ce",
+    "Doroti/tests/Doroti.Scroll.Tests/WindowsPeerChildrenRegression.cs": "9f93b0c535914dd7bfb1816e52ff5727374519b888cb21a30102df37dd33e2c8",
+    "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsPlatformViewHost.cs": "2fe4d70f2e9ecd3c742a5b03dfc2f0fa378df64cb3362c2104994b767ff82893",
+    "packages/platforms/maui/Doroti.Host.Maui/WindowsMauiPlatformViewHost.cs": "3bc735c5c0dd54f8b2702617e5efdb544d257f058e5e6386e8918c714d0cdd25",
+    "Doroti/tests/Doroti.Scroll.Tests/NativeSceneInspectionRegression.cs": "0ea1ebe5229724343c9752468296f446c1f4e3df54376407194d71ec3697b47d",
+    "Doroti/tests/Doroti.Scroll.Tests/Doroti.Scroll.Tests.csproj": "154bf3ec1783dbb9c39212ba3b89e592752eeca3abfc28ac8eb86360120a79bc",
+    "Doroti/src/Doroti.Skia.Rendering/NativeFrameSceneInspection.cs": "788970b51a8317ea62e8715abf2e85a9c658335869b647dcdb52252c4fe17e31",
+    "Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.cs": "df93d6a87fb415a13698bc3bf942a14ef3485c9366295ff710dca6a24f50248e",
+    "Doroti/src/Doroti.Ui/DorotiFrozenScene.cs": "bc187a0e6110d5dfd576a76dca59552bc521eacc6255b2e2c4002118eb8822e2",
+    "Doroti/src/Doroti.Ui/PaintingTypes.cs": "4ebb9f7257db56f1db7a283a5fc32adc3dcc540f08a7bd677dd258e86d6cb6b9",
+    "Doroti/src/Doroti.Hosting/WindowsPrecisionTrackpad.cs": "c6fd2aef97d44c46e499c58c8a44ad0214a79d3b828bba8d7f60363e90992669"
+  },
+  "binaryHashes": {
+    "samples/DorotiTestbedApp/windowsappsdk/bin/Release/net10.0-windows10.0.19041.0/win-x64/DorotiTestbedApp.WindowsAppSdk.exe": "9575eca63e2d30279f876e55614ccec0102c7243aa7df094323a7bde2d61375b",
+    "samples/DorotiTestbedApp/windowsappsdk/bin/Release/net10.0-windows10.0.19041.0/win-x64/Doroti.Host.WindowsAppSdk.dll": "0a80d6e2d2bf39af820b3e481a8fd239f98fbfe5c8fa2209414ac2ed036d81c7",
+    "samples/DorotiTestbedApp/windowsappsdk/bin/Release/net10.0-windows10.0.19041.0/win-x64/Doroti.Ui.dll": "e8761acabd63a92226d34de4f57f55bcb1a6b3cf2a917b4cfc9c6812b32d0fb6",
+    "samples/DorotiTestbedApp/windowsappsdk/bin/Release/net10.0-windows10.0.19041.0/win-x64/libSkiaSharp.dll": "82f9b2ee2b2dc91f738ae4baa54cd21fdd1181883c0fa207ab7066c708f07108",
+    "samples/DorotiTestbedApp/windows/bin/Release/net10.0-windows10.0.19041.0/win-x64/DorotiTestbedApp.Windows.exe": "423d29ea48bc93e5e488992266eda9e00ac0fd240aceef45a7fbacb24696ec20",
+    "samples/DorotiTestbedApp/windows/bin/Release/net10.0-windows10.0.19041.0/win-x64/Doroti.Host.Maui.dll": "75b6bbb4f6a6c0939532db4a1368535db6e9f5624222c59926a0242e547663d1"
+  },
+  "rawArtifactManifest": [
+    {
+      "path": "temp/windows-resume-review/baseline-background.gcdump",
+      "bytes": 6734753,
+      "sha256": "6180349707ae7256d75ee3b27208c44cd3173543f3dfb838ec2fc542fd875147",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/baseline-build.log",
+      "bytes": 10713,
+      "sha256": "e256689e0bd30e3a61aed376f9a3a431a95adabea2d4ef786bf397b6ab5676b4",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/baseline-gc.log",
+      "bytes": 332,
+      "sha256": "6626fbaed01cd24248669111653d04d33f989b0c68666d063d1f0cc714428a2d",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/baseline-heap.txt",
+      "bytes": 505268,
+      "sha256": "eb4bf549fa3419c3e0432a272dda8fc74655990fe38a0bd331c25cd06d867e46",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/baseline-ready.json",
+      "bytes": 213,
+      "sha256": "405cecc23f90f056eac55c51a898abdba41b6cf733912236ac0d3bb1c6a540e1",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/baseline-report.json",
+      "bytes": 6968705,
+      "sha256": "d58854472f2ab378e18d9e7a4aeac8bbe8992793951be81ef81c3bce2647ea5b",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/baseline-run.log",
+      "bytes": 54895,
+      "sha256": "35e7d0fc102a0c92cdb9be54e9e5f8291cdece10c2eb727fa982e5c3027816a8",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/candidate-background-1.gcdump",
+      "bytes": 5440358,
+      "sha256": "ce90ac213668bd0cab8a131db71d211a5d6402bab3c9fde9a5d121372d1843ba",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/candidate-background-2.gcdump",
+      "bytes": 5445458,
+      "sha256": "44eaa83281616ee7bc40e880709a3f092c741ff32dd98de46b17c7cc2bd54415",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/candidate-background-3.gcdump",
+      "bytes": 5446280,
+      "sha256": "080aaea4ee3f4ad423a48df0ae084471ec6468cf5f95d707afe0d3b8e5a94472",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/candidate-build.log",
+      "bytes": 7051,
+      "sha256": "7ca03cd664098ce2c74b88d6fb75212029e5e0c71eb1dcba46f441390f9bbe21",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/candidate-gc-1.log",
+      "bytes": 5676,
+      "sha256": "a027e2e3cfa66a7478e809901f5924eacdf82f7abef4c7fc515811d91d12ff3a",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/candidate-gc-2.log",
+      "bytes": 5676,
+      "sha256": "04e8cf20fb10fbc084075c62b2f26a5fa04071d37b50cff8476ab6fd00a79c57",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/candidate-gc-3.log",
+      "bytes": 5676,
+      "sha256": "a361ddfc29e32912926b3c6938ebcf78ef2cde92bcaeb0ce58b555ed482344ba",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/candidate-heap-1.txt",
+      "bytes": 486262,
+      "sha256": "23f822b6d234a8a548f269002fb32c9beedf93c0b6e035b0f5366a7a5f4dc3e9",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/candidate-heap-2.txt",
+      "bytes": 486296,
+      "sha256": "e27f7990f780af85a455da1fbe623426d7468843c439af5c5df45eb224cad099",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/candidate-heap-3.txt",
+      "bytes": 485980,
+      "sha256": "52c6d3349869b6847dca5051de6c8529a78a3f4befa43fb10147ccd521deaad2",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/candidate-ready.json",
+      "bytes": 215,
+      "sha256": "2dd7b46732e95d385a87b518f19ce637c3b24cecaee835f863f109e369faba15",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/candidate-report.json",
+      "bytes": 6979012,
+      "sha256": "7105fa4acc83f6738332616cbccd312e775374c7e854aa1a3f22a062acd20478",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/candidate-run.log",
+      "bytes": 55419,
+      "sha256": "53c24b5dd95e063ac0d264afad4a65df4c5d9ceda7a941b1cbf5ac04796e0f96",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/gcdump-install.log",
+      "bytes": 155,
+      "sha256": "1fadfdf0b3f14ce5e0513ad9b42f6debcd880f37dc7da231842713b60629d1a7",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/inspection-allocation.log",
+      "bytes": 461,
+      "sha256": "bff9f4bb7b75094cd00086f4031c8d0dfff51cb53e4b064a3f71c33465c47775",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/maui-background.gcdump",
+      "bytes": 43401146,
+      "sha256": "6a2c90da9f785c3425a5db163a1cb723e646205faf44b283cfeab7aab4564d20",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/maui-build.log",
+      "bytes": 7719,
+      "sha256": "28c6b8a285c2b94e30c1e069e56725bceef1e6f9214d2faab20bbba70e5e75c4",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/maui-final-background-1.gcdump",
+      "bytes": 14345593,
+      "sha256": "d1675bed05d4706c529f0d14d3d83f3afaa7314ebcebcd52d5ae67aeb9cac691",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/maui-final-background-2.gcdump",
+      "bytes": 10978319,
+      "sha256": "34bdeba693a1be8304c00b70cdfe5f51a5d1806fda403391e2803e3903ea5089",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/maui-final-background-3.gcdump",
+      "bytes": 10933171,
+      "sha256": "59fc5a9153fc91e21a59cd68c1b5140915157389d70b7dcd1747269418557350",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/maui-final-build.log",
+      "bytes": 7096,
+      "sha256": "e7d018c5ddf33e8e0aec0671a60bbb23371442d9f87c5714aadcde193361e112",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/maui-final-gc-1.log",
+      "bytes": 7236,
+      "sha256": "44a432b4b045c9df48de07817d6d30f7fcd7d56ebf7330beed04f98b43a2cc32",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/maui-final-gc-2.log",
+      "bytes": 7420,
+      "sha256": "94d46bcffb228110bea9e889db7c24ee6dccffc455644df0af3bf129df5e8511",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/maui-final-gc-3.log",
+      "bytes": 7418,
+      "sha256": "9ff7b9a9d88b96f152d49271f45d024a53984197779e6018bb9b9a454428aed4",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/maui-final-heap-1.txt",
+      "bytes": 541345,
+      "sha256": "70be9853165e63bf7080b367d192b3ab779779b2f474704da3aa7dd3fc7b9acc",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/maui-final-heap-2.txt",
+      "bytes": 546195,
+      "sha256": "05ec4046087e60151d555aced1e9436d46d4226c34d6d38a306d4f97ca03aeae",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/maui-final-heap-3.txt",
+      "bytes": 545819,
+      "sha256": "bb0389f0f88abd9cc83acfdb008d20513d9f03e1f152703256bfd6ff1943594e",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/maui-final-run.log",
+      "bytes": 70,
+      "sha256": "68ba55a24fa5a9e01109f66c1b1c04c4846f51160276574de859ce62a7bf9eef",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/maui-final-timeline.json",
+      "bytes": 36652,
+      "sha256": "061557550b8a65bdc77e091da59f304f96d9dff2e2bee3274bd90237d5efddb0",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/maui-foreground-second.gcdump",
+      "bytes": 35389596,
+      "sha256": "2efa7385a454f3081af81a36e71aa85a7956f0bd3cf8e51aa352ab59f697a353",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/maui-foreground-third.gcdump",
+      "bytes": 48387482,
+      "sha256": "b28c6d42792230823cb455b30d34d4fbc9f042c2f2b2a0e6f6db6d5af1504520",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/maui-gc-second.log",
+      "bytes": 7274,
+      "sha256": "7871e681d7a953974d91fd25175ad16f66f096354b2faa0c701acc4c52918eba",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/maui-gc-third.log",
+      "bytes": 7273,
+      "sha256": "f3ba8ef1d74b490da7e89076d5607ba84469d0da3c844c1e4594b2e7becce92f",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/maui-gc.log",
+      "bytes": 7267,
+      "sha256": "a40160fa280f87bcb32756e42ee8619473321f7a72a3c21a1751417265d60382",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/maui-heap-second.txt",
+      "bytes": 545983,
+      "sha256": "eef2730a758cfee5f0f22b1cb096fa20c3e780342fe6df53a00a1b9ca73e387e",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/maui-heap-third.txt",
+      "bytes": 545348,
+      "sha256": "227f8cb8f154b37298a1c2f6741a7b5a1c2f798949139efd2eddde3185082dec",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/maui-heap.txt",
+      "bytes": 544992,
+      "sha256": "5fce60b8ff2556c783eba984677320e8ae016a890deb0d75e3b21b82dea8b0b3",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/maui-run.log",
+      "bytes": 70,
+      "sha256": "68ba55a24fa5a9e01109f66c1b1c04c4846f51160276574de859ce62a7bf9eef",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/maui-timeline.json",
+      "bytes": 287951,
+      "sha256": "35966f91e1323d021b9ee9b0d4c0e261301070775335f67130a08431e503f02a",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/process-observations.jsonl",
+      "bytes": 437,
+      "sha256": "62bdd89b55d86067374bb2615efdef4decfab71a1c690e09f6276f3b922bdc5d",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/scroll-tests-final.log",
+      "bytes": 1448,
+      "sha256": "cdf826fa79d7000294ebc349f48e182c230db2003a46d1c83d56dab96c0d87d4",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/scroll-tests.log",
+      "bytes": 1343,
+      "sha256": "858fae76225be59b0345e80175dad23197e3e07a432b035a8bfe27406edc78d9",
+      "durability": "local disposable raw artifact"
+    },
+    {
+      "path": "temp/windows-resume-review/windows-final-build.log",
+      "bytes": 7051,
+      "sha256": "0473ce4be7d05c8af73deb53320de9086dd3a0bb3a9b045d526d780d1b09e58f",
+      "durability": "local disposable raw artifact"
+    }
+  ]
+}

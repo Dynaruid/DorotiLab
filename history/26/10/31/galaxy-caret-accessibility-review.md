@@ -163,7 +163,7 @@ visually inspected. These bounded native checks do not qualify every IME sequenc
 The residual owner/submit gaps require further timing work; none is explained away
 by the lower median. Ring submission is not display FPS or scanout evidence.
 Human finger-to-display acceptance and full active TalkBack action/focus behavior
-remain `notVerified`. The original [scroll plan](../../../../work.md) stays PARTIAL.
+remain `notVerified`. The [archived scroll work summary](../../11/01/scroll-caret-resume-summary.md) retains the overall PARTIAL status.
 
 ```powershell
 python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project Doroti/tests/Doroti.Scroll.Tests/Doroti.Scroll.Tests.csproj -c Release -m:1 -nr:false

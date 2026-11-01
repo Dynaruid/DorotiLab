@@ -33,6 +33,12 @@ def main():
     parser.add_argument('--trials', type=int, choices=range(1, 4), default=3)
     parser.add_argument('--gc-log', action='store_true', help='Separate diagnostic, restores debug.mono.log')
     parser.add_argument('--work-profile', action='store_true', help='Separate allocation/layout diagnostic; adds overhead')
+    parser.add_argument('--trace-capacity', type=int, choices=(8192, 32768, 65536),
+                        help='Diagnostic trace ring size; requires an APK forwarding this launch flag')
+    parser.add_argument('--export-per-stage', action='store_true',
+                        help='Preserve each gesture trace before the bounded ring can overwrite it')
+    parser.add_argument('--work-trace-per-stage', action='store_true',
+                        help='Diagnostic node trace per gesture; requires --export-per-stage and adds overhead')
     parser.add_argument('--skip-forced-gc', action='store_true', help='Control: Home/trim only, no explicit GC')
     parser.add_argument('--resume-cleanup', choices=['natural', 'trim'], default='trim',
                         help='Natural Home lifecycle or explicit background memory-pressure signal')
@@ -50,6 +56,8 @@ def main():
     parser.add_argument('--expect-retained-context', action='store_true')
     parser.add_argument('--verify-lifecycle', action='store_true', help='Also verify Activity recreation/state and final GPU teardown')
     args = parser.parse_args()
+    if args.work_trace_per_stage and not args.export_per_stage:
+        parser.error('--work-trace-per-stage requires --export-per-stage')
     args.output.mkdir(parents=True, exist_ok=True)
     adb = Path(os.environ['LOCALAPPDATA']) / 'Android/Sdk/platform-tools/adb.exe'
     package = 'dev.doroti.testbed'
@@ -75,6 +83,18 @@ def main():
         return False
 
     component = call('shell', 'cmd', 'package', 'resolve-activity', '--brief', package).splitlines()[-1]
+    profile_path = f'/sdcard/Android/data/{package}/files/doroti-scroll-profile.json'
+
+    def export_profile(target):
+        call('shell', 'rm', '-f', profile_path)
+        call('shell', 'am', 'start', '-n', component, '--es', 'DOROTI_SCROLL_EXPORT', '1')
+        for _ in range(30):
+            if 'doroti-scroll-profile.json' in call('shell', 'ls', f'/sdcard/Android/data/{package}/files'):
+                call('pull', profile_path, target)
+                return json.loads(target.read_text(encoding='utf-8'))
+            time.sleep(.2)
+        raise RuntimeError('Profile export did not complete')
+
     apk = call('shell', 'pm', 'path', package).splitlines()[0].removeprefix('package:')
     installed = args.output / f'{args.label}-installed.apk'
     call('pull', apk, installed)
@@ -83,7 +103,15 @@ def main():
     report = {'serial': args.serial, 'label': args.label,
               'apkSha256': hashlib.sha256(installed.read_bytes()).hexdigest(),
               'presentObserved': False, 'physicalInput': 'notVerified',
-              'motion': args.motion, 'resumeCleanup': args.resume_cleanup, 'trials': []}
+              'motion': args.motion, 'resumeCleanup': args.resume_cleanup,
+              'flingTailSeconds': args.fling_tail_seconds,
+              'flingDurationMs': args.fling_duration_ms, 'flingDistance': args.fling_distance,
+              'gestureX': args.gesture_x, 'warmSwipes': args.warm_swipes,
+              'warmFlingPairs': args.warm_fling_pairs,
+              'exportPerStage': args.export_per_stage,
+              'diagnosticWorkProfile': args.work_profile,
+              'traceCapacity': args.trace_capacity,
+              'diagnosticWorkTrace': args.work_trace_per_stage, 'trials': []}
     try:
         if args.gc_log:
             call('shell', 'setprop', 'debug.mono.log', 'gc,mono_log_level=debug,mono_log_mask=gc')
@@ -96,6 +124,8 @@ def main():
             if args.work_profile:
                 for flag in ('DOROTI_STAGE_TRACE', 'DOROTI_LAYOUT_PROFILE', 'DOROTI_ALLOCATION_PROFILE'):
                     extras += ['--es', flag, '1']
+            if args.trace_capacity is not None:
+                extras += ['--es', 'DOROTI_FRAME_TRACE_CAPACITY', str(args.trace_capacity)]
             call('shell', 'am', 'start', '-n', component, '--es', 'DOROTI_SCROLL_PROFILE', '1', *extras)
             time.sleep(5)  # Cold startup only; no background aging interval.
             for _ in range(args.warm_swipes):
@@ -113,6 +143,12 @@ def main():
             if not pid:
                 raise RuntimeError('App did not survive startup')
             stages = []
+            trim_levels = [('BACKGROUND', 40), ('MODERATE', 60), ('COMPLETE', 80)]
+            next_trim_level = 0
+            requested_trim_levels = []
+            trial_report = {'trial': trial, 'pid': pid, 'status': 'running', 'stages': stages,
+                            'requestedTrimLevels': requested_trim_levels}
+            report['trials'].append(trial_report)
             cleanup_name = 'resume' if args.resume_cleanup == 'natural' else 'resume-trim'
             names = ('initial', cleanup_name, cleanup_name+'-again') if args.skip_forced_gc else (
                 'initial', 'foreground-gc', cleanup_name+'-gc', cleanup_name+'-gc-again')
@@ -128,12 +164,22 @@ def main():
                     for attempt in range(30):
                         try:
                             if args.resume_cleanup == 'trim':
-                                call('shell', 'am', 'send-trim-memory', package, 'BACKGROUND')
+                                # ActivityManager rejects a level no greater than
+                                # the process's last injected trim. Escalate the
+                                # second signal rather than retrying BACKGROUND.
+                                trim_name, trim_level = trim_levels[next_trim_level]
+                                call('shell', 'am', 'send-trim-memory', package, trim_name)
+                                requested_trim_levels.append(trim_level)
+                                next_trim_level += 1
                                 break
                             if call('logcat', '-d', '-v', 'monotonic', '--pid=' + pid).count('detached submitted=') > old_detaches:
                                 break
                             time.sleep(.2)
                         except subprocess.CalledProcessError as error:
+                            if ('Unable to set a higher trim level than current level' in error.output
+                                    and next_trim_level + 1 < len(trim_levels)):
+                                next_trim_level += 1
+                                continue
                             if 'background trim level on a foreground process' not in error.output:
                                 raise
                             time.sleep(.2)
@@ -164,32 +210,36 @@ def main():
                            ('down', f'{x},{end_y},0 {x},1800,{args.fling_duration_ms}')] if args.motion == 'fling' else [
                     ('drag', f'{x},1800,0 {x},1050,650 {x},1780,1300 {x},1100,1950 {x},1780,2600 {x},1780,2850')]
                 for direction, points in motions:
+                    if args.work_trace_per_stage:
+                        call('shell', 'am', 'start', '-n', component, '--es', 'DOROTI_WORK_TRACE_START', '1')
                     motion = call('shell', 'CLASSPATH=/data/local/tmp/doroti-scroll.jar app_process /system/bin '
                                   'ScrollGesture ' + points)
                     if args.motion == 'fling':
                         time.sleep(args.fling_tail_seconds)
                     stage_name = name + '-' + direction if args.motion == 'fling' else name
+                    stage_profile = None
+                    if args.export_per_stage:
+                        stage_profile = Path(str(prefix) + '.' + stage_name + '.json')
+                        export_profile(stage_profile)
                     if layer:
                         latency = call('shell', 'dumpsys SurfaceFlinger --latency ' + shlex.quote(layer))
                         Path(str(prefix) + '.' + stage_name + '.latency.txt').write_text(latency, encoding='utf-8')
                     down = int(re.search(r'continuous-down-ms=(\d+)', motion)[1])
                     stages.append({'name': stage_name, 'downMs': down, 'motion': motion,
                                    'meminfo': call('shell', 'dumpsys', 'meminfo', package)})
+                    if stage_profile is not None:
+                        stages[-1]['profile'] = stage_profile.name
                     if name.startswith('resume'):
                         stages[-1]['resumeSnapshotReadyMs'] = resume_ready_ms
+                        if args.resume_cleanup == 'trim':
+                            stages[-1]['requestedTrimLevel'] = requested_trim_levels[-1]
                     print(json.dumps({'trial': trial, 'stage': stage_name, 'injection': motion}), flush=True)
-            call('shell', 'am', 'start', '-n', component, '--es', 'DOROTI_SCROLL_EXPORT', '1')
             path = prefix.with_suffix('.json')
-            for attempt in range(15):
-                time.sleep(.2)
-                if 'doroti-scroll-profile.json' in call('shell', 'ls', f'/sdcard/Android/data/{package}/files'):
-                    call('pull', f'/sdcard/Android/data/{package}/files/doroti-scroll-profile.json', path)
-                    break
-            else:
-                raise RuntimeError('Profile export did not complete')
-            data = json.loads(path.read_text(encoding='utf-8'))
+            data = export_profile(path)
             previous_up = None
             for stage in stages:
+                if args.export_per_stage:
+                    data = json.loads((args.output / stage['profile']).read_text(encoding='utf-8'))
                 inputs = [i for i in data['inputs'] if abs(i['eventMs']-stage['downMs']) < 5 and i['action'] == 0]
                 if len(inputs) != 1:
                     raise RuntimeError('Missing or ambiguous measured DOWN')
@@ -208,6 +258,9 @@ def main():
                     'submitted': sum(f['submitted'] for f in frames)}
                 if args.motion == 'fling':
                     tail = [f for f in data['frames'] if up['atUs'] < f['atUs'] <= up['atUs'] + args.fling_tail_seconds * 1e6]
+                    stage['unexpectedDowns'] = [i for i in data['inputs'] if i['action'] == 0
+                        and i['gesture'] != first['gesture']
+                        and first['atUs'] <= i['atUs'] <= up['atUs'] + args.fling_tail_seconds * 1e6]
                     submitted = [f for f in tail if f['submitted']]
                     native_gaps = [(b['vsyncNanos'] - a['vsyncNanos']) / 1e6 for a, b in zip(submitted, submitted[1:])]
                     owner_gaps = [(b['atUs'] - a['atUs']) / 1000 for a, b in zip(submitted, submitted[1:])]
@@ -218,6 +271,10 @@ def main():
                         'submitted': len(submitted), 'nativeGapMs': stats(native_gaps),
                         'completionGapMs': stats(owner_gaps), 'nativeGapsOver12ms': sum(x > 12 for x in native_gaps),
                         'gc': {g: tail[-1][g]-tail[0][g] for g in ('gen0', 'gen1', 'gen2')} if tail else {}}
+                    stage['ballistic']['tracedUpdates'] = sum(t['phase'] == 22
+                        and t['scrollActivity'] == 'BallisticScrollActivity'
+                        and up['atUs'] < t['recordedAtMicroseconds'] < up['atUs'] + args.fling_tail_seconds * 1e6
+                        for t in data['trace'])
                 if previous_up is not None:
                     stage['summary']['beforeMotionDrawMs'] = stats([
                         f['ownerMs'] for f in data['frames'] if previous_up <= f['atUs'] < first['atUs']])
@@ -227,7 +284,8 @@ def main():
             if 'FATAL EXCEPTION' in log or re.search(r'\bE\s+(?:DorotiGraphite|DorotiMauiFailure)\s*:', log):
                 raise RuntimeError('Fatal/render/retirement error in log')
             if not args.skip_forced_gc and (log.count('gc source=intent') != 1
-                    or (args.resume_cleanup == 'trim' and log.count('gc source=trim-40') != 2)):
+                    or (args.resume_cleanup == 'trim' and any(
+                        f'gc source=trim-{level} ' not in log for level in requested_trim_levels))):
                 raise RuntimeError('Explicit foreground/background GC probes did not execute')
             context_stats = {'contextCreations': len(re.findall(r'Vulkan device=.* generation=', log)),
                              'contextReattachments': log.count('Surface attached contextGeneration='),
@@ -241,7 +299,7 @@ def main():
                 raise RuntimeError('Resume did not retain one drained context and handle memory-pressure cleanup')
             call('shell', 'screencap', '-p', '/sdcard/doroti-resume.png')
             call('pull', '/sdcard/doroti-resume.png', prefix.with_suffix('.png'))
-            report['trials'].append({'trial': trial, 'pid': pid, 'stages': stages, **context_stats})
+            trial_report.update(status='complete', **context_stats)
             print(json.dumps({'trial': trial, 'summaries': [{k: v for k, v in s.items() if k != 'meminfo'} for s in stages]}), flush=True)
         if args.verify_lifecycle:
             def hierarchy(label):
@@ -287,6 +345,12 @@ def main():
             report['lifecycle'] = {'samePid': True, 'retainedSemanticsAndGeometry': True,
                                    'semanticNodes': len(after), 'finalGpuRetirement': True}
             print(json.dumps({'lifecycle': report['lifecycle']}), flush=True)
+    except Exception as error:
+        if report['trials'] and report['trials'][-1]['status'] == 'running':
+            report['trials'][-1]['status'] = 'failed'
+        report['error'] = {'type': type(error).__name__, 'message': str(error),
+                           'output': getattr(error, 'output', None)}
+        raise
     finally:
         if args.gc_log:
             call('shell', 'setprop', 'debug.mono.log', shlex.quote(previous))

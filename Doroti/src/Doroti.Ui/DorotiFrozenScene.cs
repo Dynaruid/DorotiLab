@@ -168,15 +168,32 @@ public sealed class DorotiFrozenScene : IDisposable
                 HostPayload = Payload(command.HostPayload),
             }));
 
-        private IReadOnlyList<PathCommand> PictureCommands(IReadOnlyList<PathCommand> commands) =>
-            Copy(commands.Select(PictureCommand));
+        private IReadOnlyList<PathCommand> PictureCommands(IReadOnlyList<PathCommand> commands)
+        {
+            // Picture owns its read-only outer storage. Keep that identity when
+            // every command is already closed; image/filter resource captures
+            // still get independent payloads and leases on each submission.
+            PathCommand[]? changed = null;
+            for (var i = 0; i < commands.Count; i++)
+            {
+                var command = PictureCommand(commands[i]);
+                if (!ReferenceEquals(command, commands[i]) && changed is null)
+                {
+                    changed = new PathCommand[commands.Count];
+                    for (var previous = 0; previous < i; previous++) changed[previous] = commands[previous];
+                }
+                if (changed is not null) changed[i] = command;
+            }
+            return changed is null ? commands : Array.AsReadOnly(changed);
+        }
 
         private PathCommand PictureCommand(PathCommand command)
         {
             var payload = Payload(command.HostPayload);
             if (command.HasClosedArguments && ReferenceEquals(payload, command.HostPayload)) return command;
-            return new(command.Operation, command.HasClosedArguments ? command.Arguments : Copy(command.Arguments))
-            { HostPayload = payload, HasClosedArguments = true };
+            var arguments = command.HasClosedArguments ? command.Arguments : Copy(command.Arguments);
+            return new(command.Operation, arguments)
+            { HostPayload = payload, ClosedArgumentStorage = arguments };
         }
 
         private Image Image(Image source)

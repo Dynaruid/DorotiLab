@@ -26,19 +26,22 @@ internal sealed class MauiApplicationDispatcher : IDorotiApplicationDispatcher
             throw new InvalidOperationException("The MAUI application dispatcher queue is full.");
         }
         var completion = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
+        Action invoke = () =>
+        {
+            Interlocked.Decrement(ref _pending);
+            try { cancellationToken.ThrowIfCancellationRequested(); completion.TrySetResult(callback()); }
+            catch (OperationCanceledException error) { completion.TrySetCanceled(error.CancellationToken); }
+            catch (Exception error) { completion.TrySetException(error); }
+        };
         try
         {
 #if MACOS
-            AppKit.NSApplication.SharedApplication.BeginInvokeOnMainThread(() =>
+            AppKit.NSApplication.SharedApplication.BeginInvokeOnMainThread(invoke);
+#elif ANDROID
+            MauiManagedCallbackQueue.Post(MainThread.BeginInvokeOnMainThread, invoke);
 #else
-            MainThread.BeginInvokeOnMainThread(() =>
+            MainThread.BeginInvokeOnMainThread(invoke);
 #endif
-            {
-                Interlocked.Decrement(ref _pending);
-                try { cancellationToken.ThrowIfCancellationRequested(); completion.TrySetResult(callback()); }
-                catch (OperationCanceledException error) { completion.TrySetCanceled(error.CancellationToken); }
-                catch (Exception error) { completion.TrySetException(error); }
-            });
         }
         catch { Interlocked.Decrement(ref _pending); throw; }
         return new(completion.Task);

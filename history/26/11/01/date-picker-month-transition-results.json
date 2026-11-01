@@ -1,0 +1,685 @@
+{
+  "schemaVersion": "doroti.date-picker-month-transition/v1",
+  "date": "2026-11-01",
+  "baseHead": "a3ce8df0f6afcb2f5ebbbcb9515e68dca757e71d",
+  "scope": "Windows App SDK Release, normal All Components -> Show date picker, six next/previous month clicks",
+  "measurement": "Wall work inside the application owner callback, including input/build/layout/paint and GC; excludes display acceptance",
+  "sampling": "Manual monotonic windows include pointer hover plus one month transition; all six windows remain fully in the recent ring. No CPU sampling or detailed work profile in the paired comparison.",
+  "baseline": {
+    "rawLocalReport": "temp/date-picker-month-review/baseline-unprofiled-report.json",
+    "rawSha256": "b3a5a6a0edc39d128b537716207bccad0c1ddc979de86bd49e82537d38a18a1a",
+    "presenter": {
+      "requested": "Vulkan",
+      "effective": "Graphite/Vulkan/D3D12/DXGI"
+    },
+    "failedTerminals": 0,
+    "operationalDebugErrors": 0,
+    "detailedWorkProfilingEnabled": false,
+    "months": [
+      {
+        "transition": "Nov-Dec",
+        "windowSeconds": [
+          43,
+          44
+        ],
+        "recentRingCoversWindow": true,
+        "sampleCount": 170,
+        "maximumUiWorkMilliseconds": 96.055,
+        "uiWorkOver16_667ms": 5,
+        "maximumGcPauseMilliseconds": 10.046,
+        "slowUiSamples": [
+          {
+            "frameId": 1761,
+            "timestampMicroseconds": 43158887,
+            "inputCount": 1,
+            "uiQueueMicroseconds": 29,
+            "uiWorkMicroseconds": 19495,
+            "uiCpuMicroseconds": 15625,
+            "completionResumeMicroseconds": 21,
+            "gcPauseMicroseconds": 1019
+          },
+          {
+            "frameId": 1769,
+            "timestampMicroseconds": 43200341,
+            "inputCount": 3,
+            "uiQueueMicroseconds": 29,
+            "uiWorkMicroseconds": 17407,
+            "uiCpuMicroseconds": 15625,
+            "completionResumeMicroseconds": 22,
+            "gcPauseMicroseconds": 0
+          },
+          {
+            "frameId": 1773,
+            "timestampMicroseconds": 43221842,
+            "inputCount": 1,
+            "uiQueueMicroseconds": 25,
+            "uiWorkMicroseconds": 55174,
+            "uiCpuMicroseconds": 62500,
+            "completionResumeMicroseconds": 18,
+            "gcPauseMicroseconds": 10046
+          },
+          {
+            "frameId": 1776,
+            "timestampMicroseconds": 43281617,
+            "inputCount": 0,
+            "uiQueueMicroseconds": 26,
+            "uiWorkMicroseconds": 96055,
+            "uiCpuMicroseconds": 93750,
+            "completionResumeMicroseconds": 19,
+            "gcPauseMicroseconds": 0
+          },
+          {
+            "frameId": 1783,
+            "timestampMicroseconds": 43408885,
+            "inputCount": 0,
+            "uiQueueMicroseconds": 28,
+            "uiWorkMicroseconds": 33406,
+            "uiCpuMicroseconds": 31250,
+            "completionResumeMicroseconds": 16,
+            "gcPauseMicroseconds": 0
+          }
+        ]
+      },
+      {
+        "transition": "Dec-Jan",
+        "windowSeconds": [
+          46.4,
+          47.4
+        ],
+        "recentRingCoversWindow": true,
+        "sampleCount": 35,
+        "maximumUiWorkMilliseconds": 55.247,
+        "uiWorkOver16_667ms": 3,
+        "maximumGcPauseMilliseconds": 7.872,
+        "slowUiSamples": [
+          {
+            "frameId": 1990,
+            "timestampMicroseconds": 46526303,
+            "inputCount": 1,
+            "uiQueueMicroseconds": 30,
+            "uiWorkMicroseconds": 21398,
+            "uiCpuMicroseconds": 15625,
+            "completionResumeMicroseconds": 19,
+            "gcPauseMicroseconds": 0
+          },
+          {
+            "frameId": 1996,
+            "timestampMicroseconds": 46579908,
+            "inputCount": 0,
+            "uiQueueMicroseconds": 67,
+            "uiWorkMicroseconds": 55247,
+            "uiCpuMicroseconds": 62500,
+            "completionResumeMicroseconds": 30,
+            "gcPauseMicroseconds": 0
+          },
+          {
+            "frameId": 2008,
+            "timestampMicroseconds": 46726900,
+            "inputCount": 0,
+            "uiQueueMicroseconds": 49,
+            "uiWorkMicroseconds": 25145,
+            "uiCpuMicroseconds": 31250,
+            "completionResumeMicroseconds": 19,
+            "gcPauseMicroseconds": 0
+          }
+        ]
+      },
+      {
+        "transition": "Jan-Dec",
+        "windowSeconds": [
+          49.7,
+          50.7
+        ],
+        "recentRingCoversWindow": true,
+        "sampleCount": 157,
+        "maximumUiWorkMilliseconds": 63.527,
+        "uiWorkOver16_667ms": 2,
+        "maximumGcPauseMilliseconds": 13.746,
+        "slowUiSamples": [
+          {
+            "frameId": 2060,
+            "timestampMicroseconds": 49866343,
+            "inputCount": 1,
+            "uiQueueMicroseconds": 28,
+            "uiWorkMicroseconds": 34248,
+            "uiCpuMicroseconds": 31250,
+            "completionResumeMicroseconds": 21,
+            "gcPauseMicroseconds": 0
+          },
+          {
+            "frameId": 2064,
+            "timestampMicroseconds": 49914294,
+            "inputCount": 0,
+            "uiQueueMicroseconds": 40,
+            "uiWorkMicroseconds": 63527,
+            "uiCpuMicroseconds": 78125,
+            "completionResumeMicroseconds": 21,
+            "gcPauseMicroseconds": 6831
+          }
+        ]
+      },
+      {
+        "transition": "Dec-Nov",
+        "windowSeconds": [
+          52.6,
+          53.6
+        ],
+        "recentRingCoversWindow": true,
+        "sampleCount": 159,
+        "maximumUiWorkMilliseconds": 73.772,
+        "uiWorkOver16_667ms": 3,
+        "maximumGcPauseMilliseconds": 9.02,
+        "slowUiSamples": [
+          {
+            "frameId": 2250,
+            "timestampMicroseconds": 52749035,
+            "inputCount": 1,
+            "uiQueueMicroseconds": 20,
+            "uiWorkMicroseconds": 42957,
+            "uiCpuMicroseconds": 46875,
+            "completionResumeMicroseconds": 19,
+            "gcPauseMicroseconds": 3722
+          },
+          {
+            "frameId": 2255,
+            "timestampMicroseconds": 52804167,
+            "inputCount": 0,
+            "uiQueueMicroseconds": 39,
+            "uiWorkMicroseconds": 73772,
+            "uiCpuMicroseconds": 78125,
+            "completionResumeMicroseconds": 18,
+            "gcPauseMicroseconds": 6823
+          },
+          {
+            "frameId": 2268,
+            "timestampMicroseconds": 52949536,
+            "inputCount": 0,
+            "uiQueueMicroseconds": 24,
+            "uiWorkMicroseconds": 25565,
+            "uiCpuMicroseconds": 15625,
+            "completionResumeMicroseconds": 22,
+            "gcPauseMicroseconds": 0
+          }
+        ]
+      },
+      {
+        "transition": "Nov-Oct",
+        "windowSeconds": [
+          59.9,
+          60.9
+        ],
+        "recentRingCoversWindow": true,
+        "sampleCount": 197,
+        "maximumUiWorkMilliseconds": 81.834,
+        "uiWorkOver16_667ms": 3,
+        "maximumGcPauseMilliseconds": 11.982,
+        "slowUiSamples": [
+          {
+            "frameId": 2441,
+            "timestampMicroseconds": 60015428,
+            "inputCount": 1,
+            "uiQueueMicroseconds": 20,
+            "uiWorkMicroseconds": 39144,
+            "uiCpuMicroseconds": 31250,
+            "completionResumeMicroseconds": 22,
+            "gcPauseMicroseconds": 2574
+          },
+          {
+            "frameId": 2446,
+            "timestampMicroseconds": 60070915,
+            "inputCount": 0,
+            "uiQueueMicroseconds": 20,
+            "uiWorkMicroseconds": 81834,
+            "uiCpuMicroseconds": 78125,
+            "completionResumeMicroseconds": 37,
+            "gcPauseMicroseconds": 6355
+          },
+          {
+            "frameId": 2456,
+            "timestampMicroseconds": 60211951,
+            "inputCount": 0,
+            "uiQueueMicroseconds": 33,
+            "uiWorkMicroseconds": 23845,
+            "uiCpuMicroseconds": 15625,
+            "completionResumeMicroseconds": 20,
+            "gcPauseMicroseconds": 0
+          }
+        ]
+      },
+      {
+        "transition": "Oct-Nov",
+        "windowSeconds": [
+          63.4,
+          64.4
+        ],
+        "recentRingCoversWindow": true,
+        "sampleCount": 221,
+        "maximumUiWorkMilliseconds": 83.605,
+        "uiWorkOver16_667ms": 3,
+        "maximumGcPauseMilliseconds": 6.987,
+        "slowUiSamples": [
+          {
+            "frameId": 2692,
+            "timestampMicroseconds": 63597831,
+            "inputCount": 1,
+            "uiQueueMicroseconds": 27,
+            "uiWorkMicroseconds": 39860,
+            "uiCpuMicroseconds": 46875,
+            "completionResumeMicroseconds": 19,
+            "gcPauseMicroseconds": 4315
+          },
+          {
+            "frameId": 2696,
+            "timestampMicroseconds": 63652151,
+            "inputCount": 0,
+            "uiQueueMicroseconds": 29,
+            "uiWorkMicroseconds": 83605,
+            "uiCpuMicroseconds": 78125,
+            "completionResumeMicroseconds": 27,
+            "gcPauseMicroseconds": 6684
+          },
+          {
+            "frameId": 2707,
+            "timestampMicroseconds": 63791534,
+            "inputCount": 0,
+            "uiQueueMicroseconds": 27,
+            "uiWorkMicroseconds": 24004,
+            "uiCpuMicroseconds": 15625,
+            "completionResumeMicroseconds": 22,
+            "gcPauseMicroseconds": 0
+          }
+        ]
+      }
+    ],
+    "meanOfTransitionMaximaMs": 75.673,
+    "medianOfTransitionMaximaMs": 77.803,
+    "uiWorkOver16_667ms": 19
+  },
+  "final": {
+    "rawLocalReport": "temp/date-picker-month-review/final-report.json",
+    "rawSha256": "ff69c7b2e2a6fe66a7bdda55d7ae230dd505830dfa534566669f9b5b9edf9491",
+    "presenter": {
+      "requested": "Vulkan",
+      "effective": "Graphite/Vulkan/D3D12/DXGI"
+    },
+    "failedTerminals": 0,
+    "operationalDebugErrors": 0,
+    "detailedWorkProfilingEnabled": false,
+    "months": [
+      {
+        "transition": "Nov-Dec",
+        "windowSeconds": [
+          32,
+          33
+        ],
+        "recentRingCoversWindow": true,
+        "sampleCount": 116,
+        "maximumUiWorkMilliseconds": 33.173,
+        "uiWorkOver16_667ms": 3,
+        "maximumGcPauseMilliseconds": 10.805,
+        "slowUiSamples": [
+          {
+            "frameId": 1858,
+            "timestampMicroseconds": 32149963,
+            "inputCount": 2,
+            "uiQueueMicroseconds": 23,
+            "uiWorkMicroseconds": 17824,
+            "uiCpuMicroseconds": 15625,
+            "completionResumeMicroseconds": 16,
+            "gcPauseMicroseconds": 0
+          },
+          {
+            "frameId": 1880,
+            "timestampMicroseconds": 32266847,
+            "inputCount": 0,
+            "uiQueueMicroseconds": 39,
+            "uiWorkMicroseconds": 33173,
+            "uiCpuMicroseconds": 31250,
+            "completionResumeMicroseconds": 17,
+            "gcPauseMicroseconds": 4852
+          },
+          {
+            "frameId": 1891,
+            "timestampMicroseconds": 32405607,
+            "inputCount": 0,
+            "uiQueueMicroseconds": 36,
+            "uiWorkMicroseconds": 20093,
+            "uiCpuMicroseconds": 15625,
+            "completionResumeMicroseconds": 23,
+            "gcPauseMicroseconds": 0
+          }
+        ]
+      },
+      {
+        "transition": "Dec-Jan",
+        "windowSeconds": [
+          36.5,
+          37.5
+        ],
+        "recentRingCoversWindow": true,
+        "sampleCount": 35,
+        "maximumUiWorkMilliseconds": 20.447,
+        "uiWorkOver16_667ms": 1,
+        "maximumGcPauseMilliseconds": 8.26,
+        "slowUiSamples": [
+          {
+            "frameId": 2054,
+            "timestampMicroseconds": 36813129,
+            "inputCount": 0,
+            "uiQueueMicroseconds": 25,
+            "uiWorkMicroseconds": 20447,
+            "uiCpuMicroseconds": 0,
+            "completionResumeMicroseconds": 22,
+            "gcPauseMicroseconds": 5176
+          }
+        ]
+      },
+      {
+        "transition": "Jan-Dec",
+        "windowSeconds": [
+          40.6,
+          41.6
+        ],
+        "recentRingCoversWindow": true,
+        "sampleCount": 76,
+        "maximumUiWorkMilliseconds": 19.13,
+        "uiWorkOver16_667ms": 1,
+        "maximumGcPauseMilliseconds": 13.557,
+        "slowUiSamples": [
+          {
+            "frameId": 2110,
+            "timestampMicroseconds": 40795321,
+            "inputCount": 1,
+            "uiQueueMicroseconds": 18,
+            "uiWorkMicroseconds": 19130,
+            "uiCpuMicroseconds": 31250,
+            "completionResumeMicroseconds": 17,
+            "gcPauseMicroseconds": 12395
+          }
+        ]
+      },
+      {
+        "transition": "Dec-Nov",
+        "windowSeconds": [
+          44.9,
+          45.9
+        ],
+        "recentRingCoversWindow": true,
+        "sampleCount": 115,
+        "maximumUiWorkMilliseconds": 12.502,
+        "uiWorkOver16_667ms": 0,
+        "maximumGcPauseMilliseconds": 10.401,
+        "slowUiSamples": []
+      },
+      {
+        "transition": "Nov-Oct",
+        "windowSeconds": [
+          49,
+          50
+        ],
+        "recentRingCoversWindow": true,
+        "sampleCount": 151,
+        "maximumUiWorkMilliseconds": 13.684,
+        "uiWorkOver16_667ms": 0,
+        "maximumGcPauseMilliseconds": 12.047,
+        "slowUiSamples": []
+      },
+      {
+        "transition": "Oct-Nov",
+        "windowSeconds": [
+          53,
+          54
+        ],
+        "recentRingCoversWindow": true,
+        "sampleCount": 97,
+        "maximumUiWorkMilliseconds": 15.116,
+        "uiWorkOver16_667ms": 0,
+        "maximumGcPauseMilliseconds": 12.91,
+        "slowUiSamples": []
+      }
+    ],
+    "meanOfTransitionMaximaMs": 19.009,
+    "medianOfTransitionMaximaMs": 17.123,
+    "uiWorkOver16_667ms": 5
+  },
+  "meanMaximumReductionPercent": 74.88,
+  "scopeAllocation": {
+    "nestedEntries": 20,
+    "baselineBytes": 27200,
+    "finalBytes": 5440
+  },
+  "dependencyLookup": {
+    "dependents": 512,
+    "lookups": 20,
+    "baselineElementComparisons": 10240,
+    "finalElementComparisons": 20
+  },
+  "acceptance": {
+    "windowsAutomatedMonthNavigation": "passed",
+    "windowsPhysicalInputAndDisplay": "userConfirmedSmoothMonthTransitions",
+    "windowsDisplayFramePacingMeasurement": "notMeasured",
+    "androidPhysicalDatePicker": "notVerified",
+    "windowsUserConfirmation": {
+      "date": "2026-11-01",
+      "scope": "Windows Testbed repeated previous/next month arrow clicks",
+      "reply": "부드러워졌음",
+      "evidence": "User-perceived smoothness confirmation; no display frame pacing measurement"
+    }
+  },
+  "baselineBinaryHashes": [
+    {
+      "path": "samples/DorotiTestbedApp/windowsappsdk/bin/Release/net10.0-windows10.0.19041.0/win-x64/Doroti.Ui.dll",
+      "sha256": "E8761ACABD63A92226D34DE4F57F55BCB1A6B3CF2A917B4CFC9C6812B32D0FB6"
+    },
+    {
+      "path": "samples/DorotiTestbedApp/windowsappsdk/bin/Release/net10.0-windows10.0.19041.0/win-x64/Doroti.Runtime.dll",
+      "sha256": "2310D3FD4CF2974A35D0D88B597F009C9945F48697379366E3254BC9EF778265"
+    }
+  ],
+  "baselineActions": [
+    {
+      "action": "November to December",
+      "utc": "2026-11-01T14:12:52.160Z"
+    },
+    {
+      "action": "December to January",
+      "utc": "2026-11-01T14:12:55.508Z"
+    },
+    {
+      "action": "January to December",
+      "utc": "2026-11-01T14:12:58.832Z"
+    },
+    {
+      "action": "December to November",
+      "utc": "2026-11-01T14:13:01.729Z"
+    },
+    {
+      "action": "November to October",
+      "utc": "2026-11-01T14:13:08.996Z"
+    },
+    {
+      "action": "October to November",
+      "utc": "2026-11-01T14:13:12.554Z"
+    }
+  ],
+  "finalActions": [
+    {
+      "action": "November to December",
+      "utc": "2026-11-01T14:28:05.911Z"
+    },
+    {
+      "action": "December to January",
+      "utc": "2026-11-01T14:28:10.369Z"
+    },
+    {
+      "action": "January to December",
+      "utc": "2026-11-01T14:28:14.496Z"
+    },
+    {
+      "action": "December to November",
+      "utc": "2026-11-01T14:28:18.789Z"
+    },
+    {
+      "action": "November to October",
+      "utc": "2026-11-01T14:28:22.824Z"
+    },
+    {
+      "action": "October to November",
+      "utc": "2026-11-01T14:28:26.905Z"
+    }
+  ],
+  "initialHashes": [
+    {
+      "path": "packages/Doroti.Material/src/calendar_date_picker.cs",
+      "sha256": "1C52BB1AACCA5EF3573A5C3C6A460231E3452DB9BC778E217708735D49777DE1"
+    },
+    {
+      "path": "Doroti/src/Doroti.Framework.Widgets/page_view.cs",
+      "sha256": "29F5B5E3249EFDBAEBFA9447090C7C06931C484635D72CE3567FDAB7B932F904"
+    },
+    {
+      "path": "samples/DorotiTestbedApp/windowsappsdk/bin/Release/net10.0-windows10.0.19041.0/win-x64/Doroti.Material.dll",
+      "sha256": "66A7A63366A2A927615CABB41C202A4D53CA8BBA7FEC3024EF6B9FF00E64856D"
+    },
+    {
+      "path": "samples/DorotiTestbedApp/windowsappsdk/bin/Release/net10.0-windows10.0.19041.0/win-x64/Doroti.Framework.Widgets.dll",
+      "sha256": "F87B094619F27BD9DB7F1613B99C06CB5C1DEC414A3D60190EBA385C82C247A5"
+    }
+  ],
+  "finalHashes": [
+    {
+      "path": "Doroti/src/Doroti.Framework.Widgets/framework.cs",
+      "sha256": "09eecb28c330da567a0bc84a84043eca40e6920e014b5f65c20c232a115c51cf"
+    },
+    {
+      "path": "Doroti/src/Doroti.Runtime/DorotiExecutionContext.cs",
+      "sha256": "5c71be3ebd29aa5eadf55cc921cf0e56dfa03b6845852c9275a95d3aa02ee400"
+    },
+    {
+      "path": "Doroti/src/Doroti.Ui/PlatformDispatcher.cs",
+      "sha256": "07eb47711634b1c86320d3d77ad1ce92faab95266883b1822f3904b04bd07122"
+    },
+    {
+      "path": "Doroti/src/Doroti.Ui/ViewContracts.cs",
+      "sha256": "799bebb7790f02a4c273679747f4e8e05b33d2c0bf29fcb456d944b1db998c4b"
+    },
+    {
+      "path": "packages/Doroti.Material/src/calendar_date_picker.cs",
+      "sha256": "fd2fbbeb2e695cfbcd97f8df56c585a6ac3604febd50c84ca8f34eb4e79f038b"
+    },
+    {
+      "path": "Doroti/src/Doroti.Framework.Widgets/page_view.cs",
+      "sha256": "29f5b5e3249efdbaebfa9447090c7c06931c484635d72ce3567fdab7b932f904"
+    },
+    {
+      "path": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/WindowsManagedProductHost.cs",
+      "sha256": "9b8dd47443ac45559d757c0d339d8543eceb9a56ff53eecdd4ca2ef1ce626e08"
+    },
+    {
+      "path": "packages/platforms/windowsappsdk/Doroti.Host.WindowsAppSdk/DorotiWindowsAppSdkRunner.cs",
+      "sha256": "05814c6c537f68bdb94c0604ea500113f666e73b0475d7291aaeeb342341403c"
+    },
+    {
+      "path": "Doroti/tests/Doroti.Scroll.Tests/InvocationScopeRegression.cs",
+      "sha256": "656ac6ed1e3af56fa6df3c74dc9ae988146296d60a4811f1ad7a6ef3a678ecd2"
+    },
+    {
+      "path": "Doroti/tests/Doroti.Scroll.Tests/InheritedDependencyRegression.cs",
+      "sha256": "edb577c8d4139d438161237ef39e1099b40356ddd5150da6f7c6f332f4e024d2"
+    },
+    {
+      "path": "Doroti/tests/Doroti.Scroll.Tests/Program.cs",
+      "sha256": "8f189692580155cdb35d16e210dba87a59231acc6966fbedd0798c34391f97ef"
+    },
+    {
+      "path": "Doroti/tests/Doroti.Scroll.Tests/README.md",
+      "sha256": "50a90afe214ddb26f993492a0fcb3a7b05580bc4559c2d9280dcf7d944545cd1"
+    },
+    {
+      "path": "samples/DorotiTestbedApp/windowsappsdk/bin/Release/net10.0-windows10.0.19041.0/win-x64/Doroti.Framework.Widgets.dll",
+      "sha256": "3c7ca9b2ad4c4bd84ebb1285706091efdfb323f6125ac77555bb5ee1a5028abd"
+    },
+    {
+      "path": "samples/DorotiTestbedApp/windowsappsdk/bin/Release/net10.0-windows10.0.19041.0/win-x64/Doroti.Runtime.dll",
+      "sha256": "3c51942c8e8cfa9fffb04989e2173f6053c0a189f2d734092dbbe53ce409c4f5"
+    },
+    {
+      "path": "samples/DorotiTestbedApp/windowsappsdk/bin/Release/net10.0-windows10.0.19041.0/win-x64/Doroti.Ui.dll",
+      "sha256": "123d65b94ec11d16cd3506ff645011ab97a24373b07d00c41cbbd1884c3ccb3c"
+    },
+    {
+      "path": "samples/DorotiTestbedApp/windowsappsdk/bin/Release/net10.0-windows10.0.19041.0/win-x64/Doroti.Material.dll",
+      "sha256": "6c5ffae922fda00c4082945b5b67fc96db5aa6677aae76798077b214c4c3f9d7"
+    },
+    {
+      "path": "samples/DorotiTestbedApp/windowsappsdk/bin/Release/net10.0-windows10.0.19041.0/win-x64/Doroti.Host.WindowsAppSdk.dll",
+      "sha256": "1998b2592aa6762f2a4a0b464599fa0711e03e762a3ede53f8d8a81f8b0c116d"
+    },
+    {
+      "path": "samples/DorotiTestbedApp/windowsappsdk/bin/Release/net10.0-windows10.0.19041.0/win-x64/DorotiTestbedApp.WindowsAppSdk.dll",
+      "sha256": "37b3695c073c37d7585c31dd30adb8008d3290554d414acb9193b8cd50876f0c"
+    },
+    {
+      "path": "samples/DorotiTestbedApp/windowsappsdk/bin/Release/net10.0-windows10.0.19041.0/win-x64/DorotiTestbedApp.WindowsAppSdk.exe",
+      "sha256": "9575eca63e2d30279f876e55614ccec0102c7243aa7df094323a7bde2d61375b"
+    },
+    {
+      "path": "Doroti/tests/Doroti.Scroll.Tests/bin/Release/net10.0/Doroti.Scroll.Tests.dll",
+      "sha256": "2c85368c32b81b886b6ddfc500ed8e9e4826ebc73e807460349a72a31f106657"
+    },
+    {
+      "path": "samples/DorotiTestbedApp/android/bin/android-arm64/Release/net10.0-android/android-arm64/dev.doroti.testbed-Signed.apk",
+      "sha256": "12adc7998ed2fdf700a9767ca3ba26f715861b7b3021bbf576e8dc804f1ecd30"
+    }
+  ],
+  "checks": {
+    "regressions": {
+      "exitCode": 0,
+      "localLog": "temp/date-picker-month-review/dependency-candidate-tests.log",
+      "sha256": "662018ef07e3b4b5123379d91b71e864f73b16d6b5155dfa7233bb280d095c77",
+      "passLines": [
+        "PASS: production ticker at 60/120 Hz, missed pulses, fractional offsets, semantic boundaries",
+        "PASS: Android vsync clock, matrix ownership/allocation, perspective and legacy semantics projection",
+        "PASS: caret semantics cache, graphemes, edit/wrap/scale/offset/obscure/dispose invalidation",
+        "PASS: text-only decoration notifications, latest semantic selection, projection/DPR/clip/obscure/thread invalidation",
+        "PASS: shared-controller collapsed caret paint without layout; text/composition/range/focus/custom fallbacks; retained leaf freshness",
+        "PASS: queued weak notifications preserve live delivery and release abandoned owners before native callback retirement",
+        "PASS: managed callback ownership, late/duplicate delivery, failure cleanup and concurrent/reentrant dispatch",
+        "PASS: immutable scroll recordings, producer mutation/disposal, texture copy-on-write and lease retirement",
+        "PASS: renderer/Windows retained native/shield inspection, depth guards and allocation-free repeated inspection",
+        "PASS: stable Windows UIA child lists, live values, order/removal/handler refresh and unready-peer retry",
+        "PASS: nested view scopes, cross-view identity, cancellation, custom overrides and async context restoration",
+        "PASS: inherited dependency lookup, aspect updates, stable notification snapshots, deactivation and removed-owner collection",
+        "PASS: scroll-only semantics coalescing, content/action priority, exact final offset/extents, conservative hosts and disposed listener release",
+        "PASS: cached section owner/parent-data/sibling preservation, no repeated attach or recreation, exact eviction teardown",
+        "PASS: release velocity, ballistic continuation, semantic changes, native inertia lifecycle"
+      ]
+    },
+    "windowsReleaseBuild": {
+      "exitCode": 0,
+      "localLog": "temp/date-picker-month-review/final-build.log",
+      "sha256": "4b9176bb459d52522f4e413799a817329ee2dbf34921ae6b7aa338541641f3d8",
+      "warnings": 0,
+      "errors": 0
+    },
+    "androidArm64ReleaseBuild": {
+      "exitCode": 0,
+      "localLog": "temp/date-picker-month-review/android-final-build.log",
+      "sha256": "5cc5e45b0f65a1012264f28f1827ba6059ae5ff1cd5a361bd045b889a5dcda94",
+      "warnings": 0,
+      "errors": 0
+    }
+  },
+  "functionalChecks": {
+    "yearSelection": "2025 selected and day mode restored",
+    "dayConfirmation": "2025-11-02 confirmed and retained on reopen",
+    "cancel": "2025-11-03 temporary selection cancelled; sample resets its nullable date and reopens on today as implemented",
+    "theme": "dark-light-dark updates observed",
+    "upperBound": "January 2027 next-month control disabled; days after January 1 disabled"
+  },
+  "reviewWindow": {
+    "hwnd": 3407898,
+    "binary": "samples/DorotiTestbedApp/windowsappsdk/bin/Release/net10.0-windows10.0.19041.0/win-x64/DorotiTestbedApp.WindowsAppSdk.exe",
+    "state": "Date picker open on November 2026 for user review"
+  }
+}

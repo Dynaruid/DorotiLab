@@ -15,11 +15,34 @@ manager, and verifies both subclasses retire on disposal. It injects no physical
 input and does not show a window.
 These checks do not establish physical trackpad behavior or display frame pacing.
 
+Invocation-scope regressions check nested same-view builds, cross-view identity,
+view/application cancellation, custom scheduler/time/environment overrides and
+ExecutionContext flow. Allocation measurements cover 20 actual nested view
+scopes; they do not qualify rendered date-picker animation or display pacing.
+
+Inherited-dependency checks use the production element and 512 registered
+dependents. Twenty lookups must avoid a linear scan; aspect replacement,
+insertion order, callback-time mutation, deactivation and collection after
+removal retain their existing behavior.
+
 The frozen-recording regression checks that repeated scroll frames share closed
 path/text/numeric recordings, while later producer mutation or disposal cannot
 change an admitted frame. Public mutable command inputs still require defensive
 copies. Nested live/frozen textures are captured once per texture/freeze pair,
 refresh independently on replay, and release exactly once after the last lease.
+Closed pictures also share their outer command storage. A public record
+`with` expression replacing numeric arguments must regain defensive copying.
+Native composition admission traverses retained layers without allocating and
+keeps platform views, input shields and excessive depth on the conservative path.
+Both Windows hosts also use the linked production Windows inspection helper;
+the regression checks nested shields/native views, the 256-layer limit and zero
+allocation across repeated inspections. These allocation checks do not measure
+scroll frame pacing.
+Windows UIA child-list caching checks stable list identity and zero allocation
+for repeated queries, live peer values, child order/removal, replaced native
+handlers and retry when a peer is not ready. Actual WinUI/UIA heap observations
+and their limits are recorded in the
+[Windows resume review](../../../history/26/11/01/windows-resume-scroll-review.md).
 Scroll semantics checks use a real pipeline/tree: pure offset updates can be
 coalesced by an explicitly opting-in host, content/actions win in either order,
 and the final flush publishes the exact fractional offset. Extent/policy changes
@@ -27,6 +50,11 @@ stay urgent; a disposed renderer releases its listener on a surviving position.
 Cached-section fixtures verify that keep-alive moves retain attachment, owner,
 parent data and sibling links without recreating children, while real eviction
 detaches the complete subtree exactly once.
+
+Native callback checks preserve exact frame timestamps for live owners and allow
+late pulses after teardown. Managed dispatcher work stays alive until delivery;
+the native notification retains only a token. Failure, duplicate delivery,
+concurrent producers and reentrant posts release each registration exactly once.
 
 It also drives the production scheduler/ticker/animation controller at 60/120 Hz
 and with missed pulses, checks fractional offsets and final ticker retirement,

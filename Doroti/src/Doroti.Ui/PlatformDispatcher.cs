@@ -14,6 +14,7 @@ public sealed class PlatformDispatcher : IDisposable
     private readonly DorotiFrameTrace _frameTrace = new();
     private readonly IDartPerformanceModeCapability? _performanceModeCapability;
     private readonly TimeProvider _timeProvider;
+    private readonly Func<Action, bool> _postMicrotask;
     private readonly HashSet<Guid> _backgroundIsolates = [];
     private ChannelBuffers? _channelBuffers;
     private readonly AsyncLocal<DorotiView?> _invocationView = new();
@@ -41,6 +42,7 @@ public sealed class PlatformDispatcher : IDisposable
         _applicationDispatcher = applicationDispatcher;
         ApplicationId = applicationId ?? Guid.NewGuid();
         _timeProvider = DorotiExecutionContext.TimeProvider;
+        _postMicrotask = EnqueueMicrotask;
     }
 
     /// <summary>
@@ -63,7 +65,9 @@ public sealed class PlatformDispatcher : IDisposable
     public DorotiFrameTrace frameTrace => _frameTrace;
     public long CurrentFrameNumber => Volatile.Read(ref _frameNumber);
 
-    public IDisposable EnterScope()
+    public IDisposable EnterScope() => EnterScope(_callbackLifetime.Token);
+
+    private IDisposable EnterScope(CancellationToken callbackLifetime)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (_applicationDispatcher?.HasThreadAccess == false)
@@ -72,7 +76,7 @@ public sealed class PlatformDispatcher : IDisposable
         ActiveDispatcher.Value = this;
         return new DispatcherScope(
             previous,
-            DorotiExecutionContext.EnterDispatcher(EnqueueMicrotask, _callbackLifetime.Token),
+            DorotiExecutionContext.EnterDispatcher(_postMicrotask, callbackLifetime),
             DorotiExecutionContext.EnterTimeProvider(_timeProvider)
         );
     }
@@ -729,7 +733,7 @@ public sealed class PlatformDispatcher : IDisposable
             using var dispatcherScope = EnterScope();
             using var invocationScope = EnterViewScope(view);
             using var viewScope = DorotiExecutionContext.EnterDispatcher(
-                EnqueueMicrotask,
+                _postMicrotask,
                 view.CallbackLifetime
             );
             if (view.environmentConfiguration is { } configuration)
@@ -768,24 +772,26 @@ public sealed class PlatformDispatcher : IDisposable
     internal IDisposable EnterViewScope(DorotiView view)
     {
         ObjectDisposedException.ThrowIf(view.CallbackLifetime.IsCancellationRequested, view);
-        var dispatcherScope = EnterScope();
+        // Enter the final view lifetime directly. Temporarily entering the
+        // application lifetime would replace the callback context twice for
+        // every nested component build and defeat equivalent-scope reuse.
+        var dispatcherScope = EnterScope(view.CallbackLifetime);
         var previous = _invocationView.Value;
         _invocationView.Value = view;
-        var callbackScope = DorotiExecutionContext.EnterDispatcher(EnqueueMicrotask, view.CallbackLifetime);
         var environmentScope = view.environmentConfiguration is { } configuration
             ? PlatformEnvironmentContext.Enter(configuration) : null;
-        return new ViewInvocationScope(this, previous, dispatcherScope, callbackScope, environmentScope);
+        return new ViewInvocationScope(this, previous, dispatcherScope, environmentScope);
     }
 
     private sealed class ViewInvocationScope(PlatformDispatcher dispatcher, DorotiView? previous,
-        IDisposable dispatcherScope, IDisposable callbackScope, IDisposable? environmentScope) : IDisposable
+        IDisposable dispatcherScope, IDisposable? environmentScope) : IDisposable
     {
         private int _disposed;
         public void Dispose()
         {
             if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
             dispatcher._invocationView.Value = previous;
-            DorotiCleanup.Run(() => environmentScope?.Dispose(), callbackScope.Dispose, dispatcherScope.Dispose);
+            DorotiCleanup.Run(() => environmentScope?.Dispose(), dispatcherScope.Dispose);
         }
     }
 

@@ -4380,8 +4380,12 @@ public class ParentDataElement<T> : ProxyElement, IParentDataElement
 
 public class InheritedElement : ProxyElement
 {
-    internal virtual DartMap<Element, object?> _dependents { get; private set; } =
-        new DartMap<Element, object?>();
+    // DartMap is a linear compatibility map. An inherited widget can have
+    // thousands of dependents, so registration/removal must not scan or shift
+    // that entire list for each element in a month/page subtree. Keep lookup
+    // hashed and notification order separate, with O(1) removal from both.
+    private readonly Dictionary<Element, (object? Value, LinkedListNode<Element> Node)> _dependents = [];
+    private readonly LinkedList<Element> _dependentOrder = [];
 
     public InheritedElement(InheritedWidget widget)
         : base(widget) { }
@@ -4398,19 +4402,26 @@ public class InheritedElement : ProxyElement
 
     public override void debugDeactivated()
     {
-        DartRuntimePrimitives.Assert(() => !Enumerable.Any(_dependents));
+        DartRuntimePrimitives.Assert(() => _dependents.Count == 0);
         base.debugDeactivated();
     }
 
     public virtual object? getDependencies(Element dependent)
     {
-        return _dependents.GetValueOrDefault(dependent);
-        throw new InvalidOperationException("Control flow completed without returning a value.");
+        return _dependents.TryGetValue(dependent, out var entry) ? entry.Value : null;
     }
 
     public virtual void setDependencies(Element dependent, object? value)
     {
-        _dependents[dependent] = value;
+        if (_dependents.TryGetValue(dependent, out var entry))
+        {
+            entry.Node.Value = dependent;
+            _dependents[dependent] = (value, entry.Node);
+        }
+        else
+        {
+            _dependents.Add(dependent, (value, _dependentOrder.AddLast(dependent)));
+        }
     }
 
     public virtual void updateDependencies(Element dependent, object? aspect)
@@ -4425,7 +4436,8 @@ public class InheritedElement : ProxyElement
 
     public virtual void removeDependent(Element dependent)
     {
-        _dependents.remove(dependent);
+        if (_dependents.Remove(dependent, out var entry))
+            _dependentOrder.Remove(entry.Node);
     }
 
     public override void updated(ProxyWidget oldWidget)
@@ -4441,7 +4453,7 @@ public class InheritedElement : ProxyElement
     {
         var __oldWidget = (InheritedWidget)oldWidget;
         DartRuntimePrimitives.Assert(() => _debugCheckOwnerBuildTargetExists("notifyClients"));
-        foreach (Element dependent in _dependents.Keys)
+        foreach (Element dependent in _dependentOrder.ToArray())
         {
             DartRuntimePrimitives.Assert(() =>
             {

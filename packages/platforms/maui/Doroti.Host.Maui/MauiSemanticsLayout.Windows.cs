@@ -1,5 +1,7 @@
 #if WINDOWS
+using Doroti.Host.SharedWindows;
 using Doroti.Ui;
+using Microsoft.Maui;
 using Microsoft.Maui.Handlers;
 using Microsoft.Maui.Platform;
 using Microsoft.UI.Xaml;
@@ -27,6 +29,7 @@ internal sealed class SemanticsPeer : FrameworkElementAutomationPeer, IInvokePro
 {
     private readonly MauiSemanticsLayout _view;
     private readonly int _id;
+    private readonly WindowsPeerChildrenCache<IView, AutomationPeer> _children = new();
     internal SemanticsPeer(SemanticsPanel panel) : base(panel)
     {
         _view = panel.View;
@@ -48,10 +51,9 @@ internal sealed class SemanticsPeer : FrameworkElementAutomationPeer, IInvokePro
     protected override bool HasKeyboardFocusCore() => Node.flags?.isFocused == Tristate.isTrue;
     protected override void SetFocusCore() => Dispatch(Node.actions.HasFlag(SemanticsAction.focus)
         ? SemanticsAction.focus : SemanticsAction.didGainAccessibilityFocus);
-    protected override IList<AutomationPeer> GetChildrenCore() => _view.Children.OfType<MauiSemanticsLayout>()
-        .Select(child => child.Handler?.PlatformView as FrameworkElement)
-        .Where(child => child is not null).Select(child => CreatePeerForElement(child!))
-        .Where(peer => peer is not null).ToList()!;
+    protected override IList<AutomationPeer> GetChildrenCore() => _children.Capture(_view.Children,
+        static child => child is MauiSemanticsLayout semantics ? semantics.Handler?.PlatformView as FrameworkElement : null,
+        static element => CreatePeerForElement((FrameworkElement)element));
     protected override AutomationControlType GetAutomationControlTypeCore()
     {
         var node = Node;

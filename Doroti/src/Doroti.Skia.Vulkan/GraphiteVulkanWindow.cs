@@ -597,6 +597,8 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
             _platformRecording = frame;
             try
             {
+                using var profile = Doroti.Ui.FrameworkWorkProfile.AllocationEnabled
+                    ? Doroti.Ui.FrameworkWorkProfile.Begin(typeof(GraphiteVulkanWindow), 33) : default;
                 paint(frame.Surface, Width, Height);
             }
             finally
