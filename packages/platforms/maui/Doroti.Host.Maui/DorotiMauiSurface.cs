@@ -71,6 +71,13 @@ public sealed class DorotiMauiSurface : Grid, IDisposable, IAsyncDisposable
     private readonly IMauiSkiaSurface _renderSurface;
     private readonly MauiTextInputBridge _textInput;
     internal MauiTextInputBridge TextInput => _textInput;
+#if ANDROID
+    internal void TrimAndroidGpuMemory()
+    {
+        if (_renderSurface.Element.Handler?.PlatformView is DorotiAndroidViewContainer container)
+            container.Surface.TrimGpuMemory();
+    }
+#endif
     private readonly AbsoluteLayout _semanticsLayer;
     private bool _attached;
     private bool _disposed;

@@ -1091,6 +1091,8 @@ public sealed class DorotiView : IDisposable
     internal bool semanticsEnabled => _semanticsHost is not null;
     public bool coalesceSemanticsGeometryDuringActiveMetrics =>
         _semanticsHost?.CoalesceGeometryDuringActiveMetrics == true;
+    public bool coalesceSemanticsScrollOffsetsDuringActiveScroll =>
+        _semanticsHost?.CoalesceScrollOffsetsDuringActiveScroll == true;
 
     public PlatformDispatcher platformDispatcher => _dispatcher;
 

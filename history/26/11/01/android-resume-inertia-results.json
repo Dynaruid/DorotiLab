@@ -1,0 +1,2430 @@
+{
+  "schemaVersion": 1,
+  "recordedDate": "2026-11-01",
+  "timezone": "Asia/Seoul",
+  "status": "PARTIAL",
+  "stopReason": "User requested end-of-day wrap-up; device subsequently disconnected by user; no further device actions.",
+  "scope": "Already-loaded All Components content, persistent micro-stutter during long inertia after Android background/resume; cold lazy-load stalls excluded from target, not from raw evidence.",
+  "source": {
+    "head": "38e1603e3419c20085666de6fb550ea9669de938",
+    "committed": false,
+    "changedSourceSha256": {
+      "Doroti/eng/android/ScrollGesture.java": "22a6fe236be32e52a94392e8c17d2b55a6f434f14f7fc3e9ab083d28ea162f8c",
+      "Doroti/eng/measure-android-resume-scroll.py": "157c6b8f3bfb0ce95630d7e9ab267d2d548f932b70ef3552de18f42683b077d7",
+      "Doroti/eng/summarize-android-resume-scroll.py": "e74ae3e77ecad4fe2209ba48d0c8640e2f0258642e6557af6c0b385cc493d205",
+      "Doroti/src/Doroti.Framework.Rendering/object.cs": "0f7de735382b10872678c6b8309f87877fe4b1295f2cb5f3fe26236e46a001f2",
+      "Doroti/src/Doroti.Framework.Rendering/section_list.cs": "f14e38bbbf997aa0eddc25f50462cd9ea9f8718d8972934311a74186c910c889",
+      "Doroti/src/Doroti.Framework.Rendering/sliver_multi_box_adaptor.cs": "5c1bd474e060726ff0f40fac42597022a5a148883c48a72168bc4fa60d48fb01",
+      "Doroti/src/Doroti.Framework.Rendering/sliver_padding.cs": "05c6562b59029a669845a2a346711173066570c49f6cccdedb7da467a1dd1596",
+      "Doroti/src/Doroti.Framework.Rendering/viewport.cs": "7b34617de4f716fb7eff055edfb91e9f9d4b24db6b037fce31b9c7d5758091ae",
+      "Doroti/src/Doroti.Framework.Widgets/binding.cs": "ae50595477fc8947e3afc77a67da756962c8a4d912eee3211b4c84f99d90fde7",
+      "Doroti/src/Doroti.Framework.Widgets/scrollable.cs": "8e2c8f65a9cf3bcd8e669638884683d73fb1d5c6e6dd2fa80399b93d1e793016",
+      "Doroti/src/Doroti.Skia.Rendering/SkiaGraphiteSession.cs": "45051ffa1174b12ab413c9bd013390e1ea53451338d8ebc5fb6157261162999f",
+      "Doroti/src/Doroti.Skia.Vulkan/GraphiteVulkanWindow.Android.cs": "67ebadcd8607f885aa5a3f9e96d8b173c7d5977798f39f6f8c3056d7e79f381f",
+      "Doroti/src/Doroti.Skia.Vulkan/GraphiteVulkanWindow.cs": "e6234fda0474d0d079a70a35dfd44b75b8221ffc7b9564d56d054c7de42f8e0a",
+      "Doroti/src/Doroti.Ui/DorotiFrozenScene.cs": "2d8cf2054f014e64a236f0937dff129861539912046e7115277569e810ac80f3",
+      "Doroti/src/Doroti.Ui/GraphicsAndSemanticsContracts.cs": "ae898c2bca92b572e3cf0d2a3d9692837364265bb4fb4a846f7c43b607a396ff",
+      "Doroti/src/Doroti.Ui/PaintingTypes.cs": "05a0a9829957bb42fab5e3240e5f9292139cee82fb2872efb7c6af259dcbcdf3",
+      "Doroti/src/Doroti.Ui/PlatformDispatcher.cs": "d76bcbd76ed25a34b6aeb9961b4d6ffb948b3813da87131322dd330fc841fc74",
+      "Doroti/tests/Doroti.Scroll.Tests/CachedSectionRegression.cs": "ae7670613f57c97cf8a5730990d5540b5b2e70fe7c44ead999ff5458aa0b6568",
+      "Doroti/tests/Doroti.Scroll.Tests/FrozenScrollRecordingRegression.cs": "1cc9a55e707ce13c0b33345a139ea794202a8373476f28da1a78f6166dd31876",
+      "Doroti/tests/Doroti.Scroll.Tests/Program.cs": "c57dbcd3b8427ee84b181281e0460c96cea9b017e477e037a6d71f22b9834f53",
+      "Doroti/tests/Doroti.Scroll.Tests/ScrollSemanticsRegression.cs": "ab0f9e3ebf08fe74ec4cebdec31bc4ba1fe38cf667999ec0af26faefab26f5ce",
+      "packages/platforms/maui/Doroti.Host.Maui/AndroidScrollProfile.cs": "e206c07523dfa35d1084452a68aca88be00ba2170040808f000e08e6315645cd",
+      "packages/platforms/maui/Doroti.Host.Maui/DorotiAndroidVulkanViewHandler.cs": "914bad6ba0d7b400035bacfd68b60c5ab8710f68c4f81412f9b3d18b600b41c1",
+      "packages/platforms/maui/Doroti.Host.Maui/DorotiMauiApplication.cs": "1b65053e93ac6e5234163b00dee9dfb753c97e573da79b1d346f257ccf2fcc5c",
+      "packages/platforms/maui/Doroti.Host.Maui/DorotiMauiSurface.cs": "1f1c46bd44d4f99b9b26a624efd4db705820dc5eea02ddf8cdf0475cfdf1489d",
+      "packages/platforms/maui/Doroti.Host.Maui/MauiAndroidSemanticsBridge.cs": "9cb7f1ec13571fec6cbf0140aac0386bb72b376390c116d71633b94303a161e2",
+      "packages/platforms/maui/Doroti.Host.Maui/MauiApplicationNavigation.cs": "c53bbbab6d544dc1e0efd1e8861057584da64c023fe39becc6fbaa2fff71d118",
+      "packages/platforms/maui/Doroti.Host.Maui/MauiHostAdapter.cs": "698c7941088f633b68f985f2077cff300e2cdf15e7d96cabe14563be0b129148",
+      "packages/platforms/maui/Doroti.Host.Maui/MauiSkiaCapabilities.cs": "a72e2b18e2eaf66dec42168da1a6c3b39a6709d9ccab3404a906570f642f8789"
+    }
+  },
+  "device": {
+    "model": "SM-S931N",
+    "serial": "R3CY30KZA4B",
+    "android": 17,
+    "api": 37,
+    "gpu": "Adreno 830",
+    "resolution": [
+      1080,
+      2340
+    ],
+    "density": 480,
+    "refreshPolicy": "unchanged default variable refresh, approximately 120Hz during scroll",
+    "enabledAccessibilityServices": false
+  },
+  "build": {
+    "configuration": "Release",
+    "rid": "android-arm64",
+    "runtime": "Mono",
+    "profiledAot": true,
+    "interpreter": false,
+    "optimized": true,
+    "nativeSkiaVersion": "4.154.0",
+    "nativeSkiaArm64Sha256": "02c4cf50f41d50750d4e83f3e52c6e80dc7ac2ae43f50fefa381b45e18b81e9b",
+    "warnings": 0,
+    "errors": 0,
+    "elapsedSeconds": 73.07,
+    "log": "temp/galaxy-resume-followup/final-build-v4.log"
+  },
+  "regression": {
+    "status": "PASS",
+    "timeoutSeconds": 1200,
+    "passReportCount": 10,
+    "reports": [
+      "PASS: production ticker at 60/120 Hz, missed pulses, fractional offsets, semantic boundaries",
+      "PASS: Android vsync clock, matrix ownership/allocation, perspective and legacy semantics projection",
+      "PASS: caret semantics cache, graphemes, edit/wrap/scale/offset/obscure/dispose invalidation",
+      "PASS: text-only decoration notifications, latest semantic selection, projection/DPR/clip/obscure/thread invalidation",
+      "PASS: shared-controller collapsed caret paint without layout; text/composition/range/focus/custom fallbacks; retained leaf freshness",
+      "PASS: queued weak notifications preserve live delivery and release abandoned owners before native callback retirement",
+      "PASS: immutable scroll recordings, producer mutation/disposal, texture copy-on-write and lease retirement",
+      "PASS: scroll-only semantics coalescing, content/action priority, exact final offset/extents, conservative hosts and disposed listener release",
+      "PASS: cached section owner/parent-data/sibling preservation, no repeated attach or recreation, exact eviction teardown",
+      "PASS: release velocity, ballistic continuation, semantic changes, native inertia lifecycle"
+    ],
+    "log": "temp/galaxy-resume-followup/final-regression-v4.log"
+  },
+  "apkIdentity": {
+    "previousUserInstalledSha256": "e99651721eae6c736e07af74face432e6d78b283c519b429655bc46863a00ca1",
+    "matchedBaselineSha256": "d0ae2b82b4f0959b3d989c2be3abadadd8b32b471bdf011a75f6648b45d63e82",
+    "finalInstalledAndPulledSha256": "27679b3f63b5df98bfbe60de6d11d45477c2ceffeef163c32eb19c0246b7f753",
+    "finalPath": "temp/galaxy-resume-followup/doroti-testbed-galaxy-inertia-arm64.apk",
+    "baselineConstruction": "Earlier retained-Surface fix preserved; four then-new recording files restored from HEAD for baseline build and candidate bytes restored afterward; later semantics/cache-attachment changes absent from baseline."
+  },
+  "method": {
+    "screen": "All Components",
+    "warmSwipes": 12,
+    "warmFlingPairs": 1,
+    "gestureX": 950,
+    "flingDistancePhysicalPx": 1300,
+    "flingDurationMs": 90,
+    "captureTailSeconds": 3,
+    "naturalResume": "Wait for actual Surface detach, then return; no long background sleep or forced GC in main comparison.",
+    "movingWindow": "Only complete trace: UP through first submitted frame completing recorded scrollEnd; incomplete trace windows excluded.",
+    "rawTailWarning": "Manifest ballistic statistics include the full UP+3s tail and idle flushes; they are not the moving-window result or displayed FPS.",
+    "detailedWorkTraceInMainComparison": false
+  },
+  "naturalComparisonManifests": [
+    {
+      "serial": "R3CY30KZA4B",
+      "label": "loaded-baseline",
+      "apkSha256": "d0ae2b82b4f0959b3d989c2be3abadadd8b32b471bdf011a75f6648b45d63e82",
+      "presentObserved": false,
+      "physicalInput": "notVerified",
+      "motion": "fling",
+      "resumeCleanup": "natural",
+      "trials": [
+        {
+          "trial": 1,
+          "pid": "27838",
+          "stages": [
+            {
+              "name": "initial-up",
+              "downMs": 376932575,
+              "motion": "continuous-down-ms=376932575 moves=10 duration-ms=92",
+              "summary": {
+                "gesture": 15,
+                "ownerMs": {
+                  "count": 9,
+                  "p50": 4.394,
+                  "p95": 5.178,
+                  "p99": 5.178,
+                  "max": 17.204
+                },
+                "callbackMs": {
+                  "count": 9,
+                  "p50": 1.45,
+                  "p95": 1.803,
+                  "p99": 1.803,
+                  "max": 11.894
+                },
+                "snapMs": {
+                  "count": 9,
+                  "p50": 0.081,
+                  "p95": 0.122,
+                  "p99": 0.122,
+                  "max": 0.142
+                },
+                "allocated": {
+                  "count": 9,
+                  "p50": 407664,
+                  "p95": 514200,
+                  "p99": 514200,
+                  "max": 846792
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 0,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 9
+              },
+              "ballistic": {
+                "ownerMs": {
+                  "count": 173,
+                  "p50": 5.159,
+                  "p95": 10.706,
+                  "p99": 12.326,
+                  "max": 27.361
+                },
+                "callbackMs": {
+                  "count": 173,
+                  "p50": 1.892,
+                  "p95": 6.982,
+                  "p99": 8.809,
+                  "max": 24.283
+                },
+                "snapMs": {
+                  "count": 173,
+                  "p50": 0.102,
+                  "p95": 0.171,
+                  "p99": 0.236,
+                  "max": 2.038
+                },
+                "allocated": {
+                  "count": 173,
+                  "p50": 469120,
+                  "p95": 550016,
+                  "p99": 734448,
+                  "max": 1392496
+                },
+                "submitted": 173,
+                "nativeGapMs": {
+                  "count": 172,
+                  "p50": 8.33,
+                  "p95": 8.332,
+                  "p99": 8.332,
+                  "max": 24.988
+                },
+                "completionGapMs": {
+                  "count": 172,
+                  "p50": 8.21,
+                  "p95": 13.833,
+                  "p99": 15.328,
+                  "max": 31.579
+                },
+                "nativeGapsOver12ms": 1,
+                "gc": {
+                  "gen0": 18,
+                  "gen1": 1,
+                  "gen2": 1
+                }
+              }
+            },
+            {
+              "name": "initial-down",
+              "downMs": 376936934,
+              "motion": "continuous-down-ms=376936934 moves=10 duration-ms=93",
+              "summary": {
+                "gesture": 16,
+                "ownerMs": {
+                  "count": 8,
+                  "p50": 7.868,
+                  "p95": 10.31,
+                  "p99": 10.31,
+                  "max": 20.398
+                },
+                "callbackMs": {
+                  "count": 8,
+                  "p50": 1.917,
+                  "p95": 6.231,
+                  "p99": 6.231,
+                  "max": 15.011
+                },
+                "snapMs": {
+                  "count": 8,
+                  "p50": 0.108,
+                  "p95": 0.128,
+                  "p99": 0.128,
+                  "max": 0.306
+                },
+                "allocated": {
+                  "count": 8,
+                  "p50": 544560,
+                  "p95": 708424,
+                  "p99": 708424,
+                  "max": 1385808
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 1,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 8,
+                "beforeMotionDrawMs": {
+                  "count": 173,
+                  "p50": 5.159,
+                  "p95": 10.706,
+                  "p99": 12.326,
+                  "max": 27.361
+                }
+              },
+              "ballistic": {
+                "ownerMs": {
+                  "count": 176,
+                  "p50": 4.913,
+                  "p95": 10.571,
+                  "p99": 11.459,
+                  "max": 12.781
+                },
+                "callbackMs": {
+                  "count": 176,
+                  "p50": 1.81,
+                  "p95": 7.221,
+                  "p99": 7.894,
+                  "max": 8.042
+                },
+                "snapMs": {
+                  "count": 176,
+                  "p50": 0.103,
+                  "p95": 0.148,
+                  "p99": 0.179,
+                  "max": 0.263
+                },
+                "allocated": {
+                  "count": 176,
+                  "p50": 416168,
+                  "p95": 523296,
+                  "p99": 614904,
+                  "max": 902816
+                },
+                "submitted": 176,
+                "nativeGapMs": {
+                  "count": 175,
+                  "p50": 8.329,
+                  "p95": 8.334,
+                  "p99": 8.335,
+                  "max": 8.336
+                },
+                "completionGapMs": {
+                  "count": 175,
+                  "p50": 8.299,
+                  "p95": 13.8,
+                  "p99": 15.238,
+                  "max": 17.085
+                },
+                "nativeGapsOver12ms": 0,
+                "gc": {
+                  "gen0": 18,
+                  "gen1": 0,
+                  "gen2": 0
+                }
+              }
+            },
+            {
+              "name": "resume-up",
+              "downMs": 376943306,
+              "motion": "continuous-down-ms=376943306 moves=10 duration-ms=92",
+              "resumeSnapshotReadyMs": 317.927,
+              "summary": {
+                "gesture": 17,
+                "ownerMs": {
+                  "count": 9,
+                  "p50": 4.218,
+                  "p95": 6.447,
+                  "p99": 6.447,
+                  "max": 14.979
+                },
+                "callbackMs": {
+                  "count": 9,
+                  "p50": 1.123,
+                  "p95": 2.697,
+                  "p99": 2.697,
+                  "max": 12.155
+                },
+                "snapMs": {
+                  "count": 9,
+                  "p50": 0.071,
+                  "p95": 0.086,
+                  "p99": 0.086,
+                  "max": 0.118
+                },
+                "allocated": {
+                  "count": 9,
+                  "p50": 398904,
+                  "p95": 432160,
+                  "p99": 432160,
+                  "max": 850760
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 1,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 9,
+                "beforeMotionDrawMs": {
+                  "count": 182,
+                  "p50": 4.913,
+                  "p95": 10.571,
+                  "p99": 12.77,
+                  "max": 18.238
+                }
+              },
+              "ballistic": {
+                "ownerMs": {
+                  "count": 174,
+                  "p50": 4.802,
+                  "p95": 11.024,
+                  "p99": 12.091,
+                  "max": 17.141
+                },
+                "callbackMs": {
+                  "count": 174,
+                  "p50": 1.812,
+                  "p95": 6.995,
+                  "p99": 7.891,
+                  "max": 13.11
+                },
+                "snapMs": {
+                  "count": 174,
+                  "p50": 0.094,
+                  "p95": 0.128,
+                  "p99": 0.174,
+                  "max": 0.191
+                },
+                "allocated": {
+                  "count": 174,
+                  "p50": 462576,
+                  "p95": 581080,
+                  "p99": 630528,
+                  "max": 1498984
+                },
+                "submitted": 174,
+                "nativeGapMs": {
+                  "count": 173,
+                  "p50": 8.331,
+                  "p95": 8.334,
+                  "p99": 8.335,
+                  "max": 16.666
+                },
+                "completionGapMs": {
+                  "count": 173,
+                  "p50": 8.304,
+                  "p95": 13.597,
+                  "p99": 16.417,
+                  "max": 21.5
+                },
+                "nativeGapsOver12ms": 1,
+                "gc": {
+                  "gen0": 20,
+                  "gen1": 0,
+                  "gen2": 0
+                }
+              }
+            },
+            {
+              "name": "resume-down",
+              "downMs": 376947607,
+              "motion": "continuous-down-ms=376947607 moves=10 duration-ms=93",
+              "resumeSnapshotReadyMs": 317.927,
+              "summary": {
+                "gesture": 18,
+                "ownerMs": {
+                  "count": 7,
+                  "p50": 9.039,
+                  "p95": 10.79,
+                  "p99": 10.79,
+                  "max": 19.17
+                },
+                "callbackMs": {
+                  "count": 7,
+                  "p50": 2.291,
+                  "p95": 6.5,
+                  "p99": 6.5,
+                  "max": 13.179
+                },
+                "snapMs": {
+                  "count": 7,
+                  "p50": 0.115,
+                  "p95": 0.165,
+                  "p99": 0.165,
+                  "max": 0.166
+                },
+                "allocated": {
+                  "count": 7,
+                  "p50": 538048,
+                  "p95": 732160,
+                  "p99": 732160,
+                  "max": 1424000
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 1,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 7,
+                "beforeMotionDrawMs": {
+                  "count": 174,
+                  "p50": 4.802,
+                  "p95": 11.024,
+                  "p99": 12.091,
+                  "max": 17.141
+                }
+              },
+              "ballistic": {
+                "ownerMs": {
+                  "count": 177,
+                  "p50": 4.938,
+                  "p95": 11.406,
+                  "p99": 13.004,
+                  "max": 13.748
+                },
+                "callbackMs": {
+                  "count": 177,
+                  "p50": 1.843,
+                  "p95": 7.778,
+                  "p99": 9.073,
+                  "max": 9.952
+                },
+                "snapMs": {
+                  "count": 177,
+                  "p50": 0.1,
+                  "p95": 0.147,
+                  "p99": 0.168,
+                  "max": 0.181
+                },
+                "allocated": {
+                  "count": 177,
+                  "p50": 422528,
+                  "p95": 530128,
+                  "p99": 619752,
+                  "max": 1250856
+                },
+                "submitted": 177,
+                "nativeGapMs": {
+                  "count": 176,
+                  "p50": 8.331,
+                  "p95": 8.332,
+                  "p99": 8.335,
+                  "max": 8.383
+                },
+                "completionGapMs": {
+                  "count": 176,
+                  "p50": 8.308,
+                  "p95": 14.803,
+                  "p99": 16.176,
+                  "max": 16.843
+                },
+                "nativeGapsOver12ms": 0,
+                "gc": {
+                  "gen0": 19,
+                  "gen1": 0,
+                  "gen2": 0
+                }
+              }
+            },
+            {
+              "name": "resume-again-up",
+              "downMs": 376953701,
+              "motion": "continuous-down-ms=376953701 moves=10 duration-ms=93",
+              "resumeSnapshotReadyMs": 301.878,
+              "summary": {
+                "gesture": 19,
+                "ownerMs": {
+                  "count": 9,
+                  "p50": 3.445,
+                  "p95": 10.061,
+                  "p99": 10.061,
+                  "max": 17.796
+                },
+                "callbackMs": {
+                  "count": 9,
+                  "p50": 1.15,
+                  "p95": 7.218,
+                  "p99": 7.218,
+                  "max": 14.789
+                },
+                "snapMs": {
+                  "count": 9,
+                  "p50": 0.072,
+                  "p95": 0.096,
+                  "p99": 0.096,
+                  "max": 0.101
+                },
+                "allocated": {
+                  "count": 9,
+                  "p50": 421808,
+                  "p95": 571624,
+                  "p99": 571624,
+                  "max": 1189328
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 1,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 9,
+                "beforeMotionDrawMs": {
+                  "count": 179,
+                  "p50": 4.938,
+                  "p95": 11.406,
+                  "p99": 13.004,
+                  "max": 13.748
+                }
+              },
+              "ballistic": {
+                "ownerMs": {
+                  "count": 177,
+                  "p50": 4.806,
+                  "p95": 12.095,
+                  "p99": 13.175,
+                  "max": 25.689
+                },
+                "callbackMs": {
+                  "count": 177,
+                  "p50": 1.799,
+                  "p95": 8.446,
+                  "p99": 9.398,
+                  "max": 9.761
+                },
+                "snapMs": {
+                  "count": 177,
+                  "p50": 0.093,
+                  "p95": 0.127,
+                  "p99": 0.153,
+                  "max": 0.17
+                },
+                "allocated": {
+                  "count": 177,
+                  "p50": 467008,
+                  "p95": 571440,
+                  "p99": 606872,
+                  "max": 1393992
+                },
+                "submitted": 177,
+                "nativeGapMs": {
+                  "count": 176,
+                  "p50": 8.329,
+                  "p95": 8.331,
+                  "p99": 8.332,
+                  "max": 24.989
+                },
+                "completionGapMs": {
+                  "count": 176,
+                  "p50": 8.332,
+                  "p95": 14.928,
+                  "p99": 16.213,
+                  "max": 29.248
+                },
+                "nativeGapsOver12ms": 1,
+                "gc": {
+                  "gen0": 19,
+                  "gen1": 1,
+                  "gen2": 1
+                }
+              }
+            },
+            {
+              "name": "resume-again-down",
+              "downMs": 376958009,
+              "motion": "continuous-down-ms=376958009 moves=10 duration-ms=92",
+              "resumeSnapshotReadyMs": 301.878,
+              "summary": {
+                "gesture": 20,
+                "ownerMs": {
+                  "count": 9,
+                  "p50": 5.3,
+                  "p95": 9.438,
+                  "p99": 9.438,
+                  "max": 13.955
+                },
+                "callbackMs": {
+                  "count": 9,
+                  "p50": 1.616,
+                  "p95": 5.471,
+                  "p99": 5.471,
+                  "max": 10.343
+                },
+                "snapMs": {
+                  "count": 9,
+                  "p50": 0.096,
+                  "p95": 0.137,
+                  "p99": 0.137,
+                  "max": 2.278
+                },
+                "allocated": {
+                  "count": 9,
+                  "p50": 546056,
+                  "p95": 698864,
+                  "p99": 698864,
+                  "max": 1387304
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 1,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 9,
+                "beforeMotionDrawMs": {
+                  "count": 177,
+                  "p50": 4.806,
+                  "p95": 12.095,
+                  "p99": 13.175,
+                  "max": 25.689
+                }
+              },
+              "ballistic": {
+                "ownerMs": {
+                  "count": 180,
+                  "p50": 4.8,
+                  "p95": 11.384,
+                  "p99": 12.506,
+                  "max": 15.121
+                },
+                "callbackMs": {
+                  "count": 180,
+                  "p50": 1.819,
+                  "p95": 7.428,
+                  "p99": 9.143,
+                  "max": 11.45
+                },
+                "snapMs": {
+                  "count": 180,
+                  "p50": 0.098,
+                  "p95": 0.154,
+                  "p99": 0.165,
+                  "max": 0.264
+                },
+                "allocated": {
+                  "count": 180,
+                  "p50": 424280,
+                  "p95": 530128,
+                  "p99": 621832,
+                  "max": 1250856
+                },
+                "submitted": 179,
+                "nativeGapMs": {
+                  "count": 178,
+                  "p50": 8.33,
+                  "p95": 8.332,
+                  "p99": 8.332,
+                  "max": 8.332
+                },
+                "completionGapMs": {
+                  "count": 178,
+                  "p50": 8.147,
+                  "p95": 14.874,
+                  "p99": 18.024,
+                  "max": 18.502
+                },
+                "nativeGapsOver12ms": 0,
+                "gc": {
+                  "gen0": 19,
+                  "gen1": 0,
+                  "gen2": 0
+                }
+              }
+            }
+          ],
+          "contextCreations": 1,
+          "contextReattachments": 2,
+          "completedSurfaceDetaches": 2,
+          "unusedGpuPurges": 0
+        }
+      ]
+    },
+    {
+      "serial": "R3CY30KZA4B",
+      "label": "retained-final",
+      "apkSha256": "27679b3f63b5df98bfbe60de6d11d45477c2ceffeef163c32eb19c0246b7f753",
+      "presentObserved": false,
+      "physicalInput": "notVerified",
+      "motion": "fling",
+      "resumeCleanup": "natural",
+      "trials": [
+        {
+          "trial": 1,
+          "pid": "11524",
+          "stages": [
+            {
+              "name": "initial-up",
+              "downMs": 378816063,
+              "motion": "continuous-down-ms=378816063 moves=10 duration-ms=93",
+              "summary": {
+                "gesture": 15,
+                "ownerMs": {
+                  "count": 8,
+                  "p50": 4.824,
+                  "p95": 5.66,
+                  "p99": 5.66,
+                  "max": 13.738
+                },
+                "callbackMs": {
+                  "count": 8,
+                  "p50": 0.703,
+                  "p95": 0.774,
+                  "p99": 0.774,
+                  "max": 6.543
+                },
+                "snapMs": {
+                  "count": 8,
+                  "p50": 0.124,
+                  "p95": 0.14,
+                  "p99": 0.14,
+                  "max": 0.154
+                },
+                "allocated": {
+                  "count": 8,
+                  "p50": 133808,
+                  "p95": 139144,
+                  "p99": 139144,
+                  "max": 755992
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 0,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 8
+              },
+              "ballistic": {
+                "ownerMs": {
+                  "count": 182,
+                  "p50": 4.931,
+                  "p95": 8.297,
+                  "p99": 10.659,
+                  "max": 11.103
+                },
+                "callbackMs": {
+                  "count": 182,
+                  "p50": 0.927,
+                  "p95": 1.315,
+                  "p99": 6.118,
+                  "max": 6.944
+                },
+                "snapMs": {
+                  "count": 182,
+                  "p50": 0.126,
+                  "p95": 0.226,
+                  "p99": 0.268,
+                  "max": 2.885
+                },
+                "allocated": {
+                  "count": 182,
+                  "p50": 149120,
+                  "p95": 176288,
+                  "p99": 279736,
+                  "max": 1177296
+                },
+                "submitted": 180,
+                "nativeGapMs": {
+                  "count": 179,
+                  "p50": 8.33,
+                  "p95": 8.336,
+                  "p99": 8.338,
+                  "max": 116.507
+                },
+                "completionGapMs": {
+                  "count": 179,
+                  "p50": 8.393,
+                  "p95": 12.289,
+                  "p99": 17.962,
+                  "max": 98.605
+                },
+                "nativeGapsOver12ms": 1,
+                "gc": {
+                  "gen0": 7,
+                  "gen1": 0,
+                  "gen2": 0
+                }
+              }
+            },
+            {
+              "name": "initial-down",
+              "downMs": 378820343,
+              "motion": "continuous-down-ms=378820343 moves=10 duration-ms=92",
+              "summary": {
+                "gesture": 16,
+                "ownerMs": {
+                  "count": 8,
+                  "p50": 4.322,
+                  "p95": 7.981,
+                  "p99": 7.981,
+                  "max": 14.774
+                },
+                "callbackMs": {
+                  "count": 8,
+                  "p50": 0.558,
+                  "p95": 0.837,
+                  "p99": 0.837,
+                  "max": 9.388
+                },
+                "snapMs": {
+                  "count": 8,
+                  "p50": 0.101,
+                  "p95": 0.154,
+                  "p99": 0.154,
+                  "max": 2.206
+                },
+                "allocated": {
+                  "count": 8,
+                  "p50": 151440,
+                  "p95": 170824,
+                  "p99": 170824,
+                  "max": 1069592
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 1,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 8,
+                "beforeMotionDrawMs": {
+                  "count": 182,
+                  "p50": 4.931,
+                  "p95": 8.297,
+                  "p99": 10.659,
+                  "max": 11.103
+                }
+              },
+              "ballistic": {
+                "ownerMs": {
+                  "count": 180,
+                  "p50": 4.699,
+                  "p95": 7.68,
+                  "p99": 11.913,
+                  "max": 12.367
+                },
+                "callbackMs": {
+                  "count": 180,
+                  "p50": 0.925,
+                  "p95": 1.394,
+                  "p99": 6.324,
+                  "max": 7.703
+                },
+                "snapMs": {
+                  "count": 180,
+                  "p50": 0.125,
+                  "p95": 0.208,
+                  "p99": 0.3,
+                  "max": 6.289
+                },
+                "allocated": {
+                  "count": 180,
+                  "p50": 138160,
+                  "p95": 165488,
+                  "p99": 275680,
+                  "max": 846048
+                },
+                "submitted": 178,
+                "nativeGapMs": {
+                  "count": 177,
+                  "p50": 8.331,
+                  "p95": 8.332,
+                  "p99": 8.375,
+                  "max": 108.298
+                },
+                "completionGapMs": {
+                  "count": 177,
+                  "p50": 8.309,
+                  "p95": 12.926,
+                  "p99": 17.005,
+                  "max": 86.144
+                },
+                "nativeGapsOver12ms": 1,
+                "gc": {
+                  "gen0": 6,
+                  "gen1": 0,
+                  "gen2": 0
+                }
+              }
+            },
+            {
+              "name": "resume-up",
+              "downMs": 378826755,
+              "motion": "continuous-down-ms=378826755 moves=10 duration-ms=93",
+              "resumeSnapshotReadyMs": 321.748,
+              "summary": {
+                "gesture": 17,
+                "ownerMs": {
+                  "count": 9,
+                  "p50": 2.976,
+                  "p95": 3.043,
+                  "p99": 3.043,
+                  "max": 16.071
+                },
+                "callbackMs": {
+                  "count": 9,
+                  "p50": 0.396,
+                  "p95": 0.428,
+                  "p99": 0.428,
+                  "max": 13.146
+                },
+                "snapMs": {
+                  "count": 9,
+                  "p50": 0.079,
+                  "p95": 0.087,
+                  "p99": 0.087,
+                  "max": 0.095
+                },
+                "allocated": {
+                  "count": 9,
+                  "p50": 132856,
+                  "p95": 139144,
+                  "p99": 139144,
+                  "max": 749520
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 0,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 9,
+                "beforeMotionDrawMs": {
+                  "count": 186,
+                  "p50": 4.697,
+                  "p95": 8.659,
+                  "p99": 12.015,
+                  "max": 17.677
+                }
+              },
+              "ballistic": {
+                "ownerMs": {
+                  "count": 167,
+                  "p50": 4.108,
+                  "p95": 9.194,
+                  "p99": 14.54,
+                  "max": 92.492
+                },
+                "callbackMs": {
+                  "count": 167,
+                  "p50": 0.811,
+                  "p95": 1.272,
+                  "p99": 8.328,
+                  "max": 90.228
+                },
+                "snapMs": {
+                  "count": 167,
+                  "p50": 0.108,
+                  "p95": 0.166,
+                  "p99": 0.219,
+                  "max": 0.292
+                },
+                "allocated": {
+                  "count": 167,
+                  "p50": 149880,
+                  "p95": 177592,
+                  "p99": 666296,
+                  "max": 2399168
+                },
+                "submitted": 167,
+                "nativeGapMs": {
+                  "count": 166,
+                  "p50": 8.33,
+                  "p95": 8.337,
+                  "p99": 24.992,
+                  "max": 108.279
+                },
+                "completionGapMs": {
+                  "count": 166,
+                  "p50": 8.312,
+                  "p95": 13.215,
+                  "p99": 31.813,
+                  "max": 104.496
+                },
+                "nativeGapsOver12ms": 4,
+                "gc": {
+                  "gen0": 6,
+                  "gen1": 1,
+                  "gen2": 1
+                }
+              }
+            },
+            {
+              "name": "resume-down",
+              "downMs": 378831044,
+              "motion": "continuous-down-ms=378831044 moves=10 duration-ms=93",
+              "resumeSnapshotReadyMs": 321.748,
+              "summary": {
+                "gesture": 18,
+                "ownerMs": {
+                  "count": 10,
+                  "p50": 4.413,
+                  "p95": 5.148,
+                  "p99": 5.148,
+                  "max": 17.618
+                },
+                "callbackMs": {
+                  "count": 10,
+                  "p50": 0.582,
+                  "p95": 0.722,
+                  "p99": 0.722,
+                  "max": 13.344
+                },
+                "snapMs": {
+                  "count": 10,
+                  "p50": 0.123,
+                  "p95": 0.139,
+                  "p99": 0.139,
+                  "max": 0.287
+                },
+                "allocated": {
+                  "count": 10,
+                  "p50": 143576,
+                  "p95": 178784,
+                  "p99": 178784,
+                  "max": 1305160
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 0,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 10,
+                "beforeMotionDrawMs": {
+                  "count": 167,
+                  "p50": 4.108,
+                  "p95": 9.194,
+                  "p99": 14.54,
+                  "max": 92.492
+                }
+              },
+              "ballistic": {
+                "ownerMs": {
+                  "count": 183,
+                  "p50": 4.857,
+                  "p95": 7.07,
+                  "p99": 12.522,
+                  "max": 19.725
+                },
+                "callbackMs": {
+                  "count": 183,
+                  "p50": 0.901,
+                  "p95": 1.284,
+                  "p99": 6.444,
+                  "max": 9.335
+                },
+                "snapMs": {
+                  "count": 183,
+                  "p50": 0.127,
+                  "p95": 0.176,
+                  "p99": 0.254,
+                  "max": 0.264
+                },
+                "allocated": {
+                  "count": 183,
+                  "p50": 139776,
+                  "p95": 159896,
+                  "p99": 193376,
+                  "max": 1181312
+                },
+                "submitted": 182,
+                "nativeGapMs": {
+                  "count": 181,
+                  "p50": 8.33,
+                  "p95": 8.332,
+                  "p99": 8.332,
+                  "max": 108.273
+                },
+                "completionGapMs": {
+                  "count": 181,
+                  "p50": 8.27,
+                  "p95": 12.261,
+                  "p99": 16.951,
+                  "max": 81.764
+                },
+                "nativeGapsOver12ms": 1,
+                "gc": {
+                  "gen0": 7,
+                  "gen1": 0,
+                  "gen2": 0
+                }
+              }
+            },
+            {
+              "name": "resume-again-up",
+              "downMs": 378837177,
+              "motion": "continuous-down-ms=378837177 moves=10 duration-ms=92",
+              "resumeSnapshotReadyMs": 312.327,
+              "summary": {
+                "gesture": 19,
+                "ownerMs": {
+                  "count": 10,
+                  "p50": 3.055,
+                  "p95": 4.08,
+                  "p99": 4.08,
+                  "max": 5.701
+                },
+                "callbackMs": {
+                  "count": 10,
+                  "p50": 0.431,
+                  "p95": 0.609,
+                  "p99": 0.609,
+                  "max": 2.917
+                },
+                "snapMs": {
+                  "count": 10,
+                  "p50": 0.078,
+                  "p95": 0.093,
+                  "p99": 0.093,
+                  "max": 0.095
+                },
+                "allocated": {
+                  "count": 10,
+                  "p50": 134872,
+                  "p95": 139152,
+                  "p99": 139152,
+                  "max": 1068240
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 0,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 10,
+                "beforeMotionDrawMs": {
+                  "count": 185,
+                  "p50": 4.857,
+                  "p95": 7.518,
+                  "p99": 12.522,
+                  "max": 19.725
+                }
+              },
+              "ballistic": {
+                "ownerMs": {
+                  "count": 180,
+                  "p50": 4.273,
+                  "p95": 5.552,
+                  "p99": 11.564,
+                  "max": 14.59
+                },
+                "callbackMs": {
+                  "count": 180,
+                  "p50": 0.816,
+                  "p95": 1.127,
+                  "p99": 7.755,
+                  "max": 12.218
+                },
+                "snapMs": {
+                  "count": 180,
+                  "p50": 0.109,
+                  "p95": 0.14,
+                  "p99": 0.186,
+                  "max": 0.202
+                },
+                "allocated": {
+                  "count": 180,
+                  "p50": 149512,
+                  "p95": 177592,
+                  "p99": 179752,
+                  "max": 1174696
+                },
+                "submitted": 180,
+                "nativeGapMs": {
+                  "count": 179,
+                  "p50": 8.331,
+                  "p95": 8.332,
+                  "p99": 8.336,
+                  "max": 116.612
+                },
+                "completionGapMs": {
+                  "count": 179,
+                  "p50": 8.333,
+                  "p95": 10.575,
+                  "p99": 16.209,
+                  "max": 109.111
+                },
+                "nativeGapsOver12ms": 1,
+                "gc": {
+                  "gen0": 7,
+                  "gen1": 0,
+                  "gen2": 0
+                }
+              }
+            },
+            {
+              "name": "resume-again-down",
+              "downMs": 378841491,
+              "motion": "continuous-down-ms=378841491 moves=10 duration-ms=93",
+              "resumeSnapshotReadyMs": 312.327,
+              "summary": {
+                "gesture": 20,
+                "ownerMs": {
+                  "count": 8,
+                  "p50": 4.081,
+                  "p95": 8.253,
+                  "p99": 8.253,
+                  "max": 17.627
+                },
+                "callbackMs": {
+                  "count": 8,
+                  "p50": 0.555,
+                  "p95": 5.086,
+                  "p99": 5.086,
+                  "max": 10.823
+                },
+                "snapMs": {
+                  "count": 8,
+                  "p50": 0.099,
+                  "p95": 0.162,
+                  "p99": 0.162,
+                  "max": 0.315
+                },
+                "allocated": {
+                  "count": 8,
+                  "p50": 152584,
+                  "p95": 171968,
+                  "p99": 171968,
+                  "max": 1070728
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 1,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 8,
+                "beforeMotionDrawMs": {
+                  "count": 180,
+                  "p50": 4.273,
+                  "p95": 5.552,
+                  "p99": 11.564,
+                  "max": 14.59
+                }
+              },
+              "ballistic": {
+                "ownerMs": {
+                  "count": 178,
+                  "p50": 4.643,
+                  "p95": 7.209,
+                  "p99": 13.8,
+                  "max": 14.538
+                },
+                "callbackMs": {
+                  "count": 178,
+                  "p50": 0.862,
+                  "p95": 1.344,
+                  "p99": 9.18,
+                  "max": 10.45
+                },
+                "snapMs": {
+                  "count": 178,
+                  "p50": 0.125,
+                  "p95": 0.191,
+                  "p99": 0.217,
+                  "max": 0.253
+                },
+                "allocated": {
+                  "count": 178,
+                  "p50": 139584,
+                  "p95": 165496,
+                  "p99": 177640,
+                  "max": 720224
+                },
+                "submitted": 177,
+                "nativeGapMs": {
+                  "count": 176,
+                  "p50": 8.33,
+                  "p95": 8.332,
+                  "p99": 8.333,
+                  "max": 116.609
+                },
+                "completionGapMs": {
+                  "count": 176,
+                  "p50": 8.363,
+                  "p95": 13.554,
+                  "p99": 17.979,
+                  "max": 100.731
+                },
+                "nativeGapsOver12ms": 1,
+                "gc": {
+                  "gen0": 6,
+                  "gen1": 0,
+                  "gen2": 0
+                }
+              }
+            }
+          ],
+          "contextCreations": 1,
+          "contextReattachments": 2,
+          "completedSurfaceDetaches": 2,
+          "unusedGpuPurges": 0
+        },
+        {
+          "trial": 2,
+          "pid": "12564",
+          "stages": [
+            {
+              "name": "initial-up",
+              "downMs": 378869846,
+              "motion": "continuous-down-ms=378869846 moves=10 duration-ms=93",
+              "summary": {
+                "gesture": 15,
+                "ownerMs": {
+                  "count": 9,
+                  "p50": 3.941,
+                  "p95": 4.682,
+                  "p99": 4.682,
+                  "max": 16.174
+                },
+                "callbackMs": {
+                  "count": 9,
+                  "p50": 0.627,
+                  "p95": 0.759,
+                  "p99": 0.759,
+                  "max": 9.382
+                },
+                "snapMs": {
+                  "count": 9,
+                  "p50": 0.098,
+                  "p95": 0.143,
+                  "p99": 0.143,
+                  "max": 0.222
+                },
+                "allocated": {
+                  "count": 9,
+                  "p50": 139384,
+                  "p95": 142000,
+                  "p99": 142000,
+                  "max": 1502880
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 1,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 9
+              },
+              "ballistic": {
+                "ownerMs": {
+                  "count": 179,
+                  "p50": 5.082,
+                  "p95": 10.115,
+                  "p99": 12.963,
+                  "max": 24.739
+                },
+                "callbackMs": {
+                  "count": 179,
+                  "p50": 0.955,
+                  "p95": 1.552,
+                  "p99": 7.188,
+                  "max": 10.341
+                },
+                "snapMs": {
+                  "count": 179,
+                  "p50": 0.132,
+                  "p95": 0.225,
+                  "p99": 0.307,
+                  "max": 2.098
+                },
+                "allocated": {
+                  "count": 179,
+                  "p50": 162528,
+                  "p95": 171616,
+                  "p99": 296512,
+                  "max": 1045600
+                },
+                "submitted": 178,
+                "nativeGapMs": {
+                  "count": 177,
+                  "p50": 8.33,
+                  "p95": 8.332,
+                  "p99": 8.332,
+                  "max": 108.302
+                },
+                "completionGapMs": {
+                  "count": 177,
+                  "p50": 8.34,
+                  "p95": 12.358,
+                  "p99": 25.795,
+                  "max": 77.981
+                },
+                "nativeGapsOver12ms": 2,
+                "gc": {
+                  "gen0": 7,
+                  "gen1": 0,
+                  "gen2": 0
+                }
+              }
+            },
+            {
+              "name": "initial-down",
+              "downMs": 378874149,
+              "motion": "continuous-down-ms=378874149 moves=10 duration-ms=92",
+              "summary": {
+                "gesture": 16,
+                "ownerMs": {
+                  "count": 11,
+                  "p50": 4.48,
+                  "p95": 8.51,
+                  "p99": 8.51,
+                  "max": 12.342
+                },
+                "callbackMs": {
+                  "count": 11,
+                  "p50": 0.523,
+                  "p95": 0.677,
+                  "p99": 0.677,
+                  "max": 3.939
+                },
+                "snapMs": {
+                  "count": 11,
+                  "p50": 0.114,
+                  "p95": 0.132,
+                  "p99": 0.132,
+                  "max": 0.141
+                },
+                "allocated": {
+                  "count": 11,
+                  "p50": 163824,
+                  "p95": 164240,
+                  "p99": 164240,
+                  "max": 897360
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 0,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 11,
+                "beforeMotionDrawMs": {
+                  "count": 179,
+                  "p50": 5.082,
+                  "p95": 10.115,
+                  "p99": 12.963,
+                  "max": 24.739
+                }
+              },
+              "ballistic": {
+                "ownerMs": {
+                  "count": 181,
+                  "p50": 5.066,
+                  "p95": 8.071,
+                  "p99": 12.763,
+                  "max": 15.665
+                },
+                "callbackMs": {
+                  "count": 181,
+                  "p50": 0.947,
+                  "p95": 1.627,
+                  "p99": 8.645,
+                  "max": 10.076
+                },
+                "snapMs": {
+                  "count": 181,
+                  "p50": 0.133,
+                  "p95": 0.234,
+                  "p99": 0.269,
+                  "max": 2.593
+                },
+                "allocated": {
+                  "count": 181,
+                  "p50": 144608,
+                  "p95": 174232,
+                  "p99": 322232,
+                  "max": 1615328
+                },
+                "submitted": 180,
+                "nativeGapMs": {
+                  "count": 179,
+                  "p50": 8.331,
+                  "p95": 8.333,
+                  "p99": 8.335,
+                  "max": 108.306
+                },
+                "completionGapMs": {
+                  "count": 179,
+                  "p50": 8.37,
+                  "p95": 12.946,
+                  "p99": 20.048,
+                  "max": 84.242
+                },
+                "nativeGapsOver12ms": 1,
+                "gc": {
+                  "gen0": 7,
+                  "gen1": 0,
+                  "gen2": 0
+                }
+              }
+            },
+            {
+              "name": "resume-up",
+              "downMs": 378880545,
+              "motion": "continuous-down-ms=378880545 moves=10 duration-ms=92",
+              "resumeSnapshotReadyMs": 314.493,
+              "summary": {
+                "gesture": 17,
+                "ownerMs": {
+                  "count": 11,
+                  "p50": 2.746,
+                  "p95": 4.352,
+                  "p99": 4.352,
+                  "max": 6.733
+                },
+                "callbackMs": {
+                  "count": 11,
+                  "p50": 0.469,
+                  "p95": 0.598,
+                  "p99": 0.598,
+                  "max": 3.36
+                },
+                "snapMs": {
+                  "count": 11,
+                  "p50": 0.08,
+                  "p95": 0.131,
+                  "p99": 0.131,
+                  "max": 0.151
+                },
+                "allocated": {
+                  "count": 11,
+                  "p50": 140520,
+                  "p95": 168216,
+                  "p99": 168216,
+                  "max": 1479232
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 0,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 11,
+                "beforeMotionDrawMs": {
+                  "count": 199,
+                  "p50": 4.963,
+                  "p95": 9.085,
+                  "p99": 15.665,
+                  "max": 62.163
+                }
+              },
+              "ballistic": {
+                "ownerMs": {
+                  "count": 179,
+                  "p50": 4.25,
+                  "p95": 9.063,
+                  "p99": 11.807,
+                  "max": 17.826
+                },
+                "callbackMs": {
+                  "count": 179,
+                  "p50": 0.857,
+                  "p95": 1.16,
+                  "p99": 7.833,
+                  "max": 14.118
+                },
+                "snapMs": {
+                  "count": 179,
+                  "p50": 0.114,
+                  "p95": 0.149,
+                  "p99": 0.18,
+                  "max": 0.216
+                },
+                "allocated": {
+                  "count": 179,
+                  "p50": 184296,
+                  "p95": 191872,
+                  "p99": 910744,
+                  "max": 1402632
+                },
+                "submitted": 179,
+                "nativeGapMs": {
+                  "count": 178,
+                  "p50": 8.33,
+                  "p95": 8.334,
+                  "p99": 8.334,
+                  "max": 108.292
+                },
+                "completionGapMs": {
+                  "count": 178,
+                  "p50": 8.39,
+                  "p95": 13.879,
+                  "p99": 17.654,
+                  "max": 101.785
+                },
+                "nativeGapsOver12ms": 2,
+                "gc": {
+                  "gen0": 8,
+                  "gen1": 0,
+                  "gen2": 0
+                }
+              }
+            },
+            {
+              "name": "resume-down",
+              "downMs": 378884859,
+              "motion": "continuous-down-ms=378884859 moves=10 duration-ms=93",
+              "resumeSnapshotReadyMs": 314.493,
+              "summary": {
+                "gesture": 18,
+                "ownerMs": {
+                  "count": 10,
+                  "p50": 4.875,
+                  "p95": 8.717,
+                  "p99": 8.717,
+                  "max": 11.022
+                },
+                "callbackMs": {
+                  "count": 10,
+                  "p50": 0.562,
+                  "p95": 0.858,
+                  "p99": 0.858,
+                  "max": 4.688
+                },
+                "snapMs": {
+                  "count": 10,
+                  "p50": 0.099,
+                  "p95": 0.175,
+                  "p99": 0.175,
+                  "max": 0.227
+                },
+                "allocated": {
+                  "count": 10,
+                  "p50": 177448,
+                  "p95": 177872,
+                  "p99": 177872,
+                  "max": 910992
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 1,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 10,
+                "beforeMotionDrawMs": {
+                  "count": 179,
+                  "p50": 4.25,
+                  "p95": 9.063,
+                  "p99": 11.807,
+                  "max": 17.826
+                }
+              },
+              "ballistic": {
+                "ownerMs": {
+                  "count": 173,
+                  "p50": 4.695,
+                  "p95": 6.756,
+                  "p99": 17.111,
+                  "max": 32.978
+                },
+                "callbackMs": {
+                  "count": 173,
+                  "p50": 0.936,
+                  "p95": 1.293,
+                  "p99": 1.504,
+                  "max": 13.748
+                },
+                "snapMs": {
+                  "count": 173,
+                  "p50": 0.128,
+                  "p95": 0.185,
+                  "p99": 0.203,
+                  "max": 0.215
+                },
+                "allocated": {
+                  "count": 173,
+                  "p50": 144648,
+                  "p95": 180296,
+                  "p99": 310296,
+                  "max": 1687896
+                },
+                "submitted": 172,
+                "nativeGapMs": {
+                  "count": 171,
+                  "p50": 8.33,
+                  "p95": 8.333,
+                  "p99": 16.661,
+                  "max": 141.565
+                },
+                "completionGapMs": {
+                  "count": 171,
+                  "p50": 8.331,
+                  "p95": 11.181,
+                  "p99": 21.762,
+                  "max": 132.156
+                },
+                "nativeGapsOver12ms": 3,
+                "gc": {
+                  "gen0": 5,
+                  "gen1": 1,
+                  "gen2": 1
+                }
+              }
+            },
+            {
+              "name": "resume-again-up",
+              "downMs": 378890995,
+              "motion": "continuous-down-ms=378890995 moves=10 duration-ms=92",
+              "resumeSnapshotReadyMs": 312.911,
+              "summary": {
+                "gesture": 19,
+                "ownerMs": {
+                  "count": 9,
+                  "p50": 2.829,
+                  "p95": 6.093,
+                  "p99": 6.093,
+                  "max": 9.417
+                },
+                "callbackMs": {
+                  "count": 9,
+                  "p50": 0.422,
+                  "p95": 0.616,
+                  "p99": 0.616,
+                  "max": 5.623
+                },
+                "snapMs": {
+                  "count": 9,
+                  "p50": 0.072,
+                  "p95": 0.111,
+                  "p99": 0.111,
+                  "max": 0.114
+                },
+                "allocated": {
+                  "count": 9,
+                  "p50": 140520,
+                  "p95": 142448,
+                  "p99": 142448,
+                  "max": 1565464
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 0,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 9,
+                "beforeMotionDrawMs": {
+                  "count": 175,
+                  "p50": 4.695,
+                  "p95": 8.65,
+                  "p99": 18.447,
+                  "max": 50.081
+                }
+              },
+              "ballistic": {
+                "ownerMs": {
+                  "count": 151,
+                  "p50": 4.148,
+                  "p95": 7.395,
+                  "p99": 11.065,
+                  "max": 12.944
+                },
+                "callbackMs": {
+                  "count": 151,
+                  "p50": 0.869,
+                  "p95": 1.058,
+                  "p99": 5.953,
+                  "max": 7.691
+                },
+                "snapMs": {
+                  "count": 151,
+                  "p50": 0.116,
+                  "p95": 0.148,
+                  "p99": 0.18,
+                  "max": 0.186
+                },
+                "allocated": {
+                  "count": 151,
+                  "p50": 158016,
+                  "p95": 184720,
+                  "p99": 193856,
+                  "max": 1059544
+                },
+                "submitted": 149,
+                "nativeGapMs": {
+                  "count": 148,
+                  "p50": 8.331,
+                  "p95": 8.336,
+                  "p99": 8.337,
+                  "max": 116.658
+                },
+                "completionGapMs": {
+                  "count": 148,
+                  "p50": 8.338,
+                  "p95": 13.931,
+                  "p99": 18.008,
+                  "max": 97.651
+                },
+                "nativeGapsOver12ms": 1,
+                "gc": {
+                  "gen0": 6,
+                  "gen1": 0,
+                  "gen2": 0
+                }
+              }
+            },
+            {
+              "name": "resume-again-down",
+              "downMs": 378895312,
+              "motion": "continuous-down-ms=378895312 moves=10 duration-ms=92",
+              "resumeSnapshotReadyMs": 312.911,
+              "summary": {
+                "gesture": 20,
+                "ownerMs": {
+                  "count": 11,
+                  "p50": 4.644,
+                  "p95": 6.126,
+                  "p99": 6.126,
+                  "max": 13.584
+                },
+                "callbackMs": {
+                  "count": 11,
+                  "p50": 0.518,
+                  "p95": 1.732,
+                  "p99": 1.732,
+                  "max": 9.737
+                },
+                "snapMs": {
+                  "count": 11,
+                  "p50": 0.097,
+                  "p95": 0.118,
+                  "p99": 0.118,
+                  "max": 0.167
+                },
+                "allocated": {
+                  "count": 11,
+                  "p50": 177768,
+                  "p95": 405416,
+                  "p99": 405416,
+                  "max": 894208
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 0,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 11,
+                "beforeMotionDrawMs": {
+                  "count": 151,
+                  "p50": 4.148,
+                  "p95": 7.395,
+                  "p99": 11.065,
+                  "max": 12.944
+                }
+              },
+              "ballistic": {
+                "ownerMs": {
+                  "count": 182,
+                  "p50": 4.801,
+                  "p95": 6.655,
+                  "p99": 13.211,
+                  "max": 16.199
+                },
+                "callbackMs": {
+                  "count": 182,
+                  "p50": 0.921,
+                  "p95": 1.355,
+                  "p99": 6.06,
+                  "max": 8.963
+                },
+                "snapMs": {
+                  "count": 182,
+                  "p50": 0.127,
+                  "p95": 0.195,
+                  "p99": 0.245,
+                  "max": 0.309
+                },
+                "allocated": {
+                  "count": 182,
+                  "p50": 147248,
+                  "p95": 175880,
+                  "p99": 187744,
+                  "max": 1601608
+                },
+                "submitted": 180,
+                "nativeGapMs": {
+                  "count": 179,
+                  "p50": 8.331,
+                  "p95": 8.334,
+                  "p99": 16.663,
+                  "max": 108.311
+                },
+                "completionGapMs": {
+                  "count": 179,
+                  "p50": 8.342,
+                  "p95": 13.062,
+                  "p99": 22.807,
+                  "max": 95.303
+                },
+                "nativeGapsOver12ms": 3,
+                "gc": {
+                  "gen0": 7,
+                  "gen1": 0,
+                  "gen2": 0
+                }
+              }
+            }
+          ],
+          "contextCreations": 1,
+          "contextReattachments": 2,
+          "completedSurfaceDetaches": 2,
+          "unusedGpuPurges": 0
+        }
+      ]
+    }
+  ],
+  "completeMovingWindows": [
+    {
+      "label": "loaded-baseline",
+      "trial": 1,
+      "stage": "resume-again-down",
+      "gesture": 20,
+      "window": "UP through the first submission completing the recorded scrollEnd frame",
+      "durationMs": 1473.762,
+      "submitted": 177,
+      "ownerMs": {
+        "count": 177,
+        "p50": 4.815,
+        "p95": 11.384,
+        "p99": 12.506,
+        "max": 15.121
+      },
+      "callbackMs": {
+        "count": 177,
+        "p50": 1.843,
+        "p95": 7.428,
+        "p99": 9.143,
+        "max": 11.45
+      },
+      "allocated": {
+        "count": 177,
+        "p50": 424760,
+        "p95": 530128,
+        "p99": 621832,
+        "max": 1250856
+      },
+      "gc": {
+        "gen0": 19,
+        "gen1": 0,
+        "gen2": 0
+      },
+      "nativeGapMs": {
+        "count": 176,
+        "p50": 8.33,
+        "p95": 8.332,
+        "p99": 8.332,
+        "max": 8.332
+      },
+      "nativeGapsOver12ms": 0,
+      "semanticsBuilds": 177,
+      "offsetStart": 4196.094775298056,
+      "offsetEnd": 1238.840986078183,
+      "extentMax": 7675.273333333332,
+      "updates": 176
+    },
+    {
+      "label": "retained-final",
+      "trial": 1,
+      "stage": "resume-again-up",
+      "gesture": 19,
+      "window": "UP through the first submission completing the recorded scrollEnd frame",
+      "durationMs": 1469.442,
+      "submitted": 176,
+      "ownerMs": {
+        "count": 176,
+        "p50": 4.259,
+        "p95": 5.548,
+        "p99": 11.564,
+        "max": 14.59
+      },
+      "callbackMs": {
+        "count": 176,
+        "p50": 0.818,
+        "p95": 1.127,
+        "p99": 7.755,
+        "max": 12.218
+      },
+      "allocated": {
+        "count": 176,
+        "p50": 149512,
+        "p95": 177592,
+        "p99": 179752,
+        "max": 1174696
+      },
+      "gc": {
+        "gen0": 7,
+        "gen1": 0,
+        "gen2": 0
+      },
+      "nativeGapMs": {
+        "count": 175,
+        "p50": 8.331,
+        "p95": 8.332,
+        "p99": 8.335,
+        "max": 8.337
+      },
+      "nativeGapsOver12ms": 0,
+      "semanticsBuilds": 1,
+      "offsetStart": 1727.7490531344972,
+      "offsetEnd": 4663.9359066721,
+      "extentMax": 7749.21333333333,
+      "updates": 175
+    },
+    {
+      "label": "retained-final",
+      "trial": 1,
+      "stage": "resume-again-down",
+      "gesture": 20,
+      "window": "UP through the first submission completing the recorded scrollEnd frame",
+      "durationMs": 1443.082,
+      "submitted": 173,
+      "ownerMs": {
+        "count": 173,
+        "p50": 4.643,
+        "p95": 6.514,
+        "p99": 13.8,
+        "max": 14.538
+      },
+      "callbackMs": {
+        "count": 173,
+        "p50": 0.868,
+        "p95": 1.32,
+        "p99": 9.18,
+        "max": 10.45
+      },
+      "allocated": {
+        "count": 173,
+        "p50": 139584,
+        "p95": 165496,
+        "p99": 177640,
+        "max": 720224
+      },
+      "gc": {
+        "gen0": 6,
+        "gen1": 0,
+        "gen2": 0
+      },
+      "nativeGapMs": {
+        "count": 172,
+        "p50": 8.33,
+        "p95": 8.332,
+        "p99": 8.332,
+        "max": 8.333
+      },
+      "nativeGapsOver12ms": 0,
+      "semanticsBuilds": 1,
+      "offsetStart": 4296.368767463363,
+      "offsetEnd": 1498.4007910161458,
+      "extentMax": 7749.21333333333,
+      "updates": 172
+    },
+    {
+      "label": "retained-final",
+      "trial": 2,
+      "stage": "resume-again-up",
+      "gesture": 19,
+      "window": "UP through the first submission completing the recorded scrollEnd frame",
+      "durationMs": 1211.334,
+      "submitted": 145,
+      "ownerMs": {
+        "count": 145,
+        "p50": 4.148,
+        "p95": 6.068,
+        "p99": 11.065,
+        "max": 12.944
+      },
+      "callbackMs": {
+        "count": 145,
+        "p50": 0.875,
+        "p95": 1.058,
+        "p99": 5.953,
+        "max": 7.691
+      },
+      "allocated": {
+        "count": 145,
+        "p50": 158016,
+        "p95": 184720,
+        "p99": 193856,
+        "max": 1059544
+      },
+      "gc": {
+        "gen0": 6,
+        "gen1": 0,
+        "gen2": 0
+      },
+      "nativeGapMs": {
+        "count": 144,
+        "p50": 8.331,
+        "p95": 8.336,
+        "p99": 8.337,
+        "max": 8.337
+      },
+      "nativeGapsOver12ms": 0,
+      "semanticsBuilds": 1,
+      "offsetStart": 4754.372696801474,
+      "offsetEnd": 7656.953333333332,
+      "extentMax": 7656.953333333332,
+      "updates": 144
+    },
+    {
+      "label": "retained-final",
+      "trial": 2,
+      "stage": "resume-again-down",
+      "gesture": 20,
+      "window": "UP through the first submission completing the recorded scrollEnd frame",
+      "durationMs": 1481.76,
+      "submitted": 176,
+      "ownerMs": {
+        "count": 176,
+        "p50": 4.801,
+        "p95": 6.362,
+        "p99": 13.211,
+        "max": 16.199
+      },
+      "callbackMs": {
+        "count": 176,
+        "p50": 0.929,
+        "p95": 1.355,
+        "p99": 6.06,
+        "max": 8.963
+      },
+      "allocated": {
+        "count": 176,
+        "p50": 147248,
+        "p95": 176208,
+        "p99": 187744,
+        "max": 1601608
+      },
+      "gc": {
+        "gen0": 7,
+        "gen1": 0,
+        "gen2": 0
+      },
+      "nativeGapMs": {
+        "count": 175,
+        "p50": 8.331,
+        "p95": 8.334,
+        "p99": 8.335,
+        "max": 16.663
+      },
+      "nativeGapsOver12ms": 1,
+      "semanticsBuilds": 1,
+      "offsetStart": 7204.089861710701,
+      "offsetEnd": 4231.4293614119,
+      "extentMax": 7656.953333333332,
+      "updates": 175
+    }
+  ],
+  "remainingOutlier": {
+    "atUs": 34812701,
+    "gesture": 17,
+    "vsyncNanos": 378828051078144,
+    "submitted": true,
+    "reason": "eligible",
+    "frameworkFrame": 1477,
+    "scene": 1476,
+    "submission": 1460,
+    "inFlight": 1,
+    "busy": 0,
+    "unavailable": 36,
+    "ownerMs": 92.4921,
+    "callbackWaitMs": 8.1034,
+    "callbackMs": 90.2277,
+    "snapMs": 0.05,
+    "insertMs": 0.2456,
+    "submitMs": 0.1542,
+    "vulkan": {
+      "acquireMs": 0.0464,
+      "paintMs": 1.1651,
+      "submitMs": 0.4525,
+      "copyMs": 0.2938,
+      "fenceMs": 0.0007,
+      "presentMs": 0.1647,
+      "totalMs": 2.1233
+    },
+    "allocated": 2399168,
+    "gen0": 98,
+    "gen1": 3,
+    "gen2": 3,
+    "stage": "resume-up",
+    "afterUpMs": 1295.068,
+    "attribution": "unknown; detailed trace evicted; retained in acceptance limitations"
+  },
+  "forcedCleanupDiagnostic": {
+    "status": "PARTIAL",
+    "apkSha256": "27679b3f63b5df98bfbe60de6d11d45477c2ceffeef163c32eb19c0246b7f753",
+    "completed": "Initial and foreground forced-GC fling pairs; first BACKGROUND trim/GC/purge and resume fling pair.",
+    "failedAction": "Second am send-trim-memory dev.doroti.testbed BACKGROUND",
+    "exitCode": 255,
+    "osErrorDetails": "Only exit status retained by harness; no cause attributed.",
+    "manifestCompletedTrials": 0,
+    "lifecycleRecreateFinish": "notReached",
+    "gcMarkers": [
+      "gc source=intent heapBefore=53730568 heapAfter=42920424 gen0=92 gen1=5 gen2=5 elapsedMs=38.385",
+      "gc source=trim-20 heapBefore=45484480 heapAfter=39972360 gen0=106 gen1=7 gen2=7 elapsedMs=65.912",
+      "gc source=trim-40 heapBefore=39973672 heapAfter=38502256 gen0=106 gen1=9 gen2=9 elapsedMs=85.691",
+      "gc source=trim-20 heapBefore=42668920 heapAfter=39904504 gen0=123 gen1=11 gen2=11 elapsedMs=71.661"
+    ],
+    "unusedGpuPurges": 1,
+    "surfaceAttachedMarkers": 2,
+    "recoveredFrameCount": 1997,
+    "recoveredInputCount": 222,
+    "rawPartialProfile": "temp/galaxy-resume-followup/retained-gc-partial.json"
+  },
+  "normalAppRestorationBeforeDisconnect": {
+    "monoLogBefore": "",
+    "pidBefore": "13807",
+    "monoLogRestored": true,
+    "normalPid": "14885",
+    "topActivity": "    topResumedActivity=ActivityRecord{87637654 u0 dev.doroti.testbed/crc64c80c495bd333b69c.MainActivity t18856}",
+    "nativeSkia": "4.154.0"
+  },
+  "acceptance": {
+    "performance": "PARTIAL",
+    "presentObserved": false,
+    "physicalInput": "notVerified",
+    "activeTalkBack": "notVerified",
+    "finalCandidateRecreateFinish": "notVerified",
+    "cacheLeak": "not established; reduced allocations/GC do not prove absence of all leaks"
+  },
+  "nextSteps": [
+    "Use the identical final APK to check fully-loaded long inertia before/after Home with physical touch.",
+    "Export each first-return gesture trace immediately to attribute the remaining 92.492ms framework outlier.",
+    "Verify active TalkBack freshness, focus and actions.",
+    "If needed, rerun explicit cleanup/lifecycle diagnostics with OS trim failure reported as partial."
+  ],
+  "artifactPolicy": "Raw files listed below existed at wrap-up in ignored temp storage and may be cleaned later. This durable JSON retains summaries and hashes; hashes alone cannot reconstruct raw traces.",
+  "rawArtifacts": {
+    "user-installed.apk": {
+      "path": "temp/galaxy-resume-followup/user-installed.apk",
+      "bytes": 29519066,
+      "sha256": "e99651721eae6c736e07af74face432e6d78b283c519b429655bc46863a00ca1"
+    },
+    "matched-baseline.apk": {
+      "path": "temp/galaxy-resume-followup/matched-baseline.apk",
+      "bytes": 29375572,
+      "sha256": "d0ae2b82b4f0959b3d989c2be3abadadd8b32b471bdf011a75f6648b45d63e82"
+    },
+    "doroti-testbed-galaxy-inertia-arm64.apk": {
+      "path": "temp/galaxy-resume-followup/doroti-testbed-galaxy-inertia-arm64.apk",
+      "bytes": 29379668,
+      "sha256": "27679b3f63b5df98bfbe60de6d11d45477c2ceffeef163c32eb19c0246b7f753"
+    },
+    "final-regression-v4.log": {
+      "path": "temp/galaxy-resume-followup/final-regression-v4.log",
+      "bytes": 1121,
+      "sha256": "dfd8ed922c37664f4b7753a9c57fb599f2c5b314126212b67a74cdbb6e3596a1"
+    },
+    "final-build-v4.log": {
+      "path": "temp/galaxy-resume-followup/final-build-v4.log",
+      "bytes": 27154,
+      "sha256": "5d1de9cb7136244e6fe7b512912c8bc1addaeb227536592c1c67108010b1028f"
+    },
+    "matched-baseline-build.log": {
+      "path": "temp/galaxy-resume-followup/matched-baseline-build.log",
+      "bytes": 16156,
+      "sha256": "e50a9ce0bc353a8b0203c3f07484ede10ab2523d904775df0efa817e96181dca"
+    },
+    "loaded-baseline-manifest.json": {
+      "path": "temp/galaxy-resume-followup/loaded-baseline-manifest.json",
+      "bytes": 39532,
+      "sha256": "f077e73540913512869f1d259c717471d8aca5606eca3d01ddc9f4fed387e98f"
+    },
+    "loaded-baseline-1.json": {
+      "path": "temp/galaxy-resume-followup/loaded-baseline-1.json",
+      "bytes": 5338945,
+      "sha256": "d2034af62f700056660172962d5febd4e2690caa732279b6a9a815f943f216fe"
+    },
+    "loaded-baseline-1.log": {
+      "path": "temp/galaxy-resume-followup/loaded-baseline-1.log",
+      "bytes": 1898698,
+      "sha256": "2c4ec1ff92b9cc773d67049b171349da5316577c851562fe2bfb758f26173e00"
+    },
+    "loaded-baseline-run.log": {
+      "path": "temp/galaxy-resume-followup/loaded-baseline-run.log",
+      "bytes": 8320,
+      "sha256": "9bde268bb09f4f8a518ad0e9e7602724cd3f4b962a225a04c91ef0e73517737c"
+    },
+    "retained-final-manifest.json": {
+      "path": "temp/galaxy-resume-followup/retained-final-manifest.json",
+      "bytes": 78796,
+      "sha256": "8677d23a7152428b51507cd518c0e007531d153bcedf5e43ef91c9c86f40d80d"
+    },
+    "retained-final-1.json": {
+      "path": "temp/galaxy-resume-followup/retained-final-1.json",
+      "bytes": 5362954,
+      "sha256": "e53555912b337ca2214a42b475eeb839de54d84c65999f4d7e4eb1e85630d82f"
+    },
+    "retained-final-1.log": {
+      "path": "temp/galaxy-resume-followup/retained-final-1.log",
+      "bytes": 2047876,
+      "sha256": "af3ccb185e5f81f779dab27891f94ace0672638319c2f05f137eaec9956bff3f"
+    },
+    "retained-final-2.json": {
+      "path": "temp/galaxy-resume-followup/retained-final-2.json",
+      "bytes": 5319112,
+      "sha256": "70a44300902baab8ba73bb6fce788beac1f08b7a4aa115c727f509d108238c7d"
+    },
+    "retained-final-2.log": {
+      "path": "temp/galaxy-resume-followup/retained-final-2.log",
+      "bytes": 1878394,
+      "sha256": "bb1c29b24e075f6dd8d0b11385728c335fabb5eb3332b894d28e03fcf054a1fd"
+    },
+    "retained-final-run.log": {
+      "path": "temp/galaxy-resume-followup/retained-final-run.log",
+      "bytes": 16656,
+      "sha256": "384b4c87194afd5892810e06f84892a7a262368e2baf57f806e38f015bc7dc9f"
+    },
+    "moving-summaries.json": {
+      "path": "temp/galaxy-resume-followup/moving-summaries.json",
+      "bytes": 5277,
+      "sha256": "cde1e2cc5ff079a2256605201043d3ff7a9c2277add787a3b5df52b030983cf3"
+    },
+    "retained-gc-manifest.json": {
+      "path": "temp/galaxy-resume-followup/retained-gc-manifest.json",
+      "bytes": 273,
+      "sha256": "8f5eaa1b8097c9052a08792df0cee03ee4c7c72eaf6024f9dc6a670d92692dbc"
+    },
+    "retained-gc-run.log": {
+      "path": "temp/galaxy-resume-followup/retained-gc-run.log",
+      "bytes": 2432,
+      "sha256": "2c403ddb42dab80685aee2b48095ab60aa5a9fee7d6126d45ee96f973f92c171"
+    },
+    "retained-gc-partial.json": {
+      "path": "temp/galaxy-resume-followup/retained-gc-partial.json",
+      "bytes": 5285118,
+      "sha256": "ddd2feb44e6c646cbad67688d227e90b8a36c51c78f82e1942303e5839826bcb"
+    },
+    "retained-gc-partial.log": {
+      "path": "temp/galaxy-resume-followup/retained-gc-partial.log",
+      "bytes": 2924692,
+      "sha256": "22fbb195daeb43c23a57b861bc622deaee147ffbc2f7df0d91855602592fff4d"
+    },
+    "normal-final-state.json": {
+      "path": "temp/galaxy-resume-followup/normal-final-state.json",
+      "bytes": 266,
+      "sha256": "243a66fe40e0f219a58abcb4cbca73d819a3b5d896b6f2f1836ea50ab4e71473"
+    },
+    "normal-final.log": {
+      "path": "temp/galaxy-resume-followup/normal-final.log",
+      "bytes": 24927,
+      "sha256": "578848ce471d230bb037f61e2e30fc48b87abb042f26d5690b8eb343968de3da"
+    },
+    "work-before.json": {
+      "path": "temp/galaxy-resume-followup/work-before.json",
+      "bytes": 4828929,
+      "sha256": "c6abcbcaa5c29e8c42bd08a8ab2de114fbbef80c7c84b10ae78b4389c349b9b0"
+    },
+    "work-after.json": {
+      "path": "temp/galaxy-resume-followup/work-after.json",
+      "bytes": 5145289,
+      "sha256": "db69b9cc37f9a9d75ac4b7aca1be8b927e5ea8f42a80b7e72063ec021be121d9"
+    },
+    "work-delta.json": {
+      "path": "temp/galaxy-resume-followup/work-delta.json",
+      "bytes": 109148,
+      "sha256": "006e4311ba2e4c132f22ce5182b0ad4f80b1fe6bb6a1691758b41e792d5b85db"
+    },
+    "work-after.log": {
+      "path": "temp/galaxy-resume-followup/work-after.log",
+      "bytes": 2417756,
+      "sha256": "4fafc45cb3fed36f5d86b9cb1fba877d87399c310de7f2de3456d49ec26d8b90"
+    }
+  }
+}

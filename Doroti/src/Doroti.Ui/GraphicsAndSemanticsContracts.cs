@@ -172,11 +172,17 @@ public sealed class Paint
 public sealed class Path
 {
     private readonly List<PathCommand> _commands = [];
+    private IReadOnlyList<PathCommand>? _paintingCommands;
+    internal bool IsPaintingSnapshot => _paintingCommands is not null;
+    private PathFillType _fillType;
+    private List<PathCommand> MutableCommands => _paintingCommands is null ? _commands
+        : throw new InvalidOperationException("A recorded path snapshot is immutable.");
 
     // A recording owns the geometry at draw time, like SkPicture/DlPath. Later
     // mutations of the caller's Path must not rewrite an already recorded frame.
     internal Path SnapshotForPainting()
     {
+        if (_paintingCommands is not null) return this;
         var snapshot = new Path { fillType = fillType };
         foreach (var command in _commands)
         {
@@ -185,49 +191,54 @@ public sealed class Path
             );
         }
 
+        snapshot._paintingCommands = snapshot._commands.AsReadOnly();
         return snapshot;
     }
 
-    public IReadOnlyList<PathCommand> Commands => _commands;
+    public IReadOnlyList<PathCommand> Commands => _paintingCommands ?? _commands;
 
-    public void moveTo(double x, double y) => _commands.Add(new("moveTo", [x, y]));
+    public void moveTo(double x, double y) => MutableCommands.Add(new("moveTo", [x, y]));
 
-    public void lineTo(double x, double y) => _commands.Add(new("lineTo", [x, y]));
+    public void lineTo(double x, double y) => MutableCommands.Add(new("lineTo", [x, y]));
 
-    public void close() => _commands.Add(new("close", []));
+    public void close() => MutableCommands.Add(new("close", []));
 
-    public PathFillType fillType { get; set; }
+    public PathFillType fillType
+    {
+        get => _fillType;
+        set { _ = MutableCommands; _fillType = value; }
+    }
 
-    public void reset() => _commands.Clear();
+    public void reset() => MutableCommands.Clear();
 
     public void relativeMoveTo(double dx, double dy) =>
-        _commands.Add(new("relativeMoveTo", [dx, dy]));
+        MutableCommands.Add(new("relativeMoveTo", [dx, dy]));
 
     public void relativeLineTo(double dx, double dy) =>
-        _commands.Add(new("relativeLineTo", [dx, dy]));
+        MutableCommands.Add(new("relativeLineTo", [dx, dy]));
 
     public void quadraticBezierTo(double x1, double y1, double x2, double y2) =>
-        _commands.Add(new("quadraticBezierTo", [x1, y1, x2, y2]));
+        MutableCommands.Add(new("quadraticBezierTo", [x1, y1, x2, y2]));
 
     public void conicTo(double x1, double y1, double x2, double y2, double weight) =>
-        _commands.Add(new("conicTo", [x1, y1, x2, y2, weight]));
+        MutableCommands.Add(new("conicTo", [x1, y1, x2, y2, weight]));
 
     public void cubicTo(double x1, double y1, double x2, double y2, double x3, double y3) =>
-        _commands.Add(new("cubicTo", [x1, y1, x2, y2, x3, y3]));
+        MutableCommands.Add(new("cubicTo", [x1, y1, x2, y2, x3, y3]));
 
     public void addRect(Rect rect) =>
-        _commands.Add(new("addRect", [rect.left, rect.top, rect.right, rect.bottom]));
+        MutableCommands.Add(new("addRect", [rect.left, rect.top, rect.right, rect.bottom]));
 
     public void addOval(Rect oval) =>
-        _commands.Add(new("addOval", [oval.left, oval.top, oval.right, oval.bottom]));
+        MutableCommands.Add(new("addOval", [oval.left, oval.top, oval.right, oval.bottom]));
 
     public void addArc(Rect oval, double startAngle, double sweepAngle) =>
-        _commands.Add(
+        MutableCommands.Add(
             new("addArc", [oval.left, oval.top, oval.right, oval.bottom, startAngle, sweepAngle])
         );
 
     public void addRRect(RRect rrect) =>
-        _commands.Add(
+        MutableCommands.Add(
             new(
                 "addRRect",
                 [
@@ -248,7 +259,7 @@ public sealed class Path
         );
 
     public void addRSuperellipse(RSuperellipse rse) =>
-        _commands.Add(
+        MutableCommands.Add(
             new(
                 "addRSuperellipse",
                 [
@@ -282,7 +293,7 @@ public sealed class Path
     }
 
     public void addPath(Path path, Offset offset, Matrix4? matrix4 = null) =>
-        _commands.AddRange(path.Commands);
+        MutableCommands.AddRange(path.Commands);
 
     public Path shift(Offset offset)
     {
@@ -365,7 +376,7 @@ public sealed class Path
         bool largeArc = false,
         bool clockwise = true
     ) =>
-        _commands.Add(
+        MutableCommands.Add(
             new(
                 "arcToPoint",
                 [
@@ -381,7 +392,7 @@ public sealed class Path
         );
 
     public void arcTo(Rect oval, double startAngle, double sweepAngle, bool forceMoveTo) =>
-        _commands.Add(
+        MutableCommands.Add(
             new(
                 "arcTo",
                 [
@@ -520,6 +531,9 @@ public static class SystemColor
 public sealed record PathCommand(string Operation, IReadOnlyList<double> Arguments)
 {
     internal object? HostPayload { get; init; }
+    // Only the recorder may certify that the numeric storage is closed. Public
+    // Picture/PathCommand inputs still get a defensive copy at scene freeze.
+    internal bool HasClosedArguments { get; init; }
 }
 
 public interface ISceneHostCapability
@@ -1867,13 +1881,19 @@ public sealed class Paragraph : IDisposable
     private double? _hostAlphabeticBaseline;
     private double? _hostIdeographicBaseline;
 
+    private bool _paintingSnapshot;
+    internal bool IsPaintingSnapshot => _paintingSnapshot;
     internal Paragraph SnapshotForPainting()
     {
+        // Canvas already closed this layout when it recorded the picture.
+        // Re-freezing a retained picture must not copy runs/styles every frame.
+        if (_paintingSnapshot) return this;
         // Layout replaces metrics/advance arrays. Keep the current line list
         // as well, so relayout/dispose of the public handle cannot change a
         // recorded Picture. No new font shaping or host call is necessary.
         var snapshot = (Paragraph)MemberwiseClone();
         snapshot._disposed = 0;
+        snapshot._paintingSnapshot = true;
         snapshot._lines = new(_lines);
         snapshot.TextRuns = Array.AsReadOnly(
             TextRuns
@@ -1938,6 +1958,7 @@ public sealed class Paragraph : IDisposable
 
     public void layout(ParagraphConstraints constraints)
     {
+        if (_paintingSnapshot) throw new InvalidOperationException("A recorded paragraph snapshot is immutable.");
         var availableWidth = constraints.width;
         if (double.IsNaN(availableWidth) || availableWidth < 0)
         {
@@ -3944,6 +3965,8 @@ public readonly record struct SemanticsActionEvent(
 
 public interface ISemanticsHostCapability
 {
+    // Conservative default: active/unknown consumers keep per-frame scroll values.
+    bool CoalesceScrollOffsetsDuringActiveScroll => false;
     SemanticsFeatureSupport Features => new(Reason: "The active semantics provider does not expose detailed support.");
     event Action<SemanticsActionEvent>? Action;
 

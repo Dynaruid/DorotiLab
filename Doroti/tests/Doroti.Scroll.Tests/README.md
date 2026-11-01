@@ -15,6 +15,19 @@ manager, and verifies both subclasses retire on disposal. It injects no physical
 input and does not show a window.
 These checks do not establish physical trackpad behavior or display frame pacing.
 
+The frozen-recording regression checks that repeated scroll frames share closed
+path/text/numeric recordings, while later producer mutation or disposal cannot
+change an admitted frame. Public mutable command inputs still require defensive
+copies. Nested live/frozen textures are captured once per texture/freeze pair,
+refresh independently on replay, and release exactly once after the last lease.
+Scroll semantics checks use a real pipeline/tree: pure offset updates can be
+coalesced by an explicitly opting-in host, content/actions win in either order,
+and the final flush publishes the exact fractional offset. Extent/policy changes
+stay urgent; a disposed renderer releases its listener on a surviving position.
+Cached-section fixtures verify that keep-alive moves retain attachment, owner,
+parent data and sibling links without recreating children, while real eviction
+detaches the complete subtree exactly once.
+
 It also drives the production scheduler/ticker/animation controller at 60/120 Hz
 and with missed pulses, checks fractional offsets and final ticker retirement,
 unchanged dimensions and recontact, and tests all four semantic scroll boundaries.

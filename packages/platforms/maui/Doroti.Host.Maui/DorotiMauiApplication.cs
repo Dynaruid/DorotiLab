@@ -143,6 +143,10 @@ public sealed class DorotiMauiApplication(DorotiApplicationDescriptor descriptor
     private bool _stopping;
 #if ANDROID
     private DorotiMauiSurface? _androidSurface;
+    internal void TrimAndroidGpuMemory()
+    {
+        foreach (var surface in _surfaces) surface.TrimAndroidGpuMemory();
+    }
 #endif
     private DorotiSharedHostSession Framework => _framework ??= new(descriptor, new MauiApplicationDispatcher());
     private void AttachApplication(DorotiApplicationBoundary boundary) => _application ??= boundary.Retain();

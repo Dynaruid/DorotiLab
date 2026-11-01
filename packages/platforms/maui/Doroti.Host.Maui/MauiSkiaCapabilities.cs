@@ -412,6 +412,8 @@ internal sealed class MauiSkiaCapabilities
         CancellationToken cancellationToken = default
     ) => _renderer.DecodeAsync(bytes, invocation, cancellationToken);
 
+    public bool CoalesceScrollOffsetsDuringActiveScroll => _host.CanCoalesceScrollOffsets;
+
     public void SetEnabled(bool enabled, DorotiUiInvocation invocation) =>
         _renderer.SetEnabled(enabled, invocation);
 
@@ -461,7 +463,7 @@ internal sealed class MauiSkiaCapabilities
 
         public long InputSequence => _host.InputSequence;
         public long SurfaceGeneration =>
-#if IOS && !MACCATALYST
+#if ANDROID || (IOS && !MACCATALYST)
             _host.CurrentSurfaceGeneration;
 #else
             _host.Snapshot.SurfaceGeneration;

@@ -773,7 +773,11 @@ public class ScrollableState
         {
             RenderObject? scrollSemanticsRenderObject =
                 _scrollSemanticsKey.currentContext?.findRenderObject();
-            if (scrollSemanticsRenderObject is not null)
+            if (scrollSemanticsRenderObject is _RenderScrollSemantics__scrollable scroll)
+            {
+                scroll.PositionChanged();
+            }
+            else if (scrollSemanticsRenderObject is not null)
             {
                 scrollSemanticsRenderObject.markNeedsSemanticsUpdate();
             }
@@ -1874,6 +1878,18 @@ internal class _ScrollSemantics__scrollable : SingleChildRenderObjectWidget
 
 public class _RenderScrollSemantics__scrollable : RenderProxyBox
 {
+    private (bool Have, double Min, double Max, double Viewport) _lastDimensions;
+    private (bool Have, double Min, double Max, double Viewport) Dimensions => _position.haveDimensions
+        ? (true, _position.minScrollExtent, _position.maxScrollExtent, _position.viewportDimension) : (false, 0, 0, 0);
+
+    internal void PositionChanged()
+    {
+        var dimensions = Dimensions;
+        var offsetOnly = dimensions.Have && dimensions == _lastDimensions;
+        _lastDimensions = dimensions;
+        if (offsetOnly) markNeedsSemanticsScrollOffsetUpdate();
+        else markNeedsSemanticsUpdate();
+    }
     internal virtual ScrollPosition _position { get; set; } = default!;
     internal virtual bool _allowImplicitScrolling { get; set; } = default!;
     public virtual Axis axis { get; set; } = default!;
@@ -1893,7 +1909,8 @@ public class _RenderScrollSemantics__scrollable : RenderProxyBox
         _position = position;
         _allowImplicitScrolling = allowImplicitScrolling;
         _semanticChildCount = semanticChildCount;
-        _position.addListener(markNeedsSemanticsUpdate);
+        _lastDimensions = Dimensions;
+        _position.addListener(PositionChanged);
     }
 
     public virtual ScrollPosition position
@@ -1906,9 +1923,10 @@ public class _RenderScrollSemantics__scrollable : RenderProxyBox
             {
                 return;
             }
-            _position.removeListener(markNeedsSemanticsUpdate);
+            _position.removeListener(PositionChanged);
             _position = __value;
-            _position.addListener(markNeedsSemanticsUpdate);
+            _lastDimensions = Dimensions;
+            _position.addListener(PositionChanged);
             markNeedsSemanticsUpdate();
         }
     }
@@ -2038,6 +2056,12 @@ public class _RenderScrollSemantics__scrollable : RenderProxyBox
     {
         base.clearSemantics();
         _innerNode = null;
+    }
+
+    public override void dispose()
+    {
+        _position.removeListener(PositionChanged);
+        base.dispose();
     }
 }
 

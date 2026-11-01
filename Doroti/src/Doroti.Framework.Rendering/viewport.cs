@@ -1591,6 +1591,7 @@ public abstract class RenderViewportBase<ParentDataClass>
 
 public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentData>
 {
+    protected override bool semanticsLayoutIsGeometryOnly => GetType() == typeof(RenderViewport);
     public static SemanticsTag useTwoPaneSemantics = new SemanticsTag("RenderViewport.twoPane");
     public static SemanticsTag excludeFromScrolling = new SemanticsTag(
         "RenderViewport.excludeFromScrolling"
@@ -2059,6 +2060,7 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
 
 public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalContainerParentData>
 {
+    protected override bool semanticsLayoutIsGeometryOnly => GetType() == typeof(RenderShrinkWrappingViewport);
     internal virtual double _maxScrollExtent { get; set; } = default!;
     internal virtual double _shrinkWrapExtent { get; set; } = default!;
     internal virtual bool _hasVisualOverflow { get; set; } = false;

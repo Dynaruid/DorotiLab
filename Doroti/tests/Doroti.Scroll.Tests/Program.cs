@@ -83,6 +83,9 @@ CaretGeometryRegression.Run();
 TextSelectionWorkRegression.Run();
 CollapsedCaretRegression.Run();
 WeakNotificationRegression.Run();
+FrozenScrollRecordingRegression.Run();
+ScrollSemanticsRegression.Run();
+CachedSectionRegression.Run();
 Console.WriteLine("PASS: release velocity, ballistic continuation, semantic changes, native inertia lifecycle");
 
 static void Check(bool condition, string message)

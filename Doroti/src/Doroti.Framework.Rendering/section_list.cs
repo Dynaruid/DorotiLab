@@ -11,6 +11,8 @@ public interface KeepAliveReleaseListener
 /// keep-alive ownership. No asynchronous work runs inside layout.</summary>
 public sealed class RenderSectionList : RenderSliverMultiBoxAdaptor, KeepAliveReleaseListener
 {
+    protected override bool semanticsLayoutIsGeometryOnly => true;
+    protected override bool preserveCachedChildAttachment => true;
     private readonly HashSet<RenderBox> _pendingReleases = [];
     private SectionExtentIndex _index;
     private object? _revision;

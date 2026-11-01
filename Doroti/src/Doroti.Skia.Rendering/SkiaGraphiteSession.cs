@@ -169,6 +169,12 @@ public sealed partial class SkiaGraphiteSession : IDisposable
         _stopping = true;
     }
 
+    public void PurgeUnusedGpuResources()
+    {
+        CheckOwner();
+        _context.FreeGpuResources();
+    }
+
     public void Dispose()
     {
         if (_disposed)

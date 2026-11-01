@@ -20,7 +20,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
     private const ulong Timeout = 5_000_000_000;
     private readonly Vk _vk;
     private readonly Instance _instance;
-    private readonly SurfaceKHR _surface;
+    private SurfaceKHR _surface;
     private readonly bool _ownsInstance;
     private readonly bool _ownsSurface;
     private readonly bool _pipelinedWindowFrames;
@@ -509,7 +509,8 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
     public void PrepareViewport(int width, int height)
     {
         CheckOwner();
-        if (_terminalShutdown) throw new InvalidOperationException("Vulkan surface admission is closed.");
+        if (_terminalShutdown || _androidSurfaceDetaching || (OperatingSystem.IsAndroid() && _surface.Handle == 0))
+            throw new InvalidOperationException("Vulkan surface admission is closed.");
         if (width > 0 && height > 0 && (_recreate || Width != width || Height != height))
             Resize(width, height);
     }
@@ -529,7 +530,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
     )
     {
         CheckOwner();
-        if (_terminalShutdown)
+        if (_terminalShutdown || _androidSurfaceDetaching || (OperatingSystem.IsAndroid() && _surface.Handle == 0))
         {
             throw new InvalidOperationException("Vulkan surface admission is closed.");
         }
@@ -839,7 +840,9 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
         // Keep the native window associated with its current swapchain until
         // WSI creates the replacement. Destroying it first can expose an empty
         // surface to the compositor during an interactive resize.
-        ReleaseImages(releaseSwapchain: false);
+        var preserveResources = _androidSurfaceReattached && Width == width && Height == height;
+        ReleaseImages(releaseSwapchain: false, invalidateHostResources: !preserveResources);
+        _androidSurfaceReattached = false;
         Check(
             _surfaces.GetPhysicalDeviceSurfaceCapabilities(_physical, _surface, out var caps),
             "surface capabilities"
@@ -1156,9 +1159,9 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
         }
     }
 
-    private void ReleaseImages(bool releaseSwapchain = true)
+    private void ReleaseImages(bool releaseSwapchain = true, bool invalidateHostResources = true)
     {
-        ResourcesReleasing?.Invoke();
+        if (invalidateHostResources) ResourcesReleasing?.Invoke();
         foreach (var slot in _windowFrames)
         {
             slot.Target?.Dispose();
@@ -1277,7 +1280,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
 
         CheckOwner();
         ReleaseDevice();
-        if (_ownsSurface)
+        if (_ownsSurface && _surface.Handle != 0)
         {
             _surfaces.DestroySurface(_instance, _surface, null);
         }

@@ -31,6 +31,8 @@ public sealed class DorotiFrozenScene : IDisposable
 
     internal static DorotiFrozenScene Capture(Scene scene)
     {
+        using var profile = FrameworkWorkProfile.AllocationEnabled
+            ? FrameworkWorkProfile.Begin(typeof(DorotiFrozenScene), 27) : default;
         ArgumentNullException.ThrowIfNull(scene);
         scene.ValidateFreezeOwner();
         var copier = new Copier(scene.viewId);
@@ -50,29 +52,56 @@ public sealed class DorotiFrozenScene : IDisposable
         Func<long, bool, IDisposable> capture,
         bool refreshLiveTextures = false)
     {
+        using var profile = FrameworkWorkProfile.AllocationEnabled
+            ? FrameworkWorkProfile.Begin(typeof(DorotiFrozenScene), 28) : default;
         var resources = new List<IDisposable> { Retain() };
         var textures = new Dictionary<(long Id, bool Freeze), IDisposable>();
-        IReadOnlyList<SceneCommand> Visit(IReadOnlyList<SceneCommand> commands) => Array.AsReadOnly(commands.Select(command =>
+        IReadOnlyList<SceneCommand> Visit(IReadOnlyList<SceneCommand> commands)
         {
-            object? payload = command.HostPayload;
-            // A replay gets its own immutable producer-frame leases. Explicitly
-            // frozen textures keep the frame owned by the submitted scene.
-            if (payload is SceneTexturePayload texture && (!refreshLiveTextures || !texture.Freeze))
+            SceneCommand[]? changed = null;
+            for (var i = 0; i < commands.Count; i++)
             {
-                var key = (texture.TextureId, texture.Freeze);
-                if (!textures.TryGetValue(key, out var frame))
+                var command = commands[i];
+                object? payload = command.HostPayload;
+                // Frozen command storage is already immutable. Only texture
+                // branches need a new snapshot; ordinary scrolling shares it.
+                if (payload is SceneTexturePayload texture && (!refreshLiveTextures || !texture.Freeze))
                 {
-                    frame = capture(key.TextureId, key.Freeze);
-                    textures.Add(key, frame);
-                    resources.Add(frame);
+                    var key = (texture.TextureId, texture.Freeze);
+                    if (!textures.TryGetValue(key, out var frame))
+                    {
+                        frame = capture(key.TextureId, key.Freeze);
+                        textures.Add(key, frame);
+                        resources.Add(frame);
+                    }
+                    payload = texture with { FrozenFrame = frame };
                 }
-                payload = texture with { FrozenFrame = frame };
+                else if (payload is SceneRetainedPayload retained)
+                {
+                    var children = Visit(retained.Commands);
+                    if (!ReferenceEquals(children, retained.Commands))
+                        payload = retained with { Commands = children };
+                }
+                if (!ReferenceEquals(payload, command.HostPayload))
+                {
+                    if (changed is null)
+                    {
+                        changed = new SceneCommand[commands.Count];
+                        for (var previous = 0; previous < i; previous++) changed[previous] = commands[previous];
+                    }
+                    changed[i] = command with { HostPayload = payload };
+                }
+                else if (changed is not null) changed[i] = command;
             }
-            else if (payload is SceneRetainedPayload retained)
-                payload = retained with { Commands = Visit(retained.Commands) };
-            return command with { HostPayload = payload };
-        }).ToArray());
-        try { return new(new(ViewId, Visit(Commands), resources.ToArray(), Owner)); }
+            return changed is null ? commands : Array.AsReadOnly(changed);
+        }
+        try
+        {
+            var original = Commands;
+            var commands = Visit(original);
+            if (ReferenceEquals(commands, original)) return (DorotiFrozenScene)resources[0];
+            return new(new(ViewId, commands, resources.ToArray(), Owner));
+        }
         catch (Exception failure)
         {
             try { DorotiCleanup.Run(resources.AsEnumerable().Reverse().Select<IDisposable, Action>(resource => resource.Dispose).ToArray()); }
@@ -140,8 +169,15 @@ public sealed class DorotiFrozenScene : IDisposable
             }));
 
         private IReadOnlyList<PathCommand> PictureCommands(IReadOnlyList<PathCommand> commands) =>
-            Copy(commands.Select(command => new PathCommand(command.Operation, Copy(command.Arguments))
-            { HostPayload = Payload(command.HostPayload) }));
+            Copy(commands.Select(PictureCommand));
+
+        private PathCommand PictureCommand(PathCommand command)
+        {
+            var payload = Payload(command.HostPayload);
+            if (command.HasClosedArguments && ReferenceEquals(payload, command.HostPayload)) return command;
+            return new(command.Operation, command.HasClosedArguments ? command.Arguments : Copy(command.Arguments))
+            { HostPayload = payload, HasClosedArguments = true };
+        }
 
         private Image Image(Image source)
         {
@@ -154,7 +190,10 @@ public sealed class DorotiFrozenScene : IDisposable
             return captured;
         }
 
-        private PaintSnapshot Paint(PaintSnapshot paint) => paint with
+        private static bool IsClosedPaint(PaintSnapshot paint) => paint.Shader is null
+            && paint.ColorFilter?.Matrix is null;
+
+        private PaintSnapshot Paint(PaintSnapshot paint) => IsClosedPaint(paint) ? paint : paint with
         { Shader = Shader(paint.Shader), ColorFilter = ColorFilter(paint.ColorFilter) };
 
         private ColorFilterSnapshot? ColorFilter(ColorFilterSnapshot? filter) => filter is null ? null :
@@ -188,6 +227,20 @@ public sealed class DorotiFrozenScene : IDisposable
         private object? Payload(object? payload) => payload switch
         {
             null => null,
+            SceneClipPathPayload clip when clip.Path.IsPaintingSnapshot => clip,
+            CanvasSaveLayerPayload draw when IsClosedPaint(draw.Paint) => draw,
+            CanvasPathPayload draw when draw.Path.IsPaintingSnapshot && IsClosedPaint(draw.Paint) => draw,
+            CanvasClipPathPayload clip when clip.Path.IsPaintingSnapshot => clip,
+            CanvasShadowPayload draw when draw.Path.IsPaintingSnapshot => draw,
+            CanvasParagraphPayload draw when draw.Paragraph.IsPaintingSnapshot => draw,
+            CanvasRectPayload draw when IsClosedPaint(draw.Paint) => draw,
+            CanvasRRectPayload draw when IsClosedPaint(draw.Paint) => draw,
+            CanvasRSuperellipsePayload draw when IsClosedPaint(draw.Paint) => draw,
+            CanvasDRRectPayload draw when IsClosedPaint(draw.Paint) => draw,
+            CanvasCirclePayload draw when IsClosedPaint(draw.Paint) => draw,
+            CanvasLinePayload draw when IsClosedPaint(draw.Paint) => draw,
+            CanvasOvalPayload draw when IsClosedPaint(draw.Paint) => draw,
+            CanvasArcPayload draw when IsClosedPaint(draw.Paint) => draw,
             ScenePicturePayload picture => picture with { Commands = PictureCommands(picture.Commands) },
             SceneRetainedPayload retained when retained.ViewId == viewId => retained with { Commands = Commands(retained.Commands) },
             SceneClipPathPayload clip => clip with { Path = clip.Path.SnapshotForPainting() },

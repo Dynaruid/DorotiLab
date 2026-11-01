@@ -111,6 +111,22 @@ internal static class AndroidScrollProfile
         Android.Util.Log.Info("DorotiScrollProfile", $"export={path} frames={_frameCount} inputs={_inputCount} pulses={_pulseCount}");
     }
 
+    // Explicit opt-in probe, outside measured gestures. This is never an app
+    // memory-management policy: a normal launch does not force either GC.
+    internal static void CollectGarbageForDiagnostics(string source)
+    {
+        if (!Enabled) return;
+        var started = Stopwatch.GetTimestamp();
+        var before = GC.GetTotalMemory(false);
+        GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, blocking: true, compacting: true);
+        GC.WaitForPendingFinalizers();
+        Java.Lang.JavaSystem.Gc();
+        Java.Lang.JavaSystem.RunFinalization();
+        GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, blocking: true, compacting: true);
+        Android.Util.Log.Info("DorotiScrollProfile", FormattableString.Invariant(
+            $"gc source={source} heapBefore={before} heapAfter={GC.GetTotalMemory(false)} gen0={GC.CollectionCount(0)} gen1={GC.CollectionCount(1)} gen2={GC.CollectionCount(2)} elapsedMs={Stopwatch.GetElapsedTime(started).TotalMilliseconds:F3}"));
+    }
+
     private static long Now => DorotiFrameClock.Now.Ticks / 10;
     private static T[] Copy<T>(T[] ring, long count)
     {

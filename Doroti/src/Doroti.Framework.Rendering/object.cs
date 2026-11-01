@@ -1321,9 +1321,14 @@ public class PipelineOwner : DiagnosticableTreeMixin
     /// <summary>Content/topology changes must not wait for scroll or resize geometry to settle.</summary>
     public bool hasPendingSemanticsContentUpdate =>
         _semanticsOwner is not null
+        && (_nodesNeedingSemanticsUpdate.Count != 0 || _children.Any(child => child.hasPendingSemanticsContentUpdate));
+
+    /// <summary>Hosts may coalesce scroll values with geometry when no accessibility consumer is active.</summary>
+    public bool hasPendingSemanticsNonGeometryUpdate =>
+        _semanticsOwner is not null
         && (
-            _nodesNeedingSemanticsUpdate.Count != 0
-            || _children.Any(child => child.hasPendingSemanticsContentUpdate)
+            _nodesNeedingSemanticsUpdate.Any(node => !node._semantics.scrollOffsetOnlyUpdate)
+            || _children.Any(child => child.hasPendingSemanticsNonGeometryUpdate)
         );
 
     public override List<DiagnosticsNode> debugDescribeChildren()
@@ -2027,7 +2032,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
             }
 
             performLayout();
-            markNeedsSemanticsUpdate();
+            markLayoutSemanticsUpdate();
         }
         catch (Exception e)
         {
@@ -2256,7 +2261,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
             }
 
             performLayout();
-            markNeedsSemanticsUpdate();
+            markLayoutSemanticsUpdate();
             DartRuntimePrimitives.Assert(() =>
             {
                 debugAssertDoesMeetConstraints();
@@ -2870,6 +2875,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         DartRuntimePrimitives.Assert(() => !owner!._debugDoingSemantics);
         DartRuntimePrimitives.Assert(() => _semantics.parentDataDirty || !_semantics.built);
         DartRuntimePrimitives.Assert(() => owner!._semanticsOwner is not null);
+        _semantics.scrollOffsetOnlyUpdate = false;
         owner!._nodesNeedingSemanticsUpdate.Add(this);
         owner!._nodesNeedingSemanticsGeometryUpdate.Add(this);
         owner!.requestVisualUpdate();
@@ -2941,6 +2947,29 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
             return;
         }
         _semantics.markNeedsUpdate();
+    }
+
+    // Opt in only for containers with no layout-dependent semantic content.
+    // New/changed children still invalidate content through adopt/drop/update.
+    protected virtual bool semanticsLayoutIsGeometryOnly => false;
+    private void markLayoutSemanticsUpdate()
+    {
+        if (!semanticsLayoutIsGeometryOnly) { markNeedsSemanticsUpdate(); return; }
+        markNeedsSemanticsGeometryUpdate();
+    }
+
+    public void markNeedsSemanticsGeometryUpdate()
+    {
+        if (!attached || owner!._semanticsOwner is null) return;
+        _semantics.markNeedsGeometryUpdate();
+    }
+
+    // The scroll value changes with geometry, not interactive content. Keep
+    // its dirty configuration for the same final flush as scroll transforms.
+    public void markNeedsSemanticsScrollOffsetUpdate()
+    {
+        if (!attached || owner!._semanticsOwner is null) return;
+        _semantics.markNeedsScrollOffsetUpdate();
     }
 
     public virtual void visitChildrenForSemantics(Action<RenderObject> visitor)
@@ -3477,6 +3506,7 @@ internal delegate void _MergeUpAndSiblingMergeGroups__object();
 
 public class _RenderObjectSemantics__object : _SemanticsFragment__object, DiagnosticableTree
 {
+    internal bool scrollOffsetOnlyUpdate;
     public virtual RenderObject renderObject { get; private set; } = default!;
     internal virtual bool _hasSiblingConflict { get; set; } = false;
     internal virtual bool? _blocksPreviousSibling { get; set; } = default;
@@ -4490,7 +4520,13 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         }
     }
 
-    public virtual void markNeedsUpdate()
+    public virtual void markNeedsUpdate() => markNeedsUpdateCore(scrollOffsetOnly: false);
+
+    internal void markNeedsScrollOffsetUpdate() => markNeedsUpdateCore(scrollOffsetOnly: true);
+
+    internal void markNeedsGeometryUpdate() => markNeedsUpdateCore(scrollOffsetOnly: true, allowAncestor: true);
+
+    private void markNeedsUpdateCore(bool scrollOffsetOnly, bool allowAncestor = false)
     {
         using var allocationProfile = FrameworkWorkProfile.AllocationEnabled
             ? FrameworkWorkProfile.Begin(renderObject.GetType(), 13)
@@ -4516,6 +4552,9 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
                 && !mayProduceSiblingNodes
             )
             {
+                if (!scrollOffsetOnly)
+                    for (RenderObject? ancestor = node; ancestor is not null; ancestor = ancestor.parent)
+                        ancestor._semantics.scrollOffsetOnlyUpdate = false;
                 break;
             }
             node._semantics.parentData = null;
@@ -4547,7 +4586,15 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
                     node._semantics.configProvider.effective.isSemanticBoundary
                     || (node.parent is null)
                 );
-                if (renderObject.owner!._nodesNeedingSemanticsUpdate.Add(node))
+                var pending = renderObject.owner!._nodesNeedingSemanticsUpdate;
+                // A real content change always wins, regardless of notification
+                // order. Unbuilt/merged nodes remain conservative content work.
+                var offsetOnly = scrollOffsetOnly && (ReferenceEquals(node, renderObject)
+                    ? wasSemanticsBoundaryLocal
+                    : allowAncestor && node._semantics.cachedSemanticsNode is not null);
+                if (!offsetOnly) node._semantics.scrollOffsetOnlyUpdate = false;
+                else if (!pending.Contains(node)) node._semantics.scrollOffsetOnlyUpdate = true;
+                if (pending.Add(node))
                 {
                     renderObject.owner!.requestVisualUpdate();
                 }

@@ -55,12 +55,28 @@ public abstract class DorotiMauiActivity : Microsoft.Maui.MauiAppCompatActivity
     protected override void OnNewIntent(Android.Content.Intent? intent)
     {
         base.OnNewIntent(intent);
+        if (intent?.GetStringExtra("DOROTI_SCROLL_GC") == "1")
+            AndroidScrollProfile.CollectGarbageForDiagnostics("intent");
         if (intent?.GetStringExtra("DOROTI_WORK_TRACE_START") == "1" && AndroidScrollProfile.Enabled && !FrameworkWorkTrace.Enabled)
             FrameworkWorkTrace.Start();
         if (intent?.GetStringExtra("DOROTI_SCROLL_EXPORT") == "1")
             AndroidScrollProfile.Export(this);
+        if (AndroidScrollProfile.Enabled)
+        {
+            if (intent?.GetStringExtra("DOROTI_SCROLL_LIFECYCLE") == "recreate") Recreate();
+            if (intent?.GetStringExtra("DOROTI_SCROLL_LIFECYCLE") == "finish") Finish();
+        }
         if (intent?.Action == Android.Content.Intent.ActionView && intent.DataString is { } location)
             TryDeliver(location, false);
+    }
+    public override void OnTrimMemory(Android.Content.TrimMemory level)
+    {
+        base.OnTrimMemory(level);
+        if (level >= Android.Content.TrimMemory.Background
+            || (level > 0 && level < Android.Content.TrimMemory.UiHidden))
+            (Microsoft.Maui.Controls.Application.Current as DorotiMauiApplication)?.TrimAndroidGpuMemory();
+        if (AndroidScrollProfile.Enabled && Intent?.GetStringExtra("DOROTI_SCROLL_GC_ON_TRIM") == "1")
+            AndroidScrollProfile.CollectGarbageForDiagnostics("trim-" + (int)level);
     }
     private static void TryDeliver(string location, bool cold)
     {

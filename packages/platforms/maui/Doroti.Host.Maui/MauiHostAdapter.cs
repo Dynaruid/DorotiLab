@@ -176,6 +176,12 @@ internal sealed class MauiHostAdapter
     internal DorotiResizeEpoch ResizeTarget => _surface.ResizeTarget ?? ToResizeEpoch(ViewEpoch);
     public DorotiViewEpoch ViewEpoch => Volatile.Read(ref _viewEpoch);
     internal MauiSemanticsDiagnostics SemanticsDiagnostics => _semantics.Diagnostics;
+    internal bool CanCoalesceScrollOffsets =>
+#if ANDROID
+        _semantics is MauiAndroidSemanticsBridge bridge && !bridge.HasActiveConsumer;
+#else
+        false;
+#endif
     public ViewMetrics Metrics
     {
         get

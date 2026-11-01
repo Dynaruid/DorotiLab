@@ -1355,7 +1355,10 @@ public class WidgetsFlutterBinding
             // A tab switch, label/value update, or changed semantics subtree
             // must reach the browser even while an offstage list is ballistic.
             // Only geometry churn is eligible for scroll/resize coalescing.
-            if (rootPipelineOwner.hasPendingSemanticsContentUpdate || (!activeScroll && !activeMetrics))
+            var contentPending = platformDispatcher.implicitView?.coalesceSemanticsScrollOffsetsDuringActiveScroll == true
+                ? rootPipelineOwner.hasPendingSemanticsNonGeometryUpdate
+                : rootPipelineOwner.hasPendingSemanticsContentUpdate;
+            if (contentPending || (!activeScroll && !activeMetrics))
             {
                 _deferredSemanticsFlush?.cancel();
                 _deferredSemanticsFlush = null;

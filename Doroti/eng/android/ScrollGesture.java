@@ -20,7 +20,9 @@ public final class ScrollGesture {
                 throw new IllegalArgumentException("Waypoint times must increase within 15 seconds");
         }
         if (t[0] != 0) throw new IllegalArgumentException("First waypoint must have elapsed-ms 0");
-        Class<?> type = Class.forName("android.hardware.input.InputManagerGlobal");
+        Class<?> type;
+        try { type = Class.forName("android.hardware.input.InputManagerGlobal"); }
+        catch (ClassNotFoundException olderAndroid) { type = Class.forName("android.hardware.input.InputManager"); }
         Object manager = type.getMethod("getInstance").invoke(null);
         Method inject = type.getMethod("injectInputEvent", InputEvent.class, int.class);
         long down = SystemClock.uptimeMillis();

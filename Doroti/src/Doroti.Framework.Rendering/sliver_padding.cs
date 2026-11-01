@@ -447,6 +447,7 @@ public abstract class RenderSliverEdgeInsetsPadding
 
 public class RenderSliverPadding : RenderSliverEdgeInsetsPadding
 {
+    protected override bool semanticsLayoutIsGeometryOnly => GetType() == typeof(RenderSliverPadding);
     internal virtual EdgeInsets? _resolvedPadding { get; set; } = default;
     internal virtual EdgeInsetsGeometry _padding { get; set; } = default!;
     internal virtual TextDirection? _textDirection { get; set; } = default;

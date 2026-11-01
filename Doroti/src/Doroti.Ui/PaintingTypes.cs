@@ -852,7 +852,12 @@ public sealed class Picture : IDisposable
     private Picture(PathCommand[] ownedCommands) => Commands = Array.AsReadOnly(ownedCommands);
 
     internal static Picture FromOwnedCommands(PathCommand[] ownedCommands) =>
-        new(ownedCommands ?? throw new ArgumentNullException(nameof(ownedCommands)));
+        new((ownedCommands ?? throw new ArgumentNullException(nameof(ownedCommands)))
+            .Select(command => command with
+            {
+                Arguments = Array.AsReadOnly(command.Arguments.ToArray()),
+                HasClosedArguments = true,
+            }).ToArray());
 
     public IReadOnlyList<PathCommand> Commands { get; }
     public bool debugDisposed => Volatile.Read(ref _disposed) != 0;

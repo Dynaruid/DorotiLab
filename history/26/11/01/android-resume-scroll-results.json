@@ -1,0 +1,1688 @@
+{
+  "date": "2026-11-01",
+  "timezone": "Asia/Seoul",
+  "baseCommit": "38e1603e3419c20085666de6fb550ea9669de938",
+  "status": "PASS-scoped-emulator-lifecycle; physical-performance-notVerified",
+  "device": {
+    "serial": "emulator-5554",
+    "avd": "Pixel_5",
+    "api": 33,
+    "abi": "x86_64",
+    "screen": "1080x2340",
+    "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "skiaSharp": "4.154.0"
+  },
+  "sourceSha256": {
+    "Doroti/eng/android/ScrollGesture.java": "22a6fe236be32e52a94392e8c17d2b55a6f434f14f7fc3e9ab083d28ea162f8c",
+    "Doroti/eng/measure-android-resume-scroll.py": "7dcc6cfcefee8107dd788bdd0049fd4f59df8c9a1b88e3a62564034c07c5d76b",
+    "Doroti/src/Doroti.Skia.Rendering/SkiaGraphiteSession.cs": "45051ffa1174b12ab413c9bd013390e1ea53451338d8ebc5fb6157261162999f",
+    "Doroti/src/Doroti.Skia.Vulkan/GraphiteVulkanWindow.cs": "e6234fda0474d0d079a70a35dfd44b75b8221ffc7b9564d56d054c7de42f8e0a",
+    "Doroti/src/Doroti.Skia.Vulkan/GraphiteVulkanWindow.Android.cs": "67ebadcd8607f885aa5a3f9e96d8b173c7d5977798f39f6f8c3056d7e79f381f",
+    "packages/platforms/maui/Doroti.Host.Maui/AndroidScrollProfile.cs": "e206c07523dfa35d1084452a68aca88be00ba2170040808f000e08e6315645cd",
+    "packages/platforms/maui/Doroti.Host.Maui/DorotiAndroidVulkanViewHandler.cs": "914bad6ba0d7b400035bacfd68b60c5ab8710f68c4f81412f9b3d18b600b41c1",
+    "packages/platforms/maui/Doroti.Host.Maui/DorotiMauiApplication.cs": "1b65053e93ac6e5234163b00dee9dfb753c97e573da79b1d346f257ccf2fcc5c",
+    "packages/platforms/maui/Doroti.Host.Maui/DorotiMauiSurface.cs": "1f1c46bd44d4f99b9b26a624efd4db705820dc5eea02ddf8cdf0475cfdf1489d",
+    "packages/platforms/maui/Doroti.Host.Maui/MauiApplicationNavigation.cs": "c53bbbab6d544dc1e0efd1e8861057584da64c023fe39becc6fbaa2fff71d118"
+  },
+  "artifacts": {
+    "android-x64": {
+      "localArtifact": "temp/android-resume-scroll/verified-x64.apk",
+      "apkSha256": "d748b199d2f6a69ec8294d442123e125b8b459b7d67e5c31c6730658f4ee1a6c",
+      "nativeSkiaSharp": {
+        "lib/x86_64/libSkiaSharp.so": "4083085434e7e8822496d2f4d0e087baee495f333d0c591696ee3ffc680d799d"
+      }
+    },
+    "android-arm64": {
+      "localArtifact": "temp/android-resume-scroll/doroti-testbed-resume-arm64.apk",
+      "apkSha256": "39c229f9558098f018641c30dc8e7cd93981e25bd35cbebd6f816bda0e3b4bb7",
+      "nativeSkiaSharp": {
+        "lib/arm64-v8a/libSkiaSharp.so": "02c4cf50f41d50750d4e83f3e52c6e80dc7ac2ae43f50fefa381b45e18b81e9b"
+      }
+    }
+  },
+  "arm64BuildProfile": {
+    "Properties": {
+      "UseMonoRuntime": "true",
+      "RunAOTCompilation": "true",
+      "AndroidEnableProfiledAot": "true",
+      "AndroidUseInterpreter": "False",
+      "Optimize": "true",
+      "DorotiCompilationMode": "Mono"
+    }
+  },
+  "baseline": [
+    {
+      "label": "original-normal",
+      "serial": "emulator-5554",
+      "apkSha256": "10c8cf69f7fc5b3e8526ec80e665d5cd539561a4fa3170fa01becc8689a4ea9a",
+      "presentObserved": false,
+      "physicalInput": "notVerified",
+      "concurrentBuild": true,
+      "trials": [
+        {
+          "trial": 1,
+          "pid": "5280",
+          "stages": [
+            {
+              "name": "initial",
+              "downMs": 359798,
+              "motion": "continuous-down-ms=359798 moves=341 duration-ms=2852",
+              "summary": {
+                "gesture": 1,
+                "ownerMs": {
+                  "count": 151,
+                  "p50": 10.206,
+                  "p95": 20.384,
+                  "p99": 32.076,
+                  "max": 128.547
+                },
+                "callbackMs": {
+                  "count": 151,
+                  "p50": 2.25,
+                  "p95": 5.318,
+                  "p99": 23.79,
+                  "max": 60.648
+                },
+                "snapMs": {
+                  "count": 151,
+                  "p50": 1.468,
+                  "p95": 2.557,
+                  "p99": 4.564,
+                  "max": 9.792
+                },
+                "allocated": {
+                  "count": 151,
+                  "p50": 606904,
+                  "p95": 751656,
+                  "p99": 841040,
+                  "max": 4367784
+                },
+                "over50ms": 2,
+                "gc": {
+                  "gen0": 23,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 144
+              },
+              "submittedOwnerMs": {
+                "count": 144,
+                "p50": 10.235,
+                "p95": 20.384,
+                "p99": 32.076,
+                "max": 128.547
+              },
+              "submittedOver50ms": 2,
+              "inputCount": 148,
+              "nativeTotalPssKiB": 257012
+            },
+            {
+              "name": "resume-trim",
+              "downMs": 366172,
+              "motion": "continuous-down-ms=366172 moves=341 duration-ms=2851",
+              "summary": {
+                "gesture": 2,
+                "ownerMs": {
+                  "count": 178,
+                  "p50": 9.736,
+                  "p95": 13.979,
+                  "p99": 23.912,
+                  "max": 33.15
+                },
+                "callbackMs": {
+                  "count": 178,
+                  "p50": 2.033,
+                  "p95": 4.693,
+                  "p99": 5.609,
+                  "max": 15.138
+                },
+                "snapMs": {
+                  "count": 178,
+                  "p50": 1.413,
+                  "p95": 2.522,
+                  "p99": 3.116,
+                  "max": 11.163
+                },
+                "allocated": {
+                  "count": 178,
+                  "p50": 602896,
+                  "p95": 687096,
+                  "p99": 768392,
+                  "max": 1415496
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 26,
+                  "gen1": 1,
+                  "gen2": 1
+                },
+                "submitted": 166
+              },
+              "submittedOwnerMs": {
+                "count": 166,
+                "p50": 9.826,
+                "p95": 13.979,
+                "p99": 23.912,
+                "max": 33.15
+              },
+              "submittedOver50ms": 0,
+              "inputCount": 172,
+              "nativeTotalPssKiB": 270651
+            },
+            {
+              "name": "resume-trim-again",
+              "downMs": 372299,
+              "motion": "continuous-down-ms=372299 moves=341 duration-ms=2852",
+              "summary": {
+                "gesture": 3,
+                "ownerMs": {
+                  "count": 175,
+                  "p50": 9.598,
+                  "p95": 12.84,
+                  "p99": 23.142,
+                  "max": 26.033
+                },
+                "callbackMs": {
+                  "count": 175,
+                  "p50": 2.139,
+                  "p95": 4.564,
+                  "p99": 5.619,
+                  "max": 16.992
+                },
+                "snapMs": {
+                  "count": 175,
+                  "p50": 1.425,
+                  "p95": 2.215,
+                  "p99": 4.857,
+                  "max": 9.354
+                },
+                "allocated": {
+                  "count": 175,
+                  "p50": 596864,
+                  "p95": 689528,
+                  "p99": 769136,
+                  "max": 1415496
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 25,
+                  "gen1": 1,
+                  "gen2": 1
+                },
+                "submitted": 168
+              },
+              "submittedOwnerMs": {
+                "count": 168,
+                "p50": 9.624,
+                "p95": 12.84,
+                "p99": 23.142,
+                "max": 26.033
+              },
+              "submittedOver50ms": 0,
+              "inputCount": 173,
+              "nativeTotalPssKiB": 274162
+            }
+          ],
+          "explicitGc": [],
+          "contextCreationCount": 3,
+          "swapchainCreationCount": 3,
+          "nativeLifecycle": [
+            "364.232  5280  5347 I DorotiFrameTiming: drained submitted=152 completed=152 outstanding=0",
+            "370.553  5280  5345 I DorotiFrameTiming: drained submitted=171 completed=171 outstanding=0"
+          ]
+        }
+      ]
+    },
+    {
+      "label": "baseline-gc",
+      "serial": "emulator-5554",
+      "apkSha256": "2a24c94810875d2baf65f5c7fed501c4067faf19b9217e4fe37632bf9e7b1933",
+      "presentObserved": false,
+      "physicalInput": "notVerified",
+      "concurrentBuild": false,
+      "trials": [
+        {
+          "trial": 1,
+          "pid": "5626",
+          "stages": [
+            {
+              "name": "initial",
+              "downMs": 403378,
+              "motion": "continuous-down-ms=403378 moves=341 duration-ms=2852",
+              "summary": {
+                "gesture": 1,
+                "ownerMs": {
+                  "count": 159,
+                  "p50": 9.383,
+                  "p95": 18.69,
+                  "p99": 26.38,
+                  "max": 117.45
+                },
+                "callbackMs": {
+                  "count": 159,
+                  "p50": 1.935,
+                  "p95": 5.508,
+                  "p99": 13.013,
+                  "max": 46.839
+                },
+                "snapMs": {
+                  "count": 159,
+                  "p50": 1.401,
+                  "p95": 2.451,
+                  "p99": 4.678,
+                  "max": 8.418
+                },
+                "allocated": {
+                  "count": 159,
+                  "p50": 604344,
+                  "p95": 743632,
+                  "p99": 841040,
+                  "max": 4365104
+                },
+                "over50ms": 2,
+                "gc": {
+                  "gen0": 24,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 151
+              },
+              "submittedOwnerMs": {
+                "count": 151,
+                "p50": 9.404,
+                "p95": 18.69,
+                "p99": 26.38,
+                "max": 117.45
+              },
+              "submittedOver50ms": 2,
+              "inputCount": 156,
+              "nativeTotalPssKiB": 259746
+            },
+            {
+              "name": "foreground-gc",
+              "downMs": 407892,
+              "motion": "continuous-down-ms=407892 moves=341 duration-ms=2853",
+              "summary": {
+                "gesture": 2,
+                "ownerMs": {
+                  "count": 172,
+                  "p50": 9.392,
+                  "p95": 13.397,
+                  "p99": 22.927,
+                  "max": 27.903
+                },
+                "callbackMs": {
+                  "count": 172,
+                  "p50": 2.021,
+                  "p95": 4.825,
+                  "p99": 5.27,
+                  "max": 5.575
+                },
+                "snapMs": {
+                  "count": 172,
+                  "p50": 1.42,
+                  "p95": 2.017,
+                  "p99": 2.8,
+                  "max": 8.918
+                },
+                "allocated": {
+                  "count": 172,
+                  "p50": 603176,
+                  "p95": 687096,
+                  "p99": 768392,
+                  "max": 1415496
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 26,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 165
+              },
+              "submittedOwnerMs": {
+                "count": 165,
+                "p50": 9.469,
+                "p95": 13.397,
+                "p99": 22.927,
+                "max": 27.903
+              },
+              "submittedOver50ms": 0,
+              "inputCount": 171,
+              "nativeTotalPssKiB": 268030
+            },
+            {
+              "name": "resume-trim-gc",
+              "downMs": 414225,
+              "motion": "continuous-down-ms=414225 moves=341 duration-ms=2851",
+              "summary": {
+                "gesture": 3,
+                "ownerMs": {
+                  "count": 175,
+                  "p50": 9.568,
+                  "p95": 13.117,
+                  "p99": 15.635,
+                  "max": 23.427
+                },
+                "callbackMs": {
+                  "count": 175,
+                  "p50": 2.128,
+                  "p95": 4.874,
+                  "p99": 5.616,
+                  "max": 7.237
+                },
+                "snapMs": {
+                  "count": 175,
+                  "p50": 1.358,
+                  "p95": 2.24,
+                  "p99": 3.086,
+                  "max": 9.83
+                },
+                "allocated": {
+                  "count": 175,
+                  "p50": 604344,
+                  "p95": 687576,
+                  "p99": 769336,
+                  "max": 1415496
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 27,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 167
+              },
+              "submittedOwnerMs": {
+                "count": 167,
+                "p50": 9.645,
+                "p95": 13.117,
+                "p99": 15.635,
+                "max": 23.427
+              },
+              "submittedOver50ms": 0,
+              "inputCount": 173,
+              "nativeTotalPssKiB": 271246
+            },
+            {
+              "name": "resume-trim-gc-again",
+              "downMs": 420252,
+              "motion": "continuous-down-ms=420252 moves=341 duration-ms=2853",
+              "summary": {
+                "gesture": 4,
+                "ownerMs": {
+                  "count": 177,
+                  "p50": 9.579,
+                  "p95": 13.538,
+                  "p99": 18.773,
+                  "max": 27.037
+                },
+                "callbackMs": {
+                  "count": 177,
+                  "p50": 2.01,
+                  "p95": 5.59,
+                  "p99": 6.045,
+                  "max": 6.498
+                },
+                "snapMs": {
+                  "count": 177,
+                  "p50": 1.336,
+                  "p95": 2.308,
+                  "p99": 3.318,
+                  "max": 11.701
+                },
+                "allocated": {
+                  "count": 177,
+                  "p50": 608480,
+                  "p95": 689528,
+                  "p99": 768872,
+                  "max": 1415496
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 26,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 167
+              },
+              "submittedOwnerMs": {
+                "count": 167,
+                "p50": 9.706,
+                "p95": 13.538,
+                "p99": 18.773,
+                "max": 27.037
+              },
+              "submittedOver50ms": 0,
+              "inputCount": 173,
+              "nativeTotalPssKiB": 275810
+            }
+          ],
+          "explicitGc": [
+            {
+              "source": "intent",
+              "heapBefore": 28695552,
+              "heapAfter": 18734032,
+              "elapsedMs": 44.874
+            },
+            {
+              "source": "trim-20",
+              "heapBefore": 28243432,
+              "heapAfter": 18678504,
+              "elapsedMs": 48.701
+            },
+            {
+              "source": "trim-40",
+              "heapBefore": 18681072,
+              "heapAfter": 18228824,
+              "elapsedMs": 35.227
+            },
+            {
+              "source": "trim-20",
+              "heapBefore": 29848704,
+              "heapAfter": 18701264,
+              "elapsedMs": 57.928
+            },
+            {
+              "source": "trim-40",
+              "heapBefore": 18701264,
+              "heapAfter": 18216960,
+              "elapsedMs": 47.267
+            }
+          ],
+          "contextCreationCount": 3,
+          "swapchainCreationCount": 3,
+          "nativeLifecycle": [
+            "412.438  5626  5660 I DorotiFrameTiming: drained submitted=340 completed=340 outstanding=0",
+            "418.637  5626  5658 I DorotiFrameTiming: drained submitted=171 completed=171 outstanding=0"
+          ]
+        }
+      ]
+    },
+    {
+      "label": "baseline-warm-ready",
+      "serial": "emulator-5554",
+      "apkSha256": "2a24c94810875d2baf65f5c7fed501c4067faf19b9217e4fe37632bf9e7b1933",
+      "presentObserved": false,
+      "physicalInput": "notVerified",
+      "concurrentBuild": true,
+      "trials": [
+        {
+          "trial": 1,
+          "pid": "6308",
+          "stages": [
+            {
+              "name": "initial",
+              "downMs": 889165,
+              "motion": "continuous-down-ms=889165 moves=341 duration-ms=2852",
+              "summary": {
+                "gesture": 9,
+                "ownerMs": {
+                  "count": 159,
+                  "p50": 10.325,
+                  "p95": 14.497,
+                  "p99": 18.923,
+                  "max": 117.075
+                },
+                "callbackMs": {
+                  "count": 159,
+                  "p50": 5.126,
+                  "p95": 9.276,
+                  "p99": 10.021,
+                  "max": 47.968
+                },
+                "snapMs": {
+                  "count": 159,
+                  "p50": 0.725,
+                  "p95": 1.293,
+                  "p99": 2.832,
+                  "max": 8.533
+                },
+                "allocated": {
+                  "count": 159,
+                  "p50": 595976,
+                  "p95": 760360,
+                  "p99": 776904,
+                  "max": 818856
+                },
+                "over50ms": 1,
+                "gc": {
+                  "gen0": 24,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 152
+              },
+              "submittedOwnerMs": {
+                "count": 152,
+                "p50": 10.352,
+                "p95": 14.497,
+                "p99": 18.923,
+                "max": 117.075
+              },
+              "submittedOver50ms": 1,
+              "inputCount": 167,
+              "nativeTotalPssKiB": 280679
+            },
+            {
+              "name": "foreground-gc",
+              "downMs": 893610,
+              "motion": "continuous-down-ms=893610 moves=341 duration-ms=2852",
+              "summary": {
+                "gesture": 10,
+                "ownerMs": {
+                  "count": 212,
+                  "p50": 9.411,
+                  "p95": 15.124,
+                  "p99": 17.149,
+                  "max": 23.297
+                },
+                "callbackMs": {
+                  "count": 212,
+                  "p50": 3.791,
+                  "p95": 8.998,
+                  "p99": 9.895,
+                  "max": 11.948
+                },
+                "snapMs": {
+                  "count": 212,
+                  "p50": 0.71,
+                  "p95": 1.283,
+                  "p99": 1.867,
+                  "max": 4.915
+                },
+                "allocated": {
+                  "count": 212,
+                  "p50": 411880,
+                  "p95": 752888,
+                  "p99": 760808,
+                  "max": 816880
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 28,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 157
+              },
+              "submittedOwnerMs": {
+                "count": 157,
+                "p50": 10.537,
+                "p95": 16.043,
+                "p99": 17.635,
+                "max": 23.297
+              },
+              "submittedOver50ms": 0,
+              "inputCount": 172,
+              "nativeTotalPssKiB": 287840
+            },
+            {
+              "name": "resume-trim-gc",
+              "downMs": 899420,
+              "motion": "continuous-down-ms=899420 moves=341 duration-ms=2852",
+              "resumeSnapshotReadyMs": 717.654,
+              "summary": {
+                "gesture": 11,
+                "ownerMs": {
+                  "count": 160,
+                  "p50": 11.053,
+                  "p95": 18.772,
+                  "p99": 29.814,
+                  "max": 33.605
+                },
+                "callbackMs": {
+                  "count": 160,
+                  "p50": 5.614,
+                  "p95": 9.806,
+                  "p99": 11.005,
+                  "max": 14.958
+                },
+                "snapMs": {
+                  "count": 160,
+                  "p50": 0.747,
+                  "p95": 1.592,
+                  "p99": 3.092,
+                  "max": 11.023
+                },
+                "allocated": {
+                  "count": 160,
+                  "p50": 595176,
+                  "p95": 760360,
+                  "p99": 760664,
+                  "max": 772616
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 25,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 154
+              },
+              "submittedOwnerMs": {
+                "count": 154,
+                "p50": 11.163,
+                "p95": 18.772,
+                "p99": 29.814,
+                "max": 33.605
+              },
+              "submittedOver50ms": 0,
+              "inputCount": 169,
+              "nativeTotalPssKiB": 291998
+            },
+            {
+              "name": "resume-trim-gc-again",
+              "downMs": 905228,
+              "motion": "continuous-down-ms=905228 moves=341 duration-ms=2852",
+              "resumeSnapshotReadyMs": 747.77,
+              "summary": {
+                "gesture": 12,
+                "ownerMs": {
+                  "count": 166,
+                  "p50": 10.215,
+                  "p95": 16.777,
+                  "p99": 25.881,
+                  "max": 28.019
+                },
+                "callbackMs": {
+                  "count": 166,
+                  "p50": 5.274,
+                  "p95": 8.818,
+                  "p99": 11.803,
+                  "max": 17.268
+                },
+                "snapMs": {
+                  "count": 166,
+                  "p50": 0.694,
+                  "p95": 1.302,
+                  "p99": 3.301,
+                  "max": 10.526
+                },
+                "allocated": {
+                  "count": 166,
+                  "p50": 586456,
+                  "p95": 759560,
+                  "p99": 760664,
+                  "max": 772712
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 25,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 154
+              },
+              "submittedOwnerMs": {
+                "count": 154,
+                "p50": 10.358,
+                "p95": 17.288,
+                "p99": 25.881,
+                "max": 28.019
+              },
+              "submittedOver50ms": 0,
+              "inputCount": 169,
+              "nativeTotalPssKiB": 291467
+            }
+          ],
+          "explicitGc": [
+            {
+              "source": "intent",
+              "heapBefore": 42808832,
+              "heapAfter": 29975080,
+              "elapsedMs": 66.943
+            },
+            {
+              "source": "trim-20",
+              "heapBefore": 41725776,
+              "heapAfter": 29745512,
+              "elapsedMs": 83.196
+            },
+            {
+              "source": "trim-40",
+              "heapBefore": 29747016,
+              "heapAfter": 29082664,
+              "elapsedMs": 97.33
+            },
+            {
+              "source": "trim-20",
+              "heapBefore": 41502512,
+              "heapAfter": 29709368,
+              "elapsedMs": 88.642
+            },
+            {
+              "source": "trim-40",
+              "heapBefore": 29709368,
+              "heapAfter": 29033072,
+              "elapsedMs": 58.855
+            }
+          ],
+          "contextCreationCount": 3,
+          "swapchainCreationCount": 3,
+          "nativeLifecycle": [
+            "898.117  6308  6342 I DorotiFrameTiming: drained submitted=481 completed=481 outstanding=0",
+            "903.821  6308  6342 I DorotiFrameTiming: drained submitted=184 completed=184 outstanding=0"
+          ]
+        }
+      ]
+    }
+  ],
+  "final": [
+    {
+      "label": "verified-final",
+      "serial": "emulator-5554",
+      "apkSha256": "d748b199d2f6a69ec8294d442123e125b8b459b7d67e5c31c6730658f4ee1a6c",
+      "presentObserved": false,
+      "physicalInput": "notVerified",
+      "concurrentBuild": true,
+      "trials": [
+        {
+          "trial": 1,
+          "pid": "7233",
+          "contextCreations": 1,
+          "contextReattachments": 2,
+          "completedSurfaceDetaches": 2,
+          "unusedGpuPurges": 2,
+          "stages": [
+            {
+              "name": "initial",
+              "downMs": 1450652,
+              "motion": "continuous-down-ms=1450652 moves=341 duration-ms=2853",
+              "summary": {
+                "gesture": 9,
+                "ownerMs": {
+                  "count": 308,
+                  "p50": 6.119,
+                  "p95": 12.195,
+                  "p99": 14.607,
+                  "max": 17.622
+                },
+                "callbackMs": {
+                  "count": 308,
+                  "p50": 2.009,
+                  "p95": 4.548,
+                  "p99": 6.302,
+                  "max": 10.265
+                },
+                "snapMs": {
+                  "count": 308,
+                  "p50": 0.536,
+                  "p95": 1.229,
+                  "p99": 1.528,
+                  "max": 3.633
+                },
+                "allocated": {
+                  "count": 308,
+                  "p50": 332848,
+                  "p95": 630592,
+                  "p99": 631752,
+                  "max": 1039176
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 27,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 158
+              },
+              "submittedOwnerMs": {
+                "count": 158,
+                "p50": 8.982,
+                "p95": 13.134,
+                "p99": 15.583,
+                "max": 17.622
+              },
+              "submittedOver50ms": 0,
+              "inputCount": 173,
+              "nativeTotalPssKiB": 377458
+            },
+            {
+              "name": "foreground-gc",
+              "downMs": 1455308,
+              "motion": "continuous-down-ms=1455308 moves=341 duration-ms=2851",
+              "summary": {
+                "gesture": 10,
+                "ownerMs": {
+                  "count": 92,
+                  "p50": 13.397,
+                  "p95": 17.517,
+                  "p99": 22.293,
+                  "max": 27.43
+                },
+                "callbackMs": {
+                  "count": 92,
+                  "p50": 2.736,
+                  "p95": 5.899,
+                  "p99": 7.777,
+                  "max": 17.738
+                },
+                "snapMs": {
+                  "count": 92,
+                  "p50": 1.394,
+                  "p95": 2.054,
+                  "p99": 2.468,
+                  "max": 3.03
+                },
+                "allocated": {
+                  "count": 92,
+                  "p50": 466720,
+                  "p95": 491296,
+                  "p99": 570648,
+                  "max": 1122976
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 10,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 77,
+                "beforeMotionDrawMs": {
+                  "count": 2,
+                  "p50": 10.564,
+                  "p95": 10.564,
+                  "p99": 10.564,
+                  "max": 13.05
+                }
+              },
+              "submittedOwnerMs": {
+                "count": 77,
+                "p50": 13.756,
+                "p95": 17.713,
+                "p99": 22.293,
+                "max": 27.43
+              },
+              "submittedOver50ms": 0,
+              "inputCount": 91,
+              "nativeTotalPssKiB": 384318
+            },
+            {
+              "name": "resume-trim-gc",
+              "downMs": 1461201,
+              "motion": "continuous-down-ms=1461201 moves=341 duration-ms=2853",
+              "resumeSnapshotReadyMs": 587.061,
+              "summary": {
+                "gesture": 11,
+                "ownerMs": {
+                  "count": 194,
+                  "p50": 10.312,
+                  "p95": 17.519,
+                  "p99": 22.847,
+                  "max": 28.004
+                },
+                "callbackMs": {
+                  "count": 194,
+                  "p50": 2.701,
+                  "p95": 5.975,
+                  "p99": 11.881,
+                  "max": 14.313
+                },
+                "snapMs": {
+                  "count": 194,
+                  "p50": 1.066,
+                  "p95": 1.946,
+                  "p99": 2.237,
+                  "max": 2.414
+                },
+                "allocated": {
+                  "count": 194,
+                  "p50": 464400,
+                  "p95": 625016,
+                  "p99": 632544,
+                  "max": 1074528
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 22,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 150,
+                "beforeMotionDrawMs": {
+                  "count": 4,
+                  "p50": 11.287,
+                  "p95": 14.916,
+                  "p99": 14.916,
+                  "max": 134.855
+                }
+              },
+              "submittedOwnerMs": {
+                "count": 150,
+                "p50": 11.461,
+                "p95": 18.012,
+                "p99": 22.847,
+                "max": 28.004
+              },
+              "submittedOver50ms": 0,
+              "inputCount": 165,
+              "nativeTotalPssKiB": 387536
+            },
+            {
+              "name": "resume-trim-gc-again",
+              "downMs": 1467330,
+              "motion": "continuous-down-ms=1467330 moves=341 duration-ms=2851",
+              "resumeSnapshotReadyMs": 715.542,
+              "summary": {
+                "gesture": 12,
+                "ownerMs": {
+                  "count": 192,
+                  "p50": 8.778,
+                  "p95": 16.382,
+                  "p99": 22.681,
+                  "max": 34.511
+                },
+                "callbackMs": {
+                  "count": 192,
+                  "p50": 2.067,
+                  "p95": 5.109,
+                  "p99": 7.92,
+                  "max": 14.524
+                },
+                "snapMs": {
+                  "count": 192,
+                  "p50": 0.898,
+                  "p95": 1.691,
+                  "p99": 2.475,
+                  "max": 6.741
+                },
+                "allocated": {
+                  "count": 192,
+                  "p50": 463568,
+                  "p95": 492040,
+                  "p99": 608032,
+                  "max": 1074528
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 21,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 151,
+                "beforeMotionDrawMs": {
+                  "count": 4,
+                  "p50": 13.545,
+                  "p95": 13.797,
+                  "p99": 13.797,
+                  "max": 127.948
+                }
+              },
+              "submittedOwnerMs": {
+                "count": 151,
+                "p50": 9.301,
+                "p95": 17.303,
+                "p99": 22.681,
+                "max": 34.511
+              },
+              "submittedOver50ms": 0,
+              "inputCount": 166,
+              "nativeTotalPssKiB": 387548
+            }
+          ],
+          "explicitGc": [
+            {
+              "source": "intent",
+              "heapBefore": 52258768,
+              "heapAfter": 39373288,
+              "elapsedMs": 104.954
+            },
+            {
+              "source": "trim-20",
+              "heapBefore": 43162776,
+              "heapAfter": 38839504,
+              "elapsedMs": 78.312
+            },
+            {
+              "source": "trim-40",
+              "heapBefore": 38840816,
+              "heapAfter": 38582088,
+              "elapsedMs": 71.981
+            },
+            {
+              "source": "trim-20",
+              "heapBefore": 46736896,
+              "heapAfter": 39236280,
+              "elapsedMs": 97.228
+            },
+            {
+              "source": "trim-40",
+              "heapBefore": 39236280,
+              "heapAfter": 38578296,
+              "elapsedMs": 74.295
+            }
+          ],
+          "contextCreationCount": 1,
+          "swapchainCreationCount": 3,
+          "nativeLifecycle": [
+            "1459.734  7233  7233 I DorotiFrameTiming: detached submitted=364 completed=364 outstanding=0 contextGeneration=1",
+            "1460.569  7233  7233 I DorotiGraphite: Surface attached contextGeneration=1",
+            "1465.694  7233  7233 I DorotiFrameTiming: detached submitted=518 completed=518 outstanding=0 contextGeneration=1",
+            "1466.594  7233  7233 I DorotiGraphite: Surface attached contextGeneration=1"
+          ]
+        },
+        {
+          "trial": 2,
+          "pid": "7560",
+          "contextCreations": 1,
+          "contextReattachments": 2,
+          "completedSurfaceDetaches": 2,
+          "unusedGpuPurges": 2,
+          "stages": [
+            {
+              "name": "initial",
+              "downMs": 1484189,
+              "motion": "continuous-down-ms=1484189 moves=341 duration-ms=2852",
+              "summary": {
+                "gesture": 9,
+                "ownerMs": {
+                  "count": 221,
+                  "p50": 7.497,
+                  "p95": 12.539,
+                  "p99": 15.597,
+                  "max": 26.5
+                },
+                "callbackMs": {
+                  "count": 221,
+                  "p50": 1.929,
+                  "p95": 4.903,
+                  "p99": 6.114,
+                  "max": 21.437
+                },
+                "snapMs": {
+                  "count": 221,
+                  "p50": 0.918,
+                  "p95": 1.792,
+                  "p99": 2.275,
+                  "max": 3.526
+                },
+                "allocated": {
+                  "count": 221,
+                  "p50": 460984,
+                  "p95": 574968,
+                  "p99": 617080,
+                  "max": 1614968
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 25,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 156
+              },
+              "submittedOwnerMs": {
+                "count": 156,
+                "p50": 8.362,
+                "p95": 13.097,
+                "p99": 16.719,
+                "max": 26.5
+              },
+              "submittedOver50ms": 0,
+              "inputCount": 173,
+              "nativeTotalPssKiB": 279321
+            },
+            {
+              "name": "foreground-gc",
+              "downMs": 1488623,
+              "motion": "continuous-down-ms=1488623 moves=341 duration-ms=2852",
+              "summary": {
+                "gesture": 10,
+                "ownerMs": {
+                  "count": 264,
+                  "p50": 6.264,
+                  "p95": 11.926,
+                  "p99": 17.188,
+                  "max": 25.705
+                },
+                "callbackMs": {
+                  "count": 264,
+                  "p50": 1.808,
+                  "p95": 4.675,
+                  "p99": 6.623,
+                  "max": 16.643
+                },
+                "snapMs": {
+                  "count": 264,
+                  "p50": 0.918,
+                  "p95": 1.67,
+                  "p99": 1.897,
+                  "max": 4.06
+                },
+                "allocated": {
+                  "count": 264,
+                  "p50": 439768,
+                  "p95": 573848,
+                  "p99": 617200,
+                  "max": 1703632
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 26,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 154,
+                "beforeMotionDrawMs": {
+                  "count": 2,
+                  "p50": 8.578,
+                  "p95": 8.578,
+                  "p99": 8.578,
+                  "max": 10.748
+                }
+              },
+              "submittedOwnerMs": {
+                "count": 154,
+                "p50": 7.792,
+                "p95": 14.038,
+                "p99": 20.311,
+                "max": 25.705
+              },
+              "submittedOver50ms": 0,
+              "inputCount": 171,
+              "nativeTotalPssKiB": 283635
+            },
+            {
+              "name": "resume-trim-gc",
+              "downMs": 1494439,
+              "motion": "continuous-down-ms=1494439 moves=341 duration-ms=2852",
+              "resumeSnapshotReadyMs": 756.168,
+              "summary": {
+                "gesture": 11,
+                "ownerMs": {
+                  "count": 180,
+                  "p50": 8.638,
+                  "p95": 12.166,
+                  "p99": 16.031,
+                  "max": 25.765
+                },
+                "callbackMs": {
+                  "count": 180,
+                  "p50": 2.004,
+                  "p95": 5.067,
+                  "p99": 6.854,
+                  "max": 10.065
+                },
+                "snapMs": {
+                  "count": 180,
+                  "p50": 1.046,
+                  "p95": 1.682,
+                  "p99": 2.422,
+                  "max": 7.094
+                },
+                "allocated": {
+                  "count": 180,
+                  "p50": 517768,
+                  "p95": 574936,
+                  "p99": 654976,
+                  "max": 1614968
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 23,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 155,
+                "beforeMotionDrawMs": {
+                  "count": 4,
+                  "p50": 10.795,
+                  "p95": 13.598,
+                  "p99": 13.598,
+                  "max": 161.49
+                }
+              },
+              "submittedOwnerMs": {
+                "count": 155,
+                "p50": 8.898,
+                "p95": 12.177,
+                "p99": 16.031,
+                "max": 25.765
+              },
+              "submittedOver50ms": 0,
+              "inputCount": 171,
+              "nativeTotalPssKiB": 286288
+            },
+            {
+              "name": "resume-trim-gc-again",
+              "downMs": 1500248,
+              "motion": "continuous-down-ms=1500248 moves=341 duration-ms=2852",
+              "resumeSnapshotReadyMs": 565.768,
+              "summary": {
+                "gesture": 12,
+                "ownerMs": {
+                  "count": 256,
+                  "p50": 6.149,
+                  "p95": 13.405,
+                  "p99": 20.119,
+                  "max": 30.123
+                },
+                "callbackMs": {
+                  "count": 256,
+                  "p50": 1.824,
+                  "p95": 4.75,
+                  "p99": 6.855,
+                  "max": 11.09
+                },
+                "snapMs": {
+                  "count": 256,
+                  "p50": 0.884,
+                  "p95": 1.53,
+                  "p99": 3.779,
+                  "max": 16.321
+                },
+                "allocated": {
+                  "count": 256,
+                  "p50": 443872,
+                  "p95": 571384,
+                  "p99": 574968,
+                  "max": 1614968
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 26,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 153,
+                "beforeMotionDrawMs": {
+                  "count": 4,
+                  "p50": 10.71,
+                  "p95": 11.282,
+                  "p99": 11.282,
+                  "max": 99.333
+                }
+              },
+              "submittedOwnerMs": {
+                "count": 153,
+                "p50": 8.141,
+                "p95": 17.145,
+                "p99": 20.531,
+                "max": 30.123
+              },
+              "submittedOver50ms": 0,
+              "inputCount": 169,
+              "nativeTotalPssKiB": 287768
+            }
+          ],
+          "explicitGc": [
+            {
+              "source": "intent",
+              "heapBefore": 43235632,
+              "heapAfter": 29796912,
+              "elapsedMs": 56.505
+            },
+            {
+              "source": "trim-20",
+              "heapBefore": 40325344,
+              "heapAfter": 29662624,
+              "elapsedMs": 69.811
+            },
+            {
+              "source": "trim-40",
+              "heapBefore": 29662744,
+              "heapAfter": 29023760,
+              "elapsedMs": 66.218
+            },
+            {
+              "source": "trim-20",
+              "heapBefore": 37900128,
+              "heapAfter": 29548216,
+              "elapsedMs": 56.181
+            },
+            {
+              "source": "trim-40",
+              "heapBefore": 29548216,
+              "heapAfter": 29082848,
+              "elapsedMs": 54.215
+            }
+          ],
+          "contextCreationCount": 1,
+          "swapchainCreationCount": 3,
+          "nativeLifecycle": [
+            "1493.036  7560  7560 I DorotiFrameTiming: detached submitted=428 completed=428 outstanding=0 contextGeneration=1",
+            "1493.736  7560  7560 I DorotiGraphite: Surface attached contextGeneration=1",
+            "1498.984  7560  7560 I DorotiFrameTiming: detached submitted=587 completed=587 outstanding=0 contextGeneration=1",
+            "1499.626  7560  7560 I DorotiGraphite: Surface attached contextGeneration=1"
+          ]
+        }
+      ],
+      "lifecycle": {
+        "samePid": true,
+        "retainedSemanticsAndGeometry": true,
+        "semanticNodes": 42,
+        "finalGpuRetirement": true
+      }
+    },
+    {
+      "label": "verified-quiet",
+      "serial": "emulator-5554",
+      "apkSha256": "d748b199d2f6a69ec8294d442123e125b8b459b7d67e5c31c6730658f4ee1a6c",
+      "presentObserved": false,
+      "physicalInput": "notVerified",
+      "concurrentBuild": false,
+      "trials": [
+        {
+          "trial": 1,
+          "pid": "8009",
+          "contextCreations": 1,
+          "contextReattachments": 2,
+          "completedSurfaceDetaches": 2,
+          "unusedGpuPurges": 2,
+          "stages": [
+            {
+              "name": "initial",
+              "downMs": 1593672,
+              "motion": "continuous-down-ms=1593672 moves=341 duration-ms=2854",
+              "summary": {
+                "gesture": 9,
+                "ownerMs": {
+                  "count": 368,
+                  "p50": 2.651,
+                  "p95": 9.399,
+                  "p99": 12.393,
+                  "max": 16.351
+                },
+                "callbackMs": {
+                  "count": 368,
+                  "p50": 1.329,
+                  "p95": 3.635,
+                  "p99": 4.96,
+                  "max": 5.782
+                },
+                "snapMs": {
+                  "count": 368,
+                  "p50": 0,
+                  "p95": 1.142,
+                  "p99": 1.58,
+                  "max": 3.624
+                },
+                "allocated": {
+                  "count": 368,
+                  "p50": 283744,
+                  "p95": 525096,
+                  "p99": 630816,
+                  "max": 1197392
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 27,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 157
+              },
+              "submittedOwnerMs": {
+                "count": 157,
+                "p50": 7.397,
+                "p95": 11.31,
+                "p99": 13.214,
+                "max": 16.351
+              },
+              "submittedOver50ms": 0,
+              "inputCount": 173,
+              "nativeTotalPssKiB": 374860
+            },
+            {
+              "name": "foreground-gc",
+              "downMs": 1598116,
+              "motion": "continuous-down-ms=1598116 moves=341 duration-ms=2852",
+              "summary": {
+                "gesture": 10,
+                "ownerMs": {
+                  "count": 339,
+                  "p50": 3.152,
+                  "p95": 10.395,
+                  "p99": 13.362,
+                  "max": 19.368
+                },
+                "callbackMs": {
+                  "count": 339,
+                  "p50": 1.499,
+                  "p95": 4.555,
+                  "p99": 5.657,
+                  "max": 10.028
+                },
+                "snapMs": {
+                  "count": 339,
+                  "p50": 0,
+                  "p95": 1.115,
+                  "p99": 1.456,
+                  "max": 3.414
+                },
+                "allocated": {
+                  "count": 339,
+                  "p50": 332728,
+                  "p95": 513920,
+                  "p99": 631616,
+                  "max": 1074528
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 28,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 156,
+                "beforeMotionDrawMs": {
+                  "count": 2,
+                  "p50": 8.944,
+                  "p95": 8.944,
+                  "p99": 8.944,
+                  "max": 10.05
+                }
+              },
+              "submittedOwnerMs": {
+                "count": 156,
+                "p50": 7.161,
+                "p95": 11.544,
+                "p99": 14.938,
+                "max": 19.368
+              },
+              "submittedOver50ms": 0,
+              "inputCount": 172,
+              "nativeTotalPssKiB": 381178
+            },
+            {
+              "name": "resume-trim-gc",
+              "downMs": 1603941,
+              "motion": "continuous-down-ms=1603941 moves=341 duration-ms=2851",
+              "resumeSnapshotReadyMs": 568.65,
+              "summary": {
+                "gesture": 11,
+                "ownerMs": {
+                  "count": 225,
+                  "p50": 5.642,
+                  "p95": 9.942,
+                  "p99": 10.912,
+                  "max": 14.144
+                },
+                "callbackMs": {
+                  "count": 225,
+                  "p50": 1.634,
+                  "p95": 3.624,
+                  "p99": 4.387,
+                  "max": 5.169
+                },
+                "snapMs": {
+                  "count": 225,
+                  "p50": 0.761,
+                  "p95": 1.124,
+                  "p99": 1.28,
+                  "max": 1.763
+                },
+                "allocated": {
+                  "count": 225,
+                  "p50": 405544,
+                  "p95": 491312,
+                  "p99": 572312,
+                  "max": 1122800
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 23,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 158,
+                "beforeMotionDrawMs": {
+                  "count": 4,
+                  "p50": 9.892,
+                  "p95": 10.614,
+                  "p99": 10.614,
+                  "max": 110.989
+                }
+              },
+              "submittedOwnerMs": {
+                "count": 158,
+                "p50": 7.161,
+                "p95": 10.046,
+                "p99": 10.968,
+                "max": 14.144
+              },
+              "submittedOver50ms": 0,
+              "inputCount": 172,
+              "nativeTotalPssKiB": 384328
+            },
+            {
+              "name": "resume-trim-gc-again",
+              "downMs": 1609587,
+              "motion": "continuous-down-ms=1609587 moves=341 duration-ms=2851",
+              "resumeSnapshotReadyMs": 555.833,
+              "summary": {
+                "gesture": 12,
+                "ownerMs": {
+                  "count": 322,
+                  "p50": 3.193,
+                  "p95": 10.035,
+                  "p99": 14.521,
+                  "max": 20.916
+                },
+                "callbackMs": {
+                  "count": 322,
+                  "p50": 1.448,
+                  "p95": 4.143,
+                  "p99": 7.275,
+                  "max": 10.656
+                },
+                "snapMs": {
+                  "count": 322,
+                  "p50": 0,
+                  "p95": 1.025,
+                  "p99": 1.371,
+                  "max": 1.58
+                },
+                "allocated": {
+                  "count": 322,
+                  "p50": 367896,
+                  "p95": 525096,
+                  "p99": 631048,
+                  "max": 1074528
+                },
+                "over50ms": 0,
+                "gc": {
+                  "gen0": 27,
+                  "gen1": 0,
+                  "gen2": 0
+                },
+                "submitted": 157,
+                "beforeMotionDrawMs": {
+                  "count": 4,
+                  "p50": 11.646,
+                  "p95": 13.662,
+                  "p99": 13.662,
+                  "max": 101.984
+                }
+              },
+              "submittedOwnerMs": {
+                "count": 157,
+                "p50": 7.225,
+                "p95": 13.229,
+                "p99": 14.828,
+                "max": 20.916
+              },
+              "submittedOver50ms": 0,
+              "inputCount": 172,
+              "nativeTotalPssKiB": 388593
+            }
+          ],
+          "explicitGc": [
+            {
+              "source": "intent",
+              "heapBefore": 52476896,
+              "heapAfter": 39311976,
+              "elapsedMs": 64.16
+            },
+            {
+              "source": "trim-20",
+              "heapBefore": 50201352,
+              "heapAfter": 39332832,
+              "elapsedMs": 66.776
+            },
+            {
+              "source": "trim-40",
+              "heapBefore": 39334144,
+              "heapAfter": 38538464,
+              "elapsedMs": 69.25
+            },
+            {
+              "source": "trim-20",
+              "heapBefore": 47738784,
+              "heapAfter": 39215336,
+              "elapsedMs": 78.362
+            },
+            {
+              "source": "trim-40",
+              "heapBefore": 39215336,
+              "heapAfter": 38593680,
+              "elapsedMs": 67.25
+            }
+          ],
+          "contextCreationCount": 1,
+          "swapchainCreationCount": 3,
+          "nativeLifecycle": [
+            "1602.468  8009  8009 I DorotiFrameTiming: detached submitted=432 completed=432 outstanding=0 contextGeneration=1",
+            "1603.302  8009  8009 I DorotiGraphite: Surface attached contextGeneration=1",
+            "1608.424  8009  8009 I DorotiFrameTiming: detached submitted=594 completed=594 outstanding=0 contextGeneration=1",
+            "1608.921  8009  8009 I DorotiGraphite: Surface attached contextGeneration=1"
+          ]
+        }
+      ]
+    }
+  ],
+  "normalProfileOffSmoke": {
+    "normalLaunch": true,
+    "samePid": true,
+    "singleContext": true,
+    "resumeReattached": true,
+    "forcedGcIgnoredWithoutProfile": true,
+    "debugMonoLogRestored": true,
+    "fatalRenderErrors": 0,
+    "injection": "continuous-down-ms=1717859 moves=113 duration-ms=952"
+  },
+  "validation": {
+    "scrollRegression": "PASS",
+    "x64ReleaseBuild": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "arm64ReleaseBuild": {
+      "errors": 0,
+      "warnings": 1,
+      "warning": "Existing Gradle SDK XML version mismatch"
+    },
+    "forcedGcResumeCycles": 6,
+    "activityRecreation": "PASS same PID; 42 semantic nodes and geometry retained",
+    "finalGpuRetirement": "PASS outstanding=0",
+    "normalProfileOffResume": "PASS"
+  },
+  "limits": [
+    "No exact scroll-offset matching across fast warm-up flings; do not infer a matched performance speedup.",
+    "verified-final ran alongside the arm64 build; verified-quiet ran after all builds completed.",
+    "CPU draw/submission timings are not display FPS or physical-input latency.",
+    "Initial and resumed swapchain preparation still has >50 ms outliers outside measured drags.",
+    "Physical Galaxy/Adreno, finger feel, display deadlines, injected device loss and stalled-drain faults are not verified.",
+    "Raw APKs, rings, XML, screenshots and logs under temp are disposable; durable aggregates and hashes are stored here."
+  ]
+}

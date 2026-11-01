@@ -31,6 +31,12 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
         _applyMicros,
         _maxApplyMicros;
     private bool _disposed;
+    private long _providerActiveUntil;
+    internal bool HasActiveConsumer => _accessibilityManager?.IsEnabled != false
+        || Stopwatch.GetTimestamp() < _providerActiveUntil
+        || (_helper is { } helper
+            && (helper.KeyboardFocusedVirtualViewId != ExploreByTouchHelper.InvalidId
+                || helper.AccessibilityFocusedVirtualViewId != ExploreByTouchHelper.InvalidId));
 
     internal MauiAndroidSemanticsBridge(View element)
     {
@@ -77,10 +83,7 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
         // Keep the latest full snapshot, but do not rebuild/hash the virtual
         // tree on every visual frame when there is no accessibility consumer.
         // Provider queries always materialize it before reading or acting.
-        if (_accessibilityManager?.IsEnabled == true
-            || (_helper is { } helper
-                && (helper.KeyboardFocusedVirtualViewId != ExploreByTouchHelper.InvalidId
-                    || helper.AccessibilityFocusedVirtualViewId != ExploreByTouchHelper.InvalidId)))
+        if (HasActiveConsumer)
         {
             EnsureLatestNodes(notify: true);
         }
@@ -88,6 +91,7 @@ internal sealed partial class MauiAndroidSemanticsBridge : IMauiSemanticsBridge,
 
     private void EnsureLatestNodes(bool notify = false)
     {
+        if (!notify) _providerActiveUntil = Stopwatch.GetTimestamp() + Stopwatch.Frequency / 2;
         if (_pendingUpdate is not { } update || _disposed)
         {
             return;

@@ -69,6 +69,7 @@ public abstract class RenderSliverMultiBoxAdaptor
         RenderSliverHelpers,
         RenderSliverWithKeepAliveMixin
 {
+    protected virtual bool preserveCachedChildAttachment => false;
     internal virtual RenderSliverBoxChildManager _childManager { get; private set; } = default!;
     internal virtual DartMap<long, RenderBox> _keepAliveBucket { get; private set; } =
         new DartMap<long, RenderBox>();
@@ -321,9 +322,22 @@ public abstract class RenderSliverMultiBoxAdaptor
                     RenderBox child = _keepAliveBucket.remove(index)!;
                     var childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
                     DartRuntimePrimitives.Assert(() => childParentData._keptAlive);
-                    dropChild(child);
-                    child.parentData = childParentData;
-                    insert(child, after: after);
+                    if (preserveCachedChildAttachment)
+                    {
+                        // The bucket and visible list have the same owner and
+                        // parent. Relink the retained child without tearing down
+                        // and reattaching its entire render/semantics subtree.
+                        _insertIntoChildList(child, after: after);
+                        markNeedsLayout();
+                        markNeedsCompositingBitsUpdate();
+                        markNeedsSemanticsGeometryUpdate();
+                    }
+                    else
+                    {
+                        dropChild(child);
+                        child.parentData = childParentData;
+                        insert(child, after: after);
+                    }
                     childParentData._keptAlive = false;
                 }
                 else
@@ -340,15 +354,25 @@ public abstract class RenderSliverMultiBoxAdaptor
         if (childParentData.keepAlive)
         {
             DartRuntimePrimitives.Assert(() => !childParentData._keptAlive);
-            remove(child);
+            if (preserveCachedChildAttachment) _removeFromChildList(child);
+            else remove(child);
             _keepAliveBucket[
                 (
                     childParentData.index
                     ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ] = child;
-            child.parentData = childParentData;
-            base.adoptChild(child);
+            if (preserveCachedChildAttachment)
+            {
+                markNeedsLayout();
+                markNeedsCompositingBitsUpdate();
+                markNeedsSemanticsGeometryUpdate();
+            }
+            else
+            {
+                child.parentData = childParentData;
+                base.adoptChild(child);
+            }
             childParentData._keptAlive = true;
         }
         else
