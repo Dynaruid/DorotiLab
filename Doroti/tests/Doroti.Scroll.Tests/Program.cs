@@ -90,6 +90,7 @@ WindowsPeerChildrenRegression.Run();
 InvocationScopeRegression.Run();
 InheritedDependencyRegression.Run();
 ScrollSemanticsRegression.Run();
+BrowserSemanticsRegression.Run();
 CachedSectionRegression.Run();
 Console.WriteLine("PASS: release velocity, ballistic continuation, semantic changes, native inertia lifecycle");
 

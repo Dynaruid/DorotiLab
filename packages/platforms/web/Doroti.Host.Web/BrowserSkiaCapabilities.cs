@@ -58,7 +58,7 @@ internal sealed class BrowserSkiaCapabilities : IBrowserGraphicsCapabilities
             pictureRasterCachePixels: DorotiWebWorkerSurface.PictureRasterCachePixels,
             filterSurfaceCachePixels: DorotiWebWorkerSurface.FilterSurfaceCachePixels,
             filterCaptureAlignment: DorotiWebWorkerSurface.FilterCaptureAlignment
-        );
+        ) { DeferPictureRasterPromotionsDuringScroll = true };
         _renderer.PlatformScenePainter = (canvas, commands, descriptor, width, height) =>
             _platform.Draw(_renderer, canvas, commands, descriptor, width, height);
         DorotiWebWorkerSurface.AttachTextureRenderer(viewId, _renderer);

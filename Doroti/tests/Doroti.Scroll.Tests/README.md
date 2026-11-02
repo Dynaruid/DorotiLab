@@ -47,6 +47,10 @@ Scroll semantics checks use a real pipeline/tree: pure offset updates can be
 coalesced by an explicitly opting-in host, content/actions win in either order,
 and the final flush publishes the exact fractional offset. Extent/policy changes
 stay urgent; a disposed renderer releases its listener on a surviving position.
+Repeated queued scroll offsets keep their configuration lazy until the real
+flush. Browser transport checks compare all semantic fields against the previous
+wire contract, require allocation-free retained content comparisons, and preserve
+compact geometry patches and immediate selection/scroll-value changes.
 Cached-section fixtures verify that keep-alive moves retain attachment, owner,
 parent data and sibling links without recreating children, while real eviction
 detaches the complete subtree exactly once.

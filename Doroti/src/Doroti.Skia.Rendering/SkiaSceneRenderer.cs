@@ -81,6 +81,7 @@ public sealed partial class SkiaSceneRenderer
     private long _pictureRasterCacheMisses;
     private long _pictureRasterCacheEntries;
     private long _promotionMicroseconds;
+    private bool _deferPictureRasterPromotions;
     private long _promotionMaximumMicroseconds;
     private long _paragraphCount;
     private long _paragraphMicroseconds;
@@ -160,6 +161,10 @@ public sealed partial class SkiaSceneRenderer
         int
     >? PlatformScenePainter { get; set; }
     public SKColor PlatformBackgroundColor => _backgroundColor;
+
+    /// <summary>Keep vector replay during scrolling instead of allocating new offscreen cache surfaces.
+    /// Already compatible raster images remain reusable. Hosts opt in without changing native scroll policy.</summary>
+    public bool DeferPictureRasterPromotionsDuringScroll { get; init; }
 
     public SkiaFrameDiagnostics Diagnostics
     {
@@ -2365,6 +2370,13 @@ public sealed partial class SkiaSceneRenderer
             RemovePictureRaster(cacheKey, cached);
         }
 
+        if (_deferPictureRasterPromotions)
+        {
+            RemovePictureWarmup(cacheKey);
+            DrawRetainedPicture(canvas, payload);
+            return;
+        }
+
         if (!_pictureRasterWarmups.TryGetValue(cacheKey, out var warmup))
         {
             if (_pictureRasterWarmups.Count >= MaxPictureRasterWarmups)
@@ -2463,6 +2475,8 @@ public sealed partial class SkiaSceneRenderer
 
     private void BeginPictureRasterFrame()
     {
+        _deferPictureRasterPromotions = DeferPictureRasterPromotionsDuringScroll
+            && _frameTrace.HasActiveScrollActivity;
         _rasterFrame++;
         _framePromotions = 0;
         _framePromotionPixels = 0;
@@ -2686,10 +2700,10 @@ public sealed partial class SkiaSceneRenderer
             style?.fontStyle == FontStyle.italic,
             (float)(style?.letterSpacing ?? 0),
             (float)(style?.wordSpacing ?? 0),
-            System.Text.Json.JsonSerializer.Serialize(
-                style?.fontFamilyFallback ?? [],
-                SkiaRenderingJsonContext.Default.IReadOnlyListString
-            ),
+            style?.fontFamilyFallback is { Count: > 0 } fallbackFamilies
+                ? System.Text.Json.JsonSerializer.Serialize(fallbackFamilies,
+                    SkiaRenderingJsonContext.Default.IReadOnlyListString)
+                : "[]",
             SkiaFontVariations.Key(style?.fontVariations)
         );
         if (_textRenderResources.TryGetValue(key, out var resources))
@@ -2849,10 +2863,17 @@ public sealed partial class SkiaSceneRenderer
         internal LinkedListNode<TextRenderKey>? Node;
         internal int FontResources => 1 + _fallbackByFamily.Count;
 
-        // Accounting estimate of wrappers/maps only, excludes shared typeface
-        // data and Skia's native glyph caches. Never a resident-memory metric.
+        // Accounting estimate of wrappers/maps and retained glyph positions;
+        // excludes shared typeface data and Skia's native glyph caches. Never a
+        // resident-memory metric.
         internal long EstimatedBytes =>
-            256L + FontResources * 256L + _fallbackByCodePoint.Count * 32L;
+            256L + FontResources * 256L + _fallbackByCodePoint.Count * 32L
+            + _spacedText.Count * 128L + _spacedTextCodeUnits * 12L;
+        private const int MaxSpacedTextEntries = 32, MaxSpacedTextCodeUnits = 2048;
+        private readonly Dictionary<(string Text, float X), SpacedText> _spacedText = [];
+        private readonly LinkedList<(string Text, float X)> _spacedTextOrder = [];
+        private int _spacedTextCodeUnits;
+        private sealed record SpacedText(SKTextBlob Blob, LinkedListNode<(string Text, float X)> Node);
         private readonly TextFontResource _primary;
         private readonly SkiaFallbackFontCollection? _registeredFallbacks;
         private readonly SKFontStyle _fontStyle;
@@ -2992,6 +3013,43 @@ public sealed partial class SkiaSceneRenderer
 
             if (_letterSpacing != 0 || _wordSpacing != 0)
             {
+                // Retained Material labels are replayed while their containing
+                // card scrolls. Preserve the original scalar/fallback-font
+                // positioning, but resolve and measure it only once. The origin
+                // is part of the key to retain float accumulation/rounding.
+                if (text.Length <= MaxSpacedTextCodeUnits / 2 && float.IsFinite(x))
+                {
+                    var key = (text, x);
+                    if (!_spacedText.TryGetValue(key, out var cached))
+                    {
+                        var blob = CreateSpacedText(text, x);
+                        if (blob is not null)
+                        {
+                            while (_spacedText.Count >= MaxSpacedTextEntries
+                                || _spacedTextCodeUnits + text.Length > MaxSpacedTextCodeUnits)
+                            {
+                                var oldest = _spacedTextOrder.First!;
+                                _spacedText[oldest.Value].Blob.Dispose();
+                                _spacedText.Remove(oldest.Value);
+                                _spacedTextCodeUnits -= oldest.Value.Text.Length;
+                                _spacedTextOrder.RemoveFirst();
+                            }
+                            cached = new SpacedText(blob, _spacedTextOrder.AddLast(key));
+                            _spacedText.Add(key, cached);
+                            _spacedTextCodeUnits += text.Length;
+                        }
+                    }
+                    else
+                    {
+                        _spacedTextOrder.Remove(cached.Node);
+                        _spacedTextOrder.AddLast(cached.Node);
+                    }
+                    if (cached is not null)
+                    {
+                        canvas.DrawText(cached.Blob, 0, baseline, Paint);
+                        return;
+                    }
+                }
                 for (var index = 0; index < text.Length; )
                 {
                     var font = ResolveFont(CodePointAt(text, index, out var length)).Font;
@@ -3031,6 +3089,45 @@ public sealed partial class SkiaSceneRenderer
             }
 
             canvas.DrawText(text[runStart..], x, baseline, SKTextAlign.Left, runFont.Font, Paint);
+        }
+
+        private SKTextBlob? CreateSpacedText(string text, float x)
+        {
+            using var builder = new SKTextBlobBuilder();
+            var glyphs = new ushort[text.Length];
+            var positions = new SKPoint[text.Length];
+            TextFontResource? runFont = null;
+            var count = 0;
+            void FlushRun()
+            {
+                if (count == 0) return;
+                var run = builder.AllocatePositionedRun(runFont!.Font, count);
+                run.SetGlyphs(glyphs.AsSpan(0, count));
+                run.SetPositions(positions.AsSpan(0, count));
+                count = 0;
+            }
+            for (var index = 0; index < text.Length; )
+            {
+                var codePoint = CodePointAt(text, index, out var length);
+                // SKCanvas's string overload replaces malformed UTF-16 while
+                // SKFont's glyph API accepts UTF-16 directly. Keep the original
+                // path for those inputs rather than changing replacement glyphs.
+                if (length == 1 && char.IsSurrogate(text[index])) return null;
+                var font = ResolveFont(codePoint);
+                if (!ReferenceEquals(font, runFont))
+                {
+                    FlushRun();
+                    runFont = font;
+                }
+                var scalar = text.AsSpan(index, length);
+                font.Font.GetGlyphs(scalar, glyphs.AsSpan(count, 1));
+                positions[count++] = new SKPoint(x + _letterSpacing / 2, 0);
+                x += font.Font.MeasureText(scalar, Paint) + _letterSpacing
+                    + (text[index] == ' ' ? _wordSpacing : 0);
+                index += length;
+            }
+            FlushRun();
+            return builder.Build();
         }
 
         internal double[] MeasureCodeUnitAdvances(string text)
@@ -3193,6 +3290,10 @@ public sealed partial class SkiaSceneRenderer
 
         public void Dispose()
         {
+            foreach (var cached in _spacedText.Values) cached.Blob.Dispose();
+            _spacedText.Clear();
+            _spacedTextOrder.Clear();
+            _spacedTextCodeUnits = 0;
             Paint.Dispose();
             _fontStyle.Dispose();
             foreach (var fallback in _fallbackByFamily.Values)

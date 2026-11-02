@@ -1,0 +1,2689 @@
+{
+  "date": "2026-11-02",
+  "scope": "Android browser Web; native scroll physics and default raster policy unchanged",
+  "environment": {
+    "avd": "Pixel_5",
+    "serial": "emulator-5554",
+    "android": "13",
+    "abi": "x86_64",
+    "screen": "1080x2340",
+    "browserPackage": "org.chromium.chrome",
+    "browserVersion": "159.0.8137.0",
+    "chromiumApk": {
+      "url": "https://storage.googleapis.com/chromium-browser-snapshots/AndroidDesktop_x64/1732428/chrome-android-desktop.zip",
+      "revision": "1732428",
+      "member": "chrome-android-desktop/apks/ChromePublic.apk",
+      "sha256": "7df3beef0fb6d67a147e1631cdd34a17e3e14db520792d4805236cb036df2c9d",
+      "bytes": 423435523
+    },
+    "gboard": "12.4.05.482060964-preload-x86_64, Korean two-bulsik",
+    "emulatorGpu": "host",
+    "driverJarSha256": "a9794868b24a8e19ecfdeaef396bd3b15da2ccdcfa13e252746a3373b55d8423"
+  },
+  "protocol": {
+    "continuousWaypoints": [
+      "950,1850,0",
+      "950,800,900",
+      "950,1750,1800",
+      "950,850,2700",
+      "950,1650,3600"
+    ],
+    "sampleTargetHz": 120,
+    "tailMs": 1100,
+    "warmup": "one unmeasured continuous pass, 1100ms tail, 1500ms slow return to top, 600ms quiet",
+    "allocation": "ownerAllocatedBytes is already the reset interval; never subtract before. Per-callback is a normalization, not total heap or resident memory.",
+    "timing": "Raster rows measure worker CPU replay/submit, not physical presentation. Active submit intervals use pointer down/up windows. Overall intervals include idle tails.",
+    "baseline": "HEAD production C# with the earlier Web IME selection fix; same Release AOT options and device/browser/GPU."
+  },
+  "runs": [
+    {
+      "name": "baseline-aot-120hz-1",
+      "rawSha256": "191653b4a8168c0010cebe8f918fcc2f0abc760f599a47627c178c5b560dddf2",
+      "browser": "159.0.8137.0",
+      "meta": {
+        "version": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/159.0.0.0 Mobile Safari/537.36",
+        "dpr": 2.75,
+        "width": 392,
+        "height": 665,
+        "dataset": {
+          "dorotiBootstrapConfigured": "true",
+          "dorotiBootstrapStage": "started",
+          "dorotiBootstrapStages": "before-start,starting,started",
+          "dorotiRenderer": "worker-direct-webgl",
+          "dorotiRendererRequested": "auto",
+          "dorotiRendererReason": "auto-webgl2-fallback",
+          "dorotiMemoryProfile": "mobile",
+          "dorotiRuntimeLocation": "main"
+        },
+        "gpu": true,
+        "timeOrigin": 1793548670231.89
+      },
+      "stats": {
+        "framework": {
+          "n": 109,
+          "p50": 8.465087890625,
+          "p95": 23.97509765625,
+          "max": 84.125,
+          "over33": 3,
+          "over50": 2
+        },
+        "input": {
+          "n": 200,
+          "p50": 1.8701171875,
+          "p95": 6.135009765625,
+          "max": 32.7548828125,
+          "over33": 0,
+          "over50": 0
+        },
+        "raster": {
+          "n": 109,
+          "p50": 10.489990234375,
+          "p95": 23.860107421875,
+          "max": 52.81005859375,
+          "over33": 3,
+          "over50": 2
+        },
+        "inputQueue": {
+          "n": 200,
+          "p50": 32.429931640625,
+          "p95": 77.465087890625,
+          "max": 115.9599609375,
+          "over33": 97,
+          "over50": 36
+        },
+        "mainRafInterval": {
+          "n": 329,
+          "p50": 16.665000000000873,
+          "p95": 16.674999999999272,
+          "max": 50.0,
+          "over33": 1,
+          "over50": 0
+        },
+        "rasterInterval": {
+          "n": 108,
+          "p50": 31.93505859375,
+          "p95": 66.195068359375,
+          "max": 112.610107421875,
+          "over33": 47,
+          "over50": 10
+        },
+        "rasterIntervalDuringDrag": {
+          "n": 98,
+          "p50": 31.93505859375,
+          "p95": 67.89501953125,
+          "max": 112.610107421875,
+          "over33": 43,
+          "over50": 10
+        }
+      },
+      "errors": [],
+      "gesture": "continuous",
+      "warmup": false,
+      "touchEvents": 198,
+      "coalescedSamples": 423,
+      "ownerAllocatedBytesInterval": 52449032,
+      "ownerAllocatedBytesPerFrameworkCallback": 481183.77981651376,
+      "newRasterPromotions": 17,
+      "submittedDelta": 109,
+      "failedDelta": 0,
+      "rendererWorkAfter": {
+        "PromotionCount": 19,
+        "PromotionMicroseconds": 124670,
+        "PromotionMaximumMicroseconds": 40940,
+        "ParagraphCount": 118,
+        "ParagraphMicroseconds": 33006,
+        "WarmupEntries": 3,
+        "RasterPixels": 795672,
+        "TextEntries": 32,
+        "CommandCacheHits": 3006,
+        "CommandRecordings": 31,
+        "CommandEntries": 50,
+        "RetainedCommands": 321,
+        "CommandBytes": 19308,
+        "TextCacheHits": 4946,
+        "TextCacheMisses": 32,
+        "TextCacheEvictions": 0,
+        "FontGeneration": 2,
+        "TextEntryLimit": 256,
+        "RasterPixelLimit": 4194304
+      },
+      "cacheAfter": {
+        "TextEntries": 32,
+        "TextEntryLimit": 256,
+        "TextFontResources": 32,
+        "TextBytesEstimate": 16384,
+        "TextHits": 4946,
+        "TextMisses": 32,
+        "TextEvictions": 0,
+        "FontGeneration": 2,
+        "RasterEntries": 1,
+        "RasterRgba8Bytes": 3182688,
+        "RasterRgba8Limit": 16777216,
+        "FilterSurfaceEntries": 0,
+        "FilterSurfaceRgba8Bytes": 0,
+        "FilterSurfaceRgba8Limit": 33554432
+      }
+    },
+    {
+      "name": "baseline-aot-120hz-2",
+      "rawSha256": "9a5438a817126e0d18835d80e74fbd2727478d03b10a47255fabd4229ed4d785",
+      "browser": "159.0.8137.0",
+      "meta": {
+        "version": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/159.0.0.0 Mobile Safari/537.36",
+        "dpr": 2.75,
+        "width": 392,
+        "height": 665,
+        "dataset": {
+          "dorotiBootstrapConfigured": "true",
+          "dorotiBootstrapStage": "started",
+          "dorotiBootstrapStages": "before-start,starting,started",
+          "dorotiRenderer": "worker-direct-webgl",
+          "dorotiRendererRequested": "auto",
+          "dorotiRendererReason": "auto-webgl2-fallback",
+          "dorotiMemoryProfile": "mobile",
+          "dorotiRuntimeLocation": "main"
+        },
+        "gpu": true,
+        "timeOrigin": 1793548683151.37
+      },
+      "stats": {
+        "framework": {
+          "n": 120,
+          "p50": 8.080078125,
+          "p95": 14.594970703125,
+          "max": 51.875,
+          "over33": 3,
+          "over50": 1
+        },
+        "input": {
+          "n": 191,
+          "p50": 1.780029296875,
+          "p95": 5.329833984375,
+          "max": 41.93994140625,
+          "over33": 1,
+          "over50": 0
+        },
+        "raster": {
+          "n": 119,
+          "p50": 8.505126953125,
+          "p95": 25.170166015625,
+          "max": 53.420166015625,
+          "over33": 2,
+          "over50": 1
+        },
+        "inputQueue": {
+          "n": 191,
+          "p50": 24.64013671875,
+          "p95": 67.919921875,
+          "max": 86.06005859375,
+          "over33": 62,
+          "over50": 29
+        },
+        "mainRafInterval": {
+          "n": 325,
+          "p50": 16.665000000000873,
+          "p95": 16.67500000000109,
+          "max": 83.33500000000095,
+          "over33": 4,
+          "over50": 2
+        },
+        "rasterInterval": {
+          "n": 118,
+          "p50": 27.83984375,
+          "p95": 58.72509765625,
+          "max": 121.64501953125,
+          "over33": 37,
+          "over50": 14
+        },
+        "rasterIntervalDuringDrag": {
+          "n": 106,
+          "p50": 28.175048828125,
+          "p95": 58.72509765625,
+          "max": 121.64501953125,
+          "over33": 32,
+          "over50": 12
+        }
+      },
+      "errors": [],
+      "gesture": "continuous",
+      "warmup": false,
+      "touchEvents": 189,
+      "coalescedSamples": 422,
+      "ownerAllocatedBytesInterval": 55672432,
+      "ownerAllocatedBytesPerFrameworkCallback": 463936.93333333335,
+      "newRasterPromotions": 25,
+      "submittedDelta": 119,
+      "failedDelta": 0,
+      "rendererWorkAfter": {
+        "PromotionCount": 27,
+        "PromotionMicroseconds": 143665,
+        "PromotionMaximumMicroseconds": 33929,
+        "ParagraphCount": 118,
+        "ParagraphMicroseconds": 33830,
+        "WarmupEntries": 3,
+        "RasterPixels": 795672,
+        "TextEntries": 32,
+        "CommandCacheHits": 3348,
+        "CommandRecordings": 31,
+        "CommandEntries": 55,
+        "RetainedCommands": 342,
+        "CommandBytes": 19308,
+        "TextCacheHits": 5502,
+        "TextCacheMisses": 32,
+        "TextCacheEvictions": 0,
+        "FontGeneration": 2,
+        "TextEntryLimit": 256,
+        "RasterPixelLimit": 4194304
+      },
+      "cacheAfter": {
+        "TextEntries": 32,
+        "TextEntryLimit": 256,
+        "TextFontResources": 32,
+        "TextBytesEstimate": 16384,
+        "TextHits": 5502,
+        "TextMisses": 32,
+        "TextEvictions": 0,
+        "FontGeneration": 2,
+        "RasterEntries": 1,
+        "RasterRgba8Bytes": 3182688,
+        "RasterRgba8Limit": 16777216,
+        "FilterSurfaceEntries": 0,
+        "FilterSurfaceRgba8Bytes": 0,
+        "FilterSurfaceRgba8Limit": 33554432
+      }
+    },
+    {
+      "name": "final-aot-120hz-1",
+      "rawSha256": "5d5df8fedd38c39ae3452d7a16339868884ac601cfbb4b9704cf72af523c7af7",
+      "browser": "159.0.8137.0",
+      "meta": {
+        "version": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/159.0.0.0 Mobile Safari/537.36",
+        "dpr": 2.75,
+        "width": 392,
+        "height": 665,
+        "dataset": {
+          "dorotiBootstrapConfigured": "true",
+          "dorotiBootstrapStage": "started",
+          "dorotiBootstrapStages": "before-start,starting,started",
+          "dorotiRenderer": "worker-direct-webgl",
+          "dorotiRendererRequested": "auto",
+          "dorotiRendererReason": "auto-webgl2-fallback",
+          "dorotiMemoryProfile": "mobile",
+          "dorotiRuntimeLocation": "main"
+        },
+        "gpu": true,
+        "timeOrigin": 1793550220957.145
+      },
+      "stats": {
+        "framework": {
+          "n": 128,
+          "p50": 7.820068359375,
+          "p95": 19.27001953125,
+          "max": 72.159912109375,
+          "over33": 3,
+          "over50": 1
+        },
+        "input": {
+          "n": 197,
+          "p50": 1.780029296875,
+          "p95": 5.77490234375,
+          "max": 33.829833984375,
+          "over33": 1,
+          "over50": 0
+        },
+        "raster": {
+          "n": 128,
+          "p50": 6.10498046875,
+          "p95": 19.60498046875,
+          "max": 33.455078125,
+          "over33": 1,
+          "over50": 0
+        },
+        "inputQueue": {
+          "n": 197,
+          "p50": 20.034912109375,
+          "p95": 77.929931640625,
+          "max": 149.965087890625,
+          "over33": 54,
+          "over50": 32
+        },
+        "mainRafInterval": {
+          "n": 330,
+          "p50": 16.665000000000873,
+          "p95": 33.32999999999993,
+          "max": 50.0,
+          "over33": 2,
+          "over50": 0
+        },
+        "rasterInterval": {
+          "n": 127,
+          "p50": 25.955078125,
+          "p95": 53.43017578125,
+          "max": 116.4599609375,
+          "over33": 38,
+          "over50": 12
+        },
+        "rasterIntervalDuringDrag": {
+          "n": 112,
+          "p50": 27.64990234375,
+          "p95": 53.72509765625,
+          "max": 116.4599609375,
+          "over33": 36,
+          "over50": 11
+        }
+      },
+      "errors": [],
+      "gesture": "continuous",
+      "warmup": false,
+      "touchEvents": 195,
+      "coalescedSamples": 424,
+      "ownerAllocatedBytesInterval": 47800152,
+      "ownerAllocatedBytesPerFrameworkCallback": 373438.6875,
+      "newRasterPromotions": 0,
+      "submittedDelta": 128,
+      "failedDelta": 0,
+      "rendererWorkAfter": {
+        "PromotionCount": 2,
+        "PromotionMicroseconds": 14704,
+        "PromotionMaximumMicroseconds": 10110,
+        "ParagraphCount": 118,
+        "ParagraphMicroseconds": 53644,
+        "WarmupEntries": 0,
+        "RasterPixels": 0,
+        "TextEntries": 32,
+        "CommandCacheHits": 4028,
+        "CommandRecordings": 35,
+        "CommandEntries": 59,
+        "RetainedCommands": 580,
+        "CommandBytes": 20380,
+        "TextCacheHits": 1949,
+        "TextCacheMisses": 32,
+        "TextCacheEvictions": 0,
+        "FontGeneration": 2,
+        "TextEntryLimit": 256,
+        "RasterPixelLimit": 4194304
+      },
+      "cacheAfter": {
+        "TextEntries": 32,
+        "TextEntryLimit": 256,
+        "TextFontResources": 32,
+        "TextBytesEstimate": 23980,
+        "TextHits": 1949,
+        "TextMisses": 32,
+        "TextEvictions": 0,
+        "FontGeneration": 2,
+        "RasterEntries": 0,
+        "RasterRgba8Bytes": 0,
+        "RasterRgba8Limit": 16777216,
+        "FilterSurfaceEntries": 0,
+        "FilterSurfaceRgba8Bytes": 0,
+        "FilterSurfaceRgba8Limit": 33554432
+      }
+    },
+    {
+      "name": "final-aot-120hz-2",
+      "rawSha256": "370012ee27e0ad595f579e65c2c6b5a72a3ec31a43738cc73c994e8af9de86ca",
+      "browser": "159.0.8137.0",
+      "meta": {
+        "version": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/159.0.0.0 Mobile Safari/537.36",
+        "dpr": 2.75,
+        "width": 392,
+        "height": 665,
+        "dataset": {
+          "dorotiBootstrapConfigured": "true",
+          "dorotiBootstrapStage": "started",
+          "dorotiBootstrapStages": "before-start,starting,started",
+          "dorotiRenderer": "worker-direct-webgl",
+          "dorotiRendererRequested": "auto",
+          "dorotiRendererReason": "auto-webgl2-fallback",
+          "dorotiMemoryProfile": "mobile",
+          "dorotiRuntimeLocation": "main"
+        },
+        "gpu": true,
+        "timeOrigin": 1793550236682.13
+      },
+      "stats": {
+        "framework": {
+          "n": 153,
+          "p50": 7.64990234375,
+          "p95": 12.75,
+          "max": 71.014892578125,
+          "over33": 2,
+          "over50": 1
+        },
+        "input": {
+          "n": 196,
+          "p50": 1.7900390625,
+          "p95": 6.074951171875,
+          "max": 21.534912109375,
+          "over33": 0,
+          "over50": 0
+        },
+        "raster": {
+          "n": 152,
+          "p50": 5.114990234375,
+          "p95": 11.829833984375,
+          "max": 38.139892578125,
+          "over33": 1,
+          "over50": 0
+        },
+        "inputQueue": {
+          "n": 196,
+          "p50": 16.815185546875,
+          "p95": 46.125,
+          "max": 70.815185546875,
+          "over33": 33,
+          "over50": 8
+        },
+        "mainRafInterval": {
+          "n": 339,
+          "p50": 16.665000000000873,
+          "p95": 33.32499999999891,
+          "max": 50.0,
+          "over33": 1,
+          "over50": 0
+        },
+        "rasterInterval": {
+          "n": 151,
+          "p50": 22.2548828125,
+          "p95": 49.14501953125,
+          "max": 95.580078125,
+          "over33": 21,
+          "over50": 7
+        },
+        "rasterIntervalDuringDrag": {
+          "n": 137,
+          "p50": 22.2548828125,
+          "p95": 49.3798828125,
+          "max": 95.580078125,
+          "over33": 19,
+          "over50": 7
+        }
+      },
+      "errors": [],
+      "gesture": "continuous",
+      "warmup": false,
+      "touchEvents": 194,
+      "coalescedSamples": 414,
+      "ownerAllocatedBytesInterval": 52968048,
+      "ownerAllocatedBytesPerFrameworkCallback": 346196.39215686277,
+      "newRasterPromotions": 0,
+      "submittedDelta": 152,
+      "failedDelta": 0,
+      "rendererWorkAfter": {
+        "PromotionCount": 2,
+        "PromotionMicroseconds": 8650,
+        "PromotionMaximumMicroseconds": 6530,
+        "ParagraphCount": 118,
+        "ParagraphMicroseconds": 31722,
+        "WarmupEntries": 0,
+        "RasterPixels": 0,
+        "TextEntries": 32,
+        "CommandCacheHits": 4820,
+        "CommandRecordings": 35,
+        "CommandEntries": 66,
+        "RetainedCommands": 649,
+        "CommandBytes": 20380,
+        "TextCacheHits": 2256,
+        "TextCacheMisses": 32,
+        "TextCacheEvictions": 0,
+        "FontGeneration": 2,
+        "TextEntryLimit": 256,
+        "RasterPixelLimit": 4194304
+      },
+      "cacheAfter": {
+        "TextEntries": 32,
+        "TextEntryLimit": 256,
+        "TextFontResources": 32,
+        "TextBytesEstimate": 23980,
+        "TextHits": 2256,
+        "TextMisses": 32,
+        "TextEvictions": 0,
+        "FontGeneration": 2,
+        "RasterEntries": 0,
+        "RasterRgba8Bytes": 0,
+        "RasterRgba8Limit": 16777216,
+        "FilterSurfaceEntries": 0,
+        "FilterSurfaceRgba8Bytes": 0,
+        "FilterSurfaceRgba8Limit": 33554432
+      }
+    },
+    {
+      "name": "baseline-aot-warm-1",
+      "rawSha256": "4b609a3dcd46d5e08fab32131f55a0803eff52bfe8c44a3ed6a2b56c020a2f10",
+      "browser": "159.0.8137.0",
+      "meta": {
+        "version": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/159.0.0.0 Mobile Safari/537.36",
+        "dpr": 2.75,
+        "width": 392,
+        "height": 665,
+        "dataset": {
+          "dorotiBootstrapConfigured": "true",
+          "dorotiBootstrapStage": "started",
+          "dorotiBootstrapStages": "before-start,starting,started",
+          "dorotiRenderer": "worker-direct-webgl",
+          "dorotiRendererRequested": "auto",
+          "dorotiRendererReason": "auto-webgl2-fallback",
+          "dorotiMemoryProfile": "mobile",
+          "dorotiRuntimeLocation": "main"
+        },
+        "gpu": true,
+        "timeOrigin": 1793550494387.595
+      },
+      "stats": {
+        "framework": {
+          "n": 143,
+          "p50": 6.8701171875,
+          "p95": 12.925048828125,
+          "max": 34.570068359375,
+          "over33": 1,
+          "over50": 0
+        },
+        "input": {
+          "n": 204,
+          "p50": 1.6298828125,
+          "p95": 4.64501953125,
+          "max": 16.0849609375,
+          "over33": 0,
+          "over50": 0
+        },
+        "raster": {
+          "n": 143,
+          "p50": 8.05517578125,
+          "p95": 15.35986328125,
+          "max": 31.219970703125,
+          "over33": 0,
+          "over50": 0
+        },
+        "inputQueue": {
+          "n": 204,
+          "p50": 19.074951171875,
+          "p95": 41.550048828125,
+          "max": 58.364990234375,
+          "over33": 30,
+          "over50": 3
+        },
+        "mainRafInterval": {
+          "n": 328,
+          "p50": 16.665000000000873,
+          "p95": 16.67500000000291,
+          "max": 50.0,
+          "over33": 2,
+          "over50": 0
+        },
+        "rasterInterval": {
+          "n": 142,
+          "p50": 23.985107421875,
+          "p95": 41.965087890625,
+          "max": 75.695068359375,
+          "over33": 28,
+          "over50": 5
+        },
+        "rasterIntervalDuringDrag": {
+          "n": 132,
+          "p50": 23.985107421875,
+          "p95": 43.43994140625,
+          "max": 75.695068359375,
+          "over33": 25,
+          "over50": 5
+        }
+      },
+      "errors": [],
+      "gesture": "continuous",
+      "warmup": true,
+      "touchEvents": 202,
+      "coalescedSamples": 422,
+      "ownerAllocatedBytesInterval": 58207256,
+      "ownerAllocatedBytesPerFrameworkCallback": 407043.7482517483,
+      "newRasterPromotions": 31,
+      "submittedDelta": 143,
+      "failedDelta": 0,
+      "rendererWorkAfter": {
+        "PromotionCount": 57,
+        "PromotionMicroseconds": 213092,
+        "PromotionMaximumMicroseconds": 32044,
+        "ParagraphCount": 118,
+        "ParagraphMicroseconds": 50450,
+        "WarmupEntries": 3,
+        "RasterPixels": 795672,
+        "TextEntries": 32,
+        "CommandCacheHits": 7966,
+        "CommandRecordings": 41,
+        "CommandEntries": 128,
+        "RetainedCommands": 1395,
+        "CommandBytes": 19500,
+        "TextCacheHits": 12016,
+        "TextCacheMisses": 32,
+        "TextCacheEvictions": 0,
+        "FontGeneration": 2,
+        "TextEntryLimit": 256,
+        "RasterPixelLimit": 4194304
+      },
+      "cacheAfter": {
+        "TextEntries": 32,
+        "TextEntryLimit": 256,
+        "TextFontResources": 32,
+        "TextBytesEstimate": 16384,
+        "TextHits": 12016,
+        "TextMisses": 32,
+        "TextEvictions": 0,
+        "FontGeneration": 2,
+        "RasterEntries": 1,
+        "RasterRgba8Bytes": 3182688,
+        "RasterRgba8Limit": 16777216,
+        "FilterSurfaceEntries": 1,
+        "FilterSurfaceRgba8Bytes": 6289920,
+        "FilterSurfaceRgba8Limit": 33554432
+      }
+    },
+    {
+      "name": "final-aot-warm-1",
+      "rawSha256": "96a3fcb78b44d69886a412e3e8e0041620358da218371211ca8acbdfbf26bead",
+      "browser": "159.0.8137.0",
+      "meta": {
+        "version": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/159.0.0.0 Mobile Safari/537.36",
+        "dpr": 2.75,
+        "width": 392,
+        "height": 665,
+        "dataset": {
+          "dorotiBootstrapConfigured": "true",
+          "dorotiBootstrapStage": "started",
+          "dorotiBootstrapStages": "before-start,starting,started",
+          "dorotiRenderer": "worker-direct-webgl",
+          "dorotiRendererRequested": "auto",
+          "dorotiRendererReason": "auto-webgl2-fallback",
+          "dorotiMemoryProfile": "mobile",
+          "dorotiRuntimeLocation": "main"
+        },
+        "gpu": true,
+        "timeOrigin": 1793550404919.615
+      },
+      "stats": {
+        "framework": {
+          "n": 169,
+          "p50": 6.31005859375,
+          "p95": 11.925048828125,
+          "max": 17.949951171875,
+          "over33": 0,
+          "over50": 0
+        },
+        "input": {
+          "n": 195,
+          "p50": 1.880126953125,
+          "p95": 5.01513671875,
+          "max": 11.3701171875,
+          "over33": 0,
+          "over50": 0
+        },
+        "raster": {
+          "n": 169,
+          "p50": 4.625,
+          "p95": 8.155029296875,
+          "max": 24.77490234375,
+          "over33": 0,
+          "over50": 0
+        },
+        "inputQueue": {
+          "n": 195,
+          "p50": 11.844970703125,
+          "p95": 24.77490234375,
+          "max": 40.909912109375,
+          "over33": 1,
+          "over50": 0
+        },
+        "mainRafInterval": {
+          "n": 324,
+          "p50": 16.665000000000873,
+          "p95": 16.67000000000189,
+          "max": 50.00500000000102,
+          "over33": 6,
+          "over50": 2
+        },
+        "rasterInterval": {
+          "n": 168,
+          "p50": 18.85009765625,
+          "p95": 42.175048828125,
+          "max": 82.93994140625,
+          "over33": 16,
+          "over50": 5
+        },
+        "rasterIntervalDuringDrag": {
+          "n": 156,
+          "p50": 18.85009765625,
+          "p95": 42.175048828125,
+          "max": 82.93994140625,
+          "over33": 14,
+          "over50": 5
+        }
+      },
+      "errors": [],
+      "gesture": "continuous",
+      "warmup": true,
+      "touchEvents": 193,
+      "coalescedSamples": 418,
+      "ownerAllocatedBytesInterval": 51177528,
+      "ownerAllocatedBytesPerFrameworkCallback": 302825.6094674556,
+      "newRasterPromotions": 0,
+      "submittedDelta": 169,
+      "failedDelta": 0,
+      "rendererWorkAfter": {
+        "PromotionCount": 4,
+        "PromotionMicroseconds": 17624,
+        "PromotionMaximumMicroseconds": 5930,
+        "ParagraphCount": 118,
+        "ParagraphMicroseconds": 48165,
+        "WarmupEntries": 0,
+        "RasterPixels": 0,
+        "TextEntries": 32,
+        "CommandCacheHits": 10879,
+        "CommandRecordings": 44,
+        "CommandEntries": 128,
+        "RetainedCommands": 1573,
+        "CommandBytes": 19364,
+        "TextCacheHits": 4965,
+        "TextCacheMisses": 32,
+        "TextCacheEvictions": 0,
+        "FontGeneration": 2,
+        "TextEntryLimit": 256,
+        "RasterPixelLimit": 4194304
+      },
+      "cacheAfter": {
+        "TextEntries": 32,
+        "TextEntryLimit": 256,
+        "TextFontResources": 32,
+        "TextBytesEstimate": 23980,
+        "TextHits": 4965,
+        "TextMisses": 32,
+        "TextEvictions": 0,
+        "FontGeneration": 2,
+        "RasterEntries": 0,
+        "RasterRgba8Bytes": 0,
+        "RasterRgba8Limit": 16777216,
+        "FilterSurfaceEntries": 1,
+        "FilterSurfaceRgba8Bytes": 6289920,
+        "FilterSurfaceRgba8Limit": 33554432
+      }
+    },
+    {
+      "name": "baseline-aot-auto-1",
+      "rawSha256": "3306f6174547cfcb2a0ad657caa01a4b2d4ac856c421bc3954f8447517d48d7a",
+      "browser": "159.0.8137.0",
+      "meta": {
+        "version": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/159.0.0.0 Mobile Safari/537.36",
+        "dpr": 2.75,
+        "width": 392,
+        "height": 665,
+        "dataset": {
+          "dorotiBootstrapConfigured": "true",
+          "dorotiBootstrapStage": "started",
+          "dorotiBootstrapStages": "before-start,starting,started",
+          "dorotiRenderer": "worker-direct-webgl",
+          "dorotiRendererRequested": "auto",
+          "dorotiRendererReason": "auto-webgl2-fallback",
+          "dorotiMemoryProfile": "mobile",
+          "dorotiRuntimeLocation": "main"
+        },
+        "gpu": true
+      },
+      "stats": {
+        "framework": {
+          "n": 58,
+          "p50": 7.81494140625,
+          "p95": 28.73486328125,
+          "max": 65.2998046875,
+          "over33": 1,
+          "over50": 1
+        },
+        "input": {
+          "n": 95,
+          "p50": 3.704833984375,
+          "p95": 17.864990234375,
+          "max": 51.2900390625,
+          "over33": 3,
+          "over50": 1
+        },
+        "raster": {
+          "n": 58,
+          "p50": 7.255126953125,
+          "p95": 24.7099609375,
+          "max": 47.3798828125,
+          "over33": 1,
+          "over50": 0
+        },
+        "inputQueue": {
+          "n": 95,
+          "p50": 41.02490234375,
+          "p95": 92.469970703125,
+          "max": 122.510009765625,
+          "over33": 60,
+          "over50": 38
+        },
+        "mainRafInterval": {
+          "n": 295,
+          "p50": 16.665000000000873,
+          "p95": 16.670000000000073,
+          "max": 50.0,
+          "over33": 1,
+          "over50": 0
+        },
+        "rasterInterval": {
+          "n": 57,
+          "p50": 31.760009765625,
+          "p95": 94.7900390625,
+          "max": 1088.280029296875,
+          "over33": 28,
+          "over50": 12
+        }
+      },
+      "errors": [],
+      "gesture": "swipes",
+      "warmup": false,
+      "touchEvents": 89,
+      "coalescedSamples": 956,
+      "ownerAllocatedBytesInterval": 58800184,
+      "ownerAllocatedBytesPerFrameworkCallback": 1013796.275862069,
+      "newRasterPromotions": 8,
+      "submittedDelta": 58,
+      "failedDelta": 0,
+      "rendererWorkAfter": {
+        "PromotionCount": 10,
+        "PromotionMicroseconds": 34301,
+        "PromotionMaximumMicroseconds": 6960,
+        "ParagraphCount": 118,
+        "ParagraphMicroseconds": 30904,
+        "WarmupEntries": 3,
+        "RasterPixels": 795672,
+        "TextEntries": 32,
+        "CommandCacheHits": 1787,
+        "CommandRecordings": 32,
+        "CommandEntries": 70,
+        "RetainedCommands": 405,
+        "CommandBytes": 19468,
+        "TextCacheHits": 2804,
+        "TextCacheMisses": 32,
+        "TextCacheEvictions": 0,
+        "FontGeneration": 2,
+        "TextEntryLimit": 256,
+        "RasterPixelLimit": 4194304
+      },
+      "cacheAfter": {
+        "TextEntries": 32,
+        "TextEntryLimit": 256,
+        "TextFontResources": 32,
+        "TextBytesEstimate": 16384,
+        "TextHits": 2804,
+        "TextMisses": 32,
+        "TextEvictions": 0,
+        "FontGeneration": 2,
+        "RasterEntries": 1,
+        "RasterRgba8Bytes": 3182688,
+        "RasterRgba8Limit": 16777216,
+        "FilterSurfaceEntries": 0,
+        "FilterSurfaceRgba8Bytes": 0,
+        "FilterSurfaceRgba8Limit": 33554432
+      }
+    },
+    {
+      "name": "final-aot-swipes-1",
+      "rawSha256": "03b89b36e5a3b3ba409f3c83996b7c8fd78780674f7d4cdfe4a0101ccf8ee171",
+      "browser": "159.0.8137.0",
+      "meta": {
+        "version": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/159.0.0.0 Mobile Safari/537.36",
+        "dpr": 2.75,
+        "width": 392,
+        "height": 665,
+        "dataset": {
+          "dorotiBootstrapConfigured": "true",
+          "dorotiBootstrapStage": "started",
+          "dorotiBootstrapStages": "before-start,starting,started",
+          "dorotiRenderer": "worker-direct-webgl",
+          "dorotiRendererRequested": "auto",
+          "dorotiRendererReason": "auto-webgl2-fallback",
+          "dorotiMemoryProfile": "mobile",
+          "dorotiRuntimeLocation": "main"
+        },
+        "gpu": true,
+        "timeOrigin": 1793550251558.955
+      },
+      "stats": {
+        "framework": {
+          "n": 54,
+          "p50": 7.844970703125,
+          "p95": 29.22021484375,
+          "max": 60.0048828125,
+          "over33": 2,
+          "over50": 1
+        },
+        "input": {
+          "n": 97,
+          "p50": 3.630126953125,
+          "p95": 32.22509765625,
+          "max": 71.31494140625,
+          "over33": 5,
+          "over50": 2
+        },
+        "raster": {
+          "n": 54,
+          "p50": 5.119873046875,
+          "p95": 13.505126953125,
+          "max": 28.51513671875,
+          "over33": 0,
+          "over50": 0
+        },
+        "inputQueue": {
+          "n": 97,
+          "p50": 47.21484375,
+          "p95": 113.0498046875,
+          "max": 132.15478515625,
+          "over33": 64,
+          "over50": 47
+        },
+        "mainRafInterval": {
+          "n": 294,
+          "p50": 16.665000000000873,
+          "p95": 16.670000000000073,
+          "max": 50.0,
+          "over33": 2,
+          "over50": 0
+        },
+        "rasterInterval": {
+          "n": 53,
+          "p50": 31.505126953125,
+          "p95": 106.739990234375,
+          "max": 1085.80517578125,
+          "over33": 24,
+          "over50": 14
+        },
+        "rasterIntervalDuringDrag": {
+          "n": 21,
+          "p50": 38.89501953125,
+          "p95": 86.099853515625,
+          "max": 97.1650390625,
+          "over33": 14,
+          "over50": 8
+        }
+      },
+      "errors": [],
+      "gesture": "swipes",
+      "warmup": false,
+      "touchEvents": 91,
+      "coalescedSamples": 1068,
+      "ownerAllocatedBytesInterval": 56579688,
+      "ownerAllocatedBytesPerFrameworkCallback": 1047772.0,
+      "newRasterPromotions": 2,
+      "submittedDelta": 54,
+      "failedDelta": 0,
+      "rendererWorkAfter": {
+        "PromotionCount": 4,
+        "PromotionMicroseconds": 14314,
+        "PromotionMaximumMicroseconds": 6609,
+        "ParagraphCount": 118,
+        "ParagraphMicroseconds": 37653,
+        "WarmupEntries": 0,
+        "RasterPixels": 0,
+        "TextEntries": 32,
+        "CommandCacheHits": 1851,
+        "CommandRecordings": 39,
+        "CommandEntries": 89,
+        "RetainedCommands": 966,
+        "CommandBytes": 22864,
+        "TextCacheHits": 1237,
+        "TextCacheMisses": 32,
+        "TextCacheEvictions": 0,
+        "FontGeneration": 2,
+        "TextEntryLimit": 256,
+        "RasterPixelLimit": 4194304
+      },
+      "cacheAfter": {
+        "TextEntries": 32,
+        "TextEntryLimit": 256,
+        "TextFontResources": 32,
+        "TextBytesEstimate": 23980,
+        "TextHits": 1237,
+        "TextMisses": 32,
+        "TextEvictions": 0,
+        "FontGeneration": 2,
+        "RasterEntries": 0,
+        "RasterRgba8Bytes": 0,
+        "RasterRgba8Limit": 16777216,
+        "FilterSurfaceEntries": 0,
+        "FilterSurfaceRgba8Bytes": 0,
+        "FilterSurfaceRgba8Limit": 33554432
+      }
+    },
+    {
+      "name": "final-aot-swipes-2",
+      "rawSha256": "87e4676833902cfca168699015075bb2917b3ab14ce168dfa79aa9783e0e4c96",
+      "browser": "159.0.8137.0",
+      "meta": {
+        "version": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/159.0.0.0 Mobile Safari/537.36",
+        "dpr": 2.75,
+        "width": 392,
+        "height": 665,
+        "dataset": {
+          "dorotiBootstrapConfigured": "true",
+          "dorotiBootstrapStage": "started",
+          "dorotiBootstrapStages": "before-start,starting,started",
+          "dorotiRenderer": "worker-direct-webgl",
+          "dorotiRendererRequested": "auto",
+          "dorotiRendererReason": "auto-webgl2-fallback",
+          "dorotiMemoryProfile": "mobile",
+          "dorotiRuntimeLocation": "main"
+        },
+        "gpu": true,
+        "timeOrigin": 1793550263780.085
+      },
+      "stats": {
+        "framework": {
+          "n": 63,
+          "p50": 8.044921875,
+          "p95": 26.704833984375,
+          "max": 60.364990234375,
+          "over33": 3,
+          "over50": 1
+        },
+        "input": {
+          "n": 89,
+          "p50": 4.094970703125,
+          "p95": 19.6298828125,
+          "max": 31.6650390625,
+          "over33": 0,
+          "over50": 0
+        },
+        "raster": {
+          "n": 62,
+          "p50": 5.705078125,
+          "p95": 12.969970703125,
+          "max": 24.25,
+          "over33": 0,
+          "over50": 0
+        },
+        "inputQueue": {
+          "n": 89,
+          "p50": 26.630126953125,
+          "p95": 77.9150390625,
+          "max": 128.005126953125,
+          "over33": 36,
+          "over50": 19
+        },
+        "mainRafInterval": {
+          "n": 276,
+          "p50": 16.665000000000873,
+          "p95": 33.32999999999993,
+          "max": 66.67000000000007,
+          "over33": 8,
+          "over50": 2
+        },
+        "rasterInterval": {
+          "n": 61,
+          "p50": 25.405029296875,
+          "p95": 121.19482421875,
+          "max": 1069.574951171875,
+          "over33": 25,
+          "over50": 15
+        },
+        "rasterIntervalDuringDrag": {
+          "n": 27,
+          "p50": 37.044921875,
+          "p95": 97.840087890625,
+          "max": 121.19482421875,
+          "over33": 15,
+          "over50": 9
+        }
+      },
+      "errors": [],
+      "gesture": "swipes",
+      "warmup": false,
+      "touchEvents": 83,
+      "coalescedSamples": 949,
+      "ownerAllocatedBytesInterval": 53178552,
+      "ownerAllocatedBytesPerFrameworkCallback": 844104.0,
+      "newRasterPromotions": 2,
+      "submittedDelta": 62,
+      "failedDelta": 0,
+      "rendererWorkAfter": {
+        "PromotionCount": 4,
+        "PromotionMicroseconds": 12564,
+        "PromotionMaximumMicroseconds": 5069,
+        "ParagraphCount": 118,
+        "ParagraphMicroseconds": 34165,
+        "WarmupEntries": 0,
+        "RasterPixels": 0,
+        "TextEntries": 32,
+        "CommandCacheHits": 2116,
+        "CommandRecordings": 39,
+        "CommandEntries": 86,
+        "RetainedCommands": 917,
+        "CommandBytes": 22864,
+        "TextCacheHits": 1326,
+        "TextCacheMisses": 32,
+        "TextCacheEvictions": 0,
+        "FontGeneration": 2,
+        "TextEntryLimit": 256,
+        "RasterPixelLimit": 4194304
+      },
+      "cacheAfter": {
+        "TextEntries": 32,
+        "TextEntryLimit": 256,
+        "TextFontResources": 32,
+        "TextBytesEstimate": 23980,
+        "TextHits": 1326,
+        "TextMisses": 32,
+        "TextEvictions": 0,
+        "FontGeneration": 2,
+        "RasterEntries": 0,
+        "RasterRgba8Bytes": 0,
+        "RasterRgba8Limit": 16777216,
+        "FilterSurfaceEntries": 0,
+        "FilterSurfaceRgba8Bytes": 0,
+        "FilterSurfaceRgba8Limit": 33554432
+      }
+    },
+    {
+      "name": "final-aot-chrome-1",
+      "rawSha256": "929eaf390ee0bfa444908befc3269e40f6239fa02c5e2690158d742de4b40c8d",
+      "browser": "156.0.8078.79",
+      "meta": {
+        "version": "Mozilla/5.0 (Linux; Android 13; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Mobile Safari/537.36",
+        "dpr": 2.75,
+        "width": 393,
+        "height": 719,
+        "dataset": {
+          "dorotiBootstrapConfigured": "true",
+          "dorotiBootstrapStage": "started",
+          "dorotiBootstrapStages": "before-start,starting,started",
+          "dorotiRenderer": "worker-direct-webgpu",
+          "dorotiRendererRequested": "auto",
+          "dorotiRendererReason": "android-prefer-webgpu",
+          "dorotiMemoryProfile": "mobile",
+          "dorotiRuntimeLocation": "main"
+        },
+        "gpu": true,
+        "timeOrigin": 1793550576302.9
+      },
+      "stats": {
+        "framework": {
+          "n": 286,
+          "p50": 3.03515625,
+          "p95": 5.695068359375,
+          "max": 31.400146484375,
+          "over33": 0,
+          "over50": 0
+        },
+        "input": {
+          "n": 102,
+          "p50": 0.684814453125,
+          "p95": 1.7998046875,
+          "max": 15.260009765625,
+          "over33": 0,
+          "over50": 0
+        },
+        "raster": {
+          "n": 256,
+          "p50": 3.739990234375,
+          "p95": 5.23486328125,
+          "max": 6.77490234375,
+          "over33": 0,
+          "over50": 0
+        },
+        "inputQueue": {
+          "n": 102,
+          "p50": 2.340087890625,
+          "p95": 8.64013671875,
+          "max": 21.469970703125,
+          "over33": 0,
+          "over50": 0
+        },
+        "mainRafInterval": {
+          "n": 820,
+          "p50": 6.055000000000291,
+          "p95": 6.264999999999418,
+          "max": 30.234999999999673,
+          "over33": 0,
+          "over50": 0
+        },
+        "rasterInterval": {
+          "n": 255,
+          "p50": 8.81005859375,
+          "p95": 14.510009765625,
+          "max": 853.655029296875,
+          "over33": 4,
+          "over50": 2
+        },
+        "rasterIntervalDuringDrag": {
+          "n": 143,
+          "p50": 8.945068359375,
+          "p95": 14.510009765625,
+          "max": 37.335205078125,
+          "over33": 2,
+          "over50": 0
+        }
+      },
+      "errors": [],
+      "gesture": "swipes",
+      "warmup": false,
+      "touchEvents": 96,
+      "coalescedSamples": 90,
+      "ownerAllocatedBytesInterval": 59213968,
+      "ownerAllocatedBytesPerFrameworkCallback": 207041.84615384616,
+      "newRasterPromotions": 2,
+      "submittedDelta": 256,
+      "failedDelta": 0,
+      "rendererWorkAfter": {
+        "PromotionCount": 5,
+        "PromotionMicroseconds": 7295,
+        "PromotionMaximumMicroseconds": 3600,
+        "ParagraphCount": 118,
+        "ParagraphMicroseconds": 27879,
+        "WarmupEntries": 16,
+        "RasterPixels": 2138218,
+        "TextEntries": 32,
+        "CommandCacheHits": 7590,
+        "CommandRecordings": 42,
+        "CommandEntries": 128,
+        "RetainedCommands": 1633,
+        "CommandBytes": 20380,
+        "TextCacheHits": 3628,
+        "TextCacheMisses": 32,
+        "TextCacheEvictions": 0,
+        "FontGeneration": 2,
+        "TextEntryLimit": 256,
+        "RasterPixelLimit": 16777216
+      },
+      "cacheAfter": {
+        "TextEntries": 32,
+        "TextEntryLimit": 256,
+        "TextFontResources": 32,
+        "TextBytesEstimate": 23980,
+        "TextHits": 3628,
+        "TextMisses": 32,
+        "TextEvictions": 0,
+        "FontGeneration": 2,
+        "RasterEntries": 1,
+        "RasterRgba8Bytes": 8552872,
+        "RasterRgba8Limit": 67108864,
+        "FilterSurfaceEntries": 0,
+        "FilterSurfaceRgba8Bytes": 0,
+        "FilterSurfaceRgba8Limit": 134217728
+      }
+    },
+    {
+      "name": "final-tracked-probe-1",
+      "rawSha256": "984d36a06962d72baa547be87fae232c2734d9b6acbffae619e21157b06f703b",
+      "browser": "159.0.8137.0",
+      "meta": {
+        "version": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/159.0.0.0 Mobile Safari/537.36",
+        "dpr": 2.75,
+        "width": 392,
+        "height": 665,
+        "dataset": {
+          "dorotiBootstrapConfigured": "true",
+          "dorotiBootstrapStage": "started",
+          "dorotiBootstrapStages": "before-start,starting,started",
+          "dorotiRenderer": "worker-direct-webgl",
+          "dorotiRendererRequested": "auto",
+          "dorotiRendererReason": "auto-webgl2-fallback",
+          "dorotiMemoryProfile": "mobile",
+          "dorotiRuntimeLocation": "main"
+        },
+        "gpu": true,
+        "timeOrigin": 1793551647450.855
+      },
+      "stats": {
+        "framework": {
+          "n": 159,
+          "p50": 7.085205078125,
+          "p95": 13.905029296875,
+          "max": 26.830078125,
+          "over33": 0,
+          "over50": 0
+        },
+        "input": {
+          "n": 199,
+          "p50": 1.650146484375,
+          "p95": 4.60986328125,
+          "max": 10.125,
+          "over33": 0,
+          "over50": 0
+        },
+        "raster": {
+          "n": 159,
+          "p50": 5.0,
+          "p95": 9.6201171875,
+          "max": 27.14501953125,
+          "over33": 0,
+          "over50": 0
+        },
+        "inputQueue": {
+          "n": 199,
+          "p50": 14.784912109375,
+          "p95": 37.4150390625,
+          "max": 45.8349609375,
+          "over33": 21,
+          "over50": 0
+        },
+        "mainRafInterval": {
+          "n": 328,
+          "p50": 16.665000000000873,
+          "p95": 16.67000000000189,
+          "max": 50.0,
+          "over33": 5,
+          "over50": 0
+        },
+        "rasterInterval": {
+          "n": 158,
+          "p50": 21.239990234375,
+          "p95": 44.0,
+          "max": 62.300048828125,
+          "over33": 20,
+          "over50": 6
+        },
+        "rasterIntervalDuringDrag": {
+          "n": 144,
+          "p50": 21.849853515625,
+          "p95": 44.0,
+          "max": 62.300048828125,
+          "over33": 19,
+          "over50": 6
+        }
+      },
+      "errors": [],
+      "gesture": "continuous",
+      "warmup": true,
+      "touchEvents": 197,
+      "coalescedSamples": 417,
+      "ownerAllocatedBytesInterval": 51022040,
+      "ownerAllocatedBytesPerFrameworkCallback": 320893.3333333333,
+      "newRasterPromotions": 0,
+      "submittedDelta": 159,
+      "failedDelta": 0,
+      "rendererWorkAfter": {
+        "PromotionCount": 4,
+        "PromotionMicroseconds": 15734,
+        "PromotionMaximumMicroseconds": 6120,
+        "ParagraphCount": 118,
+        "ParagraphMicroseconds": 27633,
+        "WarmupEntries": 0,
+        "RasterPixels": 0,
+        "TextEntries": 32,
+        "CommandCacheHits": 10649,
+        "CommandRecordings": 44,
+        "CommandEntries": 128,
+        "RetainedCommands": 1571,
+        "CommandBytes": 19364,
+        "TextCacheHits": 4903,
+        "TextCacheMisses": 32,
+        "TextCacheEvictions": 0,
+        "FontGeneration": 2,
+        "TextEntryLimit": 256,
+        "RasterPixelLimit": 4194304
+      },
+      "cacheAfter": {
+        "TextEntries": 32,
+        "TextEntryLimit": 256,
+        "TextFontResources": 32,
+        "TextBytesEstimate": 23980,
+        "TextHits": 4903,
+        "TextMisses": 32,
+        "TextEvictions": 0,
+        "FontGeneration": 2,
+        "RasterEntries": 0,
+        "RasterRgba8Bytes": 0,
+        "RasterRgba8Limit": 16777216,
+        "FilterSurfaceEntries": 1,
+        "FilterSurfaceRgba8Bytes": 6289920,
+        "FilterSurfaceRgba8Limit": 33554432
+      }
+    }
+  ],
+  "finalDeliveryReceipt": {
+    "url": "http://127.0.0.1:5102/",
+    "browser": "159.0.8137.0",
+    "assets": [
+      {
+        "url": "http://127.0.0.1:5102/_content/Doroti.Host.Web/doroti.web.js",
+        "local": "temp\\testing\\android-web-scroll\\final-publish\\wwwroot\\_content\\Doroti.Host.Web\\doroti.web.js",
+        "localSha256": "2083fd83966c16ba6e8290d27eed5148fbee509546f0ad5f792695d89cb664ce",
+        "bytes": 146690,
+        "sha256": "2083fd83966c16ba6e8290d27eed5148fbee509546f0ad5f792695d89cb664ce"
+      },
+      {
+        "url": "http://127.0.0.1:5102/_framework/dotnet.native.y0e5wyo698.wasm",
+        "local": "temp\\testing\\android-web-scroll\\final-publish\\wwwroot\\_framework\\dotnet.native.y0e5wyo698.wasm",
+        "localSha256": "42be394938f96f3a56be6448f7053b04b47a2784708d1e97ba8089f43fb83b4b",
+        "bytes": 48226736,
+        "sha256": "42be394938f96f3a56be6448f7053b04b47a2784708d1e97ba8089f43fb83b4b"
+      }
+    ],
+    "runtimeBuildInfo": {
+      "productVersion": "10.0.11",
+      "gitHash": "e2f47b0110ed922f21a1522da67279133ce28f32",
+      "buildConfiguration": "Release",
+      "wasmEnableThreads": true,
+      "wasmEnableSIMD": true,
+      "wasmEnableExceptionHandling": true
+    },
+    "gpu": {
+      "devices": [
+        {
+          "vendorId": 4318,
+          "deviceId": 10464,
+          "vendorString": "Google Inc. (NVIDIA)",
+          "deviceString": "ANGLE (NVIDIA, Vulkan 1.3.0 (NVIDIA NVIDIA GeForce RTX 4060 Laptop GPU (0x000028E0)), NVIDIA-610.62.0.0)",
+          "driverVendor": "NVIDIA",
+          "driverVersion": "610.62.0.0"
+        }
+      ],
+      "processCrashCount": 0,
+      "featureStatus": {
+        "2d_canvas": "enabled",
+        "direct_rendering_display_compositor": "enabled_on",
+        "gpu_compositing": "enabled",
+        "multiple_raster_threads": "disabled_off",
+        "opengl": "enabled_on",
+        "rasterization": "enabled",
+        "skia_graphite": "enabled_on",
+        "surface_control": "disabled_off",
+        "trees_in_viz": "enabled_on",
+        "video_decode": "enabled",
+        "video_encode": "enabled",
+        "vulkan": "disabled_off",
+        "webgl": "enabled",
+        "webgpu": "enabled",
+        "webnn": "disabled_off"
+      }
+    },
+    "head": "03b654ae17a243728c896e53ff649a3e19d89700",
+    "sourceSha256": {
+      "Doroti/src/Doroti.Framework.Rendering/object.cs": "f427324c2a279493dd93ff25844cd0a2a1641e9d1373d1b388416cd15205d964",
+      "Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.cs": "d7c3b63287740fd18934fcac567976460f3609f21cf2909b639f16a1bf38f6dd",
+      "Doroti/src/Doroti.Skia.Rendering/SkiaPictureCommandCache.cs": "63fe62217900c01d5624a38c83be57de6bd893d7e4a5e9634122948b7a2f982a",
+      "Doroti/src/Doroti.Skia.Rendering/SkiaFontFaceDescriptor.cs": "0780805340f078321be24bf504d78071223b89d7470e430cda1d7111c3f091df",
+      "packages/platforms/web/Doroti.Host.Web/BrowserSemanticsTransport.cs": "476826f0d0d8859ba939363f2cbda1681283407bead0262fad82229dcb700e33",
+      "packages/platforms/web/Doroti.Host.Web/BrowserSkiaCapabilities.cs": "7c09c0843e1254214962ad2655d96445e0e92cf6fad5094454ab5dbffa72cbd3",
+      "packages/platforms/web/Doroti.Host.Web/Web/doroti.web.ts": "64755809411688196ca546f4b816fdfae4e9fd095e79e6108f131857c55939ed",
+      "Doroti/eng/measure-android-web-scroll.py": "ac99bfd37ea0e50d9fdb941572093beee7dfa65af22cb9315ae46e1a6a2ea54e"
+    }
+  },
+  "baselineNativeAssets": [
+    {
+      "name": "dotnet.native.5df9gseivc.wasm",
+      "bytes": 48185950,
+      "sha256": "f7e9d2a5573bc1bbac0cd6e629c6d1ccdbb52d94b83db6cb124a925f500672e0"
+    }
+  ],
+  "testLogs": {
+    "final-skia-tests.log": "PASS: 21 exact spaced-text pixel comparisons, Unicode/fallback/spacing/transforms, zero-allocation replay and native cache retirement\nPASS: Web raster promotion opt-in, unchanged default host policy, scroll/quiet interval and settled resumption\nPASS: 24 exact shadow/text picture comparisons, fractional translation reuse, affine/DPR invalidation, perspective fallback and font retirement\nPASS: allocation-free empty font variation keys and normalization\n",
+    "final-scroll-tests.log": "PASS: production ticker at 60/120 Hz, missed pulses, fractional offsets, semantic boundaries\nPASS: Android vsync clock, matrix ownership/allocation, perspective and legacy semantics projection\nPASS: caret semantics cache, graphemes, edit/wrap/scale/offset/obscure/dispose invalidation\nPASS: text-only decoration notifications, latest semantic selection, projection/DPR/clip/obscure/thread invalidation\nPASS: shared-controller collapsed caret paint without layout; text/composition/range/focus/custom fallbacks; retained leaf freshness\nPASS: queued weak notifications preserve live delivery and release abandoned owners before native callback retirement\nPASS: managed callback ownership, late/duplicate delivery, failure cleanup and concurrent/reentrant dispatch\nPASS: immutable scroll recordings, producer mutation/disposal, texture copy-on-write and lease retirement\nPASS: renderer/Windows retained native/shield inspection, depth guards and allocation-free repeated inspection\nPASS: stable Windows UIA child lists, live values, order/removal/handler refresh and unready-peer retry\nINFO: 20 repeated view invocation scopes allocate 5440 bytes\nPASS: nested view scopes, cross-view identity, cancellation, custom overrides and async context restoration\nINFO: 20 lookups among 512 inherited dependents perform 20 element comparisons\nPASS: inherited dependency lookup, aspect updates, stable notification snapshots, deactivation and removed-owner collection\nPASS: scroll-only semantics coalescing, content/action priority, exact final offset/extents, conservative hosts and disposed listener release\nPASS: allocation-free browser semantics comparison, all fields, compact geometry and immediate selection/scroll values\nPASS: cached section owner/parent-data/sibling preservation, no repeated attach or recreation, exact eviction teardown\nPASS: release velocity, ballistic continuation, semantic changes, native inertia lifecycle\n"
+  },
+  "ime": [
+    {
+      "name": "final-ime-type-confirmed",
+      "url": "http://127.0.0.1:5102/",
+      "ime": {
+        "text": "한글",
+        "base": 2,
+        "extent": 2,
+        "hidden": false
+      },
+      "fields": [
+        {
+          "label": "Filled",
+          "text": "한글",
+          "base": 2,
+          "extent": 2,
+          "rect": {
+            "x": 19,
+            "y": 192.7556915283203,
+            "width": 362.3636474609375,
+            "height": 81.59091186523438,
+            "top": 192.7556915283203,
+            "right": 381.3636474609375,
+            "bottom": 274.3466033935547,
+            "left": 19
+          }
+        },
+        {
+          "label": "Filled",
+          "text": "한글",
+          "base": 2,
+          "extent": 2,
+          "rect": {
+            "x": 19,
+            "y": 288.7102355957031,
+            "width": 180,
+            "height": 81.59091186523438,
+            "top": 288.7102355957031,
+            "right": 199,
+            "bottom": 370.3011474609375,
+            "left": 19
+          }
+        },
+        {
+          "label": "Disabled",
+          "text": "한글",
+          "base": 2,
+          "extent": 2,
+          "rect": {
+            "x": 201.3636474609375,
+            "y": 288.7102355957031,
+            "width": 180,
+            "height": 81.59091186523438,
+            "top": 288.7102355957031,
+            "right": 381.3636474609375,
+            "bottom": 370.3011474609375,
+            "left": 201.3636474609375
+          }
+        },
+        {
+          "label": "Outlined",
+          "text": "",
+          "base": 0,
+          "extent": 0,
+          "rect": {
+            "x": 19,
+            "y": 384.67047119140625,
+            "width": 362.3636474609375,
+            "height": 81.59091186523438,
+            "top": 384.67047119140625,
+            "right": 381.3636474609375,
+            "bottom": 466.2613830566406,
+            "left": 19
+          }
+        },
+        {
+          "label": "Outlined",
+          "text": "",
+          "base": 0,
+          "extent": 0,
+          "rect": {
+            "x": 19,
+            "y": 480.6307067871094,
+            "width": 180,
+            "height": 81.59091186523438,
+            "top": 480.6307067871094,
+            "right": 199,
+            "bottom": 562.2216186523438,
+            "left": 19
+          }
+        },
+        {
+          "label": "Disabled",
+          "text": "",
+          "base": 0,
+          "extent": 0,
+          "rect": {
+            "x": 201.3636474609375,
+            "y": 480.6307067871094,
+            "width": 180,
+            "height": 81.59091186523438,
+            "top": 480.6307067871094,
+            "right": 381.3636474609375,
+            "bottom": 562.2216186523438,
+            "left": 201.3636474609375
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "compositionstart",
+          "data": "",
+          "inputType": null,
+          "text": "",
+          "base": 0,
+          "extent": 0,
+          "trusted": true
+        },
+        {
+          "type": "compositionupdate",
+          "data": "ㅎ",
+          "inputType": null,
+          "text": "",
+          "base": 0,
+          "extent": 0,
+          "trusted": true
+        },
+        {
+          "type": "beforeinput",
+          "data": "ㅎ",
+          "inputType": "insertCompositionText",
+          "text": "",
+          "base": 0,
+          "extent": 0,
+          "trusted": true
+        },
+        {
+          "type": "input",
+          "data": "ㅎ",
+          "inputType": "insertCompositionText",
+          "text": "ㅎ",
+          "base": 1,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "compositionupdate",
+          "data": "하",
+          "inputType": null,
+          "text": "ㅎ",
+          "base": 0,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "beforeinput",
+          "data": "하",
+          "inputType": "insertCompositionText",
+          "text": "ㅎ",
+          "base": 0,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "input",
+          "data": "하",
+          "inputType": "insertCompositionText",
+          "text": "하",
+          "base": 1,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "compositionupdate",
+          "data": "한",
+          "inputType": null,
+          "text": "하",
+          "base": 0,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "beforeinput",
+          "data": "한",
+          "inputType": "insertCompositionText",
+          "text": "하",
+          "base": 0,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "input",
+          "data": "한",
+          "inputType": "insertCompositionText",
+          "text": "한",
+          "base": 1,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "compositionupdate",
+          "data": "한ㄱ",
+          "inputType": null,
+          "text": "한",
+          "base": 0,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "beforeinput",
+          "data": "한ㄱ",
+          "inputType": "insertCompositionText",
+          "text": "한",
+          "base": 0,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "input",
+          "data": "한ㄱ",
+          "inputType": "insertCompositionText",
+          "text": "한ㄱ",
+          "base": 2,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "compositionupdate",
+          "data": "한ㄱ",
+          "inputType": null,
+          "text": "한ㄱ",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "beforeinput",
+          "data": "한ㄱ",
+          "inputType": "insertCompositionText",
+          "text": "한ㄱ",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "input",
+          "data": "한ㄱ",
+          "inputType": "insertCompositionText",
+          "text": "한ㄱ",
+          "base": 2,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "compositionupdate",
+          "data": "한그",
+          "inputType": null,
+          "text": "한ㄱ",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "beforeinput",
+          "data": "한그",
+          "inputType": "insertCompositionText",
+          "text": "한ㄱ",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "input",
+          "data": "한그",
+          "inputType": "insertCompositionText",
+          "text": "한그",
+          "base": 2,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "compositionupdate",
+          "data": "한그",
+          "inputType": null,
+          "text": "한그",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "beforeinput",
+          "data": "한그",
+          "inputType": "insertCompositionText",
+          "text": "한그",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "input",
+          "data": "한그",
+          "inputType": "insertCompositionText",
+          "text": "한그",
+          "base": 2,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "compositionupdate",
+          "data": "한글",
+          "inputType": null,
+          "text": "한그",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "beforeinput",
+          "data": "한글",
+          "inputType": "insertCompositionText",
+          "text": "한그",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "input",
+          "data": "한글",
+          "inputType": "insertCompositionText",
+          "text": "한글",
+          "base": 2,
+          "extent": 2,
+          "trusted": true
+        }
+      ],
+      "rawSha256": "2df071dadd0833754ca9e35a0b3b86a026a54159ac1dc8d79f8f0dd1cee132fc"
+    },
+    {
+      "name": "final-ime-select-confirmed",
+      "url": "http://127.0.0.1:5102/",
+      "ime": {
+        "text": "한글",
+        "base": 0,
+        "extent": 2,
+        "hidden": false
+      },
+      "fields": [
+        {
+          "label": "Filled",
+          "text": "한글",
+          "base": 0,
+          "extent": 2,
+          "rect": {
+            "x": 19,
+            "y": 192.7556915283203,
+            "width": 362.3636474609375,
+            "height": 81.59091186523438,
+            "top": 192.7556915283203,
+            "right": 381.3636474609375,
+            "bottom": 274.3466033935547,
+            "left": 19
+          }
+        },
+        {
+          "label": "Filled",
+          "text": "한글",
+          "base": 0,
+          "extent": 2,
+          "rect": {
+            "x": 19,
+            "y": 288.7102355957031,
+            "width": 180,
+            "height": 81.59091186523438,
+            "top": 288.7102355957031,
+            "right": 199,
+            "bottom": 370.3011474609375,
+            "left": 19
+          }
+        },
+        {
+          "label": "Disabled",
+          "text": "한글",
+          "base": 0,
+          "extent": 2,
+          "rect": {
+            "x": 201.3636474609375,
+            "y": 288.7102355957031,
+            "width": 180,
+            "height": 81.59091186523438,
+            "top": 288.7102355957031,
+            "right": 381.3636474609375,
+            "bottom": 370.3011474609375,
+            "left": 201.3636474609375
+          }
+        },
+        {
+          "label": "Outlined",
+          "text": "",
+          "base": 0,
+          "extent": 0,
+          "rect": {
+            "x": 19,
+            "y": 384.67047119140625,
+            "width": 362.3636474609375,
+            "height": 81.59091186523438,
+            "top": 384.67047119140625,
+            "right": 381.3636474609375,
+            "bottom": 466.2613830566406,
+            "left": 19
+          }
+        },
+        {
+          "label": "Outlined",
+          "text": "",
+          "base": 0,
+          "extent": 0,
+          "rect": {
+            "x": 19,
+            "y": 480.6307067871094,
+            "width": 180,
+            "height": 81.59091186523438,
+            "top": 480.6307067871094,
+            "right": 199,
+            "bottom": 562.2216186523438,
+            "left": 19
+          }
+        },
+        {
+          "label": "Disabled",
+          "text": "",
+          "base": 0,
+          "extent": 0,
+          "rect": {
+            "x": 201.3636474609375,
+            "y": 480.6307067871094,
+            "width": 180,
+            "height": 81.59091186523438,
+            "top": 480.6307067871094,
+            "right": 381.3636474609375,
+            "bottom": 562.2216186523438,
+            "left": 201.3636474609375
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "compositionstart",
+          "data": "",
+          "inputType": null,
+          "text": "",
+          "base": 0,
+          "extent": 0,
+          "trusted": true
+        },
+        {
+          "type": "compositionupdate",
+          "data": "ㅎ",
+          "inputType": null,
+          "text": "",
+          "base": 0,
+          "extent": 0,
+          "trusted": true
+        },
+        {
+          "type": "beforeinput",
+          "data": "ㅎ",
+          "inputType": "insertCompositionText",
+          "text": "",
+          "base": 0,
+          "extent": 0,
+          "trusted": true
+        },
+        {
+          "type": "input",
+          "data": "ㅎ",
+          "inputType": "insertCompositionText",
+          "text": "ㅎ",
+          "base": 1,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "compositionupdate",
+          "data": "하",
+          "inputType": null,
+          "text": "ㅎ",
+          "base": 0,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "beforeinput",
+          "data": "하",
+          "inputType": "insertCompositionText",
+          "text": "ㅎ",
+          "base": 0,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "input",
+          "data": "하",
+          "inputType": "insertCompositionText",
+          "text": "하",
+          "base": 1,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "compositionupdate",
+          "data": "한",
+          "inputType": null,
+          "text": "하",
+          "base": 0,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "beforeinput",
+          "data": "한",
+          "inputType": "insertCompositionText",
+          "text": "하",
+          "base": 0,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "input",
+          "data": "한",
+          "inputType": "insertCompositionText",
+          "text": "한",
+          "base": 1,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "compositionupdate",
+          "data": "한ㄱ",
+          "inputType": null,
+          "text": "한",
+          "base": 0,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "beforeinput",
+          "data": "한ㄱ",
+          "inputType": "insertCompositionText",
+          "text": "한",
+          "base": 0,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "input",
+          "data": "한ㄱ",
+          "inputType": "insertCompositionText",
+          "text": "한ㄱ",
+          "base": 2,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "compositionupdate",
+          "data": "한ㄱ",
+          "inputType": null,
+          "text": "한ㄱ",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "beforeinput",
+          "data": "한ㄱ",
+          "inputType": "insertCompositionText",
+          "text": "한ㄱ",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "input",
+          "data": "한ㄱ",
+          "inputType": "insertCompositionText",
+          "text": "한ㄱ",
+          "base": 2,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "compositionupdate",
+          "data": "한그",
+          "inputType": null,
+          "text": "한ㄱ",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "beforeinput",
+          "data": "한그",
+          "inputType": "insertCompositionText",
+          "text": "한ㄱ",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "input",
+          "data": "한그",
+          "inputType": "insertCompositionText",
+          "text": "한그",
+          "base": 2,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "compositionupdate",
+          "data": "한그",
+          "inputType": null,
+          "text": "한그",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "beforeinput",
+          "data": "한그",
+          "inputType": "insertCompositionText",
+          "text": "한그",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "input",
+          "data": "한그",
+          "inputType": "insertCompositionText",
+          "text": "한그",
+          "base": 2,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "compositionupdate",
+          "data": "한글",
+          "inputType": null,
+          "text": "한그",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "beforeinput",
+          "data": "한글",
+          "inputType": "insertCompositionText",
+          "text": "한그",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "input",
+          "data": "한글",
+          "inputType": "insertCompositionText",
+          "text": "한글",
+          "base": 2,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "select",
+          "data": null,
+          "inputType": null,
+          "text": "한글",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "compositionend",
+          "data": "한글",
+          "inputType": null,
+          "text": "한글",
+          "base": 0,
+          "extent": 2,
+          "trusted": false
+        }
+      ],
+      "rawSha256": "174ceba1019eb0f801976343a5c5578918de19a544b90d131c0a06f1be0e4ab5"
+    },
+    {
+      "name": "final-ime-delete-confirmed",
+      "url": "http://127.0.0.1:5102/",
+      "ime": {
+        "text": "",
+        "base": 0,
+        "extent": 0,
+        "hidden": false
+      },
+      "fields": [
+        {
+          "label": "Filled",
+          "text": "",
+          "base": 0,
+          "extent": 0,
+          "rect": {
+            "x": 19,
+            "y": 192.7556915283203,
+            "width": 362.3636474609375,
+            "height": 81.59091186523438,
+            "top": 192.7556915283203,
+            "right": 381.3636474609375,
+            "bottom": 274.3466033935547,
+            "left": 19
+          }
+        },
+        {
+          "label": "Filled",
+          "text": "",
+          "base": 0,
+          "extent": 0,
+          "rect": {
+            "x": 19,
+            "y": 288.7102355957031,
+            "width": 180,
+            "height": 81.59091186523438,
+            "top": 288.7102355957031,
+            "right": 199,
+            "bottom": 370.3011474609375,
+            "left": 19
+          }
+        },
+        {
+          "label": "Disabled",
+          "text": "",
+          "base": 0,
+          "extent": 0,
+          "rect": {
+            "x": 201.3636474609375,
+            "y": 288.7102355957031,
+            "width": 180,
+            "height": 81.59091186523438,
+            "top": 288.7102355957031,
+            "right": 381.3636474609375,
+            "bottom": 370.3011474609375,
+            "left": 201.3636474609375
+          }
+        },
+        {
+          "label": "Outlined",
+          "text": "",
+          "base": 0,
+          "extent": 0,
+          "rect": {
+            "x": 19,
+            "y": 384.67047119140625,
+            "width": 362.3636474609375,
+            "height": 81.59091186523438,
+            "top": 384.67047119140625,
+            "right": 381.3636474609375,
+            "bottom": 466.2613830566406,
+            "left": 19
+          }
+        },
+        {
+          "label": "Outlined",
+          "text": "",
+          "base": 0,
+          "extent": 0,
+          "rect": {
+            "x": 19,
+            "y": 480.6307067871094,
+            "width": 180,
+            "height": 81.59091186523438,
+            "top": 480.6307067871094,
+            "right": 199,
+            "bottom": 562.2216186523438,
+            "left": 19
+          }
+        },
+        {
+          "label": "Disabled",
+          "text": "",
+          "base": 0,
+          "extent": 0,
+          "rect": {
+            "x": 201.3636474609375,
+            "y": 480.6307067871094,
+            "width": 180,
+            "height": 81.59091186523438,
+            "top": 480.6307067871094,
+            "right": 381.3636474609375,
+            "bottom": 562.2216186523438,
+            "left": 201.3636474609375
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "compositionstart",
+          "data": "",
+          "inputType": null,
+          "text": "",
+          "base": 0,
+          "extent": 0,
+          "trusted": true
+        },
+        {
+          "type": "compositionupdate",
+          "data": "ㅎ",
+          "inputType": null,
+          "text": "",
+          "base": 0,
+          "extent": 0,
+          "trusted": true
+        },
+        {
+          "type": "beforeinput",
+          "data": "ㅎ",
+          "inputType": "insertCompositionText",
+          "text": "",
+          "base": 0,
+          "extent": 0,
+          "trusted": true
+        },
+        {
+          "type": "input",
+          "data": "ㅎ",
+          "inputType": "insertCompositionText",
+          "text": "ㅎ",
+          "base": 1,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "compositionupdate",
+          "data": "하",
+          "inputType": null,
+          "text": "ㅎ",
+          "base": 0,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "beforeinput",
+          "data": "하",
+          "inputType": "insertCompositionText",
+          "text": "ㅎ",
+          "base": 0,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "input",
+          "data": "하",
+          "inputType": "insertCompositionText",
+          "text": "하",
+          "base": 1,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "compositionupdate",
+          "data": "한",
+          "inputType": null,
+          "text": "하",
+          "base": 0,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "beforeinput",
+          "data": "한",
+          "inputType": "insertCompositionText",
+          "text": "하",
+          "base": 0,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "input",
+          "data": "한",
+          "inputType": "insertCompositionText",
+          "text": "한",
+          "base": 1,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "compositionupdate",
+          "data": "한ㄱ",
+          "inputType": null,
+          "text": "한",
+          "base": 0,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "beforeinput",
+          "data": "한ㄱ",
+          "inputType": "insertCompositionText",
+          "text": "한",
+          "base": 0,
+          "extent": 1,
+          "trusted": true
+        },
+        {
+          "type": "input",
+          "data": "한ㄱ",
+          "inputType": "insertCompositionText",
+          "text": "한ㄱ",
+          "base": 2,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "compositionupdate",
+          "data": "한ㄱ",
+          "inputType": null,
+          "text": "한ㄱ",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "beforeinput",
+          "data": "한ㄱ",
+          "inputType": "insertCompositionText",
+          "text": "한ㄱ",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "input",
+          "data": "한ㄱ",
+          "inputType": "insertCompositionText",
+          "text": "한ㄱ",
+          "base": 2,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "compositionupdate",
+          "data": "한그",
+          "inputType": null,
+          "text": "한ㄱ",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "beforeinput",
+          "data": "한그",
+          "inputType": "insertCompositionText",
+          "text": "한ㄱ",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "input",
+          "data": "한그",
+          "inputType": "insertCompositionText",
+          "text": "한그",
+          "base": 2,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "compositionupdate",
+          "data": "한그",
+          "inputType": null,
+          "text": "한그",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "beforeinput",
+          "data": "한그",
+          "inputType": "insertCompositionText",
+          "text": "한그",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "input",
+          "data": "한그",
+          "inputType": "insertCompositionText",
+          "text": "한그",
+          "base": 2,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "compositionupdate",
+          "data": "한글",
+          "inputType": null,
+          "text": "한그",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "beforeinput",
+          "data": "한글",
+          "inputType": "insertCompositionText",
+          "text": "한그",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "input",
+          "data": "한글",
+          "inputType": "insertCompositionText",
+          "text": "한글",
+          "base": 2,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "select",
+          "data": null,
+          "inputType": null,
+          "text": "한글",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "compositionend",
+          "data": "한글",
+          "inputType": null,
+          "text": "한글",
+          "base": 0,
+          "extent": 2,
+          "trusted": false
+        },
+        {
+          "type": "beforeinput",
+          "data": null,
+          "inputType": "deleteContentBackward",
+          "text": "한글",
+          "base": 0,
+          "extent": 2,
+          "trusted": true
+        },
+        {
+          "type": "input",
+          "data": null,
+          "inputType": "deleteContentBackward",
+          "text": "",
+          "base": 0,
+          "extent": 0,
+          "trusted": true
+        }
+      ],
+      "rawSha256": "a045de16c740427f3ad67a98f435d76e79742b199dfa7e192645d5c7344701da"
+    }
+  ],
+  "normalFallbackLoadedDiagnostics": [
+    {
+      "kind": "console",
+      "type": "log",
+      "text": "Doroti font fallback loaded: Noto Sans SC 67"
+    },
+    {
+      "kind": "console",
+      "type": "log",
+      "text": "Doroti font fallback loaded: Noto Sans KR 119"
+    },
+    {
+      "kind": "console",
+      "type": "log",
+      "text": "Doroti font fallback loaded: Noto Sans KR 118"
+    },
+    {
+      "kind": "console",
+      "type": "log",
+      "text": "Doroti font fallback loaded: Noto Sans KR 117"
+    }
+  ],
+  "delayedFontControls": {
+    "latencyMs": 1200,
+    "cacheCleared": true,
+    "runs": [
+      {
+        "url": "http://127.0.0.1:5099/",
+        "early": {
+          "at": 18608.125,
+          "text": "한글"
+        },
+        "settled": {
+          "at": 30875.549999999814,
+          "text": "한글"
+        },
+        "logs": [
+          {
+            "at": 23044.179999999702,
+            "text": "Doroti font fallback loaded: Noto Sans SC 67"
+          },
+          {
+            "at": 24252.59499999974,
+            "text": "Doroti font fallback loaded: Noto Sans KR 118"
+          },
+          {
+            "at": 25486.25499999989,
+            "text": "Doroti font fallback loaded: Noto Sans KR 117"
+          },
+          {
+            "at": 26748.290000000037,
+            "text": "Doroti font fallback loaded: Noto Sans KR 119"
+          }
+        ]
+      },
+      {
+        "url": "http://127.0.0.1:5102/",
+        "early": {
+          "at": 17282.33999999985,
+          "text": "한글"
+        },
+        "settled": {
+          "at": 29548.27499999944,
+          "text": "한글"
+        },
+        "logs": [
+          {
+            "at": 17505.919999999925,
+            "text": "Doroti font fallback loaded: Noto Sans SC 67"
+          },
+          {
+            "at": 18745.68999999948,
+            "text": "Doroti font fallback loaded: Noto Sans KR 118"
+          },
+          {
+            "at": 19973.46499999985,
+            "text": "Doroti font fallback loaded: Noto Sans KR 117"
+          },
+          {
+            "at": 21230.804999999702,
+            "text": "Doroti font fallback loaded: Noto Sans KR 119"
+          }
+        ]
+      }
+    ],
+    "observation": "Both baseline and final initially show missing-glyph boxes, then render Hangul after fallback downloads complete without code or string changes. This is existing on-demand font loading, not a persistent new cache regression."
+  },
+  "screenshots": [
+    {
+      "name": "android-web-hangul.png",
+      "sha256": "e47a0ca445fa9a7a0706d494225f0d0b5d08227e966db98fc75379ee224f9bb9",
+      "bytes": 170520
+    },
+    {
+      "name": "android-web-hangul-deleted.png",
+      "sha256": "c0fbc79343f7ad80880e0890bffc42846642c0206487f8f101492dd122b37a61",
+      "bytes": 173177
+    }
+  ],
+  "limits": [
+    "One baseline warm trial, two final warm trials (including the tracked-tool smoke) and two cold continuous trials per variant are bounded local comparisons, not statistical or physical-device acceptance.",
+    "The first final cold trial did not improve input queue p95; cold long tails remain. No stable 60fps claim.",
+    "Desktop Chrome uses WebGPU; Android auto falls back to WebGL2. Do not compare cross-backend performance.",
+    "Initial SwiftShader GPU-crash attempts, Chrome109 AOT startup failure and stale gesture-jar failure are excluded from baseline comparisons.",
+    "Physical phone/browser/keyboard, physical finger feel and display scanout remain unverified."
+  ]
+}

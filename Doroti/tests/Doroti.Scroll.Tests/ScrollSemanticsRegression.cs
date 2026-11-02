@@ -38,6 +38,10 @@ internal static class ScrollSemanticsRegression
             void Move(double pixels) { position.correctPixels(pixels); position.notifyListeners(); }
             Move(12.5);
             Move(25.25);
+            var semantics = typeof(RenderObject).GetProperty("_semantics", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(scroll)!;
+            var provider = semantics.GetType().GetProperty("configProvider")!.GetValue(semantics)!;
+            Check(provider.GetType().GetProperty("_originalConfiguration", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(provider) is null,
+                "repeated queued offsets leave the configuration lazy until flush");
             Check(owner.hasPendingSemanticsUpdate && !owner.hasPendingSemanticsNonGeometryUpdate,
                 "repeated interior scroll values retain coalescible work");
             Check(owner.hasPendingSemanticsContentUpdate, "the conservative legacy content predicate is preserved");

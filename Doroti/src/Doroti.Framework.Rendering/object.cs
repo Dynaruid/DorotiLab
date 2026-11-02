@@ -4532,6 +4532,17 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
             ? FrameworkWorkProfile.Begin(renderObject.GetType(), 13)
             : default;
         renderObject.owner!._nodesNeedingSemanticsGeometryUpdate.Add(renderObject);
+        if (scrollOffsetOnly && !allowAncestor && scrollOffsetOnlyUpdate
+            && cachedSemanticsNode is not null && !parentDataDirty
+            && renderObject.owner._nodesNeedingSemanticsUpdate.Contains(renderObject))
+        {
+            // This established scroll boundary is already queued. Keep its
+            // configuration lazy so the flush reads the latest offset; repeated
+            // pointer samples must not rebuild it or walk the same ancestors.
+            // Full content invalidation clears scrollOffsetOnlyUpdate below.
+            configProvider.clear();
+            return;
+        }
         SemanticsNode? producedSemanticsNode = cachedSemanticsNode;
         bool wasSemanticsBoundaryLocal =
             (producedSemanticsNode is not null) && configProvider.wasSemanticsBoundary;

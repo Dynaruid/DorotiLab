@@ -1460,13 +1460,18 @@ export function setTextInputState(
   if (focusedTextField) placeTextInputAtSemanticsElement(host, focusedTextField);
   if (attach && document.activeElement !== host.input) host.input.focus({ preventScroll: true });
 
-  // While an IME composition owns the textarea, managed state is an
-  // acknowledgement of an earlier native edit and may already be stale. Any
-  // value or selection write here can cancel the browser composition and leave
-  // the field apparently focused but unable to accept more text. The native
-  // endpoint remains authoritative until compositionend publishes the final
-  // state back to managed code.
-  if (host.composing || pendingNativeEdit) { emitText(host); return; }
+  // Keep the IME's text authoritative during composition. Framework selection
+  // gestures still have to reach the native endpoint: mobile selection handles
+  // belong to the framework, while the soft keyboard deletes the DOM selection.
+  // Only apply a changed selection for the same text revision after the stale
+  // acknowledgement check above. Never echo an identical selection or replace
+  // the value here, either of which can disrupt the IME's composing buffer.
+  if (host.composing || pendingNativeEdit) {
+    if (host.composing && !pendingNativeEdit && sameText && !sameSelection)
+      host.input.setSelectionRange(selectionStart, selectionEnd, selectionDirection);
+    emitText(host);
+    return;
+  }
 
   if (!sameText) host.input.value = text;
   if (!sameText || !sameSelection)

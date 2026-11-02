@@ -19,10 +19,12 @@ public sealed record SkiaFontFaceDescriptor
 /// <summary>Normalized axes are shared by measuring and drawing. Last explicit axis wins.</summary>
 public static class SkiaFontVariations
 {
-    public static string Key(IReadOnlyList<FontVariation>? variations) => string.Join(";", Normalize(variations)
+    public static string Key(IReadOnlyList<FontVariation>? variations) => variations is not { Count: > 0 }
+        ? string.Empty : string.Join(";", Normalize(variations)
         .Select(v => v.axis + "=" + v.value.ToString("R", CultureInfo.InvariantCulture)));
 
-    public static FontVariation[] Normalize(IReadOnlyList<FontVariation>? variations) => (variations ?? [])
+    public static FontVariation[] Normalize(IReadOnlyList<FontVariation>? variations) => variations is not { Count: > 0 }
+        ? [] : variations
         .Where(v => v.axis.Length == 4 && v.axis.All(c => c is >= ' ' and <= '~') && double.IsFinite(v.value))
         .GroupBy(v => v.axis, StringComparer.Ordinal).Select(g => g.Last()).OrderBy(v => v.axis, StringComparer.Ordinal).ToArray();
 

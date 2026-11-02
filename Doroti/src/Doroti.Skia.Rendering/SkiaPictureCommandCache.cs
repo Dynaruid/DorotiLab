@@ -44,24 +44,60 @@ public sealed partial class SkiaSceneRenderer
             DrawPicture(canvas, commands);
             return;
         }
-        if (_pictureCommandCache.TryGetValue(cacheKey, out var entry) && entry.Bounds != cullRect)
+        _pictureCommandCache.TryGetValue(cacheKey, out var entry);
+        SKMatrix matrix = default;
+        if (entry is not null && (entry.Bounds != cullRect
+            || entry.DeviceBasis is { } previousBasis
+                && (!TryPictureDeviceBasis(matrix = canvas.TotalMatrix, out var currentBasis)
+                    || currentBasis != previousBasis || entry.ShadowDeviceScale != _shadowDeviceScale)))
         {
             RemovePictureCommands(cacheKey);
             entry = null;
         }
         if (entry is null)
         {
-            // DrawShadow maps into device space and resets the matrix; recording
-            // it at identity would change shadow geometry at another transform.
-            // Unbounded color/paint operations also need the real destination.
-            if (
-                commands.Any(static command =>
-                    command.Operation is "drawShadow" or "drawColor" or "drawPaint"
-                )
-            )
+            // Unbounded color/paint operations need the real destination.
+            var hasShadow = false;
+            var maximumElevation = 0.0;
+            foreach (var command in commands)
             {
-                DrawPicture(canvas, commands);
-                return;
+                if (command.Operation is "drawColor" or "drawPaint")
+                {
+                    DrawPicture(canvas, commands);
+                    return;
+                }
+                if (command.HostPayload is CanvasShadowPayload shadow)
+                {
+                    hasShadow = true;
+                    maximumElevation = Math.Max(maximumElevation, shadow.Elevation);
+                }
+            }
+            SKMatrix? deviceBasis = null;
+            var recordingBounds = cullRect;
+            if (hasShadow)
+            {
+                // Shadows map their path into device space and reset the CTM.
+                // Record that same linear transform, then replay under only
+                // the destination translation. Fractional scrolling remains
+                // vector playback, without resampling cached shadow/text pixels.
+                matrix = canvas.TotalMatrix;
+                if (!TryPictureDeviceBasis(matrix, out var basis) || !double.IsFinite(_shadowDeviceScale))
+                {
+                    DrawPicture(canvas, commands);
+                    return;
+                }
+                deviceBasis = basis;
+                recordingBounds = basis.MapRect(cullRect);
+                // CanvasBounds contains unfiltered geometry. Cover the spot
+                // offset plus blur/stroke outsets used by DrawShadow; otherwise
+                // a native picture's cull rect can discard the shadow halo.
+                var outset = (float)(4 * maximumElevation * Math.Max(0, _shadowDeviceScale) + 16);
+                recordingBounds.Inflate(outset, outset);
+                if (!IsFinite(recordingBounds) || recordingBounds.IsEmpty)
+                {
+                    DrawPicture(canvas, commands);
+                    return;
+                }
             }
             while (
                 _pictureCommandCache.Count >= MaxPictureCommandEntries
@@ -71,7 +107,8 @@ public sealed partial class SkiaSceneRenderer
                 RemovePictureCommands(_pictureCommandOrder.First!.Value);
             }
 
-            entry = new(_pictureCommandOrder.AddLast(cacheKey), commands.Count, cullRect);
+            entry = new(_pictureCommandOrder.AddLast(cacheKey), commands.Count, cullRect,
+                recordingBounds, deviceBasis, _shadowDeviceScale);
             _pictureCommandCache.Add(cacheKey, entry);
             _pictureCommandCount += commands.Count;
             DrawPicture(canvas, commands);
@@ -83,7 +120,8 @@ public sealed partial class SkiaSceneRenderer
         if (entry.Picture is null)
         {
             using var recorder = new SKPictureRecorder();
-            var recording = recorder.BeginRecording(cullRect);
+            var recording = recorder.BeginRecording(entry.RecordingBounds);
+            if (entry.DeviceBasis is { } basis) recording.SetMatrix(basis);
             DrawPicture(recording, commands);
             entry.Picture = recorder.EndRecording();
             entry.Bytes = entry.Picture.ApproximateBytesUsed;
@@ -95,13 +133,35 @@ public sealed partial class SkiaSceneRenderer
             _pictureCommandHits++;
         }
 
-        canvas.DrawPicture(entry.Picture);
+        if (entry.DeviceBasis is null) canvas.DrawPicture(entry.Picture);
+        else
+        {
+            matrix = canvas.TotalMatrix;
+            var saved = canvas.Save();
+            try
+            {
+                canvas.ResetMatrix();
+                canvas.Translate(matrix.TransX, matrix.TransY);
+                canvas.DrawPicture(entry.Picture);
+            }
+            finally { canvas.RestoreToCount(saved); }
+        }
         // Evict only after drawing: an oversized current recording may itself
         // be the victim. Native command bytes exclude referenced image pixels.
         while (_pictureCommandBytes > MaxPictureCommandBytes)
         {
             RemovePictureCommands(_pictureCommandOrder.First!.Value);
         }
+    }
+
+    private static bool TryPictureDeviceBasis(SKMatrix matrix, out SKMatrix basis)
+    {
+        basis = matrix;
+        basis.TransX = basis.TransY = 0;
+        return matrix.Persp0 == 0 && matrix.Persp1 == 0 && matrix.Persp2 == 1
+            && float.IsFinite(matrix.ScaleX) && float.IsFinite(matrix.ScaleY)
+            && float.IsFinite(matrix.SkewX) && float.IsFinite(matrix.SkewY)
+            && float.IsFinite(matrix.TransX) && float.IsFinite(matrix.TransY);
     }
 
     private void RemovePictureCommands(long key)
@@ -130,12 +190,18 @@ public sealed partial class SkiaSceneRenderer
     private sealed class PictureCommandEntry(
         LinkedListNode<long> node,
         int commandCount,
-        SKRect bounds
+        SKRect bounds,
+        SKRect recordingBounds,
+        SKMatrix? deviceBasis,
+        double shadowDeviceScale
     )
     {
         internal readonly LinkedListNode<long> Node = node;
         internal readonly int CommandCount = commandCount;
         internal readonly SKRect Bounds = bounds;
+        internal readonly SKRect RecordingBounds = recordingBounds;
+        internal readonly SKMatrix? DeviceBasis = deviceBasis;
+        internal readonly double ShadowDeviceScale = shadowDeviceScale;
         internal SKPicture? Picture;
         internal long Bytes;
     }

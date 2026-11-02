@@ -112,14 +112,26 @@ internal sealed class BrowserSemanticsTransport
     }
 
     private static bool ContentEquals(SemanticsNodeUpdate previous, SemanticsNodeUpdate node) =>
-        previous == node || ((previous.controlsNodes ?? []).SequenceEqual(node.controlsNodes ?? [])
-        && previous with
-        {
-            rect = node.rect, children = node.children, indexInParent = node.indexInParent,
-            traversalParent = node.traversalParent, controlsNodes = node.controlsNodes,
-            coordinateTransform = node.coordinateTransform, platformViewId = node.platformViewId,
-            textGeometry = node.textGeometry,
-        } == node);
+        // A record `with` expression copies every field, even for unchanged
+        // nodes. This comparison runs over the retained tree on every scroll
+        // frame (and again when encoding changes), so compare the wire content
+        // directly. Geometry and child order are compared separately above.
+        ReferenceEquals(previous, node) || (
+            previous.id == node.id && previous.label == node.label && previous.value == node.value
+            && previous.actions == node.actions && Equals(previous.flags, node.flags)
+            && previous.role == node.role && previous.textSelectionBase == node.textSelectionBase
+            && previous.textSelectionExtent == node.textSelectionExtent
+            && Nullable.Equals(previous.scrollPosition, node.scrollPosition) && Nullable.Equals(previous.scrollExtentMax, node.scrollExtentMax)
+            && Nullable.Equals(previous.scrollExtentMin, node.scrollExtentMin) && previous.identifier == node.identifier
+            && previous.hint == node.hint && previous.tooltip == node.tooltip
+            && previous.increasedValue == node.increasedValue && previous.decreasedValue == node.decreasedValue
+            && previous.headingLevel == node.headingLevel && previous.linkUrl == node.linkUrl
+            && previous.validationResult == node.validationResult && previous.hitTestBehavior == node.hitTestBehavior
+            && previous.inputType == node.inputType && previous.minValue == node.minValue
+            && previous.maxValue == node.maxValue && previous.maxValueLength == node.maxValueLength
+            && previous.currentValueLength == node.currentValueLength && previous.scrollChildCount == node.scrollChildCount
+            && previous.scrollIndex == node.scrollIndex && Nullable.Equals(previous.locale, node.locale)
+            && (previous.controlsNodes ?? []).SequenceEqual(node.controlsNodes ?? []));
 
     private List<int> PruneUnreachable()
     {
