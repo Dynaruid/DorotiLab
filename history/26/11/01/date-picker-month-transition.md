@@ -9,6 +9,9 @@ Windows/Android Release 빌드를 완료했다. 사용자는 Windows 수정본�
 수정이 남아 있는 작업 트리를 기준으로 비교했고 해당 변경을 유지했다. 루트 `work.md`는
 [이전 요약](scroll-caret-resume-summary.md)으로 정리된 삭제 상태를 유지한다.
 
+2026-11-02 후속 설명: 사용자가 함께 체감한 스크롤·Date picker·lazy load 개선의 공통 원인과
+앞선 스크롤 수정의 관계는 [공통 엔진 성능 개선 요약](shared-engine-performance-summary.md)에 정리했다.
+
 ## Flutter 구성과 조사 결과
 
 [Flutter 원본](https://github.com/flutter/flutter/blob/master/packages/flutter/lib/src/material/calendar_date_picker.dart)은
