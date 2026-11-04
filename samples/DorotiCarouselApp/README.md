@@ -182,9 +182,25 @@ try {
 } finally { Pop-Location }
 ```
 
-기기 선택·설치는 [공용 배포 도구](../../helpers/deploy-helper/README.md)를 참고하세요. 이 도구의 `-App`은 `Testbed`와 `Sample2`만 지원하므로 Carousel은 직접 .NET 빌드와 기기 설치를 사용합니다.
+기기 선택·빌드·설치·실행은 [공용 배포 도구](../../helpers/deploy-helper/README.md)에 `-App Carousel`을 지정하면 됩니다.
+
+```powershell
+# .NET 10 / Release / Mono Profiled AOT
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Carousel
+# .NET 11 / Release / CoreCLR ReadyToRun
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Carousel -DotnetVersion 11
+```
 
 ### iOS 시뮬레이터, Mono 실기기, NativeAOT
+
+macOS에서는 공용 배포 도구로 기기·서명을 선택하고 빌드·설치·실행할 수 있습니다.
+
+```powershell
+# .NET 10 / 실기기 Release NativeAOT
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Carousel -Target device
+# .NET 10 / 시뮬레이터 Debug Mono
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Carousel -Target simulator
+```
 
 Mono 예제는 루트의 .NET 10 SDK에서 실행합니다. 시뮬레이터 Debug/Release와 실기기 Mono Release는 난독화에서 제외합니다. 실기기는 로컬 개발 인증서·프로비저닝 프로필 값으로 placeholder를 바꿉니다.
 

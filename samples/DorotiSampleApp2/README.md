@@ -180,7 +180,7 @@ try {
 } finally { Pop-Location }
 ```
 
-기기 선택·설치는 [공용 배포 도구](../../helpers/deploy-helper/README.md)를 참고하세요. 이 도구의 `-App`은 `Testbed`와 `Sample2`만 지원하므로 Carousel은 직접 .NET 빌드와 기기 설치를 사용합니다.
+기기 선택·설치는 [공용 배포 도구](../../helpers/deploy-helper/README.md)를 참고하세요. `-App Sample2`·`-App Testbed`·`-App Carousel`로 앱을 선택합니다.
 
 ### iOS 시뮬레이터, Mono 실기기, NativeAOT
 

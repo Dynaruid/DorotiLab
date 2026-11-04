@@ -167,7 +167,7 @@ try {
 } finally { Pop-Location }
 ```
 
-See [deployment tools](../../helpers/deploy-helper/README.md) for device selection and installation. Their `-App` supports `Testbed` and `Sample2`; build and install Carousel directly.
+See [deployment tools](../../helpers/deploy-helper/README.md) for device selection and installation. Select the app with `-App Testbed`, `-App Sample2`, or `-App Carousel`.
 
 ### iOS simulator, Mono device and NativeAOT
 

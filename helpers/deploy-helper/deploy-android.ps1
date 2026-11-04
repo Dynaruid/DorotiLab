@@ -3,10 +3,12 @@
 Build, install and launch a Doroti Android sample on a device or running emulator.
 .EXAMPLE
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Sample2 -Mode CoreClrJit
+.EXAMPLE
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Carousel
 #>
 [CmdletBinding()]
 param(
-    [ValidateSet('Sample2', 'Testbed')][string]$App,
+    [ValidateSet('Sample2', 'Testbed', 'Carousel')][string]$App,
     [ValidateSet('auto', 'device', 'emulator')][string]$Target = 'auto',
     [Alias('Serial')][string]$Device,
     [ValidateSet(10, 11)][int]$DotnetVersion = 10,

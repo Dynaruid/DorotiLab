@@ -44,7 +44,7 @@ public sealed class Options
             switch (option)
             {
                 case "--platform": options.Platform = Choice("ios", "android"); break;
-                case "--app": options.App = Choice("Sample2", "Testbed"); break;
+                case "--app": options.App = Choice(SampleApp.All.Select(app => app.Key).ToArray()); break;
                 case "--target": options.Target = Choice("auto", "device", "simulator", "emulator"); break;
                 case "--device": case "--serial": options.Device = Value(); break;
                 case "--dotnet-version": options.DotnetVersion = int.Parse(Choice("10", "11")); break;
@@ -108,7 +108,7 @@ public sealed class Options
         dotnet run --project helpers/deploy-helper/Doroti.DeployHelper -- [options]
 
           --platform ios|android           Omit to select interactively; iOS requires macOS.
-          --app Sample2|Testbed             Omit to select the sample interactively.
+          --app Sample2|Testbed|Carousel    Omit to select the sample interactively.
           --target auto|device|simulator|emulator  Default: combined targets; simulator is iOS, emulator is Android.
           --device ID, --serial ID          iOS UDID/CoreDevice ID or exact adb serial.
           --dotnet-version 10|11           Default: 10; selects the app build SDK.

@@ -1,6 +1,7 @@
 # iOS·Android 빌드·설치 CLI
 
-`DorotiSampleApp2`와 `DorotiTestbedApp`을 선택해 빌드·설치·실행합니다.
+`DorotiSampleApp2`·`DorotiTestbedApp`·`DorotiCarouselApp`을 선택해 빌드·설치·실행합니다.
+`-App` 값은 각각 `Sample2`·`Testbed`·`Carousel`이며, 생략하면 메뉴에서 선택합니다.
 [Doroti.DeployHelper](Doroti.DeployHelper/Doroti.DeployHelper.csproj)는 외부 NuGet 패키지가 없는
 .NET 10 콘솔 CLI입니다. 공통 프로세스 실행·선택 로직과 iOS/Android 배포 구현을 나눕니다.
 
@@ -41,6 +42,7 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1
 # .NET 10 기본: Release / Mono Profiled AOT
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Sample2 -Target device
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Testbed -Mode CoreClrJit
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Carousel -Target device
 
 # .NET 11 기본: Release / CoreCLR ReadyToRun
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Testbed -DotnetVersion 11
@@ -57,7 +59,7 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Testbed -D
 
 | Android 옵션 | 동작 |
 | --- | --- |
-| `-App Sample2\|Testbed` | 생략 시 앱 선택 |
+| `-App Sample2\|Testbed\|Carousel` | 생략 시 앱 선택 |
 | `-Target auto\|device\|emulator` | 기본 `auto`; 실기기와 실행 중인 에뮬레이터 목록 |
 | `-Device <serial>` / `-Serial <serial>` | `adb devices -l`의 정확한 시리얼 |
 | `-DotnetVersion 10\|11` | 기본 `10`; 저장소의 `global.json`을 수정하지 않고 앱 SDK 선택 |
@@ -77,12 +79,12 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Testbed -D
 모드 생략 시 .NET 10 Release는 `MonoAot`, .NET 10 Debug는 `Mono`, .NET 11은 `CoreClrR2R`입니다.
 .NET 10 Android CoreCLR은 실험적 기능입니다. .NET 11은
 [SampleApp2의 SDK 선택 파일](../../samples/DorotiSampleApp2/android/sdk/net11/global.json)의
-`11.0.100-rc.2.26504.105` SDK와 MAUI `11.0.0-rc.2.26505.5`를 두 앱에 공통으로 사용합니다.
+`11.0.100-rc.2.26504.105` SDK와 MAUI `11.0.0-rc.2.26505.5`를 세 앱에 공통으로 사용합니다.
 해당 SDK의 Android/MAUI workload를 미리 설치하세요. Android NativeAOT는 이 도구에서 제공하지 않습니다.
 
 연결·디버깅 권한·부팅 완료를 확인하고 `arm64-v8a`는 `android-arm64`, `x86_64`는 `android-x64`로 빌드합니다.
 다른 ABI는 빌드 전에 거부합니다. 빌드는 20분 제한이며, 빌드 성공 후 선택한 앱의 signed APK가 하나인지 확인합니다.
-산출물은 `Doroti/artifacts/<sample2|testbed>-android-<mono|aot|jit|r2r>-net<10|11>-<debug|release>-<arm64|x64>`에 분리합니다.
+산출물은 `Doroti/artifacts/<sample2|testbed|carousel>-android-<mono|aot|jit|r2r>-net<10|11>-<debug|release>-<arm64|x64>`에 분리합니다.
 모드 이름은 각각 `Mono`·`MonoAot`·`CoreClrJit`·`CoreClrR2R`에 대응하며 Windows 리소스 도구를 위해 경로를 짧게 유지합니다.
 예: `testbed-android-jit-net11-release-arm64`. Debug APK에도 managed assembly를 포함해
 별도 fast deployment 없이 `adb install`로 설치할 수 있게 합니다.
@@ -113,7 +115,7 @@ ADB 명령은 [Android 공식 문서](https://developer.android.com/tools/adb),
 
 ## iOS
 
-[deploy-ios.ps1](deploy-ios.ps1)은 `DorotiSampleApp2`와 `DorotiTestbedApp`의 iOS 빌드,
+[deploy-ios.ps1](deploy-ios.ps1)은 `DorotiSampleApp2`·`DorotiTestbedApp`·`DorotiCarouselApp`의 iOS 빌드,
 기기 설치와 실행을 처리합니다. [Doroti.DeployHelper](Doroti.DeployHelper/Doroti.DeployHelper.csproj)가
 실제 작업을 수행하는 .NET 10 콘솔 CLI이며 외부 NuGet 패키지를 사용하지 않습니다.
 
@@ -137,9 +139,11 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1
 # 특정 앱의 실기기: 기본 .NET 10 / Release / NativeAot
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Sample2 -Target device
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Target device
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Carousel -Target device
 
 # 시뮬레이터: 기본 .NET 10 / Debug / Mono, 인증서 선택 생략
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Sample2 -Target simulator
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Carousel -Target simulator
 
 # .NET 11 RC2 / Xcode 27 NativeAOT 예제
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Sample2 -Target device -DotnetVersion 11 -Mode NativeAot
@@ -167,7 +171,7 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -DryRu
 
 | PowerShell 옵션 | 동작 |
 | --- | --- |
-| `-App Sample2\|Testbed` | 생략 시 앱 선택 |
+| `-App Sample2\|Testbed\|Carousel` | 생략 시 앱 선택 |
 | `-Target auto\|device\|simulator` | 기본 `auto`: 실기기와 시뮬레이터 통합 목록 |
 | `-Device <ID>` | `-List`에 표시된 기기 UDID, CoreDevice ID 또는 시뮬레이터 UDID |
 | `-DotnetVersion 10\|11` | 기본 `10`; SDK 선택 위치를 자동 처리 |
@@ -227,7 +231,7 @@ CLI 자체는 루트 .NET 10 SDK를 사용하고, 선택한 iOS 앱의 SDK는 �
 
 두 SDK의 NativeAOT 빌드 모두 `Registrar=managed-static`, `_UseDynamicDependenciesForMarkNSObjects=false`,
 `MtouchExtraArgs=--skip-marking-nsobjects-in-user-assemblies=true`를 사용합니다.
-두 샘플의 `ios/NativeAotRoots.xml`은 UIKit 진입점·뷰·델리게이트를 명시적으로 보존합니다.
+각 샘플의 `ios/NativeAotRoots.xml`은 UIKit 진입점·뷰·델리게이트를 명시적으로 보존합니다.
 .NET 11 프로필은 RC1에서 관찰한 `IL2037`과 assembly-preparer의 `MarkNSObjects` 오류(`MT2080`)에
 사용했던 호환 설정을 유지하며, `PrepareAssemblies=false`, `PostProcessAssemblies=false`로
 ILLink의 managed registrar 경로를 사용합니다. RC2 실기기 게시·실행에서 이 옵션과 보존 목록을
@@ -238,7 +242,7 @@ Mono는 `dotnet build`를 사용하고 `PublishAot=false`를 명시합니다.
 실기기는 `ios-arm64`, 시뮬레이터는 Mac CPU에 따라 `iossimulator-arm64` 또는 `iossimulator-x64`를 선택합니다.
 Apple Silicon에서는 Rosetta로 호출해도 ARM64를 선택합니다.
 
-산출물은 `Doroti/artifacts/<sample2|testbed>-ios-<nativeaot|mono>-net<10|11>-<debug|release>-<RID>`에
+산출물은 `Doroti/artifacts/<sample2|testbed|carousel>-ios-<nativeaot|mono>-net<10|11>-<debug|release>-<RID>`에
 앱·SDK·모드·구성·RID별로 분리합니다. 예: `sample2-ios-nativeaot-net10-release-ios-arm64`.
 빌드 시간 제한은 20분이며, 실패하거나 취소하면 설치로 넘어가지 않습니다.
 성공한 산출물의 bundle ID를 확인하고, 실기기는 `codesign --verify --deep --strict`를 통과한 뒤 설치합니다.

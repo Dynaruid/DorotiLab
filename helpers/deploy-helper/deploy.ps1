@@ -5,11 +5,13 @@ Select, build, install and launch a Doroti iOS or Android sample.
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy.ps1 -Platform android -App Testbed
 .EXAMPLE
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy.ps1 -Platform ios -App Sample2 -Target simulator
+.EXAMPLE
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy.ps1 -Platform android -App Carousel
 #>
 [CmdletBinding()]
 param(
     [ValidateSet('ios', 'android')][string]$Platform,
-    [ValidateSet('Sample2', 'Testbed')][string]$App,
+    [ValidateSet('Sample2', 'Testbed', 'Carousel')][string]$App,
     [ValidateSet('auto', 'device', 'simulator', 'emulator')][string]$Target = 'auto',
     [Alias('Serial')][string]$Device,
     [ValidateSet(10, 11)][int]$DotnetVersion = 10,
