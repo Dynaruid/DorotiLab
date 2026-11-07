@@ -2,6 +2,7 @@
 #include "accessibility_bridge.h"
 #include "resize_order_trace.h"
 #include "pointer_device_kind.h"
+#include "pointer_sequence.h"
 #include "ime_editing_state.h"
 
 #include <windows.h>
@@ -2314,6 +2315,8 @@ class ProductHost final {
     if ((wparam & MK_LBUTTON) != 0) buttons |= 1;
     if ((wparam & MK_RBUTTON) != 0) buttons |= 2;
     if ((wparam & MK_MBUTTON) != 0) buttons |= 4;
+    const auto sequence = pointer_gestures_.Apply(change, buttons);
+    change = sequence.change;
     const auto is_scroll = scroll_x != 0 || scroll_y != 0;
     const auto info = static_cast<uint32_t>(GetMessageExtraInfo());
     uint32_t kind;
@@ -2341,7 +2344,7 @@ class ProductHost final {
         pointer_sequence_ == 0 ? 0.0 : y - previous_y,
         buttons, scroll_x, scroll_y,
         is_scroll ? 1u : 0u,
-        1, 1.0, 0.0, 0};
+        sequence.identifier, 1.0, 0.0, 0};
     last_pointer_lparam_ = lparam;
     ++pointer_sequence_;
     callbacks_.pointer(callbacks_.callback_context, &pointer);
@@ -2492,6 +2495,7 @@ class ProductHost final {
   bool pointer_down_{};
   LPARAM last_pointer_lparam_{};
   uint64_t pointer_sequence_{};
+  doroti::windows::CursorPointerSequence pointer_gestures_;
   doroti::windows::PointerMessageKinds pointer_kinds_;
   std::atomic<uint32_t> cursor_kind_{};
   doroti_windows_text_configuration_v1 text_configuration_{};

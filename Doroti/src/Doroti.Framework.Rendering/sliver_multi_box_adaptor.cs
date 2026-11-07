@@ -354,7 +354,15 @@ public abstract class RenderSliverMultiBoxAdaptor
         if (childParentData.keepAlive)
         {
             DartRuntimePrimitives.Assert(() => !childParentData._keptAlive);
-            if (preserveCachedChildAttachment) _removeFromChildList(child);
+            if (preserveCachedChildAttachment)
+            {
+                _removeFromChildList(child);
+                // The owner may finish layout without visiting this subtree.
+                // Match dropChild's boundary invalidation without detaching:
+                // dirty cached descendants must not inherit a path through a
+                // now-clean sliver. Restoration's layout establishes it again.
+                if (child._isRelayoutBoundary == false) child._isRelayoutBoundary = null;
+            }
             else remove(child);
             _keepAliveBucket[
                 (

@@ -89,6 +89,7 @@ Dart-to-C# 컴파일러는 필요한 소스를 가져오거나 동작을 비교�
 | [샘플 앱 가이드](samples/DorotiTestbedApp/README.ko.md) | 플랫폼별 실행, 샘플 화면, 렌더러 옵션, 문제 해결 |
 | [Cupertino 샘플](samples/DorotiSampleApp2/README.md) | Windows / Web의 Cupertino 위젯, 프로필 입력, 테마 설정 |
 | [Custom Carousel 샘플](samples/DorotiCarouselApp/README.md) | 스냅·루프·변형 효과·컨트롤러를 사용하는 다섯 캐러셀 데모 |
+| [Material 컴포넌트 데모](samples/DorotiDemoApp/README.ko.md) | Testbed의 Components 페이지를 복사한 독립 데모 앱 |
 | [iOS / Android 배포 도구](helpers/deploy-helper/README.md) | 샘플·기기 선택, 빌드·설치·실행 |
 | [Dart-to-C# 컴파일러](tools/Doroti.DartToCSharp/README.ko.md) | 선택적 소스 가져오기 및 마이그레이션 도구 |
 | [WGSL 컴파일러](tools/Doroti.Wgsl/README.md) | 셰이더 컴파일, 백엔드 프로필, 앱 연동 |

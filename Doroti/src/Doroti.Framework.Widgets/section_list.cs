@@ -31,6 +31,7 @@ public sealed class SectionList : SliverMultiBoxAdaptorWidget
     private readonly int[] _retain;
     private readonly bool _suspended,
         _restoreRetainedChildren;
+    internal bool IsSuspended => _suspended;
 
     /// <param name="suspended">For an offstage retained owner only: keep existing
     /// children and scroll extent without materializing or measuring children.</param>
@@ -57,6 +58,8 @@ public sealed class SectionList : SliverMultiBoxAdaptorWidget
         }
     }
 
+    public override SliverMultiBoxAdaptorElement createElement() => new SectionListElement(this);
+
     public override RenderObject createRenderObject(BuildContext context) =>
         new RenderSectionList(
             (SliverMultiBoxAdaptorElement)context,
@@ -74,4 +77,44 @@ public sealed class SectionList : SliverMultiBoxAdaptorWidget
             _suspended,
             _restoreRetainedChildren
         );
+}
+
+internal sealed class SectionListElement(SectionList widget)
+    : SliverMultiBoxAdaptorElement(widget), IGlobalKeyReparentingOwner
+{
+    public bool PrepareForGlobalKeyReparenting(Element element)
+    {
+        if (!((SectionList)this.widget).IsSuspended || _currentlyUpdatingChildIndex is not null)
+        {
+            return false;
+        }
+        var directChild = element;
+        while (directChild._parent is { } parent && !ReferenceEquals(parent, this))
+        {
+            directChild = parent;
+        }
+        if (!ReferenceEquals(directChild._parent, this)
+            || !ReferenceEquals(directChild.renderObject, element.renderObject)
+            || directChild.slot is not long index
+            || !_childElements.TryGetValue(index, out var registered)
+            || !ReferenceEquals(registered, directChild))
+        {
+            return false;
+        }
+
+        // The delegate's transparent wrapper is not the keyed section itself.
+        // Retire the wrapper and render slot together; the ordinary GlobalKey
+        // path then reactivates the section's existing State at its new owner.
+        _currentlyUpdatingChildIndex = index;
+        try
+        {
+            _childElements.Remove(index);
+            deactivateChild(directChild);
+        }
+        finally
+        {
+            _currentlyUpdatingChildIndex = null;
+        }
+        return true;
+    }
 }

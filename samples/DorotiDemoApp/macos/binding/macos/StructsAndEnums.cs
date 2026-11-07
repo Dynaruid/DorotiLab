@@ -1,0 +1,1 @@
+namespace DorotiDemoApp.MacOS.Native;

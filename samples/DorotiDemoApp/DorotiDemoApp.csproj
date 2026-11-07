@@ -1,0 +1,17 @@
+<Project>
+  <Import Project="../../Doroti/src/Doroti.App.Sdk/Sdk/Sdk.props" />
+  <PropertyGroup>
+    <AssemblyName>DorotiDemoApp</AssemblyName>
+    <RootNamespace>DorotiDemoApp</RootNamespace>
+    <DorotiUseRepositoryProjects>true</DorotiUseRepositoryProjects>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../Doroti/src/Doroti.Hosting/Doroti.Hosting.csproj" />
+    <ProjectReference Include="../../packages/Doroti.Material/Doroti.Material.csproj" />
+    <EmbeddedResource Include="assets/fonts/Roboto-*.ttf" LogicalName="MaterialSample.%(Filename)%(Extension)" />
+    <EmbeddedResource Include="assets/images/mae-mu-9002s2VnOAY-unsplash.webp" LogicalName="MaterialSample.image.webp" />
+    <DorotiLicense Include="src/Components/LICENSE.flutter;assets/fonts/LICENSE.roboto.txt" />
+  </ItemGroup>
+  <Import Project="../../Doroti/src/Doroti.App.Sdk/Sdk/Sdk.targets" />
+</Project>

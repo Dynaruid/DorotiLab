@@ -9,6 +9,7 @@ public sealed record SampleApp(string Key, string Folder, string BundleId, strin
         new("Sample2", "DorotiSampleApp2", "dev.doroti.sample2", "sample2"),
         new("Testbed", "DorotiTestbedApp", "dev.doroti.testbed", "testbed"),
         new("Carousel", "DorotiCarouselApp", "dev.doroti.carousel", "carousel"),
+        new("Demo", "DorotiDemoApp", "dev.doroti.demo", "demo"),
     ];
 }
 

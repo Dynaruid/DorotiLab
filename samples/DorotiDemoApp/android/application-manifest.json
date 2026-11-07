@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "doroti.application-capabilities/v1",
+  "applicationId": "dev.doroti.demo",
+  "targetRid": "android-arm64",
+  "platformViews": [],
+  "resources": [],
+  "plugins": [
+    {
+      "id": "doroti.native.platform",
+      "channel": "doroti/native-platform",
+      "codec": "json",
+      "capabilityId": "platform-messaging",
+      "nativePackage": {
+        "rid": "android-arm64",
+        "packageId": "DorotiDemoApp.Android.Native",
+        "version": "1.0.0",
+        "abiVersion": "doroti.native-platform-bridge/v1",
+        "handlerType": "DorotiDemoApp.Android.DorotiNativePlatformBridge"
+      }
+    }
+  ]
+}

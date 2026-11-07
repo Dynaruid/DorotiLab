@@ -11,7 +11,7 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy.ps1 -Platform android -App 
 [CmdletBinding()]
 param(
     [ValidateSet('ios', 'android')][string]$Platform,
-    [ValidateSet('Sample2', 'Testbed', 'Carousel')][string]$App,
+    [ValidateSet('Sample2', 'Testbed', 'Carousel', 'Demo')][string]$App,
     [ValidateSet('auto', 'device', 'simulator', 'emulator')][string]$Target = 'auto',
     [Alias('Serial')][string]$Device,
     [ValidateSet(10, 11)][int]$DotnetVersion = 10,

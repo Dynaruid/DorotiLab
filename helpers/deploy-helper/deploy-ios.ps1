@@ -12,7 +12,7 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Carousel -Targ
 #>
 [CmdletBinding()]
 param(
-    [ValidateSet('Sample2', 'Testbed', 'Carousel')][string]$App,
+    [ValidateSet('Sample2', 'Testbed', 'Carousel', 'Demo')][string]$App,
     [ValidateSet('auto', 'device', 'simulator')][string]$Target = 'auto',
     [string]$Device,
     [ValidateSet(10, 11)][int]$DotnetVersion = 10,

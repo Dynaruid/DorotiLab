@@ -8,7 +8,7 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Carousel
 #>
 [CmdletBinding()]
 param(
-    [ValidateSet('Sample2', 'Testbed', 'Carousel')][string]$App,
+    [ValidateSet('Sample2', 'Testbed', 'Carousel', 'Demo')][string]$App,
     [ValidateSet('auto', 'device', 'emulator')][string]$Target = 'auto',
     [Alias('Serial')][string]$Device,
     [ValidateSet(10, 11)][int]$DotnetVersion = 10,

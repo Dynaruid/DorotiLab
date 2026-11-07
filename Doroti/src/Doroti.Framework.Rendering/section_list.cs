@@ -13,6 +13,11 @@ public sealed class RenderSectionList : RenderSliverMultiBoxAdaptor, KeepAliveRe
 {
     protected override bool semanticsLayoutIsGeometryOnly => true;
     protected override bool preserveCachedChildAttachment => true;
+    // A suspended owner's extent is frozen and its retained bucket is never
+    // laid out or painted. Transferring a cached child to an active viewport
+    // must update ownership/compositing/semantics, but cannot change layout.
+    internal override bool childRemovalAffectsLayout(RenderObject child) =>
+        !_suspended || child.parentData is not SliverMultiBoxAdaptorParentData { keptAlive: true };
     private readonly HashSet<RenderBox> _pendingReleases = [];
     private SectionExtentIndex _index;
     private object? _revision;
@@ -133,6 +138,10 @@ public sealed class RenderSectionList : RenderSliverMultiBoxAdaptor, KeepAliveRe
         // so would steal that child back on the hidden viewport's next layout.
         if (_suspended)
         {
+            // Suspended owners do not lay out their linked children. Move them
+            // to retained storage so later widget/image updates have the same
+            // valid boundary state as other offscreen cached sections.
+            Trim(childCount, 0);
             geometry = new SliverGeometry(scrollExtent: _index.Total, maxPaintExtent: _index.Total);
             childManager.didFinishLayout();
             return;

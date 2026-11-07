@@ -53,7 +53,18 @@ wire contract, require allocation-free retained content comparisons, and preserv
 compact geometry patches and immediate selection/scroll-value changes.
 Cached-section fixtures verify that keep-alive moves retain attachment, owner,
 parent data and sibling links without recreating children, while real eviction
-detaches the complete subtree exactly once.
+detaches the complete subtree exactly once. Dirty cached descendants can update
+after their owner has completed layout, and a suspended section list moves its
+linked children into retained storage before resuming the same children. The
+fixture also transfers a GlobalKey section to an independently scrolling
+viewport while the suspended source and their shared ancestors are clean,
+preserving State and verifying exact final disposal. These use the real build
+owner, pipeline and layout callbacks in Debug, where invalid slot ownership,
+cross-subtree layout mutations and inherited layout-boundary paths raise errors:
+
+```powershell
+python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet run --project Doroti/tests/Doroti.Scroll.Tests/Doroti.Scroll.Tests.csproj -c Debug -- --cached-sections
+```
 
 Native callback checks preserve exact frame timestamps for live owners and allow
 late pulses after teardown. Managed dispatcher work stays alive until delivery;

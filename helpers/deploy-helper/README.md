@@ -1,7 +1,7 @@
 # iOS·Android 빌드·설치 CLI
 
-`DorotiSampleApp2`·`DorotiTestbedApp`·`DorotiCarouselApp`을 선택해 빌드·설치·실행합니다.
-`-App` 값은 각각 `Sample2`·`Testbed`·`Carousel`이며, 생략하면 메뉴에서 선택합니다.
+`DorotiSampleApp2`·`DorotiTestbedApp`·`DorotiCarouselApp`·`DorotiDemoApp`을 선택해 빌드·설치·실행합니다.
+`-App` 값은 각각 `Sample2`·`Testbed`·`Carousel`·`Demo`이며, 생략하면 메뉴에서 선택합니다.
 [Doroti.DeployHelper](Doroti.DeployHelper/Doroti.DeployHelper.csproj)는 외부 NuGet 패키지가 없는
 .NET 10 콘솔 CLI입니다. 공통 프로세스 실행·선택 로직과 iOS/Android 배포 구현을 나눕니다.
 
@@ -59,7 +59,7 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Testbed -D
 
 | Android 옵션 | 동작 |
 | --- | --- |
-| `-App Sample2\|Testbed\|Carousel` | 생략 시 앱 선택 |
+| `-App Sample2\|Testbed\|Carousel\|Demo` | 생략 시 앱 선택 |
 | `-Target auto\|device\|emulator` | 기본 `auto`; 실기기와 실행 중인 에뮬레이터 목록 |
 | `-Device <serial>` / `-Serial <serial>` | `adb devices -l`의 정확한 시리얼 |
 | `-DotnetVersion 10\|11` | 기본 `10`; 저장소의 `global.json`을 수정하지 않고 앱 SDK 선택 |
@@ -115,7 +115,7 @@ ADB 명령은 [Android 공식 문서](https://developer.android.com/tools/adb),
 
 ## iOS
 
-[deploy-ios.ps1](deploy-ios.ps1)은 `DorotiSampleApp2`·`DorotiTestbedApp`·`DorotiCarouselApp`의 iOS 빌드,
+[deploy-ios.ps1](deploy-ios.ps1)은 `DorotiSampleApp2`·`DorotiTestbedApp`·`DorotiCarouselApp`·`DorotiDemoApp`의 iOS 빌드,
 기기 설치와 실행을 처리합니다. [Doroti.DeployHelper](Doroti.DeployHelper/Doroti.DeployHelper.csproj)가
 실제 작업을 수행하는 .NET 10 콘솔 CLI이며 외부 NuGet 패키지를 사용하지 않습니다.
 
@@ -171,7 +171,7 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -DryRu
 
 | PowerShell 옵션 | 동작 |
 | --- | --- |
-| `-App Sample2\|Testbed\|Carousel` | 생략 시 앱 선택 |
+| `-App Sample2\|Testbed\|Carousel\|Demo` | 생략 시 앱 선택 |
 | `-Target auto\|device\|simulator` | 기본 `auto`: 실기기와 시뮬레이터 통합 목록 |
 | `-Device <ID>` | `-List`에 표시된 기기 UDID, CoreDevice ID 또는 시뮬레이터 UDID |
 | `-DotnetVersion 10\|11` | 기본 `10`; SDK 선택 위치를 자동 처리 |

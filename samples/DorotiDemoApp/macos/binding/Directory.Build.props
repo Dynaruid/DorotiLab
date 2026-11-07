@@ -1,0 +1,13 @@
+<Project>
+  <PropertyGroup>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(MSBuildThisFileDirectory)obj\**</DefaultItemExcludes>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(MSBuildProjectName.EndsWith('.MacOS.Native'))">
+    <BaseIntermediateOutputPath Condition="'$(ArtifactsPath)' == ''">obj\macos\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath Condition="'$(ArtifactsPath)' == ''">$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(MSBuildProjectName.EndsWith('.MacCatalyst.Native'))">
+    <BaseIntermediateOutputPath Condition="'$(ArtifactsPath)' == ''">obj\maccatalyst\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath Condition="'$(ArtifactsPath)' == ''">$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
+  </PropertyGroup>
+</Project>

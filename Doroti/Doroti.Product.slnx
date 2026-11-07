@@ -45,6 +45,14 @@
   </Folder>
   <Project Path="src/Doroti.App.Sdk/Doroti.App.Sdk.csproj" />
   <Folder Name="/samples/">
+    <Project Path="../samples/DorotiDemoApp/DorotiDemoApp.csproj" />
+    <Project Path="../samples/DorotiDemoApp/windowsappsdk/DorotiDemoApp.WindowsAppSdk.csproj" />
+    <Project Path="../samples/DorotiDemoApp/web/DorotiDemoApp.Web.csproj" />
+    <Project Path="../samples/DorotiDemoApp/android/DorotiDemoApp.Android.csproj" />
+    <Project Path="../samples/DorotiDemoApp/ios/DorotiDemoApp.iOS.csproj" />
+    <Project Path="../samples/DorotiDemoApp/macos/DorotiDemoApp.MacOS.csproj" />
+    <Project Path="../samples/DorotiDemoApp/macos/DorotiDemoApp.MacCatalyst.csproj" />
+    <Project Path="../samples/DorotiDemoApp/linux/DorotiDemoApp.Linux.csproj" />
     <Project Path="../samples/DorotiTestbedApp/DorotiTestbedApp.csproj" />
     <Project Path="../samples/DorotiCarouselApp/DorotiCarouselApp.csproj" />
     <Project Path="../samples/DorotiCarouselApp/windowsappsdk/DorotiCarouselApp.WindowsAppSdk.csproj" />

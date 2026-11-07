@@ -75,6 +75,11 @@ public class ObjectKey : LocalKey
     }
 }
 
+internal interface IGlobalKeyReparentingOwner
+{
+    bool PrepareForGlobalKeyReparenting(Element element);
+}
+
 public abstract class GlobalKeyBase : Key
 {
     internal virtual Element? _currentElement =>
@@ -2642,6 +2647,17 @@ public abstract class Element : DiagnosticableTree, BuildContext
         if (!Widget.canUpdate(element.widget, newWidget))
         {
             return null;
+        }
+        // A retained lazy owner can park a whole keyed section while another
+        // viewport requests it. Let that owner retire its direct sliver slot
+        // under its own mutation scope before the ordinary key reparenting.
+        for (var ancestor = element._parent; ancestor is not null; ancestor = ancestor._parent)
+        {
+            if (ancestor is IGlobalKeyReparentingOwner retainedOwner
+                && retainedOwner.PrepareForGlobalKeyReparenting(element))
+            {
+                break;
+            }
         }
         DartRuntimePrimitives.Assert(() =>
         {

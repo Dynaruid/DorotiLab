@@ -1,0 +1,24 @@
+# Local runner output and packaging state.
+[Bb]in/
+[Oo]bj/
+[Pp]ublish/
+[Aa]pp[Pp]ackages/
+[Bb]undle[Aa]rtifacts/
+*.appx
+*.appxbundle
+*.msix
+*.msixbundle
+*.appinstaller
+web/wwwroot/_framework/
+
+# Native workspaces and per-user state.
+**/.gradle/
+**/native/**/[Bb]uild/
+**/DerivedData/
+**/xcuserdata/
+**/.xcode.env.local
+**/native/**/*.aar
+**/native/**/*.xcframework/
+**/local.properties
+*.user
+*.suo

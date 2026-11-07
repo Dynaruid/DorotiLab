@@ -9,6 +9,12 @@ using Doroti.Host.Maui;
 using Doroti.Runtime;
 using Doroti.Ui;
 
+if (args is ["--cached-sections"])
+{
+    CachedSectionRegression.Run();
+    return;
+}
+
 if (args.Length == 1)
 {
     ReplayTrackpadReport(args[0]);

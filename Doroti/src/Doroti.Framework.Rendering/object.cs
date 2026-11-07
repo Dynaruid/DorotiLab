@@ -1587,11 +1587,16 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         redepthChild(child);
     }
 
+    // A retained child outside layout/paint can leave a frozen owner without
+    // changing that owner's geometry. Ordinary child removals require layout.
+    internal virtual bool childRemovalAffectsLayout(RenderObject child) => true;
+
     public virtual void dropChild(RenderObject child)
     {
         DartRuntimePrimitives.Assert(() => Equals(child._parent, this));
         DartRuntimePrimitives.Assert(() => child.attached == attached);
         DartRuntimePrimitives.Assert(() => child.parentData is not null);
+        bool affectsLayout = childRemovalAffectsLayout(child);
         if (!(child._isRelayoutBoundary ?? true))
         {
             child._isRelayoutBoundary = null;
@@ -1603,7 +1608,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         {
             child.detach();
         }
-        markNeedsLayout();
+        if (affectsLayout) markNeedsLayout();
         markNeedsCompositingBitsUpdate();
         markNeedsSemanticsUpdate();
     }
