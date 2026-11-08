@@ -223,7 +223,9 @@ CLI 자체는 루트 .NET 10 SDK를 사용하고, 선택한 iOS 앱의 SDK는 �
 첫 실행에는 CLI 복원·컴파일이 포함되며 이후에는 증분 빌드를 사용합니다.
 `-List`와 `-DryRun`에서도 CLI 자체의 빌드는 수행하지만 iOS 앱은 빌드하거나 배포하지 않습니다.
 
-.NET 10은 루트 `global.json`에서 SDK를 선택하고 `net10.0-ios27.0` / MAUI `10.0.110`을 사용합니다.
+.NET 10은 루트 `global.json`에서 SDK를 선택하고 `net10.0-ios` / MAUI `10.0.110`을 사용합니다.
+iOS 플랫폼 버전은 선택된 SDK의 iOS 워크로드가 지원하는 기본값을 사용합니다.
+`27.0` 같은 버전을 고정하지 않으므로 워크로드 업데이트로 지원 버전이 바뀌어도 `NETSDK1140`이 발생하지 않습니다.
 .NET 11은 `samples/DorotiTestbedApp/ios/global.json`에서 SDK를 선택하고
 `net11.0-ios` / MAUI `11.0.0-rc.2.26505.5`를 사용합니다. 저장소의 `global.json`은 수정하지 않습니다.
 .NET 11 RC2는 Xcode 27.0과 워크로드 집합 `11.0.100-rc.2.26509.2`를 사용합니다.

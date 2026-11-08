@@ -6,7 +6,9 @@ Mac, 대상 SDK의 iOS 워크로드, Xcode와 기기에 맞는 개발 인증서�
 
 ## .NET 10 + Xcode 27
 
-이 예제는 .NET SDK 10.0.401, iOS SDK 27.0.10722, MAUI 10.0.110 구성의 게시 옵션입니다.
+이 예제는 .NET 10 SDK와 MAUI 10.0.110을 사용하며, iOS 플랫폼 버전은 설치된 워크로드의 기본값을 따릅니다.
+`27.0`을 고정하지 않아 워크로드 업데이트 후 `NETSDK1140`이 발생하는 것을 방지합니다.
+아래 NSObject 호환 설정은 .NET SDK 10.0.401, iOS SDK 27.0.10722에서 사용한 옵션입니다.
 SDK 버전 검사와 AOT 분석 경고 검사를 유지합니다.
 
 아래는 저장소 루트의 PowerShell 예제입니다. 서명 값은 해당 기기를 포함한 개발 프로필로 바꿉니다.
@@ -16,7 +18,7 @@ $sample2AotArtifacts = Join-Path (Get-Location).Path 'Doroti/artifacts/sample2-i
 dotnet publish ./samples/DorotiSampleApp2/ios/DorotiSampleApp2.iOS.csproj `
     --disable-build-servers -nr:false -c Release -r ios-arm64 `
     -p:DorotiCompilationMode=NativeAot `
-    -p:DorotiIosTargetFramework=net10.0-ios27.0 `
+    -p:DorotiIosTargetFramework=net10.0-ios `
     -p:DorotiIosMauiVersion=10.0.110 `
     -p:Registrar=managed-static `
     -p:_UseDynamicDependenciesForMarkNSObjects=false `

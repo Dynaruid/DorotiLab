@@ -167,7 +167,8 @@ public sealed class IosDeploymentCli(string repositoryRoot, ICommandRunner runne
             throw new DeployException($"Expected .NET {options.DotnetVersion} SDK, but {cwd}/global.json selected {sdk}.");
         var artifacts = Path.Combine(RepositoryRoot, "Doroti/artifacts",
             $"{app.ArtifactSlug}-ios-{mode.ToLowerInvariant()}-net{options.DotnetVersion}-{configuration.ToLowerInvariant()}-{rid}");
-        var framework = options.DotnetVersion == 10 ? "net10.0-ios27.0" : "net11.0-ios";
+        // Let the selected iOS workload supply a supported platform version.
+        var framework = $"net{options.DotnetVersion}.0-ios";
         var maui = options.DotnetVersion == 10 ? "10.0.110" : "11.0.0-rc.2.26505.5";
         var args = new List<string>
         {

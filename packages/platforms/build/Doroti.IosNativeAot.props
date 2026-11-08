@@ -3,12 +3,12 @@
     <DorotiIosNativeAotProfileImported>true</DorotiIosNativeAotProfileImported>
     <DorotiIosNativeAotProfilePath>$(MSBuildThisFileFullPath)</DorotiIosNativeAotProfilePath>
   </PropertyGroup>
-  <!-- Select the .NET 10/Xcode 27 profile explicitly; keep the
-       .NET 11 RC2 NativeAOT profile separate. -->
-  <PropertyGroup Condition="'$(DorotiIosTargetFramework)' == 'net10.0-ios27.0'">
+  <!-- Use the installed iOS workload for .NET 10, while retaining the
+       explicit Xcode 27.0 profile and the separate .NET 11 RC2 profile. -->
+  <PropertyGroup Condition="'$(DorotiIosTargetFramework)' == 'net10.0-ios' or '$(DorotiIosTargetFramework)' == 'net10.0-ios27.0'">
     <DorotiCompilationMode Condition="'$(DorotiCompilationMode)' == ''">Mono</DorotiCompilationMode>
     <DorotiHostTargetFrameworks Condition="'$(DorotiHostTargetFrameworks)' == ''">$(DorotiIosTargetFramework)</DorotiHostTargetFrameworks>
-    <NoWarn>$(NoWarn);XCODE_27_0_PREVIEW</NoWarn>
+    <NoWarn Condition="'$(DorotiIosTargetFramework)' == 'net10.0-ios27.0'">$(NoWarn);XCODE_27_0_PREVIEW</NoWarn>
     <!-- Choose the Debug interpreter split in Sdk.targets, after the runner's
          app project, assembly name and RID are known. Explicit caller settings
          and NativeAOT remain separate profiles. -->
