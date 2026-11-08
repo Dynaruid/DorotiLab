@@ -231,6 +231,20 @@ iOS 플랫폼 버전은 선택된 SDK의 iOS 워크로드가 지원하는 기본
 .NET 11 RC2는 Xcode 27.0과 워크로드 집합 `11.0.100-rc.2.26509.2`를 사용합니다.
 기본 예제는 Xcode 버전 검사를 활성화한 상태로 실행합니다.
 
+iOS 워크로드와 Xcode의 요구 버전이 다르면 빌드가 중단됩니다. 예를 들어 iOS 워크로드
+`27.1.10018`은 Xcode `27.1`을 요구하므로 Xcode `27.2`에서는 버전 검사가 실패합니다.
+해당 환경에서 로컬 기기 테스트를 계속하려면 다음처럼 이번 빌드에만 검사를 생략할 수 있습니다.
+
+```powershell
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy.ps1 -Platform ios -App Sample2 -Target device -SkipXcodeValidation
+```
+
+.NET SDK `10.0.403` / iOS 워크로드 `27.1.10018` / Xcode `27.2` 조합에서 위 옵션으로
+Sample2의 Release NativeAOT 게시, 서명 검증, iOS `27.0.1` 실기기 설치와 프로세스 실행을 확인했습니다.
+화면 동작은 별도로 확인해야 하며, 서로 다른 Xcode 버전 조합은
+[공식 지원 대상이 아닙니다](https://learn.microsoft.com/en-us/dotnet/ios/troubleshooting/xcode-requirement).
+지원되는 구성에는 워크로드가 요구하는 Xcode를 선택하거나 현재 Xcode를 지원하는 워크로드가 필요합니다.
+
 두 SDK의 NativeAOT 빌드 모두 `Registrar=managed-static`, `_UseDynamicDependenciesForMarkNSObjects=false`,
 `MtouchExtraArgs=--skip-marking-nsobjects-in-user-assemblies=true`를 사용합니다.
 각 샘플의 `ios/NativeAotRoots.xml`은 UIKit 진입점·뷰·델리게이트를 명시적으로 보존합니다.
