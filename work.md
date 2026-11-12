@@ -1,0 +1,341 @@
+# Web 자동 고성능/호환 모드 작업 계획
+
+작성일: 2026-11-12
+
+## 1. 목표와 결론
+
+- 동일한 앱 URL과 배포본에서, 브라우저가 실제 cross-origin isolation 및 공유 메모리 조건을 만족하면 기존 고성능 경로를 사용한다.
+- COOP/COEP가 없거나 적용되지 않아 조건을 만족하지 못하면, 성능 저하를 허용하고 단일 스레드 호환 경로로 시작한다.
+- **.NET 10 SDK와 .NET 11 SDK로 현재 `net10.0` Web 타깃을 빌드하는 경우를 모두 필수 검증한다.** SDK 11 사용과 대상 TFM/runtime의 `net11.0` 전환은 별개의 변경으로 다룬다.
+- 헤더 부재는 예상된 환경 차이로 처리한다. 배포 누락, 잘못된 빌드 조합, 앱 예외까지 정상적인 호환 전환으로 숨기지는 않는다.
+- 이번 작업은 **소스 검토 및 구현 계획 작성**이다. 런타임 코드 변경, 두 모드 빌드 및 브라우저 실측은 아직 수행하지 않았다.
+
+**권장안: 같은 소스에서 threaded/non-threaded 산출물을 각각 만들고, .NET 초기화 전에 한쪽만 선택한다.**
+호환 모드는 이미 존재하는 standalone Worker + WebGL2 경로를 제품화한다. 렌더러를 새로 만들거나 앱을 브라우저 메인 스레드로 옮기는 방식은 우선하지 않는다.
+
+## 2. 현재 구조에서 확인한 사실
+
+| 영역 | 현재 동작 및 근거 | 필요한 작업 |
+| --- | --- | --- |
+| 기본 빌드 | [Web target props](packages/platforms/web/Doroti.Target.Web.browser-wasm/build/Doroti.Target.Web.browser-wasm.props)는 `WasmEnableThreads=true`를 기본값으로 둔다. [Testbed 프로젝트](samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj)와 다른 샘플/템플릿에도 명시되어 있다. | JS 설정만 바꾸지 않고 non-threaded 산출물을 별도로 생성한다. |
+| SDK/TFM 고정 | [루트 global.json](global.json)과 [제품 global.json](Doroti/global.json)은 SDK `10.0.400`, `latestPatch`, `allowPrerelease=false`다. [Web 계약 검사](packages/platforms/web/Doroti.Target.Web.browser-wasm/buildTransitive/Doroti.Target.Web.browser-wasm.targets)는 TFM `net10.0`만 허용하고 [provider props](packages/platforms/build/Sdk.props)는 Web runtime `10.0.11`을 기본값으로 둔다. | SDK 11 설치만으로 SDK 11 빌드가 되지 않는다. 검증 job별 SDK 선택과 실제 TFM/runtime/pack 해석을 확인한다. |
+| 기본 부트스트랩 | [loader](packages/platforms/web/Doroti.Host.Web/Web/doroti.loader.ts)는 `runtimeLocation` 미지정 시 `main`을 선택한다. [Sample2](samples/DorotiSampleApp2/web/src/doroti_bootstrap.ts), [템플릿](Doroti/templates/Doroti.Templates/content/doroti-app/web/src/doroti_bootstrap.ts)은 `main`을 고정한다. | 환경/배포 프로필 선택을 먼저 수행하고 샘플의 고정을 제거한다. |
+| 고성능 런타임 | [managed worker](packages/platforms/web/Doroti.Host.Web/Web/doroti.web.managed-worker.ts)는 `crossOriginIsolated`, `SharedArrayBuffer`, 실제 runtime threads 및 shared heap을 요구한다. [managed render thread](packages/platforms/web/Doroti.Host.Web/BrowserManagedRenderThread.cs)는 .NET 10의 JS-affine Worker 진입점을 사용한다. | 기존 검사를 유지한다. 격리 검사 삭제로 우회하지 않는다. |
+| 기존 호환 경로 | [host](packages/platforms/web/Doroti.Host.Web/Web/doroti.web.ts)는 `runtimeLocation="worker"`를 받으며, 빌드 프로필의 `threads=false`를 요구한다. [raster worker](packages/platforms/web/Doroti.Host.Web/Web/doroti.raster.worker.ts)는 Worker 안에서 독립 .NET 런타임을 시작할 수 있다. | 새 아키텍처 대신 이 경로를 우선 검증하고 자동 선택에 연결한다. |
+| Worker 생성 | [worker host](packages/platforms/web/Doroti.Host.Web/Web/doroti.web.worker-host.ts)는 비격리 환경에서 일반 module Worker를 만든다. 격리 환경에서는 COEP 상속을 위한 blob Worker 경로도 있다. | 비격리 상태에서도 Worker 자체는 사용 가능하다. CSP/실제 브라우저 지원은 별도 검증한다. |
+| owner/async | [BrowserOwnerSynchronizationContext](packages/platforms/web/Doroti.Host.Web/BrowserOwnerSynchronizationContext.cs)가 standalone Worker의 JS event-loop context를 제공한다. [runner](packages/platforms/web/Doroti.Target.Web.browser-wasm/DorotiWebWorkerRunner.cs)가 이를 설치한다. | continuation, 타이머, 해제 경로가 owner를 유지하는지 검증한다. |
+| 렌더러 선택 | [renderer policy](packages/platforms/web/Doroti.Host.Web/Web/doroti.web.policy.ts)는 Android에서 WebGPU 우선, 나머지에서 WebGL2 우선이다. WebGPU 자동 선택의 사전 조건이 안 맞으면 WebGL2로 전환한다. | 런타임 선택과 렌더러 선택을 분리한다. WebGL2 선택만으로 threads 의존성이 사라지는 것은 아니다. |
+| WebGPU 제한 | [WebGPU 초기화](packages/platforms/web/Doroti.Host.Web/Web/doroti.webgpu.ts)와 raster worker는 현재 격리된 main-owned shared runtime을 요구한다. | 최초 호환 모드는 WebGL2로 한정한다. 이는 현재 Doroti 구현 제약이지 WebGPU 표준 전체의 COOP/COEP 요구사항이라는 뜻은 아니다. |
+| 빌드 프로필 | [provider SDK targets](packages/platforms/build/Sdk.targets)의 `DorotiWriteWebRuntimeProfile`이 `schemaVersion: 1, threads: boolean`인 단일 프로필을 생성한다. | dual 배포 목록, 선택된 런타임 URL, 버전 일관성 계약이 필요하다. |
+| 산출물 경로 | host는 document base/import map에서 단일 `_framework/dotnet.js`를 찾는다. raster worker는 모듈 위치의 `../../`를 앱 리소스 기준으로 사용한다. | runtime asset base와 application base를 구분해야 한다. 폴더만 옮기면 폰트/플러그인/라우팅이 깨질 수 있다. |
+| preload/fingerprint | [Testbed HTML](samples/DorotiTestbedApp/web/wwwroot/index.html)에 SDK가 채우는 framework preload/import map placeholder가 있다. [publish 검사](packages/platforms/web/Doroti.Target.Web.browser-wasm/buildTransitive/Doroti.Target.Web.browser-wasm.targets)는 단일 root framework를 전제로 한다. | 선택 전 양쪽 runtime 다운로드를 피하고 dual 경로를 publish 검사에 반영한다. |
+| 개발/배포 | [devserver](packages/platforms/web/devserver/Program.cs)는 `--apply-cop-headers`가 있으면 헤더를 강제한다. [Nginx](tools/doroti-cloudflared/nginx.conf)와 [tunnel](tools/doroti-cloudflared/tunnel.ps1)은 격리 헤더 및 단일 framework/pthread 자산을 전제로 한다. | 기존 고성능 기본값을 유지하면서 비격리 검증 경로와 dual 산출물 검사를 추가한다. |
+
+추가 확인:
+
+- 현재 로컬에 설치된 `SkiaSharp.NativeAssets.WebAssembly 4.154.0`의 targets는 `WasmEnableThreads`에 따라 `mt`/`st` native archive를 선택한다. 실제 `mt`, `mt,simd`, `st`, `st,simd` 디렉터리도 존재한다. 이는 호환 빌드 가능성을 뒷받침하지만 **현재 앱의 링크/AOT/실행 성공을 입증하지는 않는다**.
+- [Skia interop](packages/platforms/web/Doroti.Target.Web.browser-wasm/build/DorotiSkiaInterop.js)는 emdawnwebgpu ABI에 의존한다. 호환 모드가 WebGL2라고 해서 첫 단계에서 Dawn 링크 라이브러리나 exports까지 제거하지 않는다.
+- [Testbed bootstrap](samples/DorotiTestbedApp/web/src/doroti_bootstrap.ts)은 텍스처 샘플 초기화를 `main`일 때만 호출한다. [WebTextureSources](samples/DorotiTestbedApp/web/WebTextureSources.cs)를 비롯한 런타임 소유권 의존 초기화는 호환 모드에서 기능이 빠지지 않도록 정리해야 한다.
+- 현재 추적되는 Web 전용 TS/브라우저 테스트 러너는 확인되지 않았다. 기존 테스트 이름이나 로컬 `bin`/`obj` 잔여물만 보고 실행 가능한 테스트 프로젝트라고 가정하지 않는다.
+- 작성 시점 로컬 SDK는 `10.0.403`과 `11.0.100-rc.3.26522.148`이다. SDK 11 RC의 manifest에는 `wasm-tools-net10`, `wasm-experimental-net10`이 있고 net10 WASM/AOT pack은 `10.0.14`, Emscripten은 `3.1.56` 계열로 선언되어 있다. manifest 존재는 workload 설치 완료나 빌드 성공의 증거가 아니며, 이 RC 결과를 다른 SDK 11 릴리스의 검증 결과로 확대하지 않는다.
+
+## 3. 설계 원칙
+
+### 3.1 한 WASM 바이너리의 threads를 실행 중 끌 수는 없다
+
+Emscripten pthread 빌드는 공유 메모리 전제 자체가 다르다. threaded 앱을 먼저 로드한 뒤 실패하면 같은 바이너리를 단일 스레드로 실행하는 방식은 사용할 수 없다.
+
+- `WasmEnableThreads=true/false`로 **런타임, 앱 어셈블리, native Skia를 포함한 각각의 완결된 빌드**를 만든다.
+- 두 결과의 `_framework` 파일을 덮어쓰거나 섞지 않는다.
+- 한 페이지에서는 선택된 managed runtime 한 개만 생성한다.
+- 호환 모드도 Release AOT 사용을 검증한다. non-threaded와 non-AOT는 다른 축이며, 호환성을 이유로 AOT/SIMD를 일괄 비활성화하지 않는다.
+
+### 3.2 모드별 계약
+
+| 항목 | 고성능: `threaded` | 호환: `compatible` |
+| --- | --- | --- |
+| WASM 빌드 | `WasmEnableThreads=true` | `WasmEnableThreads=false` |
+| 런타임 소유자 | 기존 `runtimeLocation="main"` | 기존 `runtimeLocation="worker"` |
+| managed UI/Skia 실행 | main-owned 런타임의 JS-affine render Worker | 독립 Worker 내 단일 managed 실행 스레드 |
+| 메모리 | shared WASM heap | non-shared WASM heap |
+| 렌더러 | 기존 Android WebGPU 우선/기타 WebGL2 우선 정책 유지 | WebGL2 |
+| DOM/input/platform 연동 | 기존 Worker 메시지 브리지 | 동일 브리지 재사용 |
+| 기대 성능 | 기존 병렬 처리 가능 경로 보존 | 앱/layout/paint/일부 작업이 같은 Worker event loop를 공유하므로 지연 증가 가능 |
+| 장애 복구 | 기존 page restart | 기존 Worker session restart; 메모리 상태 보존은 보장하지 않음 |
+
+`main`은 런타임 소유권이며, 화면 렌더링을 DOM 메인 스레드에서 한다는 뜻이 아니다. 호환 모드에서도 DOM 메인 스레드와 Worker는 분리된다.
+또한 고성능 모드가 모든 장치/화면에서 반드시 더 빠르다는 보장은 없다. 기존 성능을 유지하는 경로로 정의하고 차이는 실측한다.
+
+### 3.3 자동 선택 순서
+
+1. 경량 부트스트랩에서 배포 manifest를 읽고 schema/배포 세대/필수 항목을 검증한다.
+2. `globalThis.isSecureContext`, `globalThis.crossOriginIsolated === true`, `typeof SharedArrayBuffer` 및 필요한 shared WebAssembly memory 생성 가능 여부를 확인한다.
+3. Worker/module Worker, OffscreenCanvas, `transferControlToOffscreen`, 선택 렌더러의 지원 여부를 확인한다. WebGL2 검사는 실제 visible canvas를 소비하지 않는 사전 검사와 Worker 초기화 검사를 구분한다.
+4. `auto`에서는 shared-memory 조건을 만족하면 threaded, 그렇지 않으면 compatible을 선택한다.
+5. 선택된 런타임을 기준으로 기존 renderer policy를 해석한다. 호환 경로의 자동 렌더러는 WebGL2다.
+6. 선택된 runtime의 URL/프로필/app base를 host와 Worker에 전달한다. 그 뒤에만 .NET import/create와 visible canvas 이전을 수행한다.
+7. 런타임 생성 후 실제 `wasmEnableThreads` 및 heap 종류가 선택 프로필과 일치하는지 양쪽 경로에서 검증한다.
+
+헤더 문자열을 별도로 fetch하여 판단하거나 user-agent만으로 고성능 모드를 결정하지 않는다. 헤더가 있어도 Permissions-Policy, iframe 상위 문서, 비보안 컨텍스트 등에 의해 실제 isolation이 꺼질 수 있다. COEP `credentialless`도 실제 isolation 조건을 만족하면 배제하지 않는다.
+
+### 3.4 명시적 설정과 오류 처리
+
+아래 이름은 **제안하는 새 계약이며 현재 구현된 옵션이 아니다**.
+
+- 빌드/배포: `DorotiWebExecutionMode=auto|threaded|compatible`.
+  - `auto` publish: 두 빌드를 포함하는 배포본.
+  - `threaded`/`compatible` publish: 용량이나 배포 환경이 명확한 경우의 단일 모드 배포본.
+- loader 요청: `executionMode: "auto" | "threaded" | "compatible"`.
+- 진단 출력: 요청 모드, 선택 모드, 선택 이유, 실제 isolation/threads, renderer, build ID.
+
+정책:
+
+- 기존 `runtimeLocation` 지정은 마이그레이션 중 명시적 legacy 요청으로 보존한다. 새 요청과 충돌하면 오류로 표시하고 임의 덮어쓰기는 하지 않는다.
+- 강제 `threaded`인데 격리/공유 메모리 조건이 부족하면 필요한 조건을 안내한다. 강제 요청을 조용히 무시하지 않는다.
+- 강제 `compatible`은 격리 환경에서도 compatible을 사용하여 재현/비교가 가능해야 한다.
+- `compatible`과 명시적 `worker-direct-webgpu`의 조합은 현재 미지원임을 명확히 알린다. 기존 명시적 renderer override 의미를 유지한다.
+- 단일 모드 배포는 manifest에 그 사실을 표시한다. compatible-only + auto는 이유를 기록하고 compatible을 선택한다. threaded-only를 비격리 환경에 배포하면 dual/compatible 재배포가 필요함을 알린다.
+- dual manifest가 약속한 파일 누락/404, schema 오류, 세대 불일치, CSP 차단, 앱 예외는 배포/실행 실패다. 임의의 다른 모드를 시도하며 성공처럼 처리하지 않는다.
+- 런타임이나 GPU 생성 이후의 오류를 자동 backend/runtime 교체로 복구하는 기능은 이번 범위에서 제외한다. canvas 소유권과 shared runtime 수명을 고려한 기존 복구 정책을 유지한다.
+- 모드 선택은 페이지 시작 시 한 번 수행한다. Worker 재시작은 같은 선택을 사용하고 페이지 재시작은 환경을 다시 평가한다. 자동 선택 결과를 강제 URL 옵션으로 굳혀 다음 시작을 방해하지 않도록 요청값과 결과값을 구분한다.
+
+## 4. 빌드/배포 구성안
+
+### 4.1 논리적 산출물 배치
+
+다음은 구현 목표 배치다. fingerprint 파일명은 SDK가 생성한 실제 결과에서 얻는다.
+
+```text
+wwwroot/
+  index.html
+  doroti_bootstrap.js
+  doroti.runtime-profile.json       # v2: build ID + variants + 실제 loader URL
+  _content/Doroti.Host.Web/         # 두 빌드에서 동일함을 확인한 공통 host 자산
+  assets/, fonts/, locales/, plugins/  # 앱이 실제 선언한 공통 자산
+  runtimes/
+    threaded/
+      _framework/                  # threaded 전체 framework 산출물
+      doroti.runtime-profile.json  # 이 variant의 빌드 정보
+    compatible/
+      _framework/                  # non-threaded 전체 framework 산출물
+      doroti.runtime-profile.json
+```
+
+- 기존 v1 단일 profile 소비는 유지하고 v2 목록은 명시적으로 해석한다. v1 배포에 존재하지 않는 대체 런타임을 추측하지 않는다.
+- manifest에 최소한 schema, build ID, variant별 threads, loader URL, profile URL 및 지원 renderer를 담는다. SDK/TFM/runtime/workload 식별 정보는 공통 build provenance로 기록하고 두 variant의 일관성을 검사한다. .NET boot manifest 자체를 새로 구현하지 않고 SDK 결과를 사용한다.
+- 공통 자산은 같은 source/configuration의 두 산출물을 비교한 뒤 합친다. 동일 경로의 내용이 다르면 덮어쓰지 말고 빌드 실패 또는 명시적인 variant 분리로 처리한다.
+- 먼저 두 개의 완전한 publish 결과를 생성한 뒤 병합한다. 최종 배포에서 선택하지 않은 `_framework`는 다운로드/instantiate하지 않는다.
+- 순환 publish를 막는 내부 child-build 구분과 두 자식 빌드 실패 전파가 필요하다. 한쪽만 성공한 결과로 최종 manifest를 발행하지 않는다.
+- 초기에는 순차 publish로 충돌 위험을 줄인다. 공통 캐시 공유/병렬 publish 최적화는 올바른 출력 분리 이후 검토한다.
+
+### 4.2 캐시와 출력 격리
+
+- SDK 버전/TFM/모드별 `ArtifactsPath` 또는 SDK 호환 출력 경로를 사용해 restore/intermediate/native link/AOT/WebCIL/static-web-assets/publish 결과를 분리한다. workload/runtime pack 또는 native toolchain이 달라지면 캐시도 무효화한다. 최종 `PublishDir`만 다르게 지정하는 것으로 끝내지 않는다.
+- 프로젝트 참조, generated bootstrap, TypeScript 출력, static-web-assets manifest가 다른 모드 경로를 덮어쓰지 않는지 확인한다.
+- [Web build targets](packages/platforms/build/Doroti.Web.targets)는 이미 WebCIL identity에 `WasmEnableThreads`를 포함한다. 이를 유지하되 이것만으로 두 빌드의 모든 native/intermediate 충돌이 해결됐다고 판단하지 않는다.
+- `DorotiWebInterpretWidgetTree`, trimming, AOT, SIMD, heap 옵션은 variant에 의도대로 전달하고 manifest/진단에서 확인 가능하게 한다. 기존 Safari 관련 설정을 누락하지 않는다.
+- HTML/선택 manifest는 재검증하도록 하고 fingerprint 자산은 장기 캐시할 수 있게 한다. 두 모드를 한 배포 세대로 교체하며 구세대 클라이언트가 필요한 파일을 즉시 잃지 않게 배포한다.
+
+### 4.3 경로와 preload
+
+- 앱 리소스 기준인 `applicationBaseUrl`과 runtime 파일 기준 URL을 분리하여 Worker 초기화 및 재시작에도 전달한다.
+- 모드를 고르기 위해 `document.baseURI`나 앱 라우트 자체를 `runtimes/...`로 바꾸지 않는다. asset/font/localization/plugin/API 상대 URL 및 history/navigation 의미를 유지한다.
+- `resolveCurrentDotnetModuleUrl`, profile fetch, Worker의 `../../` 기반 리소스 해석을 선택 descriptor에 맞게 정리한다.
+- .NET loader의 상대 모듈, boot resource, native worker, compressed asset URL이 선택한 variant 안에서 끝까지 해결되는지 검증한다. DLL/WebCIL/native WASM 일부만 골라 복사하지 않는다.
+- SDK가 주입하는 import map/fingerprint 및 preload를 dual 구조에 맞춰 생성한다. 공통 모듈 매핑은 유지하되 threaded runtime preload가 비격리 페이지에서 먼저 시작되지 않게 한다.
+- Worker entry는 document import map을 자동으로 따르지 않으므로 기존 fingerprint 처리와 별도로 실제 선택 URL을 검증한다.
+- `/`뿐 아니라 `/demo/` 같은 subpath, deep link 새로고침에서도 같은 계약을 검증한다. missing framework/profile을 SPA HTML로 돌려주지 않는다.
+
+### 4.4 .NET 11 SDK 빌드 지원
+
+**필수 지원 목표는 SDK 11 + `net10.0` + 두 실행 모드다.** SDK major만 보고 runtime을 11로 올리거나 renderer/threads를 바꾸지 않는다. 브라우저는 빌드에 사용한 SDK가 아니라 실제 capability와 배포 프로필로 실행 모드를 선택한다.
+
+#### SDK 선택과 재현성
+
+- SDK 10/11 검증은 별도 CI job/격리 checkout에서 정확한 SDK 버전을 선택한다. 루트와 제품 하위의 SDK pin, CLI 작업 디렉터리 및 MSBuild resolver가 서로 다른 SDK를 고르지 않도록 확인한다.
+- SDK 11 RC 검증에서는 해당 job에서만 prerelease를 명시적으로 허용한다. 공용 작업 트리의 SDK pin을 무조건 `latestMajor`로 바꾸어 다른 플랫폼 빌드까지 바꾸지 않는다. 이 계획 작성 단계에서는 SDK 설치나 pin 변경을 하지 않는다.
+- `dotnet --version`, 평가된 `NETCoreSdkVersion`, TFM, `RuntimeFrameworkVersion`, workload-set/manifest, WASM SDK/runtime/AOT/Emscripten pack의 실제 버전을 기록한다. SDK 11이 설치되어 있다는 확인만으로 SDK 11 검증을 완료하지 않는다.
+- child publish와 별도 프로세스로 실행되는 devserver 빌드에도 동일한 SDK 선택을 적용한다. SDK 10의 threaded와 SDK 11의 compatible 산출물을 임의로 합쳐 한 dual 배포본을 만들지 않는다.
+
+#### workload 및 패키지 조합
+
+- SDK 11에서 `net10.0`을 빌드할 때 해당 SDK의 `wasm-tools-net10` 계약과 threaded pack의 `wasm-experimental-net10` 필요 여부를 실제 restore/build 진단으로 확인한다. SDK 10에 설치된 `wasm-tools`나 SDK 11의 current `wasm-tools`만으로 충분하다고 가정하지 않는다.
+- 현재 runtime/Blazor 패키지 pin `10.0.11`과 로컬 SDK 11 RC manifest의 net10 pack `10.0.14`가 다르므로, restore와 native/AOT 링크가 해석하는 실제 조합을 P0에서 확인한다. 숫자가 다르다는 이유만으로 즉시 실패라고 단정하거나 pin을 일괄 제거하지 않는다.
+- 지원 가능한 조합을 명시적으로 선택하고, pack/runtime 불일치가 확인되면 관련 버전만 함께 조정한다. AOT 비활성화나 compatible 강제 선택으로 SDK 11의 threaded 빌드 실패를 숨기지 않는다.
+- Skia의 `mt`/`st` archive, Emscripten/LLVM, emdawnwebgpu JS ABI 및 Doroti interop를 양 모드에서 검증한다. SDK 11 + net10이 반드시 net11 native toolchain을 쓰는 것은 아니므로 SDK major만으로 라이브러리를 분기하지 않는다.
+
+#### SDK/runtime 내부 계약 검증
+
+- [Web targets](packages/platforms/build/Doroti.Web.targets)의 `_PrepareForBrowserWasmBuildNative`, `_WasmAotCompileApp`, `_WasmAssembliesInternal`/`AOT_InternalForceToInterpret`, `_ResolveWasmConfiguration`, WebCIL 무효화 hook이 SDK 11에서 실제 선택된 WASM targets에도 유효한지 binlog와 산출물로 확인한다. build 성공만으로 Safari mixed-AOT 설정이 적용됐다고 판단하지 않는다.
+- [native interop 연결](packages/platforms/build/Sdk.targets)의 `_BrowserWasmWriteRspForLinking`/`_BrowserWasmLinkDotNet`, Debug stack workaround도 실제 toolchain 기준으로 확인한다. 차이가 발견된 지점만 작은 호환 분기로 처리하며 SDK 전체 복제/생성 runtime 패치는 하지 않는다.
+- SDK 11의 static-web-assets/import map/preload/압축 산출물에 맞춰 loader URL을 발견한다. 기존 publish 검사의 fingerprint 10자리 패턴이나 `dotnet.native.worker*.mjs` 가정이 유지된다고 단정하지 않는다.
+- [managed render thread](packages/platforms/web/Doroti.Host.Web/BrowserManagedRenderThread.cs)의 비공개 `JSWebWorker.RunAsyncVoid`, JSExport/JSImport, `getDotnetRuntime` 및 shared-port handshake는 **실제 탑재 runtime** 기준으로 검증한다. SDK만 11로 바꾸었다는 이유로 .NET 10 runtime 진입점을 무조건 교체하지 않는다.
+- Debug/Hot Reload/devserver와 Release/AOT를 각각 검증한다. framework pack 누락이나 사라진 hook을 무시하여 일부 기능만 빠진 성공 산출물을 만들지 않는다.
+
+#### `net11.0` 대상으로의 전환은 별도 확장
+
+- SDK 11로 빌드하는 요구만으로 현재 `net10.0` 계약을 해제하거나 Blazor/runtime 패키지를 11로 올리지 않는다.
+- `net11.0`까지 지원하기로 하면 target descriptor/검사, host/target 프로젝트, runtime/Blazor 패키지, manifest/템플릿을 일관되게 바꾸고 SDK 11 + net11 + 두 모드를 별도 자격 검증한다. 기존 검사 한 줄만 완화하는 것으로 완료하지 않는다.
+- 이때 JS-affine Worker API, Mono/runtime backend, native/AOT/Skia ABI 및 loader 구조를 다시 확인한다. .NET 10의 private API가 그대로 있다고 가정하거나 동작하지 않을 때 자동 compatible 전환으로 은폐하지 않는다.
+
+## 5. 호환성 범위와 예상 제약
+
+### 보존할 기능
+
+- 첫 화면/첫 frame, 레이아웃, 스크롤/애니메이션, 텍스트 입력/IME, 포커스와 접근성 semantics.
+- 폰트 fallback, 이미지 decode, asset/localization, navigation 및 history 복원.
+- clipboard/file picker 등 DOM 서비스, JavaScript plugin, 지원하는 platform view/iframe composition.
+- WebGL2에서 제공하던 texture/effect 동작. [GPU effect backend](packages/platforms/web/Doroti.Host.Web/DorotiWebWorkerSurface.GpuEffects.cs)는 이미 WebGL2/WebGPU variant를 구분한다. 앱의 shader에도 WebGL2 variant가 있는지 확인하고 누락을 숨기지 않는다.
+- resize/DPR, context loss, 종료/재시작, pending request/lease의 정상 정리.
+
+### 이번 범위에서 보장하지 않을 것
+
+- Worker/OffscreenCanvas/WebGL2가 없는 구형 브라우저까지 지원하는 것. Canvas2D/소프트웨어/DOM-main renderer 추가는 별도 과제다.
+- 비격리 WebGPU 지원. 표준 가능성과 현재 Doroti의 Graphite/managed-port 의존성 해소 작업을 혼동하지 않는다.
+- 임의의 `Thread`, blocking wait, native pthread 의존 플러그인의 투명한 호환. 앱/플러그인이 해당 기능을 요구하면 호환 구현이나 명시적인 미지원 안내가 필요하다.
+- 일반 HTTP에서 모든 서비스 API를 제공하는 것. 비격리 HTTPS/localhost를 우선 지원하며 clipboard/camera 등 secure-context/권한 요구는 남는다.
+- 모든 iframe/sandbox/CSP 구성에서 실행되는 것. embedding, origin, frame policy와 자원 접근 제한은 각각 충족해야 한다.
+- 성능 저하를 감추기 위한 자동 DPR/blur/품질 하향. 우선 동일한 결과를 보존하고 별도 품질 정책은 실측 후 제안한다.
+
+주의할 실행 경로:
+
+- [DartAsync](Doroti/src/Doroti.Runtime/DartAsync.cs)의 scheduler 부재 시 `Task.Run`, [이미지 decode](Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.cs)의 `Task.Run`, [platform view 해제](Doroti/src/Doroti.Hosting/PlatformViewCoordinator.cs)의 비동기 정리를 실제 단일 스레드 런타임에서 확인한다.
+- `Task.Run`이 있다고 무조건 미지원으로 분류하거나 모두 제거하지 않는다. non-threaded에서는 병렬 CPU 처리를 보장하지 않으며 owner context/응답성/취소가 핵심 검증 대상이다.
+- [Hot Reload bridge](packages/platforms/web/Doroti.Host.Web/Web/doroti.web.hot-reload.ts)는 현재 main runtime 초기화에서 연결된다. 호환 개발 모드의 Hot Reload는 따로 자격 검증한다. 지원되지 않으면 명시적으로 알리고 rebuild/page reload를 제공한다.
+
+## 6. 단계별 작업 계획
+
+### P0. 기존 standalone 경로 자격 검증
+
+- [ ] SDK 10/11 각각에 대해 SDK 선택, net10 workload/pack 및 runtime pin의 해석을 확인하고 재현 가능한 toolchain 조합을 기록한다. SDK 11은 필수 검증 축이며 마지막에 붙이는 선택 검사가 아니다.
+- [ ] Testbed와 실제 앱 한 개(Sample2)를 모드별 격리 출력에서 `WasmEnableThreads=false`로 빌드한다.
+- [ ] 헤더가 실제 없는 서버에서 `runtimeLocation="worker"` + WebGL2로 시작한다. 별도 thread-enabled 산출물을 잘못 읽지 않았는지 runtime/profile/heap으로 확인한다.
+- [ ] Debug/non-AOT와 Release/AOT를 분리 검증한다. Skia `st` 선택 및 기존 emdawn interop 링크가 맞는지 확인한다.
+- [ ] 첫 frame, 입력/스크롤, 폰트/이미지, timers, 최소 플러그인 호출 및 종료를 확인한다.
+- [ ] main-only 텍스처 초기화 등 재사용 경로의 기능 누락과 실제 blocking/thread 의존성을 기록하고 필요한 부분만 수정한다.
+
+완료 조건: SDK 10/11로 빌드한 net10 앱 각각이 비격리 실제 환경에서 non-shared runtime 한 개로 렌더링되고 상호작용한다. threaded 기준 동작도 각각 확인한다. 실패하면 toolchain/native/owner/서비스 원인을 먼저 해결하며 dual 자동 배포로 가리지 않는다.
+
+### P1. 공개 모드와 manifest 계약
+
+- [ ] 제안 옵션명/우선순위/legacy 동작을 확정하고 빌드 프로필 v2를 정의한다.
+- [ ] 요청 모드와 선택 결과, runtime descriptor를 분리한다. `runtimeLocation`은 선택된 실행 경로와 일치하게 한다.
+- [ ] capability 판정과 실행 선택을 작은 독립 함수로 분리해 조합별 테스트가 가능하도록 한다.
+- [ ] runtime/profile/heap 불일치, 미지원 조합, 선택 이유의 오류/진단 계약을 정의한다.
+- [ ] build provenance에 SDK/TFM/runtime/workload 정보를 구분해 기록하고, 빌드 SDK major를 브라우저 선택 조건으로 사용하지 않는다.
+- [ ] [loader 타입 선언](packages/platforms/web/Doroti.Host.Web/Web/types/doroti-loader/index.d.ts)과 패키징되는 동일 선언을 함께 갱신한다.
+
+완료 조건: 선택/검증 규칙이 테스트되고 v1 단일 모드 소비를 깨지 않는다. 아직 없는 새 옵션을 문서상 사용 가능하다고 발표하지 않는다.
+
+### P2. dual publish와 자산 통합
+
+- [ ] [provider SDK targets](packages/platforms/build/Sdk.targets), [Web targets](packages/platforms/build/Doroti.Web.targets), [publish 검증](packages/platforms/web/Doroti.Target.Web.browser-wasm/buildTransitive/Doroti.Target.Web.browser-wasm.targets)에 모드별 child publish 및 통합 검사를 추가한다.
+- [ ] restore부터 AOT/static-web-assets까지 출력 격리를 검증한다. threaded → compatible → threaded 재빌드에서도 캐시 오염이 없어야 한다.
+- [ ] SDK 10 → 11 → 10 전환에서도 native/AOT/WebCIL/TypeScript/static-web-assets 캐시가 섞이지 않는지 확인하고, SDK 11의 hook 실행과 실제 native 입력을 검사한다.
+- [ ] 실제 fingerprint와 압축 파일을 보존하여 variant를 배치하고 공통 자산의 동일성을 검사한다.
+- [ ] HTML/import map/preload를 선택형으로 정리하고 두 빌드의 ID/프로필/필수 자산이 완성된 뒤 manifest를 생성한다.
+- [ ] source checkout과 NuGet target/provider 소비 모두 동일하게 구성되는지 확인한다. 런타임 profile 생성 위치를 공통 runner SDK에 있다고 오인하지 않는다.
+
+완료 조건: 한 publish root에 일관된 두 산출물이 있으며 각각 독립적으로 로드된다. 한쪽 빌드 실패, 자산 충돌, 누락은 publish 실패다.
+
+### P3. 자동 loader 및 호환 실행 연결
+
+- [ ] .NET import/create 및 visible canvas 이전보다 앞에서 모드를 결정한다.
+- [ ] 선택한 dotnet/profile URL과 app base를 host, raster Worker, 재시작 경로까지 전달한다.
+- [ ] 고성능 renderer policy는 유지하고 compatible은 WebGL2로 연결한다. Android의 WebGPU 선택이 비격리 호환 시작을 막지 않게 한다.
+- [ ] standalone runtime의 실제 threads/heap 검사와 진단을 추가한다.
+- [ ] 단일 runtime/visible canvas 소유권, splash/error/retry, 취소/해제, Worker 재시작의 선택 일관성을 확인한다.
+- [ ] runtime 소유권에 묶인 앱 초기화를 공통 managed 시작 또는 적절한 메시지 경로로 이동한다. DOM 전용 작업은 계속 main bridge로 수행한다.
+
+완료 조건: 동일 배포본/동일 앱 URL이 서버 헤더 조건에 따라 고성능 또는 호환으로 자동 시작한다. 호환 선택을 오류로 표시하지 않고 실제 실패는 표시한다.
+
+### P4. 개발 도구·샘플·템플릿·문서 정합성
+
+- [ ] 초기 도입은 기존 threaded 배포 동작을 유지하는 opt-in으로 시작한다. 검증 완료 후 신규 템플릿과 제공 샘플은 auto를 기본 사용하고 기존 앱에는 명시적 마이그레이션 절차를 제공한다.
+- [ ] Testbed, Sample2, Demo, Carousel 및 템플릿의 threads/main 고정 설정을 새 모드와 일관되게 정리한다. raw `WasmEnableThreads`와 mode가 충돌하면 명확한 진단을 제공한다.
+- [ ] devserver 옵션 전달 경로까지 포함해 격리 on/off가 실제 응답에 반영되도록 한다. 강제 헤더가 남아 있는 상태를 비격리 테스트로 인정하지 않는다.
+- [ ] `run/watch`의 모드 전환은 필요한 빌드/서버 재시작으로 처리한다. auto publish 지원과 dual Hot Reload를 동일 과제로 과도하게 확장하지 않는다.
+- [ ] SDK 10/11 CI job, 지원 SDK/workload 버전 및 선택 절차를 문서화한다. SDK 11로 net10을 빌드하는 안내와 net11 타깃 마이그레이션 안내를 분리한다.
+- [ ] tunnel의 단일 root framework 및 pthread 필수 검사, Nginx runtime 경로/404/MIME 검사를 모드별로 갱신한다. 기존 격리 공유 환경은 유지한다.
+- [ ] [Web provider README](packages/platforms/web/README.md), [제품 README](Doroti/README.md), [한국어 README](Doroti/README.ko.md), 샘플 가이드 및 [target manifest](packages/platforms/web/Doroti.Target.Web.browser-wasm/doroti-target-manifest.json)를 갱신한다.
+
+완료 조건: 사용자가 별도 JS 수정이나 배포 폴더 수작업 없이 auto publish를 만들 수 있고, 헤더를 설정할 수 없는 HTTPS 정적 호스팅에서도 compatible이 선택된다.
+
+의존 순서: **P0 → P1 → P2/P3 → P4 → 최종 인수 검증**. P2/P3은 P1 계약 확정 후 나눠 진행할 수 있지만 두 결과를 합친 실제 배포 테스트는 반드시 수행한다.
+
+## 7. 검증 계획과 인수 기준
+
+모든 테스트 실행에는 **외부 프로세스 기준 20분(1,200초) timeout**을 적용한다. test runner의 개별 timeout만 두어 전체 실행이 무한 대기하지 않도록 한다. 일반적인 반복 검증은 시나리오당 3~5회, 추가 확인도 대부분 30회 이내로 제한한다.
+
+### SDK/타깃/실행 모드 행렬
+
+| SDK | TFM/runtime 계열 | 빌드·실행 검증 | 분류 |
+| --- | --- | --- | --- |
+| 고정한 SDK 10 | `net10.0` / .NET 10 | threaded + compatible 각각 Debug/non-AOT 및 Release/AOT | 기존 기준선, 필수 |
+| 고정한 SDK 11 | `net10.0` / .NET 10 | threaded + compatible 각각 Debug/non-AOT 및 Release/AOT | 이번 지원 목표, 필수 |
+| SDK 11 | `net11.0` / .NET 11 | 위와 동일 + runtime/ABI 전환 검증 | 별도 타깃 확장 시 수행, 현재 지원으로 표기하지 않음 |
+
+- 필수 두 SDK 조합마다 auto dual publish를 만들고, 같은 배포본의 COOP/COEP on/off 선택과 실제 첫 frame을 확인한다. 핵심 구성은 SDK 2종 × 실행 모드 2종 × Debug/Release 2종의 8개다.
+- `RunAOTCompilation=false`인 Release 및 Sample2의 mixed-AOT도 영향 경로를 중심으로 추가 검증한다. 모든 브라우저/설정의 무차별 조합 반복은 피하되 각 SDK 산출물의 양 모드 브라우저 smoke는 생략하지 않는다.
+- SDK 11은 시험한 정확한 RC/정식 버전과 workload set을 기록한다. RC 성공을 정식/이후 feature band 지원으로 간주하지 않으며, 버전 변경 시 native link/AOT/자동 선택/첫 frame 핵심 검사를 다시 수행한다.
+- SDK 11 필수 job이 미실행/실패라면 SDK 10 결과만으로 전체 완료를 선언하지 않는다.
+
+### 필수 환경/선택 행렬
+
+| 조건 | 기대 결과 |
+| --- | --- |
+| HTTPS/localhost + 올바른 COOP/COEP + shared-memory 지원 | auto → threaded, shared runtime 한 개 |
+| HTTPS + COOP/COEP 둘 다 없음 | auto → compatible, non-shared runtime 한 개 |
+| COOP만 있음 / COEP만 있음 | 실제 isolation false이면 compatible |
+| 헤더는 있으나 Permissions-Policy로 isolation 차단 | 실제 capability를 따라 compatible |
+| 격리 환경에서 강제 compatible | non-threaded Worker 사용 |
+| 비격리 환경에서 강제 threaded | 시작 전 설명 가능한 오류 |
+| compatible + 명시적 WebGPU | 미지원 조합 오류; 조용한 renderer 변경 없음 |
+| Android auto + WebGPU 미지원 | threaded 가능 시 기존 WebGL2 전환, 비격리면 compatible WebGL2 |
+| dual manifest의 파일 누락/잘못된 schema/다른 build ID | 명확한 실패; 다른 runtime이나 HTML을 대신 읽지 않음 |
+| Worker/CSP/OffscreenCanvas/WebGL2 미지원 | 조건별 오류; 무한 splash/재시도 없음 |
+| compatible-only / threaded-only 기존 배포 | 선언된 모드 안에서 동작; 없는 variant 추측 금지 |
+
+### 빌드/배포 검증
+
+- [ ] production TypeScript 빌드 및 두 variant의 .NET native link/AOT 성공. 이 변경에 필요한 검증부터 수행하고 무관한 전체 솔루션 검증은 피한다.
+- [ ] 비격리 검증은 실제 응답 헤더가 없는 서버에서 수행한다. `crossOriginIsolated` 값을 JS mock으로 바꾸는 단위 테스트만으로 완료하지 않는다.
+- [ ] Network에서 선택되지 않은 runtime의 fetch/preload/worker 생성이 없는지 확인한다. 호환 경로에서 pthread worker가 뜨지 않아야 한다.
+- [ ] .NET의 실제 build info 및 heap buffer 종류로 프로필을 검증한다. DOM dataset/파일명 확인만으로 통과시키지 않는다.
+- [ ] `/`, subpath, deep link, 캐시된 구세대 HTML + 새 배포, `.mjs`/`.wasm` MIME 및 압축 응답을 확인한다.
+- [ ] 동시 페이지 접근에서 양 모드 파일이 같은 배포 세대에 속하고 서로 덮어쓰지 않는지 확인한다.
+
+### 기능/브라우저 검증
+
+- [ ] Windows Chromium/Firefox, Android Chrome, 실제 iOS/iPadOS Safari에서 isolation 유무에 따른 선택과 첫 frame/입력/스크롤을 확인한다.
+- [ ] iOS AOT는 실제 Safari로 확인한다. [기존 Safari 제한](packages/platforms/web/README.md#safari-and-memory-configuration)을 유지하며 Playwright WebKit 통과만으로 실제 장치 안정성을 선언하지 않는다.
+- [ ] Sample2의 깊은 widget tree, 반복 blur/scroll, 이미지 decode 중 입력, 화면 복귀/resize, 한글 IME, 접근성, 파일 선택/취소, clipboard, navigation, texture/effect 및 plugin을 검증한다.
+- [ ] Worker/context loss 후 pending 요청과 GPU/외부 lease가 정리되고, 재시작이 기존 정책대로 제한되며 실제 실패가 노출되는지 확인한다.
+- [ ] 새 선택 로직의 소수 집중 테스트와 최소 브라우저 통합 fixture를 유지한다. 현재 저장소의 TypeScript/MSBuild 방식을 재사용하고 앱 빌드에 npm/bundler 의존성을 불필요하게 추가하지 않는다.
+
+### 성능 검증
+
+- [ ] 동일 SDK/toolchain/장치/앱/화면/renderer/AOT/캐시 조건으로 기존 threaded와 변경 후 threaded를 비교한다. 다음으로 compatible을 비교하며 WebGPU↔WebGL2 차이와 threads 차이를 구분한다. SDK 10↔11 차이는 별도 비교하여 모드 변경 효과와 섞지 않는다.
+- [ ] cold/warm 시작부터 첫 실제 frame까지의 시간, 입력→frame 지연, frame time p50/p95, managed/WASM 메모리, 전송량 및 publish 시간/크기를 기록한다. `started` 이벤트만으로 첫 frame을 대신 측정하지 않는다.
+- [ ] 고성능 경로의 잠정 회귀 경보 기준은 주요 지연 지표의 기존 대비 10% 초과 악화로 둔다. 사전 baseline에서 측정 잡음을 확인하고 초과 시 원인을 분석한다. 측정 없이 성능 동등성을 선언하지 않는다.
+- [ ] 호환 경로에는 고성능 경로와 같은 FPS를 요구하지 않는다. 기능 완료/무응답 없음은 필수이며, 목표 장치의 허용 frame/input 지연 수치는 P0 실측 후 확정한다. 결정되지 않은 SLA나 성능 감소율을 임의 보장하지 않는다.
+
+검증 산출물은 삭제 가능한 [Doroti/artifacts](Doroti/artifacts)에 둘 수 있다. 보존할 결과/한계 요약은 추적 문서에 남기고, 원시 산출물을 정리한 뒤에는 파일이 남아 있다고 보고하지 않는다.
+
+## 8. 완료 정의
+
+- [ ] SDK 10/11 각각으로 `net10.0` 앱의 두 모드 및 dual publish를 검증하고 정확한 SDK/runtime/workload 조합을 기록한다. `net11.0` 타깃 지원 여부는 별도로 표시한다.
+- [ ] auto publish 한 번으로 threaded/compatible을 모두 포함하는 정상 배포본을 만든다.
+- [ ] 같은 앱 URL에서 실제 isolation/shared-memory 조건 충족 시 기존 고성능 경로, 미충족 시 compatible 경로가 자동 선택된다.
+- [ ] 선택되지 않은 runtime은 다운로드/생성하지 않으며 두 모드 모두 managed runtime은 정확히 한 개다.
+- [ ] 기존 고성능 기능/성능을 검증하고, 호환 모드의 필수 기능·성능 차이·미지원 범위를 기록한다.
+- [ ] 빌드/캐시/리소스 경로 및 샘플 초기화가 모드에 따라 깨지지 않는다.
+- [ ] manifest/실행 불일치와 실제 장애가 드러나고, 안내 없는 품질 하향이나 실패 숨김이 없다.
+- [ ] 새 템플릿/샘플과 기존 앱의 마이그레이션 가이드가 구현 상태와 일치한다.
+
+## 9. 외부 근거
+
+- [Emscripten Pthreads support](https://emscripten.org/docs/porting/pthreads.html): pthread/shared-memory 조건 및 thread/non-thread 두 빌드 필요성.
+- [MDN: crossOriginIsolated](https://developer.mozilla.org/en-US/docs/Web/API/Window/crossOriginIsolated): 실제 격리 상태, COOP/COEP와 Permissions-Policy 관계.
+- [MDN: WebGPU API](https://developer.mozilla.org/en-US/docs/Web/API/WebGPU_API): WebGPU의 secure-context 요구. 현재 Doroti의 threaded/isolated 제한과 구분할 근거.
+- [Microsoft Learn: global.json](https://learn.microsoft.com/en-us/dotnet/core/tools/global-json): SDK 선택과 대상 runtime의 구분, resolver 탐색 위치, roll-forward 및 prerelease 설정.
