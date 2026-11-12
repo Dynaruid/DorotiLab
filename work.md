@@ -7,11 +7,13 @@
 - 동일한 앱 URL과 배포본에서, 브라우저가 실제 cross-origin isolation 및 공유 메모리 조건을 만족하면 기존 고성능 경로를 사용한다.
 - COOP/COEP가 없거나 적용되지 않아 조건을 만족하지 못하면, 성능 저하를 허용하고 단일 스레드 호환 경로로 시작한다.
 - **.NET 10 SDK와 .NET 11 SDK로 현재 `net10.0` Web 타깃을 빌드하는 경우를 모두 필수 검증한다.** SDK 11 사용과 대상 TFM/runtime의 `net11.0` 전환은 별개의 변경으로 다룬다.
+- **.NET 11 WASM 자체의 구조 적합성 검토도 설계 확정 전 필수다.** SDK 11 + net10 검증만으로 .NET 11 runtime 지원을 선언하지 않는다. Worker 진입점, Emscripten/native ABI, Mono/CoreCLR 차이는 4.5절과 P-1에서 먼저 판정한다.
 - 헤더 부재는 예상된 환경 차이로 처리한다. 배포 누락, 잘못된 빌드 조합, 앱 예외까지 정상적인 호환 전환으로 숨기지는 않는다.
 - 이번 작업은 **소스 검토 및 구현 계획 작성**이다. 런타임 코드 변경, 두 모드 빌드 및 브라우저 실측은 아직 수행하지 않았다.
 
 **권장안: 같은 소스에서 threaded/non-threaded 산출물을 각각 만들고, .NET 초기화 전에 한쪽만 선택한다.**
 호환 모드는 이미 존재하는 standalone Worker + WebGL2 경로를 제품화한다. 렌더러를 새로 만들거나 앱을 브라우저 메인 스레드로 옮기는 방식은 우선하지 않는다.
+이 재사용 권고는 현재 Mono 기반 경로를 출발점으로 한다. .NET 11의 다른 runtime flavor에도 동일한 Worker 소유권/API/AOT 경로가 성립한다는 검증 결과는 아니다.
 
 ## 2. 현재 구조에서 확인한 사실
 
@@ -122,7 +124,7 @@ wwwroot/
 ```
 
 - 기존 v1 단일 profile 소비는 유지하고 v2 목록은 명시적으로 해석한다. v1 배포에 존재하지 않는 대체 런타임을 추측하지 않는다.
-- manifest에 최소한 schema, build ID, variant별 threads, loader URL, profile URL 및 지원 renderer를 담는다. SDK/TFM/runtime/workload 식별 정보는 공통 build provenance로 기록하고 두 variant의 일관성을 검사한다. .NET boot manifest 자체를 새로 구현하지 않고 SDK 결과를 사용한다.
+- manifest에 최소한 schema, build ID, variant별 threads, loader URL, profile URL 및 지원 renderer를 담는다. SDK/TFM/runtime flavor·버전/workload/toolchain 식별 정보는 공통 build provenance로 기록하고 두 variant의 일관성을 검사한다. Worker 진입점 등 버전별 차이는 검증된 host 계약으로 해석한다. .NET boot manifest 자체를 새로 구현하지 않고 SDK 결과를 사용한다.
 - 공통 자산은 같은 source/configuration의 두 산출물을 비교한 뒤 합친다. 동일 경로의 내용이 다르면 덮어쓰지 말고 빌드 실패 또는 명시적인 variant 분리로 처리한다.
 - 먼저 두 개의 완전한 publish 결과를 생성한 뒤 병합한다. 최종 배포에서 선택하지 않은 `_framework`는 다운로드/instantiate하지 않는다.
 - 순환 publish를 막는 내부 child-build 구분과 두 자식 빌드 실패 전파가 필요하다. 한쪽만 성공한 결과로 최종 manifest를 발행하지 않는다.
@@ -130,7 +132,7 @@ wwwroot/
 
 ### 4.2 캐시와 출력 격리
 
-- SDK 버전/TFM/모드별 `ArtifactsPath` 또는 SDK 호환 출력 경로를 사용해 restore/intermediate/native link/AOT/WebCIL/static-web-assets/publish 결과를 분리한다. workload/runtime pack 또는 native toolchain이 달라지면 캐시도 무효화한다. 최종 `PublishDir`만 다르게 지정하는 것으로 끝내지 않는다.
+- SDK 버전/TFM/runtime flavor/모드별 `ArtifactsPath` 또는 SDK 호환 출력 경로를 사용해 restore/intermediate/native link/AOT/WebCIL/static-web-assets/publish 결과를 분리한다. workload/runtime pack, native toolchain 또는 WebCIL 형식이 달라지면 캐시도 무효화한다. 최종 `PublishDir`만 다르게 지정하는 것으로 끝내지 않는다.
 - 프로젝트 참조, generated bootstrap, TypeScript 출력, static-web-assets manifest가 다른 모드 경로를 덮어쓰지 않는지 확인한다.
 - [Web build targets](packages/platforms/build/Doroti.Web.targets)는 이미 WebCIL identity에 `WasmEnableThreads`를 포함한다. 이를 유지하되 이것만으로 두 빌드의 모든 native/intermediate 충돌이 해결됐다고 판단하지 않는다.
 - `DorotiWebInterpretWidgetTree`, trimming, AOT, SIMD, heap 옵션은 variant에 의도대로 전달하고 manifest/진단에서 확인 가능하게 한다. 기존 Safari 관련 설정을 누락하지 않는다.
@@ -148,7 +150,7 @@ wwwroot/
 
 ### 4.4 .NET 11 SDK 빌드 지원
 
-**필수 지원 목표는 SDK 11 + `net10.0` + 두 실행 모드다.** SDK major만 보고 runtime을 11로 올리거나 renderer/threads를 바꾸지 않는다. 브라우저는 빌드에 사용한 SDK가 아니라 실제 capability와 배포 프로필로 실행 모드를 선택한다.
+**SDK 빌드 호환성의 필수 목표는 SDK 11 + `net10.0` + 두 실행 모드다. 이것만으로 .NET 11 WASM 구조를 검증한 것은 아니다.** SDK major만 보고 runtime을 11로 올리거나 renderer/threads를 바꾸지 않는다. 브라우저는 빌드에 사용한 SDK가 아니라 실제 capability와 배포 프로필로 실행 모드를 선택한다.
 
 #### SDK 선택과 재현성
 
@@ -172,11 +174,41 @@ wwwroot/
 - [managed render thread](packages/platforms/web/Doroti.Host.Web/BrowserManagedRenderThread.cs)의 비공개 `JSWebWorker.RunAsyncVoid`, JSExport/JSImport, `getDotnetRuntime` 및 shared-port handshake는 **실제 탑재 runtime** 기준으로 검증한다. SDK만 11로 바꾸었다는 이유로 .NET 10 runtime 진입점을 무조건 교체하지 않는다.
 - Debug/Hot Reload/devserver와 Release/AOT를 각각 검증한다. framework pack 누락이나 사라진 hook을 무시하여 일부 기능만 빠진 성공 산출물을 만들지 않는다.
 
-#### `net11.0` 대상으로의 전환은 별도 확장
+#### `net11.0` 대상 전환과 구조 검토의 구분
 
 - SDK 11로 빌드하는 요구만으로 현재 `net10.0` 계약을 해제하거나 Blazor/runtime 패키지를 11로 올리지 않는다.
 - `net11.0`까지 지원하기로 하면 target descriptor/검사, host/target 프로젝트, runtime/Blazor 패키지, manifest/템플릿을 일관되게 바꾸고 SDK 11 + net11 + 두 모드를 별도 자격 검증한다. 기존 검사 한 줄만 완화하는 것으로 완료하지 않는다.
 - 이때 JS-affine Worker API, Mono/runtime backend, native/AOT/Skia ABI 및 loader 구조를 다시 확인한다. .NET 10의 private API가 그대로 있다고 가정하거나 동작하지 않을 때 자동 compatible 전환으로 은폐하지 않는다.
+- 제품 기본 TFM 변경은 별도 결정이지만, 4.5절의 구조 차이를 조사하고 지원 가능/차단 상태를 기록하는 작업은 이번 계획의 선행 필수 항목이다. 이를 단순한 후속 TODO로 미루지 않는다.
+
+### 4.5 .NET 11 WASM 구조 재검토 결과와 설계 차단 항목
+
+2026-11-12 추가 검토. 이전 계획은 SDK 11 + net10과 일반적인 ABI 확인 항목에 집중했으며, 아래 실제 구조 변경을 구체적으로 반영하지 못했다. 근거는 upstream `v10.0.11`/`v11.0.0` 소스, 공식 문서, 설치된 SDK 11 RC targets/manifest다. **앱 실행 재현 결과와는 구분한다.**
+
+| 구분 | 확인된 차이 | Doroti 영향과 조치 |
+| --- | --- | --- |
+| Mono pthread 진입점 | .NET 10은 `js-module-threads` 자산 URL에서 Worker를 만든다. .NET 11은 loader의 `import.meta.url`에서 얻은 `scriptUrl`, 즉 선택된 `dotnet.js`로 module Worker를 생성한다. 초기 preload와 runtime config 전달 경로도 loader에 있다. | [managed worker](packages/platforms/web/Doroti.Host.Web/Web/doroti.web.managed-worker.ts)는 `dotnet.native.worker` 접두사와 `.mjs` 확장자로만 Worker를 식별한다. .NET 11에서는 이 필터를 통과하지 않아 `doroti-managed-port` 리스너가 연결되지 않는 문제가 정적 분석상 확인된다. 기존 main-runtime 경로를 그대로 재사용하면 연결 timeout으로 이어질 수 있다. |
+| native toolchain | .NET 11 `v11.0.0`의 Emscripten 버전은 `6.0.2`다. SDK 11로 net10을 빌드하는 경로는 로컬 manifest 기준 여전히 `3.1.56`이다. | 로컬 SkiaSharp 4.154.0 targets는 net9 이상에도 `3.1.56` archive를 선택한다. net11에 같은 archive를 넣어도 된다고 가정하지 않는다. C/C++ ABI, EH, linker flags, emdawnwebgpu, JS library/export 호환성을 확인하고 필요하면 지원 패키지 또는 재빌드한 native 자산을 사용한다. 실제 링크 실패까지 확인한 것은 아니다. |
+| Mono와 CoreCLR | 설치된 SDK 11 RC의 WebAssembly props는 `UseMonoRuntime=true`가 기본이다. 별도로 .NET 11에는 CoreCLR WASM 경로와 전용 native relink targets가 존재한다. `v11.0.0` CoreCLR WASM 빌드 가이드는 실험적 지원으로 설명한다. | '.NET 11이면 모두 CoreCLR'도, 'net11도 기존 Mono와 동일'도 전제하지 않는다. `TFM + runtime flavor + runtime version`별 지원 계약을 나누고 실제 선택값을 확인한다. CoreCLR을 자동으로 선택하거나 기존 안정 경로로 홍보하지 않는다. |
+| CoreCLR native/EH | CoreCLR 전용 targets는 `_CoreCLRWriteLinkRsp`/`_CoreCLRLinkNative`를 사용하며 SIMD/EH와 `WASM_LEGACY_EXCEPTIONS=0`을 강제한다. | 기존 [native hook](packages/platforms/build/Sdk.targets)의 Mono `_BrowserWasm*` hook과 Emscripten 3.1.56 Debug workaround가 그대로 적용되지 않는다. CoreCLR native 연결은 별도 검증하며, COOP/COEP가 없어도 SIMD/EH 등 브라우저 요구가 사라지지 않는다. |
+| WebCIL/AOT | 공식 .NET 11 runtime 문서는 CoreCLR WASM에서 WebCIL V1을 기본으로 하고 header/table 계약과 Crossgen2 출력이 바뀐다고 설명한다. Mono/WebCIL reader의 V0/V1 지원도 별도로 언급한다. | Mono AOT의 `RunAOTCompilation`, assembly별 interpreter opt-in, IL stripping/cache 규칙을 CoreCLR/NativeAOT에 그대로 적용하지 않는다. payload와 compiler/runtime 조합을 식별하고 WebCIL 내부 형식을 직접 재작성하지 않는다. |
+| Blazor 자산 등록 | SDK 11 RC targets에는 .NET 11 패키지의 `blazor.webassembly.js`를 framework static web asset으로 처리하는 경로가 있고, 구 패키지의 `BlazorWebAssemblyJSPath`와 구분한다. | [provider 검증](packages/platforms/build/Sdk.targets)의 `DOROTIWEB023`은 해당 파일 경로의 존재를 무조건 요구한다. net11 패키지 전환 시 이 검사도 실제 자산 계약 기준으로 변경해야 한다. Doroti가 직접 dotnet loader를 사용하더라도 SDK 자산 파이프라인 검사는 영향을 받는다. |
+
+유지되는 것과 미확인 부분:
+
+- .NET 11 Mono 소스에도 feature-gated `JSWebWorker.RunAsyncVoid`가 있으며, Mono의 공개 타입 선언에는 `getDotnetRuntime`, `runtimeBuildInfo.wasmEnableThreads`, `localHeapViewU8`가 남아 있다. 따라서 API가 모두 제거되었다고 단정하지 않는다. 실제 threaded pack/trim/AOT에서 사용할 수 있는지는 별도 검증한다.
+- .NET 11 Mono loader는 non-threaded Worker 환경을 sidecar로 구분한다. 기존 독립 Worker 재사용 가능성은 있지만 owner context/초기화/종료/서비스 브리지까지 동등하다는 증거는 아니다.
+- .NET 11의 공식 Blazor Web Worker 템플릿은 별도 Worker 런타임 호출을 위한 참고 자료다. 공유 managed heap의 JS-affine render Worker와 같지 않으며, 이를 단순 도입해 main과 Worker에 런타임 두 개를 만드는 것으로 해결하지 않는다.
+- 로컬에 설치된 WASM runtime/native packs는 이번 확인 기준 .NET 10의 `10.0.11`/`10.0.14`뿐이다. .NET 11 SDK RC 및 net11 manifest 존재만으로 **.NET 11 WASM 실행 검증 완료**라고 보고할 수 없다. SDK/workload 추가 설치는 이 문서 작업에서 수행하지 않았다.
+
+설계에 반영할 결정:
+
+1. 자동 실행 모드 선택과 runtime별 host 연결을 분리한다. 처음에는 필요한 Mono 10/11 차이만 작은 명시적 분기로 다루고 범용 runtime 추상화는 만들지 않는다.
+2. Mono 11 Worker 식별은 선택된 loader의 실제 URL/fingerprint를 사용한다. 범용 `dotnet.*` 정규식으로 넓혀 모든 Worker 메시지를 가로채지 않는다. 기존 origin, session token, protocol, MessagePort 검증을 유지하고 .NET preload/control 메시지는 그대로 통과시킨다.
+3. native 연결 가능성은 '빈 앱 빌드'가 아닌 **Skia/interop를 링크한 최소 render probe**로 입증한다. threaded는 managed port 연결/실제 render owner, compatible은 non-shared heap/실제 첫 frame까지 확인한다.
+4. CoreCLR의 threaded JS-affine Worker, standalone runtime, JS interop 및 AOT 지원 상태는 확인 전 미지원/미검증으로 둔다. 해당 flavor에 `WasmEnableThreads` 토글만 적용하면 두 모드가 생긴다고 가정하지 않는다.
+5. dual 배포의 두 variant는 같은 검증된 runtime flavor/버전/toolchain으로 만든다. 고성능을 CoreCLR, 호환을 Mono로 몰래 교차 선택하지 않는다. .NET 11에서 문제가 생겨 .NET 10으로 바꾸는 것도 브라우저 호환 fallback이 아니라 별도 배포 정책이다.
+6. Mono/Emscripten의 shared/non-shared 두 빌드 필요성은 유지된다. 바뀌는 것은 그 두 산출물의 생성·초기화 계약이다. COOP/COEP 미충족과 runtime 구조 미지원은 서로 다른 사유로 진단한다.
 
 ## 5. 호환성 범위와 예상 제약
 
@@ -205,6 +237,16 @@ wwwroot/
 
 ## 6. 단계별 작업 계획
 
+### P-1. .NET 11 runtime 구조 적합성 판정
+
+- [ ] SDK 11 + net10/Mono 10, SDK 11 + net11/Mono 11, SDK 11 + net11/CoreCLR을 구분한 지원 상태표를 만든다. 설치·소스 확인·빌드·실행 증거를 따로 표시한다.
+- [ ] Mono 10의 별도 pthread 자산과 Mono 11의 loader-entry Worker를 각각 식별하는 계약을 정의하고 managed-port handshake 회귀 테스트를 설계한다. 관련 없는 Worker와 잘못된 token/port는 수락하지 않아야 한다.
+- [ ] Emscripten 6.0.2와 Skia/emdawn/interop 조합을 검증할 최소 render probe를 준비한다. native 자산 조정 여부를 판정하고 빌드 성공만으로 렌더링 성공을 대신하지 않는다.
+- [ ] net11 Blazor static-web-assets 검사와 Mono/CoreCLR별 native hook/WebCIL/AOT 차이를 분류한다. 지원하지 않는 flavor는 명시적으로 거부한다.
+- [ ] 실제 net11 자격 검증이 차단되면 이유·필요한 패키지/도구·남은 검증을 기록한다. net10 결과를 net11 통과로 대체하지 않는다.
+
+완료 조건: 4.5절의 구조 변경에 대응하는 설계와 net11 지원 가능/차단 판정이 있다. net11 제품 지원을 선언하려면 선택한 flavor에서 양 모드의 실제 render probe까지 통과해야 한다. 기본 TFM의 일괄 변경은 이 단계의 전제 조건이 아니다.
+
 ### P0. 기존 standalone 경로 자격 검증
 
 - [ ] SDK 10/11 각각에 대해 SDK 선택, net10 workload/pack 및 runtime pin의 해석을 확인하고 재현 가능한 toolchain 조합을 기록한다. SDK 11은 필수 검증 축이며 마지막에 붙이는 선택 검사가 아니다.
@@ -222,7 +264,7 @@ wwwroot/
 - [ ] 요청 모드와 선택 결과, runtime descriptor를 분리한다. `runtimeLocation`은 선택된 실행 경로와 일치하게 한다.
 - [ ] capability 판정과 실행 선택을 작은 독립 함수로 분리해 조합별 테스트가 가능하도록 한다.
 - [ ] runtime/profile/heap 불일치, 미지원 조합, 선택 이유의 오류/진단 계약을 정의한다.
-- [ ] build provenance에 SDK/TFM/runtime/workload 정보를 구분해 기록하고, 빌드 SDK major를 브라우저 선택 조건으로 사용하지 않는다.
+- [ ] build provenance에 SDK/TFM/runtime flavor·버전/workload/toolchain 정보를 구분해 기록하고, 빌드 SDK major를 브라우저 선택 조건으로 사용하지 않는다. 선택된 runtime host 계약의 지원 여부는 별도 검증한다.
 - [ ] [loader 타입 선언](packages/platforms/web/Doroti.Host.Web/Web/types/doroti-loader/index.d.ts)과 패키징되는 동일 선언을 함께 갱신한다.
 
 완료 조건: 선택/검증 규칙이 테스트되고 v1 단일 모드 소비를 깨지 않는다. 아직 없는 새 옵션을 문서상 사용 가능하다고 발표하지 않는다.
@@ -232,6 +274,7 @@ wwwroot/
 - [ ] [provider SDK targets](packages/platforms/build/Sdk.targets), [Web targets](packages/platforms/build/Doroti.Web.targets), [publish 검증](packages/platforms/web/Doroti.Target.Web.browser-wasm/buildTransitive/Doroti.Target.Web.browser-wasm.targets)에 모드별 child publish 및 통합 검사를 추가한다.
 - [ ] restore부터 AOT/static-web-assets까지 출력 격리를 검증한다. threaded → compatible → threaded 재빌드에서도 캐시 오염이 없어야 한다.
 - [ ] SDK 10 → 11 → 10 전환에서도 native/AOT/WebCIL/TypeScript/static-web-assets 캐시가 섞이지 않는지 확인하고, SDK 11의 hook 실행과 실제 native 입력을 검사한다.
+- [ ] net11을 제품 지원에 포함하면 Emscripten 6.0.2 native 자산과 새 Blazor static-web-assets 경로를 사용하며, 선택된 runtime flavor와 다른 native/AOT/WebCIL 산출물을 병합하지 않는다.
 - [ ] 실제 fingerprint와 압축 파일을 보존하여 variant를 배치하고 공통 자산의 동일성을 검사한다.
 - [ ] HTML/import map/preload를 선택형으로 정리하고 두 빌드의 ID/프로필/필수 자산이 완성된 뒤 manifest를 생성한다.
 - [ ] source checkout과 NuGet target/provider 소비 모두 동일하게 구성되는지 확인한다. 런타임 profile 생성 위치를 공통 runner SDK에 있다고 오인하지 않는다.
@@ -242,6 +285,7 @@ wwwroot/
 
 - [ ] .NET import/create 및 visible canvas 이전보다 앞에서 모드를 결정한다.
 - [ ] 선택한 dotnet/profile URL과 app base를 host, raster Worker, 재시작 경로까지 전달한다.
+- [ ] Mono 10/11의 서로 다른 pthread 진입점에 맞춰 Worker 감시/managed-port 연결을 수행한다. 로드된 runtime이 미지원이면 isolation fallback과 구분해 실패시킨다.
 - [ ] 고성능 renderer policy는 유지하고 compatible은 WebGL2로 연결한다. Android의 WebGPU 선택이 비격리 호환 시작을 막지 않게 한다.
 - [ ] standalone runtime의 실제 threads/heap 검사와 진단을 추가한다.
 - [ ] 단일 runtime/visible canvas 소유권, splash/error/retry, 취소/해제, Worker 재시작의 선택 일관성을 확인한다.
@@ -261,7 +305,7 @@ wwwroot/
 
 완료 조건: 사용자가 별도 JS 수정이나 배포 폴더 수작업 없이 auto publish를 만들 수 있고, 헤더를 설정할 수 없는 HTTPS 정적 호스팅에서도 compatible이 선택된다.
 
-의존 순서: **P0 → P1 → P2/P3 → P4 → 최종 인수 검증**. P2/P3은 P1 계약 확정 후 나눠 진행할 수 있지만 두 결과를 합친 실제 배포 테스트는 반드시 수행한다.
+의존 순서: **P-1 → P0 → P1 → P2/P3 → P4 → 최종 인수 검증**. P-1의 구조 판정을 거치지 않은 채 기존 net10 계약을 공통 계약으로 확정하지 않는다. P2/P3은 P1 계약 확정 후 나눠 진행할 수 있지만 두 결과를 합친 실제 배포 테스트는 반드시 수행한다.
 
 ## 7. 검증 계획과 인수 기준
 
@@ -273,12 +317,14 @@ wwwroot/
 | --- | --- | --- | --- |
 | 고정한 SDK 10 | `net10.0` / .NET 10 | threaded + compatible 각각 Debug/non-AOT 및 Release/AOT | 기존 기준선, 필수 |
 | 고정한 SDK 11 | `net10.0` / .NET 10 | threaded + compatible 각각 Debug/non-AOT 및 Release/AOT | 이번 지원 목표, 필수 |
-| SDK 11 | `net11.0` / .NET 11 | 위와 동일 + runtime/ABI 전환 검증 | 별도 타깃 확장 시 수행, 현재 지원으로 표기하지 않음 |
+| SDK 11 | `net11.0` / Mono 11 | loader-entry pthread handshake + Emscripten 6.0.2/Skia link + 양 모드 실제 render probe, 제품 지원 시 Debug/AOT 전체 | P-1 구조 판정 필수, 실행 통과 전 지원 표기 금지 |
+| SDK 11 | `net11.0` / CoreCLR | JS-affine Worker/threads/interop/native link/WebCIL/AOT 각각 지원 가능성 판정 | 별도 실험 경로; 기존 Mono 행렬을 자동 적용하지 않음 |
 
 - 필수 두 SDK 조합마다 auto dual publish를 만들고, 같은 배포본의 COOP/COEP on/off 선택과 실제 첫 frame을 확인한다. 핵심 구성은 SDK 2종 × 실행 모드 2종 × Debug/Release 2종의 8개다.
 - `RunAOTCompilation=false`인 Release 및 Sample2의 mixed-AOT도 영향 경로를 중심으로 추가 검증한다. 모든 브라우저/설정의 무차별 조합 반복은 피하되 각 SDK 산출물의 양 모드 브라우저 smoke는 생략하지 않는다.
 - SDK 11은 시험한 정확한 RC/정식 버전과 workload set을 기록한다. RC 성공을 정식/이후 feature band 지원으로 간주하지 않으며, 버전 변경 시 native link/AOT/자동 선택/첫 frame 핵심 검사를 다시 수행한다.
 - SDK 11 필수 job이 미실행/실패라면 SDK 10 결과만으로 전체 완료를 선언하지 않는다.
+- 위 8개 구성은 net10 대상 검증 수다. net11 구조 자격 검증을 포함한 수치가 아니다. net11 runtime 지원 여부는 Mono/CoreCLR별 P-1 결과로 별도 표시한다.
 
 ### 필수 환경/선택 행렬
 
@@ -302,6 +348,7 @@ wwwroot/
 - [ ] 비격리 검증은 실제 응답 헤더가 없는 서버에서 수행한다. `crossOriginIsolated` 값을 JS mock으로 바꾸는 단위 테스트만으로 완료하지 않는다.
 - [ ] Network에서 선택되지 않은 runtime의 fetch/preload/worker 생성이 없는지 확인한다. 호환 경로에서 pthread worker가 뜨지 않아야 한다.
 - [ ] .NET의 실제 build info 및 heap buffer 종류로 프로필을 검증한다. DOM dataset/파일명 확인만으로 통과시키지 않는다.
+- [ ] Mono 11 threaded에서 실제 loader-entry Worker 생성과 managed-port 수락을 관찰한다. 구 `.mjs` 필터로 인한 연결 timeout을 검출하고 runtime preload 메시지를 방해하지 않는지 확인한다.
 - [ ] `/`, subpath, deep link, 캐시된 구세대 HTML + 새 배포, `.mjs`/`.wasm` MIME 및 압축 응답을 확인한다.
 - [ ] 동시 페이지 접근에서 양 모드 파일이 같은 배포 세대에 속하고 서로 덮어쓰지 않는지 확인한다.
 
@@ -324,7 +371,7 @@ wwwroot/
 
 ## 8. 완료 정의
 
-- [ ] SDK 10/11 각각으로 `net10.0` 앱의 두 모드 및 dual publish를 검증하고 정확한 SDK/runtime/workload 조합을 기록한다. `net11.0` 타깃 지원 여부는 별도로 표시한다.
+- [ ] SDK 10/11 각각으로 `net10.0` 앱의 두 모드 및 dual publish를 검증하고 정확한 SDK/runtime/workload 조합을 기록한다. net11의 구조 판정과 flavor별 지원/미검증/차단 상태도 필수로 기록한다. 'SDK 11 빌드 성공'과 '.NET 11 WASM 지원'을 같은 표현으로 쓰지 않는다.
 - [ ] auto publish 한 번으로 threaded/compatible을 모두 포함하는 정상 배포본을 만든다.
 - [ ] 같은 앱 URL에서 실제 isolation/shared-memory 조건 충족 시 기존 고성능 경로, 미충족 시 compatible 경로가 자동 선택된다.
 - [ ] 선택되지 않은 runtime은 다운로드/생성하지 않으며 두 모드 모두 managed runtime은 정확히 한 개다.
@@ -339,3 +386,8 @@ wwwroot/
 - [MDN: crossOriginIsolated](https://developer.mozilla.org/en-US/docs/Web/API/Window/crossOriginIsolated): 실제 격리 상태, COOP/COEP와 Permissions-Policy 관계.
 - [MDN: WebGPU API](https://developer.mozilla.org/en-US/docs/Web/API/WebGPU_API): WebGPU의 secure-context 요구. 현재 Doroti의 threaded/isolated 제한과 구분할 근거.
 - [Microsoft Learn: global.json](https://learn.microsoft.com/en-us/dotnet/core/tools/global-json): SDK 선택과 대상 runtime의 구분, resolver 탐색 위치, roll-forward 및 prerelease 설정.
+- [Mono 10 Worker 생성](https://github.com/dotnet/runtime/blob/v10.0.11/src/mono/browser/runtime/pthreads/ui-thread.ts), [Mono 11 Worker 생성](https://github.com/dotnet/runtime/blob/v11.0.0/src/mono/browser/runtime/pthreads/ui-thread.ts), [Mono 11 preload Worker](https://github.com/dotnet/runtime/blob/v11.0.0/src/mono/browser/runtime/loader/assets.ts), [loader URL 결정](https://github.com/dotnet/runtime/blob/v11.0.0/src/mono/browser/runtime/loader/polyfills.ts): 별도 threads 자산에서 dotnet loader 진입점으로의 변경.
+- [.NET 11 Emscripten 버전](https://github.com/dotnet/runtime/blob/v11.0.0/src/mono/browser/emscripten-version.txt): `6.0.2`.
+- [.NET 11 JSWebWorker](https://github.com/dotnet/runtime/blob/v11.0.0/src/libraries/System.Runtime.InteropServices.JavaScript/src/System/Runtime/InteropServices/JavaScript/JSWebWorker.cs), [Mono runtime 타입](https://github.com/dotnet/runtime/blob/v11.0.0/src/mono/browser/runtime/dotnet.d.ts), [Mono sidecar 구분](https://github.com/dotnet/runtime/blob/v11.0.0/src/mono/browser/runtime/loader/globals.ts): 기존 API 존재와 실제 빌드에서의 사용 가능성을 구분할 근거.
+- [.NET 11 runtime 개선](https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-11/runtime#webassembly-improvements), [CoreCLR WASM 빌드 가이드](https://github.com/dotnet/runtime/blob/v11.0.0/docs/workflow/building/coreclr/wasm.md), [CoreCLR native targets](https://github.com/dotnet/runtime/blob/v11.0.0/src/mono/browser/build/BrowserWasmApp.CoreCLR.targets): runtime flavor, WebCIL V1 및 별도 native pipeline.
+- [Blazor Web Worker](https://learn.microsoft.com/en-us/aspnet/core/blazor/blazor-with-dotnet-on-web-workers?view=aspnetcore-11.0): 일반 독립 Worker와 Doroti의 공유 런타임 render Worker를 구분한다.
