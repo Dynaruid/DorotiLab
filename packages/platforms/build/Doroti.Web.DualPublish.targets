@@ -1,0 +1,40 @@
+<Project>
+  <PropertyGroup>
+    <WasmTriggerPublishAppAfterThisTarget></WasmTriggerPublishAppAfterThisTarget>
+    <DorotiWebBuildId Condition="'$(DorotiWebBuildId)' == ''">$([System.Guid]::NewGuid().ToString('N'))</DorotiWebBuildId>
+    <!-- Keep native tools below Windows path limits even with a nested parent
+         ArtifactsPath. A deployment generation never reuses another SDK/mode. -->
+    <_DorotiDualRoot>$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)', 'obj', 'doroti-web', '$(DorotiWebBuildId)'))</_DorotiDualRoot>
+    <_DorotiWebTasksRoot>$(_DorotiDualRoot)tools/$([System.Guid]::NewGuid().ToString('N'))/</_DorotiWebTasksRoot>
+    <_DorotiWebPublishTasksAssembly>$(_DorotiWebTasksRoot)Doroti.Web.Publish.Tasks.dll</_DorotiWebPublishTasksAssembly>
+  </PropertyGroup>
+  <UsingTask TaskName="DorotiMergeWebPublish" AssemblyFile="$(_DorotiWebPublishTasksAssembly)" />
+  <UsingTask TaskName="DorotiWebPublishProperties" AssemblyFile="$(_DorotiWebPublishTasksAssembly)" />
+  <!-- The SDK's explicit after-Blazor hook replaces only auto Publish. Children
+       use the ordinary SDK Publish target with global, early output isolation. -->
+  <Target Name="_DorotiPrepareDualPublish" DependsOnTargets="ValidateDorotiRunnerProvider;ValidateDorotiRunnerProperties">
+    <PropertyGroup>
+      <DorotiWebBuildId Condition="'$(DorotiWebBuildId)' == ''">$([System.Guid]::NewGuid().ToString('N'))</DorotiWebBuildId>
+      <_DorotiDualOutput>$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)', '$(PublishDir)'))</_DorotiDualOutput>
+      <_DorotiPublishDotnet Condition="'$(DotNetHostPath)' != ''">$(DotNetHostPath)</_DorotiPublishDotnet>
+      <_DorotiPublishDotnet Condition="'$(_DorotiPublishDotnet)' == ''">dotnet</_DorotiPublishDotnet>
+    </PropertyGroup>
+    <Error Code="DOROTIWEB044" Condition="'$(NoBuild)' == 'true'" Text="Auto publish requires two complete isolated builds; --no-build is not supported." />
+    <Error Code="DOROTIWEB054" Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('$(DorotiWebBuildId)', '^[a-fA-F0-9]{32}$'))" Text="DorotiWebBuildId must be a 32-character hexadecimal deployment generation." />
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Timeout="1200000" Command="&quot;$(_DorotiPublishDotnet)&quot; &quot;$(MSBuildToolsPath)/dotnet.dll&quot; build &quot;$(MSBuildThisFileDirectory)WebPublishTasks/Doroti.Web.Publish.Tasks.csproj&quot; --nologo --artifacts-path &quot;$(_DorotiDualRoot)tools-artifacts&quot; --output &quot;$(_DorotiWebTasksRoot)&quot;" />
+  </Target>
+  <Target Name="_DorotiBuildDualVariants" DependsOnTargets="_DorotiPrepareDualPublish">
+    <ItemGroup>
+      <_DorotiVariant Include="threaded"><Threads>true</Threads></_DorotiVariant>
+      <_DorotiVariant Include="compatible"><Threads>false</Threads></_DorotiVariant>
+    </ItemGroup>
+    <DorotiWebPublishProperties><Output TaskParameter="Arguments" PropertyName="_DorotiPublishForwarded" /></DorotiWebPublishProperties>
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Timeout="1200000"
+          Command="&quot;$(_DorotiPublishDotnet)&quot; &quot;$(MSBuildToolsPath)/dotnet.dll&quot; publish &quot;$(MSBuildProjectFullPath)&quot; --nologo -c $(Configuration) -p:DorotiWebPublishChild=true -p:DorotiWebExecutionMode=%(_DorotiVariant.Identity) -p:WasmEnableThreads=%(_DorotiVariant.Threads) -p:DorotiWebBuildId=$(DorotiWebBuildId) --artifacts-path &quot;$(_DorotiDualRoot)%(_DorotiVariant.Identity)&quot; -p:PublishDir=&quot;$(_DorotiDualRoot)%(_DorotiVariant.Identity)/publish/&quot; $(_DorotiPublishForwarded)" />
+  </Target>
+  <Target Name="_DorotiMergeDualPublish" DependsOnTargets="_DorotiPrepareDualPublish">
+    <DorotiMergeWebPublish ThreadedRoot="$(_DorotiDualRoot)threaded/publish/wwwroot" CompatibleRoot="$(_DorotiDualRoot)compatible/publish/wwwroot" OutputRoot="$(_DorotiDualOutput)wwwroot" BuildId="$(DorotiWebBuildId)" />
+    <Message Importance="High" Text="Doroti auto publish: $(_DorotiDualOutput)wwwroot (threaded + compatible; $(DorotiWebBuildId))" />
+  </Target>
+  <Target Name="Publish" DependsOnTargets="_DorotiBuildDualVariants;_DorotiMergeDualPublish" />
+</Project>

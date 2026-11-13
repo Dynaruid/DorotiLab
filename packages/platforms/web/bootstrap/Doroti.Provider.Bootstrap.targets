@@ -24,12 +24,16 @@
     <DorotiProviderEntryLine Include="    public static global::System.Threading.Tasks.Task Main(string[] args) =&gt;" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
     <DorotiProviderEntryLine Include="        global::System.Threading.Tasks.Task.CompletedTask%3B" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
     <DorotiProviderEntryLine Include="    [global::System.Runtime.InteropServices.JavaScript.JSExport]" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
-    <DorotiProviderEntryLine Include="    public static global::System.Threading.Tasks.Task&lt;string&gt; StartWorker() =&gt;" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
+    <DorotiProviderEntryLine Include="    public static global::System.Threading.Tasks.Task&lt;string&gt; StartWorker() { ConfigureWorker()%3B return" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
     <DorotiProviderEntryLine Include="        global::Doroti.Target.Web.DorotiWebWorkerRunner.RunAsync&lt;global::$(DorotiApplicationType)&gt;(typeof(DorotiBootstrap).Assembly, DorotiPluginRegistration.Items, nativePlugins: DorotiNativePluginRegistration.Items)%3B" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main' and '$(DorotiWebFontOptions)' == ''" />
     <DorotiProviderEntryLine Include="        global::Doroti.Target.Web.DorotiWebWorkerRunner.RunAsync&lt;global::$(DorotiApplicationType)&gt;(typeof(DorotiBootstrap).Assembly, DorotiPluginRegistration.Items, fontFallbackOptions: $(DorotiWebFontOptions), nativePlugins: DorotiNativePluginRegistration.Items)%3B" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main' and '$(DorotiWebFontOptions)' != ''" />
+    <DorotiProviderEntryLine Include="    }" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
+    <DorotiProviderEntryLine Include="    static partial void ConfigureWorker()%3B" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
     <DorotiProviderEntryLine Include="    [global::System.Runtime.InteropServices.JavaScript.JSExport]" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
     <DorotiProviderEntryLine Include="    public static void StopWorker() =&gt;" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
     <DorotiProviderEntryLine Include="        global::Doroti.Target.Web.DorotiWebWorkerRunner.Dispose()%3B" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
   </ItemGroup>
   <Import Project="$(DorotiProviderBuildDirectory)Sdk.targets" Condition="'$(DorotiRunnerSdkActive)' == 'true'" />
+  <Import Project="../Doroti.Target.Web.browser-wasm/buildTransitive/Doroti.Target.Web.browser-wasm.targets"
+          Condition="Exists('$(MSBuildThisFileDirectory)../Doroti.Target.Web.browser-wasm/buildTransitive/Doroti.Target.Web.browser-wasm.targets')" />
 </Project>

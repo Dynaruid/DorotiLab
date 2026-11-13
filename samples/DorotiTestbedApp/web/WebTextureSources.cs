@@ -8,7 +8,7 @@ namespace DorotiTestbedApp.Web;
 public static partial class WebTextureSources
 {
     [JSExport]
-    public static Task Initialize()
+    public static void Initialize()
     {
         TextureSampleSources.SelectSource = async operation =>
         {
@@ -24,7 +24,6 @@ public static partial class WebTextureSources
                 Convert.FromBase64String(json.RootElement.GetProperty("base64").GetString()!)
             );
         };
-        return Task.CompletedTask;
     }
 
     [JSImport("invokePlugin", "doroti.web")]

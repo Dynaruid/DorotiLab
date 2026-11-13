@@ -55,7 +55,7 @@ SDK 선택과 대상 프레임워크는 별개입니다. Testbed를 직접 빌�
 
 Windows App SDK 2.4는 target의 NuGet 복원·배포에 포함됩니다. 별도의 machine-wide Windows App Runtime 설치는 요구하지 않습니다. Android native bridge는 저장소의 Gradle wrapper 8.10.2/AGP 8.6.1을 사용합니다. `JAVA_HOME`으로 지원 JDK를 지정하고 `adb`를 `PATH`에 추가합니다. Apple은 `xcode-select -p`와 `xcodebuild -version`으로 선택한 Xcode를 확인합니다.
 
-Linux는 API 조건을 충족하는 llvmpipe 같은 소프트웨어 Vulkan 장치도 허용합니다. Web의 `Microsoft.TypeScript.MSBuild` 7.0.0은 Web runner가 복원하며, 앱 빌드에 Node/npm/Bun 설치는 필요하지 않습니다.
+Linux는 API 조건을 충족하는 llvmpipe 같은 소프트웨어 Vulkan 장치도 허용합니다. Web의 `Microsoft.TypeScript.MSBuild` 7.0.1은 Web runner가 복원하며, 앱 빌드에 Node/npm/Bun 설치는 필요하지 않습니다.
 
 ### 설치 상태 확인과 워크로드 복원
 
@@ -158,6 +158,14 @@ Android, iOS, AppKit macOS, Mac Catalyst 실행 프로젝트는 각각 앱 소�
 기본 경로는 Graphite/Vulkan으로 렌더링하고 같은 GPU의 D3D12/DXGI DirectComposition으로 화면에 표시합니다. 자동 출력 경로 전환은 없습니다. 네이티브 PlatformView의 래스터 조각은 D3D11 그리기 API를 유지합니다.
 
 ### Web
+
+`-p:DorotiWebExecutionMode=auto`로 두 모드를 함께 게시하거나, COOP/COEP를 설정할 수 없는 서버에는
+`compatible`만 게시할 수 있습니다. 로더가 시작 전에 Mono 런타임 하나를 선택하며, 호환 모드는
+non-shared 렌더 Worker와 WebGL2를 사용합니다. 기존 단일 threaded 게시 기본값은 유지합니다.
+SDK 11/net10과 `DorotiWebTargetFramework=net11.0`은 별도 검증 축입니다. net11은 현재 재검증 전용이며
+기본 빌드는 DOROTIWEB050으로 거부합니다. CoreCLR WASM도 미지원입니다.
+[실행 프로필·마이그레이션](../packages/platforms/web/README.md#execution-profiles-opt-in)과
+[현재 검증 상태](../work.md)를 확인하세요.
 
 | 렌더러 | 요구 사항 |
 | --- | --- |

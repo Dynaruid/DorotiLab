@@ -1,0 +1,71 @@
+name: Web execution contracts
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'packages/platforms/web/**'
+      - 'packages/platforms/build/**'
+      - 'packages/icons/build/**'
+      - 'Doroti/Directory.Packages.props'
+      - 'samples/DorotiTestbedApp/**'
+      - '.github/workflows/web-execution.yml'
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain:
+          - { sdk: '10.0.403', tfm: 'net10.0', workloads: 'wasm-tools' }
+          - { sdk: '11.0.100', tfm: 'net10.0', workloads: 'wasm-tools-net10' }
+          - { sdk: '11.0.100', tfm: 'net11.0', workloads: 'wasm-tools' }
+        configuration: [Debug, Release]
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-dotnet@v6.1.0
+        with:
+          dotnet-version: |
+            10.0.403
+            11.0.100
+      - name: Install selected system workload
+        shell: pwsh
+        run: |
+          $sdk = Join-Path $env:ProgramFiles 'dotnet\sdk\${{ matrix.toolchain.sdk }}\dotnet.dll'
+          & .\packages\platforms\web\tests\run-validation.ps1 -Executable (Join-Path $env:ProgramFiles 'dotnet\dotnet.exe') -Arguments @($sdk, 'workload', 'install', '${{ matrix.toolchain.workloads }}', '--skip-manifest-update') -WorkingDirectory $env:RUNNER_TEMP -LogPath Doroti\artifacts\web-qualification\workload.log
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Publish both complete variants
+        shell: pwsh
+        run: |
+          & .\packages\platforms\web\tests\qualify-publish.ps1 -Sdk '${{ matrix.toolchain.sdk }}' -Framework '${{ matrix.toolchain.tfm }}' -Configuration '${{ matrix.configuration }}'
+          exit $LASTEXITCODE
+      - name: Selection and publish contracts
+        shell: pwsh
+        run: |
+          & .\packages\platforms\web\tests\run-contract-tests.ps1
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          & .\packages\platforms\web\tests\build-contracts.ps1
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          & .\packages\platforms\web\tests\run-validation.ps1 -Executable (Join-Path $env:ProgramFiles 'dotnet\dotnet.exe') -Arguments @('run', '--project', 'packages\platforms\web\tests\PublishContracts\PublishContracts.csproj') -LogPath Doroti\artifacts\web-qualification\publish-contracts.log
+          exit $LASTEXITCODE
+      - name: Install browser-only test tooling
+        shell: pwsh
+        run: |
+          npm ci --prefix packages\platforms\web\tests --ignore-scripts
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          node packages\platforms\web\tests\node_modules\playwright\cli.js install chromium
+          exit $LASTEXITCODE
+      - name: Actual isolated and non-isolated browser smoke
+        shell: pwsh
+        run: |
+          $webRoot = Join-Path $PWD 'Doroti\artifacts\web-qualification\DorotiTestbedApp-${{ matrix.toolchain.sdk }}-${{ matrix.toolchain.tfm }}-${{ matrix.configuration }}-auto\publish\wwwroot'
+          & .\packages\platforms\web\tests\run-validation.ps1 -Executable (Get-Command node).Source -Arguments @('packages\platforms\web\tests\browser-smoke.mjs', $webRoot) -LogPath Doroti\artifacts\web-qualification\browser-smoke.log
+          exit $LASTEXITCODE
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: web-${{ matrix.toolchain.sdk }}-${{ matrix.toolchain.tfm }}-${{ matrix.configuration }}
+          path: Doroti/artifacts/web-qualification/**/*.log
+          retention-days: 7

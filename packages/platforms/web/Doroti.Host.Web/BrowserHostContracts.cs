@@ -445,7 +445,7 @@ public static class BrowserHostRuntime
                 return;
             }
 
-            await JSHost.ImportAsync("doroti.web", "../_content/Doroti.Host.Web/doroti.web.js");
+            await JSHost.ImportAsync("doroti.web", ResolveModuleUrl("doroti.web.js"));
             await BrowserInterop.InitializeManagedCallbacksAsync();
             _initialized = true;
         }
@@ -457,6 +457,14 @@ public static class BrowserHostRuntime
 
     public static string ResolveResourceUrl(string relativeUrl) =>
         BrowserInterop.ResolveResourceUrl(relativeUrl);
+
+    internal static string ResolveModuleUrl(string moduleName)
+    {
+        var applicationBase = Environment.GetEnvironmentVariable("DOROTI_WEB_APPLICATION_BASE_URL");
+        if (!Uri.TryCreate(applicationBase, UriKind.Absolute, out var baseUri))
+            throw new InvalidOperationException("The render session did not provide an absolute application base URL.");
+        return new Uri(baseUri, "_content/Doroti.Host.Web/" + moduleName).AbsoluteUri;
+    }
 
     public static void SetApplicationTitle(int hostId, string title) =>
         BrowserInterop.SetApplicationTitle(hostId, title);

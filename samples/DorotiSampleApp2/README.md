@@ -390,6 +390,12 @@ Windows App SDK / Vulkan 호스트를 사용합니다.
 
 ## Web
 
+격리 헤더를 제공할 수 없는 서버까지 하나의 배포본으로 지원하려면 게시 명령에
+`-p:DorotiWebExecutionMode=auto`를 추가합니다. 호환 전용 배포는 `compatible`을 사용하며,
+개발 서버 비격리 검증에는 `-p:DorotiWebIsolation=false`도 지정합니다. 기존 threaded 기본값,
+Safari mixed-AOT 및 메모리 설정은 유지합니다. SDK 11/net10과 Mono 11/net11은 별도 검증이
+필요합니다. [실행 프로필 안내](../../packages/platforms/web/README.md#execution-profiles-opt-in)를 참고하세요.
+
 빠른 개발 실행은 [빠른 시작](#빠른-시작)의 Debug 명령을 사용합니다.
 Release 게시의 기본값은 Mono WASM AOT이며, 게시물을 제공하는 서버를 실행한 터미널을 열어 둡니다.
 첫 AOT 게시에는 시간이 더 걸립니다.

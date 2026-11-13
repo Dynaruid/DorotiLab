@@ -29,8 +29,8 @@ public static class DorotiWebWorkerRunner
             return "already-running";
         }
 
-        BrowserOwnerSynchronizationContext.EnsureInstalled();
         await BrowserHostRuntime.EnsureInitializedAsync();
+        BrowserOwnerSynchronizationContext.EnsureInstalled();
         _timeProvider = new BrowserTimeProvider();
         using var timeScope = Runtime.DorotiExecutionContext.EnterTimeProvider(
             _timeProvider

@@ -26,6 +26,7 @@ import { captureBrowserTimers } from "./doroti.web.timers.js";
 import * as textures from "./doroti.web.texture-worker.js";
 import { WorkerRequestMailbox } from "./doroti.web.requests.js";
 import { WebGlFrameQueue } from "./doroti.web.gl-frames.js";
+import { verifyRuntime, sameOriginRuntimeUrl, type ExecutionSelection } from "./doroti.web.execution.js";
 
 const protocolVersion = dorotiProtocolVersion;
 const inboundKinds = new Set([
@@ -149,6 +150,8 @@ interface EmscriptenGlRuntime {
 }
 
 interface DotnetRuntime {
+  runtimeBuildInfo: { wasmEnableThreads: boolean; productVersion: string };
+  localHeapViewU8(): Uint8Array;
   getAssemblyExports(name: string): Promise<unknown>;
   getConfig(): { mainAssemblyName: string };
   exit(code: number, reason?: unknown): void;
@@ -162,6 +165,7 @@ let presenter: WorkerPresenter | null = null;
 let stopManagedRuntime: (() => void) | null = null;
 let managedRuntime: DotnetRuntime | null = null;
 let dotnetModuleUrl: string | null = null;
+let execution: ExecutionSelection;
 let testbedMode = "diagnostics";
 let progressScope = "local";
 let managedHostReady = false;
@@ -799,8 +803,7 @@ configureWorkerBridge({
   captureResizeTrace() { return "[]"; },
   closeHost(id) { post("closed", { hostId: id }); },
   resolveResourceUrl(relativeUrl) {
-    const applicationBase = new URL("../../", import.meta.url);
-    return new URL(relativeUrl, applicationBase).href;
+    return new URL(relativeUrl, execution.applicationBaseUrl).href;
   },
   postControl(kind, payload) { post("control", { controlKind: kind, payload }); },
   requestControl(kind, payload, transfer = []) {
@@ -885,6 +888,11 @@ function handleHostMessage(event: MessageEvent): void {
       if (!transferredCanvas)
         throw new Error("Doroti direct worker init requires a transferred visible OffscreenCanvas.");
       dotnetModuleUrl = String(message.dotnetModuleUrl ?? "");
+      execution = message.execution as ExecutionSelection;
+      if (!execution || execution.runtimeLocation !== (managedPort ? "main" : "worker") || !dotnetModuleUrl ||
+          execution.selected !== (managedPort ? "threaded" : "compatible"))
+        throw new Error("Doroti render session requires a matching execution descriptor.");
+      sameOriginRuntimeUrl(dotnetModuleUrl, execution.applicationBaseUrl);
       testbedMode = String(message.testbedMode ?? "diagnostics");
       progressScope = String(message.progressScope ?? "local");
       void startManagedRuntime();
@@ -903,7 +911,8 @@ function handleHostMessage(event: MessageEvent): void {
         // Window activation can deliver focus/pointer state while the worker
         // runtime is still bootstrapping. Keep a bounded startup mailbox rather
         // than calling the not-yet-installed managed callback ABI.
-        if (pendingManagedInputs.length >= 256) pendingManagedInputs.shift();
+        if (pendingManagedInputs.length >= 256)
+          throw new Error("Doroti render owner input mailbox is full before application readiness.");
         pendingManagedInputs.push(message);
       } else {
         dispatchOwnerInput(message);
@@ -996,6 +1005,7 @@ async function startManagedRuntime(): Promise<void> {
     const runtime = managedPort
       ? (globalThis as unknown as { getDotnetRuntime(id: number): DotnetRuntime }).getDotnetRuntime(0)
       : await startupLifetime.wait(dotnetModule!.dotnet.withEnvironmentVariables({
+      DOROTI_WEB_APPLICATION_BASE_URL: execution.applicationBaseUrl,
       DOROTI_TESTBED_MODE: testbedMode, DOROTI_WEB_DIRECT_TRACE: diagnosticsEnabled ? "1" : "0",
       DOROTI_STAGE_TRACE: diagnosticsEnabled ? "1" : "0",
       DOROTI_SAMPLE_PROGRESS_SCOPE: progressScope,
@@ -1003,6 +1013,7 @@ async function startManagedRuntime(): Promise<void> {
     }).create(), late => { late.exit(0); });
     startupLifetime.check();
     managedRuntime = runtime;
+    const actualRuntime = verifyRuntime(runtime, execution);
     post("runtime-stage", { stage: "managed-callbacks" });
     await startupLifetime.wait(initializeManagedCallbacks());
     const hostExports = await startupLifetime.wait(runtime.getAssemblyExports("Doroti.Host.Web.dll")) as {
@@ -1081,6 +1092,7 @@ async function startManagedRuntime(): Promise<void> {
     post("runtime-ready", { result, pointerAdmission: true, wheelAdmission: true, mainManagedRuntimeCount: managedPort ? 1 : 0,
       workerManagedRuntimeCount: managedPort ? 0 : 1, sharedRuntimeRenderThread: !!managedPort,
       renderThreadId: hostExports.Doroti.Host.Web.BrowserManagedRenderThread.CaptureThreadId(),
+      runtimeThreads: actualRuntime.threads, sharedHeap: actualRuntime.sharedHeap, runtimeVersion: actualRuntime.version,
       workerIsolated: crossOriginIsolated });
   } catch (error) {
     if (startupLifetime.closed) return;

@@ -1,0 +1,7 @@
+<linker>
+  <assembly fullname="System.Runtime.InteropServices.JavaScript">
+    <type fullname="System.Runtime.InteropServices.JavaScript.JSWebWorker">
+      <method name="RunAsyncVoid" />
+    </type>
+  </assembly>
+</linker>

@@ -4,7 +4,7 @@ use sha2::{Digest, Sha256};
 use std::{fs, path::Path};
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
-const COMPILER: &str = "doroti-wgsl/0.1.0+naga/30.0.1";
+const COMPILER: &str = "doroti-wgsl/0.1.0+naga/30.0.2";
 const VERTEX: &str = r#"
 struct VertexOutput { @builtin(position) position: vec4<f32>, @location(0) uv: vec2<f32> }
 @vertex fn main(@builtin(vertex_index) index: u32) -> VertexOutput {

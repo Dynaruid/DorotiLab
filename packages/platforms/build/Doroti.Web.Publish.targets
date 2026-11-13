@@ -1,0 +1,4 @@
+<Project>
+  <Import Project="$(_DorotiPreviousAfterBlazorTargets)" Condition="'$(_DorotiPreviousAfterBlazorTargets)' != '' and Exists('$(_DorotiPreviousAfterBlazorTargets)')" />
+  <Import Project="Doroti.Web.DualPublish.targets" Condition="'$(DorotiWebExecutionMode)' == 'auto' and '$(DorotiWebPublishChild)' != 'true'" />
+</Project>

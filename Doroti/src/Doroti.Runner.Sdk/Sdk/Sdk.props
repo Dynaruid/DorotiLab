@@ -20,9 +20,9 @@
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
     <EnableDefaultXamlItems>false</EnableDefaultXamlItems>
     <DorotiVersion Condition="'$(DorotiVersion)' == ''">0.4.1-beta</DorotiVersion>
-    <SkiaSharpVersion Condition="'$(SkiaSharpVersion)' == ''">4.154.0</SkiaSharpVersion>
+    <SkiaSharpVersion Condition="'$(SkiaSharpVersion)' == ''">4.156.0</SkiaSharpVersion>
     <DorotiMarkupVersion Condition="'$(DorotiMarkupVersion)' == ''">8.0.0</DorotiMarkupVersion>
-    <DorotiTypeScriptVersion Condition="'$(DorotiTypeScriptVersion)' == ''">7.0.0</DorotiTypeScriptVersion>
+    <DorotiTypeScriptVersion Condition="'$(DorotiTypeScriptVersion)' == ''">7.0.1</DorotiTypeScriptVersion>
     <_DorotiGeneratedDirectory>$(BaseIntermediateOutputPath)Doroti.Generated/</_DorotiGeneratedDirectory>
     <_DorotiBootstrapFile>$(_DorotiGeneratedDirectory)DorotiBootstrap.g.cs</_DorotiBootstrapFile>
     <_DorotiPluginRegistrationFile>$(_DorotiGeneratedDirectory)DorotiPluginRegistration.g.cs</_DorotiPluginRegistrationFile>

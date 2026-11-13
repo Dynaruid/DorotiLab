@@ -2,8 +2,12 @@
   <PropertyGroup>
     <DorotiWebTarget>true</DorotiWebTarget>
     <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">browser-wasm</RuntimeIdentifier>
-    <RuntimeFrameworkVersion Condition="'$(RuntimeFrameworkVersion)' == ''">10.0.11</RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion Condition="'$(RuntimeFrameworkVersion)' == '' and '$(DorotiWebRuntimeVersion)' != ''">$(DorotiWebRuntimeVersion)</RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion Condition="'$(RuntimeFrameworkVersion)' == '' and ('$(DorotiWebTargetFramework)' == 'net11.0' or '$(TargetFramework)' == 'net11.0')">11.0.0</RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion Condition="'$(RuntimeFrameworkVersion)' == ''">10.0.15</RuntimeFrameworkVersion>
     <WasmBuildNative>true</WasmBuildNative>
+    <WasmEnableThreads Condition="'$(DorotiWebExecutionMode)' == 'compatible'">false</WasmEnableThreads>
+    <WasmEnableThreads Condition="'$(DorotiWebExecutionMode)' == 'threaded' or '$(DorotiWebExecutionMode)' == 'auto'">true</WasmEnableThreads>
     <WasmEnableThreads Condition="'$(WasmEnableThreads)' == ''">true</WasmEnableThreads>
     <!-- Also covers package consumers that do not import the runner SDK props. -->
     <RunAOTCompilation Condition="'$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true' and '$(Configuration)' == 'Release' and '$(RunAOTCompilation)' == ''">true</RunAOTCompilation>

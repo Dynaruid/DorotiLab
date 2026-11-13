@@ -7,7 +7,7 @@
   <Import Project="Doroti.MacOS.props" Condition="'$(DorotiMacOSProfileImported)' != 'true'" />
   <Import Project="Doroti.IosNativeAot.props" Condition="'$(DorotiIosNativeAotProfileImported)' != 'true'" />
   <PropertyGroup Condition="'$(DorotiIosDevelopment)' == 'true' and '$(DorotiCompilationMode)' == 'CoreClr'">
-    <DorotiIosDevelopmentRuntimeVersion Condition="'$(DorotiIosDevelopmentRuntimeVersion)' == ''">11.0.0-rc.2.26504.105</DorotiIosDevelopmentRuntimeVersion>
+    <DorotiIosDevelopmentRuntimeVersion Condition="'$(DorotiIosDevelopmentRuntimeVersion)' == ''">11.0.0</DorotiIosDevelopmentRuntimeVersion>
     <RestoreAdditionalProjectSources>$(RestoreAdditionalProjectSources);https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet11/nuget/v3/index.json</RestoreAdditionalProjectSources>
   </PropertyGroup>
   <PropertyGroup>
@@ -27,7 +27,11 @@
     <MauiEnablePlatformUsings Condition="'$(UseMaui)' == 'true'">true</MauiEnablePlatformUsings>
     <SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
     <MauiVersion Condition="'$(MauiVersion)' == '' and '$(DorotiIosMauiVersion)' != ''">$(DorotiIosMauiVersion)</MauiVersion>
-    <MauiVersion Condition="'$(MauiVersion)' == ''">10.0.90</MauiVersion>
-    <DorotiWebRuntimeVersion Condition="'$(DorotiWebRuntimeVersion)' == ''">10.0.11</DorotiWebRuntimeVersion>
+    <MauiVersion Condition="'$(MauiVersion)' == ''">10.0.130</MauiVersion>
+    <DorotiWebTargetFramework Condition="'$(DorotiWebTargetFramework)' == ''">net10.0</DorotiWebTargetFramework>
+    <DorotiWebRuntimeVersion Condition="'$(DorotiWebRuntimeVersion)' == '' and '$(DorotiWebTargetFramework)' == 'net11.0'">11.0.0</DorotiWebRuntimeVersion>
+    <DorotiWebRuntimeVersion Condition="'$(DorotiWebRuntimeVersion)' == ''">10.0.15</DorotiWebRuntimeVersion>
+    <WasmEnableThreads Condition="'$(DorotiWebExecutionMode)' == 'compatible'">false</WasmEnableThreads>
+    <WasmEnableThreads Condition="'$(DorotiWebExecutionMode)' == 'threaded' or '$(DorotiWebExecutionMode)' == 'auto'">true</WasmEnableThreads>
   </PropertyGroup>
 </Project>

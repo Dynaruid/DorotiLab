@@ -1,4 +1,8 @@
 <Project>
+  <PropertyGroup>
+    <_DorotiWebCilBuildHook>_ResolveWasmOutputs</_DorotiWebCilBuildHook>
+    <_DorotiWebCilBuildHook Condition="'$(TargetFramework)' == 'net11.0'">_ConvertBuildDllsToWebcil</_DorotiWebCilBuildHook>
+  </PropertyGroup>
   <!-- Emscripten 3.1.56 implicitly uses STACK_FIRST at -O0 unless GLOBAL_BASE
        is explicit. That puts the main pthread stack's lower bound at zero,
        which Mono rejects in mono_threads_platform_get_stack_bounds. Explicitly
@@ -7,7 +11,7 @@
        GLOBAL_BASE can still take precedence. -->
   <Target Name="DorotiConfigureWebDebugStackLayout"
           BeforeTargets="_PrepareForBrowserWasmBuildNative"
-          Condition="'$(DorotiTarget)' == 'Web' and '$(Configuration)' == 'Debug' and '$(WasmEnableThreads)' == 'true'">
+          Condition="'$(DorotiTarget)' == 'Web' and '$(Configuration)' == 'Debug' and '$(WasmEnableThreads)' == 'true' and '$(EmscriptenVersion)' == '3.1.56'">
     <PropertyGroup>
       <EmccExtraLDFlags>-sGLOBAL_BASE=1024 $(EmccExtraLDFlags)</EmccExtraLDFlags>
     </PropertyGroup>
@@ -33,7 +37,7 @@
        Track the execution mode and all assemblies (including project references
        and this runner), as well as package paths/content, before reusing outputs. -->
   <Target Name="DorotiInvalidateWebDependencyWebCil"
-          BeforeTargets="_ResolveWasmOutputs;ProcessPublishFilesForWasm"
+          BeforeTargets="$(_DorotiWebCilBuildHook);ProcessPublishFilesForWasm"
           DependsOnTargets="ResolveReferences;_ResolveWasmConfiguration"
           Condition="'$(DorotiTarget)' == 'Web' and '$(WasmEnableWebcil)' != 'false'">
     <ItemGroup>
@@ -48,7 +52,7 @@
       <_DorotiWebDependencyIdentityFile>$(IntermediateOutputPath)doroti-webcil-dependencies.identity</_DorotiWebDependencyIdentityFile>
     </PropertyGroup>
     <ItemGroup>
-      <_DorotiWebDependencyIdentity Include="mode|$(Configuration)|$(RunAOTCompilation)|$(WasmStripILAfterAOT)|$(WasmEnableThreads)|$(DorotiWebInterpretWidgetTree)" />
+      <_DorotiWebDependencyIdentity Include="mode|$(NETCoreSdkVersion)|$(TargetFramework)|$(RuntimeFrameworkVersion)|$(UseMonoRuntime)|$(WasmSdkPackVersion)|$(EmscriptenVersion)|$(Configuration)|$(RunAOTCompilation)|$(WasmStripILAfterAOT)|$(WasmEnableThreads)|$(DorotiWebInterpretWidgetTree)" />
       <!-- A policy change also needs unstripped IL, even if assembly bytes and
            the public opt-in flag are identical to an earlier AOT publish. -->
       <_DorotiWebDependencyIdentity Include="widget-tree-policy|Widgets,Rendering,Runtime"

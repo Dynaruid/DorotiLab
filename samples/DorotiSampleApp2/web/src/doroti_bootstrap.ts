@@ -8,7 +8,7 @@ import {
 await startDoroti({
   splash: true, // Set to false to disable the built-in loading screen.
   configure(context: DorotiBootstrapContext) {
-    context.runtimeLocation = "main";
+    context.executionMode = "auto";
   },
   onStage(stage) {
     document.documentElement.dataset.dorotiBootstrapStage = stage;

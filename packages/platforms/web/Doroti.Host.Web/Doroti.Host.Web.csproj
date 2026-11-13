@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework Condition="'$(DorotiWebTargetFramework)' != ''">$(DorotiWebTargetFramework)</TargetFramework>
     <AssemblyName>Doroti.Host.Web</AssemblyName>
     <PackageId>Doroti.Host.Web</PackageId>
     <Description>Doroti browser render Worker, DOM, lifecycle, and requestAnimationFrame host capabilities.</Description>
@@ -25,7 +26,7 @@
   </ItemGroup>
   <PropertyGroup>
     <DorotiWebTypeScript>true</DorotiWebTypeScript>
-    <DorotiTypeScriptVersion>7.0.0</DorotiTypeScriptVersion>
+    <DorotiTypeScriptVersion>7.0.1</DorotiTypeScriptVersion>
     <DorotiTypeScriptConfig>$(MSBuildProjectDirectory)\Web\tsconfig.json</DorotiTypeScriptConfig>
     <DorotiTypeScriptSourceRoot>$(MSBuildProjectDirectory)\Web</DorotiTypeScriptSourceRoot>
     <DorotiTypeScriptOutputRoot>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework)\Doroti.Web\wwwroot</DorotiTypeScriptOutputRoot>

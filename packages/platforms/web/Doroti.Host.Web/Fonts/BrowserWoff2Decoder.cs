@@ -14,7 +14,7 @@ internal static partial class BrowserWoff2Decoder
         if (BrowserFontData.CanUseWoff2Directly(bytes)) return bytes;
         try
         {
-            _module ??= JSHost.ImportAsync("doroti.fonts", "../_content/Doroti.Host.Web/doroti.web.fonts.js");
+            _module ??= JSHost.ImportAsync("doroti.fonts", BrowserHostRuntime.ResolveModuleUrl("doroti.web.fonts.js"));
             await _module;
             cancellationToken.ThrowIfCancellationRequested();
             using var decoded = await Decode(bytes, decoderUrl.AbsoluteUri);

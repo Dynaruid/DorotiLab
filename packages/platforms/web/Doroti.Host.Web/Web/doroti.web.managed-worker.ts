@@ -1,5 +1,7 @@
 import { dorotiProtocolVersion } from "./doroti.web.protocol.js";
 import { developmentBridge, startBrowserHotReload } from "./doroti.web.hot-reload.js";
+import { verifyRuntime, type ExecutionSelection } from "./doroti.web.execution.js";
+import { monoWorkerUrls, type MonoWorkerConfig } from "./doroti.web.mono.js";
 
 export interface DorotiWorkerEndpoint extends EventTarget {
   postMessage(message: unknown, transfer?: Transferable[]): void;
@@ -22,9 +24,12 @@ const connections = new Map<string, {
   fail(error: Error): void;
 }>();
 const activeEndpoints = new Set<ManagedEndpoint>();
+let runtimeLoaderUrl: string | undefined;
+let restoreWorkerObserver: (() => void) | undefined;
 
 function failRuntime(error: Error): void {
   runtimeFailure ??= error;
+  restoreWorkerObserver?.();
   for (const connection of connections.values()) connection.fail(runtimeFailure);
   connections.clear();
   // A finalizer/deputy pthread failure invalidates the same shared runtime as a
@@ -72,11 +77,11 @@ class ManagedEndpoint extends EventTarget implements DorotiWorkerEndpoint {
   }
 }
 
-async function initializeMainRuntime(dotnetUrl: string): Promise<MainRuntime> {
+async function initializeMainRuntime(dotnetUrl: string, selection: ExecutionSelection): Promise<MainRuntime> {
   if (!crossOriginIsolated || typeof SharedArrayBuffer === "undefined")
     throw new Error("Doroti main-runtime rendering requires COOP/COEP isolation and shared memory.");
-  const runtimeBase = new URL("./", dotnetUrl);
   const NativeWorker = globalThis.Worker;
+  let workerUrls: ReadonlySet<string> = selection.runtimeContract === "mono-11" ? monoWorkerUrls("mono-11", dotnetUrl, {}) : new Set();
   let rejectStartup!: (error: Error) => void;
   const interrupted = new Promise<never>((_, reject) => { rejectStartup = reject; });
   const policyViolation = (event: SecurityPolicyViolationEvent): void => {
@@ -88,13 +93,11 @@ async function initializeMainRuntime(dotnetUrl: string): Promise<MainRuntime> {
   // The public Worker constructor is the boundary where the host can receive a
   // transferable port from a runtime-owned pthread. No PThread/Mono internals are
   // inspected or patched. All .NET/Emscripten control messages pass through.
-  globalThis.Worker = class extends NativeWorker {
+  const ObservedWorker = class extends NativeWorker {
     constructor(url: string | URL, options?: WorkerOptions) {
       super(url, options);
       const resolved = new URL(String(url), document.baseURI);
-      if (resolved.origin !== runtimeBase.origin ||
-          !resolved.pathname.startsWith(`${runtimeBase.pathname}dotnet.native.worker`) ||
-          !resolved.pathname.endsWith(".mjs")) return;
+      if (!workerUrls.has(resolved.href)) return;
       this.addEventListener("error", event => {
         const error = new Error(`Doroti .NET runtime worker failed: ${event.message || String(event.error)}`);
         const originalStack = event.error?.stack;
@@ -112,6 +115,7 @@ async function initializeMainRuntime(dotnetUrl: string): Promise<MainRuntime> {
         event.stopImmediatePropagation();
         const connection = connections.get(data.sessionToken);
         if (data.protocolVersion !== dorotiProtocolVersion || !connection || !(data.port instanceof MessagePort)) {
+          console.warn("Doroti rejected a stale/invalid managed-port handshake.", { protocolVersion: data.protocolVersion, sessionToken: data.sessionToken });
           if (data.port instanceof MessagePort) {
             data.port.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "managed-rejected", sessionToken: data.sessionToken });
             data.port.close();
@@ -123,8 +127,16 @@ async function initializeMainRuntime(dotnetUrl: string): Promise<MainRuntime> {
       });
     }
   };
+  globalThis.Worker = ObservedWorker;
+  restoreWorkerObserver = () => {
+    if (globalThis.Worker === ObservedWorker) globalThis.Worker = NativeWorker;
+  };
+  globalThis.addEventListener("pagehide", () => restoreWorkerObserver?.(), { once: true });
   try {
     const module = await import(dotnetUrl);
+    module.dotnet.withModuleConfig({ onConfigLoaded: (config: MonoWorkerConfig) => {
+      workerUrls = monoWorkerUrls(selection.runtimeContract, dotnetUrl, config);
+    } });
     const params = new URL(location.href).searchParams;
     const diagnostics = params.get("dorotiResizeDiagnostics") === "1";
     // .NET 10's SDK Hot Reload agent uses synchronous JSExport entry points.
@@ -134,6 +146,7 @@ async function initializeMainRuntime(dotnetUrl: string): Promise<MainRuntime> {
     if (document.querySelector("script[src*='aspnetcore-browser-refresh']"))
       module.dotnet.withConfig({ jsThreadBlockingMode: "ThrowWhenBlockingWait" });
     const runtime = await Promise.race([module.dotnet.withEnvironmentVariables({
+      DOROTI_WEB_APPLICATION_BASE_URL: selection.applicationBaseUrl,
       DOROTI_DEV_SESSION_ID: developmentBridge(location.search)?.sessionId ?? "browser",
       DOROTI_TESTBED_MODE: params.get("dorotiTestbedMode") ?? "diagnostics",
       DOROTI_SAMPLE: params.get("dorotiSample") ?? "",
@@ -144,13 +157,12 @@ async function initializeMainRuntime(dotnetUrl: string): Promise<MainRuntime> {
       DOROTI_WEBVIEW_WORKLOAD: params.get("dorotiWebViewWorkload") ?? "idle",
       DOROTI_SAMPLE_PROGRESS_SCOPE: params.get("dorotiProgressScope") ?? "local",
     }).create() as Promise<MainRuntime>, interrupted]);
-    if (!runtime.runtimeBuildInfo.wasmEnableThreads || !(runtime.localHeapViewU8().buffer instanceof SharedArrayBuffer))
-      throw new Error("Doroti main-runtime rendering requires a threaded .NET build with a shared heap.");
+    verifyRuntime(runtime, selection);
     document.documentElement.dataset.dorotiRuntimeLocation = "main";
     await startBrowserHotReload(runtime);
     return runtime;
   } catch (error) {
-    globalThis.Worker = NativeWorker;
+    restoreWorkerObserver();
     throw error;
   } finally {
     clearTimeout(startupTimer);
@@ -158,8 +170,11 @@ async function initializeMainRuntime(dotnetUrl: string): Promise<MainRuntime> {
   }
 }
 
-export async function createManagedDorotiWorker(dotnetUrl: string, roleUrl: URL, signal?: AbortSignal): Promise<DorotiWorkerEndpoint> {
-  const runtime = await (runtimePromise ??= initializeMainRuntime(dotnetUrl));
+export async function createManagedDorotiWorker(dotnetUrl: string, roleUrl: URL, selection: ExecutionSelection, signal?: AbortSignal): Promise<DorotiWorkerEndpoint> {
+  if (runtimeLoaderUrl !== undefined && runtimeLoaderUrl !== dotnetUrl)
+    throw new Error("Doroti cannot create a second managed runtime in the same page.");
+  runtimeLoaderUrl = dotnetUrl;
+  const runtime = await (runtimePromise ??= initializeMainRuntime(dotnetUrl, selection));
   if (runtimeFailure) throw runtimeFailure;
   const exports = await runtime.getAssemblyExports("Doroti.Host.Web.dll");
   if (runtimeFailure) throw runtimeFailure;

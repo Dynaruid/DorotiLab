@@ -15,14 +15,17 @@ try
         return index >= 0 && index + 1 < args.Length ? args[index + 1] : throw new InvalidDataException($"Missing argument {name}.");
     }
     var applicationPath = Path.GetFullPath(RequiredArgument("--applicationpath"));
-    var configPath = Path.GetFullPath(RequiredArgument("--web-dev-config"));
-    var config = WebDevConfig.Load(configPath);
+    var configPath = args.Contains("--web-dev-config") ? Path.GetFullPath(RequiredArgument("--web-dev-config")) : null;
+    var config = configPath is null ? new WebDevConfig(null, null, null, null, new Dictionary<string, string>(), []) : WebDevConfig.Load(configPath);
+    var suppressIsolation = args.Contains("--no-cop-headers");
+    if (suppressIsolation && args.Contains("--apply-cop-headers"))
+        throw new InvalidDataException("Specify only one isolation header option.");
     var isolated = args.Contains("--apply-cop-headers");
     var hostArguments = new List<string>();
     for (var index = 0; index < args.Length; index++)
     {
         if (args[index] is "--applicationpath" or "--web-dev-config") { index++; continue; }
-        if (args[index] != "--apply-cop-headers") hostArguments.Add(args[index]);
+        if (args[index] is not ("--apply-cop-headers" or "--no-cop-headers")) hostArguments.Add(args[index]);
     }
     var cliUrls = new ConfigurationBuilder().AddCommandLine(hostArguments.ToArray()).Build()["urls"];
     var builder = Host.CreateDefaultBuilder(hostArguments.ToArray())
@@ -87,6 +90,11 @@ try
                             request.Response.Headers["Cross-Origin-Opener-Policy"] = "same-origin";
                             request.Response.Headers["Cross-Origin-Embedder-Policy"] = "require-corp";
                         }
+                        else if (suppressIsolation)
+                        {
+                            request.Response.Headers.Remove("Cross-Origin-Opener-Policy");
+                            request.Response.Headers.Remove("Cross-Origin-Embedder-Policy");
+                        }
                         return Task.CompletedTask;
                     });
                     await next(request);
@@ -98,6 +106,8 @@ try
                 app.UseEndpoints(endpoints =>
                 {
                     endpoints.MapStaticAssets(Path.ChangeExtension(applicationPath, ".staticwebassets.endpoints.json"));
+                    endpoints.MapFallback("/runtimes/{**path}", context => { context.Response.StatusCode = 404; return Task.CompletedTask; });
+                    endpoints.MapFallback("/_framework/{**path}", context => { context.Response.StatusCode = 404; return Task.CompletedTask; });
                     endpoints.MapFallbackToFile("index.html", new StaticFileOptions
                     {
                         OnPrepareResponse = response => response.Context.Response.Headers.CacheControl = "no-store",
@@ -105,7 +115,7 @@ try
                 });
             });
         });
-    Console.WriteLine($"Doroti Web development configuration: {configPath} ({config.Proxy.Count} proxy rules)");
+    Console.WriteLine($"Doroti Web development configuration: {configPath ?? "defaults"} ({config.Proxy.Count} proxy rules), isolation: {(isolated ? "on" : suppressIsolation ? "off" : "configured headers")}");
     await builder.Build().RunAsync();
     return 0;
 }

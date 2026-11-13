@@ -15,7 +15,11 @@
       <Output TaskParameter="TargetOutputs" PropertyName="_DorotiIconTools" />
     </MSBuild>
   </Target>
-  <Target Name="InvalidateDorotiIconWebCil" BeforeTargets="_ResolveWasmOutputs;ProcessPublishFilesForWasm"
+  <PropertyGroup>
+    <_DorotiIconWebCilBuildHook>_ResolveWasmOutputs</_DorotiIconWebCilBuildHook>
+    <_DorotiIconWebCilBuildHook Condition="'$(TargetFramework)' == 'net11.0'">_ConvertBuildDllsToWebcil</_DorotiIconWebCilBuildHook>
+  </PropertyGroup>
+  <Target Name="InvalidateDorotiIconWebCil" BeforeTargets="$(_DorotiIconWebCilBuildHook);ProcessPublishFilesForWasm"
           DependsOnTargets="ResolveReferences;ResolveDorotiIconTool"
           Condition="'$(RuntimeIdentifier)' == 'browser-wasm' and '$(WasmEnableWebcil)' != 'false'">
     <ItemGroup>

@@ -29,11 +29,104 @@ the splash; it is enabled by default.
 
 ## Publishing and AOT
 
+### Execution profiles (opt-in)
+
+`DorotiWebExecutionMode=threaded|compatible|auto` controls the deployment:
+
+| Mode | Deployment and requirements |
+| --- | --- |
+| omitted / `threaded` | Existing single threaded deployment; secure cross-origin isolation and shared WASM memory are required. |
+| `compatible` | One non-threaded Mono runtime in a render Worker, WebGL2, no isolation headers required. Worker, OffscreenCanvas and WebGL2 are still required. |
+| `auto` | Two complete, sequential, isolated publishes. The loader selects one before importing .NET or transferring the visible canvas. |
+
+```powershell
+dotnet publish samples\DorotiTestbedApp\web\DorotiTestbedApp.Web.csproj -c Release -p:DorotiWebExecutionMode=auto
+```
+
+The published root contains a v2 `doroti.runtime-profile.json`, common app/host
+assets and `runtimes/threaded/_framework` plus `runtimes/compatible/_framework`.
+Deploy the entire root as one generation. Runtime files, compressed variants and
+fingerprints are not mixed between builds. The common assets must be byte-identical;
+missing/conflicting output fails publish. Runtime preload/import-map entries are
+removed before the shared HTML is emitted. Only the selected runtime is loaded.
+
+Child restore/build/AOT/static-assets outputs use a fresh generation below the
+runner's `obj/doroti-web` rather than nesting inside the parent `ArtifactsPath`:
+Emscripten tools can fail on long Windows paths. This intentionally avoids
+cross-generation cache reuse, including old TypeScript/static-assets fingerprints.
+`--no-build` is not supported for auto publish. Clean these generated directories
+with the normal runner output cleanup when no publish is running.
+
+`startDoroti({ executionMode: "auto" })` is the default loader request. The explicit
+configured context overrides the option, then `?dorotiExecutionMode=...` is used
+when neither is supplied. Legacy `runtimeLocation` remains supported but conflicts
+with an explicit incompatible mode fail. A v1 profile never implies an unpublished
+second runtime. Forced threaded without isolation and compatible with explicit
+WebGPU fail rather than silently changing the request. Configuration, HTTP/CSP,
+runtime/heap mismatches and application errors are not capability fallbacks.
+
+Application asset/font/plugin/navigation bases remain at the app root, not the
+selected runtime directory, including subpath hosting. Both transports use protocol
+v6 and the same render/DOM bridge. The managed-port Worker observer matches Mono 10
+runtime metadata or the exact Mono 11 loader URL, not arbitrary `dotnet.*` scripts.
+It still depends on the private `JSWebWorker.RunAsyncVoid` contract; this is not a
+general Worker-hosting API or CoreCLR support.
+
+For non-isolated development, rebuild and restart the server with
+`-p:DorotiWebExecutionMode=compatible -p:DorotiWebIsolation=false`. The explicit
+isolation-off option removes configured COOP/COEP response headers as well.
+`run/watch` builds a single mode; auto publish does not provide dual Hot Reload.
+Standalone Worker Hot Reload is not qualified: use rebuild/page reload. Threaded
+runtime recovery reloads the page; compatible recovery retains its selected
+descriptor and existing bounded Worker-session restart policy.
+
+### SDK and runtime qualification
+
+The repository SDK pin stays unchanged. SDK 11 building net10 and Mono 11 running
+net11 are separate axes. SDK 10/11 net10 Debug and AOT dual starts are validated.
+`DorotiWebTargetFramework=net11.0` is **qualification-only and rejected by default
+with DOROTIWEB050**: Mono 11.0.0's affine `JSWebWorker` startup hangs even in the
+[runtime-only probe](tests/Mono11ThreadProbe/Probe.csproj), without Doroti, Skia or
+native relinking. Native link and compatible-mode success do not qualify its
+threaded path. Validation tools explicitly pass `DorotiWebQualificationProbe=true`
+for requalification, not product deployment. Common net10 libraries are not
+retargeted. CoreCLR/NativeAOT WASM are explicitly unsupported. See the current
+matrix and remaining device/performance limits in [work.md](../../../work.md).
+
+Use the system SDK explicitly without changing either repository SDK pin:
+
+```powershell
+& 'C:\Program Files\dotnet\dotnet.exe' 'C:\Program Files\dotnet\sdk\11.0.100\dotnet.dll' publish samples\DorotiTestbedApp\web\DorotiTestbedApp.Web.csproj -p:DorotiWebExecutionMode=auto
+```
+
+System SDK 11 requires `wasm-tools` for net11 and `wasm-tools-net10` for net10.
+Child publishes/devserver builds invoke the parent's exact SDK, not `dotnet` SDK
+resolution from a different working directory. The current system pack is named
+Emscripten 6.0.2 but reports tool version 6.0.3. SkiaSharp 4.156.0 includes separate
+3.1.56 and 6.0.2 native archives; native link and actual render-owner tests, not the
+SDK major or archive folder name, determine qualification.
+
+Focused contracts: `pwsh -File packages\platforms\web\tests\run-contract-tests.ps1`.
+`qualify-publish.ps1` selects a system SDK and imposes a 1,200-second external
+process timeout. Release qualification bounds each complete AOT child publish and
+the final merge separately; it does not disable AOT or increase the timeout.
+`build-contracts.ps1` checks mode conflicts and unsupported runtime diagnostics;
+`PublishContracts` checks the actual SDK loader mapping, stale fingerprints and
+atomic preflight failures. Browser-only tooling lives under `tests`, not the application
+build: run `npm ci --prefix packages\platforms\web\tests`, install its Playwright
+Chromium, then `run-browser-tests.ps1 -WebRoot <published-wwwroot>`. It serves the
+same deployment on separate actual isolated/non-isolated origins and checks real
+first-frame, runtime build info/heap, unselected downloads, overrides and subpaths.
+The fixture permits headless SwiftShader and is not a physical-device/GPU
+performance certificate. `devserver-smoke.mjs` separately verifies the actual C#
+server's configured header overrides and missing-runtime 404 responses.
+
 Web Release publish defaults to Mono WASM AOT. Debug/watch remains non-AOT;
 explicit `-p:RunAOTCompilation=false` opts out for a Release comparison. AOT is
 applied during `dotnet publish`, so ordinary `dotnet run -c Release` uses the build
 output rather than the AOT publish output. Serve the published `wwwroot` with the
-required COOP/COEP headers; the sample READMEs give commands. This profile increases
+COOP/COEP headers for threaded mode; compatible does not require those headers.
+The sample READMEs give commands. This profile increases
 publish time and native WASM size.
 
 ## File selection

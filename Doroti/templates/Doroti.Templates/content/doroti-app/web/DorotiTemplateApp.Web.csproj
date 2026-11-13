@@ -2,6 +2,9 @@
   <Sdk Name="Doroti.Runner.Sdk" Version="0.4.1-beta" />
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework Condition="'$(DorotiWebTargetFramework)' != ''">$(DorotiWebTargetFramework)</TargetFramework>
+    <DorotiWebRuntimeVersion Condition="'$(DorotiWebRuntimeVersion)' == '' and '$(TargetFramework)' == 'net11.0'">11.0.0</DorotiWebRuntimeVersion>
+    <DorotiWebRuntimeVersion Condition="'$(DorotiWebRuntimeVersion)' == ''">10.0.15</DorotiWebRuntimeVersion>
     <RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
     <AssemblyName>DorotiTemplateApp.Web</AssemblyName>
     <RootNamespace>DorotiTemplateApp.Web</RootNamespace>
@@ -10,17 +13,17 @@
     <DorotiHostKind>BlazorWebAssembly</DorotiHostKind>
     <DorotiNativeEntryKind>Managed-Main</DorotiNativeEntryKind>
     <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
-    <WasmEnableThreads>true</WasmEnableThreads>
+    <WasmEnableThreads Condition="'$(WasmEnableThreads)' == ''">true</WasmEnableThreads>
     <DefineConstants>$(DefineConstants);DOROTI_BROWSER</DefineConstants>
     <DorotiWebFontPreset Condition="'$(DorotiWebFontPreset)' == ''">Default</DorotiWebFontPreset>
     <DorotiWebFontOptions Condition="'$(DorotiWebFontPreset)' == 'Offline'">global::DorotiTemplateApp.Web.WebFonts.Offline</DorotiWebFontOptions>
   </PropertyGroup>
   <ItemGroup>
-    <DorotiTargetDescriptor Include="Web" HostKind="BlazorWebAssembly" NativeEntryKind="Managed-Main" RuntimeIdentifier="browser-wasm" TargetFramework="net10.0" TargetPackage="Doroti.Target.Web.browser-wasm" />
+    <DorotiTargetDescriptor Include="Web" HostKind="BlazorWebAssembly" NativeEntryKind="Managed-Main" RuntimeIdentifier="browser-wasm" TargetFramework="$(TargetFramework)" TargetPackage="Doroti.Target.Web.browser-wasm" />
     <PackageReference Include="Doroti.Target.Web.browser-wasm" Version="0.4.1-beta" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.11" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.11" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="7.0.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="$(DorotiWebRuntimeVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="$(DorotiWebRuntimeVersion)" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="7.0.1" PrivateAssets="all" />
     <DorotiJavaScriptPlugin Include="echo" Channel="doroti.example/echo" ExportName="invoke" ModuleUrl="./plugins/echo.js" />
   </ItemGroup>
   <ItemGroup Condition="'$(DorotiWebFontPreset)' != 'Offline'">

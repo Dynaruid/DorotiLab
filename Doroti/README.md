@@ -55,7 +55,7 @@ Prepare the tools for the selected platform. Workload names identify .NET instal
 
 Windows App SDK 2.4 is restored through NuGet and deployed with the target; a separate machine-wide Windows App Runtime installation is not required. The Android native bridge uses the repository's Gradle 8.10.2 wrapper and AGP 8.6.1. Set `JAVA_HOME` to a supported JDK and add `adb` to `PATH`. On Apple hosts, check the selected Xcode with `xcode-select -p` and `xcodebuild -version`.
 
-Linux also accepts software Vulkan devices such as llvmpipe when they satisfy the API requirements. Web runners restore `Microsoft.TypeScript.MSBuild` 7.0.0; application builds do not require Node, npm, or Bun.
+Linux also accepts software Vulkan devices such as llvmpipe when they satisfy the API requirements. Web runners restore `Microsoft.TypeScript.MSBuild` 7.0.1; application builds do not require Node, npm, or Bun.
 
 ### Check installations and restore workloads
 
@@ -157,6 +157,15 @@ Android, iOS, AppKit macOS, and Mac Catalyst runners each reference an app-owned
 The default path renders through Graphite/Vulkan and presents through D3D12/DXGI DirectComposition on the same adapter. There is no automatic presenter fallback. Native PlatformView raster slices retain their D3D11 drawing API.
 
 ### Web
+
+Opt in to a dual deployment with `-p:DorotiWebExecutionMode=auto`, or publish only
+`compatible` for hosts without COOP/COEP. The loader selects one Mono runtime
+before startup; compatible uses a non-shared render Worker and WebGL2. Existing
+single threaded publishing remains the build default. SDK 11/net10 and the opt-in
+`DorotiWebTargetFramework=net11.0` are qualified separately. The latter is currently
+probe-only and rejected by default (DOROTIWEB050); CoreCLR WASM is not supported.
+See [execution profiles and migration](../packages/platforms/web/README.md#execution-profiles-opt-in)
+and [the current validation matrix](../work.md).
 
 | Renderer | Requirements |
 | --- | --- |

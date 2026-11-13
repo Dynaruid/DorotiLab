@@ -2,7 +2,7 @@
   <Import Project="../../../packages/platforms/build/Sdk.props" />
   <Import Project="../../../Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.props" />
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>$(DorotiWebTargetFramework)</TargetFramework>
     <RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
     <AssemblyName>DorotiTestbedApp.Web</AssemblyName>
     <RootNamespace>DorotiTestbedApp.Web</RootNamespace>
@@ -12,7 +12,7 @@
     <DorotiNativeEntryKind>Managed-Main</DorotiNativeEntryKind>
     <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
     <WasmBuildNative>true</WasmBuildNative>
-    <WasmEnableThreads>true</WasmEnableThreads>
+    <WasmEnableThreads Condition="'$(WasmEnableThreads)' == ''">true</WasmEnableThreads>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>$(DefineConstants);DOROTI_BROWSER</DefineConstants>
     <DorotiSkiaInteropLibrary>$(MSBuildThisFileDirectory)..\..\..\packages\platforms\web\Doroti.Target.Web.browser-wasm\build\DorotiSkiaInterop.js</DorotiSkiaInteropLibrary>
@@ -20,11 +20,11 @@
   </PropertyGroup>
   <ItemGroup>
     <EmccExportedFunction Include="_wgpuDeviceRelease;_wgpuQueueRelease;_wgpuInstanceRelease" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.11" />
-    <DorotiTargetDescriptor Include="Web" HostKind="BlazorWebAssembly" NativeEntryKind="Managed-Main" RuntimeIdentifier="browser-wasm" TargetFramework="net10.0" TargetPackage="Doroti.Target.Web.browser-wasm" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="$(DorotiWebRuntimeVersion)" />
+    <DorotiTargetDescriptor Include="Web" HostKind="BlazorWebAssembly" NativeEntryKind="Managed-Main" RuntimeIdentifier="browser-wasm" TargetFramework="$(TargetFramework)" TargetPackage="Doroti.Target.Web.browser-wasm" />
     <ProjectReference Include="../../../packages/platforms/web/Doroti.Target.Web.browser-wasm/Doroti.Target.Web.browser-wasm.csproj" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.11" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="7.0.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="$(DorotiWebRuntimeVersion)" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="7.0.1" PrivateAssets="all" />
     <DorotiJavaScriptPlugin Include="echo" Channel="doroti.example/echo" ExportName="invoke" ModuleUrl="./plugins/echo.js" />
   </ItemGroup>
   <Import Project="../../../Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.targets" />

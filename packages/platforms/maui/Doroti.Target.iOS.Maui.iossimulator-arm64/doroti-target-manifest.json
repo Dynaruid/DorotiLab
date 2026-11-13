@@ -7,7 +7,7 @@
   "softwareFallback": false,
   "defaultSkiaEngine": "Graphite",
   "nativeSkiaPackage": "SkiaSharp.NativeAssets.iOS",
-  "nativeSkiaVersion": "4.154.0",
+  "nativeSkiaVersion": "4.156.0",
   "nativeSkiaApi": "public-Graphite",
   "schemaVersion": "doroti.target-package/v2",
   "provider": "maui",

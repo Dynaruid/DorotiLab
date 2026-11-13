@@ -15,6 +15,7 @@ import { pushBounded } from "./doroti.web.diagnostics.js";
 import { createWorkerVisibleSurface } from "./doroti.web.surface.js";
 import { closeExternalLeases, createDorotiWorker } from "./doroti.web.worker-host.js";
 import { createManagedDorotiWorker, type DorotiWorkerEndpoint } from "./doroti.web.managed-worker.js";
+import { loadExecutionSelection, type ExecutionSelection } from "./doroti.web.execution.js";
 import { TextInputTapFocus } from "./doroti.web.text-focus.js";
 import { BrowserTextActions } from "./doroti.web.text-actions.js";
 import { BrowserTextComposition } from "./doroti.web.text-composition.js";
@@ -1880,9 +1881,14 @@ export function restartDorotiWebHost(): void {
 
 export async function startDorotiWorkerHost(
   mode?: "worker-direct-webgl" | "worker-direct-webgpu",
-  runtimeLocation: "main" | "worker" = "main",
+  runtimeLocation?: "main" | "worker",
   policy?: RendererPolicy,
+  execution?: ExecutionSelection,
 ): Promise<"started"> {
+  execution ??= await loadExecutionSelection("auto", runtimeLocation);
+  if (runtimeLocation !== undefined && runtimeLocation !== execution.runtimeLocation)
+    throw new Error("Doroti runtime ownership conflicts with the selected execution profile.");
+  runtimeLocation = execution.runtimeLocation;
   // The loader supplies its resolved policy. Direct host callers resolve auto
   // here; a mode argument is an explicit override even if it matches auto.
   const preferred = policy ?? presenterPolicy();
@@ -1894,30 +1900,26 @@ export async function startDorotiWorkerHost(
     dorotiRendererReason: selectedRendererPolicy.reason, dorotiMemoryProfile: selectedRendererPolicy.memoryProfile });
   if (mode === "worker-direct-webgpu" && runtimeLocation !== "main")
     throw new Error("Doroti WebGPU requires runtimeLocation=main and a threaded build.");
-  if (runtimeLocation === "worker") {
-    const response = await fetch(new URL("./doroti.runtime-profile.json", document.baseURI), { cache: "no-store" });
-    const profile = response.ok ? await response.json() as { schemaVersion?: number; threads?: boolean } : undefined;
-    if (profile?.schemaVersion !== 1 || typeof profile.threads !== "boolean")
-      throw new Error("Standalone worker ownership requires a build profile from the matching Doroti.Runner.Sdk.");
-    if (profile.threads)
-      throw new Error("Standalone worker ownership requires WasmEnableThreads=false. Use runtimeLocation=main for the threaded build.");
-  }
+  if (!execution.renderers.includes(mode))
+    throw new Error(`DOROTIWEB052: Renderer '${mode}' is not supported by the selected execution variant.`);
   if (typeof Worker === "undefined" || typeof OffscreenCanvas === "undefined" ||
       typeof HTMLCanvasElement.prototype.transferControlToOffscreen !== "function")
     throw new Error(`Doroti ${mode} required browser capabilities are unavailable.`);
+  if (mode === "worker-direct-webgl" && !new OffscreenCanvas(1, 1).getContext("webgl2"))
+    throw new Error("Doroti requires OffscreenCanvas WebGL2 support.");
   const app = document.getElementById("app");
   if (!app) throw new Error("Doroti worker bootstrap could not find '#app'.");
   const endpoints = createDorotiDomEndpoints(app);
   const root = endpoints.root;
   let canvas = endpoints.canvas;
-  const dotnetModuleUrl = resolveCurrentDotnetModuleUrl();
+  const dotnetModuleUrl = execution.loaderUrl ?? resolveCurrentDotnetModuleUrl();
 
   let activeWorker: DorotiWorkerEndpoint;
   const connectionLifetime = new AbortController();
   globalThis.addEventListener("pagehide", () => connectionLifetime.abort(), { once: true });
   try {
     activeWorker = runtimeLocation === "main"
-      ? await createManagedDorotiWorker(dotnetModuleUrl, new URL("./doroti.raster.worker.js", import.meta.url), connectionLifetime.signal)
+      ? await createManagedDorotiWorker(dotnetModuleUrl, new URL("./doroti.raster.worker.js", import.meta.url), execution, connectionLifetime.signal)
       : createDorotiWorker(new URL("./doroti.raster.worker.js", import.meta.url));
   } catch (error) {
     webRuntimeState = { state: "failed", generation: 1, renderer: mode, restartScope: "page", reason: String(error) };
@@ -2163,6 +2165,8 @@ export async function startDorotiWorkerHost(
           root.dataset.dorotiSharedRuntimeRenderThread = String(message.sharedRuntimeRenderThread === true);
           root.dataset.dorotiRenderThreadId = String(message.renderThreadId ?? 0);
           root.dataset.dorotiRenderWorkerIsolated = String(message.workerIsolated === true);
+          Object.assign(root.dataset, { dorotiRuntimeThreads: String(message.runtimeThreads), dorotiRuntimeSharedHeap: String(message.sharedHeap),
+            dorotiRuntimeVersion: String(message.runtimeVersion), dorotiRuntimeReadyAt: String(performance.now()) });
           resolveReady("started");
           publishRuntimeState("ready");
           break;
@@ -2254,7 +2258,10 @@ export async function startDorotiWorkerHost(
               capacityWidth, capacityHeight);
             canvas.dataset.dorotiFrontLogicalWidth = String(frameLogicalWidth);
             canvas.dataset.dorotiFrontLogicalHeight = String(frameLogicalHeight);
-            if (firstFrame) globalThis.dispatchEvent(new CustomEvent("doroti-first-frame", { detail: { canvasId: canvas.id } }));
+            if (firstFrame) {
+              root.dataset.dorotiFirstFrameAt = String(performance.now());
+              globalThis.dispatchEvent(new CustomEvent("doroti-first-frame", { detail: { canvasId: canvas.id } }));
+            }
           }
           recordResize(host, admitted ? "front-commit" : "ack", "worker-direct-surface", {
             timestampMicroseconds: Number.isFinite(Number(message.commitEpochMilliseconds))
@@ -2417,7 +2424,7 @@ export async function startDorotiWorkerHost(
             attachWorker(replacement);
             replacement.postMessage({
               protocolVersion: dorotiProtocolVersion, kind: "init", snapshot: JSON.parse(snapshot(host)),
-              dotnetModuleUrl, mode, canvas: replacementOffscreen,
+              dotnetModuleUrl, execution, mode, canvas: replacementOffscreen,
               policy: selectedRendererPolicy,
               rendererContractVersion: mode === "worker-direct-webgpu" ? dorotiWebGpuRendererVersion : undefined,
               testbedMode: new URL(location.href).searchParams.get("dorotiTestbedMode") ?? "diagnostics",
@@ -2469,16 +2476,13 @@ export async function startDorotiWorkerHost(
     activeWorker.terminate();
     // A threaded managed main runtime cannot be instantiated twice in the same
     // realm. Navigation retires all its clients/requests and allocates fresh DOM.
-    const restartUrl = new URL(location.href);
-    restartUrl.searchParams.set("dorotiRenderer", mode);
-    restartUrl.searchParams.set("dorotiRuntimeLocation", runtimeLocation);
-    location.replace(restartUrl.href);
+    location.reload();
   };
   const initialOffscreen = createWorkerVisibleSurface(canvas).offscreen;
   const initialMessage = {
     protocolVersion: dorotiProtocolVersion, kind: "init", snapshot: JSON.parse(snapshot(host)),
     rendererContractVersion: mode === "worker-direct-webgpu" ? dorotiWebGpuRendererVersion : undefined,
-    dotnetModuleUrl, mode, policy: selectedRendererPolicy, canvas: initialOffscreen,
+    dotnetModuleUrl, execution, mode, policy: selectedRendererPolicy, canvas: initialOffscreen,
     initialCapacity: { width: Number(canvas.dataset.dorotiCapacityWidth), height: Number(canvas.dataset.dorotiCapacityHeight) },
     testbedMode: new URL(location.href).searchParams.get("dorotiTestbedMode") ?? "diagnostics",
     progressScope: new URL(location.href).searchParams.get("dorotiProgressScope") ?? "local",

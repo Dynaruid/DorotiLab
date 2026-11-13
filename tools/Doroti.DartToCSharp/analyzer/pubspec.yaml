@@ -7,5 +7,5 @@ dependencies:
   analyzer: 9.0.0
   characters: 1.4.1
   collection: 1.19.1
-  crypto: 3.0.7
-  vector_math: 2.2.0
+  crypto: 3.0.8
+  vector_math: 2.3.0

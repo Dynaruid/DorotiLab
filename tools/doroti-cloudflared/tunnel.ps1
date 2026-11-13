@@ -10,6 +10,9 @@ param(
 
     [switch] $DisableAot,
 
+    [ValidateSet('threaded', 'compatible', 'auto')]
+    [string] $ExecutionMode = 'threaded',
+
     [string] $App = './samples/DorotiTestbedApp',
 
     [ValidateRange(15, 600)]
@@ -106,7 +109,7 @@ switch ($Command) {
             try {
                 # Publish the declared web runner even for samples that only
                 # provide a subset of the workspace CLI's platform aliases.
-                $publishArguments = @('publish', $webProject, '-c', 'Release', '--nologo', '-p:UseSharedCompilation=false')
+                $publishArguments = @('publish', $webProject, '-c', 'Release', '--nologo', '-p:UseSharedCompilation=false', "-p:DorotiWebExecutionMode=$ExecutionMode")
                 if ($Obfuscate) { $publishArguments += '-p:DorotiObfuscate=true' }
                 if ($DisableAot) { $publishArguments += '-p:RunAOTCompilation=false' }
                 & dotnet @publishArguments
@@ -120,8 +123,20 @@ switch ($Command) {
                 throw "Missing published asset: $asset. Run start without -SkipPublish."
             }
         }
-        if (-not (Get-ChildItem -LiteralPath (Join-Path $webRoot '_framework') -Filter 'dotnet.*.js' -ErrorAction SilentlyContinue)) {
-            throw 'Missing published .NET runtime. Run start without -SkipPublish.'
+        $profile = Get-Content -LiteralPath (Join-Path $webRoot 'doroti.runtime-profile.json') -Raw | ConvertFrom-Json
+        $runtimeRoots = if ($profile.schemaVersion -eq 2) {
+            if ($profile.hostContract -ne 'doroti.web.execution/v1') { throw 'Unsupported runtime host contract.' }
+            @($profile.variants.PSObject.Properties | ForEach-Object {
+                if ($_.Name -notin @('threaded', 'compatible')) { throw "Unsupported runtime variant: $($_.Name)" }
+                @{ Relative = "runtimes/$($_.Name)/_framework"; Threads = $_.Value.threads }
+            })
+        } elseif ($profile.schemaVersion -eq 1 -and $profile.threads -is [bool]) {
+            @(@{ Relative = '_framework'; Threads = $profile.threads })
+        } else { throw 'Unsupported runtime profile.' }
+        foreach ($runtimeRoot in $runtimeRoots) {
+            if (-not (Get-ChildItem -LiteralPath (Join-Path $webRoot $runtimeRoot.Relative) -Filter 'dotnet*.js' -ErrorAction SilentlyContinue)) {
+                throw "Missing published .NET runtime: $($runtimeRoot.Relative)"
+            }
         }
 
         Remove-Item -LiteralPath $urlPath -ErrorAction SilentlyContinue
@@ -140,17 +155,18 @@ switch ($Command) {
                             $response.Headers['Cross-Origin-Embedder-Policy'] -notcontains 'require-corp') {
                             throw 'Public response is missing the Doroti page or COOP/COEP headers.'
                         }
-                        foreach ($runtimeAsset in @(
-                            @{ Filter = 'dotnet.native.worker.*.mjs'; Mime = 'application/javascript' },
-                            @{ Filter = 'dotnet.native.*.wasm'; Mime = 'application/wasm' }
-                        )) {
-                            $file = Get-ChildItem -LiteralPath (Join-Path $webRoot '_framework') -Filter $runtimeAsset.Filter | Select-Object -First 1
+                        foreach ($runtimeRoot in $runtimeRoots) {
+                          $runtimeAssets = @(@{ Filter = 'dotnet.native*.wasm'; Mime = 'application/wasm' })
+                          if ($runtimeRoot.Threads) { $runtimeAssets += @{ Filter = 'dotnet.native.worker*.mjs'; Mime = 'application/javascript' } }
+                          foreach ($runtimeAsset in $runtimeAssets) {
+                            $file = Get-ChildItem -LiteralPath (Join-Path $webRoot $runtimeRoot.Relative) -Filter $runtimeAsset.Filter | Select-Object -First 1
                             if (-not $file) { throw "Missing runtime asset: $($runtimeAsset.Filter)" }
-                            $assetResponse = Invoke-WebRequest -Method Head -Uri "$url/_framework/$($file.Name)" -TimeoutSec 10
+                            $assetResponse = Invoke-WebRequest -Method Head -Uri "$url/$($runtimeRoot.Relative)/$($file.Name)" -TimeoutSec 10
                             if ($assetResponse.Headers['Content-Type'] -notcontains $runtimeAsset.Mime -or
                                 $assetResponse.Headers['Cross-Origin-Embedder-Policy'] -notcontains 'require-corp') {
                                 throw "Incorrect runtime MIME/isolation headers: $($file.Name)"
                             }
+                          }
                         }
                         Save-TunnelUrl $url
                         Write-Host 'HTTPS page, COOP/COEP headers and worker/WASM MIME types verified. Open this URL on the other device.'

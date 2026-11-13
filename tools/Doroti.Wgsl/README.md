@@ -3,7 +3,7 @@
 Build-time compiler for Doroti GPU effects. It translates WGSL fragment shaders
 into backend-specific variants and generates C# parameter serializers.
 
-The tool pins Rust 1.95.0, Naga 30.0.1 and Cargo.lock. Applications use the
+The tool pins Rust 1.95.0, Naga 30.0.2 and Cargo.lock. Applications use the
 generated assets without loading Rust or creating a second wgpu device.
 
 From the repository root:

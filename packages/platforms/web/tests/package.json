@@ -1,0 +1,7 @@
+{
+  "name": "doroti-web-contract-tests",
+  "private": true,
+  "type": "module",
+  "scripts": { "smoke": "node browser-smoke.mjs" },
+  "devDependencies": { "@playwright/test": "1.65.0" }
+}
