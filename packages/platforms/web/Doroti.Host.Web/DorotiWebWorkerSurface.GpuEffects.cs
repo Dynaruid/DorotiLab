@@ -59,7 +59,7 @@ public static partial class DorotiWebWorkerSurface
                         SKColorType.Rgba8888, SKAlphaType.Premul, color);
                 }
                 if (image is null) throw new InvalidOperationException("Cannot wrap GPU effect output image.");
-                BrowserTextureImages.Add(token, new(image, wrappers));
+                BrowserTextureImages.Add(token, new(token, image, wrappers));
                 retained = true;
                 capture(input.Canvas);
                 input.Canvas.Flush();

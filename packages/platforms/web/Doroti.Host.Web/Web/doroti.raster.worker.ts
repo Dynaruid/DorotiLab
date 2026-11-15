@@ -166,8 +166,7 @@ let stopManagedRuntime: (() => void) | null = null;
 let managedRuntime: DotnetRuntime | null = null;
 let dotnetModuleUrl: string | null = null;
 let execution: ExecutionSelection;
-let testbedMode = "diagnostics";
-let progressScope = "local";
+let environment: Record<string, string>;
 let managedHostReady = false;
 let workerMode: WorkerMode = "worker-direct-webgl";
 let transferredCanvas: OffscreenCanvas | null = null;
@@ -889,12 +888,14 @@ function handleHostMessage(event: MessageEvent): void {
         throw new Error("Doroti direct worker init requires a transferred visible OffscreenCanvas.");
       dotnetModuleUrl = String(message.dotnetModuleUrl ?? "");
       execution = message.execution as ExecutionSelection;
+      environment = message.environment as Record<string, string>;
       if (!execution || execution.runtimeLocation !== (managedPort ? "main" : "worker") || !dotnetModuleUrl ||
           execution.selected !== (managedPort ? "threaded" : "compatible"))
         throw new Error("Doroti render session requires a matching execution descriptor.");
+      if (!environment || environment.DOROTI_WEB_APPLICATION_BASE_URL !== execution.applicationBaseUrl ||
+          Object.values(environment).some(value => typeof value !== "string"))
+        throw new Error("Doroti render session requires matching application options.");
       sameOriginRuntimeUrl(dotnetModuleUrl, execution.applicationBaseUrl);
-      testbedMode = String(message.testbedMode ?? "diagnostics");
-      progressScope = String(message.progressScope ?? "local");
       void startManagedRuntime();
       break;
     case "snapshot":
@@ -966,6 +967,17 @@ function handleHostMessage(event: MessageEvent): void {
           () => { const stop = stopManagedRuntime; stopManagedRuntime = null; stop?.(); },
           drainPlatformViews,
           async () => { controls.close(); await controls.drain(); },
+          // Renderer shutdown releases frozen-scene texture snapshots after
+          // source unregistration. Drain those final leases before deleting GL
+          // or declaring the native owner disposed.
+          async () => {
+            try {
+              await textures.flushRetired();
+              const remaining = textures.diagnostics();
+              if (remaining.live !== 0 || remaining.registrations !== 0 || remaining.pending !== 0 || remaining.completions !== 0)
+                throw new Error("Browser texture snapshots remain owned after renderer shutdown.");
+            } catch (error) { consumerCompleted = false; throw error; }
+          },
           async () => {
             if (!consumerCompleted) return; // Keep native allocations on an unconfirmed consumer timeout.
             if (webgpu) { await surface?.DisposeGraphite(); webgpu.releaseNative(); }
@@ -1005,12 +1017,8 @@ async function startManagedRuntime(): Promise<void> {
     const runtime = managedPort
       ? (globalThis as unknown as { getDotnetRuntime(id: number): DotnetRuntime }).getDotnetRuntime(0)
       : await startupLifetime.wait(dotnetModule!.dotnet.withEnvironmentVariables({
-      DOROTI_WEB_APPLICATION_BASE_URL: execution.applicationBaseUrl,
-      DOROTI_TESTBED_MODE: testbedMode, DOROTI_WEB_DIRECT_TRACE: diagnosticsEnabled ? "1" : "0",
-      DOROTI_STAGE_TRACE: diagnosticsEnabled ? "1" : "0",
-      DOROTI_SAMPLE_PROGRESS_SCOPE: progressScope,
-      DOROTI_STANDALONE_WORKER: "1",
-    }).create(), late => { late.exit(0); });
+        ...environment, DOROTI_STANDALONE_WORKER: "1",
+      }).create(), late => { late.exit(0); });
     startupLifetime.check();
     managedRuntime = runtime;
     const actualRuntime = verifyRuntime(runtime, execution);

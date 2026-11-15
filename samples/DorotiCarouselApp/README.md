@@ -37,6 +37,12 @@ dotnet run --project samples/DorotiCarouselApp/web/DorotiCarouselApp.Web.csproj 
 
 Web Release publish는 저장소 기본 WASM AOT 설정을 사용합니다.
 
+기본값은 net10/threaded입니다. `-p:DorotiWebExecutionMode=auto`를 publish에 추가하면
+두 variant를 함께 게시하고 비격리 HTTPS 호스팅에서는 compatible을 선택합니다.
+단일 compatible은 `-p:DorotiWebExecutionMode=compatible`을 사용합니다. run/watch의
+모드를 바꿀 때는 rebuild·서버 재시작·page reload가 필요합니다. compatible Hot Reload와
+실제 Safari/모바일 성능 인수 상태는 [Web 가이드](../../packages/platforms/web/README.md)를 확인하세요.
+
 ```powershell
 python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet publish samples/DorotiCarouselApp/web/DorotiCarouselApp.Web.csproj -c Release -o temp/testing/carousel-web
 python Doroti/eng/serve-isolated-web.py temp/testing/carousel-web/wwwroot --port 5226

@@ -13,11 +13,11 @@ public static partial class Probe
     [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicMethods, "System.Runtime.InteropServices.JavaScript.JSWebWorker", "System.Runtime.InteropServices.JavaScript")]
     public static async Task<int> Start()
     {
-        System.Console.WriteLine("probe: before Thread.Start");
+        System.Console.WriteLine($"probe: before Thread.Start; runtime={System.Environment.Version}; caller={System.Environment.CurrentManagedThreadId}; context={SynchronizationContext.Current?.GetType().FullName}");
         var type = typeof(JSHost).Assembly.GetType("System.Runtime.InteropServices.JavaScript.JSWebWorker")!;
         var method = type.GetMethod("RunAsyncVoid", BindingFlags.Static | BindingFlags.NonPublic)!;
         var result = 0;
-        System.Func<Task> body = () => { result = System.Environment.CurrentManagedThreadId; System.Console.WriteLine("probe: owner-enter"); return Task.CompletedTask; };
+        System.Func<Task> body = () => { result = System.Environment.CurrentManagedThreadId; System.Console.WriteLine($"probe: owner-enter; thread={result}; context={SynchronizationContext.Current?.GetType().FullName}"); return Task.CompletedTask; };
         var lifetime = (Task)method.Invoke(null, new object[] { body, CancellationToken.None })!;
         System.Console.WriteLine("probe: Thread.Start returned");
         await lifetime;

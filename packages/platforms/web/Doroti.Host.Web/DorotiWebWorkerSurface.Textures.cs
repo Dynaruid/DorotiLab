@@ -97,9 +97,25 @@ public static partial class DorotiWebWorkerSurface
             image.Dispose();
     }
 
-    private sealed class BrowserTextureImage(SKImage image, IDisposable backend) : IDisposable
+    private sealed class BrowserTextureImage(int token, SKImage image, IDisposable backend) : IDisposable
     {
+        private int _references = 1;
         internal SKImage Image => image;
+        internal BrowserTextureImage Retain()
+        {
+            Interlocked.Increment(ref _references);
+            return this;
+        }
+        internal void Release()
+        {
+            if (Interlocked.Decrement(ref _references) == 0)
+                RetireBrowserTexture(token);
+        }
+        internal void Draw(SKCanvas canvas, SKRect destination, SKSamplingOptions sampling)
+        {
+            canvas.DrawImage(image, destination, sampling);
+            BrowserTextureDrawn(token);
+        }
 
         public void Dispose()
         {
@@ -112,7 +128,28 @@ public static partial class DorotiWebWorkerSurface
     {
         internal string Id = "";
         internal SkiaExternalTextureRegistration? Registration;
-        private int _current;
+        private BrowserTextureImage? _current;
+        private bool _disposed;
+
+        public SkiaExternalTextureFrame CaptureFrame(bool freeze)
+        {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            if (Environment.CurrentManagedThreadId != _renderOwnerThreadId)
+                throw new InvalidOperationException("Browser texture capture requires the application/raster JS owner.");
+            // Browser framework submission and raster share this JS-affine
+            // context owner. Each upload creates immutable GPU storage; retain
+            // that exact image through scene replay and registration disposal.
+            UpdateCurrent(freeze);
+            return new Snapshot(_current?.Retain());
+        }
+
+        private sealed class Snapshot(BrowserTextureImage? image) : SkiaExternalTextureFrame
+        {
+            private BrowserTextureImage? _image = image;
+            public override void Draw(SKCanvas canvas, SKRect destination, SKSamplingOptions sampling) =>
+                _image?.Draw(canvas, destination, sampling);
+            public override void Dispose() => Interlocked.Exchange(ref _image, null)?.Release();
+        }
 
         public void Draw(
             SKCanvas canvas,
@@ -121,7 +158,14 @@ public static partial class DorotiWebWorkerSurface
             bool freeze
         )
         {
-            if (!freeze || _current == 0)
+            if (_disposed) return;
+            using var captured = CaptureFrame(freeze);
+            captured.Draw(canvas, destination, sampling);
+        }
+
+        private void UpdateCurrent(bool freeze)
+        {
+            if (!freeze || _current is null)
             {
                 using var frame = AcquireBrowserTexture(Id);
                 if (frame is not null)
@@ -178,11 +222,11 @@ public static partial class DorotiWebWorkerSurface
                             throw new InvalidOperationException(
                                 "Browser GPU texture image wrapping failed."
                             );
-                        BrowserTextureImages.Add(token, new(image, backend));
+                        var owned = new BrowserTextureImage(token, image, backend);
+                        BrowserTextureImages.Add(token, owned);
                         backend = null;
-                        if (_current != 0)
-                            RetireBrowserTexture(_current);
-                        _current = token;
+                        _current?.Release();
+                        _current = owned;
                     }
                     catch
                     {
@@ -192,19 +236,15 @@ public static partial class DorotiWebWorkerSurface
                     }
                 }
             }
-            if (_current != 0 && BrowserTextureImages.TryGetValue(_current, out var current))
-            {
-                canvas.DrawImage(current.Image, destination, sampling);
-                BrowserTextureDrawn(_current);
-            }
         }
 
         public void Dispose()
         {
+            if (_disposed) return;
+            _disposed = true;
             BrowserTextures.Remove(Id);
-            if (_current != 0)
-                RetireBrowserTexture(_current);
-            _current = 0;
+            _current?.Release();
+            _current = null;
         }
     }
 

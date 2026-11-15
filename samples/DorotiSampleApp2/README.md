@@ -17,6 +17,16 @@ dotnet run --project ./samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj 
 
 Web 개발 서버가 출력하는 주소를 브라우저에서 엽니다. WebAssembly 빌드에는 `wasm-tools` 워크로드가 필요합니다.
 
+Web 게시의 기본값은 net10/threaded입니다. 헤더를 설정할 수 없는 HTTPS 호스팅은
+`dotnet publish samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj -c Release -p:DorotiWebExecutionMode=auto`
+로 두 variant 전체를 게시하면 compatible을 선택합니다. 단일 compatible 개발은
+`-p:DorotiWebExecutionMode=compatible -p:DorotiWebIsolation=false`로 서버를 다시
+시작합니다. 모드 변경은 rebuild와 page reload가 필요하며 compatible Hot Reload는
+미인수입니다. 이전 단일 배포로 되돌릴 때는 `DorotiWebExecutionMode` 인수를 제거하고
+완결된 threaded 배포본과 격리 헤더를 복원합니다.
+[Web 실행 프로필](../../packages/platforms/web/README.md#execution-profiles-opt-in)에서
+SDK 11/net10과 재검증 전용 net11의 구분, AOT 및 Safari 제한을 확인하세요.
+
 ## 살펴볼 기능
 
 - **Components**: 카운터 버튼, 스위치, 슬라이더, 활동 표시기, 다이얼로그

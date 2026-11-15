@@ -1,0 +1,16 @@
+<Project>
+  <PropertyGroup>
+    <_DorotiWebTasksRoot>$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)', 'obj', 'doroti-web-tools', '$([System.Guid]::NewGuid().ToString("N"))'))</_DorotiWebTasksRoot>
+    <_DorotiWebPublishTasksAssembly>$(_DorotiWebTasksRoot)out/Doroti.Web.Publish.Tasks.dll</_DorotiWebPublishTasksAssembly>
+  </PropertyGroup>
+  <UsingTask TaskName="DorotiMergeWebPublish" AssemblyFile="$(_DorotiWebPublishTasksAssembly)" />
+  <UsingTask TaskName="DorotiWebPublishProperties" AssemblyFile="$(_DorotiWebPublishTasksAssembly)" />
+  <UsingTask TaskName="DorotiValidateWebPublish" AssemblyFile="$(_DorotiWebPublishTasksAssembly)" />
+  <Target Name="DorotiPrepareWebPublishTasks">
+    <PropertyGroup>
+      <_DorotiPublishDotnet Condition="'$(DotNetHostPath)' != ''">$(DotNetHostPath)</_DorotiPublishDotnet>
+      <_DorotiPublishDotnet Condition="'$(_DorotiPublishDotnet)' == ''">dotnet</_DorotiPublishDotnet>
+    </PropertyGroup>
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Timeout="1200000" Command="&quot;$(_DorotiPublishDotnet)&quot; &quot;$(MSBuildToolsPath)/dotnet.dll&quot; build &quot;$(MSBuildThisFileDirectory)WebPublishTasks/Doroti.Web.Publish.Tasks.csproj&quot; --nologo --artifacts-path &quot;$(_DorotiWebTasksRoot)artifacts&quot; --output &quot;$(_DorotiWebTasksRoot)out&quot;" />
+  </Target>
+</Project>

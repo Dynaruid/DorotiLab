@@ -23,7 +23,7 @@ internal sealed class InputLifetimeState : State<InputLifetimeSample>
     private bool _showWeb;
     private string _status = "Native views preparing";
     private readonly PlatformViewDescriptor _editor = new("doroti/native-editor", Encoding.UTF8.GetBytes("{\"text\":\"Native editor\"}"));
-    private readonly PlatformViewDescriptor _web = new("doroti/webview", Encoding.UTF8.GetBytes("{\"html\":\"<meta charset='utf-8'><label>Web input <input aria-label='Web input'></label>\"}"));
+    private readonly PlatformViewDescriptor _web = new("doroti/webview", Encoding.UTF8.GetBytes("<meta charset='utf-8'><label>Web input <input aria-label='Web input'></label>"));
 
     private void Report(string message)
     {

@@ -49,6 +49,14 @@ Deploy the entire root as one generation. Runtime files, compressed variants and
 fingerprints are not mixed between builds. The common assets must be byte-identical;
 missing/conflicting output fails publish. Runtime preload/import-map entries are
 removed before the shared HTML is emitted. Only the selected runtime is loaded.
+The merger validates a fresh staging tree, then replaces the local output with
+rollback on installation failure. Files removed from a new publish do not survive
+from the previous output. The same final validator runs for single and dual
+publishes, including package consumers. The HTML carries its deployment build ID;
+a cached HTML/new-manifest mismatch fails with DOROTIWEB055 before importing .NET.
+Publish production releases to separate directories, switch the complete root and
+retain the previous release for active clients and rollback; do not copy children
+individually over a live deployment.
 
 Child restore/build/AOT/static-assets outputs use a fresh generation below the
 runner's `obj/doroti-web` rather than nesting inside the parent `ArtifactsPath`:
@@ -67,7 +75,7 @@ runtime/heap mismatches and application errors are not capability fallbacks.
 
 Application asset/font/plugin/navigation bases remain at the app root, not the
 selected runtime directory, including subpath hosting. Both transports use protocol
-v6 and the same render/DOM bridge. The managed-port Worker observer matches Mono 10
+v7 and the same application-option/render/DOM bridge. The managed-port Worker observer matches Mono 10
 runtime metadata or the exact Mono 11 loader URL, not arbitrary `dotnet.*` scripts.
 It still depends on the private `JSWebWorker.RunAsyncVoid` contract; this is not a
 general Worker-hosting API or CoreCLR support.
@@ -79,16 +87,30 @@ isolation-off option removes configured COOP/COEP response headers as well.
 Standalone Worker Hot Reload is not qualified: use rebuild/page reload. Threaded
 runtime recovery reloads the page; compatible recovery retains its selected
 descriptor and existing bounded Worker-session restart policy.
+Stop the existing run/watch process before changing execution mode or isolation,
+then run again with the new build properties and reload the page. Changing only
+the URL cannot create a variant that was not built. Bootstrap `started` now waits
+for both managed readiness and an admitted first canvas commit; missing readiness
+or a first frame fails within 120 seconds. Shutdown drains Worker controls before
+retiring DOM endpoints; an unconfirmed 15-second shutdown is reported explicitly.
 
 ### SDK and runtime qualification
 
 The repository SDK pin stays unchanged. SDK 11 building net10 and Mono 11 running
 net11 are separate axes. SDK 10/11 net10 Debug and AOT dual starts are validated.
 `DorotiWebTargetFramework=net11.0` is **qualification-only and rejected by default
-with DOROTIWEB050**: Mono 11.0.0's affine `JSWebWorker` startup hangs even in the
-[runtime-only probe](tests/Mono11ThreadProbe/Probe.csproj), without Doroti, Skia or
-native relinking. Native link and compatible-mode success do not qualify its
-threaded path. Validation tools explicitly pass `DorotiWebQualificationProbe=true`
+with DOROTIWEB050**. Mono 11.0.0's default pthread startup hangs in the
+[runtime-only probe](tests/Mono11ThreadProbe/README.md), without Doroti, Skia or
+native relinking. Its connection now admits startup only after the initial native
+Worker preload receipts, with a version-specific initial pool of 16. The independent
+probe and isolated-generation application Debug/AOT first-frame, paint-owner,
+input, texture-lifetime and shutdown checks pass in software-capable browsers.
+The runtime-source native/Chromium matrix passed 12/12 before the last incremental
+cache-policy changes. Final build-policy requalification is paused at 2/12;
+an in-place net10-to-net11 repair still emits a shutdown console error. These
+results do not establish final cache, physical-device or hardware-performance
+acceptance. See the exact current scope in [work.md](../../../work.md).
+Validation tools explicitly pass `DorotiWebQualificationProbe=true`
 for requalification, not product deployment. Common net10 libraries are not
 retargeted. CoreCLR/NativeAOT WASM are explicitly unsupported. See the current
 matrix and remaining device/performance limits in [work.md](../../../work.md).
@@ -107,9 +129,12 @@ Emscripten 6.0.2 but reports tool version 6.0.3. SkiaSharp 4.156.0 includes sepa
 SDK major or archive folder name, determine qualification.
 
 Focused contracts: `pwsh -File packages\platforms\web\tests\run-contract-tests.ps1`.
-`qualify-publish.ps1` selects a system SDK and imposes a 1,200-second external
-process timeout. Release qualification bounds each complete AOT child publish and
-the final merge separately; it does not disable AOT or increase the timeout.
+`qualify-publish.ps1` selects a system SDK and bounds each complete child publish
+and final merge with a 1,200-second external process timeout. `-Label` preserves
+comparison outputs; `-Generation` rebuilds both children in a named existing
+qualification cache. It never treats an old child as a successful new build.
+Release qualification retains AOT; `-DisableAot` explicitly selects the separate
+Release/non-AOT comparison.
 `build-contracts.ps1` checks mode conflicts and unsupported runtime diagnostics;
 `PublishContracts` checks the actual SDK loader mapping, stale fingerprints and
 atomic preflight failures. Browser-only tooling lives under `tests`, not the application
@@ -120,6 +145,47 @@ first-frame, runtime build info/heap, unselected downloads, overrides and subpat
 The fixture permits headless SwiftShader and is not a physical-device/GPU
 performance certificate. `devserver-smoke.mjs` separately verifies the actual C#
 server's configured header overrides and missing-runtime 404 responses.
+`http-contracts.mjs` verifies root/subpath/deep links, concurrent module responses,
+gzip/Brotli WASM and MIME, generation IDs and missing-asset 404s. Pass `--firefox`
+to `browser-smoke.mjs` to run the same first-frame/owner/input/restart/shutdown
+checks in Firefox. `measure-execution.mjs <before-wwwroot> <after-wwwroot>
+<report.json>` compares recorded compiler/runtime settings with three fresh
+browser/warm reload pairs, WebGL2, input-to-commit/paint timing, memory and transfer
+sizes. Run it after native builds finish. These software-capable browser results
+do not qualify hardware GPU, physical IME/accessibility or Safari devices.
+Legacy manifests omit some pack metadata; the report preserves those unknowns
+and records the original provenance beside the normalized comparison axes.
+The three variants rotate through all three run-order positions. Capture drains
+to the last input's actual canvas commit and rejects missing/dropped timing data.
+The report separates fresh/warm threaded comparisons and flags latency increases
+over 10% for review; measurement completion is not hardware performance acceptance.
+Publish duration is reported only from a matching successful qualification receipt.
+Missing historical receipts or unmatched build-cache conditions do not establish
+a publish-time regression or improvement.
+
+`browser-features.mjs` uses Testbed's actual navigation, input and plugin scenes
+for concurrent pages, synthetic Korean DOM text commit, iframe lifecycle, file
+selection/cancel, context loss and owner shutdown. `runner-contracts.ps1` checks
+the four sample runners and a generated template's three mode settings and raw
+thread-override conflicts; this configuration check is not a template browser
+publish. The feature, texture and Sample2 fixtures also accept `--firefox`.
+Firefox 159 headless filechooser interception emits `cancel` before injected
+files, reproduced with plain HTML and no Doroti. Use the explicit
+`--controlled-picker` option with the feature/Sample2 fixture to test managed
+selection, bounded reads and synthetic cancellation without a native dialog;
+these results do not qualify native Firefox file-dialog selection. The default
+fixture retains native filechooser interception and does not silently fall back.
+Texture tests await actual GPU allocations and source busy/ready transitions;
+Sample2 verifies its generated PNG's red/green pixels in the rendered canvas.
+
+`switch-cache.ps1 -Label <run>` deliberately reuses one output/intermediate
+tree across threaded/compatible/threaded, SDK 10/11/10 at net10, then actual
+net10/Mono 10 to net11/Mono 11 and back. Its seven Debug steps check native
+publish, provenance and real browser frame/owner/input/shutdown after every step.
+`-IncludeAot` adds five same-cache Release steps: threaded/compatible/threaded
+AOT, non-AOT, then AOT again. This explicitly exercises stripped-WebCIL/native
+cache invalidation instead of inferring AOT correctness from Debug. Run every script
+through `run-validation.ps1` for the external 1,200-second process limit.
 
 Web Release publish defaults to Mono WASM AOT. Debug/watch remains non-AOT;
 explicit `-p:RunAOTCompilation=false` opts out for a Release comparison. AOT is

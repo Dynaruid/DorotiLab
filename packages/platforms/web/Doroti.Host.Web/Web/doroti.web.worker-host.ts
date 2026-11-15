@@ -12,7 +12,9 @@ export function createDorotiWorker(url: URL): Worker {
   // CSP deployments must allow worker-src blob: or serve the worker with COEP.
   if (globalThis.crossOriginIsolated) {
     const bootstrap = URL.createObjectURL(new Blob([`import ${JSON.stringify(url.href)};`], { type: "text/javascript" }));
-    const worker = new Worker(bootstrap, { type: "module" });
+    let worker: Worker;
+    try { worker = new Worker(bootstrap, { type: "module" }); }
+    catch (error) { URL.revokeObjectURL(bootstrap); throw error; }
     const release = (): void => URL.revokeObjectURL(bootstrap);
     worker.addEventListener("message", release, { once: true });
     worker.addEventListener("error", release, { once: true });
@@ -27,6 +29,25 @@ export function closeExternalLeases<T>(
   leases: Map<number, T>,
   close: (requestId: number, lease: T) => void,
 ): void {
-  for (const [requestId, lease] of leases) close(requestId, lease);
+  const retired = [...leases];
   leases.clear();
+  const failures: unknown[] = [];
+  for (const [requestId, lease] of retired) {
+    try { close(requestId, lease); } catch (error) { failures.push(error); }
+  }
+  if (failures.length) throw new AggregateError(failures, "External lease retirement failed.");
+}
+
+/** Retired endpoints can still have transferred a platform frame before replacement. */
+export function closeRetiredWorkerMessage(value: unknown): void {
+  if (!value || typeof value !== "object" || typeof ImageBitmap === "undefined") return;
+  const message = value as Record<string, unknown>;
+  const bitmaps = new Set<ImageBitmap>();
+  if (message.bitmap instanceof ImageBitmap) bitmaps.add(message.bitmap);
+  if (message.controlKind === "platform-frame") {
+    const payload = message.payload as { rasters?: { bitmap?: unknown }[] } | undefined;
+    if (Array.isArray(payload?.rasters)) for (const raster of payload.rasters)
+      if (raster?.bitmap instanceof ImageBitmap) bitmaps.add(raster.bitmap);
+  }
+  for (const bitmap of bitmaps) bitmap.close();
 }

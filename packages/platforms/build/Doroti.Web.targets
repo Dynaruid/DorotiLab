@@ -35,9 +35,12 @@
   <!-- WebCIL conversion reuses outputs by timestamp. AOT publishing can strip
        method bodies, while the next interpreted build needs the full IL again.
        Track the execution mode and all assemblies (including project references
-       and this runner), as well as package paths/content, before reusing outputs. -->
+       and this runner), as well as package paths/content, before reusing outputs.
+       ILLink's timestamp semaphore does not track changed feature values or a
+       removed threads root descriptor. The SDK also reuses runtime icall tables
+       solely by existence; both caches must follow the execution identity. -->
   <Target Name="DorotiInvalidateWebDependencyWebCil"
-          BeforeTargets="$(_DorotiWebCilBuildHook);ProcessPublishFilesForWasm"
+          BeforeTargets="PrepareForILLink;_GenerateManagedToNative;$(_DorotiWebCilBuildHook);ProcessPublishFilesForWasm"
           DependsOnTargets="ResolveReferences;_ResolveWasmConfiguration"
           Condition="'$(DorotiTarget)' == 'Web' and '$(WasmEnableWebcil)' != 'false'">
     <ItemGroup>
@@ -53,6 +56,7 @@
     </PropertyGroup>
     <ItemGroup>
       <_DorotiWebDependencyIdentity Include="mode|$(NETCoreSdkVersion)|$(TargetFramework)|$(RuntimeFrameworkVersion)|$(UseMonoRuntime)|$(WasmSdkPackVersion)|$(EmscriptenVersion)|$(Configuration)|$(RunAOTCompilation)|$(WasmStripILAfterAOT)|$(WasmEnableThreads)|$(DorotiWebInterpretWidgetTree)" />
+      <_DorotiWebDependencyIdentity Include="cache-policy|linked-and-runtime-bindings-v1" />
       <!-- A policy change also needs unstripped IL, even if assembly bytes and
            the public opt-in flag are identical to an earlier AOT publish. -->
       <_DorotiWebDependencyIdentity Include="widget-tree-policy|Widgets,Rendering,Runtime"
@@ -65,9 +69,13 @@
     <ItemGroup Condition="'@(_DorotiWebDependencyIdentity)' != '@(_DorotiPreviousWebDependencyIdentity)'">
       <_DorotiStaleWebDependencyWebCil Include="@(_DorotiWebDependencyAssembly->'$(IntermediateOutputPath)webcil/%(Filename).wasm')" />
       <_DorotiStaleWebDependencyWebCil Include="@(_DorotiWebDependencyAssembly->'$(IntermediateOutputPath)webcil/publish/%(Filename).wasm')" />
+      <_DorotiStaleWebNativeBinding Include="$(IntermediateOutputPath)wasm/for-build/runtime-icall-table.h;$(IntermediateOutputPath)wasm/for-build/m2n_cache.txt;$(IntermediateOutputPath)wasm/for-publish/runtime-icall-table.h;$(IntermediateOutputPath)wasm/for-publish/m2n_cache.txt" />
     </ItemGroup>
+    <Delete Files="$(_LinkSemaphore)"
+            Condition="'$(PublishTrimmed)' == 'true' and '$(_LinkSemaphore)' != '' and '@(_DorotiStaleWebDependencyWebCil)' != ''" />
     <Delete Files="@(_DorotiStaleWebDependencyWebCil)" />
-    <Message Importance="High" Text="Doroti Web: assembly or execution mode changed; regenerating cached WebCIL assemblies."
+    <Delete Files="@(_DorotiStaleWebNativeBinding)" />
+    <Message Importance="High" Text="Doroti Web: assembly or execution mode changed; regenerating cached linked/WebCIL assemblies and native binding tables."
              Condition="'@(_DorotiStaleWebDependencyWebCil)' != ''" />
     <WriteLinesToFile File="$(_DorotiWebDependencyIdentityFile)" Lines="@(_DorotiWebDependencyIdentity)"
                       Overwrite="true" WriteOnlyWhenDifferent="true" Condition="'@(_DorotiWebDependencyIdentity)' != ''" />

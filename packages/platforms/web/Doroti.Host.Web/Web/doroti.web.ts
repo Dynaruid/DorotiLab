@@ -5,6 +5,7 @@ import type { RendererPolicy } from "./doroti.web.policy.js";
 import type { BrowserPlatformComposition, CompositionPacket } from "./doroti.web.composition.js";
 import { PlatformFrameStager } from "./doroti.web.platform-frames.js";
 import { WorkerRequestMailbox } from "./doroti.web.requests.js";
+import { RenderSessionReadiness } from "./doroti.web.lifetime.js";
 import { BrowserViewEnvironment } from "./doroti.web.environment.js";
 import { attachTextureRegistry, texturesForCanvas } from "./doroti.web.textures.js";
 import { decodeDorotiMessage, dorotiProtocolVersion, dorotiWebGpuRendererVersion } from "./doroti.web.protocol.js";
@@ -13,9 +14,10 @@ export { scheduleBrowserTimer, cancelBrowserTimer, cancelBrowserTimerOwner } fro
 import { createDorotiDomEndpoints, createReplacementCanvas } from "./doroti.web.dom.js";
 import { pushBounded } from "./doroti.web.diagnostics.js";
 import { createWorkerVisibleSurface } from "./doroti.web.surface.js";
-import { closeExternalLeases, createDorotiWorker } from "./doroti.web.worker-host.js";
+import { closeExternalLeases, closeRetiredWorkerMessage, createDorotiWorker } from "./doroti.web.worker-host.js";
 import { createManagedDorotiWorker, type DorotiWorkerEndpoint } from "./doroti.web.managed-worker.js";
 import { loadExecutionSelection, type ExecutionSelection } from "./doroti.web.execution.js";
+import { applicationEnvironment } from "./doroti.web.session.js";
 import { TextInputTapFocus } from "./doroti.web.text-focus.js";
 import { BrowserTextActions } from "./doroti.web.text-actions.js";
 import { BrowserTextComposition } from "./doroti.web.text-composition.js";
@@ -450,7 +452,7 @@ function recordResize(
     "surfaceWidth" | "surfaceHeight" | "terminal" | "detail" |
     "inputSequence" | "requestId">> = {}): void {
   if (!diagnosticsEnabled() && !(phase === "front-commit" && source === "worker-direct-surface" &&
-      new URL(location.href).searchParams.get("dorotiInputMarkers") === "1")) return;
+      hostSearchOptions.get("dorotiInputMarkers") === "1")) return;
   const entry: ResizeTraceEntry = {
     sequence: ++host.resizeTraceSequence,
     timestampMicroseconds: options.timestampMicroseconds ?? Math.round(performance.now() * 1000),
@@ -479,8 +481,11 @@ function recordResize(
   scheduleResizeDiagnosticsPublish(host);
 }
 
+// Router updates may remove bootstrap query options. Keep them for this host's
+// lifetime, including replacement Workers and input/commit diagnostics.
+let hostSearchOptions = new URLSearchParams(globalThis.location?.search ?? "");
 function diagnosticsEnabled(): boolean {
-  return new URLSearchParams(globalThis.location.search).get("dorotiResizeDiagnostics") === "1";
+  return hostSearchOptions.get("dorotiResizeDiagnostics") === "1";
 }
 
 function scheduleResizeDiagnosticsPublish(host: BrowserHost): void {
@@ -1862,7 +1867,7 @@ export async function invokePlugin(moduleUrl: string, exportName: string, channe
 }
 
 export interface DorotiRuntimeState {
-  state: "lost" | "restarting" | "ready" | "failed";
+  state: "lost" | "restarting" | "ready" | "disposing" | "disposed" | "failed";
   generation: number;
   renderer: string;
   restartScope: "page" | "worker-session";
@@ -1886,6 +1891,10 @@ export async function startDorotiWorkerHost(
   execution?: ExecutionSelection,
 ): Promise<"started"> {
   execution ??= await loadExecutionSelection("auto", runtimeLocation);
+  hostSearchOptions = new URLSearchParams(location.search);
+  const sessionEnvironment = applicationEnvironment(location.search, execution.applicationBaseUrl);
+  const sessionResizeDiagnostics = diagnosticsEnabled();
+  const sessionFrameCost = hostSearchOptions.get("dorotiFrameCost") === "1";
   if (runtimeLocation !== undefined && runtimeLocation !== execution.runtimeLocation)
     throw new Error("Doroti runtime ownership conflicts with the selected execution profile.");
   runtimeLocation = execution.runtimeLocation;
@@ -1922,6 +1931,7 @@ export async function startDorotiWorkerHost(
       ? await createManagedDorotiWorker(dotnetModuleUrl, new URL("./doroti.raster.worker.js", import.meta.url), execution, connectionLifetime.signal)
       : createDorotiWorker(new URL("./doroti.raster.worker.js", import.meta.url));
   } catch (error) {
+    root.remove();
     webRuntimeState = { state: "failed", generation: 1, renderer: mode, restartScope: "page", reason: String(error) };
     restartWebRuntime = () => location.reload();
     globalThis.dispatchEvent(new CustomEvent("doroti-runtime-state", { detail: getDorotiRuntimeState() }));
@@ -2000,7 +2010,7 @@ export async function startDorotiWorkerHost(
     closed: () => new Error("Frame cost owner is closed."),
     timeout: () => new Error("Frame cost capture timed out."),
   });
-  const frameCostEnabled = new URL(location.href).searchParams.get("dorotiFrameCost") === "1";
+  const frameCostEnabled = sessionFrameCost;
   if (frameCostEnabled) Object.assign(globalThis, { __dorotiFrameCost: (action: string) => {
     pointerInputs.flush();
     return frameCostRequests.request(request => activeWorker.postMessage({
@@ -2048,22 +2058,28 @@ export async function startDorotiWorkerHost(
   let host = requireHost(1);
   let compositionPromise: Promise<BrowserPlatformComposition> | undefined;
   const requireComposition = async (owner: string): Promise<BrowserPlatformComposition> => {
-    compositionPromise ??= import("./doroti.web.composition.js").then(({ BrowserPlatformComposition }) =>
-      new BrowserPlatformComposition(root, canvas, owner, event =>
-        {
+    const ownerWorker = activeWorker, ownerCanvas = canvas, ownerHost = host;
+    compositionPromise ??= import("./doroti.web.composition.js").then(({ BrowserPlatformComposition }) => {
+      if (ownerWorker !== activeWorker || closing || failedWorkers.has(ownerWorker) || retiredWorkers.has(ownerWorker))
+        throw new DOMException("Retired browser composition owner.", "AbortError");
+      return new BrowserPlatformComposition(root, ownerCanvas, owner, event => {
+          if (ownerWorker !== activeWorker || failedWorkers.has(ownerWorker) || retiredWorkers.has(ownerWorker)) return;
           if (event.focused) {
-            closeTextConnectionAfterBlur(host);
-            setViewFocus(host, true, performance.now());
+            closeTextConnectionAfterBlur(ownerHost);
+            setViewFocus(ownerHost, true, performance.now());
           }
-          postInput("platform", host.id, host.inputSequence, { json: JSON.stringify(event) });
-        }));
+          postInput("platform", ownerHost.id, ownerHost.inputSequence, { json: JSON.stringify(event) });
+        });
+    });
     const composition = await compositionPromise;
     if (composition.registry.owner !== owner) throw new Error("Foreign browser composition owner.");
     return composition;
   };
-  const closeComposition = (): void => {
-    void compositionPromise?.then(value => value.dispose()).catch(error => console.error("DOM owner close failed", error));
+  const closeComposition = async (): Promise<void> => {
+    try { await compositionPromise?.then(value => value.dispose()); }
+    catch (error) { if (!(error instanceof DOMException && error.name === "AbortError")) throw error; }
   };
+  const retireComposition = (): void => { void closeComposition().catch(error => console.error("DOM owner close failed", error)); };
   {
     configureDirectCanvasCapacity(
       host, initialRect.width, initialRect.height, host.resizeEpoch.devicePixelRatio,
@@ -2072,6 +2088,9 @@ export async function startDorotiWorkerHost(
   document.documentElement.dataset.dorotiRenderer = mode;
 
   let ready = false;
+  let closing = false;
+  let shutdownTimer: ReturnType<typeof setTimeout> | undefined;
+  let shutdownTimedOut = false;
   let terminalFailure: Error | null = null;
   let resolveReady!: (value: "started") => void;
   let rejectReady!: (reason: unknown) => void;
@@ -2079,12 +2098,25 @@ export async function startDorotiWorkerHost(
     resolveReady = resolve;
     rejectReady = reject;
   });
+  const failedWorkers = new WeakSet<DorotiWorkerEndpoint>();
+  const retiredWorkers = new WeakSet<DorotiWorkerEndpoint>();
+  const startup = new RenderSessionReadiness(120000, () => {
+    ready = true;
+    resolveReady("started");
+    publishRuntimeState("ready");
+  }, error => activeWorker.dispatchEvent(new MessageEvent("message", { data: {
+    protocolVersion: dorotiProtocolVersion, kind: "fatal", error: error.message,
+  } })));
+  startup.begin(display.runtimeSessionId);
 
-  const sendControlResponse = (recipient: DorotiWorkerEndpoint, correlationId: number, result: string, error?: unknown): void =>
+  const sendControlResponse = (recipient: DorotiWorkerEndpoint, correlationId: number, result: string, error?: unknown): void => {
+    // A picker/plugin/font request may finish after its owner was replaced.
+    if (recipient !== activeWorker || retiredWorkers.has(recipient)) return;
     recipient.postMessage({
       protocolVersion: dorotiProtocolVersion, kind: "control-response", correlationId, result,
       error: error ? String(error) : undefined,
     });
+  };
 
   const handleControl = async (message: Record<string, unknown>): Promise<void> => {
     const kind = String(message.controlKind);
@@ -2131,10 +2163,9 @@ export async function startDorotiWorkerHost(
 
   const attachWorker = (worker: DorotiWorkerEndpoint): void => {
     worker.addEventListener("message", (event) => {
-      if (worker !== activeWorker) {
+      if (worker !== activeWorker || retiredWorkers.has(worker)) {
         // A retired endpoint can finish an asynchronous bitmap/request after replacement.
-        const stale = (event as MessageEvent).data;
-        if (stale?.bitmap instanceof ImageBitmap) stale.bitmap.close();
+        closeRetiredWorkerMessage((event as MessageEvent).data);
         return;
       }
       let message: Record<string, unknown>;
@@ -2157,18 +2188,17 @@ export async function startDorotiWorkerHost(
           break;
         }
         case "runtime-ready":
+          if (failedWorkers.has(worker)) break;
           if (message.pointerAdmission === true) pointerInputs.enable();
           if (message.wheelAdmission === true) pointerInputs.enableWheel();
           attachTextureRegistry(canvas.id, worker);
-          ready = true;
           root.dataset.dorotiWorkerRuntime = "ready";
           root.dataset.dorotiSharedRuntimeRenderThread = String(message.sharedRuntimeRenderThread === true);
           root.dataset.dorotiRenderThreadId = String(message.renderThreadId ?? 0);
           root.dataset.dorotiRenderWorkerIsolated = String(message.workerIsolated === true);
           Object.assign(root.dataset, { dorotiRuntimeThreads: String(message.runtimeThreads), dorotiRuntimeSharedHeap: String(message.sharedHeap),
             dorotiRuntimeVersion: String(message.runtimeVersion), dorotiRuntimeReadyAt: String(performance.now()) });
-          resolveReady("started");
-          publishRuntimeState("ready");
+          startup.runtimeReady(display.runtimeSessionId);
           break;
         case "gpu-ready":
           host.gpu = message.gpu as GpuIdentity;
@@ -2226,6 +2256,7 @@ export async function startDorotiWorkerHost(
           break;
         }
         case "direct-commit": {
+          if (failedWorkers.has(worker)) break;
           const requestId = Number(message.requestId);
           const frameGeneration = Number(message.generation);
           const frameLogicalWidth = Number(message.logicalWidth);
@@ -2260,6 +2291,7 @@ export async function startDorotiWorkerHost(
             canvas.dataset.dorotiFrontLogicalHeight = String(frameLogicalHeight);
             if (firstFrame) {
               root.dataset.dorotiFirstFrameAt = String(performance.now());
+              startup.firstFrame(display.runtimeSessionId);
               globalThis.dispatchEvent(new CustomEvent("doroti-first-frame", { detail: { canvasId: canvas.id } }));
             }
           }
@@ -2303,23 +2335,44 @@ export async function startDorotiWorkerHost(
           // The managed host detached; GPU/queued port work is still draining.
           // Only "disposed" ends the renderer role and retires DOM endpoints.
           break;
-        case "disposed":
+        case "disposed": {
+          retiredWorkers.add(worker);
+          startup.close();
           pointerInputs.reset();
           frameCostRequests.close();
-          closeComposition();
-          root.dataset.dorotiWorkerRuntime = "disposed";
-          if (display.pendingLeases.size !== 0)
-            throw new Error(`Doroti worker disposed with ${display.pendingLeases.size} external leases.`);
+          closeExternalLeases(display.pendingLeases, (requestId, lease) => recordResize(host, "ack", "worker-supervisor", {
+            requestId, rafId: requestId, terminal: "dropped",
+            detail: `owner disposed: session ${lease.runtimeSessionId} causal frame ${lease.causalFrameId}`,
+          }));
+          try { texturesForCanvas(canvas.id).disconnect(); } catch { /* Already closed. */ }
+          if (!ready) rejectReady(new Error("Doroti render owner disposed before its first frame."));
           recordResize(host, "disposed", "worker-supervisor", {
             detail: JSON.stringify({ runtimeSessionId: display.runtimeSessionId }),
           });
-          if (runtimeLocation === "main") {
-            closeHost(host.id);
-            workerDisplayPresenters.delete(canvas.id);
+          const ownerHost = host, ownerCanvas = canvas;
+          void closeComposition().then(() => {
+            if (worker !== activeWorker || shutdownTimedOut) return;
+            clearTimeout(shutdownTimer);
+            root.dataset.dorotiWorkerRuntime = "disposed";
+            root.dataset.dorotiShutdown = "complete";
+            root.dataset.dorotiShutdownRequests = String(message.activeRequests ?? 0);
+            root.dataset.dorotiShutdownTextures = JSON.stringify(message.textures ?? {});
+            if (!terminalFailure) publishRuntimeState("disposed", closing ? "page hidden" : "render owner stopped");
+            closeHost(ownerHost.id);
+            workerDisplayPresenters.delete(ownerCanvas.id);
             if (terminalFailure) app.textContent = terminalFailure.message;
-            return;
-          }
+          }, error => {
+            if (worker !== activeWorker) return;
+            clearTimeout(shutdownTimer);
+            root.dataset.dorotiShutdown = "resources-unconfirmed";
+            root.dataset.dorotiWorkerRuntime = "failed";
+            publishRuntimeState("failed", `DOM owner shutdown failed: ${String(error)}`);
+            closeHost(ownerHost.id);
+            workerDisplayPresenters.delete(ownerCanvas.id);
+            console.error("DOM owner shutdown failed", error);
+          });
           break;
+        }
         case "resource":
           display.bitmapCreated = Number(message.bitmapCreated);
           display.bitmapConsumed = Number(message.bitmapConsumed);
@@ -2349,10 +2402,16 @@ export async function startDorotiWorkerHost(
           const payload = (message.payload ?? {}) as Record<string, unknown>;
           void (async () => {
             if (worker !== activeWorker) throw new Error("Retired worker request.");
-            if (kind === "platform") return (await requireComposition(String((payload.identity as { owner: string }).owner))).request(payload);
+            if (kind === "platform") {
+              const composition = await requireComposition(String((payload.identity as { owner: string }).owner));
+              if (worker !== activeWorker || failedWorkers.has(worker)) throw new Error("Retired worker request.");
+              return composition.request(payload);
+            }
             if (kind === "platform-frame") {
               const packet = payload as unknown as CompositionPacket;
-              return (await requireComposition(packet.batch.owner)).commit(packet, host.resizeEpoch.generation);
+              const composition = await requireComposition(packet.batch.owner);
+              if (worker !== activeWorker || failedWorkers.has(worker)) throw new Error("Retired worker request.");
+              return composition.commit(packet, host.resizeEpoch.generation);
             }
             if (kind.startsWith("service-")) return handleService(kind, payload);
             if (kind === "css-fonts") return discoverCssFonts(String(payload.optionsJson));
@@ -2372,38 +2431,52 @@ export async function startDorotiWorkerHost(
           break;
         }
         case "fatal": {
+          if (typeof message.cleanupComplete === "boolean") {
+            retiredWorkers.add(worker);
+            clearTimeout(shutdownTimer);
+            root.dataset.dorotiShutdown = message.cleanupComplete ? "complete" : "resources-unconfirmed";
+            closeHost(host.id);
+            workerDisplayPresenters.delete(canvas.id);
+          }
+          if (failedWorkers.has(worker) && message.explicitRestart !== true) break;
+          failedWorkers.add(worker);
+          startup.close();
           pointerInputs.reset();
           const error = new Error(`Doroti worker runtime failed: ${String(message.error)}`);
           frameCostRequests.rejectAll(error);
+          try { texturesForCanvas(canvas.id).disconnect(); } catch { /* endpoint already closed */ }
+          closeExternalLeases(display.pendingLeases, (requestId, lease) => {
+            recordResize(host, "ack", "worker-supervisor", {
+              requestId, rafId: requestId, terminal: "failed",
+              detail: `runtime-lost: session ${lease.runtimeSessionId} causal frame ${lease.causalFrameId}: ${error.message}`,
+            });
+          });
+          snapshotInFlight = false;
+          snapshotInFlightGeneration = 0;
+          latestWorkerSnapshot = null;
+          directAdmission.reset();
+          retireComposition(); compositionPromise = undefined;
+          root.dataset.dorotiWorkerRuntime = "failed";
           publishRuntimeState("lost", error.message);
-          if (runtimeLocation !== "main" && (display.restartCount < 1 || message.explicitRestart === true)) {
+          if (!closing && runtimeLocation !== "main" && (display.restartCount < 1 || message.explicitRestart === true)) {
             display.restartCount++;
             display.runtimeSessionId++;
+            startup.begin(display.runtimeSessionId);
             publishRuntimeState("restarting", error.message);
             terminalFailure = null;
+            delete root.dataset.dorotiFirstFrameAt;
+            delete root.dataset.dorotiRuntimeReadyAt;
             delete document.documentElement.dataset.dorotiRendererError;
-            try { texturesForCanvas(canvas.id).disconnect(); } catch { /* endpoint already closed */ }
             worker.terminate();
             display.currentRequestId = null;
             display.latestRequestId = null;
             display.frontGeneration = 0;
             display.frontRequestId = 0;
             display.contextLost = false;
-            snapshotInFlight = false;
-            snapshotInFlightGeneration = 0;
-            latestWorkerSnapshot = null;
-            directAdmission.reset();
-            closeExternalLeases(display.pendingLeases, (requestId, lease) => {
-              recordResize(host, "ack", "worker-supervisor", {
-                requestId, rafId: requestId, terminal: "failed",
-                detail: `runtime-lost: session ${lease.runtimeSessionId} causal frame ${lease.causalFrameId}`,
-              });
-            });
             let replacementOffscreen: OffscreenCanvas | null = null;
             {
               const lifetimeInputSequence = host.inputSequence;
               const previousCanvas = canvas;
-              closeComposition(); compositionPromise = undefined;
               closeHost(host.id);
               canvas = createReplacementCanvas(previousCanvas);
               directWorkerBootstrap = true;
@@ -2418,25 +2491,40 @@ export async function startDorotiWorkerHost(
               replacementOffscreen = createWorkerVisibleSurface(canvas).offscreen;
               workerDisplayPresenters.set(canvas.id, display);
             }
-            const replacement = createDorotiWorker(new URL("./doroti.raster.worker.js", import.meta.url));
+            let replacement: Worker;
+            try { replacement = createDorotiWorker(new URL("./doroti.raster.worker.js", import.meta.url)); }
+            catch (replacementError) {
+              startup.close();
+              terminalFailure = new Error(`Doroti replacement Worker could not start: ${String(replacementError)}`);
+              publishRuntimeState("failed", terminalFailure.message);
+              frameCostRequests.close(terminalFailure);
+              closeHost(host.id);
+              workerDisplayPresenters.delete(canvas.id);
+              rejectReady(terminalFailure);
+              break;
+            }
             activeWorker = replacement;
             display.worker = replacement;
             attachWorker(replacement);
             replacement.postMessage({
               protocolVersion: dorotiProtocolVersion, kind: "init", snapshot: JSON.parse(snapshot(host)),
               dotnetModuleUrl, execution, mode, canvas: replacementOffscreen,
+              environment: sessionEnvironment,
               policy: selectedRendererPolicy,
               rendererContractVersion: mode === "worker-direct-webgpu" ? dorotiWebGpuRendererVersion : undefined,
-              testbedMode: new URL(location.href).searchParams.get("dorotiTestbedMode") ?? "diagnostics",
-    progressScope: new URL(location.href).searchParams.get("dorotiProgressScope") ?? "local",
-              resizeDiagnostics: diagnosticsEnabled(),
-    frameCost: new URL(location.href).searchParams.get("dorotiFrameCost") === "1",
+              resizeDiagnostics: sessionResizeDiagnostics,
+              frameCost: sessionFrameCost,
             }, replacementOffscreen ? [replacementOffscreen] : []);
           } else {
             terminalFailure = error;
             publishRuntimeState("failed", error.message);
             document.documentElement.dataset.dorotiRendererError = error.message;
-            if (runtimeLocation === "main") worker.terminate();
+            frameCostRequests.close(error);
+            worker.terminate();
+            if (runtimeLocation !== "main") {
+              closeHost(host.id);
+              workerDisplayPresenters.delete(canvas.id);
+            }
             if (!ready) rejectReady(error);
             else root.dataset.dorotiWorkerRuntime = "failed";
           }
@@ -2472,7 +2560,7 @@ export async function startDorotiWorkerHost(
     closeExternalLeases(display.pendingLeases, () => {});
     frameCostRequests.close(new Error("Runtime restarted."));
     pointerInputs.reset();
-    closeComposition();
+    retireComposition();
     activeWorker.terminate();
     // A threaded managed main runtime cannot be instantiated twice in the same
     // realm. Navigation retires all its clients/requests and allocates fresh DOM.
@@ -2483,28 +2571,36 @@ export async function startDorotiWorkerHost(
     protocolVersion: dorotiProtocolVersion, kind: "init", snapshot: JSON.parse(snapshot(host)),
     rendererContractVersion: mode === "worker-direct-webgpu" ? dorotiWebGpuRendererVersion : undefined,
     dotnetModuleUrl, execution, mode, policy: selectedRendererPolicy, canvas: initialOffscreen,
+    environment: sessionEnvironment,
     initialCapacity: { width: Number(canvas.dataset.dorotiCapacityWidth), height: Number(canvas.dataset.dorotiCapacityHeight) },
-    testbedMode: new URL(location.href).searchParams.get("dorotiTestbedMode") ?? "diagnostics",
-    progressScope: new URL(location.href).searchParams.get("dorotiProgressScope") ?? "local",
-    resizeDiagnostics: diagnosticsEnabled(),
-    frameCost: new URL(location.href).searchParams.get("dorotiFrameCost") === "1",
+    resizeDiagnostics: sessionResizeDiagnostics,
+    frameCost: sessionFrameCost,
   };
   activeWorker.postMessage(initialMessage, initialOffscreen ? [initialOffscreen] : []);
   globalThis.addEventListener("pagehide", () => {
+    closing = true;
+    publishRuntimeState("disposing", "page hidden");
+    startup.close();
+    if (!ready) rejectReady(new Error("Doroti startup canceled because the page closed."));
     restartWebRuntime = undefined;
     frameCostRequests.close();
     pointerInputs.reset();
     try { texturesForCanvas(canvas.id).disconnect(); } catch { /* Already closed. */ }
-    closeComposition();
-    if (runtimeLocation === "main") {
-      // Keep DOM endpoints alive until the role has drained cursor/text/frame
-      // messages and acknowledged disposal. The main runtime still owns it.
-      activeWorker.terminate();
-      return;
-    }
-    activeWorker.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "dispose" });
-    closeHost(host.id);
-    workerDisplayPresenters.delete(canvas.id);
+    // Both modes can still drain semantics/text/platform controls while the
+    // owner disposes. Retire the DOM only after the disposed receipt.
+    shutdownTimer = setTimeout(() => {
+      shutdownTimedOut = true;
+      root.dataset.dorotiShutdown = "resources-unconfirmed";
+      root.dataset.dorotiWorkerRuntime = "failed";
+      publishRuntimeState("failed", "Render owner shutdown exceeded 15 seconds; resource completion is unconfirmed.");
+      closeExternalLeases(display.pendingLeases, () => {});
+      closeHost(host.id);
+      workerDisplayPresenters.delete(canvas.id);
+      if (runtimeLocation !== "main") activeWorker.terminate();
+      console.error("Doroti render owner shutdown timed out; native resource completion is unconfirmed.");
+    }, 15000);
+    if (runtimeLocation === "main") activeWorker.terminate();
+    else activeWorker.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "dispose" });
   }, { once: true });
   return readyPromise;
 }

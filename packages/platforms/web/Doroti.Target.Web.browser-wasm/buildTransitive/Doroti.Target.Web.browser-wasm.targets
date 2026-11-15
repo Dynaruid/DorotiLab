@@ -21,7 +21,7 @@
            Text="DorotiJavaScriptPlugin '%(DorotiJavaScriptPlugin.Identity)' must declare ExportName metadata." />
   </Target>
 
-  <Target Name="DorotiValidatePublishedBrowserProduct" AfterTargets="Publish">
+  <Target Name="DorotiValidatePublishedBrowserProduct" AfterTargets="Publish" DependsOnTargets="DorotiPrepareWebPublishTasks">
     <PropertyGroup>
       <_DorotiPublishRoot>$([System.IO.Path]::Combine('$(PublishDir)', 'wwwroot'))</_DorotiPublishRoot>
     </PropertyGroup>
@@ -40,5 +40,6 @@
            Text="Doroti Web publish is missing the compiled application bootstrap module." />
     <Error Code="DOROTIWEB026" Condition="!Exists('$(_DorotiPublishRoot)\_content\Doroti.Host.Web\doroti.raster.worker.js')"
            Text="Doroti Web publish is missing the persistent offscreen worker runtime module." />
+    <DorotiValidateWebPublish Root="$(_DorotiPublishRoot)" BuildId="$(DorotiWebBuildId)" />
   </Target>
 </Project>

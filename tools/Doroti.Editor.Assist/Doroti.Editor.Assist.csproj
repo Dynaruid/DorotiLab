@@ -7,6 +7,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <!-- Old nested test outputs are not part of the helper's source tree. -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);tests/**</DefaultItemExcludes>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.9.0" />

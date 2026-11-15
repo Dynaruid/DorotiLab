@@ -28,6 +28,20 @@ pwsh -NoProfile -File ./tools/doroti-cloudflared/tunnel.ps1 start -App ./samples
 기본 앱은 `DorotiTestbedApp`입니다. `-SkipPublish`로 재실행할 때도 같은 `-App`을
 지정하세요. 이 도구는 한 번에 하나의 앱을 공유하며, 앱을 바꾸면 기존 공유를 대체합니다.
 
+`-ExecutionMode auto`는 두 variant 전체를 게시하고, `compatible`은 비공유 Worker
+하나를 게시합니다. 두 모드는 같은 root의 manifest에서 선택합니다. `-PublishRoot`
+로 별도 `wwwroot` 경로를 지정할 수 있으며, `start`는 그 부모를 PublishDir로 씁니다.
+Docker나 공개 터널을 시작하지 않고 게시 구조만 확인하려면 다음을 실행합니다.
+
+```powershell
+pwsh -File tools/doroti-cloudflared/tunnel.ps1 validate -PublishRoot C:/path/to/publish/wwwroot
+```
+
+검사는 양 variant의 build ID/runtime/thread 설정과 실제 loader를 확인합니다.
+Mono 10의 별도 pthread `.mjs`와 Mono 11의 loader-entry Worker를 구분하며,
+공개 검사에서는 각 loader/native JS/WASM과 필요한 pthread의 MIME을 확인합니다.
+이 tunnel은 격리 헤더를 제공하는 개발 미리보기이며, net11 제품 인수는 별도입니다.
+
 앱 DLL 난독화를 사용하려면 WASM AOT를 끄고 게시합니다.
 
 ```powershell

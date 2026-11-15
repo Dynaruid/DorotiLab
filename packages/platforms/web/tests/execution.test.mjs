@@ -7,6 +7,7 @@ const root = process.env.DOROTI_WEB_MODULE_ROOT;
 if (!root) throw new Error("Set DOROTI_WEB_MODULE_ROOT to the production TypeScript output.");
 const execution = await import(pathToFileURL(resolve(root, "doroti.web.execution.js")));
 const { monoWorkerUrls } = await import(pathToFileURL(resolve(root, "doroti.web.mono.js")));
+const { applicationEnvironment } = await import(pathToFileURL(resolve(root, "doroti.web.session.js")));
 const { resolveRendererPolicy, selectRendererPolicy } = await import(pathToFileURL(resolve(root, "doroti.web.policy.js")));
 const base = "https://example.test/demo/";
 const manifest = { schemaVersion: 2, hostContract: "doroti.web.execution/v1", buildId: "generation-a", runtimeContract: "mono-10", runtimeVersion: "10.0.11",
@@ -15,6 +16,15 @@ const manifest = { schemaVersion: 2, hostContract: "doroti.web.execution/v1", bu
     renderers: mode === "threaded" ? ["worker-direct-webgl", "worker-direct-webgpu"] : ["worker-direct-webgl"],
   }])) };
 const isolated = { secureContext: true, isolated: true, sharedMemory: true };
+
+test("both transports share application options, sample selection, profiling and resource bases", () => {
+  const options = applicationEnvironment("?dorotiSample=input&dorotiTestbedMode=components&dorotiLayoutProfile=1&dorotiAllocationProfile=1&dorotiWebViewCount=3&dorotiWebViewWorkload=active&dorotiProgressScope=shared&dorotiResizeDiagnostics=1", base);
+  assert.deepEqual(options, { DOROTI_WEB_APPLICATION_BASE_URL: base, DOROTI_DEV_SESSION_ID: "browser", DOROTI_TESTBED_MODE: "components",
+    DOROTI_SAMPLE: "input", DOROTI_LAYOUT_PROFILE: "1", DOROTI_ALLOCATION_PROFILE: "1", DOROTI_WEB_DIRECT_TRACE: "1",
+    DOROTI_STAGE_TRACE: "1", DOROTI_WEBVIEW_COUNT: "3", DOROTI_WEBVIEW_WORKLOAD: "active", DOROTI_SAMPLE_PROGRESS_SCOPE: "shared" });
+  assert.equal(applicationEnvironment("", base).DOROTI_SAMPLE, "");
+  assert.ok(!("DOROTI_STANDALONE_WORKER" in options), "Runtime ownership must not change application configuration.");
+});
 
 test("auto uses actual isolation and shared-memory conditions, preserving the application base", () => {
   for (const capabilities of [isolated, { ...isolated, secureContext: false }, { ...isolated, isolated: false }, { ...isolated, sharedMemory: false }]) {
@@ -61,6 +71,11 @@ test("variant generation, runtime version and threads must all match", () => {
   execution.verifyVariantProfile(profile, selected);
   for (const bad of [{ ...profile, buildId: "stale" }, { ...profile, threads: true }, { ...profile, runtimeVersion: "10.0.14" }])
     assert.throws(() => execution.verifyVariantProfile(bad, selected), /DOROTIWEB037/);
+});
+test("cached HTML cannot start a runtime from a different deployment generation", () => {
+  execution.verifyDocumentGeneration(manifest, manifest.buildId);
+  execution.verifyDocumentGeneration(manifest, undefined);
+  assert.throws(() => execution.verifyDocumentGeneration(manifest, "previous-generation"), /DOROTIWEB055/);
 });
 test("actual runtime build info and heap reject mislabeled builds", () => {
   for (const threads of [false, true]) {

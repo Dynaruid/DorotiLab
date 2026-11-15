@@ -141,12 +141,23 @@ internal sealed partial class TextureSampleState : State<TextureSample>
 
     private async Task SelectSource(string operation)
     {
-        setState(() => _busy = true);
+        using var retiredEntry = _entry;
+        _timer?.cancel();
+        _timer = null;
+        setState(() =>
+        {
+            _busy = true;
+            _entry = null;
+            if (operation is "canvas" or "video" or "camera" or "bitmap" or "frame" or "codec" or "recreate" or "stop")
+                _externalId = null;
+        });
         try
         {
-            _timer?.cancel();
-            _entry?.Dispose();
-            _entry = null;
+            // setState only schedules removal. Submit the texture-free tree
+            // before the plugin unregisters an ID retained by the old layer.
+            await WidgetsBinding.instance.endOfFrame;
+            if (!mounted)
+                return;
             if (operation is "canvas" or "video" or "camera" or "bitmap" or "frame" or "codec")
                 _source = operation;
             var id = await (

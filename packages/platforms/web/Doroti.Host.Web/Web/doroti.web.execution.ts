@@ -129,6 +129,10 @@ export function verifyVariantProfile(value: unknown, selection: ExecutionSelecti
       profile.buildId !== selection.buildId || profile.runtimeContract !== selection.runtimeContract || profile.runtimeVersion !== selection.runtimeVersion)
     throw new Error("DOROTIWEB037: Selected runtime profile does not match the deployment generation/runtime/threads.");
 }
+export function verifyDocumentGeneration(manifest: RuntimeProfile | ExecutionManifest, documentBuildId?: string): void {
+  if (documentBuildId !== undefined && documentBuildId !== manifest.buildId)
+    throw new Error("DOROTIWEB055: Cached application HTML belongs to another deployment generation. Reload the page; deploy HTML and both runtimes together.");
+}
 export function verifyRuntime(runtime: { runtimeBuildInfo: { wasmEnableThreads: boolean; productVersion: string }; localHeapViewU8(): Uint8Array },
   selection: Pick<ExecutionSelection, "selected" | "runtimeContract" | "runtimeVersion">): { threads: boolean; sharedHeap: boolean; version: string } {
   const info = runtime.runtimeBuildInfo;
@@ -154,6 +158,7 @@ export async function loadExecutionSelection(requested: ExecutionMode, legacyLoc
     return response.json();
   };
   const manifest = parseExecutionManifest(await read(new URL("doroti.runtime-profile.json", base).href));
+  verifyDocumentGeneration(manifest, document.querySelector<HTMLMetaElement>('meta[name="doroti-build-id"]')?.content);
   const selection = selectExecution(manifest, requested, probeExecutionCapabilities(), base, legacyLocation);
   if (manifest.schemaVersion === 2) verifyVariantProfile(await read(selection.profileUrl), selection);
   return selection;

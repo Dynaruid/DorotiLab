@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0)]
-    [ValidateSet('start', 'stop', 'url', 'status', 'logs')]
+    [ValidateSet('start', 'stop', 'url', 'status', 'logs', 'validate')]
     [string] $Command = 'start',
 
     [switch] $SkipPublish,
@@ -14,6 +14,8 @@ param(
     [string] $ExecutionMode = 'threaded',
 
     [string] $App = './samples/DorotiTestbedApp',
+
+    [string] $PublishRoot,
 
     [ValidateRange(15, 600)]
     [int] $TimeoutSeconds = 120
@@ -28,7 +30,70 @@ $appRoot = if ([IO.Path]::IsPathFullyQualified($App)) {
 } else {
     [IO.Path]::GetFullPath((Join-Path $repositoryRoot $App))
 }
-$webRoot = Join-Path $appRoot 'web/bin/Release/net10.0/publish/wwwroot'
+$webRoot = if ($PublishRoot) { [IO.Path]::GetFullPath($PublishRoot) } else { Join-Path $appRoot 'web/bin/Release/net10.0/publish/wwwroot' }
+if ([IO.Path]::GetFileName($webRoot.TrimEnd('\', '/')) -ne 'wwwroot') { throw 'PublishRoot must name a published wwwroot directory.' }
+
+function Get-PublishedRuntimeRoots {
+    foreach ($asset in @('index.html', 'doroti_bootstrap.js', 'doroti.runtime-profile.json', '_content/Doroti.Host.Web/doroti.loader.js', '_content/Doroti.Host.Web/doroti.raster.worker.js')) {
+        if (-not (Test-Path -LiteralPath (Join-Path $webRoot $asset) -PathType Leaf)) { throw "Missing published asset: $asset" }
+    }
+    $profile = Get-Content -LiteralPath (Join-Path $webRoot 'doroti.runtime-profile.json') -Raw | ConvertFrom-Json
+    $roots = if ($profile.schemaVersion -eq 2) {
+        if ($profile.hostContract -ne 'doroti.web.execution/v1' -or @($profile.variants.PSObject.Properties).Count -ne 2) { throw 'Expected both dual runtime variants.' }
+        if (Test-Path -LiteralPath (Join-Path $webRoot '_framework')) { throw 'Dual deployment must not contain a root framework.' }
+        foreach ($mode in @('threaded', 'compatible')) {
+            $variant = $profile.variants.$mode
+            $prefix = "runtimes/$mode/"
+            if ($null -eq $variant -or $variant.threads -isnot [bool] -or $variant.threads -ne ($mode -eq 'threaded') -or
+                $variant.profileUrl -ne "${prefix}doroti.runtime-profile.json" -or $variant.loaderUrl -notmatch "^${prefix}_framework/dotnet(\.[a-zA-Z0-9_-]+)?\.js$" -or
+                $variant.loaderUrl -match '/dotnet\.(native|runtime)') { throw "Invalid runtime variant: $mode" }
+            $child = Get-Content -LiteralPath (Join-Path $webRoot $variant.profileUrl) -Raw | ConvertFrom-Json
+            foreach ($field in @('buildId', 'runtimeContract', 'runtimeVersion')) {
+                if (-not $profile.$field -or $child.$field -ne $profile.$field) { throw "Runtime variant $mode differs: $field" }
+            }
+            if ($child.schemaVersion -ne 1 -or $child.threads -isnot [bool] -or $child.threads -ne $variant.threads) { throw "Invalid runtime profile: $mode" }
+            if (($child.provenance | ConvertTo-Json -Compress -Depth 8) -ne ($profile.provenance | ConvertTo-Json -Compress -Depth 8)) { throw "Runtime variant toolchain differs: $mode" }
+            @{ Relative = "${prefix}_framework"; Threads = $variant.threads; Contract = $child.runtimeContract; Loader = [IO.Path]::GetFileName($variant.loaderUrl) }
+        }
+    } elseif ($profile.schemaVersion -eq 1 -and $profile.threads -is [bool]) {
+        $html = Get-Content -LiteralPath (Join-Path $webRoot 'index.html') -Raw
+        $loaders = @(
+            foreach ($match in [regex]::Matches($html, '<script\b[^>]*type\s*=\s*["'']importmap["''][^>]*>(.*?)</script>', 'IgnoreCase,Singleline')) {
+                $map = $match.Groups[1].Value | ConvertFrom-Json
+                foreach ($key in @('./_framework/dotnet.js', '/_framework/dotnet.js', '_framework/dotnet.js')) {
+                    $mapped = $map.imports.PSObject.Properties[$key].Value
+                    if ($mapped) {
+                        if ($mapped -notmatch '^(\./|/)?_framework/(dotnet(\.[a-zA-Z0-9_-]+)?\.js)$') { throw 'Invalid dotnet loader import mapping.' }
+                        $Matches[2]
+                    }
+                }
+            }
+        ) | Select-Object -Unique
+        if (-not $loaders -and (Test-Path -LiteralPath (Join-Path $webRoot '_framework/dotnet.js'))) { $loaders = @('dotnet.js') }
+        if (@($loaders).Count -ne 1) { throw 'Missing or ambiguous dotnet loader mapping.' }
+        @{ Relative = '_framework'; Threads = $profile.threads; Contract = $profile.runtimeContract; Loader = @($loaders)[0] }
+    } else { throw 'Unsupported runtime profile.' }
+    foreach ($runtimeRoot in $roots) {
+        if ($runtimeRoot.Contract -notin @('mono-10', 'mono-11', $null)) { throw 'Unsupported runtime contract.' }
+        $assets = @(@{ Name = $runtimeRoot.Loader; Mime = 'application/javascript' })
+        foreach ($pattern in @('dotnet.native*.wasm', 'dotnet.native*.js', 'dotnet.runtime*.js')) {
+            $files = @(Get-ChildItem -LiteralPath (Join-Path $webRoot $runtimeRoot.Relative) -Filter $pattern -File)
+            if (-not $files.Count) { throw "Missing runtime asset: $pattern" }
+            $assets += @{ Name = $files[0].Name; Mime = $(if ($pattern.EndsWith('.wasm')) { 'application/wasm' } else { 'application/javascript' }) }
+        }
+        # Mono 11 uses the exact loader entry, rather than a separate worker.mjs.
+        if ($runtimeRoot.Threads -and $runtimeRoot.Contract -ne 'mono-11') {
+            $worker = Get-ChildItem -LiteralPath (Join-Path $webRoot $runtimeRoot.Relative) -Filter 'dotnet.native.worker*.mjs' -File | Select-Object -First 1
+            if (-not $worker) { throw 'Missing Mono 10 pthread worker asset.' }
+            $assets += @{ Name = $worker.Name; Mime = 'application/javascript' }
+        }
+        foreach ($asset in $assets) {
+            if (-not (Test-Path -LiteralPath (Join-Path $webRoot "$($runtimeRoot.Relative)/$($asset.Name)") -PathType Leaf)) { throw "Missing runtime asset: $($asset.Name)" }
+        }
+        $runtimeRoot.Assets = $assets
+        $runtimeRoot
+    }
+}
 
 function Invoke-Compose {
     $previousWebRoot = $env:DOROTI_PREVIEW_WEBROOT
@@ -67,6 +132,7 @@ if (($Obfuscate -or $DisableAot) -and ($Command -ne 'start' -or $SkipPublish)) {
 }
 
 switch ($Command) {
+    'validate' { Get-PublishedRuntimeRoots | ConvertTo-Json -Depth 6 }
     'stop' {
         Invoke-Compose down
         Remove-Item -LiteralPath $urlPath -ErrorAction SilentlyContinue
@@ -110,6 +176,7 @@ switch ($Command) {
                 # Publish the declared web runner even for samples that only
                 # provide a subset of the workspace CLI's platform aliases.
                 $publishArguments = @('publish', $webProject, '-c', 'Release', '--nologo', '-p:UseSharedCompilation=false', "-p:DorotiWebExecutionMode=$ExecutionMode")
+                if ($PublishRoot) { $publishArguments += "-p:PublishDir=$([IO.Path]::GetDirectoryName($webRoot))/" }
                 if ($Obfuscate) { $publishArguments += '-p:DorotiObfuscate=true' }
                 if ($DisableAot) { $publishArguments += '-p:RunAOTCompilation=false' }
                 & dotnet @publishArguments
@@ -118,26 +185,7 @@ switch ($Command) {
             finally { Pop-Location }
         }
 
-        foreach ($asset in @('index.html', 'doroti_bootstrap.js', 'doroti.runtime-profile.json')) {
-            if (-not (Test-Path -LiteralPath (Join-Path $webRoot $asset) -PathType Leaf)) {
-                throw "Missing published asset: $asset. Run start without -SkipPublish."
-            }
-        }
-        $profile = Get-Content -LiteralPath (Join-Path $webRoot 'doroti.runtime-profile.json') -Raw | ConvertFrom-Json
-        $runtimeRoots = if ($profile.schemaVersion -eq 2) {
-            if ($profile.hostContract -ne 'doroti.web.execution/v1') { throw 'Unsupported runtime host contract.' }
-            @($profile.variants.PSObject.Properties | ForEach-Object {
-                if ($_.Name -notin @('threaded', 'compatible')) { throw "Unsupported runtime variant: $($_.Name)" }
-                @{ Relative = "runtimes/$($_.Name)/_framework"; Threads = $_.Value.threads }
-            })
-        } elseif ($profile.schemaVersion -eq 1 -and $profile.threads -is [bool]) {
-            @(@{ Relative = '_framework'; Threads = $profile.threads })
-        } else { throw 'Unsupported runtime profile.' }
-        foreach ($runtimeRoot in $runtimeRoots) {
-            if (-not (Get-ChildItem -LiteralPath (Join-Path $webRoot $runtimeRoot.Relative) -Filter 'dotnet*.js' -ErrorAction SilentlyContinue)) {
-                throw "Missing published .NET runtime: $($runtimeRoot.Relative)"
-            }
-        }
+        $runtimeRoots = @(Get-PublishedRuntimeRoots)
 
         Remove-Item -LiteralPath $urlPath -ErrorAction SilentlyContinue
         try {
@@ -156,15 +204,11 @@ switch ($Command) {
                             throw 'Public response is missing the Doroti page or COOP/COEP headers.'
                         }
                         foreach ($runtimeRoot in $runtimeRoots) {
-                          $runtimeAssets = @(@{ Filter = 'dotnet.native*.wasm'; Mime = 'application/wasm' })
-                          if ($runtimeRoot.Threads) { $runtimeAssets += @{ Filter = 'dotnet.native.worker*.mjs'; Mime = 'application/javascript' } }
-                          foreach ($runtimeAsset in $runtimeAssets) {
-                            $file = Get-ChildItem -LiteralPath (Join-Path $webRoot $runtimeRoot.Relative) -Filter $runtimeAsset.Filter | Select-Object -First 1
-                            if (-not $file) { throw "Missing runtime asset: $($runtimeAsset.Filter)" }
-                            $assetResponse = Invoke-WebRequest -Method Head -Uri "$url/$($runtimeRoot.Relative)/$($file.Name)" -TimeoutSec 10
+                          foreach ($runtimeAsset in $runtimeRoot.Assets) {
+                            $assetResponse = Invoke-WebRequest -Method Head -Uri "$url/$($runtimeRoot.Relative)/$($runtimeAsset.Name)" -TimeoutSec 10
                             if ($assetResponse.Headers['Content-Type'] -notcontains $runtimeAsset.Mime -or
                                 $assetResponse.Headers['Cross-Origin-Embedder-Policy'] -notcontains 'require-corp') {
-                                throw "Incorrect runtime MIME/isolation headers: $($file.Name)"
+                                throw "Incorrect runtime MIME/isolation headers: $($runtimeAsset.Name)"
                             }
                           }
                         }

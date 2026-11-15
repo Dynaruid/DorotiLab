@@ -81,6 +81,7 @@ public static partial class DorotiWebWorkerSurface
         {
             throw new InvalidOperationException("Graphite frame is not on its recorder owner.");
         }
+        VerifyPaintOwner();
 
         if (_target.CaptureSnapshot(_viewId).ResizeEpoch.Generation != generation)
         {

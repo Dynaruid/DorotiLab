@@ -1,7 +1,9 @@
 import { dorotiProtocolVersion } from "./doroti.web.protocol.js";
-import { developmentBridge, startBrowserHotReload } from "./doroti.web.hot-reload.js";
+import { startBrowserHotReload } from "./doroti.web.hot-reload.js";
+import { applicationEnvironment } from "./doroti.web.session.js";
 import { verifyRuntime, type ExecutionSelection } from "./doroti.web.execution.js";
-import { monoWorkerUrls, type MonoWorkerConfig } from "./doroti.web.mono.js";
+import { monoWorkerUrls, MonoWorkerPreload, mono11InitialWorkerPoolSize, type MonoWorkerConfig } from "./doroti.web.mono.js";
+import { awaitWithAbort } from "./doroti.web.lifetime.js";
 
 export interface DorotiWorkerEndpoint extends EventTarget {
   postMessage(message: unknown, transfer?: Transferable[]): void;
@@ -38,39 +40,59 @@ function failRuntime(error: Error): void {
   for (const endpoint of activeEndpoints) endpoint.fail(runtimeFailure);
 }
 
-class ManagedEndpoint extends EventTarget implements DorotiWorkerEndpoint {
+export class ManagedEndpoint extends EventTarget implements DorotiWorkerEndpoint {
   #disposing = false;
+  #closed = false;
   #failed = false;
+  #disposeTimer: ReturnType<typeof setTimeout> | undefined;
   readonly #onError = (event: ErrorEvent): void => this.fail(event.error ?? event.message);
+  readonly #onDecodeError = (): void => this.fail("Renderer MessagePort could not decode a message.");
+  readonly #onMessage = (event: MessageEvent): void => {
+    const terminal = event.data?.protocolVersion === dorotiProtocolVersion &&
+      (event.data.kind === "disposed" || (event.data.kind === "fatal" && typeof event.data.cleanupComplete === "boolean"));
+    if (terminal) this.#disposing = true;
+    try { this.dispatchEvent(new MessageEvent("message", { data: event.data })); }
+    finally { if (terminal) this.#close(); }
+  };
   constructor(readonly port: MessagePort, readonly nativeWorker: Worker) {
     super();
     activeEndpoints.add(this);
-    port.addEventListener("message", event => {
-      const terminal = event.data?.kind === "disposed" || (event.data?.kind === "fatal" && typeof event.data.cleanupComplete === "boolean");
-      if (terminal) this.#disposing = true;
-      this.dispatchEvent(new MessageEvent("message", { data: event.data }));
-      if (terminal) {
-        activeEndpoints.delete(this);
-        port.close();
-        nativeWorker.removeEventListener("error", this.#onError);
-      }
-    });
-    port.addEventListener("messageerror", () => this.fail("Renderer MessagePort could not decode a message."));
+    port.addEventListener("message", this.#onMessage);
+    port.addEventListener("messageerror", this.#onDecodeError);
     nativeWorker.addEventListener("error", this.#onError);
     port.start();
   }
-  postMessage(message: unknown, transfer: Transferable[] = []): void { this.port.postMessage(message, transfer); }
+  postMessage(message: unknown, transfer: Transferable[] = []): void {
+    if (this.#closed) throw new Error("Managed render endpoint is closed.");
+    this.port.postMessage(message, transfer);
+  }
   terminate(): void {
     if (this.#disposing) return;
     this.#disposing = true;
     // The runtime owns the pthread. Killing its Worker would abandon managed
     // stacks and shared-heap resources. Finish the role on its JS owner instead.
     this.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "dispose" });
+    this.#disposeTimer = setTimeout(() => {
+      const error = "Managed render owner did not acknowledge shutdown in 15 seconds. Native resources remain unconfirmed; reload the page.";
+      console.error(error);
+      this.dispatchEvent(new MessageEvent("message", { data: {
+        protocolVersion: dorotiProtocolVersion, kind: "fatal", error, cleanupComplete: false, resourcesRetained: true,
+      } }));
+      this.#close();
+    }, 15000);
+  }
+  #close(): void {
+    this.#closed = true;
+    clearTimeout(this.#disposeTimer);
+    activeEndpoints.delete(this);
+    this.port.removeEventListener("message", this.#onMessage);
+    this.port.removeEventListener("messageerror", this.#onDecodeError);
+    this.port.close();
+    this.nativeWorker.removeEventListener("error", this.#onError);
   }
   fail(error: unknown): void {
     if (this.#failed) return;
     this.#failed = true;
-    activeEndpoints.delete(this);
     this.dispatchEvent(new MessageEvent("message", { data: {
       protocolVersion: dorotiProtocolVersion, kind: "fatal", error: String(error),
     } }));
@@ -81,6 +103,7 @@ async function initializeMainRuntime(dotnetUrl: string, selection: ExecutionSele
   if (!crossOriginIsolated || typeof SharedArrayBuffer === "undefined")
     throw new Error("Doroti main-runtime rendering requires COOP/COEP isolation and shared memory.");
   const NativeWorker = globalThis.Worker;
+  const preload = new MonoWorkerPreload();
   let workerUrls: ReadonlySet<string> = selection.runtimeContract === "mono-11" ? monoWorkerUrls("mono-11", dotnetUrl, {}) : new Set();
   let rejectStartup!: (error: Error) => void;
   const interrupted = new Promise<never>((_, reject) => { rejectStartup = reject; });
@@ -98,6 +121,7 @@ async function initializeMainRuntime(dotnetUrl: string, selection: ExecutionSele
       super(url, options);
       const resolved = new URL(String(url), document.baseURI);
       if (!workerUrls.has(resolved.href)) return;
+      if (selection.runtimeContract === "mono-11") preload.observe(this);
       this.addEventListener("error", event => {
         const error = new Error(`Doroti .NET runtime worker failed: ${event.message || String(event.error)}`);
         const originalStack = event.error?.stack;
@@ -107,6 +131,7 @@ async function initializeMainRuntime(dotnetUrl: string, selection: ExecutionSele
         // intentionally only contains the short error description.
         console.error(error.stack ?? error.message);
         rejectStartup(error);
+        preload.fail(error);
         failRuntime(error);
       });
       this.addEventListener("message", event => {
@@ -114,7 +139,8 @@ async function initializeMainRuntime(dotnetUrl: string, selection: ExecutionSele
         if (data?.kind !== "doroti-managed-port") return;
         event.stopImmediatePropagation();
         const connection = connections.get(data.sessionToken);
-        if (data.protocolVersion !== dorotiProtocolVersion || !connection || !(data.port instanceof MessagePort)) {
+        if (data.protocolVersion !== dorotiProtocolVersion || !connection || !(data.port instanceof MessagePort) ||
+            event.origin !== "" && event.origin !== location.origin || event.ports.length !== 1 || event.ports[0] !== data.port) {
           console.warn("Doroti rejected a stale/invalid managed-port handshake.", { protocolVersion: data.protocolVersion, sessionToken: data.sessionToken });
           if (data.port instanceof MessagePort) {
             data.port.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "managed-rejected", sessionToken: data.sessionToken });
@@ -133,36 +159,28 @@ async function initializeMainRuntime(dotnetUrl: string, selection: ExecutionSele
   };
   globalThis.addEventListener("pagehide", () => restoreWorkerObserver?.(), { once: true });
   try {
-    const module = await import(dotnetUrl);
+    const module = await Promise.race([import(dotnetUrl), interrupted]);
     module.dotnet.withModuleConfig({ onConfigLoaded: (config: MonoWorkerConfig) => {
       workerUrls = monoWorkerUrls(selection.runtimeContract, dotnetUrl, config);
     } });
-    const params = new URL(location.href).searchParams;
-    const diagnostics = params.get("dorotiResizeDiagnostics") === "1";
+    if (selection.runtimeContract === "mono-11")
+      module.dotnet.withConfig({ pthreadPoolInitialSize: mono11InitialWorkerPoolSize });
     // .NET 10's SDK Hot Reload agent uses synchronous JSExport entry points.
     // The threaded runtime otherwise rejects them on the browser UI thread.
     // Enable only for the SDK-injected development transport; blocking waits
     // still throw, including during metadata handlers, rather than deadlocking.
     if (document.querySelector("script[src*='aspnetcore-browser-refresh']"))
       module.dotnet.withConfig({ jsThreadBlockingMode: "ThrowWhenBlockingWait" });
-    const runtime = await Promise.race([module.dotnet.withEnvironmentVariables({
-      DOROTI_WEB_APPLICATION_BASE_URL: selection.applicationBaseUrl,
-      DOROTI_DEV_SESSION_ID: developmentBridge(location.search)?.sessionId ?? "browser",
-      DOROTI_TESTBED_MODE: params.get("dorotiTestbedMode") ?? "diagnostics",
-      DOROTI_SAMPLE: params.get("dorotiSample") ?? "",
-      DOROTI_LAYOUT_PROFILE: params.get("dorotiLayoutProfile") === "1" ? "1" : "0",
-      DOROTI_ALLOCATION_PROFILE: params.get("dorotiAllocationProfile") === "1" ? "1" : "0",
-      DOROTI_WEB_DIRECT_TRACE: diagnostics ? "1" : "0", DOROTI_STAGE_TRACE: diagnostics ? "1" : "0",
-      DOROTI_WEBVIEW_COUNT: params.get("dorotiWebViewCount") ?? "1",
-      DOROTI_WEBVIEW_WORKLOAD: params.get("dorotiWebViewWorkload") ?? "idle",
-      DOROTI_SAMPLE_PROGRESS_SCOPE: params.get("dorotiProgressScope") ?? "local",
-    }).create() as Promise<MainRuntime>, interrupted]);
+    const runtime = await Promise.race([module.dotnet.withEnvironmentVariables(
+      applicationEnvironment(location.search, selection.applicationBaseUrl)).create() as Promise<MainRuntime>, interrupted]);
     verifyRuntime(runtime, selection);
+    if (selection.runtimeContract === "mono-11") await Promise.race([preload.ready(), interrupted]);
     document.documentElement.dataset.dorotiRuntimeLocation = "main";
     await startBrowserHotReload(runtime);
     return runtime;
   } catch (error) {
-    restoreWorkerObserver();
+    preload.fail(error instanceof Error ? error : new Error(String(error)));
+    failRuntime(error instanceof Error ? error : new Error(String(error)));
     throw error;
   } finally {
     clearTimeout(startupTimer);
@@ -171,12 +189,15 @@ async function initializeMainRuntime(dotnetUrl: string, selection: ExecutionSele
 }
 
 export async function createManagedDorotiWorker(dotnetUrl: string, roleUrl: URL, selection: ExecutionSelection, signal?: AbortSignal): Promise<DorotiWorkerEndpoint> {
+  signal?.throwIfAborted();
   if (runtimeLoaderUrl !== undefined && runtimeLoaderUrl !== dotnetUrl)
     throw new Error("Doroti cannot create a second managed runtime in the same page.");
   runtimeLoaderUrl = dotnetUrl;
-  const runtime = await (runtimePromise ??= initializeMainRuntime(dotnetUrl, selection));
+  const runtime = await awaitWithAbort(runtimePromise ??= initializeMainRuntime(dotnetUrl, selection), signal);
+  signal?.throwIfAborted();
   if (runtimeFailure) throw runtimeFailure;
-  const exports = await runtime.getAssemblyExports("Doroti.Host.Web.dll");
+  const exports = await awaitWithAbort(runtime.getAssemblyExports("Doroti.Host.Web.dll"), signal);
+  signal?.throwIfAborted();
   if (runtimeFailure) throw runtimeFailure;
   const token = crypto.randomUUID();
   let endpoint: ManagedEndpoint | undefined;
@@ -193,7 +214,7 @@ export async function createManagedDorotiWorker(dotnetUrl: string, roleUrl: URL,
     connections.delete(token);
     endpoint?.terminate();
     void exports.Doroti.Host.Web.BrowserManagedRenderThread.CancelAsync(token).catch(error => endpoint?.fail(error));
-    rejectConnection(new Error("Managed render connection canceled or timed out."));
+    rejectConnection(signal?.aborted ? signal.reason : new Error(`Managed render connection ${token} timed out before the port handshake.`));
   };
   const timer = setTimeout(cancel, 120000);
   signal?.addEventListener("abort", cancel, { once: true });

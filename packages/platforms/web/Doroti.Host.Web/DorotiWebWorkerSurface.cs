@@ -49,6 +49,8 @@ public static partial class DorotiWebWorkerSurface
     private static int _stencilBits;
     private static long _contextGeneration;
     private static bool _initialized;
+    private static int _renderOwnerThreadId;
+    private static int _lastPaintThreadId;
 
     public static void Initialize(IDorotiBrowserTarget target, ulong viewId)
     {
@@ -64,6 +66,7 @@ public static partial class DorotiWebWorkerSurface
         _target = target;
         _viewId = viewId;
         _initialized = true;
+        _renderOwnerThreadId = Environment.CurrentManagedThreadId;
         target.AttachSkiaSurface(viewId, RequestPresent);
         RequestPresent();
     }
@@ -81,6 +84,8 @@ public static partial class DorotiWebWorkerSurface
                 backend = _graphiteContext is null ? "Ganesh/WebGL" : "Graphite/Dawn",
                 nativeSkia = SkiaSharpVersion.Native.ToString(),
                 managedSkia = typeof(SKSurface).Assembly.GetName().Version?.ToString(),
+                renderOwnerThreadId = _renderOwnerThreadId,
+                lastPaintThreadId = _lastPaintThreadId,
                 graphiteImageProviderCalls = _graphiteImageRequests,
                 graphiteBudgetedBytes = _graphiteContext?.CurrentBudgetedBytes ?? 0,
             }
@@ -92,6 +97,14 @@ public static partial class DorotiWebWorkerSurface
             return null;
         _context.GetResourceCacheUsage(out var count, out var bytes);
         return new { resourceCount = count, budgetedBytes = bytes };
+    }
+
+    private static void VerifyPaintOwner()
+    {
+        var current = Environment.CurrentManagedThreadId;
+        if (_initialized && current != _renderOwnerThreadId)
+            throw new InvalidOperationException("Skia paint must execute on the application render owner.");
+        _lastPaintThreadId = current;
     }
 
     [JSExport]
@@ -128,6 +141,8 @@ public static partial class DorotiWebWorkerSurface
             {
                 clockMicroseconds = DorotiFrameClock.Now.Ticks / 10,
                 ownerAllocatedBytes,
+                renderOwnerThreadId = _renderOwnerThreadId,
+                lastPaintThreadId = _lastPaintThreadId,
                 totalAllocatedBytes,
                 managedHeapBytes = GC.GetTotalMemory(false),
                 memoryProfile = _mobileMemoryProfile ? "mobile" : "desktop",
@@ -186,6 +201,7 @@ public static partial class DorotiWebWorkerSurface
             return "superseded";
         }
 
+        VerifyPaintOwner();
         var target = new DorotiResizeEpoch(
             generation,
             logicalWidth,

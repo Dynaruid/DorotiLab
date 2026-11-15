@@ -213,6 +213,11 @@
     "package": "npm run compile && npm run build-helper && vsce package --no-dependencies",
     "build-helper": "node scripts/build-helper.cjs"
   },
+  "overrides": {
+    "@vscode/vsce": {
+      "minimatch": "11.0.1"
+    }
+  },
   "devDependencies": {
     "@types/node": "24.19.2",
     "@types/vscode": "1.100.0",

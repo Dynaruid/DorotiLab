@@ -164,6 +164,8 @@ Android, iOS, AppKit macOS, Mac Catalyst 실행 프로젝트는 각각 앱 소�
 non-shared 렌더 Worker와 WebGL2를 사용합니다. 기존 단일 threaded 게시 기본값은 유지합니다.
 SDK 11/net10과 `DorotiWebTargetFramework=net11.0`은 별도 검증 축입니다. net11은 현재 재검증 전용이며
 기본 빌드는 DOROTIWEB050으로 거부합니다. CoreCLR WASM도 미지원입니다.
+마지막 incremental cache 수정 전 runtime 소스의 12개 구성은 통과했지만 최종 build-policy 재검증은 중단·미완료입니다.
+캐시 전환·실기기·하드웨어 성능 인수가 남아 있으므로 auto·net11 기본값을 승격하지 않습니다.
 [실행 프로필·마이그레이션](../packages/platforms/web/README.md#execution-profiles-opt-in)과
 [현재 검증 상태](../work.md)를 확인하세요.
 
@@ -172,7 +174,7 @@ SDK 11/net10과 `DorotiWebTargetFramework=net11.0`은 별도 검증 축입니다
 | `worker-direct-webgl` (Android 외 기본) | Ganesh/WebGL2, 독립 Worker 런타임도 지원 |
 | `worker-direct-webgpu` (Android 우선) | Graphite/Dawn, `runtimeLocation: "main"`, WASM threads, COOP/COEP 격리, 하드웨어 WebGPU 어댑터 |
 
-옵션 생략, `auto`, 알 수 없는 렌더러 값은 Android에서 WebGPU를, Windows·iOS/iPadOS·macOS 등에서는 WebGL2를 우선합니다. Android 자동 선택은 시작 전에 런타임·출처 조건과 WebGPU API·어댑터를 확인하고 사용할 수 없으면 WebGL2를 선택합니다. 명시적인 렌더러 지정은 유지하며, 사전 확인 이후 장치·context 초기화 실패 시에는 다른 백엔드로 재시도하지 않습니다. 두 경로 모두 표시할 canvas를 한 번 이전합니다. 로더의 `started`는 런타임·GPU 준비 완료를 뜻하며, 첫 콘텐츠가 표시되었다는 의미는 아닙니다.
+옵션 생략, `auto`, 알 수 없는 렌더러 값은 Android에서 WebGPU를, Windows·iOS/iPadOS·macOS 등에서는 WebGL2를 우선합니다. Android 자동 선택은 시작 전에 런타임·출처 조건과 WebGPU API·어댑터를 확인하고 사용할 수 없으면 WebGL2를 선택합니다. 명시적인 렌더러 지정은 유지하며, 사전 확인 이후 장치·context 초기화 실패 시에는 다른 백엔드로 재시도하지 않습니다. 두 경로 모두 표시할 canvas를 한 번 이전합니다. 로더의 `started`는 managed 준비와 첫 유효 canvas commit을 모두 기다리며, 디스플레이 scanout 측정과는 구분합니다.
 
 앱의 부팅 코드는 `web/src/**/*.ts`, 프레임워크 웹 코드는 `../packages/platforms/web/Doroti.Host.Web/Web/*.ts`에 있습니다. `Microsoft.TypeScript.MSBuild`가 실행 프로젝트의 `obj`에 JavaScript를 만들고, 배포에는 결과 파일을 포함합니다. Node, npm, Bun, 번들러는 필요하지 않습니다. Testbed와 템플릿은 같은 출처의 대체 폰트를 미리 읽고 import map의 `dotnet.js`를 사용합니다. [웹 렌더러 옵션](../samples/DorotiTestbedApp/README.ko.md#web-렌더러와-측정-옵션)을 참고하세요.
 

@@ -164,6 +164,10 @@ before startup; compatible uses a non-shared render Worker and WebGL2. Existing
 single threaded publishing remains the build default. SDK 11/net10 and the opt-in
 `DorotiWebTargetFramework=net11.0` are qualified separately. The latter is currently
 probe-only and rejected by default (DOROTIWEB050); CoreCLR WASM is not supported.
+The runtime-source 12-profile matrix passed before the latest incremental-cache
+changes; final build-policy requalification is paused and incomplete. Cache,
+physical-device and hardware-performance gates remain open. Auto and net11
+defaults are not promoted.
 See [execution profiles and migration](../packages/platforms/web/README.md#execution-profiles-opt-in)
 and [the current validation matrix](../work.md).
 
@@ -172,7 +176,7 @@ and [the current validation matrix](../work.md).
 | `worker-direct-webgl` (default outside Android) | Ganesh/WebGL2; also supports an independent Worker runtime |
 | `worker-direct-webgpu` (preferred on Android) | Graphite/Dawn, `runtimeLocation: "main"`, WASM threads, COOP/COEP isolation, hardware WebGPU adapter |
 
-Omitted, `auto`, and unknown renderer values prefer WebGPU on Android and WebGL2 on Windows, iOS/iPadOS, macOS, and other platforms. Before startup, Android auto selects WebGL2 if the runtime/origin is unsuitable or the WebGPU API/adapter is unavailable. Explicit renderer overrides are preserved. Device/context initialization failures after this preflight do not trigger a backend retry. Both paths transfer the visible canvas once. Loader `started` signals runtime/GPU readiness, not the first visible content.
+Omitted, `auto`, and unknown renderer values prefer WebGPU on Android and WebGL2 on Windows, iOS/iPadOS, macOS, and other platforms. Before startup, Android auto selects WebGL2 if the runtime/origin is unsuitable or the WebGPU API/adapter is unavailable. Explicit renderer overrides are preserved. Device/context initialization failures after this preflight do not trigger a backend retry. Both paths transfer the visible canvas once. Loader `started` waits for managed readiness and the first admitted canvas commit; it does not measure display scanout.
 
 Application bootstrap code lives in `web/src/**/*.ts`; framework Web code lives in `../packages/platforms/web/Doroti.Host.Web/Web/*.ts`. `Microsoft.TypeScript.MSBuild` compiles both into runner-local `obj` directories, and publishing includes the resulting JavaScript. Node, npm, Bun, and a bundler are not required. Testbed and templates preload the same-origin fallback font and use the import-mapped `dotnet.js`. See [Web renderer options](../samples/DorotiTestbedApp/README.md#web-renderers-and-measurement-options).
 

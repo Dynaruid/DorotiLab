@@ -17,15 +17,8 @@ description: Algorithms and utilities that power the Material Design 3 color sys
 version: 0.13.0
 repository: https://github.com/material-foundation/material-color-utilities/tree/main/dart
 issue_tracker: https://github.com/material-foundation/material-color-utilities/issues
-screenshots:
-  - description: "App showing the Material You color system."
-    path: screenshots/material_you_1.png
-  - description: "App showing the Material You color system."
-    path: screenshots/material_you_2.png
-  - description: "App showing the Material You color system."
-    path: screenshots/material_you_3.png
-  - description: "App showing the Material You color system."
-    path: screenshots/material_you_4.png
+# This analysis-only source stub does not vendor the upstream package screenshots.
+publish_to: none
 
 environment:
   sdk: ^3.5.0

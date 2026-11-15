@@ -22,6 +22,11 @@ runners. Select `android`, `ios`, `linux`, `macos`, or `maccatalyst` with `-Plat
 on a suitable build host. See the [framework guide](../../Doroti/README.md) for
 platform prerequisites.
 
+Web publishing defaults to net10/threaded. Use `-p:DorotiWebExecutionMode=auto`
+with `dotnet publish` to include both complete variants, or `compatible` for a
+single non-isolated deployment. Restart run/watch and reload the page after mode
+changes; compatible Hot Reload is unqualified. See [Web profiles and migration](../../packages/platforms/web/README.md#execution-profiles-opt-in).
+
 The [deployment helper](../../helpers/deploy-helper/README.md) accepts `-App Demo`
 to build, install, and launch this sample on Android or iOS.
 
