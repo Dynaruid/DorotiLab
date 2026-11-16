@@ -22,6 +22,7 @@
     <None Include="$(IntermediateOutputPath)doroti-target-manifest.json" Pack="true" PackagePath="doroti" />
     <None Include="build/Doroti.Target.Web.browser-wasm.props" Pack="true" PackagePath="build/Doroti.Target.Web.browser-wasm.props" />
     <None Include="build/DorotiSkiaInterop.js" Pack="true" PackagePath="build/DorotiSkiaInterop.js" />
+    <None Include="build/DorotiMono11Pthreads.js" Pack="true" PackagePath="build/DorotiMono11Pthreads.js" />
     <None Include="buildTransitive/Doroti.Target.Web.browser-wasm.targets" Pack="true" PackagePath="buildTransitive/Doroti.Target.Web.browser-wasm.targets" />
   </ItemGroup>
   <ItemGroup>

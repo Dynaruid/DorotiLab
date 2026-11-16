@@ -1,19 +1,20 @@
-# Web 자동 고성능/호환 모드: PAUSED / PARTIAL
+# Web 자동 고성능/호환 모드: PARTIAL — 재검증·측정 완료, 성능 인수 FAIL
 
-작성: 2026-11-12 · 재개: 2026-11-15 21:57 KST · 중간 마무리: 2026-11-16 00:30 KST
+작성: 2026-11-12 · 이전 중간 마무리: 2026-11-16 00:30 KST · 네 항목 재검증·측정: 2026-11-16
 이 문서는 구현·검증·미완료 범위와 재개 순서를 기록한다. 11월 13일까지의 기존 검증과 11월 15일 변경분의 검증을 구분하며, 최종 소스에 대한 전체 인수는 완료하지 않았다.
 
-**PAUSED / PARTIAL — 사용자 요청으로 중간 마무리했다.** 00:30 KST에 이 세션의 검증·게시·native 빌드 프로세스가 남아 있지 않음을 확인했다. 변경사항은 로컬에 보존했고 커밋·push·외부 배포는 하지 않았다. §6은 이전 중단 이력, §7은 이번 재개 중의 검증 이력이며, **최신 판정과 재개 지점은 §8**이다. 명시적 재개 요청 전에는 작업을 자동 재개하지 않는다. CI는 제외하고, 실기기 부재와 미실행 검증을 PASS로 바꾸지 않는다.
+**PARTIAL — 요청한 종료 오류 수정, 전체 12단계 캐시 전환, 최종 정책의 12개 구성 재검증과 성능 측정을 완료했다.** 기능·종료·캐시 행렬은 PASS지만, 성능의 10% 회귀 기준과 compatible 입력 예산은 FAIL다. §6~§8은 이전 이력이며 **최신 결과는 §9**다. CI와 실기기 인수는 제외하고 제품 기본값·지원 차단은 유지한다.
 
-| 이번 중간 마무리의 핵심 판정 | 상태 |
+| 최신 핵심 판정 | 상태 |
 | --- | --- |
 | Texture source/snapshot | end-of-frame 순서 수정 뒤 양 모드 실제 GPU allocation·freeze·source 교체·종료 PASS. 잘못된 async polling도 수정. |
-| 핵심 runtime 행렬 | 마지막 incremental build-policy 수정 전 12/12 PASS. 최종 build-policy 재게시·실행 재검증은 SDK 10/net10 Debug 양 모드 2/12까지만 PASS. |
+| 핵심 runtime 행렬 | 최종 정책·종료 어댑터·active SDK inventory 게시 코드로 12/12 native·Chromium frame/owner/input/실제 Worker close·Texture PASS. 배포 hash 6개 재확인. |
 | 추가 구성 | Sample2 net10/net11 mixed-AOT 양 모드·두 브라우저 UI/pixel PASS. Release non-AOT net10/net11 양 모드 PASS. |
-| 캐시 전환 | 원래 5단계 SDK/mode 전환은 linker 수정 뒤 PASS. 실제 net10→net11 전환의 icall cache 수정 뒤 시작·종료는 확인했으나 `unknown command killThread` console error가 남아 strict 검사 FAIL. |
-| 전체 완료 여부 | 미완료. 최종 cache-policy 재검증·12단계 전체 전환·성능·실기기 인수는 남았으며 net10/threaded 기본값과 net11 제품 차단을 유지. |
+| 캐시 전환 | 새 label에서 Debug 7단계 + Release/AOT·non-AOT 5단계, 전체 12/12 native·브라우저·실제 Worker 종료 PASS. |
+| 성능 측정 | Debug·Release/AOT × 기존 threaded·변경 threaded·compatible × fresh/warm × 3회 = 최종 36개 표본. 측정 완료, 회귀 기준·compatible 입력 예산 FAIL. |
+| 전체 완료 여부 | 제품 인수는 미완료. 성능 초과 원인 격리·개선과 실기기 인수가 남았다. net10/threaded 기본값·auto opt-in·net11 제품 차단 유지. |
 
-마지막 검증의 실패와 후속 수정의 제한된 PASS를 섞지 않는다. 상세 이력은 §6·§7, 최신 중단 상태는 §8을 따른다.
+이전 실패·수정 이력은 §6~§8, 이번 최종 검증과 남은 범위는 §9를 따른다.
 
 ## 1. 현재 상태와 완료한 작업
 
@@ -64,7 +65,7 @@
 
 ### R2. 빌드·배포·캐시 무결성
 
-- [ ] [Web targets](packages/platforms/build/Doroti.Web.targets)와 [publish validator](packages/platforms/web/Doroti.Target.Web.browser-wasm/buildTransitive/Doroti.Target.Web.browser-wasm.targets)를 기준으로 threaded → compatible → threaded 재빌드와 SDK 10 → 11 → 10 전환의 restore/native/AOT/WebCIL/TypeScript/static-assets 캐시 격리를 확인하고 결함을 수정한다.
+- [x] [Web targets](packages/platforms/build/Doroti.Web.targets)와 [publish validator](packages/platforms/web/Doroti.Target.Web.browser-wasm/buildTransitive/Doroti.Target.Web.browser-wasm.targets)를 기준으로 threaded → compatible → threaded, SDK 10 → 11 → 10, 실제 net10 → net11 → net10 및 Release AOT → non-AOT → AOT의 동일 경로 전환을 확인했다. 새 label의 전체 12단계 native·frame/owner/input·요청/Texture 정리·실제 Worker 종료가 PASS다.
 - [x] 이미 통과한 source checkout·NuGet provider의 publish validator를 기준으로, 한쪽 child 실패, 다른 build ID, 공통 자산 충돌, 필수 파일 누락, 오래된 fingerprint 파일이 최종 배포본을 정상처럼 통과하지 않는지 추가 확인한다.
 - [x] 루트·하위 경로·deep link, 캐시된 이전 HTML과 새 배포의 조합, 압축 응답과 .mjs/.wasm MIME, 동시 페이지 접근을 검사한다. 선택하지 않은 variant의 fetch/preload/Worker 생성을 막는다.
 - [ ] net11의 실제 Emscripten 도구 버전과 Skia archive/interop ABI를 산출물로 확인한다. 설치된 pack 이름의 6.0.2와 실제 도구 6.0.3을 구분한다. Sample2 mixed-AOT 및 AOT를 끈 Release도 별도 영향 범위에서 검증한다.
@@ -89,17 +90,17 @@
 
 완료 기준: 필수 기능이 두 모드에서 동등하게 동작하고, 지원하지 않는 브라우저·권한·플러그인 경계가 문서화된다.
 
-### R5. 성능 기준선과 회귀 판정
+### R5. 성능 기준선과 회귀 판정 — 측정 완료, 성능 인수 FAIL
 
-- [ ] 동일 SDK·toolchain·장치·앱·화면·renderer·AOT·캐시 조건에서 기존 threaded와 변경 후 threaded를 비교한다. 그 다음 compatible을 비교하고, SDK 10/11 또는 WebGPU/WebGL2 차이를 모드 효과와 분리한다.
-- [ ] cold/warm 시작부터 실제 첫 frame, 입력→frame 지연, frame time p50/p95, managed/WASM 메모리, 전송량, publish 시간·크기를 측정한다. runtime started만으로 첫 frame을 대체하지 않는다.
-- [ ] 기존 threaded 대비 주요 지연 지표가 10%를 초과해 악화되면 원인을 분석한다. compatible은 실측으로 허용 지연 목표를 정하고 기능 완료·무응답 없음은 필수로 유지한다.
+- [x] SDK 10.0.403/net10.0/Mono 10.0.15/Emscripten 3.1.56, 같은 앱·viewport·WebGL2에서 기존 threaded·변경 threaded·compatible을 Debug 및 Release/AOT 각각 fresh/reload 3회 비교했다. SDK/renderer 효과를 섞지 않았다.
+- [x] 실제 첫 frame, 입력→canvas commit, paint·commit 간격 p50/p95, managed/WASM 메모리와 main/Worker를 합친 실제 전송량·배포 크기를 기록했다. 새 publish 소요 시간은 기록했으나, 과거와 같은 fresh/cache 조건의 시간은 없어 속도 비교에서 제외했다. warm은 HTTP no-store 상태의 같은 페이지 reload이며 OS cold/실제 scanout 측정이 아니다.
+- [x] 10% 기준과 사전 compatible 예산으로 판정하고 입력 queue/dispatch·paint·commit 경계를 분석했다. **성능 인수 FAIL**이며 단일 변경 원인은 아직 격리하지 못했다. threshold를 완화하거나 원인을 종료 어댑터로 추정해 통과시키지 않았다. 상세 수치·한계·다음 분석 범위는 §9에 기록했다.
 
 완료 기준: 고성능 경로의 회귀 여부와 compatible의 실제 성능 차이·미지원 범위가 재현 가능한 조건과 함께 기록된다.
 
 ### R6. 최종 지원·출시 판정
 
-- [ ] SDK 10/net10, SDK 11/net10, SDK 11/net11 Mono의 양 모드 × Debug/non-AOT·Release/AOT runtime 행렬은 마지막 build-policy 수정 전 12/12 PASS다. 이후 incremental linker/native-table 무효화 정책을 수정했으며, 최종 정책의 재게시·실행 재검증은 SDK 10/net10 Debug 양 모드 2/12까지만 통과하고 중단했다. 남은 10개와 cache 전환 잔여 실패를 완료로 표시하지 않는다.
+- [x] SDK 10/net10, SDK 11/net10, SDK 11/net11 Mono의 양 모드 × Debug/non-AOT·Release/AOT를 최종 linker/native cache 정책·종료 어댑터로 재게시했다. **12/12 PASS**이며 실제 frame/owner/input/Worker close·Texture 정리와 6개 dual 배포의 전체 hash를 확인했다. 별도 동일 cache 전환도 12/12 PASS다.
 - [x] native 빌드, 실제 browser first-frame, 기능, 종료·자원 정리, 실기기, 성능 결과를 각각 PASS/FAIL/미검증으로 기록한다. net10 지원 배포와 net11 차세대 지원의 판정을 분리한다.
 - [x] 인수 미완료이므로 기존 net10/threaded 기본값과 auto opt-in을 유지했다. auto·net11 기본값 승격은 각각 별도 출시 결정으로 남기며, 회귀 시 이전 완결 배포본으로 되돌린다.
 
@@ -254,7 +255,7 @@ Firefox 159 headless의 Playwright filechooser interception은 payload 주입 �
 
 이후 Sample2 net11 mixed-AOT와 Release non-AOT는 아래 범위까지 통과했다. 마지막 build-policy 재검증·12단계 cache 전환·성능 비교는 중단 시점에 미완료다. 성능 도구는 세 variant의 순서를 3회 순환하고 마지막 input의 실제 canvas commit을 기다리며, 누락 trace/latency를 PASS로 만들지 않는다. fresh/warm별 10% 초과 회귀를 별도 출력하고 이전 publish 시간·캐시 조건이 없으면 비교 불가로 남긴다. 측정 전 provisional desktop loopback/headless compatible 예산은 input→commit p95 100ms, fresh-browser first frame 10초·reload 5초로 두었다. 이는 물리 장치 SLA나 hardware GPU 인수 기준이 아니며, 실제 측정은 실행하지 않았다.
 
-## 8. 2026-11-16 00:30 KST 중간 마무리 — 최신 상태
+## 8. 2026-11-16 00:30 KST 중간 마무리 이력
 
 사용자 요청으로 검증을 중단했다. `final-native-policy-rechecks-v2`의 process tree를 종료했고, 00:30 KST 조회에서 해당 controller와 이 세션의 관련 게시·browser·native 검증 프로세스가 남아 있지 않음을 확인했다. 마지막 fresh-child 대조 검사는 중단 요청 전에 이미 완료된 PASS이며, 중단 뒤 새 build/browser/성능 검사를 시작하지 않았다. 원시 산출물은 삭제하지 않았고 변경사항은 로컬에 보존했다. 커밋·push·외부 배포는 없다.
 
@@ -284,3 +285,83 @@ Firefox 159 headless의 Playwright filechooser interception은 payload 주입 �
 - 최종 build-policy 주 행렬의 나머지 10개를 재게시·재실행한다. 중단된 Release는 양 child부터 다시 확인한다. 전체 배포 hash의 이전 snapshot은 `final-core-publish-hashes-before-recheck.json`에 있으나, 재게시 후 전체 hash 비교는 미실행이다.
 - 모든 native 작업이 끝난 뒤에만 Debug/Release AOT의 before/after threaded 및 compatible 성능을 각각 3회 fresh/warm으로 측정한다. **실제 성능 측정과 10% 회귀 판정은 아직 0회**이며 제시한 예산을 달성했다고 보고하지 않는다.
 - 실기기 Android/iOS/iPadOS Safari, 물리 한글 IME·screen reader·hardware GPU·장시간 동작·native Firefox dialog 선택은 미인수다. CI 제외, net10/threaded 기본값 및 auto opt-in, net11 제품 차단은 유지한다.
+
+## 9. 2026-11-16 네 항목 재검증 결과 — 기능 PASS, 성능 인수 FAIL
+
+### 종료 오류의 원인과 수정
+
+fresh와 재사용 게시본의 실제 native JS 및 WASM SHA-256은 각각 같았다. `runtime.o`·`pinvoke.o`의 경로 차이만으로 런타임 차이를 추정하지 않는다. 실제 설치 pack의 source map이 가리키는 [Mono 11 원본](https://github.com/dotnet/dotnet/blob/297acf930fb0f5c07fd4e51d78e521b4ad2e5d1f/src/runtime/src/mono/browser/runtime/pthreads/ui-thread.ts#L228-L249)을 확인했다. JS interop을 설치한 dirty Worker의 반환 경로가 문자열 `killThread`를 호출하지만, Emscripten 6.0.3의 생성 코드는 숫자 명령만 처리한다. 수정 전 양 게시본에 같은 종료 대기를 적용한 negative control은 모두 `disposed` 직후에는 오류가 없었고, 1.5초 뒤 같은 console error를 확인했다. 이전 fresh PASS는 실제 pthread 종료까지 기다리지 않은 제한된 결과다.
+
+`DorotiMono11Pthreads.js`는 Mono 11.0.0 + Emscripten 6.0.3 threaded 링크에만 들어간다. Emscripten compiler의 라이브러리 입력에 누락된 명령을 추가해 native 소유권 해제 → Worker 종료 → pthread 메모리 해제 순서를 복원한다. dirty Worker를 pool에 반환하지 않고, 잘못된 pthread owner는 오류로 거부한다. 앱 host에서 live PThread를 관찰·교체하거나 설치 SDK·NuGet cache·게시 JS를 사후 수정하지 않는다. 지원하지 않는 compiler 형상은 링크 시 실패한다. 라이브러리도 NuGet provider에 포함하고 링크 의존성으로 추적한다.
+
+`browser-smoke.mjs`는 managed `disposed` receipt와 별도로 실제 렌더 Worker의 `close` 이벤트를 기다린 뒤 console error를 판정한다. cleanup 순서·소유자 불일치·알 수 없는 명령 보존·비지원 compiler 거부 계약 4/4 PASS. 같은 재사용 cache의 generation `4aee65bd3dc84b52b5ed23217e902158` 재게시와 강화한 smoke는 실제 native/첫 frame/paint owner/입력/잔여 자원 0/Worker 종료 및 console error 없음까지 PASS다. 전체 SDK·모드·AOT 인수와 구분한다.
+
+### 동일 cache 전환과 최종 주 행렬
+
+TypeScript production compile 및 계약 **27/27**, 지원 차단·linker/native cache 보존/무효화 계약 **8/8 PASS**. 새 `remaining-switch-cache-mono11-retirement` label의 전체 전환은 **12/12 PASS**다. Debug 7단계의 SDK 10→11→10·실제 net10→net11→net10, Release 5단계의 threaded→compatible→threaded AOT·AOT→non-AOT→AOT를 같은 cache/output/publish 경로로 실행했다. 각 단계에서 native 게시, 실제 frame/owner/input, 요청·Texture 잔여 0과 렌더 Worker close를 확인했다. 특히 net10→net11 generation `e90252ee2a6946b98dbd3c0546a8d240`에서 이전 `icall.c:6998`·`killThread`가 재발하지 않았다.
+
+`verified-retirement` label의 최종 주 행렬도 **12/12 PASS**다. 각 행은 양 모드 native 재게시·최종 통합, Chromium의 실제 frame/paint owner/input/Worker close, Texture의 canvas/ImageBitmap·freeze/resume·resize·source 교체·활성 source 종료와 잔여 자원 0까지 포함한다.
+
+| SDK / TFM | 구성 | generation | 양 모드 결과 | 최종 파일 수 | 배포 tree SHA-256 앞 12자리 |
+| --- | --- | --- | --- | ---: | --- |
+| 10.0.403 / net10.0 | Debug | `34584db179ac4ae2affed8cf900cb6a0` | PASS | 699 | `974636b793e5` |
+| 10.0.403 / net10.0 | Release/AOT | `c70399f2be98495ba5bddc51d8773abd` | PASS | 552 | `3e4710cdc567` |
+| 11.0.100 / net10.0 | Debug | `2d0db3b869b240b686becf82f54e62fa` | PASS | 705 | `4636972c87af` |
+| 11.0.100 / net10.0 | Release/AOT | `8f68fc85ff7c441caef6e31d43cfe2a2` | PASS | 558 | `dfd54ab07619` |
+| 11.0.100 / net11.0 | Debug | `2e9d8c5638614119b8e6217de656c3e5` | PASS | 714 | `cb59033abc15` |
+| 11.0.100 / net11.0 | Release/AOT | `90e47f8154f7460ba8f36b107fe7a535` | PASS | 567 | `c1902d53760e` |
+
+net11 threaded의 Debug·Release/AOT는 Firefox에서도 강화한 실제 Worker close 검사를 별도로 통과했다. 이번 Firefox 실행을 양 모드 전체 Firefox 기능 행렬로 확대하지 않는다. 전체 SHA-256·파일 수·용량·전후 diff와 최종 36개 성능 표본은 [보존용 JSON](history/26/11/16/web-execution-qualification.json)에 남겼다. 마지막 감사에서 실제 배포 파일을 다시 hash해 6개 inventory 및 controller receipt와 모두 일치함을 확인했다.
+
+### 주 행렬 hash 비교 중 발견한 게시 경계
+
+첫 Debug 재게시에서 이전 fingerprint가 child에 남아 최종 배포 파일이 849개로 늘었다. `MergeWebPublish.cs`는 fresh staging을 만들지만 child `_framework` 전체를 복사했고, framework 검증은 wildcard로 아무 native/runtime/worker 파일의 존재만 확인했다. 현재 SDK 10/11의 실제 loader `/*json-start*/.../*json-end*/` boot resources를 읽어 active 의존성의 존재·경로·native 그룹을 검증하고, SDK가 참조하지 않는 fingerprint 및 `.gz`/`.br`를 최종 staging에서 제외하도록 수정했다. 안정된 지원 파일과 문화권별 satellite resource는 유지한다. 설치 pack·앱 runtime/native 소스·기존 child는 바꾸지 않는다.
+
+최종 게시 계약은 SDK 10·11 각각 **29/29 PASS**다. active native/runtime/worker가 누락됐지만 이전 파일이 남은 경우, assembly 누락, boot metadata 부재·잘못된 native 그룹·경로 탈출은 이전 완결 배포를 보존하며 거부한다. Mono 11의 별도 pthread entry 없는 형상, 현재 assembly·satellite 보존과 이전 fingerprint·압축본 제거도 확인했다. 실제 NuGet에는 최종 tasks/targets 및 두 native JS 입력의 원본 SHA가 일치하며, 추출한 validator의 실제 완결 배포 승인·다른 generation 거부 **2/2 PASS**다.
+
+첫 SDK 10/net10 Debug는 native 재컴파일 없이 새 게시 코드로 재통합하고 양 모드 smoke·Texture를 다시 통과했다. 최종 **699개 파일** inventory로 controller의 첫 Debug hash도 갱신했다. 후속 5개 dual 구성은 처음부터 새 publisher를 사용했다. native runtime·build-policy 코드가 바뀌지 않았으므로 완료한 12단계 실제 전환 결과를 유지하며, 변경한 게시 경계는 위 계약·실제 재통합·최종 주 행렬에서 따로 검증했다.
+
+이전 주 행렬과 새 주 행렬은 파일별 hash까지 같지는 않다. 기존 Doroti assembly informational version의 `af604be5...`가 현재 HEAD `8da0a516...`로 바뀌어 assembly·AOT 및 loader fingerprint가 달라졌고, net11 threaded에는 native 종료 어댑터가 들어갔다. 이름이 같은 파일 중 변경된 것은 각 dual root의 manifest 하나이며, fingerprint 파일은 새 이름으로 교체됐다. net10 네 행은 참조되지 않는 이전 자산 6개씩도 제거했다. 전체 hash 차이를 캐시 손상이나 기능 코드 차이로 단정하지 않는다.
+
+### 성능 조건과 측정 도구 보정
+
+모든 native 빌드가 끝난 뒤 같은 Windows 10.0.26300 / Ryzen 7 8845HS / 16 logical CPU / 약 32GB에서 측정했다. SDK 10.0.403, net10.0/Mono 10.0.15, Emscripten 3.1.56, viewport 1180×760, Chromium 158.0.8127.18 headless, worker-direct-webgl과 SwiftShader 허용 조건이다. Debug와 Release/AOT를 분리하고 기존 threaded·변경 threaded·compatible 순서를 세 번 순환했다. 각 variant에서 fresh browser와 같은 페이지 reload를 한 쌍으로 실행해 **최종 36개 표본**을 얻었다. HTTP는 no-store이므로 warm을 HTTP cache hit나 OS cold 대비로 부르지 않는다. 표시 장치 scanout·물리 입력은 측정하지 않았다.
+
+최초 Debug 기준선 `075b0399...`는 Worker의 runtime-relative host module URL이 404여서 첫 frame 전에 실패했다. 해당 배포본은 제외하고, 보존된 실제 동작 기준선 Debug `0c8f6c2e3527435d8d9cf8057677e7a5`와 Release/AOT `0837a0bf23014bb480cdd683e3d254f8`을 사용했다. 기준선 파일·runtime은 수정하지 않았다. 과거 Release manifest의 누락 pack 필드는 unknown으로 남겼다. 기록된 SDK·runtime·compiler·SIMD·AOT·interpretWidgetTree 조건은 양쪽 같음을 도구가 검증한다.
+
+실행 전 작성됐던 측정 도구의 비공개 `module.snapshot` 호출을 공개 diagnostics object로 바꾸고, 실패한 startup의 실제 DOM·console 오류를 즉시 남기도록 했다. 첫 36개 탐색 표본에서는 page Resource Timing이 Worker 다운로드를 제외함을 발견했다. 최종 측정은 Playwright의 완료된 요청별 encoded response body + response header를 main/Worker·navigation 모두 합산하고, 선택된 native WASM 다운로드가 포함되는지 검증했다. 탐색 표본과 최종 표본을 섞지 않는다. 원시 input/paint/commit/network trace도 보관했다. 모든 최종 표본은 입력 16개가 실제 인과적 commit에 도달했고 unmatched input·trace dropped·browser error가 0이다.
+
+### 최종 성능 결과와 판정
+
+다음 수치는 각 fresh/warm 셀 3회 결과의 중앙값이다. 시간 단위는 ms이며 paint와 commit은 각 실행의 p95를 다시 중앙값으로 요약했다. 입력→commit도 화면 scanout 지연과 구분한다.
+
+| 구성 / cache | variant | 첫 frame | 입력→commit p95 | paint p95 | commit 간격 p95 |
+| --- | --- | ---: | ---: | ---: | ---: |
+| Debug fresh | 기존 threaded | 3184.1 | 348.2 | 23.0 | 139.8 |
+| Debug fresh | 변경 threaded | 3061.6 | 371.3 | 30.2 | 148.6 |
+| Debug fresh | compatible | 2990.2 | 341.9 | 28.1 | 138.2 |
+| Debug warm | 기존 threaded | 2409.5 | 351.4 | 26.5 | 137.3 |
+| Debug warm | 변경 threaded | 2359.4 | 346.1 | 24.2 | 209.1 |
+| Debug warm | compatible | 2474.4 | 350.7 | 25.3 | 216.8 |
+| Release/AOT fresh | 기존 threaded | 2695.8 | 197.4 | 8.05 | 81.1 |
+| Release/AOT fresh | 변경 threaded | 2636.2 | 203.6 | 9.36 | 81.2 |
+| Release/AOT fresh | compatible | 2352.6 | 217.8 | 8.80 | 77.3 |
+| Release/AOT warm | 기존 threaded | 1685.6 | 185.7 | 7.27 | 79.7 |
+| Release/AOT warm | 변경 threaded | 1651.4 | 187.6 | 6.76 | 77.5 |
+| Release/AOT warm | compatible | 1881.4 | 195.4 | 7.50 | 66.8 |
+
+**10% 회귀 기준 FAIL:** Debug fresh paint p95 **+31.30%**, Debug warm commit 간격 p95 **+52.36%**, Release/AOT fresh paint p95 **+16.27%**다. 최종 표본의 threaded 첫 frame과 입력 p95는 모든 셀에서 10% 이내다. **compatible 예산 FAIL:** 첫 frame은 사전 예산 fresh 10초/reload 5초를 모두 만족했지만, 입력 p95 100ms는 Debug·AOT의 총 12개 compatible 표본 모두 초과했다. 표의 중앙값 범위는 Debug 341.9~350.7ms, AOT 195.4~217.8ms다. 측정 완료를 성능 통과로 바꾸지 않는다.
+
+managed heap 중앙값은 Debug에서 기존 threaded fresh/warm **19.22/18.96MB**, 변경 threaded **18.87/18.57MB**, compatible **21.14/21.04MB**다. AOT는 각각 **15.91/15.91MB**, **15.91/15.93MB**, **16.10/16.02MB**다. WASM linear memory는 threaded **173.67MB**, compatible은 Debug **120.59MB**·AOT **100.47MB**다. 단위는 decimal MB이며 browser 전체 RSS나 GPU 메모리 인수로 확대하지 않는다. p50/p95·실제 전송량은 보존용 JSON에 모두 있다. fresh의 encoded body는 Debug 기존/변경/compatible **10.081/10.092/8.840MB**, AOT **15.292/15.317/14.028MB**다.
+
+dual 배포 크기는 Debug **150,448,932 → 103,389,950 bytes**, AOT **275,418,258 → 200,470,925 bytes**다. 디스크의 이전 fingerprint·압축본 제거 효과를 네트워크 다운로드 개선과 혼동하지 않는다. 이번 dual publish receipt 시간은 Debug **323,754ms**, AOT **1,078,317ms**이며 모두 generation cache 재사용이다. 일치하는 과거 fresh/cache 시간 기록이 없으므로 publish 속도 회귀·향상을 판정하지 않았다.
+
+### 회귀 경계 분석과 실제 남은 작업
+
+코드에서 확인한 범위상 이번 종료 어댑터는 net11 링크에만 들어가므로 net10 성능 측정의 hot path에 실행되지 않는다. 기존/변경 raster Worker JS의 frame dispatch·paint 기록·입력 처리 블록도 같으며, 그 파일의 차이는 시작 옵션 전달·종료의 texture lease drain이다. publisher의 fingerprint 정리는 배포 시 실행된다. 이 사실만으로 managed renderer 또는 browser scheduling 비용까지 같다고 가정하지 않는다.
+
+최종 trace에서 compatible의 main ingress→Worker dispatch 시작 p95 중앙값은 Debug fresh/warm **215.0/148.9ms**, AOT **145.0/133.6ms**다. 실제 입력 handler p95는 각각 **19.3/19.6ms**, **21.0/16.1ms**다. 이는 100ms 예산 초과를 paint 하나로 설명할 수 없고, Worker가 입력을 받기 전 대기와 그 뒤 framework scheduling을 분리해 분석해야 한다는 증거다. rAF callback과 입력·managed paint가 같은 Worker event loop를 쓰는 경계가 우선 후보지만, 단일 변경 원인을 확정한 결과는 아니다.
+
+각 실행은 입력 16개에 paint 6~18개뿐이어서 이 표본의 p95는 사실상 최댓값이다. commit 간격에는 fixture의 click·wheel pacing과 frame이 없는 간격도 들어가며 paint CPU 시간이나 지속 FPS와 같지 않다. sparse tail과 탐색/최종 표본의 변동을 근거로 threshold를 완화하지 않았다. **남은 작업은 이 trace의 Worker queue/framework/paint 경계를 좁혀 성능 초과 원인을 격리·개선하고 같은 조건으로 확인하는 것**이다. 실기기 Android/iOS/iPadOS Safari, hardware GPU·물리 한글 IME·screen reader·장시간 사용·Firefox native dialog는 계속 미인수다. CI는 제외한다.
+
+원시 로그·게시본·controller receipt와 전체 trace는 삭제 가능한 `Doroti/artifacts/web-qualification/resume-*`다. 지속 보존할 결과는 이 문서와 `history/26/11/16/web-execution-qualification.json`에 남겼다. 커밋·push·외부 배포는 하지 않았으며 SDK pin·제품 기본값·DOROTIWEB050 지원 차단은 유지한다.

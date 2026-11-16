@@ -1,0 +1,2510 @@
+{
+  "date": "2026-11-16",
+  "scope": "Requested shutdown fix, 12-step same-cache transitions, final-policy 12-mode core matrix, and three-repeat fresh/reload performance comparison.",
+  "outcome": {
+    "shutdown": "PASS",
+    "sameCacheTransitions": "PASS 12/12",
+    "coreMatrix": "PASS 12/12",
+    "measurement": "complete 36 qualified samples",
+    "performanceAcceptance": "FAIL: >10% tail regressions and compatible input budget",
+    "productAcceptance": "PARTIAL; net11 gate and default modes preserved"
+  },
+  "contracts": {
+    "productionTypeScript": 27,
+    "nativeBuildPolicy": 8,
+    "publishSdk10": 29,
+    "publishSdk11": 29,
+    "actualPackagedValidator": 2
+  },
+  "runtimeSource": {
+    "packages/platforms/web/Doroti.Target.Web.browser-wasm/build/DorotiMono11Pthreads.js": "A850369B8519D632EE0BF125D113290E4C2DB57CAABF4A9058D6F778478C71FC",
+    "packages/platforms/build/Doroti.Web.targets": "5E6653B1E34ED34B9532B90B54652C5BAB7A906EBAC434B659505FD689E01E3D",
+    "packages/platforms/web/tests/measure-execution.mjs": "7751F3501C75280EBC27FBAA2046CC82E5D11B100D8C358DB771323F745D3563",
+    "packages/platforms/web/tests/switch-cache.ps1": "08FAE92CEE54A7DFDB12811ACF2F1AB96DB79E43FDCC7C665C00B0FC0B35D2BC",
+    "packages/platforms/web/tests/browser-smoke.mjs": "A452A4E882487CCBCED5B43FA798B516629C88AA5B4FA3B3F7B2FA16B5485CB5",
+    "packages/platforms/web/Doroti.Target.Web.browser-wasm/build/Doroti.Target.Web.browser-wasm.props": "5863C47567E5A0D3404160D34CCEE5095165F73DFB80C75E3307171E315D4D32",
+    "packages/platforms/build/MergeWebPublish.cs": "C48B65FC72597EA07582BB724735CABB80CFE0ED29E874EC12870386A0DD3F0D",
+    "packages/platforms/web/tests/PublishContracts/Program.cs": "DABF4D3543B0493A859BE16B09CDF5D77DFAB0FBFC6170E45179F6187F0CC928",
+    "packages/platforms/web/tests/package-contracts.ps1": "669BDDFEC21F4EE496EDC86EFE078BB63102E41EFA9CFEB7B844F8F478505C41",
+    "packages/platforms/web/Doroti.Target.Web.browser-wasm/Doroti.Target.Web.browser-wasm.csproj": "334A0CCA0EA220A23168EC8B0ABA0EB3235406B52910CF41B8D43412E29BB963",
+    "packages/platforms/web/tests/mono11-pthreads.test.mjs": "015267407EDA6D16589D1D77EBFC8000116206EB9723EF10F01A4CB04EB73699",
+    "packages/platforms/web/tests/run-contract-tests.ps1": "A191F10A06D4013D0A5701AB20587962BF69A6AA4EA41BF95C68D0E52C05F202"
+  },
+  "nativePackageSha256": "B6A6DE33698D5501BE0983137312845FDAC8BD9E41E92B18E622A6A05D9C3A8C",
+  "hashAlgorithm": "SHA256 of UTF8 LF-joined relative/path|UPPERCASE_FILE_SHA256 rows, sorted by absolute file path on Windows. Includes compressed companions.",
+  "sameCacheTransitions": [
+    {
+      "step": 1,
+      "sdk": "10.0.403",
+      "framework": "net10.0",
+      "mode": "threaded",
+      "buildId": "7b7f65a51a35469c926c0cb7a43bcd30",
+      "provenance": {
+        "sdk": "10.0.403",
+        "targetFramework": "net10.0",
+        "runtimeFlavor": "mono",
+        "runtimePack": "10.0.15",
+        "wasmSdkPack": "10.0.15",
+        "monoTargetsPack": "10.0.15",
+        "emscriptenPack": "10.0.15",
+        "emscriptenVersion": "3.1.56",
+        "configuration": "Debug",
+        "aot": "false",
+        "simd": "true",
+        "interpretWidgetTree": ""
+      },
+      "result": "PASS native publish, actual first frame, paint owner, input, shutdown",
+      "configuration": "Debug",
+      "aot": "false"
+    },
+    {
+      "step": 2,
+      "sdk": "10.0.403",
+      "framework": "net10.0",
+      "mode": "compatible",
+      "buildId": "ab4ccf458e6a49f280494f816cb5983d",
+      "provenance": {
+        "sdk": "10.0.403",
+        "targetFramework": "net10.0",
+        "runtimeFlavor": "mono",
+        "runtimePack": "10.0.15",
+        "wasmSdkPack": "10.0.15",
+        "monoTargetsPack": "10.0.15",
+        "emscriptenPack": "10.0.15",
+        "emscriptenVersion": "3.1.56",
+        "configuration": "Debug",
+        "aot": "false",
+        "simd": "true",
+        "interpretWidgetTree": ""
+      },
+      "result": "PASS native publish, actual first frame, paint owner, input, shutdown",
+      "configuration": "Debug",
+      "aot": "false"
+    },
+    {
+      "step": 3,
+      "sdk": "10.0.403",
+      "framework": "net10.0",
+      "mode": "threaded",
+      "buildId": "870eb74dc13146c2a85cca6f8a08f95a",
+      "provenance": {
+        "sdk": "10.0.403",
+        "targetFramework": "net10.0",
+        "runtimeFlavor": "mono",
+        "runtimePack": "10.0.15",
+        "wasmSdkPack": "10.0.15",
+        "monoTargetsPack": "10.0.15",
+        "emscriptenPack": "10.0.15",
+        "emscriptenVersion": "3.1.56",
+        "configuration": "Debug",
+        "aot": "false",
+        "simd": "true",
+        "interpretWidgetTree": ""
+      },
+      "result": "PASS native publish, actual first frame, paint owner, input, shutdown",
+      "configuration": "Debug",
+      "aot": "false"
+    },
+    {
+      "step": 4,
+      "sdk": "11.0.100",
+      "framework": "net10.0",
+      "mode": "threaded",
+      "buildId": "fb031b8a80844296b973e155f3ae44ef",
+      "provenance": {
+        "sdk": "11.0.100",
+        "targetFramework": "net10.0",
+        "runtimeFlavor": "mono",
+        "runtimePack": "10.0.15",
+        "wasmSdkPack": "10.0.15",
+        "monoTargetsPack": "10.0.15",
+        "emscriptenPack": "10.0.15",
+        "emscriptenVersion": "3.1.56",
+        "configuration": "Debug",
+        "aot": "false",
+        "simd": "true",
+        "interpretWidgetTree": ""
+      },
+      "result": "PASS native publish, actual first frame, paint owner, input, shutdown",
+      "configuration": "Debug",
+      "aot": "false"
+    },
+    {
+      "step": 5,
+      "sdk": "10.0.403",
+      "framework": "net10.0",
+      "mode": "threaded",
+      "buildId": "27e16279dd6643968dfc35d19ce0c183",
+      "provenance": {
+        "sdk": "10.0.403",
+        "targetFramework": "net10.0",
+        "runtimeFlavor": "mono",
+        "runtimePack": "10.0.15",
+        "wasmSdkPack": "10.0.15",
+        "monoTargetsPack": "10.0.15",
+        "emscriptenPack": "10.0.15",
+        "emscriptenVersion": "3.1.56",
+        "configuration": "Debug",
+        "aot": "false",
+        "simd": "true",
+        "interpretWidgetTree": ""
+      },
+      "result": "PASS native publish, actual first frame, paint owner, input, shutdown",
+      "configuration": "Debug",
+      "aot": "false"
+    },
+    {
+      "step": 6,
+      "sdk": "11.0.100",
+      "framework": "net11.0",
+      "mode": "threaded",
+      "buildId": "e90252ee2a6946b98dbd3c0546a8d240",
+      "provenance": {
+        "sdk": "11.0.100",
+        "targetFramework": "net11.0",
+        "runtimeFlavor": "mono",
+        "runtimePack": "11.0.0",
+        "wasmSdkPack": "11.0.0",
+        "monoTargetsPack": "11.0.0",
+        "emscriptenPack": "11.0.0",
+        "emscriptenVersion": "6.0.3",
+        "configuration": "Debug",
+        "aot": "false",
+        "simd": "true",
+        "interpretWidgetTree": ""
+      },
+      "result": "PASS native publish, actual first frame, paint owner, input, shutdown",
+      "configuration": "Debug",
+      "aot": "false"
+    },
+    {
+      "step": 7,
+      "sdk": "10.0.403",
+      "framework": "net10.0",
+      "mode": "threaded",
+      "buildId": "ce6dd13d36d442e08956ecaed59e6cbc",
+      "provenance": {
+        "sdk": "10.0.403",
+        "targetFramework": "net10.0",
+        "runtimeFlavor": "mono",
+        "runtimePack": "10.0.15",
+        "wasmSdkPack": "10.0.15",
+        "monoTargetsPack": "10.0.15",
+        "emscriptenPack": "10.0.15",
+        "emscriptenVersion": "3.1.56",
+        "configuration": "Debug",
+        "aot": "false",
+        "simd": "true",
+        "interpretWidgetTree": ""
+      },
+      "result": "PASS native publish, actual first frame, paint owner, input, shutdown",
+      "configuration": "Debug",
+      "aot": "false"
+    },
+    {
+      "step": 8,
+      "sdk": "10.0.403",
+      "framework": "net10.0",
+      "mode": "threaded",
+      "buildId": "d132c2218af14364ad6854b6186932ae",
+      "provenance": {
+        "sdk": "10.0.403",
+        "targetFramework": "net10.0",
+        "runtimeFlavor": "mono",
+        "runtimePack": "10.0.15",
+        "wasmSdkPack": "10.0.15",
+        "monoTargetsPack": "10.0.15",
+        "emscriptenPack": "10.0.15",
+        "emscriptenVersion": "3.1.56",
+        "configuration": "Release",
+        "aot": "true",
+        "simd": "true",
+        "interpretWidgetTree": ""
+      },
+      "result": "PASS native publish, actual first frame, paint owner, input, shutdown",
+      "configuration": "Release",
+      "aot": "true"
+    },
+    {
+      "step": 9,
+      "sdk": "10.0.403",
+      "framework": "net10.0",
+      "mode": "compatible",
+      "buildId": "682328f2a6084969ade903a80e1135fd",
+      "provenance": {
+        "sdk": "10.0.403",
+        "targetFramework": "net10.0",
+        "runtimeFlavor": "mono",
+        "runtimePack": "10.0.15",
+        "wasmSdkPack": "10.0.15",
+        "monoTargetsPack": "10.0.15",
+        "emscriptenPack": "10.0.15",
+        "emscriptenVersion": "3.1.56",
+        "configuration": "Release",
+        "aot": "true",
+        "simd": "true",
+        "interpretWidgetTree": ""
+      },
+      "result": "PASS native publish, actual first frame, paint owner, input, shutdown",
+      "configuration": "Release",
+      "aot": "true"
+    },
+    {
+      "step": 10,
+      "sdk": "10.0.403",
+      "framework": "net10.0",
+      "mode": "threaded",
+      "buildId": "f65c049b64a442729382fb19742625e4",
+      "provenance": {
+        "sdk": "10.0.403",
+        "targetFramework": "net10.0",
+        "runtimeFlavor": "mono",
+        "runtimePack": "10.0.15",
+        "wasmSdkPack": "10.0.15",
+        "monoTargetsPack": "10.0.15",
+        "emscriptenPack": "10.0.15",
+        "emscriptenVersion": "3.1.56",
+        "configuration": "Release",
+        "aot": "true",
+        "simd": "true",
+        "interpretWidgetTree": ""
+      },
+      "result": "PASS native publish, actual first frame, paint owner, input, shutdown",
+      "configuration": "Release",
+      "aot": "true"
+    },
+    {
+      "step": 11,
+      "sdk": "10.0.403",
+      "framework": "net10.0",
+      "mode": "threaded",
+      "buildId": "449a939415514328b488cfb0c123701f",
+      "provenance": {
+        "sdk": "10.0.403",
+        "targetFramework": "net10.0",
+        "runtimeFlavor": "mono",
+        "runtimePack": "10.0.15",
+        "wasmSdkPack": "10.0.15",
+        "monoTargetsPack": "10.0.15",
+        "emscriptenPack": "10.0.15",
+        "emscriptenVersion": "3.1.56",
+        "configuration": "Release",
+        "aot": "false",
+        "simd": "true",
+        "interpretWidgetTree": ""
+      },
+      "result": "PASS native publish, actual first frame, paint owner, input, shutdown",
+      "configuration": "Release",
+      "aot": "false"
+    },
+    {
+      "step": 12,
+      "sdk": "10.0.403",
+      "framework": "net10.0",
+      "mode": "threaded",
+      "buildId": "722db0d85298418bb8a60295e95343e4",
+      "provenance": {
+        "sdk": "10.0.403",
+        "targetFramework": "net10.0",
+        "runtimeFlavor": "mono",
+        "runtimePack": "10.0.15",
+        "wasmSdkPack": "10.0.15",
+        "monoTargetsPack": "10.0.15",
+        "emscriptenPack": "10.0.15",
+        "emscriptenVersion": "3.1.56",
+        "configuration": "Release",
+        "aot": "true",
+        "simd": "true",
+        "interpretWidgetTree": ""
+      },
+      "result": "PASS native publish, actual first frame, paint owner, input, shutdown",
+      "configuration": "Release",
+      "aot": "true"
+    }
+  ],
+  "matrix": [
+    {
+      "sdk": "10.0.403",
+      "framework": "net10.0",
+      "configuration": "Debug",
+      "buildId": "34584db179ac4ae2affed8cf900cb6a0",
+      "modes": [
+        "threaded",
+        "compatible"
+      ],
+      "result": "PASS both modes native/frame/owner/input/Worker-close/Texture/resources",
+      "files": 699,
+      "bytes": 103389950,
+      "sha256": "974636b793e56374082d0450c0573329728546ac1918d6319c0af708213060cd",
+      "previousSha256": "0fc1ab72fe9f129dd8d4a2045cf3caebad90ff44d94142a67c0477d521b41652",
+      "added": 144,
+      "removed": 150,
+      "changed": [
+        "doroti.runtime-profile.json"
+      ]
+    },
+    {
+      "sdk": "10.0.403",
+      "framework": "net10.0",
+      "configuration": "Release",
+      "buildId": "c70399f2be98495ba5bddc51d8773abd",
+      "modes": [
+        "threaded",
+        "compatible"
+      ],
+      "result": "PASS both modes native/frame/owner/input/Worker-close/Texture/resources",
+      "files": 552,
+      "bytes": 200470925,
+      "sha256": "3e4710cdc567538c32ed650e15cda3910ceabbd63aacb6ad0d442228981896ba",
+      "previousSha256": "5808d3c0e4dfb7d809024bed8470cdf8d3834659a44c4f126549a96277557ada",
+      "added": 150,
+      "removed": 156,
+      "changed": [
+        "doroti.runtime-profile.json"
+      ]
+    },
+    {
+      "sdk": "11.0.100",
+      "framework": "net10.0",
+      "configuration": "Debug",
+      "buildId": "2d0db3b869b240b686becf82f54e62fa",
+      "modes": [
+        "threaded",
+        "compatible"
+      ],
+      "result": "PASS both modes native/frame/owner/input/Worker-close/Texture/resources",
+      "files": 705,
+      "bytes": 104903020,
+      "sha256": "4636972c87afd388148865faadb3f1cc6ee388262b945cbabb79f9daa67b5079",
+      "previousSha256": "4ad3358229873204f39abbe06f490b35a6ed5049d99a5081a7b06834d25e05f8",
+      "added": 144,
+      "removed": 150,
+      "changed": [
+        "doroti.runtime-profile.json"
+      ]
+    },
+    {
+      "sdk": "11.0.100",
+      "framework": "net10.0",
+      "configuration": "Release",
+      "buildId": "8f68fc85ff7c441caef6e31d43cfe2a2",
+      "modes": [
+        "threaded",
+        "compatible"
+      ],
+      "result": "PASS both modes native/frame/owner/input/Worker-close/Texture/resources",
+      "files": 558,
+      "bytes": 205679478,
+      "sha256": "dfd54ab07619edb10ea24a1ab85982319fcbb6e4c824178e65af0f3277223f58",
+      "previousSha256": "1917700f24e9ec38628363a8cb022851cf913bf326def914d300de4edff31121",
+      "added": 150,
+      "removed": 156,
+      "changed": [
+        "doroti.runtime-profile.json"
+      ]
+    },
+    {
+      "sdk": "11.0.100",
+      "framework": "net11.0",
+      "configuration": "Debug",
+      "buildId": "2e9d8c5638614119b8e6217de656c3e5",
+      "modes": [
+        "threaded",
+        "compatible"
+      ],
+      "result": "PASS both modes native/frame/owner/input/Worker-close/Texture/resources",
+      "files": 714,
+      "bytes": 108181550,
+      "sha256": "cb59033abc155ca067b48be1c5a3dfefda196fa13b70e6a347c22e8c49c42f07",
+      "previousSha256": "d5f3e39020db8c22633c393bc8d822ef19e89628ab13a211f66a5e78babd1560",
+      "added": 147,
+      "removed": 147,
+      "changed": [
+        "doroti.runtime-profile.json"
+      ]
+    },
+    {
+      "sdk": "11.0.100",
+      "framework": "net11.0",
+      "configuration": "Release",
+      "buildId": "90e47f8154f7460ba8f36b107fe7a535",
+      "modes": [
+        "threaded",
+        "compatible"
+      ],
+      "result": "PASS both modes native/frame/owner/input/Worker-close/Texture/resources",
+      "files": 567,
+      "bytes": 214056023,
+      "sha256": "c1902d53760e0949c9c50d281acc0ccca511a8c38786274f66fda45ec65a3438",
+      "previousSha256": "04147e89d5a0efd986f56cc40a5389d6240a1d29c9fa550eb0690d92cdd4cbd3",
+      "added": 153,
+      "removed": 153,
+      "changed": [
+        "doroti.runtime-profile.json"
+      ]
+    }
+  ],
+  "performance": [
+    {
+      "conditions": {
+        "repeats": 3,
+        "renderer": "worker-direct-webgl",
+        "viewport": "1180x760",
+        "headless": true,
+        "gpu": "SwiftShader allowed; inspect hardware separately",
+        "cache": "HTTP no-store; warm is same-page reload with WASM code cache retained",
+        "instrumentation": "Identical frame-cost/input markers and URL-only preservation of diagnostic options across Router path replacement in both releases; drain to the last causal input commit.",
+        "transfer": "Playwright completed-request encoded response bodies plus response headers, including Worker requests and navigation; excludes request/TLS framing bytes.",
+        "order": "Rotate all three variants through first, second and third position across the three repeats.",
+        "publishTimingComparison": "Not qualified without identical fresh/cached build conditions; missing historical receipts remain not-recorded.",
+        "displayedLatency": "not measured",
+        "hardwarePerformanceAcceptance": false,
+        "machine": {
+          "platform": "win32",
+          "release": "10.0.26300",
+          "cpu": "AMD Ryzen 7 8845HS w/ Radeon 780M Graphics",
+          "logicalCpus": 16,
+          "totalMemoryBytes": 33600122880
+        },
+        "comparisonProvenance": {
+          "sdk": "10.0.403",
+          "targetFramework": "net10.0",
+          "runtimeFlavor": "mono",
+          "runtimePack": "10.0.15",
+          "configuration": "Debug",
+          "aot": "false",
+          "simd": "true",
+          "interpretWidgetTree": "",
+          "emscriptenVersion": "3.1.56"
+        },
+        "provenance": [
+          {
+            "sdk": "10.0.403",
+            "targetFramework": "net10.0",
+            "runtimeFlavor": "mono",
+            "runtimePack": "10.0.15",
+            "wasmSdkPack": "10.0.15",
+            "monoTargetsPack": "10.0.15",
+            "emscriptenPack": "10.0.15",
+            "emscriptenVersion": "3.1.56",
+            "configuration": "Debug",
+            "aot": "false",
+            "simd": "true",
+            "interpretWidgetTree": ""
+          },
+          {
+            "sdk": "10.0.403",
+            "targetFramework": "net10.0",
+            "runtimeFlavor": "mono",
+            "runtimePack": "10.0.15",
+            "wasmSdkPack": "10.0.15",
+            "monoTargetsPack": "10.0.15",
+            "emscriptenPack": "10.0.15",
+            "emscriptenVersion": "3.1.56",
+            "configuration": "Debug",
+            "aot": "false",
+            "simd": "true",
+            "interpretWidgetTree": ""
+          }
+        ],
+        "legacyProvenance": "Missing old wasmSdkPack/monoTargetsPack fields remain unknown; compare recorded compiler/runtime axes only."
+      },
+      "buildIds": [
+        "0c8f6c2e3527435d8d9cf8057677e7a5",
+        "34584db179ac4ae2affed8cf900cb6a0"
+      ],
+      "publishBytes": [
+        150448932,
+        103389950
+      ],
+      "publishTimings": [
+        {
+          "status": "not-recorded"
+        },
+        {
+          "status": "recorded",
+          "elapsedMilliseconds": 323754,
+          "generationReused": true
+        }
+      ],
+      "regressions": [
+        {
+          "cache": "fresh-browser",
+          "metric": "firstFrameMs",
+          "before": 3184.1149999946356,
+          "after": 3061.64999999851,
+          "changePercent": -3.8461236480570586,
+          "thresholdPercent": 10,
+          "reviewRequired": false
+        },
+        {
+          "cache": "fresh-browser",
+          "metric": "inputToCommitP95Ms",
+          "before": 348.190185546875,
+          "after": 371.329833984375,
+          "changePercent": 6.645692325059757,
+          "thresholdPercent": 10,
+          "reviewRequired": false
+        },
+        {
+          "cache": "fresh-browser",
+          "metric": "managedPaintP95Ms",
+          "before": 22.969970703125,
+          "after": 30.16015625,
+          "changePercent": 31.302545570494765,
+          "thresholdPercent": 10,
+          "reviewRequired": true
+        },
+        {
+          "cache": "fresh-browser",
+          "metric": "commitIntervalP95Ms",
+          "before": 139.75,
+          "after": 148.645,
+          "changePercent": 6.364937388193209,
+          "thresholdPercent": 10,
+          "reviewRequired": false
+        },
+        {
+          "cache": "same-page-reload",
+          "metric": "firstFrameMs",
+          "before": 2409.4650000035763,
+          "after": 2359.435000002384,
+          "changePercent": -2.076394552364024,
+          "thresholdPercent": 10,
+          "reviewRequired": false
+        },
+        {
+          "cache": "same-page-reload",
+          "metric": "inputToCommitP95Ms",
+          "before": 351.4150390625,
+          "after": 346.10498046875,
+          "changePercent": -1.5110504683909085,
+          "thresholdPercent": 10,
+          "reviewRequired": false
+        },
+        {
+          "cache": "same-page-reload",
+          "metric": "managedPaintP95Ms",
+          "before": 26.5400390625,
+          "after": 24.169921875,
+          "changePercent": -8.930345512749751,
+          "thresholdPercent": 10,
+          "reviewRequired": false
+        },
+        {
+          "cache": "same-page-reload",
+          "metric": "commitIntervalP95Ms",
+          "before": 137.255,
+          "after": 209.115,
+          "changePercent": 52.355105460638974,
+          "thresholdPercent": 10,
+          "reviewRequired": true
+        }
+      ],
+      "compatibleTargets": {
+        "scope": "provisional loopback/headless desktop budget; not a device SLA",
+        "inputToCommitP95Ms": 100,
+        "freshBrowserFirstFrameMs": 10000,
+        "reloadFirstFrameMs": 5000,
+        "results": [
+          {
+            "repeat": 1,
+            "cache": "fresh-browser",
+            "met": false
+          },
+          {
+            "repeat": 1,
+            "cache": "same-page-reload",
+            "met": false
+          },
+          {
+            "repeat": 2,
+            "cache": "fresh-browser",
+            "met": false
+          },
+          {
+            "repeat": 2,
+            "cache": "same-page-reload",
+            "met": false
+          },
+          {
+            "repeat": 3,
+            "cache": "fresh-browser",
+            "met": false
+          },
+          {
+            "repeat": 3,
+            "cache": "same-page-reload",
+            "met": false
+          }
+        ]
+      },
+      "regressionReviewRequired": true,
+      "results": [
+        {
+          "variant": "before-threaded",
+          "repeat": 1,
+          "cache": "fresh-browser",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 4977.079999998212,
+          "runtimeReadyMs": 5266.784999996424,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 214.969970703125,
+            "p95": 348.190185546875
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 8,
+            "p50": 6.344970703125,
+            "p95": 22.969970703125
+          },
+          "commitIntervalMs": {
+            "count": 7,
+            "p50": 84.05,
+            "p95": 139.01
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 115.959716796875,
+            "p95": 209.60498046875
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 2.545166015625,
+            "p95": 19.85498046875
+          },
+          "managedHeapBytes": 20930448,
+          "wasmBytes": 173670400,
+          "transferBytes": 10136155,
+          "encodedBytes": 10081211,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "before-threaded",
+          "repeat": 1,
+          "cache": "same-page-reload",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 2334.1949999928474,
+          "runtimeReadyMs": 2598.7299999967217,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 257.43017578125,
+            "p95": 322.760009765625
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 11,
+            "p50": 4.85498046875,
+            "p95": 21.58984375
+          },
+          "commitIntervalMs": {
+            "count": 10,
+            "p50": 32.265,
+            "p95": 134.55
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 106.1201171875,
+            "p95": 240.06494140625
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 2.64013671875,
+            "p95": 18.7900390625
+          },
+          "managedHeapBytes": 18955240,
+          "wasmBytes": 173670400,
+          "transferBytes": 9907856,
+          "encodedBytes": 9850332,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "after-threaded",
+          "repeat": 1,
+          "cache": "fresh-browser",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 3054.27499999851,
+          "runtimeReadyMs": 3331.89999999851,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 238.46484375,
+            "p95": 371.329833984375
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 7,
+            "p50": 9.830078125,
+            "p95": 30.16015625
+          },
+          "commitIntervalMs": {
+            "count": 6,
+            "p50": 86.04,
+            "p95": 143.035
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 112.224853515625,
+            "p95": 228.52490234375
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 2.905029296875,
+            "p95": 20.18505859375
+          },
+          "managedHeapBytes": 18928776,
+          "wasmBytes": 173670400,
+          "transferBytes": 10147968,
+          "encodedBytes": 10092072,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "after-threaded",
+          "repeat": 1,
+          "cache": "same-page-reload",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 2400.22500000149,
+          "runtimeReadyMs": 2419.685000002384,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 291.664794921875,
+            "p95": 438.10498046875
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 9,
+            "p50": 10.85009765625,
+            "p95": 30.18505859375
+          },
+          "commitIntervalMs": {
+            "count": 8,
+            "p50": 67.695,
+            "p95": 417.98
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 118.68994140625,
+            "p95": 247.469970703125
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 2.375,
+            "p95": 25.4150390625
+          },
+          "managedHeapBytes": 18380784,
+          "wasmBytes": 173670400,
+          "transferBytes": 9919669,
+          "encodedBytes": 9861193,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "after-compatible",
+          "repeat": 1,
+          "cache": "fresh-browser",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 2995.3000000044703,
+          "runtimeReadyMs": 3276.2000000029802,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 227.300048828125,
+            "p95": 341.89990234375
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 7,
+            "p50": 9.199951171875,
+            "p95": 24.800048828125
+          },
+          "commitIntervalMs": {
+            "count": 6,
+            "p50": 81.9,
+            "p95": 138.2
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 110.699951171875,
+            "p95": 233.2998046875
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 2.599853515625,
+            "p95": 18.39990234375
+          },
+          "managedHeapBytes": 20394240,
+          "wasmBytes": 120586240,
+          "transferBytes": 8871053,
+          "encodedBytes": 8839553,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "after-compatible",
+          "repeat": 1,
+          "cache": "same-page-reload",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 2474.4000000059605,
+          "runtimeReadyMs": 2747.7000000029802,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 243.199951171875,
+            "p95": 377.900146484375
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 10,
+            "p50": 4.5,
+            "p95": 25.300048828125
+          },
+          "commitIntervalMs": {
+            "count": 9,
+            "p50": 25.8,
+            "p95": 229.6
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 84,
+            "p95": 148.900146484375
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 2.099853515625,
+            "p95": 19.60009765625
+          },
+          "managedHeapBytes": 20616344,
+          "wasmBytes": 120586240,
+          "transferBytes": 8642754,
+          "encodedBytes": 8608674,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "after-threaded",
+          "repeat": 2,
+          "cache": "fresh-browser",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 3061.64999999851,
+          "runtimeReadyMs": 1581.4100000038743,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 342.56494140625,
+            "p95": 529.93505859375
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 10,
+            "p50": 5.18994140625,
+            "p95": 32.5
+          },
+          "commitIntervalMs": {
+            "count": 9,
+            "p50": 38.75,
+            "p95": 337.195
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 125.97998046875,
+            "p95": 275.920166015625
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 3.47509765625,
+            "p95": 24.054931640625
+          },
+          "managedHeapBytes": 18871776,
+          "wasmBytes": 173670400,
+          "transferBytes": 10147969,
+          "encodedBytes": 10092073,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "after-threaded",
+          "repeat": 2,
+          "cache": "same-page-reload",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 2359.435000002384,
+          "runtimeReadyMs": 2631.155000001192,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 215.4599609375,
+            "p95": 346.10498046875
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 7,
+            "p50": 9.31982421875,
+            "p95": 24.169921875
+          },
+          "commitIntervalMs": {
+            "count": 6,
+            "p50": 80.805,
+            "p95": 143.185
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 112.5849609375,
+            "p95": 265.869873046875
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 2.420166015625,
+            "p95": 19.594970703125
+          },
+          "managedHeapBytes": 18565280,
+          "wasmBytes": 173670400,
+          "transferBytes": 9919669,
+          "encodedBytes": 9861193,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "after-compatible",
+          "repeat": 2,
+          "cache": "fresh-browser",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 2990.2000000029802,
+          "runtimeReadyMs": 3287.10000000149,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 215.199951171875,
+            "p95": 340.900146484375
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 8,
+            "p50": 9.099853515625,
+            "p95": 28.400146484375
+          },
+          "commitIntervalMs": {
+            "count": 7,
+            "p50": 66.7,
+            "p95": 132.4
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 109.699951171875,
+            "p95": 215
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 3,
+            "p95": 19.2998046875
+          },
+          "managedHeapBytes": 21144096,
+          "wasmBytes": 120586240,
+          "transferBytes": 8871054,
+          "encodedBytes": 8839554,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "after-compatible",
+          "repeat": 2,
+          "cache": "same-page-reload",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 2485.10000000149,
+          "runtimeReadyMs": 2759.39999999851,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 217.300048828125,
+            "p95": 350.7001953125
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 8,
+            "p50": 6.199951171875,
+            "p95": 26.199951171875
+          },
+          "commitIntervalMs": {
+            "count": 7,
+            "p50": 67.8,
+            "p95": 216.8
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 102.2998046875,
+            "p95": 142
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 3.39990234375,
+            "p95": 19.599853515625
+          },
+          "managedHeapBytes": 21038056,
+          "wasmBytes": 120586240,
+          "transferBytes": 8642754,
+          "encodedBytes": 8608674,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "before-threaded",
+          "repeat": 2,
+          "cache": "fresh-browser",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 3166.045000001788,
+          "runtimeReadyMs": 3463.740000002086,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 225.75,
+            "p95": 344.625
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 8,
+            "p50": 7.955078125,
+            "p95": 25.5
+          },
+          "commitIntervalMs": {
+            "count": 7,
+            "p50": 75.41,
+            "p95": 139.75
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 108.425048828125,
+            "p95": 271.5400390625
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 2.8701171875,
+            "p95": 20.260009765625
+          },
+          "managedHeapBytes": 18564888,
+          "wasmBytes": 173670400,
+          "transferBytes": 10136156,
+          "encodedBytes": 10081212,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "before-threaded",
+          "repeat": 2,
+          "cache": "same-page-reload",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 2423.9899999946356,
+          "runtimeReadyMs": 2694.905000001192,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 234.514892578125,
+            "p95": 351.4150390625
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 7,
+            "p50": 8.320068359375,
+            "p95": 29.544921875
+          },
+          "commitIntervalMs": {
+            "count": 6,
+            "p50": 80.26,
+            "p95": 137.255
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 122.469970703125,
+            "p95": 280.239990234375
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 2.2900390625,
+            "p95": 18.094970703125
+          },
+          "managedHeapBytes": 18561112,
+          "wasmBytes": 173670400,
+          "transferBytes": 9907856,
+          "encodedBytes": 9850332,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "after-compatible",
+          "repeat": 3,
+          "cache": "fresh-browser",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 2912.2999999970198,
+          "runtimeReadyMs": 3222.2999999970198,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 235.900146484375,
+            "p95": 367.800048828125
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 9,
+            "p50": 4.800048828125,
+            "p95": 28.099853515625
+          },
+          "commitIntervalMs": {
+            "count": 8,
+            "p50": 27.2,
+            "p95": 197
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 101.2998046875,
+            "p95": 171.099853515625
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 2.60009765625,
+            "p95": 20.10009765625
+          },
+          "managedHeapBytes": 21455840,
+          "wasmBytes": 120586240,
+          "transferBytes": 8871054,
+          "encodedBytes": 8839554,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "after-compatible",
+          "repeat": 3,
+          "cache": "same-page-reload",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 2405.8000000044703,
+          "runtimeReadyMs": 2692.7000000029802,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 216.7001953125,
+            "p95": 345.300048828125
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 8,
+            "p50": 5.89990234375,
+            "p95": 23.60009765625
+          },
+          "commitIntervalMs": {
+            "count": 7,
+            "p50": 85,
+            "p95": 136.8
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 127.2998046875,
+            "p95": 220.89990234375
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 3,
+            "p95": 18.300048828125
+          },
+          "managedHeapBytes": 21383208,
+          "wasmBytes": 120586240,
+          "transferBytes": 8642754,
+          "encodedBytes": 8608674,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "before-threaded",
+          "repeat": 3,
+          "cache": "fresh-browser",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 3184.1149999946356,
+          "runtimeReadyMs": 3483.155000001192,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 263.9951171875,
+            "p95": 422.710205078125
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 10,
+            "p50": 7.369873046875,
+            "p95": 21.43505859375
+          },
+          "commitIntervalMs": {
+            "count": 9,
+            "p50": 91.585,
+            "p95": 311.015
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 150.615234375,
+            "p95": 203.175048828125
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 2.739990234375,
+            "p95": 20.3349609375
+          },
+          "managedHeapBytes": 19223344,
+          "wasmBytes": 173670400,
+          "transferBytes": 10136156,
+          "encodedBytes": 10081212,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "before-threaded",
+          "repeat": 3,
+          "cache": "same-page-reload",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 2409.4650000035763,
+          "runtimeReadyMs": 2683.740000002086,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 297.155029296875,
+            "p95": 417.21484375
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 9,
+            "p50": 9.60498046875,
+            "p95": 26.5400390625
+          },
+          "commitIntervalMs": {
+            "count": 8,
+            "p50": 78.485,
+            "p95": 247.02
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 131.775146484375,
+            "p95": 218.170166015625
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 2.530029296875,
+            "p95": 22.16015625
+          },
+          "managedHeapBytes": 19188224,
+          "wasmBytes": 173670400,
+          "transferBytes": 9907856,
+          "encodedBytes": 9850332,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "after-threaded",
+          "repeat": 3,
+          "cache": "fresh-browser",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 3154.179999999702,
+          "runtimeReadyMs": 3439.0499999970198,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 229.58984375,
+            "p95": 363.414794921875
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 7,
+            "p50": 10.43994140625,
+            "p95": 26.420166015625
+          },
+          "commitIntervalMs": {
+            "count": 6,
+            "p50": 81.34,
+            "p95": 148.645
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 125.740234375,
+            "p95": 244.1298828125
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 2.650146484375,
+            "p95": 23.955078125
+          },
+          "managedHeapBytes": 18293312,
+          "wasmBytes": 173670400,
+          "transferBytes": 10147969,
+          "encodedBytes": 10092073,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "after-threaded",
+          "repeat": 3,
+          "cache": "same-page-reload",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 2308.509999997914,
+          "runtimeReadyMs": 2568.640000000596,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 206.989990234375,
+            "p95": 340.2001953125
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 6,
+            "p50": 7.875,
+            "p95": 20.52001953125
+          },
+          "commitIntervalMs": {
+            "count": 5,
+            "p50": 105.54,
+            "p95": 209.115
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 110.750244140625,
+            "p95": 144.925048828125
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 3.369873046875,
+            "p95": 18.169921875
+          },
+          "managedHeapBytes": 18833384,
+          "wasmBytes": 173670400,
+          "transferBytes": 9919669,
+          "encodedBytes": 9861193,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        }
+      ],
+      "configuration": "Debug"
+    },
+    {
+      "conditions": {
+        "repeats": 3,
+        "renderer": "worker-direct-webgl",
+        "viewport": "1180x760",
+        "headless": true,
+        "gpu": "SwiftShader allowed; inspect hardware separately",
+        "cache": "HTTP no-store; warm is same-page reload with WASM code cache retained",
+        "instrumentation": "Identical frame-cost/input markers and URL-only preservation of diagnostic options across Router path replacement in both releases; drain to the last causal input commit.",
+        "transfer": "Playwright completed-request encoded response bodies plus response headers, including Worker requests and navigation; excludes request/TLS framing bytes.",
+        "order": "Rotate all three variants through first, second and third position across the three repeats.",
+        "publishTimingComparison": "Not qualified without identical fresh/cached build conditions; missing historical receipts remain not-recorded.",
+        "displayedLatency": "not measured",
+        "hardwarePerformanceAcceptance": false,
+        "machine": {
+          "platform": "win32",
+          "release": "10.0.26300",
+          "cpu": "AMD Ryzen 7 8845HS w/ Radeon 780M Graphics",
+          "logicalCpus": 16,
+          "totalMemoryBytes": 33600122880
+        },
+        "comparisonProvenance": {
+          "sdk": "10.0.403",
+          "targetFramework": "net10.0",
+          "runtimeFlavor": "mono",
+          "runtimePack": "10.0.15",
+          "configuration": "Release",
+          "aot": "true",
+          "simd": "true",
+          "interpretWidgetTree": "",
+          "emscriptenVersion": "3.1.56"
+        },
+        "provenance": [
+          {
+            "sdk": "10.0.403",
+            "targetFramework": "net10.0",
+            "runtimeFlavor": "mono",
+            "runtimePack": "10.0.15",
+            "wasmSdkPack": "",
+            "emscriptenPack": "3.1.56",
+            "configuration": "Release",
+            "aot": "true",
+            "simd": "true",
+            "interpretWidgetTree": ""
+          },
+          {
+            "sdk": "10.0.403",
+            "targetFramework": "net10.0",
+            "runtimeFlavor": "mono",
+            "runtimePack": "10.0.15",
+            "wasmSdkPack": "10.0.15",
+            "monoTargetsPack": "10.0.15",
+            "emscriptenPack": "10.0.15",
+            "emscriptenVersion": "3.1.56",
+            "configuration": "Release",
+            "aot": "true",
+            "simd": "true",
+            "interpretWidgetTree": ""
+          }
+        ],
+        "legacyProvenance": "Missing old wasmSdkPack/monoTargetsPack fields remain unknown; compare recorded compiler/runtime axes only."
+      },
+      "buildIds": [
+        "0837a0bf23014bb480cdd683e3d254f8",
+        "c70399f2be98495ba5bddc51d8773abd"
+      ],
+      "publishBytes": [
+        275418258,
+        200470925
+      ],
+      "publishTimings": [
+        {
+          "status": "not-recorded"
+        },
+        {
+          "status": "recorded",
+          "elapsedMilliseconds": 1078317,
+          "generationReused": true
+        }
+      ],
+      "regressions": [
+        {
+          "cache": "fresh-browser",
+          "metric": "firstFrameMs",
+          "before": 2695.820000000298,
+          "after": 2636.155000001192,
+          "changePercent": -2.213241240108736,
+          "thresholdPercent": 10,
+          "reviewRequired": false
+        },
+        {
+          "cache": "fresh-browser",
+          "metric": "inputToCommitP95Ms",
+          "before": 197.375,
+          "after": 203.64501953125,
+          "changePercent": 3.1767040056998095,
+          "thresholdPercent": 10,
+          "reviewRequired": false
+        },
+        {
+          "cache": "fresh-browser",
+          "metric": "managedPaintP95Ms",
+          "before": 8.050048828125,
+          "after": 9.360107421875,
+          "changePercent": 16.27392108694993,
+          "thresholdPercent": 10,
+          "reviewRequired": true
+        },
+        {
+          "cache": "fresh-browser",
+          "metric": "commitIntervalP95Ms",
+          "before": 81.095,
+          "after": 81.205,
+          "changePercent": 0.1356433812195566,
+          "thresholdPercent": 10,
+          "reviewRequired": false
+        },
+        {
+          "cache": "same-page-reload",
+          "metric": "firstFrameMs",
+          "before": 1685.594999998808,
+          "after": 1651.3999999985099,
+          "changePercent": -2.0286605026902786,
+          "thresholdPercent": 10,
+          "reviewRequired": false
+        },
+        {
+          "cache": "same-page-reload",
+          "metric": "inputToCommitP95Ms",
+          "before": 185.670166015625,
+          "after": 187.56494140625,
+          "changePercent": 1.0205061110709333,
+          "thresholdPercent": 10,
+          "reviewRequired": false
+        },
+        {
+          "cache": "same-page-reload",
+          "metric": "managedPaintP95Ms",
+          "before": 7.26513671875,
+          "after": 6.760009765625,
+          "changePercent": -6.952752201088782,
+          "thresholdPercent": 10,
+          "reviewRequired": false
+        },
+        {
+          "cache": "same-page-reload",
+          "metric": "commitIntervalP95Ms",
+          "before": 79.67,
+          "after": 77.48,
+          "changePercent": -2.748838960712938,
+          "thresholdPercent": 10,
+          "reviewRequired": false
+        }
+      ],
+      "compatibleTargets": {
+        "scope": "provisional loopback/headless desktop budget; not a device SLA",
+        "inputToCommitP95Ms": 100,
+        "freshBrowserFirstFrameMs": 10000,
+        "reloadFirstFrameMs": 5000,
+        "results": [
+          {
+            "repeat": 1,
+            "cache": "fresh-browser",
+            "met": false
+          },
+          {
+            "repeat": 1,
+            "cache": "same-page-reload",
+            "met": false
+          },
+          {
+            "repeat": 2,
+            "cache": "fresh-browser",
+            "met": false
+          },
+          {
+            "repeat": 2,
+            "cache": "same-page-reload",
+            "met": false
+          },
+          {
+            "repeat": 3,
+            "cache": "fresh-browser",
+            "met": false
+          },
+          {
+            "repeat": 3,
+            "cache": "same-page-reload",
+            "met": false
+          }
+        ]
+      },
+      "regressionReviewRequired": true,
+      "results": [
+        {
+          "variant": "before-threaded",
+          "repeat": 1,
+          "cache": "fresh-browser",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 3091.509999997914,
+          "runtimeReadyMs": 3359.7299999967217,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 76.39013671875,
+            "p95": 175.580078125
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 17,
+            "p50": 3.66015625,
+            "p95": 8.050048828125
+          },
+          "commitIntervalMs": {
+            "count": 16,
+            "p50": 41.59,
+            "p95": 97.925
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 30.559814453125,
+            "p95": 112.43505859375
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 1.405029296875,
+            "p95": 19.93994140625
+          },
+          "managedHeapBytes": 15908312,
+          "wasmBytes": 173670400,
+          "transferBytes": 15346547,
+          "encodedBytes": 15291927,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "before-threaded",
+          "repeat": 1,
+          "cache": "same-page-reload",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 1610.7550000026822,
+          "runtimeReadyMs": 1866.4250000044703,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 72.60498046875,
+            "p95": 169.465087890625
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 18,
+            "p50": 3.695068359375,
+            "p95": 5.3701171875
+          },
+          "commitIntervalMs": {
+            "count": 17,
+            "p50": 43.1,
+            "p95": 65.515
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 28.47509765625,
+            "p95": 118.270263671875
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 1.239990234375,
+            "p95": 11.869873046875
+          },
+          "managedHeapBytes": 15919264,
+          "wasmBytes": 173670400,
+          "transferBytes": 15118247,
+          "encodedBytes": 15061047,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "after-threaded",
+          "repeat": 1,
+          "cache": "fresh-browser",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 2600.679999999702,
+          "runtimeReadyMs": 2886.634999997914,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 85.804931640625,
+            "p95": 191.64990234375
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 15,
+            "p50": 4.059814453125,
+            "p95": 9.360107421875
+          },
+          "commitIntervalMs": {
+            "count": 14,
+            "p50": 43.005,
+            "p95": 104.36
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 38.849853515625,
+            "p95": 128.030029296875
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 1.344970703125,
+            "p95": 17.0048828125
+          },
+          "managedHeapBytes": 15870288,
+          "wasmBytes": 173670400,
+          "transferBytes": 15372815,
+          "encodedBytes": 15317243,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "after-threaded",
+          "repeat": 1,
+          "cache": "same-page-reload",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 1644.3250000029802,
+          "runtimeReadyMs": 1901.719999998808,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 77.074951171875,
+            "p95": 172.300048828125
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 17,
+            "p50": 3.2548828125,
+            "p95": 5.264892578125
+          },
+          "commitIntervalMs": {
+            "count": 16,
+            "p50": 42.82,
+            "p95": 67.855
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 22.955078125,
+            "p95": 120.295166015625
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 1.22998046875,
+            "p95": 12.5400390625
+          },
+          "managedHeapBytes": 15928160,
+          "wasmBytes": 173670400,
+          "transferBytes": 15144515,
+          "encodedBytes": 15086363,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "after-compatible",
+          "repeat": 1,
+          "cache": "fresh-browser",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 2321.5,
+          "runtimeReadyMs": 2591.89999999851,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 78.60009765625,
+            "p95": 207.2001953125
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 16,
+            "p50": 4.2001953125,
+            "p95": 8.800048828125
+          },
+          "commitIntervalMs": {
+            "count": 15,
+            "p50": 45.6,
+            "p95": 74.2
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 37,
+            "p95": 145
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 1.5,
+            "p95": 17.5
+          },
+          "managedHeapBytes": 16387016,
+          "wasmBytes": 100466688,
+          "transferBytes": 14059082,
+          "encodedBytes": 14027820,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "after-compatible",
+          "repeat": 1,
+          "cache": "same-page-reload",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 1924.7999999970198,
+          "runtimeReadyMs": 2179.7999999970198,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 92.7001953125,
+            "p95": 193.7001953125
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 16,
+            "p50": 3.800048828125,
+            "p95": 6.699951171875
+          },
+          "commitIntervalMs": {
+            "count": 15,
+            "p50": 46.1,
+            "p95": 66.8
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 41.2998046875,
+            "p95": 137.399658203125
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 1.39990234375,
+            "p95": 15.699951171875
+          },
+          "managedHeapBytes": 16015136,
+          "wasmBytes": 100466688,
+          "transferBytes": 13830783,
+          "encodedBytes": 13796941,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "after-threaded",
+          "repeat": 2,
+          "cache": "fresh-browser",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 2636.155000001192,
+          "runtimeReadyMs": 2923.35000000149,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 88.565185546875,
+            "p95": 203.64501953125
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 15,
+            "p50": 4.4951171875,
+            "p95": 8.875
+          },
+          "commitIntervalMs": {
+            "count": 14,
+            "p50": 44.955,
+            "p95": 75.235
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 42.97509765625,
+            "p95": 136.1201171875
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 1.8701171875,
+            "p95": 17.385009765625
+          },
+          "managedHeapBytes": 15910608,
+          "wasmBytes": 173670400,
+          "transferBytes": 15372815,
+          "encodedBytes": 15317243,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "after-threaded",
+          "repeat": 2,
+          "cache": "same-page-reload",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 1651.3999999985099,
+          "runtimeReadyMs": 1903.7950000017881,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 74.544921875,
+            "p95": 190.949951171875
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 15,
+            "p50": 4.43017578125,
+            "p95": 8.375
+          },
+          "commitIntervalMs": {
+            "count": 14,
+            "p50": 45.935,
+            "p95": 109.465
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 31.909912109375,
+            "p95": 136.27001953125
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 1.775146484375,
+            "p95": 12.1298828125
+          },
+          "managedHeapBytes": 15930600,
+          "wasmBytes": 173670400,
+          "transferBytes": 15144515,
+          "encodedBytes": 15086363,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "after-compatible",
+          "repeat": 2,
+          "cache": "fresh-browser",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 2418.2999999970198,
+          "runtimeReadyMs": 2422.2999999970198,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 138.699951171875,
+            "p95": 271.39990234375
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 14,
+            "p50": 4.400146484375,
+            "p95": 24.2998046875
+          },
+          "commitIntervalMs": {
+            "count": 13,
+            "p50": 46.2,
+            "p95": 222.4
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 35.39990234375,
+            "p95": 137.89990234375
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 1.7998046875,
+            "p95": 21
+          },
+          "managedHeapBytes": 16097032,
+          "wasmBytes": 100466688,
+          "transferBytes": 14059083,
+          "encodedBytes": 14027821,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "after-compatible",
+          "repeat": 2,
+          "cache": "same-page-reload",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 1843.3999999985099,
+          "runtimeReadyMs": 2100.2999999970198,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 99,
+            "p95": 195.39990234375
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 15,
+            "p50": 4.5,
+            "p95": 7.5
+          },
+          "commitIntervalMs": {
+            "count": 14,
+            "p50": 47.6,
+            "p95": 66.3
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 44.699951171875,
+            "p95": 133.60009765625
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 1.5,
+            "p95": 16.10009765625
+          },
+          "managedHeapBytes": 16003464,
+          "wasmBytes": 100466688,
+          "transferBytes": 13830783,
+          "encodedBytes": 13796941,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "before-threaded",
+          "repeat": 2,
+          "cache": "fresh-browser",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 2695.820000000298,
+          "runtimeReadyMs": 2977.554999999702,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 89.949951171875,
+            "p95": 197.375
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 13,
+            "p50": 5.18994140625,
+            "p95": 7.364990234375
+          },
+          "commitIntervalMs": {
+            "count": 12,
+            "p50": 45.28,
+            "p95": 80.445
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 40.85498046875,
+            "p95": 129.43994140625
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 1.294921875,
+            "p95": 18.875
+          },
+          "managedHeapBytes": 15890960,
+          "wasmBytes": 173670400,
+          "transferBytes": 15346547,
+          "encodedBytes": 15291927,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "before-threaded",
+          "repeat": 2,
+          "cache": "same-page-reload",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 1727.1700000017881,
+          "runtimeReadyMs": 1968.9350000023842,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 88.08984375,
+            "p95": 185.670166015625
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 16,
+            "p50": 4.304931640625,
+            "p95": 7.26513671875
+          },
+          "commitIntervalMs": {
+            "count": 15,
+            "p50": 44.77,
+            "p95": 79.67
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 33.545166015625,
+            "p95": 126.364990234375
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 1.23486328125,
+            "p95": 14.135009765625
+          },
+          "managedHeapBytes": 15913432,
+          "wasmBytes": 173670400,
+          "transferBytes": 15118247,
+          "encodedBytes": 15061047,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "after-compatible",
+          "repeat": 3,
+          "cache": "fresh-browser",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 2352.5999999940395,
+          "runtimeReadyMs": 2683.5,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 114.7998046875,
+            "p95": 217.800048828125
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 14,
+            "p50": 4.89990234375,
+            "p95": 8.2001953125
+          },
+          "commitIntervalMs": {
+            "count": 13,
+            "p50": 53.7,
+            "p95": 77.3
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 57.7001953125,
+            "p95": 153.7001953125
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 1.5,
+            "p95": 21.5
+          },
+          "managedHeapBytes": 16093416,
+          "wasmBytes": 100466688,
+          "transferBytes": 14059083,
+          "encodedBytes": 14027821,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "after-compatible",
+          "repeat": 3,
+          "cache": "same-page-reload",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 1881.3999999985099,
+          "runtimeReadyMs": 1068.6999999955297,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 98.10009765625,
+            "p95": 206.10009765625
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 15,
+            "p50": 5.199951171875,
+            "p95": 21.199951171875
+          },
+          "commitIntervalMs": {
+            "count": 14,
+            "p50": 51,
+            "p95": 196.7
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 32.7998046875,
+            "p95": 64.199951171875
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 1.5,
+            "p95": 21.5
+          },
+          "managedHeapBytes": 16405928,
+          "wasmBytes": 100466688,
+          "transferBytes": 13830783,
+          "encodedBytes": 13796941,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "before-threaded",
+          "repeat": 3,
+          "cache": "fresh-browser",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 2669.625,
+          "runtimeReadyMs": 2960.9249999970198,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 101.260009765625,
+            "p95": 200.550048828125
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 13,
+            "p50": 5.655029296875,
+            "p95": 8.594970703125
+          },
+          "commitIntervalMs": {
+            "count": 12,
+            "p50": 51,
+            "p95": 81.095
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 45.4599609375,
+            "p95": 136.469970703125
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 1.364990234375,
+            "p95": 17.91015625
+          },
+          "managedHeapBytes": 15912288,
+          "wasmBytes": 173670400,
+          "transferBytes": 15346547,
+          "encodedBytes": 15291927,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "before-threaded",
+          "repeat": 3,
+          "cache": "same-page-reload",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 1685.594999998808,
+          "runtimeReadyMs": 1936.2600000053644,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 82.224853515625,
+            "p95": 193.590087890625
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 15,
+            "p50": 4.05517578125,
+            "p95": 7.68017578125
+          },
+          "commitIntervalMs": {
+            "count": 14,
+            "p50": 44.18,
+            "p95": 105.155
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 33.610107421875,
+            "p95": 134.184814453125
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 1.330078125,
+            "p95": 12.340087890625
+          },
+          "managedHeapBytes": 15897568,
+          "wasmBytes": 173670400,
+          "transferBytes": 15118247,
+          "encodedBytes": 15061047,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "after-threaded",
+          "repeat": 3,
+          "cache": "fresh-browser",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 2646.3400000035763,
+          "runtimeReadyMs": 2919.6450000032783,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 89.8701171875,
+            "p95": 223.01513671875
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 15,
+            "p50": 5.125,
+            "p95": 10.570068359375
+          },
+          "commitIntervalMs": {
+            "count": 14,
+            "p50": 43.725,
+            "p95": 81.205
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 39.01513671875,
+            "p95": 148.199951171875
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 1.425048828125,
+            "p95": 19.294921875
+          },
+          "managedHeapBytes": 16340104,
+          "wasmBytes": 173670400,
+          "transferBytes": 15372815,
+          "encodedBytes": 15317243,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        },
+        {
+          "variant": "after-threaded",
+          "repeat": 3,
+          "cache": "same-page-reload",
+          "browser": "158.0.8127.18",
+          "firstFrameMs": 1754.0350000038743,
+          "runtimeReadyMs": 2036.5900000035763,
+          "inputToCommitMs": {
+            "count": 16,
+            "p50": 90.125,
+            "p95": 187.56494140625
+          },
+          "unmatchedInputs": 0,
+          "managedPaintMs": {
+            "count": 15,
+            "p50": 4.239990234375,
+            "p95": 6.760009765625
+          },
+          "commitIntervalMs": {
+            "count": 14,
+            "p50": 43.86,
+            "p95": 77.48
+          },
+          "mainToWorkerQueueMs": {
+            "count": 16,
+            "p50": 35.31005859375,
+            "p95": 128.675048828125
+          },
+          "inputDispatchMs": {
+            "count": 16,
+            "p50": 1.400146484375,
+            "p95": 13.054931640625
+          },
+          "managedHeapBytes": 15927672,
+          "wasmBytes": 173670400,
+          "transferBytes": 15144515,
+          "encodedBytes": 15086363,
+          "traceDropped": 0,
+          "gpu": {
+            "api": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "hardware": false,
+            "softwareFallbackUsed": true
+          }
+        }
+      ],
+      "configuration": "Release"
+    }
+  ],
+  "limitations": [
+    "Desktop headless Chromium 158 / SwiftShader; not hardware/display scanout or physical input acceptance.",
+    "Warm is same-page reload with no-store HTTP responses, not an OS/cache-reset cold comparison.",
+    "Each cell has three runs and 6-18 paint events per run. Tail statistics are sparse; thresholds are retained, not relaxed.",
+    "Historical matching fresh/cached publish timing is unavailable. Recorded new native publish elapsed times are not a comparative speed claim.",
+    "Single change causing paint tail regressions is not isolated. Worker queue/dispatch and paced commit gaps are recorded separately.",
+    "Native device/IME/screen reader/long-run acceptance and CI remain outside this request."
+  ],
+  "rawEvidence": "Doroti/artifacts/web-qualification/resume-* is disposable. This durable record retains qualified results and aggregate hashes, not raw trace/network rows."
+}

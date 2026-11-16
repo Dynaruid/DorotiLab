@@ -16,6 +16,7 @@
     <InvariantGlobalization>false</InvariantGlobalization>
     <BlazorEnableTimeZoneSupport>true</BlazorEnableTimeZoneSupport>
     <DorotiSkiaInteropLibrary>$(MSBuildThisFileDirectory)DorotiSkiaInterop.js</DorotiSkiaInteropLibrary>
+    <DorotiMono11PthreadsLibrary>$(MSBuildThisFileDirectory)DorotiMono11Pthreads.js</DorotiMono11PthreadsLibrary>
   </PropertyGroup>
   <ItemGroup>
     <EmccExportedFunction Include="_wgpuDeviceRelease;_wgpuQueueRelease;_wgpuInstanceRelease" />

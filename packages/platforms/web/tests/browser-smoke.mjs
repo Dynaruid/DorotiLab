@@ -107,9 +107,10 @@ try {
       assert.deepEqual(errors, []);
       assert.deepEqual(consoleErrors, []);
       const paintOwners = [];
+      const observedWorkers = page.workers();
       // Ordinary managed pthreads can block their JS event loop in Atomics.wait.
       // Only the JS-affine renderer must answer; do not wait on every pool thread.
-      const owners = await Promise.all(page.workers().map(worker => Promise.race([
+      const owners = await Promise.all(observedWorkers.map(worker => Promise.race([
         worker.evaluate(() => globalThis.__dorotiDirectDiagnostics?.().managed).catch(() => null),
         new Promise(done => setTimeout(() => done(null), 5000)),
       ])));
@@ -130,18 +131,24 @@ try {
         await page.mouse.wheel(0, 40);
         await page.evaluate(() => new Promise(done => requestAnimationFrame(() => requestAnimationFrame(done))));
       }
+      // The disposed MessagePort receipt precedes JSWebWorker's pthread cleanup.
+      // Require the actual render Worker's close event as well; otherwise a late
+      // native retirement error can escape after the last console assertion.
+      const renderWorker = scenario.mode === "threaded" ? observedWorkers[owners.findIndex(Boolean)] : page.workers()[0];
+      const workerClosed = renderWorker.waitForEvent("close", { timeout: 45000 });
       await page.evaluate(() => dispatchEvent(new Event("pagehide")));
       await page.waitForFunction(() => document.querySelector('[data-doroti-worker-runtime="disposed"]'), null, { timeout: 45000 });
       assert.equal(await page.evaluate(() => document.querySelector('[data-doroti-worker-runtime="disposed"]').dataset.dorotiShutdownRequests), "0");
       const textures = await page.evaluate(() => JSON.parse(document.querySelector('[data-doroti-worker-runtime="disposed"]').dataset.dorotiShutdownTextures));
       for (const field of ["live", "registrations", "gpuBytes", "pending", "completions"]) assert.equal(textures[field], 0, `Shutdown retained ${field}.`);
       assert.equal(await page.evaluate(() => Worker === globalThis.__dorotiOriginalWorker), true);
+      await workerClosed;
       assert.deepEqual(errors, []);
       assert.deepEqual(consoleErrors, []);
       results.push({ ...scenario, ...actual, workers: page.workers().map(worker => worker.url()),
         runtimeRequestCount: requests.filter(url => url.includes(`/runtimes/${scenario.mode}/`)).length,
         paintOwners: paintOwners.map(value => ({ owner: value.renderOwnerThreadId, paint: value.lastPaintThreadId, nativeSkia: value.nativeSkia })),
-        shutdown: "disposed; no pending requests" });
+        shutdown: "disposed; render Worker closed; no pending requests" });
     }
     await context.close();
   }

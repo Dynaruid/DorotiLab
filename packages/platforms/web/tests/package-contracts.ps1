@@ -16,6 +16,14 @@ try {
         if (-not (Test-Path -LiteralPath $packed -PathType Leaf)) { throw "Missing packaged build source: $file" }
         if ((Get-FileHash -LiteralPath $packed).Hash -ne (Get-FileHash -LiteralPath (Join-Path $repository "packages/platforms/build/$file")).Hash) { throw "Stale packaged build source: $file" }
     }
+    foreach ($file in @('DorotiMono11Pthreads.js', 'Doroti.Target.Web.browser-wasm.props')) {
+        $packed = Join-Path $unpacked "build/$file"
+        $source = Join-Path $repository "packages/platforms/web/Doroti.Target.Web.browser-wasm/build/$file"
+        if (-not (Test-Path -LiteralPath $packed -PathType Leaf) -or
+            (Get-FileHash -LiteralPath $packed).Hash -ne (Get-FileHash -LiteralPath $source).Hash) {
+            throw "Missing or stale packaged native retirement input: $file"
+        }
+    }
     $root = (Resolve-Path -LiteralPath $WebRoot).Path
     $profile = Get-Content -LiteralPath (Join-Path $root 'doroti.runtime-profile.json') -Raw | ConvertFrom-Json
     $escapedPackage = [Security.SecurityElement]::Escape($unpacked)

@@ -54,6 +54,11 @@ rollback on installation failure. Files removed from a new publish do not surviv
 from the previous output. The same final validator runs for single and dual
 publishes, including package consumers. The HTML carries its deployment build ID;
 a cached HTML/new-manifest mismatch fails with DOROTIWEB055 before importing .NET.
+The selected .NET 10/11 loader's inline boot resources identify the exact active
+native, managed and satellite payloads. An older fingerprint cannot satisfy a
+missing active dependency. Dual staging excludes obsolete SDK fingerprints and
+their compressed companions from reused children, while retaining stable support
+files and culture subpaths. `_framework` is the SDK-owned runtime namespace.
 Publish production releases to separate directories, switch the complete root and
 retain the previous release for active clients and rollback; do not copy children
 individually over a live deployment.
@@ -105,11 +110,24 @@ native relinking. Its connection now admits startup only after the initial nativ
 Worker preload receipts, with a version-specific initial pool of 16. The independent
 probe and isolated-generation application Debug/AOT first-frame, paint-owner,
 input, texture-lifetime and shutdown checks pass in software-capable browsers.
-The runtime-source native/Chromium matrix passed 12/12 before the last incremental
-cache-policy changes. Final build-policy requalification is paused at 2/12;
-an in-place net10-to-net11 repair still emits a shutdown console error. These
-results do not establish final cache, physical-device or hardware-performance
-acceptance. See the exact current scope in [work.md](../../../work.md).
+The final cache-policy native/Chromium matrix and the same-cache SDK/mode/AOT
+switch sequence both pass 12/12 with actual render-Worker close checks. The six
+dual deployment inventories have been rehashed. Desktop Debug/Release AOT
+performance comparisons contain three fresh/reload runs per variant (36 samples).
+The 10% tail-regression gate and the provisional compatible input-latency budget
+fail; this does not qualify a default-mode or net11 support promotion. See the
+exact results in [work.md](../../../work.md) and the [durable qualification record](../../../history/26/11/16/web-execution-qualification.json).
+Mono 11.0.0's dirty JSWebWorker cleanup still issues the removed Emscripten
+`killThread` command. Its native link includes `DorotiMono11Pthreads.js` only for
+the qualified 6.0.3 toolchain. This compiler-library adapter retires the native
+Worker and frees its pthread data last, without returning a dirty Worker to the
+pool, changing installed packs, or patching a live PThread from the application.
+Unsupported toolchains fail with DOROTIWEB056; an unexpected compiler library
+shape fails linking. A native link dependency also tracks adapter edits.
+Browser smoke now waits for the actual render Worker's close event after the
+managed disposed receipt, so late native cleanup errors cannot escape validation.
+Neither these checks nor the software GPU measurements establish physical-device
+or hardware-performance acceptance.
 Validation tools explicitly pass `DorotiWebQualificationProbe=true`
 for requalification, not product deployment. Common net10 libraries are not
 retargeted. CoreCLR/NativeAOT WASM are explicitly unsupported. See the current
@@ -184,8 +202,10 @@ net10/Mono 10 to net11/Mono 11 and back. Its seven Debug steps check native
 publish, provenance and real browser frame/owner/input/shutdown after every step.
 `-IncludeAot` adds five same-cache Release steps: threaded/compatible/threaded
 AOT, non-AOT, then AOT again. This explicitly exercises stripped-WebCIL/native
-cache invalidation instead of inferring AOT correctness from Debug. Run every script
-through `run-validation.ps1` for the external 1,200-second process limit.
+cache invalidation instead of inferring AOT correctness from Debug. The switch
+controller runs each native publish and browser child through `run-validation.ps1`
+with its own external 1,200-second process limit; the multi-step controller can
+take longer than one child deadline.
 
 Web Release publish defaults to Mono WASM AOT. Debug/watch remains non-AOT;
 explicit `-p:RunAOTCompilation=false` opts out for a Release comparison. AOT is

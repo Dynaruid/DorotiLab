@@ -10,6 +10,6 @@ $compile = Start-Process -FilePath $compiler -ArgumentList @('--project', (Join-
 if (-not $compile.WaitForExit(1200000)) { Stop-Process -Id $compile.Id -Force; throw 'Contract tests exceeded 20 minutes.' }
 if ($compile.ExitCode -ne 0) { exit $compile.ExitCode }
 $env:DOROTI_WEB_MODULE_ROOT = $output
-$tests = Start-Process -FilePath (Get-Command node).Source -ArgumentList @('--test', '--test-timeout=1200000', (Join-Path $PSScriptRoot 'execution.test.mjs'), (Join-Path $PSScriptRoot 'lifecycle.test.mjs')) -NoNewWindow -PassThru
+$tests = Start-Process -FilePath (Get-Command node).Source -ArgumentList @('--test', '--test-timeout=1200000', (Join-Path $PSScriptRoot 'execution.test.mjs'), (Join-Path $PSScriptRoot 'lifecycle.test.mjs'), (Join-Path $PSScriptRoot 'mono11-pthreads.test.mjs')) -NoNewWindow -PassThru
 if (-not $tests.WaitForExit([Math]::Max(1, 1200000 - [int]$timer.ElapsedMilliseconds))) { Stop-Process -Id $tests.Id -Force; throw 'Contract tests exceeded 20 minutes.' }
 exit $tests.ExitCode

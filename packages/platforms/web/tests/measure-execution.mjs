@@ -33,6 +33,17 @@ try {
       const browser = await chromium.launch({ args: ["--enable-unsafe-swiftshader"] });
       try {
         const page = await browser.newPage({ viewport: { width: 1180, height: 760 } });
+        const errors = [];
+        const pendingRequests = new Set();
+        let networkSizes = [];
+        page.on("pageerror", error => errors.push(String(error)));
+        page.on("console", message => { if (message.type() === "error") errors.push(message.text()); });
+        page.on("request", request => pendingRequests.add(request));
+        page.on("requestfinished", request => {
+          pendingRequests.delete(request);
+          networkSizes.push(request.sizes().then(sizes => ({ url: request.url(), ...sizes })));
+        });
+        page.on("requestfailed", request => { pendingRequests.delete(request); errors.push(`Request failed: ${request.url()}`); });
         // The historical host reads diagnostics from the live query string.
         // Apply the same URL-only instrumentation to both releases so Router
         // path replacement cannot turn off the baseline's commit markers.
@@ -54,10 +65,20 @@ try {
         });
         const address = fixtures[index].addresses.find(value => value.isolated === (mode === "threaded")).url;
         for (const cache of ["fresh-browser", "same-page-reload"]) {
+          networkSizes = [];
+          console.log(JSON.stringify({ stage: "sample-start", variant, repeat: repeat + 1, cache }));
           const url = `${address}/?dorotiExecutionMode=${mode}&dorotiRenderer=worker-direct-webgl&dorotiFrameCost=1&dorotiInputMarkers=1`;
           if (cache === "fresh-browser") await page.goto(url); else await page.reload();
-          await page.waitForFunction(() => document.querySelector('[data-doroti-worker-runtime="ready"]') &&
-            document.querySelector("[data-doroti-first-frame-at]"), null, { timeout: 120000 });
+          try {
+            await page.waitForFunction(() => document.documentElement.dataset.dorotiBootstrapStage === "failed" ||
+              (!!document.querySelector('[data-doroti-worker-runtime="ready"]') &&
+                !!document.querySelector("[data-doroti-first-frame-at]")), null, { timeout: 120000 });
+            assert.equal(await page.evaluate(() => document.documentElement.dataset.dorotiBootstrapStage === "failed"), false);
+          } catch (error) {
+            const state = await page.evaluate(() => ({ url: location.href, root: { ...document.documentElement.dataset },
+              host: { ...document.querySelector("[data-doroti-host-id]")?.dataset } }));
+            throw new Error(`Startup failed for ${variant}/${cache}: ${JSON.stringify({ state, errors })}`, { cause: error });
+          }
           const intervalStart = await page.evaluate(async () => { await globalThis.__dorotiFrameCost("reset"); return performance.now(); });
           await page.locator("#doroti-surface").click({ position: { x: 400, y: 400 } });
           for (let input = 0; input < 12; input++) {
@@ -66,7 +87,7 @@ try {
           }
           await expect.poll(() => page.evaluate(async () => {
             const module = await import(new URL("./_content/Doroti.Host.Web/doroti.web.js", document.baseURI));
-            const sequence = JSON.parse(module.snapshot(1)).inputSequence;
+            const sequence = JSON.parse(globalThis.__dorotiResizeDiagnostics.snapshot(1)).inputSequence;
             return Number.isSafeInteger(sequence) && JSON.parse(module.captureResizeTrace(1))
               .some(frame => frame.phase === "front-commit" && frame.inputSequence >= sequence);
           }), { timeout: 30000 }).toBe(true);
@@ -75,9 +96,8 @@ try {
             const host = document.querySelector("[data-doroti-first-frame-at]");
             const module = await import(new URL("./_content/Doroti.Host.Web/doroti.web.js", document.baseURI));
             return { cost, startup: Number(host.dataset.dorotiFirstFrameAt), ready: Number(host.dataset.dorotiRuntimeReadyAt),
-              commits: JSON.parse(module.captureResizeTrace(1)), gpu: JSON.parse(module.snapshot(1)).gpu, timeOrigin: performance.timeOrigin,
-              transferBytes: performance.getEntriesByType("resource").reduce((bytes, value) => bytes + value.transferSize, 0),
-              encodedBytes: performance.getEntriesByType("resource").reduce((bytes, value) => bytes + value.encodedBodySize, 0) };
+              commits: JSON.parse(module.captureResizeTrace(1)), gpu: JSON.parse(globalThis.__dorotiResizeDiagnostics.snapshot(1)).gpu, timeOrigin: performance.timeOrigin,
+              };
           });
           const paints = capture.cost.trace.rows.filter(row => row[0] === 3 && row[5] >= 0);
           const inputRows = capture.cost.trace.rows.filter(row => row[0] === 2 && row[5] > 0);
@@ -92,12 +112,24 @@ try {
           assert.ok(latency.every(value => Number.isFinite(value) && value >= 0), "Input latency clocks must agree.");
           assert.equal(capture.cost.trace.dropped, 0, "Dropped trace records invalidate timing comparisons.");
           assert.ok(capture.cost.after.managed.managedHeapBytes > 0 && capture.cost.after.wasmBytes > 0);
+          await expect.poll(() => pendingRequests.size, { timeout: 15000 }).toBe(0);
+          const network = await Promise.all(networkSizes);
+          assert.ok(network.some(row => row.url.includes(`/runtimes/${mode}/_framework/`) && row.url.endsWith(".wasm") && row.responseBodySize > 0),
+            "Transfer totals must include the selected runtime's Worker-owned downloads.");
+          assert.deepEqual(errors, [], "Browser errors invalidate the performance sample.");
           results.push({ variant, repeat: repeat + 1, cache, browser: browser.version(), firstFrameMs: capture.startup,
             runtimeReadyMs: capture.ready, inputToCommitMs: summary(latency), unmatchedInputs: inputRows.length - latency.length,
             managedPaintMs: summary(paints.map(row => row[4] - row[3])),
             commitIntervalMs: summary(commits.slice(1).map((row, index) => (row.timestampMicroseconds - commits[index].timestampMicroseconds) / 1000)),
+            mainToWorkerQueueMs: summary(inputRows.map(row => row[3] - row[5])),
+            inputDispatchMs: summary(inputRows.map(row => row[4] - row[3])),
             managedHeapBytes: capture.cost.after.managed.managedHeapBytes, wasmBytes: capture.cost.after.wasmBytes,
-            transferBytes: capture.transferBytes, encodedBytes: capture.encodedBytes, traceDropped: capture.cost.trace.dropped, gpu: capture.gpu });
+            transferBytes: network.reduce((bytes, row) => bytes + row.responseHeadersSize + row.responseBodySize, 0),
+            encodedBytes: network.reduce((bytes, row) => bytes + row.responseBodySize, 0),
+            traceDropped: capture.cost.trace.dropped, gpu: capture.gpu,
+            evidence: { inputRows, paints, commits, network } });
+          await writeFile(resolve(output + ".partial.json"), JSON.stringify({ status: "partial", results }, null, 2));
+          console.log(JSON.stringify({ stage: "sample-complete", variant, repeat: repeat + 1, cache, samples: results.length }));
         }
       } finally { await browser.close(); }
     }
@@ -132,13 +164,14 @@ try {
   const report = { conditions: { repeats: 3, renderer: "worker-direct-webgl", viewport: "1180x760", headless: true,
     gpu: "SwiftShader allowed; inspect hardware separately", cache: "HTTP no-store; warm is same-page reload with WASM code cache retained",
     instrumentation: "Identical frame-cost/input markers and URL-only preservation of diagnostic options across Router path replacement in both releases; drain to the last causal input commit.",
+    transfer: "Playwright completed-request encoded response bodies plus response headers, including Worker requests and navigation; excludes request/TLS framing bytes.",
     order: "Rotate all three variants through first, second and third position across the three repeats.",
     publishTimingComparison: "Not qualified without identical fresh/cached build conditions; missing historical receipts remain not-recorded.",
     displayedLatency: "not measured", hardwarePerformanceAcceptance: false,
     machine: { platform: platform(), release: release(), cpu: cpus()[0]?.model, logicalCpus: cpus().length, totalMemoryBytes: totalmem() },
     comparisonProvenance: comparisonProvenance[0], provenance: manifests.map(value => value.provenance),
     legacyProvenance: "Missing old wasmSdkPack/monoTargetsPack fields remain unknown; compare recorded compiler/runtime axes only." },
-    buildIds: manifests.map(value => value.buildId), publishBytes: await Promise.all(roots.map(treeSize)), publishTimings, regressions, compatibleTargets,
+    roots, buildIds: manifests.map(value => value.buildId), publishBytes: await Promise.all(roots.map(treeSize)), publishTimings, regressions, compatibleTargets,
     regressionReviewRequired: regressions.some(value => value.reviewRequired), results };
   await writeFile(resolve(output), JSON.stringify(report, null, 2));
   for (const variant of ["before-threaded", "after-threaded", "after-compatible"]) {

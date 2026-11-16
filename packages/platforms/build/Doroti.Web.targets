@@ -1,5 +1,7 @@
 <Project>
   <PropertyGroup>
+    <!-- Source runners do not import the provider's NuGet build props. -->
+    <DorotiMono11PthreadsLibrary Condition="'$(DorotiMono11PthreadsLibrary)' == '' and Exists('$(MSBuildThisFileDirectory)../web/Doroti.Target.Web.browser-wasm/build/DorotiMono11Pthreads.js')">$(MSBuildThisFileDirectory)../web/Doroti.Target.Web.browser-wasm/build/DorotiMono11Pthreads.js</DorotiMono11PthreadsLibrary>
     <_DorotiWebCilBuildHook>_ResolveWasmOutputs</_DorotiWebCilBuildHook>
     <_DorotiWebCilBuildHook Condition="'$(TargetFramework)' == 'net11.0'">_ConvertBuildDllsToWebcil</_DorotiWebCilBuildHook>
   </PropertyGroup>
@@ -15,6 +17,20 @@
     <PropertyGroup>
       <EmccExtraLDFlags>-sGLOBAL_BASE=1024 $(EmccExtraLDFlags)</EmccExtraLDFlags>
     </PropertyGroup>
+  </Target>
+
+  <Target Name="DorotiConfigureMono11PthreadRetirement"
+          BeforeTargets="_BrowserWasmWriteRspForLinking"
+          Condition="'$(DorotiTarget)' == 'Web' and '$(TargetFramework)' == 'net11.0' and '$(RuntimeFrameworkVersion)' == '11.0.0' and '$(WasmEnableThreads)' == 'true'">
+    <Error Code="DOROTIWEB056" Condition="'$(EmscriptenVersion)' != '6.0.3' or !Exists('$(DorotiMono11PthreadsLibrary)')"
+           Text="Mono 11.0.0 threaded retirement requires the qualified Emscripten 6.0.3 link-time adapter." />
+    <PropertyGroup>
+      <EmccExtraLDFlags>$(EmccExtraLDFlags) --js-library="$(DorotiMono11PthreadsLibrary)"</EmccExtraLDFlags>
+    </PropertyGroup>
+  </Target>
+  <Target Name="DorotiTrackMono11PthreadRetirement" BeforeTargets="_BrowserWasmLinkDotNet"
+          Condition="'$(DorotiTarget)' == 'Web' and '$(TargetFramework)' == 'net11.0' and '$(RuntimeFrameworkVersion)' == '11.0.0' and '$(WasmEnableThreads)' == 'true'">
+    <ItemGroup><_WasmLinkDependencies Include="$(DorotiMono11PthreadsLibrary)" /></ItemGroup>
   </Target>
 
   <!-- Opt-in for deep widget trees on Safari's limited Worker stack. Interpret

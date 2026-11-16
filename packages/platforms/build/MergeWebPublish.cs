@@ -68,11 +68,12 @@ public sealed class DorotiMergeWebPublish : Microsoft.Build.Utilities.Task
             if (html[0] != html[1]) throw new InvalidDataException("Child application HTML differs after removing runtime preload/imports.");
             var variants = new JObject();
             var modes = new[] { "threaded", "compatible" };
+            var activeFrameworkFiles = new HashSet<string>[roots.Length];
             for (var i = 0; i < roots.Length; i++)
             {
                 var framework = Path.Combine(roots[i], "_framework");
                 var loader = ResolveLoader(framework, originalHtml[i]);
-                ValidateFramework(framework, loader, profiles[i]);
+                activeFrameworkFiles[i] = ValidateFramework(framework, loader, profiles[i]);
                 var prefix = "runtimes/" + modes[i] + "/";
                 variants[modes[i]] = new JObject { ["threads"] = i == 0, ["loaderUrl"] = prefix + "_framework/" + loader,
                     ["profileUrl"] = prefix + "doroti.runtime-profile.json",
@@ -85,8 +86,18 @@ public sealed class DorotiMergeWebPublish : Microsoft.Build.Utilities.Task
             foreach (var path in common[0]) Copy(Path.Combine(roots[0], path), Path.Combine(staging, path));
             for (var i = 0; i < roots.Length; i++)
             {
-                foreach (var file in Directory.GetFiles(Path.Combine(roots[i], "_framework"), "*", SearchOption.AllDirectories))
-                    Copy(file, Path.Combine(staging, "runtimes", modes[i], "_framework", file.Substring(Path.Combine(roots[i], "_framework").Length + 1)));
+                var framework = Path.Combine(roots[i], "_framework");
+                foreach (var file in Directory.GetFiles(framework, "*", SearchOption.AllDirectories))
+                {
+                    var relative = file.Substring(framework.Length + 1).Replace('\\', '/');
+                    var payload = Regex.Replace(relative, @"\.(?:gz|br)$", "", RegexOptions.CultureInvariant);
+                    // SDK publish can leave the previous compiler/assembly
+                    // fingerprints in a reused child. Include only the active
+                    // SDK inventory and its compressed companions. Keep stable
+                    // ancillary files (maps/config/support scripts) unchanged.
+                    if (IsSdkFingerprint(payload) && !activeFrameworkFiles[i].Contains(payload)) continue;
+                    Copy(file, Path.Combine(staging, "runtimes", modes[i], "_framework", relative));
+                }
                 foreach (var suffix in new[] { "", ".gz", ".br" })
                 {
                     var source = Path.Combine(roots[i], "doroti.runtime-profile.json" + suffix);
@@ -167,16 +178,68 @@ public sealed class DorotiMergeWebPublish : Microsoft.Build.Utilities.Task
                 if ((attributes & FileAttributes.Directory) != 0) pending.Push(entry);
             }
     }
-    internal static void ValidateFramework(string framework, string loader, JObject profile)
+    private static bool IsSdkFingerprint(string path) =>
+        Regex.IsMatch(path, @"(?:^|/)dotnet(?:\.[^/]*)?\.(?:js|mjs|wasm)$", RegexOptions.CultureInvariant) ||
+        Regex.IsMatch(path, @"\.[A-Za-z0-9_-]{10}\.(?:js|mjs|wasm|dat|dll|pdb)$", RegexOptions.CultureInvariant);
+
+    internal static HashSet<string> ValidateFramework(string framework, string loader, JObject profile)
     {
         if (!Regex.IsMatch(loader, @"^dotnet(?:\.[A-Za-z0-9_-]+)?\.js$") ||
             loader.StartsWith("dotnet.native", StringComparison.Ordinal) || loader.StartsWith("dotnet.runtime", StringComparison.Ordinal) ||
-            !File.Exists(Path.Combine(framework, loader)) ||
-            !Directory.GetFiles(framework, "dotnet.native*.wasm").Any() ||
-            !Directory.GetFiles(framework, "dotnet.native*.js").Any() ||
-            !Directory.GetFiles(framework, "dotnet.runtime*.js").Any() ||
-            (bool?)profile["threads"] == true && (string?)profile["runtimeContract"] == "mono-10" && !Directory.GetFiles(framework, "dotnet.native.worker*.mjs").Any())
+            !File.Exists(Path.Combine(framework, loader)))
             throw new InvalidDataException("Incomplete or invalid framework: " + framework);
+
+        // Both qualified .NET 10/11 SDKs embed their exact boot resource names.
+        // A wildcard match can incorrectly accept another generation's native
+        // file when the active loader's actual dependency is missing.
+        var metadata = Regex.Match(File.ReadAllText(Path.Combine(framework, loader)),
+            @"/\*json-start\*/(.*?)/\*json-end\*/", RegexOptions.Singleline | RegexOptions.CultureInvariant);
+        if (!metadata.Success || JObject.Parse(metadata.Groups[1].Value)["resources"] is not JObject resources)
+            throw new InvalidDataException("Missing or unsupported SDK inline boot resources: " + loader);
+        var active = new HashSet<string>(StringComparer.Ordinal) { loader };
+        var root = Path.GetFullPath(framework).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar) + Path.DirectorySeparatorChar;
+        var ownedGroups = new HashSet<string>(new[] { "jsModuleNative", "jsModuleRuntime", "jsModuleWorker", "jsModuleDiagnostics",
+            "wasmNative", "icu", "coreAssembly", "assembly", "pdb", "corePdb", "vfs", "coreVfs", "wasmSymbols", "satelliteResources" }, StringComparer.Ordinal);
+        foreach (var group in resources.Properties())
+        {
+            if (group.Value is not JContainer container) continue;
+            foreach (var resource in container.DescendantsAndSelf().OfType<JObject>())
+            {
+                if (resource["name"] is not JValue { Type: JTokenType.String } name) continue;
+                var relative = ((string)name!).Replace('\\', '/');
+                if (group.Name == "satelliteResources" && resource.Parent?.Parent is JProperty culture)
+                    relative = culture.Name + "/" + relative;
+                if (relative.StartsWith("./", StringComparison.Ordinal)) relative = relative.Substring(2);
+                var inside = relative.Length > 0 && !Path.IsPathRooted(relative) && !relative.Contains(':') &&
+                    !relative.Contains('?') && !relative.Contains('#');
+                var absolute = inside ? Path.GetFullPath(Path.Combine(framework, relative)) : "";
+                inside = inside && absolute.StartsWith(root, StringComparison.Ordinal);
+                // Initializer modules may live in the common application's
+                // _content tree; native/managed framework payloads may not.
+                if (!inside)
+                {
+                    if (ownedGroups.Contains(group.Name)) throw new InvalidDataException("Invalid SDK framework resource path: " + relative);
+                    continue;
+                }
+                if (File.Exists(absolute)) active.Add(Path.GetRelativePath(framework, absolute).Replace('\\', '/'));
+                else if (ownedGroups.Contains(group.Name)) throw new InvalidDataException("Missing active SDK resource: " + relative);
+            }
+        }
+        void RequireNative(string group, string prefix, string extension)
+        {
+            if (resources[group] is not JArray { Count: 1 } entries || entries[0] is not JObject entry || entry["name"]?.Type != JTokenType.String)
+                throw new InvalidDataException("Missing or unsupported SDK native resource group: " + group);
+            var name = (string)entry["name"]!;
+            if (Path.GetFileName(name) != name || !name.StartsWith(prefix, StringComparison.Ordinal) ||
+                !name.EndsWith(extension, StringComparison.Ordinal) || !active.Contains(name))
+                throw new InvalidDataException("Invalid active SDK native resource: " + group);
+        }
+        RequireNative("wasmNative", "dotnet.native.", ".wasm");
+        RequireNative("jsModuleNative", "dotnet.native.", ".js");
+        RequireNative("jsModuleRuntime", "dotnet.runtime.", ".js");
+        if ((bool?)profile["threads"] == true && (string?)profile["runtimeContract"] == "mono-10")
+            RequireNative("jsModuleWorker", "dotnet.native.worker.", ".mjs");
+        return active;
     }
     private static string NormalizeHtml(string html)
     {
