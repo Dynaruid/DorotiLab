@@ -1,9 +1,9 @@
-# Web 자동 고성능/호환 모드: PARTIAL — 재검증·측정 완료, 성능 인수 FAIL
+# Web 자동 고성능/호환 모드: PARTIAL — 자동 성능 기준 미달, 사용자 양 모드 체감 쾌적
 
 작성: 2026-11-12 · 이전 중간 마무리: 2026-11-16 00:30 KST · 네 항목 재검증·측정: 2026-11-16
 이 문서는 구현·검증·미완료 범위와 재개 순서를 기록한다. 11월 13일까지의 기존 검증과 11월 15일 변경분의 검증을 구분하며, 최종 소스에 대한 전체 인수는 완료하지 않았다.
 
-**PARTIAL — 요청한 종료 오류 수정, 전체 12단계 캐시 전환, 최종 정책의 12개 구성 재검증과 성능 측정을 완료했다.** 기능·종료·캐시 행렬은 PASS지만, 성능의 10% 회귀 기준과 compatible 입력 예산은 FAIL다. §6~§8은 이전 이력이며 **최신 결과는 §9**다. CI와 실기기 인수는 제외하고 제품 기본값·지원 차단은 유지한다.
+**PARTIAL — 요청한 종료 오류 수정, 전체 12단계 캐시 전환, 최종 정책의 12개 구성 재검증과 성능 측정을 완료했다.** 기능·종료·캐시 행렬은 PASS다. 사용자는 두 모드를 직접 실행해 모두 쾌적하다고 확인했다. 자동 측정의 10% 회귀 기준과 compatible 입력 예산은 FAIL다. §6~§8은 이전 이력이며 **최신 결과는 §9**다. CI와 실기기 인수는 제외하고 제품 기본값·지원 차단은 유지한다.
 
 | 최신 핵심 판정 | 상태 |
 | --- | --- |
@@ -12,6 +12,7 @@
 | 추가 구성 | Sample2 net10/net11 mixed-AOT 양 모드·두 브라우저 UI/pixel PASS. Release non-AOT net10/net11 양 모드 PASS. |
 | 캐시 전환 | 새 label에서 Debug 7단계 + Release/AOT·non-AOT 5단계, 전체 12/12 native·브라우저·실제 Worker 종료 PASS. |
 | 성능 측정 | Debug·Release/AOT × 기존 threaded·변경 threaded·compatible × fresh/warm × 3회 = 최종 36개 표본. 측정 완료, 회귀 기준·compatible 입력 예산 FAIL. |
+| 사용자 직접 확인 | isolated=true의 threaded와 isolated=false의 compatible URL을 직접 열어 확인했으며, 두 모드 모두 성능이 쾌적하게 체감된다고 보고했다. |
 | 전체 완료 여부 | 제품 인수는 미완료. 성능 초과 원인 격리·개선과 실기기 인수가 남았다. net10/threaded 기본값·auto opt-in·net11 제품 차단 유지. |
 
 이전 실패·수정 이력은 §6~§8, 이번 최종 검증과 남은 범위는 §9를 따른다.
@@ -355,6 +356,10 @@ net11 threaded의 Debug·Release/AOT는 Firefox에서도 강화한 실제 Worker
 managed heap 중앙값은 Debug에서 기존 threaded fresh/warm **19.22/18.96MB**, 변경 threaded **18.87/18.57MB**, compatible **21.14/21.04MB**다. AOT는 각각 **15.91/15.91MB**, **15.91/15.93MB**, **16.10/16.02MB**다. WASM linear memory는 threaded **173.67MB**, compatible은 Debug **120.59MB**·AOT **100.47MB**다. 단위는 decimal MB이며 browser 전체 RSS나 GPU 메모리 인수로 확대하지 않는다. p50/p95·실제 전송량은 보존용 JSON에 모두 있다. fresh의 encoded body는 Debug 기존/변경/compatible **10.081/10.092/8.840MB**, AOT **15.292/15.317/14.028MB**다.
 
 dual 배포 크기는 Debug **150,448,932 → 103,389,950 bytes**, AOT **275,418,258 → 200,470,925 bytes**다. 디스크의 이전 fingerprint·압축본 제거 효과를 네트워크 다운로드 개선과 혼동하지 않는다. 이번 dual publish receipt 시간은 Debug **323,754ms**, AOT **1,078,317ms**이며 모두 generation cache 재사용이다. 일치하는 과거 fresh/cache 시간 기록이 없으므로 publish 속도 회귀·향상을 판정하지 않았다.
+
+### 사용자 직접 실행 확인 — 2026-11-16
+
+사용자가 안내한 isolated=true(threaded)와 isolated=false(compatible) URL을 모두 직접 실행하고, “성능은 둘 다 쾌적하게 체감된다”고 확인했다. **두 모드의 직접 사용 체감은 모두 쾌적**으로 기록한다. 이는 사용자 정성 확인이며, 위 headless 자동 측정의 수치·판정은 해당 측정 조건의 결과로 유지한다.
 
 ### 회귀 경계 분석과 실제 남은 작업
 

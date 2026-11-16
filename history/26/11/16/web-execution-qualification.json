@@ -9,6 +9,13 @@
     "performanceAcceptance": "FAIL: >10% tail regressions and compatible input budget",
     "productAcceptance": "PARTIAL; net11 gate and default modes preserved"
   },
+  "userObservation": {
+    "reportedOn": "2026-11-16",
+    "kind": "User-reported interactive browser responsiveness",
+    "threaded": "Checked isolated=true URL; felt smooth",
+    "compatible": "Checked isolated=false URL; felt smooth",
+    "reportedText": "둘다 확인해봤는데 성능은 둘다 쾌적하게 체감된다"
+  },
   "contracts": {
     "productionTypeScript": 27,
     "nativeBuildPolicy": 8,
