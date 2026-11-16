@@ -4,6 +4,7 @@ public sealed record SampleApp(string Key, string Folder, string BundleId, strin
 {
     public string Project(string root) => Path.Combine(root, "samples", Folder, "ios", Folder + ".iOS.csproj");
     public string AndroidProject(string root) => Path.Combine(root, "samples", Folder, "android", Folder + ".Android.csproj");
+    public string WebProject(string root) => Path.Combine(root, "samples", Folder, "web", Folder + ".Web.csproj");
     public static readonly SampleApp[] All =
     [
         new("Sample2", "DorotiSampleApp2", "dev.doroti.sample2", "sample2"),

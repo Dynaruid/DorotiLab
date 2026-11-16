@@ -1,16 +1,18 @@
 <#
 .SYNOPSIS
-Select, build, install and launch a Doroti iOS or Android sample.
+Deploy a Doroti iOS/Android sample, or publish and serve a Web sample locally.
 .EXAMPLE
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy.ps1 -Platform android -App Testbed
 .EXAMPLE
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy.ps1 -Platform ios -App Sample2 -Target simulator
 .EXAMPLE
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy.ps1 -Platform android -App Carousel
+.EXAMPLE
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy.ps1 -Platform web -App Demo -DotnetVersion 11
 #>
 [CmdletBinding()]
 param(
-    [ValidateSet('ios', 'android')][string]$Platform,
+    [ValidateSet('ios', 'android', 'web')][string]$Platform,
     [ValidateSet('Sample2', 'Testbed', 'Carousel', 'Demo')][string]$App,
     [ValidateSet('auto', 'device', 'simulator', 'emulator')][string]$Target = 'auto',
     [Alias('Serial')][string]$Device,
@@ -27,6 +29,8 @@ param(
     [switch]$DryRun,
     [string]$DotnetPath = 'dotnet',
     [string]$AdbPath,
+    [ValidateSet('threaded', 'compatible', 'auto')][string]$WebExecutionMode,
+    [ValidateRange(0, 65535)][int]$Port,
     [switch]$Help
 )
 
@@ -39,7 +43,8 @@ $arguments = @('run', '--project', $project, '-c', 'Release', '--no-launch-profi
 if ($Help) {
     $arguments += '--help'
 } else {
-    $arguments += @('--target', $Target.ToLowerInvariant(), '--dotnet-version', "$DotnetVersion", '--dotnet-path', $dotnet)
+    $arguments += @('--target', $Target.ToLowerInvariant(), '--dotnet-path', $dotnet)
+    if ($PSBoundParameters.ContainsKey('DotnetVersion')) { $arguments += @('--dotnet-version', "$DotnetVersion") }
     if ($Platform) { $arguments += @('--platform', $Platform.ToLowerInvariant()) }
     if ($App) { $arguments += @('--app', $App) }
     if ($Device) { $arguments += @('--device', $Device) }
@@ -48,6 +53,8 @@ if ($Help) {
     if ($CodesignKey) { $arguments += @('--codesign-key', $CodesignKey) }
     if ($CodesignProvision) { $arguments += @('--codesign-provision', $CodesignProvision) }
     if ($AdbPath) { $arguments += @('--adb-path', $AdbPath) }
+    if ($WebExecutionMode) { $arguments += @('--web-execution-mode', $WebExecutionMode) }
+    if ($PSBoundParameters.ContainsKey('Port')) { $arguments += @('--port', "$Port") }
     foreach ($entry in $Environment) { $arguments += @('--env', $entry) }
     foreach ($entry in $Extra) { $arguments += @('--extra', $entry) }
     if ($SkipXcodeValidation) { $arguments += '--skip-xcode-validation' }

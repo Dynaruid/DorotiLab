@@ -8,13 +8,21 @@ public sealed class Options
     public string? App { get; set; }
     public string Target { get; set; } = "auto";
     public string? Device { get; set; }
-    public int DotnetVersion { get; set; } = 10;
+    private int dotnetVersion = 10;
+    public int DotnetVersion
+    {
+        get => dotnetVersion;
+        set { dotnetVersion = value; DotnetVersionSpecified = true; }
+    }
+    public bool DotnetVersionSpecified { get; private set; }
     public string? Mode { get; set; }
     public string? Configuration { get; set; }
     public string? CodesignKey { get; set; }
     public string? CodesignProvision { get; set; }
     public string DotnetPath { get; set; } = "dotnet";
     public string AdbPath { get; set; } = "adb";
+    public string? WebExecutionMode { get; set; }
+    public int? Port { get; set; }
     public Dictionary<string, string> Extras { get; } = new(StringComparer.Ordinal);
     public Dictionary<string, string> Environment { get; } = new(StringComparer.Ordinal);
     public bool SkipXcodeValidation { get; set; }
@@ -43,7 +51,7 @@ public sealed class Options
             }
             switch (option)
             {
-                case "--platform": options.Platform = Choice("ios", "android"); break;
+                case "--platform": options.Platform = Choice("ios", "android", "web"); break;
                 case "--app": options.App = Choice(SampleApp.All.Select(app => app.Key).ToArray()); break;
                 case "--target": options.Target = Choice("auto", "device", "simulator", "emulator"); break;
                 case "--device": case "--serial": options.Device = Value(); break;
@@ -54,6 +62,12 @@ public sealed class Options
                 case "--codesign-provision": options.CodesignProvision = Value(); break;
                 case "--dotnet-path": options.DotnetPath = Value(); break;
                 case "--adb-path": options.AdbPath = Value(); break;
+                case "--web-execution-mode": options.WebExecutionMode = Choice("threaded", "compatible", "auto"); break;
+                case "--port":
+                    if (!int.TryParse(Value(), out var port) || port is < 0 or > 65535)
+                        throw new DeployException("--port must be 0 (automatic) or a port from 1 to 65535.");
+                    options.Port = port;
+                    break;
                 case "--extra":
                     var extra = Value();
                     var extraSeparator = extra.IndexOf('=');
@@ -81,6 +95,8 @@ public sealed class Options
 
     public void ValidateForPlatform(string platform)
     {
+        if (platform != "web" && (WebExecutionMode is not null || Port is not null))
+            throw new DeployException("--web-execution-mode and --port are only available for Web.");
         if (platform == "ios")
         {
             if (Target == "emulator" || Mode is not (null or "Mono" or "NativeAot") || Extras.Count > 0 || AdbPath != "adb")
@@ -99,15 +115,31 @@ public sealed class Options
             if (Configuration == "Debug" && Mode == "MonoAot")
                 throw new DeployException("MonoAot requires Release. Use --mode Mono for an Android Debug build.");
         }
+        else if (platform == "web")
+        {
+            if (Target != "auto" || Device is not null || Extras.Count > 0 || Environment.Count > 0 ||
+                AdbPath != "adb" || CodesignKey is not null || CodesignProvision is not null || SkipXcodeValidation)
+                throw new DeployException("Web publishes and serves locally; device, signing, adb, extra and launch environment options are unavailable.");
+            if (Mode is not (null or "Mono" or "MonoAot"))
+                throw new DeployException("Web uses --mode Mono (non-AOT) or MonoAot (Mono WASM AOT). CoreCLR/NativeAOT WASM are unavailable.");
+            if (Configuration == "Debug" && Mode == "MonoAot")
+                throw new DeployException("Web MonoAot requires Release. Use --mode Mono for a Debug publish.");
+            if (WebExecutionMode is not (null or "threaded" or "compatible" or "auto") || Port is < 0 or > 65535)
+                throw new DeployException("Web requires --web-execution-mode threaded|compatible|auto and --port 0..65535.");
+        }
         else throw new DeployException($"Unknown platform: {platform}.");
     }
 
     public const string HelpText = """
-        Select, build, install and launch Doroti samples on iOS or Android.
+        Select and deploy Doroti samples on iOS/Android, or publish and preview Web.
 
         dotnet run --project helpers/deploy-helper/Doroti.DeployHelper -- [options]
 
-          --platform ios|android           Omit to select interactively; iOS requires macOS.
+        Web: omitted build options open selection menus in an interactive terminal.
+        Press Enter for defaults: .NET 10 / Release / MonoAot / threaded. AOT takes longer to publish.
+        Redirected input uses the defaults below; explicit options skip their menus.
+
+          --platform ios|android|web       Omit to select interactively; iOS requires macOS.
           --app Sample2|Testbed|Carousel|Demo  Omit to select the sample interactively.
           --target auto|device|simulator|emulator  Default: combined targets; simulator is iOS, emulator is Android.
           --device ID, --serial ID          iOS UDID/CoreDevice ID or exact adb serial.
@@ -115,7 +147,10 @@ public sealed class Options
           --mode MODE                     iOS: Mono|NativeAot. Android: Mono|MonoAot|CoreClrJit|CoreClrR2R.
                                           iOS defaults: device NativeAot, simulator Mono.
                                           Android defaults: .NET 10 Release MonoAot/Debug Mono, .NET 11 CoreClrR2R.
-          --configuration Debug|Release    Default: iOS device/Android Release; iOS simulator Debug.
+                                          Web: Mono|MonoAot; Release defaults to MonoAot, Debug to Mono. Publish only.
+          --configuration Debug|Release    Default: iOS device/Android/Web Release; iOS simulator Debug.
+          --web-execution-mode threaded|compatible|auto  Web only; default: threaded.
+          --port 0..65535                  Web loopback server port; default: 0 (automatic).
           --codesign-key NAME_OR_SHA1      Exact development identity; omit to select.
           --codesign-provision UUID_OR_NAME  Compatible development profile; omit to select.
           --dotnet-path PATH               dotnet executable for app builds.
@@ -123,9 +158,9 @@ public sealed class Options
           --skip-xcode-validation          iOS only: ValidateXcodeVersion=false for this build.
           --env NAME=VALUE                 iOS launch environment; repeat as needed.
           --extra KEY=VALUE                Android string Intent extra; repeat as needed.
-          --no-launch                      Install without launching the app.
+          --no-launch                      Mobile: install without launching. Web: serve without opening a browser.
           --list                           Inventory only; do not build.
-          --dry-run                        Select and inspect; do not build, boot, install or launch.
+          --dry-run                        Select and inspect; do not build, publish, serve, boot, install or launch.
           --help, -h                       Show this help.
         """;
 }

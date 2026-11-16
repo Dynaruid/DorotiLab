@@ -3,9 +3,21 @@
 DorotiSampleApp2의 Web 배포, 렌더러 비교, 로컬 폰트 추가 방법입니다.
 명령은 저장소 루트 `DorotiLab`에서 실행합니다.
 
+기본·권장 Release Mono WASM AOT 실행은 [배포 helper](../../../helpers/deploy-helper/README.md#web)를 사용합니다.
+
+```powershell
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-web.ps1 -App Sample2
+```
+
+빌드 메뉴에서 Enter로 .NET 10 / Release / AOT / threaded를 선택합니다. 첫 AOT 게시에는 시간이 더 걸립니다.
+helper가 브라우저와 게시본 서버를 열고 `Ctrl+C`로 서버와 helper를 함께 종료합니다.
+non-AOT 비교는 `-Mode Mono`로 명시합니다. helper는 위젯·렌더링·런타임 어셈블리도 AOT에 포함하며,
+SDK 직접 게시의 Safari mixed-AOT 설정과 구분합니다.
+
 ## WASM AOT 비교 실행
 
-Mono WASM AOT는 Release `publish`의 기본값입니다. 저장소 루트에서 비교용 산출물을
+Mono WASM AOT는 Release `publish`의 기본값입니다. 아래는 폰트 MSBuild 속성 등을 직접 지정할 수 있는
+SDK 게시 명령입니다. 저장소 루트에서 비교용 산출물을
 분리해 게시하고, 아래 서버를 실행한 터미널을 열어 둡니다.
 
 ```powershell

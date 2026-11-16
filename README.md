@@ -63,6 +63,16 @@ pwsh -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform
 
 The command builds and launches the default Windows App SDK runner. Follow the [sample app guide](samples/DorotiTestbedApp/README.md) for Android, iOS, macOS, Mac Catalyst, Linux, and Web commands, or the [framework guide](Doroti/README.md) for build and publish options.
 
+For Web runtime checks, use the [publish and preview helper](helpers/deploy-helper/README.md#web).
+Accept the marked defaults with Enter for .NET 10 / Release / Mono WASM AOT / threaded:
+
+```powershell
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-web.ps1 -App Testbed
+```
+
+Release AOT is the recommended default; the first publish takes longer. The helper
+opens the browser and serves the published app until `Ctrl+C` stops both server and helper.
+
 ## How it works
 
 Doroti owns the widget and render trees. Platform hosts provide native services and a GPU surface, while the shared framework handles layout, painting, and UI state.
@@ -90,7 +100,7 @@ The Dart-to-C# compiler is an optional source import and behavior-comparison too
 | [Cupertino sample](samples/DorotiSampleApp2/README.md) | Cupertino components, profile input, and appearance settings on Windows / Web |
 | [Custom carousel sample](samples/DorotiCarouselApp/README.md) | Five customizable carousel demos with snapping, looping, transforms, and controllers |
 | [Material components demo](samples/DorotiDemoApp/README.md) | Standalone copy of the Testbed Components page |
-| [iOS / Android deployment helper](helpers/deploy-helper/README.md) | Select a sample and device, build, install, and launch |
+| [iOS / Android / Web helper](helpers/deploy-helper/README.md) | Mobile build/install/launch and Web Release AOT publish/preview |
 | [Dart-to-C# compiler](tools/Doroti.DartToCSharp/README.md) | Optional source import and migration tooling |
 | [WGSL compiler](tools/Doroti.Wgsl/README.md) | Shader compilation, backend profiles, and application integration |
 

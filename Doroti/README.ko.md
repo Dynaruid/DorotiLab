@@ -159,6 +159,18 @@ Android, iOS, AppKit macOS, Mac Catalyst 실행 프로젝트는 각각 앱 소�
 
 ### Web
 
+Release **publish**의 기본·권장 실행 프로필은 Mono WASM AOT입니다.
+첫 AOT 게시에는 시간이 더 걸리고 WASM 파일이 커질 수 있습니다.
+[배포 helper](../helpers/deploy-helper/README.md#web)로 게시와 임시 서버 실행을 함께 처리합니다.
+
+```powershell
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-web.ps1 -App Testbed
+```
+
+Web 빌드 메뉴의 Enter 기본값은 .NET 10 / Release / AOT / threaded입니다.
+non-AOT 비교는 `-Mode Mono`로 명시하고, `Ctrl+C`로 서버와 helper를 함께 종료합니다.
+일반 `run -Configuration Release`는 빌드 산출물을 사용하므로 AOT 게시본 실행을 대신하지 않습니다.
+
 `-p:DorotiWebExecutionMode=auto`로 두 모드를 함께 게시하거나, COOP/COEP를 설정할 수 없는 서버에는
 `compatible`만 게시할 수 있습니다. 로더가 시작 전에 Mono 런타임 하나를 선택하며, 호환 모드는
 non-shared 렌더 Worker와 WebGL2를 사용합니다. 기존 단일 threaded 게시 기본값은 유지합니다.

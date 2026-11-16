@@ -432,18 +432,19 @@ The default remains partial trimming; full trimming needs the dynamic-member pre
 
 ### Web sample
 
-Release publish defaults to Mono WASM AOT. Publish the app, then start its server
-and leave this terminal open. The first AOT publish takes longer:
+Release Mono WASM AOT is the default and recommended profile for runtime checks.
+The [deployment helper](../../helpers/deploy-helper/README.md#web) publishes the app,
+serves the result, and opens the browser. The first AOT publish takes longer:
 
 ```powershell
-python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet publish ./samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release --artifacts-path ./temp/testing/testbed-web-release
-python Doroti/eng/serve-isolated-web.py ./temp/testing/testbed-web-release/publish/DorotiTestbedApp.Web/release/wwwroot --port 5088
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-web.ps1 -App Testbed -Port 5088
 ```
 
-In a browser, [open the Material sample](http://127.0.0.1:5088/).
+Accept .NET 10 / Release / AOT / threaded with Enter. The browser opens automatically;
+you can also [open the Material sample](http://127.0.0.1:5088/).
 Web opens the Material sample directly.
 Omitting the renderer option prefers WebGPU on Android and WebGL2 elsewhere.
-Press `Ctrl+C` in the server terminal to stop it.
+Press `Ctrl+C` in the server terminal to stop both server and helper.
 Ordinary `dotnet run -c Release` and workspace CLI `run -Configuration Release` use
 build output rather than the AOT publish output. Use CLI `dev -Platform web` or
 `dotnet run -c Debug` for faster development runs.
@@ -451,20 +452,26 @@ build output rather than the AOT publish output. Use CLI `dev -Platform web` or
 #### Publish and compare WASM AOT
 
 With the selected .NET SDK and `wasm-tools`, Release **publish** uses Mono WASM AOT
-by default. Keep comparison output separate:
+by default. The helper separates AOT and non-AOT artifacts. Use the same SDK,
+configuration, and execution mode for the comparison:
 
 ```powershell
-python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet publish ./samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release --artifacts-path ./temp/testing/testbed-web-aot
-python Doroti/eng/serve-isolated-web.py ./temp/testing/testbed-web-aot/publish/DorotiTestbedApp.Web/release/wwwroot --port 5208
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-web.ps1 -App Testbed -DotnetVersion 10 -Configuration Release -Mode MonoAot -WebExecutionMode threaded -Port 5208
 ```
 
 Open the [AOT WebGL2 sample](http://127.0.0.1:5208/?dorotiRenderer=worker-direct-webgl) or
 [AOT WebGPU sample](http://127.0.0.1:5208/?dorotiRenderer=worker-direct-webgpu).
 This server supplies the COOP/COEP headers needed by WASM threads and `.mjs`/`.wasm` MIME types.
 
-For a baseline, change the publish flag to `RunAOTCompilation=false`, use
-`./temp/testing/testbed-web-baseline` as the artifacts path, and serve that `wwwroot` on another port.
-AOT can reduce managed CPU work at the cost of larger deployment files. This is Mono WASM AOT;
+For a non-AOT baseline, run this in another terminal and compare the same scene and renderer:
+
+```powershell
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-web.ps1 -App Testbed -DotnetVersion 10 -Configuration Release -Mode Mono -WebExecutionMode threaded -Port 5209
+```
+
+The helper includes widget/rendering/runtime assemblies in AOT; direct SDK sample
+publishes can retain their separate Safari mixed-AOT settings. AOT increases publish
+time and deployment size. This is Mono WASM AOT;
 some methods still use interpreter paths. Debug development remains non-AOT.
 
 ## Screen and renderer settings

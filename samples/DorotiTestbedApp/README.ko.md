@@ -427,38 +427,43 @@ Intel Mac의 시뮬레이터는 `-r iossimulator-x64`를 사용합니다. 실제
 
 ### Web 샘플
 
-Release 게시의 기본값은 Mono WASM AOT입니다. 게시한 앱을 제공하는 서버를 실행하고
-이 터미널을 열어 둡니다. 첫 AOT 게시에는 시간이 더 걸립니다.
+Web 실행 확인의 기본·권장 프로필은 Release Mono WASM AOT입니다.
+[배포 helper](../../helpers/deploy-helper/README.md#web)가 게시·임시 서버 실행·브라우저 열기를
+함께 처리합니다. 첫 AOT 게시에는 시간이 더 걸립니다.
 
 ```powershell
-python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet publish ./samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release --artifacts-path ./temp/testing/testbed-web-release
-python Doroti/eng/serve-isolated-web.py ./temp/testing/testbed-web-release/publish/DorotiTestbedApp.Web/release/wwwroot --port 5088
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-web.ps1 -App Testbed -Port 5088
 ```
 
-브라우저에서 [Material 샘플 열기](http://127.0.0.1:5088/)를 누릅니다.
+메뉴에서 Enter로 .NET 10 / Release / AOT / threaded를 선택합니다. 브라우저가 자동으로 열리며
+[Material 샘플 열기](http://127.0.0.1:5088/)로 직접 접속할 수도 있습니다.
 Web도 Material 샘플을 바로 엽니다.
 renderer 옵션을 생략하면 Android는 WebGPU를, 나머지 플랫폼은 WebGL2를 우선합니다.
-서버는 실행한 터미널에서 `Ctrl+C`로 종료합니다.
+실행한 터미널에서 `Ctrl+C`를 누르면 서버와 helper를 함께 종료합니다.
 일반 `dotnet run -c Release`나 workspace CLI의 `run -Configuration Release`는 AOT 게시물을
 사용하지 않습니다. 빠른 개발 실행은 CLI의 `dev -Platform web` 또는 `dotnet run -c Debug`를 사용합니다.
 
 #### WASM AOT 게시·비교
 
 `wasm-tools` workload를 설치한 .NET SDK에서 Release **publish**는 기본적으로 Mono WASM AOT를
-적용합니다. 다음 명령은 비교용 산출물을 분리합니다.
+적용합니다. helper가 AOT·non-AOT 산출물을 분리하며, 비교에서는 SDK·구성·실행 모드를 맞춥니다.
 
 ```powershell
-python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet publish ./samples/DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release --artifacts-path ./temp/testing/testbed-web-aot
-python Doroti/eng/serve-isolated-web.py ./temp/testing/testbed-web-aot/publish/DorotiTestbedApp.Web/release/wwwroot --port 5208
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-web.ps1 -App Testbed -DotnetVersion 10 -Configuration Release -Mode MonoAot -WebExecutionMode threaded -Port 5208
 ```
 
 [AOT WebGL2 샘플](http://127.0.0.1:5208/?dorotiRenderer=worker-direct-webgl) 또는
 [AOT WebGPU 샘플](http://127.0.0.1:5208/?dorotiRenderer=worker-direct-webgpu)을 엽니다.
 이 서버는 WASM threads에 필요한 COOP/COEP 헤더와 `.mjs`/`.wasm` MIME을 제공합니다.
 
-비교 버전은 publish 명령에서 `RunAOTCompilation=false`, 산출물 경로는
-`./temp/testing/testbed-web-baseline`으로 바꾸고 해당 `wwwroot`를 다른 포트로 실행합니다.
-AOT는 managed CPU 작업을 줄일 수 있지만 배포 파일이 커집니다. CoreCLR NativeAOT와는
+non-AOT 비교 버전은 다른 터미널에서 다음과 같이 실행하고 같은 화면·렌더러로 비교합니다.
+
+```powershell
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-web.ps1 -App Testbed -DotnetVersion 10 -Configuration Release -Mode Mono -WebExecutionMode threaded -Port 5209
+```
+
+helper는 위젯·렌더링·런타임 어셈블리를 AOT에 포함하며, SDK 직접 게시에서 사용하는
+샘플의 Safari mixed-AOT 설정과 구분합니다. AOT는 게시 시간이 늘고 배포 파일이 커집니다. CoreCLR NativeAOT와는
 다르며 일부 메서드는 인터프리터 경로를 사용합니다. Debug 개발 프로필은 비-AOT로 유지합니다.
 
 ## 화면과 렌더러 설정

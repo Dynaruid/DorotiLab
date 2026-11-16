@@ -361,6 +361,18 @@ dual 배포 크기는 Debug **150,448,932 → 103,389,950 bytes**, AOT **275,418
 
 사용자가 안내한 isolated=true(threaded)와 isolated=false(compatible) URL을 모두 직접 실행하고, “성능은 둘 다 쾌적하게 체감된다”고 확인했다. **두 모드의 직접 사용 체감은 모두 쾌적**으로 기록한다. 이는 사용자 정성 확인이며, 위 headless 자동 측정의 수치·판정은 해당 측정 조건의 결과로 유지한다.
 
+추가로 첫 lazy 로드 때 살짝 버벅이며 나타나는 느낌은 있으나, lazy 로드의 초기 지연으로 감수할 수 있을 것 같다고 보고했다. 이를 **초회 lazy 로드의 짧은 지연은 수용 가능하다는 사용자 의견**으로 기록한다. 반복 로드·장시간 지연이나 자동 측정 예산 전체를 수용했다는 뜻으로 확대하지 않는다.
+
+### threaded의 JS interop blocking 경고 조사
+
+사용자는 isolated=true URL에서 `Blocking the thread with JS interop is dangerous and could lead to deadlock. ManagedThreadId: 8`을 관찰했고, 경고 뒤에도 계속 쾌적하게 동작했다고 확인했다. 해당 경고의 `dotnet.runtime.tgg8aw5mc7.js`는 최종 net11 Release/AOT threaded 배포에도 있는 파일명이다.
+
+설치 Mono 11.0.0과 같은 commit의 [Thread.AssureBlockingPossible 원본](https://github.com/dotnet/dotnet/blob/297acf930fb0f5c07fd4e51d78e521b4ad2e5d1f/src/runtime/src/libraries/System.Private.CoreLib/src/System/Threading/Thread.cs#L678-L700)을 확인했다. JS interop Worker에 warning 정책이 켜진 상태에서 블로킹 가능 API의 검사를 통과할 때 발생한다. 실제 대기 시간이나 교착 발생을 측정해서 출력하는 경고는 아니다. `Thread.Start`도 `RuntimeFeature.ThrowIfMultithreadingIsNotSupported`를 통해 이 검사를 호출한다.
+
+기존 `final-icall-repair-browser.log:202`의 동일 경고에는 `BrowserStartupFonts.Read → CancellationTokenSource.CancelAfter → TimerQueue.InitializeScheduledTimerManager_Locked → Thread.UnsafeStart → Thread.AssureBlockingPossible` 호출 스택이 있다. 현재 `BrowserStartupFonts.cs:64`도 폰트 다운로드 제한 시간을 `CancelAfter`로 설정한다. 이 기존 경로에서는 폰트 다운로드를 동기로 기다린 것이 아니라, 최초 .NET 타이머 스레드 초기화가 경고를 유발했다. 사용자 실행의 전체 스택은 아직 제공되지 않았으므로 그 실행도 같은 호출 지점이라고 확정하지 않는다. 첫 lazy 로드의 지연과 이 경고의 인과관계 역시 미확정이다.
+
+기존 browser smoke의 실패 조건은 page error와 console.error이며 warning은 실패 조건이 아니었다. 이전 PASS는 warning 0을 뜻하지 않는다. 이번에는 코드·원본·기존 스택을 조사하고 사용자 증상을 기록했으며, 경고를 숨기거나 runtime blocking 정책을 완화하지 않았다.
+
 ### 회귀 경계 분석과 실제 남은 작업
 
 코드에서 확인한 범위상 이번 종료 어댑터는 net11 링크에만 들어가므로 net10 성능 측정의 hot path에 실행되지 않는다. 기존/변경 raster Worker JS의 frame dispatch·paint 기록·입력 처리 블록도 같으며, 그 파일의 차이는 시작 옵션 전달·종료의 texture lease drain이다. publisher의 fingerprint 정리는 배포 시 실행된다. 이 사실만으로 managed renderer 또는 browser scheduling 비용까지 같다고 가정하지 않는다.

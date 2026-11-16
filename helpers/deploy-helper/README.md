@@ -1,26 +1,109 @@
-# iOS·Android 빌드·설치 CLI
+# iOS·Android 배포 및 Web 게시·미리보기 CLI
 
-`DorotiSampleApp2`·`DorotiTestbedApp`·`DorotiCarouselApp`·`DorotiDemoApp`을 선택해 빌드·설치·실행합니다.
+`DorotiSampleApp2`·`DorotiTestbedApp`·`DorotiCarouselApp`·`DorotiDemoApp`을 선택해
+iOS·Android에 빌드·설치·실행하거나 Web으로 게시해 임시 서버에서 확인합니다.
 `-App` 값은 각각 `Sample2`·`Testbed`·`Carousel`·`Demo`이며, 생략하면 메뉴에서 선택합니다.
 [Doroti.DeployHelper](Doroti.DeployHelper/Doroti.DeployHelper.csproj)는 외부 NuGet 패키지가 없는
-.NET 10 콘솔 CLI입니다. 공통 프로세스 실행·선택 로직과 iOS/Android 배포 구현을 나눕니다.
+.NET 10 콘솔 CLI입니다. Web 임시 서버는 .NET SDK에 포함된 ASP.NET Core 공유 런타임을 사용하며,
+Python·Node·별도 서버 설치가 필요하지 않습니다.
 
 ```text
 helpers/deploy-helper/
   deploy.ps1                         공통 진입점: 플랫폼·앱 선택
   deploy-ios.ps1                     iOS 진입점
   deploy-android.ps1                 Android 진입점
+  deploy-web.ps1                     Web publish → 임시 서버 → 브라우저 열기
   Doroti.DeployHelper/               공통 CLI와 플랫폼별 구현
 ```
 
 아래 명령은 저장소 루트 `DorotiLab` 기준입니다. PowerShell 스크립트는 파일 위치로 저장소를 찾으므로
 다른 작업 폴더에서도 실행할 수 있습니다. 공통 진입점에서 `-Platform`을 생략하면 플랫폼을 번호로 선택합니다.
-비대화형 실행에서는 플랫폼·앱·기기를 명시하세요. 선택지가 하나면 해당 항목을 자동 사용합니다.
+비대화형 실행에서는 플랫폼·앱과 모바일 기기를 명시하세요. 선택지가 하나면 해당 항목을 자동 사용합니다.
 
 ```powershell
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy.ps1
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy.ps1 -Platform android -App Testbed -List
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy.ps1 -Platform ios -App Sample2 -Target simulator
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy.ps1 -Platform web -App Demo
+```
+
+## Web
+
+`dotnet publish`가 성공한 게시본의 `wwwroot`를 helper 내부 임시 서버에서 제공하고
+기본 브라우저를 엽니다. `run`·`watch`·Hot Reload는 사용하지 않습니다.
+Web 실행 확인의 기본·권장 프로필은 **Release / Mono WASM AOT**입니다.
+첫 AOT 게시에는 시간이 더 걸리고 WASM 파일이 커질 수 있으며, 빠른 non-AOT 비교는 `-Mode Mono`로 명시합니다.
+터미널에서는 **앱 → .NET 버전 → 게시 구성 → AOT 여부 → 실행 모드**를 번호로 선택합니다.
+명령 옵션으로 지정한 항목은 다시 묻지 않으며, SDK는 설치된 .NET 10·11 중에서 선택합니다.
+Debug 게시에는 non-AOT만, AOT를 미리 지정한 경우에는 Release만 표시합니다.
+Web 빌드 메뉴에는 `(default)`를 표시하며 **Enter로 .NET 10 / Release / AOT / threaded 기본값을 선택**합니다.
+선택지가 하나면 자동 사용하며, `q`·입력 종료 또는 `Ctrl+C`로 취소합니다.
+입력을 리디렉션한 비대화형 실행에서는 생략한 옵션에
+**.NET 10 / Release / Mono WASM AOT / threaded** 기본값을 사용합니다.
+선택한 SDK의 `wasm-tools` workload가 필요합니다.
+
+2026-11-16 사용자가 Release AOT와 non-AOT(Mono)를 직접 비교해 AOT가 훨씬 부드럽고
+빌드는 더 오래 걸린다고 확인했습니다. 이 기본값의 근거로 정성적인 사용자 확인을 기록합니다.
+
+```powershell
+# 앱을 선택하고 빌드 메뉴에서 Enter로 기본 Release/AOT 선택
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-web.ps1
+
+# 앱·.NET 11을 고정하고 나머지 빌드 옵션은 메뉴에서 선택
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-web.ps1 -App Demo -DotnetVersion 11
+
+# 선택 메뉴 없이 .NET 11 / Release / AOT / threaded로 바로 게시
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-web.ps1 -App Demo -DotnetVersion 11 -Configuration Release -Mode MonoAot -WebExecutionMode threaded
+
+# non-AOT 또는 compatible을 고정하고 나머지는 메뉴에서 선택
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-web.ps1 -App Demo -Mode Mono
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-web.ps1 -App Demo -WebExecutionMode compatible
+
+# 고정 포트 / 브라우저 자동 열기 생략 / 게시 명령만 확인
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-web.ps1 -App Demo -Port 5192 -NoLaunch
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-web.ps1 -App Demo -DotnetVersion 11 -DryRun
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-web.ps1 -List
+```
+
+서버는 `127.0.0.1`에만 바인딩하며 기본 포트는 사용 가능한 포트를 자동 배정합니다.
+출력된 `Preview URL`을 열고, **해당 터미널에서 `Ctrl+C`를 누르면 서버와 deploy-helper가 함께 종료**됩니다.
+서버를 별도 프로세스로 분리하지 않습니다. `-NoLaunch`는 브라우저 자동 열기만 생략하며 서버는 유지합니다.
+`threaded`·`auto`에는 COOP/COEP 격리 헤더를 제공하고, `compatible`에는 제공하지 않습니다.
+모든 응답에 `Cache-Control: no-store`를 적용하며 없는 runtime 자산은 404로 응답합니다.
+
+| Web 옵션 | 동작 |
+| --- | --- |
+| `-App Sample2\|Testbed\|Carousel\|Demo` | 생략하면 앱 선택 |
+| `-DotnetVersion 10\|11` | 설치된 SDK에서 메뉴 선택; Enter 기본값은 `10`, 해당 major의 최신 stable SDK 사용 |
+| `-Mode MonoAot\|Mono` | Release 메뉴의 Enter 기본값은 `MonoAot`; `Mono`는 AOT를 끈 비교용 게시본 |
+| `-Configuration Release\|Debug` | 메뉴의 Enter 기본값은 `Release`; Debug는 `Mono` 게시만 허용 |
+| `-WebExecutionMode threaded\|compatible\|auto` | 메뉴의 Enter 기본값은 `threaded`; auto는 두 variant를 모두 게시 |
+| `-Port 0..65535` | 기본 `0`: 자동 배정 |
+| `-NoLaunch` | 서버는 실행하고 브라우저 자동 열기만 생략 |
+| `-List` / `-DryRun` / `-Help` | 앱·SDK 목록 / 게시·서버 계획 확인 / 도움말 |
+| `-DotnetPath <경로>` | 사용할 dotnet 실행 파일 |
+
+이 helper는 `DorotiWebInterpretWidgetTree=false`를 지정해 MonoAot에서 위젯·렌더링·런타임
+어셈블리를 AOT에 포함합니다. 샘플의 Safari용 부분 해석 기본값과 구분해 데스크톱에서 비교합니다.
+.NET 11 선택은 로컬 확인용으로 `DorotiWebQualificationProbe=true`를 전달하며,
+기존 제품 빌드의 net11 지원 차단은 유지합니다.
+
+게시 명령은 20분 제한이며 실패하면 서버나 브라우저를 열지 않습니다.
+각 게시에 하나의 배포 ID를 전달해 내부 빌드와 검증이 같은 generation을 사용합니다.
+게시 후 runtime profile의 배포 ID·SDK·TFM·AOT·실행 모드가 요청과 일치하는지도 확인합니다.
+산출물은 `Doroti/artifacts/<sample>-web-<aot|mono>-net<10|11>-<release|debug>-<threaded|compatible|auto>/`의
+`build`와 `publish`로 분리합니다. 이 로컬 산출물은 기존 artifacts 정리 대상입니다.
+
+공통 진입점의 `-Platform web`과 .NET CLI 직접 실행도 같은 동작입니다.
+
+```sh
+dotnet run --project ./helpers/deploy-helper/Doroti.DeployHelper -c Release -- --platform web --app Demo --dotnet-version 11
+```
+
+Web 회귀 검사는 실제 HTTP 응답·격리 헤더·게시 실패·서버 종료와 메뉴/명령 옵션에 따른 SDK·AOT 선택을 확인합니다.
+
+```powershell
+dotnet run --project ./helpers/deploy-helper/tests/Doroti.DeployHelper.Tests -c Release
 ```
 
 ## Android

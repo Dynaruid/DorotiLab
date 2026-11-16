@@ -14,7 +14,17 @@
     "kind": "User-reported interactive browser responsiveness",
     "threaded": "Checked isolated=true URL; felt smooth",
     "compatible": "Checked isolated=false URL; felt smooth",
-    "reportedText": "둘다 확인해봤는데 성능은 둘다 쾌적하게 체감된다"
+    "reportedText": "둘다 확인해봤는데 성능은 둘다 쾌적하게 체감된다",
+    "firstLazyLoad": "A slight hitch on first lazy load; user considers this tolerable",
+    "threadedInteropWarning": "ManagedThreadId 8 blocking warning observed; user reports continued smooth operation and no freeze"
+  },
+  "interopWarningInvestigation": {
+    "runtime": "Mono 11.0.0, source commit 297acf930fb0f5c07fd4e51d78e521b4ad2e5d1f",
+    "mechanism": "Thread.AssureBlockingPossible emits a warning for a potentially blocking API on a JS interop thread; it does not detect an actual deadlock",
+    "existingStack": "BrowserStartupFonts.Read -> CancellationTokenSource.CancelAfter -> TimerQueue.InitializeScheduledTimerManager_Locked -> Thread.UnsafeStart -> Thread.AssureBlockingPossible",
+    "evidence": "Doroti/artifacts/web-qualification/final-icall-repair-browser.log:202; current BrowserStartupFonts.cs:64; pinned runtime Thread.cs and RuntimeFeature.cs",
+    "scope": "Existing matching-warning stack is confirmed; the user's exact current call site and a causal link to first-lazy-load stutter remain unconfirmed",
+    "changes": "Documentation only; warning policy and runtime code unchanged"
   },
   "contracts": {
     "productionTypeScript": 27,

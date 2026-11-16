@@ -29,26 +29,30 @@ WebAssembly 빌드에는 `wasm-tools` 워크로드가 필요합니다.
 # Windows App SDK
 pwsh -File Doroti/eng/doroti.ps1 run --app samples/DorotiCarouselApp --platform windows
 
-# Web 개발 서버
-dotnet run --project samples/DorotiCarouselApp/web/DorotiCarouselApp.Web.csproj -c Debug
+# Web 기본·권장 Release AOT 게시와 로컬 미리보기
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-web.ps1 -App Carousel
 ```
 
 ### Web Release 게시
 
-Web Release publish는 저장소 기본 WASM AOT 설정을 사용합니다.
+Web 실행 확인은 Release Mono WASM AOT를 기본·권장으로 사용합니다.
+[배포 helper](../../helpers/deploy-helper/README.md#web)가 게시·임시 서버·브라우저 열기를 함께 처리합니다.
+메뉴에서 Enter로 .NET 10 / Release / AOT / threaded를 선택합니다. 첫 AOT 게시에는 시간이 더 걸립니다.
 
-기본값은 net10/threaded입니다. `-p:DorotiWebExecutionMode=auto`를 publish에 추가하면
+기본값은 net10/threaded입니다. helper의 `-WebExecutionMode auto`를 선택하면
 두 variant를 함께 게시하고 비격리 HTTPS 호스팅에서는 compatible을 선택합니다.
-단일 compatible은 `-p:DorotiWebExecutionMode=compatible`을 사용합니다. run/watch의
+단일 compatible은 `-WebExecutionMode compatible`을 사용합니다. run/watch의
 모드를 바꿀 때는 rebuild·서버 재시작·page reload가 필요합니다. compatible Hot Reload와
 실제 Safari/모바일 성능 인수 상태는 [Web 가이드](../../packages/platforms/web/README.md)를 확인하세요.
 
 ```powershell
-python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet publish samples/DorotiCarouselApp/web/DorotiCarouselApp.Web.csproj -c Release -o temp/testing/carousel-web
-python Doroti/eng/serve-isolated-web.py temp/testing/carousel-web/wwwroot --port 5226
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-web.ps1 -App Carousel -Port 5226
 ```
 
-브라우저에서 `http://127.0.0.1:5226`을 엽니다. WASM threads에 필요한 COOP/COEP 헤더를 제공하는 서버입니다.
+브라우저가 자동으로 열리며 `http://127.0.0.1:5226`에 직접 접속할 수도 있습니다.
+WASM threads에 필요한 COOP/COEP 헤더를 제공하며 `Ctrl+C`로 서버와 helper를 함께 종료합니다.
+non-AOT 비교는 `-Mode Mono`로 명시합니다. 빠른 Debug 개발은
+`dotnet run --project samples/DorotiCarouselApp/web/DorotiCarouselApp.Web.csproj -c Debug`를 사용합니다.
 
 워크스페이스는 `windows`, `web`, `android`, `ios`, `linux`, `macos`, `maccatalyst`를 선언합니다.
 다른 플랫폼은 해당 호스트와 SDK에서 같은 CLI의 `--platform` 값을 바꿔 실행합니다.

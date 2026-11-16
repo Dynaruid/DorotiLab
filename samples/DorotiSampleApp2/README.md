@@ -402,20 +402,23 @@ Windows App SDK / Vulkan 호스트를 사용합니다.
 
 격리 헤더를 제공할 수 없는 서버까지 하나의 배포본으로 지원하려면 게시 명령에
 `-p:DorotiWebExecutionMode=auto`를 추가합니다. 호환 전용 배포는 `compatible`을 사용하며,
-개발 서버 비격리 검증에는 `-p:DorotiWebIsolation=false`도 지정합니다. 기존 threaded 기본값,
+개발 서버 비격리 검증에는 `-p:DorotiWebIsolation=false`도 지정합니다. SDK 직접 게시의 threaded 기본값,
 Safari mixed-AOT 및 메모리 설정은 유지합니다. SDK 11/net10과 Mono 11/net11은 별도 검증이
 필요합니다. [실행 프로필 안내](../../packages/platforms/web/README.md#execution-profiles-opt-in)를 참고하세요.
 
+Web 실행 확인의 기본·권장 프로필은 Release Mono WASM AOT입니다.
+[배포 helper](../../helpers/deploy-helper/README.md#web)로 게시·임시 서버 실행·브라우저 열기를
+함께 처리합니다. 메뉴에서 Enter로 .NET 10 / Release / AOT / threaded를 선택하며 첫 게시에는 시간이 더 걸립니다.
 빠른 개발 실행은 [빠른 시작](#빠른-시작)의 Debug 명령을 사용합니다.
-Release 게시의 기본값은 Mono WASM AOT이며, 게시물을 제공하는 서버를 실행한 터미널을 열어 둡니다.
-첫 AOT 게시에는 시간이 더 걸립니다.
 
 ```powershell
-python Doroti/eng/run-with-timeout.py --timeout 1200 dotnet publish ./samples/DorotiSampleApp2/web/DorotiSampleApp2.Web.csproj -c Release --artifacts-path ./temp/testing/sample2-web-release
-python Doroti/eng/serve-isolated-web.py ./temp/testing/sample2-web-release/publish/DorotiSampleApp2.Web/release/wwwroot --port 5089
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-web.ps1 -App Sample2 -Port 5089
 ```
 
-브라우저에서 `http://127.0.0.1:5089`에 접속합니다. 서버는 WASM threads에 필요한 COOP/COEP 헤더를 제공합니다.
+브라우저가 자동으로 열리며 `http://127.0.0.1:5089`에 직접 접속할 수도 있습니다.
+서버는 WASM threads에 필요한 COOP/COEP 헤더를 제공합니다. `Ctrl+C`로 서버와 helper를 함께 종료합니다.
+non-AOT 비교는 `-Mode Mono`로 명시합니다. helper는 위젯·렌더링·런타임도 AOT에 포함하며
+SDK 직접 게시의 Safari mixed-AOT 설정과 구분합니다.
 일반 `dotnet run -c Release`는 AOT 게시물을 사용하지 않습니다.
 
 스플래시는 [web/src/doroti_bootstrap.ts](web/src/doroti_bootstrap.ts)의 `startDoroti({ splash: true, ... })`에서 설정합니다.

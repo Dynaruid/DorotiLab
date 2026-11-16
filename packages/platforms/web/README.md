@@ -207,13 +207,25 @@ controller runs each native publish and browser child through `run-validation.ps
 with its own external 1,200-second process limit; the multi-step controller can
 take longer than one child deadline.
 
-Web Release publish defaults to Mono WASM AOT. Debug/watch remains non-AOT;
+Web Release publish defaults to Mono WASM AOT and is recommended for runtime checks. Debug/watch remains non-AOT;
 explicit `-p:RunAOTCompilation=false` opts out for a Release comparison. AOT is
 applied during `dotnet publish`, so ordinary `dotnet run -c Release` uses the build
 output rather than the AOT publish output. Serve the published `wwwroot` with the
 COOP/COEP headers for threaded mode; compatible does not require those headers.
 The sample READMEs give commands. This profile increases
 publish time and native WASM size.
+
+For repository samples, the [deployment helper](../../../helpers/deploy-helper/README.md#web)
+publishes and serves the result without a separate server dependency:
+
+```powershell
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-web.ps1 -App Demo
+```
+
+Enter accepts the marked .NET 10 / Release / AOT / threaded defaults. `-Mode Mono`
+explicitly selects non-AOT; `Ctrl+C` stops the server and helper together. The helper
+includes widget/rendering/runtime assemblies in AOT (`DorotiWebInterpretWidgetTree=false`);
+direct sample publishes can retain their separate Safari mixed-AOT settings.
 
 ## File selection
 

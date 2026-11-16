@@ -158,6 +158,18 @@ The default path renders through Graphite/Vulkan and presents through D3D12/DXGI
 
 ### Web
 
+Release **publish** uses Mono WASM AOT by default and is the recommended path for
+runtime checks. The first AOT publish takes longer and can produce larger WASM files.
+The [deployment helper](../helpers/deploy-helper/README.md#web) publishes and serves the result:
+
+```powershell
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-web.ps1 -App Testbed
+```
+
+Accept the marked Web build defaults with Enter for .NET 10 / Release / AOT / threaded.
+Use `-Mode Mono` for an explicit non-AOT comparison. `Ctrl+C` stops the server and helper.
+Ordinary `run -Configuration Release` uses build output and does not run the AOT publish output.
+
 Opt in to a dual deployment with `-p:DorotiWebExecutionMode=auto`, or publish only
 `compatible` for hosts without COOP/COEP. The loader selects one Mono runtime
 before startup; compatible uses a non-shared render Worker and WebGL2. Existing
