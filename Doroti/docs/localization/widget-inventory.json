@@ -1,0 +1,1343 @@
+{
+  "schema": 1,
+  "sourceHashNormalization": "UTF-8 without BOM; CRLF and CR normalized to LF",
+  "flutterApiBaseline": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "qualification": "Current Doroti public resource contracts; not upstream translation completeness or runtime acceptance.",
+  "sections": {
+    "Widgets": {
+      "source": "Doroti/src/Doroti.Framework.Widgets/localizations.cs",
+      "sha256": "fc02fa5b2aa4a981c7d52da7dc82bf3c63ef8a7a5ca51f6d4bb0528bc1d4e011",
+      "memberCount": 17,
+      "members": [
+        {
+          "name": "textDirection",
+          "signature": "TextDirection textDirection { get; }",
+          "line": 136,
+          "category": "locale-calendar-hour-direction-policy"
+        },
+        {
+          "name": "reorderItemToStart",
+          "signature": "string reorderItemToStart { get; }",
+          "line": 137,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "reorderItemToEnd",
+          "signature": "string reorderItemToEnd { get; }",
+          "line": 138,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "reorderItemUp",
+          "signature": "string reorderItemUp { get; }",
+          "line": 139,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "reorderItemDown",
+          "signature": "string reorderItemDown { get; }",
+          "line": 140,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "reorderItemLeft",
+          "signature": "string reorderItemLeft { get; }",
+          "line": 141,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "reorderItemRight",
+          "signature": "string reorderItemRight { get; }",
+          "line": 142,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "searchResultsFound",
+          "signature": "string searchResultsFound { get; }",
+          "line": 143,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "noResultsFound",
+          "signature": "string noResultsFound { get; }",
+          "line": 144,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "copyButtonLabel",
+          "signature": "string copyButtonLabel { get; }",
+          "line": 145,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "cutButtonLabel",
+          "signature": "string cutButtonLabel { get; }",
+          "line": 146,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "pasteButtonLabel",
+          "signature": "string pasteButtonLabel { get; }",
+          "line": 147,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "selectAllButtonLabel",
+          "signature": "string selectAllButtonLabel { get; }",
+          "line": 148,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "lookUpButtonLabel",
+          "signature": "string lookUpButtonLabel { get; }",
+          "line": 149,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "searchWebButtonLabel",
+          "signature": "string searchWebButtonLabel { get; }",
+          "line": 150,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "shareButtonLabel",
+          "signature": "string shareButtonLabel { get; }",
+          "line": 151,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "radioButtonUnselectedLabel",
+          "signature": "string radioButtonUnselectedLabel { get; }",
+          "line": 152,
+          "category": "translated-message-or-interpolation"
+        }
+      ]
+    },
+    "Cupertino": {
+      "source": "packages/Doroti.Cupertino/src/localizations.cs",
+      "sha256": "1cedc4023985d1397d449f0c0445a814ff0ecb9b84c25205afdf2a430cbae7d9",
+      "memberCount": 45,
+      "members": [
+        {
+          "name": "datePickerYear",
+          "signature": "string datePickerYear(long yearIndex)",
+          "line": 29,
+          "category": "dotnet-format-with-widget-policy"
+        },
+        {
+          "name": "datePickerMonth",
+          "signature": "string datePickerMonth(long monthIndex)",
+          "line": 30,
+          "category": "dotnet-format-with-widget-policy"
+        },
+        {
+          "name": "datePickerStandaloneMonth",
+          "signature": "string datePickerStandaloneMonth(long monthIndex)",
+          "line": 31,
+          "category": "dotnet-format-with-widget-policy"
+        },
+        {
+          "name": "datePickerDayOfMonth",
+          "signature": "string datePickerDayOfMonth(long dayIndex, long? weekDay = null)",
+          "line": 32,
+          "category": "dotnet-format-with-widget-policy"
+        },
+        {
+          "name": "datePickerMediumDate",
+          "signature": "string datePickerMediumDate(DateTime date)",
+          "line": 33,
+          "category": "dotnet-format-with-widget-policy"
+        },
+        {
+          "name": "datePickerHour",
+          "signature": "string datePickerHour(long hour)",
+          "line": 34,
+          "category": "dotnet-format-with-widget-policy"
+        },
+        {
+          "name": "datePickerHourSemanticsLabel",
+          "signature": "string? datePickerHourSemanticsLabel(long hour)",
+          "line": 35,
+          "category": "message-with-cardinal-or-number"
+        },
+        {
+          "name": "datePickerMinute",
+          "signature": "string datePickerMinute(long minute)",
+          "line": 36,
+          "category": "dotnet-format-with-widget-policy"
+        },
+        {
+          "name": "datePickerMinuteSemanticsLabel",
+          "signature": "string? datePickerMinuteSemanticsLabel(long minute)",
+          "line": 37,
+          "category": "message-with-cardinal-or-number"
+        },
+        {
+          "name": "datePickerDateOrder",
+          "signature": "DatePickerDateOrder datePickerDateOrder { get; }",
+          "line": 38,
+          "category": "locale-calendar-hour-direction-policy"
+        },
+        {
+          "name": "datePickerDateTimeOrder",
+          "signature": "DatePickerDateTimeOrder datePickerDateTimeOrder { get; }",
+          "line": 39,
+          "category": "locale-calendar-hour-direction-policy"
+        },
+        {
+          "name": "anteMeridiemAbbreviation",
+          "signature": "string anteMeridiemAbbreviation { get; }",
+          "line": 40,
+          "category": "locale-calendar-hour-direction-policy"
+        },
+        {
+          "name": "postMeridiemAbbreviation",
+          "signature": "string postMeridiemAbbreviation { get; }",
+          "line": 41,
+          "category": "locale-calendar-hour-direction-policy"
+        },
+        {
+          "name": "todayLabel",
+          "signature": "string todayLabel { get; }",
+          "line": 42,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "alertDialogLabel",
+          "signature": "string alertDialogLabel { get; }",
+          "line": 43,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "tabSemanticsLabel",
+          "signature": "string tabSemanticsLabel(long tabIndex, long tabCount)",
+          "line": 44,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "timerPickerHour",
+          "signature": "string timerPickerHour(long hour)",
+          "line": 45,
+          "category": "dotnet-format-with-widget-policy"
+        },
+        {
+          "name": "timerPickerMinute",
+          "signature": "string timerPickerMinute(long minute)",
+          "line": 46,
+          "category": "dotnet-format-with-widget-policy"
+        },
+        {
+          "name": "timerPickerSecond",
+          "signature": "string timerPickerSecond(long second)",
+          "line": 47,
+          "category": "dotnet-format-with-widget-policy"
+        },
+        {
+          "name": "timerPickerHourLabel",
+          "signature": "string? timerPickerHourLabel(long hour)",
+          "line": 48,
+          "category": "message-with-cardinal-or-number"
+        },
+        {
+          "name": "timerPickerHourLabels",
+          "signature": "List<string> timerPickerHourLabels { get; }",
+          "line": 49,
+          "category": "dotnet-format-with-widget-policy"
+        },
+        {
+          "name": "timerPickerMinuteLabel",
+          "signature": "string? timerPickerMinuteLabel(long minute)",
+          "line": 50,
+          "category": "message-with-cardinal-or-number"
+        },
+        {
+          "name": "timerPickerMinuteLabels",
+          "signature": "List<string> timerPickerMinuteLabels { get; }",
+          "line": 51,
+          "category": "dotnet-format-with-widget-policy"
+        },
+        {
+          "name": "timerPickerSecondLabel",
+          "signature": "string? timerPickerSecondLabel(long second)",
+          "line": 52,
+          "category": "message-with-cardinal-or-number"
+        },
+        {
+          "name": "timerPickerSecondLabels",
+          "signature": "List<string> timerPickerSecondLabels { get; }",
+          "line": 53,
+          "category": "dotnet-format-with-widget-policy"
+        },
+        {
+          "name": "cutButtonLabel",
+          "signature": "string cutButtonLabel { get; }",
+          "line": 54,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "copyButtonLabel",
+          "signature": "string copyButtonLabel { get; }",
+          "line": 55,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "pasteButtonLabel",
+          "signature": "string pasteButtonLabel { get; }",
+          "line": 56,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "clearButtonLabel",
+          "signature": "string clearButtonLabel { get; }",
+          "line": 57,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "noSpellCheckReplacementsLabel",
+          "signature": "string noSpellCheckReplacementsLabel { get; }",
+          "line": 58,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "selectAllButtonLabel",
+          "signature": "string selectAllButtonLabel { get; }",
+          "line": 59,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "lookUpButtonLabel",
+          "signature": "string lookUpButtonLabel { get; }",
+          "line": 60,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "searchWebButtonLabel",
+          "signature": "string searchWebButtonLabel { get; }",
+          "line": 61,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "shareButtonLabel",
+          "signature": "string shareButtonLabel { get; }",
+          "line": 62,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "searchTextFieldPlaceholderLabel",
+          "signature": "string searchTextFieldPlaceholderLabel { get; }",
+          "line": 63,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "modalBarrierDismissLabel",
+          "signature": "string modalBarrierDismissLabel { get; }",
+          "line": 64,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "menuDismissLabel",
+          "signature": "string menuDismissLabel { get; }",
+          "line": 65,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "cancelButtonLabel",
+          "signature": "string cancelButtonLabel { get; }",
+          "line": 66,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "backButtonLabel",
+          "signature": "string backButtonLabel { get; }",
+          "line": 67,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "expansionTileExpandedHint",
+          "signature": "string expansionTileExpandedHint { get; }",
+          "line": 68,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "expansionTileCollapsedHint",
+          "signature": "string expansionTileCollapsedHint { get; }",
+          "line": 69,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "expansionTileExpandedTapHint",
+          "signature": "string expansionTileExpandedTapHint { get; }",
+          "line": 70,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "expansionTileCollapsedTapHint",
+          "signature": "string expansionTileCollapsedTapHint { get; }",
+          "line": 71,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "expandedHint",
+          "signature": "string expandedHint { get; }",
+          "line": 72,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "collapsedHint",
+          "signature": "string collapsedHint { get; }",
+          "line": 73,
+          "category": "translated-message-or-interpolation"
+        }
+      ]
+    },
+    "Material": {
+      "source": "packages/Doroti.Material/src/material_localizations.cs",
+      "sha256": "8a14da9e3e8419df6b1c662281296389d58adad2c42bf3763bd67a10470a77b3",
+      "memberCount": 157,
+      "members": [
+        {
+          "name": "openAppDrawerTooltip",
+          "signature": "string openAppDrawerTooltip { get; }",
+          "line": 13,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "backButtonTooltip",
+          "signature": "string backButtonTooltip { get; }",
+          "line": 14,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "clearButtonTooltip",
+          "signature": "string clearButtonTooltip { get; }",
+          "line": 15,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "closeButtonTooltip",
+          "signature": "string closeButtonTooltip { get; }",
+          "line": 16,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "deleteButtonTooltip",
+          "signature": "string deleteButtonTooltip { get; }",
+          "line": 17,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "moreButtonTooltip",
+          "signature": "string moreButtonTooltip { get; }",
+          "line": 18,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "nextMonthTooltip",
+          "signature": "string nextMonthTooltip { get; }",
+          "line": 19,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "previousMonthTooltip",
+          "signature": "string previousMonthTooltip { get; }",
+          "line": 20,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "firstPageTooltip",
+          "signature": "string firstPageTooltip { get; }",
+          "line": 21,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "lastPageTooltip",
+          "signature": "string lastPageTooltip { get; }",
+          "line": 22,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "nextPageTooltip",
+          "signature": "string nextPageTooltip { get; }",
+          "line": 23,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "previousPageTooltip",
+          "signature": "string previousPageTooltip { get; }",
+          "line": 24,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "showMenuTooltip",
+          "signature": "string showMenuTooltip { get; }",
+          "line": 25,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "aboutListTileTitle",
+          "signature": "string aboutListTileTitle(string applicationName)",
+          "line": 26,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "licensesPageTitle",
+          "signature": "string licensesPageTitle { get; }",
+          "line": 27,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "licensesPackageDetailText",
+          "signature": "string licensesPackageDetailText(long licenseCount)",
+          "line": 28,
+          "category": "message-with-cardinal-or-number"
+        },
+        {
+          "name": "pageRowsInfoTitle",
+          "signature": "string pageRowsInfoTitle( long firstRow, long lastRow, long rowCount, bool rowCountIsApproximate )",
+          "line": 29,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "rowsPerPageTitle",
+          "signature": "string rowsPerPageTitle { get; }",
+          "line": 35,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "tabLabel",
+          "signature": "string tabLabel(long tabIndex, long tabCount)",
+          "line": 36,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "selectedRowCountTitle",
+          "signature": "string selectedRowCountTitle(long selectedRowCount)",
+          "line": 37,
+          "category": "message-with-cardinal-or-number"
+        },
+        {
+          "name": "cancelButtonLabel",
+          "signature": "string cancelButtonLabel { get; }",
+          "line": 38,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "closeButtonLabel",
+          "signature": "string closeButtonLabel { get; }",
+          "line": 39,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "continueButtonLabel",
+          "signature": "string continueButtonLabel { get; }",
+          "line": 40,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "copyButtonLabel",
+          "signature": "string copyButtonLabel { get; }",
+          "line": 41,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "cutButtonLabel",
+          "signature": "string cutButtonLabel { get; }",
+          "line": 42,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "scanTextButtonLabel",
+          "signature": "string scanTextButtonLabel { get; }",
+          "line": 43,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "okButtonLabel",
+          "signature": "string okButtonLabel { get; }",
+          "line": 44,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "pasteButtonLabel",
+          "signature": "string pasteButtonLabel { get; }",
+          "line": 45,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "selectAllButtonLabel",
+          "signature": "string selectAllButtonLabel { get; }",
+          "line": 46,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "lookUpButtonLabel",
+          "signature": "string lookUpButtonLabel { get; }",
+          "line": 47,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "searchWebButtonLabel",
+          "signature": "string searchWebButtonLabel { get; }",
+          "line": 48,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "shareButtonLabel",
+          "signature": "string shareButtonLabel { get; }",
+          "line": 49,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "viewLicensesButtonLabel",
+          "signature": "string viewLicensesButtonLabel { get; }",
+          "line": 50,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "anteMeridiemAbbreviation",
+          "signature": "string anteMeridiemAbbreviation { get; }",
+          "line": 51,
+          "category": "locale-calendar-hour-direction-policy"
+        },
+        {
+          "name": "postMeridiemAbbreviation",
+          "signature": "string postMeridiemAbbreviation { get; }",
+          "line": 52,
+          "category": "locale-calendar-hour-direction-policy"
+        },
+        {
+          "name": "timePickerHourModeAnnouncement",
+          "signature": "string timePickerHourModeAnnouncement { get; }",
+          "line": 53,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "timePickerMinuteModeAnnouncement",
+          "signature": "string timePickerMinuteModeAnnouncement { get; }",
+          "line": 54,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "modalBarrierDismissLabel",
+          "signature": "string modalBarrierDismissLabel { get; }",
+          "line": 55,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "menuDismissLabel",
+          "signature": "string menuDismissLabel { get; }",
+          "line": 56,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "drawerLabel",
+          "signature": "string drawerLabel { get; }",
+          "line": 57,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "popupMenuLabel",
+          "signature": "string popupMenuLabel { get; }",
+          "line": 58,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "menuBarMenuLabel",
+          "signature": "string menuBarMenuLabel { get; }",
+          "line": 59,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "dialogLabel",
+          "signature": "string dialogLabel { get; }",
+          "line": 60,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "alertDialogLabel",
+          "signature": "string alertDialogLabel { get; }",
+          "line": 61,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "searchFieldLabel",
+          "signature": "string searchFieldLabel { get; }",
+          "line": 62,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "currentDateLabel",
+          "signature": "string currentDateLabel { get; }",
+          "line": 63,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "selectedDateLabel",
+          "signature": "string selectedDateLabel { get; }",
+          "line": 64,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "scrimLabel",
+          "signature": "string scrimLabel { get; }",
+          "line": 65,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "bottomSheetLabel",
+          "signature": "string bottomSheetLabel { get; }",
+          "line": 66,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "scrimOnTapHint",
+          "signature": "string scrimOnTapHint(string modalRouteContentName)",
+          "line": 67,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "timeOfDayFormat",
+          "signature": "TimeOfDayFormat timeOfDayFormat(bool alwaysUse24HourFormat = false)",
+          "line": 68,
+          "category": "locale-calendar-hour-direction-policy"
+        },
+        {
+          "name": "scriptCategory",
+          "signature": "ScriptCategory scriptCategory { get; }",
+          "line": 69,
+          "category": "locale-calendar-hour-direction-policy"
+        },
+        {
+          "name": "formatDecimal",
+          "signature": "string formatDecimal(long number)",
+          "line": 70,
+          "category": "dotnet-format-with-widget-policy"
+        },
+        {
+          "name": "formatHour",
+          "signature": "string formatHour(TimeOfDay timeOfDay, bool alwaysUse24HourFormat = false)",
+          "line": 71,
+          "category": "dotnet-format-with-widget-policy"
+        },
+        {
+          "name": "formatMinute",
+          "signature": "string formatMinute(TimeOfDay timeOfDay)",
+          "line": 72,
+          "category": "dotnet-format-with-widget-policy"
+        },
+        {
+          "name": "formatTimeOfDay",
+          "signature": "string formatTimeOfDay(TimeOfDay timeOfDay, bool alwaysUse24HourFormat = false)",
+          "line": 73,
+          "category": "dotnet-format-with-widget-policy"
+        },
+        {
+          "name": "formatYear",
+          "signature": "string formatYear(DateTime date)",
+          "line": 74,
+          "category": "dotnet-format-with-widget-policy"
+        },
+        {
+          "name": "formatCompactDate",
+          "signature": "string formatCompactDate(DateTime date)",
+          "line": 75,
+          "category": "dotnet-format-with-widget-policy"
+        },
+        {
+          "name": "formatShortDate",
+          "signature": "string formatShortDate(DateTime date)",
+          "line": 76,
+          "category": "dotnet-format-with-widget-policy"
+        },
+        {
+          "name": "formatMediumDate",
+          "signature": "string formatMediumDate(DateTime date)",
+          "line": 77,
+          "category": "dotnet-format-with-widget-policy"
+        },
+        {
+          "name": "formatFullDate",
+          "signature": "string formatFullDate(DateTime date)",
+          "line": 78,
+          "category": "dotnet-format-with-widget-policy"
+        },
+        {
+          "name": "formatMonthYear",
+          "signature": "string formatMonthYear(DateTime date)",
+          "line": 79,
+          "category": "dotnet-format-with-widget-policy"
+        },
+        {
+          "name": "formatShortMonthDay",
+          "signature": "string formatShortMonthDay(DateTime date)",
+          "line": 80,
+          "category": "dotnet-format-with-widget-policy"
+        },
+        {
+          "name": "parseCompactDate",
+          "signature": "DateTime? parseCompactDate(string? inputString)",
+          "line": 81,
+          "category": "dotnet-format-with-widget-policy"
+        },
+        {
+          "name": "narrowWeekdays",
+          "signature": "List<string> narrowWeekdays { get; }",
+          "line": 82,
+          "category": "locale-calendar-hour-direction-policy"
+        },
+        {
+          "name": "firstDayOfWeekIndex",
+          "signature": "long firstDayOfWeekIndex { get; }",
+          "line": 83,
+          "category": "locale-calendar-hour-direction-policy"
+        },
+        {
+          "name": "dateSeparator",
+          "signature": "string dateSeparator { get; }",
+          "line": 84,
+          "category": "locale-calendar-hour-direction-policy"
+        },
+        {
+          "name": "dateHelpText",
+          "signature": "string dateHelpText { get; }",
+          "line": 85,
+          "category": "locale-calendar-hour-direction-policy"
+        },
+        {
+          "name": "selectYearSemanticsLabel",
+          "signature": "string selectYearSemanticsLabel { get; }",
+          "line": 86,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "unspecifiedDate",
+          "signature": "string unspecifiedDate { get; }",
+          "line": 87,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "unspecifiedDateRange",
+          "signature": "string unspecifiedDateRange { get; }",
+          "line": 88,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "dateInputLabel",
+          "signature": "string dateInputLabel { get; }",
+          "line": 89,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "dateRangeStartLabel",
+          "signature": "string dateRangeStartLabel { get; }",
+          "line": 90,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "dateRangeEndLabel",
+          "signature": "string dateRangeEndLabel { get; }",
+          "line": 91,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "dateRangeStartDateSemanticLabel",
+          "signature": "string dateRangeStartDateSemanticLabel(string formattedDate)",
+          "line": 92,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "dateRangeEndDateSemanticLabel",
+          "signature": "string dateRangeEndDateSemanticLabel(string formattedDate)",
+          "line": 93,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "invalidDateFormatLabel",
+          "signature": "string invalidDateFormatLabel { get; }",
+          "line": 94,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "invalidDateRangeLabel",
+          "signature": "string invalidDateRangeLabel { get; }",
+          "line": 95,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "dateOutOfRangeLabel",
+          "signature": "string dateOutOfRangeLabel { get; }",
+          "line": 96,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "saveButtonLabel",
+          "signature": "string saveButtonLabel { get; }",
+          "line": 97,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "datePickerHelpText",
+          "signature": "string datePickerHelpText { get; }",
+          "line": 98,
+          "category": "dotnet-format-with-widget-policy"
+        },
+        {
+          "name": "dateRangePickerHelpText",
+          "signature": "string dateRangePickerHelpText { get; }",
+          "line": 99,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "calendarModeButtonLabel",
+          "signature": "string calendarModeButtonLabel { get; }",
+          "line": 100,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "inputDateModeButtonLabel",
+          "signature": "string inputDateModeButtonLabel { get; }",
+          "line": 101,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "timePickerDialHelpText",
+          "signature": "string timePickerDialHelpText { get; }",
+          "line": 102,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "timePickerInputHelpText",
+          "signature": "string timePickerInputHelpText { get; }",
+          "line": 103,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "timePickerHourLabel",
+          "signature": "string timePickerHourLabel { get; }",
+          "line": 104,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "timePickerMinuteLabel",
+          "signature": "string timePickerMinuteLabel { get; }",
+          "line": 105,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "invalidTimeLabel",
+          "signature": "string invalidTimeLabel { get; }",
+          "line": 106,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "dialModeButtonLabel",
+          "signature": "string dialModeButtonLabel { get; }",
+          "line": 107,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "inputTimeModeButtonLabel",
+          "signature": "string inputTimeModeButtonLabel { get; }",
+          "line": 108,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "signedInLabel",
+          "signature": "string signedInLabel { get; }",
+          "line": 109,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "hideAccountsLabel",
+          "signature": "string hideAccountsLabel { get; }",
+          "line": 110,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "showAccountsLabel",
+          "signature": "string showAccountsLabel { get; }",
+          "line": 111,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "reorderItemToStart",
+          "signature": "string reorderItemToStart { get; }",
+          "line": 112,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "reorderItemToEnd",
+          "signature": "string reorderItemToEnd { get; }",
+          "line": 113,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "reorderItemUp",
+          "signature": "string reorderItemUp { get; }",
+          "line": 114,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "reorderItemDown",
+          "signature": "string reorderItemDown { get; }",
+          "line": 115,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "reorderItemLeft",
+          "signature": "string reorderItemLeft { get; }",
+          "line": 116,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "reorderItemRight",
+          "signature": "string reorderItemRight { get; }",
+          "line": 117,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "expandedIconTapHint",
+          "signature": "string expandedIconTapHint { get; }",
+          "line": 118,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "collapsedIconTapHint",
+          "signature": "string collapsedIconTapHint { get; }",
+          "line": 119,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "expansionTileExpandedHint",
+          "signature": "string expansionTileExpandedHint { get; }",
+          "line": 120,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "expansionTileCollapsedHint",
+          "signature": "string expansionTileCollapsedHint { get; }",
+          "line": 121,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "expansionTileExpandedTapHint",
+          "signature": "string expansionTileExpandedTapHint { get; }",
+          "line": 122,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "expansionTileCollapsedTapHint",
+          "signature": "string expansionTileCollapsedTapHint { get; }",
+          "line": 123,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "expandedHint",
+          "signature": "string expandedHint { get; }",
+          "line": 124,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "collapsedHint",
+          "signature": "string collapsedHint { get; }",
+          "line": 125,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "remainingTextFieldCharacterCount",
+          "signature": "string remainingTextFieldCharacterCount(long remaining)",
+          "line": 126,
+          "category": "message-with-cardinal-or-number"
+        },
+        {
+          "name": "refreshIndicatorSemanticLabel",
+          "signature": "string refreshIndicatorSemanticLabel { get; }",
+          "line": 127,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyAlt",
+          "signature": "string keyboardKeyAlt { get; }",
+          "line": 128,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyAltGraph",
+          "signature": "string keyboardKeyAltGraph { get; }",
+          "line": 129,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyBackspace",
+          "signature": "string keyboardKeyBackspace { get; }",
+          "line": 130,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyCapsLock",
+          "signature": "string keyboardKeyCapsLock { get; }",
+          "line": 131,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyChannelDown",
+          "signature": "string keyboardKeyChannelDown { get; }",
+          "line": 132,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyChannelUp",
+          "signature": "string keyboardKeyChannelUp { get; }",
+          "line": 133,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyControl",
+          "signature": "string keyboardKeyControl { get; }",
+          "line": 134,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyDelete",
+          "signature": "string keyboardKeyDelete { get; }",
+          "line": 135,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyEject",
+          "signature": "string keyboardKeyEject { get; }",
+          "line": 136,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyEnd",
+          "signature": "string keyboardKeyEnd { get; }",
+          "line": 137,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyEscape",
+          "signature": "string keyboardKeyEscape { get; }",
+          "line": 138,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyFn",
+          "signature": "string keyboardKeyFn { get; }",
+          "line": 139,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyHome",
+          "signature": "string keyboardKeyHome { get; }",
+          "line": 140,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyInsert",
+          "signature": "string keyboardKeyInsert { get; }",
+          "line": 141,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyMeta",
+          "signature": "string keyboardKeyMeta { get; }",
+          "line": 142,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyMetaMacOs",
+          "signature": "string keyboardKeyMetaMacOs { get; }",
+          "line": 143,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyMetaWindows",
+          "signature": "string keyboardKeyMetaWindows { get; }",
+          "line": 144,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyNumLock",
+          "signature": "string keyboardKeyNumLock { get; }",
+          "line": 145,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyNumpad1",
+          "signature": "string keyboardKeyNumpad1 { get; }",
+          "line": 146,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyNumpad2",
+          "signature": "string keyboardKeyNumpad2 { get; }",
+          "line": 147,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyNumpad3",
+          "signature": "string keyboardKeyNumpad3 { get; }",
+          "line": 148,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyNumpad4",
+          "signature": "string keyboardKeyNumpad4 { get; }",
+          "line": 149,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyNumpad5",
+          "signature": "string keyboardKeyNumpad5 { get; }",
+          "line": 150,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyNumpad6",
+          "signature": "string keyboardKeyNumpad6 { get; }",
+          "line": 151,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyNumpad7",
+          "signature": "string keyboardKeyNumpad7 { get; }",
+          "line": 152,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyNumpad8",
+          "signature": "string keyboardKeyNumpad8 { get; }",
+          "line": 153,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyNumpad9",
+          "signature": "string keyboardKeyNumpad9 { get; }",
+          "line": 154,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyNumpad0",
+          "signature": "string keyboardKeyNumpad0 { get; }",
+          "line": 155,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyNumpadAdd",
+          "signature": "string keyboardKeyNumpadAdd { get; }",
+          "line": 156,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyNumpadComma",
+          "signature": "string keyboardKeyNumpadComma { get; }",
+          "line": 157,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyNumpadDecimal",
+          "signature": "string keyboardKeyNumpadDecimal { get; }",
+          "line": 158,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyNumpadDivide",
+          "signature": "string keyboardKeyNumpadDivide { get; }",
+          "line": 159,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyNumpadEnter",
+          "signature": "string keyboardKeyNumpadEnter { get; }",
+          "line": 160,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyNumpadEqual",
+          "signature": "string keyboardKeyNumpadEqual { get; }",
+          "line": 161,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyNumpadMultiply",
+          "signature": "string keyboardKeyNumpadMultiply { get; }",
+          "line": 162,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyNumpadParenLeft",
+          "signature": "string keyboardKeyNumpadParenLeft { get; }",
+          "line": 163,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyNumpadParenRight",
+          "signature": "string keyboardKeyNumpadParenRight { get; }",
+          "line": 164,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyNumpadSubtract",
+          "signature": "string keyboardKeyNumpadSubtract { get; }",
+          "line": 165,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyPageDown",
+          "signature": "string keyboardKeyPageDown { get; }",
+          "line": 166,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyPageUp",
+          "signature": "string keyboardKeyPageUp { get; }",
+          "line": 167,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyPower",
+          "signature": "string keyboardKeyPower { get; }",
+          "line": 168,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyPowerOff",
+          "signature": "string keyboardKeyPowerOff { get; }",
+          "line": 169,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyPrintScreen",
+          "signature": "string keyboardKeyPrintScreen { get; }",
+          "line": 170,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyScrollLock",
+          "signature": "string keyboardKeyScrollLock { get; }",
+          "line": 171,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeySelect",
+          "signature": "string keyboardKeySelect { get; }",
+          "line": 172,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeyShift",
+          "signature": "string keyboardKeyShift { get; }",
+          "line": 173,
+          "category": "translated-message-or-interpolation"
+        },
+        {
+          "name": "keyboardKeySpace",
+          "signature": "string keyboardKeySpace { get; }",
+          "line": 174,
+          "category": "translated-message-or-interpolation"
+        }
+      ]
+    }
+  }
+}

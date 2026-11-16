@@ -10,6 +10,15 @@ Doroti is independently implemented. Reference checkouts are not runtime depende
 - License: BSD 3-Clause; see [the retained license](LICENSES/Flutter-LICENSE.md). The optional reference checkout is prepared separately.
 - Copyright: Copyright 2014 The Flutter Authors
 
+## CLDR cardinal plural subset
+
+- Unicode CLDR 49, revision `96e54b273d2da4ec6fbad350ba19ff23fa24a588`.
+- Source: https://github.com/unicode-org/cldr/blob/96e54b273d2da4ec6fbad350ba19ff23fa24a588/common/supplemental/plurals.xml
+- Use: independently transcribed cardinal conditions for en, ko, ru and ar in `Doroti.Intl/CardinalPlural.cs`.
+- License: Unicode-3.0; see [the retained license](LICENSES/Unicode-3.0.txt).
+- Source/license hashes and manual regeneration procedure: [plural-provenance.json](src/Doroti.Intl/data/plural-provenance.json).
+- This subset supplies no date/number data, ordinal rules, runtime message parser or text shaping engine.
+
 ## Flutter rounded superellipse paths
 
 - Upstream: Flutter engine `lib/web_ui/lib/rsuperellipse_param.dart`, revision `35e669cfa38f3f66d1a743486c1ddceed23f0841`

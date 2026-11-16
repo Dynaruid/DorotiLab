@@ -13,7 +13,11 @@ namespace DorotiDemoApp;
 internal static class App
 {
     internal static Func<IDorotiViewEntrypoint> Definition =>
+#if DOROTI_INTL_RENDER_PROBE
+        () => new DorotiWidgetEntrypoint(() => new IntlRenderProbe(), PrepareResourcesAsync);
+#else
         () => new DorotiWidgetEntrypoint(() => new DemoApplication(), PrepareResourcesAsync);
+#endif
 
     internal static DorotiViewConfiguration ViewConfiguration { get; } =
         new(

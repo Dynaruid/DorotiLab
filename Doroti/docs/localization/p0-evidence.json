@@ -1,0 +1,1646 @@
+{
+  "schema": 1,
+  "recordedDate": "2026-11-16",
+  "baseCommit": "520945c31dee17403fd0be188dc3e966b70b07cd",
+  "status": "PARTIAL",
+  "formatAndDataContract": "passed within listed P0 profiles",
+  "hardwarePerformanceAccepted": false,
+  "individualLayoutP95Measured": false,
+  "complexTextAccepted": false,
+  "laterPhases": "P1-P5 not implemented",
+  "artifactPolicy": "Raw artifacts and the local Linux SDK are disposable. This tracked summary preserves decisions and selected results, not the full raw traces or distributions.",
+  "native": {
+    "windows": {
+      "status": "passed",
+      "sdk": "10.0.403",
+      "environment": {
+        "Runtime": ".NET 10.0.15",
+        "OperatingSystem": "Microsoft Windows 10.0.26300",
+        "IcuModules": [
+          "C:\\WINDOWS\\SYSTEM32\\icu.dll (72, 1, 0, 4 (WinBuild.160101.0800))"
+        ],
+        "Cultures": [
+          {
+            "Name": "en-US",
+            "January": "January",
+            "Morning": "AM",
+            "Evening": "PM",
+            "ShortDatePattern": "M/d/yyyy",
+            "ShortTimePattern": "h:mm tt",
+            "Calendar": "GregorianCalendar",
+            "Currency": "$1,234.50",
+            "Number": "1,234,567.50"
+          },
+          {
+            "Name": "ko-KR",
+            "January": "1월",
+            "Morning": "오전",
+            "Evening": "오후",
+            "ShortDatePattern": "yyyy. M. d.",
+            "ShortTimePattern": "tt h:mm",
+            "Calendar": "GregorianCalendar",
+            "Currency": "₩1,235",
+            "Number": "1,234,567.50"
+          },
+          {
+            "Name": "fr-FR",
+            "January": "janvier",
+            "Morning": "AM",
+            "Evening": "PM",
+            "ShortDatePattern": "dd/MM/yyyy",
+            "ShortTimePattern": "HH:mm",
+            "Calendar": "GregorianCalendar",
+            "Currency": "1 234,50 €",
+            "Number": "1 234 567,50"
+          },
+          {
+            "Name": "hi-IN",
+            "January": "जनवरी",
+            "Morning": "am",
+            "Evening": "pm",
+            "ShortDatePattern": "d/M/yyyy",
+            "ShortTimePattern": "h:mm tt",
+            "Calendar": "GregorianCalendar",
+            "Currency": "₹1,234.50",
+            "Number": "12,34,567.50"
+          },
+          {
+            "Name": "th-TH",
+            "January": "มกราคม",
+            "Morning": "ก่อนเที่ยง",
+            "Evening": "หลังเที่ยง",
+            "ShortDatePattern": "d/M/yyyy",
+            "ShortTimePattern": "HH:mm",
+            "Calendar": "ThaiBuddhistCalendar",
+            "Currency": "฿1,234.50",
+            "Number": "1,234,567.50"
+          }
+        ]
+      },
+      "contract": {
+        "Runtime": ".NET 10.0.15",
+        "OperatingSystem": "Microsoft Windows 10.0.26300",
+        "Architecture": "X64",
+        "SortVersion": "31129/00007999-0000-0000-0000-000000000409",
+        "Checks": 124,
+        "PluralFixtures": 39,
+        "ParallelTasks": 16,
+        "FirstContractFormatterMicroseconds": 27907.4,
+        "FormatterCacheState": "fresh-process",
+        "English": {
+          "Locale": "en-US",
+          "Calendar": "GregorianCalendar",
+          "CompactDate": "02/29/2024",
+          "FullDate": "Thursday, February 29, 2024",
+          "Currency": "$1,234.50",
+          "CurrencyCode": "USD",
+          "CurrencyCodePoints": "U+0024 U+0031 U+002C U+0032 U+0033 U+0034 U+002E U+0035 U+0030",
+          "Percent": "12.5%",
+          "PercentCodePoints": "U+0031 U+0032 U+002E U+0035 U+0025",
+          "Time12": "1:05 PM",
+          "Time24": "13:05"
+        },
+        "Korean": {
+          "Locale": "ko-KR",
+          "Calendar": "GregorianCalendar",
+          "CompactDate": "2024. 02. 29.",
+          "FullDate": "2024년 2월 29일 목요일",
+          "Currency": "₩1,235",
+          "CurrencyCode": "KRW",
+          "CurrencyCodePoints": "U+20A9 U+0031 U+002C U+0032 U+0033 U+0035",
+          "Percent": "12.5%",
+          "PercentCodePoints": "U+0031 U+0032 U+002E U+0035 U+0025",
+          "Time12": "오후 1:05",
+          "Time24": "13:05"
+        },
+        "AdapterCost": {
+          "Samples": 30,
+          "P50Microseconds": 0.1,
+          "P95Microseconds": 0.3,
+          "AllocatedBytes": 1200
+        },
+        "DirectNetCost": {
+          "Samples": 30,
+          "P50Microseconds": 0.1,
+          "P95Microseconds": 3.8,
+          "AllocatedBytes": 1200
+        }
+      },
+      "trimContract": {
+        "Runtime": ".NET 10.0.14",
+        "OperatingSystem": "Microsoft Windows 10.0.26300",
+        "Architecture": "X64",
+        "SortVersion": "31129/00007999-0000-0000-0000-000000000409",
+        "Checks": 124,
+        "PluralFixtures": 39,
+        "ParallelTasks": 16,
+        "FirstContractFormatterMicroseconds": 92591.3,
+        "FormatterCacheState": "fresh-process",
+        "English": {
+          "Locale": "en-US",
+          "Calendar": "GregorianCalendar",
+          "CompactDate": "02/29/2024",
+          "FullDate": "Thursday, February 29, 2024",
+          "Currency": "$1,234.50",
+          "CurrencyCode": "USD",
+          "CurrencyCodePoints": "U+0024 U+0031 U+002C U+0032 U+0033 U+0034 U+002E U+0035 U+0030",
+          "Percent": "12.5%",
+          "PercentCodePoints": "U+0031 U+0032 U+002E U+0035 U+0025",
+          "Time12": "1:05 PM",
+          "Time24": "13:05"
+        },
+        "Korean": {
+          "Locale": "ko-KR",
+          "Calendar": "GregorianCalendar",
+          "CompactDate": "2024. 02. 29.",
+          "FullDate": "2024년 2월 29일 목요일",
+          "Currency": "₩1,235",
+          "CurrencyCode": "KRW",
+          "CurrencyCodePoints": "U+20A9 U+0031 U+002C U+0032 U+0033 U+0035",
+          "Percent": "12.5%",
+          "PercentCodePoints": "U+0031 U+0032 U+002E U+0035 U+0025",
+          "Time12": "오후 1:05",
+          "Time24": "13:05"
+        },
+        "AdapterCost": {
+          "Samples": 30,
+          "P50Microseconds": 0.6,
+          "P95Microseconds": 10.3,
+          "AllocatedBytes": 1200
+        },
+        "DirectNetCost": {
+          "Samples": 30,
+          "P50Microseconds": 0.5,
+          "P95Microseconds": 1,
+          "AllocatedBytes": 1200
+        }
+      },
+      "aotContract": {
+        "Runtime": ".NET 10.0.14",
+        "OperatingSystem": "Microsoft Windows 10.0.26300",
+        "Architecture": "X64",
+        "SortVersion": "31129/00007999-0000-0000-0000-000000000409",
+        "Checks": 124,
+        "PluralFixtures": 39,
+        "ParallelTasks": 16,
+        "FirstContractFormatterMicroseconds": 22826.4,
+        "FormatterCacheState": "fresh-process",
+        "English": {
+          "Locale": "en-US",
+          "Calendar": "GregorianCalendar",
+          "CompactDate": "02/29/2024",
+          "FullDate": "Thursday, February 29, 2024",
+          "Currency": "$1,234.50",
+          "CurrencyCode": "USD",
+          "CurrencyCodePoints": "U+0024 U+0031 U+002C U+0032 U+0033 U+0034 U+002E U+0035 U+0030",
+          "Percent": "12.5%",
+          "PercentCodePoints": "U+0031 U+0032 U+002E U+0035 U+0025",
+          "Time12": "1:05 PM",
+          "Time24": "13:05"
+        },
+        "Korean": {
+          "Locale": "ko-KR",
+          "Calendar": "GregorianCalendar",
+          "CompactDate": "2024. 02. 29.",
+          "FullDate": "2024년 2월 29일 목요일",
+          "Currency": "₩1,235",
+          "CurrencyCode": "KRW",
+          "CurrencyCodePoints": "U+20A9 U+0031 U+002C U+0032 U+0033 U+0035",
+          "Percent": "12.5%",
+          "PercentCodePoints": "U+0031 U+0032 U+002E U+0035 U+0025",
+          "Time12": "오후 1:05",
+          "Time24": "13:05"
+        },
+        "AdapterCost": {
+          "Samples": 30,
+          "P50Microseconds": 0.1,
+          "P95Microseconds": 0.5,
+          "AllocatedBytes": 1200
+        },
+        "DirectNetCost": {
+          "Samples": 30,
+          "P50Microseconds": 0.1,
+          "P95Microseconds": 0.1,
+          "AllocatedBytes": 1200
+        }
+      },
+      "packageConsumer": {
+        "Runtime": ".NET 10.0.15",
+        "OperatingSystem": "Microsoft Windows 10.0.26300",
+        "Architecture": "X64",
+        "SortVersion": "31129/00007999-0000-0000-0000-000000000409",
+        "Checks": 124,
+        "PluralFixtures": 39,
+        "ParallelTasks": 16,
+        "FirstContractFormatterMicroseconds": 35221.3,
+        "FormatterCacheState": "fresh-process",
+        "English": {
+          "Locale": "en-US",
+          "Calendar": "GregorianCalendar",
+          "CompactDate": "02/29/2024",
+          "FullDate": "Thursday, February 29, 2024",
+          "Currency": "$1,234.50",
+          "CurrencyCode": "USD",
+          "CurrencyCodePoints": "U+0024 U+0031 U+002C U+0032 U+0033 U+0034 U+002E U+0035 U+0030",
+          "Percent": "12.5%",
+          "PercentCodePoints": "U+0031 U+0032 U+002E U+0035 U+0025",
+          "Time12": "1:05 PM",
+          "Time24": "13:05"
+        },
+        "Korean": {
+          "Locale": "ko-KR",
+          "Calendar": "GregorianCalendar",
+          "CompactDate": "2024. 02. 29.",
+          "FullDate": "2024년 2월 29일 목요일",
+          "Currency": "₩1,235",
+          "CurrencyCode": "KRW",
+          "CurrencyCodePoints": "U+20A9 U+0031 U+002C U+0032 U+0033 U+0035",
+          "Percent": "12.5%",
+          "PercentCodePoints": "U+0031 U+0032 U+002E U+0035 U+0025",
+          "Time12": "오후 1:05",
+          "Time24": "13:05"
+        },
+        "AdapterCost": {
+          "Samples": 30,
+          "P50Microseconds": 0.1,
+          "P95Microseconds": 0.3,
+          "AllocatedBytes": 1200
+        },
+        "DirectNetCost": {
+          "Samples": 30,
+          "P50Microseconds": 0.1,
+          "P95Microseconds": 3.9,
+          "AllocatedBytes": 1200
+        }
+      },
+      "trimSize": {
+        "scope": "Published files excluding symbols and compression sidecars; gzip per file, not measured install/download size.",
+        "groups": {
+          "native": {
+            "files": 16,
+            "bytes": 17340160,
+            "sumGzipBytes": 8079407
+          },
+          "managed-pe-including-r2r": {
+            "files": 24,
+            "bytes": 3453952,
+            "sumGzipBytes": 1301888
+          },
+          "static-and-metadata": {
+            "files": 4,
+            "bytes": 12498,
+            "sumGzipBytes": 3841
+          }
+        },
+        "icu": []
+      },
+      "aotSize": {
+        "scope": "Published files excluding symbols and compression sidecars; gzip per file, not measured install/download size.",
+        "groups": {
+          "native": {
+            "files": 1,
+            "bytes": 2990080,
+            "sumGzipBytes": 1336708
+          },
+          "static-and-metadata": {
+            "files": 2,
+            "bytes": 4687,
+            "sumGzipBytes": 2381
+          }
+        },
+        "icu": []
+      },
+      "package": {
+        "name": "Doroti.Intl.0.4.1-beta.nupkg",
+        "bytes": 13754,
+        "sha256": "3fc4e8e9e1294dd8a17a854512446c1b63b99beadd260f41049e60534dde6646"
+      }
+    },
+    "linux": {
+      "status": "passed",
+      "sdk": "10.0.403",
+      "environment": {
+        "Runtime": ".NET 10.0.14",
+        "OperatingSystem": "Ubuntu 26.04 LTS",
+        "IcuModules": [
+          "/usr/lib/x86_64-linux-gnu/libicui18n.so.78.2 ()",
+          "/usr/lib/x86_64-linux-gnu/libicudata.so.78.2 ()",
+          "/usr/lib/x86_64-linux-gnu/libicuuc.so.78.2 ()"
+        ],
+        "Cultures": [
+          {
+            "Name": "en-US",
+            "January": "January",
+            "Morning": "AM",
+            "Evening": "PM",
+            "ShortDatePattern": "M/d/yyyy",
+            "ShortTimePattern": "h:mm tt",
+            "Calendar": "GregorianCalendar",
+            "Currency": "$1,234.50",
+            "Number": "1,234,567.50"
+          },
+          {
+            "Name": "ko-KR",
+            "January": "1월",
+            "Morning": "AM",
+            "Evening": "PM",
+            "ShortDatePattern": "yyyy. M. d.",
+            "ShortTimePattern": "tt h:mm",
+            "Calendar": "GregorianCalendar",
+            "Currency": "₩1,235",
+            "Number": "1,234,567.50"
+          },
+          {
+            "Name": "fr-FR",
+            "January": "janvier",
+            "Morning": "AM",
+            "Evening": "PM",
+            "ShortDatePattern": "dd/MM/yyyy",
+            "ShortTimePattern": "HH:mm",
+            "Calendar": "GregorianCalendar",
+            "Currency": "1 234,50 €",
+            "Number": "1 234 567,50"
+          },
+          {
+            "Name": "hi-IN",
+            "January": "जनवरी",
+            "Morning": "am",
+            "Evening": "pm",
+            "ShortDatePattern": "d/M/yyyy",
+            "ShortTimePattern": "h:mm tt",
+            "Calendar": "GregorianCalendar",
+            "Currency": "₹1,234.50",
+            "Number": "12,34,567.50"
+          },
+          {
+            "Name": "th-TH",
+            "January": "มกราคม",
+            "Morning": "AM",
+            "Evening": "PM",
+            "ShortDatePattern": "d/M/yyyy",
+            "ShortTimePattern": "HH:mm",
+            "Calendar": "ThaiBuddhistCalendar",
+            "Currency": "฿1,234.50",
+            "Number": "1,234,567.50"
+          }
+        ]
+      },
+      "contract": {
+        "Runtime": ".NET 10.0.14",
+        "OperatingSystem": "Ubuntu 26.04 LTS",
+        "Architecture": "X64",
+        "SortVersion": "34969/00008899-0000-0000-0000-000000000409",
+        "Checks": 124,
+        "PluralFixtures": 39,
+        "ParallelTasks": 16,
+        "FirstContractFormatterMicroseconds": 11590.1,
+        "FormatterCacheState": "fresh-process",
+        "English": {
+          "Locale": "en-US",
+          "Calendar": "GregorianCalendar",
+          "CompactDate": "02/29/2024",
+          "FullDate": "Thursday, February 29, 2024",
+          "Currency": "$1,234.50",
+          "CurrencyCode": "USD",
+          "CurrencyCodePoints": "U+0024 U+0031 U+002C U+0032 U+0033 U+0034 U+002E U+0035 U+0030",
+          "Percent": "12.5%",
+          "PercentCodePoints": "U+0031 U+0032 U+002E U+0035 U+0025",
+          "Time12": "1:05 PM",
+          "Time24": "13:05"
+        },
+        "Korean": {
+          "Locale": "ko-KR",
+          "Calendar": "GregorianCalendar",
+          "CompactDate": "2024. 02. 29.",
+          "FullDate": "2024년 2월 29일 목요일",
+          "Currency": "₩1,235",
+          "CurrencyCode": "KRW",
+          "CurrencyCodePoints": "U+20A9 U+0031 U+002C U+0032 U+0033 U+0035",
+          "Percent": "12.5%",
+          "PercentCodePoints": "U+0031 U+0032 U+002E U+0035 U+0025",
+          "Time12": "PM 1:05",
+          "Time24": "13:05"
+        },
+        "AdapterCost": {
+          "Samples": 30,
+          "P50Microseconds": 0,
+          "P95Microseconds": 9.4,
+          "AllocatedBytes": 1200
+        },
+        "DirectNetCost": {
+          "Samples": 30,
+          "P50Microseconds": 0,
+          "P95Microseconds": 0.3,
+          "AllocatedBytes": 1200
+        }
+      },
+      "trimContract": {
+        "Runtime": ".NET 10.0.14",
+        "OperatingSystem": "Ubuntu 26.04 LTS",
+        "Architecture": "X64",
+        "SortVersion": "34969/00008899-0000-0000-0000-000000000409",
+        "Checks": 124,
+        "PluralFixtures": 39,
+        "ParallelTasks": 16,
+        "FirstContractFormatterMicroseconds": 52302.3,
+        "FormatterCacheState": "fresh-process",
+        "English": {
+          "Locale": "en-US",
+          "Calendar": "GregorianCalendar",
+          "CompactDate": "02/29/2024",
+          "FullDate": "Thursday, February 29, 2024",
+          "Currency": "$1,234.50",
+          "CurrencyCode": "USD",
+          "CurrencyCodePoints": "U+0024 U+0031 U+002C U+0032 U+0033 U+0034 U+002E U+0035 U+0030",
+          "Percent": "12.5%",
+          "PercentCodePoints": "U+0031 U+0032 U+002E U+0035 U+0025",
+          "Time12": "1:05 PM",
+          "Time24": "13:05"
+        },
+        "Korean": {
+          "Locale": "ko-KR",
+          "Calendar": "GregorianCalendar",
+          "CompactDate": "2024. 02. 29.",
+          "FullDate": "2024년 2월 29일 목요일",
+          "Currency": "₩1,235",
+          "CurrencyCode": "KRW",
+          "CurrencyCodePoints": "U+20A9 U+0031 U+002C U+0032 U+0033 U+0035",
+          "Percent": "12.5%",
+          "PercentCodePoints": "U+0031 U+0032 U+002E U+0035 U+0025",
+          "Time12": "PM 1:05",
+          "Time24": "13:05"
+        },
+        "AdapterCost": {
+          "Samples": 30,
+          "P50Microseconds": 0.3,
+          "P95Microseconds": 0.6,
+          "AllocatedBytes": 1200
+        },
+        "DirectNetCost": {
+          "Samples": 30,
+          "P50Microseconds": 0.3,
+          "P95Microseconds": 11.7,
+          "AllocatedBytes": 1200
+        }
+      },
+      "aotContract": {
+        "Runtime": ".NET 10.0.14",
+        "OperatingSystem": "Ubuntu 26.04 LTS",
+        "Architecture": "X64",
+        "SortVersion": "34969/00008899-0000-0000-0000-000000000409",
+        "Checks": 124,
+        "PluralFixtures": 39,
+        "ParallelTasks": 16,
+        "FirstContractFormatterMicroseconds": 13580.9,
+        "FormatterCacheState": "fresh-process",
+        "English": {
+          "Locale": "en-US",
+          "Calendar": "GregorianCalendar",
+          "CompactDate": "02/29/2024",
+          "FullDate": "Thursday, February 29, 2024",
+          "Currency": "$1,234.50",
+          "CurrencyCode": "USD",
+          "CurrencyCodePoints": "U+0024 U+0031 U+002C U+0032 U+0033 U+0034 U+002E U+0035 U+0030",
+          "Percent": "12.5%",
+          "PercentCodePoints": "U+0031 U+0032 U+002E U+0035 U+0025",
+          "Time12": "1:05 PM",
+          "Time24": "13:05"
+        },
+        "Korean": {
+          "Locale": "ko-KR",
+          "Calendar": "GregorianCalendar",
+          "CompactDate": "2024. 02. 29.",
+          "FullDate": "2024년 2월 29일 목요일",
+          "Currency": "₩1,235",
+          "CurrencyCode": "KRW",
+          "CurrencyCodePoints": "U+20A9 U+0031 U+002C U+0032 U+0033 U+0035",
+          "Percent": "12.5%",
+          "PercentCodePoints": "U+0031 U+0032 U+002E U+0035 U+0025",
+          "Time12": "PM 1:05",
+          "Time24": "13:05"
+        },
+        "AdapterCost": {
+          "Samples": 30,
+          "P50Microseconds": 0,
+          "P95Microseconds": 0.1,
+          "AllocatedBytes": 1200
+        },
+        "DirectNetCost": {
+          "Samples": 30,
+          "P50Microseconds": 0,
+          "P95Microseconds": 0,
+          "AllocatedBytes": 1200
+        }
+      },
+      "packageConsumer": {
+        "Runtime": ".NET 10.0.14",
+        "OperatingSystem": "Ubuntu 26.04 LTS",
+        "Architecture": "X64",
+        "SortVersion": "34969/00008899-0000-0000-0000-000000000409",
+        "Checks": 124,
+        "PluralFixtures": 39,
+        "ParallelTasks": 16,
+        "FirstContractFormatterMicroseconds": 13745.7,
+        "FormatterCacheState": "fresh-process",
+        "English": {
+          "Locale": "en-US",
+          "Calendar": "GregorianCalendar",
+          "CompactDate": "02/29/2024",
+          "FullDate": "Thursday, February 29, 2024",
+          "Currency": "$1,234.50",
+          "CurrencyCode": "USD",
+          "CurrencyCodePoints": "U+0024 U+0031 U+002C U+0032 U+0033 U+0034 U+002E U+0035 U+0030",
+          "Percent": "12.5%",
+          "PercentCodePoints": "U+0031 U+0032 U+002E U+0035 U+0025",
+          "Time12": "1:05 PM",
+          "Time24": "13:05"
+        },
+        "Korean": {
+          "Locale": "ko-KR",
+          "Calendar": "GregorianCalendar",
+          "CompactDate": "2024. 02. 29.",
+          "FullDate": "2024년 2월 29일 목요일",
+          "Currency": "₩1,235",
+          "CurrencyCode": "KRW",
+          "CurrencyCodePoints": "U+20A9 U+0031 U+002C U+0032 U+0033 U+0035",
+          "Percent": "12.5%",
+          "PercentCodePoints": "U+0031 U+0032 U+002E U+0035 U+0025",
+          "Time12": "PM 1:05",
+          "Time24": "13:05"
+        },
+        "AdapterCost": {
+          "Samples": 30,
+          "P50Microseconds": 0,
+          "P95Microseconds": 13.6,
+          "AllocatedBytes": 1200
+        },
+        "DirectNetCost": {
+          "Samples": 30,
+          "P50Microseconds": 0,
+          "P95Microseconds": 0.2,
+          "AllocatedBytes": 1200
+        }
+      },
+      "trimSize": {
+        "scope": "Published files excluding symbols and compression sidecars; gzip per file, not measured install/download size.",
+        "groups": {
+          "static-and-metadata": {
+            "files": 6,
+            "bytes": 201357,
+            "sumGzipBytes": 89205
+          },
+          "managed-pe-including-r2r": {
+            "files": 24,
+            "bytes": 3506176,
+            "sumGzipBytes": 1330492
+          },
+          "native": {
+            "files": 14,
+            "bytes": 20804720,
+            "sumGzipBytes": 8372339
+          }
+        },
+        "icu": []
+      },
+      "aotSize": {
+        "scope": "Published files excluding symbols and compression sidecars; gzip per file, not measured install/download size.",
+        "groups": {
+          "static-and-metadata": {
+            "files": 4,
+            "bytes": 10093447,
+            "sumGzipBytes": 5054058
+          }
+        },
+        "icu": []
+      },
+      "package": {
+        "name": "Doroti.Intl.0.4.1-beta.nupkg",
+        "bytes": 13745,
+        "sha256": "697988ad543f8cac65efa2ee788b4a225db1e4ef022f97a9fb873cf39d4d07ef"
+      }
+    }
+  },
+  "webMatrix": [
+    {
+      "unit": "web-sdk10-compatible-debug",
+      "status": "passed",
+      "configuration": {
+        "TargetFramework": "net10.0",
+        "RuntimeFrameworkVersion": "10.0.15",
+        "InvariantGlobalization": "false",
+        "WasmEnableThreads": "false",
+        "WasmBuildNative": "false",
+        "RunAOTCompilation": "",
+        "BlazorWebAssemblyLoadAllGlobalizationData": "true",
+        "BlazorIcuDataFileName": ""
+      },
+      "runtime": {
+        "productVersion": "10.0.15",
+        "gitHash": "8e0f8ed2312954727f8919d7d1c2f78b483b4ee7",
+        "buildConfiguration": "Release",
+        "wasmEnableThreads": false,
+        "wasmEnableSIMD": true,
+        "wasmEnableExceptionHandling": true
+      },
+      "result": "passed",
+      "checks": 124,
+      "pluralFixtures": 39,
+      "concurrentTasks": 0,
+      "requestedIcu": [
+        "/_framework/icudt.oh1zvcfom8.dat"
+      ],
+      "errors": [],
+      "publishSize": {
+        "scope": "Published files excluding symbols and compression sidecars; gzip per file, not measured install/download size.",
+        "groups": {
+          "static-and-metadata": {
+            "files": 7,
+            "bytes": 496485,
+            "sumGzipBytes": 138453
+          },
+          "managed-webcil": {
+            "files": 15,
+            "bytes": 1807419,
+            "sumGzipBytes": 695753
+          },
+          "native": {
+            "files": 1,
+            "bytes": 3002122,
+            "sumGzipBytes": 1182999
+          },
+          "icu-data": {
+            "files": 1,
+            "bytes": 1526128,
+            "sumGzipBytes": 456868
+          }
+        },
+        "icu": [
+          {
+            "path": "_framework\\icudt.oh1zvcfom8.dat",
+            "bytes": 1526128,
+            "sha256": "b4ee4ee58ccc4d549a2816e8c40a9ecce40bf5ec26ba9cd5d89ac1e5191cf1ae"
+          }
+        ]
+      }
+    },
+    {
+      "unit": "web-sdk10-compatible-release",
+      "status": "passed",
+      "configuration": {
+        "TargetFramework": "net10.0",
+        "RuntimeFrameworkVersion": "10.0.15",
+        "InvariantGlobalization": "false",
+        "WasmEnableThreads": "false",
+        "WasmBuildNative": "true",
+        "RunAOTCompilation": "true",
+        "BlazorWebAssemblyLoadAllGlobalizationData": "true",
+        "BlazorIcuDataFileName": ""
+      },
+      "runtime": {
+        "productVersion": "10.0.15",
+        "gitHash": "8e0f8ed2312954727f8919d7d1c2f78b483b4ee7",
+        "buildConfiguration": "Release",
+        "wasmEnableThreads": false,
+        "wasmEnableSIMD": true,
+        "wasmEnableExceptionHandling": true
+      },
+      "result": "passed",
+      "checks": 124,
+      "pluralFixtures": 39,
+      "concurrentTasks": 0,
+      "requestedIcu": [
+        "/_framework/icudt.oh1zvcfom8.dat"
+      ],
+      "errors": [],
+      "publishSize": {
+        "scope": "Published files excluding symbols and compression sidecars; gzip per file, not measured install/download size.",
+        "groups": {
+          "static-and-metadata": {
+            "files": 6,
+            "bytes": 531355,
+            "sumGzipBytes": 141506
+          },
+          "managed-webcil": {
+            "files": 12,
+            "bytes": 1520892,
+            "sumGzipBytes": 449494
+          },
+          "native": {
+            "files": 1,
+            "bytes": 8018477,
+            "sumGzipBytes": 2670245
+          },
+          "icu-data": {
+            "files": 1,
+            "bytes": 1526128,
+            "sumGzipBytes": 456868
+          }
+        },
+        "icu": [
+          {
+            "path": "_framework\\icudt.oh1zvcfom8.dat",
+            "bytes": 1526128,
+            "sha256": "b4ee4ee58ccc4d549a2816e8c40a9ecce40bf5ec26ba9cd5d89ac1e5191cf1ae"
+          }
+        ]
+      }
+    },
+    {
+      "unit": "web-sdk10-threaded-debug",
+      "status": "passed",
+      "configuration": {
+        "TargetFramework": "net10.0",
+        "RuntimeFrameworkVersion": "10.0.15",
+        "InvariantGlobalization": "false",
+        "WasmEnableThreads": "true",
+        "WasmBuildNative": "false",
+        "RunAOTCompilation": "",
+        "BlazorWebAssemblyLoadAllGlobalizationData": "true",
+        "BlazorIcuDataFileName": ""
+      },
+      "runtime": {
+        "productVersion": "10.0.15",
+        "gitHash": "8e0f8ed2312954727f8919d7d1c2f78b483b4ee7",
+        "buildConfiguration": "Release",
+        "wasmEnableThreads": true,
+        "wasmEnableSIMD": true,
+        "wasmEnableExceptionHandling": true
+      },
+      "result": "passed",
+      "checks": 124,
+      "pluralFixtures": 39,
+      "concurrentTasks": 16,
+      "requestedIcu": [
+        "/_framework/icudt.oh1zvcfom8.dat"
+      ],
+      "errors": [],
+      "publishSize": {
+        "scope": "Published files excluding symbols and compression sidecars; gzip per file, not measured install/download size.",
+        "groups": {
+          "static-and-metadata": {
+            "files": 9,
+            "bytes": 590076,
+            "sumGzipBytes": 165396
+          },
+          "managed-webcil": {
+            "files": 16,
+            "bytes": 1962320,
+            "sumGzipBytes": 757049
+          },
+          "native": {
+            "files": 1,
+            "bytes": 3090864,
+            "sumGzipBytes": 1205580
+          },
+          "icu-data": {
+            "files": 1,
+            "bytes": 1526128,
+            "sumGzipBytes": 456868
+          }
+        },
+        "icu": [
+          {
+            "path": "_framework\\icudt.oh1zvcfom8.dat",
+            "bytes": 1526128,
+            "sha256": "b4ee4ee58ccc4d549a2816e8c40a9ecce40bf5ec26ba9cd5d89ac1e5191cf1ae"
+          }
+        ]
+      }
+    },
+    {
+      "unit": "web-sdk10-threaded-release",
+      "status": "passed",
+      "configuration": {
+        "TargetFramework": "net10.0",
+        "RuntimeFrameworkVersion": "10.0.15",
+        "InvariantGlobalization": "false",
+        "WasmEnableThreads": "true",
+        "WasmBuildNative": "true",
+        "RunAOTCompilation": "true",
+        "BlazorWebAssemblyLoadAllGlobalizationData": "true",
+        "BlazorIcuDataFileName": ""
+      },
+      "runtime": {
+        "productVersion": "10.0.15",
+        "gitHash": "8e0f8ed2312954727f8919d7d1c2f78b483b4ee7",
+        "buildConfiguration": "Release",
+        "wasmEnableThreads": true,
+        "wasmEnableSIMD": true,
+        "wasmEnableExceptionHandling": true
+      },
+      "result": "passed",
+      "checks": 124,
+      "pluralFixtures": 39,
+      "concurrentTasks": 16,
+      "requestedIcu": [
+        "/_framework/icudt.oh1zvcfom8.dat"
+      ],
+      "errors": [],
+      "publishSize": {
+        "scope": "Published files excluding symbols and compression sidecars; gzip per file, not measured install/download size.",
+        "groups": {
+          "static-and-metadata": {
+            "files": 7,
+            "bytes": 515972,
+            "sumGzipBytes": 136997
+          },
+          "managed-webcil": {
+            "files": 13,
+            "bytes": 1634321,
+            "sumGzipBytes": 484513
+          },
+          "native": {
+            "files": 1,
+            "bytes": 8519918,
+            "sumGzipBytes": 2811014
+          },
+          "icu-data": {
+            "files": 1,
+            "bytes": 1526128,
+            "sumGzipBytes": 456868
+          }
+        },
+        "icu": [
+          {
+            "path": "_framework\\icudt.oh1zvcfom8.dat",
+            "bytes": 1526128,
+            "sha256": "b4ee4ee58ccc4d549a2816e8c40a9ecce40bf5ec26ba9cd5d89ac1e5191cf1ae"
+          }
+        ]
+      }
+    },
+    {
+      "unit": "web-sdk11-compatible-debug",
+      "status": "passed",
+      "configuration": {
+        "TargetFramework": "net10.0",
+        "RuntimeFrameworkVersion": "10.0.15",
+        "InvariantGlobalization": "false",
+        "WasmEnableThreads": "false",
+        "WasmBuildNative": "false",
+        "RunAOTCompilation": "",
+        "BlazorWebAssemblyLoadAllGlobalizationData": "true",
+        "BlazorIcuDataFileName": ""
+      },
+      "runtime": {
+        "productVersion": "10.0.15",
+        "gitHash": "8e0f8ed2312954727f8919d7d1c2f78b483b4ee7",
+        "buildConfiguration": "Release",
+        "wasmEnableThreads": false,
+        "wasmEnableSIMD": true,
+        "wasmEnableExceptionHandling": true
+      },
+      "result": "passed",
+      "checks": 124,
+      "pluralFixtures": 39,
+      "concurrentTasks": 0,
+      "requestedIcu": [
+        "/_framework/icudt.oh1zvcfom8.dat"
+      ],
+      "errors": [],
+      "publishSize": {
+        "scope": "Published files excluding symbols and compression sidecars; gzip per file, not measured install/download size.",
+        "groups": {
+          "static-and-metadata": {
+            "files": 6,
+            "bytes": 452525,
+            "sumGzipBytes": 124965
+          },
+          "managed-webcil": {
+            "files": 14,
+            "bytes": 2285862,
+            "sumGzipBytes": 873186
+          },
+          "native": {
+            "files": 1,
+            "bytes": 3002122,
+            "sumGzipBytes": 1182999
+          },
+          "icu-data": {
+            "files": 1,
+            "bytes": 1526128,
+            "sumGzipBytes": 456868
+          }
+        },
+        "icu": [
+          {
+            "path": "_framework\\icudt.oh1zvcfom8.dat",
+            "bytes": 1526128,
+            "sha256": "b4ee4ee58ccc4d549a2816e8c40a9ecce40bf5ec26ba9cd5d89ac1e5191cf1ae"
+          }
+        ]
+      }
+    },
+    {
+      "unit": "web-sdk11-compatible-release",
+      "status": "passed",
+      "configuration": {
+        "TargetFramework": "net10.0",
+        "RuntimeFrameworkVersion": "10.0.15",
+        "InvariantGlobalization": "false",
+        "WasmEnableThreads": "false",
+        "WasmBuildNative": "true",
+        "RunAOTCompilation": "true",
+        "BlazorWebAssemblyLoadAllGlobalizationData": "true",
+        "BlazorIcuDataFileName": ""
+      },
+      "runtime": {
+        "productVersion": "10.0.15",
+        "gitHash": "8e0f8ed2312954727f8919d7d1c2f78b483b4ee7",
+        "buildConfiguration": "Release",
+        "wasmEnableThreads": false,
+        "wasmEnableSIMD": true,
+        "wasmEnableExceptionHandling": true
+      },
+      "result": "passed",
+      "checks": 124,
+      "pluralFixtures": 39,
+      "concurrentTasks": 0,
+      "requestedIcu": [
+        "/_framework/icudt.oh1zvcfom8.dat"
+      ],
+      "errors": [],
+      "publishSize": {
+        "scope": "Published files excluding symbols and compression sidecars; gzip per file, not measured install/download size.",
+        "groups": {
+          "static-and-metadata": {
+            "files": 6,
+            "bytes": 531962,
+            "sumGzipBytes": 141612
+          },
+          "managed-webcil": {
+            "files": 13,
+            "bytes": 2060305,
+            "sumGzipBytes": 599958
+          },
+          "native": {
+            "files": 1,
+            "bytes": 9471867,
+            "sumGzipBytes": 3130884
+          },
+          "icu-data": {
+            "files": 1,
+            "bytes": 1526128,
+            "sumGzipBytes": 456868
+          }
+        },
+        "icu": [
+          {
+            "path": "_framework\\icudt.oh1zvcfom8.dat",
+            "bytes": 1526128,
+            "sha256": "b4ee4ee58ccc4d549a2816e8c40a9ecce40bf5ec26ba9cd5d89ac1e5191cf1ae"
+          }
+        ]
+      }
+    },
+    {
+      "unit": "web-sdk11-threaded-debug",
+      "status": "passed",
+      "configuration": {
+        "TargetFramework": "net10.0",
+        "RuntimeFrameworkVersion": "10.0.15",
+        "InvariantGlobalization": "false",
+        "WasmEnableThreads": "true",
+        "WasmBuildNative": "false",
+        "RunAOTCompilation": "",
+        "BlazorWebAssemblyLoadAllGlobalizationData": "true",
+        "BlazorIcuDataFileName": ""
+      },
+      "runtime": {
+        "productVersion": "10.0.15",
+        "gitHash": "8e0f8ed2312954727f8919d7d1c2f78b483b4ee7",
+        "buildConfiguration": "Release",
+        "wasmEnableThreads": true,
+        "wasmEnableSIMD": true,
+        "wasmEnableExceptionHandling": true
+      },
+      "result": "passed",
+      "checks": 124,
+      "pluralFixtures": 39,
+      "concurrentTasks": 16,
+      "requestedIcu": [
+        "/_framework/icudt.oh1zvcfom8.dat"
+      ],
+      "errors": [],
+      "publishSize": {
+        "scope": "Published files excluding symbols and compression sidecars; gzip per file, not measured install/download size.",
+        "groups": {
+          "static-and-metadata": {
+            "files": 7,
+            "bytes": 496826,
+            "sumGzipBytes": 136835
+          },
+          "managed-webcil": {
+            "files": 15,
+            "bytes": 2380859,
+            "sumGzipBytes": 913902
+          },
+          "native": {
+            "files": 1,
+            "bytes": 3090864,
+            "sumGzipBytes": 1205580
+          },
+          "icu-data": {
+            "files": 1,
+            "bytes": 1526128,
+            "sumGzipBytes": 456868
+          }
+        },
+        "icu": [
+          {
+            "path": "_framework\\icudt.oh1zvcfom8.dat",
+            "bytes": 1526128,
+            "sha256": "b4ee4ee58ccc4d549a2816e8c40a9ecce40bf5ec26ba9cd5d89ac1e5191cf1ae"
+          }
+        ]
+      }
+    },
+    {
+      "unit": "web-sdk11-threaded-release",
+      "status": "passed",
+      "configuration": {
+        "TargetFramework": "net10.0",
+        "RuntimeFrameworkVersion": "10.0.15",
+        "InvariantGlobalization": "false",
+        "WasmEnableThreads": "true",
+        "WasmBuildNative": "true",
+        "RunAOTCompilation": "true",
+        "BlazorWebAssemblyLoadAllGlobalizationData": "true",
+        "BlazorIcuDataFileName": ""
+      },
+      "runtime": {
+        "productVersion": "10.0.15",
+        "gitHash": "8e0f8ed2312954727f8919d7d1c2f78b483b4ee7",
+        "buildConfiguration": "Release",
+        "wasmEnableThreads": true,
+        "wasmEnableSIMD": true,
+        "wasmEnableExceptionHandling": true
+      },
+      "result": "passed",
+      "checks": 124,
+      "pluralFixtures": 39,
+      "concurrentTasks": 16,
+      "requestedIcu": [
+        "/_framework/icudt.oh1zvcfom8.dat"
+      ],
+      "errors": [],
+      "publishSize": {
+        "scope": "Published files excluding symbols and compression sidecars; gzip per file, not measured install/download size.",
+        "groups": {
+          "static-and-metadata": {
+            "files": 7,
+            "bytes": 516579,
+            "sumGzipBytes": 137105
+          },
+          "managed-webcil": {
+            "files": 14,
+            "bytes": 2148134,
+            "sumGzipBytes": 630963
+          },
+          "native": {
+            "files": 1,
+            "bytes": 9942024,
+            "sumGzipBytes": 3261984
+          },
+          "icu-data": {
+            "files": 1,
+            "bytes": 1526128,
+            "sumGzipBytes": 456868
+          }
+        },
+        "icu": [
+          {
+            "path": "_framework\\icudt.oh1zvcfom8.dat",
+            "bytes": 1526128,
+            "sha256": "b4ee4ee58ccc4d549a2816e8c40a9ecce40bf5ec26ba9cd5d89ac1e5191cf1ae"
+          }
+        ]
+      }
+    }
+  ],
+  "dataFixtures": [
+    {
+      "unit": "web-sdk10-compatible-debug-icudt_CJK",
+      "status": "passed",
+      "configuration": {
+        "TargetFramework": "net10.0",
+        "RuntimeFrameworkVersion": "10.0.15",
+        "InvariantGlobalization": "false",
+        "WasmEnableThreads": "false",
+        "WasmBuildNative": "false",
+        "RunAOTCompilation": "",
+        "BlazorWebAssemblyLoadAllGlobalizationData": "",
+        "BlazorIcuDataFileName": "icudt_CJK.dat"
+      },
+      "runtime": {
+        "productVersion": "10.0.15",
+        "gitHash": "8e0f8ed2312954727f8919d7d1c2f78b483b4ee7",
+        "buildConfiguration": "Release",
+        "wasmEnableThreads": false,
+        "wasmEnableSIMD": true,
+        "wasmEnableExceptionHandling": true
+      },
+      "result": "passed",
+      "checks": 124,
+      "pluralFixtures": 39,
+      "concurrentTasks": 0,
+      "requestedIcu": [
+        "/_framework/icudt_CJK.tjcz0u77k5.dat"
+      ],
+      "errors": [],
+      "publishSize": {
+        "scope": "Published files excluding symbols and compression sidecars; gzip per file, not measured install/download size.",
+        "groups": {
+          "static-and-metadata": {
+            "files": 6,
+            "bytes": 452276,
+            "sumGzipBytes": 124913
+          },
+          "managed-webcil": {
+            "files": 13,
+            "bytes": 1735697,
+            "sumGzipBytes": 667565
+          },
+          "native": {
+            "files": 1,
+            "bytes": 3002122,
+            "sumGzipBytes": 1182999
+          },
+          "icu-data": {
+            "files": 1,
+            "bytes": 956416,
+            "sumGzipBytes": 329303
+          }
+        },
+        "icu": [
+          {
+            "path": "_framework\\icudt_CJK.tjcz0u77k5.dat",
+            "bytes": 956416,
+            "sha256": "4992ed42745cd09930a8769bd155153fb4f7b813d2798cf1cc39e9c4fa549c79"
+          }
+        ]
+      }
+    },
+    {
+      "unit": "web-sdk10-compatible-debug-icudt_EFIGS",
+      "status": "passed",
+      "configuration": {
+        "TargetFramework": "net10.0",
+        "RuntimeFrameworkVersion": "10.0.15",
+        "InvariantGlobalization": "false",
+        "WasmEnableThreads": "false",
+        "WasmBuildNative": "false",
+        "RunAOTCompilation": "",
+        "BlazorWebAssemblyLoadAllGlobalizationData": "",
+        "BlazorIcuDataFileName": "icudt_EFIGS.dat"
+      },
+      "runtime": {
+        "productVersion": "10.0.15",
+        "gitHash": "8e0f8ed2312954727f8919d7d1c2f78b483b4ee7",
+        "buildConfiguration": "Release",
+        "wasmEnableThreads": false,
+        "wasmEnableSIMD": true,
+        "wasmEnableExceptionHandling": true
+      },
+      "result": "failed",
+      "checks": null,
+      "pluralFixtures": null,
+      "concurrentTasks": null,
+      "requestedIcu": [
+        "/_framework/icudt_EFIGS.tptq2av103.dat"
+      ],
+      "errors": [
+        "Error: Required .NET globalization data for ko-KR is unavailable. Invariant mode is not supported."
+      ],
+      "publishSize": {
+        "scope": "Published files excluding symbols and compression sidecars; gzip per file, not measured install/download size.",
+        "groups": {
+          "static-and-metadata": {
+            "files": 6,
+            "bytes": 452280,
+            "sumGzipBytes": 124904
+          },
+          "managed-webcil": {
+            "files": 13,
+            "bytes": 1735697,
+            "sumGzipBytes": 667567
+          },
+          "native": {
+            "files": 1,
+            "bytes": 3002122,
+            "sumGzipBytes": 1182999
+          },
+          "icu-data": {
+            "files": 1,
+            "bytes": 550832,
+            "sumGzipBytes": 195310
+          }
+        },
+        "icu": [
+          {
+            "path": "_framework\\icudt_EFIGS.tptq2av103.dat",
+            "bytes": 550832,
+            "sha256": "f1f22d7ad618f24434c30ea8c704cb893de85e50701caba66de3f6a51178c937"
+          }
+        ]
+      }
+    }
+  ],
+  "firefox": {
+    "unit": "SDK10/net10 compatible Debug",
+    "status": "passed",
+    "scope": "runtime format probe at root/subpath; missing/corrupt startup data"
+  },
+  "demo": {
+    "baseline": {
+      "qualification": "Doroti demo format-only opt-in page; headless software GPU and synthetic button input. No widget translation, physical input, scanout or hardware performance acceptance.",
+      "mode": "compatible",
+      "manifest": {
+        "schemaVersion": 1,
+        "threads": false,
+        "buildId": "16983df55d69428f8617217c983b8088",
+        "runtimeContract": "mono-10",
+        "runtimeVersion": "10.0.15",
+        "provenance": {
+          "sdk": "10.0.403",
+          "targetFramework": "net10.0",
+          "runtimeFlavor": "mono",
+          "runtimePack": "10.0.15",
+          "wasmSdkPack": "10.0.15",
+          "monoTargetsPack": "10.0.15",
+          "emscriptenPack": "10.0.15",
+          "emscriptenVersion": "3.1.56",
+          "configuration": "Debug",
+          "aot": "false",
+          "simd": "true",
+          "interpretWidgetTree": "true"
+        }
+      },
+      "samples": [
+        {
+          "repeat": 1,
+          "browser": "158.0.8127.18",
+          "firstCanvasFrameMs": 4412.79999999702,
+          "managedRasterMs": {
+            "count": 31,
+            "p50": 3,
+            "p95": 18.60009765625
+          },
+          "frameworkFrameCallbackMs": {
+            "count": 31,
+            "p50": 4.89990234375,
+            "p95": 33.800048828125
+          },
+          "encodedTransferBytes": 10814775,
+          "requestedIcu": [
+            "icudt_EFIGS.tptq2av103.dat"
+          ],
+          "koreanInputToCanvasCommitMs": null
+        },
+        {
+          "repeat": 2,
+          "browser": "158.0.8127.18",
+          "firstCanvasFrameMs": 2242.6000000089407,
+          "managedRasterMs": {
+            "count": 32,
+            "p50": 2.699951171875,
+            "p95": 17.5
+          },
+          "frameworkFrameCallbackMs": {
+            "count": 32,
+            "p50": 4.5,
+            "p95": 31.60009765625
+          },
+          "encodedTransferBytes": 10814775,
+          "requestedIcu": [
+            "icudt_EFIGS.tptq2av103.dat"
+          ],
+          "koreanInputToCanvasCommitMs": null
+        },
+        {
+          "repeat": 3,
+          "browser": "158.0.8127.18",
+          "firstCanvasFrameMs": 2395.8999999910593,
+          "managedRasterMs": {
+            "count": 32,
+            "p50": 3.400146484375,
+            "p95": 24.39990234375
+          },
+          "frameworkFrameCallbackMs": {
+            "count": 32,
+            "p50": 5.5,
+            "p95": 47.400146484375
+          },
+          "encodedTransferBytes": 10814775,
+          "requestedIcu": [
+            "icudt_EFIGS.tptq2av103.dat"
+          ],
+          "koreanInputToCanvasCommitMs": null
+        }
+      ],
+      "publishSize": {
+        "scope": "Published files excluding symbols and compression sidecars; gzip per file, not measured install/download size.",
+        "groups": {
+          "static-and-metadata": {
+            "files": 98,
+            "bytes": 1649064,
+            "sumGzipBytes": 391745
+          },
+          "managed-webcil": {
+            "files": 56,
+            "bytes": 16982176,
+            "sumGzipBytes": 6603661
+          },
+          "native": {
+            "files": 1,
+            "bytes": 9791445,
+            "sumGzipBytes": 3544348
+          },
+          "icu-data": {
+            "files": 3,
+            "bytes": 2614416,
+            "sumGzipBytes": 841415
+          }
+        },
+        "icu": [
+          {
+            "path": "_framework\\icudt_CJK.tjcz0u77k5.dat",
+            "bytes": 956416,
+            "sha256": "4992ed42745cd09930a8769bd155153fb4f7b813d2798cf1cc39e9c4fa549c79"
+          },
+          {
+            "path": "_framework\\icudt_EFIGS.tptq2av103.dat",
+            "bytes": 550832,
+            "sha256": "f1f22d7ad618f24434c30ea8c704cb893de85e50701caba66de3f6a51178c937"
+          },
+          {
+            "path": "_framework\\icudt_no_CJK.lfu7j35m59.dat",
+            "bytes": 1107168,
+            "sha256": "2fbb15ecd1183f7eff42bd853c278fa39709a918135d1c061eec05e50fb435fb"
+          }
+        ]
+      },
+      "medianFirstCanvasFrameMs": 2395.8999999910593
+    },
+    "fullData": {
+      "qualification": "Doroti demo format-only opt-in page; headless software GPU and synthetic button input. No widget translation, physical input, scanout or hardware performance acceptance.",
+      "mode": "compatible",
+      "manifest": {
+        "schemaVersion": 1,
+        "threads": false,
+        "buildId": "c1bade256c1e443eb70378cc7a1cac80",
+        "runtimeContract": "mono-10",
+        "runtimeVersion": "10.0.15",
+        "provenance": {
+          "sdk": "10.0.403",
+          "targetFramework": "net10.0",
+          "runtimeFlavor": "mono",
+          "runtimePack": "10.0.15",
+          "wasmSdkPack": "10.0.15",
+          "monoTargetsPack": "10.0.15",
+          "emscriptenPack": "10.0.15",
+          "emscriptenVersion": "3.1.56",
+          "configuration": "Debug",
+          "aot": "false",
+          "simd": "true",
+          "interpretWidgetTree": "true"
+        }
+      },
+      "samples": [
+        {
+          "repeat": 1,
+          "browser": "158.0.8127.18",
+          "firstCanvasFrameMs": 3926.7999999970198,
+          "managedRasterMs": {
+            "count": 31,
+            "p50": 2.7001953125,
+            "p95": 19.5
+          },
+          "frameworkFrameCallbackMs": {
+            "count": 31,
+            "p50": 4.7001953125,
+            "p95": 31.699951171875
+          },
+          "encodedTransferBytes": 11007147,
+          "requestedIcu": [
+            "icudt.oh1zvcfom8.dat"
+          ],
+          "koreanInputToCanvasCommitMs": 65.199951171875
+        },
+        {
+          "repeat": 2,
+          "browser": "158.0.8127.18",
+          "firstCanvasFrameMs": 2325.0999999940395,
+          "managedRasterMs": {
+            "count": 45,
+            "p50": 2.7001953125,
+            "p95": 14.099853515625
+          },
+          "frameworkFrameCallbackMs": {
+            "count": 45,
+            "p50": 4.199951171875,
+            "p95": 33.39990234375
+          },
+          "encodedTransferBytes": 11007148,
+          "requestedIcu": [
+            "icudt.oh1zvcfom8.dat"
+          ],
+          "koreanInputToCanvasCommitMs": 60.800048828125
+        },
+        {
+          "repeat": 3,
+          "browser": "158.0.8127.18",
+          "firstCanvasFrameMs": 2716.0,
+          "managedRasterMs": {
+            "count": 43,
+            "p50": 3.800048828125,
+            "p95": 22.60009765625
+          },
+          "frameworkFrameCallbackMs": {
+            "count": 43,
+            "p50": 6.39990234375,
+            "p95": 56.400146484375
+          },
+          "encodedTransferBytes": 11007148,
+          "requestedIcu": [
+            "icudt.oh1zvcfom8.dat"
+          ],
+          "koreanInputToCanvasCommitMs": 78.0
+        }
+      ],
+      "publishSize": {
+        "scope": "Published files excluding symbols and compression sidecars; gzip per file, not measured install/download size.",
+        "groups": {
+          "static-and-metadata": {
+            "files": 98,
+            "bytes": 1648839,
+            "sumGzipBytes": 391665
+          },
+          "managed-webcil": {
+            "files": 57,
+            "bytes": 16994229,
+            "sumGzipBytes": 6609358
+          },
+          "native": {
+            "files": 1,
+            "bytes": 9792693,
+            "sumGzipBytes": 3544802
+          },
+          "icu-data": {
+            "files": 1,
+            "bytes": 1526128,
+            "sumGzipBytes": 456868
+          }
+        },
+        "icu": [
+          {
+            "path": "_framework\\icudt.oh1zvcfom8.dat",
+            "bytes": 1526128,
+            "sha256": "b4ee4ee58ccc4d549a2816e8c40a9ecce40bf5ec26ba9cd5d89ac1e5191cf1ae"
+          }
+        ]
+      },
+      "medianFirstCanvasFrameMs": 2716.0
+    },
+    "cjkData": {
+      "qualification": "Doroti demo format-only opt-in page; headless software GPU and synthetic button input. No widget translation, physical input, scanout or hardware performance acceptance.",
+      "mode": "compatible",
+      "manifest": {
+        "schemaVersion": 1,
+        "threads": false,
+        "buildId": "d6a55a4e9e2f463196b91f859fa6142d",
+        "runtimeContract": "mono-10",
+        "runtimeVersion": "10.0.15",
+        "provenance": {
+          "sdk": "10.0.403",
+          "targetFramework": "net10.0",
+          "runtimeFlavor": "mono",
+          "runtimePack": "10.0.15",
+          "wasmSdkPack": "10.0.15",
+          "monoTargetsPack": "10.0.15",
+          "emscriptenPack": "10.0.15",
+          "emscriptenVersion": "3.1.56",
+          "configuration": "Debug",
+          "aot": "false",
+          "simd": "true",
+          "interpretWidgetTree": "true"
+        }
+      },
+      "samples": [
+        {
+          "repeat": 1,
+          "browser": "158.0.8127.18",
+          "firstCanvasFrameMs": 4149.29999999702,
+          "managedRasterMs": {
+            "count": 44,
+            "p50": 2.199951171875,
+            "p95": 14.89990234375
+          },
+          "frameworkFrameCallbackMs": {
+            "count": 44,
+            "p50": 3.699951171875,
+            "p95": 30.199951171875
+          },
+          "encodedTransferBytes": 10926213,
+          "requestedIcu": [
+            "icudt_CJK.tjcz0u77k5.dat"
+          ],
+          "koreanInputToCanvasCommitMs": 51.199951171875
+        },
+        {
+          "repeat": 2,
+          "browser": "158.0.8127.18",
+          "firstCanvasFrameMs": 2338.7000000029802,
+          "managedRasterMs": {
+            "count": 35,
+            "p50": 2.39990234375,
+            "p95": 17.400146484375
+          },
+          "frameworkFrameCallbackMs": {
+            "count": 35,
+            "p50": 3.900146484375,
+            "p95": 34.39990234375
+          },
+          "encodedTransferBytes": 10926213,
+          "requestedIcu": [
+            "icudt_CJK.tjcz0u77k5.dat"
+          ],
+          "koreanInputToCanvasCommitMs": 69.60009765625
+        },
+        {
+          "repeat": 3,
+          "browser": "158.0.8127.18",
+          "firstCanvasFrameMs": 2363.0999999940395,
+          "managedRasterMs": {
+            "count": 39,
+            "p50": 2.300048828125,
+            "p95": 19.60009765625
+          },
+          "frameworkFrameCallbackMs": {
+            "count": 39,
+            "p50": 4.5,
+            "p95": 32.5
+          },
+          "encodedTransferBytes": 10926213,
+          "requestedIcu": [
+            "icudt_CJK.tjcz0u77k5.dat"
+          ],
+          "koreanInputToCanvasCommitMs": 45.699951171875
+        }
+      ],
+      "publishSize": {
+        "scope": "Published files excluding symbols and compression sidecars; gzip per file, not measured install/download size.",
+        "groups": {
+          "static-and-metadata": {
+            "files": 98,
+            "bytes": 1648850,
+            "sumGzipBytes": 391671
+          },
+          "managed-webcil": {
+            "files": 57,
+            "bytes": 16994229,
+            "sumGzipBytes": 6609358
+          },
+          "native": {
+            "files": 1,
+            "bytes": 9792693,
+            "sumGzipBytes": 3544802
+          },
+          "icu-data": {
+            "files": 1,
+            "bytes": 956416,
+            "sumGzipBytes": 329303
+          }
+        },
+        "icu": [
+          {
+            "path": "_framework\\icudt_CJK.tjcz0u77k5.dat",
+            "bytes": 956416,
+            "sha256": "4992ed42745cd09930a8769bd155153fb4f7b813d2798cf1cc39e9c4fa549c79"
+          }
+        ]
+      },
+      "medianFirstCanvasFrameMs": 2363.0999999940395
+    }
+  },
+  "defaultDemo": {
+    "build": "passed, 0 warnings and 0 errors",
+    "intlDependencies": []
+  },
+  "sourceSha256RawWorktree": {
+    "Doroti/src/Doroti.Intl/CardinalPlural.cs": "ee903292f3a3832454508c33ae0c732fefe66732a40e5350d05ec8e168cd453a",
+    "Doroti/src/Doroti.Intl/data/plural-provenance.json": "75435adc48398d75c585df482c4f4523bca02c849a90c0ed76e8f681562d0c4b",
+    "Doroti/src/Doroti.Intl/Doroti.Intl.csproj": "9d8973f5483e72c986b392115b78e0d07f7d52f0f71498328ab3b01615b54cce",
+    "Doroti/src/Doroti.Intl/IntlFormatter.cs": "267b0cad741a87965b7e22598747d989e7e5ae1e5aff978a2340bf4de95e4786",
+    "Doroti/tests/Doroti.Intl.Tests/Doroti.Intl.Tests.csproj": "9b8f307a4a981e6f52adc44b0ea51a3b0148e3356d2c35c74dfcba97ec8d064b",
+    "Doroti/tests/Doroti.Intl.Tests/GlobalizationContract.cs": "2bfeaa814f812f38f2ce350507e89c13b18f347d09829d19ea1026206bc3cf6a",
+    "Doroti/tests/Doroti.Intl.Tests/NativeProfile.cs": "e89b563df5ab34b4a6b417c8f29efb0921bfd9edfac0b36e8c4a7c7054bc3050",
+    "Doroti/tests/Doroti.Intl.Tests/Program.cs": "f8eba1af477bdbe6a421b07af78b1b3ab56279abaa21ffdcfed98fb2ebb87981",
+    "Doroti/tests/Doroti.Intl.Web.Tests/Doroti.Intl.Web.Tests.csproj": "aed33afef3812122e49904ec307f34a9466fa458101612664b71cdf5ba42658b",
+    "Doroti/tests/Doroti.Intl.Web.Tests/Program.cs": "9dacb6ade9bb3f64de7b243510fbd57ee8a0609396863d28ff37fdabba04fe60",
+    "Doroti/tests/Doroti.Intl.Web.Tests/wwwroot/index.html": "303555d5d537bfeeb691937247881d4c153bc622a895ee5b914b0a3209bfe9c6",
+    "Doroti/tests/Doroti.Intl.Web.Tests/wwwroot/probe.js": "80675b41656296c76358b5134f65d69851cd85f367be4a5ffecf0c71be731c3e",
+    "samples/DorotiDemoApp/assets/fonts/Roboto-regular.ttf": "79e851404657dac2106b3d22ad256d47824a9a5765458edb72c9102a45816d95",
+    "samples/DorotiDemoApp/src/IntlRenderProbe.cs": "1b2790f91f9374ee9a6b35590feaf329952f3040c3fdf2231a50e8a4459191f7"
+  }
+}

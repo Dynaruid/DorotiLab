@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Doroti.Intl</AssemblyName>
+    <PackageId>Doroti.Intl</PackageId>
+    <IsDorotiProduct>true</IsDorotiProduct>
+    <IsAotCompatible>true</IsAotCompatible>
+    <Description>Explicit .NET formatting and a pinned cardinal plural subset for Doroti.</Description>
+    <DorotiPackageReadmeSource>$(MSBuildProjectDirectory)/README.md</DorotiPackageReadmeSource>
+  </PropertyGroup>
+  <ItemGroup>
+    <DorotiLicense Include="../../LICENSES/Unicode-3.0.txt" />
+    <None Include="data/plural-provenance.json" Pack="true" PackagePath="provenance/" />
+  </ItemGroup>
+</Project>

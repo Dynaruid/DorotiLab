@@ -6,9 +6,16 @@
     <DorotiUseRepositoryProjects>true</DorotiUseRepositoryProjects>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(DorotiIntlProbe)' == 'baseline' or '$(DorotiIntlProbe)' == 'adapter'">
+    <DefineConstants>$(DefineConstants);DOROTI_INTL_RENDER_PROBE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(DorotiIntlProbe)' == 'adapter'">
+    <DefineConstants>$(DefineConstants);DOROTI_INTL_RENDER_ADAPTER</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../Doroti/src/Doroti.Hosting/Doroti.Hosting.csproj" />
     <ProjectReference Include="../../packages/Doroti.Material/Doroti.Material.csproj" />
+    <ProjectReference Include="../../Doroti/src/Doroti.Intl/Doroti.Intl.csproj" Condition="'$(DorotiIntlProbe)' == 'adapter'" />
     <EmbeddedResource Include="assets/fonts/Roboto-*.ttf" LogicalName="MaterialSample.%(Filename)%(Extension)" />
     <EmbeddedResource Include="assets/images/mae-mu-9002s2VnOAY-unsplash.webp" LogicalName="MaterialSample.image.webp" />
     <DorotiLicense Include="src/Components/LICENSE.flutter;assets/fonts/LICENSE.roboto.txt" />

@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RuntimeFrameworkVersion>10.0.15</RuntimeFrameworkVersion>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+    <UseMonoRuntime>true</UseMonoRuntime>
+    <WasmEnableThreads Condition="'$(WasmEnableThreads)' == ''">false</WasmEnableThreads>
+    <WasmBuildNative Condition="'$(WasmBuildNative)' == '' and '$(Configuration)' == 'Release'">true</WasmBuildNative>
+    <WasmBuildNative Condition="'$(WasmBuildNative)' == ''">false</WasmBuildNative>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <BlazorEnableTimeZoneSupport>true</BlazorEnableTimeZoneSupport>
+    <UseIntlProbe Condition="'$(UseIntlProbe)' == ''">true</UseIntlProbe>
+    <!-- Use the real Blazor SDK setting. This test app opts in; English apps are unaffected. -->
+    <BlazorWebAssemblyLoadAllGlobalizationData Condition="'$(UseIntlProbe)' == 'true' and '$(BlazorIcuDataFileName)' == ''">true</BlazorWebAssemblyLoadAllGlobalizationData>
+    <RunAOTCompilation Condition="'$(Configuration)' == 'Release' and '$(RunAOTCompilation)' == ''">true</RunAOTCompilation>
+    <DefineConstants Condition="'$(UseIntlProbe)' == 'true'">$(DefineConstants);DOROTI_INTL_PROBE</DefineConstants>
+    <DefineConstants Condition="'$(WasmEnableThreads)' == 'true'">$(DefineConstants);DOROTI_INTL_THREADS</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="$(RuntimeFrameworkVersion)" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(UseIntlProbe)' == 'true'">
+    <ProjectReference Include="../../src/Doroti.Intl/Doroti.Intl.csproj" />
+    <Compile Include="../Doroti.Intl.Tests/GlobalizationContract.cs" Link="GlobalizationContract.cs" />
+  </ItemGroup>
+</Project>

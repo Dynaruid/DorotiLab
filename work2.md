@@ -3,7 +3,7 @@
 - 작성일: 2026-11-13
 - 검토 기준: DorotiLab `0a7fdcfe2ffa`, 현재 제품 소스와 공식 upstream 문서·소스
 - 채택 방향: **.NET 우선 + 부족한 국제화 기능만 보강.** 이전의 Dart `intl` 관리형 이식 우선안을 대체한다.
-- 상태: **설계 방향 확정, 구현 미착수. 제품 구현·성능 측정·플랫폼 실행 검증은 하지 않았다.**
+- 상태: **PARTIAL — P0 포맷/데이터 시범 구현과 기능 검증 완료 (2026-11-16). 성능 인수는 미완료이며 P1–P5는 미착수이다.** 실제 코드·실행 범위·측정값·남은 작업은 §14에 기록했다. 아래 §0–§13은 2026-11-13에 정한 설계·인수 계획이며 전체 구현 완료를 뜻하지 않는다.
 
 ## 0. 요약과 채택 결정
 
@@ -400,7 +400,7 @@ ICU MessageFormat 전체, Flutter parser 문법, MessageFormat 2는 동일하지
 
 ## 10. 검증 계획과 완료 기준
 
-이 절은 **향후 구현의 인수 계획**이다. 이번 문서 작성에서 테스트를 실행했다는 뜻이 아니다.
+이 절은 **2026-11-13에 정한 구현 인수 계획**이다. 2026-11-16에 실제 실행한 검증과 미실행 범위는 §14에 별도로 기록한다.
 
 ### 10.1 핵심 케이스
 
@@ -475,7 +475,7 @@ profile 내 문자열 비교는 공백·방향 제어 문자까지 확인한다.
 - 런타임 실패를 영어 fallback·기존 renderer로 조용히 숨기기.
 - 이 작업과 무관한 SDK/runtime major upgrade 또는 전체 렌더러 재작성.
 
-**다음 구현 착수 단위는 P0이다.** .NET culture·포맷·달력 정책과 Web의 실제 ICU 데이터부터 검증한 뒤, 얇은 어댑터·번역·최소 plural 보강을 진행한다. paragraph 연결 가능성은 복잡문자 지원을 위한 별도 P4 트랙에서 판정한다. 이 결정 변경은 문서에 반영한 것이며 제품 코드를 구현했다는 뜻은 아니다.
+**2026-11-13 결정 당시 첫 구현 착수 단위는 P0였고 제품 코드는 미구현이었다.** .NET culture·포맷·달력 정책과 Web의 실제 ICU 데이터부터 검증하며, paragraph 연결 가능성은 별도 P4 트랙에서 판정한다. 이후 P0 구현·검증 기록은 §14를 따른다.
 
 ## 13. 외부 근거
 
@@ -502,3 +502,93 @@ profile 내 문자열 비교는 공백·방향 제어 문자까지 확인한다.
 - **[U2] UTS #35 / CLDR 49 Numbers:** 숫자 형식과 plural 명세. <https://www.unicode.org/reports/tr35/tr35-79/tr35-numbers.html>
 - **[A1] ICU4N upstream README:** ICU4J 60.1 부분 포팅, 진행 상태와 resource 배포. <https://github.com/NightOwl888/ICU4N>
 - **[A2] ICU4X upstream README:** Rust 구현, 모듈성·데이터 provider와 다언어 목표. <https://github.com/unicode-org/icu4x>
+
+## 14. 2026-11-16 P0 실행 결과
+
+### 14.1 구현한 범위
+
+기준 checkout은 `520945c31dee17403fd0be188dc3e966b70b07cd`이며 이 절의 변경은 그 위의 작업 트리이다. 문서에서 첫 착수 단위로 지정한 **P0의 .NET 포맷·데이터 계약과 시범 구현**을 진행했다. 전체 계획 상태는 **PARTIAL**이다. 위젯 번역 패키지·ARB 생성기·새 paragraph backend가 구현되었다는 뜻이 아니다.
+
+- [Doroti.Intl](Doroti/src/Doroti.Intl/README.md): en-US/ko-KR 전용의 읽기 전용 culture, 명시적 .NET 숫자·통화·percent·날짜·시간 포맷, Gregorian/12·24시간/zero padding, canonical strict date parsing을 추가했다. 현재는 .NET만 참조하며 Widgets/Skia/host 의존성이 없다. 필요하지 않은 Runtime 참조도 아직 추가하지 않았다.
+- `en`/`ko`의 지역 선택, 입력 타입·범위·precision, 미지원 culture·패턴 처리와 .NET 데이터 차이를 [P0 계약](Doroti/docs/localization/p0-contract.md)에 고정했다. 이 선택 로직은 P1의 공통 BCP 47 파서가 아니다.
+- CLDR 49의 en/ko/ru/ar cardinal subset을 고정 revision·원본 SHA-256·Unicode 라이선스와 함께 구현했다. `decimal` scale을 visible precision으로 보존하고, 정확한 숫자 분기와 category를 구분하며, 전역 mutable operand를 사용하지 않는다. 전체 intl/ICU 메시지 엔진은 추가하지 않았다.
+- [리소스 inventory](Doroti/docs/localization/widget-inventory.json): Widgets 17개, Cupertino 45개, Material 157개, 합계 **219개** public abstract/virtual 멤버의 위치·signature·분류·소스 hash를 추출했다. source hash는 LF/UTF-8로 정규화하여 Windows/Linux checkout 차이를 제거하며 포맷 출력 문자는 정규화하지 않는다.
+- 공통 native/runtime-only Web 계약 검사와 [bounded 실행기](Doroti/eng/validate-intl.py)를 추가했다. SDK·mode·configuration별 중간 산출물을 분리하고, 각 자식 명령은 기존 `run-with-timeout.py`의 외부 1,200초 timeout과 프로세스 트리 종료를 사용한다.
+- Demo에 `DorotiIntlProbe=baseline|adapter`로만 선택되는 [포맷 측정 페이지](samples/DorotiDemoApp/src/IntlRenderProbe.cs)를 추가했다. 같은 레이아웃·Roboto·영어 문자열로 기존 DefaultMaterial 포맷과 새 어댑터를 비교한다. 기본 Components gallery와 기존 기본 delegate를 교체하지 않는다.
+- 로컬 NuGet 패키지의 provenance·Unicode 라이선스 전달과 solution 등록을 추가했다. 원래의 Skia 등 다른 notice 버전 정리는 범위에 넣지 않았다.
+
+### 14.2 실제 통과한 검증
+
+선택 결과·culture 문자열의 실제 code point·ICU 파일 hash·배포 크기·소스 identity는 추적되는 [p0-evidence.json](Doroti/docs/localization/p0-evidence.json)에 보존했다. `Doroti/artifacts/intl-p0`의 원시 로그·trace·publish 결과·스크린샷은 삭제 가능한 로컬 산출물이다. 이 summary는 원시 자료 전체를 보존한다는 뜻이 아니다.
+
+| 구분 | 실제 결과와 경계 |
+| --- | --- |
+| Windows 공통 계약 | .NET 10.0.15, OS ICU 72.1.0.4. 124개 조건 검사(39개 plural fixture 포함), 별도 오류 조건, 16개 Task 호출 통과 |
+| Windows trim/NativeAOT | SDK 10.0.403의 10.0.14 self-contained/ILCompiler cohort에서 publish 후 같은 계약 실행 통과 |
+| Linux 공통·trim·NativeAOT | WSL Ubuntu 26.04, SDK 10.0.403, .NET 10.0.14, 실제 `libicu*.so.78.2` 로드. 같은 계약 실행 통과 |
+| NuGet 소비 | Windows/Linux에서 repository ProjectReference 없는 별도 소비 프로젝트의 restore·컴파일·계약 실행과 Unicode 라이선스 전달 통과 |
+| 불변 모드 | `PredefinedCulturesOnly=false`에서도 named invariant culture를 정상 데이터로 받아들이지 않고 명시적 오류 처리 |
+| net10 Web 행렬 | SDK 10.0.403 / SDK 11.0.100 × compatible/threaded × Debug/Release Mono AOT의 **8개 조합** publish·Chromium 실행 통과. 각 root와 `/demo/` 경로에서 영어 시작 후 한국어 전환, 포맷/fixture, threaded의 16개 Task 완료 확인 |
+| Firefox | SDK10/net10 compatible Debug의 runtime-only probe에서 같은 전환·하위 경로·누락/손상 시작 데이터 검사 통과. 전체 Firefox 행렬을 실행한 것은 아님 |
+| CJK subset | SDK10/net10 compatible Debug에서 실제 `icudt_CJK.tjcz0u77k5.dat` 요청 후 en-US→ko-KR 통과. runtime-only probe와 실제 Demo 양쪽에서 확인 |
+| 미지원 데이터 | EFIGS만 선택한 동일 Debug probe는 영어로 시작한 후 한국어 전환에 명시적으로 실패하고 이전 출력만 유지. 파일 누락·SRI 불일치/손상은 정상 영어 출력으로 숨기지 않음 |
+| 실제 Doroti 렌더링 | SDK10/net10 compatible Debug의 baseline/full/CJK 페이지에서 실제 canvas commit, 날짜 변경과 한국어 glyph 표시 확인. 각 최종 측정은 새 브라우저 3회, 회당 영어 날짜 변경 12회이며 실기기 입력 검증은 아님 |
+| 기본 Demo | opt-in 없이 앱 빌드 통과(경고/오류 0). 저장한 기본 `deps.json`에 Doroti.Intl 의존성이 없고 baseline publish에도 Intl WebCIL이 없음을 확인 |
+| 문서·소스 inventory | Windows/WSL의 inventory `--check`, Git LF checkout과 source identity 비교, script 구문·컴파일 검사, diff 공백 검사 통과 |
+
+이 Web 8개 행렬은 **Intl runtime probe**의 인수이다. Doroti render Worker/Skia 전체 행렬, net11 제품 qualification, Android/Apple/Qt UI 실행이나 물리 IME·접근성 인수로 확대하지 않는다. 실제 renderer 비교는 위 표에 적은 compatible Debug Demo 범위이다.
+
+검증 중 발견한 차이·실패는 다음과 같이 처리했다.
+
+- Linux ICU 78.2의 한국어 AM/PM 데이터는 `AM/PM`이고 Windows/Web 검증 profile은 `오전/오후`이다. 처음의 AM 문자열 canary는 이 정상 profile 차이를 데이터 누락으로 오판했으므로 제거했다. culture 존재와 현지화 월 데이터 검사는 유지하며, 시간 문구는 .NET 출력 그대로 사용한다.
+- threaded WASM의 동기 C# export 호출은 거부되므로 probe의 JS 경계를 `Task` export/`await`로 바꿨다. 제품의 worker 소유권이나 비공개 runtime API를 변경하지 않았다.
+- .NET 10에서 ICU download/integrity 오류 후 `create()`가 완료되지 않는 경우가 있어 probe에 별도 30초 시작 진단을 두었다. 제품 loader 전체의 복구 인수를 완료했다고 보지 않는다.
+- 처음 Linux SDK 10.0.400의 AOT compiler audit 차단을 경고 억제로 통과시키지 않았다. 검증 전용 SDK 10.0.403 cohort로 재실행했다. 마지막 SDK는 `/home/parti/.cache/doroti/intl-dotnet10`에 있으며 system SDK/global.json은 바꾸지 않았다.
+- 초기 Linux `/tmp`의 SDK·원시 산출물은 최종 보존 확인에서 남아 있지 않았다. 그 파일을 보존했다고 보고하지 않는다. 동일 검증을 재실행하여 **최종** Linux 결과를 `Doroti/artifacts/intl-p0/linux-final/native-sdk10-compatible-debug`에 저장했고 이 실행을 evidence에 반영했다.
+
+### 14.3 크기와 초기 측정
+
+아래는 Windows의 headless Chromium/동일 Demo 측정 페이지, compatible Debug, 새 브라우저 3회 결과이다. `first canvas frame`은 host의 실제 첫 commit marker이며 localized semantics도 확인했지만 물리 scanout 시간은 아니다. framework callback은 build/layout/paint-recording을 포함하는 callback 전체이며 **개별 layout p95가 아니다**. raster는 별도 Skia paint 경로 시간이다.
+
+| 항목 | 기존 영어 포맷 | 어댑터 + full ICU | 어댑터 + 검증한 CJK |
+| --- | ---: | ---: | ---: |
+| 첫 canvas frame 중앙값, ms | 2395.9 | 2716.0 | 2363.1 |
+| framework callback p95, 3회 각각 ms | 33.8 / 31.6 / 47.4 | 31.7 / 33.4 / 56.4 | 30.2 / 34.4 / 32.5 |
+| managed raster p95, 3회 각각 ms | 18.6 / 17.5 / 24.4 | 19.5 / 14.1 / 22.6 | 14.9 / 17.4 / 19.6 |
+| 실제 요청의 encoded body 합계 중앙값, bytes | 10,814,775 | 11,007,148 | 10,926,213 |
+| 배포 ICU 파일 총 bytes | 2,614,416 (기본 3 subset) | 1,526,128 | 956,416 |
+| 배포 managed WebCIL 총 bytes | 16,982,176 | 16,994,229 | 16,994,229 |
+| 배포 native WASM bytes | 9,791,445 | 9,792,693 | 9,792,693 |
+
+기본 앱은 3 subset을 배포하되 영어 시작에는 EFIGS만 요청한다. 따라서 배포 파일 총량과 실제 시작 download 차이를 혼동하지 않는다. CJK 파일은 full보다 569,712 bytes 작고 두 초기 culture를 포함하는 해당 조합에서 동작했다. 이것을 모든 앱·business culture 목록의 자동 기본값으로 만들지는 않았다.
+
+한국어 버튼 입력에서 canvas commit까지 관찰한 값은 full 65.2/60.8/78.0 ms, CJK 51.2/69.6/45.7 ms이다. 이는 synthetic 입력의 해당 frame 경계이며 물리 입력 지연이 아니다. native warm 숫자 포맷 30회 allocation은 어댑터/직접 .NET 모두 1,200 bytes였으며, 정확한 cold/warm 비용과 환경은 evidence의 profile별 결과를 따른다.
+
+**성능 인수는 하지 않았다.** 샘플 편차가 있고 full profile에는 대응하는 framework callback p95가 제안 10%를 초과한 경우도 있다. CJK 결과의 수치가 낮다는 이유로 전체 layout/paint 게이트나 성능 개선을 선언하지 않는다. 개별 layout p95, 실제 GPU/기기의 안정된 비교, native UI 첫 localized frame, Firefox 전체 성능 행렬은 여전히 미검증이다. 번역 registry·실제 culture 요구 목록을 확정한 후 §10.3의 통제된 profile과 집계 규칙을 고정해 인수해야 한다.
+
+### 14.4 재현 명령과 후속 작업
+
+저장소 루트 PowerShell에서 실행한다. 아래 실행기는 각각의 자식 명령에 20분 제한을 적용한다.
+
+```powershell
+python Doroti/eng/validate-intl.py native --trim --aot --pack
+python Doroti/eng/validate-intl.py web --sdk 10 --mode compatible --configuration Debug --firefox
+python Doroti/eng/validate-intl.py web --sdk 10 --mode threaded --configuration Release
+python Doroti/eng/validate-intl.py web --sdk 11 --mode compatible --configuration Release
+python Doroti/eng/validate-intl.py web --sdk 11 --mode threaded --configuration Debug
+python Doroti/eng/validate-intl.py web --sdk 10 --mode compatible --configuration Debug --icu-file icudt_CJK.dat
+python Doroti/eng/validate-intl.py web --sdk 10 --mode compatible --configuration Debug --icu-file icudt_EFIGS.dat
+```
+
+나머지 Web 조합도 `--sdk`, `--mode`, `--configuration`을 바꿔 같은 실행기로 검증한다. 기존 영문 baseline만 생성하려면 `--baseline`을 사용한다. 이 옵션의 존재와 해당 미실행 조합의 인수를 혼동하지 않는다.
+
+실제 Demo의 CJK 포맷 페이지는 다음과 같이 새 generation으로 만든다. 영어 baseline은 `DorotiIntlProbe=baseline`을 사용하고 ICU override를 생략한다. 측정 중에는 다른 빌드를 실행하지 않는다.
+
+```powershell
+$intlBuildId = [Guid]::NewGuid().ToString('N')
+$intlPublish = "Doroti/artifacts/intl-p0/demo-$intlBuildId"
+python Doroti/eng/run-with-timeout.py dotnet publish samples/DorotiDemoApp/web/DorotiDemoApp.Web.csproj -c Debug -p:DorotiIntlProbe=adapter -p:DorotiWebExecutionMode=compatible "-p:DorotiWebBuildId=$intlBuildId" -p:BlazorIcuDataFileName=icudt_CJK.dat -o $intlPublish
+python Doroti/eng/run-with-timeout.py node packages/platforms/web/tests/browser-intl-render.mjs "$intlPublish/wwwroot" "$intlPublish/measurement.json"
+```
+
+다음 구현 단위는 **P1**의 공통 태그 정규화·host 언어 목록·application/subtree locale 격리와 비동기 delegate 실패/역순 완료 검증이다. 특히 현재 `_LocalizationsState`의 dispatcher 갱신 경계는 수정하지 않았으므로 기존 계획대로 확인해야 한다. P2의 219개 리소스 번역/포맷 연결, P3의 ARB generator, P4의 native paragraph 타당성/전체 텍스트 동작, P5의 언어 확대·배포 최적화도 미착수이다. 이 절의 PASS를 그 작업들의 완료로 계산하지 않는다.
