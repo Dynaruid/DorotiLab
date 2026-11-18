@@ -228,14 +228,17 @@ internal sealed unsafe partial class VulkanObserver
         Fence fence
     );
 
-    private Delegate? Wrap(string name, nint address)
+    private static (Delegate Target, nint Pointer) CreateDispatch<T>(T callback) where T : Delegate =>
+        (callback, Marshal.GetFunctionPointerForDelegate(callback));
+
+    private (Delegate Target, nint Pointer)? Wrap(string name, nint address)
     {
         switch (name)
         {
             case "vkCreateImage":
             {
                 var forward = Marshal.GetDelegateForFunctionPointer<CreateImageDelegate>(address);
-                return new CreateImageDelegate(
+                return CreateDispatch(new CreateImageDelegate(
                     (d, p, a, output) =>
                     {
                         var result = forward(d, p, a, output);
@@ -248,12 +251,12 @@ internal sealed unsafe partial class VulkanObserver
                         });
                         return result;
                     }
-                );
+                ));
             }
             case "vkDestroyImage":
             {
                 var forward = Marshal.GetDelegateForFunctionPointer<DestroyImageDelegate>(address);
-                return new DestroyImageDelegate(
+                return CreateDispatch(new DestroyImageDelegate(
                     (d, image, a) =>
                     {
                         forward(d, image, a);
@@ -264,14 +267,14 @@ internal sealed unsafe partial class VulkanObserver
                             Journal.RemoveImage(image.Handle);
                         });
                     }
-                );
+                ));
             }
             case "vkCreateImageView":
             {
                 var forward = Marshal.GetDelegateForFunctionPointer<CreateImageViewDelegate>(
                     address
                 );
-                return new CreateImageViewDelegate(
+                return CreateDispatch(new CreateImageViewDelegate(
                     (d, p, a, output) =>
                     {
                         var result = forward(d, p, a, output);
@@ -284,14 +287,14 @@ internal sealed unsafe partial class VulkanObserver
                         });
                         return result;
                     }
-                );
+                ));
             }
             case "vkDestroyImageView":
             {
                 var forward = Marshal.GetDelegateForFunctionPointer<DestroyImageViewDelegate>(
                     address
                 );
-                return new DestroyImageViewDelegate(
+                return CreateDispatch(new DestroyImageViewDelegate(
                     (d, view, a) =>
                     {
                         forward(d, view, a);
@@ -301,14 +304,14 @@ internal sealed unsafe partial class VulkanObserver
                             Views.Remove(view.Handle);
                         });
                     }
-                );
+                ));
             }
             case "vkCreateRenderPass":
             {
                 var forward = Marshal.GetDelegateForFunctionPointer<CreateRenderPassDelegate>(
                     address
                 );
-                return new CreateRenderPassDelegate(
+                return CreateDispatch(new CreateRenderPassDelegate(
                     (d, p, a, output) =>
                     {
                         var result = forward(d, p, a, output);
@@ -321,7 +324,7 @@ internal sealed unsafe partial class VulkanObserver
                         });
                         return result;
                     }
-                );
+                ));
             }
             case "vkCreateRenderPass2":
             case "vkCreateRenderPass2KHR":
@@ -329,7 +332,7 @@ internal sealed unsafe partial class VulkanObserver
                 var forward = Marshal.GetDelegateForFunctionPointer<CreateRenderPass2Delegate>(
                     address
                 );
-                return new CreateRenderPass2Delegate(
+                return CreateDispatch(new CreateRenderPass2Delegate(
                     (d, p, a, output) =>
                     {
                         var result = forward(d, p, a, output);
@@ -342,14 +345,14 @@ internal sealed unsafe partial class VulkanObserver
                         });
                         return result;
                     }
-                );
+                ));
             }
             case "vkDestroyRenderPass":
             {
                 var forward = Marshal.GetDelegateForFunctionPointer<DestroyRenderPassDelegate>(
                     address
                 );
-                return new DestroyRenderPassDelegate(
+                return CreateDispatch(new DestroyRenderPassDelegate(
                     (d, pass, a) =>
                     {
                         forward(d, pass, a);
@@ -359,14 +362,14 @@ internal sealed unsafe partial class VulkanObserver
                             Passes.Remove(pass.Handle);
                         });
                     }
-                );
+                ));
             }
             case "vkCreateFramebuffer":
             {
                 var forward = Marshal.GetDelegateForFunctionPointer<CreateFramebufferDelegate>(
                     address
                 );
-                return new CreateFramebufferDelegate(
+                return CreateDispatch(new CreateFramebufferDelegate(
                     (d, p, a, output) =>
                     {
                         var result = forward(d, p, a, output);
@@ -379,14 +382,14 @@ internal sealed unsafe partial class VulkanObserver
                         });
                         return result;
                     }
-                );
+                ));
             }
             case "vkDestroyFramebuffer":
             {
                 var forward = Marshal.GetDelegateForFunctionPointer<DestroyFramebufferDelegate>(
                     address
                 );
-                return new DestroyFramebufferDelegate(
+                return CreateDispatch(new DestroyFramebufferDelegate(
                     (d, frame, a) =>
                     {
                         forward(d, frame, a);
@@ -396,14 +399,14 @@ internal sealed unsafe partial class VulkanObserver
                             Framebuffers.Remove(frame.Handle);
                         });
                     }
-                );
+                ));
             }
             case "vkAllocateCommandBuffers":
             {
                 var forward = Marshal.GetDelegateForFunctionPointer<AllocateCommandBuffersDelegate>(
                     address
                 );
-                return new AllocateCommandBuffersDelegate(
+                return CreateDispatch(new AllocateCommandBuffersDelegate(
                     (d, p, output) =>
                     {
                         var result = forward(d, p, output);
@@ -416,14 +419,14 @@ internal sealed unsafe partial class VulkanObserver
                         });
                         return result;
                     }
-                );
+                ));
             }
             case "vkFreeCommandBuffers":
             {
                 var forward = Marshal.GetDelegateForFunctionPointer<FreeCommandBuffersDelegate>(
                     address
                 );
-                return new FreeCommandBuffersDelegate(
+                return CreateDispatch(new FreeCommandBuffersDelegate(
                     (d, pool, count, buffers) =>
                     {
                         forward(d, pool, count, buffers);
@@ -432,14 +435,14 @@ internal sealed unsafe partial class VulkanObserver
                             Freed(d, count, buffers);
                         });
                     }
-                );
+                ));
             }
             case "vkBeginCommandBuffer":
             {
                 var forward = Marshal.GetDelegateForFunctionPointer<BeginCommandBufferDelegate>(
                     address
                 );
-                return new BeginCommandBufferDelegate(
+                return CreateDispatch(new BeginCommandBufferDelegate(
                     (cb, p) =>
                     {
                         var result = forward(cb, p);
@@ -462,14 +465,14 @@ internal sealed unsafe partial class VulkanObserver
                         });
                         return result;
                     }
-                );
+                ));
             }
             case "vkEndCommandBuffer":
             {
                 var forward = Marshal.GetDelegateForFunctionPointer<EndCommandBufferDelegate>(
                     address
                 );
-                return new EndCommandBufferDelegate(
+                return CreateDispatch(new EndCommandBufferDelegate(
                     (cb) =>
                     {
                         var result = forward(cb);
@@ -488,14 +491,14 @@ internal sealed unsafe partial class VulkanObserver
                         });
                         return result;
                     }
-                );
+                ));
             }
             case "vkResetCommandBuffer":
             {
                 var forward = Marshal.GetDelegateForFunctionPointer<ResetCommandBufferDelegate>(
                     address
                 );
-                return new ResetCommandBufferDelegate(
+                return CreateDispatch(new ResetCommandBufferDelegate(
                     (cb, flags) =>
                     {
                         var result = forward(cb, flags);
@@ -509,14 +512,14 @@ internal sealed unsafe partial class VulkanObserver
                         });
                         return result;
                     }
-                );
+                ));
             }
             case "vkResetCommandPool":
             {
                 var forward = Marshal.GetDelegateForFunctionPointer<ResetCommandPoolDelegate>(
                     address
                 );
-                return new ResetCommandPoolDelegate(
+                return CreateDispatch(new ResetCommandPoolDelegate(
                     (d, pool, flags) =>
                     {
                         var result = forward(d, pool, flags);
@@ -529,14 +532,14 @@ internal sealed unsafe partial class VulkanObserver
                         });
                         return result;
                     }
-                );
+                ));
             }
             case "vkDestroyCommandPool":
             {
                 var forward = Marshal.GetDelegateForFunctionPointer<DestroyCommandPoolDelegate>(
                     address
                 );
-                return new DestroyCommandPoolDelegate(
+                return CreateDispatch(new DestroyCommandPoolDelegate(
                     (d, pool, a) =>
                     {
                         forward(d, pool, a);
@@ -545,14 +548,14 @@ internal sealed unsafe partial class VulkanObserver
                             ResetPool(d, pool, true);
                         });
                     }
-                );
+                ));
             }
             case "vkCmdPipelineBarrier":
             {
                 var forward = Marshal.GetDelegateForFunctionPointer<CmdPipelineBarrierDelegate>(
                     address
                 );
-                return new CmdPipelineBarrierDelegate(
+                return CreateDispatch(new CmdPipelineBarrierDelegate(
                     (
                         cb,
                         src,
@@ -584,12 +587,12 @@ internal sealed unsafe partial class VulkanObserver
                             Barrier(cb.Handle, imageCount, images);
                         });
                     }
-                );
+                ));
             }
             case "vkCmdWaitEvents":
             {
                 var forward = Marshal.GetDelegateForFunctionPointer<CmdWaitEventsDelegate>(address);
-                return new CmdWaitEventsDelegate(
+                return CreateDispatch(new CmdWaitEventsDelegate(
                     (
                         cb,
                         count,
@@ -622,7 +625,7 @@ internal sealed unsafe partial class VulkanObserver
                             Barrier(cb.Handle, imageCount, images);
                         });
                     }
-                );
+                ));
             }
             case "vkCmdPipelineBarrier2":
             case "vkCmdPipelineBarrier2KHR":
@@ -630,7 +633,7 @@ internal sealed unsafe partial class VulkanObserver
                 var forward = Marshal.GetDelegateForFunctionPointer<CmdPipelineBarrier2Delegate>(
                     address
                 );
-                return new CmdPipelineBarrier2Delegate(
+                return CreateDispatch(new CmdPipelineBarrier2Delegate(
                     (cb, dependency) =>
                     {
                         forward(cb, dependency);
@@ -639,7 +642,7 @@ internal sealed unsafe partial class VulkanObserver
                             Barrier2(cb.Handle, dependency);
                         });
                     }
-                );
+                ));
             }
             case "vkCmdWaitEvents2":
             case "vkCmdWaitEvents2KHR":
@@ -647,7 +650,7 @@ internal sealed unsafe partial class VulkanObserver
                 var forward = Marshal.GetDelegateForFunctionPointer<CmdWaitEvents2Delegate>(
                     address
                 );
-                return new CmdWaitEvents2Delegate(
+                return CreateDispatch(new CmdWaitEvents2Delegate(
                     (cb, count, events, dependencies) =>
                     {
                         forward(cb, count, events, dependencies);
@@ -658,13 +661,13 @@ internal sealed unsafe partial class VulkanObserver
                             );
                         });
                     }
-                );
+                ));
             }
             case "vkCmdSetEvent2":
             case "vkCmdSetEvent2KHR":
             {
                 var forward = Marshal.GetDelegateForFunctionPointer<CmdSetEvent2Delegate>(address);
-                return new CmdSetEvent2Delegate(
+                return CreateDispatch(new CmdSetEvent2Delegate(
                     (cb, e, dependency) =>
                     {
                         forward(cb, e, dependency);
@@ -675,14 +678,14 @@ internal sealed unsafe partial class VulkanObserver
                             );
                         });
                     }
-                );
+                ));
             }
             case "vkCmdBeginRenderPass":
             {
                 var forward = Marshal.GetDelegateForFunctionPointer<CmdBeginRenderPassDelegate>(
                     address
                 );
-                return new CmdBeginRenderPassDelegate(
+                return CreateDispatch(new CmdBeginRenderPassDelegate(
                     (cb, p, contents) =>
                     {
                         forward(cb, p, contents);
@@ -691,14 +694,14 @@ internal sealed unsafe partial class VulkanObserver
                             BeginPass(cb.Handle, p);
                         });
                     }
-                );
+                ));
             }
             case "vkCmdNextSubpass":
             {
                 var forward = Marshal.GetDelegateForFunctionPointer<CmdNextSubpassDelegate>(
                     address
                 );
-                return new CmdNextSubpassDelegate(
+                return CreateDispatch(new CmdNextSubpassDelegate(
                     (cb, contents) =>
                     {
                         forward(cb, contents);
@@ -707,14 +710,14 @@ internal sealed unsafe partial class VulkanObserver
                             NextPass(cb.Handle);
                         });
                     }
-                );
+                ));
             }
             case "vkCmdEndRenderPass":
             {
                 var forward = Marshal.GetDelegateForFunctionPointer<CmdEndRenderPassDelegate>(
                     address
                 );
-                return new CmdEndRenderPassDelegate(
+                return CreateDispatch(new CmdEndRenderPassDelegate(
                     (cb) =>
                     {
                         forward(cb);
@@ -723,7 +726,7 @@ internal sealed unsafe partial class VulkanObserver
                             EndPass(cb.Handle);
                         });
                     }
-                );
+                ));
             }
             case "vkCmdBeginRenderPass2":
             case "vkCmdBeginRenderPass2KHR":
@@ -731,7 +734,7 @@ internal sealed unsafe partial class VulkanObserver
                 var forward = Marshal.GetDelegateForFunctionPointer<CmdBeginRenderPass2Delegate>(
                     address
                 );
-                return new CmdBeginRenderPass2Delegate(
+                return CreateDispatch(new CmdBeginRenderPass2Delegate(
                     (cb, p, begin) =>
                     {
                         forward(cb, p, begin);
@@ -740,7 +743,7 @@ internal sealed unsafe partial class VulkanObserver
                             BeginPass(cb.Handle, p);
                         });
                     }
-                );
+                ));
             }
             case "vkCmdNextSubpass2":
             case "vkCmdNextSubpass2KHR":
@@ -748,7 +751,7 @@ internal sealed unsafe partial class VulkanObserver
                 var forward = Marshal.GetDelegateForFunctionPointer<CmdNextSubpass2Delegate>(
                     address
                 );
-                return new CmdNextSubpass2Delegate(
+                return CreateDispatch(new CmdNextSubpass2Delegate(
                     (cb, begin, end) =>
                     {
                         forward(cb, begin, end);
@@ -757,7 +760,7 @@ internal sealed unsafe partial class VulkanObserver
                             NextPass(cb.Handle);
                         });
                     }
-                );
+                ));
             }
             case "vkCmdEndRenderPass2":
             case "vkCmdEndRenderPass2KHR":
@@ -765,7 +768,7 @@ internal sealed unsafe partial class VulkanObserver
                 var forward = Marshal.GetDelegateForFunctionPointer<CmdEndRenderPass2Delegate>(
                     address
                 );
-                return new CmdEndRenderPass2Delegate(
+                return CreateDispatch(new CmdEndRenderPass2Delegate(
                     (cb, end) =>
                     {
                         forward(cb, end);
@@ -774,7 +777,7 @@ internal sealed unsafe partial class VulkanObserver
                             EndPass(cb.Handle);
                         });
                     }
-                );
+                ));
             }
             case "vkCmdBeginRendering":
             case "vkCmdBeginRenderingKHR":
@@ -782,7 +785,7 @@ internal sealed unsafe partial class VulkanObserver
                 var forward = Marshal.GetDelegateForFunctionPointer<CmdBeginRenderingDelegate>(
                     address
                 );
-                return new CmdBeginRenderingDelegate(
+                return CreateDispatch(new CmdBeginRenderingDelegate(
                     (cb, p) =>
                     {
                         forward(cb, p);
@@ -793,7 +796,7 @@ internal sealed unsafe partial class VulkanObserver
                             );
                         });
                     }
-                );
+                ));
             }
             case "vkCmdEndRendering":
             case "vkCmdEndRenderingKHR":
@@ -801,7 +804,7 @@ internal sealed unsafe partial class VulkanObserver
                 var forward = Marshal.GetDelegateForFunctionPointer<CmdEndRenderingDelegate>(
                     address
                 );
-                return new CmdEndRenderingDelegate(
+                return CreateDispatch(new CmdEndRenderingDelegate(
                     (cb) =>
                     {
                         forward(cb);
@@ -812,14 +815,14 @@ internal sealed unsafe partial class VulkanObserver
                             );
                         });
                     }
-                );
+                ));
             }
             case "vkCmdExecuteCommands":
             {
                 var forward = Marshal.GetDelegateForFunctionPointer<CmdExecuteCommandsDelegate>(
                     address
                 );
-                return new CmdExecuteCommandsDelegate(
+                return CreateDispatch(new CmdExecuteCommandsDelegate(
                     (cb, count, children) =>
                     {
                         forward(cb, count, children);
@@ -831,12 +834,12 @@ internal sealed unsafe partial class VulkanObserver
                             }
                         });
                     }
-                );
+                ));
             }
             case "vkQueueSubmit":
             {
                 var forward = Marshal.GetDelegateForFunctionPointer<QueueSubmitDelegate>(address);
-                return new QueueSubmitDelegate(
+                return CreateDispatch(new QueueSubmitDelegate(
                     (q, count, submits, fence) =>
                     {
                         var result = forward(q, count, submits, fence);
@@ -846,13 +849,13 @@ internal sealed unsafe partial class VulkanObserver
                         });
                         return result;
                     }
-                );
+                ));
             }
             case "vkQueueSubmit2":
             case "vkQueueSubmit2KHR":
             {
                 var forward = Marshal.GetDelegateForFunctionPointer<QueueSubmit2Delegate>(address);
-                return new QueueSubmit2Delegate(
+                return CreateDispatch(new QueueSubmit2Delegate(
                     (q, count, submits, fence) =>
                     {
                         var result = forward(q, count, submits, fence);
@@ -862,14 +865,14 @@ internal sealed unsafe partial class VulkanObserver
                         });
                         return result;
                     }
-                );
+                ));
             }
             case "vkQueueBindSparse":
             {
                 var forward = Marshal.GetDelegateForFunctionPointer<QueueBindSparseDelegate>(
                     address
                 );
-                return new QueueBindSparseDelegate(
+                return CreateDispatch(new QueueBindSparseDelegate(
                     (q, count, binds, fence) =>
                     {
                         var result = forward(q, count, binds, fence);
@@ -879,7 +882,7 @@ internal sealed unsafe partial class VulkanObserver
                         });
                         return result;
                     }
-                );
+                ));
             }
             default:
                 if (

@@ -566,11 +566,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 );
             }
 
-            _filePicker = new WindowsFilePicker(host.TopLevelHwnd);
-            _dropTarget = new WindowsOsDropTarget(host.ChildHwnd, host.DispatchPlatformViewEvent, host.DropWindows);
             var capabilities = new DorotiViewCapabilities(target, _sharedFramework.Capabilities)
-                .Register<IOsDragDropHostCapability>(DorotiCapabilityIds.OsDragDrop, _dropTarget)
-                .Register<IFilePickerHostCapability>(DorotiCapabilityIds.FilePicker, _filePicker)
                 .Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)
                 .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, host)
                 .Register<IFrameHostCapability>(DorotiCapabilityIds.ViewFrameDispatch, host)
@@ -593,6 +589,14 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 .Register<ITextureHostCapability>(DorotiCapabilityIds.GraphicsTexture, renderer)
                 .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, renderer)
             .Register<ISceneRasterizationHostCapability>(DorotiCapabilityIds.GraphicsSceneSnapshot, renderer);
+            // These shell integrations use the CLR's built-in COM interop.
+            if (RuntimeFeature.IsDynamicCodeSupported)
+            {
+                _filePicker = new WindowsFilePicker(host.TopLevelHwnd);
+                _dropTarget = new WindowsOsDropTarget(host.ChildHwnd, host.DispatchPlatformViewEvent, host.DropWindows);
+                capabilities.Register<IFilePickerHostCapability>(DorotiCapabilityIds.FilePicker, _filePicker);
+                capabilities.Register<IOsDragDropHostCapability>(DorotiCapabilityIds.OsDragDrop, _dropTarget);
+            }
             ApplicationNavigationHost? navigation = null;
             if (_configuration.Navigation is { } navigationOptions)
             {
@@ -1741,6 +1745,9 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             bool diagnosticsEnabled
         )
         {
+            if (!RuntimeFeature.IsDynamicCodeSupported)
+                throw new PlatformNotSupportedException("The dynamically loaded D3D12 diagnostic presenter requires CoreCLR.");
+
             const string assemblyName = "Doroti.Host.WindowsAppSdk.Diagnostics";
             const string typeName = "Doroti.Host.WindowsAppSdk.WindowsManagedHwndPresenter";
             try

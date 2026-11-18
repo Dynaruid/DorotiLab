@@ -55,6 +55,71 @@ Test("Web CLI and mobile options stay separate", () =>
     return Task.CompletedTask;
 });
 
+Test("Windows dry run resolves all sample runners and requests Native AOT publish", async () =>
+{
+    foreach (var app in SampleApp.All)
+    {
+        var options = Options.Parse(["--platform", "windows", "--app", app.Key, "--dry-run", "--dotnet-path", dotnet]);
+        var runner = new FakeRunner("");
+        var ui = new TestUi();
+        await new WindowsDeploymentCli(repository, runner, ui).RunAsync(options, ct);
+        var plan = ui.Lines.Single(line => line.StartsWith("Dry run:", StringComparison.Ordinal));
+        Require(plan.Contains(app.WindowsProject(repository), StringComparison.Ordinal) &&
+            plan.Contains(" publish ", StringComparison.Ordinal) && plan.Contains("-c Release -r win-x64", StringComparison.Ordinal) &&
+            plan.Contains("-p:DorotiCompilationMode=NativeAot", StringComparison.Ordinal) && runner.Publishes == 0,
+            $"Unexpected Windows publish plan for {app.Key}.");
+    }
+});
+
+Test("Windows rejects mobile, Web and incompatible build options", () =>
+{
+    foreach (var arguments in new[]
+    {
+        new[] { "--target", "device" }, new[] { "--port", "5192" }, new[] { "--dotnet-version", "11" },
+        new[] { "--mode", "CoreClrJit" }, new[] { "--configuration", "Debug" },
+    })
+    {
+        try
+        {
+            Options.Parse(arguments).ValidateForPlatform("windows");
+            throw new Exception("Invalid Windows options were accepted: " + string.Join(' ', arguments));
+        }
+        catch (DeployException) { }
+    }
+    return Task.CompletedTask;
+});
+
+if (OperatingSystem.IsWindows())
+{
+    Test("Windows rejects an apphost with a managed runner before launch", async () =>
+    {
+        var project = demo.WindowsProject(root);
+        Directory.CreateDirectory(Path.GetDirectoryName(project)!);
+        File.WriteAllText(project, "project fixture");
+        var runner = new FakeRunner("")
+        {
+            OnPublish = command =>
+            {
+                var publish = command.Arguments.SkipWhile(argument => argument != "-o").Skip(1).First();
+                Directory.CreateDirectory(publish);
+                File.Copy(dotnet, Path.Combine(publish, "DorotiDemoApp.WindowsAppSdk.exe"));
+                File.WriteAllText(Path.Combine(publish, "DorotiDemoApp.WindowsAppSdk.dll"), "managed entry fixture");
+                File.WriteAllText(Path.Combine(publish, "doroti_windows_appsdk_host_v1.dll"), "native host fixture");
+            },
+        };
+        try
+        {
+            await new WindowsDeploymentCli(root, runner, new TestUi()).RunAsync(new() { App = "Demo", DotnetPath = dotnet }, ct);
+            throw new Exception("The Windows apphost was accepted as Native AOT.");
+        }
+        catch (DeployException error)
+        {
+            Require(runner.Publishes == 1 && error.Message.Contains("not a win-x64 Native AOT image", StringComparison.Ordinal),
+                "Unexpected Windows publish validation result.");
+        }
+    });
+}
+
 Test("SDK discovery excludes previews and unsupported majors", () =>
 {
     var sdks = WebDeploymentCli.ParseSdks(sdkOutput + $"\n11.0.101 [{sdkRoot}]");

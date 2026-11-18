@@ -63,6 +63,12 @@ pwsh -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform
 
 이 명령은 기본 Windows App SDK 실행 프로젝트를 빌드하고 실행합니다. Android, iOS, macOS, Mac Catalyst, Linux, Web 실행 방법은 [샘플 앱 가이드](samples/DorotiTestbedApp/README.ko.md), 빌드·배포 옵션은 [프레임워크 가이드](Doroti/README.ko.md)를 참고하세요.
 
+Windows Release Native AOT 게시본을 실행하려면 [Windows 배포 helper](helpers/deploy-helper/README.md#windows-native-aot)를 사용합니다.
+
+```powershell
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-windows.ps1 -App Testbed
+```
+
 Web 실행 확인은 [게시·미리보기 helper](helpers/deploy-helper/README.md#web)를 사용합니다.
 메뉴에서 Enter를 누르면 .NET 10 / Release / Mono WASM AOT / threaded 기본값을 선택합니다.
 
@@ -100,7 +106,7 @@ Dart-to-C# 컴파일러는 필요한 소스를 가져오거나 동작을 비교�
 | [Cupertino 샘플](samples/DorotiSampleApp2/README.md) | Windows / Web의 Cupertino 위젯, 프로필 입력, 테마 설정 |
 | [Custom Carousel 샘플](samples/DorotiCarouselApp/README.md) | 스냅·루프·변형 효과·컨트롤러를 사용하는 다섯 캐러셀 데모 |
 | [Material 컴포넌트 데모](samples/DorotiDemoApp/README.ko.md) | Testbed의 Components 페이지를 복사한 독립 데모 앱 |
-| [iOS / Android / Web 도구](helpers/deploy-helper/README.md) | 모바일 빌드·설치·실행 및 Web Release AOT 게시·미리보기 |
+| [iOS / Android / Web / Windows 도구](helpers/deploy-helper/README.md) | 모바일 설치·실행, Web Release AOT 미리보기 및 Windows Native AOT 게시·실행 |
 | [Dart-to-C# 컴파일러](tools/Doroti.DartToCSharp/README.ko.md) | 선택적 소스 가져오기 및 마이그레이션 도구 |
 | [WGSL 컴파일러](tools/Doroti.Wgsl/README.md) | 셰이더 컴파일, 백엔드 프로필, 앱 연동 |
 

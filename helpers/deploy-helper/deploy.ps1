@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-Deploy a Doroti iOS/Android sample, or publish and serve a Web sample locally.
+Deploy a Doroti iOS/Android sample, preview a Web sample, or run a Windows Native AOT sample.
 .EXAMPLE
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy.ps1 -Platform android -App Testbed
 .EXAMPLE
@@ -9,10 +9,12 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy.ps1 -Platform ios -App Samp
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy.ps1 -Platform android -App Carousel
 .EXAMPLE
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy.ps1 -Platform web -App Demo -DotnetVersion 11
+.EXAMPLE
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy.ps1 -Platform windows -App Demo
 #>
 [CmdletBinding()]
 param(
-    [ValidateSet('ios', 'android', 'web')][string]$Platform,
+    [ValidateSet('ios', 'android', 'web', 'windows')][string]$Platform,
     [ValidateSet('Sample2', 'Testbed', 'Carousel', 'Demo')][string]$App,
     [ValidateSet('auto', 'device', 'simulator', 'emulator')][string]$Target = 'auto',
     [Alias('Serial')][string]$Device,

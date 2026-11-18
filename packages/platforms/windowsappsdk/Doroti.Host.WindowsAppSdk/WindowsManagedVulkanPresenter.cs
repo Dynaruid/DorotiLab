@@ -236,8 +236,24 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
             _loaderSha256 = Convert.ToHexString(SHA256.HashData(loaderStream)).ToLowerInvariant();
         }
 
-        _vk = new Vk(new DefaultNativeContext(_loaderPath));
+        _vk = new Vk(new VulkanLibraryContext(_loaderPath));
         RecordEvent($"loader-open path={_loaderPath}");
+    }
+
+    private sealed class VulkanLibraryContext(string path) : INativeContext
+    {
+        private nint _module = NativeLibrary.Load(path);
+
+        public nint GetProcAddress(string proc, int? slot = null) => NativeLibrary.GetExport(_module, proc);
+
+        public bool TryGetProcAddress(string proc, out nint address, int? slot = null) =>
+            NativeLibrary.TryGetExport(_module, proc, out address);
+
+        public void Dispose()
+        {
+            var module = Interlocked.Exchange(ref _module, 0);
+            if (module != 0) NativeLibrary.Free(module);
+        }
     }
 
     internal override string BackendName =>

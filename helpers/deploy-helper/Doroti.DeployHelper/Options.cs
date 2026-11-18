@@ -51,7 +51,7 @@ public sealed class Options
             }
             switch (option)
             {
-                case "--platform": options.Platform = Choice("ios", "android", "web"); break;
+                case "--platform": options.Platform = Choice("ios", "android", "web", "windows"); break;
                 case "--app": options.App = Choice(SampleApp.All.Select(app => app.Key).ToArray()); break;
                 case "--target": options.Target = Choice("auto", "device", "simulator", "emulator"); break;
                 case "--device": case "--serial": options.Device = Value(); break;
@@ -127,11 +127,19 @@ public sealed class Options
             if (WebExecutionMode is not (null or "threaded" or "compatible" or "auto") || Port is < 0 or > 65535)
                 throw new DeployException("Web requires --web-execution-mode threaded|compatible|auto and --port 0..65535.");
         }
+        else if (platform == "windows")
+        {
+            if (Target != "auto" || Device is not null || Extras.Count > 0 || AdbPath != "adb" ||
+                CodesignKey is not null || CodesignProvision is not null || SkipXcodeValidation)
+                throw new DeployException("Windows publishes and runs locally. Device, signing, adb and Android extras are unavailable.");
+            if (DotnetVersion != 10 || Configuration is not (null or "Release") || Mode is not (null or "NativeAot"))
+                throw new DeployException("Windows uses .NET 10, Release and NativeAot (win-x64).");
+        }
         else throw new DeployException($"Unknown platform: {platform}.");
     }
 
     public const string HelpText = """
-        Select and deploy Doroti samples on iOS/Android, or publish and preview Web.
+        Select and deploy Doroti samples on iOS/Android, publish Web previews, or run Windows Native AOT samples.
 
         dotnet run --project helpers/deploy-helper/Doroti.DeployHelper -- [options]
 
@@ -139,7 +147,7 @@ public sealed class Options
         Press Enter for defaults: .NET 10 / Release / MonoAot / threaded. AOT takes longer to publish.
         Redirected input uses the defaults below; explicit options skip their menus.
 
-          --platform ios|android|web       Omit to select interactively; iOS requires macOS.
+          --platform ios|android|web|windows  Omit to select interactively; iOS requires macOS.
           --app Sample2|Testbed|Carousel|Demo  Omit to select the sample interactively.
           --target auto|device|simulator|emulator  Default: combined targets; simulator is iOS, emulator is Android.
           --device ID, --serial ID          iOS UDID/CoreDevice ID or exact adb serial.
@@ -148,6 +156,7 @@ public sealed class Options
                                           iOS defaults: device NativeAot, simulator Mono.
                                           Android defaults: .NET 10 Release MonoAot/Debug Mono, .NET 11 CoreClrR2R.
                                           Web: Mono|MonoAot; Release defaults to MonoAot, Debug to Mono. Publish only.
+                                          Windows: .NET 10 / Release / NativeAot / win-x64. Publishes and launches the EXE.
           --configuration Debug|Release    Default: iOS device/Android/Web Release; iOS simulator Debug.
           --web-execution-mode threaded|compatible|auto  Web only; default: threaded.
           --port 0..65535                  Web loopback server port; default: 0 (automatic).
@@ -156,9 +165,9 @@ public sealed class Options
           --dotnet-path PATH               dotnet executable for app builds.
           --adb-path PATH                  Android adb executable; SDK locations are also searched.
           --skip-xcode-validation          iOS only: ValidateXcodeVersion=false for this build.
-          --env NAME=VALUE                 iOS launch environment; repeat as needed.
+          --env NAME=VALUE                 iOS/Windows launch environment; repeat as needed.
           --extra KEY=VALUE                Android string Intent extra; repeat as needed.
-          --no-launch                      Mobile: install without launching. Web: serve without opening a browser.
+          --no-launch                      Mobile: install only. Web: serve only. Windows: publish only.
           --list                           Inventory only; do not build.
           --dry-run                        Select and inspect; do not build, publish, serve, boot, install or launch.
           --help, -h                       Show this help.

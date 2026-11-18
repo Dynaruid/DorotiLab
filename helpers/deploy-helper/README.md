@@ -1,7 +1,7 @@
-# iOS·Android 배포 및 Web 게시·미리보기 CLI
+# 모바일 배포·Web 미리보기·Windows Native AOT CLI
 
 `DorotiSampleApp2`·`DorotiTestbedApp`·`DorotiCarouselApp`·`DorotiDemoApp`을 선택해
-iOS·Android에 빌드·설치·실행하거나 Web으로 게시해 임시 서버에서 확인합니다.
+iOS·Android에 설치하고 실행하거나, Web 임시 서버 또는 Windows Native AOT 실행 파일로 확인합니다.
 `-App` 값은 각각 `Sample2`·`Testbed`·`Carousel`·`Demo`이며, 생략하면 메뉴에서 선택합니다.
 [Doroti.DeployHelper](Doroti.DeployHelper/Doroti.DeployHelper.csproj)는 외부 NuGet 패키지가 없는
 .NET 10 콘솔 CLI입니다. Web 임시 서버는 .NET SDK에 포함된 ASP.NET Core 공유 런타임을 사용하며,
@@ -13,6 +13,7 @@ helpers/deploy-helper/
   deploy-ios.ps1                     iOS 진입점
   deploy-android.ps1                 Android 진입점
   deploy-web.ps1                     Web publish → 임시 서버 → 브라우저 열기
+  deploy-windows.ps1                 Windows Native AOT publish → EXE 실행
   Doroti.DeployHelper/               공통 CLI와 플랫폼별 구현
 ```
 
@@ -25,7 +26,38 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy.ps1
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy.ps1 -Platform android -App Testbed -List
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy.ps1 -Platform ios -App Sample2 -Target simulator
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy.ps1 -Platform web -App Demo
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy.ps1 -Platform windows -App Demo
 ```
+
+## Windows Native AOT
+
+네 샘플의 `windowsappsdk` 프로젝트를 **.NET 10 / Release / Native AOT / `win-x64`**로 게시하고
+출력된 EXE를 실행합니다. Windows App SDK와 네이티브 라이브러리가 포함된 게시 폴더를 함께 사용하세요.
+Windows, 저장소 `global.json`에 맞는 .NET 10 SDK, PowerShell 7, Visual Studio의 **Desktop development with C++** 워크로드,
+Windows SDK `10.0.26100.0`이 필요합니다. 기본 Graphite 렌더러는 Vulkan 1.2를 사용합니다. [Microsoft Native AOT 빌드 요건](https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/?tabs=windows)
+
+```powershell
+# 앱 선택 메뉴
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-windows.ps1
+
+# Demo를 게시하고 실행
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-windows.ps1 -App Demo
+
+# Testbed의 입력 샘플을 실행
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-windows.ps1 -App Testbed -Environment 'DOROTI_SAMPLE=input'
+
+# 게시만 수행 / 명령만 출력 / 앱 목록
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-windows.ps1 -App Carousel -NoLaunch
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-windows.ps1 -App Sample2 -DryRun
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-windows.ps1 -List
+```
+
+게시 경로는 `Doroti/artifacts/windows-aot-net10-release-x64/publish/<sample>/<id>/`입니다.
+게시 제한은 20분입니다. 게시가 성공하고 x64 네이티브 실행 파일과 Windows 호스트를 확인하면 앱을 엽니다.
+창을 닫으면 helper가 종료되며, `Ctrl+C`로 빌드 또는 현재 실행을 취소할 수 있습니다.
+`-Environment`는 실행할 앱에 전달되며, 여러 값은 PowerShell 세션에서 배열로 지정합니다.
+이 로컬 확인용 프로필에서는 트리밍과 AOT 경고를 게시 출력에 남깁니다. CLR COM에 의존하는 Windows 파일 선택기와
+OS 드래그 앤 드롭, 동적 로드 방식의 D3D12 진단 프리젠터는 CoreCLR 실행에서 사용할 수 있습니다.
 
 ## Web
 

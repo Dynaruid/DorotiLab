@@ -6,7 +6,7 @@ namespace Doroti.DeployHelper;
 public sealed class DeployException(string message) : Exception(message);
 
 public record Command(string FileName, IReadOnlyList<string> Arguments, string? WorkingDirectory = null,
-    bool Capture = true, int TimeoutSeconds = 60, IReadOnlyDictionary<string, string>? Environment = null)
+    bool Capture = true, int? TimeoutSeconds = 60, IReadOnlyDictionary<string, string>? Environment = null)
 {
     public string Display => string.Join(" ", new[] { FileName }.Concat(Arguments).Select(Quote));
     private static string Quote(string value) => Regex.IsMatch(value, "^[A-Za-z0-9_./:=+-]+$")
@@ -51,7 +51,7 @@ public sealed class ProcessRunner(IUserInterface ui) : ICommandRunner
         var output = command.Capture ? process.StandardOutput.ReadToEndAsync() : Task.FromResult("");
         var error = command.Capture ? process.StandardError.ReadToEndAsync() : Task.FromResult("");
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-        timeout.CancelAfter(TimeSpan.FromSeconds(command.TimeoutSeconds));
+        if (command.TimeoutSeconds is { } seconds) timeout.CancelAfter(TimeSpan.FromSeconds(seconds));
         try
         {
             await process.WaitForExitAsync(timeout.Token);

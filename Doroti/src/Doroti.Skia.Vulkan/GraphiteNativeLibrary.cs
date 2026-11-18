@@ -1,4 +1,7 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text.Json;
@@ -49,18 +52,12 @@ public static unsafe class GraphiteNativeLibrary
             throw new PlatformNotSupportedException();
         }
 
-        var managedPath = typeof(SKGraphiteContext).Assembly.Location;
-        if (string.IsNullOrEmpty(managedPath))
-        {
-            throw new PlatformNotSupportedException(
-                "Desktop single-file/AOT needs linked-asset provenance."
-            );
-        }
-
-        using var managed = File.OpenRead(managedPath);
-        var managedHash = Convert.ToHexString(SHA256.HashData(managed)).ToLowerInvariant();
+        var managedHash = GetManagedHash();
+        var windows4156 = windows && managedHash is
+            "b25527130f8f27fd0a3c9c7732bf2432a4732c148be774125c66e1d8a5e88ae3" or
+            "58f32363c74ce37dc2cfbc16ee49278453189e37948fb7746e268969e1ea8fee";
         if (
-            managedHash != "71274ef112eefdf5ca8a1517086787bc786c7103c30115abbb9dc424a09db43e"
+            !windows4156 && managedHash != "71274ef112eefdf5ca8a1517086787bc786c7103c30115abbb9dc424a09db43e"
             && (
                 !windows
                 || managedHash != "c3719ba116d106b97d65665cc83cf9cfa1cbb8e58fbda0580d26a69340c8a82e"
@@ -78,13 +75,37 @@ public static unsafe class GraphiteNativeLibrary
                 windows ? "libSkiaSharp.dll" : "libSkiaSharp.so"
             ),
             windows ? "SkiaSharp.NativeAssets.Win32" : "SkiaSharp.NativeAssets.Linux",
-            "4.154.0",
+            windows4156 ? "4.156.0" : "4.154.0",
             windows ? "win-x64" : "linux-x64",
-            windows
-                ? "82f9b2ee2b2dc91f738ae4baa54cd21fdd1181883c0fa207ab7066c708f07108"
+            windows4156 ? "591421fa5322466196321a5fd216716c74ca02d7af64c0a62cb45edb0147c0d7"
+                : windows ? "82f9b2ee2b2dc91f738ae4baa54cd21fdd1181883c0fa207ab7066c708f07108"
                 : "a96876fc38d29ad5364ceee6f1ad57d87d94844a6cd38306a36f3f91edf9beab",
             managedHash
         );
+    }
+
+    private static string GetManagedHash()
+    {
+        if (OperatingSystem.IsWindows() && !RuntimeFeature.IsDynamicCodeSupported)
+        {
+            using var provenance = Assembly.GetEntryAssembly()?.GetManifestResourceStream("Doroti.Skia.NativeAot.SkiaSharp.sha256")
+                ?? throw new PlatformNotSupportedException("Windows Native AOT requires embedded SkiaSharp build provenance.");
+            using var reader = new StreamReader(provenance);
+            return reader.ReadToEnd().Trim().ToLowerInvariant();
+        }
+
+        return GetFileBackedManagedHash();
+    }
+
+    [UnconditionalSuppressMessage("SingleFile", "IL3000", Justification = "File-backed deployments verify the real managed DLL. Windows AOT uses the embedded build hash.")]
+    private static string GetFileBackedManagedHash()
+    {
+        var path = typeof(SKGraphiteContext).Assembly.Location;
+        if (string.IsNullOrEmpty(path))
+            throw new PlatformNotSupportedException("Desktop single-file/AOT needs linked-asset provenance.");
+
+        using var managed = File.OpenRead(path);
+        return Convert.ToHexString(SHA256.HashData(managed)).ToLowerInvariant();
     }
 
     /// <summary>Verify a standalone APK's native entry before normal Android/AOT binding.</summary>
@@ -288,26 +309,9 @@ public static unsafe class GraphiteNativeLibrary
             );
         }
 
-        var managedPath = typeof(SKGraphiteContext).Assembly.Location;
-        if (string.IsNullOrEmpty(managedPath))
+        if (!GetManagedHash().Equals(asset.ManagedSha256, StringComparison.OrdinalIgnoreCase))
         {
-            throw new PlatformNotSupportedException(
-                "Static/single-file managed provenance needs a separately qualified publish manifest."
-            );
-        }
-
-        using (var managedFile = File.OpenRead(managedPath))
-        {
-            if (
-                !Convert
-                    .ToHexString(SHA256.HashData(managedFile))
-                    .Equals(asset.ManagedSha256, StringComparison.OrdinalIgnoreCase)
-            )
-            {
-                throw new InvalidDataException(
-                    "Loaded SkiaSharp managed assembly differs from NuGet provenance."
-                );
-            }
+            throw new InvalidDataException("Loaded SkiaSharp managed assembly differs from NuGet provenance.");
         }
 
         var path = Path.GetFullPath(asset.NativePath);

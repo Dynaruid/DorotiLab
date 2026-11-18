@@ -63,6 +63,12 @@ pwsh -File ./Doroti/eng/doroti.ps1 run -App ./samples/DorotiTestbedApp -Platform
 
 The command builds and launches the default Windows App SDK runner. Follow the [sample app guide](samples/DorotiTestbedApp/README.md) for Android, iOS, macOS, Mac Catalyst, Linux, and Web commands, or the [framework guide](Doroti/README.md) for build and publish options.
 
+To publish and launch a Windows Release Native AOT build, use the [Windows deploy helper](helpers/deploy-helper/README.md#windows-native-aot).
+
+```powershell
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-windows.ps1 -App Testbed
+```
+
 For Web runtime checks, use the [publish and preview helper](helpers/deploy-helper/README.md#web).
 Accept the marked defaults with Enter for .NET 10 / Release / Mono WASM AOT / threaded:
 
@@ -100,7 +106,7 @@ The Dart-to-C# compiler is an optional source import and behavior-comparison too
 | [Cupertino sample](samples/DorotiSampleApp2/README.md) | Cupertino components, profile input, and appearance settings on Windows / Web |
 | [Custom carousel sample](samples/DorotiCarouselApp/README.md) | Five customizable carousel demos with snapping, looping, transforms, and controllers |
 | [Material components demo](samples/DorotiDemoApp/README.md) | Standalone copy of the Testbed Components page |
-| [iOS / Android / Web helper](helpers/deploy-helper/README.md) | Mobile build/install/launch and Web Release AOT publish/preview |
+| [iOS / Android / Web / Windows helper](helpers/deploy-helper/README.md) | Mobile install and launch, Web Release AOT previews, and Windows Native AOT publish and launch |
 | [Dart-to-C# compiler](tools/Doroti.DartToCSharp/README.md) | Optional source import and migration tooling |
 | [WGSL compiler](tools/Doroti.Wgsl/README.md) | Shader compilation, backend profiles, and application integration |
 

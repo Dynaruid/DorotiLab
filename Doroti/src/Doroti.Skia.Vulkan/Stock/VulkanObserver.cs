@@ -14,7 +14,7 @@ internal sealed unsafe partial class VulkanObserver(
 ) : IDisposable
 {
     public readonly SubmissionJournal Journal = new();
-    private readonly Dictionary<string, Delegate> Roots = [];
+    private readonly Dictionary<string, (Delegate Target, nint Pointer)> Roots = [];
     private readonly Dictionary<ulong, ImageCreateInfo> Images = [];
 
     private sealed record View(ulong Image, ImageSubresourceRange Range);
@@ -154,7 +154,7 @@ internal sealed unsafe partial class VulkanObserver(
 
         if (Roots.TryGetValue(name, out var known))
         {
-            return Marshal.GetFunctionPointerForDelegate(known);
+            return known.Pointer;
         }
         // Global commands (notably vkEnumerateInstanceVersion) must keep the
         // caller's null instance. Android loaders need not accept a bound one.
@@ -189,21 +189,20 @@ internal sealed unsafe partial class VulkanObserver(
             return 0;
         }
 
-        var callback = Wrap(name, real);
-        if (callback == null)
+        if (Wrap(name, real) is not { } callback)
         {
             return real;
         }
 
         Roots.Add(name, callback);
-        return Marshal.GetFunctionPointerForDelegate(callback);
+        return callback.Pointer;
     }
 
     public T Call<T>(string name)
         where T : Delegate
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        if (Roots.TryGetValue(name, out var cached) && cached is T typed)
+        if (Roots.TryGetValue(name, out var cached) && cached.Target is T typed)
         {
             return typed;
         }

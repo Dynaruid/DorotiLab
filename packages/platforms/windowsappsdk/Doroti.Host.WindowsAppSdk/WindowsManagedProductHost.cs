@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Doroti.Skia.Rendering;
 using Doroti.Ui;
 
@@ -891,15 +892,14 @@ internal sealed unsafe partial class WindowsManagedProductHost
     public void UpdateSemantics(SemanticsUpdate update)
     {
         ArgumentNullException.ThrowIfNull(update);
-        var nodes = update.nodes.Select(node => new
-        {
+        var nodes = update.nodes.Select(node => new SemanticsNodeWire(
             node.id,
             node.label,
             node.value,
-            textGeometry = node.flags?.isObscured == true ? null : node.textGeometry?.ToWire(),
-            role = node.role.ToString(),
-            actions = (long)node.actions,
-            children = node.children,
+            textGeometry: node.flags?.isObscured == true ? null : node.textGeometry?.ToWire(),
+            role: node.role.ToString(),
+            actions: (long)node.actions,
+            node.children,
             node.identifier,
             node.hint,
             node.tooltip,
@@ -907,46 +907,60 @@ internal sealed unsafe partial class WindowsManagedProductHost
             node.linkUrl,
             node.increasedValue,
             node.decreasedValue,
-            validationResult = node.validationResult.ToString(),
+            validationResult: node.validationResult.ToString(),
             node.minValue,
             node.maxValue,
             node.scrollPosition,
             node.scrollExtentMin,
             node.scrollExtentMax,
-            flags = node.flags is null
+            flags: node.flags is null
                 ? null
-                : new
-                {
-                    enabled = node.flags.isEnabled.toBoolOrNull() ?? true,
-                    focused = node.flags.isFocused.toBoolOrNull() ?? false,
-                    focusable = node.flags.isFocused != Tristate.none,
-                    button = node.flags.isButton,
-                    textField = node.flags.isTextField,
-                    hidden = node.flags.isHidden,
-                    slider = node.flags.isSlider,
-                    readOnly = node.flags.isReadOnly,
-                    @checked = node.flags.isChecked.ToString(),
-                    selected = node.flags.isSelected.toBoolOrNull(),
-                    toggled = node.flags.isToggled.toBoolOrNull(),
-                    expanded = node.flags.isExpanded.toBoolOrNull(),
-                    required = node.flags.isRequired.toBoolOrNull(),
-                    mutuallyExclusive = node.flags.isInMutuallyExclusiveGroup,
-                    header = node.flags.isHeader,
-                    image = node.flags.isImage,
-                    liveRegion = node.flags.isLiveRegion,
-                    link = node.flags.isLink,
-                    obscured = node.flags.isObscured,
-                },
+                : new SemanticsFlagsWire(
+                    enabled: node.flags.isEnabled.toBoolOrNull() ?? true,
+                    focused: node.flags.isFocused.toBoolOrNull() ?? false,
+                    focusable: node.flags.isFocused != Tristate.none,
+                    button: node.flags.isButton,
+                    textField: node.flags.isTextField,
+                    hidden: node.flags.isHidden,
+                    slider: node.flags.isSlider,
+                    readOnly: node.flags.isReadOnly,
+                    @checked: node.flags.isChecked.ToString(),
+                    selected: node.flags.isSelected.toBoolOrNull(),
+                    toggled: node.flags.isToggled.toBoolOrNull(),
+                    expanded: node.flags.isExpanded.toBoolOrNull(),
+                    required: node.flags.isRequired.toBoolOrNull(),
+                    mutuallyExclusive: node.flags.isInMutuallyExclusiveGroup,
+                    header: node.flags.isHeader,
+                    image: node.flags.isImage,
+                    liveRegion: node.flags.isLiveRegion,
+                    link: node.flags.isLink,
+                    obscured: node.flags.isObscured
+                ),
             node.textSelectionBase,
             node.textSelectionExtent,
-            rect = new[] { node.rect.left, node.rect.top, node.rect.right, node.rect.bottom },
-        });
+            rect: [node.rect.left, node.rect.top, node.rect.right, node.rect.bottom]
+        ));
         InvokeUtf8(
             _native.UpdateSemantics,
-            JsonSerializer.Serialize(new { generation = update.generation, nodes }),
+            JsonSerializer.Serialize(new SemanticsUpdateWire(update.generation, nodes), SemanticsJson.Default.SemanticsUpdateWire),
             "semantics-update"
         );
     }
+
+    private sealed record SemanticsUpdateWire(long generation, IEnumerable<SemanticsNodeWire> nodes);
+
+    private sealed record SemanticsNodeWire(int id, string? label, string? value, SemanticsTextGeometryWire? textGeometry,
+        string role, long actions, IReadOnlyList<int> children, string? identifier, string? hint, string? tooltip,
+        long? headingLevel, string? linkUrl, string? increasedValue, string? decreasedValue, string validationResult,
+        string? minValue, string? maxValue, double? scrollPosition, double? scrollExtentMin, double? scrollExtentMax,
+        SemanticsFlagsWire? flags, long textSelectionBase, long textSelectionExtent, double[] rect);
+
+    private sealed record SemanticsFlagsWire(bool enabled, bool focused, bool focusable, bool button, bool textField,
+        bool hidden, bool slider, bool readOnly, string @checked, bool? selected, bool? toggled, bool? expanded,
+        bool? required, bool mutuallyExclusive, bool header, bool image, bool liveRegion, bool link, bool obscured);
+
+    [JsonSerializable(typeof(SemanticsUpdateWire))]
+    private sealed partial class SemanticsJson : JsonSerializerContext;
 
     public void ClearSemantics()
     {

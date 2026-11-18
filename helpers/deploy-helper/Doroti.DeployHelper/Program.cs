@@ -19,19 +19,21 @@ internal static class Program
                 return 0;
             }
             var ui = new ConsoleUi();
-            var platform = await new Selector(ui).SelectAsync("Platform", new[] { "ios", "android", "web" },
+            var platform = await new Selector(ui).SelectAsync("Platform", new[] { "ios", "android", "web", "windows" },
                 item => item, "--platform / -Platform", cancellation.Token, options.Platform, (item, value) => item == value);
             options.ValidateForPlatform(platform);
             var runner = new ProcessRunner(ui);
             var repository = FindRepository();
             if (platform == "ios")
             {
-                if (!OperatingSystem.IsMacOS()) throw new DeployException("iOS deployment requires macOS and Xcode. Use --platform android or --platform web on Windows/Linux.");
+                if (!OperatingSystem.IsMacOS()) throw new DeployException("iOS deployment requires macOS and Xcode.");
                 foreach (var tool in new[] { "xcrun", "security", "plutil" }) _ = Executables.Resolve(tool);
                 await new IosDeploymentCli(repository, runner, ui).RunAsync(options, cancellation.Token);
             }
             else if (platform == "android")
                 await new AndroidDeploymentCli(repository, runner, ui).RunAsync(options, cancellation.Token);
+            else if (platform == "windows")
+                await new WindowsDeploymentCli(repository, runner, ui).RunAsync(options, cancellation.Token);
             else
                 await new WebDeploymentCli(repository, runner, ui, new WebPreviewServer(ui)).RunAsync(options, cancellation.Token);
             return 0;

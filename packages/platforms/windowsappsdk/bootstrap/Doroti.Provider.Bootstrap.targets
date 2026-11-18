@@ -22,4 +22,19 @@
     <DorotiProviderEntryLine Include="        global::Doroti.Host.WindowsAppSdk.DorotiWindowsAppSdkRunner.Run(() =&gt; Create(args))%3B" Condition="'$(DorotiNativeEntryKind)' == 'Win32-WinMain'" />
   </ItemGroup>
   <Import Project="$(DorotiProviderBuildDirectory)Sdk.targets" Condition="'$(DorotiRunnerSdkActive)' == 'true'" />
+  <Target Name="DorotiEmbedNativeAotSkiaHash" BeforeTargets="AssignTargetPaths" DependsOnTargets="ResolvePackageAssets"
+          Condition="'$(PublishAot)' == 'true' and '$(DorotiRunnerSdkActive)' == 'true'">
+    <ItemGroup>
+      <_DorotiSkiaImplementation Include="@(RuntimeCopyLocalItems)" Condition="'%(RuntimeCopyLocalItems.Filename)%(RuntimeCopyLocalItems.Extension)' == 'SkiaSharp.dll'" />
+    </ItemGroup>
+    <Error Condition="'@(_DorotiSkiaImplementation->Count())' != '1'" Text="Windows Native AOT requires exactly one resolved SkiaSharp runtime assembly." />
+    <GetFileHash Files="@(_DorotiSkiaImplementation)" Algorithm="SHA256">
+      <Output TaskParameter="Hash" PropertyName="_DorotiSkiaImplementationSha256" />
+    </GetFileHash>
+    <WriteLinesToFile File="$(IntermediateOutputPath)doroti-skia-implementation.sha256" Lines="$(_DorotiSkiaImplementationSha256)" Overwrite="true" WriteOnlyWhenDifferent="true" />
+    <ItemGroup>
+      <EmbeddedResource Include="$(IntermediateOutputPath)doroti-skia-implementation.sha256" LogicalName="Doroti.Skia.NativeAot.SkiaSharp.sha256" />
+      <FileWrites Include="$(IntermediateOutputPath)doroti-skia-implementation.sha256" />
+    </ItemGroup>
+  </Target>
 </Project>

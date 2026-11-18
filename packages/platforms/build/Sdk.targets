@@ -2,6 +2,7 @@
   <Import Project="Doroti.SingleFile.targets" />
   <Import Project="Doroti.WindowsSingleFile.targets" Condition="'$(DorotiHostKind)' == 'WindowsAppSdk'" />
   <PropertyGroup>
+    <DorotiCompilationMode Condition="'$(DorotiCompilationMode)' == '' and '$(DorotiTarget)' == 'Windows' and '$(DorotiHostKind)' == 'WindowsAppSdk' and '$(PublishAot)' == 'true'">NativeAot</DorotiCompilationMode>
     <DorotiCompilationMode Condition="'$(DorotiCompilationMode)' == ''">Mono</DorotiCompilationMode>
     <_DorotiWebRuntimeContract>mono-10</_DorotiWebRuntimeContract>
     <_DorotiWebRuntimeContract Condition="'$(TargetFramework)' == 'net11.0'">mono-11</_DorotiWebRuntimeContract>
@@ -95,14 +96,19 @@
   <PropertyGroup>
     <DorotiCompilationMode Condition="'$(DorotiCompilationMode)' == '' and '$(PublishAot)' == 'true'">NativeAot</DorotiCompilationMode>
     <PublishAot Condition="'$(DorotiCompilationMode)' == 'NativeAot'">true</PublishAot>
-    <ILLinkTreatWarningsAsErrors Condition="'$(DorotiCompilationMode)' == 'NativeAot'">true</ILLinkTreatWarningsAsErrors>
-    <IlcTreatWarningsAsErrors Condition="'$(DorotiCompilationMode)' == 'NativeAot'">true</IlcTreatWarningsAsErrors>
-    <TrimmerSingleWarn Condition="'$(DorotiCompilationMode)' == 'NativeAot'">false</TrimmerSingleWarn>
+    <ILLinkTreatWarningsAsErrors Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(DorotiTarget)' == 'iOS'">true</ILLinkTreatWarningsAsErrors>
+    <IlcTreatWarningsAsErrors Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(DorotiTarget)' == 'iOS'">true</IlcTreatWarningsAsErrors>
+    <TrimmerSingleWarn Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(DorotiTarget)' == 'iOS'">false</TrimmerSingleWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(DorotiTarget)' == 'Windows' and '$(DorotiHostKind)' == 'WindowsAppSdk'">
+    <!-- Keep the desktop preview diagnostics visible while optional host features are being qualified. -->
+    <ILLinkTreatWarningsAsErrors Condition="'$(ILLinkTreatWarningsAsErrors)' == ''">false</ILLinkTreatWarningsAsErrors>
+    <IlcTreatWarningsAsErrors Condition="'$(IlcTreatWarningsAsErrors)' == ''">false</IlcTreatWarningsAsErrors>
   </PropertyGroup>
   <Target Name="ValidateDorotiCompilationMode" BeforeTargets="PrepareForBuild;CollectPackageReferences">
     <Error Code="DOROTIAOT001" Condition="'$(DorotiCompilationMode)' != 'Mono' and '$(DorotiCompilationMode)' != 'NativeAot' and '$(DorotiCompilationMode)' != 'CoreClr'" Text="DorotiCompilationMode must be Mono, NativeAot or CoreClr." />
     <Error Code="DOROTICLR001" Condition="'$(DorotiCompilationMode)' == 'CoreClr' and ('$(DorotiIosDevelopment)' != 'true' or '$(DorotiTarget)' != 'iOS' or '$(RuntimeIdentifier)' != 'ios-arm64' or '$(TargetFramework)' != 'net11.0-ios' or '$(UseMonoRuntime)' != 'false')" Text="The CoreClr profile currently requires a net11.0-ios device development session." />
-    <Error Code="DOROTIAOT002" Condition="'$(DorotiCompilationMode)' == 'NativeAot' and ('$(DorotiTarget)' != 'iOS' or '$(RuntimeIdentifier)' != 'ios-arm64')" Text="The experimental NativeAot profile currently targets iOS ios-arm64 only." />
+    <Error Code="DOROTIAOT002" Condition="'$(DorotiCompilationMode)' == 'NativeAot' and !(('$(DorotiTarget)' == 'iOS' and '$(RuntimeIdentifier)' == 'ios-arm64') or ('$(DorotiTarget)' == 'Windows' and '$(DorotiHostKind)' == 'WindowsAppSdk' and '$(RuntimeIdentifier)' == 'win-x64' and '$(Configuration)' == 'Release'))" Text="The NativeAot profile supports iOS ios-arm64 and Windows App SDK Release win-x64." />
     <Error Code="DOROTIAOT003" Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(ArtifactsPath)' == ''" Text="NativeAot validation requires a separate ArtifactsPath. Use the Doroti CLI compilation mode option or pass a mode-specific ArtifactsPath." />
     <Error Code="DOROTIAOT004" Condition="'$(DorotiCompilationMode)' == 'NativeAot' and ('$(MtouchInterpreter)' != '' or '$(UseInterpreter)' == 'true')" Text="Remove Mono interpreter options from the NativeAot profile." />
     <Error Code="DOROTIAOT005" Condition="'$(DorotiCompilationMode)' == 'Mono' and '$(PublishAot)' == 'true'" Text="PublishAot=true conflicts with DorotiCompilationMode=Mono." />
