@@ -7,6 +7,22 @@ internal sealed partial class MauiSemanticsLayout : AbsoluteLayout
 {
     private SemanticsNodeUpdate? _node;
     internal SemanticsNodeUpdate? Node { get => _node; set { _node = value; RefreshNativeSemantics(); } }
+
+    internal void UpdateNode(SemanticsNodeUpdate node, SemanticsNodeProperty properties)
+    {
+#if IOS && !MACCATALYST
+        _node = node;
+        // Layout owns the bounds, and actions consult the current snapshot.
+        // A scroll offset alone does not change UIKit labels, traits, or actions.
+        if ((properties & ~(SemanticsNodeProperty.bounds | SemanticsNodeProperty.scroll)) != 0)
+        {
+            RefreshNativeSemantics();
+        }
+#else
+        Node = node;
+#endif
+    }
+
     internal MauiSemanticsLayout()
     {
         HandlerChanged += (_, _) => { RefreshNativeSemantics(); (Parent as MauiSemanticsLayout)?.RefreshNativeSemantics(); };

@@ -9,7 +9,11 @@ namespace Doroti.Host.Maui;
 internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, TimeSpan>? schedule = null) : IMauiSemanticsBridge, IDisposable
 {
     private static readonly TimeSpan MinimumApplyInterval = TimeSpan.FromMilliseconds(
+#if IOS && !MACCATALYST
+        67
+#else
         1000.0 / 15.0
+#endif
     );
     private readonly AbsoluteLayout _layer = layer;
     private readonly object _gate = new();
@@ -75,10 +79,9 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
         ArgumentNullException.ThrowIfNull(update);
         ArgumentNullException.ThrowIfNull(performAction);
         Interlocked.Increment(ref _updatesReceived);
-        var visibleNodes = VisibleNodes(update.nodes);
-        var schedule = false;
-        var scheduleId = 0L;
-        var delay = TimeSpan.Zero;
+        var visibleNodes = ShouldThrottleScrollUpdate(update) ? null : VisibleNodes(update.nodes);
+        long scheduleId;
+        TimeSpan delay;
         lock (_gate)
         {
             if (_disposed || update.generation < _lastReceivedGeneration)
@@ -87,45 +90,55 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
                 return;
             }
             _lastReceivedGeneration = update.generation;
-            var delta = SemanticsUpdateDiffer.Diff(_appliedNodes, visibleNodes);
-            // Even an applied-equivalent update replaces older pending work and
-            // refreshes its action owner on the native dispatcher.
-            if (!delta.HasChanges) Interlocked.Increment(ref _updatesSuppressed);
-            _pending = new(update with { nodes = visibleNodes }, performAction);
-            var immediate =
-                update.urgency
-                    is SemanticsUpdateUrgency.immediate
-                        or SemanticsUpdateUrgency.scrollEnd
-                || delta.RequiresImmediateFlush || !delta.HasChanges;
+            var immediate = false;
+            if (visibleNodes is null)
+            {
+                // The renderer sends a complete snapshot. Only filter and diff
+                // the latest snapshot when it reaches the UIKit dispatcher.
+                _pending = new(update, performAction, FilterVisibleNodes: true);
+            }
+            else
+            {
+                var delta = SemanticsUpdateDiffer.Diff(_appliedNodes, visibleNodes);
+                // Even an applied-equivalent update replaces older pending work and
+                // refreshes its action owner on the native dispatcher.
+                if (!delta.HasChanges) Interlocked.Increment(ref _updatesSuppressed);
+                _pending = new(update with { nodes = visibleNodes }, performAction);
+                immediate =
+                    update.urgency is SemanticsUpdateUrgency.immediate or SemanticsUpdateUrgency.scrollEnd
+                    || delta.RequiresImmediateFlush || !delta.HasChanges;
+            }
+
             if (_applyScheduled)
             {
                 Interlocked.Increment(ref _updatesCoalesced);
                 if (!immediate)
                 {
+                    // Keep the existing deadline and let its callback take the latest tree.
                     return;
                 }
-                // A critical update invalidates a previously scheduled scroll callback.
-                _scheduleGeneration++;
-            }
-            else
-            {
-                _applyScheduled = true;
-                _scheduleGeneration++;
             }
             if (immediate)
             {
                 Interlocked.Increment(ref _immediateFlushes);
             }
 
-            scheduleId = _scheduleGeneration;
+            _applyScheduled = true;
+            scheduleId = ++_scheduleGeneration;
             delay = immediate ? TimeSpan.Zero : RemainingApplyDelay();
-            schedule = true;
         }
-        if (schedule)
-        {
-            ScheduleApply(scheduleId, delay);
-        }
+        ScheduleApply(scheduleId, delay);
     }
+
+    private bool ShouldThrottleScrollUpdate(SemanticsUpdate update) =>
+#if IOS && !MACCATALYST
+        update.urgency == SemanticsUpdateUrgency.automatic
+        && _frameTrace?.HasActiveScrollActivity == true
+        && !UIKit.UIAccessibility.IsVoiceOverRunning
+        && !UIKit.UIAccessibility.IsSwitchControlRunning;
+#else
+        false;
+#endif
 
     public void Dispose()
     {
@@ -244,7 +257,13 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
             lock (_gate)
             {
                 if (_disposed || scheduleId != _scheduleGeneration) return;
-                Apply(pending.Update, pending.PerformAction);
+                var update = pending.Update;
+                if (pending.FilterVisibleNodes)
+                {
+                    update = update with { nodes = VisibleNodes(update.nodes) };
+                }
+                Apply(update, pending.PerformAction);
+                _lastApplyTimestamp = Stopwatch.GetTimestamp();
                 Interlocked.Increment(ref _updatesApplied);
             }
         }
@@ -260,20 +279,20 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
                 finished,
                 reason: $"generation {pending.Update.generation}"
             );
-            Interlocked.Exchange(ref _lastApplyTimestamp, Stopwatch.GetTimestamp());
         }
     }
 
     private TimeSpan RemainingApplyDelay()
     {
-        var timestamp = Interlocked.Read(ref _lastApplyTimestamp);
-        if (timestamp == 0)
+        if (_lastApplyTimestamp == 0)
         {
             return TimeSpan.Zero;
         }
 
-        var elapsed = Stopwatch.GetElapsedTime(timestamp);
-        return elapsed >= MinimumApplyInterval ? TimeSpan.Zero : MinimumApplyInterval - elapsed;
+        var remaining = MinimumApplyInterval - Stopwatch.GetElapsedTime(_lastApplyTimestamp);
+        return remaining <= TimeSpan.Zero
+            ? TimeSpan.Zero
+            : TimeSpan.FromMilliseconds(Math.Ceiling(remaining.TotalMilliseconds));
     }
 
     private void ScheduleApply(long scheduleId, TimeSpan delay)
@@ -284,7 +303,11 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
             _layer.Dispatcher.Dispatch(() => ApplyLatest(scheduleId));
             return;
         }
-        _ = DelayAndApplyLatest(scheduleId, delay, _lifetime.Token);
+        lock (_gate)
+        {
+            if (_disposed || scheduleId != _scheduleGeneration) return;
+            _ = DelayAndApplyLatest(scheduleId, delay, _lifetime.Token);
+        }
     }
 
     private async Task DelayAndApplyLatest(
@@ -312,6 +335,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
         using var allocationProfile = FrameworkWorkProfile.AllocationEnabled
             ? FrameworkWorkProfile.Begin(GetType(), 17)
             : default;
+        var tree = new SemanticsTreeSnapshot(update.nodes);
         var delta = SemanticsUpdateDiffer.Diff(_appliedNodes, update.nodes);
         var changedById = delta.changedNodes.ToDictionary(node => node.id);
         var rebuildOrder = delta.HasTopologyChange;
@@ -360,9 +384,9 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
 
             if (rebuildOrder)
             {
-                SynchronizeChildOrder(update.nodes);
+                SynchronizeChildOrder(tree);
             }
-            LayoutHierarchy(update.nodes);
+            LayoutHierarchy(tree);
             Interlocked.Exchange(ref _activeElements, _elements.Count);
             Interlocked.Exchange(ref _retainedNodes, _appliedNodes.Count);
         }
@@ -407,13 +431,51 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
         recycled.Push(state);
     }
 
-    private void SynchronizeChildOrder(IReadOnlyList<SemanticsNodeUpdate> nodes)
+    private void SynchronizeChildOrder(SemanticsTreeSnapshot tree)
     {
-        var tree = new SemanticsTreeSnapshot(nodes);
-        foreach (var state in _elements.Values) DetachContainer(state);
-        foreach (var root in tree.Roots) _layer.Children.Add(_elements[root].Container);
-        foreach (var node in nodes)
-            foreach (var child in tree.Children(node.id)) _elements[node.id].Container.Children.Add(_elements[child].Container);
+        // Remove old ownership links before inserting their replacements, so a tree
+        // that inverts a parent/child relationship never creates a transient cycle.
+        foreach (var (id, state) in _elements)
+        {
+            Layout owner = tree.Parents.TryGetValue(id, out var parentId)
+                ? _elements[parentId].Container
+                : _layer;
+            if (state.Container.Parent is Layout previous && !ReferenceEquals(previous, owner))
+            {
+                previous.Remove(state.Container);
+            }
+        }
+
+        SynchronizeChildren(_layer, tree.Roots, 0);
+        foreach (var node in tree.Nodes.Values)
+        {
+            var owner = _elements[node.id].Container;
+            if (node.children.Count != 0 || owner.Count > 1)
+            {
+                // The projected control occupies the first slot in each container.
+                SynchronizeChildren(owner, tree.Children(node.id), 1);
+            }
+        }
+    }
+
+    private void SynchronizeChildren(Layout owner, IReadOnlyList<int> childIds, int index)
+    {
+        foreach (var id in childIds)
+        {
+            var child = _elements[id].Container;
+            if (index >= owner.Count || !ReferenceEquals(owner[index], child))
+            {
+                var previousIndex = owner.IndexOf(child);
+                if (previousIndex >= 0)
+                {
+                    if (previousIndex < index) continue; // This child was already listed.
+                    owner.RemoveAt(previousIndex);
+                }
+                owner.Insert(index, child);
+            }
+            index++;
+        }
+        while (owner.Count > index) owner.RemoveAt(owner.Count - 1);
     }
 
     private static void DetachContainer(NativeElementState state)
@@ -421,15 +483,22 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
         if (state.Container.Parent is Layout parent) parent.Children.Remove(state.Container);
     }
 
-    private void LayoutHierarchy(IReadOnlyList<SemanticsNodeUpdate> nodes)
+    private void LayoutHierarchy(SemanticsTreeSnapshot tree)
     {
-        var tree = new SemanticsTreeSnapshot(nodes);
-        foreach (var node in nodes)
+        foreach (var node in tree.Nodes.Values)
         {
             var state = _elements[node.id];
             var origin = tree.Parents.TryGetValue(node.id, out var parent) ? tree.Nodes[parent].rect.topLeft : Doroti.Ui.Offset.zero;
-            AbsoluteLayout.SetLayoutBounds(state.Container, new(node.rect.left - origin.dx, node.rect.top - origin.dy,
-                Math.Max(0, node.rect.width), Math.Max(0, node.rect.height)));
+            var bounds = new Microsoft.Maui.Graphics.Rect(
+                node.rect.left - origin.dx,
+                node.rect.top - origin.dy,
+                Math.Max(0, node.rect.width),
+                Math.Max(0, node.rect.height)
+            );
+            if (state.LayoutBounds == bounds) continue;
+            AbsoluteLayout.SetLayoutBounds(state.Container, bounds);
+            state.LayoutBounds = bounds;
+            Interlocked.Increment(ref _nativePropertyWrites);
         }
     }
 
@@ -453,6 +522,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
             _ => new Label { Opacity = 0 },
         };
         var state = new NativeElementState(kind, element);
+        AbsoluteLayout.SetLayoutFlags(state.Container, AbsoluteLayoutFlags.None);
         state.Container.Children.Add(element);
         AbsoluteLayout.SetLayoutBounds(element, new(0, 0, 1, 1));
         AbsoluteLayout.SetLayoutFlags(element, AbsoluteLayoutFlags.All);
@@ -654,7 +724,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
         {
             state.Node = node;
             state.PerformAction = performAction;
-            state.Container.Node = node;
+            state.Container.UpdateNode(node, properties);
             state.Container.DispatchAction = (action, arguments) =>
             {
                 if (_disposed || _projectionDepth != 0 || state.Node is not { } currentNode
@@ -868,29 +938,6 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
                     }
                 }
             }
-            if ((properties & SemanticsNodeProperty.bounds) != 0)
-            {
-                var bounds = new Microsoft.Maui.Graphics.Rect(
-                    node.rect.left,
-                    node.rect.top,
-                    Math.Max(0, node.rect.right - node.rect.left),
-                    Math.Max(0, node.rect.bottom - node.rect.top)
-                );
-                if (state.LayoutBounds != bounds)
-                {
-                    AbsoluteLayout.SetLayoutBounds(state.Container, bounds);
-                    state.LayoutBounds = bounds;
-                    Interlocked.Increment(ref _nativePropertyWrites);
-                }
-                if (!state.LayoutFlagsInitialized)
-                {
-                    AbsoluteLayout.SetLayoutFlags(
-                        state.Container,
-                        Microsoft.Maui.Layouts.AbsoluteLayoutFlags.None
-                    );
-                    state.LayoutFlagsInitialized = true;
-                }
-            }
         }
         finally
         {
@@ -979,7 +1026,8 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
 
     private sealed record PendingUpdate(
         SemanticsUpdate Update,
-        Action<int, SemanticsAction, object?> PerformAction
+        Action<int, SemanticsAction, object?> PerformAction,
+        bool FilterVisibleNodes = false
     );
 
     private enum NativeElementKind
@@ -1004,7 +1052,6 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer, Action<Action, T
         internal string? Hint { get; set; }
         internal SemanticHeadingLevel Heading { get; set; } = SemanticHeadingLevel.None;
         internal Microsoft.Maui.Graphics.Rect? LayoutBounds { get; set; }
-        internal bool LayoutFlagsInitialized { get; set; }
         internal bool Updating { get; set; }
         internal object? ObservedValue { get; set; }
         internal (int Start, int End) ObservedSelection { get; set; }
