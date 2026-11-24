@@ -28,15 +28,17 @@ Doroti는 데스크톱·모바일·웹에서 공유하는 위젯, 레이아웃, 
 ### 공통 도구와 SDK 선택
 
 - Windows·macOS·Linux에서 [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6)을 설치해 `eng/doroti.ps1` 등 저장소 스크립트 실행에 사용합니다. 아래 명령은 **저장소 루트 `DorotiLab`**에서 PowerShell로 시작합니다.
-- **iOS 외 플랫폼: .NET SDK 10.0.400** 또는 같은 기능 밴드의 호환 패치 버전. [루트 global.json](../global.json)과 [Doroti/global.json](global.json)이 선택합니다.
-- **iOS Testbed: .NET SDK 11.0.100-rc.2.26504.105** 또는 호환 패치 버전. [iOS global.json](../samples/DorotiTestbedApp/ios/global.json)이 선택합니다. .NET 10과 함께 설치합니다.
+- **.NET 10 빌드.** 10.0.400 계열의 호환 SDK를 사용합니다. 배포 도구는 .NET 10 빌드에 [Doroti/global.json](global.json)을 사용합니다.
+- **iOS와 배포 도구.** .NET SDK 11.0.100 계열의 정식 버전을 사용합니다. 각 샘플의 `ios/global.json`과 배포 도구의 SDK 선택 파일이 버전을 지정합니다. [배포 도구](../helpers/deploy-helper/README.md#ios)
 - 선택한 SDK에 맞는 플랫폼 워크로드와 NuGet 패키지 복원이 필요합니다. .NET 10 경로는 프로젝트가 지정한 10.0.11 런타임 팩을 사용하며, 필요한 팩은 대상별로 복원합니다.
 
 `dotnet`은 **현재 작업 폴더**에서 상위로 `global.json`을 찾습니다. `--project` 경로만 iOS로 지정해도 SDK가 바뀌지는 않습니다. iOS 직접 실행은 `samples/DorotiTestbedApp/ios`에서 하고, 다른 플랫폼은 저장소 루트에서 실행합니다. workspace CLI의 `build/run/publish -App ./samples/DorotiTestbedApp -Platform ios`는 iOS 폴더를 자동으로 사용합니다.
 
-SDK 선택과 대상 프레임워크는 별개입니다. Testbed를 직접 빌드하는 iOS 실기기 Release는 NativeAOT가 기본이며, `dotnet build/publish`에 `-p:DorotiCompilationMode=Mono -p:PublishAot=false`를 전달해 Mono 프로필을 선택합니다. NativeAOT의 기본값은 `net11.0-ios`와 MAUI `11.0.0-rc.2.26505.5`이고 Debug·시뮬레이터는 `net10.0-ios`를 유지합니다. workspace CLI는 manifest의 TFM/RID를 사용하며 현재 Testbed의 `ios` 별칭은 `net10.0-ios` / `iossimulator-x64`입니다. 다른 시뮬레이터·서명된 실기기·SDK 선택은 [iOS 샘플 안내](../samples/DorotiTestbedApp/README.ko.md#ios-샘플)를 참고하세요.
+iOS 기본 대상은 `net11.0-ios`이며 MAUI `11.0.10`을 사용합니다. 샘플의 workspace `ios` 별칭은 Apple Silicon 시뮬레이터
+(`iossimulator-arm64`)를 선택합니다. Debug와 시뮬레이터는 CoreCLR을 사용하고, 배포 도구의 실기기 Release는 NativeAOT를 기본으로 사용합니다.
+.NET 10 iOS 호환 빌드는 배포 도구에서 `-DotnetVersion 10`으로 선택합니다.
 
-**.NET 11 RC2 + Xcode 27:** RC2는 Xcode 27.0과 워크로드 집합 `11.0.100-rc.2.26509.2`(iOS `27.0.12212-net11-rc.2`)를 사용합니다. Xcode 버전 검사는 활성화한 상태로 빌드합니다. [SampleApp2 빌드 예제](../samples/DorotiSampleApp2/README.md#net-11-rc2--xcode-27-native-aot), [RC2 공식 요구 사항](https://github.com/dotnet/macios/releases/tag/dotnet-11.0.1xx-rc2-12212)을 참고하세요.
+Xcode 27.2와 .NET 11 워크로드 집합 `11.0.100.1`이 필요합니다. [공식 iOS 워크로드 안내](https://github.com/dotnet/macios/releases/tag/dotnet-11.0.1xx-xcode27.2.11039)
 
 ### 플랫폼별 구성
 
@@ -60,7 +62,7 @@ Linux는 API 조건을 충족하는 llvmpipe 같은 소프트웨어 Vulkan 장�
 ### 설치 상태 확인과 워크로드 복원
 
 ```powershell
-# 저장소 루트: SDK 10 확인
+# 저장소 루트에서 선택된 SDK 확인
 dotnet --version
 dotnet workload list
 pwsh -File ./Doroti/eng/doroti.ps1 doctor -App ./samples/DorotiTestbedApp -Platform windows -Scope target
@@ -71,8 +73,7 @@ dotnet workload restore ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.
 # iOS: SDK 11을 선택한 위치에서 확인 및 복원
 Push-Location ./samples/DorotiTestbedApp/ios
 dotnet --version
-dotnet workload list
-dotnet workload restore ./DorotiTestbedApp.iOS.csproj
+dotnet workload --info
 Pop-Location
 ```
 

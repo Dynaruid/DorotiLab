@@ -2,31 +2,24 @@
   <PropertyGroup>
     <DorotiIosNativeAotProfileImported>true</DorotiIosNativeAotProfileImported>
     <DorotiIosNativeAotProfilePath>$(MSBuildThisFileFullPath)</DorotiIosNativeAotProfilePath>
+    <_DorotiDefaultIosTargetFramework>net10.0-ios</_DorotiDefaultIosTargetFramework>
+    <_DorotiDefaultIosTargetFramework Condition="'$(NETCoreSdkVersion)' != '' and $([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '11.0'))">net11.0-ios</_DorotiDefaultIosTargetFramework>
+    <DorotiIosTargetFramework Condition="'$(DorotiIosTargetFramework)' == '' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">$(TargetFramework)</DorotiIosTargetFramework>
+    <DorotiIosTargetFramework Condition="'$(DorotiIosTargetFramework)' == '' and ('$(DorotiIosProject)' == 'true' or $(MSBuildProjectName.StartsWith('Doroti.Target.iOS.')) or $(RuntimeIdentifier.StartsWith('ios-')) or $(RuntimeIdentifier.StartsWith('iossimulator-')))">$(_DorotiDefaultIosTargetFramework)</DorotiIosTargetFramework>
   </PropertyGroup>
-  <!-- Use the installed iOS workload for .NET 10, while retaining the
-       explicit Xcode 27.0 profile and the separate .NET 11 profile. -->
-  <PropertyGroup Condition="'$(DorotiIosTargetFramework)' == 'net10.0-ios' or '$(DorotiIosTargetFramework)' == 'net10.0-ios27.0'">
+  <PropertyGroup Condition="'$(DorotiIosTargetFramework)' != ''">
+    <DorotiCompilationMode Condition="'$(DorotiCompilationMode)' == '' and ('$(PublishAot)' == 'true' or ('$(DorotiIosNativeAotByDefault)' == 'true' and '$(PublishAot)' != 'false' and '$(Configuration)' == 'Release' and '$(RuntimeIdentifier)' == 'ios-arm64'))">NativeAot</DorotiCompilationMode>
+    <DorotiCompilationMode Condition="'$(DorotiCompilationMode)' == '' and $(DorotiIosTargetFramework.StartsWith('net11.'))">CoreClr</DorotiCompilationMode>
     <DorotiCompilationMode Condition="'$(DorotiCompilationMode)' == ''">Mono</DorotiCompilationMode>
+    <DorotiIosMauiVersion Condition="'$(DorotiIosMauiVersion)' == '' and $(DorotiIosTargetFramework.StartsWith('net11.'))">11.0.10</DorotiIosMauiVersion>
     <DorotiHostTargetFrameworks Condition="'$(DorotiHostTargetFrameworks)' == ''">$(DorotiIosTargetFramework)</DorotiHostTargetFrameworks>
     <NoWarn Condition="'$(DorotiIosTargetFramework)' == 'net10.0-ios27.0'">$(NoWarn);XCODE_27_0_PREVIEW</NoWarn>
-    <!-- Choose the Debug interpreter split in Sdk.targets, after the runner's
-         app project, assembly name and RID are known. Explicit caller settings
-         and NativeAOT remain separate profiles. -->
-    <_DorotiIosDebugInterpreterDefault Condition="'$(Configuration)' == 'Debug' and '$(DorotiCompilationMode)' != 'NativeAot' and '$(UseInterpreter)' != 'false' and '$(MtouchInterpreter)' == ''">true</_DorotiIosDebugInterpreterDefault>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(DorotiCompilationMode)' == '' and '$(PublishAot)' != 'false' and '$(Configuration)' == 'Release' and ('$(RuntimeIdentifier)' == 'ios-arm64' or '$(MSBuildProjectName)' == 'Doroti.Target.iOS.Maui.ios-arm64')">
-    <DorotiCompilationMode>NativeAot</DorotiCompilationMode>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(DorotiIosDevelopment)' == 'true' and '$(DorotiIosTargetFramework)' == 'net11.0-ios'">
-    <DorotiIosMauiVersion Condition="'$(DorotiIosMauiVersion)' == ''">11.0.10</DorotiIosMauiVersion>
-    <DorotiHostTargetFrameworks>$(DorotiIosTargetFramework)</DorotiHostTargetFrameworks>
-    <Registrar>partial-static</Registrar>
+    <_DorotiIosDebugInterpreterDefault Condition="'$(Configuration)' == 'Debug' and '$(DorotiCompilationMode)' == 'Mono' and '$(UseInterpreter)' != 'false' and '$(MtouchInterpreter)' == ''">true</_DorotiIosDebugInterpreterDefault>
+    <Registrar Condition="'$(Registrar)' == '' and '$(DorotiIosDevelopment)' == 'true' and '$(DorotiCompilationMode)' == 'CoreClr'">partial-static</Registrar>
   </PropertyGroup>
   <!-- Selected before target-framework discovery, including RID-less restore.
        PublishAot belongs on the executable and is deliberately not set here. -->
-  <PropertyGroup Condition="'$(DorotiCompilationMode)' == 'NativeAot'">
+  <PropertyGroup Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(DorotiIosTargetFramework)' != ''">
     <ArtifactsPath Condition="'$(ArtifactsPath)' == ''">$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '.doroti', 'compilation', 'NativeAot', '$(RuntimeIdentifier)'))</ArtifactsPath>
-    <DorotiIosTargetFramework Condition="'$(DorotiIosTargetFramework)' == ''">net11.0-ios</DorotiIosTargetFramework>
-    <DorotiIosMauiVersion Condition="'$(DorotiIosMauiVersion)' == ''">11.0.10</DorotiIosMauiVersion>
   </PropertyGroup>
 </Project>

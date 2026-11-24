@@ -21,7 +21,7 @@
       "runner": "ios/DorotiTemplateApp.iOS.csproj",
       "backend": "Maui",
       "profile": "default:iossimulator-arm64",
-      "targetFramework": "net10.0-ios",
+      "targetFramework": "net11.0-ios",
       "runtimeIdentifier": "iossimulator-arm64"
     },
     "linux": {

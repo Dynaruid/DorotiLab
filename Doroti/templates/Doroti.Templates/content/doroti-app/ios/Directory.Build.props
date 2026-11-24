@@ -1,6 +1,9 @@
 <Project>
   <PropertyGroup>
-    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == '' and '$(Configuration)' == 'Release' and '$(DorotiCompilationMode)' != 'Mono' and '$(PublishAot)' != 'false'">ios-arm64</RuntimeIdentifier>
+    <DorotiIosTargetFramework Condition="'$(DorotiIosTargetFramework)' == '' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">$(TargetFramework)</DorotiIosTargetFramework>
+    <DorotiIosTargetFramework Condition="'$(DorotiIosTargetFramework)' == ''">net11.0-ios</DorotiIosTargetFramework>
+    <DorotiIosNativeAotByDefault>true</DorotiIosNativeAotByDefault>
+    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == '' and '$(Configuration)' == 'Release' and '$(DorotiCompilationMode)' != 'Mono' and '$(DorotiCompilationMode)' != 'CoreClr' and '$(PublishAot)' != 'false'">ios-arm64</RuntimeIdentifier>
   </PropertyGroup>
   <Import Project="..\Directory.Build.props" />
   <PropertyGroup>

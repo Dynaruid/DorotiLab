@@ -2,9 +2,9 @@
 """Install the pinned .NET 10/11 SDKs and Apple/MAUI workloads on macOS.
 
 Run as your normal user; only installer/workload operations use sudo.
-Version references (checked 2026-10-15):
-https://github.com/dotnet/macios/releases/tag/dotnet-10.0.1xx-xcode27.0-10722
-https://github.com/dotnet/macios/releases/tag/dotnet-11.0.1xx-rc2-12212
+Version references:
+https://github.com/dotnet/macios/releases/tag/dotnet-10.0.1xx-xcode27.2.10000
+https://github.com/dotnet/macios/releases/tag/dotnet-11.0.1xx-xcode27.2.11039
 """
 
 import argparse
@@ -24,16 +24,16 @@ import urllib.request
 
 PROFILES = {
     "10": {
-        "sdk": "10.0.401",
-        "workloads": "10.0.401.1",
-        "ios": "27.0.10722",
-        "xcode": "27.0",
+        "sdk": "10.0.404",
+        "workloads": "10.0.404",
+        "ios": "27.2.10000",
+        "xcode": "27.2",
     },
     "11": {
-        "sdk": "11.0.100-rc.2.26504.105",
-        "workloads": "11.0.100-rc.2.26509.2",
-        "ios": "27.0.12212-net11-rc.2",
-        "xcode": "27.0",
+        "sdk": "11.0.100",
+        "workloads": "11.0.100.1",
+        "ios": "27.2.11039",
+        "xcode": "27.2",
     },
 }
 DOTNET_ROOT = Path("/usr/local/share/dotnet")
@@ -113,9 +113,12 @@ def download_installer(entry, destination):
     print("SDK SHA-512 검증 통과", flush=True)
 
 
-def workload_command(profile):
-    return ["/usr/bin/sudo", "-H", str(DOTNET), "workload", "install", *WORKLOAD_IDS,
-            "--version", profile["workloads"], "--source", NUGET_SOURCE]
+def workload_commands(profile):
+    command = ["/usr/bin/sudo", "-H", str(DOTNET), "workload"]
+    options = ["--version", profile["workloads"], "--source", NUGET_SOURCE]
+    # A fresh SDK can lack the Apple workload manifests altogether.
+    return [command + ["update", *options],
+            command + ["install", *WORKLOAD_IDS, *options]]
 
 
 def update(major, arch, staging):
@@ -136,7 +139,7 @@ def update(major, arch, staging):
     # dotnet resolves global.json from cwd, not from a supplied csproj path.
     # Do not set workloadVersion here: it conflicts with install --version.
     (selection / "global.json").write_text(json.dumps({"sdk": {
-        "version": profile["sdk"], "rollForward": "disable", "allowPrerelease": major == "11",
+        "version": profile["sdk"], "rollForward": "disable", "allowPrerelease": False,
     }}) + "\n")
     (selection / "NuGet.Config").write_text(
         '<configuration><packageSources><clear />'
@@ -147,7 +150,8 @@ def update(major, arch, staging):
         raise RuntimeError(f"SDK 선택 불일치: expected {profile['sdk']}, got {selected}")
     print(f"\n.NET {major} 업데이트 전 워크로드:", flush=True)
     run([DOTNET, "workload", "--info"], cwd=selection)
-    run(workload_command(profile), cwd=selection)
+    for command in workload_commands(profile):
+        run(command, cwd=selection)
     installed = run([DOTNET, "workload", "--version"], cwd=selection, capture=True)
     if installed != profile["workloads"]:
         raise RuntimeError(f"워크로드 검증 실패: expected {profile['workloads']}, got {installed}")
@@ -163,10 +167,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(
         description="macOS의 .NET 10/11 SDK와 iOS·MAUI·macOS·Mac Catalyst·WebAssembly 도구를 업데이트합니다.",
         epilog="""일반 사용자로 실행하세요. 설치 단계에서만 sudo 비밀번호를 요청합니다.
-.NET 10 / .NET 11 RC2: Xcode 27.0 필요.
-프로젝트 global.json, MAUI PackageReference, Native AOT 프로필과 Xcode 선택은 수정하지 않습니다.
-설치 후에도 프로젝트의 TFM/MAUI 버전은 지원 조합으로 맞춰야 합니다.
-SDK/워크로드 설치 확인은 앱의 Native AOT 빌드·실행 검증과 별개입니다.""",
+두 프로필의 iOS 워크로드에는 Xcode 27.2가 필요합니다.""",
         formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--dotnet-version", choices=("10", "11", "all"), default="all")
     parser.add_argument("--dry-run", action="store_true", help="다운로드·설치 없이 대상 버전과 명령만 표시")
@@ -181,7 +182,6 @@ SDK/워크로드 설치 확인은 앱의 Native AOT 빌드·실행 검증과 별
     for major in majors:
         p = PROFILES[major]
         print(f".NET {major}: SDK {p['sdk']}, workload {p['workloads']}, iOS {p['ios']}, Xcode {p['xcode']}")
-    print(".NET 10과 .NET 11 RC2 프로필은 Xcode 27.0을 사용합니다.", flush=True)
     current = shutil.which("dotnet")
     if current and Path(current).resolve() != DOTNET.resolve():
         print(f"주의: PATH의 dotnet({current})과 업데이트 대상({DOTNET})이 다릅니다.", flush=True)
@@ -189,7 +189,8 @@ SDK/워크로드 설치 확인은 앱의 Native AOT 빌드·실행 검증과 별
         for major in majors:
             print(f"\n.NET {major}: SDK가 없으면 Microsoft .pkg 다운로드 → SHA-512/서명 확인 → sudo installer")
             print("임시 폴더의 global.json으로 SDK를 정확히 선택한 뒤:")
-            print("  " + shlex.join(workload_command(PROFILES[major])))
+            for command in workload_commands(PROFILES[major]):
+                print("  " + shlex.join(command))
         print("\nDRY RUN 완료. 다운로드/설치/설정 변경을 하지 않았습니다.")
         return 0
     if DOTNET.exists():
@@ -202,8 +203,7 @@ SDK/워크로드 설치 확인은 앱의 Native AOT 빌드·실행 검증과 별
             update(major, arch, Path(directory))
     run([DOTNET, "--list-sdks"])
     print("\n업데이트 완료. VS Code를 다시 시작한 뒤 SDK/워크로드 선택을 확인하세요.")
-    print("Xcode 27: .NET 10 + net10.0-ios27.0 + MAUI 10.0.110 이상을 사용하세요.")
-    print(".NET 11 RC2: Xcode 27.0을 선택하세요. 버전 검사 우회는 필요하지 않습니다.")
+    print("iOS 기본 빌드는 .NET 11 / net11.0-ios / MAUI 11.0.10과 Xcode 27.2를 사용합니다.")
     return 0
 
 

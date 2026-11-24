@@ -6,7 +6,7 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Sample2
 .EXAMPLE
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Target simulator
 .EXAMPLE
-pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Sample2 -DotnetVersion 11
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Sample2 -Target device -Configuration Debug
 .EXAMPLE
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Carousel -Target simulator
 #>
@@ -15,8 +15,8 @@ param(
     [ValidateSet('Sample2', 'Testbed', 'Carousel', 'Demo')][string]$App,
     [ValidateSet('auto', 'device', 'simulator')][string]$Target = 'auto',
     [string]$Device,
-    [ValidateSet(10, 11)][int]$DotnetVersion = 10,
-    [ValidateSet('Mono', 'NativeAot')][string]$Mode,
+    [ValidateSet(10, 11)][int]$DotnetVersion,
+    [ValidateSet('Mono', 'NativeAot', 'CoreClr')][string]$Mode,
     [ValidateSet('Debug', 'Release')][string]$Configuration,
     [string]$CodesignKey,
     [string]$CodesignProvision,

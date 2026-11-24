@@ -30,7 +30,7 @@ JavaScript 실행 컨트롤도 표시합니다. attachment만 제공하는 호�
 Windows·macOS·Linux에서 [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6)을 설치하세요. 모든 명령은 **저장소 루트 `DorotiLab`**에서 PowerShell로 실행합니다.
 macOS/Linux의 기본 셸이 zsh/bash라면 먼저 `pwsh -NoProfile`을 실행하세요.
 iOS 외 대상은 저장소 루트 [global.json](../../global.json)이 선택하는 **.NET SDK 10.0.400 계열**을 사용합니다.
-아래 iOS 직접 실행 명령이나 공용 설치 스크립트의 `-DotnetVersion 11`을 사용하려면 .NET 10과 함께 [ios/global.json](ios/global.json)이 선택하는 **.NET SDK 11.0.100-rc.2.26504.105**를 설치합니다.
+배포 도구와 iOS는 [ios/global.json](ios/global.json)이 선택하는 **.NET SDK 11.0.100** 계열의 정식 버전을 사용합니다.
 각 플랫폼에 필요한 workload와 도구는 아래 실행 항목에서 확인하세요.
 
 첫 실행은 패키지 복원과 빌드, 필요한 경우 기기 설치를 포함합니다. 샘플 실행 예제는 Release이며 빌드 옵션 절에서는 Debug/Release를 명시합니다.
@@ -151,7 +151,7 @@ try {
         -p:DorotiCompilationMode=Mono -p:PublishAot=false `
         -p:RunAOTCompilation=false -p:AndroidEnableProfiledAot=false `
         -p:AndroidPackageFormats=apk -p:DorotiAndroidTargetFramework=net11.0-android `
-        -p:DorotiAndroidMauiVersion=11.0.0-rc.2.26505.5 -p:MauiVersion=11.0.0-rc.2.26505.5 `
+        -p:DorotiAndroidMauiVersion=11.0.10 -p:MauiVersion=11.0.10 `
         -p:UseMonoRuntime=false -p:PublishReadyToRun=false `
         -p:DorotiObfuscate=true
     # .NET 11 / CoreCLR ReadyToRun + Obfuscar
@@ -159,7 +159,7 @@ try {
         -p:DorotiCompilationMode=Mono -p:PublishAot=false `
         -p:RunAOTCompilation=false -p:AndroidEnableProfiledAot=false `
         -p:AndroidPackageFormats=apk -p:DorotiAndroidTargetFramework=net11.0-android `
-        -p:DorotiAndroidMauiVersion=11.0.0-rc.2.26505.5 -p:MauiVersion=11.0.0-rc.2.26505.5 `
+        -p:DorotiAndroidMauiVersion=11.0.10 -p:MauiVersion=11.0.10 `
         -p:UseMonoRuntime=false -p:PublishReadyToRun=true `
         -p:DorotiObfuscate=true
 } finally { Pop-Location }
@@ -167,37 +167,21 @@ try {
 
 기기 선택·설치는 [공용 배포 도구](../../helpers/deploy-helper/README.md)를 참고하세요. `-App Testbed`·`-App Sample2`·`-App Carousel`로 앱을 선택합니다.
 
-### iOS 시뮬레이터, Mono 실기기, NativeAOT
+### iOS 시뮬레이터와 실기기 NativeAOT
 
-Mono 예제는 루트의 .NET 10 SDK에서 실행합니다. 시뮬레이터 Debug/Release와 실기기 Mono Release는 난독화에서 제외합니다. 실기기는 로컬 개발 인증서·프로비저닝 프로필 값으로 placeholder를 바꿉니다.
-
-```powershell
-# .NET 10 / Mono simulator Debug
-dotnet build ./samples/DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Debug -r iossimulator-arm64 -p:DorotiCompilationMode=Mono -p:PublishAot=false -p:DorotiIosTargetFramework=net10.0-ios
-# .NET 10 / Mono simulator Release
-dotnet build ./samples/DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Release -r iossimulator-arm64 -p:DorotiCompilationMode=Mono -p:PublishAot=false -p:DorotiIosTargetFramework=net10.0-ios
-# .NET 10 / Mono physical device Release
-dotnet build ./samples/DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Release -r ios-arm64 -p:DorotiCompilationMode=Mono -p:PublishAot=false -p:DorotiIosTargetFramework=net10.0-ios '-p:CodesignKey=YOUR_CERTIFICATE_SHA1' '-p:CodesignProvision=YOUR_PROFILE_UUID'
-```
-
-.NET 11 NativeAOT는 아래처럼 SDK 선택 폴더로 이동하여 **publish**합니다. `build`나 `run`으로 대체하지 않습니다. NativeAOT에는 Obfuscar를 적용하지 않습니다. 호환되는 Xcode를 선택하고, Xcode 버전 검사 우회나 .NET 10 NativeAOT가 필요한 경우 [SDK별 상세 설정](../DorotiSampleApp2/docs/ios-nativeaot.md)을 참고하세요.
+샘플의 `ios` 폴더에서 .NET 11을 선택합니다. 시뮬레이터는 CoreCLR로 빌드하고, 실기기 Release NativeAOT를 게시할 때는 로컬 서명 값을 지정합니다.
 
 ```powershell
 Push-Location ./samples/DorotiTestbedApp/ios
 try {
-    dotnet --version
+    dotnet build DorotiTestbedApp.iOS.csproj -c Debug -r iossimulator-arm64
     dotnet publish DorotiTestbedApp.iOS.csproj -c Release -r ios-arm64 `
-        -p:DorotiCompilationMode=NativeAot -p:DorotiIosTargetFramework=net11.0-ios `
-        -p:DorotiIosMauiVersion=11.0.0-rc.2.26505.5 -p:Registrar=managed-static `
-        -p:_UseDynamicDependenciesForMarkNSObjects=false `
-        '-p:MtouchExtraArgs=--skip-marking-nsobjects-in-user-assemblies=true' `
-        -p:PrepareAssemblies=false -p:PostProcessAssemblies=false `
-        --artifacts-path ../.doroti/publish/ios-nativeaot-net11 `
+        -p:DorotiCompilationMode=NativeAot `
         '-p:CodesignKey=YOUR_CERTIFICATE_SHA1' '-p:CodesignProvision=YOUR_PROFILE_UUID'
 } finally { Pop-Location }
 ```
 
-Testbed의 직접 iOS Release 기본값은 NativeAOT이지만, SampleApp2와 Carousel은 Mono가 기본입니다. 위 예제는 이 차이에 의존하지 않도록 모드·TFM을 명시합니다. 현재 iOS CoreCLR은 개발 세션용이며 일반 Release JIT/R2R 게시 케이스로 안내하지 않습니다.
+Mono 호환 빌드는 배포 도구에서 `-DotnetVersion 10`을 지정합니다.
 
 ### Web AOT, 비 AOT, 난독화, HTTPS 공유
 
@@ -352,7 +336,7 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Testbed -D
 ```
 
 .NET 10의 기본 모드는 Release에서 `MonoAot`, Debug에서 `Mono`입니다. .NET 11은 `CoreClrR2R`이며,
-SampleApp2에 고정한 SDK `11.0.100-rc.2.26504.105`와 MAUI `11.0.0-rc.2.26505.5` 프로필을 사용합니다.
+SampleApp2에 고정한 SDK `11.0.100`과 MAUI `11.0.10` 프로필을 사용합니다.
 해당 SDK의 Android/MAUI workload를 미리 설치하세요. .NET 10 Android CoreCLR은 실험적 기능입니다.
 `-Device` 또는 `-Serial`로 정확한 adb 시리얼을 지정하고 `-NoLaunch`로 설치만 할 수 있습니다.
 빌드는 20분 제한이며 빌드·설치 실패 시 배포를 중단합니다. APK는 앱·모드·SDK·구성·RID별로 분리합니다.
@@ -365,7 +349,7 @@ SampleApp2에 고정한 SDK `11.0.100-rc.2.26504.105`와 MAUI `11.0.0-rc.2.26505
 #### 기기·인증서 선택 후 빌드·설치·실행
 
 [공용 iOS 설치 스크립트](../../helpers/deploy-helper/deploy-ios.ps1)가 iPhone/iPad와 사용 가능한 iOS 시뮬레이터를
-번호로 선택하고 빌드·설치·실행합니다. CLI는 .NET 10으로 실행하며 macOS,
+번호로 선택하고 빌드·설치·실행합니다. CLI는 .NET 11에서 실행하며 macOS,
 Xcode와 선택한 .NET SDK의 iOS/MAUI workload가 필요합니다. PowerShell 진입점은 PowerShell 7도 필요하며
 `dotnet run`으로 직접 실행할 수 있습니다. 실기기는 Mac 신뢰와 개발자 모드를
 허용하고 Xcode에서 개발 인증서와 provisioning profile을 준비하세요.
@@ -373,14 +357,14 @@ Xcode와 선택한 .NET SDK의 iOS/MAUI workload가 필요합니다. PowerShell 
 저장소 루트 `DorotiLab`에서 실행합니다.
 
 ```powershell
-# 실기기: 기본 .NET 10 / Release / NativeAot, 인증서·프로필 선택
+# 실기기 기본 프로필 (.NET 11 / Release / NativeAot), 인증서·프로필 선택
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Target device
 
-# 시뮬레이터: 기본 .NET 10 / Debug / Mono, 자동 부팅·설치·실행
+# 시뮬레이터 기본 프로필 (.NET 11 / Debug / CoreClr)
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Target simulator
 
-# .NET 11 RC2 / Xcode 27
-pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Target device -DotnetVersion 11 -Mode NativeAot
+# .NET 10 시뮬레이터 호환 프로필
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Target simulator -DotnetVersion 10
 
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -List
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -DryRun
@@ -390,13 +374,12 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -DryRu
 앱 ID `dev.doroti.testbed`·기기 UDID·인증서에 맞는 만료되지 않은 개발 프로필을 선택합니다.
 선택지가 하나면 해당 항목을 사용하며 시뮬레이터에서는 서명 선택을 생략합니다.
 `-Device <UDID>`, `-CodesignKey '<인증서 이름 또는 SHA-1>'`, `-CodesignProvision <UUID>`로 선택을 고정합니다.
-Mono 실기기 Debug는 `-Mode Mono -Configuration Debug`, 앱 실행 환경변수는
+실기기 Debug CoreCLR은 `-Configuration Debug`, 앱 실행 환경변수는
 `-Environment 'DOROTI_SAMPLE=input'`으로 지정합니다. 여러 환경변수 전달 방법은 공용 사용법에 있습니다.
 
-.NET 10은 루트 `global.json`, .NET 11은 `ios/global.json`으로 SDK를 선택하며 파일을 수정하지 않습니다.
+.NET 11은 `ios/global.json`, .NET 10 호환 빌드는 `Doroti/global.json`에서 SDK를 선택합니다.
 산출물은 앱·SDK·모드·구성·RID별로 분리하고 빌드 실패 시 설치를 중단합니다.
-기본 실행은 기존 앱 프로세스를 종료하고 다시 시작합니다. .NET 11 RC2는 Xcode 27.0을 요구하며,
-워크로드 집합 `11.0.100-rc.2.26509.2`와 Xcode 버전 검사를 사용합니다.
+기본 실행은 기존 앱 프로세스를 종료하고 다시 시작합니다. .NET 11은 Xcode 27.2와 워크로드 집합 `11.0.100.1`을 사용합니다.
 전체 옵션과 `dotnet run` 직접 실행은 [helpers 사용법](../../helpers/deploy-helper/README.md)을 참고하세요.
 Hot Reload는 개발 CLI를 사용합니다.
 
@@ -421,7 +404,7 @@ Pop-Location
 
 Intel Mac의 시뮬레이터는 `-r iossimulator-x64`를 사용합니다. 실제 iPhone/iPad는
 `-r ios-arm64`와 해당 기기의 ID를 지정하며 별도 코드 서명·프로비저닝 설정이 필요합니다.
-여기서 `--device`는 `dotnet run` 옵션입니다. `doroti.ps1`의 `-Device`는 현재 Android 전용입니다.
+기기는 `dotnet run --device` 또는 workspace RID에 맞춰 `doroti.ps1 -Device`로 선택합니다.
 
 기본값은 부분 트리밍이며, 전체 트리밍에는 동적 호출 멤버의 보존 설정이 필요합니다.
 

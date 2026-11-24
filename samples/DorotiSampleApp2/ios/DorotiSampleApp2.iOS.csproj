@@ -2,8 +2,7 @@
   <Import Project="../../../packages/platforms/build/Sdk.props" />
   <Import Project="../../../Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.props" />
   <PropertyGroup>
-    <TargetFramework>net10.0-ios</TargetFramework>
-    <TargetFramework Condition="'$(DorotiIosTargetFramework)' != ''">$(DorotiIosTargetFramework)</TargetFramework>
+    <TargetFramework>$(DorotiIosTargetFramework)</TargetFramework>
     <AssemblyName>DorotiSampleApp2.iOS</AssemblyName>
     <RootNamespace>DorotiSampleApp2.iOS</RootNamespace>
     <DorotiAppProject>..\DorotiSampleApp2.csproj</DorotiAppProject>

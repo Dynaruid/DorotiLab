@@ -135,6 +135,9 @@ def main():
             project = project.resolve()
             if project in graph: return
             profile_properties = []
+            sdk_directory = ROOT
+            if platform and platform['target'] == 'iOS' and platform['targetFramework'].startswith('net11.'):
+                sdk_directory = TEMPLATE / 'ios'
             if platform:
                 provider_root = next(item['tool'].parent.parent for item in selected.values()
                                      if item['platform']['provider'] == platform['provider'])
@@ -143,12 +146,15 @@ def main():
                     # restore input. Its multi-target Host otherwise restores
                     # every OS workload while packing a single Apple profile.
                     profile_properties.append('-p:RuntimeIdentifier=' + platform['runtimeIdentifier'])
+                    if platform['target'] == 'iOS':
+                        profile_properties.append('-p:DorotiIosTargetFramework=' + platform['targetFramework'])
             if platform and list(ET.parse(project).iter('TargetFrameworks')):
-                profile_properties = ['-p:TargetFramework=' + platform['targetFramework'],
-                                      '-p:RuntimeIdentifier=' + platform['runtimeIdentifier']]
+                profile_properties = [*profile_properties, '-p:TargetFramework=' + platform['targetFramework']]
+                if not any(value.startswith('-p:RuntimeIdentifier=') for value in profile_properties):
+                    profile_properties.append('-p:RuntimeIdentifier=' + platform['runtimeIdentifier'])
             model = json.loads(command('evaluate-' + project.stem, [args.dotnet, 'msbuild', project, '-nologo',
-                '-getProperty:PackageId,PackageVersion,Version,TargetFramework,TargetFrameworks,IsPackable', '-getItem:ProjectReference', *properties, *profile_properties]))
-            graph[project] = (model, profile_properties)
+                '-getProperty:PackageId,PackageVersion,Version,TargetFramework,TargetFrameworks,IsPackable', '-getItem:ProjectReference', *properties, *profile_properties], cwd=sdk_directory))
+            graph[project] = (model, profile_properties, sdk_directory)
             for reference in model['Items']['ProjectReference']: visit(Path(reference['FullPath']), platform)
         for project, platform in roots: visit(project, platform)
         digest = hashlib.sha256()
@@ -159,11 +165,12 @@ def main():
         record['sourceTreeSha256'] = digest.hexdigest()
         record['evaluatedProjects'] = {str(path.relative_to(ROOT)): model['Properties'] for path, (model, _) in graph.items()}
         for project, _ in roots:
-            command('build-' + project.stem, [args.dotnet, 'build', project, '-c', 'Release', '--nologo', *properties, *graph[project][1]])
-        for project, (model, profile_properties) in graph.items():
+            _, profile_properties, sdk_directory = graph[project]
+            command('build-' + project.stem, [args.dotnet, 'build', project, '-c', 'Release', '--nologo', *properties, *profile_properties], cwd=sdk_directory)
+        for project, (model, profile_properties, sdk_directory) in graph.items():
             if model['Properties']['IsPackable'] != 'true': continue
-            if profile_properties: command('build-profile-' + project.stem, [args.dotnet, 'build', project, '-c', 'Release', *properties, *profile_properties])
-            command('pack-' + project.stem, [args.dotnet, 'pack', project, '-c', 'Release', '--no-build', '-o', feed, *properties, *profile_properties])
+            if profile_properties: command('build-profile-' + project.stem, [args.dotnet, 'build', project, '-c', 'Release', *properties, *profile_properties], cwd=sdk_directory)
+            command('pack-' + project.stem, [args.dotnet, 'pack', project, '-c', 'Release', '--no-build', '-o', feed, *properties, *profile_properties], cwd=sdk_directory)
         command('pack-template', [args.dotnet, 'pack', TEMPLATE.parent.parent / 'Doroti.Templates.csproj', '-c', 'Release', '-o', feed, *properties])
         metadata = {path.name: package_metadata(path) for path in feed.glob('*.nupkg')}
         record['packageDetails'] = metadata
@@ -172,6 +179,8 @@ def main():
             package = next(value for value in metadata.values() if value['id'] == item['platform']['targetPackage'])
             manifest = package['manifests']['doroti/doroti-target-manifest.json']
             if manifest['schemaVersion'] != 'doroti.target-package/v2' or manifest['packageVersion'] != package['version'] or manifest['providerVersion'] != record['versions']['providers'][item['platform']['provider']]: raise RuntimeError('Packaged target identity/version mismatch: ' + alias)
+            if item['platform']['target'] == 'iOS' and (manifest['targetFramework'] != item['platform']['targetFramework'] or manifest['rid'] != item['platform']['runtimeIdentifier']):
+                raise RuntimeError('Packaged target TFM/RID mismatch: ' + alias)
         hive = run / 'template-hive'; consumer = run / 'consumer'
         command('template-install', [args.dotnet, 'new', 'install', feed / ('Doroti.Templates.' + versions['Doroti.Templates'] + '.nupkg'), '--debug:custom-hive', hive])
         command('template-create', [args.dotnet, 'new', 'doroti-app', '-n', 'CandidateApp', '-o', consumer, '--design', args.design, '--debug:custom-hive', hive])
@@ -214,6 +223,9 @@ def main():
         record['runtime'] = {}
         for alias, item in selected.items():
             runner = consumer / generated['platforms'][alias]['runner']
+            sdk_directory = consumer
+            if item['platform']['target'] == 'iOS' and item['platform']['targetFramework'].startswith('net11.'):
+                sdk_directory = runner.parent
             publish_properties = ['-p:PublishTrimmed=false', '-p:RunAOTCompilation=false']
             if any('-' + platform in item['platform']['targetFramework'] for platform in ('macos', 'maccatalyst', 'ios')):
                 # Apple SDKs require the trim pipeline even for an untrimmed
@@ -225,11 +237,11 @@ def main():
             publish_properties += ['-p:TargetFramework=' + item['platform']['targetFramework'],
                                    '-p:RuntimeIdentifier=' + item['platform']['runtimeIdentifier']]
             record.setdefault('publishProperties', {})[alias] = publish_properties
-            command('publish-' + alias, [args.dotnet, 'publish', runner, '-c', 'Release', '-o', output / alias, *publish_properties], cwd=consumer, env=environment)
+            command('publish-' + alias, [args.dotnet, 'publish', runner, '-c', 'Release', '-o', output / alias, *publish_properties], cwd=sdk_directory, env=environment)
             evaluated = json.loads(command('consumer-profile-' + alias, [args.dotnet, 'msbuild', runner, '-nologo',
                 '-p:Configuration=Release', *publish_properties,
                 '-getProperty:ProjectAssetsFile,TargetFramework,RuntimeIdentifier,TargetPlatformVersion,TargetPlatformMinVersion,UseMonoRuntime,PublishAot,TrimMode,LinkMode,MtouchLink,ApplicationId,ApplicationDisplayVersion,ApplicationVersion'],
-                cwd=consumer, env=environment))['Properties']
+                cwd=sdk_directory, env=environment))['Properties']
             record.setdefault('consumerProfiles', {})[alias] = evaluated
             assets = json.loads(Path(evaluated['ProjectAssetsFile']).read_text())
             for value in assets['libraries'].values():

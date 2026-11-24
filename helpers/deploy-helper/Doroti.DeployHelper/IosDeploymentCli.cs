@@ -136,23 +136,25 @@ public sealed class IosDeploymentCli(string repositoryRoot, ICommandRunner runne
             throw new DeployException("Enable Settings > Privacy & Security > Developer Mode on the device, then restart it.");
     }
 
-    public static void ValidateBuildOptions(Options options, IosTarget target)
+    private static (string Mode, string Configuration) ResolveBuildOptions(Options options, IosTarget target)
     {
         options.ValidateForPlatform("ios");
-        var mode = options.Mode ?? (target.Kind == "device" ? "NativeAot" : "Mono");
         var configuration = options.Configuration ?? (target.Kind == "device" ? "Release" : "Debug");
+        var runtimeMode = options.GetDotnetVersion("ios") == 11 ? "CoreClr" : "Mono";
+        var mode = options.Mode ?? (target.Kind == "device" && configuration == "Release" ? "NativeAot" : runtimeMode);
         if (mode == "NativeAot" && (target.Kind != "device" || configuration != "Release"))
-            throw new DeployException("NativeAot requires a physical device and Release. Use -Mode Mono for Simulator/Debug.");
+            throw new DeployException($"NativeAot requires a physical device and Release. Use --mode {runtimeMode} for Simulator/Debug.");
         if (target.Kind == "simulator" && (options.CodesignKey is not null || options.CodesignProvision is not null))
             throw new DeployException("Signing options require -Target device; Simulator does not need a development certificate.");
+        return (mode, configuration);
     }
 
     public async Task<BuildPlan> BuildPlanAsync(Options options, SampleApp app, IosTarget target, Identity? identity,
         ProvisionProfile? profile, string dotnet, CancellationToken ct)
     {
-        ValidateBuildOptions(options, target);
-        var mode = options.Mode ?? (target.Kind == "device" ? "NativeAot" : "Mono");
-        var configuration = options.Configuration ?? (target.Kind == "device" ? "Release" : "Debug");
+        var (mode, configuration) = ResolveBuildOptions(options, target);
+        var dotnetVersion = options.GetDotnetVersion("ios");
+        var project = app.Project(RepositoryRoot);
         var rid = "ios-arm64";
         if (target.Kind == "simulator")
         {
@@ -161,31 +163,25 @@ public sealed class IosDeploymentCli(string repositoryRoot, ICommandRunner runne
             catch (DeployException) { arm64 = RuntimeInformation.OSArchitecture == Architecture.Arm64; }
             rid = arm64 ? "iossimulator-arm64" : "iossimulator-x64";
         }
-        var cwd = options.DotnetVersion == 10 ? RepositoryRoot : Path.Combine(RepositoryRoot, "samples/DorotiTestbedApp/ios");
+        var cwd = dotnetVersion == 10 ? Path.Combine(RepositoryRoot, "Doroti") : Path.GetDirectoryName(project)!;
         var sdk = (await runner.RunAsync(new(dotnet, ["--version"], cwd), ct)).Trim();
-        if (!sdk.StartsWith($"{options.DotnetVersion}.", StringComparison.Ordinal))
-            throw new DeployException($"Expected .NET {options.DotnetVersion} SDK, but {cwd}/global.json selected {sdk}.");
+        if (!Version.TryParse(sdk, out var version) || version.Major != dotnetVersion)
+            throw new DeployException($"Expected a stable .NET {dotnetVersion} SDK, but {cwd}/global.json selected {sdk}.");
         var artifacts = Path.Combine(RepositoryRoot, "Doroti/artifacts",
-            $"{app.ArtifactSlug}-ios-{mode.ToLowerInvariant()}-net{options.DotnetVersion}-{configuration.ToLowerInvariant()}-{rid}");
+            $"{app.ArtifactSlug}-ios-{mode.ToLowerInvariant()}-net{dotnetVersion}-{configuration.ToLowerInvariant()}-{rid}");
         // Let the selected iOS workload supply a supported platform version.
-        var framework = $"net{options.DotnetVersion}.0-ios";
-        var maui = options.DotnetVersion == 10 ? "10.0.110" : "11.0.0-rc.2.26505.5";
+        var framework = $"net{dotnetVersion}.0-ios";
         var args = new List<string>
         {
-            mode == "NativeAot" ? "publish" : "build", app.Project(RepositoryRoot), "--disable-build-servers", "-nr:false",
+            mode == "NativeAot" ? "publish" : "build", project, "--disable-build-servers", "-nr:false",
             "-c", configuration, "-r", rid, $"-p:DorotiCompilationMode={mode}", $"-p:DorotiIosTargetFramework={framework}",
-            $"-p:DorotiIosMauiVersion={maui}", $"-p:ArtifactsPath={artifacts}",
+            $"-p:ArtifactsPath={artifacts}",
         };
-        if (mode == "Mono") args.Add("-p:PublishAot=false");
-        if (mode == "NativeAot")
-            // Retain the managed registrar and NativeAotRoots.xml compatibility
-            // profile used for invalid NSObject DynamicDependency entries (IL2037).
+        if (mode != "NativeAot") args.Add("-p:PublishAot=false");
+        if (dotnetVersion == 10) args.Add("-p:DorotiIosMauiVersion=10.0.110");
+        if (mode == "NativeAot" && dotnetVersion == 10)
             args.AddRange(["-p:Registrar=managed-static", "-p:_UseDynamicDependenciesForMarkNSObjects=false",
                 "-p:MtouchExtraArgs=--skip-marking-nsobjects-in-user-assemblies=true", "-p:Optimize=true"]);
-        if (mode == "NativeAot" && options.DotnetVersion == 11)
-            // Retain the ILLink registrar path used for RC1's MarkNSObjects
-            // failure (MT2080) until RC2 device publishing is requalified.
-            args.AddRange(["-p:PrepareAssemblies=false", "-p:PostProcessAssemblies=false"]);
         if (options.SkipXcodeValidation) args.Add("-p:ValidateXcodeVersion=false");
         if (target.Kind == "device")
         {
@@ -207,8 +203,12 @@ public sealed class IosDeploymentCli(string repositoryRoot, ICommandRunner runne
             throw new DeployException($"Expected one {app.Folder}.iOS.app under {artifacts}/bin; found {candidates.Length}.");
         // plutil handles both binary and XML Info.plist without altering the app bundle.
         var xml = await runner.RunAsync(new("plutil", ["-convert", "xml1", "-o", "-", Path.Combine(candidates[0], "Info.plist")]), ct);
-        var bundleId = Plist.String(Plist.Parse(xml), "CFBundleIdentifier");
+        var manifest = Plist.Parse(xml);
+        var bundleId = Plist.String(manifest, "CFBundleIdentifier");
         if (bundleId != app.BundleId) throw new DeployException($"Unexpected bundle ID '{bundleId}'; expected '{app.BundleId}'.");
+        var executable = Plist.String(manifest, "CFBundleExecutable");
+        if (executable.Length == 0 || Path.GetFileName(executable) != executable || !File.Exists(Path.Combine(candidates[0], executable)))
+            throw new DeployException($"The bundle is missing its executable: {candidates[0]}.");
         return candidates[0];
     }
 
@@ -266,7 +266,7 @@ public sealed class IosDeploymentCli(string repositoryRoot, ICommandRunner runne
         if (targets.Count == 0) throw new DeployException("No iOS targets found. Connect/trust a device or install an iOS Simulator runtime in Xcode.");
         var target = await SelectAsync("iPhone/iPad or Simulator", targets, item => item.Label, "--device / -Device", ct, options.Device,
             (item, value) => item.Udid.Equals(value, StringComparison.OrdinalIgnoreCase) || item.Identifier.Equals(value, StringComparison.OrdinalIgnoreCase));
-        ValidateBuildOptions(options, target);
+        ResolveBuildOptions(options, target);
         Identity? identity = null;
         ProvisionProfile? profile = null;
         if (target.Kind == "device")

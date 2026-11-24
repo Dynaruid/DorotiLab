@@ -42,7 +42,7 @@ The workspace declares the TFM, RID and profile; `doroti.device` selects a match
 | --- | --- |
 | AppKit macOS (`macos`) | Local Debug session through the packaged Mac adapter |
 | Mac Catalyst (`maccatalyst`) | Local Debug session with the editable interpreter profile |
-| iOS simulator (`ios`) | Matching simulator RID and local reload acknowledgments |
+| iOS simulator (`ios`) | .NET 11 CoreCLR with local reload acknowledgments |
 | iPhone / .NET 10 Mono | SDK LAN relay; Mac and iPhone must share a LAN |
 | iPhone / .NET 11 CoreCLR | SDK USB transport with CoreDevice acknowledgments |
 

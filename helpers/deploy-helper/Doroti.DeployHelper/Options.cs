@@ -8,13 +8,14 @@ public sealed class Options
     public string? App { get; set; }
     public string Target { get; set; } = "auto";
     public string? Device { get; set; }
-    private int dotnetVersion = 10;
+    private int? dotnetVersion;
     public int DotnetVersion
     {
-        get => dotnetVersion;
-        set { dotnetVersion = value; DotnetVersionSpecified = true; }
+        get => GetDotnetVersion(Platform);
+        set => dotnetVersion = value;
     }
-    public bool DotnetVersionSpecified { get; private set; }
+    public bool DotnetVersionSpecified => dotnetVersion.HasValue;
+    internal int GetDotnetVersion(string? platform) => dotnetVersion ?? (platform == "ios" ? 11 : 10);
     public string? Mode { get; set; }
     public string? Configuration { get; set; }
     public string? CodesignKey { get; set; }
@@ -56,7 +57,7 @@ public sealed class Options
                 case "--target": options.Target = Choice("auto", "device", "simulator", "emulator"); break;
                 case "--device": case "--serial": options.Device = Value(); break;
                 case "--dotnet-version": options.DotnetVersion = int.Parse(Choice("10", "11")); break;
-                case "--mode": options.Mode = Choice("Mono", "NativeAot", "MonoAot", "CoreClrJit", "CoreClrR2R"); break;
+                case "--mode": options.Mode = Choice("Mono", "NativeAot", "CoreClr", "MonoAot", "CoreClrJit", "CoreClrR2R"); break;
                 case "--configuration": options.Configuration = Choice("Debug", "Release"); break;
                 case "--codesign-key": options.CodesignKey = Value(); break;
                 case "--codesign-provision": options.CodesignProvision = Value(); break;
@@ -99,8 +100,12 @@ public sealed class Options
             throw new DeployException("--web-execution-mode and --port are only available for Web.");
         if (platform == "ios")
         {
-            if (Target == "emulator" || Mode is not (null or "Mono" or "NativeAot") || Extras.Count > 0 || AdbPath != "adb")
-                throw new DeployException("iOS uses --target auto|device|simulator and --mode Mono|NativeAot. Android extras/adb options are unavailable.");
+            if (Target == "emulator" || Mode is not (null or "Mono" or "NativeAot" or "CoreClr") || Extras.Count > 0 || AdbPath != "adb")
+                throw new DeployException("iOS uses --target auto|device|simulator and --mode CoreClr|NativeAot|Mono. Android extras/adb options are unavailable.");
+            if (GetDotnetVersion(platform) == 11 && Mode == "Mono")
+                throw new DeployException("iOS Mono requires .NET 10. Use --dotnet-version 10 or --mode CoreClr.");
+            if (GetDotnetVersion(platform) == 10 && Mode == "CoreClr")
+                throw new DeployException("iOS CoreClr requires .NET 11. Use --dotnet-version 11 or --mode Mono.");
         }
         else if (platform == "android")
         {
@@ -110,7 +115,7 @@ public sealed class Options
                 throw new DeployException("Codesign and Xcode options are only available for iOS.");
             if (Environment.Count > 0)
                 throw new DeployException("Android launches accept --extra KEY=VALUE Intent extras, not --env. The app must handle the requested extra.");
-            if (DotnetVersion == 11 && Mode is "Mono" or "MonoAot")
+            if (GetDotnetVersion(platform) == 11 && Mode is "Mono" or "MonoAot")
                 throw new DeployException("This .NET 11 Android profile supports CoreClrJit or CoreClrR2R; use .NET 10 for Mono/MonoAot.");
             if (Configuration == "Debug" && Mode == "MonoAot")
                 throw new DeployException("MonoAot requires Release. Use --mode Mono for an Android Debug build.");
@@ -132,7 +137,7 @@ public sealed class Options
             if (Target != "auto" || Device is not null || Extras.Count > 0 || AdbPath != "adb" ||
                 CodesignKey is not null || CodesignProvision is not null || SkipXcodeValidation)
                 throw new DeployException("Windows publishes and runs locally. Device, signing, adb and Android extras are unavailable.");
-            if (DotnetVersion != 10 || Configuration is not (null or "Release") || Mode is not (null or "NativeAot"))
+            if (GetDotnetVersion(platform) != 10 || Configuration is not (null or "Release") || Mode is not (null or "NativeAot"))
                 throw new DeployException("Windows uses .NET 10, Release and NativeAot (win-x64).");
         }
         else throw new DeployException($"Unknown platform: {platform}.");
@@ -141,7 +146,7 @@ public sealed class Options
     public const string HelpText = """
         Select and deploy Doroti samples on iOS/Android, publish Web previews, or run Windows Native AOT samples.
 
-        dotnet run --project helpers/deploy-helper/Doroti.DeployHelper -- [options]
+        From helpers/deploy-helper, run dotnet run --project Doroti.DeployHelper -- [options]
 
         Web: omitted build options open selection menus in an interactive terminal.
         Press Enter for defaults: .NET 10 / Release / MonoAot / threaded. AOT takes longer to publish.
@@ -151,9 +156,10 @@ public sealed class Options
           --app Sample2|Testbed|Carousel|Demo  Omit to select the sample interactively.
           --target auto|device|simulator|emulator  Default: combined targets; simulator is iOS, emulator is Android.
           --device ID, --serial ID          iOS UDID/CoreDevice ID or exact adb serial.
-          --dotnet-version 10|11           Default: 10; selects the app build SDK.
-          --mode MODE                     iOS: Mono|NativeAot. Android: Mono|MonoAot|CoreClrJit|CoreClrR2R.
-                                          iOS defaults: device NativeAot, simulator Mono.
+          --dotnet-version 10|11           App build SDK. Default: 11 for iOS, 10 elsewhere.
+          --mode MODE                     iOS: CoreClr|NativeAot with .NET 11, Mono|NativeAot with .NET 10.
+                                          iOS defaults: device Release NativeAot, other builds CoreClr (.NET 11) or Mono (.NET 10).
+                                          Android: Mono|MonoAot|CoreClrJit|CoreClrR2R.
                                           Android defaults: .NET 10 Release MonoAot/Debug Mono, .NET 11 CoreClrR2R.
                                           Web: Mono|MonoAot; Release defaults to MonoAot, Debug to Mono. Publish only.
                                           Windows: .NET 10 / Release / NativeAot / win-x64. Publishes and launches the EXE.

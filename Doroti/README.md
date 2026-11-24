@@ -28,15 +28,17 @@ See the [platform implementation table](../README.md#platforms) for the host and
 ### Shared tools and SDK selection
 
 - Install [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6) on Windows, macOS, or Linux to run repository scripts such as `eng/doroti.ps1`. Start the commands below in PowerShell at the **repository root, `DorotiLab`**.
-- **Platforms other than iOS: .NET SDK 10.0.400**, or a compatible patch in the same feature band, selected by the [root global.json](../global.json) and [Doroti/global.json](global.json).
-- **iOS Testbed: .NET SDK 11.0.100-rc.2.26504.105**, or a compatible patch, selected by [iOS global.json](../samples/DorotiTestbedApp/ios/global.json). Install it alongside .NET 10.
+- **.NET 10 builds.** Use a compatible 10.0.400 feature-band SDK. The deploy helper selects this SDK for .NET 10 builds from [Doroti/global.json](global.json).
+- **iOS and the deploy helper.** Use .NET SDK 11.0.100 or a compatible stable patch. The sample `ios/global.json` files and the deploy helper pin this feature band. [Deploy helper](../helpers/deploy-helper/README.md#ios)
 - Restore the platform workloads and NuGet packages for the selected SDK. The .NET 10 paths use the project-pinned 10.0.11 runtime packs, restored as needed for each target.
 
 `dotnet` searches upward from the **current working directory** for `global.json`. Pointing `--project` at an iOS project does not change SDK selection. Run direct iOS commands from `samples/DorotiTestbedApp/ios`, and other platform commands from the repository root. The workspace CLI's `build/run/publish -App ./samples/DorotiTestbedApp -Platform ios` uses the iOS directory automatically.
 
-SDK selection is separate from the target framework. Direct Testbed iOS device Release defaults to NativeAOT; pass `-p:DorotiCompilationMode=Mono -p:PublishAot=false` to `dotnet build/publish` for the explicit Mono profile. NativeAOT defaults to `net11.0-ios` and MAUI `11.0.0-rc.2.26505.5`; Debug and simulators retain `net10.0-ios`. The workspace CLI uses the TFM/RID declared in its manifest; the current Testbed `ios` alias selects `net10.0-ios` / `iossimulator-x64`. Use the [iOS sample instructions](../samples/DorotiTestbedApp/README.md#ios-sample) for other simulators, signed devices, and SDK selection.
+The iOS default is `net11.0-ios` with MAUI `11.0.10`. The sample workspace `ios` aliases select the Apple Silicon simulator
+(`iossimulator-arm64`). Debug and simulator builds use CoreCLR. The deploy helper uses NativeAOT for device Release and supports
+`-DotnetVersion 10` for iOS compatibility builds.
 
-**.NET 11 RC2 + Xcode 27:** RC2 requires Xcode 27.0 and workload set `11.0.100-rc.2.26509.2` (iOS `27.0.12212-net11-rc.2`). Xcode version validation stays enabled. See the [SampleApp2 build example](../samples/DorotiSampleApp2/README.md#net-11-rc2--xcode-27-native-aot) and [official RC2 requirements](https://github.com/dotnet/macios/releases/tag/dotnet-11.0.1xx-rc2-12212).
+Use Xcode 27.2 and .NET 11 workload set `11.0.100.1`. [Official iOS workload release](https://github.com/dotnet/macios/releases/tag/dotnet-11.0.1xx-xcode27.2.11039)
 
 ### Platform prerequisites
 
@@ -60,7 +62,7 @@ Linux also accepts software Vulkan devices such as llvmpipe when they satisfy th
 ### Check installations and restore workloads
 
 ```powershell
-# Repository root: check SDK 10
+# Repository root: check the selected SDK
 dotnet --version
 dotnet workload list
 pwsh -File ./Doroti/eng/doroti.ps1 doctor -App ./samples/DorotiTestbedApp -Platform windows -Scope target
@@ -71,8 +73,7 @@ dotnet workload restore ./samples/DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.
 # iOS: check and restore from the directory that selects SDK 11
 Push-Location ./samples/DorotiTestbedApp/ios
 dotnet --version
-dotnet workload list
-dotnet workload restore ./DorotiTestbedApp.iOS.csproj
+dotnet workload --info
 Pop-Location
 ```
 

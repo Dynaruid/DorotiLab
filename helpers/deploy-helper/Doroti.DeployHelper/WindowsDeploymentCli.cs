@@ -30,7 +30,7 @@ public sealed class WindowsDeploymentCli(string repositoryRoot, ICommandRunner r
             ["publish", project, "-c", "Release", "-r", Rid, "--self-contained", "--disable-build-servers", "-nr:false",
                 "--artifacts-path", Path.Combine(artifacts, "build"), "-o", publish,
                 "-p:DorotiCompilationMode=NativeAot", "-p:DorotiBuildNativeFromSource=true"],
-            repositoryRoot, Capture: false, TimeoutSeconds: 1200);
+            Path.Combine(repositoryRoot, "Doroti"), Capture: false, TimeoutSeconds: 1200);
 
         ui.WriteLine($"\n.NET 10 / Release / Native AOT / {Rid}\nPublished executable: {executable}");
         if (options.DryRun)

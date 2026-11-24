@@ -11,7 +11,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../Doroti/src/Doroti.Framework.Widgets/Doroti.Framework.Widgets.csproj" />
-    <ProjectReference Include="../../tools/Doroti.IconTools/Doroti.IconTools.csproj" ReferenceOutputAssembly="false" PrivateAssets="all"
+    <ProjectReference Include="../../tools/Doroti.IconTools/Doroti.IconTools.csproj" ReferenceOutputAssembly="false" Private="false" PrivateAssets="all"
                       GlobalPropertiesToRemove="TargetFramework;TargetFrameworks;RuntimeIdentifier;RuntimeIdentifiers;PublishAot;PublishTrimmed;PublishReadyToRun;PublishSingleFile;SelfContained" />
     <EmbeddedResource Include="assets/MaterialIcons.otf" LogicalName="Doroti.Icons.Material.font" />
     <DorotiLicense Include="assets/LICENSE.materialicons.txt" />

@@ -64,7 +64,7 @@
     <Error Condition="'$(RuntimeIdentifier)' == 'ios-arm64' and '$(DorotiCompilationMode)' == 'Mono' and '$(DOROTI_DEV_HOTRELOAD_ENDPOINT)' == ''" Text="iOS development sessions on .NET 10 devices require the Doroti network Hot Reload launcher." />
     <Error Condition="'$(RuntimeIdentifier)' == 'ios-arm64' and '$(DorotiCompilationMode)' == 'Mono' and '@(_DorotiIosHotReloadAgent-&gt;Count())' != '1'" Text="iOS development sessions require one .NET 10 SDK WebSocket Hot Reload agent." />
     <Error Condition="'$(RuntimeIdentifier)' == 'ios-arm64' and '$(DorotiCompilationMode)' == 'Mono' and '$(MtouchInterpreter)' != 'all,-Doroti.Host.Maui'" Text="iOS development sessions on .NET 10 devices require MtouchInterpreter=all,-Doroti.Host.Maui. Mixed framework AOT can crash Mono when invoking updated virtual methods." />
-    <Error Condition="'$(DorotiTarget)' != 'iOS' or '$(Configuration)' != 'Debug' or '$(DorotiCompilationMode)' == 'NativeAot' or '$(PublishAot)' == 'true' or ('$(DorotiCompilationMode)' == 'Mono' and '$(UseInterpreter)' == 'false')" Text="iOS development sessions require iOS Debug with Mono/interpreter or the .NET 11 device CoreCLR profile." />
+    <Error Condition="'$(DorotiTarget)' != 'iOS' or '$(Configuration)' != 'Debug' or '$(DorotiCompilationMode)' == 'NativeAot' or '$(PublishAot)' == 'true' or ('$(DorotiCompilationMode)' == 'Mono' and '$(UseInterpreter)' == 'false')" Text="iOS development sessions require iOS Debug with the .NET 11 CoreCLR profile or .NET 10 Mono with the interpreter." />
   </Target>
   <Target Name="DorotiConfigureDeviceHotReloadNetwork" AfterTargets="ComputeMlaunchRunArguments" Condition="'$(DorotiIosDevelopment)' == 'true' and '$(RuntimeIdentifier)' == 'ios-arm64' and '$(DorotiCompilationMode)' == 'Mono' and '$(DOROTI_DEV_HOTRELOAD_ENDPOINT)' != ''">
     <PropertyGroup>
@@ -91,7 +91,7 @@
     <RuntimeEnvironmentVariable Include="DOROTI_DEV_SESSION_ID" Value="$(DOROTI_DEV_SESSION_ID)" />
     <RuntimeEnvironmentVariable Include="DOROTI_DEV_SESSION" Value="$(DOROTI_DEV_DEVICE_SESSION)" Condition="'$(RuntimeIdentifier)' == 'ios-arm64'" />
     <RuntimeEnvironmentVariable Include="DOROTI_SAMPLE" Value="$(DOROTI_SAMPLE)" Condition="'$(DOROTI_SAMPLE)' != ''" />
-    <RuntimeEnvironmentVariable Include="HOTRELOAD_DELTA_CLIENT_LOG_MESSAGES" Value="iOS Hot Reload:" Condition="'$(DOTNET_CLI_CONTEXT_VERBOSE)' == 'true' and '$(DorotiIosTargetFramework)' != 'net11.0-ios'" />
+    <RuntimeEnvironmentVariable Include="HOTRELOAD_DELTA_CLIENT_LOG_MESSAGES" Value="iOS Hot Reload:" Condition="'$(DOTNET_CLI_CONTEXT_VERBOSE)' == 'true' and '$(DorotiCompilationMode)' == 'Mono'" />
   </ItemGroup>
   <PropertyGroup>
     <DorotiCompilationMode Condition="'$(DorotiCompilationMode)' == '' and '$(PublishAot)' == 'true'">NativeAot</DorotiCompilationMode>
@@ -107,12 +107,12 @@
   </PropertyGroup>
   <Target Name="ValidateDorotiCompilationMode" BeforeTargets="PrepareForBuild;CollectPackageReferences">
     <Error Code="DOROTIAOT001" Condition="'$(DorotiCompilationMode)' != 'Mono' and '$(DorotiCompilationMode)' != 'NativeAot' and '$(DorotiCompilationMode)' != 'CoreClr'" Text="DorotiCompilationMode must be Mono, NativeAot or CoreClr." />
-    <Error Code="DOROTICLR001" Condition="'$(DorotiCompilationMode)' == 'CoreClr' and ('$(DorotiIosDevelopment)' != 'true' or '$(DorotiTarget)' != 'iOS' or '$(RuntimeIdentifier)' != 'ios-arm64' or '$(TargetFramework)' != 'net11.0-ios' or '$(UseMonoRuntime)' != 'false')" Text="The CoreClr profile currently requires a net11.0-ios device development session." />
+    <Error Code="DOROTICLR001" Condition="'$(DorotiCompilationMode)' == 'CoreClr' and ('$(DorotiTarget)' != 'iOS' or !$(TargetFramework.StartsWith('net11.0-ios')) or '$(UseMonoRuntime)' != 'false' or '$(PublishAot)' == 'true')" Text="The CoreClr profile requires net11.0-ios and disables Mono and NativeAOT." />
     <Error Code="DOROTIAOT002" Condition="'$(DorotiCompilationMode)' == 'NativeAot' and !(('$(DorotiTarget)' == 'iOS' and '$(RuntimeIdentifier)' == 'ios-arm64') or ('$(DorotiTarget)' == 'Windows' and '$(DorotiHostKind)' == 'WindowsAppSdk' and '$(RuntimeIdentifier)' == 'win-x64' and '$(Configuration)' == 'Release'))" Text="The NativeAot profile supports iOS ios-arm64 and Windows App SDK Release win-x64." />
     <Error Code="DOROTIAOT003" Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(ArtifactsPath)' == ''" Text="NativeAot validation requires a separate ArtifactsPath. Use the Doroti CLI compilation mode option or pass a mode-specific ArtifactsPath." />
     <Error Code="DOROTIAOT004" Condition="'$(DorotiCompilationMode)' == 'NativeAot' and ('$(MtouchInterpreter)' != '' or '$(UseInterpreter)' == 'true')" Text="Remove Mono interpreter options from the NativeAot profile." />
     <Error Code="DOROTIAOT005" Condition="'$(DorotiCompilationMode)' == 'Mono' and '$(PublishAot)' == 'true'" Text="PublishAot=true conflicts with DorotiCompilationMode=Mono." />
-    <Error Code="DOROTIAOT006" Condition="'$(DorotiTarget)' == 'iOS' and '$(DorotiCompilationMode)' == 'Mono' and '$(UseMonoRuntime)' != 'true'" Text="The iOS Mono profile requires UseMonoRuntime=true; refusing an implicit CoreCLR runtime change." />
+    <Error Code="DOROTIAOT006" Condition="'$(DorotiTarget)' == 'iOS' and '$(DorotiCompilationMode)' == 'Mono' and (!$(TargetFramework.StartsWith('net10.0-ios')) or '$(UseMonoRuntime)' != 'true')" Text="The iOS Mono profile requires net10.0-ios and UseMonoRuntime=true. Use the CoreClr profile with .NET 11." />
     <Error Code="DOROTIAOT007" Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(UseMonoRuntime)' == 'true'" Text="UseMonoRuntime=true conflicts with NativeAot." />
   </Target>
   <ItemGroup Condition="'$(DorotiTarget)' == 'Android'">
@@ -248,9 +248,10 @@
   </Target>
   <Import Project="$(DorotiCommonRunnerSdkDirectory)Doroti.TypeScript.targets" Condition="'$(DorotiWebTypeScript)' == 'true' and Exists('$(DorotiCommonRunnerSdkDirectory)Doroti.TypeScript.targets')" />
   <Import Project="$(DorotiCommonRunnerSdkDirectory)..\..\Doroti.App.Sdk\Sdk\Doroti.TypeScript.targets" Condition="'$(DorotiWebTypeScript)' == 'true' and !Exists('$(DorotiCommonRunnerSdkDirectory)Doroti.TypeScript.targets')" />
-  <Target Name="DorotiApplyIosCompilationProfileToRestore" BeforeTargets="_FilterRestoreGraphProjectInputItems" Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(DorotiTarget)' == 'iOS'">
+  <Target Name="DorotiApplyIosCompilationProfileToRestore" BeforeTargets="_FilterRestoreGraphProjectInputItems" Condition="'$(DorotiTarget)' == 'iOS'">
     <PropertyGroup>
-      <_GenerateRestoreGraphProjectEntryInputProperties>$(_GenerateRestoreGraphProjectEntryInputProperties);DorotiCompilationMode=$(DorotiCompilationMode);DorotiIosTargetFramework=$(DorotiIosTargetFramework);DorotiIosMauiVersion=$(DorotiIosMauiVersion);RuntimeIdentifier=$(RuntimeIdentifier);ArtifactsPath=$(ArtifactsPath)</_GenerateRestoreGraphProjectEntryInputProperties>
+      <_GenerateRestoreGraphProjectEntryInputProperties>$(_GenerateRestoreGraphProjectEntryInputProperties);DorotiIosTargetFramework=$(DorotiIosTargetFramework);DorotiIosMauiVersion=$(DorotiIosMauiVersion);DorotiHostTargetFrameworks=$(DorotiHostTargetFrameworks)</_GenerateRestoreGraphProjectEntryInputProperties>
+      <_GenerateRestoreGraphProjectEntryInputProperties Condition="'$(DorotiCompilationMode)' == 'NativeAot'">$(_GenerateRestoreGraphProjectEntryInputProperties);DorotiCompilationMode=$(DorotiCompilationMode);RuntimeIdentifier=$(RuntimeIdentifier);ArtifactsPath=$(ArtifactsPath)</_GenerateRestoreGraphProjectEntryInputProperties>
     </PropertyGroup>
   </Target>
   <ItemGroup Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(DorotiTarget)' == 'iOS'">
@@ -266,6 +267,23 @@
     </ItemGroup>
   </Target>
   <Import Project="Doroti.NativeAot.Evidence.targets" Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(DorotiTarget)' == 'iOS'" />
+  <Target Name="DorotiResolveIosPublishBundlePath" AfterTargets="_ComputeVariables"
+          Condition="'$(DorotiTarget)' == 'iOS' and $(TargetFramework.StartsWith('net11.0-ios')) and $([System.IO.Path]::IsPathRooted('$(_AppBundlePath)'))">
+    <!-- The iOS SDK combines the bundle path with the project directory. MSBuild can
+         return an absolute bundle path for artifacts outside the project tree. -->
+    <PropertyGroup>
+      <_RelativeAppBundlePath>$([System.IO.Path]::GetRelativePath('$(_AbsolutePublishDir)', '$(_AppBundlePath)'))</_RelativeAppBundlePath>
+      <_NativeExecutablePublishDir>$(_RelativeAppBundlePath)\</_NativeExecutablePublishDir>
+      <_AppBundleFrameworksDir>$(_RelativeAppBundlePath)\Frameworks\</_AppBundleFrameworksDir>
+    </PropertyGroup>
+  </Target>
+  <Target Name="DorotiBundleIosLicenseFiles" BeforeTargets="_ComputePublishLocation" Condition="'$(DorotiTarget)' == 'iOS' and $(TargetFramework.StartsWith('net11.0-ios'))">
+    <ItemGroup>
+      <ResolvedFileToPublish Update="@(ResolvedFileToPublish)"
+                             Condition="'%(ResolvedFileToPublish.PublishFolderType)' == '' and $([System.String]::Copy('%(ResolvedFileToPublish.RelativePath)').Replace('\', '/').StartsWith('licenses/'))"
+                             PublishFolderType="Resource" />
+    </ItemGroup>
+  </Target>
   <Target Name="DorotiApplyAppleRuntimeToTransitiveReferences" AfterTargets="IncludeTransitiveProjectReferences" Condition="('$(DorotiTarget)' == 'iOS' and ('$(RuntimeIdentifier)' == 'ios-arm64' or '$(RuntimeIdentifier)' == 'iossimulator-arm64' or '$(RuntimeIdentifier)' == 'iossimulator-x64')) or ('$(DorotiTarget)' == 'macOS' and '$(RuntimeIdentifier)' == 'osx-arm64') or ('$(DorotiTarget)' == 'MacCatalyst' and '$(RuntimeIdentifier)' == 'maccatalyst-arm64') or ('$(DorotiTarget)' == 'Android' and ('$(RuntimeIdentifier)' == 'android-arm64' or '$(RuntimeIdentifier)' == 'android-x64'))">
     <ItemGroup>
       <ProjectReference Update="@(_TransitiveProjectReferences)" Condition="'%(Filename)' == 'Doroti.Host.Maui'">

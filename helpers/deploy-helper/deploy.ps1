@@ -18,8 +18,8 @@ param(
     [ValidateSet('Sample2', 'Testbed', 'Carousel', 'Demo')][string]$App,
     [ValidateSet('auto', 'device', 'simulator', 'emulator')][string]$Target = 'auto',
     [Alias('Serial')][string]$Device,
-    [ValidateSet(10, 11)][int]$DotnetVersion = 10,
-    [ValidateSet('Mono', 'NativeAot', 'MonoAot', 'CoreClrJit', 'CoreClrR2R')][string]$Mode,
+    [ValidateSet(10, 11)][int]$DotnetVersion,
+    [ValidateSet('Mono', 'NativeAot', 'CoreClr', 'MonoAot', 'CoreClrJit', 'CoreClrR2R')][string]$Mode,
     [ValidateSet('Debug', 'Release')][string]$Configuration,
     [string]$CodesignKey,
     [string]$CodesignProvision,
@@ -38,14 +38,14 @@ param(
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-$dotnet = (Get-Command $DotnetPath -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source
-$repoRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
+$helperDotnet = (Get-Command dotnet -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source
 $project = Join-Path $PSScriptRoot 'Doroti.DeployHelper/Doroti.DeployHelper.csproj'
 $arguments = @('run', '--project', $project, '-c', 'Release', '--no-launch-profile', '--')
 if ($Help) {
     $arguments += '--help'
 } else {
-    $arguments += @('--target', $Target.ToLowerInvariant(), '--dotnet-path', $dotnet)
+    $appDotnet = (Get-Command $DotnetPath -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source
+    $arguments += @('--target', $Target.ToLowerInvariant(), '--dotnet-path', $appDotnet)
     if ($PSBoundParameters.ContainsKey('DotnetVersion')) { $arguments += @('--dotnet-version', "$DotnetVersion") }
     if ($Platform) { $arguments += @('--platform', $Platform.ToLowerInvariant()) }
     if ($App) { $arguments += @('--app', $App) }
@@ -64,10 +64,9 @@ if ($Help) {
     if ($List) { $arguments += '--list' }
     if ($DryRun) { $arguments += '--dry-run' }
 }
-# Compile the helper with the root .NET 10 SDK; app SDK selection is independent.
-Push-Location $repoRoot
+Push-Location $PSScriptRoot
 try {
-    & $dotnet @arguments
+    & $helperDotnet @arguments
     $result = $LASTEXITCODE
 } finally {
     Pop-Location

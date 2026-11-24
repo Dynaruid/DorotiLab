@@ -17,8 +17,7 @@ internal static class AppleDevelopment
         var valid = target switch
         {
             "iOS" => rid is "ios-arm64" or "iossimulator-arm64" or "iossimulator-x64"
-                && Regex.IsMatch(framework, @"^net10\.0-ios(?:\d+(?:\.\d+)*)?$")
-                || rid == "ios-arm64" && framework == "net11.0-ios",
+                && Regex.IsMatch(framework, @"^net(?:10|11)\.0-ios(?:\d+(?:\.\d+)*)?$"),
             "macOS" => rid is "osx-arm64" or "osx-x64" && Regex.IsMatch(framework, @"^net10\.0-macos(?:\d+(?:\.\d+)*)?$"),
             "MacCatalyst" => rid is "maccatalyst-arm64" or "maccatalyst-x64" && Regex.IsMatch(framework, @"^net10\.0-maccatalyst(?:\d+(?:\.\d+)*)?$"),
             _ => false,

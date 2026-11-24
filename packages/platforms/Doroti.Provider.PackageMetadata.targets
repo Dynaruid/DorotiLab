@@ -7,6 +7,11 @@
     <ItemGroup>
       <_DorotiProviderOutputLine Include="@(_DorotiProviderSourceLines-&gt;Replace('&quot;version&quot;: &quot;0.4.1-beta&quot;', '&quot;version&quot;: &quot;$(Version)&quot;')-&gt;Replace('&quot;providerVersion&quot;: &quot;0.4.1-beta&quot;', '&quot;providerVersion&quot;: &quot;$(Version)&quot;')-&gt;Replace('&quot;packageVersion&quot;: &quot;0.4.1-beta&quot;', '&quot;packageVersion&quot;: &quot;$(Version)&quot;'))" />
     </ItemGroup>
+    <ItemGroup Condition="'$(DorotiProviderMetadataSourceFramework)' != ''">
+      <_DorotiProviderOutputWithFramework Include="@(_DorotiProviderOutputLine-&gt;Replace('&quot;targetFramework&quot;: &quot;$(DorotiProviderMetadataSourceFramework)&quot;', '&quot;targetFramework&quot;: &quot;$(TargetFramework)&quot;'))" />
+      <_DorotiProviderOutputLine Remove="@(_DorotiProviderOutputLine)" />
+      <_DorotiProviderOutputLine Include="@(_DorotiProviderOutputWithFramework)" />
+    </ItemGroup>
     <WriteLinesToFile File="$(IntermediateOutputPath)$(DorotiProviderMetadataFile)" Lines="@(_DorotiProviderOutputLine)" Overwrite="true" WriteOnlyWhenDifferent="true" />
     <ItemGroup>
       <FileWrites Include="$(IntermediateOutputPath)$(DorotiProviderMetadataFile)" />

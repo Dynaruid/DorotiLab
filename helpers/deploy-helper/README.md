@@ -4,8 +4,9 @@
 iOS·Android에 설치하고 실행하거나, Web 임시 서버 또는 Windows Native AOT 실행 파일로 확인합니다.
 `-App` 값은 각각 `Sample2`·`Testbed`·`Carousel`·`Demo`이며, 생략하면 메뉴에서 선택합니다.
 [Doroti.DeployHelper](Doroti.DeployHelper/Doroti.DeployHelper.csproj)는 외부 NuGet 패키지가 없는
-.NET 10 콘솔 CLI입니다. Web 임시 서버는 .NET SDK에 포함된 ASP.NET Core 공유 런타임을 사용하며,
-Python·Node·별도 서버 설치가 필요하지 않습니다.
+.NET 11 콘솔 CLI입니다. Web 임시 서버는 .NET SDK에 포함된 ASP.NET Core 공유 런타임을 사용하며,
+Python·Node·별도 서버 설치가 필요하지 않습니다. CLI의 SDK는 [global.json](global.json)이 선택하며,
+앱 빌드 SDK는 플랫폼과 `-DotnetVersion`으로 결정합니다.
 
 ```text
 helpers/deploy-helper/
@@ -33,7 +34,7 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy.ps1 -Platform windows -App 
 
 네 샘플의 `windowsappsdk` 프로젝트를 **.NET 10 / Release / Native AOT / `win-x64`**로 게시하고
 출력된 EXE를 실행합니다. Windows App SDK와 네이티브 라이브러리가 포함된 게시 폴더를 함께 사용하세요.
-Windows, 저장소 `global.json`에 맞는 .NET 10 SDK, PowerShell 7, Visual Studio의 **Desktop development with C++** 워크로드,
+Windows, 앱 빌드용 .NET 10 SDK, PowerShell 7, Visual Studio의 **Desktop development with C++** 워크로드,
 Windows SDK `10.0.26100.0`이 필요합니다. 기본 Graphite 렌더러는 Vulkan 1.2를 사용합니다. [Microsoft Native AOT 빌드 요건](https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/?tabs=windows)
 
 ```powershell
@@ -129,19 +130,23 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy-web.ps1 -List
 공통 진입점의 `-Platform web`과 .NET CLI 직접 실행도 같은 동작입니다.
 
 ```sh
-dotnet run --project ./helpers/deploy-helper/Doroti.DeployHelper -c Release -- --platform web --app Demo --dotnet-version 11
+cd helpers/deploy-helper
+dotnet run --project Doroti.DeployHelper -c Release -- --platform web --app Demo --dotnet-version 11
 ```
 
-Web 회귀 검사는 실제 HTTP 응답·격리 헤더·게시 실패·서버 종료와 메뉴/명령 옵션에 따른 SDK·AOT 선택을 확인합니다.
+회귀 검사는 Web 게시·임시 서버와 iOS SDK·런타임 선택을 확인합니다.
 
 ```powershell
-dotnet run --project ./helpers/deploy-helper/tests/Doroti.DeployHelper.Tests -c Release
+Push-Location ./helpers/deploy-helper
+try {
+    dotnet run --project tests/Doroti.DeployHelper.Tests -c Release
+} finally { Pop-Location }
 ```
 
 ## Android
 
-Windows·macOS·Linux에서 사용할 수 있습니다. 루트 `global.json`이 선택하는 .NET 10 SDK,
-앱 빌드에 선택한 SDK의 Android/MAUI workload, Android SDK와 JDK 17이 필요합니다.
+Windows·macOS·Linux에서 사용할 수 있습니다. 앱 빌드에 선택한 .NET SDK와 Android/MAUI 워크로드,
+Android SDK와 JDK 17이 필요합니다. 앱 빌드 기본값은 `Doroti/global.json`이 선택하는 .NET 10입니다.
 PowerShell 진입점에는 PowerShell 7이 필요하고, 네이티브 바인딩은 프로젝트의 Gradle wrapper로 빌드합니다.
 CLI는 Python 없이 명령의 시간 제한과 취소를 처리합니다.
 
@@ -194,7 +199,7 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Testbed -D
 모드 생략 시 .NET 10 Release는 `MonoAot`, .NET 10 Debug는 `Mono`, .NET 11은 `CoreClrR2R`입니다.
 .NET 10 Android CoreCLR은 실험적 기능입니다. .NET 11은
 [SampleApp2의 SDK 선택 파일](../../samples/DorotiSampleApp2/android/sdk/net11/global.json)의
-`11.0.100-rc.2.26504.105` SDK와 MAUI `11.0.0-rc.2.26505.5`를 세 앱에 공통으로 사용합니다.
+`11.0.100` 정식 SDK와 MAUI `11.0.10`을 네 앱에 공통으로 사용합니다.
 해당 SDK의 Android/MAUI workload를 미리 설치하세요. Android NativeAOT는 이 도구에서 제공하지 않습니다.
 
 연결·디버깅 권한·부팅 완료를 확인하고 `arm64-v8a`는 `android-arm64`, `x86_64`는 `android-x64`로 빌드합니다.
@@ -219,8 +224,9 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Testbed -E
 ```
 
 ```sh
-dotnet run --project ./helpers/deploy-helper/Doroti.DeployHelper -c Release -- --platform android --app Testbed --device YOUR_ADB_SERIAL --mode CoreClrJit
-dotnet run --project ./helpers/deploy-helper/Doroti.DeployHelper -c Release -- --platform android --app Testbed --extra doroti_sample=input --dry-run
+cd helpers/deploy-helper
+dotnet run --project Doroti.DeployHelper -c Release -- --platform android --app Testbed --device YOUR_ADB_SERIAL --mode CoreClrJit
+dotnet run --project Doroti.DeployHelper -c Release -- --platform android --app Testbed --extra doroti_sample=input --dry-run
 ```
 
 SampleApp2의 기존 `samples/DorotiSampleApp2/android/deploy-android.ps1`도 공용 진입점으로 전달합니다.
@@ -231,18 +237,32 @@ ADB 명령은 [Android 공식 문서](https://developer.android.com/tools/adb),
 ## iOS
 
 [deploy-ios.ps1](deploy-ios.ps1)은 `DorotiSampleApp2`·`DorotiTestbedApp`·`DorotiCarouselApp`·`DorotiDemoApp`의 iOS 빌드,
-기기 설치와 실행을 처리합니다. [Doroti.DeployHelper](Doroti.DeployHelper/Doroti.DeployHelper.csproj)가
-실제 작업을 수행하는 .NET 10 콘솔 CLI이며 외부 NuGet 패키지를 사용하지 않습니다.
+기기 설치와 실행을 처리합니다. 기본 빌드는 .NET 11 SDK, `net11.0-ios`, MAUI `11.0.10`을 사용합니다.
 
 ### 준비
 
-- macOS, 루트 `global.json`이 선택하는 .NET 10 SDK, Xcode와 앱 빌드에 선택한 SDK의 iOS/MAUI workload가 필요합니다.
+- macOS, Xcode 27.2, .NET SDK 11.0.100 계열의 정식 버전과 `ios`·`maui-ios` 워크로드가 필요합니다.
 - PowerShell 진입점을 사용하려면 PowerShell 7도 설치합니다. `dotnet run`으로 CLI를 직접 실행할 수도 있습니다.
 - `dotnet`, `xcrun`, `security`, `plutil`을 PATH에서 찾을 수 있어야 합니다.
 - 실기기는 Mac에 연결하고 잠금을 해제한 뒤 Mac 신뢰와 **설정 → 개인정보 보호 및 보안 → 개발자 모드**를 허용합니다.
 - Xcode **Settings → Accounts**에서 개발 인증서와 provisioning profile을 준비합니다.
   프로필에 앱 ID, 선택한 인증서, 해당 기기 UDID가 포함되어야 합니다.
 - 시뮬레이터는 Xcode에서 iOS runtime을 설치합니다. 종료된 시뮬레이터도 선택할 수 있으며 설치 단계에서 부팅합니다.
+
+설치 프로그램으로 설치한 시스템 SDK에는 아래 명령으로 워크로드를 추가합니다. 첫 번째 출력에서 .NET 11.0.100 계열이
+선택됐는지 확인하세요. 워크로드 집합 `11.0.100.1`은 iOS `27.2.11039`를 포함합니다. [공식 릴리스 안내](https://github.com/dotnet/macios/releases/tag/dotnet-11.0.1xx-xcode27.2.11039)
+
+```sh
+(
+  set -e
+  cd helpers/deploy-helper
+  dotnet_host="$(command -v dotnet)"
+  "$dotnet_host" --version
+  sudo -H "$dotnet_host" workload update --version 11.0.100.1 --source https://api.nuget.org/v3/index.json
+  sudo -H "$dotnet_host" workload install ios maui-ios --version 11.0.100.1 --source https://api.nuget.org/v3/index.json
+  "$dotnet_host" workload --info
+)
+```
 
 아래 명령은 저장소 루트 `DorotiLab` 기준입니다. 스크립트는 파일 위치를 기준으로
 저장소를 찾으므로 호출한 작업 폴더와 관계없이 같은 프로젝트를 빌드합니다.
@@ -251,17 +271,18 @@ ADB 명령은 [Android 공식 문서](https://developer.android.com/tools/adb),
 # 앱 → iPhone/iPad 또는 시뮬레이터 → 실기기 개발 인증서 → 호환 프로필 선택
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1
 
-# 특정 앱의 실기기: 기본 .NET 10 / Release / NativeAot
+# 실기기 기본 프로필 (.NET 11 / Release / NativeAot)
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Sample2 -Target device
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Target device
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Carousel -Target device
 
-# 시뮬레이터: 기본 .NET 10 / Debug / Mono, 인증서 선택 생략
+# 시뮬레이터 기본 프로필 (.NET 11 / Debug / CoreClr)
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Sample2 -Target simulator
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Carousel -Target simulator
 
-# .NET 11 RC2 / Xcode 27 NativeAOT 예제
-pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Sample2 -Target device -DotnetVersion 11 -Mode NativeAot
+# 실기기 Debug와 .NET 10 호환 프로필
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Sample2 -Target device -Configuration Debug
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Sample2 -Target simulator -DotnetVersion 10
 
 # 목록만 출력 / 선택과 빌드 명령만 확인
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -List
@@ -289,8 +310,8 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -DryRu
 | `-App Sample2\|Testbed\|Carousel\|Demo` | 생략 시 앱 선택 |
 | `-Target auto\|device\|simulator` | 기본 `auto`: 실기기와 시뮬레이터 통합 목록 |
 | `-Device <ID>` | `-List`에 표시된 기기 UDID, CoreDevice ID 또는 시뮬레이터 UDID |
-| `-DotnetVersion 10\|11` | 기본 `10`; SDK 선택 위치를 자동 처리 |
-| `-Mode Mono\|NativeAot` | 실기기 기본 `NativeAot`, 시뮬레이터 기본 `Mono` |
+| `-DotnetVersion 10\|11` | 기본 `11` |
+| `-Mode CoreClr\|NativeAot\|Mono` | 실기기 Release 기본 `NativeAot`. 그 외에는 .NET 11에서 `CoreClr`, .NET 10에서 `Mono` |
 | `-Configuration Debug\|Release` | 실기기 기본 `Release`, 시뮬레이터 기본 `Debug` |
 | `-CodesignKey '<인증서 이름 또는 SHA-1>'` | 목록에서 정확한 이름 또는 SHA-1을 지정; 생략 시 선택 |
 | `-CodesignProvision '<UUID 또는 이름>'` | 호환 프로필의 UUID 또는 정확한 이름; 생략 시 선택 |
@@ -311,12 +332,13 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Sample2 -Targe
 ```
 
 PowerShell 없이 zsh/bash에서 .NET CLI를 직접 실행할 수도 있습니다.
-`--` 뒤의 옵션은 앱에 전달합니다. 다음 명령은 루트 `global.json`의 SDK를 선택하도록 저장소 루트에서 실행합니다.
+`--` 뒤의 옵션은 배포 도구에 전달합니다. CLI를 직접 실행할 때는 .NET 11을 선택하는 `helpers/deploy-helper`로 이동합니다.
 
 ```sh
-dotnet run --project ./helpers/deploy-helper/Doroti.DeployHelper -c Release -- --platform ios --app Sample2 --target simulator
-dotnet run --project ./helpers/deploy-helper/Doroti.DeployHelper -c Release -- --platform ios --app Testbed --target device --dotnet-version 11 --skip-xcode-validation
-dotnet run --project ./helpers/deploy-helper/Doroti.DeployHelper -c Release -- --help
+cd helpers/deploy-helper
+dotnet run --project Doroti.DeployHelper -c Release -- --platform ios --app Sample2 --target simulator
+dotnet run --project Doroti.DeployHelper -c Release -- --platform ios --app Testbed --target device --configuration Debug
+dotnet run --project Doroti.DeployHelper -c Release -- --help
 ```
 
 여러 환경변수는 PowerShell 세션에서 스크립트를 직접 호출하거나 .NET CLI의 `--env`를 반복합니다.
@@ -328,53 +350,25 @@ dotnet run --project ./helpers/deploy-helper/Doroti.DeployHelper -c Release -- -
 ```
 
 ```sh
-dotnet run --project ./helpers/deploy-helper/Doroti.DeployHelper -c Release -- --platform ios --app Testbed --target device --env DOROTI_SAMPLE=input --env DOROTI_IOS_GRAPHITE=1
+dotnet run --project Doroti.DeployHelper -c Release -- --platform ios --app Testbed --target device --env DOROTI_SAMPLE=input --env DOROTI_IOS_GRAPHITE=1
 ```
 
 ### 빌드 구성과 산출물
 
-PowerShell 진입점은 저장소 루트로 이동해 `dotnet run`으로 CLI를 빌드·실행합니다.
-CLI 자체는 루트 .NET 10 SDK를 사용하고, 선택한 iOS 앱의 SDK는 별도로 결정합니다.
-첫 실행에는 CLI 복원·컴파일이 포함되며 이후에는 증분 빌드를 사용합니다.
-`-List`와 `-DryRun`에서도 CLI 자체의 빌드는 수행하지만 iOS 앱은 빌드하거나 배포하지 않습니다.
+PowerShell 진입점은 helper 폴더의 .NET 11 SDK로 CLI를 빌드·실행합니다. `-DotnetPath`는 앱 빌드에 사용할
+별도 dotnet 실행 파일을 지정합니다. `-List`와 `-DryRun`은 CLI 실행과 기기 조회만 수행합니다.
 
-.NET 10은 루트 `global.json`에서 SDK를 선택하고 `net10.0-ios` / MAUI `10.0.110`을 사용합니다.
-iOS 플랫폼 버전은 선택된 SDK의 iOS 워크로드가 지원하는 기본값을 사용합니다.
-`27.0` 같은 버전을 고정하지 않으므로 워크로드 업데이트로 지원 버전이 바뀌어도 `NETSDK1140`이 발생하지 않습니다.
-.NET 11은 `samples/DorotiTestbedApp/ios/global.json`에서 SDK를 선택하고
-`net11.0-ios` / MAUI `11.0.0-rc.2.26505.5`를 사용합니다. 저장소의 `global.json`은 수정하지 않습니다.
-.NET 11 RC2는 Xcode 27.0과 워크로드 집합 `11.0.100-rc.2.26509.2`를 사용합니다.
-기본 예제는 Xcode 버전 검사를 활성화한 상태로 실행합니다.
+iOS 앱 빌드는 각 샘플의 `ios/global.json`에서 .NET 11을 선택합니다. `-DotnetVersion 10`을 지정하면
+`Doroti/global.json`의 SDK에서 `net10.0-ios`와 MAUI `10.0.110`을 사용합니다. iOS 플랫폼 버전은 선택된 워크로드의 기본값을 따릅니다.
+Xcode 버전 검사는 기본적으로 활성화되어 있습니다. [Xcode 요구 사항](https://learn.microsoft.com/en-us/dotnet/ios/troubleshooting/xcode-requirement)
 
-iOS 워크로드와 Xcode의 요구 버전이 다르면 빌드가 중단됩니다. 예를 들어 iOS 워크로드
-`27.1.10018`은 Xcode `27.1`을 요구하므로 Xcode `27.2`에서는 버전 검사가 실패합니다.
-해당 환경에서 로컬 기기 테스트를 계속하려면 다음처럼 이번 빌드에만 검사를 생략할 수 있습니다.
-
-```powershell
-pwsh -NoProfile -File ./helpers/deploy-helper/deploy.ps1 -Platform ios -App Sample2 -Target device -SkipXcodeValidation
-```
-
-.NET SDK `10.0.403` / iOS 워크로드 `27.1.10018` / Xcode `27.2` 조합에서 위 옵션으로
-Sample2의 Release NativeAOT 게시, 서명 검증, iOS `27.0.1` 실기기 설치와 프로세스 실행을 확인했습니다.
-화면 동작은 별도로 확인해야 하며, 서로 다른 Xcode 버전 조합은
-[공식 지원 대상이 아닙니다](https://learn.microsoft.com/en-us/dotnet/ios/troubleshooting/xcode-requirement).
-지원되는 구성에는 워크로드가 요구하는 Xcode를 선택하거나 현재 Xcode를 지원하는 워크로드가 필요합니다.
-
-두 SDK의 NativeAOT 빌드 모두 `Registrar=managed-static`, `_UseDynamicDependenciesForMarkNSObjects=false`,
-`MtouchExtraArgs=--skip-marking-nsobjects-in-user-assemblies=true`를 사용합니다.
-각 샘플의 `ios/NativeAotRoots.xml`은 UIKit 진입점·뷰·델리게이트를 명시적으로 보존합니다.
-.NET 11 프로필은 RC1에서 관찰한 `IL2037`과 assembly-preparer의 `MarkNSObjects` 오류(`MT2080`)에
-사용했던 호환 설정을 유지하며, `PrepareAssemblies=false`, `PostProcessAssemblies=false`로
-ILLink의 managed registrar 경로를 사용합니다. RC2 실기기 게시·실행에서 이 옵션과 보존 목록을
-다시 검증해야 합니다. 버전 갱신만으로 기존 실기기 검증 결과가 RC2에 적용되지는 않습니다.
-
-NativeAOT는 실기기 Release만 지원하며 `dotnet publish`로 생성합니다.
-Mono는 `dotnet build`를 사용하고 `PublishAot=false`를 명시합니다.
-실기기는 `ios-arm64`, 시뮬레이터는 Mac CPU에 따라 `iossimulator-arm64` 또는 `iossimulator-x64`를 선택합니다.
+실기기 Release NativeAOT는 `dotnet publish`를 사용합니다. **Debug**와 **시뮬레이터**는 .NET 11 CoreCLR로
+`dotnet build`하고, .NET 10을 선택한 경우 Mono로 빌드합니다.
+실기기 RID는 `ios-arm64`이며 시뮬레이터는 Mac 아키텍처에 따라 `iossimulator-arm64` 또는 `iossimulator-x64`를 선택합니다.
 Apple Silicon에서는 Rosetta로 호출해도 ARM64를 선택합니다.
 
-산출물은 `Doroti/artifacts/<sample2|testbed|carousel>-ios-<nativeaot|mono>-net<10|11>-<debug|release>-<RID>`에
-앱·SDK·모드·구성·RID별로 분리합니다. 예: `sample2-ios-nativeaot-net10-release-ios-arm64`.
+산출물은 `Doroti/artifacts/<app>-ios-<nativeaot|coreclr|mono>-net<10|11>-<debug|release>-<RID>`에 생성합니다.
+예를 들어 Sample2 실기기 기본 빌드는 `sample2-ios-nativeaot-net11-release-ios-arm64`에 있습니다.
 빌드 시간 제한은 20분이며, 실패하거나 취소하면 설치로 넘어가지 않습니다.
 성공한 산출물의 bundle ID를 확인하고, 실기기는 `codesign --verify --deep --strict`를 통과한 뒤 설치합니다.
 설치·실행 단계의 실패도 종료 코드로 전달하며 성공 시 `.app` 경로를 출력합니다.

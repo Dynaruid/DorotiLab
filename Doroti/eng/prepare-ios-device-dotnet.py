@@ -1,4 +1,4 @@
-"""Prepare a user-owned dotnet host for the iOS RC2 build tools.
+"""Prepare a user-owned dotnet host for the .NET 11 iOS build tools.
 
 Reuses installed SDKs/workloads and adds the desktop runtime required by bgen.
 Does not modify the system installation. Not a workload installer.
@@ -15,7 +15,7 @@ import urllib.request
 import xml.etree.ElementTree as ET
 import zipfile
 
-VERSION = '11.0.0-rc.2.26504.105'
+VERSION = '11.0.0'
 
 
 def main():

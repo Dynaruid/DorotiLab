@@ -21,6 +21,7 @@ internal static class Program
             var ui = new ConsoleUi();
             var platform = await new Selector(ui).SelectAsync("Platform", new[] { "ios", "android", "web", "windows" },
                 item => item, "--platform / -Platform", cancellation.Token, options.Platform, (item, value) => item == value);
+            options.Platform = platform;
             options.ValidateForPlatform(platform);
             var runner = new ProcessRunner(ui);
             var repository = FindRepository();

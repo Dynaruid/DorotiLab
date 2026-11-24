@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
-    <DorotiCompilationMode Condition="'$(DorotiCompilationMode)' == '' and '$(PublishAot)' != 'true'">Mono</DorotiCompilationMode>
-    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == '' and '$(Configuration)' == 'Release' and '$(DorotiCompilationMode)' != 'Mono' and '$(PublishAot)' != 'false'">ios-arm64</RuntimeIdentifier>
+    <DorotiIosProject>true</DorotiIosProject>
+    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == '' and '$(Configuration)' == 'Release' and ('$(DorotiCompilationMode)' == 'NativeAot' or '$(PublishAot)' == 'true')">ios-arm64</RuntimeIdentifier>
   </PropertyGroup>
   <Import Project="..\Directory.Build.props" />
   <Import Project="../../../packages/platforms/build/Doroti.IosNativeAot.props" />

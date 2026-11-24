@@ -32,7 +32,7 @@ interactive local page and a reset action.
 Install [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6) on Windows, macOS, or Linux, then run all commands in PowerShell from the **repository root, `DorotiLab`**.
 If your macOS/Linux shell is zsh/bash, enter `pwsh -NoProfile` first.
 Use the **.NET SDK 10.0.400 feature band** selected by the repository root [global.json](../../global.json) for targets other than iOS.
-For the direct iOS commands below or the helper's `-DotnetVersion 11`, also install **.NET SDK 11.0.100-rc.2.26504.105** from [ios/global.json](ios/global.json) alongside .NET 10.
+The deploy helper and iOS use a stable **.NET SDK 11.0.100** patch. The sample SDK is selected by [ios/global.json](ios/global.json).
 Platform-specific workloads and tools are listed with each command below.
 
 The first run restores packages, builds, and deploys to a device where needed. Sample run examples use Release; the build cases below explicitly select Debug or Release.
@@ -153,7 +153,7 @@ try {
         -p:DorotiCompilationMode=Mono -p:PublishAot=false `
         -p:RunAOTCompilation=false -p:AndroidEnableProfiledAot=false `
         -p:AndroidPackageFormats=apk -p:DorotiAndroidTargetFramework=net11.0-android `
-        -p:DorotiAndroidMauiVersion=11.0.0-rc.2.26505.5 -p:MauiVersion=11.0.0-rc.2.26505.5 `
+        -p:DorotiAndroidMauiVersion=11.0.10 -p:MauiVersion=11.0.10 `
         -p:UseMonoRuntime=false -p:PublishReadyToRun=false `
         -p:DorotiObfuscate=true
     # .NET 11 / CoreCLR ReadyToRun + Obfuscar
@@ -161,7 +161,7 @@ try {
         -p:DorotiCompilationMode=Mono -p:PublishAot=false `
         -p:RunAOTCompilation=false -p:AndroidEnableProfiledAot=false `
         -p:AndroidPackageFormats=apk -p:DorotiAndroidTargetFramework=net11.0-android `
-        -p:DorotiAndroidMauiVersion=11.0.0-rc.2.26505.5 -p:MauiVersion=11.0.0-rc.2.26505.5 `
+        -p:DorotiAndroidMauiVersion=11.0.10 -p:MauiVersion=11.0.10 `
         -p:UseMonoRuntime=false -p:PublishReadyToRun=true `
         -p:DorotiObfuscate=true
 } finally { Pop-Location }
@@ -169,37 +169,21 @@ try {
 
 See [deployment tools](../../helpers/deploy-helper/README.md) for device selection and installation. Select the app with `-App Testbed`, `-App Sample2`, or `-App Carousel`.
 
-### iOS simulator, Mono device and NativeAOT
+### iOS simulator and device NativeAOT
 
-Run the Mono cases with the root .NET 10 SDK. Simulator Debug/Release and Mono device Release are excluded from obfuscation. Replace the signing placeholders with a local development certificate and provisioning profile.
-
-```powershell
-# .NET 10 / Mono simulator Debug
-dotnet build ./samples/DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Debug -r iossimulator-arm64 -p:DorotiCompilationMode=Mono -p:PublishAot=false -p:DorotiIosTargetFramework=net10.0-ios
-# .NET 10 / Mono simulator Release
-dotnet build ./samples/DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Release -r iossimulator-arm64 -p:DorotiCompilationMode=Mono -p:PublishAot=false -p:DorotiIosTargetFramework=net10.0-ios
-# .NET 10 / Mono physical device Release
-dotnet build ./samples/DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Release -r ios-arm64 -p:DorotiCompilationMode=Mono -p:PublishAot=false -p:DorotiIosTargetFramework=net10.0-ios '-p:CodesignKey=YOUR_CERTIFICATE_SHA1' '-p:CodesignProvision=YOUR_PROFILE_UUID'
-```
-
-For .NET 11 NativeAOT, select the SDK directory below and **publish**. Do not substitute `build` or `run`. Obfuscar is skipped for NativeAOT. Select a compatible Xcode; see [SDK-specific settings](../DorotiSampleApp2/docs/ios-nativeaot.md) for an Xcode validation override or the .NET 10 NativeAOT profile.
+Run from the sample’s `ios` folder to select .NET 11. The simulator uses CoreCLR. Supply local signing values when publishing device Release NativeAOT.
 
 ```powershell
 Push-Location ./samples/DorotiTestbedApp/ios
 try {
-    dotnet --version
+    dotnet build DorotiTestbedApp.iOS.csproj -c Debug -r iossimulator-arm64
     dotnet publish DorotiTestbedApp.iOS.csproj -c Release -r ios-arm64 `
-        -p:DorotiCompilationMode=NativeAot -p:DorotiIosTargetFramework=net11.0-ios `
-        -p:DorotiIosMauiVersion=11.0.0-rc.2.26505.5 -p:Registrar=managed-static `
-        -p:_UseDynamicDependenciesForMarkNSObjects=false `
-        '-p:MtouchExtraArgs=--skip-marking-nsobjects-in-user-assemblies=true' `
-        -p:PrepareAssemblies=false -p:PostProcessAssemblies=false `
-        --artifacts-path ../.doroti/publish/ios-nativeaot-net11 `
+        -p:DorotiCompilationMode=NativeAot `
         '-p:CodesignKey=YOUR_CERTIFICATE_SHA1' '-p:CodesignProvision=YOUR_PROFILE_UUID'
 } finally { Pop-Location }
 ```
 
-Direct iOS Release defaults to NativeAOT for Testbed, and Mono for SampleApp2/Carousel. The examples explicitly select mode and TFM to avoid depending on that difference. The current iOS CoreCLR profile is for development sessions, not a general Release JIT/R2R publish case.
+Select `-DotnetVersion 10` in the deploy helper for a Mono compatibility build.
 
 ### Web AOT, non-AOT, obfuscation and HTTPS sharing
 
@@ -358,7 +342,7 @@ pwsh -NoProfile -File ./helpers/deploy-helper/deploy-android.ps1 -App Testbed -D
 ```
 
 `.NET 10` defaults to `MonoAot` for Release and `Mono` for Debug. `.NET 11` defaults to `CoreClrR2R`
-and uses SampleApp2's pinned SDK `11.0.100-rc.2.26504.105` and MAUI `11.0.0-rc.2.26505.5` profile.
+and uses SampleApp2's pinned SDK `11.0.100` and MAUI `11.0.10` profile.
 Install its Android/MAUI workloads first. `.NET 10` Android CoreCLR is experimental.
 Use `-Device` or `-Serial` for an exact adb serial and `-NoLaunch` to install only.
 Builds have a 20-minute limit; build/install failures stop deployment. APKs are separated by app, mode, SDK, configuration and RID,
@@ -371,21 +355,21 @@ See [all options and direct .NET commands](../../helpers/deploy-helper/README.md
 #### Select a device and signing certificate, then build and deploy
 
 The shared [iOS deployment helper](../../helpers/deploy-helper/deploy-ios.ps1) lists known iPhones/iPads and available
-iOS simulators, then builds, installs and launches the selected app. The CLI runs on .NET 10 and requires macOS,
+iOS simulators, then builds, installs and launches the selected app. The CLI runs on .NET 11 and requires macOS,
 Xcode and the selected .NET SDK's iOS/MAUI workloads. The PowerShell entry point also requires PowerShell 7; direct `dotnet run` is available. For a physical device,
 trust the Mac, enable Developer Mode, and prepare a development certificate and provisioning profile in Xcode.
 
 Run from the repository root `DorotiLab`:
 
 ```powershell
-# Physical device: .NET 10 / Release / NativeAot by default
+# Physical device (.NET 11 / Release / NativeAot)
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Target device
 
-# Simulator: .NET 10 / Debug / Mono; boots the selected simulator before installation
+# Simulator (.NET 11 / Debug / CoreClr)
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Target simulator
 
-# .NET 11 RC2 with Xcode 27
-pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Target device -DotnetVersion 11 -Mode NativeAot
+# .NET 10 simulator compatibility profile
+pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -App Testbed -Target simulator -DotnetVersion 10
 
 # Inventory only / select and inspect the build command without deploying
 pwsh -NoProfile -File ./helpers/deploy-helper/deploy-ios.ps1 -List
@@ -396,13 +380,12 @@ Omit `-Target` to select from a combined device/simulator list. Physical-device 
 identities with private keys, followed by unexpired iOS development profiles matching `dev.doroti.testbed`,
 the device UDID and the certificate. A single entry is selected automatically. Simulator builds skip signing selection.
 Use `-Device <UDID>`, `-CodesignKey '<name or SHA-1>'` and `-CodesignProvision <UUID>` to select explicitly.
-For a Mono device Debug build, add `-Mode Mono -Configuration Debug`.
+For a CoreCLR device Debug build, add `-Configuration Debug`.
 Launch variables use `-Environment 'DOROTI_SAMPLE=input'`; the helper documentation shows how to pass multiple variables.
 
-The helper selects .NET 10 from the root `global.json` and .NET 11 from `ios/global.json` without editing either file.
+The helper selects .NET 11 from `ios/global.json` and uses `Doroti/global.json` for .NET 10 compatibility builds.
 Artifacts are separated by app, SDK, mode, configuration and RID. Failed builds stop deployment;
-the default launch restarts the existing app process. .NET 11 RC2 requires Xcode 27.0;
-use workload set `11.0.100-rc.2.26509.2` with Xcode version validation enabled.
+the default launch restarts the existing app process. .NET 11 uses Xcode 27.2 and workload set `11.0.100.1`.
 See [all options and direct .NET commands](../../helpers/deploy-helper/README.md). Use the development CLI for Hot Reload.
 
 #### Direct .NET 11 commands
@@ -426,7 +409,7 @@ Pop-Location
 
 For an Intel Mac simulator, use `-r iossimulator-x64`. A physical iPhone/iPad requires
 `-r ios-arm64`, its device ID, and separate signing/provisioning configuration.
-Here, `--device` belongs to `dotnet run`; the `doroti.ps1` wrapper's `-Device` currently supports Android only.
+Use `--device` with `dotnet run` or `-Device` with `doroti.ps1` to select an iOS device matching the workspace RID.
 
 The default remains partial trimming; full trimming needs the dynamic-member preservation descriptor.
 

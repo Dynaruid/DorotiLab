@@ -176,7 +176,7 @@ try {
         -p:DorotiCompilationMode=Mono -p:PublishAot=false `
         -p:RunAOTCompilation=false -p:AndroidEnableProfiledAot=false `
         -p:AndroidPackageFormats=apk -p:DorotiAndroidTargetFramework=net11.0-android `
-        -p:DorotiAndroidMauiVersion=11.0.0-rc.2.26505.5 -p:MauiVersion=11.0.0-rc.2.26505.5 `
+        -p:DorotiAndroidMauiVersion=11.0.10 -p:MauiVersion=11.0.10 `
         -p:UseMonoRuntime=false -p:PublishReadyToRun=false `
         -p:DorotiObfuscate=true
     # .NET 11 / CoreCLR ReadyToRun + Obfuscar
@@ -184,7 +184,7 @@ try {
         -p:DorotiCompilationMode=Mono -p:PublishAot=false `
         -p:RunAOTCompilation=false -p:AndroidEnableProfiledAot=false `
         -p:AndroidPackageFormats=apk -p:DorotiAndroidTargetFramework=net11.0-android `
-        -p:DorotiAndroidMauiVersion=11.0.0-rc.2.26505.5 -p:MauiVersion=11.0.0-rc.2.26505.5 `
+        -p:DorotiAndroidMauiVersion=11.0.10 -p:MauiVersion=11.0.10 `
         -p:UseMonoRuntime=false -p:PublishReadyToRun=true `
         -p:DorotiObfuscate=true
 } finally { Pop-Location }
@@ -192,37 +192,21 @@ try {
 
 기기 선택·설치는 [공용 배포 도구](../../helpers/deploy-helper/README.md)를 참고하세요. `-App Sample2`·`-App Testbed`·`-App Carousel`로 앱을 선택합니다.
 
-### iOS 시뮬레이터, Mono 실기기, NativeAOT
+### iOS 시뮬레이터와 실기기 NativeAOT
 
-Mono 예제는 루트의 .NET 10 SDK에서 실행합니다. 시뮬레이터 Debug/Release와 실기기 Mono Release는 난독화에서 제외합니다. 실기기는 로컬 개발 인증서·프로비저닝 프로필 값으로 placeholder를 바꿉니다.
-
-```powershell
-# .NET 10 / Mono simulator Debug
-dotnet build ./samples/DorotiSampleApp2/ios/DorotiSampleApp2.iOS.csproj -c Debug -r iossimulator-arm64 -p:DorotiCompilationMode=Mono -p:PublishAot=false -p:DorotiIosTargetFramework=net10.0-ios
-# .NET 10 / Mono simulator Release
-dotnet build ./samples/DorotiSampleApp2/ios/DorotiSampleApp2.iOS.csproj -c Release -r iossimulator-arm64 -p:DorotiCompilationMode=Mono -p:PublishAot=false -p:DorotiIosTargetFramework=net10.0-ios
-# .NET 10 / Mono physical device Release
-dotnet build ./samples/DorotiSampleApp2/ios/DorotiSampleApp2.iOS.csproj -c Release -r ios-arm64 -p:DorotiCompilationMode=Mono -p:PublishAot=false -p:DorotiIosTargetFramework=net10.0-ios '-p:CodesignKey=YOUR_CERTIFICATE_SHA1' '-p:CodesignProvision=YOUR_PROFILE_UUID'
-```
-
-.NET 11 NativeAOT는 아래처럼 SDK 선택 폴더로 이동하여 **publish**합니다. `build`나 `run`으로 대체하지 않습니다. NativeAOT에는 Obfuscar를 적용하지 않습니다. 호환되는 Xcode를 선택하고, Xcode 버전 검사 우회나 .NET 10 NativeAOT가 필요한 경우 [SDK별 상세 설정](../DorotiSampleApp2/docs/ios-nativeaot.md)을 참고하세요.
+샘플의 `ios` 폴더에서 .NET 11을 선택합니다. 시뮬레이터는 CoreCLR로 빌드하고, 실기기 Release NativeAOT를 게시할 때는 로컬 서명 값을 지정합니다.
 
 ```powershell
-Push-Location ./samples/DorotiTestbedApp/ios
+Push-Location ./samples/DorotiSampleApp2/ios
 try {
-    dotnet --version
-    dotnet publish ../../DorotiSampleApp2/ios/DorotiSampleApp2.iOS.csproj -c Release -r ios-arm64 `
-        -p:DorotiCompilationMode=NativeAot -p:DorotiIosTargetFramework=net11.0-ios `
-        -p:DorotiIosMauiVersion=11.0.0-rc.2.26505.5 -p:Registrar=managed-static `
-        -p:_UseDynamicDependenciesForMarkNSObjects=false `
-        '-p:MtouchExtraArgs=--skip-marking-nsobjects-in-user-assemblies=true' `
-        -p:PrepareAssemblies=false -p:PostProcessAssemblies=false `
-        --artifacts-path ../../DorotiSampleApp2/.doroti/publish/ios-nativeaot-net11 `
+    dotnet build DorotiSampleApp2.iOS.csproj -c Debug -r iossimulator-arm64
+    dotnet publish DorotiSampleApp2.iOS.csproj -c Release -r ios-arm64 `
+        -p:DorotiCompilationMode=NativeAot `
         '-p:CodesignKey=YOUR_CERTIFICATE_SHA1' '-p:CodesignProvision=YOUR_PROFILE_UUID'
 } finally { Pop-Location }
 ```
 
-Testbed의 직접 iOS Release 기본값은 NativeAOT이지만, SampleApp2와 Carousel은 Mono가 기본입니다. 위 예제는 이 차이에 의존하지 않도록 모드·TFM을 명시합니다. 현재 iOS CoreCLR은 개발 세션용이며 일반 Release JIT/R2R 게시 케이스로 안내하지 않습니다.
+Mono 호환 빌드는 배포 도구에서 `-DotnetVersion 10`을 지정합니다.
 
 ### Web AOT, 비 AOT, 난독화, HTTPS 공유
 
@@ -365,9 +349,9 @@ Release/NativeAOT는 metadata Hot Reload 대상이 아닙니다.
 
 직접 게시·서명·설치할 때 필요한 옵션은 [NativeAOT 빌드 안내](docs/ios-nativeaot.md#net-10--xcode-27)에 있습니다.
 
-### .NET 11 RC2 + Xcode 27 Native AOT
+### .NET 11과 Xcode 27.2의 NativeAOT
 
-SDK·워크로드 선택과 registrar 설정은 [NativeAOT 빌드 안내](docs/ios-nativeaot.md#net-11-rc2--xcode-27)를 참고하세요.
+실기기 게시 명령과 SDK·워크로드 선택은 [NativeAOT 빌드 안내](docs/ios-nativeaot.md#net-11과-xcode-272)를 참고하세요.
 
 ## Linux
 

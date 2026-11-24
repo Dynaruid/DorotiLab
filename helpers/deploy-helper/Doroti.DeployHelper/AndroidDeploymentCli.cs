@@ -62,10 +62,10 @@ public sealed class AndroidDeploymentCli(string repositoryRoot, ICommandRunner r
         if (rid is not ("android-arm64" or "android-x64")) throw new DeployException($"Unsupported Android RID: {rid}.");
         var configuration = options.Configuration ?? "Release";
         var mode = options.Mode ?? (options.DotnetVersion == 11 ? "CoreClrR2R" : configuration == "Release" ? "MonoAot" : "Mono");
-        var cwd = options.DotnetVersion == 10 ? RepositoryRoot : Path.Combine(RepositoryRoot, "samples/DorotiSampleApp2/android/sdk/net11");
+        var cwd = options.DotnetVersion == 10 ? Path.Combine(RepositoryRoot, "Doroti") : Path.Combine(RepositoryRoot, "samples/DorotiSampleApp2/android/sdk/net11");
         var sdk = (await runner.RunAsync(new(dotnet, ["--version"], cwd), ct)).Trim();
-        if (!sdk.StartsWith($"{options.DotnetVersion}.", StringComparison.Ordinal))
-            throw new DeployException($"Expected .NET {options.DotnetVersion} SDK, but {cwd}/global.json selected {sdk}.");
+        if (!Version.TryParse(sdk, out var version) || version.Major != options.DotnetVersion)
+            throw new DeployException($"Expected a stable .NET {options.DotnetVersion} SDK, but {cwd}/global.json selected {sdk}.");
         var artifactMode = mode switch { "MonoAot" => "aot", "CoreClrJit" => "jit", "CoreClrR2R" => "r2r", _ => "mono" };
         // Keep Windows aapt2 resource paths short while isolating every variant.
         var artifacts = Path.Combine(RepositoryRoot, "Doroti/artifacts",
@@ -83,7 +83,7 @@ public sealed class AndroidDeploymentCli(string repositoryRoot, ICommandRunner r
             "-p:AndroidPackageFormats=apk", "-p:EmbedAssembliesIntoApk=true", $"-p:ArtifactsPath={artifacts}",
         };
         if (options.DotnetVersion == 11)
-            args.AddRange(["-p:DorotiAndroidMauiVersion=11.0.0-rc.2.26505.5", "-p:MauiVersion=11.0.0-rc.2.26505.5"]);
+            args.AddRange(["-p:DorotiAndroidMauiVersion=11.0.10", "-p:MauiVersion=11.0.10"]);
         ui.WriteLine($"\nSDK {sdk} / {mode} / {configuration} / {rid}\nSDK working directory: {cwd}\nArtifacts: {artifacts}");
         return new(new(dotnet, args, cwd, Capture: false, TimeoutSeconds: 1200,
             Environment: new Dictionary<string, string> { ["DOTNET_HOST_PATH"] = dotnet }), artifacts, sdk, mode, configuration, rid);

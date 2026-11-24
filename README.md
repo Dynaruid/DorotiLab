@@ -45,7 +45,7 @@ Web auto selection prefers WebGL2 on desktop/iOS and WebGPU on Android, with ini
 The sample application is the starting point for exploring Doroti. Prepare these dependencies on the build host:
 
 - **Windows, macOS, and Linux:** Install [PowerShell 7](https://learn.microsoft.com/ko-kr/powershell/scripting/install/install-powershell?view=powershell-7.6) to run the repository scripts.
-- **.NET SDK:** Install the 10.0.400 feature band for targets other than iOS. For the iOS Testbed, also install 11.0.100-rc.2.26504.105 alongside .NET 10.
+- **.NET SDK.** Install .NET 11.0.100 or a compatible patch for the deploy helper and iOS. .NET 10 builds use the 10.0.400 feature band.
 - **Platform tools:** The default Windows runner needs the Windows C++ build tools in the [platform prerequisites](Doroti/README.md#platform-prerequisites). See that guide for workloads and native tools for other targets.
 - **Custom WGSL effects:** Apps declaring `DorotiGpuEffect` inputs need the optional [WGSL compiler](tools/Doroti.Wgsl/README.md). The current Testbed does not declare these inputs.
 

@@ -17,12 +17,12 @@
       "provider": "maui",
       "providerManifest": "../../packages/platforms/maui/doroti-provider.json",
       "target": "iOS",
-      "targetPackage": "Doroti.Target.iOS.Maui.iossimulator-x64",
+      "targetPackage": "Doroti.Target.iOS.Maui.iossimulator-arm64",
       "runner": "ios/DorotiTestbedApp.iOS.csproj",
       "backend": "Maui",
-      "profile": "default:iossimulator-x64",
-      "targetFramework": "net10.0-ios",
-      "runtimeIdentifier": "iossimulator-x64"
+      "profile": "default:iossimulator-arm64",
+      "targetFramework": "net11.0-ios",
+      "runtimeIdentifier": "iossimulator-arm64"
     },
     "linux": {
       "provider": "qt",

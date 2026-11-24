@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0-ios</TargetFramework>
-    <TargetFramework Condition="'$(DorotiIosTargetFramework)' != ''">$(DorotiIosTargetFramework)</TargetFramework>
+    <TargetFramework>$(DorotiIosTargetFramework)</TargetFramework>
     <RuntimeIdentifier>iossimulator-arm64</RuntimeIdentifier>
     <AssemblyName>Doroti.Target.iOS.Maui</AssemblyName>
     <RootNamespace>Doroti.Target.iOS.Maui</RootNamespace>
@@ -14,11 +13,9 @@
     <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../Doroti.Host.Maui/Doroti.Host.Maui.csproj" AdditionalProperties="RuntimeIdentifier=iossimulator-arm64" SetTargetFramework="TargetFramework=$(TargetFramework)" SkipGetTargetFrameworkProperties="true" />
-    <EmbeddedResource Include="doroti-target-manifest.ios27.json" LogicalName="Doroti.Target.Manifest" Condition="'$(TargetFramework)' == 'net10.0-ios27.0'" />
-    <None Include="doroti-target-manifest.ios27.json" Pack="true" PackagePath="doroti/doroti-target-manifest.json" Condition="'$(TargetFramework)' == 'net10.0-ios27.0'" />
-    <EmbeddedResource Include="$(IntermediateOutputPath)doroti-target-manifest.json" LogicalName="Doroti.Target.Manifest" Condition="'$(TargetFramework)' != 'net10.0-ios27.0'" />
-    <None Include="$(IntermediateOutputPath)doroti-target-manifest.json" Pack="true" PackagePath="doroti" Condition="'$(TargetFramework)' != 'net10.0-ios27.0'" />
+    <ProjectReference Include="../Doroti.Host.Maui/Doroti.Host.Maui.csproj" AdditionalProperties="RuntimeIdentifier=iossimulator-arm64;DorotiIosTargetFramework=$(TargetFramework);DorotiIosMauiVersion=$(DorotiIosMauiVersion)" SetTargetFramework="TargetFramework=$(TargetFramework)" SkipGetTargetFrameworkProperties="true" />
+    <EmbeddedResource Include="$(IntermediateOutputPath)doroti-target-manifest.json" LogicalName="Doroti.Target.Manifest" />
+    <None Include="$(IntermediateOutputPath)doroti-target-manifest.json" Pack="true" PackagePath="doroti" />
     <None Include="buildTransitive/Doroti.Target.iOS.Maui.iossimulator-arm64.targets" Pack="true" PackagePath="buildTransitive/Doroti.Target.iOS.Maui.iossimulator-arm64.targets" />
   </ItemGroup>
   <ItemGroup>
@@ -26,6 +23,7 @@
   </ItemGroup>
   <PropertyGroup>
     <DorotiProviderMetadataSource>$(MSBuildProjectDirectory)/doroti-target-manifest.json</DorotiProviderMetadataSource>
+    <DorotiProviderMetadataSourceFramework>net10.0-ios</DorotiProviderMetadataSourceFramework>
     <DorotiProviderMetadataFile>doroti-target-manifest.json</DorotiProviderMetadataFile>
   </PropertyGroup>
   <Import Project="../../Doroti.Provider.PackageMetadata.targets" />

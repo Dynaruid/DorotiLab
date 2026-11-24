@@ -5,7 +5,10 @@ using Doroti.DeployHelper;
 
 using var deadline = new CancellationTokenSource(TimeSpan.FromMinutes(20));
 var ct = deadline.Token;
-var repository = Directory.GetCurrentDirectory();
+var currentDirectory = Directory.GetCurrentDirectory();
+var repository = Directory.Exists(Path.Combine(currentDirectory, "samples"))
+    ? currentDirectory
+    : Path.GetFullPath("../..", currentDirectory);
 var root = Path.Combine(repository, "Doroti", "artifacts", "deploy-helper-tests", Guid.NewGuid().ToString("N"));
 Directory.CreateDirectory(root);
 var sdkRoot = Path.Combine(root, "sdk with spaces");
@@ -28,6 +31,29 @@ Options WebOptions(int version = 10, string? mode = null) => new()
 };
 var demo = SampleApp.All.Single(app => app.Key == "Demo");
 
+Test("iOS defaults to stable .NET 11 CoreCLR on Simulator and retains explicit .NET 10", async () =>
+{
+    var cli = new IosDeploymentCli(repository, new IosBuildRunner(repository), new TestUi());
+    var simulator = new IosTarget("simulator", "iPhone", "test-udid", "test-udid", "Shutdown", "27.2");
+    var plan = await cli.BuildPlanAsync(new Options(), demo, simulator, null, null, dotnet, ct);
+    Require(plan.Sdk == "11.0.100" && plan.Mode == "CoreClr" && plan.Configuration == "Debug" &&
+        plan.Command.WorkingDirectory == Path.GetDirectoryName(demo.Project(repository)) &&
+        plan.Command.Arguments.Contains("-p:DorotiIosTargetFramework=net11.0-ios") &&
+        plan.Command.Arguments.Contains("-p:PublishAot=false"), "iOS Simulator did not select its stable .NET 11 profile.");
+
+    var legacy = await cli.BuildPlanAsync(Options.Parse(["--dotnet-version", "10"]), demo, simulator, null, null, dotnet, ct);
+    Require(legacy.Sdk == "10.0.403" && legacy.Mode == "Mono" && legacy.Command.WorkingDirectory == Path.Combine(repository, "Doroti") &&
+        legacy.Command.Arguments.Contains("-p:DorotiIosTargetFramework=net10.0-ios"), "Explicit .NET 10 iOS selection was lost.");
+
+    var device = simulator with { Kind = "device" };
+    var identity = new Identity("test-key", "Development");
+    var profile = new ProvisionProfile("test-profile", new() { ["UUID"] = "test-uuid" });
+    var release = await cli.BuildPlanAsync(new Options(), demo, device, identity, profile, dotnet, ct);
+    Require(release.Sdk == "11.0.100" && release.Mode == "NativeAot" && release.Configuration == "Release" &&
+        release.Command.Arguments[0] == "publish" && release.Command.Arguments.Contains("-p:CodesignProvision=test-uuid"),
+        "Default iOS device build did not select .NET 11 NativeAOT and signing.");
+});
+
 Test("Web CLI and mobile options stay separate", () =>
 {
     var parsed = Options.Parse(["--platform", "web", "--app", "Demo", "--dotnet-version", "11", "--mode", "MonoAot", "--web-execution-mode", "compatible", "--port", "5192"]);
@@ -40,6 +66,8 @@ Test("Web CLI and mobile options stay separate", () =>
         new[] { "--platform", "web", "--device", "mobile" },
         new[] { "--platform", "android", "--port", "5192" },
         new[] { "--platform", "ios", "--web-execution-mode", "compatible" },
+        new[] { "--platform", "ios", "--mode", "Mono" },
+        new[] { "--platform", "ios", "--dotnet-version", "10", "--mode", "CoreClr" },
         new[] { "--platform", "web", "--port", "65536" },
     })
     {
@@ -434,6 +462,18 @@ sealed class FakeRunner(string sdks) : ICommandRunner
         Publishes++;
         OnPublish?.Invoke(command);
         return Task.FromResult("");
+    }
+}
+
+sealed class IosBuildRunner(string repository) : ICommandRunner
+{
+    public Task<string> RunAsync(Command command, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        if (command.FileName == "sysctl") return Task.FromResult("1");
+        if (command.Arguments.SequenceEqual(["--version"]))
+            return Task.FromResult(command.WorkingDirectory == Path.Combine(repository, "Doroti") ? "10.0.403" : "11.0.100");
+        throw new Exception("Unexpected iOS command: " + command.Display);
     }
 }
 

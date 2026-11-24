@@ -229,53 +229,52 @@ def run(args, ownership):
     args.dotnet = str(Path(dotnet).resolve())
     if args.sdk_version and not re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.-]+)?', args.sdk_version):
         raise ValueError('Invalid SDK version')
+    working_directory = args.working_directory or Path(args.runner).resolve().parent
+    if args.sdk_version:
+        working_directory = ownership.directory / 'toolchain'
+        working_directory.mkdir(exist_ok=True)
+        atomic_json(working_directory / 'global.json', {'sdk': {
+            'version': args.sdk_version, 'rollForward': 'disable', 'allowPrerelease': '-' in args.sdk_version}})
+    environment = dict(os.environ, DOTNET_HOST_PATH=args.dotnet, DOTNET_CUSTOM_PATH=args.dotnet,
+                       DOTNET_CLI_USE_MSBUILD_SERVER='0', MSBUILDDISABLENODEREUSE='1')
+    sdk = subprocess.check_output([args.dotnet, '--version'], cwd=working_directory,
+                                  env=environment, text=True, timeout=30).strip()
+    sdk_version = tuple(int(part) for part in sdk.split('-')[0].split('.'))
+    if sdk_version < (10, 0, 400):
+        raise ValueError('iOS Hot Reload requires .NET SDK 10.0.400 or newer with mobile dotnet-watch support.')
+    framework = args.framework or ('net11.0-ios' if sdk_version[0] >= 11 else 'net10.0-ios')
+    coreclr = framework.startswith('net11.')
+    if coreclr and sdk_version[0] < 11:
+        raise ValueError('The net11.0-ios profile requires .NET SDK 11. Select it via runner/global.json or --sdk-version.')
+    mode = 'CoreClr' if coreclr else 'Mono'
     physical = args.rid == 'ios-arm64'
-    if physical and not args.framework and (args.sdk_version or '').startswith('11.'):
-        args.framework = 'net11.0-ios'
-    coreclr = physical and (args.framework or '').startswith('net11.')
     network_device = physical and not coreclr
     relay = None
     session = DeviceSession(args.session_directory, args.session_id, args.device, args.xcrun) if physical else Session(args.session_directory, args.session_id)
     server = None if physical else make_server(session)
     if server:
         threading.Thread(target=server.serve_forever, daemon=True).start()
-    environment = dict(os.environ,
+    environment.update(
         DOROTI_DEV_URL=f'http://127.0.0.1:{server.server_port}/session' if server else '',
         DOROTI_DEV_DEVICE_SESSION='Doroti.Dev/' + args.session_id if physical else '',
-        DOROTI_DEV_TOKEN=session.token, DOROTI_DEV_SESSION_ID=args.session_id,
-        DOTNET_HOST_PATH=args.dotnet, DOTNET_CUSTOM_PATH=args.dotnet,
-        DOTNET_CLI_USE_MSBUILD_SERVER='0', MSBUILDDISABLENODEREUSE='1')
+        DOROTI_DEV_TOKEN=session.token, DOROTI_DEV_SESSION_ID=args.session_id)
     # Do not give the sandbox a path on the Mac. The runtime publishes remotely.
     environment.pop('DOROTI_DEV_SESSION', None)
     command = [args.dotnet, 'watch', '--project', args.runner, '--configuration', 'Debug',
         '--device', args.device, '--no-launch-profile',
-        '--property:DorotiIosDevelopment=true', '--property:DorotiCompilationMode=' + ('CoreClr' if coreclr else 'Mono'),
+        '--property:DorotiIosDevelopment=true', '--property:DorotiCompilationMode=' + mode,
+        '--property:DorotiIosTargetFramework=' + framework, '--property:DorotiHostTargetFrameworks=' + framework,
         '--property:DorotiHostRuntimeIdentifier=' + args.rid,
         '--property:EnableAotAnalyzer=false', '--property:EnableTrimAnalyzer=false',
         '--property:BuildInParallel=false', '--property:RestoreDisableParallel=true']
     if environment.get('DOTNET_CLI_CONTEXT_VERBOSE', '').lower() in ('true', '1', 'trace'):
         command.append('--verbose')
-    if args.framework:
-        command.append('--property:DorotiIosTargetFramework=' + args.framework)
-        command.append('--property:DorotiHostTargetFrameworks=' + args.framework)
-    working_directory = args.working_directory or Path(args.runner).resolve().parent
-    if args.sdk_version:
-        working_directory = session.directory / 'toolchain'
-        working_directory.mkdir(exist_ok=True)
-        atomic_json(working_directory / 'global.json', {'sdk': {
-            'version': args.sdk_version, 'rollForward': 'disable', 'allowPrerelease': True}})
     child = None
     bundle_id = None
     stop = threading.Event()
     for sig in (signal.SIGINT, signal.SIGTERM):
         signal.signal(sig, lambda *_: stop.set())
     try:
-        sdk = subprocess.check_output([args.dotnet, '--version'], cwd=working_directory,
-                                      env=environment, text=True, timeout=30).strip()
-        if tuple(int(part) for part in sdk.split('-')[0].split('.')) < (10, 0, 400):
-            raise ValueError('iOS Hot Reload requires .NET SDK 10.0.400 or newer with mobile dotnet-watch support.')
-        if coreclr and int(sdk.split('.')[0]) < 11:
-            raise ValueError('Device Hot Reload requires .NET SDK 11; select an installed version with -IosSdkVersion.')
         if network_device:
             host = args.host or local_network_address()
             address = ipaddress.IPv4Address(host)
@@ -297,10 +296,8 @@ def run(args, ownership):
         query = [args.dotnet, 'msbuild', args.runner, '-nologo', '-getProperty:ApplicationId,DorotiIosDevelopmentRuntimeVersion,RuntimeIdentifier',
                  '-p:Configuration=Debug',
                  '-p:DorotiHostRuntimeIdentifier=' + args.rid,
-                 '-p:DorotiIosDevelopment=true', '-p:DorotiCompilationMode=' + ('CoreClr' if coreclr else 'Mono'), '-p:ArtifactsPath=' + str(artifacts)]
-        if args.framework:
-            query.append('-p:DorotiIosTargetFramework=' + args.framework)
-            query.append('-p:DorotiHostTargetFrameworks=' + args.framework)
+                 '-p:DorotiIosDevelopment=true', '-p:DorotiCompilationMode=' + mode, '-p:ArtifactsPath=' + str(artifacts),
+                 '-p:DorotiIosTargetFramework=' + framework, '-p:DorotiHostTargetFrameworks=' + framework]
         query_environment = dict(environment, DOTNET_CLI_CONTEXT_VERBOSE='false')
         properties = json.loads(subprocess.check_output(query, cwd=working_directory, env=query_environment,
                                                        text=True, timeout=30))['Properties']
@@ -313,7 +310,7 @@ def run(args, ownership):
         if coreclr:
             runtime_version = properties['DorotiIosDevelopmentRuntimeVersion']
             if not re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.-]+)?', runtime_version):
-                raise ValueError('The device development profile must specify a runtime version.')
+                raise ValueError('The CoreCLR development profile must specify a runtime version.')
             # Apple framework copy/R2R caches may retain a previously bundled
             # native CoreCLR even after NuGet selects a different runtime pack.
             artifacts /= 'coreclr-' + runtime_version
