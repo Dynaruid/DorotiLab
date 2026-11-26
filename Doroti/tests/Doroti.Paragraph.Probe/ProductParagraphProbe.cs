@@ -54,6 +54,9 @@ internal static class ProductParagraphProbe
         var softWrap = thai.getPositionForOffset(new Offset(line.width + 10, line.baseline - line.ascent / 2));
         Require(softWrap.offset == 7 && softWrap.affinity == TextAffinity.upstream,
             "The trailing edge of the wrapped line preserves upstream affinity.");
+        _ = thai.getBoxesForRange(0, thai.text.Length);
+        var afterSelection = thai.getPositionForOffset(new Offset(line.width + 10, line.baseline - line.ascent / 2));
+        Require(afterSelection == softWrap, "A line hit agrees with the full selection geometry.");
         Require(thai.getLineBoundary(new TextPosition(7)) is { start: 7, end: 14 },
             "Downstream affinity resolves the same offset on the following line.");
 
@@ -95,6 +98,10 @@ internal static class ProductParagraphProbe
             "Arabic", 24, MaxLines: 1, Locale: new Locale("ar"), Ellipsis: "…"), invoke);
         Require(elided.didExceedMaxLines && elided.numberOfLines == 1 && elided.getGlyphInfoAt(elided.text.Length - 1) is null,
             "Ellipsis keeps truncated text outside selectable geometry.");
+        using var ellipsisOnly = renderer.Layout(new ParagraphRequest("abcd", 0, "Arabic", 24, MaxLines: 1, Ellipsis: "…"), invoke);
+        var ellipsisHit = ellipsisOnly.getPositionForOffset(Offset.zero);
+        Require(ellipsisHit is { offset: 0, affinity: TextAffinity.upstream },
+            $"An ellipsis without source glyphs preserves the line-end affinity. Found {ellipsisHit}.");
 
         var reflowRequest = new ParagraphRequest("abc سلام 12 भाषा\r\nภาษาไทยภาษาไทย Z  ", 650, "Arabic", 24);
         foreach (var (align, direction) in new[] { (TextAlign.left, TextDirection.ltr), (TextAlign.center, TextDirection.ltr),
@@ -108,6 +115,22 @@ internal static class ProductParagraphProbe
                 using var fresh = renderer.Layout(styled with { Width = nextWidth }, invoke);
                 RequireMatchingGeometry(resizable, fresh);
             }
+        }
+
+        const string indexedText = "  Price 12.00 Add to cart  Price 24.00 Add one more.   ";
+        var indexedRequest = new ParagraphRequest(indexedText, double.PositiveInfinity, "Arabic", 20);
+        using var indexed = renderer.Layout(indexedRequest, invoke);
+        var minWidth = indexed.minIntrinsicWidth;
+        var fullWidth = indexed.maxIntrinsicWidth;
+        foreach (var nextWidth in new[] { Math.BitDecrement(fullWidth), fullWidth, Math.BitIncrement(fullWidth),
+            minWidth, Math.BitDecrement(minWidth), 0, 128, double.PositiveInfinity })
+        {
+            indexed.layout(new ParagraphConstraints(nextWidth));
+            // With an explicit maximum above the text length, the ellipsis
+            // selects the general line breaker without truncating the text.
+            using var general = renderer.Layout(indexedRequest with { Width = nextWidth, MaxLines = indexedText.Length + 1,
+                Ellipsis = "…" }, invoke);
+            RequireMatchingGeometry(indexed, general);
         }
 
         using var evicted = renderer.Layout(reflowRequest, invoke);
@@ -127,6 +150,9 @@ internal static class ProductParagraphProbe
         fonts.Register(fontBytes("Arabic"), "Replaceable");
         using var replaceable = Layout("123", "Replaceable", "en", 200);
         var originalWidth = replaceable.maxIntrinsicWidth;
+        var deferredRecorder = new PictureRecorder();
+        new Canvas(deferredRecorder).drawParagraph(replaceable, new Offset(4, 4));
+        using var deferredPicture = deferredRecorder.endRecording();
 
         using var tabular = LayoutStyled("١٢٣", "ar", new TextStyle(fontFeatures: [FontFeature.enable("tnum")]));
         using var proportional = LayoutStyled("١٢٣", "ar", new TextStyle(fontFeatures: [FontFeature.enable("pnum")]));
@@ -138,6 +164,19 @@ internal static class ProductParagraphProbe
             "The width axis affects the placed advances.");
         await RequireDifferentPaint(tabular, proportional);
         await RequireDifferentPaint(regular, condensed);
+
+        const string cachedText = "A repeated label";
+        var foreground = new Paint { color = new Color(0xffff0000) };
+        var cacheRequest = new ParagraphRequest(cachedText, 200, "Arabic", 24, Locale: new Locale("en"),
+            TextRuns: [new ParagraphTextRun(cachedText, new TextStyle(foreground: foreground))]);
+        using var red = renderer.Layout(cacheRequest, invoke);
+        using var narrowerRed = renderer.Layout(cacheRequest with { Width = 60 }, invoke);
+        red.layout(new ParagraphConstraints(60));
+        RequireMatchingGeometry(red, narrowerRed);
+        foreground.color = new Color(0xff0000ff);
+        using var blue = renderer.Layout(cacheRequest with { Width = 60 }, invoke);
+        RequireMatchingGeometry(red, blue);
+        await RequireDifferentPaint(red, blue);
 
         var recorder = new PictureRecorder();
         var canvas = new Canvas(recorder);
@@ -161,6 +200,12 @@ internal static class ProductParagraphProbe
         RequireMatchingGeometry(replaceable, replacement);
         var replay = await Render(picture, ImageByteFormat.rawRgba, 300, 210);
         Require(pixels.AsSpan().SequenceEqual(replay), "Relayout, disposal, and font cache invalidation preserve the recorded raster.");
+        replaceable.Dispose();
+        using var originalFont = Layout("123", "Arabic", "en", 200);
+        var originalFontPixels = await PaintSample(originalFont);
+        var deferredPixels = await Render(deferredPicture, ImageByteFormat.rawRgba, 200, 128);
+        Require(originalFontPixels.AsSpan().SequenceEqual(deferredPixels),
+            "A picture first painted after font replacement and disposal still uses its original placed glyphs.");
 
         var png = await Render(picture, ImageByteFormat.png, 300, 210);
         return ("Product paragraph | mixed RTL, Indic and emoji UTF-16, Thai/Lao/Khmer/Burmese word/wrap, caret affinity, semantics, ellipsis, reflow, font replacement, OpenType, retained paint", png);

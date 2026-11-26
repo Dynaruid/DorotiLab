@@ -159,6 +159,25 @@ The Windows x64 Release CPU fixture ran after the parallel builds finished. Both
 
 The wrapped English resize case allocated 16,025 managed bytes per sample with shaping. The earlier shaping measurement in this document recorded 20,367 bytes for the same case. Short repeated layout and wrapped resize exceed the proposed 10% p95 budget. The renderer keeps the shaping path opt-in. Frame timing on a physical device remains open.
 
+### Deferred paragraph geometry and paint
+
+A width change updates the line breaks and immutable line metrics first. For left-aligned ASCII with uniform metrics, a cumulative advance index finds breaks using exact sums. A caret hit computes geometry for its line and reuses the most recently queried line. Selection and semantics can materialize the complete geometry. The first draw records the positioned glyphs using the font captured during shaping. Repeated single-run paragraphs with the same effective style share the existing bounded renderer cache, which is invalidated on font changes.
+
+The Windows x64 Release CPU probe used SDK 10.0.403, the same fixture fonts and one logical CPU. Each operation used five warmups and 25 samples. The reference profiles were built from `9ae52e72` with the same measurement harness. The table uses the default JIT configuration. The two combined operations include the work needed immediately after resizing.
+
+| English workload | Operation | Advance-based p95 (µs) | Previous HarfBuzz p95 (µs) | Updated HarfBuzz p95 (µs) |
+| --- | --- | ---: | ---: | ---: |
+| Short | New paragraph, same text | 11.6 | 14.3 | 1.3 |
+| Wrapped | New paragraph, same text | 168.6 | 154.7 | 1.3 |
+| Wrapped | Change width | 8.3 | 54.2 | 4.3 |
+| Wrapped | Change width and hit test | 7.8 | 60.7 | 8.9 |
+| Wrapped | Change width and draw | 74.0 | 78.4 | 79.7 |
+| Wrapped | Replay recorded picture | 67.8 | 18.3 | 17.9 |
+
+Wrapped resize allocations fell from 16,025 to 1,361 managed bytes per sample. Wrapped resize plus draw p50 fell from 67.0 to 39.1 µs, with similar p95. With tiered compilation disabled, the wrapped resize p95 was 19.1 µs on the previous HarfBuzz path and 1.0 µs with the index. The English layout and retained paint cases met the 10% p95 budget in the default JIT run. Physical display timing and first localized frame measurements remain open.
+
+The product probe passed on Windows x64 JIT and NativeAOT, WSL Linux x64 JIT, and Chromium 158.0.8127.18 in compatible and threaded .NET 10.0.15 Web profiles. Each fixture PNG matched its previous platform hash. The probe compares indexed and general line breaking at exact wrap thresholds. It also covers ellipsis-only caret affinity, single-run paint color changes, and first paint after font replacement and paragraph disposal. The Windows scroll suites, renderer suites, and Unicode 17 conformance corpus also passed.
+
 ## Reproduce the probe
 
 Use the OFL test fonts from [Google Fonts at the pinned revision](https://github.com/google/fonts/tree/6ebe737e44fd64ee736bbc6feed6136a6dbfd222/ofl). They are fetched into the disposable artifacts directory and provide the probe's fixed glyph coverage.

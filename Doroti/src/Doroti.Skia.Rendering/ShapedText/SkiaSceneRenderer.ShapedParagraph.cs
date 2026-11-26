@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Doroti.Skia.Rendering.Unicode;
 using Doroti.Ui;
 using HarfBuzzSharp;
@@ -15,15 +16,21 @@ public sealed partial class SkiaSceneRenderer
     private const int MaxPreparedParagraphWeight = 16_384;
     private const int MaxReusableShapeLength = 4_096;
     private const int ShapingUnitsPerEm = 512;
-    private readonly LinkedList<ShapedParagraphLayout> _preparedParagraphs = new();
+    private readonly Dictionary<object, LinkedListNode<PreparedParagraph>> _preparedByKey = [];
+    private readonly LinkedList<PreparedParagraph> _preparedParagraphs = new();
     private long _preparedParagraphWeight;
     private Buffer? _shapingBuffer;
 
     private Paragraph CreateShapedParagraph(ParagraphRequest request)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        var runs = NormalizeTextRuns(request)
-            .Select(run => new ParagraphTextRun(run.Text, run.Style.SnapshotForPainting())).ToArray();
+        var originalRuns = NormalizeTextRuns(request);
+        var runs = originalRuns.Count == 0 ? [] : new ParagraphTextRun[originalRuns.Count];
+        for (var i = 0; i < runs.Length; i++)
+        {
+            var run = originalRuns[i];
+            runs[i] = new(run.Text, run.Style.SnapshotForPainting());
+        }
         var direction = request.TextDirection ?? UiDirection.ltr;
         var layout = new ShapedParagraphLayout(this, request, runs, direction);
         var paragraph = new Paragraph(request, runs, layout)
@@ -53,92 +60,83 @@ public sealed partial class SkiaSceneRenderer
             ObjectDisposedException.ThrowIf(_disposed, this);
             ObjectDisposedException.ThrowIf(layout.Disposed, layout);
             var fontGeneration = _fontGeneration;
-            var analysis = layout.Analysis;
-            // Remove the lease from the idle cache while it is in use. Only
-            // the active call can release these fonts during placement.
-            var prepared = TakePreparedParagraph(layout) ?? PrepareParagraph(layout.Request, layout.Runs, analysis);
-            try
+            var key = layout.CacheKey;
+            var last = _preparedParagraphs.Last;
+            var cached = ReferenceEquals(last?.Value.Key, key) ? last : _preparedByKey.GetValueOrDefault(key);
+            if (cached is not null && cached != last)
             {
-                var widths = prepared.Widths;
-                var placedWidth = double.IsFinite(availableWidth) ? availableWidth : widths.Maximum;
-                var snapshot = prepared.Placement;
-                if (snapshot is null || (availableWidth != prepared.AvailableWidth
-                    && !prepared.ReusableWidths.Contains(availableWidth)))
-                {
-                    snapshot = PlaceParagraph(layout.Request, layout.Runs, analysis, prepared.Cells,
-                        availableWidth, placedWidth, prepared.EmptyMetrics, widths, out var breakWidths);
-                    prepared.ReusableWidths = !snapshot.DidExceedMaxLines
-                        && ResolveLineAlignment(layout.Request.TextAlign, analysis.BaseLevel) == TextAlign.left
-                        ? layout.Request.TextAlign == TextAlign.justify
-                            ? breakWidths.AtOrAbove(widths.UnwrappedAdvance)
-                            : breakWidths
-                        : default;
-                }
-                prepared.Placement = snapshot;
-                prepared.AvailableWidth = availableWidth;
-                _paragraphCount++;
-                _paragraphMicroseconds += (DorotiFrameClock.Now - started).Ticks / 10;
-                return (placedWidth, snapshot);
+                _preparedParagraphs.Remove(cached);
+                _preparedParagraphs.AddLast(cached);
             }
-            finally
+            var prepared = cached?.Value ?? PrepareParagraph(layout);
+            var analysis = prepared.Analysis;
+            var widths = prepared.Widths;
+            var placedWidth = double.IsFinite(availableWidth) ? availableWidth : widths.Maximum;
+            var snapshot = prepared.Placement;
+            if (snapshot is null || (availableWidth != prepared.AvailableWidth
+                && !prepared.ReusableWidths.Contains(availableWidth)))
             {
-                if (_disposed || layout.Disposed || fontGeneration != _fontGeneration
-                    || prepared.Weight > MaxPreparedParagraphWeight || prepared.Placement is null
-                    || layout.Prepared is not null)
-                    prepared.Dispose();
-                else
-                    RetainPreparedParagraph(layout, prepared);
+                snapshot = PlaceParagraph(layout.Request, layout.Runs, prepared, availableWidth, placedWidth, out var breakWidths);
+                prepared.ReusableWidths = !snapshot.DidExceedMaxLines
+                    && ResolveLineAlignment(layout.Request.TextAlign, analysis.BaseLevel) == TextAlign.left
+                    ? layout.Request.TextAlign == TextAlign.justify
+                        ? breakWidths.AtOrAbove(widths.UnwrappedAdvance)
+                        : breakWidths
+                    : default;
             }
+            prepared.Placement = snapshot;
+            prepared.AvailableWidth = availableWidth;
+            if (cached is null && !_disposed && !layout.Disposed && fontGeneration == _fontGeneration
+                && prepared.Weight <= MaxPreparedParagraphWeight && !_preparedByKey.ContainsKey(prepared.Key))
+                RetainPreparedParagraph(prepared);
+            _paragraphCount++;
+            _paragraphMicroseconds += (DorotiFrameClock.Now - started).Ticks / 10;
+            return (placedWidth, snapshot);
         }
     }
 
-    private PreparedParagraph PrepareParagraph(ParagraphRequest request, ParagraphTextRun[] runs,
-        ParagraphTextAnalysis analysis)
+    private PreparedParagraph PrepareParagraph(ShapedParagraphLayout layout)
     {
-        var fonts = new ShapingFonts();
-        try
-        {
-            var cells = ShapeParagraph(request, runs, analysis.Clusters, fonts, out var emptyMetrics);
-            var widths = MeasureIntrinsicWidths(cells, analysis.Breaks);
-            return new(cells, fonts, widths, emptyMetrics, request.Text.Length + widths.GlyphCount);
-        }
-        catch
-        {
-            fonts.Dispose();
-            throw;
-        }
+        var analysis = layout.Analysis;
+        var request = layout.Request;
+        var cells = ShapeParagraph(request, layout.Runs, analysis.Clusters, out var emptyMetrics);
+        var widths = MeasureIntrinsicWidths(cells, analysis.Breaks);
+        var lineAdvances = layout.Runs.Length <= 1 && analysis.BaseLevel == 0
+            && (request.TextAlign is null or TextAlign.start or TextAlign.left)
+            && string.IsNullOrEmpty(request.Ellipsis) && request.Text.AsSpan().IndexOfAnyExceptInRange(' ', '~') < 0
+            ? LineAdvanceIndex.Create(CollectionsMarshal.AsSpan(cells), analysis.Breaks)
+            : null;
+        var weight = request.Text.Length + widths.GlyphCount + (request.Ellipsis?.Length ?? 0);
+        return new(layout.CacheKey, analysis, cells, widths, emptyMetrics, lineAdvances, weight);
     }
 
-    private void RetainPreparedParagraph(ShapedParagraphLayout layout, PreparedParagraph prepared)
+    private void RetainPreparedParagraph(PreparedParagraph prepared)
     {
         while (_preparedParagraphs.Count >= MaxPreparedParagraphs
             || _preparedParagraphWeight + prepared.Weight > MaxPreparedParagraphWeight)
         {
-            TakePreparedParagraph(_preparedParagraphs.First!.Value)!.Dispose();
+            RemovePreparedParagraph(_preparedParagraphs.First!.Value.Key);
         }
-        layout.Prepared = prepared;
-        _preparedParagraphs.AddLast(layout.CacheNode ??= new(layout));
+        _preparedByKey.Add(prepared.Key, _preparedParagraphs.AddLast(prepared));
         _preparedParagraphWeight += prepared.Weight;
     }
 
-    private PreparedParagraph? TakePreparedParagraph(ShapedParagraphLayout layout)
+    private void RemovePreparedParagraph(object key)
     {
-        var prepared = layout.Prepared;
-        if (prepared is null) return null;
-        _preparedParagraphs.Remove(layout.CacheNode!);
-        layout.Prepared = null;
-        _preparedParagraphWeight -= prepared.Weight;
-        return prepared;
+        if (!_preparedByKey.Remove(key, out var node)) return;
+        _preparedParagraphs.Remove(node);
+        _preparedParagraphWeight -= node.Value.Weight;
     }
 
     private void ClearPreparedParagraphs()
     {
-        while (_preparedParagraphs.First is { } oldest)
-            TakePreparedParagraph(oldest.Value)!.Dispose();
+        _preparedByKey.Clear();
+        _preparedParagraphs.Clear();
+        _preparedParagraphWeight = 0;
     }
 
     private List<ShapedCell> ShapeParagraph(ParagraphRequest request, ParagraphTextRun[] runs,
-        ParagraphTextAnalysis.Cluster[] clusters, ShapingFonts fonts, out VerticalMetrics emptyMetrics)
+        ParagraphTextAnalysis.Cluster[] clusters, out VerticalMetrics emptyMetrics)
     {
         var cells = new List<ShapedCell>(clusters.Length);
         var clusterIndex = 0;
@@ -151,7 +149,7 @@ public sealed partial class SkiaSceneRenderer
         {
             runEnd += run.Text.Length;
             var style = run.Style;
-            var color = ToColor(style.foreground?.color ?? style.color ?? request.Color ?? new UiColor(0xff000000));
+            var color = ToParagraphColor(ParagraphColor(request, style));
             var resources = GetTextRenderResources(style.fontFamily ?? request.FontFamily,
                 (float)(style.fontSize ?? request.FontSize), color, style);
             var language = (style.locale ?? request.Locale)?.toLanguageTag() ?? "und";
@@ -182,7 +180,7 @@ public sealed partial class SkiaSceneRenderer
                     next++;
                 }
                 ShapeRun(request.Text, first.Start, clusters[next - 1].End, first.Level, shapingLanguage, features,
-                    firstFont, fonts.Get(firstFont), color, style, request.Height, cells);
+                    firstFont, color, style, request.Height, cells);
                 clusterIndex = next;
             }
 
@@ -191,6 +189,11 @@ public sealed partial class SkiaSceneRenderer
         }
         return cells;
     }
+
+    private static UiColor? ParagraphColor(ParagraphRequest request, TextStyle? style) =>
+        style?.foreground?.color ?? style?.color ?? request.Color;
+
+    private static SKColor ToParagraphColor(UiColor? color) => color is null ? SKColors.Black : ToColor(color);
 
     private static Feature[] CreateShapingFeatures(IReadOnlyList<FontFeature>? features)
     {
@@ -231,7 +234,7 @@ public sealed partial class SkiaSceneRenderer
     }
 
     private void ShapeRun(string text, int start, int end, sbyte level, Language language, Feature[] features,
-        TextRenderResources.TextFontResource face, SKFont retainedFont, SKColor color, TextStyle style,
+        TextRenderResources.TextFontResource face, SKColor color, TextStyle style,
         double? paragraphHeight, List<ShapedCell> output)
     {
         using var largeBuffer = end - start > MaxReusableShapeLength ? new Buffer() : null;
@@ -246,7 +249,7 @@ public sealed partial class SkiaSceneRenderer
         var positions = buffer.GetGlyphPositionSpan();
         var glyphs = new ushort[glyphInfo.Length];
         var points = new SKPoint[glyphInfo.Length];
-        var run = new ShapedRun(retainedFont, color, glyphs, points);
+        var run = new ShapedRun(face.RecordingFont, color, glyphs, points);
         var ascent = MeasureHeight(face.Font, style, paragraphHeight);
         var scaleY = face.Font.Size / ShapingUnitsPerEm;
         var scaleX = scaleY * face.Font.ScaleX;
@@ -328,11 +331,11 @@ public sealed partial class SkiaSceneRenderer
         ParagraphTextRun[] runs, UiDirection direction) : IParagraphHostLayout
     {
         private ParagraphTextAnalysis? _analysis;
+        private readonly SharedParagraphKey? _sharedKey = SharedParagraphKey.Create(request, runs, direction);
         internal ParagraphRequest Request { get; } = request;
         internal ParagraphTextRun[] Runs { get; } = runs;
         internal ParagraphTextAnalysis Analysis => _analysis ??= new(Request.Text, direction);
-        internal LinkedListNode<ShapedParagraphLayout>? CacheNode { get; set; }
-        internal PreparedParagraph? Prepared { get; set; }
+        internal object CacheKey => (object?)_sharedKey ?? this;
         internal bool Disposed { get; private set; }
 
         public (double Width, ParagraphHostLayoutSnapshot Snapshot) Layout(double availableWidth) =>
@@ -343,24 +346,50 @@ public sealed partial class SkiaSceneRenderer
             lock (renderer._paintGate)
             {
                 Disposed = true;
-                renderer.TakePreparedParagraph(this)?.Dispose();
+                if (_sharedKey is null) renderer.RemovePreparedParagraph(this);
                 _analysis = null;
             }
         }
     }
 
-    private sealed class PreparedParagraph(List<ShapedCell> cells, ShapingFonts fonts,
-        IntrinsicWidths widths, VerticalMetrics emptyMetrics, long weight) : IDisposable
+    // Uniform text can share shaping and immutable placement across Paragraph handles.
+    // Multi-run and list-valued styles use the same bounded cache by handle identity.
+    private sealed record SharedParagraphKey(string Text, string? Family, double FontSize, SKColor Color,
+        Locale? Locale, int Weight, FontStyle? Style, double? LetterSpacing, double? WordSpacing,
+        double? HeightMultiplier, double? ParagraphHeight, TextLeadingDistribution? Leading,
+        UiDirection Direction, TextAlign? Alignment, long? MaxLines, string? Ellipsis)
     {
+        internal static SharedParagraphKey? Create(ParagraphRequest request, ParagraphTextRun[] runs, UiDirection direction)
+        {
+            if (runs.Length > 1 || request.Text.Length > MaxPreparedParagraphWeight) return null;
+            var style = runs.Length == 0 ? null : runs[0].Style;
+            if (style is { fontFamilyFallback.Count: > 0 } or { fontFeatures.Count: > 0 } or { fontVariations.Count: > 0 })
+                return null;
+            var color = ParagraphColor(request, style);
+            // Color.value is virtual. Leave custom colors to the normal layout path.
+            if (color is not null && color.GetType() != typeof(UiColor)) return null;
+
+            return new(request.Text, style?.fontFamily ?? request.FontFamily, style?.fontSize ?? request.FontSize,
+                ToParagraphColor(color),
+                style?.locale ?? request.Locale, style?.fontWeight?.value ?? 400, style?.fontStyle,
+                style?.letterSpacing, style?.wordSpacing, style?.height, request.Height, style?.leadingDistribution,
+                direction, request.TextAlign, request.MaxLines, request.Ellipsis);
+        }
+    }
+
+    private sealed class PreparedParagraph(object key, ParagraphTextAnalysis analysis, List<ShapedCell> cells,
+        IntrinsicWidths widths, VerticalMetrics emptyMetrics, LineAdvanceIndex? lineAdvances, long weight)
+    {
+        internal object Key { get; } = key;
+        internal ParagraphTextAnalysis Analysis { get; } = analysis;
         internal List<ShapedCell> Cells { get; } = cells;
         internal IntrinsicWidths Widths { get; } = widths;
         internal VerticalMetrics EmptyMetrics { get; } = emptyMetrics;
+        internal LineAdvanceIndex? LineAdvances { get; } = lineAdvances;
         internal long Weight { get; } = weight;
         internal ParagraphHostLayoutSnapshot? Placement { get; set; }
         internal double AvailableWidth { get; set; }
         internal LineBreakWidths ReusableWidths { get; set; }
-
-        public void Dispose() => fonts.Dispose();
     }
 
     private sealed record ShapedRun(SKFont Font, SKColor Color, ushort[] Glyphs, SKPoint[] Positions);
@@ -368,40 +397,16 @@ public sealed partial class SkiaSceneRenderer
     private readonly record struct ShapedCell(int Start, int End, sbyte Level, bool HardBreak, bool ResetLevel,
         bool IsSpace, double Advance, VerticalMetrics Metrics, ShapedRun? Run, int GlyphStart, int GlyphCount, float Origin);
 
-    private sealed class ShapingFonts : IDisposable
+    private sealed class ShapedParagraphPaint(PlacedLine[] placements)
     {
-        private readonly Dictionary<TextRenderResources.TextFontResource, SKFont> _fonts = [];
+        private readonly Lazy<List<ShapedPaintRun>> _runs = new(() => BuildParagraphPaint(placements));
 
-        internal SKFont Get(TextRenderResources.TextFontResource resource)
-        {
-            if (_fonts.TryGetValue(resource, out var retained))
-                return retained;
-            var font = resource.Font;
-            retained = new SKFont(resource.Typeface, font.Size, font.ScaleX, font.SkewX)
-            {
-                Embolden = font.Embolden,
-                Edging = font.Edging,
-                Hinting = font.Hinting,
-                Subpixel = font.Subpixel,
-            };
-            _fonts.Add(resource, retained);
-            return retained;
-        }
-
-        public void Dispose()
-        {
-            foreach (var font in _fonts.Values) font.Dispose();
-            _fonts.Clear();
-        }
-    }
-
-    private sealed record ShapedParagraphPaint(IReadOnlyList<ShapedPaintRun> Runs)
-    {
         internal void Draw(SKCanvas canvas, Offset offset)
         {
-            if (Runs.Count == 0) return;
+            var runs = _runs.Value;
+            if (runs.Count == 0) return;
             using var paint = new SKPaint { IsAntialias = true };
-            foreach (var run in Runs)
+            foreach (var run in runs)
             {
                 paint.Color = run.Color;
                 canvas.DrawText(run.Blob, (float)offset.dx, (float)offset.dy, paint);

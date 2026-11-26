@@ -43,8 +43,23 @@ internal static class ParagraphMeasurement
             using var picture = recorder.endRecording();
             Measure(name, "layout-repeat", _ => { using var result = renderer.Layout(request, invoke); });
             Measure(name, "layout-text-change", index => { using var result = renderer.Layout(edited[index], invoke); });
-            Measure(name, "layout-resize", index => layout.layout(new ParagraphConstraints(width - 80 + index * 4)));
+            Measure(name, "layout-resize", Resize);
+            Measure(name, "resize-and-hit-test", index =>
+            {
+                Resize(index);
+                layout.getPositionForOffset(new Offset(width / 2, layout.height / 2));
+            });
+            Measure(name, "resize-and-paint", index =>
+            {
+                Resize(index);
+                var frame = new PictureRecorder();
+                new Canvas(frame).drawParagraph(layout, Offset.zero);
+                using var resizedPicture = frame.endRecording();
+                draw(raster, resizedPicture.Commands);
+            });
             Measure(name, "paint", _ => draw(raster, picture.Commands));
+
+            void Resize(int index) => layout.layout(new ParagraphConstraints(width - 80 + index * 4));
         }
     }
 

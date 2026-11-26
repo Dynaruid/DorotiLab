@@ -3386,8 +3386,19 @@ public sealed partial class SkiaSceneRenderer
             internal SkiaFontFaceDescriptor? Descriptor { get; } = descriptor;
 #if DOROTI_SHAPED_PARAGRAPHS
             private HarfBuzzSharp.Font? _shapingFont;
+            private SKFont? _recordingFont;
             private UInt128? _asciiGlyphs;
             internal HarfBuzzSharp.Font ShapingFont => _shapingFont ??= CreateShapingFont(Typeface);
+
+            // A recorded paragraph may build its blob after this font resource
+            // was evicted. The immutable copy owns a native typeface reference.
+            internal SKFont RecordingFont => _recordingFont ??= new(Typeface, Font.Size, Font.ScaleX, Font.SkewX)
+            {
+                Embolden = Font.Embolden,
+                Edging = Font.Edging,
+                Hinting = Font.Hinting,
+                Subpixel = Font.Subpixel,
+            };
 
             internal bool CoversGlyph(int codePoint)
             {
@@ -3424,6 +3435,7 @@ public sealed partial class SkiaSceneRenderer
             {
 #if DOROTI_SHAPED_PARAGRAPHS
                 _shapingFont?.Dispose();
+                _recordingFont = null;
 #endif
                 Font.Dispose();
                 _typefaceLease.Dispose();

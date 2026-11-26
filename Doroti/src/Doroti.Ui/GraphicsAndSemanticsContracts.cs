@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Doroti.Runtime;
 
 namespace Doroti.Ui;
@@ -1840,7 +1841,10 @@ internal readonly record struct ParagraphHostLineSnapshot(
     double Width,
     double Left,
     double Baseline
-);
+)
+{
+    internal double Top => Baseline - Ascent;
+}
 
 internal readonly record struct ParagraphHostGraphemeSnapshot(
     int Start,
@@ -1860,19 +1864,112 @@ internal interface IParagraphHostLayout : IDisposable
     (double Width, ParagraphHostLayoutSnapshot Snapshot) Layout(double availableWidth);
 }
 
-internal sealed record ParagraphHostLayoutSnapshot(
-    double Height,
-    double AlphabeticBaseline,
-    double IdeographicBaseline,
-    double MinIntrinsicWidth,
-    double MaxIntrinsicWidth,
-    double LongestLine,
-    bool DidExceedMaxLines,
-    IReadOnlyList<ParagraphHostLineSnapshot> Lines,
-    ReadOnlyMemory<ParagraphHostGraphemeSnapshot> Graphemes,
-    Lazy<int[]>? WordBoundaries = null,
-    object? PaintPayload = null
-);
+internal sealed class ParagraphHostLayoutSnapshot
+{
+    private readonly int _textLength;
+    private readonly StrongBox<Func<int, ReadOnlyMemory<ParagraphHostGraphemeSnapshot>>?> _lineGeometry;
+
+    internal ParagraphHostLayoutSnapshot(double height, double alphabeticBaseline, double ideographicBaseline,
+        double minIntrinsicWidth, double maxIntrinsicWidth, double longestLine, bool didExceedMaxLines,
+        ParagraphHostLineSnapshot[] lines, Func<ReadOnlyMemory<ParagraphHostGraphemeSnapshot>> buildGraphemes,
+        Func<int, ReadOnlyMemory<ParagraphHostGraphemeSnapshot>> buildLineGraphemes, int textLength,
+        Lazy<int[]>? wordBoundaries, object? paintPayload)
+    {
+        Height = height;
+        AlphabeticBaseline = alphabeticBaseline;
+        IdeographicBaseline = ideographicBaseline;
+        MinIntrinsicWidth = minIntrinsicWidth;
+        MaxIntrinsicWidth = maxIntrinsicWidth;
+        LongestLine = longestLine;
+        DidExceedMaxLines = didExceedMaxLines;
+        ValidateLines(lines, textLength);
+        Lines = lines;
+        WordBoundaries = wordBoundaries;
+        PaintPayload = paintPayload;
+        _textLength = textLength;
+        var lineCount = lines.Length;
+        var lineGeometry = new StrongBox<Func<int, ReadOnlyMemory<ParagraphHostGraphemeSnapshot>>?>(buildLineGraphemes);
+        _lineGeometry = lineGeometry;
+        Graphemes = new(() =>
+        {
+            var geometry = ValidateGraphemes(buildGraphemes(), textLength, lineCount);
+            // The materialized geometry can serve hits without the shaped cells.
+            Volatile.Write(ref lineGeometry.Value, null);
+            return geometry;
+        });
+    }
+
+    internal double Height { get; }
+    internal double AlphabeticBaseline { get; }
+    internal double IdeographicBaseline { get; }
+    internal double MinIntrinsicWidth { get; }
+    internal double MaxIntrinsicWidth { get; }
+    internal double LongestLine { get; }
+    internal bool DidExceedMaxLines { get; }
+    internal ParagraphHostLineSnapshot[] Lines { get; }
+    internal Lazy<int[]>? WordBoundaries { get; }
+    internal object? PaintPayload { get; }
+    internal Lazy<ReadOnlyMemory<ParagraphHostGraphemeSnapshot>> Graphemes { get; }
+
+    internal ReadOnlyMemory<ParagraphHostGraphemeSnapshot> GraphemesOnLine(int index)
+    {
+        var buildLine = Volatile.Read(ref _lineGeometry.Value);
+        return buildLine is null ? Graphemes.Value : ValidateGraphemes(buildLine(index), _textLength, Lines.Length);
+    }
+
+    private static void ValidateLines(ReadOnlySpan<ParagraphHostLineSnapshot> lines, int textLength)
+    {
+        foreach (ref readonly var line in lines)
+        {
+            if (
+                line.Start < 0
+                || line.End < line.Start
+                || line.End > textLength
+                || !IsNonnegativeFinite(line.Ascent)
+                || !IsNonnegativeFinite(line.Descent)
+                || !IsNonnegativeFinite(line.Height)
+                || !IsNonnegativeFinite(line.Width)
+                || !double.IsFinite(line.Left)
+                || !IsNonnegativeFinite(line.Baseline)
+            )
+            {
+                throw new InvalidDataException("The host returned an invalid paragraph line snapshot.");
+            }
+        }
+    }
+
+    private static ReadOnlyMemory<ParagraphHostGraphemeSnapshot> ValidateGraphemes(
+        ReadOnlyMemory<ParagraphHostGraphemeSnapshot> graphemes, int textLength, int lineCount)
+    {
+        var previousEnd = 0;
+        foreach (ref readonly var grapheme in graphemes.Span)
+        {
+            if (
+                grapheme.Start < previousEnd
+                || grapheme.End <= grapheme.Start
+                || grapheme.End > textLength
+                || (uint)grapheme.LineIndex >= (uint)lineCount
+                || !double.IsFinite(grapheme.Left)
+                || !double.IsFinite(grapheme.Top)
+                || !double.IsFinite(grapheme.Right)
+                || !double.IsFinite(grapheme.Bottom)
+                || grapheme.Right < grapheme.Left
+                || grapheme.Bottom < grapheme.Top
+                || !double.IsFinite(grapheme.StrutTop)
+                || !double.IsFinite(grapheme.StrutBottom)
+                || grapheme.StrutBottom < grapheme.StrutTop
+            )
+            {
+                throw new InvalidDataException("The host returned an invalid paragraph grapheme snapshot.");
+            }
+
+            previousEnd = grapheme.End;
+        }
+        return graphemes;
+    }
+
+    private static bool IsNonnegativeFinite(double value) => double.IsFinite(value) && value >= 0;
+}
 
 public sealed class Paragraph : IDisposable
 {
@@ -1882,8 +1979,9 @@ public sealed class Paragraph : IDisposable
     private readonly long? _maxLines;
     private readonly int[] _graphemeStarts;
     private double[] _codeUnitAdvances;
-    private List<ParagraphLine> _lines = [];
-    private ReadOnlyMemory<ParagraphHostGraphemeSnapshot>? _hostGraphemes;
+    private IReadOnlyList<ParagraphHostLineSnapshot> _lines = [];
+    private Lazy<ReadOnlyMemory<ParagraphHostGraphemeSnapshot>>? _hostGraphemes;
+    private ReadOnlyMemory<ParagraphHostGraphemeSnapshot>? HostGraphemes => _hostGraphemes?.Value;
     private Lazy<int[]>? _hostWordBoundaries;
     private double? _hostMinIntrinsicWidth;
     private double? _hostMaxIntrinsicWidth;
@@ -1909,8 +2007,15 @@ public sealed class Paragraph : IDisposable
         snapshot._paintingSnapshot = true;
         snapshot._hostLayout = null;
         if (HostPaintPayload is not null)
+        {
+            // A picture needs the immutable paint payload. Keeping the lazy
+            // editing geometry here would also pin the original shaped cells.
+            snapshot._appliedHostLayout = null;
+            snapshot._hostGraphemes = null;
+            snapshot._hostWordBoundaries = null;
             return snapshot;
-        snapshot._lines = new(_lines);
+        }
+        snapshot._lines = new List<ParagraphHostLineSnapshot>(_lines);
         snapshot.TextRuns = Array.AsReadOnly(
             TextRuns
                 .Select(run => new ParagraphTextRun(run.Text, run.Style.SnapshotForPainting()))
@@ -2013,16 +2118,15 @@ public sealed class Paragraph : IDisposable
         _hostWordBoundaries = null;
         HostPaintPayload = null;
         width = double.IsFinite(availableWidth) ? Math.Max(0, availableWidth) : _naturalWidth;
-        _lines = BuildLines(width);
-        didExceedMaxLines = _maxLines.HasValue && _lines.Count > _maxLines.Value;
-        if (_maxLines.HasValue && _lines.Count > _maxLines.Value)
+        var lines = BuildLines(width);
+        didExceedMaxLines = _maxLines.HasValue && lines.Count > _maxLines.Value;
+        if (didExceedMaxLines)
         {
-            _lines.RemoveRange(
-                checked((int)_maxLines.Value),
-                _lines.Count - checked((int)_maxLines.Value)
-            );
+            var limit = checked((int)_maxLines!.Value);
+            lines.RemoveRange(limit, lines.Count - limit);
         }
-        numberOfLines = _lines.Count;
+        _lines = lines;
+        numberOfLines = lines.Count;
         // An empty paragraph still reserves the font's line height for its
         // caret. It has no glyphs or line-metrics entries, matching dart:ui.
         // A zero height collapses RenderEditable and clamps handle leaders to
@@ -2044,7 +2148,7 @@ public sealed class Paragraph : IDisposable
             return [];
         }
 
-        if (_hostGraphemes is { } graphemes)
+        if (HostGraphemes is { } graphemes)
         {
             var useStrutHeight = boxHeightStyle == BoxHeightStyle.strut;
             var hostBoxes = new List<TextBox>();
@@ -2094,13 +2198,15 @@ public sealed class Paragraph : IDisposable
 
     public TextPosition getPositionForOffset(Offset offset)
     {
-        if (_hostGraphemes is { Length: > 0 } graphemes)
+        var lineIndex = LineIndexAtY(offset.dy);
+        if (lineIndex < 0) return new TextPosition(0);
+
+        var line = _lines[lineIndex];
+        if (GraphemesOnLine(lineIndex) is { } graphemes)
         {
-            var hostLineIndex = LineIndexAtY(offset.dy);
-            if (ClosestGrapheme(graphemes.Span, offset, hostLineIndex) is not { } glyph)
-                return new TextPosition(_lines[hostLineIndex].Start);
-            var hostLine = _lines[hostLineIndex];
-            if (hostLine.HardBreak && glyph.Start == hostLine.End)
+            if (ClosestGrapheme(graphemes.Span, offset, lineIndex) is not { } glyph)
+                return new TextPosition(line.Start);
+            if (line.HardBreak && glyph.Start == line.End)
                 return new TextPosition(glyph.Start);
             var afterMidpoint = offset.dx >= (glyph.Left + glyph.Right) / 2;
             var atEnd = afterMidpoint == (glyph.Direction == TextDirection.ltr);
@@ -2108,13 +2214,6 @@ public sealed class Paragraph : IDisposable
                 ? new TextPosition(glyph.End, TextAffinity.upstream)
                 : new TextPosition(glyph.Start);
         }
-        if (_lines.Count == 0)
-        {
-            return new TextPosition(0);
-        }
-
-        var lineIndex = _lines.FindIndex(value => offset.dy < value.Top + value.Height);
-        var line = _lines[lineIndex < 0 ? ^1 : lineIndex];
         var x = Math.Max(0, offset.dx - line.Left);
         var currentX = 0.0;
         for (var index = line.Start; index < line.End; index = NextClusterEnd(index))
@@ -2191,11 +2290,10 @@ public sealed class Paragraph : IDisposable
         var offset = Math.Clamp(checked((int)position.offset), 0, text.Length);
         if (_hostGraphemes is not null && position.affinity == TextAffinity.downstream)
         {
-            var lineIndex = _lines.FindLastIndex(candidate => candidate.Start == offset);
-            if (lineIndex >= 0)
+            for (var i = _lines.Count - 1; i >= 0; i--)
             {
-                var next = _lines[lineIndex];
-                return new TextRange(next.Start, next.End);
+                var next = _lines[i];
+                if (next.Start == offset) return new TextRange(next.Start, next.End);
             }
         }
         var line = FindLine(offset);
@@ -2237,7 +2335,7 @@ public sealed class Paragraph : IDisposable
             return null;
         }
         var offset = checked((int)codeUnitOffset);
-        if (_hostGraphemes is { } graphemes)
+        if (HostGraphemes is { } graphemes)
         {
             var values = graphemes.Span;
             var index = FirstHostGraphemeEndingAfter(values, offset);
@@ -2265,9 +2363,10 @@ public sealed class Paragraph : IDisposable
 
     public GlyphInfo? getClosestGlyphInfoForOffset(Offset offset)
     {
-        if (_hostGraphemes is { Length: > 0 } graphemes)
+        var line = LineIndexAtY(offset.dy);
+        if (line >= 0 && GraphemesOnLine(line) is { } graphemes)
         {
-            return ClosestGrapheme(graphemes.Span, offset, LineIndexAtY(offset.dy)) is { } glyph
+            return ClosestGrapheme(graphemes.Span, offset, line) is { } glyph
                 ? ToGlyphInfo(glyph)
                 : null;
         }
@@ -2282,7 +2381,7 @@ public sealed class Paragraph : IDisposable
 
     internal SemanticsTextGeometry? CaptureHostTextGeometry(long revision, Offset paintOffset)
     {
-        if (_hostGraphemes is not { } graphemes) return null;
+        if (HostGraphemes is not { } graphemes) return null;
 
         var hasPosition = double.IsFinite(paintOffset.dx) && double.IsFinite(paintOffset.dy);
         var runs = hasPosition ? new SemanticsTextRun[graphemes.Length] : [];
@@ -2348,72 +2447,11 @@ public sealed class Paragraph : IDisposable
             );
         }
 
-        var lines = new List<ParagraphLine>(snapshot.Lines.Count);
-        foreach (var line in snapshot.Lines)
-        {
-            if (
-                line.Start < 0
-                || line.End < line.Start
-                || line.End > text.Length
-                || !IsNonnegativeFinite(line.Ascent)
-                || !IsNonnegativeFinite(line.Descent)
-                || !IsNonnegativeFinite(line.Height)
-                || !IsNonnegativeFinite(line.Width)
-                || !double.IsFinite(line.Left)
-                || !IsNonnegativeFinite(line.Baseline)
-            )
-            {
-                throw new InvalidDataException(
-                    "The host returned an invalid paragraph line snapshot."
-                );
-            }
-
-            lines.Add(
-                new(
-                    line.Start,
-                    line.End,
-                    line.Width,
-                    line.HardBreak,
-                    line.Ascent,
-                    line.Descent,
-                    line.Height,
-                    line.Left,
-                    line.Baseline
-                )
-            );
-        }
-
-        var previousEnd = 0;
-        foreach (ref readonly var grapheme in snapshot.Graphemes.Span)
-        {
-            if (
-                grapheme.Start < previousEnd
-                || grapheme.End <= grapheme.Start
-                || grapheme.End > text.Length
-                || (uint)grapheme.LineIndex >= (uint)lines.Count
-                || !double.IsFinite(grapheme.Left)
-                || !double.IsFinite(grapheme.Top)
-                || !double.IsFinite(grapheme.Right)
-                || !double.IsFinite(grapheme.Bottom)
-                || grapheme.Right < grapheme.Left
-                || grapheme.Bottom < grapheme.Top
-                || !double.IsFinite(grapheme.StrutTop)
-                || !double.IsFinite(grapheme.StrutBottom)
-                || grapheme.StrutBottom < grapheme.StrutTop
-            )
-            {
-                throw new InvalidDataException(
-                    "The host returned an invalid paragraph grapheme snapshot."
-                );
-            }
-
-            previousEnd = grapheme.End;
-        }
-
+        var lines = snapshot.Lines;
         width = placedWidth;
         height = snapshot.Height;
         _naturalWidth = snapshot.MaxIntrinsicWidth;
-        if (lines.Count != 0)
+        if (lines.Length != 0)
         {
             _lineHeight = lines[0].Height;
         }
@@ -2428,16 +2466,29 @@ public sealed class Paragraph : IDisposable
         _hostAlphabeticBaseline = snapshot.AlphabeticBaseline;
         _hostIdeographicBaseline = snapshot.IdeographicBaseline;
         didExceedMaxLines = snapshot.DidExceedMaxLines;
-        numberOfLines = lines.Count;
+        numberOfLines = lines.Length;
         _appliedHostLayout = snapshot;
     }
 
     private static bool IsNonnegativeFinite(double value) => double.IsFinite(value) && value >= 0;
 
+    private ReadOnlyMemory<ParagraphHostGraphemeSnapshot>? GraphemesOnLine(int lineIndex)
+    {
+        if (_appliedHostLayout?.GraphemesOnLine(lineIndex) is { Length: > 0 } line) return line;
+        // A trailing empty line still uses the host's caret path when earlier
+        // lines contain graphemes. A synthetic-only ellipsis uses line affinity.
+        if (HostGraphemes is { Length: > 0 } full) return full;
+        return default;
+    }
+
     private int LineIndexAtY(double y)
     {
-        var index = _lines.FindIndex(line => y < line.Top + line.Height);
-        return index < 0 ? _lines.Count - 1 : index;
+        for (var i = 0; i < _lines.Count; i++)
+        {
+            var line = _lines[i];
+            if (y < line.Top + line.Height) return i;
+        }
+        return _lines.Count - 1;
     }
 
     private static ParagraphHostGraphemeSnapshot? ClosestGrapheme(
@@ -2536,14 +2587,14 @@ public sealed class Paragraph : IDisposable
         return Math.Max(longest, current);
     }
 
-    private List<ParagraphLine> BuildLines(double availableWidth)
+    private List<ParagraphHostLineSnapshot> BuildLines(double availableWidth)
     {
         if (text.Length == 0)
         {
             return [];
         }
 
-        var lines = new List<ParagraphLine>();
+        var lines = new List<ParagraphHostLineSnapshot>();
         var lineStart = 0;
         var lineWidth = 0.0;
         var finiteWidth = double.IsFinite(availableWidth);
@@ -2570,7 +2621,7 @@ public sealed class Paragraph : IDisposable
         return lines;
     }
 
-    private ParagraphLine CreateFallbackLine(
+    private ParagraphHostLineSnapshot CreateFallbackLine(
         int start,
         int end,
         double lineWidth,
@@ -2596,11 +2647,11 @@ public sealed class Paragraph : IDisposable
         return new(
             start,
             end,
-            lineWidth,
             hardBreak,
             ascent,
             _lineHeight - ascent,
             _lineHeight,
+            lineWidth,
             left,
             (lineNumber * _lineHeight) + ascent
         );
@@ -2659,7 +2710,7 @@ public sealed class Paragraph : IDisposable
         return -1;
     }
 
-    private ParagraphLine? FindLine(int offset)
+    private ParagraphHostLineSnapshot? FindLine(int offset)
     {
         foreach (var line in _lines)
         {
@@ -2669,21 +2720,6 @@ public sealed class Paragraph : IDisposable
             }
         }
         return _lines.Count == 0 ? null : _lines[^1];
-    }
-
-    private readonly record struct ParagraphLine(
-        int Start,
-        int End,
-        double Width,
-        bool HardBreak,
-        double Ascent,
-        double Descent,
-        double Height,
-        double Left,
-        double Baseline
-    )
-    {
-        internal double Top => Baseline - Ascent;
     }
 }
 

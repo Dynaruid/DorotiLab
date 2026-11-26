@@ -3,7 +3,7 @@
 - 작성일: 2026-11-13
 - 검토 기준: DorotiLab `0a7fdcfe2ffa`, 현재 제품 소스와 공식 upstream 문서·소스
 - 채택 방향: **.NET 우선 + 부족한 국제화 기능만 보강.** 이전의 Dart `intl` 관리형 이식 우선안을 대체한다.
-- 상태: **PARTIAL.** 공통 로케일 계약, 위젯 번역 패키지, ARB 생성기와 언어 확대를 구현했다. 합성 문단은 `-p:DorotiShapedParagraphs=true`로 선택한다. 최신 검증과 남은 인수는 §21에 기록한다.
+- 상태: **PARTIAL.** 공통 로케일 계약, 위젯 번역 패키지, ARB 생성기와 언어 확대를 구현했다. 합성 문단은 `-p:DorotiShapedParagraphs=true`로 선택한다. 남은 제품 인수는 §21, 문단 성능 개선 결과는 §22에 기록한다.
 
 ## 0. 요약과 채택 결정
 
@@ -698,3 +698,9 @@ python Doroti/eng/run-with-timeout.py node packages/platforms/web/tests/browser-
 ### 남은 제품 인수
 
 Apple 지원 runner의 빌드와 실행에는 연결된 macOS/Xcode 환경이 필요하다. 실제 기기의 IME 조합, 화면 읽기 프로그램, 첫 현지화 프레임과 실제 GPU·표시 프레임 성능 인수도 남아 있다. 로컬 검증 로그는 `Doroti/artifacts/work2-paragraph/continuation`과 `Doroti/artifacts/work2-paragraph/semantics/qt`에 있다.
+
+## 22. 2026-11-26 문단 배치 성능 개선
+
+- 폭 변경 시 불변 줄 배치를 즉시 제공한다. 글자 너비의 합을 정확히 계산할 수 있는 왼쪽 정렬 ASCII 문단은 누적 너비를 재사용한다. 커서 조회는 해당 줄의 좌표를 계산하고, 선택과 접근성에 전체 좌표가 필요하면 같은 배치에서 생성한다. 첫 그리기는 합성 때 확정한 글꼴로 위치가 지정된 글리프를 기록한다. 동일한 텍스트와 스타일의 단일 런 문단은 기존 크기 제한 안에서 합성과 배치를 재사용한다.
+- 기본 JIT 설정의 동일한 Windows x64 Release 조건에서 줄바꿈 영어의 폭 변경 p95는 이전 HarfBuzz 54.2µs에서 4.3µs로 줄었다. 기본 advance 방식의 기준값은 8.3µs였다. 폭 변경과 커서 조회 p95는 60.7→8.9µs였다. 폭 변경과 그리기 p50은 67.0→39.1µs, p95는 78.4→79.7µs였다. 이 CPU 표본의 영어 레이아웃·기록 그림 재생은 §10.3의 10% 예산을 충족했다. [측정 조건과 세부 결과](Doroti/docs/localization/paragraph-feasibility.md#deferred-paragraph-geometry-and-paint)
+- Windows x64 JIT·NativeAOT, WSL Linux x64 JIT, Chromium Web compatible·threaded에서 문단 프로브가 통과했다. 플랫폼별 고정 예문의 PNG 해시는 이전 빌드와 일치했다. 줄바꿈 경계의 전후 폭, 말줄임표만 있는 줄의 커서 방향, 단일 런의 색 변경, 글꼴 교체와 문단 해제 뒤 처음 그린 그림을 검사했다. Windows Debug·Release 스크롤 회귀, Unicode 17 표준 113,755건과 ASCII 줄바꿈 비교 23건도 통과했다.
