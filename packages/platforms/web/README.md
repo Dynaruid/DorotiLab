@@ -116,7 +116,8 @@ dual deployment inventories have been rehashed. Desktop Debug/Release AOT
 performance comparisons contain three fresh/reload runs per variant (36 samples).
 The 10% tail-regression gate and the provisional compatible input-latency budget
 fail; this does not qualify a default-mode or net11 support promotion. See the
-exact results in [work.md](../../../work.md) and the [durable qualification record](../../../history/26/11/16/web-execution-qualification.json).
+exact results in the [archived execution-mode summary](../../../history/26/11/12/web-execution-modes-summary.md)
+and the [qualification record](../../../history/26/11/16/web-execution-qualification.json).
 Mono 11.0.0's dirty JSWebWorker cleanup still issues the removed Emscripten
 `killThread` command. Its native link includes `DorotiMono11Pthreads.js` only for
 the qualified 6.0.3 toolchain. This compiler-library adapter retires the native
@@ -130,8 +131,7 @@ Neither these checks nor the software GPU measurements establish physical-device
 or hardware-performance acceptance.
 Validation tools explicitly pass `DorotiWebQualificationProbe=true`
 for requalification, not product deployment. Common net10 libraries are not
-retargeted. CoreCLR/NativeAOT WASM are explicitly unsupported. See the current
-matrix and remaining device/performance limits in [work.md](../../../work.md).
+retargeted. CoreCLR/NativeAOT WASM are explicitly unsupported.
 
 Use the system SDK explicitly without changing either repository SDK pin:
 

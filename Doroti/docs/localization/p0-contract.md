@@ -2,8 +2,7 @@
 
 This file records the initial en-US and ko-KR qualification. The expanded formatter and widget catalog are documented in [Doroti.Intl](../../src/Doroti.Intl/README.md) and [the widget packages guide](widget-packages.md).
 
-Established 2026-11-16 for the first implementation unit in [work2.md](../../../work2.md).
-Execution evidence and open acceptance gates are recorded separately in that plan.
+Established 2026-11-16 for the first implementation unit in the [localization history](../../../history/26/11/13/intl-localization-summary.md).
 
 ## Source inventory and ownership
 

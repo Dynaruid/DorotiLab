@@ -37,10 +37,10 @@ The independent probe with this preload admission passed three fresh Chromium
 starts, with `Thread.Start returned` and `owner-enter` on a JS synchronization
 context. This is **runtime startup evidence only**. Isolated-generation application
 Debug/Release-AOT frame, paint-owner, input, texture and shutdown checks passed
-separately. Final incremental-cache requalification was subsequently paused with
-a remaining in-place net11 shutdown console error. Physical-device and hardware
-performance gates also remain open. DOROTIWEB050 and the net10/threaded defaults
-are unchanged. See the exact scope and resume point in [work.md](../../../../../work.md).
+separately. The later native-link fix resolved the in-place net11 shutdown error,
+and the final 12-step same-cache transition passed on 2026-11-16. Physical-device
+and hardware-performance gates remain open. The product defaults are net10/threaded,
+and DOROTIWEB050 keeps net11 probe-only. See the [final Web qualification summary](../../../../../history/26/11/12/web-execution-modes-summary.md).
 
 ## Reproduction
 

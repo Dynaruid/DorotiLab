@@ -33,4 +33,4 @@ python Doroti/eng/validate-intl.py web --sdk 10 --mode threaded --configuration 
 
 Each child has an external 1200-second timeout. Native, runtime-only Web, Doroti rendering,
 physical input and complex-script shaping have separate acceptance scopes. P0 results and
-remaining gates are recorded in [work2.md](../../../work2.md).
+remaining gates are recorded in the [localization history](../../../history/26/11/13/intl-localization-summary.md).

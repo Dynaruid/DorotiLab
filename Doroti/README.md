@@ -177,12 +177,11 @@ before startup; compatible uses a non-shared render Worker and WebGL2. Existing
 single threaded publishing remains the build default. SDK 11/net10 and the opt-in
 `DorotiWebTargetFramework=net11.0` are qualified separately. The latter is currently
 probe-only and rejected by default (DOROTIWEB050); CoreCLR WASM is not supported.
-The runtime-source 12-profile matrix passed before the latest incremental-cache
-changes; final build-policy requalification is paused and incomplete. Cache,
-physical-device and hardware-performance gates remain open. Auto and net11
-defaults are not promoted.
+The 2026-11-16 final runtime matrix and same-cache transition each passed 12/12.
+The automated performance gates failed, and physical-device and hardware-performance
+qualification remains open.
 See [execution profiles and migration](../packages/platforms/web/README.md#execution-profiles-opt-in)
-and [the current validation matrix](../work.md).
+and the [archived validation matrix](../history/26/11/12/web-execution-modes-summary.md#2026-11-16-최종-기능-검증).
 
 | Renderer | Requirements |
 | --- | --- |

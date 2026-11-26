@@ -177,10 +177,10 @@ non-AOT 비교는 `-Mode Mono`로 명시하고, `Ctrl+C`로 서버와 helper를 
 non-shared 렌더 Worker와 WebGL2를 사용합니다. 기존 단일 threaded 게시 기본값은 유지합니다.
 SDK 11/net10과 `DorotiWebTargetFramework=net11.0`은 별도 검증 축입니다. net11은 현재 재검증 전용이며
 기본 빌드는 DOROTIWEB050으로 거부합니다. CoreCLR WASM도 미지원입니다.
-마지막 incremental cache 수정 전 runtime 소스의 12개 구성은 통과했지만 최종 build-policy 재검증은 중단·미완료입니다.
-캐시 전환·실기기·하드웨어 성능 인수가 남아 있으므로 auto·net11 기본값을 승격하지 않습니다.
+2026-11-16 최종 런타임 검증과 동일 캐시 전환은 각각 12/12로 통과했습니다.
+자동 성능 기준은 미달이었고 실기기·하드웨어 성능 인수가 남아 있습니다.
 [실행 프로필·마이그레이션](../packages/platforms/web/README.md#execution-profiles-opt-in)과
-[현재 검증 상태](../work.md)를 확인하세요.
+[당시 검증 기록](../history/26/11/12/web-execution-modes-summary.md#2026-11-16-최종-기능-검증)을 확인하세요.
 
 | 렌더러 | 요구 사항 |
 | --- | --- |
